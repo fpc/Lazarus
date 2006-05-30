@@ -284,7 +284,7 @@ implementation
 
 { TWinCEWSScrollBar }
 
-function TWinCEWSScrollBar.CreateHandle(const AWinControl: TWinControl;
+class function TWinCEWSScrollBar.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
   Params: TCreateWindowExParams;
@@ -307,7 +307,7 @@ begin
   Result := Params.Window;
 end;
 
-procedure TWinCEWSScrollBar.SetParams(const AScrollBar: TCustomScrollBar);
+class procedure TWinCEWSScrollBar.SetParams(const AScrollBar: TCustomScrollBar);
 begin
   with AScrollBar do
   begin
@@ -343,7 +343,7 @@ begin
   end;
 end;
 
-function TWinCEWSCustomGroupBox.CreateHandle(const AWinControl: TWinControl;
+class function TWinCEWSCustomGroupBox.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
   Params: TCreateWindowExParams;
@@ -370,7 +370,7 @@ begin
   Result := Params.Window;
 end;
 
-procedure TWinCEWSCustomGroupBox.AdaptBounds(const AWinControl: TWinControl;
+class procedure TWinCEWSCustomGroupBox.AdaptBounds(const AWinControl: TWinControl;
   var Left, Top, Width, Height: integer; var SuppressMove: boolean);
 var
   WinHandle, BuddyHandle: HWND;
@@ -389,7 +389,7 @@ end;
 
 { TWinCEWSCustomListBox }
 
-function TWinCEWSCustomListBox.CreateHandle(const AWinControl: TWinControl;
+class function TWinCEWSCustomListBox.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
   Params: TCreateWindowExParams;
@@ -429,7 +429,7 @@ begin
 end;
 
 //this should not be called in multiple selection things
-function  TWinCEWSCustomListBox.GetItemIndex(const ACustomListBox: TCustomListBox): integer;
+class function  TWinCEWSCustomListBox.GetItemIndex(const ACustomListBox: TCustomListBox): integer;
 begin
   Result := SendMessage(ACustomListBox.Handle, LB_GETCURSEL, 0, 0);
   if Result = LB_ERR then
@@ -439,7 +439,7 @@ begin
   end;
 end;
 
-function  TWinCEWSCustomListBox.GetSelCount(const ACustomListBox: TCustomListBox): integer;
+class function  TWinCEWSCustomListBox.GetSelCount(const ACustomListBox: TCustomListBox): integer;
 begin
   // GetSelCount only works for multiple-selection listboxes
   if ACustomListBox.MultiSelect then
@@ -452,7 +452,7 @@ begin
   end;
 end;
 
-function  TWinCEWSCustomListBox.GetSelected(const ACustomListBox: TCustomListBox; const AIndex: integer): boolean;
+class function  TWinCEWSCustomListBox.GetSelected(const ACustomListBox: TCustomListBox; const AIndex: integer): boolean;
 var
   WindowInfo: PWindowInfo;
   winHandle: HWND;
@@ -466,7 +466,7 @@ begin
     Result := Windows.SendMessage(winHandle, LB_GETSEL, Windows.WParam(AIndex), 0) > 0;
 end;
 
-function  TWinCEWSCustomListBox.GetStrings(const ACustomListBox: TCustomListBox): TStrings;
+class function  TWinCEWSCustomListBox.GetStrings(const ACustomListBox: TCustomListBox): TStrings;
 var
   Handle: HWND;
 begin
@@ -475,12 +475,12 @@ begin
   GetWindowInfo(Handle)^.List := Result;
 end;
 
-function  TWinCEWSCustomListBox.GetTopIndex(const ACustomListBox: TCustomListBox): integer;
+class function  TWinCEWSCustomListBox.GetTopIndex(const ACustomListBox: TCustomListBox): integer;
 begin
   Result:=Windows.SendMessage(ACustomListBox.Handle, LB_GETTOPINDEX, 0, 0);
 end;
 
-procedure TWinCEWSCustomListBox.SelectItem(const ACustomListBox: TCustomListBox; AIndex: integer; ASelected: boolean);
+class procedure TWinCEWSCustomListBox.SelectItem(const ACustomListBox: TCustomListBox; AIndex: integer; ASelected: boolean);
 begin
   if ACustomListBox.MultiSelect then
     Windows.SendMessage(ACustomListBox.Handle, LB_SETSEL,
@@ -492,7 +492,7 @@ begin
     SetItemIndex(ACustomListBox, -1);
 end;
 
-procedure TWinCEWSCustomListBox.SetBorder(const ACustomListBox: TCustomListBox);
+class procedure TWinCEWSCustomListBox.SetBorder(const ACustomListBox: TCustomListBox);
 var
   Handle: HWND;
   StyleEx: dword;
@@ -506,7 +506,7 @@ begin
   SetWindowLong(Handle, GWL_EXSTYLE, StyleEx);
 end;
 
-procedure TWinCEWSCustomListBox.SetItemIndex(const ACustomListBox: TCustomListBox; const AIndex: integer);
+class procedure TWinCEWSCustomListBox.SetItemIndex(const ACustomListBox: TCustomListBox; const AIndex: integer);
 var
   Handle: HWND;
 begin
@@ -521,24 +521,24 @@ begin
     Windows.SendMessage(Handle, LB_SETCURSEL, Windows.WParam(AIndex), 0);
 end;
 
-procedure TWinCEWSCustomListBox.SetSelectionMode(const ACustomListBox: TCustomListBox;
+class procedure TWinCEWSCustomListBox.SetSelectionMode(const ACustomListBox: TCustomListBox;
   const AExtendedSelect, AMultiSelect: boolean);
 begin
   RecreateWnd(ACustomListBox);
 end;
 
-procedure TWinCEWSCustomListBox.SetStyle(const ACustomListBox: TCustomListBox);
+class procedure TWinCEWSCustomListBox.SetStyle(const ACustomListBox: TCustomListBox);
 begin
   // The listbox styles can't be updated, so recreate the listbox
   RecreateWnd(ACustomListBox);
 end;
 
-procedure TWinCEWSCustomListBox.SetSorted(const ACustomListBox: TCustomListBox; AList: TStrings; ASorted: boolean);
+class procedure TWinCEWSCustomListBox.SetSorted(const ACustomListBox: TCustomListBox; AList: TStrings; ASorted: boolean);
 begin
   TWinCEListStringList(AList).Sorted := ASorted;
 end;
 
-procedure TWinCEWSCustomListBox.SetTopIndex(const ACustomListBox: TCustomListBox; const NewTopIndex: integer);
+class procedure TWinCEWSCustomListBox.SetTopIndex(const ACustomListBox: TCustomListBox; const NewTopIndex: integer);
 begin
   Windows.SendMessage(ACustomListBox.Handle, LB_SETTOPINDEX, NewTopIndex, 0);
 end;
@@ -562,7 +562,7 @@ begin
     Result := Result or ComboBoxReadOnlyStyles[AComboBox.ReadOnly];
 end;
 
-function TWinCEWSCustomComboBox.CreateHandle(const AWinControl: TWinControl;
+class function TWinCEWSCustomComboBox.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
   Params: TCreateWindowExParams;
@@ -600,7 +600,7 @@ begin
   Result := Params.Window;
 end;
 
-procedure TWinCEWSCustomComboBox.AdaptBounds(const AWinControl: TWinControl;
+class procedure TWinCEWSCustomComboBox.AdaptBounds(const AWinControl: TWinControl;
   var Left, Top, Width, Height: integer; var SuppressMove: boolean);
 var
   WinHandle: HWND;
@@ -612,12 +612,12 @@ begin
     Height := StringList.ComboHeight;
 end;
 
-function  TWinCEWSCustomComboBox.GetSelStart(const ACustomComboBox: TCustomComboBox): integer;
+class function  TWinCEWSCustomComboBox.GetSelStart(const ACustomComboBox: TCustomComboBox): integer;
 begin
   SendMessage(ACustomComboBox.Handle, CB_GETEDITSEL, Windows.WPARAM(@Result), Windows.LPARAM(nil));
 end;
 
-function  TWinCEWSCustomComboBox.GetSelLength(const ACustomComboBox: TCustomComboBox): integer;
+class function  TWinCEWSCustomComboBox.GetSelLength(const ACustomComboBox: TCustomComboBox): integer;
 var
   startPos, endPos: dword;
 begin
@@ -625,7 +625,7 @@ begin
   Result := endPos - startPos;
 end;
 
-procedure TWinCEWSCustomComboBox.SetStyle(const ACustomComboBox: TCustomComboBox; NewStyle: TComboBoxStyle);
+class procedure TWinCEWSCustomComboBox.SetStyle(const ACustomComboBox: TCustomComboBox; NewStyle: TComboBoxStyle);
 var
   CurrentStyle: dword;
 begin
@@ -637,7 +637,7 @@ begin
   RecreateWnd(ACustomComboBox);
 end;
 
-function  TWinCEWSCustomComboBox.GetItemIndex(const ACustomComboBox: TCustomComboBox): integer;
+class function  TWinCEWSCustomComboBox.GetItemIndex(const ACustomComboBox: TCustomComboBox): integer;
 begin
   Result := SendMessage(ACustomComboBox.Handle, CB_GETCURSEL, 0, 0);
   if Result = LB_ERR Then
@@ -648,12 +648,12 @@ begin
   End;
 end;
 
-function  TWinCEWSCustomComboBox.GetMaxLength(const ACustomComboBox: TCustomComboBox): integer;
+class function  TWinCEWSCustomComboBox.GetMaxLength(const ACustomComboBox: TCustomComboBox): integer;
 begin
   Result := GetWindowInfo(ACustomComboBox.Handle)^.MaxLength;
 end;
 
-function  TWinCEWSCustomComboBox.GetText(const AWinControl: TWinControl; var AText: string): boolean;
+class function  TWinCEWSCustomComboBox.GetText(const AWinControl: TWinControl; var AText: string): boolean;
 begin
   Result := AWinControl.HandleAllocated;
   if not Result then
@@ -661,18 +661,18 @@ begin
   AText := GetControlText(AWinControl.Handle);
 end;
 
-procedure TWinCEWSCustomComboBox.SetArrowKeysTraverseList(const ACustomComboBox: TCustomComboBox;
+class procedure TWinCEWSCustomComboBox.SetArrowKeysTraverseList(const ACustomComboBox: TCustomComboBox;
   NewTraverseList: boolean);
 begin
   // TODO: implement me?
 end;
 
-procedure TWinCEWSCustomComboBox.SetSelStart(const ACustomComboBox: TCustomComboBox; NewStart: integer);
+class procedure TWinCEWSCustomComboBox.SetSelStart(const ACustomComboBox: TCustomComboBox; NewStart: integer);
 begin
   SendMessage(ACustomComboBox.Handle, CB_SETEDITSEL, 0, MakeLParam(NewStart, NewStart));
 end;
 
-procedure TWinCEWSCustomComboBox.SetSelLength(const ACustomComboBox: TCustomComboBox; NewLength: integer);
+class procedure TWinCEWSCustomComboBox.SetSelLength(const ACustomComboBox: TCustomComboBox; NewLength: integer);
 var
   startpos, endpos: integer;
   winhandle: HWND;
@@ -683,12 +683,12 @@ begin
   SendMessage(winhandle, CB_SETEDITSEL, 0, MakeLParam(startpos, endpos));
 end;
 
-procedure TWinCEWSCustomComboBox.SetItemIndex(const ACustomComboBox: TCustomComboBox; NewIndex: integer);
+class procedure TWinCEWSCustomComboBox.SetItemIndex(const ACustomComboBox: TCustomComboBox; NewIndex: integer);
 begin
   SendMessage(ACustomComboBox.Handle, CB_SETCURSEL, Windows.WParam(NewIndex), 0);
 end;
 
-procedure TWinCEWSCustomComboBox.SetMaxLength(const ACustomComboBox: TCustomComboBox; NewLength: integer);
+class procedure TWinCEWSCustomComboBox.SetMaxLength(const ACustomComboBox: TCustomComboBox; NewLength: integer);
 var
   winhandle: HWND;
 begin
@@ -697,13 +697,13 @@ begin
   GetWindowInfo(winhandle)^.MaxLength := NewLength;
 end;
 
-procedure TWinCEWSCustomComboBox.SetReadOnly(const ACustomComboBox: TCustomComboBox;
+class procedure TWinCEWSCustomComboBox.SetReadOnly(const ACustomComboBox: TCustomComboBox;
   NewReadOnly: boolean);
 begin
   RecreateWnd(ACustomComboBox);
 end;
 
-procedure TWinCEWSCustomComboBox.SetText(const AWinControl: TWinControl; const AText: string);
+class procedure TWinCEWSCustomComboBox.SetText(const AWinControl: TWinControl; const AText: string);
 var
   Handle: HWND;
   pwAText : pWideChar;
@@ -718,7 +718,7 @@ begin
   DisposePWideChar(pwAText);
 end;
 
-function  TWinCEWSCustomComboBox.GetItems(const ACustomComboBox: TCustomComboBox): TStrings;
+class function  TWinCEWSCustomComboBox.GetItems(const ACustomComboBox: TCustomComboBox): TStrings;
 var
   winhandle: HWND;
 begin
@@ -727,7 +727,7 @@ begin
   GetWindowInfo(winhandle)^.List := Result;
 end;
 
-procedure TWinCEWSCustomComboBox.Sort(const ACustomComboBox: TCustomComboBox; AList: TStrings; IsSorted: boolean);
+class procedure TWinCEWSCustomComboBox.Sort(const ACustomComboBox: TCustomComboBox; AList: TStrings; IsSorted: boolean);
 begin
   TWinCEListStringList(AList).Sorted := IsSorted;
 end;
@@ -767,7 +767,7 @@ end;
 
 { TWinCEWSCustomEdit }
 
-function TWinCEWSCustomEdit.CreateHandle(const AWinControl: TWinControl;
+class function TWinCEWSCustomEdit.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
   hwnd: THandle;
@@ -799,22 +799,22 @@ begin
   Result := hwnd;
 end;
 
-function  TWinCEWSCustomEdit.GetSelStart(const ACustomEdit: TCustomEdit): integer;
+class function  TWinCEWSCustomEdit.GetSelStart(const ACustomEdit: TCustomEdit): integer;
 begin
   Result := EditGetSelStart(ACustomEdit.Handle);
 end;
 
-function  TWinCEWSCustomEdit.GetSelLength(const ACustomEdit: TCustomEdit): integer;
+class function  TWinCEWSCustomEdit.GetSelLength(const ACustomEdit: TCustomEdit): integer;
 begin
   Result := EditGetSelLength(ACustomEdit.Handle);
 end;
 
-function  TWinCEWSCustomEdit.GetMaxLength(const ACustomEdit: TCustomEdit): integer;
+class function  TWinCEWSCustomEdit.GetMaxLength(const ACustomEdit: TCustomEdit): integer;
 begin
   Result := GetWindowInfo(ACustomEdit.Handle)^.MaxLength;
 end;
 
-function  TWinCEWSCustomEdit.GetText(const AWinControl: TWinControl; var AText: string): boolean;
+class function  TWinCEWSCustomEdit.GetText(const AWinControl: TWinControl; var AText: string): boolean;
 begin
   Result := AWinControl.HandleAllocated;
   if not Result then
@@ -822,7 +822,7 @@ begin
   AText := GetControlText(AWinControl.Handle);
 end;
 
-procedure TWinCEWSCustomEdit.SetCharCase(const ACustomEdit: TCustomEdit; NewCase: TEditCharCase);
+class procedure TWinCEWSCustomEdit.SetCharCase(const ACustomEdit: TCustomEdit; NewCase: TEditCharCase);
 const
   EditStyles: array[TEditCharCase] of integer = (0, ES_UPPERCASE, ES_LOWERCASE);
   EditStyleMask = ES_UPPERCASE or ES_LOWERCASE;
@@ -830,11 +830,11 @@ begin
   UpdateWindowStyle(ACustomEdit.Handle, EditStyles[NewCase], EditStyleMask);
 end;
 
-procedure TWinCEWSCustomEdit.SetEchoMode(const ACustomEdit: TCustomEdit; NewMode: TEchoMode);
+class procedure TWinCEWSCustomEdit.SetEchoMode(const ACustomEdit: TCustomEdit; NewMode: TEchoMode);
 begin
 end;
 
-procedure TWinCEWSCustomEdit.SetMaxLength(const ACustomEdit: TCustomEdit; NewLength: integer);
+class procedure TWinCEWSCustomEdit.SetMaxLength(const ACustomEdit: TCustomEdit; NewLength: integer);
 var
   winhandle: HWND;
 begin
@@ -843,29 +843,29 @@ begin
   GetWindowInfo(winhandle)^.MaxLength := NewLength;
 end;
 
-procedure TWinCEWSCustomEdit.SetPasswordChar(const ACustomEdit: TCustomEdit; NewChar: char);
+class procedure TWinCEWSCustomEdit.SetPasswordChar(const ACustomEdit: TCustomEdit; NewChar: char);
 begin
   SendMessage(ACustomEdit.Handle, EM_SETPASSWORDCHAR, WParam(NewChar), 0);
 end;
 
-procedure TWinCEWSCustomEdit.SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean);
+class procedure TWinCEWSCustomEdit.SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean);
 begin
   Windows.SendMessage(ACustomEdit.Handle, EM_SETREADONLY, Windows.WPARAM(NewReadOnly), 0);
 end;
 
-procedure TWinCEWSCustomEdit.SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer);
+class procedure TWinCEWSCustomEdit.SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer);
 begin
   EditSetSelStart(ACustomEdit.Handle, NewStart);
 end;
 
-procedure TWinCEWSCustomEdit.SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer);
+class procedure TWinCEWSCustomEdit.SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer);
 begin
   EditSetSelLength(ACustomEdit.Handle, NewLength);
 end;
 
 { TWinCEWSCustomMemo }
 
-function TWinCEWSCustomMemo.CreateHandle(const AWinControl: TWinControl;
+class function TWinCEWSCustomMemo.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
   Params: TCreateWindowExParams;
@@ -901,13 +901,13 @@ begin
   Result := Params.Window;
 end;
 
-function TWinCEWSCustomMemo.GetStrings(const ACustomMemo: TCustomMemo
+class function TWinCEWSCustomMemo.GetStrings(const ACustomMemo: TCustomMemo
   ): TStrings;
 begin
   Result:=TWinCEMemoStrings.Create(ACustomMemo.Handle, ACustomMemo)
 end;
 
-procedure TWinCEWSCustomMemo.AppendText(const ACustomMemo: TCustomMemo; const AText: string);
+class procedure TWinCEWSCustomMemo.AppendText(const ACustomMemo: TCustomMemo; const AText: string);
 var
   S: string;
 begin
@@ -919,13 +919,13 @@ begin
   end;
 end;
 
-procedure TWinCEWSCustomMemo.SetScrollbars(const ACustomMemo: TCustomMemo; const NewScrollbars: TScrollStyle);
+class procedure TWinCEWSCustomMemo.SetScrollbars(const ACustomMemo: TCustomMemo; const NewScrollbars: TScrollStyle);
 begin
   // TODO: check if can be done without recreation
   RecreateWnd(ACustomMemo);
 end;
 
-procedure TWinCEWSCustomMemo.SetText(const AWinControl: TWinControl; const AText: string);
+class procedure TWinCEWSCustomMemo.SetText(const AWinControl: TWinControl; const AText: string);
 var
 tmpWideStr : PWideChar;
 begin
@@ -934,7 +934,7 @@ begin
   DisposePWideChar(tmpWideStr);
 end;
 
-procedure TWinCEWSCustomMemo.SetWordWrap(const ACustomMemo: TCustomMemo; const NewWordWrap: boolean);
+class procedure TWinCEWSCustomMemo.SetWordWrap(const ACustomMemo: TCustomMemo; const NewWordWrap: boolean);
 begin
   // TODO: check if can be done without recreation
   RecreateWnd(ACustomMemo);
@@ -949,7 +949,7 @@ begin
   Result := AlignmentToStaticTextFlags[Alignment];
 end;
 
-function TWinCEWSCustomStaticText.CreateHandle(const AWinControl: TWinControl;
+class function TWinCEWSCustomStaticText.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
   Params: TCreateWindowExParams;
@@ -975,14 +975,14 @@ begin
   Result := Params.Window;
 end;
 
-procedure TWinCEWSCustomStaticText.SetAlignment(const ACustomStaticText: TCustomStaticText; const NewAlignment: TAlignment);
+class procedure TWinCEWSCustomStaticText.SetAlignment(const ACustomStaticText: TCustomStaticText; const NewAlignment: TAlignment);
 begin
   // can not apply on the fly: needs window recreate
   RecreateWnd(ACustomStaticText);
 end;
 { TWin32WSButtonControl }
 
-procedure TWinCEWSButtonControl.GetPreferredSize(const AWinControl: TWinControl;
+class procedure TWinCEWSButtonControl.GetPreferredSize(const AWinControl: TWinControl;
   var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);
 begin
   if MeasureText(AWinControl, AWinControl.Caption, PreferredWidth, PreferredHeight) then
@@ -995,7 +995,7 @@ end;
 
 { TWinCEWSCustomCheckBox }
 
-function TWinCEWSCustomCheckBox.CreateHandle(const AWinControl: TWinControl;
+class function TWinCEWSCustomCheckBox.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
   Params: TCreateWindowExParams;
@@ -1022,7 +1022,7 @@ begin
 
 end;
 
-procedure TWinCEWSCustomCheckBox.GetPreferredSize(const AWinControl: TWinControl;
+class procedure TWinCEWSCustomCheckBox.GetPreferredSize(const AWinControl: TWinControl;
   var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);
 var
   iconHeight: integer;
@@ -1037,7 +1037,7 @@ begin
   end;
 end;
 
-function  TWinCEWSCustomCheckBox.RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState;
+class function  TWinCEWSCustomCheckBox.RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState;
 begin
   case SendMessage(ACustomCheckBox.Handle, BM_GETCHECK, 0, 0) of
     BST_CHECKED:       Result := cbChecked;
@@ -1047,13 +1047,13 @@ begin
   end;
 end;
 
-procedure TWinCEWSCustomCheckBox.SetShortCut(const ACustomCheckBox: TCustomCheckBox;
+class procedure TWinCEWSCustomCheckBox.SetShortCut(const ACustomCheckBox: TCustomCheckBox;
   const OldShortCut, NewShortCut: TShortCut);
 begin
   // TODO: implement me!
 end;
 
-procedure TWinCEWSCustomCheckBox.SetState(const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState);
+class procedure TWinCEWSCustomCheckBox.SetState(const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState);
 var
   Flags: WPARAM;
 begin
@@ -1068,7 +1068,7 @@ end;
 
 { TWinCEWSToggleBox }
 
-function TWinCEWSToggleBox.CreateHandle(const AWinControl: TWinControl;
+class function TWinCEWSToggleBox.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
   Params: TCreateWindowExParams;
@@ -1089,7 +1089,7 @@ end;
 
 { TWinCEWSRadioButton }
 
-function TWinCEWSRadioButton.CreateHandle(const AWinControl: TWinControl;
+class function TWinCEWSRadioButton.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
   Params: TCreateWindowExParams;

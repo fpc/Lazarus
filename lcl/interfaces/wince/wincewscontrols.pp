@@ -299,7 +299,7 @@ end;
 
 { TWinCEWSWinControl }
 
-function TWinCEWSWinControl.CreateHandle(const AWinControl: TWinControl;
+class function TWinCEWSWinControl.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
   Params: TCreateWindowExParams;
@@ -321,7 +321,7 @@ begin
   Result := Params.Window;
 end;
 
-procedure TWinCEWSWinControl.AddControl(const AControl: TControl);
+class procedure TWinCEWSWinControl.AddControl(const AControl: TControl);
 var
   ParentPanelHandle, ParentHandle, ChildHandle: HWND;
 begin
@@ -346,18 +346,18 @@ begin
   SetParent(ChildHandle, ParentHandle);
 end;
 
-function  TWinCEWSWinControl.GetText(const AWinControl: TWinControl; var AText: String): Boolean;
+class function  TWinCEWSWinControl.GetText(const AWinControl: TWinControl; var AText: String): Boolean;
 begin
   AText := '';
   Result := false;
 end;
 
-procedure TWinCEWSWinControl.SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle);
+class procedure TWinCEWSWinControl.SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle);
 begin
   RecreateWnd(AWinControl);
 end;
 
-procedure TWinCEWSWinControl.SetChildZPosition(
+class procedure TWinCEWSWinControl.SetChildZPosition(
   const AWinControl, AChild: TWinControl; const AOldPos, ANewPos: Integer;
   const AChildren: TFPList);
 var
@@ -410,7 +410,7 @@ end;
 
   Resize a window
  ------------------------------------------------------------------------------}
-procedure TWinCEWSWinControl.SetBounds(const AWinControl: TWinControl;
+class procedure TWinCEWSWinControl.SetBounds(const AWinControl: TWinControl;
   const ALeft, ATop, AWidth, AHeight: Integer);
 var
   IntfLeft, IntfTop, IntfWidth, IntfHeight: integer;
@@ -432,17 +432,17 @@ begin
   LCLControlSizeNeedsUpdate(AWinControl, false);
 end;
 
-procedure TWinCEWSWinControl.SetColor(const AWinControl: TWinControl);
+class procedure TWinCEWSWinControl.SetColor(const AWinControl: TWinControl);
 begin
   // TODO: to be implemented, had no implementation in LM_SETCOLOR message
 end;
 
-procedure TWinCEWSWinControl.SetFont(const AWinControl: TWinControl; const AFont: TFont);
+class procedure TWinCEWSWinControl.SetFont(const AWinControl: TWinControl; const AFont: TFont);
 begin
   Windows.SendMessage(AWinControl.Handle, WM_SETFONT, Windows.WParam(AFont.Handle), 1);
 end;
 
-procedure TWinCEWSWinControl.SetText(const AWinControl: TWinControl; const AText: string);
+class procedure TWinCEWSWinControl.SetText(const AWinControl: TWinControl; const AText: string);
 var
   tmpStr : PWideChar;
 begin
@@ -453,12 +453,12 @@ begin
   DisposePWideChar(tmpStr);
 end;
 
-procedure TWinCEWSWinControl.ConstraintsChange(const AWinControl: TWinControl);
+class procedure TWinCEWSWinControl.ConstraintsChange(const AWinControl: TWinControl);
 begin
   // TODO: implement me!
 end;
 
-procedure TWinCEWSWinControl.DestroyHandle(const AWinControl: TWinControl);
+class procedure TWinCEWSWinControl.DestroyHandle(const AWinControl: TWinControl);
 var
   Handle: HWND;
   AccelTable: HACCEL;
@@ -470,13 +470,13 @@ begin
   DestroyWindow(Handle);
 end;
 
-procedure TWinCEWSWinControl.Invalidate(const AWinControl: TWinControl);
+class procedure TWinCEWSWinControl.Invalidate(const AWinControl: TWinControl);
 begin
   // lpRect = nil updates entire client area of window
   InvalidateRect(AWinControl.Handle, nil, true);
 end;
 
-procedure TWinCEWSWinControl.ShowHide(const AWinControl: TWinControl);
+class procedure TWinCEWSWinControl.ShowHide(const AWinControl: TWinControl);
 begin
   // other methods also use ShowHide, can't move code
   TWinCEWidgetSet(WidgetSet).ShowHide(AWinControl);

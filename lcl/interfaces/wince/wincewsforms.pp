@@ -152,7 +152,7 @@ uses Winceint;
 
 { TWinCEWSScrollBox }
 
-function TWinCEWSScrollBox.CreateHandle(const AWinControl: TWinControl;
+class function TWinCEWSScrollBox.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
   Params: TCreateWindowExParams;
@@ -178,7 +178,7 @@ end;
 function ScrollWindowPtr(hWnd:HWND; dx:longint; dy:longint; prcScroll:lpRECT; prcClip:lpRECT;hrgnUpdate:HRGN;
 prcUpdate:LPRECT; flags:UINT):longint; external UserDLLCore name 'ScrollWindowEx';
 
-procedure TWinCEWSScrollingWinControl.ScrollBy(const AWinControl: TScrollingWinControl;
+class procedure TWinCEWSScrollingWinControl.ScrollBy(const AWinControl: TScrollingWinControl;
   const DeltaX, DeltaY: integer);
 var
   lVisible: boolean;
@@ -271,7 +271,7 @@ begin
   {$endif}
 end;
 
-procedure TWinCEWSCustomForm.SetBorderIcons(const AForm: TCustomForm;
+class procedure TWinCEWSCustomForm.SetBorderIcons(const AForm: TCustomForm;
  const ABorderIcons: TBorderIcons);
 begin
   UpdateWindowStyle(AForm.Handle, CalcBorderIconsFlags(AForm),
@@ -279,7 +279,7 @@ begin
   SetIcon(AForm, 0);
 end;
 
-procedure TWinCEWSCustomForm.SetFormBorderStyle(const AForm: TCustomForm;
+class procedure TWinCEWSCustomForm.SetFormBorderStyle(const AForm: TCustomForm;
           const AFormBorderStyle: TFormBorderStyle);
 begin
   RecreateWnd(AForm);
@@ -309,7 +309,7 @@ begin
     SizeRect.Bottom - SizeRect.Top);
 end;
 
-procedure TWinCEWSCustomForm.SetIcon(const AForm: TCustomForm; const AIcon: HICON);
+class procedure TWinCEWSCustomForm.SetIcon(const AForm: TCustomForm; const AIcon: HICON);
 var
   winHandle: HWND;
   iconHandle: HICON;
@@ -327,7 +327,7 @@ begin
   SendMessage(winHandle, WM_SETICON, ICON_BIG, iconHandle);
 end;
 
-procedure TWinCEWSCustomForm.SetShowInTaskbar(const AForm: TCustomForm;
+class procedure TWinCEWSCustomForm.SetShowInTaskbar(const AForm: TCustomForm;
   const AValue: TShowInTaskbar);
 begin
   if not AForm.HandleAllocated then exit;
@@ -337,7 +337,7 @@ begin
   RecreateWnd(AForm);
 end;
 
-procedure TWinCEWSCustomForm.ShowModal(const ACustomForm: TCustomForm);
+class procedure TWinCEWSCustomForm.ShowModal(const ACustomForm: TCustomForm);
 begin
   DisableApplicationWindows(ACustomForm.Handle);
   ShowWindow(ACustomForm.Handle, SW_SHOW);

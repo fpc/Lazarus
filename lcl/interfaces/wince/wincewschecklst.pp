@@ -54,13 +54,13 @@ type
 
 implementation
 
-function  TWinCEWSCustomCheckListBox.GetChecked(const ACheckListBox: TCustomCheckListBox;
+class function  TWinCEWSCustomCheckListBox.GetChecked(const ACheckListBox: TCustomCheckListBox;
   const AIndex: integer): boolean;
 begin
   Result := TWinCECheckListBoxStrings(ACheckListBox.Items).Checked[AIndex];
 end;
 
-function  TWinCEWSCustomCheckListBox.GetStrings(const ACustomListBox: TCustomListBox): TStrings;
+class function  TWinCEWSCustomCheckListBox.GetStrings(const ACustomListBox: TCustomListBox): TStrings;
 var
   Handle: HWND;
 begin
@@ -69,7 +69,7 @@ begin
   GetWindowInfo(Handle)^.List := Result;
 end;
 
-procedure TWinCEWSCustomCheckListBox.SetChecked(const ACheckListBox: TCustomCheckListBox;
+class procedure TWinCEWSCustomCheckListBox.SetChecked(const ACheckListBox: TCustomCheckListBox;
   const AIndex: integer; const AChecked: boolean);
 var
   SizeRect: Windows.RECT;

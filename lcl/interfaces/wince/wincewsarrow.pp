@@ -53,7 +53,7 @@ implementation
 
 { TWinCEWSArrow }
 
-procedure TWinCEWSArrow.SetType(const AArrow: TArrow; const AArrowType: TArrowType;
+class procedure TWinCEWSArrow.SetType(const AArrow: TArrow; const AArrowType: TArrowType;
   const AShadowType: TShadowType);
 begin
   // TODO: implement me!

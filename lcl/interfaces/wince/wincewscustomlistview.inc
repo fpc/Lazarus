@@ -62,7 +62,7 @@ type
 // Column code
 ////////////////////////////////////////////////////////////////////////////////
 
-procedure TWinCEWSCustomListView.ColumnDelete(const ALV: TCustomListView; const AIndex: Integer);
+class procedure TWinCEWSCustomListView.ColumnDelete(const ALV: TCustomListView; const AIndex: Integer);
 var
   hHdr, hLV: THandle;
   Count: Integer;
@@ -82,7 +82,7 @@ begin
   ListView_DeleteColumn(hLV, Count - 1);
 end;
 
-function TWinCEWSCustomListView.ColumnGetWidth(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn): Integer;
+class function TWinCEWSCustomListView.ColumnGetWidth(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn): Integer;
 var
   lvc: TLvColumn;
 begin
@@ -101,7 +101,7 @@ begin
   then Result := lvc.cx;
 end;
 
-procedure TWinCEWSCustomListView.ColumnInsert(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn);
+class procedure TWinCEWSCustomListView.ColumnInsert(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn);
 var
   lvc: TLvColumn;
   tmpCaption :PWideChar;
@@ -116,7 +116,7 @@ begin
   DisposePWideChar(lvc.pszText);
 end;
 
-procedure TWinCEWSCustomListView.ColumnMove(const ALV: TCustomListView; const AOldIndex, ANewIndex: Integer; const AColumn: TListColumn);
+class procedure TWinCEWSCustomListView.ColumnMove(const ALV: TCustomListView; const AOldIndex, ANewIndex: Integer; const AColumn: TListColumn);
 var
   lvc, oldlvc: TLvColumn_v4_7;
   buf, oldbuf: array[0..1024] of WideChar;
@@ -157,7 +157,7 @@ begin
   ListView_SetColumn(ALV.Handle, ANewIndex, oldlvc.lvc);
 end;
 
-procedure TWinCEWSCustomListView.ColumnSetAlignment(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const AAlignment: TAlignment);
+class procedure TWinCEWSCustomListView.ColumnSetAlignment(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const AAlignment: TAlignment);
 const
   JUSTIFICATION: array[TAlignment] of Integer = (
     LVCFMT_LEFT,
@@ -176,7 +176,7 @@ begin
   ListView_SetColumn(ALV.Handle, AIndex, lvc);
 end;
 
-procedure TWinCEWSCustomListView.ColumnSetAutoSize(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const AAutoSize: Boolean);
+class procedure TWinCEWSCustomListView.ColumnSetAutoSize(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const AAutoSize: Boolean);
 begin
   if not WSCheckHandleAllocated(ALV, 'ColumnSetAutoSize')
   then Exit;
@@ -186,7 +186,7 @@ begin
   else ListView_SetColumnWidth(ALV.Handle, AIndex, AColumn.Width);
 end;
 
-procedure TWinCEWSCustomListView.ColumnSetCaption(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const ACaption: String);
+class procedure TWinCEWSCustomListView.ColumnSetCaption(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const ACaption: String);
 var
   lvc: TLvColumn;
   tmpACaption : PWideChar;
@@ -201,7 +201,7 @@ begin
   DisposePWideChar(lvc.pszText);
 end;
 
-procedure TWinCEWSCustomListView.ColumnSetImage(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const AImageIndex: Integer);
+class procedure TWinCEWSCustomListView.ColumnSetImage(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const AImageIndex: Integer);
 var
   lvc: TLvColumn_v4_7;
 begin
@@ -228,7 +228,7 @@ begin
   ListView_SetColumn(ALV.Handle, AIndex, lvc.lvc);
 end;
 
-procedure TWinCEWSCustomListView.ColumnSetMaxWidth(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const AMaxWidth: Integer);
+class procedure TWinCEWSCustomListView.ColumnSetMaxWidth(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const AMaxWidth: Integer);
 begin
   if not WSCheckHandleAllocated(ALV, 'ColumnSetMaxWidth')
   then Exit;
@@ -236,7 +236,7 @@ begin
   // TODO: in messageHandler
 end;
 
-procedure TWinCEWSCustomListView.ColumnSetMinWidth(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const AMinWidth: integer);
+class procedure TWinCEWSCustomListView.ColumnSetMinWidth(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const AMinWidth: integer);
 begin
   if not WSCheckHandleAllocated(ALV, 'ColumnSetMinWidth')
   then Exit;
@@ -244,7 +244,7 @@ begin
   // TODO: in messageHandler
 end;
 
-procedure TWinCEWSCustomListView.ColumnSetWidth(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const AWidth: Integer);
+class procedure TWinCEWSCustomListView.ColumnSetWidth(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const AWidth: Integer);
 begin
   if not WSCheckHandleAllocated(ALV, 'ColumnSetWidth')
   then Exit;
@@ -252,7 +252,7 @@ begin
   ListView_SetColumnWidth(ALV.Handle, AIndex, AWidth)
 end;
 
-procedure TWinCEWSCustomListView.ColumnSetVisible(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const AVisible: Boolean);
+class procedure TWinCEWSCustomListView.ColumnSetVisible(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const AVisible: Boolean);
 begin
   if not WSCheckHandleAllocated(ALV, 'ColumnSetVisible')
   then Exit;
@@ -268,7 +268,7 @@ end;
 // Item code
 ////////////////////////////////////////////////////////////////////////////////
 
-procedure TWinCEWSCustomListView.ItemDelete(const ALV: TCustomListView; const AIndex: Integer);
+class procedure TWinCEWSCustomListView.ItemDelete(const ALV: TCustomListView; const AIndex: Integer);
 begin
   if not WSCheckHandleAllocated(ALV, 'ItemDelete')
   then Exit;
@@ -276,7 +276,7 @@ begin
   ListView_DeleteItem(ALV.Handle, AIndex);
 end;
 
-function TWinCEWSCustomListView.ItemGetState(const ALV: TCustomListView;
+class function TWinCEWSCustomListView.ItemGetState(const ALV: TCustomListView;
   const AIndex: Integer; const AItem: TListItem; const AState: TListItemState;
   out AIsSet: Boolean): Boolean;
 const
@@ -292,7 +292,7 @@ begin
   Result := True;
 end;
 
-procedure TWinCEWSCustomListView.ItemInsert(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem);
+class procedure TWinCEWSCustomListView.ItemInsert(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem);
 var
   lvi: TLvItem;
 begin
@@ -308,7 +308,7 @@ begin
   DisposePWideChar(lvi.pszText);
 end;
 
-procedure TWinCEWSCustomListView.ItemSetImage(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const ASubIndex, AImageIndex: Integer);
+class procedure TWinCEWSCustomListView.ItemSetImage(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const ASubIndex, AImageIndex: Integer);
 var
   lvi: TLvItem;
 begin
@@ -323,7 +323,7 @@ begin
   ListView_SetItem(ALV.Handle, lvi);
 end;
 
-procedure TWinCEWSCustomListView.ItemSetState(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const AState: TListItemState; const AIsSet: Boolean);
+class procedure TWinCEWSCustomListView.ItemSetState(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const AState: TListItemState; const AIsSet: Boolean);
 const
   // lisCut, lisDropTarget, lisFocused, lisSelected
   FLAGS: array[TListItemState] of Integer = (LVIS_CUT, LVIS_DROPHILITED, LVIS_FOCUSED, LVIS_SELECTED);
@@ -338,7 +338,7 @@ begin
   else ListView_SetItemState(ALV.Handle, AIndex, 0, FLAGS[AState]);
 end;
 
-procedure TWinCEWSCustomListView.ItemSetText(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const ASubIndex: Integer; const AText: String);
+class procedure TWinCEWSCustomListView.ItemSetText(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const ASubIndex: Integer; const AText: String);
 var
 tmpAText : PWideChar;
 begin
@@ -350,7 +350,7 @@ begin
   DisposePWideChar(tmpAText);
 end;
 
-procedure TWinCEWSCustomListView.ItemShow(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const PartialOK: Boolean);
+class procedure TWinCEWSCustomListView.ItemShow(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const PartialOK: Boolean);
 begin
   if not WSCheckHandleAllocated(ALV, 'ItemShow')
   then Exit;
@@ -363,7 +363,7 @@ end;
 ////////////////////////////////////////////////////////////////////////////////
 
 
-function TWinCEWSCustomListView.CreateHandle(const AWinControl: TWinControl;
+class function TWinCEWSCustomListView.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 const
   LISTVIEWSTYLES: array[TViewStyle] of DWORD = (LVS_ICON, LVS_SMALLICON, LVS_LIST, LVS_REPORT);
@@ -385,7 +385,7 @@ begin
   Result := Params.Window;
 end;
 
-procedure TWinCEWSCustomListView.BeginUpdate(const ALV: TCustomListView);
+class procedure TWinCEWSCustomListView.BeginUpdate(const ALV: TCustomListView);
 begin
   if not WSCheckHandleAllocated(ALV, 'BeginUpdate')
   then Exit;
@@ -393,7 +393,7 @@ begin
   inherited BeginUpdate(ALV);
 end;
 
-procedure TWinCEWSCustomListView.EndUpdate(const ALV: TCustomListView);
+class procedure TWinCEWSCustomListView.EndUpdate(const ALV: TCustomListView);
 begin
   if not WSCheckHandleAllocated(ALV, 'EndUpdate')
   then Exit;
@@ -401,7 +401,7 @@ begin
   inherited EndUpdate(ALV);
 end;
 
-function TWinCEWSCustomListView.GetBoundingRect(const ALV: TCustomListView): TRect;
+class function TWinCEWSCustomListView.GetBoundingRect(const ALV: TCustomListView): TRect;
 begin
   if not WSCheckHandleAllocated(ALV, 'GetBoundingRect')
   then Exit;
@@ -409,7 +409,7 @@ begin
   ListView_GetViewRect(ALV.Handle, Result);
 end;
 
-function TWinCEWSCustomListView.GetDropTarget(const ALV: TCustomListView): Integer;
+class function TWinCEWSCustomListView.GetDropTarget(const ALV: TCustomListView): Integer;
 begin
   if not WSCheckHandleAllocated(ALV, 'GetDropTarget')
   then Exit;
@@ -417,7 +417,7 @@ begin
   Result := ListView_GetNextItem(ALV.Handle, -1, LVNI_ALL or LVNI_DROPHILITED);
 end;
 
-function TWinCEWSCustomListView.GetFocused(const ALV: TCustomListView): Integer;
+class function TWinCEWSCustomListView.GetFocused(const ALV: TCustomListView): Integer;
 begin
   if not WSCheckHandleAllocated(ALV, 'GetFocused')
   then Exit;
@@ -425,7 +425,7 @@ begin
   Result := ListView_GetNextItem(ALV.Handle, -1, LVNI_ALL or LVNI_FOCUSED);
 end;
 
-function TWinCEWSCustomListView.GetHoverTime(const ALV: TCustomListView): Integer;
+class function TWinCEWSCustomListView.GetHoverTime(const ALV: TCustomListView): Integer;
 begin
   if not WSCheckHandleAllocated(ALV, 'GetHoverTime')
   then Exit;
@@ -434,7 +434,7 @@ begin
 //  Result := ListView_GetHoverTime(ALV.Handle);
 end;
 
-function TWinCEWSCustomListView.GetSelCount(const ALV: TCustomListView): Integer;
+class function TWinCEWSCustomListView.GetSelCount(const ALV: TCustomListView): Integer;
 begin
   if not WSCheckHandleAllocated(ALV, 'GetSelCount')
   then Exit;
@@ -442,7 +442,7 @@ begin
   Result := ListView_GetSelectedCount(ALV.Handle);
 end;
 
-function TWinCEWSCustomListView.GetSelection(const ALV: TCustomListView): Integer;
+class function TWinCEWSCustomListView.GetSelection(const ALV: TCustomListView): Integer;
 begin
   if not WSCheckHandleAllocated(ALV, 'GetSelection')
   then Exit;
@@ -450,7 +450,7 @@ begin
   Result := ListView_GetNextItem(ALV.Handle, -1, LVNI_ALL or LVNI_SELECTED);
 end;
 
-function TWinCEWSCustomListView.GetTopItem(const ALV: TCustomListView): Integer;
+class function TWinCEWSCustomListView.GetTopItem(const ALV: TCustomListView): Integer;
 begin
   if not WSCheckHandleAllocated(ALV, 'GetTopItem')
   then Exit;
@@ -463,7 +463,7 @@ begin
   end;
 end;
 
-function TWinCEWSCustomListView.GetVisibleRowCount(const ALV: TCustomListView): Integer;
+class function TWinCEWSCustomListView.GetVisibleRowCount(const ALV: TCustomListView): Integer;
 begin
   if not WSCheckHandleAllocated(ALV, 'GetVisibleRowCount')
   then Exit;
@@ -476,7 +476,7 @@ begin
   end;
 end;
 
-function TWinCEWSCustomListView.GetHeader(const AHandle: THandle): THandle;
+class function TWinCEWSCustomListView.GetHeader(const AHandle: THandle): THandle;
 begin
 //roozbeh not supported!
 //  Result := ListView_GetHeader(AHandle);
@@ -494,7 +494,7 @@ end;
     view is changed, or a WM_SYSPARAMETERCHANGE message is received.
 
  ********************************************************************)
-procedure TWinCEWSCustomListView.PositionHeader(const AHandle: THandle);
+class procedure TWinCEWSCustomListView.PositionHeader(const AHandle: THandle);
 var
   hwndHeader: HWND;
   dwStyle: DWORD;
@@ -527,7 +527,7 @@ begin
   ListView_EnsureVisible(AHandle, 0, 0);
 end;
 
-procedure TWinCEWSCustomListView.SetAllocBy(const ALV: TCustomListView; const AValue: Integer);
+class procedure TWinCEWSCustomListView.SetAllocBy(const ALV: TCustomListView; const AValue: Integer);
 begin
   if not WSCheckHandleAllocated(ALV, 'SetAllocBy')
   then Exit;
@@ -535,7 +535,7 @@ begin
   ListView_SetItemCount(ALV.Handle, AValue);
 end;
 
-procedure TWinCEWSCustomListView.SetDefaultItemHeight(const ALV: TCustomListView; const AValue: Integer);
+class procedure TWinCEWSCustomListView.SetDefaultItemHeight(const ALV: TCustomListView; const AValue: Integer);
 begin
   if not WSCheckHandleAllocated(ALV, 'SetDefaultItemHeight')
   then Exit;
@@ -544,7 +544,7 @@ begin
 end;
 
 //roozbeh not supported!
-procedure TWinCEWSCustomListView.SetHotTrackStyles(const ALV: TCustomListView; const AValue: TListHotTrackStyles);
+class procedure TWinCEWSCustomListView.SetHotTrackStyles(const ALV: TCustomListView; const AValue: TListHotTrackStyles);
 const
   MASK = LVS_EX_ONECLICKACTIVATE {or LVS_EX_TWOCLICKACTIVATE or LVS_EX_UNDERLINEHOT or LVS_EX_UNDERLINECOLD};
 var
@@ -569,7 +569,7 @@ begin
 end;
 
 //roozbeh : not supported!
-procedure TWinCEWSCustomListView.SetHoverTime(const ALV: TCustomListView; const AValue: Integer);
+class procedure TWinCEWSCustomListView.SetHoverTime(const ALV: TCustomListView; const AValue: Integer);
 begin
   if not WSCheckHandleAllocated(ALV, 'SetHoverTime')
   then Exit;
@@ -577,7 +577,7 @@ begin
 //  ListView_SetHoverTime(ALV.Handle, AValue);
 end;
 
-procedure TWinCEWSCustomListView.SetImageList(const ALV: TCustomListView; const AList: TListViewImageList; const AValue: TCustomImageList);
+class procedure TWinCEWSCustomListView.SetImageList(const ALV: TCustomListView; const AList: TListViewImageList; const AValue: TCustomImageList);
 begin
   if not WSCheckHandleAllocated(ALV, 'SetImageList')
   then Exit;
@@ -585,7 +585,7 @@ begin
   //TODO: implement imagelist
 end;
 
-procedure TWinCEWSCustomListView.SetProperty(const ALV: TCustomListView; const AProp: TListViewProperty; const AIsSet: Boolean);
+class procedure TWinCEWSCustomListView.SetProperty(const ALV: TCustomListView; const AProp: TListViewProperty; const AIsSet: Boolean);
 begin
   if not WSCheckHandleAllocated(ALV, 'SetProperty')
   then Exit;
@@ -609,7 +609,7 @@ begin
   end;
 end;
 
-procedure TWinCEWSCustomListView.SetProperties(const ALV: TCustomListView; const AProps: TListViewProperties);
+class procedure TWinCEWSCustomListView.SetProperties(const ALV: TCustomListView; const AProps: TListViewProperties);
 var
   Prop: TListViewProperty;
   Style, ExStyle, Mask, ExMask: Integer;
@@ -649,7 +649,7 @@ begin
   then UpdateExStyle(ALV.Handle, ExMask, ExStyle);
 end;
 
-procedure TWinCEWSCustomListView.SetScrollBars(const ALV: TCustomListView; const AValue: TScrollStyle);
+class procedure TWinCEWSCustomListView.SetScrollBars(const ALV: TCustomListView; const AValue: TScrollStyle);
 begin
   if not WSCheckHandleAllocated(ALV, 'SetScrollBars')
   then Exit;
@@ -660,7 +660,7 @@ begin
   else UpdateStyle(ALV.Handle, LVS_NOSCROLL, 0);
 end;
 
-procedure TWinCEWSCustomListView.SetScrolledLeft(const ALV: TCustomListView; const AValue: Integer);
+class procedure TWinCEWSCustomListView.SetScrolledLeft(const ALV: TCustomListView; const AValue: Integer);
 begin
   if not WSCheckHandleAllocated(ALV, 'SetScrolledLeft')
   then Exit;
@@ -668,7 +668,7 @@ begin
   ListView_Scroll(ALV.Handle, AValue, 0);
 end;
 
-procedure TWinCEWSCustomListView.SetScrolledTop(const ALV: TCustomListView; const AValue: Integer);
+class procedure TWinCEWSCustomListView.SetScrolledTop(const ALV: TCustomListView; const AValue: Integer);
 begin
   if not WSCheckHandleAllocated(ALV, 'SetScrolledTop')
   then Exit;
@@ -676,7 +676,7 @@ begin
   ListView_Scroll(ALV.Handle, 0, AValue);
 end;
 
-procedure TWinCEWSCustomListView.SetSort(const ALV: TCustomListView; const AType: TSortType; const AColumn: Integer);
+class procedure TWinCEWSCustomListView.SetSort(const ALV: TCustomListView; const AType: TSortType; const AColumn: Integer);
 begin
   if not WSCheckHandleAllocated(ALV, 'SetSort')
   then Exit;
@@ -684,7 +684,7 @@ begin
   // TODO: implement
 end;
 
-procedure TWinCEWSCustomListView.SetViewStyle(const ALV: TCustomListView; const Avalue: TViewStyle);
+class procedure TWinCEWSCustomListView.SetViewStyle(const ALV: TCustomListView; const Avalue: TViewStyle);
 const
   //vsIcon, vsSmallIcon, vsList, vsReport
   STYLES: array[TViewStyle] of DWORD = (LVS_ICON, LVS_SMALLICON, LVS_LIST, LVS_REPORT);
@@ -696,7 +696,7 @@ begin
   UpdateStyle(ALV.Handle, 0, STYLES[AValue]);//roozbeh ?!
 end;
 
-procedure TWinCEWSCustomListView.UpdateStyle(const AHandle: THandle; const AMask, AStyle: Integer);
+class procedure TWinCEWSCustomListView.UpdateStyle(const AHandle: THandle; const AMask, AStyle: Integer);
 var
   OldStyle, NewStyle: Integer;
 begin
@@ -719,7 +719,7 @@ begin
   Windows.InvalidateRect(AHandle, nil, true);
 end;
 
-procedure TWinCEWSCustomListView.UpdateExStyle(const AHandle: THandle; const AMask, AStyle: Integer);
+class procedure TWinCEWSCustomListView.UpdateExStyle(const AHandle: THandle; const AMask, AStyle: Integer);
 var
   OldStyle, NewStyle: Integer;
 begin

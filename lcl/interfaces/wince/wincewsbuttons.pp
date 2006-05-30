@@ -317,7 +317,6 @@ var
         DeleteObject(MonoBmp);
       end;  
     end;
-    
     SetBkMode(hdcNewBitmap, TRANSPARENT);
     SetTextColor(hdcNewBitmap, 0);
     DrawState(hdcNewBitmap, 0, nil, LPARAM(ButtonCaption), 0, XDestText, YDestText, 0, 0, TextFlags);
