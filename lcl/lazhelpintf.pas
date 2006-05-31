@@ -554,6 +554,7 @@ function ExtractURLDirectory(const URL: string): string;
 function TrimUrl(const URL: string): string;
 function TrimURLPath(const URLPath: string): string;
 function IsFileURL(const URL: string): boolean;
+function AppendURLPathDelim(const URLPath: string): string;
 
 procedure CreateListAndAdd(const AnObject: TObject; var List: TList;
   OnlyIfNotExists: boolean);
@@ -668,7 +669,7 @@ end;
 
 function URLFilenameIsAbsolute(const Filename: string): boolean;
 begin
-  Result:=FilenameIsUnixAbsolute(Filename);
+  Result:=FilenameIsAbsolute(SetDirSeparators(Filename));
 end;
 
 function FindURLPathStart(const URL: string): integer;
@@ -736,6 +737,12 @@ function IsFileURL(const URL: string): boolean;
 begin
   Result:=(length(URL)>=7)
           and (CompareByte(URL[1],'file://',7)=0);
+end;
+
+function AppendURLPathDelim(const URLPath: string): string;
+begin
+  if (Result<>'') and (Result[length(Result)]<>'/') then
+    Result:=Result+'/';
 end;
 
 function ExtractURLPath(const URL: string): string;
@@ -1287,7 +1294,7 @@ begin
     if Result='' then exit;
     Result:=FilenameToURL(Result);
   end;
-  Result:=AppendPathDelim(Result);
+  Result:=AppendURLPathDelim(Result);
 end;
 
 function THelpDatabases.GetBaseDirectoryForBasePathObject(
@@ -1306,7 +1313,7 @@ begin
     Result:=THelpBasePathObject(BasePathObject).BasePath
   else
     Result:='';
-  Result:=AppendPathDelim(Result);
+  Result:=AppendURLPathDelim(Result);
 end;
 
 function THelpDatabases.FindViewer(const MimeType: string; var ErrMsg: string;

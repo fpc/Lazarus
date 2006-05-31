@@ -265,8 +265,7 @@ begin
       Databases.SubstituteMacros(Result);
     //debugln('THTMLHelpDatabase.GetEffectiveBaseURL using DefaultBaseURL="',Result,'"');
   end;
-  if (Result<>'') and (Result[length(Result)]<>'/') then
-    Result:=Result+'/';
+  Result:=AppendURLPathDelim(Result);
 end;
 
 procedure THTMLHelpDatabase.Load(Storage: TConfigStorage);
