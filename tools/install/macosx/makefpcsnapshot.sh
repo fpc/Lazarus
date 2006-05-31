@@ -59,7 +59,7 @@ make install PP=$COMPILER INSTALL_PREFIX=$INSTALLDIR
 # create symlink using relative paths, make symlinkinstall uses absolute path, 
 # which then ends up as link to the temporary build path
 # on the user's machine after installation
-ln -sf ../lib/fpc/$FPCVERSION/ppcppc $INSTALLDIR/bin/$PPCARCH
+ln -sf ../lib/fpc/$FPCVERSION/$PPCARCH $INSTALLDIR/bin/$PPCARCH
 
 # install for use by lazarus
 cd fpcsrc
