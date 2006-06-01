@@ -1,897 +1,653 @@
-<?xml version="1.0" encoding="ISO8859-1"?>
+<?xml version="1.0"?>
 <fpdoc-descriptions>
-<package name="lcl">
-
-<!--
+  <package name="lcl">
+    <!--
   ====================================================================
     FileUtil
   ====================================================================
 -->
-
-<module name="FileUtil">
-<short></short>
-<descr>
+    <module name="FileUtil">
+      <short/>
+      <descr/>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="Classes">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="SysUtils">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="LCLStrConsts">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="CompareFilenames">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="CompareFilenames.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="CompareFilenames.Filename1">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="CompareFilenames.Filename2">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="CompareFilenames">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="CompareFilenames.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="CompareFilenames.Filename1">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="CompareFilenames.Filename2">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="CompareFilenames.ResolveLinks">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="CompareFilenames">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="CompareFilenames.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="CompareFilenames.Filename1">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="CompareFilenames.Len1">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="CompareFilenames.Filename2">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="CompareFilenames.Len2">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="CompareFilenames.ResolveLinks">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="FilenameIsAbsolute">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="FilenameIsAbsolute.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FilenameIsAbsolute.TheFilename">
+        <short/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="CheckIfFileIsExecutable">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="CheckIfFileIsExecutable.AFilename">
+        <short/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="CheckIfFileIsSymlink">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="CheckIfFileIsSymlink.AFilename">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="FileIsReadable">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="FileIsReadable.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FileIsReadable.AFilename">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="FileIsWritable">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="FileIsWritable.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FileIsWritable.AFilename">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="FileIsText">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="FileIsText.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FileIsText.AFilename">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="FileIsExecutable">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="FileIsExecutable.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FileIsExecutable.AFilename">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="FileIsSymlink">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="FileIsSymlink.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FileIsSymlink.AFilename">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="GetFileDescription">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="GetFileDescription.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="GetFileDescription.AFilename">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="ReadAllLinks">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="ReadAllLinks.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="ReadAllLinks.Filename">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="ReadAllLinks.ExceptionOnError">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="DirPathExists">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="DirPathExists.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="DirPathExists.FileName">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="ForceDirectory">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="ForceDirectory.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="ForceDirectory.DirectoryName">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="DeleteDirectory">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="DeleteDirectory.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="DeleteDirectory.DirectoryName">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="DeleteDirectory.OnlyChilds">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="ProgramDirectory">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="ProgramDirectory.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="DirectoryIsWritable">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="DirectoryIsWritable.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="DirectoryIsWritable.DirectoryName">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="ExtractFileNameOnly">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="ExtractFileNameOnly.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="ExtractFileNameOnly.AFilename">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="CompareFileExt">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="CompareFileExt.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="CompareFileExt.Filename">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="CompareFileExt.Ext">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="CompareFileExt.CaseSensitive">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="FilenameIsPascalUnit">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="FilenameIsPascalUnit.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FilenameIsPascalUnit.Filename">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="AppendPathDelim">
+        <short>Appends the path delimeter to the path.</short>
+        <descr>AppendPathDelim checks if the last character in the path is the path delimeter. If it isn't the path delimeter, it is added, otherwise the unmodified path is returned.
 </descr>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="Classes">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="SysUtils">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="LCLStrConsts">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: default -->
-<element name="CompareFilenames">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="CompareFilenames.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="CompareFilenames.Filename1">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="CompareFilenames.Filename2">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="CompareFilenames">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="CompareFilenames.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="CompareFilenames.Filename1">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="CompareFilenames.Filename2">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="CompareFilenames.ResolveLinks">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="CompareFilenames">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="CompareFilenames.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="CompareFilenames.Filename1">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="CompareFilenames.Len1">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="CompareFilenames.Filename2">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="CompareFilenames.Len2">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="CompareFilenames.ResolveLinks">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="FilenameIsAbsolute">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="FilenameIsAbsolute.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="FilenameIsAbsolute.TheFilename">
-<short></short>
-</element>
-
-<!-- procedure Visibility: default -->
-<element name="CheckIfFileIsExecutable">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="CheckIfFileIsExecutable.AFilename">
-<short></short>
-</element>
-
-<!-- procedure Visibility: default -->
-<element name="CheckIfFileIsSymlink">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="CheckIfFileIsSymlink.AFilename">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="FileIsReadable">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="FileIsReadable.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="FileIsReadable.AFilename">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="FileIsWritable">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="FileIsWritable.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="FileIsWritable.AFilename">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="FileIsText">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="FileIsText.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="FileIsText.AFilename">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="FileIsExecutable">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="FileIsExecutable.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="FileIsExecutable.AFilename">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="FileIsSymlink">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="FileIsSymlink.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="FileIsSymlink.AFilename">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="GetFileDescription">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="GetFileDescription.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="GetFileDescription.AFilename">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="ReadAllLinks">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="ReadAllLinks.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="ReadAllLinks.Filename">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="ReadAllLinks.ExceptionOnError">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="DirPathExists">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="DirPathExists.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="DirPathExists.FileName">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="ForceDirectory">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="ForceDirectory.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="ForceDirectory.DirectoryName">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="DeleteDirectory">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="DeleteDirectory.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="DeleteDirectory.DirectoryName">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="DeleteDirectory.OnlyChilds">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="ProgramDirectory">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="ProgramDirectory.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="DirectoryIsWritable">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="DirectoryIsWritable.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="DirectoryIsWritable.DirectoryName">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="ExtractFileNameOnly">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="ExtractFileNameOnly.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="ExtractFileNameOnly.AFilename">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="CompareFileExt">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="CompareFileExt.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="CompareFileExt.Filename">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="CompareFileExt.Ext">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="CompareFileExt.CaseSensitive">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="FilenameIsPascalUnit">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="FilenameIsPascalUnit.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="FilenameIsPascalUnit.Filename">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="AppendPathDelim">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="AppendPathDelim.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="AppendPathDelim.Path">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="ChompPathDelim">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="ChompPathDelim.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="ChompPathDelim.Path">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="TrimFilename">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TrimFilename.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TrimFilename.AFilename">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="CleanAndExpandFilename">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="CleanAndExpandFilename.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="CleanAndExpandFilename.Filename">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="CleanAndExpandDirectory">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="CleanAndExpandDirectory.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="CleanAndExpandDirectory.Filename">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="FileIsInPath">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="FileIsInPath.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="FileIsInPath.Filename">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="FileIsInPath.Path">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="FileIsInDirectory">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="FileIsInDirectory.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="FileIsInDirectory.Filename">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="FileIsInDirectory.Directory">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="FileInFilenameMasks">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="FileInFilenameMasks.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="FileInFilenameMasks.Filename">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="FileInFilenameMasks.Masks">
-<short></short>
-</element>
-
-<!-- enumeration type Visibility: default -->
-<element name="TSearchFileInPathFlag">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TSearchFileInPathFlag.sffDontSearchInBasePath">
-<short></short>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TSearchFileInPathFlag.sffSearchLoUpCase">
-<short></short>
-</element>
-
-<!-- set type Visibility: default -->
-<element name="TSearchFileInPathFlags">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: default -->
-<element name="SearchFileInPath">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="SearchFileInPath.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="SearchFileInPath.Filename">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="SearchFileInPath.BasePath">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="SearchFileInPath.SearchPath">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="SearchFileInPath.Delimiter">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="SearchFileInPath.Flags">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="GetAllFilesMask">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="GetAllFilesMask.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="ReadFileToString">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="ReadFileToString.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="ReadFileToString.Filename">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="CopyFile">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="CopyFile.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="CopyFile.SrcFilename">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="CopyFile.DestFilename">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="CopyFile">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="CopyFile.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="CopyFile.SrcFilename">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="CopyFile.DestFilename">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="CopyFile.PreserveTime">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="GetTempFilename">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="GetTempFilename.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="GetTempFilename.Path">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="GetTempFilename.Prefix">
-<short></short>
-</element>
-</module> <!-- FileUtil -->
-</package>
+        <errors></errors>
+        <seealso></seealso>
+        <example>&lt;example file=""/&gt;</example>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="AppendPathDelim.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="AppendPathDelim.Path">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="ChompPathDelim">
+        <short>Removes trailing path delimeter</short>
+        <descr>ChompPathDelim checks if the last character in the path is the path delimeter. If it is the path delimeter, it is removed, otherwise the unmodified path is returned.</descr>
+        <errors></errors>
+        <seealso></seealso>
+        <example>&lt;example file=""/&gt;</example>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="ChompPathDelim.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="ChompPathDelim.Path">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="TrimFilename">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TrimFilename.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TrimFilename.AFilename">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="CleanAndExpandFilename">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="CleanAndExpandFilename.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="CleanAndExpandFilename.Filename">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="CleanAndExpandDirectory">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="CleanAndExpandDirectory.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="CleanAndExpandDirectory.Filename">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="FileIsInPath">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="FileIsInPath.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FileIsInPath.Filename">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FileIsInPath.Path">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="FileIsInDirectory">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="FileIsInDirectory.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FileIsInDirectory.Filename">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FileIsInDirectory.Directory">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="FileInFilenameMasks">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="FileInFilenameMasks.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FileInFilenameMasks.Filename">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FileInFilenameMasks.Masks">
+        <short/>
+      </element>
+      <!-- enumeration type Visibility: default -->
+      <element name="TSearchFileInPathFlag">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TSearchFileInPathFlag.sffDontSearchInBasePath">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TSearchFileInPathFlag.sffSearchLoUpCase">
+        <short/>
+      </element>
+      <!-- set type Visibility: default -->
+      <element name="TSearchFileInPathFlags">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="SearchFileInPath">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="SearchFileInPath.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="SearchFileInPath.Filename">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="SearchFileInPath.BasePath">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="SearchFileInPath.SearchPath">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="SearchFileInPath.Delimiter">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="SearchFileInPath.Flags">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="GetAllFilesMask">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="GetAllFilesMask.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="ReadFileToString">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="ReadFileToString.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="ReadFileToString.Filename">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="CopyFile">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="CopyFile.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="CopyFile.SrcFilename">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="CopyFile.DestFilename">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="CopyFile">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="CopyFile.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="CopyFile.SrcFilename">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="CopyFile.DestFilename">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="CopyFile.PreserveTime">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="GetTempFilename">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="GetTempFilename.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="GetTempFilename.Path">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="GetTempFilename.Prefix">
+        <short/>
+      </element>
+    </module>
+    <!-- FileUtil -->
+  </package>
 </fpdoc-descriptions>
