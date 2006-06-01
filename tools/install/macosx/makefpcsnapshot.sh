@@ -2,21 +2,42 @@
 
 set -e
 
-PPCARCH=ppcppc
-SVN=/usr/local/bin/svn
+PPC_RELEASE=$1
+
+if [ ! -e "$PPC_RELEASE" ]; then
+  PPC_RELEASE=/usr/local/lib/fpc/2.0.2/ppcppc
+  echo "Using default PPC_RELEASE: $PPC_RELEASE"
+fi
+
 FREEZE=/usr/bin/freeze
 HDIUTIL=/usr/bin/hdiutil
 UPDATELIST=~/tmp/updatelist
-
-TEMPLATEDIR=~/src/lazarus/tools/install/macosx
-
+TEMPLATEDIR=`dirname $0`
 FPCSVNDIR=~/src/fpc/build
 FPCSOURCEDIR=$FPCSVNDIR/fpcsrc
-PPC_RELEASE=/usr/local/lib/fpc/2.0.2/$PPCARCH
 BUILDDIR=~/tmp/build
 FPCBUILDDIR=$BUILDDIR/fpc
 INSTALLDIR=~/tmp/fpc
 INSTALLFPCDIR=~/fpc
+
+PPCARCH=ppcppc
+ARCH=`uname -p`
+if [ "$ARCH" = "i386" ]; then
+  PPCARCH=ppc386
+fi
+
+SVN=`which svn`
+if [ ! -e "$SVN" ]; then
+  SVN=/usr/local/bin/svn
+fi
+
+if [ ! -e "$SVN" ]; then
+  SVN=/sw/bin/svn
+fi
+
+if [ ! -e "$SVN" ]; then
+  echo "Cannot find a svn executable"
+fi
 
 DATESTAMP=`date +%Y%m%d`
 FPCPACKPROJ=fpc.packproj
@@ -32,9 +53,12 @@ else
   fi
 fi
 
-$SVN export $FPCSVNDIR $FPCBUILDDIR  
-$SVN export $FPCSVNDIR/fpcsrc $FPCBUILDDIR/fpcsrc
-$SVN export $FPCSVNDIR/fpcdocs $FPCBUILDDIR/fpcdocs
+$SVN export $FPCSVNDIR $FPCBUILDDIR
+if [ ! -d  "$FPCBUILDDIR/fpcsrc" ]; then
+# old versions of svn did not export external repositories
+  $SVN export $FPCSVNDIR/fpcsrc $FPCBUILDDIR/fpcsrc
+  $SVN export $FPCSVNDIR/fpcdocs $FPCBUILDDIR/fpcdocs
+fi
 
 cd $FPCBUILDDIR
 make distclean PP=$PPC_RELEASE

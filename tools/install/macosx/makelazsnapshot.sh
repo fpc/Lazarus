@@ -3,11 +3,28 @@
 set -e
 set -x
 
-PPCARCH=ppcppc
-SVN=/usr/local/bin/svn
 FREEZE=/usr/bin/freeze
 HDIUTIL=/usr/bin/hdiutil
 UPDATELIST=~/tmp/updatelist
+
+PPCARCH=ppcppc
+ARCH=`uname -p`
+if [ "$ARCH" = "i386" ]; then
+  PPCARCH=ppc386
+fi
+
+SVN=`which svn`
+if [ ! -e "$SVN" ]; then
+  SVN=/usr/local/bin/svn
+fi
+
+if [ ! -e "$SVN" ]; then
+  SVN=/sw/bin/svn
+fi
+
+if [ ! -e "$SVN" ]; then
+  echo "Cannot find a svn executable"
+fi
 
 LAZSOURCEDIR=~/src/lazsource
 
@@ -45,10 +62,10 @@ strip lazarus
 strip startlazarus
 
 # create symlinks
-mkdir -p $BUILDDIR\bin
-cd $BUILDDIR\bin
+mkdir -p $BUILDDIR/bin
+cd $BUILDDIR/bin
 ln -s ../share/lazarus/lazarus lazarus
-ln -s ../share/lazarus/startlazarus lazarus
+ln -s ../share/lazarus/startlazarus startlazarus
 
 # copy license file, it must be a txt file.
 cp $LAZBUILDDIR/COPYING.GPL $BUILDDIR/License.txt

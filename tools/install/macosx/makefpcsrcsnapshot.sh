@@ -2,13 +2,30 @@
 
 set -e
 
-PPCARCH=ppcppc
-SVN=/usr/local/bin/svn
 FREEZE=/usr/bin/freeze
 HDIUTIL=/usr/bin/hdiutil
 UPDATELIST=~/tmp/updatelist
 
-TEMPLATEDIR=~/etc/templates
+PPCARCH=ppcppc
+ARCH=`uname -p`
+if [ "$ARCH" = "i386" ]; then
+  PPCARCH=ppc386
+fi
+
+SVN=`which svn`
+if [ ! -e "$SVN" ]; then
+  SVN=/usr/local/bin/svn
+fi
+
+if [ ! -e "$SVN" ]; then
+  SVN=/sw/bin/svn
+fi
+
+if [ ! -e "$SVN" ]; then
+  echo "Cannot find a svn executable"
+fi
+
+TEMPLATEDIR=`dirname $0`
 
 FPCSVNDIR=~/src/fpc/build
 FPCSOURCEDIR=$FPCSVNDIR/fpcsrc
@@ -16,7 +33,7 @@ COMPILER=~/fpc/bin/$PPCARCH
 INSTALLDIR=~/tmp/fpcsrc
 
 DATESTAMP=`date +%Y%m%d`
-PACKPROJ=fpcsrc.packproj
+PACKPROJ=fpcsrc.packproj.template
 
 
 # clean installdir: since I am not root and the install dir can contain files owned by root 
