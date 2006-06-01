@@ -54,8 +54,8 @@ type
   { TEncloseSelectionDialog }
 
   TEncloseSelectionDialog = class(TForm)
-    OkButton: TBUTTON;
-    CancelButton: TBUTTON;
+    btnCancel: TButton;
+    btnOk: TButton;
     TypeRadiogroup: TRADIOGROUP;
     procedure EncloseSelectionDialogCREATE(Sender: TObject);
     procedure EncloseSelectionDialogResize(Sender: TObject);
@@ -84,14 +84,14 @@ function EncloseSelectionTypeDescription(TheType: TEncloseSelectionType
   ): string;
 begin
   case TheType of
-  estTryFinally: Result:='Try..Finally';
-  estTryExcept: Result:='Try..Except';
-  estBeginEnd: Result:='Begin..End';
-  estForBeginEnd: Result:='For | do begin..end';
-  estWhileDoBeginEnd: Result:='While | do begin..end';
-  estRepeatUntil: Result:='Repeat..Until |';
-  estWith: Result:='With | do begin..end';
-  estPascalComment: Result:='{..}';
+    estTryFinally: Result:='Try..Finally';
+    estTryExcept: Result:='Try..Except';
+    estBeginEnd: Result:='Begin..End';
+    estForBeginEnd: Result:='For | do begin..end';
+    estWhileDoBeginEnd: Result:='While | do begin..end';
+    estRepeatUntil: Result:='Repeat..Until |';
+    estWith: Result:='With | do begin..end';
+    estPascalComment: Result:='{..}';
   else
     RaiseException('EncloseSelectionTypeDescription');
   end;
@@ -113,49 +113,49 @@ procedure GetEncloseSelectionParams(TheType: TEncloseSelectionType;
   var Template: string);
 begin
   case TheType of
-  estTryFinally:
-    Template:='try'+LineEnding
-             +'  <selection>'+LineEnding
-             +'finally'+LineEnding
-             +'  |'+LineEnding
-             +'end;'+LineEnding;
+    estTryFinally:
+      Template:='try'+LineEnding
+               +'  <selection>'+LineEnding
+               +'finally'+LineEnding
+               +'  |'+LineEnding
+               +'end;'+LineEnding;
 
-  estTryExcept:
-    Template:='try'+LineEnding
-             +'  <selection>'+LineEnding
-             +'except'+LineEnding
-             +'  |'+LineEnding
-             +'end;'+LineEnding;
+    estTryExcept:
+      Template:='try'+LineEnding
+               +'  <selection>'+LineEnding
+               +'except'+LineEnding
+               +'  |'+LineEnding
+               +'end;'+LineEnding;
 
-  estBeginEnd:
-    Template:='begin'+LineEnding
-             +'  |<selection>'+LineEnding
-             +'end;'+LineEnding;
+    estBeginEnd:
+      Template:='begin'+LineEnding
+               +'  |<selection>'+LineEnding
+               +'end;'+LineEnding;
 
-  estForBeginEnd:
-    Template:='for | do begin'+LineEnding
-             +'  <selection>'+LineEnding
-             +'end;'+LineEnding;
+    estForBeginEnd:
+      Template:='for | do begin'+LineEnding
+               +'  <selection>'+LineEnding
+               +'end;'+LineEnding;
 
-  estWhileDoBeginEnd:
-    Template:='while | do begin'+LineEnding
-             +'  <selection>'+LineEnding
-             +'end;'+LineEnding;
+    estWhileDoBeginEnd:
+      Template:='while | do begin'+LineEnding
+               +'  <selection>'+LineEnding
+               +'end;'+LineEnding;
 
-  estRepeatUntil:
-    Template:='repeat'+LineEnding
-             +'  <selection>'+LineEnding
-             +'until |;'+LineEnding;
+    estRepeatUntil:
+      Template:='repeat'+LineEnding
+               +'  <selection>'+LineEnding
+               +'until |;'+LineEnding;
 
-  estWith:
-    Template:='with | do begin'+LineEnding
-             +'  <selection>'+LineEnding
-             +'end;'+LineEnding;
+    estWith:
+      Template:='with | do begin'+LineEnding
+               +'  <selection>'+LineEnding
+               +'end;'+LineEnding;
 
-  estPascalComment:
-    Template:='{'+LineEnding
-             +'  |<selection>'+LineEnding
-             +'}'+LineEnding;
+    estPascalComment:
+      Template:='{'+LineEnding
+               +'  |<selection>'+LineEnding
+               +'}'+LineEnding;
 
   else
     RaiseException('GetEnclosedSelectionParams');
@@ -406,8 +406,8 @@ var
   t: TEncloseSelectionType;
 begin
   Caption:=lisEncloseSelection;
-  OkButton.Caption:=lisEnclose;
-  CancelButton.Caption:=dlgCancel;
+  btnOk.Caption:=lisEnclose;
+  btnCancel.Caption:=dlgCancel;
   TypeRadiogroup.Caption:=lisChooseStructureToEncloseSelection;
   with TypeRadiogroup.Items do begin
     BeginUpdate;
@@ -423,9 +423,9 @@ var
   c: Integer;
 begin
   c:=Width div 2;
-  OkButton.Width:=c-OkButton.Left-15;
-  CancelButton.Left:=c+15;
-  CancelButton.Width:=OkButton.Width;
+  btnOk.Width:=c-btnOk.Left-15;
+  btnCancel.Left:=c+15;
+  btnCancel.Width:=btnOk.Width;
 end;
 
 function TEncloseSelectionDialog.GetEncloseType: TEncloseSelectionType;
