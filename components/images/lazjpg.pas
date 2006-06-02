@@ -94,12 +94,12 @@ begin
   inherited InitFPImageWriter(ImgWriter);
 end;
 
-function TJPGImage.GetDefaultFPReader: TFPCustomImageReaderClass;
+class function TJPGImage.GetDefaultFPReader: TFPCustomImageReaderClass;
 begin
   Result:=TFPReaderJPEG;
 end;
 
-function TJPGImage.GetDefaultFPWriter: TFPCustomImageWriterClass;
+class function TJPGImage.GetDefaultFPWriter: TFPCustomImageWriterClass;
 begin
   Result:=TFPWriterJPEG;
 end;
@@ -112,7 +112,7 @@ begin
   FQuality:=75;
 end;
 
-function TJPGImage.GetFileExtensions: string;
+class function TJPGImage.GetFileExtensions: string;
 begin
   Result:='jpg;jpeg';
 end;

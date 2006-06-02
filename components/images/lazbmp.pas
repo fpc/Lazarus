@@ -74,12 +74,12 @@ begin
   inherited InitFPImageWriter(ImgWriter);
 end;
 
-function TBMPImage.GetDefaultFPReader: TFPCustomImageReaderClass;
+class function TBMPImage.GetDefaultFPReader: TFPCustomImageReaderClass;
 begin
   Result:=TFPReaderBMP;
 end;
 
-function TBMPImage.GetDefaultFPWriter: TFPCustomImageWriterClass;
+class function TBMPImage.GetDefaultFPWriter: TFPCustomImageWriterClass;
 begin
   Result:=TFPWriterBMP;
 end;
@@ -89,7 +89,7 @@ begin
   inherited Create;
 end;
 
-function TBMPImage.GetFileExtensions: string;
+class function TBMPImage.GetFileExtensions: string;
 begin
   Result:='bmp';
 end;

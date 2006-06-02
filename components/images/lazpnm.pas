@@ -47,12 +47,12 @@ implementation
 
 { TPNMImage }
 
-function TPNMImage.GetDefaultFPReader: TFPCustomImageReaderClass;
+class function TPNMImage.GetDefaultFPReader: TFPCustomImageReaderClass;
 begin
   Result:=TFPReaderPNM;
 end;
 
-function TPNMImage.GetDefaultFPWriter: TFPCustomImageWriterClass;
+class function TPNMImage.GetDefaultFPWriter: TFPCustomImageWriterClass;
 begin
   Result:=TFPWriterPNM;
 end;
@@ -62,7 +62,7 @@ begin
   inherited Create;
 end;
 
-function TPNMImage.GetFileExtensions: string;
+class function TPNMImage.GetFileExtensions: string;
 begin
   Result:='ppm;pgm;pbm';
 end;

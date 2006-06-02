@@ -73,12 +73,12 @@ begin
   inherited InitFPImageWriter(ImgWriter);
 end;
 
-function TTGAImage.GetDefaultFPReader: TFPCustomImageReaderClass;
+class function TTGAImage.GetDefaultFPReader: TFPCustomImageReaderClass;
 begin
   Result:=TFPReaderTarga;
 end;
 
-function TTGAImage.GetDefaultFPWriter: TFPCustomImageWriterClass;
+class function TTGAImage.GetDefaultFPWriter: TFPCustomImageWriterClass;
 begin
   Result:=TFPWriterTarga;
 end;
@@ -88,7 +88,7 @@ begin
   inherited Create;
 end;
 
-function TTGAImage.GetFileExtensions: string;
+class function TTGAImage.GetFileExtensions: string;
 begin
   Result:='tga';
 end;

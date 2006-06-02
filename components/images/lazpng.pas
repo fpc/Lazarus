@@ -22,8 +22,7 @@ interface
 
 uses
   SysUtils, Classes, FPImage, IntfGraphics, Graphics,
-  FPReadPNG, FPWritePNG,
-  ClipBrd;
+  FPReadPNG, FPWritePNG,ClipBrd;
 
 type
 
@@ -45,12 +44,12 @@ implementation
 
 { TPNGImage }
 
-function TPNGImage.GetDefaultFPReader: TFPCustomImageReaderClass;
+class function TPNGImage.GetDefaultFPReader: TFPCustomImageReaderClass;
 begin
   Result:=TFPReaderPNG;
 end;
 
-function TPNGImage.GetDefaultFPWriter: TFPCustomImageWriterClass;
+class function TPNGImage.GetDefaultFPWriter: TFPCustomImageWriterClass;
 begin
   Result:=TFPWriterPNG;
 end;
@@ -60,7 +59,7 @@ begin
   inherited Create;
 end;
 
-function TPNGImage.GetFileExtensions: string;
+class function TPNGImage.GetFileExtensions: string;
 begin
   Result:='png';
 end;

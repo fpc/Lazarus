@@ -78,12 +78,12 @@ begin
   inherited InitFPImageWriter(ImgWriter);
 end;
 
-function TXPMImage.GetDefaultFPReader: TFPCustomImageReaderClass;
+class function TXPMImage.GetDefaultFPReader: TFPCustomImageReaderClass;
 begin
   Result:=TFPReaderXPM;
 end;
 
-function TXPMImage.GetDefaultFPWriter: TFPCustomImageWriterClass;
+class function TXPMImage.GetDefaultFPWriter: TFPCustomImageWriterClass;
 begin
   Result:=TFPWriterXPM;
 end;
@@ -93,7 +93,7 @@ begin
   inherited Create;
 end;
 
-function TXPMImage.GetFileExtensions: string;
+class function TXPMImage.GetFileExtensions: string;
 begin
   Result:='xpm';
 end;
