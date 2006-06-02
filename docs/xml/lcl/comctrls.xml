@@ -7246,8 +7246,8 @@ To add, change or delete a column use the Columns property.</descr>
         </descr>
         <seealso>
           <link id="TToolBar"/>
-          <link id="TButton"/>
-          <link id="TSpeedButton"/>
+          <link id="buttons.TButton"/>
+          <link id="buttons.TSpeedButton"/>
         </seealso>
         <example file="comctrls/ttoolbutton.pas"/>
       </element>
