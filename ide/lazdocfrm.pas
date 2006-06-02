@@ -490,8 +490,10 @@ begin
       if S = 'seealso' then
         Result[SEEALSO] := GetFirstChildValue(Node);
 
-      if S = 'example' then
-        Result[EXAMPLE] := GetFirstChildValue(Node);
+      if S = 'example' then begin
+        Result[EXAMPLE] := Node.Attributes.GetNamedItem('file').NodeValue;
+        writeln('TLazDocForm.ElementFromNode example: ',Result[EXAMPLE]);
+      end;
     end;
     Node := Node.NextSibling;
   end;
@@ -593,6 +595,7 @@ begin
     exit;
   end;
 
+  FreeAndNil(FCurrentElement);
   FCurrentElement := NewElement;
 
   UpdateCaption;
@@ -611,7 +614,7 @@ begin
     LinkListBox.Items.Text := ConvertLineEndings(dn[SEEALSO]);
     LinkIdComboBox.Text := '';
     LinkTextEdit.Clear;
-    ExampleEdit.Text := Copy(dn[EXAMPLE], 16, Length(dn[EXAMPLE]) - 19);
+    ExampleEdit.Text := ConvertLineEndings(dn[EXAMPLE]);
   end
   else
   begin
@@ -691,9 +694,27 @@ var
     end;
   end;
 
+  procedure CheckAndWriteExampleNode(NodeText: String);
+  var
+    FileAttribute: TDOMAttr;
+  begin
+    {$ifdef dbgLazDoc}
+    DebugLn('TLazDocForm.Save[CheckAndWriteExampleNode]');
+    {$endif}
+
+    if S = 'example' then
+    begin
+      FileAttribute := doc.CreateAttribute('file');
+      FileAttribute.Value := NodeText;
+      node.Attributes.SetNamedItem(FileAttribute);
+      NodeWritten[EXAMPLE] := True;
+    end;
+  end;
+
   procedure InsertNodeElement(ElementName: String; ElementText: String);
   var
     child: TDOMNode;
+    FileAttribute: TDOMAttr;
   begin
     {$ifdef dbgLazDoc}
     DebugLn('TLazDocForm.Save[InsertNodeElement]: inserting element: ' +
@@ -701,10 +722,16 @@ var
     {$endif}
 
     child := doc.CreateElement(ElementName);
-    child.AppendChild(doc.CreateTextNode(ToUnixLineEnding(ElementText)));
+    if ElementName='example' then begin
+      FileAttribute := doc.CreateAttribute('file');
+      FileAttribute.Value := ElementText;
+      child.Attributes.SetNamedItem(FileAttribute);
+    end
+    else
+      child.AppendChild(doc.CreateTextNode(ToUnixLineEnding(ElementText)));
     Node.AppendChild(child);
   end;
-
+  
 begin
   // nothing changed, so exit
   if not FChanged then
@@ -731,8 +758,7 @@ begin
       CheckAndWriteNode('descr', DescrMemo.Text, DESCR);
       CheckAndWriteNode('errors', ErrorsMemo.Text, ERRORS);
       CheckAndWriteNode('seealso', LinkListBox.Text, SEEALSO);
-      CheckAndWriteNode('example', '<example file="' +
-        ExampleEdit.Text + '"/>', EXAMPLE);
+      CheckAndWriteExampleNode(ExampleEdit.Text);
     end;
     Node := Node.NextSibling;
   end;
@@ -751,8 +777,7 @@ begin
         SEEALSO:
           InsertNodeElement('seealso', LinkListBox.Text);
         EXAMPLE:
-          InsertNodeElement('example', '<example file="' +
-            ExampleEdit.Text + '"/>');
+          InsertNodeElement('example', ExampleEdit.Text);
       end;
 
   WriteXMLFile(doc, FDocFileName);
