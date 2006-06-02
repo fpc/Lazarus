@@ -4119,6 +4119,9 @@ begin
                 end;
               except
                 on E: Exception do begin
+                  // added to get more feedback on issue 7009
+                  Debugln('TMainIDE.SaveFileResources E3: ', E.Message);
+                  DumpExceptionBackTrace;
                   ACaption:=lisStreamingError;
                   AText:=Format(
                     lisUnableToTransformBinaryComponentStreamOfTIntoText, [
@@ -6764,8 +6767,9 @@ begin
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoOpenProjectFile A');{$ENDIF}
   Result:=mrCancel;
   if ExtractFileNameOnly(AFileName)='' then exit;
-
+  //debugln('TMainIDE.DoOpenProjectFile A1 "'+AFileName+'"');
   AFilename:=ExpandFileName(TrimFilename(AFilename));
+  //debugln('TMainIDE.DoOpenProjectFile A2 "'+AFileName+'"');
   if not FilenameIsAbsolute(AFilename) then
     RaiseException('TMainIDE.DoOpenProjectFile: buggy ExpandFileName');
   Ext:=lowercase(ExtractFileExt(AFilename));
