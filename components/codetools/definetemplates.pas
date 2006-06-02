@@ -3362,15 +3362,6 @@ begin
     ctsFPDocSystemOn,'FPDocSystem','',da_DefineRecurse);
   MainDir.AddChild(DefTempl);}
 
-  // compiler
-  CompilerDir:=TDefineTemplate.Create('Compiler',ctsCompiler,'','compiler',
-     da_Directory);
-  AddProcessorTypeDefine(CompilerDir);
-  CompilerDir.AddChild(TDefineTemplate.Create('SrcPath','SrcPath addition',
-    ExternalMacroStart+'SrcPath',
-    SrcPathMacro+';'+Dir+TargetProcessor,da_Define));
-  MainDir.AddChild(CompilerDir);
-
   // rtl
   RTLDir:=TDefineTemplate.Create('RTL',ctsRuntimeLibrary,'','rtl',da_Directory);
   MainDir.AddChild(RTLDir);
@@ -3484,6 +3475,18 @@ begin
     ExternalMacroStart+'SrcPath',
     SrcPathMacro+';'+Dir+'ide;'+Dir+'fv',da_Define));
   MainDir.AddChild(InstallerDir);
+
+  // compiler
+  CompilerDir:=TDefineTemplate.Create('Compiler',ctsCompiler,'','compiler',
+     da_Directory);
+  AddProcessorTypeDefine(CompilerDir);
+  CompilerDir.AddChild(TDefineTemplate.Create('SrcPath','SrcPath addition',
+    ExternalMacroStart+'SrcPath',
+    SrcPathMacro+';'+Dir+TargetProcessor,da_Define));
+  CompilerDir.AddChild(TDefineTemplate.Create('IncPath','IncPath addition',
+    ExternalMacroStart+'IncPath',
+    IncPathMacro+';'+Dir+'compiler',da_DefineRecurse));
+  MainDir.AddChild(CompilerDir);
 
   // clean up
   if UnitTree<>nil then begin
