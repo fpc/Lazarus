@@ -381,7 +381,6 @@
 </descr>
         <errors></errors>
         <seealso></seealso>
-        <example>&lt;example file=""/&gt;</example>
       </element>
       <!-- function result Visibility: default -->
       <element name="AppendPathDelim.Result">
@@ -397,7 +396,6 @@
         <descr>ChompPathDelim checks if the last character in the path is the path delimeter. If it is the path delimeter, it is removed, otherwise the unmodified path is returned.</descr>
         <errors></errors>
         <seealso></seealso>
-        <example>&lt;example file=""/&gt;</example>
       </element>
       <!-- function result Visibility: default -->
       <element name="ChompPathDelim.Result">
