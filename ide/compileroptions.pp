@@ -804,6 +804,7 @@ begin
   FreeThenNil(fExecuteBefore);
   FreeThenNil(fExecuteAfter);
   FreeThenNil(FParsedOpts);
+  FreeThenNil(FTargets);
   inherited Destroy;
 end;
 

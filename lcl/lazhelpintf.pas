@@ -741,9 +741,10 @@ end;
 
 function AppendURLPathDelim(const URLPath: string): string;
 begin
-  Result:=URLPath;
-  if (Result<>'') and (Result[length(Result)]<>'/') then
-    Result:=URLPath+'/';
+  if (URLPath<>'') and (URLPath[length(URLPath)]<>'/') then
+    Result:=URLPath+'/'
+  else
+    Result:=URLPath;
 end;
 
 function ExtractURLPath(const URL: string): string;
