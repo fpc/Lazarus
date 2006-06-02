@@ -5676,82 +5676,87 @@ begin
   debugln('TFindDeclarationTool.FindExpressionTypeOfPredefinedIdentifier ',
     ExpressionTypeDescNames[Result.Desc]);
   {$ENDIF}
-  case Result.Desc of
-  xtCompilerFunc:
-    begin
-      if not (Params.ContextNode.Desc in AllPascalStatements) then exit;
-      MoveCursorToCleanPos(StartPos);
-      ReadNextAtom;
-      ReadNextAtom;
-      if not AtomIsChar('(') then
-        exit;
-      ParamList:=CreateParamExprListFromStatement(CurPos.StartPos,Params);
-      if (CompareIdentifiers(IdentPos,'PREC')=0)
-      or (CompareIdentifiers(IdentPos,'SUCC')=0) then begin
-        // the PREC and SUCC of a expression has the same type as the expression
-        if ParamList.Count<>1 then exit;
-        Result:=ParamList.Items[0];
-      end
-      else if (CompareIdentifiers(IdentPos,'LOW')=0)
-           or (CompareIdentifiers(IdentPos,'HIGH')=0) then
+  ParamList:=nil;
+  try
+    case Result.Desc of
+    xtCompilerFunc:
       begin
-        {$IFDEF ShowExprEval}
-        debugln('TFindDeclarationTool.FindExpressionTypeOfPredefinedIdentifier Ident=',GetIdentifier(IdentPos));
-        {$ENDIF}
-        { examples:
-           Low(ordinal type)  is the ordinal type
-           Low(array)         has type of the array items
-           Low(set)           has type of the enums
-        }
-        if ParamList.Count<>1 then exit;
-        Result:=ParamList.Items[0];
-        if Result.Desc<>xtContext then exit;
-        ParamNode:=Result.Context.Node;
-        case ParamNode.Desc of
-
-        ctnEnumerationType:
-          // Low(enum)   has the type of the enum
-          if (ParamNode.Parent<>nil)
-          and (ParamNode.Parent.Desc=ctnTypeDefinition) then
-            Result.Context.Node:=ParamNode.Parent;
-
-        ctnOpenArrayType:
-          // array without explicit range -> open array
-          // Low(Open array) is ordinal integer
-          begin
-            Result.Desc:=xtConstOrdInteger;
-            Result.Context:=CleanFindContext;
-          end;
-
-        ctnRangedArrayType:
-          begin
-            // array with explicit range
-            // Low(array[SubRange])  has the type of the subrange
-            MoveCursorToNodeStart(ParamNode.FirstChild);
-            Result:=ReadOperandTypeAtCursor(Params);
-          end;
-            
-        else
-          DebugLn('NOTE: unimplemented Low(type) type=',ParamNode.DescAsString);
-        end;
-      end
-      else if (CompareIdentifiers(IdentPos,'LENGTH')=0) then
-      begin
-        if ParamList.Count<>1 then exit;
-        Result.Desc:=xtConstOrdInteger;
-      end
-      else if (CompareIdentifiers(IdentPos,'COPY')=0) then
-      begin
-        if (ParamList.Count<>3) or (Scanner.Values.IsDefined('VER1_0')) then
+        if not (Params.ContextNode.Desc in AllPascalStatements) then exit;
+        MoveCursorToCleanPos(StartPos);
+        ReadNextAtom;
+        ReadNextAtom;
+        if not AtomIsChar('(') then
           exit;
-        Result.Desc:=xtString;
+        ParamList:=CreateParamExprListFromStatement(CurPos.StartPos,Params);
+        if (CompareIdentifiers(IdentPos,'PREC')=0)
+        or (CompareIdentifiers(IdentPos,'SUCC')=0) then begin
+          // the PREC and SUCC of a expression has the same type as the expression
+          if ParamList.Count<>1 then exit;
+          Result:=ParamList.Items[0];
+        end
+        else if (CompareIdentifiers(IdentPos,'LOW')=0)
+             or (CompareIdentifiers(IdentPos,'HIGH')=0) then
+        begin
+          {$IFDEF ShowExprEval}
+          debugln('TFindDeclarationTool.FindExpressionTypeOfPredefinedIdentifier Ident=',GetIdentifier(IdentPos));
+          {$ENDIF}
+          { examples:
+             Low(ordinal type)  is the ordinal type
+             Low(array)         has type of the array items
+             Low(set)           has type of the enums
+          }
+          if ParamList.Count<>1 then exit;
+          Result:=ParamList.Items[0];
+          if Result.Desc<>xtContext then exit;
+          ParamNode:=Result.Context.Node;
+          case ParamNode.Desc of
+
+          ctnEnumerationType:
+            // Low(enum)   has the type of the enum
+            if (ParamNode.Parent<>nil)
+            and (ParamNode.Parent.Desc=ctnTypeDefinition) then
+              Result.Context.Node:=ParamNode.Parent;
+
+          ctnOpenArrayType:
+            // array without explicit range -> open array
+            // Low(Open array) is ordinal integer
+            begin
+              Result.Desc:=xtConstOrdInteger;
+              Result.Context:=CleanFindContext;
+            end;
+
+          ctnRangedArrayType:
+            begin
+              // array with explicit range
+              // Low(array[SubRange])  has the type of the subrange
+              MoveCursorToNodeStart(ParamNode.FirstChild);
+              Result:=ReadOperandTypeAtCursor(Params);
+            end;
+
+          else
+            DebugLn('NOTE: unimplemented Low(type) type=',ParamNode.DescAsString);
+          end;
+        end
+        else if (CompareIdentifiers(IdentPos,'LENGTH')=0) then
+        begin
+          if ParamList.Count<>1 then exit;
+          Result.Desc:=xtConstOrdInteger;
+        end
+        else if (CompareIdentifiers(IdentPos,'COPY')=0) then
+        begin
+          if (ParamList.Count<>3) or (Scanner.Values.IsDefined('VER1_0')) then
+            exit;
+          Result.Desc:=xtString;
+        end;
+      end;
+
+    xtString:
+      begin
+        // ToDo: ask scanner for shortstring, ansistring, widestring
       end;
     end;
-    
-  xtString:
-    begin
-      // ToDo: ask scanner for shortstring, ansistring, widestring
-    end;
+  finally
+    ParamList.Free;
   end;
 end;
 
