@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
-"PO-Revision-Date: 2006-02-11 20:11+0300\n"
+"PO-Revision-Date: 2006-06-03 21:15+0300\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
@@ -105,13 +105,13 @@ msgstr ""
 msgid "(All)"
 msgstr "(Все)"
 
-#: objinspstrconsts:cactionlisteditorunknowncategory
-msgid "(Unknown)"
-msgstr "(Неизвестно)"
-
 #: objinspstrconsts:oisnone
 msgid "(none)"
 msgstr "(нет)"
+
+#: objinspstrconsts:cactionlisteditorunknowncategory
+msgid "(Unknown)"
+msgstr "(Неизвестно)"
 
 #: objinspstrconsts:ois0lines0chars
 msgid "0 lines, 0 chars"
@@ -139,7 +139,7 @@ msgstr "Добавить изображения"
 
 #: objinspstrconsts:clbadd
 msgid "Add new Item"
-msgstr ""
+msgstr "Добавить новый Элемент"
 
 #: objinspstrconsts:nbcesaddpage
 msgid "Add page"
@@ -147,7 +147,7 @@ msgstr "Добавить страницу"
 
 #: objinspstrconsts:tccesaddtab
 msgid "Add tab"
-msgstr ""
+msgstr "Добавить вкладку"
 
 #: objinspstrconsts:oisaddtofavorites
 msgid "Add to Favorites"
@@ -179,7 +179,7 @@ msgstr "Массив"
 
 #: objinspstrconsts:oisstdactionlisteditorclass
 msgid "Available Action Classes:"
-msgstr ""
+msgstr "Доступные Классы Действий:"
 
 #: objinspstrconsts:oisboolean
 msgid "Boolean"
@@ -215,11 +215,11 @@ msgstr "Символы для пробелов"
 
 #: objinspstrconsts:clbcheckgroupeditor
 msgid "CheckGroup Editor"
-msgstr ""
+msgstr "Редактор CheckGroup"
 
 #: objinspstrconsts:clbchecklistboxeditor
 msgid "CheckListBox Editor"
-msgstr ""
+msgstr "Редактор CheckListBox"
 
 #: objinspstrconsts:oisclass
 msgid "Class"
@@ -227,7 +227,7 @@ msgstr "Class"
 
 #: objinspstrconsts:sccssgedtclean
 msgid "Clean"
-msgstr ""
+msgstr "Очистить"
 
 #: objinspstrconsts:sccsiledtclear
 msgid "Clear"
@@ -315,7 +315,7 @@ msgstr "Удалить"
 
 #: objinspstrconsts:cactionlisteditordeleteactionhint
 msgid "Delete Action"
-msgstr ""
+msgstr "Удалить Действие"
 
 #: objinspstrconsts:oisdeleteitem
 msgid "Delete item %s%s%s?"
@@ -327,11 +327,11 @@ msgstr "Удалить страницу"
 
 #: objinspstrconsts:tccesdeletetab
 msgid "Delete tab"
-msgstr ""
+msgstr "Удалить вкладку"
 
 #: objinspstrconsts:clbdelete
 msgid "Delete the Item %d \"%s\"?"
-msgstr ""
+msgstr "Удалить Элемент %d \"%s\"?"
 
 #: objinspstrconsts:cactionlisteditordialogcategory
 msgid "Dialog"
@@ -353,21 +353,21 @@ msgstr ""
 msgid "Edit"
 msgstr "Редактировать"
 
-#: objinspstrconsts:sccslvedt
-msgid "Edit ListView Items..."
-msgstr ""
-
-#: objinspstrconsts:sccssgedt
-msgid "Edit StringGrid..."
-msgstr ""
-
-#: objinspstrconsts:sccstredt
-msgid "Edit TreeView Items..."
-msgstr ""
-
 #: objinspstrconsts:oiseditactionlist
 msgid "Edit action list..."
 msgstr "Правка списка действий..."
+
+#: objinspstrconsts:sccslvedt
+msgid "Edit ListView Items..."
+msgstr "Редактировать Элементы ListView..."
+
+#: objinspstrconsts:sccssgedt
+msgid "Edit StringGrid..."
+msgstr "Редактировать StringGrid..."
+
+#: objinspstrconsts:sccstredt
+msgid "Edit TreeView Items..."
+msgstr "Редактировать Элементы TreeView..."
 
 #: objinspstrconsts:oicoleditediting
 msgid "Editing"
@@ -435,7 +435,7 @@ msgstr ""
 
 #: objinspstrconsts:sccsiledtcaption
 msgid "ImageList Editor"
-msgstr ""
+msgstr "Редактор ImageList"
 
 #: objinspstrconsts:sccsiledtgrplcaption
 msgid "Images"
@@ -443,7 +443,7 @@ msgstr "Изображения"
 
 #: objinspstrconsts:oisinputmask
 msgid "Input Mask:"
-msgstr ""
+msgstr "Маска ввода:"
 
 #: objinspstrconsts:oistdactdatasetinserthint
 msgid "Insert"
@@ -455,7 +455,7 @@ msgstr "Вставить страницу"
 
 #: objinspstrconsts:tccesinserttab
 msgid "Insert tab"
-msgstr ""
+msgstr "Вставить вкладку"
 
 #: objinspstrconsts:oisint64
 msgid "Int64"
@@ -475,19 +475,19 @@ msgstr "Неверное значение свойства"
 
 #: objinspstrconsts:sccstredtitem
 msgid "Item"
-msgstr ""
+msgstr "Элемент"
 
 #: objinspstrconsts:sccstredtgrprcaption
 msgid "Item Properties"
-msgstr ""
+msgstr "Свойства Элемента"
 
 #: objinspstrconsts:sccstredtgrplcaption
 msgid "Items"
-msgstr ""
+msgstr "Элементы"
 
 #: objinspstrconsts:oisfinddeclaration
 msgid "Jump to declaration"
-msgstr ""
+msgstr "Перейти к объявлению"
 
 #: objinspstrconsts:oistdactdatasetlasthint
 msgid "Last"
@@ -495,7 +495,7 @@ msgstr "Последний"
 
 #: objinspstrconsts:sccslvedtcaption
 msgid "ListView Items Editor"
-msgstr ""
+msgstr "Редактор Элементов ListView"
 
 #: objinspstrconsts:sccstredtload
 msgid "Load"
@@ -511,7 +511,7 @@ msgstr "Загрузить картинку"
 
 #: objinspstrconsts:sccssgedtload
 msgid "Load..."
-msgstr ""
+msgstr "Загрузить..."
 
 #: objinspstrconsts:oismasks
 msgid "Masks..."
@@ -523,47 +523,47 @@ msgstr "Метод"
 
 #: objinspstrconsts:clbmodify
 msgid "Modify the Item"
-msgstr ""
+msgstr "Изменить Элемент"
 
 #: objinspstrconsts:sccsiledtmovedown
 msgid "Move Down"
-msgstr ""
-
-#: objinspstrconsts:sccsiledtmoveup
-msgid "Move Up"
-msgstr ""
+msgstr "Переместить вниз"
 
 #: objinspstrconsts:nbcesmovepageleft
 msgid "Move page left"
-msgstr ""
+msgstr "Переместить страницу налево"
 
 #: objinspstrconsts:nbcesmovepageright
 msgid "Move page right"
-msgstr ""
+msgstr "Переместить страницу направо"
 
 #: objinspstrconsts:tccesmovetableft
 msgid "Move tab left"
-msgstr ""
+msgstr "Переместить вкладку налево"
 
 #: objinspstrconsts:tccesmovetabright
 msgid "Move tab right"
-msgstr ""
+msgstr "Переместить вкладку направо"
+
+#: objinspstrconsts:sccsiledtmoveup
+msgid "Move Up"
+msgstr "Переместить вверх"
 
 #: objinspstrconsts:cactionlisteditornewaction
 msgid "New Action"
-msgstr ""
+msgstr "Новое Действие"
 
 #: objinspstrconsts:sccstredtnewitem
 msgid "New Item"
-msgstr ""
+msgstr "Новый Элемент"
 
 #: objinspstrconsts:cactionlisteditornewstdaction
 msgid "New Standard Action"
-msgstr ""
+msgstr "Новое Стандартное Действие"
 
 #: objinspstrconsts:sccstredtnewsubitem
 msgid "New SubItem"
-msgstr ""
+msgstr "Новый Подэлемент"
 
 #: objinspstrconsts:oistdactdatasetnexthint
 msgid "Next"
@@ -571,7 +571,7 @@ msgstr "Следующий"
 
 #: objinspstrconsts:sccsiledtnone
 msgid "None"
-msgstr ""
+msgstr "Нет"
 
 #: objinspstrconsts:oisobject
 msgid "Object"
@@ -611,11 +611,11 @@ msgstr "Вставить"
 
 #: objinspstrconsts:clbdisable
 msgid "Popup to disable/enable items"
-msgstr ""
+msgstr "Всплывающее меню включения/отключения элементов"
 
 #: objinspstrconsts:oistdactdatasetposthint
 msgid "Post"
-msgstr ""
+msgstr "Отправить"
 
 #: objinspstrconsts:oistdactdatasetpriorhint
 msgid "Prior"
@@ -685,13 +685,13 @@ msgstr ""
 msgid "Select &Font..."
 msgstr ""
 
-#: objinspstrconsts:oistdacteditselectallshorthint
-msgid "Select All"
-msgstr "Выделить всё"
-
 #: objinspstrconsts:oisselectafile
 msgid "Select a file"
 msgstr "Выберите файл"
+
+#: objinspstrconsts:oistdacteditselectallshorthint
+msgid "Select All"
+msgstr "Выделить всё"
 
 #: objinspstrconsts:sccsiledtgrprcaption
 msgid "Selected Image"
@@ -731,7 +731,7 @@ msgstr "Сортировка"
 
 #: objinspstrconsts:oisstdactionlisteditor
 msgid "Standard Action Classes"
-msgstr ""
+msgstr "Классы Стандартных Действий"
 
 #: objinspstrconsts:sccstredtlabelstateindex
 msgid "State Index:"
@@ -757,13 +757,13 @@ msgstr "Редактор StringGrid"
 msgid "Strings Editor Dialog"
 msgstr "Диалог ввода строк"
 
-#: objinspstrconsts:oistestinput
-msgid "Test Input"
-msgstr "Тестовый ввод"
-
 #: objinspstrconsts:oistestdialog
 msgid "Test dialog..."
 msgstr ""
+
+#: objinspstrconsts:oistestinput
+msgid "Test Input"
+msgstr "Тестовый ввод"
 
 #: objinspstrconsts:sccstredtlabeltext
 msgid "Text:"
@@ -783,7 +783,7 @@ msgstr "Прозрачный цвет:"
 
 #: objinspstrconsts:sccstredtcaption
 msgid "TreeView Items Editor"
-msgstr ""
+msgstr "Редактор Элементов TreeView"
 
 #: objinspstrconsts:oisundo
 msgid "Undo"
