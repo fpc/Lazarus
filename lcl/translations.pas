@@ -304,7 +304,7 @@ begin
       if CompareMem(LineStart,sCommentIdentifier,3) then begin
         Identifier:=copy(s,LineStart-p+4,LineLen-3);
       end else if CompareMem(LineStart,sMsgID,7) then begin
-        MsgID:=copy(s,LineStart-p+8,LineLen-8);
+        MsgID:=UTF8CStringToUTF8String(LineStart+7,LineLen-8);
       end else if CompareMem(LineStart,sMsgStr,8) then begin
         //MsgStr:=copy(s,LineStart-p+9,LineLen-9);
         MsgStr:=UTF8CStringToUTF8String(LineStart+8,LineLen-9);

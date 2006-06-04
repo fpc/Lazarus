@@ -2149,12 +2149,13 @@ var
   SourceEnd: PChar;
   CharLen: integer;
 
-  // Copies from SourceStart to Source to Dest and updates Dest
+  // Copies from SourceStart till Source to Dest and updates Dest
   procedure CopyPart; inline;
   var
     CopyLength: SizeInt;
   begin
     CopyLength := Source - SourceStart;
+    if CopyLength=0 then exit;
     move(SourceStart^ , Dest^, CopyLength);
     inc(Dest, CopyLength);
   end;
