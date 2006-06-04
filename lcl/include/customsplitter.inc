@@ -557,7 +557,7 @@ var
   procedure FindNearerControl(CurValue, Limit: integer);
   begin
     if (CurValue<=Limit)
-    and ((Result=nil) or (BestValue>CurValue)) then begin
+    and ((Result=nil) or (BestValue<CurValue)) then begin
       BestValue:=CurValue;
       Result:=CurControl;
     end;
