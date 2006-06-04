@@ -1951,7 +1951,8 @@ var
   begin
     FuncData.Param:=Params;
     FuncData.Result:='';
-    FMacroFunctions.DoDataFunction(PChar(FuncName),length(FuncName),@FuncData);
+    FMacroFunctions.DoDataFunction(PChar(Pointer(FuncName)),length(FuncName),
+                                   @FuncData);
     Result:=FuncData.Result;
   end;
   
@@ -1962,7 +1963,7 @@ var
     FuncData.Param:=MacroVariable;
     FuncData.Result:='';
     Result:=FMacroVariables.DoDataFunction(
-                          PChar(MacroVariable),length(MacroVariable),@FuncData);
+                 PChar(Pointer(MacroVariable)),length(MacroVariable),@FuncData);
     if Result then
       MacroVariable:=FuncData.Result;
   end;
@@ -3387,7 +3388,7 @@ begin
     Format(ctsIncludeDirectoriesPlusDirs,
     ['objpas, inc,'+TargetProcessor+','+SrcOS]),
     ExternalMacroStart+'IncPath',s,da_DefineRecurse));
-    
+
   // rtl/$(#TargetOS)
   RTLOSDir:=TDefineTemplate.Create('TargetOS','Target OS','',
                                    TargetOS,da_Directory);
@@ -3415,6 +3416,17 @@ begin
       IncPathMacro
       +';'+FPCSrcDir+'rtl'+DS+'win'+DS+'wininc'
       +';'+FPCSrcDir+'rtl'+DS+'win',
+      da_DefineRecurse));
+  RTLDir.AddChild(IFTempl);
+
+  // rtl: IF TargetOS=darwin then add include path rtl/freebsd
+  IFTempl:=TDefineTemplate.Create('If TargetOS=darwin','If TargetOS=darwin',
+    '',TargetOS+'=darwin',da_If);
+  IFTempl.AddChild(TDefineTemplate.Create('Include Path',
+      Format(ctsIncludeDirectoriesPlusDirs,['rtl'+DS+'freebsd']),
+      ExternalMacroStart+'IncPath',
+      IncPathMacro
+      +';'+FPCSrcDir+'rtl'+DS+'freebsd',
       da_DefineRecurse));
   RTLDir.AddChild(IFTempl);
 

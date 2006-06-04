@@ -7,7 +7,7 @@ unit MacOSFiles;
 interface
 
 uses
-  macapplicationres, LazarusPackageIntf; 
+  MacApplicationRes, LazarusPackageIntf; 
 
 implementation
 

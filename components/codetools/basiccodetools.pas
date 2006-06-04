@@ -1154,7 +1154,8 @@ begin
     else
       Offset:=-1;
     if Offset>0 then begin
-      if (CompareIdentifiers(PChar(DirectiveName),@ASource[Result+Offset])=0)
+      if (CompareIdentifiers(PChar(Pointer(DirectiveName)),// pointer type cast avoids #0 check
+                             @ASource[Result+Offset])=0)
       then begin
         ParamPos:=FindNextNonSpace(ASource,Result+Offset+length(DirectiveName));
         exit;
@@ -2111,7 +2112,8 @@ function CompareTextIgnoringSpace(const Txt1, Txt2: string;
   CaseSensitive: boolean): integer;
 begin
   Result:=CompareTextIgnoringSpace(
-               PChar(Txt1),length(Txt1),PChar(Txt2),length(Txt2),
+               PChar(Pointer(Txt1)),length(Txt1),// pointer type cast avoids #0 check
+               PChar(Pointer(Txt2)),length(Txt2),
                CaseSensitive);
 end;
 
@@ -2412,7 +2414,8 @@ begin
   Result:=false;
   MaxPos:=length(ASource);
   StartPos:=length(IncludeByHintStart);
-  if not TextBeginsWith(PChar(ASource),MaxPos,IncludeByHintStart,StartPos,false)
+  if not TextBeginsWith(PChar(Pointer(ASource)),// pointer type cast avoids #0 check
+          MaxPos,IncludeByHintStart,StartPos,false)
   then
     exit;
   while (StartPos<=MaxPos) and (ASource[StartPos]=' ') do inc(StartPos);

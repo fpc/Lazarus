@@ -263,7 +263,7 @@ begin
         AnsiStrLIComp(PChar(TheUnitName),@UnitLinks[UnitLinkStart],UnitLinkLen));
       {$ENDIF}
       if (UnitLinkLen=length(TheUnitName))
-      and (AnsiStrLIComp(PChar(TheUnitName),@UnitLinks[UnitLinkStart],
+      and (AnsiStrLIComp(PChar(Pointer(TheUnitName)),@UnitLinks[UnitLinkStart],
            UnitLinkLen)=0)
       then begin
         // unit found -> parse filename
@@ -618,12 +618,12 @@ begin
       case FileCase of
       ctsfcDefault:
         {$IFDEF CaseInsensitiveFilenames}
-        cmp:=stricomp(PChar(ShortFilename),CurFilename);
+        cmp:=stricomp(PChar(Pointer(ShortFilename)),CurFilename);// pointer type cast avoids #0 check
         {$ELSE}
-        cmp:=strcomp(PChar(ShortFilename),CurFilename);
+        cmp:=strcomp(PChar(Pointer(ShortFilename)),CurFilename);
         {$ENDIF}
       ctsfcAllCase,ctsfcLoUpCase:
-        cmp:=stricomp(PChar(ShortFilename),CurFilename);
+        cmp:=stricomp(PChar(Pointer(ShortFilename)),CurFilename);
       else RaiseDontKnow;
       end;
       if cmp>0 then
@@ -667,7 +667,7 @@ begin
     while r>=l do begin
       m:=(l+r) shr 1;
       CurFilename:=@FListing.Names[FListing.NameStarts[m]];
-      cmp:=stricomp(PChar(UnitName),CurFilename);
+      cmp:=stricomp(PChar(Pointer(UnitName)),CurFilename);
       if cmp>0 then
         l:=m+1
       else if cmp<0 then
@@ -690,11 +690,12 @@ begin
       // check if the filename prefix is the unitname
       // if not, then all filenames are not compatible as well
       if CurFilenameLen<length(UnitName) then break;
-      if strlicomp(CurFilename,PChar(Unitname),length(UnitName))<>0 then break;
+      if strlicomp(CurFilename,PChar(Pointer(Unitname)),length(UnitName))<>0
+      then break;
 
       // check if the filename fits
       if (CompareFilenameOnly(CurFilename,CurFilenameLen,
-                             PChar(UnitName),length(UnitName),false)=0)
+                             PChar(Pointer(UnitName)),length(UnitName),false)=0)
       and FilenameIsPascalUnit(CurFilename,CurFilenameLen,false)
       then begin
         // the unitname is ok and the extension is ok

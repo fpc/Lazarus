@@ -1232,7 +1232,8 @@ function TStandardCodeTool.CommentUnitsInUsesSections(MissingUnits: TStrings;
       CurUnitName:=GetAtom;
       i:=MissingUnits.Count-1;
       while (i>=0)
-      and (CompareIdentifiers(PChar(MissingUnits[i]),PChar(CurUnitName))<>0) do
+      and (CompareIdentifiers(PChar(Pointer(MissingUnits[i])),
+                              PChar(Pointer(CurUnitName)))<>0) do
         dec(i);
       CommentCurUnit:=i>=0;
       //debugln('CommentUnitsInUsesSection CurUnitName="',CurUnitName,'" CommentCurUnit=',dbgs(CommentCurUnit));
@@ -1625,7 +1626,7 @@ var
                      fdfExceptionOnPredefinedIdent,fdfIgnoreMissingParams,
                      fdfIgnoreOverloadedProcs];
       Params.ContextNode:=ClassContext.Node;
-      Params.SetIdentifier(ClassContext.Tool,PChar(IdentName),nil);
+      Params.SetIdentifier(ClassContext.Tool,PChar(Pointer(IdentName)),nil);
       try
         //DebugLn('FindLFMIdentifier A ',
         //  ' Ident=',
@@ -1743,7 +1744,7 @@ var
     Result:=CleanFindContext;
     Params:=TFindDeclarationParams.Create;
     StartTool:=Self;
-    Identifier:=PChar(ClassName);
+    Identifier:=PChar(Pointer(ClassName));
     try
       Params.Flags:=[fdfExceptionOnNotFound,
         fdfSearchInParentNodes,
@@ -2498,7 +2499,7 @@ function TStandardCodeTool.ReplaceIdentifiers(IdentList: TStrings;
           i:=0;
           while i<IdentList.Count do begin
             if (IdentList[i]<>'')
-            and (BasicCodeTools.CompareIdentifiers(PChar(IdentList[i]),
+            and (BasicCodeTools.CompareIdentifiers(PChar(Pointer(IdentList[i])),
                                                    @CurSource[IdentStart])=0)
             and (IdentList[i]<>IdentList[i+1]) then
             begin
@@ -3801,7 +3802,8 @@ begin
         ANode:=SectionNode.FirstChild;
         while (ANode<>nil) do begin
           if (ANode.Desc=ctnConstDefinition)
-          and (CompareIdentifiers(@Src[ANode.StartPos],PChar(NewIdentifier))<0)
+          and (CompareIdentifiers(@Src[ANode.StartPos],
+            PChar(Pointer(NewIdentifier)))<0)
           then
             break;
           ANode:=ANode.NextBrother;
@@ -4476,7 +4478,7 @@ begin
     FilenameEndPos:=FilenameStartPos;
     while (FilenameEndPos<=SrcLen) and (Src[FilenameEndPos]<>'}') do
       inc(FilenameEndPos);
-    if CompareText(PChar(Filename),length(Filename),
+    if CompareText(PChar(Pointer(Filename)),length(Filename),
                    @Src[FilenameStartPos],FilenameEndPos-FilenameStartPos,
                    true,false)=0
     then begin

@@ -1863,7 +1863,7 @@ begin
       exit;
     end;
     // check if old identifier is there
-    if CompareIdentifiers(@Code.Source[IdentStartPos],PChar(OldIdentifier))<>0
+    if CompareIdentifiers(@Code.Source[IdentStartPos],PChar(Pointer(OldIdentifier)))<>0
     then begin
       SetError(CurCodePos^.Code,CurCodePos^.Y,CurCodePos^.X,
         Format(ctsStrExpectedButAtomFound,[OldIdentifier,
@@ -1873,7 +1873,7 @@ begin
     end;
     // change if needed
     if CompareIdentifiersCaseSensitive(@Code.Source[IdentStartPos],
-       PChar(NewIdentifier))<>0
+       PChar(Pointer(NewIdentifier)))<>0
     then begin
       DebugLn('TCodeToolManager.RenameIdentifier Change ');
       SourceChangeCache.ReplaceEx(gtNone,gtNone,1,1,Code,

@@ -359,11 +359,13 @@ begin
   Item1:=TIdentHistListItem(Data1);
   Item2:=TIdentHistListItem(Data2);
 
-  Result:=CompareIdentifiers(PChar(Item2.Identifier),PChar(Item1.Identifier));
+  Result:=CompareIdentifiers(PChar(Pointer(Item2.Identifier)),
+                             PChar(Pointer(Item1.Identifier)));
   if Result<>0 then exit;
 
   //debugln('CompareIdentHistListItem ',Item2.Identifier,'=',Item1.Identifier);
-  Result:=CompareIdentifiers(PChar(Item2.ParamList),PChar(Item1.ParamList));
+  Result:=CompareIdentifiers(PChar(Pointer(Item2.ParamList)),
+                             PChar(Pointer(Item1.ParamList)));
 end;
 
 function CompareIdentItemWithHistListItem(Data1, Data2: Pointer): integer;
@@ -374,7 +376,8 @@ begin
   IdentItem:=TIdentifierListItem(Data1);
   HistItem:=TIdentHistListItem(Data2);
 
-  Result:=CompareIdentifiers(PChar(HistItem.Identifier),IdentItem.Identifier);
+  Result:=CompareIdentifiers(PChar(Pointer(HistItem.Identifier)),
+                             IdentItem.Identifier);
   if Result<>0 then exit;
 
   //debugln('CompareIdentItemWithHistListItem ',HistItem.Identifier,'=',GetIdentifier(IdentItem.Identifier));
@@ -478,7 +481,7 @@ begin
   while AnAVLNode<>nil do begin
     CurItem:=TIdentifierListItem(AnAVLNode.Data);
     if (CurItem.Identifier<>nil)
-    and ComparePrefixIdent(PChar(Prefix),CurItem.Identifier) then begin
+    and ComparePrefixIdent(PChar(Pointer(Prefix)),CurItem.Identifier) then begin
       {$IFDEF ShowFilteredIdents}
       DebugLn('::: FILTERED ITEM ',FFilteredList.Count,' ',GetIdentifier(CurItem.Identifier));
       {$ENDIF}
@@ -600,7 +603,8 @@ begin
   if Ident<>'' then begin
     Result:=FCreatedIdentifiers.Count-1;
     while (Result>=0)
-    and (CompareIdentifiers(PChar(Ident),PChar(FCreatedIdentifiers[Result]))<>0)
+    and (CompareIdentifiers(PChar(Pointer(Ident)),
+                            PChar(Pointer(FCreatedIdentifiers[Result])))<>0)
     do
       dec(Result);
   end else begin
@@ -615,7 +619,7 @@ begin
   if Ident<>'' then begin
     i:=FindCreatedIdentifier(Ident);
     if i>=0 then
-      Result:=PChar(FCreatedIdentifiers[i])
+      Result:=PChar(Pointer(FCreatedIdentifiers[i]))
     else begin
       GetMem(Result,length(Ident)+1);
       Move(Ident[1],Result^,length(Ident)+1);
@@ -650,7 +654,7 @@ begin
   while AnAVLNode<>nil do begin
     CurItem:=TIdentifierListItem(AnAVLNode.Data);
     if (CurItem.Identifier<>nil)
-    and ComparePrefixIdent(PChar(Prefix),CurItem.Identifier) then begin
+    and ComparePrefixIdent(PChar(Pointer(Prefix)),CurItem.Identifier) then begin
       if not FoundFirst then begin
         Result:=GetIdentifier(CurItem.Identifier);
         FoundFirst:=true;
@@ -1080,7 +1084,8 @@ begin
     ANode:=TreeOfUnitFiles.FindLowest;
     while ANode<>nil do begin
       UnitFileInfo:=TUnitFileInfo(ANode.Data);
-      if CompareIdentifiers(PChar(UnitFileInfo.UnitName),PChar(CurSourceName))<>0
+      if CompareIdentifiers(PChar(Pointer(UnitFileInfo.UnitName)),
+                            PChar(Pointer(CurSourceName)))<>0
       then begin
         NewItem:=TIdentifierListItem.Create(
             icompCompatible,true,0,

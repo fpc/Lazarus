@@ -1082,7 +1082,8 @@ begin
         and (not (IgnoreNonForwards
                  and ((CurClassNode.SubDesc and ctnsForwardDeclaration)=0)))
         then begin
-          if CompareIdentifiers(PChar(AClassName),@Src[ANode.StartPos])=0
+          if CompareIdentifiers(PChar(Pointer(AClassName)),
+                                @Src[ANode.StartPos])=0
           then begin
             Result:=CurClassNode;
             exit;
@@ -1117,7 +1118,8 @@ begin
         and (not (IgnoreNonForwards
                  and ((CurClassNode.SubDesc and ctnsForwardDeclaration)=0)))
         then begin
-          if CompareIdentifiers(PChar(AClassName),@Src[ANode.StartPos])=0
+          if CompareIdentifiers(PChar(Pointer(AClassName)),
+                                @Src[ANode.StartPos])=0
           then begin
             Result:=CurClassNode;
             exit;

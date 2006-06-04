@@ -1346,7 +1346,7 @@ begin
   ActivateGlobalWriteLock;
   try
     Params.Flags:=[fdfExceptionOnNotFound];
-    Params.SetIdentifier(Self,PChar(Identifier),nil);
+    Params.SetIdentifier(Self,PChar(Pointer(Identifier)),nil);
     if FindIdentifierInUsesSection(UsesNode,Params) then begin
       if Params.NewNode=nil then exit;
       Result:=Params.NewCodeTool.JumpToNode(Params.NewNode,NewPos,
@@ -1413,7 +1413,7 @@ begin
       Identifier:=GetNextIdentifier;
       //DebugLn('TFindDeclarationTool.FindDeclarationOfPropertyPath Identifier="',identifier,'"');
       if Identifier='' then exit;
-      Params.SetIdentifier(Self,PChar(Identifier),nil);
+      Params.SetIdentifier(Self,PChar(Pointer(Identifier)),nil);
       Params.ContextNode:=Context.Node;
       IsLastProperty:=StartPos>length(PropertyPath);
       if IsLastProperty then
@@ -1466,7 +1466,8 @@ begin
       Node:=SectionNode.FirstChild;
       while Node<>nil do begin
         if Node.Desc in AllIdentifierDefinitions then begin
-          if CompareSrcIdentifiers(Node.StartPos,PChar(Identifier)) then begin
+          if CompareSrcIdentifiers(Node.StartPos,PChar(Pointer(Identifier)))
+          then begin
             CurNodeIsForwardDeclaration:=NodeIsForwardDeclaration(Node);
             if (BestNode=nil) or BestNodeIsForwardDecaration then begin
               BestNode:=Node;
@@ -3213,7 +3214,7 @@ var
       inc(IdentEndPos);
     //debugln('ReadIdentifier ',copy(Src,StartPos,IdentEndPos-StartPos));
     if (IdentEndPos-StartPos=length(Identifier))
-    and (CompareIdentifiers(PChar(Identifier),@Src[StartPos])=0)
+    and (CompareIdentifiers(PChar(Pointer(Identifier)),@Src[StartPos])=0)
     and ((not IsComment)
          or ((not SkipComments) and UnitStartFound))
     then begin
@@ -3453,7 +3454,7 @@ var
             then
               AliasDeclarationNode:=AliasDeclarationNode.FirstChild
             else begin
-              if CompareIdentifiers(PChar(identifier),
+              if CompareIdentifiers(PChar(Pointer(Identifier)),
                 @Src[AliasDeclarationNode.StartPos])=0 then break;
               AliasDeclarationNode:=AliasDeclarationNode.NextBrother;
             end;
@@ -3499,7 +3500,7 @@ begin
     if PosTree<>nil then begin
       AVLNode:=PosTree.FindHighest;
       while AVLNode<>nil do begin
-        StartPos:=PChar(AVLNode.Data)-PChar(Src)+1;
+        StartPos:=PChar(AVLNode.Data)-PChar(Pointer(Src))+1;
         if CleanPosToCaret(StartPos,ReferencePos) then
           AddCodePosition(ReferencePos);
         AVLNode:=PosTree.FindPrecessor(AVLNode);
@@ -4660,7 +4661,7 @@ begin
         // the system unit name itself is searched -> rename searched identifier
         Params.Save(OldInput);
         try
-          Params.SetIdentifier(Self,PChar(SystemAlias),nil);
+          Params.SetIdentifier(Self,PChar(Pointer(SystemAlias)),nil);
           Result:=FindIdentifierInUsedUnit(SystemAlias,Params);
         finally
           // ! always reset input, because the string SystemAlias is freed !

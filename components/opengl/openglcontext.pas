@@ -411,7 +411,7 @@ end;
 
 { TWSOpenGLControl }
 
-function TWSOpenGLControl.CreateHandle(const AWinControl: TWinControl;
+class function TWSOpenGLControl.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
   OpenGlControl: TCustomOpenGLControl;
@@ -431,7 +431,7 @@ begin
   end;
 end;
 
-procedure TWSOpenGLControl.DestroyHandle(const AWinControl: TWinControl);
+class procedure TWSOpenGLControl.DestroyHandle(const AWinControl: TWinControl);
 begin
   LOpenGLDestroyContextInfo(AWinControl);
   inherited DestroyHandle(AWinControl);

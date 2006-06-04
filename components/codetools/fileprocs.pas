@@ -35,13 +35,12 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, AVL_Tree,
-  CodeToolsStrConsts;
+  Classes, SysUtils, AVL_Tree, CodeToolsStrConsts;
 
 type
   TFPCStreamSeekType = int64;
   TFPCMemStreamSeekType = integer;
-
+  PCharZ = Pointer;
 
 const
   SpecialChar = '#'; // used to use PathDelim, e.g. #\
@@ -227,6 +226,8 @@ procedure MergeSort(List: PPointer; ListLength: PtrInt;
                     Compare: TListSortCompare);
 
 // debugging
+procedure DebugLn(Args: array of const);
+procedure DebugLn(const S: String; Args: array of const);// similar to Format(s,Args)
 procedure DebugLn;
 procedure DebugLn(const s: string);
 procedure DebugLn(const s1,s2: string);
@@ -256,9 +257,10 @@ function DbgS(const p: TPoint): string; overload;
 function DbgS(const p: pointer): string; overload;
 function DbgS(const e: extended): string; overload;
 function DbgS(const b: boolean): string; overload;
+function DbgSName(const p: TObject): string; overload;
+function DbgSName(const p: TClass): string; overload;
 
 function DbgS(const i1,i2,i3,i4: integer): string; overload;
-function DbgSName(const p: TObject): string;
 function DbgStr(const StringWithSpecialChars: string): string;
 
 function GetTicks: int64;
@@ -493,6 +495,7 @@ begin
   {$IFDEF CaseInsensitiveFilenames}
   Result:=CompareText(Filename1, Filename2);
   {$ELSE}
+  //debugln(['CompareFilenames F1="',length(Filename1),'" F2="',length(Filename2),'"']);
   Result:=CompareStr(Filename1, Filename2);
   {$ENDIF}
 end;
@@ -660,7 +663,8 @@ end;
 
 function FilenameIsTrimmed(const TheFilename: string): boolean;
 begin
-  Result:=FilenameIsTrimmed(PChar(TheFilename),length(TheFilename));
+  Result:=FilenameIsTrimmed(PChar(Pointer(TheFilename)),// pointer type cast avoids #0 check
+                            length(TheFilename));
 end;
 
 function FilenameIsTrimmed(StartPos: PChar; NameLen: integer): boolean;
@@ -988,7 +992,7 @@ begin
     if (CTPascalExtension[e]='') or (length(CTPascalExtension[e])<>ExtLen) then
       continue;
     i:=0;
-    p:=PChar(CTPascalExtension[e]);
+    p:=PChar(Pointer(CTPascalExtension[e]));// pointer type cast avoids #0 check
     if CaseSensitive then begin
       while (i<ExtLen) and (p^=Filename[StartPos+i]) do begin
         inc(i);
@@ -1046,8 +1050,10 @@ begin
       if not FilenameIsPascalUnit(FileInfo.Name,false) then continue;
       case SearchCase of
       ctsfcDefault,ctsfcLoUpCase:
-        if (CompareFilenameOnly(PChar(FileInfo.Name),length(FileInfo.Name),
-                                PChar(AnUnitName),length(AnUnitName),false)=0)
+        if (CompareFilenameOnly(PChar(Pointer(FileInfo.Name)),// pointer type cast avoids #0 check
+                                length(FileInfo.Name),
+                                PChar(Pointer(AnUnitName)),
+                                length(AnUnitName),false)=0)
         then begin
           CurUnitName:=ExtractFilePath(FileInfo.Name);
           if CurUnitName=AnUnitName then begin
@@ -1060,8 +1066,9 @@ begin
         end;
 
       ctsfcAllCase:
-        if (CompareFilenameOnly(PChar(FileInfo.Name),length(FileInfo.Name),
-                                PChar(AnUnitName),length(AnUnitName),true)=0)
+        if (CompareFilenameOnly(PChar(Pointer(FileInfo.Name)),// pointer type cast avoids #0 check
+                                length(FileInfo.Name),
+                          PChar(Pointer(AnUnitName)),length(AnUnitName),true)=0)
         then begin
           Result:=FileInfo.Name;
           CurUnitName:=ExtractFilePath(FileInfo.Name);
@@ -1799,6 +1806,40 @@ begin
   end;
 end;
 
+procedure DebugLn(Args: array of const);
+var
+  i: Integer;
+begin
+  for i:=Low(Args) to High(Args) do begin
+    case Args[i].VType of
+    vtInteger: DbgOut(dbgs(Args[i].vinteger));
+    vtInt64: DbgOut(dbgs(Args[i].VInt64));
+    vtQWord: DbgOut(dbgs(Args[i].VQWord));
+    vtBoolean: DbgOut(dbgs(Args[i].vboolean));
+    vtExtended: DbgOut(dbgs(Args[i].VExtended^));
+    vtCurrency: DbgOut(dbgs(Args[i].vCurrency));
+    vtString: DbgOut(Args[i].VString^);
+    vtAnsiString: DbgOut(AnsiString(Args[i].VAnsiString));
+    vtChar: DbgOut(Args[i].VChar);
+    vtPChar: DbgOut(Args[i].VPChar);
+    vtPWideChar: DbgOut(Args[i].VPWideChar);
+    vtWideChar: DbgOut(Args[i].VWideChar);
+    vtWidestring: DbgOut(WideString(Args[i].VWideString));
+    vtObject: DbgOut(DbgSName(Args[i].VObject));
+    vtClass: DbgOut(DbgSName(Args[i].VClass));
+    vtPointer: DbgOut(Dbgs(Args[i].VPointer));
+    else
+      DbgOut('?unknown variant?');
+    end;
+  end;
+  DebugLn;
+end;
+
+procedure DebugLn(const S: String; Args: array of const);
+begin
+  DebugLn(Format(S, Args));
+end;
+
 procedure DebugLn;
 begin
   DebugLn('');
@@ -1953,6 +1994,14 @@ begin
     Result:='nil'
   else if p is TComponent then
     Result:=TComponent(p).Name+':'+p.ClassName
+  else
+    Result:=p.ClassName;
+end;
+
+function DbgSName(const p: TClass): string;
+begin
+  if p=nil then
+    Result:='nil'
   else
     Result:=p.ClassName;
 end;
@@ -2312,14 +2361,14 @@ var
 begin
   // make filename unique
   TrimmedFilename:=ChompPathDelim(TrimFilename(Filename));
-  ANode:=FFiles.FindKey(PChar(TrimmedFilename),
+  ANode:=FFiles.FindKey(Pointer(TrimmedFilename),
                         @CompareFilenameWithFileStateCacheItem);
   if ANode<>nil then
     Result:=TFileStateCacheItem(ANode.Data)
   else if CreateIfNotExists then begin
     Result:=TFileStateCacheItem.Create(TrimmedFilename,FTimeStamp);
     FFiles.Add(Result);
-    if FFiles.FindKey(PChar(TrimmedFilename),
+    if FFiles.FindKey(Pointer(TrimmedFilename),
                       @CompareFilenameWithFileStateCacheItem)=nil
     then begin
       DebugLn(format('FileStateCache.FindFile: "%s"',[FileName]));

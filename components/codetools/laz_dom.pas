@@ -764,8 +764,8 @@ end;
 
 function CompareDOMNodeWithDOMNode(Node1, Node2: Pointer): integer;
 begin
-  Result:=CompareDOMStrings(DOMPChar(TDOMNode(Node1).NodeName),
-                            DOMPChar(TDOMNode(Node2).NodeName),
+  Result:=CompareDOMStrings(DOMPChar(Pointer(TDOMNode(Node1).NodeName)),
+                            DOMPChar(Pointer(TDOMNode(Node2).NodeName)),
                             length(TDOMNode(Node1).NodeName),
                             length(TDOMNode(Node2).NodeName)
                             );
@@ -774,7 +774,7 @@ end;
 function CompareDOMStringWithDOMNode(AKey, ANode: Pointer): integer;
 begin
   Result:=CompareDOMStrings(DOMPChar(AKey),
-                            DOMPChar(TDOMNode(ANode).NodeName),
+                            DOMPChar(Pointer(TDOMNode(ANode).NodeName)),
                             length(DOMString(AKey)),
                             length(TDOMNode(ANode).NodeName)
                             );
@@ -922,7 +922,7 @@ begin
     // use tree for fast search
     //if FChildNodeTree.ConsistencyCheck<>0 then
     //  raise exception.Create('TDOMNode_WithChildren.FindNode');
-    AVLNode:=FChildNodeTree.FindKey(DOMPChar(ANodeName),
+    AVLNode:=FChildNodeTree.FindKey(DOMPChar(Pointer(ANodeName)),
                                     @CompareDOMStringWithDOMNode);
     if AVLNode<>nil then
       Result:=TDOMNode(AVLNode.Data);
@@ -930,7 +930,8 @@ begin
     // search in list
     Result := FirstChild;
     while Assigned(Result) do begin
-      if CompareDOMStringWithDOMNode(DOMPChar(ANodeName),Result)=0 then exit;
+      if CompareDOMStringWithDOMNode(DOMPChar(Pointer(ANodeName)),Result)=0
+      then exit;
       Result := Result.NextSibling;
     end;
   end;
