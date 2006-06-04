@@ -2495,6 +2495,7 @@ tools/install/macosx/makefpcsnapshot.sh svneol=native#text/plain
 tools/install/macosx/makefpcsrcsnapshot.sh svneol=native#text/plain
 tools/install/macosx/makelazsnapshot.sh svneol=native#text/plain
 tools/install/replace_in_files.pl -text svneol=native#application/x-perl
+tools/install/rpm/create_gtk1_links.sh svneol=native#text/plain
 tools/install/rpm/create_nonroot_rpmmacros.sh svneol=native#text/plain
 tools/install/rpm/fpc.spec.template svneol=native#text/plain
 tools/install/rpm/fpc_crosswin32.spec.template svneol=native#text/plain

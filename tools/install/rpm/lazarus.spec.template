@@ -10,7 +10,7 @@ Source0:        http://prdownloads.sourceforge.net/%{name}/%{name}-%{version}-%{
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 #BuildRequires:  
-Requires:       fpc-src = FPCVERSION, fpc = FPCVERSION, gdk-pixbuf-devel, gtk+, gtk+-devel, gdb, glibc-devel, gdk-pixbuf
+Requires:       fpc-src = FPCVERSION, fpc = FPCVERSION, gdk-pixbuf, gtk+, gdb, glibc
 
 Requires(post): desktop-file-utils
 Requires(postun): desktop-file-utils
@@ -51,6 +51,7 @@ cp -a lazarus/* %{buildroot}%{_libdir}/%{name}/
   install -m 644 lazarus/install/lazarus.desktop %{buildroot}%{_datadir}/applications/lazarus.desktop
 ln -sf ../%{_lib}/%{name}/lazarus %{buildroot}%{_bindir}/lazarus
 ln -sf ../%{_lib}/%{name}/startlazarus %{buildroot}%{_bindir}/startlazarus
+%{_lib}/%{name}/tools/install/rpm/create_gtk1_links.sh
 
 %clean
 [ %{buildroot} != "/" ] && ( rm -rf %{buildroot} )

@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 mkdir -p ~/rpm/tmp
-for fulldir in /usr/src/redhat/*
-do
+for fulldir in BUILD RPMS SOURCES SPECS SRPMS; do
     dir=$(basename "$fulldir")
     mkdir -p ~/rpm/"$dir"
 done
