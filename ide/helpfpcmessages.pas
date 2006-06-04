@@ -190,6 +190,9 @@ var
     p: Integer;
   begin
     Result:=false;
+    if TxtStart>length(Command) then exit;
+    if TypeStart>length(Command) then exit;
+    
     RegularExpression:=copy(Command,TxtStart,length(Command));
     // replace all $d variables with (.*)
     p:=length(RegularExpression);
@@ -227,10 +230,18 @@ var
   end;
 
 var
+  Command: String;
+  CommandLine: Integer;
+
+  procedure ErrorInCommand(const ErrMsg: string);
+  begin
+    raise Exception.Create('Line='+IntToStr(CommandLine+1)+': '+ErrMsg+' in "'+Command+'"');
+  end;
+
+var
   EqualPos: LongInt;
   Comment: String;
   BracketLevel: Integer;
-  Command: String;
   x: Integer;
   PartStart: Integer;
   TypeStart: LongInt;
@@ -239,15 +250,16 @@ begin
   FoundComment:='';
   Comment:='';
   Command:='';
+  CommandLine:=0;
   BracketLevel:=0;
   for i:=0 to Lines.Count-1 do begin
     Line:=Lines[i];
     if (Trim(Line)='') or (Line[1]='#') then continue;
 
     // example:
-    // general_t_compilername=01000_T_Compiler: $1
-    // % When the \var{-vt} switch is used, this line tells you what compiler
-    // % is used.
+    //   general_t_compilername=01000_T_Compiler: $1
+    //   % When the \var{-vt} switch is used, this line tells you what compiler
+    //   % is used.
     if Line[1]='%' then begin
       if BracketLevel>0 then
         Error('unclosed bracket in lines before');
@@ -259,18 +271,20 @@ begin
           if CompareByte(Command[1],'option_',7)=0 then begin
             // option
           end else begin
+            // read '='
             EqualPos:=System.Pos('=',Command);
-            if EqualPos<1 then Error('missing =');
+            if EqualPos<1 then ErrorInCommand('missing =');
+            // read number
             PartStart:=EqualPos+1;
             TypeStart:=PartStart;
             while (TypeStart<=length(Command)) and (Command[TypeStart]<>'_') do
               inc(TypeStart);
-            if TypeStart=PartStart then Error('missing message type');
+            // read type
             inc(TypeStart);
             TxtStart:=TypeStart;
             while (TxtStart<=length(Command)) and (Command[TxtStart]<>'_') do
               inc(TxtStart);
-            if TxtStart=TypeStart then Error('missing message text');
+            // read text
             inc(TxtStart);
             if SearchMessage<>'' then begin
               if CompareTextWithSearchMessage(Command,TypeStart,TxtStart) then
@@ -285,6 +299,7 @@ begin
         // start a new message
         Comment:='';
         Command:=Line;
+        CommandLine:=i;
       end else begin
         // continue command
         Command:=Command+Line;
