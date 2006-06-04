@@ -1613,8 +1613,7 @@ begin
   // language
   LanguageGroupBox.Caption:=dlgEnvLanguage;
 
-  with LanguageComboBox.Items do
-  begin
+  with LanguageComboBox.Items do begin
     BeginUpdate;
     for i:=0 to LazarusTranslations.Count-1 do begin
       LangID:=LazarusTranslations[i].ID;

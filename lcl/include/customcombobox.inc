@@ -69,7 +69,7 @@ var NewStrings : TStrings;
 begin
   if not HandleAllocated then RaiseGDBException('');
   // store itemindex
-  GetItemIndex;
+  FItemIndex:= TWSCustomComboBoxClass(WidgetSetClass).GetItemIndex(Self);
   // create an internal list for storing items internally
   NewStrings:= TStringList.Create;
   // copy from interface based list
@@ -753,7 +753,8 @@ end;
  ------------------------------------------------------------------------------}
 function TCustomComboBox.GetItemIndex : integer;
 begin
-  if not (csDestroying in ComponentState) and     not  (csDestroyingHandle in ControlState)  and HandleAllocated then
+  if not (csDestroying in ComponentState)
+  and not (csDestroyingHandle in ControlState) and HandleAllocated then
     FItemIndex:= TWSCustomComboBoxClass(WidgetSetClass).GetItemIndex(Self);
   Result:=FItemIndex;
 end;
