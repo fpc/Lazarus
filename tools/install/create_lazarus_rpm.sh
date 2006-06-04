@@ -26,7 +26,7 @@ SrcTGZ=$(./rpm/get_rpm_source_dir.sh)/SOURCES/$Src
 TmpDir=/tmp/lazarus$LazVersion
 SpecFile=rpm/lazarus-$LazVersion-$LazRelease.spec
 
-# download lazarus svn if necessary
+# download lazarus svn if needed
 echo "creating lazarus tgz ..."
 #if [ ! -f $SrcTGZ ]; then
   sh create_lazarus_export_tgz.sh $SrcTGZ

@@ -34,9 +34,9 @@ fi
 FPCSrcDir=$(echo $FPCSrcDir)
 shift
 
-LazRelease=$1
-if [ "x$LazRelease" = "x" ]; then
-  LazRelease=$(date +%y%m%d)
+FPCRelease=$1
+if [ "x$FPCRelease" = "x" ]; then
+  FPCRelease=$(date +%y%m%d)
 else
   shift
 fi
@@ -75,11 +75,11 @@ CompilerVersion=`cat $VersionFile | grep ' *version_nr *=.*;' | sed -e 's/[^0-9]
 CompilerRelease=`cat $VersionFile | grep ' *release_nr *=.*;' | sed -e 's/[^0-9]//g'`
 CompilerPatch=`cat $VersionFile | grep ' *patch_nr *=.*;' | sed -e 's/[^0-9]//g'`
 CompilerVersionStr="$CompilerVersion.$CompilerRelease.$CompilerPatch"
-LazVersion="$CompilerVersion.$CompilerRelease"
+FPCVersion="$CompilerVersion.$CompilerRelease"
 if [ "$CompilerPatch" != "0" ]; then
-  LazVersion="$LazVersion.$CompilerPatch"
+  FPCVersion="$FPCVersion.$CompilerPatch"
 fi
-echo " $CompilerVersionStr-$LazRelease"
+echo " $CompilerVersionStr-$FPCRelease"
 
 
 
@@ -109,7 +109,7 @@ if [ "$PkgType" = "deb" ]; then
   File=changelog
   OldFile=changelog.old.fpc
   cp $File $OldFile
-  echo "fpc ($LazVersion-$LazRelease) unstable; urgency=low" > $File
+  echo "fpc ($FPCVersion-$FPCRelease) unstable; urgency=low" > $File
   echo '  * Unofficial snapshot build for lazarus' >> $File
   echo " -- Mattias Gaertner <mattias@freepascal.org>  $Date" >> $File
   echo "" >> $File
@@ -135,7 +135,7 @@ if [ "$PkgType" = "deb" ]; then
   cd $TmpDir/fpc
   make debcopy
   cd -
-  cd /usr/src/fpc-$LazVersion
+  cd /usr/src/fpc-$FPCVersion
   ./debian/rules binary-arch
   cd -
   
@@ -148,13 +148,13 @@ else
 
   # change spec file
   cat $SpecFileTemplate | \
-    sed -e 's/^Version: .*/Version: '"$LazVersion/" \
-        -e 's/^Release: .*/Release: '"$LazRelease/" \
+    sed -e 's/^Version: .*/Version: '"$FPCVersion/" \
+        -e 's/^Release: .*/Release: '"$FPCRelease/" \
     > $SpecFile
   #      -e 's/\(%define builddocdir.*\)/%define __strip smart_strip.sh\n\n\1/' \
   #      -e 's/^\%{fpcdir}\/samplecfg .*/%{fpcdir}\/samplecfg %{_libdir}\/fpc\/\\\$version/' \
   
-  SrcTGZ=$(rpm/get_rpm_source_dir.sh)/SOURCES/fpc-$CompilerVersionStr-$LazRelease.source.tar.gz
+  SrcTGZ=$(rpm/get_rpm_source_dir.sh)/SOURCES/fpc-$CompilerVersionStr-$FPCRelease.source.tar.gz
   echo "creating $SrcTGZ ..."
   tar czf $SrcTGZ -C $TmpDir fpc
 
@@ -166,7 +166,7 @@ else
   fi
   rpmbuild --nodeps -ba $SpecFile
 
-  echo "The new rpm can be found in $(./rpm/get_rpm_source_dir.sh)/RPMS/i386/fpc-$LazVersion-$LazRelease.i386.rpm"
+  echo "The new rpm can be found in $(./rpm/get_rpm_source_dir.sh)/RPMS/i386/fpc-$FPCVersion-$FPCRelease.i386.rpm"
 fi
 
 # end.

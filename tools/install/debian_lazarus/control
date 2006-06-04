@@ -12,6 +12,7 @@ Depends: fp-compiler (>=FPCVERSION),
   fp-utils (>=FPCVERSION), fpcsrc (>=FPCVERSION),
   libgdk-pixbuf-devel (>=0.17.0)
 Description: RAD tool for freepascal
-  Lazarus is a free RAD tool for FreePascal using the lazarus component
-  library LCL.
+  Lazarus is a free and opensource RAD tool for FreePascal using the
+  Lazarus component library LCL. The LCL is included in this package too.
+  See http://www.lazarus.freepascal.org
   

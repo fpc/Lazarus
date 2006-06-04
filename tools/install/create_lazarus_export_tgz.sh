@@ -18,7 +18,7 @@ if [ "x$OutputFile" = "x" ]; then
 fi
 
 if [ "x$Download" = "xyes" ]; then
-  echo "downloading lazarus cvs ..."
+  echo "downloading lazarus svn ..."
   cd /tmp
   rm -rf /tmp/lazarus
   svn export http://svn.freepascal.org/svn/lazarus/trunk lazarus
