@@ -9621,8 +9621,7 @@ begin
   {$IFDEF SYN_LAZARUS}
   // i now contains the needed spaces
   Spaces := CreateTabsAndSpaces(CaretX,i,TabWidth,
-                                not (eoTabsToSpaces in Options))+'|';
-  Spaces := StringOfChar(' ', i);
+                                not (eoTabsToSpaces in Options));
   //debugln('TCustomSynEdit.DoTabKey Spaces="',DbgStr(Spaces),'" TabChar=',DbgStr(TabChar));
 
   BeginUndoBlock;
