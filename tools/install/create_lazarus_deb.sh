@@ -98,7 +98,7 @@ echo "creating deb ..."
 cd $TmpDir
 fakeroot dpkg-deb --build $LazBuildDir
 mv $LazBuildDir.deb $LazDeb
-echo "the new deb can be fonud at $LazDeb."
+echo "the new deb can be found at $LazDeb."
 cd -
 
 # end.
