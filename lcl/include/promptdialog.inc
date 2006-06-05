@@ -220,6 +220,7 @@ var
   curBtn      : Longint; // variable to loop through TMsgDlgButtons
   cMinLeft,
   ButtonLeft  : integer;    // left position of button(s)
+  TextLeft    : integer;    // left position of text
   reqBtnWidth : integer;    // width neccessary to display buttons
   reqWidth, reqHeight : integer;    // width and height neccessary to display all
   i        : integer;
@@ -326,20 +327,26 @@ begin
     end;
   end;
 
-  // calculate the complete width without the spacing around all
+  // calculate the minimum text offset from left
   If FBitmap <> nil then
     cMinLeft := cBitmapX + max(32,FBitmap.Width) + cLabelSpacing
   else
     cMinLeft := 0;
 
+  // calculate required width for the text
   reqWidth := cMinLeft + TextBox.Right;
-  if reqWidth < reqBtnWidth then
-    reqWidth:= reqBtnWidth;
 
-  // center the text
-  OffsetRect(TextBox, cLabelSpacing + cMinLeft
-                      +((reqWidth - cMinLeft - TextBox.Right) div 2),
-                      cLabelSpacing);
+  // if buttons require more space than the text, center the text
+  // as much as possible
+  if reqWidth < reqBtnWidth then begin
+    reqWidth := reqBtnWidth;
+    TextLeft := max(cMinLeft, cLabelSpacing + (reqWidth - TextBox.Right) div 2);
+  end
+  else
+    TextLeft := (cMinLeft + reqWidth - TextBox.Right) div 2;
+
+  // position the text
+  OffsetRect(TextBox, TextLeft, cLabelSpacing);
 
   // calculate the height of the text+icon
   reqHeight:= max(TextBox.Bottom, 32);
