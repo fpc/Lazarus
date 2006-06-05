@@ -45,8 +45,7 @@ type
     procedure SetChecked(const AIndex: Integer; const AValue: Boolean);
     procedure SendItemChecked(const AIndex: Integer; const AChecked: Boolean);
     procedure DoChange(var Msg); message LM_CHANGED;
-    procedure KeyPress(var Key: char); override;
-
+    procedure KeyDown(var Key: Word; Shift: TShiftState); override;
   protected
     procedure AssignItemDataToCache(const AIndex: Integer; const AData: Pointer); override;
     procedure AssignCacheToItemData(const AIndex: Integer; const AData: Pointer); override;
@@ -166,14 +165,14 @@ begin
   Result := Items.Count;
 end;
 
-procedure TCustomCheckListBox.KeyPress(var Key: char);
+procedure TCustomCheckListBox.KeyDown(var Key: Word; Shift: TShiftState);
 begin
-  if Key = ' ' then begin
+  if (Key = VK_SPACE) and (Shift=[]) then begin
     Checked[ItemIndex]:=not Checked[ItemIndex];
-  end;
-  inherited KeyPress(Key);
+    Key:=VK_UNKNOWN;
+  end else
+    inherited KeyDown(Key,Shift);
 end;
-
 
 procedure TCustomCheckListBox.SendItemChecked(const AIndex: Integer;
   const AChecked: Boolean);
