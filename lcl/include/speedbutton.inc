@@ -552,7 +552,8 @@ begin
       Canvas.TextRect(PaintRect, PaintRect.Left, PaintRect.Top, Caption, TXTStyle);
       Canvas.Font.Color := clBtnShadow;
       OffsetRect(PaintRect, -1, -1);
-    end;
+    end
+    else Canvas.Font.Color := Font.Color;
     //DebugLn('TCustomSpeedButton.Paint PaintRect=',PaintRect.Left,',',PaintRect.TOp,',',PaintRect.Right,',',PaintRect.Bottom,caption);
     Canvas.TextRect(PaintRect, PaintRect.Left, PaintRect.Top, Caption, TXTStyle);
   end;
