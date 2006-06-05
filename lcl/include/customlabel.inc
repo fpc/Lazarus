@@ -169,7 +169,6 @@ end;
 constructor TCustomLabel.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
-  Font.OnChange := @FontChange;
   ControlStyle := [csSetCaption, csClickEvents, csDoubleClicks, csReplicatable];
   setInitialBounds(0,0,65,17);
   FShowAccelChar := True;
@@ -406,12 +405,6 @@ begin
     end;
     TextRect(R, TextLeft, TextTop, Caption, TR)
   end;
-end;
-
-Procedure TCustomLabel.FontChange(Sender : TObject);
-begin
-  If Caption <> '' then
-    Invalidate;
 end;
 
 procedure TCustomLabel.SetOptimalFill(const AValue: Boolean);

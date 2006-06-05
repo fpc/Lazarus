@@ -938,6 +938,7 @@ type
     property DragKind;
     property DragMode;
     property Enabled;
+    property Font;
     property Hint;
     property OnChange;
     property OnChangeBounds;
@@ -1143,7 +1144,6 @@ type
     FShowAccelChar: Boolean;
     FWordWrap: Boolean;
     FLayout: TTextLayout;
-    Procedure FontChange(Sender: TObject);
     procedure SetOptimalFill(const AValue: Boolean);
   protected
     function  CanTab: boolean; override;

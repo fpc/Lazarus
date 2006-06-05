@@ -2527,7 +2527,7 @@ begin
 
   if not HandleAllocated then Exit;
 
-  //DebugLn('TWinControl.UpdateShowing A ',Name,':',ClassName,' FShowing=',FShowing,' bShow=',bShow);
+  //DebugLn('TWinControl.UpdateShowing A ',Name,':',ClassName,' FShowing=',dbgs(FShowing),' bShow=',dbgs(bShow));
   if FShowing = bShow then Exit;
   
   FShowing := bShow;
@@ -2896,7 +2896,7 @@ procedure TWinControl.PaintHandler(var TheMessage: TLMPaint);
   function ControlMustBeClipped(AControl: TControl): boolean;
   begin
     with AControl do
-      Result:=IsVisible and (csOpaque in ControlStyle);
+      Result:=(csOpaque in ControlStyle) and IsVisible;
   end;
 
 var
@@ -5158,7 +5158,7 @@ begin
   Assert(False, Format('Trace:[TWinControl.InitializeWnd]  %s', [ClassName]));
   // set all cached properties
 
-  //DebugLn('[TWinControl.InitializeWnd] ',Name,':',ClassName,':', FCaption,' ',Left,',',Top,',',Width,',',Height);
+  //DebugLn('[TWinControl.InitializeWnd] ',Name,':',ClassName,':', FCaption,' ',dbgs(Left),',',dbgs(Top),',',dbgs(Width),',',dbgs(Height));
 
   //First set the WinControl property.
   //The win32 interface depends on it to determine where to send call backs.

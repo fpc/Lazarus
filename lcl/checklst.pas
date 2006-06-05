@@ -33,15 +33,20 @@ uses
   
 
 type
+
   { TCustomCheckListBox }
 
   TCustomCheckListBox = class(TCustomListBox)
   private
     FItemDataOffset: Integer;
+    FOnClickChecked : tNotifyEvent;
     function GetChecked(const AIndex: Integer): Boolean;
     function GetCount: integer;
     procedure SetChecked(const AIndex: Integer; const AValue: Boolean);
     procedure SendItemChecked(const AIndex: Integer; const AChecked: Boolean);
+    procedure DoChange(var Msg); message LM_CHANGED;
+    procedure KeyPress(var Key: char); override;
+
   protected
     procedure AssignItemDataToCache(const AIndex: Integer; const AData: Pointer); override;
     procedure AssignCacheToItemData(const AIndex: Integer; const AData: Pointer); override;
@@ -49,10 +54,12 @@ type
     procedure DefineProperties(Filer: TFiler); override;
     procedure ReadData(Stream: TStream);
     procedure WriteData(Stream: TStream);
+    procedure ClickChecked;
   public
     constructor Create(AOwner: TComponent); override;
     property Checked[const AIndex: Integer]: Boolean read GetChecked write SetChecked;
     property Count: integer read GetCount;
+    property OnClickChecked:tNotifyEvent read FOnClickChecked write FOnClickChecked;
   end;
   
   
@@ -132,6 +139,12 @@ begin
   FItemDataOffset := inherited GetCachedDataSize;
 end;
 
+
+procedure TCustomCheckListBox.DoChange(var Msg);
+begin
+  clickChecked;
+end;
+
 function TCustomCheckListBox.GetCachedDataSize: Integer;
 begin
   FItemDataOffset := inherited GetCachedDataSize;
@@ -153,6 +166,15 @@ begin
   Result := Items.Count;
 end;
 
+procedure TCustomCheckListBox.KeyPress(var Key: char);
+begin
+  if Key = ' ' then begin
+    Checked[ItemIndex]:=not Checked[ItemIndex];
+  end;
+  inherited KeyPress(Key);
+end;
+
+
 procedure TCustomCheckListBox.SendItemChecked(const AIndex: Integer;
   const AChecked: Boolean);
 begin
@@ -168,6 +190,11 @@ begin
   if HandleAllocated
   then SendItemChecked(AIndex, AValue)
   else PCachedItemData(GetCachedData(AIndex) + FItemDataOffset)^ := AValue;
+end;
+
+procedure TCustomCheckListBox.ClickChecked;
+begin
+  if Assigned(fOnClickChecked) then FOnClickChecked(self);
 end;
 
 procedure TCustomCheckListBox.DefineProperties(Filer: TFiler);

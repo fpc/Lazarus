@@ -248,7 +248,9 @@ procedure Gtk2WS_ListBoxChange(Selection: PGtkTreeSelection; WidgetInfo: PWidget
 var
   Mess: TLMessage;
 begin
+  {$IFDEF EventTrace}
   EventTrace('Gtk2WS_ListBoxChange', WidgetInfo^.LCLObject);
+  {$ENDIF}
   FillChar(Mess,SizeOf(Mess),0);
   Mess.msg := LM_SelChange;
   DeliverMessage(WidgetInfo^.LCLObject, Mess);

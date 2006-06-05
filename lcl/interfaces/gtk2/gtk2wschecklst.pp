@@ -35,7 +35,7 @@ Gtk2, GLib2, GtkDef,
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-  CheckLst, Controls, LCLType, Classes,
+  CheckLst, Controls, LCLType, Classes, LMessages,
 ////////////////////////////////////////////////////
   WSCheckLst, WSLCLClasses,
   Gtk2WSStdCtrls;
@@ -64,14 +64,18 @@ uses GtkWSControls, GtkProc;
 
 { TGtk2WSCheckListBox }
 
-procedure Gtk2WS_CheckListBoxToggle(cellrenderertoggle : PGtkCellRendererToggle; arg1 : PGChar;
-                         WidgetInfo: PWidgetInfo); cdecl;
+procedure Gtk2WS_CheckListBoxToggle(cellrenderertoggle : PGtkCellRendererToggle;
+  arg1 : PGChar; WidgetInfo: PWidgetInfo); cdecl;
 var
   aWidget : PGTKWidget;
   aTreeModel : PGtkTreeModel;
   aTreeIter : TGtkTreeIter;
   value : pgValue;
+  Mess: TLMessage;
 begin
+  {$IFDEF EventTrace}
+  EventTrace('Gtk2WS_CheckListBoxToggle', WidgetInfo^.LCLObject);
+  {$ENDIF}
   aWidget := WidgetInfo^.CoreWidget;
   aTreeModel := gtk_tree_view_get_model (GTK_TREE_VIEW(aWidget));
   if (gtk_tree_model_get_iter_from_string (aTreeModel, @aTreeIter, arg1)) then begin
@@ -85,10 +89,13 @@ begin
     g_value_unset(value);
     g_free(value);
   end;
+  Mess.Msg := LM_CHANGED;
+  Mess.Result := 0;
+  DeliverMessage(widgetInfo^.lclObject, Mess);
 end;
 
-procedure Gtk2WS_CheckListBoxRowActivate(treeview : PGtkTreeView; arg1 : PGtkTreePath;
-                                  arg2 : PGtkTreeViewColumn; WidgetInfo: PWidgetInfo); cdecl;
+procedure Gtk2WS_CheckListBoxRowActivate(treeview : PGtkTreeView;
+  arg1 : PGtkTreePath; arg2 : PGtkTreeViewColumn; WidgetInfo: PWidgetInfo); cdecl;
 var
   aTreeModel : PGtkTreeModel;
   aTreeIter : TGtkTreeIter;
