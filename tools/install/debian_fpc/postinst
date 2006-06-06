@@ -1,0 +1,2 @@
+#!/bin/sh
+sh /usr/lib/fpc/FPCVERSION/samplecfg /usr/lib/fpc/\$fpcversion/ /etc

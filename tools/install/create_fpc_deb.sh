@@ -3,19 +3,24 @@
 set -x
 set -e
 
-# ToDo: check libgpm
-# ToDo: check if ppcxxx is installed
-
 #------------------------------------------------------------------------------
 # parse parameters
 #------------------------------------------------------------------------------
-Usage="Usage: $0 [nodocs] [notemp] <FPCSrcDir> [release]"
+Usage="Usage: $0 fpc|fpc-src [notemp] <FPCSrcDir> [release]"
 
-WithDOCS=yes
-if [ "x$1" = "xnodocs" ]; then
-  WithDOCS=no
-  shift
+# what package should be built ...
+PackageName=""
+if [ "$1" = fpc ]; then
+    PackageName=$1
 fi
+if [ "$1" = fpc-src ]; then
+    PackageName=$1
+fi
+if [ "x$PackageName" = "x" ]; then
+  echo $Usage
+  exit -1
+fi
+shift
 
 WithTempDir=yes
 if [ "x$1" = "xnotemp" ]; then
@@ -46,15 +51,13 @@ fi
 
 #------------------------------------------------------------------------------
 # quick tests
+
 ./check_fpc_dependencies.sh
 
-CurDir=`pwd`
 
 #------------------------------------------------------------------------------
-# patching
-#------------------------------------------------------------------------------
-
 # retrieve the version information
+
 echo -n "getting FPC version from local svn ..."
 VersionFile="$FPCSrcDir/compiler/version.pas"
 CompilerVersion=`cat $VersionFile | grep ' *version_nr *=.*;' | sed -e 's/[^0-9]//g'`
@@ -67,14 +70,20 @@ if [ "$CompilerPatch" != "0" ]; then
 fi
 echo " $CompilerVersionStr-$FPCRelease"
 
+
+#------------------------------------------------------------------------------
+# download/export fpc svn if needed
+
 SrcTGZ=$(pwd)/fpc-$FPCVersion-$FPCRelease.tar.gz
 
-# download/export fpc svn if needed
 if [ ! -f $SrcTGZ ]; then
   ./create_fpc_export_tgz.sh $FPCSrcDir $SrcTGZ
 fi
 
+
+#------------------------------------------------------------------------------
 # create a temporary copy of the fpc sources to patch it
+
 TmpDir=/tmp/fpc_patchdir
 if [ "$WithTempDir" = "yes" ]; then
   if [ -d $TmpDir ]; then
@@ -92,6 +101,22 @@ else
   TmpDir=$FPCSrcDir
 fi
 
+
+#------------------------------------------------------------------------------
+# setup variables
+
+CurDir=`pwd`
+Arch=i386
+FPCBuildDir=$TmpDir/fpc_build
+FPCDeb=$CurDir/${PackageName}_$FPCVersion-${FPCRelease}_$Arch.deb
+ResourceDir=$CurDir/debian_$PackageName
+DebianInstallDir=$FPCBuildDir/usr
+DebianRulezDir=$FPCBuildDir/DEBIAN/
+DebianDocDir=$FPCBuildDir/usr/share/doc/$PackageName
+DebianSourceDir=$FPCBuildDir/usr/share/fpcsrc
+Date=`date --rfc-822`
+
+
 #------------------------------------------------------------------------------
 # patch sources
 
@@ -101,33 +126,9 @@ ReplaceScript=replace_in_files.pl
 echo "set version numbers in all Makefiles ..."
 perl replace_in_files.pl -sR -f '=\d.\d.\d' -r =$CompilerVersionStr -m 'Makefile(.fpc)?' $FPCSrcDir/*
 
-#------------------------------------------------------------------------------
-#
-
-PackageName=fpc-src
-FPCBuildDir=$TmpDir/fpc_build
-FPCDeb=$CurDir/$PackageName-$FPCVersion-$FPCRelease.deb
-ResourceDir=$CurDir/debian_$PackageName
-DebianLibDir=$FPCBuildDir/usr/lib/fpc 
-DebianRulezDir=$FPCBuildDir/DEBIAN/
-DebianDocDir=$FPCBuildDir/usr/share/doc/$PackageName
-DebianSourceDir=$FPCBuildDir/usr/share/fpcsrc
-Date=`date --rfc-822`
-
 
 #------------------------------------------------------------------------------
-# copy fpc sources
-mkdir -p $DebianSourceDir
-cp -a $FPCSrcDir/* $DebianSourceDir/
-
-#------------------------------------------------------------------------------
-# build fpc
-cd $TmpDir
-# TODO make all
-cd -
-
-#------------------------------------------------------------------------------
-# build fpc-src deb
+# create rulez and files
 
 # change debian files
 mkdir -p $DebianDocDir
@@ -147,6 +148,13 @@ echo "" >> $File
 cat $ResourceDir/changelog >> $File
 gzip --best $File
 
+# create postinst if needed
+if [ -f "$ResourceDir/postinst" ]; then
+    echo "creating DEBIAN/postinst file"
+    cat $ResourceDir/postinst | sed -e "s/FPCVERSION/$FPCVersion/g" > $DebianRulezDir/postinst
+    chmod a+x $DebianRulezDir/postinst
+fi
+
 # create changelog.Debian file
 echo "creating changelog.Debian file ..."
 File=$DebianDocDir/changelog.Debian
@@ -157,10 +165,32 @@ gzip --best $File
 echo "creating copyright file ..."
 cp $ResourceDir/copyright $DebianDocDir/
 
+#------------------------------------------------------------------------------
+
+if [ "$PackageName" = "fpc-src" ]; then
+    # copy fpc sources
+    mkdir -p $DebianSourceDir
+    cp -a $FPCSrcDir/* $DebianSourceDir/
+fi
+if [ "$PackageName" = "fpc" ]; then
+    # build fpc
+    mkdir $FPCBuildDir/etc
+    cd $FPCSrcDir
+    make all
+    mkdir -p $DebianInstallDir
+    make install INSTALL_PREFIX=$DebianInstallDir
+    cd -
+fi
+
+#------------------------------------------------------------------------------
 # creating deb
+
 cd $TmpDir
 fakeroot dpkg-deb --build $FPCBuildDir
 mv $FPCBuildDir.deb $FPCDeb
+
+echo "The new deb can be found at $FPCDeb"
+echo "You can test it with lintian."
 
 # end.
 
