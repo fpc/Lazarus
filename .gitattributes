@@ -2466,6 +2466,7 @@ tools/getallpofiles.sh -text svneol=native#application/x-sh
 tools/install/build_fpc-src_rpm.sh svneol=native#text/plain
 tools/install/build_fpc_rpm.sh svneol=native#text/plain
 tools/install/build_fpc_snaphot_rpm.sh svneol=native#text/plain
+tools/install/check_fpc_dependencies.sh svneol=native#text/plain
 tools/install/create_clean_fpcsrc_directory.sh svneol=native#text/plain
 tools/install/create_clean_lazarus_directory.sh svneol=native#text/plain
 tools/install/create_fpc-src_deb.sh svneol=native#text/plain
