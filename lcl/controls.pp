@@ -304,11 +304,11 @@ type
     );
   TDragMessage = (dmDragEnter, dmDragLeave, dmDragMove, dmDragDrop,
                   dmDragCancel,dmFindTarget);
-  TDragOverEvent = Procedure(Sender, Source: TObject;
-               X,Y: Integer; State: TDragState; Var Accept: Boolean) of Object;
-  TDragDropEvent = Procedure(Sender, Source: TObject; X,Y: Integer) of Object;
-  TStartDragEvent = Procedure(Sender: TObject; DragObject: TDragObject) of Object;
-  TEndDragEvent = Procedure(Sender, Target: TObject; X,Y: Integer) of Object;
+  TDragOverEvent = procedure(Sender, Source: TObject;
+               X,Y: Integer; State: TDragState; var Accept: Boolean) of object;
+  TDragDropEvent = procedure(Sender, Source: TObject; X,Y: Integer) of object;
+  TStartDragEvent = procedure(Sender: TObject; var DragObject: TDragObject) of object;
+  TEndDragEvent = procedure(Sender, Target: TObject; X,Y: Integer) of object;
 
 
   PDragRec = ^TDragRec;
