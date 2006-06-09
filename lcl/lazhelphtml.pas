@@ -422,7 +422,7 @@ begin
     or Find('safari')
     or Find('netscape')
     or Find('opera')
-    or Find('iexplorer') then ;
+    or Find('iexplore') then ;
   end;
   Browser:=FDefaultBrowser;
   Params:=FDefaultBrowserParams;

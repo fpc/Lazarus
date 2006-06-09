@@ -202,7 +202,7 @@ begin
   if Find('safari',Browser) then exit;
   if Find('netscape',Browser) then exit;
   if Find('opera',Browser) then exit;
-  if Find('iexplorer.exe',Browser) then exit;
+  if Find('iexplore.exe',Browser) then exit;
 end;
 
 {---------------------------------------------------------------------------
