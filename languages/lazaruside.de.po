@@ -4170,7 +4170,7 @@ msgstr "Hauptmenü"
 
 #: lazarusidestrconsts:lismainunithasapplicationcreateformstatements
 msgid "Main Unit has Application.CreateForm statements"
-msgstr "Die Huaptunit enthält die Anweisung \"Application.CreateForm\"."
+msgstr "Die Hauptunit enthält die Anweisung \"Application.CreateForm\"."
 
 #: lazarusidestrconsts:lismainunithasapplicationtitlestatements
 msgid "Main Unit has Application.Title statements"
@@ -8730,7 +8730,7 @@ msgstr "s"
 
 #: lazarusidestrconsts:lissecondaryconfigdirectorywherelazarussearchesfor
 msgid "secondary config directory, where Lazarus searches for config template files. Default is "
-msgstr "sekundäres Konfigurationsverzeichnis wo Lazarus nach Konfigurationsschalblonen sucht. Voreinstellung ist"
+msgstr "sekundäres Konfigurationsverzeichnis in dem Lazarus nach Konfigurationsschalblonen sucht. Voreinstellung ist"
 
 #: lazarusidestrconsts:lisedtdefsetfpcmodetodelphi
 msgid "set FPC mode to DELPHI"
