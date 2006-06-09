@@ -118,6 +118,8 @@ begin
     Result:=rsLanguageJapanese
   else if CompareText(ID,'zh-cn')=0 then
     Result:=rsLanguageChinese
+  else if CompareText(ID,'id')=0 then
+    Result:=rsLanguageIndonesian
   else
     Result:=ID;
 end;

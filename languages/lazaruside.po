@@ -5106,6 +5106,14 @@ msgstr ""
 msgid "Japanese"
 msgstr ""
 
+#: lazarusidestrconsts:rslanguagechinese
+msgid "Chinese"
+msgstr ""
+
+#: lazarusidestrconsts:rslanguageindonesian
+msgid "Indonesian"
+msgstr ""
+
 #: lazarusidestrconsts:dlgunitdepcaption
 msgid "Unit dependencies"
 msgstr ""
@@ -9164,5 +9172,9 @@ msgstr ""
 
 #: lazarusidestrconsts:lishfmhelpforfreepascalcompilermessage
 msgid "Help for FreePascal Compiler message"
+msgstr ""
+
+#: lazarusidestrconsts:lisrelativepaths
+msgid "Relative paths"
 msgstr ""
 

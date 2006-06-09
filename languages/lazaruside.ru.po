@@ -3413,6 +3413,10 @@ msgstr "Выровнять код по"
 msgid "Indent selection"
 msgstr "Сдвинуть блок вправо"
 
+#: lazarusidestrconsts:rslanguageindonesian
+msgid "Indonesian"
+msgstr ""
+
 #: lazarusidestrconsts:lisinformationaboutunit
 msgid "Information about %s"
 msgstr "Информация о %s"

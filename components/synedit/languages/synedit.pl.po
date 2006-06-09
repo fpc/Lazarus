@@ -13,13 +13,13 @@ msgstr ""
 msgid "%d - %d"
 msgstr "%d - %d"
 
-#: syneditstrconst:syns_filterasm68hc11
-msgid "68HC11 Assembler Files (*.hc11,*.asm,*.asc)|*.HC11;*.ASM;*.ASC"
-msgstr "Pliki asemblera 68HC11 (*.hc11,*.asm,*.asc)|*.HC11;*.ASM;*.ASC"
-
 #: syneditstrconst:syns_shortcutnone
 msgid "<none>"
 msgstr "<brak>"
+
+#: syneditstrconst:syns_filterasm68hc11
+msgid "68HC11 Assembler Files (*.hc11,*.asm,*.asc)|*.HC11;*.ASM;*.ASC"
+msgstr "Pliki asemblera 68HC11 (*.hc11,*.asm,*.asc)|*.HC11;*.ASM;*.ASC"
 
 #: syneditstrconst:syns_filterawk
 msgid "AWK Script (*.awk)|*.awk"
@@ -37,9 +37,17 @@ msgstr "Formularze Borlanda (*.dfm;*.xfm)|*.dfm;*.xfm"
 msgid "C++ Files (*.c,*.cpp,*.h,*.hpp,*.hh)|*.c;*.cpp;*.h;*.hpp;*.hh"
 msgstr "Pliki C++ (*.c,*.cpp,*.h,*.hpp,*.hh)|*.c;*.cpp;*.h;*.hpp;*.hh"
 
+#: syneditstrconst:syns_filtercache
+msgid "Cache Files (*.mac,*.inc,*.int)|*.mac;*.inc;*.int"
+msgstr "Pliki Cache (*.mac,*.inc,*.int)|*.mac;*.inc;*.int"
+
 #: syneditstrconst:syns_filtercaclipper
 msgid "CA-Clipper Files (*.prg,*.ch,*.inc)|*.prg;*.ch;*.inc"
 msgstr "Pliki CA-Clipper (*.prg,*.ch,*.inc)|*.prg;*.ch;*.inc"
+
+#: syneditstrconst:syns_filtercss
+msgid "Cascading Stylesheets (*.css)|*.css"
+msgstr "Kaskadowe arkusze stylów (*.css)|*.css"
 
 #: syneditstrconst:syns_filtercorbaidl
 msgid "CORBA IDL files (*.idl)|*.idl"
@@ -48,14 +56,6 @@ msgstr "Pliki CORBA IDL (*.idl)|*.idl"
 #: syneditstrconst:syns_filtercpm
 msgid "CPM reports (*.rdf,*.rif,*.rmf,*.rxf)|*.rdf;*.rif;*.rmf;*.rxf"
 msgstr "Raporty CPM (*.rdf,*.rif,*.rmf,*.rxf)|*.rdf;*.rif;*.rmf;*.rxf"
-
-#: syneditstrconst:syns_filtercache
-msgid "Cache Files (*.mac,*.inc,*.int)|*.mac;*.inc;*.int"
-msgstr "Pliki Cache (*.mac,*.inc,*.int)|*.mac;*.inc;*.int"
-
-#: syneditstrconst:syns_filtercss
-msgid "Cascading Stylesheets (*.css)|*.css"
-msgstr "Kaskadowe arkusze stylów (*.css)|*.css"
 
 #: syneditstrconst:syns_filteradsp21xx
 msgid "DSP Files (*.dsp,*.inc)|*.DSP;*.INC"
@@ -69,6 +69,10 @@ msgstr "Pliki Fortrana (*.for)|*.for"
 msgid "Foxpro Files (*.prg)|*.prg"
 msgstr "Pliki Foxpro (*.prg)|*.prg"
 
+#: syneditstrconst:syns_filtergalaxy
+msgid "Galaxy Files (*.gtv,*.galrep,*.txt)|*.gtv;*.galrep;*.txt"
+msgstr "Pliki Galaxy (*.gtv,*.galrep,*.txt)|*.gtv;*.galrep;*.txt"
+
 #: syneditstrconst:syns_filtergembase
 msgid "GEMBASE Files (*.dml,*.gem)|*.DML;*.GEM"
 msgstr "Pliki GEMBASE (*.dml,*.gem)|*.DML;*.GEM"
@@ -77,17 +81,13 @@ msgstr "Pliki GEMBASE (*.dml,*.gem)|*.DML;*.GEM"
 msgid "GW-TEL Script Files (*.gws)|*.gws"
 msgstr "pliki skryptowe GW-TEL (*.gws)|*.gws"
 
-#: syneditstrconst:syns_filtergalaxy
-msgid "Galaxy Files (*.gtv,*.galrep,*.txt)|*.gtv;*.galrep;*.txt"
-msgstr "Pliki Galaxy (*.gtv,*.galrep,*.txt)|*.gtv;*.galrep;*.txt"
+#: syneditstrconst:syns_filterhp48
+msgid "HP48 Files (*.s,*.sou,*.a,*.hp)|*.s;*.sou;*.a;*.hp"
+msgstr "Pliki HP48 (*.s,*.sou,*.a,*.hp)|*.s;*.sou;*.a;*.hp"
 
 #: syneditstrconst:syns_filterhp
 msgid "HP48 Files (*.s,*.sou,*.a,*.hp)|*.S;*.SOU;*.A;*.HP"
 msgstr "Pliki HP48 (*.s,*.sou,*.a,*.hp)|*.S;*.SOU;*.A;*.HP"
-
-#: syneditstrconst:syns_filterhp48
-msgid "HP48 Files (*.s,*.sou,*.a,*.hp)|*.s;*.sou;*.a;*.hp"
-msgstr "Pliki HP48 (*.s,*.sou,*.a,*.hp)|*.s;*.sou;*.a;*.hp"
 
 #: syneditstrconst:syns_exporterformathtml
 msgid "HTML"
@@ -121,10 +121,6 @@ msgstr "Skrypty KiXtart (*.kix)|*.kix"
 msgid "Lazarus Form Files (*.lfm)|*.lfm"
 msgstr "Formularze Lazarusa (*.lfm)|*.lfm"
 
-#: syneditstrconst:syns_filterbatch
-msgid "MS-DOS Batch Files (*.bat;*.cmd)|*.bat;*.cmd"
-msgstr "Pliki wsadowe MS-DOS (*.bat;*.cmd)|*.bat;*.cmd"
-
 #: syneditstrconst:syns_filtermodelica
 msgid "Modelica Files (*.mo)|*.mo"
 msgstr "Pliki Modelica (*.mo)|*.mo"
@@ -133,13 +129,13 @@ msgstr "Pliki Modelica (*.mo)|*.mo"
 msgid "Modula-3 Files (*.m3)|*.m3"
 msgstr "Pliki Modula-3 (*.m3)|*.m3"
 
+#: syneditstrconst:syns_filterbatch
+msgid "MS-DOS Batch Files (*.bat;*.cmd)|*.bat;*.cmd"
+msgstr "Pliki wsadowe MS-DOS (*.bat;*.cmd)|*.bat;*.cmd"
+
 #: syneditstrconst:syns_filtersyngenmsgfiles
 msgid "Msg files (*.msg)|*.msg"
 msgstr "Pliki Msg (*.msg)|*.msg"
-
-#: syneditstrconst:syns_filterphp
-msgid "PHP Files (*.php,*.php3,*.phtml,*.inc)|*.php;*.php3;*.phtml;*.inc"
-msgstr "Pliki PHP (*.php,*.php3,*.phtml,*.inc)|*.php;*.php3;*.phtml;*.inc"
 
 #: syneditstrconst:syns_previewscrollinfofmt
 msgid "Page: %d"
@@ -153,6 +149,10 @@ msgstr "Pliki pascala (*.pas,*.dpr,*.dpk,*.inc)|*.pas;*.dpr;*.dpk;*.inc"
 msgid "Perl Files (*.pl,*.pm,*.cgi)|*.pl;*.pm;*.cgi"
 msgstr "Pliki Perla (*.pl,*.pm,*.cgi)|*.pl;*.pm;*.cgi"
 
+#: syneditstrconst:syns_filterphp
+msgid "PHP Files (*.php,*.php3,*.phtml,*.inc)|*.php;*.php3;*.phtml;*.inc"
+msgstr "Pliki PHP (*.php,*.php3,*.phtml,*.inc)|*.php;*.php3;*.phtml;*.inc"
+
 #: syneditstrconst:syns_filterprogress
 msgid "Progress Files (*.w,*.p,*.i)|*.w;*.p;*.i"
 msgstr "Pliki Progress (*.w,*.p,*.i)|*.w;*.p;*.i"
@@ -161,17 +161,13 @@ msgstr "Pliki Progress (*.w,*.p,*.i)|*.w;*.p;*.i"
 msgid "Python Files (*.py)|*.py"
 msgstr "Pliki Pythona (*.py)|*.py"
 
-#: syneditstrconst:syns_exporterformatrtf
-msgid "RTF"
-msgstr "RTF"
-
 #: syneditstrconst:syns_filterrtf
 msgid "Rich Text Format (*.rtf)|*.rtf"
 msgstr "Dokumenty Rich Text Format (*.rtf)|*.rtf"
 
-#: syneditstrconst:syns_filtersql
-msgid "SQL Files (*.sql)|*.sql"
-msgstr "Pliki SQL (*.sql)|*.sql"
+#: syneditstrconst:syns_exporterformatrtf
+msgid "RTF"
+msgstr "RTF"
 
 #: syneditstrconst:syns_filtersdd
 msgid "Semanta DD files (*.sdd)|*.sdd"
@@ -180,6 +176,10 @@ msgstr "Pliki Semanta DD (*.sdd)|*.sdd"
 #: syneditstrconst:syns_eduplicateshortcut
 msgid "Shortcut already exists"
 msgstr "Skrót już istnieje"
+
+#: syneditstrconst:syns_filtersql
+msgid "SQL Files (*.sql)|*.sql"
+msgstr "Pliki SQL (*.sql)|*.sql"
 
 #: syneditstrconst:syns_filtersml
 msgid "Standard ML Files (*.sml)|*.sml"
@@ -213,11 +213,11 @@ msgstr "Pliki VBScript (*.vbs)|*.vbs"
 msgid "Visual Basic Files (*.bas)|*.bas"
 msgstr "Pliki Visual Basic (*.bas)|*.bas"
 
-#: syneditstrconst:syns_filterxml
-msgid "XML Document (*.xml,*.xsd,*.xsl,*.xslt,*.dtd)|*.xml;*.xsd;*.xsl;*.xslt;*.dtd"
-msgstr "Dokumenty XML (*.xml,*.xsd,*.xsl,*.xslt,*.dtd)|*.xml;*.xsd;*.xsl;*.xslt;*.dtd"
-
 #: syneditstrconst:syns_filterx86asm
 msgid "x86 Assembly Files (*.asm)|*.ASM"
 msgstr "Pliki asemblera x86 (*.asm)|*.ASM"
+
+#: syneditstrconst:syns_filterxml
+msgid "XML Document (*.xml,*.xsd,*.xsl,*.xslt,*.dtd)|*.xml;*.xsd;*.xsl;*.xslt;*.dtd"
+msgstr "Dokumenty XML (*.xml,*.xsd,*.xsl,*.xslt,*.dtd)|*.xml;*.xsd;*.xsl;*.xslt;*.dtd"
 
