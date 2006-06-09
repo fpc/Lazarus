@@ -569,6 +569,7 @@ type
     FGridPropBackup: TGridPropertyBackup;
     procedure AdjustCount(IsColumn:Boolean; OldValue, NewValue:Integer);
     procedure CacheVisibleGrid;
+    procedure CancelSelection;
     procedure CheckFixedCount(aCol,aRow,aFCol,aFRow: Integer);
     procedure CheckCount(aNewColCount, aNewRowCount: Integer);
     procedure CheckIndex(IsColumn: Boolean; Index: Integer);
@@ -620,6 +621,7 @@ type
     procedure InternalSetColWidths(aCol,aValue: Integer);
     procedure InternalSetFixedCols(const AValue: Integer);
     procedure InternalUpdateColumnWidths;
+    procedure InvalidateMovement(DCol,DRow: Integer; OldRange: TRect);
     function  IsAltColorStored: boolean;
     function  IsColumnsStored: boolean;
     procedure OnTitleFontChanged(Sender: TObject);
@@ -748,6 +750,7 @@ type
     procedure InternalSetColCount(ACount: Integer);
     procedure InvalidateCell(aCol, aRow: Integer); overload;
     procedure InvalidateCell(aCol, aRow: Integer; Redraw: Boolean); overload;
+    procedure InvalidateRange(const aRange: TRect);
     procedure InvalidateCol(ACol: Integer);
     procedure InvalidateFromCol(ACol: Integer);
     procedure InvalidateGrid;
@@ -1644,6 +1647,88 @@ begin
     if C<>nil then
       SetRawColWidths(i, C.Width);
   end;
+end;
+
+procedure TCustomGrid.InvalidateMovement(DCol, DRow: Integer; OldRange: TRect);
+
+  procedure doInvalidateRange(Col1,Row1,Col2,Row2: Integer);
+  begin
+    InvalidateRange(Rect(Col1,Row1,Col2,Row2));
+  end;
+  
+begin
+  if SelectActive then begin
+  
+    if DCol>FCol then begin
+      // expanded cols
+      if not (goRowSelect in Options) then
+        doInvalidateRange(FCol, OldRange.Top, DCol, Oldrange.Bottom)
+        
+      else if (goRelaxedRowSelect in Options) and (DRow=FRow) then
+        InvalidateRow(DRow)
+        
+    end else if DCol<FCol then begin
+      // shrunk cols
+      if not (goRowSelect in Options) then
+        doInvalidateRange(DCol,OldRange.Top,FCol,OldRange.Bottom)
+        
+      else if (goRelaxedRowSelect in Options) and (DRow=FRow) then
+        InvalidateRow(DRow)
+        
+    end;
+
+    if DRow>FRow then
+      // expanded rows
+      doInvalidateRange(OldRange.Left, FRow, OldRange.Right, DRow)
+      
+    else if DRow<FRow then
+      // shrunk rows
+      doInvalidateRange(OldRange.Left, DRow, OldRange.Right, FRow);
+    
+    if not (goRowSelect in Options) then begin
+
+      // Above rules do work only if either rows or cols remain
+      // constant, if both rows and cols change there may be gaps
+      //
+      // four cases are left.
+      //
+      
+      if (DCol>FCol)and(DRow<FRow) then // (1: I   Cuadrant)
+        // Rect(FCol+1,FRow-1,DCol,DRow) normalized -v
+        doInvalidateRange(FCol+1, DRow, DCol, FRow-1)
+      else
+      if (DCol<FCol)and(DRow<FRow) then // (2: II  Cuadrant)
+        // Rect(FCol-1,FRow-1,DCol,DRow) normalized -v
+        doInvalidateRange(DCol, DRow, FCol-1, FRow-1)
+      else
+      if (DCol<FCol)and(DRow>FRow) then // (3: III Cuadrant)
+        // Rect(FCol-1,FRow+1,DCol,DRow) normalized -v
+        doInvalidateRange(DCol, FRow+1, FCol-1, DRow)
+      else
+      if (DCol>FCol)and(DRow>FRow) then // (4: IV  Cuadrant)
+        // normalization not needed
+        doInvalidateRange(FCol+1,FRow+1,DCol,DRow);
+        
+    end;
+
+  end else begin
+  
+    if (OldRange.Right-OldRange.Left>0) or
+      (OldRange.Bottom-OldRange.Top>0) then
+      // old selected range gone, invalidate old area
+      InvalidateRange(OldRange)
+    else
+      // Single cell
+      InvalidateCell(FCol, FRow);
+    
+    // and invalidate current selecion, cell or full row
+    if goRowSelect in Options then
+      InvalidateRow(Drow)
+    else
+      InvalidateCell(DCol, DRow);
+      
+  end;
+  
 end;
 
 function TCustomGrid.IsColumnsStored: boolean;
@@ -3496,6 +3581,20 @@ begin
   end;
 end;
 
+procedure TCustomGrid.CancelSelection;
+begin
+  with FRange do
+    if (Bottom-Top>0) or
+      ((Right-Left>0) and not (goRowSelect in Options)) then begin
+      InvalidateRange(FRange);
+      if goRowSelect in Options then
+        FRange:=Rect(FFixedCols, FRow, ColCount-1, FRow)
+      else
+        FRange:=Rect(FCol,FRow,FCol,FRow);
+    end;
+  SelectActive := False;
+end;
+
 function TCustomGrid.GetSelection: TGridRect;
 begin
   Result:=FRange;
@@ -4054,6 +4153,10 @@ begin
             if ssShift in Shift then begin
               SelectActive:=(goRangeSelect in Options);
             end else begin
+              // shift is not pressed any more cancel SelectActive if necessary
+              if SelectActive then
+                CancelSelection;
+
               if not SelectActive then begin
                 FPivot:=FSplitter;
                 Include(GridFlags, gfNeedsSelectActive);
@@ -4133,10 +4236,9 @@ begin
 
     gsSelecting:
       begin
-        if SelectActive then begin
-          MoveExtend(False, Cur.x, Cur.y);
-          SelectActive:=False;
-        end else
+        if SelectActive then
+          MoveExtend(False, Cur.x, Cur.y)
+        else
           CellClick(cur.x, cur.y);
       end;
       
@@ -4648,7 +4750,7 @@ end;
 
 function TCustomGrid.MoveExtend(Relative: Boolean; DCol, DRow: Integer): Boolean;
 var
-  InvalidateAll: Boolean;
+  OldRange: TRect;
 begin
   Result:=TryMoveSelection(Relative,DCol,DRow);
   if (not Result) then Exit;
@@ -4657,45 +4759,24 @@ begin
 
   {$IfDef dbgGrid}DebugLn(' MoveExtend INIT FCol= ',IntToStr(FCol), ' FRow= ',IntToStr(FRow));{$Endif}
   BeforeMoveSelection(DCol,DRow);
-
-  InvalidateAll:=False;
   
-  // default range
+  OldRange := FRange;
+
   if goRowSelect in Options then
     FRange:=Rect(FFixedCols, DRow, Colcount-1, DRow)
-  else begin
-    // Just after selectActive=false and Selection Area is more than one cell
-    InvalidateAll := not SelectActive and (
-      (FRange.Right-FRange.Left > 0) or
-      (Frange.Bottom-FRange.Top > 0) );
+  else
     FRange:=Rect(DCol,DRow,DCol,DRow);
-  end;
 
-  if SelectActive then
-    if goRangeSelect in Options then begin
-      if goRowSelect in Options then begin
-        FRange.Top:=Min(fPivot.y, DRow);
-        FRange.Bottom:=Max(fPivot.y, DRow);
-      end else begin
-        FRange:=NormalizarRect(Rect(Fpivot.x,FPivot.y, DCol, DRow));
-      end;
-      InvalidateAll:=True;
-    end;
+  if SelectActive and (goRangeSelect in Options) then
+    if goRowSelect in Options then begin
+      FRange.Top:=Min(fPivot.y, DRow);
+      FRange.Bottom:=Max(fPivot.y, DRow);
+    end else
+      FRange:=NormalizarRect(Rect(Fpivot.x,FPivot.y, DCol, DRow));
 
   if not ScrollToCell(DCol, DRow) then
-    if InvalidateAll then begin
-      //InvalidateSelection;
-      Invalidate
-    end else begin
-      if goRowSelect in Options then begin
-        InvalidateRow(FRow);
-        InvalidateRow(DRow);
-      end else begin
-        InvalidateCell(FCol, FRow);
-        InvalidateCell(DCol, DRow);
-      end;
-    end;
-
+    InvalidateMovement(DCol, DRow, OldRange);
+    
   SwapInt(DCol,FCol);
   SwapInt(DRow,FRow);
 
@@ -4938,6 +5019,17 @@ begin
   if not HandleAllocated then Exit;
   R:=CellRect(aCol, aRow);
   InvalidateRect(Handle, @R, Redraw);
+end;
+
+procedure TCustomGrid.InvalidateRange(const aRange: TRect);
+var
+  RIni,RFin: TRect;
+begin
+  RIni := CellRect(aRange.Left, aRange.Top);
+  RFin := CellRect(aRange.Right, aRange.Bottom);
+  RIni.Right := RFin.Right;
+  RIni.Bottom:= RFin.Bottom;
+  InvalidateRect(Handle, @RIni, False);
 end;
 
 procedure TCustomGrid.InvalidateGrid;
