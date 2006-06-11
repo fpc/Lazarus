@@ -13,7 +13,8 @@ rm -rf $TmpDir
 mkdir -p $TmpDir
 TestPas=$TmpDir/test.pas
 echo "program test;" >> $TestPas
-echo "{$linklib gpm}" >> $TestPas
+echo "{\$linklib gpm}" >> $TestPas
+echo "{\$linklib ncurses}" >> $TestPas
 echo "begin end." >> $TestPas
 
 fpc $TestPas

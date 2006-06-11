@@ -54,6 +54,8 @@ fi
 
 ./check_fpc_dependencies.sh
 
+fakeroot -v
+
 
 #------------------------------------------------------------------------------
 # retrieve the version information
@@ -179,6 +181,7 @@ if [ "$PackageName" = "fpc" ]; then
     make all
     mkdir -p $DebianInstallDir
     make install INSTALL_PREFIX=$DebianInstallDir
+    ln -s $DebianInstallDir/lib/fpc/$FPCVersion/ppc386 $DebianInstallDir/bin/ppc386 
     cd -
 fi
 

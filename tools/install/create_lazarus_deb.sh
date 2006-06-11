@@ -3,12 +3,9 @@
 set -x
 set -e
 
-# get installed fpc version
-#FPCDeb=`dpkg -l | grep fp-compiler`
-#if [ "x$FPCDeb" = "x" ]; then
-#  echo ERROR: fp-compiler deb not installed
-#  exit
-#fi
+# get FPC version
+FPCVersion=$(fpc -v | grep 'Compiler version' | sed 's/.*\([0-9]\.[0-9]\.[0-9]\).*/\1/')
+Arch=$(fpc -v | grep 'Compiler version' | sed 's/.*for \([^ ]\+\)$/\1/')
 
 # get date of day
 Year=`date +%y`
@@ -22,7 +19,7 @@ SrcTGZ=lazarus-$LazVersion-$LazRelease.tar.gz
 CurDir=`pwd`
 TmpDir=/tmp/lazarus$LazVersion
 LazBuildDir=$TmpDir/lazarus_build
-LazDeb=$CurDir/lazarus-$LazVersion-$LazRelease.deb
+LazDeb=$CurDir/lazarus_${LazVersion}-${LazRelease}_$Arch.deb
 DebianSrcDir=$CurDir/debian_lazarus
 LazDestDir=$LazBuildDir/usr/share/lazarus
 FPCVersion=2.0.2
