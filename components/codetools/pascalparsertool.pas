@@ -468,7 +468,7 @@ begin
     exit;
   end;
   ClearLastError;
-  DebugLn('TPascalParserTool.BuildTree B OnlyIntf=',dbgs(OnlyInterfaceNeeded),'  ',TCodeBuffer(Scanner.MainCode).Filename);
+//  DebugLn('TPascalParserTool.BuildTree B OnlyIntf=',dbgs(OnlyInterfaceNeeded),'  ',TCodeBuffer(Scanner.MainCode).Filename);
   //CheckHeap('TBasicCodeTool.BuildTree B '+IntToStr(MemCheck_GetMem_Cnt));
   
   // scan code

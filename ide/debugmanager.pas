@@ -1114,7 +1114,7 @@ begin
     then Include(FManagerStates,dmsInitializingDebuggerObjectFailed);
   end;
 
-  DebugLn('[TDebugManager.OnDebuggerChangeState] state: ', STATENAME[FDebugger.State]);
+  //DebugLn('[TDebugManager.OnDebuggerChangeState] state: ', STATENAME[FDebugger.State]);
 
   // All conmmands
   // -------------------
@@ -1312,6 +1312,11 @@ begin
       if (Project1<>nil) then
         TBreakPointsDlg(CurDialog).BaseDirectory:=Project1.ProjectDirectory;
     end;
+  end;
+  if (CurDialog is tEvaluateDlg) and  (sourceNotebook<>nil)
+  then begin
+        tEvaluateDlg(CurDialog).FindText:=
+         SourceNotebook.GetActiveSE.GetWordAtCurrentCaret;
   end;
   FDialogs[ADialogType].Show;
   FDialogs[ADialogType].BringToFront;

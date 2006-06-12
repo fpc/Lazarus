@@ -63,8 +63,14 @@ type
       Shift: TShiftState);
     procedure tbEvaluateClick(Sender: TObject);
     procedure tbWatchClick(Sender: TObject);
+    
   private
+    function GetFindText: string;
+    procedure SetFindText(const NewFindText: string);
+
   public
+    property FindText: string read GetFindText write SetFindText;
+
   end;
 
 implementation
@@ -91,6 +97,22 @@ begin
     Key := 0;
   end;
 end;
+
+procedure TEvaluateDlg.SetFindText(const NewFindText: string);
+begin
+  if NewFindText<>'' then begin
+    cmbExpression.Text := NewFindText;
+    cmbExpression.SelectAll;
+    tbEvaluate.Click;
+  end;
+  ActiveControl := cmbExpression;
+end;
+
+function TEvaluateDlg.GetFindText: string;
+begin
+  Result := cmbExpression.Text;
+end;
+
 
 procedure TEvaluateDlg.FormShow(Sender: TObject);
 begin
