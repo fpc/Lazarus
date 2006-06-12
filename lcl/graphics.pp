@@ -923,6 +923,7 @@ type
     procedure SetHandle(NewHandle: HDC); virtual;
     procedure SetInternalPenPos(const Value: TPoint); virtual;
     Procedure SetPixel(X,Y: Integer; Value: TColor); virtual;
+    procedure FreeHandle;virtual;
   public
     constructor Create;
     destructor Destroy; override;

@@ -79,9 +79,9 @@ end;
  ------------------------------------------------------------------------------}
 procedure TControlCanvas.CreateHandle;
 begin
-//DebugLn('[TControlCanvas.CreateHandle] ',FControl<>nil,' DC=',DbgS(FDeviceContext,8),' WinHandle=',DbgS(FWindowHandle,8));
-  if FControl = nil
-  then inherited CreateHandle
+  //DebugLn('[TControlCanvas.CreateHandle] ',FControl<>nil,' DC=',DbgS(FDeviceContext,8),' WinHandle=',DbgS(FWindowHandle,8));
+  if FControl = nil then
+    inherited CreateHandle
   else begin
     if FDeviceContext = 0 then
     begin
@@ -102,9 +102,9 @@ end;
  ------------------------------------------------------------------------------}
 procedure TControlCanvas.FreeHandle;
 begin
+  inherited;
   if FDeviceContext <> 0 then
   begin
-    Handle := 0;
     ReleaseDC(FWindowHandle, FDeviceContext);
     FDeviceContext := 0;
   end;

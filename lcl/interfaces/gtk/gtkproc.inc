@@ -3908,17 +3908,14 @@ function GetWidgetInfo(const AWidget: Pointer;
 var
   MainWidget: PGtkObject;
 begin
-  if AWidget <> nil
-  then begin
+  if AWidget <> nil then begin
     MainWidget := GetMainWidget(AWidget);
-    if MainWidget = nil then MainWidget := AWidget;
     Result := gtk_object_get_data(MainWidget, 'widgetinfo');
-    if (Result = nil) and ACreate
-    then begin
+    if (Result = nil) and ACreate then begin
       Result := CreateWidgetInfo(MainWidget);
       // use the main widget as default
       Result^.CoreWidget := PGtkWidget(MainWidget);
-    end;  
+    end;
   end
   else Result := nil;
 end;

@@ -246,7 +246,7 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    procedure FreeHandle;
+    procedure FreeHandle;override;
     property Control: TControl read FControl write SetControl;
   end;
   

@@ -124,7 +124,7 @@ procedure TScrollingWinControl.DestroyWnd;
 begin
   inherited DestroyWnd;
   if Canvas<>nil then
-    Canvas.Handle:=0;
+    Canvas.FreeHandle;
 end;
 
 Function TScrollingWinControl.StoreScrollBars : Boolean;

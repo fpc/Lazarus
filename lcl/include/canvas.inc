@@ -1367,7 +1367,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCanvas.DeselectHandles;
 begin
-  //debugln('TCanvas.DeselectHandles ',ClassName,' Self=',DbgS(Self),' Handle=',DbgS(FHandle),8),' FSavedBrushHandle=',DbgS(Cardinal(FSavedBrushHandle));
+  //debugln('TCanvas.DeselectHandles ',ClassName,' Self=',DbgS(Self),' Handle=',DbgS(FHandle),' FSavedBrushHandle=',DbgS(Cardinal(FSavedBrushHandle)));
   if (FHandle<>0) then begin
     // select default sub handles in the device context without deleting owns
     if FSavedBrushHandle<>0 then begin
@@ -1395,7 +1395,12 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCanvas.CreateHandle;
 begin
-// Plain canvas does nothing
+  // Plain canvas does nothing
+end;
+
+procedure TCanvas.FreeHandle;
+begin
+  Handle:=0;
 end;
 
 {------------------------------------------------------------------------------
