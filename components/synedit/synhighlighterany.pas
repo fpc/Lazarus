@@ -1246,7 +1246,6 @@ begin
     FEntity := Value;
     DefHighLightChange(nil);
   end;
-
 end;
 
 procedure TSynAnySyn.AmpersandProc;
@@ -1290,7 +1289,11 @@ end;
 
 procedure TSynAnySyn.SetDollarVariables(const Value: boolean);
 begin
-  FDollarVariables := Value;
+  if Value<>FDollarVariables then begin
+    FDollarVariables := Value;
+    MakeMethodTables;
+    DefHighLightChange(nil);
+  end;
 end;
 
 procedure TSynAnySyn.DollarProc;
