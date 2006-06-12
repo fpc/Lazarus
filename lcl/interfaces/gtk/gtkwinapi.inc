@@ -6504,17 +6504,27 @@ begin
     {$ENDIF}
   end;
   Result := True;
-  gdkRect.X := Rect^.Left;
-  gdkRect.Y := Rect^.Top;
-  gdkRect.Width := (Rect^.Right - Rect^.Left);
-  gdkRect.Height := (Rect^.Bottom - Rect^.Top);
-
   PaintWidget:=GetFixedWidget(Widget);
   if PaintWidget=nil then PaintWidget:=Widget;
+
+  if Rect = nil then begin
+    gdkRect.X := 0;//PaintWidget^.Allocation.X;
+    gdkRect.Y := 0;//PaintWidget^.Allocation.Y;
+    gdkRect.Width:=PaintWidget^.Allocation.Width;
+    gdkRect.Height:=PaintWidget^.Allocation.Height;
+
+  end else begin
+    gdkRect.X := Rect^.Left;
+    gdkRect.Y := Rect^.Top;
+    gdkRect.Width := (Rect^.Right - Rect^.Left);
+    gdkRect.Height := (Rect^.Bottom - Rect^.Top);
+  end;
+
 
   {$IfDef GTK2}
     if (PaintWidget<>nil) and GTK_WIDGET_NO_WINDOW(PaintWidget)
       and (not GtkWidgetIsA(PGTKWidget(PaintWidget),GTKAPIWidget_GetType))
+      and (Rect<>nil)
     then begin
       Inc(gdkRect.X, PaintWidget^.Allocation.x);
       Inc(gdkRect.Y, PaintWidget^.Allocation.y);
