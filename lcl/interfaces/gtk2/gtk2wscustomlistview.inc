@@ -142,6 +142,10 @@ begin
   //DebugLn('Gtk2_ItemSelectionChanged');
   Widgets := PTVWidgets(WidgetInfo^.UserData);
   msg.Msg := CN_NOTIFY;
+  if (widgets=nil) or (Widgets^.ItemCache=nil) or (Widgets^.ItemCache.Count=0) then begin
+    debugln(' Gtk2_ItemSelectionChanged  ItemChache=nil ',tComponent(widgetInfo^.lclObject).name);
+    exit;
+  end;
   for i := 0 to Widgets^.ItemCache.Count -1 do begin
 
     FillChar(NM, SizeOf(NM), 0);

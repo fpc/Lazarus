@@ -82,7 +82,7 @@ begin
         Exit;
       end;
       
-      if CompareText(lfFacename,'default')=0 then begin
+      if  (lfHeight=0) and (CompareText(lfFacename,'default')=0) then begin
         LoadDefaultFont;
         Result := HFONT(GdiObject);
         exit;
@@ -112,7 +112,7 @@ begin
       else
         FullString:=IntToStr(aSize);
       FullString := AFamily + ' ' + aStyle + ' ' + FullString;
-      
+
 
       GdiObject^.GDIFontObject :=
         pango_font_description_from_string(PChar(FullString));
@@ -131,10 +131,10 @@ begin
         // which would be great with the given lfheight value, but older gtk2 version
         // doesn't have this funtion
         if lfHeight<0 then
-          aSize:= (abs(lfheight) * 72) div ScreenInfo.PixelsPerInchX
+          aSize:= (abs(lfheight) * 72 * PANGO_SCALE) div ScreenInfo.PixelsPerInchX
         else
-          aSize:=lfHeight;
-        pango_font_description_set_size( GdiObject^.GDIFontObject, aSize*PANGO_SCALE);
+          aSize:=lfHeight*PANGO_SCALE;
+        pango_font_description_set_size( GdiObject^.GDIFontObject, aSize);
       end;
 
 
@@ -219,7 +219,7 @@ var
       aRect := Classes.Rect(0,0,0,0);
       pango_layout_get_pixel_size(Layout, @arect.Right, @arect.Bottom);
 
-      OffsetRect(aRect, X+DCOrigin.X,Y+DCOrigin.Y);
+      OffsetRect(aRect, X,Y);
 
       gdk_draw_layout_with_colors(drawable, gc, aRect.Left, aRect.Top, Layout, Foreground, nil);
     end;
@@ -307,7 +307,7 @@ begin
           UpdateDCTextMetric(TDeviceContext(DC));
           TxtPt.X := X + DCOrigin.X;
           LineHeight := DCTextMetric.TextMetric.tmHeight;
-          TxtPt.Y := TopY + LineHeight + DCOrigin.Y;
+          TxtPt.Y := TopY  + DCOrigin.Y;
 
           SelectedColors := dcscCustom;
 
@@ -499,11 +499,10 @@ Function TGtk2WidgetSet.TextOut(DC: HDC; X,Y : Integer; Str : Pchar;
   Count: Integer) : Boolean;
 var
   DCOrigin: TPoint;
-  aRect : TRect;
-
   UnRef,
   Underline,
   StrikeOut : Boolean;
+  yOffset   : integer;
 
   Layout : PPangoLayout;
   UseFontDesc : PPangoFontDescription;
@@ -537,6 +536,9 @@ begin
         DebugLn('WARNING: [TGtk2WidgetSet.TextOut] Missing Font')
       else begin
         DCOrigin:=GetDCOffset(TDeviceContext(DC));
+        with DCTextMetric.TextMetric do
+          yOffset:= tmHeight-tmDescent-tmAscent;
+        if yOffset<0 then yOffset:=0;
         GetStyle(lgsdefault);
         Layout := gtk_widget_create_pango_layout (GetStyleWidget(lgsdefault), nil);
         pango_layout_set_font_description(Layout, UseFontDesc);
@@ -571,15 +573,9 @@ begin
         //cross-compatibility with GTK1.2 and win32 interfaces.....
 
         pango_layout_set_text(Layout, Str, Count);
-
-        aRect := Rect(0,0,0, 0);
-        pango_layout_get_pixel_size(Layout, @arect.Right, @arect.Bottom);
-
-        OffsetRect(aRect, X+DCOrigin.X,Y+DCOrigin.Y);
-
         EnsureGCColor(DC, dccCurrentTextColor, True, False);
 
-        gdk_draw_layout_with_colors(drawable, GC, aRect.Left, aRect.Top, Layout, nil, nil);
+        gdk_draw_layout_with_colors(drawable, GC, X+DCOrigin.X, Y+DCOrigin.Y+yOffset, Layout, nil, nil);
         g_object_unref(Layout);
         Result := True;
         If UnRef then

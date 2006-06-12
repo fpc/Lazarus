@@ -555,17 +555,48 @@ end;
 
 procedure TheFontsInfoManager.RetrieveLogFontForComparison(ABaseFont: TFont;
   var LF: TLogFont);
-var
-  pEnd: PChar;
+
+  procedure SetLogFontName(const NewName: string);
+  var l: integer;
+    aName: string;
+  begin
+    if IsFontNameXLogicalFontDesc(NewName) then
+      aName:=ExtractFamilyFromXLFDName(NewName)
+    else
+      aName:=NewName;
+    l:=High(LF.lfFaceName)-Low(LF.lfFaceName);
+    if l>length(aName) then l:=length(aName);
+    if l>0 then
+      Move(aName[1],LF.lfFaceName[Low(LF.lfFaceName)],l);
+    LF.lfFaceName[Low(LF.lfFaceName)+l]:=#0;
+  end;
+
+  
 begin
-  GetObject(ABaseFont.Handle, SizeOf(TLogFont), @LF);
   with LF do
   begin
+    FillChar(LF,SizeOf(LF),0);
+    lfHeight := ABaseFont.Height;
+    lfWidth := 0;
+    lfEscapement := 0;
+    lfOrientation := 0;
+
+    if fsBold in ABaseFont.Style then lfWeight:=FW_BOLD
+                                 else lfWeight:=FW_NORMAL;
+    lfCharSet := Byte(ABaseFont.Charset);
+    SetLogFontName(aBaseFont.Name);
+    lfQuality := DEFAULT_QUALITY;
+    lfOutPrecision := OUT_DEFAULT_PRECIS;
+    lfClipPrecision := CLIP_DEFAULT_PRECIS;
+    case ABaseFont.Pitch of
+      fpVariable: lfPitchAndFamily := VARIABLE_PITCH;
+      fpFixed: lfPitchAndFamily := FIXED_PITCH;
+    else
+      lfPitchAndFamily := DEFAULT_PITCH;
+    end;
     lfItalic := 0;
     lfUnderline := 0;
     lfStrikeOut := 0;
-    pEnd := StrEnd(lfFaceName);
-    FillChar(pEnd[1], @lfFaceName[High(lfFaceName)] - Pointer(pEnd), 0);
   end;
 end;
 
