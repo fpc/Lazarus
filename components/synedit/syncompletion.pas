@@ -1324,8 +1324,9 @@ procedure TSynCompletion.Notification(AComponent: TComponent;
   Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
-  if (Operation = opRemove) and (fEditors.IndexOf(AComponent) > -1) then
-    RemoveEditor(AComponent as TCustomSynEdit);
+  if (Operation = opRemove) and (fEditors <> nil) then
+    if (fEditors.IndexOf(AComponent) > -1) then
+      RemoveEditor(AComponent as TCustomSynEdit);
 end;
 
 constructor TSynCompletion.Create(AOwner: TComponent);
@@ -1436,8 +1437,8 @@ begin
   Form := nil;
   while fEditors.Count <> 0 do
     RemoveEditor(TCustomSynEdit(fEditors.last));
-  fEditors.Free;
-  fEditstuffs.free;
+  FreeAndNil(fEditors);
+  FreeAndNil(fEditstuffs);
   inherited;
 end;
 
@@ -1545,9 +1546,9 @@ begin
 {$ELSE}
     RemoveEditor(feditors.last);
 {$ENDIF}
-  fEditors.free;
-  fEditstuffs.free;
-  fAutoCompleteList.free;
+  FreeAndNil(fEditors);
+  FreeAndNil(fEditstuffs);
+  FreeAndNil(fAutoCompleteList);
   inherited;
 end;
 
@@ -1676,8 +1677,9 @@ end;
 procedure TSynAutoComplete.Notification(AComponent: TComponent; Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
-  if (Operation = opRemove) and (fEditors.indexOf(AComponent) <> -1) then
-    RemoveEditor(AComponent as TCustomSynEdit);
+  if (Operation = opRemove) and (fEditors <> nil) then
+    if fEditors.indexOf(AComponent) <> -1 then
+      RemoveEditor(AComponent as TCustomSynEdit);
 end;
 
 function TSynAutoComplete.RemoveEditor(aEditor: TCustomSynEdit): boolean;
