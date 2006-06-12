@@ -46,11 +46,9 @@ type
     procedure HelpButtonClick(Sender: TObject);
   private
     { private declarations }
-
   public
     { public declarations }
-
-  end; 
+  end;
 
 var
   Form1: TForm1; 
@@ -65,15 +63,11 @@ begin
   ShowHelpOrErrorForKeyword('','HTML/index.html');  // HTML is case sensitive
 end;
 
-
 procedure TForm1.FormCreate(Sender: TObject);
 begin
   HtmlHelp2Viewer.RegisterHelpViewer;  // This registers the help viewer
                                        // using the iPro viewer
 end;
-
-
-
 
 initialization
   {$I htmlhelp2unit1.lrs}

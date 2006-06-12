@@ -35,8 +35,9 @@ unit HtmlHelp2Viewer;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ExtCtrls, LCLProc,
-  IpHtml, Buttons, helpintfs, lazhelpintf, ComCtrls, ipfilebroker, iputils;
+  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ExtCtrls,
+  LCLProc, IpHtml, Buttons, helpintfs, lazhelpintf, ComCtrls, ipfilebroker,
+  iputils;
 
 type
 
@@ -69,7 +70,10 @@ procedure RegisterHelpViewer;
 implementation
 
 type
-THTMLHelpViewer = class(THelpViewer)
+
+  { THTMLHelpViewer }
+
+  THTMLHelpViewer = class(THelpViewer)
   private
   public
     constructor Create(TheOwner: TComponent); override;
@@ -122,19 +126,16 @@ begin
   IHP.GoBack;
 end;
 
-
 procedure THelpViewerForm.ForwardButtonClick(Sender: TObject);
 begin
   IHP.GoForward;
 end;
-
 
 procedure THelpViewerForm.IHPDocumentOpen(Sender: TObject);
 begin
   BackButton.Enabled := IHP.canGoBack;
   ForwardButton.Enabled := IHP.canGoForward;
 end;
-
 
 procedure THelpViewerForm.showURL(URL : String);
 begin
