@@ -1,0 +1,187 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <ProjectSession>
+    <PathDelim Value="/"/>
+    <Version Value="5"/>
+    <Units Count="23">
+      <Unit0>
+        <Filename Value="htmlhelpsample.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="HTMLHelpSample"/>
+        <CursorPos X="28" Y="6"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="2"/>
+        <UsageCount Value="61"/>
+        <Loaded Value="True"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="htmlhelp2unit1.pas"/>
+        <ComponentName Value="Form1"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceFilename Value="htmlhelp2unit1.lrs"/>
+        <UnitName Value="HtmlHelp2Unit1"/>
+        <CursorPos X="78" Y="65"/>
+        <TopLine Value="32"/>
+        <EditorIndex Value="0"/>
+        <UsageCount Value="61"/>
+        <Loaded Value="True"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="htmlhelp2viewer.pas"/>
+        <ComponentName Value="HelpViewerForm"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceFilename Value="htmlhelp2viewer.lrs"/>
+        <UnitName Value="HtmlHelp2Viewer"/>
+        <CursorPos X="26" Y="36"/>
+        <TopLine Value="12"/>
+        <EditorIndex Value="1"/>
+        <UsageCount Value="61"/>
+        <Bookmarks Count="1">
+          <Item0 X="3" Y="117" ID="1"/>
+        </Bookmarks>
+        <Loaded Value="True"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="../../../../WinPrj/fd/helptest/html/edit1.html"/>
+        <UsageCount Value="58"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="../../../../WinPrj/fd/helptest/html/edit2.html"/>
+        <UsageCount Value="58"/>
+      </Unit4>
+      <Unit5>
+        <Filename Value="../../../../WinPrj/fd/helptest/html/index.html"/>
+        <UsageCount Value="58"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="../../../../WinPrj/fd/helptest/Ipfilebroker.pas"/>
+        <UnitName Value="Ipfilebroker"/>
+        <CursorPos X="1" Y="294"/>
+        <TopLine Value="275"/>
+        <UsageCount Value="22"/>
+      </Unit6>
+      <Unit7>
+        <Filename Value="../../lcl/lazhelphtml.pas"/>
+        <UnitName Value="LazHelpHTML"/>
+        <CursorPos X="12" Y="129"/>
+        <TopLine Value="118"/>
+        <UsageCount Value="27"/>
+      </Unit7>
+      <Unit8>
+        <Filename Value="../../lcl/lazhelpintf.pas"/>
+        <UnitName Value="LazHelpIntf"/>
+        <CursorPos X="1" Y="1270"/>
+        <TopLine Value="1259"/>
+        <UsageCount Value="27"/>
+      </Unit8>
+      <Unit9>
+        <Filename Value="../../lcl/helpintfs.pas"/>
+        <UnitName Value="HelpIntfs"/>
+        <CursorPos X="1" Y="324"/>
+        <TopLine Value="313"/>
+        <UsageCount Value="27"/>
+      </Unit9>
+      <Unit10>
+        <Filename Value="../../../fpc/cvssrc/fpc/rtl/objpas/classes/classesh.inc"/>
+        <CursorPos X="3" Y="97"/>
+        <TopLine Value="86"/>
+        <UsageCount Value="27"/>
+      </Unit10>
+      <Unit11>
+        <Filename Value="iphtml.pas"/>
+        <UnitName Value="IpHtml"/>
+        <CursorPos X="1" Y="17448"/>
+        <TopLine Value="17436"/>
+        <UsageCount Value="27"/>
+      </Unit11>
+      <Unit12>
+        <Filename Value="../../../../WinPrj/fd/helptest/Ipbroker.pas"/>
+        <UnitName Value="IpBroker"/>
+        <CursorPos X="1" Y="2626"/>
+        <TopLine Value="2618"/>
+        <UsageCount Value="11"/>
+      </Unit12>
+      <Unit13>
+        <Filename Value="../../../../WinPrj/fd/helptest/ipcache.pas"/>
+        <UnitName Value="IpCache"/>
+        <CursorPos X="12" Y="396"/>
+        <TopLine Value="385"/>
+        <UsageCount Value="10"/>
+      </Unit13>
+      <Unit14>
+        <Filename Value="../../../../WinPrj/fd/helptest/IpHttp.pas"/>
+        <UnitName Value="IpHttp"/>
+        <CursorPos X="60" Y="43"/>
+        <TopLine Value="23"/>
+        <UsageCount Value="10"/>
+      </Unit14>
+      <Unit15>
+        <Filename Value="../../../../WinPrj/fd/helptest/IpCookie.pas"/>
+        <UnitName Value="IpCookie"/>
+        <CursorPos X="11" Y="599"/>
+        <TopLine Value="588"/>
+        <UsageCount Value="10"/>
+      </Unit15>
+      <Unit16>
+        <Filename Value="iputils.pas"/>
+        <UnitName Value="IpUtils"/>
+        <CursorPos X="70" Y="242"/>
+        <TopLine Value="228"/>
+        <UsageCount Value="13"/>
+      </Unit16>
+      <Unit17>
+        <Filename Value="../../../../WinPrj/fd/helptest/IpSock.pas"/>
+        <UnitName Value="IpSock"/>
+        <CursorPos X="33" Y="10028"/>
+        <TopLine Value="10017"/>
+        <UsageCount Value="10"/>
+      </Unit17>
+      <Unit18>
+        <Filename Value="Ipfilebroker.pas"/>
+        <UnitName Value="Ipfilebroker"/>
+        <CursorPos X="35" Y="130"/>
+        <TopLine Value="126"/>
+        <UsageCount Value="11"/>
+      </Unit18>
+      <Unit19>
+        <Filename Value="turbopoweripro.pas"/>
+        <UnitName Value="TurboPowerIPro"/>
+        <CursorPos X="69" Y="10"/>
+        <TopLine Value="2"/>
+        <UsageCount Value="11"/>
+      </Unit19>
+      <Unit20>
+        <Filename Value="../../lcl/lclproc.pas"/>
+        <UnitName Value="LCLProc"/>
+        <CursorPos X="37" Y="187"/>
+        <TopLine Value="184"/>
+        <UsageCount Value="11"/>
+      </Unit20>
+      <Unit21>
+        <Filename Value="../../lcl/include/customform.inc"/>
+        <CursorPos X="1" Y="326"/>
+        <TopLine Value="315"/>
+        <UsageCount Value="10"/>
+      </Unit21>
+      <Unit22>
+        <Filename Value="../../components/turbopower_ipro/iphtml.pas"/>
+        <UnitName Value="IpHtml"/>
+        <CursorPos X="1" Y="16382"/>
+        <TopLine Value="16371"/>
+        <UsageCount Value="10"/>
+      </Unit22>
+    </Units>
+    <General>
+      <ActiveEditorIndexAtStart Value="1"/>
+    </General>
+    <JumpHistory Count="0" HistoryIndex="-1"/>
+  </ProjectSession>
+  <Debugging>
+    <Watches Count="1">
+      <Item1>
+        <Expression Value="URL"/>
+        <Enabled Value="False"/>
+      </Item1>
+    </Watches>
+  </Debugging>
+</CONFIG>
