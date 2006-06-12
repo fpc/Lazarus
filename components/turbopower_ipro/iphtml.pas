@@ -2759,7 +2759,9 @@ type
     procedure CopyToClipboard;
     procedure EnumDocuments(Enumerator: TIpHtmlEnumerator);
     procedure GoBack;
+    function canGoBack : boolean;
     procedure GoForward;
+    function canGoForward : boolean;
     function HaveSelection: Boolean;
     property HotNode : TIpHtmlNode read FHotNode;                      {!!.12}
     function IsURLHtml(const URL: string): Boolean;
@@ -17441,9 +17443,17 @@ end;
 procedure TIpHtmlCustomPanel.GoBack;
 begin
   if (URLStack.Count > 0) then begin
-    InternalOpenURL(TargetStack[Stp], URLStack[Stp]);
-    dec(Stp);
+    if URLStack.Count >= URLStack.count then Stp := URLStack.Count - 1;
+    if URLStack.Count > 0 then begin
+      InternalOpenURL(TargetStack[Stp], URLStack[Stp]);
+      dec(Stp);
+    end;
   end;
+end;
+
+function TIpHtmlCustomPanel.canGoBack : boolean;
+begin
+  result := (URLStack.Count > 0);
 end;
 
 procedure TIpHtmlCustomPanel.GoForward;
@@ -17452,6 +17462,11 @@ begin
     InternalOpenURL(TargetStack[Stp + 1], URLStack[Stp + 1]);
     inc(Stp);
   end;
+end;
+
+function TIpHtmlCustomPanel.canGoForward : boolean;
+begin
+  result := (Stp < URLStack.Count - 1);
 end;
 
 procedure TIpHtmlCustomPanel.Push(const Target, URL: string);

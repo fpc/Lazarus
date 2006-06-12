@@ -22,7 +22,7 @@
     <Description Value="Turbopower Internet Pro - Lazarus Package"/>
     <License Value="MPL - Mozilla public license"/>
     <Version Major="1"/>
-    <Files Count="9">
+    <Files Count="10">
       <Item1>
         <Filename Value="ipanim.pas"/>
         <UnitName Value="IpAnim"/>
@@ -32,34 +32,39 @@
         <UnitName Value="IpConst"/>
       </Item2>
       <Item3>
+        <Filename Value="ipdefct.inc"/>
+        <Type Value="Include"/>
+      </Item3>
+      <Item4>
+        <Filename Value="ipdefine.inc"/>
+        <Type Value="Include"/>
+      </Item4>
+      <Item5>
+        <Filename Value="ipfilebroker.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="Ipfilebroker"/>
+      </Item5>
+      <Item6>
         <Filename Value="iphtml.pas"/>
         <HasRegisterProc Value="True"/>
         <UnitName Value="IpHtml"/>
-      </Item3>
-      <Item4>
-        <Filename Value="iphtmlpv.pas"/>
-        <UnitName Value="IpHtmlPv"/>
-      </Item4>
-      <Item5>
-        <Filename Value="ipmsg.pas"/>
-        <UnitName Value="IpMsg"/>
-      </Item5>
-      <Item6>
-        <Filename Value="ipstrms.pas"/>
-        <UnitName Value="IpStrms"/>
       </Item6>
       <Item7>
-        <Filename Value="iputils.pas"/>
-        <UnitName Value="IpUtils"/>
+        <Filename Value="iphtmlpv.pas"/>
+        <UnitName Value="IpHtmlPv"/>
       </Item7>
       <Item8>
-        <Filename Value="ipdefct.inc"/>
-        <Type Value="Include"/>
+        <Filename Value="ipmsg.pas"/>
+        <UnitName Value="IpMsg"/>
       </Item8>
       <Item9>
-        <Filename Value="ipdefine.inc"/>
-        <Type Value="Include"/>
+        <Filename Value="ipstrms.pas"/>
+        <UnitName Value="IpStrms"/>
       </Item9>
+      <Item10>
+        <Filename Value="iputils.pas"/>
+        <UnitName Value="IpUtils"/>
+      </Item10>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="1">
