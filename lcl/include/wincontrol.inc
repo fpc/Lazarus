@@ -978,7 +978,7 @@ begin
           or (inherited AutoSizeDelayed);
   //if Result then debugln('TWinControl.AutoSizeDelayed A ',DbgSName(Self),' wcfCreatingChildHandles=',dbgs(wcfCreatingChildHandles in FWinControlFlags),' csLoading=',dbgs(csLoading in ComponentState));
   {$IFDEF VerboseCanAutoSize}
-  if Result and AutoSize then begin
+  if Result {and AutoSize} then begin
     DbgOut('TWinControl.AutoSizeDelayed Self='+DbgSName(Self)+' ');
     if not HandleAllocated then debugln('not HandleAllocated')
     else if not FShowing then debugln('not FShowing')
@@ -2515,8 +2515,7 @@ var
 begin
   bShow := HandleObjectShouldBeVisible;
 
-  if bShow
-  then begin
+  if bShow then begin
     if not HandleAllocated then CreateHandle;
     if FWinControls <> nil
     then begin
@@ -2540,6 +2539,7 @@ begin
       FShowing := not bShow;
   end;
   
+  //DebugLn(['TWinControl.UpdateShowing ',DbgSName(Self),' FShowing=',FShowing,' AutoSizeDelayed=',AutoSizeDelayed]);
   if FShowing then begin
     ResizeDelayedAutoSizeChildren;
     AdjustSize;

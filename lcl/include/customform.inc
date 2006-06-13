@@ -1475,8 +1475,7 @@ end;
 ------------------------------------------------------------------------------}
 function TCustomForm.IsForm: Boolean;
 begin
-  //TODO:
-  Result := True;
+  Result := true;
 end;
 
 function TCustomForm.GetPixelsPerInch: Longint;

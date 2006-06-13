@@ -1983,7 +1983,7 @@ begin
           and (not AutoSizing)
           and (not (csDestroying in ComponentState))
           and IsControlVisible;
-  if AutoSize and not Result then begin
+  if (not Result) and AutoSize then begin
     {$IFDEF VerboseCanAutoSize}
     DbgOut('TControl.AutoSizeCanStart Self='+DbgSName(Self)+' ');
     if not AutoSize then DebugLn('not AutoSize')
