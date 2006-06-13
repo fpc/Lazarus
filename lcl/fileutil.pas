@@ -104,7 +104,7 @@ function FindDiskFileCaseInsensitive(const Filename: string): string;
 function ReadFileToString(const Filename: string): string;
 function CopyFile(const SrcFilename, DestFilename: string): boolean;
 function CopyFile(const SrcFilename, DestFilename: string; PreserveTime: boolean): boolean;
-function GetTempFilename(const Path, Prefix: string): string;
+function GetTempFilename(const Directory, Prefix: string): string;
 
 implementation
 

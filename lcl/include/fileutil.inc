@@ -1047,20 +1047,17 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  function GetTempFilename(const Path, Prefix: string): string;
+  function GetTempFilename(const Directory, Prefix: string): string;
  ------------------------------------------------------------------------------}
-function GetTempFilename(const Path, Prefix: string): string;
+function GetTempFilename(const Directory, Prefix: string): string;
 var
   i: Integer;
   CurPath: String;
-  CurName: String;
 begin
-  Result:=ExpandFilename(Path);
-  CurPath:=AppendPathDelim(ExtractFilePath(Result));
-  CurName:=Prefix+ExtractFileNameOnly(Result);
+  CurPath:=AppendPathDelim(ExpandFilename(Directory))+Prefix;
   i:=1;
   repeat
-    Result:=CurPath+CurName+IntToStr(i)+'.tmp';
+    Result:=CurPath+IntToStr(i)+'.tmp';
     if not FileExists(Result) then exit;
     inc(i);
   until false;
