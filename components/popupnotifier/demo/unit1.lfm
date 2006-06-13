@@ -12,7 +12,7 @@ object Form1: TForm1
   Width = 214
   object Button1: TButton
     BorderSpacing.InnerBorder = 4
-    Caption = 'Show/Hide Popup'
+    Caption = 'Show Popup'
     OnClick = Button1Click
     TabOrder = 0
     Left = 24
@@ -1005,6 +1005,7 @@ object Form1: TForm1
     }
     Text = 'This is a test Message'
     Title = 'TestPopup'
+    OnClose = PopupNotifier1Close
     top = 187
   end
 end

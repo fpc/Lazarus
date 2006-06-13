@@ -75,6 +75,7 @@ type
     function GetVisible: Boolean;
     procedure SetVisible(const Value: Boolean);
     procedure SetOnClose(const Value: TCloseEvent);
+    function  GetOnClose:TCloseEvent;
   public
     vNotifierForm: TNotifierForm;
     constructor Create(AOwner: TComponent); override;
@@ -88,7 +89,7 @@ type
     property Text: string read GetText write SetText;
     property Title: string read GetTitle write SetTitle;
     property Visible: Boolean read GetVisible write SetVisible;
-    property OnClose: TCloseEvent write SetOnClose;
+    property OnClose: TCloseEvent  read GetOnClose write SetOnClose;
   end;
 
 const
@@ -229,12 +230,12 @@ end;
 *  Releases associated resources of the notifier form
 *******************************************************************}
 destructor TNotifierForm.Destroy;
+
 begin
   ImgIcon.Free;
   lblTitle.Free;
   lblText.Free;
   BtnX.Free;
-
   inherited Destroy;
 end;
 
@@ -244,7 +245,10 @@ end;
 *  Utilized for events that hide the form, such as clicking on it
 *******************************************************************}
 procedure TNotifierForm.HideForm(Sender: TObject);
+Var NoValue :TCloseAction;
 begin
+if Assigned(OnClose) then
+   OnClose(Self,NoValue);
   Hide;
 end;
 
@@ -322,8 +326,14 @@ end;
 
 procedure TPopupNotifier.SetOnClose(const Value: TCloseEvent);
 begin
-  vNotifierForm.OnClose := Value;
+  VNotifierForm.Onclose := Value;
 end;
+
+function TPopupNotifier.GetOnClose:TCloseEvent;
+begin
+  Result := VNotifierForm.Onclose;
+end;
+
 
 function TPopupNotifier.GetVisible: Boolean;
 begin
