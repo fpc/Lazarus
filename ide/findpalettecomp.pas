@@ -87,11 +87,12 @@ end;
 
 procedure TFindPaletteComponentDlg.FormCreate(Sender: TObject);
 begin
-  ComponentsGroupBox.Caption:='Components';
-  SelectButton.Caption:='Select';
-  CancelButton.Caption:='Cancel';
+  Caption:=lisFPFindPaletteComponent;
+  ComponentsGroupBox.Caption:=lisFPComponents;
+  SelectButton.Caption:=lisMenuSelect;
+  CancelButton.Caption:=dlgCancel;
   PatternEdit.Text:='';
-  SearchPatternGroupBox.Caption:='Find';
+  SearchPatternGroupBox.Caption:=lisMenuFind;
   ComponentsListBox.ItemHeight:=ComponentPaletteBtnWidth;
   
   UpdateComponentSelection;
