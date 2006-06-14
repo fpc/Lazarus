@@ -2084,6 +2084,7 @@ resourcestring
   // component palette
   lisCompPalOpenPackage = 'Open package';
   lisCompPalOpenUnit = 'Open unit';
+  lisCompPalFindComponent = 'Find component';
 
   // macro promp dialog
   lisMacroPromptEnterData = 'Enter data';

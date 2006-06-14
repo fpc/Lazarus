@@ -6,19 +6,21 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
-  DockForm2Unit, Buttons, Menus, LDockCtrl;
+  XMLCfg, DockForm2Unit, Buttons, Menus, LDockCtrl;
 
 type
 
   { TMainForm }
 
   TMainForm = class(TForm)
+    SaveLayoutButton: TButton;
     CreateNewFormButton: TButton;
     MainPopupMenu: TPopupMenu;
     procedure CreateNewFormButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormPaint(Sender: TObject);
+    procedure SaveLayoutButtonClick(Sender: TObject);
   private
     function CreateNewForm: TCustomForm;
   public
@@ -37,6 +39,11 @@ procedure TMainForm.FormPaint(Sender: TObject);
 begin
   if Sender=nil then ;
   PaintBoundaries(Self,clBlue);
+end;
+
+procedure TMainForm.SaveLayoutButtonClick(Sender: TObject);
+begin
+  DockingManager.SaveToStream();
 end;
 
 function TMainForm.CreateNewForm: TCustomForm;

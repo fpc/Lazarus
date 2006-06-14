@@ -2003,11 +2003,11 @@ procedure TDesigner.ValidateRename(AComponent: TComponent;
       lisDesThereIsAlreadyAnotherComponentWithTheName, ['"',
       ConflictComponent.Name, '"']));
   end;
-  {$ENDIF}
-  
+
 var
   i: Integer;
   CurComponent: TComponent;
+  {$ENDIF}
 begin
   // check if component is initialized
   if (CurName='') or (NewName='')

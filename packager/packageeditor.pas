@@ -40,7 +40,7 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, StdCtrls, ComCtrls, Buttons, LResources,
   Graphics, LCLType, LCLProc, Menus, Dialogs, FileUtil,
-  AVL_Tree, Laz_XMLCfg, LazIDEIntf, ProjectIntf,
+  AVL_Tree, Laz_XMLCfg, LazIDEIntf, ProjectIntf, FormEditingIntf,
   IDEProcs, LazConf, LazarusIDEStrConsts, IDEOptionDefs, IDEDefs,
   CompilerOptions, CompilerOptionsDlg, ComponentReg, PackageDefs, PkgOptionsDlg,
   AddToPackageDlg, PkgVirtualUnitEditor, PackageSystem;
@@ -1448,7 +1448,7 @@ begin
   with RegisteredListBox do begin
     Name:='RegisteredListBox';
     Align:=alClient;
-    ItemHeight:=23;
+    ItemHeight:=ComponentPaletteBtnWidth-2;
     OnDrawItem:=@RegisteredListBoxDrawItem;
     Style:= lbOwnerDrawFixed;
     Parent:=RegisteredPluginsGroupBox;

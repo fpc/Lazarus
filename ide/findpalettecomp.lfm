@@ -1,0 +1,77 @@
+object FindPaletteComponentDlg: TFindPaletteComponentDlg
+  Left = 290
+  Height = 300
+  Top = 163
+  Width = 400
+  HorzScrollBar.Page = 399
+  VertScrollBar.Page = 299
+  ActiveControl = PatternEdit
+  Caption = 'FindPaletteComponentDlg'
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  object SearchPatternGroupBox: TGroupBox
+    Left = 10
+    Height = 55
+    Top = 5
+    Width = 380
+    Anchors = [akTop, akLeft, akRight]
+    Caption = 'SearchPatternGroupBox'
+    TabOrder = 0
+    object PatternEdit: TEdit
+      Left = 8
+      Height = 23
+      Top = 4
+      Width = 357
+      Anchors = [akTop, akLeft, akRight]
+      OnChange = PatternEditChange
+      TabOrder = 0
+      Text = 'PatternEdit'
+    end
+  end
+  object SelectButton: TButton
+    AnchorSideRight.Control = CancelButton
+    Left = 196
+    Height = 26
+    Top = 260
+    Width = 84
+    Anchors = [akRight, akBottom]
+    AutoSize = True
+    BorderSpacing.Right = 15
+    BorderSpacing.InnerBorder = 4
+    Caption = 'SelectButton'
+    ModalResult = 1
+    TabOrder = 1
+  end
+  object CancelButton: TButton
+    Left = 295
+    Height = 26
+    Top = 260
+    Width = 89
+    Anchors = [akRight, akBottom]
+    AutoSize = True
+    BorderSpacing.InnerBorder = 4
+    Cancel = True
+    Caption = 'CancelButton'
+    ModalResult = 2
+    TabOrder = 2
+  end
+  object ComponentsGroupBox: TGroupBox
+    Left = 10
+    Height = 180
+    Top = 65
+    Width = 380
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    Caption = 'ComponentsGroupBox'
+    TabOrder = 3
+    object ComponentsListBox: TListBox
+      Height = 163
+      Width = 376
+      Align = alClient
+      OnDblClick = ComponentsListBoxDblClick
+      OnDrawItem = ComponentsListBoxDrawItem
+      Style = lbOwnerDrawFixed
+      TabOrder = 0
+      TopIndex = -1
+    end
+  end
+end

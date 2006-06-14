@@ -29,7 +29,7 @@
   Author: Mattias Gaertner
 
   Abstract:
-
+   The implementation of the component palette.
 }
 unit ComponentPalette;
 
@@ -44,7 +44,8 @@ uses
   {$IFDEF CustomIDEComps}
   CustomIDEComps,
   {$ENDIF}
-  LazarusIDEStrConsts, ComponentReg, DesignerProcs, IDEProcs, PackageDefs;
+  LazarusIDEStrConsts, ComponentReg, DesignerProcs, IDEProcs, PackageDefs,
+  FindPaletteComp;
 
 type
   { TComponentPalette }
@@ -53,9 +54,11 @@ type
     PopupMenu: TPopupMenu;
     OpenPackageMenuItem: TMenuItem;
     OpenUnitMenuItem: TMenuItem;
+    FindComponentMenuItem: TMenuItem;
     procedure ActivePageChanged(Sender: TObject);
     procedure OpenPackageClicked(Sender: TObject);
     procedure OpenUnitClicked(Sender: TObject);
+    procedure FindComponentClicked(Sender: TObject);
     procedure PopupMenuPopup(Sender: TObject);
   private
     fComponents: TAVLTree; // tree of TRegisteredComponent sorted for componentclass
@@ -111,8 +114,8 @@ var
 begin
   RegComp1:=TRegisteredComponent(Data1);
   RegComp2:=TRegisteredComponent(Data2);
-  Result:=AnsiCompareText(RegComp1.ComponentClass.ClassName,
-                          RegComp2.ComponentClass.ClassName);
+  Result:=CompareText(RegComp1.ComponentClass.ClassName,
+                      RegComp2.ComponentClass.ClassName);
 end;
 
 function CompareClassNameWithRegisteredComponent(Key, Data: Pointer): integer;
@@ -122,7 +125,7 @@ var
 begin
   AClassName:=String(Key);
   RegComp:=TRegisteredComponent(Data);
-  Result:=AnsiCompareText(AClassName,RegComp.ComponentClass.ClassName);
+  Result:=CompareText(AClassName,RegComp.ComponentClass.ClassName);
 end;
 
 { TComponentPalette }
@@ -156,6 +159,14 @@ begin
   or (PkgComponent.PkgFile.LazPackage=nil) then exit;
   if Assigned(OnOpenUnit) then
     OnOpenUnit(PkgComponent);
+end;
+
+procedure TComponentPalette.FindComponentClicked(Sender: TObject);
+var
+  AComponent: TRegisteredComponent;
+begin
+  if ShowFindPaletteComponentDlg(AComponent)<>mrOk then exit;
+  Selected:=AComponent;
 end;
 
 procedure TComponentPalette.PopupMenuPopup(Sender: TObject);
@@ -288,6 +299,14 @@ begin
     OnClick:=@OpenUnitClicked;
   end;
   PopupMenu.Items.Add(OpenUnitMenuItem);
+
+  FindComponentMenuItem:=TMenuItem.Create(PopupMenu);
+  with FindComponentMenuItem do begin
+    Name:='FindComponentMenuItem';
+    Caption:=lisCompPalFindComponent;
+    OnClick:=@FindComponentClicked;
+  end;
+  PopupMenu.Items.Add(FindComponentMenuItem);
 end;
 
 procedure TComponentPalette.DoEndUpdate(Changed: boolean);

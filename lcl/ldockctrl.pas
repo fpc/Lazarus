@@ -37,7 +37,7 @@ interface
 
 uses
   Classes, SysUtils, TypInfo, LCLProc, Controls, Forms, Menus, LCLStrConsts,
-  StringHashList, LDockCtrlEdit, LDockTree;
+  StringHashList, LazConfigStorage, LDockCtrlEdit, LDockTree;
 
 type
   TNonDockConfigNames = (

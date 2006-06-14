@@ -7,23 +7,31 @@ object MainForm: TMainForm
   VertScrollBar.Page = 299
   ActiveControl = CreateNewFormButton
   Caption = 'MainForm'
-  ClientHeight = 300
-  ClientWidth = 400
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnPaint = FormPaint
-  PixelsPerInch = 95
   PopupMenu = MainPopupMenu
   object CreateNewFormButton: TButton
-    Left = 56
+    Left = 30
     Height = 26
-    Top = 34
-    Width = 135
+    Top = 15
+    Width = 116
     AutoSize = True
-    
-    Caption = 'CreateNewFormButton'
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Create a new form'
     OnClick = CreateNewFormButtonClick
     TabOrder = 0
+  end
+  object SaveLayoutButton: TButton
+    Left = 30
+    Height = 26
+    Top = 60
+    Width = 158
+    AutoSize = True
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Save Layout to config.xml'
+    OnClick = SaveLayoutButtonClick
+    TabOrder = 1
   end
   object MainPopupMenu: TPopupMenu
     left = 142
