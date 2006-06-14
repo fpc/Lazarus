@@ -39,7 +39,7 @@ interface
 
 uses
   LazarusPackageIntf,
-  Classes, SysUtils, Process, DB;
+  Classes, SysUtils, Process, DB, XMLCfg;
 
 procedure Register;
 
@@ -55,10 +55,16 @@ begin
   RegisterComponents('Data Access',[TDatasource]);
 end;
 
+procedure RegisterXMLCfg;
+begin
+  RegisterComponents('System',[TXMLConfig]);
+end;
+
 procedure Register;
 begin
   RegisterUnit('DB',@RegisterDB);
   RegisterUnit('Process',@RegisterProcess);
+  RegisterUnit('XMLCfg',@RegisterXMLCfg);
 end;
 
 end.

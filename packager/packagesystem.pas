@@ -886,10 +886,9 @@ begin
       '$(LazarusDir)/packager/units/$(TargetCPU)-$(TargetOS)');
 
     // add registering units
-    AddFile(SetDirSeparators('db/db.pp'),'DB',pftUnit,
-            [pffHasRegisterProc],cpBase);
-    AddFile(SetDirSeparators('inc/process.pp'),'Process',pftUnit,
-            [pffHasRegisterProc],cpBase);
+    AddFile(SetDirSeparators('db/db.pp'),'DB',pftUnit,[],cpBase);
+    AddFile(SetDirSeparators('inc/process.pp'),'Process',pftUnit,[],cpBase);
+    AddFile(SetDirSeparators('fcl/xml/xmlcfg.pp'),'XMLCfg',pftUnit,[],cpBase);
 
     // use the packager/units/lazaruspackageintf.o file as indicator,
     // if FCL has been recompiled
