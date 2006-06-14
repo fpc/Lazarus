@@ -56,7 +56,7 @@ tools/svn2revisioninc $LAZSOURCEDIR $LAZBUILDDIR/ide/revision.inc
 
 cd $LAZBUILDDIR
 
-make bigide PP=$COMPILER
+make bigide PP=$COMPILER USESVN2REVISIONINC=0
 make lcl LCL_PLATFORM=carbon PP=$COMPILER
 strip lazarus
 strip startlazarus

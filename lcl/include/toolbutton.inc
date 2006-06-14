@@ -229,7 +229,8 @@ begin
     end;
 
     // draw button
-    if (Style in [tbsButton,tbsDropDown,tbsCheck]) and (FLastButtonDrawFlags and DFCS_FLAT = 0) then begin
+    if (Style in [tbsButton,tbsDropDown,tbsCheck])
+    and (FLastButtonDrawFlags and DFCS_FLAT = 0) then begin
       DrawFrameControl(Canvas.GetUpdatedHandle([csBrushValid,csPenValid]),
         PaintRect{ButtonRect}, DFC_BUTTON, FLastButtonDrawFlags);
       InflateRect(PaintRect, -1, -1);
@@ -751,6 +752,73 @@ begin
     Result := true;
   end else
     Result := inherited;
+end;
+
+procedure TToolButton.CalculatePreferredSize(var PreferredWidth,
+  PreferredHeight: integer; WithThemeSpace: Boolean);
+var
+  IconSize: TPoint;
+  TextSize: TSize;
+  TextPos: TPoint;
+  IconPos: TPoint;
+  ImgList: TCustomImageList;
+  ImgIndex: integer;
+begin
+  if (FToolBar<>nil) then begin
+    PreferredWidth:=0;
+    PreferredHeight:=0;
+
+    // calculate text size
+    TextSize.cx:=0;
+    TextSize.cy:=0;
+    if (Style in [tbsButton,tbsDropDown,tbsCheck])
+    and (FToolBar.ShowCaptions) then begin
+      if (Caption<>'') then begin
+        if HandleAllocated then
+          TextSize:=Canvas.TextExtent(Caption);
+      end;
+    end;
+
+    // calculate icon size
+    IconSize:=Point(0,0);
+    GetCurrentIcon(ImgList,ImgIndex);
+    if (ImgList<>nil) then begin
+      IconSize:=Point(ImgList.Width,ImgList.Height);
+      if IconSize.y<=0 then IconSize.X:=0;
+    end;
+
+    // calculate text and icon position
+    TextPos:=Point(0,0);
+    IconPos:=Point(0,0);
+    if TextSize.cx>0 then begin
+      if IconSize.X>0 then begin
+        if FToolBar.List then begin
+          // icon left of text
+          TextPos.X:=IconPos.X+IconSize.X+2;
+        end else begin
+          // icon above text
+          TextPos.Y:=IconPos.Y+IconSize.Y+2;
+        end;
+      end else begin
+        // only text
+      end;
+    end else if IconSize.x>0 then begin
+      // only icon
+    end;
+    
+    PreferredWidth:=Max(IconPos.X+IconSize.X,TextPos.X+TextSize.cx);
+    PreferredHeight:=Max(IconPos.Y+IconSize.Y,TextPos.Y+TextSize.cy);
+
+    // add button frame
+    FLastButtonDrawFlags:=GetButtonDrawFlags;
+    if (FLastButtonDrawFlags and DFCS_PUSHED) <> 0 then begin
+      inc(PreferredWidth,2);
+      inc(PreferredHeight,2);
+    end;
+    if Style=tbsDropDown then begin
+      inc(PreferredWidth,FToolBar.FDropDownWidth);
+    end;
+  end;
 end;
 
 

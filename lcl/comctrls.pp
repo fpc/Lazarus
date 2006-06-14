@@ -1270,6 +1270,9 @@ type
     function GroupAllUpAllowed: boolean;
     procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: integer); override;
     function DialogChar(var Message: TLMKey): boolean; override;
+    procedure CalculatePreferredSize(
+                         var PreferredWidth, PreferredHeight: integer;
+                         WithThemeSpace: Boolean); override;
   public
     constructor Create(TheOwner: TComponent); override;
     function CheckMenuDropdown: Boolean; dynamic;

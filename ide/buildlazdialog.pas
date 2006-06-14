@@ -302,6 +302,9 @@ begin
     Tool.EnvironmentOverrides.Values['LCL_PLATFORM']:=
       LCLPlatformNames[Options.LCLPlatform];
     Tool.EnvironmentOverrides.Values['LANG']:= 'en_US';
+    Tool.EnvironmentOverrides.Values['LANG']:= 'en_US';
+    if blfOnlyIDE in Flags then
+      Tool.EnvironmentOverrides.Values['USESVN2REVISIONINC']:= '0';
     if CompilerPath<>'' then
       Tool.EnvironmentOverrides.Values['PP']:=CompilerPath;
     if not FileExists(Tool.Filename) then begin

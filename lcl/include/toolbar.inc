@@ -465,6 +465,7 @@ var
   begin
     if (CurControl is TToolButton)
     and (TToolButton(CurControl).Style in [tbsButton,tbsDropDown,tbsCheck])
+    and (not CurControl.AutoSize)
     then
       NewControlWidth:=ButtonWidth
     else
