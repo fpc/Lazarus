@@ -21,16 +21,19 @@ interface
 
 
 uses
-  Classes, SysUtils, LCLProc, Forms, PropertyStorage, XMLCfg, DOM;
+  Classes, SysUtils, LCLProc, Forms, PropertyStorage, XMLCfg, DOM,
+  LazConfigStorage;
 
 type
-  { TXMLPropStorage }
+  { TPropStorageXMLConfig }
 
   TPropStorageXMLConfig = class(TXMLConfig)
   Public
     Procedure DeleteSubNodes (const ARootNode: String);
   end;
   
+  { TCustomXMLPropStorage }
+
   TCustomXMLPropStorage = class(TFormPropertyStorage)
   private
     FCount: Integer;
@@ -53,6 +56,8 @@ type
     property RootNodePath: String Read FRootNodePath Write FRootNodePath;
   end;
   
+  { TXMLPropStorage }
+
   TXMLPropStorage = class(TCustomXMLPropStorage)
   Published
     property StoredValues;
@@ -63,6 +68,35 @@ type
     property OnSaveProperties;
     property OnRestoringProperties;
     property OnRestoreProperties;
+  end;
+  
+  { TXMLConfigStorage }
+
+  TXMLConfigStorage = class(TConfigStorage)
+  private
+    FFreeXMLConfig: boolean;
+    FXMLConfig: TXMLConfig;
+  protected
+    function  GetFullPathValue(const APath, ADefault: String): String; override;
+    function  GetFullPathValue(const APath: String; ADefault: Integer): Integer; override;
+    function  GetFullPathValue(const APath: String; ADefault: Boolean): Boolean; override;
+    procedure SetFullPathValue(const APath, AValue: String); override;
+    procedure SetDeleteFullPathValue(const APath, AValue, DefValue: String); override;
+    procedure SetFullPathValue(const APath: String; AValue: Integer); override;
+    procedure SetDeleteFullPathValue(const APath: String; AValue, DefValue: Integer); override;
+    procedure SetFullPathValue(const APath: String; AValue: Boolean); override;
+    procedure SetDeleteFullPathValue(const APath: String; AValue, DefValue: Boolean); override;
+    procedure DeleteFullPath(const APath: string); override;
+    procedure DeleteFullPathValue(const APath: string); override;
+  public
+    constructor Create(const Filename: string; LoadFromDisk: Boolean); override;
+    constructor Create(TheXMLConfig: TXMLConfig);
+    constructor Create(TheXMLConfig: TXMLConfig; const StartPath: string);
+    destructor Destroy; override;
+    property XMLConfig: TXMLConfig read FXMLConfig;
+    property FreeXMLConfig: boolean read FFreeXMLConfig write FFreeXMLConfig;
+    procedure WriteToDisk; override;
+    function GetFilename: string; override;
   end;
 
 procedure Register;
@@ -171,6 +205,110 @@ begin
     //debugln('TPropStorageXMLConfig.DeleteSubNodes ',ARootNode);
     Node.Free;
   end;
+end;
+
+{ TXMLConfigStorage }
+
+function TXMLConfigStorage.GetFullPathValue(const APath, ADefault: String
+  ): String;
+begin
+  Result:=XMLConfig.GetValue(APath, ADefault);
+end;
+
+function TXMLConfigStorage.GetFullPathValue(const APath: String;
+  ADefault: Integer): Integer;
+begin
+  Result:=XMLConfig.GetValue(APath, ADefault);
+end;
+
+function TXMLConfigStorage.GetFullPathValue(const APath: String;
+  ADefault: Boolean): Boolean;
+begin
+  Result:=XMLConfig.GetValue(APath, ADefault);
+end;
+
+procedure TXMLConfigStorage.SetFullPathValue(const APath, AValue: String);
+begin
+  XMLConfig.SetValue(APath, AValue);
+end;
+
+procedure TXMLConfigStorage.SetDeleteFullPathValue(const APath, AValue,
+  DefValue: String);
+begin
+  XMLConfig.SetDeleteValue(APath, AValue, DefValue);
+end;
+
+procedure TXMLConfigStorage.SetFullPathValue(const APath: String;
+  AValue: Integer);
+begin
+  XMLConfig.SetValue(APath, AValue);
+end;
+
+procedure TXMLConfigStorage.SetDeleteFullPathValue(const APath: String;
+  AValue, DefValue: Integer);
+begin
+  XMLConfig.SetDeleteValue(APath, AValue, DefValue);
+end;
+
+procedure TXMLConfigStorage.SetFullPathValue(const APath: String;
+  AValue: Boolean);
+begin
+  XMLConfig.SetValue(APath, AValue);
+end;
+
+procedure TXMLConfigStorage.SetDeleteFullPathValue(const APath: String;
+  AValue, DefValue: Boolean);
+begin
+  XMLConfig.SetDeleteValue(APath, AValue, DefValue);
+end;
+
+procedure TXMLConfigStorage.DeleteFullPath(const APath: string);
+begin
+  XMLConfig.DeletePath(APath);
+end;
+
+procedure TXMLConfigStorage.DeleteFullPathValue(const APath: string);
+begin
+  XMLConfig.DeleteValue(APath);
+end;
+
+constructor TXMLConfigStorage.Create(const Filename: string;
+  LoadFromDisk: Boolean);
+begin
+  FXMLConfig:=TXMLConfig.Create(nil);
+  FXMLConfig.StartEmpty:=not LoadFromDisk;
+  FXMLConfig.Filename:=Filename;
+  FFreeXMLConfig:=true;
+end;
+
+constructor TXMLConfigStorage.Create(TheXMLConfig: TXMLConfig);
+begin
+  FXMLConfig:=TheXMLConfig;
+  if FXMLConfig=nil then
+    raise Exception.Create('');
+end;
+
+constructor TXMLConfigStorage.Create(TheXMLConfig: TXMLConfig;
+  const StartPath: string);
+begin
+  Create(TheXMLConfig);
+  AppendBasePath(StartPath);
+end;
+
+destructor TXMLConfigStorage.Destroy;
+begin
+  if FreeXMLConfig then FreeAndNil(FXMLConfig);
+  inherited Destroy;
+end;
+
+procedure TXMLConfigStorage.WriteToDisk;
+begin
+  FXMLConfig.Flush;
+end;
+
+function TXMLConfigStorage.GetFilename: string;
+begin
+  Result:=FXMLConfig.Filename;
 end;
 
 end.

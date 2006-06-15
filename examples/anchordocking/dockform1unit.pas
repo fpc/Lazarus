@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
-  XMLCfg, DockForm2Unit, Buttons, Menus, LDockCtrl;
+  DockForm2Unit, Buttons, Menus, LDockCtrl, XMLPropStorage;
 
 type
 
@@ -42,8 +42,13 @@ begin
 end;
 
 procedure TMainForm.SaveLayoutButtonClick(Sender: TObject);
+var
+  Config: TXMLConfigStorage;
 begin
-  DockingManager.SaveToStream();
+  Config:=TXMLConfigStorage.Create('config.xml',false);
+  DockingManager.SaveToConfig(Config);
+  Config.WriteToDisk;
+  Config.Free;
 end;
 
 function TMainForm.CreateNewForm: TCustomForm;
@@ -68,9 +73,17 @@ procedure TMainForm.FormCreate(Sender: TObject);
 var
   Form2: TCustomForm;
   Form3: TCustomForm;
+  Config: TXMLConfigStorage;
 begin
   if Sender=nil then ;
   DockingManager:=TLazDockingManager.Create(Self);
+  
+  if FileExists('config.xml') then begin
+    Config:=TXMLConfigStorage.Create('config.xml',true);
+    DockingManager.LoadFromConfig(Config);
+    Config.Free;
+  end;
+
   DockerForm1:=TLazControlDocker.Create(Self);
   DockerForm1.Name:='DockerForm1';
   DockerForm1.Manager:=DockingManager;
@@ -84,7 +97,6 @@ begin
   DockingManager.WriteDebugReport;
   
   DockerForm1.GetLayoutFromControl;
-  DockerForm1.WriteConfigTreeDebugReport;
 end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);

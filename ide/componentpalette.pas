@@ -300,6 +300,8 @@ begin
   end;
   PopupMenu.Items.Add(OpenUnitMenuItem);
 
+  PopupMenu.Items.AddSeparator;
+
   FindComponentMenuItem:=TMenuItem.Create(PopupMenu);
   with FindComponentMenuItem do begin
     Name:='FindComponentMenuItem';

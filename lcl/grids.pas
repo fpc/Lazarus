@@ -488,10 +488,10 @@ type
       ScrollHeight: Integer;  // ClientHeight-FixedHeight
       VisibleGrid: TRect;     // Visible non fixed rectangle of cellcoordinates
       MaxClientXY: Tpoint;    // VisibleGrid.BottomRight (pixel) coordinates
-      ValidRows: boolean;    // true if there are not fixed columns to show
-      ValidCols: boolean;    // true if there are not fixed rows to show
+      ValidRows: boolean;     // true if there are not fixed columns to show
+      ValidCols: boolean;     // true if there are not fixed rows to show
       ValidGrid: boolean;     // true if there are not fixed cells to show
-      AccumWidth: TList;       // Accumulated width per column
+      AccumWidth: TList;      // Accumulated width per column
       AccumHeight: TList;     // Accumulated Height per row
       TLColOff,TLRowOff: Integer;   // TopLeft Offset in pixels
       MaxTopLeft: TPoint;     // Max Top left ( cell coorditates)
@@ -676,7 +676,8 @@ type
     procedure ColRowExchanged(IsColumn: Boolean; index,WithIndex: Integer); dynamic;
     procedure ColRowInserted(IsColumn: boolean; index: integer); dynamic;
     procedure ColRowMoved(IsColumn: Boolean; FromIndex,ToIndex: Integer); dynamic;
-    function  ColRowToOffset(IsCol,Fisical:Boolean; index: Integer; var Ini,Fin:Integer): Boolean;
+    function  ColRowToOffset(IsCol, Relative: Boolean; Index:Integer;
+                             var StartPos, EndPos: Integer): Boolean;
     function  ColumnIndexFromGridColumn(Column: Integer): Integer;
     function  ColumnFromGridColumn(Column: Integer): TGridColumn;
     procedure ColumnsChanged(aColumn: TGridColumn);
@@ -2417,6 +2418,7 @@ var
   RNew: TRect;
   OldTopLeft:TPoint;
   Xinc,YInc: Integer;
+  i: Integer;
 begin
   OldTopLeft:=fTopLeft;
 
@@ -2428,15 +2430,19 @@ begin
     RNew:=CellRect(aCol,aRow);
 
     Xinc:=0;
-    if Rnew.Left + FGCache.TLColOff < FGCache.FixedWidth then Xinc:=-1
-    else if (RNew.Right  + FGCache.TLColOff > (FGCache.ClientWidth + GetBorderWidth))
-            and (RNew.Left + FGCache.TLColOff - GetColWidths(aCol) >= FGCache.FixedWidth) then XInc:=1;
-            // Only scroll left if the left edge of the cell does not become invisible as a result
+    if RNew.Left + FGCache.TLColOff < FGCache.FixedWidth then Xinc:=-1
+    else if (RNew.Right+FGCache.TLColOff > (FGCache.ClientWidth+GetBorderWidth))
+            and (RNew.Left+FGCache.TLColOff-GetColWidths(aCol) >= FGCache.FixedWidth)
+            then XInc:=1;
+            // Only scroll left if the left edge of the cell does not become
+            // invisible as a result
     Yinc:=0;
     if RNew.Top  + FGCache.TLRowOff < FGCache.FixedHeight then Yinc:=-1
-    else if (RNew.Bottom + FGCache.TLRowOff > (FGCache.ClientHeight + GetBorderWidth))
-            and (RNew.Top + FGCache.TLRowOff - GetRowHeights(aRow) >= FGCache.FixedHeight) then YInc:=1;
-            // Only scroll up if the top edge of the cell does not become invisible as a result
+    else if (RNew.Bottom+FGCache.TLRowOff > (FGCache.ClientHeight+GetBorderWidth))
+            and (RNew.Top+FGCache.TLRowOff-GetRowHeights(aRow) >= FGCache.FixedHeight)
+            then YInc:=1;
+            // Only scroll up if the top edge of the cell does not become
+            // invisible as a result
 
     with FTopLeft do
     if ((XInc=0)and(YInc=0)) or // the cell is already visible
@@ -3849,35 +3855,37 @@ begin
   result := True;
 end;
 
-// ex: IsCol=true, Index:=100, TopLeft.x:=98, FixedCols:=1, all ColWidths:=20
-// Fisical = Relative => Ini := WidthfixedCols+WidthCol98+WidthCol99
-// not Fisical = Absolute => Ini := WidthCols(0..99)
-function TCustomGrid.ColRowToOffset(IsCol,Fisical:Boolean; index:Integer;
-  var Ini,Fin:Integer): Boolean;
+{ ------------------------------------------------------------------------------
+  Example:
+  IsCol=true, Index:=100, TopLeft.x:=98, FixedCols:=1, all ColWidths:=20
+  Relative => StartPos := WidthfixedCols+WidthCol98+WidthCol99
+  not Relative = Absolute => StartPos := WidthCols(0..99) }
+function TCustomGrid.ColRowToOffset(IsCol, Relative: Boolean; Index:Integer;
+  var StartPos, EndPos: Integer): Boolean;
 var
   Dim: Integer;
 begin
   with FGCache do begin
     if IsCol then begin
-      Ini:=PtrInt(AccumWidth[index]);
+      StartPos:=PtrInt(AccumWidth[index]);
       Dim:=GetColWidths(index);
     end else begin
-      Ini:=PtrInt(AccumHeight[index]);
+      StartPos:=PtrInt(AccumHeight[index]);
       Dim:= GetRowHeights(index);
     end;
-    Ini := Ini + GetBorderWidth;
-    if not Fisical then begin
-      Fin:=Ini + Dim;
+    StartPos := StartPos + GetBorderWidth;
+    if not Relative then begin
+      EndPos:=StartPos + Dim;
       Exit;
     end;
     if IsCol then begin
       if index>=FFixedCols then
-        Ini:=Ini-PtrInt(AccumWidth[FTopLeft.X]) + FixedWidth -  TLColOff;
+        StartPos:=StartPos-PtrInt(AccumWidth[FTopLeft.X]) + FixedWidth -  TLColOff;
     end else begin
       if index>=FFixedRows then
-        Ini:=Ini-PtrInt(AccumHeight[FTopLeft.Y]) + FixedHeight - TLRowOff;
+        StartPos:=StartPos-PtrInt(AccumHeight[FTopLeft.Y]) + FixedHeight - TLRowOff;
     end;
-    Fin:=Ini + Dim;
+    EndPos:=StartPos + Dim;
   end;
   Result:=true;
 end;
@@ -4142,8 +4150,8 @@ begin
           R:=CellRect(FSplitter.x, FTopLeft.y);
           FSplitter.y:=R.Left;
           fGridState:= gsColSizing;
-        end else
-        if not FixedGrid then begin
+        end
+        else if not FixedGrid then begin
           // normal selecting
           fGridState:=gsSelecting;
           FSplitter:=MouseToCell(Point(X,Y));
