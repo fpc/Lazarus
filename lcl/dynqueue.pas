@@ -13,7 +13,7 @@
  *****************************************************************************
  
   Abstract:
-  A dynamic data queue to push and pop arbitrary data.
+    A dynamic data queue to push and pop arbitrary data.
 }
 unit DynQueue;
 

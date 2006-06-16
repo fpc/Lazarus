@@ -105,13 +105,13 @@ msgstr ""
 msgid "(All)"
 msgstr "(Все)"
 
-#: objinspstrconsts:oisnone
-msgid "(none)"
-msgstr "(нет)"
-
 #: objinspstrconsts:cactionlisteditorunknowncategory
 msgid "(Unknown)"
 msgstr "(Неизвестно)"
+
+#: objinspstrconsts:oisnone
+msgid "(none)"
+msgstr "(нет)"
 
 #: objinspstrconsts:ois0lines0chars
 msgid "0 lines, 0 chars"
@@ -353,10 +353,6 @@ msgstr ""
 msgid "Edit"
 msgstr "Редактировать"
 
-#: objinspstrconsts:oiseditactionlist
-msgid "Edit action list..."
-msgstr "Правка списка действий..."
-
 #: objinspstrconsts:sccslvedt
 msgid "Edit ListView Items..."
 msgstr "Редактировать Элементы ListView..."
@@ -368,6 +364,10 @@ msgstr "Редактировать StringGrid..."
 #: objinspstrconsts:sccstredt
 msgid "Edit TreeView Items..."
 msgstr "Редактировать Элементы TreeView..."
+
+#: objinspstrconsts:oiseditactionlist
+msgid "Edit action list..."
+msgstr "Правка списка действий..."
 
 #: objinspstrconsts:oicoleditediting
 msgid "Editing"
@@ -529,6 +529,10 @@ msgstr "Изменить Элемент"
 msgid "Move Down"
 msgstr "Переместить вниз"
 
+#: objinspstrconsts:sccsiledtmoveup
+msgid "Move Up"
+msgstr "Переместить вверх"
+
 #: objinspstrconsts:nbcesmovepageleft
 msgid "Move page left"
 msgstr "Переместить страницу налево"
@@ -544,10 +548,6 @@ msgstr "Переместить вкладку налево"
 #: objinspstrconsts:tccesmovetabright
 msgid "Move tab right"
 msgstr "Переместить вкладку направо"
-
-#: objinspstrconsts:sccsiledtmoveup
-msgid "Move Up"
-msgstr "Переместить вверх"
 
 #: objinspstrconsts:cactionlisteditornewaction
 msgid "New Action"
@@ -685,13 +685,13 @@ msgstr ""
 msgid "Select &Font..."
 msgstr ""
 
-#: objinspstrconsts:oisselectafile
-msgid "Select a file"
-msgstr "Выберите файл"
-
 #: objinspstrconsts:oistdacteditselectallshorthint
 msgid "Select All"
 msgstr "Выделить всё"
+
+#: objinspstrconsts:oisselectafile
+msgid "Select a file"
+msgstr "Выберите файл"
 
 #: objinspstrconsts:sccsiledtgrprcaption
 msgid "Selected Image"
@@ -757,13 +757,13 @@ msgstr "Редактор StringGrid"
 msgid "Strings Editor Dialog"
 msgstr "Диалог ввода строк"
 
-#: objinspstrconsts:oistestdialog
-msgid "Test dialog..."
-msgstr ""
-
 #: objinspstrconsts:oistestinput
 msgid "Test Input"
 msgstr "Тестовый ввод"
+
+#: objinspstrconsts:oistestdialog
+msgid "Test dialog..."
+msgstr ""
 
 #: objinspstrconsts:sccstredtlabeltext
 msgid "Text:"

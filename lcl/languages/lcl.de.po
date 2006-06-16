@@ -4,8 +4,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2006-05-18 20:27+0100\n"
-"Last-Translator: Jörg Braun <jb@toolbox-mag.de>\n"
+"PO-Revision-Date: 2006-06-16 13:28+0100\n"
+"Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -47,7 +47,7 @@ msgstr "%s ist bereits mit %s verbunden"
 
 #: lclstrconsts:rspressoktoignoreandriskdatacorruptionpresscanceltok
 msgid "%s%sPress Ok to ignore and risk data corruption.%sPress Cancel to kill the program."
-msgstr "%s%sMit Ok wird ignoriert und Dateninkonsistenz riskiert.%sMit Abbrechen wird das Programm abgeschossen."
+msgstr "%s%sMit Ok wird ignoriert und Dateninkonsistenz riskiert.%sMit Abbrechen wird das Programm abgebrochen."
 
 #: lclstrconsts:rshelpalreadyregistered
 msgid "%s: Already registered"
@@ -247,7 +247,7 @@ msgstr "Doppelte Menüs"
 
 #: lclstrconsts:rserrorinlcl
 msgid "ERROR in LCL: "
-msgstr "FEHLER in der LCL"
+msgstr "FEHLER in der LCL:"
 
 #: lclstrconsts:ifsvk_end
 msgid "End"
@@ -295,7 +295,7 @@ msgstr "Dateiinformation"
 
 #: lclstrconsts:rsfdfilereadonlytitle
 msgid "File is not writable"
-msgstr "Datei ist nicht beschreibbar."
+msgstr "Datei ist nicht beschreibbar"
 
 #: lclstrconsts:rsfdfilemustexist
 msgid "File must exist"
@@ -327,7 +327,7 @@ msgstr "Grid-Datei fehlt"
 
 #: lclstrconsts:rsgroupindexcannotbelessthanprevious
 msgid "GroupIndex cannot be less than a previous menu item's GroupIndex"
-msgstr "GroupIndex darf nicht kleiner als der GroupIndex eines früheren Menüeintrags sein"
+msgstr "GroupIndex darf nicht kleiner als der GroupIndex eines vorherigen Menüeintrags sein"
 
 #: lclstrconsts:ifsvk_hanja
 msgid "Hanja"
@@ -587,7 +587,7 @@ msgstr "Vorher"
 
 #: lclstrconsts:rspropertydoesnotexist
 msgid "Property %s does not exist"
-msgstr "Eigenschaft %s ist nicht vorhanden"
+msgstr "Eigenschaft %s fehlt"
 
 #: lclstrconsts:lislclresourcesnotfound
 msgid "Resource %s not found"
@@ -675,11 +675,11 @@ msgstr "Die Hilfedatenbank %s%s%s konnte die Datei %s%s%s nicht finden."
 
 #: lclstrconsts:hhshelpthemacrosinbrowserparamswillbereplacedbytheurl
 msgid "The macro %s in BrowserParams will be replaced by the URL."
-msgstr "Das Makros %s in BrowserParams wird durch den URL ersetzt."
+msgstr "Das Makro %s in BrowserParams wird durch den URL ersetzt."
 
 #: lclstrconsts:rsfdpathnoexist
 msgid "The path \"%s\" does not exist."
-msgstr "Der Pfad \"%s\" ist nicht vorhanden"
+msgstr "Der Pfad \"%s\" ist nicht vorhanden."
 
 #: lclstrconsts:rshelpthereisnoviewerforhelptype
 msgid "There is no viewer for help type %s%s%s"
@@ -687,7 +687,7 @@ msgstr "Es gibt keinen Viewer für den Hilfetyp %s%s%s"
 
 #: lclstrconsts:hhshelpnohtmlbrowserfound
 msgid "Unable to find a HTML browser."
-msgstr ""
+msgstr "Kann den HTML-Browser nicht finden."
 
 #: lclstrconsts:rsunabletoloaddefaultfont
 msgid "Unable to load default font"
@@ -699,7 +699,7 @@ msgstr "Unbekannt"
 
 #: lclstrconsts:rsunknownerrorpleasereportthisbug
 msgid "Unknown Error, please report this bug"
-msgstr "Unbekanntet Fehler, bitte melden Sie diesen Bug."
+msgstr "Unbekannter Fehler, bitte melden Sie diesen Bug."
 
 #: lclstrconsts:rsunknownpictureextension
 msgid "Unknown picture extension"
@@ -727,7 +727,7 @@ msgstr "Warnung:"
 
 #: lclstrconsts:rsmbyestoall
 msgid "Yes to &All"
-msgstr "Alles bestätigen"
+msgstr "&Alles bestätigen"
 
 #: lclstrconsts:ifsvk_apps
 msgid "application key"

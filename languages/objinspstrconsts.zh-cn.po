@@ -16,14 +16,6 @@ msgstr ""
 msgid "%d lines, %d chars"
 msgstr "%d 行, %d 字符"
 
-#: objinspstrconsts:oishelpalreadyregistered
-msgid "%s: Already registered"
-msgstr "%s: 已经注册"
-
-#: objinspstrconsts:oishelpnotregistered
-msgid "%s: Not registered"
-msgstr "%s: 没有注册"
-
 #: objinspstrconsts:oisitemsselected
 msgid "%u items selected"
 msgstr "%u 个项目被选择"
@@ -156,6 +148,10 @@ msgstr "添加新的标签"
 msgid "Add page"
 msgstr "添加页面"
 
+#: objinspstrconsts:tccesaddtab
+msgid "Add tab"
+msgstr ""
+
 #: objinspstrconsts:oisaddtofavorites
 msgid "Add to Favorites"
 msgstr "添加到收藏"
@@ -191,14 +187,6 @@ msgstr "可用的动作类:"
 #: objinspstrconsts:oisboolean
 msgid "Boolean"
 msgstr "Boolean"
-
-#: objinspstrconsts:oishelpbrowsernotexecutable
-msgid "Browser %s%s%s not executable."
-msgstr "浏览 %s%s%s 不可执行."
-
-#: objinspstrconsts:oishelpbrowsernotfound
-msgid "Browser %s%s%s not found."
-msgstr "浏览 %s%s%s 未找到."
 
 #: objinspstrconsts:oisclear
 msgid "C&lear"
@@ -340,6 +328,10 @@ msgstr "删除项目 %s%s%s?"
 msgid "Delete page"
 msgstr "删除页面"
 
+#: objinspstrconsts:tccesdeletetab
+msgid "Delete tab"
+msgstr ""
+
 #: objinspstrconsts:clbdelete
 msgid "Delete the Item %d \"%s\"?"
 msgstr "删除项目 %d \"%s\"?"
@@ -400,10 +392,6 @@ msgstr "装载图像时错误"
 msgid "Error loading image %s%s%s:%s%s"
 msgstr "装载图像 %s%s%s:%s%s 时错误"
 
-#: objinspstrconsts:oishelperrorwhileexecuting
-msgid "Error while executing %s%s%s:%s%s"
-msgstr "当执行 %s%s%s:%s%s 时错误"
-
 #: objinspstrconsts:oisevents
 msgid "Events"
 msgstr "事件"
@@ -440,34 +428,6 @@ msgstr "帮助"
 msgid "Help Contents"
 msgstr "帮助目录"
 
-#: objinspstrconsts:oishelphelpdatabasedidnotfoundaviewerforahelppageoftype
-msgid "Help Database %s%s%s did not found a viewer for a help page of type %s"
-msgstr "帮助数据库 %s%s%s 没有一个浏览器可以阅读 %s"
-
-#: objinspstrconsts:oishelphelpdatabasenotfound
-msgid "Help Database %s%s%s not found"
-msgstr "帮助数据库 %s%s%s 没有找到"
-
-#: objinspstrconsts:oishelphelpcontextnotfoundindatabase
-msgid "Help context %s not found in Database %s%s%s."
-msgstr "数据库 %s%s%s 中没有找到 %s 的帮助内容 ."
-
-#: objinspstrconsts:oishelphelpcontextnotfound
-msgid "Help context %s not found."
-msgstr "帮助目录 %s 未找到."
-
-#: objinspstrconsts:oishelphelpkeywordnotfoundindatabase
-msgid "Help keyword %s%s%s not found in Database %s%s%s."
-msgstr "数据库 %s%s%s 中没有找到关键字 %s 的帮助."
-
-#: objinspstrconsts:oishelphelpkeywordnotfound
-msgid "Help keyword %s%s%s not found."
-msgstr "关键字 %s%s%s 未找到."
-
-#: objinspstrconsts:oishelphelpnodehasnohelpdatabase
-msgid "Help node %s%s%s has no Help Database"
-msgstr "帮助节点 %s%s%s 没有帮助数据库"
-
 #: objinspstrconsts:oistdacthelphelphelphint
 msgid "Help on help"
 msgstr "在线帮助"
@@ -495,6 +455,10 @@ msgstr "插入"
 #: objinspstrconsts:nbcesinsertpage
 msgid "Insert page"
 msgstr "插入页面"
+
+#: objinspstrconsts:tccesinserttab
+msgid "Insert tab"
+msgstr ""
 
 #: objinspstrconsts:oisint64
 msgid "Int64"
@@ -580,6 +544,14 @@ msgstr "左移页面"
 msgid "Move page right"
 msgstr "右移页面"
 
+#: objinspstrconsts:tccesmovetableft
+msgid "Move tab left"
+msgstr ""
+
+#: objinspstrconsts:tccesmovetabright
+msgid "Move tab right"
+msgstr ""
+
 #: objinspstrconsts:cactionlisteditornewaction
 msgid "New Action"
 msgstr "新的动作"
@@ -599,14 +571,6 @@ msgstr "新的子项目"
 #: objinspstrconsts:oistdactdatasetnexthint
 msgid "Next"
 msgstr "下一个"
-
-#: objinspstrconsts:oishelpnohtmlbrowserfoundpleasedefineoneinhelpconfigurehe
-msgid "No HTML Browser found.%sPlease define one in Help -> Configure Help -> Viewers"
-msgstr "没有找到HTML浏览器.%s定义帮助-> 配置帮助 -> 查看器"
-
-#: objinspstrconsts:oishelpnohelpfoundforsource
-msgid "No help found for line %d, column %d of %s."
-msgstr "没有找到 %s 的行 %d, 列 %d ."
 
 #: objinspstrconsts:sccsiledtnone
 msgid "None"
@@ -807,14 +771,6 @@ msgstr "测试对话框..."
 #: objinspstrconsts:sccstredtlabeltext
 msgid "Text:"
 msgstr "文本"
-
-#: objinspstrconsts:oishelpthehelpdatabasewasunabletofindfile
-msgid "The help database %s%s%s was unable to find file %s%s%s."
-msgstr "帮助数据库 %s%s%s 无法找到文件 %s%s%s."
-
-#: objinspstrconsts:oishelpthemacrosinbrowserparamswillbereplacedbytheurl
-msgid "The macro %s in BrowserParams will be replaced by the URL."
-msgstr "浏览框里的 %s 将被URL所替代."
 
 #: objinspstrconsts:cactionlisteditorpaneltoolbar
 msgid "Toolbar"

@@ -6506,6 +6506,10 @@ msgstr ""
 msgid "Open unit"
 msgstr ""
 
+#: lazarusidestrconsts:liscomppalfindcomponent
+msgid "Find component"
+msgstr ""
+
 #: lazarusidestrconsts:lismacropromptenterdata
 msgid "Enter data"
 msgstr ""
@@ -7836,6 +7840,14 @@ msgstr ""
 
 #: lazarusidestrconsts:lispckeditpage
 msgid "%s, Page: %s"
+msgstr ""
+
+#: lazarusidestrconsts:lisfpfindpalettecomponent
+msgid "Find palette component"
+msgstr ""
+
+#: lazarusidestrconsts:lisfpcomponents
+msgid "Components"
 msgstr ""
 
 #: lazarusidestrconsts:lispckeditremovefile2

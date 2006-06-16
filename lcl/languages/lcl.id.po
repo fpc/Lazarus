@@ -12,145 +12,21 @@ msgstr ""
 "X-Poedit-Country: INDONESIA\n"
 "X-Poedit-SourceCharset: iso-8859-1\n"
 
-#: lclstrconsts:snomdiform
-msgid "No MDI form present."
-msgstr "Tidak ada form MDI"
+#: lclstrconsts:rsmodified
+msgid "  modified "
+msgstr "  diubah "
 
-#: lclstrconsts:rsmbyes
-msgid "&Yes"
-msgstr "&Ya"
+#: lclstrconsts:rssize
+msgid "  size "
+msgstr "  ukuran "
 
-#: lclstrconsts:rsmbno
-msgid "&No"
-msgstr "&Tidak"
+#: lclstrconsts:rswarningunreleasedtimerinfos
+msgid " WARNING: There are %d TimerInfo structures left, I'll free them"
+msgstr " PERINGATAN: Ada %d struktur TimerInfo tersisa, Saya akan membebaskannya"
 
-#: lclstrconsts:rsmbok
-msgid "&OK"
-msgstr "&OK"
-
-#: lclstrconsts:rsmbcancel
-msgid "Cancel"
-msgstr "Batal"
-
-#: lclstrconsts:rsmbabort
-msgid "Abort"
-msgstr "Batal"
-
-#: lclstrconsts:rsmbretry
-msgid "&Retry"
-msgstr "&Coba lagi"
-
-#: lclstrconsts:rsmbignore
-msgid "&Ignore"
-msgstr "&Abaikan"
-
-#: lclstrconsts:rsmball
-msgid "&All"
-msgstr "&Semua"
-
-#: lclstrconsts:rsmbnotoall
-msgid "No to all"
-msgstr "Tidak untuk semua"
-
-#: lclstrconsts:rsmbyestoall
-msgid "Yes to &All"
-msgstr "Ya untuk &Semua"
-
-#: lclstrconsts:rsmbhelp
-msgid "&Help"
-msgstr "&Panduan"
-
-#: lclstrconsts:rsmbclose
-msgid "&Close"
-msgstr "&Tutup"
-
-#: lclstrconsts:rsmtwarning
-msgid "Warning"
-msgstr "Peringatan"
-
-#: lclstrconsts:rsmterror
-msgid "Error"
-msgstr "Salah"
-
-#: lclstrconsts:rsmtinformation
-msgid "Information"
-msgstr "Informasi"
-
-#: lclstrconsts:rsmtconfirmation
-msgid "Confirmation"
-msgstr "Konfirmasi"
-
-#: lclstrconsts:rsmtcustom
-msgid "Custom"
-msgstr "Kustom"
-
-#: lclstrconsts:rsfdopenfile
-msgid "Open existing file"
-msgstr "Buka file yang ada"
-
-#: lclstrconsts:rsfdoverwritefile
-msgid "Overwrite file ?"
-msgstr "Timpa file ?"
-
-#: lclstrconsts:rsfdfilealreadyexists
-msgid "The file \"%s\" already exists. Overwrite ?"
-msgstr "File \"%s\" sudah ada. Timpa saja ?"
-
-#: lclstrconsts:rsfdpathmustexist
-msgid "Path must exist"
-msgstr "Path harus ada"
-
-#: lclstrconsts:rsfdpathnoexist
-msgid "The path \"%s\" does not exist."
-msgstr "Path \"%s\" tidak ada."
-
-#: lclstrconsts:rsfdfilemustexist
-msgid "File must exist"
-msgstr "File harus ada"
-
-#: lclstrconsts:rsfddirectorymustexist
-msgid "Directory must exist"
-msgstr "Direktori harus ada"
-
-#: lclstrconsts:rsfdfilenotexist
-msgid "The file \"%s\" does not exist."
-msgstr "File \"%s\" tidak ada."
-
-#: lclstrconsts:rsfddirectorynotexist
-msgid "The directory \"%s\" does not exist."
-msgstr "Directori \"%s\" tidak ada."
-
-#: lclstrconsts:rsfdfilereadonlytitle
-msgid "File is not writable"
-msgstr "File tidak bisa ditulisi"
-
-#: lclstrconsts:rsfdfilereadonly
-msgid "The file \"%s\" is not writable."
-msgstr "File \"%s\" tidak bisa ditulisi."
-
-#: lclstrconsts:rsfdfilesaveas
-msgid "Save file as"
-msgstr "Simpan file sebagai"
-
-#: lclstrconsts:rsallfiles
-msgid "All files (%s)|%s|%s"
-msgstr "Semua file (%s)|%s|%s"
-
-#: lclstrconsts:rsfdselectdirectory
-msgid "Select Directory"
-msgstr "Pilih Direktori"
-
-#: lclstrconsts:rsselectcolortitle
-msgid "Select color"
-msgstr "Pilih warna"
-
-#: lclstrconsts:rsselectfonttitle
-msgid "Select a font"
-msgstr "Pilih font"
-
-#: lclstrconsts:rswarningunremovedpaintmessages
-msgid " WARNING: There are %s unremoved LM_PAINT/LM_GtkPAINT message links left."
-msgstr " PERINGATAN: ada %s tersisa link pesan LM_PAINT/LM_GtkPAINT tidak dihapus."
+#: lclstrconsts:rswarningunreleasedmessagesinqueue
+msgid " WARNING: There are %d messages left in the queue! I'll free them"
+msgstr " PERINGATAN: Ada %d pesan tersisa dalam antrian! Saya akan membebaskannya"
 
 #: lclstrconsts:rswarningunreleaseddcsdump
 msgid " WARNING: There are %d unreleased DCs, a detailed dump follows:"
@@ -160,61 +36,77 @@ msgstr " PERINGATAN: Ada %d DCs tidak dilepas, dump detil sebagai berikut:"
 msgid " WARNING: There are %d unreleased GDIObjects, a detailed dump follows:"
 msgstr " PERINGATAN: Ada %d GDIObjects tidak dilepas, detil dump sebagai berikut:"
 
-#: lclstrconsts:rswarningunreleasedmessagesinqueue
-msgid " WARNING: There are %d messages left in the queue! I'll free them"
-msgstr " PERINGATAN: Ada %d pesan tersisa dalam antrian! Saya akan membebaskannya"
+#: lclstrconsts:rswarningunremovedpaintmessages
+msgid " WARNING: There are %s unremoved LM_PAINT/LM_GtkPAINT message links left."
+msgstr " PERINGATAN: ada %s tersisa link pesan LM_PAINT/LM_GtkPAINT tidak dihapus."
 
-#: lclstrconsts:rswarningunreleasedtimerinfos
-msgid " WARNING: There are %d TimerInfo structures left, I'll free them"
-msgstr " PERINGATAN: Ada %d struktur TimerInfo tersisa, Saya akan membebaskannya"
+#: lclstrconsts:rsindexoutofbounds
+msgid "%s Index %d out of bounds 0-%d"
+msgstr "%s Indeks %d diluar jangkauan 0-%d"
 
-#: lclstrconsts:rsfileinformation
-msgid "File information"
-msgstr "Informasi file"
+#: lclstrconsts:rsisalreadyassociatedwith
+msgid "%s is already associated with %s"
+msgstr "%s sudah dikaitkan dengan %s"
 
-#: lclstrconsts:rsgtkfilter
-msgid "Filter:"
-msgstr "Filter:"
+#: lclstrconsts:rspressoktoignoreandriskdatacorruptionpresscanceltok
+msgid "%s%sPress Ok to ignore and risk data corruption.%sPress Cancel to kill the program."
+msgstr "%s%sTekan Ok untuk mengabaikan dan resiko kerusakan data.%sTekan Batal untuk mematikan program"
 
-#: lclstrconsts:rsgtkhistory
-msgid "History:"
-msgstr "Histori:"
+#: lclstrconsts:rshelpalreadyregistered
+msgid "%s: Already registered"
+msgstr ""
 
-#: lclstrconsts:rsdefaultfileinfovalue
-msgid "permissions user group size date time"
-msgstr "ukuran waktu tanggal perijinan grup pemakai "
+#: lclstrconsts:rshelpnotregistered
+msgid "%s: Not registered"
+msgstr ""
 
-#: lclstrconsts:rsblank
-msgid "Blank"
-msgstr "Kosong"
+#: lclstrconsts:rsmball
+msgid "&All"
+msgstr "&Semua"
 
-#: lclstrconsts:rsunabletoloaddefaultfont
-msgid "Unable to load default font"
-msgstr "Tidak bisa mengambil font default"
+#: lclstrconsts:rsmbclose
+msgid "&Close"
+msgstr "&Tutup"
+
+#: lclstrconsts:rsmbhelp
+msgid "&Help"
+msgstr "&Panduan"
+
+#: lclstrconsts:rsmbignore
+msgid "&Ignore"
+msgstr "&Abaikan"
+
+#: lclstrconsts:rsmbno
+msgid "&No"
+msgstr "&Tidak"
+
+#: lclstrconsts:rsmbok
+msgid "&OK"
+msgstr "&OK"
+
+#: lclstrconsts:rsmbretry
+msgid "&Retry"
+msgstr "&Coba lagi"
+
+#: lclstrconsts:rsmbyes
+msgid "&Yes"
+msgstr "&Ya"
 
 #: lclstrconsts:rsfileinfofilenotfound
 msgid "(file not found: \"%s\")"
 msgstr "(file tidak ditemukan: \"%s\")"
 
-#: lclstrconsts:rsgtkoptionnotransient
-msgid "--lcl-no-transient    Do not set transient order for modal forms"
-msgstr "--lcl-no-transient    Jangan set urutan sementara untuk form modal"
+#: lclstrconsts:rsgtkoptionclass
+msgid "--class classname     Following Xt conventions, the class of a program is the program name with the initial character capitalized. For example, the classname for gimp is \"Gimp\". If --class is specified, the class of the program will be set to \"classname\"."
+msgstr "--class classname     Mengikuti konvensi Xt, class dari sebuah program dalam nama program dengan inisial karakter dibesarkan. Sebagai contoh, classname untuk gimp adalah \"Gimp\". Jika --class ditetapkan, class dari program akan di set ke \"classname\"."
 
-#: lclstrconsts:rsgtkoptionmodule
-msgid "--gtk-module module   Load the specified module at startup."
-msgstr "--gtk-module module   Ambil modul yang ditetapkan saat startup."
+#: lclstrconsts:rsgtkoptiondisplay
+msgid "--display h:s:d       Connect to the specified X server, where \"h\" is the hostname, \"s\" is the server number (usually 0), and \"d\" is the display number (typically omitted). If --display is not specified, the DISPLAY environment variable is used."
+msgstr "--display h:s:d       Sambungkan ke X server tertentu, dimana \"h\" adalah nama host, \"s\" adalah nomor server (biasanya 0), dan \"d\" adalah nomor layar (biasanya diabaikan). Jika --display tidak ditetapkan, variabel lingkungan DISPLAY yang digunakan."
 
 #: lclstrconsts:rsgoptionfatalwarnings
 msgid "--g-fatal-warnings    Warnings and errors generated by Gtk+/GDK will halt the application."
 msgstr "--g-fatal-warnings    Peringatan dan kesalahan dihasilkan oleh Gtk+/GDK akan menghentikan aplikasi."
-
-#: lclstrconsts:rsgtkoptiondebug
-msgid "--gtk-debug flags     Turn on specific Gtk+ trace/debug messages."
-msgstr "--gtk-debug flags    Hidupkan pesan khusus Gtk+ trace/debug."
-
-#: lclstrconsts:rsgtkoptionnodebug
-msgid "--gtk-no-debug flags  Turn off specific Gtk+ trace/debug messages."
-msgstr "--gtk-no-debug flags  Matikan pesan khusus Gtk+ trace/debug."
 
 #: lclstrconsts:rsgdkoptiondebug
 msgid "--gdk-debug flags     Turn on specific GDK trace/debug messages."
@@ -224,129 +116,201 @@ msgstr "--gdk-debug flags     Hidupkan pesan khusus GDK trace/debug."
 msgid "--gdk-no-debug flags  Turn off specific GDK trace/debug messages."
 msgstr "--gdk-no-debug flags  Matikan pesan khusus GDK trace/debug."
 
-#: lclstrconsts:rsgtkoptiondisplay
-msgid "--display h:s:d       Connect to the specified X server, where \"h\" is the hostname, \"s\" is the server number (usually 0), and \"d\" is the display number (typically omitted). If --display is not specified, the DISPLAY environment variable is used."
-msgstr "--display h:s:d       Sambungkan ke X server tertentu, dimana \"h\" adalah nama host, \"s\" adalah nomor server (biasanya 0), dan \"d\" adalah nomor layar (biasanya diabaikan). Jika --display tidak ditetapkan, variabel lingkungan DISPLAY yang digunakan."
+#: lclstrconsts:rsgtkoptiondebug
+msgid "--gtk-debug flags     Turn on specific Gtk+ trace/debug messages."
+msgstr "--gtk-debug flags    Hidupkan pesan khusus Gtk+ trace/debug."
 
-#: lclstrconsts:rsgtkoptionsync
-msgid "--sync                Call XSynchronize (display, True) after the Xserver connection has been established. This makes debugging X protocol errors easier, because X request buffering will be disabled and X errors will be received immediatey after the protocol request that generated the error has been processed by the X server."
-msgstr "--sync                Panggil XSynchronize (layar, Benar) setelah sambungan Xserver terlaksana. Ini membuat debugging kesalahan protokol X lebih mudah, karena permintaan penyanggaan X akan dimatikan dan kesalahan X akan diterima segera setelah permintaan protokol yang kesalahannya telah dibuat sudah diproses oleh X server."
+#: lclstrconsts:rsgtkoptionmodule
+msgid "--gtk-module module   Load the specified module at startup."
+msgstr "--gtk-module module   Ambil modul yang ditetapkan saat startup."
 
-#: lclstrconsts:rsgtkoptionnoxshm
-msgid "--no-xshm             Disable use of the X Shared Memory Extension."
-msgstr "--no-xshm             Matikan penggunaan X Shared Memory Extension."
+#: lclstrconsts:rsgtkoptionnodebug
+msgid "--gtk-no-debug flags  Turn off specific Gtk+ trace/debug messages."
+msgstr "--gtk-no-debug flags  Matikan pesan khusus Gtk+ trace/debug."
+
+#: lclstrconsts:rsgtkoptionnotransient
+msgid "--lcl-no-transient    Do not set transient order for modal forms"
+msgstr "--lcl-no-transient    Jangan set urutan sementara untuk form modal"
 
 #: lclstrconsts:rsgtkoptionname
 msgid "--name programe       Set program name to \"progname\". If not specified, program name will be set to ParamStr(0)."
 msgstr "--name programe       Set nama program ke \"progname\". Jika tidak ditetapkan, nama program akan diset ke ParamStr(0)."
 
-#: lclstrconsts:rsgtkoptionclass
-msgid "--class classname     Following Xt conventions, the class of a program is the program name with the initial character capitalized. For example, the classname for gimp is \"Gimp\". If --class is specified, the class of the program will be set to \"classname\"."
-msgstr "--class classname     Mengikuti konvensi Xt, class dari sebuah program dalam nama program dengan inisial karakter dibesarkan. Sebagai contoh, classname untuk gimp adalah \"Gimp\". Jika --class ditetapkan, class dari program akan di set ke \"classname\"."
+#: lclstrconsts:rsgtkoptionnoxshm
+msgid "--no-xshm             Disable use of the X Shared Memory Extension."
+msgstr "--no-xshm             Matikan penggunaan X Shared Memory Extension."
 
-#: lclstrconsts:rswin32warning
-msgid "Warning:"
-msgstr "Peringatan:"
+#: lclstrconsts:rsgtkoptionsync
+msgid "--sync                Call XSynchronize (display, True) after the Xserver connection has been established. This makes debugging X protocol errors easier, because X request buffering will be disabled and X errors will be received immediatey after the protocol request that generated the error has been processed by the X server."
+msgstr "--sync                Panggil XSynchronize (layar, Benar) setelah sambungan Xserver terlaksana. Ini membuat debugging kesalahan protokol X lebih mudah, karena permintaan penyanggaan X akan dimatikan dan kesalahan X akan diterima segera setelah permintaan protokol yang kesalahannya telah dibuat sudah diproses oleh X server."
 
-#: lclstrconsts:rswin32error
-msgid "Error:"
-msgstr "Kesalahan:"
+#: lclstrconsts:rsacontrolcannothaveitselfasparent
+msgid "A control can't have itself as parent"
+msgstr "Kontrol tidak bisa menjadikan dirinya sebagai induk"
 
-#: lclstrconsts:sinvalidactionregistration
-msgid "Invalid action registration"
-msgstr "Registrasi action tidak benar"
+#: lclstrconsts:rsmbabort
+msgid "Abort"
+msgstr "Batal"
 
-#: lclstrconsts:sinvalidactionunregistration
-msgid "Invalid action unregistration"
-msgstr "Pembatalan registrasi action tidak benar"
+#: lclstrconsts:ifsvk_accept
+msgid "Accept"
+msgstr "Terima"
 
-#: lclstrconsts:sinvalidactionenumeration
-msgid "Invalid action enumeration"
-msgstr "Enumerasi action tidak benar"
+#: lclstrconsts:rsallfiles
+msgid "All files (%s)|%s|%s"
+msgstr "Semua file (%s)|%s|%s"
 
-#: lclstrconsts:sinvalidactioncreation
-msgid "Invalid action creation"
-msgstr "Pembuatan action tidak benar"
+#: lclstrconsts:ifsvk_back
+msgid "Backspace"
+msgstr "Backspace"
 
-#: lclstrconsts:smenunotfound
-msgid "Sub-menu is not in menu"
-msgstr "Sub-menu tidak dalam menu"
+#: lclstrconsts:rsbitmaps
+msgid "Bitmaps"
+msgstr "Bitmaps"
 
-#: lclstrconsts:smenuindexerror
-msgid "Menu index out of range"
-msgstr "Indeks Menu diluar jangkauan"
+#: lclstrconsts:rsblank
+msgid "Blank"
+msgstr "Kosong"
 
-#: lclstrconsts:smenuitemisnil
-msgid "MenuItem is nil"
-msgstr "MenuItem kosong"
+#: lclstrconsts:hhshelpbrowsernotexecutable
+msgid "Browser %s%s%s not executable."
+msgstr ""
 
-#: lclstrconsts:snotimers
-msgid "No timers available"
-msgstr "Tidak tersedia timer"
+#: lclstrconsts:hhshelpbrowsernotfound
+msgid "Browser %s%s%s not found."
+msgstr ""
 
-#: lclstrconsts:sinvalidindex
-msgid "Invalid ImageList Index"
-msgstr "Indeks ImageList tidak benar"
+#: lclstrconsts:rscalculator
+msgid "Calculator"
+msgstr "Kalkulator"
 
-#: lclstrconsts:sinvalidimagesize
-msgid "Invalid image size"
-msgstr "Ukuran gambar tidak benar"
+#: lclstrconsts:rscannotfocus
+msgid "Can not focus"
+msgstr "Tidak bisa memfokuskan"
 
-#: lclstrconsts:sduplicatemenus
-msgid "Duplicate menus"
-msgstr "Duplikasi menu"
+#: lclstrconsts:rsmbcancel
+msgid "Cancel"
+msgstr "Batal"
 
 #: lclstrconsts:scannotfocus
 msgid "Cannot focus a disabled or invisible window"
 msgstr "Tidak bisa memberikan fokus ke jendela yang dimatikan atau tidak nampak"
 
-#: lclstrconsts:rslistmustbeempty
-msgid "List must be empty"
-msgstr "List harus kosong"
+#: lclstrconsts:rscanvasdoesnotallowdrawing
+msgid "Canvas does not allow drawing"
+msgstr "Kanvas tidak membolehkan penggambaran"
 
-#: lclstrconsts:rsinvalidpropertyvalue
-msgid "Invalid property value"
-msgstr "Nilai properti tidak benar"
+#: lclstrconsts:ifsvk_capital
+msgid "Capital"
+msgstr "Kapital"
 
-#: lclstrconsts:rspropertydoesnotexist
-msgid "Property %s does not exist"
-msgstr "Properti %s tidak ada"
+#: lclstrconsts:ifsvk_clear
+msgid "Clear"
+msgstr "Clear"
 
-#: lclstrconsts:rsinvalidstreamformat
-msgid "Invalid stream format"
-msgstr "Format stream tidak benar"
+#: lclstrconsts:rsmtconfirmation
+msgid "Confirmation"
+msgstr "Konfirmasi"
 
-#: lclstrconsts:rserrorreadingproperty
-msgid "Error reading %s%s%s: %s"
-msgstr "Kesalahan pembacaan %s%s%s: %s"
+#: lclstrconsts:ifsvk_control
+msgid "Control"
+msgstr "Kontrol"
 
-#: lclstrconsts:rsinvalidformobjectstream
-msgid "invalid Form object stream"
-msgstr "Aliran Objek Form tidak benar"
+#: lclstrconsts:ifsvk_convert
+msgid "Convert"
+msgstr "Konversi"
 
-#: lclstrconsts:rsscrollbaroutofrange
-msgid "ScrollBar property out of range"
-msgstr "Properti ScrollBar diluar jangkauan"
+#: lclstrconsts:rscreatinggdbcatchableerror
+msgid "Creating gdb catchable error:"
+msgstr "Pembuatan cachable salah: "
 
-#: lclstrconsts:rsinvaliddate
-msgid "Invalid Date : %s"
-msgstr "Tanggal tidak benar : %s"
+#: lclstrconsts:rsmtcustom
+msgid "Custom"
+msgstr "Kustom"
 
-#: lclstrconsts:rsinvaliddaterangehint
-msgid "Invalid Date: %s. Must be between %s and %s"
-msgstr "Tanggal tidak benar: %s. Harus ada diantara %s dan %s"
+#: lclstrconsts:ifsvk_delete
+msgid "Delete"
+msgstr "Delete"
+
+#: lclstrconsts:rsfddirectorymustexist
+msgid "Directory must exist"
+msgstr "Direktori harus ada"
+
+#: lclstrconsts:rsdocking
+msgid "Docking"
+msgstr "Docking"
+
+#: lclstrconsts:ifsvk_down
+msgid "Down"
+msgstr "Turun"
+
+#: lclstrconsts:sduplicatemenus
+msgid "Duplicate menus"
+msgstr "Duplikasi menu"
+
+#: lclstrconsts:rserrorinlcl
+msgid "ERROR in LCL: "
+msgstr "KESALAHAN dalam LCL: "
+
+#: lclstrconsts:ifsvk_end
+msgid "End"
+msgstr "End"
+
+#: lclstrconsts:rsmterror
+msgid "Error"
+msgstr "Salah"
+
+#: lclstrconsts:rserrorcreatingdevicecontext
+msgid "Error creating device context for %s.%s"
+msgstr "Kesalahan pembuatan konteks device untuk %s.%s"
 
 #: lclstrconsts:rserroroccurredinataddressframe
 msgid "Error occurred in %s at %sAddress %s%s Frame %s"
 msgstr "Kesalahan terjadi dalam %s at %sAlamat %s%s Frame %s"
 
+#: lclstrconsts:rserrorreadingproperty
+msgid "Error reading %s%s%s: %s"
+msgstr "Kesalahan pembacaan %s%s%s: %s"
+
+#: lclstrconsts:hhshelperrorwhileexecuting
+msgid "Error while executing %s%s%s:%s%s"
+msgstr ""
+
+#: lclstrconsts:rswin32error
+msgid "Error:"
+msgstr "Kesalahan:"
+
+#: lclstrconsts:ifsvk_escape
+msgid "Escape"
+msgstr "Escape"
+
 #: lclstrconsts:rsexception
 msgid "Exception"
 msgstr "Kekecualian"
 
-#: lclstrconsts:rsformstreamingerror
-msgid "Form streaming \"%s\" error: %s"
-msgstr "Pengaliran form \"%s\" salah: %s"
+#: lclstrconsts:ifsvk_execute
+msgid "Execute"
+msgstr "Jalankan"
+
+#: lclstrconsts:rsfileinformation
+msgid "File information"
+msgstr "Informasi file"
+
+#: lclstrconsts:rsfdfilereadonlytitle
+msgid "File is not writable"
+msgstr "File tidak bisa ditulisi"
+
+#: lclstrconsts:rsfdfilemustexist
+msgid "File must exist"
+msgstr "File harus ada"
+
+#: lclstrconsts:rsgtkfilter
+msgid "Filter:"
+msgstr "Filter:"
+
+#: lclstrconsts:ifsvk_final
+msgid "Final"
+msgstr "Final"
 
 #: lclstrconsts:rsfixedcolstoobig
 msgid "FixedCols can't be >= ColCount"
@@ -356,49 +320,257 @@ msgstr "FixedCols tidak bisa >= ColCount"
 msgid "FixedRows can't be >= RowCount"
 msgstr "FixedRows tidak bisa >= RowCount"
 
+#: lclstrconsts:rsformstreamingerror
+msgid "Form streaming \"%s\" error: %s"
+msgstr "Pengaliran form \"%s\" salah: %s"
+
 #: lclstrconsts:rsgridfiledoesnotexists
 msgid "Grid file doesn't exists"
 msgstr "File grid tidak ada"
 
-#: lclstrconsts:rsnotavalidgridfile
-msgid "Not a valid grid file"
-msgstr "Bukan file grid yang benar"
+#: lclstrconsts:rsgroupindexcannotbelessthanprevious
+msgid "GroupIndex cannot be less than a previous menu item's GroupIndex"
+msgstr "GroupIndex tidak bisa kurang dari item GroupIndex menu sebelumnya"
+
+#: lclstrconsts:ifsvk_hanja
+msgid "Hanja"
+msgstr "Hanja"
+
+#: lclstrconsts:ifsvk_help
+msgid "Help"
+msgstr "Panduan"
+
+#: lclstrconsts:rshelpcontextnotfound
+msgid "Help Context not found"
+msgstr ""
+
+#: lclstrconsts:rshelphelpdatabasedidnotfoundaviewerforahelppageoftype
+msgid "Help Database %s%s%s did not found a viewer for a help page of type %s"
+msgstr ""
+
+#: lclstrconsts:rshelphelpdatabasenotfound
+msgid "Help Database %s%s%s not found"
+msgstr ""
+
+#: lclstrconsts:rshelpdatabasenotfound
+msgid "Help Database not found"
+msgstr ""
+
+#: lclstrconsts:rshelperror
+msgid "Help Error"
+msgstr ""
+
+#: lclstrconsts:rshelpselectorerror
+msgid "Help Selector Error"
+msgstr ""
+
+#: lclstrconsts:rshelpviewererror
+msgid "Help Viewer Error"
+msgstr ""
+
+#: lclstrconsts:rshelpviewernotfound
+msgid "Help Viewer not found"
+msgstr ""
+
+#: lclstrconsts:rshelphelpcontextnotfoundindatabase
+msgid "Help context %s not found in Database %s%s%s."
+msgstr ""
+
+#: lclstrconsts:rshelphelpcontextnotfound
+msgid "Help context %s not found."
+msgstr ""
+
+#: lclstrconsts:rshelphelpkeywordnotfoundindatabase
+msgid "Help keyword %s%s%s not found in Database %s%s%s."
+msgstr ""
+
+#: lclstrconsts:rshelphelpkeywordnotfound
+msgid "Help keyword %s%s%s not found."
+msgstr ""
+
+#: lclstrconsts:rshelphelpnodehasnohelpdatabase
+msgid "Help node %s%s%s has no Help Database"
+msgstr ""
+
+#: lclstrconsts:rshelpnotfound
+msgid "Help not found"
+msgstr ""
+
+#: lclstrconsts:rsgtkhistory
+msgid "History:"
+msgstr "Histori:"
+
+#: lclstrconsts:ifsvk_home
+msgid "Home"
+msgstr "Home"
+
+#: lclstrconsts:rsicon
+msgid "Icon"
+msgstr "Ikon"
 
 #: lclstrconsts:rsindexoutofrange
 msgid "Index Out of range Cell[Col=%d Row=%d]"
 msgstr "Indeks Diluar jangkauan Cell[Kolom=%d Baris=%d]"
 
-#: lclstrconsts:rserrorinlcl
-msgid "ERROR in LCL: "
-msgstr "KESALAHAN dalam LCL: "
+#: lclstrconsts:rsmtinformation
+msgid "Information"
+msgstr "Informasi"
 
-#: lclstrconsts:rscreatinggdbcatchableerror
-msgid "Creating gdb catchable error:"
-msgstr "Pembuatan cachable salah: "
+#: lclstrconsts:ifsvk_insert
+msgid "Insert"
+msgstr "Insert"
 
-#: lclstrconsts:rsacontrolcannothaveitselfasparent
-msgid "A control can't have itself as parent"
-msgstr "Kontrol tidak bisa menjadikan dirinya sebagai induk"
+#: lclstrconsts:rsinvaliddate
+msgid "Invalid Date : %s"
+msgstr "Tanggal tidak benar : %s"
 
-#: lclstrconsts:lislclresourcesnotfound
-msgid "Resource %s not found"
-msgstr "Sumber %s tidak ditemukan"
+#: lclstrconsts:rsinvaliddaterangehint
+msgid "Invalid Date: %s. Must be between %s and %s"
+msgstr "Tanggal tidak benar: %s. Harus ada diantara %s dan %s"
 
-#: lclstrconsts:rserrorcreatingdevicecontext
-msgid "Error creating device context for %s.%s"
-msgstr "Kesalahan pembuatan konteks device untuk %s.%s"
+#: lclstrconsts:sinvalidindex
+msgid "Invalid ImageList Index"
+msgstr "Indeks ImageList tidak benar"
 
-#: lclstrconsts:rsindexoutofbounds
-msgid "%s Index %d out of bounds 0-%d"
-msgstr "%s Indeks %d diluar jangkauan 0-%d"
+#: lclstrconsts:sinvalidactioncreation
+msgid "Invalid action creation"
+msgstr "Pembuatan action tidak benar"
 
-#: lclstrconsts:rsunknownpictureextension
-msgid "Unknown picture extension"
-msgstr "Ekstensi gambar tidak dikenal"
+#: lclstrconsts:sinvalidactionenumeration
+msgid "Invalid action enumeration"
+msgstr "Enumerasi action tidak benar"
 
-#: lclstrconsts:rsbitmaps
-msgid "Bitmaps"
-msgstr "Bitmaps"
+#: lclstrconsts:sinvalidactionregistration
+msgid "Invalid action registration"
+msgstr "Registrasi action tidak benar"
+
+#: lclstrconsts:sinvalidactionunregistration
+msgid "Invalid action unregistration"
+msgstr "Pembatalan registrasi action tidak benar"
+
+#: lclstrconsts:sinvalidimagesize
+msgid "Invalid image size"
+msgstr "Ukuran gambar tidak benar"
+
+#: lclstrconsts:rsinvalidpropertyvalue
+msgid "Invalid property value"
+msgstr "Nilai properti tidak benar"
+
+#: lclstrconsts:rsinvalidstreamformat
+msgid "Invalid stream format"
+msgstr "Format stream tidak benar"
+
+#: lclstrconsts:ifsvk_junja
+msgid "Junja"
+msgstr "Junja"
+
+#: lclstrconsts:ifsvk_kana
+msgid "Kana"
+msgstr "Kana"
+
+#: lclstrconsts:ifsvk_left
+msgid "Left"
+msgstr "Left"
+
+#: lclstrconsts:rslistindexexceedsbounds
+msgid "List index exceeds bounds (%d)"
+msgstr "Indeks List melebihi jangkauan (%d)"
+
+#: lclstrconsts:rslistmustbeempty
+msgid "List must be empty"
+msgstr "List harus kosong"
+
+#: lclstrconsts:ifsvk_menu
+msgid "Menu"
+msgstr "Menu"
+
+#: lclstrconsts:smenuindexerror
+msgid "Menu index out of range"
+msgstr "Indeks Menu diluar jangkauan"
+
+#: lclstrconsts:smenuitemisnil
+msgid "MenuItem is nil"
+msgstr "MenuItem kosong"
+
+#: lclstrconsts:ifsvk_modechange
+msgid "Mode Change"
+msgstr "Ubah  Mode"
+
+#: lclstrconsts:ifsvk_lbutton
+msgid "Mouse Button Left"
+msgstr "Tombol Mouse Kiri"
+
+#: lclstrconsts:ifsvk_mbutton
+msgid "Mouse Button Middle"
+msgstr "Tombol Mouse Tengah"
+
+#: lclstrconsts:ifsvk_rbutton
+msgid "Mouse Button Right"
+msgstr "Tombol Mouse Kanan"
+
+#: lclstrconsts:ifsvk_next
+msgid "Next"
+msgstr "Berikutnya"
+
+#: lclstrconsts:hhshelpnohtmlbrowserfoundpleasedefineoneinhelpconfigurehe
+msgid "No HTML Browser found.%sPlease define one in Help -> Configure Help -> Viewers"
+msgstr ""
+
+#: lclstrconsts:snomdiform
+msgid "No MDI form present."
+msgstr "Tidak ada form MDI"
+
+#: lclstrconsts:rshelpnohelpfoundforsource
+msgid "No help found for line %d, column %d of %s."
+msgstr ""
+
+#: lclstrconsts:rshelpnohelpnodesavailable
+msgid "No help nodes available"
+msgstr ""
+
+#: lclstrconsts:snotimers
+msgid "No timers available"
+msgstr "Tidak tersedia timer"
+
+#: lclstrconsts:rsmbnotoall
+msgid "No to all"
+msgstr "Tidak untuk semua"
+
+#: lclstrconsts:rsnowidgetset
+msgid "No widgetset object. Plz check if the unit \"interfaces\" was added to the programs uses clause."
+msgstr "Objek widgetset todal ada. Tolong periksa apakah unit \"interfaces\" sudah ditambahkan ke klausul uses program."
+
+#: lclstrconsts:ifsvk_nonconvert
+msgid "Nonconvert"
+msgstr "Nonkonversi"
+
+#: lclstrconsts:rsnotavalidgridfile
+msgid "Not a valid grid file"
+msgstr "Bukan file grid yang benar"
+
+#: lclstrconsts:ifsvk_numlock
+msgid "Numlock"
+msgstr "Numlock"
+
+#: lclstrconsts:ifsvk_numpad
+msgid "Numpad %d"
+msgstr "Numpad %d"
+
+#: lclstrconsts:rsfdopenfile
+msgid "Open existing file"
+msgstr "Buka file yang ada"
+
+#: lclstrconsts:rsfdoverwritefile
+msgid "Overwrite file ?"
+msgstr "Timpa file ?"
+
+#: lclstrconsts:rsfdpathmustexist
+msgid "Path must exist"
+msgstr "Path harus ada"
+
+#: lclstrconsts:ifsvk_pause
+msgid "Pause key"
+msgstr "Tombol pause"
 
 #: lclstrconsts:rspixmap
 msgid "Pixmap"
@@ -408,251 +580,175 @@ msgstr "Pixmap"
 msgid "Portable Network Graphic"
 msgstr "Portable Network Graphic"
 
-#: lclstrconsts:rsicon
-msgid "Icon"
-msgstr "Ikon"
-
-#: lclstrconsts:rsunsupportedclipboardformat
-msgid "Unsupported clipboard format: %s"
-msgstr "Format clipboard tidak didukung: %s"
-
-#: lclstrconsts:rsgroupindexcannotbelessthanprevious
-msgid "GroupIndex cannot be less than a previous menu item's GroupIndex"
-msgstr "GroupIndex tidak bisa kurang dari item GroupIndex menu sebelumnya"
-
-#: lclstrconsts:rsisalreadyassociatedwith
-msgid "%s is already associated with %s"
-msgstr "%s sudah dikaitkan dengan %s"
-
-#: lclstrconsts:rscanvasdoesnotallowdrawing
-msgid "Canvas does not allow drawing"
-msgstr "Kanvas tidak membolehkan penggambaran"
-
-#: lclstrconsts:rsunsupportedbitmapformat
-msgid "Unsupported bitmap format."
-msgstr "Format bitmap tidak didukung."
-
-#: lclstrconsts:rsnowidgetset
-msgid "No widgetset object. Plz check if the unit \"interfaces\" was added to the programs uses clause."
-msgstr "Objek widgetset todal ada. Tolong periksa apakah unit \"interfaces\" sudah ditambahkan ke klausul uses program."
-
-#: lclstrconsts:rspressoktoignoreandriskdatacorruptionpresscanceltok
-msgid "%s%sPress Ok to ignore and risk data corruption.%sPress Cancel to kill the program."
-msgstr "%s%sTekan Ok untuk mengabaikan dan resiko kerusakan data.%sTekan Batal untuk mematikan program"
-
-#: lclstrconsts:rscannotfocus
-msgid "Can not focus"
-msgstr "Tidak bisa memfokuskan"
-
-#: lclstrconsts:rslistindexexceedsbounds
-msgid "List index exceeds bounds (%d)"
-msgstr "Indeks List melebihi jangkauan (%d)"
-
-#: lclstrconsts:rsresourcenotfound
-msgid "Resource %s not found"
-msgstr "Sumber %s tidak ditemukan"
-
-#: lclstrconsts:rscalculator
-msgid "Calculator"
-msgstr "Kalkulator"
-
-#: lclstrconsts:rserror
-msgid "Error"
-msgstr "Salah"
-
-#: lclstrconsts:rspickdate
-msgid "Select a date"
-msgstr "Pilih tanggal"
-
-#: lclstrconsts:rssize
-msgid "  size "
-msgstr "  ukuran "
-
-#: lclstrconsts:rsmodified
-msgid "  modified "
-msgstr "  diubah "
-
-#: lclstrconsts:ifsvk_unknown
-msgid "Unknown"
-msgstr "Tidak dikenal"
-
-#: lclstrconsts:ifsvk_lbutton
-msgid "Mouse Button Left"
-msgstr "Tombol Mouse Kiri"
-
-#: lclstrconsts:ifsvk_rbutton
-msgid "Mouse Button Right"
-msgstr "Tombol Mouse Kanan"
-
-#: lclstrconsts:ifsvk_cancel
-msgid "Cancel"
-msgstr "Batal"
-
-#: lclstrconsts:ifsvk_mbutton
-msgid "Mouse Button Middle"
-msgstr "Tombol Mouse Tengah"
-
-#: lclstrconsts:ifsvk_back
-msgid "Backspace"
-msgstr "Backspace"
-
-#: lclstrconsts:ifsvk_tab
-msgid "Tab"
-msgstr "Tab"
-
-#: lclstrconsts:ifsvk_clear
-msgid "Clear"
-msgstr "Clear"
-
-#: lclstrconsts:ifsvk_return
-msgid "Return"
-msgstr "Return"
-
-#: lclstrconsts:ifsvk_shift
-msgid "Shift"
-msgstr "Shift"
-
-#: lclstrconsts:ifsvk_control
-msgid "Control"
-msgstr "Kontrol"
-
-#: lclstrconsts:ifsvk_menu
-msgid "Menu"
-msgstr "Menu"
-
-#: lclstrconsts:ifsvk_pause
-msgid "Pause key"
-msgstr "Tombol pause"
-
-#: lclstrconsts:ifsvk_capital
-msgid "Capital"
-msgstr "Kapital"
-
-#: lclstrconsts:ifsvk_kana
-msgid "Kana"
-msgstr "Kana"
-
-#: lclstrconsts:ifsvk_junja
-msgid "Junja"
-msgstr "Junja"
-
-#: lclstrconsts:ifsvk_final
-msgid "Final"
-msgstr "Final"
-
-#: lclstrconsts:ifsvk_hanja
-msgid "Hanja"
-msgstr "Hanja"
-
-#: lclstrconsts:ifsvk_escape
-msgid "Escape"
-msgstr "Escape"
-
-#: lclstrconsts:ifsvk_convert
-msgid "Convert"
-msgstr "Konversi"
-
-#: lclstrconsts:ifsvk_nonconvert
-msgid "Nonconvert"
-msgstr "Nonkonversi"
-
-#: lclstrconsts:ifsvk_accept
-msgid "Accept"
-msgstr "Terima"
-
-#: lclstrconsts:ifsvk_modechange
-msgid "Mode Change"
-msgstr "Ubah  Mode"
-
-#: lclstrconsts:ifsvk_space
-msgid "Space key"
-msgstr "Tombol Spasi"
+#: lclstrconsts:ifsvk_print
+msgid "Print"
+msgstr "Cetak"
 
 #: lclstrconsts:ifsvk_prior
 msgid "Prior"
 msgstr "Sebelumnya"
 
-#: lclstrconsts:ifsvk_next
-msgid "Next"
-msgstr "Berikutnya"
+#: lclstrconsts:rspropertydoesnotexist
+msgid "Property %s does not exist"
+msgstr "Properti %s tidak ada"
 
-#: lclstrconsts:ifsvk_end
-msgid "End"
-msgstr "End"
+#: lclstrconsts:lislclresourcesnotfound
+msgid "Resource %s not found"
+msgstr "Sumber %s tidak ditemukan"
 
-#: lclstrconsts:ifsvk_home
-msgid "Home"
-msgstr "Home"
-
-#: lclstrconsts:ifsvk_left
-msgid "Left"
-msgstr "Left"
-
-#: lclstrconsts:ifsvk_up
-msgid "Up"
-msgstr "Up"
+#: lclstrconsts:ifsvk_return
+msgid "Return"
+msgstr "Return"
 
 #: lclstrconsts:ifsvk_right
 msgid "Right"
 msgstr "Right"
 
-#: lclstrconsts:ifsvk_down
-msgid "Down"
-msgstr "Turun"
-
-#: lclstrconsts:ifsvk_select
-msgid "Select"
-msgstr "Pilih"
-
-#: lclstrconsts:ifsvk_print
-msgid "Print"
-msgstr "Cetak"
-
-#: lclstrconsts:ifsvk_execute
-msgid "Execute"
-msgstr "Jalankan"
-
-#: lclstrconsts:ifsvk_snapshot
-msgid "Snapshot"
-msgstr "Snapshot"
-
-#: lclstrconsts:ifsvk_insert
-msgid "Insert"
-msgstr "Insert"
-
-#: lclstrconsts:ifsvk_delete
-msgid "Delete"
-msgstr "Delete"
-
-#: lclstrconsts:ifsvk_help
-msgid "Help"
-msgstr "Panduan"
-
-#: lclstrconsts:ifsvk_lwin
-msgid "left windows key"
-msgstr "tombol kiri windows"
-
-#: lclstrconsts:ifsvk_rwin
-msgid "right windows key"
-msgstr "tombol kanan windows"
-
-#: lclstrconsts:ifsvk_apps
-msgid "application key"
-msgstr "tombol aplikasi"
-
-#: lclstrconsts:ifsvk_numpad
-msgid "Numpad %d"
-msgstr "Numpad %d"
-
-#: lclstrconsts:ifsvk_numlock
-msgid "Numlock"
-msgstr "Numlock"
+#: lclstrconsts:rsfdfilesaveas
+msgid "Save file as"
+msgstr "Simpan file sebagai"
 
 #: lclstrconsts:ifsvk_scroll
 msgid "Scroll"
 msgstr "Scroll"
 
-#: lclstrconsts:rsdocking
-msgid "Docking"
-msgstr "Docking"
+#: lclstrconsts:rsscrollbaroutofrange
+msgid "ScrollBar property out of range"
+msgstr "Properti ScrollBar diluar jangkauan"
+
+#: lclstrconsts:ifsvk_select
+msgid "Select"
+msgstr "Pilih"
+
+#: lclstrconsts:rsfdselectdirectory
+msgid "Select Directory"
+msgstr "Pilih Direktori"
+
+#: lclstrconsts:rspickdate
+msgid "Select a date"
+msgstr "Pilih tanggal"
+
+#: lclstrconsts:rsselectfonttitle
+msgid "Select a font"
+msgstr "Pilih font"
+
+#: lclstrconsts:rsselectcolortitle
+msgid "Select color"
+msgstr "Pilih warna"
+
+#: lclstrconsts:ifsvk_shift
+msgid "Shift"
+msgstr "Shift"
+
+#: lclstrconsts:ifsvk_snapshot
+msgid "Snapshot"
+msgstr "Snapshot"
+
+#: lclstrconsts:ifsvk_space
+msgid "Space key"
+msgstr "Tombol Spasi"
+
+#: lclstrconsts:smenunotfound
+msgid "Sub-menu is not in menu"
+msgstr "Sub-menu tidak dalam menu"
+
+#: lclstrconsts:ifsvk_tab
+msgid "Tab"
+msgstr "Tab"
+
+#: lclstrconsts:rsfddirectorynotexist
+msgid "The directory \"%s\" does not exist."
+msgstr "Directori \"%s\" tidak ada."
+
+#: lclstrconsts:rsfdfilealreadyexists
+msgid "The file \"%s\" already exists. Overwrite ?"
+msgstr "File \"%s\" sudah ada. Timpa saja ?"
+
+#: lclstrconsts:rsfdfilenotexist
+msgid "The file \"%s\" does not exist."
+msgstr "File \"%s\" tidak ada."
+
+#: lclstrconsts:rsfdfilereadonly
+msgid "The file \"%s\" is not writable."
+msgstr "File \"%s\" tidak bisa ditulisi."
+
+#: lclstrconsts:hhshelpthehelpdatabasewasunabletofindfile
+msgid "The help database %s%s%s was unable to find file %s%s%s."
+msgstr ""
+
+#: lclstrconsts:hhshelpthemacrosinbrowserparamswillbereplacedbytheurl
+msgid "The macro %s in BrowserParams will be replaced by the URL."
+msgstr ""
+
+#: lclstrconsts:rsfdpathnoexist
+msgid "The path \"%s\" does not exist."
+msgstr "Path \"%s\" tidak ada."
+
+#: lclstrconsts:rshelpthereisnoviewerforhelptype
+msgid "There is no viewer for help type %s%s%s"
+msgstr ""
+
+#: lclstrconsts:hhshelpnohtmlbrowserfound
+msgid "Unable to find a HTML browser."
+msgstr ""
+
+#: lclstrconsts:rsunabletoloaddefaultfont
+msgid "Unable to load default font"
+msgstr "Tidak bisa mengambil font default"
+
+#: lclstrconsts:ifsvk_unknown
+msgid "Unknown"
+msgstr "Tidak dikenal"
+
+#: lclstrconsts:rsunknownerrorpleasereportthisbug
+msgid "Unknown Error, please report this bug"
+msgstr ""
+
+#: lclstrconsts:rsunknownpictureextension
+msgid "Unknown picture extension"
+msgstr "Ekstensi gambar tidak dikenal"
+
+#: lclstrconsts:rsunsupportedbitmapformat
+msgid "Unsupported bitmap format."
+msgstr "Format bitmap tidak didukung."
+
+#: lclstrconsts:rsunsupportedclipboardformat
+msgid "Unsupported clipboard format: %s"
+msgstr "Format clipboard tidak didukung: %s"
+
+#: lclstrconsts:ifsvk_up
+msgid "Up"
+msgstr "Up"
+
+#: lclstrconsts:rsmtwarning
+msgid "Warning"
+msgstr "Peringatan"
+
+#: lclstrconsts:rswin32warning
+msgid "Warning:"
+msgstr "Peringatan:"
+
+#: lclstrconsts:rsmbyestoall
+msgid "Yes to &All"
+msgstr "Ya untuk &Semua"
+
+#: lclstrconsts:ifsvk_apps
+msgid "application key"
+msgstr "tombol aplikasi"
+
+#: lclstrconsts:rsinvalidformobjectstream
+msgid "invalid Form object stream"
+msgstr "Aliran Objek Form tidak benar"
+
+#: lclstrconsts:ifsvk_lwin
+msgid "left windows key"
+msgstr "tombol kiri windows"
+
+#: lclstrconsts:rsdefaultfileinfovalue
+msgid "permissions user group size date time"
+msgstr "ukuran waktu tanggal perijinan grup pemakai "
+
+#: lclstrconsts:ifsvk_rwin
+msgid "right windows key"
+msgstr "tombol kanan windows"
 
