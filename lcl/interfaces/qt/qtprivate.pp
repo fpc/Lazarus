@@ -55,6 +55,7 @@ type
     procedure SlotPaint(Event: QEventH); cdecl;
     procedure SlotResize; cdecl;
   public
+    procedure SetColor(const Value: PQColor);
     procedure Update;
     procedure Repaint;
     procedure setWindowTitle(Str: PWideString);
@@ -526,6 +527,27 @@ begin
   except
     Application.HandleException(nil);
   end;
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtWidget.SetColor
+  Params:  QColorH
+  Returns: Nothing
+
+  Schedules a paint event for processing when Qt returns to the main event loop
+ ------------------------------------------------------------------------------}
+procedure TQtWidget.SetColor(const Value: PQColor);
+var
+  Palette: QPaletteH;
+begin
+  Palette:=QPalette_create(QWidget_palette(Widget));
+  // Set the palette for all color groups (active, inactive, disabled)
+  QPalette_setColor(Palette,QPaletteWindow,Value);
+  QPalette_setColor(Palette,QPaletteButton,Value);
+  QPalette_setColor(Palette,QPaletteBase,Value);
+  // Set the Palette
+  QWidget_setPalette(Widget,Palette);
+  QPalette_destroy(Palette);
 end;
 
 {------------------------------------------------------------------------------

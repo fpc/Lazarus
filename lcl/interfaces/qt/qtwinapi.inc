@@ -548,6 +548,88 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Function: TQtWidgetSet.GetSysColor
+  Params:   index to the syscolors array
+  Returns:  RGB value
+
+ ------------------------------------------------------------------------------}
+function TQtWidgetSet.GetSysColor(nIndex: Integer): DWORD;
+
+  {------------------------------------------------------------------------------
+    Function: GetColor
+    Params:   A Qt color group and a Qt color role
+    Returns:  TColor
+
+  ------------------------------------------------------------------------------}
+  function GetColor(Group: QPaletteColorGroup; Role: QPaletteColorRole): TColor;
+  var
+    Handle : QPaletteH;
+    QColor : PQColor;
+  begin
+    Handle := QPalette_create;
+    QApplication_palette(Handle);
+
+    QColor:=QPalette_color(Handle, Group,Role);
+    Result:=(QColor^.r and $00FF) or ((QColor^.g and $00FF) shl 8) or ((QColor^.b and $00FF) shl 16);
+
+    QPalette_destroy(Handle);
+  end;
+
+begin
+  if (nIndex < 0) or (nIndex > MAX_SYS_COLORS) then
+    begin
+    Assert(False, 'Trace:Unknown lcl system color: [TQtWidgetSet.GetSysColor]');
+    exit;
+    end;
+    
+  case nIndex of
+    COLOR_SCROLLBAR               : Result:=GetColor(QPaletteActive,   QPaletteMid);
+    COLOR_BACKGROUND              : Result:=GetColor(QPaletteActive,   QPaletteWindow);
+    COLOR_ACTIVECAPTION           : Result:=GetColor(QPaletteActive,   QPaletteBase);
+    COLOR_INACTIVECAPTION         : Result:=GetColor(QPaletteInActive, QPaletteBase);
+    COLOR_MENU                    : Result:=GetColor(QPaletteActive,   QPaletteWindow);
+    COLOR_WINDOW                  : Result:=GetColor(QPaletteActive,   QPaletteWindow);
+    COLOR_WINDOWFRAME             : Result:=GetColor(QPaletteActive,   QPaletteWindow);
+    COLOR_MENUTEXT                : Result:=GetColor(QPaletteActive,   QPaletteWindowText);
+    COLOR_WINDOWTEXT              : Result:=GetColor(QPaletteActive,   QPaletteWindowText);
+    COLOR_CAPTIONTEXT             : Result:=GetColor(QPaletteActive,   QPaletteText);
+    COLOR_ACTIVEBORDER            : Result:=GetColor(QPaletteActive,   QPaletteWindow);
+    COLOR_INACTIVEBORDER          : Result:=GetColor(QPaletteInactive, QPaletteWindow);
+    COLOR_APPWORKSPACE            : Result:=GetColor(QPaletteActive,   QPaletteWindow);
+    COLOR_HIGHLIGHT               : Result:=GetColor(QPaletteActive,   QPaletteHighlight);
+    COLOR_HIGHLIGHTTEXT           : Result:=GetColor(QPaletteActive,   QPaletteHighlightedText);
+    COLOR_BTNFACE                 : Result:=GetColor(QPaletteActive,   QPaletteButton);
+    COLOR_BTNSHADOW               : Result:=GetColor(QPaletteActive,   QPaletteShadow);
+    COLOR_GRAYTEXT                : Result:=GetColor(QPaletteActive,   QPaletteText);
+    COLOR_BTNTEXT                 : Result:=GetColor(QPaletteActive,   QPaletteButtonText);
+    COLOR_INACTIVECAPTIONTEXT     : Result:=GetColor(QPaletteInactive, QPaletteText);
+    COLOR_BTNHIGHLIGHT            : Result:=GetColor(QPaletteActive,   QPaletteHighlightedText);
+    COLOR_3DDKSHADOW              : Result:=GetColor(QPaletteActive,   QPaletteMid);
+    COLOR_3DLIGHT                 : Result:=GetColor(QPaletteActive,   QPaletteMidlight);
+    COLOR_INFOTEXT                : Result:=GetColor(QPaletteActive,   QPaletteText);
+    COLOR_INFOBK                  : Result:=GetColor(QPaletteActive,   QPaletteBase);
+    // PBD: 25 is unassigned in all the docs I can find
+    //      if someone finds what this is supposed to be then fill it in
+    //      note defaults below, and cl[ColorConst] in graphics
+    COLOR_HOTLIGHT                : Result:=GetColor(QPaletteActive,   QPaletteLight);
+    COLOR_GRADIENTACTIVECAPTION   : Result:=GetColor(QPaletteActive,   QPaletteText);
+    COLOR_GRADIENTINACTIVECAPTION : Result:=GetColor(QPaletteInactive, QPaletteText);
+    COLOR_FORM                    : Result:=GetColor(QPaletteActive,   QPaletteWindow);
+
+    COLOR_clForeground..COLOR_clHighlightedText
+                                  : Result:=GetColor(QPaletteActive,   nIndex - COLOR_clForeground);
+    COLOR_clNormalForeground..COLOR_clNormalHighlightedText
+                                  : Result:=GetColor(QPaletteInactive, nIndex - COLOR_clNormalForeground);
+    COLOR_clDisabledForeground..COLOR_clDisabledHighlightedText
+                                  : Result:=GetColor(QPaletteDisabled, nIndex - COLOR_clDisabledForeground);
+    COLOR_clActiveForeground..COLOR_clActiveHighlightedText
+                                  : Result:=GetColor(QPaletteActive,   nIndex - COLOR_clActiveForeground);
+  else
+    Result:=0;
+  end;
+end;
+
+{------------------------------------------------------------------------------
   Function: GetSystemMetrics
   Params:
   Returns: Nothing

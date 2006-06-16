@@ -30,7 +30,7 @@ uses
   // Bindings
   qt4, qtprivate,
   // LCL
-  SysUtils, Controls, LCLType, Forms,
+  SysUtils, Controls, LCLType, Forms, Graphics,
   // Widgetset
   InterfaceBase, WSControls, WSLCLClasses;
 
@@ -69,6 +69,7 @@ type
     class procedure SetPos(const AWinControl: TWinControl; const ALeft, ATop: Integer); override;
     class procedure SetSize(const AWinControl: TWinControl; const AWidth, AHeight: Integer); override;
     class procedure ShowHide(const AWinControl: TWinControl); override; //TODO: rename to SetVisible(control, visible)
+    class procedure SetColor(const AWinControl: TWinControl); override;
 
 //    class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
 //    class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
@@ -79,7 +80,6 @@ type
     class procedure SetChildZPosition(const AWinControl, AChild: TWinControl;
                                       const AOldPos, ANewPos: Integer;
                                       const AChildren: TFPList); override;
-    class procedure SetColor(const AWinControl: TWinControl); override;
     class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
 
     class procedure ConstraintsChange(const AWinControl: TWinControl); override;}
@@ -240,6 +240,26 @@ begin
     if AWinControl.Visible then
      WriteLn('True') else WriteLn('False');
   {$endif}
+end;
+
+class procedure TQtWSWinControl.SetColor(const AWinControl: TWinControl);
+var QColor : TQColor;
+    Color  : TColor;
+begin
+  if AWinControl = nil then exit;
+
+  if not AWinControl.HandleAllocated then exit;
+
+  if AWinControl.Color = CLR_INVALID then exit;
+
+  // Get the color numeric value (system colors are mapped to numeric colors depending on the widget style)
+  Color:=ColorToRGB(AWinControl.Color);
+  
+  // Fill QColor
+  QColor_setRgb(@QColor,Red(Color),Green(Color),Blue(Color));
+
+  // Set color of the widget to QColor
+  TQtWidget(AWinControl.Handle).SetColor(@QColor);
 end;
 
 initialization
