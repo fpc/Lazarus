@@ -108,8 +108,6 @@ begin
     FWaitPipeHandlers := lHandler^.Next;
   if lHandler^.Next <> nil then
     lHandler^.Next^.Prev := lHandler^.Prev;
-  FILLCHAR(LHandler^, sizeof(TPipeEventInfo), 0);
-  DebugLn(['TWin32WidgetSet.RemovePipeEventHandler', lHandler]);
   Dispose(lHandler);
   AHandler := nil;
 end;
