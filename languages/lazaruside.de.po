@@ -4574,7 +4574,7 @@ msgstr "Neues Projekt"
 
 #: lazarusidestrconsts:lismenunewprojectfromfile
 msgid "New Project from file"
-msgstr "Neues Projekt von Datei"
+msgstr "Neues Projekt aus Datei"
 
 #: lazarusidestrconsts:lisprojaddnewrequirement
 msgid "New Requirement"
@@ -4938,7 +4938,7 @@ msgstr "Andere Quellen (.pp-/.pas-Dateien, nur von der IDE benutzt, nicht vom Co
 
 #: lazarusidestrconsts:dlgotherunitfiles
 msgid "Other Unit Files (-Fu) (Delimiter is semicolon):"
-msgstr "Andere Unitdateien (-FU) (Trenner ist der Strichpunkt):"
+msgstr "Andere Unitdateien (-Fu) (Trenner ist das Semikolon):"
 
 #: lazarusidestrconsts:dlgenvotherfiles
 msgid "Other files"
