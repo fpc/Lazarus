@@ -27,7 +27,7 @@ unit OutputFilter;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, CompilerOptions, Project, Process,
+  Classes, Math, SysUtils, Forms, Controls, CompilerOptions, Project, Process,
   IDEProcs, FileUtil, LclProc, LazConf, AsyncProcess, IDEMsgIntf;
 
 type
@@ -241,7 +241,10 @@ begin
         // using non blocking TAsyncProcess
         Count:=TheAsyncProcess.NumBytesAvailable;
         if (Count=0) and AsyncProcessTerminated then break;
-        Count:=TheProcess.Output.Read(Buf[1],length(Buf));
+        if Count>0 then
+          Count:=TheProcess.Output.Read(Buf[1],Min(Count,length(Buf)))
+        else
+          Sleep(1);
       end;
       if (TheAsyncProcess=nil) and (TheProcess.Output<>nil) then begin
         // using a blocking TProcess

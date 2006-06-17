@@ -347,17 +347,29 @@ procedure TWin32WidgetSet.CheckPipeEvents;
 var
   lHandler: PPipeEventInfo;
   lBytesAvail: dword;
+  SomethingChanged: Boolean;
+  ChangedCount:integer;
 begin
   lHandler := FWaitPipeHandlers;
-  while lHandler <> nil do
+  ChangedCount:=0;
+  while (lHandler <> nil) and (ChangedCount<10) do
   begin
+    SomethingChanged:=true;
     if Windows.PeekNamedPipe(lHandler^.Handle, nil, 0, nil, @lBytesAvail, nil) then
     begin
       if lBytesAvail <> 0 then
-        lHandler^.OnEvent(lHandler^.UserData, [prDataAvailable]);
+        lHandler^.OnEvent(lHandler^.UserData, [prDataAvailable])
+      else
+        SomethingChanged := false;
     end else
       lHandler^.OnEvent(lHandler^.UserData, [prBroken]);
-    lHandler := lHandler^.Next;
+    if SomethingChanged then
+      lHandler := FWaitPipeHandlers
+    else begin
+      lHandler := lHandler^.Next;
+      ChangedCount := 0;
+    end;
+    inc(ChangedCount);
   end;
 end;
 
