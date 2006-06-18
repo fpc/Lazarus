@@ -233,7 +233,7 @@ begin
     and (FLastButtonDrawFlags and DFCS_FLAT = 0) then begin
       DrawFrameControl(Canvas.GetUpdatedHandle([csBrushValid,csPenValid]),
         PaintRect{ButtonRect}, DFC_BUTTON, FLastButtonDrawFlags);
-      InflateRect(PaintRect, -1, -1);
+      InflateRect(PaintRect, -2, -2);
     end;
 
     // draw dropdown button
@@ -256,7 +256,9 @@ begin
       TS.Opaque:= false;
       TS.Clipping:= false;
       TS.SystemFont:=Canvas.Font.IsDefault;
-      TS.ShowPrefix:= true;
+      TS.ShowPrefix:=true;
+      TS.Wordbreak:=false;
+      //DebugLn(['TToolButton.Paint Caption="',DbgStr(Caption),'" TextPos=',dbgs(TextPos),' PaintRect=',dbgs(PaintRect)]);
       Canvas.TextRect(PaintRect, TextPos.X, TextPos.Y, Caption, TS);
     end;
 
@@ -292,7 +294,7 @@ end;
 procedure TToolButton.SetAutoSize(const Value: Boolean);
 begin
   if Value = AutoSize then exit;
-  Inherited SetAutoSize(Value);
+  inherited SetAutoSize(Value);
   RequestAlign;
 end;
 
@@ -777,6 +779,9 @@ begin
         if HandleAllocated then
           TextSize:=Canvas.TextExtent(Caption);
       end;
+      // add space around text
+      inc(TextSize.cx,4);
+      inc(TextSize.cy,4);
     end;
 
     // calculate icon size
@@ -808,12 +813,15 @@ begin
     
     PreferredWidth:=Max(IconPos.X+IconSize.X,TextPos.X+TextSize.cx);
     PreferredHeight:=Max(IconPos.Y+IconSize.Y,TextPos.Y+TextSize.cy);
+    //DebugLn(['TToolButton.CalculatePreferredSize Preferred=',PreferredWidth,',',PreferredHeight,' Icon=',IconPos.X,'+',IconSize.X,' Text=',TextPos.X,'+',TextSize.cx]);
+    //DebugLn(['TToolButton.CalculatePreferredSize Preferred=',PreferredWidth,',',PreferredHeight,' Icon=',IconPos.Y,'+',IconSize.Y,' Text=',TextPos.Y,'+',TextSize.cy]);
 
     // add button frame
     FLastButtonDrawFlags:=GetButtonDrawFlags;
-    if (FLastButtonDrawFlags and DFCS_PUSHED) <> 0 then begin
-      inc(PreferredWidth,2);
-      inc(PreferredHeight,2);
+    if (Style in [tbsButton,tbsDropDown,tbsCheck])
+    and (FLastButtonDrawFlags and DFCS_FLAT = 0) then begin
+      inc(PreferredWidth,4);
+      inc(PreferredHeight,4);
     end;
     if Style=tbsDropDown then begin
       inc(PreferredWidth,FToolBar.FDropDownWidth);

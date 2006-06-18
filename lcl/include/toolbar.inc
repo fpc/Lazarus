@@ -123,37 +123,9 @@ begin
 end;
 
 procedure TToolBar.CreateWnd;
-{const
-  TB_SETEXTENDEDSTYLE     = (WM_USER + 84);
-  TB_GETEXTENDEDSTYLE     = (WM_USER + 85);
-  TBSTYLE_EX_DRAWDDARROWS = $0001;
-var
-  DisplayDC: HDC;
-  SaveFont, StockFont: HFONT;
-  TxtMetric: TTextMetric;}
 begin
   BeginUpdate;
   inherited CreateWnd;
-
-  {Perform(TB_SETEXTENDEDSTYLE, 0, LParam(Perform(TB_GETEXTENDEDSTYLE, 0, 0) or
-    TBSTYLE_EX_DRAWDDARROWS));
-  FOldHandle := 0;
-  StockFont := GetStockObject(SYSTEM_FONT);
-  if StockFont <> 0 then
-  begin
-    DisplayDC := GetDC(0);
-    if (DisplayDC <> 0) then
-    begin
-      SaveFont := SelectObject(DisplayDC, StockFont);
-      if (GetTextMetrics(DisplayDC, TxtMetric)) then
-        with TxtMetric do
-          FHeightMargin := tmHeight - tmInternalLeading - tmExternalLeading + 1;
-      SelectObject(DisplayDC, SaveFont);
-      ReleaseDC(0, DisplayDC);
-    end;
-  end;
-  RecreateButtons;
-  Invalidate;}
   UpdateVisibleBar;
   EndUpdate;
 end;
@@ -361,10 +333,6 @@ end;
 
 procedure TToolBar.Loaded;
 begin
-  // dock controls after streaming
-  // TODO: activate when docking finished
-  //for I := 0 to ControlCount - 1 do
-  //  Controls[I].HostDockSite := Self;
   inherited Loaded;
   UpdateVisibleBar;
 end;
@@ -411,10 +379,11 @@ begin
   try
     for i:=ControlCount-1 downto 0 do begin
       CurControl:=Controls[i];
-      if CurControl.Align<>alNone then continue;
+      if (CurControl.Align<>alNone) then continue;
       NewWidth:=CurControl.Width;
-      NewHeight:=FButtonHeight;
-      if (CurControl is TToolButton) then begin
+      if CurControl.AutoSize then
+       NewHeight:=FButtonHeight;
+      if (CurControl is TToolButton) and (not CurControl.AutoSize) then begin
         CurButton:=TToolButton(CurControl);
         case CurButton.Style of
         tbsButton,tbsCheck,tbsDropDown:
@@ -505,11 +474,12 @@ var
 begin
   //DebugLn('WrapButtons ');
   Result:=true;
-  BeginUpdate;
   NewWidth:=0;
   NewHeight:=0;
   AlignedControls:=TList.Create;
   OrderedControls:=TList.Create;
+  DisableAlign;
+  BeginUpdate;
   try
     for i:=0 to ControlCount-1 do begin
       CurControl:=Controls[i];
@@ -528,14 +498,17 @@ begin
     StartX:=ARect.Left+Indent;
     x:=StartX;
     y:=ARect.Top;
-    NewControlWidth:=ButtonWidth;
     i:=0;
+    NewControlWidth:=ButtonWidth;
     while i<OrderedControls.Count do begin
       CurControl:=TControl(OrderedControls[i]);
       if CurControl.Align=alNone then begin
         CalculatePosition;
         //DebugLn('WrapButtons ',CurControl.Name,':',CurControl.ClassName,' ',x,',',y,',',CurControl.Width,',',CurControl.Height);
-        CurControl.SetBounds(x,y,NewControlWidth,ButtonHeight);
+        if CurControl.AutoSize then
+          CurControl.SetBounds(x,y,CurControl.Width,CurControl.Height)
+        else
+          CurControl.SetBounds(x,y,NewControlWidth,ButtonHeight);
         inc(x,CurControl.Width);
         
         if (not Wrapable) and (CurControl is TToolButton)
@@ -552,6 +525,7 @@ begin
     AlignedControls.Free;
     OrderedControls.Free;
     EndUpdate;
+    EnableAlign;
   end;
 end;
 
