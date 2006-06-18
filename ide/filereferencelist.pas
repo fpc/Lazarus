@@ -86,6 +86,7 @@ type
     function CreateFileList: TStringList;
     property TimeStamp: integer read FTimeStamp;
     property OnChanged: TNotifyEvent read FOnChanged write FOnChanged;
+    property UpdateLock: integer read FUpdateLock;
   end;
   
 implementation
@@ -175,7 +176,6 @@ end;
 procedure TFileReferenceList.Invalidate;
 begin
   IncreaseTimeStamp;
-  if not (frfSearchPathValid in FFlags) then exit;
   Exclude(FFlags,frfSearchPathValid);
   if FUpdateLock>0 then
     Include(FFlags,frfChanged)
@@ -211,7 +211,7 @@ end;
 
 procedure TFileReferenceList.EndUpdate;
 begin
-  if FUpdateLock=0 then RaiseException('TFileReferenceList.EndUpdate');
+  if FUpdateLock<=0 then RaiseException('TFileReferenceList.EndUpdate');
   dec(FUpdateLock);
   if (frfChanged in FFlags) then begin
     Exclude(FFlags,frfChanged);

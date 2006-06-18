@@ -4918,13 +4918,16 @@ function TMainIDE.CreateProjectObject(ProjectDesc,
 begin
   Result:=TProject.Create(ProjectDesc);
   // custom initialization
+  Result.BeginUpdate(true);
   if ProjectDesc.InitProject(Result)<>mrOk then begin
+    Result.EndUpdate;
     Result.Free;
     Result:=nil;
     if FallbackProjectDesc=nil then exit;
     Result:=TProject.Create(FallbackProjectDesc);
     FallbackProjectDesc.InitProject(Result);
   end;
+  Result.EndUpdate;
 
   Result.MainProject:=true;
   Result.OnFileBackup:=@DoBackupFile;

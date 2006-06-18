@@ -1204,15 +1204,15 @@ begin
   if FSourceDirNeedReference then begin
     if not SourceDirectoryReferenced then begin
       fLastDirectoryReferenced:=GetDirectory;
-      Project.SourceDirectories.AddFilename(fLastDirectoryReferenced);
-      //DebugLn('TUnitInfo.UpdateSourceDirectoryReference ADD File="',Filename,' Path="',Project.SourceDirectories.CreateSearchPathFromAllFiles,'"');
+      //DebugLn('TUnitInfo.UpdateSourceDirectoryReference ADD File="',Filename,'" Project.SourceDirectories.TimeStamp=',dbgs(Project.SourceDirectories.TimeStamp));
       FSourceDirectoryReferenced:=true;
+      Project.SourceDirectories.AddFilename(fLastDirectoryReferenced);
     end;
   end else begin
     if SourceDirectoryReferenced then begin
-      Project.SourceDirectories.RemoveFilename(fLastDirectoryReferenced);
-      //DebugLn('TUnitInfo.UpdateSourceDirectoryReference REMOVE File="',Filename,' Path="',Project.SourceDirectories.CreateSearchPathFromAllFiles,'"');
+      //DebugLn('TUnitInfo.UpdateSourceDirectoryReference REMOVE File="',Filename,'" Project.SourceDirectories.TimeStamp=',dbgs(Project.SourceDirectories.TimeStamp));
       FSourceDirectoryReferenced:=false;
+      Project.SourceDirectories.RemoveFilename(fLastDirectoryReferenced);
     end;
   end;
 end;
@@ -1976,7 +1976,7 @@ begin
       SessionStorage:=StrToProjectSessionStorage(
                         XMLConfig.GetValue(Path+'General/SessionStorage/Value',
                                  ProjectSessionStorageNames[pssInProjectInfo]));
-      DebugLn('TProject.ReadProject SessionStorage=',dbgs(ord(SessionStorage)),' ProjectSessionFile=',ProjectSessionFile);
+      //DebugLn('TProject.ReadProject SessionStorage=',dbgs(ord(SessionStorage)),' ProjectSessionFile=',ProjectSessionFile);
 
       NewMainUnitID := xmlconfig.GetValue(Path+'General/MainUnit/Value', -1);
       AutoCreateForms := xmlconfig.GetValue(
