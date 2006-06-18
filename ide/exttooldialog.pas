@@ -33,6 +33,11 @@ unit ExtToolDialog;
 
 {$I ide.inc}
 
+// TODO: Test on all platforms
+{$IFDEF Linux}
+{$Define UseAsyncProcess}
+{$ENDIF}
+
 interface
 
 uses

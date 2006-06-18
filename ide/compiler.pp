@@ -38,6 +38,11 @@ unit Compiler;
 
 interface
 
+// TODO: Test on all platforms
+{$IFDEF Linux}
+{$Define UseAsyncProcess}
+{$ENDIF}
+
 uses
   Classes, SysUtils, Process, LCLProc, Forms, Controls, FileUtil, AsyncProcess,
   LazarusIDEStrConsts, CompilerOptions, Project, IDEProcs, OutputFilter;

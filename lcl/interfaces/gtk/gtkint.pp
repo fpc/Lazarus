@@ -40,6 +40,10 @@ interface
 {$DEFINE Use_KeyStateList} // keep track of keystates instead of using OS
                            // This is the old mode and might be removed
 
+// TODO: Test on all platforms
+{$IFDEF Linux}
+{$Define UseAsyncProcess}
+{$ENDIF}
 
 {$IFDEF win32}
 {$DEFINE NoGdkPixbufLib}
