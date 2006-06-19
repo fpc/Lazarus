@@ -10410,6 +10410,12 @@ var
   TargetOS, TargetProcessor: string;
   UnitLinksValid: boolean;
   i: Integer;
+  
+  function SearchSystemInUnitLinks: boolean;
+  begin
+    Result:=System.Pos('system ',CompilerUnitLinks)>0;
+  end;
+  
 begin
   GetFPCCompilerParamsForEnvironmentTest(CurOptions);
   {$IFDEF VerboseFPCSrcScan}
@@ -10462,7 +10468,7 @@ begin
     CompilerUnitLinks:='';
     if UnitLinksValid then
       CompilerUnitLinks:=InputHistories.FPCConfigCache.GetUnitLinks(CurOptions);
-    if System.Pos('system ',CompilerUnitLinks)<1 then begin
+    if not SearchSystemInUnitLinks then begin
       UnitLinksValid:=false;
     end;
 
@@ -10475,7 +10481,7 @@ begin
     {$IFDEF VerboseFPCSrcScan}
     debugln('TMainIDE.RescanCompilerDefines C UnitLinks=',copy(CompilerUnitLinks,1,100));
     {$ENDIF}
-    if System.Pos('system ',CompilerUnitLinks)<1 then begin
+    if not SearchSystemInUnitLinks then begin
       MessageDlg('Error',
         'The system.ppu was not found in the FPC directories. '
         +'Make sure fpc is installed correctly and the fpc.cfg points to the right directory.',

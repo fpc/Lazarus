@@ -2721,7 +2721,7 @@ var
 //   const PPC386Path: string): TDefineTemplate;
 var CmdLine: string;
   i, OutLen, LineStart: integer;
-  TheProcess : TProcess;
+  TheProcess: TProcess;
   OutputLine, Buf: String;
   NewDefTempl: TDefineTemplate;
   SrcOS: string;
@@ -3182,6 +3182,9 @@ var
       DebugLn(' -> ',UnitLink.Filename)
     else
       DebugLn('MISSING');
+    {$ELSE}
+    if UnitLink=nil then
+      DebugLn(['WARNING: unable to find source of fpc unit ',AnUnitName]);
     {$ENDIF}
     if UnitLink=nil then exit;
     s:=AnUnitName+' '+UnitLink.Filename+LineEnding;
@@ -3224,12 +3227,12 @@ var
         // search all ppu files in this directory
         if FindFirst(ADirPath+CurMask,faAnyFile,FileInfo)=0 then begin
           repeat
-            UnitName:=ExtractFileName(FileInfo.Name);
-            UnitName:=copy(UnitName,1,length(UnitName)-4);
+            UnitName:=lowercase(ExtractFileNameOnly(FileInfo.Name));
             {$IFDEF VerboseFPCSrcScan}
             DebugLn('FindStandardPPUSources Found: ',UnitName);
             {$ENDIF}
             AddFPCSourceLinkForUnit(UnitName);
+            if (UnitTree=nil) or (UnitTree.Count=0) then exit;
           until FindNext(FileInfo)<>0;
         end;
         FindClose(FileInfo);
