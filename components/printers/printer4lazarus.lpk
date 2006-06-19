@@ -24,7 +24,7 @@
 "/>
     <License Value="LGPL
 "/>
-    <Version Build="2"/>
+    <Version Minor="5"/>
     <Files Count="27">
       <Item1>
         <Filename Value="printersdlgs.lrs"/>

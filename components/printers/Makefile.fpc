@@ -1,13 +1,13 @@
-#   Makefile.fpc for Printer4Lazarus 0.0.0.2
+#   Makefile.fpc for Printer4Lazarus 0.5
 
 [package]
 name=printer4lazarus
-version=0.0.0.2
+version=0.5
 
 [compiler]
 unittargetdir=lib/$(CPU_TARGET)-$(OS_TARGET)
 unitdir=unix/ win32/ ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/ ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)/ ../../packager/units/$(CPU_TARGET)-$(OS_TARGET)/
-options=-dUseCache   -dLCL -dLCL$(LCL_PLATFORM) -S2 -gl
+options=-dUseCache  -dLCL -dLCL$(LCL_PLATFORM) -S2 -gl
 
 [target]
 units=printer4lazarus.pas

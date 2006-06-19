@@ -682,17 +682,6 @@ end;
 function TCUPSPrinter.DoGetPaperRect(aName: string;
   var aPaperRc: TPaperRect): Integer;
   
-  procedure SortInts(var a, b: Integer);
-  var
-    h: LongInt;
-  begin
-    if b<a then begin
-      h:=a;
-      a:=b;
-      b:=h;
-    end;
-  end;
-  
 var P : Pppd_size_t;
 begin
   if (not (cpsPaperRectValid in FStates))
@@ -718,10 +707,8 @@ begin
         //Margings
         fCachePaperRect.WorkRect.Left:=Trunc(P^.Left);
         fCachePaperRect.WorkRect.Right:=Trunc(P^.Right);
-        fCachePaperRect.WorkRect.Top:=Trunc(P^.Top);
-        fCachePaperRect.WorkRect.Bottom:=Trunc(P^.Bottom);
-        SortInts(fCachePaperRect.WorkRect.Top,fCachePaperRect.WorkRect.Bottom);
-        SortInts(fCachePaperRect.WorkRect.Left,fCachePaperRect.WorkRect.Right);
+        fCachePaperRect.WorkRect.Top:=Trunc(P^.Length-P^.Top);
+        fCachePaperRect.WorkRect.Bottom:=Trunc(P^.Length-P^.Bottom);
         //debugln('TCUPSPrinter.DoGetPaperRect PhysicalRect=',dbgs(fCachePaperRect.PhysicalRect),' WorkRect=',dbgs(fCachePaperRect.WorkRect));
       end;
     end;
