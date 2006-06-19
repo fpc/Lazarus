@@ -1,8 +1,24 @@
+{%MainUnit ../osprinters.pas}
 {**************************************************************
 Implementation for winprinter
 ***************************************************************}
 Uses WinUtilPrn, InterfaceBase, Win32Int, LCLIntf,WinVer;
 
+// todo: this ^ is a mess: mixed WinUtilPrn/Windows units clean...
+
+// todo: this should be a method, cant be atm because mixed units ^
+function GetCurrentDevMode(var DM:PDeviceMode): boolean;
+var
+  PDev: TPrinterDevice;
+begin
+  result := false;
+  if (Printer.Printers.Count>0) then
+  begin
+    PDev:=TPrinterDevice(Printer.Printers.Objects[Printer.PrinterIndex]);
+    DM := PDev.DevMode;
+    result := DM<>nil;
+  end;
+end;
 
 { TWinPrinter }
 
@@ -69,12 +85,13 @@ begin
   if (fLastHandleType=0) and (Printers.Count>0) then
   begin
     PDev:=TPrinterDevice(Printers.Objects[PrinterIndex]);
+    
     fDC:=CreateIC(PChar(PDev.Driver),PChar(PDev.Device),
-           PChar(PDev.Port),@PDev.DevMode);
+           PChar(PDev.Port),PDev.DevMode);
 
     if fDC=0 then
       fDC:=CreateIC(PChar('WINSPOOL'),PChar(PDev.Device),
-           PChar(PDev.Port),@PDev.DevMode);
+           PChar(PDev.Port),PDev.DevMode);
 
     if fDC=0 then
       raise EPrinter.Create(Format('Invalid printer (DC=%d Driver=%s Device=%s Port=%s)',[fDC,Pdev.Driver,PDev.Device,PDev.Port]));
@@ -93,16 +110,17 @@ begin
     PDev:=TPrinterDevice(Printers.Objects[PrinterIndex]);
     try
 
-    //Device is only 32 chars long, if the Printername or share is longer than 32 chars, this will return 0
-    fDC:=CreateDC(nil,PChar(Printers[PrinterIndex]),nil,@PDev.DevMode);
+    //Device is only 32 chars long,
+    //if the Printername or share is longer than 32 chars, this will return 0
+    fDC:=CreateDC(nil,PChar(Printers[PrinterIndex]),nil, PDev.DevMode);
     if fDC=0 then
-      fDC:=CreateDC(PChar('WINSPOOL'),PChar(Printers[PrinterIndex]),nil,@PDev.DevMode);
+      fDC:=CreateDC(PChar('WINSPOOL'),PChar(Printers[PrinterIndex]),nil,PDev.DevMode);
 
     {Workaround (hack) for Lexmark 1020 JetPrinter (Mono)}
     if fDC=0 then
-      fDC:=CreateDC(nil,PChar(PDev.Driver),nil,@PDev.DevMode);
+      fDC:=CreateDC(nil,PChar(PDev.Driver),nil, PDev.DevMode);
     if fDC=0 then
-      fDC:=CreateDC(pChar('WINSPOOL'),PChar(PDev.Driver),nil,@PDev.DevMode);
+      fDC:=CreateDC(pChar('WINSPOOL'),PChar(PDev.Driver),nil,PDev.DevMode);
 
     except on E:Exception do
        raise EPrinter.Create(Format('CreateDC exception: %s (LastError : %s,DC=%d Driver="%s" Device="%s" Port="%s")',[E.Message,SysErrorMessage(GetLastError),fDC,Pdev.Driver,Printers[PrinterIndex],PDev.Port]));
@@ -127,6 +145,41 @@ begin
     fDc := 0;
   end;
   fLastHandleType:=0;
+end;
+
+
+// Based on MS Article Q167345
+procedure TWinPrinter.UpdateDevMode;
+var
+  PDev: TPrinterDevice;
+  dwRet: Integer;
+begin
+  // now we have a right FPrinterHandle, get current printer settings
+  PDev := TPrinterDevice(Printers.Objects[PrinterIndex]);
+
+  // allocate a new Devmode
+  if (Pdev.DevMode=nil) then begin
+  
+    // 1.	Determine the required size of the buffer from the device,
+    //    and then allocate enough memory for it.
+    PDev.DevModeSize:=DocumentProperties(0, FPrinterHandle, pchar(PDev.Name),
+                  nil, nil, 0);
+    if PDev.DevModeSize<=0 then begin
+      // error
+      exit;
+    end;
+    GetMem(PDev.DevMode, PDev.DevModeSize);
+    
+    // 2.	Ask the device driver to initialize the DEVMODE buffer with
+    //    the default settings.
+    dwRet := DocumentProperties(0, FPrinterHandle, pchar(Pdev.Name),
+                  PDev.DevMode, nil, DM_OUT_BUFFER);
+    if (dwRet<>IDOK) then begin
+      FreeMem(PDev.DevMode);
+      PDev.DevMode:=nil;
+    end;
+  end;
+  
 end;
 
 procedure TWinPrinter.DoBeginDoc;
@@ -184,6 +237,7 @@ Var Flags          : DWORD;
     i              : Integer;
     DefaultPrinter : array[0..79] of Char;
     PDev           : TPrinterDevice;
+    TmpDevMode     : PDeviceMode;
 begin
   Level:=5; //Compatible with all Win32 versions
   DefaultPrinter:='';
@@ -221,6 +275,7 @@ begin
   if Needed<>0 then
   begin
     GetMem(Buffer,Needed);
+    Fillchar(Buffer^, Needed, 0);
     try
       //Enumerate Printers
       if EnumPrinters(Flags,nil,Level,Buffer,Needed,Needed,PrtCount) then
@@ -234,10 +289,17 @@ begin
             PDev.Name  :=PPRINTER_INFO_2(InfoPrt)^.pPrinterName;
             PDev.Driver:=PPRINTER_INFO_2(InfoPrt)^.pDriverName;
             PDev.Port  :=PPRINTER_INFO_2(InfoPrt)^.pPortName;
-            if PPRINTER_INFO_2(InfoPrt)^.PDevMode <> nil then begin
-              PDev.DevMode:=PPRINTER_INFO_2(InfoPrt)^.PDevMode^;
-              PDev.Device:=PDev.DevMode.dmDeviceName;
-              PDev.DefaultPaper:=PDev.DevMode.dmPaperSize;
+            TmpDevMode :=PPRINTER_INFO_2(InfoPrt)^.pDevMode;
+            if TmpDevMode<>nil then begin
+              // the devmode structure obtained this way have two problems
+              // 1. It's not the full devmode, because it doesn't have
+              //    the private info
+              // 2. It's not initialized with the current settings and
+              //    have not extra settings at all.
+              //
+              // PDev.DevMode:=PPRINTER_INFO_2(InfoPrt)^.PDevMode^;
+              PDev.Device:= TmpDevMode^.dmDeviceName; //PDev.DevMode.dmDeviceName;
+              PDev.DefaultPaper:=TmpDevMode^.dmPaperSize; //PDev.DevMode.dmPaperSize;
             end
             else begin
               PDev.Device:='';
@@ -326,19 +388,17 @@ begin
 end;
 
 function TWinPrinter.DoGetPaperName: string;
-var i    : Integer;
-    PDev : TPrinterDevice;
+var
+  i    : Integer;
+  dm   : PDeviceMode;
 begin
   Result:=inherited DoGetPaperName;
-
-  if (Printers.Count>0) then
-  begin
-    PDev:=TPrinterDevice(Printers.Objects[PrinterIndex]);
-
-    i:=PaperSize.SupportedPapers.IndexOfObject(TObject(ptrint(PDev.Devmode.dmPaperSize)));
-    if i<>-1 then
-      Result:=PaperSize.SupportedPapers.Strings[i];
-  end;
+  if GetCurrentDevMode(dm) then
+    with PaperSize.SupportedPapers do begin
+      i := IndexOfObject(TObject(ptrInt(dm^.dmPaperSize)));
+      if i>=0 then
+        result := PaperSize.SupportedPapers[i];
+    end;
 end;
 
 function TWinPrinter.DoGetDefaultPaperName: string;
@@ -359,22 +419,14 @@ end;
 
 procedure TWinPrinter.DoSetPaperName(aName: string);
 var i    : Integer;
-    PDev : TPrinterDevice;
-    j    : SHORT;
+    dm   : PDeviceMode;
 begin
   inherited DoSetPaperName(aName);
-
-  if (Printers.Count>0) then
-  begin
-
-    PDev:=TPrinterDevice(Printers.Objects[PrinterIndex]);
-
+  if GetCurrentDevMode(dm) then begin
     i:=PaperSize.SupportedPapers.IndexOf(aName);
-    if i<>-1 then
-    begin
+    if i<>-1 then begin
       ClearDC;
-      j:=SHORT(ptrint(PaperSize.SupportedPapers.Objects[i]));
-      PDev.DevMode.dmPaperSize:=j;
+      dm^.dmPaperSize := SHORT(ptrint(PaperSize.SupportedPapers.Objects[i]));
     end;
   end;
 end;
@@ -388,20 +440,50 @@ begin
 
   if (Printers.Count>0) then
   begin
-    PDev:=TPrinterDevice(Printers.Objects[PrinterIndex]);
+    // Information for physical sizes can be obtained for any paper supported
+    // by the printer, the same is not true for printable paper size, this can
+    // be obtained only(?) for currently selected paper.
+    //
+    if DoGetPaperName=AName then begin
+      SetDC;
+      with aPaperRC.PhysicalRect do begin
+        Left  :=0;
+        Top   :=0;
+        Right :=Windows.GetDeviceCaps(fDC, PHYSICALWIDTH);
+        Bottom:=Windows.GetDeviceCaps(fDC, PHYSICALHEIGHT);
+      end;
+      with aPaperRC.WorkRect do begin
+        Left  :=Windows.GetDeviceCaps(fDC, PHYSICALOFFSETX);
+        Top   :=Windows.GetDeviceCaps(fDC, PHYSICALOFFSETY);
+        Right :=Left   + Windows.GetDeviceCaps(fDC, HORZRES);
+        Bottom:=Bottom + Windows.GetDeviceCaps(fDC, VERTRES);
+      end;
+    end else begin
+      // for other papers return at least the physical size
+      // note: old implementation was using DeviceCapabilities function with
+      //       index DC_PAPERSIZE, unfortunately this returns dimensions in
+      //       tenths of millimeter which is wrong, we need points (not font
+      //       points, but printer "pixels" at current resolution).
+      //
+      PDev:=TPrinterDevice(Printers.Objects[PrinterIndex]);
 
-    //Retreive the Width and Height of aName paper
-    FillChar(ArSizes,SizeOf(ArSizes),0);
-    NSize:=DeviceCapabilities(PChar(Pdev.Name),PChar(PDev.Port),
-          DC_PAPERSIZE,@ArSizes,nil);
-    i:=PaperSize.SupportedPapers.IndexOf(aName);
-    if (i>=0) and (i<NSize) and (NSize<>0) then
-    begin
-      aPaperRc.PhysicalRect:=Classes.Rect(0,0,ArSizes[i].X,ArSizes[i].Y);
-      aPaperRc.WorkRect:=Classes.Rect(0,0,ArSizes[i].X,ArSizes[i].Y);
-
-      Result:=1;
+      //Retreive the Width and Height of aName paper
+      FillChar(ArSizes,SizeOf(ArSizes),0);
+      NSize:=DeviceCapabilities(PChar(Pdev.Name),PChar(PDev.Port),
+            DC_PAPERSIZE,@ArSizes,nil);
+      i:=PaperSize.SupportedPapers.IndexOf(aName);
+      if (i>=0) and (i<NSize) and (NSize<>0) then
+      begin
+        aPaperRc.PhysicalRect:=Classes.Rect(0,0,ArSizes[i].X,ArSizes[i].Y);
+        with aPaperRC.PhysicalRect do begin
+          // convert from tenths of millimeter to points
+          Right  := round(Right * XDPI / 254);
+          Bottom := round(Bottom* YDPI / 254);
+        end;
+        aPaperRc.WorkRect := aPaperRC.PhysicalRect;
+      end;
     end;
+    Result:=1;
   end;
 end;
 
@@ -418,68 +500,57 @@ begin
     PDev:=TPrinterDevice(Printers.Objects[i]);
     if fPrinterHandle<>0 then
       ClosePrinter(fPrinterHandle);
-
-    if not OpenPrinter(PChar(PDev.Name),fPrinterHandle,nil) then
-      raise EPrinter.CreateFmt('OpenPrinter exception : %s',[SysErrorMessage(GetlastError)]);
+    if not OpenPrinter(PChar(PDev.Name),fPrinterHandle, nil) then
+      raise EPrinter.CreateFmt('OpenPrinter exception : %s',[SysErrorMessage(GetlastError)])
+    else
+      UpdateDevMode;
      Result:=i;
   end;
 end;
 
 function TWinPrinter.DoGetCopies: Integer;
-var PDev : TPrinterDevice;
+var
+  dm: PDeviceMode;
 begin
   Result:=inherited DoGetCopies;
-
-  if (Printers.Count>0) then
-  begin
-    PDev:=TPrinterDevice(Printers.Objects[PrinterIndex]);
-
-    if PDev.DevMode.dmCopies<>0 then
-      Result:=PDev.DevMode.dmCopies;
+  if GetCurrentDevMode(dm) then begin
+    if dm^.dmCopies<>0 then
+      result := dm^.dmCopies;
   end;
 end;
 
 procedure TWinPrinter.DoSetCopies(aValue: Integer);
-var PDev : TPrinterDevice;
+var
+  dm: PDeviceMode;
 begin
   inherited DoSetCopies(aValue);
-
-  if (Printers.Count>0) and (aValue>0) then
-  begin
-    PDev:=TPrinterDevice(Printers.Objects[PrinterIndex]);
-
+  if (AValue>0) and GetCurrentDevMode(dm) then begin
     ClearDC;
-    PDev.DevMode.dmCopies:=SHORT(aValue);
+    dm^.dmCopies := SHORT(aValue)
   end;
 end;
 
 function TWinPrinter.DoGetOrientation: TPrinterOrientation;
-var PDev : TPrinterDevice;
+var
+  dm: PDeviceMode;
 begin
   Result:=inherited DoGetOrientation;
-
-  if (Printers.Count>0) then
-  begin
-    PDev:=TPrinterDevice(Printers.Objects[PrinterIndex]);
-
-    Case PDev.DevMode.dmOrientation of
-      DMORIENT_PORTRAIT  : Result:=poPortrait;
-      DMORIENT_LANDSCAPE : Result:=poLandscape;
+  if GetCurrentDevMode(dm) then begin
+    case dm^.dmOrientation of
+      DMORIENT_PORTRAIT : result:=poPortrait;
+      DMORIENT_LANDSCAPE: result:=poLandscape;
     end;
   end;
 end;
 
 procedure TWinPrinter.DoSetOrientation(aValue: TPrinterOrientation);
-var PDev : TPrinterDevice;
+var
+  dm: PDeviceMode;
 begin
   inherited DoSetOrientation(aValue);
-
-  if (Printers.Count>0) then
-  begin
-    PDev:=TPrinterDevice(Printers.Objects[PrinterIndex]);
-
+  if GetCurrentDevMode(dm) then begin
     ClearDC;
-    PDev.DevMode.dmOrientation:=Win32Orientations[aValue];
+    dm^.dmOrientation := Win32Orientations[aValue];
   end;
 end;
 
@@ -566,14 +637,23 @@ begin
   if (Printers.Count>0) then
   begin
     PDev:=TPrinterDevice(Printers.Objects[PrinterIndex]);
-    Count := DeviceCapabilities(PChar(Pdev.Name),PCHar(PDev.Port),DC_COPIES,nil,@PDev.DevMode);
-    Result := (Count > 1);
- end;
+    Count := DeviceCapabilities(PChar(Pdev.Name),PCHar(PDev.Port),DC_COPIES,nil,PDev.DevMode);
+    Result := (Count>1);
+  end;
 end;
 
 procedure TWinPrinter.AdvancedProperties;
+var
+  PDev: TPrinterDevice;
 begin
- PrinterProperties(TWin32WidgetSet(WidgetSet).AppHandle,fPrinterHandle);
+  PDev:=TPrinterDevice(Printers.Objects[PrinterIndex]);
+  DocumentProperties(
+    TWin32WidgetSet(WidgetSet).AppHandle,
+    FPrinterHandle,
+    pchar(PDev.Name),
+    Pdev.DevMode, Pdev.DevMode,
+    DM_OUT_BUFFER or DM_IN_BUFFER or DM_IN_PROMPT);
+  //PrinterProperties(TWin32WidgetSet(WidgetSet).AppHandle,fPrinterHandle)
 end;
 
 initialization

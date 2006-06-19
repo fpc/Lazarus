@@ -1,60 +1,21 @@
 <?xml version="1.0"?>
 <CONFIG>
   <ProjectOptions>
-    <PathDelim Value="/"/>
+    <PathDelim Value="\"/>
     <Version Value="5"/>
     <General>
       <Flags>
         <SaveClosedFiles Value="False"/>
-        <SaveOnlyProjectUnits Value="True"/>
       </Flags>
+      <SessionStorage Value="None"/>
       <MainUnit Value="0"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=".exe"/>
       <Title Value="selectprinter"/>
-      <ActiveEditorIndexAtStart Value="0"/>
     </General>
-    <LazDoc Paths=""/>
-    <Units Count="4">
-      <Unit0>
-        <CursorPos X="19" Y="15"/>
-        <Filename Value="selectprinter.lpr"/>
-        <IsPartOfProject Value="True"/>
-        <TopLine Value="1"/>
-        <UnitName Value="selectprinter"/>
-        <UsageCount Value="154"/>
-      </Unit0>
-      <Unit1>
-        <CursorPos X="34" Y="109"/>
-        <EditorIndex Value="0"/>
-        <Filename Value="frmselprinter.pas"/>
-        <ComponentName Value="Form1"/>
-        <IsPartOfProject Value="True"/>
-        <Loaded Value="True"/>
-        <ResourceFilename Value="frmselprinter.lrs"/>
-        <TopLine Value="81"/>
-        <UnitName Value="frmselprinter"/>
-        <UsageCount Value="154"/>
-      </Unit1>
-      <Unit2>
-        <CursorPos X="10" Y="296"/>
-        <Filename Value="C:/lazarus/components/PRINTERS/WIN32/winprndialogs.inc"/>
-        <IsPartOfProject Value="True"/>
-        <TopLine Value="1"/>
-        <UnitName Value="text"/>
-        <UsageCount Value="100"/>
-      </Unit2>
-      <Unit3>
-        <CursorPos X="1" Y="1"/>
-        <Filename Value="C:/lazarus/components/PRINTERS/LINUX/cupsprndialogs.inc"/>
-        <IsPartOfProject Value="True"/>
-        <TopLine Value="1"/>
-        <UnitName Value="text"/>
-        <UsageCount Value="100"/>
-      </Unit3>
-    </Units>
     <PublishOptions>
       <Version Value="2"/>
+      <DestinationDirectory Value="$(TestDir)\publishedproject\"/>
       <IgnoreBinaries Value="False"/>
       <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
       <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
@@ -62,7 +23,7 @@
     <RunParams>
       <local>
         <FormatVersion Value="1"/>
-        <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
+        <LaunchingApplication PathPlusParams="\usr\X11R6\bin\xterm -T 'Lazarus Run Output' -e $(LazarusDir)\tools\runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
     <RequiredPackages Count="2">
@@ -74,11 +35,34 @@
         <PackageName Value="LCL"/>
       </Item2>
     </RequiredPackages>
+    <Units Count="4">
+      <Unit0>
+        <Filename Value="selectprinter.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="selectprinter"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="frmselprinter.pas"/>
+        <ComponentName Value="Form1"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceFilename Value="frmselprinter.lrs"/>
+        <UnitName Value="frmselprinter"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="..\..\..\..\..\..\..\lazarus\components\PRINTERS\WIN32\winprndialogs.inc"/>
+        <IsPartOfProject Value="True"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="..\..\..\..\..\..\..\lazarus\components\PRINTERS\LINUX\cupsprndialogs.inc"/>
+        <IsPartOfProject Value="True"/>
+      </Unit3>
+    </Units>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>
+    <PathDelim Value="\"/>
     <SearchPaths>
-      <SrcPath Value="$(LazarusDir)/lcl/;$(LazarusDir)/lcl/interfaces/$(LCLWidgetType)/"/>
+      <SrcPath Value="$(LazarusDir)\lcl\;$(LazarusDir)\lcl\interfaces\$(LCLWidgetType)\"/>
     </SearchPaths>
     <Parsing>
       <SyntaxOptions>
@@ -110,26 +94,4 @@
     </Other>
     <CompileReasons Run="False"/>
   </CompilerOptions>
-  <Debugging>
-    <Watches Count="6">
-      <Item1>
-        <Expression Value="lpp.nCopies"/>
-      </Item1>
-      <Item2>
-        <Expression Value="DevMode^.dmCopies"/>
-      </Item2>
-      <Item3>
-        <Expression Value="PDev.DevMode.dmDriverExtra"/>
-      </Item3>
-      <Item4>
-        <Expression Value="AName"/>
-      </Item4>
-      <Item5>
-        <Expression Value="Pdev.name"/>
-      </Item5>
-      <Item6>
-        <Expression Value="pdev.name"/>
-      </Item6>
-    </Watches>
-  </Debugging>
 </CONFIG>

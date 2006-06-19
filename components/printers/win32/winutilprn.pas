@@ -148,15 +148,21 @@ type
   
   
   Type
+
+  { TPrinterDevice }
+
   TPrinterDevice = class
+  public
     Name   : String;
     Driver : String;
     Device : String;
     Port   : String;
 
     DefaultPaper : Short;
-
-    DevMode: TDeviceMode;
+    
+    DevMode: PDeviceMode;
+    DevModeSize: Integer;
+    destructor destroy; override;
   end;
 
 
@@ -288,6 +294,16 @@ function AdvancedDocumentProperties(
              pDevModeInput  : PDeviceMode  // original device mode data
              ): Longint; stdcall; external LibWinSpool name 'AdvancedDocumentPropertiesA';
 
+
+function DocumentProperties(
+      hWnd          :HWND;        // handle to parent window
+      hPrinter      :THandle;     // handle to printer object
+      pDeviceName   :Pchar;       // device name
+      pDevModeOutput:PdeviceMode; // modified device mode
+      pDevModeInput :PdeviceMode; // original device mode
+      fMode         :DWORD        // mode options
+      ): Longint; stdcall; external LibWinSpool name 'DocumentPropertiesA';
+
 function DeviceCapabilities(pDevice, pPort: PChar; fwCapability: Word; pOutput: PChar;
   DevMode: PDeviceMode): Integer; stdcall; external LibWinSpool name 'DeviceCapabilitiesA';
 
@@ -305,8 +321,20 @@ function EndDoc(DC: HDC): Integer; stdcall;  external 'gdi32.dll' name 'EndDoc';
 function StartPage(DC: HDC): Integer; stdcall; external 'gdi32.dll' name 'StartPage';
 function EndPage(DC: HDC): Integer; stdcall; external 'gdi32.dll' name 'EndPage';
 function AbortDoc(DC: HDC): Integer; stdcall; external 'gdi32.dll' name 'AbortDoc';
+function GlobalFree(HMem: HGlobal): HGlobal; stdcall; external 'kernel32.dll' name 'GlobalFree';
 
 implementation
+
+{ TPrinterDevice }
+
+destructor TPrinterDevice.destroy;
+begin
+  if DevMode<>nil then begin
+    FreeMem(DevMode);
+    DevMode:=nil;
+  end;
+  inherited destroy;
+end;
 
 end.
 

@@ -444,18 +444,23 @@ begin
     Result:=DoGetOrientation;
 end;
 
+// Returns the height in points (pixels) of printable area
 function TPrinter.GetPageHeight: Integer;
 begin
   Result:=0;
   if (Printers.Count>0) then
-    Result:=PaperSize.PaperRect.PhysicalRect.Bottom;
+    with PaperSize.PaperRect.WorkRect do
+      Result:=Bottom-Top;
 end;
 
+// Returns the width in points (pixels) of the printable area
 function TPrinter.GetPageWidth: Integer;
 begin
   Result:=0;
   if (Printers.Count>0) then
-    Result:=PaperSize.PaperRect.PhysicalRect.Right;
+    with PaperSize.PaperRect.WorkRect do
+      // PageWidth is the size in "pixels" of the printable area
+      Result:=Right-Left;
 end;
 
 function TPrinter.GetPaperSize: TPaperSize;
@@ -499,7 +504,6 @@ function TPrinter.GetYDPI: Integer;
 begin
   Result:=1;
 end;
-
 
 //Set the copies numbers
 procedure TPrinter.SetCopies(AValue: Integer);

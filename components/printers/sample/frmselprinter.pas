@@ -97,11 +97,11 @@ begin
         poReverseLandscape : AddInfo('Orientation','ReverseLandscape');
         poReversePortrait  :AddInfo('Orientation','ReversePortrait');
       end;
-      AddInfo('XDPI',IntToStr(XDPI));
-      AddInfo('YDPI',IntToStr(YDPI));
+      AddInfo('XDPI',IntToStr(XDPI)+' dpi');
+      AddInfo('YDPI',IntToStr(YDPI)+' dpi');
       AddInfo('Copies',IntToStr(Copies));
-      AddInfo('PageHeight',IntToStr(PageHeight));
-      AddInfo('PageWidth',IntToStr(PageWidth));
+      AddInfo('PageHeight',IntToStr(PageHeight)+' dots (printable size)');
+      AddInfo('PageWidth',IntToStr(PageWidth)+' dots (printable size)');
       case PrinterType of
         ptLocal: AddInfo('PrinterType','Local');
         ptNetWork: AddInfo('PrinterType','Network');
@@ -168,6 +168,7 @@ begin
   {$ELSE}
   ShowMessage('Printer.AdvancedProperties is not yet implemented for this platform');
   {$ENDIF}
+  UpdatePrinterInfo;
 end;
 
 procedure TForm1.Button7Click(Sender: TObject);

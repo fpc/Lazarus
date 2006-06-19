@@ -1,3 +1,4 @@
+{%MainUnit ../printersdlgs.pp}
 Uses
  Windows,WinUtilPrn, InterfaceBase, Win32Int, LCLIntf,LCLType,WinVer;
 
@@ -20,36 +21,26 @@ begin
   if Printer.Printers.Count>0 then
   begin
     FillChar(lpp,SizeOf(lpp),0);
-    with lpp do
-    begin
+    with lpp do begin
       lStructSize:=SizeOf(lpp);
       hInstance:=LCLType.HInstance;
       Flags := PSD_MARGINS;
       hWndOwner:=TWin32WidgetSet(WidgetSet).AppHandle;
       rtMargin := fMargins;
       PDev:=TPrinterDevice(Printer.Printers.Objects[Printer.PrinterIndex]);
-      Size := DeviceCapabilities(PChar(PDev.Name),PChar(PDev.Port),DC_SIZE,nil,nil);
-      Extra := DeviceCapabilities(PChar(PDev.Name),PChar(PDev.Port),DC_EXTRA,nil,nil);
-      Fields := DeviceCapabilities(PChar(PDev.Name),PChar(PDev.Port),DC_FIELDS,nil,nil);
-      DeviceMode:=GlobalAlloc(GHND,Size + Extra);
+      // Pdev.DevMode has the required size, just copy to the global memory
+      DeviceMode:=GLobalAlloc(GHND, PDev.DevModeSize);
       try
-      DevMode:=PDeviceMode(GlobalLock(DeviceMode));
-      try
-       CopyMemory(DevMode,@PDev.DevMode,SizeOf(PDev.DevMode));
-       DevMode^.dmSize := Word(Size);
-       DevMode^.dmDriverExtra := Word(Extra);
-       DevMode^.dmFields := Fields;
-      finally
-        GlobalUnLock(DeviceMode);
-      end;
-
-      hDevMode:= DeviceMode;
-      if PageSetupDlg(lpp) then
-        begin
-          St:='';
-          //Change Selected printer
-          if lpp.hDevNames<>0 then
-          begin
+        DevMode:=PDeviceMode(GlobalLock(DeviceMode));
+        try
+          CopyMemory(DevMode, PDev.DevMode, Pdev.DevModeSize);
+        finally
+          GlobalUnlock(DeviceMode);
+        end;
+        hDevMode:=DeviceMode;
+        if PageSetupDlg(Lpp) then begin
+          St :='';
+          if Lpp.HdevNames<>0 then begin
             DevNames:=PDevNames(GlobalLock(lpp.hDevNames));
             try
               St:=PChar(DevNames)+DevNames^.wDeviceOffset;
@@ -59,11 +50,12 @@ begin
               GlobalFree(lpp.hDevNames);
             end;
           end;
-
+          
           Result:=True;
-          if (Flags and PSD_INHUNDREDTHSOFMILLIMETERS)>0 then fUnits := unMM
+          if (Flags and PSD_INHUNDREDTHSOFMILLIMETERS)>0 then
+            fUnits := unMM
           else
-          fUnits := unInch;
+            fUnits := unInch;
           fMargins := rtMargin;
 
           if lpp.hDevMode<>0 then
@@ -72,10 +64,7 @@ begin
             try
               //Set the properties for the selected printer
               PDev:=TPrinterDevice(Printer.Printers.Objects[Printer.PrinterIndex]);
-              CopyMemory(@PDev.DevMode,DevMode,sizeof(Pdev.DevMode));
-              PDev.DevMode.dmSize := SizeOf(PDev.DevMode);
-              PDev.DevMode.dmDriverExtra := 0;
-              PDev.DevMode.dmPaperSize := DevMode^.dmPaperSize;
+              CopyMemory(PDev.DevMode,DevMode,PDev.DevModeSize);
             finally
               GlobalUnlock(lpp.hDevMode);
            end;
@@ -113,25 +102,18 @@ begin
       hInstance:=LCLType.HInstance;
       Flags:= PD_PRINTSETUP or PD_RETURNDC;
       hWndOwner:=TWin32WidgetSet(WidgetSet).AppHandle;
-
       PDev:=TPrinterDevice(Printer.Printers.Objects[Printer.PrinterIndex]);
-      Size := DeviceCapabilities(PChar(PDev.Name),PChar(PDev.Port),DC_SIZE,nil,nil);
-      Extra := DeviceCapabilities(PChar(PDev.Name),PChar(PDev.Port),DC_EXTRA,nil,nil);
-      Fields := DeviceCapabilities(PChar(PDev.Name),PChar(PDev.Port),DC_FIELDS,nil,nil);
-      DeviceMode:=GlobalAlloc(GHND,Size + Extra);
+      // Pdev.DevMode has the required size, just copy to the global memory
+      DeviceMode:=GlobalAlloc(GHND, PDev.DevModeSize);
       try
-      DevMode:=PDeviceMode(GlobalLock(DeviceMode));
-      try
-       CopyMemory(DevMode,@PDev.DevMode,SizeOf(PDev.DevMode));
-       DevMode^.dmSize := Word(Size);
-       DevMode^.dmDriverExtra := Word(Extra);
-       DevMode^.dmFields := Fields;
-      finally
-        GlobalUnLock(DeviceMode);
-      end;
-
-      hDevMode:= DeviceMode;
-      if PrintDlg(lpp) then
+        DevMode:=PDeviceMode(GlobalLock(DeviceMode));
+        try
+          CopyMemory(DevMode, Pdev.DevMode, Pdev.DevModeSize);
+        finally
+          GlobalUnlock(DeviceMode);
+        end;
+        hDevMode := DeviceMode;
+        if PrintDlg(lpp) then
         begin
           St:='';
           //Change Selected printer
@@ -155,10 +137,7 @@ begin
             try
               //Set the properties for the selected printer
               PDev:=TPrinterDevice(Printer.Printers.Objects[Printer.PrinterIndex]);
-              CopyMemory(@PDev.DevMode,DevMode,sizeof(Pdev.DevMode));
-              PDev.DevMode.dmSize := SizeOf(PDev.DevMode);
-              PDev.DevMode.dmDriverExtra := 0;
-              PDev.DevMode.dmPaperSize := Devmode^.dmPaperSize;
+              CopyMemory(PDev.DevMode,DevMode,PDev.DevModeSize);
               TWinPrinter(Printer).Handle := hDC;
             finally
               GlobalUnlock(lpp.hDevMode);
@@ -210,30 +189,25 @@ begin
       if not (poWarning in Options) then Flags := Flags or PD_NOWARNING;
       
       hWndOwner:=TWin32WidgetSet(WidgetSet).AppHandle;
-
       PDev:=TPrinterDevice(Printer.Printers.Objects[Printer.PrinterIndex]);
-      Size := DeviceCapabilities(PChar(PDev.Name),PChar(PDev.Port),DC_SIZE,nil,nil);
-      Extra := DeviceCapabilities(PChar(PDev.Name),PChar(PDev.Port),DC_EXTRA,nil,nil);
-      Fields := DeviceCapabilities(PChar(PDev.Name),PChar(PDev.Port),DC_FIELDS,nil,nil);
-      DeviceMode:=GlobalAlloc(GHND,Size + Extra);
+      // Pdev.DevMode has the required size, just copy to the global memory
+      DeviceMode:=GlobalAlloc(GHND, PDEV.DevModeSize);
       try
-      DevMode:=PDeviceMode(GlobalLock(DeviceMode));
-      try
-       CopyMemory(DevMode,@PDev.DevMode,SizeOf(PDev.DevMode));
-       DevMode^.dmSize := Word(Size);
-       DevMode^.dmDriverExtra := Word(Extra);
-       DevMode^.dmFields := Fields;
-      finally
-        GlobalUnLock(DeviceMode);
-      end;
-
-      hDevMode:= DeviceMode;
-      nCopies:= Word(Copies);
-      nFromPage := Word(FromPage);
-      nToPage := Word(ToPage);
-      nMinPage := Word(MinPage);
-      nMaxPage := Word(MaxPage);
-      if PrintDlg(lpp) then
+        DevMode:=PDeviceMode(GlobalLock(DeviceMode));
+        try
+          CopyMemory(DevMode, PDev.DevMode, PDev.DevModeSize);
+        finally
+          GlobalUnlock(DeviceMode);
+        end;
+        
+        hDevMode:= DeviceMode;
+        nCopies:= Word(Copies);
+        nFromPage := Word(FromPage);
+        nToPage := Word(ToPage);
+        nMinPage := Word(MinPage);
+        nMaxPage := Word(MaxPage);
+        
+        if PrintDlg(lpp) then
         begin
           St:='';
           //Change Selected printer
@@ -250,25 +224,24 @@ begin
           end;
 
           Result:=True;
-
-
+          
           if lpp.hDevMode<>0 then
           begin
             DevMode:=PDeviceMode(GlobalLock(lpp.hDevMode));
             try
               //Set the properties for the selected printer
               PDev:=TPrinterDevice(Printer.Printers.Objects[Printer.PrinterIndex]);
-              CopyMemory(@PDev.DevMode,DevMode,sizeof(Pdev.DevMode));
-              PDev.DevMode.dmSize := SizeOf(PDev.DevMode);
-              PDev.DevMode.dmDriverExtra := 0;
+              CopyMemory(PDev.DevMode,DevMode,PDev.DevModeSize);
+              
               if Printer.PaperSize.SupportedPapers.IndexOfObject(TObject(ptrint(DevMode^.dmPaperSize))) <> -1
                then
-                PDev.DevMode.dmPaperSize := DevMode^.dmPaperSize
+                PDev.DevMode^.dmPaperSize := DevMode^.dmPaperSize
               else
-                PDev.DevMode.dmPaperSize := PDev.DefaultPaper;
-              if nCopies=1 then Copies := DevMode^.dmCopies
+                PDev.DevMode^.dmPaperSize := PDev.DefaultPaper;
+              if nCopies=1 then
+                Copies := DevMode^.dmCopies
               else
-              Copies := nCopies;
+                Copies := nCopies;
               Printer.Copies := Copies;
               TWinPrinter(Printer).Handle := hDC;
             finally

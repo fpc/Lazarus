@@ -1,3 +1,4 @@
+{%MainUnit ../osprinters.pas}
 {
   Author: Olivier Guilbaud
 
@@ -41,7 +42,7 @@ Type
     procedure SetIC;
     procedure SetDC;
     procedure ClearDC;
-    
+    procedure UpdateDevMode;
 
   protected
     //function GetDefaultPrinter : String;
