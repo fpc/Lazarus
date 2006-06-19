@@ -528,7 +528,7 @@ end;
 
 procedure TGtkWidgetSet.PrepareSynchronize(AObject: TObject);
 begin
-  // wake up GUI thread by send a byte through the threadsync pipe
+  // wake up GUI thread by sending a byte through the threadsync pipe
   fpwrite(threadsync_pipeout, ' ', 1);
 end;
 
@@ -571,10 +571,11 @@ end;
 function threadsync_iocallback(source: PGIOChannel; condition: TGIOCondition; 
   data: gpointer): gboolean; cdecl;
 var
-  thrashspace: char;
+  thrashspace: array[1..1024] of byte;
 begin
-  // read the sent byte
-  fpread(threadsync_pipein, thrashspace, 1);
+  // read the sent bytes
+  fpread(threadsync_pipein, thrashspace[1], 1);
+  
   Result := true;
   // one of children signaled ?
   if childsig_pending then
@@ -1739,15 +1740,21 @@ procedure TGtkWidgetSet.AppProcessMessages;
 var
   vlItem : TGtkMessageQueueItem;
   vlMsg  : PMSg;
+  i: Integer;
 begin
   repeat
     // send cached LCL messages to the gtk
+    //DebugLn(['TGtkWidgetSet.AppProcessMessages SendCachedLCLMessages']);
     SendCachedLCLMessages;
 
-    // let gtk handle all its messages and call our callbacks
-    while gtk_events_pending<>0 do
+    // let gtk handle up to 100 messages and call our callbacks
+    i:=100;
+    while (gtk_events_pending<>0) and (i>0) do begin
       gtk_main_iteration_do(False);
+      dec(i);
+    end;
 
+    //DebugLn(['TGtkWidgetSet.AppProcessMessages SendCachedGtkMessages']);
     // send cached gtk messages to the lcl
     SendCachedGtkMessages;
 
@@ -1759,19 +1766,27 @@ begin
 
       // remove message from queue
       if vlItem.IsPaintMessage then begin
+        //DebugLn(['TGtkWidgetSet.AppProcessMessages Paint: ',DbgSName(GetLCLObject(Pointer(vlItem.Msg^.hwnd)))]);
         // paint messages are the most expensive messages in the LCL,
-        // therefore they are sent always after all other
-        if fMessageQueue.HasNonPaintMessages then begin
-          // there are non paint messages -> keep paint message back
-          fMessageQueue.MoveToLast(FMessageQueue.First);
-          continue;
+        // therefore they are sent after all other
+        if MovedPaintMessageCount<10 then begin
+          inc(MovedPaintMessageCount);
+          if fMessageQueue.HasNonPaintMessages then begin
+            // there are non paint messages -> move paint message to the end
+            fMessageQueue.MoveToLast(FMessageQueue.First);
+            continue;
+          end else begin
+            // there are only paint messages left in the queue
+            // -> check other queues
+            if PendingGtkMessagesExists then break;
+          end;
         end else begin
-          // there are only paint messages left in the queue
-          // -> check other queues
-          if PendingGtkMessagesExists then break;
+          // handle this paint message now
+          MovedPaintMessageCount:=0;
         end;
       end;
 
+      //DebugLn(['TGtkWidgetSet.AppProcessMessages SendMessage: ',DbgSName(GetLCLObject(Pointer(vlItem.Msg^.hwnd)))]);
       vlMsg:=fMessageQueue.PopFirstMessage;
 
       // Send message
@@ -1780,6 +1795,7 @@ begin
     end;
 
     // proceed until all messages are handled
+    
   until (not PendingGtkMessagesExists) or Application.Terminated;
 end;
 

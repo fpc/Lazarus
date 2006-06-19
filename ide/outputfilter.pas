@@ -202,7 +202,6 @@ var
   i, Count, LineStart : longint;
   OutputLine, Buf : String;
   TheAsyncProcess: TAsyncProcess;
-  
 begin
   Result:=true;
   Clear;
@@ -240,11 +239,12 @@ begin
       if (TheAsyncProcess<>nil) then begin
         // using non blocking TAsyncProcess
         Count:=TheAsyncProcess.NumBytesAvailable;
+        DebugLn(['TOutputFilter.Execute Count=',Count]);
         if (Count=0) and AsyncProcessTerminated then break;
         if Count>0 then
           Count:=TheProcess.Output.Read(Buf[1],Min(Count,length(Buf)))
         else
-          Sleep(1);
+          Sleep(100);
       end;
       if (TheAsyncProcess=nil) and (TheProcess.Output<>nil) then begin
         // using a blocking TProcess
