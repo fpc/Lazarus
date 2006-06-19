@@ -10461,7 +10461,7 @@ begin
         UnitLinksValid:=false;
     end;
     {$IFDEF VerboseFPCSrcScan}
-    debugln('TMainIDE.RescanCompilerDefines B rescanning FPC sources  UnitLinksValid=',UnitLinksValid);
+    debugln(['TMainIDE.RescanCompilerDefines B rescanning FPC sources  UnitLinksValid=',UnitLinksValid]);
     {$ENDIF}
 
     // create compiler macros to simulate the Makefiles of the FPC sources
