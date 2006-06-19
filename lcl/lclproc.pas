@@ -740,7 +740,14 @@ begin
   debugln(rsERRORInLCL, Msg);
   // creates an exception, that gdb catches:
   debugln(rsCreatingGdbCatchableError);
+//  {$IF defined(CPUI386) or defined(CPUX86_64) }
+// MWE: not yet, linux i386 seems to choke on this
+//  asm
+//    INT $3
+//  end;
+//  {$ELSE}
   if (length(Msg) div (length(Msg) div 10000))=0 then ;
+//  {$ENDIF}
 end;
 
 procedure DumpExceptionBackTrace;
@@ -1157,7 +1164,14 @@ begin
     vtQWord: DbgOut(dbgs(Args[i].VQWord^));
     vtBoolean: DbgOut(dbgs(Args[i].vboolean));
     vtExtended: DbgOut(dbgs(Args[i].VExtended^));
+{$ifdef FPC_CURRENCY_IS_INT64}
+    // MWE:
+    // ppcppc 2.0.2 has troubles in choosing the right dbgs() 
+    // so we convert here (i don't know about other versions
+    vtCurrency: DbgOut(dbgs(int64(Args[i].vCurrency^)/10000, 4));
+{$else}    
     vtCurrency: DbgOut(dbgs(Args[i].vCurrency^));
+{$endif}
     vtString: DbgOut(Args[i].VString^);
     vtAnsiString: DbgOut(AnsiString(Args[i].VAnsiString));
     vtChar: DbgOut(Args[i].VChar);
