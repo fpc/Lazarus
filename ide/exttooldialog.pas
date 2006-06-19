@@ -311,11 +311,7 @@ begin
   try
     try
       CheckIfFileIsExecutable(Filename);
-      {$IFDEF UseAsyncProcess}
-      TheProcess := TAsyncProcess.Create(nil);
-      {$ELSE}
-      TheProcess := TProcess.Create(nil);
-      {$ENDIF}
+      TheProcess := TOutputFilterProcess.Create(nil);
       TheProcess.CommandLine := Filename+' '+Params;
       TheProcess.Options:= [poUsePipes,poStdErrToOutPut];
       TheProcess.ShowWindow := swoHide;

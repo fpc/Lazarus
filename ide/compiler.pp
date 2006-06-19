@@ -45,7 +45,7 @@ uses
 type
   TOnCmdLineCreate = procedure(var CmdLine: string; var Abort:boolean)
       of object;
-  
+
   { TCompiler }
 
   TCompiler = class(TObject)
@@ -145,13 +145,8 @@ begin
     DebugLn('[TCompiler.Compile] CmdLine="',CmdLine,'"');
 
     try
-      if TheProcess=nil then begin
-        {$IFDEF UseAsyncProcess}
-        FTheProcess := TAsyncProcess.Create(nil);
-        {$ELSE}
-        FTheProcess := TProcess.Create(nil);
-        {$ENDIF}
-      end;
+      if TheProcess=nil then
+        FTheProcess := TOutputFilterProcess.Create(nil);
       TheProcess.CommandLine := CmdLine;
       TheProcess.Options:= [poUsePipes, poStdErrToOutput];
       TheProcess.ShowWindow := swoHide;

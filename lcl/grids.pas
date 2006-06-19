@@ -2418,7 +2418,6 @@ var
   RNew: TRect;
   OldTopLeft:TPoint;
   Xinc,YInc: Integer;
-  i: Integer;
 begin
   OldTopLeft:=fTopLeft;
 

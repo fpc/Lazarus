@@ -26,9 +26,14 @@ unit OutputFilter;
 
 interface
 
+// TODO: Test on all platforms
+{$IFDEF Linux}
+{$DEFINE UseAsyncProcess}
+{$ENDIF}
+
 uses
   Classes, Math, SysUtils, Forms, Controls, CompilerOptions, Project, Process,
-  IDEProcs, FileUtil, LclProc, LazConf, AsyncProcess, IDEMsgIntf;
+  IDEProcs, DynQueue, FileUtil, LclProc, LazConf, AsyncProcess, IDEMsgIntf;
 
 type
   TOnOutputString = procedure(const Msg, Directory: String;
@@ -37,7 +42,13 @@ type
                                  OriginalIndex: integer) of object;
   TOnGetIncludePath = function(const Directory: string;
                                UseCache: boolean): string of object;
-  
+
+  {$IFDEF UseAsyncProcess}
+  TOutputFilterProcess = TAsyncProcess;
+  {$ELSE}
+  TOutputFilterProcess = TProcess;
+  {$ENDIF}
+
   TOuputFilterOption = (
     ofoShowAll,              // don't filter
     ofoSearchForFPCMessages, // scan for freepascal compiler messages
@@ -99,6 +110,8 @@ type
     fLastOutputTime: TDateTime;
     fLastSearchedShortIncFilename: string;
     fLastSearchedIncFilename: string;
+    fProcess: TProcess;
+    FAsyncOutput: TDynamicDataQueue;
     procedure DoAddFilteredLine(const s: string; OriginalIndex: integer = -1);
     procedure DoAddLastLinkerMessages(SkipLastLine: boolean);
     procedure DoAddLastAssemblerMessages;
@@ -205,8 +218,9 @@ var
 begin
   Result:=true;
   Clear;
+  fProcess:=TheProcess;
   //debugln('TOutputFilter.Execute A CurrentDirectory="',TheProcess.CurrentDirectory,'"');
-  fCurrentDirectory:=TrimFilename(TheProcess.CurrentDirectory);
+  fCurrentDirectory:=TrimFilename(fProcess.CurrentDirectory);
   if fCurrentDirectory='' then fCurrentDirectory:=GetCurrentDir;
   fCurrentDirectory:=AppendPathDelim(fCurrentDirectory);
   SetLength(Buf,BufSize);
@@ -217,18 +231,19 @@ begin
   try
     BeginBufferingOutput;
     
-    if TheProcess is TAsyncProcess then begin
-      TheAsyncProcess:=TAsyncProcess(TheProcess);
+    if fProcess is TAsyncProcess then begin
+      TheAsyncProcess:=TAsyncProcess(fProcess);
       TheAsyncProcess.OnReadData:=@OnAsyncReadData;
       TheAsyncProcess.OnTerminate:=@OnAsyncTerminate;
+      FAsyncOutput:=TDynamicDataQueue.Create;
     end else
       TheAsyncProcess:=nil;
 
-    TheProcess.Execute;
+    fProcess.Execute;
     repeat
       Application.ProcessMessages;
       if StopExecute then begin
-        TheProcess.Terminate(0);
+        fProcess.Terminate(0);
         Aborted:=true;
         Result:=false;
         ReadLine('aborted',true);
@@ -238,17 +253,16 @@ begin
       Count:=0;
       if (TheAsyncProcess<>nil) then begin
         // using non blocking TAsyncProcess
-        Count:=TheAsyncProcess.NumBytesAvailable;
-        DebugLn(['TOutputFilter.Execute Count=',Count]);
+        Count:=FAsyncOutput.Size;
         if (Count=0) and AsyncProcessTerminated then break;
         if Count>0 then
-          Count:=TheProcess.Output.Read(Buf[1],Min(Count,length(Buf)))
+          Count:=FAsyncOutput.Pop(Buf[1],Min(Count,length(Buf)))
         else
-          Sleep(100);
+          Sleep(30);
       end;
-      if (TheAsyncProcess=nil) and (TheProcess.Output<>nil) then begin
+      if (TheAsyncProcess=nil) and (fProcess.Output<>nil) then begin
         // using a blocking TProcess
-        Count:=TheProcess.Output.Read(Buf[1],length(Buf));
+        Count:=fProcess.Output.Read(Buf[1],length(Buf));
         if Count=0 then begin
           // no output on blocking means, process has ended
           break;
@@ -276,14 +290,16 @@ begin
       OutputLine:=OutputLine+copy(Buf,LineStart,Count-LineStart+1);
     until false;
     //DebugLn('TOutputFilter.Execute After Loop');
-    TheProcess.WaitOnExit;
-    //DebugLn('TOutputFilter.Execute TheProcess.ExitStatus=',dbgs(TheProcess.ExitStatus));
-    if TheProcess.ExitStatus=0 then
+    fProcess.WaitOnExit;
+    //DebugLn('TOutputFilter.Execute fProcess.ExitStatus=',dbgs(fProcess.ExitStatus));
+    if fProcess.ExitStatus=0 then
       ErrorExists:=false;
     if ErrorExists and (ofoExceptionOnError in Options) then
       raise EOutputFilterError.Create('there was an error');
   finally
     EndBufferingOutput;
+    fProcess:=nil;
+    FreeAndNil(FAsyncOutput);
     if Assigned(OnEndReading) then OnEndReading(Self,fOutput);
   end;
 end;
@@ -990,8 +1006,12 @@ begin
 end;
 
 procedure TOutputFilter.OnAsyncReadData(Sender: TObject);
+var
+  Count: LongWord;
 begin
-  FAsyncDataAvailable:=true;
+  Count:=TAsyncProcess(fProcess).NumBytesAvailable;
+  if Count>0 then
+    FAsyncOutput.Push(TStream(TAsyncProcess(fProcess).Output),Count);
 end;
 
 destructor TOutputFilter.Destroy;

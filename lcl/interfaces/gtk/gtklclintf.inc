@@ -36,7 +36,7 @@ var
 begin
   //debugln('waithandle_iocallback lEventHandler=',HexStr(Cardinal(lEventHandler),8));
   lEventHandler^.OnEvent(lEventHandler^.UserData, condition);
-  result := true;
+  Result := true;
 end;
 
 function TGtkWidgetSet.AddEventHandler(AHandle: THandle; AFlags: dword; 

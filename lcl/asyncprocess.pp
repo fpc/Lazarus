@@ -34,9 +34,12 @@ unit AsyncProcess;
 interface
 
 uses
-  Classes, Process, InterfaceBase, LCLIntf;
+  Classes, Process, LCLProc, InterfaceBase, LCLIntf;
 
 type
+
+  { TAsyncProcess }
+
   TAsyncProcess = class(TProcess)
   private
     FPipeHandler: PPipeEventHandler;
@@ -54,7 +57,7 @@ type
     destructor Destroy; override;
   published
     property NumBytesAvailable: dword read GetNumBytesAvailable;
-    property OnReadData: TNotifyEvent read FOnReadData write FOnReadData;
+    property OnReadData: TNotifyEvent read FOnReadData write FOnReadData;// You must read all the data in this event. Otherwise it is called again.
     property OnTerminate: TNotifyEvent read FOnTerminate write FOnTerminate;
   end;
 
@@ -78,7 +81,7 @@ begin
 {$endif}
 end;
 
-{$else}
+{$else below for not Windows}
 
 uses BaseUnix, TermIO;
 
@@ -95,7 +98,7 @@ begin
     // FIONREAD -> bytes available for reading without blocking
     // FIONSPACE -> bytes available for writing without blocking
     //   does not work on all platforms (not defined on linux e.g.)
-    if fpioctl(Output.Handle, FIONREAD, @Result) = -1 then
+    if fpioctl(Output.Handle, FIONREAD, @Result)<0 then
       Result := 0;
   end;
 end;
