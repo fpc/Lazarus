@@ -366,7 +366,7 @@ type
 
 { THackComponent }
 
-procedure THackComponent.SetOtherDesigning(AComponent: TComponent;
+class procedure THackComponent.SetOtherDesigning(AComponent: TComponent;
   Value: Boolean);
 begin
   AComponent.SetDesigning(Value);

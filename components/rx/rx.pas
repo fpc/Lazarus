@@ -1,6 +1,5 @@
-{  This file was automatically created by Lazarus. Do not edit!
-  This source is only used to compile and install
-  the package rx 1.0.
+{ This file was automatically created by Lazarus. Do not edit!
+This source is only used to compile and install the package.
  }
 
 unit rx; 
@@ -19,5 +18,5 @@ begin
 end; 
 
 initialization
-  RegisterPackage('rx', @Register)
+  RegisterPackage('rx', @Register); 
 end.

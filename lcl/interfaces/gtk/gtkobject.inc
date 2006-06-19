@@ -1737,10 +1737,8 @@ procedure TGtkWidgetSet.AppProcessMessages;
   end;
 
 var
-
   vlItem : TGtkMessageQueueItem;
   vlMsg  : PMSg;
-
 begin
   repeat
     // send cached LCL messages to the gtk

@@ -1403,8 +1403,13 @@ begin
   Cursor := crIBeam;
 {$IFDEF SYN_LAZARUS}
   Color := clWhite;
+  {$IFDEF LCLgtk}
+  fFontDummy.Name := '-adobe-courier-medium-r-normal-*-*-140-*-*-*-*-iso10646-1';
+  fFontDummy.Height := 14;
+  {$ELSE}
   fFontDummy.Name := 'courier';
   fFontDummy.Size := 12;
+  {$ENDIF}
   fLastMouseCaret := Point(-1,-1);
   fLastCtrlMouseLinkY := -1;
   fLastControlIsPressed := false;
