@@ -254,11 +254,20 @@ begin
       if (TheAsyncProcess<>nil) then begin
         // using non blocking TAsyncProcess
         Count:=FAsyncOutput.Size;
-        if (Count=0) and AsyncProcessTerminated then break;
+        //DebugLn(['TOutputFilter.Execute Count=',Count,' AsyncProcessTerminated=',AsyncProcessTerminated,' ',TheAsyncProcess.NumBytesAvailable]);
         if Count>0 then
           Count:=FAsyncOutput.Pop(Buf[1],Min(Count,length(Buf)))
-        else
+        else if AsyncProcessTerminated then begin
+          Count:=TheAsyncProcess.NumBytesAvailable;
+          if Count>0 then begin
+            Count:=fProcess.Output.Read(Buf[1],Min(Count,length(Buf)));
+          end else begin
+            break;
+          end;
+        end else begin
+          // no new input, but process still running
           Sleep(30);
+        end;
       end;
       if (TheAsyncProcess=nil) and (fProcess.Output<>nil) then begin
         // using a blocking TProcess
