@@ -2407,7 +2407,7 @@ begin
     aField := SelectedField;
     if aField<>nil then begin
       Result := aField.IsValidChar(Ch) and not aField.Calculated and
-        (aField.DataType<>ftAutoInc);
+        (aField.DataType<>ftAutoInc) and not aField.IsBlob;
     end;
   end;
 end;
