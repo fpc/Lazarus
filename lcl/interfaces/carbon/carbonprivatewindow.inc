@@ -213,6 +213,7 @@ function CarbonPrivateWindow_MouseProc(ANextHandler: EventHandlerCallRef;
                                 AEvent: EventRef;
                                 AWIndowInfo: PWidgetInfo): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
 var
+  Root: ControlRef;     // the root control of the window
   Control: ControlRef;  // the control we are dealing with
                         // or the rootcontrol if none found          
   Info: PWidgetInfo;    // the info specific to the mouse event
@@ -246,13 +247,25 @@ var
   function GetMousePoint: TPoint;
   var
     MousePoint: HIPoint;//QDPoint;
+    R: HIRect;
   begin
     GetEventParameter(AEvent, kEventParamWindowMouseLocation, typeHIPoint, nil,
-                      SizeOf(MousePoint), nil, @MousePoint);
-    HIViewConvertPoint(MousePoint, nil, Control);
-    Result.X := Round(MousePoint.X);
-    Result.Y := Round(MousePoint.Y);
-    // WriteLn('Mouse to Widget Coords: X=',Result.X,' Y=',Result.Y);
+                      SizeOf(MousePoint), nil, @MousePoint); 
+    
+    // somehow the conversion to the control coordinates doen't work (or I don't understand the function)                         
+    // so convert manually
+    HIViewConvertPoint(MousePoint, nil, Root);
+    // Mousepoint is now in root coordinates                         
+    if Control = Root 
+    then begin
+      Result.X := Round(MousePoint.X);
+      Result.Y := Round(MousePoint.Y);
+    end
+    else begin
+      HiViewGetFrame(Control, R);
+      Result.X := Round(MousePoint.X - R.Origin.X);
+      Result.Y := Round(MousePoint.Y - R.Origin.Y);
+    end;
   end;
 
   function GetMouseWheelDelta: Integer;
@@ -393,7 +406,6 @@ var
     Extra: array[0..20] of Byte; // some messages are a bit larger, make some room
   end;  
   EventKind: UInt32;
-  Root: ControlRef;
 begin
   FillChar(Msg, SizeOf(Msg), 0);
 
