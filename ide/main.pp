@@ -9337,7 +9337,6 @@ var MaxMessages: integer;
   NewFilename: String;
 begin
   Result:=false;
-  //DebugLn('TMainIDE.DoJumpToCompilerMessage Index=',dbgs(Index));
   MaxMessages:=MessagesView.VisibleItemCount;
   if Index>=MaxMessages then exit;
   if (Index<0) then begin
@@ -9353,8 +9352,13 @@ begin
       inc(Index);
     end;
     if Index>=MaxMessages then exit;
-    MessagesView.SelectedMessageIndex:=Index;
   end;
+  MessagesView.SelectedMessageIndex:=Index;
+
+  // first try the plugins
+  if MessagesView.ExecuteMsgLinePlugin(imqfoJump) then exit;
+
+  // default: jump to source position
   MessagesView.GetVisibleMessageAt(Index,CurMsg,CurDir);
   if TheOutputFilter.GetSourcePosition(CurMsg,Filename,LogCaretXY,MsgType)
   then begin

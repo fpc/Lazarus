@@ -30,8 +30,8 @@ unit MsgQuickFixes;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, IDEMsgIntf, TextTools, LazarusIDEStrConsts,
-  LazIDEIntf, CodeCache, CodeToolManager;
+  Classes, SysUtils, Dialogs, FileUtil, LCLProc, IDEMsgIntf, TextTools,
+  LazarusIDEStrConsts, ProjectIntf, LazIDEIntf, CodeCache, CodeToolManager;
   
 type
 
@@ -41,6 +41,14 @@ type
   public
     constructor Create;
     function IsApplicable(Line: TIDEMessageLine): boolean; override;
+    procedure Execute(const Msg: TIDEMessageLine; Step: TIMQuickFixStep); override;
+  end;
+  
+  { TQuickFixLinkerUndefinedReference }
+
+  TQuickFixLinkerUndefinedReference = class(TIDEMsgQuickFixItem)
+  public
+    constructor Create;
     procedure Execute(const Msg: TIDEMessageLine; Step: TIMQuickFixStep); override;
   end;
 
@@ -121,6 +129,7 @@ begin
     'Unit "[a-z_0-9]+" not used in [a-z_0-9]+',[imqfoMenuItem],
     nil,@QuickFixUnitNotUsed);
   RegisterIDEMsgQuickFix(TQuickFixUnitNotFoundPosition.Create);
+  RegisterIDEMsgQuickFix(TQuickFixLinkerUndefinedReference.Create);
 end;
 
 procedure FreeStandardIDEQuickFixItems;
@@ -172,6 +181,95 @@ begin
   if (Line>0) and (Col>0) then begin
     //DebugLn('QuickFixUnitNotFoundPosition Line=',dbgs(Line),' Col=',dbgs(Col));
     Msg.SetSourcePosition('',Line,Col);
+  end;
+end;
+
+{ TQuickFixLinkerUndefinedReference }
+
+constructor TQuickFixLinkerUndefinedReference.Create;
+begin
+  Name:='Linker: undefined reference to';
+  Steps:=[imqfoJump];
+  RegExpression:='^(: .* `(.*)'')|((.*)\(\.text.*?\): .* `([A-Z0-9_$]+)'':)$';
+end;
+
+procedure TQuickFixLinkerUndefinedReference.Execute(const Msg: TIDEMessageLine;
+  Step: TIMQuickFixStep);
+{ Example:
+ /usr/lib/fpc/2.1.1/units/i386-linux/gtk2/gtk2.o(.text+0xbba1): In function `GTK2_GTK_TYPE_CELL_RENDERER_COMBO$$LONGWORD':
+ undefined reference to `gtk_cell_renderer_combo_get_type'
+}
+
+  procedure Error(const Msg: string);
+  begin
+    DebugLn('TQuickFixLinkerUndefinedReference.Execute ',Msg);
+    MessageDlg('TQuickFixLinkerUndefinedReference.Execute',
+               Msg,mtError,[mbCancel],0);
+  end;
+
+  procedure JumpTo(Line1, Line2: TIDEMessageLine);
+  var
+    Identifier: String;
+    Filename: String;
+    MangledFunction: String;
+    CurProject: TLazProject;
+    CodeBuf: TCodeBuffer;
+    NewCode: TCodeBuffer;
+    NewX, NewY, NewTopLine: integer;
+    AnUnitName: String;
+  begin
+    DebugLn(['JumpTo START ',Line1.Msg]);
+    if not REMatches(Line1.Msg,'^(.*)\(\.text.*?\): .* `([A-Z0-9_$]+)'':$')
+    then
+      exit;
+    Filename:=REVar(1);
+    MangledFunction:=REVar(2);
+    if not REMatches(Line2.Msg,'^: .* `(.*)''$') then exit;
+    Identifier:=REVar(1);
+    DebugLn(['TQuickFixLinkerUndefinedReference.JumpTo Filename="',Filename,'" MangledFunction="',MangledFunction,'" Identifier="',Identifier,'"']);
+    CurProject:=LazarusIDE.ActiveProject;
+    if CurProject=nil then begin
+      Error('no project');
+      exit;
+    end;
+    if (CurProject.MainFile=nil) then begin
+      Error('no main file in project');
+      exit;
+    end;
+    if (CurProject.MainFile=nil) then begin
+      Error('no main file in project');
+      exit;
+    end;
+    CodeBuf:=CodeToolBoss.FindFile(CurProject.MainFile.Filename);
+    if (CodeBuf=nil) then begin
+      Error('project main file has no source');
+      exit;
+    end;
+    AnUnitName:=ExtractFilenameOnly(Filename);
+    CodeBuf:=CodeToolBoss.FindUnitSource(CodeBuf,AnUnitName,'');
+    if (CodeBuf=nil) then begin
+      Error('unit not found: '+AnUnitName);
+      exit;
+    end;
+    if not CodeToolBoss.JumpToLinkerIdentifier(CodeBuf,
+      MangledFunction,Identifier,NewCode,NewX,NewY,NewTopLine)
+    then begin
+      Error('function not found: '+MangledFunction+' Identifier='+Identifier);
+      exit;
+    end;
+    LazarusIDE.DoOpenFileAndJumpToPos(NewCode.Filename,Point(NewX,NewY),
+                                      NewTopLine,-1,[]);
+  end;
+  
+begin
+  inherited Execute(Msg, Step);
+  if Step=imqfoJump then begin
+    DebugLn(['TQuickFixLinkerUndefinedReference.Execute ',Msg.Msg,' ',REMatches(Msg.Msg,'^(.*)\(\.text.*?\): .* `([A-Z0-9_$]+)'':$')]);
+    if (Msg.Position>0) and REMatches(Msg.Msg,'^: .* `(.*)''$') then
+      JumpTo(IDEMessagesWindow[Msg.Position-1],Msg)
+    else if (Msg.Position<IDEMessagesWindow.LinesCount-1)
+    and REMatches(Msg.Msg,'^(.*)\(\.text.*?\): .* `([A-Z0-9_$]+)'':$') then
+      JumpTo(Msg,IDEMessagesWindow[Msg.Position+1]);
   end;
 end;
 

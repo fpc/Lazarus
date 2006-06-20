@@ -70,11 +70,11 @@ type
         TypeData: PTypeData; Proc: TGetStringProc): boolean;
     function PublishedMethodExists(const UpperClassName,
         UpperMethodName: string; TypeData: PTypeData;
-        var MethodIsCompatible, MethodIsPublished, IdentIsMethod: boolean
+        out MethodIsCompatible, MethodIsPublished, IdentIsMethod: boolean
         ): boolean;
     function PublishedMethodExists(ClassNode: TCodeTreeNode;
         const UpperMethodName: string; TypeData: PTypeData;
-        var MethodIsCompatible, MethodIsPublished, IdentIsMethod: boolean
+        out MethodIsCompatible, MethodIsPublished, IdentIsMethod: boolean
         ): boolean;
     function JumpToPublishedMethodBody(const UpperClassName,
         UpperMethodName: string;
@@ -372,7 +372,7 @@ end;
 
 function TEventsCodeTool.PublishedMethodExists(const UpperClassName,
   UpperMethodName: string; TypeData: PTypeData;
-  var MethodIsCompatible, MethodIsPublished, IdentIsMethod: boolean): boolean;
+  out MethodIsCompatible, MethodIsPublished, IdentIsMethod: boolean): boolean;
 var ClassNode: TCodeTreeNode;
 begin
   ActivateGlobalWriteLock;
@@ -395,7 +395,7 @@ end;
 
 function TEventsCodeTool.PublishedMethodExists(ClassNode: TCodeTreeNode;
   const UpperMethodName: string; TypeData: PTypeData;
-  var MethodIsCompatible, MethodIsPublished, IdentIsMethod: boolean): boolean;
+  out MethodIsCompatible, MethodIsPublished, IdentIsMethod: boolean): boolean;
 var
   FoundContext: TFindContext;
   CompListSize: integer;

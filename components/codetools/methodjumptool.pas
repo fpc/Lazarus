@@ -42,10 +42,13 @@ uses
   {$ENDIF}
   Classes, SysUtils, FileProcs, CodeTree, CodeAtom, PascalParserTool,
   StdCodeTools, CodeTemplatesTool, KeywordFuncLists, BasicCodeTools,
-  LinkScanner, AVL_Tree;
+  LinkScanner, CodeCache, AVL_Tree;
 
 
 type
+
+  { TMethodJumpingCodeTool }
+
   TMethodJumpingCodeTool = class(TCodeTemplatesTool)
   protected
     procedure RemoveCorrespondingProcNodes(Tree1, Tree2: TAVLTree;
@@ -74,6 +77,11 @@ type
         Attr: TProcHeadAttributes): TStringList;
     function FindSubProcPath(SubProcPath: TStrings; Attr: TProcHeadAttributes;
         SkipInterface: boolean): TCodeTreeNode;
+        
+    function FindJumpPointForLinkerPos(const MangledFunction,
+        Identifier: string; out NewPos: TCodeXYPosition;
+        out NewTopLine: integer): boolean;
+        
     procedure WriteCodeTreeNodeExtTree(ExtTree: TAVLTree);
   end;
 
@@ -938,6 +946,30 @@ begin
     if StartNode<>nil then StartNode:=StartNode.FirstChild;
   end;
   Result:=SearchSubProcPath(StartNode,0);
+end;
+
+function TMethodJumpingCodeTool.FindJumpPointForLinkerPos(
+  const MangledFunction, Identifier: string;
+  out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
+{ Examples:
+  GTK2_GTK_TYPE_CELL_RENDERER_COMBO$$LONGWORD
+
+    GTK2 is the unit.
+    GTK_TYPE_CELL_RENDERER_COMBO is the function or procedure name.
+    LONGWORD is the list of parameter types.
+  
+  ADDFILETOAPACKAGEDLG_TADDFILETOAPACKAGEDIALOG_$__ADDFILETOAPACKAGEDLGCLOSE$TOBJECT$TCLOSEACTION
+  
+    ADDFILETOAPACKAGEDLG is the unit.
+    TADDFILETOAPACKAGEDIALOG is the class.
+    ADDFILETOAPACKAGEDLGCLOSE is the method name.
+    $TOBJECT$TCLOSEACTION is the list of parameter types
+}
+begin
+  Result:=false;
+  BuildTree(false);
+  DebugLn(['TMethodJumpingCodeTool.FindJumpPointForLinkerPos ']);
+  
 end;
 
 procedure TMethodJumpingCodeTool.WriteCodeTreeNodeExtTree(ExtTree: TAVLTree);

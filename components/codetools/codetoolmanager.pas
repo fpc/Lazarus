@@ -445,8 +445,10 @@ type
           var FoundInUnits, MissingInUnits, NormalUnits: TStrings): boolean;
     function CommentUnitsInUsesSections(Code: TCodeBuffer;
           MissingUnits: TStrings): boolean;
-    function FindUnit(Code: TCodeBuffer;
-                      var AnUnitName, AnUnitInFilename: string): string;
+    function FindUnitCaseInsensitive(Code: TCodeBuffer;
+                              var AnUnitName, AnUnitInFilename: string): string;
+    function FindUnitSource(Code: TCodeBuffer;
+                       const AnUnitName, AnUnitInFilename: string): TCodeBuffer;
 
     // resources
     property OnFindDefinePropertyForContext: TOnFindDefinePropertyForContext
@@ -541,7 +543,7 @@ type
           Proc: TGetStringProc): boolean;
     function PublishedMethodExists(Code:TCodeBuffer; const AClassName,
           AMethodName: string; TypeData: PTypeData;
-          var MethodIsCompatible, MethodIsPublished, IdentIsMethod: boolean
+          out MethodIsCompatible, MethodIsPublished, IdentIsMethod: boolean
           ): boolean;
     function JumpToPublishedMethodBody(Code: TCodeBuffer;
           const AClassName, AMethodName: string;
@@ -558,6 +560,12 @@ type
           DirectiveList: TStrings): boolean;
     function SetIDEDirectives(Code: TCodeBuffer;
           DirectiveList: TStrings): boolean;
+          
+    // linker jumping
+    function JumpToLinkerIdentifier(Code: TCodeBuffer;
+          const MangledFunction, Identifier: string;
+          out NewCode: TCodeBuffer;
+          out NewX, NewY, NewTopLine: integer): boolean;
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -2443,7 +2451,7 @@ end;
 
 function TCodeToolManager.PublishedMethodExists(Code:TCodeBuffer;
   const AClassName, AMethodName: string; TypeData: PTypeData;
-  var MethodIsCompatible, MethodIsPublished, IdentIsMethod: boolean): boolean;
+  out MethodIsCompatible, MethodIsPublished, IdentIsMethod: boolean): boolean;
 begin
   {$IFDEF CTDEBUG}
   DebugLn('TCodeToolManager.PublishedMethodExists A ',Code.Filename,' ',AClassName,':',AMethodName);
@@ -2542,6 +2550,30 @@ begin
   if not InitCurCodeTool(Code) then exit;
   try
     Result:=FCurCodeTool.SetIDEDirectives(DirectiveList,SourceChangeCache);
+  except
+    on e: Exception do Result:=HandleException(e);
+  end;
+end;
+
+function TCodeToolManager.JumpToLinkerIdentifier(Code: TCodeBuffer;
+  const MangledFunction, Identifier: string; out NewCode: TCodeBuffer; out
+  NewX, NewY, NewTopLine: integer): boolean;
+var
+  NewPos: TCodeXYPosition;
+begin
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.JumpToLinkerIdentifier A ',Code.Filename);
+  {$ENDIF}
+  Result:=false;
+  if not InitCurCodeTool(Code) then exit;
+  try
+    Result:=FCurCodeTool.FindJumpPointForLinkerPos(MangledFunction, Identifier,
+                                                   NewPos,NewTopLine);
+    if Result then begin
+      NewX:=NewPos.X;
+      NewY:=NewPos.Y;
+      NewCode:=NewPos.Code;
+    end;
   except
     on e: Exception do Result:=HandleException(e);
   end;
@@ -2962,16 +2994,31 @@ begin
   end;
 end;
 
-function TCodeToolManager.FindUnit(Code: TCodeBuffer; var AnUnitName,
-  AnUnitInFilename: string): string;
+function TCodeToolManager.FindUnitCaseInsensitive(Code: TCodeBuffer;
+  var AnUnitName, AnUnitInFilename: string): string;
 begin
   Result:='';
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.FindUnitCaseInsensitive A ',Code.Filename,' TheUnitName="',TheUnitName,'"');
+  {$ENDIF}
+  if not InitCurCodeTool(Code) then exit;
+  try
+    Result:=FCurCodeTool.FindUnitCaseInsensitive(AnUnitName,AnUnitInFilename);
+  except
+    on e: Exception do HandleException(e);
+  end;
+end;
+
+function TCodeToolManager.FindUnitSource(Code: TCodeBuffer; const AnUnitName,
+  AnUnitInFilename: string): TCodeBuffer;
+begin
+  Result:=nil;
   {$IFDEF CTDEBUG}
   DebugLn('TCodeToolManager.FindUnit A ',Code.Filename,' TheUnitName="',TheUnitName,'"');
   {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
   try
-    Result:=FCurCodeTool.FindUnitCaseInsensitive(AnUnitName,AnUnitInFilename);
+    Result:=FCurCodeTool.FindUnitSource(AnUnitName,AnUnitInFilename,false);
   except
     on e: Exception do HandleException(e);
   end;

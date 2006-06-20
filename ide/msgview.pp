@@ -120,6 +120,7 @@ type
     function FindNextItem(const Filename: string;
                           FirstLine, LineCount: integer): TAVLTreeNode;
     procedure UpdateMsgSrcPos(Line: TLazMessageLine);
+    function GetLines(Index: integer): TIDEMessageLine; override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -137,7 +138,7 @@ type
     procedure BeginBlock;
     procedure EndBlock;
     procedure ClearItems;
-    function ItemCount: integer;
+    function LinesCount: integer; override;
     function VisibleItemCount: integer;
     function MsgCount: integer;
     procedure FilterLines(Filter: TOnFilterLine);
@@ -145,18 +146,19 @@ type
     procedure SrcEditLinesInsertedDeleted(const Filename: string;
                                           FirstLine, LineCount: Integer);
     procedure UpdateMsgLineInListBox(Line: TLazMessageLine);
+    function ExecuteMsgLinePlugin(Step: TIMQuickFixStep): boolean;
     procedure ConsistencyCheck;
   public
-    property LastLineIsProgress: boolean Read FLastLineIsProgress
-      Write SetLastLineIsProgress;
-    property Message: string Read GetMessage;
-    property Directory: string Read GetDirectory;
-    property SelectedMessageIndex: integer Read GetSelectedLineIndex  // visible index
-      Write SetSelectedLineIndex;
+    property LastLineIsProgress: boolean read FLastLineIsProgress
+                                         write SetLastLineIsProgress;
+    property Message: string read GetMessage;
+    property Directory: string read GetDirectory;
+    property SelectedMessageIndex: integer read GetSelectedLineIndex  // visible index
+                                           write SetSelectedLineIndex;
     property OnSelectionChanged: TNotifyEvent
-      Read FOnSelectionChanged Write FOnSelectionChanged;
-    property Items[Index: integer]: TLazMessageLine Read GetItems;
-    property VisibleItems[Index: integer]: TLazMessageLine Read GetVisibleItems;
+                             read FOnSelectionChanged write FOnSelectionChanged;
+    property Items[Index: integer]: TLazMessageLine read GetItems;
+    property VisibleItems[Index: integer]: TLazMessageLine read GetVisibleItems;
   end;
 
 var
@@ -372,8 +374,8 @@ begin
   //ConsistencyCheck;
   //DebugLn('TMessagesView.Add START ItemCount=',dbgs(ItemCount),' VisibleCount=',dbgs(VisibleItemCount),' ListBoxCount=',dbgs(MessageListBox.Items.Count),' ProgressLine=',dbgs(ProgressLine),' VisibleLine=',dbgs(VisibleLine),' OriginalIndex=',dbgs(OriginalIndex),' Msg="',Msg,'"');
   NewMsg:=nil;
-  if ItemCount>0 then begin
-    LastItem:=Items[ItemCount-1];
+  if LinesCount>0 then begin
+    LastItem:=Items[LinesCount-1];
     if (OriginalIndex>=0) and (LastItem.OriginalIndex=OriginalIndex) then begin
       // already added
       NewMsg:=LastItem;
@@ -475,7 +477,7 @@ begin
   if (SrcLines=nil) or (SrcLines.Count=0) then exit;
   
   StartOriginalIndex:=SrcLines[0].OriginalIndex;
-  DestStartIndex:=ItemCount-1;
+  DestStartIndex:=LinesCount-1;
   while (DestStartIndex>=0)
   and (Items[DestStartIndex].OriginalIndex<>StartOriginalIndex) do
     dec(DestStartIndex);
@@ -510,7 +512,7 @@ begin
     SrcLine:=SrcLines[i];
     DebugLn('TMessagesView.CollectLineParts i=',dbgs(i),' SrcLine=',MsgAsString(SrcLine));
   end;
-  for i:=0 to ItemCount-1 do begin
+  for i:=0 to LinesCount-1 do begin
     DestLine:=Items[i];
     DebugLn('TMessagesView.CollectLineParts i=',dbgs(i),' DestLine=',MsgAsString(DestLine));
   end;}
@@ -527,7 +529,7 @@ begin
   if LastSeparator >= 0 then
   begin
     while (VisibleItemCount > LastSeparator) do
-      DeleteLine(ItemCount - 1);
+      DeleteLine(LinesCount - 1);
     FLastLineIsProgress := False;
   end;
   EndBlock;
@@ -634,6 +636,34 @@ begin
   end;
 end;
 
+function TMessagesView.ExecuteMsgLinePlugin(Step: TIMQuickFixStep): boolean;
+var
+  i: Integer;
+  QuickFixItem: TIDEMsgQuickFixItem;
+  Msg: TLazMessageLine;
+begin
+  Result:=false;
+  Msg:=GetMessageLine;
+  if Msg=nil then exit;
+  for i:=0 to IDEMsgQuickFixes.Count-1 do begin
+    QuickFixItem:=IDEMsgQuickFixes[i];
+    //DebugLn(['TMessagesView.ExecuteMsgLinePlugin ',Msg.Msg,' ',QuickFixItem.Name]);
+    if (Step in QuickFixItem.Steps)
+    and QuickFixItem.IsApplicable(Msg) then begin
+      Result:=true;
+      QuickFixItem.Execute(Msg,Step);
+      if Msg.Msg='' then begin
+        // message fixed -> delete
+        DeleteLine(Msg.Position);
+      end else begin
+        UpdateMsgSrcPos(Msg);
+        UpdateMsgLineInListBox(Msg);
+      end;
+      exit;
+    end;
+  end;
+end;
+
 {------------------------------------------------------------------------------
   TMessagesView.Clear
 ------------------------------------------------------------------------------}
@@ -693,7 +723,7 @@ begin
   FLastLineIsProgress:=false;
 end;
 
-function TMessagesView.ItemCount: integer;
+function TMessagesView.LinesCount: integer;
 begin
   Result := FItems.Count;
 end;
@@ -896,6 +926,7 @@ begin
         UpdateMsgSrcPos(Msg);
         UpdateMsgLineInListBox(Msg);
       end;
+      exit;
       //ConsistencyCheck;
     end;
   end;
@@ -968,6 +999,11 @@ begin
   Line.GetSourcePosition(Line.Filename,Line.LineNumber,Line.Column);
   if Line.LineNumber>0 then
     Line.Node:=FSrcPositions.Add(Line);
+end;
+
+function TMessagesView.GetLines(Index: integer): TIDEMessageLine;
+begin
+  Result:=Items[Index];
 end;
 
 procedure TMessagesView.ConsistencyCheck;

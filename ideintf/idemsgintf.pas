@@ -113,8 +113,9 @@ type
   { TIDEMsgQuickFixItem }
   
   TIMQuickFixStep = (
-    imqfoMenuItem,      // add menu item in popup menu for this item
-    imqfoImproveMessage // rewrites message
+    imqfoMenuItem,       // add menu item in popup menu for this item
+    imqfoImproveMessage, // rewrites message
+    imqfoJump            // user clicks on message
     );
   TIMQuickFixSteps = set of TIMQuickFixStep;
 
@@ -172,10 +173,16 @@ type
     property Items[Index: integer]: TIDEMsgQuickFixItem read GetItems; default;
   end;
   
+  { TIDEMessagesWindowInterface }
+
   TIDEMessagesWindowInterface = class(TForm)
+  protected
+    function GetLines(Index: integer): TIDEMessageLine; virtual; abstract;
   public
     procedure Clear; virtual; abstract;
     procedure AddMsg(const Msg, CurDir: string; OriginalIndex: integer); virtual; abstract;
+    property Lines[Index: integer]: TIDEMessageLine read GetLines; default;
+    function LinesCount: integer; virtual; abstract;
   end;
   
 var
