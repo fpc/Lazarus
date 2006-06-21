@@ -78,6 +78,7 @@ type
     procedure BtnSaveClick(Sender: TObject);
     procedure ColorBoxTransparentClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
     procedure PreviewPaint(Sender: TObject);
     procedure btnApplyClick(Sender: TObject);
     procedure TreeViewDeletion(Sender: TObject; Node: TTreeNode);
@@ -181,6 +182,11 @@ begin
   SaveDialog.Title := sccsILEdtSaveDialog;
   
   FillColorBoxTransparent;
+end;
+
+procedure TImageListEditorDlg.FormDestroy(Sender: TObject);
+begin
+  FreeAndNil(FPreviewBmp);
 end;
 
 procedure TImageListEditorDlg.BtnAddClick(Sender: TObject);

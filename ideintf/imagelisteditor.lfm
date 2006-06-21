@@ -1,65 +1,65 @@
 object ImageListEditorDlg: TImageListEditorDlg
-  ActiveControl = BtnOK
-  BorderIcons = [biSystemMenu, biHelp]
-  Caption = 'ImagesList Editor'
-  ClientHeight = 345
-  ClientWidth = 520
-  Constraints.MinHeight = 345
-  Constraints.MinWidth = 520
-  OnCreate = FormCreate
-  PixelsPerInch = 112
-  Position = poScreenCenter
-  HorzScrollBar.Page = 519
-  VertScrollBar.Page = 344
   Left = 313
   Height = 345
   Top = 194
   Width = 520
+  HorzScrollBar.Page = 519
+  VertScrollBar.Page = 344
+  ActiveControl = BtnOK
+  BorderIcons = [biSystemMenu, biHelp]
+  Caption = 'ImagesList Editor'
+  Constraints.MinHeight = 345
+  Constraints.MinWidth = 520
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  Position = poScreenCenter
   object GroupBoxR: TGroupBox
-    Anchors = [akTop, akLeft, akRight, akBottom]
-    BorderSpacing.Around = 6
-    Caption = 'Selected Image'
-    ClientHeight = 282
-    ClientWidth = 214
-    TabOrder = 5
     Left = 296
     Height = 299
     Top = 6
     Width = 218
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Around = 6
+    Caption = 'Selected Image'
+    TabOrder = 5
     object LabelTransparent: TLabel
+      Left = 110
+      Height = 13
+      Top = 175
+      Width = 104
       Anchors = [akLeft, akBottom]
       BorderSpacing.Around = 6
       Caption = 'Transparent Color:'
       Color = clNone
       ParentColor = False
-      Left = 110
-      Height = 13
-      Top = 176
-      Width = 104
     end
     object LabelSize: TLabel
-      Color = clNone
-      ParentColor = False
       Left = 6
       Height = 28
       Top = 6
       Width = 76
+      Color = clNone
+      ParentColor = False
     end
     object Preview: TScrollBox
+      Left = 6
+      Height = 132
+      Top = 32
+      Width = 201
+      HorzScrollBar.Page = 196
+      VertScrollBar.Page = 127
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Around = 6
       Color = clGrayText
       ParentColor = False
       TabOrder = 0
       OnPaint = PreviewPaint
-      HorzScrollBar.Page = 196
-      VertScrollBar.Page = 128
-      Left = 6
-      Height = 133
-      Top = 32
-      Width = 201
     end
     object RadioGroup: TRadioGroup
+      Left = 6
+      Height = 105
+      Top = 170
+      Width = 96
       Anchors = [akLeft, akBottom]
       AutoFill = True
       BorderSpacing.Around = 6
@@ -82,12 +82,12 @@ object ImageListEditorDlg: TImageListEditorDlg
       )
       OnClick = ColorBoxTransparentClick
       TabOrder = 1
-      Left = 6
-      Height = 105
-      Top = 171
-      Width = 96
     end
     object ColorBoxTransparent: TColorBox
+      Left = 110
+      Height = 24
+      Top = 195
+      Width = 96
       Anchors = [akLeft, akBottom]
       Enabled = False
       Items.Strings = (
@@ -208,78 +208,72 @@ object ImageListEditorDlg: TImageListEditorDlg
       TabOrder = 2
       Text = 'clFuchsia'
       OnChange = ColorBoxTransparentClick
-      Left = 110
-      Height = 24
-      Top = 196
-      Width = 96
     end
   end
   object BtnOK: TBitBtn
+    Left = 199
+    Height = 25
+    Top = 313
+    Width = 75
     Anchors = [akRight, akBottom]
     BorderSpacing.Around = 6
-    
     Caption = '&OK'
     Kind = bkOK
     ModalResult = 1
     NumGlyphs = 0
     TabOrder = 0
-    Left = 199
+  end
+  object BtnCancel: TBitBtn
+    Left = 279
     Height = 25
     Top = 313
     Width = 75
-  end
-  object BtnCancel: TBitBtn
     Anchors = [akRight, akBottom]
-    
     Cancel = True
     Caption = 'Cancel'
     Kind = bkCancel
     ModalResult = 2
     NumGlyphs = 0
     TabOrder = 1
-    Left = 279
-    Height = 25
-    Top = 313
-    Width = 75
   end
   object BtnApply: TBitBtn
-    Anchors = [akRight, akBottom]
-    BorderSpacing.Around = 6
-    
-    Caption = '&Apply'
-    NumGlyphs = 0
-    OnClick = btnApplyClick
-    TabOrder = 2
     Left = 359
     Height = 25
     Top = 313
     Width = 75
-  end
-  object BtnHelp: TBitBtn
     Anchors = [akRight, akBottom]
     BorderSpacing.Around = 6
-    
-    Caption = '&Help'
-    Kind = bkHelp
+    Caption = '&Apply'
     NumGlyphs = 0
-    TabOrder = 3
+    OnClick = btnApplyClick
+    TabOrder = 2
+  end
+  object BtnHelp: TBitBtn
     Left = 439
     Height = 25
     Top = 313
     Width = 75
+    Anchors = [akRight, akBottom]
+    BorderSpacing.Around = 6
+    Caption = '&Help'
+    Kind = bkHelp
+    NumGlyphs = 0
+    TabOrder = 3
   end
   object GroupBoxL: TGroupBox
-    Anchors = [akTop, akLeft, akBottom]
-    BorderSpacing.Around = 6
-    Caption = 'Images'
-    ClientHeight = 282
-    ClientWidth = 276
-    TabOrder = 4
     Left = 6
     Height = 299
     Top = 6
     Width = 280
+    Anchors = [akTop, akLeft, akBottom]
+    BorderSpacing.Around = 6
+    Caption = 'Images'
+    TabOrder = 4
     object TreeView: TTreeView
+      Left = 6
+      Height = 269
+      Top = 6
+      Width = 185
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Around = 6
       DefaultItemHeight = 16
@@ -293,85 +287,81 @@ object ImageListEditorDlg: TImageListEditorDlg
       OnDeletion = TreeViewDeletion
       OnSelectionChanged = TreeViewSelectionChanged
       Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoRowSelect, tvoToolTips]
-      Left = 6
-      Height = 270
-      Top = 6
-      Width = 185
     end
     object BtnAdd: TButton
+      Tag = 1
+      Left = 196
+      Height = 25
+      Top = 6
+      Width = 75
       Anchors = [akTop, akRight]
       BorderSpacing.Around = 6
-      
+      BorderSpacing.InnerBorder = 4
       Caption = 'Add...'
       Default = True
       OnClick = BtnAddClick
       TabOrder = 1
-      Left = 196
-      Height = 25
-      Top = 6
-      Width = 75
-      Tag = 1
     end
     object BtnClear: TButton
-      Anchors = [akTop, akRight]
-      BorderSpacing.Around = 6
-      
-      Caption = 'Clear'
-      OnClick = BtnClearClick
-      TabOrder = 2
       Left = 196
       Height = 25
       Top = 68
       Width = 75
-    end
-    object BtnDelete: TButton
       Anchors = [akTop, akRight]
       BorderSpacing.Around = 6
-      
-      Caption = '&Delete'
-      OnClick = BtnDeleteClick
-      TabOrder = 3
+      BorderSpacing.InnerBorder = 4
+      Caption = 'Clear'
+      OnClick = BtnClearClick
+      TabOrder = 2
+    end
+    object BtnDelete: TButton
       Left = 196
       Height = 25
       Top = 37
       Width = 75
-    end
-    object BtnMoveUp: TButton
       Anchors = [akTop, akRight]
       BorderSpacing.Around = 6
-      
-      Caption = 'Move Up'
-      OnClick = BtnMoveUpClick
-      TabOrder = 4
+      BorderSpacing.InnerBorder = 4
+      Caption = '&Delete'
+      OnClick = BtnDeleteClick
+      TabOrder = 3
+    end
+    object BtnMoveUp: TButton
+      Tag = -1
       Left = 196
       Height = 25
       Top = 99
       Width = 75
-      Tag = -1
-    end
-    object BtnMoveDown: TButton
       Anchors = [akTop, akRight]
       BorderSpacing.Around = 6
-      
-      Caption = 'Move Down'
+      BorderSpacing.InnerBorder = 4
+      Caption = 'Move Up'
       OnClick = BtnMoveUpClick
-      TabOrder = 5
+      TabOrder = 4
+    end
+    object BtnMoveDown: TButton
+      Tag = 1
       Left = 196
       Height = 25
       Top = 130
       Width = 75
-      Tag = 1
+      Anchors = [akTop, akRight]
+      BorderSpacing.Around = 6
+      BorderSpacing.InnerBorder = 4
+      Caption = 'Move Down'
+      OnClick = BtnMoveUpClick
+      TabOrder = 5
     end
     object BtnSave: TButton
-      Anchors = [akTop, akRight]
-      
-      Caption = 'Save...'
-      OnClick = BtnSaveClick
-      TabOrder = 6
       Left = 196
       Height = 25
       Top = 161
       Width = 75
+      Anchors = [akTop, akRight]
+      BorderSpacing.InnerBorder = 4
+      Caption = 'Save...'
+      OnClick = BtnSaveClick
+      TabOrder = 6
     end
   end
   object ImageList: TImageList
@@ -379,22 +369,17 @@ object ImageListEditorDlg: TImageListEditorDlg
     top = 246
   end
   object OpenDialog: TOpenPictureDialog
-    Filter = 'Graphic (*.ico;*.ppm;*.pgm;*.pbm;*.png;*.xpm;*.bmp)|*.ico;*.ppm;*.pgm;*.pbm;*.png;*.xpm;*.bmp|Icon (*.ico)|*.ico|Portable PixMap (*.ppm)|*.ppm|Portable GrayMap (*.pgm)|*.pgm|Portable BitMap (*.pbm)|*.pbm|Portable Network Graphic (*.png)|*.png|Pixmap (*.xpm)|*.xpm|Bitmaps (*.bmp)|*.bmp|All files (*.*)|*.*|'
-    Options = [ofAllowMultiSelect, ofFileMustExist, ofEnableSizing, ofViewDetail, ofAutoPreview]
     Title = 'Open existing file'
-    Filter = 'Graphic (*.ico;*.ppm;*.pgm;*.pbm;*.png;*.xpm;*.bmp)|*.ico;*.ppm;*.pgm;*.pbm;*.png;*.xpm;*.bmp|Icon (*.ico)|*.ico|Portable PixMap (*.ppm)|*.ppm|Portable GrayMap (*.pgm)|*.pgm|Portable BitMap (*.pbm)|*.pbm|Portable Network Graphic (*.png)|*.png|Pixmap (*.xpm)|*.xpm|Bitmaps (*.bmp)|*.bmp|All files (*.*)|*.*|'
     FilterIndex = 0
-    Title = 'Open existing file'
+    Options = [ofAllowMultiSelect, ofFileMustExist, ofEnableSizing, ofViewDetail, ofAutoPreview]
     left = 216
     top = 209
   end
   object SaveDialog: TSavePictureDialog
-    Filter = 'Pixmap (*.xpm)|*.xpm'
-    Options = [ofEnableSizing, ofViewDetail, ofAutoPreview]
     Title = 'Save file as'
     Filter = 'Pixmap (*.xpm)|*.xpm'
     FilterIndex = 0
-    Title = 'Save file as'
+    Options = [ofEnableSizing, ofViewDetail, ofAutoPreview]
     left = 252
     top = 209
   end
