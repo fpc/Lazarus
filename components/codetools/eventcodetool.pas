@@ -188,8 +188,8 @@ begin
       if phpWithParameterNames in Attr then
         s:=s+ParamType.ParamName;
       s:=s+':'+ParamType.TypeName;
-      if i>0 then s:=s+';';
-      ParamString:=s+ParamString;
+      if i>0 then s:=';'+s;
+      ParamString:=ParamString+s;
     end;
     Result:=Result+ParamString+')';
   end;
