@@ -46,7 +46,7 @@ begin
   if Code=nil then
     raise Exception.Create('loading failed '+Filename);
 
-  // Step 2: add a method
+  // Step 2: add a method compatible to TMyMethodType
   if CodeToolBoss.CreatePublishedMethod(Code,'TMyClass','NewMethod',
     typeinfo(TMyMethodType),true) then
   begin

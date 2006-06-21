@@ -47,9 +47,9 @@ uses
   {$IFDEF UNIX}{$IFDEF UseCThreads}
   cthreads,
   {$ENDIF}{$ENDIF}
-  { $IFDEF IDE_MEM_CHECK}
+  {$IFDEF IDE_MEM_CHECK}
   MemCheck,
-  { $ENDIF}
+  {$ENDIF}
   Interfaces,
   Forms, LCLProc,
   Splash,

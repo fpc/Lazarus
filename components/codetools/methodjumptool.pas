@@ -78,9 +78,10 @@ type
     function FindSubProcPath(SubProcPath: TStrings; Attr: TProcHeadAttributes;
         SkipInterface: boolean): TCodeTreeNode;
         
-    function FindJumpPointForLinkerPos(const MangledFunction,
-        Identifier: string; out NewPos: TCodeXYPosition;
-        out NewTopLine: integer): boolean;
+    function FindJumpPointForLinkerPos(
+        const SourceFilename: string; SourceLine: integer;
+        const MangledFunction, Identifier: string;
+        out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
         
     procedure WriteCodeTreeNodeExtTree(ExtTree: TAVLTree);
   end;
@@ -949,27 +950,30 @@ begin
 end;
 
 function TMethodJumpingCodeTool.FindJumpPointForLinkerPos(
+  const SourceFilename: string; SourceLine: integer;
   const MangledFunction, Identifier: string;
   out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
 { Examples:
-  GTK2_GTK_TYPE_CELL_RENDERER_COMBO$$LONGWORD
 
-    GTK2 is the unit.
-    GTK_TYPE_CELL_RENDERER_COMBO is the function or procedure name.
-    LONGWORD is the list of parameter types.
+  MangledFunction:
   
-  
-  ADDFILETOAPACKAGEDLG_TADDFILETOAPACKAGEDIALOG_$__ADDFILETOAPACKAGEDLGCLOSE$TOBJECT$TCLOSEACTION
-  
-    ADDFILETOAPACKAGEDLG is the unit.
-    TADDFILETOAPACKAGEDIALOG is the class.
-    ADDFILETOAPACKAGEDLGCLOSE is the method name.
-    $TOBJECT$TCLOSEACTION is the list of parameter types
+    GTK2_GTK_TYPE_CELL_RENDERER_COMBO$$LONGWORD
 
-     
-  SUBBY
-    Unit name and parent procedues are missing.
-  
+      GTK2 is the unit.
+      GTK_TYPE_CELL_RENDERER_COMBO is the function or procedure name.
+      LONGWORD is the list of parameter types.
+
+
+    ADDFILETOAPACKAGEDLG_TADDFILETOAPACKAGEDIALOG_$__ADDFILETOAPACKAGEDLGCLOSE$TOBJECT$TCLOSEACTION
+
+      ADDFILETOAPACKAGEDLG is the unit.
+      TADDFILETOAPACKAGEDIALOG is the class.
+      ADDFILETOAPACKAGEDLGCLOSE is the method name.
+      $TOBJECT$TCLOSEACTION is the list of parameter types
+
+
+    SUBBY
+      Unit name and parent procedues are missing.
 }
 var
   ProcName: String;
@@ -1038,44 +1042,60 @@ var
   p: LongInt;
   ShortIdentifier: ShortString;
   BestPos: Integer;
+  ASrcFilename: String;
 begin
   Result:=false;
   BuildTree(false);
   DebugLn(['TMethodJumpingCodeTool.FindJumpPointForLinkerPos ']);
 
-  ProcName:=MangledFunction;
-  ProcPos:=1;
-
-  // remove unitname from ProcName
-  CurSourceName:=GetSourceName(false);
-  p:=System.Pos('_',ProcName);
-  if p>0 then begin
-    while (p<=length(ProcName)) and (ProcName[p]='_') do inc(p);
-    ProcName:=copy(ProcName,p,length(ProcName));
-  end;
-
-  // find procedure
-  BestProcNode:=nil;
   BestPos:=0;
-  Result:=SearchNode(Tree.Root);
   ShortIdentifier:=UpperCaseStr(copy(Identifier,1,255));
-  if BestProcNode<>nil then begin
-    if Identifier<>'' then begin
-      MoveCursorToCleanPos(BestProcNode.StartPos);
-      repeat
-        ReadNextAtom;
-        if (CurPos.StartPos>SrcLen) or (CurPos.StartPos>BestProcNode.EndPos)
-        then
-          break;
-        if UpAtomIs(ShortIdentifier) then begin
-          BestPos:=CurPos.StartPos;
-          break;
+  
+  if (MangledFunction<>'') then begin
+    // try to find the function
+    ProcName:=MangledFunction;
+    ProcPos:=1;
+
+    // remove unitname from ProcName
+    CurSourceName:=GetSourceName(false);
+    if CurSourceName<>'' then begin
+      p:=System.Pos('_',ProcName);
+      if p>0 then begin
+        if CompareIdentifiers(@ProcName[1],PChar(CurSourceName))=0 then begin
+          while (p<=length(ProcName)) and (ProcName[p]='_') do inc(p);
+          ProcName:=copy(ProcName,p,length(ProcName));
         end;
-      until false;
-    end else begin
-      BestPos:=BestProcNode.StartPos;
+      end;
+    end;
+
+    // find procedure
+    BestProcNode:=nil;
+    SearchNode(Tree.Root);
+    if BestProcNode<>nil then begin
+      if Identifier<>'' then begin
+        MoveCursorToCleanPos(BestProcNode.StartPos);
+        repeat
+          ReadNextAtom;
+          if (CurPos.StartPos>SrcLen) or (CurPos.StartPos>BestProcNode.EndPos)
+          then
+            break;
+          if UpAtomIs(ShortIdentifier) then begin
+            BestPos:=CurPos.StartPos;
+            break;
+          end;
+        until false;
+      end else begin
+        BestPos:=BestProcNode.StartPos;
+      end;
     end;
   end;
+  
+  if (BestPos<1) and (SourceFilename<>'') then begin
+    // try to find the source (unit or include file)
+    ASrcFilename:=ExtractFileName(SourceFilename);
+    
+  end;
+  
   if BestPos<1 then exit;
   
   // find jump point

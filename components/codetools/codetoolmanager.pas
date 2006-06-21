@@ -564,6 +564,7 @@ type
           
     // linker jumping
     function JumpToLinkerIdentifier(Code: TCodeBuffer;
+          const SourceFilename: string; SourceLine: integer;
           const MangledFunction, Identifier: string;
           out NewCode: TCodeBuffer;
           out NewX, NewY, NewTopLine: integer): boolean;
@@ -2558,6 +2559,7 @@ begin
 end;
 
 function TCodeToolManager.JumpToLinkerIdentifier(Code: TCodeBuffer;
+  const SourceFilename: string; SourceLine: integer;
   const MangledFunction, Identifier: string; out NewCode: TCodeBuffer; out
   NewX, NewY, NewTopLine: integer): boolean;
 var
@@ -2569,8 +2571,9 @@ begin
   Result:=false;
   if not InitCurCodeTool(Code) then exit;
   try
-    Result:=FCurCodeTool.FindJumpPointForLinkerPos(MangledFunction, Identifier,
-                                                   NewPos,NewTopLine);
+    Result:=FCurCodeTool.FindJumpPointForLinkerPos(
+                        SourceFilename, SourceLine, MangledFunction, Identifier,
+                        NewPos,NewTopLine);
     if Result then begin
       NewX:=NewPos.X;
       NewY:=NewPos.Y;

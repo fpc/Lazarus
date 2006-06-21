@@ -179,12 +179,13 @@ type
     property CodeCompleteSrcChgCache: TSourceChangeCache
                        read ASourceChangeCache write SetCodeCompleteSrcChgCache;
   public
-    function AddPublishedVariable(const UpperClassName,VarName, VarType: string;
-                      SourceChangeCache: TSourceChangeCache): boolean; override;
+    constructor Create;
     function CompleteCode(CursorPos: TCodeXYPosition; OldTopLine: integer;
                           var NewPos: TCodeXYPosition; var NewTopLine: integer;
                           SourceChangeCache: TSourceChangeCache): boolean;
-    constructor Create;
+    function AddPublishedVariable(const UpperClassName,VarName, VarType: string;
+                      SourceChangeCache: TSourceChangeCache): boolean; override;
+
     property SetPropertyVariablename: string read FSetPropertyVariablename
                                              write FSetPropertyVariablename;
     property CompleteProperties: boolean read FCompleteProperties
