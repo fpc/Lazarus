@@ -1202,6 +1202,7 @@ ide/include/netbsd/lazconf.inc svneol=native#text/pascal
 ide/include/solaris/lazconf.inc svneol=native#text/plain
 ide/include/unix/lazbaseconf.inc svneol=native#text/pascal
 ide/include/win32/lazconf.inc svneol=native#text/pascal
+ide/include/win64/lazconf.inc svneol=native#text/plain
 ide/initialsetupdlgs.pas svneol=native#text/pascal
 ide/inputfiledialog.pas svneol=native#text/pascal
 ide/inputhistory.pas svneol=native#text/pascal
