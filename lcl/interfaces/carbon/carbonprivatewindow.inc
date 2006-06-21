@@ -167,16 +167,16 @@ var
   ActionUPP, OldActionUPP: ControlActionUPP;
   pt: FPCMacOSAll.Point;
   MouseButton: EventMouseButton;
-  Window: WindowRef;
+  Window: WindowRef = nil;
   R: FPCMacOSAll.Rect;
   Msg: TLMMouseMove;
 begin                                   
   {$IFDEF VerboseMouse}
   DebugLn('CarbonPrivateWindow_ControlTrack');
   {$ENDIF}
-  GetEventParameter(AEvent, kEventParamWindowMouseLocation, typeHIPoint, nil, SizeOf(MousePoint), nil, @MousePoint);
   GetEventParameter(AEvent, kEventParamControlAction, typeControlActionUPP, nil, sizeof(ActionUPP), nil, @OldActionUPP);
   GetEventParameter(AEvent, kEventParamMouseButton, typeMouseButton, nil, SizeOf(MouseButton), nil, @MouseButton);
+  GetEventParameter(AEvent, kEventParamWindowRef, typeWindowRef, nil, SizeOf(window), nil, @window);
 
   ActionUPP := NewControlActionUPP(@TrackProgress);   
   SetEventParameter(AEvent, kEventParamControlAction, typeControlActionUPP, sizeof(ActionUPP), @ActionUPP);
@@ -187,16 +187,28 @@ begin
   SetEventParameter(AEvent, kEventParamControlAction, typeControlActionUPP, sizeof(OldActionUPP), @OldActionUPP);
   DisposeControlActionUPP(ActionUPP);
   
-  // now we will create a MouseUp message to send the LCL
-  Control := ControlRef(AInfo^.Widget);
+  // now we will create a MouseUp message to send the LCL 
+  
   GetGlobalMouse(Pt);
-  Window := HIViewGetWindow(Control);
-  GetWindowBounds(Window, kWindowStructureRgn, R);
-  MousePoint.X := pt.h - R.left;
-  MousePoint.Y := pt.v - R.Top;
 
-  HIViewConvertPoint(MousePoint, nil, Control);
-
+  Control := ControlRef(AInfo^.Widget);
+  // if control is the rootview or rootcontrol (parent = nil)
+  // use the content area. No conversion is needed
+  if HIViewGetSuperView(Control) = nil
+  then begin
+    // root
+    GetWindowBounds(Window, kWindowContentRgn, R);
+    MousePoint.X := pt.h - R.left;
+    MousePoint.Y := pt.v - R.Top;
+  end
+  else begin
+    // non root
+    GetWindowBounds(Window, kWindowStructureRgn, R);
+    MousePoint.X := pt.h - R.left;
+    MousePoint.Y := pt.v - R.Top;
+    HIViewConvertPoint(MousePoint, nil, Control);
+  end;
+  
   FillChar(Msg,SizeOf(Msg),0);
   if  (MouseButton >= Low(MSGKIND))
   and (MouseButton <= High(MSGKIND))
@@ -205,7 +217,7 @@ begin
   Msg.XPos := Trunc(MousePoint.X);
   Msg.YPos := Trunc(MousePoint.Y);
   Msg.Keys := GetCarbonMsgKeyState;
-
+                 
   DeliverMessage(AInfo^.LCLObject, Msg);
 end;
                                    
@@ -246,26 +258,14 @@ var
 
   function GetMousePoint: TPoint;
   var
-    MousePoint: HIPoint;//QDPoint;
-    R: HIRect;
+    MousePoint: HIPoint;
   begin
     GetEventParameter(AEvent, kEventParamWindowMouseLocation, typeHIPoint, nil,
                       SizeOf(MousePoint), nil, @MousePoint); 
     
-    // somehow the conversion to the control coordinates doen't work (or I don't understand the function)                         
-    // so convert manually
-    HIViewConvertPoint(MousePoint, nil, Root);
-    // Mousepoint is now in root coordinates                         
-    if Control = Root 
-    then begin
-      Result.X := Round(MousePoint.X);
-      Result.Y := Round(MousePoint.Y);
-    end
-    else begin
-      HiViewGetFrame(Control, R);
-      Result.X := Round(MousePoint.X - R.Origin.X);
-      Result.Y := Round(MousePoint.Y - R.Origin.Y);
-    end;
+    HIViewConvertPoint(MousePoint, nil, Control);
+    Result.X := Round(MousePoint.X);
+    Result.Y := Round(MousePoint.Y);
   end;
 
   function GetMouseWheelDelta: Integer;

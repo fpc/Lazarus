@@ -141,8 +141,9 @@ begin
   DebugLn('TCarbonWSCustomForm.CreateHandle NewBounds=',dbgs(NewBounds),' Title=',AParams.Caption);
 
   NewWindowClass:=kDocumentWindowClass;
-
+                                                    
   if CreateNewWindow(NewWindowClass,
+                     kWindowCompositingAttribute or 
                      kWindowStandardDocumentAttributes or
                      kWindowStandardHandlerAttribute or
                      kWindowLiveResizeAttribute or
