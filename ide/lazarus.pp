@@ -77,6 +77,7 @@ begin
   LazarusRevisionStr:=RevisionStr;
   Application.Initialize;
   TMainIDE.ParseCmdLineOptions;
+  if Application.Terminated then exit;
 
   // Show splashform
   if ShowSplashScreen then begin

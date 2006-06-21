@@ -978,7 +978,7 @@ begin
     writeln('');
     writeln(GetCmdLineParamDescForInterface);
     Application.Terminate;
-    Halt;
+    exit;
   end;
   for i:=1 to ParamCount do begin
     if ParamIsOptionPlusValue(i,PrimaryConfPathOptLong,AValue) then begin
