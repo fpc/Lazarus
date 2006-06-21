@@ -370,8 +370,8 @@ begin
       // allocate windowinfo record ourselves, we do not call WindowInitBuddy
       BuddyWindowInfo := AllocWindowInfo(Buddy);
       BuddyWindowInfo^.PWinControl := AWinControl;
-      if GetWindowInfo(Parent)^.hasTabParent then
-        BuddyWindowInfo^.hasTabParent := true;
+      if GetWindowInfo(Parent)^.needParentPaint then
+        BuddyWindowInfo^.needParentPaint := true;
       Parent := Buddy;
     end;
     pClassName := 'BUTTON';
@@ -393,7 +393,7 @@ begin
   // if themed but does not have tabpage as parent
   // remember we are a groupbox in need of erasebackground hack
   if TWin32WidgetSet(WidgetSet).ThemesActive
-      and not Params.WindowInfo^.hasTabParent then
+      and not Params.WindowInfo^.needParentPaint then
     Params.WindowInfo^.isGroupBox := true;
   AWinControl.InvalidateClientRectCache(true);
   Result := Params.Window;
@@ -452,7 +452,7 @@ begin
   // create window
   FinishCreateWindow(AWinControl, Params, false);
   // listbox is not a transparent control -> no need for parentpainting
-  Params.WindowInfo^.hasTabParent := false;
+  Params.WindowInfo^.needParentPaint := false;
   Result := Params.Window;
 end;
 
@@ -609,7 +609,7 @@ begin
   // create window
   FinishCreateWindow(AWinControl, Params, false);
   // combobox is not a transparent control -> no need for parentpainting
-  Params.WindowInfo^.hasTabParent := false;
+  Params.WindowInfo^.needParentPaint := false;
 
   // get edit window within
   with Params do
@@ -809,7 +809,7 @@ begin
   // create window
   FinishCreateWindow(AWinControl, Params, false);
   // edit is not a transparent control -> no need for parentpainting
-  Params.WindowInfo^.hasTabParent := false;
+  Params.WindowInfo^.needParentPaint := false;
   Result := Params.Window;
 end;
 
@@ -911,7 +911,7 @@ begin
   // create window
   FinishCreateWindow(AWinControl, Params, false);
   // memo is not a transparent control -> no need for parentpainting
-  Params.WindowInfo^.hasTabParent := false;
+  Params.WindowInfo^.needParentPaint := false;
   Result := Params.Window;
 end;
 

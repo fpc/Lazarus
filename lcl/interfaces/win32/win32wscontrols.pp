@@ -223,8 +223,8 @@ begin
     begin
       // some controls (combobox) immediately send a message upon setting font
       WindowInfo := AllocWindowInfo(Window);
-      if GetWindowInfo(Parent)^.hasTabParent then
-        WindowInfo^.hasTabParent := true;
+      if GetWindowInfo(Parent)^.needParentPaint then
+        WindowInfo^.needParentPaint := true;
       WindowInfo^.WinControl := AWinControl;
       AWinControl.Handle := Window;
       if SubClassWndProc <> nil then

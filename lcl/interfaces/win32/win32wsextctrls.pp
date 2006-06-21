@@ -294,7 +294,7 @@ begin
   if TWin32WidgetSet(WidgetSet).ThemesActive then
   with Params.WindowInfo^ do
   begin
-    hasTabParent := true;
+    needParentPaint := true;
     isTabPage := true;
   end;
 end;
@@ -349,7 +349,7 @@ begin
   Result := Params.Window;
   // although we may be child of tabpage, cut the paint chain
   // to improve speed and possible paint anomalities
-  Params.WindowInfo^.hasTabParent := false;
+  Params.WindowInfo^.needParentPaint := false;
 end;
 
 class procedure TWin32WSCustomNotebook.AddPage(const ANotebook: TCustomNotebook;

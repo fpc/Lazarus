@@ -45,7 +45,7 @@ Type
     AWinControl: TWinControl; // control associated with (for buddy controls)
     List: TStrings;
     DisabledWindowList: TList;// a list of windows that were disabled when showing modal
-    hasTabParent: boolean;    // has a tabpage as parent, and is winxp themed
+    needParentPaint: boolean; // has a tabpage as parent, and is winxp themed
     isTabPage: boolean;       // is window of tabpage
     isComboEdit: boolean;     // is buddy of combobox, the edit control
     isChildEdit: boolean;     // is buddy edit of a control

@@ -103,7 +103,7 @@ begin
 end;
 
 type
-  TEraseBkgndCommand = (ecDefault, ecDiscard, ecDiscardNoRemove);
+  TEraseBkgndCommand = (ecDefault, ecDiscard, ecDiscardNoRemove, ecDoubleBufferNoRemove);
 const
   EraseBkgndStackMask = $3;
   EraseBkgndStackShift = 2;
@@ -129,6 +129,8 @@ begin
       ' *forcing next WM_ERASEBKGND to discard message');
     ecDiscardNoRemove: DebugLn(MessageStackDepth,
       ' *forcing next WM_ERASEBKGND to discard message, no remove');
+    ecDoubleBufferNoRemove: DebugLn(MessageStackDepth,
+      ' *forcing next WM_ERASEBKGND to use double buffer, after that, discard no remove');
   end;
   DebugLn(MessageStackDepth, ' *erasebkgndstack: ', EraseBkgndStackToString);
 {$endif}
@@ -293,10 +295,10 @@ Var
       CompareMem(@winClassName, @TabControlClsName, High(TabControlClsName)+1);
     isNativeControl := not CompareMem(@winClassName, @ClsName, High(ClsName)+1);
     ParentPaintWindow := 0;
-    // if hasTabParent and not isTabPage then background will be drawn in
+    // if needParentPaint and not isTabPage then background will be drawn in
     // WM_ERASEBKGND and WM_CTLCOLORSTATIC for native controls
     // sent by default paint handler
-    if WindowInfo^.isTabPage or (WindowInfo^.hasTabParent
+    if WindowInfo^.isTabPage or (WindowInfo^.needParentPaint
       and (not isNativeControl or (WParam <> 0))) then
     begin
       ParentPaintWindow := Window;
@@ -356,7 +358,7 @@ Var
       begin
         // ignore first erase background on themed control, paint will do everything
         if TWin32WidgetSet(WidgetSet).ThemesActive then
-          PushEraseBkgndCommand(ecDiscardNoRemove);
+          PushEraseBkgndCommand(ecDoubleBufferNoRemove);
         DC := Windows.BeginPaint(Window, @PS);
         if TWin32WidgetSet(WidgetSet).ThemesActive then
           EraseBkgndStack := EraseBkgndStack shr EraseBkgndStackShift;
@@ -409,7 +411,7 @@ Var
       PaintMsg.PaintStruct := @PS;
       if not useDoubleBuffer then
         PaintMsg.DC := DC;
-      if not WindowInfo^.hasTabParent and not isNotebook then
+      if not WindowInfo^.needParentPaint and not isNotebook then
         lWinControl.EraseBackground(PaintMsg.DC);
       if ParentPaintWindow <> 0 then
       begin
@@ -423,7 +425,7 @@ Var
         Windows.SendMessage(ParentPaintWindow, WM_PAINT, PaintMsg.DC, 0);
         Windows.RestoreDC(PaintMsg.DC, DCIndex);
       end;
-      if (WParam = 0) or not WindowInfo^.hasTabParent then
+      if (WParam = 0) or not WindowInfo^.needParentPaint then
       begin
         DCIndex := Windows.SaveDC(PaintMsg.DC);
         MoveWindowOrgEx(PaintMsg.DC, ORect.Left, ORect.Top);
@@ -800,7 +802,7 @@ Begin
     lWinControl := WindowInfo^.WinControl;
   end;
 {$ifdef MSG_DEBUG}
-  DebugLn('lWinControl: ',DbgSName(lWinControl));
+  DebugLn(MessageStackDepth, 'lWinControl: ',DbgSName(lWinControl));
 {$endif}
   if (IgnoreNextCharWindow <> 0) and ((Msg = WM_CHAR) or (Msg = WM_SYSCHAR)) then
   begin
@@ -987,7 +989,7 @@ Begin
       if (Msg = WM_CTLCOLORSTATIC) or (Msg = WM_CTLCOLORBTN)
           or (Msg = WM_CTLCOLORSCROLLBAR) then
       begin
-        if GetWindowInfo(LParam)^.hasTabParent then
+        if GetWindowInfo(LParam)^.needParentPaint then
         begin
           // need to draw transparently, draw background
           GetWin32ControlPos(LParam, Window, P.X, P.Y);
@@ -1130,17 +1132,25 @@ Begin
       case eraseBkgndCommand of
         ecDefault: DebugLn(MessageStackDepth, ' *command: default');
         ecDiscardNoRemove, ecDiscard: DebugLn(MessageStackDepth, ' *command: completely ignore');
+        ecDoubleBufferNoRemove: DebugLn(MessageStackDepth, ' *command: use double buffer');
       end;
       DebugLn(MessageStackDepth, ' *erasebkgndstack: ', EraseBkgndStackToString);
 {$endif}
-      if eraseBkgndCommand <> ecDiscardNoRemove then
+      if eraseBkgndCommand = ecDoubleBufferNoRemove then
+      begin
+        if DoubleBufferDC <> 0 then
+          WParam := DoubleBufferDC;
+        if WindowInfo^.isTabPage then
+          EraseBkgndStack := (EraseBkgndStack and not ((1 shl EraseBkgndStackShift)-1)) 
+            or dword(ecDiscardNoRemove);
+      end else if eraseBkgndCommand <> ecDiscardNoRemove then
         EraseBkgndStack := EraseBkgndStack shr EraseBkgndStackShift;
       if eraseBkgndCommand in [ecDiscard, ecDiscardNoRemove] then
       begin
         Result := 0;
         exit;
       end;
-      if not WindowInfo^.hasTabParent then
+      if (not WindowInfo^.needParentPaint) or (eraseBkgndCommand = ecDoubleBufferNoRemove) then
       begin
         if TWin32WidgetSet(WidgetSet).ThemesActive and WindowInfo^.isGroupBox
             and (lWinControl <> nil) then
@@ -1440,6 +1450,9 @@ Begin
     WM_NOTIFY:
     Begin
       WindowInfo := GetWindowInfo(PNMHdr(LParam)^.hwndFrom);
+{$ifdef MSG_DEBUG}
+      DebugLn([MessageStackDepth, 'Notify code: ', PNMHdr(LParam)^.code]);
+{$endif}
       case PNMHdr(LParam)^.code of
         MCN_SELCHANGE:
         begin

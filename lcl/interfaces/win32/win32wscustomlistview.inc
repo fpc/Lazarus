@@ -373,6 +373,7 @@ begin
   end;
   // create window
   FinishCreateWindow(AWinControl, Params, false);
+  Params.WindowInfo^.needParentPaint := false;
   Result := Params.Window;
 end;
 
