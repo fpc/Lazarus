@@ -1186,7 +1186,7 @@ type
     function CreateIntfImage: TLazIntfImage;
     function CanReadGraphicStreams(AClass: TFPCustomImageWriterClass): boolean; virtual;
   public
-    property Canvas: TCanvas read GetCanvas write FCanvas;
+    property Canvas: TCanvas read GetCanvas;
     property Handle: HBITMAP read GetHandle write SetHandle;
     property HandleType: TBitmapHandleType read GetHandleType write SetHandleType;
     property MaskHandle: HBITMAP read GetMaskHandle write SetMaskHandle;
