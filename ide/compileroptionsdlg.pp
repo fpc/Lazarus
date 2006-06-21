@@ -1205,17 +1205,16 @@ begin
     Top := 5;
     Left := 5;
     Height := 42;
-    Width := 400;
+    Width := 350;
     Caption := dlgCOStyle+' (-R)';
     with Items do begin
       BeginUpdate;
       Items.Add('Default');
       Items.Add('Intel');
-      Items.Add('AT&T');
-      Items.Add('direct');
+      Items.Add('AT&&T');
       EndUpdate;
     end;
-    Columns:=4;
+    Columns:=3;
   end;
 
   yDiff:=22;

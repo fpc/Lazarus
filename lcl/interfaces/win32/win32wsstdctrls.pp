@@ -801,7 +801,7 @@ begin
   begin
     if (AWinControl is TCustomEdit) then
       if TCustomEdit(AWinControl).BorderStyle=bsSingle then
-    FlagsEx := FlagsEx or WS_EX_CLIENTEDGE;
+        FlagsEx := FlagsEx or WS_EX_CLIENTEDGE;
     pClassName := 'EDIT';
     WindowTitle := StrCaption;
     Flags := Flags or ES_AUTOHSCROLL;
