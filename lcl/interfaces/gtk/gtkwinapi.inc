@@ -6648,22 +6648,21 @@ end;
 function MessageButtonClicked(Widget : PGtkWidget; data: gPointer) : GBoolean; cdecl;
 begin
   //DebugLn('[MessageButtonClicked] ',dbgs(data),' ',dbgs(gtk_object_get_data(PGtkObject(Widget), 'modal_result')));
-  if Integer(data^) = 0 then
-    Integer(data^):=
-               Integer(gtk_object_get_data(PGtkObject(Widget), 'modal_result'));
+  if PInteger(data)^ = 0 then
+    PInteger(data)^:=PtrInt(gtk_object_get_data(PGtkObject(Widget), 'modal_result'));
   Result:=false;
 end;
 
 function MessageBoxClosed(Widget : PGtkWidget; Event : PGdkEvent;
   data: gPointer) : GBoolean; cdecl;
-var ModalResult : integer;
+var ModalResult : PtrInt;
 begin
   { We were requested by window manager to close }
-  if Integer(data^) = 0 then begin
-    ModalResult:= Integer(gtk_object_get_data(PGtkObject(Widget), 'modal_result'));
+  if PInteger(data)^ = 0 then begin
+    ModalResult:= PtrInt(gtk_object_get_data(PGtkObject(Widget), 'modal_result'));
     { Don't allow to close if we don't have a default return value }
     Result:= (ModalResult = 0);
-    if not Result then Integer(data^):= ModalResult
+    if not Result then PInteger(data)^:= ModalResult
     else DebugLn('Do not close !!!');
   end else Result:= false;
 end;

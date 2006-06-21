@@ -27,8 +27,10 @@ unit OutputFilter;
 interface
 
 // TODO: Test on all platforms
-{$IFDEF Linux}
-{$DEFINE UseAsyncProcess}
+{$IFNDEF DisableAsyncProcess}
+  {$IFDEF Linux}
+  {$DEFINE UseAsyncProcess}
+  {$ENDIF}
 {$ENDIF}
 
 uses

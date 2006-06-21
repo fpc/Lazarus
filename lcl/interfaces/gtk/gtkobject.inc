@@ -240,6 +240,7 @@ begin
 {$ifdef Unix}
   InitSynchronizeSupport;
 {$ifdef UseAsyncProcess}  
+  DebugLn(['TGtkWidgetSet.Create Installing signal handler for TAsyncProcess']);
   InstallSignalHandler;
 {$endif}
 {$endif}

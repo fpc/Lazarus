@@ -1,8 +1,8 @@
-#   Makefile.fpc for Printer4Lazarus 0.0.0.2
+#   Makefile.fpc for Printer4Lazarus 0.5
 
 [package]
 name=printer4lazarus
-version=0.0.0.2
+version=0.5
 
 [compiler]
 unittargetdir=lib/$(CPU_TARGET)-$(OS_TARGET)

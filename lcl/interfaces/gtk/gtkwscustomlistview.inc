@@ -750,7 +750,7 @@ begin
           // check if the row is are already selected
           // since we are in singleselect, the first item is checked
           if (CListWidget^.selection <> nil)
-          and (Integer(CListWidget^.selection^.Data) = AIndex)
+          and (PtrInt(CListWidget^.selection^.Data) = AIndex)
           then Exit;
           gtk_clist_unselect_all(CListWidget);
         end;
@@ -1047,7 +1047,7 @@ begin
   
   if CListWidget^.selection = nil
   then Result := -1
-  else Result := Integer(CListWidget^.selection^.data);
+  else Result := PtrInt(CListWidget^.selection^.data)
 end;
 
 class function TGtkWSCustomListView.GetTopItem(const ALV: TCustomListView): Integer;

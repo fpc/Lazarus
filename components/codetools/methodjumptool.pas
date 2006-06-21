@@ -958,18 +958,128 @@ function TMethodJumpingCodeTool.FindJumpPointForLinkerPos(
     GTK_TYPE_CELL_RENDERER_COMBO is the function or procedure name.
     LONGWORD is the list of parameter types.
   
+  
   ADDFILETOAPACKAGEDLG_TADDFILETOAPACKAGEDIALOG_$__ADDFILETOAPACKAGEDLGCLOSE$TOBJECT$TCLOSEACTION
   
     ADDFILETOAPACKAGEDLG is the unit.
     TADDFILETOAPACKAGEDIALOG is the class.
     ADDFILETOAPACKAGEDLGCLOSE is the method name.
     $TOBJECT$TCLOSEACTION is the list of parameter types
+
+     
+  SUBBY
+    Unit name and parent procedues are missing.
+  
 }
+var
+  ProcName: String;
+  BestProcNode: TCodeTreeNode;
+  ProcPos: integer;
+  
+  function FindFirstIdentifier(const Identifier: string): boolean;
+  begin
+    ProcPos:=1;
+    while (ProcPos<=length(ProcName))
+    and (not IsIdentStartChar[ProcName[ProcPos]]) do
+      inc(ProcPos);
+    Result:=BasicCodeTools.CompareIdentifiers(@ProcName[ProcPos],
+                                              PChar(Pointer(Identifier)))=0;
+  end;
+  
+  function FindNextIdentifier(const Identifier: string): boolean;
+  begin
+    while (ProcPos<=length(ProcName)) and (IsIdentChar[ProcName[ProcPos]]) do
+      inc(ProcPos);
+    while (ProcPos<=length(ProcName))
+    and (not IsIdentStartChar[ProcName[ProcPos]]) do
+      inc(ProcPos);
+    Result:=BasicCodeTools.CompareIdentifiers(@ProcName[ProcPos],
+                                              PChar(Pointer(Identifier)))=0;
+  end;
+  
+  function SearchNode(Node: TCodeTreeNode): boolean;
+  var
+    CurProcName: String;
+    p: LongInt;
+    CurClassName: String;
+  begin
+    Result:=false;
+    while Node<>nil do begin
+      if Node.Desc=ctnProcedure then begin
+        CurProcName:=ExtractProcName(Node,[phpInUpperCase]);
+        p:=System.Pos('.',CurProcName);
+        if p>0 then begin
+          // classname.procname
+          CurClassName:=copy(CurProcName,1,p-1);
+          CurProcName:=copy(CurProcName,p+1,length(CurProcName));
+          if FindFirstIdentifier(CurClassName)
+          and FindNextIdentifier(CurProcName) then begin
+            // proc found
+            BestProcNode:=Node;
+            Result:=true;
+          end;
+        end else begin
+          // procname
+          if FindFirstIdentifier(CurProcName) then begin
+            // proc found
+            BestProcNode:=Node;
+            Result:=true;
+          end;
+        end;
+      end;
+      if Node.Desc in ([ctnImplementation,ctnProcedure]+AllSourceTypes) then
+        SearchNode(Node.FirstChild);
+      Node:=Node.NextBrother;
+    end;
+  end;
+
+var
+  CurSourceName: String;
+  p: LongInt;
+  ShortIdentifier: ShortString;
+  BestPos: Integer;
 begin
   Result:=false;
   BuildTree(false);
   DebugLn(['TMethodJumpingCodeTool.FindJumpPointForLinkerPos ']);
+
+  ProcName:=MangledFunction;
+  ProcPos:=1;
+
+  // remove unitname from ProcName
+  CurSourceName:=GetSourceName(false);
+  p:=System.Pos('_',ProcName);
+  if p>0 then begin
+    while (p<=length(ProcName)) and (ProcName[p]='_') do inc(p);
+    ProcName:=copy(ProcName,p,length(ProcName));
+  end;
+
+  // find procedure
+  BestProcNode:=nil;
+  BestPos:=0;
+  Result:=SearchNode(Tree.Root);
+  ShortIdentifier:=UpperCaseStr(copy(Identifier,1,255));
+  if BestProcNode<>nil then begin
+    if Identifier<>'' then begin
+      MoveCursorToCleanPos(BestProcNode.StartPos);
+      repeat
+        ReadNextAtom;
+        if (CurPos.StartPos>SrcLen) or (CurPos.StartPos>BestProcNode.EndPos)
+        then
+          break;
+        if UpAtomIs(ShortIdentifier) then begin
+          BestPos:=CurPos.StartPos;
+          break;
+        end;
+      until false;
+    end else begin
+      BestPos:=BestProcNode.StartPos;
+    end;
+  end;
+  if BestPos<1 then exit;
   
+  // find jump point
+  Result:=JumpToCleanPos(BestPos,-1,-1,NewPos,NewTopLine,false);
 end;
 
 procedure TMethodJumpingCodeTool.WriteCodeTreeNodeExtTree(ExtTree: TAVLTree);

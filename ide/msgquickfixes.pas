@@ -190,14 +190,18 @@ constructor TQuickFixLinkerUndefinedReference.Create;
 begin
   Name:='Linker: undefined reference to';
   Steps:=[imqfoJump];
-  RegExpression:='^(: .* `(.*)'')|((.*)\(\.text.*?\): .* `([A-Z0-9_$]+)'':)$';
+  RegExpression:='^((.*:[0-9]+)?: .* `(.*)'')|((.*)\(\.text.*?\): .* `([A-Z0-9_$]+)'':)$';
 end;
 
 procedure TQuickFixLinkerUndefinedReference.Execute(const Msg: TIDEMessageLine;
   Step: TIMQuickFixStep);
-{ Example:
- /usr/lib/fpc/2.1.1/units/i386-linux/gtk2/gtk2.o(.text+0xbba1): In function `GTK2_GTK_TYPE_CELL_RENDERER_COMBO$$LONGWORD':
- undefined reference to `gtk_cell_renderer_combo_get_type'
+{ Examples:
+  /usr/lib/fpc/2.1.1/units/i386-linux/gtk2/gtk2.o(.text+0xbba1): In function `GTK2_GTK_TYPE_CELL_RENDERER_COMBO$$LONGWORD':
+  undefined reference to `gtk_cell_renderer_combo_get_type'
+
+  unit1.o(.text+0x1a): In function `SubProc':
+  unit1.pas:37: undefined reference to `DoesNotExist'
+  unit1.o(.text+0x3a):unit1.pas:48: undefined reference to `DoesNotExist'
 }
 
   procedure Error(const Msg: string);
@@ -219,13 +223,30 @@ procedure TQuickFixLinkerUndefinedReference.Execute(const Msg: TIDEMessageLine;
     AnUnitName: String;
   begin
     DebugLn(['JumpTo START ',Line1.Msg]);
-    if not REMatches(Line1.Msg,'^(.*)\(\.text.*?\): .* `([A-Z0-9_$]+)'':$')
-    then
+    if REMatches(Line1.Msg,'^(.*)\(\.text.*?\): .* `([A-Z0-9_$]+)'':$') then
+    begin
+      Filename:=REVar(1);
+      MangledFunction:=REVar(2);
+    end
+    else if REMatches(Line1.Msg,'^(.*)\(\.text.*?\):.*:([0-9]*): .* `([A-Z0-9_$]+)'':$')
+    then begin
+      Filename:=REVar(1);
+      //LineNumber:=StrToIntDef(REVar(2),0);
+      MangledFunction:=REVar(3);
+    end else begin
+      DebugLn('JumpTo Line1 does not match: "',Line1.Msg,'"');
       exit;
-    Filename:=REVar(1);
-    MangledFunction:=REVar(2);
-    if not REMatches(Line2.Msg,'^: .* `(.*)''$') then exit;
-    Identifier:=REVar(1);
+    end;
+    if REMatches(Line2.Msg,'^: .* `(.*)''$') then begin
+      // no source position
+      Identifier:=REVar(1);
+    end else if REMatches(Line2.Msg,'^.*:([0-9]+): .* `(.*)''$') then begin
+      // with source position
+      Identifier:=REVar(2);
+    end else begin
+      DebugLn('JumpTo Line2 does not match: "',Line2.Msg,'"');
+      exit;
+    end;
     DebugLn(['TQuickFixLinkerUndefinedReference.JumpTo Filename="',Filename,'" MangledFunction="',MangledFunction,'" Identifier="',Identifier,'"']);
     CurProject:=LazarusIDE.ActiveProject;
     if CurProject=nil then begin
@@ -254,7 +275,10 @@ procedure TQuickFixLinkerUndefinedReference.Execute(const Msg: TIDEMessageLine;
     if not CodeToolBoss.JumpToLinkerIdentifier(CodeBuf,
       MangledFunction,Identifier,NewCode,NewX,NewY,NewTopLine)
     then begin
-      Error('function not found: '+MangledFunction+' Identifier='+Identifier);
+      if CodeToolBoss.ErrorCode<>nil then
+        LazarusIDE.DoJumpToCodeToolBossError
+      else
+        Error('function not found: '+MangledFunction+' Identifier='+Identifier);
       exit;
     end;
     LazarusIDE.DoOpenFileAndJumpToPos(NewCode.Filename,Point(NewX,NewY),
@@ -265,10 +289,15 @@ begin
   inherited Execute(Msg, Step);
   if Step=imqfoJump then begin
     DebugLn(['TQuickFixLinkerUndefinedReference.Execute ',Msg.Msg,' ',REMatches(Msg.Msg,'^(.*)\(\.text.*?\): .* `([A-Z0-9_$]+)'':$')]);
-    if (Msg.Position>0) and REMatches(Msg.Msg,'^: .* `(.*)''$') then
+    if (Msg.Position>0) and REMatches(Msg.Msg,'^(.*:[0-9]+)?: .* `(.*)''$') then
+      // example: unit1.pas:37: undefined reference to `DoesNotExist'
       JumpTo(IDEMessagesWindow[Msg.Position-1],Msg)
     else if (Msg.Position<IDEMessagesWindow.LinesCount-1)
     and REMatches(Msg.Msg,'^(.*)\(\.text.*?\): .* `([A-Z0-9_$]+)'':$') then
+      // example: unit1.o(.text+0x1a): In function `SubProc':
+      JumpTo(Msg,IDEMessagesWindow[Msg.Position+1])
+    else if REMatches(Msg.Msg,'^(.*)\(\.text.*?\): .* `([A-Z0-9_$]+)'':$') then
+      // unit1.o(.text+0x3a):unit1.pas:48: undefined reference to `DoesNotExist'
       JumpTo(Msg,IDEMessagesWindow[Msg.Position+1]);
   end;
 end;

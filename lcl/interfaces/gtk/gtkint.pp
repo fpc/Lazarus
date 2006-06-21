@@ -41,8 +41,10 @@ interface
                            // This is the old mode and might be removed
 
 // TODO: Test on all platforms
-{$IFDEF Linux}
-{$Define UseAsyncProcess}
+{$IFNDEF DisableAsyncProcess}
+  {$IFDEF Linux}
+  {$DEFINE UseAsyncProcess}
+  {$ENDIF}
 {$ENDIF}
 
 {$IFDEF win32}

@@ -459,7 +459,7 @@ begin
       end;
       if i=FLastIndex then
         dec(DataCount,FLastItemSpace);
-      writeln(i,' Item=',HexStr(Cardinal(FItems[i]),8),' Size=',fItems[i]^.Size,' Start=',DataOffset,' Count=',DataCount);
+      writeln(i,' Item=',HexStr(PtrInt(FItems[i]),8),' Size=',fItems[i]^.Size,' Start=',DataOffset,' Count=',DataCount);
       if WriteData then begin
         writeln(dbgMemRange(PByte(@FItems[i]^.Data)+DataOffset,DataCount));
       end;

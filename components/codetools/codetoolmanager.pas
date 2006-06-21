@@ -553,7 +553,8 @@ type
           const AClassName, OldMethodName,
           NewMethodName: string): boolean;
     function CreatePublishedMethod(Code: TCodeBuffer; const AClassName,
-          NewMethodName: string; ATypeInfo: PTypeInfo): boolean;
+          NewMethodName: string; ATypeInfo: PTypeInfo;
+          UseTypeInfoForParameters: boolean = false): boolean;
           
     // IDE % directives
     function GetIDEDirectives(Code: TCodeBuffer;
@@ -2509,7 +2510,8 @@ begin
 end;
 
 function TCodeToolManager.CreatePublishedMethod(Code: TCodeBuffer;
-  const AClassName, NewMethodName: string; ATypeInfo: PTypeInfo): boolean;
+  const AClassName, NewMethodName: string; ATypeInfo: PTypeInfo;
+  UseTypeInfoForParameters: boolean): boolean;
 begin
   {$IFDEF CTDEBUG}
   DebugLn('TCodeToolManager.CreatePublishedMethod A');
@@ -2519,7 +2521,7 @@ begin
   try
     SourceChangeCache.Clear;
     Result:=FCurCodeTool.CreatePublishedMethod(UpperCaseStr(AClassName),
-              NewMethodName,ATypeInfo,SourceChangeCache);
+            NewMethodName,ATypeInfo,SourceChangeCache,UseTypeInfoForParameters);
   except
     on e: Exception do Result:=HandleException(e);
   end;

@@ -86,10 +86,12 @@ type
         SourceChangeCache: TSourceChangeCache): boolean;
     function CreatePublishedMethod(const UpperClassName,
         AMethodName: string; ATypeInfo: PTypeInfo;
-        SourceChangeCache: TSourceChangeCache): boolean;
+        SourceChangeCache: TSourceChangeCache;
+        UseTypeInfoForParameters: boolean = false): boolean;
     function CreatePublishedMethod(ClassNode: TCodeTreeNode;
         const AMethodName: string; ATypeInfo: PTypeInfo;
-        SourceChangeCache: TSourceChangeCache): boolean;
+        SourceChangeCache: TSourceChangeCache;
+        UseTypeInfoForParameters: boolean = false): boolean;
 
     function CreateExprListFromMethodTypeData(TypeData: PTypeData;
         Params: TFindDeclarationParams): TExprTypeList;
@@ -123,17 +125,27 @@ type
 
 var i, ParamCount, Len, Offset: integer;
   ParamType: TParamType;
-  s, ParamString: string;
+  s, ParamString, ResultType: string;
 begin
   Result:='';
   if TypeData=nil then exit;
+  if phpWithStart in Attr then begin
+    case TypeData^.MethodKind of
+    mkProcedure: Result:=Result+'procedure ';
+    mkFunction: Result:=Result+'function ';
+    mkConstructor: Result:=Result+'constructor ';
+    mkDestructor: Result:=Result+'destructor ';
+    mkClassProcedure: Result:=Result+'class procedure ';
+    mkClassFunction: Result:=Result+'class function ';
+    end;
+  end;
   // transform TypeData into a ProcHead String
   ParamCount:=TypeData^.ParamCount;
   //DebugLn('TEventsCodeTool.MethodTypeDataToStr A ParamCount=',ParamCount);
+  Offset:=0;
   if ParamCount>0 then begin
     Result:=Result+'(';
     ParamString:='';
-    Offset:=0;
     for i:=0 to ParamCount-1 do begin
       // read ParamFlags
       // ToDo: check this: SizeOf(TParamFlags) is 4, but the data is only 1 byte
@@ -180,6 +192,14 @@ begin
       ParamString:=s+ParamString;
     end;
     Result:=Result+ParamString+')';
+  end;
+  if phpWithResultType in Attr then begin
+    Len:=ord(TypeData^.ParamList[Offset]);
+    inc(Offset);
+    SetLength(ResultType,Len);
+    Move(TypeData^.ParamList[Offset],ResultType[1],Len);
+    inc(Offset,Len);
+    Result:=Result+':'+ResultType;
   end;
   if phpInUpperCase in Attr then Result:=UpperCaseStr(Result);
   Result:=Result+';';
@@ -551,49 +571,70 @@ end;
 
 function TEventsCodeTool.CreatePublishedMethod(const UpperClassName,
   AMethodName: string; ATypeInfo: PTypeInfo;
-  SourceChangeCache: TSourceChangeCache): boolean;
+  SourceChangeCache: TSourceChangeCache;
+  UseTypeInfoForParameters: boolean): boolean;
 var AClassNode: TCodeTreeNode;
 begin
   BuildTree(false);
   if not EndOfSourceFound then exit;
   AClassNode:=FindClassNodeInInterface(UpperClassName,true,false,true);
   Result:=CreatePublishedMethod(AClassNode,AMethodName,ATypeInfo,
-               SourceChangeCache);
+               SourceChangeCache,UseTypeInfoForParameters);
 end;
 
 function TEventsCodeTool.CreatePublishedMethod(ClassNode: TCodeTreeNode;
   const AMethodName: string; ATypeInfo: PTypeInfo;
-  SourceChangeCache: TSourceChangeCache): boolean;
+  SourceChangeCache: TSourceChangeCache; UseTypeInfoForParameters: boolean
+  ): boolean;
 var
   CleanMethodDefinition, MethodDefinition: string;
   FindContext: TFindContext;
+  ATypeData: PTypeData;
 begin
   try
     Result:=false;
     if (ClassNode=nil) or (ClassNode.Desc<>ctnClass) or (AMethodName='')
     or (ATypeInfo=nil) or (SourceChangeCache=nil) or (Scanner=nil) then exit;
-    {$IFDEF CTDEBUG}
+    { $IFDEF CTDEBUG}
     DebugLn('[TEventsCodeTool.CreatePublishedMethod] A AMethodName="',AMethodName,'" in "',MainFilename,'"');
-    {$ENDIF}
-    // search typeinfo in source
-    FindContext:=FindMethodTypeInfo(ATypeInfo);
+    { $ENDIF}
+    DebugLn(['TEventsCodeTool.CreatePublishedMethod UseTypeInfoForParameters=',UseTypeInfoForParameters]);
     // initialize class for code completion
     CodeCompleteClassNode:=ClassNode;
     CodeCompleteSrcChgCache:=SourceChangeCache;
     // check if method definition already exists in class
-    CleanMethodDefinition:=UpperCaseStr(AMethodName)
-           +FindContext.Tool.ExtractProcHead(FindContext.Node,
-                           [phpWithoutClassName, phpWithoutName, phpInUpperCase]);
+    if UseTypeInfoForParameters then begin
+      // do not lookup the declaration in the source
+      ATypeData:=GetTypeData(ATypeInfo);
+      if ATypeData=nil then exit(false);
+      CleanMethodDefinition:=UpperCaseStr(AMethodName)
+                         +MethodTypeDataToStr(ATypeData,
+                         [phpWithoutClassName, phpWithoutName, phpInUpperCase]);
+      DebugLn(['TEventsCodeTool.CreatePublishedMethod CleanMethodDefinition="',CleanMethodDefinition,'"']);
+    end else begin
+      // search typeinfo in source
+      FindContext:=FindMethodTypeInfo(ATypeInfo);
+      CleanMethodDefinition:=UpperCaseStr(AMethodName)
+             +FindContext.Tool.ExtractProcHead(FindContext.Node,
+                         [phpWithoutClassName, phpWithoutName, phpInUpperCase]);
+    end;
     if not ProcExistsInCodeCompleteClass(CleanMethodDefinition) then begin
       {$IFDEF CTDEBUG}
       DebugLn('[TEventsCodeTool.CreatePublishedMethod] insert method definition to class');
       {$ENDIF}
       // insert method definition into class
-      MethodDefinition:=TrimCodeSpace(FindContext.Tool.ExtractProcHead(
-                   FindContext.Node,
-                  [phpWithStart, phpWithoutClassKeyword, phpWithoutClassName,
-                   phpWithoutName, phpWithVarModifiers, phpWithParameterNames,
-                   phpWithDefaultValues, phpWithResultType]));
+      if UseTypeInfoForParameters then begin
+        MethodDefinition:=MethodTypeDataToStr(ATypeData,
+                    [phpWithStart, phpWithoutClassKeyword, phpWithoutClassName,
+                     phpWithoutName, phpWithVarModifiers, phpWithParameterNames,
+                     phpWithDefaultValues, phpWithResultType]);
+      end else begin
+        MethodDefinition:=TrimCodeSpace(FindContext.Tool.ExtractProcHead(
+                     FindContext.Node,
+                    [phpWithStart, phpWithoutClassKeyword, phpWithoutClassName,
+                     phpWithoutName, phpWithVarModifiers, phpWithParameterNames,
+                     phpWithDefaultValues, phpWithResultType]));
+      end;
       MethodDefinition:=SourceChangeCache.BeautifyCodeOptions.
                          AddClassAndNameToProc(MethodDefinition, '', AMethodName);
       {$IFDEF CTDEBUG}
