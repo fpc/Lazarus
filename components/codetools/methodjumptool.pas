@@ -1043,6 +1043,11 @@ var
   ShortIdentifier: ShortString;
   BestPos: Integer;
   ASrcFilename: String;
+  LinkCode: TCodeBuffer;
+  Link: TSourceLink;
+  i: Integer;
+  CurLine: String;
+  StartPos, EndPos: integer;
 begin
   Result:=false;
   BuildTree(false);
@@ -1051,7 +1056,47 @@ begin
   BestPos:=0;
   ShortIdentifier:=UpperCaseStr(copy(Identifier,1,255));
   
-  if (MangledFunction<>'') then begin
+  if (BestPos<1) and (SourceFilename<>'') then begin
+    // try to find the source (unit or include file)
+    ASrcFilename:=ExtractFileName(SourceFilename);
+    i:=0;
+    while (i<Scanner.LinkCount) do begin
+      Link:=Scanner.Links[i];
+      LinkCode:=TCodeBuffer(Link.Code);
+      if CompareFilenames(ExtractFilename(LinkCode.Filename),ASrcFilename)=0 then
+      begin
+        BestPos:=Link.CleanedPos;
+        if (SourceLine>0) and (SourceLine<=LinkCode.LineCount) then begin
+          // there is a SourceLine => use that
+          NewPos.X:=1;
+          if Identifier<>'' then begin
+            // there is an Identifier => search it in line
+            CurLine:=LinkCode.GetLine(SourceLine-1);
+            EndPos:=1;
+            while (EndPos<=length(CurLine)) do begin
+              BasicCodeTools.ReadRawNextPascalAtom(CurLine,EndPos,StartPos);
+              if (EndPos<=length(CurLine))
+              and (CompareIdentifiers(@CurLine[StartPos],PChar(Identifier))=0)
+              then begin
+                NewPos.X:=StartPos;
+                break;
+              end;
+            end;
+          end;
+          NewPos.Code:=LinkCode;
+          NewPos.Y:=SourceLine;
+          NewTopLine:=NewPos.Y-VisibleEditorLines div 2;
+          if NewTopLine<1 then NewTopLine:=1;
+          Result:=true;
+          exit;
+        end;
+        break;
+      end;
+      inc(i);
+    end;
+  end;
+
+  if (BestPos<1) and (MangledFunction<>'') then begin
     // try to find the function
     ProcName:=MangledFunction;
     ProcPos:=1;
@@ -1088,12 +1133,6 @@ begin
         BestPos:=BestProcNode.StartPos;
       end;
     end;
-  end;
-  
-  if (BestPos<1) and (SourceFilename<>'') then begin
-    // try to find the source (unit or include file)
-    ASrcFilename:=ExtractFileName(SourceFilename);
-    
   end;
   
   if BestPos<1 then exit;
