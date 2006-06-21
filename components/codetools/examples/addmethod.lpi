@@ -4,10 +4,10 @@
     <PathDelim Value="/"/>
     <Version Value="5"/>
     <General>
+      <SessionStorage Value="InProjectDir"/>
       <MainUnit Value="0"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=""/>
-      <ActiveEditorIndexAtStart Value="1"/>
     </General>
     <PublishOptions>
       <Version Value="2"/>
@@ -21,96 +21,18 @@
         <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
-    <Units Count="9">
+    <Units Count="2">
       <Unit0>
         <Filename Value="addmethod.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="AddMethod"/>
-        <CursorPos X="11" Y="34"/>
-        <TopLine Value="10"/>
-        <EditorIndex Value="0"/>
-        <UsageCount Value="20"/>
-        <Loaded Value="True"/>
       </Unit0>
       <Unit1>
-        <Filename Value="finddeclaration.lpr"/>
-        <UnitName Value="FindDeclaration"/>
-        <CursorPos X="1" Y="85"/>
-        <TopLine Value="38"/>
-        <UsageCount Value="10"/>
-      </Unit1>
-      <Unit2>
         <Filename Value="scanexamples/simpleunit1.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="SimpleUnit1"/>
-        <CursorPos X="11" Y="32"/>
-        <TopLine Value="1"/>
-        <EditorIndex Value="6"/>
-        <UsageCount Value="20"/>
-        <Loaded Value="True"/>
-      </Unit2>
-      <Unit3>
-        <Filename Value="../stdcodetools.pas"/>
-        <UnitName Value="StdCodeTools"/>
-        <CursorPos X="1" Y="1"/>
-        <TopLine Value="1"/>
-        <UsageCount Value="10"/>
-      </Unit3>
-      <Unit4>
-        <Filename Value="../eventcodetool.pas"/>
-        <UnitName Value="EventCodeTool"/>
-        <CursorPos X="1" Y="623"/>
-        <TopLine Value="606"/>
-        <EditorIndex Value="3"/>
-        <UsageCount Value="10"/>
-        <Bookmarks Count="1">
-          <Item0 X="30" Y="620" ID="0"/>
-        </Bookmarks>
-        <Loaded Value="True"/>
-      </Unit4>
-      <Unit5>
-        <Filename Value="../../../../../fpc_sources/20/fpc/rtl/objpas/typinfo.pp"/>
-        <UnitName Value="typinfo"/>
-        <CursorPos X="17" Y="121"/>
-        <TopLine Value="88"/>
-        <EditorIndex Value="5"/>
-        <UsageCount Value="10"/>
-        <Loaded Value="True"/>
-      </Unit5>
-      <Unit6>
-        <Filename Value="../codetoolmanager.pas"/>
-        <UnitName Value="CodeToolManager"/>
-        <CursorPos X="29" Y="2523"/>
-        <TopLine Value="2512"/>
-        <EditorIndex Value="2"/>
-        <UsageCount Value="10"/>
-        <Loaded Value="True"/>
-      </Unit6>
-      <Unit7>
-        <Filename Value="../pascalreadertool.pas"/>
-        <UnitName Value="PascalReaderTool"/>
-        <CursorPos X="12" Y="1197"/>
-        <TopLine Value="1187"/>
-        <EditorIndex Value="4"/>
-        <UsageCount Value="10"/>
-        <Loaded Value="True"/>
-      </Unit7>
-      <Unit8>
-        <Filename Value="../../../ide/main.pp"/>
-        <UnitName Value="Main"/>
-        <CursorPos X="1" Y="1077"/>
-        <TopLine Value="1037"/>
-        <EditorIndex Value="1"/>
-        <UsageCount Value="10"/>
-        <Loaded Value="True"/>
-      </Unit8>
+      </Unit1>
     </Units>
-    <JumpHistory Count="1" HistoryIndex="0">
-      <Position1>
-        <Filename Value="../../../ide/main.pp"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
-      </Position1>
-    </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>

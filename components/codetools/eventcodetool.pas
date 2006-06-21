@@ -595,10 +595,9 @@ begin
     Result:=false;
     if (ClassNode=nil) or (ClassNode.Desc<>ctnClass) or (AMethodName='')
     or (ATypeInfo=nil) or (SourceChangeCache=nil) or (Scanner=nil) then exit;
-    { $IFDEF CTDEBUG}
+    {$IFDEF CTDEBUG}
     DebugLn('[TEventsCodeTool.CreatePublishedMethod] A AMethodName="',AMethodName,'" in "',MainFilename,'"');
-    { $ENDIF}
-    DebugLn(['TEventsCodeTool.CreatePublishedMethod UseTypeInfoForParameters=',UseTypeInfoForParameters]);
+    {$ENDIF}
     // initialize class for code completion
     CodeCompleteClassNode:=ClassNode;
     CodeCompleteSrcChgCache:=SourceChangeCache;
@@ -610,7 +609,6 @@ begin
       CleanMethodDefinition:=UpperCaseStr(AMethodName)
                          +MethodTypeDataToStr(ATypeData,
                          [phpWithoutClassName, phpWithoutName, phpInUpperCase]);
-      DebugLn(['TEventsCodeTool.CreatePublishedMethod CleanMethodDefinition="',CleanMethodDefinition,'"']);
     end else begin
       // search typeinfo in source
       FindContext:=FindMethodTypeInfo(ATypeInfo);
