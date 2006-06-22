@@ -314,17 +314,17 @@ end;
 
 class procedure TGtkWSScrollBar.SetParams(const AScrollBar: TCustomScrollBar);
 var
-  Widget   : PGtkWidget;
+  Adjustment: PGtkAdjustment;
 begin
   with AScrollBar do
   begin
     //set properties for the range
-    Widget := GTK_WIDGET(gtk_range_get_adjustment (GTK_RANGE(Pointer(Handle))));
-    GTK_ADJUSTMENT(Widget)^.lower := Min;
-    GTK_ADJUSTMENT(Widget)^.Upper := Max;
-    GTK_ADJUSTMENT(Widget)^.Value := Position;
-    GTK_ADJUSTMENT(Widget)^.step_increment := SmallChange;
-    GTK_ADJUSTMENT(Widget)^.page_increment := LargeChange;
+    Adjustment := gtk_range_get_adjustment (GTK_RANGE(Pointer(Handle)));
+    Adjustment^.lower := Min;
+    Adjustment^.Upper := Max;
+    Adjustment^.Value := Position;
+    Adjustment^.step_increment := SmallChange;
+    Adjustment^.page_increment := LargeChange;
   end;
 end;
 
