@@ -98,28 +98,8 @@ begin
 end;
 
 procedure TToolBar.CreateParams(var Params: TCreateParams);
-{const
-  TBSTYLE_TRANSPARENT = $8000;  // IE4 style -this is not valid but still needed as a holder
-  DefaultStyles =
-    CCS_NOPARENTALIGN or CCS_NOMOVEY or CCS_NORESIZE or CCS_NODIVIDER;
-  ListStyles: array[Boolean] of DWORD = (0, TBSTYLE_LIST);
-  FlatStyles: array[Boolean] of DWORD = (0, TBSTYLE_FLAT);
-  TransparentStyles: array[Boolean] of DWORD = (0, TBSTYLE_TRANSPARENT);}
 begin
-  //FNewStyle := InitCommonControl(ICC_BAR_CLASSES);
-
   inherited CreateParams(Params);
-
-  {CreateSubClass(Params, TOOLBARCLASSNAME);
-  with Params do
-  begin
-    Style := Style or DefaultStyles or FlatStyles[FFlat] or ListStyles[FList]
-             or TransparentStyles[FTransparent];
-    if ShowCaptions then
-      Style := Style or TBSTYLE_TRANSPARENT;
-    WindowClass.style := WindowClass.style and
-                           not Cardinal(CS_HREDRAW or CS_VREDRAW);
-  end;}
 end;
 
 procedure TToolBar.CreateWnd;

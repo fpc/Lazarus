@@ -455,7 +455,9 @@ initialization
 //  RegisterWSComponent(TCustomUpDown, TGtkWSCustomUpDown);
 //  RegisterWSComponent(TCustomUpDown, TGtkWSUpDown);
 //  RegisterWSComponent(TCustomToolButton, TGtkWSToolButton);
+{$ifdef OldToolbar}
   RegisterWSComponent(TToolBar, TGtkWSToolBar);
+{$ENDIF}
   RegisterWSComponent(TCustomTrackBar, TGtkWSTrackBar);
 //  RegisterWSComponent(TCustomTreeView, TGtkWSCustomTreeView);
 //  RegisterWSComponent(TCustomTreeView, TGtkWSTreeView);

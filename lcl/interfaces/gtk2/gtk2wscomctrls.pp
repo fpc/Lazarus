@@ -222,7 +222,8 @@ type
 implementation
 
 // Will be used commonly for ListViews and TreeViews
-procedure GetCommonTreeViewWidgets(ATreeViewHandle: PGtkWidget; var TVWidgets: PTVWidgets);
+procedure GetCommonTreeViewWidgets(ATreeViewHandle: PGtkWidget;
+  var TVWidgets: PTVWidgets);
 var
   WidgetInfo: PWidgetInfo;
 begin
