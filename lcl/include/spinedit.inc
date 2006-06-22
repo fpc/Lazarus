@@ -215,7 +215,7 @@ begin
   FUpdatePending := true;
   FValueChanged := true;
 
-  SetInitialBounds(0,0,50,20);
+  SetInitialBounds(0,0,50,23);
   ParentColor := false;
   TabStop := true;
 end;

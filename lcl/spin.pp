@@ -161,6 +161,7 @@ type
   published
     property Align;
     property Anchors;
+    property AutoSize;
     property BorderSpacing;
     property ClimbRate: integer write SetIncrement stored false; // TODO: remove, deprecated
     property Constraints;

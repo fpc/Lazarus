@@ -578,7 +578,7 @@ type
     FDefaultItemHeight: integer;
     FFlags: TOIFlags;
     FOnShowOptions: TNotifyEvent;
-    FPropertyEditorHook:TPropertyEditorHook;
+    FPropertyEditorHook: TPropertyEditorHook;
     FOnAddAvailablePersistent: TOnAddAvailablePersistent;
     FOnSelectPersistentsInOI: TNotifyEvent;
     FOnModified: TNotifyEvent;
@@ -1049,7 +1049,7 @@ var
   OldExpanded: boolean;
   OldChangeStep: integer;
 begin
-  //debugln('TOICustomPropertyGrid.SetRowValue A ',dbgs(FStates*[pgsChangingItemIndex,pgsApplyingValue]<>[]),' ',dbgs(FItemIndex));
+  //debugln(['TOICustomPropertyGrid.SetRowValue A ',dbgs(FStates*[pgsChangingItemIndex,pgsApplyingValue]<>[]),' FItemIndex=',dbgs(FItemIndex),' CanEditRowValue=',CanEditRowValue]);
   if not CanEditRowValue then exit;
 
   NewValue:=GetCurrentEditValue;
@@ -1058,6 +1058,7 @@ begin
   if length(NewValue)>CurRow.Editor.GetEditLimit then
     NewValue:=LeftStr(NewValue,CurRow.Editor.GetEditLimit);
 
+  //DebugLn(['TOICustomPropertyGrid.SetRowValue Old="',CurRow.Editor.GetVisualValue,'" New="',NewValue,'"']);
   if CurRow.Editor.GetVisualValue=NewValue then exit;
 
   OldChangeStep:=fChangeStep;
@@ -1066,9 +1067,9 @@ begin
     {$IFNDEF DoNotCatchOIExceptions}
     try
     {$ENDIF}
-      //debugln('TOICustomPropertyGrid.SetRowValue B ClassName=',CurRow.Editor.ClassName,' Visual=',CurRow.Editor.GetVisualValue,' NewValue=',NewValue,' AllEqual=',CurRow.Editor.AllEqual);
+      //debugln(['TOICustomPropertyGrid.SetRowValue B ClassName=',CurRow.Editor.ClassName,' Visual=',CurRow.Editor.GetVisualValue,' NewValue=',NewValue,' AllEqual=',CurRow.Editor.AllEqual]);
       CurRow.Editor.SetValue(NewValue);
-      //debugln('TOICustomPropertyGrid.SetRowValue C ClassName=',CurRow.Editor.ClassName,' Visual=',CurRow.Editor.GetVisualValue,' NewValue=',NewValue,' AllEqual=',CurRow.Editor.AllEqual);
+      //debugln(['TOICustomPropertyGrid.SetRowValue C ClassName=',CurRow.Editor.ClassName,' Visual=',CurRow.Editor.GetVisualValue,' NewValue=',NewValue,' AllEqual=',CurRow.Editor.AllEqual]);
     {$IFNDEF DoNotCatchOIExceptions}
     except
       on E: Exception do begin
@@ -1093,7 +1094,7 @@ begin
       if OldExpanded then
         ExpandRow(FItemIndex);
     end;
-    //debugln('TOICustomPropertyGrid.SetRowValue D ClassName=',CurRow.Editor.ClassName,' Visual=',CurRow.Editor.GetVisualValue,' NewValue=',NewValue,' AllEqual=',CurRow.Editor.AllEqual);
+    //debugln(['TOICustomPropertyGrid.SetRowValue D ClassName=',CurRow.Editor.ClassName,' Visual=',CurRow.Editor.GetVisualValue,' NewValue=',NewValue,' AllEqual=',CurRow.Editor.AllEqual]);
   finally
     Exclude(FStates,pgsApplyingValue);
   end;
@@ -1588,6 +1589,15 @@ begin
     and (FPropertyEditorHook<>nil)
     and (FPropertyEditorHook.LookupRoot<>FCurrentEditorLookupRoot))
   then begin
+    {DebugLn(['TOICustomPropertyGrid.CanEditRowValue',
+      ' pgsChangingItemIndex=',pgsChangingItemIndex in FStates,
+      ' pgsApplyingValue=',pgsApplyingValue in FStates,
+      ' pgsUpdatingEditControl=',pgsUpdatingEditControl in FStates,
+      ' FCurrentEdit=',dbgsName(FCurrentEdit),
+      ' FItemIndex=',FItemIndex,
+      ' FCurrentEditorLookupRoot=',dbgsName(FCurrentEditorLookupRoot),
+      ' FPropertyEditorHook.LookupRoot=',dbgsName(FPropertyEditorHook.LookupRoot)
+      ]);}
     Result:=false;
   end else begin
     Result:=true;
@@ -2212,6 +2222,8 @@ begin
   // When the LookupRoot changes, no changes can be stored
   // -> undo the value editor changes
   RefreshValueEdit;
+  if PropertyEditorHook<>nil then
+    FCurrentEditorLookupRoot:=PropertyEditorHook.LookupRoot;
 end;
 
 function TOICustomPropertyGrid.RowRect(ARow:integer):TRect;
