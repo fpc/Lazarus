@@ -221,7 +221,6 @@ type
 
   TPageControl = class(TCustomNotebook)
   private
-    //FOnChange: TNotifyEvent;  //changed to use inherited OnPageChanged
     FOnChanging: TTabChangingEvent;
     function GetActivePageIndex: Integer;
     function GetActiveTabSheet: TTabSheet;

@@ -103,7 +103,7 @@ begin
   // Make sure Index is in the range of valid pages to delete
   {$IFDEF NOTEBOOK_DEBUG}
   //DebugLn('TNBPages.Delete A Index=',Index);
-  DebugLn('TNBPages.Delete B ',fNoteBook.Name,' Index=',Index,' fPageList.Count=',fPageList.Count,' fNoteBook.PageIndex=',fNoteBook.PageIndex);
+  DebugLn(['TNBPages.Delete B ',fNoteBook.Name,' Index=',Index,' fPageList.Count=',fPageList.Count,' fNoteBook.PageIndex=',fNoteBook.PageIndex]);
   {$ENDIF}
   if (Index >= 0) and
      (Index < fPageList.Count) then
@@ -115,7 +115,7 @@ begin
     APage.Free;
   end;
   {$IFDEF NOTEBOOK_DEBUG}
-  DebugLn('TNBPages.Delete END ',fNoteBook.Name,' Index=',Index,' fPageList.Count=',fPageList.Count,' fNoteBook.PageIndex=',fNoteBook.PageIndex);
+  DebugLn(['TNBPages.Delete END ',fNoteBook.Name,' Index=',Index,' fPageList.Count=',fPageList.Count,' fNoteBook.PageIndex=',fNoteBook.PageIndex]);
   {$ENDIF}
 end;
 
@@ -128,7 +128,7 @@ var
   NewOwner: TComponent;
 begin
   {$IFDEF NOTEBOOK_DEBUG}
-  DebugLn('TNBPages.Insert A ',FNoteBook.Name,' Index=',Index,' S="',S,'"');
+  DebugLn(['TNBPages.Insert A ',FNoteBook.Name,' Index=',Index,' S="',S,'"']);
   {$ENDIF}
   NewOwner:=FNotebook.Owner;
   if NewOwner=nil then
@@ -138,11 +138,11 @@ begin
     Caption := S;
 
   {$IFDEF NOTEBOOK_DEBUG}
-  DebugLn('TNBPages.Insert B ',FNotebook;.Name,' Index=',Index,' S="',S,'"');
+  DebugLn(['TNBPages.Insert B ',FNotebook.Name,' Index=',Index,' S="',S,'"']);
   {$ENDIF}
   FNoteBook.InsertPage(NewPage,Index);
   {$IFDEF NOTEBOOK_DEBUG}
-  DebugLn('TNBPages.Insert END ',FNotebook;.Name,' Index=',Index,' S="',S,'"');
+  DebugLn(['TNBPages.Insert END ',FNotebook.Name,' Index=',Index,' S="',S,'"']);
   {$ENDIF}
 end;
 
@@ -227,7 +227,7 @@ end;
 procedure TCustomNotebook.CreateWnd;
 begin
   {$IFDEF NOTEBOOK_DEBUG}
-  DebugLn('TCustomNotebook.CreateWnd ',Name,':',ClassName,' HandleAllocated=',HandleAllocated);
+  DebugLn(['TCustomNotebook.CreateWnd ',dbgsName(Self),' HandleAllocated=',HandleAllocated]);
   {$ENDIF}
   inherited CreateWnd;
   DoCreateWnd;
@@ -244,12 +244,12 @@ var
   lPage: TCustomPage;
 begin
   {$IFDEF NOTEBOOK_DEBUG}
-  DebugLn('TCustomNotebook.DoCreateWnd ',Name,':',ClassName,' HandleAllocated=',HandleAllocated);
+  DebugLn(['TCustomNotebook.DoCreateWnd ',dbgsName(Self),' HandleAllocated=',HandleAllocated]);
   {$ENDIF}
   fAddingPages:=true;
   for i := 0 to FPageList.Count -1 do begin
     {$IFDEF NOTEBOOK_DEBUG}
-    DebugLn('TCustomNotebook.DoCreateWnd ',Name,':',ClassName,' ',Page[i].Caption,' ',not (pfAdded in Page[i].Flags));
+    DebugLn(['TCustomNotebook.DoCreateWnd ',dbgsName(Self),' Page.Caption=',Page[i].Caption,' pfAdded=',pfAdded in Page[i].Flags]);
     {$ENDIF}
     lPage := Page[i];
     if not (pfAdded in lPage.Flags) then begin
@@ -447,8 +447,8 @@ var
   NewZPosition: integer;
 begin
   {$IFDEF NOTEBOOK_DEBUG}
-  DebugLn('TCustomNotebook.InsertPage A ',Name,' Index=',Index,' Name=',
-    APage.Name,' Caption=',APage.Caption);
+  DebugLn(['TCustomNotebook.InsertPage A ',dbgsName(Self),' Index=',Index,' Name=',
+    APage.Name,' Caption=',APage.Caption]);
   {$ENDIF}
   APage.DisableAutoSizing;
   try
@@ -463,16 +463,9 @@ begin
     if PageIndex = -1 then
       FPageIndex := Index;
 
-  {$ifndef WINDOWS}
-    // TODO: remove when gtk widgetset fixed to show tabpage tab upon
-    //   AddPage, instead of needing TabPage.Visible := true
-    APage.Visible := true;
-  {$endif}
-
     UpdateDesignerFlags(Index);
 
     if HandleAllocated and (not (csLoading in ComponentState)) then begin
-      //TWSCustomNotebookClass(WidgetSetClass).AddPage(Self, APage, Index);
       ChildPageSetTabVisible(APage, APage.TabVisible, Index);
       Include(APage.FFlags, pfAdded);
       if PageIndex = Index then
@@ -482,8 +475,8 @@ begin
     APage.EnableAutoSizing;
   end;
   {$IFDEF NOTEBOOK_DEBUG}
-  DebugLn('TCustomNotebook.InsertPage END ',Name,' Index=',
-    Index,' Name=',APage.Name,' Caption=',APage.Caption);
+  DebugLn(['TCustomNotebook.InsertPage END ',dbgsName(Self),' Index=',
+    Index,' Name=',APage.Name,' Caption=',APage.Caption]);
   {$ENDIF}
 end;
 
@@ -533,8 +526,8 @@ var
 begin
   // Make sure Index is in the range of valid pages to delete
   {$IFDEF NOTEBOOK_DEBUG}
-  DebugLn('TCustomNotebook.RemovePage A ',Name,' Index=',Index,
-    ' FPageList.Count=',FPageList.Count,' PageIndex=',PageIndex);
+  DebugLn(['TCustomNotebook.RemovePage A ',dbgsName(Self),' Index=',Index,
+    ' FPageList.Count=',FPageList.Count,' PageIndex=',PageIndex]);
   {$ENDIF}
   if (Index >= 0) and
      (Index < FPageList.Count) then
@@ -559,7 +552,6 @@ begin
       end;
     end;
     if HandleAllocated and APage.TabVisible then begin
-      //TWSCustomNotebookClass(WidgetSetClass).RemovePage(Self, Index);
       ChildPageSetTabVisible(APage, False, Index);
     end;
     FPageList.Delete(Index);
@@ -568,7 +560,7 @@ begin
       Dec(fPageIndex);
   end;
   {$IFDEF NOTEBOOK_DEBUG}
-  DebugLn('TCustomNotebook.RemovePage END ',fNoteBook.Name,' Index=',Index,' fPageList.Count=',fPageList.Count,' fNoteBook.PageIndex=',fNoteBook.PageIndex);
+  DebugLn(['TCustomNotebook.RemovePage END ',dbgsName(Self),' Index=',Index,' fPageList.Count=',fPageList.Count,' PageIndex=',PageIndex]);
   {$ENDIF}
 end;
 
@@ -756,7 +748,7 @@ Begin
     else
       begin
         {$IFDEF NOTEBOOK_DEBUG}
-        DebugLn('[TCustomNotebook.CNNotify] unhandled NMHdr code:', NMHdr^.code);
+        DebugLn(['[TCustomNotebook.CNNotify] unhandled NMHdr code:', NMHdr^.code]);
         {$ENDIF}
       end;
     end;
@@ -778,10 +770,10 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomNotebook.DoSendPageIndex;
 begin
-  //DebugLn('[TCustomNotebook.DoSendPageIndex] A ',Name,' PageIndex=',dbgs(fPageIndex),' ',dbgs(csLoading in ComponentState),' ',dbgs(HandleAllocated));
+  //DebugLn('[TCustomNotebook.DoSendPageIndex] A ',dbgsName(Self),' PageIndex=',dbgs(fPageIndex),' ',dbgs(csLoading in ComponentState),' ',dbgs(HandleAllocated));
   if not HandleAllocated or (csLoading in ComponentState) then exit;
   {$IFDEF NOTEBOOK_DEBUG}
-  //DebugLn('[TCustomNotebook.DoSendPageIndex] B ',Name,' PageIndex=',dbgs(fPageIndex));
+  //DebugLn('[TCustomNotebook.DoSendPageIndex] B ',dbgsName(Self),' PageIndex=',dbgs(fPageIndex));
   {$ENDIF}
   ShowCurrentPage;
   TWSCustomNotebookClass(WidgetSetClass).SetPageIndex(Self, FPageIndex);
@@ -797,11 +789,11 @@ procedure TCustomNotebook.DoSendShowTabs;
 begin
   if not HandleAllocated or (csLoading in ComponentState) then exit;
   {$IFDEF NOTEBOOK_DEBUG}
-  DebugLn('[TCustomNotebook.DoSendShowTabs] A ',Name);
+  DebugLn('[TCustomNotebook.DoSendShowTabs] A ',dbgsName(Self));
   {$ENDIF}
   TWSCustomNotebookClass(WidgetSetClass).ShowTabs(Self, FShowTabs);
   {$IFDEF NOTEBOOK_DEBUG}
-  DebugLn('[TCustomNotebook.DoSendShowTabs] B ',Name);
+  DebugLn('[TCustomNotebook.DoSendShowTabs] B ',dbgsName(Self));
   {$ENDIF}
 end;
 

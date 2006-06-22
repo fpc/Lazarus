@@ -44,9 +44,11 @@ type
     procedure InsertPageRightButtonClick(Sender: TObject);
     procedure MovePageLeftButtonClick(Sender: TObject);
     procedure MovePageRightButtonClick(Sender: TObject);
+    procedure PageControl1Change(Sender: TObject);
   public
     constructor Create(TheOwner: TComponent); override;
     procedure AddNewPage(Index: integer);
+    procedure FillPagesListBox;
   end;
 
 { TForm1 }
@@ -62,6 +64,7 @@ begin
     Align:=alTop;
     Height:=200;
     Parent:=Self;
+    OnChange:=@PageControl1Change;
   end;
 
   PagesListBox:=TListBox.Create(Self);
@@ -136,43 +139,74 @@ begin
 end;
 
 procedure TForm1.DeletePageButtonClick(Sender: TObject);
+var
+  i: LongInt;
 begin
-  if PageControl1.PageCount=0 then exit;
-  PageControl1.PageList.Delete(PageControl1.PageIndex);
+  i:=PagesListBox.ItemIndex;
+  if (i<0) or (i>=PageControl1.PageCount) then exit;
+  PageControl1.PageList.Delete(i);
+  FillPagesListBox;
 end;
 
 procedure TForm1.InsertPageLeftButtonClick(Sender: TObject);
+var
+  i: LongInt;
 begin
-  AddNewPage(PageControl1.PageIndex);
+  i:=PagesListBox.ItemIndex;
+  if (i<0) or (i>=PageControl1.PageCount) then i:=PageControl1.PageIndex;
+  AddNewPage(i);
 end;
 
 procedure TForm1.InsertPageRightButtonClick(Sender: TObject);
+var
+  i: LongInt;
 begin
   if PageControl1.PageCount=0 then
     AddNewPage(0)
-  else
-    AddNewPage(PageControl1.PageIndex+1);
+  else begin
+    i:=PagesListBox.ItemIndex;
+    if (i<0) or (i>=PageControl1.PageCount) then i:=PageControl1.PageIndex;
+    AddNewPage(i+1);
+  end;
 end;
 
 procedure TForm1.MovePageLeftButtonClick(Sender: TObject);
+var
+  i: LongInt;
 begin
-  if PageControl1.PageIndex=0 then exit;
-  PageControl1.PageList.Move(PageControl1.PageIndex,PageControl1.PageIndex-1);
+  i:=PagesListBox.ItemIndex;
+  if (i<0) or (i>=PageControl1.PageCount) then i:=PageControl1.PageIndex;
+  if i=0 then exit;
+  PageControl1.PageList.Move(i,i-1);
+  FillPagesListBox;
 end;
 
 procedure TForm1.MovePageRightButtonClick(Sender: TObject);
+var
+  i: LongInt;
 begin
-  if PageControl1.PageIndex<PageControl1.PageCount-1 then exit;
-  PageControl1.PageList.Move(PageControl1.PageIndex,PageControl1.PageIndex+1);
+  i:=PagesListBox.ItemIndex;
+  if (i<0) or (i>=PageControl1.PageCount) then i:=PageControl1.PageIndex;
+  if i<PageControl1.PageCount-1 then exit;
+  PageControl1.PageList.Move(i,i+1);
+  FillPagesListBox;
+end;
+
+procedure TForm1.PageControl1Change(Sender: TObject);
+begin
+  FillPagesListBox;
+  PagesListBox.ItemIndex:=PageControl1.PageIndex;
 end;
 
 constructor TForm1.Create(TheOwner: TComponent);
+var
+  i: Integer;
 begin
   OnCreate:=@Form1Create;
   inherited Create(TheOwner);
-  AddNewPage(0);
-  AddNewPage(1);
-  AddNewPage(2);
+  // start with 3 pages
+  for i:=0 to 2 do AddNewPage(i);
+  FillPagesListBox;
 end;
 
 procedure TForm1.AddNewPage(Index: integer);
@@ -186,6 +220,28 @@ begin
   NewPage.Name:=NewName;
   NewPage.Caption:=NewName;
   PageControl1.PageList.Insert(Index,NewPage);
+  FillPagesListBox;
+  PagesListBox.ItemIndex:=Index;
+end;
+
+procedure TForm1.FillPagesListBox;
+var
+  i: Integer;
+  OldItemIndex: LongInt;
+begin
+  PagesListBox.Items.BeginUpdate;
+  OldItemIndex:=PagesListBox.ItemIndex;
+  for i:=0 to PageControl1.PageCount-1 do begin
+    if PagesListBox.Items.Count>i then begin
+      PagesListBox.Items[i]:=PageControl1.Pages[i].Name;
+    end else begin
+      PagesListBox.Items.Add(PageControl1.Pages[i].Name);
+    end;
+  end;
+  while (PagesListBox.Items.Count>PageControl1.PageCount) do
+    PagesListBox.Items.Delete(PagesListBox.Items.Count-1);
+  PagesListBox.ItemIndex:=OldItemIndex;
+  PagesListBox.Items.EndUpdate;
 end;
 
 var

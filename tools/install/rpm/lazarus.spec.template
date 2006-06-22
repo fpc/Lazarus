@@ -10,7 +10,8 @@ Source0:        http://prdownloads.sourceforge.net/%{name}/%{name}-%{version}-%{
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 #BuildRequires:  
-Requires:       fpc-src = FPCVERSION, fpc = FPCVERSION, gdk-pixbuf, gtk+, gdb, glibc
+Requires:       fpc-src = FPCVERSION, fpc = FPCVERSION, gdk-pixbuf, gtk+, glibc, gdb
+# NOTE: without the symlink trick for gtk1, it requires the devel packages.
 
 Requires(post): desktop-file-utils
 Requires(postun): desktop-file-utils

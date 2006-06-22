@@ -238,12 +238,20 @@ var
                                // a label)
   MenuLabelWidget: PGtkWidget; // the label in the popup menu item
 begin
+  {$IFDEF NOTEBOOK_DEBUG}
+  DebugLn(['TGtkWSCustomNotebook.AddPage ',dbgsName(ANoteBook),' ',ANotebook.HandleAllocated,' AChild=',dbgsName(AChild),' ',AChild.HandleAllocated,' Child.TabVisible=',AChild.TabVisible]);
+  {$ENDIF}
   NoteBookWidget:=PGtkWidget(ANoteBook.Handle);
   PageWidget:=PGtkWidget(AChild.Handle);
-  
-  // Check if already created. if so just show it because it is invisible
-  if gtk_notebook_get_tab_label(PGtkNoteBook(NoteBookWidget), PageWidget) <> nil then begin
+  if AChild.TabVisible then
     gtk_widget_show(PageWidget);
+
+  // Check if already created. if so just show it because it is invisible
+  if gtk_notebook_get_tab_label(PGtkNoteBook(NoteBookWidget), PageWidget) <> nil
+  then begin
+    {$IFDEF NOTEBOOK_DEBUG}
+    DebugLn(['TGtkWSCustomNotebook.AddPage already added']);
+    {$ENDIF}
     exit;
   end;
   
@@ -258,9 +266,10 @@ begin
     gtk_widget_show(TabLabelWidget);
     gtk_box_pack_start_defaults(PGtkBox(TabWidget),TabLabelWidget);
   end;
-  gtk_widget_show(TabWidget);
+  if AChild.TabVisible then
+    gtk_widget_show(TabWidget);
 
-  // create popup menu
+  // create popup menu item
   MenuWidget:=gtk_hbox_new(false,2);
   begin
     // set icon widget to nil
@@ -271,10 +280,12 @@ begin
     gtk_widget_show(MenuLabelWidget);
     gtk_box_pack_start_defaults(PGtkBox(MenuWidget),MenuLabelWidget);
   end;
+  if AChild.TabVisible then
+    gtk_widget_show(MenuWidget);
 
-  gtk_widget_show(MenuWidget);
-
+  // remove the dummy page (a gtk_notebook needs at least one page)
   RemoveDummyNoteBookPage(PGtkNotebook(NoteBookWidget));
+  // insert the page
   gtk_notebook_insert_page_menu(GTK_NOTEBOOK(NotebookWidget), PageWidget,
     TabWidget, MenuWidget, AIndex);
 

@@ -2295,8 +2295,30 @@ begin
 end;
 
 Procedure TMainIDE.OnSrcNotebookFileClose(Sender: TObject);
+var
+  PageIndex: LongInt;
+  i: Integer;
 begin
-  mnuCloseClicked(Sender);
+  if GetKeyState(VK_CONTROL)<0 then begin
+    // close all source editors except the clicked
+    if SourceNoteBook.Notebook=nil then exit;
+    if Sender is TPage then begin
+      PageIndex:=SourceNoteBook.Notebook.Pages.IndexOfObject(Sender);
+      if PageIndex<0 then
+        PageIndex:=SourceNoteBook.Notebook.PageIndex;
+    end else begin
+      PageIndex:=SourceNoteBook.Notebook.PageIndex;
+    end;
+    repeat
+      i:=SourceNoteBook.Notebook.PageCount-1;
+      if i=PageIndex then dec(i);
+      if i<0 then break;
+      if DoCloseEditorFile(i,[cfSaveFirst])<>mrOk then exit;
+      if i<PageIndex then PageIndex:=i;
+    until false;
+  end else
+    // close only the clicked source editor
+    mnuCloseClicked(Sender);
 end;
 
 Procedure TMainIDE.OnSrcNotebookFileOpen(Sender: TObject);
