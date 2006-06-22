@@ -5,7 +5,7 @@ object FindDialogForm: TFindDialogForm
   ClientHeight = 103
   ClientWidth = 444
   OnCreate = FormCreate
-  PixelsPerInch = 96
+  PixelsPerInch = 112
   Position = poDesktopCenter
   HorzScrollBar.Page = 443
   VertScrollBar.Page = 102
@@ -13,15 +13,15 @@ object FindDialogForm: TFindDialogForm
   Height = 103
   Top = 434
   Width = 444
-  object Label1: TLabel
+  object FindLabel: TLabel
     Caption = 'Text to find'
     Color = clNone
     FocusControl = EditFind
     ParentColor = False
     Left = 6
-    Height = 14
+    Height = 13
     Top = 19
-    Width = 57
+    Width = 62
   end
   object EditFind: TEdit
     Anchors = [akTop, akLeft, akRight]
@@ -33,9 +33,9 @@ object FindDialogForm: TFindDialogForm
     Top = 10
     Width = 269
   end
-  object btnFind: TButton
+  object FindButton: TButton
     Anchors = [akTop, akRight]
-    
+    BorderSpacing.InnerBorder = 4
     Caption = 'Find more'
     ModalResult = 1
     TabOrder = 1
@@ -44,9 +44,9 @@ object FindDialogForm: TFindDialogForm
     Top = 8
     Width = 91
   end
-  object Button2: TButton
+  object CancelButton: TButton
     Anchors = [akTop, akRight]
-    
+    BorderSpacing.InnerBorder = 4
     Caption = 'Cancel'
     ModalResult = 2
     TabOrder = 2
@@ -55,23 +55,23 @@ object FindDialogForm: TFindDialogForm
     Top = 40
     Width = 91
   end
-  object CheckBox1: TCheckBox
+  object WholeWordsOnlyCheckBox: TCheckBox
     Caption = 'Whole words only'
     TabOrder = 3
     Left = 6
-    Height = 13
+    Height = 20
     Top = 51
-    Width = 104
+    Width = 127
   end
-  object CheckBox2: TCheckBox
+  object CaseSensitiveCheckBox: TCheckBox
     Caption = 'Case sensitive'
     TabOrder = 4
     Left = 6
-    Height = 13
+    Height = 20
     Top = 78
-    Width = 88
+    Width = 109
   end
-  object RadioGroup1: TRadioGroup
+  object DirectionRadioGroup: TRadioGroup
     AutoFill = True
     Caption = 'Direction'
     ChildSizing.LeftRightSpacing = 6
@@ -93,9 +93,9 @@ object FindDialogForm: TFindDialogForm
     Top = 46
     Width = 197
   end
-  object btnHelp: TButton
+  object HelpButton: TButton
     Anchors = [akRight, akBottom]
-    
+    BorderSpacing.InnerBorder = 4
     Caption = 'Help'
     TabOrder = 6
     Left = 349

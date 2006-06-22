@@ -67,6 +67,7 @@ ResourceString
   rsfdDirectoryMustExist = 'Directory must exist';
   rsfdFileNotExist       = 'The file "%s" does not exist.';
   rsfdDirectoryNotExist  = 'The directory "%s" does not exist.';
+  rsFind = 'Find';
   rsfdFileReadOnlyTitle  = 'File is not writable';
   rsfdFileReadOnly       = 'The file "%s" is not writable.';
   rsfdFileSaveAs         = 'Save file as';
@@ -78,6 +79,9 @@ ResourceString
    
   // Select font dialog
   rsSelectFontTitle     = 'Select a font';
+  rsFindMore = 'Find more';
+  rsReplace = 'Replace';
+  rsReplaceAll = 'Replace all';
   
   // gtk interface
   rsWarningUnremovedPaintMessages = ' WARNING: There are %s unremoved LM_'
@@ -239,6 +243,12 @@ ResourceString
   ifsVK_INSERT     = 'Insert';
   ifsVK_DELETE     = 'Delete'; //= dlgeddelete
   ifsVK_HELP       = 'Help';
+  rsWholeWordsOnly = 'Whole words only';
+  rsCaseSensitive = 'Case sensitive';
+  rsText = 'Text';
+  rsDirection = 'Direction';
+  rsForward = 'Forward';
+  rsBackward = 'Backward';
   ifsVK_LWIN       = 'left windows key';
   ifsVK_RWIN       = 'right windows key';
   ifsVK_APPS       = 'application key';

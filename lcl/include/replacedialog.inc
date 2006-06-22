@@ -22,18 +22,18 @@ type
 { TReplaceDialogForm }
 
   TReplaceDialogForm = class(TForm)
-    Button1: TButton;
-    btnReplace: TButton;
-    btnReplaceAll: TButton;
-    Button4: TButton;
-    btnHelp: TButton;
-    CheckBox1: TCheckBox;
-    CheckBox2: TCheckBox;
+    FindMoreButton: TButton;
+    ReplaceButton: TButton;
+    ReplaceAllButton: TButton;
+    CancelButton: TButton;
+    HelpButton: TButton;
+    WholeWordsOnlyCheckBox: TCheckBox;
+    CaseSensitiveCheckBox: TCheckBox;
     EditFind: TEdit;
     EditReplace: TEdit;
-    Label1: TLabel;
-    Label2: TLabel;
-    RadioGroup1: TRadioGroup;
+    TextLabel: TLabel;
+    ReplaceLabel: TLabel;
+    DirectionRadioGroup: TRadioGroup;
     procedure btnReplaceAllClick(Sender: TObject);
   private
     ReplOwner: TReplaceDialog;
@@ -47,17 +47,17 @@ begin
     2:ReplOwner.FOptions:=ReplOwner.FOptions + [frReplace];
     3:ReplOwner.FOptions:=ReplOwner.FOptions + [frReplaceAll];
   end;
-  if RadioGroup1.ItemIndex = 0 then
+  if DirectionRadioGroup.ItemIndex = 0 then
     ReplOwner.FOptions:=ReplOwner.FOptions + [frDown]
   else
     ReplOwner.FOptions:=ReplOwner.FOptions - [frDown];
 
-  if CheckBox1.Checked then
+  if WholeWordsOnlyCheckBox.Checked then
     ReplOwner.FOptions:=ReplOwner.FOptions + [frWholeWord]
   else
     ReplOwner.FOptions:=ReplOwner.FOptions - [frWholeWord];
 
-  if CheckBox2.Checked then
+  if CaseSensitiveCheckBox.Checked then
     ReplOwner.FOptions:=ReplOwner.FOptions + [frMatchCase]
   else
     ReplOwner.FOptions:=ReplOwner.FOptions - [frMatchCase];
@@ -82,27 +82,44 @@ end;
 
 function TReplaceDialog.CreateForm: TForm;
 begin
-  Result:=TReplaceDialogForm.Create(Application);
+  Result:=TReplaceDialogForm.Create(Self);
+  with TReplaceDialogForm(Result) do begin
+    FindMoreButton.Caption:=rsFindMore;
+    ReplaceButton.Caption:=rsReplace;
+    ReplaceAllButton.Caption:=rsReplaceAll;
+    CancelButton.Caption:=rsMbCancel;
+    HelpButton.Caption:=ifsVK_HELP;
+    WholeWordsOnlyCheckBox.Caption:=rsWholeWordsOnly;
+    CaseSensitiveCheckBox.Caption:=rsCaseSensitive;
+    TextLabel.Caption:=rsText;
+    ReplaceLabel.Caption:=rsReplace;
+    DirectionRadioGroup.Caption:=rsDirection;
+    DirectionRadioGroup.Items[0]:=rsForward;
+    DirectionRadioGroup.Items[1]:=rsBackward;
+  end;
   TReplaceDialogForm(Result).ReplOwner:=Self;
 end;
 
 procedure TReplaceDialog.UpdateValues;
+var
+  dlg: TReplaceDialogForm;
 begin
-  TReplaceDialogForm(FFindForm).EditFind.Text:=FFindText;
-  TReplaceDialogForm(FFindForm).EditReplace.Text:=FReplaceText;
+  dlg:=TReplaceDialogForm(FFindForm);
+  dlg.EditFind.Text:=FFindText;
+  dlg.EditReplace.Text:=FReplaceText;
 
-  TReplaceDialogForm(FFindForm).CheckBox1.Checked:=frWholeWord in Options;
-  TReplaceDialogForm(FFindForm).CheckBox2.Checked:=frMatchCase in Options;
-  TReplaceDialogForm(FFindForm).RadioGroup1.ItemIndex:=ord(frDown in Options);
+  dlg.WholeWordsOnlyCheckBox.Checked:=frWholeWord in Options;
+  dlg.CaseSensitiveCheckBox.Checked:=frMatchCase in Options;
+  dlg.DirectionRadioGroup.ItemIndex:=ord(frDown in Options);
 
-  TReplaceDialogForm(FFindForm).CheckBox1.Enabled:=not (frDisableWholeWord in Options);
-  TReplaceDialogForm(FFindForm).CheckBox2.Enabled:=not (frDisableMatchCase in Options);
-  TReplaceDialogForm(FFindForm).RadioGroup1.Enabled:=not (frDisableUpDown in Options);
+  dlg.WholeWordsOnlyCheckBox.Enabled:=not (frDisableWholeWord in Options);
+  dlg.CaseSensitiveCheckBox.Enabled:=not (frDisableMatchCase in Options);
+  dlg.DirectionRadioGroup.Enabled:=not (frDisableUpDown in Options);
 
-  TReplaceDialogForm(FFindForm).CheckBox1.Visible:=not (frHideWholeWord in Options);
-  TReplaceDialogForm(FFindForm).CheckBox2.Visible:=not (frHideMatchCase in Options);
-  TReplaceDialogForm(FFindForm).RadioGroup1.Visible:=not (frHideUpDown in Options);
-  TReplaceDialogForm(FFindForm).btnHelp.Visible:=(frShowHelp in Options);
+  dlg.WholeWordsOnlyCheckBox.Visible:=not (frHideWholeWord in Options);
+  dlg.CaseSensitiveCheckBox.Visible:=not (frHideMatchCase in Options);
+  dlg.DirectionRadioGroup.Visible:=not (frHideUpDown in Options);
+  dlg.HelpButton.Visible:=(frShowHelp in Options);
 end;
 
 constructor TReplaceDialog.Create(AOwner: TComponent);
@@ -110,4 +127,5 @@ begin
   inherited Create(AOwner);
   Options:=Options + [frReplace, frReplaceAll];
 end;
+
 

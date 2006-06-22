@@ -21,9 +21,9 @@
   Abstract:
     Only the .lrs file is used by the LCL (dialogs.pp).
     This unit is itself is not compiled into the LCL.
-    This form is used to design the .lfm and lrs file.
+    This form is used to design the .lfm and .lrs file.
     
-    The code is copied to lcl/include/finddialog.inc.
+    The code is copied to ../lcl/include/finddialog.inc.
 }
 unit FindDlgUnit;
 
@@ -40,14 +40,14 @@ type
   { TFindDialogForm }
 
   TFindDialogForm = class(TForm)
-    btnFind: TButton;
-    Button2: TButton;
-    btnHelp: TButton;
-    CheckBox1: TCheckBox;
-    CheckBox2: TCheckBox;
+    FindButton: TButton;
+    CancelButton: TButton;
+    HelpButton: TButton;
+    WholeWordsOnlyCheckBox: TCheckBox;
+    CaseSensitiveCheckBox: TCheckBox;
     EditFind: TEdit;
-    Label1: TLabel;
-    RadioGroup1: TRadioGroup;
+    FindLabel: TLabel;
+    DirectionRadioGroup: TRadioGroup;
     procedure EditFindChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
   private
@@ -60,7 +60,7 @@ implementation
 
 procedure TFindDialogForm.EditFindChange(Sender: TObject);
 begin
-  btnFind.Enabled:=EditFind.Text<>'';
+  FindButton.Enabled:=EditFind.Text<>'';
 end;
 
 procedure TFindDialogForm.FormCreate(Sender: TObject);

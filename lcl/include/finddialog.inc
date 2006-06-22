@@ -22,14 +22,14 @@ type
   { TFindDialogForm }
 
   TFindDialogForm = class(TForm)
-    btnFind: TButton;
-    Button2: TButton;
-    btnHelp: TButton;
-    CheckBox1: TCheckBox;
-    CheckBox2: TCheckBox;
+    FindButton: TButton;
+    CancelButton: TButton;
+    HelpButton: TButton;
+    WholeWordsOnlyCheckBox: TCheckBox;
+    CaseSensitiveCheckBox: TCheckBox;
     EditFind: TEdit;
-    Label1: TLabel;
-    RadioGroup1: TRadioGroup;
+    FindLabel: TLabel;
+    DirectionRadioGroup: TRadioGroup;
     procedure EditFindChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
   private
@@ -38,7 +38,7 @@ type
 
 procedure TFindDialogForm.EditFindChange(Sender: TObject);
 begin
-  btnFind.Enabled:=EditFind.Text<>'';
+  FindButton.Enabled:=EditFind.Text<>'';
 end;
 
 procedure TFindDialogForm.FormCreate(Sender: TObject);
@@ -76,17 +76,17 @@ begin
     begin
       FOptions:=FOptions + [frFindNext];
       FFindText:=EditFind.Text;
-      if RadioGroup1.ItemIndex = 0 then
+      if DirectionRadioGroup.ItemIndex = 0 then
         FOptions:=FOptions + [frDown]
       else
         FOptions:=FOptions - [frDown];
 
-      if CheckBox1.Checked then
+      if WholeWordsOnlyCheckBox.Checked then
         FOptions:=FOptions + [frWholeWord]
       else
         FOptions:=FOptions - [frWholeWord];
 
-      if CheckBox2.Checked then
+      if CaseSensitiveCheckBox.Checked then
         FOptions:=FOptions + [frMatchCase]
       else
         FOptions:=FOptions - [frMatchCase];
@@ -164,25 +164,36 @@ end;
 
 function TFindDialog.CreateForm: TForm;
 begin
-  Result:=TFindDialogForm.Create(Application);
+  Result:=TFindDialogForm.Create(Self);
+  with TFindDialogForm(Result) do begin
+    FindButton.Caption:=rsFind;
+    CancelButton.Caption:=rsMbCancel;
+    HelpButton.Caption:=ifsVK_HELP;
+    WholeWordsOnlyCheckBox.Caption:=rsWholeWordsOnly;
+    CaseSensitiveCheckBox.Caption:=rsCaseSensitive;
+    FindLabel.Caption:=rsText;
+    DirectionRadioGroup.Caption:=rsDirection;
+    DirectionRadioGroup.Items[0]:=rsForward;
+    DirectionRadioGroup.Items[1]:=rsBackward;
+  end;
 end;
 
 procedure TFindDialog.UpdateValues;
 begin
   TFindDialogForm(FFindForm).EditFind.Text:=FFindText;
 
-  TFindDialogForm(FFindForm).CheckBox1.Checked:=frWholeWord in Options;
-  TFindDialogForm(FFindForm).CheckBox2.Checked:=frMatchCase in Options;
-  TFindDialogForm(FFindForm).RadioGroup1.ItemIndex:=ord(frDown in Options);
+  TFindDialogForm(FFindForm).WholeWordsOnlyCheckBox.Checked:=frWholeWord in Options;
+  TFindDialogForm(FFindForm).CaseSensitiveCheckBox.Checked:=frMatchCase in Options;
+  TFindDialogForm(FFindForm).DirectionRadioGroup.ItemIndex:=ord(frDown in Options);
 
-  TFindDialogForm(FFindForm).CheckBox1.Enabled:=not (frDisableWholeWord in Options);
-  TFindDialogForm(FFindForm).CheckBox2.Enabled:=not (frDisableMatchCase in Options);
-  TFindDialogForm(FFindForm).RadioGroup1.Enabled:=not (frDisableUpDown in Options);
+  TFindDialogForm(FFindForm).WholeWordsOnlyCheckBox.Enabled:=not (frDisableWholeWord in Options);
+  TFindDialogForm(FFindForm).CaseSensitiveCheckBox.Enabled:=not (frDisableMatchCase in Options);
+  TFindDialogForm(FFindForm).DirectionRadioGroup.Enabled:=not (frDisableUpDown in Options);
 
-  TFindDialogForm(FFindForm).CheckBox1.Visible:=not (frHideWholeWord in Options);
-  TFindDialogForm(FFindForm).CheckBox2.Visible:=not (frHideMatchCase in Options);
-  TFindDialogForm(FFindForm).RadioGroup1.Visible:=not (frHideUpDown in Options);
-  TFindDialogForm(FFindForm).btnHelp.Visible:=(frShowHelp in Options);
+  TFindDialogForm(FFindForm).WholeWordsOnlyCheckBox.Visible:=not (frHideWholeWord in Options);
+  TFindDialogForm(FFindForm).CaseSensitiveCheckBox.Visible:=not (frHideMatchCase in Options);
+  TFindDialogForm(FFindForm).DirectionRadioGroup.Visible:=not (frHideUpDown in Options);
+  TFindDialogForm(FFindForm).HelpButton.Visible:=(frShowHelp in Options);
 end;
 
 constructor TFindDialog.Create(AOwner: TComponent);
@@ -216,4 +227,5 @@ begin
     FreeAndNil(FFindForm);
   end;
 end;
+
 

@@ -4,32 +4,32 @@ object ReplaceDialogForm: TReplaceDialogForm
   Caption = 'Replace text'
   ClientHeight = 162
   ClientWidth = 432
-  PixelsPerInch = 96
+  PixelsPerInch = 112
   HorzScrollBar.Page = 431
   VertScrollBar.Page = 161
   Left = 460
   Height = 162
   Top = 471
   Width = 432
-  object Label1: TLabel
+  object TextLabel: TLabel
     Caption = 'Text to find'
     Color = clNone
     FocusControl = EditFind
     ParentColor = False
     Left = 4
-    Height = 14
+    Height = 13
     Top = 19
-    Width = 57
+    Width = 62
   end
-  object Label2: TLabel
+  object ReplaceLabel: TLabel
     Caption = 'Replace with'
     Color = clNone
     FocusControl = EditReplace
     ParentColor = False
     Left = 4
-    Height = 14
+    Height = 13
     Top = 48
-    Width = 62
+    Width = 73
   end
   object EditFind: TEdit
     Anchors = [akTop, akLeft, akRight]
@@ -49,25 +49,25 @@ object ReplaceDialogForm: TReplaceDialogForm
     Top = 42
     Width = 257
   end
-  object CheckBox1: TCheckBox
+  object WholeWordsOnlyCheckBox: TCheckBox
     Caption = 'Whole words only'
     TabOrder = 2
     Left = 4
-    Height = 13
+    Height = 20
     Top = 80
-    Width = 104
+    Width = 127
   end
-  object CheckBox2: TCheckBox
+  object CaseSensitiveCheckBox: TCheckBox
     Caption = 'Case sensitive'
     TabOrder = 3
     Left = 4
-    Height = 13
+    Height = 20
     Top = 104
-    Width = 88
+    Width = 109
   end
-  object Button1: TButton
+  object FindMoreButton: TButton
     Anchors = [akTop, akRight]
-    
+    BorderSpacing.InnerBorder = 4
     Caption = 'Find more'
     ModalResult = 1
     OnClick = btnReplaceAllClick
@@ -78,9 +78,9 @@ object ReplaceDialogForm: TReplaceDialogForm
     Width = 91
     Tag = 1
   end
-  object btnReplace: TButton
+  object ReplaceButton: TButton
     Anchors = [akTop, akRight]
-    
+    BorderSpacing.InnerBorder = 4
     Caption = 'Replace'
     ModalResult = 1
     OnClick = btnReplaceAllClick
@@ -91,9 +91,9 @@ object ReplaceDialogForm: TReplaceDialogForm
     Width = 91
     Tag = 2
   end
-  object btnReplaceAll: TButton
+  object ReplaceAllButton: TButton
     Anchors = [akTop, akRight]
-    
+    BorderSpacing.InnerBorder = 4
     Caption = 'Replace all'
     ModalResult = 1
     OnClick = btnReplaceAllClick
@@ -104,9 +104,9 @@ object ReplaceDialogForm: TReplaceDialogForm
     Width = 91
     Tag = 3
   end
-  object Button4: TButton
+  object CancelButton: TButton
     Anchors = [akTop, akRight]
-    
+    BorderSpacing.InnerBorder = 4
     Caption = 'Cancel'
     ModalResult = 2
     TabOrder = 7
@@ -115,9 +115,9 @@ object ReplaceDialogForm: TReplaceDialogForm
     Top = 96
     Width = 91
   end
-  object btnHelp: TButton
+  object HelpButton: TButton
     Anchors = [akRight, akBottom]
-    
+    BorderSpacing.InnerBorder = 4
     Caption = 'Help'
     TabOrder = 8
     Left = 337
@@ -125,7 +125,7 @@ object ReplaceDialogForm: TReplaceDialogForm
     Top = 129
     Width = 91
   end
-  object RadioGroup1: TRadioGroup
+  object DirectionRadioGroup: TRadioGroup
     AutoFill = True
     Caption = 'Direction'
     ChildSizing.LeftRightSpacing = 6

@@ -533,6 +533,7 @@ initialization
   InterfaceBase.InputDialogFunction:=@ShowInputDialog;
   InterfaceBase.PromptDialogFunction:=@ShowPromptDialog;
   {$I forms/finddlgunit.lrs}
+  {$I forms/replacedlgunit.lrs}
 
 finalization
   InterfaceBase.InputDialogFunction:=nil;
