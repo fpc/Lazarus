@@ -2726,6 +2726,7 @@ var CmdLine: string;
   NewDefTempl: TDefineTemplate;
   SrcOS: string;
   SrcOS2: String;
+  Step: String;
 begin
   //DebugLn('TDefinePool.CreateFPCTemplate PPC386Path="',CompilerPath,'" PPCOptions="',CompilerOptions,'"');
   Result:=nil;
@@ -2738,6 +2739,7 @@ begin
   // find all initial compiler macros and all unit paths
   // -> ask compiler with the -vm -vt switch
   SetLength(Buf,1024);
+  Step:='Init';
   try
     CmdLine:=CompilerPath+' -va ';
     if FileExistsCached(EnglishErrorMsgFilename) then
@@ -2752,6 +2754,7 @@ begin
     TheProcess.CommandLine := CmdLine;
     TheProcess.Options:= [poUsePipes, poStdErrToOutPut];
     TheProcess.ShowWindow := swoHide;
+    Step:='Running '+CmdLine;
     try
       TheProcess.Execute;
       OutputLine:='';
@@ -2778,7 +2781,7 @@ begin
       until OutLen=0;
       TheProcess.WaitOnExit;
     finally
-      //DebugLn('TDefinePool.CreateFPCTemplate OutputLine="',OutputLine,'"');
+      //DebugLn('TDefinePool.CreateFPCTemplate Run with -va: OutputLine="',OutputLine,'"');
       TheProcess.Free;
     end;
     //DebugLn('TDefinePool.CreateFPCTemplate First done UnitSearchPath="',UnitSearchPath,'"');
@@ -2793,6 +2796,7 @@ begin
     TheProcess.CommandLine := CmdLine;
     TheProcess.Options:= [poUsePipes, poStdErrToOutPut];
     TheProcess.ShowWindow := swoHide;
+    Step:='Running '+CmdLine;
     try
       TheProcess.Execute;
       if (TheProcess.Output<>nil) then
@@ -2829,6 +2833,7 @@ begin
       TheProcess.WaitOnExit;
       //DebugLn('TDefinePool.CreateFPCTemplate target OS done');
     finally
+      //DebugLn('TDefinePool.CreateFPCTemplate Run with -iTO: OutputLine="',OutputLine,'"');
       TheProcess.Free;
     end;
     
@@ -2841,6 +2846,7 @@ begin
     TheProcess.CommandLine := CmdLine;
     TheProcess.Options:= [poUsePipes, poStdErrToOutPut];
     TheProcess.ShowWindow := swoHide;
+    Step:='Running '+CmdLine;
     try
       TheProcess.Execute;
       if TheProcess.Output<>nil then
@@ -2863,6 +2869,7 @@ begin
       TheProcess.WaitOnExit;
       //DebugLn('TDefinePool.CreateFPCTemplate target CPU done');
     finally
+      //DebugLn('TDefinePool.CreateFPCTemplate Run with -iTP: OutputLine="',OutputLine,'"');
       TheProcess.Free;
     end;
 
@@ -2876,7 +2883,7 @@ begin
     end;
   except
     on E: Exception do begin
-      DebugLn('ERROR: TDefinePool.CreateFPCTemplate: ',E.Message);
+      DebugLn('ERROR: TDefinePool.CreateFPCTemplate (',Step,'): ',E.Message);
     end;
   end;
   if Result<>nil then

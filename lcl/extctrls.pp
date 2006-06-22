@@ -39,7 +39,7 @@ uses
 type
   { workaround problem with fcl }
   TAbstractReader = TReader;
-
+  
   { TCustomPage }
 
   TPageFlag = (
@@ -90,15 +90,17 @@ type
 
   TNBPages = class(TStrings)
   private
-    FPageList: TList;
+    FPageList: TListWithEvent;
     FNotebook: TCustomNotebook;
+    procedure PageListChange(Ptr: Pointer; AnAction: TListNotification);
   protected
     function Get(Index: Integer): String; override;
     function GetCount: Integer; override;
     function GetObject(Index: Integer): TObject; override;
     procedure Put(Index: Integer; const S: String); override;
   public
-    constructor Create(thePageList: TList; theNotebook: TCustomNotebook);
+    constructor Create(thePageList: TListWithEvent;
+                       theNotebook: TCustomNotebook);
     procedure Clear; override;
     procedure Delete(Index: Integer); override;
     procedure Insert(Index: Integer; const S: String); override;
@@ -134,7 +136,7 @@ type
     FOptions: TNoteBookOptions;
     FPageIndex: Integer;
     FPageIndexOnLastChange: integer;
-    FPageList: TList;  // List of TCustomPage
+    FPageList: TList;  // TListWithEvent of TCustomPage
     FShowTabs: Boolean;
     FTabPosition: TTabPosition;
     Procedure CNNotify(var Message: TLMNotify); message CN_NOTIFY;

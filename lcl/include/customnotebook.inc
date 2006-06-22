@@ -23,12 +23,25 @@
 {------------------------------------------------------------------------------
   TNBPages Constructor
  ------------------------------------------------------------------------------}
-constructor TNBPages.Create(thePageList: TList; theNotebook: TCustomNotebook);
+constructor TNBPages.Create(thePageList: TListWithEvent;
+  theNotebook: TCustomNotebook);
 begin
   inherited Create;
-  // Create the page list and a notebook
   fPageList := thePageList;
+  fPageList.OnChange:=@PageListChange;
   fNotebook := theNotebook;
+end;
+
+{------------------------------------------------------------------------------
+  procedure TNBPages.PageListChange(Ptr: Pointer; AnAction: TListNotification);
+ ------------------------------------------------------------------------------}
+procedure TNBPages.PageListChange(Ptr: Pointer; AnAction: TListNotification);
+begin
+  if (AnAction=lnAdded) then begin
+    (TObject(Ptr) as TCustomPage).Parent:=fNotebook;
+  end else if (AnAction=lnDeleted) then begin
+    (TObject(Ptr) as TCustomPage).Parent:=nil;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -191,9 +204,9 @@ begin
 
   fCompStyle := csNoteBook;
 
-  fPageList := TList.Create;
+  fPageList := TListWithEvent.Create;
 
-  fAccess := TNBPages.Create(fPageList, Self);
+  fAccess := TNBPages.Create(TListWithEvent(fPageList), Self);
   fPageIndex := -1;
   FLoadedPageIndex:=-1;
 

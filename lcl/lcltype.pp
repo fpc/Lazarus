@@ -2122,6 +2122,20 @@ const
   );
 
 
+type
+  TListChangeEvent = procedure(Ptr: Pointer; AnAction: TListNotification) of object;
+
+  { TListWithEvent }
+
+  TListWithEvent = class(TList)
+  private
+    FOnChange: TListChangeEvent;
+  protected
+    procedure Notify(Ptr: Pointer; AnAction: TListNotification); override;
+  public
+    property OnChange: TListChangeEvent read FOnChange write FOnChange;
+  end;
+
 const
   csNone = 0;
   csAlignment = 1;
@@ -2474,6 +2488,14 @@ begin
   else
     result := DEFAULT_CHARSET;
   
+end;
+
+{ TListWithEvent }
+
+procedure TListWithEvent.Notify(Ptr: Pointer; AnAction: TListNotification);
+begin
+  inherited Notify(Ptr, AnAction);
+  if Assigned(OnChange) then OnChange(Ptr,AnAction);
 end;
 
 end.
