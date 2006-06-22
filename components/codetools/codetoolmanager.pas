@@ -555,7 +555,12 @@ type
     function CreatePublishedMethod(Code: TCodeBuffer; const AClassName,
           NewMethodName: string; ATypeInfo: PTypeInfo;
           UseTypeInfoForParameters: boolean = false): boolean;
-          
+
+    // private class parts
+    function CreatePrivateMethod(Code: TCodeBuffer; const AClassName,
+          NewMethodName: string; ATypeInfo: PTypeInfo;
+          UseTypeInfoForParameters: boolean = false): boolean;
+
     // IDE % directives
     function GetIDEDirectives(Code: TCodeBuffer;
           DirectiveList: TStrings): boolean;
@@ -2521,8 +2526,28 @@ begin
   if not Result then exit;
   try
     SourceChangeCache.Clear;
-    Result:=FCurCodeTool.CreatePublishedMethod(UpperCaseStr(AClassName),
-            NewMethodName,ATypeInfo,SourceChangeCache,UseTypeInfoForParameters);
+    Result:=FCurCodeTool.CreateMethod(UpperCaseStr(AClassName),
+            NewMethodName,ATypeInfo,SourceChangeCache,UseTypeInfoForParameters,
+            pcsPublished);
+  except
+    on e: Exception do Result:=HandleException(e);
+  end;
+end;
+
+function TCodeToolManager.CreatePrivateMethod(Code: TCodeBuffer;
+  const AClassName, NewMethodName: string; ATypeInfo: PTypeInfo;
+  UseTypeInfoForParameters: boolean): boolean;
+begin
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.CreatePrivateMethod A');
+  {$ENDIF}
+  Result:=InitCurCodeTool(Code);
+  if not Result then exit;
+  try
+    SourceChangeCache.Clear;
+    Result:=FCurCodeTool.CreateMethod(UpperCaseStr(AClassName),
+            NewMethodName,ATypeInfo,SourceChangeCache,UseTypeInfoForParameters,
+            pcsPrivate);
   except
     on e: Exception do Result:=HandleException(e);
   end;

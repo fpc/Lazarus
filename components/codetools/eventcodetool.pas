@@ -44,7 +44,7 @@ uses
   {$ENDIF}
   Classes, SysUtils, FileProcs, CodeToolsStrConsts, CodeTree, CodeAtom,
   PascalParserTool, CodeCompletionTool, KeywordFuncLists, BasicCodeTools,
-  LinkScanner, AVL_Tree, TypInfo,
+  LinkScanner, AVL_Tree, TypInfo, CodeToolsStructs,
   SourceChanger, FindDeclarationTool, ExtractProcTool;
 
 type
@@ -84,14 +84,17 @@ type
     function RenamePublishedMethod(ClassNode: TCodeTreeNode;
         const UpperOldMethodName, NewMethodName: string;
         SourceChangeCache: TSourceChangeCache): boolean;
-    function CreatePublishedMethod(const UpperClassName,
+        
+    function CreateMethod(const UpperClassName,
         AMethodName: string; ATypeInfo: PTypeInfo;
         SourceChangeCache: TSourceChangeCache;
-        UseTypeInfoForParameters: boolean = false): boolean;
-    function CreatePublishedMethod(ClassNode: TCodeTreeNode;
+        UseTypeInfoForParameters: boolean = false;
+        Section: TPascalClassSection = pcsPublished): boolean;
+    function CreateMethod(ClassNode: TCodeTreeNode;
         const AMethodName: string; ATypeInfo: PTypeInfo;
         SourceChangeCache: TSourceChangeCache;
-        UseTypeInfoForParameters: boolean = false): boolean;
+        UseTypeInfoForParameters: boolean = false;
+        Section: TPascalClassSection = pcsPublished): boolean;
 
     function CreateExprListFromMethodTypeData(TypeData: PTypeData;
         Params: TFindDeclarationParams): TExprTypeList;
@@ -570,34 +573,36 @@ begin
   Result:=SourceChangeCache.Apply;
 end;
 
-function TEventsCodeTool.CreatePublishedMethod(const UpperClassName,
+function TEventsCodeTool.CreateMethod(const UpperClassName,
   AMethodName: string; ATypeInfo: PTypeInfo;
   SourceChangeCache: TSourceChangeCache;
-  UseTypeInfoForParameters: boolean): boolean;
+  UseTypeInfoForParameters: boolean;
+  Section: TPascalClassSection): boolean;
 var AClassNode: TCodeTreeNode;
 begin
   BuildTree(false);
   if not EndOfSourceFound then exit;
   AClassNode:=FindClassNodeInInterface(UpperClassName,true,false,true);
-  Result:=CreatePublishedMethod(AClassNode,AMethodName,ATypeInfo,
-               SourceChangeCache,UseTypeInfoForParameters);
+  Result:=CreateMethod(AClassNode,AMethodName,ATypeInfo,
+                       SourceChangeCache,UseTypeInfoForParameters,Section);
 end;
 
-function TEventsCodeTool.CreatePublishedMethod(ClassNode: TCodeTreeNode;
+function TEventsCodeTool.CreateMethod(ClassNode: TCodeTreeNode;
   const AMethodName: string; ATypeInfo: PTypeInfo;
-  SourceChangeCache: TSourceChangeCache; UseTypeInfoForParameters: boolean
-  ): boolean;
+  SourceChangeCache: TSourceChangeCache; UseTypeInfoForParameters: boolean;
+  Section: TPascalClassSection): boolean;
 var
   CleanMethodDefinition, MethodDefinition: string;
   FindContext: TFindContext;
   ATypeData: PTypeData;
+  NewSection: TNewClassPart;
 begin
   try
     Result:=false;
     if (ClassNode=nil) or (ClassNode.Desc<>ctnClass) or (AMethodName='')
     or (ATypeInfo=nil) or (SourceChangeCache=nil) or (Scanner=nil) then exit;
     {$IFDEF CTDEBUG}
-    DebugLn('[TEventsCodeTool.CreatePublishedMethod] A AMethodName="',AMethodName,'" in "',MainFilename,'"');
+    DebugLn('[TEventsCodeTool.CreateMethod] A AMethodName="',AMethodName,'" in "',MainFilename,'"');
     {$ENDIF}
     // initialize class for code completion
     CodeCompleteClassNode:=ClassNode;
@@ -619,7 +624,7 @@ begin
     end;
     if not ProcExistsInCodeCompleteClass(CleanMethodDefinition) then begin
       {$IFDEF CTDEBUG}
-      DebugLn('[TEventsCodeTool.CreatePublishedMethod] insert method definition to class');
+      DebugLn('[TEventsCodeTool.CreateMethod] insert method definition to class');
       {$ENDIF}
       // insert method definition into class
       if UseTypeInfoForParameters then begin
@@ -637,13 +642,17 @@ begin
       MethodDefinition:=SourceChangeCache.BeautifyCodeOptions.
                          AddClassAndNameToProc(MethodDefinition, '', AMethodName);
       {$IFDEF CTDEBUG}
-      DebugLn('[TEventsCodeTool.CreatePublishedMethod] MethodDefinition="',MethodDefinition,'"');
+      DebugLn('[TEventsCodeTool.CreateMethod] MethodDefinition="',MethodDefinition,'"');
       {$ENDIF}
+      if Section in [pcsPublished,pcsPublic] then
+        NewSection:=ncpPublishedProcs
+      else
+        NewSection:=ncpPrivateProcs;
       AddClassInsertion(nil, CleanMethodDefinition, MethodDefinition, AMethodName,
-                        '', ncpPublishedProcs);
+                        '', NewSection);
     end;
     {$IFDEF CTDEBUG}
-    DebugLn('[TEventsCodeTool.CreatePublishedMethod] invoke class completion');
+    DebugLn('[TEventsCodeTool.CreateMethod] invoke class completion');
     {$ENDIF}
     if not InsertAllNewClassParts then
       RaiseException(ctsErrorDuringInsertingNewClassParts);
@@ -656,7 +665,7 @@ begin
     if not SourceChangeCache.Apply then
       RaiseException(ctsUnableToApplyChanges);
     {$IFDEF CTDEBUG}
-    DebugLn('[TEventsCodeTool.CreatePublishedMethod] END');
+    DebugLn('[TEventsCodeTool.CreateMethod] END');
     {$ENDIF}
     Result:=true;
   finally
