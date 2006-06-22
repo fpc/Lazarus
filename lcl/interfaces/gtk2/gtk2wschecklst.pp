@@ -79,7 +79,7 @@ begin
   aWidget := WidgetInfo^.CoreWidget;
   aTreeModel := gtk_tree_view_get_model (GTK_TREE_VIEW(aWidget));
   if (gtk_tree_model_get_iter_from_string (aTreeModel, @aTreeIter, arg1)) then begin
-    aTreeIter.stamp := GTK_LIST_STORE (aTreeModel)^.stamp; //strange hack
+    // aTreeIter.stamp := GTK_LIST_STORE (aTreeModel)^.stamp; //strange hack
     value := g_new0(SizeOf(TgValue), 1);
     gtk_tree_model_get_value(aTreeModel, @aTreeIter, 0, value);
 
@@ -103,7 +103,7 @@ var
 begin
   aTreeModel := gtk_tree_view_get_model (treeview);
   if (gtk_tree_model_get_iter (aTreeModel, @aTreeIter, arg1)) then begin
-    aTreeIter.stamp := GTK_LIST_STORE (aTreeModel)^.stamp; //strange hack
+    // aTreeIter.stamp := GTK_LIST_STORE (aTreeModel)^.stamp; //strange hack
     value := g_new0(SizeOf(TgValue), 1);
     gtk_tree_model_get_value(aTreeModel, @aTreeIter, 0, value);
 
@@ -121,7 +121,6 @@ class procedure TGtk2WSCustomCheckListBox.SetCallbacks(const AGtkWidget: PGtkWid
 //  Selection: PGtkTreeSelection;
 begin
   TGtkWSBaseScrollingWinControl.SetCallbacks(AGtkWidget,AWidgetInfo);
-  TGtkWSWinControl.SetCallbacks(PGtkObject(AWidgetInfo^.CoreWidget), TComponent(AWidgetInfo^.LCLObject));
 
   {Selection :=} gtk_tree_view_get_selection(PGtkTreeView(AWidgetInfo^.CoreWidget));
   //SignalConnect(PGtkWidget(Selection), 'changed', @Gtk2WS_ListBoxChange, AWidgetInfo);
@@ -161,10 +160,10 @@ begin
     gtk_list_store_set(ListStore, @Iter, [0, AChecked, -1]);
 end;
 
-class function TGtk2WSCustomCheckListBox.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+class function TGtk2WSCustomCheckListBox.CreateHandle(
+  const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
 var
-  TempWidget: PGtkWidget;
+  TreeViewWidget: PGtkWidget;
   p: PGtkWidget;                 // ptr to the newly created GtkWidget
   liststore : PGtkListStore;
   Selection: PGtkTreeSelection;
@@ -172,7 +171,6 @@ var
   column : PGtkTreeViewColumn;
   WidgetInfo: PWidgetInfo;
 begin
-
   Result := TGtkWSBaseScrollingWinControl.CreateHandle(AWinControl,AParams);
   p:= PGtkWidget(Result);
 
@@ -187,39 +185,41 @@ begin
   gtk_scrolled_window_set_shadow_type(PGtkScrolledWindow(p),GTK_SHADOW_IN);
   gtk_widget_show(p);
 
-  liststore := gtk_list_store_new (3, [G_TYPE_BOOLEAN, G_TYPE_STRING, G_TYPE_POINTER, nil]);
-
-  TempWidget:= gtk_tree_view_new_with_model (GTK_TREE_MODEL (liststore));
+  liststore := gtk_list_store_new (3,
+                          [G_TYPE_BOOLEAN, G_TYPE_STRING, G_TYPE_POINTER, nil]);
+  TreeViewWidget:= gtk_tree_view_new_with_model (GTK_TREE_MODEL(liststore));
   g_object_unref (G_OBJECT (liststore));
 
   // Check Column
   renderer := gtk_cell_renderer_toggle_new();
-  column := gtk_tree_view_column_new_with_attributes('', renderer, ['active', 0,  nil]);
+  column := gtk_tree_view_column_new_with_attributes(
+                                    'CHECKBTNS', renderer, ['active', 0,  nil]);
   gtk_cell_renderer_toggle_set_active(GTK_CELL_RENDERER_TOGGLE(renderer), True);
-  gtk_tree_view_append_column (GTK_TREE_VIEW (TempWidget), column);
+  gtk_tree_view_append_column (GTK_TREE_VIEW (TreeViewWidget), column);
   gtk_tree_view_column_set_clickable (GTK_TREE_VIEW_COLUMN (column), TRUE);
 
   SignalConnect(PGtkWidget(renderer), 'toggled', @Gtk2WS_CheckListBoxToggle, WidgetInfo);
-  SignalConnect(PGtkWidget(renderer), 'row_activated', @Gtk2WS_CheckListBoxRowActivate, WidgetInfo);
+  SignalConnect(TreeViewWidget, 'row_activated', @Gtk2WS_CheckListBoxRowActivate, WidgetInfo);
 
   //g_signal_connect (renderer, 'toggled', G_CALLBACK (@gtk_clb_toggle), AWinControl);
-  //g_signal_connect (TempWidget, 'row_activated', G_CALLBACK (@gtk_clb_toggle_row_activated), AWinControl);
+  //g_signal_connect (TreeViewWidget, 'row_activated', G_CALLBACK (@gtk_clb_toggle_row_activated), AWinControl);
 
   // Text Column
   renderer := gtk_cell_renderer_text_new();
-  column := gtk_tree_view_column_new_with_attributes ('LISTITEMS', renderer, ['text', 1, nil]);
-  gtk_tree_view_append_column (GTK_TREE_VIEW (TempWidget), column);
+  column := gtk_tree_view_column_new_with_attributes (
+                                       'LISTITEMS', renderer, ['text', 1, nil]);
+  gtk_tree_view_append_column (GTK_TREE_VIEW (TreeViewWidget), column);
   gtk_tree_view_column_set_clickable (GTK_TREE_VIEW_COLUMN (column), TRUE);
 
-  gtk_tree_view_set_headers_visible(GTK_TREE_VIEW (TempWidget), False);
+  gtk_tree_view_set_headers_visible(GTK_TREE_VIEW (TreeViewWidget), False);
 
-  gtk_container_add(GTK_CONTAINER(p), TempWidget);
-  gtk_widget_show(TempWidget);
+  gtk_container_add(GTK_CONTAINER(p), TreeViewWidget);
+  gtk_widget_show(TreeViewWidget);
 
-  SetMainWidget(p, TempWidget);
-  GetWidgetInfo(p, True)^.CoreWidget := TempWidget;
+  SetMainWidget(p, TreeViewWidget);
+  GetWidgetInfo(p, True)^.CoreWidget := TreeViewWidget;
 
-  Selection := gtk_tree_view_get_selection(PGtkTreeView(TempWidget));
+  Selection := gtk_tree_view_get_selection(PGtkTreeView(TreeViewWidget));
 
   case TCustomCheckListBox(AWinControl).MultiSelect of
     True : gtk_tree_selection_set_mode(Selection, GTK_SELECTION_MULTIPLE);
@@ -236,6 +236,6 @@ initialization
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
-  RegisterWSComponent(TCheckListBox, TGtk2WSCustomCheckListBox);
+  RegisterWSComponent(TCustomCheckListBox, TGtk2WSCustomCheckListBox);
 ////////////////////////////////////////////////////
 end.

@@ -114,11 +114,18 @@ function CompareLineInfoCacheItems(Data1, Data2: Pointer): integer;
 function CompareAddrWithLineInfoCacheItem(Addr, Item: Pointer): integer;
 
 
+type
+  TStringsSortCompare = function(const Item1, Item2: string): Integer;
+
+
+procedure MergeSort(List: TFPList; const OnCompare: TListSortCompare);
+procedure MergeSort(List: TStrings; const OnCompare: TStringsSortCompare);
 
 function ShortCutToText(ShortCut: TShortCut): string;
 function TextToShortCut(const ShortCutText: string): TShortCut;
 
-function GetCompleteText(sText: string; iSelStart: Integer; bCaseSensitive, bSearchAscending: Boolean; slTextList: TStrings): string;
+function GetCompleteText(sText: string; iSelStart: Integer;
+  bCaseSensitive, bSearchAscending: Boolean; slTextList: TStrings): string;
 function IsEditableTextKey(Key: Word): Boolean;
 
 // Hooks used to prevent unit circles
@@ -164,6 +171,9 @@ function RoundToCardinal(const e: Extended): cardinal;
 function TruncToInt(const e: Extended): integer;
 function TruncToCardinal(const e: Extended): cardinal;
 function StrToDouble(const s: string): double;
+
+
+
 
 
 // debugging
@@ -1083,6 +1093,140 @@ begin
   DebugLn('StrToDouble "',s,'"');
   {$ENDIF}
   Result:=Double(StrToFloat(s));
+end;
+
+procedure MergeSort(List: TFPList; const OnCompare: TListSortCompare);
+var
+  MergeList: PPointer;
+
+  procedure Merge(Pos1, Pos2, Pos3: integer);
+  // merge two sorted arrays
+  // the first array ranges Pos1..Pos2-1, the second ranges Pos2..Pos3
+  var Src1Pos,Src2Pos,DestPos,cmp,a:integer;
+  begin
+    while (Pos3>=Pos2) and (OnCompare(List[Pos2-1],List[Pos3])<=0) do
+      dec(Pos3);
+    if (Pos1>=Pos2) or (Pos2>Pos3) then exit;
+    Src1Pos:=Pos2-1;
+    Src2Pos:=Pos3;
+    DestPos:=Pos3;
+    while (Src2Pos>=Pos2) and (Src1Pos>=Pos1) do begin
+      cmp:=OnCompare(List[Src1Pos],List[Src2Pos]);
+      if cmp>0 then begin
+        MergeList[DestPos]:=List[Src1Pos];
+        dec(Src1Pos);
+      end else begin
+        MergeList[DestPos]:=List[Src2Pos];
+        dec(Src2Pos);
+      end;
+      dec(DestPos);
+    end;
+    while Src2Pos>=Pos2 do begin
+      MergeList[DestPos]:=List[Src2Pos];
+      dec(Src2Pos);
+      dec(DestPos);
+    end;
+    for a:=DestPos+1 to Pos3 do
+      List[a]:=MergeList[a];
+  end;
+
+  procedure Sort(StartPos, EndPos: integer);
+  // sort an interval in List. Use MergeList as work space.
+  var
+    cmp, mid: integer;
+    p: Pointer;
+  begin
+    if StartPos=EndPos then begin
+    end else if StartPos+1=EndPos then begin
+      cmp:=OnCompare(List[StartPos],List[EndPos]);
+      if cmp>0 then begin
+        p:=List[StartPos];
+        List[StartPos]:=List[EndPos];
+        List[EndPos]:=p;
+      end;
+    end else if EndPos>StartPos then begin
+      mid:=(StartPos+EndPos) shr 1;
+      Sort(StartPos,mid);
+      Sort(mid+1,EndPos);
+      Merge(StartPos,mid+1,EndPos);
+    end;
+  end;
+
+begin
+  if (List=nil) or (List.Count<=1) then exit;
+  ReAllocMem(MergeList,List.Count*SizeOf(Pointer));
+  Sort(0,List.Count-1);
+  Freemem(MergeList);
+end;
+
+procedure MergeSort(List: TStrings; const OnCompare: TStringsSortCompare);
+var
+  MergeList: PAnsiString;
+
+  procedure Merge(Pos1, Pos2, Pos3: integer);
+  // merge two sorted arrays
+  // the first array ranges Pos1..Pos2-1, the second ranges Pos2..Pos3
+  var Src1Pos,Src2Pos,DestPos,cmp,a:integer;
+  begin
+    while (Pos3>=Pos2) and (OnCompare(List[Pos2-1],List[Pos3])<=0) do
+      dec(Pos3);
+    if (Pos1>=Pos2) or (Pos2>Pos3) then exit;
+    Src1Pos:=Pos2-1;
+    Src2Pos:=Pos3;
+    DestPos:=Pos3;
+    while (Src2Pos>=Pos2) and (Src1Pos>=Pos1) do begin
+      cmp:=OnCompare(List[Src1Pos],List[Src2Pos]);
+      if cmp>0 then begin
+        MergeList[DestPos]:=List[Src1Pos];
+        dec(Src1Pos);
+      end else begin
+        MergeList[DestPos]:=List[Src2Pos];
+        dec(Src2Pos);
+      end;
+      dec(DestPos);
+    end;
+    while Src2Pos>=Pos2 do begin
+      MergeList[DestPos]:=List[Src2Pos];
+      dec(Src2Pos);
+      dec(DestPos);
+    end;
+    for a:=DestPos+1 to Pos3 do
+      List[a]:=MergeList[a];
+  end;
+
+  procedure Sort(StartPos, EndPos: integer);
+  // sort an interval in List. Use MergeList as work space.
+  var
+    cmp, mid: integer;
+    s: string;
+  begin
+    if StartPos=EndPos then begin
+    end else if StartPos+1=EndPos then begin
+      cmp:=OnCompare(List[StartPos],List[EndPos]);
+      if cmp>0 then begin
+        s:=List[StartPos];
+        List[StartPos]:=List[EndPos];
+        List[EndPos]:=s;
+      end;
+    end else if EndPos>StartPos then begin
+      mid:=(StartPos+EndPos) shr 1;
+      Sort(StartPos,mid);
+      Sort(mid+1,EndPos);
+      Merge(StartPos,mid+1,EndPos);
+    end;
+  end;
+
+var
+  CurSize: PtrInt;
+  i: Integer;
+begin
+  if (List=nil) or (List.Count<=1) then exit;
+  CurSize:=PtrInt(List.Count)*SizeOf(Pointer);
+  ReAllocMem(MergeList,CurSize);
+  FillChar(MergeList^,CurSize,0);
+  Sort(0,List.Count-1);
+  for i:=0 to List.Count-1 do MergeList[i]:='';
+  Freemem(MergeList);
 end;
 
 procedure InitializeDebugOutput;

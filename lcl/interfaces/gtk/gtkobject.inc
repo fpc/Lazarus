@@ -3632,6 +3632,7 @@ begin
 
     LM_DESTROY :
     begin
+      //DebugLn(['TGtkWidgetSet.SetCallback ',DbgSName(ALCLObject)]);
       ConnectSenderSignal(gObject, 'destroy', @gtkdestroyCB);
     end;
 

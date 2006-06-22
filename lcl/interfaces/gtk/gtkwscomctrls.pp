@@ -337,17 +337,17 @@ end;
 class procedure TGtkWSTrackBar.ApplyChanges(const ATrackBar: TCustomTrackBar);
 var
   wHandle: HWND;
-  Widget: PGtkWidget;
+  Adjustment: PGtkAdjustment;
 begin
   with ATrackBar do
   begin
     wHandle := Handle;
-    Widget := GTK_WIDGET(gtk_range_get_adjustment (GTK_RANGE(Pointer(wHandle))));
-    GTK_ADJUSTMENT(Widget)^.lower := Min;
-    GTK_ADJUSTMENT(Widget)^.Upper := Max;
-    GTK_ADJUSTMENT(Widget)^.Value := Position;
-    GTK_ADJUSTMENT(Widget)^.step_increment := LineSize;
-    GTK_ADJUSTMENT(Widget)^.page_increment := PageSize;
+    Adjustment := gtk_range_get_adjustment (GTK_RANGE(Pointer(wHandle)));
+    Adjustment^.lower := Min;
+    Adjustment^.Upper := Max;
+    Adjustment^.Value := Position;
+    Adjustment^.step_increment := LineSize;
+    Adjustment^.page_increment := PageSize;
     { now do some of the more sophisticated features }
     { Hint: For some unknown reason we have to disable the draw_value first,
       otherwise it's set always to true }
@@ -363,7 +363,7 @@ begin
           trBottom: gtk_scale_set_value_pos (GTK_SCALE (Pointer(wHandle)), GTK_POS_BOTTOM);
        end;
     end;
-    //Not here (Delphi compatibility):  gtk_signal_emit_by_name (GTK_Object (Widget), 'value_changed');
+    //Not here (Delphi compatibility):  gtk_signal_emit_by_name (GTK_Object (Adjustment), 'value_changed');
   end;
 end;
 

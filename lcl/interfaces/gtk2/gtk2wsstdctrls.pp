@@ -95,11 +95,11 @@ type
     class function  GetStrings(const ACustomListBox: TCustomListBox): TStrings; override;
     class function  GetItemIndex(const ACustomListBox: TCustomListBox): integer; override;
     class function  GetTopIndex(const ACustomListBox: TCustomListBox): integer; override;
-    class procedure SelectItem(const ACustomListBox: TCustomListBox; AIndex: integer; ASelected: boolean); override;
+    class procedure SelectItem(const ACustomListBox: TCustomListBox; AnIndex: integer; ASelected: boolean); override;
     class procedure SetBorder(const ACustomListBox: TCustomListBox); override;
     class procedure SetItemIndex(const ACustomListBox: TCustomListBox; const AIndex: integer); override;
     class procedure SetSelectionMode(const ACustomListBox: TCustomListBox; const AExtendedSelect,
-      AMultiSelect: boolean); override;
+                                     AMultiSelect: boolean); override;
     class procedure SetSorted(const ACustomListBox: TCustomListBox; AList: TStrings; ASorted: boolean); override;
     class procedure SetTopIndex(const ACustomListBox: TCustomListBox; const NewTopIndex: integer); override;
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
@@ -256,8 +256,8 @@ begin
   DeliverMessage(WidgetInfo^.LCLObject, Mess);
 end;
 
-class function TGtk2WSCustomListBox.GetItemIndex(const ACustomListBox: TCustomListBox
-  ): integer;
+class function TGtk2WSCustomListBox.GetItemIndex(
+  const ACustomListBox: TCustomListBox): integer;
 var
   Handle: HWND;
   Widget: PGtkWidget;
@@ -286,17 +286,16 @@ begin
       end;
     end;
   end;
-
 end;
 
-class function TGtk2WSCustomListBox.GetTopIndex(const ACustomListBox: TCustomListBox
-  ): integer;
+class function TGtk2WSCustomListBox.GetTopIndex(
+  const ACustomListBox: TCustomListBox): integer;
 begin
   Result:=inherited GetTopIndex(ACustomListBox);
 end;
 
-class procedure TGtk2WSCustomListBox.SelectItem(const ACustomListBox: TCustomListBox;
-  AIndex: integer; ASelected: boolean);
+class procedure TGtk2WSCustomListBox.SelectItem(
+  const ACustomListBox: TCustomListBox; AnIndex: integer; ASelected: boolean);
 var
   Handle: HWND;
   Widget: PGtkWidget; // pointer to gtk-widget (local use when neccessary)
@@ -309,7 +308,7 @@ begin
   ListStoreModel := gtk_tree_view_get_model(PGtkTreeView(Widget));
   Selection := gtk_tree_view_get_selection(PGtkTreeView(Widget));
 
-  if gtk_tree_model_iter_nth_child(ListStoreModel, @Iter, nil, AIndex) then begin
+  if gtk_tree_model_iter_nth_child(ListStoreModel, @Iter, nil, AnIndex) then begin
     case ASelected of
       True:
       begin
@@ -325,7 +324,8 @@ begin
   end;
 end;
 
-class procedure TGtk2WSCustomListBox.SetBorder(const ACustomListBox: TCustomListBox);
+class procedure TGtk2WSCustomListBox.SetBorder(
+  const ACustomListBox: TCustomListBox);
 begin
   // TODO
   debugln('TGtk2WSCustomListBox.SetBorder TODO');
@@ -451,20 +451,19 @@ begin
   SetCallbacks(p, WidgetInfo);
 end;
 
-class procedure TGtk2WSCustomListBox.SetCallbacks(const AGtkWidget: PGtkWidget;
-  const AWidgetInfo: PWidgetInfo);
+class procedure TGtk2WSCustomListBox.SetCallbacks(
+  const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo);
 var
-Selection: PGtkTreeSelection;
+  Selection: PGtkTreeSelection;
 begin
   TGtkWSBaseScrollingWinControl.SetCallbacks(AGtkWidget,AWidgetInfo);
-  TGtkWSWinControl.SetCallbacks(PGtkObject(AWidgetInfo^.CoreWidget), TComponent(AWidgetInfo^.LCLObject));
-  
+
   Selection := gtk_tree_view_get_selection(PGtkTreeView(AWidgetInfo^.CoreWidget));
   SignalConnect(PGtkWidget(Selection), 'changed', @Gtk2WS_ListBoxChange, AWidgetInfo);
 end;
 
-class function TGtk2WSCustomListBox.GetSelCount(const ACustomListBox: TCustomListBox
-  ): integer;
+class function TGtk2WSCustomListBox.GetSelCount(
+  const ACustomListBox: TCustomListBox): integer;
 var
   Handle: HWND;
   Widget: PGtkWidget; // pointer to gtk-widget (local use when neccessary)
@@ -482,8 +481,8 @@ begin
   g_list_free(Rows);
 end;
 
-class function TGtk2WSCustomListBox.GetSelected(const ACustomListBox: TCustomListBox;
-  const AIndex: integer): boolean;
+class function TGtk2WSCustomListBox.GetSelected(
+  const ACustomListBox: TCustomListBox; const AIndex: integer): boolean;
 var
   Handle: HWND;
   Widget: PGtkWidget; // pointer to gtk-widget (local use when neccessary)
@@ -502,8 +501,8 @@ begin
   end;
 end;
 
-class function TGtk2WSCustomListBox.GetStrings(const ACustomListBox: TCustomListBox
-  ): TStrings;
+class function TGtk2WSCustomListBox.GetStrings(
+  const ACustomListBox: TCustomListBox): TStrings;
 var
   Widget: PGtkWidget;// pointer to gtk-widget
   Handle: HWND;
@@ -523,20 +522,17 @@ begin
     csCheckListBox, csListBox:
       begin
         Widget := GetWidgetInfo(Pointer(Handle), True)^.CoreWidget;
-        Result := TGtkListStoreStringList.Create(gtk_tree_view_get_model(PGtkTreeView(Widget)),
+        Result := TGtkListStoreStringList.Create(
+                          gtk_tree_view_get_model(PGtkTreeView(Widget)),
           Ord(ACustomListBox.fCompStyle = csCheckListBox) ,ACustomListBox);
-        if ACustomListBox is TCustomListBox then
-          TGtkListStoreStringList(Result).Sorted := ACustomListBox.Sorted;
+        TGtkListStoreStringList(Result).Sorted := ACustomListBox.Sorted;
       end;
   else
     raise Exception.Create('TGtk2WSCustomListBox.GetStrings');
   end;
-
-
 end;
 
 { TGtk2WSCustomCheckBox }
-
 
 class function TGtk2WSCustomCheckBox.RetrieveState(
   const ACustomCheckBox: TCustomCheckBox): TCheckBoxState;

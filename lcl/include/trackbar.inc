@@ -45,12 +45,7 @@
     - range checking for min/max could raise an exception
     - use RecreateWnd when the orientation changes!
 
-  Bugs:
-
-    - When changing orientation after the Trackbar has been constructed
-      the GTK version will CRASH
 }
-{ASSERTIONS ON}
 {------------------------------------------------------------------------------
   Method: TCustomTrackBar.Create
   Params:  AOwner: the owner of the class
@@ -75,7 +70,7 @@ begin
   FTickMarks:=tmBottomRight;
   FTickStyle:=tsAuto;
   TabStop := true;
-  SetInitialBounds(0,0,100,20);
+  SetInitialBounds(0,0,100,25);
 end;
 
 {------------------------------------------------------------------------------
@@ -133,7 +128,7 @@ end;
   Method: TCustomTrackBar.SetParams
   Params:  APosition : new position
            AMin      : new minimum
-	   AMax	     : new maximum
+           AMax      : new maximum
   Returns: Nothing
 
   Set new parameters for the trackbar.

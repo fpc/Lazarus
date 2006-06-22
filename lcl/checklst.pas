@@ -138,7 +138,6 @@ begin
   FItemDataOffset := inherited GetCachedDataSize;
 end;
 
-
 procedure TCustomCheckListBox.DoChange(var Msg);
 begin
   clickChecked;

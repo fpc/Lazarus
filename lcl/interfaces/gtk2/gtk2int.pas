@@ -104,7 +104,8 @@ type
     procedure SetSorted(Val : boolean); virtual;
     procedure UpdateItemCache;
   public
-    constructor Create(ListStore : PGtkListStore; ColumnIndex : Integer; TheOwner: TWinControl);
+    constructor Create(ListStore : PGtkListStore;
+                       ColumnIndex : Integer; TheOwner: TWinControl);
     destructor Destroy; override;
     function Add(const S: string): Integer; override;
     procedure Assign(Source : TPersistent); override;
@@ -193,7 +194,8 @@ const
   Returns:
 
  ------------------------------------------------------------------------------}
-constructor TGtkListStoreStringList.Create(ListStore : PGtkListStore; ColumnIndex : Integer; TheOwner: TWinControl);
+constructor TGtkListStoreStringList.Create(ListStore : PGtkListStore;
+  ColumnIndex : Integer; TheOwner: TWinControl);
 begin
   inherited Create;
   if ListStore = nil then RaiseException(
@@ -232,10 +234,19 @@ end;
 
  ------------------------------------------------------------------------------}
 procedure TGtkListStoreStringList.SetSorted(Val : boolean);
+var
+  i: Integer;
 begin
   if Val <> FSorted then begin
+    if Val then begin
+      for i:=0 to Count-2 do begin
+        if AnsiCompareText(Strings[i],Strings[i+1])<0 then begin
+          Sort;
+          break;
+        end;
+      end;
+    end;
     FSorted:= Val;
-    if FSorted then Sort;
   end;
 end;
 
@@ -284,16 +295,17 @@ end;
 procedure TGtkListStoreStringList.Sort;
 var
   sl: TStringList;
+  OldSorted: Boolean;
 begin
   BeginUpdate;
   // sort internally (sorting in the widget would be slow and unpretty ;)
   sl:=TStringList.Create;
   sl.Assign(Self);
-  sl.Sort; // currently this is quicksort ->
-             // Disadvantages: - worst case on sorted list
-             //                - not keeping order
-             // ToDo: replace by mergesort and add customsort
+  MergeSort(sl,@AnsiCompareText);
+  OldSorted:=Sorted;
+  FSorted:=false;
   Assign(sl);
+  FSorted:=OldSorted;
   sl.Free;
   EndUpdate;
 end;
@@ -301,7 +313,6 @@ end;
 function TGtkListStoreStringList.IsEqual(List: TStrings): boolean;
 var
   i, Cnt: integer;
-  CmpList: TStringList;
 begin
   if List=Self then begin
     Result:=true;
@@ -312,30 +323,20 @@ begin
   BeginUpdate;
   Cnt:=Count;
   if (Cnt<>List.Count) then exit;
-  CmpList:=TStringList.Create;
-  try
-    CmpList.Assign(List);
-    CmpList.Sorted:=FSorted;
-    for i:=0 to Cnt-1 do begin
-      if (Strings[i]<>CmpList[i]) or (Objects[i]<>CmpList.Objects[i]) then exit;
-    end;
-  finally
-    CmpList.Free;
-  end;
+  for i:=0 to Cnt-1 do
+    if (Strings[i]<>List[i]) or (Objects[i]<>List.Objects[i]) then exit;
   Result:=true;
   EndUpdate;
 end;
 
 procedure TGtkListStoreStringList.BeginUpdate;
 begin
-  if FUpdateCount=0 then Include(FStates,glsItemCacheNeedsUpdate);
   inc(FUpdateCount);
 end;
 
 procedure TGtkListStoreStringList.EndUpdate;
 begin
   dec(FUpdateCount);
-  if FUpdateCount=0 then Include(FStates,glsItemCacheNeedsUpdate);
 end;
 
 {------------------------------------------------------------------------------
@@ -347,22 +348,33 @@ end;
 procedure TGtkListStoreStringList.Assign(Source : TPersistent);
 var
   i, Cnt: integer;
+  CmpList: TStrings;
+  OldSorted: Boolean;
 begin
   if (Source=Self) or (Source=nil) then exit;
   if ((Source is TGtkListStoreStringList)
     and (TGtkListStoreStringList(Source).FGtkListStore=FGtkListStore))
   then
-    RaiseException('TGtkListStoreStringList.Assign: There 2 lists with the same FGtkListStore');
+    RaiseException('TGtkListStoreStringList.Assign: There are 2 lists with the same FGtkListStore');
   BeginUpdate;
+  OldSorted:=Sorted;
+  CmpList:=nil;
   try
     if Source is TStrings then begin
       // clearing and resetting can change other properties of the widget,
       // => don't change if the content is already the same
-      if IsEqual(TStrings(Source)) then exit;
+      if Sorted then begin
+        CmpList:=TStringList.Create;
+        CmpList.Assign(TStrings(Source));
+        MergeSort(TStringList(CmpList),@AnsiCompareText);
+      end else
+        CmpList:=TStrings(Source);
+      if IsEqual(CmpList) then exit;
       Clear;
+      FSorted:=false;
       Cnt:=TStrings(Source).Count;
       for i:=0 to Cnt - 1 do begin
-        AddObject(TStrings(Source)[i],TStrings(Source).Objects[i]);
+        AddObject(CmpList[i],CmpList.Objects[i]);
       end;
       // ToDo: restore other settings
 
@@ -370,6 +382,8 @@ begin
     end else
       inherited Assign(Source);
   finally
+    fSorted:=OldSorted;
+    if CmpList<>Source then CmpList.Free;
     EndUpdate;
   end;
 end;
@@ -392,7 +406,8 @@ begin
     ListItem:=FCachedItems[Index];
 
     Item := nil;
-    gtk_tree_model_get(GTK_TREE_MODEL(FGtkListStore), @ListItem, [FColumnIndex, @Item, -1]);
+    gtk_tree_model_get(GTK_TREE_MODEL(FGtkListStore), @ListItem,
+                       [FColumnIndex, @Item, -1]);
     if (Item <> nil) then begin
       Result:= StrPas(Item);
       g_free(Item);
@@ -454,7 +469,7 @@ end;
 procedure TGtkListStoreStringList.Clear;
 begin
   Include(FStates,glsItemCacheNeedsUpdate);
-  gtk_list_store_clear(FGtkListStore)
+  gtk_list_store_clear(FGtkListStore);
 end;
 
 {------------------------------------------------------------------------------
@@ -542,7 +557,6 @@ begin
     gtk_list_store_set(FGtkListStore, @li, [FColumnIndex, PChar(S), -1]);
 
     Include(FStates,glsItemCacheNeedsUpdate);
-
   finally
     EndUpdate;
   end;

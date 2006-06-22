@@ -328,7 +328,8 @@ begin
   end;
 end;
 
-class procedure TGtkWSWinControl.SetCallbacks(const AGTKObject: PGTKObject; const AComponent: TComponent);
+class procedure TGtkWSWinControl.SetCallbacks(const AGTKObject: PGTKObject;
+  const AComponent: TComponent);
 begin
   GtkWidgetSet.SetCallback(LM_SHOWWINDOW, AGTKObject, AComponent);
   GtkWidgetSet.SetCallback(LM_DESTROY, AGTKObject, AComponent);
@@ -836,9 +837,11 @@ begin
   // SetCallbacks isn't called here, it should be done in the 'derived' class
 end;
 
-class procedure TGtkWSBaseScrollingWinControl.SetCallbacks(const AWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo);
+class procedure TGtkWSBaseScrollingWinControl.SetCallbacks(
+  const AWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo);
 begin
-  TGtkWSWinControl.SetCallbacks(PGtkObject(AWidget), TComponent(AWidgetInfo^.LCLObject));
+  TGtkWSWinControl.SetCallbacks(PGtkObject(AWidget),
+                                TComponent(AWidgetInfo^.LCLObject));
 
   SignalConnect(
     PGtkWidget(gtk_scrolled_window_get_hadjustment(PGTKScrolledWindow(AWidget))),

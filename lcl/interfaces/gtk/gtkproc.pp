@@ -619,7 +619,7 @@ function GetDesignOnlySignalFlag(Widget: PGtkWidget;
 // new signal procs, these will obsolete the old ones
 // new signalshandlers are attached locally in the new WSxxx classes
 // they also have PWidgetInfo as data (and not the TControl)
-// singnals are now also handled dedicated and locally, so no case statements
+// signals are now also handled dedicated and locally, so no case statements
 // anymore in signal handlers
 procedure SignalConnect(const AWidget: PGTKWidget; const ASignal: PChar;
   const AProc: Pointer; const AInfo: PWidgetInfo);

@@ -4640,7 +4640,7 @@ end;
   Returns: Nothing
 
   Connects a gtk signal handler.
-  This is wrappers to get around gtk casting
+  This is a wrapper to get around gtk casting
 -------------------------------------------------------------------------------}
 procedure SignalConnect(const AWidget: PGTKWidget; const ASignal: PChar;
   const AProc: Pointer; const AInfo: PWidgetInfo);
@@ -4657,7 +4657,7 @@ end;
   Returns: Nothing
 
   Connects a gtk signal after handler. 
-  This is wrappers to get around gtk casting
+  This is a wrapper to get around gtk casting
 -------------------------------------------------------------------------------}
 procedure SignalConnectAfter(const AWidget:PGTKWidget; const ASignal: PChar;
   const AProc: Pointer; const AInfo: PWidgetInfo);
@@ -4775,8 +4775,7 @@ begin
     and (not (csfDesignOnly in ASFlags))
     then begin
       OldDesignMask := GetDesignSignalMask(PGtkWidget(AnObject));
-      NewDesignMask :=
-        OldDesignMask and not DesignSignalMasks[DesignSignalType];
+      NewDesignMask :=OldDesignMask and not DesignSignalMasks[DesignSignalType];
       if OldDesignMask <> NewDesignMask
       then SetDesignSignalMask(PGtkWidget(AnObject),NewDesignMask);
     end;
