@@ -1,9 +1,9 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: lazarus中文文件\n"
+"Project-Id-Version: 0.9.16\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2006-05-24 20:57+0800\n"
-"Last-Translator: \n"
+"PO-Revision-Date: 2006-06-04 02:30+0800\n"
+"Last-Translator: 巫山霏云 <freefcw@gmail.com>\n"
 "Language-Team: newsfree <freefcw@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -150,7 +150,7 @@ msgstr "添加页面"
 
 #: objinspstrconsts:tccesaddtab
 msgid "Add tab"
-msgstr ""
+msgstr "添加页面"
 
 #: objinspstrconsts:oisaddtofavorites
 msgid "Add to Favorites"
@@ -178,7 +178,7 @@ msgstr "应用"
 
 #: objinspstrconsts:oisarray
 msgid "Array"
-msgstr "排列"
+msgstr "Array"
 
 #: objinspstrconsts:oisstdactionlisteditorclass
 msgid "Available Action Classes:"
@@ -330,7 +330,7 @@ msgstr "删除页面"
 
 #: objinspstrconsts:tccesdeletetab
 msgid "Delete tab"
-msgstr ""
+msgstr "删除页面"
 
 #: objinspstrconsts:clbdelete
 msgid "Delete the Item %d \"%s\"?"
@@ -342,7 +342,7 @@ msgstr "对话框"
 
 #: objinspstrconsts:clbdown
 msgid "Do&wn"
-msgstr "Do&wn"
+msgstr "下移(&W)"
 
 #: objinspstrconsts:oicoleditdown
 msgid "Down"
@@ -446,7 +446,7 @@ msgstr "图片"
 
 #: objinspstrconsts:oisinputmask
 msgid "Input Mask:"
-msgstr "输入格式:"
+msgstr "输入掩码:"
 
 #: objinspstrconsts:oistdactdatasetinserthint
 msgid "Insert"
@@ -458,7 +458,7 @@ msgstr "插入页面"
 
 #: objinspstrconsts:tccesinserttab
 msgid "Insert tab"
-msgstr ""
+msgstr "插入页面"
 
 #: objinspstrconsts:oisint64
 msgid "Int64"
@@ -474,7 +474,7 @@ msgstr "界面"
 
 #: objinspstrconsts:oisinvalidpropertyvalue
 msgid "Invalid property value"
-msgstr "错误的属性值"
+msgstr "属性值错误"
 
 #: objinspstrconsts:sccstredtitem
 msgid "Item"
@@ -518,11 +518,11 @@ msgstr "载入..."
 
 #: objinspstrconsts:oismasks
 msgid "Masks..."
-msgstr "格式..."
+msgstr "掩码..."
 
 #: objinspstrconsts:oismethod
 msgid "Method"
-msgstr "方法"
+msgstr "Method"
 
 #: objinspstrconsts:clbmodify
 msgid "Modify the Item"
@@ -546,11 +546,11 @@ msgstr "右移页面"
 
 #: objinspstrconsts:tccesmovetableft
 msgid "Move tab left"
-msgstr ""
+msgstr "左移页面"
 
 #: objinspstrconsts:tccesmovetabright
 msgid "Move tab right"
-msgstr ""
+msgstr "右移页面"
 
 #: objinspstrconsts:cactionlisteditornewaction
 msgid "New Action"
@@ -582,7 +582,7 @@ msgstr "对象"
 
 #: objinspstrconsts:oisobjectinspector
 msgid "Object Inspector"
-msgstr "对象浏览器"
+msgstr "对象观察器"
 
 #: objinspstrconsts:oisok2
 msgid "Ok"
@@ -594,7 +594,7 @@ msgstr "打开"
 
 #: objinspstrconsts:oisopenmaskfile
 msgid "Open masks file (*.dem)"
-msgstr "打开格式文件 (*.dem)"
+msgstr "打开掩码文件 (*.dem)"
 
 #: objinspstrconsts:oisoptions
 msgid "Options"
@@ -646,7 +646,7 @@ msgstr "从收藏中移除"
 
 #: objinspstrconsts:oissamplemasks
 msgid "Sample Masks:"
-msgstr "样例格式:"
+msgstr "掩码样例:"
 
 #: objinspstrconsts:sccstredtsave
 msgid "Save"
@@ -706,7 +706,7 @@ msgstr "选择索引:"
 
 #: objinspstrconsts:oisset
 msgid "Set"
-msgstr "集合"
+msgstr "Set"
 
 #: objinspstrconsts:oissettodefaultvalue
 msgid "Set to default value"
@@ -734,7 +734,7 @@ msgstr "排序"
 
 #: objinspstrconsts:oisstdactionlisteditor
 msgid "Standard Action Classes"
-msgstr "标准类动作"
+msgstr "标准动作类"
 
 #: objinspstrconsts:sccstredtlabelstateindex
 msgid "State Index:"
@@ -770,7 +770,7 @@ msgstr "测试对话框..."
 
 #: objinspstrconsts:sccstredtlabeltext
 msgid "Text:"
-msgstr "文本"
+msgstr "文本:"
 
 #: objinspstrconsts:cactionlisteditorpaneltoolbar
 msgid "Toolbar"
@@ -778,7 +778,7 @@ msgstr "工具栏"
 
 #: objinspstrconsts:oistdacthelptopicsearchhint
 msgid "Topic Search"
-msgstr "查找主题"
+msgstr "主题搜索"
 
 #: objinspstrconsts:sccsiledtransparentcolor
 msgid "Transparent Color:"

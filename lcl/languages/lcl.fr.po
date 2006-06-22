@@ -159,6 +159,10 @@ msgstr "Tous les fichiers (%s)|%s|%s"
 msgid "Backspace"
 msgstr ""
 
+#: lclstrconsts:rsbackward
+msgid "Backward"
+msgstr ""
+
 #: lclstrconsts:rsbitmaps
 msgid "Bitmaps"
 msgstr ""
@@ -199,6 +203,10 @@ msgstr "Dessin sur le Canvas non autorisé"
 msgid "Capital"
 msgstr "Majuscule"
 
+#: lclstrconsts:rscasesensitive
+msgid "Case sensitive"
+msgstr ""
+
 #: lclstrconsts:ifsvk_clear
 msgid "Clear"
 msgstr "Effacer"
@@ -226,6 +234,10 @@ msgstr "Personnalisé"
 #: lclstrconsts:ifsvk_delete
 msgid "Delete"
 msgstr "Supprimer"
+
+#: lclstrconsts:rsdirection
+msgid "Direction"
+msgstr ""
 
 #: lclstrconsts:rsfddirectorymustexist
 msgid "Directory must exist"
@@ -307,6 +319,14 @@ msgstr "Filtre:"
 msgid "Final"
 msgstr ""
 
+#: lclstrconsts:rsfind
+msgid "Find"
+msgstr ""
+
+#: lclstrconsts:rsfindmore
+msgid "Find more"
+msgstr ""
+
 #: lclstrconsts:rsfixedcolstoobig
 msgid "FixedCols can't be >= ColCount"
 msgstr "FixedCols ne peut pas être supérieur à ColCount"
@@ -318,6 +338,10 @@ msgstr "FixedRows ne peut pas être supérieur à RowCount"
 #: lclstrconsts:rsformstreamingerror
 msgid "Form streaming \"%s\" error: %s"
 msgstr "Dans le flux de fiche \"%s\": erreur %s"
+
+#: lclstrconsts:rsforward
+msgid "Forward"
+msgstr ""
 
 #: lclstrconsts:rsgridfiledoesnotexists
 msgid "Grid file doesn't exists"
@@ -587,6 +611,14 @@ msgstr "Précédent"
 msgid "Property %s does not exist"
 msgstr "La propriété %s n'existe pas"
 
+#: lclstrconsts:rsreplace
+msgid "Replace"
+msgstr ""
+
+#: lclstrconsts:rsreplaceall
+msgid "Replace all"
+msgstr ""
+
 #: lclstrconsts:lislclresourcesnotfound
 msgid "Resource %s not found"
 msgstr "Ressource %s non trouvée"
@@ -649,6 +681,10 @@ msgstr "Le sous-menu n'est pas dans le menu"
 
 #: lclstrconsts:ifsvk_tab
 msgid "Tab"
+msgstr ""
+
+#: lclstrconsts:rstext
+msgid "Text"
 msgstr ""
 
 #: lclstrconsts:rsfddirectorynotexist
@@ -722,6 +758,10 @@ msgstr "Avertissement"
 #: lclstrconsts:rswin32warning
 msgid "Warning:"
 msgstr "Attention:"
+
+#: lclstrconsts:rswholewordsonly
+msgid "Whole words only"
+msgstr ""
 
 #: lclstrconsts:rsmbyestoall
 msgid "Yes to &All"

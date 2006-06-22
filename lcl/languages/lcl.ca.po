@@ -150,6 +150,10 @@ msgstr "Tots els fitxers (%s)|%s|%s"
 msgid "Backspace"
 msgstr "Retrocés"
 
+#: lclstrconsts:rsbackward
+msgid "Backward"
+msgstr ""
+
 #: lclstrconsts:rsbitmaps
 msgid "Bitmaps"
 msgstr ""
@@ -190,6 +194,10 @@ msgstr "Els patrons no permeten dibuixar"
 msgid "Capital"
 msgstr "Majúscula"
 
+#: lclstrconsts:rscasesensitive
+msgid "Case sensitive"
+msgstr ""
+
 #: lclstrconsts:ifsvk_clear
 msgid "Clear"
 msgstr "Neteja"
@@ -217,6 +225,10 @@ msgstr "Personalitzat"
 #: lclstrconsts:ifsvk_delete
 msgid "Delete"
 msgstr "Elimina"
+
+#: lclstrconsts:rsdirection
+msgid "Direction"
+msgstr ""
 
 #: lclstrconsts:rsfddirectorymustexist
 msgid "Directory must exist"
@@ -298,6 +310,14 @@ msgstr "Filtre:"
 msgid "Final"
 msgstr "Final"
 
+#: lclstrconsts:rsfind
+msgid "Find"
+msgstr ""
+
+#: lclstrconsts:rsfindmore
+msgid "Find more"
+msgstr ""
+
 #: lclstrconsts:rsfixedcolstoobig
 msgid "FixedCols can't be >= ColCount"
 msgstr "FixedCols no pot ser >= ColCount"
@@ -309,6 +329,10 @@ msgstr "FixedRows no pot ser >= RowCount"
 #: lclstrconsts:rsformstreamingerror
 msgid "Form streaming \"%s\" error: %s"
 msgstr "S'ha produït un error en l'afluent de les formes \"%s\": %s"
+
+#: lclstrconsts:rsforward
+msgid "Forward"
+msgstr ""
 
 #: lclstrconsts:rsgridfiledoesnotexists
 msgid "Grid file doesn't exists"
@@ -578,6 +602,14 @@ msgstr "Anterior"
 msgid "Property %s does not exist"
 msgstr "No existeix la propietat %s"
 
+#: lclstrconsts:rsreplace
+msgid "Replace"
+msgstr ""
+
+#: lclstrconsts:rsreplaceall
+msgid "Replace all"
+msgstr ""
+
 #: lclstrconsts:lislclresourcesnotfound
 msgid "Resource %s not found"
 msgstr "No s'ha trobat el recurs %s"
@@ -641,6 +673,10 @@ msgstr "El submenú no és al menú"
 #: lclstrconsts:ifsvk_tab
 msgid "Tab"
 msgstr "Tabulador"
+
+#: lclstrconsts:rstext
+msgid "Text"
+msgstr ""
 
 #: lclstrconsts:rsfddirectorynotexist
 msgid "The directory \"%s\" does not exist."
@@ -713,6 +749,10 @@ msgstr "Avís"
 #: lclstrconsts:rswin32warning
 msgid "Warning:"
 msgstr "Avís:"
+
+#: lclstrconsts:rswholewordsonly
+msgid "Whole words only"
+msgstr ""
 
 #: lclstrconsts:rsmbyestoall
 msgid "Yes to &All"
