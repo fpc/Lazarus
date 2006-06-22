@@ -163,7 +163,8 @@ begin
   TGtkWidgetSet(WidgetSet).DestroyLCLComponent(AMenuItem);
 end;
 
-class procedure TGtkWSMenuItem.SetCaption(const AMenuItem: TMenuItem; const ACaption: string);
+class procedure TGtkWSMenuItem.SetCaption(const AMenuItem: TMenuItem;
+  const ACaption: string);
 var
   MenuItemWidget: PGtkWidget;
 begin
@@ -197,7 +198,8 @@ begin
     gtk_widget_hide(MenuItemWidget);
 end;
 
-class function TGtkWSMenuItem.SetCheck(const AMenuItem: TMenuItem; const Checked: boolean): boolean;
+class function TGtkWSMenuItem.SetCheck(const AMenuItem: TMenuItem;
+  const Checked: boolean): boolean;
 var
   IsRadio: Boolean;
   Group: PGSList;
@@ -225,7 +227,8 @@ begin
   end;
 end;
 
-class function TGtkWSMenuItem.SetEnable(const AMenuItem: TMenuItem; const Enabled: boolean): boolean;
+class function TGtkWSMenuItem.SetEnable(const AMenuItem: TMenuItem;
+  const Enabled: boolean): boolean;
 begin
   gtk_widget_set_sensitive(pgtkwidget(AMenuItem.Handle),
                            Enabled and (AMenuItem.Caption<>'-'));
@@ -239,7 +242,8 @@ begin
   Result:=true;
 end;
 
-class function TGtkWSMenuItem.SetRightJustify(const AMenuItem: TMenuItem; const Justified: boolean): boolean;
+class function TGtkWSMenuItem.SetRightJustify(const AMenuItem: TMenuItem;
+  const Justified: boolean): boolean;
 var
   MenuItemWidget: PGtkMenuItem;
 begin
@@ -259,17 +263,18 @@ end;
 
 { TGtkWSPopupMenu }
 procedure GtkWS_Popup(menu:  PGtkMenu; X, Y: pgint;
-   {$IFDEF GTK2} ForceInScreen: pgboolean; {$ENDIF}
-   Point: PPoint); cdecl;
+  {$IFDEF GTK2} ForceInScreen: pgboolean; {$ENDIF}
+  Point: PPoint); cdecl;
 begin
   X^ := Point^.X;
   Y^ := Point^.Y;
 end;
 
-class procedure TGtkWSPopupMenu.Popup(const APopupMenu: TPopupMenu; const X, Y: integer);
+class procedure TGtkWSPopupMenu.Popup(const APopupMenu: TPopupMenu;
+  const X, Y: integer);
 var
-APoint: TPoint;
-AProc: Pointer;
+  APoint: TPoint;
+  AProc: Pointer;
 begin
   ReleaseMouseCapture;
   APoint.X := X;
@@ -298,9 +303,7 @@ begin
   func :  a user supplied function used to position the menu.
   data :  user supplied data to be passed to func.
   button :  the button which was pressed to initiate the event.
-  activate_time : the time at which the activation event occurred.
-  }
-
+  activate_time : the time at which the activation event occurred. }
 end;
 
 initialization

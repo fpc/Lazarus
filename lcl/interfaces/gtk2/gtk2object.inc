@@ -284,8 +284,6 @@ end;
 
 function TGtk2WidgetSet.CreateComponent(Sender : TObject): THandle;
 var
-  Caption : ansistring;          // the caption of "Sender"
-  StrTemp : PChar;               // same as "caption" but as PChar
   p: PGtkWidget;                 // ptr to the newly created GtkWidget
   CompStyle: integer;            // componentstyle (type) of GtkWidget which will be created
   SetupProps : boolean;
@@ -294,10 +292,6 @@ begin
   SetupProps:= false;
 
   CompStyle := GetCompStyle(Sender);
-  Caption   := GetCaption(Sender);
-
-  strTemp := StrAlloc(length(Caption) + 1);
-  StrPCopy(strTemp, Caption);
 
   case CompStyle of
   csEdit :
@@ -307,12 +301,10 @@ begin
       gtk_widget_show_all(P);
     end;
     else begin
-      StrDispose(StrTemp);
       Result:=Inherited CreateComponent(Sender);
       Exit;
     end;
   end; //end case
-  StrDispose(StrTemp);
   FinishComponentCreate(Sender, P, SetupProps);
   Result := THandle(P);
 end;

@@ -5712,7 +5712,7 @@ var
     end
     else begin
       gtk_label_set_text(LabelWidget,PChar(s));
-      gtk_label_set_pattern(LabelWidget, nil);  // Ensure any underlines removed
+      gtk_label_set_pattern(LabelWidget, #0);  // Ensure any underlines removed
     end;
   end;
 
