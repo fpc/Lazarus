@@ -324,7 +324,7 @@ type
     procedure OnSrcNotebookFileOpenAtCursor(Sender: TObject);
     procedure OnSrcNotebookFileSave(Sender: TObject);
     procedure OnSrcNotebookFileSaveAs(Sender: TObject);
-    procedure OnSrcNotebookFileClose(Sender: TObject);
+    procedure OnSrcNotebookFileClose(Sender: TObject; InvertedClose: boolean);
     procedure OnSrcNotebookFindDeclaration(Sender: TObject);
     procedure OnSrcNotebookInitIdentCompletion(Sender: TObject;
       JumpToError: boolean; out Handled, Abort: boolean);
@@ -2294,12 +2294,13 @@ begin
   mnuNewFormClicked(Sender);
 end;
 
-Procedure TMainIDE.OnSrcNotebookFileClose(Sender: TObject);
+Procedure TMainIDE.OnSrcNotebookFileClose(Sender: TObject;
+  InvertedClose: boolean);
 var
   PageIndex: LongInt;
   i: Integer;
 begin
-  if GetKeyState(VK_CONTROL)<0 then begin
+  if InvertedClose then begin
     // close all source editors except the clicked
     if SourceNoteBook.Notebook=nil then exit;
     if Sender is TPage then begin

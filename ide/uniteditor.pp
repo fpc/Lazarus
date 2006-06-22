@@ -370,6 +370,7 @@ type
                   APageIndex: integer; DeleteForwardHistory: boolean) of object;
   TOnMovingPage = procedure(Sender: TObject;
                             OldPageIndex, NewPageIndex: integer) of object;
+  TOnCloseSrcEditor = procedure(Sender: TObject; InvertedClose: boolean) of object;
   TOnShowHintForSource = procedure(SrcEdit: TSourceEditor; ClientPos: TPoint;
                                    CaretPos: TPoint) of object;
   TOnInitIdentCompletion = procedure(Sender: TObject; JumpToError: boolean;
@@ -444,7 +445,7 @@ type
     FLastCodeBuffer: TCodeBuffer;
     FOnAddJumpPoint: TOnAddJumpPoint;
     FOnAddWatchAtCursor: TOnAddWatch;
-    FOnCloseClicked: TNotifyEvent;
+    FOnCloseClicked: TOnCloseSrcEditor;
     FOnCtrlMouseUp: TMouseEvent;
     FOnCurrentCodeBufferChanged: TNotifyEvent;
     FOnDeleteLastJumpPoint: TNotifyEvent;
@@ -603,6 +604,7 @@ type
     procedure ClearErrorLines;
     procedure ClearExecutionLines;
 
+    procedure CloseTabClicked(Sender: TObject);
     procedure CloseClicked(Sender: TObject);
     procedure ToggleFormUnitClicked(Sender: TObject);
     procedure ToggleObjectInspClicked(Sender: TObject);
@@ -684,7 +686,7 @@ type
   published
     property OnAddJumpPoint: TOnAddJumpPoint
                                      read FOnAddJumpPoint write FOnAddJumpPoint;
-    property OnCloseClicked: TNotifyEvent
+    property OnCloseClicked: TOnCloseSrcEditor
                                      read FOnCloseClicked write FOnCloseClicked;
     property OnCtrlMouseUp: TMouseEvent
                                        read FOnCtrlMouseUp write FOnCtrlMouseUp;
@@ -3484,7 +3486,7 @@ Begin
           else
             Options:=Options-[nboShowCloseButtons];
           OnPageChanged := @NotebookPageChanged;
-          OnCloseTabClicked:=@CloseClicked;
+          OnCloseTabClicked:=@CloseTabClicked;
           ShowHint:=true;
           OnShowHint:=@NotebookShowTabHint;
           {$IFDEF IDE_DEBUG}
@@ -5022,7 +5024,7 @@ end;
 
 Procedure TSourceNotebook.CloseClicked(Sender: TObject);
 Begin
-  if Assigned(FOnCloseClicked) then FOnCloseClicked(Sender);
+  if Assigned(FOnCloseClicked) then FOnCloseClicked(Sender,false);
 end;
 
 Function TSourceNotebook.FindUniquePageName(FileName:string;
@@ -5651,6 +5653,12 @@ var i: integer;
 begin
   for i:=0 to EditorCount-1 do
     Editors[i].ExecutionLine:=-1;
+end;
+
+procedure TSourceNotebook.CloseTabClicked(Sender: TObject);
+begin
+  if Assigned(FOnCloseClicked) then
+    FOnCloseClicked(Sender,GetKeyState(VK_CONTROL)<0);
 end;
 
 
