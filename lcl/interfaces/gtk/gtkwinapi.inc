@@ -48,6 +48,9 @@ const
   circle equals 5760 (16*360). Positive values of Angle and AngleLength mean
   counter-clockwise while negative values mean clockwise direction.
   Zero degrees is at the 3'o clock position.
+  Angle1 is the starting angle. Angle2 is relative to Angle1 (added).
+  Example:
+    Angle1 = 10*16, Angle2 = 30*16 will draw an arc from 10 to 40 degree.
 
  ------------------------------------------------------------------------------}
 function TGtkWidgetSet.Arc(DC: HDC;
@@ -75,9 +78,11 @@ begin
         DCOrigin:=GetDCOffset(TDeviceContext(DC));
         inc(Left,DCOrigin.X);
         inc(Top,DCOrigin.Y);
+        inc(Right,DCOrigin.X);
+        inc(Bottom,DCOrigin.Y);
         {$IFDEF DebugGDKTraps}BeginGDKErrorTrap;{$ENDIF}
         gdk_draw_arc(Drawable, GC, 0, left, top, right - left, bottom - top,
-                     Angle1 shl 2, Angle2 shl 2);
+                     Angle1*4, Angle2*4);
         {$IFDEF DebugGDKTraps}EndGDKErrorTrap;{$ENDIF}
       end else
         Result:=false;

@@ -165,7 +165,7 @@ var
   ImgIndex: integer;
   TS: TTextStyle;
 begin
-  //DebugLn('TToolButton.Paint A ',Name,' FToolBar=',DbgS(FToolBar),' ',ClientWidth,',',ClientHeight,' ',ord(Style));
+  //DebugLn(['TToolButton.Paint A ',DbgSName(Self),' FToolBar=',DbgSName(FToolBar),' ',ClientWidth,',',ClientHeight,' ',ord(Style)]);
   if (FToolBar<>nil) and (ClientWidth>0) and (ClientHeight>0) then begin
     PaintRect:=ClientRect; // the whole paint area
 

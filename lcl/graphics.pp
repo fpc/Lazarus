@@ -978,7 +978,7 @@ type
                       NumPts: Integer = -1);
     procedure Polygon(Points: PPoint; NumPts: Integer;
                       Winding: boolean = False); virtual;
-    Procedure Polygon(const Points: array of TPoint); // already in fpcanvas
+    procedure Polygon(const Points: array of TPoint); // already in fpcanvas
     procedure Polyline(const Points: array of TPoint;
                        StartIndex: Integer;
                        NumPts: Integer = -1);

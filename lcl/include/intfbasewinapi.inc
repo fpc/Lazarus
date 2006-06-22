@@ -36,7 +36,8 @@ begin
   Result := False;
   Points := nil;
   Count := 0;
-  PolyBezierArcPoints(Left, Top, Right-Left, Bottom-Top, Angle1, Angle2, 0, Points, Count);
+  PolyBezierArcPoints(Left, Top, Right-Left, Bottom-Top, Angle1, Angle2, 0,
+                      Points, Count);
   Polygon(DC, Points, Count, False);
   ReallocMem(Points, 0);
   Result := True;
