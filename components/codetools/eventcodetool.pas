@@ -202,7 +202,7 @@ begin
     SetLength(ResultType,Len);
     Move(TypeData^.ParamList[Offset],ResultType[1],Len);
     inc(Offset,Len);
-    if Result<>'' then
+    if ResultType<>'' then
       Result:=Result+':'+ResultType;
   end;
   if phpInUpperCase in Attr then Result:=UpperCaseStr(Result);
