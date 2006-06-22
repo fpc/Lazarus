@@ -45,6 +45,8 @@ type
     procedure MovePageLeftButtonClick(Sender: TObject);
     procedure MovePageRightButtonClick(Sender: TObject);
     procedure PageControl1Change(Sender: TObject);
+    procedure PageVisibleCheckBoxClick(Sender: TObject);
+    procedure PagesListBoxClick(Sender: TObject);
   public
     constructor Create(TheOwner: TComponent); override;
     procedure AddNewPage(Index: integer);
@@ -72,6 +74,7 @@ begin
     Name:='PagesListBox';
     Align:=alLeft;
     Parent:=Self;
+    OnClick:=@PagesListBoxClick;
   end;
 
   ButtonsGroupBox:=TGroupBox.Create(Self);
@@ -132,6 +135,7 @@ begin
     Caption:='Visible';
     AutoSize:=true;
     Parent:=ButtonsGroupBox;
+    OnClick:=@PageVisibleCheckBoxClick;
   end;
   
   ButtonsGroupBox.ChildSizing.ControlsPerLine:=2;
@@ -144,7 +148,7 @@ var
 begin
   i:=PagesListBox.ItemIndex;
   if (i<0) or (i>=PageControl1.PageCount) then exit;
-  PageControl1.PageList.Delete(i);
+  PageControl1.Pages[i].Free;
   FillPagesListBox;
 end;
 
@@ -176,9 +180,10 @@ var
 begin
   i:=PagesListBox.ItemIndex;
   if (i<0) or (i>=PageControl1.PageCount) then i:=PageControl1.PageIndex;
-  if i=0 then exit;
-  PageControl1.PageList.Move(i,i-1);
+  if i<=0 then exit;
+  PageControl1.Pages[i].PageIndex:=PageControl1.Pages[i].PageIndex-1;
   FillPagesListBox;
+  PagesListBox.ItemIndex:=PageControl1.PageIndex;
 end;
 
 procedure TForm1.MovePageRightButtonClick(Sender: TObject);
@@ -187,15 +192,36 @@ var
 begin
   i:=PagesListBox.ItemIndex;
   if (i<0) or (i>=PageControl1.PageCount) then i:=PageControl1.PageIndex;
-  if i<PageControl1.PageCount-1 then exit;
-  PageControl1.PageList.Move(i,i+1);
+  if i>=PageControl1.PageCount-1 then exit;
+  PageControl1.Pages[i].PageIndex:=PageControl1.Pages[i].PageIndex+1;
   FillPagesListBox;
+  PagesListBox.ItemIndex:=PageControl1.PageIndex;
 end;
 
 procedure TForm1.PageControl1Change(Sender: TObject);
 begin
   FillPagesListBox;
   PagesListBox.ItemIndex:=PageControl1.PageIndex;
+  DebugLn(['TForm1.PageControl1Change PagesListBox.ItemIndex=',PagesListBox.ItemIndex,' PageControl1.PageIndex=',PageControl1.PageIndex]);
+end;
+
+procedure TForm1.PageVisibleCheckBoxClick(Sender: TObject);
+var
+  i: LongInt;
+begin
+  i:=PagesListBox.ItemIndex;
+  if i<0 then exit;
+  PageControl1.Pages[i].TabVisible:=PageVisibleCheckBox.Checked;
+end;
+
+procedure TForm1.PagesListBoxClick(Sender: TObject);
+var
+  i: LongInt;
+begin
+  i:=PagesListBox.ItemIndex;
+  if i<0 then exit;
+  PageControl1.PageIndex:=i;
+  PageVisibleCheckBox.Checked:=PageControl1.Pages[i].TabVisible;
 end;
 
 constructor TForm1.Create(TheOwner: TComponent);
@@ -220,8 +246,9 @@ begin
   NewPage.Name:=NewName;
   NewPage.Caption:=NewName;
   PageControl1.PageList.Insert(Index,NewPage);
+  PageControl1.PageIndex:=Index;
   FillPagesListBox;
-  PagesListBox.ItemIndex:=Index;
+  PagesListBox.ItemIndex:=PageControl1.PageIndex;
 end;
 
 procedure TForm1.FillPagesListBox;
@@ -242,6 +269,9 @@ begin
     PagesListBox.Items.Delete(PagesListBox.Items.Count-1);
   PagesListBox.ItemIndex:=OldItemIndex;
   PagesListBox.Items.EndUpdate;
+  if PagesListBox.ItemIndex>=0 then
+    PageVisibleCheckBox.Checked:=
+      PageControl1.Pages[PagesListBox.ItemIndex].TabVisible;
 end;
 
 var

@@ -312,7 +312,9 @@ begin
   // The gtk does not provide a function to remove a page without destroying it.
   // Luckily the LCL destroys the Handle, when a page is removed, so this
   // function is not needed.
-  // However this is usefull for the TCustomPage.TabVisible property. :)
+  {$IFDEF NOTEBOOK_DEBUG}
+  DebugLn(['TGtkWSCustomNotebook.RemovePage AIndex=',AIndex,' ',DbgSName(ANotebook.Page[AIndex])]);
+  {$ENDIF}
   Page:=ANotebook.Page[AIndex];
   if not Page.HandleAllocated then exit;
   PageWidget := PGtkWidget(Page.Handle);

@@ -39,8 +39,6 @@ procedure TNBPages.PageListChange(Ptr: Pointer; AnAction: TListNotification);
 begin
   if (AnAction=lnAdded) then begin
     (TObject(Ptr) as TCustomPage).Parent:=fNotebook;
-  end else if (AnAction=lnDeleted) then begin
-    (TObject(Ptr) as TCustomPage).Parent:=nil;
   end;
 end;
 
@@ -252,10 +250,7 @@ begin
     DebugLn(['TCustomNotebook.DoCreateWnd ',dbgsName(Self),' Page.Caption=',Page[i].Caption,' pfAdded=',pfAdded in Page[i].Flags]);
     {$ENDIF}
     lPage := Page[i];
-    if not (pfAdded in lPage.Flags) then begin
-      TWSCustomNotebookClass(WidgetSetClass).AddPage(Self, lPage, i);
-      Include(lPage.FFlags,pfAdded);
-    end;
+    AddRemovePageHandle(lPage);
   end;
   fAddingPages:=false;
 
@@ -466,8 +461,7 @@ begin
     UpdateDesignerFlags(Index);
 
     if HandleAllocated and (not (csLoading in ComponentState)) then begin
-      ChildPageSetTabVisible(APage, APage.TabVisible, Index);
-      Include(APage.FFlags, pfAdded);
+      AddRemovePageHandle(APage);
       if PageIndex = Index then
         DoSendPageIndex;
     end;
@@ -489,34 +483,41 @@ begin
     TNBPages(fAccess).Move(TCustomPage(Sender).PageIndex,NewIndex);
   end
   else ; //raise exception?
+  Change;
 end;
 
 procedure TCustomNotebook.WSMovePage(APage: TCustomPage; NewIndex: Integer);
+var
+  RealIndex: Integer;
+  i: Integer;
 begin
-  if HandleAllocated and (not (csLoading in ComponentState)) then
-    TWSCustomNotebookClass(WidgetSetClass).MovePage(Self, APage, NewIndex);
+  //DebugLn(['TCustomNotebook.WSMovePage APage=',DbgSName(APage),' NewIndex=',NewIndex,' pfAdded=',pfAdded in APage.FFlags]);
+  if HandleAllocated and (pfAdded in APage.FFlags) then begin
+    RealIndex:=0;
+    i:=0;
+    repeat
+      if (i=NewIndex) or (i=PageCount) then break;
+      if pfAdded in Page[i].FFlags then inc(RealIndex);
+      inc(i);
+    until false;
+    //DebugLn(['TCustomNotebook.WSMovePage APage=',DbgSName(APage),' NewIndex=',NewIndex,' RealIndex=',RealIndex]);
+    TWSCustomNotebookClass(WidgetSetClass).MovePage(Self, APage, RealIndex);
+  end;
 end;
 
-procedure TCustomNoteBook.ChildPageSetTabVisible(APage: TCustomPage;
-  AValue: Boolean; AIndex: Integer);
-var
-  X: Integer;
-  RealIndex: Integer;
+procedure TCustomNoteBook.AddRemovePageHandle(APage: TCustomPage);
 begin
-  RealIndex:= AIndex;
-  for X := 0 to AIndex-1 do
-    if not (Page[X].TabVisible) then Dec(RealIndex);
-  if AValue then
-    TWSCustomNotebookClass(WidgetSetClass).AddPage(Self, APage, RealIndex)
-  else
-    TWSCustomNotebookClass(WidgetSetClass).RemovePage(Self, RealIndex);
-  APage.FTabVisible := AValue;
-  if not AValue and (AIndex = PageIndex) then
-    if RealIndex > 0 then
-      PageIndex := AIndex-1
-    else
-    if AIndex < (PageCount-1) then
-      PageIndex := AIndex+1;
+  if (not (csDestroying in APage.ComponentState))
+  and (APage.TabVisible or (csDesigning in ComponentState)) then begin
+    if (pfAdded in APage.FFlags) then exit;
+    Include(APage.FFlags,pfAdded);
+    TWSCustomNotebookClass(WidgetSetClass).AddPage(Self, APage, APage.VisibleIndex);
+  end else begin
+    if not (pfAdded in APage.FFlags) then exit;
+    Exclude(APage.FFlags,pfAdded);
+    TWSCustomNotebookClass(WidgetSetClass).RemovePage(Self, APage.PageIndex);
+    APage.DestroyHandle;
+  end;
 end;
 
 procedure TCustomNotebook.RemovePage(Index: Integer);
@@ -551,8 +552,9 @@ begin
           PageIndex:=NewPageIndex;
       end;
     end;
-    if HandleAllocated and APage.TabVisible then begin
-      ChildPageSetTabVisible(APage, False, Index);
+    if HandleAllocated then begin
+      APage.FTabVisible:=false;
+      AddRemovePageHandle(APage);
     end;
     FPageList.Delete(Index);
     APage.Parent:=nil;

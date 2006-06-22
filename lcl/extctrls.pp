@@ -70,6 +70,7 @@ type
     procedure AdjustClientRect(var ARect: TRect); override;
     function CanTab: boolean; override;
     function IsVisible: Boolean; override;
+    function VisibleIndex: integer;
     property PageIndex: Integer read GetPageIndex write SetPageIndex;
     property TabVisible: Boolean read GetTabVisible write SetTabVisible default True;
     property ImageIndex: integer read FImageIndex write SetImageIndex default -1;
@@ -150,8 +151,7 @@ type
     function GetPageIndex: Integer;
     procedure InsertPage(APage: TCustomPage; Index: Integer);
     function IsStoredActivePage: boolean;
-    procedure ChildPageSetTabVisible(APage: TCustomPage; AValue: Boolean;
-                                     AIndex: Integer);
+    procedure AddRemovePageHandle(APage: TCustomPage);
     procedure MoveTab(Sender: TObject; NewIndex: Integer);
     procedure WSMovePage(APage: TCustomPage; NewIndex: Integer);
     procedure RemovePage(Index: Integer);

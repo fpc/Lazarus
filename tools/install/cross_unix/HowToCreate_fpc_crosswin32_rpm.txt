@@ -12,7 +12,7 @@ This will download the FPC svn to ~/freepascal/fpc.
 
 Create the fpc rpm and install it:
 
-  []$ cd <lazarusdir>/tools/install/cross_unix/
+  []$ cd <lazarusdir>/tools/install
   []$ ./build_fpc_rpm.sh ~/freepascal/fpc
   []$ sudo rpm -Uvh <path_to_rpms>/RPMS/i386/fpc-<version>.i386.rpm
 

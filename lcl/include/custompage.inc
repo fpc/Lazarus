@@ -56,8 +56,8 @@ end;
 procedure TCustomPage.SetTabVisible(const AValue: Boolean);
 begin
   if AValue = FTabVisible then exit;
-  TCustomNotebook(Parent).ChildPageSetTabVisible(Self, AValue, PageIndex);
   fTabVisible := AValue;
+  TCustomNotebook(Parent).AddRemovePageHandle(Self);
 end;
 
 {------------------------------------------------------------------------------
@@ -100,7 +100,6 @@ begin
       try
         TabVisible := False;
         ParentNotebook.RemovePage(i);
-        //ParentNoteBook.ChildPageSetTabVisible(Self, False, i);
       finally
         Exclude(FFlags,pfRemoving);
       end;
@@ -113,10 +112,12 @@ begin
   and (Parent is TCustomNotebook) then begin
     // add to new pagelist
     ParentNotebook:=TCustomNotebook(Parent);
-    if ParentNotebook.PageList.IndexOf(Self)<0 then begin
-      ParentNotebook.InsertPage(Self, ParentNotebook.PageCount);
-      //ParentNoteBook.ChildPageSetTabVisible(Self, FTabVisible, ParentNotebook.PageCount);
-    end;
+    i:=ParentNotebook.PageList.IndexOf(Self);
+    if i>=0 then
+      ParentNotebook.PageList.Delete(i)
+    else
+      i:=ParentNotebook.PageCount;
+    ParentNotebook.InsertPage(Self,i);
   end;
 end;
 
@@ -190,10 +191,31 @@ begin
   if Parent is TCustomNotebook then
   begin
     Result := PageIndex = TCustomNotebook(Parent).PageIndex;
-  //DebugLn('TCustomPage.IsVisible PageIndex=',dbgs(PageIndex),' Parent.PageIndex=',dbgs(TCustomNotebook(Parent).PageIndex));
+  //DebugLn(['TCustomPage.IsVisible PageIndex=',PageIndex,' Parent.PageIndex=',TCustomNotebook(Parent).PageIndex]);
   end else begin
     Result := inherited IsVisible;
   end;
+end;
+
+function TCustomPage.VisibleIndex: integer;
+// returns the visible index, as if TabVisible=true
+var
+  List: TList;
+  i: Integer;
+begin
+  if (Parent<>nil) and (Parent is TCustomNotebook) then begin
+    Result:=0;
+    List:=TCustomNotebook(Parent).PageList;
+    i:=0;
+    repeat
+      if i=List.Count then exit(-1);
+      if (TObject(List[i])=Self) then exit;
+      if TCustomPage(List[i]).TabVisible or (csDesigning in ComponentState)
+      then inc(Result);
+      inc(i);
+    until false;
+  end else
+    Result := -1;
 end;
 
 {------------------------------------------------------------------------------
@@ -203,6 +225,5 @@ function TCustomPage.CanTab: boolean;
 begin
   Result:=false;
 end;
-
 
 // included by extctrls.pp
