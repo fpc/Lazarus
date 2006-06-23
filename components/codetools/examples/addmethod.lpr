@@ -72,9 +72,11 @@ begin
     MethodName:='NewProc'+IntToStr(i);
     MethodDefinition:='procedure '+MethodName
                                 +'(Sender:TObject; AValue:integer);';
-    // check, that we don't add an already existing method.
-    // Create a search mask: no class name, no 'procedure' keyword, no comments,
-    // no unneeded spaces, no result type, no parameter names, uppercase
+    // check, to not add an already existing method.
+    // Create a search mask: only method names, parameter types and semicolon.
+    // no class name, no 'procedure' keyword, no comments, no defaults,
+    // no unneeded spaces, no result type, no parameter names, uppercase,
+    // no modifiers (e.g. virtual)
     CleanMethodDefinition:=UpperCase(MethodName+'(:TObject;:integer);');
     if not Tool.ProcExistsInCodeCompleteClass(CleanMethodDefinition) then
       Tool.AddClassInsertion(CleanMethodDefinition, MethodDefinition, MethodName,
