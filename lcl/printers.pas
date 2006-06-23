@@ -761,43 +761,7 @@ begin
     Margins:=fOwnedPrinter.DoGetPaperRect(aName,TmpPaperRect);
     if Margins>=0 then
     begin
-      if fOwnedPrinter.Orientation in [poPortrait,poReversePortrait] then
-      begin
-        Result.PhysicalRect:=TmpPaperRect.PhysicalRect;
-
-        if Margins=1 then
-          Result.WorkRect:=TmpPaperRect.WorkRect
-        else
-        begin
-          Result.WorkRect.Left:=Result.PhysicalRect.Left+TmpPaperRect.WorkRect.Left;
-          Result.WorkRect.Right:=Result.PhysicalRect.Right-TmpPaperRect.WorkRect.Right;
-          Result.WorkRect.Top:=Result.PhysicalRect.Top+TmpPaperRect.WorkRect.Top;
-          Result.WorkRect.Bottom:=Result.PhysicalRect.Bottom-TmpPaperRect.WorkRect.Bottom;
-        end;
-      end
-      else
-      begin
-        //If the selected orientation is not normal, reverse
-        //length with width
-        Result.PhysicalRect.Right:=TmpPaperRect.PhysicalRect.Bottom;
-        Result.PhysicalRect.Bottom:=TmpPaperRect.PhysicalRect.Right;
-
-        if Margins=1 then
-        begin
-          Result.WorkRect.Right:=TmpPaperRect.WorkRect.Bottom;
-          Result.WorkRect.Left:=TmpPaperRect.WorkRect.Left;
-          Result.WorkRect.Bottom:=TmpPaperRect.WorkRect.Right;
-          Result.WorkRect.Top:=TmpPaperRect.WorkRect.Top;
-        end
-        else
-        begin
-          // workrect is margins
-          Result.WorkRect.Left:=Result.PhysicalRect.Left+TmpPaperRect.WorkRect.left;
-          Result.WorkRect.Right:=Result.PhysicalRect.Right-TmpPaperRect.WorkRect.Bottom;
-          Result.WorkRect.Top:=Result.PhysicalRect.Top+TmpPaperRect.WorkRect.top;
-          Result.WorkRect.Bottom:=Result.PhysicalRect.Bottom-TmpPaperRect.WorkRect.right;
-        end;
-      end;
+      Result := TmpPaperRect;
     end
     else raise EPrinter.Create(Format('The paper "%s" as not definied rect ! ',[aName]));
   end

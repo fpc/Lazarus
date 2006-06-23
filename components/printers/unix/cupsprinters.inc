@@ -628,6 +628,7 @@ begin
   {$IFDEF UseCache}
   if aValue=DoGetOrientation then exit;
   Exclude(FStates,cpsOrientationValid);
+  Exclude(FStates,cpsPaperRectValid);
   {$ENDIF}
   inherited DoSetOrientation(aValue);
 
@@ -701,14 +702,77 @@ begin
       begin
         fCachePaperRectResult:=1; //CUPS return margins
 
-        fCachePaperRect.PhysicalRect.Right:=Trunc(P^.Width);
-        fCachePaperRect.PhysicalRect.Bottom:=Trunc(P^.Length);
+        // Margins.
+        //
+        // Cups gives dimensions based on postcript language
+        // user space coordinates system which is something like
+        //
+        //  +y                                 +--> +x
+        //   ^           but our system is     |
+        //   |                                 v
+        //   +--> +x                           +y
+        //
+        //  so values in x are the same, but we need to invert values in y,
+        //  the given bottom value is the margin size at the bottom, we need
+        //  to re-calc. our bottom offset, and the given top value is offset
+        //  top value of imageable area, we need to re-calc. our top offset,
+        //  which is the margin size at the top of the page.
+        //
+        //  The current implementation assumes that paper is fed short-edge-first
+        //  either in portrait orientation, or in landscape orientation.
+        //
+        //  In landscape orientation, printable margins should preserved.
+        //  It's based on a 90 degree counterclock wise paper rotation
+        //
+        //     FEED DIRECTION             FEED DIRECTION
+        //
+        //           /\                         /\
+        //          /  \                       /  \
+        //           ||                         ||
+        //           ||                         ||
+        //
+        //  PORTRAIT ORIENTATION        LANDSCAPE ORIENTATION
+        //
+        //   +-----------------+        +-----------------+
+        //   |        t        |        |        t        |
+        //   |   +---------+   |        |   +---------+   |
+        //   |   |         |   |        |   |         |   |
+        //   |   |   ( )   |   |        |   |    v    |   |
+        //   |   |    |    |   |        |   |\   |    |   |
+        //   | l | >--+--< | r |        | l | ---+-() | r |
+        //   |   |    |    |   |        |   |/   |    |   |
+        //   |   |   / \   |   |        |   |    ^    |   |
+        //   |   |  /   \  |   |        |   |         |   |
+        //   |   +---------+   |        |   +---------+   |
+        //   |                 |        |                 |
+        //   |        b        |        |        b        |
+        //   +-----------------+        +-----------------+
+        //
+        //  todo: check meaning of poReverseXXXXX
+        //
 
-        //Margings
-        fCachePaperRect.WorkRect.Left:=Trunc(P^.Left);
-        fCachePaperRect.WorkRect.Right:=Trunc(P^.Right);
-        fCachePaperRect.WorkRect.Top:=Trunc(P^.Length-P^.Top);
-        fCachePaperRect.WorkRect.Bottom:=Trunc(P^.Length-P^.Bottom);
+        if Orientation in [poPortrait, poReversePortrait] then begin
+        
+          fCachePaperRect.PhysicalRect.Right:=Trunc(P^.Width);
+          fCachePaperRect.PhysicalRect.Bottom:=Trunc(P^.Length);
+
+          fCachePaperRect.WorkRect.Left:=Trunc(P^.Left);
+          fCachePaperRect.WorkRect.Right:=Trunc(P^.Right);
+          fCachePaperRect.WorkRect.Top:=Trunc(P^.Length-P^.Top);
+          fCachePaperRect.WorkRect.Bottom:=Trunc(P^.Length-P^.Bottom);
+          
+        end else begin
+
+          FCachePaperRect.PhysicalRect.Right:=Trunc(P^.Length);
+          FCachePaperRect.PhysicalRect.Bottom:=Trunc(P^.Width);
+          
+          FCachePaperRect.WorkRect.Left:=Trunc(P^.Length-P^.Top);
+          FCachePaperRect.WorkRect.Right:=Trunc(P^.Length-P^.Bottom);
+          FCachePaperRect.WorkRect.Top:=Trunc(P^.Width-P^.Right);
+          FCachePaperRect.WorkRect.Bottom:=Trunc(p^.width - P^.left);
+          
+        end;
+
         //debugln('TCUPSPrinter.DoGetPaperRect PhysicalRect=',dbgs(fCachePaperRect.PhysicalRect),' WorkRect=',dbgs(fCachePaperRect.WorkRect));
       end;
     end;

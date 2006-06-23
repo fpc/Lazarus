@@ -456,7 +456,7 @@ begin
         Left  :=Windows.GetDeviceCaps(fDC, PHYSICALOFFSETX);
         Top   :=Windows.GetDeviceCaps(fDC, PHYSICALOFFSETY);
         Right :=Left   + Windows.GetDeviceCaps(fDC, HORZRES);
-        Bottom:=Bottom + Windows.GetDeviceCaps(fDC, VERTRES);
+        Bottom:=Top    + Windows.GetDeviceCaps(fDC, VERTRES);
       end;
     end else begin
       // for other papers return at least the physical size
