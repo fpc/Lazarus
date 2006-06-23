@@ -395,7 +395,11 @@ type
     function CompleteCode(Code: TCodeBuffer; X,Y,TopLine: integer;
           var NewCode: TCodeBuffer;
           var NewX, NewY, NewTopLine: integer): boolean;
-          
+
+    // custom class completion
+    function InitClassCompletion(Code: TCodeBuffer;
+                const UpperClassName: string; out CodeTool: TCodeTool): boolean;
+
     // extract proc (creates a new procedure from code in selection)
     function CheckExtractProc(Code: TCodeBuffer;
           const StartPoint, EndPoint: TPoint;
@@ -2631,6 +2635,23 @@ begin
       NewY:=NewPos.Y;
       NewCode:=NewPos.Code;
     end;
+  except
+    on e: Exception do Result:=HandleException(e);
+  end;
+end;
+
+function TCodeToolManager.InitClassCompletion(Code: TCodeBuffer;
+  const UpperClassName: string; out CodeTool: TCodeTool): boolean;
+begin
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.InitClassCompletion A ',Code.Filename);
+  {$ENDIF}
+  Result:=false;
+  CodeTool:=nil;
+  if not InitCurCodeTool(Code) then exit;
+  try
+    Result:=FCurCodeTool.InitClassCompletion(UpperClassName,SourceChangeCache);
+    CodeTool:=FCurCodeTool;
   except
     on e: Exception do Result:=HandleException(e);
   end;

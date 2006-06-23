@@ -1020,8 +1020,8 @@ var
         eptPublicMethod:    NewClassPart:=ncpPublicProcs;
         else                NewClassPart:=ncpPublishedProcs;
         end;
-        AddClassInsertion(nil, CleanMethodDefinition, MethodDefinition,
-                          ProcName, ProcCode, NewClassPart);
+        AddClassInsertion(CleanMethodDefinition, MethodDefinition,
+                          ProcName, NewClassPart, nil, ProcCode);
         if not InsertAllNewClassParts then
           RaiseException(ctsErrorDuringInsertingNewClassParts);
       end;

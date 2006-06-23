@@ -133,12 +133,6 @@ type
     function OnTopLvlIdentifierFound(Params: TFindDeclarationParams;
         const FoundContext: TFindContext): TIdentifierFoundResult;
   protected
-    function ProcExistsInCodeCompleteClass(
-                                          const NameAndParams: string): boolean;
-    function VarExistsInCodeCompleteClass(const UpperName: string): boolean;
-    procedure AddClassInsertion(PosNode: TCodeTreeNode;
-        const CleanDef, Def, IdentifierName, Body: string;
-        TheType: TNewClassPart);
     procedure FreeClassInsertionList;
     procedure InsertNewClassParts(PartType: TNewClassPart);
     function InsertAllNewClassParts: boolean;
@@ -186,6 +180,18 @@ type
     function AddPublishedVariable(const UpperClassName,VarName, VarType: string;
                       SourceChangeCache: TSourceChangeCache): boolean; override;
 
+    // custom class completion
+    function InitClassCompletion(const UpperClassName: string;
+                                 SourceChangeCache: TSourceChangeCache): boolean;
+    function ApplyClassCompletion: boolean;
+    function ProcExistsInCodeCompleteClass(
+                                    const NameAndParamsUpCase: string): boolean;
+    function VarExistsInCodeCompleteClass(const UpperName: string): boolean;
+    procedure AddClassInsertion(
+        const CleanDef, Def, IdentifierName: string;
+        TheType: TNewClassPart; PosNode: TCodeTreeNode = nil;
+        const Body: string = '');
+
     property SetPropertyVariablename: string read FSetPropertyVariablename
                                              write FSetPropertyVariablename;
     property CompleteProperties: boolean read FCompleteProperties
@@ -204,7 +210,7 @@ implementation
 { TCodeCompletionCodeTool }
 
 function TCodeCompletionCodeTool.ProcExistsInCodeCompleteClass(
-  const NameAndParams: string): boolean;
+  const NameAndParamsUpCase: string): boolean;
 // NameAndParams should be uppercase and contains the proc name and the
 // parameter list without names and default values
 // and should not contain any comments and no result type
@@ -214,7 +220,7 @@ begin
   // search in new nodes, which will be inserted
   ANodeExt:=FirstInsert;
   while ANodeExt<>nil do begin
-    if CompareTextIgnoringSpace(ANodeExt.Txt,NameAndParams,true)=0 then begin
+    if CompareTextIgnoringSpace(ANodeExt.Txt,NameAndParamsUpCase,true)=0 then begin
       Result:=true;
       exit;
     end;
@@ -223,7 +229,7 @@ begin
   if not Result then begin
     // ToDo: check ancestor procs too
     // search in current class
-    Result:=(FindProcNode(FCompletingStartNode,NameAndParams,[phpInUpperCase])<>nil);
+    Result:=(FindProcNode(FCompletingStartNode,NameAndParamsUpCase,[phpInUpperCase])<>nil);
   end;
 end;
 
@@ -294,20 +300,21 @@ begin
   end;
 end;
 
-procedure TCodeCompletionCodeTool.AddClassInsertion(PosNode: TCodeTreeNode;
-  const CleanDef, Def, IdentifierName, Body: string; TheType: TNewClassPart);
+procedure TCodeCompletionCodeTool.AddClassInsertion(
+  const CleanDef, Def, IdentifierName: string; TheType: TNewClassPart;
+  PosNode: TCodeTreeNode; const Body: string);
 { add an insert request entry to the list of insertions
   For example: a request to insert a new variable or a new method to the class
 
-  PosNode:   optional. The node, to which the request belongs. e.g. the
-             property node, if the insert is the auto created private variable.
-  CleanDef:  The skeleton of the new insertion. e.g. the variablename or the
+  CleanDef:  The sceleton of the new insertion. e.g. the variablename or the
              method header without parameter names.
   Def:       The insertion code.
   IdentifierName: e.g. the variablename or the method name
+  TheType:   see TNewClassPart
+  PosNode:   optional. The node, to which the request belongs. e.g. the
+             property node, if the insert is the auto created private variable.
   Body:      optional. Normally a method body is auto created. This overrides
              the body code.
-  TheType:   see TNewClassPart
 
 }
 var NewInsert, InsertPos, LastInsertPos: TCodeTreeNodeExtension;
@@ -983,8 +990,8 @@ begin
   if VarExistsInCodeCompleteClass(UpperCaseStr(VarName)) then begin
 
   end else begin
-    AddClassInsertion(nil,UpperCaseStr(VarName),
-            VarName+':'+VarType+';',VarName,'',ncpPublishedVars);
+    AddClassInsertion(UpperCaseStr(VarName),
+                      VarName+':'+VarType+';',VarName,ncpPublishedVars);
     if not InsertAllNewClassParts then
       RaiseException(ctsErrorDuringInsertingNewClassParts);
     // apply the changes
@@ -992,6 +999,43 @@ begin
       RaiseException(ctsUnableToApplyChanges);
   end;
   Result:=true;
+end;
+
+function TCodeCompletionCodeTool.InitClassCompletion(
+  const UpperClassName: string;
+  SourceChangeCache: TSourceChangeCache): boolean;
+var
+  ClassNode: TCodeTreeNode;
+begin
+  Result:=false;
+  BuildTree(false);
+  if not EndOfSourceFound then exit;
+  if (SourceChangeCache=nil) or (Scanner=nil) then exit;
+  ClassNode:=FindClassNodeInInterface(UpperClassName,true,false,true);
+  if (ClassNode=nil) then exit;
+  CodeCompleteClassNode:=ClassNode;
+  CodeCompleteSrcChgCache:=SourceChangeCache;
+  FreeClassInsertionList;
+  Result:=true;
+end;
+
+function TCodeCompletionCodeTool.ApplyClassCompletion: boolean;
+begin
+  Result:=false;
+  try
+    // insert all new class parts
+    if not InsertAllNewClassParts then
+      RaiseException(ctsErrorDuringInsertingNewClassParts);
+    // insert all missing proc bodies
+    if not CreateMissingProcBodies then
+      RaiseException(ctsErrorDuringCreationOfNewProcBodies);
+    // apply the changes
+    if not CodeCompleteSrcChgCache.Apply then
+      RaiseException(ctsUnableToApplyChanges);
+    Result:=true;
+  finally
+    FreeClassInsertionList;
+  end;
 end;
 
 function TCodeCompletionCodeTool.CompleteProperty(
@@ -1305,14 +1349,14 @@ var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
       end;
       // add new Insert Node
       if CompleteProperties then
-        AddClassInsertion(PropNode,CleanAccessFunc,AccessFunc,AccessParam,
-                          '',ncpPrivateProcs);
+        AddClassInsertion(CleanAccessFunc,AccessFunc,AccessParam,
+                          ncpPrivateProcs,PropNode);
     end else begin
       // the read identifier is a variable
       VariableName:=AccessParam;
       // variable does not exist yet -> add insert demand for variable
-      AddClassInsertion(PropNode,UpperCaseStr(VariableName),
-                  VariableName+':'+PropType+';',VariableName,'',ncpPrivateVars);
+      AddClassInsertion(UpperCaseStr(VariableName),
+         VariableName+':'+PropType+';',VariableName,ncpPrivateVars,PropNode);
     end;
   end;
   
@@ -1456,14 +1500,14 @@ var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
       end;
       // add new Insert Node
       if CompleteProperties then
-        AddClassInsertion(PropNode,CleanAccessFunc,AccessFunc,AccessParam,
-                          ProcBody,ncpPrivateProcs);
+        AddClassInsertion(CleanAccessFunc,AccessFunc,AccessParam,
+                          ncpPrivateProcs,PropNode,ProcBody);
     end else begin
       // the write identifier is a variable
       // -> add insert demand for variable
       if CompleteProperties then
-        AddClassInsertion(PropNode,UpperCaseStr(AccessParam),
-                AccessParam+':'+PropType+';',AccessParam,'',ncpPrivateVars);
+        AddClassInsertion(UpperCaseStr(AccessParam),
+           AccessParam+':'+PropType+';',AccessParam,ncpPrivateVars,PropNode);
     end;
   end;
   
@@ -1496,8 +1540,8 @@ var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
       CleanAccessFunc:=CleanAccessFunc+';';
       // add new Insert Node
       if CompleteProperties then
-        AddClassInsertion(PropNode,CleanAccessFunc,AccessFunc,AccessParam,'',
-                          ncpPrivateProcs);
+        AddClassInsertion(CleanAccessFunc,AccessFunc,AccessParam,
+                          ncpPrivateProcs,PropNode);
     end;
     if Parts[ppStored].StartPos<0 then begin
       // insert stored specifier
@@ -2781,8 +2825,8 @@ var CleanCursorPos, Indent, insertPos: integer;
       {$ENDIF}
       if not ProcExistsInCodeCompleteClass(CleanMethodDefinition) then begin
         // insert method definition into class
-        AddClassInsertion(nil, CleanMethodDefinition, MethodDefinition,
-                          AnEventName, '', ncpPublishedProcs);
+        AddClassInsertion(CleanMethodDefinition, MethodDefinition,
+                          AnEventName, ncpPublishedProcs);
       end;
       MethodDefinition:=SourceChangeCache.BeautifyCodeOptions.
                      AddClassAndNameToProc(MethodDefinition,

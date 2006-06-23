@@ -580,6 +580,7 @@ function TEventsCodeTool.CreateMethod(const UpperClassName,
   Section: TPascalClassSection): boolean;
 var AClassNode: TCodeTreeNode;
 begin
+  Result:=false;
   BuildTree(false);
   if not EndOfSourceFound then exit;
   AClassNode:=FindClassNodeInInterface(UpperClassName,true,false,true);
@@ -649,8 +650,8 @@ begin
         NewSection:=ncpPublishedProcs
       else
         NewSection:=ncpPrivateProcs;
-      AddClassInsertion(nil, CleanMethodDefinition, MethodDefinition, AMethodName,
-                        '', NewSection);
+      AddClassInsertion(CleanMethodDefinition, MethodDefinition, AMethodName,
+                        NewSection);
     end;
     {$IFDEF CTDEBUG}
     DebugLn('[TEventsCodeTool.CreateMethod] invoke class completion');
@@ -810,9 +811,9 @@ begin
     BuildTree(false);
     if not EndOfSourceFound then exit;
     UpperClassName:=UpperCaseStr(AComponent.ClassName);
-    { $IFDEF CTDEBUG}
+    {$IFDEF CTDEBUG}
     DebugLn('[TEventsCodeTool.CompleteComponent] A Component="',AComponent.Name,':',AComponent.ClassName);
-    { $ENDIF}
+    {$ENDIF}
     // initialize class for code completion
     CodeCompleteClassNode:=FindClassNodeInInterface(UpperClassName,true,false,true);
     CodeCompleteSrcChgCache:=SourceChangeCache;
@@ -827,32 +828,18 @@ begin
       // add missing published variable
       if VarExistsInCodeCompleteClass(UpperCurComponentName) then begin
       end else begin
-        DebugLn('[TEventsCodeTool.CompleteComponent] ADDING variable ',CurComponent.Name,':',CurComponent.ClassName);
-        AddClassInsertion(nil,UpperCurComponentName,
-                VarName+':'+VarType+';',VarName,'',ncpPublishedVars);
+        //DebugLn('[TEventsCodeTool.CompleteComponent] ADDING variable ',CurComponent.Name,':',CurComponent.ClassName);
+        AddClassInsertion(UpperCurComponentName,
+                VarName+':'+VarType+';',VarName,ncpPublishedVars);
       end;
-      // remove missing published events
-
-      // ToDo
-
     end;
-    { $IFDEF CTDEBUG}
+    {$IFDEF CTDEBUG}
     DebugLn('[TEventsCodeTool.CompleteComponent] invoke class completion');
-    { $ENDIF}
-    if not InsertAllNewClassParts then
-      RaiseException(ctsErrorDuringInsertingNewClassParts);
-
-    // insert all missing proc bodies
-    if not CreateMissingProcBodies then
-      RaiseException(ctsErrorDuringCreationOfNewProcBodies);
-
-    // apply the changes
-    if not SourceChangeCache.Apply then
-      RaiseException(ctsUnableToApplyChanges);
-    { $IFDEF CTDEBUG}
+    {$ENDIF}
+    Result:=ApplyClassCompletion;
+    {$IFDEF CTDEBUG}
     DebugLn('[TEventsCodeTool.CompleteComponent] END');
-    { $ENDIF}
-    Result:=true;
+    {$ENDIF}
   finally
     FreeClassInsertionList;
   end;

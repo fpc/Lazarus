@@ -28,33 +28,63 @@ program AddMethod;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, SysUtils, CodeCache, CodeToolManager, SimpleUnit1, FileProcs;
+  Classes, SysUtils, CodeCache, CodeToolManager, SimpleUnit1, FileProcs,
+  CodeCompletionTool;
   
 type
   TMyMethodType = function(Sender: TObject; AValue: integer): string of object;
 
 var
-  Code: TCodeBuffer;
   Filename: string;
+  Code: TCodeBuffer;
+  Tool: TCodeTool;
+  AClassName: String;
+  MethodName: String;
+  MethodDefinition: String;
+  CleanMethodDefinition: String;
+  i: Integer;
 begin
   // Example: find declaration of 'TObject'
 
-  // Step 1: load the file
+  // load the file
   Filename:=AppendPathDelim(GetCurrentDir)
             +'scanexamples'+PathDelim+'simpleunit1.pas';
   Code:=CodeToolBoss.LoadFile(Filename,false,false);
   if Code=nil then
     raise Exception.Create('loading failed '+Filename);
 
-  // Step 2: add a method compatible to TMyMethodType
+  // Example 1: add a method compatible to TMyMethodType
   if CodeToolBoss.CreatePublishedMethod(Code,'TMyClass','NewMethod',
     typeinfo(TMyMethodType),true) then
   begin
     writeln('Method added: ');
     writeln(Code.Source);
   end else begin
-    writeln('Adding method failed: ',CodeToolBoss.ErrorMessage);
+    raise Exception.Create('Adding method failed');
   end;
+  
+  // Example 2: adding methods directly, but several at a time
+  AClassName:='TMyClass';
+  if not CodeToolBoss.InitClassCompletion(Code,UpperCase(AClassName),Tool) then
+    raise Exception.Create('Explore failed');
+
+  for i:=1 to 3 do begin
+    MethodName:='NewProc'+IntToStr(i);
+    MethodDefinition:='procedure '+MethodName
+                                +'(Sender:TObject; AValue:integer);';
+    // check, that we don't add an already existing method.
+    // Create a search mask: no class name, no 'procedure' keyword, no comments,
+    // no unneeded spaces, no result type, no parameter names, uppercase
+    CleanMethodDefinition:=UpperCase(MethodName+'(:TObject;:integer);');
+    if not Tool.ProcExistsInCodeCompleteClass(CleanMethodDefinition) then
+      Tool.AddClassInsertion(CleanMethodDefinition, MethodDefinition, MethodName,
+                             ncpPublishedProcs);
+  end;
+  
+  if not Tool.ApplyClassCompletion then
+    raise Exception.Create('Explore failed');
+  writeln('Method added: ');
+  writeln(Code.Source);
 end.
 
 

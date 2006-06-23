@@ -1744,11 +1744,13 @@ procedure MergeSort(List: PPointer; ListLength: PtrInt;
 var
   MergeList: PPointer;
 
-  procedure Merge(const Pos1, Pos2, Pos3: PtrInt);
+  procedure Merge(Pos1, Pos2, Pos3: PtrInt);
   // merge two sorted arrays
   // the first array ranges Pos1..Pos2-1, the second ranges Pos2..Pos3
   var Src1Pos,Src2Pos,DestPos,cmp,i:PtrInt;
   begin
+    while (Pos3>=Pos2) and (Compare(List[Pos2-1],List[Pos3])<=0) do
+      dec(Pos3);
     if (Pos1>=Pos2) or (Pos2>Pos3) then exit;
     Src1Pos:=Pos2-1;
     Src2Pos:=Pos3;
