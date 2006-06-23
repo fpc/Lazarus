@@ -1207,20 +1207,22 @@ end;
 
 class procedure TGtk2WSCustomListView.SetViewStyle(const ALV: TCustomListView;
   const Avalue: TViewStyle);
-      procedure ShowColumns(const Widgets: PTVWidgets; const Show: Boolean);
-      var
-        GtkColumn: PGtkTreeViewColumn;
-        i: Integer;
-      begin
-        for i := 1 to TLVHack(ALV).Columns.Count-1 do begin
-          GtkColumn := gtk_tree_view_get_column(PGtkTreeView(Widgets^.MainView), i);
-          if not(Show)
-          or (Show and (ptrint(g_object_get_data(G_OBJECT(GtkColumn), PChar('Visible')))<>0))
-          then
-            gtk_tree_view_column_set_visible(GtkColumn, Show);
-        end;
+  
+  procedure ShowColumns(const Widgets: PTVWidgets; const Show: Boolean);
+  var
+    GtkColumn: PGtkTreeViewColumn;
+    i: Integer;
+  begin
+    for i := 1 to TLVHack(ALV).Columns.Count-1 do begin
+      GtkColumn := gtk_tree_view_get_column(PGtkTreeView(Widgets^.MainView), i);
+      if not (Show)
+      or (Show and (PtrInt(g_object_get_data(G_OBJECT(GtkColumn),
+                                             PChar('Visible')))<>0))
+      then
+        gtk_tree_view_column_set_visible(GtkColumn, Show);
+    end;
+  end;
 
-      end;
 var
   Widgets: PTVWidgets;
 begin
@@ -1238,7 +1240,8 @@ begin
         end;
       vsReport:
         begin
-          if TLVHack(ALV).ShowColumnHeaders = True then gtk_tree_view_set_headers_visible(GTK_TREE_VIEW (MainView), True);
+          if TLVHack(ALV).ShowColumnHeaders = True then
+            gtk_tree_view_set_headers_visible(GTK_TREE_VIEW (MainView), True);
         end;
     end;
   end;

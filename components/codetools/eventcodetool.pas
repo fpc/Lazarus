@@ -144,7 +144,7 @@ begin
   end;
   // transform TypeData into a ProcHead String
   ParamCount:=TypeData^.ParamCount;
-  //DebugLn('TEventsCodeTool.MethodTypeDataToStr A ParamCount=',ParamCount);
+  //DebugLn(['TEventsCodeTool.MethodTypeDataToStr A ParamCount=',ParamCount]);
   Offset:=0;
   if ParamCount>0 then begin
     Result:=Result+'(';
@@ -202,7 +202,7 @@ begin
     SetLength(ResultType,Len);
     Move(TypeData^.ParamList[Offset],ResultType[1],Len);
     inc(Offset,Len);
-    if ResultType<>'' then
+    if (ResultType<>'') and (IsIdentStartChar[ResultType[1]]) then // e.g. $void
       Result:=Result+':'+ResultType;
   end;
   if phpInUpperCase in Attr then Result:=UpperCaseStr(Result);
@@ -610,6 +610,7 @@ begin
     // check if method definition already exists in class
     if UseTypeInfoForParameters then begin
       // do not lookup the declaration in the source
+      
       ATypeData:=GetTypeData(ATypeInfo);
       if ATypeData=nil then exit(false);
       CleanMethodDefinition:=UpperCaseStr(AMethodName)
