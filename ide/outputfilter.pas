@@ -29,7 +29,9 @@ interface
 // TODO: Test on all platforms
 {$IFNDEF DisableAsyncProcess}
   {$IFDEF Linux}
-  {$DEFINE UseAsyncProcess}
+    {$IFDEF CPUI386}
+      {$DEFINE UseAsyncProcess}
+    {$ENDIF}
   {$ENDIF}
 {$ENDIF}
 
