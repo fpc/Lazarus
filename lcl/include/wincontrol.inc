@@ -614,8 +614,17 @@ var
 
         crsScaleChilds:
           begin
+            {$IFDEF CPU64}
+            {$NOTE remove this workaround, when comiler bug fixed}
+            if Child.MinimumSize[Orientation]=0 then
+              CurScale:=0
+            else
+              CurScale:=double(Child.MinimumSize[Orientation])
+                        /Child.PreferredSize[Orientation];
+            {$ELSE}
             CurScale:=double(Child.MinimumSize[Orientation])
                       /Child.PreferredSize[Orientation];
+            {$ENDIF}
             CurOffset:=Child.PreferredSize[Orientation]
                        -Child.MinimumSize[Orientation];
             if (Factor.Offset=0) or (Factor.Scale<CurScale) then begin
@@ -626,8 +635,17 @@ var
 
         crsHomogenousChildResize:
           begin
+            {$IFDEF CPU64}
+            {$NOTE remove this workaround, when comiler bug fixed}
+            if Child.MinimumSize[Orientation]=0 then
+              CurScale:=0
+            else
+              CurScale:=double(Child.MinimumSize[Orientation])
+                        /Child.PreferredSize[Orientation];
+            {$ELSE}
             CurScale:=double(Child.MinimumSize[Orientation])
                       /Child.PreferredSize[Orientation];
+            {$ENDIF}
             CurOffset:=Child.PreferredSize[Orientation]
                        -Child.MinimumSize[Orientation];
             if (Factor.Offset=0) or (Factor.Offset>CurOffset) then begin

@@ -1099,10 +1099,10 @@ procedure MergeSort(List: TFPList; const OnCompare: TListSortCompare);
 var
   MergeList: PPointer;
 
-  procedure Merge(Pos1, Pos2, Pos3: integer);
+  procedure Merge(Pos1, Pos2, Pos3: PtrInt);
   // merge two sorted arrays
   // the first array ranges Pos1..Pos2-1, the second ranges Pos2..Pos3
-  var Src1Pos,Src2Pos,DestPos,cmp,a:integer;
+  var Src1Pos,Src2Pos,DestPos,cmp,a:PtrInt;
   begin
     while (Pos3>=Pos2) and (OnCompare(List[Pos2-1],List[Pos3])<=0) do
       dec(Pos3);
@@ -1130,7 +1130,7 @@ var
       List[a]:=MergeList[a];
   end;
 
-  procedure Sort(StartPos, EndPos: integer);
+  procedure Sort(StartPos, EndPos: PtrInt);
   // sort an interval in List. Use MergeList as work space.
   var
     cmp, mid: integer;
@@ -1163,7 +1163,7 @@ procedure MergeSort(List: TStrings; const OnCompare: TStringsSortCompare);
 var
   MergeList: PAnsiString;
 
-  procedure Merge(Pos1, Pos2, Pos3: integer);
+  procedure Merge(Pos1, Pos2, Pos3: PtrInt);
   // merge two sorted arrays
   // the first array ranges Pos1..Pos2-1, the second ranges Pos2..Pos3
   var Src1Pos,Src2Pos,DestPos,cmp,a:integer;
@@ -1194,7 +1194,7 @@ var
       List[a]:=MergeList[a];
   end;
 
-  procedure Sort(StartPos, EndPos: integer);
+  procedure Sort(StartPos, EndPos: PtrInt);
   // sort an interval in List. Use MergeList as work space.
   var
     cmp, mid: integer;
@@ -1218,7 +1218,7 @@ var
 
 var
   CurSize: PtrInt;
-  i: Integer;
+  i: PtrInt;
 begin
   if (List=nil) or (List.Count<=1) then exit;
   CurSize:=PtrInt(List.Count)*SizeOf(Pointer);
