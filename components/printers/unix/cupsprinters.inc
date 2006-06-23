@@ -489,13 +489,6 @@ begin
   GetEnumAttributeString('media-supported',Lst);
 end;
 
-procedure TCUPSPrinter.DoInitialization;
-begin
-  //printer list has been obtained
-  if Printers.Count > 0 then
-    SelectCurrentPrinterOrDefault;
-end;
-
 function TCUPSPrinter.DoSetPrinter(aName: string): Integer;
 Var i  : Integer;
     P  : Pcups_dest_t;

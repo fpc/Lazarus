@@ -489,6 +489,8 @@ begin
   if not fPrintersValid then begin
     fPrintersValid:=true;
     DoEnumPrinters(fPrinters);
+    if FPrinters.Count>0 then
+      SelectCurrentPrinterOrDefault;
     DoInitialization;
   end;
 end;

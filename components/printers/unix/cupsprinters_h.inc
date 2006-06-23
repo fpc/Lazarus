@@ -102,7 +102,6 @@ type
 
      procedure DoEnumPrinters(Lst : TStrings); override;
      procedure DoEnumPapers(Lst : TStrings); override;
-     procedure DoInitialization; override;
      function DoSetPrinter(aName : string): Integer; override;
      function DoGetCopies : Integer; override;
      procedure DoSetCopies(aValue : Integer); override;
