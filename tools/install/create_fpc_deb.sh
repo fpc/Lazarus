@@ -181,7 +181,8 @@ if [ "$PackageName" = "fpc" ]; then
     make all
     mkdir -p $DebianInstallDir
     make install INSTALL_PREFIX=$DebianInstallDir
-    ln -s $DebianInstallDir/lib/fpc/$FPCVersion/ppc386 $DebianInstallDir/bin/ppc386 
+    # ToDo: put this into an debian script and use the right prefix.
+    ln -s /usr/lib/fpc/$FPCVersion/ppc386 $DebianInstallDir/bin/ppc386
     cd -
 fi
 
