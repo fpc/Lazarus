@@ -68,6 +68,7 @@ end;
 
 constructor TForm1.Create(TheOwner: TComponent);
 begin
+  Name:='Form1';
   OnCreate:=@Form1Create;
   inherited Create(TheOwner);
 end;
