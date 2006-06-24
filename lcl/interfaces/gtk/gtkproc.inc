@@ -7116,6 +7116,7 @@ begin
   if Result = nil then
     Result := pango_font_description_from_string('12');
 end;
+
 {$Else}
 function LoadDefaultFont: PGDKFont;
 var
@@ -7147,6 +7148,7 @@ begin
 end;
 {$EndIf}
 
+{$IFDEF Gtk2}
 function GetDefaultPangoLayout: PPangoLayout;
 begin
   if DefaultPangoLayout=nil then begin
@@ -7155,6 +7157,7 @@ begin
   end;
   Result := DefaultPangoLayout;
 end;
+{$ENDIF}
 
 function GetDefaultFontName: string;
 var
