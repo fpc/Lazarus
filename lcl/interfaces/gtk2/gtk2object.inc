@@ -1414,6 +1414,7 @@ var
   AttrList : PPangoAttrList;
   Attr : PPangoAttribute;
   Extents : TPangoRectangle;
+  AttrListTemporary: Boolean;
 begin
   with TDeviceContext(DC) do begin
     if dcfTextMetricsValid in DCFlags then begin
@@ -1437,24 +1438,29 @@ begin
       If UseFontDesc = nil then
         DebugLn('WARNING: [TGtk2WidgetSet.GetTextMetrics] Missing font')
       else begin
-        Layout := gtk_widget_create_pango_layout (GetStyleWidget(lgsdefault), nil);
+        Layout := GetDefaultPangoLayout;
         pango_layout_set_font_description(Layout, UseFontDesc);
-        AttrList := pango_layout_get_attributes(Layout);
+        
+        AttrList := nil;
+        AttrListTemporary := false;
+        if Underline or StrikeOut then begin
+          AttrList := pango_layout_get_attributes(Layout);
+          If (AttrList = nil) then begin
+            AttrList := pango_attr_list_new();
+            AttrListTemporary := true;
+          end;
 
-        If (AttrList = nil) then
-          AttrList := pango_attr_list_new();
+          If Underline then
+            Attr := pango_attr_underline_new(PANGO_UNDERLINE_SINGLE)
+          else
+            Attr := pango_attr_underline_new(PANGO_UNDERLINE_NONE);
+          pango_attr_list_change(AttrList,Attr);
 
-        If Underline then
-          Attr := pango_attr_underline_new(PANGO_UNDERLINE_SINGLE)
-        else
-          Attr := pango_attr_underline_new(PANGO_UNDERLINE_NONE);
+          Attr := pango_attr_strikethrough_new(StrikeOut);
+          pango_attr_list_change(AttrList,Attr);
 
-        pango_attr_list_change(AttrList,Attr);
-
-        Attr := pango_attr_strikethrough_new(StrikeOut);
-        pango_attr_list_change(AttrList,Attr);
-
-        pango_layout_set_attributes(Layout, AttrList);
+          pango_layout_set_attributes(Layout, AttrList);
+        end;
 
         pango_layout_set_single_paragraph_mode(Layout, TRUE);
         pango_layout_set_width(Layout, -1);
@@ -1464,9 +1470,10 @@ begin
         pango_layout_set_text(Layout,  TestString, length(TestString));
 
         pango_layout_get_extents(Layout, nil, @Extents);
-        g_object_unref(Layout);
 
-        If UnRef then
+        if AttrListTemporary then
+          pango_attr_list_unref(AttrList);
+        if UnRef then
           pango_font_description_free(UseFontDesc);
 
         FillChar(DCTextMetric, SizeOf(DCTextMetric), 0);

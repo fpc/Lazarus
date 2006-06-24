@@ -202,6 +202,7 @@ var
   UseFontDesc : PPangoFontDescription;
   AttrList : PPangoAttrList;
   Attr : PPangoAttribute;
+  AttrListTemporary: Boolean;
 
   procedure DoTextOut(X,Y : Integer; Str : Pchar; Count: Integer);
   var
@@ -242,118 +243,130 @@ begin
     then begin
       DebugLn('WARNING: [TGtk2WidgetSet.ExtTextOut] Uninitialized GC');
       Result := False;
-    end
-    else if ((Options and (ETO_OPAQUE+ETO_CLIPPED)) <> 0)
+      exit;
+    end;
+    if ((Options and (ETO_OPAQUE+ETO_CLIPPED)) <> 0)
     and (Rect=nil) then begin
       DebugLn('WARNING: [TGtk2WidgetSet.ExtTextOut] Rect=nil');
       Result := False;
-    end else begin
-      // TODO: implement other parameters.
+      exit;
+    end;
 
-      UseFontDesc:=nil;
-      if (CurrentFont = nil) or (CurrentFont^.GDIFontObject = nil)
-      then begin
-        UseFontDesc := GetDefaultFontDesc(true);
-        UnRef := True;
-        Underline := False;
-        StrikeOut := False;
-      end
-      else begin
-        UseFontDesc := CurrentFont^.GDIFontObject;
-        UnRef := False;
-        Underline := CurrentFont^.Underline;
-        StrikeOut := CurrentFont^.StrikeOut;
+    // TODO: implement other parameters.
+
+    UseFontDesc:=nil;
+    if (CurrentFont = nil) or (CurrentFont^.GDIFontObject = nil)
+    then begin
+      UseFontDesc := GetDefaultFontDesc(true);
+      UnRef := True;
+      Underline := False;
+      StrikeOut := False;
+    end
+    else begin
+      UseFontDesc := CurrentFont^.GDIFontObject;
+      UnRef := False;
+      Underline := CurrentFont^.Underline;
+      StrikeOut := CurrentFont^.StrikeOut;
+    end;
+    
+    If (UseFontDesc = nil) then begin
+      DebugLn('WARNING: [TGtk2WidgetSet.ExtTextOut] Missing Font');
+      Result:=false;
+      exit;
+    end;
+
+    // to reduce flickering calculate first and then paint
+    
+    Layout := GetDefaultPangoLayout;
+
+    If (Layout = nil) then begin
+      DebugLn('WARNING: [TGtk2WidgetSet.ExtTextOut] Missing Default Pango Layout');
+      Result:=false;
+      exit;
+    end;
+
+    DCOrigin:=GetDCOffset(TDeviceContext(DC));
+
+    pango_layout_set_font_description(Layout, UseFontDesc);
+
+    AttrList:=nil;
+    AttrListTemporary := false;
+    if Underline or StrikeOut then begin
+      AttrList := pango_layout_get_attributes(Layout);
+      If (AttrList = nil) then begin
+        AttrList := pango_attr_list_new();
+        AttrListTemporary := true;
       end;
-      
-      If (UseFontDesc = nil) or (GetStyleWidget(lgsdefault)=nil) then
-        DebugLn('WARNING: [TGtk2WidgetSet.ExtTextOut] Missing Font')
-      else begin
-        // to reduce flickering calculate first and then paint
-        
-        DCOrigin:=GetDCOffset(TDeviceContext(DC));
+      If Underline then
+        Attr := pango_attr_underline_new(PANGO_UNDERLINE_SINGLE)
+      else
+        Attr := pango_attr_underline_new(PANGO_UNDERLINE_NONE);
+      pango_attr_list_change(AttrList,Attr);
 
-        Layout := gtk_widget_create_pango_layout (GetStyleWidget(lgsdefault), nil);
+      Attr := pango_attr_strikethrough_new(StrikeOut);
+      pango_attr_list_change(AttrList,Attr);
+    end;
 
-        If (Layout = nil) then
-          DebugLn('WARNING: [TGtk2WidgetSet.ExtTextOut] Missing Pango Layout')
-        else begin
-          pango_layout_set_font_description(Layout, UseFontDesc);
+    if (Options and ETO_CLIPPED) <> 0 then
+    begin
+      X := Rect^.Left;
+      Y := Rect^.Top;
+      IntersectClipRect(DC, Rect^.Left, Rect^.Top,
+                        Rect^.Right, Rect^.Bottom);
+    end;
 
-          AttrList := pango_layout_get_attributes(Layout);
+    LineLen := FindChar(#10,Str,Count);
+    TopY := Y;
+    UpdateDCTextMetric(TDeviceContext(DC));
+    TxtPt.X := X + DCOrigin.X;
+    LineHeight := DCTextMetric.TextMetric.tmHeight;
+    TxtPt.Y := TopY  + DCOrigin.Y;
 
-          If (AttrList = nil) then
-            AttrList := pango_attr_list_new();
+    SelectedColors := dcscCustom;
 
-          If Underline then
-            Attr := pango_attr_underline_new(PANGO_UNDERLINE_SINGLE)
-          else
-            Attr := pango_attr_underline_new(PANGO_UNDERLINE_NONE);
+    if ((Options and ETO_OPAQUE) <> 0) then
+    begin
+      Width := Rect^.Right - Rect^.Left;
+      Height := Rect^.Bottom - Rect^.Top;
+      EnsureGCColor(DC, dccCurrentBackColor, True, False);
+      gdk_draw_rectangle(Drawable, GC, 1,
+                         Rect^.Left+DCOrigin.X, Rect^.Top+DCOrigin.Y,
+                         Width, Height);
+    end;
 
-          pango_attr_list_change(AttrList,Attr);
+    EnsureGCColor(DC, dccCurrentTextColor, True, False);
+    if AttrList<>nil then
+      pango_layout_set_attributes(Layout, AttrList);
 
-          Attr := pango_attr_strikethrough_new(StrikeOut);
-          pango_attr_list_change(AttrList,Attr);
+    Foreground := StyleForegroundColor(CurrentTextColor.ColorRef, nil);
 
-          if (Options and ETO_CLIPPED) <> 0 then
-          begin
-            X := Rect^.Left;
-            Y := Rect^.Top;
-            IntersectClipRect(DC, Rect^.Left, Rect^.Top,
-                              Rect^.Right, Rect^.Bottom);
-          end;
-
-          LineLen := FindChar(#10,Str,Count);
-          TopY := Y;
-          UpdateDCTextMetric(TDeviceContext(DC));
-          TxtPt.X := X + DCOrigin.X;
-          LineHeight := DCTextMetric.TextMetric.tmHeight;
-          TxtPt.Y := TopY  + DCOrigin.Y;
-
-          SelectedColors := dcscCustom;
-
-          if ((Options and ETO_OPAQUE) <> 0) then
-          begin
-            Width := Rect^.Right - Rect^.Left;
-            Height := Rect^.Bottom - Rect^.Top;
-            EnsureGCColor(DC, dccCurrentBackColor, True, False);
-            gdk_draw_rectangle(Drawable, GC, 1,
-                               Rect^.Left+DCOrigin.X, Rect^.Top+DCOrigin.Y,
-                               Width, Height);
-          end;
-
-          EnsureGCColor(DC, dccCurrentTextColor, True, False);
-          pango_layout_set_attributes(Layout, AttrList);
-
-          Foreground := StyleForegroundColor(CurrentTextColor.ColorRef, nil);
-
-          LineStart:=Str;
-          if LineLen < 0 then begin
-            LineLen:=Count;
-            if Count> 0 then DrawTextLine;
-          end else
-          Begin  //write multiple lines
-            StrEnd:=Str+Count;
-            while LineStart < StrEnd do begin
-              LineEnd:=LineStart+LineLen;
-              if LineLen>0 then DrawTextLine;
-              inc(TxtPt.Y,LineHeight);
-              LineStart:=LineEnd+1; // skip #10
-              if (LineStart<StrEnd) and (LineStart^=#13) then
-                inc(LineStart); // skip #10
-              Count:=StrEnd-LineStart;
-              LineLen:=FindChar(#10,LineStart,Count);
-              if LineLen<0 then
-                LineLen:=Count;
-            end;
-          end;
-
-          g_object_unref(Layout);
-          Result := True;
-        end;
-        If UnRef then
-           pango_font_description_free(UseFontDesc);
+    LineStart:=Str;
+    if LineLen < 0 then begin
+      LineLen:=Count;
+      if Count> 0 then DrawTextLine;
+    end else
+    Begin  //write multiple lines
+      StrEnd:=Str+Count;
+      while LineStart < StrEnd do begin
+        LineEnd:=LineStart+LineLen;
+        if LineLen>0 then DrawTextLine;
+        inc(TxtPt.Y,LineHeight);
+        LineStart:=LineEnd+1; // skip #10
+        if (LineStart<StrEnd) and (LineStart^=#13) then
+          inc(LineStart); // skip #10
+        Count:=StrEnd-LineStart;
+        LineLen:=FindChar(#10,LineStart,Count);
+        if LineLen<0 then
+          LineLen:=Count;
       end;
     end;
+
+    Result := True;
+
+    if AttrListTemporary then
+      pango_attr_list_unref(AttrList);
+    if UnRef then
+      pango_font_description_free(UseFontDesc);
   end;
   Assert(False, Format('trace:< [TGtk2WidgetSet.ExtTextOut] DC:0x%x, X:%d, Y:%d, Options:%d, Str:''%s'', Count: %d', [DC, X, Y, Options, Str, Count]));
 end;

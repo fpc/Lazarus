@@ -180,24 +180,18 @@ const
   
   
 type
-  TRecentListEntry = record
-    Item: Pointer;
-    Data: Pointer;
-  end;
-  PRecentListEntry = ^TRecentListEntry;
-
   TRecentList = class
   private
     FCapacity: integer;
     FCount: integer;
-    FItems: PRecentListEntry;
+    FItems: PPointer;
     procedure FreeItems;
     procedure SetCapacity(NewCapacity: integer);
   public
     constructor Create(TheCapacity: integer);
     destructor Destroy; override;
     function Contains(Item: Pointer): boolean;
-    procedure Add(Item, Data: Pointer);
+    procedure Add(Item: Pointer);
     procedure Remove(Item: Pointer);
     function IndexOf(Item: Pointer): integer;
     procedure Clear;
@@ -220,7 +214,7 @@ procedure TRecentList.SetCapacity(NewCapacity: integer);
 begin
   if NewCapacity=FCapacity then exit;
   if NewCapacity>0 then
-    ReAllocMem(FItems,NewCapacity*SizeOf(TRecentListEntry))
+    ReAllocMem(FItems,NewCapacity*SizeOf(Pointer))
   else
     FreeItems;
   FCapacity:=NewCapacity;
@@ -245,16 +239,15 @@ begin
   Result:=IndexOf(Item)>=0;
 end;
 
-procedure TRecentList.Add(Item, Data: Pointer);
+procedure TRecentList.Add(Item: Pointer);
 begin
   if FCount=FCapacity then begin
     if FCount>1 then
-      Move(FItems[1],FItems[0],SizeOf(TRecentListEntry)*(FCount-1));
+      Move(FItems[1],FItems[0],SizeOf(PPointer)*(FCount-1));
   end else begin
     inc(FCount);
   end;
-  FItems[FCount-1].Item:=Item;
-  FItems[FCount-1].Data:=Data;
+  FItems[FCount-1]:=Item;
 end;
 
 procedure TRecentList.Remove(Item: Pointer);
@@ -263,14 +256,14 @@ begin
   i:=IndexOf(Item);
   if i<0 then exit;
   if i<FCount-1 then
-    Move(FItems[i+1],FItems[i],SizeOf(TRecentListEntry)*(FCount-i-1));
+    Move(FItems[i+1],FItems[i],SizeOf(PPointer)*(FCount-i-1));
   dec(FCount);
 end;
 
 function TRecentList.IndexOf(Item: Pointer): integer;
 begin
   Result:=FCount-1;
-  while (Result>=0) and (FItems[Result].Item<>Item) do dec(Result);
+  while (Result>=0) and (FItems[Result]<>Item) do dec(Result);
 end;
 
 procedure TRecentList.Clear;
@@ -614,7 +607,7 @@ begin
   then begin
     Result:=FindHashItem(Item)<>nil;
     if Result and (FContainsCache<>nil) then
-      TRecentList(FContainsCache).Add(Item,nil);
+      TRecentList(FContainsCache).Add(Item);
   end else
     Result:=true;
 end;

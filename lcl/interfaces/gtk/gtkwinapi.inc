@@ -3865,9 +3865,9 @@ begin
     // TODO: implement other parameters.
 
     // to reduce flickering calculate first and then paint
-    DCOrigin:=GetDCOffset(TDeviceContext(DC));
+    DCOrigin := GetDCOffset(TDeviceContext(DC));
     buffered := false;
-    UseFont:=nil;
+    UseFont := nil;
     buffer := Drawable;
     UnRef := false;
     UnderLine := false;

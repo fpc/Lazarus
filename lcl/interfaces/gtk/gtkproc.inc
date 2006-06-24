@@ -6730,6 +6730,12 @@ var
   i: Integer;
 begin
   if Styles=nil then exit;
+  {$IFDEF Gtk2}
+  if DefaultPangoLayout<>nil then begin
+    g_object_unref(DefaultPangoLayout);
+    DefaultPangoLayout:=nil;
+  end;
+  {$ENDIF}
   for i:=Styles.Count-1 downto 0 do begin
     StyleObject:=PStyleObject(Styles.Objects[i]);
     FreeStyleObject(StyleObject);
@@ -7140,6 +7146,15 @@ begin
     Result := gdk_font_ref(Result);
 end;
 {$EndIf}
+
+function GetDefaultPangoLayout: PPangoLayout;
+begin
+  if DefaultPangoLayout=nil then begin
+    DefaultPangoLayout :=
+      gtk_widget_create_pango_layout (GetStyleWidget(lgsdefault), nil);
+  end;
+  Result := DefaultPangoLayout;
+end;
 
 function GetDefaultFontName: string;
 var

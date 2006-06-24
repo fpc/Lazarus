@@ -21,7 +21,7 @@ interface
 uses
   SysUtils, Classes, InterfaceBase,
   {$IFDEF gtk2}
-  glib2, gdk2pixbuf, gdk2, gtk2,
+  Pango, glib2, gdk2pixbuf, gdk2, gtk2,
   {$ELSE}
   glib, gdk, gtk,
   {$ENDIF}
@@ -136,6 +136,11 @@ const
 
 var
   Styles : TStrings;
+  
+{$IFDEF Gtk2}
+var
+  DefaultPangoLayout: PPangoLayout = nil;
+{$ENDIF}
 
 const
   KEYMAP_VKUNKNOWN = $10000;

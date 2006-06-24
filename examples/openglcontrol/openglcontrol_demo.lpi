@@ -14,10 +14,8 @@
       <TargetFileExt Value=""/>
       <Title Value="openglcontrol_demo"/>
     </General>
-    <LazDoc Paths=""/>
     <PublishOptions>
       <Version Value="2"/>
-      <IgnoreBinaries Value="False"/>
     </PublishOptions>
     <RunParams>
       <local>
