@@ -56,6 +56,10 @@ Type
     MouseX, MouseY: word; // noticing spurious WM_MOUSEMOVE messages
     case integer of
       0: (spinValue: single);
+      1: (
+        TrackValid: Boolean; // Set when we have a valid trackpos
+        TrackPos: Integer    // keeps the thumb position while tracking
+      );
   end;
 
 function WM_To_String(WM_Message: Integer): string;

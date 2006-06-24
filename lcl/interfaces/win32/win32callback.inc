@@ -564,19 +564,45 @@ Var
       Pos := 0;
     end;
 
-    if not (Lo(WParam) in [SB_THUMBTRACK, SB_THUMBPOSITION]) then Exit;
+    if not (Lo(WParam) in [SB_THUMBTRACK, SB_THUMBPOSITION])
+    then begin
+      WindowInfo^.TrackValid := False;
+      Exit;
+    end;
+    
+    // Note on thumb tracking
+    // When using the scrollwheel, windows sends SB_THUMBTRACK
+    // messages, but only when scroll.max < 32K. So in that case
+    // Hi(WParam) won't cycle.
+    // When ending scrollbar tracking we also get those
+    // messages. Now Hi(WParam) is cycling.
+    // To get the correct value you need to use GetScrollInfo.
+    //
+    // Now there is a problem. GetScrollInfo returns always the old
+    // position. So in case we get track messages, we'll keep the
+    // last trackposition.
+    // To get the correct position, we use the most significant
+    // part of the last known value (or the value returned by
+    // ScrollInfo). The missing least significant part is given
+    // by Hi(WParam), since it is cycling, the or of both will give
+    // the position
+    // This only works if the difference between the last pos and
+    // the new pos is < 64K, so it might fail if we don't get track
+    // messages
+    // MWE.
 
-    // For thumb messges, retrieve the real position,
+
     ScrollInfo.cbSize := SizeOf(ScrollInfo);
     if Lo(WParam) = SB_THUMBTRACK
     then begin
       ScrollInfo.fMask := SIF_TRACKPOS;
       // older windows versions may not support trackpos, so fill it with some default
-      ScrollInfo.nTrackPos := Hi(WParam);
+      if WindowInfo^.TrackValid
+      then ScrollInfo.nTrackPos := (WindowInfo^.TrackPos and $FFFF0000) or Hi(WParam)
+      else ScrollInfo.nTrackPos := Hi(WParam);
     end
     else begin
       ScrollInfo.fMask := SIF_POS;
-      // older windows versions may not support trackpos, so fill it with some default
       ScrollInfo.nPos := Hi(WParam);
     end;
 
@@ -592,38 +618,21 @@ Var
       else GetScrollInfo(Window, SB_VERT, ScrollInfo);
     end;
 
-    with LMScroll do
-    begin
-      if Lo(WParam) = SB_THUMBTRACK
-      then Pos := ScrollInfo.nTrackPos
-      else Pos := (ScrollInfo.nPos and $FFFF0000) or Hi(WParam);
-      // Note on the above
-      // When using the scrollwheel, windows sends SB_THUMBTRACK
-      // messages, but only when scroll.max < 32K. So in that case
-      // Hi(WParam) won't cycle.
-      // When ending scrollbar tracking we also get those
-      // messages. Now Hi(WParam) is cycling.
-      // To get the correct value you need to use GetScrollInfo.
-      //
-      // Now there is a problem. GetScrollInfo returns the old position
-      // while using the wheelmouse, and during tracking it returns
-      // the new position.
-      // To get around this, I use the most significant part of the
-      // value returned by ScrollInfo, since that is always correct
-      // The missing least significant part is given by Hi(WParam)
-      // (since it is cycling) and is also always valid.
-      // So the combination of both also is.
-      // In the case of the wheelmouse this only works if the
-      // difference between the old pos and the new pos is < 64K.
-      // I think we safely can asuume that (you wont get messages
-      // anyhow if the range was > 32K :).
-      // MWE.
-
-
-      if Pos < High(SmallPos)
-      then SmallPos := Pos
-      else SmallPos := High(SmallPos);
+    if Lo(WParam) = SB_THUMBTRACK
+    then begin
+      LMScroll.Pos := ScrollInfo.nTrackPos;
+      WindowInfo^.TrackPos := ScrollInfo.nTrackPos;
+      WindowInfo^.TrackValid := True;
+    end
+    else begin
+      if WindowInfo^.TrackValid
+      then LMScroll.Pos := (WindowInfo^.TrackPos and $FFFF0000) or Hi(WParam)
+      else LMScroll.Pos := (ScrollInfo.nPos and $FFFF0000) or Hi(WParam);
     end;
+
+    if LMScroll.Pos < High(LMScroll.SmallPos)
+    then LMScroll.SmallPos := LMScroll.Pos
+    else LMScroll.SmallPos := High(LMScroll.SmallPos);
   end;
 
   procedure HandleSetCursor;
