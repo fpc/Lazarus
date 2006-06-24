@@ -361,15 +361,18 @@ begin
       CurControl:=Controls[i];
       if (CurControl.Align<>alNone) then continue;
       NewWidth:=CurControl.Width;
-      if CurControl.AutoSize then
-       NewHeight:=FButtonHeight;
       if (CurControl is TToolButton) and (not CurControl.AutoSize) then begin
         CurButton:=TToolButton(CurControl);
-        case CurButton.Style of
-        tbsButton,tbsCheck,tbsDropDown:
-          NewWidth:=FButtonWidth;
+        if CurButton.Style in [tbsButton,tbsCheck,tbsDropDown] then begin
+          CurControl.GetPreferredSize(NewWidth,NewHeight);
+          if NewWidth<FButtonWidth then
+            NewWidth:=FButtonWidth;
         end;
       end;
+      if CurControl.AutoSize then
+        NewHeight:=CurControl.Height
+      else
+        NewHeight:=FButtonHeight;
       CurControl.SetBounds(CurControl.Left,CurControl.Top,
                            NewWidth,NewHeight);
     end;
@@ -493,10 +496,10 @@ begin
         CalculatePosition;
         //DebugLn('WrapButtons ',CurControl.Name,':',CurControl.ClassName,' ',x,',',y,',',CurControl.Width,',',CurControl.Height);
         if CurControl.AutoSize then begin
-          // center vertically
-          CurControl.SetBounds(x,y,CurControl.Width,CurControl.Height);
+          // TODO: center vertically
+          CurControl.SetBoundsKeepBase(x,y,CurControl.Width,CurControl.Height);
         end else
-          CurControl.SetBounds(x,y,NewControlWidth,ButtonHeight);
+          CurControl.SetBoundsKeepBase(x,y,NewControlWidth,ButtonHeight);
         inc(x,CurControl.Width);
         
         if (not Wrapable) and (CurControl is TToolButton)

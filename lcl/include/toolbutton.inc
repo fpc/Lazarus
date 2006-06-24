@@ -712,40 +712,6 @@ begin
   end;
 end;
 
-procedure TToolButton.DoSetBounds(ALeft, ATop, AWidth, AHeight: integer);
-var
-  NewButtonWidth: Integer;
-  NewButtonHeight: Integer;
-  OldLeft: Integer;
-  OldTop: Integer;
-  OldWidth: Integer;
-  OldHeight: Integer;
-begin
-  if ([csDesigning,csLoading,csDestroying]*ComponentState=[csDesigning])
-  and (FToolBar<>nil)
-  and (not (tbfPlacingControls in FToolBar.FToolBarFlags))
-  and (FToolBar.FUpdateCount=0)
-  and (AWidth>0) and (AHeight>0) then begin
-    if Style in [tbsButton,tbsDropDown,tbsCheck] then
-      NewButtonWidth:=AWidth
-    else
-      NewButtonWidth:=FToolBar.ButtonWidth;
-    NewButtonHeight:=AHeight;
-    //DebugLn('TToolButton.DoSetBounds NewButtonSize=',NewButtonWidth,',',NewButtonHeight);
-    OldLeft:=Left;
-    OldTop:=Top;
-    OldWidth:=Width;
-    OldHeight:=Height;
-    FToolBar.SetButtonSize(NewButtonWidth,NewButtonHeight);
-    if (OldLeft<>Left) or (OldTop<>Top)
-    or (OldWidth<>Width) or (OldHeight<>Height) then
-      // button was auto aligned -> ignore setbounds
-      exit;
-  end;
-  
-  inherited DoSetBounds(ALeft, ATop, AWidth, AHeight);
-end;
-
 function TToolButton.DialogChar(var Message: TLMKey): boolean;
 begin
   if IsAccel(Message.CharCode, Caption) and CanFocus then

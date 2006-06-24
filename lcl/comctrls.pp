@@ -1270,7 +1270,6 @@ type
     procedure SetParent(AParent: TWinControl); override;
     procedure UpdateVisibleToolbar;
     function GroupAllUpAllowed: boolean;
-    procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: integer); override;
     function DialogChar(var Message: TLMKey): boolean; override;
   public
     constructor Create(TheOwner: TComponent); override;
