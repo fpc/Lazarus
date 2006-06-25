@@ -1015,6 +1015,7 @@ end;
 
 procedure TOutputFilter.OnAsyncTerminate(Sender: TObject);
 begin
+  if fProcess=nil then exit;
   FAsyncProcessTerminated:=true;
 end;
 
@@ -1022,6 +1023,7 @@ procedure TOutputFilter.OnAsyncReadData(Sender: TObject);
 var
   Count: LongWord;
 begin
+  if fProcess=nil then exit;
   Count:=TAsyncProcess(fProcess).NumBytesAvailable;
   if Count>0 then
     FAsyncOutput.Push(TStream(TAsyncProcess(fProcess).Output),Count);
