@@ -390,25 +390,25 @@ end;
        end;
 }
 
-class function TGtkWSCustomNotebook.GetTabIndexAtPos(const ANotebook: TCustomNotebook;
-  const AClientPos: TPoint): integer;
+class function TGtkWSCustomNotebook.GetTabIndexAtPos(
+  const ANotebook: TCustomNotebook; const AClientPos: TPoint): integer;
 var
   NoteBookWidget: PGtkNotebook;
   i: integer;
   TabWidget: PGtkWidget;
   PageWidget: PGtkWidget;
   NotebookPos: TPoint;
-  PageListItem: PGList;
+  Count: guint;
 begin
   Result:=-1;
   NoteBookWidget:=PGtkNotebook(ANotebook.Handle);
   if (NotebookWidget=nil) then exit;
+  //DebugLn(['TGtkWSCustomNotebook.GetTabIndexAtPos ',GetWidgetDebugReport(PGtkWidget(NotebookWidget))]);
   NotebookPos:=AClientPos;
   // go through all tabs
-  i:=0;
-  PageListItem:=NoteBookWidget^.Children;
-  while PageListItem<>nil do begin
-    PageWidget:=PGtkWidget(PageListItem^.Data);
+  Count:=g_list_length(NoteBookWidget^.Children);
+  for i:=0 to Count-1 do begin
+    PageWidget:=gtk_notebook_get_nth_page(NoteBookWidget,i);
     if PageWidget<>nil then begin
       TabWidget:=gtk_notebook_get_tab_label(NoteBookWidget, PageWidget);
       if TabWidget<>nil then begin
@@ -423,18 +423,18 @@ begin
         end;
       end;
     end;
-    PageListItem:=PageListItem^.Next;
-    inc(i);
   end;
 end;
 
-class procedure TGtkWSCustomNotebook.SetPageIndex(const ANotebook: TCustomNotebook; const AIndex: integer);
+class procedure TGtkWSCustomNotebook.SetPageIndex(
+  const ANotebook: TCustomNotebook; const AIndex: integer);
 begin
   gtk_notebook_set_page(PGtkNotebook(ANotebook.Handle), AIndex);
   UpdateNoteBookClientWidget(ANotebook);
 end;
 
-class procedure TGtkWSCustomNotebook.SetTabPosition(const ANotebook: TCustomNotebook; const ATabPosition: TTabPosition);
+class procedure TGtkWSCustomNotebook.SetTabPosition(
+  const ANotebook: TCustomNotebook; const ATabPosition: TTabPosition);
 var
   GtkNotebook: PGtkNotebook;
 begin
@@ -447,14 +447,16 @@ begin
   end;
 end;
 
-class procedure TGtkWSCustomNotebook.ShowTabs(const ANotebook: TCustomNotebook; AShowTabs: boolean);
+class procedure TGtkWSCustomNotebook.ShowTabs(const ANotebook: TCustomNotebook;
+  AShowTabs: boolean);
 begin
   gtk_notebook_set_show_tabs(PGtkNotebook(ANotebook.Handle), AShowTabs);
 end;
 
 { TGtkWSCustomSplitter }
 
-class procedure TGtkWSCustomSplitter.DrawSplitter(const ASplitter: TCustomSplitter);
+class procedure TGtkWSCustomSplitter.DrawSplitter(
+  const ASplitter: TCustomSplitter);
 var
   Widget: PGtkWidget;
   ClientWidget: Pointer;
