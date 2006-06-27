@@ -867,7 +867,7 @@ type
     procedure CreateInternalLabel; virtual;
   public
     constructor Create(TheOwner: TComponent); override;
-    property EditLabel: TBoundLabel read FEditLabel stored false;
+    property EditLabel: TBoundLabel read FEditLabel;
     property LabelPosition: TLabelPosition read FLabelPosition
                                          write SetLabelPosition default lpAbove;
     property LabelSpacing: Integer read FLabelSpacing write SetLabelSpacing
