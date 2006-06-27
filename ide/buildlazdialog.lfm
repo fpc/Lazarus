@@ -8,7 +8,7 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
   OnClose = FormClose
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  PixelsPerInch = 112
+  PixelsPerInch = 95
   Position = poScreenCenter
   HorzScrollBar.Page = 500
   VertScrollBar.Page = 475
@@ -61,7 +61,7 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
     Width = 65
   end
   object BuildAllButton: TButton
-    
+    BorderSpacing.InnerBorder = 4
     Caption = 'Set to "Build All"'
     OnClick = BuildAllButtonClick
     TabOrder = 0
@@ -75,7 +75,7 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
     TabOrder = 1
     AnchorSideLeft.Control = LCLInterfaceRadioGroup
     Left = 339
-    Height = 24
+    Height = 20
     Top = 12
     Width = 79
   end
@@ -108,7 +108,7 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
   end
   object TargetDirectoryButton: TButton
     Anchors = [akRight, akBottom]
-    
+    BorderSpacing.InnerBorder = 4
     Caption = '...'
     OnClick = TargetDirectoryButtonClick
     TabOrder = 8
@@ -141,8 +141,8 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
     TabOrder = 4
     AnchorSideLeft.Control = LCLInterfaceRadioGroup
     Left = 339
-    Height = 24
-    Top = 253
+    Height = 20
+    Top = 257
     Width = 194
   end
   object RestartAfterBuildCheckBox: TCheckBox
@@ -150,8 +150,8 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
     Caption = 'RestartAfterBuildCheckBox'
     TabOrder = 10
     Left = 10
-    Height = 24
-    Top = 411
+    Height = 20
+    Top = 415
     Width = 176
   end
   object ConfirmBuildCheckBox: TCheckBox
@@ -159,33 +159,39 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
     Caption = 'ConfirmBuildCheckBox'
     TabOrder = 11
     Left = 10
-    Height = 24
-    Top = 437
+    Height = 20
+    Top = 441
     Width = 154
   end
-  object OKButton: TButton
+  object SaveSettingsButton: TButton
     Anchors = [akRight, akBottom]
-    
-    Caption = 'OK'
+    AutoSize = True
+    BorderSpacing.Right = 10
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Save settings'
     Default = True
-    OnClick = OKButtonClick
+    OnClick = SaveSettingsButtonClick
     TabOrder = 12
-    Left = 304
-    Height = 24
-    Top = 437
-    Width = 75
+    AnchorSideRight.Control = CancelButton
+    AnchorSideBottom.Control = CancelButton
+    AnchorSideBottom.Side = asrBottom
+    Left = 335
+    Height = 26
+    Top = 439
+    Width = 89
   end
   object CancelButton: TButton
     Anchors = [akRight, akBottom]
-    
+    AutoSize = True
+    BorderSpacing.InnerBorder = 4
     Cancel = True
     Caption = 'Cancel'
     OnClick = CancelButtonClick
     TabOrder = 13
-    Left = 413
-    Height = 24
-    Top = 437
-    Width = 75
+    Left = 434
+    Height = 26
+    Top = 439
+    Width = 54
   end
   object ItemsListBox: TListBox
     Anchors = [akTop, akLeft, akRight, akBottom]
@@ -209,6 +215,22 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
     Height = 21
     Top = 378
     Width = 308
+  end
+  object CompileButton: TButton
+    Anchors = [akRight, akBottom]
+    AutoSize = True
+    BorderSpacing.Right = 10
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Compile'
+    OnClick = CompileButtonClick
+    TabOrder = 14
+    AnchorSideRight.Control = SaveSettingsButton
+    AnchorSideBottom.Control = SaveSettingsButton
+    AnchorSideBottom.Side = asrBottom
+    Left = 266
+    Height = 26
+    Top = 439
+    Width = 59
   end
   object ImageList: TImageList
     Height = 20

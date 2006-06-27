@@ -14,19 +14,6 @@
       <Title Value="test1_2button"/>
       <ActiveEditorIndexAtStart Value="0"/>
     </General>
-    <LazDoc Paths=""/>
-    <Units Count="1">
-      <Unit0>
-        <CursorPos X="28" Y="349"/>
-        <EditorIndex Value="0"/>
-        <Filename Value="test1_2button.lpr"/>
-        <IsPartOfProject Value="True"/>
-        <Loaded Value="True"/>
-        <TopLine Value="330"/>
-        <UnitName Value="test1_2button"/>
-        <UsageCount Value="41"/>
-      </Unit0>
-    </Units>
     <PublishOptions>
       <Version Value="2"/>
       <IgnoreBinaries Value="False"/>
@@ -44,9 +31,24 @@
         <PackageName Value="LCL"/>
       </Item1>
     </RequiredPackages>
+    <Units Count="1">
+      <Unit0>
+        <Filename Value="test1_2button.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="test1_2button"/>
+        <CursorPos X="37" Y="356"/>
+        <TopLine Value="330"/>
+        <EditorIndex Value="0"/>
+        <UsageCount Value="41"/>
+        <Loaded Value="True"/>
+      </Unit0>
+    </Units>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>
+    <SearchPaths>
+      <LCLWidgetType Value="gtk2"/>
+    </SearchPaths>
     <CodeGeneration>
       <Checks>
         <IOChecks Value="True"/>

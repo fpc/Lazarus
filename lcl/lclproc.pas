@@ -237,6 +237,7 @@ function DbgWideStr(const StringWithSpecialChars: widestring): string; overload;
 function dbgMemRange(P: PByte; Count: integer; Width: integer = 0): string; overload;
 function dbgMemStream(MemStream: TCustomMemoryStream; Count: integer): string; overload;
 function dbgObjMem(AnObject: TObject): string; overload;
+function dbghex(i: Int64): string; overload;
 
 function DbgS(const i1,i2,i3,i4: integer): string; overload;
 function DbgS(const Shift: TShiftState): string; overload;
@@ -756,6 +757,7 @@ begin
 //    INT $3
 //  end;
 //  {$ELSE}
+  DumpStack;
   if (length(Msg) div (length(Msg) div 10000))=0 then ;
 //  {$ENDIF}
 end;
@@ -1688,6 +1690,26 @@ begin
   Result:='';
   if AnObject=nil then exit;
   Result:=dbgMemRange(PByte(AnObject),AnObject.InstanceSize);
+end;
+
+function dbghex(i: Int64): string;
+const
+  Hex = '0123456789ABCDEF';
+var
+  Negated: Boolean;
+begin
+  Result:='';
+  if i<0 then begin
+    Negated:=true;
+    i:=-i;
+  end else
+    Negated:=false;
+  repeat
+    Result:=Hex[(i mod 16)+1]+Result;
+    i:=i div 16;
+  until i=0;
+  if Negated then
+    Result:='-'+Result;
 end;
 
 function DbgS(const i1, i2, i3, i4: integer): string;

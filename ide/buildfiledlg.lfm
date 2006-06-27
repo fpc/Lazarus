@@ -1,12 +1,11 @@
 object BuildFileDialog: TBuildFileDialog
-  ActiveControl = RunPage
   Caption = 'BuildFileDialog'
   ClientHeight = 344
   ClientWidth = 414
   KeyPreview = True
   OnCreate = BuildFileDialogCREATE
   OnKeyDown = BuildFileDialogKEYDOWN
-  PixelsPerInch = 96
+  PixelsPerInch = 95
   Position = poScreenCenter
   HorzScrollBar.Page = 413
   VertScrollBar.Page = 343
@@ -16,7 +15,7 @@ object BuildFileDialog: TBuildFileDialog
   Width = 414
   object OkButton: TButton
     Anchors = [akLeft, akBottom]
-    BorderSpacing.OnChange = nil
+    BorderSpacing.InnerBorder = 4
     Caption = 'Ok'
     OnClick = OkButtonCLICK
     TabOrder = 0
@@ -27,7 +26,7 @@ object BuildFileDialog: TBuildFileDialog
   end
   object CancelButton: TButton
     Anchors = [akLeft, akBottom]
-    BorderSpacing.OnChange = nil
+    BorderSpacing.InnerBorder = 4
     Caption = 'Cancel'
     ModalResult = 2
     TabOrder = 1
@@ -39,23 +38,21 @@ object BuildFileDialog: TBuildFileDialog
   object Notebook1: TNotebook
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
-    BorderSpacing.OnChange = nil
-    PageIndex = 2
+    PageIndex = 1
     Height = 304
     Width = 414
     object GeneralPage: TPage
       Caption = 'Options'
-      ClientWidth = 406
-      ClientHeight = 296
-      Visible = False
-      Height = 296
-      Width = 406
+      ClientWidth = 410
+      ClientHeight = 274
+      Left = 2
+      Height = 274
+      Top = 28
+      Width = 410
       object WhenFileIsActiveGroupbox: TGroupBox
-        BorderSpacing.OnChange = nil
         Caption = 'When this file is active in source editor ...'
-        ClientHeight = 63
+        ClientHeight = 64
         ClientWidth = 397
-        ParentColor = True
         ParentCtl3D = False
         TabOrder = 0
         Left = 6
@@ -63,7 +60,6 @@ object BuildFileDialog: TBuildFileDialog
         Top = 12
         Width = 401
         object OverrideBuildProjectCheckbox: TCheckBox
-          BorderSpacing.OnChange = nil
           Caption = 'On build project execute the Build File command instead'
           TabOrder = 0
           Left = 6
@@ -72,7 +68,6 @@ object BuildFileDialog: TBuildFileDialog
           Width = 384
         end
         object OverrideRunProjectCheckbox: TCheckBox
-          BorderSpacing.OnChange = nil
           Caption = 'On run project execute the Run File command instead'
           TabOrder = 1
           Left = 6
@@ -84,62 +79,55 @@ object BuildFileDialog: TBuildFileDialog
     end
     object BuildPage: TPage
       Caption = 'Build'
-      ClientWidth = 406
-      ClientHeight = 296
-      OnResize = BuildPageRESIZE
-      Visible = False
-      Height = 296
-      Width = 406
+      ClientWidth = 410
+      ClientHeight = 274
+      Left = 2
+      Height = 274
+      Top = 28
+      Width = 410
       object BuildCommandGroupbox: TGroupBox
         Anchors = [akTop, akLeft, akRight]
-        BorderSpacing.OnChange = nil
         Caption = 'Build Command'
-        ClientHeight = 70
+        ClientHeight = 53
         ClientWidth = 402
-        ParentColor = True
         ParentCtl3D = False
         TabOrder = 0
         Left = 4
         Height = 70
         Top = 52
-        Width = 402
+        Width = 406
         object BuildCommandMemo: TMemo
           Align = alClient
-          BorderSpacing.OnChange = nil
           Lines.Strings = (
             'CompileCommandMemo'
           )
           TabOrder = 0
           Height = 53
-          Width = 398
+          Width = 402
         end
       end
       object BuildScanForFPCMsgCheckbox: TCheckBox
         Anchors = [akTop, akLeft, akRight]
-        BorderSpacing.OnChange = nil
         Caption = 'Scan for FPC messages'
         TabOrder = 1
         Left = 10
         Height = 20
         Top = 122
-        Width = 388
+        Width = 392
       end
       object BuildScanForMakeMsgCheckbox: TCheckBox
         Anchors = [akTop, akLeft, akRight]
-        BorderSpacing.OnChange = nil
         Caption = 'Scan for Make messages'
         TabOrder = 2
         Left = 10
         Height = 20
         Top = 146
-        Width = 388
+        Width = 392
       end
       object BuildWorkingDirGroupbox: TGroupBox
-        BorderSpacing.OnChange = nil
         Caption = 'Working directory (Leave empty for file path)'
-        ClientHeight = 48
-        ClientWidth = 402
-        ParentColor = True
+        ClientHeight = 31
+        ClientWidth = 398
         ParentCtl3D = False
         TabOrder = 3
         Left = 4
@@ -148,21 +136,21 @@ object BuildFileDialog: TBuildFileDialog
         Width = 402
         object BuildWorkDirCombobox: TComboBox
           Anchors = [akTop, akLeft, akRight]
-          BorderSpacing.OnChange = nil
+          AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
           MaxLength = 0
           ParentCtl3D = False
           TabOrder = 0
           Text = 'BuildWorkDirCombobox'
           Height = 25
-          Width = 368
+          Width = 364
         end
         object BuildBrowseWorkDirButton: TButton
           Anchors = [akTop, akRight]
-          BorderSpacing.OnChange = nil
+          BorderSpacing.InnerBorder = 4
           Caption = '...'
           OnClick = BuildBrowseWorkDirButtonCLICK
           TabOrder = 1
-          Left = 368
+          Left = 364
           Height = 23
           Width = 24
         end
@@ -170,75 +158,70 @@ object BuildFileDialog: TBuildFileDialog
     end
     object RunPage: TPage
       Caption = 'Run'
-      ClientWidth = 406
-      ClientHeight = 296
-      OnResize = RunPageRESIZE
-      Height = 296
-      Width = 406
+      ClientWidth = 410
+      ClientHeight = 274
+      Left = 2
+      Height = 274
+      Top = 28
+      Width = 410
       object AlwaysCompileFirstCheckbox: TCheckBox
         Anchors = [akTop, akLeft, akRight]
-        BorderSpacing.OnChange = nil
         Caption = 'Always Build before Run'
         TabOrder = 0
         Left = 10
         Height = 20
         Top = 4
-        Width = 388
+        Width = 392
       end
       object RunCommandGroupbox: TGroupBox
         Anchors = [akTop, akLeft, akRight]
-        BorderSpacing.OnChange = nil
         Caption = 'Run Command'
-        ClientHeight = 52
-        ClientWidth = 396
-        ParentColor = True
+        ClientHeight = 53
+        ClientWidth = 400
         ParentCtl3D = False
         TabOrder = 1
         Left = 4
         Height = 70
         Top = 92
-        Width = 400
+        Width = 404
         object RunCommandMemo: TMemo
           Align = alClient
-          BorderSpacing.OnChange = nil
           Lines.Strings = (
             'CompileCommandMemo'
           )
           TabOrder = 0
-          Height = 52
-          Width = 396
+          Height = 53
+          Width = 400
         end
       end
       object RunWorkDirGroupbox: TGroupBox
         Anchors = [akTop, akLeft, akRight]
-        BorderSpacing.OnChange = nil
         Caption = 'Working Directory (Leave empty for file path)'
-        ClientHeight = 31
-        ClientWidth = 396
-        ParentColor = True
+        ClientHeight = 32
+        ClientWidth = 400
         ParentCtl3D = False
         TabOrder = 2
         Left = 4
         Height = 49
         Top = 36
-        Width = 400
+        Width = 404
         object RunWorkDirCombobox: TComboBox
           Anchors = [akTop, akLeft, akRight]
-          BorderSpacing.OnChange = nil
+          AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
           MaxLength = 0
           ParentCtl3D = False
           TabOrder = 0
           Text = 'RunWorkDirCombobox'
           Height = 21
-          Width = 360
+          Width = 364
         end
         object RunBrowseWorkDirButton: TButton
           Anchors = [akTop, akRight]
-          BorderSpacing.OnChange = nil
+          BorderSpacing.InnerBorder = 4
           Caption = '...'
           OnClick = BuildBrowseWorkDirButtonCLICK
           TabOrder = 1
-          Left = 364
+          Left = 368
           Height = 23
           Width = 27
           HelpType = htKeyword

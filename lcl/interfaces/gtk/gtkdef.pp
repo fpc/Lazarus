@@ -37,7 +37,8 @@ uses
   {$ELSE}
   glib, gdk, gtk, {$Ifndef NoGdkPixbufLib}gdkpixbuf,{$EndIf}
   {$ENDIF}
-  Classes, LCLIntf, LCLProc, LCLType, LCLMemManager, DynHashArray, GraphType;
+  Classes, SysUtils, LCLIntf, LCLProc, LCLType, LCLMemManager, DynHashArray,
+  GraphType;
   
 {$ifdef TraceGdiCalls}
 const
@@ -51,6 +52,12 @@ type
 type
   TGDIType = (gdiBitmap, gdiBrush, gdiFont, gdiPen, gdiRegion, gdiPalette);
   TGDIBitmapType = (gbBitmap, gbPixmap{obsolete:, gbImage});
+
+  {$IFDEF Gtk1}
+  TGtkIntfFont = PGDKFont;
+  {$ELSE}
+  TGtkIntfFont = PPangoLayout;
+  {$ENDIF}
 
   PGDIRGB = ^TGDIRGB;
   TGDIRGB = record
@@ -106,14 +113,8 @@ type
         GDIBrushPixMap: PGdkPixmap;
       );
       gdiFont: (
-      {$Ifdef GTK2}
-        GDIFontObject: PPangoFontDescription;
-        StrikeOut : gboolean;//Description can't set these so we use these
-        Underline : gboolean;//instead of an additional AttributeList
-      {$else}
-        GDIFontObject: PGdkFont;
-        LogFont: TLogFont;// for now font info is stored as well, for later query font params
-      {$EndIf}
+        GDIFontObject: TGtkIntfFont;
+        LogFont: TLogFont;// font info is stored as well, for later query font params
       );
       gdiPen: (
         IsNullPen : Boolean;//GDK will bomb with a NULL Pen Hatch
@@ -385,6 +386,12 @@ procedure DisposePGDIObject(GDIObject: PGdiObject);
 function NewDeviceContext: TDeviceContext;
 procedure DisposeDeviceContext(DeviceContext: TDeviceContext);
 
+{$IFDEF DebugLCLComponents}
+var
+  DebugGtkWidgets: TDebugLCLItems = nil;
+  DebugGdiObjects: TDebugLCLItems = nil;
+  DebugDeviceContexts: TDebugLCLItems = nil;
+{$ENDIF}
 
 implementation
 
@@ -411,10 +418,16 @@ begin
     GDIObjectMemManager.MinimumFreeCount:=1000;
   end;
   Result:=GDIObjectMemManager.NewGDIObject;
+  {$IFDEF DebugLCLComponents}
+  DebugGdiObjects.MarkCreated(Result,'NewPGDIObject');
+  {$ENDIF}
 end;
 
 procedure DisposePGDIObject(GDIObject: PGdiObject);
 begin
+  {$IFDEF DebugLCLComponents}
+  DebugGdiObjects.MarkDestroyed(GDIObject);
+  {$ENDIF}
   GDIObjectMemManager.DisposeGDIObject(GDIObject);
 end;
 
@@ -435,7 +448,7 @@ end;
 procedure TGDIObjectMemManager.DisposeGDIObject(AGDIObject: PGDIObject);
 begin
   //DebugLn('TGDIObjectMemManager.DisposeGDIObject ',DbgS(AGDIObject));
-  if AGDIObject^.RefCount>0 then
+  if AGDIObject^.RefCount<>0 then
     RaiseGDBException('');
   if (FFreeCount<FMinFree) or (FFreeCount<((FCount shr 3)*FMaxFreeRatio)) then
   begin
@@ -495,10 +508,16 @@ begin
     DeviceContextMemManager.MinimumFreeCount:=1000;
   end;
   Result:=DeviceContextMemManager.NewDeviceContext;
+  {$IFDEF DebugLCLComponents}
+  DebugDeviceContexts.MarkCreated(Result,'NewDeviceContext');
+  {$ENDIF}
 end;
 
 procedure DisposeDeviceContext(DeviceContext: TDeviceContext);
 begin
+  {$IFDEF DebugLCLComponents}
+  DebugDeviceContexts.MarkDestroyed(DeviceContext);
+  {$ENDIF}
   DeviceContextMemManager.DisposeDeviceContext(DeviceContext);
 end;
 
@@ -586,10 +605,32 @@ begin
   DCFlags:=[];
 end;
 
-finalization
+
+procedure GtkDefInit;
+begin
+  {$IFDEF DebugLCLComponents}
+  DebugGtkWidgets:=TDebugLCLItems.Create;
+  DebugGdiObjects:=TDebugLCLItems.Create;
+  DebugDeviceContexts:=TDebugLCLItems.Create;
+  {$ENDIF}
+end;
+
+procedure GtkDefDone;
+begin
   GDIObjectMemManager.Free;
   GDIObjectMemManager:=nil;
   DeviceContextMemManager.Free;
   DeviceContextMemManager:=nil;
+  {$IFDEF DebugLCLComponents}
+  FreeAndNil(DebugGtkWidgets);
+  FreeAndNil(DebugGdiObjects);
+  FreeAndNil(DebugDeviceContexts);
+  {$ENDIF}
+end;
+
+initialization
+  GtkDefInit;
+
+finalization
 
 end.

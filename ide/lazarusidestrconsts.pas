@@ -3034,6 +3034,7 @@ resourcestring
   lisHFMHelpForFreePascalCompilerMessage = 'Help for FreePascal Compiler '
     +'message';
   lisRelativePaths = 'Relative paths';
+  lisLazBuildSaveSettings = 'Save settings';
 
 implementation
 end.

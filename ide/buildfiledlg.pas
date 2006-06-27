@@ -52,7 +52,6 @@ type
     procedure AddButtonClick(Sender: TObject);
     procedure SetMacroList(const AValue: TTransferMacroList);
     procedure FillListBox;
-    procedure DoOnChangeBounds; override;
   public
     constructor Create(TheOwner: TComponent); override;
     function GetSelectedMacro(var MacroAsCode: string): TTransferMacro;
@@ -93,10 +92,8 @@ type
     procedure BuildFileDialogKEYDOWN(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure BuildMacroSelectionBoxAddMacro(Sender: TObject);
-    procedure BuildPageRESIZE(Sender: TObject);
     procedure OkButtonCLICK(Sender: TObject);
     procedure RunMacroSelectionBoxAddMacro(Sender: TObject);
-    procedure RunPageRESIZE(Sender: TObject);
   private
     FDirectiveList: TStrings;
     FFilename: string;
@@ -109,8 +106,6 @@ type
     procedure SetMacroList(const AValue: TTransferMacroList);
     procedure SetRunFileIfActive(const AValue: boolean);
     procedure UpdateCaption;
-    procedure UpdateBuildMacroSelectionBoxBounds;
-    procedure UpdateRunMacroSelectionBoxBounds;
     procedure ReadDirectiveList;
     procedure WriteDirectiveList;
   public
@@ -492,11 +487,6 @@ begin
   BuildCommandMemo.SelText:=MacroCode;
 end;
 
-procedure TBuildFileDialog.BuildPageRESIZE(Sender: TObject);
-begin
-  UpdateBuildMacroSelectionBoxBounds;
-end;
-
 procedure TBuildFileDialog.OkButtonCLICK(Sender: TObject);
 begin
   WriteDirectiveList;
@@ -513,11 +503,6 @@ begin
   RunCommandMemo.SelText:=MacroCode;
 end;
 
-procedure TBuildFileDialog.RunPageRESIZE(Sender: TObject);
-begin
-  UpdateRunMacroSelectionBoxBounds;
-end;
-
 procedure TBuildFileDialog.BuildFileDialogCREATE(Sender: TObject);
 begin
   Notebook1.PageIndex:=0;
@@ -525,20 +510,24 @@ begin
   BuildMacroSelectionBox:=TMacroSelectionBox.Create(Self);
   with BuildMacroSelectionBox do begin
     Name:='BuildMacroSelectionBox';
-    Parent:=BuildPage;
     Caption:='Macros';
     OnAddMacro:=@BuildMacroSelectionBoxAddMacro;
+    AnchorToNeighbour(akTop,5,BuildScanForMakeMsgCheckbox);
+    BorderSpacing.Around:=3;
+    Align:=alBottom;
+    Parent:=BuildPage;
   end;
-  UpdateBuildMacroSelectionBoxBounds;
-  
+
   RunMacroSelectionBox:=TMacroSelectionBox.Create(Self);
   with RunMacroSelectionBox do begin
     Name:='RunMacroSelectionBox';
-    Parent:=RunPage;
     Caption:='Macros';
     OnAddMacro:=@RunMacroSelectionBoxAddMacro;
+    AnchorToNeighbour(akTop,5,RunCommandGroupbox);
+    BorderSpacing.Around:=3;
+    Align:=alBottom;
+    Parent:=RunPage;
   end;
-  UpdateRunMacroSelectionBoxBounds;
 end;
 
 procedure TBuildFileDialog.BuildBrowseWorkDirButtonCLICK(Sender: TObject);
@@ -617,38 +606,6 @@ end;
 procedure TBuildFileDialog.UpdateCaption;
 begin
   Caption:='Configure Build '+Filename;
-end;
-
-procedure TBuildFileDialog.UpdateBuildMacroSelectionBoxBounds;
-var
-  x: Integer;
-  y: Integer;
-  w: Integer;
-  h: Integer;
-begin
-  if (BuildMacroSelectionBox=nil) or (BuildScanForMakeMsgCheckbox=nil) then
-    exit;
-
-  x:=3;
-  y:=BuildScanForMakeMsgCheckbox.Top+BuildScanForMakeMsgCheckbox.Height+5;
-  w:=BuildPage.ClientWidth-2*x;
-  h:=BuildPage.ClientHeight-y-x;
-  BuildMacroSelectionBox.SetBounds(x,y,w,h);
-end;
-
-procedure TBuildFileDialog.UpdateRunMacroSelectionBoxBounds;
-var
-  x: Integer;
-  y: Integer;
-  w: Integer;
-  h: Integer;
-begin
-  if (RunCommandGroupbox=nil) or (RunMacroSelectionBox=nil) then exit;
-  x:=3;
-  y:=RunCommandGroupbox.Top+RunCommandGroupbox.Height+5;
-  w:=RunPage.ClientWidth-2*x;
-  h:=RunPage.ClientHeight-y-x;
-  RunMacroSelectionBox.SetBounds(x,y,w,h);
 end;
 
 procedure TBuildFileDialog.ReadDirectiveList;
@@ -781,23 +738,6 @@ begin
   ListBox.Items.EndUpdate;
 end;
 
-procedure TMacroSelectionBox.DoOnChangeBounds;
-var
-  w: Integer;
-begin
-  inherited DoOnChangeBounds;
-
-  if ListBox<>nil then begin
-    w:=ClientWidth-80;
-    if w<50 then w:=50;
-    ListBox.SetBounds(0,0,w,ClientHeight);
-  end;
-  
-  if AddButton<>nil then begin
-    AddButton.SetBounds(ClientWidth-75,5,70,25);
-  end;
-end;
-
 constructor TMacroSelectionBox.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
@@ -805,17 +745,23 @@ begin
   AddButton:=TButton.Create(Self);
   with AddButton do begin
     Name:='AddButton';
-    Parent:=Self;
     Caption:='Add';
     OnClick:=@AddButtonClick;
     Enabled:=false;
+    AutoSize:=true;
+    Anchors:=[akTop,akRight];
+    Top:=3;
+    AnchorParallel(akRight,3,Self);
+    Parent:=Self;
   end;
   
   ListBox:=TListBox.Create(Self);
   with ListBox do begin
     Name:='ListBox';
-    Parent:=Self;
     OnClick:=@ListBoxClick;
+    Align:=alLeft;
+    AnchorToNeighbour(akRight,3,AddButton);
+    Parent:=Self;
   end;
 end;
 

@@ -3372,9 +3372,11 @@ var
   CmdLineDefines: TDefineTemplate;
   LazSrcTemplate: TDefineTemplate;
   LazSrcDirTemplate: TDefineTemplate;
+  DlgResult: TModalResult;
 begin
-  if ShowConfigureBuildLazarusDlg(MiscellaneousOptions.BuildLazOpts)=mrOk then
-  begin
+  DlgResult:=ShowConfigureBuildLazarusDlg(MiscellaneousOptions.BuildLazOpts);
+  DebugLn(['TMainIDE.mnuToolConfigBuildLazClicked ',DlgResult]);
+  if DlgResult in [mrOk,mrYes] then begin
     MiscellaneousOptions.Save;
     LazSrcTemplate:=CodeToolBoss.DefineTree.FindDefineTemplateByName(
                                                 StdDefTemplLazarusSources,true);
@@ -3391,6 +3393,8 @@ begin
       end;
     end;
   end;
+  if DlgResult=mrYes then
+    DoBuildLazarus([]);
 end;
 
 {-------------------------------------------------------------------------------

@@ -21,9 +21,8 @@ program Test4_1Synedit;
 {$mode objfpc}{$H+}
 
 uses
-  Interfaces, FPCAdds, LCLProc, LCLType, Classes, Controls, Forms, TypInfo,
-  LMessages, Buttons, ExtCtrls, ComCtrls, SynEdit, SynHighlighterPas,
-  Graphics;
+  Interfaces, Classes, SysUtils, LCLProc, LCLType, Controls, Forms, TypInfo,
+  ExtCtrls, ComCtrls, SynEdit, SynHighlighterPas, Graphics;
 
 type
 
@@ -40,6 +39,8 @@ type
 { TForm1 }
 
 procedure TForm1.Form1Create(Sender: TObject);
+var
+  Filename: string;
 begin
   debugln('TForm1.Form1Create ',DbgSName(Sender));
   SetBounds(50,50,950,700);
@@ -61,9 +62,15 @@ begin
     Name:='SynEdit1';
     Align:=alClient;
     Highlighter:=SynPasSyn1;
+    Font.Name:='Monospace';
+    Font.Size:=10;
     Parent:=Self;
-    Lines.LoadFromFile('../controls.pp');
   end;
+
+  Filename:=ParamStr(1);
+  if Filename='' then
+    Filename:='..'+PathDelim+'controls.pp';
+  SynEdit1.Lines.LoadFromFile(Filename);
 end;
 
 constructor TForm1.Create(TheOwner: TComponent);

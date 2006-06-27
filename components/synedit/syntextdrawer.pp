@@ -905,7 +905,13 @@ begin
       CharAdv := CalcFontAdvance(DC, @CharHeight, nil);
   end;
 
+  {$IFDEF SYN_LAZARUS}
+  hOldFont:=SelectObject(DC, hOldFont);
+  if hOldFont<>FCrntFont then
+    RaiseGDBException('TheFontStock.SetStyle LCL interface lost the font');
+  {$ELSE}
   SelectObject(DC, hOldFont);
+  {$ENDIF}
   InternalReleaseDC(DC);
 end;
 

@@ -33,13 +33,15 @@
 function TGtk2WidgetSet.ExtUTF8Out(DC: HDC; X, Y: Integer; Options: Longint;
   Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
 begin
-    Result:=ExtTextOut(DC,X,Y,Options,Rect,Str,Count,Dx);
+  // all fonts are UTF-8 under gtk2 => no mapping needed
+  Result:=ExtTextOut(DC,X,Y,Options,Rect,Str,Count,Dx);
 end;
-function TGtk2WidgetSet.TextUTF8Out(DC: HDC; X, Y: Integer; Str: PChar; Count: Longint): Boolean;
+
+function TGtk2WidgetSet.TextUTF8Out(DC: HDC; X, Y: Integer; Str: PChar;
+  Count: Longint): Boolean;
 begin
-    Result:=TextOut(DC,X,Y,Str,Count);
+  // all fonts are UTF-8 under gtk2 => no mapping needed
+  Result:=TextOut(DC,X,Y,Str,Count);
 end;
-
-
 
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line

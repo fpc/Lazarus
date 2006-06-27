@@ -86,7 +86,7 @@ uses
   {$IFDEF gtk2}
   glib2, gdk2pixbuf, gdk2, gtk2, Pango,
   {$ELSE}
-  glib, gdk, gtk, {$Ifndef NoGdkPixbufLib}gdkpixbuf,{$EndIf} GtkFontCache,
+  glib, gdk, gtk, {$Ifndef NoGdkPixbufLib}gdkpixbuf,{$EndIf}
   {$ENDIF}
   // Target OS specific
   {$IFDEF UNIX}
@@ -95,7 +95,7 @@ uses
   Math, // after gtk to get the correct Float type
   // LCL
   ExtDlgs, Dialogs, Controls, Forms, LCLStrConsts, LMessages,
-  LCLProc, LCLIntf, LCLType, gtkDef, GtkProc, DynHashArray, 
+  LCLProc, LCLIntf, LCLType, GtkFontCache, gtkDef, GtkProc, DynHashArray,
   gtkMsgQueue, GraphType, GraphMath, Graphics, Menus;
 
 
@@ -140,14 +140,11 @@ type
 
     {$Ifdef GTK2}
     FDefaultFontDesc: PPangoFontDescription;
-    {$Else}
-    FDefaultFont: PGdkFont;
-    {$EndIf}
+    {$Endif}
+    FDefaultFont: TGtkIntfFont;
     FStockSystemFont: HFONT;
     FExtUTF8OutCache: Pointer;
     FExtUTF8OutCacheSize: integer;
-
-    Function CreateSystemFont : hFont;
 
     procedure InitStockItems; virtual;
     procedure FreeStockItems; virtual;
@@ -208,9 +205,8 @@ type
     procedure UpdateDCTextMetric(DC: TDeviceContext); virtual;
     {$Ifdef GTK2}
     function GetDefaultFontDesc(IncreaseReferenceCount: boolean): PPangoFontDescription;
-    {$Else}
-    function GetDefaultFont(IncreaseReferenceCount: boolean): PGDKFont;
-    {$EndIf}
+    {$Endif}
+    function GetDefaultGtkFont(IncreaseReferenceCount: boolean): TGtkIntfFont;
     function CreateRegionCopy(SrcRGN: hRGN): hRGN; override;
     function DCClipRegionValid(DC: HDC): boolean; override;
     function CreateEmptyRegion: hRGN; override;

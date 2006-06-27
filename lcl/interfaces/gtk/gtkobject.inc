@@ -1459,12 +1459,6 @@ begin
   PangoDescStr := PangoDescStr+DescOpts+' '+IntToStr(AFont.Size);
   //DebugLn('TGtkWidgetSet.SetWidgetFont PangoDescStr="',PangoDescStr,'"');
   font_desc:=pango_font_description_from_string(PChar(PangoDescStr));
-  {Style:=gtk_widget_get_style(AWidget);
-  if Style<>nil then begin
-    font_desc:=Style^.font_desc;
-
-  end;}
-
   gtk_widget_modify_font(AWidget,font_desc);
   pango_font_description_free(font_desc);
 {$ENDIF}
@@ -4163,8 +4157,8 @@ begin
   FixWidget:=GetFixedWidget(Widget);
 
   // Remove control accelerators - has to be done due to GTK+ bug?
+  //DebugLn('TGtkWidgetSet.DestroyLCLComponent B  Widget=',GetWidgetDebugReport(Widget));
   {$IFNDef GTK2}
-  //DebugLn('TGtkWidgetSet.DestroyLCLComponent B ',TWinControl(Sender).Name,':',TWinControl(Sender).ClassName);
   Accelerators:= gtk_accel_group_entries_from_object(PGtkObject(Widget));
   while Accelerators <> nil do begin
     AccelEntry:= Accelerators^.data;
@@ -6107,7 +6101,7 @@ begin
            end;
         end;
         gdiBrush  : Result := True; //Result := GDIBrushPixmap <> nil; //GDIBrushPixmap may be nil
-        gdiFont   : Result := GDIFontObject <> nil;
+        gdiFont   : Result := GDIFontObject <> nil;// ToDo: create font on demand
         gdiPen    : Result := True;
         gdiRegion : Result := True;
       else
@@ -6293,7 +6287,7 @@ function TGtkWidgetSet.CreateDCForWidget(TheWidget: PGtkWidget;
 var
   aDC: TDeviceContext;
   ClientWidget: PGtkWidget;
-  GdiObject: PGdiObject;
+  FontGdiObject: PGdiObject;
   GCValues: TGdkGCValues;
 begin
   aDC := nil;
@@ -6301,7 +6295,8 @@ begin
   aDC := NewDC;
   aDC.Wnd := HWND(TheWidget);
 
-  GdiObject := nil;
+  FontGdiObject := nil;
+  ClientWidget := nil;
 
   if TheWidget = nil
   then begin
@@ -6338,17 +6333,6 @@ begin
     gdk_gc_set_function(aDC.GC, GDK_COPY);
 
     gdk_gc_get_values(aDC.GC, @GCValues);
-    {$Ifdef GTK2}
-    // ToDo: create font on demand
-    if (gtk_widget_get_style(ClientWidget)<>nil) and
-      (gtk_widget_get_style(ClientWidget)^.font_desc <> nil)
-    then begin
-       GdiObject:=NewGDIObject(gdiFont);
-       GdiObject^.GDIFontObject :=  pango_font_description_copy(gtk_widget_get_style(ClientWidget)^.font_desc);
-       GdiObject^.StrikeOut := False;
-       GdiObject^.Underline := False;
-    end else GdiObject := CreateDefaultFont;
-    {$EndIf}
   end;
 
   if aDC <> nil
@@ -6357,17 +6341,25 @@ begin
     // ToDo: create font on demand
     if GCValues.Font <> nil
     then begin
-      GdiObject:=NewGDIObject(gdiFont);
-      GdiObject^.GDIFontObject := GCValues.Font;
-      FontCache.Reference(GdiObject^.GDIFontObject);
+      FontGdiObject:=NewGDIObject(gdiFont);
+      FontGdiObject^.GDIFontObject := GCValues.Font;
+      FontCache.Reference(FontGdiObject^.GDIFontObject);
     end
-    else GdiObject := CreateDefaultFont;
+    else FontGdiObject := CreateDefaultFont;
+    {$ELSE}
+    // ToDo: create font on demand
+    if ClientWidget<>nil then begin
+      FontGdiObject:=NewGDIObject(gdiFont);
+      FontGdiObject^.GDIFontObject:=
+                               gtk_widget_create_pango_layout(ClientWidget,nil);
+      FontCache.Reference(FontGdiObject^.GDIFontObject);
+    end;
     {$EndIf}
 
-    If GdiObject = nil then
-      GdiObject := CreateDefaultFont;
+    If FontGdiObject = nil then
+      FontGdiObject := CreateDefaultFont;
 
-    aDC.CurrentFont := GdiObject;
+    aDC.CurrentFont := FontGdiObject;
     aDC.CurrentBrush := CreateDefaultBrush;
     aDC.CurrentPen := CreateDefaultPen;
   end;
@@ -6541,13 +6533,16 @@ end;
   Creates an default font, used for initial values
  ------------------------------------------------------------------------------}
 function TGtkWidgetSet.CreateDefaultFont: PGdiObject;
+var
+  CachedFont: TGtkFontCacheDescriptor;
 begin
   Result := NewGDIObject(gdiFont);
-{$Ifdef GTK2}
-  Result^.GDIFontObject:= GetDefaultFontDesc(true);
-{$Else}
-  Result^.GDIFontObject:= GetDefaultFont(true);
-{$EndIf}
+  Result^.GDIFontObject:= GetDefaultGtkFont(true);
+  CachedFont:=FontCache.FindADescriptor(Result^.GDIFontObject);
+  if CachedFont<>nil then
+    FontCache.Reference(Result^.GDIFontObject)
+  else
+    FontCache.Add(Result^.GDIFontObject,DefaultLogFont,'');
 end;
 
 {------------------------------------------------------------------------------
@@ -6574,10 +6569,6 @@ end;
   Sets the gtk resource file and parses it.
  ------------------------------------------------------------------------------}
 procedure TGtkWidgetSet.UpdateDCTextMetric(DC: TDeviceContext);
-{$Ifdef GTK2}
-begin
-end;
-{$Else}
 const
   TestString: array[boolean] of string = (
     // single byte char font
@@ -6589,118 +6580,167 @@ const
     +#0'p'#0'q'#0'r'#0's'#0't'#0'u'#0'v'#0'w'#0'x'#0'y'#0'z'#0'|'#0'_'#0'}'
     );
 var
-  UseFont : PGDKFont;
-  UnRef : Boolean;
-  Width: LongInt;
-
-  {procedure UseWidthHeuristic;
-  var
-    i: Integer;
-    l: Integer;
-    lBearing: LongInt;
-    rBearing: LongInt;
-    tmAscent: Longint;
-    tmDescent: Longint;
-    CurWidth: integer;
-    PC: PGdkWChar;
-  begin
-    l:=length(TestString[false]);
-    for i:=1 to l do begin
-      PC:=PGdkWChar(@TestString[true][i*2-1]);
-      gdk_text_extents_wc(UseFont, PC,
-        2, @lBearing, @rBearing, @CurWidth,
-        @tmAscent, @tmDescent);
-      debugln('UseWidthHeuristic i=',dbgs(i),' lBearing=',dbgs(lBearing),
-        ' rBearing=',dbgs(rBearing),' CurWidth=',dbgs(CurWidth),' ',DbgS(ord(PC^),8));
-    end;
-  end;}
-
-var
+  UseFont : TGtkIntfFont;
+  CachedFont: TGtkFontCacheItem;
+  {$IFDEF Gtk1}
   AvgTxtLen: Integer;
-  CachedFont: TGdkFontCacheItem;
+  Width: LongInt;
+  {$ELSE}
+  AWidget: PGtkWidget;
+  APangoContext: PPangoContext;
+  APangoLanguage: PPangoLanguage;
+  Desc: TGtkFontCacheDescriptor;
+  APangoFontDescription: PPangoFontDescription;
+  APangoMetrics: PPangoFontMetrics;
+  aRect: TPangoRectangle;
+  {$ENDIF}
 begin
   with TDeviceContext(DC) do begin
     if dcfTextMetricsValid in DCFlags then begin
       // cache valid
-    end else begin
-      UnRef := False;
-      if (CurrentFont = nil) or (CurrentFont^.GDIFontObject = nil)
-      then begin
-        UseFont := GetDefaultFont(false);
-      end
-      else begin
-        UseFont := CurrentFont^.GDIFontObject;
-      end;
-      If UseFont = nil then
-        DebugLn('WARNING: [TGtkWidgetSet.GetTextMetrics] Missing font')
-      else begin
-        FillChar(DCTextMetric, SizeOf(DCTextMetric), 0);
-        CachedFont:=FontCache.FindGDKFont(UseFont);
-        if (CachedFont<>nil) and (CachedFont.MetricsValid) then begin
-          DCTextMetric.lBearing:=CachedFont.lBearing;
-          DCTextMetric.rBearing:=CachedFont.rBearing;
-          DCTextMetric.IsDoubleByteChar:=CachedFont.IsDoubleByteChar;
-          DCTextMetric.TextMetric:=CachedFont.TextMetric;
-        end
-        else with DCTextMetric do begin
-          IsDoubleByteChar:=FontIsDoubleByteCharsFont(UseFont);
-          AvgTxtLen:=length(TestString[false]);
-          if IsDoubleByteChar then begin
-            gdk_text_extents(UseFont, PChar(TestString[IsDoubleByteChar]),
-              AvgTxtLen*2, @lBearing, @rBearing, @Width,
-              @TextMetric.tmAscent, @TextMetric.tmDescent);
-            //debugln('TGtkWidgetSet.UpdateDCTextMetric A IsDoubleByteChar=',dbgs(IsDoubleByteChar),' Width=',dbgs(Width),' AvgTxtLen=',dbgs(AvgTxtLen));
-            TextMetric.tmHeight := TextMetric.tmAscent+TextMetric.tmDescent;
-                    // gdk_text_height(UseFont,PChar(TestString[IsDoubleByteChar]),
-                    //                 AvgTxtLen*2)
-                    //       {$IfNDef Win32} + TextMetric.tmdescent div 2{$EndIf};
-          end else begin
-            gdk_text_extents(UseFont, PChar(TestString[IsDoubleByteChar]),
-              AvgTxtLen, @lBearing, @rBearing, @Width,
-              @TextMetric.tmAscent, @TextMetric.tmDescent);
-            TextMetric.tmHeight := TextMetric.tmAscent+TextMetric.tmDescent;
-                    // gdk_text_height(UseFont,PChar(TestString[IsDoubleByteChar]),
-                    //              AvgTxtLen)
-                    //       {$IfNDef Win32} + TextMetric.tmdescent div 2{$EndIf};
-          end;
-          //if Width<AvgTxtLen then UseWidthHeuristic;
-          //TextMetric.tmAscent := TextMetric.tmHeight - TextMetric.tmDescent;
-          TextMetric.tmAveCharWidth := Width div AvgTxtLen;
-          if TextMetric.tmAveCharWidth<1 then TextMetric.tmAveCharWidth:=1;
-          TextMetric.tmMaxCharWidth :=
-            Max(gdk_char_width(UseFont, 'W'),
-                gdk_char_width(UseFont, 'M')); // temp hack
-          if TextMetric.tmMaxCharWidth<TextMetric.tmAveCharWidth then
-            TextMetric.tmMaxCharWidth:=TextMetric.tmAveCharWidth;
-          //debugln('TGtkWidgetSet.UpdateDCTextMetric A IsDoubleByteChar=',dbgs(IsDoubleByteChar),
-          //  ' lbearing=',dbgs(lBearing),' rbearing=',dbgs(rBearing),
-          //  ' width='+dbgs(width),' tmAscent='+dbgs(TextMetric.tmAscent),
-          //  ' tmDescent='+dbgs(TextMetric.tmdescent),
-          //  ' tmHeight='+dbgs(TextMetric.tmHeight),
-          //  ' AvgTxtLen='+dbgs(AvgTxtLen),
-          //  ' tmMaxCharWidth='+dbgs(TextMetric.tmMaxCharWidth),
-          //  ' tmAveCharWidth='+dbgs(TextMetric.tmAveCharWidth));
-          if (CachedFont<>nil) then begin
-            CachedFont.lBearing:=lBearing;
-            CachedFont.rBearing:=rBearing;
-            CachedFont.IsDoubleByteChar:=IsDoubleByteChar;
-            CachedFont.TextMetric:=TextMetric;
-            CachedFont.MetricsValid:=true;
-          end;
-        end;
-        If UnRef then
-          FontCache.Unreference(UseFont);
-      end;
-      Include(DCFlags,dcfTextMetricsValid);
+      exit;
     end;
+    if (CurrentFont = nil) or (CurrentFont^.GDIFontObject = nil)
+    then begin
+      UseFont := GetDefaultGtkFont(false);
+    end
+    else begin
+      UseFont := CurrentFont^.GDIFontObject;
+    end;
+    If UseFont = nil then begin
+      DebugLn('WARNING: [TGtkWidgetSet.GetTextMetrics] Missing font')
+    end else begin
+      FillChar(DCTextMetric, SizeOf(DCTextMetric), 0);
+      CachedFont:=FontCache.FindGTKFont(UseFont);
+      if (CachedFont=nil) and (UseFont <> GetDefaultGtkFont(false)) then begin
+        DebugLn(['TGtkWidgetSet.UpdateDCTextMetric no CachedFont UseFont=',dbgs(UseFont)]);
+        DumpStack;
+      end;
+      
+      if (CachedFont<>nil) and (CachedFont.MetricsValid) then begin
+        DCTextMetric.lBearing:=CachedFont.lBearing;
+        DCTextMetric.rBearing:=CachedFont.rBearing;
+        DCTextMetric.IsDoubleByteChar:=CachedFont.IsDoubleByteChar;
+        DCTextMetric.TextMetric:=CachedFont.TextMetric;
+      end
+      else with DCTextMetric do begin
+        IsDoubleByteChar:=FontIsDoubleByteCharsFont(UseFont);
+        {$IFDEF Gtk1}
+        AvgTxtLen:=length(TestString[false]);
+        if IsDoubleByteChar then begin
+          gdk_text_extents(UseFont, PChar(TestString[IsDoubleByteChar]),
+            AvgTxtLen, @lBearing, @rBearing, @Width,
+            @TextMetric.tmAscent, @TextMetric.tmDescent);
+          //debugln('TGtkWidgetSet.UpdateDCTextMetric A IsDoubleByteChar=',dbgs(IsDoubleByteChar),' Width=',dbgs(Width),' AvgTxtLen=',dbgs(AvgTxtLen));
+          TextMetric.tmHeight := TextMetric.tmAscent+TextMetric.tmDescent;
+                  // gdk_text_height(UseFont,PChar(TestString[IsDoubleByteChar]),
+                  //                 AvgTxtLen*2)
+                  //       {$IfNDef Win32} + TextMetric.tmdescent div 2{$EndIf};
+        end else begin
+          gdk_text_extents(UseFont, PChar(TestString[IsDoubleByteChar]),
+            AvgTxtLen, @lBearing, @rBearing, @Width,
+            @TextMetric.tmAscent, @TextMetric.tmDescent);
+          TextMetric.tmHeight := TextMetric.tmAscent+TextMetric.tmDescent;
+                  // gdk_text_height(UseFont,PChar(TestString[IsDoubleByteChar]),
+                  //              AvgTxtLen)
+                  //       {$IfNDef Win32} + TextMetric.tmdescent div 2{$EndIf};
+        end;
+        //if Width<AvgTxtLen then UseWidthHeuristic;
+        //TextMetric.tmAscent := TextMetric.tmHeight - TextMetric.tmDescent;
+        if IsDoubleByteChar then
+          TextMetric.tmAveCharWidth:=Width div (AvgTxtLen div 2)
+        else
+          TextMetric.tmAveCharWidth:=Width div AvgTxtLen;
+        if TextMetric.tmAveCharWidth<1 then TextMetric.tmAveCharWidth:=1;
+        TextMetric.tmMaxCharWidth :=
+          Max(gdk_char_width(UseFont, 'W'),
+              gdk_char_width(UseFont, 'M')); // temp hack
+        if TextMetric.tmMaxCharWidth<TextMetric.tmAveCharWidth then
+          TextMetric.tmMaxCharWidth:=TextMetric.tmAveCharWidth;
+        {$ELSE Gtk2}
+        // get pango context (= association to a widget)
+        AWidget:=PGtkWidget(Wnd);
+        if AWidget=nil then
+          AWidget:=GetStyleWidget(lgsLabel);
+        APangoContext := gtk_widget_get_pango_context(AWidget);
+        if APangoContext=nil then
+          DebugLn(['TGtkWidgetSet.UpdateDCTextMetric WARNING: no pango context']);
+        // get pango language (e.g. de_DE)
+        APangoLanguage := pango_context_get_language(APangoContext);
+        if APangoLanguage=nil then
+          DebugLn(['TGtkWidgetSet.UpdateDCTextMetric WARNING: no pango language']);
+        // get pango font description (e.g. 'sans 12')
+        if CachedFont<>nil then begin
+          Desc:=FontCache.FindADescriptor(UseFont);
+          if Desc<>nil then
+            APangoFontDescription := Desc.PangoFontDescription;
+          //DebugLn(['TGtkWidgetSet.UpdateDCTextMetric CachedFont Desc.PangoFontDescription=',GetPangoDescriptionReport(APangoFontDescription)]);
+        end;
+        if APangoFontDescription=nil then
+          APangoFontDescription:=GetDefaultFontDesc(false);
+        if APangoFontDescription=nil then
+          DebugLn(['TGtkWidgetSet.UpdateDCTextMetric WARNING: no pango font description']);
+        //DebugLn(['TGtkWidgetSet.UpdateDCTextMetric APangoFontDescription=',GetPangoDescriptionReport(APangoFontDescription)]);
+        // get pango metrics (e.g. ascent, descent)
+        APangoMetrics := pango_context_get_metrics(APangoContext,
+                                         APangoFontDescription, APangoLanguage);
+        if APangoMetrics=nil then
+          DebugLn(['TGtkWidgetSet.UpdateDCTextMetric WARNING: no pango metrics']);
+
+        TextMetric.tmAveCharWidth := Max(1,
+                   pango_font_metrics_get_approximate_char_width(APangoMetrics)
+                   div PANGO_SCALE);
+        TextMetric.tmAscent := pango_font_metrics_get_ascent(APangoMetrics) div PANGO_SCALE;
+        TextMetric.tmDescent := pango_font_metrics_get_descent(APangoMetrics) div PANGO_SCALE;
+        TextMetric.tmHeight := TextMetric.tmAscent+TextMetric.tmDescent;
+
+        pango_layout_set_text(UseFont, PChar(TestString[IsDoubleByteChar]),
+                              length(PChar(TestString[IsDoubleByteChar])));
+        pango_layout_get_extents(UseFont, nil, @aRect);
+
+        lBearing := PANGO_LBEARING(aRect) div PANGO_SCALE;
+        rBearing := PANGO_RBEARING(aRect) div PANGO_SCALE;
+
+        pango_layout_set_text(UseFont, 'M', 1);
+        pango_layout_get_pixel_size(UseFont, @aRect.width, @aRect.height);
+        TextMetric.tmMaxCharWidth := Max(1,aRect.width);
+        pango_layout_set_text(UseFont, 'W', 1);
+        pango_layout_get_pixel_size(UseFont, @aRect.width, @aRect.height);
+        TextMetric.tmMaxCharWidth := Max(TextMetric.tmMaxCharWidth,aRect.width);
+
+        pango_font_metrics_unref(APangoMetrics);
+        {$ENDIF}
+        (*debugln('TGtkWidgetSet.UpdateDCTextMetric A IsDoubleByteChar=',dbgs(IsDoubleByteChar),
+          ' lbearing=',dbgs(lBearing),' rbearing=',dbgs(rBearing),
+          {$IFDEF Gtk1}
+          ' width='+dbgs(width),
+          ' AvgTxtLen='+dbgs(AvgTxtLen),
+          {$ENDIF}
+          ' tmAscent='+dbgs(TextMetric.tmAscent),
+          ' tmDescent='+dbgs(TextMetric.tmdescent),
+          ' tmHeight='+dbgs(TextMetric.tmHeight),
+          ' tmMaxCharWidth='+dbgs(TextMetric.tmMaxCharWidth),
+          ' tmAveCharWidth='+dbgs(TextMetric.tmAveCharWidth));*)
+        if (CachedFont<>nil) then begin
+          CachedFont.lBearing:=lBearing;
+          CachedFont.rBearing:=rBearing;
+          CachedFont.IsDoubleByteChar:=IsDoubleByteChar;
+          CachedFont.TextMetric:=TextMetric;
+          CachedFont.MetricsValid:=true;
+        end;
+      end;
+    end;
+    Include(DCFlags,dcfTextMetricsValid);
   end;
 end;
-{$EndIf}
-{------------------------------------------------------------------------------
-  function TGtkWidgetSet.GetDefaultFont(IncreaseReferenceCount: boolean): PGDKFont;
- ------------------------------------------------------------------------------}
+
 {$Ifdef GTK2}
-function TGtkWidgetSet.GetDefaultFontDesc(IncreaseReferenceCount: boolean): PPangoFontDescription;
+{------------------------------------------------------------------------------
+  function TGtkWidgetSet.GetDefaultFontDesc(IncreaseReferenceCount: boolean
+    ): PPangoFontDescription;
+ ------------------------------------------------------------------------------}
+function TGtkWidgetSet.GetDefaultFontDesc(IncreaseReferenceCount: boolean
+  ): PPangoFontDescription;
 begin
   if FDefaultFontDesc = nil then begin
     FDefaultFontDesc:=LoadDefaultFontDesc;
@@ -6709,26 +6749,27 @@ begin
   end;
   Result:=FDefaultFontDesc;
   if IncreaseReferenceCount then
-    result := pango_font_description_copy(Result);
+    Result := pango_font_description_copy(Result);
 end;
-{$Else}
-function TGtkWidgetSet.GetDefaultFont(IncreaseReferenceCount: boolean): PGDKFont;
+{$Endif}
+
+{------------------------------------------------------------------------------
+  function TGtkWidgetSet.GetDefaultGtkFont(IncreaseReferenceCount: boolean
+    ): TGtkIntfFont;
+ ------------------------------------------------------------------------------}
+function TGtkWidgetSet.GetDefaultGtkFont(IncreaseReferenceCount: boolean
+  ): TGtkIntfFont;
 begin
   if FDefaultFont = nil then begin
     FDefaultFont:=LoadDefaultFont;
-    //  gdk_font_load('-adobe-helvetica-medium-r-normal--*-120-*-*-*-*-iso8859-1');
-    if FDefaultFont = nil then begin
-      FDefaultFont:= gdk_font_load ('fixed');
-      if FDefaultFont = nil then
-        raise EOutOfResources.Create(rsUnableToLoadDefaultFont);
-    end;
-    gdk_font_ref(FDefaultFont); // mark as used
+    if FDefaultFont = nil then
+      raise EOutOfResources.Create(rsUnableToLoadDefaultFont);
+    ReferenceGtkIntfFont(FDefaultFont); // mark as used
   end;
   Result:=FDefaultFont;
   if IncreaseReferenceCount then
-    gdk_font_ref(Result);
+    ReferenceGtkIntfFont(Result);
 end;
-{$EndIF}
 
 function TGtkWidgetSet.CreateRegionCopy(SrcRGN: hRGN): hRGN;
 var
@@ -7005,24 +7046,14 @@ end;
 procedure TGtkWidgetSet.WordWrap(DC: HDC; AText: PChar;
   MaxWidthInPixel: integer; var Lines: PPChar; var LineCount: integer);
 var
-  {$IfDef GTK2}
-  UseFontDesc : PPangoFontDescription;
-  {$Else}
-  UseFont : PGDKFont;
-  {$EndIf}
-  UnRef : Boolean;
+  UseFont : TGtkIntfFont;
 
   function GetLineWidthInPixel(LineStart, LineLen: integer): integer;
   var
     lbearing, rbearing, width, ascent, descent: LongInt;
   begin
-    {$IfDef GTK2}
-    GetTextExtentIgnoringAmpersands(UseFontDesc, @AText[LineStart], LineLen,
-                     @lbearing, @rBearing, @width, @ascent, @descent);
-    {$Else}
     GetTextExtentIgnoringAmpersands(UseFont, @AText[LineStart], LineLen,
                      @lbearing, @rBearing, @width, @ascent, @descent);
-    {$EndIf}
     Result:=Width;
   end;
 
@@ -7095,32 +7126,12 @@ var
     with TDeviceContext(DC) do begin
       if (CurrentFont = nil) or (CurrentFont^.GDIFontObject = nil)
       then begin
-        {$IfDef GTK2}
-        UseFontDesc := GetDefaultFontDesc(true);
-        {$Else}
-        UseFont := GetDefaultFont(true);
-        {$EndIf}
-        UnRef := True;
+        UseFont := GetDefaultGtkFont(false);
       end
       else begin
-        {$IfDef GTK2}
-        UseFontDesc := CurrentFont^.GDIFontObject;
-        {$Else}
         UseFont := CurrentFont^.GDIFontObject;
-        {$EndIf}
-        UnRef := False;
       end;
     end;
-  end;
-
-  procedure CleanUpFont;
-  begin
-    If UnRef then
-      {$IfDef GTK2}
-      pango_font_description_free(UseFontDesc);
-      {$Else}
-      FontCache.Unreference(UseFont);
-      {$EndIf}
   end;
 
 var
@@ -7197,7 +7208,6 @@ begin
   CurLineEntry[i shr 1]:=nil;
 
   LinesList.Free;
-  CleanUpFont;
 end;
 
 function TGtkWidgetSet.ROP2ModeToGdkFunction(Mode: IntegeR): TGdkFunction;

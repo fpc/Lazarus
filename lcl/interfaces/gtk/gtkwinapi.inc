@@ -1282,7 +1282,7 @@ begin
   DebugLn('ToDo: TGtkWidgetSet.CreateFontIndirectEx');
   Result:=0;
 end;
-{$Else}
+{$Else Gtk1}
 
 {off $DEFINE VerboseFonts}
 var
@@ -1293,14 +1293,14 @@ var
   CharSetRegistry, CharSetCoding: string;
   n: Integer;
   sn, cs: Float;
-  CachedFont: TGdkFontCacheDescriptor;
+  CachedFont: TGtkFontCacheDescriptor;
   CharsetRec: PCharSetEncodingRec;
   Weightlist: TStringlist;
 
 
   function LoadFontXLFD(aXLFD: string): boolean;
   var
-    Desc: TGdkFontCacheDescriptor;
+    Desc: TGtkFontCacheDescriptor;
   begin
     GdiObject^.GDIFontObject := gdk_font_load(PChar(aXLFD));
     Result:=GdiObject^.GDIFontObject<>nil;
@@ -1444,10 +1444,10 @@ begin
   try
     GdiObject^.LogFont := LogFont;
 
-    CachedFont:=FontCache.FindGDKFontDesc(LogFont,LongFontName);
+    CachedFont:=FontCache.FindGTkFontDesc(LogFont,LongFontName);
     if CachedFont<>nil then begin
       CachedFont.Item.IncreaseRefCount;
-      GdiObject^.GDIFontObject := TGdkFontCacheItem(CachedFont.Item).GdkFont;
+      GdiObject^.GDIFontObject := TGtkFontCacheItem(CachedFont.Item).GtkFont;
       {$IFDEF VerboseFonts}
       WriteLn('Was in cache: ', Integer(CachedFont));
       {$ENDIF}
@@ -2248,6 +2248,14 @@ begin
     Result:=true;
     exit;
   end;
+  {$IFDEF DebugLCLComponents}
+  if DebugGdiObjects.IsDestroyed(PGDIObject(GDIObject)) then begin
+    DebugLn(['TGtkWidgetSet.DeleteObject object already deleted ',GDIObject]);
+    debugln(DebugGdiObjects.GetInfo(PGDIObject(GDIObject),true));
+    Halt;
+  end;
+  {$ENDIF}
+  
   // Find out if we want to release internal GDI object
   GDIObjectExists:=FGDIObjects.Contains(PGDIObject(GDIObject));
   Result:=GDIObjectExists;
@@ -2260,11 +2268,8 @@ begin
       gdiFont:
         begin
           if GDIFontObject<>nil then begin
-            {$Ifdef GTK2}
-            pango_font_description_free(GDIFontObject);
-            {$Else}
+            //DebugLn(['TGtkWidgetSet.DeleteObject GDIObject=',dbgs(Pointer(PtrInt(GDIObject))),' GDIFontObject=',dbgs(GDIFontObject)]);
             FontCache.Unreference(GDIFontObject);
-            {$EndIf}
           end;
         end;
       gdiBrush:
@@ -3785,7 +3790,6 @@ var
   TopY, LineLen, LineHeight : Integer;
   TxtPt : TPoint;
   UseFont : PGDKFont;
-  UnRef : Boolean;
   DCOrigin: TPoint;
   UnderLine: boolean;
   buffer: PGdkDrawable;
@@ -3869,15 +3873,14 @@ begin
     buffered := false;
     UseFont := nil;
     buffer := Drawable;
-    UnRef := false;
-    UnderLine := false;
 
+    UnderLine:=false;
     if (Str<>nil) and (Count>0) then begin
       if (CurrentFont = nil) or (CurrentFont^.GDIFontObject = nil) then begin
-        UseFont := GetDefaultFont(false);
+        UseFont := GetDefaultGtkFont(false);
       end else begin
         UseFont := CurrentFont^.GDIFontObject;
-        UnderLine := (CurrentFont^.LogFont.lfUnderline<>0);
+        UnderLine:= (CurrentFont^.LogFont.lfUnderline<>0);
       end;
 
       if UseFont <> nil then begin
@@ -3891,6 +3894,7 @@ begin
       end else begin
         DebugLn('WARNING: [TGtkWidgetSet.ExtTextOut] Missing Font');
         Result := False;
+        exit;
       end;
     end;
 
@@ -3953,15 +3957,6 @@ begin
           if LineLen<0 then
             LineLen:=Count;
         end;
-      end;
-      If UnRef then begin
-        {$IFDEF DebugGDKTraps}
-        BeginGDKErrorTrap;
-        {$ENDIF}
-        FontCache.Unreference(UseFont);
-        {$IFDEF DebugGDKTraps}
-        EndGDKErrorTrap;
-        {$ENDIF}
       end;
     end;
   end;
@@ -4783,6 +4778,7 @@ begin
       exit;
     Result := GetDeviceCaps(DC, Index);
     ReleaseDC(0, DC);
+    exit;
   end;
   if not IsValidDC(DC) then exit;
   with TDeviceContext(DC) do
@@ -5548,23 +5544,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Function TGtkWidgetSet.CreateSystemFont : hFont;
- ------------------------------------------------------------------------------}
-Function TGtkWidgetSet.CreateSystemFont: hFont;
-var
-  GDIObj : PGDIObject;
-begin
-  GDIObj := NewGDIObject(gdiFont);
-  {$IfDef GTK2}
-  GDIObj^.GDIFontObject:= GetDefaultFontDesc(true);
-  {$Else}
-  GDIObj^.GDIFontObject:= GetDefaultFont(true);
-  {$EndIf}
-  Result := hFont(GDIObj);
-  ;
-end;
-
-{------------------------------------------------------------------------------
   Function: GetStockObject
   Params:
   Returns: Nothing
@@ -5620,7 +5599,7 @@ begin
         end;
 
         If FStockSystemFont = 0 then
-          FStockSystemFont := CreateSystemFont;
+          FStockSystemFont := HFont(CreateDefaultFont);
         Result := FStockSystemFont;
       end;
 (*    SYSTEM_FIXED_FONT:   // Fixed-pitch (monospace) system font used in Windows versions earlier than 3.0. This stock object is provided for compatibility with earlier versions of Windows.
@@ -6005,7 +5984,6 @@ end;
 var
   lbearing, rbearing, width, ascent,descent: LongInt;
   UseFont : PGDKFont;
-  UnRef : Boolean;
   IsDBCSFont: Boolean;
   NewCount: Integer;
 begin
@@ -6015,12 +5993,10 @@ begin
   begin
     if (CurrentFont = nil) or (CurrentFont^.GDIFontObject = nil)
     then begin
-      UseFont := GetDefaultFont(true);
-      UnRef := True;
+      UseFont := GetDefaultGtkFont(false);
     end
     else begin
       UseFont := CurrentFont^.GDIFontObject;
-      UnRef := False;
     end;
     If UseFont = nil then
       DebugLn('WARNING: [TGtkWidgetSet.GetTextExtentPoint] Missing font')
@@ -6049,8 +6025,6 @@ begin
                 ascent+descent;
                 {$ENDIF}
       //debugln('TGtkWidgetSet.GetTextExtentPoint END Str="'+DbgStr(Str)+'" Size=',dbgs(Size.cX),'x',dbgs(Size.cY),' ascent=',dbgs(ascent),' descent=',dbgs(descent),' tmDescent=',dbgs(TDeviceContext(DC).DCTextMetric.TextMetric.tmDescent));
-      If UnRef then
-        FontCache.Unreference(UseFont);
     end;
   end;
   Assert(False, 'trace:< [TGtkWidgetSet.GetTextExtentPoint]');
@@ -6705,6 +6679,9 @@ begin
 
   ADialogResult:= 0;
   Dialog:= gtk_dialog_new;
+  {$IFDEF DebugLCLComponents}
+  DebugGtkWidgets.MarkCreated(Dialog,'TGtkWidgetSet.MessageBox');
+  {$ENDIF}
   g_signal_connect(PGtkObject(Dialog), 'delete-event', TGtkSignalFunc(@MessageBoxClosed), @ADialogResult);
   gtk_window_set_default_size(PGtkWindow(Dialog), 100, 100);
   ALabel:= gtk_label_new(lpText);
@@ -7918,6 +7895,12 @@ function TGtkWidgetSet.SelectObject(DC: HDC; GDIObj: HGDIOBJ): HGDIOBJ;
   begin
     RaiseException('TGtkWidgetSet.SelectObject Invalid GDIType '+IntToStr(ord(PGdiObject(GDIObj)^.GDIType)));
   end;
+  
+  procedure DebugInvalidGDIObject;
+  begin
+    DebugLn(['TGtkWidgetSet.SelectObject DC=',dbghex(DC),' IsValidDC(DC)=',IsValidDC(DC),' GDIObj=',dbghex(GDIObj),' IsValidGDIObject(GDIObj)=',IsValidGDIObject(GDIObj)]);
+    DumpStack;
+  end;
 
 begin
   Result := 0;
@@ -7939,26 +7922,28 @@ begin
         begin
           Assert(False, Format('trace:  [TGtkWidgetSet.SelectObject] DC: 0x%x, Type: Bitmap', [DC]));
           Result := HBITMAP(CurrentBitmap);
-          CurrentBitmap := PGDIObject(GDIObj);
-          if GC <> nil then begin
-            gdk_gc_unref(GC);
-            GC:=nil;
-          end;
-          with CurrentBitmap^ do
-            case GDIBitmapType of
-              gbPixmap: Drawable := GDIPixmapObject;
-              gbBitmap: Drawable := GDIBitmapObject;
-              {obsolete: gbImage:  Drawable := nil;//GDI_RGBImageObject;}
-            else
-              Drawable := nil;
+          if CurrentBitmap<>PGDIObject(GDIObj) then begin
+            CurrentBitmap := PGDIObject(GDIObj);
+            if GC <> nil then begin
+              gdk_gc_unref(GC);
+              GC:=nil;
             end;
-          //DebugLn('TGtkWidgetSet.SelectObject DC=',DbgS(DC),8),' GDIBitmap=',DbgS(Cardinal(CurrentBitmap),
-          //' GDIBitmapType=',ord(CurrentBitmap^.GDIBitmapType),' Drawable=',DbgS(Drawable));
+            with CurrentBitmap^ do
+              case GDIBitmapType of
+                gbPixmap: Drawable := GDIPixmapObject;
+                gbBitmap: Drawable := GDIBitmapObject;
+                {obsolete: gbImage:  Drawable := nil;//GDI_RGBImageObject;}
+              else
+                Drawable := nil;
+              end;
+            //DebugLn('TGtkWidgetSet.SelectObject DC=',DbgS(DC),8),' GDIBitmap=',DbgS(Cardinal(CurrentBitmap),
+            //' GDIBitmapType=',ord(CurrentBitmap^.GDIBitmapType),' Drawable=',DbgS(Drawable));
 
-          GC := gdk_gc_new(Drawable);
+            GC := gdk_gc_new(Drawable);
 
-          gdk_gc_set_function(GC, GDK_COPY);
-          SelectedColors := dcscCustom;
+            gdk_gc_set_function(GC, GDK_COPY);
+            SelectedColors := dcscCustom;
+          end;
         end;
 
       gdiBrush:
@@ -7966,16 +7951,18 @@ begin
         begin
           Assert(False, Format('trace:  [TGtkWidgetSet.SelectObject] DC: 0x%x, Type: Brush', [DC]));
           Result := HBRUSH(CurrentBrush);
-          CurrentBrush := PGDIObject(GDIObj);
-          if GC <> nil
-          then begin
-            gdk_gc_set_fill(GC, GDIBrushFill);
-            case GDIBrushFill of
-              GDK_STIPPLED: gdk_gc_set_stipple(GC, GDIBrushPixMap);
-              GDK_TILED:    gdk_gc_set_tile(GC, GDIBrushPixMap);
+          if CurrentBrush<>PGDIObject(GDIObj) then begin
+            CurrentBrush := PGDIObject(GDIObj);
+            if GC <> nil
+            then begin
+              gdk_gc_set_fill(GC, GDIBrushFill);
+              case GDIBrushFill of
+                GDK_STIPPLED: gdk_gc_set_stipple(GC, GDIBrushPixMap);
+                GDK_TILED:    gdk_gc_set_tile(GC, GDIBrushPixMap);
+              end;
             end;
+            SelectedColors := dcscCustom;
           end;
-          SelectedColors := dcscCustom;
         end;
 
       gdiFont:
@@ -7983,28 +7970,30 @@ begin
         begin
           Assert(False, Format('trace:  [TGtkWidgetSet.SelectObject] DC: 0x%x, Type: Font', [DC]));
           Result := HFONT(CurrentFont);
-          CurrentFont := PGDIObject(GDIObj);
-          {$IfDef GTK1}
-          if GC <> nil then begin
-            gdk_gc_set_font(GC, PGdiObject(GDIObj)^.GDIFontObject);
+          if CurrentFont<> PGDIObject(GDIObj) then begin
+            CurrentFont := PGDIObject(GDIObj);
+            {$IfDef GTK1}
+            if GC <> nil then
+              gdk_gc_set_font(GC, PGdiObject(GDIObj)^.GDIFontObject);
+            {$ENDIF}
+            Exclude(DCFlags,dcfTextMetricsValid);
+            SelectedColors := dcscCustom;
           end;
-          {$ENDIF}
-          Exclude(DCFlags,dcfTextMetricsValid);
-          SelectedColors := dcscCustom;
         end;
 
       gdiPen:
         with TDeviceContext(DC) do
         begin
           Result := HPEN(CurrentPen);
-          CurrentPen := PGDIObject(GDIObj);
-          DCFlags:=DCFlags-[dcfPenSelected];
-          if GC <> nil then SelectGDKPenProps(DC);
-          SelectedColors := dcscCustom;
+          if CurrentPen<> PGDIObject(GDIObj) then begin
+            CurrentPen := PGDIObject(GDIObj);
+            DCFlags:=DCFlags-[dcfPenSelected];
+            if GC <> nil then SelectGDKPenProps(DC);
+            SelectedColors := dcscCustom;
+          end;
         end;
 
       gdiRegion:
-      begin
         with TDeviceContext(DC) do
         begin
           Result := ClipRegion;
@@ -8013,12 +8002,16 @@ begin
           else
             ClipRegion:=0;
         end;
-      end;
 
     else
       RaiseInvalidGDIType;
     end;
+  end else begin
+    {$IFDEF DebugLCLComponents}
+    DebugInvalidGDIObject;
+    {$ENDIF}
   end;
+
 //DebugLn('[TGtkWidgetSet.SelectObject] GDI=',DbgS(GDIObj)
 // ,'  Old=',DbgS(Result));
 end;
@@ -9458,7 +9451,6 @@ var
   txtpt : TPoint;
   sz : TSize;
   UseFont : PGDKFont;
-  UnRef,
   Underline,
   StrikeOut : Boolean;
   DCOrigin: TPoint;
@@ -9481,14 +9473,12 @@ begin
     else begin
       if (CurrentFont = nil) or (CurrentFont^.GDIFontObject = nil)
       then begin
-        UseFont := GetDefaultFont(true);
-        UnRef := True;
+        UseFont := GetDefaultGtkFont(false);
         Underline := False;
         StrikeOut := False;
       end
       else begin
         UseFont := CurrentFont^.GDIFontObject;
-        UnRef := False;
         Underline := LongBool(CurrentFont^.LogFont.lfUnderline);
         StrikeOut := LongBool(CurrentFont^.LogFont.lfStrikeOut);
       end;
@@ -9551,8 +9541,6 @@ begin
           DeleteObject(SelectObject(DC, TempPen));
         end;
         Result := True;
-        If UnRef then
-          FontCache.Unreference(UseFont);
       end;
     end;
   end;

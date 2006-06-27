@@ -46,7 +46,7 @@ uses
   GTKWinApiWindow, StdCtrls, ComCtrls,
   Dialogs, ExtDlgs, LResources, Math, GTKGlobals,
   {Buttons, CListBox, Calendar, Arrow, Spin, FileCtrl, CommCtrl, ExtCtrls, }
-  gtkDef, gtkInt;
+  gtkDef, gtkFontCache, gtkInt;
 
 type
 
@@ -58,7 +58,6 @@ type
     function CreateComponent(Sender : TObject): THandle; override;
     function GetText(Sender: TComponent; var Text: String): Boolean;
     procedure HookSignals(const AGTKObject: PGTKObject; const ALCLObject: TObject); override;
-    //function IntSendMessage3(LM_Message : Integer; Sender : TObject; data : pointer) : integer; override;
     function LoadStockPixmap(StockID: longint) : HBitmap; override;
     procedure SetCallback(const AMsg: LongInt; const AGTKObject: PGTKObject; const ALCLObject: TObject);override;
     //procedure SetLabel(Sender : TObject; Data : Pointer);
@@ -66,7 +65,6 @@ type
     procedure SetSelectionMode(Sender: TObject; Widget: PGtkWidget;
       MultiSelect, ExtendedSelect: boolean); override;
     //function SetTopIndex(Sender: TObject; NewTopIndex: integer): integer; override;
-    procedure UpdateDCTextMetric(DC: TDeviceContext); override;
 
     procedure InitializeFileDialog(FileDialog: TFileDialog;
       var SelWidget: PGtkWidget; Title: PChar); override;
@@ -79,8 +77,6 @@ type
   public    
     {$I gtk2winapih.inc}
     {$I gtk2lclintfh.inc}
-  
-    function PangoDrawText(DC: HDC; Str: PChar; Count: Integer; var Rect: TRect; Flags: Cardinal): Integer; //override;
   end;
 
   { TGtkListStoreStringList }

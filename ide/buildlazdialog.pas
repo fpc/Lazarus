@@ -170,13 +170,14 @@ type
 
   TConfigureBuildLazarusDlg = class(TForm)
     BuildAllButton: TButton;
+    CompileButton: TButton;
     CancelButton: TButton;
     CleanAllCheckBox: TCheckBox;
     ConfirmBuildCheckBox: TCheckBox;
     ImageList: TImageList;
     ItemsListBox: TListBox;
     LCLInterfaceRadioGroup: TRadioGroup;
-    OKButton: TButton;
+    SaveSettingsButton: TButton;
     OptionsEdit: TEdit;
     OptionsLabel: TLabel;
     RestartAfterBuildCheckBox: TCheckBox;
@@ -190,6 +191,7 @@ type
     WithStaticPackagesCheckBox: TCheckBox;
     procedure BuildAllButtonClick(Sender: TObject);
     procedure CancelButtonClick(Sender: TObject);
+    procedure CompileButtonClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -198,10 +200,9 @@ type
     procedure ItemsListBoxMouseDown(Sender: TOBject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure ItemsListBoxShowHint(Sender: TObject; HintInfo: PHintInfo);
-    procedure OKButtonClick(Sender: TObject);
+    procedure SaveSettingsButtonClick(Sender: TObject);
     procedure TargetDirectoryButtonClick(Sender: TObject);
   private
-    { private declarations }
     ImageIndexNone: Integer;
     ImageIndexBuild: Integer;
     ImageIndexCleanBuild: Integer;
@@ -210,7 +211,6 @@ type
     function MakeModeToInt(MakeMode: TMakeMode): integer;
     function IntToMakeMode(i: integer): TMakeMode;
   public
-    { public declarations }
     procedure Load(SourceOptions: TBuildLazarusOptions);
     procedure Save(DestOptions: TBuildLazarusOptions);
   end;
@@ -254,19 +254,21 @@ end;
 function StrToMakeMode(const s: string): TMakeMode;
 begin
   for Result:=Succ(mmNone) to High(TMakeMode) do
-    if AnsiCompareText(s,MakeModeNames[Result])=0 then exit;
+    if CompareText(s,MakeModeNames[Result])=0 then exit;
   Result:=mmNone;
 end;
 
 function StrToLCLPlatform(const s: string): TLCLPlatform;
 begin
   for Result:=Low(TLCLPlatform) to High(TLCLPlatform) do
-    if AnsiCompareText(s,LCLPlatformNames[Result])=0 then exit;
+    if CompareText(s,LCLPlatformNames[Result])=0 then exit;
   Result:=lpGtk;
 end;
 
 function ShowConfigureBuildLazarusDlg(
   Options: TBuildLazarusOptions): TModalResult;
+// mrOk=save
+// mrYes=save and compile
 var ConfigBuildLazDlg: TConfigureBuildLazarusDlg;
 begin
   Result:=mrCancel;
@@ -274,12 +276,11 @@ begin
   try
     ConfigBuildLazDlg.Load(Options);
     Result:=ConfigBuildLazDlg.ShowModal;
-    if Result=mrOk then
+    if Result in [mrOk,mrYes] then
       ConfigBuildLazDlg.Save(Options);
   finally
     ConfigBuildLazDlg.Free;
   end;
-  Result:=mrOk;
 end;
 
 function BuildLazarus(Options: TBuildLazarusOptions;
@@ -292,7 +293,6 @@ var
   CurItem: TBuildLazarusItem;
   ExtraOptions: String;
   CurMakeMode: TMakeMode;
-
 begin
   Result:=mrCancel;
   Tool:=TExternalToolOptions.Create;
@@ -301,7 +301,6 @@ begin
     Tool.Filename:=MakePath;
     Tool.EnvironmentOverrides.Values['LCL_PLATFORM']:=
       LCLPlatformNames[Options.LCLPlatform];
-    Tool.EnvironmentOverrides.Values['LANG']:= 'en_US';
     Tool.EnvironmentOverrides.Values['LANG']:= 'en_US';
     if blfOnlyIDE in Flags then
       Tool.EnvironmentOverrides.Values['USESVN2REVISIONINC']:= '0';
@@ -675,7 +674,8 @@ begin
   WithStaticPackagesCheckBox.Caption := lisLazBuildWithStaticPackages;
   RestartAfterBuildCheckBox.Caption := lisLazBuildRestartAfterBuild;
   ConfirmBuildCheckBox.Caption := lisLazBuildConfirmBuild;
-  OKButton.Caption := lisLazBuildOk;
+  CompileButton.Caption := lisMenuBuild;
+  SaveSettingsButton.Caption := lisLazBuildSaveSettings;
   CancelButton.Caption := lisLazBuildCancel;
   TargetOSLabel.Caption := lisLazBuildTargetOS;
   TargetCPULabel.Caption := lisLazBuildTargetCPU;
@@ -803,7 +803,7 @@ begin
   end;
 end;
 
-procedure TConfigureBuildLazarusDlg.OKButtonClick(Sender: TObject);
+procedure TConfigureBuildLazarusDlg.SaveSettingsButtonClick(Sender: TObject);
 begin
   Save(Options);
   ModalResult:=mrOk;
@@ -917,6 +917,12 @@ end;
 procedure TConfigureBuildLazarusDlg.CancelButtonClick(Sender: TObject);
 begin
   ModalResult:=mrCancel;
+end;
+
+procedure TConfigureBuildLazarusDlg.CompileButtonClick(Sender: TObject);
+begin
+  Save(Options);
+  ModalResult:=mrYes;
 end;
 
 procedure TConfigureBuildLazarusDlg.FormClose(Sender: TObject;
@@ -1286,7 +1292,7 @@ var
   i: Integer;
 begin
   Result:=nil;
-  for i:=0 to Count-1 do if AnsiCompareText(Name,Items[i].Name)=0 then begin
+  for i:=0 to Count-1 do if CompareText(Name,Items[i].Name)=0 then begin
     Result:=Items[i];
     exit;
   end;

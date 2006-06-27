@@ -19,17 +19,22 @@ unit GtkFontCache;
 interface
 
 uses
-  Classes, SysUtils, FPCAdds, LCLProc, LCLType, AvgLvlTree, gdk, gtkdef,
+  Classes, SysUtils, FPCAdds, LCLProc, LCLType, AvgLvlTree, gtkdef,
+  {$IFDEF Gtk1}
+  gdk,
+  {$ELSE}
+  glib2, gdk2, pango,
+  {$ENDIF}
   LCLResCache;
   
 type
-  TGdkFontCacheDescriptor = class;
+  TGtkFontCacheDescriptor = class;
 
-  { TGdkFontCacheItem }
+  { TGtkFontCacheItem }
   
-  TGdkFontCacheItem = class(TResourceCacheItem)
+  TGtkFontCacheItem = class(TResourceCacheItem)
   public
-    GdkFont: PGDKFont;
+    GtkFont: TGtkIntfFont;
 
     // metrics
     MetricsValid: boolean;
@@ -41,40 +46,48 @@ type
   end;
   
   
-  { TGdkFontCacheDescriptor }
+  { TGtkFontCacheDescriptor }
   
-  TGdkFontCacheDescriptor = class(TResourceCacheDescriptor)
+  TGtkFontCacheDescriptor = class(TResourceCacheDescriptor)
   public
     LogFont: TLogFont;
     LongFontName: string;
+    {$IFDEF Gtk1}
     xlfd: string;
+    {$ELSE}
+    PangoFontDescription: PPangoFontDescription;
+    {$ENDIF}
+    destructor Destroy; override;
   end;
   
   
-  { TGdkFontCache }
+  { TGtkFontCache }
   
-  TGdkFontCache = class(TResourceCache)
+  TGtkFontCache = class(TResourceCache)
   protected
     procedure RemoveItem(Item: TResourceCacheItem); override;
   public
     constructor Create;
     function CompareItems(Tree: TAvgLvlTree; Item1, Item2: Pointer): integer; override;
     function CompareDescriptors(Tree: TAvgLvlTree; Desc1, Desc2: Pointer): integer; override;
-    function FindGDKFont(TheGdkFont: PGDKFont): TGdkFontCacheItem;
-    function FindGDKFontDesc(const LogFont: TLogFont;
-                           const LongFontName: string): TGdkFontCacheDescriptor;
-    function FindADescriptor(TheGdkFont: PGDKFont): TGdkFontCacheDescriptor;
-    function Add(TheGdkFont: PGDKFont; const LogFont: TLogFont;
-                 const LongFontName: string): TGdkFontCacheDescriptor;
-    procedure Reference(TheGdkFont: PGDKFont);
-    procedure Unreference(TheGdkFont: PGDKFont);
+    function FindGtkFont(TheGtkFont: TGtkIntfFont): TGtkFontCacheItem;
+    function FindGtkFontDesc(const LogFont: TLogFont;
+                           const LongFontName: string): TGtkFontCacheDescriptor;
+    function FindADescriptor(TheGtkFont: TGtkIntfFont): TGtkFontCacheDescriptor;
+    function Add(TheGtkFont: TGtkIntfFont; const LogFont: TLogFont;
+                 const LongFontName: string): TGtkFontCacheDescriptor;
+    procedure Reference(TheGtkFont: TGtkIntfFont);
+    procedure Unreference(TheGtkFont: TGtkIntfFont);
     procedure DumpDescriptors;
   end;
 
 function LogFontToString(const LogFont: TLogFont): string;
+
+procedure ReferenceGtkIntfFont(AFont: TGtkIntfFont);
+procedure UnreferenceGtkIntfFont(AFont: TGtkIntfFont);
   
 var
-  FontCache: TGdkFontCache;
+  FontCache: TGtkFontCache;
 
 implementation
 
@@ -110,17 +123,34 @@ begin
   Result:=Result+#13#10;
 end;
 
-
-{ TGdkFontCache }
-
-function CompareGdkFontWithResItem(Font: PGDKFont;
-  Item: TGdkFontCacheItem): integer;
+procedure ReferenceGtkIntfFont(AFont: TGtkIntfFont);
 begin
-  Result := ComparePointers(Font, Item.GdkFont);
+  {$IFDEF Gtk1}
+  gdk_font_ref(AFont);
+  {$ELSE}
+  g_object_ref(AFont);
+  {$ENDIF}
+end;
+
+procedure UnreferenceGtkIntfFont(AFont: TGtkIntfFont);
+begin
+  {$IFDEF Gtk1}
+  gdk_font_unref(AFont);
+  {$ELSE}
+  g_object_unref(AFont);
+  {$ENDIF}
+end;
+
+{ TGtkFontCache }
+
+function CompareGtkFontWithResItem(Font: TGtkIntfFont;
+  Item: TGtkFontCacheItem): integer;
+begin
+  Result := ComparePointers(Font, Item.GtkFont);
 end;
 
 function CompareLogFontAndNameWithResDesc(Key: PLogFontAndName;
-  Desc: TGdkFontCacheDescriptor): integer;
+  Desc: TGtkFontCacheDescriptor): integer;
 begin
   Result:=CompareStr(Key^.LongFontName,Desc.LongFontName);
   //debugln('CompareLogFontAndNameWithResDesc A ',Key^.LongFontName,' ',Desc.LongFontName,' ',DbgS(Desc),' Result=',Result);
@@ -129,53 +159,53 @@ begin
   //debugln('CompareLogFontAndNameWithResDesc END Result=',Result);
 end;
 
-procedure TGdkFontCache.RemoveItem(Item: TResourceCacheItem);
+procedure TGtkFontCache.RemoveItem(Item: TResourceCacheItem);
 begin
-  gdk_font_unref(TGdkFontCacheItem(Item).GdkFont);
+  UnreferenceGtkIntfFont(TGtkFontCacheItem(Item).GtkFont);
   inherited RemoveItem(Item);
 end;
 
-constructor TGdkFontCache.Create;
+constructor TGtkFontCache.Create;
 begin
   inherited Create;
-  FResourceCacheItemClass:=TGdkFontCacheItem;
-  FResourceCacheDescriptorClass:=TGdkFontCacheDescriptor;
+  FResourceCacheItemClass:=TGtkFontCacheItem;
+  FResourceCacheDescriptorClass:=TGtkFontCacheDescriptor;
 end;
 
-function TGdkFontCache.CompareItems(Tree: TAvgLvlTree; Item1, Item2: Pointer
+function TGtkFontCache.CompareItems(Tree: TAvgLvlTree; Item1, Item2: Pointer
   ): integer;
 begin
-  Result:=ComparePointers(TGdkFontCacheItem(Item1).GdkFont,
-                          TGdkFontCacheItem(Item2).GdkFont);
+  Result:=ComparePointers(TGtkFontCacheItem(Item1).GtkFont,
+                          TGtkFontCacheItem(Item2).GtkFont);
 end;
 
-function TGdkFontCache.CompareDescriptors(Tree: TAvgLvlTree; Desc1,
+function TGtkFontCache.CompareDescriptors(Tree: TAvgLvlTree; Desc1,
   Desc2: Pointer): integer;
 var
-  Descriptor1: TGdkFontCacheDescriptor;
-  Descriptor2: TGdkFontCacheDescriptor;
+  Descriptor1: TGtkFontCacheDescriptor;
+  Descriptor2: TGtkFontCacheDescriptor;
 begin
-  Descriptor1:=TGdkFontCacheDescriptor(Desc1);
-  Descriptor2:=TGdkFontCacheDescriptor(Desc2);
+  Descriptor1:=TGtkFontCacheDescriptor(Desc1);
+  Descriptor2:=TGtkFontCacheDescriptor(Desc2);
   Result:=CompareStr(Descriptor1.LongFontName,Descriptor2.LongFontName);
   if Result<>0 then exit;
   Result:=CompareMemRange(@Descriptor1.LogFont,@Descriptor2.LogFont,
                           SizeOf(Descriptor1.LogFont));
 end;
 
-function TGdkFontCache.FindGDKFont(TheGdkFont: PGDKFont): TGdkFontCacheItem;
+function TGtkFontCache.FindGtkFont(TheGtkFont: TGtkIntfFont): TGtkFontCacheItem;
 var
   ANode: TAvgLvlTreeNode;
 begin
-  ANode:=FItems.Findkey(TheGdkFont,TListSortCompare(@CompareGdkFontWithResItem));
+  ANode:=FItems.Findkey(TheGtkFont,TListSortCompare(@CompareGtkFontWithResItem));
   if ANode<>nil then
-    Result:=TGdkFontCacheItem(ANode.Data)
+    Result:=TGtkFontCacheItem(ANode.Data)
   else
     Result:=nil;
 end;
 
-function TGdkFontCache.FindGDKFontDesc(const LogFont: TLogFont;
-  const LongFontName: string): TGdkFontCacheDescriptor;
+function TGtkFontCache.FindGtkFontDesc(const LogFont: TLogFont;
+  const LongFontName: string): TGtkFontCacheDescriptor;
 var
   LogFontAndName: TLogFontAndName;
   ANode: TAvgLvlTreeNode;
@@ -185,104 +215,117 @@ begin
   ANode:=FDescriptors.Findkey(@LogFontAndName,
                            TListSortCompare(@CompareLogFontAndNameWithResDesc));
   if ANode<>nil then
-    Result:=TGdkFontCacheDescriptor(ANode.Data)
+    Result:=TGtkFontCacheDescriptor(ANode.Data)
   else
     Result:=nil;
 end;
 
-function TGdkFontCache.FindADescriptor(TheGdkFont: PGDKFont
-  ): TGdkFontCacheDescriptor;
+function TGtkFontCache.FindADescriptor(TheGtkFont: TGtkIntfFont
+  ): TGtkFontCacheDescriptor;
 var
-  Item: TGdkFontCacheItem;
+  Item: TGtkFontCacheItem;
 begin
-  Item:=FindGDKFont(TheGdkFont);
+  Item:=FindGtkFont(TheGtkFont);
   if Item=nil then
     Result:=nil
   else
-    Result:=TGdkFontCacheDescriptor(Item.FirstDescriptor);
+    Result:=TGtkFontCacheDescriptor(Item.FirstDescriptor);
 end;
 
-function TGdkFontCache.Add(TheGdkFont: PGDKFont; const LogFont: TLogFont;
-  const LongFontName: string): TGdkFontCacheDescriptor;
+function TGtkFontCache.Add(TheGtkFont: TGtkIntfFont; const LogFont: TLogFont;
+  const LongFontName: string): TGtkFontCacheDescriptor;
 var
-  Item: TGdkFontCacheItem;
+  Item: TGtkFontCacheItem;
 begin
-  if FindGDKFontDesc(LogFont,LongFontName)<>nil then
-    RaiseGDBException('TGdkFontCache.Add font desc added twice');
+  if FindGtkFontDesc(LogFont,LongFontName)<>nil then
+    RaiseGDBException('TGtkFontCache.Add font desc added twice');
     
-  // find cache item with TheGdkFont
-  Item:=FindGDKFont(TheGdkFont);
+  // find cache item with TheGtkFont
+  Item:=FindGtkFont(TheGtkFont);
   if Item=nil then begin
     // create new item
-    Item:=TGdkFontCacheItem.Create(Self,0);
-    Item.GdkFont:=TheGdkFont;
-    gdk_font_ref(TheGdkFont);
+    Item:=TGtkFontCacheItem.Create(Self,0);
+    Item.GtkFont:=TheGtkFont;
+    ReferenceGtkIntfFont(TheGtkFont);
     FItems.Add(Item);
   end;
 
   // create descriptor
-  Result:=TGdkFontCacheDescriptor.Create(Self,Item);
+  Result:=TGtkFontCacheDescriptor.Create(Self,Item);
   Result.LongFontName:=LongFontName;
   Result.LogFont:=LogFont;
   FDescriptors.Add(Result);
-  if FindGDKFontDesc(LogFont,LongFontName)=nil then begin
-    DebugLn('TGdkFontCache.Add Added: %p LongFontName=%s LogFont=%s', [Pointer(Result), Result.LongFontName, LogFontToString(Result.LogFont)]);
+  if FindGtkFontDesc(LogFont,LongFontName)=nil then begin
+    DebugLn('TGtkFontCache.Add Added: %p LongFontName=%s LogFont=%s', [Pointer(Result), Result.LongFontName, LogFontToString(Result.LogFont)]);
     DumpDescriptors;
     RaiseGDBException('');
   end;
 end;
 
-procedure TGdkFontCache.Reference(TheGdkFont: PGDKFont);
+procedure TGtkFontCache.Reference(TheGtkFont: TGtkIntfFont);
 var
-  Item: TGdkFontCacheItem;
+  Item: TGtkFontCacheItem;
 begin
-  Item:=FindGDKFont(TheGdkFont);
+  Item:=FindGtkFont(TheGtkFont);
   if Item=nil then
-    gdk_font_ref(TheGdkFont)
+    ReferenceGtkIntfFont(TheGtkFont)
   else
     Item.IncreaseRefCount;
 end;
 
-procedure TGdkFontCache.Unreference(TheGdkFont: PGDKFont);
+procedure TGtkFontCache.Unreference(TheGtkFont: TGtkIntfFont);
 var
-  Item: TGdkFontCacheItem;
+  Item: TGtkFontCacheItem;
 begin
-  Item:=FindGDKFont(TheGdkFont);
+  Item:=FindGtkFont(TheGtkFont);
   if Item=nil then
-    gdk_font_unref(TheGdkFont)
+    UnreferenceGtkIntfFont(TheGtkFont)
   else
     Item.DecreaseRefCount;
 end;
 
-procedure TGdkFontCache.DumpDescriptors;
+procedure TGtkFontCache.DumpDescriptors;
 var
   ANode: TAvgLvlTreeNode;
-  Desc: TGdkFontCacheDescriptor;
+  Desc: TGtkFontCacheDescriptor;
   i: Integer;
 begin
   ANode:=FDescriptors.FindLowest;
   i:=1;
   while ANode<>nil do begin
-    Desc:=TGdkFontCacheDescriptor(ANode.Data);
-    DebugLn('TGdkFontCache.DumpDescriptors %d %p %s %s', [i, Pointer(Desc), Desc.LongFontName, LogFontToString(Desc.LogFont)]);
+    Desc:=TGtkFontCacheDescriptor(ANode.Data);
+    DebugLn('TGtkFontCache.DumpDescriptors %d %p %s %s', [i, Pointer(Desc), Desc.LongFontName, LogFontToString(Desc.LogFont)]);
     ANode:=FDescriptors.FindSuccessor(ANode);
     inc(i);
   end;
 end;
 
-{ TGdkFontCacheItem }
+{ TGtkFontCacheItem }
 
-procedure TGdkFontCacheItem.WarnReferenceHigh;
+procedure TGtkFontCacheItem.WarnReferenceHigh;
 begin
   inherited WarnReferenceHigh;
-  debugln(' GdkFont='+DbgS(GdkFont));
+  debugln(' GtkFont='+DbgS(GtkFont));
   if FirstDescriptor<>nil then
-    debugln('  '+TGdkFontCacheDescriptor(FirstDescriptor).LongFontName
-            +' '+LogFontToString(TGdkFontCacheDescriptor(FirstDescriptor).LogFont));
+    debugln('  '+TGtkFontCacheDescriptor(FirstDescriptor).LongFontName
+            +' '+LogFontToString(TGtkFontCacheDescriptor(FirstDescriptor).LogFont));
+end;
+
+{ TGtkFontCacheDescriptor }
+
+destructor TGtkFontCacheDescriptor.Destroy;
+begin
+  {$IFDEF Gtk2}
+  if PangoFontDescription<>nil then begin
+    pango_font_description_free(PangoFontDescription);
+    PangoFontDescription:=nil;
+  end;
+  {$ENDIF}
+  inherited Destroy;
 end;
 
 initialization
-  FontCache:=TGdkFontCache.Create;
+  FontCache:=TGtkFontCache.Create;
   
 finalization
   FontCache.Free;

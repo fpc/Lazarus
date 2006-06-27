@@ -59,22 +59,38 @@ end;
 
 function TGtk2WidgetSet.CreateFontIndirectEx(const LogFont: TLogFont;
   const LongFontName: string): HFONT;
+{off $DEFINE VerboseFonts}
 var
   GdiObject: PGdiObject;
   FullString: String;
   aFamily,aStyle: String;
   aSize: Integer;
-
-  procedure LoadDefaultFont;
-  begin
-    DisposeGDIObject(GdiObject);
-    GdiObject:=CreateDefaultFont;
-  end;
-  
+  PangoDesc: PPangoFontDescription;
+  CachedFont: TGtkFontCacheDescriptor;
+  AttrList: PPangoAttrList;
+  AttrListTemporary: Boolean;
+  Attr: PPangoAttribute;
+  CurFont: PPangoLayout;
 begin
-  result := 0;
-  GdiObject := NewGdiObject(gdiFont);
+  {$IFDEF VerboseFonts}
+  DebugLn('TGtk2WidgetSet.CreateFontIndirectEx A Name=',LogFont.lfFaceName,' Height=',dbgs(LogFont.lfHeight),' LongName=',LongFontName);
+  {$ENDIF}
+  Result := 0;
+  PangoDesc := nil;
+  GdiObject := nil;
   try
+    // first search in cache
+    CachedFont:=FontCache.FindGTkFontDesc(LogFont,LongFontName);
+    if CachedFont<>nil then begin
+      CachedFont.Item.IncreaseRefCount;
+      GdiObject := NewGdiObject(gdiFont);
+      GdiObject^.GDIFontObject := TGtkFontCacheItem(CachedFont.Item).GtkFont;
+      {$IFDEF VerboseFonts}
+      WriteLn('Was already in cache');
+      {$ENDIF}
+      exit;
+    end;
+
     with LogFont do begin
       if lfFaceName[0] = #0
       then begin
@@ -82,18 +98,18 @@ begin
         Exit;
       end;
       
-      if  (lfHeight=0) and (CompareText(lfFacename,'default')=0) then begin
-        LoadDefaultFont;
-        Result := HFONT(GdiObject);
+      if (lfHeight=0) and (CompareText(lfFacename,'default')=0) then begin
+        {$IFDEF VerboseFonts}
+        DebugLn(['TGtk2WidgetSet.CreateFontIndirectEx Creating default font']);
+        {$ENDIF}
+        GdiObject:=CreateDefaultFont;
         exit;
       end;
 
-
-      
       FontNameToPangoFontDescStr(LongFontname, aFamily, aStyle, aSize);
-      
-      // if font specified size, prefer this instead of 'posibly' inacurate
-      // lfHeight note that lfHeight may actually have a most acurate value
+
+      // if font specified size, prefer this instead of 'possibly' inaccurate
+      // lfHeight note that lfHeight may actually have a most accurate value
       // but there is no way to know this at this point.
       
       // setting the size, this could be done in two ways
@@ -113,16 +129,13 @@ begin
         FullString:=IntToStr(aSize);
       FullString := AFamily + ' ' + aStyle + ' ' + FullString;
 
+      PangoDesc := pango_font_description_from_string(PChar(FullString));
 
-      GdiObject^.GDIFontObject :=
-        pango_font_description_from_string(PChar(FullString));
-
-      If lfWeight <> FW_DONTCARE then
-        pango_font_description_set_weight(GdiObject^.GDIFontObject, lfWeight);
+      if lfWeight <> FW_DONTCARE then
+        pango_font_description_set_weight(PangoDesc,lfWeight);
 
       if lfItalic <> 0 then
-        pango_font_description_set_style(GdiObject^.GDIFontObject,
-                                         PANGO_STYLE_ITALIC);
+        pango_font_description_set_style(PangoDesc,PANGO_STYLE_ITALIC);
 
       if (aSize=0) and (lfHeight<>0) then begin
         // a size is not specified, try to calculate one based on lfHeight
@@ -134,23 +147,79 @@ begin
           aSize:= (abs(lfheight) * 72 * PANGO_SCALE) div ScreenInfo.PixelsPerInchX
         else
           aSize:=lfHeight*PANGO_SCALE;
-        pango_font_description_set_size( GdiObject^.GDIFontObject, aSize);
+        pango_font_description_set_size(PangoDesc, aSize);
+      end;
+      
+      // create font
+      // TODO: use context widget (CreateFontIndirectEx needs a parameter for this: Context: HWnd)
+      GdiObject := NewGdiObject(gdiFont);
+      GdiObject^.GDIFontObject:=gtk_widget_create_pango_layout(
+                                               GetStyleWidget(lgsdefault), nil);
+      CurFont:=GdiObject^.GDIFontObject;
+
+      pango_layout_set_font_description(CurFont,PangoDesc);
+
+      if (LogFont.lfUnderline<>0) or (LogFont.lfStrikeOut<>0) then begin
+        AttrListTemporary := false;
+        AttrList := pango_layout_get_attributes(CurFont);
+        if (AttrList = nil) then begin
+          AttrList := pango_attr_list_new();
+          AttrListTemporary := true;
+        end;
+        if LogFont.lfUnderline<>0 then
+          Attr := pango_attr_underline_new(PANGO_UNDERLINE_SINGLE)
+        else
+          Attr := pango_attr_underline_new(PANGO_UNDERLINE_NONE);
+        pango_attr_list_change(AttrList,Attr);
+
+        Attr := pango_attr_strikethrough_new(LogFont.lfStrikeOut<>0);
+        pango_attr_list_change(AttrList,Attr);
+
+        if AttrListTemporary then
+          pango_attr_list_unref(AttrList);
       end;
 
-
-      GdiObject^.StrikeOut := lfStrikeOut <> 0;
-      GdiObject^.Underline := lfUnderline <> 0;
-
+      pango_layout_set_single_paragraph_mode(CurFont, TRUE);
+      pango_layout_set_width(CurFont, -1);
+      pango_layout_set_alignment(CurFont, PANGO_ALIGN_LEFT);
     end;
   finally
-    if GdiObject^.GDIFontObject = nil
-    then begin
-      DisposeGDIObject(GdiObject);
-      Result := 0;
-    end
-    else begin
-      Result := HFONT(GdiObject);
+    if (CachedFont=nil)
+    and (GdiObject<>nil) and (GdiObject^.GDIFontObject <> nil) then begin
+      // add to cache
+      CachedFont:=FontCache.Add(GdiObject^.GDIFontObject,LogFont,LongFontName);
+      if CachedFont<>nil then begin
+        CachedFont.PangoFontDescription:=PangoDesc;
+        PangoDesc:=nil;
+      end;
     end;
+    {$IFDEF VerboseFonts}
+    if (GdiObject<>nil) and (GdiObject^.GDIFontObject <> nil) then begin
+      DebugLn(['TGtk2WidgetSet.CreateFontIndirectEx New pangolayout=',dbgs(GdiObject^.GDIFontObject),' Cached=',FontCache.FindGTKFont(GdiObject^.GDIFontObject)<>nil]);
+    end;
+    {$ENDIF}
+    // clean up helper objects
+    if PangoDesc<>nil then
+      pango_font_description_free(PangoDesc);
+      
+    if (GdiObject<>nil) then begin
+      if (GdiObject^.GDIFontObject = nil) then begin
+        DebugLn(['TGtk2WidgetSet.CreateFontIndirectEx Unable to create font A']);
+        DisposeGDIObject(GdiObject);
+        Result := 0;
+      end else begin
+        // return the new font
+        GdiObject^.LogFont:=LogFont;
+        Result := HFONT(GdiObject);
+      end;
+    end else begin
+      {$IFDEF VerboseFonts}
+      DebugLn(['TGtk2WidgetSet.CreateFontIndirectEx Unable to create font B']);
+      {$ENDIF}
+    end;
+    {$IFDEF VerboseFonts}
+    DebugLn(['TGtk2WidgetSet.CreateFontIndirectEx END Result=',dbgs(Pointer(PtrInt(Result)))]);
+    {$ENDIF}
   end;
 end;
 
@@ -188,52 +257,44 @@ function TGtk2WidgetSet.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint;
 var
   LineStart, LineEnd, StrEnd: PChar;
   Width, Height: Integer;
-  TopY, LineLen, LineHeight : Integer;
-  TxtPt : TPoint;
+  TopY, LineLen, LineHeight: Integer;
+  TxtPt: TPoint;
   DCOrigin: TPoint;
+  Foreground: PGDKColor;
+  UseFont: PPangoLayout;
+  CurDx: PInteger;
+  CurStr: PChar;
 
-  UnRef,
-  Underline,
-  StrikeOut : Boolean;
-
-  Foreground : PGDKColor;
-  
-  Layout : PPangoLayout;
-  UseFontDesc : PPangoFontDescription;
-  AttrList : PPangoAttrList;
-  Attr : PPangoAttribute;
-  AttrListTemporary: Boolean;
-
-  procedure DoTextOut(X,Y : Integer; Str : Pchar; Count: Integer);
+  procedure DoTextOut(X,Y : Integer; Str: Pchar; CurCount: Integer);
   var
-    aRect : TRect;
+    DevCtx: TDeviceContext;
+    CurScreenX: LongInt;
+    CharLen: LongInt;
   begin
-    with TDeviceContext(DC) do begin
-      //fix me... and what about UTF-8 conversion?
-      //this could be a massive problem since we
-      //will need to know before hand what the current
-      //locale is, and if we stored UTF-8 string this would break
-      //cross-compatibility with GTK1.2 and win32 interfaces.....
-
-      pango_layout_set_text(Layout, Str, Count);
-
-      aRect := Classes.Rect(0,0,0,0);
-      pango_layout_get_pixel_size(Layout, @arect.Right, @arect.Bottom);
-
-      OffsetRect(aRect, X,Y);
-
-      gdk_draw_layout_with_colors(drawable, gc, aRect.Left, aRect.Top, Layout, Foreground, nil);
-    end;
-  end;
-
-  procedure DrawTextLine;
-  begin
-    with TDeviceContext(DC) do begin
-      DoTextOut(TxtPt.X, TxtPt.Y, LineStart, LineLen);
+    DevCtx:=TDeviceContext(DC);
+    if (Dx<>nil) then begin
+      CurScreenX:=X;
+      while CurCount>0 do begin
+        CharLen:=UTF8CharacterLength(CurStr);
+        //gdk_draw_glyphs(DevCtx.drawable,DevCtx.gc );
+        pango_layout_set_text(UseFont, CurStr, 1);
+        gdk_draw_layout_with_colors(DevCtx.drawable, DevCtx.gc, CurScreenX, Y,
+                                    UseFont, Foreground, nil);
+        //gdk_draw_rectangle(DevCtx.Drawable,DevCtx.GC,1,CurScreenX,Y,3,3);
+        inc(CurScreenX,CurDx^);
+        inc(CurDx);
+        inc(CurStr,CharLen);
+        dec(CurCount,CharLen);
+      end;
+    end else begin
+      pango_layout_set_text(UseFont, Str, Count);
+      gdk_draw_layout_with_colors(DevCtx.drawable, DevCtx.gc, X, Y, UseFont,
+                                  Foreground, nil);
     end;
   end;
 
 begin
+  //DebugLn(['TGtk2WidgetSet.ExtTextOut X=',X,' Y=',Y,' Str="',copy(Str,1,Count),'" Count=',Count,' DX=',dbgs(DX)]);
   Assert(False, Format('trace:> [TGtk2WidgetSet.ExtTextOut] DC:0x%x, X:%d, Y:%d, Options:%d, Str:''%s'', Count: %d', [DC, X, Y, Options, Str, Count]));
   Result := IsValidDC(DC);
   if Result
@@ -252,24 +313,14 @@ begin
       exit;
     end;
 
-    // TODO: implement other parameters.
-
-    UseFontDesc:=nil;
-    if (CurrentFont = nil) or (CurrentFont^.GDIFontObject = nil)
-    then begin
-      UseFontDesc := GetDefaultFontDesc(true);
-      UnRef := True;
-      Underline := False;
-      StrikeOut := False;
-    end
-    else begin
-      UseFontDesc := CurrentFont^.GDIFontObject;
-      UnRef := False;
-      Underline := CurrentFont^.Underline;
-      StrikeOut := CurrentFont^.StrikeOut;
+    UseFont:=nil;
+    if (CurrentFont = nil) or (CurrentFont^.GDIFontObject = nil) then begin
+      UseFont := GetDefaultGtkFont(false);
+    end else begin
+      UseFont := CurrentFont^.GDIFontObject;
     end;
     
-    If (UseFontDesc = nil) then begin
+    if (UseFont = nil) then begin
       DebugLn('WARNING: [TGtk2WidgetSet.ExtTextOut] Missing Font');
       Result:=false;
       exit;
@@ -277,50 +328,21 @@ begin
 
     // to reduce flickering calculate first and then paint
     
-    Layout := GetDefaultPangoLayout;
-
-    If (Layout = nil) then begin
-      DebugLn('WARNING: [TGtk2WidgetSet.ExtTextOut] Missing Default Pango Layout');
-      Result:=false;
-      exit;
-    end;
-
     DCOrigin:=GetDCOffset(TDeviceContext(DC));
 
-    pango_layout_set_font_description(Layout, UseFontDesc);
-
-    AttrList:=nil;
-    AttrListTemporary := false;
-    if Underline or StrikeOut then begin
-      AttrList := pango_layout_get_attributes(Layout);
-      If (AttrList = nil) then begin
-        AttrList := pango_attr_list_new();
-        AttrListTemporary := true;
-      end;
-      If Underline then
-        Attr := pango_attr_underline_new(PANGO_UNDERLINE_SINGLE)
-      else
-        Attr := pango_attr_underline_new(PANGO_UNDERLINE_NONE);
-      pango_attr_list_change(AttrList,Attr);
-
-      Attr := pango_attr_strikethrough_new(StrikeOut);
-      pango_attr_list_change(AttrList,Attr);
-    end;
-
-    if (Options and ETO_CLIPPED) <> 0 then
-    begin
+    if (Options and ETO_CLIPPED) <> 0 then begin
       X := Rect^.Left;
       Y := Rect^.Top;
       IntersectClipRect(DC, Rect^.Left, Rect^.Top,
                         Rect^.Right, Rect^.Bottom);
     end;
 
-    LineLen := FindChar(#10,Str,Count);
+    LineLen := FindLineLen(Str,Count);
     TopY := Y;
     UpdateDCTextMetric(TDeviceContext(DC));
     TxtPt.X := X + DCOrigin.X;
     LineHeight := DCTextMetric.TextMetric.tmHeight;
-    TxtPt.Y := TopY  + DCOrigin.Y;
+    TxtPt.Y := TopY + DCOrigin.Y;
 
     SelectedColors := dcscCustom;
 
@@ -335,38 +357,35 @@ begin
     end;
 
     EnsureGCColor(DC, dccCurrentTextColor, True, False);
-    if AttrList<>nil then
-      pango_layout_set_attributes(Layout, AttrList);
+    Foreground := nil;//StyleForegroundColor(CurrentTextColor.ColorRef, nil);
 
-    Foreground := StyleForegroundColor(CurrentTextColor.ColorRef, nil);
-
+    CurDx:=Dx;
+    CurStr:=Str;
     LineStart:=Str;
     if LineLen < 0 then begin
       LineLen:=Count;
-      if Count> 0 then DrawTextLine;
+      if Count> 0 then
+        DoTextOut(TxtPt.X, TxtPt.Y, LineStart, LineLen);
     end else
     Begin  //write multiple lines
       StrEnd:=Str+Count;
       while LineStart < StrEnd do begin
         LineEnd:=LineStart+LineLen;
-        if LineLen>0 then DrawTextLine;
+        if LineLen>0 then
+          DoTextOut(TxtPt.X, TxtPt.Y, LineStart, LineLen);
         inc(TxtPt.Y,LineHeight);
-        LineStart:=LineEnd+1; // skip #10
-        if (LineStart<StrEnd) and (LineStart^=#13) then
+        LineStart:=LineEnd+1; // skip #13
+        if (LineStart<StrEnd) and (LineStart^ in [#10,#13])
+        and (LineStart^ <> LineEnd^) then
           inc(LineStart); // skip #10
         Count:=StrEnd-LineStart;
-        LineLen:=FindChar(#10,LineStart,Count);
+        LineLen:=FindLineLen(LineStart,Count);
         if LineLen<0 then
           LineLen:=Count;
       end;
     end;
 
     Result := True;
-
-    if AttrListTemporary then
-      pango_attr_list_unref(AttrList);
-    if UnRef then
-      pango_font_description_free(UseFontDesc);
   end;
   Assert(False, Format('trace:< [TGtk2WidgetSet.ExtTextOut] DC:0x%x, X:%d, Y:%d, Options:%d, Str:''%s'', Count: %d', [DC, X, Y, Options, Str, Count]));
 end;
@@ -420,81 +439,42 @@ begin
 {$EndIf}
 end;
 
+{------------------------------------------------------------------------------
+  function TGtk2WidgetSet.GetTextExtentPoint(DC: HDC; Str: PChar;
+    Count: Integer; var Size: TSize): Boolean;
+
+ ------------------------------------------------------------------------------}
 function TGtk2WidgetSet.GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer;
   var Size: TSize): Boolean;
 var
-  UnRef,
-  Underline,
-  StrikeOut : Boolean;
-
-  Layout : PPangoLayout;
-  UseFontDesc : PPangoFontDescription;
-  AttrList : PPangoAttrList;
-  Attr : PPangoAttribute;
+  UseFont : PPangoLayout;
 begin
+  //inherited GetTextExtentPoint;
   Result := IsValidDC(DC);
   if Result and (Count>0)
   then with TDeviceContext(DC) do
   begin
-      if (CurrentFont = nil) or (CurrentFont^.GDIFontObject = nil)
-      then begin
-        UseFontDesc := GetDefaultFontDesc(true);
-        UnRef := True;
-        Underline := False;
-        StrikeOut := False;
-      end
-      else begin
-        UseFontDesc := CurrentFont^.GDIFontObject;
-        UnRef := False;
-        Underline := CurrentFont^.Underline;
-        StrikeOut := CurrentFont^.StrikeOut;
-      end;
+    if (CurrentFont = nil) or (CurrentFont^.GDIFontObject = nil)
+    then begin
+      UseFont := GetDefaultGtkFont(false);
+    end
+    else begin
+      UseFont := CurrentFont^.GDIFontObject;
+    end;
 
-      If UseFontDesc = nil then
-        DebugLn('WARNING: [TGtk2WidgetSet.GetTextExtentPoint] Missing Font')
-      else begin
-        GetStyle(lgsdefault);
-        Layout := gtk_widget_create_pango_layout (GetStyleWidget(lgsdefault), nil);
-        pango_layout_set_font_description(Layout, UseFontDesc);
-        AttrList := pango_layout_get_attributes(Layout);
+    if UseFont = nil then begin
+      DebugLn('WARNING: [TGtk2WidgetSet.GetTextExtentPoint] Missing Font');
+      Result:=false;
+      exit;
+    end;
 
-        If (AttrList = nil) then
-          AttrList := pango_attr_list_new();
+    UpdateDCTextMetric(TDeviceContext(DC));
 
-        //fix me... what about &&, can we strip and do do markup substitution?
-        If Underline then
-          Attr := pango_attr_underline_new(PANGO_UNDERLINE_SINGLE)
-        else
-          Attr := pango_attr_underline_new(PANGO_UNDERLINE_NONE);
+    pango_layout_set_text(UseFont, Str, Count);
+    pango_layout_get_pixel_size(UseFont, @Size.cX, @Size.cY);
+    //DebugLn(['TGtk2WidgetSet.GetTextExtentPoint Str="',copy(Str,1,Count),' Count=',Count,' X=',Size.cx,' Y=',Size.cY]);
 
-        pango_attr_list_change(AttrList,Attr);
-
-        Attr := pango_attr_strikethrough_new(StrikeOut);
-        pango_attr_list_change(AttrList,Attr);
-
-        pango_layout_set_attributes(Layout, AttrList);
-
-        pango_layout_set_single_paragraph_mode(Layout, TRUE);
-        pango_layout_set_width(Layout, -1);
-
-        pango_layout_set_alignment(Layout, PANGO_ALIGN_LEFT);
-
-        //fix me... and what about UTF-8 conversion?
-        //this could be a massive problem since we
-        //will need to know before hand what the current
-        //locale is, and if we stored UTF-8 string this would break
-        //cross-compatibility with GTK1.2 and win32 interfaces.....
-
-        pango_layout_set_text(Layout, Str, Count);
-
-        pango_layout_get_pixel_size(Layout, @Size.cX, @Size.cY);
-
-        g_object_unref(Layout);
-
-        Result := True;
-        If UnRef then
-          pango_font_description_free(UseFontDesc);
-      end;
+    Result := True;
   end;
 end;
 
@@ -512,15 +492,8 @@ Function TGtk2WidgetSet.TextOut(DC: HDC; X,Y : Integer; Str : Pchar;
   Count: Integer) : Boolean;
 var
   DCOrigin: TPoint;
-  UnRef,
-  Underline,
-  StrikeOut : Boolean;
-  yOffset   : integer;
-
-  Layout : PPangoLayout;
-  UseFontDesc : PPangoFontDescription;
-  AttrList : PPangoAttrList;
-  Attr : PPangoAttribute;
+  yOffset: integer;
+  UseFont: PPangoLayout;
 begin
   Result := IsValidDC(DC);
   if Result and (Count>0)
@@ -529,72 +502,36 @@ begin
     if GC = nil
     then begin
       DebugLn('WARNING: [TGtk2WidgetSet.TextOut] Uninitialized GC');
+      exit(false);
+    end;
+    if (CurrentFont = nil) or (CurrentFont^.GDIFontObject = nil)
+    then begin
+      UseFont := GetDefaultGtkFont(false);
     end
     else begin
-      if (CurrentFont = nil) or (CurrentFont^.GDIFontObject = nil)
-      then begin
-        UseFontDesc := GetDefaultFontDesc(true);
-        UnRef := True;
-        Underline := False;
-        StrikeOut := False;
-      end
-      else begin
-        UseFontDesc := CurrentFont^.GDIFontObject;
-        UnRef := False;
-        Underline := CurrentFont^.Underline;
-        StrikeOut := CurrentFont^.StrikeOut;
-      end;
-
-      If UseFontDesc = nil then
-        DebugLn('WARNING: [TGtk2WidgetSet.TextOut] Missing Font')
-      else begin
-        DCOrigin:=GetDCOffset(TDeviceContext(DC));
-        with DCTextMetric.TextMetric do
-          yOffset:= tmHeight-tmDescent-tmAscent;
-        if yOffset<0 then yOffset:=0;
-        GetStyle(lgsdefault);
-        Layout := gtk_widget_create_pango_layout (GetStyleWidget(lgsdefault), nil);
-        pango_layout_set_font_description(Layout, UseFontDesc);
-        AttrList := pango_layout_get_attributes(Layout);
-
-        If (AttrList = nil) then
-          AttrList := pango_attr_list_new();
-
-        //fix me... what about &&, can we strip and do do markup substitution?
-        If Underline then
-          Attr := pango_attr_underline_new(PANGO_UNDERLINE_SINGLE)
-        else
-          Attr := pango_attr_underline_new(PANGO_UNDERLINE_NONE);
-
-        pango_attr_list_change(AttrList,Attr);
-
-        Attr := pango_attr_strikethrough_new(StrikeOut);
-        pango_attr_list_change(AttrList,Attr);
-
-        SelectedColors := dcscCustom;
-        EnsureGCColor(DC, dccCurrentTextColor, True, False);
-        pango_layout_set_attributes(Layout, AttrList);
-        pango_layout_set_single_paragraph_mode(Layout, TRUE);
-        pango_layout_set_width(Layout, -1);
-
-        pango_layout_set_alignment(Layout, PANGO_ALIGN_LEFT);
-
-        //fix me... and what about UTF-8 conversion?
-        //this could be a massive problem since we
-        //will need to know before hand what the current
-        //locale is, and if we stored UTF-8 string this would break
-        //cross-compatibility with GTK1.2 and win32 interfaces.....
-
-        pango_layout_set_text(Layout, Str, Count);
-        EnsureGCColor(DC, dccCurrentTextColor, True, False);
-
-        gdk_draw_layout_with_colors(drawable, GC, X+DCOrigin.X, Y+DCOrigin.Y+yOffset, Layout, nil, nil);
-        g_object_unref(Layout);
-        Result := True;
-        If UnRef then
-          pango_font_description_free(UseFontDesc);
-      end;
+      UseFont := CurrentFont^.GDIFontObject;
     end;
+
+    If UseFont = nil then begin
+      DebugLn('WARNING: [TGtk2WidgetSet.TextOut] Missing Font');
+      exit(false);
+    end;
+    UpdateDCTextMetric(TDeviceContext(DC));
+
+    DCOrigin:=GetDCOffset(TDeviceContext(DC));
+    with DCTextMetric.TextMetric do
+      yOffset:= tmHeight-tmDescent-tmAscent;
+    if yOffset<0 then yOffset:=0;
+    
+    SelectedColors := dcscCustom;
+    EnsureGCColor(DC, dccCurrentTextColor, True, False);
+
+    pango_layout_set_text(UseFont, Str, Count);
+    EnsureGCColor(DC, dccCurrentTextColor, True, False);
+
+    gdk_draw_layout_with_colors(drawable, GC,
+                        X+DCOrigin.X, Y+DCOrigin.Y+yOffset, UseFont, nil, nil);
+    Result := True;
   end;
 end;
 

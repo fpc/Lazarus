@@ -44,12 +44,12 @@ uses
   {$IFDEF gtk2}
     glib2, gdk2pixbuf, gdk2, gtk2, Pango,
   {$ELSE}
-    glib, gdk, gtk, {$Ifndef NoGdkPixbufLib}gdkpixbuf,{$EndIf} GtkFontCache,
+    glib, gdk, gtk, {$Ifndef NoGdkPixbufLib}gdkpixbuf,{$EndIf}
   {$ENDIF}
   LMessages, LCLProc, LCLStrConsts, LCLIntf, LCLType, DynHashArray,
   GraphType, GraphMath, Graphics, GTKWinApiWindow, LResources, Controls, Forms,
   Buttons, Menus, StdCtrls, ComCtrls, CommCtrl, ExtCtrls, Dialogs, ExtDlgs,
-  FileUtil, ImgList, GTKGlobals, gtkDef;
+  FileUtil, ImgList, GtkFontCache, GTKGlobals, gtkDef;
 
 
 
@@ -347,6 +347,9 @@ function GetWidgetDebugReport(Widget: PGtkWidget): string;
 function GetWindowDebugReport(AWindow: PGDKWindow): string;
 function GetStyleDebugReport(AStyle: PGTKStyle): string;
 function GetRCStyleDebugReport(AStyle: PGtkRcStyle): string;
+{$IFDEF Gtk2}
+function GetPangoDescriptionReport(Desc: PPangoFontDescription): string;
+{$ENDIF}
 function WidgetFlagsToString(Widget: PGtkWidget): string;
 function GdkColorToStr(Color: PGDKColor): string;
 function GetWidgetStyleReport(Widget: PGtkWidget): string;
@@ -365,6 +368,7 @@ function DeliverMessage(const Target: Pointer; var AMessage): Integer;
 function CreatePChar(const s: string): PChar;
 function ComparePChar(P1, P2: PChar): boolean;
 function FindChar(c: char; p:PChar; Max: integer): integer;
+function FindLineLen(p:PChar; Max: integer): integer;
 
 // flags
 function WidgetIsDestroyingHandle(Widget: PGtkWidget): boolean;
@@ -760,15 +764,14 @@ procedure UpdateWidgetStyleOfControl(AWinControl: TWinControl);
 
 // fonts
 function FontIsDoubleByteCharsFont(TheFont: PGdkFont): boolean;
+function LoadDefaultFont: TGtkIntfFont;
 {$Ifdef GTK2}
 function FontIsDoubleByteCharsFont(TheFont: PPangoFontDescription): boolean;
 function LoadDefaultFontDesc: PPangoFontDescription;
 procedure GetTextExtentIgnoringAmpersands(FontDesc: PPangoFontDescription; Str: PChar;
   LineLength: Longint; lbearing, rbearing, width, ascent, descent: Pgint);
-function GetDefaultPangoLayout: PPangoLayout;
 {$ENDIF}
 {$IFDEF GTK1}
-function LoadDefaultFont: PGDKFont;
 Procedure GetTextExtentIgnoringAmpersands(FontDesc: PGDKFont; Str: PChar;
   LineLength: Longint; lbearing, rbearing, width, ascent, descent: Pgint);
 {$EndIf}
@@ -1053,6 +1056,7 @@ var
   current_desktop: pguint;
 begin
   Result := -1;
+
   xdisplay := gdk_display;
   xscreen := XDefaultScreenOfDisplay(xdisplay);
   xwindow := XRootWindowOfScreen(xscreen);

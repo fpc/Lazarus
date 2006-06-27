@@ -591,6 +591,23 @@ begin
   Result:=-1;
 end;
 
+{------------------------------------------------------------------------------
+  function FindLineLen(p: PChar; Max: integer): integer;
+  
+  Find line end
+ ------------------------------------------------------------------------------}
+function FindLineLen(p: PChar; Max: integer): integer;
+begin
+  Result:=0;
+  while (Result<Max) do begin
+    if not (p[Result] in [#10,#13]) then
+      inc(Result)
+    else
+      exit;
+  end;
+  Result:=-1;
+end;
+
 
 {------------------------------------------------------------------------------
   function GtkWidgetIsA(Widget: PGtkWidget; AType: TGtkType): boolean;
@@ -763,22 +780,36 @@ begin
 {$IFDEF GTK1}
     Result:=Result+'font_name="'+AStyle^.font_name+'" ';
     Result:=Result+'fontset_name="'+AStyle^.fontset_name+'" ';
-    Result:=Result+'FG[N]:='+GdkColorToStr(@AStyle^.fg[GTK_STATE_NORMAL])+' ';
-    Result:=Result+'BG[N]:='+GdkColorToStr(@AStyle^.bg[GTK_STATE_NORMAL])+' ';
-    Result:=Result+'Base[N]:='+GdkColorToStr(@AStyle^.base[GTK_STATE_NORMAL])+' ';
-    Result:=Result+'flagi:='+intTostr(AStyle^.color_flags[GTK_STATE_NORMAL])+' ';
-{$ELSE GTK1}
-    {$WARNING TODO find GTK2 font naming}
-{$ENDIF GTK1}
+    Result:=Result+'FG[N]='+GdkColorToStr(@AStyle^.fg[GTK_STATE_NORMAL])+' ';
+    Result:=Result+'BG[N]='+GdkColorToStr(@AStyle^.bg[GTK_STATE_NORMAL])+' ';
+    Result:=Result+'Base[N]='+GdkColorToStr(@AStyle^.base[GTK_STATE_NORMAL])+' ';
+    Result:=Result+'flagi='+intTostr(AStyle^.color_flags[GTK_STATE_NORMAL])+' ';
+{$ELSE GTK2}
+    Result:=Result+'font_desc=['+GetPangoDescriptionReport(AStyle^.font_desc)+'] ';
+{$ENDIF GTK2}
     Result:=Result+'bg_pixmap_name[N]="'+AStyle^.bg_pixmap_name[GTK_STATE_NORMAL]+'" ';
 {$IFDEF GTK1}
     Result:=Result+'engine='+DbgS(AStyle^.engine);
-{$ELSE GTK1}
-    {$WARNING TODO find GTK2 theme engine}
 {$ENDIF GTK1}
   end;
   Result:=Result+']';
 end;
+
+{$IFDEF Gtk2}
+function GetPangoDescriptionReport(Desc: PPangoFontDescription): string;
+begin
+  if Desc=nil then begin
+    Result:='nil';
+  end else begin
+    Result:='family='+pango_font_description_get_family(Desc);
+    Result:=Result+' size='+IntToStr(pango_font_description_get_size(Desc));
+    Result:=Result+' weight='+IntToStr(pango_font_description_get_weight(Desc));
+    Result:=Result+' variant='+IntToStr(pango_font_description_get_variant(Desc));
+    Result:=Result+' style='+IntToStr(pango_font_description_get_style(Desc));
+    Result:=Result+' stretch='+IntToStr(pango_font_description_get_stretch(Desc));
+  end;
+end;
+{$ENDIF}
 
 function WidgetFlagsToString(Widget: PGtkWidget): string;
 begin
@@ -835,7 +866,7 @@ begin
     Result:=Result+ARCStyle^.font_name+',';
     Result:=Result+ARCStyle^.fontset_name+',';
 {$ELSE GTK1}
-    {$WARNING TODO find GTK2 font naming}
+    Result:=Result+GetPangoDescriptionReport(AStyle^.font_desc);
 {$ENDIF GTK1}
     Result:=Result+']';
   end;
@@ -7016,7 +7047,7 @@ begin
       StyleObject^.Style:=gtk_widget_get_style(StyleObject^.Widget);
       // ToDo: find out, why sometimes the style is not initialized.
       // for example: why the following occurs:
-      If AnsiCompareText(WName,'button')=0 then begin
+      If CompareText(WName,'button')=0 then begin
         if StyleObject^.Style^.light_gc[GTK_STATE_NORMAL]=nil then begin
           //DebugLn('GetStyleWithName ',WName);
           if not GtkWidgetIsA(StyleObject^.Widget,GTK_WINDOW_GET_TYPE) then begin
@@ -7085,7 +7116,7 @@ end;
 {------------------------------------------------------------------------------
   Function: LoadDefaultFont(Desc)
   Params: none
-  Returns: Returns the default Font(or Pango Font Description if using PANGO)
+  Returns: Returns the default Font
 
   For Text/Font Routines: if the Font is invalid, this can be used instead, or
   if the DT_internal flag is used(aka use system font) this is used. This is
@@ -7096,42 +7127,24 @@ end;
   a generic fixed font, if THAT fails, it gets whatever font is available.
   If the result is not nil it MUST be GDK_FONT_UNREF'd when done.
  ------------------------------------------------------------------------------}
-{$Ifdef GTK2}
-function LoadDefaultFontDesc: PPangoFontDescription;
+function LoadDefaultFont: TGtkIntfFont;
+{$IFDEF Gtk1}
 var
   Style : PGTKStyle;
+{$ENDIF}
 begin
+  {$IFDEF Gtk2}
+  Result:=gtk_widget_create_pango_layout(GetStyleWidget(lgsdefault), nil);
+  {$ELSE Gtk1}
   Result := nil;
   Style := GetStyle(lgsDefault);
   if Style = nil then
     Style := GetStyle(lgsGTK_Default);
-
-  If (Style <> nil) then begin
-     Result := pango_font_description_copy(Style^.font_desc);
-  end;
-
-  If Result = nil then
-    Result := pango_font_description_from_string('sans 12');
-    
-  if Result = nil then
-    Result := pango_font_description_from_string('12');
-end;
-
-{$Else}
-function LoadDefaultFont: PGDKFont;
-var
-  Style : PGTKStyle;
-begin
-  Result := nil;
-  Style := GetStyle(lgsDefault);
-  if Style = nil then
-    Style := GetStyle(lgsGTK_Default);
-
-  If Style <> nil then begin
+  if Style <> nil then begin
     Result := Style^.Font;
-    If Result = nil then
+    if Result = nil then
       {$IFNDEF NoStyle}
-      If (Style^.RC_Style <> nil) then begin
+      if (Style^.RC_Style <> nil) then begin
         if (Style^.RC_Style^.font_name <> nil) then
           Result := gdk_font_load(Style^.RC_Style^.font_name);
       end;
@@ -7142,20 +7155,39 @@ begin
     Result := gdk_fontset_load('-*-fixed-*-*-*-*-*-120-*-*-*-*-*-*');
   if Result = nil then
     Result := gdk_fontset_load('-*-*-*-*-*-*-*-*-*-*-*-*-*-*');
+  {$ENDIF}
 
   If Result <> nil then
-    Result := gdk_font_ref(Result);
+    ReferenceGtkIntfFont(Result);
 end;
-{$EndIf}
 
-{$IFDEF Gtk2}
-function GetDefaultPangoLayout: PPangoLayout;
+{$Ifdef GTK2}
+function LoadDefaultFontDesc: PPangoFontDescription;
+var
+  Style : PGTKStyle;
 begin
-  if DefaultPangoLayout=nil then begin
-    DefaultPangoLayout :=
-      gtk_widget_create_pango_layout (GetStyleWidget(lgsdefault), nil);
+  Result := nil;
+  
+  {$WARNING ToDo LoadDefaultFontDesc: get a working default pango font description}
+  Result := pango_font_description_from_string('sans 12');
+
+  exit;
+  
+  Style := GetStyle(lgsLabel);
+  if Style = nil then
+    Style := GetStyle(lgsDefault);
+  if Style = nil then
+    Style := GetStyle(lgsGTK_Default);
+
+  If (Style <> nil) then begin
+    Result := pango_font_description_copy(Style^.font_desc);
   end;
-  Result := DefaultPangoLayout;
+
+  If Result = nil then
+    Result := pango_font_description_from_string('sans 12');
+
+  if Result = nil then
+    Result := pango_font_description_from_string('12');
 end;
 {$ENDIF}
 
@@ -7644,7 +7676,7 @@ var
   procedure SetRCFont(FontGdiObject: PGdiObject);
   {$IFDEF GTK1}
   var
-    FontDesc: TGdkFontCacheDescriptor;
+    FontDesc: TGtkFontCacheDescriptor;
   {$ENDIF}
   begin
     {$IFDEF GTK1}

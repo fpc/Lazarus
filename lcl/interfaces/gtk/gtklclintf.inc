@@ -287,8 +287,11 @@ end;
  ------------------------------------------------------------------------------}
 function TGTKWidgetSet.FontCanUTF8(Font: HFont): boolean;
 begin
-  Result:=IsValidGDIObject(Font) and
-  FontIsDoubleByteCharsFont(PGdiObject(Font)^.GDIFontObject);
+  Result:=IsValidGDIObject(Font)
+    {$IFDEF Gtk1}
+    and FontIsDoubleByteCharsFont(PGdiObject(Font)^.GDIFontObject)
+    {$ENDIF}
+    ;
 end;
 
 {------------------------------------------------------------------------------
