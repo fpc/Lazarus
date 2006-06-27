@@ -6220,8 +6220,14 @@ begin
   if not WithThemeSpace then begin
     //DebugLn('GetGTKDefaultWidgetSize ',DbgSName(AWinControl),' ',dbgs(gtk_widget_get_xthickness(Widget)),' ',dbgs(gtk_widget_get_ythickness(Widget)));
     //dec(PreferredWidth,gtk_widget_get_xthickness(Widget));
+    {$IFDEF Gtk1}
     dec(PreferredHeight,2*gtk_widget_get_ythickness(Widget));
+    {$ENDIF}
   end;
+  //DebugLn(['GetGTKDefaultWidgetSize Allocation=',Widget^.allocation.x,',',Widget^.allocation.y,',',Widget^.allocation.width,',',Widget^.allocation.height,
+  // ' requisition=',Widget^.requisition.width,',',Widget^.requisition.height,
+  // ' PreferredWidth=',PreferredWidth,' PreferredHeight=',PreferredHeight,
+  // ' WithThemeSpace=',WithThemeSpace]);
   // set new size
   gtk_widget_set_usize(Widget,AWinControl.Width,AWinControl.Height);
   //debugln('GetGTKDefaultSize PreferredWidth=',dbgs(PreferredWidth),' PreferredHeight=',dbgs(PreferredHeight));

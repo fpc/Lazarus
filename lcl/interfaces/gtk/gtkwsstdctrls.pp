@@ -236,7 +236,8 @@ type
                                   ): TCheckBoxState; override;
     class procedure SetShortCut(const ACustomCheckBox: TCustomCheckBox;
       const OldShortCut, NewShortCut: TShortCut); override;
-    class procedure SetState(const ACB: TCustomCheckBox; const ANewState: TCheckBoxState); override;
+    class procedure SetState(const ACB: TCustomCheckBox;
+                             const ANewState: TCheckBoxState); override;
     class procedure GetPreferredSize(const AWinControl: TWinControl;
                         var PreferredWidth, PreferredHeight: integer;
                         WithThemeSpace: Boolean); override;
@@ -903,7 +904,8 @@ begin
     'activate_item');
 end;
 
-class procedure TGtkWSCustomCheckBox.SetState(const ACB: TCustomCheckBox; const ANewState: TCheckBoxState);
+class procedure TGtkWSCustomCheckBox.SetState(const ACB: TCustomCheckBox;
+  const ANewState: TCheckBoxState);
 var
   GtkObject: PGtkObject;
 begin

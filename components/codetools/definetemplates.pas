@@ -100,7 +100,7 @@ const
       'i386', 'powerpc', 'm68k', 'x86_64', 'sparc', 'arm'
     );
 
-  Lazarus_CPU_OS_Widget_Combinations: array[1..27] of string = (
+  Lazarus_CPU_OS_Widget_Combinations: array[1..31] of string = (
     'i386-linux-gtk',
     'i386-linux-gnome',
     'i386-linux-gtk2',
@@ -120,6 +120,10 @@ const
     'i386-win32-win32',
     'i386-win32-wince',
     'i386-win32-gtk',
+    'i386-darwin-gtk',
+    'i386-darwin-gtk2',
+    'i386-darwin-carbon',
+    'i386-darwin-qt',
     'powerpc-darwin-gtk',
     'powerpc-darwin-gtk2',
     'powerpc-darwin-carbon',

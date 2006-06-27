@@ -54,7 +54,7 @@ begin
   lEventHandler^.OnEvent := AEventHandler;
   lEventHandler^.GSourceID := g_io_add_watch(giochannel,
     AFlags, @waithandle_iocallback, lEventHandler);
-  //debugln('TGtkWidgetSet.AddEventHandler lEventHandler=',HexStr(Cardinal(lEventHandler),8));
+  //debugln('TGtkWidgetSet.AddEventHandler lEventHandler=',HexStr(Cardinal(lEventHandler),8),' AHandle=',dbgs(lEventHandler^.Handle));
   lEventHandler^.PrevHandler := nil;
   lEventHandler^.NextHandler := FWaitHandles;
   if FWaitHandles <> nil then
@@ -69,13 +69,15 @@ var
 begin
   if AHandler = nil then exit;
   g_source_remove(lEventHandler^.GSourceID);
+  g_io_channel_unref(lEventHandler^.GIOChannel);
+  g_io_channel_close(lEventHandler^.GIOChannel);
   if lEventHandler^.PrevHandler = nil then
     FWaitHandles := lEventHandler^.NextHandler
   else
     lEventHandler^.PrevHandler^.NextHandler := lEventHandler^.NextHandler;
   if lEventHandler^.NextHandler <> nil then
     lEventHandler^.NextHandler^.PrevHandler := lEventHandler^.PrevHandler;
-  //debugln('TGtkWidgetSet.RemoveEventHandler lEventHandler=',HexStr(Cardinal(lEventHandler),8));
+  //debugln('TGtkWidgetSet.RemoveEventHandler lEventHandler=',HexStr(Cardinal(lEventHandler),8),' AHandle=',dbgs(lEventHandler^.Handle));
   Dispose(lEventHandler);
   AHandler := nil;
 end;
@@ -88,7 +90,7 @@ begin
   g_source_remove(lEventHandler^.GSourceID);
   lEventHandler^.GSourceID := g_io_add_watch(lEventHandler^.GIOChannel,
     NewFlags, @waithandle_iocallback, lEventHandler);
-  //debugln('TGtkWidgetSet.SetEventHandlerFlags lEventHandler=',HexStr(Cardinal(lEventHandler),8));
+  //debugln('TGtkWidgetSet.SetEventHandlerFlags lEventHandler=',HexStr(Cardinal(lEventHandler),8),' AHandle=',dbgs(lEventHandler^.Handle));
 end;
 
 type

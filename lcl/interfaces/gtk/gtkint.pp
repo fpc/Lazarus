@@ -44,7 +44,7 @@ interface
 {$IFNDEF DisableAsyncProcess}
   {$IFDEF Linux}
     {$IFDEF CPUI386}
-      {$DEFINE UseAsyncProcess}
+      {off $DEFINE UseAsyncProcess}
     {$ENDIF}
   {$ENDIF}
 {$ENDIF}
