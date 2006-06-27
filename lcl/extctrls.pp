@@ -563,6 +563,7 @@ type
     property Constraints;
     property OnChangeBounds;
     property OnClick;
+    property OnDblClick;
     property OnMouseDown;
     property OnMouseEnter;
     property OnMouseLeave;
