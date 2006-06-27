@@ -3769,15 +3769,15 @@ begin
   end
   else if not (btKeepIgnoreErrorPos in BuildTreeFlags) then
     ClearIgnoreErrorAfter;
-    
-  if (TreeRange=trTillCursor) and (not UpdateNeeded(true)) then begin
-    // interface tree is valid
+
+  if (TreeRange=trTillCursor) and (not UpdateNeeded(false)) then begin
+    // tree is valid
     // -> if there was an error, raise it again
     if (LastErrorPhase in [CodeToolPhaseScan,CodeToolPhaseParse])
     and ((not IgnoreErrorAfterValid)
       or (not IgnoreErrorAfterPositionIsInFrontOfLastErrMessage))
     then begin
-      //DebugLn('TPascalParserTool.BuildTreeAndGetCleanPos RaiseLastError ',MainFilename);
+      DebugLn('TPascalParserTool.BuildTreeAndGetCleanPos RaiseLastError ',MainFilename);
       RaiseLastError;
     end;
     // check if cursor is in interface

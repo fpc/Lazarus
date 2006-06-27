@@ -190,9 +190,9 @@ type
       ExceptionOnNotFound: boolean): TCodeTreeNode;
     function CaretToCleanPos(Caret: TCodeXYPosition;
         var CleanPos: integer): integer;  // 0=valid CleanPos
-              //-1=CursorPos was skipped, CleanPos between two links
-              // 1=CursorPos beyond scanned code
-              //-2=X,Y beyond source
+                          //-1=CursorPos was skipped, CleanPos between two links
+                          // 1=CursorPos beyond scanned code
+                          //-2=X,Y beyond source
     function CleanPosToCodePos(CleanPos: integer;
         out CodePos:TCodePosition): boolean; // true=ok, false=invalid CleanPos
     function CleanPosToCaret(CleanPos: integer;
@@ -1655,17 +1655,17 @@ function TCustomCodeTool.IgnoreErrorAfterPositionIsInFrontOfLastErrMessage: bool
 var
   IgnoreErrorAfterCleanPos: integer;
 begin
-  DebugLn('TCustomCodeTool.IgnoreErrorAfterPositionIsInFrontOfLastErrMessage ',
-    ' LastErrorCheckedForIgnored='+dbgs(LastErrorCheckedForIgnored),
-    ' LastErrorBehindIgnorePosition='+dbgs(LastErrorBehindIgnorePosition));
+  //DebugLn('TCustomCodeTool.IgnoreErrorAfterPositionIsInFrontOfLastErrMessage ',
+  //  ' LastErrorCheckedForIgnored='+dbgs(LastErrorCheckedForIgnored),
+  //  ' LastErrorBehindIgnorePosition='+dbgs(LastErrorBehindIgnorePosition));
   if LastErrorCheckedForIgnored then begin
     Result:=LastErrorBehindIgnorePosition;
   end else begin
     if (Scanner<>nil) then begin
       IgnoreErrorAfterCleanPos:=Scanner.IgnoreErrorAfterCleanedPos;
-      DebugLn('  IgnoreErrorAfterCleanPos='+dbgs(IgnoreErrorAfterCleanPos)+'"'+copy(Src,IgnoreErrorAfterCleanPos-6,6)+'"',
-        ' LastErrorCurPos.StartPos='+dbgs(LastErrorCurPos.StartPos)+'"'+copy(Src,LastErrorCurPos.StartPos-6,6)+'"',
-        ' LastErrorPhase>CodeToolPhaseParse='+dbgs(LastErrorPhase>CodeToolPhaseParse));
+      //DebugLn('  IgnoreErrorAfterCleanPos='+dbgs(IgnoreErrorAfterCleanPos)+'"'+copy(Src,IgnoreErrorAfterCleanPos-6,6)+'"',
+      //  ' LastErrorCurPos.StartPos='+dbgs(LastErrorCurPos.StartPos)+'"'+copy(Src,LastErrorCurPos.StartPos-6,6)+'"',
+      //  ' LastErrorPhase>CodeToolPhaseParse='+dbgs(LastErrorPhase>CodeToolPhaseParse));
       if IgnoreErrorAfterCleanPos>0 then begin
         // ignore position in scanned code
         // -> check if last error is behind ignore position
@@ -1883,7 +1883,7 @@ begin
   FIgnoreErrorAfter:=AValue;
   LastErrorCheckedForIgnored:=false;
   {$IFDEF ShowIgnoreErrorAfter}
-  DebugLn('TCustomCodeTool.SetIgnoreErrorAfter ',dbgsCP(FIgnoreErrorAfter));
+  DebugLn('TCustomCodeTool.SetIgnoreErrorAfter FIgnoreErrorAfter=',dbgsCP(FIgnoreErrorAfter));
   {$ENDIF}
   if Scanner<>nil then
     Scanner.SetIgnoreErrorAfter(IgnoreErrorAfter.P,IgnoreErrorAfter.Code);

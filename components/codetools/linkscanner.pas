@@ -1490,8 +1490,8 @@ var
   CleanResult: integer;
 begin
   //DebugLn('TLinkScanner.IgnoreErrAfterPositionIsInFrontOfLastErrMessage');
-  //DebugLn('  LastErrorCheckedForIgnored=',LastErrorCheckedForIgnored,
-  //  ' LastErrorBehindIgnorePosition=',LastErrorBehindIgnorePosition);
+  //DebugLn(['  LastErrorCheckedForIgnored=',LastErrorCheckedForIgnored,
+  //  ' LastErrorBehindIgnorePosition=',LastErrorBehindIgnorePosition]);
   if LastErrorCheckedForIgnored then
     Result:=LastErrorBehindIgnorePosition
   else begin
@@ -1500,9 +1500,11 @@ begin
     begin
       CleanResult:=CursorToCleanPos(FIgnoreErrorAfterCursorPos,
                          FIgnoreErrorAfterCode,CleanedIgnoreErrorAfterPosition);
-      //DebugLn('  CleanResult=',CleanResult,
+      //DebugLn(['  CleanResult=',CleanResult,
       //  ' CleanedIgnoreErrorAfterPosition=',CleanedIgnoreErrorAfterPosition,
-      //  ' FIgnoreErrorAfterCursorPos=',FIgnoreErrorAfterCursorPos);
+      //  ' FIgnoreErrorAfterCursorPos=',FIgnoreErrorAfterCursorPos,
+      //  ' CleanedLen=',CleanedLen,
+      //  ' LastErrorIsValid=',LastErrorIsValid]);
       if (CleanResult=0) or (CleanResult=-1)
       or (not LastErrorIsValid) then begin
         Result:=true;
@@ -2754,7 +2756,7 @@ begin
       //DebugLn('[TLinkScanner.CursorToCleanPos] B ACleanPos=',ACleanPos);
       if i+1<LinkCount then begin
         // link has successor
-        //DebugLn('[TLinkScanner.CursorToCleanPos] C Links[i+1].CleanedPos=',Links[i+1].CleanedPos);
+        //DebugLn(['[TLinkScanner.CursorToCleanPos] C Links[i+1].CleanedPos=',Links[i+1].CleanedPos]);
         if ACleanPos<FLinks[i+1].CleanedPos then begin
           // link covers the cursor position
           Result:=0;  // valid position
@@ -2782,8 +2784,8 @@ begin
         i:=j-1;
       end else begin
         // in last link
-        //DebugLn('[TLinkScanner.CursorToCleanPos] E length(FCleanedSrc)=',length(FCleanedSrc));
-        if ACleanPos<=length(FCleanedSrc) then begin
+        //DebugLn(['[TLinkScanner.CursorToCleanPos] E ACleanPos=',ACleanPos,' CleanedLen=',CleanedLen]);
+        if ACleanPos<=CleanedLen then begin
           Result:=0;  // valid position
           exit;
         end;
@@ -2969,6 +2971,7 @@ begin
   LastErrorSrcPos:=SrcPos;
   LastErrorCode:=Code;
   LastErrorCheckedForIgnored:=false;
+  LastErrorIsValid:=true;
   raise ExceptionClass.Create(Self,AMessage);
 end;
 
