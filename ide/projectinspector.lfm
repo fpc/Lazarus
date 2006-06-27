@@ -61,6 +61,7 @@ object ProjectInspectorForm: TProjectInspectorForm
   object ItemsTreeView: TTreeView
     Align = alBottom
     Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Top = 2
     DefaultItemHeight = 16
     Images = ImageList
     PopupMenu = ItemsPopupMenu
@@ -70,8 +71,10 @@ object ProjectInspectorForm: TProjectInspectorForm
     OnKeyDown = ItemsTreeViewKeyDown
     OnSelectionChanged = ItemsTreeViewSelectionChanged
     Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
-    Height = 278
-    Top = 31
+    AnchorSideTop.Control = OpenBitBtn
+    AnchorSideTop.Side = asrBottom
+    Height = 281
+    Top = 28
     Width = 433
   end
   object ImageList: TImageList
