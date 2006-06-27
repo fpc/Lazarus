@@ -261,6 +261,7 @@ begin
     Result:=ExtTextOut(DC,X,Y,Options,Rect,Str,Count,Dx);
   end;
 end;
+
 function TGtkWidgetSet.TextUTF8Out(DC: HDC; X, Y: Integer; Str: PChar; Count: Longint): Boolean;
 var
   IsDBCSFont: Boolean;
@@ -280,7 +281,6 @@ begin
     Result:=TextOut(DC,X,Y,Str,Count);
   end;
 end;
-
 
 {------------------------------------------------------------------------------
   function TGTKWidgetSet.FontCanUTF8(Font: HFont): boolean;
@@ -370,9 +370,18 @@ begin
       MinHeight:=Widget^.requisition.Height+20;
       Widget:=GetStyleWidget(lgsVerticalScrollbar);
       MinWidth:=Widget^.requisition.Width+20;
-      SizeConstraints.SetInterfaceConstraints(MinWidth,MinHeight,
-                                              MaxWidth,MaxHeight);
-      exit;
+    end
+    else if SizeConstraints.Control is TCustomTrackBar then begin
+      // TCustomTrackBar
+      if TCustomTrackBar(SizeConstraints.Control).Orientation=trHorizontal then
+      begin
+        Widget:=GetStyleWidget(lgsHScale);
+        MinHeight:=Widget^.requisition.height;
+      end else begin
+        Widget:=GetStyleWidget(lgsVScale);
+        MinWidth:=Widget^.requisition.width;
+      end;
+      DebugLn(['TGtkWidgetSet.GetControlConstraints ',DbgSName(SizeConstraints.Control),' ',MinWidth,',',MinHeight]);
     end;
 
     SizeConstraints.SetInterfaceConstraints(MinWidth,MinHeight,

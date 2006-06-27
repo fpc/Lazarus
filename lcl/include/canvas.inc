@@ -964,7 +964,7 @@ var
   fRect : TRect;
   DCIndex: Integer;
 begin
-  //debugln('TCanvas.TextRect A Text="',Text,'" ',dbgs(ARect));
+  //debugln(['TCanvas.TextRect ',DbgSName(Self),' Text="',Text,'" ',dbgs(ARect),' X=',X,',Y=',Y]);
   Changing;
   Options := 0;
   case Style.Alignment of

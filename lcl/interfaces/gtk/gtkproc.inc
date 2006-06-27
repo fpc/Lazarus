@@ -7012,6 +7012,20 @@ begin
         StyleObject^.Style:=gtk_widget_get_style(PGTKTooltips(TP)^.Tip_Window);
       end
     else
+      If CompareText(WName,LazGtkStyleNames[lgsHScale])=0 then begin
+        lgs:=lgsHScale;
+        AddToStyleWindow:=true;
+        TP := PGtkWidget( gtk_adjustment_new (0, 0, 100, 1, 10, 0));
+        StyleObject^.Widget := gtk_hscale_new (PGTKADJUSTMENT (TP));
+      end
+    else
+      If CompareText(WName,LazGtkStyleNames[lgsVScale])=0 then begin
+        lgs:=lgsVScale;
+        AddToStyleWindow:=true;
+        TP := PGtkWidget( gtk_adjustment_new (0, 0, 100, 1, 10, 0));
+        StyleObject^.Widget := gtk_vscale_new (PGTKADJUSTMENT (TP));
+      end
+    else
       If CompareText(WName,LazGtkStyleNames[lgsGTK_Default])=0 then begin
         lgs:=lgsGTK_Default;
         AddToStyleWindow:=false;

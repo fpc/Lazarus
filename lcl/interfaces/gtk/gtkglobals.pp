@@ -108,6 +108,8 @@ type
     lgsHorizontalPaned,
     lgsNotebook,
     lgsStatusBar,
+    lgsHScale,
+    lgsVScale,
     // user defined
     lgsUserDefined
     );
@@ -131,6 +133,8 @@ const
     'horizontal paned',
     'statusbar',
     'notebook',
+    'hscale',
+    'vscale',
     ''
     );
 

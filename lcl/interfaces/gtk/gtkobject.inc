@@ -5628,7 +5628,8 @@ begin
   csTrackBar:
     with (TCustomTrackBar (Sender)) do
     begin
-       TempWidget := PGtkWidget( gtk_adjustment_new (Position, Min, Max, linesize, pagesize, 0));
+       TempWidget := PGtkWidget( gtk_adjustment_new (Position, Min, Max,
+                                                     linesize, pagesize, 0));
        if (Orientation = trHorizontal) then
          P := gtk_hscale_new (PGTKADJUSTMENT (TempWidget))
          else

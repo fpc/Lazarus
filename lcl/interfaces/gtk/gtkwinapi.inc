@@ -2937,9 +2937,6 @@ var
   end;
 
 
-
-
-
   Procedure DrawLine(theLine : PChar; LineLength, TopPos : Longint);
   var
     Points : Array[0..1] of TSize;
@@ -3007,80 +3004,84 @@ begin
   if Boolean(Result)
   then with TDeviceContext(DC) do
   begin
-    if GC = nil
-    then begin
+    if GC = nil then begin
       DebugLn('WARNING: [TGtkWidgetSet.DrawText] Uninitialized GC');
       Result := 0;
-    end
-    else begin
-      Result := 0;
-      Lines := nil;
-      NumLines := 0;
-      TempDC := -1;
-      TempPen := -1;
-      TempBrush := -1;
-      try
-        if (Flags and (DT_SingleLine+DT_CalcRect+Dt_NoPrefix+DT_NOClip))=(DT_SingleLine+Dt_NoPrefix+Dt_NoClip) then begin
-          CopyRect(theRect, Rect);
-          DrawLineRaw(Str, Count, Rect.Top);
-          exit;
-        end;
-
-        Count := Min(StrLen(Str), Count);
-
-        GetTextMetrics(DC, TM);
-
-        DoCalcRect;
-
-        If (Flags and DT_CalcRect) = DT_CalcRect then begin
-          CopyRect(Rect, theRect);
-          Result := 1;
-          exit;
-        end else begin
-          TempDC := SaveDC(DC);
-        end;
-
-        If (Flags and DT_NOCLIP) <> DT_NOCLIP then begin
-          If theRect.Right > Rect.Right then
-            theRect.Right := Rect.Right;
-          If theRect.Bottom > Rect.Bottom then
-            theRect.Bottom := Rect.Bottom;
-          IntersectClipRect(DC, theRect.Left, theRect.Top,
-            theRect.Right, theRect.Bottom);
-        end;
-
-        If (Flags and DT_SingleLine) = DT_SingleLine then begin
-          DrawLine(Str, Count, theRect.Top);
-          Result := 1;
-        end
-        else If (Lines <> nil) and (NumLines <> 0) then begin
-          For I := 0 to NumLines - 1 do begin
-            if I>0 then
-              Inc(theRect.Top, TM.tmDescent);// space between lines
-
-            If (((Flags and DT_EditControl) = DT_EditControl) and
-              (tm.tmHeight > (theRect.Bottom - theRect.Top))) or
-              (theRect.Top > theRect.Bottom)
-            then
-              break;
-
-            If Lines[I] <> nil then
-              DrawLine(Lines[I], StrLen(Lines[I]), theRect.Top);
-
-            Inc(theRect.Top, TM.tmHeight);
-          end;
-          Result := 1;
-        end;
-
-      finally
-        Reallocmem(Lines, 0);
-        If TempBrush <> -1 then
-          SelectObject(DC, TempBrush);
-        If TempPen <> -1 then
-          DeleteObject(SelectObject(DC, TempPen));
-        If TempDC <> -1 then
-          RestoreDC(DC, TempDC);
+      exit;
+    end;
+    Result := 0;
+    Lines := nil;
+    NumLines := 0;
+    TempDC := -1;
+    TempPen := -1;
+    TempBrush := -1;
+    try
+      if (Flags and (DT_SingleLine+DT_CalcRect+Dt_NoPrefix+DT_NOClip))
+        =(DT_SingleLine+Dt_NoPrefix+Dt_NoClip)
+      then begin
+        //DebugLn(['TGtkWidgetSet.DrawText Calc single line']);
+        CopyRect(theRect, Rect);
+        DrawLineRaw(Str, Count, Rect.Top);
+        exit;
       end;
+
+      Count := Min(StrLen(Str), Count);
+
+      GetTextMetrics(DC, TM);
+
+      DoCalcRect;
+
+      If (Flags and DT_CalcRect) = DT_CalcRect then begin
+        //DebugLn(['TGtkWidgetSet.DrawText Complex Calc']);
+        CopyRect(Rect, theRect);
+        Result := 1;
+        exit;
+      end else begin
+        TempDC := SaveDC(DC);
+      end;
+
+      If (Flags and DT_NOCLIP) <> DT_NOCLIP then begin
+        If theRect.Right > Rect.Right then
+          theRect.Right := Rect.Right;
+        If theRect.Bottom > Rect.Bottom then
+          theRect.Bottom := Rect.Bottom;
+        IntersectClipRect(DC, theRect.Left, theRect.Top,
+          theRect.Right, theRect.Bottom);
+      end;
+
+      If (Flags and DT_SingleLine) = DT_SingleLine then begin
+        //DebugLn(['TGtkWidgetSet.DrawText Draw single line']);
+        DrawLine(Str, Count, theRect.Top);
+        Result := 1;
+      end
+      else If (Lines <> nil) and (NumLines <> 0) then begin
+        //DebugLn(['TGtkWidgetSet.DrawText Draw multiline']);
+        For I := 0 to NumLines - 1 do begin
+          if I>0 then
+            Inc(theRect.Top, TM.tmDescent);// space between lines
+
+          If (((Flags and DT_EditControl) = DT_EditControl) and
+            (tm.tmHeight > (theRect.Bottom - theRect.Top))) or
+            (theRect.Top > theRect.Bottom)
+          then
+            break;
+
+          If Lines[I] <> nil then
+            DrawLine(Lines[I], StrLen(Lines[I]), theRect.Top);
+
+          Inc(theRect.Top, TM.tmHeight);
+        end;
+        Result := 1;
+      end;
+
+    finally
+      Reallocmem(Lines, 0);
+      If TempBrush <> -1 then
+        SelectObject(DC, TempBrush);
+      If TempPen <> -1 then
+        DeleteObject(SelectObject(DC, TempPen));
+      If TempDC <> -1 then
+        RestoreDC(DC, TempDC);
     end;
   end;
   Assert(False, Format('trace:> [TGtkWidgetSet.DrawText] DC:0x%x, Str:''%s'', Count: %d, Rect = %d,%d,%d,%d, Flags:%d',

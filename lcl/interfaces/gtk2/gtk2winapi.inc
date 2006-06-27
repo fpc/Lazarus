@@ -529,8 +529,10 @@ begin
     pango_layout_set_text(UseFont, Str, Count);
     EnsureGCColor(DC, dccCurrentTextColor, True, False);
 
+    //DebugLn(['TGtk2WidgetSet.TextOut Str="',copy(Str,1,Count),'" X=',X+DCOrigin.X,',',Y+DCOrigin.Y+yOffset]);
     gdk_draw_layout_with_colors(drawable, GC,
                         X+DCOrigin.X, Y+DCOrigin.Y+yOffset, UseFont, nil, nil);
+
     Result := True;
   end;
 end;

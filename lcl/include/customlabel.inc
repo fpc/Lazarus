@@ -400,7 +400,7 @@ begin
     //debugln('TCustomLabel.Paint ',dbgs(Alignment=tacenter),' ',dbgs(Layout=tlCenter),' ',dbgs(TextLeft),' TextTop=',dbgs(TextTop),' ',dbgs(R));
     if not Enabled then begin
       Font.Color := clBtnHighlight;
-      textRect(R, TextLeft + 1, TextTop + 1, Caption, TR);
+      TextRect(R, TextLeft + 1, TextTop + 1, Caption, TR);
       Font.color := clBtnShadow;
     end;
     TextRect(R, TextLeft, TextTop, Caption, TR)
