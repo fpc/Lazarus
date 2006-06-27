@@ -212,6 +212,9 @@ begin
       ScrollCode := scBottom;
       NewPos := FMax;
     end;
+    SB_ENDSCROLL: begin
+      ScrollCode := scEndScroll;
+    end;
   else
     Exit;
   end;
