@@ -35,6 +35,9 @@
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>
+    <SearchPaths>
+      <LCLWidgetType Value="gtk2"/>
+    </SearchPaths>
     <CodeGeneration>
       <Generate Value="Faster"/>
     </CodeGeneration>

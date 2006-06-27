@@ -355,6 +355,7 @@ function GdkColorToStr(Color: PGDKColor): string;
 function GetWidgetStyleReport(Widget: PGtkWidget): string;
 procedure BeginGDKErrorTrap;
 procedure EndGDKErrorTrap;
+function dbgGRect(const ARect: PGDKRectangle): string; overload;
 
 
 // gtk resources

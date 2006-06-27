@@ -519,6 +519,16 @@ begin
   {$EndIf}
 end;
 
+function dbgGRect(const ARect: PGDKRectangle): string;
+begin
+  if ARect=nil then begin
+    Result:='nil';
+  end else begin
+    Result:='x='+dbgs(ARect^.x)+',y='+dbgs(ARect^.y)
+           +',w='+dbgs(ARect^.width)+',h='+dbgs(ARect^.height);
+  end;
+end;
+
 
 {------------------------------------------------------------------------------
   procedure RaiseException(const Msg: string);

@@ -3375,7 +3375,6 @@ var
   DlgResult: TModalResult;
 begin
   DlgResult:=ShowConfigureBuildLazarusDlg(MiscellaneousOptions.BuildLazOpts);
-  DebugLn(['TMainIDE.mnuToolConfigBuildLazClicked ',DlgResult]);
   if DlgResult in [mrOk,mrYes] then begin
     MiscellaneousOptions.Save;
     LazSrcTemplate:=CodeToolBoss.DefineTree.FindDefineTemplateByName(

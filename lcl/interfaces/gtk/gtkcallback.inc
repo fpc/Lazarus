@@ -67,6 +67,10 @@ end;
 
 function DeliverGtkPaintMessage(Target: Pointer; Widget: PGtkWidget;
   Area: PGDKRectangle; RepaintAll: boolean): GBoolean;
+{$IFDEF Gtk2}
+// the gtk2 has a working double buffering and expose event area
+{$DEFINE DirectPaintMsg}
+{$ENDIF}
 var
   MSG: TLMGtkPaint;
   {$IFDEF DirectPaintMsg}
@@ -462,6 +466,8 @@ begin
     {$ENDIF}
   end;
 
+  //DebugLn(['gtkExposeEventAfter ',GetWidgetDebugReport(Widget),' ',dbgGRect(@Event^.Area)]);
+  
   // the expose area is ok, but some gtk widgets repaints everything on expose
   // -> maximize the area
   DeliverGtkPaintMessage(Data,Widget,@Event^.Area,true);

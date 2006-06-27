@@ -381,7 +381,7 @@ begin
         Widget:=GetStyleWidget(lgsVScale);
         MinWidth:=Widget^.requisition.width;
       end;
-      DebugLn(['TGtkWidgetSet.GetControlConstraints ',DbgSName(SizeConstraints.Control),' ',MinWidth,',',MinHeight]);
+      //DebugLn(['TGtkWidgetSet.GetControlConstraints ',DbgSName(SizeConstraints.Control),' ',MinWidth,',',MinHeight]);
     end;
 
     SizeConstraints.SetInterfaceConstraints(MinWidth,MinHeight,
