@@ -1083,16 +1083,18 @@ function GtkPaintMessageToPaintMessage(var GtkPaintMsg: TLMGtkPaint;
   FreeGtkPaintMsg: boolean): TLMPaint;
 var
   PS : PPaintStruct;
+  Widget: PGtkWidget;
 begin
   Result.Msg:=LM_PAINT;
   New(PS);
   PS^.hDC:=0;
+  Widget:=GtkPaintMsg.Data.Widget;
   If GtkPaintMsg.Data.RepaintAll then
-    PS^.rcPaint := Rect(0,0,0,0)
+    PS^.rcPaint := Rect(0,0,Widget^.Allocation.Width,Widget^.Allocation.Height)
   else
     PS^.rcPaint := GtkPaintMsg.Data.Rect;
 
-  Result.DC:=BeginPaint(THandle(GtkPaintMsg.Data.Widget), PS^);
+  Result.DC:=BeginPaint(THandle(Widget), PS^);
   Result.PaintStruct:=PS;
   Result.Result:=0;
   if FreeGtkPaintMsg then
