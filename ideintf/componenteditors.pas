@@ -27,7 +27,7 @@ interface
 uses
   Classes, SysUtils, LResources, TypInfo, LCLProc, Forms, Controls, Menus,
   ExtCtrls, StdCtrls, Graphics, Grids, CheckLst, Buttons, ComCtrls, Dialogs,
-  GraphType, PropEdits, ObjInspStrConsts;
+  LazStringGridEdit, GraphType, PropEdits, ObjInspStrConsts;
 
 type
   { TComponentEditorDesigner }
@@ -359,8 +359,6 @@ type
 
 
 implementation
-
-uses StringGridDlg;
 
 { RegisterComponentEditor }
 type

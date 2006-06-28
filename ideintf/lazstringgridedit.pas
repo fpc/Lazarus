@@ -10,7 +10,7 @@
  *                                                                           *
  *****************************************************************************
 }
-unit StringGridDlg;
+unit LazStringGridEdit;
 
 {$mode objfpc}{$H+}
 
@@ -199,7 +199,7 @@ begin
 end;
 
 initialization
-  {$I stringgriddlg.lrs}
+  {$I lazstringgridedit.lrs}
 
 end.
 
