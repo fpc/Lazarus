@@ -554,13 +554,38 @@ begin
     raise Exception.Create('');
 end;
 
-class procedure TGtkWSCustomListBox.SetTopIndex(const ACustomListBox: TCustomListBox;
-  const NewTopIndex: integer);
+class procedure TGtkWSCustomListBox.SetTopIndex(
+  const ACustomListBox: TCustomListBox; const NewTopIndex: integer);
 {$IFdef GTK2}
+var
+  ScrolledWindow: PGtkScrolledWindow;
+  VertAdj: PGTKAdjustment;
+  AdjValue, MaxAdjValue: integer;
+  ListWidget: PGtkList;
+  AWidget: PGtkWidget;
+  GListItem: PGList;
+  ListItemWidget: PGtkWidget;
+  i: Integer;
 begin
-  DebugLn('TODO: TGtkWSCustomListBox.SetTopIndex');
+  DebugLn(['TGtkWSCustomListBox.SetTopIndex ',DbgSName(ACustomListBox),' NewTopIndex=',NewTopIndex,' ',GetWidgetDebugReport(PGtkWidget(ACustomListBox.Handle))]);
+  AWidget:=PGtkWidget(ACustomListBox.Handle);
+  ListWidget:=PGtkList(GetWidgetInfo(AWidget, True)^.CoreWidget);
+  ScrolledWindow:=PGtkScrolledWindow(AWidget);
+  AdjValue:=0;
+  GListItem:=ListWidget^.children;
+  i:=0;
+  while GListItem<>nil do begin
+    ListItemWidget:=PGtkWidget(GListItem^.data);
+    if i>=NewTopIndex then break;
+    inc(AdjValue,ListItemWidget^.Allocation.Height);
+    inc(i);
+    GListItem:=GListItem^.next;
+  end;
+  VertAdj:=gtk_scrolled_window_get_vadjustment(ScrolledWindow);
+  MaxAdjValue:=RoundToInt(VertAdj^.upper-VertAdj^.page_size);
+  if AdjValue>MaxAdjValue then AdjValue:=MaxAdjValue;
+  gtk_adjustment_set_value(VertAdj,AdjValue);
 end;
-
 {$Else}
 var
   ScrolledWindow: PGtkScrolledWindow;
@@ -594,15 +619,16 @@ begin
 end;
 {$EndIf}
 
-
-
 class procedure TGtkWSCustomListBox.SetColor(const AWinControl: TWinControl);
 var
   aWidget,ListWidget : PGTKWidget;
 begin
   AWidget:=PGtkWidget(AWinControl.Handle);
   ListWidget:=GetWidgetInfo(AWidget, True)^.CoreWidget;
-  GtkWidgetSet.SetWidgetColor(ListWidget, AWinControl.font.color, AWinControl.color,[GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED,GTK_STYLE_BASE]);
+  GtkWidgetSet.SetWidgetColor(ListWidget, AWinControl.Font.Color,
+    AWinControl.Color,
+    [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED,
+     GTK_STYLE_BASE]);
 end;
 
 { TGtkWSCustomComboBox }

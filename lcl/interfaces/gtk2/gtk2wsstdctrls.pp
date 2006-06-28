@@ -341,22 +341,18 @@ var
   Iter: TGtkTreeIter;
 begin
   Handle := ACustomListBox.Handle;
-  if Handle<>0 then
-  begin
-    Widget:=GetWidgetInfo(Pointer(Handle),True)^.CoreWidget;
-    if GtkWidgetIsA(Widget,gtk_tree_view_get_type) then begin
-      Selection := Gtk_tree_view_get_selection(PGtkTreeView(Widget));
-      if AIndex >= 0 then
-      begin
-        ListStoreModel := gtk_tree_view_get_model(PGtkTreeView(Widget));
-        if gtk_tree_model_iter_nth_child(ListStoreModel, @Iter, nil, AIndex) then begin
-          gtk_tree_selection_select_iter(Selection, @Iter);
-        end;
-      end else
-        gtk_tree_selection_unselect_all(Selection);
-    end else
-      raise Exception.Create('');
-  end;
+  if Handle=0 then exit;
+  Widget:=GetWidgetInfo(Pointer(Handle),True)^.CoreWidget;
+  if not GtkWidgetIsA(Widget,gtk_tree_view_get_type) then
+    raise Exception.Create('');
+  Selection := Gtk_tree_view_get_selection(PGtkTreeView(Widget));
+  if AIndex >= 0 then begin
+    ListStoreModel := gtk_tree_view_get_model(PGtkTreeView(Widget));
+    if gtk_tree_model_iter_nth_child(ListStoreModel, @Iter, nil, AIndex) then begin
+      gtk_tree_selection_select_iter(Selection, @Iter);
+    end;
+  end else
+    gtk_tree_selection_unselect_all(Selection);
 end;
 
 class procedure TGtk2WSCustomListBox.SetSelectionMode(
@@ -394,8 +390,23 @@ end;
 
 class procedure TGtk2WSCustomListBox.SetTopIndex(
   const ACustomListBox: TCustomListBox; const NewTopIndex: integer);
+var
+  Widget: PGtkWidget;
+  ListStoreModel: PGtkTreeModel;
+  Iter: TGtkTreeIter;
+  TreeView: PGtkTreeView;
+  APath: Pointer;
 begin
-  inherited SetTopIndex(ACustomListBox, NewTopIndex);
+  Widget:=GetWidgetInfo(Pointer(ACustomListBox.Handle),True)^.CoreWidget;
+  TreeView:=PGtkTreeView(Widget);
+  ListStoreModel:=gtk_tree_view_get_model(TreeView);
+  
+  if not gtk_tree_model_iter_nth_child(ListStoreModel, @Iter, nil, NewTopIndex)
+  then exit;
+
+  APath := gtk_tree_model_get_path(ListStoreModel, @Iter);
+  gtk_tree_view_scroll_to_cell(TreeView, APath, NULL, true, 0.0, 0.0);
+  gtk_tree_path_free(APath);
 end;
 
 class function TGtk2WSCustomListBox.CreateHandle(const AWinControl: TWinControl;
@@ -409,7 +420,6 @@ var
   column : PGtkTreeViewColumn;
   WidgetInfo: PWidgetInfo;
 begin
-  
   Result := TGtkWSBaseScrollingWinControl.CreateHandle(AWinControl,AParams);
   p:= PGtkWidget(Result);
   
