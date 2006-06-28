@@ -2846,6 +2846,8 @@ begin
     else
       BaseDirectory:=GetParsedValue(pcosBaseDir);
     s:=TrimSearchPath(s,BaseDirectory);
+  end else if Option=pcosCustomOptions then begin
+    s:=SpecialCharsToSpaces(s);
   end;
   Result:=s;
 end;
