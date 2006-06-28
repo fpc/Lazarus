@@ -40,6 +40,9 @@
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>
+    <SearchPaths>
+      <LCLWidgetType Value="gtk2"/>
+    </SearchPaths>
     <CodeGeneration>
       <Checks>
         <IOChecks Value="True"/>

@@ -4965,8 +4965,8 @@ begin
     Result := gtk_window_new(WindowType);
     {$IFDEF Gtk2}
     g_signal_connect(GTK_OBJECT(Result), 'window-state-event',
-                         gtk_signal_func(@GTKWindowStateEventCB),
-                         ACustomForm);
+                     gtk_signal_func(@GTKWindowStateEventCB),
+                     ACustomForm);
     {$ENDIF}
 
     gtk_window_set_policy(GTK_WINDOW(Result), FormResizableMap[ABorderStyle],

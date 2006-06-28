@@ -159,6 +159,7 @@ end;
 procedure TForm1.Form1MouseMove(Sender: TObject; Shift: TShiftState; X,
   Y: Integer);
 begin
+  exit;
   debugln('TForm1.Form1MouseMove ',DbgSName(Sender),
     ' X=',dbgs(X),' Y=',dbgs(Y),' Shift=',dbgs(Shift));
 end;

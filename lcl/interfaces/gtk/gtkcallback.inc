@@ -1004,8 +1004,7 @@ end;
 
 {$IFDEF Gtk2}
 function GTKWindowStateEventCB(widget: PGtkWidget;
-                               state: PGdkEventWindowState;
-                               data: gpointer): gboolean; cdecl;
+  state: PGdkEventWindowState; data: gpointer): gboolean; cdecl;
 var
   TheForm: TCustomForm;
   SizeMsg: TLMSize;
@@ -1018,6 +1017,7 @@ begin
 
   if TObject(Data) is TCustomForm then begin
     TheForm := TCustomForm(Data);
+    DebugLn(['GTKWindowStateEventCB ',DbgSName(TheForm),' new_window_state=',state^.new_window_state,' changed_mask=',state^.changed_mask]);
     if TheForm.Parent = nil then begin (* toplevel window, just as a sanity check *)
       if GTK_WIDGET_REALIZED(Widget) then begin
         // send a WMSize Message (see TCustomForm.WMSize)
@@ -1025,9 +1025,13 @@ begin
         if GtkWidth<0 then GtkWidth:=0;
         GtkHeight:=Widget^.Allocation.Height;
         if GtkHeight<0 then GtkHeight:=0;
-        //debugln('GTKWindowStateEventCB ',DbgSName(TObject(Data)),' ',dbgs(state^.new_window_state));
+        debugln('GTKWindowStateEventCB ',DbgSName(TObject(Data)),' ',dbgs(state^.new_window_state),' ',WidgetFlagsToString(Widget));
         if (GDK_WINDOW_STATE_ICONIFIED and state^.new_window_state)>0 then
-          SizeMsg.SizeType:=SIZEICONIC
+          // the window is iconified, or the user switched to another desktop
+          // TODO: find out which one happened.
+          // The LCL interprets SIZEICONIC as minimizing by the user
+          // and thus minimizes the whole application.
+          SizeMsg.SizeType:=SIZENORMAL //SIZEICONIC
         else if (GDK_WINDOW_STATE_MAXIMIZED and state^.new_window_state)>0 then
           SizeMsg.SizeType:=SIZEFULLSCREEN
         else

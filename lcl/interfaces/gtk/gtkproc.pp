@@ -158,7 +158,7 @@ function GTKWindowStateEventCB(widget: PGtkWidget;
                                data: gpointer): gboolean; cdecl;
 {$ENDIF}
 
-{$IfNdef GTK2}
+{$Ifdef GTK1}
 function gtkDrawAfter(Widget: PGtkWidget; area: PGDKRectangle;
   data: gPointer): GBoolean; cdecl;
 {$EndIf}

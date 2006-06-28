@@ -256,7 +256,6 @@ begin
   OnUTF8KeyPress:=@FormUTF8KeyPress;
   inherited Create(TheOwner);
 
-  DebugLn(['TForm1And2.Create AAA ',DbgSName(Form1),' ',DbgSName(Form2)]);
   if Self=Form1 then
     Name:='Form1'
   else
