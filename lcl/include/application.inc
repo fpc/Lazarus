@@ -623,6 +623,7 @@ var
   CurHeight: Integer;
 begin
   if not FShowHint then exit;
+  if FHintControl=nil then exit;
 
   //debugln('TApplication.ShowHintWindow A OldHint="',Hint,'" NewHint="',GetShortHint(Info.Control.Hint),'"');
   Hint := GetShortHint(Info.Control.Hint);

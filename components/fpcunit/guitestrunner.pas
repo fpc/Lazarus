@@ -1,4 +1,5 @@
-{ Copyright (C) 2004 Dean Zobec
+{
+  Copyright (C) 2004 Dean Zobec
 
   This library is free software; you can redistribute it and/or modify it
   under the terms of the GNU Library General Public License as published by
@@ -13,10 +14,21 @@
   You should have received a copy of the GNU Library General Public License
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+  
+  
+  Modified:
+    Graeme Geldenhuys <graemeg@gmail.com>
 }
+
 unit GuiTestRunner;
 
 {$mode objfpc}{$H+}
+
+{ Uncomment this define, to use the old XML output routines. If it is left
+  commented out, it will use the XMLWrite unit that comes
+  with FPC. The benefit of using XMLWrite is that it creates valid XML data with
+  reserved characters escaped and allows for further processing with XSLT etc. }
+{.$DEFINE UseOldXML}
 
 interface
 
@@ -24,7 +36,10 @@ uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ExtCtrls,
   Buttons, ComCtrls, ActnList, Menus, Clipbrd, StdCtrls,
   testdecorator,
-  testreport, fpcunit, testregistry;
+  {$IFDEF UseOldXML}
+  testreport,
+  {$ENDIF}
+  fpcunit, testregistry, SynEdit, SynHighlighterXML;
 
 type
 
@@ -35,8 +50,11 @@ type
     actCut: TAction;
     ActCloseForm: TAction;
     actCopyErrorMsg: TAction;
+    Memo1: TMemo;
     miRunTest: TMenuItem;
     miShowfailureMsg: TMenuItem;
+    pbBar: TPaintBox;
+    pbBar1: TPaintBox;
     PopupMenu3: TPopupMenu;
     RunAction: TAction;
     ActionList1: TActionList;
@@ -47,30 +65,22 @@ type
     ImageList2: TImageList;
     Label1: TLabel;
     lblSelectedTest: TLabel;
-    Memo1: TMemo;
     MenuItem1: TMenuItem;
     MenuItem2: TMenuItem;
     MenuItem3: TMenuItem;
-    Panel7: TPanel;
-    Panel8: TPanel;
-    pbBar: TPaintBox;
-    Panel6: TPanel;
-    pbBar1: TPaintBox;
     PopupMenu1: TPopupMenu;
     PopupMenu2: TPopupMenu;
     SpeedButton1: TSpeedButton;
     SpeedButton2: TSpeedButton;
     Splitter1: TSplitter;
     TestTree: TTreeView;
-    XMLMemo: TMemo;
-    Panel4: TPanel;
-    Panel5: TPanel;
+    SynXMLSyn1: TSynXMLSyn;
     PageControl1: TPageControl;
     Panel1: TPanel;
     Panel2: TPanel;
-    Panel3: TPanel;
     tsTestTree: TTabSheet;
     tsResultsXML: TTabSheet;
+    XMLSynEdit: TSynEdit;
     procedure ActCloseFormExecute(Sender: TObject);
     procedure RunActionUpdate(Sender: TObject);
     procedure RunExecute(Sender: TObject);
@@ -90,7 +100,7 @@ type
     barColor: TColor;
     testSuite: TTest;
     procedure BuildTree(rootNode: TTreeNode; aSuite: TTestSuite);
-    function FindNode(aTest: TTest): TTreeNode;
+    function  FindNode(aTest: TTest): TTreeNode;
     procedure ResetNodeColors;
     procedure PaintNodeError(aNode: TTreeNode);
     procedure PaintNodeFailure(aNode: TTreeNode);
@@ -107,20 +117,27 @@ type
 var
   TestRunner: TGUITestRunner;
 
+
 implementation
+{$IFNDEF UseOldXML}
+uses
+  xmlreporter
+  ,xmlwrite
+  ;
+{$ENDIF}
 
 { TGUITestRunner }
 
 procedure TGUITestRunner.actCopyExecute(Sender: TObject);
 begin
-  Clipboard.AsText := XMLMemo.Lines.Text;
+  Clipboard.AsText := XMLSynEdit.Lines.Text;
 end;
 
 
 procedure TGUITestRunner.actCutExecute(Sender: TObject);
 begin
-  Clipboard.AsText := XMLMemo.Lines.Text;
-  XMLMemo.Lines.Clear;
+  Clipboard.AsText := XMLSynEdit.Lines.Text;
+  XMLSynEdit.Lines.Clear;
 end;
 
 
@@ -129,6 +146,7 @@ begin
   barColor := clGreen;
   TestTree.Items.Clear;
   BuildTree(TestTree.Items.AddObject(nil, 'All Tests', GetTestRegistry), GetTestRegistry);
+  PageControl1.ActivePage := tsTestTree;
 end;
 
 
@@ -137,6 +155,10 @@ var
   testResult:TTestResult;
   FStopCrono: TDateTime;
   FStartCrono: TDateTime;
+  {$IFNDEF UseOldXML}
+    w: TXMLResultsWriter;
+    m: TMemoryStream;
+  {$ENDIF}
 begin
   barcolor := clGreen;
   ResetNodeColors;
@@ -163,11 +185,26 @@ begin
     FStopCrono := Now;
     MemoLog('Number of executed tests: ' + IntToStr(testResult.RunTests) + '  Time elapsed: ' +
     FormatDateTime('hh:nn:ss.zzz', FStopCrono - FStartCrono));
-    XMLMemo.lines.text:= '<TestResults>' + system.sLineBreak +
-    TestResultAsXML(testResult) + system.sLineBreak + '</TestResults>';
+    
+    {$IFNDEF UseOldXML}
+      w := TXMLResultsWriter.Create;
+      w.WriteResult(testResult);
+      m := TMemoryStream.Create;
+      WriteXMLFile(w.Document, m);
+      m.Position := 0;
+      XMLSynEdit.Lines.LoadFromStream(m);
+    {$ELSE}
+      XMLSynEdit.lines.text:= '<TestResults>' + system.sLineBreak +
+      TestResultAsXML(testResult) + system.sLineBreak + '</TestResults>';
+    {$ENDIF}
+
     pbBar.Invalidate;
     pbBar1.Invalidate;
    finally
+    {$IFNDEF UseOldXML}
+      m.free;
+      w.Free;
+    {$ENDIF}
     testResult.Free;
   end;
 end;
@@ -401,7 +438,6 @@ begin
   FailureNode := FindNode(ATest);
   if Assigned(FailureNode) then
   begin
-    FailureNode.DeleteChildren;
     node := TestTree.Items.AddChild(FailureNode, 'Message: ' + AFailure.ExceptionMessage);
     node.ImageIndex := 4;
     node.SelectedIndex := 4;
@@ -423,7 +459,6 @@ begin
   ErrorNode := FindNode(ATest);
   if Assigned(ErrorNode) then
   begin
-    ErrorNode.DeleteChildren;
     node := TestTree.Items.AddChild(ErrorNode, 'Exception message: ' + AError.ExceptionMessage);
     node.ImageIndex := 4;
     node.SelectedIndex := 4;
@@ -458,7 +493,9 @@ var
 begin
   TestTree.BeginUpdate;
   Node := FindNode(ATest);
+  Node.DeleteChildren;
   PaintNodeBusy(Node);
+  Node.MakeVisible;
   Application.ProcessMessages;
   TestTree.EndUpdate;
 end;
