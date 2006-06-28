@@ -24,14 +24,14 @@ object GUITestRunner: TGUITestRunner
   }
   OnCreate = GUITestRunnerCreate
   OnShow = GUITestRunnerShow
-  PixelsPerInch = 96
+  PixelsPerInch = 112
   Position = poDesktopCenter
   ShowHint = True
   HorzScrollBar.Page = 574
   VertScrollBar.Page = 612
-  Left = 352
+  Left = 356
   Height = 613
-  Top = 168
+  Top = 170
   Width = 575
   object Panel1: TPanel
     Align = alTop
@@ -285,11 +285,11 @@ object GUITestRunner: TGUITestRunner
       Width = 573
       object tsTestTree: TTabSheet
         Caption = 'Testcase tree'
-        ClientHeight = 521
+        ClientHeight = 525
         ClientWidth = 569
         Left = 2
-        Height = 521
-        Top = 32
+        Height = 525
+        Top = 28
         Width = 569
         object pbBar: TPaintBox
           Align = alTop
@@ -308,20 +308,20 @@ object GUITestRunner: TGUITestRunner
           ResizeAnchor = akBottom
           Cursor = crVSplit
           Height = 5
-          Top = 395
+          Top = 399
           Width = 569
         end
         object TestTree: TTreeView
           Align = alClient
           BackgroundColor = clBtnFace
           Color = clBtnFace
-          DefaultItemHeight = 18
+          DefaultItemHeight = 16
           Images = ImageList1
           PopupMenu = PopupMenu3
           ScrollBars = ssAutoBoth
           TabOrder = 0
           OnSelectionChanged = TestTreeSelectionChanged
-          Height = 353
+          Height = 357
           Top = 42
           Width = 569
         end
@@ -331,17 +331,17 @@ object GUITestRunner: TGUITestRunner
           ScrollBars = ssAutoVertical
           TabOrder = 1
           Height = 121
-          Top = 400
+          Top = 404
           Width = 569
         end
       end
       object tsResultsXML: TTabSheet
         Caption = 'Results XML'
-        ClientHeight = 521
+        ClientHeight = 525
         ClientWidth = 569
         Left = 2
-        Height = 521
-        Top = 32
+        Height = 525
+        Top = 28
         Width = 569
         object SpeedButton2: TSpeedButton
           Action = actCut
@@ -556,14 +556,16 @@ object GUITestRunner: TGUITestRunner
           Font.Height = -13
           Font.Name = 'Courier'
           Font.Pitch = fpFixed
-          Height = 479
+          Height = 483
           Name = 'XMLSynEdit'
           ParentColor = False
           PopupMenu = PopupMenu1
           TabOrder = 0
           Width = 569
           BookMarkOptions.Xoffset = -18
+          BookMarkOptions.OnChange = nil
           Gutter.Visible = False
+          Gutter.OnChange = nil
           Gutter.CodeFoldingWidth = 14
           Highlighter = SynXMLSyn1
           Keystrokes = <          
@@ -887,6 +889,7 @@ object GUITestRunner: TGUITestRunner
               Command = 250
               ShortCut = 24642
             end>
+          SelectedColor.OnChange = nil
           AnchorSideLeft.Control = tsResultsXML
           AnchorSideTop.Control = SpeedButton1
           AnchorSideTop.Side = asrBottom
@@ -895,7 +898,7 @@ object GUITestRunner: TGUITestRunner
           AnchorSideBottom.Control = tsResultsXML
           AnchorSideBottom.Side = asrBottom
           Cursor = crIBeam
-          Height = 479
+          Height = 483
           Top = 42
           Width = 569
         end
