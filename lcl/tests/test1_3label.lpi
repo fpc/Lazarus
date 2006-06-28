@@ -8,11 +8,11 @@
         <SaveClosedFiles Value="False"/>
         <SaveOnlyProjectUnits Value="True"/>
       </Flags>
+      <SessionStorage Value="InProjectDir"/>
       <MainUnit Value="0"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=""/>
       <Title Value="test1_3label"/>
-      <ActiveEditorIndexAtStart Value="0"/>
     </General>
     <PublishOptions>
       <Version Value="2"/>
@@ -36,11 +36,6 @@
         <Filename Value="test1_3label.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="test1_3label"/>
-        <CursorPos X="16" Y="324"/>
-        <TopLine Value="319"/>
-        <EditorIndex Value="0"/>
-        <UsageCount Value="34"/>
-        <Loaded Value="True"/>
       </Unit0>
     </Units>
   </ProjectOptions>
