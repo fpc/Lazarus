@@ -41,7 +41,7 @@
       </Item4>
       <Item5>
         <Filename Value="ipfilebroker.pas"/>
-        <AddToUsesPkgSection Value="False"/>
+        <HasRegisterProc Value="True"/>
         <UnitName Value="Ipfilebroker"/>
       </Item5>
       <Item6>

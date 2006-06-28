@@ -504,6 +504,7 @@ components/turbopower_ipro/ipanim.pas svneol=native#text/pascal
 components/turbopower_ipro/ipconst.pas svneol=native#text/pascal
 components/turbopower_ipro/ipdefct.inc svneol=native#text/pascal
 components/turbopower_ipro/ipdefine.inc svneol=native#text/pascal
+components/turbopower_ipro/ipfilebroker.pas svneol=native#text/plain
 components/turbopower_ipro/iphtml.lrs svneol=native#text/pascal
 components/turbopower_ipro/iphtml.pas svneol=native#text/pascal
 components/turbopower_ipro/iphtmlpv.lfm svneol=native#text/plain

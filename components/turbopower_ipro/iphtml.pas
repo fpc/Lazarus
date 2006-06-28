@@ -2759,9 +2759,13 @@ type
     procedure CopyToClipboard;
     procedure EnumDocuments(Enumerator: TIpHtmlEnumerator);
     procedure GoBack;
+    {$IFDEF IP_LAZARUS}
     function canGoBack : boolean;
+    {$ENDIF}
     procedure GoForward;
+    {$IFDEF IP_LAZARUS}
     function canGoForward : boolean;
+    {$ENDIF}
     function HaveSelection: Boolean;
     property HotNode : TIpHtmlNode read FHotNode;                      {!!.12}
     function IsURLHtml(const URL: string): Boolean;
@@ -17443,18 +17447,25 @@ end;
 procedure TIpHtmlCustomPanel.GoBack;
 begin
   if (URLStack.Count > 0) then begin
+    {$IFDEF IP_LAZARUS}
     if URLStack.Count >= URLStack.count then Stp := URLStack.Count - 1;
     if URLStack.Count > 0 then begin
       InternalOpenURL(TargetStack[Stp], URLStack[Stp]);
       dec(Stp);
     end;
+    {$ELSE}
+    InternalOpenURL(TargetStack[Stp], URLStack[Stp]);
+    dec(Stp);
+    {$ENDIF}
   end;
 end;
 
+{$IFDEF IP_LAZARUS}
 function TIpHtmlCustomPanel.canGoBack : boolean;
 begin
   result := (URLStack.Count > 0);
 end;
+{$ENDIF}
 
 procedure TIpHtmlCustomPanel.GoForward;
 begin
@@ -17464,10 +17475,12 @@ begin
   end;
 end;
 
+{$IFDEF IP_LAZARUS}
 function TIpHtmlCustomPanel.canGoForward : boolean;
 begin
   result := (Stp < URLStack.Count - 1);
 end;
+{$ENDIF}
 
 procedure TIpHtmlCustomPanel.Push(const Target, URL: string);
 begin

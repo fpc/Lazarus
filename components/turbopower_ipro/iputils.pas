@@ -42,6 +42,7 @@ uses
   LCLIntf,
   LMessages,
   FileUtil,
+  LCLProc,
   {$ELSE}
   Messages,
   Windows,
@@ -1170,7 +1171,11 @@ begin
   for i := 1 to Length(Result) do begin
     case Result[i] of
       '|': Result[i] := ':';
+      {$IFDEF IP_LAZARUS}
+      '/': Result[i] := DirectorySeparator;
+      {$ELSE}
       '/': Result[i] := '\';
+      {$ENDIF}
     else
       { leave it alone };
     end;
@@ -1191,7 +1196,11 @@ begin
   for i := 1 to Length(Result) do begin
     case Result[i] of
       ':': Result[i] := '|';
+      {$IFDEF IP_LAZARUS}
+      DirectorySeparator: Result[i] := '/';
+      {$ELSE}
       '\': Result[i] := '/';
+      {$ENDIF}
     else
       { leave it alone };
     end;
@@ -1296,6 +1305,9 @@ var
   State : TUrlParseState;
   PotAuth, PotPath : string;
   SchemeSeen: Boolean;
+  {$IFDEF IP_LAZARUS}
+  SlashCount: integer;
+  {$ENDIF}
 
 procedure ProcessChar;
 begin
@@ -1374,6 +1386,9 @@ begin
               SchemeSeen := True;
               PotAuth := '';
               State := psSchemeSlashes;
+              {$IFDEF IP_LAZARUS}
+              SlashCount := 0;
+              {$ENDIF}
             end
             else begin
 
@@ -1427,6 +1442,9 @@ begin
           SchemeSeen := True;
           PotAuth := '';
           State := psSchemeSlashes;
+          {$IFDEF IP_LAZARUS}
+          SlashCount := 0;
+          {$ENDIF}
         end;
 
         'A'..'Z', 'a'..'z': begin
@@ -1453,10 +1471,16 @@ begin
     end;
 
     psSchemeSlashes: begin
+      {$IFDEF IP_LAZARUS}
+      inc(SlashCount);
+      if (p^ <> '/') or (SlashCount > 2) then
+      {$ENDIF}
       case P^ of
+        {$IFNDEF IP_LAZARUS}
         '/': { ignore };
+        {$ENDIF}
 
-        '.', '\': begin { start of a local path }                      {!!.12}
+        '.', '\','/': begin { start of a local path }                      {!!.12}
           PotPath := PotPath + P^;                                     {!!.12}
           State := psLocalPath;                                        {!!.12}
         end;                                                           {!!.12}
@@ -2666,6 +2690,61 @@ end;
 { File/Directory Stuff }
 
 { Retreive Windows "MIME" type for a particular file extension }
+{$IFDEF IP_LAZARUS}
+{$ifndef MSWindows}
+{define some basic mime types}
+const MimeTypeExt : Array[0..4] of String = ('.htm','.html','.txt','.jpg','.png');
+      MimeTypes   : Array[0..4] of String = ('text/html','text/html','text/plain','image/jpeg','image/png');
+{$endif}
+
+{$IFDEF VER2_0_2}
+type
+ TMyRegistry=Class(TRegistry);
+{$ENDIF}
+function GetLocalContent(const TheFileName: string): string;
+var
+  Reg : TRegistry;
+  Ext : string;
+  {$ifndef MSWindows}
+  ExtU: string;
+  i : integer;
+  {$ENDIF}
+begin
+  Result := '';
+  Ext := ExtractFileExt(TheFileName);
+  {$ifndef MSWindows}
+  ExtU := AnsiLowerCase(Ext);
+  for i := 0 to high(MimeTypeExt) do
+    if MimeTypeExt[i] = ExtU then
+    begin
+      result := MimeTypes[i];
+      break;
+    end;
+  {$endif}
+  if result = '' then
+  begin
+    Reg := nil;
+    try
+      {$IFDEF VER2_0_2}
+      Reg := TMyRegistry.Create;
+      Reg.RootKey := HKEY_CLASSES_ROOT;
+      TMyRegistry(Reg).SetCurrentKey(Reg.RootKey);
+      {$ELSE}
+      Reg := TRegistry.Create;
+      Reg.RootKey := HKEY_CLASSES_ROOT;
+      {$ENDIF}
+      if Reg.OpenKey(Ext, False) then
+        Result := Reg.ReadString('Content Type');
+    finally
+      Reg.CloseKey;
+      Reg.Free;
+    end;
+  end;
+  DebugLn('IpUtils.GetLocalContent File:'+TheFileName+' Result:'+result);
+end;
+
+{$ELSE}
+{ Retreive Windows "MIME" type for a particular file extension }
 function GetLocalContent(const TheFileName: string): string;
 var
   Reg : TRegistry;
@@ -2685,6 +2764,7 @@ begin
     Reg.Free;
   end;
 end;
+{$ENDIF}
 
 { Determine if a directory exists }
 function DirExists(Dir : string): Boolean;

@@ -33,7 +33,7 @@
        so options specified here could be overridden by hardcoded
        options in the unit source file.}
 
-{$IFDEF FPC}
+{$IFDEF LCL}
 {$DEFINE IP_LAZARUS}
 {$ENDIF}
 
