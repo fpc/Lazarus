@@ -1,4 +1,5 @@
-#!/usr/bin/env bash
+#!/usr/bin/env
+bash
 
 set -e
 set -x
@@ -29,6 +30,7 @@ fi
 LAZSOURCEDIR=~/src/lazsource
 
 COMPILER=~/fpc/bin/$PPCARCH
+FPCVERSION=`%COMPILER% -iV`
 BUILDDIR=~/tmp/buildlaz
 LAZBUILDDIR=$BUILDDIR/lazarus
 DATESTAMP=`date +%Y%m%d`
@@ -55,6 +57,8 @@ fi
 tools/svn2revisioninc $LAZSOURCEDIR $LAZBUILDDIR/ide/revision.inc
 
 cd $LAZBUILDDIR
+
+export FPCDIR=~/fpc/lib/fpc/$FPCVERSION
 
 make bigide PP=$COMPILER USESVN2REVISIONINC=0
 make lcl LCL_PLATFORM=carbon PP=$COMPILER
