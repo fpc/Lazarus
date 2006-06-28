@@ -29,7 +29,7 @@ fi
 LAZSOURCEDIR=~/src/lazsource
 
 COMPILER=~/fpc/bin/$PPCARCH
-FPCVERSION=`%COMPILER% -iV`
+FPCVERSION=`$COMPILER -iV`
 BUILDDIR=~/tmp/buildlaz
 LAZBUILDDIR=$BUILDDIR/lazarus
 DATESTAMP=`date +%Y%m%d`
