@@ -1377,6 +1377,7 @@ ideintf/propedits.pp svneol=native#text/pascal
 ideintf/srceditorintf.pas svneol=native#text/pascal
 ideintf/stringgriddlg.lfm svneol=native#text/plain
 ideintf/stringgriddlg.lrs svneol=native#text/plain
+ideintf/stringgriddlg.pas svneol=native#text/plain
 ideintf/stringspropeditdlg.lfm svneol=native#text/plain
 ideintf/stringspropeditdlg.lrs svneol=native#text/plain
 ideintf/stringspropeditdlg.pas svneol=native#text/plain

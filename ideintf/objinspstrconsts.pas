@@ -132,6 +132,7 @@ resourcestring
   sccsSGEdtSave       = 'Save...';
   sccsSGEdtOpenDialog = 'Open';
   sccsSGEdtSaveDialog = 'Save';
+  sccsSGEdtMoveRowsCols = 'Move Rows/Cols';
 
   // component editors
   nbcesAddPage  = 'Add page';

@@ -1,32 +1,142 @@
 object StringGridEditorDlg: TStringGridEditorDlg
   ActiveControl = StringGrid
   Caption = 'StringGridEditorDlg'
-  ClientHeight = 296
-  ClientWidth = 394
-  Constraints.MinHeight = 250
+  ClientHeight = 270
+  ClientWidth = 520
+  Constraints.MinHeight = 270
   Constraints.MinWidth = 340
   OnCreate = FormCreate
   PixelsPerInch = 96
   Position = poScreenCenter
-  HorzScrollBar.Page = 393
-  VertScrollBar.Page = 295
-  Left = 340
-  Height = 296
-  Top = 251
-  Width = 394
+  HorzScrollBar.Page = 519
+  VertScrollBar.Page = 269
+  Left = 259
+  Height = 270
+  Top = 167
+  Width = 520
   object GroupBox: TGroupBox
     Align = alTop
-    Anchors = [akTop, akLeft, akRight, akBottom]
+    Anchors = [akRight, akBottom]
     BorderSpacing.Around = 6
     BorderSpacing.InnerBorder = 6
     Caption = 'String Grid'
-    ClientHeight = 235
-    ClientWidth = 378
+    ClientHeight = 209
+    ClientWidth = 504
     TabOrder = 0
+    AnchorSideBottom.Control = BtnOK
     Left = 6
-    Height = 253
+    Height = 227
     Top = 6
-    Width = 382
+    Width = 508
+    object LabelMove: TLabel
+      Caption = 'Move Cols/Rows'
+      Color = clNone
+      ParentColor = False
+      AnchorSideLeft.Control = ArrowDown
+      AnchorSideLeft.Side = asrCenter
+      AnchorSideTop.Control = ArrowDown
+      AnchorSideTop.Side = asrBottom
+      Left = 414
+      Height = 14
+      Top = 181
+      Width = 83
+    end
+    object ArrowLeft: TArrow
+      Anchors = [akTop, akRight]
+      OnClick = SwapRowCol
+      AnchorSideLeft.Control = ArrowUp
+      AnchorSideTop.Control = ArrowRight
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Control = ArrowUp
+      Left = 416
+      Height = 26
+      Top = 129
+      Width = 26
+    end
+    object ArrowRight: TArrow
+      ArrowType = atRight
+      OnClick = SwapRowCol
+      AnchorSideLeft.Control = ArrowUp
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = ArrowUp
+      AnchorSideTop.Side = asrBottom
+      Left = 468
+      Height = 26
+      Top = 129
+      Width = 26
+    end
+    object ArrowDown: TArrow
+      ArrowType = atDown
+      OnClick = SwapRowCol
+      AnchorSideLeft.Control = ArrowLeft
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = ArrowLeft
+      AnchorSideTop.Side = asrBottom
+      Left = 442
+      Height = 26
+      Top = 155
+      Width = 26
+    end
+    object ArrowUp: TArrow
+      ArrowType = atUp
+      BorderSpacing.Top = 10
+      OnClick = SwapRowCol
+      AnchorSideLeft.Control = BtnClean
+      AnchorSideLeft.Side = asrCenter
+      AnchorSideTop.Control = BtnClean
+      AnchorSideTop.Side = asrBottom
+      Left = 442
+      Height = 26
+      Top = 103
+      Width = 26
+    end
+    object BtnLoad: TButton
+      Anchors = [akTop, akRight]
+      BorderSpacing.Around = 6
+      BorderSpacing.InnerBorder = 4
+      Caption = 'Load...'
+      OnClick = BtnLoadClick
+      TabOrder = 0
+      AnchorSideLeft.Control = StringGrid
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = GroupBox
+      AnchorSideRight.Control = GroupBox
+      AnchorSideRight.Side = asrBottom
+      Left = 413
+      Height = 25
+      Top = 6
+      Width = 85
+    end
+    object BtnSave: TButton
+      BorderSpacing.Around = 6
+      BorderSpacing.InnerBorder = 4
+      Caption = 'BtnSave'
+      OnClick = BtnSaveClick
+      TabOrder = 1
+      AnchorSideLeft.Control = BtnLoad
+      AnchorSideLeft.Side = asrCenter
+      AnchorSideTop.Control = BtnLoad
+      AnchorSideTop.Side = asrBottom
+      Left = 413
+      Height = 25
+      Top = 37
+      Width = 85
+    end
+    object BtnClean: TButton
+      BorderSpacing.Around = 6
+      BorderSpacing.InnerBorder = 4
+      Caption = 'BtnClean'
+      OnClick = BtnCleanClick
+      TabOrder = 2
+      AnchorSideLeft.Control = BtnSave
+      AnchorSideLeft.Side = asrCenter
+      AnchorSideTop.Control = BtnSave
+      AnchorSideTop.Side = asrBottom
+      Left = 413
+      Height = 25
+      Top = 68
+      Width = 85
+    end
     object StringGrid: TStringGrid
       Align = alLeft
       Anchors = [akTop, akLeft, akRight, akBottom]
@@ -39,125 +149,94 @@ object StringGridEditorDlg: TStringGridEditorDlg
       Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRowSizing, goColSizing, goRowMoving, goColMoving, goEditing, goSmoothScroll]
       RowCount = 5
       ScrollBars = ssAutoBoth
-      TabOrder = 0
+      TabOrder = 3
       TabStop = True
       VisibleColCount = 5
       VisibleRowCount = 5
       OnPrepareCanvas = StringGridPrepareCanvas
+      AnchorSideRight.Control = BtnLoad
       Left = 6
-      Height = 223
+      Height = 197
       Top = 6
-      Width = 286
+      Width = 401
     end
-    object BtnLoad: TButton
-      Anchors = [akTop, akRight]
-      BorderSpacing.Around = 6
-      
-      Caption = 'Load...'
-      OnClick = BtnLoadClick
-      TabOrder = 1
-      Left = 298
-      Height = 25
-      Top = 6
-      Width = 75
-    end
-    object BtnSave: TButton
-      Anchors = [akTop, akRight]
-      BorderSpacing.Around = 6
-      
-      Caption = 'Save...'
-      OnClick = BtnSaveClick
-      TabOrder = 2
-      Left = 298
-      Height = 25
-      Top = 37
-      Width = 75
-    end
-    object BtnClean: TButton
-      Anchors = [akTop, akRight]
-      BorderSpacing.Around = 6
-      
-      Caption = 'Clean'
-      OnClick = BtnCleanClick
-      TabOrder = 3
-      Left = 298
-      Height = 25
-      Top = 68
-      Width = 75
-    end
-  end
-  object BtnHelp: TBitBtn
-    Align = alRight
-    Anchors = [akRight, akBottom]
-    BorderSpacing.Around = 6
-    
-    Caption = '&Help'
-    Kind = bkHelp
-    NumGlyphs = 0
-    TabOrder = 1
-    Left = 313
-    Height = 25
-    Top = 265
-    Width = 75
-  end
-  object BtnApply: TBitBtn
-    Align = alRight
-    Anchors = [akRight, akBottom]
-    BorderSpacing.Around = 6
-    
-    Caption = '&Apply'
-    NumGlyphs = 0
-    OnClick = BtnApplyClick
-    TabOrder = 2
-    Left = 232
-    Height = 25
-    Top = 265
-    Width = 75
-  end
-  object BtnCancel: TBitBtn
-    Align = alRight
-    Anchors = [akRight, akBottom]
-    BorderSpacing.Around = 6
-    
-    Cancel = True
-    Caption = 'Cancel'
-    Kind = bkCancel
-    ModalResult = 2
-    NumGlyphs = 0
-    TabOrder = 3
-    Left = 151
-    Height = 25
-    Top = 265
-    Width = 75
   end
   object BtnOK: TBitBtn
-    Align = alRight
     Anchors = [akRight, akBottom]
     BorderSpacing.Around = 6
-    
     Caption = '&OK'
     Default = True
     Kind = bkOK
     ModalResult = 1
     NumGlyphs = 0
-    TabOrder = 4
-    Left = 70
+    TabOrder = 1
+    AnchorSideRight.Control = BtnCancel
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 196
     Height = 25
-    Top = 265
+    Top = 239
+    Width = 75
+  end
+  object BtnCancel: TBitBtn
+    Anchors = [akRight, akBottom]
+    BorderSpacing.Around = 6
+    Caption = 'Cancel'
+    Kind = bkCancel
+    ModalResult = 2
+    NumGlyphs = 0
+    TabOrder = 2
+    AnchorSideRight.Control = BtnApply
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 277
+    Height = 25
+    Top = 239
+    Width = 75
+  end
+  object BtnApply: TBitBtn
+    Anchors = [akRight, akBottom]
+    BorderSpacing.Around = 6
+    Caption = '&Apply'
+    NumGlyphs = 0
+    OnClick = BtnApplyClick
+    TabOrder = 3
+    AnchorSideRight.Control = BtnHelp
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 358
+    Height = 25
+    Top = 239
+    Width = 75
+  end
+  object BtnHelp: TBitBtn
+    Anchors = [akRight, akBottom]
+    BorderSpacing.Around = 6
+    Caption = '&Help'
+    Kind = bkHelp
+    NumGlyphs = 0
+    TabOrder = 4
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 439
+    Height = 25
+    Top = 239
     Width = 75
   end
   object OpenDialog: TOpenDialog
     Title = 'Open'
     FilterIndex = 0
     Title = 'Open'
-    left = 132
-    top = 312
+    left = 135
+    top = 343
   end
   object SaveDialog: TSaveDialog
     Title = 'Save'
     FilterIndex = 0
     Title = 'Save'
-    left = 132
-    top = 348
+    left = 168
+    top = 343
   end
 end

@@ -50,6 +50,7 @@ uses
   PropEdits,
   SrcEditorIntf,
   StringsPropEditDlg,
+  StringGridDlg,
   TextTools,
   TreeViewPropEdit;
 

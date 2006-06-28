@@ -360,6 +360,8 @@ type
 
 implementation
 
+uses StringGridDlg;
+
 { RegisterComponentEditor }
 type
   PComponentClassRec = ^TComponentClassRec;
@@ -794,36 +796,6 @@ begin
   Result:=TCustomPage(GetComponent);
 end;
 
-{ TStringGridEditorDlg }
-
-type
-  TStringGridEditorDlg = class(TForm)
-    BtnApply: TBitBtn;
-    BtnCancel: TBitBtn;
-    BtnHelp: TBitBtn;
-    BtnOK: TBitBtn;
-    BtnLoad: TButton;
-    BtnSave: TButton;
-    BtnClean: TButton;
-    GroupBox: TGroupBox;
-    OpenDialog: TOpenDialog;
-    SaveDialog: TSaveDialog;
-    StringGrid: TStringGrid;
-    procedure BtnApplyClick(Sender: TObject);
-    procedure BtnCleanClick(Sender: TObject);
-    procedure BtnLoadClick(Sender: TObject);
-    procedure BtnSaveClick(Sender: TObject);
-    procedure FormCreate(Sender: TObject);
-    procedure StringGridPrepareCanvas(sender: TObject; Col, Row: Integer;
-      aState: TGridDrawState);
-  private
-    FModified: Boolean;
-    FStringGrid: TStringGrid;
-  public
-    property Modified: Boolean read FModified;
-    procedure LoadFromGrid(AStringGrid: TStringGrid);
-    procedure SaveToGrid;
-  end;
 
 function EditStringGrid(AStringGrid: TStringGrid): Boolean;
 var
@@ -839,104 +811,6 @@ begin
     Result := StringGridEditorDlg.Modified;
   finally
     StringGridEditorDlg.Free;
-  end;
-end;
-
-procedure AssignGrid(Dest, Src: TStringGrid; Full: Boolean);
-var
-  I, J: Integer;
-begin
-  Dest.BeginUpdate;
-  try
-    if Full then
-    begin
-      Dest.Clear;
-      Dest.ColCount := Src.ColCount;
-      Dest.RowCount := Src.RowCount;
-    end;
-    
-    for I := 0 to Src.RowCount - 1 do
-      Dest.RowHeights[I] := Src.RowHeights[I];
-
-    for I := 0 to Src.ColCount - 1 do
-      Dest.ColWidths[I] := Src.ColWidths[I];
-
-    for I := 0 to Src.ColCount - 1 do
-      for J := 0 to Src.RowCount - 1 do
-        Dest.Cells[I, J] := Src.Cells[I, J];
-  finally
-    Dest.EndUpdate(uoFull);
-  end;
-end;
-
-{ TStringGridEditorDlg }
-
-procedure TStringGridEditorDlg.StringGridPrepareCanvas(sender: TObject; Col,
-  Row: Integer; aState: TGridDrawState);
-begin
-  if (Col < FStringGrid.FixedCols) or (Row < FStringGrid.FixedRows) then
-    StringGrid.Canvas.Brush.Color := FStringGrid.FixedColor;
-end;
-
-procedure TStringGridEditorDlg.LoadFromGrid(AStringGrid: TStringGrid);
-begin
-  if Assigned(AStringGrid) then
-  begin
-    FStringGrid := AStringGrid;
-
-    AssignGrid(StringGrid, AStringGrid, True);
-    FModified := False;
-  end;
-end;
-
-procedure TStringGridEditorDlg.SaveToGrid;
-begin
-  if Assigned(FStringGrid) then
-  begin
-    AssignGrid(FStringGrid, StringGrid, False);
-    FModified := True;
-  end;
-end;
-
-procedure TStringGridEditorDlg.FormCreate(Sender: TObject);
-begin
-  Caption := sccsSGEdtCaption;
-
-  GroupBox.Caption := sccsSGEdtGrp;
-  BtnClean.Caption := sccsSGEdtClean;
-  BtnApply.Caption := sccsSGEdtApply;
-  BtnLoad.Caption := sccsSGEdtLoad;
-  BtnSave.Caption := sccsSGEdtSave;
-
-  OpenDialog.Title := sccsSGEdtOpenDialog;
-  SaveDialog.Title := sccsSGEdtSaveDialog;
-  
-  StringGrid.ExtendedColSizing := True;
-end;
-
-procedure TStringGridEditorDlg.BtnLoadClick(Sender: TObject);
-begin
-  if OpenDialog.Execute then
-  begin
-    StringGrid.LoadFromFile(OpenDialog.FileName);
-  end;
-end;
-
-procedure TStringGridEditorDlg.BtnCleanClick(Sender: TObject);
-begin
-  StringGrid.Clean;
-end;
-
-procedure TStringGridEditorDlg.BtnApplyClick(Sender: TObject);
-begin
-  SaveToGrid;
-end;
-
-procedure TStringGridEditorDlg.BtnSaveClick(Sender: TObject);
-begin
-  if SaveDialog.Execute then
-  begin
-    StringGrid.SaveToFile(SaveDialog.FileName);
   end;
 end;
 
@@ -1532,8 +1406,7 @@ end;
 initialization
   {$I checklistboxeditordlg.lrs}
   {$I checkgroupeditordlg.lrs}
-  {$I stringgriddlg.lrs}
-  
+
   RegisterComponentEditorProc:=@DefaultRegisterComponentEditorProc;
   RegisterComponentEditor(TCustomNotebook,TNotebookComponentEditor);
   RegisterComponentEditor(TCustomPage,TPageComponentEditor);
