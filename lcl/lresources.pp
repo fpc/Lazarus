@@ -3493,8 +3493,9 @@ begin
       ConvertEndianBigDoubleToLRSExtended(@e,@LRSExtended);
       Write(LRSExtended,10);
     {$ENDIF}
-  {$ENDIF}
+  {$ELSE}
   Write(e,10);
+  {$ENDIF}
 end;
 
 procedure TLRSObjectWriter.WriteCurrencyContent(c: Currency);
