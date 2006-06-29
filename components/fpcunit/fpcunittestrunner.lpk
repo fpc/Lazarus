@@ -6,6 +6,7 @@
     <CompilerOptions>
       <Version Value="5"/>
       <SearchPaths>
+        <OtherUnitFiles Value="$(LazarusDir)/components/synedit/units/$(TargetCPU)-$(TargetOS)/"/>
         <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
       <CodeGeneration>
