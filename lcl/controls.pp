@@ -730,6 +730,10 @@ type
   TControlFlag = (
     cfRequestAlignNeeded,
     cfAutoSizeNeeded,
+    cfLeftLoaded,  // cfLeftLoaded is set, when 'Left' is set during loading.
+    cfTopLoaded,
+    cfWidthLoaded,
+    cfHeightLoaded,
     cfClientWidthLoaded,
     cfClientHeightLoaded,
     cfLastAlignedBoundsValid,

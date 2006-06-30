@@ -2436,12 +2436,33 @@ begin
 end;
 
 procedure TControl.Loaded;
+var
+  UseClientWidthForWidth: boolean;
+  UseClientHeightForHeight: boolean;
+  NewWidth: LongInt;
+  NewHeight: LongInt;
 begin
   inherited Loaded;
-  {DebugLn('TControl.Loaded A ',Name,':',ClassName,
-    ' CW=',DbgS(cfClientWidthLoaded in FControlFlags),'=',DbgS(FLoadedClientSize.X),
-    ' CH=',DbgS(cfClientHeightLoaded in FControlFlags),'=',DbgS(FLoadedClientSize.Y),
-    '');}
+  
+  {DebugLn(['TControl.Loaded A ',DbgSName(Self),
+    ' LoadedClientWidth=',cfClientWidthLoaded in FControlFlags,'=',FLoadedClientSize.X,
+    ' LoadedClientHeight=',cfClientHeightLoaded in FControlFlags,'=',FLoadedClientSize.Y,
+    ' LoadedBounds=',DbgS(FReadBounds),
+    '']);}
+  UseClientWidthForWidth:=(not (cfWidthLoaded in FControlFlags))
+                 and (cfClientWidthLoaded in FControlFlags);
+  UseClientHeightForHeight:=(not (cfHeightLoaded in FControlFlags))
+                 and (cfClientHeightLoaded in FControlFlags);
+  if UseClientWidthForWidth or UseClientHeightForHeight then begin
+    DebugLn(['TControl.Loaded ',DbgSName(Self),' Note: Width and/or Height were not set during loading, using ClientWidth/ClientHeight']);
+    NewWidth:=Width;
+    if UseClientWidthForWidth then
+      NewWidth:=FLoadedClientSize.X;
+    NewHeight:=Height;
+    if UseClientHeightForHeight then
+      NewHeight:=FLoadedClientSize.Y;
+    SetBoundsKeepBase(Left,Top,NewWidth,NewHeight);
+  end;
     
   if Assigned(Parent) then begin
     if ParentColor then begin
@@ -2684,6 +2705,7 @@ begin
   if csLoading in ComponentState then begin
     inc(FReadBounds.Right,Value-FReadBounds.Left);
     FReadBounds.Left:=Value;
+    Include(FControlFlags,cfLeftLoaded);
   end;
   SetBounds(Value, FTop, FWidth, FHeight);
 end;
@@ -2699,6 +2721,7 @@ begin
   if csLoading in ComponentState then begin
     inc(FReadBounds.Bottom,Value-FReadBounds.Top);
     FReadBounds.Top:=Value;
+    Include(FControlFlags,cfTopLoaded);
   end;
   SetBounds(FLeft, Value, FWidth, FHeight);
 end;
@@ -2725,8 +2748,10 @@ begin
   {$IFDEF CHECK_POSITION}
   DebugLn('[TControl.SetWidth] ',Name,':',ClassName,' ',dbgs(Value));
   {$ENDIF}
-  if csLoading in ComponentState then
+  if csLoading in ComponentState then begin
     FReadBounds.Right:=FReadBounds.Left+Value;
+    Include(FControlFlags,cfWidthLoaded);
+  end;
   if [csDesigning,csDestroying,csLoading]*ComponentState=[csDesigning] then
     CheckDesignBounds;
   SetBounds(FLeft, FTop, Max(0,Value), FHeight);
@@ -2754,8 +2779,10 @@ begin
   {$IFDEF CHECK_POSITION}
   DebugLn('[TControl.SetHeight] ',Name,':',ClassName,' ',dbgs(Value));
   {$ENDIF}
-  if csLoading in ComponentState then
+  if csLoading in ComponentState then begin
     FReadBounds.Bottom:=FReadBounds.Top+Value;
+    Include(FControlFlags,cfHeightLoaded);
+  end;
   if [csDesigning,csDestroying,csLoading]*ComponentState=[csDesigning] then
     CheckDesignBounds;
   SetBounds(FLeft, FTop, FWidth, Max(0,Value));
