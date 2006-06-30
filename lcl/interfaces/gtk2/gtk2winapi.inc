@@ -277,7 +277,7 @@ var
       while CurCount>0 do begin
         CharLen:=UTF8CharacterLength(CurStr);
         //gdk_draw_glyphs(DevCtx.drawable,DevCtx.gc );
-        pango_layout_set_text(UseFont, CurStr, 1);
+        pango_layout_set_text(UseFont, CurStr, CharLen);
         gdk_draw_layout_with_colors(DevCtx.drawable, DevCtx.gc, CurScreenX, Y,
                                     UseFont, Foreground, nil);
         //gdk_draw_rectangle(DevCtx.Drawable,DevCtx.GC,1,CurScreenX,Y,3,3);
