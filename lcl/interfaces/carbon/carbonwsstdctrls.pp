@@ -256,7 +256,7 @@ begin
                  SizeOf(Boolean), @SingleLine);
 
 
-  Info := CreateWidgetInfo(Control, AWinControl);
+  Info := CreateWidgetInfo(Control, AWinControl, cwtControlRef);
   Info^.UserData := IsPassword;
   Info^.DataOwner := True;
   TCarbonPrivateHandleClass(WSPrivate).RegisterEvents(Info);
@@ -476,7 +476,7 @@ begin
   CFRelease(Pointer(CFString));
   if Result = 0 then Exit;
 
-  Info := CreateWidgetInfo(Control, AWinControl);
+  Info := CreateWidgetInfo(Control, AWinControl, cwtControlRef);
 
   TCarbonPrivateHandleClass(WSPrivate).RegisterEvents(Info);
 end;

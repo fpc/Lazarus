@@ -190,8 +190,12 @@ end;
 
 procedure TCarbonWidgetSet.DeleteCriticalSection(
   var CritSection: TCriticalSection);
+var
+  ACritSec: System.PRTLCriticalSection;
 begin
-  inherited DeleteCriticalSection(CritSection);
+  ACritSec:=System.PRTLCriticalSection(CritSection);
+  System.DoneCriticalsection(ACritSec^);
+  CritSection:=0;
 end;
 
 function TCarbonWidgetSet.DeleteDC(hDC: HDC): Boolean;
@@ -251,8 +255,11 @@ end;
 
 procedure TCarbonWidgetSet.EnterCriticalSection(
   var CritSection: TCriticalSection);
+var
+  ACritSec: System.PRTLCriticalSection;
 begin
-  inherited EnterCriticalSection(CritSection);
+  ACritSec:=System.PRTLCriticalSection(CritSection);
+  System.EnterCriticalsection(ACritSec^);
 end;
 
 function TCarbonWidgetSet.ExcludeClipRect(dc: hdc; Left, Top, Right,
@@ -585,8 +592,19 @@ end;
 
 function TCarbonWidgetSet.GetWindowSize(Handle: hwnd; var Width, Height: integer
   ): boolean;
+var
+  AWndRect: FPCMacOSAll.Rect;
+  Info: PWidgetInfo;
 begin
-  Result:=inherited GetWindowSize(Handle, Width, Height);
+  Info:=GetWidgetInfo(Pointer(Handle));
+  if Info^.widgetType=cwtWindowRef then begin
+    Result := GetWindowBounds(WindowRef(Handle),kWindowStructureRgn, AWndRect) = 0;
+  end else begin
+    Result :=  GetControlBounds(ControlRef(Handle), AWndRect) <>nil;
+  end;
+  if not Result then Exit;
+  Width := AWndRect.right-AWndRect.left;
+  Height := AWndRect.bottom-AWndRect.top;
 end;
 
 function TCarbonWidgetSet.GradientFill(DC: HDC; Vertices: PTriVertex;
@@ -604,8 +622,11 @@ end;
 
 procedure TCarbonWidgetSet.InitializeCriticalSection(
   var CritSection: TCriticalSection);
+var
+  ACritSec: System.PRTLCriticalSection;
 begin
-  inherited InitializeCriticalSection(CritSection);
+  ACritSec:=System.PRTLCriticalSection(CritSection);
+  System.InitCriticalSection(ACritSec^);
 end;
 
 function TCarbonWidgetSet.IntersectClipRect(dc: hdc; Left, Top, Right,
@@ -628,8 +649,11 @@ end;
 
 procedure TCarbonWidgetSet.LeaveCriticalSection(
   var CritSection: TCriticalSection);
+var
+  ACritSec: System.PRTLCriticalSection;
 begin
-  inherited LeaveCriticalSection(CritSection);
+  ACritSec:=System.PRTLCriticalSection(CritSection);
+  System.LeaveCriticalsection(ACritSec^);
 end;
 
 function TCarbonWidgetSet.LineTo(DC: HDC; X, Y: Integer): Boolean;

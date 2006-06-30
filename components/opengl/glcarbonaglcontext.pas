@@ -107,7 +107,7 @@ begin
 
   // create LCL WidgetInfo
   Result:=HWnd(Control);
-  Info := CreateWidgetInfo(Control, AWinControl);
+  Info := CreateWidgetInfo(Control, AWinControl, cwtControlRef);
   TCarbonPrivateHandleClass(WSPrivate).RegisterEvents(Info);
 
   // create the AGL context

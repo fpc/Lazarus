@@ -34,7 +34,8 @@ uses
   LCLProc, LCLClasses, Controls, LMessages, Forms, Avl_Tree, SysUtils,
   CarbonDef;
 
-function CreateWidgetInfo(AWidget: Pointer; AObject: TLCLComponent): PWidgetInfo;
+function CreateWidgetInfo(AWidget: Pointer; AObject: TLCLComponent;
+  TheType: TCarbonWidgetType): PWidgetInfo;
 procedure FreeWidgetInfo(AInfo: PWidgetInfo);
 function GetWidgetInfo(AWidget: Pointer): PWidgetInfo;
 
@@ -52,13 +53,15 @@ function Dbgs(const ARect: FPCMacOSAll.Rect): string; overload;
 
 implementation
 
-function CreateWidgetInfo(AWidget: Pointer; AObject: TLCLComponent): PWidgetInfo;
+function CreateWidgetInfo(AWidget: Pointer; AObject: TLCLComponent;
+  TheType: TCarbonWidgetType): PWidgetInfo;
 begin
   New(Result);
   FillChar(Result^, SizeOf(Result^), 0);
   Result^.LCLObject := AObject;
   Result^.Widget := AWidget;
   Result^.WSClass := AObject.WidgetSetClass;
+  Result^.widgetType := TheType;
 
   if IsValidControlHandle(AWidget)
   then begin

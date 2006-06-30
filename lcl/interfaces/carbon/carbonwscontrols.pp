@@ -204,13 +204,26 @@ class function TCarbonWSWinControl.GetClientRect(const AWincontrol: TWinControl;
   var ARect: TRect): Boolean;
 var
   AHiRect: HIRect;
+  AWndRect: FPCMacOSAll.Rect;
 begin
-  Result := HIViewGetBounds(HIViewRef(AWinControl.Handle), AHiRect) = 0;
-  if not Result then Exit;
-  ARect.Top := 0;//AHiRect.Origin.y;
-  ARect.Left := 0;//AHiRect.Origin.x;
-  ARect.Right := ARect.Left + Trunc(AHiRect.size.width);
-  ARect.Bottom := ARect.Top + Trunc(AHIRect.size.height);
+  if (AWinControl is TCustomForm)
+  and (AWinControl.Parent=nil) then begin
+    Result := GetWindowBounds(WindowRef(AWinControl.Handle),kWindowContentRgn, AWndRect) = 0;
+    if not Result then Exit;
+    ARect.Top := 0;//AHiRect.Origin.y;
+    ARect.Left := 0;//AHiRect.Origin.x;
+    ARect.Right := AWndRect.right-AWndRect.left;
+    ARect.Bottom := AWndRect.bottom-AWndRect.top;
+    //debugln(['TCarbonWSWinControl.GetClientRect ',dbgs(ARect)]);
+  end else begin
+    Result := HIViewGetBounds(HIViewRef(AWinControl.Handle), AHiRect) = 0;
+    if not Result then Exit;
+    ARect.Top := 0;//AHiRect.Origin.y;
+    ARect.Left := 0;//AHiRect.Origin.x;
+    ARect.Right := ARect.Left + Trunc(AHiRect.size.width);
+    ARect.Bottom := ARect.Top + Trunc(AHIRect.size.height);
+    //debugln(['TCarbonWSWinControl.GetClientRect ',dbgs(ARect)]);
+  end;
 end;
 
 { TCarbonWSCustomControl }
@@ -239,7 +252,7 @@ begin
   CFRelease(Pointer(CFString));
   if Result = 0 then Exit;
 
-  Info := CreateWidgetInfo(Control, AWinControl);
+  Info := CreateWidgetInfo(Control, AWinControl, cwtControlRef);
   TCarbonPrivateHandleClass(WSPrivate).RegisterEvents(Info);
 end;
 

@@ -42,11 +42,14 @@ var
   WIDGETINFO_FOURCC: FourCharCode; // = 'WInf';
 
 type
+  TCarbonWidgetType = (cwtWindowRef, cwtControlRef);
+
   // Info needed by the API of a HWND (=Widget)
   PWidgetInfo = ^TWidgetInfo;
   TWidgetInfo = record
     LCLObject: TObject;               // the object which created this widget
     Widget: Pointer;                  // Reference to the Carbon window or control
+    WidgetType: TCarbonWidgetType;
     WSClass: TWSLCLComponentClass;    // The Widgetsetclass for this info
     DataOwner: Boolean;               // Set if the UserData should be freed when the info is freed
     UserData: Pointer;

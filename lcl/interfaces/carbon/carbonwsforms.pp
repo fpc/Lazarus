@@ -158,7 +158,7 @@ begin
   SetWindowTitleWithCFString(Window, CFString);
   CFRelease(Pointer(CFString));
 
-  Info := CreateWidgetInfo(Window, AWinControl);
+  Info := CreateWidgetInfo(Window, AWinControl, cwtWindowRef);
   TCarbonPrivateHandleClass(WSPrivate).RegisterEvents(Info);
   
   MinSize.width:=AWinControl.Constraints.EffectiveMinWidth;
