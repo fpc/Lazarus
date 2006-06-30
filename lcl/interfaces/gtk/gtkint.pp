@@ -146,6 +146,7 @@ type
     FExtUTF8OutCache: Pointer;
     FExtUTF8OutCacheSize: integer;
 
+  public
     procedure InitStockItems; virtual;
     procedure FreeStockItems; virtual;
     procedure PassCmdLineOptions; override;
@@ -267,7 +268,7 @@ type
     procedure RemoveCallbacks(Widget: PGtkWidget); virtual;
     function ROP2ModeToGdkFunction(Mode: Integer): TGdkFunction;
     function gdkFunctionToROP2Mode(aFunction: TGdkFunction): Integer;
-  public
+
     // for gtk specific components:
     procedure SetLabelCaption(const ALabel: PGtkLabel; const ACaption: String;
                               const AComponent: TComponent;

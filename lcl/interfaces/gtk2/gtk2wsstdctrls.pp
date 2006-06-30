@@ -38,7 +38,7 @@ uses
 ////////////////////////////////////////////////////
   glib2,  gdk2, gtk2, Pango,
   WSStdCtrls, WSLCLClasses, GtkWSStdCtrls, Gtk2Int, LCLType, GtkDef, LCLProc,
-  GTKWinApiWindow, gtkglobals, gtkproc, InterfaceBase;
+  Gtk2CellRenderer, GTKWinApiWindow, gtkglobals, gtkproc, InterfaceBase;
 
 type
 
@@ -437,8 +437,9 @@ begin
   TempWidget:= gtk_tree_view_new_with_model (GTK_TREE_MODEL (liststore));
   g_object_unref (G_OBJECT (liststore));
 
-  renderer := gtk_cell_renderer_text_new();
-  column := gtk_tree_view_column_new_with_attributes ('LISTITEMS', renderer, ['text', 0, nil]);
+  renderer := LCLIntfCellRenderer_New();
+  column := gtk_tree_view_column_new_with_attributes ('LISTITEMS', renderer,
+                                                      ['text', 0, nil]);
   gtk_tree_view_append_column (GTK_TREE_VIEW (TempWidget), column);
   gtk_tree_view_column_set_clickable (GTK_TREE_VIEW_COLUMN (column), TRUE);
 

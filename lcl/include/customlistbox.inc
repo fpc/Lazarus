@@ -352,9 +352,9 @@ begin
   end;
 end;
 
-{------------------------------------------------------------------------------}
-{  procedure TCustomListBox.SetStyle                                }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  procedure TCustomListBox.SetStyle
+------------------------------------------------------------------------------}
 procedure TCustomListBox.SetStyle(Val : TListBoxStyle);
 begin
   if Val <> FStyle then begin
@@ -366,9 +366,6 @@ end;
 
 procedure TCustomListBox.DrawItem(Index: Integer; ARect: TRect;
   State: TOwnerDrawState);
-{var
-  Flags: Longint;
-  Data: String;}
 begin
   //DebugLn('TCustomListBox.DrawItem ',DbgSName(Self));
   if Assigned(FOnDrawItem) then
@@ -376,19 +373,8 @@ begin
   else if not (odPainted in State) then
   begin
     FCanvas.FillRect(ARect);
-    if (Index>=0) and (Index < Items.Count) then
-    begin
-      {Flags := DrawTextBiDiModeFlags(DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX);
-      if not UseRightToLeftAlignment then
-        Inc(Rect.Left, 2)
-      else
-        Dec(Rect.Right, 2);
-      Data := '';
-      if (Style in [lbVirtual, lbVirtualOwnerDraw]) then
-        Data := DoGetData(Index)
-      else
-        Data := Items[Index];
-      DrawText(FCanvas.Handle, PChar(Data), Length(Data), Rect, Flags);}
+    if (Index>=0) and (Index < Items.Count) then begin
+      // TODO
     end;
   end;
 end;
@@ -407,7 +393,6 @@ end;
 
 procedure TCustomListBox.SendItemIndex;
 begin
-  // TODO 64bit
   TWSCustomListBoxClass(WidgetSetClass).SetItemIndex(Self, FItemIndex);
 end;
 
@@ -416,7 +401,8 @@ end;
 ------------------------------------------------------------------------------}
 function TCustomListBox.GetCachedData(const AIndex: Integer): Pointer;
 begin
-  if not FCacheValid then raise EInvalidOperation.Create('Reading form invalid cache');
+  if not FCacheValid then
+    raise EInvalidOperation.Create('Reading form invalid cache');
   Result := TExtendedStringList(FItems).Records[AIndex];
 end;
 
