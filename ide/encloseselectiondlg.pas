@@ -59,26 +59,25 @@ type
     TypeRadiogroup: TRADIOGROUP;
     procedure EncloseSelectionDialogCREATE(Sender: TObject);
     procedure EncloseSelectionDialogResize(Sender: TObject);
+    procedure btnOkClick(Sender: TObject);
   private
   public
     function GetEncloseType: TEncloseSelectionType;
   end;
   
-var
-  EncloseSelectionDialog: TEncloseSelectionDialog;
-  
-function EncloseSelectionTypeDescription(TheType: TEncloseSelectionType
-  ): string;
 function ShowEncloseSelectionDialog(var TheType: TEncloseSelectionType
-  ): TModalResult;
+                                    ): TModalResult;
+function EncloseSelectionTypeDescription(TheType: TEncloseSelectionType
+                                         ): string;
 procedure GetEncloseSelectionParams(TheType: TEncloseSelectionType;
-  var Template: string);
+                                    var Template: string);
 procedure EncloseTextSelection(const Template: string; Source: TStrings;
-  SelectionStart, SelectionEnd: TPoint;
-  Indent: integer;
-  var NewSelection: string; var NewCursor: TPoint);
+                               SelectionStart, SelectionEnd: TPoint;
+                               Indent: integer;
+                               var NewSelection: string; var NewCursor: TPoint);
 
 implementation
+
 
 function EncloseSelectionTypeDescription(TheType: TEncloseSelectionType
   ): string;
@@ -426,6 +425,12 @@ begin
   btnOk.Width:=c-btnOk.Left-15;
   btnCancel.Left:=c+15;
   btnCancel.Width:=btnOk.Width;
+end;
+
+procedure TEncloseSelectionDialog.btnOkClick(Sender: TObject);
+begin
+  if TypeRadiogroup.ItemIndex>=0 then
+    ModalResult:=mrOk;
 end;
 
 function TEncloseSelectionDialog.GetEncloseType: TEncloseSelectionType;

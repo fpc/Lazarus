@@ -2232,10 +2232,8 @@ var
   NewCaretXY: TPoint;
 begin
   if ReadOnly then exit;
-  if not FEditor.SelAvail then begin
-    FEditor.BlockBegin:=FEditor.LogicalCaretXY;
-    FEditor.BlockEnd:=FEditor.BlockBegin;
-  end;
+  if not FEditor.SelAvail then
+    exit;
   if ShowEncloseSelectionDialog(EncloseType)<>mrOk then exit;
   GetEncloseSelectionParams(EncloseType,EncloseTemplate);
   EncloseTextSelection(EncloseTemplate,FEditor.Lines,

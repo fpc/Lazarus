@@ -1,19 +1,18 @@
 object EncloseSelectionDialog: TEncloseSelectionDialog
+  Caption = 'Enclose Selection'
+  ClientHeight = 244
+  ClientWidth = 427
+  OnCreate = EncloseSelectionDialogCREATE
+  OnResize = EncloseSelectionDialogResize
+  PixelsPerInch = 112
+  Position = poScreenCenter
+  HorzScrollBar.Page = 426
+  VertScrollBar.Page = 243
   Left = 319
   Height = 244
   Top = 231
   Width = 427
-  HorzScrollBar.Page = 426
-  VertScrollBar.Page = 243
-  Caption = 'Enclose Selection'
-  OnCreate = EncloseSelectionDialogCREATE
-  OnResize = EncloseSelectionDialogResize
-  Position = poScreenCenter
   object TypeRadiogroup: TRadioGroup
-    Left = 8
-    Height = 189
-    Top = 8
-    Width = 409
     Anchors = [akTop, akLeft, akRight, akBottom]
     AutoFill = True
     Caption = 'Type'
@@ -26,29 +25,31 @@ object EncloseSelectionDialog: TEncloseSelectionDialog
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
     TabOrder = 0
+    Left = 8
+    Height = 189
+    Top = 8
+    Width = 409
   end
   object btnOk: TButton
+    Anchors = [akLeft, akBottom]
+    Caption = 'Ok'
+    Default = True
+    OnClick = btnOkClick
+    TabOrder = 1
     Left = 88
     Height = 25
     Top = 208
     Width = 107
-    Anchors = [akLeft, akBottom]
-    BorderSpacing.InnerBorder = 2
-    Caption = 'Ok'
-    Default = True
-    ModalResult = 1
-    TabOrder = 1
   end
   object btnCancel: TButton
-    Left = 224
-    Height = 25
-    Top = 208
-    Width = 104
     Anchors = [akLeft, akBottom]
-    BorderSpacing.InnerBorder = 2
     Cancel = True
     Caption = 'Cancel'
     ModalResult = 2
     TabOrder = 2
+    Left = 224
+    Height = 25
+    Top = 208
+    Width = 104
   end
 end

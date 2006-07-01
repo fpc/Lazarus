@@ -138,6 +138,7 @@ type
     procedure OnScreenRemoveForm(Sender: TObject; AForm: TCustomForm);
 
     // file menu
+    procedure mnuFileClicked(Sender: TObject);
     procedure mnuNewUnitClicked(Sender: TObject);
     procedure mnuNewFormClicked(Sender: TObject);
     procedure mnuNewOtherClicked(Sender: TObject);
@@ -154,6 +155,7 @@ type
     procedure mnuQuitClicked(Sender: TObject);
 
     // edit menu
+    procedure mnuEditClicked(Sender: TObject);
     procedure mnuEditUndoClicked(Sender: TObject);
     procedure mnuEditRedoClicked(Sender: TObject);
     procedure mnuEditCutClicked(Sender: TObject);
@@ -1899,6 +1901,7 @@ procedure TMainIDE.SetupFileMenu;
 begin
   inherited SetupFileMenu;
   with MainIDEBar do begin
+    mnuFile.OnClick:=@mnuFileClicked;
     itmFileNewUnit.OnClick := @mnuNewUnitClicked;
     itmFileNewForm.OnClick := @mnuNewFormClicked;
     itmFileNewOther.OnClick := @mnuNewOtherClicked;
@@ -1922,6 +1925,7 @@ procedure TMainIDE.SetupEditMenu;
 begin
   inherited SetupEditMenu;
   with MainIDEBar do begin
+    mnuEdit.OnClick:=@mnuEditClicked;
     itmEditUndo.OnClick:=@mnuEditUndoClicked;
     itmEditRedo.OnClick:=@mnuEditRedoClicked;
     itmEditCut.OnClick:=@mnuEditCutClicked;
@@ -2870,6 +2874,68 @@ begin
   {$IFDEF IDE_DEBUG}
   writeln('TMainIDE.mnuQuitClicked 2');
   {$ENDIF}
+end;
+
+procedure TMainIDE.mnuEditClicked(Sender: TObject);
+var
+  ASrcEdit: TSourceEditor;
+  AnUnitInfo: TUnitInfo;
+  Editable: Boolean;
+  SelAvail: Boolean;
+  SelEditable: Boolean;
+begin
+  GetCurrentUnit(ASrcEdit,AnUnitInfo);
+  Editable:=(ASrcEdit<>nil) and (not ASrcEdit.ReadOnly);
+  SelAvail:=(ASrcEdit<>nil) and (ASrcEdit.SelectionAvailable);
+  SelEditable:=Editable and SelAvail;
+  with MainIDEBar do begin
+    itmEditUndo.Enabled:=Editable;
+    itmEditRedo.Enabled:=Editable;
+  //itmEditClipboard: TIDEMenuSection;
+    itmEditCut.Enabled:=SelEditable;
+    itmEditCopy.Enabled:=SelAvail;
+    itmEditPaste.Enabled:=Editable;
+  //itmEditBlockIndentation: TIDEMenuSection;
+    itmEditIndentBlock.Enabled:=SelEditable;
+    itmEditUnindentBlock.Enabled:=SelEditable;
+    itmEditEncloseBlock.Enabled:=SelEditable;
+    itmEditCommentBlock.Enabled:=SelEditable;
+    itmEditUncommentBlock.Enabled:=SelEditable;
+    itmEditConditionalBlock.Enabled:=SelEditable;
+    itmEditSortBlock.Enabled:=SelEditable;
+  //itmEditBlockCharConversion: TIDEMenuSection;
+    itmEditUpperCaseBlock.Enabled:=SelEditable;
+    itmEditLowerCaseBlock.Enabled:=SelEditable;
+    itmEditTabsToSpacesBlock.Enabled:=SelEditable;
+    itmEditSelectionBreakLines.Enabled:=SelEditable;
+  //itmEditSelect: TIDEMenuSection;
+    //itmEditSelectAll: TIDEMenuCommand;
+    //itmEditSelectToBrace: TIDEMenuCommand;
+    //itmEditSelectCodeBlock: TIDEMenuCommand;
+    //itmEditSelectLine: TIDEMenuCommand;
+    //itmEditSelectParagraph: TIDEMenuCommand;
+  //itmEditInsertions: TIDEMenuSection;
+    itmEditInsertCharacter.Enabled:=Editable;
+    //itmEditInsertText: TIDEMenuSection;
+      //itmEditInsertCVSKeyWord: TIDEMenuSection;
+        itmEditInsertCVSAuthor.Enabled:=Editable;
+        itmEditInsertCVSDate.Enabled:=Editable;
+        itmEditInsertCVSHeader.Enabled:=Editable;
+        itmEditInsertCVSID.Enabled:=Editable;
+        itmEditInsertCVSLog.Enabled:=Editable;
+        itmEditInsertCVSName.Enabled:=Editable;
+        itmEditInsertCVSRevision.Enabled:=Editable;
+        itmEditInsertCVSSource.Enabled:=Editable;
+      //itmEditInsertGeneral: TIDEMenuSection;
+        itmEditInsertGPLNotice.Enabled:=Editable;
+        itmEditInsertLGPLNotice.Enabled:=Editable;
+        itmEditInsertUsername.Enabled:=Editable;
+        itmEditInsertDateTime.Enabled:=Editable;
+        itmEditInsertChangeLogEntry.Enabled:=Editable;
+  //itmEditMenuCodeTools: TIDEMenuSection;
+    itmEditCompleteCode.Enabled:=Editable;
+    itmEditExtractProc.Enabled:=SelEditable;
+  end;
 end;
 
 {------------------------------------------------------------------------------}
@@ -12128,6 +12194,18 @@ procedure TMainIDE.OnScreenRemoveForm(Sender: TObject; AForm: TCustomForm);
 begin
   HiddenWindowsOnRun.Remove(AForm);
   EnvironmentOptions.IDEWindowLayoutList.CloseForm(AForm);
+end;
+
+procedure TMainIDE.mnuFileClicked(Sender: TObject);
+var
+  ASrcEdit: TSourceEditor;
+  AnUnitInfo: TUnitInfo;
+begin
+  GetCurrentUnit(ASrcEdit,AnUnitInfo);
+  with MainIDEBar do begin
+    itmFileClose.Enabled := ASrcEdit<>nil;
+    itmFileCloseAll.Enabled := ASrcEdit<>nil;
+  end;
 end;
 
 function TMainIDE.ProjInspectorAddUnitToProject(Sender: TObject;
