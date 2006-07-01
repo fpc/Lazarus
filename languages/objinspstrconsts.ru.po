@@ -529,6 +529,10 @@ msgstr "Изменить Элемент"
 msgid "Move Down"
 msgstr "Переместить вниз"
 
+#: objinspstrconsts:sccssgedtmoverowscols
+msgid "Move Rows/Cols"
+msgstr ""
+
 #: objinspstrconsts:sccsiledtmoveup
 msgid "Move Up"
 msgstr "Переместить вверх"

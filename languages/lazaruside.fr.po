@@ -6026,6 +6026,10 @@ msgstr "Enregistrer le paquet ?"
 msgid "Save session information in"
 msgstr "Sauver les informations de session dans"
 
+#: lazarusidestrconsts:lislazbuildsavesettings
+msgid "Save settings"
+msgstr ""
+
 #: lazarusidestrconsts:fdmscaleword
 msgid "Scale"
 msgstr "Ajuster"

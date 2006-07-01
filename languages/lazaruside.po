@@ -9190,3 +9190,7 @@ msgstr ""
 msgid "Relative paths"
 msgstr ""
 
+#: lazarusidestrconsts:lislazbuildsavesettings
+msgid "Save settings"
+msgstr ""
+

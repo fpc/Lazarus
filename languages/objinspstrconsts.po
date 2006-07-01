@@ -390,6 +390,10 @@ msgstr ""
 msgid "Save"
 msgstr ""
 
+#: objinspstrconsts:sccssgedtmoverowscols
+msgid "Move Rows/Cols"
+msgstr ""
+
 #: objinspstrconsts:nbcesaddpage
 msgid "Add page"
 msgstr ""

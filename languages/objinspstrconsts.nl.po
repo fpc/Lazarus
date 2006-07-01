@@ -518,6 +518,10 @@ msgstr "Wijzig het item"
 msgid "Move Down"
 msgstr "Ga naar beneden"
 
+#: objinspstrconsts:sccssgedtmoverowscols
+msgid "Move Rows/Cols"
+msgstr ""
+
 #: objinspstrconsts:sccsiledtmoveup
 msgid "Move Up"
 msgstr "Ga naar boven"

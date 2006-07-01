@@ -532,6 +532,10 @@ msgstr "更改项目"
 msgid "Move Down"
 msgstr "下移"
 
+#: objinspstrconsts:sccssgedtmoverowscols
+msgid "Move Rows/Cols"
+msgstr ""
+
 #: objinspstrconsts:sccsiledtmoveup
 msgid "Move Up"
 msgstr "上移"

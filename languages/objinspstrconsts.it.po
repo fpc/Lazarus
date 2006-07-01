@@ -530,6 +530,10 @@ msgstr "Modifica la voce"
 msgid "Move Down"
 msgstr "Sposta in basso"
 
+#: objinspstrconsts:sccssgedtmoverowscols
+msgid "Move Rows/Cols"
+msgstr ""
+
 #: objinspstrconsts:sccsiledtmoveup
 msgid "Move Up"
 msgstr "Sposta in alto"

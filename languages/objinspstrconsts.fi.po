@@ -240,7 +240,7 @@ msgstr ""
 
 #: objinspstrconsts:oisconfirmdelete
 msgid "Confirm delete"
-msgstr ""
+msgstr "Vahvista poisto"
 
 #: objinspstrconsts:oiscopy
 msgid "Copy"
@@ -308,7 +308,7 @@ msgstr ""
 
 #: objinspstrconsts:oisdeleteitem
 msgid "Delete item %s%s%s?"
-msgstr ""
+msgstr "Poistetaanko %s%s%s?"
 
 #: objinspstrconsts:nbcesdeletepage
 msgid "Delete page"
@@ -516,6 +516,10 @@ msgstr "Muokkaa kohtaa"
 
 #: objinspstrconsts:sccsiledtmovedown
 msgid "Move Down"
+msgstr ""
+
+#: objinspstrconsts:sccssgedtmoverowscols
+msgid "Move Rows/Cols"
 msgstr ""
 
 #: objinspstrconsts:sccsiledtmoveup

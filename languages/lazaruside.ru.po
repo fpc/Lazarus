@@ -6025,6 +6025,10 @@ msgstr "Сохранить пакет?"
 msgid "Save session information in"
 msgstr "Сохранять информацию о сеансе работы в"
 
+#: lazarusidestrconsts:lislazbuildsavesettings
+msgid "Save settings"
+msgstr ""
+
 #: lazarusidestrconsts:fdmscaleword
 msgid "Scale"
 msgstr "Масштаб"

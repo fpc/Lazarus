@@ -529,6 +529,10 @@ msgstr "Eintrag ändern"
 msgid "Move Down"
 msgstr "Nach unten bewegen"
 
+#: objinspstrconsts:sccssgedtmoverowscols
+msgid "Move Rows/Cols"
+msgstr ""
+
 #: objinspstrconsts:sccsiledtmoveup
 msgid "Move Up"
 msgstr "Nach oben bewegen"

@@ -532,6 +532,10 @@ msgstr "Ubah Item"
 msgid "Move Down"
 msgstr "Turunkan"
 
+#: objinspstrconsts:sccssgedtmoverowscols
+msgid "Move Rows/Cols"
+msgstr ""
+
 #: objinspstrconsts:sccsiledtmoveup
 msgid "Move Up"
 msgstr "Naikan"

@@ -6028,6 +6028,10 @@ msgstr "保存包?"
 msgid "Save session information in"
 msgstr "保存会话信息到"
 
+#: lazarusidestrconsts:lislazbuildsavesettings
+msgid "Save settings"
+msgstr ""
+
 #: lazarusidestrconsts:fdmscaleword
 msgid "Scale"
 msgstr "缩放"
