@@ -1367,7 +1367,7 @@ begin
   end;
   CodeBuffer.Source:=s;
 
-  debugln('TPkgManager.DoWriteMakefile MakefileFPCFilename="',MakefileFPCFilename,'"');
+  //debugln('TPkgManager.DoWriteMakefile MakefileFPCFilename="',MakefileFPCFilename,'"');
   Result:=MainIDE.DoSaveCodeBufferToFile(CodeBuffer,MakefileFPCFilename,false);
   if Result<>mrOk then exit;
   

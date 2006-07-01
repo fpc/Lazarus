@@ -1556,14 +1556,16 @@ begin
   CurrentPath:=ParsedOpts.GetParsedPIValue(Option);
   {$IFDEF VerbosePkgUnitPath}
   if Option=pcosUnitPath then
-    debugln('TBaseCompilerOptions.GetParsedPIPath GetParsedPIValue ',dbgsName(Self),' RelativeToBaseDir=',dbgs(RelativeToBaseDir),' CurrentPath="',CurrentPath,'"');
+    debugln('TBaseCompilerOptions.GetParsedPIPath GetParsedPIValue ',dbgsName(Self),' RelativeToBaseDir=',dbgs(RelativeToBaseDir),' CurrentPath="',CurrentPath,'" BaseDirectory="',BaseDirectory,'"');
   {$ENDIF}
 
-  if (not RelativeToBaseDir) then
-    CreateAbsoluteSearchPath(CurrentPath,BaseDirectory);
+  if RelativeToBaseDir then
+    CurrentPath:=CreateRelativeSearchPath(CurrentPath,BaseDirectory)
+  else
+    CurrentPath:=CreateAbsoluteSearchPath(CurrentPath,BaseDirectory);
   {$IFDEF VerbosePkgUnitPath}
   if Option=pcosUnitPath then
-    debugln('TBaseCompilerOptions.GetParsedPIPath CreateAbsoluteSearchPath ',dbgsName(Self),' CurrentPath="',CurrentPath,'"');
+    debugln('TBaseCompilerOptions.GetParsedPIPath Abs/Rel ',dbgsName(Self),' CurrentPath="',CurrentPath,'"');
   {$ENDIF}
 
   // inherited path
