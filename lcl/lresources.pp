@@ -1560,6 +1560,7 @@ procedure LRSObjectBinaryToText(Input, Output: TStream);
   end;
 
   procedure OutWideString(const s: WideString);
+  // write as normal string
   var
     res, NewStr: String;
     i: Integer;
@@ -1567,33 +1568,37 @@ procedure LRSObjectBinaryToText(Input, Output: TStream);
   begin
     //debugln('OutWideString ',s);
     res := '';
-    InString := False;
-    for i := 1 to Length(s) do begin
-      NewInString := InString;
-      if (ord(s[i])<ord(' ')) or (ord(s[i])>=127) then begin
-        // special char
-        NewInString := False;
-        NewStr := '#' + IntToStr(Ord(s[i]));
-      end
-      else if s[i]='''' then begin
-        // '
-        if InString then
-          NewStr := ''''''
-        else
-          NewStr := '''''''';
-      end
-      else begin
-        // normal char
-        NewInString := True;
-        NewStr := s[i];
+    if s<>'' then begin
+      InString := False;
+      for i := 1 to Length(s) do begin
+        NewInString := InString;
+        if (ord(s[i])<ord(' ')) or (ord(s[i])>=127) then begin
+          // special char
+          NewInString := False;
+          NewStr := '#' + IntToStr(Ord(s[i]));
+        end
+        else if s[i]='''' then begin
+          // '
+          if InString then
+            NewStr := ''''''
+          else
+            NewStr := '''''''';
+        end
+        else begin
+          // normal char
+          NewInString := True;
+          NewStr := s[i];
+        end;
+        if NewInString <> InString then begin
+          NewStr := '''' + NewStr;
+          InString := NewInString;
+        end;
+        res := res + NewStr;
       end;
-      if NewInString <> InString then begin
-        NewStr := '''' + NewStr;
-        InString := NewInString;
-      end;
-      res := res + NewStr;
+      if InString then res := res + '''';
+    end else begin
+      res:='''''';
     end;
-    if InString then res := res + '''';
     OutStr(res);
   end;
 
@@ -1646,38 +1651,41 @@ procedure LRSObjectBinaryToText(Input, Output: TStream);
         RaiseGDBException('ObjectLRSToText '+s);
       end;
       
+      function ValueTypeAsString(ValueType: TValueType): string;
+      begin
+        case ValueType of
+        vaNull: Result:='vaNull';
+        vaList: Result:='vaList';
+        vaInt8: Result:='vaInt8';
+        vaInt16: Result:='vaInt16';
+        vaInt32: Result:='vaInt32';
+        vaExtended: Result:='vaExtended';
+        vaString: Result:='vaString';
+        vaIdent: Result:='vaIdent';
+        vaFalse: Result:='vaFalse';
+        vaTrue: Result:='vaTrue';
+        vaBinary: Result:='vaBinary';
+        vaSet: Result:='vaSet';
+        vaLString: Result:='vaLString';
+        vaNil: Result:='vaNil';
+        vaCollection: Result:='vaCollection';
+        vaSingle: Result:='vaSingle';
+        vaCurrency: Result:='vaCurrency';
+        vaDate: Result:='vaDate';
+        vaWString: Result:='vaWString';
+        vaInt64: Result:='vaInt64';
+        else Result:='Unknown ValueType='+dbgs(Ord(ValueType));
+        end;
+      end;
+      
       procedure UnknownValueType;
       var
         HintStr, s: String;
         HintLen: Int64;
       begin
-        s:='';
-        case ValueType of
-        vaNull: s:='vaNull';
-        vaList: s:='vaList';
-        vaInt8: s:='vaInt8';
-        vaInt16: s:='vaInt16';
-        vaInt32: s:='vaInt32';
-        vaExtended: s:='vaExtended';
-        vaString: s:='vaString';
-        vaIdent: s:='vaIdent';
-        vaFalse: s:='vaFalse';
-        vaTrue: s:='vaTrue';
-        vaBinary: s:='vaBinary';
-        vaSet: s:='vaSet';
-        vaLString: s:='vaLString';
-        vaNil: s:='vaNil';
-        vaCollection: s:='vaCollection';
-        vaSingle: s:='vaSingle';
-        vaCurrency: s:='vaCurrency';
-        vaDate: s:='vaDate';
-        vaWString: s:='vaWString';
-        vaInt64: s:='vaInt64';
-        end;
+        s:=ValueTypeAsString(ValueType);
         if s<>'' then
-          s:='Unimplemented ValueType='+s
-        else
-          s:='Unknown ValueType='+dbgs(Ord(ValueType));
+          s:='Unimplemented ValueType='+s;
         HintLen:=Output.Position;
         if HintLen>50 then HintLen:=50;
         SetLength(HintStr,HintLen);
@@ -1726,7 +1734,7 @@ procedure LRSObjectBinaryToText(Input, Output: TStream);
       AWideString: WideString;
 
     begin
-      //DbgOut('ValueType="',dbgs(ord(ValueType)),'"');
+      //DebugLn(['ProcessValue ',Indent,' ValueType="',ValueTypeAsString(ValueType),'"']);
       case ValueType of
         vaList: begin
             OutStr('(');
@@ -1825,11 +1833,17 @@ procedure LRSObjectBinaryToText(Input, Output: TStream);
       end;
     end;
 
+  var
+    NextByte: Byte;
   begin
     while Input.ReadByte <> 0 do begin
       Input.Seek(-1, soFromCurrent);
       OutStr(indent + ReadShortString + ' = ');
-      ProcessValue(TValueType(Input.ReadByte), Indent);
+      NextByte:=Input.ReadByte;
+      if NextByte<>0 then
+        ProcessValue(TValueType(NextByte), Indent)
+      else
+        OutLn('');
     end;
   end;
 
@@ -2272,7 +2286,8 @@ var
     // Convert property list
     while not (parser.TokenSymbolIs('END') or
       parser.TokenSymbolIs('OBJECT') or
-      parser.TokenSymbolIs('INHERITED')) do
+      parser.TokenSymbolIs('INHERITED'))
+    do
       ProcessProperty;
     Output.WriteByte(0);        // Terminate property list
 

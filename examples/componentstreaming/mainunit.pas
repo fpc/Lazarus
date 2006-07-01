@@ -146,10 +146,10 @@ procedure TCompStreamDemoForm.ClearDestinationGroupBox;
 { free all components owned by DestinationGroupBox
   Do not confuse 'Owner' and 'Parent';
   The 'Owner' of a TComponent is responsible for freeing the component.
-  All components owned by a component can be found in the 'Components'
+  All components owned by a component can be found in its 'Components'
   property.
   The 'Parent' of a TControl is the visible container. For example
-  DestinationGroupBox has as Parent the form.
+  DestinationGroupBox has as Parent the form (CompStreamDemoForm).
   All controls with the same parent are gathered in Parent.Controls.
   
   In this simple example the created component has as Owner and Parent the
