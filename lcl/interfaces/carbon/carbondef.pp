@@ -60,6 +60,17 @@ type
                                         AEvent: EventRef;
                                         AInfo: PWidgetInfo): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
 
+type
+  TEventInt = packed record
+    case integer of
+    1: (Chars: array[0..4] of char);
+    2: (Int: FPCMacOSAll.UInt32);
+  end;
+  
+const
+  LCLCarbonEventClass = 'Laz ';
+  LCLCarbonEventKindWake = 'Wake';
+  LCLCarbonEventKindMain = 'Main';
 
 implementation
 

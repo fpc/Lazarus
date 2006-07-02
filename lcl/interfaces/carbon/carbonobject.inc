@@ -154,8 +154,7 @@ end;
 
 procedure TCarbonWidgetSet.AppInit(var ScreenInfo: TScreenInfo);
 begin
-  InitializeCriticalSection(FSynchronizedMethodsCritSec);
-  // Do we need this? WakeMainThread:=@OnWakeMainThread;
+  WakeMainThread:=@OnWakeMainThread;
 end;
 
 procedure TCarbonWidgetSet.AppRun(const ALoop: TApplicationMainLoop);
@@ -197,7 +196,7 @@ begin
     // explicitly posting an event to our event loop.  Thus, the
     // standard event handlers are installed while our event loop runs.
 
-    EventSpec := MakeEventSpec('Laz ', 'Main');
+    EventSpec := MakeEventSpec(LCLCarbonEventClass,LCLCarbonEventKindMain);
     if InstallApplicationEventHandler(EventLoopUPP, 1, @EventSpec, nil,
                                       @EventLoopHandler) <> noErr
     then
@@ -242,30 +241,32 @@ procedure TCarbonWidgetSet.AppProcessMessages;
 var
   Target: EventTargetRef;
   Event: EventRef;
-  AMethod: TThreadMethod;
-  {$IFDEF DebugEventLoop}
-  EC: array[0..4] of char;
-  {$ENDIF}
+  CurEventClass: TEventInt;
+  CurEventKind: TEventInt;
 begin
   Target := GetEventDispatcherTarget;
+  CurEventClass.Chars[4] := #0;
+  CurEventKind.Chars[4] := #0;
   repeat
     if ReceiveNextEvent(0, nil, kEventDurationNoWait, True, Event) <> noErr then
       Break;
+    CurEventClass.Int := GetEventClass(Event);
+    CurEventKind.Int := GetEventKind(Event);
     {$IFDEF DebugEventLoop}
-    PInteger(@EC)^ := GetEventClass(Event);
-    EC[4] := #0;
-    DebugLn('EventClass: ''%s'' EventKind: 0x%8.8x', [EC, GetEventKind(Event)]);
+    DebugLn('EventClass: ''%s'' EventKind: 0x%8.8x', [CurEventClass.Chars, CurEventKind.Chars]);
     {$ENDIF}
+    if CurEventClass.Chars=LCLCarbonEventClass then begin
+      // internal carbon intf message
+      if (CurEventKind.Chars=LCLCarbonEventKindWake) and IsMultiThread then
+      begin
+        // a thread is waiting -> synchronize
+        CheckSynchronize;
+      end;
+    end;
+
     SendEventToEventTarget(Event, Target);
     ReleaseEvent(Event);
   until Application.Terminated;
-  // call synchronize methods
-  repeat
-    AMethod:=PopSynchronizedMethod;
-    if AMethod=nil then break;
-    debugln(['TCarbonWidgetSet.AppProcessMessages calling synchronize method ...']);
-    AMethod();
-  until false;
 end;
 
 procedure TCarbonWidgetSet.AppWaitMessage;
@@ -286,7 +287,6 @@ end;
 
 destructor TCarbonWidgetSet.Destroy;
 begin
-  DeleteCriticalSection(FSynchronizedMethodsCritSec);
   inherited Destroy;
   CarbonWidgetSet:=nil;
 end;
@@ -304,56 +304,38 @@ begin
   if fMainEventQueue=nil then exit;;
   
   DebuglnThreadLog('TCarbonWidgetSet.SendCheckSynchronizeMessage ');
-  EventSpec := MakeEventSpec('Laz ', 'Wake');
+  EventSpec := MakeEventSpec(LCLCarbonEventClass,LCLCarbonEventKindWake);
   DummyEvent:=nil;
-  if CreateEvent(nil, EventSpec.eventClass, EventSpec.eventKind,
-                     0{GetCurrentEventTime}, kEventAttributeNone,
-                     DummyEvent) = noErr
-  then begin
-    DebuglnThreadLog('TCarbonWidgetSet.SendCheckSynchronizeMessage SUCCESS '+dbgs(DummyEvent<>nil));
-  end else begin
-    DebuglnThreadLog('TCarbonWidgetSet.SendCheckSynchronizeMessage FAILED');
+  try
+    if CreateEvent(nil, EventSpec.eventClass, EventSpec.eventKind,
+                       0{GetCurrentEventTime}, kEventAttributeNone,
+                       DummyEvent) <> noErr
+    then begin
+      DebuglnThreadLog('TCarbonWidgetSet.SendCheckSynchronizeMessage create event FAILED');
+      exit;
+    end;
+
+    DebuglnThreadLog('TCarbonWidgetSet.SendCheckSynchronizeMessage GetMainEventQueue='+dbgs(GetMainEventQueue));
+    if PostEventToQueue(fMainEventQueue, DummyEvent,
+                        kEventPriorityHigh) <> noErr
+    then begin
+      DebuglnThreadLog('TCarbonWidgetSet.SendCheckSynchronizeMessage post event FAILED');
+      exit;
+    end;
+  finally
+    if DummyEvent<>nil then
+      ReleaseEvent(DummyEvent);
   end;
-
-        {if SetEventParameter(DummyEvent, MakeFourCC('Loop'),
-                             MakeFourCC('TAML'), SizeOf(TMethod),
-                             Pointer(@DummyMethod)) <> noErr
-        then Exit;}
-
-        DebuglnThreadLog('TCarbonWidgetSet.SendCheckSynchronizeMessage GetMainEventQueue='+dbgs(GetMainEventQueue));
-        if PostEventToQueue(GetMainEventQueue, DummyEvent,
-                            kEventPriorityHigh) <> noErr
-        then Exit;
 
   DebuglnThreadLog('TCarbonWidgetSet.SendCheckSynchronizeMessage END');
 end;
 
-procedure TCarbonWidgetSet.PushSynchronizeMethod(const AMethod: TThreadMethod);
-var
-  l: Integer;
+procedure TCarbonWidgetSet.OnWakeMainThread(Sender: TObject);
 begin
-  EnterCriticalSection(FSynchronizedMethodsCritSec);
-  l:=length(FSynchronizedMethods);
-  SetLength(FSynchronizedMethods,l+1);
-  FSynchronizedMethods[l]:=AMethod;
-  LeaveCriticalSection(FSynchronizedMethodsCritSec);
-end;
-
-function TCarbonWidgetSet.PopSynchronizedMethod: TThreadMethod;
-var
-  l: Integer;
-begin
-  EnterCriticalSection(FSynchronizedMethodsCritSec);
-  l:=length(FSynchronizedMethods);
-  if l>0 then begin
-    Result:=FSynchronizedMethods[0];
-    if l>1 then
-      System.Move(FSynchronizedMethods[1],FSynchronizedMethods[0],
-                  SizeOf(FSynchronizedMethods)*l-1);
-    SetLength(FSynchronizedMethods,l-1);
-  end else
-    Result:=nil;
-  LeaveCriticalSection(FSynchronizedMethodsCritSec);
+  // wake main thread
+  SendCheckSynchronizeMessage;
+  // wait till the event has been processed by the main thread
+  // TODO: wait till processed
 end;
 
 procedure TCarbonWidgetSet.AppTerminate;
@@ -370,13 +352,6 @@ end;
 procedure TCarbonWidgetSet.AppBringToFront;
 begin
 
-end;
-
-procedure TCarbonWidgetSet.DoSynchronize(const AMethod: TThreadMethod);
-begin
-  PushSynchronizeMethod(AMethod);
-  // wake up main tread
-  SendCheckSynchronizeMessage;
 end;
 
 function TCarbonWidgetSet.DCGetPixel(CanvasHandle: HDC; X, Y: integer

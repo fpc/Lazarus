@@ -193,16 +193,10 @@ procedure TCarbonWidgetSet.DeleteCriticalSection(
 var
   ACritSec: System.PRTLCriticalSection;
 begin
-<<<<<<< .mine
   ACritSec:=System.PRTLCriticalSection(CritSection);
   System.DoneCriticalsection(ACritSec^);
   Dispose(ACritSec);
   CritSection:=0;
-=======
-  ACritSec:=System.PRTLCriticalSection(CritSection);
-  System.DoneCriticalsection(ACritSec^);
-  CritSection:=0;
->>>>>>> .r9540
 end;
 
 function TCarbonWidgetSet.DeleteDC(hDC: HDC): Boolean;
@@ -632,14 +626,9 @@ procedure TCarbonWidgetSet.InitializeCriticalSection(
 var
   ACritSec: System.PRTLCriticalSection;
 begin
-<<<<<<< .mine
   New(ACritSec);
   System.InitCriticalSection(ACritSec^);
   CritSection:=TCriticalSection(ACritSec);
-=======
-  ACritSec:=System.PRTLCriticalSection(CritSection);
-  System.InitCriticalSection(ACritSec^);
->>>>>>> .r9540
 end;
 
 function TCarbonWidgetSet.IntersectClipRect(dc: hdc; Left, Top, Right,

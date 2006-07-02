@@ -56,15 +56,11 @@ type
   private
     // Set when the QuitEventHandler terminates
     FTerminating: Boolean;
-    // synchronized functions
-    FSynchronizedMethodsCritSec: TCriticalSection;
-    FSynchronizedMethods: array of TThreadMethod; // ToDo: replace with a queue
     fMainEventQueue: EventQueueRef;
   protected
     procedure PassCmdLineOptions; override;
     procedure SendCheckSynchronizeMessage;
-    procedure PushSynchronizeMethod(const AMethod: TThreadMethod);
-    function  PopSynchronizedMethod: TThreadMethod;
+    procedure OnWakeMainThread(Sender: TObject);
   public
     constructor Create;
     destructor Destroy; override;
@@ -77,8 +73,6 @@ type
     procedure AppMinimize; override;
     procedure AppBringToFront; override;
     
-    procedure DoSynchronize(const AMethod: TThreadMethod);
-
     function  DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor; override;
     procedure DCSetPixel(CanvasHandle: HDC; X, Y: integer; AColor: TGraphicsColor); override;
     procedure DCRedraw(CanvasHandle: HDC); override;
