@@ -76,6 +76,7 @@ type
   TLazDockConfigNode = class(TPersistent)
   private
     FBounds: TRect;
+    FClientBounds: TRect;
     FName: string;
     FParent: TLazDockConfigNode;
     FSides: array[TAnchorKind] of string;
@@ -85,6 +86,7 @@ type
     function GetChilds(Index: integer): TLazDockConfigNode;
     function GetSides(Side: TAnchorKind): string;
     procedure SetBounds(const AValue: TRect);
+    procedure SetClientBounds(const AValue: TRect);
     procedure SetName(const AValue: string);
     procedure SetParent(const AValue: TLazDockConfigNode);
     procedure SetSides(Side: TAnchorKind; const AValue: string);
@@ -95,12 +97,15 @@ type
     constructor Create(ParentNode: TLazDockConfigNode; const AName: string);
     destructor Destroy; override;
     procedure Clear;
-    function FindByName(const AName: string): TLazDockConfigNode;
+    function FindByName(const AName: string;
+                        Recursive: boolean = false): TLazDockConfigNode;
+    function GetScreenBounds: TRect;
     procedure SaveToConfig(Config: TConfigStorage; const Path: string = '');
     procedure LoadFromConfig(Config: TConfigStorage; const Path: string = '');
     procedure WriteDebugReport;
   public
     property Bounds: TRect read FBounds write SetBounds;
+    property ClientBounds: TRect read FClientBounds write SetClientBounds;
     property Parent: TLazDockConfigNode read FParent write SetParent;
     property Sides[Side: TAnchorKind]: string read GetSides write SetSides;
     property ChildCount: Integer read GetChildCount;
@@ -109,7 +114,19 @@ type
     property TheType: TLDConfigNodeType read FTheType write SetTheType default ldcntControl;
     property Name: string read FName write SetName;
   end;
+  
+  { TLazDockerConfig }
 
+  TLazDockerConfig = class
+  private
+    FDockerName: string;
+    FRoot: TLazDockConfigNode;
+  public
+    constructor Create(const ADockerName: string; ANode: TLazDockConfigNode);
+    property DockerName: string read FDockerName;
+    property Root: TLazDockConfigNode read FRoot;
+  end;
+  
   TCustomLazControlDocker = class;
 
   { TCustomLazDockingManager }
@@ -118,9 +135,9 @@ type
   private
     FDockers: TFPList;
     FManager: TAnchoredDockManager;
-    FConfigs: TFPList;// list of TLazDockConfigNode
+    FConfigs: TFPList;// list of TLazDockerConfig
     function GetConfigCount: Integer;
-    function GetConfigs(Index: Integer): TLazDockConfigNode;
+    function GetConfigs(Index: Integer): TLazDockerConfig;
     function GetDockerCount: Integer;
     function GetDockers(Index: Integer): TCustomLazControlDocker;
   protected
@@ -138,15 +155,18 @@ type
     function GetControlConfigName(AControl: TControl): string;
     procedure SaveToConfig(Config: TConfigStorage; const Path: string = '');
     procedure LoadFromConfig(Config: TConfigStorage; const Path: string = '');
-    procedure AddOrReplaceConfig(Config: TLazDockConfigNode);
+    procedure AddOrReplaceConfig(const DockerName: string;
+                                 Config: TLazDockConfigNode);
     procedure WriteDebugReport;
     procedure ClearConfigs;
+    function GetConfigWithDockerName(const DockerName: string
+                                     ): TLazDockerConfig;
   public
     property Manager: TAnchoredDockManager read FManager;
     property DockerCount: Integer read GetDockerCount;
     property Dockers[Index: Integer]: TCustomLazControlDocker read GetDockers; default;
     property ConfigCount: Integer read GetConfigCount;
-    property Configs[Index: Integer]: TLazDockConfigNode read GetConfigs;
+    property Configs[Index: Integer]: TLazDockerConfig read GetConfigs;
   end;
 
   { TLazDockingManager }
@@ -164,6 +184,7 @@ type
   private
     FControl: TControl;
     FDockerName: string;
+    FEnabled: boolean;
     FExtendPopupMenu: boolean;
     FLocalizedName: string;
     FManager: TCustomLazDockingManager;
@@ -184,6 +205,8 @@ type
     constructor Create(TheOwner: TComponent); override;
     procedure ShowDockingEditor; virtual;
     function GetLayoutFromControl: TLazDockConfigNode;
+    procedure SaveLayout;
+    procedure RestoreLayout;
     function GetControlName(AControl: TControl): string;
     property Control: TControl read FControl write SetControl;
     property Manager: TCustomLazDockingManager read FManager write SetManager;
@@ -191,6 +214,7 @@ type
     property PopupMenuItem: TMenuItem read FPopupMenuItem;
     property LocalizedName: string read FLocalizedName write SetLocalizedName;
     property DockerName: string read FDockerName write SetDockerName;
+    property Enabled: boolean read FEnabled write FEnabled;// true to auto restore layout on show
   end;
 
   { TLazControlDocker }
@@ -201,6 +225,7 @@ type
     property Manager;
     property ExtendPopupMenu;
     property DockerName;
+    property Enabled;
   end;
 
 
@@ -362,19 +387,20 @@ begin
       DbgSName(Control),'<>',DbgSName(Sender));
     exit;
   end;
+  DebugLn(['TCustomLazControlDocker.ControlVisibleChanging Sender=',DbgSName(Sender)]);
   if Control.Visible then begin
     // control will be hidden -> the layout will change
-    // save the layout for restore
-    GetLayoutFromControl;
+    // save the layout for later restore
+    SaveLayout;
   end else begin
     // the control will become visible -> dock it to restore the last layout
-    debugln('TCustomLazControlDocker.ControlVisibleChanging TODO restore layout');
+    RestoreLayout;
   end;
 end;
 
 procedure TCustomLazControlDocker.ControlVisibleChanged(Sender: TObject);
 begin
-
+  DebugLn(['TCustomLazControlDocker.ControlVisibleChanged Sender=',DbgSName(Sender)]);
 end;
 
 function TCustomLazControlDocker.GetControlName(AControl: TControl): string;
@@ -440,7 +466,7 @@ function TCustomLazControlDocker.GetLayoutFromControl: TLazDockConfigNode;
             if CurAnchorNode=nil then
               RaiseGDBException('inconsistency');
           end;
-          DebugLn('CopyChildsLayout ',DbgSName(CurAnchorControl),' CurAnchorCtrlName="',CurAnchorCtrlName,'"');
+          //DebugLn('CopyChildsLayout ',DbgSName(CurAnchorControl),' CurAnchorCtrlName="',CurAnchorCtrlName,'"');
           ChildNode.Sides[a]:=CurAnchorNode.Name;
         end;
       end;
@@ -472,7 +498,12 @@ function TCustomLazControlDocker.GetLayoutFromControl: TLazDockConfigNode;
 
     // Bounds
     Result.FBounds:=AControl.BoundsRect;
-    
+    if AControl is TWinControl then
+      Result.FClientBounds:=TWinControl(AControl).GetChildsRect(false)
+    else
+      Result.FClientBounds:=Rect(0,0,Result.FBounds.Right-Result.FBounds.Left,
+                                 Result.FBounds.Bottom-Result.FBounds.Top);
+
     // Childs
     if (AControl is TWinControl) then begin
       // check if childs need nodes
@@ -511,6 +542,222 @@ begin
   Result:=AddNode(nil,RootControl);
 end;
 
+procedure TCustomLazControlDocker.SaveLayout;
+var
+  Layout: TLazDockConfigNode;
+begin
+  if Manager=nil then exit;
+  Layout:=GetLayoutFromControl;
+  if (Layout=nil) then exit;
+  Manager.AddOrReplaceConfig(DockerName,Layout);
+end;
+
+procedure TCustomLazControlDocker.RestoreLayout;
+  { TODO
+  
+  Goals of this algorithm:
+  - If a form is hidden and immediately shown again, the layout should be
+    restored 1:1.
+    That's why a TCustomLazControlDocker stores the complete layout on every
+    hide. And restores it on every show.
+  - If an application is closed and all dock forms are closed (in any order)
+    the layout should be restored on startup, when the forms
+    are created (in any order).
+    This is done by saving the layout before all forms are closed.
+
+
+  Example 1: Docking to a side.
+    
+    Current:
+    +---+
+    | A |
+    +---+
+    
+    Formerly:
+    +------------+
+    |+---+|+----+|
+    || A |||Self||
+    |+---+|+----+|
+    +------------+
+
+    Then put A into a new TLazDockForm, add a splitter and Self.
+    
+
+  Example 2: Docking in between
+  
+    Current:
+    +-----------+
+    |+---+|+---+|
+    || A ||| C ||
+    |+---+|+---+|
+    +-----------+
+
+    Formerly:
+    +------------------+
+    |+---+|+----+|+---+|
+    || A |||Self||| C ||
+    |+---+|+----+|+---+|
+    +------------------+
+
+    Then enlarge the parent of A and C, add a splitter and Self.
+    
+  Example:
+
+    Formerly:
+    +-------------------------+
+    |+-----------------------+|
+    ||           A           ||
+    |+-----------------------+|
+    |=========================|
+    |+---+#+-----------+#+---+|
+    || D |#|           |#|   ||
+    |+---+#|           |#|   ||
+    |=====#|     B     |#| E ||
+    |+---+#|           |#|   ||
+    ||   |#|           |#|   ||
+    ||   |#+-----------+#+---+|
+    || F |#===================|
+    ||   |#+-----------------+|
+    ||   |#|        C        ||
+    |+---+#+-----------------+|
+    +-------------------------+
+
+
+    1. Showing A:
+    There is no other form yet, so just show it at the old position.
+    +-----------------------+
+    |           A           |
+    +-----------------------+
+
+
+    2. Showing B:
+    B is the bottom sibling of A. Put A into a new TLazDockForm, add a splitter,
+    enlarge B horizontally.
+
+    +-------------------------+
+    |+-----------------------+|
+    ||           A           ||
+    |+-----------------------+|
+    |=========================|
+    |+-----------------------+|
+    ||                       ||
+    ||                       ||
+    ||           B           ||
+    ||                       ||
+    ||                       ||
+    |+-----------------------+|
+    +-------------------------+
+
+
+    3. Showing C:
+    C is the bottom sibling of B. Enlarge the parent vertically, add a splitter
+    and enlarge C horizontally.
+    
+    +-------------------------+
+    |+-----------------------+|
+    ||           A           ||
+    |+-----------------------+|
+    |=========================|
+    |+-----------------------+|
+    ||                       ||
+    ||                       ||
+    ||           B           ||
+    ||                       ||
+    ||                       ||
+    |+-----------------------+|
+    |=========================|
+    |+-----------------------+|
+    ||           C           ||
+    |+-----------------------+|
+    +-------------------------+
+
+
+    4. Showing D:
+    D is below of A, and left of B and C. Shrink B and C, add a splitter.
+    
+    +-------------------------+
+    |+-----------------------+|
+    ||           A           ||
+    |+-----------------------+|
+    |=========================|
+    |+---+#+-----------------+|
+    ||   |#|                 ||
+    ||   |#|                 ||
+    ||   |#|        B        ||
+    ||   |#|                 ||
+    || D |#|                 ||
+    ||   |#+-----------------+|
+    ||   |#===================|
+    ||   |#+-----------------+|
+    ||   |#|        C        ||
+    |+---+#+-----------------+|
+    +-------------------------+
+
+
+    5. Showing E:
+    Shrink B, add a splitter.
+    
+    +-------------------------+
+    |+-----------------------+|
+    ||           A           ||
+    |+-----------------------+|
+    |=========================|
+    |+---+#+-----------+#+---+|
+    ||   |#|           |#|   ||
+    ||   |#|           |#|   ||
+    ||   |#|     B     |#| E ||
+    ||   |#|           |#|   ||
+    || D |#|           |#|   ||
+    ||   |#+-----------+#+---+|
+    ||   |#===================|
+    ||   |#+-----------------+|
+    ||   |#|        C        ||
+    |+---+#+-----------------+|
+    +-------------------------+
+
+
+    6. Showing F:
+    Shrink D and add a splitter.
+
+    +-------------------------+
+    |+-----------------------+|
+    ||           A           ||
+    |+-----------------------+|
+    |=========================|
+    |+---+#+-----------+#+---+|
+    || D |#|           |#|   ||
+    |+---+#|           |#|   ||
+    |=====#|     B     |#| E ||
+    |+---+#|           |#|   ||
+    ||   |#|           |#|   ||
+    ||   |#+-----------+#+---+|
+    || F |#===================|
+    ||   |#+-----------------+|
+    ||   |#|        C        ||
+    |+---+#+-----------------+|
+    +-------------------------+
+  }
+var
+  Layout: TLazDockerConfig;
+  SelfNode: TLazDockConfigNode;
+  NewBounds: TRect;
+begin
+  DebugLn(['TCustomLazControlDocker.RestoreLayout A ',DockerName]);
+  if (Manager=nil) or (Control=nil) then exit;
+  Layout:=Manager.GetConfigWithDockerName(DockerName);
+  DebugLn(['TCustomLazControlDocker.RestoreLayout ',Layout=nil,' DockerName=',DockerName,' ',Manager.Configs[0].DockerName]);
+  if (Layout=nil) or (Layout.Root=nil) then exit;
+  SelfNode:=Layout.Root.FindByName(DockerName);
+  if SelfNode=nil then exit;
+  
+  // default: do not dock, just move
+  DebugLn(['TCustomLazControlDocker.RestoreLayout ',DockerName,' not docking, just moving ...']);
+  NewBounds:=SelfNode.GetScreenBounds;
+  Control.SetBoundsKeepBase(NewBounds.Left,NewBounds.Top,
+                            NewBounds.Right-NewBounds.Left,
+                            NewBounds.Bottom-NewBounds.Top);
+end;
+
 constructor TCustomLazControlDocker.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
@@ -532,9 +779,9 @@ begin
   if FControl<>nil then
     FControl.RemoveAllHandlersOfObject(Self);
   FControl:=AValue;
-  if FControl=nil then begin
-    FControl.AddHandlerOnVisibleChanging(@ControlVisibleChanging);
-    FControl.AddHandlerOnVisibleChanged(@ControlVisibleChanged);
+  if Control<>nil then begin
+    Control.AddHandlerOnVisibleChanging(@ControlVisibleChanging);
+    Control.AddHandlerOnVisibleChanged(@ControlVisibleChanged);
   end;
   if DockerName='' then
     DockerName:=AValue.Name;
@@ -598,9 +845,9 @@ begin
 end;
 
 function TCustomLazDockingManager.GetConfigs(Index: Integer
-  ): TLazDockConfigNode;
+  ): TLazDockerConfig;
 begin
-  Result:=TLazDockConfigNode(FConfigs[Index]);
+  Result:=TLazDockerConfig(FConfigs[Index]);
 end;
 
 constructor TCustomLazDockingManager.Create(TheOwner: TComponent);
@@ -680,21 +927,24 @@ procedure TCustomLazDockingManager.SaveToConfig(Config: TConfigStorage;
 var
   i: Integer;
   ADocker: TCustomLazControlDocker;
-  CurDockConfig: TLazDockConfigNode;
+  CurDockConfig: TLazDockerConfig;
+  SubPath: String;
 begin
   // collect configs
   for i:=0 to DockerCount-1 do begin
     ADocker:=Dockers[i];
     if ((ADocker.Control<>nil) and ADocker.Control.Visible) then begin
-      CurDockConfig:=ADocker.GetLayoutFromControl;
-      AddOrReplaceConfig(CurDockConfig);
+      ADocker.SaveLayout;
     end;
   end;
 
+  // save configs
   Config.SetDeleteValue(Path+'Configs/Count',ConfigCount,0);
   for i:=0 to ConfigCount-1 do begin
+    SubPath:=Path+'Config'+IntToStr(i)+'/';
     CurDockConfig:=Configs[i];
-    CurDockConfig.SaveToConfig(Config,Path+'Config'+IntToStr(i)+'/');
+    Config.SetDeleteValue(SubPath+'DockerName/Value',CurDockConfig.DockerName,'');
+    CurDockConfig.Root.SaveToConfig(Config,SubPath);
   end;
 end;
 
@@ -703,41 +953,44 @@ procedure TCustomLazDockingManager.LoadFromConfig(Config: TConfigStorage;
 var
   i: Integer;
   NewConfigCount: LongInt;
-  NewConfigName: String;
   SubPath: String;
-  NewConfig: TLazDockConfigNode;
+  NewRoot: TLazDockConfigNode;
+  NewDockerName: String;
+  NewRootName: String;
 begin
   // merge the configs
   NewConfigCount:=Config.GetValue(Path+'Configs/Count',0);
+  DebugLn(['TCustomLazDockingManager.LoadFromConfig NewConfigCount=',NewConfigCount]);
   for i:=0 to NewConfigCount-1 do begin
     SubPath:=Path+'Config'+IntToStr(i)+'/';
-    NewConfigName:=Config.GetValue(SubPath+'Name/Value','');
-    if NewConfigName='' then continue;
-    NewConfig:=TLazDockConfigNode.Create(nil,NewConfigName);
-    NewConfig.LoadFromConfig(Config,SubPath);
-    AddOrReplaceConfig(NewConfig);
+    NewDockerName:=Config.GetValue(SubPath+'DockerName/Value','');
+    if NewDockerName='' then continue;
+    NewRootName:=Config.GetValue(SubPath+'Name/Value','');
+    if NewRootName='' then continue;
+    DebugLn(['TCustomLazDockingManager.LoadFromConfig NewDockerName=',NewDockerName,' NewRootName=',NewRootName]);
+    NewRoot:=TLazDockConfigNode.Create(nil,NewRootName);
+    NewRoot.LoadFromConfig(Config,SubPath);
+    AddOrReplaceConfig(NewDockerName,NewRoot);
   end;
-  
-  // apply the configs
-  // TODO
 end;
 
 procedure TCustomLazDockingManager.AddOrReplaceConfig(
-  Config: TLazDockConfigNode);
+  const DockerName: string; Config: TLazDockConfigNode);
 var
   i: Integer;
-  CurConfig: TLazDockConfigNode;
+  CurConfig: TLazDockerConfig;
 begin
   if FConfigs=nil then
     FConfigs:=TFPList.Create;
   for i:=FConfigs.Count-1 downto 0 do begin
     CurConfig:=Configs[i];
-    if CompareText(CurConfig.Name,Config.Name)=0 then begin
-      CurConfig.Free;
-      FConfigs.Delete(i);
+    if CompareText(CurConfig.DockerName,DockerName)=0 then begin
+      CurConfig.FRoot.Free;
+      CurConfig.FRoot:=Config;
+      exit;
     end;
   end;
-  FConfigs.Add(Config);
+  FConfigs.Add(TLazDockerConfig.Create(DockerName,Config));
 end;
 
 procedure TCustomLazDockingManager.WriteDebugReport;
@@ -759,6 +1012,20 @@ begin
   if FConfigs=nil then exit;
   for i:=0 to FConfigs.Count-1 do TObject(FConfigs[i]).Free;
   FConfigs.Clear;
+end;
+
+function TCustomLazDockingManager.GetConfigWithDockerName(
+  const DockerName: string): TLazDockerConfig;
+var
+  i: Integer;
+begin
+  i:=ConfigCount-1;
+  while (i>=0) do begin
+    Result:=Configs[i];
+    if CompareText(Result.DockerName,DockerName)=0 then exit;
+    dec(i);
+  end;
+  Result:=nil;
 end;
 
 { TLazDockConfigNode }
@@ -785,6 +1052,12 @@ procedure TLazDockConfigNode.SetBounds(const AValue: TRect);
 begin
   if CompareRect(@FBounds,@AValue) then exit;
   FBounds:=AValue;
+end;
+
+procedure TLazDockConfigNode.SetClientBounds(const AValue: TRect);
+begin
+  if CompareRect(@FClientBounds,@AValue) then exit;
+  FClientBounds:=AValue;
 end;
 
 procedure TLazDockConfigNode.SetName(const AValue: string);
@@ -851,8 +1124,8 @@ begin
   FChilds.Clear;
 end;
 
-function TLazDockConfigNode.FindByName(const AName: string
-  ): TLazDockConfigNode;
+function TLazDockConfigNode.FindByName(const AName: string;
+  Recursive: boolean): TLazDockConfigNode;
 var
   i: Integer;
 begin
@@ -860,8 +1133,33 @@ begin
     for i:=0 to FChilds.Count-1 do begin
       Result:=Childs[i];
       if CompareText(Result.Name,AName)=0 then exit;
+      if Recursive then begin
+        Result:=Result.FindByName(AName,true);
+        if Result<>nil then exit;
+      end;
     end;
   Result:=nil;
+end;
+
+function TLazDockConfigNode.GetScreenBounds: TRect;
+var
+  NewWidth: Integer;
+  NewHeight: Integer;
+  NewLeft: LongInt;
+  NewTop: LongInt;
+  Node: TLazDockConfigNode;
+begin
+  NewWidth:=FBounds.Right-FBounds.Left;
+  NewHeight:=FBounds.Bottom-FBounds.Top;
+  NewLeft:=FBounds.Left;
+  NewTop:=FBounds.Top;
+  Node:=Parent;
+  while Node<>nil do begin
+    inc(NewLeft,Node.FBounds.Left+Node.FClientBounds.Left);
+    inc(NewTop,Node.FBounds.Top+Node.FClientBounds.Top);
+    Node:=Node.Parent;
+  end;
+  Result:=Classes.Bounds(NewLeft,NewTop,NewWidth,NewHeight);
 end;
 
 procedure TLazDockConfigNode.SaveToConfig(Config: TConfigStorage;
@@ -873,6 +1171,8 @@ var
 begin
   Config.SetDeleteValue(Path+'Name/Value',Name,'');
   Config.SetDeleteValue(Path+'Bounds/',FBounds,Rect(0,0,0,0));
+  Config.SetDeleteValue(Path+'ClientBounds/',FClientBounds,
+                Rect(0,0,FBounds.Right-FBounds.Left,FBounds.Bottom-FBounds.Top));
   Config.SetDeleteValue(Path+'Type/Value',LDConfigNodeTypeNames[TheType],
                         LDConfigNodeTypeNames[ldcntControl]);
   
@@ -899,6 +1199,8 @@ var
 begin
   Clear;
   Config.GetValue(Path+'Bounds/',FBounds,Rect(0,0,0,0));
+  Config.GetValue(Path+'ClientBounds/',FClientBounds,
+               Rect(0,0,FBounds.Right-FBounds.Left,FBounds.Bottom-FBounds.Top));
   TheType:=LDConfigNodeTypeNameToType(Config.GetValue(Path+'Type/Value',
                                       LDConfigNodeTypeNames[ldcntControl]));
 
@@ -944,6 +1246,15 @@ procedure TLazDockConfigNode.WriteDebugReport;
 begin
   DebugLn('TLazDockConfigNode.WriteDebugReport Root=',dbgs(Self));
   WriteNode('  ',Self);
+end;
+
+{ TLazDockerConfig }
+
+constructor TLazDockerConfig.Create(const ADockerName: string;
+  ANode: TLazDockConfigNode);
+begin
+  FDockerName:=ADockerName;
+  FRoot:=ANode;
 end;
 
 end.

@@ -243,6 +243,11 @@ function DbgS(const i1,i2,i3,i4: integer): string; overload;
 function DbgS(const Shift: TShiftState): string; overload;
 function DbgsVKCode(c: word): string;
 
+procedure DbgOutThreadLog(const Msg: string); overload;
+procedure DebuglnThreadLog(const Msg: string); overload;
+procedure DebuglnThreadLog(Args: array of const); overload;
+procedure DebuglnThreadLog; overload;
+
 // some string manipulation functions
 function StripLN(const ALine: String): String;
 function GetPart(const ASkipTo, AnEnd: String; var ASource: String): String; overload;
@@ -1904,6 +1909,71 @@ begin
   else
     Result:='VK_('+dbgs(c)+')';
   end;
+end;
+
+procedure DbgOutThreadLog(const Msg: string);
+var
+  PID: PtrInt;
+  fs: TFileStream;
+  s: string;
+  Filename: string;
+begin
+  PID:=PtrInt(GetThreadID);
+  Filename:='Log'+IntToStr(PID);
+  if FileExists(Filename) then
+    fs:=TFileStream.Create(Filename,fmOpenWrite)
+  else
+    fs:=TFileStream.Create(Filename,fmCreate);
+  fs.Position:=fs.Size;
+  s:=IntToStr(PtrInt(PID))+' : '+Msg;
+  fs.Write(s[1], length(s));
+  fs.Free;
+end;
+
+procedure DebuglnThreadLog(const Msg: string);
+begin
+  DbgOutThreadLog(Msg+LineEnding);
+end;
+
+procedure DebuglnThreadLog(Args: array of const);
+var
+  i: Integer;
+begin
+  for i:=Low(Args) to High(Args) do begin
+    case Args[i].VType of
+    vtInteger: DbgOutThreadLog(dbgs(Args[i].vinteger));
+    vtInt64: DbgOutThreadLog(dbgs(Args[i].VInt64^));
+    vtQWord: DbgOutThreadLog(dbgs(Args[i].VQWord^));
+    vtBoolean: DbgOutThreadLog(dbgs(Args[i].vboolean));
+    vtExtended: DbgOutThreadLog(dbgs(Args[i].VExtended^));
+{$ifdef FPC_CURRENCY_IS_INT64}
+    // MWE:
+    // ppcppc 2.0.2 has troubles in choosing the right dbgs()
+    // so we convert here (i don't know about other versions
+    vtCurrency: DbgOutThreadLog(dbgs(int64(Args[i].vCurrency^)/10000, 4));
+{$else}
+    vtCurrency: DbgOutThreadLog(dbgs(Args[i].vCurrency^));
+{$endif}
+    vtString: DbgOutThreadLog(Args[i].VString^);
+    vtAnsiString: DbgOutThreadLog(AnsiString(Args[i].VAnsiString));
+    vtChar: DbgOutThreadLog(Args[i].VChar);
+    vtPChar: DbgOutThreadLog(Args[i].VPChar);
+    vtPWideChar: DbgOutThreadLog(Args[i].VPWideChar);
+    vtWideChar: DbgOutThreadLog(Args[i].VWideChar);
+    vtWidestring: DbgOutThreadLog(WideString(Args[i].VWideString));
+    vtObject: DbgOutThreadLog(DbgSName(Args[i].VObject));
+    vtClass: DbgOutThreadLog(DbgSName(Args[i].VClass));
+    vtPointer: DbgOutThreadLog(Dbgs(Args[i].VPointer));
+    else
+      DbgOutThreadLog('?unknown variant?');
+    end;
+  end;
+  DebuglnThreadLog;
+end;
+
+procedure DebuglnThreadLog;
+begin
+  DebuglnThreadLog('');
 end;
 
 function StripLN(const ALine: String): String;

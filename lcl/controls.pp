@@ -943,7 +943,6 @@ type
     Function GetClientOrigin: TPoint; virtual;
     Function GetClientRect: TRect; virtual;
     Function GetScrolledClientRect: TRect; virtual;
-    function GetChildsRect(Scrolled: boolean): TRect; virtual;
     function GetClientScrollOffset: TPoint; virtual;
     function GetControlOrigin: TPoint; virtual;
   protected
@@ -1176,6 +1175,7 @@ type
     Function  ClientToScreen(const APoint: TPoint): TPoint;
     Function  ScreenToControl(const APoint: TPoint): TPoint;
     Function  ControlToScreen(const APoint: TPoint): TPoint;
+    function GetChildsRect(Scrolled: boolean): TRect; virtual;
     procedure Show;
     procedure Update; virtual;
     function HandleObjectShouldBeVisible: boolean; virtual;
@@ -1609,7 +1609,6 @@ type
     procedure SelectFirst;
     function  RealGetText: TCaption; override;
     function  GetBorderStyle: TBorderStyle;
-    function  GetChildsRect(Scrolled: boolean): TRect; override;
     function  GetClientOrigin: TPoint; override;
     function  GetClientRect: TRect; override;
     function  GetControlOrigin: TPoint; override;
@@ -1699,6 +1698,7 @@ type
     procedure InvalidateClientRectCache(WithChildControls: boolean);
     function ClientRectNeedsInterfaceUpdate: boolean;
     procedure SetBounds(aLeft, aTop, aWidth, aHeight: integer); override;
+    function  GetChildsRect(Scrolled: boolean): TRect; override;
     procedure DisableAlign;
     procedure EnableAlign;
     procedure WriteLayoutDebugReport(const Prefix: string); override;

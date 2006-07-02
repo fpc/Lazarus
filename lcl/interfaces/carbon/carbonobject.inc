@@ -154,6 +154,8 @@ end;
 
 procedure TCarbonWidgetSet.AppInit(var ScreenInfo: TScreenInfo);
 begin
+  InitializeCriticalSection(FSynchronizedMethodsCritSec);
+  // Do we need this? WakeMainThread:=@OnWakeMainThread;
 end;
 
 procedure TCarbonWidgetSet.AppRun(const ALoop: TApplicationMainLoop);
@@ -167,6 +169,7 @@ var
   EventLoopHandler: EventHandlerRef;
   DummyEvent: EventRef;
   EventSpec: EventTypeSpec;
+  CurMainEventQueue: EventQueueRef;
 begin
   DummyEvent := nil;
 
@@ -174,8 +177,8 @@ begin
 
   EventLoopUPP := NewEventHandlerUPP(EventHandlerProcPtr(
                                      Pointer(@EventLoopEventHandler)));
-  //todo: raise exception ??
-  if EventLoopUPP = nil then Exit;
+  if EventLoopUPP = nil then
+    RaiseGDBException('TCarbonWidgetSet.AppRun no eventhandler');
 
   try
     // Install EventLoopEventHandler, create a dummy event and post it,
@@ -197,26 +200,34 @@ begin
     EventSpec := MakeEventSpec('Laz ', 'Main');
     if InstallApplicationEventHandler(EventLoopUPP, 1, @EventSpec, nil,
                                       @EventLoopHandler) <> noErr
-    then Exit;
+    then
+      RaiseGDBException('TCarbonWidgetSet.AppRun install eventhandler failed');
 
     try
       if CreateEvent(nil, EventSpec.eventClass, EventSpec.eventKind,
                      GetCurrentEventTime, kEventAttributeNone,
                      DummyEvent) <> noErr
-      then Exit;
+      then
+        RaiseGDBException('TCarbonWidgetSet.AppRun create first dummy event failed');
 
       try
         if SetEventParameter(DummyEvent, MakeFourCC('Loop'),
                              MakeFourCC('TAML'), SizeOf(ALoop),
                              @ALoop) <> noErr
-        then Exit;
+        then
+          RaiseGDBException('TCarbonWidgetSet.AppRun setparam to first event failed');
 
-        if PostEventToQueue(GetMainEventQueue, DummyEvent,
+        DebuglnThreadLog('TCarbonWidgetSet.AppRun '+dbgs(GetMainEventQueue));
+        CurMainEventQueue:=GetMainEventQueue;
+        if PostEventToQueue(CurMainEventQueue, DummyEvent,
                             kEventPriorityHigh) <> noErr
-        then Exit;
+        then
+          RaiseGDBException('TCarbonWidgetSet.AppRun post dummy event failed');
+        fMainEventQueue:=CurMainEventQueue;
 
         RunApplicationEventLoop;
       finally
+        fMainEventQueue:=nil;
         ReleaseEvent(DummyEvent);
       end;
     finally
@@ -231,6 +242,7 @@ procedure TCarbonWidgetSet.AppProcessMessages;
 var
   Target: EventTargetRef;
   Event: EventRef;
+  AMethod: TThreadMethod;
   {$IFDEF DebugEventLoop}
   EC: array[0..4] of char;
   {$ENDIF}
@@ -247,15 +259,19 @@ begin
     SendEventToEventTarget(Event, Target);
     ReleaseEvent(Event);
   until Application.Terminated;
+  // call synchronize methods
+  repeat
+    AMethod:=PopSynchronizedMethod;
+    if AMethod=nil then break;
+    debugln(['TCarbonWidgetSet.AppProcessMessages calling synchronize method ...']);
+    AMethod();
+  until false;
 end;
 
 procedure TCarbonWidgetSet.AppWaitMessage;
 var
   Event: EventRef;
 begin
-  if FNumberOfRunningThreads > 0
-  then YieldToAnyThread;
-
   // Simply wait forever for the next event.
   // Don't pull it, so we can handle it later.
   ReceiveNextEvent(0, nil, kEventDurationForever, False, Event);
@@ -263,19 +279,81 @@ end;
 
 constructor TCarbonWidgetSet.Create;
 begin
+  CarbonWidgetSet:=Self;
   inherited Create;
-  FNumberOfRunningThreads := 0;
   FTerminating := False;
 end;
 
 destructor TCarbonWidgetSet.Destroy;
 begin
+  DeleteCriticalSection(FSynchronizedMethodsCritSec);
   inherited Destroy;
+  CarbonWidgetSet:=nil;
 end;
 
 procedure TCarbonWidgetSet.PassCmdLineOptions;
 begin
   inherited PassCmdLineOptions;
+end;
+
+procedure TCarbonWidgetSet.SendCheckSynchronizeMessage;
+var
+  EventSpec: EventTypeSpec;
+  DummyEvent: EventRef;
+begin
+  if fMainEventQueue=nil then exit;;
+  
+  DebuglnThreadLog('TCarbonWidgetSet.SendCheckSynchronizeMessage ');
+  EventSpec := MakeEventSpec('Laz ', 'Wake');
+  DummyEvent:=nil;
+  if CreateEvent(nil, EventSpec.eventClass, EventSpec.eventKind,
+                     0{GetCurrentEventTime}, kEventAttributeNone,
+                     DummyEvent) = noErr
+  then begin
+    DebuglnThreadLog('TCarbonWidgetSet.SendCheckSynchronizeMessage SUCCESS '+dbgs(DummyEvent<>nil));
+  end else begin
+    DebuglnThreadLog('TCarbonWidgetSet.SendCheckSynchronizeMessage FAILED');
+  end;
+
+        {if SetEventParameter(DummyEvent, MakeFourCC('Loop'),
+                             MakeFourCC('TAML'), SizeOf(TMethod),
+                             Pointer(@DummyMethod)) <> noErr
+        then Exit;}
+
+        DebuglnThreadLog('TCarbonWidgetSet.SendCheckSynchronizeMessage GetMainEventQueue='+dbgs(GetMainEventQueue));
+        if PostEventToQueue(GetMainEventQueue, DummyEvent,
+                            kEventPriorityHigh) <> noErr
+        then Exit;
+
+  DebuglnThreadLog('TCarbonWidgetSet.SendCheckSynchronizeMessage END');
+end;
+
+procedure TCarbonWidgetSet.PushSynchronizeMethod(const AMethod: TThreadMethod);
+var
+  l: Integer;
+begin
+  EnterCriticalSection(FSynchronizedMethodsCritSec);
+  l:=length(FSynchronizedMethods);
+  SetLength(FSynchronizedMethods,l+1);
+  FSynchronizedMethods[l]:=AMethod;
+  LeaveCriticalSection(FSynchronizedMethodsCritSec);
+end;
+
+function TCarbonWidgetSet.PopSynchronizedMethod: TThreadMethod;
+var
+  l: Integer;
+begin
+  EnterCriticalSection(FSynchronizedMethodsCritSec);
+  l:=length(FSynchronizedMethods);
+  if l>0 then begin
+    Result:=FSynchronizedMethods[0];
+    if l>1 then
+      System.Move(FSynchronizedMethods[1],FSynchronizedMethods[0],
+                  SizeOf(FSynchronizedMethods)*l-1);
+    SetLength(FSynchronizedMethods,l-1);
+  end else
+    Result:=nil;
+  LeaveCriticalSection(FSynchronizedMethodsCritSec);
 end;
 
 procedure TCarbonWidgetSet.AppTerminate;
@@ -292,6 +370,13 @@ end;
 procedure TCarbonWidgetSet.AppBringToFront;
 begin
 
+end;
+
+procedure TCarbonWidgetSet.DoSynchronize(const AMethod: TThreadMethod);
+begin
+  PushSynchronizeMethod(AMethod);
+  // wake up main tread
+  SendCheckSynchronizeMessage;
 end;
 
 function TCarbonWidgetSet.DCGetPixel(CanvasHandle: HDC; X, Y: integer

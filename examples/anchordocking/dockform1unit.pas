@@ -60,6 +60,7 @@ begin
   DockForm.Docker.Manager:=DockingManager;
   DockForm.Name:=DockForm.Docker.DockerName;
   DockForm.Docker.Name:='Docker'+DockForm.Name;
+  DockForm.Visible:=true;
   DebugLn('TMainForm.CreateNewForm ',DockForm.Name,' ',DockingManager.FindDockerByControl(DockForm,nil).DockerName,' ',DockingManager.GetControlConfigName(DockForm));
 end;
 
@@ -74,11 +75,13 @@ var
   Form2: TCustomForm;
   Form3: TCustomForm;
   Config: TXMLConfigStorage;
+  UseConfig: Boolean;
 begin
   if Sender=nil then ;
   DockingManager:=TLazDockingManager.Create(Self);
   
-  if FileExists('config.xml') then begin
+  UseConfig:=FileExists('config.xml');
+  if UseConfig then begin
     Config:=TXMLConfigStorage.Create('config.xml',true);
     DockingManager.LoadFromConfig(Config);
     Config.Free;
@@ -89,10 +92,13 @@ begin
   DockerForm1.Manager:=DockingManager;
   
   Form2:=CreateNewForm;
-  DockingManager.Manager.InsertControl(Form2,alLeft,Self);
-
   Form3:=CreateNewForm;
-  DockingManager.Manager.InsertControl(Form3,alBottom,Self);
+
+  if not UseConfig then begin
+    DebugLn(['TMainForm.FormCreate AAAAAA']);
+    DockingManager.Manager.InsertControl(Form2,alLeft,Self);
+    DockingManager.Manager.InsertControl(Form3,alBottom,Self);
+  end;
   
   DockingManager.WriteDebugReport;
   

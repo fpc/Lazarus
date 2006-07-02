@@ -54,14 +54,17 @@ type
 
   TCarbonWidgetSet = class(TWidgetSet)
   private
-    // This variable must be maintained by your thread scheduling
-    // code to accurately reflect the number of threads that are
-    // ready and need time for computation.
-    FNumberOfRunningThreads: SInt32;
     // Set when the QuitEventHandler terminates
     FTerminating: Boolean;
+    // synchronized functions
+    FSynchronizedMethodsCritSec: TCriticalSection;
+    FSynchronizedMethods: array of TThreadMethod; // ToDo: replace with a queue
+    fMainEventQueue: EventQueueRef;
   protected
     procedure PassCmdLineOptions; override;
+    procedure SendCheckSynchronizeMessage;
+    procedure PushSynchronizeMethod(const AMethod: TThreadMethod);
+    function  PopSynchronizedMethod: TThreadMethod;
   public
     constructor Create;
     destructor Destroy; override;
@@ -73,6 +76,8 @@ type
     procedure AppTerminate; override;
     procedure AppMinimize; override;
     procedure AppBringToFront; override;
+    
+    procedure DoSynchronize(const AMethod: TThreadMethod);
 
     function  DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor; override;
     procedure DCSetPixel(CanvasHandle: HDC; X, Y: integer; AColor: TGraphicsColor); override;

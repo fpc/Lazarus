@@ -832,6 +832,7 @@ procedure TCustomForm.VisibleChanging;
 begin
   //if (FormStyle = fsMDIChild) and Visible then
   //  raise EInvalidOperation.Create(SMDIChildNotVisible);
+  inherited VisibleChanging;
 end;
 
 {------------------------------------------------------------------------------
