@@ -19,6 +19,7 @@
 constructor TCustomListView.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  ControlStyle := ControlStyle - [csCaptureMouse];
   FColumns := TListColumns.Create(self);
   FListItems := TListItems.Create(self);
   BorderStyle := bsSingle;
