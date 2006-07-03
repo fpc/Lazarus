@@ -182,7 +182,7 @@ type
     procedure GetDescriptionFromDevice(DC: HDC); virtual;
     procedure GetDescriptionFromBitmap(Bitmap: HBitmap); virtual;
     procedure LoadFromDevice(DC: HDC); virtual;
-    procedure LoadFromBitmap(Bitmap, MaskBitmap: HBitmap); virtual;
+    procedure LoadFromBitmap(Bitmap, MaskBitmap: HBitmap; AWidth: integer = -1; AHeight: integer = -1); virtual;
     procedure CreateBitmap(var Bitmap, MaskBitmap: HBitmap;
                            AlwaysCreateMask: boolean); virtual;
     procedure SetRawImage(const RawImage: TRawImage); virtual;
@@ -1678,7 +1678,7 @@ begin
   SetRawImage(ARawImage);
 end;
 
-procedure TLazIntfImage.LoadFromBitmap(Bitmap, MaskBitmap: HBitmap);
+procedure TLazIntfImage.LoadFromBitmap(Bitmap, MaskBitmap: HBitmap; AWidth, AHeight: integer);
 var
   ARect: TRect;
   ARawImage: TRawImage;
@@ -1687,6 +1687,10 @@ begin
   if not GetBitmapRawImageDescription(Bitmap,@NewDataDescription) then
     raise FPImageException.Create('Failed to get raw image description from bitmap');
   ARect:=Rect(0,0,NewDataDescription.Width,NewDataDescription.Height);
+  if (AWidth >= 0) and (dword(AWidth) < NewDataDescription.Width) then
+    ARect.Right := AWidth;
+  if (AHeight >= 0) and (dword(AHeight) > NewDataDescription.Height) then
+    ARect.Bottom := AHeight;
   if not GetRawImageFromBitmap(Bitmap,MaskBitmap,ARect,ARawImage) then
     raise FPImageException.Create('Failed to get raw image from bitmap');
   SetRawImage(ARawImage);

@@ -507,7 +507,7 @@ begin
         // copy content
         IntfImage:=TLazIntfImage.Create(0,0);
         try
-          IntfImage.LoadFromBitmap(FImage.FHandle,FImage.FMaskHandle);
+          IntfImage.LoadFromBitmap(FImage.FHandle,FImage.FMaskHandle,Width,Height);
           IntfImage.CreateBitmap(NewImage.FHandle,NewImage.FMaskHandle,false);
           FillChar(NewImage.FDIB, SizeOf(NewImage.FDIB), 0);
           if NewImage.HandleAllocated then
@@ -643,7 +643,10 @@ begin
   if (FImage.FDIB.dsbm.bmHeight <> NewHeight)
   or (FImage.FDIB.dsbm.bmWidth <> NewWidth) then
   begin
-    FreeImage;
+    if (Width <> 0) and (Height <> 0) and (NewWidth <> 0) and (NewHeight <> 0) then
+      UnshareImage(true)
+    else
+      FreeImage;
     FImage.FDIB.dsbm.bmWidth := NewWidth;
     FImage.FDIB.dsbm.bmHeight := NewHeight;
     Changed(Self);
