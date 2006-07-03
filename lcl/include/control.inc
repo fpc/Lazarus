@@ -2348,7 +2348,6 @@ var
 begin
   if (Parent=nil) or (not Parent.HandleAllocated)
   or ([csLoading,csDestroying]*Parent.ComponentState<>[])
-  or ([csLoading,csDestroying]*ComponentState<>[])
   then exit;
 
   if (CtrlIsVisible or ((csDesigning in ComponentState)
