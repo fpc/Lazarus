@@ -248,6 +248,7 @@ ResourceString
   ctsFileHasCircularSymLink = '%s has a circular symbolic link';
   ctsFileIsNotExecutable = '%s is not executable';
   ctsSrcPathForCompiledUnits = 'src path for compiled units';
+  ctsTCodeToolManagerConsistencyCheck = 'TCodeToolManager.ConsistencyCheck=%d';
 
 implementation
 

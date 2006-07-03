@@ -3971,8 +3971,7 @@ begin
     end;
   finally
     if (Result<>0) and (FCatchExceptions=false) then
-      raise Exception.Create(
-                        'TCodeToolManager.ConsistencyCheck='+IntToStr(Result));
+      raise Exception.CreateFmt(ctsTCodeToolManagerConsistencyCheck, [Result]);
   end;
   Result:=0;
 end;
