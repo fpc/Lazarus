@@ -38,8 +38,7 @@ uses
 ////////////////////////////////////////////////////
   glib2,  gdk2, gtk2, Pango,
   WSStdCtrls, WSLCLClasses, GtkWSStdCtrls, Gtk2Int, LCLType, GtkDef, LCLProc,
-  //Gtk2CellRenderer,
-  GTKWinApiWindow, gtkglobals, gtkproc, InterfaceBase;
+  Gtk2CellRenderer, GTKWinApiWindow, gtkglobals, gtkproc, InterfaceBase;
 
 type
 
@@ -309,18 +308,15 @@ begin
   ListStoreModel := gtk_tree_view_get_model(PGtkTreeView(Widget));
   Selection := gtk_tree_view_get_selection(PGtkTreeView(Widget));
 
-  if gtk_tree_model_iter_nth_child(ListStoreModel, @Iter, nil, AnIndex) then begin
+  if gtk_tree_model_iter_nth_child(ListStoreModel, @Iter, nil, AnIndex) then
+  begin
     case ASelected of
       True:
-      begin
         if not gtk_tree_selection_iter_is_selected(Selection, @Iter) then
           gtk_tree_selection_select_iter(Selection, @Iter);
-      end;
       False:
-      begin
         if gtk_tree_selection_iter_is_selected(Selection, @Iter) then
           gtk_tree_selection_unselect_iter(Selection, @Iter);
-      end;
     end;
   end;
 end;
@@ -438,7 +434,7 @@ begin
   TempWidget:= gtk_tree_view_new_with_model (GTK_TREE_MODEL (liststore));
   g_object_unref (G_OBJECT (liststore));
 
-  renderer := gtk_cell_renderer_text_new;// LCLIntfCellRenderer_New();
+  renderer := LCLIntfCellRenderer_New();
   column := gtk_tree_view_column_new_with_attributes ('LISTITEMS', renderer,
                                                       ['text', 0, nil]);
   gtk_tree_view_append_column (GTK_TREE_VIEW (TempWidget), column);
@@ -535,8 +531,9 @@ begin
       begin
         Widget := GetWidgetInfo(Pointer(Handle), True)^.CoreWidget;
         Result := TGtkListStoreStringList.Create(
-                          gtk_tree_view_get_model(PGtkTreeView(Widget)),
-          Ord(ACustomListBox.fCompStyle = csCheckListBox) ,ACustomListBox);
+                                gtk_tree_view_get_model(PGtkTreeView(Widget)),
+                                Ord(ACustomListBox.fCompStyle = csCheckListBox),
+                                ACustomListBox);
         TGtkListStoreStringList(Result).Sorted := ACustomListBox.Sorted;
       end;
   else

@@ -2211,6 +2211,7 @@ lcl/interfaces/gtk/tests/lclclipboardunit.lfm svneol=native#text/plain
 lcl/interfaces/gtk/tests/lclclipboardunit.lrs svneol=native#text/plain
 lcl/interfaces/gtk/tests/lclclipboardunit.pas svneol=native#text/plain
 lcl/interfaces/gtk/tnotebook_close_tab.xpm -text svneol=native#image/x-xpixmap
+lcl/interfaces/gtk2/gtk2cellrenderer.pas svneol=native#text/plain
 lcl/interfaces/gtk2/gtk2int.pas svneol=native#text/pascal
 lcl/interfaces/gtk2/gtk2interface.lpk svneol=native#text/pascal
 lcl/interfaces/gtk2/gtk2interface.pas svneol=native#text/pascal

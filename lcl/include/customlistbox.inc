@@ -43,8 +43,7 @@ end;
 procedure TCustomListBox.Loaded;
 begin
   inherited Loaded;
-  if HandleAllocated then
-  begin
+  if HandleAllocated then begin
     LockSelectionChange;
     SendItemIndex;
     UnlockSelectionChange;

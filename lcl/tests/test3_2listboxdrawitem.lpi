@@ -27,12 +27,17 @@
         <MinVersion Major="1" Valid="True"/>
       </Item1>
     </RequiredPackages>
-    <Units Count="1">
+    <Units Count="2">
       <Unit0>
         <Filename Value="test3_2listboxdrawitem.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="test3_2listboxdrawitem"/>
       </Unit0>
+      <Unit1>
+        <Filename Value="test3_1listboxdrawitem.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="test3_1listboxdrawitem"/>
+      </Unit1>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
