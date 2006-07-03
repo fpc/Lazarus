@@ -1742,10 +1742,6 @@ msgstr "La línia del cursor en l'editor actual"
 msgid "Custom"
 msgstr "Personalitzat"
 
-#: lazarusidestrconsts:lismakeresstrcustomidentifier
-msgid "Custom Identifier"
-msgstr "Identificador personalitzat"
-
 #: lazarusidestrconsts:liscustomprogram
 msgid "Custom Program"
 msgstr "Programa personalitzat"
@@ -1757,6 +1753,10 @@ msgstr "Programa personalitzat%sUn programa FreePascal."
 #: lazarusidestrconsts:liskeycatcustom
 msgid "Custom commands"
 msgstr "Ordres personalitzades"
+
+#: lazarusidestrconsts:lismakeresstrcustomidentifier
+msgid "Custom identifier"
+msgstr "Identificador personalitzat"
 
 #: lazarusidestrconsts:liscustomoptions2
 msgid "Custom options"
@@ -3099,11 +3099,11 @@ msgid "Hide IDE windows on run"
 msgstr "Amaga les finestres de l'IDE durant l'execució"
 
 #: lazarusidestrconsts:lishintthemakeresourcestringfunctionexpectsastringcon2
-msgid "Hint: The Make Resourcestring Function expects a string constant.%sPlease select only a string expression and try again."
+msgid "Hint: The \"Make Resourcestring\" function expects a string constant.%sPlease select only a string expression and try again."
 msgstr "Suggeriment: La funció de la cadena del recurs espera una constant de cadena.%sSi us plau, seleccioneu només una expressió de cadena i torneu-ho a provar."
 
 #: lazarusidestrconsts:lishintthemakeresourcestringfunctionexpectsastringcon
-msgid "Hint: The Make Resourcestring Function expects a string constant.%sPlease select the expression and try again."
+msgid "Hint: The \"Make Resourcestring\" function expects a string constant.%sPlease select the expression and try again."
 msgstr "Suggeriment: La funció de la cadena del recurs espera una constant de cadena.%sSi us plau, seleccioneu l'expressió i torneu-ho a provar."
 
 #: lazarusidestrconsts:dlgedhintcommand
@@ -3166,21 +3166,21 @@ msgstr "INS"
 msgid "Identifier"
 msgstr "Identificador"
 
-#: lazarusidestrconsts:lismakeresstridentifierlength
-msgid "Identifier Length:"
-msgstr "Longitud de l'identificador"
-
-#: lazarusidestrconsts:lismakeresstridentifierprefix
-msgid "Identifier Prefix:"
-msgstr "Prefix de l'identificador"
-
 #: lazarusidestrconsts:dlgedidcomlet
 msgid "Identifier completion"
 msgstr "Completa l'identificador"
 
+#: lazarusidestrconsts:lismakeresstridentifierlength
+msgid "Identifier length:"
+msgstr "Longitud de l'identificador"
+
 #: lazarusidestrconsts:dlgidentifierpolicy
 msgid "Identifier policy"
 msgstr "Política d'identificador"
+
+#: lazarusidestrconsts:lismakeresstridentifierprefix
+msgid "Identifier prefix:"
+msgstr "Prefix de l'identificador"
 
 #: lazarusidestrconsts:lisfriidentifier
 msgid "Identifier: %s"
@@ -3667,7 +3667,7 @@ msgid "Invalid destination directory"
 msgstr "El directori de destinació no és vàlid"
 
 #: lazarusidestrconsts:lisinvalidexpressionhintthemakeresourcestringfunction
-msgid "Invalid expression.%sHint: The Make Resourcestring Function expects a string constant in a single file. Please select the expression and try again."
+msgid "Invalid expression.%sHint: The \"Make Resourcestring\" function expects a string constant in a single file. Please select the expression and try again."
 msgstr "L'expressió no és vàlida.%sSuggeriment: La funció de la cadena del recurs espera una constant de cadena en un sol fitxer. Si us plau, seleccioneu l'expressió i torneu-ho a provar."
 
 #: lazarusidestrconsts:lisa2pinvalidfile
@@ -4614,10 +4614,6 @@ msgstr ""
 msgid "No ResourceString Section found"
 msgstr "No s'ha trobat la secció de la cadena del recurs"
 
-#: lazarusidestrconsts:lisnostringconstantfound
-msgid "No String Constant Found"
-msgstr "No s'ha trobat la constant de cadena"
-
 #: lazarusidestrconsts:lisnochange
 msgid "No change"
 msgstr "Cap canvi"
@@ -4653,6 +4649,10 @@ msgstr "No hi ha cap paquet seleccionat"
 #: lazarusidestrconsts:lisnoprogramfilesfound
 msgid "No program file %s%s%s found."
 msgstr "No s'ha trobat el fitxer del programa %s%s%s."
+
+#: lazarusidestrconsts:lisnostringconstantfound
+msgid "No string constant found"
+msgstr "No s'ha trobat la constant de cadena"
 
 #: lazarusidestrconsts:liscodetoolsdefsnodeanditschildrenareonly
 msgid "Node and its children are only valid for this project"
@@ -5730,13 +5730,13 @@ msgstr "S'ha produït un error mentre es carregava el recurs"
 msgid "Resource save error"
 msgstr "S'ha produït un error mentre es desava el recurs"
 
-#: lazarusidestrconsts:lismakeresstrresourcestringsection
-msgid "Resourcestring Section:"
-msgstr "Secció de cadena del recurs"
-
 #: lazarusidestrconsts:lismakeresstrresourcestringalreadyexis
 msgid "Resourcestring already exists"
 msgstr "Ja existeix la cadena del recurs"
+
+#: lazarusidestrconsts:lismakeresstrresourcestringsection
+msgid "Resourcestring section:"
+msgstr "Secció de cadena del recurs"
 
 #: lazarusidestrconsts:lismenurestart
 msgid "Restart"
@@ -6722,13 +6722,13 @@ msgstr "Postfix de desat"
 msgid "Streaming error"
 msgstr "S'ha produït un error d'afluent"
 
-#: lazarusidestrconsts:lismakeresstrstringconstantinsource
-msgid "String Constant in source"
-msgstr "Constant de cadena en el codi font"
-
 #: lazarusidestrconsts:liscodetoolsoptsstringconst
 msgid "String constant"
 msgstr "Constant alfanumèrica"
+
+#: lazarusidestrconsts:lismakeresstrstringconstantinsource
+msgid "String constant in source"
+msgstr "Constant de cadena en el codi font"
 
 #: lazarusidestrconsts:lismakeresstrstringswithsamevalue
 msgid "Strings with same value:"

@@ -521,11 +521,11 @@ resourcestring
   lisNOTECouldNotCreateDefineTemplateForLazarusSources = 'NOTE: Could not '
     +'create Define Template for Lazarus Sources';
   lisInvalidExpressionHintTheMakeResourcestringFunction = 'Invalid expression.%'
-    +'sHint: The Make Resourcestring Function expects a string constant in a '
+    +'sHint: The "Make Resourcestring" function expects a string constant in a '
     +'single file. Please select the expression and try again.';
   lisSelectionExceedsStringConstant = 'Selection exceeds string constant';
-  lisHintTheMakeResourcestringFunctionExpectsAStringCon2 = 'Hint: The Make '
-    +'Resourcestring Function expects a string constant.%sPlease select only '
+  lisHintTheMakeResourcestringFunctionExpectsAStringCon2 = 'Hint: The "Make '
+    +'Resourcestring" function expects a string constant.%sPlease select only '
     +'a string expression and try again.';
   lisNoResourceStringSectionFound = 'No ResourceString Section found';
   lisUnableToFindAResourceStringSectionInThisOrAnyOfThe = 'Unable to find a '
@@ -1853,20 +1853,21 @@ resourcestring
   lisMakeResStrResourcestringAlreadyExis = 'Resourcestring already exists';
   lisMakeResStrChooseAnotherName = 'The resourcestring %s%s%s already exists.%'
     +'sPlease choose another name.%sUse Ignore to add it anyway.';
-  lisMakeResStrStringConstantInSource = 'String Constant in source';
+  lisMakeResStrStringConstantInSource = 'String constant in source';
   lisMakeResStrConversionOptions = 'Conversion Options';
-  lisMakeResStrIdentifierPrefix = 'Identifier Prefix:';
-  lisMakeResStrIdentifierLength = 'Identifier Length:';
-  lisMakeResStrCustomIdentifier = 'Custom Identifier';
-  lisMakeResStrResourcestringSection = 'Resourcestring Section:';
+  lisMakeResStrIdentifierPrefix = 'Identifier prefix:';
+  lisMakeResStrIdentifierLength = 'Identifier length:';
+  lisMakeResStrDialogIdentifier = 'Identifier';
+  lisMakeResStrCustomIdentifier = 'Custom identifier';
+  lisMakeResStrResourcestringSection = 'Resourcestring section:';
   lisMakeResStrStringsWithSameValue = 'Strings with same value:';
   lisMakeResStrAppendToSection = 'Append to section';
   lisMakeResStrInsertAlphabetically = 'Insert alphabetically';
   lisMakeResStrInsertContexttSensitive = 'Insert context sensitive';
   lisMakeResStrSourcePreview = 'Source preview';
-  lisNoStringConstantFound = 'No String Constant Found';
-  lisHintTheMakeResourcestringFunctionExpectsAStringCon = 'Hint: The Make '
-    +'Resourcestring Function expects a string constant.%sPlease select the '
+  lisNoStringConstantFound = 'No string constant found';
+  lisHintTheMakeResourcestringFunctionExpectsAStringCon = 'Hint: The "Make '
+    +'Resourcestring" function expects a string constant.%sPlease select the '
     +'expression and try again.';
 
   // diff dialog

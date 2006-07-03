@@ -1535,7 +1535,7 @@ msgid "NOTE: Could not create Define Template for Lazarus Sources"
 msgstr ""
 
 #: lazarusidestrconsts:lisinvalidexpressionhintthemakeresourcestringfunction
-msgid "Invalid expression.%sHint: The Make Resourcestring Function expects a string constant in a single file. Please select the expression and try again."
+msgid "Invalid expression.%sHint: The \"Make Resourcestring\" function expects a string constant in a single file. Please select the expression and try again."
 msgstr ""
 
 #: lazarusidestrconsts:lisselectionexceedsstringconstant
@@ -1543,7 +1543,7 @@ msgid "Selection exceeds string constant"
 msgstr ""
 
 #: lazarusidestrconsts:lishintthemakeresourcestringfunctionexpectsastringcon2
-msgid "Hint: The Make Resourcestring Function expects a string constant.%sPlease select only a string expression and try again."
+msgid "Hint: The \"Make Resourcestring\" function expects a string constant.%sPlease select only a string expression and try again."
 msgstr ""
 
 #: lazarusidestrconsts:lisnoresourcestringsectionfound
@@ -5851,7 +5851,7 @@ msgid "The resourcestring %s%s%s already exists.%sPlease choose another name.%sU
 msgstr ""
 
 #: lazarusidestrconsts:lismakeresstrstringconstantinsource
-msgid "String Constant in source"
+msgid "String constant in source"
 msgstr ""
 
 #: lazarusidestrconsts:lismakeresstrconversionoptions
@@ -5859,19 +5859,23 @@ msgid "Conversion Options"
 msgstr ""
 
 #: lazarusidestrconsts:lismakeresstridentifierprefix
-msgid "Identifier Prefix:"
+msgid "Identifier prefix:"
 msgstr ""
 
 #: lazarusidestrconsts:lismakeresstridentifierlength
-msgid "Identifier Length:"
+msgid "Identifier length:"
+msgstr ""
+
+#: lazarusidestrconsts:lismakeresstrdialogidentifier
+msgid "Identifier"
 msgstr ""
 
 #: lazarusidestrconsts:lismakeresstrcustomidentifier
-msgid "Custom Identifier"
+msgid "Custom identifier"
 msgstr ""
 
 #: lazarusidestrconsts:lismakeresstrresourcestringsection
-msgid "Resourcestring Section:"
+msgid "Resourcestring section:"
 msgstr ""
 
 #: lazarusidestrconsts:lismakeresstrstringswithsamevalue
@@ -5895,11 +5899,11 @@ msgid "Source preview"
 msgstr ""
 
 #: lazarusidestrconsts:lisnostringconstantfound
-msgid "No String Constant Found"
+msgid "No string constant found"
 msgstr ""
 
 #: lazarusidestrconsts:lishintthemakeresourcestringfunctionexpectsastringcon
-msgid "Hint: The Make Resourcestring Function expects a string constant.%sPlease select the expression and try again."
+msgid "Hint: The \"Make Resourcestring\" function expects a string constant.%sPlease select the expression and try again."
 msgstr ""
 
 #: lazarusidestrconsts:lisdiffdlgtext1

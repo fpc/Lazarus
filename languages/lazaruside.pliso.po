@@ -1753,10 +1753,6 @@ msgstr "Wiersz w miejscu kursora"
 msgid "Custom"
 msgstr "Dodatkowe"
 
-#: lazarusidestrconsts:lismakeresstrcustomidentifier
-msgid "Custom Identifier"
-msgstr "Identyfikator u¿ytkownika"
-
 #: lazarusidestrconsts:liscustomprogram
 msgid "Custom Program"
 msgstr ""
@@ -1768,6 +1764,10 @@ msgstr ""
 #: lazarusidestrconsts:liskeycatcustom
 msgid "Custom commands"
 msgstr "Polecenia u¿ytkownika"
+
+#: lazarusidestrconsts:lismakeresstrcustomidentifier
+msgid "Custom identifier"
+msgstr "Identyfikator u¿ytkownika"
 
 #: lazarusidestrconsts:liscustomoptions2
 msgid "Custom options"
@@ -3110,11 +3110,11 @@ msgid "Hide IDE windows on run"
 msgstr "Ukryj okna IDE przy uruchomieniu"
 
 #: lazarusidestrconsts:lishintthemakeresourcestringfunctionexpectsastringcon2
-msgid "Hint: The Make Resourcestring Function expects a string constant.%sPlease select only a string expression and try again."
+msgid "Hint: The \"Make Resourcestring\" function expects a string constant.%sPlease select only a string expression and try again."
 msgstr "Wskazówka: funkcja Utwórz napis zasobów oczekuje sta³ej napisowej%sWybierz wyra¿enie i spróbuj ponownie."
 
 #: lazarusidestrconsts:lishintthemakeresourcestringfunctionexpectsastringcon
-msgid "Hint: The Make Resourcestring Function expects a string constant.%sPlease select the expression and try again."
+msgid "Hint: The \"Make Resourcestring\" function expects a string constant.%sPlease select the expression and try again."
 msgstr "Porada: Funkcja Make Resourcestring wymaga sta³ej napisowej.%sWybierz wyra¿enie i spróbuj ponownie."
 
 #: lazarusidestrconsts:dlgedhintcommand
@@ -3177,21 +3177,21 @@ msgstr "WST"
 msgid "Identifier"
 msgstr "Identyfikator"
 
-#: lazarusidestrconsts:lismakeresstridentifierlength
-msgid "Identifier Length:"
-msgstr "D³ugo¶æ identyfikatora:"
-
-#: lazarusidestrconsts:lismakeresstridentifierprefix
-msgid "Identifier Prefix:"
-msgstr "Przedrostek identyfikatora:"
-
 #: lazarusidestrconsts:dlgedidcomlet
 msgid "Identifier completion"
 msgstr "Uzupe³niaj identyfikatory"
 
+#: lazarusidestrconsts:lismakeresstridentifierlength
+msgid "Identifier length:"
+msgstr "D³ugo¶æ identyfikatora:"
+
 #: lazarusidestrconsts:dlgidentifierpolicy
 msgid "Identifier policy"
 msgstr "Identyfikatorów"
+
+#: lazarusidestrconsts:lismakeresstridentifierprefix
+msgid "Identifier prefix:"
+msgstr "Przedrostek identyfikatora:"
 
 #: lazarusidestrconsts:lisfriidentifier
 msgid "Identifier: %s"
@@ -3678,7 +3678,7 @@ msgid "Invalid destination directory"
 msgstr "B³êdny katalog docelowy"
 
 #: lazarusidestrconsts:lisinvalidexpressionhintthemakeresourcestringfunction
-msgid "Invalid expression.%sHint: The Make Resourcestring Function expects a string constant in a single file. Please select the expression and try again."
+msgid "Invalid expression.%sHint: The \"Make Resourcestring\" function expects a string constant in a single file. Please select the expression and try again."
 msgstr "B³êdne wyra¿enie.%sWskazówka: funkcja Utwórz napis zasobów oczekuje sta³ej napisowej w pojedyñczym pliku. Wybierz wyra¿enie i spróbuj ponownie."
 
 #: lazarusidestrconsts:lisa2pinvalidfile
@@ -4625,10 +4625,6 @@ msgstr ""
 msgid "No ResourceString Section found"
 msgstr "Nie znalaz³em sekcji ResourceString."
 
-#: lazarusidestrconsts:lisnostringconstantfound
-msgid "No String Constant Found"
-msgstr "Nie znalaz³em sta³ej napisowej"
-
 #: lazarusidestrconsts:lisnochange
 msgid "No change"
 msgstr ""
@@ -4664,6 +4660,10 @@ msgstr "Brak wybranego pakietu"
 #: lazarusidestrconsts:lisnoprogramfilesfound
 msgid "No program file %s%s%s found."
 msgstr "Nie znalaz³em pliku z programem %s%s%s."
+
+#: lazarusidestrconsts:lisnostringconstantfound
+msgid "No string constant found"
+msgstr "Nie znalaz³em sta³ej napisowej"
 
 #: lazarusidestrconsts:liscodetoolsdefsnodeanditschildrenareonly
 msgid "Node and its children are only valid for this project"
@@ -5741,13 +5741,13 @@ msgstr "Nie mo¿na za³adowaæ zasobów"
 msgid "Resource save error"
 msgstr "Nie mo¿na zapisaæ zasobów"
 
-#: lazarusidestrconsts:lismakeresstrresourcestringsection
-msgid "Resourcestring Section:"
-msgstr "Sekcja Resourcestring:"
-
 #: lazarusidestrconsts:lismakeresstrresourcestringalreadyexis
 msgid "Resourcestring already exists"
 msgstr "Resourcestring ju¿ istnieje"
+
+#: lazarusidestrconsts:lismakeresstrresourcestringsection
+msgid "Resourcestring section:"
+msgstr "Sekcja Resourcestring:"
 
 #: lazarusidestrconsts:lismenurestart
 msgid "Restart"
@@ -6733,13 +6733,13 @@ msgstr "Przyrostek \"zachowany\""
 msgid "Streaming error"
 msgstr "B³±d strumienia"
 
-#: lazarusidestrconsts:lismakeresstrstringconstantinsource
-msgid "String Constant in source"
-msgstr "Sta³a napisowa w ¼ródle"
-
 #: lazarusidestrconsts:liscodetoolsoptsstringconst
 msgid "String constant"
 msgstr "Sta³a napisowa"
+
+#: lazarusidestrconsts:lismakeresstrstringconstantinsource
+msgid "String constant in source"
+msgstr "Sta³a napisowa w ¼ródle"
 
 #: lazarusidestrconsts:lismakeresstrstringswithsamevalue
 msgid "Strings with same value:"

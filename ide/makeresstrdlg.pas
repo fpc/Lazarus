@@ -50,21 +50,19 @@ type
   { TMakeResStrDialog }
 
   TMakeResStrDialog = class(TForm)
+    CustomIdentifierCheckBox: TCheckBox;
+    IdentifierGroupBox: TGroupBox;
+    IdentifierEdit: TEdit;
+    IdentLengthComboBox: TComboBox;
+    IdentLengthLabel: TLabel;
+    IdentPrefixComboBox: TComboBox;
+    IdentPrefixLabel: TLabel;
     // source synedit
     StringConstGroupBox: TGroupBox;
     StringConstSynEdit: TSynEdit;
     
     // options
     ConversionGroupBox: TGroupBox;
-    // identifier prefix
-    IdentPrefixLabel: TLabel;
-    IdentPrefixComboBox: TComboBox;
-    // identifier length
-    IdentLengthLabel: TLabel;
-    IdentLengthComboBox: TComboBox;
-    // identifier
-    CustomIdentifierCheckBox: TCheckBox;
-    IdentifierEdit: TEdit;
     // resourcestring section
     ResStrSectionLabel: TLabel;
     ResStrSectionComboBox: TComboBox;
@@ -223,12 +221,10 @@ var
   w: integer;
 begin
   w := IdentPrefixLabel.Width;
-  w := Max(w, CustomIdentifierCheckBox.Width);
   w := Max(w, ResStrSectionLabel.Width);
   w := Max(w, ResStrWithSameValueLabel.Width);
 
   IdentPrefixLabel.Width := w;
-  CustomIdentifierCheckBox.Width := w;
   ResStrSectionLabel.Width := w;
   ResStrWithSameValueLabel.Width := w;
 end;
@@ -278,17 +274,18 @@ end;
 procedure TMakeResStrDialog.SetupComponents;
 begin
   // source
-  StringConstGroupBox.Caption:=lisMakeResStrStringConstantInSource;
-  ConversionGroupBox.Caption:=lisMakeResStrConversionOptions;
-  IdentPrefixLabel.Caption:=lisMakeResStrIdentifierPrefix;
-  IdentLengthLabel.Caption:=lisMakeResStrIdentifierLength;
-  CustomIdentifierCheckBox.Caption:=lisMakeResStrCustomIdentifier;
-  ResStrSectionLabel.Caption:=lisMakeResStrResourcestringSection;
-  ResStrWithSameValueLabel.Caption:=lisMakeResStrStringsWithSameValue;
   AppendResStrRadioButton.Caption:=lisMakeResStrAppendToSection;
+  ConversionGroupBox.Caption:=lisMakeResStrConversionOptions;
+  CustomIdentifierCheckBox.Caption:=lisMakeResStrCustomIdentifier;
+  IdentifierGroupBox.Caption := lisMakeResStrDialogIdentifier;
+  IdentLengthLabel.Caption:=lisMakeResStrIdentifierLength;
+  IdentPrefixLabel.Caption:=lisMakeResStrIdentifierPrefix;
   InsertAlphabeticallyResStrRadioButton.Caption:=lisMakeResStrInsertAlphabetically;
   InsertContextSensitiveRadioButton.Caption:=lisMakeResStrInsertContexttSensitive;
+  ResStrSectionLabel.Caption:=lisMakeResStrResourcestringSection;
+  ResStrWithSameValueLabel.Caption:=lisMakeResStrStringsWithSameValue;
   SrcPreviewGroupBox.Caption:=lisMakeResStrSourcePreview;
+  StringConstGroupBox.Caption:=lisMakeResStrStringConstantInSource;
 
   // ok+cancel buttons
   OkButton.Caption:=lisLazBuildOk;

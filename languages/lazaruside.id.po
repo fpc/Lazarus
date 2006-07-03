@@ -1756,10 +1756,6 @@ msgstr "Baris kursor dalam editor saat ini"
 msgid "Custom"
 msgstr "Kustom"
 
-#: lazarusidestrconsts:lismakeresstrcustomidentifier
-msgid "Custom Identifier"
-msgstr "Pengenal Kustom:"
-
 #: lazarusidestrconsts:liscustomprogram
 msgid "Custom Program"
 msgstr "Program Kustom"
@@ -1771,6 +1767,10 @@ msgstr "Program Kustom%sProgram freepascal"
 #: lazarusidestrconsts:liskeycatcustom
 msgid "Custom commands"
 msgstr "Perintah Kustom"
+
+#: lazarusidestrconsts:lismakeresstrcustomidentifier
+msgid "Custom identifier"
+msgstr "Pengenal Kustom:"
 
 #: lazarusidestrconsts:liscustomoptions2
 msgid "Custom options"
@@ -3113,11 +3113,11 @@ msgid "Hide IDE windows on run"
 msgstr "Sembunyikan jendela IDE saat menjalankan"
 
 #: lazarusidestrconsts:lishintthemakeresourcestringfunctionexpectsastringcon2
-msgid "Hint: The Make Resourcestring Function expects a string constant.%sPlease select only a string expression and try again."
+msgid "Hint: The \"Make Resourcestring\" function expects a string constant.%sPlease select only a string expression and try again."
 msgstr "Petunjuk: Fungsi Make Resourcestring mengharapkan konstan string. %sSiliahkan pilih hanya ekspresi string dan coba lagi."
 
 #: lazarusidestrconsts:lishintthemakeresourcestringfunctionexpectsastringcon
-msgid "Hint: The Make Resourcestring Function expects a string constant.%sPlease select the expression and try again."
+msgid "Hint: The \"Make Resourcestring\" function expects a string constant.%sPlease select the expression and try again."
 msgstr "Petunjuk:  Fungsi Buat Resourcestring mengharapkan konstan string.%sSilahkan pilih ekspresi dan coba lagi."
 
 #: lazarusidestrconsts:dlgedhintcommand
@@ -3180,21 +3180,21 @@ msgstr "INS"
 msgid "Identifier"
 msgstr "Pengenal"
 
-#: lazarusidestrconsts:lismakeresstridentifierlength
-msgid "Identifier Length:"
-msgstr "Panjang Pengenal:"
-
-#: lazarusidestrconsts:lismakeresstridentifierprefix
-msgid "Identifier Prefix:"
-msgstr "Prefiks Pengenal:"
-
 #: lazarusidestrconsts:dlgedidcomlet
 msgid "Identifier completion"
 msgstr "Pelengkapan pengenal"
 
+#: lazarusidestrconsts:lismakeresstridentifierlength
+msgid "Identifier length:"
+msgstr "Panjang Pengenal:"
+
 #: lazarusidestrconsts:dlgidentifierpolicy
 msgid "Identifier policy"
 msgstr "Kebijakan pengenal"
+
+#: lazarusidestrconsts:lismakeresstridentifierprefix
+msgid "Identifier prefix:"
+msgstr "Prefiks Pengenal:"
 
 #: lazarusidestrconsts:lisfriidentifier
 msgid "Identifier: %s"
@@ -3681,7 +3681,7 @@ msgid "Invalid destination directory"
 msgstr "Direktori tujuan tidak benar"
 
 #: lazarusidestrconsts:lisinvalidexpressionhintthemakeresourcestringfunction
-msgid "Invalid expression.%sHint: The Make Resourcestring Function expects a string constant in a single file. Please select the expression and try again."
+msgid "Invalid expression.%sHint: The \"Make Resourcestring\" function expects a string constant in a single file. Please select the expression and try again."
 msgstr "Ekspresi tidak benar.%sPetunjuk: Fungsi Make Resourcestring mengharapkan konstan string dalam file tunggal. Silahkan pilih ekspresi dan coba lagi."
 
 #: lazarusidestrconsts:lisa2pinvalidfile
@@ -4628,10 +4628,6 @@ msgstr "Penanda berikutnya"
 msgid "No ResourceString Section found"
 msgstr "ResourceString Section tidak ditemukan"
 
-#: lazarusidestrconsts:lisnostringconstantfound
-msgid "No String Constant Found"
-msgstr "Tidak ada Konstan String Ditemukan"
-
 #: lazarusidestrconsts:lisnochange
 msgid "No change"
 msgstr "Tidak ada perubahan"
@@ -4667,6 +4663,10 @@ msgstr "Tidak ada paket yang dipilih"
 #: lazarusidestrconsts:lisnoprogramfilesfound
 msgid "No program file %s%s%s found."
 msgstr "File program %s%s%s tidak ditemukan"
+
+#: lazarusidestrconsts:lisnostringconstantfound
+msgid "No string constant found"
+msgstr "Tidak ada Konstan String Ditemukan"
 
 #: lazarusidestrconsts:liscodetoolsdefsnodeanditschildrenareonly
 msgid "Node and its children are only valid for this project"
@@ -5744,13 +5744,13 @@ msgstr "Kesalahan pengambilan resource"
 msgid "Resource save error"
 msgstr "Penyimpanan resource salah"
 
-#: lazarusidestrconsts:lismakeresstrresourcestringsection
-msgid "Resourcestring Section:"
-msgstr "Bagian Resourcestring:"
-
 #: lazarusidestrconsts:lismakeresstrresourcestringalreadyexis
 msgid "Resourcestring already exists"
 msgstr "Resourcestring sudah ada"
+
+#: lazarusidestrconsts:lismakeresstrresourcestringsection
+msgid "Resourcestring section:"
+msgstr "Bagian Resourcestring:"
 
 #: lazarusidestrconsts:lismenurestart
 msgid "Restart"
@@ -6736,13 +6736,13 @@ msgstr "Akhiran Stored"
 msgid "Streaming error"
 msgstr "Pengaliran salah"
 
-#: lazarusidestrconsts:lismakeresstrstringconstantinsource
-msgid "String Constant in source"
-msgstr "Konstan String dalam sumber"
-
 #: lazarusidestrconsts:liscodetoolsoptsstringconst
 msgid "String constant"
 msgstr "Konstan string"
+
+#: lazarusidestrconsts:lismakeresstrstringconstantinsource
+msgid "String constant in source"
+msgstr "Konstan String dalam sumber"
 
 #: lazarusidestrconsts:lismakeresstrstringswithsamevalue
 msgid "Strings with same value:"

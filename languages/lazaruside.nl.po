@@ -1,3 +1,14 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2006-06-22 22:37+0100\n"
+"Last-Translator: Darius Blaszijk <dhkblaszyk@zeelandnet.nl>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Transfer-Encoding: 8bit\n"
+
 #: lazarusidestrconsts:srkmcommand1
 msgid "    command1 \""
 msgstr "   commando1 \""
@@ -428,7 +439,7 @@ msgstr "Additionele bestanden om te zoeken (d.w.z. /pad/*.pas, /pad2/*.pp)"
 
 #: lazarusidestrconsts:lisdebugoptionsfrmadditionalsearchpath
 msgid "Additional search path"
-msgstr ""
+msgstr "Additioneel zoekpad"
 
 #: lazarusidestrconsts:dlgadjusttopline
 msgid "Adjust top line due to comment in front"
@@ -924,7 +935,7 @@ msgstr "Alleen the class van TComponents kan gewijzigd worden."
 
 #: lazarusidestrconsts:dlgcancel
 msgid "Cancel"
-msgstr "Annuleer"
+msgstr "Annuleren"
 
 #: lazarusidestrconsts:liscancelloadingunit
 msgid "Cancel loading unit"
@@ -1032,11 +1043,11 @@ msgstr "Controleert:"
 
 #: lazarusidestrconsts:rslanguagechinese
 msgid "Chinese"
-msgstr ""
+msgstr "Chinees"
 
 #: lazarusidestrconsts:lischoosedelphipackage
 msgid "Choose Delphi package (*.dpk)"
-msgstr ""
+msgstr "Kies Delphi package (*.dpk)"
 
 #: lazarusidestrconsts:lischoosedelphiproject
 msgid "Choose Delphi project (*.dpr)"
@@ -1284,7 +1295,7 @@ msgstr "Kleur"
 
 #: lazarusidestrconsts:dlgclrscheme
 msgid "Color Scheme"
-msgstr ""
+msgstr "Kleuren schema"
 
 #: lazarusidestrconsts:dlgenvcolors
 msgid "Colors"
@@ -1420,7 +1431,7 @@ msgstr "Component Naam %s%s%s is geen geldige identifier"
 
 #: lazarusidestrconsts:lisfpcomponents
 msgid "Components"
-msgstr ""
+msgstr "Componenten"
 
 #: lazarusidestrconsts:srkmcatcomponentsmenu
 msgid "Components menu commands"
@@ -1528,11 +1539,11 @@ msgstr "Converteer .dfm-bestand naar .lfm"
 
 #: lazarusidestrconsts:lismenuconvertdelphipackage
 msgid "Convert Delphi package to Lazarus package"
-msgstr ""
+msgstr "Converteer Delphi package naar een Lazarus package"
 
 #: lazarusidestrconsts:lismenuconvertdelphiproject
 msgid "Convert Delphi project to Lazarus project"
-msgstr ""
+msgstr "Converteer Delphi project naar een Lazarus project"
 
 #: lazarusidestrconsts:lismenuconvertdelphiunit
 msgid "Convert Delphi unit to Lazarus unit"
@@ -1568,7 +1579,7 @@ msgstr "Kopieerfout"
 
 #: lazarusidestrconsts:uemcopyfilename
 msgid "Copy filename"
-msgstr ""
+msgstr "Kopieer bestandsnaam"
 
 #: lazarusidestrconsts:lisdsgcopycomponents
 msgid "Copy selected components to clipboard"
@@ -1742,10 +1753,6 @@ msgstr "Cursor rij in huidige editor"
 msgid "Custom"
 msgstr "Aanpasbaar"
 
-#: lazarusidestrconsts:lismakeresstrcustomidentifier
-msgid "Custom Identifier"
-msgstr "Aanpasbare Identifier"
-
 #: lazarusidestrconsts:liscustomprogram
 msgid "Custom Program"
 msgstr "Aanpasbaar Programma"
@@ -1757,6 +1764,10 @@ msgstr "Aanpasbaar Programma%sEen Freepascalprogramma."
 #: lazarusidestrconsts:liskeycatcustom
 msgid "Custom commands"
 msgstr "Aanpasbare commando's"
+
+#: lazarusidestrconsts:lismakeresstrcustomidentifier
+msgid "Custom identifier"
+msgstr ""
 
 #: lazarusidestrconsts:liscustomoptions2
 msgid "Custom options"
@@ -1816,7 +1827,7 @@ msgstr "Debugger error%sOeps, de debugger is gecrashed%sSla uw werk op!%sKies St
 
 #: lazarusidestrconsts:lisdebugoptionsfrmdebuggergeneraloptions
 msgid "Debugger general options"
-msgstr ""
+msgstr "Algemene debugger opties"
 
 #: lazarusidestrconsts:lisdebuggerinvalid
 msgid "Debugger invalid"
@@ -1828,7 +1839,7 @@ msgstr "Debugger pad toevoeging (geen):"
 
 #: lazarusidestrconsts:lisdebugoptionsfrmdebuggerspecific
 msgid "Debugger specific options (depends on type of debugger)"
-msgstr ""
+msgstr "Specifieke opties debugger (hangt af van het type debugger)"
 
 #: lazarusidestrconsts:dlgdebugtype
 msgid "Debugger type and path"
@@ -1864,7 +1875,7 @@ msgstr "Definieer recursief"
 
 #: lazarusidestrconsts:lisctdefdefinetemplates
 msgid "Define templates"
-msgstr ""
+msgstr "Definieer templates"
 
 #: lazarusidestrconsts:dlgeddelay
 msgid "Delay"
@@ -2108,7 +2119,7 @@ msgstr "Splashscherm niet tonen"
 
 #: lazarusidestrconsts:lisuedonotsho
 msgid "Do not show this message again."
-msgstr ""
+msgstr "Toon dit bericht niet meer."
 
 #: lazarusidestrconsts:dlgnotsplitlinefront
 msgid "Do not split line In front of:"
@@ -2196,7 +2207,7 @@ msgstr "Bewerk code template"
 
 #: lazarusidestrconsts:lismenueditcontexthelp
 msgid "Edit context sensitive Help"
-msgstr ""
+msgstr "Bewerk context gevoelige Help"
 
 #: lazarusidestrconsts:srkmeditforcmd
 msgid "Edit keys for command"
@@ -2504,7 +2515,7 @@ msgstr "Destilleer procedure"
 
 #: lazarusidestrconsts:lishofpcdochtmlpath
 msgid "FPC Doc HTML Path"
-msgstr ""
+msgstr "FPC Doc HTML pad"
 
 #: lazarusidestrconsts:liscodetoolsdefsfpcsvnsourcedirectory
 msgid "FPC SVN source directory"
@@ -2580,7 +2591,7 @@ msgstr "Bestand al aanwezig in package"
 
 #: lazarusidestrconsts:dlgfileexts
 msgid "File extensions"
-msgstr ""
+msgstr "Bestands extensie"
 
 #: lazarusidestrconsts:lispkgmangfileisalreadyinpackage
 msgid "File is already in package"
@@ -2712,7 +2723,7 @@ msgstr "Spring naar begin code blok "
 
 #: lazarusidestrconsts:liscomppalfindcomponent
 msgid "Find component"
-msgstr ""
+msgstr "Vind component"
 
 #: lazarusidestrconsts:srkmecfinddeclaration
 msgid "Find declaration"
@@ -2740,7 +2751,7 @@ msgstr "Spring naar eind code blok"
 
 #: lazarusidestrconsts:lisfpfindpalettecomponent
 msgid "Find palette component"
-msgstr ""
+msgstr "Vind palette component"
 
 #: lazarusidestrconsts:srkmecfindprevious
 msgid "Find previous"
@@ -2780,7 +2791,7 @@ msgstr "Volg cursor"
 
 #: lazarusidestrconsts:lisuefontwith
 msgid "Font without UTF-8"
-msgstr ""
+msgstr "Lettertype zonder UTF-8"
 
 #: lazarusidestrconsts:lisforcerenaming
 msgid "Force renaming"
@@ -3099,12 +3110,12 @@ msgid "Hide IDE windows on run"
 msgstr "Verberg IDE vensters bij uitvoeren"
 
 #: lazarusidestrconsts:lishintthemakeresourcestringfunctionexpectsastringcon2
-msgid "Hint: The Make Resourcestring Function expects a string constant.%sPlease select only a string expression and try again."
+msgid "Hint: The \"Make Resourcestring\" function expects a string constant.%sPlease select only a string expression and try again."
 msgstr "Hint: De maak resourcestring functie verwacht een string constante.%sSelecteer a.u.b. alleen een string expressie en probeer nogmaals."
 
 #: lazarusidestrconsts:lishintthemakeresourcestringfunctionexpectsastringcon
-msgid "Hint: The Make Resourcestring Function expects a string constant.%sPlease select the expression and try again."
-msgstr "Hint: De maak resourcestring functie verwacht een string constante.%sSelecteer a.u.b. de expressie en probeer nogmaals."
+msgid "Hint: The \"Make Resourcestring\" function expects a string constant.%sPlease select the expression and try again."
+msgstr ""
 
 #: lazarusidestrconsts:dlgedhintcommand
 msgid "Hint: click on the command you want to edit"
@@ -3166,21 +3177,21 @@ msgstr "INS"
 msgid "Identifier"
 msgstr "Identifier"
 
-#: lazarusidestrconsts:lismakeresstridentifierlength
-msgid "Identifier Length:"
-msgstr "Identifier lengte:"
-
-#: lazarusidestrconsts:lismakeresstridentifierprefix
-msgid "Identifier Prefix:"
-msgstr "Identifier prefix:"
-
 #: lazarusidestrconsts:dlgedidcomlet
 msgid "Identifier completion"
 msgstr "Identifier completering"
 
+#: lazarusidestrconsts:lismakeresstridentifierlength
+msgid "Identifier length:"
+msgstr "Identifier lengte:"
+
 #: lazarusidestrconsts:dlgidentifierpolicy
 msgid "Identifier policy"
 msgstr "Identifier beleid"
+
+#: lazarusidestrconsts:lismakeresstridentifierprefix
+msgid "Identifier prefix:"
+msgstr ""
 
 #: lazarusidestrconsts:lisfriidentifier
 msgid "Identifier: %s"
@@ -3216,7 +3227,7 @@ msgstr "Aantal te negeren spaties"
 
 #: lazarusidestrconsts:lispkgmangignoreandsavepackagenow
 msgid "Ignore and save package now"
-msgstr ""
+msgstr "Negeer en sla package nu op"
 
 #: lazarusidestrconsts:lisignorebinaries
 msgid "Ignore binaries"
@@ -3252,7 +3263,7 @@ msgstr "Negeer spaties aan begin van regel"
 
 #: lazarusidestrconsts:lisdebugoptionsfrmignoretheseexceptions
 msgid "Ignore these exceptions"
-msgstr ""
+msgstr "Negeer deze exceptions"
 
 #: lazarusidestrconsts:srkmecimestr
 msgid "Ime Str"
@@ -3316,7 +3327,7 @@ msgstr "Selectie Inspringen"
 
 #: lazarusidestrconsts:rslanguageindonesian
 msgid "Indonesian"
-msgstr ""
+msgstr "Indonesisch"
 
 #: lazarusidestrconsts:lisinformationaboutunit
 msgid "Information about %s"
@@ -3667,7 +3678,7 @@ msgid "Invalid destination directory"
 msgstr "Ongeldige destinatie directory"
 
 #: lazarusidestrconsts:lisinvalidexpressionhintthemakeresourcestringfunction
-msgid "Invalid expression.%sHint: The Make Resourcestring Function expects a string constant in a single file. Please select the expression and try again."
+msgid "Invalid expression.%sHint: The \"Make Resourcestring\" function expects a string constant in a single file. Please select the expression and try again."
 msgstr "Ongeldige expressie.%sHint: De \"Make Resourcestring\" Functie verwacht een string in een enkel bestand. Selecteer de expressie en probeer het opnieuw."
 
 #: lazarusidestrconsts:lisa2pinvalidfile
@@ -4328,7 +4339,7 @@ msgstr "Gewijzigd: %s"
 
 #: lazarusidestrconsts:lisdebugoptionsfrmmodule
 msgid "Module"
-msgstr ""
+msgstr "Module"
 
 #: lazarusidestrconsts:lispckeditmore
 msgid "More ..."
@@ -4508,7 +4519,7 @@ msgstr "NB: Oude configuratie bestand voor code tools wordt geladen: "
 
 #: lazarusidestrconsts:lisdebugoptionsfrmname
 msgid "Name"
-msgstr ""
+msgstr "Naam"
 
 #: lazarusidestrconsts:lisnameofnewprocedure
 msgid "Name of new procedure"
@@ -4614,10 +4625,6 @@ msgstr "Volgend bookmark"
 msgid "No ResourceString Section found"
 msgstr "Geen ResourceString sectie gevonden"
 
-#: lazarusidestrconsts:lisnostringconstantfound
-msgid "No String Constant Found"
-msgstr "Geen string constante gevonden"
-
 #: lazarusidestrconsts:lisnochange
 msgid "No change"
 msgstr "Geen wijziging"
@@ -4653,6 +4660,10 @@ msgstr "Geen package geselecteerd"
 #: lazarusidestrconsts:lisnoprogramfilesfound
 msgid "No program file %s%s%s found."
 msgstr "Geen programma bestand %s%s%s gevonden."
+
+#: lazarusidestrconsts:lisnostringconstantfound
+msgid "No string constant found"
+msgstr "Geen string constante gevonden"
 
 #: lazarusidestrconsts:liscodetoolsdefsnodeanditschildrenareonly
 msgid "Node and its children are only valid for this project"
@@ -4820,7 +4831,7 @@ msgstr "Open Recent Project"
 
 #: lazarusidestrconsts:lisopenasxmlfile
 msgid "Open as XML file"
-msgstr ""
+msgstr "Open als XML bestand"
 
 #: lazarusidestrconsts:lisopenfile
 msgid "Open file"
@@ -4868,7 +4879,7 @@ msgstr "Open recente Package"
 
 #: lazarusidestrconsts:lisopenthefileasnormalsource
 msgid "Open the file as normal source"
-msgstr ""
+msgstr "Open het bestand als normale broncode"
 
 #: lazarusidestrconsts:lisopenthepackage
 msgid "Open the package %s?"
@@ -4876,7 +4887,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisopentheproject
 msgid "Open the project %s?"
-msgstr ""
+msgstr "Open het project %s"
 
 #: lazarusidestrconsts:liscomppalopenunit
 msgid "Open unit"
@@ -5000,7 +5011,7 @@ msgstr "Package graph"
 
 #: lazarusidestrconsts:lispackageinfo
 msgid "Package Info"
-msgstr ""
+msgstr "Package informatie"
 
 #: lazarusidestrconsts:lisoippackagename
 msgid "Package Name"
@@ -5024,7 +5035,7 @@ msgstr "Package conflicteert."
 
 #: lazarusidestrconsts:lispkgmangpackagefilemissing
 msgid "Package file missing"
-msgstr ""
+msgstr "Package bestand ontbreekt"
 
 #: lazarusidestrconsts:lispkgsyspackagefilenotfound
 msgid "Package file not found"
@@ -5032,7 +5043,7 @@ msgstr "Package bestand niet gevonden"
 
 #: lazarusidestrconsts:lispkgmangpackagefilenotsaved
 msgid "Package file not saved"
-msgstr ""
+msgstr "Package bestand niet opgeslagen"
 
 #: lazarusidestrconsts:lispkgmangpackageisnodesigntimepackage
 msgid "Package is no designtime package"
@@ -5276,7 +5287,7 @@ msgstr "Procedure met interface"
 
 #: lazarusidestrconsts:lisdebugoptionsfrmprocess
 msgid "Process"
-msgstr ""
+msgstr "Proces"
 
 #: lazarusidestrconsts:lisprogram
 msgid "Program"
@@ -5384,7 +5395,7 @@ msgstr "Project is 'runnable'"
 
 #: lazarusidestrconsts:lisprojectmacroproperties
 msgid "Project macro properties"
-msgstr ""
+msgstr "Project macro eigenschappen"
 
 #: lazarusidestrconsts:srkmcatprojectmenu
 msgid "Project menu commands"
@@ -5556,7 +5567,7 @@ msgstr "Reguliere expressies"
 
 #: lazarusidestrconsts:lisrelativepaths
 msgid "Relative paths"
-msgstr ""
+msgstr "Relatieve paden"
 
 #: lazarusidestrconsts:lispckoptsrelease
 msgid "Release"
@@ -5684,7 +5695,7 @@ msgstr "Vervangen"
 
 #: lazarusidestrconsts:dlgreplaceall
 msgid "Replace &All"
-msgstr ""
+msgstr "Vervang &alles"
 
 #: lazarusidestrconsts:lispkgmangreplacefile
 msgid "Replace File"
@@ -5730,13 +5741,13 @@ msgstr "Resource laad fout"
 msgid "Resource save error"
 msgstr "Fout bij opslaan Resource"
 
-#: lazarusidestrconsts:lismakeresstrresourcestringsection
-msgid "Resourcestring Section:"
-msgstr "Resourcestring sectie:"
-
 #: lazarusidestrconsts:lismakeresstrresourcestringalreadyexis
 msgid "Resourcestring already exists"
 msgstr "Resourcestring bestaat al"
+
+#: lazarusidestrconsts:lismakeresstrresourcestringsection
+msgid "Resourcestring section:"
+msgstr "Resourcestring sectie:"
 
 #: lazarusidestrconsts:lismenurestart
 msgid "Restart"
@@ -5756,7 +5767,7 @@ msgstr "Herstel window afmeting"
 
 #: lazarusidestrconsts:lisdebugoptionsfrmresume
 msgid "Resume"
-msgstr ""
+msgstr "Hervat"
 
 #: lazarusidestrconsts:lisdebugoptionsfrmresumehandled
 msgid "Resume Handled"
@@ -5976,11 +5987,11 @@ msgstr "Bestand %s%s%s%sopslaan voor het sluiten van form %s%s%s?"
 
 #: lazarusidestrconsts:lisa2psavefiledialog
 msgid "Save file dialog"
-msgstr ""
+msgstr "Bewaar bestand dialoogvenster"
 
 #: lazarusidestrconsts:fdmsaveformasxml
 msgid "Save form as xml"
-msgstr ""
+msgstr "Sla formulier als xml op"
 
 #: lazarusidestrconsts:lisposaveinlpifil
 msgid "Save in .lpi file"
@@ -6492,7 +6503,7 @@ msgstr "Toon regelnummers"
 
 #: lazarusidestrconsts:lisdebugoptionsfrmshowmessageonstop
 msgid "Show message on stop"
-msgstr ""
+msgstr "Toon meldingen bij stoppen"
 
 #: lazarusidestrconsts:dlgshownothing
 msgid "Show nothing (only errors)"
@@ -6520,11 +6531,11 @@ msgstr "Toon gebruikte bestanden"
 
 #: lazarusidestrconsts:lissibling
 msgid "Sibling"
-msgstr ""
+msgstr "Nakomeling"
 
 #: lazarusidestrconsts:lisdebugoptionsfrmsignals
 msgid "Signals"
-msgstr ""
+msgstr "Signalen"
 
 #: lazarusidestrconsts:lissimplesyntax
 msgid "Simple Syntax"
@@ -6722,13 +6733,13 @@ msgstr "Opgeslagen postfix"
 msgid "Streaming error"
 msgstr "Fout in streaming"
 
-#: lazarusidestrconsts:lismakeresstrstringconstantinsource
-msgid "String Constant in source"
-msgstr "String constante in bron"
-
 #: lazarusidestrconsts:liscodetoolsoptsstringconst
 msgid "String constant"
 msgstr "String constante"
+
+#: lazarusidestrconsts:lismakeresstrstringconstantinsource
+msgid "String constant in source"
+msgstr "String constante in broncode"
 
 #: lazarusidestrconsts:lismakeresstrstringswithsamevalue
 msgid "Strings with same value:"
@@ -7128,7 +7139,7 @@ msgstr "De directorie \""
 
 #: lazarusidestrconsts:listhefileseemstobetheprogramfileofanexistinglazarusp
 msgid "The file %s seems to be the program file of an existing lazarus Project."
-msgstr ""
+msgstr "Het bestand %s lijkt het programma bestand te zijn van een bestaand Lazarus project."
 
 #: lazarusidestrconsts:listhefile
 msgid "The file %s%s%s"
@@ -7164,11 +7175,11 @@ msgstr "Het bestand %s%s%s%sstaat niet in het unitpad van het package.%s%s %s%s%
 
 #: lazarusidestrconsts:lispkgmangthefileofpackageismissing
 msgid "The file %s%s%s%sof package %s is missing."
-msgstr ""
+msgstr "Het bestand %s%s%s%svan package %s ontbreekt."
 
 #: lazarusidestrconsts:lispkgmangthefileofpackageneedstobesavedfirst
 msgid "The file %s%s%s%sof package %s needs to be saved first."
-msgstr ""
+msgstr "Het bestand %s%s%s%svan package %s dient eerst te worden opgeslagen."
 
 #: lazarusidestrconsts:listhefileseemstobeaprogramclosecurrentproject
 msgid "The file %s%s%s%sseems to be a program. Close current project and create a new lazarus project for this program?%s\"No\" will load the file as normal source."
@@ -8440,7 +8451,7 @@ msgstr "Breedte:"
 
 #: lazarusidestrconsts:lisdebugoptionsfrmwindow
 msgid "Window"
-msgstr ""
+msgstr "Venster"
 
 #: lazarusidestrconsts:dlgwinpos
 msgid "Window Positions"

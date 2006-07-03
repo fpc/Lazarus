@@ -1756,10 +1756,6 @@ msgstr "当前代码编辑器中光标所在行"
 msgid "Custom"
 msgstr "自定义"
 
-#: lazarusidestrconsts:lismakeresstrcustomidentifier
-msgid "Custom Identifier"
-msgstr "自定义标识符"
-
 #: lazarusidestrconsts:liscustomprogram
 msgid "Custom Program"
 msgstr "自定义程序"
@@ -1771,6 +1767,10 @@ msgstr "自定义 freepascal 程序 %s."
 #: lazarusidestrconsts:liskeycatcustom
 msgid "Custom commands"
 msgstr "自定义命令"
+
+#: lazarusidestrconsts:lismakeresstrcustomidentifier
+msgid "Custom identifier"
+msgstr "自定义标识符"
 
 #: lazarusidestrconsts:liscustomoptions2
 msgid "Custom options"
@@ -3113,11 +3113,11 @@ msgid "Hide IDE windows on run"
 msgstr "运行时隐藏 IDE 窗口"
 
 #: lazarusidestrconsts:lishintthemakeresourcestringfunctionexpectsastringcon2
-msgid "Hint: The Make Resourcestring Function expects a string constant.%sPlease select only a string expression and try again."
+msgid "Hint: The \"Make Resourcestring\" function expects a string constant.%sPlease select only a string expression and try again."
 msgstr "提示: 编译资源预期得到一个字符串常量.%s请选择一个字符串表达式并再次尝试."
 
 #: lazarusidestrconsts:lishintthemakeresourcestringfunctionexpectsastringcon
-msgid "Hint: The Make Resourcestring Function expects a string constant.%sPlease select the expression and try again."
+msgid "Hint: The \"Make Resourcestring\" function expects a string constant.%sPlease select the expression and try again."
 msgstr "提示: 编译资源预期得到一个字符串常量.%s请选择一个表达式并再次尝试."
 
 #: lazarusidestrconsts:dlgedhintcommand
@@ -3180,21 +3180,21 @@ msgstr "插入"
 msgid "Identifier"
 msgstr "标识符"
 
-#: lazarusidestrconsts:lismakeresstridentifierlength
-msgid "Identifier Length:"
-msgstr "标识符长度:"
-
-#: lazarusidestrconsts:lismakeresstridentifierprefix
-msgid "Identifier Prefix:"
-msgstr "标识符前缀"
-
 #: lazarusidestrconsts:dlgedidcomlet
 msgid "Identifier completion"
 msgstr "标识符自动完成"
 
+#: lazarusidestrconsts:lismakeresstridentifierlength
+msgid "Identifier length:"
+msgstr "标识符长度:"
+
 #: lazarusidestrconsts:dlgidentifierpolicy
 msgid "Identifier policy"
 msgstr "标识符规则"
+
+#: lazarusidestrconsts:lismakeresstridentifierprefix
+msgid "Identifier prefix:"
+msgstr "标识符前缀"
 
 #: lazarusidestrconsts:lisfriidentifier
 msgid "Identifier: %s"
@@ -3681,7 +3681,7 @@ msgid "Invalid destination directory"
 msgstr "无效的目标目录"
 
 #: lazarusidestrconsts:lisinvalidexpressionhintthemakeresourcestringfunction
-msgid "Invalid expression.%sHint: The Make Resourcestring Function expects a string constant in a single file. Please select the expression and try again."
+msgid "Invalid expression.%sHint: The \"Make Resourcestring\" function expects a string constant in a single file. Please select the expression and try again."
 msgstr "无效的表达式.%s提示: 编译资源功能要求在一个独立的文件中包含连续的字符串."
 
 #: lazarusidestrconsts:lisa2pinvalidfile
@@ -4628,10 +4628,6 @@ msgstr "下一个书签"
 msgid "No ResourceString Section found"
 msgstr "未找到任何资源字符串节"
 
-#: lazarusidestrconsts:lisnostringconstantfound
-msgid "No String Constant Found"
-msgstr "未找到字符串常量"
-
 #: lazarusidestrconsts:lisnochange
 msgid "No change"
 msgstr "没有改变"
@@ -4667,6 +4663,10 @@ msgstr "没有选择包"
 #: lazarusidestrconsts:lisnoprogramfilesfound
 msgid "No program file %s%s%s found."
 msgstr "未找到程序文件 %s%s%s ."
+
+#: lazarusidestrconsts:lisnostringconstantfound
+msgid "No string constant found"
+msgstr "未找到字符串常量"
 
 #: lazarusidestrconsts:liscodetoolsdefsnodeanditschildrenareonly
 msgid "Node and its children are only valid for this project"
@@ -5744,13 +5744,13 @@ msgstr "资源装载错误"
 msgid "Resource save error"
 msgstr "资源保存错误"
 
-#: lazarusidestrconsts:lismakeresstrresourcestringsection
-msgid "Resourcestring Section:"
-msgstr "资源字符串节:"
-
 #: lazarusidestrconsts:lismakeresstrresourcestringalreadyexis
 msgid "Resourcestring already exists"
 msgstr "资源已经存在"
+
+#: lazarusidestrconsts:lismakeresstrresourcestringsection
+msgid "Resourcestring section:"
+msgstr "资源字符串节:"
 
 #: lazarusidestrconsts:lismenurestart
 msgid "Restart"
@@ -6736,13 +6736,13 @@ msgstr "保存后缀"
 msgid "Streaming error"
 msgstr "流错误"
 
-#: lazarusidestrconsts:lismakeresstrstringconstantinsource
-msgid "String Constant in source"
-msgstr "代码中的字符串常数"
-
 #: lazarusidestrconsts:liscodetoolsoptsstringconst
 msgid "String constant"
 msgstr "字符串常数"
+
+#: lazarusidestrconsts:lismakeresstrstringconstantinsource
+msgid "String constant in source"
+msgstr "代码中的字符串常数"
 
 #: lazarusidestrconsts:lismakeresstrstringswithsamevalue
 msgid "Strings with same value:"

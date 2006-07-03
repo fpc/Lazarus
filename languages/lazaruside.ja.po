@@ -1752,10 +1752,6 @@ msgstr ""
 msgid "Custom"
 msgstr ""
 
-#: lazarusidestrconsts:lismakeresstrcustomidentifier
-msgid "Custom Identifier"
-msgstr ""
-
 #: lazarusidestrconsts:liscustomprogram
 msgid "Custom Program"
 msgstr ""
@@ -1767,6 +1763,10 @@ msgstr ""
 #: lazarusidestrconsts:liskeycatcustom
 msgid "Custom commands"
 msgstr "カスタムコマンド"
+
+#: lazarusidestrconsts:lismakeresstrcustomidentifier
+msgid "Custom identifier"
+msgstr ""
 
 #: lazarusidestrconsts:liscustomoptions2
 msgid "Custom options"
@@ -3109,11 +3109,11 @@ msgid "Hide IDE windows on run"
 msgstr "実行中はIDEウィンドウを隠す"
 
 #: lazarusidestrconsts:lishintthemakeresourcestringfunctionexpectsastringcon2
-msgid "Hint: The Make Resourcestring Function expects a string constant.%sPlease select only a string expression and try again."
+msgid "Hint: The \"Make Resourcestring\" function expects a string constant.%sPlease select only a string expression and try again."
 msgstr ""
 
 #: lazarusidestrconsts:lishintthemakeresourcestringfunctionexpectsastringcon
-msgid "Hint: The Make Resourcestring Function expects a string constant.%sPlease select the expression and try again."
+msgid "Hint: The \"Make Resourcestring\" function expects a string constant.%sPlease select the expression and try again."
 msgstr ""
 
 #: lazarusidestrconsts:dlgedhintcommand
@@ -3176,20 +3176,20 @@ msgstr ""
 msgid "Identifier"
 msgstr ""
 
-#: lazarusidestrconsts:lismakeresstridentifierlength
-msgid "Identifier Length:"
-msgstr ""
-
-#: lazarusidestrconsts:lismakeresstridentifierprefix
-msgid "Identifier Prefix:"
-msgstr ""
-
 #: lazarusidestrconsts:dlgedidcomlet
 msgid "Identifier completion"
 msgstr ""
 
+#: lazarusidestrconsts:lismakeresstridentifierlength
+msgid "Identifier length:"
+msgstr ""
+
 #: lazarusidestrconsts:dlgidentifierpolicy
 msgid "Identifier policy"
+msgstr ""
+
+#: lazarusidestrconsts:lismakeresstridentifierprefix
+msgid "Identifier prefix:"
 msgstr ""
 
 #: lazarusidestrconsts:lisfriidentifier
@@ -3677,7 +3677,7 @@ msgid "Invalid destination directory"
 msgstr ""
 
 #: lazarusidestrconsts:lisinvalidexpressionhintthemakeresourcestringfunction
-msgid "Invalid expression.%sHint: The Make Resourcestring Function expects a string constant in a single file. Please select the expression and try again."
+msgid "Invalid expression.%sHint: The \"Make Resourcestring\" function expects a string constant in a single file. Please select the expression and try again."
 msgstr ""
 
 #: lazarusidestrconsts:lisa2pinvalidfile
@@ -4624,10 +4624,6 @@ msgstr ""
 msgid "No ResourceString Section found"
 msgstr ""
 
-#: lazarusidestrconsts:lisnostringconstantfound
-msgid "No String Constant Found"
-msgstr ""
-
 #: lazarusidestrconsts:lisnochange
 msgid "No change"
 msgstr ""
@@ -4662,6 +4658,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisnoprogramfilesfound
 msgid "No program file %s%s%s found."
+msgstr ""
+
+#: lazarusidestrconsts:lisnostringconstantfound
+msgid "No string constant found"
 msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefsnodeanditschildrenareonly
@@ -5740,13 +5740,13 @@ msgstr "リソース展開失敗"
 msgid "Resource save error"
 msgstr "リソース保存失敗"
 
-#: lazarusidestrconsts:lismakeresstrresourcestringsection
-msgid "Resourcestring Section:"
-msgstr ""
-
 #: lazarusidestrconsts:lismakeresstrresourcestringalreadyexis
 msgid "Resourcestring already exists"
 msgstr "リソース文字列はすでに存在します"
+
+#: lazarusidestrconsts:lismakeresstrresourcestringsection
+msgid "Resourcestring section:"
+msgstr ""
 
 #: lazarusidestrconsts:lismenurestart
 msgid "Restart"
@@ -6732,12 +6732,12 @@ msgstr ""
 msgid "Streaming error"
 msgstr "ストリーミングエラー"
 
-#: lazarusidestrconsts:lismakeresstrstringconstantinsource
-msgid "String Constant in source"
-msgstr ""
-
 #: lazarusidestrconsts:liscodetoolsoptsstringconst
 msgid "String constant"
+msgstr ""
+
+#: lazarusidestrconsts:lismakeresstrstringconstantinsource
+msgid "String constant in source"
 msgstr ""
 
 #: lazarusidestrconsts:lismakeresstrstringswithsamevalue

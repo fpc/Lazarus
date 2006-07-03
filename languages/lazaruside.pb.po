@@ -1745,10 +1745,6 @@ msgstr "Linha do cursor no editor atual"
 msgid "Custom"
 msgstr "Habitual"
 
-#: lazarusidestrconsts:lismakeresstrcustomidentifier
-msgid "Custom Identifier"
-msgstr "Identificador Habitual"
-
 #: lazarusidestrconsts:liscustomprogram
 msgid "Custom Program"
 msgstr "Programa Habitual"
@@ -1760,6 +1756,10 @@ msgstr "Programa Habitual%sUm Programa FreePascal"
 #: lazarusidestrconsts:liskeycatcustom
 msgid "Custom commands"
 msgstr "Comandos Habituais"
+
+#: lazarusidestrconsts:lismakeresstrcustomidentifier
+msgid "Custom identifier"
+msgstr "Identificador Habitual"
 
 #: lazarusidestrconsts:liscustomoptions2
 msgid "Custom options"
@@ -3102,11 +3102,11 @@ msgid "Hide IDE windows on run"
 msgstr "Esconder a janela da IDE ao executar"
 
 #: lazarusidestrconsts:lishintthemakeresourcestringfunctionexpectsastringcon2
-msgid "Hint: The Make Resourcestring Function expects a string constant.%sPlease select only a string expression and try again."
+msgid "Hint: The \"Make Resourcestring\" function expects a string constant.%sPlease select only a string expression and try again."
 msgstr "Dica: A Função de criação de ResourceString espera uma constante de palavra.%sPor favor selecione somente uma expressão de palavra e tente novamente."
 
 #: lazarusidestrconsts:lishintthemakeresourcestringfunctionexpectsastringcon
-msgid "Hint: The Make Resourcestring Function expects a string constant.%sPlease select the expression and try again."
+msgid "Hint: The \"Make Resourcestring\" function expects a string constant.%sPlease select the expression and try again."
 msgstr "Dica: A Função de Criar Resourcestring espera uma constante de palavra..%sPor Favor selecione a expressão e tente novamente."
 
 #: lazarusidestrconsts:dlgedhintcommand
@@ -3169,21 +3169,21 @@ msgstr "INS"
 msgid "Identifier"
 msgstr "Identificador"
 
-#: lazarusidestrconsts:lismakeresstridentifierlength
-msgid "Identifier Length:"
-msgstr "Largura do Identificador:"
-
-#: lazarusidestrconsts:lismakeresstridentifierprefix
-msgid "Identifier Prefix:"
-msgstr "Prefixo do Identificador:"
-
 #: lazarusidestrconsts:dlgedidcomlet
 msgid "Identifier completion"
 msgstr "Complementação do Identificador"
 
+#: lazarusidestrconsts:lismakeresstridentifierlength
+msgid "Identifier length:"
+msgstr "Largura do Identificador:"
+
 #: lazarusidestrconsts:dlgidentifierpolicy
 msgid "Identifier policy"
 msgstr "Politica de Identificador"
+
+#: lazarusidestrconsts:lismakeresstridentifierprefix
+msgid "Identifier prefix:"
+msgstr "Prefixo do Identificador:"
 
 #: lazarusidestrconsts:lisfriidentifier
 msgid "Identifier: %s"
@@ -3670,7 +3670,7 @@ msgid "Invalid destination directory"
 msgstr "Diretório de destino inválido"
 
 #: lazarusidestrconsts:lisinvalidexpressionhintthemakeresourcestringfunction
-msgid "Invalid expression.%sHint: The Make Resourcestring Function expects a string constant in a single file. Please select the expression and try again."
+msgid "Invalid expression.%sHint: The \"Make Resourcestring\" function expects a string constant in a single file. Please select the expression and try again."
 msgstr "Expressão inválida.%sDica: A Função de criação de ResourceString espera uma constante de palavra em um arquivo único. Por favor selecione a expressão e tente novamente."
 
 #: lazarusidestrconsts:lisa2pinvalidfile
@@ -4617,10 +4617,6 @@ msgstr "Próximo Marcador"
 msgid "No ResourceString Section found"
 msgstr "Nao foi encontrada uma Seção de 'ResourceString'"
 
-#: lazarusidestrconsts:lisnostringconstantfound
-msgid "No String Constant Found"
-msgstr "Nenhuma Constante de Palavra Encontrada"
-
 #: lazarusidestrconsts:lisnochange
 msgid "No change"
 msgstr "Sem Modificações"
@@ -4656,6 +4652,10 @@ msgstr "Nenhum pacote selcionado"
 #: lazarusidestrconsts:lisnoprogramfilesfound
 msgid "No program file %s%s%s found."
 msgstr "Nenhum arquivo de programa %s%s%s encontrado."
+
+#: lazarusidestrconsts:lisnostringconstantfound
+msgid "No string constant found"
+msgstr "Nenhuma Constante de Palavra Encontrada"
 
 #: lazarusidestrconsts:liscodetoolsdefsnodeanditschildrenareonly
 msgid "Node and its children are only valid for this project"
@@ -5733,13 +5733,13 @@ msgstr "Erro no carregamento de Recurso"
 msgid "Resource save error"
 msgstr "Erro ao salvar recurso"
 
-#: lazarusidestrconsts:lismakeresstrresourcestringsection
-msgid "Resourcestring Section:"
-msgstr "Seção de ResourceString:"
-
 #: lazarusidestrconsts:lismakeresstrresourcestringalreadyexis
 msgid "Resourcestring already exists"
 msgstr "Ja existe a ResourceString"
+
+#: lazarusidestrconsts:lismakeresstrresourcestringsection
+msgid "Resourcestring section:"
+msgstr "Seção de ResourceString:"
 
 #: lazarusidestrconsts:lismenurestart
 msgid "Restart"
@@ -6725,13 +6725,13 @@ msgstr "Armazenar sufixo"
 msgid "Streaming error"
 msgstr "Erro de 'Streaming'"
 
-#: lazarusidestrconsts:lismakeresstrstringconstantinsource
-msgid "String Constant in source"
-msgstr "Constante de Palavra no Fonte"
-
 #: lazarusidestrconsts:liscodetoolsoptsstringconst
 msgid "String constant"
 msgstr "Constante de Palavra"
+
+#: lazarusidestrconsts:lismakeresstrstringconstantinsource
+msgid "String constant in source"
+msgstr "Constante de Palavra no Fonte"
 
 #: lazarusidestrconsts:lismakeresstrstringswithsamevalue
 msgid "Strings with same value:"

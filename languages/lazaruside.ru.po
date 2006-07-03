@@ -1753,10 +1753,6 @@ msgstr "Ряд курсора в этом редакторе"
 msgid "Custom"
 msgstr "Пользовательский"
 
-#: lazarusidestrconsts:lismakeresstrcustomidentifier
-msgid "Custom Identifier"
-msgstr "Пользовательский ID"
-
 #: lazarusidestrconsts:liscustomprogram
 msgid "Custom Program"
 msgstr "Программа пользователя"
@@ -1768,6 +1764,10 @@ msgstr "Программа пользователя%sПрограмма на я�
 #: lazarusidestrconsts:liskeycatcustom
 msgid "Custom commands"
 msgstr "Команды пользователя"
+
+#: lazarusidestrconsts:lismakeresstrcustomidentifier
+msgid "Custom identifier"
+msgstr "Пользовательский ID"
 
 #: lazarusidestrconsts:liscustomoptions2
 msgid "Custom options"
@@ -3110,11 +3110,11 @@ msgid "Hide IDE windows on run"
 msgstr "Скрыть окна IDE при пуске"
 
 #: lazarusidestrconsts:lishintthemakeresourcestringfunctionexpectsastringcon2
-msgid "Hint: The Make Resourcestring Function expects a string constant.%sPlease select only a string expression and try again."
+msgid "Hint: The \"Make Resourcestring\" function expects a string constant.%sPlease select only a string expression and try again."
 msgstr "Подсказка: функция Создать строку ресурсов требует строковой константы.%sВыберите только строковое выражение и попробуйте снова."
 
 #: lazarusidestrconsts:lishintthemakeresourcestringfunctionexpectsastringcon
-msgid "Hint: The Make Resourcestring Function expects a string constant.%sPlease select the expression and try again."
+msgid "Hint: The \"Make Resourcestring\" function expects a string constant.%sPlease select the expression and try again."
 msgstr "Подсказка: функция Создать строку ресурсов требует строковой константы.%sВыберите выражение и попробуйте снова."
 
 #: lazarusidestrconsts:dlgedhintcommand
@@ -3177,21 +3177,21 @@ msgstr "ВСТ"
 msgid "Identifier"
 msgstr "Идентификатор"
 
-#: lazarusidestrconsts:lismakeresstridentifierlength
-msgid "Identifier Length:"
-msgstr "Длина идентификатора:"
-
-#: lazarusidestrconsts:lismakeresstridentifierprefix
-msgid "Identifier Prefix:"
-msgstr "Префикс идентификатора:"
-
 #: lazarusidestrconsts:dlgedidcomlet
 msgid "Identifier completion"
 msgstr "Завершение идентификаторов"
 
+#: lazarusidestrconsts:lismakeresstridentifierlength
+msgid "Identifier length:"
+msgstr "Длина идентификатора:"
+
 #: lazarusidestrconsts:dlgidentifierpolicy
 msgid "Identifier policy"
 msgstr "Политика идентификаторов"
+
+#: lazarusidestrconsts:lismakeresstridentifierprefix
+msgid "Identifier prefix:"
+msgstr "Префикс идентификатора:"
 
 #: lazarusidestrconsts:lisfriidentifier
 msgid "Identifier: %s"
@@ -3678,7 +3678,7 @@ msgid "Invalid destination directory"
 msgstr "Неправильный каталог назначения"
 
 #: lazarusidestrconsts:lisinvalidexpressionhintthemakeresourcestringfunction
-msgid "Invalid expression.%sHint: The Make Resourcestring Function expects a string constant in a single file. Please select the expression and try again."
+msgid "Invalid expression.%sHint: The \"Make Resourcestring\" function expects a string constant in a single file. Please select the expression and try again."
 msgstr "Неправильное выражение.%sПодсказка: функция Создать строку ресурсов требует строковую константу в одном файле. Выделите выражение и попробуйте ещё."
 
 #: lazarusidestrconsts:lisa2pinvalidfile
@@ -4625,10 +4625,6 @@ msgstr "Следующая Закладка"
 msgid "No ResourceString Section found"
 msgstr "Не найдено секции ResourceString"
 
-#: lazarusidestrconsts:lisnostringconstantfound
-msgid "No String Constant Found"
-msgstr "Не найдено строковой константы"
-
 #: lazarusidestrconsts:lisnochange
 msgid "No change"
 msgstr "Без изменений"
@@ -4664,6 +4660,10 @@ msgstr "Не выбрано пакетов"
 #: lazarusidestrconsts:lisnoprogramfilesfound
 msgid "No program file %s%s%s found."
 msgstr "Файла программы %s%s%s не найдено."
+
+#: lazarusidestrconsts:lisnostringconstantfound
+msgid "No string constant found"
+msgstr "Не найдено строковой константы"
 
 #: lazarusidestrconsts:liscodetoolsdefsnodeanditschildrenareonly
 msgid "Node and its children are only valid for this project"
@@ -5741,13 +5741,13 @@ msgstr "Ошибка загрузки ресурса"
 msgid "Resource save error"
 msgstr "Ошибка сохранения ресурса"
 
-#: lazarusidestrconsts:lismakeresstrresourcestringsection
-msgid "Resourcestring Section:"
-msgstr "Секция Resourcestring:"
-
 #: lazarusidestrconsts:lismakeresstrresourcestringalreadyexis
 msgid "Resourcestring already exists"
 msgstr "Строка ресурсов уже существует"
+
+#: lazarusidestrconsts:lismakeresstrresourcestringsection
+msgid "Resourcestring section:"
+msgstr "Секция Resourcestring:"
 
 #: lazarusidestrconsts:lismenurestart
 msgid "Restart"
@@ -6733,13 +6733,13 @@ msgstr "Префикс STORED"
 msgid "Streaming error"
 msgstr "Ошибка потоков"
 
-#: lazarusidestrconsts:lismakeresstrstringconstantinsource
-msgid "String Constant in source"
-msgstr "Строковая константа в исходнике"
-
 #: lazarusidestrconsts:liscodetoolsoptsstringconst
 msgid "String constant"
 msgstr "Строковая константа"
+
+#: lazarusidestrconsts:lismakeresstrstringconstantinsource
+msgid "String constant in source"
+msgstr "Строковая константа в исходнике"
 
 #: lazarusidestrconsts:lismakeresstrstringswithsamevalue
 msgid "Strings with same value:"
