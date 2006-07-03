@@ -677,26 +677,31 @@ Var
     // forward keystroke to show window menu, if parent form has no menu
     // if wparam contains SC_KEYMENU, lparam contains key pressed
     // keymenu+space should always bring up system menu
-    if ((WParam and $FFF0) = SC_KEYMENU) and (lWinControl <> nil)
-      and (lParam <> VK_SPACE) then
-    begin
-      ParentForm := GetParentForm(lWinControl);
-      if (ParentForm <> nil) and (ParentForm.Menu = nil)
-        and (Application <> nil) and (Application.MainForm <> nil)
-        and (Application.MainForm <> ParentForm)
-        and Application.MainForm.HandleAllocated then
-      begin
-        targetWindow := Application.MainForm.Handle;
-        if IsWindowEnabled(targetWindow) and IsWindowVisible(targetWindow) then
+    case (WParam and $FFF0) of
+      SC_KEYMENU:
+        if (lWinControl <> nil) and (lParam <> VK_SPACE) then
         begin
-          prevFocus := Windows.GetFocus;
-          Windows.SetFocus(targetWindow);
-          PLMsg^.Result := Windows.SendMessage(targetWindow, WM_SYSCOMMAND, WParam, LParam);
-          Windows.SetFocus(prevFocus);
-          WinProcess := false;
+          ParentForm := GetParentForm(lWinControl);
+          if (ParentForm <> nil) and (ParentForm.Menu = nil)
+            and (Application <> nil) and (Application.MainForm <> nil)
+            and (Application.MainForm <> ParentForm)
+            and Application.MainForm.HandleAllocated then
+          begin
+            targetWindow := Application.MainForm.Handle;
+            if IsWindowEnabled(targetWindow) and IsWindowVisible(targetWindow) then
+            begin
+              prevFocus := Windows.GetFocus;
+              Windows.SetFocus(targetWindow);
+              PLMsg^.Result := Windows.SendMessage(targetWindow, WM_SYSCOMMAND, WParam, LParam);
+              Windows.SetFocus(prevFocus);
+              WinProcess := false;
+            end;
+          end;
         end;
-      end;
-    end
+      SC_MINIMIZE:
+        if (Application <> nil) and (Application.MainForm = lWinControl) then
+          Window := TWin32WidgetSet(WidgetSet).AppHandle;
+    end;
   end;
 
   function IsComboEditSelection: boolean;
