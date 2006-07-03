@@ -305,6 +305,10 @@ msgstr "Инициализация путей исходников"
 msgid "Syntax Error in expression \"%s\""
 msgstr "Ошибка синтаксиса в выражении \"%s\""
 
+#: codetoolsstrconsts:ctstcodetoolmanagerconsistencycheck
+msgid "TCodeToolManager.ConsistencyCheck=%d"
+msgstr ""
+
 #: codetoolsstrconsts:ctstermnotsimple
 msgid "Term has no simple type"
 msgstr "Определение не имеет простого типа"

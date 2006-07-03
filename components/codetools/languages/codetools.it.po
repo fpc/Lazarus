@@ -304,6 +304,10 @@ msgstr "Inizializzazione SrcPath"
 msgid "Syntax Error in expression \"%s\""
 msgstr "Errore di sintassi nell'espressione \"%s\""
 
+#: codetoolsstrconsts:ctstcodetoolmanagerconsistencycheck
+msgid "TCodeToolManager.ConsistencyCheck=%d"
+msgstr ""
+
 #: codetoolsstrconsts:ctstermnotsimple
 msgid "Term has no simple type"
 msgstr "Il termine non ha un tipo semplice"

@@ -305,6 +305,10 @@ msgstr "Inicjowanie SrcPath"
 msgid "Syntax Error in expression \"%s\""
 msgstr "B³±d sk³adniowy w wyra¿eniu \"%s\""
 
+#: codetoolsstrconsts:ctstcodetoolmanagerconsistencycheck
+msgid "TCodeToolManager.ConsistencyCheck=%d"
+msgstr ""
+
 #: codetoolsstrconsts:ctstermnotsimple
 msgid "Term has no simple type"
 msgstr "wyra¿enie nie jest typu prostego"

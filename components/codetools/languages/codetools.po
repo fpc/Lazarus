@@ -746,3 +746,7 @@ msgstr ""
 msgid "src path for compiled units"
 msgstr ""
 
+#: codetoolsstrconsts:ctstcodetoolmanagerconsistencycheck
+msgid "TCodeToolManager.ConsistencyCheck=%d"
+msgstr ""
+

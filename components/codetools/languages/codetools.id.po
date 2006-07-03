@@ -308,6 +308,10 @@ msgstr "Inisialisasi SrcPath"
 msgid "Syntax Error in expression \"%s\""
 msgstr "Kesalahan sintaks dalam ekspresi \"%s\""
 
+#: codetoolsstrconsts:ctstcodetoolmanagerconsistencycheck
+msgid "TCodeToolManager.ConsistencyCheck=%d"
+msgstr ""
+
 #: codetoolsstrconsts:ctstermnotsimple
 msgid "Term has no simple type"
 msgstr "Term tidak mempunyai tipe sederhana"
