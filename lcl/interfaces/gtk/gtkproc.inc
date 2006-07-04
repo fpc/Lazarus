@@ -54,14 +54,20 @@ begin
     result := 0;
 end;
 
-function gtk_widget_get_xthickness(Style : PGTKWidget) : gint; overload;
+function gtk_widget_get_xthickness(Widget : PGTKWidget) : gint; overload;
 begin
-  result := gtk_widget_get_xthickness(gtk_widget_get_style(Style));
+  result := gtk_widget_get_xthickness(gtk_widget_get_style(Widget));
 end;
 
-function gtk_widget_get_ythickness(Style : PGTKWidget) : gint; overload;
+function gtk_widget_get_ythickness(Widget : PGTKWidget) : gint; overload;
 begin
-  result := gtk_widget_get_ythickness(gtk_widget_get_style(Style));
+  result := gtk_widget_get_ythickness(gtk_widget_get_style(Widget));
+end;
+
+function GetGtkContainerBorderWidth(Widget: PGtkContainer): gint;
+begin
+  Result:=(Widget^.flag0 and bm_TGtkContainer_border_width)
+          shr bp_TGtkContainer_border_width;
 end;
 
 procedure gdk_event_key_get_string(Event : PGDKEventKey; var theString : Pointer);
@@ -6230,16 +6236,16 @@ begin
   PreferredWidth:=Requisition.width;
   PreferredHeight:=Requisition.height;
   if not WithThemeSpace then begin
-    //DebugLn('GetGTKDefaultWidgetSize ',DbgSName(AWinControl),' ',dbgs(gtk_widget_get_xthickness(Widget)),' ',dbgs(gtk_widget_get_ythickness(Widget)));
+    //DebugLn('GetGTKDefaultWidgetSize ',DbgSName(AWinControl),' ',dbgs(gtk_widget_get_xthickness(Widget)),' ythickness=',dbgs(gtk_widget_get_ythickness(Widget)));
     //dec(PreferredWidth,gtk_widget_get_xthickness(Widget));
     {$IFDEF Gtk1}
     dec(PreferredHeight,2*gtk_widget_get_ythickness(Widget));
     {$ENDIF}
   end;
-  //DebugLn(['GetGTKDefaultWidgetSize Allocation=',Widget^.allocation.x,',',Widget^.allocation.y,',',Widget^.allocation.width,',',Widget^.allocation.height,
-  // ' requisition=',Widget^.requisition.width,',',Widget^.requisition.height,
-  // ' PreferredWidth=',PreferredWidth,' PreferredHeight=',PreferredHeight,
-  // ' WithThemeSpace=',WithThemeSpace]);
+  {DebugLn(['GetGTKDefaultWidgetSize Allocation=',Widget^.allocation.x,',',Widget^.allocation.y,',',Widget^.allocation.width,',',Widget^.allocation.height,
+   ' requisition=',Widget^.requisition.width,',',Widget^.requisition.height,
+   ' PreferredWidth=',PreferredWidth,' PreferredHeight=',PreferredHeight,
+   ' WithThemeSpace=',WithThemeSpace]);}
   // set new size
   gtk_widget_set_usize(Widget,AWinControl.Width,AWinControl.Height);
   //debugln('GetGTKDefaultSize PreferredWidth=',dbgs(PreferredWidth),' PreferredHeight=',dbgs(PreferredHeight));

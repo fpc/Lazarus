@@ -794,8 +794,9 @@ Procedure FreeGDKCursors;
 function gtk_widget_get_xthickness(Style: PGTKStyle): gint; overload;
 function gtk_widget_get_ythickness(Style: PGTKStyle): gint; overload;
 
-function gtk_widget_get_xthickness(Style: PGTKWidget): gint; overload;
-function gtk_widget_get_ythickness(Style: PGTKWidget): gint; overload;
+function gtk_widget_get_xthickness(Widget: PGTKWidget): gint; overload;
+function gtk_widget_get_ythickness(Widget: PGTKWidget): gint; overload;
+function GetGtkContainerBorderWidth(Widget: PGtkContainer): gint;
 
 {$Ifdef GTK1}
   type
