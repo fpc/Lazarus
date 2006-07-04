@@ -40,32 +40,39 @@ interface
 uses
   Classes, SysUtils, LCLProc, LCLType, Controls, StdCtrls, Forms, Buttons,
   ExtCtrls, LResources, Dialogs, SynEditTypes, SynRegExpr, SynEdit,
-  LazarusIdeStrConsts;
+  LazarusIdeStrConsts, Math;
 
 type
   TFindDlgComponent = (fdcText, fdcReplace);
   TOnFindDlgKey = procedure(Sender: TObject; var Key: Word; Shift:TShiftState;
                            FindDlgComponent: TFindDlgComponent) of Object;
 
+  { TLazFindReplaceDialog }
+
   TLazFindReplaceDialog = class(TForm)
+    BackwardRadioButton: TRadioButton;
+    ReplaceAllButton: TBitBtn;
+    CaseSensitiveCheckBox: TCheckBox;
+    EntireScopeRadioButton: TRadioButton;
+    ForwardRadioButton: TRadioButton;
+    FromCursorRadioButton: TRadioButton;
+    GlobalRadioButton: TRadioButton;
+    DirectionGroupBox: TGroupBox;
+    OriginGroupBox: TGroupBox;
+    ScopeGroupBox: TGroupBox;
+    OptionsGroupBox: TGroupBox;
+    MultiLineCheckBox: TCheckBox;
+    OKButton: TBitBtn;
+    PromptOnReplaceCheckBox: TCheckBox;
+    RegularExpressionsCheckBox: TCheckBox;
+    SelectedRadioButton: TRadioButton;
     TextToFindLabel: TLabel;
     ReplaceWithLabel: TLabel;
     TextToFindComboBox: TComboBox;
     ReplaceTextComboBox: TComboBox;
-    OptionsGroupBox: TGroupBox;
-    CaseSensitiveCheckBox: TCheckBox;
+    CancelButton: TBitBtn;
     WholeWordsOnlyCheckBox: TCheckBox;
-    RegularExpressionsCheckBox: TCheckBox;
-    MultiLineCheckBox: TCheckBox;
-    PromptOnReplaceCheckBox: TCheckBox;
-    DirectionRadioGroup: TRadioGroup;
-    ScopeRadioGroup: TRadioGroup;
-    OriginRadioGroup: TRadioGroup;
-    OkButton: TButton;
-    ReplaceAllButton: TButton;
-    CancelButton: TButton;
-    procedure LazFindReplaceDialogResize(Sender: TObject);
-    procedure OptionsGroupBoxResize(Sender: TObject);
+    procedure FormResize(Sender: TObject);
     procedure TextToFindComboboxKeyDown(Sender: TObject; var Key: Word;
        Shift: TShiftState);
     procedure OkButtonClick(Sender: TObject);
@@ -107,232 +114,59 @@ implementation
 { TLazFindReplaceDialog }
 
 constructor TLazFindReplaceDialog.Create(TheOwner:TComponent);
-var
-  x: Integer;
-  y: Integer;
-  ComboX: Integer;
-  OptionW: Integer;
-  OptionsGrpW: Integer;
-  OptionY: Integer;
-  OptionH: Integer;
 begin
   inherited Create(TheOwner);
-  Name:='LazFindReplaceDialog';
+
   Caption:='';
-  Width:=400;
-  Height:=300;
-  BorderStyle:= bsDialog;
-  Position:=poDesigned;
-  OnResize:=@LazFindReplaceDialogResize;
 
-  x:=4;
-  y:=4;
-  ComboX:=x+90;
-  TextToFindComboBox:=TComboBox.Create(Self);
-  with TextToFindComboBox do begin
-    Name:='TextToFindComboBox';
-    SetBounds(ComboX,y,Self.ClientWidth-ComboX-x,Height);
-    Anchors:= [akLeft, akTop, akRight];
-    Text:='';
-    AutoCompleteText := [cbactEnabled, cbactEndOfLineComplete, cbactRetainPrefixCase, cbactSearchAscending];
-    OnKeyDown:=@TextToFindComboBoxKeyDown;
-    Parent:=Self;
-    TabOrder:=0;
-  end;
+  TextToFindComboBox.Text:='';
+  TextToFindLabel.Caption:=dlgTextToFing;
+  ReplaceTextComboBox.Text:='';
+  ReplaceWithLabel.Caption:=dlgReplaceWith;
 
-  TextToFindLabel:=TLabel.Create(Self);
-  with TextToFindLabel do begin
-    Name:='TextToFindLabel';
-    SetBounds(x,y+3,ComboX-x,Height);
-    Caption:=dlgTextToFing;
-    FocusControl:= TextToFindComboBox;
-    Parent:=Self;
-  end;
-  inc(y,TextToFindComboBox.Height+1);
-  
-  ReplaceTextComboBox:=TComboBox.Create(Self);
-  with ReplaceTextComboBox do begin
-    Name:='ReplaceTextComboBox';
-    SetBounds(ComboX,y,Self.ClientWidth-ComboX-x,Height);
-    Anchors:= [akLeft, akTop, akRight];
-    Text:='';
-    AutoCompleteText := [cbactEnabled, cbactEndOfLineComplete, cbactRetainPrefixCase, cbactSearchAscending];
-    OnKeyDown:=@TextToFindComboBoxKeyDown;
-    Parent:=Self;
-    TabOrder:=1;
-  end;
-  
-  ReplaceWithLabel:=TLabel.Create(Self);
-  with ReplaceWithLabel do begin
-    Name:='ReplaceWithLabel';
-    SetBounds(x,y+3,ComboX-x,Height);
-    Caption:=dlgReplaceWith;
-    FocusControl:= ReplaceTextComboBox;
-    Parent:=Self;
-  end;
-  inc(y,ReplaceTextComboBox.Height+1);
+  OptionsGroupBox.Caption:=dlgFROpts;
 
-  OptionsGrpW:=(ClientWidth-15) div 2;
-  x:=5;
-  OptionsGroupBox:=TGroupBox.Create(Self);
-  with OptionsGroupBox do begin
-    Name:='OptionsGroupBox';
-    SetBounds(x,y,OptionsGrpW,160);
-    Caption:=dlgFROpts;
-    OnResize:=@OptionsGroupBoxResize;
-    Parent:=Self;
-  end;
-
-  OptionH:=OptionsGroupBox.ClientHeight div 5;
-  OptionW:=OptionsGroupBox.ClientWidth-12;
-  OptionY:=2;
-  
-  CaseSensitiveCheckBox:=TCheckBox.Create(Self);
   with CaseSensitiveCheckBox do begin
-    Name:='CaseSensitiveCheckBox';
-    Parent:=OptionsGroupBox;
-    AutoSize := True;
-    SetBounds(8,OptionY,OptionW,Height);
     Caption:=dlgCaseSensitive;
     Hint:=lisDistinguishBigAndSmallLettersEGAAndA;
-    ShowHint:=true;
-    inc(OptionY,OptionH);
   end;
 
-  WholeWordsOnlyCheckBox:=TCheckBox.Create(Self);
   with WholeWordsOnlyCheckBox do begin
-    Name:='WholeWordsOnlyCheckBox';
-    Parent:=OptionsGroupBox;
-    AutoSize := False;
-    SetBounds(8,OptionY,OptionW,Height);
     Caption:=dlgWholeWordsOnly;
     Hint:=lisOnlySearchForWholeWords;
-    ShowHint:=true;
-    inc(OptionY,OptionH);
   end;
 
-  RegularExpressionsCheckBox:=TCheckBox.Create(Self);
   with RegularExpressionsCheckBox do begin
-    Name:='RegularExpressionsCheckBox';
-    Parent:=OptionsGroupBox;
-    AutoSize := False;
-    SetBounds(8,OptionY,OptionW,Height);
     Caption:=dlgRegularExpressions;
     Hint:=lisActivateRegularExpressionSyntaxForTextAndReplaceme;
-    ShowHint:=true;
-    inc(OptionY,OptionH);
   end;
 
-  MultiLineCheckBox:=TCheckBox.Create(Self);
   with MultiLineCheckBox do begin
-    Name:='MultiLineCheckBox';
-    Parent:=OptionsGroupBox;
-    AutoSize := False;
-    SetBounds(8,OptionY,OptionW,Height);
     Caption:=dlgMultiLine;
-    Enabled:=false;
     Hint:=lisAllowSearchingForMultipleLines;
-    ShowHint:=true;
-    inc(OptionY,OptionH);
   end;
 
-  PromptOnReplaceCheckBox:=TCheckBox.Create(Self);
   with PromptOnReplaceCheckBox do begin
-    Name:='PromptOnReplaceCheckBox';
-    Parent:=OptionsGroupBox;
-    AutoSize := False;
-    SetBounds(8,OptionY,OptionW,Height);
     Caption:=dlgPromptOnReplace;
-    Checked:=true;
     Hint:=lisAskBeforeReplacingEachFoundText;
-    ShowHint:=true;
-    inc(OptionY,OptionH);
   end;
 
-  OriginRadioGroup:=TRadioGroup.Create(Self);
-  with OriginRadioGroup do begin
-    Name:='OriginRadioGroup';
-    Parent:= Self;
-    SetBounds(x+OptionsGrpW+x,OptionsGroupBox.Top,OptionsGrpW,65);
-    Caption:=dlgSROrigin;
-    with Items do begin
-      BeginUpdate;
-      Clear;
-      Add(dlgFromCursor);
-      Add(dlgEntireScope);
-      EndUpdate;
-    end;
-    ItemIndex:=0;
-  end;
+  OriginGroupBox.Caption:=dlgSROrigin;
+  FromCursorRadioButton.Caption := dlgFromCursor;
+  EntireScopeRadioButton.Caption := dlgEntireScope;
 
-  ScopeRadioGroup:=TRadioGroup.Create(Self);
-  with ScopeRadioGroup do begin
-    Name:='ScopeRadioGroup';
-    Parent:=Self;
-    SetBounds(OriginRadioGroup.Left,
-              OriginRadioGroup.Top+OriginRadioGroup.Height+5,
-              OriginRadioGroup.Width,65);
-    Caption:=dlgScope;
-    with Items do begin
-      BeginUpdate;
-      Clear;
-      Add(dlgGlobal);
-      Add(dlgSelectedText);
-      EndUpdate;
-    end;
-    ItemIndex:=0;
-  end;
+  ScopeGroupBox.Caption:=dlgScope;
+  GlobalRadioButton.Caption := dlgGlobal;
+  SelectedRadioButton.Caption := dlgSelectedText;
 
-  DirectionRadioGroup:=TRadioGroup.Create(Self);
-  with DirectionRadioGroup do begin
-    Name:='DirectionRadioGroup';
-    Parent:=Self;
-    SetBounds(OriginRadioGroup.Left,
-              ScopeRadioGroup.Top+ScopeRadioGroup.Height+5,
-              OriginRadioGroup.Width,65);
-    Caption:=dlgDirection;
-    with Items do begin
-      BeginUpdate;
-      Clear;
-      Add(lisFRForwardSearch);
-      Add(lisFRBackwardSearch);
-      EndUpdate;
-    end;
-    ItemIndex:=0;
-  end;
+  DirectionGroupBox.Caption:=dlgDirection;
+  ForwardRadioButton.Caption := lisFRForwardSearch;
+  BackwardRadioButton.Caption := lisFRBackwardSearch;
 
-  OkButton:=TButton.Create(Self);
-  with OkButton do begin
-    Name:='OkButton';
-    Parent:= Self;
-    Default:=true;
-    SetBounds(Parent.ClientWidth-350,Parent.ClientHeight-32,120,Height);
-    Caption:='O&k';
-    OnClick:=@OkButtonClick;
-  end;
+  ReplaceAllButton.Caption:=dlgReplaceAll;
+  CancelButton.Caption:=dlgCancel;
 
-  ReplaceAllButton:=TButton.Create(Self);
-  with ReplaceAllButton do begin
-    Name:='ReplaceAllButton';
-    Parent:= Self;
-    SetBounds(OkButton.Left+OkButton.Width+10,OkButton.Top,120,Height);
-    Caption:=dlgReplaceAll;
-    OnClick:=@ReplaceAllButtonClick;
-  end;
-
-  CancelButton:=TButton.Create(Self);
-  with CancelButton do begin
-    Name:='CancelButton';
-    Parent:= Self;
-    Cancel:=true;
-    SetBounds(ReplaceAllButton.Left+ReplaceAllButton.Width+10,OkButton.Top,
-              80,Height);
-    Caption:=dlgCancel;
-    OnClick:=@CancelButtonClick;
-  end;
-    
   fReplaceAllClickedLast:=false;
-  ActiveControl:=TextToFindComboBox;
 end;
 
 destructor TLazFindReplaceDialog.Destroy;
@@ -361,104 +195,21 @@ begin
   end;
 end;
 
-procedure TLazFindReplaceDialog.OptionsGroupBoxResize(Sender: TObject);
+procedure TLazFindReplaceDialog.FormResize(Sender: TObject);
 var
-  OptionH: Integer;
-  OptionW: Integer;
-  OptionY: Integer;
+  w: integer;
+  h: integer;
 begin
-  OptionH:=OptionsGroupBox.ClientHeight div 5;
-  OptionW:=OptionsGroupBox.ClientWidth-12;
-  OptionY:=2;
-
-  with CaseSensitiveCheckBox do begin
-    SetBounds(8,OptionY,OptionW,Height);
-    inc(OptionY,OptionH);
-  end;
-
-  with WholeWordsOnlyCheckBox do begin
-    SetBounds(8,OptionY,OptionW,Height);
-    inc(OptionY,OptionH);
-  end;
-
-  with RegularExpressionsCheckBox do begin
-    SetBounds(8,OptionY,OptionW,Height);
-    inc(OptionY,OptionH);
-  end;
-
-  with MultiLineCheckBox do begin
-    SetBounds(8,OptionY,OptionW,Height);
-    inc(OptionY,OptionH);
-  end;
-
-  with PromptOnReplaceCheckBox do begin
-    SetBounds(8,OptionY,OptionW,Height);
-    inc(OptionY,OptionH);
-  end;
-end;
-
-procedure TLazFindReplaceDialog.LazFindReplaceDialogResize(Sender: TObject);
-var
-  x: Integer;
-  y: Integer;
-  ComboX: Integer;
-  OptionsGrpW: Integer;
-begin
-  x:=4;
-  y:=4;
-  ComboX:=x+90;
-  with TextToFindComboBox do begin
-    SetBounds(ComboX,y,Parent.ClientWidth-ComboX-x,Height);
-  end;
-
-  with TextToFindLabel do begin
-    SetBounds(x,y+3,ComboX-x,Height);
-  end;
-  inc(y,TextToFindComboBox.Height+1);
-
-  with ReplaceTextComboBox do begin
-    SetBounds(ComboX,y,Parent.ClientWidth-ComboX-x,Height);
-  end;
-
-  with ReplaceWithLabel do begin
-    SetBounds(x,y+3,ComboX-x,Height);
-  end;
-  inc(y,ReplaceTextComboBox.Height+1);
-
-  OptionsGrpW:=(ClientWidth-15) div 2;
-  x:=5;
-  with OptionsGroupBox do begin
-    SetBounds(x,y,OptionsGrpW,160);
-  end;
-
-  with OriginRadioGroup do begin
-    SetBounds(x+OptionsGrpW+x,OptionsGroupBox.Top,OptionsGrpW,65);
-  end;
-
-  with ScopeRadioGroup do begin
-    SetBounds(OriginRadioGroup.Left,
-              OriginRadioGroup.Top+OriginRadioGroup.Height+5,
-              OriginRadioGroup.Width,65);
-  end;
-
-  with DirectionRadioGroup do begin
-    SetBounds(OriginRadioGroup.Left,
-              ScopeRadioGroup.Top+ScopeRadioGroup.Height+5,
-              OriginRadioGroup.Width,65);
-  end;
-
-  with OkButton do begin
-    SetBounds(Parent.ClientWidth-350,Parent.ClientHeight-32,120,Height);
-  end;
-
-  with ReplaceAllButton do begin
-    SetBounds(OkButton.Left+OkButton.Width+10,OkButton.Top,120,Height);
-  end;
-
-  with CancelButton do begin
-    SetBounds(ReplaceAllButton.Left+ReplaceAllButton.Width+10,OkButton.Top,
-              80,Height);
-  end;
+  w := (Width - 18) div 2;
+  OptionsGroupBox.Width := w;
+  OriginGroupBox.Width := w;
+  ScopeGroupBox.Width := w;
+  DirectionGroupBox.Width := w;
+  
+  h := (OptionsGroupBox.Height - 12) div 3;
+  OriginGroupBox.Height := h;
+  ScopeGroupBox.Height := h;
+  DirectionGroupBox.Height := h;
 end;
 
 procedure TLazFindReplaceDialog.OkButtonClick(Sender:TObject);
@@ -466,7 +217,6 @@ begin
   if not CheckInput then exit;
   fReplaceAllClickedLast:=false;
   ActiveControl:=TextToFindComboBox;
-  ModalResult:=mrOk;
 end;
 
 procedure TLazFindReplaceDialog.ReplaceAllButtonClick(Sender:TObject);
@@ -474,13 +224,11 @@ begin
   if not CheckInput then exit;
   fReplaceAllClickedLast:=true;
   ActiveControl:=TextToFindComboBox;
-  ModalResult:=mrAll;
 end;
 
 procedure TLazFindReplaceDialog.CancelButtonClick(Sender:TObject);
 begin
   ActiveControl:=TextToFindComboBox;
-  ModalResult:=mrCancel;
 end;
 
 function TLazFindReplaceDialog.CheckInput: boolean;
@@ -544,28 +292,30 @@ begin
   RegularExpressionsCheckBox.Checked:=ssoRegExpr in NewOptions;
   MultiLineCheckBox.Checked:=ssoRegExprMultiLine in NewOptions;
   PromptOnReplaceCheckBox.Checked:=ssoPrompt in NewOptions;
+
   if ssoEntireScope in NewOptions
-    then OriginRadioGroup.ItemIndex:=1
-    else OriginRadioGroup.ItemIndex:=0;
+    then EntireScopeRadioButton.Checked:=True
+    else FromCursorRadioButton.Checked:=True;
   if ssoSelectedOnly in NewOptions
-    then ScopeRadioGroup.ItemIndex:=1
-    else ScopeRadioGroup.ItemIndex:=0;
+    then SelectedRadioButton.Checked:=True
+    else GlobalRadioButton.Checked:=True;
   if ssoBackwards in NewOptions
-    then DirectionRadioGroup.ItemIndex:=1
-    else DirectionRadioGroup.ItemIndex:=0;
-  if ssoSelectedOnly in NewOptions then
-   ScopeRadioGroup.ItemIndex := 1 else
-   ScopeRadioGroup.ItemIndex := 0;
-  ReplaceAllButton.Enabled:=ssoReplace in NewOptions;
-  ReplaceTextComboBox.Enabled:=ReplaceAllButton.Enabled;
-  ReplaceWithLabel.Enabled:=ReplaceAllButton.Enabled;
-  PromptOnReplaceCheckBox.Enabled:=ReplaceAllButton.Enabled;
+    then BackwardRadioButton.Checked:=True
+    else ForwardRadioButton.Checked:=True;
+
+  ReplaceAllButton.Visible:=ssoReplace in NewOptions;
+  ReplaceTextComboBox.Enabled:=ReplaceAllButton.Visible;
+  ReplaceWithLabel.Enabled:=ReplaceAllButton.Visible;
+  PromptOnReplaceCheckBox.Enabled:=ReplaceAllButton.Visible;
+
   if ssoReplace in NewOptions then begin
     Caption:=lisMenuReplace;
     OkButton.Caption:=lisMenuReplace;
+    CancelButton.AnchorSideRight.Control := ReplaceAllButton
   end else begin
     Caption:=lisMenuFind ;
     OkButton.Caption:=lisMenuFind ;
+    CancelButton.AnchorSideRight.Control := OKButton;
   end;
 end;
 
@@ -577,10 +327,11 @@ begin
   if RegularExpressionsCheckBox.Checked then Include(Result,ssoRegExpr);
   if MultiLineCheckBox.Checked then Include(Result,ssoRegExprMultiLine);
   if PromptOnReplaceCheckBox.Checked then Include(Result,ssoPrompt);
-  if OriginRadioGroup.ItemIndex=1 then Include(Result,ssoEntireScope);
-  if ScopeRadioGroup.ItemIndex=1 then include(Result,ssoSelectedOnly);
-  if DirectionRadioGroup.ItemIndex=1 then include(Result,ssoBackwards);
-  if ReplaceAllButton.Enabled then include(Result,ssoReplace);
+
+  if EntireScopeRadioButton.Checked then Include(Result,ssoEntireScope);
+  if SelectedRadioButton.Checked then include(Result,ssoSelectedOnly);
+  if BackwardRadioButton.Checked then include(Result,ssoBackwards);
+  if ReplaceAllButton.Visible then include(Result,ssoReplace);
   if fReplaceAllClickedLast then include(Result,ssoReplaceAll);
 end;
 
@@ -620,5 +371,8 @@ begin
     AComboBox.ItemIndex:=AComboBox.Items.IndexOf(AText);
   end;
 end;
+
+initialization
+  {$I findreplacedialog.lrs}
 
 end.

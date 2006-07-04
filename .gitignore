@@ -4,6 +4,7 @@ components/turbopower_ipro/units
 designer/jitform/units
 designer/units
 examples/units
+ide/*.bak
 ide/revision.inc
 ide/units
 ideintf/units
