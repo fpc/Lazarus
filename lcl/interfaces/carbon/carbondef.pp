@@ -68,7 +68,7 @@ type
   end;
   
 const
-  LCLCarbonEventClass = 'Laz ';
+  LCLCarbonEventClass    = 'Laz ';
   LCLCarbonEventKindWake = 'Wake';
   LCLCarbonEventKindMain = 'Main';
 

@@ -253,7 +253,7 @@ begin
     CurEventClass.Int := GetEventClass(Event);
     CurEventKind.Int := GetEventKind(Event);
     {$IFDEF DebugEventLoop}
-    DebugLn('EventClass: ''%s'' EventKind: 0x%8.8x', [CurEventClass.Chars, CurEventKind.Chars]);
+    DebugLn('EventClass: "',CurEventClass.Chars,'" EventKind: "',CurEventKind.Chars,'"');
     {$ENDIF}
     if CurEventClass.Chars=LCLCarbonEventClass then begin
       // internal carbon intf message
@@ -303,7 +303,7 @@ var
 begin
   if fMainEventQueue=nil then exit;;
   
-  DebuglnThreadLog('TCarbonWidgetSet.SendCheckSynchronizeMessage ');
+  //DebuglnThreadLog('TCarbonWidgetSet.SendCheckSynchronizeMessage ');
   EventSpec := MakeEventSpec(LCLCarbonEventClass,LCLCarbonEventKindWake);
   DummyEvent:=nil;
   try
@@ -311,31 +311,27 @@ begin
                        0{GetCurrentEventTime}, kEventAttributeNone,
                        DummyEvent) <> noErr
     then begin
-      DebuglnThreadLog('TCarbonWidgetSet.SendCheckSynchronizeMessage create event FAILED');
+      //DebuglnThreadLog('TCarbonWidgetSet.SendCheckSynchronizeMessage create event FAILED');
       exit;
     end;
 
-    DebuglnThreadLog('TCarbonWidgetSet.SendCheckSynchronizeMessage GetMainEventQueue='+dbgs(GetMainEventQueue));
+    //DebuglnThreadLog('TCarbonWidgetSet.SendCheckSynchronizeMessage GetMainEventQueue='+dbgs(GetMainEventQueue));
     if PostEventToQueue(fMainEventQueue, DummyEvent,
                         kEventPriorityHigh) <> noErr
     then begin
-      DebuglnThreadLog('TCarbonWidgetSet.SendCheckSynchronizeMessage post event FAILED');
+      //DebuglnThreadLog('TCarbonWidgetSet.SendCheckSynchronizeMessage post event FAILED');
       exit;
     end;
   finally
     if DummyEvent<>nil then
       ReleaseEvent(DummyEvent);
   end;
-
-  DebuglnThreadLog('TCarbonWidgetSet.SendCheckSynchronizeMessage END');
+  //DebuglnThreadLog('TCarbonWidgetSet.SendCheckSynchronizeMessage END');
 end;
 
 procedure TCarbonWidgetSet.OnWakeMainThread(Sender: TObject);
 begin
-  // wake main thread
   SendCheckSynchronizeMessage;
-  // wait till the event has been processed by the main thread
-  // TODO: wait till processed
 end;
 
 procedure TCarbonWidgetSet.AppTerminate;
