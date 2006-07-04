@@ -2349,6 +2349,7 @@ begin
   if (Parent=nil) or (not Parent.HandleAllocated)
   or ([csLoading,csDestroying]*Parent.ComponentState<>[])
   then exit;
+  // Note: it should invalidate, when this control is loaded/destroyed, but parent not
 
   if (CtrlIsVisible or ((csDesigning in ComponentState)
   and not (csNoDesignVisible in ControlStyle)))

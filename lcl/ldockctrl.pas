@@ -97,8 +97,8 @@ type
     constructor Create(ParentNode: TLazDockConfigNode; const AName: string);
     destructor Destroy; override;
     procedure Clear;
-    function FindByName(const AName: string;
-                        Recursive: boolean = false): TLazDockConfigNode;
+    function FindByName(const AName: string; Recursive: boolean = false;
+                        WithRoot: boolean = true): TLazDockConfigNode;
     function GetScreenBounds: TRect;
     procedure SaveToConfig(Config: TConfigStorage; const Path: string = '');
     procedure LoadFromConfig(Config: TConfigStorage; const Path: string = '');
@@ -745,9 +745,9 @@ begin
   DebugLn(['TCustomLazControlDocker.RestoreLayout A ',DockerName]);
   if (Manager=nil) or (Control=nil) then exit;
   Layout:=Manager.GetConfigWithDockerName(DockerName);
-  DebugLn(['TCustomLazControlDocker.RestoreLayout ',Layout=nil,' DockerName=',DockerName,' ',Manager.Configs[0].DockerName]);
   if (Layout=nil) or (Layout.Root=nil) then exit;
-  SelfNode:=Layout.Root.FindByName(DockerName);
+  SelfNode:=Layout.Root.FindByName(DockerName,true);
+  DebugLn(['TCustomLazControlDocker.RestoreLayout ',SelfNode<>nil,' DockerName=',DockerName,' ',Manager.Configs[0].DockerName]);
   if SelfNode=nil then exit;
   
   // default: do not dock, just move
@@ -1125,16 +1125,17 @@ begin
 end;
 
 function TLazDockConfigNode.FindByName(const AName: string;
-  Recursive: boolean): TLazDockConfigNode;
+  Recursive: boolean; WithRoot: boolean): TLazDockConfigNode;
 var
   i: Integer;
 begin
+  if WithRoot and (CompareText(Name,AName)=0) then exit(Self);
   if FChilds<>nil then
     for i:=0 to FChilds.Count-1 do begin
       Result:=Childs[i];
       if CompareText(Result.Name,AName)=0 then exit;
       if Recursive then begin
-        Result:=Result.FindByName(AName,true);
+        Result:=Result.FindByName(AName,true,false);
         if Result<>nil then exit;
       end;
     end;
@@ -1168,14 +1169,15 @@ var
   a: TAnchorKind;
   i: Integer;
   Child: TLazDockConfigNode;
+  SubPath: String;
 begin
   Config.SetDeleteValue(Path+'Name/Value',Name,'');
+  Config.SetDeleteValue(Path+'Type/Value',LDConfigNodeTypeNames[TheType],
+                        LDConfigNodeTypeNames[ldcntControl]);
   Config.SetDeleteValue(Path+'Bounds/',FBounds,Rect(0,0,0,0));
   Config.SetDeleteValue(Path+'ClientBounds/',FClientBounds,
                 Rect(0,0,FBounds.Right-FBounds.Left,FBounds.Bottom-FBounds.Top));
-  Config.SetDeleteValue(Path+'Type/Value',LDConfigNodeTypeNames[TheType],
-                        LDConfigNodeTypeNames[ldcntControl]);
-  
+
   // Sides
   for a:=Low(TAnchorKind) to High(TAnchorKind) do
     Config.SetDeleteValue(Path+'Sides/'+AnchorNames[a]+'/Name',Sides[a],'');
@@ -1184,7 +1186,8 @@ begin
   Config.SetDeleteValue(Path+'Childs/Count',ChildCount,0);
   for i:=0 to ChildCount-1 do begin
     Child:=Childs[i];
-    Child.SaveToConfig(Config,Path+'Child'+IntToStr(i+1)+'/');
+    SubPath:=Path+'Child'+IntToStr(i+1)+'/';
+    Child.SaveToConfig(Config,SubPath);
   end;
 end;
 
@@ -1196,13 +1199,14 @@ var
   NewChildCount: LongInt;
   NewChildName: String;
   NewChild: TLazDockConfigNode;
+  SubPath: String;
 begin
   Clear;
+  TheType:=LDConfigNodeTypeNameToType(Config.GetValue(Path+'Type/Value',
+                                      LDConfigNodeTypeNames[ldcntControl]));
   Config.GetValue(Path+'Bounds/',FBounds,Rect(0,0,0,0));
   Config.GetValue(Path+'ClientBounds/',FClientBounds,
                Rect(0,0,FBounds.Right-FBounds.Left,FBounds.Bottom-FBounds.Top));
-  TheType:=LDConfigNodeTypeNameToType(Config.GetValue(Path+'Type/Value',
-                                      LDConfigNodeTypeNames[ldcntControl]));
 
   // Sides
   for a:=Low(TAnchorKind) to High(TAnchorKind) do
@@ -1211,9 +1215,10 @@ begin
   // childs
   NewChildCount:=Config.GetValue(Path+'Childs/Count',0);
   for i:=0 to NewChildCount-1 do begin
-    NewChildName:=Config.GetValue(Path+'Name/Value','');
+    SubPath:=Path+'Child'+IntToStr(i+1)+'/';
+    NewChildName:=Config.GetValue(SubPath+'Name/Value','');
     NewChild:=TLazDockConfigNode.Create(Self,NewChildName);
-    NewChild.LoadFromConfig(Config,Path+'Child'+IntToStr(i+1)+'/');
+    NewChild.LoadFromConfig(Config,SubPath);
     FChilds.Add(NewChild);
   end;
 end;
@@ -1230,6 +1235,7 @@ procedure TLazDockConfigNode.WriteDebugReport;
     DbgOut(Prefix,'Name="'+ANode.Name+'"');
     DbgOut(' Type=',GetEnumName(TypeInfo(TLDConfigNodeType),ord(ANode.TheType)));
     DbgOut(' Bounds='+dbgs(ANode.Bounds));
+    DbgOut(' ClientBounds='+dbgs(ANode.ClientBounds));
     DbgOut(' Childs='+dbgs(ANode.ChildCount));
     for a:=Low(TAnchorKind) to High(TAnchorKind) do begin
       s:=ANode.Sides[a];
