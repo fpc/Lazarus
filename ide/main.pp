@@ -7740,10 +7740,10 @@ begin
 
   Result := mrCancel;
 
-{$IFNDEF DoNotUseProcessDebugger}
+  {$IFNDEF DoNotUseProcessDebugger}
   Result := DebugBoss.RunDebugger;
 //  if Result<>mrOk then exit;
-{$ELSE}
+  {$ELSE}
   if EnvironmentOptions.IsDebuggerClassDefined
   then begin
     Result := DebugBoss.RunDebugger;
@@ -7771,7 +7771,7 @@ begin
       ToolStatus:=itNone;
     end;
   end;
-{$ENDIF}
+  {$ENDIF}
 
   DebugLn('[TMainIDE.DoRunProject] END');
 end;

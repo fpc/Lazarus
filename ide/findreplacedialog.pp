@@ -180,13 +180,7 @@ procedure TLazFindReplaceDialog.TextToFindComboBoxKeyDown(
 var Component: TFindDlgComponent;
 begin
   //debugln('TLazFindReplaceDialog.TextToFindComboBoxKeyDown Key=',Key,' RETURN=',VK_RETURN,' TAB=',VK_TAB,' DOWN=',VK_DOWN,' UP=',VK_UP);
-  if (Key=VK_RETURN) then begin
-    OkButtonClick(Sender);
-    Key:=VK_UNKNOWN;
-  end else if (Key=VK_ESCAPE) then begin
-    CancelButtonClick(Sender);
-    Key:=VK_UNKNOWN;
-  end else if Assigned(OnKey) then begin
+  if Assigned(OnKey) then begin
     if Sender=TextToFindComboBox then
       Component:=fdcText
     else

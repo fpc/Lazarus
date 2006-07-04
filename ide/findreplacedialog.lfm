@@ -1,46 +1,56 @@
 object LazFindReplaceDialog: TLazFindReplaceDialog
+  Left = 334
+  Height = 331
+  Top = 185
+  Width = 416
+  HorzScrollBar.Page = 415
+  VertScrollBar.Page = 330
   ActiveControl = TextToFindComboBox
   BorderIcons = [biSystemMenu]
   Caption = 'LazFindReplaceDialog'
-  ClientHeight = 331
-  ClientWidth = 416
   Constraints.MinHeight = 312
+  KeyPreview = True
   OnResize = FormResize
-  PixelsPerInch = 96
   Position = poScreenCenter
-  HorzScrollBar.Page = 415
-  VertScrollBar.Page = 330
-  Left = 311
-  Height = 331
-  Top = 426
-  Width = 416
   object TextToFindLabel: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = TextToFindComboBox
+    AnchorSideTop.Side = asrCenter
+    Left = 6
+    Height = 13
+    Top = 16
+    Width = 94
     Alignment = taRightJustify
-    BorderSpacing.Around = 6
+    BorderSpacing.Left = 6
     Caption = 'TextToFindLabel'
     Color = clNone
     FocusControl = TextToFindComboBox
     ParentColor = False
-    AnchorSideLeft.Control = Owner
-    Left = 6
-    Height = 14
-    Top = 16
-    Width = 80
   end
   object ReplaceWithLabel: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = ReplaceTextComboBox
+    AnchorSideTop.Side = asrCenter
+    Left = 6
+    Height = 13
+    Top = 43
+    Width = 102
     Alignment = taRightJustify
-    BorderSpacing.Around = 6
+    BorderSpacing.Left = 6
     Caption = 'ReplaceWithLabel'
     Color = clNone
     FocusControl = ReplaceTextComboBox
     ParentColor = False
-    AnchorSideLeft.Control = Owner
-    Left = 6
-    Height = 14
-    Top = 40
-    Width = 86
   end
   object TextToFindComboBox: TComboBox
+    AnchorSideLeft.Control = TextToFindLabel
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 112
+    Height = 21
+    Top = 12
+    Width = 298
     Anchors = [akTop, akLeft, akRight]
     AutoComplete = True
     AutoCompleteText = [cbactEnabled, cbactEndOfLineComplete, cbactRetainPrefixCase, cbactSearchAscending]
@@ -50,16 +60,16 @@ object LazFindReplaceDialog: TLazFindReplaceDialog
     OnKeyDown = TextToFindComboboxKeyDown
     TabOrder = 0
     Text = 'TextToFindComboBox'
-    AnchorSideLeft.Control = TextToFindLabel
+  end
+  object ReplaceTextComboBox: TComboBox
+    AnchorSideLeft.Control = ReplaceWithLabel
     AnchorSideLeft.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 98
+    Left = 120
     Height = 21
-    Top = 12
-    Width = 312
-  end
-  object ReplaceTextComboBox: TComboBox
+    Top = 39
+    Width = 290
     Anchors = [akTop, akLeft, akRight]
     AutoComplete = True
     AutoCompleteText = [cbactEnabled, cbactEndOfLineComplete, cbactRetainPrefixCase, cbactSearchAscending]
@@ -69,16 +79,15 @@ object LazFindReplaceDialog: TLazFindReplaceDialog
     OnKeyDown = TextToFindComboboxKeyDown
     TabOrder = 1
     Text = 'ReplaceTextComboBox'
-    AnchorSideLeft.Control = ReplaceWithLabel
-    AnchorSideLeft.Side = asrBottom
-    AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
-    Left = 104
-    Height = 21
-    Top = 39
-    Width = 306
   end
   object CancelButton: TBitBtn
+    AnchorSideRight.Control = ReplaceAllButton
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 222
+    Height = 24
+    Top = 301
+    Width = 73
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6
@@ -91,15 +100,16 @@ object LazFindReplaceDialog: TLazFindReplaceDialog
     NumGlyphs = 0
     OnClick = CancelButtonClick
     TabOrder = 2
-    AnchorSideRight.Control = ReplaceAllButton
-    AnchorSideBottom.Control = Owner
-    AnchorSideBottom.Side = asrBottom
-    Left = 194
-    Height = 33
-    Top = 292
-    Width = 80
   end
   object OKButton: TBitBtn
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 359
+    Height = 24
+    Top = 301
+    Width = 51
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6
@@ -112,33 +122,28 @@ object LazFindReplaceDialog: TLazFindReplaceDialog
     NumGlyphs = 0
     OnClick = OkButtonClick
     TabOrder = 3
-    AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
-    AnchorSideBottom.Control = Owner
-    AnchorSideBottom.Side = asrBottom
-    Left = 348
-    Height = 33
-    Top = 292
-    Width = 62
   end
   object OptionsGroupBox: TGroupBox
-    Anchors = [akTop, akLeft, akBottom]
-    BorderSpacing.Left = 6
-    BorderSpacing.Top = 6
-    BorderSpacing.Bottom = 6
-    Caption = 'OptionsGroupBox'
-    ClientHeight = 202
-    ClientWidth = 195
-    TabOrder = 4
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = ReplaceTextComboBox
     AnchorSideTop.Side = asrBottom
     AnchorSideBottom.Control = CancelButton
     Left = 6
-    Height = 220
+    Height = 229
     Top = 66
     Width = 199
+    Anchors = [akTop, akLeft, akBottom]
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    BorderSpacing.Bottom = 6
+    Caption = 'OptionsGroupBox'
+    TabOrder = 4
     object PromptOnReplaceCheckBox: TCheckBox
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 20
+      Top = 140
+      Width = 183
       Align = alTop
       BorderSpacing.Top = 6
       BorderSpacing.Around = 6
@@ -148,13 +153,13 @@ object LazFindReplaceDialog: TLazFindReplaceDialog
       ShowHint = True
       State = cbChecked
       TabOrder = 0
-      AnchorSideTop.Side = asrBottom
-      Left = 6
-      Height = 13
-      Top = 112
-      Width = 183
     end
     object MultiLineCheckBox: TCheckBox
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 20
+      Top = 108
+      Width = 183
       Align = alTop
       BorderSpacing.Top = 6
       BorderSpacing.Around = 6
@@ -163,13 +168,13 @@ object LazFindReplaceDialog: TLazFindReplaceDialog
       ParentShowHint = False
       ShowHint = True
       TabOrder = 1
-      AnchorSideTop.Side = asrBottom
-      Left = 6
-      Height = 13
-      Top = 87
-      Width = 183
     end
     object RegularExpressionsCheckBox: TCheckBox
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 20
+      Top = 76
+      Width = 183
       Align = alTop
       BorderSpacing.Top = 6
       BorderSpacing.Around = 6
@@ -177,13 +182,13 @@ object LazFindReplaceDialog: TLazFindReplaceDialog
       ParentShowHint = False
       ShowHint = True
       TabOrder = 2
-      AnchorSideTop.Side = asrBottom
-      Left = 6
-      Height = 13
-      Top = 62
-      Width = 183
     end
     object WholeWordsOnlyCheckBox: TCheckBox
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 20
+      Top = 44
+      Width = 183
       Align = alTop
       BorderSpacing.Top = 6
       BorderSpacing.Around = 6
@@ -191,13 +196,13 @@ object LazFindReplaceDialog: TLazFindReplaceDialog
       ParentShowHint = False
       ShowHint = True
       TabOrder = 3
-      AnchorSideTop.Side = asrBottom
-      Left = 6
-      Height = 13
-      Top = 37
-      Width = 183
     end
     object CaseSensitiveCheckBox: TCheckBox
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 20
+      Top = 12
+      Width = 183
       Align = alTop
       BorderSpacing.Top = 6
       BorderSpacing.Around = 6
@@ -205,19 +210,9 @@ object LazFindReplaceDialog: TLazFindReplaceDialog
       ParentShowHint = False
       ShowHint = True
       TabOrder = 4
-      AnchorSideTop.Side = asrBottom
-      Left = 6
-      Height = 13
-      Top = 12
-      Width = 183
     end
   end
   object ScopeGroupBox: TGroupBox
-    BorderSpacing.Around = 6
-    Caption = 'ScopeGroupBox'
-    ClientHeight = 51
-    ClientWidth = 195
-    TabOrder = 5
     AnchorSideLeft.Control = OptionsGroupBox
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = OriginGroupBox
@@ -226,34 +221,34 @@ object LazFindReplaceDialog: TLazFindReplaceDialog
     Height = 69
     Top = 141
     Width = 199
+    BorderSpacing.Around = 6
+    Caption = 'ScopeGroupBox'
+    TabOrder = 5
     object SelectedRadioButton: TRadioButton
+      Left = 3
+      Height = 20
+      Top = 32
+      Width = 189
       Align = alTop
       BorderSpacing.Top = 6
-      BorderSpacing.Around = 6
+      BorderSpacing.Around = 3
       Caption = 'SelectedRadioButton'
       TabOrder = 0
-      Left = 6
-      Height = 13
-      Top = 31
-      Width = 183
     end
     object GlobalRadioButton: TRadioButton
+      Left = 3
+      Height = 20
+      Top = 3
+      Width = 189
       Align = alTop
-      BorderSpacing.Around = 6
+      BorderSpacing.Around = 3
       Caption = 'GlobalRadioButton'
+      Checked = True
+      State = cbChecked
       TabOrder = 1
-      Left = 6
-      Height = 13
-      Top = 6
-      Width = 183
     end
   end
   object DirectionGroupBox: TGroupBox
-    BorderSpacing.Around = 6
-    Caption = 'DirectionGroupBox'
-    ClientHeight = 51
-    ClientWidth = 195
-    TabOrder = 6
     AnchorSideLeft.Control = OptionsGroupBox
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = ScopeGroupBox
@@ -262,34 +257,34 @@ object LazFindReplaceDialog: TLazFindReplaceDialog
     Height = 69
     Top = 216
     Width = 199
+    BorderSpacing.Around = 6
+    Caption = 'DirectionGroupBox'
+    TabOrder = 6
     object BackwardRadioButton: TRadioButton
+      Left = 3
+      Height = 20
+      Top = 32
+      Width = 189
       Align = alTop
       BorderSpacing.Top = 6
-      BorderSpacing.Around = 6
+      BorderSpacing.Around = 3
       Caption = 'BackwardRadioButton'
       TabOrder = 0
-      Left = 6
-      Height = 13
-      Top = 31
-      Width = 183
     end
     object ForwardRadioButton: TRadioButton
+      Left = 3
+      Height = 20
+      Top = 3
+      Width = 189
       Align = alTop
-      BorderSpacing.Around = 6
+      BorderSpacing.Around = 3
       Caption = 'ForwardRadioButton'
+      Checked = True
+      State = cbChecked
       TabOrder = 1
-      Left = 6
-      Height = 13
-      Top = 6
-      Width = 183
     end
   end
   object OriginGroupBox: TGroupBox
-    BorderSpacing.Around = 6
-    Caption = 'OriginGroupBox'
-    ClientHeight = 51
-    ClientWidth = 195
-    TabOrder = 7
     AnchorSideLeft.Control = OptionsGroupBox
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = ReplaceTextComboBox
@@ -298,28 +293,40 @@ object LazFindReplaceDialog: TLazFindReplaceDialog
     Height = 69
     Top = 66
     Width = 199
+    BorderSpacing.Around = 6
+    Caption = 'OriginGroupBox'
+    TabOrder = 7
     object FromCursorRadioButton: TRadioButton
+      Left = 3
+      Height = 20
+      Top = 3
+      Width = 189
       Align = alTop
-      BorderSpacing.Around = 6
+      BorderSpacing.Around = 3
       Caption = 'FromCursorRadioButton'
+      Checked = True
+      State = cbChecked
       TabOrder = 0
-      Left = 6
-      Height = 13
-      Top = 6
-      Width = 183
     end
     object EntireScopeRadioButton: TRadioButton
+      Left = 3
+      Height = 20
+      Top = 26
+      Width = 189
       Align = alTop
-      BorderSpacing.Around = 6
+      BorderSpacing.Around = 3
       Caption = 'EntireScopeRadioButton'
       TabOrder = 1
-      Left = 6
-      Height = 13
-      Top = 25
-      Width = 183
     end
   end
   object ReplaceAllButton: TBitBtn
+    AnchorSideRight.Control = OKButton
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 301
+    Height = 28
+    Top = 297
+    Width = 52
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6
@@ -329,12 +336,5 @@ object LazFindReplaceDialog: TLazFindReplaceDialog
     ModalResult = 8
     NumGlyphs = 0
     TabOrder = 8
-    AnchorSideRight.Control = OKButton
-    AnchorSideBottom.Control = Owner
-    AnchorSideBottom.Side = asrBottom
-    Left = 280
-    Height = 33
-    Top = 292
-    Width = 62
   end
 end
