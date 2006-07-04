@@ -147,9 +147,9 @@ type
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     function FindDockerByName(const ADockerName: string;
-                      Ignore: TCustomLazControlDocker): TCustomLazControlDocker;
+                Ignore: TCustomLazControlDocker = nil): TCustomLazControlDocker;
     function FindDockerByControl(AControl: TControl;
-                      Ignore: TCustomLazControlDocker): TCustomLazControlDocker;
+                Ignore: TCustomLazControlDocker = nil): TCustomLazControlDocker;
     function CreateUniqueName(const AName: string;
                               Ignore: TCustomLazControlDocker): string;
     function GetControlConfigName(AControl: TControl): string;
@@ -740,6 +740,34 @@ procedure TCustomLazControlDocker.RestoreLayout;
 var
   Layout: TLazDockerConfig;
   SelfNode: TLazDockConfigNode;
+  
+{  function FindControl(Node: TLazDockConfigNode): TControl;
+  begin
+    if Node.TheType=ldcntControl then
+      Result:=Manager.FindDockerByName(Node.Name)
+    else
+      Result:=nil;
+  end;
+
+  procedure FindSibling(Node: TLazDockConfigNode; Side: TAnchorKind;
+    out Sibling: TControl; out SiblingNode: TLazDockConfigNode;
+    out Distance: integer);
+  var
+    SiblingName: string;
+  begin
+    Sibling:=nil;
+    SiblingNode:=nil;
+    Distance:=10000;
+    if Node=nil then exit;
+    SiblingName:=Node.Sides[Side];
+    if SiblingName<>'' then begin
+      SiblingNode:=Layout.Root.FindByName(SiblingName,true,true);
+      Sibling:=FindControl(SiblingNode);
+      // TODO
+    end;
+  end;}
+  
+var
   NewBounds: TRect;
 begin
   DebugLn(['TCustomLazControlDocker.RestoreLayout A ',DockerName]);
@@ -748,7 +776,18 @@ begin
   if (Layout=nil) or (Layout.Root=nil) then exit;
   SelfNode:=Layout.Root.FindByName(DockerName,true);
   DebugLn(['TCustomLazControlDocker.RestoreLayout ',SelfNode<>nil,' DockerName=',DockerName,' ',Manager.Configs[0].DockerName]);
-  if SelfNode=nil then exit;
+  if (SelfNode=nil) or (SelfNode.TheType<>ldcntControl) then exit;
+  
+  if SelfNode.Parent<>nil then begin
+    // this control was docked
+    if SelfNode.Parent.TheType=ldcntPage then begin
+      // this control was docked as child of a page
+      DebugLn(['TCustomLazControlDocker.RestoreLayout TODO restore page']);
+    end else begin
+      // this control was docked on a form as child
+      //FindSibling(SelfNode,akLeft,LeftSibling,LeftSiblingDistance);
+    end;
+  end;
   
   // default: do not dock, just move
   DebugLn(['TCustomLazControlDocker.RestoreLayout ',DockerName,' not docking, just moving ...']);

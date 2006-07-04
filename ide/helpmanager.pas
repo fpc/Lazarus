@@ -121,6 +121,7 @@ type
     NodesListBox: TListBox;
     procedure HelpSelectorDialogClose(Sender: TObject;
       var CloseAction: TCloseAction);
+    procedure NodesListBoxDblClick(Sender: TObject);
   private
     FNodes: THelpNodeQueryList;
     procedure SetNodes(const AValue: THelpNodeQueryList);
@@ -154,6 +155,11 @@ begin
   IDEDialogLayoutList.SaveLayout(Self);
 end;
 
+procedure THelpSelectorDialog.NodesListBoxDblClick(Sender: TObject);
+begin
+  ModalResult := mrOK;
+end;
+
 procedure THelpSelectorDialog.SetNodes(const AValue: THelpNodeQueryList);
 begin
   if FNodes=AValue then exit;
@@ -183,6 +189,7 @@ begin
   inherited Create(TheOwner);
   IDEDialogLayoutList.ApplyLayout(Self,500,300);
 
+  Caption := lisHelpSelectorDialog;
   NodesGroupBox.Caption:=lisSelectAHelpItem;
   OkButton.Caption:=lisLazBuildOk;
   CancelButton.Caption:=dlgCancel;

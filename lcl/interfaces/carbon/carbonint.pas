@@ -32,8 +32,6 @@ interface
 {$ASSERTIONS ON}
 {$endif}
 
-{off $Define Critical_Sections_Support}
-
 uses
   // rtl+ftl
   Types, Classes, SysUtils, Math, FPCAdds,
