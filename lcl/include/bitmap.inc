@@ -643,10 +643,7 @@ begin
   if (FImage.FDIB.dsbm.bmHeight <> NewHeight)
   or (FImage.FDIB.dsbm.bmWidth <> NewWidth) then
   begin
-    if (Width <> 0) and (Height <> 0) and (NewWidth <> 0) and (NewHeight <> 0) then
-      UnshareImage(true)
-    else
-      FreeImage;
+    FreeImage;
     FImage.FDIB.dsbm.bmWidth := NewWidth;
     FImage.FDIB.dsbm.bmHeight := NewHeight;
     Changed(Self);
