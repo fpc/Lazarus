@@ -5,8 +5,14 @@ unit uSamplePostScriptCanvas;
 interface
 
 uses
+  {$IFDEF MSWINDOWS}
+    Windows,
+  {$ENDIF}
+  {$IFDEF UNIX}
+    Unix,
+  {$ENDIF}
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, Buttons,
-  PostScriptCanvas, Unix;
+  PostScriptCanvas;
 
 type
   TForm1 = class(TForm)
@@ -177,10 +183,20 @@ begin
 end;
 
 procedure TForm1.Button2Click(Sender: TObject);
+var
+  FName: string;
 begin
   if Sender=nil then ;
   if FileExists(ExpandFileName('./test1.ps')) then
-    Shell(format('kghostview %s',[ExpandFileName('./test1.ps')]));
+  begin
+    {$IFDEF MSWINDOWS}
+      FName := '"C:\Program Files\Ghostgum\gsview\gsview32" '  + ExpandFileName('./test1.ps');
+      ShellExecute(Handle, 'open', PChar(FName), nil, nil, SW_SHOWNORMAL)
+    {$ENDIF}
+    {$IFDEF UNIX}
+      Shell(format('kghostview %s',[ExpandFileName('./test1.ps')]));
+    {$ENDIF}
+  end;
 end;
 
 initialization

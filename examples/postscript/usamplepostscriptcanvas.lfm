@@ -3,14 +3,15 @@ object Form1: TForm1
   Caption = 'Form1'
   ClientHeight = 97
   ClientWidth = 400
-  PixelsPerInch = 90
-  HorzScrollBar.Page = 401
-  VertScrollBar.Page = 98
+  PixelsPerInch = 96
+  HorzScrollBar.Page = 399
+  VertScrollBar.Page = 96
   Left = 310
   Height = 97
   Top = 163
   Width = 400
   object Button1: TButton
+    BorderSpacing.InnerBorder = 4
     Caption = 'Generate a PostScript file'
     OnClick = Button1Click
     TabOrder = 0
@@ -20,6 +21,7 @@ object Form1: TForm1
     Width = 352
   end
   object Button2: TButton
+    BorderSpacing.InnerBorder = 4
     Caption = 'Show this file (kghostview)'
     OnClick = Button2Click
     TabOrder = 1
