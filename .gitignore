@@ -5,6 +5,12 @@ designer/jitform/units
 designer/units
 examples/units
 ide/*.bak
+ide/include/darwin/*.bak
+ide/include/freebsd/*.bak
+ide/include/linux/*.bak
+ide/include/netbsd/*.bak
+ide/include/unix/*.bak
+ide/include/win32/*.bak
 ide/revision.inc
 ide/units
 ideintf/units

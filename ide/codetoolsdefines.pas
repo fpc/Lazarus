@@ -1104,6 +1104,7 @@ begin
 
   ValueNotebook.Page[0].Caption := lisCodeToolsDefsValueAsText;
   ValueNotebook.Page[1].Caption := lisCodeToolsDefsValueAsFilePaths;
+  ValueNotebook.PageIndex := 0;
 
   MoveFilePathUpBitBtn.Caption:=dlgUpWord;
   MoveFilePathDownBitBtn.Caption:=dlgDownWord;
