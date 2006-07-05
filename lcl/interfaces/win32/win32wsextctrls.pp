@@ -460,6 +460,7 @@ var
 X: Integer;
 begin
   Result := AIndex;
+  if csDesigning in ANotebook.ComponentState then exit;
   for X := 0 to AIndex-1 do begin
     if ANotebook.Page[X].TabVisible = False then Dec(Result);
   end;
