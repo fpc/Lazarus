@@ -267,7 +267,7 @@ begin
   if lItemIndex = -1 then
   begin
     lItemIndex := SendMessage(FWin32List, FFlagGetItemIndex, 0, 0);
-    lSelected := true;
+    lSelected := lItemIndex >= 0;
   end;
   
   inherited;
