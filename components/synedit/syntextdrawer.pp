@@ -1152,8 +1152,9 @@ begin
   if FETOSizeInChar < Length then
     InitETODist(GetCharWidth);
   {$IFDEF SYN_LAZARUS}
+  // TODO: disable distance Array (FETODist), when using monospace fonts
   LCLIntf.ExtUTF8Out(FDC, X, Y, fuOptions, @ARect, Text,
-    Length, PInteger(FETODist));
+    Length, {$ifdef USE_UTF8BIDI_LCL}nil{$else}PInteger(FETODist){$endif});
   {$ELSE}
   Windows.ExtTextOut(FDC, X, Y, fuOptions, @ARect, Text,
     Length, PInteger(FETODist));
