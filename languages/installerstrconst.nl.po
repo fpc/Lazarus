@@ -1,0 +1,16 @@
+#: installerstrconsts:wiseditsource
+msgid "&Edit source"
+msgstr "&Broncode bewerken"
+
+#: installerstrconsts:wiseditform
+msgid "&Edit form"
+msgstr "&Form bewerken"
+
+#: installerstrconsts:wisopenproject
+msgid "&Open project"
+msgstr "&Project openen"
+
+#: installerstrconsts:wisopenpackage
+msgid "&Open package"
+msgstr "&Package openen"
+
