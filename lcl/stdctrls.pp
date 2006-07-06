@@ -677,6 +677,7 @@ type
     FLines: TStrings;
     FScrollBars: TScrollStyle;
     FVertScrollBar: TMemoScrollBar;
+    FWantTabs: boolean;
     FWordWrap: Boolean;
     procedure SetHorzScrollBar(const AValue: TMemoScrollBar);
     procedure SetVertScrollBar(const AValue: TMemoScrollBar);
@@ -688,11 +689,14 @@ type
     procedure RealSetText(const Value: TCaption); override;
     function GetCachedText(var CachedText: TCaption): boolean; override;
     procedure SetLines(const Value: TStrings);
+    procedure SetWantTabs(const NewWantTabs: boolean);
     procedure SetWordWrap(const Value: boolean);
     procedure SetScrollBars(const Value: TScrollStyle);
     procedure Loaded; override;
     function WordWrapIsStored: boolean; virtual;
     procedure ControlKeyDown(var Key: Word; Shift: TShiftState); override;
+
+    property WantTabs: boolean read FWantTabs write SetWantTabs default false;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -782,6 +786,7 @@ type
     property TabOrder;
     property TabStop;
     property Visible;
+    property WantTabs;
     property WordWrap;
   end;
 

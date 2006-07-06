@@ -30,6 +30,7 @@ constructor TCustomMemo.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   fCompStyle := csMemo;
+  FWantTabs := false;
   FWordWrap := True;
   //FLines := TMemoStrings.Create(Self);
   FLines := TStringList.Create; //TODO finish TTextStrings and add them here instead of TStringList
@@ -198,9 +199,17 @@ procedure TCustomMemo.ControlKeyDown(var Key: Word; Shift: TShiftState);
 begin
   if not ReadOnly then begin
     if (Key=VK_RETURN) and (Shift=[]) then exit;
-    if (Key=VK_TAB) and (Shift-[ssShift]=[]) then exit;
+    if FWantTabs and (Key=VK_TAB) and (Shift-[ssShift]=[]) then exit;
   end;
   inherited ControlKeyDown(Key, Shift);
+end;
+
+procedure TCustomMemo.SetWantTabs(const NewWantTabs: boolean);
+begin
+  if FWantTabs = NewWantTabs then exit;
+  FWantTabs := NewWantTabs;
+  if HandleAllocated then
+    TWSCustomMemoClass(WidgetSetClass).SetWantTabs(Self, NewWantTabs);
 end;
 
 {------------------------------------------------------------------------------
