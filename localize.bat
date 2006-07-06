@@ -41,6 +41,13 @@ tools\updatepofiles languages\lazaruside.po
 rstconv -i %ObjInsp_RST% -o languages\objinspstrconsts.po
 tools\updatepofiles languages\objinspstrconsts.po
 
+@REM INSTALLER
+@set Installer_RST=tools\install\win32\installerstrconsts.rst
+if not exist %Installer_RST% goto SkipInstaller
+rstconv -i %Installer_RST% -o languages\installerstrconsts.po
+tools\updatepofiles languages\installerstrconsts.po
+:SkipInstaller
+
 @REM CodeTools
 @set CodeTools_RST=components\codetools\units\%ArchOS%\CodeToolsStrConsts.rst
 rstconv -i %CodeTools_RST% -o components\codetools\languages\codetools.po
@@ -60,3 +67,4 @@ tools\updatepofiles components\synedit\languages\synmacrorecorder.po
 @set LCL_RST=lcl\units\%ArchOS%\lclstrconsts.rst
 rstconv -i %LCL_RST% -o lcl\languages\lcl.po
 tools\updatepofiles lcl\languages\lcl.po
+

@@ -9,7 +9,6 @@ resourcestring
   wisEditForm = '&Edit form';
   wisOpenProject = '&Open project';
   wisOpenPackage = '&Open package';
-  wisFolderWithSpaces ='Selected folder contains spaces, please select a folder without spaces in it.'
 
 implementation
 
