@@ -736,7 +736,6 @@ var
 begin
   Assert(False, Format('Trace:TWin32WSCustomComboBox.SetText --> %S', [AText]));
   Handle := AWinControl.Handle;
-  Windows.SendMessage(Handle, CB_SETCURSEL, -1, 0);
   if TCustomComboBox(AWinControl).ReadOnly then
     Windows.SendMessage(Handle, CB_SELECTSTRING, -1, LPARAM(PChar(AText)))
   else
