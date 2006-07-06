@@ -14,7 +14,7 @@ AppPublisherURL=http://www.lazarus.freepascal.org/
 AppSupportURL=http://www.lazarus.freepascal.org/
 AppUpdatesURL=http://www.lazarus.freepascal.org/
 LicenseFile={#BuildDir}\COPYING.GPL
-DefaultDirName={code:GetDefDir|c:\lazarus}
+DefaultDirName={code:GetDefDir|c:\lazarus-0.9.17}
 DefaultGroupName={#AppName}
 OutputBaseFilename={#AppName}-{#AppVersion}-{#SetupDate}-win32
 InternalCompressLevel=ultra
@@ -38,7 +38,7 @@ Source: samplefpc.cfg; DestDir: {app}\pp\bin\i386-win32; AfterInstall: UpdateFpc
 [INI]
 Filename: {app}\Lazarus Home Page.url; Section: InternetShortcut; Key: URL; String: http://www.lazarus.freepascal.org/
 Filename: {app}\Lazarus Forums.url; Section: InternetShortcut; Key: URL; String: http://www.lazarus.freepascal.org/modules.php?op=modload&name=PNphpBB2&file=index
-Filename: {app}\Lazarus Wiki Help.url; Section: InternetShortcut; Key: URL; String: http://lazarus-ccr.sourceforge.net/kb/index.php/Main_Page
+Filename: {app}\Lazarus Wiki Help.url; Section: InternetShortcut; Key: URL; String: http://wiki.lazarus.freepascal.org/index.php/Main_Page
 
 [Icons]
 Name: {group}\{#AppName}; Filename: {app}\lazarus.exe
@@ -50,6 +50,9 @@ Name: {userdesktop}\Lazarus; Filename: {app}\lazarus.exe; Tasks: desktopicon
 
 [UninstallDelete]
 Name: {app}\compilertest.pas; Type: files
+Name: {app}\Lazarus Wiki Help.url; Type: files
+Name: {app}\Lazarus Home Page.url; Type: files
+Name: {app}\Lazarus Forums.url; Type: files
 
 [Registry]
 Root: HKLM; SubKey: SOFTWARE\Classes\.lpi; ValueType: string; ValueData: LazarusProject; Flags: uninsdeletekeyifempty uninsdeletevalue; Check: IsHKLMWriteable
@@ -76,7 +79,7 @@ Root: HKLM; SubKey: SOFTWARE\Classes\.pas; ValueType: string; ValueData: Lazarus
 Root: HKLM; SubKey: SOFTWARE\Classes\.pp; ValueType: string; ValueData: LazarusUnit; Flags: uninsdeletekeyifempty uninsdeletevalue; Check: IsHKLMWriteable
 Root: HKLM; SubKey: SOFTWARE\Classes\LazarusUnit; ValueType: string; ValueName: ; ValueData: Object Pascal Unit; Flags: uninsdeletekey; Check: IsHKLMWriteable
 Root: HKLM; SubKey: SOFTWARE\Classes\LazarusUnit\DefaultIcon; ValueType: string; ValueName: ; ValueData: {app}\images\LazarusSource.ico; Flags: uninsdeletevalue; Check: IsHKLMWriteable
-Root: HKLM; SubKey: SOFTWARE\Classes\LazarusUnit\shell\open; ValueType: string; ValueName: ; ValueData: &Edit Source; Flags: uninsdeletevalue; Check: IsHKLMWriteable
+Root: HKLM; SubKey: SOFTWARE\Classes\LazarusUnit\shell\open; ValueType: string; ValueData: {code:GetPoString|installerstrconsts:wiseditsource}; Flags: uninsdeletevalue; Check: IsHKLMWriteable
 Root: HKLM; SubKey: SOFTWARE\Classes\LazarusUnit\shell\open\command; ValueType: string; ValueData: "{app}\lazarus.exe  ""%1"""; Flags: uninsdeletevalue; Check: IsHKLMWriteable
 Root: HKLM; SubKey: SOFTWARE\Classes\.inc; ValueType: string; ValueData: LazarusInclude; Flags: uninsdeletekeyifempty uninsdeletevalue; Check: IsHKLMWriteable
 Root: HKLM; SubKey: SOFTWARE\Classes\LazarusInclude; ValueType: string; ValueName: ; ValueData: Object Pascal Include; Flags: uninsdeletekey; Check: IsHKLMWriteable
@@ -199,4 +202,44 @@ end;
 function IsHKLMNotWriteable: boolean;
 begin
   Result := not IsHKLMWriteable();
+end;
+
+var
+  PoFileStrings: TArrayOfString;
+
+procedure LoadPoFile;
+var
+  PoFilename: string;
+begin
+  if (GetArrayLength(PoFileStrings)=0) then begin
+	  PoFilename := ExpandConstant('{app}\languages\installerstrconsts.{language}.po');
+	if FileExists(PoFileName) then
+	PoFilename := ExpandConstant('{app}\languages\installerstrconsts.po');
+	//if not FileExists(PoFilename) then
+    //  MsgBox(PoFilename + ' does not exist.', mbInformation, MB_OK);
+	LoadStringsFromFile(PoFileName, PoFileStrings);
+  end;
+end;
+
+function GetPoString(const msgid: string): string;
+var
+  PoFilename: string;
+  Signature: string;
+  i: integer;
+  Count: integer;
+begin
+  LoadPoFile;
+  Result := msgid;
+  Signature := '#: '+ msgid;
+  Count := GetArrayLength(PoFileStrings);
+  i := 0;
+  while (i<Count) and (PoFileStrings[i]<>Signature) do begin
+    i := i+1;
+  end;
+
+  if i+2<Count then begin
+	Result := copy(PoFileStrings[i+2],9, Length(PoFileStrings[i+2])-9);
+	if Result='' then
+	  Result := copy(PoFileStrings[i+1],8, Length(PoFileStrings[i+1])-8);
+  end;
 end;
