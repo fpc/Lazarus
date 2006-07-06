@@ -1822,7 +1822,7 @@ end;
 
 function TDebugManager.RunDebugger: TModalResult;
 begin
-  DebugLn('TDebugManager.RunDebugger A ',FDebugger<>nil,' Destroying=',Destroying);
+  DebugLn('TDebugManager.RunDebugger A ',DbgS(FDebugger<>nil),' Destroying=',DbgS(Destroying));
   Result:=mrCancel;
   if Destroying then exit;
   if (FDebugger <> nil) then begin
