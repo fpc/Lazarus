@@ -174,8 +174,6 @@ function StrToDouble(const s: string): double;
 
 
 
-
-
 // debugging
 procedure RaiseGDBException(const Msg: string);
 procedure DumpExceptionBackTrace;
@@ -1915,7 +1913,6 @@ procedure DbgOutThreadLog(const Msg: string);
 var
   PID: PtrInt;
   fs: TFileStream;
-  s: string;
   Filename: string;
 begin
   PID:=PtrInt(GetThreadID);
@@ -1925,50 +1922,54 @@ begin
   else
     fs:=TFileStream.Create(Filename,fmCreate);
   fs.Position:=fs.Size;
-  s:=IntToStr(PtrInt(PID))+' : '+Msg;
-  fs.Write(s[1], length(s));
+  fs.Write(Msg[1], length(Msg));
   fs.Free;
 end;
 
 procedure DebuglnThreadLog(const Msg: string);
+var
+  PID: PtrInt;
 begin
-  DbgOutThreadLog(Msg+LineEnding);
+  PID:=PtrInt(GetThreadID);
+  DbgOutThreadLog(IntToStr(PtrInt(PID))+' : '+Msg+LineEnding);
 end;
 
 procedure DebuglnThreadLog(Args: array of const);
 var
   i: Integer;
+  s: String;
 begin
+  s:='';
   for i:=Low(Args) to High(Args) do begin
     case Args[i].VType of
-    vtInteger: DbgOutThreadLog(dbgs(Args[i].vinteger));
-    vtInt64: DbgOutThreadLog(dbgs(Args[i].VInt64^));
-    vtQWord: DbgOutThreadLog(dbgs(Args[i].VQWord^));
-    vtBoolean: DbgOutThreadLog(dbgs(Args[i].vboolean));
-    vtExtended: DbgOutThreadLog(dbgs(Args[i].VExtended^));
+    vtInteger: s:=s+dbgs(Args[i].vinteger);
+    vtInt64: s:=s+dbgs(Args[i].VInt64^);
+    vtQWord: s:=s+dbgs(Args[i].VQWord^);
+    vtBoolean: s:=s+dbgs(Args[i].vboolean);
+    vtExtended: s:=s+dbgs(Args[i].VExtended^);
 {$ifdef FPC_CURRENCY_IS_INT64}
     // MWE:
     // ppcppc 2.0.2 has troubles in choosing the right dbgs()
     // so we convert here (i don't know about other versions
-    vtCurrency: DbgOutThreadLog(dbgs(int64(Args[i].vCurrency^)/10000, 4));
+    vtCurrency: s:=s+dbgs(int64(Args[i].vCurrency^)/10000, 4);
 {$else}
-    vtCurrency: DbgOutThreadLog(dbgs(Args[i].vCurrency^));
+    vtCurrency: s:=s+dbgs(Args[i].vCurrency^);
 {$endif}
-    vtString: DbgOutThreadLog(Args[i].VString^);
-    vtAnsiString: DbgOutThreadLog(AnsiString(Args[i].VAnsiString));
-    vtChar: DbgOutThreadLog(Args[i].VChar);
-    vtPChar: DbgOutThreadLog(Args[i].VPChar);
-    vtPWideChar: DbgOutThreadLog(Args[i].VPWideChar);
-    vtWideChar: DbgOutThreadLog(Args[i].VWideChar);
-    vtWidestring: DbgOutThreadLog(WideString(Args[i].VWideString));
-    vtObject: DbgOutThreadLog(DbgSName(Args[i].VObject));
-    vtClass: DbgOutThreadLog(DbgSName(Args[i].VClass));
-    vtPointer: DbgOutThreadLog(Dbgs(Args[i].VPointer));
+    vtString: s:=s+Args[i].VString^;
+    vtAnsiString: s:=s+AnsiString(Args[i].VAnsiString);
+    vtChar: s:=s+Args[i].VChar;
+    vtPChar: s:=s+Args[i].VPChar;
+    vtPWideChar: s:=s+Args[i].VPWideChar;
+    vtWideChar: s:=s+Args[i].VWideChar;
+    vtWidestring: s:=s+WideString(Args[i].VWideString);
+    vtObject: s:=s+DbgSName(Args[i].VObject);
+    vtClass: s:=s+DbgSName(Args[i].VClass);
+    vtPointer: s:=s+Dbgs(Args[i].VPointer);
     else
       DbgOutThreadLog('?unknown variant?');
     end;
   end;
-  DebuglnThreadLog;
+  DebuglnThreadLog(s);
 end;
 
 procedure DebuglnThreadLog;

@@ -9592,13 +9592,13 @@ end;
 // Placed CriticalSectionSupport outside the API wizard bounds
 // so it won't affect sorting etc.
 
-{$IfDef Critical_Sections_Support}
+{$IfNDef DisableCriticalSections}
 
-  {$IfNDef Win32}
+  {$IfDef Unix}
 
     {$Define pthread}
 
-    Type
+    {Type
       _pthread_fastlock = packed record
         __status: Longint;
         __spinlock: Integer;
@@ -9615,11 +9615,11 @@ end;
 
       pthread_mutexattr_t = packed record
         __mutexkind: Integer;
-      end;
+      end;}
 
     {$linklib pthread}
 
-    function pthread_mutex_init(var Mutex: pthread_mutex_t;
+    {function pthread_mutex_init(var Mutex: pthread_mutex_t;
       var Attr: pthread_mutexattr_t): Integer; cdecl;external;
     function pthread_mutexattr_settype(var Attr: pthread_mutexattr_t;
       Kind: Integer): Integer; cdecl;external;
@@ -9628,7 +9628,7 @@ end;
     function pthread_mutex_unlock(var Mutex: pthread_mutex_t):
       Integer; cdecl; external;
     function pthread_mutex_destroy(var Mutex: pthread_mutex_t):
-      Integer; cdecl; external;
+      Integer; cdecl; external;}
   {$EndIf}
 
 {$EndIf}
@@ -9636,6 +9636,13 @@ end;
 Procedure TGtkWidgetSet.InitializeCriticalSection(var CritSection: TCriticalSection);
 {$IfDef pthread}
 var
+  ACritSec: System.PRTLCriticalSection;
+begin
+  New(ACritSec);
+  System.InitCriticalSection(ACritSec^);
+  CritSection:=TCriticalSection(ACritSec);
+end;
+{var
   Crit : ppthread_mutex_t;
   Attribute: pthread_mutexattr_t;
 begin
@@ -9651,7 +9658,7 @@ begin
   New(Crit);
   pthread_mutex_init(Crit^, Attribute);
   CritSection := Longint(Crit);
-end;
+end;}
 {$Else}
 begin
 end;
@@ -9660,6 +9667,12 @@ end;
 Procedure TGtkWidgetSet.EnterCriticalSection(var CritSection: TCriticalSection);
 {$IfDef pthread}
 var
+  ACritSec: System.PRTLCriticalSection;
+begin
+  ACritSec:=System.PRTLCriticalSection(CritSection);
+  System.EnterCriticalsection(ACritSec^);
+end;
+{var
   Crit,
   tmp : ppthread_mutex_t;
 begin
@@ -9677,7 +9690,7 @@ begin
   tmp := ppthread_mutex_t(CritSection);
   CritSection := Longint(Crit);
   Dispose(Tmp);
-end;
+end;}
 {$Else}
 begin
 end;
@@ -9686,6 +9699,12 @@ end;
 Procedure TGtkWidgetSet.LeaveCriticalSection(var CritSection: TCriticalSection);
 {$IfDef pthread}
 var
+  ACritSec: System.PRTLCriticalSection;
+begin
+  ACritSec:=System.PRTLCriticalSection(CritSection);
+  System.LeaveCriticalsection(ACritSec^);
+end;
+{var
   Crit,
   tmp : ppthread_mutex_t;
 begin
@@ -9703,7 +9722,7 @@ begin
   tmp := ppthread_mutex_t(CritSection);
   CritSection := Longint(Crit);
   Dispose(Tmp);
-end;
+end;}
 {$Else}
 begin
 end;
@@ -9712,6 +9731,14 @@ end;
 Procedure TGtkWidgetSet.DeleteCriticalSection(var CritSection: TCriticalSection);
 {$IfDef pthread}
 var
+  ACritSec: System.PRTLCriticalSection;
+begin
+  ACritSec:=System.PRTLCriticalSection(CritSection);
+  System.DoneCriticalsection(ACritSec^);
+  Dispose(ACritSec);
+  CritSection:=0;
+end;
+{var
   Crit,
   tmp : ppthread_mutex_t;
 begin
@@ -9730,7 +9757,7 @@ begin
   tmp := ppthread_mutex_t(CritSection);
   CritSection := 0;
   Dispose(Tmp);
-end;
+end;}
 {$Else}
 begin
 end;

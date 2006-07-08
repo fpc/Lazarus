@@ -97,7 +97,7 @@ type
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
   public
-    property Options:TSynSearchOptions read GetOptions write SetOptions;
+    property Options: TSynSearchOptions read GetOptions write SetOptions;
     property FindText:AnsiString read GetFindText write SetFindText;
     property ReplaceText:AnsiString read GetReplaceText write SetReplaceText;
     property OnKey: TOnFindDlgKey read FOnKey write SetOnKey;
@@ -211,6 +211,7 @@ begin
   if not CheckInput then exit;
   fReplaceAllClickedLast:=false;
   ActiveControl:=TextToFindComboBox;
+  ModalResult:=mrOk;
 end;
 
 procedure TLazFindReplaceDialog.ReplaceAllButtonClick(Sender:TObject);
@@ -218,6 +219,7 @@ begin
   if not CheckInput then exit;
   fReplaceAllClickedLast:=true;
   ActiveControl:=TextToFindComboBox;
+  ModalResult:=mrAll;
 end;
 
 procedure TLazFindReplaceDialog.CancelButtonClick(Sender:TObject);

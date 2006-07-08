@@ -118,7 +118,6 @@ object LazFindReplaceDialog: TLazFindReplaceDialog
     Constraints.MaxHeight = 33
     Default = True
     Kind = bkOK
-    ModalResult = 1
     NumGlyphs = 0
     OnClick = OkButtonClick
     TabOrder = 3
@@ -342,8 +341,8 @@ object LazFindReplaceDialog: TLazFindReplaceDialog
     Caption = '&All'
     Constraints.MaxHeight = 33
     Kind = bkAll
-    ModalResult = 8
     NumGlyphs = 0
+    OnClick = ReplaceAllButtonClick
     TabOrder = 8
   end
 end

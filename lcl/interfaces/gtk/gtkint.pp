@@ -54,7 +54,7 @@ interface
 {$ELSE}
 {off $DEFINE NoGdkPixbufLib}
 {$ENDIF}
-{off $Define Critical_Sections_Support}
+{off $Define DisableCriticalSections}
 
 {off $Define Disable_GC_SysColors}
 
