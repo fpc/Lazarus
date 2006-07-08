@@ -1,15 +1,14 @@
-program MultiThreadingExample1;
+program WaitForExample1;
 
 {$mode objfpc}{$H+}
 
 uses
-  // for multi threading the cthreads unit must be used on unix systems:
-  // for example: Linux, MacOSX, FreeBSD, Solaris
   {$IFDEF UNIX}
   cthreads,
   {$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms, MainUnit;
+  Forms
+  { add your units here }, WaitForUnit1;
 
 begin
   Application.Initialize;

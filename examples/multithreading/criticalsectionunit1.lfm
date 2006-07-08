@@ -1,0 +1,43 @@
+object Form1: TForm1
+  Caption = 'Form1'
+  ClientHeight = 169
+  ClientWidth = 312
+  PixelsPerInch = 75
+  HorzScrollBar.Page = 311
+  VertScrollBar.Page = 168
+  Left = 286
+  Height = 169
+  Top = 202
+  Width = 312
+  object Label1: TLabel
+    Caption = 'Label1'
+    Color = clNone
+    ParentColor = False
+    Left = 43
+    Height = 17
+    Top = 125
+    Width = 65
+  end
+  object CountWithCritSecButton: TButton
+    AutoSize = True
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Count with critical section'
+    OnClick = CountWithCritSecButtonClick
+    TabOrder = 0
+    Left = 40
+    Height = 26
+    Top = 24
+    Width = 158
+  end
+  object CountWithoutCritSecButton: TButton
+    AutoSize = True
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Count without critical section'
+    OnClick = CountWithoutCritSecButtonClick
+    TabOrder = 1
+    Left = 40
+    Height = 26
+    Top = 64
+    Width = 175
+  end
+end

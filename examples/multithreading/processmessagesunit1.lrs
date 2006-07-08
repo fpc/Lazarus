@@ -1,0 +1,14 @@
+{ Dies ist eine automatisch erzeugte Lazarus-Ressourcendatei }
+
+LazarusResources.Add('TForm1','FORMDATA',[
+  'TPF0'#6'TForm1'#5'Form1'#7'Caption'#6#5'Form1'#12'ClientHeight'#3#142#0#11'C'
+  +'lientWidth'#3'/'#1#8'OnCreate'#7#10'FormCreate'#13'PixelsPerInch'#2'K'#18'H'
+  +'orzScrollBar.Page'#3'.'#1#18'VertScrollBar.Page'#3#141#0#4'Left'#3#30#1#6'H'
+  +'eight'#3#142#0#3'Top'#3#202#0#5'Width'#3'/'#1#0#7'TButton'#15'StartStopButt'
+  +'on'#7'Anchors'#11#5'akTop'#0#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6
+  +#5'Start'#7'OnClick'#7#20'StartStopButtonClick'#8'TabOrder'#2#0#4'Left'#2'H'
+  +#6'Height'#2#25#3'Top'#2'('#5'Width'#3#158#0#0#0#12'TProgressBar'#12'Progres'
+  +'sBar1'#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#0#3'Max'#3#232#3#6'Smoot'
+  +'h'#9#4'Step'#2#1#4'Left'#2' '#6'Height'#2#20#3'Top'#2'X'#5'Width'#3#244#0#0
+  +#0#0
+]);

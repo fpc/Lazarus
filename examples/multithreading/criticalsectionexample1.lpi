@@ -6,11 +6,11 @@
     <General>
       <SessionStorage Value="InProjectDir"/>
       <MainUnit Value="0"/>
-      <IconPath Value="./"/>
       <TargetFileExt Value=""/>
     </General>
     <PublishOptions>
       <Version Value="2"/>
+      <IgnoreBinaries Value="False"/>
       <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
       <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
     </PublishOptions>
@@ -27,16 +27,16 @@
     </RequiredPackages>
     <Units Count="2">
       <Unit0>
-        <Filename Value="multithreadingexample1.lpr"/>
+        <Filename Value="criticalsectionexample1.lpr"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="MultiThreadingExample1"/>
+        <UnitName Value="CriticalSectionExample1"/>
       </Unit0>
       <Unit1>
-        <Filename Value="mainunit.pas"/>
+        <Filename Value="criticalsectionunit1.pas"/>
         <ComponentName Value="Form1"/>
         <IsPartOfProject Value="True"/>
-        <ResourceFilename Value="mainunit.lrs"/>
-        <UnitName Value="MainUnit"/>
+        <ResourceFilename Value="criticalsectionunit1.lrs"/>
+        <UnitName Value="CriticalSectionUnit1"/>
       </Unit1>
     </Units>
   </ProjectOptions>

@@ -17,6 +17,12 @@
  *   Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.        *
  *                                                                         *
  ***************************************************************************
+
+  Abstract:
+    Demo to show, how to start a thread and how synchronize with the main
+    thread.
+    Important: The cthread unint must be added to the uses section of the .lpr
+               file. See multithreadingexample1.lpr.
 }
 unit MainUnit;
 
@@ -60,18 +66,21 @@ procedure TForm1.FormCreate(Sender: TObject);
 var
   MyThread : TMyThread;
 begin
-   MyThread := TMyThread.Create(True); // This way it doesn't start automatically
-   if Assigned(MyThread.FatalException) then
-     raise MyThread.FatalException;
+  MyThread := TMyThread.Create(True); // With the True parameter it doesn't start automatically
+  if Assigned(MyThread.FatalException) then
+    raise MyThread.FatalException;
       
-   // Here the code initialises anything required before the threads starts executing
+  // Here the code initialises anything required before the threads starts executing
 
-   MyThread.Resume;
+  MyThread.Resume;
 end;
 
 { TMyThread }
 
 procedure TMyThread.ShowStatus;
+// this method is only called by Synchronize(@ShowStatus) and therefore
+// executed by the main thread
+// The main thread can access GUI elements, for example Form1.Caption.
 begin
   Form1.Caption := fStatusText;
 end;
@@ -80,13 +89,13 @@ procedure TMyThread.Execute;
 var
   newStatus : string;
 begin
-  fStatusText := 'Starting...';
+  fStatusText := 'TMyThread Starting...';
   Synchronize(@Showstatus);
-  fStatusText := 'Running...';
+  fStatusText := 'TMyThread Running...';
   while (not Terminated) and (true {any condition required}) do begin
 
     //here goes the code of the main thread loop
-    newStatus:='Time: '+FormatDateTime('YYYY-MM-DD HH:NN:SS',Now);
+    newStatus:='TMyThread Time: '+FormatDateTime('YYYY-MM-DD HH:NN:SS',Now);
     
     if NewStatus <> fStatusText then begin
       fStatusText := newStatus;

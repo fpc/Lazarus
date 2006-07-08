@@ -1,0 +1,32 @@
+object Form1: TForm1
+  ActiveControl = Button1
+  Caption = 'Form1'
+  ClientHeight = 359
+  ClientWidth = 394
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  PixelsPerInch = 75
+  HorzScrollBar.Page = 393
+  VertScrollBar.Page = 358
+  Left = 286
+  Height = 359
+  Top = 202
+  Width = 394
+  object Button1: TButton
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Start'
+    OnClick = Button1Click
+    TabOrder = 0
+    Left = 32
+    Height = 25
+    Top = 16
+    Width = 75
+  end
+  object Memo1: TMemo
+    Align = alBottom
+    TabOrder = 1
+    Height = 303
+    Top = 56
+    Width = 394
+  end
+end
