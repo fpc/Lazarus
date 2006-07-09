@@ -2,6 +2,7 @@
 EnableISX=true
 [Defines]
 #define AppVersion GetEnv('LazVersion')
+#define FPCVersion GetEnv('FPCVersion')
 #define AppName "Lazarus"
 #define SetupDate GetEnv('DateStamp')
 #define BuildDir GetEnv('BuildDir')
@@ -33,7 +34,6 @@ Name: desktopicon; Description: {cm:CreateDesktopIcon}; GroupDescription: {cm:Ad
 Source: {#BuildDir}\*.*; DestDir: {app}; Flags: recursesubdirs
 Source: environmentoptions.xml; DestDir: {app}; Flags: onlyifdoesntexist; AfterInstall: UpdateEnvironmentOptions
 Source: editoroptions.xml; DestDir: {app}; Flags: onlyifdoesntexist
-Source: samplefpc.cfg; DestDir: {app}\pp\bin\i386-win32; AfterInstall: UpdateFpcCfg; DestName: fpc.cfg
 
 [INI]
 Filename: {app}\Lazarus Home Page.url; Section: InternetShortcut; Key: URL; String: http://www.lazarus.freepascal.org/
@@ -48,11 +48,15 @@ Name: {group}\Lazarus Wiki Help; Filename: {app}\Lazarus Wiki Help.url; IconFile
 Name: {group}\{cm:UninstallProgram,Lazarus}; Filename: {uninstallexe}
 Name: {userdesktop}\Lazarus; Filename: {app}\lazarus.exe; Tasks: desktopicon
 
+[Run]
+Filename: {app}\fpc\{#FPCVersion}\bin\i386-win32\fpcmkcfg.exe; Parameters: "-d ""basepath={app}\fpc\{#FPCVersion}""-o fpc.cfg"; Flags: runhidden
+
 [UninstallDelete]
 Name: {app}\compilertest.pas; Type: files
 Name: {app}\Lazarus Wiki Help.url; Type: files
 Name: {app}\Lazarus Home Page.url; Type: files
 Name: {app}\Lazarus Forums.url; Type: files
+Name: {app}\fpc\{#FPCVersion}\bin\i386-win32\fpc.cfg; Type: files
 
 [Registry]
 Root: HKLM; SubKey: SOFTWARE\Classes\.lpi; ValueType: string; ValueData: LazarusProject; Flags: uninsdeletekeyifempty uninsdeletevalue; Check: IsHKLMWriteable
@@ -178,19 +182,8 @@ begin
   LoadStringFromFile(FileName, Content);
   StringChange(Content, '%Temp%', GetTempDir);
   StringChange(Content, '%LazDir%', ExpandConstant('{app}'));
-  StringChange(Content, '%FpcSrcDir%', ExpandConstant('{app}\fpcsrc'));
-  StringChange(Content, '%FpcBinDir%', ExpandConstant('{app}\pp\bin\i386-win32'));
-  SaveStringToFile(FileName, Content, False);
-end;
-
-procedure UpdateFpcCfg();
-var
-  FileName: string;
-  Content: string;
-begin
-  FileName := ExpandConstant(CurrentFileName);
-  LoadStringFromFile(FileName, Content);
-  StringChange(Content, '$1', ExpandConstant('{app}\pp'));
+  StringChange(Content, '%FpcSrcDir%', ExpandConstant('{app}\fpc\{#FPCVersion}\source'));
+  StringChange(Content, '%FpcBinDir%', ExpandConstant('{app}\fpc\{#FPCVersion}\bin\i386-win32\'));
   SaveStringToFile(FileName, Content, False);
 end;
 

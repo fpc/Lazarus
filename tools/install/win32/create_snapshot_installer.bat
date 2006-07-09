@@ -56,19 +56,19 @@ rmdir /s /q %BUILDDIR%
 %SVN% export %LAZSVNDIR% %BUILDDIR% >> %LOGFILE%
 ..\..\svn2revisioninc %LAZSVNDIR% %BUILDDIR%\ide\revision.inc
 
-:: copy fpc source
-gmkdir -p %BUILDDIR%\fpcsrc
-%SVN% export %FPCSVNDIR%\rtl %BUILDDIR%\fpcsrc\rtl >> %LOGFILE%
-%SVN% export %FPCSVNDIR%\fcl %BUILDDIR%\fpcsrc\fcl >> %LOGFILE%
-%SVN% export %FPCSVNDIR%\packages %BUILDDIR%\fpcsrc\packages >> %LOGFILE%
-
 call build-fpc.bat
 
-:: exit if no compiler has been made
-if not exist %BUILDDIR%\pp\bin\i386-win32\ppc386.exe goto END
+:: copy fpc source
+gmkdir -p %INSTALL_BASE%\source
+%SVN% export %FPCSVNDIR%\rtl %INSTALL_BASE%\source\rtl >> %LOGFILE%
+%SVN% export %FPCSVNDIR%\fcl %INSTALL_BASE%\source\fcl >> %LOGFILE%
+%SVN% export %FPCSVNDIR%\packages %INSTALL_BASE%\source\packages >> %LOGFILE%
 
-%CP% %FPCBINDIR%\*.* %BUILDDIR%\pp\bin\i386-win32 >> %LOGFILE% 
-samplecfg.vbs
+:: exit if no compiler has been made
+if not exist %INSTALL_BINDIR%\ppc386.exe goto END
+
+%CP% %FPCBINDIR%\*.* %INSTALL_BINDIR% >> %LOGFILE% 
+%INSTALL_BINDIR%\fpcmkcfg.exe -d "basepath=%INSTALL_BASE%" -o %INSTALL_BINDIR%\fpc.cfg
 
 call build-lazarus.bat
 
@@ -86,7 +86,7 @@ if not exist %BUILDDIR%\startlazarus.exe goto END
 if not exist output\lazarus-%LAZVERSION%-%DATESTAMP%-win32.exe goto END
 
 :: delete build dir
-rd /s /q %BUILDDIR% > NUL
+::rd /s /q %BUILDDIR% > NUL
 
 :END
 
