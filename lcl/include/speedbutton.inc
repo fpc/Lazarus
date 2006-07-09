@@ -605,18 +605,15 @@ begin
   if FDragging
   then begin
     Assert(False,'Trace:FDragging is true');
-    if not FDown then
-      NewState := bsUp
-    else
-      NewState := bsExclusive;
-
-    if  (X >= 0) and (X < Width)
-    and (Y >= 0) and (Y < Height)
-    then begin
-      if FDown then
-        NewState := bsExclusive
+    if FDown then
+      NewState := bsExclusive
+    else begin
+      if  (X >= 0) and (X < Width)
+      and (Y >= 0) and (Y < Height) 
+      then
+        NewState := bsDown
       else
-        NewState := bsDown;
+        NewState := bsUp;
     end;
 
     if NewState <> FState
@@ -649,10 +646,10 @@ begin
     then begin
       FState := bsUp;
       if OldState<>FState then Invalidate;
-    end
-    else begin
+    end 
+    else if (X >= 0) and (X < Width)
+        and (Y >= 0) and (Y < Height) then
       SetDown(not FDown);
-    end;
   end;
   inherited MouseUp(Button, Shift, X, Y);
 end;
