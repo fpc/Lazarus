@@ -393,8 +393,8 @@ type
     // code completion = auto class completion, auto forward proc completion,
     //             local var assignment completion, event assignment completion
     function CompleteCode(Code: TCodeBuffer; X,Y,TopLine: integer;
-          var NewCode: TCodeBuffer;
-          var NewX, NewY, NewTopLine: integer): boolean;
+          out NewCode: TCodeBuffer;
+          out NewX, NewY, NewTopLine: integer): boolean;
 
     // custom class completion
     function InitClassCompletion(Code: TCodeBuffer;
@@ -2614,7 +2614,7 @@ begin
 end;
 
 function TCodeToolManager.CompleteCode(Code: TCodeBuffer; X,Y,TopLine: integer;
-  var NewCode: TCodeBuffer; var NewX, NewY, NewTopLine: integer): boolean;
+  out NewCode: TCodeBuffer; out NewX, NewY, NewTopLine: integer): boolean;
 var
   CursorPos: TCodeXYPosition;
   NewPos: TCodeXYPosition;

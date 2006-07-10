@@ -175,7 +175,7 @@ type
   public
     constructor Create;
     function CompleteCode(CursorPos: TCodeXYPosition; OldTopLine: integer;
-                          var NewPos: TCodeXYPosition; var NewTopLine: integer;
+                          out NewPos: TCodeXYPosition; out NewTopLine: integer;
                           SourceChangeCache: TSourceChangeCache): boolean;
     function AddPublishedVariable(const UpperClassName,VarName, VarType: string;
                       SourceChangeCache: TSourceChangeCache): boolean; override;
@@ -2418,7 +2418,7 @@ begin
 end;
 
 function TCodeCompletionCodeTool.CompleteCode(CursorPos: TCodeXYPosition;
-  OldTopLine: integer; var NewPos: TCodeXYPosition; var NewTopLine: integer;
+  OldTopLine: integer; out NewPos: TCodeXYPosition; out NewTopLine: integer;
   SourceChangeCache: TSourceChangeCache): boolean;
 var CleanCursorPos, Indent, insertPos: integer;
   CursorNode, ProcNode, ImplementationNode, SectionNode, AClassNode,
@@ -2944,6 +2944,8 @@ begin
   if (SourceChangeCache=nil) then 
     RaiseException('need a SourceChangeCache');
   BuildTreeAndGetCleanPos(trAll,CursorPos, CleanCursorPos,[]);
+  NewPos:=CleanCodeXYPosition;
+  NewTopLine:=0;
 
   // find CodeTreeNode at cursor
   // skip newline chars

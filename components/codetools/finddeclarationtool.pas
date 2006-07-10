@@ -4942,10 +4942,10 @@ var
       // find base type
       Exclude(Params.Flags,fdfFunctionResult);
       {$IFDEF ShowExprEval}
-      DebugLn('ResolveBaseTypeOfIdentifier ExprType=',ExprTypeToString(ExprType));
+      DebugLn('  ResolveBaseTypeOfIdentifier ExprType=',ExprTypeToString(ExprType));
       {$ENDIF}
       ExprType:=ExprType.Context.Tool.ConvertNodeToExpressionType(
-                        ExprType.Context.Node,Params);
+                                                  ExprType.Context.Node,Params);
       if (ExprType.Desc=xtContext)
       and (ExprType.Context.Node.Desc in [ctnProcedure,ctnProcedureHead]) then
       begin
@@ -5029,7 +5029,7 @@ var
       Params.Flags:=[fdfSearchInAncestors,fdfExceptionOnNotFound]
                     +(fdfGlobals*Params.Flags);
       if ExprType.Context.Node=StartContext.Node then begin
-        // there is no special context -> also search in parent contexts
+        // there is no special context -> search in parent contexts too
         Params.Flags:=Params.Flags
                      +[fdfSearchInParentNodes,fdfIgnoreCurContextNode];
       end else begin
@@ -5049,7 +5049,7 @@ var
       // search ...
       Params.SetIdentifier(Self,@Src[CurAtom.StartPos],@CheckSrcIdentifier);
       {$IFDEF ShowExprEval}
-      DebugLn('ResolveIdentifier Ident="',GetIdentifier(Params.Identifier),'"');
+      DebugLn('  ResolveIdentifier Ident="',GetIdentifier(Params.Identifier),'"');
       {$ENDIF}
       if ExprType.Context.Tool.FindIdentifierInContext(Params) then begin
         if not Params.NewCodeTool.NodeIsConstructor(Params.NewNode) then begin
@@ -5487,56 +5487,79 @@ begin
   DebugLn('[TFindDeclarationTool.ConvertNodeToExpressionType] B',
   ' Expr=',ExprTypeToString(Result));
   {$ENDIF}
-  if Node.Desc=ctnRangeType then begin
-    // range type -> convert to special expression type
+  case Node.Desc of
+  ctnRangeType:
+    begin
+      // range type -> convert to special expression type
 
-    // ToDo: ppu, ppw, dcu files
+      // ToDo: ppu, ppw, dcu files
 
-    MoveCursorToNodeStart(Node);
+      MoveCursorToNodeStart(Node);
 
-    // ToDo: check for circles
+      // ToDo: check for circles
+
+      Params.Save(OldInput);
+      Params.ContextNode:=Node;
+      Result:=ReadOperandTypeAtCursor(Params);
+      Params.Load(OldInput);
+      Result.Context:=CreateFindContext(Self,Node);
+    end;
     
-    Params.Save(OldInput);
-    Params.ContextNode:=Node;
-    Result:=ReadOperandTypeAtCursor(Params);
-    Params.Load(OldInput);
-    Result.Context:=CreateFindContext(Self,Node);
-  end else if (Node.Desc=ctnConstDefinition) and (Node.FirstChild=nil) then
-  begin
-    // const -> convert to special expression type
+  ctnConstDefinition:
+    begin
+      // const -> convert to special expression type
 
-    // ToDo: ppu, ppw, dcu files
+      // ToDo: ppu, ppw, dcu files
 
-    MoveCursorToNodeStart(Node);
+      MoveCursorToNodeStart(Node);
 
-    ReadNextAtom;
-    if not AtomIsIdentifier(false) then exit;
-    ReadNextAtom;
-    if not (CurPos.Flag in [cafEqual,cafColon]) then exit;
-    ReadNextAtom;
+      ReadNextAtom;
+      if not AtomIsIdentifier(false) then exit;
+      ReadNextAtom;
+      if not (CurPos.Flag in [cafEqual,cafColon]) then exit;
+      ReadNextAtom;
 
-    // ToDo: check for circles
+      // ToDo: check for circles
 
-    Params.Save(OldInput);
-    Params.ContextNode:=Node;
-    Result:=ReadOperandTypeAtCursor(Params);
-    Params.Load(OldInput);
-    Result.Context:=CreateFindContext(Self,Node);
-  end else if Node.Desc=ctnIdentifier then begin
+      Params.Save(OldInput);
+      Params.ContextNode:=Node;
+      Result:=ReadOperandTypeAtCursor(Params);
+      Params.Load(OldInput);
+      Result.Context:=CreateFindContext(Self,Node);
+    end;
+    
+  ctnIdentifier:
+    begin
 
-    // ToDo: ppu, ppw, dcu files
+      // ToDo: ppu, ppw, dcu files
 
-    MoveCursorToNodeStart(Node);
-    ReadNextAtom;
-    ConvertIdentifierAtCursor;
-  end else if (Node.Desc=ctnProperty) or (Node.Desc=ctnGlobalProperty) then
-  begin
-
-    // ToDo: ppu, ppw, dcu files
-
-    ExtractPropType(Node,false,true);
-    if CurPos.Flag<>cafEdgedBracketOpen then
+      MoveCursorToNodeStart(Node);
+      ReadNextAtom;
       ConvertIdentifierAtCursor;
+    end;
+    
+  ctnProperty,ctnGlobalProperty:
+    begin
+
+      // ToDo: ppu, ppw, dcu files
+
+      ExtractPropType(Node,false,true);
+      if CurPos.Flag<>cafEdgedBracketOpen then
+        ConvertIdentifierAtCursor;
+    end;
+    
+  ctnConstant:
+    begin
+
+      // ToDo: ppu, ppw, dcu files
+
+      MoveCursorToNodeStart(Node);
+      Params.Save(OldInput);
+      Params.ContextNode:=Node;
+      Result:=ReadOperandTypeAtCursor(Params);
+      Params.Load(OldInput);
+      Result.Context:=CreateFindContext(Self,Node);
+    end;
   end;
 end;
 
