@@ -1142,15 +1142,17 @@ begin
       end;
     end;
     {$ENDIF}
+
     if (OldChangeStep<>FChangeStep) then begin
       // the selection has changed
       // => CurRow does not exist any more
+      RefreshPropertyValues;
       exit;
     end;
     
     // update value
     RefreshValueEdit;
-    
+
     //invalidate changed subproperties
     DoPaint(True);
   end;
