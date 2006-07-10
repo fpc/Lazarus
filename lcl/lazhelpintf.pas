@@ -2178,9 +2178,15 @@ function TPascalHelpContextList.AsString: string;
 var
   i: Integer;
   Item: TPascalHelpContext;
+  Filename: String;
 begin
   Result:='';
-  for i:=0 to Count-1 do begin
+  i:=0;
+  while (i<Count) and (Items[i].Descriptor=pihcFilename) do begin
+    Filename:=Items[i].Context;
+    inc(i);
+  end;
+  while i<Count do begin
     Item:=Items[i];
     case Item.Descriptor of
     pihcFilename: Result:=Result+Item.Context;
@@ -2192,7 +2198,11 @@ begin
     pihcType: Result:=Result+' type '+Item.Context;
     pihcConst: Result:=Result+' const '+Item.Context;
     end;
+    //DebugLn(['TPascalHelpContextList.AsString ',i,' ',Item.Descriptor,' ',Result]);
+    inc(i);
   end;
+  if Filename<>'' then
+    Result:=Result+' in '+Filename;
 end;
 
 { THelpDBISourceFile }
