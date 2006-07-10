@@ -166,8 +166,7 @@ begin
       end;
       
     ctnProcedure:
-      if (IdentItem.Node<>nil)
-      and IdentItem.Tool.NodeIsFunction(IdentItem.Node) then begin
+      if IdentItem.IsFunction then begin
         AColor:=clTeal;
         s:='function';
       end else begin
@@ -210,13 +209,15 @@ begin
     ACanvas.Font.Style:=ACanvas.Font.Style+[fsBold];
     s:=GetIdentifier(IdentItem.Identifier);
     if MeasureOnly then
-      Inc(Result.X, ACanvas.TextWidth(s))
-    else
+      Inc(Result.X, 1+ACanvas.TextWidth(s))
+    else begin
       ACanvas.TextOut(x+1,y,s);
-    inc(x,ACanvas.TextWidth(s));
-    if x>MaxX then exit;
+      inc(x,ACanvas.TextWidth(s));
+      if x>MaxX then exit;
+    end;
     ACanvas.Font.Style:=ACanvas.Font.Style-[fsBold];
-
+    
+    s:='';
     if IdentItem.Node<>nil then begin
       case IdentItem.Node.Desc of
 
@@ -259,20 +260,27 @@ begin
           s:=copy(s,1,50);
         end;
 
-      else
-        exit;
-
       end;
     end else begin
       // IdentItem.Node=nil
-      exit;
+      case IdentItem.GetDesc of
+      ctnProcedure:
+        begin
+          s:=IdentItem.ParamList;
+          if s<>'' then
+            s:='('+s+')';
+          s:=s+';'
+        end;
+      end;
     end;
     
-    SetFontColor(clBlack);
-    if MeasureOnly then
-      Inc(Result.X, ACanvas.TextWidth(s))
-    else
-      ACanvas.TextOut(x+1,y,s);
+    if s<>'' then begin
+      SetFontColor(clBlack);
+      if MeasureOnly then
+        Inc(Result.X, ACanvas.TextWidth(s))
+      else
+        ACanvas.TextOut(x+1,y,s);
+    end;
 
   end else begin
     // parse AKey for text and style

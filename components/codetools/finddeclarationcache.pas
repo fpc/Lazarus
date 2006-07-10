@@ -82,14 +82,14 @@ type
         Identifier+Range -> Source Position
       and can be interpreted as:
       Identifier is a PChar to the beginning of an identifier string.
-      Range is a clenaed source range (CleanStartPos-CleanEndPos).
+      Range is a cleaned source range (CleanStartPos-CleanEndPos).
       Source position is a tuple of NewTool, NewNode, NewCleanPos.
       If the current context node is a child of a caching node and it is in the
       range, then the result is valid. If NewNode=nil then there is no such
       identifier valid at the context node.
 
-      Every node that define local identifiers contains a node cache.
-      These are: class, proc, record, withstatement
+      Every node that defines local identifiers contains a node cache.
+      These are: class, interface, proc, record, withstatement
       
       Because node caches can store information of used units, the cache must be
       deleted every time a used unit is changed. Currently all node caches are
@@ -647,7 +647,7 @@ var
   OldEntry: PCodeTreeNodeCacheEntry;
   OldNode: TAVLTreeNode;
   NewSearchRangeFlags: TNodeCacheEntryFlags;
-  
+
   function ParamsDebugReport: string;
   var
     s: string;
@@ -704,8 +704,16 @@ var
 
 begin
   OldEntry:=nil;
+  // consistency checks
   if CleanStartPos>=CleanEndPos then
     RaiseConflictException('CleanStartPos>=CleanEndPos');
+  if (NewNode<>nil) then begin
+    if NewTool=nil then
+      RaiseConflictException('NewNode<>nil and NewTool=nil');
+    if not NewTool.Tree.ContainsNode(NewNode) then
+      RaiseConflictException('NewNode is not a node of NewTool');
+  end;
+  
   {if GetIdentifier(Identifier)='TDefineAction' then begin
     DebugLn('[[[[======================================================');
     DebugLn('[TCodeTreeNodeCache.Add] Ident=',GetIdentifier(Identifier),

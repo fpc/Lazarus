@@ -74,7 +74,10 @@ type
   
   TIdentListItemFlag = (
     iliHasChilds,
-    iliBaseExprTypeValid
+    iliBaseExprTypeValid,
+    iliIsFunction,
+    iliIsFunctionValid,
+    iliParamListValid
     );
   TIdentListItemFlags = set of TIdentListItemFlag;
   
@@ -84,7 +87,6 @@ type
   private
     FNext: TIdentifierListItem;
     FParamList: string;
-    FParamListValid: boolean;
     function GetParamList: string;
     procedure SetParamList(const AValue: string);
   public
@@ -110,6 +112,7 @@ type
     function CanBeAssigned: boolean;
     procedure UpdateBaseContext;
     function HasChilds: boolean;
+    function IsFunction: boolean;
     procedure Clear;
     function CompareParamList(CompareItem: TIdentifierListItem): integer;
   public
@@ -276,8 +279,8 @@ type
                                    Node: TCodeTreeNode);
   public
     function GatherIdentifiers(const CursorPos: TCodeXYPosition;
-      var IdentifierList: TIdentifierList;
-      BeautifyCodeOptions: TBeautifyCodeOptions): boolean;
+                            var IdentifierList: TIdentifierList;
+                            BeautifyCodeOptions: TBeautifyCodeOptions): boolean;
     function FindCodeContext(const CursorPos: TCodeXYPosition;
                              out CodeContexts: TCodeContextInfo): boolean;
   end;
@@ -854,86 +857,58 @@ const
     if ANode=nil then Result:=0;
   end;
   
+  procedure AddCompilerProcedure(const AProcName, AParameterList: PChar);
+  var
+    NewItem: TIdentifierListItem;
+  begin
+    NewItem:=TIdentifierListItem.Create(
+        icompUnknown,
+        false,
+        CompilerFuncHistoryIndex,
+        AProcName,
+        CompilerFuncLevel,
+        nil,
+        nil,
+        ctnProcedure);
+    NewItem.ParamList:=AParameterList;
+    CurrentIdentifierList.Add(NewItem);
+  end;
+  
+  procedure AddCompilerFunction(const AProcName, AParameterList,
+    AResultType: PChar);
+  var
+    NewItem: TIdentifierListItem;
+  begin
+    NewItem:=TIdentifierListItem.Create(
+        icompUnknown,
+        false,
+        CompilerFuncHistoryIndex,
+        AProcName,
+        CompilerFuncLevel,
+        nil,
+        nil,
+        ctnProcedure);
+    NewItem.ParamList:=AParameterList;
+    NewItem.Flags:=NewItem.Flags+[iliIsFunction,iliIsFunctionValid];
+    CurrentIdentifierList.Add(NewItem);
+  end;
+
 var
   NewItem: TIdentifierListItem;
   ProcNode: TCodeTreeNode;
 begin
   if Context.Node.Desc in AllPascalStatements then begin
-    // begin..end -> add 'SetLength'
-    NewItem:=TIdentifierListItem.Create(
-        icompUnknown,
-        false,
-        CompilerFuncHistoryIndex,
-        'SetLength',
-        CompilerFuncLevel,
-        nil,
-        nil,
-        ctnProcedure);
-    NewItem.ParamList:='array of type; NewLength: integer';
-    CurrentIdentifierList.Add(NewItem);
-
-    // begin..end -> add 'copy'
-    NewItem:=TIdentifierListItem.Create(
-        icompUnknown,
-        false,
-        CompilerFuncHistoryIndex,
-        'Copy',
-        CompilerFuncLevel,
-        nil,
-        nil,
-        ctnProcedure);
-    NewItem.ParamList:='const s: string; FromPosition, ToPosition: integer';
-    CurrentIdentifierList.Add(NewItem);
-
-    // begin..end -> add 'write'
-    NewItem:=TIdentifierListItem.Create(
-        icompUnknown,
-        false,
-        CompilerFuncHistoryIndex,
-        'Write',
-        CompilerFuncLevel,
-        nil,
-        nil,
-        ctnProcedure);
-    NewItem.ParamList:='Args : Arguments';
-    CurrentIdentifierList.Add(NewItem);
-
-    // begin..end -> add 'writeln'
-    NewItem:=TIdentifierListItem.Create(
-        icompUnknown,
-        false,
-        CompilerFuncHistoryIndex,
-        'WriteLn',
-        CompilerFuncLevel,
-        nil,
-        nil,
-        ctnProcedure);
-    NewItem.ParamList:='Args : Arguments';
-    CurrentIdentifierList.Add(NewItem);
-
-    // begin..end -> add 'read'
-    NewItem:=TIdentifierListItem.Create(
-        icompUnknown,
-        false,
-        CompilerFuncHistoryIndex,
-        'Read',
-        CompilerFuncLevel,
-        nil,
-        nil,
-        ctnProcedure);
-    CurrentIdentifierList.Add(NewItem);
-
-    // begin..end -> add 'readln'
-    NewItem:=TIdentifierListItem.Create(
-        icompUnknown,
-        false,
-        CompilerFuncHistoryIndex,
-        'ReadLn',
-        CompilerFuncLevel,
-        nil,
-        nil,
-        ctnProcedure);
-    CurrentIdentifierList.Add(NewItem);
+    AddCompilerProcedure('SetLength','array of type; NewLength: integer');
+    AddCompilerProcedure('Copy','const s: string; FromPosition, ToPosition: integer');
+    AddCompilerProcedure('Write','Args : Arguments');
+    AddCompilerProcedure('WriteLn','Args : Arguments');
+    AddCompilerProcedure('Read','');
+    AddCompilerProcedure('ReadLn','');
+    AddCompilerFunction('Length','array of type','ordinal');
+    AddCompilerFunction('High','Argument','ordinal');
+    AddCompilerFunction('Low','Argument','ordinal');
+    AddCompilerProcedure('Include','set of enum; enum');
+    AddCompilerProcedure('Exclude','set of enum; enum');
 
     if Context.Tool.NodeIsInAMethod(Context.Node)
     and (not CurrentIdentifierList.HasIdentifier('Self','')) then begin
@@ -1411,7 +1386,6 @@ var
 
   function CheckContextIsParameter(var Ok: boolean): boolean;
   // returns true, on error or context is parameter
-  // returns false, if no error and context is not parameter
   var
     VarNameAtom, ProcNameAtom: TAtomPosition;
     ParameterIndex: integer;
@@ -1420,15 +1394,17 @@ var
     StartInSubContext: Boolean;
   begin
     Result:=false;
+    // check if in a begin..end block
     if (CursorNode.Desc<>ctnBeginBlock)
     and (not CursorNode.HasParentOfType(ctnBeginBlock)) then exit;
-    //DebugLn('CheckContextIsParameter ');
+    // check is cursor is in a parameter list behind an identifier
     if not CheckParameterSyntax(CursorNode, CleanCursorPos,
-      VarNameAtom, ProcNameAtom, ParameterIndex) then exit;
+                                VarNameAtom, ProcNameAtom, ParameterIndex)
+    then exit;
     if VarNameAtom.StartPos<1 then exit;
     //DebugLn('CheckContextIsParameter Variable=',GetAtom(VarNameAtom),' Proc=',GetAtom(ProcNameAtom),' ParameterIndex=',dbgs(ParameterIndex));
     
-    // it is a parameter -> save ParameterIndex
+    // it is a parameter -> create context
     Result:=true;
     if CurrentContexts=nil then
       CurrentContexts:=TCodeContextInfo.Create;
@@ -1446,9 +1422,9 @@ var
       CurrentContexts.EndPos:=SrcLen+1;
 
     FindCollectionContext(Params,ProcNameAtom.StartPos,CursorNode,
-      GatherContext,ContextExprStartPos,StartInSubContext);
+                          GatherContext,ContextExprStartPos,StartInSubContext);
 
-    // gather declarations of parameter lists
+    // gather declarations of all parameter lists
     Params.ContextNode:=GatherContext.Node;
     Params.SetIdentifier(Self,@Src[ProcNameAtom.StartPos],@CollectAllContexts);
     Params.Flags:=[fdfSearchInAncestors,fdfCollect,fdfFindVariable];
@@ -1515,7 +1491,7 @@ end;
 
 function TIdentifierListItem.GetParamList: string;
 begin
-  if not FParamListValid then begin
+  if not (iliParamListValid in Flags) then begin
     // Note: if you implement param lists for other than ctnProcedure, check
     //       CompareParamList
     if (Node<>nil) and (Node.Desc=ctnProcedure) then begin
@@ -1525,7 +1501,7 @@ begin
       //debugln('TIdentifierListItem.GetParamList A ',GetIdentifier(Identifier),' ',Tool.MainFilename,' ',dbgs(Node.StartPos));
     end else
       FParamList:='';
-    FParamListValid:=true;
+    Include(Flags,iliParamListValid);
   end;
   Result:=FParamList;
 end;
@@ -1533,7 +1509,7 @@ end;
 procedure TIdentifierListItem.SetParamList(const AValue: string);
 begin
   FParamList:=AValue;
-  FParamListValid:=true;
+  Include(Flags,iliParamListValid);
 end;
 
 function TIdentifierListItem.AsString: string;
@@ -1641,10 +1617,20 @@ begin
   Result:=iliHasChilds in Flags;
 end;
 
+function TIdentifierListItem.IsFunction: boolean;
+begin
+  if not (iliIsFunctionValid in Flags) then begin
+    if (Node<>nil)
+    and Tool.NodeIsFunction(Node) then
+      Include(Flags,iliIsFunction);
+    Include(Flags,iliIsFunctionValid);
+  end;
+  Result:=iliIsFunction in Flags;
+end;
+
 procedure TIdentifierListItem.Clear;
 begin
   FParamList:='';
-  FParamListValid:=false;
   Compatibility:=icompUnknown;
   HistoryIndex:=0;
   Identifier:=nil;

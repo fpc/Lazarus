@@ -212,6 +212,8 @@ type
     function ConsistencyCheck: integer; // 0 = ok
   end;
 
+  { TCodeTree }
+
   TCodeTree = class
   private
     FNodeCount: integer;
@@ -221,6 +223,7 @@ type
     procedure DeleteNode(ANode: TCodeTreeNode);
     procedure AddNodeAsLastChild(ParentNode, ANode: TCodeTreeNode);
     function FindLastPosition: integer;
+    function ContainsNode(ANode: TCodeTreeNode): boolean;
     procedure Clear;
     constructor Create;
     destructor Destroy; override;
@@ -676,6 +679,14 @@ begin
   while (ANode.NextBrother<>nil) do ANode:=ANode.NextBrother;
   debugln('TCodeTree.FindLastPosition A ',Anode.DescAsString,' ANode.StartPos=',dbgs(ANode.StartPos),' ANode.EndPos=',dbgs(ANode.EndPos));
   Result:=ANode.EndPos;
+end;
+
+function TCodeTree.ContainsNode(ANode: TCodeTreeNode): boolean;
+begin
+  if ANode=nil then exit(false);
+  while ANode.Parent<>nil do ANode:=ANode.Parent;
+  while ANode.PriorBrother<>nil do ANode:=ANode.PriorBrother;
+  Result:=ANode=Root;
 end;
 
 function TCodeTree.ConsistencyCheck: integer;
