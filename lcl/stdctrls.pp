@@ -186,6 +186,7 @@ type
     property TabOrder;
     property TabStop;
     property Visible;
+    property OnChangeBounds;
     property OnClick;
     property OnDblClick;
     property OnDragDrop;

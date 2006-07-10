@@ -314,6 +314,7 @@ var
   OldHeight: Integer;
   CurBounds: TRect;
   NewBounds: TRect;
+  CurClientSize: TPoint;
 
   function UpdatePosSizeChanged: boolean;
   begin
@@ -403,11 +404,7 @@ begin
   // notify user about resize
   if (not (csLoading in ComponentState)) then begin
     Resize;
-    CurBounds:=BoundsRect;
-    if not CompareRect(@FLastDoChangeBounds,@CurBounds) then begin
-      FLastDoChangeBounds:=CurBounds;
-      DoOnChangeBounds;
-    end;
+    CheckOnChangeBounds;
     // for delphi compatibility send size/move messages
     SendMoveSizeMessages(SizeChanged,PosChanged);
   end;
@@ -857,6 +854,22 @@ procedure TControl.DoOnChangeBounds;
 begin
   if Assigned(FOnChangeBounds) then FOnChangeBounds(Self);
   DoCallNotifyHandler(chtOnChangeBounds);
+end;
+
+procedure TControl.CheckOnChangeBounds;
+var
+  CurBounds: TRect;
+  CurClientSize: TPoint;
+begin
+  if [csLoading,csDestroying]*ComponentState<>[] then exit;
+  CurBounds:=BoundsRect;
+  CurClientSize:=Point(ClientWidth,ClientHeight);
+  if (not CompareRect(@FLastDoChangeBounds,@CurBounds))
+  or (ComparePoints(CurClientSize,FLastDoChangeClientSize)<>0) then begin
+    FLastDoChangeBounds:=CurBounds;
+    FLastDoChangeClientSize:=CurClientSize;
+    DoOnChangeBounds;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -2485,6 +2498,8 @@ begin
   if cfAutoSizeNeeded in FControlFlags then
     AdjustSize;
   if Action <> nil then ActionChange(Action, True);
+  
+  CheckOnChangeBounds;
 end;
 
 {------------------------------------------------------------------------------

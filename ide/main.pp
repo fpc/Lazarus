@@ -1175,7 +1175,7 @@ begin
   // free IDE parts
   FreeStandardIDEQuickFixItems;
   FreeFormEditor;
-  FreeAndNil(FindReplaceDlg);
+  FreeAndNil(LazFindReplaceDialog);
   FreeAndNil(MessagesView);
   FreeThenNil(AnchorDesigner);
   FreeThenNil(ObjectInspector1);
@@ -1214,7 +1214,7 @@ end;
 procedure TMainIDE.CreateOftenUsedForms;
 begin
   MessagesView:=TMessagesView.Create(nil);
-  FindReplaceDlg:=TLazFindReplaceDialog.Create(nil);
+  LazFindReplaceDialog:=TLazFindReplaceDialog.Create(nil);
 end;
 
 procedure TMainIDE.CreateSearchResultWindow;

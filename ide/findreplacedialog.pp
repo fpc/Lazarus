@@ -38,9 +38,9 @@ unit FindReplaceDialog;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, LCLType, Controls, StdCtrls, Forms, Buttons,
+  Classes, Math, SysUtils, LCLProc, LCLType, Controls, StdCtrls, Forms, Buttons,
   ExtCtrls, LResources, Dialogs, SynEditTypes, SynRegExpr, SynEdit,
-  LazarusIdeStrConsts, Math;
+  LazarusIdeStrConsts, IDEWindowIntf;
 
 type
   TFindDlgComponent = (fdcText, fdcReplace);
@@ -72,7 +72,9 @@ type
     ReplaceTextComboBox: TComboBox;
     CancelButton: TBitBtn;
     WholeWordsOnlyCheckBox: TCheckBox;
-    procedure FormResize(Sender: TObject);
+    procedure FormChangeBounds(Sender: TObject);
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
+    procedure OptionsGroupBoxResize(Sender: TObject);
     procedure TextToFindComboboxKeyDown(Sender: TObject; var Key: Word;
        Shift: TShiftState);
     procedure OkButtonClick(Sender: TObject);
@@ -105,7 +107,7 @@ type
       read GetComponentText write SetComponentText;
   end;
 
-var FindReplaceDlg: TLazFindReplaceDialog;
+var LazFindReplaceDialog: TLazFindReplaceDialog;
 
 
 implementation
@@ -116,6 +118,8 @@ implementation
 constructor TLazFindReplaceDialog.Create(TheOwner:TComponent);
 begin
   inherited Create(TheOwner);
+
+  IDEDialogLayoutList.ApplyLayout(Self,420,350);
 
   Caption:='';
 
@@ -189,21 +193,35 @@ begin
   end;
 end;
 
-procedure TLazFindReplaceDialog.FormResize(Sender: TObject);
+procedure TLazFindReplaceDialog.FormClose(Sender: TObject;
+  var CloseAction: TCloseAction);
+begin
+  IDEDialogLayoutList.SaveLayout(Self);
+end;
+
+procedure TLazFindReplaceDialog.OptionsGroupBoxResize(Sender: TObject);
 var
-  w: integer;
   h: integer;
 begin
-  w := (Width - 18) div 2;
+  DisableAlign;
+  h := (OptionsGroupBox.Height-12) div 3;
+  OriginGroupBox.Height := h;
+  ScopeGroupBox.Height := h;
+  DirectionGroupBox.Height := OptionsGroupBox.Height-2*h-12;
+  EnableAlign;
+end;
+
+procedure TLazFindReplaceDialog.FormChangeBounds(Sender: TObject);
+var
+  w: integer;
+begin
+  DisableAlign;
+  w := (ClientWidth - 18) div 2;
   OptionsGroupBox.Width := w;
   OriginGroupBox.Width := w;
   ScopeGroupBox.Width := w;
   DirectionGroupBox.Width := w;
-  
-  h := (OptionsGroupBox.Height - 12) div 3;
-  OriginGroupBox.Height := h;
-  ScopeGroupBox.Height := h;
-  DirectionGroupBox.Height := h;
+  EnableAlign;
 end;
 
 procedure TLazFindReplaceDialog.OkButtonClick(Sender:TObject);
@@ -313,7 +331,7 @@ begin
     OkButton.Caption:=lisMenuFind ;
     CancelButton.AnchorSideRight.Control := OKButton;
   end;
-  DebugLn(['TLazFindReplaceDialog.SetOptions END ssoSelectedOnly=',ssoSelectedOnly in NewOptions,' SelectedRadioButton.Checked=',SelectedRadioButton.Checked]);
+  //DebugLn(['TLazFindReplaceDialog.SetOptions END ssoSelectedOnly=',ssoSelectedOnly in NewOptions,' SelectedRadioButton.Checked=',SelectedRadioButton.Checked]);
 end;
 
 function TLazFindReplaceDialog.GetOptions:TSynSearchOptions;

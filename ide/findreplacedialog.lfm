@@ -1,17 +1,17 @@
 object LazFindReplaceDialog: TLazFindReplaceDialog
   Left = 334
-  Height = 347
+  Height = 350
   Top = 185
   Width = 420
   HorzScrollBar.Page = 419
-  VertScrollBar.Page = 346
+  VertScrollBar.Page = 349
   ActiveControl = TextToFindComboBox
   BorderIcons = [biSystemMenu]
   Caption = 'LazFindReplaceDialog'
   Constraints.MinHeight = 312
   KeyPreview = True
-  OnResize = FormResize
-  Position = poScreenCenter
+  OnClose = FormClose
+  OnChangeBounds = FormChangeBounds
   object TextToFindLabel: TLabel
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = TextToFindComboBox
@@ -86,7 +86,7 @@ object LazFindReplaceDialog: TLazFindReplaceDialog
     AnchorSideBottom.Side = asrBottom
     Left = 230
     Height = 24
-    Top = 317
+    Top = 320
     Width = 73
     Anchors = [akRight, akBottom]
     AutoSize = True
@@ -108,7 +108,7 @@ object LazFindReplaceDialog: TLazFindReplaceDialog
     AnchorSideBottom.Side = asrBottom
     Left = 363
     Height = 24
-    Top = 317
+    Top = 320
     Width = 51
     Anchors = [akRight, akBottom]
     AutoSize = True
@@ -128,7 +128,7 @@ object LazFindReplaceDialog: TLazFindReplaceDialog
     AnchorSideTop.Side = asrBottom
     AnchorSideBottom.Control = CancelButton
     Left = 6
-    Height = 245
+    Height = 248
     Top = 66
     Width = 199
     Anchors = [akTop, akLeft, akBottom]
@@ -137,6 +137,7 @@ object LazFindReplaceDialog: TLazFindReplaceDialog
     BorderSpacing.Bottom = 6
     Caption = 'OptionsGroupBox'
     TabOrder = 4
+    OnResize = OptionsGroupBoxResize
     object PromptOnReplaceCheckBox: TCheckBox
       AnchorSideTop.Side = asrBottom
       Left = 6
@@ -333,7 +334,7 @@ object LazFindReplaceDialog: TLazFindReplaceDialog
     AnchorSideBottom.Side = asrBottom
     Left = 309
     Height = 24
-    Top = 317
+    Top = 320
     Width = 48
     Anchors = [akRight, akBottom]
     AutoSize = True

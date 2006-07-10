@@ -803,6 +803,7 @@ type
     fLastAlignedBounds: TRect;
     FLastChangebounds: TRect;
     FLastDoChangeBounds: TRect;
+    FLastDoChangeClientSize: TPoint;
     FLastResizeClientHeight: integer;
     FLastResizeClientWidth: integer;
     FLastResizeHeight: integer;
@@ -932,6 +933,7 @@ type
                          WithThemeSpace: Boolean); virtual;
     procedure DoOnResize; virtual;
     procedure DoOnChangeBounds; virtual;
+    procedure CheckOnChangeBounds;
     procedure Resize; virtual;
     procedure RequestAlign; dynamic;
     procedure UpdateAnchorRules;
