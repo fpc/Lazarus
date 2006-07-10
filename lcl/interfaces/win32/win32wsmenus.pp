@@ -98,124 +98,6 @@ type
   TCaptionFlags = (cfBold, cfUnderline);
   TCaptionFlagsSet = set of TCaptionFlags;
   
-  TMenuItemCaptionToken = class(TObject)
-    token: string;
-    fontDecoration: TCaptionFlagsSet;
-    constructor Create;
-    destructor Destroy; override;
-  end;
-
-(* TMenuItemCaptionToken *)
-constructor TMenuItemCaptionToken.Create;
-begin
-  inherited Create;
-  token := '';
-  fontDecoration := [];
-end;
-    
-destructor TMenuItemCaptionToken.Destroy;
-begin
-  inherited Destroy;
-end;
-(* End of TMenuItemCaptionToken *)
-
-procedure RemoveUnderline(const aList: Tlist);
-var i: integer;
-    token: TMenuItemCaptionToken;
-begin
-  for i := 0 to aList.Count - 1 do
-  begin
-    token := TMenuItemCaptionToken(aList[i]);
-    token.fontDecoration := token.fontDecoration - [cfUnderline];
-  end;
-end;
-
-procedure MergeTokens(const aList: TList);
-var i: integer;
-    token1, token2: TMenuItemCaptionToken;
-begin
-  i := aList.Count - 1;
-  while i > 0 do
-  begin
-    token1 := TMenuItemCaptionToken(aList[i-1]);
-    token2 := TMenuItemCaptionToken(aList[i]);
-    if (token1.fontDecoration = token2.fontDecoration) then
-    begin
-      token1.token := token1.token + token2.token;
-      token2.Free;
-      aList.Delete(i);
-    end;
-    dec(i);
-  end;
-end;
-
-function ParseMenuItemCaption(const aUnderlinedChar: char; aCaption: string; const aDecoration: TCaptionFlagsSet): TList;
-var position: integer;
-    token: TMenuItemCaptionToken;
-    subcaption: string;
-begin
-  subcaption := '';
-  Result := TList.Create;
-  position := pos(aUnderlinedChar, aCaption);
-  // if aChar is on the last position then there is nothing to underscore, ignore this character
-  //while (position > 0) and (position < length(aCaption)) do
-  while (position > 0) do
-  begin
-    if aCaption[position+1] = aUnderlinedChar then
-    begin
-      // two 'aChar' characters together are replaced by one
-      subCaption := subcaption + copy(aCaption, 1, position);
-    end else begin
-      // before adding new underlined character, all previous underlined characters must be changed to not underlined - it is Delphi like behavior
-      removeUnderline(Result);
-      if (position > 1) or (subcaption <> '') then
-      begin
-        token := TMenuItemCaptionToken.Create;
-        token.token := subcaption + copy(aCaption, 1, position - 1);
-        token.fontDecoration := aDecoration;
-        Result.add(token);
-      end;
-      // next character (if any) must be underlined
-      if position < length(aCaption) then begin
-        token := TMenuItemCaptionToken.Create;
-        token.token := copy(aCaption, position + 1, 1);
-        token.fontDecoration := aDecoration + [cfUnderline];
-        Result.add(token);
-        subcaption := '';
-      end;
-    end;
-    aCaption := copy(aCaption, position + 2, length(aCaption) - position - 1);
-    position := pos(aUnderlinedChar, aCaption);
-  end;
-  token := TMenuItemCaptionToken.Create;
-  token.token := subcaption + aCaption;
-  token.fontDecoration := aDecoration;
-  Result.add(token);
-  mergeTokens(Result);
-end;
-
-procedure DestroyCaptionTokens(aList: TList);
-var i: integer;
-    token: TMenuItemCaptionToken;
-begin
-  for i := 0 to aList.Count - 1 do
-  begin
-    token := TMenuItemCaptionToken(aList[i]);
-    token.Free;
-  end;
-  aList.Free;
-end;
-    
-
-function MenuItemCaptionFromList(const aList: TList): string;
-var i: integer;
-begin
-  Result := '';
-  for i := 0 to aList.Count - 1 do
-    Result := Result + (TMenuItemCaptionToken(aList[i]).token);
-end;
-
-  
 function GetMenuItemFont(const aFlags: TCaptionFlagsSet): HFONT;
 var lf: LOGFONT;
     ncm: NONCLIENTMETRICS;
@@ -251,58 +133,32 @@ end;
   
 (* Get the maximum length of the given string in pixels *)
 function StringLength(const aCaption: String; const aHDC: HDC; const aDecoration:TCaptionFlagsSet): integer;
-var captionSize: SIZE;
-    oldFont: HFONT;
+var oldFont: HFONT;
     newFont: HFONT;
+    TmpRect: Windows.RECT;
 begin
   newFont := getMenuItemFont(aDecoration);
   oldFont := SelectObject(aHDC, newFont);
-  GetTextExtentPoint32(aHDC, PChar(aCaption), length(aCaption), @captionSize);
+  DrawText(aHDC, pChar(aCaption), length(aCaption), @TmpRect, DT_CALCRECT);
   SelectObject(aHDC, oldFont);
   DeleteObject(newFont);
-  Result := captionSize.cx;
-end;
-  
-function MenuCaptionLength(const aList: Tlist; const aHDC: HDC): integer;
-var i: integer;
-    token: TMenuItemCaptionToken;
-begin
-  Result := 0;
-  for i := 0 to aList.Count - 1 do
-  begin
-    token := TMenuItemCaptionToken(aList[i]);
-    Result := Result + StringLength(token.token, aHDC, token.fontDecoration);
-  end;
+  Result := TmpRect.right - TmpRect.left;
 end;
   
 (* Get the maximum height of the given string in pixels *)
 function StringHeight(const aCaption: String; const aHDC: HDC; const aDecoration: TCaptionFlagsSet): integer;
-var captionSize: SIZE;
-    oldFont: HFONT;
+var oldFont: HFONT;
     newFont: HFONT;
+    TmpRect: Windows.RECT;
 begin
   newFont := getMenuItemFont(aDecoration);
   oldFont := SelectObject(aHDC, newFont);
-  GetTextExtentPoint32(aHDC, PChar(aCaption), length(aCaption), @captionSize);
+  DrawText(aHDC, pChar(aCaption), length(aCaption), @TmpRect, DT_CALCRECT);
   SelectObject(aHDC, oldFont);
   DeleteObject(newFont);
-  Result := captionSize.cy;
+  Result := TmpRect.bottom - TmpRect.top;
 end;
   
-function MenuCaptionHeight(const aList: TList; const aHDC: HDC): integer;
-var i: integer;
-    token: TMenuItemCaptionToken;
-    height: integer;
-begin
-  Result := 0;
-  for i := 0 to aList.Count - 1 do
-  begin
-    token := TMenuItemCaptionToken(aList[i]);
-    height := StringHeight(token.token, aHDC, token.fontDecoration);
-    if height > Result then Result := height;
-  end;
-end;
-
 function LeftIconPosition: integer;
 begin
   Result := GetSystemMetrics(SM_CXMENUCHECK);
@@ -327,22 +183,18 @@ begin
 end;
 
 function MenuItemLength(const aMenuItem: TMenuItem; const aHDC: HDC): integer;
-var captionTokens: TList;
-    decoration: TCaptionFlagsSet;
+var decoration: TCaptionFlagsSet;
 begin
   if aMenuItem.Default then decoration := [cfBold]
   else decoration := [];
-  captionTokens := parseMenuItemCaption('&', CompleteMenuItemCaption(aMenuItem), decoration);
-  if aMenuItem.IsInMenuBar then Result := MenuCaptionLength(captionTokens, aHDC)
-  else Result := MenuIconWidth(aMenuItem) + spaceBetweenIcons + MenuCaptionLength(captionTokens, aHDC) + spaceBetweenIcons;
+  if aMenuItem.IsInMenuBar then Result := StringLength(CompleteMenuItemCaption(aMenuItem), aHDC, decoration)
+  else Result := MenuIconWidth(aMenuItem) + spaceBetweenIcons + StringLength(CompleteMenuItemCaption(aMenuItem), aHDC, decoration) + spaceBetweenIcons;
   if aMenuItem.ShortCut <> scNone then
     Result := Result + spaceBetweenIcons;
-  destroyCaptionTokens(captionTokens);
 end;
 
 function MenuItemHeight(const AMenuItem: TMenuItem; const aHDC: HDC): integer;
-var captionTokens: TList;
-    decoration: TCaptionFlagsSet;
+var decoration: TCaptionFlagsSet;
     minimumHeight: integer;
 begin
   minimumHeight := GetSystemMetrics(SM_CYMENU);
@@ -351,13 +203,11 @@ begin
   else begin
     if aMenuItem.Default then decoration := [cfBold]
     else decoration := [];
-    captionTokens := parseMenuItemCaption('&', aMenuItem.Caption, decoration);
-    Result := MenuCaptionHeight(captionTokens, aHDC);
+    Result := StringHeight(aMenuItem.Caption, aHDC, decoration);
     if aMenuItem.hasIcon and (aMenuItem.bitmap.height > Result) then
       Result := aMenuItem.bitmap.height;
     Result := Result + 2;
     if Result < minimumHeight then Result := minimumHeight;
-    DestroyCaptionTokens(captionTokens);
   end;
 end;
 
@@ -406,23 +256,6 @@ begin
   DrawEdge(aHDC, separatorRect, BDR_SUNKENOUTER, BF_RECT);
 end;
 
-procedure DrawList(const aList: TList; const aHDC: HDC; const aRect: Windows.RECT);
-var i: integer;
-    token: TMenuItemCaptionToken;
-    oldFont: HFONT;
-    newFont: HFONT;
-begin
-  for i := 0 to aList.Count - 1 do
-  begin
-    token := TMenuItemCaptionToken(aList[i]);
-    newFont := getMenuItemFont(token.fontDecoration);
-    oldFont := SelectObject(aHDC, newFont);
-    ExtTextOut(aHDC, 0, 0, ETO_OPAQUE, nil, PChar(token.token), length(token.token), nil);
-    SelectObject(aHDC, oldFont);
-    DeleteObject(newFont);
-  end;
-end;
-
 procedure DrawMenuItemCheckMark(const aMenuItem: TMenuItem; const aHDC: HDC; const aRect: Windows.RECT; const aSelected: boolean);
 var checkMarkWidth: integer;
     checkMarkHeight: integer;
@@ -450,44 +283,59 @@ begin
   DeleteDC(hdcMem);
 end;
 
-procedure DrawMenuItemCaption(const aMenuItem: TMenuItem; const aHDC: HDC; const aRect: Windows.RECT; const aSelected: boolean);
+procedure DrawMenuItemCaption(const aMenuItem: TMenuItem; const aHDC: HDC; aRect: Windows.RECT; const aSelected: boolean);
 var crText: COLORREF;
     crBkgnd: COLORREF;
-    captionTokens: TList;
+    TmpLength: integer;
+    TmpHeight: integer;
+    oldFont: HFONT;
+    newFont: HFONT;
     decoration: TCaptionFlagsSet;
 begin
-  if aMenuItem.Default then decoration := [cfBold]
-  else decoration := [];
-  captionTokens := parseMenuItemCaption('&', aMenuItem.Caption, decoration);
   crText := TextColorMenu(aSelected, aMenuItem.Enabled);
   crBkgnd := BackgroundColorMenu(aSelected, aMenuItem.IsInMenuBar);
   SetTextColor(aHDC, crText);
   SetBkColor(aHDC, crBkgnd);
-  SetTextAlign(aHDC, TA_UPDATECP);
+  if aMenuItem.Default then decoration := [cfBold]
+  else decoration := [];
+  newFont := getMenuItemFont(decoration);
+  oldFont := SelectObject(aHDC, newFont);
   ExtTextOut(aHDC, 0, 0, ETO_OPAQUE, @aRect, PChar(''), 0, nil);
-  MoveToEx(aHDC, aRect.left + leftCaptionPosition(aRect.right - aRect.left, menuCaptionLength(captionTokens, aHDC), aMenuItem), aRect.top + topPosition(aRect.bottom - aRect.top, menuCaptionHeight(captionTokens, aHDC)), nil);
-  DrawList(captionTokens, aHDC, aRect);
-  destroyCaptionTokens(captionTokens);
+  TmpLength := aRect.right - aRect.left;
+  TmpHeight := aRect.bottom - aRect.top;
+  DrawText(aHDC, pChar(aMenuItem.Caption), length(aMenuItem.Caption), @aRect, DT_CALCRECT);
+  OffsetRect(aRect, leftCaptionPosition(TmpLength, aRect.right - aRect.left, aMenuItem), topPosition(TmpHeight, aRect.bottom - aRect.top));
+  DrawText(aHDC, pChar(aMenuItem.Caption), length(aMenuItem.Caption), @aRect, 0);
+  SelectObject(aHDC, oldFont);
+  DeleteObject(newFont);
 end;
 
-procedure DrawMenuItemShortCut(const aMenuItem: TMenuItem; const aHDC: HDC; const aRect: Windows.RECT; const aSelected: boolean);
+procedure DrawMenuItemShortCut(const aMenuItem: TMenuItem; const aHDC: HDC; aRect: Windows.RECT; const aSelected: boolean);
 var crText: COLORREF;
     crBkgnd: COLORREF;
     shortCutText: String;
-    captionTokens: TList;
+    TmpLength: integer;
+    TmpHeight: integer;
+    oldFont: HFONT;
+    newFont: HFONT;
     decoration: TCaptionFlagsSet;
 begin
   shortCutText := ShortCutToText(aMenuItem.ShortCut);
-  if aMenuItem.Default then decoration := [cfBold]
-  else decoration := [];
-  captionTokens := parseMenuItemCaption('&', shortCutText, decoration);
   crText := TextColorMenu(aSelected, aMenuItem.Enabled);
   crBkgnd := BackgroundColorMenu(aSelected, aMenuItem.IsInMenuBar);
   SetTextColor(aHDC, crText);
   SetBkColor(aHDC, crBkgnd);
-  MoveToEx(aHDC, aRect.right - menuCaptionLength(captionTokens, aHDC) - GetSystemMetrics(SM_CXMENUCHECK), aRect.top + topPosition(aRect.bottom - aRect.top, menuCaptionHeight(captionTokens, aHDC)), nil);
-  DrawList(captionTokens, aHDC, aRect);
-  destroyCaptionTokens(captionTokens);
+  if aMenuItem.Default then decoration := [cfBold]
+  else decoration := [];
+  newFont := getMenuItemFont(decoration);
+  oldFont := SelectObject(aHDC, newFont);
+  TmpLength := aRect.right - aRect.left;
+  TmpHeight := aRect.bottom - aRect.top;
+  DrawText(aHDC, pChar(shortCutText), length(shortCutText), @aRect, DT_CALCRECT);
+  OffsetRect(aRect, TmpLength - (aRect.right - aRect.left) - GetSystemMetrics(SM_CXMENUCHECK), topPosition(TmpHeight, aRect.bottom - aRect.top)); 
+  DrawText(aHDC, pChar(shortCutText), length(shortCutText), @aRect, 0);
+  SelectObject(aHDC, oldFont);
+  DeleteObject(newFont);
 end;
 
 procedure DrawMenuItemIcon(const aMenuItem: TMenuItem; const aHDC: HDC; const aRect: Windows.RECT; const aSelected: boolean);
@@ -515,7 +363,6 @@ begin
       DrawMenuItemIcon(aMenuItem, aHDC, aRect, aSelected);
   end;
 end;
-
 
 
 procedure TriggerFormUpdate(const AMenuItem: TMenuItem);
