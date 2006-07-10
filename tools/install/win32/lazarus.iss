@@ -49,7 +49,7 @@ Name: {group}\{cm:UninstallProgram,Lazarus}; Filename: {uninstallexe}
 Name: {userdesktop}\Lazarus; Filename: {app}\lazarus.exe; Tasks: desktopicon
 
 [Run]
-Filename: {app}\fpc\{#FPCVersion}\bin\i386-win32\fpcmkcfg.exe; Parameters: "-d ""basepath={app}\fpc\{#FPCVersion}""-o fpc.cfg"; Flags: runhidden
+Filename: {app}\fpc\{#FPCVersion}\bin\i386-win32\fpcmkcfg.exe; Parameters: "-d ""basepath={app}\fpc\{#FPCVersion}"" -o fpc.cfg"; Flags: runhidden; Tasks: ; Languages: 
 
 [UninstallDelete]
 Name: {app}\compilertest.pas; Type: files
