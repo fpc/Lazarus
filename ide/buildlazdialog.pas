@@ -1194,7 +1194,7 @@ begin
       Path+'Build'+Items[i].Name+'/Value',
       MakeModeNames[Items[i].MakeMode]));
   end;
-  FCleanAll:=XMLConfig.GetValue(Path+'CleanAll/Value',true);
+  FCleanAll:=XMLConfig.GetValue(Path+'CleanAll/Value',false);
   FExtraOptions:=XMLConfig.GetValue(Path+'ExtraOptions/Value','');
   TargetOS:=XMLConfig.GetValue(Path+'TargetOS/Value','');
   TargetCPU:=XMLConfig.GetValue(Path+'TargetCPU/Value','');
