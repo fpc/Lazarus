@@ -714,14 +714,15 @@ begin
       RaiseConflictException('NewNode is not a node of NewTool');
   end;
   
-  {if GetIdentifier(Identifier)='TDefineAction' then begin
+  {if CompareIdentifiers(Identifier,'FillRect')=0 then begin
     DebugLn('[[[[======================================================');
-    DebugLn('[TCodeTreeNodeCache.Add] Ident=',GetIdentifier(Identifier),
+    DebugLn(['[TCodeTreeNodeCache.Add] Ident=',GetIdentifier(Identifier),
        ' CleanStartPos=',CleanStartPos,' CleanEndPos=',CleanEndPos,
        ' Flags=[',NodeCacheEntryFlagsAsString(Flags),']',
        ' NewNode=',NewNode<>nil
-       );
+       ]);
     DebugLn('======================================================]]]]');
+    CTDumpStack;
   end;}
   if FItems=nil then
     FItems:=TAVLTree.Create(@CompareTCodeTreeNodeCacheEntry);

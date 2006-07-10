@@ -2022,7 +2022,7 @@ var
         DebugLn('   NewTool=',Params.NewCodeTool.MainFilename,
                 ' NewNode=',Params.NewNode.DescAsString)
       else
-        DebugLn('   cache says: identifier NOT FOUND');
+        DebugLn('   cache says: identifier does NOT exist');
       if CompareSrcIdentifiers(Params.Identifier,'TDefineAction') then begin
         NodeCache.WriteDebugReport('NANUNANA: ');
       end;
@@ -2054,7 +2054,7 @@ var
   end;
 
   function CheckResult(NewResult, CallOnIdentifierFound: boolean): boolean;
-  // returns: true if ok to exit
+  // returns: true to stop search
   //          false if search should continue
   
     procedure RaiseNotFound;
@@ -2127,8 +2127,8 @@ var
     // identifier was not found
     if not (fdfExceptionOnNotFound in Params.Flags) then exit;
     if (Params.Identifier<>nil)
-    and WordIsPredefinedIdentifier.DoIt(Params.Identifier)
-    and not (fdfExceptionOnPredefinedIdent in Params.Flags) then begin
+    and not (fdfExceptionOnPredefinedIdent in Params.Flags)
+    and WordIsPredefinedIdentifier.DoIt(Params.Identifier) then begin
       Params.SetResult(nil,nil);
       exit;
     end;
@@ -2571,7 +2571,8 @@ begin
     end;
   end;}
   // if we are here, the identifier was not found
-  if (FirstSearchedNode<>nil) and (Params.FoundProc=nil) then begin
+  if (FirstSearchedNode<>nil) and (Params.FoundProc=nil)
+  and (not (fdfCollect in Params.Flags)) then begin
     // add result to cache
     Params.NewNode:=nil;
     Params.NewCodeTool:=nil;
