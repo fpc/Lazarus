@@ -5,7 +5,7 @@ Section: devel
 Priority: optional
 Maintainer: Mattias Gaertner <mattias@freepascal.org>
 Architecture: i386 powerpc sparc
-Depends: fpc (>=FPCVERSION), fpc-src (>=FPCVERSION), libgdk-pixbuf-devel (>=0.17.0), libgtk1.2-dev, debhelper (>=4.0.0)
+Depends: fpc (>=FPCVERSION), fpc-src (>=FPCVERSION), libgdk-pixbuf-dev (>=0.17.0), libgtk1.2-dev, debhelper (>=4.0.0)
 Description: RAD tool for freepascal
   Lazarus is a free and opensource RAD tool for FreePascal using the
   Lazarus component library LCL. The LCL is included in this package too.
