@@ -1666,8 +1666,7 @@ var
   Handled: boolean;
 Begin
   {$IFDEF VerboseDesigner}
-  DebugLn('TDesigner.KEYDOWN ',DbgS(TheMessage.CharCode),' ',
-             DbgS(TheMessage.KeyData));
+  DebugLn(['TDesigner.KEYDOWN ',TheMessage.CharCode,' ',TheMessage.KeyData]);
   {$ENDIF}
 
   Shift := KeyDataToShiftState(TheMessage.KeyData);
@@ -1677,6 +1676,7 @@ Begin
                                                      TheMessage.CharCode,Shift);
   //DebugLn('TDesigner.KEYDOWN Command=',dbgs(Command));
   DoProcessCommand(Self,Command,Handled);
+  //DebugLn(['TDesigner.KeyDown Command=',Command,' Handled=',Handled,' TheMessage.CharCode=',TheMessage.CharCode]);
 
   if not Handled then begin
     Handled:=true;

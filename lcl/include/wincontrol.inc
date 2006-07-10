@@ -5518,6 +5518,7 @@ var
   i: integer;
 begin
   Result := 0;
+  if FDockClients=nil then exit;
   for i:=FDockClients.Count-1 downto 0 do
     if TControl(FDockClients[I]).Visible then inc(Result);
 end;
