@@ -67,14 +67,38 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TCustomSpeedButton.Click
-  Params:
-  Returns:  nothing
+  Method: TCustomSpeedButton.FindDownButton: TCustomSpeedButton;
 
+  Searches the speed button with Down=true and the same GroupIndex.
  ------------------------------------------------------------------------------}
-procedure TCustomSpeedButton.Click;
+function TCustomSpeedButton.FindDownButton: TCustomSpeedButton;
+
+  function FindDown(AWinControl: TWinControl): TCustomSpeedButton;
+  var
+    i: Integer;
+    Child: TControl;
+    Button: TCustomSpeedButton;
+  begin
+    if AWinControl=nil then exit(nil);
+    for i:=0 to AWinControl.ControlCount-1 do begin
+      Child:=AWinControl.Controls[i];
+      if Child is TCustomSpeedButton then begin
+        Button:=TCustomSpeedButton(Child);
+        if (Button.GroupIndex=GroupIndex)
+        and (Button.Down) then
+          exit(Button);
+      end;
+      if Child is TWinControl then begin
+        Result:=FindDown(TWinControl(Child));
+        if Result<>nil then exit;
+      end;
+    end;
+    Result:=nil;
+  end;
+
 begin
-  inherited Click;
+  if Down or (GroupIndex=0) then exit(Self);
+  Result:=FindDown(GetFirstParentForm(Self));
 end;
 
 {------------------------------------------------------------------------------
@@ -169,8 +193,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomSpeedButton.SetGroupIndex(const Value : Integer);
 begin
-  if FGroupIndex <> Value
-  then begin
+  if FGroupIndex <> Value then begin
     FGroupIndex := Value;
     UpdateExclusive;
   end;
@@ -287,12 +310,13 @@ begin
       inc(Result,DFCS_PUSHED);
     if not Enabled then
       inc(Result,DFCS_INACTIVE)
-    else if fMouseInControl then inc(Result,DFCS_CHECKED);
-      
+    else if fMouseInControl then
+      inc(Result,DFCS_CHECKED);
   end;
 end;
 
-procedure TCustomSpeedButton.ActionChange(Sender: TObject; CheckDefaults: Boolean);
+procedure TCustomSpeedButton.ActionChange(Sender: TObject;
+  CheckDefaults: Boolean);
 
   procedure CopyImage(ImageList: TCustomImageList; Index: Integer);
   begin
@@ -328,10 +352,11 @@ var
   msg : TLMessage;
 begin
   if (FGroupIndex <> 0) and (Parent <> nil)
+  and (not (csLoading in ComponentState))
   then begin
-    MSg.MSg := CM_ButtonPressed;
+    Msg.Msg := CM_ButtonPressed;
     Msg.WParam := FGroupIndex;
-    Msg.LParam := PtrInt(self);
+    Msg.LParam := PtrInt(Self);
     Msg.Result := 0;
     Parent.Broadcast(Msg);
   end;
@@ -696,6 +721,7 @@ procedure TCustomSpeedButton.CMButtonPressed(var Message : TLMessage);
 var
   Sender : TCustomSpeedButton;
 begin
+  if csDestroying in ComponentState then exit;
   if Message.WParam = WParam(FGroupIndex)
   then begin
     Sender := TCustomSpeedButton(Message.LParam);
@@ -715,9 +741,9 @@ end;
 procedure TCustomSpeedButton.Loaded;
 begin
   inherited Loaded;
+  UpdateExclusive;
   if FDownBuffered then SetDown(FDownBuffered);
 end;
-
 
 {------------------------------------------------------------------------------
   Method: TCustomSpeedButton.CMEnabledChanged
@@ -761,10 +787,10 @@ begin
   if csDesigning in ComponentState then exit;
 
   if FMouseInControl
-  and Enabled {and not FDragging}
   then begin
     FMouseInControl := False;
-    UpdateState(true);
+    if Enabled then
+      UpdateState(true);
   end;
 end;
 

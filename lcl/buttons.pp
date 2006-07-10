@@ -329,7 +329,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure Click; override;
+    function FindDownButton: TCustomSpeedButton;
   public
     property AllowAllUp: Boolean read FAllowAllUp write SetAllowAllUp default false;
     property Down: Boolean read FDown write SetDown default false;

@@ -70,6 +70,22 @@ begin
   AdjustSize;
 end;
 
+procedure TRadioButton.ApplyChanges;
+var
+  i: Integer;
+  Sibling: TControl;
+begin
+  inherited ApplyChanges;
+  if (not (csLoading in ComponentState))
+  and (Parent<>nil) and (FState=cbChecked) then begin
+    for i:=0 to Parent.ControlCount-1 do begin
+      Sibling:=Parent.Controls[i];
+      if (Sibling is TRadioButton) and (Sibling<>Self) then
+        TRadioButton(Sibling).Checked:=false;
+    end;
+  end;
+end;
+
 function TRadioButton.DialogChar(var Message: TLMKey): boolean;
 begin
   if IsAccel(Message.CharCode, Caption) and CanFocus then

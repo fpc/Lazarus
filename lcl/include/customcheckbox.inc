@@ -34,7 +34,6 @@ begin
   if FState <> Value then
   begin
     FState := Value;
-    //debugln('TCustomCheckBox.SetState ',dbgsname(Self),' ',dbgs(ord(FState)));
     ApplyChanges;
   end;
 end;
@@ -179,7 +178,6 @@ procedure TCustomCheckBox.Loaded;
 begin
   // Send first the FState to the interface before calling inherited,
   // otherwise the FState will be lost and the default interface State is taken.
-  // TODO: MWE, remove this, it should be handled by InitializeWnd
   if HandleAllocated
   then TWSCustomCheckBoxClass(WidgetSetClass).SetState(Self, FState);
   inherited Loaded;

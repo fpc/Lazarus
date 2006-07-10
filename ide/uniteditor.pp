@@ -1104,7 +1104,8 @@ begin
     FSourceNoteBook.DoIncrementalSearch;
   end else begin
     OldOptions:=FindReplaceDlg.Options;
-    FindReplaceDlg.Options:=FindReplaceDlg.Options-[ssoEntireScope];
+    FindReplaceDlg.Options:=FindReplaceDlg.Options
+                                     -[ssoEntireScope,ssoReplace,ssoReplaceAll];
     DoFindAndReplace;
     FindReplaceDlg.Options:=OldOptions;
   end;
@@ -1140,7 +1141,7 @@ begin
     else
       EditorComponent.LogicalCaretXY:=EditorComponent.BlockEnd
   end;
-  debugln('TSourceEditor.DoFindAndReplace A FindReplaceDlg.FindText="',dbgstr(FindReplaceDlg.FindText),'" ssoEntireScope=',dbgs(ssoEntireScope in FindReplaceDlg.Options),' ssoBackwards=',dbgs(ssoBackwards in FindReplaceDlg.Options));
+  //debugln('TSourceEditor.DoFindAndReplace A FindReplaceDlg.FindText="',dbgstr(FindReplaceDlg.FindText),'" ssoEntireScope=',dbgs(ssoEntireScope in FindReplaceDlg.Options),' ssoBackwards=',dbgs(ssoBackwards in FindReplaceDlg.Options));
   try
     Result:=EditorComponent.SearchReplace(
       FindReplaceDlg.FindText,FindReplaceDlg.ReplaceText,FindReplaceDlg.Options);

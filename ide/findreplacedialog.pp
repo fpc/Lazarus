@@ -313,6 +313,7 @@ begin
     OkButton.Caption:=lisMenuFind ;
     CancelButton.AnchorSideRight.Control := OKButton;
   end;
+  DebugLn(['TLazFindReplaceDialog.SetOptions END ssoSelectedOnly=',ssoSelectedOnly in NewOptions,' SelectedRadioButton.Checked=',SelectedRadioButton.Checked]);
 end;
 
 function TLazFindReplaceDialog.GetOptions:TSynSearchOptions;

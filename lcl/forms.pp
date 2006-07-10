@@ -1244,6 +1244,7 @@ var
   OnGetDesignerForm: TGetDesignerFormEvent;
 
 function GetParentForm(Control:TControl): TCustomForm;
+function GetFirstParentForm(Control:TControl): TCustomForm;
 function GetDesignerForm(AComponent: TComponent): TCustomForm;
 function FindRootDesigner(AComponent: TComponent): TIDesigner;
 
@@ -1432,6 +1433,13 @@ begin
   Form:=GetDesignerForm(AComponent);
   if Form<>nil then
     Result:=Form.Designer;
+end;
+
+function GetFirstParentForm(Control: TControl): TCustomForm;
+begin
+  while (Control<>nil) and (not (Control is TCustomForm)) do
+    Control:=Control.Parent;
+  Result:=TCustomForm(Control);
 end;
 
 function GetDesignerForm(AComponent: TComponent): TCustomForm;

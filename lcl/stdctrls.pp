@@ -1097,6 +1097,7 @@ type
   protected
     function DialogChar(var Message: TLMKey): boolean; override;
     procedure RealSetText(const Value: TCaption); override;
+    procedure ApplyChanges; override;
   public
     constructor Create(TheOwner: TComponent); override;
   published
