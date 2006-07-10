@@ -274,7 +274,7 @@ msgstr "Ein gültiges Werkzeug benötigt wenigstens einen Titel und eine auszuf�
 
 #: lazarusidestrconsts:lispdabort
 msgid "Abort"
-msgstr "Abbruch"
+msgstr "Alles abbrechen"
 
 #: lazarusidestrconsts:lismenuabortbuild
 msgid "Abort Build"
