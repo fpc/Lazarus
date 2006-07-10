@@ -79,7 +79,7 @@ all: lcl components packager/registration ideintf designer packager ide starter
 cleanide:
 	$(MAKE) -C ide cleanide
 
-cleanlaz: clean cleanide
+cleanlaz: cleanide
         $(MAKE) -C lcl clean
         $(MAKE) -C components clean
         $(MAKE) -C packager clean
