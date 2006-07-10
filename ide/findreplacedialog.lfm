@@ -84,7 +84,7 @@ object LazFindReplaceDialog: TLazFindReplaceDialog
     AnchorSideRight.Control = ReplaceAllButton
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 226
+    Left = 230
     Height = 24
     Top = 317
     Width = 73
@@ -331,13 +331,14 @@ object LazFindReplaceDialog: TLazFindReplaceDialog
     AnchorSideRight.Control = OKButton
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 305
-    Height = 28
-    Top = 313
-    Width = 52
+    Left = 309
+    Height = 24
+    Top = 317
+    Width = 48
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6
+    BorderSpacing.InnerBorder = 2
     Caption = '&All'
     Constraints.MaxHeight = 33
     Kind = bkAll

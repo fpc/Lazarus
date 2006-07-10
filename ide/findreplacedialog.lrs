@@ -35,7 +35,7 @@ LazarusResources.Add('TLazFindReplaceDialog','FORMDATA',[
   +#25'TextToFindComboboxKeyDown'#8'TabOrder'#2#1#4'Text'#6#19'ReplaceTextCombo'
   +'Box'#0#0#7'TBitBtn'#12'CancelButton'#23'AnchorSideRight.Control'#7#16'Repla'
   +'ceAllButton'#24'AnchorSideBottom.Control'#7#5'Owner'#21'AnchorSideBottom.Si'
-  +'de'#7#9'asrBottom'#4'Left'#3#226#0#6'Height'#2#24#3'Top'#3'='#1#5'Width'#2
+  +'de'#7#9'asrBottom'#4'Left'#3#230#0#6'Height'#2#24#3'Top'#3'='#1#5'Width'#2
   +'I'#7'Anchors'#11#7'akRight'#8'akBottom'#0#8'AutoSize'#9#20'BorderSpacing.Ar'
   +'ound'#2#6#25'BorderSpacing.InnerBorder'#2#2#6'Cancel'#9#7'Caption'#6#6'Canc'
   +'el'#21'Constraints.MaxHeight'#2'!'#4'Kind'#7#8'bkCancel'#11'ModalResult'#2#2
@@ -118,9 +118,10 @@ LazarusResources.Add('TLazFindReplaceDialog','FORMDATA',[
   +#4'Left'#2#6#6'Height'#2#20#3'Top'#2' '#5'Width'#3#183#0#8'AutoSize'#8#7'Cap'
   +'tion'#6#22'EntireScopeRadioButton'#8'TabOrder'#2#1#0#0#0#7'TBitBtn'#16'Repl'
   +'aceAllButton'#23'AnchorSideRight.Control'#7#8'OKButton'#24'AnchorSideBottom'
-  +'.Control'#7#5'Owner'#21'AnchorSideBottom.Side'#7#9'asrBottom'#4'Left'#3'1'#1
-  +#6'Height'#2#28#3'Top'#3'9'#1#5'Width'#2'4'#7'Anchors'#11#7'akRight'#8'akBot'
-  +'tom'#0#8'AutoSize'#9#20'BorderSpacing.Around'#2#6#7'Caption'#6#4'&All'#21'C'
-  +'onstraints.MaxHeight'#2'!'#4'Kind'#7#5'bkAll'#9'NumGlyphs'#2#0#7'OnClick'#7
-  +#21'ReplaceAllButtonClick'#8'TabOrder'#2#8#0#0#0
+  +'.Control'#7#5'Owner'#21'AnchorSideBottom.Side'#7#9'asrBottom'#4'Left'#3'5'#1
+  +#6'Height'#2#24#3'Top'#3'='#1#5'Width'#2'0'#7'Anchors'#11#7'akRight'#8'akBot'
+  +'tom'#0#8'AutoSize'#9#20'BorderSpacing.Around'#2#6#25'BorderSpacing.InnerBor'
+  +'der'#2#2#7'Caption'#6#4'&All'#21'Constraints.MaxHeight'#2'!'#4'Kind'#7#5'bk'
+  +'All'#9'NumGlyphs'#2#0#7'OnClick'#7#21'ReplaceAllButtonClick'#8'TabOrder'#2#8
+  +#0#0#0
 ]);
