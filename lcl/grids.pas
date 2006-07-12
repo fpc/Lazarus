@@ -5553,15 +5553,68 @@ begin
     Result := GetDefaultColumnWidth(Column);
 end;
 
+// return the relative cell coordinate of the next cell
+// considering AutoAdvance property and selectable cells.
 function TCustomGrid.GetDeltaMoveNext(const Inverse: boolean;
   var ACol, ARow: Integer): boolean;
 var
   aa: TAutoAdvance;
+  DeltaCol,DeltaRow: Integer;
+  
+  function CalcNextStep: boolean;
+  var
+    cCol,cRow: Integer;
+  begin
+
+    DeltaCol := 0;
+    DeltaRow := 0;
+    
+    case aa of
+      aaRight:
+        DeltaCol := 1;
+        
+      aaLeft:
+        DeltaCol := -1;
+        
+      aaDown:
+        DeltaRow := 1;
+        
+      aaRightDown:
+        if ACol<ColCount-1 then
+          DeltaCol := 1
+        else begin
+          DeltaCol := FixedCols-ACol;
+          DeltaRow := 1;
+        end;
+
+      aaLeftDown:
+        if ACol>FixedCols then
+          DeltaCol := -1
+        else begin
+          DeltaCol := ColCount-1-ACol;
+          DeltaRow := 1;
+        end;
+    end;
+    
+    CCol := ACol + DeltaCol;
+    CRow := ARow + DeltaRow;
+
+    // is CCol,CRow within range?
+    result :=
+      (CCol<=ColCount-1)and(CCol>=FixedCols)and
+      (CRow<=RowCount-1)and(CRow>=FixedRows);
+  end;
 begin
 
-  aCol := 0;
-  aRow := 0;
+  ACol := FCol;
+  ARow := FRow;
 
+  result := False;
+  
+  if FAutoAdvance=aaNone then
+    exit; // quick case, no auto movement allowed
+  
+  // invert direction if necessary
   aa := FAutoAdvance;
   if Inverse then
     case FAutoAdvance of
@@ -5571,43 +5624,25 @@ begin
       aaLeftDown:   aa := aaRightDown;
     end;
 
-  case aa of
-    aaRight,aaRightDown: ACol := integer(FCol<ColCount-1);
-    aaLeft, aaLeftDown : ACol := -integer(FCol>FixedCols);
-    aaDown:
-      if Inverse then
-        ARow := -Integer(FRow>FixedRows)
-      else
-        ARow := integer(FRow<RowCount-1);
+  // browse the grid in autoadvance order
+  while CalcNextStep do begin
+    ACol := ACol + DeltaCol;
+    ARow := ARow + DeltaRow;
+    // is cell ACol,ARow selectable?
+    result := SelectCell(ACol,ARow);
+    if Result then
+      break;
   end;
-
-  if (aCol=0) and ((aa=aaLeftDown) or (aa=aaRightDown)) then begin
-    if FAutoAdvance=aaLeftDown then
-      if Inverse then begin
-        aRow := -1;
-        Result := FRow>0;
-        aCol := FixedCols-FCol;
-      end else begin
-        Result := FRow<RowCount-1;
-        aRow := 1;
-        aCol := ColCount-FCol-1;
-      end
-    else
-      if Inverse then begin
-        aRow := -1;
-        Result := FRow>0;
-        aCol := ColCount-FCol-1;
-      end else begin
-        aRow := 1;
-        Result := FRow<RowCount-1;
-        aCol := FixedCols-FCol;
-      end
-  end else
-  if (ARow=0) and (aa=aaDown) then begin
-    Result := False;
-    ARow := 1 - 2 * Integer(Inverse);
-  end else
-    result := (aCol<>0) or (aRow<>0);
+  
+  if result then begin
+    // return relative position
+    ACol := ACol - FCol;
+    ARow := ARow - FRow;
+  end else begin
+    // no available next cell, return current
+    ACol := FCol;
+    ARow := FRow;
+  end;
 end;
 
 function TCustomGrid.GetDefaultColumnAlignment(Column: Integer): TAlignment;
