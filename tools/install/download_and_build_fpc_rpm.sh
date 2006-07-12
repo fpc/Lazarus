@@ -39,7 +39,7 @@ if [ "x$1" != "x" ]; then
 fi
 
 
-# set here the fpc cvs dates for the various versions
+# set here the fpc svn dates for the various versions
 if [ "x$FPCVersion" = "xdevel" ]; then
   Year=04
   Month=06
@@ -60,7 +60,7 @@ SrcPatch=fpc-src-patch
 TmpDir=/tmp/fpc$LazVersion
 SpecFile=$TmpDir/fpc/install/fpc.spec
 
-# download fpc cvs if necessary
+# download fpc svn if necessary
 if [ ! -f $SrcTGZ ]; then
   ./create_fpc_export_tgz.sh $SrcTGZ $FPCVersion $Month/$Day/$Year
 fi

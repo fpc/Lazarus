@@ -2583,7 +2583,6 @@ tools/install/rpm/fpc.spec.template svneol=native#text/plain
 tools/install/rpm/fpc_crosswin32.spec.template svneol=native#text/plain
 tools/install/rpm/get_rpm_source_dir.sh svneol=native#text/plain
 tools/install/rpm/lazarus.spec.template svneol=native#text/plain
-tools/install/setup.sh svneol=native#text/plain
 tools/install/smart_strip.sh svneol=native#text/plain
 tools/install/win32/build-fpc.bat svneol=native#text/x-msdos-program
 tools/install/win32/build-lazarus.bat svneol=native#text/x-msdos-program
