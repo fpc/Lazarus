@@ -273,7 +273,7 @@ if [ $BuildCrossFPC = "yes" ]; then
     cd $BuildRoot/install/cross/
     cat buildcrosssnaphot | \
       sed -e 's#^CROSSTOOLSROOT=.*$#CROSSTOOLSROOT='"$BuildRoot"'/binutils/cross/#' \
-          -e 's#^FPCCVS=.*$#FPCCVS='"$BuildRoot"'/fpc#' \
+          -e 's#^FPCSVN=.*$#FPCSVN='"$BuildRoot"'/fpc#' \
           -e 's#^TARGETS_OS=.*$#TARGETS_OS='"$TargetOS"'#' \
           -e 's#^TARGETS_CPU=.*$#TARGETS_CPU='"$TargetCPU"'#' \
           -e 's#^MOS=cygwin$#MOS=mingw32#' \

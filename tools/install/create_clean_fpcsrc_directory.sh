@@ -40,7 +40,7 @@ else
   cp -a $SrcDir $DestDir
 fi
 
-echo "cleaning up (CVS, ppu, o) ..."
+echo "cleaning up (svn, ppu, o) ..."
 cd $DestDir
 make distclean
 for Ext in ppu ppw ppl o ow rst cvsignore bak orig rej xvpics; do
@@ -50,6 +50,8 @@ find . -name "*.~*" -exec rm -f {} \;
 find . -name "*.#*" -exec rm -f {} \;
 # delete all CVS directories
 find . -name "CVS" -exec rm -rf {} \;
+# delete all .svn directories
+find . -name ".svn" -exec rm -rf {} \;
 # delete all executables
 find . -perm +a+x -type f -exec rm -f {} \;
 cd -

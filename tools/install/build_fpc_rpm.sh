@@ -59,9 +59,6 @@ if [ "$WithTempDir" = "yes" ]; then
   fi
   mkdir -p $TmpDir
 
-  #ppc386 -Fu../../lcl/units/i386/linux cvsexportlocal.pas
-  #echo "extracting FPC from local cvs ..."
-  #./cvsexportlocal $FPCSrcDir $TmpDir
   echo "extracting FPC from local svn ..."
   svn export $FPCSrcDir $TmpDir/fpc
 else

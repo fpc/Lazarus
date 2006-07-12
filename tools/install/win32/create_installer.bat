@@ -8,7 +8,7 @@ SET ISCC="C:\Program Files\Inno Setup 5\iscc.exe"
 :: Path to the fpc sources checked out of svn
 SET FPCSVNDIR=C:\lazarus\source\fpc\fpcbuild-2.0.2\fpcsrc
 
-:: Path to the lazarus sources checked out of cvs
+:: Path to the lazarus sources checked out of svn
 SET LAZSVNDIR=c:\lazarus\source\lazarus-0.9.16
 
 :: Path to fpc 2.0.2 compiler

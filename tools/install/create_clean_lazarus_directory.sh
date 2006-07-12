@@ -40,7 +40,7 @@ else
   cp -a $LazSrcDir $LazDestDir
 fi
 
-echo "cleaning up (CVS, ppu, o) ..."
+echo "cleaning up (svn, ppu, o) ..."
 cd $LazDestDir
 make clean
 make -C examples clean
@@ -52,6 +52,8 @@ find . -name "*.~*" -exec rm -f {} \;
 find . -name "*.#*" -exec rm -f {} \;
 # delete all CVS directories
 find . -name "CVS" -exec rm -rf {} \;
+# delete all SVN directories
+find . -name ".svn" -exec rm -rf {} \;
 # delete all executables
 find . -perm +a+x -type f -exec rm -f {} \;
 rm -rf tools/install/*.tgz
