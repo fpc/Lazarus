@@ -397,7 +397,6 @@ begin
       Parent:=OptionsGroupBox;
       SetBounds(5,2,400,20);
       Caption:=lisEdtExtToolScanOutputForFreePascalCompilerMessages;
-      Visible:=true;
     end;
 
     OptionScanOutputForMakeMessagesCheckBox:=TCheckBox.Create(Self);
@@ -407,7 +406,6 @@ begin
       SetBounds(5,OptionScanOutputForFPCMessagesCheckBox.Top
                 +OptionScanOutputForFPCMessagesCheckBox.Height+4,400,20);
       Caption:=lisEdtExtToolScanOutputForMakeMessages;
-      Visible:=true;
     end;
 
     KeyGroupBox:=TGroupBox.Create(Self);
@@ -419,7 +417,6 @@ begin
       Top:=OptionsGroupBox.Top+OptionsGroupBox.Height+12;
       Width:=Self.ClientWidth-Left-Left;
       Height:=50;
-      Visible:=true;
     end;
 
     KeyCtrlCheckBox:=TCheckBox.Create(Self);
@@ -431,7 +428,6 @@ begin
       Top:=2;
       Width:=50;
       Height:=20;
-      Visible:=true; 
     end;
 
     KeyAltCheckBox:=TCheckBox.Create(Self);
@@ -443,7 +439,6 @@ begin
       Top:=KeyCtrlCheckBox.Top;
       Height:=20;
       Width:=KeyCtrlCheckBox.Width;
-      Visible:=true; 
     end;
 
     KeyShiftCheckBox:=TCheckBox.Create(Self);
@@ -455,7 +450,6 @@ begin
       Top:=KeyCtrlCheckBox.Top;
       Height:=20;
       Width:=KeyCtrlCheckBox.Width;
-      Visible:=true; 
     end;
 
     KeyComboBox:=TComboBox.Create(Self);
@@ -474,7 +468,6 @@ begin
       end;
       Items.EndUpdate;
       ItemIndex:=0;
-      Visible:=true; 
     end;
     
     KeyGrabButton:=TButton.Create(Self);
@@ -487,7 +480,6 @@ begin
       Caption:=srkmGrabKey;
       Name:='KeyGrabButton';
       OnClick:=@KeyGrabButtonClick;
-      Visible:=true; 
     end;
 
     MacrosGroupbox:=TGroupbox.Create(Self);
@@ -528,6 +520,7 @@ begin
       SetBounds(270,Self.ClientHeight-40,100,25);
       Caption:=lisLazBuildOk;
       OnClick:=@OkButtonClick;
+      Default:=true;
     end;
     
     CancelButton:=TButton.Create(Self);
@@ -537,6 +530,7 @@ begin
       SetBounds(390,OkButton.Top,100,25);
       Caption:=dlgCancel;
       OnClick:=@CancelButtonClick;
+      Cancel:=true;
     end;
     
     OnResize:=@ExternalToolOptionDlgResize;

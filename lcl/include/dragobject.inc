@@ -73,7 +73,7 @@ end;
 
 procedure TDragObject.CaptureChanged(OldCaptureControl: TControl);
 begin
-  DragDone(False);
+  DragDone(OldCaptureControl.Dragging);
 end;
 
 procedure TDragObject.KeyDown(var Key: Word; Shift: TShiftState);

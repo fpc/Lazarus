@@ -36,8 +36,8 @@ interface
   to:
     OnCreate := {$IFDEF FPC} @ {$ENDIF} CreateHandler
   select @ and then use Edit, Insert $IFDEF (default shortcut Ctrl+Shift+D),
-  select "FPC,NONE" and hit rerurn. If you select one or more complete lines then the
-  conditional defines are put on sepearate lines as in:
+  select "FPC,NONE" and hit return. If you select one or more complete lines
+  then the conditional defines are put on sepearate lines as in:
   {$IFDEF DEBUG}
   Writeln('State= ', State)
   {$ENDIF}
@@ -45,10 +45,11 @@ interface
     MSWINDOWS,UNIX => {$IFDEF MSWINDOWS} ... {$ENDIF} {$IFDEF UNIX} ... {$ENDIF}
     FPC,ELSE       => {$IFDEF FPC} ... {$ELSE} ... {$ENDIF}
     DEBUG,NONE     => {$IFDEF DEBUG} ... {$ENDIF}
-  This tool is most useful when you need to put several identical conditionals in a file,
-  You can add to the possible conditionals by selecting or typing the required symbols
-  in "First test" and /or "Second test" and using the Add button.
-  Your additons are saved in the condef.xml file in the lazarus configuration directory.
+  This tool is most useful when you need to put several identical conditionals
+  in a file, You can add to the possible conditionals by selecting or typing
+  the required symbols in "First test" and /or "Second test" and using the
+  Add button. Your additons are saved in the condef.xml file in the lazarus
+  configuration directory.
 *)
 
 uses
@@ -63,8 +64,8 @@ type
     AddInverse: TButton;
     FirstTest: TComboBox;
     ListBox: TListBox;
-    Label1: TLabel;
-    Label2: TLabel;
+    FirstLabel: TLabel;
+    SecondLabel: TLabel;
     SecondTest: TComboBox;
     AddBtn: TBitBtn;
     RemoveBtn: TBitBtn;

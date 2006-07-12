@@ -312,9 +312,7 @@ var
   OldTop: Integer;
   OldWidth: Integer;
   OldHeight: Integer;
-  CurBounds: TRect;
   NewBounds: TRect;
-  CurClientSize: TPoint;
 
   function UpdatePosSizeChanged: boolean;
   begin
@@ -2935,7 +2933,7 @@ Procedure TControl.MouseDown(Button: TMouseButton; Shift: TShiftState;
 var
   P: TPoint;
 begin
-  if (Button in [mbLeft,mbRight]) and Dragging and (DragObject<>nil) then begin
+  if (Button in [mbLeft,mbRight]) and (DragObject<>nil) then begin
     P:=ClientToScreen(Point(X,Y));
     DragObject.MouseDown(Button,Shift,P.X,P.Y);
   end;
@@ -2998,7 +2996,7 @@ end;
 ------------------------------------------------------------------------------}
 procedure TControl.CaptureChanged;
 begin
-  if Dragging and (DragObject<>nil) then DragObject.CaptureChanged(Self);
+  if (DragObject<>nil) then DragObject.CaptureChanged(Self);
 end;
 
 {------------------------------------------------------------------------------

@@ -40,7 +40,7 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, StdCtrls, ComCtrls, Buttons, LResources,
   Graphics, LCLType, LCLProc, Menus, Dialogs, FileUtil,
-  AVL_Tree, Laz_XMLCfg, LazIDEIntf, ProjectIntf, FormEditingIntf,
+  HelpIntfs, AVL_Tree, Laz_XMLCfg, LazIDEIntf, ProjectIntf, FormEditingIntf,
   IDEProcs, LazConf, LazarusIDEStrConsts, IDEOptionDefs, IDEDefs,
   CompilerOptions, CompilerOptionsDlg, ComponentReg, PackageDefs, PkgOptionsDlg,
   AddToPackageDlg, PkgVirtualUnitEditor, PackageSystem;
@@ -599,9 +599,7 @@ end;
 
 procedure TPackageEditorForm.HelpBitBtnClick(Sender: TObject);
 begin
-  MessageDlg(lisPkgEdOnlineHelpNotYetImplemented,
-    lisPkgEdRightClickOnTheItemsTreeToGetThePopupmenuWithAllAv,
-    mtInformation,[mbOk],0);
+  Application.ShowHelpForObjecct(HelpBitBtn)
 end;
 
 procedure TPackageEditorForm.InstallBitBtnClick(Sender: TObject);

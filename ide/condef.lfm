@@ -1,41 +1,51 @@
 object CondForm: TCondForm
   ActiveControl = ListBox
   Caption = 'Conditional Defines'
-  ClientHeight = 239
-  ClientWidth = 218
+  ClientHeight = 238
+  ClientWidth = 213
   OnClose = CondFormCLOSE
   OnCreate = CondFormCREATE
   OnDestroy = FormDestroy
   OnShow = FormShow
-  Position = poMainFormCenter
+  PixelsPerInch = 95
+  Position = poDesktopCenter
   TextHeight = 13
-  HorzScrollBar.Page = 219
+  HorzScrollBar.Page = 212
   HorzScrollBar.Range = 186
-  VertScrollBar.Page = 240
+  VertScrollBar.Page = 237
   VertScrollBar.Range = 157
-  Left = 776
-  Height = 239
-  Top = 158
-  Width = 218
-  object Label1: TLabel
+  Left = 360
+  Height = 238
+  Top = 344
+  Width = 213
+  object FirstLabel: TLabel
     Caption = '&First test'
+    Color = clNone
     FocusControl = FirstTest
+    ParentColor = False
     Left = 6
     Height = 13
     Top = 2
-    Width = 50
+    Width = 57
   end
-  object Label2: TLabel
+  object SecondLabel: TLabel
+    BorderSpacing.Top = 6
     Caption = '&Second test'
+    Color = clNone
     FocusControl = SecondTest
+    ParentColor = False
+    AnchorSideTop.Control = FirstTest
+    AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 13
-    Top = 34
-    Width = 73
+    Top = 42
+    Width = 76
   end
   object FirstTest: TComboBox
     Anchors = [akTop, akLeft, akRight]
+    AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
     ItemHeight = 13
+    ItemIndex = 0
     Items.Strings = (
       'MSWINDOWS'
       'UNIX'
@@ -52,25 +62,32 @@ object CondForm: TCondForm
     ParentCtl3D = False
     TabOrder = 0
     Text = 'MSWINDOWS'
+    AnchorSideTop.Control = FirstLabel
+    AnchorSideTop.Side = asrBottom
     Left = 5
     Height = 21
-    Top = 14
-    Width = 123
+    Top = 15
+    Width = 118
   end
   object ListBox: TListBox
     Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Top = 6
     ItemHeight = 13
     OnKeyDown = ListBoxKeyDown
     TabOrder = 2
     TopIndex = -1
+    AnchorSideTop.Control = SecondTest
+    AnchorSideTop.Side = asrBottom
     Left = 5
-    Height = 160
-    Top = 72
-    Width = 123
+    Height = 149
+    Top = 82
+    Width = 118
   end
   object SecondTest: TComboBox
     Anchors = [akTop, akLeft, akRight]
+    AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
     ItemHeight = 13
+    ItemIndex = 0
     Items.Strings = (
       'NONE'
       'ELSE'
@@ -79,70 +96,68 @@ object CondForm: TCondForm
     ParentCtl3D = False
     TabOrder = 1
     Text = 'NONE'
+    AnchorSideTop.Control = SecondLabel
+    AnchorSideTop.Side = asrBottom
     Left = 5
     Height = 21
-    Top = 47
-    Width = 123
+    Top = 55
+    Width = 118
   end
   object AddBtn: TBitBtn
     Anchors = [akTop, akRight]
-    OnClick = AddBtnClick
-    Anchors = [akTop, akRight]
     Caption = '&Add'
-    TabOrder = 3
+    NumGlyphs = 0
     OnClick = AddBtnClick
-    Left = 134
+    TabOrder = 3
+    Left = 129
     Height = 25
     Top = 6
     Width = 82
   end
   object RemoveBtn: TBitBtn
     Anchors = [akTop, akRight]
-    OnClick = RemoveBtnClick
-    Anchors = [akTop, akRight]
     Caption = '&Remove'
-    TabOrder = 5
+    NumGlyphs = 0
     OnClick = RemoveBtnClick
-    Left = 134
+    TabOrder = 5
+    Left = 129
     Height = 25
     Top = 64
     Width = 82
   end
   object OkBtn: TBitBtn
     Anchors = [akTop, akRight]
+    Caption = '&OK'
     Default = True
     Kind = bkOK
     ModalResult = 1
-    Anchors = [akTop, akRight]
-    Default = True
-    ModalResult = 1
-    Caption = '&OK'
+    NumGlyphs = 0
     TabOrder = 6
-    Left = 134
+    Left = 129
     Height = 25
     Top = 95
     Width = 82
   end
   object BitBtn1: TBitBtn
     Anchors = [akTop, akRight]
-    Kind = bkCancel
-    ModalResult = 2
-    Anchors = [akTop, akRight]
-    ModalResult = 2
     Cancel = True
     Caption = 'Cancel'
+    Kind = bkCancel
+    ModalResult = 2
+    NumGlyphs = 0
     TabOrder = 7
-    Left = 134
+    Left = 129
     Height = 25
     Top = 125
     Width = 82
   end
   object AddInverse: TButton
     Anchors = [akTop, akRight]
+    BorderSpacing.InnerBorder = 4
     Caption = 'Add Inverse'
-    TabOrder = 4
     OnClick = AddInverseCLICK
-    Left = 134
+    TabOrder = 4
+    Left = 129
     Height = 25
     Top = 34
     Width = 82
