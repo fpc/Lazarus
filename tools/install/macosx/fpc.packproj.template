@@ -1038,7 +1038,7 @@ For more information, see the readme.txt file or visit http://www.freepascal.org
 			<key>IFPkgFlagPackageSelection</key>
 			<integer>0</integer>
 			<key>Name</key>
-			<string>fpc-_FPCVERSION_-_DATESTAMP_</string>
+			<string>fpc-_FPCVERSION_-_DATESTAMP_-_FPCARCH_</string>
 			<key>Status</key>
 			<integer>1</integer>
 			<key>Type</key>
