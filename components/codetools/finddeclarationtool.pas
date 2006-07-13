@@ -617,6 +617,8 @@ type
     function FindCodeToolForUsedUnit(UnitNameAtom,
       UnitInFileAtom: TAtomPosition;
       ExceptionOnNotFound: boolean): TFindDeclarationTool;
+    function FindCodeToolForUsedUnit(const AnUnitName, AnUnitInFilename: string;
+      ExceptionOnNotFound: boolean): TFindDeclarationTool;
     function FindIdentifierInInterface(AskingTool: TFindDeclarationTool;
       Params: TFindDeclarationParams): boolean;
     function CompareNodeIdentifier(Node: TCodeTreeNode;
@@ -4301,7 +4303,6 @@ function TFindDeclarationTool.FindCodeToolForUsedUnit(UnitNameAtom,
   UnitInFileAtom: TAtomPosition;
   ExceptionOnNotFound: boolean): TFindDeclarationTool;
 var AnUnitName, AnUnitInFilename: string;
-  NewCode: TCodeBuffer;
 begin
   Result:=nil;
   if (UnitNameAtom.StartPos<1) or (UnitNameAtom.EndPos<=UnitNameAtom.StartPos)
@@ -4320,6 +4321,15 @@ begin
                    UnitInFileAtom.EndPos-UnitInFileAtom.StartPos-2);
   end else
     AnUnitInFilename:='';
+  Result:=FindCodeToolForUsedUnit(AnUnitName,AnUnitInFilename,ExceptionOnNotFound);
+end;
+
+function TFindDeclarationTool.FindCodeToolForUsedUnit(const AnUnitName,
+  AnUnitInFilename: string; ExceptionOnNotFound: boolean): TFindDeclarationTool;
+var
+  NewCode: TCodeBuffer;
+begin
+  Result:=nil;
   NewCode:=FindUnitSource(AnUnitName,AnUnitInFilename,ExceptionOnNotFound);
   if (NewCode=nil) then begin
     // no source found

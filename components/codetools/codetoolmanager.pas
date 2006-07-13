@@ -558,12 +558,14 @@ type
           NewMethodName: string): boolean;
     function CreatePublishedMethod(Code: TCodeBuffer; const AClassName,
           NewMethodName: string; ATypeInfo: PTypeInfo;
-          UseTypeInfoForParameters: boolean = false): boolean;
+          UseTypeInfoForParameters: boolean = false;
+          const ATypeUnitName: string = ''): boolean;
 
     // private class parts
     function CreatePrivateMethod(Code: TCodeBuffer; const AClassName,
           NewMethodName: string; ATypeInfo: PTypeInfo;
-          UseTypeInfoForParameters: boolean = false): boolean;
+          UseTypeInfoForParameters: boolean = false;
+          const ATypeUnitName: string = ''): boolean;
 
     // IDE % directives
     function GetIDEDirectives(Code: TCodeBuffer;
@@ -2521,7 +2523,7 @@ end;
 
 function TCodeToolManager.CreatePublishedMethod(Code: TCodeBuffer;
   const AClassName, NewMethodName: string; ATypeInfo: PTypeInfo;
-  UseTypeInfoForParameters: boolean): boolean;
+  UseTypeInfoForParameters: boolean; const ATypeUnitName: string): boolean;
 begin
   {$IFDEF CTDEBUG}
   DebugLn('TCodeToolManager.CreatePublishedMethod A');
@@ -2531,8 +2533,8 @@ begin
   try
     SourceChangeCache.Clear;
     Result:=FCurCodeTool.CreateMethod(UpperCaseStr(AClassName),
-            NewMethodName,ATypeInfo,SourceChangeCache,UseTypeInfoForParameters,
-            pcsPublished);
+            NewMethodName,ATypeInfo,ATypeUnitName,SourceChangeCache,
+            UseTypeInfoForParameters,pcsPublished);
   except
     on e: Exception do Result:=HandleException(e);
   end;
@@ -2540,7 +2542,7 @@ end;
 
 function TCodeToolManager.CreatePrivateMethod(Code: TCodeBuffer;
   const AClassName, NewMethodName: string; ATypeInfo: PTypeInfo;
-  UseTypeInfoForParameters: boolean): boolean;
+  UseTypeInfoForParameters: boolean; const ATypeUnitName: string): boolean;
 begin
   {$IFDEF CTDEBUG}
   DebugLn('TCodeToolManager.CreatePrivateMethod A');
@@ -2550,8 +2552,8 @@ begin
   try
     SourceChangeCache.Clear;
     Result:=FCurCodeTool.CreateMethod(UpperCaseStr(AClassName),
-            NewMethodName,ATypeInfo,SourceChangeCache,UseTypeInfoForParameters,
-            pcsPrivate);
+            NewMethodName,ATypeInfo,ATypeUnitName,SourceChangeCache,
+            UseTypeInfoForParameters,pcsPrivate);
   except
     on e: Exception do Result:=HandleException(e);
   end;

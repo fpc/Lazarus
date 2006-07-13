@@ -121,6 +121,7 @@ function CompareStringToStringItemsI(Data1, Data2: Pointer): integer;
 function CompareStringAndStringToStringTreeItem(Key, Data: Pointer): integer;
 function CompareStringAndStringToStringTreeItemI(Key, Data: Pointer): integer;
 
+
 implementation
 
 function CompareStringToStringItems(Data1, Data2: Pointer): integer;

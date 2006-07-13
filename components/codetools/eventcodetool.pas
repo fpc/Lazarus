@@ -86,12 +86,13 @@ type
         SourceChangeCache: TSourceChangeCache): boolean;
         
     function CreateMethod(const UpperClassName,
-        AMethodName: string; ATypeInfo: PTypeInfo;
+        AMethodName: string; ATypeInfo: PTypeInfo; const ATypeUnitName: string;
         SourceChangeCache: TSourceChangeCache;
         UseTypeInfoForParameters: boolean = false;
         Section: TPascalClassSection = pcsPublished): boolean;
     function CreateMethod(ClassNode: TCodeTreeNode;
-        const AMethodName: string; ATypeInfo: PTypeInfo;
+        const AMethodName: string;
+        ATypeInfo: PTypeInfo; const ATypeUnitName: string;
         SourceChangeCache: TSourceChangeCache;
         UseTypeInfoForParameters: boolean = false;
         Section: TPascalClassSection = pcsPublished): boolean;
@@ -102,7 +103,8 @@ type
         const UpperMethodName: string): TFindContext;
     function FindMethodNodeInImplementation(const UpperClassName,
         UpperMethodName: string; BuildTreeBefore: boolean): TCodeTreeNode;
-    function FindMethodTypeInfo(ATypeInfo: PTypeInfo): TFindContext;
+    function FindMethodTypeInfo(ATypeInfo: PTypeInfo;
+        const AStartUnitName: string = ''): TFindContext;
     function MethodTypeDataToStr(TypeData: PTypeData;
         Attr: TProcHeadAttributes): string;
   end;
@@ -357,12 +359,32 @@ begin
   end;
 end;
 
-function TEventsCodeTool.FindMethodTypeInfo(ATypeInfo: PTypeInfo): TFindContext;
+function TEventsCodeTool.FindMethodTypeInfo(ATypeInfo: PTypeInfo;
+  const AStartUnitName: string): TFindContext;
+var
+  Tool: TFindDeclarationTool;
+
+  procedure RaiseTypeNotFound;
+  begin
+    RaiseException('type '+ATypeInfo^.Name+' not found, because tool is '+dbgsname(Tool));
+  end;
+  
 var TypeName: string;
   Params: TFindDeclarationParams;
 begin
+  if AStartUnitName<>'' then begin
+    // start searching in another unit
+    Tool:=FindCodeToolForUsedUnit(AStartUnitName,'',true);
+    if not (Tool is TEventsCodeTool) then
+      RaiseTypeNotFound;
+    TEventsCodeTool(Tool).BuildTree(true);
+    Result:=TEventsCodeTool(Tool).FindMethodTypeInfo(ATypeInfo,'');
+    exit;
+  end;
+
   ActivateGlobalWriteLock;
   try
+
     // find method type declaration
     TypeName:=ATypeInfo^.Name;
     CheckDependsOnNodeCaches;
@@ -574,7 +596,7 @@ begin
 end;
 
 function TEventsCodeTool.CreateMethod(const UpperClassName,
-  AMethodName: string; ATypeInfo: PTypeInfo;
+  AMethodName: string; ATypeInfo: PTypeInfo; const ATypeUnitName: string;
   SourceChangeCache: TSourceChangeCache;
   UseTypeInfoForParameters: boolean;
   Section: TPascalClassSection): boolean;
@@ -584,22 +606,33 @@ begin
   BuildTree(false);
   if not EndOfSourceFound then exit;
   AClassNode:=FindClassNodeInInterface(UpperClassName,true,false,true);
-  Result:=CreateMethod(AClassNode,AMethodName,ATypeInfo,
+  Result:=CreateMethod(AClassNode,AMethodName,ATypeInfo,ATypeUnitName,
                        SourceChangeCache,UseTypeInfoForParameters,Section);
 end;
 
 function TEventsCodeTool.CreateMethod(ClassNode: TCodeTreeNode;
-  const AMethodName: string; ATypeInfo: PTypeInfo;
+  const AMethodName: string; ATypeInfo: PTypeInfo; const ATypeUnitName: string;
   SourceChangeCache: TSourceChangeCache; UseTypeInfoForParameters: boolean;
   Section: TPascalClassSection): boolean;
+
+  procedure AddNeededUnits(const AFindContext: TFindContext);
+  var
+    MethodUnitName: String;
+  begin
+    MethodUnitName:=AFindContext.Tool.GetSourceName(false);
+    AddNeededUnitToMainUsesSection(PChar(MethodUnitName));
+    // ToDo
+    // search every parameter type and collect units
+  end;
+  
 var
   CleanMethodDefinition, MethodDefinition: string;
   FindContext: TFindContext;
   ATypeData: PTypeData;
   NewSection: TNewClassPart;
 begin
+  Result:=false;
   try
-    Result:=false;
     if (ClassNode=nil) or (ClassNode.Desc<>ctnClass) or (AMethodName='')
     or (ATypeInfo=nil) or (SourceChangeCache=nil) or (Scanner=nil) then exit;
     {$IFDEF CTDEBUG}
@@ -611,7 +644,6 @@ begin
     // check if method definition already exists in class
     if UseTypeInfoForParameters then begin
       // do not lookup the declaration in the source
-      
       ATypeData:=GetTypeData(ATypeInfo);
       if ATypeData=nil then exit(false);
       CleanMethodDefinition:=UpperCaseStr(AMethodName)
@@ -619,7 +651,8 @@ begin
                          [phpWithoutClassName, phpWithoutName, phpInUpperCase]);
     end else begin
       // search typeinfo in source
-      FindContext:=FindMethodTypeInfo(ATypeInfo);
+      FindContext:=FindMethodTypeInfo(ATypeInfo,ATypeUnitName);
+      AddNeededUnits(FindContext);
       CleanMethodDefinition:=UpperCaseStr(AMethodName)
              +FindContext.Tool.ExtractProcHead(FindContext.Node,
                          [phpWithoutClassName, phpWithoutName, phpInUpperCase]);
@@ -658,10 +691,10 @@ begin
     {$ENDIF}
     if not InsertAllNewClassParts then
       RaiseException(ctsErrorDuringInsertingNewClassParts);
-
-    // insert all missing proc bodies
     if not CreateMissingProcBodies then
       RaiseException(ctsErrorDuringCreationOfNewProcBodies);
+    if not InsertAllNewUnitsToMainUsesSection then
+      RaiseException(ctsErrorDuringInsertingNewUsesSection);
 
     // apply the changes
     if not SourceChangeCache.Apply then

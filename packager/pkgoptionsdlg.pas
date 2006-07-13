@@ -503,6 +503,7 @@ begin
     Caption:=lisLazBuildOk;
     Parent:=Self;
     OnClick:=@OkButtonClick;
+    Default:=true;
   end;
   
   CancelButton:=TButton.Create(Self);
@@ -511,6 +512,7 @@ begin
     Parent:=Self;
     Caption:=dlgCancel;
     ModalResult:=mrCancel;
+    Cancel:=true;
   end;
 end;
 

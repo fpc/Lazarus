@@ -148,6 +148,7 @@ ResourceString
   ctsUnableToCompleteProperty = 'unable to complete property';
   ctsErrorDuringInsertingNewClassParts = 'error during inserting new class parts';
   ctsErrorDuringCreationOfNewProcBodies = 'error during creation of new proc bodies';
+  ctsErrorDuringInsertingNewUsesSection = 'error during inserting new units to the main uses section';
   ctsUnableToApplyChanges = 'unable to apply changes';
   ctsEndOfSourceNotFound = 'End of source not found';
   ctsCursorPosOutsideOfCode = 'cursor pos outside of code';

@@ -289,24 +289,27 @@ begin
 end;
 
 //Find in comment the ToDo message
-procedure TfrmTodo.ParseComment(const aFileName: string; const SComment, EComment: string;
+procedure TfrmTodo.ParseComment(const aFileName: string;
+  const SComment, EComment: string;
   const TokenString: string; LineNumber: Integer);
 Var
   N,J           : Integer;
   ParsingString : string;
   CListItem     : TListItem;
   TodoFlag      : string;
+  
   function IsTodoFlag(const Flag: string): boolean;
   begin
     TodoFLag := Flag;
     Result := Pos(UpperCase(Flag),UpperCase(TokenString)) > 1;
   end;
+  
 begin
-  if IsTodoFlag(cTodoFlag) or  IsTodoFlag(cAltTodoFlag) then
+  if IsTodoFlag(cTodoFlag) or IsTodoFlag(cAltTodoFlag) then
   begin
     // We found a token that looks like a TODO comment. Now
     // verify that it *is* one: either a white-space or the
-    // comment token need to be right in front of the TODO item
+    // comment token need to be in front of the TODO item
 
     // Remove comment characters
     ParsingString := TokenString;

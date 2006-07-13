@@ -123,7 +123,8 @@ type
     JumpToProcName: string;
     NewClassSectionIndent: array[TPascalClassSection] of integer;
     NewClassSectionInsertPos: array[TPascalClassSection] of integer;
-    FullTopLvlName: string;
+    fFullTopLvlName: string;// used by OnTopLvlIdentifierFound
+    fNewMainUsesSectionUnits: TAVLTree; // tree of PChar
     procedure AddNewPropertyAccessMethodsToClassProcs(ClassProcs: TAVLTree;
         const TheClassName: string);
     procedure CheckForOverrideAndAddInheritedCode(ClassProcs: TAVLTree);
@@ -137,6 +138,7 @@ type
     procedure InsertNewClassParts(PartType: TNewClassPart);
     function InsertAllNewClassParts: boolean;
     function InsertClassHeaderComment: boolean;
+    function InsertAllNewUnitsToMainUsesSection: boolean;
     function CreateMissingProcBodies: boolean;
     function NodeExtIsVariable(ANodeExt: TCodeTreeNodeExtension): boolean;
     function NodeExtHasVisibilty(ANodeExt: TCodeTreeNodeExtension;
@@ -159,6 +161,7 @@ type
                       const VariableName, NewType: string;
                       out NewPos: TCodeXYPosition; out NewTopLine: integer;
                       SourceChangeCache: TSourceChangeCache): boolean;
+    procedure AddNeededUnitToMainUsesSection(AnUnitName: PChar);
     function CompleteLocalVariableAssignment(CleanCursorPos,
                        OldTopLine: integer; CursorNode: TCodeTreeNode;
                        var NewPos: TCodeXYPosition; var NewTopLine: integer;
@@ -275,7 +278,7 @@ begin
       TrimmedIdentifier:=GetIdentifier(Params.Identifier);
     end;
   end;
-  FullTopLvlName:=FullTopLvlName+TrimmedIdentifier;
+  fFullTopLvlName:=fFullTopLvlName+TrimmedIdentifier;
   Result:=ifrSuccess;
 end;
 
@@ -378,6 +381,7 @@ begin
     FirstInsert:=FirstInsert.Next;
     NodeExtMemManager.DisposeNode(ANodeExt);
   end;
+  FreeAndNil(fNewMainUsesSectionUnits);
 end;
 
 function TCodeCompletionCodeTool.NodeExtIsVariable(
@@ -799,6 +803,17 @@ begin
     NewPos, NewTopLine, SourceChangeCache)
   then
     RaiseException('CompleteLocalVariableAssignment Internal error: AddLocalVariable');
+end;
+
+procedure TCodeCompletionCodeTool.AddNeededUnitToMainUsesSection(
+  AnUnitName: PChar);
+begin
+  if fNewMainUsesSectionUnits=nil then
+    fNewMainUsesSectionUnits:=
+                         TAVLTree.Create(TListSortCompare(@CompareIdentifiers));
+  //DebugLn(['TCodeCompletionCodeTool.AddNeededUnitToMainUsesSection AnUnitName="',AnUnitName,'"']);
+  if fNewMainUsesSectionUnits.Find(AnUnitName)<>nil then exit;
+  fNewMainUsesSectionUnits.Add(AnUnitName);
 end;
 
 function TCodeCompletionCodeTool.CompleteLocalVariableAssignment(
@@ -1949,6 +1964,81 @@ begin
                              InsertPos,InsertPos,Code);
 end;
 
+function TCodeCompletionCodeTool.InsertAllNewUnitsToMainUsesSection: boolean;
+var
+  UsesNode: TCodeTreeNode;
+  AVLNode: TAVLTreeNode;
+  CurSourceName: String;
+  SectionNode: TCodeTreeNode;
+  NewUsesTerm: String;
+  NewUnitName: String;
+  InsertPos: LongInt;
+begin
+  Result:=true;
+  if (fNewMainUsesSectionUnits=nil) then exit;
+  //DebugLn(['TCodeCompletionCodeTool.InsertAllNewUnitsToMainUsesSection ']);
+  UsesNode:=FindMainUsesSection;
+
+  // remove units, that are already in the uses section
+  CurSourceName:=GetSourceName(false);
+  fNewMainUsesSectionUnits.Remove(PChar(CurSourceName)); // the unit itself
+  if UsesNode<>nil then begin
+    MoveCursorToNodeStart(UsesNode);
+    ReadNextAtom; // read 'uses'
+    repeat
+      ReadNextAtom; // read name
+      if AtomIsChar(';') then break;
+      fNewMainUsesSectionUnits.Remove(@Src[CurPos.StartPos]);
+      ReadNextAtom;
+      if UpAtomIs('IN') then begin
+        ReadNextAtom;
+        ReadNextAtom;
+      end;
+      if AtomIsChar(';') then break;
+      if not AtomIsChar(',') then break;
+    until (CurPos.StartPos>SrcLen);;
+    
+    if (fNewMainUsesSectionUnits.Count=0) then exit;
+  end;
+  
+  // add units
+  NewUsesTerm:='';
+  AVLNode:=fNewMainUsesSectionUnits.FindLowest;
+  while AVLNode<>nil do begin
+    if NewUsesTerm<>'' then
+      NewUsesTerm:=NewUsesTerm+', ';
+    NewUnitName:=GetIdentifier(PChar(AVLNode.Data));
+    NewUsesTerm:=NewUsesTerm+NewUnitName;
+    AVLNode:=fNewMainUsesSectionUnits.FindSuccessor(AVLNode);
+  end;
+  if UsesNode<>nil then begin
+    // add unit to existing uses section
+    MoveCursorToNodeStart(UsesNode); // for nice error position
+    InsertPos:=UsesNode.EndPos-1; // position of semicolon at end of uses section
+    NewUsesTerm:=', '+NewUsesTerm;
+    if not ASourceChangeCache.Replace(gtNone,gtNone,InsertPos,InsertPos,
+                                      NewUsesTerm) then exit;
+  end else begin
+    // create a new uses section
+    if Tree.Root=nil then exit;
+    SectionNode:=Tree.Root;
+    MoveCursorToNodeStart(SectionNode);
+    ReadNextAtom;
+    if UpAtomIs('UNIT') then begin
+      // search interface
+      SectionNode:=SectionNode.NextBrother;
+      if (SectionNode=nil) or (SectionNode.Desc<>ctnInterface) then exit;
+      MoveCursorToNodeStart(SectionNode);
+      ReadNextAtom;
+    end;
+    InsertPos:=CurPos.EndPos;
+    NewUsesTerm:=ASourceChangeCache.BeautifyCodeOptions.BeautifyKeyWord('uses')
+                 +' '+NewUsesTerm+';';
+    if not ASourceChangeCache.Replace(gtEmptyLine,gtEmptyLine,
+                                     InsertPos,InsertPos,NewUsesTerm) then exit;
+  end;
+end;
+
 procedure TCodeCompletionCodeTool.AddNewPropertyAccessMethodsToClassProcs(
   ClassProcs: TAVLTree;  const TheClassName: string);
 var ANodeExt: TCodeTreeNodeExtension;
@@ -2702,7 +2792,7 @@ var CleanCursorPos, Indent, insertPos: integer;
       Params.ContextNode:=CursorNode;
       MoveCursorToCleanPos(PropertyAtom.StartPos);
       Params.SetIdentifier(Self,@Src[CurPos.StartPos],nil);
-      FullTopLvlName:='';
+      fFullTopLvlName:='';
       Params.OnTopLvlIdentifierFound:=@OnTopLvlIdentifierFound;
       Params.Flags:=[fdfSearchInParentNodes,fdfSearchInAncestors,
                      fdfTopLvlResolving,fdfFindVariable];
@@ -2736,7 +2826,7 @@ var CleanCursorPos, Indent, insertPos: integer;
       l: integer;
     begin
       if UserEventAtom.StartPos=UserEventAtom.EndPos then begin
-        Result:=FullTopLvlName;
+        Result:=fFullTopLvlName;
         l:=PropertyAtom.EndPos-PropertyAtom.StartPos;
         PropertyName:=copy(Src,PropertyAtom.StartPos,l);
         if AnsiCompareText(PropertyName,RightStr(Result,l))<>0 then

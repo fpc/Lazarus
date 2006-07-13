@@ -807,8 +807,6 @@ type
   TOnUserInputEvent = procedure(Sender: TObject; Msg: Cardinal) of object;
   TDataEvent = procedure (Data: PtrInt) of object;
 
-  //TODO: move to LMessages ?
-
   // application hint stuff
   TCMHintShow = record
     Msg: Cardinal;
@@ -1398,7 +1396,6 @@ function IsAccel(VK: word; const Str: string): Boolean;
 var
   lPos: integer;
 begin
-  // TODO: MBCS/UTF-8
   lPos:=1;
   while (lPos<length(Str)) do begin
     if Str[lPos]<>'&' then begin

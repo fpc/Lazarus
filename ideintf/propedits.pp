@@ -297,7 +297,7 @@ type
     function GetAttributes: TPropertyAttributes; virtual;
     function IsReadOnly: boolean; virtual;
     function GetComponent(Index: Integer): TPersistent;// for Delphi compatibility
-    function GetUnitName(Index: Integer): string;
+    function GetUnitName(Index: Integer = 0): string;
     function GetEditLimit: Integer; virtual;
     function GetName: shortstring; virtual;
     procedure GetProperties(Proc: TGetPropEditProc); virtual;
@@ -1096,7 +1096,7 @@ type
   TPropHookChangeLookupRoot = procedure of object;
   // methods
   TPropHookCreateMethod = function(const Name:ShortString;
-    ATypeInfo:PTypeInfo): TMethod of object;
+    ATypeInfo:PTypeInfo; const ATypeUnitName: string): TMethod of object;
   TPropHookGetMethodName = function(const Method:TMethod): ShortString of object;
   TPropHookGetMethods = procedure(TypeData:PTypeData; Proc:TGetStringProc) of object;
   TPropHookMethodExists = function(const Name:ShortString; TypeData: PTypeData;
@@ -1190,7 +1190,8 @@ type
     // lookup root
     property LookupRoot: TPersistent read FLookupRoot write SetLookupRoot;
     // methods
-    function CreateMethod(const Name:ShortString; ATypeInfo:PTypeInfo): TMethod;
+    function CreateMethod(const Name:ShortString; ATypeInfo:PTypeInfo;
+                          const ATypeUnitName: string): TMethod;
     function GetMethodName(const Method:TMethod): ShortString;
     procedure GetMethods(TypeData:PTypeData; Proc:TGetStringProc);
     function MethodExists(const Name:ShortString; TypeData: PTypeData;
@@ -3848,7 +3849,7 @@ begin
     //writeln('### TMethodPropertyEditor.SetValue E');
     CreateNewMethod := IsValidIdent(NewValue) and not NewMethodExists;
     //OldMethod := GetMethodValue;
-    SetMethodValue(PropertyHook.CreateMethod(NewValue,GetPropType));
+    SetMethodValue(PropertyHook.CreateMethod(NewValue,GetPropType,GetUnitName));
     //writeln('### TMethodPropertyEditor.SetValue F NewValue=',GetValue);
     if CreateNewMethod then begin
       {if (PropCount = 1) and (OldMethod.Data <> nil) and (OldMethod.Code <> nil)
@@ -4952,7 +4953,7 @@ end;
 { TPropertyEditorHook }
 
 function TPropertyEditorHook.CreateMethod(const Name:Shortstring;
-  ATypeInfo:PTypeInfo): TMethod;
+  ATypeInfo:PTypeInfo; const ATypeUnitName: string): TMethod;
 var
   i: Integer;
   Handler: TPropHookCreateMethod;
@@ -4963,7 +4964,7 @@ begin
     i:=GetHandlerCount(htCreateMethod);
     while GetNextHandlerIndex(htCreateMethod,i) do begin
       Handler:=TPropHookCreateMethod(FHandlers[htCreateMethod][i]);
-      Result:=Handler(Name,ATypeInfo);
+      Result:=Handler(Name,ATypeInfo,ATypeUnitName);
       if Result.Code<>nil then exit;
     end;
   end;

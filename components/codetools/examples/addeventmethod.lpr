@@ -21,72 +21,65 @@
   Author: Mattias Gaertner
 
   Abstract:
-    Simple demonstrating, how to add a method to a class.
+    Demonstrating, how to add a method to a class and extending the uses section.
 }
-program AddMethod;
+program AddEventMethod;
 
 {$mode objfpc}{$H+}
 
 uses
   Classes, SysUtils, CodeCache, CodeToolManager, SimpleUnit1, FileProcs,
-  CodeCompletionTool;
+  CodeToolsConfig, CodeCompletionTool, ExtCtrls;
   
-type
-  TMyMethodType = function(Sender: TObject; AValue: integer): string of object;
-
+const
+  ConfigFilename = 'codetools.config';
 var
+  Options: TCodeToolsOptions;
   Filename: string;
   Code: TCodeBuffer;
-  Tool: TCodeTool;
-  AClassName: String;
-  MethodName: String;
-  MethodDefinition: String;
-  CleanMethodDefinition: String;
-  i: Integer;
 begin
-  // Example: find declaration of 'TObject'
+  // setup the Options
+  Options:=TCodeToolsOptions.Create;
+
+  // To not parse the FPC sources every time, the options are saved to a file.
+  if FileExists(ConfigFilename) then
+    Options.LoadFromFile(ConfigFilename);
+
+  // setup your paths
+  Options.FPCPath:='/usr/bin/ppc386';
+  Options.FPCSrcDir:=ExpandFileName('~/freepascal/fpc');
+  Options.LazarusSrcDir:=ExpandFileName('~/pascal/lazarus');
+
+  // optional: ProjectDir and TestPascalFile exists only to easily test some
+  // things.
+  Options.ProjectDir:=GetCurrentDir+'/scanexamples/';
+  Options.TestPascalFile:=Options.ProjectDir+'addeventexample.pas';
+
+  // init the codetools
+  if not Options.UnitLinkListValid then
+    writeln('Scanning FPC sources may take a while ...');
+  CodeToolBoss.Init(Options);
+
+  // save the options and the FPC unit links results.
+  Options.SaveToFile(ConfigFilename);
 
   // load the file
-  Filename:=AppendPathDelim(GetCurrentDir)
-            +'scanexamples'+PathDelim+'simpleunit1.pas';
+  Filename:=Options.TestPascalFile;
   Code:=CodeToolBoss.LoadFile(Filename,false,false);
   if Code=nil then
     raise Exception.Create('loading failed '+Filename);
 
-  // Example 1: add a method compatible to TMyMethodType
-  if CodeToolBoss.CreatePublishedMethod(Code,'TMyClass','NewMethod',
-    typeinfo(TMyMethodType),true) then
+  // Example 1: add a method compatible to TTabChangingEvent
+  // TTabChangingEvent is used in ComCtrls, but defined in ExtCtrls.
+  // The codetools will search TTabChangingEvent and will add ExtCtrls to the
+  // uses section.
+  if CodeToolBoss.CreatePublishedMethod(Code,'TForm1','NewMethod',
+    typeinfo(TTabChangingEvent),false,'ComCtrls') then
   begin
     writeln('Method added: ');
     writeln(Code.Source);
   end else begin
     raise Exception.Create('Adding method failed');
   end;
-  
-  // Example 2: adding methods directly, but several at a time
-  AClassName:='TMyClass';
-  if not CodeToolBoss.InitClassCompletion(Code,UpperCase(AClassName),Tool) then
-    raise Exception.Create('Explore failed');
-
-  for i:=1 to 3 do begin
-    MethodName:='NewProc'+IntToStr(i);
-    MethodDefinition:='procedure '+MethodName
-                                +'(Sender:TObject; AValue:integer);';
-    // check, to not add an already existing method.
-    // Create a search mask: only method names, parameter types and semicolon.
-    // no class name, no 'procedure' keyword, no comments, no defaults,
-    // no unneeded spaces, no result type, no parameter names, uppercase,
-    // no modifiers (e.g. virtual)
-    CleanMethodDefinition:=UpperCase(MethodName+'(:TObject;:integer);');
-    if not Tool.ProcExistsInCodeCompleteClass(CleanMethodDefinition) then
-      Tool.AddClassInsertion(CleanMethodDefinition, MethodDefinition, MethodName,
-                             ncpPublishedProcs);
-  end;
-
-  if not Tool.ApplyClassCompletion then
-    raise Exception.Create('Explore failed');
-  writeln('Method added: ');
-  writeln(Code.Source);
 end.
-
 

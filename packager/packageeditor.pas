@@ -42,8 +42,9 @@ uses
   Graphics, LCLType, LCLProc, Menus, Dialogs, FileUtil,
   HelpIntfs, AVL_Tree, Laz_XMLCfg, LazIDEIntf, ProjectIntf, FormEditingIntf,
   IDEProcs, LazConf, LazarusIDEStrConsts, IDEOptionDefs, IDEDefs,
-  CompilerOptions, CompilerOptionsDlg, ComponentReg, PackageDefs, PkgOptionsDlg,
-  AddToPackageDlg, PkgVirtualUnitEditor, PackageSystem;
+  IDEContextHelpEdit, CompilerOptions, CompilerOptionsDlg, ComponentReg,
+  PackageDefs, PkgOptionsDlg, AddToPackageDlg, PkgVirtualUnitEditor,
+  PackageSystem;
   
 type
   TOnCreatePkgMakefile =
@@ -599,7 +600,7 @@ end;
 
 procedure TPackageEditorForm.HelpBitBtnClick(Sender: TObject);
 begin
-  Application.ShowHelpForObjecct(HelpBitBtn)
+  ShowContextHelpForIDE(HelpBitBtn);
 end;
 
 procedure TPackageEditorForm.InstallBitBtnClick(Sender: TObject);

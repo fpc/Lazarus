@@ -98,7 +98,7 @@ type
     property Modified: boolean read FModified write SetModified;
 
     // FPC
-    property FPCSrcDir: string read FFPCSrcDir write SetFPCSrcDir; // e.g. /usr/shar/fpcsrc
+    property FPCSrcDir: string read FFPCSrcDir write SetFPCSrcDir; // e.g. /usr/share/fpcsrc
     property FPCPath: string read FFPCPath write SetFPCPath; // e.g. /usr/bin/ppc386
     property FPCOptions: string read FFPCOptions write SetFPCOptions;
     property TargetOS: string read FTargetOS write SetTargetOS;
