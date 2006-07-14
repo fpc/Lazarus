@@ -65,12 +65,26 @@ type
     tkSpace, tkString, tkSymbol, {$IFDEF SYN_LAZARUS}tkDirective, {$ENDIF}
     tkUnknown);
 
-  TRangeState = (rsANil, rsAnsi, rsAnsiAsm, rsAsm, rsBor, rsBorAsm,
-    {$IFDEF SYN_LAZARUS}rsDirective, rsDirectiveAsm,{$ENDIF}
-    rsProperty, rsUnKnown);
+  TRangeState = (
+    rsANil,
+    rsAnsi,   // *) comment
+    rsAnsiAsm,// *) comment in assembler block
+    rsAsm,    // assembler block
+    rsBor,    // { comment
+    rsBorAsm, // { comment in assembler block
+    {$IFDEF SYN_LAZARUS}
+    rsDirective,
+    rsDirectiveAsm, // directive in assembler block
+    {$ENDIF}
+    rsProperty,
+    rsUnKnown);
     
   {$IFDEF SYN_LAZARUS}
-  TPascalCodeFoldBlockType = (cfbtNone, cfbtBeginEnd);
+  TPascalCodeFoldBlockType = (
+    cfbtNone,
+    cfbtBeginEnd,
+    cfbtNestedComment
+    );
   {$ENDIF}
 
   TProcTableProc = procedure of object;
@@ -112,9 +126,11 @@ type
     fSpaceAttri: TSynHighlighterAttributes;
     {$IFDEF SYN_LAZARUS}
     fDirectiveAttri: TSynHighlighterAttributes;
+    FNestedComments: boolean;
     {$ENDIF}
     fD4syntax: boolean;
     {$IFDEF SYN_LAZARUS}
+    function TextComp(aText: PChar): Boolean;
     function KeyHash: Integer;
     {$ELSE}
     function KeyHash(ToHash: PChar): Integer;
@@ -287,9 +303,18 @@ type
     {$IFDEF SYN_LAZARUS}
     property DirectiveAttri: TSynHighlighterAttributes read fDirectiveAttri
       write fDirectiveAttri;
+    property NestedComments: boolean read FNestedComments write FNestedComments;
     {$ENDIF}
     property D4syntax: boolean read FD4syntax write SetD4syntax default true;
   end;
+
+  { TSynFreePascalSyn }
+
+  TSynFreePascalSyn = class(TSynPasSyn)
+  public
+    constructor Create(AOwner: TComponent); override;
+  end;
+
 
 implementation
 
@@ -562,6 +587,21 @@ begin
     end;
   end else Result := False;
 end; { KeyComp }
+
+{$IFDEF SYN_LAZARUS}
+function TSynPasSyn.TextComp(aText: PChar): Boolean;
+var
+  CurPos: PChar;
+begin
+  CurPos:=@fLine[Run];
+  while (aText<>#0) do begin
+    if mHashTable[aText^]<>mHashTable[CurPos^] then exit(false);
+    inc(aText);
+    inc(CurPos);
+  end;
+  Result:=true;
+end;
+{$ENDIF}
 
 function TSynPasSyn.Func15: TtkTokenKind;
 begin
@@ -1186,6 +1226,7 @@ end; { Create }
 
 procedure TSynPasSyn.SetLine(const NewValue: string; LineNumber:Integer);
 begin
+  //DebugLn(['TSynPasSyn.SetLine LineNumber=',LineNumber,' Line="',NewValue,'"']);
   {$IFDEF SYN_LAZARUS}
   fLine := NewValue;
   fLineLen:=length(fLine);
@@ -1223,6 +1264,30 @@ end;
 
 procedure TSynPasSyn.BorProc;
 begin
+  {$IFDEF SYN_LAZARUS}
+  fTokenID := tkComment;
+  repeat
+    case fLine[Run] of
+    #0: break;
+    '}':
+      if TopPascalCodeFoldBlockType=cfbtNestedComment then
+        EndCodeFoldBlock
+      else begin
+        if fRange = rsBorAsm then
+          fRange := rsAsm
+        else
+          fRange := rsUnKnown;
+        Inc(Run);
+        break;
+      end;
+    '{':
+      if NestedComments then begin
+        StartPascalCodeFoldBlock(cfbtNestedComment);
+      end;
+    end;
+    Inc(Run);
+  until (Run>fLineLen) or (fLine[Run] in [#0, #10, #13]);
+  {$ELSE}
   case fLine[Run] of
      #0: NullProc;
     #10: LFProc;
@@ -1239,37 +1304,37 @@ begin
           break;
         end;
         Inc(Run);
-      {$IFDEF SYN_LAZARUS}
-      until (Run>fLineLen) or (fLine[Run] in [#0, #10, #13]);
-      {$ELSE}
       until (fLine[Run] in [#0, #10, #13]);
-      {$ENDIF}
     end;
   end;
+  {$ENDIF}
 end;
 
 {$IFDEF SYN_LAZARUS}
 procedure TSynPasSyn.DirectiveProc;
 begin
-  case fLine[Run] of
-     #0: NullProc;
-    #10: LFProc;
-    #13: CRProc;
-    else begin
-      fTokenID := tkDirective;
-      repeat
-        if fLine[Run] = '}' then begin
-          Inc(Run);
-          if fRange = rsDirectiveAsm then
-            fRange := rsAsm
-          else
-            fRange := rsUnKnown;
-          break;
-        end;
+  fTokenID := tkDirective;
+  repeat
+    case fLine[Run] of
+    #0: break;
+    '}':
+      if TopPascalCodeFoldBlockType=cfbtNestedComment then
+        EndCodeFoldBlock
+      else begin
+        if fRange = rsDirectiveAsm then
+          fRange := rsAsm
+        else
+          fRange := rsUnKnown;
         Inc(Run);
-      until (Run>fLineLen) or (fLine[Run] in [#0, #10, #13]);
+        break;
+      end;
+    '{':
+      if NestedComments then begin
+        StartPascalCodeFoldBlock(cfbtNestedComment);
+      end;
     end;
-  end;
+    Inc(Run);
+  until (Run>fLineLen) or (fLine[Run] in [#0, #10, #13]);
 end;
 {$ENDIF}
 
@@ -1277,6 +1342,7 @@ procedure TSynPasSyn.BraceOpenProc;
 begin
   {$IFDEF SYN_LAZARUS}
   if (Run=fLineLen) or (fLine[Run+1]<>'$') then begin
+    inc(Run);
   {$ENDIF}
     if fRange = rsAsm then
       fRange := rsBorAsm
@@ -1285,11 +1351,11 @@ begin
     BorProc;
   {$IFDEF SYN_LAZARUS}
   end else begin
-    inc(Run);
     if fRange = rsAsm then
       fRange := rsDirectiveAsm
     else
       fRange := rsDirective;
+    inc(Run,2);
     DirectiveProc;
   end;
   {$ENDIF}
@@ -1401,6 +1467,22 @@ end;
 
 procedure TSynPasSyn.AnsiProc;
 begin
+  {$IFDEF SYN_LAZARUS}
+  fTokenID := tkComment;
+  repeat
+    if fLine[Run]=#0 then break;
+    if (fLine[Run] = '*') and (Run<fLineLen) and (fLine[Run + 1] = ')') then
+    begin
+      Inc(Run, 2);
+      if fRange = rsAnsiAsm then
+        fRange := rsAsm
+      else
+        fRange := rsUnKnown;
+      break;
+    end;
+    Inc(Run);
+  until (Run>fLineLen) or (fLine[Run] in [#0, #10, #13]);
+  {$ELSE}
   case fLine[Run] of
      #0: NullProc;
     #10: LFProc;
@@ -1408,12 +1490,7 @@ begin
   else
     fTokenID := tkComment;
     repeat
-      {$IFDEF SYN_LAZARUS}
-      if (fLine[Run] = '*') and (Run<fLineLen) and (fLine[Run + 1] = ')') then
-      begin
-      {$ELSE}
       if (fLine[Run] = '*') and (fLine[Run + 1] = ')') then begin
-      {$ENDIF}
         Inc(Run, 2);
         if fRange = rsAnsiAsm then
           fRange := rsAsm
@@ -1424,6 +1501,7 @@ begin
       Inc(Run);
     until (Run>fLineLen) or (fLine[Run] in [#0, #10, #13]);
   end;
+  {$ENDIF}
 end;
 
 procedure TSynPasSyn.RoundOpenProc;
@@ -1445,11 +1523,12 @@ begin
           fRange := rsAnsi;
         fTokenID := tkComment;
         {$IFDEF SYN_LAZARUS}
-        if (Run<=fLineLen) and not (fLine[Run] in [#0, #10, #13]) then
+        if (Run<=fLineLen) and not (fLine[Run] in [#0, #10, #13]) then begin
         {$ELSE}
-        if not (fLine[Run] in [#0, #10, #13]) then
+        if not (fLine[Run] in [#0, #10, #13]) then begin
         {$ENDIF}
           AnsiProc;
+        end;
       end;
     '.':
       begin
@@ -1548,19 +1627,27 @@ begin
     fTokenID := tkNull;
     exit;
   end;
-  {$ENDIF}
-  case fRange of
-    rsAnsi, rsAnsiAsm:
-      AnsiProc;
-    rsBor, rsBorAsm:
-      BorProc;
-    {$IFDEF SYN_LAZARUS}
-    rsDirective, rsDirectiveAsm:
-      DirectiveProc;
-    {$ENDIF}
+  case fLine[Run] of
+     #0: NullProc;
+    #10: LFProc;
+    #13: CRProc;
   else
-    fProcTable[fLine[Run]];
+  {$ENDIF}
+    case fRange of
+      rsAnsi, rsAnsiAsm:
+        AnsiProc;
+      rsBor, rsBorAsm:
+        BorProc;
+      {$IFDEF SYN_LAZARUS}
+      rsDirective, rsDirectiveAsm:
+        DirectiveProc;
+      {$ENDIF}
+    else
+      fProcTable[fLine[Run]];
+    end;
+  {$IFDEF SYN_LAZARUS}
   end;
+  {$ENDIF}
 end;
 
 function TSynPasSyn.GetDefaultAttribute(Index: integer):
@@ -1869,6 +1956,14 @@ end;
 procedure TSynPasSyn.SetD4syntax(const Value: boolean);
 begin
   FD4syntax := Value;
+end;
+
+{ TSynFreePascalSyn }
+
+constructor TSynFreePascalSyn.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  NestedComments:=true;
 end;
 
 initialization

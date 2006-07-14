@@ -80,7 +80,7 @@ uses
 
 type
   TPreviewEditor = TSynEdit;
-  TPreviewPasSyn = TSynPasSyn;
+  TPreviewPasSyn = TSynFreePascalSyn;
                                                                                                                                                                                                                                                                                                                                                                                         TCustomSyn     = TSynCustomHighlighter;
   TSynHighlightElement = TSynHighlighterAttributes;
   TCustomSynClass = class of TCustomSyn;
@@ -111,8 +111,8 @@ const
 
   LazSyntaxHighlighterClasses: array[TLazSyntaxHighlighter] of
     TCustomSynClass =
-    (Nil, Nil, TSynPasSyn, TSynPasSyn, TSynLFMSyn, TSynXMLSyn, TSynHTMLSyn,
-    TSynCPPSyn, TSynPerlSyn, TSynJavaSyn, TSynUNIXShellScriptSyn,
+    (Nil, Nil, TSynFreePascalSyn, TSynPasSyn, TSynLFMSyn, TSynXMLSyn,
+    TSynHTMLSyn, TSynCPPSyn, TSynPerlSyn, TSynJavaSyn, TSynUNIXShellScriptSyn,
     TSynPythonSyn, TSynPHPSyn, TSynSQLSyn);
 
 

@@ -1633,7 +1633,7 @@ begin
   i:=EditorOpts.HighlighterList.FindByHighlighter(FEditor.Highlighter);
   if i>=0 then
     IsPascal := EditorOpts.HighlighterList[i].DefaultCommentType <> comtCPP;
-  FEditor.SelText:=AddConditional(EditorComponent.SelText, IsPascal);
+  FEditor.SelText:=AddConditional(EditorComponent.SelText,IsPascal);
   FEditor.EndUndoBlock;
   FEditor.EndUpdate;
 end;

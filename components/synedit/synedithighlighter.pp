@@ -1211,15 +1211,6 @@ begin
   if FMinimumCodeFoldBlockLevel>CodeFoldRange.CodeFoldStackSize then
     FMinimumCodeFoldBlockLevel:=CodeFoldRange.CodeFoldStackSize;
 end;
-{$ELSE}
-procedure TSynCustomHighlighter.SetCodeFoldItem(Lines: TStrings; Line : integer; Folded: boolean;
-  FoldIndex: integer; FoldType: TSynEditCodeFoldType);
-begin
-end;
-
-procedure TSynCustomHighlighter.InitCodeFold(Lines: TStrings);
-begin
-end;
 {$ENDIF}
 
 {$IFNDEF SYN_CPPB_1}
@@ -1312,9 +1303,9 @@ end;
 
 procedure TSynCustomHighlighterRange.Pop;
 // can be called, even if there is no stack
-// because it's normal, that sources under development have unclosed blocks
+// because it's normal that sources under development have unclosed blocks
 begin
-  //debugln('TSynCustomHighlighterRange.Pop AAAAAAAAAAAA');
+  //debugln('TSynCustomHighlighterRange.Pop');
   if FCodeFoldStackSize>0 then
     dec(FCodeFoldStackSize);
   if FCodeFoldStackSize>0 then
@@ -1360,7 +1351,7 @@ begin
     Clear;
   end;
   if FCodeFoldStackSize>0 then
-    FTop:=FCodeFoldStack[0]
+    FTop:=FCodeFoldStack[FCodeFoldStackSize-1]
   else
     FTop:=nil;
 end;
