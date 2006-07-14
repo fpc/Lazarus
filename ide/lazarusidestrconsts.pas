@@ -79,6 +79,8 @@ resourcestring
   lisExpandedFilenameOfCurrentEditor = 'Expanded filename of current editor file';
   lisFreePascalSourceDirectory = 'Freepascal source directory';
   lisLazarusDirectory = 'Lazarus directory';
+  lisLazarusLanguageID = 'Lazarus language ID (e.g. en, de, br, fi)';
+  lisLazarusLanguageName = 'Lazarus language name (e.g. english, deutsch)';
   lisLCLWidgetType = 'LCL Widget Type';
   lisTargetCPU = 'Target CPU';
   lisTargetOS = 'Target OS';

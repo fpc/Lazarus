@@ -1605,6 +1605,10 @@ begin
                     lisTargetCPU,nil,[]));
   MacroList.Add(TTransferMacro.Create('TargetOS','',
                     lisTargetOS,nil,[]));
+  MacroList.Add(TTransferMacro.Create('LanguageID','',
+                    lisLazarusLanguageID,nil,[]));
+  MacroList.Add(TTransferMacro.Create('LanguageName','',
+                    lisLazarusLanguageName,nil,[]));
   MacroList.Add(TTransferMacro.Create('Params','',
                     lisCommandLineParamsOfProgram,nil,[]));
   MacroList.Add(TTransferMacro.Create('Prompt','',
@@ -9258,6 +9262,10 @@ begin
     s:=EnvironmentOptions.FPCSourceDirectory;
   end else if MacroName='comppath' then begin
     s:=EnvironmentOptions.CompilerFilename;
+  end else if MacroName='languageid' then begin
+    s:=EnvironmentOptions.LanguageID;
+  end else if MacroName='languagename' then begin
+    s:=GetLazarusLanguageLocalizedName(EnvironmentOptions.LanguageID);
   end else if MacroName='params' then begin
     if Project1<>nil then
       s:=Project1.RunParameterOptions.CmdLineParams
