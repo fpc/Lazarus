@@ -459,7 +459,7 @@ begin
   //  ' DFCS_INACTIVE=',FLastDrawFlags and DFCS_INACTIVE,
   //  ' DFCS_FLAT=',FLastDrawFlags and DFCS_FLAT,
   //  '');
-  if not Transparent and (color<>clBtnFace) then begin
+  if (not Transparent) and Enabled and (Color<>clBtnFace) then begin
     Canvas.Brush.Color := Color;
     Canvas.FillRect(PaintRect);
   end;
