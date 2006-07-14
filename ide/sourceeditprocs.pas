@@ -34,10 +34,11 @@ unit SourceEditProcs;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, BasicCodeTools, CodeTree, CodeToolManager,
-  LCLType, PascalParserTool, IdentCompletionTool, GraphType, Graphics,
-  TextTools, EditorOptions,
-  SynEdit, SynRegExpr, SynCompletion, MainIntf;
+  Classes, SysUtils, LCLProc, LCLType, GraphType, Graphics,
+  SynEdit, SynRegExpr, SynCompletion,
+  BasicCodeTools, CodeTree, CodeToolManager, PascalParserTool,
+  IdentCompletionTool,
+  TextTools, MainIntf, EditorOptions, CodeToolsOptions;
 
 type
   TCompletionType = (
@@ -389,7 +390,8 @@ begin
     Result:=Result+AddChar;
 
   // add semicolon for statement ends
-  if (ilcfNeedsEndSemicolon in IdentList.ContextFlags) then begin
+  if (ilcfNeedsEndSemicolon in IdentList.ContextFlags)
+  and CodeToolsOpts.IdentComplAddSemicolon then begin
     Result:=Result+';';
     if (not CursorAtEnd) or IdentItem.HasChilds
     or ([ilcfStartIsLValue,ilcfIsExpression]*IdentList.ContextFlags<>[]) then

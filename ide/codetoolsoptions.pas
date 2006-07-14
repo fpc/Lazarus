@@ -49,7 +49,7 @@ type
   private
     FClassHeaderComments: boolean;
     FFilename: string;
-    
+
     // General
     FSrcPath: string;
     FAdjustTopLineDueToComment: boolean;
@@ -82,7 +82,9 @@ type
     FPropertyStoredIdentPostfix: string;
     FPrivateVariablePrefix: string;
     FSetPropertyVariablename: string;
-    
+
+    // identifier completion
+    FIdentComplAddSemicolon: Boolean;
     procedure SetFilename(const AValue: string);
   public
     constructor Create;
@@ -157,6 +159,10 @@ type
       read FPrivateVariablePrefix write FPrivateVariablePrefix;
     property SetPropertyVariablename: string
       read FSetPropertyVariablename write FSetPropertyVariablename;
+      
+    // identifier completion
+    property IdentComplAddSemicolon: Boolean read FIdentComplAddSemicolon
+                                             write FIdentComplAddSemicolon;
   end;
 
 
@@ -210,6 +216,9 @@ type
     DoInsertSpaceAfterGroupBox: TGroupBox;
     SpacePreviewGroupBox: TGroupBox;
     SpacePreviewSynEdit: TSynEdit;
+    
+    // identifier completion
+    ICAddSemicolonCheckBox: TCheckBox;
 
     // buttons at bottom
     OkButton: TButton;
@@ -227,6 +236,7 @@ type
     procedure SetupWordsPage(PageID: integer);
     procedure SetupLineSplittingPage(PageID: integer);
     procedure SetupSpacePage(PageID: integer);
+    procedure SetupIdentifierCompletionPage(PageID: integer);
     procedure ResizeGeneralPage;
     procedure ResizeCodeCreationPage;
     procedure ResizeWordsPage;
@@ -242,13 +252,13 @@ type
     procedure UpdateSplitLineExample;
     procedure UpdateSpaceExample;
   public
-    procedure ReadSettings(Options: TCodeToolsOptions);
-    procedure WriteSettings(Options: TCodeToolsOptions);
-    procedure UpdatePreviewSettings;
     constructor Create(AnOwner:TComponent);  override;
     destructor Destroy; override;
     property OnGetSynEditSettings: TNotifyEvent
-      read FOnGetSynEditSettings write FOnGetSynEditSettings;
+                         read FOnGetSynEditSettings write FOnGetSynEditSettings;
+    procedure ReadSettings(Options: TCodeToolsOptions);
+    procedure WriteSettings(Options: TCodeToolsOptions);
+    procedure UpdatePreviewSettings;
   end;
 
 var CodeToolsOpts: TCodeToolsOptions;
@@ -474,6 +484,10 @@ begin
       'CodeToolsOptions/PrivateVariablePrefix/Value',''),'F');
     FSetPropertyVariablename:=ReadIdentifier(XMLConfig.GetValue(
       'CodeToolsOptions/SetPropertyVariablename/Value',''),'AValue');
+      
+    // identifier completion
+    FIdentComplAddSemicolon:=XMLConfig.GetValue(
+      'CodeToolsOptions/IdentifierCompletion/AddSemicolon',true);
 
     XMLConfig.Free;
   except
@@ -568,6 +582,10 @@ begin
     XMLConfig.SetDeleteValue('CodeToolsOptions/SetPropertyVariablename/Value',
       FSetPropertyVariablename,'AValue');
 
+    // identifier completion
+    XMLConfig.SetDeleteValue('CodeToolsOptions/IdentifierCompletion/AddSemicolon',
+      FIdentComplAddSemicolon,true);
+
     XMLConfig.Flush;
     XMLConfig.Free;
   except
@@ -635,6 +653,9 @@ begin
     FPropertyStoredIdentPostfix:=CodeToolsOpts.FPropertyStoredIdentPostfix;
     FPrivateVariablePrefix:=CodeToolsOpts.FPrivateVariablePrefix;
     FSetPropertyVariablename:=CodeToolsOpts.FSetPropertyVariablename;
+    
+    // identifier completion
+    FIdentComplAddSemicolon:=CodeToolsOpts.FIdentComplAddSemicolon;
   end else begin
     Clear;
   end;
@@ -676,6 +697,9 @@ begin
   FPropertyStoredIdentPostfix:='IsStored';
   FPrivateVariablePrefix:='f';
   FSetPropertyVariablename:='AValue';
+  
+  // identifier completion
+  FIdentComplAddSemicolon:=true;
 end;
 
 procedure TCodeToolsOptions.ClearGlobalDefineTemplates;
@@ -797,7 +821,7 @@ begin
   if LazarusResources.Find(ClassName)=nil then begin
     Width:=485;
     Height:=435;
-    Position:=poScreenCenter;
+    Position:=poDesktopCenter;
     IDEDialogLayoutList.ApplyLayout(Self,485,435);
     Caption:=dlgCodeToolsOpts;
     OnResize:=@CodeToolsOptsDlgResize;
@@ -816,6 +840,7 @@ begin
       Pages.Add(dlgWordsPolicies);
       Pages.Add(dlgLineSplitting);
       Pages.Add(dlgSpaceNotCosmos);
+      Pages.Add(dlgIdentifierCompletion);
       PageIndex:=0;
     end;
 
@@ -824,8 +849,7 @@ begin
     SetupWordsPage(2);
     SetupLineSplittingPage(3);
     SetupSpacePage(4);
-
-    NoteBook.Show;
+    SetupIdentifierCompletionPage(5);
 
     CancelButton:=TButton.Create(Self);
     with CancelButton do begin
@@ -1262,6 +1286,22 @@ begin
   end;
 end;
 
+procedure TCodeToolsOptsDlg.SetupIdentifierCompletionPage(PageID: integer);
+var
+  CurPage: TPage;
+begin
+  CurPage:=NoteBook.Page[PageID];
+
+  ICAddSemicolonCheckBox:=TCheckBox.Create(Self);
+  with ICAddSemicolonCheckBox do begin
+    Name:='ICAddSemicolonCheckBox';
+    SetBounds(6,6,Width,Height);
+    AutoSize:=true;
+    Caption:=dlgAddSemicolon;
+    Parent:=CurPage;
+  end;
+end;
+
 procedure TCodeToolsOptsDlg.ResizeGeneralPage;
 begin
   with SrcPathGroupBox do begin
@@ -1632,6 +1672,9 @@ begin
   PropertyStoredIdentPostfixEdit.Text:=Options.PropertyStoredIdentPostfix;
   PrivateVariablePrefixEdit.Text:=Options.PrivateVariablePrefix;
   SetPropertyVariablenameEdit.Text:=Options.SetPropertyVariablename;
+  
+  // identifier completion
+  ICAddSemicolonCheckBox.Checked:=Options.IdentComplAddSemicolon;
 end;
 
 procedure TCodeToolsOptsDlg.WriteSettings(Options: TCodeToolsOptions);
@@ -1690,6 +1733,9 @@ begin
     ReadIdentifier(PrivateVariablePrefixEdit.Text,'F');
   Options.SetPropertyVariablename:=
     ReadIdentifier(SetPropertyVariablenameEdit.Text,'AValue');
+
+  // identifier completion
+  Options.IdentComplAddSemicolon:=ICAddSemicolonCheckBox.Checked;
 end;
 
 procedure TCodeToolsOptsDlg.SetAtomCheckBoxes(AtomTypes: TAtomTypes;

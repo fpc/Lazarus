@@ -933,6 +933,7 @@ resourcestring
   dlgWordsPolicies = 'Words';
   dlgLineSplitting = 'Line Splitting';
   dlgSpaceNotCosmos{:)} = 'Space';
+  dlgIdentifierCompletion = 'Identifier completion';
   dlgAdditionalSrcPath = 'Additional Source search path for all projects (.pp;.pas)';
   dlgJumpingETC = 'Jumping (e.g. Method Jumping)';
   dlgAdjustTopLine = 'Adjust top line due to comment in front';
@@ -969,6 +970,7 @@ resourcestring
   dlgInsSpaceFront = 'Insert space in front of';
   dlgInsSpaceAfter = 'Insert space after';
   dlgWRDPreview = 'Preview';
+  dlgAddSemicolon = 'Add semicolon';
 
   // source editor
   locwndSrcEditor = 'Lazarus Source Editor';
