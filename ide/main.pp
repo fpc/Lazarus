@@ -5960,7 +5960,7 @@ begin
   AFilename:=TrimFilename(AFilename);
   DiskFilename:=FindDiskFilename(AFilename);
   if DiskFilename<>AFilename then begin
-    debugln('WARNING: TMainIDE.DoOpenEditorFile Opening "',DiskFilename,'" instead "',DiskFilename,'"');
+    debugln('WARNING: TMainIDE.DoOpenEditorFile Opening "',DiskFilename,'" instead "',AFilename,'"');
     AFilename:=DiskFilename;
   end;
 
