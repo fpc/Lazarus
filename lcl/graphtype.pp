@@ -113,9 +113,9 @@ type
   TRawImage = record
     Description: TRawImageDescription;
     Data: PByte;
-    DataSize: cardinal;
+    DataSize: PtrInt;
     Mask: PByte;
-    MaskSize: cardinal;
+    MaskSize: PtrInt;
     Palette: PByte;
     PaletteSize: cardinal;
   end;
@@ -166,7 +166,7 @@ procedure ReleaseRawImageData(RawImage: PRawImage);
 
 procedure CreateRawImageData(Width, Height, BitsPerPixel: cardinal;
                              LineEnd: TRawImageLineEnd;
-                             var Data: Pointer; var DataSize: cardinal);
+                             var Data: Pointer; var DataSize: PtrInt);
 procedure CreateRawImageLineStarts(Width, Height, BitsPerPixel: cardinal;
                                    LineEnd: TRawImageLineEnd;
                                    var LineStarts: PRawImagePosition);
@@ -180,17 +180,21 @@ procedure ExtractRawImageRect(SrcRawImage: PRawImage; const SrcRect: TRect;
 procedure ExtractRawImageDataRect(SrcRawImageDesc: PRawImageDescription;
                              const SrcRect: TRect; SrcData: Pointer;
                              DestRawImageDesc: PRawImageDescription;
-                             var DestData: Pointer; var DestDataSize: cardinal);
+                             var DestData: Pointer; var DestDataSize: PtrInt);
 function GetBytesPerLine(Width, BitsPerPixel: cardinal;
-                         LineEnd: TRawImageLineEnd): cardinal;
+                         LineEnd: TRawImageLineEnd): PtrInt;
 function GetBitsPerLine(Width, BitsPerPixel: cardinal;
-                        LineEnd: TRawImageLineEnd): cardinal;
+                        LineEnd: TRawImageLineEnd): PtrInt;
 procedure ReadRawImageBits(TheData: PByte; const Position: TRawImagePosition;
                        BitsPerPixel, Prec, Shift: cardinal;
                        BitOrder: TRawImageBitOrder; var Bits: word);
 procedure WriteRawImageBits(TheData: PByte; const Position: TRawImagePosition;
                        BitsPerPixel, Prec, Shift: cardinal;
                        BitOrder: TRawImageBitOrder; Bits: word);
+procedure ReAlignRawImageLines(var Data: Pointer; var Size: PtrInt;
+  Width, Height: cardinal;
+  var OldLineEnd: TRawImageLineEnd; NewLineEnd: TRawImageLineEnd);
+
 var
   MissingBits: array[0..15] of array[0..7] of word;
 
@@ -267,7 +271,7 @@ begin
       BitsPerLine:=GetBitsPerLine(Width,RawImage^.Description.AlphaBitsPerPixel,
                                   RawImage^.Description.AlphaLineEnd);
       UsedBitsPerLine:=Width*RawImage^.Description.AlphaBitsPerPixel;
-      if RawImage^.MaskSize<((Height*BitsPerLine+7) shr 3) then
+      if RawImage^.MaskSize<PtrInt((Height*BitsPerLine+7) shr 3) then
         raise Exception.Create('RawImageMaskIsEmpty Invalid MaskSize');
       if (BitsPerLine and 7)=0 then begin
         // byte boundary
@@ -400,10 +404,10 @@ end;
 
 -------------------------------------------------------------------------------}
 procedure CreateRawImageData(Width, Height, BitsPerPixel: cardinal;
-  LineEnd: TRawImageLineEnd; var Data: Pointer; var DataSize: cardinal);
+  LineEnd: TRawImageLineEnd; var Data: Pointer; var DataSize: PtrInt);
 var
-  PixelCount: cardinal;
-  BitsPerLine: cardinal;
+  PixelCount: PtrInt;
+  BitsPerLine: PtrInt;
   DataBits: Int64;
 begin
   // get current size
@@ -493,7 +497,7 @@ end;
 procedure ExtractRawImageDataRect(SrcRawImageDesc: PRawImageDescription;
   const SrcRect: TRect; SrcData: Pointer;
   DestRawImageDesc: PRawImageDescription;
-  var DestData: Pointer; var DestDataSize: cardinal);
+  var DestData: Pointer; var DestDataSize: PtrInt);
 var
   SrcWidth: cardinal;
   SrcHeight: cardinal;
@@ -510,7 +514,7 @@ var
   Shift: LongWord;
   SrcPos: PByte;
   DestPos: PByte;
-  ByteCount: LongWord;
+  ByteCount: PtrInt;
   x: Integer;
 begin
   // init
@@ -628,15 +632,15 @@ begin
 end;
 
 function GetBytesPerLine(Width, BitsPerPixel: cardinal;
-  LineEnd: TRawImageLineEnd): cardinal;
+  LineEnd: TRawImageLineEnd): PtrInt;
 begin
   Result:=(GetBitsPerLine(Width,BitsPerPixel,LineEnd)+7) shr 3;
 end;
 
 function GetBitsPerLine(Width, BitsPerPixel: cardinal;
-                        LineEnd: TRawImageLineEnd): cardinal;
+                        LineEnd: TRawImageLineEnd): PtrInt;
 var
-  BitsPerLine: Cardinal;
+  BitsPerLine: PtrInt;
 begin
   BitsPerLine:=Width*BitsPerPixel;
   case LineEnd of
@@ -751,6 +755,48 @@ begin
         //DebugLn'WriteDataBits 32 Result=',DbgS(FourBytes));
       end;
   end;
+end;
+
+procedure ReAlignRawImageLines(var Data: Pointer; var Size: PtrInt;
+  Width, Height: cardinal;
+  var OldLineEnd: TRawImageLineEnd; NewLineEnd: TRawImageLineEnd);
+var
+  OldBytesPerLine: PtrInt;
+  OldSize: PtrInt;
+  NewBytesPerLine: PtrInt;
+  NewSize: PtrInt;
+  y: Integer;
+  OldPos: Pointer;
+  NewPos: Pointer;
+begin
+  if OldLineEnd=NewLineEnd then exit;
+  if (Width=0) or (Height=0) then exit;
+  OldBytesPerLine:=GetBytesPerLine(Width,Height,OldLineEnd);
+  OldSize:=OldBytesPerLine*PtrInt(Height);
+  if OldSize<>Size then
+    RaiseGDBException('ReAlignRawImageLines OldSize<>Size');
+  NewBytesPerLine:=GetBytesPerLine(Width,Height,OldLineEnd);
+  NewSize:=NewBytesPerLine*PtrInt(Height);
+  
+  // enlarge before
+  if OldSize<NewSize then
+    ReAllocMem(Data,NewSize);
+
+  // move data
+  OldPos:=Data;
+  NewPos:=Data;
+  for y:=0 to Height-1 do begin
+    System.Move(OldPos,NewPos,OldBytesPerLine);
+    inc(OldPos,OldBytesPerLine);
+    inc(NewPos,NewBytesPerLine);
+  end;
+      
+  // shrink after
+  if OldSize>NewSize then
+    ReAllocMem(Data,NewSize);
+    
+  Size:=NewSize;
+  OldLineEnd:=NewLineEnd;
 end;
 
 //------------------------------------------------------------------------------

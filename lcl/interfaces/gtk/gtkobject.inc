@@ -2730,7 +2730,7 @@ begin
     DebugLn('TGtkWidgetSet.GetRawImageFromGdkWindow G Width=',dbgs(AnImage^.Width),' Height=',dbgs(AnImage^.Height),
       ' BitsPerPixel=',dbgs(NewRawImage.Description.BitsPerPixel),' bpl=',dbgs(AnImage^.bpl));
     {$ENDIF}
-    if NewRawImage.DataSize<>cardinal(AnImage^.bpl) * cardinal(AnImage^.Height)
+    if NewRawImage.DataSize<>PtrInt(AnImage^.bpl) * PtrInt(AnImage^.Height)
     then
       RaiseGDBException('NewRawImage.DataSize<>AnImage^.bpl*AnImage^.Height');
 
@@ -2784,7 +2784,7 @@ var
   BytesPerLine: Integer;
 begin
   Result:=false;
-
+  
   Width:=SrcRect.Right-SrcRect.Left;
   Height:=SrcRect.Bottom-SrcRect.Top;
 
@@ -2814,16 +2814,18 @@ begin
 
     // See also GetWindowRawImageDescription
     RawImage.Description.AlphaBitsPerPixel:=GetPGdkImageBitsPerPixel(AnImage);
-    RawImage.Description.AlphaLineEnd:=rileByteBoundary;// gdk_image_get uses rileByteBoundary or rileDWordBoundary
+    RawImage.Description.AlphaLineEnd:=rileByteBoundary;// gdk_bitmap_create_from_data expects rileByteBoundary
     BytesPerLine:=GetBytesPerLine(RawImage.Description.Width,
                    RawImage.Description.AlphaBitsPerPixel,
                    RawImage.Description.AlphaLineEnd);
     if BytesPerLine<>AnImage^.bpl then begin
-      RawImage.Description.AlphaLineEnd:=rileDWordBoundary;// gdk_image_get uses rileByteBoundary
+      //DebugLn(['TGTKWidgetSet.GetRawImageMaskFromGdkBitmap WRONG: Width=',RawImage.Description.Width,' AlphaBitsPerPixel=',RawImage.Description.AlphaBitsPerPixel,' BytesPerLine=',BytesPerLine,' AnImage^.bpl=',AnImage^.bpl,' AlphaLineEnd=',RawImageLineEndNames[RawImage.Description.AlphaLineEnd]]);
+      RawImage.Description.AlphaLineEnd:=rileDWordBoundary;
       BytesPerLine:=GetBytesPerLine(RawImage.Description.Width,
                      RawImage.Description.AlphaBitsPerPixel,
                      RawImage.Description.AlphaLineEnd);
     end;
+    //DebugLn(['TGTKWidgetSet.GetRawImageMaskFromGdkBitmap Width=',RawImage.Description.Width,' AlphaBitsPerPixel=',RawImage.Description.AlphaBitsPerPixel,' BytesPerLine=',BytesPerLine,' AnImage^.bpl=',AnImage^.bpl,' AlphaLineEnd=',RawImageLineEndNames[RawImage.Description.AlphaLineEnd]]);
 
     // consistency checks
     if RawImage.Description.AlphaBitsPerPixel<>AnImage^.Depth then
@@ -2839,7 +2841,7 @@ begin
     {$IFDEF VerboseRawImage}
     DebugLn('TGtkWidgetSet.GetRawImageFromGdkWindow G Width=',dbgs(AnImage^.Width),' Height=',dbgs(AnImage^.Height),' BitsPerPixel=',dbgs(RawImage.Description.AlphaBitsPerPixel),' bpl=',dbgs(AnImage^.bpl));
     {$ENDIF}
-    if RawImage.MaskSize<>cardinal(AnImage^.bpl) * cardinal(AnImage^.Height)
+    if RawImage.MaskSize<>PtrInt(AnImage^.bpl) * PtrInt(AnImage^.Height)
     then
       RaiseGDBException('RawImage.MaskSize<>AnImage^.bpl*AnImage^.Height');
 
@@ -2847,6 +2849,15 @@ begin
     ReAllocMem(RawImage.Mask,RawImage.MaskSize);
     if RawImage.MaskSize>0 then
       System.Move(AnImage^.Mem^,RawImage.Mask^,RawImage.MaskSize);
+      
+    // gdk_bitmap_create_from_data expects rileByteBoundary
+    if RawImage.Description.AlphaLineEnd<>rileByteBoundary then begin
+      // re align data
+      ReAlignRawImageLines(RawImage.Mask,RawImage.MaskSize,
+        RawImage.Description.Width,RawImage.Description.Height,
+        RawImage.Description.AlphaLineEnd,rileByteBoundary);
+    end;
+
     //debugln(dbgMemRange(RawImage.Mask,RawImage.MaskSize,
     //                    GetBytesPerLine(RawImage.Description.Width,
     //                                     RawImage.Description.AlphaBitsPerPixel,
