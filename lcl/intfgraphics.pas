@@ -117,9 +117,9 @@ type
     FAutoCreateMask: boolean;
     FDataDescription: TRawImageDescription;
     FPixelData: PByte;
-    FPixelDataSize: PtrInt;
+    FPixelDataSize: PtrUInt;
     FMaskData: PByte;
-    FMaskDataSize: PtrInt;
+    FMaskDataSize: PtrUInt;
     FLineStarts: PRawImagePosition;
     FMaskLineStarts: PRawImagePosition;
     FUpdateCount: integer;
@@ -143,7 +143,7 @@ type
     procedure FreeAllData; virtual;
     procedure FreePixelData; virtual;
     procedure FreeMaskData; virtual;
-    procedure CreateDataAndLineStarts(var Data: Pointer; var DataSize: PtrInt;
+    procedure CreateDataAndLineStarts(var Data: Pointer; var DataSize: PtrUInt;
                                       var TheLineStarts: PRawImagePosition;
                                       TheBitsPerPixel: cardinal;
                                       TheLineEnd: TRawImageLineEnd); virtual;
@@ -1568,7 +1568,7 @@ begin
 end;
 
 procedure TLazIntfImage.CreateDataAndLineStarts(var Data: Pointer;
-  var DataSize: PtrInt; var TheLineStarts: PRawImagePosition;
+  var DataSize: PtrUInt; var TheLineStarts: PRawImagePosition;
   TheBitsPerPixel: cardinal; TheLineEnd: TRawImageLineEnd);
 begin
   CreateRawImageLineStarts(Width,Height,TheBitsPerPixel,TheLineEnd,

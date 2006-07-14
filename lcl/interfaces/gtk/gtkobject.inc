@@ -2730,7 +2730,7 @@ begin
     DebugLn('TGtkWidgetSet.GetRawImageFromGdkWindow G Width=',dbgs(AnImage^.Width),' Height=',dbgs(AnImage^.Height),
       ' BitsPerPixel=',dbgs(NewRawImage.Description.BitsPerPixel),' bpl=',dbgs(AnImage^.bpl));
     {$ENDIF}
-    if NewRawImage.DataSize<>PtrInt(AnImage^.bpl) * PtrInt(AnImage^.Height)
+    if NewRawImage.DataSize<>PtrUInt(AnImage^.bpl) * PtrUInt(AnImage^.Height)
     then
       RaiseGDBException('NewRawImage.DataSize<>AnImage^.bpl*AnImage^.Height');
 
@@ -2841,7 +2841,7 @@ begin
     {$IFDEF VerboseRawImage}
     DebugLn('TGtkWidgetSet.GetRawImageFromGdkWindow G Width=',dbgs(AnImage^.Width),' Height=',dbgs(AnImage^.Height),' BitsPerPixel=',dbgs(RawImage.Description.AlphaBitsPerPixel),' bpl=',dbgs(AnImage^.bpl));
     {$ENDIF}
-    if RawImage.MaskSize<>PtrInt(AnImage^.bpl) * PtrInt(AnImage^.Height)
+    if RawImage.MaskSize<>PtrUInt(AnImage^.bpl) * PtrUInt(AnImage^.Height)
     then
       RaiseGDBException('RawImage.MaskSize<>AnImage^.bpl*AnImage^.Height');
 
