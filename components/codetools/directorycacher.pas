@@ -703,11 +703,15 @@ begin
         if AnyCase then begin
           exit;
         end else begin
-          // check case
+          // check case platform dependent
+          {$IFDEF CaseInsensitiveFilenames}
+          exit;
+          {$ELSE}
           if (Result=lowercase(Result))
           or (Result=uppercase(Result))
           or (ExtractFileNameOnly(Result)=UnitName) then
             exit;
+          {$ENDIF}
         end;
       end;
       inc(m);
@@ -844,6 +848,7 @@ begin
         Result:=FindUnitLink(UnitName);
       end;
       if Result<>'' then begin
+        // improve unit name
         NewUnitName:=ExtractFileNameOnly(Result);
         if (NewUnitName<>lowercase(NewUnitName))
         and (UnitName<>NewUnitName) then
