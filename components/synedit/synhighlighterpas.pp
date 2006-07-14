@@ -1470,17 +1470,28 @@ begin
   {$IFDEF SYN_LAZARUS}
   fTokenID := tkComment;
   repeat
-    if fLine[Run]=#0 then break;
-    if (fLine[Run] = '*') and (Run<fLineLen) and (fLine[Run + 1] = ')') then
-    begin
+    if fLine[Run]=#0 then
+      break
+    else if (fLine[Run] = '*') and (Run<fLineLen) and (fLine[Run + 1] = ')')
+    then begin
       Inc(Run, 2);
-      if fRange = rsAnsiAsm then
-        fRange := rsAsm
-      else
-        fRange := rsUnKnown;
-      break;
-    end;
-    Inc(Run);
+      if TopPascalCodeFoldBlockType=cfbtNestedComment then begin
+        EndCodeFoldBlock;
+      end else begin
+        if fRange = rsAnsiAsm then
+          fRange := rsAsm
+        else
+          fRange := rsUnKnown;
+        break;
+      end;
+    end
+    else if NestedComments
+    and (fLine[Run] = '(') and (Run<fLineLen) and (fLine[Run + 1] = '*') then
+    begin
+      Inc(Run,2);
+      StartPascalCodeFoldBlock(cfbtNestedComment);
+    end else
+      Inc(Run);
   until (Run>fLineLen) or (fLine[Run] in [#0, #10, #13]);
   {$ELSE}
   case fLine[Run] of
