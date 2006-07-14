@@ -871,14 +871,17 @@ end;
 procedure TBitmap.InitFPImageReader(ImgReader: TFPCustomImageReader);
 begin
   if ImgReader is TLazReaderBMP then begin
+    // TransparentColor:
+    //   clDefault: use left, bottom pixel color as transparent color
+    //   clNone: load image opaque
+    //   otherwise: use TransparentColor as transparent color
     TLazReaderBMP(ImgReader).UseLeftBottomAsTransparent:=
-                                                    TransparentColor=clDefault;
-    if (TransparentColor<>clDefault)
-    and (TransparentColor<>clNone) then
-      TLazReaderBMP(ImgReader).TransparentColor:=
-                                              TColorToFPColor(TransparentColor)
+                                                   (TransparentColor=clDefault);
+    if (TransparentColor=clDefault) or (TransparentColor=clNone) then
+      TLazReaderBMP(ImgReader).TransparentColor:=colTransparent
     else
-      TLazReaderBMP(ImgReader).TransparentColor:=colTransparent;
+      TLazReaderBMP(ImgReader).TransparentColor:=
+                                              TColorToFPColor(TransparentColor);
     //DebugLn('TBitmap.InitFPImageReader ',dbgs(TLazReaderBMP(ImgReader).TransparentColor));
   end;
 end;

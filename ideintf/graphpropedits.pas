@@ -200,8 +200,8 @@ begin
           Ext := ExtractFileExt(TheDialog.FileName);
           if ABitmap=nil then ABitmap:=TBitmap.Create;
           If (ABitmap is TBitmap)
-          and ((AnsiCompareText(Ext, '.xpm') = 0)
-            or (AnsiCompareText(Ext, '.bmp') = 0))
+          and ((CompareText(Ext, '.xpm') = 0)
+            or (CompareText(Ext, '.bmp') = 0))
           then begin
             ABitmap.LoadFromFile(TheDialog.FileName);
           end else begin

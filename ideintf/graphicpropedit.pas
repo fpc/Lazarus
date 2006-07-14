@@ -54,7 +54,7 @@ type
     FileName: String;
     property Modified: Boolean read FModified write SetModified;
     property Preview: TImage read ImagePreview write ImagePreview;
-  end; 
+  end;
 
 var
   GraphicPropertyEditorForm: TGraphicPropertyEditorForm;

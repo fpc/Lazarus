@@ -6,7 +6,7 @@ object GraphicPropertyEditorForm: TGraphicPropertyEditorForm
   Constraints.MinHeight = 180
   Constraints.MinWidth = 200
   OnCreate = FormCreate
-  PixelsPerInch = 96
+  PixelsPerInch = 112
   Position = poDesktopCenter
   HorzScrollBar.Page = 369
   VertScrollBar.Page = 329
@@ -19,7 +19,7 @@ object GraphicPropertyEditorForm: TGraphicPropertyEditorForm
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
     Caption = 'Picture'
-    ClientHeight = 271
+    ClientHeight = 272
     ClientWidth = 354
     TabOrder = 0
     Left = 6
@@ -29,7 +29,7 @@ object GraphicPropertyEditorForm: TGraphicPropertyEditorForm
     object LoadButton: TButton
       Anchors = [akTop, akRight]
       BorderSpacing.Around = 6
-      
+      BorderSpacing.InnerBorder = 4
       Caption = 'Load'
       OnClick = LoadButtonClick
       TabOrder = 0
@@ -40,7 +40,7 @@ object GraphicPropertyEditorForm: TGraphicPropertyEditorForm
     object SaveButton: TButton
       Anchors = [akTop, akRight]
       BorderSpacing.Around = 6
-      
+      BorderSpacing.InnerBorder = 4
       Caption = 'Save'
       OnClick = SaveButtonClick
       TabOrder = 1
@@ -52,7 +52,7 @@ object GraphicPropertyEditorForm: TGraphicPropertyEditorForm
     object ClearButton: TButton
       Anchors = [akTop, akRight]
       BorderSpacing.Around = 6
-      
+      BorderSpacing.InnerBorder = 4
       Caption = 'Clear'
       OnClick = ClearButtonClick
       TabOrder = 2
@@ -68,13 +68,12 @@ object GraphicPropertyEditorForm: TGraphicPropertyEditorForm
       TabOrder = 3
       AutoScroll = True
       Left = 5
-      Height = 261
+      Height = 262
       Top = 2
       Width = 261
       object ImagePreview: TImage
         AutoSize = True
         Center = True
-        Transparent = True
         Height = 100
         Width = 100
       end
@@ -84,7 +83,6 @@ object GraphicPropertyEditorForm: TGraphicPropertyEditorForm
     Anchors = [akRight, akBottom]
     BorderSpacing.Bottom = 6
     BorderSpacing.Around = 6
-    
     Caption = '&OK'
     Default = True
     Kind = bkOK
@@ -99,7 +97,6 @@ object GraphicPropertyEditorForm: TGraphicPropertyEditorForm
   object CancelButton: TBitBtn
     Anchors = [akRight, akBottom]
     BorderSpacing.Around = 6
-    
     Cancel = True
     Caption = 'Cancel'
     Kind = bkCancel
@@ -112,6 +109,7 @@ object GraphicPropertyEditorForm: TGraphicPropertyEditorForm
     Width = 75
   end
   object OpenDialog: TOpenPictureDialog
+    Filter = 'Graphic (*.ico;*.ppm;*.pgm;*.pbm;*.png;*.xpm;*.bmp)|*.ico;*.ppm;*.pgm;*.pbm;*.png;*.xpm;*.bmp|Icon (*.ico)|*.ico|Portable PixMap (*.ppm)|*.ppm|Portable GrayMap (*.pgm)|*.pgm|Portable BitMap (*.pbm)|*.pbm|Portable Network Graphic (*.png)|*.png|Pixmap (*.xpm)|*.xpm|Bitmaps (*.bmp)|*.bmp|All files (*.*)|*.*|'
     Title = 'Open existing file'
     Filter = 'Graphic (*.ico;*.ppm;*.pgm;*.pbm;*.png;*.xpm;*.bmp)|*.ico;*.ppm;*.pgm;*.pbm;*.png;*.xpm;*.bmp|Icon (*.ico)|*.ico|Portable PixMap (*.ppm)|*.ppm|Portable GrayMap (*.pgm)|*.pgm|Portable BitMap (*.pbm)|*.pbm|Portable Network Graphic (*.png)|*.png|Pixmap (*.xpm)|*.xpm|Bitmaps (*.bmp)|*.bmp|All files (*.*)|*.*|'
     FilterIndex = 0
@@ -120,6 +118,7 @@ object GraphicPropertyEditorForm: TGraphicPropertyEditorForm
     top = 288
   end
   object SaveDialog: TSavePictureDialog
+    Filter = 'Graphic (*.ico;*.ppm;*.pgm;*.pbm;*.png;*.xpm;*.bmp)|*.ico;*.ppm;*.pgm;*.pbm;*.png;*.xpm;*.bmp|Icon (*.ico)|*.ico|Portable PixMap (*.ppm)|*.ppm|Portable GrayMap (*.pgm)|*.pgm|Portable BitMap (*.pbm)|*.pbm|Portable Network Graphic (*.png)|*.png|Pixmap (*.xpm)|*.xpm|Bitmaps (*.bmp)|*.bmp|All files (*.*)|*.*|'
     Title = 'Save file as'
     Filter = 'Graphic (*.ico;*.ppm;*.pgm;*.pbm;*.png;*.xpm;*.bmp)|*.ico;*.ppm;*.pgm;*.pbm;*.png;*.xpm;*.bmp|Icon (*.ico)|*.ico|Portable PixMap (*.ppm)|*.ppm|Portable GrayMap (*.pgm)|*.pgm|Portable BitMap (*.pbm)|*.pbm|Portable Network Graphic (*.png)|*.png|Pixmap (*.xpm)|*.xpm|Bitmaps (*.bmp)|*.bmp|All files (*.*)|*.*|'
     FilterIndex = 0
