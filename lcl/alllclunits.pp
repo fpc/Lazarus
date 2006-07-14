@@ -22,7 +22,7 @@ unit AllLCLUnits;
 
 { At least 2.0.2 is required }
 {$if defined(ver1) or (defined(ver2_0) and (fpc_patch<2))}
-  { $fatal Lazarus requires at least FPC 2.0.2}
+  {$fatal Lazarus requires at least FPC 2.0.2}
 {$endif}
 {$mode objfpc}{$H+}
 
