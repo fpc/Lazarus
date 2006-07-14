@@ -4974,16 +4974,19 @@ Begin
   Visible:=true;
   TempEditor.Close;
   TempEditor.Free;
-  if Notebook.PageCount>1 then begin
+  if Notebook.PageCount>1 then
+  begin
     //writeln('TSourceNotebook.CloseFile B  PageIndex=',PageIndex);
-    // if this is the current page, switch to left PageIndex
-    if (Notebook.PageIndex=PageIndex) and (PageIndex>0) then
-      Notebook.PageIndex:=PageIndex-1;
+    // if this is the current page, switch to right PageIndex (if possible)
+    if (Notebook.PageIndex = PageIndex) then
+      Notebook.PageIndex := PageIndex +
+        IfThen(PageIndex + 1 < Notebook.PageCount, 1, -1);
     // delete the page
     Notebook.Pages.Delete(PageIndex);
     //writeln('TSourceNotebook.CloseFile C  PageIndex=',PageIndex,' Notebook.PageCount=',Notebook.PageCount);
     UpdateStatusBar;
-  end else begin
+  end else
+  begin
     //writeln('TSourceNotebook.CloseFile D  PageIndex=',PageIndex);
     Notebook.Free;
     //writeln('TSourceNotebook.CloseFile E  PageIndex=',PageIndex);
