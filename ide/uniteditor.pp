@@ -134,6 +134,7 @@ type
     FOnMouseMove: TMouseMoveEvent;
     FOnMouseDown: TMouseEvent;
     FOnMouseUp: TMouseEvent;
+    FOnMouseWheel : tMouseWheelEvent;
     FOnKeyDown: TKeyEvent;
 
     FSourceNoteBook: TSourceNotebook;
@@ -143,6 +144,8 @@ type
           Shift: TShiftState; X,Y: Integer);
     Procedure EditorMouseUp(Sender: TObject; Button: TMouseButton;
           Shift: TShiftState; X,Y: Integer);
+    procedure EditorMouseWheel(Sender: TObject; Shift: TShiftState;
+         WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
     Procedure EditorKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     Procedure EditorStatusChanged(Sender: TObject; Changes: TSynStatusChanges);
     procedure SetCodeBuffer(NewCodeBuffer: TCodeBuffer);
@@ -346,6 +349,7 @@ type
     property OnMouseMove: TMouseMoveEvent read FOnMouseMove write FOnMouseMove;
     property OnMouseDown: TMouseEvent read FOnMouseDown write FOnMouseDown;
     property OnMouseUp: TMouseEvent read FOnMouseUp write FOnMouseUp;
+    property OnMouseWheel: TMouseWheelEvent read FOnMouseWheel write FOnMouseWheel;
     property OnKeyDown: TKeyEvent read FOnKeyDown write FOnKeyDown;
     property Owner: TComponent read FAOwner;
     property PageName: string read FPageName write SetPageName;
@@ -529,6 +533,8 @@ type
     procedure EditorMouseUp(Sender: TObject; Button: TMouseButton;
                             Shift: TShiftstate; X,Y: Integer);
     procedure EditorKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure EditorMouseWheel(Sender: TObject; Shift: TShiftState;
+         WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
 
     // hintwindow stuff
     FHintWindow: THintWindow;
@@ -1978,6 +1984,7 @@ Begin
       OnGutterClick := @Self.OnGutterClick;
       OnSpecialLineColors:=@OnEditorSpecialLineColor;
       OnMouseMove := @EditorMouseMoved;
+      OnMouseWheel := @EditorMouseWheel;
       OnMouseDown := @EditorMouseDown;
       OnMouseUp := @EditorMouseUp;
       OnKeyDown := @EditorKeyDown;
@@ -2355,6 +2362,13 @@ begin
 //  Writeln('MouseMove in Editor',X,',',Y);
   if Assigned(OnMouseMove) then
     OnMouseMove(Self,Shift,X,Y);
+end;
+Procedure TSourceEditor.EditorMouseWheel(Sender: TObject; Shift: TShiftState;
+         WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
+begin
+//  Writeln('MouseWheel in Editor');
+  if Assigned(OnMouseWheel) then
+    OnMouseWheel(Self, Shift, WheelDelta, MousePos, Handled)
 end;
 
 Function TSourceEditor.GetWordAtPosition(Position: TPoint): String;
@@ -2786,7 +2800,7 @@ begin
   // HintTimer
   FHintTimer := TTimer.Create(nil);
   with FHintTimer do begin
-    Interval := 500;
+    Interval := 1000;
     Enabled := False;
     OnTimer := @HintTimer;
   end;
@@ -3867,6 +3881,7 @@ Begin
   Result.OnEditorChange := @EditorChanged;
   Result.OnMouseMove := @EditorMouseMove;
   Result.OnMouseDown := @EditorMouseDown;
+  Result.OnMouseWheel := @EditorMouseWheel;
   Result.OnMouseUp := @EditorMouseUp;
   Result.OnKeyDown :=@EditorKeyDown;
 
@@ -5463,6 +5478,18 @@ begin
   FHintTimer.Enabled := (EditorOpts.AutoToolTipSymbTools or
                          EditorOpts.AutoToolTipExprEval)
                         and Visible;
+end;
+Procedure TSourceNotebook.EditorMouseWheel(Sender: TObject; Shift: TShiftState;
+         WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
+begin
+  // restart hint timer
+  HideHint;
+  FHintTimer.Enabled := False;
+  FHintTimer.Enabled := (EditorOpts.AutoToolTipSymbTools or
+                         EditorOpts.AutoToolTipExprEval)
+                         
+                        and Visible;
+  handled:=true;
 end;
 
 procedure TSourceNotebook.EditorMouseDown(Sender: TObject;
