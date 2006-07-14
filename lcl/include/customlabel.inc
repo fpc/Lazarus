@@ -350,9 +350,10 @@ var
 begin
   R := Rect(0,0,Width,Height);
   With Canvas do begin
-    Color := Self.Color;
+    if enabled then   Color := Self.Color
+               else   Color := clNone;
     Font := Self.Font;
-    if Color<>clNone then
+    if (Color<>clNone) and not Transparent then
       FillRect(R);
 {
     If BorderStyle <> sbsNone then begin

@@ -111,6 +111,15 @@ begin
     TS.Opaque:= false;
     TS.Clipping:= false;
     TS.SystemFont:=Canvas.Font.IsDefault;
+    If not Enabled then begin
+      Canvas.Font.Color := clBtnHighlight;
+      OffsetRect(ARect, 1, 1);
+      Canvas.TextRect(ARect, ARect.Left, ARect.Top, Caption, TS);
+      Canvas.Font.Color := clBtnShadow;
+      OffsetRect(ARect, -1, -1);
+    end
+    else Canvas.Font.Color := Font.Color;
+
     Canvas.TextRect(ARect,ARect.Left,ARect.Top, Caption, TS);
   end;
 
