@@ -255,9 +255,9 @@ Begin
   else
     ActiveDrag := dopDock;
 
-  // if Target changed, send dmDragLeave to old target and dmDragEnter to new
   if TargetControl <> DragObject.DragTarget then
   begin
+    // Target changed => send dmDragLeave to old target and dmDragEnter to new
     SendDragOver(dmDragLeave);
     if DragObject = nil then Exit;
     DragObject.DragTarget := TargetControl;
@@ -267,6 +267,11 @@ Begin
       DragObject.DragHandle := TargetControl.Parent.Handle;
     DragObject.DragPos := Position;
     SendDragOver(dmDragEnter);
+    if DragObject = nil then Exit;
+  end else begin
+    // same target => send dmDragMove
+    DragObject.DragPos := Position;
+    SendDragOver(dmDragMove);
     if DragObject = nil then Exit;
   end;
 
