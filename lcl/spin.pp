@@ -172,6 +172,7 @@ type
     property OnChange;
     property OnChangeBounds;
     property OnClick;
+    property OnEditingDone;
     property OnEnter;
     property OnExit;
     Property OnKeyDown;
