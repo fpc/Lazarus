@@ -450,6 +450,10 @@ msgstr "помилка при створенні нових тіл процед�
 msgid "error during inserting new class parts"
 msgstr "помилка при вставці нових частин класу"
 
+#: codetoolsstrconsts:ctserrorduringinsertingnewusessection
+msgid "error during inserting new units to the main uses section"
+msgstr ""
+
 #: codetoolsstrconsts:ctserrorindirectiveexpression
 msgid "error in directive expression"
 msgstr "помилка у виразі директиви"

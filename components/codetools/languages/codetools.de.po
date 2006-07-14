@@ -461,6 +461,10 @@ msgstr "Fehler beim Generieren eines neuen Prozedur-Rumpfs"
 msgid "error during inserting new class parts"
 msgstr "Fehler beim Einfügen eines neuen Klassenteils"
 
+#: codetoolsstrconsts:ctserrorduringinsertingnewusessection
+msgid "error during inserting new units to the main uses section"
+msgstr ""
+
 #: codetoolsstrconsts:ctserrorindirectiveexpression
 msgid "error in directive expression"
 msgstr "Fehler im Bezeichnerausdruck"

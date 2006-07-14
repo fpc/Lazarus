@@ -402,6 +402,10 @@ msgstr "Aggiungi percorso"
 msgid "Add paths to dependent packages/projects"
 msgstr "Aggiungi percorsi ai pacchetti/progetti dipendenti"
 
+#: lazarusidestrconsts:dlgaddsemicolon
+msgid "Add semicolon"
+msgstr ""
+
 #: lazarusidestrconsts:lisoifaddtofavouriteproperties
 msgid "Add to favourite properties"
 msgstr "Aggiungi alle proprietà preferite"
@@ -4025,6 +4029,14 @@ msgstr "Cartella Lazarus non trovata"
 #: lazarusidestrconsts:lislazarusform
 msgid "Lazarus form"
 msgstr "form di Lazarus"
+
+#: lazarusidestrconsts:lislazaruslanguageid
+msgid "Lazarus language ID (e.g. en, de, br, fi)"
+msgstr ""
+
+#: lazarusidestrconsts:lislazaruslanguagename
+msgid "Lazarus language name (e.g. english, deutsch)"
+msgstr ""
 
 #: lazarusidestrconsts:lislazaruspackage
 msgid "Lazarus package"

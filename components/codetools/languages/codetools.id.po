@@ -464,6 +464,10 @@ msgstr "kesalahan selama pembuatan dari badan proc baru"
 msgid "error during inserting new class parts"
 msgstr "kesalahan selama penyisipan bagian class"
 
+#: codetoolsstrconsts:ctserrorduringinsertingnewusessection
+msgid "error during inserting new units to the main uses section"
+msgstr ""
+
 #: codetoolsstrconsts:ctserrorindirectiveexpression
 msgid "error in directive expression"
 msgstr "Kesalahan dalam ekspresi direktif"

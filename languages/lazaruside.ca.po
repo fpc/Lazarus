@@ -390,6 +390,10 @@ msgstr ""
 msgid "Add paths to dependent packages/projects"
 msgstr "Afegeix les trajectòries en els paquets/projectes dependents"
 
+#: lazarusidestrconsts:dlgaddsemicolon
+msgid "Add semicolon"
+msgstr ""
+
 #: lazarusidestrconsts:lisoifaddtofavouriteproperties
 msgid "Add to favourite properties"
 msgstr ""
@@ -4012,6 +4016,14 @@ msgstr "No s'ha trobat el directori del Lazarus"
 
 #: lazarusidestrconsts:lislazarusform
 msgid "Lazarus form"
+msgstr ""
+
+#: lazarusidestrconsts:lislazaruslanguageid
+msgid "Lazarus language ID (e.g. en, de, br, fi)"
+msgstr ""
+
+#: lazarusidestrconsts:lislazaruslanguagename
+msgid "Lazarus language name (e.g. english, deutsch)"
 msgstr ""
 
 #: lazarusidestrconsts:lislazaruspackage

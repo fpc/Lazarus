@@ -390,6 +390,10 @@ msgstr "Додати шлях"
 msgid "Add paths to dependent packages/projects"
 msgstr "Додати шляхи до залежних пакунків/проектів"
 
+#: lazarusidestrconsts:dlgaddsemicolon
+msgid "Add semicolon"
+msgstr ""
+
 #: lazarusidestrconsts:lisoifaddtofavouriteproperties
 msgid "Add to favourite properties"
 msgstr "Додати до улюблених властивостей"
@@ -4013,6 +4017,14 @@ msgstr "Не знайдена тека Lazarus"
 #: lazarusidestrconsts:lislazarusform
 msgid "Lazarus form"
 msgstr "Форма Lazarus"
+
+#: lazarusidestrconsts:lislazaruslanguageid
+msgid "Lazarus language ID (e.g. en, de, br, fi)"
+msgstr ""
+
+#: lazarusidestrconsts:lislazaruslanguagename
+msgid "Lazarus language name (e.g. english, deutsch)"
+msgstr ""
 
 #: lazarusidestrconsts:lislazaruspackage
 msgid "Lazarus package"

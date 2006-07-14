@@ -390,6 +390,10 @@ msgstr ""
 msgid "error during creation of new proc bodies"
 msgstr ""
 
+#: codetoolsstrconsts:ctserrorduringinsertingnewusessection
+msgid "error during inserting new units to the main uses section"
+msgstr ""
+
 #: codetoolsstrconsts:ctsunabletoapplychanges
 msgid "unable to apply changes"
 msgstr ""

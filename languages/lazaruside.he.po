@@ -401,6 +401,10 @@ msgstr ""
 msgid "Add paths to dependent packages/projects"
 msgstr "תלויים הוסף נתיב ל מיזם/חבילה"
 
+#: lazarusidestrconsts:dlgaddsemicolon
+msgid "Add semicolon"
+msgstr ""
+
 #: lazarusidestrconsts:lisoifaddtofavouriteproperties
 msgid "Add to favourite properties"
 msgstr ""
@@ -4023,6 +4027,14 @@ msgstr ""
 
 #: lazarusidestrconsts:lislazarusform
 msgid "Lazarus form"
+msgstr ""
+
+#: lazarusidestrconsts:lislazaruslanguageid
+msgid "Lazarus language ID (e.g. en, de, br, fi)"
+msgstr ""
+
+#: lazarusidestrconsts:lislazaruslanguagename
+msgid "Lazarus language name (e.g. english, deutsch)"
 msgstr ""
 
 #: lazarusidestrconsts:lislazaruspackage

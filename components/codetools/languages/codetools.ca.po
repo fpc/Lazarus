@@ -450,6 +450,10 @@ msgstr "s'ha produït un error mentre es creaven els cossos del nou procediment"
 msgid "error during inserting new class parts"
 msgstr "s'ha produït un error mentre s'inserien parts de la nova classe"
 
+#: codetoolsstrconsts:ctserrorduringinsertingnewusessection
+msgid "error during inserting new units to the main uses section"
+msgstr ""
+
 #: codetoolsstrconsts:ctserrorindirectiveexpression
 msgid "error in directive expression"
 msgstr "s'ha produït un error en l'expressió de la directiva"

@@ -90,6 +90,14 @@ msgstr ""
 msgid "Lazarus directory"
 msgstr ""
 
+#: lazarusidestrconsts:lislazaruslanguageid
+msgid "Lazarus language ID (e.g. en, de, br, fi)"
+msgstr ""
+
+#: lazarusidestrconsts:lislazaruslanguagename
+msgid "Lazarus language name (e.g. english, deutsch)"
+msgstr ""
+
 #: lazarusidestrconsts:lislclwidgettype
 msgid "LCL Widget Type"
 msgstr ""
@@ -2778,6 +2786,10 @@ msgstr ""
 msgid "Space"
 msgstr ""
 
+#: lazarusidestrconsts:dlgidentifiercompletion
+msgid "Identifier completion"
+msgstr ""
+
 #: lazarusidestrconsts:dlgadditionalsrcpath
 msgid "Additional Source search path for all projects (.pp;.pas)"
 msgstr ""
@@ -2920,6 +2932,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgwrdpreview
 msgid "Preview"
+msgstr ""
+
+#: lazarusidestrconsts:dlgaddsemicolon
+msgid "Add semicolon"
 msgstr ""
 
 #: lazarusidestrconsts:locwndsrceditor

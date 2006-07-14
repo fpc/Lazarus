@@ -404,6 +404,10 @@ msgstr "Tambah path"
 msgid "Add paths to dependent packages/projects"
 msgstr "Tambah path ke paket dependen/proyek"
 
+#: lazarusidestrconsts:dlgaddsemicolon
+msgid "Add semicolon"
+msgstr ""
+
 #: lazarusidestrconsts:lisoifaddtofavouriteproperties
 msgid "Add to favourite properties"
 msgstr "Tambah properti favorit"
@@ -4027,6 +4031,14 @@ msgstr "Direktori Lazarus tidak ditemukan"
 #: lazarusidestrconsts:lislazarusform
 msgid "Lazarus form"
 msgstr "Form Lazarus"
+
+#: lazarusidestrconsts:lislazaruslanguageid
+msgid "Lazarus language ID (e.g. en, de, br, fi)"
+msgstr ""
+
+#: lazarusidestrconsts:lislazaruslanguagename
+msgid "Lazarus language name (e.g. english, deutsch)"
+msgstr ""
 
 #: lazarusidestrconsts:lislazaruspackage
 msgid "Lazarus package"

@@ -461,6 +461,10 @@ msgstr "błąd przy tworzeniu ciał nowych procedur"
 msgid "error during inserting new class parts"
 msgstr "błąd przy wstawianiu nowych składników klasy"
 
+#: codetoolsstrconsts:ctserrorduringinsertingnewusessection
+msgid "error during inserting new units to the main uses section"
+msgstr ""
+
 #: codetoolsstrconsts:ctserrorindirectiveexpression
 msgid "error in directive expression"
 msgstr "błąd w wyrażeniu dyrektywy"

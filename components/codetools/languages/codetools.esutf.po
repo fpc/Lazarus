@@ -460,6 +460,10 @@ msgstr "error durante la creación de los nuevos cuerpos del proc"
 msgid "error during inserting new class parts"
 msgstr "error durante la inserción de nueva partes de la clase"
 
+#: codetoolsstrconsts:ctserrorduringinsertingnewusessection
+msgid "error during inserting new units to the main uses section"
+msgstr ""
+
 #: codetoolsstrconsts:ctserrorindirectiveexpression
 msgid "error in directive expression"
 msgstr "error en expresión de directiva"

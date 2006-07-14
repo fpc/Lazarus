@@ -461,6 +461,10 @@ msgstr "创建新的过程主体时错误"
 msgid "error during inserting new class parts"
 msgstr "插入类的部分时错误"
 
+#: codetoolsstrconsts:ctserrorduringinsertingnewusessection
+msgid "error during inserting new units to the main uses section"
+msgstr ""
+
 #: codetoolsstrconsts:ctserrorindirectiveexpression
 msgid "error in directive expression"
 msgstr "指示错误"

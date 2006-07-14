@@ -400,6 +400,10 @@ msgstr "パス追加"
 msgid "Add paths to dependent packages/projects"
 msgstr "単独パッケージ/プロジェクトのパスを追加"
 
+#: lazarusidestrconsts:dlgaddsemicolon
+msgid "Add semicolon"
+msgstr ""
+
 #: lazarusidestrconsts:lisoifaddtofavouriteproperties
 msgid "Add to favourite properties"
 msgstr "お気に入りプロパティを追加"
@@ -4023,6 +4027,14 @@ msgstr "Lazarusディレクトリがみつかりません"
 #: lazarusidestrconsts:lislazarusform
 msgid "Lazarus form"
 msgstr "Lazarusフォーム"
+
+#: lazarusidestrconsts:lislazaruslanguageid
+msgid "Lazarus language ID (e.g. en, de, br, fi)"
+msgstr ""
+
+#: lazarusidestrconsts:lislazaruslanguagename
+msgid "Lazarus language name (e.g. english, deutsch)"
+msgstr ""
 
 #: lazarusidestrconsts:lislazaruspackage
 msgid "Lazarus package"

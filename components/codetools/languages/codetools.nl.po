@@ -461,6 +461,10 @@ msgstr ""
 msgid "error during inserting new class parts"
 msgstr "fout opgetreden tijdens het invoegen van nieuwe klasse onderdelen"
 
+#: codetoolsstrconsts:ctserrorduringinsertingnewusessection
+msgid "error during inserting new units to the main uses section"
+msgstr ""
+
 #: codetoolsstrconsts:ctserrorindirectiveexpression
 msgid "error in directive expression"
 msgstr ""

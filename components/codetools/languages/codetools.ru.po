@@ -461,6 +461,10 @@ msgstr "ошибка при создании новых тел процедур"
 msgid "error during inserting new class parts"
 msgstr "ошибка при вставке новых частей класса"
 
+#: codetoolsstrconsts:ctserrorduringinsertingnewusessection
+msgid "error during inserting new units to the main uses section"
+msgstr ""
+
 #: codetoolsstrconsts:ctserrorindirectiveexpression
 msgid "error in directive expression"
 msgstr "оишбка в выражении директивы"
