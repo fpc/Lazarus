@@ -135,8 +135,8 @@ function gtkListItemToggledCB(Widget: PGtkWidget; Data: gPointer): GBoolean; cde
 var
   GtkList: PGtkList;
   LCLList: TGtkListStringList;
-  //ItemIndex: LongInt;
   Mess: TLMessage;
+  ItemIndex: LongInt;
 begin
   Result:=true;
 
@@ -153,7 +153,7 @@ begin
   if [csDestroying,csLoading]*LCLList.Owner.ComponentState<>[] then exit;
 
   // get itemindex and area
-  //ItemIndex:=g_list_index(GtkList^.children,Data);
+  ItemIndex:=g_list_index(GtkList^.children,Data);
   
   if LockOnChange(PgtkObject(Widget),0) > 0 then Exit;
 
@@ -163,6 +163,8 @@ begin
 
   Mess.Msg := LM_CHANGED;
   Mess.Result := 0;
+  Mess.WParam := ItemIndex;
+  //DebugLn(['gtkListItemToggledCB ',ItemIndex]);
   DeliverMessage(LCLList.Owner, Mess);
 end;
 

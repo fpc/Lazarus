@@ -33,18 +33,20 @@ uses
   
 
 type
+  TCheckListClicked = procedure(Sender: TObject; Index: integer) of object;
 
   { TCustomCheckListBox }
 
   TCustomCheckListBox = class(TCustomListBox)
   private
     FItemDataOffset: Integer;
-    FOnClickChecked : tNotifyEvent;
+    FOnClickChecked : TNotifyEvent;
+    FOnItemClick: TCheckListClicked;
     function GetChecked(const AIndex: Integer): Boolean;
     function GetCount: integer;
     procedure SetChecked(const AIndex: Integer; const AValue: Boolean);
     procedure SendItemChecked(const AIndex: Integer; const AChecked: Boolean);
-    procedure DoChange(var Msg); message LM_CHANGED;
+    procedure DoChange(var Msg: TLMessage); message LM_CHANGED;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
   protected
     procedure AssignItemDataToCache(const AIndex: Integer; const AData: Pointer); override;
@@ -58,7 +60,8 @@ type
     constructor Create(AOwner: TComponent); override;
     property Checked[const AIndex: Integer]: Boolean read GetChecked write SetChecked;
     property Count: integer read GetCount;
-    property OnClickChecked:tNotifyEvent read FOnClickChecked write FOnClickChecked;
+    property OnClickChecked: TNotifyEvent read FOnClickChecked write FOnClickChecked;
+    property OnItemClick: TCheckListClicked read FOnItemClick write FOnItemClick;
   end;
   
   
@@ -80,6 +83,7 @@ type
     property OnDrawItem;
     property OnEnter;
     property OnExit;
+    property OnItemClick;
     property OnKeyPress;
     property OnKeyDown;
     property OnKeyUp;
@@ -138,9 +142,11 @@ begin
   FItemDataOffset := inherited GetCachedDataSize;
 end;
 
-procedure TCustomCheckListBox.DoChange(var Msg);
+procedure TCustomCheckListBox.DoChange(var Msg: TLMessage);
 begin
-  clickChecked;
+  //DebugLn(['TCustomCheckListBox.DoChange ',DbgSName(Self),' ',Msg.WParam]);
+  ClickChecked;
+  if Assigned(OnItemClick) then OnItemClick(Self,Msg.WParam);
 end;
 
 function TCustomCheckListBox.GetCachedDataSize: Integer;
