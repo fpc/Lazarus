@@ -1,134 +1,180 @@
 object CheckListBoxEditorDlg: TCheckListBoxEditorDlg
-  ActiveControl = FBtnAdd
   AutoSize = True
+  BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'CheckListBoxEditorDlg'
-  ClientHeight = 299
-  ClientWidth = 395
+  ClientHeight = 284
+  ClientWidth = 438
   PixelsPerInch = 96
   Position = poScreenCenter
-  HorzScrollBar.Page = 394
-  VertScrollBar.Page = 298
-  Left = 290
-  Height = 299
-  Top = 149
-  Width = 395
-  object FPanelButtons: TPanel
-    Align = alTop
-    AutoSize = True
-    ClientHeight = 31
-    ClientWidth = 395
+  HorzScrollBar.Page = 437
+  VertScrollBar.Page = 283
+  Left = 316
+  Height = 284
+  Top = 154
+  Width = 438
+  object FCheck: TCheckListBox
+    Align = alClient
     TabOrder = 0
-    Height = 31
-    Width = 395
-    object FBtnAdd: TButton
-      AutoSize = True
-      
-      Caption = 'FBtnAdd'
-      OnClick = AddItem
-      TabOrder = 0
-      Left = 1
-      Height = 29
-      Top = 1
-      Width = 65
-    end
-    object FBtnDelete: TButton
-      AutoSize = True
-      
-      Caption = 'FBtnDelete'
-      OnClick = DeleteItem
-      TabOrder = 1
-      AnchorSideLeft.Control = FBtnAdd
-      AnchorSideLeft.Side = asrBottom
-      Left = 66
-      Height = 29
-      Top = 1
-      Width = 77
-    end
-    object FBtnUp: TButton
-      AutoSize = True
-      
-      Caption = 'FBtnUp'
-      OnClick = MoveUpItem
-      TabOrder = 2
-      AnchorSideLeft.Control = FBtnDelete
-      AnchorSideLeft.Side = asrBottom
-      Left = 143
-      Height = 29
-      Top = 1
-      Width = 60
-    end
-    object FBtnDown: TButton
-      AutoSize = True
-      
-      Caption = 'FBtnDown'
-      OnClick = MoveDownItem
-      TabOrder = 3
-      AnchorSideLeft.Control = FBtnUp
-      AnchorSideLeft.Side = asrBottom
-      Left = 203
-      Height = 29
-      Top = 1
-      Width = 74
-    end
-    object FBtnModify: TButton
-      AutoSize = True
-      
-      Caption = 'FBtnModify'
-      OnClick = ModifyItem
-      TabOrder = 4
-      AnchorSideLeft.Control = FBtnDown
-      AnchorSideLeft.Side = asrBottom
-      Left = 277
-      Height = 29
-      Top = 1
-      Width = 77
-    end
+    Height = 205
+    Top = 43
+    Width = 438
   end
   object FPanelOKCancel: TPanel
     Align = alBottom
-    AutoSize = True
+    BevelInner = bvLowered
     ClientHeight = 36
-    ClientWidth = 395
+    ClientWidth = 438
     TabOrder = 1
     Height = 36
-    Top = 263
-    Width = 395
-    object FBtnOK: TBitBtn
-      AutoSize = True
-      
+    Top = 248
+    Width = 438
+    object BtnHelp: TBitBtn
+      Anchors = [akRight, akBottom]
+      BorderSpacing.Around = 6
+      Caption = '&Help'
+      Kind = bkHelp
+      NumGlyphs = 0
+      TabOrder = 0
+      AnchorSideRight.Control = FPanelOKCancel
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = FPanelOKCancel
+      AnchorSideBottom.Side = asrBottom
+      Left = 357
+      Height = 25
+      Top = 5
+      Width = 75
+    end
+    object BtnApply: TBitBtn
+      Anchors = [akRight, akBottom]
+      BorderSpacing.Around = 6
+      Caption = '&Apply'
+      NumGlyphs = 0
+      OnClick = ApplyCheck
+      TabOrder = 1
+      AnchorSideRight.Control = BtnHelp
+      AnchorSideBottom.Control = FPanelOKCancel
+      AnchorSideBottom.Side = asrBottom
+      Left = 276
+      Height = 25
+      Top = 5
+      Width = 75
+    end
+    object BtnCancel: TBitBtn
+      Anchors = [akRight, akBottom]
+      BorderSpacing.Around = 6
+      Caption = 'Cancel'
+      Kind = bkCancel
+      ModalResult = 2
+      NumGlyphs = 0
+      TabOrder = 2
+      AnchorSideRight.Control = BtnApply
+      AnchorSideBottom.Control = FPanelOKCancel
+      AnchorSideBottom.Side = asrBottom
+      Left = 195
+      Height = 25
+      Top = 5
+      Width = 75
+    end
+    object BtnOK: TBitBtn
+      Anchors = [akRight, akBottom]
+      BorderSpacing.Around = 6
       Caption = '&OK'
       Default = True
       Kind = bkOK
       ModalResult = 1
       NumGlyphs = 0
-      TabOrder = 0
-      Left = 1
-      Height = 34
-      Top = 1
-      Width = 68
-    end
-    object FBtnCancel: TBitBtn
-      AutoSize = True
-      
-      Caption = 'Cancel'
-      Kind = bkCancel
-      ModalResult = 2
-      NumGlyphs = 0
-      TabOrder = 1
-      AnchorSideLeft.Control = FBtnOK
-      AnchorSideLeft.Side = asrBottom
-      Left = 69
-      Height = 34
-      Top = 1
-      Width = 80
+      TabOrder = 3
+      AnchorSideRight.Control = BtnCancel
+      AnchorSideBottom.Control = FPanelOKCancel
+      AnchorSideBottom.Side = asrBottom
+      Left = 114
+      Height = 25
+      Top = 5
+      Width = 75
     end
   end
-  object FCheck: TCheckListBox
-    Align = alClient
+  object FPanelButtons: TPanel
+    Align = alTop
+    AutoSize = True
+    BevelInner = bvLowered
+    ClientHeight = 43
+    ClientWidth = 438
     TabOrder = 2
-    Height = 232
-    Top = 31
-    Width = 395
+    Height = 43
+    Width = 438
+    object BtnAdd: TButton
+      AutoSize = True
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 6
+      BorderSpacing.InnerBorder = 4
+      Caption = 'BtnAdd'
+      OnClick = AddItem
+      TabOrder = 0
+      AnchorSideLeft.Control = FPanelButtons
+      AnchorSideTop.Control = FPanelButtons
+      Left = 6
+      Height = 33
+      Top = 6
+      Width = 69
+    end
+    object BtnDelete: TButton
+      AutoSize = True
+      BorderSpacing.InnerBorder = 4
+      Caption = 'BtnDelete'
+      OnClick = DeleteItem
+      TabOrder = 1
+      AnchorSideLeft.Control = BtnAdd
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = BtnAdd
+      Left = 75
+      Height = 33
+      Top = 6
+      Width = 81
+    end
+    object BtnUp: TButton
+      AutoSize = True
+      BorderSpacing.Left = 6
+      BorderSpacing.InnerBorder = 4
+      Caption = 'BtnUp'
+      OnClick = MoveUpItem
+      TabOrder = 2
+      AnchorSideLeft.Control = BtnDelete
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = BtnDelete
+      Left = 162
+      Height = 33
+      Top = 6
+      Width = 64
+    end
+    object BtnDown: TButton
+      AutoSize = True
+      BorderSpacing.InnerBorder = 4
+      Caption = 'BtnDown'
+      OnClick = MoveDownItem
+      TabOrder = 3
+      AnchorSideLeft.Control = BtnUp
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = BtnUp
+      Left = 226
+      Height = 33
+      Top = 6
+      Width = 78
+    end
+    object BtnModify: TButton
+      AutoSize = True
+      BorderSpacing.Left = 6
+      BorderSpacing.InnerBorder = 4
+      Caption = 'BtnModify'
+      OnClick = ModifyItem
+      TabOrder = 4
+      AnchorSideLeft.Control = BtnDown
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = BtnDown
+      Left = 310
+      Height = 33
+      Top = 6
+      Width = 81
+    end
   end
 end

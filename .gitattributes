@@ -1346,6 +1346,7 @@ ideintf/checkgroupeditordlg.lfm svneol=native#text/plain
 ideintf/checkgroupeditordlg.lrs svneol=native#text/plain
 ideintf/checklistboxeditordlg.lfm svneol=native#text/plain
 ideintf/checklistboxeditordlg.lrs svneol=native#text/plain
+ideintf/checklistboxeditordlg.pas svneol=native#text/plain
 ideintf/collectionpropeditform.lfm svneol=native#text/plain
 ideintf/collectionpropeditform.lrs svneol=native#text/plain
 ideintf/columndlg.pp svneol=native#text/pascal

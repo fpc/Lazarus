@@ -817,10 +817,11 @@ end;
   Method:   TCanvas.FillRect
   Params:   X, Y: Integer; Color: TColor; FillStyle: TFillStyle
   Returns:  Nothing
+  
 
  ------------------------------------------------------------------------------}
-procedure TCanvas.FloodFill(X, Y: Integer; FillColor: TColor; FillStyle: TFillStyle
-  );
+procedure TCanvas.FloodFill(X, Y: Integer; FillColor: TColor;
+  FillStyle: TFillStyle);
 begin
   Changing;
   RequiredState([csHandleValid, csBrushValid]);

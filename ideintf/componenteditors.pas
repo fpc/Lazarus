@@ -27,7 +27,7 @@ interface
 uses
   Classes, SysUtils, LResources, TypInfo, LCLProc, Forms, Controls, Menus,
   ExtCtrls, StdCtrls, Graphics, Grids, CheckLst, Buttons, ComCtrls, Dialogs,
-  LazStringGridEdit, GraphType, PropEdits, ObjInspStrConsts;
+  LazStringGridEdit, CheckListboxEditorDlg, GraphType, PropEdits, ObjInspStrConsts;
 
 type
   { TComponentEditorDesigner }
@@ -289,7 +289,6 @@ type
   TCheckListBoxComponentEditor = class(TDefaultComponentEditor)
   protected
     procedure DoShowEditor;
-    procedure AssignCheck(dstCheck, srcCheck: TCheckListBox);
   public
     procedure ExecuteVerb(Index: Integer); override;
     function GetVerb(Index: Integer): string; override;
@@ -838,129 +837,42 @@ begin
   Result := 1;
 end;
 
-{ TCheckListBoxEditorDlg }
-
-type
-
-  TCheckListBoxEditorDlg = class(TForm)
-    FCheck: TCheckListBox;
-    FBtnCancel: TBitBtn;
-    FBtnOK: TBitBtn;
-    FBtnModify: TButton;
-    FBtnDown: TButton;
-    FBtnUp: TButton;
-    FBtnDelete: TButton;
-    FBtnAdd: TButton;
-    FPanelButtons: TPanel;
-    FPanelOKCancel: TPanel;
-    procedure AddItem(Sender: TObject);
-    procedure DeleteItem(Sender: TObject);
-    procedure ModifyItem(Sender: TObject);
-    procedure MoveDownItem(Sender: TObject);
-    procedure MoveUpItem(Sender: TObject);
-  private
-    { private declarations }
-  public
-    { public declarations }
-  end;
-
-procedure TCheckListBoxEditorDlg.AddItem(Sender:TObject);
-var strItem:string;
-begin
-  if InputQuery(clbCheckListBoxEditor, clbAdd, strItem) then
-    FCheck.Items.Add(strItem);
-end;
-
-procedure TCheckListBoxEditorDlg.DeleteItem(Sender:TObject);
-begin
-  if FCheck.ItemIndex=-1 then exit;
-  if MessageDlg(clbCheckListBoxEditor,Format(clbDelete,[FCheck.ItemIndex,FCheck.Items[FCheck.ItemIndex]]),
-    mtConfirmation, mbYesNo, 0)=mrYes then
-    FCheck.Items.Delete(FCheck.ItemIndex);
-end;
-
-procedure TCheckListBoxEditorDlg.MoveUpItem(Sender:TObject);
-var itemtmp:string;
-    checkedtmp:boolean;
-begin
-  if (FCheck.Items.Count<=1)or(FCheck.ItemIndex<1) then exit;
-  itemtmp:=FCheck.Items[FCheck.ItemIndex-1];
-  checkedtmp:=FCheck.Checked[FCheck.ItemIndex-1];
-  FCheck.Items[FCheck.ItemIndex-1]:=FCheck.Items[FCheck.ItemIndex];
-  FCheck.Checked[FCheck.ItemIndex-1]:=FCheck.Checked[FCheck.ItemIndex];
-  FCheck.Items[FCheck.ItemIndex]:=itemtmp;
-  FCheck.Checked[FCheck.ItemIndex]:=checkedtmp;
-  FCheck.ItemIndex:=FCheck.ItemIndex-1
-end;
-
-procedure TCheckListBoxEditorDlg.MoveDownItem(Sender:TObject);
-var itemtmp:string;
-    checkedtmp:boolean;
-begin
-  if (FCheck.Items.Count<=1)or(FCheck.ItemIndex=FCheck.Items.Count-1)or(FCheck.ItemIndex=-1) then exit;
-  itemtmp:=FCheck.Items[FCheck.ItemIndex+1];
-  checkedtmp:=FCheck.Checked[FCheck.ItemIndex+1];
-  FCheck.Items[FCheck.ItemIndex+1]:=FCheck.Items[FCheck.ItemIndex];
-  FCheck.Checked[FCheck.ItemIndex+1]:=FCheck.Checked[FCheck.ItemIndex];
-  FCheck.Items[FCheck.ItemIndex]:=itemtmp;
-  FCheck.Checked[FCheck.ItemIndex]:=checkedtmp;
-  FCheck.ItemIndex:=FCheck.ItemIndex+1
-end;
-
-procedure TCheckListBoxEditorDlg.ModifyItem(Sender:TObject);
-begin
-  if FCheck.ItemIndex=-1 then exit;
-  FCheck.Items[FCheck.ItemIndex]:=InputBox(clbCheckListBoxEditor,clbModify,FCheck.Items[FCheck.ItemIndex]);
-end;
-
 { TCheckListBoxComponentEditor }
 
 procedure TCheckListBoxComponentEditor.DoShowEditor;
 var Dlg: TCheckListBoxEditorDlg;
     Hook: TPropertyEditorHook;
-    aCheck: TCheckListBox;
 begin
   Dlg:=TCheckListBoxEditorDlg.Create(nil);
   with Dlg do begin
     Caption:=clbCheckListBoxEditor;
-    FBtnAdd.Caption:=oiscAdd;
-    FBtnDelete.Caption:=oiscDelete;
-    FBtnUp.Caption:=clbUp;
-    FBtnDown.Caption:=clbDown;
-    FBtnModify.Caption:='...';
-    FBtnModify.ShowHint:=true;
-    FBtnModify.Hint:=clbModify;
+    BtnAdd.Caption:=oiscAdd;
+    BtnDelete.Caption:=oiscDelete;
+    BtnUp.Caption:=clbUp;
+    BtnDown.Caption:=clbDown;
+    BtnModify.Caption:='...';
+    BtnModify.ShowHint:=true;
+    BtnModify.Hint:=clbModify;
+    Modified:=false;
   end;
 
   try
     if GetComponent is TCheckListBox then begin
-      aCheck:=TCheckListBox(GetComponent);
+      Dlg.aCheck:=TCheckListBox(GetComponent);
       GetHook(Hook);
 
-      AssignCheck(Dlg.FCheck, aCheck);
+      AssignCheck(Dlg.FCheck, Dlg.aCheck);
 
       //ShowEditor
       if Dlg.ShowModal=mrOK then begin
-        //Apply the modifications
-        AssignCheck(aCheck, Dlg.FCheck);
+        AssignCheck(Dlg.aCheck, Dlg.FCheck);
         Modified;
       end;
+      if Dlg.Modified then
+        Modified;
     end;
   finally
     Dlg.Free;
-  end;
-end;
-
-procedure TCheckListBoxComponentEditor.AssignCheck(dstCheck, srcCheck: TCheckListBox);
-var i: integer;
-begin
-  DstCheck.Items.Clear;
-  DstCheck.Items:=srcCheck.Items;
-  DstCheck.ItemHeight:=srcCheck.ItemHeight;
-  for i:=0 to srcCheck.Items.Count-1 do begin
-    if srcCheck.Items[i]<>dstCheck.Items[i] then
-        dstCheck.Items[i]:=srcCheck.Items[i];
-    dstCheck.Checked[i]:=srcCheck.Checked[i]
   end;
 end;
 
@@ -1402,7 +1314,6 @@ begin
 end;
 
 initialization
-  {$I checklistboxeditordlg.lrs}
   {$I checkgroupeditordlg.lrs}
 
   RegisterComponentEditorProc:=@DefaultRegisterComponentEditorProc;
