@@ -306,6 +306,8 @@ begin
     gtk_idle_add(TGtkfunction(@GtkWS_GtkTextUnFreeze), FGtkText);
   end;
 
+  LockOnChange(PGtkObject(FGtkText),+1);
+
   if Index < FCachedCount then begin
     //insert with LineEnding
     LineStart := FLineStartPos[Index];
@@ -321,6 +323,8 @@ begin
       NewLine := S+LineEnding;
     gtk_editable_insert_text(PGtkEditable(FGtkText),PChar(NewLine), Length(NewLine), @LineStart)
   end;
+
+  LockOnChange(PGtkObject(FGtkText),-1);
 end;
 
 procedure TGtkMemoStrings.SetText(TheText: PChar);
@@ -328,9 +332,11 @@ var
 StartPos: Integer;
 begin
   StartPos := 0;
+  LockOnChange(PGtkObject(FGtkText),+1);
   Clear;
   if theText^<>#0 then
     gtk_editable_insert_text(PGtkEditable(FGtkText),TheText, Length(TheText), @StartPos);
+  LockOnChange(PGtkObject(FGtkText),-1);
   //debugln('TGtkMemoStrings.SetText ',DbgSName(Owner),' "',TheText,'" ',dbgs(gtk_text_get_length(FGtkText)));
 end;
 {$ENDIF}
