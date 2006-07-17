@@ -392,7 +392,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgaddsemicolon
 msgid "Add semicolon"
-msgstr ""
+msgstr "Lisää puolipiste"
 
 #: lazarusidestrconsts:lisoifaddtofavouriteproperties
 msgid "Add to favourite properties"
@@ -1424,7 +1424,7 @@ msgstr "Komponentin nimi (name) %s%s%s ei ole sallittu tunnus"
 
 #: lazarusidestrconsts:lisfpcomponents
 msgid "Components"
-msgstr ""
+msgstr "Komponentit"
 
 #: lazarusidestrconsts:srkmcatcomponentsmenu
 msgid "Components menu commands"
@@ -2716,7 +2716,7 @@ msgstr "Etsi koodilohkon alku"
 
 #: lazarusidestrconsts:liscomppalfindcomponent
 msgid "Find component"
-msgstr ""
+msgstr "Etsi komponentti"
 
 #: lazarusidestrconsts:srkmecfinddeclaration
 msgid "Find declaration"
@@ -2744,7 +2744,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisfpfindpalettecomponent
 msgid "Find palette component"
-msgstr ""
+msgstr "Etsi komponenttipaletista komponentti"
 
 #: lazarusidestrconsts:srkmecfindprevious
 msgid "Find previous"
@@ -3172,7 +3172,7 @@ msgstr "Käsiteltävä tunniste on"
 
 #: lazarusidestrconsts:dlgedidcomlet
 msgid "Identifier completion"
-msgstr ""
+msgstr "Koodin täydentäminen"
 
 #: lazarusidestrconsts:lismakeresstridentifierlength
 msgid "Identifier length:"
@@ -5484,7 +5484,7 @@ msgstr "Vain luettavissa"
 
 #: lazarusidestrconsts:lispckeditreadonly
 msgid "Read Only: %s"
-msgstr ""
+msgstr "Tämä on vain luettavissa: %s"
 
 #: lazarusidestrconsts:liscodetoolsdefsreaderror
 msgid "Read error"
