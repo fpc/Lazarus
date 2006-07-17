@@ -1731,6 +1731,8 @@ begin
                        cafEdgedBracketClose]
     then
       break;
+    if CurPos.StartPos>SrcLen then
+      RaiseCharExpectedButAtomFound(';');
     if AtomIs('..') then begin
       if RangeOpFound then
         RaiseCharExpectedButAtomFound(';');
