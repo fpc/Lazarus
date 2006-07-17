@@ -84,7 +84,7 @@ fi
 if [ "x$Params" != "x" ]; then
   Params="$Params targets=i386-win32"
   echo "calling update_cross_fpc.sh $Params ..."
-  ./update_cross_fpc.sh $Params
+  ./update_cross_fpc.sh $Params || exit
 fi
 
 

@@ -56,7 +56,8 @@ type
   TLDConfigNodeType = (
     ldcntControl,
     ldcntForm,
-    ldcntSplitter,
+    ldcntSplitterLeftRight,
+    ldcntSplitterUpDown,
     ldcntPages,
     ldcntPage
     );
@@ -65,7 +66,8 @@ const
   LDConfigNodeTypeNames: array[TLDConfigNodeType] of string = (
     'Control',
     'Form',
-    'Splitter',
+    'SplitterLeftRight',
+    'SplitterUpDown',
     'Pages',
     'Page'
     );
@@ -94,9 +96,12 @@ type
     procedure DoAdd(ChildNode: TLazDockConfigNode);
     procedure DoRemove(ChildNode: TLazDockConfigNode);
   public
+    constructor Create(ParentNode: TLazDockConfigNode);
     constructor Create(ParentNode: TLazDockConfigNode; const AName: string);
     destructor Destroy; override;
     procedure Clear;
+    procedure RemoveFromParentAndFree;
+    procedure Assign(Source: TPersistent); override;
     function FindByName(const AName: string; Recursive: boolean = false;
                         WithRoot: boolean = true): TLazDockConfigNode;
     function GetScreenBounds: TRect;
@@ -161,6 +166,8 @@ type
     procedure ClearConfigs;
     function GetConfigWithDockerName(const DockerName: string
                                      ): TLazDockerConfig;
+    function CreateLayout(const DockerName: string; VisibleControl: TControl
+                          ): TLazDockConfigNode;
   public
     property Manager: TAnchoredDockManager read FManager;
     property DockerCount: Integer read GetDockerCount;
@@ -485,9 +492,12 @@ function TCustomLazControlDocker.GetLayoutFromControl: TLazDockConfigNode;
     Result:=TLazDockConfigNode.Create(ParentNode,GetControlName(AControl));
 
     // The Type
-    if AControl is TLazDockSplitter then
-      Result.FTheType:=ldcntSplitter
-    else if AControl is TLazDockForm then
+    if AControl is TLazDockSplitter then begin
+      if TLazDockSplitter(AControl).ResizeAnchor in [akLeft,akRight] then
+        Result.FTheType:=ldcntSplitterLeftRight
+      else
+        Result.FTheType:=ldcntSplitterUpDown;
+    end else if AControl is TLazDockForm then
       Result.FTheType:=ldcntForm
     else if AControl is TLazDockPages then
       Result.FTheType:=ldcntPages
@@ -737,40 +747,66 @@ procedure TCustomLazControlDocker.RestoreLayout;
     |+---+#+-----------------+|
     +-------------------------+
   }
+type
+  TSiblingDistance = (
+    sdUnknown,
+    sdThreeSides,        // sibling shares 3 sides
+    sdOneSide,           // sibling shares 1 side
+    sdSplitterThreeSides,// splitter, then sibling shares 3 sides
+    sdSplitterOneSide    // splitter, then sibling shares 1 side
+    );
 var
   Layout: TLazDockerConfig;
   SelfNode: TLazDockConfigNode;
-  
-{  function FindControl(Node: TLazDockConfigNode): TControl;
-  begin
-    if Node.TheType=ldcntControl then
-      Result:=Manager.FindDockerByName(Node.Name)
-    else
-      Result:=nil;
-  end;
 
+  procedure RaiseLayoutInconsistency(Node: TLazDockConfigNode);
+  begin
+    raise Exception.Create('TCustomLazControlDocker.RestoreLayout'
+      +' DockerName="'+DockerName+'"'
+      +' Control='+DbgSName(Control)
+      +' Node='+Node.Name);
+  end;
+  
   procedure FindSibling(Node: TLazDockConfigNode; Side: TAnchorKind;
     out Sibling: TControl; out SiblingNode: TLazDockConfigNode;
-    out Distance: integer);
+    out Distance: TSiblingDistance);
+  // find the nearest visible sibling control at Side
   var
     SiblingName: string;
   begin
     Sibling:=nil;
     SiblingNode:=nil;
-    Distance:=10000;
+    Distance:=sdUnknown;
     if Node=nil then exit;
     SiblingName:=Node.Sides[Side];
     if SiblingName<>'' then begin
-      SiblingNode:=Layout.Root.FindByName(SiblingName,true,true);
-      Sibling:=FindControl(SiblingNode);
+      SiblingNode:=Layout.Root.FindByName(SiblingName,true);
+      if SiblingNode=nil then
+        RaiseLayoutInconsistency(Node);
+      case SiblingNode.TheType of
+      ldcntSplitterLeftRight,ldcntSplitterUpDown:
+        begin
+          FindSibling(SiblingNode,Side,Sibling,SiblingNode,Distance);
+          if Distance=sdOneSide then
+            Distance:=sdSplitterOneSide;
+          if Distance=sdThreeSides then
+            Distance:=sdSplitterThreeSides;
+          if Distance=sdSplitterThreeSides then begin
+
+          end;
+          exit;
+        end;
+      else
+        exit;
+      end;
       // TODO
     end;
-  end;}
+  end;
   
 var
   NewBounds: TRect;
 begin
-  DebugLn(['TCustomLazControlDocker.RestoreLayout A ',DockerName]);
+  DebugLn(['TCustomLazControlDocker.RestoreLayout A ',DockerName,' Control=',DbgSName(Control)]);
   if (Manager=nil) or (Control=nil) then exit;
   Layout:=Manager.GetConfigWithDockerName(DockerName);
   if (Layout=nil) or (Layout.Root=nil) then exit;
@@ -780,12 +816,20 @@ begin
   
   if SelfNode.Parent<>nil then begin
     // this control was docked
-    if SelfNode.Parent.TheType=ldcntPage then begin
-      // this control was docked as child of a page
-      DebugLn(['TCustomLazControlDocker.RestoreLayout TODO restore page']);
-    end else begin
-      // this control was docked on a form as child
-      //FindSibling(SelfNode,akLeft,LeftSibling,LeftSiblingDistance);
+    case SelfNode.Parent.TheType of
+    ldcntPage:
+      begin
+        // this control was docked as child of a page
+        DebugLn(['TCustomLazControlDocker.RestoreLayout TODO restore page']);
+      end;
+    ldcntControl,ldcntForm:
+      begin
+        // this control was docked on a form as child
+        DebugLn(['TCustomLazControlDocker.RestoreLayout TODO restore splitter']);
+        //FindSibling(SelfNode,akLeft,LeftSibling,LeftSiblingDistance);
+      end;
+    else
+      exit;
     end;
   end;
   
@@ -1067,6 +1111,69 @@ begin
   Result:=nil;
 end;
 
+function TCustomLazDockingManager.CreateLayout(const DockerName: string;
+  VisibleControl: TControl): TLazDockConfigNode;
+// create a usable config
+// This means: search a config, create a copy
+// and remove all nodes without visible controls.
+
+  procedure RemoveEmptyNodes(Node: TLazDockConfigNode);
+  var
+    i: Integer;
+    Docker: TCustomLazControlDocker;
+    Child: TLazDockConfigNode;
+  begin
+    if Node=nil then exit;
+    // remove empty childs
+    for i:=Node.ChildCount-1 downto 0 do
+      RemoveEmptyNodes(Node.Childs[i]);
+    // remove unneeded splitters
+    for i:=Node.ChildCount-1 downto 0 do begin
+      Child:=Node.Childs[i];
+      // a splitter is needed, if it has none splitters on both sides
+      if Child.TheType=ldcntSplitterLeftRight then begin
+
+      end else if Child.TheType=ldcntSplitterUpDown then begin
+      
+      end;
+    end;
+
+    case Node.TheType of
+    ldcntControl:
+      begin
+        Docker:=FindDockerByName(Node.Name);
+        // if the associated control does not exist or is not visible,
+        // then delete the node
+        if (Docker=nil)
+        or (Docker.Control=nil)
+        or ((not Docker.Control.Visible) and (Docker.Control<>VisibleControl))
+        then
+          Node.RemoveFromParentAndFree;
+      end;
+    ldcntForm,ldcntPage,ldcntPages:
+      // these are auto created parent nodes. If they have no childs: delete
+      if Node.ChildCount=0 then
+        Node.RemoveFromParentAndFree;
+    end;
+  end;
+
+var
+  Config: TLazDockerConfig;
+begin
+  Result:=nil;
+  Config:=GetConfigWithDockerName(DockerName);
+  if (Config=nil) or (Config.Root=nil)
+  or (Config.Root.FindByName(DockerName)=nil) then begin
+    // no good config found
+    exit;
+  end;
+  // create a copy of the config
+  Result:=TLazDockConfigNode.Create(nil);
+  Result.Assign(Config.Root);
+  // clean up
+  RemoveEmptyNodes(Result);
+end;
+
 { TLazDockConfigNode }
 
 function TLazDockConfigNode.GetSides(Side: TAnchorKind): string;
@@ -1138,12 +1245,17 @@ begin
   FChilds.Remove(ChildNode);
 end;
 
+constructor TLazDockConfigNode.Create(ParentNode: TLazDockConfigNode);
+begin
+  FTheType:=ldcntControl;
+  Parent:=ParentNode;
+end;
+
 constructor TLazDockConfigNode.Create(ParentNode: TLazDockConfigNode;
   const AName: string);
 begin
   FName:=AName;
-  FTheType:=ldcntControl;
-  Parent:=ParentNode;
+  Create(ParentNode,AName);
 end;
 
 destructor TLazDockConfigNode.Destroy;
@@ -1161,6 +1273,39 @@ begin
   if FChilds=nil then exit;
   for i:=ChildCount-1 downto 0 do Childs[i].Free;
   FChilds.Clear;
+end;
+
+procedure TLazDockConfigNode.RemoveFromParentAndFree;
+begin
+  if Parent<>nil then Parent.FChilds.Remove(Self);
+  Free;
+end;
+
+procedure TLazDockConfigNode.Assign(Source: TPersistent);
+var
+  Src: TLazDockConfigNode;
+  i: Integer;
+  SrcChild: TLazDockConfigNode;
+  NewChild: TLazDockConfigNode;
+  a: TAnchorKind;
+begin
+  if Source is TLazDockConfigNode then begin
+    Clear;
+    Src:=TLazDockConfigNode(Source);
+    FBounds:=Src.FBounds;
+    FClientBounds:=Src.FClientBounds;
+    FName:=Src.FName;
+    for a:=Low(TAnchorKind) to High(TAnchorKind) do
+      FSides[a]:=Src.FSides[a];
+    FTheType:=Src.FTheType;
+    for i:=0 to Src.FChilds.Count-1 do begin
+      SrcChild:=Src.Childs[i];
+      NewChild:=TLazDockConfigNode.Create(Self);
+      NewChild.Assign(SrcChild);
+      FChilds.Add(NewChild);
+    end;
+  end else
+    inherited Assign(Source);
 end;
 
 function TLazDockConfigNode.FindByName(const AName: string;
@@ -1241,6 +1386,7 @@ var
   SubPath: String;
 begin
   Clear;
+  // Note: 'Name' is stored for information, but not restored on load
   TheType:=LDConfigNodeTypeNameToType(Config.GetValue(Path+'Type/Value',
                                       LDConfigNodeTypeNames[ldcntControl]));
   Config.GetValue(Path+'Bounds/',FBounds,Rect(0,0,0,0));

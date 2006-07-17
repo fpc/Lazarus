@@ -72,7 +72,7 @@ for p in $Params; do
     BuildRoot=$(echo $p | sed -e 's#^buildroot=##')
     ;;
   targets=*)
-    Targets=$p
+    Targets=$(echo $p | sed -e 's#^targets=##')
     ;;
   *)
     echo "Unknown option: $p"
@@ -182,22 +182,22 @@ fi
 
 if [ $DownloadFPC = "yes" ]; then
   cd $BuildRoot
-  if [ -f fpc ]; then
+  if [ -d fpc ]; then
     cd fpc
     echo "SVN update for FPC ..."
     svn cleanup
     svn up
   else
-    echo "SVN checkout for FPC ..."
+    echo "SVN checkout for FPC 2.0 ..."
     svn co http://svn.freepascal.org/svn/fpc/branches/fixes_2_0 fpc
   fi
-  if [ -f install ]; then
+  if [ -d install ]; then
     cd install
     echo "SVN update for FPC install ..."
     svn cleanup
     svn up
   else
-    echo "SVN checkout for FPC install ..."
+    echo "SVN checkout for FPC 2.0 install ..."
     svn co http://svn.freepascal.org/svn/fpcbuild/branches/fixes_2_0/install install
   fi
 fi
@@ -206,6 +206,10 @@ fi
 # setup some variables
 # retrieve the version information
 VersionFile="$BuildRoot/fpc/compiler/version.pas"
+if [ ! -f $VersionFile ]; then
+  echo No FPC sources found. To download them call ./update_cross_fpc.sh DownloadFPC
+  exit
+fi
 CompilerVersion=`cat $VersionFile | grep ' *version_nr *=.*;' | sed -e 's/[^0-9]//g'`
 CompilerRelease=`cat $VersionFile | grep ' *release_nr *=.*;' | sed -e 's/[^0-9]//g'`
 CompilerPatch=`cat $VersionFile | grep ' *patch_nr *=.*;' | sed -e 's/[^0-9]//g'`
@@ -215,7 +219,12 @@ CompilerVersionStr="$CompilerVersion.$CompilerRelease.$CompilerPatch"
 # build binutils
 if [ $BuildBinutils = "yes" ]; then
   # create custom version of buildcrossbinutils
-  echo "building cross binutils ..."
+  echo "building cross binutils for targets:"
+  echo "  WIN=$TARGETS_WIN"
+  echo "  I386=$TARGETS_I386"
+  echo "  POWERPC=$TARGETS_POWERPC"
+  echo "  SPARC=$TARGETS_SPARC"
+  echo "  M68K=$TARGETS_M68K"
   cd $BuildRoot/install/cross/
   cat buildcrossbinutils | \
     sed -e 's#^BASE=.*$#BASE='"$BuildRoot"'/binutils#' \
@@ -233,10 +242,18 @@ if [ $BuildBinutils = "yes" ]; then
   #debugging: head -n 50 buildcrossbinutils.sh
 
   # build the cross binutils
-  echo "HINT: when something goes wrong see the log files in $BuildRoot/bintuils/logs/"
+  echo "HINT: when something goes wrong see the log files in $BuildRoot/binutils/logs/"
   rm -rf $BuildRoot/binutils
-  sh buildcrossbinutils.sh
-  
+  Command=$BuildRoot/install/cross/buildcrossbinutils.sh
+  echo "calling $Command ..."
+  Result=$(sh buildcrossbinutils.sh)
+  FailResult=$(echo "$Result" | grep -i failes || true)
+  if [ -n "$FailResult" ]; then
+    echo $Result
+    echo "HINT: see the log files in $BuildRoot/binutils/logs/"
+    exit -1
+  fi
+
   # link binaries into the bin directory, so that FPC can find them
   mkdir -p $BinDir
   for Target in $Targets; do

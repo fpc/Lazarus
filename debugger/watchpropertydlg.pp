@@ -40,9 +40,12 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, LResources, StdCtrls,
-  Buttons, Extctrls, Debugger, BaseDebugManager, Menus;
+  Buttons, Extctrls, Menus,
+  IDEContextHelpEdit, Debugger, BaseDebugManager;
 
 type
+
+  { TWatchPropertyDlg }
 
   TWatchPropertyDlg = class(TForm)
     lblExpression: TLabel;
@@ -57,6 +60,7 @@ type
     txtExpression: TEdit;
     txtRepCount: TEdit;
     txtDigits: TEdit;
+    procedure btnHelpClick(Sender: TObject);
     procedure btnOKClick(Sender: TObject);
   private
     FWatch: TIDEWatch;
@@ -80,6 +84,11 @@ begin
   end;
   
   FWatch.Enabled := chkEnabled.Checked;
+end;
+
+procedure TWatchPropertyDlg.btnHelpClick(Sender: TObject);
+begin
+  ShowContextHelpForIDE(btnHelp);
 end;
 
 constructor TWatchPropertyDlg.Create(AOwner: TComponent; const AWatch: TIDEWatch);
