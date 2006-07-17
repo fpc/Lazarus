@@ -1171,7 +1171,7 @@ procedure TIdentCompletionTool.FindCollectionContext(
       if WordIsPropertySpecifier.DoItUpperCase(UpperSrc,
           CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)
       then
-        // don't resolve property specifiers
+        // do not resolve property specifiers
         Result:=IdentStartPos;
     end;
   end;
@@ -1213,6 +1213,7 @@ begin
       //DebugLn('TIdentCompletionTool.CollectAllContexts CurrentContexts.ProcNameAtom.StartPos=',dbgs(CurrentContexts.ProcNameAtom.StartPos));
       if (CurrentContexts.ProcName='') then exit;
       FoundContext.Tool.MoveCursorToProcName(FoundContext.Node,true);
+      //DebugLn(['TIdentCompletionTool.CollectAllContexts ProcName=',GetIdentifier(@FoundContext.Tool.Src[FoundContext.Tool.CurPos.StartPos])]);
       if not FoundContext.Tool.CompareSrcIdentifier(
         FoundContext.Tool.CurPos.StartPos,
         CurrentContexts.ProcName)
@@ -1396,12 +1397,17 @@ var
     Result:=false;
     // check if in a begin..end block
     if (CursorNode.Desc<>ctnBeginBlock)
-    and (not CursorNode.HasParentOfType(ctnBeginBlock)) then exit;
-    // check is cursor is in a parameter list behind an identifier
+    and (not CursorNode.HasParentOfType(ctnBeginBlock)) then begin
+      DebugLn(['TIdentCompletionTool.FindCodeContext.CheckContextIsParameter not in a begin block']);
+      exit;
+    end;
+    // check if cursor is in a parameter list
     if not CheckParameterSyntax(CursorNode, CleanCursorPos,
                                 VarNameAtom, ProcNameAtom, ParameterIndex)
-    then exit;
-    if VarNameAtom.StartPos<1 then exit;
+    then begin
+      DebugLn(['TIdentCompletionTool.FindCodeContext.CheckContextIsParameter not in a parameter list']);
+      exit;
+    end;
     //DebugLn('CheckContextIsParameter Variable=',GetAtom(VarNameAtom),' Proc=',GetAtom(ProcNameAtom),' ParameterIndex=',dbgs(ParameterIndex));
     
     // it is a parameter -> create context
@@ -1423,6 +1429,7 @@ var
 
     FindCollectionContext(Params,ProcNameAtom.StartPos,CursorNode,
                           GatherContext,ContextExprStartPos,StartInSubContext);
+    //DebugLn(['CheckContextIsParameter StartInSubContext=',StartInSubContext,' ',GatherContext.Node.DescAsString,' "',copy(GatherContext.Tool.Src,GatherContext.Node.StartPos-20,25),'"']);
 
     // gather declarations of all parameter lists
     Params.ContextNode:=GatherContext.Node;
@@ -1430,8 +1437,6 @@ var
     Params.Flags:=[fdfSearchInAncestors,fdfCollect,fdfFindVariable];
     if not StartInSubContext then
       Include(Params.Flags,fdfSearchInParentNodes);
-    if Params.ContextNode.Desc in [ctnClass,ctnClassInterface] then
-      Exclude(Params.Flags,fdfSearchInParentNodes);
     CurrentIdentifierList.Context:=GatherContext;
     //DebugLn('CheckContextIsParameter searching procedure ...');
     GatherContext.Tool.FindIdentifierInContext(Params);
@@ -1460,10 +1465,13 @@ begin
     FindContextClassAndAncestors(CursorPos,ClassAndAncestors);
 
     if CursorNode<>nil then begin
-      if CheckContextIsParameter(Result) then exit;
+      if not CheckContextIsParameter(Result) then begin
+        DebugLn(['TIdentCompletionTool.FindCodeContext cursor not at parameter']);
+        exit;
+      end;
     end;
 
-    if CodeContexts=nil then begin
+    if CurrentContexts=nil then begin
       // create default
       AddCollectionContext(Self,CursorNode);
     end;
@@ -1483,7 +1491,6 @@ begin
     DeactivateGlobalWriteLock;
     FreeAndNil(CurrentIdentifierList);
   end;
-  Result:=false;
 end;
 
 
