@@ -217,7 +217,7 @@ Var
   DrawListItemStruct: TDrawListItemStruct; //used by WM_DRAWITEM
   CancelEndSession : Boolean;//use by WM_QUERYENDSESSION
 
-  procedure ShowHideTabPage(NotebookHandle: HWnd; Showing: boolean);
+  function ShowHideTabPage(NotebookHandle: HWnd; Showing: boolean): integer;
   var
     NoteBook: TCustomNotebook;
     PageIndex, Flags: Integer;
@@ -225,6 +225,7 @@ Var
   begin
     Notebook := GetWindowInfo(NotebookHandle)^.WinControl as TCustomNotebook;
     PageIndex := Windows.SendMessage(NotebookHandle, TCM_GETCURSEL, 0, 0);
+    PageIndex := NotebookPageRealToLCLIndex(Notebook, PageIndex);
     if PageIndex = -1 then exit;
     PageHandle := Notebook.CustomPage(PageIndex).Handle;
     if Showing then
@@ -232,8 +233,10 @@ Var
     else
       Flags := SW_HIDE;
     Windows.ShowWindow(PageHandle, Flags);
+    Windows.RedrawWindow(PageHandle, nil, 0, RDW_INVALIDATE or RDW_ALLCHILDREN or RDW_ERASE);
     if Showing then
       NotebookFocusNewControl(Notebook, PageIndex);
+    Result := PageIndex;
   end;
 
   function GetMenuItemObject: TObject;
@@ -1491,10 +1494,7 @@ Begin
             TCN_SELCHANGING:
               ShowHideTabPage(HWndFrom, False);
             TCN_SELCHANGE:
-            begin
-              ShowHideTabPage(HWndFrom, True);
-              idFrom := Windows.SendMessage(HWndFrom, TCM_GETCURSEL, 0, 0);
-            end;
+              idFrom := ShowHideTabPage(HWndFrom, true);
           end;
         end;
       end;
