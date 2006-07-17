@@ -116,7 +116,7 @@ uses
   BuildLazDialog, MiscOptions, InputHistory, UnitDependencies, ClipBoardHistory,
   ProcessList, InitialSetupDlgs, NewDialog, MakeResStrDlg, ToDoList,
   DialogProcs, FindReplaceDialog, FindInFilesDlg, CodeExplorer, BuildFileDlg,
-  ExtractProcDlg, FindRenameIdentifier,
+  ProcedureList, ExtractProcDlg, FindRenameIdentifier,
   CleanDirDlg, CodeContextForm, AboutFrm,
   // main ide
   MainBar, MainIntf, MainBase;
@@ -1853,6 +1853,7 @@ begin
   SetupEnvironmentMenu;
   SetupWindowsMenu;
   SetupHelpMenu;
+  ProcedureList.Register;
   mnuMain.MenuItem:=MainIDEBar.mnuMainMenu.Items;
 end;
 
