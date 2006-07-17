@@ -2363,8 +2363,9 @@ begin
   if Assigned(OnMouseMove) then
     OnMouseMove(Self,Shift,X,Y);
 end;
-Procedure TSourceEditor.EditorMouseWheel(Sender: TObject; Shift: TShiftState;
-         WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
+
+procedure TSourceEditor.EditorMouseWheel(Sender: TObject; Shift: TShiftState;
+  WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
 begin
 //  Writeln('MouseWheel in Editor');
   if Assigned(OnMouseWheel) then
@@ -5479,17 +5480,16 @@ begin
                          EditorOpts.AutoToolTipExprEval)
                         and Visible;
 end;
-Procedure TSourceNotebook.EditorMouseWheel(Sender: TObject; Shift: TShiftState;
-         WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
+
+procedure TSourceNotebook.EditorMouseWheel(Sender: TObject; Shift: TShiftState;
+  WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
 begin
   // restart hint timer
   HideHint;
   FHintTimer.Enabled := False;
   FHintTimer.Enabled := (EditorOpts.AutoToolTipSymbTools or
-                         EditorOpts.AutoToolTipExprEval)
-                         
-                        and Visible;
-  handled:=true;
+                         EditorOpts.AutoToolTipExprEval) and Visible;
+  //handled:=true; //The scrooling is not done: it's not handled! See TWinControl.DoMouseWheel
 end;
 
 procedure TSourceNotebook.EditorMouseDown(Sender: TObject;
