@@ -7,7 +7,7 @@ object WatchesDlg: TWatchesDlg
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  PixelsPerInch = 96
+  PixelsPerInch = 112
   HorzScrollBar.Page = 499
   VertScrollBar.Page = 199
   Left = 321

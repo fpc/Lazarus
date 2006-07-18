@@ -146,6 +146,10 @@ msgstr "%sQuesto pacchetto è installato ma il file lpk non è stato trovato"
 msgid "%sThis package was automatically created"
 msgstr "%sQuesto pacchetto è stato creato automaticamente"
 
+#: lazarusidestrconsts:liswladd
+msgid "&Add"
+msgstr ""
+
 #: lazarusidestrconsts:uemaddbreakpoint
 msgid "&Add Breakpoint"
 msgstr "&Aggiungi breakpoint"
@@ -158,9 +162,17 @@ msgstr "&Chiudi pagina"
 msgid "&Components"
 msgstr "&Componenti"
 
+#: lazarusidestrconsts:liswldelete
+msgid "&Delete"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuedit
 msgid "&Edit"
 msgstr "&Modifica"
+
+#: lazarusidestrconsts:liswlenabled
+msgid "&Enabled"
+msgstr ""
 
 #: lazarusidestrconsts:lismenufile
 msgid "&File"
@@ -185,6 +197,10 @@ msgstr "Apri il file al cursore"
 #: lazarusidestrconsts:lismenuproject
 msgid "&Project"
 msgstr "&Progetto"
+
+#: lazarusidestrconsts:liswlproperties
+msgid "&Properties"
+msgstr ""
 
 #: lazarusidestrconsts:dlgreplacewith
 msgid "&Replace With"
@@ -1798,6 +1814,10 @@ msgstr "Taglia i componenti selezionati negli appunti"
 msgid "Cut selection to clipboard"
 msgstr "Taglia la selezione negli appunti"
 
+#: lazarusidestrconsts:liswldisableall
+msgid "D&isable All"
+msgstr ""
+
 #: lazarusidestrconsts:lishlpoptsdatabases
 msgid "Databases"
 msgstr "Database"
@@ -1805,6 +1825,10 @@ msgstr "Database"
 #: lazarusidestrconsts:lisdate
 msgid "Date"
 msgstr "Data"
+
+#: lazarusidestrconsts:liswldeleteall
+msgid "De&lete All"
+msgstr ""
 
 #: lazarusidestrconsts:uemdebugword
 msgid "Debug"
@@ -2182,6 +2206,10 @@ msgstr "Rilascia file"
 msgid "Dutch"
 msgstr "Olandese"
 
+#: lazarusidestrconsts:liswlenableall
+msgid "E&nable All"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuenvironent
 msgid "E&nvironment"
 msgstr "Ambie&nte"
@@ -2485,6 +2513,10 @@ msgstr "Nome file espanso del file dell'editor corrente"
 #: lazarusidestrconsts:lisexportlist
 msgid "Export list"
 msgstr "Esporta elenco"
+
+#: lazarusidestrconsts:liswlexpression
+msgid "Expression"
+msgstr ""
 
 #: lazarusidestrconsts:lisextendunitpath
 msgid "Extend unit path?"
@@ -8433,6 +8465,10 @@ msgstr "Attenzione: il file %s%s%s%sappartiene al progetto corrente."
 #: lazarusidestrconsts:liswarningambiguousfilefoundsourcefileis
 msgid "Warning: ambiguous file found: %s%s%s. Source file is: %s%s%s"
 msgstr "Attenzione: trovato file ambiguo: %s%s%s. Il file sorgente è: %s%s%s"
+
+#: lazarusidestrconsts:liswlwatchlist
+msgid "Watch list"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuviewwatches
 msgid "Watches"

@@ -2314,6 +2314,34 @@ msgstr ""
 msgid "Value"
 msgstr ""
 
+#: lazarusidestrconsts:liswladd
+msgid "&Add"
+msgstr ""
+
+#: lazarusidestrconsts:liswlproperties
+msgid "&Properties"
+msgstr ""
+
+#: lazarusidestrconsts:liswlenabled
+msgid "&Enabled"
+msgstr ""
+
+#: lazarusidestrconsts:liswldelete
+msgid "&Delete"
+msgstr ""
+
+#: lazarusidestrconsts:liswldisableall
+msgid "D&isable All"
+msgstr ""
+
+#: lazarusidestrconsts:liswlenableall
+msgid "E&nable All"
+msgstr ""
+
+#: lazarusidestrconsts:liswldeleteall
+msgid "De&lete All"
+msgstr ""
+
 #: lazarusidestrconsts:dlgdefvaluecolor
 msgid "Default value"
 msgstr ""
@@ -9212,5 +9240,13 @@ msgstr ""
 
 #: lazarusidestrconsts:lislazbuildsavesettings
 msgid "Save settings"
+msgstr ""
+
+#: lazarusidestrconsts:liswlwatchlist
+msgid "Watch list"
+msgstr ""
+
+#: lazarusidestrconsts:liswlexpression
+msgid "Expression"
 msgstr ""
 

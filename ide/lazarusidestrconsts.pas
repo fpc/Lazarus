@@ -803,6 +803,13 @@ resourcestring
   dlgSubPropkColor = 'Subpropertes';
   dlgReferenceColor = 'Reference';
   dlgValueColor = 'Value';
+  liswlAdd = '&Add';
+  liswlProperties = '&Properties';
+  liswlEnabled = '&Enabled';
+  liswlDelete = '&Delete';
+  liswlDIsableAll = 'D&isable All';
+  liswlENableAll = 'E&nable All';
+  liswlDeLeteAll = 'De&lete All';
   dlgDefValueColor = 'Default value';
   dlgPropNameColor = 'Property name';
 
@@ -3040,6 +3047,8 @@ resourcestring
     +'message';
   lisRelativePaths = 'Relative paths';
   lisLazBuildSaveSettings = 'Save settings';
+  liswlWatchList = 'Watch list';
+  liswlExpression = 'Expression';
 
 implementation
 end.

@@ -134,6 +134,10 @@ msgstr "%sAquest paquet està intal·lat, però no s'ha trobat el fitxer lpk"
 msgid "%sThis package was automatically created"
 msgstr "%sAquest paquet s'ha creat automàticament"
 
+#: lazarusidestrconsts:liswladd
+msgid "&Add"
+msgstr ""
+
 #: lazarusidestrconsts:uemaddbreakpoint
 msgid "&Add Breakpoint"
 msgstr "&Afegeix punt de ruptura"
@@ -146,9 +150,17 @@ msgstr "Tan&ca la pàgina"
 msgid "&Components"
 msgstr "C&omponents"
 
+#: lazarusidestrconsts:liswldelete
+msgid "&Delete"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuedit
 msgid "&Edit"
 msgstr "&Edita"
+
+#: lazarusidestrconsts:liswlenabled
+msgid "&Enabled"
+msgstr ""
 
 #: lazarusidestrconsts:lismenufile
 msgid "&File"
@@ -173,6 +185,10 @@ msgstr "&Obre el fitxer al cursor"
 #: lazarusidestrconsts:lismenuproject
 msgid "&Project"
 msgstr "&Projecte"
+
+#: lazarusidestrconsts:liswlproperties
+msgid "&Properties"
+msgstr ""
 
 #: lazarusidestrconsts:dlgreplacewith
 msgid "&Replace With"
@@ -1786,6 +1802,10 @@ msgstr "Retalla els components seleccionats al porta-retalls"
 msgid "Cut selection to clipboard"
 msgstr "Retalla la selecció al porta-retalls"
 
+#: lazarusidestrconsts:liswldisableall
+msgid "D&isable All"
+msgstr ""
+
 #: lazarusidestrconsts:lishlpoptsdatabases
 msgid "Databases"
 msgstr "Base de dades"
@@ -1793,6 +1813,10 @@ msgstr "Base de dades"
 #: lazarusidestrconsts:lisdate
 msgid "Date"
 msgstr "Data"
+
+#: lazarusidestrconsts:liswldeleteall
+msgid "De&lete All"
+msgstr ""
 
 #: lazarusidestrconsts:uemdebugword
 msgid "Debug"
@@ -2170,6 +2194,10 @@ msgstr "Deixa anar els fitxers"
 msgid "Dutch"
 msgstr ""
 
+#: lazarusidestrconsts:liswlenableall
+msgid "E&nable All"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuenvironent
 msgid "E&nvironment"
 msgstr "E&ntorn"
@@ -2473,6 +2501,10 @@ msgstr "Nom del fitxer estès de l'actual fitxer editor"
 #: lazarusidestrconsts:lisexportlist
 msgid "Export list"
 msgstr "Exporta la llista"
+
+#: lazarusidestrconsts:liswlexpression
+msgid "Expression"
+msgstr ""
 
 #: lazarusidestrconsts:lisextendunitpath
 msgid "Extend unit path?"
@@ -8420,6 +8452,10 @@ msgstr "Avís: El fitxer %s%s%s%spertany al projecte actual."
 
 #: lazarusidestrconsts:liswarningambiguousfilefoundsourcefileis
 msgid "Warning: ambiguous file found: %s%s%s. Source file is: %s%s%s"
+msgstr ""
+
+#: lazarusidestrconsts:liswlwatchlist
+msgid "Watch list"
 msgstr ""
 
 #: lazarusidestrconsts:lismenuviewwatches

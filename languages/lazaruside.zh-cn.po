@@ -148,6 +148,10 @@ msgstr "%s包安装了, 但是 lpk 文件没有找到"
 msgid "%sThis package was automatically created"
 msgstr "%s包已经自动创建 "
 
+#: lazarusidestrconsts:liswladd
+msgid "&Add"
+msgstr ""
+
 #: lazarusidestrconsts:uemaddbreakpoint
 msgid "&Add Breakpoint"
 msgstr "添加断点(&A)"
@@ -160,9 +164,17 @@ msgstr "关闭页面(&C)"
 msgid "&Components"
 msgstr "组件(&C)"
 
+#: lazarusidestrconsts:liswldelete
+msgid "&Delete"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuedit
 msgid "&Edit"
 msgstr "编辑(&E)"
+
+#: lazarusidestrconsts:liswlenabled
+msgid "&Enabled"
+msgstr ""
 
 #: lazarusidestrconsts:lismenufile
 msgid "&File"
@@ -187,6 +199,10 @@ msgstr "在光标处打开文件(&O)"
 #: lazarusidestrconsts:lismenuproject
 msgid "&Project"
 msgstr "工程(&P)"
+
+#: lazarusidestrconsts:liswlproperties
+msgid "&Properties"
+msgstr ""
 
 #: lazarusidestrconsts:dlgreplacewith
 msgid "&Replace With"
@@ -1800,6 +1816,10 @@ msgstr "剪切选择的组件到剪切板"
 msgid "Cut selection to clipboard"
 msgstr "剪切选择的部分到剪切板"
 
+#: lazarusidestrconsts:liswldisableall
+msgid "D&isable All"
+msgstr ""
+
 #: lazarusidestrconsts:lishlpoptsdatabases
 msgid "Databases"
 msgstr "数据库"
@@ -1807,6 +1827,10 @@ msgstr "数据库"
 #: lazarusidestrconsts:lisdate
 msgid "Date"
 msgstr "日期"
+
+#: lazarusidestrconsts:liswldeleteall
+msgid "De&lete All"
+msgstr ""
 
 #: lazarusidestrconsts:uemdebugword
 msgid "Debug"
@@ -2184,6 +2208,10 @@ msgstr "丢失文件"
 msgid "Dutch"
 msgstr "德语"
 
+#: lazarusidestrconsts:liswlenableall
+msgid "E&nable All"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuenvironent
 msgid "E&nvironment"
 msgstr "环境(&N)"
@@ -2487,6 +2515,10 @@ msgstr "展开当前编辑器中文件的名称"
 #: lazarusidestrconsts:lisexportlist
 msgid "Export list"
 msgstr "导出列表"
+
+#: lazarusidestrconsts:liswlexpression
+msgid "Expression"
+msgstr ""
 
 #: lazarusidestrconsts:lisextendunitpath
 msgid "Extend unit path?"
@@ -8435,6 +8467,10 @@ msgstr "警告: 文件 %s%s%s%s属于当前工程."
 #: lazarusidestrconsts:liswarningambiguousfilefoundsourcefileis
 msgid "Warning: ambiguous file found: %s%s%s. Source file is: %s%s%s"
 msgstr "警告: 发现可疑文件: %s%s%s .源代码文件是:%s%s%s"
+
+#: lazarusidestrconsts:liswlwatchlist
+msgid "Watch list"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuviewwatches
 msgid "Watches"

@@ -1117,6 +1117,37 @@ function TCustomLazDockingManager.CreateLayout(const DockerName: string;
 // This means: search a config, create a copy
 // and remove all nodes without visible controls.
 
+  function ControlIsVisible(AControl: TControl): boolean;
+  begin
+    Result:=(AControl<>nil)
+            and ((AControl.Visible) or (AControl=VisibleControl));
+  end;
+  
+  procedure DeleteNode(DeletingNode: TLazDockConfigNode);
+  
+    procedure RemoveLinksToNode(ANode: TLazDockConfigNode);
+    var
+      a: TAnchorKind;
+      i: Integer;
+    begin
+      for a:=Low(TAnchorKind) to High(TAnchorKind) do begin
+        if CompareText(ANode.Sides[a],DeletingNode.Name)=0 then begin
+          ANode.Sides[a]:=DeletingNode.Sides[a]
+        end;
+      end;
+      for i:=0 to ANode.ChildCount-1 do
+        RemoveLinksToNode(ANode.Childs[i]);
+    end;
+  
+  var
+    ARoot: TLazDockConfigNode;
+  begin
+    ARoot:=DeletingNode;
+    while ARoot.Parent<>nil do ARoot:=ARoot.Parent;
+    RemoveLinksToNode(ARoot);
+    DeletingNode.RemoveFromParentAndFree;
+  end;
+
   procedure RemoveEmptyNodes(Node: TLazDockConfigNode);
   var
     i: Integer;
@@ -1130,7 +1161,7 @@ function TCustomLazDockingManager.CreateLayout(const DockerName: string;
     // remove unneeded splitters
     for i:=Node.ChildCount-1 downto 0 do begin
       Child:=Node.Childs[i];
-      // a splitter is needed, if it has none splitters on both sides
+      // a splitter is needed, if it has on both sides none splitters on both sides
       if Child.TheType=ldcntSplitterLeftRight then begin
 
       end else if Child.TheType=ldcntSplitterUpDown then begin
@@ -1145,15 +1176,14 @@ function TCustomLazDockingManager.CreateLayout(const DockerName: string;
         // if the associated control does not exist or is not visible,
         // then delete the node
         if (Docker=nil)
-        or (Docker.Control=nil)
-        or ((not Docker.Control.Visible) and (Docker.Control<>VisibleControl))
+        or not ControlIsVisible(Docker.Control)
         then
-          Node.RemoveFromParentAndFree;
+          DeleteNode(Node);
       end;
     ldcntForm,ldcntPage,ldcntPages:
       // these are auto created parent nodes. If they have no childs: delete
       if Node.ChildCount=0 then
-        Node.RemoveFromParentAndFree;
+        DeleteNode(Node);
     end;
   end;
 

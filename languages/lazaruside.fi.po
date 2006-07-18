@@ -134,6 +134,10 @@ msgstr ""
 msgid "%sThis package was automatically created"
 msgstr ""
 
+#: lazarusidestrconsts:liswladd
+msgid "&Add"
+msgstr ""
+
 #: lazarusidestrconsts:uemaddbreakpoint
 msgid "&Add Breakpoint"
 msgstr ""
@@ -146,9 +150,17 @@ msgstr "Sulje välilehti"
 msgid "&Components"
 msgstr "&Komponentit"
 
+#: lazarusidestrconsts:liswldelete
+msgid "&Delete"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuedit
 msgid "&Edit"
 msgstr "&Muokkaa"
+
+#: lazarusidestrconsts:liswlenabled
+msgid "&Enabled"
+msgstr ""
 
 #: lazarusidestrconsts:lismenufile
 msgid "&File"
@@ -173,6 +185,10 @@ msgstr "&Avaa kohdistimen osoittama tiedosto"
 #: lazarusidestrconsts:lismenuproject
 msgid "&Project"
 msgstr "&Projekti"
+
+#: lazarusidestrconsts:liswlproperties
+msgid "&Properties"
+msgstr ""
 
 #: lazarusidestrconsts:dlgreplacewith
 msgid "&Replace With"
@@ -1786,6 +1802,10 @@ msgstr ""
 msgid "Cut selection to clipboard"
 msgstr ""
 
+#: lazarusidestrconsts:liswldisableall
+msgid "D&isable All"
+msgstr ""
+
 #: lazarusidestrconsts:lishlpoptsdatabases
 msgid "Databases"
 msgstr ""
@@ -1793,6 +1813,10 @@ msgstr ""
 #: lazarusidestrconsts:lisdate
 msgid "Date"
 msgstr "Olla peräisin"
+
+#: lazarusidestrconsts:liswldeleteall
+msgid "De&lete All"
+msgstr ""
 
 #: lazarusidestrconsts:uemdebugword
 msgid "Debug"
@@ -2170,6 +2194,10 @@ msgstr ""
 msgid "Dutch"
 msgstr "hollanti"
 
+#: lazarusidestrconsts:liswlenableall
+msgid "E&nable All"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuenvironent
 msgid "E&nvironment"
 msgstr "Käyttöliittymä"
@@ -2472,6 +2500,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisexportlist
 msgid "Export list"
+msgstr ""
+
+#: lazarusidestrconsts:liswlexpression
+msgid "Expression"
 msgstr ""
 
 #: lazarusidestrconsts:lisextendunitpath
@@ -8420,6 +8452,10 @@ msgstr "Varoitus: Tiedosto %s%s%s%skuuluu jo projektiin."
 
 #: lazarusidestrconsts:liswarningambiguousfilefoundsourcefileis
 msgid "Warning: ambiguous file found: %s%s%s. Source file is: %s%s%s"
+msgstr ""
+
+#: lazarusidestrconsts:liswlwatchlist
+msgid "Watch list"
 msgstr ""
 
 #: lazarusidestrconsts:lismenuviewwatches

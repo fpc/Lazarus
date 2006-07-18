@@ -841,8 +841,6 @@ begin
   Button.Glyph:=ABitmap;
   ABitmap.Free;
   Button.OnClick:= @DoButtonClick;
-//  OnChange:=@Change;
-//  OnDblClick:=@DoButtonClick;
 end;
 
 destructor TDateEdit.Destroy;

@@ -104,6 +104,7 @@ procedure Register;
 
 
 implementation
+
 uses
   MenuIntf
   ,SrcEditorIntf

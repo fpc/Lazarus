@@ -1491,7 +1491,7 @@ begin
   ObjectInspector1.FindDeclarationPopupmenuItem.Visible:=true;
   ObjectInspector1.OnFindDeclarationOfProperty:=@OIOnFindDeclarationOfProperty;
   ObjectInspector1.BorderStyle:=bsSizeToolWin;
-  IDECmdScopeObjctInspectorOnly.AddWindowClass(TObjectInspector);
+  IDECmdScopeObjectInspectorOnly.AddWindowClass(TObjectInspector);
 
   GlobalDesignHook:=TPropertyEditorHook.Create;
   GlobalDesignHook.GetPrivateDirectory:=AppendPathDelim(GetPrimaryConfigPath);

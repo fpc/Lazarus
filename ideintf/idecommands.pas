@@ -434,6 +434,7 @@ type
                            const OnExecuteMethod: TNotifyEvent = nil;
                            const OnExecuteProc: TNotifyProcedure = nil
                            ): TIDECommand; virtual; abstract;
+    function FindCategoryByName(const CategoryName: string): TIDECommandCategory; virtual; abstract;
     function CategoryCount: integer; virtual; abstract;
   public
     property Categories[Index: integer]: TIDECommandCategory read GetCategory;
@@ -472,7 +473,11 @@ var
   IDECmdScopeSrcEdit: TIDECommandScope;
   IDECmdScopeSrcEditOnly: TIDECommandScope;
   IDECmdScopeDesignerOnly: TIDECommandScope;
-  IDECmdScopeObjctInspectorOnly: TIDECommandScope;
+  IDECmdScopeObjectInspectorOnly: TIDECommandScope;
+
+const
+  CommandCategoryToolMenuName = 'ToolMenu';
+  CommandCategoryCustomName = 'Custom';
 
 // register a new IDE command category (i.e. set of commands)
 function RegisterIDECommandCategory(Parent: TIDECommandCategory;
@@ -505,6 +510,7 @@ procedure CreateStandardIDECommandScopes;
 
 function CompareIDEShortCuts(Data1, Data2: Pointer): integer;
 function CompareIDEShortCutKey1s(Data1, Data2: Pointer): integer;
+
 
 implementation
 
@@ -553,7 +559,7 @@ begin
   IDECmdScopeSrcEdit:=RegisterIDECommandScope('SourceEditor');
   IDECmdScopeSrcEditOnly:=RegisterIDECommandScope('SourceEditorOnly');
   IDECmdScopeDesignerOnly:=RegisterIDECommandScope('DesignerOnly');
-  IDECmdScopeObjctInspectorOnly:=RegisterIDECommandScope('ObjectInspectorOnly');
+  IDECmdScopeObjectInspectorOnly:=RegisterIDECommandScope('ObjectInspectorOnly');
 end;
 
 function CompareIDEShortCuts(Data1, Data2: Pointer): integer;

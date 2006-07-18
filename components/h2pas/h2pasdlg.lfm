@@ -1,0 +1,95 @@
+object H2PasDialog: TH2PasDialog
+  Caption = 'H2PasDialog'
+  ClientHeight = 534
+  ClientWidth = 785
+  KeyPreview = True
+  OnCreate = FormCreate
+  OnKeyDown = FormKeyDown
+  PixelsPerInch = 112
+  HorzScrollBar.Page = 784
+  VertScrollBar.Page = 533
+  Left = 326
+  Height = 534
+  Top = 178
+  Width = 785
+  object MainPageControl: TPageControl
+    ActivePage = FilesTabSheet
+    Align = alClient
+    TabIndex = 0
+    TabOrder = 0
+    Height = 534
+    Width = 785
+    object FilesTabSheet: TTabSheet
+      Caption = 'FilesTabSheet'
+      ClientHeight = 504
+      ClientWidth = 781
+      Left = 2
+      Height = 504
+      Top = 28
+      Width = 781
+      object CHeaderFilesCheckListBox: TCheckListBox
+        Align = alLeft
+        TabOrder = 0
+        TopIndex = -1
+        Height = 504
+        Width = 255
+      end
+      object AddCHeaderFilesButton: TButton
+        BorderSpacing.Left = 6
+        BorderSpacing.InnerBorder = 4
+        Caption = 'AddCHeaderFilesButton'
+        TabOrder = 1
+        AnchorSideLeft.Control = CHeaderFilesSplitter1
+        AnchorSideLeft.Side = asrBottom
+        Left = 266
+        Height = 25
+        Top = 12
+        Width = 185
+      end
+      object DeleteCHeaderFilesButton: TButton
+        BorderSpacing.Left = 6
+        BorderSpacing.InnerBorder = 4
+        Caption = 'DeleteCHeaderFilesButton'
+        TabOrder = 2
+        AnchorSideLeft.Control = CHeaderFilesSplitter1
+        AnchorSideLeft.Side = asrBottom
+        Left = 266
+        Height = 25
+        Top = 51
+        Width = 185
+      end
+      object SelectAllCHeaderFilesButton: TButton
+        BorderSpacing.Left = 6
+        BorderSpacing.InnerBorder = 4
+        Caption = 'SelectAllCHeaderFilesButton'
+        TabOrder = 3
+        AnchorSideLeft.Control = CHeaderFilesSplitter1
+        AnchorSideLeft.Side = asrBottom
+        Left = 266
+        Height = 25
+        Top = 97
+        Width = 185
+      end
+      object UnselectAllCHeaderFilesButton: TButton
+        BorderSpacing.Left = 6
+        BorderSpacing.InnerBorder = 4
+        Caption = 'UnselectAllCHeaderFilesButton'
+        TabOrder = 4
+        AnchorSideLeft.Control = CHeaderFilesSplitter1
+        AnchorSideLeft.Side = asrBottom
+        Left = 266
+        Height = 25
+        Top = 137
+        Width = 185
+      end
+      object CHeaderFilesSplitter1: TSplitter
+        Height = 504
+        Width = 5
+        Cursor = crHSplit
+        Left = 255
+        Height = 504
+        Width = 5
+      end
+    end
+  end
+end

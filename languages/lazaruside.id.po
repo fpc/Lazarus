@@ -148,6 +148,10 @@ msgstr "%sPaket ini diinstalasi, tetapi file lpk tidak ditemukan"
 msgid "%sThis package was automatically created"
 msgstr "%sPaket ini otomatis dibuat"
 
+#: lazarusidestrconsts:liswladd
+msgid "&Add"
+msgstr ""
+
 #: lazarusidestrconsts:uemaddbreakpoint
 msgid "&Add Breakpoint"
 msgstr "&Tambah Breakpoint"
@@ -160,9 +164,17 @@ msgstr "&Tutup Halaman"
 msgid "&Components"
 msgstr "&Komponen"
 
+#: lazarusidestrconsts:liswldelete
+msgid "&Delete"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuedit
 msgid "&Edit"
 msgstr "&Edit"
+
+#: lazarusidestrconsts:liswlenabled
+msgid "&Enabled"
+msgstr ""
 
 #: lazarusidestrconsts:lismenufile
 msgid "&File"
@@ -187,6 +199,10 @@ msgstr "&Buka file di kursor"
 #: lazarusidestrconsts:lismenuproject
 msgid "&Project"
 msgstr "&Proyek"
+
+#: lazarusidestrconsts:liswlproperties
+msgid "&Properties"
+msgstr ""
 
 #: lazarusidestrconsts:dlgreplacewith
 msgid "&Replace With"
@@ -1800,6 +1816,10 @@ msgstr "Potong komponen yang dipilih ke clipboard"
 msgid "Cut selection to clipboard"
 msgstr "Potong pilihan ke clipboard"
 
+#: lazarusidestrconsts:liswldisableall
+msgid "D&isable All"
+msgstr ""
+
 #: lazarusidestrconsts:lishlpoptsdatabases
 msgid "Databases"
 msgstr "Database"
@@ -1807,6 +1827,10 @@ msgstr "Database"
 #: lazarusidestrconsts:lisdate
 msgid "Date"
 msgstr "Tanggal"
+
+#: lazarusidestrconsts:liswldeleteall
+msgid "De&lete All"
+msgstr ""
 
 #: lazarusidestrconsts:uemdebugword
 msgid "Debug"
@@ -2184,6 +2208,10 @@ msgstr "File Drop"
 msgid "Dutch"
 msgstr "Belanda"
 
+#: lazarusidestrconsts:liswlenableall
+msgid "E&nable All"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuenvironent
 msgid "E&nvironment"
 msgstr "Li&ngkungan"
@@ -2487,6 +2515,10 @@ msgstr "Nama file lebar dari file editor saat ini"
 #: lazarusidestrconsts:lisexportlist
 msgid "Export list"
 msgstr "Daftar ekspor"
+
+#: lazarusidestrconsts:liswlexpression
+msgid "Expression"
+msgstr ""
 
 #: lazarusidestrconsts:lisextendunitpath
 msgid "Extend unit path?"
@@ -8435,6 +8467,10 @@ msgstr "Perhatian: File %s%s%s%smilik proyek saat ini."
 #: lazarusidestrconsts:liswarningambiguousfilefoundsourcefileis
 msgid "Warning: ambiguous file found: %s%s%s. Source file is: %s%s%s"
 msgstr "Peringatan: file dwimakna ditemukan: %s%s%s. File Sumber adalah: %s%s%s"
+
+#: lazarusidestrconsts:liswlwatchlist
+msgid "Watch list"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuviewwatches
 msgid "Watches"

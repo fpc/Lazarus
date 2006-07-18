@@ -145,6 +145,10 @@ msgstr "%sهذا ال"
 msgid "%sThis package was automatically created"
 msgstr ""
 
+#: lazarusidestrconsts:liswladd
+msgid "&Add"
+msgstr ""
+
 #: lazarusidestrconsts:uemaddbreakpoint
 msgid "&Add Breakpoint"
 msgstr ""
@@ -157,9 +161,17 @@ msgstr "أ&غلق الصفحة"
 msgid "&Components"
 msgstr "&عناصر"
 
+#: lazarusidestrconsts:liswldelete
+msgid "&Delete"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuedit
 msgid "&Edit"
 msgstr "&إصدار"
+
+#: lazarusidestrconsts:liswlenabled
+msgid "&Enabled"
+msgstr ""
 
 #: lazarusidestrconsts:lismenufile
 msgid "&File"
@@ -184,6 +196,10 @@ msgstr "إفتح الجذاذة التي تحت المؤشرة"
 #: lazarusidestrconsts:lismenuproject
 msgid "&Project"
 msgstr "&مشروع"
+
+#: lazarusidestrconsts:liswlproperties
+msgid "&Properties"
+msgstr ""
 
 #: lazarusidestrconsts:dlgreplacewith
 msgid "&Replace With"
@@ -1797,12 +1813,20 @@ msgstr ""
 msgid "Cut selection to clipboard"
 msgstr ""
 
+#: lazarusidestrconsts:liswldisableall
+msgid "D&isable All"
+msgstr ""
+
 #: lazarusidestrconsts:lishlpoptsdatabases
 msgid "Databases"
 msgstr ""
 
 #: lazarusidestrconsts:lisdate
 msgid "Date"
+msgstr ""
+
+#: lazarusidestrconsts:liswldeleteall
+msgid "De&lete All"
 msgstr ""
 
 #: lazarusidestrconsts:uemdebugword
@@ -2181,6 +2205,10 @@ msgstr ""
 msgid "Dutch"
 msgstr ""
 
+#: lazarusidestrconsts:liswlenableall
+msgid "E&nable All"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuenvironent
 msgid "E&nvironment"
 msgstr "ب&يئة"
@@ -2483,6 +2511,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisexportlist
 msgid "Export list"
+msgstr ""
+
+#: lazarusidestrconsts:liswlexpression
+msgid "Expression"
 msgstr ""
 
 #: lazarusidestrconsts:lisextendunitpath
@@ -8431,6 +8463,10 @@ msgstr ""
 
 #: lazarusidestrconsts:liswarningambiguousfilefoundsourcefileis
 msgid "Warning: ambiguous file found: %s%s%s. Source file is: %s%s%s"
+msgstr ""
+
+#: lazarusidestrconsts:liswlwatchlist
+msgid "Watch list"
 msgstr ""
 
 #: lazarusidestrconsts:lismenuviewwatches

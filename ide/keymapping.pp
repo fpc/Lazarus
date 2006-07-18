@@ -103,7 +103,7 @@ type
                   ): TKeyCommandRelation;
     function FindIDECommand(ACommand:word): TIDECommand; override;
     function FindByCommand(ACommand:word): TKeyCommandRelation;
-    function FindCategoryByName(const CategoryName: string): TIDECommandCategory;
+    function FindCategoryByName(const CategoryName: string): TIDECommandCategory; override;
     function FindCommandByName(const CommandName: string): TKeyCommandRelation;
     function TranslateKey(Key: word; Shift: TShiftState;
       IDEWindowClass: TCustomFormClass; UseLastKey: boolean = true): word;
@@ -191,8 +191,6 @@ function EditorKeyStringIsIrregular(const s: string): boolean;
 var KeyMappingEditForm: TKeyMappingEditForm;
 
 const
-  KeyCategoryToolMenuName = 'ToolMenu';
-  KeyCategoryCustomName = 'Custom';
   UnknownVKPrefix = 'Word(''';
   UnknownVKPostfix = ''')';
 
@@ -2310,7 +2308,7 @@ begin
   AddDefault(C,'Configure custom components',ecConfigCustomComps);
 
   // tools menu
-  C:=Categories[AddCategory(KeyCategoryToolMenuName,srkmCatToolMenu,nil)];
+  C:=Categories[AddCategory(CommandCategoryToolMenuName,srkmCatToolMenu,nil)];
   AddDefault(C,'External Tools settings',ecExtToolSettings);
   AddDefault(C,'Build Lazarus',ecBuildLazarus);
   AddDefault(C,'Configure "Build Lazarus"',ecConfigBuildLazarus);
@@ -2351,10 +2349,10 @@ begin
 
   // object inspector - without menu items in the IDE bar (at least no direct)
   C:=Categories[AddCategory('Object Inspector',lisKeyCatObjInspector,
-                            IDECmdScopeObjctInspectorOnly)];
+                            IDECmdScopeObjectInspectorOnly)];
 
   // custom keys (for experts, task groups, dynamic menu items, etc)
-  C:=Categories[AddCategory(KeyCategoryCustomName,lisKeyCatCustom,nil)];
+  C:=Categories[AddCategory(CommandCategoryCustomName,lisKeyCatCustom,nil)];
 end;
 
 procedure TKeyCommandRelationList.Clear;
@@ -2419,7 +2417,7 @@ var i: integer;
   ExtToolRelation: TKeyCommandRelation;
 begin
   if NewCount=fExtToolCount then exit;
-  ExtToolCat:=FindCategoryByName(KeyCategoryToolMenuName);
+  ExtToolCat:=FindCategoryByName(CommandCategoryToolMenuName);
   if NewCount>fExtToolCount then begin
     // increase available external tool commands
     while NewCount>fExtToolCount do begin

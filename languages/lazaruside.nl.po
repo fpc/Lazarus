@@ -145,6 +145,10 @@ msgstr "%sDit package was geïnstalleerd, maar het lpk-bestand was niet gevonden
 msgid "%sThis package was automatically created"
 msgstr "%sDit package was automatisch aangemaakt"
 
+#: lazarusidestrconsts:liswladd
+msgid "&Add"
+msgstr ""
+
 #: lazarusidestrconsts:uemaddbreakpoint
 msgid "&Add Breakpoint"
 msgstr "&Voeg Breekpunt toe"
@@ -157,9 +161,17 @@ msgstr "&Sluit Pagina"
 msgid "&Components"
 msgstr "&Componenten"
 
+#: lazarusidestrconsts:liswldelete
+msgid "&Delete"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuedit
 msgid "&Edit"
 msgstr "&Bewerken"
+
+#: lazarusidestrconsts:liswlenabled
+msgid "&Enabled"
+msgstr ""
 
 #: lazarusidestrconsts:lismenufile
 msgid "&File"
@@ -184,6 +196,10 @@ msgstr "&Open bestand op positie van cursor"
 #: lazarusidestrconsts:lismenuproject
 msgid "&Project"
 msgstr "&Project"
+
+#: lazarusidestrconsts:liswlproperties
+msgid "&Properties"
+msgstr ""
 
 #: lazarusidestrconsts:dlgreplacewith
 msgid "&Replace With"
@@ -1797,6 +1813,10 @@ msgstr "Knip geselecteerde componenten naar klipbord"
 msgid "Cut selection to clipboard"
 msgstr "Knip selectie naar klembord"
 
+#: lazarusidestrconsts:liswldisableall
+msgid "D&isable All"
+msgstr ""
+
 #: lazarusidestrconsts:lishlpoptsdatabases
 msgid "Databases"
 msgstr "Databases"
@@ -1804,6 +1824,10 @@ msgstr "Databases"
 #: lazarusidestrconsts:lisdate
 msgid "Date"
 msgstr "Datum"
+
+#: lazarusidestrconsts:liswldeleteall
+msgid "De&lete All"
+msgstr ""
 
 #: lazarusidestrconsts:uemdebugword
 msgid "Debug"
@@ -2181,6 +2205,10 @@ msgstr "Sleep bestanden"
 msgid "Dutch"
 msgstr "Nederlands"
 
+#: lazarusidestrconsts:liswlenableall
+msgid "E&nable All"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuenvironent
 msgid "E&nvironment"
 msgstr "I&nstellingen"
@@ -2484,6 +2512,10 @@ msgstr "Volledige bestandsnaam van huidige editor bestand"
 #: lazarusidestrconsts:lisexportlist
 msgid "Export list"
 msgstr "Export lijst"
+
+#: lazarusidestrconsts:liswlexpression
+msgid "Expression"
+msgstr ""
 
 #: lazarusidestrconsts:lisextendunitpath
 msgid "Extend unit path?"
@@ -8432,6 +8464,10 @@ msgstr "Waarschuwing: Het bestand %s%s%s%sbehoort tot het huidige project."
 #: lazarusidestrconsts:liswarningambiguousfilefoundsourcefileis
 msgid "Warning: ambiguous file found: %s%s%s. Source file is: %s%s%s"
 msgstr "Waarschuwing: dubbel bestand gevonden: %s%s%s. Broncode bestand is: %s%s%s"
+
+#: lazarusidestrconsts:liswlwatchlist
+msgid "Watch list"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuviewwatches
 msgid "Watches"

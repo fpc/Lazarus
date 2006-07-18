@@ -144,6 +144,10 @@ msgstr "%sこのパッケージはインストールされましたが、lpkフ�
 msgid "%sThis package was automatically created"
 msgstr "%sこのパッケージは自動的に作成されました"
 
+#: lazarusidestrconsts:liswladd
+msgid "&Add"
+msgstr ""
+
 #: lazarusidestrconsts:uemaddbreakpoint
 msgid "&Add Breakpoint"
 msgstr "ブレークポイント追加"
@@ -156,9 +160,17 @@ msgstr "ページを閉じる"
 msgid "&Components"
 msgstr "コンポーネント(&C)"
 
+#: lazarusidestrconsts:liswldelete
+msgid "&Delete"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuedit
 msgid "&Edit"
 msgstr "編集(&E)"
+
+#: lazarusidestrconsts:liswlenabled
+msgid "&Enabled"
+msgstr ""
 
 #: lazarusidestrconsts:lismenufile
 msgid "&File"
@@ -183,6 +195,10 @@ msgstr "カーソルのファイルを開く(&O)"
 #: lazarusidestrconsts:lismenuproject
 msgid "&Project"
 msgstr "プロジェクト(&P)"
+
+#: lazarusidestrconsts:liswlproperties
+msgid "&Properties"
+msgstr ""
 
 #: lazarusidestrconsts:dlgreplacewith
 msgid "&Replace With"
@@ -1796,12 +1812,20 @@ msgstr ""
 msgid "Cut selection to clipboard"
 msgstr ""
 
+#: lazarusidestrconsts:liswldisableall
+msgid "D&isable All"
+msgstr ""
+
 #: lazarusidestrconsts:lishlpoptsdatabases
 msgid "Databases"
 msgstr ""
 
 #: lazarusidestrconsts:lisdate
 msgid "Date"
+msgstr ""
+
+#: lazarusidestrconsts:liswldeleteall
+msgid "De&lete All"
 msgstr ""
 
 #: lazarusidestrconsts:uemdebugword
@@ -2180,6 +2204,10 @@ msgstr ""
 msgid "Dutch"
 msgstr ""
 
+#: lazarusidestrconsts:liswlenableall
+msgid "E&nable All"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuenvironent
 msgid "E&nvironment"
 msgstr "環境(&N)"
@@ -2482,6 +2510,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisexportlist
 msgid "Export list"
+msgstr ""
+
+#: lazarusidestrconsts:liswlexpression
+msgid "Expression"
 msgstr ""
 
 #: lazarusidestrconsts:lisextendunitpath
@@ -8430,6 +8462,10 @@ msgstr ""
 
 #: lazarusidestrconsts:liswarningambiguousfilefoundsourcefileis
 msgid "Warning: ambiguous file found: %s%s%s. Source file is: %s%s%s"
+msgstr ""
+
+#: lazarusidestrconsts:liswlwatchlist
+msgid "Watch list"
 msgstr ""
 
 #: lazarusidestrconsts:lismenuviewwatches

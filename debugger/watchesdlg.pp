@@ -40,7 +40,7 @@ interface
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs, LResources,
   StdCtrls, Buttons, Menus, ComCtrls, LCLType,
-  Debugger, DebuggerDlg, BaseDebugManager;
+  LazarusIDEStrConsts, Debugger, DebuggerDlg, BaseDebugManager;
 
 type
 
@@ -195,6 +195,16 @@ end;
 
 procedure TWatchesDlg.FormCreate(Sender: TObject);
 begin
+  Caption:=liswlWatchList;
+  lvWatches.Columns[0].Caption:=liswlExpression;
+  lvWatches.Columns[1].Caption:=dlgValueColor;
+  popAdd.Caption:=liswlAdd;
+  popProperties.Caption:=liswlProperties;
+  popEnabled.Caption:=liswlEnabled;
+  popDelete.Caption:=liswlDelete;
+  popDisableAll.Caption:=liswlDIsableAll;
+  popEnableAll.Caption:=liswlENableAll;
+  popDeleteAll.Caption:=liswlDeLeteAll;
 end;
 
 procedure TWatchesDlg.FormDestroy(Sender: TObject);

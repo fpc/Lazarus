@@ -134,6 +134,10 @@ msgstr "%sЦей пакунок вже встановлений, але файл
 msgid "%sThis package was automatically created"
 msgstr "%sЦей пакунок створений автоматично"
 
+#: lazarusidestrconsts:liswladd
+msgid "&Add"
+msgstr ""
+
 #: lazarusidestrconsts:uemaddbreakpoint
 msgid "&Add Breakpoint"
 msgstr "&Додати точку зупинки"
@@ -146,9 +150,17 @@ msgstr "&Закрити сторінку"
 msgid "&Components"
 msgstr "&Компоненти"
 
+#: lazarusidestrconsts:liswldelete
+msgid "&Delete"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuedit
 msgid "&Edit"
 msgstr "&Правка"
+
+#: lazarusidestrconsts:liswlenabled
+msgid "&Enabled"
+msgstr ""
 
 #: lazarusidestrconsts:lismenufile
 msgid "&File"
@@ -173,6 +185,10 @@ msgstr "&Відкрити файл біля курсора"
 #: lazarusidestrconsts:lismenuproject
 msgid "&Project"
 msgstr "&Проект"
+
+#: lazarusidestrconsts:liswlproperties
+msgid "&Properties"
+msgstr ""
 
 #: lazarusidestrconsts:dlgreplacewith
 msgid "&Replace With"
@@ -1786,6 +1802,10 @@ msgstr "Вирізати вибрані компоненти в буфер"
 msgid "Cut selection to clipboard"
 msgstr "Вирізати вибране в буфер обміну"
 
+#: lazarusidestrconsts:liswldisableall
+msgid "D&isable All"
+msgstr ""
+
 #: lazarusidestrconsts:lishlpoptsdatabases
 msgid "Databases"
 msgstr "Бази даних"
@@ -1793,6 +1813,10 @@ msgstr "Бази даних"
 #: lazarusidestrconsts:lisdate
 msgid "Date"
 msgstr "Дата"
+
+#: lazarusidestrconsts:liswldeleteall
+msgid "De&lete All"
+msgstr ""
 
 #: lazarusidestrconsts:uemdebugword
 msgid "Debug"
@@ -2170,6 +2194,10 @@ msgstr "Кинути файли"
 msgid "Dutch"
 msgstr ""
 
+#: lazarusidestrconsts:liswlenableall
+msgid "E&nable All"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuenvironent
 msgid "E&nvironment"
 msgstr "&Оточення"
@@ -2473,6 +2501,10 @@ msgstr "Повна назва файлу в поточному редактор�
 #: lazarusidestrconsts:lisexportlist
 msgid "Export list"
 msgstr "Список експорту"
+
+#: lazarusidestrconsts:liswlexpression
+msgid "Expression"
+msgstr ""
 
 #: lazarusidestrconsts:lisextendunitpath
 msgid "Extend unit path?"
@@ -8421,6 +8453,10 @@ msgstr "Увага: Файл %s%s%s%sналежить поточному про�
 #: lazarusidestrconsts:liswarningambiguousfilefoundsourcefileis
 msgid "Warning: ambiguous file found: %s%s%s. Source file is: %s%s%s"
 msgstr "Попередження: знайдений двозначний файл %s%s%s. Код: %s%s%s"
+
+#: lazarusidestrconsts:liswlwatchlist
+msgid "Watch list"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuviewwatches
 msgid "Watches"
