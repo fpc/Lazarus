@@ -2742,7 +2742,7 @@ Begin
     OnCloseQuery:=@OnDesignerCloseQuery;
     OnPersistentDeleted:=@OnDesignerPersistentDeleted;
     OnGetNonVisualCompIcon:=
-           @TComponentPalette(IDEComponentPalette).OnGetNonVisualCompIcon;
+                 @TComponentPalette(IDEComponentPalette).OnGetNonVisualCompIcon;
     OnGetSelectedComponentClass:=@OnDesignerGetSelectedComponentClass;
     OnModified:=@OnDesignerModified;
     OnPasteComponent:=@OnDesignerPasteComponent;

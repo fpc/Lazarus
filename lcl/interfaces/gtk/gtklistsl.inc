@@ -437,6 +437,20 @@ var
   i: integer;
 begin
   if not (glsItemCacheNeedsUpdate in FStates) then exit;
+
+  {$IFDEF DebugLCLComponents}
+  // if items were removed => mark them as destroyed
+  for i:=0 to FCachedCount-1 do begin
+    if (FGtkList=nil)
+    or (g_list_find(FGtkList^.children,FCachedItems[i])=nil) then begin
+      if DebugGtkWidgets.IsCreated(FCachedItems[i]) then begin
+        DebugLn(['TGtkListStringList.UpdateItemCache item vanished: ',i]);
+        DebugGtkWidgets.MarkDestroyed(FCachedItems[i]);
+      end;
+    end;
+  end;
+  {$ENDIF}
+
   if (FGtkList<>nil) and (FGtkList^.children<>nil) then
     FCachedCount:=g_list_length(FGtkList^.children)
   else
@@ -455,6 +469,13 @@ begin
     i:=0;
     while CurListItem<>nil do begin
       FCachedItems[i]:=PGtkListItem(CurListItem^.Data);
+      {$IFDEF DebugLCLComponents}
+      if not DebugGtkWidgets.IsCreated(PGtkListItem(CurListItem^.Data)) then
+      begin
+        DebugLn(['TGtkListStringList.UpdateItemCache unknown item ',i,' ',DbgSName(Owner)]);
+        DumpStack;
+      end;
+      {$ENDIF}
       inc(i);
       CurListItem:=CurListItem^.Next;
     end;

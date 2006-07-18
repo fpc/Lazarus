@@ -380,8 +380,8 @@ const
   GDKX_KEY_LaunchF          = $1008FF4F;
 
 
-function NewPGDIObject: PGDIObject;
-procedure DisposePGDIObject(GDIObject: PGdiObject);
+function InternalNewPGDIObject: PGDIObject;
+procedure InternalDisposePGDIObject(GDIObject: PGdiObject);
 
 function NewDeviceContext: TDeviceContext;
 procedure DisposeDeviceContext(DeviceContext: TDeviceContext);
@@ -392,6 +392,9 @@ var
   DebugGdiObjects: TDebugLCLItems = nil;
   DebugDeviceContexts: TDebugLCLItems = nil;
 {$ENDIF}
+
+procedure GtkDefDone;
+
 
 implementation
 
@@ -411,7 +414,7 @@ type
 const
   GDIObjectMemManager: TGDIObjectMemManager = nil;
 
-function NewPGDIObject: PGDIObject;
+function InternalNewPGDIObject: PGDIObject;
 begin
   if GDIObjectMemManager=nil then begin
     GDIObjectMemManager:=TGDIObjectMemManager.Create;
@@ -423,7 +426,7 @@ begin
   {$ENDIF}
 end;
 
-procedure DisposePGDIObject(GDIObject: PGdiObject);
+procedure InternalDisposePGDIObject(GDIObject: PGdiObject);
 begin
   {$IFDEF DebugLCLComponents}
   DebugGdiObjects.MarkDestroyed(GDIObject);
@@ -604,7 +607,6 @@ begin
   SavedContext:=nil;
   DCFlags:=[];
 end;
-
 
 procedure GtkDefInit;
 begin

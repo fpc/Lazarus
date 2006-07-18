@@ -3120,7 +3120,11 @@ end;
 destructor TPkgComponent.Destroy;
 begin
   PkgFile:=nil;
-  if fIconLoaded then FIcon.Free;
+  if fIconLoaded then begin
+    FIcon.Free;
+    FIcon:=nil;
+    fIconLoaded:=false;
+  end;
   inherited Destroy;
 end;
 

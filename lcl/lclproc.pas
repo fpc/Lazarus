@@ -91,6 +91,7 @@ type
     function FindInfo(p: Pointer; CreateIfNotExists: boolean = false
                       ): TDebugLCLItemInfo;
     function IsDestroyed(p: Pointer): boolean;
+    function IsCreated(p: Pointer): boolean;
     function MarkCreated(p: Pointer; const InfoText: string): TDebugLCLItemInfo;
     procedure MarkDestroyed(p: Pointer);
     function GetInfo(p: Pointer; WithStackTraces: boolean): string;
@@ -2393,27 +2394,31 @@ begin
   end;
 end;
 
-function  UTF8CStringToUTF8String(SourceStart: PChar; SourceLen: SizeInt) : string;
+function UTF8CStringToUTF8String(SourceStart: PChar; SourceLen: SizeInt) : string;
 var
   Source: PChar;
   Dest: PChar;
   SourceEnd: PChar;
   CharLen: integer;
+  SourceCopied: PChar;
 
   // Copies from SourceStart till Source to Dest and updates Dest
   procedure CopyPart; inline;
   var
     CopyLength: SizeInt;
   begin
-    CopyLength := Source - SourceStart;
+    CopyLength := Source - SourceCopied;
     if CopyLength=0 then exit;
-    move(SourceStart^ , Dest^, CopyLength);
+    move(SourceCopied^ , Dest^, CopyLength);
+    SourceCopied:=Source;
     inc(Dest, CopyLength);
   end;
 
 begin
-  Source:= SourceStart;
   SetLength(Result, SourceLen);
+  if SourceLen=0 then exit;
+  SourceCopied:=SourceStart;
+  Source:=SourceStart;
   Dest:=PChar(Result);
   SourceEnd := Source + SourceLen;
   while Source<SourceEnd do begin
@@ -2442,7 +2447,7 @@ begin
         inc(Source);
         inc(Dest);
       end;
-      SourceStart := Source;
+      SourceCopied := Source;
     end
     else
       Inc(Source, CharLen);
@@ -2993,6 +2998,17 @@ begin
     Result:=Info.IsDestroyed;
 end;
 
+function TDebugLCLItems.IsCreated(p: Pointer): boolean;
+var
+  Info: TDebugLCLItemInfo;
+begin
+  Info:=FindInfo(p);
+  if Info=nil then
+    Result:=false
+  else
+    Result:=not Info.IsDestroyed;
+end;
+
 procedure TDebugLCLItems.MarkDestroyed(p: Pointer);
 var
   Info: TDebugLCLItemInfo;
@@ -3041,7 +3057,7 @@ var
 
   procedure RaiseDoubleCreated;
   begin
-    debugLn('TDebugLCLItems.MarkCreated old:');
+    debugLn('TDebugLCLItems.MarkCreated CREATED TWICE. Old:');
     debugln(Info.AsString(true));
     debugln(' New=',dbgs(p),' InfoText="',InfoText,'"');
     DebugLn(GetStackTrace(true));

@@ -7,7 +7,9 @@ set -e
 set -x
 
 # This is the root for all download and building directories
-BuildRoot=~/freepascal
+if [ ! -d "$BuildRoot" ]; then
+  BuildRoot=~/freepascal
+fi
 
 # the binutils version to download
 BinutilsVersion=2.16

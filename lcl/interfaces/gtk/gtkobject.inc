@@ -515,6 +515,8 @@ begin
   FKeyStateList_.Free;
   {$ENDIF}
   FTimerData.Free;
+  
+  GtkDefDone;
 
   // finally remove our loghandler
   g_log_remove_handler(nil, FLogHandlerID);
@@ -4230,6 +4232,7 @@ begin
     FFixWidgetsResized.Remove(FixWidget);
 
   // destroy the widget
+  //DebugLn(['TGtkWidgetSet.DestroyConnectedWidget ',GetWidgetDebugReport(Widget)]);
   DestroyWidget(Widget);
 
   // remove all remaining messages to this widget
@@ -6103,16 +6106,8 @@ begin
   if Result then
     with PGdiObject(GDIObject)^ do
       case GDIType of
-        gdiBitmap : begin
-           case GDIBitmapType of
-             gbPixmap: Result := GDIPixmapObject <> nil;
-             gbBitmap: Result := GDIBitmapObject <> nil;
-             {obsolete: gbImage:  Result := GDI_RGBImageObject <> nil;}
-           else
-             Result := False;
-           end;
-        end;
-        gdiBrush  : Result := True; //Result := GDIBrushPixmap <> nil; //GDIBrushPixmap may be nil
+        gdiBitmap : Result:=true;
+        gdiBrush  : Result := True;
         gdiFont   : Result := GDIFontObject <> nil;// ToDo: create font on demand
         gdiPen    : Result := True;
         gdiRegion : Result := True;
@@ -6252,7 +6247,7 @@ end;
 function TGtkWidgetSet.NewDC: TDeviceContext;
 begin
   Assert(False, Format('Trace:> [TGtkWidgetSet.NewDC]', []));
-  Result:=GtkDef.NewDeviceContext;
+  Result:=NewDeviceContext;
   with Result do
   begin
     {$ifdef TraceGdiCalls}
@@ -6488,7 +6483,7 @@ end;
 function TGtkWidgetSet.NewGDIObject(const GDIType: TGDIType): PGdiObject;
 begin
   Assert(False, Format('Trace:> [TGtkWidgetSet.NewGDIObject]', []));
-  Result:=GtkDef.NewPGDIObject;
+  Result:=GtkDef.InternalNewPGDIObject;
   {$ifdef TraceGdiCalls}
   FillStackAddrs(get_caller_frame(get_frame), @Result^.StackAddrs);
   {$endif}
@@ -6511,7 +6506,7 @@ begin
   if FGDIObjects.Contains(GDIObject) then begin
     dec(GDIObject^.RefCount);
     FGDIObjects.Remove(GDIObject);
-    GtkDef.DisposePGDIObject(GDIObject);
+    GtkDef.InternalDisposePGDIObject(GDIObject);
   end else
     RaiseGDBException('');
 end;

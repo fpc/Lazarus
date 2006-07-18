@@ -4990,8 +4990,10 @@ begin
       then begin
         Widget := Window^.focus_widget;
         {$IFDEF DebugLCLComponents}
-        if DebugGtkWidgets.IsDestroyed(Widget) then
-          DebugLn('TGtkWidgetSet.GetFocus ',DebugGtkWidgets.GetInfo(Widget,true));
+        if DebugGtkWidgets.IsDestroyed(Widget) then begin
+          DebugLn(['TGtkWidgetSet.GetFocus Window^.focus_widget was laready destroyed:']);
+          DebugLn(DebugGtkWidgets.GetInfo(Widget,true));
+        end;
         {$ENDIF}
         
         if (Widget <> nil) and gtk_widget_has_focus(Widget)
@@ -7901,8 +7903,20 @@ function TGtkWidgetSet.SelectObject(DC: HDC; GDIObj: HGDIOBJ): HGDIOBJ;
   begin
     DebugLn(['TGtkWidgetSet.SelectObject DC=',dbghex(DC),' IsValidDC(DC)=',IsValidDC(DC),' GDIObj=',dbghex(GDIObj),' IsValidGDIObject(GDIObj)=',IsValidGDIObject(GDIObj)]);
     DumpStack;
+    {$IFDEF DebugLCLComponents}
+    if not IsValidDC(DC) then begin
+      DebugLn(['DebugInvalidGDIObject DC:']);
+      debugln(DebugDeviceContexts.GetInfo(Pointer(DC),true));
+    end;
+    if not IsValidGDIObject(GDIObj) then begin
+      DebugLn(['DebugInvalidGDIObject GDIObj:']);
+      debugln(DebugGdiObjects.GetInfo(Pointer(GDIObj),true));
+    end;
+    {$ENDIF}
   end;
 
+var
+  NewDrawable: PGdkPixmap;
 begin
   Result := 0;
 
@@ -7922,28 +7936,36 @@ begin
         with TDeviceContext(DC) do
         begin
           Assert(False, Format('trace:  [TGtkWidgetSet.SelectObject] DC: 0x%x, Type: Bitmap', [DC]));
+          if CurrentBitmap=nil then begin
+            // creating HBitmap on the fly (To find mem leaks)
+            CurrentBitmap:=NewGDIObject(gdiBitmap);
+          end;
           Result := HBITMAP(CurrentBitmap);
           if CurrentBitmap<>PGDIObject(GDIObj) then begin
             CurrentBitmap := PGDIObject(GDIObj);
-            if GC <> nil then begin
-              gdk_gc_unref(GC);
-              GC:=nil;
-            end;
             with CurrentBitmap^ do
               case GDIBitmapType of
-                gbPixmap: Drawable := GDIPixmapObject;
-                gbBitmap: Drawable := GDIBitmapObject;
-                {obsolete: gbImage:  Drawable := nil;//GDI_RGBImageObject;}
+                gbPixmap: NewDrawable := GDIPixmapObject;
+                gbBitmap: NewDrawable := GDIBitmapObject;
               else
-                Drawable := nil;
+                NewDrawable := nil;
               end;
-            //DebugLn('TGtkWidgetSet.SelectObject DC=',DbgS(DC),8),' GDIBitmap=',DbgS(Cardinal(CurrentBitmap),
-            //' GDIBitmapType=',ord(CurrentBitmap^.GDIBitmapType),' Drawable=',DbgS(Drawable));
-
-            GC := gdk_gc_new(Drawable);
-
-            gdk_gc_set_function(GC, GDK_COPY);
-            SelectedColors := dcscCustom;
+            if NewDrawable<>nil then begin
+              //DebugLn('TGtkWidgetSet.SelectObject DC=',DbgS(DC),8),' GDIBitmap=',DbgS(Cardinal(CurrentBitmap),
+              //' GDIBitmapType=',ord(CurrentBitmap^.GDIBitmapType),' Drawable=',DbgS(Drawable));
+              if GC <> nil then begin
+                gdk_gc_unref(GC);
+                GC:=nil;
+              end;
+              Drawable:=NewDrawable;
+              GC := gdk_gc_new(Drawable);
+              gdk_gc_set_function(GC, GDK_COPY);
+              SelectedColors := dcscCustom;
+            end else begin
+              // use defaults, free dummy gdiobject
+              DisposeGDIObject(CurrentBitmap);
+              CurrentBitmap:=nil;
+            end;
           end;
         end;
 

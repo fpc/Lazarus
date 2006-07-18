@@ -130,6 +130,9 @@ begin
 
   Result := TLCLIntfHandle(gtk_button_new_with_label('button'));
   if Result = 0 then Exit;
+  {$IFDEF DebugLCLComponents}
+  DebugGtkWidgets.MarkCreated(Pointer(Result),'button');
+  {$ENDIF}
 
   WidgetInfo := CreateWidgetInfo(Pointer(Result), Button, AParams);
   

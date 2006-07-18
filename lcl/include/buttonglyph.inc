@@ -26,37 +26,29 @@ begin
   FOriginal.OnChange := @GlyphChanged;
 end;
 
-{------------------------------------------------------------------------------}
-{       TButtonGlyph destructor                                                    }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+       TButtonGlyph destructor
+------------------------------------------------------------------------------}
 destructor TButtonGlyph.Destroy;
-Begin
+begin
   FOriginal.Free;
   FOriginal:=nil;
   inherited Destroy;
 end;
 
-{------------------------------------------------------------------------------}
-{       TButtonGlyph SetGlyph                                                  }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+       TButtonGlyph SetGlyph
+------------------------------------------------------------------------------}
 procedure TButtonGlyph.SetGlyph(Value : TBitmap);
 var
   GlyphCount : integer;
 begin
   if FOriginal = Value then exit;
-  {$IFDEF BitmapSharingWorks}
   if FOriginal=nil then begin
     FOriginal:=TBitmap.Create;
   end;
   FOriginal.OnChange:=nil;
   FOriginal.Assign(Value);
-  {$ELSE}
-  if FOriginal<>nil then begin
-    FOriginal.OnChange:=nil;
-    FOriginal.Free;
-  end;
-  FOriginal:= Value;
-  {$ENDIF}
   FOriginal.OnChange := @GlyphChanged;
   FNumGlyphs:=1;
   if (FOriginal <> nil) and (FOriginal.Height > 0) then begin
@@ -75,9 +67,9 @@ begin
     if Assigned(FOnChange) then FOnChange(Self);
 end;
 
-{------------------------------------------------------------------------------}
-{       TButtonGlyph Draw                                                      }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+       TButtonGlyph Draw
+------------------------------------------------------------------------------}
 Function TButtonGlyph.Draw(Canvas: TCanvas; const Client: TRect;
   const Offset: TPoint;  State: TButtonState;  Transparent: Boolean;
   BiDiFlags: Longint): TRect;
