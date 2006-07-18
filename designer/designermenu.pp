@@ -101,6 +101,8 @@ type
     fDesignerPopupMenu: TPopupMenu;
     TemplateMenuForm: TTemplateMenuForm;
     function GetDesigner: TComponentEditorDesigner;
+  protected
+    procedure PersistentDeleting(APersistent: TPersistent);
   public
     // Constructor and destructor
     constructor CreateWithMenu(aOwner: TComponent; aMenu: TMenu);
@@ -284,8 +286,10 @@ begin
   // designermenuitem
   GlobalDesignHook.AddHandlerModified(@OnDesignerModified);
   //GlobalDesignHook.AddHandlerPersistentAdded(@OnComponentAdded);
+  GlobalDesignHook.AddHandlerPersistentDeleting(@PersistentDeleting);
 
   new(Root);
+  fillchar(root^, sizeof(root^), #0);
   fMenu:=aMenu;
 
 
@@ -377,7 +381,7 @@ begin
     GetDesigner.PropertyEditorHook.PersistentAdded(firstmenuitem, true);
     GetDesigner.Modified;
   end;
-  
+
   prevtemp:=nil;
   for i:= 0 to fMenu.Items.Count-1 do
   begin
@@ -447,6 +451,7 @@ procedure TDesignerMainMenu.Draw(MenuItem: PDesignerMenuItem; FormPanel,SubMenuP
 var
   SubMenuDimensions: TRect;
 begin
+  if MenuItem^.SelfPanel = nil then exit;
   with MenuItem^.SelfPanel do
   begin
     if (fMenu is TPopupMenu) and (MenuItem^.Level = 1) then
@@ -861,6 +866,17 @@ begin
     if (temp_returnvalue = 2) then
       UpdateMenu(fMenu.Items, GetDesignerMenuItem(Root, SelectedDesignerMenuItem), 1 , 8);
   end;
+end;
+
+procedure TDesignerMainMenu.PersistentDeleting(APersistent: TPersistent);
+begin
+  if APersistent is TMenuItem then
+  begin
+    DeleteItem(FindDesignerMenuItem(TMenuItem(APersistent)));
+    SetCoordinates(POSITION_LEFT, POSITION_TOP, 0, Root);
+    Parent.Invalidate;
+  end;
+  inherited;
 end;
 
 // -----------------------------------------------------------------//
