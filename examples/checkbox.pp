@@ -56,8 +56,7 @@ type
     ToggleBox   : TToggleBox;
     label1    : TLabel;   
     label2    : TLabel;
-    FPixmap : TPixMap;
-    constructor Create(AOwner: TComponent); override; 
+    constructor Create(AOwner: TComponent); override;
     procedure LoadMainMenu;
     Procedure FormKill(Sender : TObject);
     procedure mnuQuitClicked(Sender : TObject);
@@ -77,9 +76,9 @@ Form1 : TForm1;
 
 constructor TForm1.Create(AOwner: TComponent);  
 begin
-   inherited Create(AOwner);
-   Caption := 'CheckBox Demo V.02';
-   LoadMainMenu;
+  inherited Create(AOwner);
+  Caption := 'CheckBox Demo V.02';
+  LoadMainMenu;
 end;
 
 procedure TForm1.Button1Click(Sender : TObject);
@@ -225,9 +224,6 @@ begin
    Button2.Caption := 'Toggle checkbox';
    Button2.OnClick := @Button2Click;
 
-   FPixMap:= TPixmap.Create;
-   FPixmap.LoadFromFile('../images/btn_newform.xpm');
-
    Button11 := TSpeedButton.Create(Self);
    Button11.GroupIndex:= 1;
    Button11.Layout:= blGlyphTop;
@@ -238,7 +234,7 @@ begin
    Button11.Width:= 45;
    Button11.Height:= 55;
    Button11.Flat:= true;
-   Button11.Glyph:= FPixmap;
+   Button11.Glyph.LoadFromFile('../images/btn_newform.xpm');
 //   Button11.Spacing:= -1;
 //   Button11.Margin:= 4;
    Button11.Visible:= true;

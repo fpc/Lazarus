@@ -1248,12 +1248,8 @@ procedure TPackageEditorForm.SetupComponents;
   end;
   
   procedure LoadBitBtnGlyph(ABitBtn: TBitBtn; const ResName: string);
-  var Pixmap: TPixmap;
   begin
-    Pixmap:=TPixmap.Create;
-    Pixmap.TransparentColor:=clWhite;
-    Pixmap.LoadFromLazarusResource(ResName);
-    ABitBtn.Glyph:=Pixmap;
+    ABitBtn.Glyph.LoadFromLazarusResource(ResName);
   end;
 
 begin

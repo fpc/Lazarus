@@ -621,10 +621,14 @@ end;
 { TFileNameEdit }
 
 constructor TFileNameEdit.Create(AOwner: TComponent);
+var
+  ABitmap: TBitmap;
 begin
   inherited Create(AOwner);
   FDialogFiles:=TStringList.Create;
-  Glyph:=CreateFileOpenBitmap;
+  ABitmap:=CreateFileOpenBitmap;
+  Glyph:=ABitmap;
+  ABitmap.Free;
 end;
 
 destructor TFileNameEdit.Destroy;
@@ -732,9 +736,13 @@ end;
 { TDirectoryEdit }
 
 constructor TDirectoryEdit.Create(AOwner: TComponent);
+var
+  ABitmap: TBitmap;
 begin
   inherited Create(AOwner);
-  Glyph:=CreateDirectoryBitmap;
+  ABitmap:=CreateDirectoryBitmap;
+  Glyph:=ABitmap;
+  ABitmap.Free;
 end;
 
 destructor TDirectoryEdit.Destroy;
@@ -816,6 +824,8 @@ end;
 { TDateEdit }
 
 constructor TDateEdit.Create(AOwner: TComponent);
+var
+  ABitmap: TBitmap;
 begin
   inherited Create(AOwner);
   FDate:=Now;
@@ -827,7 +837,9 @@ begin
   CancelCaption:='Cancel';
   ReadOnly:=true;
   Color:=clBtnFace;
-  Button.Glyph:=CreateDateGlyph;//.LoadFromLazarusResource('DateEditGlyph');  //GlyphFromBitmapOrResource(DateGlyph,ResBtnCalendar)
+  ABitmap:=CreateDateGlyph;
+  Button.Glyph:=ABitmap;
+  ABitmap.Free;
   Button.OnClick:= @DoButtonClick;
 //  OnChange:=@Change;
 //  OnDblClick:=@DoButtonClick;
@@ -978,9 +990,13 @@ begin
 end;
 
 constructor TCalcEdit.Create(AOwner: TComponent);
+var
+  ABitmap: TBitmap;
 begin
   inherited Create(AOwner);
-  Glyph:=CreateCalcBitmap;
+  ABitmap:=CreateCalcBitmap;
+  Glyph:=ABitmap;
+  ABitmap.Free;
   FdialogTitle:=rsCalculator;
 end;
 
