@@ -173,6 +173,7 @@ type
     procedure Change; virtual;
     procedure Loaded; override;
     procedure ReadState(Reader: TAbstractReader); override;
+    function  DialogChar(var Message: TLMKey): boolean; override;
     procedure ShowControl(APage: TControl); override;
     procedure UpdateTabProperties; virtual;
     function ChildClassAllowed(ChildClass: TClass): boolean; override;

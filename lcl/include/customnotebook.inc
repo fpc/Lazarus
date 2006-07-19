@@ -714,6 +714,17 @@ begin
   if HandleAllocated then DoCreateWnd;
 end;
 
+function TCustomNotebook.DialogChar(var Message: TLMKey): boolean;
+var
+  destPage: TCustomPage;
+begin
+  // broadcast only to active page
+  Result := false;
+  destPage := GetActivePageComponent;
+  if destPage <> nil then
+    Result := destPage.DialogChar(Message);
+end;
+
 {------------------------------------------------------------------------------
   TCustomNotebook CNNotify
  ------------------------------------------------------------------------------}
