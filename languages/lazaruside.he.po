@@ -5321,6 +5321,10 @@ msgstr ""
 msgid "Procedure"
 msgstr ""
 
+#: lazarusidestrconsts:srkmecprocedurelist
+msgid "Procedure List..."
+msgstr ""
+
 #: lazarusidestrconsts:dlgforwardprocsinsertpolicy
 msgid "Procedure insert policy"
 msgstr ""

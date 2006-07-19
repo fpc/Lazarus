@@ -5324,6 +5324,10 @@ msgstr "你可能在继续之前要安装若干包.%s%s警告:%s这个工程依�
 msgid "Procedure"
 msgstr "过程"
 
+#: lazarusidestrconsts:srkmecprocedurelist
+msgid "Procedure List..."
+msgstr ""
+
 #: lazarusidestrconsts:dlgforwardprocsinsertpolicy
 msgid "Procedure insert policy"
 msgstr "插入过程策略"

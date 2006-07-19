@@ -5322,6 +5322,10 @@ msgstr "Probabilmente devi installare alcuni componenti prima di continuare. %s%
 msgid "Procedure"
 msgstr "Procedura"
 
+#: lazarusidestrconsts:srkmecprocedurelist
+msgid "Procedure List..."
+msgstr ""
+
 #: lazarusidestrconsts:dlgforwardprocsinsertpolicy
 msgid "Procedure insert policy"
 msgstr "Criterio di inserimento procedure"

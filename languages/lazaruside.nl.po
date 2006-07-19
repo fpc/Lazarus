@@ -5321,6 +5321,10 @@ msgstr "Waarschijnlijk moet je nog wat packages installeren voordat je verder ga
 msgid "Procedure"
 msgstr "Procedure"
 
+#: lazarusidestrconsts:srkmecprocedurelist
+msgid "Procedure List..."
+msgstr ""
+
 #: lazarusidestrconsts:dlgforwardprocsinsertpolicy
 msgid "Procedure insert policy"
 msgstr "Wijze van procedures toevoegen"

@@ -5324,6 +5324,10 @@ msgstr "Mungkin anda perlu menginstalasi beberapa paket sebelum melanjutkan. %s%
 msgid "Procedure"
 msgstr "Procedure"
 
+#: lazarusidestrconsts:srkmecprocedurelist
+msgid "Procedure List..."
+msgstr ""
+
 #: lazarusidestrconsts:dlgforwardprocsinsertpolicy
 msgid "Procedure insert policy"
 msgstr "Kebijakan penyisipan Procedure"

@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2006-06-16 13:26+0100\n"
-"Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
+"PO-Revision-Date: 2006-07-19 11:39+0100\n"
+"Last-Translator: Swen Heinig <x@y.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1454,7 +1454,7 @@ msgstr "Der Komponentenname %s%s%s ist kein gültiger Bezeichner"
 
 #: lazarusidestrconsts:lisfpcomponents
 msgid "Components"
-msgstr ""
+msgstr "Komponenten"
 
 #: lazarusidestrconsts:srkmcatcomponentsmenu
 msgid "Components menu commands"
@@ -2518,7 +2518,7 @@ msgstr "Exportiere Liste"
 
 #: lazarusidestrconsts:liswlexpression
 msgid "Expression"
-msgstr ""
+msgstr "Ausdruck"
 
 #: lazarusidestrconsts:lisextendunitpath
 msgid "Extend unit path?"
@@ -4066,7 +4066,7 @@ msgstr "Lazarus-Form"
 
 #: lazarusidestrconsts:lislazaruslanguageid
 msgid "Lazarus language ID (e.g. en, de, br, fi)"
-msgstr ""
+msgstr "Lazarus Sprach ID (z.B. en, de, br, fi)"
 
 #: lazarusidestrconsts:lislazaruslanguagename
 msgid "Lazarus language name (e.g. english, deutsch)"
@@ -5324,6 +5324,10 @@ msgstr "Möglicherweise müssen sie einige Package installieren bevor Sie fortfa
 msgid "Procedure"
 msgstr "Prozedur"
 
+#: lazarusidestrconsts:srkmecprocedurelist
+msgid "Procedure List..."
+msgstr ""
+
 #: lazarusidestrconsts:dlgforwardprocsinsertpolicy
 msgid "Procedure insert policy"
 msgstr "Prozedur-Einfügerichtlinie"
@@ -6074,7 +6078,7 @@ msgstr "Sitzungsinformationen speichern in"
 
 #: lazarusidestrconsts:lislazbuildsavesettings
 msgid "Save settings"
-msgstr ""
+msgstr "Einstellungen speichern"
 
 #: lazarusidestrconsts:fdmscaleword
 msgid "Scale"
@@ -8470,7 +8474,7 @@ msgstr "Warnung: Unklarer Dateiname gefunden: %s%s%s. Quelldatei ist: %s%s%s"
 
 #: lazarusidestrconsts:liswlwatchlist
 msgid "Watch list"
-msgstr ""
+msgstr "Überwachte Ausdrücke"
 
 #: lazarusidestrconsts:lismenuviewwatches
 msgid "Watches"

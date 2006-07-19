@@ -276,8 +276,9 @@ begin
   OpenDialog:=TOpenDialog.Create(nil);
   try
     InitIDEFileDialog(OpenDialog);
-    OpenDialog.Title:='Add .h files ...';
+    OpenDialog.Title:='Add *.h files ...';
     OpenDialog.Options:=OpenDialog.Options+[ofAllowMultiSelect,ofFileMustExist];
+    OpenDialog.Filter:='C header file (*.h)|*.h|All files (*.*)|'+GetAllFilesMask;
     if OpenDialog.Execute then begin
       Project.AddFiles(OpenDialog.Files);
       UpdateFilesPage;
@@ -346,8 +347,9 @@ begin
   OpenDialog:=TOpenDialog.Create(nil);
   try
     InitIDEFileDialog(OpenDialog);
-    OpenDialog.Title:='Open project ...';
+    OpenDialog.Title:='Open project (*.h2p) ...';
     OpenDialog.Options:=OpenDialog.Options+[ofFileMustExist];
+    OpenDialog.Filter:='h2pas project (*.h2p)|*.h2p|All files (*.*)|'+GetAllFilesMask;
     if OpenDialog.Execute then begin
       OpenProject(OpenDialog.FileName,[]);
     end;
@@ -654,11 +656,12 @@ begin
     SaveDialog:=TSaveDialog.Create(nil);
     try
       InitIDEFileDialog(SaveDialog);
-      SaveDialog.Title:='Save project as ...';
+      SaveDialog.Title:='Save project as ... (*.h2p)';
       //choose a nice default name
       if NewFilename='' then
         NewFilename:='project1.h2p';
       SaveDialog.FileName:=NewFilename;
+      SaveDialog.Filter:='h2pas project (*.h2p)|*.h2p|All files (*.*)|'+GetAllFilesMask;
       NewPath:=ExtractFilePath(NewFilename);
       if NewPath<>'' then
         SaveDialog.InitialDir:=NewPath;

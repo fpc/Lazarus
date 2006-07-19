@@ -5321,6 +5321,10 @@ msgstr "Возможно, вам следует установить некот�
 msgid "Procedure"
 msgstr "Процедура"
 
+#: lazarusidestrconsts:srkmecprocedurelist
+msgid "Procedure List..."
+msgstr ""
+
 #: lazarusidestrconsts:dlgforwardprocsinsertpolicy
 msgid "Procedure insert policy"
 msgstr "Политика вставки процедур"

@@ -5313,6 +5313,10 @@ msgstr "Provavelmente você necessita instalar alguns pacotes antes de continuar
 msgid "Procedure"
 msgstr "Procedure"
 
+#: lazarusidestrconsts:srkmecprocedurelist
+msgid "Procedure List..."
+msgstr ""
+
 #: lazarusidestrconsts:dlgforwardprocsinsertpolicy
 msgid "Procedure insert policy"
 msgstr "Politica de inserção de procedure"

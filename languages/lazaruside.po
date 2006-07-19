@@ -4602,6 +4602,10 @@ msgstr ""
 msgid "Go to to include directive of current include file"
 msgstr ""
 
+#: lazarusidestrconsts:srkmecprocedurelist
+msgid "Procedure List..."
+msgstr ""
+
 #: lazarusidestrconsts:srkmectoggleformunit
 msgid "Switch between form and unit"
 msgstr ""
