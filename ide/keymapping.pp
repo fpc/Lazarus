@@ -110,7 +110,7 @@ type
     function IndexOf(ARelation: TKeyCommandRelation): integer;
     function CommandToShortCut(ACommand: word): TShortCut;
     function LoadFromXMLConfig(XMLConfig:TXMLConfig; const Prefix: String):boolean;
-    function SaveToXMLConfig(XMLConfig:TXMLConfig; const Prefix: String):boolean;
+    function SaveToXMLConfig(XMLConfig:TXMLConfig; const Path: String):boolean;
     procedure AssignTo(ASynEditKeyStrokes:TSynEditKeyStrokes;
                        IDEWindowClass: TCustomFormClass);
     procedure Assign(List: TKeyCommandRelationList);
@@ -198,7 +198,7 @@ implementation
 
 
 const
-  KeyMappingFormatVersion = 3;
+  KeyMappingFormatVersion = 4;
 
   VirtualKeyStrings: TStringHashList = nil;
 
@@ -2475,7 +2475,7 @@ var a,b,p:integer;
     Result:=IntToStr(ShortcutA.Key1) + ',' + ShiftStateToStr(ShortcutA.Shift1) + ',' +
             IntToStr(ShortcutB.Key1) + ',' + ShiftStateToStr(ShortcutB.Shift1);
   end;
-
+  
 // LoadFromXMLConfig
 var
   FileVersion: integer;
@@ -2527,15 +2527,18 @@ begin
 end;
 
 function TKeyCommandRelationList.SaveToXMLConfig(
-  XMLConfig:TXMLConfig; const Prefix: String):boolean;
+  XMLConfig:TXMLConfig; const Path: String):boolean;
 var a,b: integer;
   Name: String;
   CurKeyStr: String;
   DefaultKeyStr: string;
   TheKeyA, TheKeyB: TIDEShortCut;
+  //SavedCount: Integer;
+  //SubPath: String;
 begin
-  XMLConfig.SetValue(Prefix+'Version/Value',KeyMappingFormatVersion);
-  XMLConfig.SetDeleteValue(Prefix+'ExternalToolCount/Value',ExtToolCount,0);
+  XMLConfig.SetValue(Path+'Version/Value',KeyMappingFormatVersion);
+  XMLConfig.SetDeleteValue(Path+'ExternalToolCount/Value',ExtToolCount,0);
+  //SavedCount:=0;
   for a:=0 to FRelations.Count-1 do begin
     Name:=lowercase(Relations[a].Name);
     for b:=1 to length(Name) do
@@ -2545,9 +2548,16 @@ begin
       GetDefaultKeyForCommand(Command,TheKeyA,TheKeyB);
       DefaultKeyStr:=KeyValuesToStr(TheKeyA, TheKeyB);
     end;
-    //debugln(['TKeyCommandRelationList.SaveToXMLConfig A ',Prefix+Name,' ',CurKeyStr=DefaultKeyStr]);
-    XMLConfig.SetDeleteValue(Prefix+Name+'/Value',CurKeyStr,DefaultKeyStr);
+    XMLConfig.SetDeleteValue(Path+Name+'/Value',CurKeyStr,DefaultKeyStr);
+    //debugln(['TKeyCommandRelationList.SaveToXMLConfig A ',Path+Name,' ',CurKeyStr=DefaultKeyStr]);
+    {if CurKeyStr<>DefaultKeyStr then begin
+      inc(SavedCount);
+      SubPath:=Path+'Item'+IntToStr(SavedCount);
+      XMLConfig.SetDeleteValue(SubPath+'/Name',Name,'');
+      XMLConfig.SetValue(SubPath+'/Value',CurKeyStr);
+    end;}
   end;
+  //XMLConfig.SetDeleteValue(Path+'KeyMap/Count',SavedCount,0);
   Result:=true;
 end;
 

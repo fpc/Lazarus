@@ -226,4 +226,9 @@ begin
   Result:=false;
 end;
 
+function TCustomPage.AutoSizeDelayed: boolean;
+begin
+  Result:=(not (pfAdded in FFlags)) or (inherited AutoSizeDelayed);
+end;
+
 // included by extctrls.pp

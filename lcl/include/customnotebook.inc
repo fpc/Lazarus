@@ -423,10 +423,11 @@ begin
   if fPageIndex = AValue then exit;
   if not CanChangePageIndex then exit;
   //debugln('TCustomNotebook.SetPageIndex B ',dbgsName(Self),' AValue=',dbgs(AValue),' fPageIndex=',dbgs(fPageIndex),' PageCount=',dbgs(PageCount),' HandleAllocated=',dbgs(HandleAllocated));
-  if not Page[AValue].TabVisible and not (csDesigning in ComponentState) then exit;
-  fPageIndex := AValue;
-  UpdateAllDesignerFlags;
-  DoSendPageIndex;
+  if Page[AValue].TabVisible or (csDesigning in ComponentState) then begin
+    fPageIndex := AValue;
+    UpdateAllDesignerFlags;
+    DoSendPageIndex;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -510,8 +511,10 @@ begin
   if (not (csDestroying in APage.ComponentState))
   and (APage.TabVisible or (csDesigning in ComponentState)) then begin
     if (pfAdded in APage.FFlags) then exit;
-    Include(APage.FFlags,pfAdded);
+    Include(APage.FFlags,pfAdding);
     TWSCustomNotebookClass(WidgetSetClass).AddPage(Self, APage, APage.VisibleIndex);
+    APage.FFlags:=APage.FFlags+[pfAdded]-[pfAdding];
+    APage.ResizeDelayedAutoSizeChildren
   end else begin
     if not (pfAdded in APage.FFlags) then exit;
     Exclude(APage.FFlags,pfAdded);

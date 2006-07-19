@@ -44,6 +44,7 @@ type
 
   TPageFlag = (
     pfAdded,  // page handle added to notebook handle
+    pfAdding, // currently page handle adding to notebook handle
     pfRemoving
     );
   TPageFlags = set of TPageFlag;
@@ -69,6 +70,7 @@ type
     constructor Create(TheOwner: TComponent); override;
     procedure AdjustClientRect(var ARect: TRect); override;
     function CanTab: boolean; override;
+    function AutoSizeDelayed: boolean; override;
     function IsVisible: Boolean; override;
     function VisibleIndex: integer;
     property PageIndex: Integer read GetPageIndex write SetPageIndex;
