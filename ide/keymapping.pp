@@ -359,6 +359,8 @@ begin
   ecJumpToPrevError: SetResult(VK_F8,[ssCtrl, ssShift],VK_UNKNOWN,[]);
   ecJumpToNextError: SetResult(VK_F8,[ssCtrl],VK_UNKNOWN,[]);
   ecOpenFileAtCursor: SetResult2(VK_RETURN,[ssCtrl],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecProcedureList: SetResult(VK_G, [ssCtrl,ssShift],VK_UNKNOWN,[]);
+
 
   // marker
   ecSetFreeBookmark: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -1300,6 +1302,7 @@ begin
     ecJumpToPrevError       : Result:= lisMenuJumpToPrevError;
     ecGotoIncludeDirective  : Result:= srkmecGotoIncludeDirective;
     ecOpenFileAtCursor      : Result:= srkmecOpenFileAtCursor;
+    ecProcedureList         : Result:= srkmecProcedureList;
 
     // view menu
     ecToggleFormUnit        : Result:= srkmecToggleFormUnit;
@@ -2154,6 +2157,7 @@ begin
   AddDefault(C,'Jump to next error',ecJumpToNextError);
   AddDefault(C,'Jump to previous error',ecJumpToPrevError);
   AddDefault(C,'Open file at cursor',ecOpenFileAtCursor);
+  AddDefault(C,srkmecProcedureList,ecProcedureList);
 
   // marker - without menu items in the IDE bar
   C:=Categories[AddCategory('Marker',srkmCatMarker,IDECmdScopeSrcEdit)];

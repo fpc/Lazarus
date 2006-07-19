@@ -100,8 +100,9 @@ type
   end; 
 
 
-procedure Register;
 
+procedure Register;
+procedure ExecuteProcedureList(Sender: TObject);
 
 implementation
 
@@ -168,7 +169,7 @@ var
   Key: TIDEShortCut;
   Cat: TIDECommandCategory;
 begin
-  Key := IDEShortCut(VK_G,[ssCtrl,ssShift],VK_UNKNOWN,[]);
+{  Key := IDEShortCut(VK_G,[ssCtrl,ssShift],VK_UNKNOWN,[]);
   Cat := IDECommandList.CreateCategory(Nil,
                                     cProcedureList,
                                     SProcedureListCaption,
@@ -182,6 +183,7 @@ begin
                          cProcedureList,
                          SProcedureListCaption,
                          nil, nil, CmdProcedureList);
+}
 end;
 
 

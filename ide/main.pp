@@ -208,6 +208,7 @@ type
     procedure mnuFindDeclarationClicked(Sender: TObject);
     procedure mnuOpenFileAtCursorClicked(Sender: TObject);
     procedure mnuGotoIncludeDirectiveClicked(Sender: TObject);
+    procedure mnuSearchProcedureList(Sender: TObject);
 
     // view menu
     procedure mnuViewInspectorClicked(Sender: TObject);
@@ -1983,6 +1984,7 @@ begin
     itmSearchFindIdentifierRefs.OnClick:=@mnuSearchFindIdentifierRefsClicked;
     itmSearchRenameIdentifier.OnClick:=@mnuSearchRenameIdentifierClicked;
     itmGotoIncludeDirective.OnClick:=@mnuGotoIncludeDirectiveClicked;
+    itmSearchProcedureList.OnClick := @mnuSearchProcedureList;
   end;
 end;
 
@@ -2252,6 +2254,11 @@ end;
 procedure TMainIDE.mnuGotoIncludeDirectiveClicked(Sender: TObject);
 begin
   DoGotoIncludeDirective;
+end;
+
+procedure TMainIDE.mnuSearchProcedureList(Sender: TObject);
+begin
+  ProcedureList.ExecuteProcedureList(Sender);
 end;
 
 procedure TMainIDE.mnuSaveClicked(Sender: TObject);
@@ -2551,6 +2558,9 @@ begin
 
   ecRemoveBreakPoint:
     SourceNotebook.DeleteBreakpointClicked(Self);
+    
+  ecProcedureList:
+    mnuSearchProcedureList(self);
 
   else
     Handled:=false;

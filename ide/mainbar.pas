@@ -169,6 +169,7 @@ type
         itmGotoIncludeDirective: TIDEMenuCommand;
         itmSearchFindIdentifierRefs: TIDEMenuCommand;
         itmSearchRenameIdentifier: TIDEMenuCommand;
+        itmSearchProcedureList: TIDEMenuCommand;
 
     // view menu
     //mnuView: TIDEMenuSection;

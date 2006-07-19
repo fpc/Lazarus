@@ -77,6 +77,7 @@ const
   ecViewJumpHistory      = ecFirstLazarus + 13;
   ecJumpToNextError      = ecFirstLazarus + 14;
   ecJumpToPrevError      = ecFirstLazarus + 15;
+  ecProcedureList        = ecFirstLazarus + 16;
 
   // search code
   ecFindDeclaration      = ecFirstLazarus + 20;

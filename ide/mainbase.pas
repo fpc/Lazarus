@@ -511,6 +511,7 @@ begin
     CreateMenuItem(ParentMI,itmGotoIncludeDirective,'itmGotoIncludeDirective',lisMenuGotoIncludeDirective);
     CreateMenuItem(ParentMI,itmSearchFindIdentifierRefs,'itmSearchFindIdentifierRefs',lisMenuFindIdentifierRefs);
     CreateMenuItem(ParentMI,itmSearchRenameIdentifier,'itmSearchRenameIdentifier',lisMenuRenameIdentifier);
+    CreateMenuItem(ParentMI,itmSearchProcedureList,'itmSearchProcedureList',srkmecProcedureList);
   end;
 end;
 
@@ -859,6 +860,7 @@ begin
     itmFindDeclaration.Command:=GetCommand(ecFindDeclaration);
     itmOpenFileAtCursor.Command:=GetCommand(ecOpenFileAtCursor);
     itmGotoIncludeDirective.Command:=GetCommand(ecGotoIncludeDirective);
+    itmSearchProcedureList.Command:=GetCommand(ecProcedureList);
 
     // view menu
     itmViewInspector.Command:=GetCommand(ecToggleObjectInsp);

@@ -1444,6 +1444,7 @@ resourcestring
   srkmecAddJumpPoint              = 'Add jump point';
   srkmecOpenFileAtCursor          = 'Open file at cursor';
   srkmecGotoIncludeDirective      = 'Go to to include directive of current include file';
+  srkmecProcedureList             = 'Procedure List...';
   
   // view menu
   srkmecToggleFormUnit            = 'Switch between form and unit';
