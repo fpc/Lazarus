@@ -2545,7 +2545,7 @@ begin
       GetDefaultKeyForCommand(Command,TheKeyA,TheKeyB);
       DefaultKeyStr:=KeyValuesToStr(TheKeyA, TheKeyB);
     end;
-    //writeln('TKeyCommandRelationList.SaveToXMLConfig A ',Prefix+Name,' ',CurKeyStr=DefaultKeyStr);
+    //debugln(['TKeyCommandRelationList.SaveToXMLConfig A ',Prefix+Name,' ',CurKeyStr=DefaultKeyStr]);
     XMLConfig.SetDeleteValue(Prefix+Name+'/Value',CurKeyStr,DefaultKeyStr);
   end;
   Result:=true;

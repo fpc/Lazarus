@@ -425,6 +425,8 @@ type
 //   Element
 // -------------------------------------------------------
 
+  { TDOMElement }
+
   TDOMElement = class(TDOMNode_WithChildren)
   private
     FAttributes: TDOMNamedNodeMap;
@@ -443,6 +445,7 @@ type
     function  RemoveAttributeNode(OldAttr: TDOMAttr): TDOMAttr;
     // Free NodeList with TDOMNodeList.Release!
     function  GetElementsByTagName(const name: DOMString): TDOMNodeList;
+    function  IsEmpty: Boolean;
     procedure Normalize;
 
     property AttribStrings[const Name: DOMString]: DOMString
@@ -1519,6 +1522,11 @@ end;
 function TDOMElement.GetElementsByTagName(const name: DOMString): TDOMNodeList;
 begin
   Result := TDOMNodeList.Create(Self, name);
+end;
+
+function TDOMElement.IsEmpty: Boolean;
+begin
+  Result:=(FAttributes=nil) or (FAttributes.Count=0)
 end;
 
 procedure TDOMElement.Normalize;

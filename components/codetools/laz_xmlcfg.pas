@@ -323,15 +323,26 @@ var
   Node: TDomNode;
   StartPos: integer;
   NodeName: string;
+  ParentNode: TDOMNode;
 begin
   Node:=FindNode(APath,true);
   if (Node=nil) then exit;
   StartPos:=length(APath);
   while (StartPos>0) and (APath[StartPos]<>'/') do dec(StartPos);
   NodeName:=copy(APath,StartPos+1,length(APath)-StartPos);
-  if (not Assigned(TDOMElement(Node).GetAttributeNode(NodeName))) then exit;
-  TDOMElement(Node).RemoveAttribute(NodeName);
-  FModified := True;
+  if Assigned(TDOMElement(Node).GetAttributeNode(NodeName)) then begin
+    TDOMElement(Node).RemoveAttribute(NodeName);
+    FModified := True;
+  end;
+  while (Node.ChildNodes.Count=0) and (Node.ParentNode<>nil)
+  and (Node.ParentNode.ParentNode<>nil) do begin
+    if (Node is TDOMElement) and (not TDOMElement(Node).IsEmpty) then break;
+    ParentNode:=Node.ParentNode;
+    //writeln('TXMLConfig.DeleteValue APath="',APath,'" NodeName=',Node.NodeName,' ',Node.ClassName);
+    ParentNode.RemoveChild(Node);
+    Node:=ParentNode;
+    FModified := True;
+  end;
 end;
 
 procedure TXMLConfig.Loaded;

@@ -197,7 +197,7 @@ type
 
 { TEditorOptions }
 
-TEditorOptions = class(TPersistent)
+  TEditorOptions = class(TPersistent)
   private
     xmlconfig: TXMLConfig;
 
@@ -1498,7 +1498,7 @@ begin
     // Key Mappings options
     XMLConfig.SetValue('EditorOptions/KeyMapping/Scheme', fKeyMappingScheme);
     fKeyMap.SaveToXMLConfig(
-      XMLConfig, 'EditorOptions/KeyMapping/' + fKeyMappingScheme + '/');
+              XMLConfig, 'EditorOptions/KeyMapping/' + fKeyMappingScheme + '/');
 
     // Color options
     for i := 0 to fHighlighterList.Count - 1 do

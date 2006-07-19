@@ -615,7 +615,7 @@ begin
     raise Exception.Create('item does not belong to this listview');
   if FSelected = AValue then Exit;
   FSelected := AValue;
-  DebugLn('TCustomListView.SetSelection FSelected=',dbgs(FSelected));
+  //DebugLn('TCustomListView.SetSelection FSelected=',dbgs(FSelected));
   if not HandleAllocated then Exit;
   TWSCustomListViewClass(WidgetSetClass).ItemSetState(Self, FSelected.Index,
                                                   FSelected, lisSelected, True);
