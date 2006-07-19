@@ -1,5 +1,5 @@
-{ This file was automatically created by Lazarus. Do not edit!
-This source is only used to compile and install the package.
+{ Diese Datei wurde automatisch von Lazarus erzeugt. Sie darf nicht bearbeitet werden!
+Dieser Quelltext dient nur dem Übersetzen und Installieren des Packages.
  }
 
 unit H2PasWizard; 
@@ -7,7 +7,7 @@ unit H2PasWizard;
 interface
 
 uses
-  H2PasDlg, H2PasStrConsts, LazarusPackageIntf; 
+  H2PasConvert, H2PasDlg, H2PasStrConsts, LazarusPackageIntf; 
 
 implementation
 

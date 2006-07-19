@@ -71,9 +71,9 @@ uses
   // synedit
   SynEditKeyCmds,
   // IDE interface
-  AllIDEIntf, ObjectInspector, PropEdits, MacroIntf, IDECommands, SrcEditorIntf,
-  NewItemIntf, IDEMsgIntf, PackageIntf, ProjectIntf, MenuIntf, LazIDEIntf,
-  IDEDialogs,
+  AllIDEIntf, BaseIDEIntf, ObjectInspector, PropEdits, MacroIntf, IDECommands,
+  SrcEditorIntf, NewItemIntf, IDEMsgIntf, PackageIntf, ProjectIntf, MenuIntf,
+  LazIDEIntf, IDEDialogs,
   // protocol
   IDEProtocol,
   // compile
@@ -304,6 +304,8 @@ type
                        IDEWindowClass: TCustomFormClass);
     function OnExecuteIDECommand(Sender: TObject; Command: word): boolean;
     function OnSelectDirectory(const Title, InitialDir: string): string;
+    procedure OnInitIDEFileDialog(AFileDialog: TFileDialog);
+    procedure OnStoreIDEFileDialog(AFileDialog: TFileDialog);
 
     // Environment options dialog events
     procedure OnLoadEnvironmentSettings(Sender: TObject;
@@ -1432,6 +1434,8 @@ end;
 procedure TMainIDE.SetupDialogs;
 begin
   LazIDESelectDirectory:=@OnSelectDirectory;
+  InitIDEFileDialog:=@OnInitIDEFileDialog;
+  StoreIDEFileDialog:=@OnStoreIDEFileDialog;
 end;
 
 procedure TMainIDE.SetupComponentNoteBook;
@@ -2607,6 +2611,16 @@ begin
   finally
     Dialog.Free;
   end;
+end;
+
+procedure TMainIDE.OnInitIDEFileDialog(AFileDialog: TFileDialog);
+begin
+  InputHistories.ApplyFileDialogSettings(AFileDialog);
+end;
+
+procedure TMainIDE.OnStoreIDEFileDialog(AFileDialog: TFileDialog);
+begin
+  InputHistories.StoreFileDialogSettings(AFileDialog);
 end;
 
 procedure TMainIDE.OnExecuteIDEShortCut(Sender: TObject; var Key: word;

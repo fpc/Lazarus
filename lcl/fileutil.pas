@@ -80,6 +80,7 @@ function ChompPathDelim(const Path: string): string;
 function TrimFilename(const AFilename: string): string;
 function CleanAndExpandFilename(const Filename: string): string;
 function CleanAndExpandDirectory(const Filename: string): string;
+function CreateRelativePath(const Filename, BaseDirectory: string): string;
 function FileIsInPath(const Filename, Path: string): boolean;
 function FileIsInDirectory(const Filename, Directory: string): boolean;
 function FileInFilenameMasks(const Filename, Masks: string): boolean;

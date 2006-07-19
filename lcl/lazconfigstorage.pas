@@ -51,6 +51,9 @@ type
     function  GetValue(const APath: String; ADefault: Boolean): Boolean;
     procedure GetValue(const APath: String; out ARect: TRect;
                        const ADefault: TRect);
+    procedure GetValue(const APath: String; out APoint: TPoint;
+                       const ADefault: TPoint);
+    procedure GetValue(const APath: String; const List: TStrings);
     procedure SetValue(const APath, AValue: String);
     procedure SetDeleteValue(const APath, AValue, DefValue: String);
     procedure SetValue(const APath: String; AValue: Integer);
@@ -59,6 +62,9 @@ type
     procedure SetDeleteValue(const APath: String; AValue, DefValue: Boolean);
     procedure SetValue(const APath: String; const AValue: TRect);
     procedure SetDeleteValue(const APath: String; const AValue, DefValue: TRect);
+    procedure SetValue(const APath: String; const AValue: TPoint);
+    procedure SetDeleteValue(const APath: String; const AValue, DefValue: TPoint);
+    procedure SetValue(const APath: String; const AValue: TStrings);
     procedure DeletePath(const APath: string);
     procedure DeleteValue(const APath: string);
     property CurrentBasePath: string read FCurrentBasePath;
@@ -113,6 +119,30 @@ begin
   ARect.Bottom:=GetValue(APath+'Bottom',ADefault.Bottom);
 end;
 
+procedure TConfigStorage.GetValue(const APath: String; out APoint: TPoint;
+  const ADefault: TPoint);
+begin
+  APoint.X:=GetValue(APath+'X',ADefault.X);
+  APoint.Y:=GetValue(APath+'Y',ADefault.Y);
+end;
+
+procedure TConfigStorage.GetValue(const APath: String; const List: TStrings);
+var
+  NewCount: LongInt;
+  i: Integer;
+  NewLine: String;
+begin
+  NewCount:=GetValue(APath+'Count',0);
+  for i:=0 to NewCount-1 do begin
+    NewLine:=GetValue(APath+'Item'+IntToStr(i+1),'');
+    if List.Count>i then
+      List[i]:=NewLine
+    else
+      List.Add(NewLine);
+  end;
+  while List.Count>NewCount do List.Delete(List.Count-1);
+end;
+
 procedure TConfigStorage.SetValue(const APath, AValue: String);
 begin
   SetFullPathValue(ExtendPath(APath),AValue);
@@ -160,6 +190,28 @@ begin
   SetDeleteValue(APath+'Top',AValue.Top,DefValue.Top);
   SetDeleteValue(APath+'Right',AValue.Right,DefValue.Right);
   SetDeleteValue(APath+'Bottom',AValue.Bottom,DefValue.Bottom);
+end;
+
+procedure TConfigStorage.SetValue(const APath: String; const AValue: TPoint);
+begin
+  SetValue(APath+'X',AValue.X);
+  SetValue(APath+'Y',AValue.Y);
+end;
+
+procedure TConfigStorage.SetDeleteValue(const APath: String; const AValue,
+  DefValue: TPoint);
+begin
+  SetDeleteValue(APath+'X',AValue.X,DefValue.X);
+  SetDeleteValue(APath+'Y',AValue.Y,DefValue.Y);
+end;
+
+procedure TConfigStorage.SetValue(const APath: String; const AValue: TStrings);
+var
+  i: Integer;
+begin
+  SetDeleteValue(APath+'Count',AValue.Count,0);
+  for i:=0 to AValue.Count-1 do
+    SetDeleteValue(APath+'Item'+IntToStr(i+1),AValue[i],'');
 end;
 
 procedure TConfigStorage.DeletePath(const APath: string);

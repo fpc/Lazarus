@@ -22,16 +22,19 @@ unit BaseIDEIntf;
 interface
 
 uses
-  Classes, SysUtils, LazConfigStorage;
+  Classes, SysUtils, LazConfigStorage, Dialogs;
   
 type
   TGetIDEConfigStorage = function(const Filename: string; LoadFromDisk: Boolean
                                   ): TConfigStorage;
+  TInitIDEFileDialog = procedure(AFileDialog: TFileDialog) of object;
+  TStoreIDEFileDialog = procedure(AFileDialog: TFileDialog) of object;
 
 var
   DefaultConfigClass: TConfigStorageClass = nil;   // will be set by the IDE
   GetIDEConfigStorage: TGetIDEConfigStorage = nil; // will be set by the IDE
-
+  InitIDEFileDialog: TInitIDEFileDialog = nil;     // will be set by the IDE
+  StoreIDEFileDialog: TStoreIDEFileDialog = nil  ; // will be set by the IDE
 
 implementation
 
