@@ -1489,13 +1489,11 @@ Begin
           Msg := LM_NOTIFY;
           IDCtrl := WParam;
           NMHdr := PNMHDR(LParam);
-          With NMHdr^ do
-          case code of
-            TCN_SELCHANGING:
-              ShowHideTabPage(HWndFrom, False);
-            TCN_SELCHANGE:
-              idFrom := ShowHideTabPage(HWndFrom, true);
-          end;
+          with NMHdr^ do
+            case code of
+              TCN_SELCHANGE:
+                idFrom := ShowHideTabPage(HWndFrom, true);
+            end;
         end;
       end;
     end;
@@ -1862,6 +1860,16 @@ Begin
       // if key not yet processed, let windows process it
       WinProcess := LMKey.Result = 0;
       WParam := LMKey.CharCode;
+    end;
+
+    LM_NOTIFY:
+    begin
+      with LMNotify.NMHdr^ do
+        case code of
+          TCN_SELCHANGING:
+            if LMNotify.Result = 0 then
+              ShowHideTabPage(HWndFrom, False);
+        end;
     end;
 
   else

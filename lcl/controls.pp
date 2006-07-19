@@ -2338,12 +2338,13 @@ function DoControlMsg(Handle: hwnd; var Message): Boolean;
 var
   AWinControl: TWinControl;
 begin
-  Result := False;
+  Result := false;
   AWinControl := FindOwnerControl(Handle);
-  if AWinControl <> nil then begin
+  if AWinControl <> nil then
+  begin
     with TLMessage(Message) do
-      AWinControl.Perform(Msg + CN_BASE, WParam, LParam);
-    Result:= True;
+      Result := AWinControl.Perform(Msg + CN_BASE, WParam, LParam);
+    Result := true;
   end;
 end;
 

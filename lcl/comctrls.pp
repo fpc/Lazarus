@@ -221,7 +221,6 @@ type
 
   TPageControl = class(TCustomNotebook)
   private
-    FOnChanging: TTabChangingEvent;
     function GetActivePageIndex: Integer;
     function GetActiveTabSheet: TTabSheet;
     function GetTabIndex: Integer;
@@ -271,7 +270,7 @@ type
     //property TabWidth;
     property Visible;
     property OnChange: TNotifyEvent read fOnPageChanged write fOnPageChanged;
-    property OnChanging: TTabChangingEvent read FOnChanging write FOnChanging;
+    property OnChanging;
     property OnContextPopup;
     //property OnDockDrop;
     //property OnDockOver;

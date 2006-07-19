@@ -1022,8 +1022,8 @@ begin
   Message.WParam := WParam;
   Message.LParam := LParam;
   Message.Result := 0;
-  If Self <> nil then WindowProc(Message);
-    Result := Message.Result;
+  if Self <> nil then WindowProc(Message);
+  Result := Message.Result;
 end;
 
 {------------------------------------------------------------------------------
