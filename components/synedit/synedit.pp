@@ -2376,20 +2376,21 @@ var
   Z: integer;
 begin
   inherited MouseMove(Shift, x, y);
-  {$IFDEF SYN_LAZARUS}
-  LastMouseCaret:=PixelsToRowColumn(Point(X,Y));
-  {$ENDIF}
 
   if (X >= fGutterWidth)
     and (X < ClientWidth{$IFDEF SYN_LAZARUS}-ScrollBarWidth{$ENDIF})
     and (Y >= 0)
     and (Y < ClientHeight{$IFDEF SYN_LAZARUS}-ScrollBarWidth{$ENDIF})
   then begin
-    If Cursor <> crIBeam then
+    if Cursor <> crHandPoint then
       Cursor := crIBeam;
-  end else
-    If Cursor <> crDefault then
-      Cursor := crDefault;
+  end
+  else
+    Cursor := crDefault;
+
+  {$IFDEF SYN_LAZARUS}
+  LastMouseCaret:=PixelsToRowColumn(Point(X,Y));
+  {$ENDIF}
 
   //debugln('TCustomSynEdit.MouseMove sfWaitForDragging=',dbgs(sfWaitForDragging in fStateFlags),' MouseCapture=',dbgs(MouseCapture),' GetCaptureControl=',DbgSName(GetCaptureControl));
   if MouseCapture
@@ -6844,6 +6845,15 @@ end;
 
 {$IFDEF SYN_LAZARUS}
 procedure TCustomSynEdit.UpdateCtrlMouse;
+
+  procedure doNotShowLink;
+  begin
+    if fLastCtrlMouseLinkY>0 then begin
+      Invalidate;
+      Cursor := crIBeam;
+    end;
+  end;
+
 var
   NewY, NewX1, NewX2: integer;
 begin
@@ -6860,19 +6870,12 @@ begin
       or (NewX2<>fLastCtrlMouseLinkX2)
       then begin
         Invalidate;
+        Cursor := crHandPoint;
       end;
-    end else begin
-      // there is no link -> do not show link
-      if fLastCtrlMouseLinkY>0 then begin
-        Invalidate;
-      end;
-    end;
-  end else begin
-    // do not show link
-    if fLastCtrlMouseLinkY>0 then begin
-      Invalidate;
-    end;
-  end;
+    end else
+      doNotShowLink // there is no link
+  end else
+    doNotShowLink;
 end;
 {$ENDIF}
 
