@@ -101,10 +101,10 @@ var
   SrcDC: hDC;
   DestDC: hDC;
 begin
-  if (DestRect.Left>=Width) or (DestRect.Right<=0)
-  or (DestRect.Top>=Height) or (DestRect.Bottom<=0)
-  or (DestRect.Right<=DestRect.Left) or (DestRect.Bottom<=DestRect.Top)
-  or (Width=0) or (Height=0) then exit;
+  if (DestRect.Right<=DestRect.Left) or (DestRect.Bottom<=DestRect.Top)
+  or (Width=0) or (Height=0) then begin
+    exit;
+  end;
   HandleNeeded;
   if HandleAllocated then begin
     if Transparent then

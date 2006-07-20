@@ -780,6 +780,7 @@ begin
     RaiseGDBException('ReAlignRawImageLines OldSize<>Size');
   NewBytesPerLine:=GetBytesPerLine(Width,BitsPerPixel,NewLineEnd);
   NewSize:=NewBytesPerLine*PtrUInt(Height);
+  //DebugLn(['ReAlignRawImageLines OldBytesPerLine=',OldBytesPerLine,' NewBytesPerLine=',NewBytesPerLine]);
   
   // enlarge before
   if OldSize<NewSize then

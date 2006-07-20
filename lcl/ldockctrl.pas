@@ -1165,9 +1165,17 @@ var
         --+#+---+|          ---+|
         ---------+      --------+
     }
+    var
+      SideNode: TLazDockConfigNode;
     begin
-      // TODO
       Result:=false;
+      SideNode:=FindNode(DeletingNode.Sides[Side]);
+      if (SideNode=nil) then exit;
+      if not (SideNode.TheType in [ldcntSplitterLeftRight,ldcntSplitterUpDown])
+      then exit;
+      
+      // TODO
+      Result:=true;
     end;
     
     function HasSpiralSplitter: boolean;
@@ -1294,13 +1302,14 @@ function TCustomLazDockingManager.ConfigIsCompatible(
         exit(false);
       end;
       if Sibling=Node.Parent then
-        exit(true);
+        exit(true); // anchored to parent: ok
       if (a in [akLeft,akRight]) and (Sibling.TheType=ldcntSplitterLeftRight)
       then
-        exit(true);
+        exit(true); // left/right side anchored to a left/right splitter: ok
       if (a in [akTop,akBottom]) and (Sibling.TheType=ldcntSplitterUpDown)
       then
-        exit(true);
+        exit(true); // top/bottom side anchored to a up/down splitter: ok
+      // otherwise: not ok
       Error('Node.Sides[a] invalid');
       Result:=false;
     end;
@@ -1364,6 +1373,16 @@ function TCustomLazDockingManager.ConfigIsCompatible(
     i: Integer;
   begin
     Result:=false;
+    
+    for a:=Low(TAnchorKind) to High(TAnchorKind) do begin
+      if Node.Sides[a]<>'' then begin
+        if RootNode.FindByName(Node.Sides[a],true)=nil then begin
+          Error('invalid Node.Sides[a]');
+          exit;
+        end;
+      end;
+    end;
+    
     case Node.TheType of
     ldcntControl:
       begin
