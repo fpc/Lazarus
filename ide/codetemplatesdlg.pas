@@ -32,7 +32,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
-  ClipBrd, StdCtrls, Buttons, ExtCtrls, Menus,
+  ClipBrd, StdCtrls, Buttons, ExtCtrls, Menus, FileUtil,
   SynEdit, SynHighlighterPas, SynEditAutoComplete, CodeToolManager, CodeCache,
   PascalParserTool,
   IDECommands, TextTools, SrcEditorIntf, MenuIntf, IDEWindowIntf, LazIDEIntf,
@@ -769,7 +769,7 @@ begin
     InputHistories.ApplyFileDialogSettings(OpenDialog);
     with OpenDialog do begin
       Title:=dlgChsCodeTempl;
-      Filter:='DCI file (*.dci)|*.dci|'+dlgAllFiles+'|*.*';
+      Filter:='DCI file (*.dci)|*.dci|' + dlgAllFiles  + '|' + GetAllFilesMask;
       if Execute then
         FilenameEdit.Text:=FileName;
     end;

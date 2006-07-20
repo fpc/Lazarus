@@ -306,12 +306,6 @@ begin
 end;
 
 function FindAllTranslatedPoFiles(const Filename: string): TStringList;
-const
-  {$IFdef MSWindows}
-  FindMask = '*.*';
-  {$ELSE}
-  FindMask = '*';
-  {$ENDIF}
 var
   Path: String;
   Name: String;
@@ -325,7 +319,7 @@ begin
   Name:=ExtractFilename(Filename);
   Ext:=ExtractFileExt(Filename);
   NameOnly:=LeftStr(Name,length(Name)-length(Ext));
-  if SysUtils.FindFirst(Path+FindMask,faAnyFile,FileInfo)=0 then begin
+  if SysUtils.FindFirst(Path+GetAllFilesMask,faAnyFile,FileInfo)=0 then begin
     repeat
       if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='')
       or (CompareFilenames(FileInfo.Name,Name)=0) then continue;

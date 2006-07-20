@@ -75,13 +75,6 @@ var
   
 implementation
 
-const
-  {$IFDEF WINDOWS}
-  FindMask = '*.*';
-  {$ELSE}
-  FindMask = '*';
-  {$ENDIF}
-
 { TDirSelDlg }
 
 {Function HasSubDirs returns True if the directory passed has subdirectories}
@@ -97,7 +90,7 @@ begin
  begin
    FCurrentDir:= Dir;
    FileCtrl.AppendPathDelim(FCurrentDir);
-   FCurrentDir:= Dir + FindMask;
+   FCurrentDir:= Dir + GetAllFilesMask;
    Try
      if SysUtils.FindFirst(FCurrentDir, (faAnyFile),FileInfo)=0 then
      begin
@@ -133,7 +126,7 @@ begin
     FCurrentDir:= Dir;
     FileCtrl.AppendPathDelim(FCurrentDir);
     i:= length(FCurrentDir);
-    FCurrentDir:= Dir + FindMask;
+    FCurrentDir:= Dir + GetAllFilesMask;
     Try
       if SysUtils.FindFirst(FCurrentDir, faAnyFile,FileInfo)=0 then
       begin
