@@ -1154,8 +1154,9 @@ var
       Result:=true;
     end;
     
-    function Has3SideSplitter(Side: TAnchorKind): boolean;
-    { check if node has a splitter to Side, and the splitter shares 3 sides
+    function HasOwnSideSplitter(Side: TAnchorKind): boolean;
+    { check if node has a splitter to Side, and the node is the only node
+      anchored to the splitter at this side.
       If yes, it removes the splitter and the node and reconnects the nodes
       using the splitter with the opposite side
       For example:
@@ -1202,10 +1203,10 @@ var
 
   begin
     if HasNoSplitter
-    or Has3SideSplitter(akLeft)
-    or Has3SideSplitter(akTop)
-    or Has3SideSplitter(akRight)
-    or Has3SideSplitter(akBottom)
+    or HasOwnSideSplitter(akLeft)
+    or HasOwnSideSplitter(akTop)
+    or HasOwnSideSplitter(akRight)
+    or HasOwnSideSplitter(akBottom)
     or HasSpiralSplitter then begin
     end else begin
       // this should never be reached
