@@ -3037,7 +3037,9 @@ begin
     if FField<>nil then
       FFieldName := FField.FieldName;
     ColumnChanged;
-  end;
+  end else
+  if (AValue<>nil)and(Visible<>AValue.Visible) then
+    Visible := AValue.Visible;
 end;
 
 procedure TColumn.SetFieldName(const AValue: String);
