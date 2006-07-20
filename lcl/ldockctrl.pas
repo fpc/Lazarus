@@ -56,8 +56,8 @@ type
   TLDConfigNodeType = (
     ldcntControl,
     ldcntForm,
-    ldcntSplitterLeftRight,
-    ldcntSplitterUpDown,
+    ldcntSplitterLeftRight,// vertical splitter, can be moved left/right
+    ldcntSplitterUpDown,   // horizontal splitter, can be moved up/down
     ldcntPages,
     ldcntPage
     );
@@ -108,6 +108,7 @@ type
     procedure SaveToConfig(Config: TConfigStorage; const Path: string = '');
     procedure LoadFromConfig(Config: TConfigStorage; const Path: string = '');
     procedure WriteDebugReport;
+    function GetPath: string;
   public
     property Bounds: TRect read FBounds write SetBounds;
     property ClientBounds: TRect read FClientBounds write SetClientBounds;
@@ -168,6 +169,8 @@ type
                                      ): TLazDockerConfig;
     function CreateLayout(const DockerName: string; VisibleControl: TControl
                           ): TLazDockConfigNode;
+    function ConfigIsCompatible(RootNode: TLazDockConfigNode;
+                                ExceptionOnError: boolean): boolean;
   public
     property Manager: TAnchoredDockManager read FManager;
     property DockerCount: Integer read GetDockerCount;
@@ -1116,6 +1119,8 @@ function TCustomLazDockingManager.CreateLayout(const DockerName: string;
 // create a usable config
 // This means: search a config, create a copy
 // and remove all nodes without visible controls.
+var
+  Root: TLazDockConfigNode;
 
   function ControlIsVisible(AControl: TControl): boolean;
   begin
@@ -1123,52 +1128,104 @@ function TCustomLazDockingManager.CreateLayout(const DockerName: string;
             and ((AControl.Visible) or (AControl=VisibleControl));
   end;
   
-  procedure DeleteNode(DeletingNode: TLazDockConfigNode);
+  function FindNode(const AName: string): TLazDockConfigNode;
+  begin
+    if AName='' then
+      Result:=nil
+    else
+      Result:=Root.FindByName(AName,true,true);
+  end;
   
-    procedure RemoveLinksToNode(ANode: TLazDockConfigNode);
+  procedure DeleteNode(var DeletingNode: TLazDockConfigNode);
+  
+    function HasNoSplitter: boolean;
+    { checks if node does not use any splitter
+      A node without splitter neighbours can be deleted. }
     var
       a: TAnchorKind;
-      i: Integer;
+      SiblingNode: TLazDockConfigNode;
     begin
       for a:=Low(TAnchorKind) to High(TAnchorKind) do begin
-        if CompareText(ANode.Sides[a],DeletingNode.Name)=0 then begin
-          ANode.Sides[a]:=DeletingNode.Sides[a]
-        end;
+        SiblingNode:=FindNode(DeletingNode.Sides[a]);
+        if (SiblingNode<>nil)
+        and (SiblingNode.TheType in [ldcntSplitterLeftRight,ldcntSplitterUpDown])
+        then exit(false);
       end;
-      for i:=0 to ANode.ChildCount-1 do
-        RemoveLinksToNode(ANode.Childs[i]);
+      Result:=true;
+    end;
+    
+    function Has3SideSplitter(Side: TAnchorKind): boolean;
+    { check if node has a splitter to Side, and the splitter shares 3 sides
+      If yes, it removes the splitter and the node and reconnects the nodes
+      using the splitter with the opposite side
+      For example:
+        ---------+      --------+
+        --+#+---+|          ---+|
+        B |#| A ||  ->       B ||
+        --+#+---+|          ---+|
+        ---------+      --------+
+    }
+    begin
+      // TODO
+      Result:=false;
+    end;
+    
+    function HasSpiralSplitter: boolean;
+    { check if node has 4 splitters like a spiral.
+      In this case merge the two vertical splitters.
+      For example:
+             |             |
+      -------|        -----|
+       |+---+|             |
+       || A ||   ->        |
+       |+---+|             |
+       |--------           |------
+       |                   |
+    }
+    begin
+      // TODO
+      Result:=false;
     end;
   
-  var
-    ARoot: TLazDockConfigNode;
+    procedure RaiseUnknownCase;
+    begin
+      raise Exception.Create('TCustomLazDockingManager.CreateLayout invalid Config');
+    end;
+
   begin
-    ARoot:=DeletingNode;
-    while ARoot.Parent<>nil do ARoot:=ARoot.Parent;
-    RemoveLinksToNode(ARoot);
+    if HasNoSplitter
+    or Has3SideSplitter(akLeft)
+    or Has3SideSplitter(akTop)
+    or Has3SideSplitter(akRight)
+    or Has3SideSplitter(akBottom)
+    or HasSpiralSplitter then begin
+    end else begin
+      // this should never be reached
+      RaiseUnknownCase;
+    end;
     DeletingNode.RemoveFromParentAndFree;
+    DeletingNode:=nil;
   end;
 
-  procedure RemoveEmptyNodes(Node: TLazDockConfigNode);
+  procedure RemoveEmptyNodes(var Node: TLazDockConfigNode);
+  // remove unneeded child nodes
+  // if no childs left and Node itself is unneeded, it s freed and set to nil
   var
     i: Integer;
     Docker: TCustomLazControlDocker;
     Child: TLazDockConfigNode;
   begin
     if Node=nil then exit;
-    // remove empty childs
-    for i:=Node.ChildCount-1 downto 0 do
-      RemoveEmptyNodes(Node.Childs[i]);
-    // remove unneeded splitters
-    for i:=Node.ChildCount-1 downto 0 do begin
+    
+    // remove unneeded childs
+    i:=Node.ChildCount-1;
+    while i>=0 do begin
       Child:=Node.Childs[i];
-      // a splitter is needed, if it has on both sides none splitters on both sides
-      if Child.TheType=ldcntSplitterLeftRight then begin
-
-      end else if Child.TheType=ldcntSplitterUpDown then begin
-      
-      end;
+      RemoveEmptyNodes(Child);
+      dec(i);
+      if i>=Node.ChildCount then i:=Node.ChildCount-1;
     end;
-
+      
     case Node.TheType of
     ldcntControl:
       begin
@@ -1190,18 +1247,199 @@ function TCustomLazDockingManager.CreateLayout(const DockerName: string;
 var
   Config: TLazDockerConfig;
 begin
-  Result:=nil;
   Config:=GetConfigWithDockerName(DockerName);
   if (Config=nil) or (Config.Root=nil)
-  or (Config.Root.FindByName(DockerName)=nil) then begin
+  or (Config.Root.FindByName(DockerName)=nil)
+  or (ConfigIsCompatible(Config.Root,false)) then begin
     // no good config found
-    exit;
+    exit(nil);
   end;
   // create a copy of the config
-  Result:=TLazDockConfigNode.Create(nil);
-  Result.Assign(Config.Root);
+  Root:=TLazDockConfigNode.Create(nil);
+  Root.Assign(Config.Root);
   // clean up
-  RemoveEmptyNodes(Result);
+  RemoveEmptyNodes(Root);
+  Result:=Root;
+end;
+
+function TCustomLazDockingManager.ConfigIsCompatible(
+  RootNode: TLazDockConfigNode; ExceptionOnError: boolean): boolean;
+  
+  function CheckNode(Node: TLazDockConfigNode): boolean;
+  
+    procedure Error(const Msg: string);
+    var
+      s: String;
+    begin
+      s:='Error: Node="'+Node.GetPath+'"';
+      s:=s+' NodeType='+LDConfigNodeTypeNames[Node.TheType];
+      s:=s+Msg;
+      DebugLn(s);
+      if ExceptionOnError then raise Exception.Create(s);
+    end;
+    
+    function CheckSideAnchored(a: TAnchorKind): boolean;
+    var
+      SiblingName: string;
+      Sibling: TLazDockConfigNode;
+    begin
+      SiblingName:=Node.Sides[a];
+      if SiblingName='' then begin
+        Error('Node.Sides[a]=''''');
+        exit(false);
+      end;
+      Sibling:=RootNode.FindByName(SiblingName,true);
+      if Sibling=nil then begin
+        Error('Node.Sides[a] not found');
+        exit(false);
+      end;
+      if Sibling=Node.Parent then
+        exit(true);
+      if (a in [akLeft,akRight]) and (Sibling.TheType=ldcntSplitterLeftRight)
+      then
+        exit(true);
+      if (a in [akTop,akBottom]) and (Sibling.TheType=ldcntSplitterUpDown)
+      then
+        exit(true);
+      Error('Node.Sides[a] invalid');
+      Result:=false;
+    end;
+    
+    function CheckAllSidesAnchored: boolean;
+    var
+      a: TAnchorKind;
+    begin
+      for a:=Low(TAnchorKind) to High(TAnchorKind) do
+        if not CheckSideAnchored(a) then exit(false);
+      Result:=true;
+    end;
+    
+    function CheckSideNotAnchored(a: TAnchorKind): boolean;
+    begin
+      if Node.Sides[a]<>'' then begin
+        Error('Sides[a]<>''''');
+        Result:=false;
+      end else
+        Result:=true;
+    end;
+    
+    function CheckNoSideAnchored: boolean;
+    var
+      a: TAnchorKind;
+    begin
+      for a:=Low(TAnchorKind) to High(TAnchorKind) do
+        if not CheckSideNotAnchored(a) then exit(false);
+      Result:=true;
+    end;
+    
+    function CheckHasChilds: boolean;
+    begin
+      if Node.ChildCount=0 then begin
+        Error('ChildCount=0');
+        Result:=false;
+      end else
+        Result:=true;
+    end;
+
+    function CheckHasNoChilds: boolean;
+    begin
+      if Node.ChildCount>0 then begin
+        Error('ChildCount>0');
+        Result:=false;
+      end else
+        Result:=true;
+    end;
+    
+    function CheckHasParent: boolean;
+    begin
+      if Node.Parent=nil then begin
+        Error('Parent=nil');
+        Result:=false;
+      end else
+        Result:=true;
+    end;
+
+  var
+    a: TAnchorKind;
+    i: Integer;
+  begin
+    Result:=false;
+    case Node.TheType of
+    ldcntControl:
+      begin
+        // a control node contains a TControl
+        if not CheckAllSidesAnchored then exit;
+      end;
+    ldcntForm:
+      begin
+        // a dock form is a dummy control, used as top level container
+        if Node.Parent<>nil then begin
+          Error('Parent<>nil');
+          exit;
+        end;
+        if not CheckHasChilds then exit;
+        if not CheckNoSideAnchored then exit;
+      end;
+    ldcntPages:
+      begin
+        // a pages node has only page nodes as childs
+        if not CheckHasChilds then exit;
+        for i:=0 to Node.ChildCount-1 do
+          if Node.Childs[i].TheType<>ldcntPage then begin
+            Error('Childs[i].TheType<>ldcntPage');
+            exit;
+          end;
+        if not CheckAllSidesAnchored then exit;
+      end;
+    ldcntPage:
+      begin
+        // a page is the child of a pages node, and a container
+        if not CheckHasParent then exit;
+        if not CheckHasChilds then exit;
+        if Node.Parent.TheType<>ldcntPages then begin
+          Error('Parent.TheType<>ldcntPages');
+          exit;
+        end;
+        if not CheckNoSideAnchored then exit;
+      end;
+    ldcntSplitterLeftRight:
+      begin
+        // a vertical splitter can be moved left/right
+        if not CheckHasParent then exit;
+        if not CheckHasNoChilds then exit;
+        if not CheckSideNotAnchored(akLeft) then exit;
+        if not CheckSideNotAnchored(akRight) then exit;
+        CheckSideAnchored(akTop);
+        CheckSideAnchored(akBottom);
+      end;
+    ldcntSplitterUpDown:
+      begin
+        // a horizontal splitter can be moved up/down
+        // it is anchored left and right, and not top/bottom
+        // it is not a root node
+        // it has no childs
+        if not CheckHasParent then exit;
+        if not CheckHasNoChilds then exit;
+        if not CheckSideNotAnchored(akTop) then exit;
+        if not CheckSideNotAnchored(akBottom) then exit;
+        CheckSideAnchored(akLeft);
+        CheckSideAnchored(akRight);
+      end;
+    else
+      Error('unknown type');
+      exit;
+    end;
+    
+    // check childs
+    for i:=0 to Node.ChildCount-1 do
+      if not CheckNode(Node.Childs[i]) then exit;
+
+    Result:=true;
+  end;
+  
+begin
+  if RootNode=nil then exit(false);
+  Result:=CheckNode(RootNode);
 end;
 
 { TLazDockConfigNode }
@@ -1467,6 +1705,21 @@ procedure TLazDockConfigNode.WriteDebugReport;
 begin
   DebugLn('TLazDockConfigNode.WriteDebugReport Root=',dbgs(Self));
   WriteNode('  ',Self);
+end;
+
+function TLazDockConfigNode.GetPath: string;
+var
+  Node: TLazDockConfigNode;
+begin
+  Result:='';
+  Node:=Self;
+  while Node<>nil do begin
+    if Result<>'' then
+      Result:=Node.Name+'/'+Result
+    else
+      Result:=Node.Name;
+    Node:=Node.Parent;
+  end;
 end;
 
 { TLazDockerConfig }
