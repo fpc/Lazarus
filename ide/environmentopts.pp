@@ -1690,7 +1690,7 @@ begin
     Caption:=dlgEnvType;
     with Items do begin
       BeginUpdate;
-      Add(dlgEnvNone);
+      Add(lisNoBackupFiles);
       Add(dlgSmbFront);
       Add(dlgSmbBehind);
       Add(dlgSmbCounter);
@@ -1741,7 +1741,7 @@ begin
     Caption:=dlgEnvType;
     with Items do begin
       BeginUpdate;
-      Add(dlgEnvNone);
+      Add(lisNoBackupFiles);
       Add(dlgSmbFront);
       Add(dlgSmbBehind);
       Add(dlgSmbCounter);

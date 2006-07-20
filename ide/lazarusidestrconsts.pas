@@ -605,7 +605,7 @@ resourcestring
   lisVersion = 'Version';
   lisDate = 'Date';
   lisSVNRevision = 'SVN Revision: ';
-  lisClose = 'Close';
+  lisClose = '&Close';
   lisAboutLazarusMsg =
        'License: GPL/LGPL'
       +'%s'
@@ -744,6 +744,7 @@ resourcestring
   dlgEnvType = 'Type';
   dlgEnvNone = 'None';
   dlgSmbFront = 'Symbol in front (.~pp)';
+  lisNoBackupFiles = 'No backup files';
   dlgSmbBehind = 'Symbol behind (.pp~)';
   dlgSmbCounter = 'Counter (.pp;1)';
   dlgCustomExt = 'User defined extension (.pp.xxx)';

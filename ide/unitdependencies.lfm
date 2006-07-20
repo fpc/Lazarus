@@ -5,7 +5,7 @@ object UnitDependenciesView: TUnitDependenciesView
   ClientWidth = 400
   KeyPreview = True
   OnClose = UnitDependenciesViewClose
-  PixelsPerInch = 96
+  PixelsPerInch = 112
   Position = poScreenCenter
   HorzScrollBar.Page = 399
   VertScrollBar.Page = 299
@@ -29,10 +29,10 @@ object UnitDependenciesView: TUnitDependenciesView
       Caption = 'ShowProjectButton'
       ImageIndex = 2
       OnClick = ShowProjectButtonClick
-      Left = 95
+      Left = 185
       Height = 46
       Top = 2
-      Width = 47
+      Width = 113
     end
     object SelectUnitButton: TToolButton
       Caption = 'SelectUnitButton'
@@ -41,16 +41,16 @@ object UnitDependenciesView: TUnitDependenciesView
       Left = 1
       Height = 46
       Top = 2
-      Width = 47
+      Width = 99
     end
     object RefreshButton: TToolButton
       Caption = 'RefreshButton'
       ImageIndex = 1
       OnClick = RefreshButtonClick
-      Left = 48
+      Left = 100
       Height = 46
       Top = 2
-      Width = 47
+      Width = 85
     end
   end
   object UnitHistoryList: TComboBox
@@ -70,17 +70,16 @@ object UnitDependenciesView: TUnitDependenciesView
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Bottom = 6
-    
     Caption = '&Close'
     Kind = bkClose
     NumGlyphs = 0
     TabOrder = 2
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 312
-    Height = 34
-    Top = 260
-    Width = 79
+    Left = 322
+    Height = 28
+    Top = 266
+    Width = 69
   end
   object UnitTreeView: TTreeView
     Align = alTop
@@ -94,7 +93,7 @@ object UnitDependenciesView: TUnitDependenciesView
     OnExpanding = UnitTreeViewExpanding
     OnMouseDown = UnitTreeViewMouseDown
     AnchorSideBottom.Control = CloseButton
-    Height = 173
+    Height = 179
     Top = 81
     Width = 400
   end

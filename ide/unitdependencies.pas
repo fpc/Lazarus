@@ -427,6 +427,7 @@ begin
   SelectUnitButton.Caption:=dlgUnitDepBrowse;
   RefreshButton.Caption:=dlgUnitDepRefresh;
   ShowProjectButton.Caption:=dlgEnvProject;
+  CloseButton.Caption:=lisClose;
 end;
 
 destructor TUnitDependenciesView.Destroy;

@@ -15,7 +15,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
   object Notebook: TNotebook
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
-    PageIndex = 1
+    PageIndex = 5
     Height = 477
     Width = 540
     object FilesPage: TPage
@@ -289,17 +289,17 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         Caption = 'CheckDiskChangesWithLoadingCheckBox'
         TabOrder = 1
         Left = 6
-        Height = 13
+        Height = 20
         Top = 320
-        Width = 223
+        Width = 263
       end
       object ShowHintsForComponentPaletteCheckBox: TCheckBox
         Caption = 'ShowHintsForComponentPaletteCheckBox'
         TabOrder = 2
         Left = 6
-        Height = 13
+        Height = 20
         Top = 342
-        Width = 222
+        Width = 263
       end
       object AutoSaveGroupBox: TGroupBox
         Anchors = [akTop, akLeft, akRight]
@@ -318,7 +318,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           Enabled = False
           ParentColor = False
           Left = 6
-          Height = 14
+          Height = 13
           Top = 67
           Width = 476
         end
@@ -397,17 +397,17 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         Caption = 'ShowHintsForMainSpeedButtonsCheckBox'
         TabOrder = 4
         Left = 6
-        Height = 13
+        Height = 20
         Top = 362
-        Width = 225
+        Width = 267
       end
       object MsgViewDblClickJumpsCheckBox: TCheckBox
         Caption = 'MsgViewDblClickJumpsCheckBox'
         TabOrder = 5
         Left = 6
-        Height = 13
+        Height = 20
         Top = 382
-        Width = 181
+        Width = 219
       end
     end
     object WindowsPage: TPage
@@ -981,15 +981,15 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         Color = clNone
         ParentColor = False
         Left = 6
-        Height = 14
+        Height = 13
         Top = 7
         Width = 524
       end
       object BackupProjectGroupBox: TGroupBox
         Anchors = [akTop, akLeft, akRight]
         Caption = 'BackupProjectGroupBox'
-        ClientHeight = 201
-        ClientWidth = 524
+        ClientHeight = 184
+        ClientWidth = 520
         TabOrder = 0
         Left = 6
         Height = 201
@@ -1001,9 +1001,9 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           Color = clNone
           ParentColor = False
           Left = 118
-          Height = 14
+          Height = 13
           Top = 100
-          Width = 396
+          Width = 392
         end
         object BakProjMaxCounterLabel: TLabel
           Anchors = [akTop, akLeft, akRight]
@@ -1011,9 +1011,9 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           Color = clNone
           ParentColor = False
           Left = 118
-          Height = 14
+          Height = 13
           Top = 125
-          Width = 396
+          Width = 392
         end
         object BakProjSubDirLabel: TLabel
           Anchors = [akTop, akLeft, akRight]
@@ -1021,9 +1021,9 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           Color = clNone
           ParentColor = False
           Left = 118
-          Height = 14
+          Height = 13
           Top = 154
-          Width = 396
+          Width = 392
         end
         object BakProjTypeRadioGroup: TRadioGroup
           Anchors = [akTop, akLeft, akRight]
@@ -1042,7 +1042,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           TabOrder = 0
           Left = 6
           Height = 88
-          Width = 508
+          Width = 504
         end
         object BakProjAddExtComboBox: TComboBox
           AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
@@ -1078,8 +1078,8 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
       object BackupOtherGroupBox: TGroupBox
         Anchors = [akTop, akLeft, akRight]
         Caption = 'BackupOtherGroupBox'
-        ClientHeight = 196
-        ClientWidth = 524
+        ClientHeight = 179
+        ClientWidth = 520
         TabOrder = 1
         Left = 6
         Height = 196
@@ -1091,9 +1091,9 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           Color = clNone
           ParentColor = False
           Left = 118
-          Height = 14
+          Height = 13
           Top = 97
-          Width = 396
+          Width = 392
         end
         object BakOtherMaxCounterLabel: TLabel
           Anchors = [akTop, akLeft, akRight]
@@ -1101,9 +1101,9 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           Color = clNone
           ParentColor = False
           Left = 118
-          Height = 14
+          Height = 13
           Top = 124
-          Width = 396
+          Width = 392
         end
         object BakOtherSubDirLabel: TLabel
           Anchors = [akTop, akLeft, akRight]
@@ -1111,9 +1111,9 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           Color = clNone
           ParentColor = False
           Left = 118
-          Height = 14
+          Height = 13
           Top = 151
-          Width = 396
+          Width = 392
         end
         object BakOtherTypeRadioGroup: TRadioGroup
           Anchors = [akTop, akLeft, akRight]
@@ -1132,7 +1132,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           TabOrder = 0
           Left = 6
           Height = 84
-          Width = 508
+          Width = 504
         end
         object BakOtherAddExtComboBox: TComboBox
           AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
