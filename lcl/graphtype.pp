@@ -788,10 +788,22 @@ begin
   // move data
   OldPos:=Data;
   NewPos:=Data;
-  for y:=0 to Height-1 do begin
-    System.Move(OldPos,NewPos,OldBytesPerLine);
-    inc(OldPos,OldBytesPerLine);
-    inc(NewPos,NewBytesPerLine);
+  if OldBytesPerLine>NewBytesPerLine then begin
+    // compress
+    for y:=0 to Height-1 do begin
+      System.Move(OldPos,NewPos,OldBytesPerLine);
+      inc(OldPos,OldBytesPerLine);
+      inc(NewPos,NewBytesPerLine);
+    end;
+  end else begin
+    // expand
+    inc(OldPos,OldSize);
+    inc(NewPos,NewSize);
+    for y:=Height-1 downto 0 do begin
+      dec(OldPos,OldBytesPerLine);
+      dec(NewPos,NewBytesPerLine);
+      System.Move(OldPos,NewPos,OldBytesPerLine);
+    end;
   end;
       
   // shrink after
