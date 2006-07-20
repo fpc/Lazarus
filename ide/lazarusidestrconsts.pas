@@ -3048,6 +3048,7 @@ resourcestring
     +'message';
   lisRelativePaths = 'Relative paths';
   lisLazBuildSaveSettings = 'Save settings';
+  rsFormDataFileDfm = 'Form data file (*.dfm)|*.dfm';
   liswlWatchList = 'Watch list';
   liswlExpression = 'Expression';
 

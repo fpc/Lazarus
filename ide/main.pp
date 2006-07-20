@@ -8302,6 +8302,8 @@ begin
     InputHistories.ApplyFileDialogSettings(OpenDialog);
     OpenDialog.Title:=lisSelectDFMFiles;
     OpenDialog.Options:=OpenDialog.Options+[ofAllowMultiSelect];
+    OpenDialog.Filter := rsFormDataFileDfm
+                         + '|' + dlgAllFiles + '|'+GetAllFilesMask;
     if OpenDialog.Execute and (OpenDialog.Files.Count>0) then begin
       For I := 0 to OpenDialog.Files.Count-1 do begin
         AFilename:=ExpandFilename(OpenDialog.Files.Strings[i]);
