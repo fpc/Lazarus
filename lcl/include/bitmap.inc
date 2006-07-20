@@ -52,7 +52,7 @@ var
 begin
   if Source=Self then exit;
   if Source is TBitmap then begin
-    Changing(Self);
+    ChangingAll(Self);
     //DebugLn('TBitMap.Assign ',ClassName,' ',Source.ClassName);
     // TBitmap can share image data
     // -> check if already shared
@@ -72,7 +72,7 @@ begin
     //DebugLn('TBitMap.Assign B ',Width,',',Height,' ',HandleAllocated,' RefCount=',FImage.RefCount);
     Changed(Self);
   end else if Source is TFPCustomImage then begin
-    Changing(Self);
+    ChangingAll(Self);
     SrcFPImage:=TFPCustomImage(Source);
     IntfImage:=TLazIntfImage.Create(0,0);
     try
@@ -101,7 +101,9 @@ var
   SrcDC: hDC;
   DestDC: hDC;
 begin
-  if (DestRect.Right<=DestRect.Left) or (DestRect.Bottom<=DestRect.Top)
+  if (DestRect.Left>=Width) or (DestRect.Right<=0)
+  or (DestRect.Top>=Height) or (DestRect.Bottom<=0)
+  or (DestRect.Right<=DestRect.Left) or (DestRect.Bottom<=DestRect.Top)
   or (Width=0) or (Height=0) then exit;
   HandleNeeded;
   if HandleAllocated then begin
@@ -357,6 +359,12 @@ begin
   FImage.FDIB.dsbmih.biClrUsed := 0;
   FImage.FDIB.dsbmih.biClrImportant := 0;
   FreeSaveStream;
+end;
+
+procedure TBitmap.ChangingAll(Sender: TObject);
+begin
+  UnshareImage(false);
+  Changing(Sender);
 end;
 
 procedure TBitMap.HandleNeeded;

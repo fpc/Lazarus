@@ -2857,6 +2857,7 @@ begin
       // re align data
       ReAlignRawImageLines(RawImage.Mask,RawImage.MaskSize,
         RawImage.Description.Width,RawImage.Description.Height,
+        RawImage.Description.AlphaBitsPerPixel,
         RawImage.Description.AlphaLineEnd,rileByteBoundary);
     end;
 

@@ -195,7 +195,7 @@ procedure WriteRawImageBits(TheData: PByte; const Position: TRawImagePosition;
                        BitsPerPixel, Prec, Shift: cardinal;
                        BitOrder: TRawImageBitOrder; Bits: word);
 procedure ReAlignRawImageLines(var Data: Pointer; var Size: PtrUInt;
-  Width, Height: cardinal;
+  Width, Height, BitsPerPixel: cardinal;
   var OldLineEnd: TRawImageLineEnd; NewLineEnd: TRawImageLineEnd);
 
 var
@@ -761,7 +761,7 @@ begin
 end;
 
 procedure ReAlignRawImageLines(var Data: Pointer; var Size: PtrUInt;
-  Width, Height: cardinal;
+  Width, Height, BitsPerPixel: cardinal;
   var OldLineEnd: TRawImageLineEnd; NewLineEnd: TRawImageLineEnd);
 var
   OldBytesPerLine: PtrUInt;
@@ -774,11 +774,11 @@ var
 begin
   if OldLineEnd=NewLineEnd then exit;
   if (Width=0) or (Height=0) then exit;
-  OldBytesPerLine:=GetBytesPerLine(Width,Height,OldLineEnd);
+  OldBytesPerLine:=GetBytesPerLine(Width,BitsPerPixel,OldLineEnd);
   OldSize:=OldBytesPerLine*PtrUInt(Height);
   if OldSize<>Size then
     RaiseGDBException('ReAlignRawImageLines OldSize<>Size');
-  NewBytesPerLine:=GetBytesPerLine(Width,Height,OldLineEnd);
+  NewBytesPerLine:=GetBytesPerLine(Width,BitsPerPixel,NewLineEnd);
   NewSize:=NewBytesPerLine*PtrUInt(Height);
   
   // enlarge before

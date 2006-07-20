@@ -1117,6 +1117,7 @@ type
   protected
     procedure Changed(Sender: TObject); override;
     procedure Changing(Sender: TObject); virtual;
+    procedure ChangingAll(Sender: TObject);
     procedure Draw(DestCanvas: TCanvas; const DestRect: TRect); override;
     function GetEmpty: Boolean; override;
     function GetHeight: Integer; override;
