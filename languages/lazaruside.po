@@ -3998,10 +3998,6 @@ msgstr ""
 msgid "Do not show this message again."
 msgstr ""
 
-#: lazarusidestrconsts:fdinvalidmutliselectioncap
-msgid "Invalid mutliselection"
-msgstr ""
-
 #: lazarusidestrconsts:lisinvalidmultiselection
 msgid "Invalid multiselection"
 msgstr ""
@@ -4054,7 +4050,7 @@ msgstr ""
 msgid "The component editor of class %s%s%shas created the error:%s%s%s%s"
 msgstr ""
 
-#: lazarusidestrconsts:fdinvalidmutliselectiontext
+#: lazarusidestrconsts:fdinvalidmultiselectiontext
 msgid "Multiselected components must be of a single form."
 msgstr ""
 

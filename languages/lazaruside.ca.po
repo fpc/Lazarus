@@ -3742,10 +3742,6 @@ msgstr "La versió mínima no és vàlida"
 msgid "Invalid multiselection"
 msgstr "La multiselecció no és vàlida"
 
-#: lazarusidestrconsts:fdinvalidmutliselectioncap
-msgid "Invalid mutliselection"
-msgstr "La multiselecció no és vàlida"
-
 #: lazarusidestrconsts:lisaf2pinvalidpackageid
 msgid "Invalid package ID: %s%s%s"
 msgstr "L'ID del paquet no és vàlida: %s%s%s"
@@ -4538,7 +4534,7 @@ msgstr "Línia múltiple"
 msgid "Multi Select"
 msgstr ""
 
-#: lazarusidestrconsts:fdinvalidmutliselectiontext
+#: lazarusidestrconsts:fdinvalidmultiselectiontext
 msgid "Multiselected components must be of a single form."
 msgstr "Els components multi seleccionats han de ser d'una sola forma"
 

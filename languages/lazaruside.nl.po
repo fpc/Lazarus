@@ -3753,10 +3753,6 @@ msgstr "Ongeldige minimum versie"
 msgid "Invalid multiselection"
 msgstr "Ongeldige meervoudige selectie"
 
-#: lazarusidestrconsts:fdinvalidmutliselectioncap
-msgid "Invalid mutliselection"
-msgstr "Ongeldige meervoudige selectie"
-
 #: lazarusidestrconsts:lisaf2pinvalidpackageid
 msgid "Invalid package ID: %s%s%s"
 msgstr "Ongeldige package ID: %s%s%s"
@@ -4549,7 +4545,7 @@ msgstr "Meervoudige regel"
 msgid "Multi Select"
 msgstr "Meervoudige selectie"
 
-#: lazarusidestrconsts:fdinvalidmutliselectiontext
+#: lazarusidestrconsts:fdinvalidmultiselectiontext
 msgid "Multiselected components must be of a single form."
 msgstr "Meervoudig geselecteerd componenten moeten van een enkel form zijn"
 

@@ -3756,10 +3756,6 @@ msgstr "无效最小版本"
 msgid "Invalid multiselection"
 msgstr "无效的多选"
 
-#: lazarusidestrconsts:fdinvalidmutliselectioncap
-msgid "Invalid mutliselection"
-msgstr "无效的多选"
-
 #: lazarusidestrconsts:lisaf2pinvalidpackageid
 msgid "Invalid package ID: %s%s%s"
 msgstr "无效包 ID : %s%s%s"
@@ -4552,7 +4548,7 @@ msgstr "多行"
 msgid "Multi Select"
 msgstr "多选"
 
-#: lazarusidestrconsts:fdinvalidmutliselectiontext
+#: lazarusidestrconsts:fdinvalidmultiselectiontext
 msgid "Multiselected components must be of a single form."
 msgstr "多选的组件必须是一个简单窗体"
 

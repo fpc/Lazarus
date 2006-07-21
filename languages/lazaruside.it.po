@@ -3754,10 +3754,6 @@ msgstr "Versione minima non valida"
 msgid "Invalid multiselection"
 msgstr "Multiselezione non valida"
 
-#: lazarusidestrconsts:fdinvalidmutliselectioncap
-msgid "Invalid mutliselection"
-msgstr "Multiselezione non valida"
-
 #: lazarusidestrconsts:lisaf2pinvalidpackageid
 msgid "Invalid package ID: %s%s%s"
 msgstr "ID pacchetto non valido: %s%s%s"
@@ -4550,7 +4546,7 @@ msgstr "Multi linea"
 msgid "Multi Select"
 msgstr "Multi Selezione"
 
-#: lazarusidestrconsts:fdinvalidmutliselectiontext
+#: lazarusidestrconsts:fdinvalidmultiselectiontext
 msgid "Multiselected components must be of a single form."
 msgstr "I componenti selezionati più volte devono essere di una singola form"
 

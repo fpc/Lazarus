@@ -3756,10 +3756,6 @@ msgstr "Ungültige Minimalvesion"
 msgid "Invalid multiselection"
 msgstr "Ungültige Mehrfachauswahl"
 
-#: lazarusidestrconsts:fdinvalidmutliselectioncap
-msgid "Invalid mutliselection"
-msgstr "Ungültige Mehrfachauswahl"
-
 #: lazarusidestrconsts:lisaf2pinvalidpackageid
 msgid "Invalid package ID: %s%s%s"
 msgstr "Ungültige Paket-ID: %s%s%s"
@@ -4552,7 +4548,7 @@ msgstr "Mehrzeilig"
 msgid "Multi Select"
 msgstr "Mehrfachauswahl"
 
-#: lazarusidestrconsts:fdinvalidmutliselectiontext
+#: lazarusidestrconsts:fdinvalidmultiselectiontext
 msgid "Multiselected components must be of a single form."
 msgstr "Mehrfachselektion nur auf einem Formular möglich."
 

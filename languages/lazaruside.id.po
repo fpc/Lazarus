@@ -3756,10 +3756,6 @@ msgstr "Versi minimum tidak benar"
 msgid "Invalid multiselection"
 msgstr "Pemilihan multi tidak benar"
 
-#: lazarusidestrconsts:fdinvalidmutliselectioncap
-msgid "Invalid mutliselection"
-msgstr "Pemilihan multi tidak benar"
-
 #: lazarusidestrconsts:lisaf2pinvalidpackageid
 msgid "Invalid package ID: %s%s%s"
 msgstr "ID paket tidak benar: %s%s%s"
@@ -4552,7 +4548,7 @@ msgstr "Multi Baris"
 msgid "Multi Select"
 msgstr "Pilihan Multi"
 
-#: lazarusidestrconsts:fdinvalidmutliselectiontext
+#: lazarusidestrconsts:fdinvalidmultiselectiontext
 msgid "Multiselected components must be of a single form."
 msgstr "Pemilihan multi komponen harus dari form tunggal."
 

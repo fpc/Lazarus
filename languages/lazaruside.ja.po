@@ -3752,10 +3752,6 @@ msgstr ""
 msgid "Invalid multiselection"
 msgstr ""
 
-#: lazarusidestrconsts:fdinvalidmutliselectioncap
-msgid "Invalid mutliselection"
-msgstr ""
-
 #: lazarusidestrconsts:lisaf2pinvalidpackageid
 msgid "Invalid package ID: %s%s%s"
 msgstr ""
@@ -4548,7 +4544,7 @@ msgstr ""
 msgid "Multi Select"
 msgstr "多重選択"
 
-#: lazarusidestrconsts:fdinvalidmutliselectiontext
+#: lazarusidestrconsts:fdinvalidmultiselectiontext
 msgid "Multiselected components must be of a single form."
 msgstr ""
 

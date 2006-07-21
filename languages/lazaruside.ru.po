@@ -3753,10 +3753,6 @@ msgstr "Неправильная минимальная версия"
 msgid "Invalid multiselection"
 msgstr "Неправильный множественный выбор"
 
-#: lazarusidestrconsts:fdinvalidmutliselectioncap
-msgid "Invalid mutliselection"
-msgstr "Неправильный множественный выбор"
-
 #: lazarusidestrconsts:lisaf2pinvalidpackageid
 msgid "Invalid package ID: %s%s%s"
 msgstr "Неправильный идентификатор пакета: %s%s%s"
@@ -4549,7 +4545,7 @@ msgstr "Многострочный"
 msgid "Multi Select"
 msgstr "Множественное выделение"
 
-#: lazarusidestrconsts:fdinvalidmutliselectiontext
+#: lazarusidestrconsts:fdinvalidmultiselectiontext
 msgid "Multiselected components must be of a single form."
 msgstr "Множественный выбор компонентов должен быть на одной форме"
 

@@ -1271,7 +1271,6 @@ resourcestring
   lisUEDoNotSho = 'Do not show this message again.';
 
   // Form designer
-  fdInvalidMutliselectionCap='Invalid mutliselection';
   lisInvalidMultiselection = 'Invalid multiselection';
   lisUnableConvertBinaryStreamToText = 'Unable convert binary stream to text';
   lisUnableToStreamSelectedComponents = 'Unable to stream selected components';
@@ -1293,7 +1292,7 @@ resourcestring
     +'error:%s%s%s%s';
   lisTheComponentEditorOfClassHasCreatedTheError = 'The component editor of '
     +'class %s%s%shas created the error:%s%s%s%s';
-  fdInvalidMutliselectionText='Multiselected components must be of a single form.';
+  fdInvalidMultiselectionText='Multiselected components must be of a single form.';
   lisInvalidDelete = 'Invalid delete';
   lisTheRootComponentCanNotBeDeleted = 'The root component can not be deleted.';
   fdmAlignWord='Align';

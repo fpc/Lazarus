@@ -1235,7 +1235,7 @@ begin
               and (ControlSelection.SelectionForm<>Form)
               then begin
                 MessageDlg(lisInvalidMultiselection,
-                  fdInvalidMutliselectionText,
+                  fdInvalidMultiselectionText,
                   mtInformation,[mbOk],0);
               end else begin
                 ControlSelection.Add(MouseDownComponent);
@@ -1403,8 +1403,8 @@ var
     and (ControlSelection.SelectionForm<>nil)
     and (ControlSelection.SelectionForm<>Form)
     then begin
-      MessageDlg(fdInvalidMutliselectionCap,
-        fdInvalidMutliselectionText,
+      MessageDlg(lisInvalidMultiselection,
+        fdInvalidMultiselectionText,
         mtInformation,[mbOk],0);
       exit;
     end;

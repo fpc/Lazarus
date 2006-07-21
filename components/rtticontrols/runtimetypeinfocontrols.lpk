@@ -6,7 +6,7 @@
     <CompilerOptions>
       <Version Value="5"/>
       <SearchPaths>
-        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)/"/>
+        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
       <CodeGeneration>
         <Generate Value="Faster"/>
@@ -21,7 +21,7 @@
 "/>
     <License Value="LGPL"/>
     <Version Minor="1"/>
-    <Files Count="4">
+    <Files Count="3">
       <Item1>
         <Filename Value="rttictrls.pas"/>
         <HasRegisterProc Value="True"/>
@@ -36,10 +36,6 @@
         <Filename Value="rttictrls.lrs"/>
         <Type Value="LRS"/>
       </Item3>
-      <Item4>
-        <Filename Value="README"/>
-        <Type Value="Text"/>
-      </Item4>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="3">
