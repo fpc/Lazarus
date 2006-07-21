@@ -134,7 +134,7 @@ var
 begin
   NewCount:=GetValue(APath+'Count',0);
   for i:=0 to NewCount-1 do begin
-    NewLine:=GetValue(APath+'Item'+IntToStr(i+1),'');
+    NewLine:=GetValue(APath+'Item'+IntToStr(i+1)+'/Value','');
     if List.Count>i then
       List[i]:=NewLine
     else
@@ -211,7 +211,7 @@ var
 begin
   SetDeleteValue(APath+'Count',AValue.Count,0);
   for i:=0 to AValue.Count-1 do
-    SetDeleteValue(APath+'Item'+IntToStr(i+1),AValue[i],'');
+    SetDeleteValue(APath+'Item'+IntToStr(i+1)+'/Value',AValue[i],'');
 end;
 
 procedure TConfigStorage.DeletePath(const APath: string);

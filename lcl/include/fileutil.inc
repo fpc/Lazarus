@@ -1349,6 +1349,34 @@ begin
   end;
 end;
 
+function FindDefaultExecutablePath(const Executable: string): string;
+begin
+  if FilenameIsAbsolute(Executable) then begin
+    Result:=Executable;
+    if FileExists(Result) then exit;
+    {$IFDEF Windows}
+    if ExtractFileExt(Result)='' then begin
+      Result:=Result+'.exe';
+      if FileExists(Result) then exit;
+    end;
+    {$ENDIF}
+  end else begin
+    Result:=SearchFileInPath(Executable,'',
+                             SysUtils.GetEnvironmentVariable('PATH'),':',
+                             [sffDontSearchInBasePath]);
+    if Result<>'' then exit;
+    {$IFDEF Windows}
+    if ExtractFileExt(Executable)='' then begin
+      Result:=SearchFileInPath(Executable+'.exe','',
+                               SysUtils.GetEnvironmentVariable('PATH'),':',
+                               [sffDontSearchInBasePath]);
+      if Result<>'' then exit;
+    end;
+    {$ENDIF}
+  end;
+  Result:='';
+end;
+
 function GetAllFilesMask: string;
 begin
   {$IFDEF WINDOWS}

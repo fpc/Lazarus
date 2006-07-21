@@ -43,61 +43,11 @@ uses
   MemCheck,
   {$ENDIF}
   Classes, SysUtils, LCLType, Controls, Forms, Buttons, StdCtrls, ComCtrls,
-  Dialogs, LResources, Laz_XMLCfg,
+  Dialogs, LResources, LazConfigStorage, Laz_XMLCfg,
+  IDEExternToolIntf,
   KeyMapping, TransferMacros, IDEProcs, LazarusIDEStrConsts;
 
-{ The xml format version:
-    When the format changes (new values, changed formats) we can distinguish old
-    files and are able to convert them.
-} 
-const ExternalToolOptionsFormat = '1.0';
-
 type
-  {
-    TExternalToolOptions - the storage object for a single external tool
-  }
-  TExternalToolOptions = class
-  private
-    fCmdLineParams: string;
-    FEnvironmentOverrides: TStringList;
-    fFilename: string;
-    fKey: word;
-    FScanOutput: boolean;
-    fScanOutputForFPCMessages: boolean;
-    fScanOutputForMakeMessages: boolean;
-    fShift: TShiftState;
-    FShowAllOutput: boolean;
-    fTitle: string;
-    fWorkingDirectory: string;
-    procedure SetScanOutput(const AValue: boolean);
-    procedure SetShowAllOutput(const AValue: boolean);
-  public
-    procedure Assign(Source: TExternalToolOptions);
-    constructor Create;
-    destructor Destroy; override;
-    procedure Clear;
-    function NeedsOutputFilter: boolean;
-    function Load(XMLConfig: TXMLConfig; const Path: string): TModalResult;
-    function Save(XMLConfig: TXMLConfig; const Path: string): TModalResult;
-    function ShortDescription: string;
-    procedure AssignEnvironmentTo(Strings: TStrings);
-
-    property CmdLineParams: string read fCmdLineParams write fCmdLineParams;
-    property Filename: string read fFilename write fFilename;
-    property Key: word read fKey write fKey;
-    property Title: string read fTitle write fTitle;
-    property ScanOutputForFPCMessages: boolean
-      read fScanOutputForFPCMessages write fScanOutputForFPCMessages;
-    property ScanOutputForMakeMessages: boolean
-      read fScanOutputForMakeMessages write fScanOutputForMakeMessages;
-    property Shift: TShiftState read fShift write fShift;
-    property WorkingDirectory: string
-      read fWorkingDirectory write fWorkingDirectory;
-    property EnvironmentOverrides: TStringList read FEnvironmentOverrides;
-    property ScanOutput: boolean read FScanOutput write SetScanOutput;
-    property ShowAllOutput: boolean read FShowAllOutput write SetShowAllOutput;
-  end;
-
   {
     the editor dialog for a single external tool
   }
@@ -175,120 +125,6 @@ begin
   finally
     ExternalToolOptionDlg.Free;
   end;
-end;
-
-{ TExternalToolOptions }
-
-procedure TExternalToolOptions.SetScanOutput(const AValue: boolean);
-begin
-  if FScanOutput=AValue then exit;
-  FScanOutput:=AValue;
-end;
-
-procedure TExternalToolOptions.SetShowAllOutput(const AValue: boolean);
-begin
-  if FShowAllOutput=AValue then exit;
-  FShowAllOutput:=AValue;
-end;
-
-procedure TExternalToolOptions.Assign(Source: TExternalToolOptions);
-begin
-  if Source=Self then exit;
-  if Source=nil then
-    Clear
-  else begin
-    fTitle:=Source.fTitle;
-    fFilename:=Source.fFilename;
-    fCmdLineParams:=Source.fCmdLineParams;
-    fWorkingDirectory:=Source.fWorkingDirectory;
-    fKey:=Source.fKey;
-    fShift:=Source.fShift;
-    fScanOutputForFPCMessages:=Source.fScanOutputForFPCMessages;
-    fScanOutputForMakeMessages:=Source.fScanOutputForMakeMessages;
-    FScanOutput:=Source.FScanOutput;
-    FShowAllOutput:=Source.FShowAllOutput;
-  end;
-end;
-
-constructor TExternalToolOptions.Create;
-begin
-  inherited Create;
-  FEnvironmentOverrides:=TStringList.Create;
-  Clear;
-end;
-
-destructor TExternalToolOptions.Destroy;
-begin
-  FEnvironmentOverrides.Free;
-  inherited Destroy;
-end;
-
-procedure TExternalToolOptions.Clear;
-begin
-  fTitle:='';
-  fFilename:='';
-  fCmdLineParams:='';
-  fWorkingDirectory:='';
-  fKey:=VK_UNKNOWN;
-  fShift:=[];
-  fScanOutputForFPCMessages:=false;
-  fScanOutputForMakeMessages:=false;
-  FScanOutput:=false;
-  FShowAllOutput:=false;
-end;
-
-function TExternalToolOptions.Load(XMLConfig: TXMLConfig;
-  const Path: string): TModalResult;
-begin
-  Clear;
-  fTitle:=XMLConfig.GetValue(Path+'Title/Value','');
-  fFilename:=XMLConfig.GetValue(Path+'Filename/Value','');
-  fCmdLineParams:=XMLConfig.GetValue(Path+'CmdLineParams/Value','');
-  fWorkingDirectory:=XMLConfig.GetValue(Path+'WorkingDirectory/Value','');
-  fScanOutputForFPCMessages:=XMLConfig.GetValue(
-                                   Path+'ScanOutputForFPCMessages/Value',false);
-  fScanOutputForMakeMessages:=XMLConfig.GetValue(
-                                  Path+'ScanOutputForMakeMessages/Value',false);
-  FShowAllOutput:=XMLConfig.GetValue(Path+'ShowAllOutput/Value',false);
-  LoadStringList(XMLConfig,FEnvironmentOverrides,Path+'EnvironmentOverrides/');
-  // key and shift are loaded with the keymapping in the editoroptions
-  Result:=mrOk;
-end;
-
-function TExternalToolOptions.Save(XMLConfig: TXMLConfig;
-  const Path: string): TModalResult;
-begin
-  XMLConfig.SetValue(Path+'Format/Version',ExternalToolOptionsFormat);
-  XMLConfig.SetDeleteValue(Path+'Title/Value',fTitle,'');
-  XMLConfig.SetDeleteValue(Path+'Filename/Value',fFilename,'');
-  XMLConfig.SetDeleteValue(Path+'CmdLineParams/Value',fCmdLineParams,'');
-  XMLConfig.SetDeleteValue(Path+'WorkingDirectory/Value',fWorkingDirectory,'');
-  XMLConfig.SetDeleteValue(
-               Path+'ScanOutputForFPCMessages/Value',fScanOutputForFPCMessages,
-               false);
-  XMLConfig.SetDeleteValue(
-             Path+'ScanOutputForMakeMessages/Value',fScanOutputForMakeMessages,
-             false);
-  XMLConfig.SetDeleteValue(Path+'ShowAllOutput/Value',FShowAllOutput,false);
-  SaveStringList(XMLConfig,FEnvironmentOverrides,Path+'EnvironmentOverrides/');
-  // key and shift are saved with the keymapping in the editoroptions
-  Result:=mrOk;
-end;
-
-function TExternalToolOptions.ShortDescription: string;
-begin
-  Result:=Title;
-end;
-
-procedure TExternalToolOptions.AssignEnvironmentTo(Strings: TStrings);
-begin
-  IDEProcs.AssignEnvironmentTo(Strings,EnvironmentOverrides);
-end;
-
-function TExternalToolOptions.NeedsOutputFilter: boolean;
-begin
-  Result:=ScanOutput or ScanOutputForFPCMessages or ScanOutputForMakeMessages
-                     or ShowAllOutput;
 end;
 
 
@@ -556,9 +392,9 @@ begin
   fOptions.Key:=EditorKeyStringToVKCode(KeyComboBox.Text);
   fOptions.Shift:=[];
   if fOptions.Key<>VK_UNKNOWN then begin
-    if KeyCtrlCheckBox.Checked then include(fOptions.fShift,ssCtrl);
-    if KeyAltCheckBox.Checked then include(fOptions.fShift,ssAlt);
-    if KeyShiftCheckBox.Checked then include(fOptions.fShift,ssShift);
+    if KeyCtrlCheckBox.Checked then include(fOptions.Shift,ssCtrl);
+    if KeyAltCheckBox.Checked then include(fOptions.Shift,ssAlt);
+    if KeyShiftCheckBox.Checked then include(fOptions.Shift,ssShift);
   end;
   fOptions.ScanOutputForFPCMessages:=
     OptionScanOutputForFPCMessagesCheckBox.Checked;

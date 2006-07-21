@@ -38,6 +38,7 @@ uses
   Classes, SysUtils, Math, LCLProc, Forms, Controls, LCLType, LCLIntf,
   Graphics, GraphType, StdCtrls, ExtCtrls, Buttons, FileUtil, Dialogs,
   LResources,  Laz_XMLCfg,
+  IDEExternToolIntf,
   LazarusIDEStrConsts, TransferMacros, LazConf, IDEProcs, DialogProcs,
   IDEWindowIntf, InputHistory, ExtToolDialog, ExtToolEditDlg,
   CompilerOptions;

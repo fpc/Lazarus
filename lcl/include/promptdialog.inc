@@ -771,4 +771,11 @@ begin
   end;
 end;
 
+function QuestionDlg(const aCaption, aMsg: string; DlgType: TMsgDlgType;
+  Buttons: array of const; const HelpKeyword: string): TModalResult;
+begin
+  // TODO: handle HelpKeyword
+  Result:=QuestionDlg(aCaption,aMsg,DlgType,Buttons,0);
+end;
+
 // included by dialogs.pp

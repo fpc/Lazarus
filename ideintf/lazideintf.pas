@@ -22,7 +22,8 @@ unit LazIDEIntf;
 interface
 
 uses
-  Classes, SysUtils, Forms, PropEdits, LazHelpHTML, ProjectIntf, SrcEditorIntf;
+  Classes, SysUtils, LCLProc, Forms, Controls, Dialogs, PropEdits, LazHelpHTML,
+  ProjectIntf, SrcEditorIntf;
 
 type
   // open file flags
@@ -105,12 +106,28 @@ type
     fsfUseDebugPath
     );
   TFindSourceFlags = set of TFindSourceFlag;
+  
+  TModalResultFunction = function(Sender: TObject): TModalResult of object;
 
+  TLazarusIDEHandlerType = (
+    lihtOnSavingAll, // called before IDE saves everything
+    lihtOnSavedAll   // called after IDE saved everything
+    );
+    
   { TLazIDEInterface }
 
   TLazIDEInterface = class(TComponent)
+  private
+    FLazarusIDEHandlers: array[TLazarusIDEHandlerType] of TMethodList;
+    procedure AddHandler(HandlerType: TLazarusIDEHandlerType;
+                         const AMethod: TMethod; AsLast: boolean = false);
+    procedure RemoveHandler(HandlerType: TLazarusIDEHandlerType;
+                            const AMethod: TMethod);
   protected
     function GetActiveProject: TLazProject; virtual; abstract;
+    procedure DoCallNotifyHandler(HandlerType: TLazarusIDEHandlerType);
+    function DoCallModalFunctionHandler(HandlerType: TLazarusIDEHandlerType
+                                        ): TModalResult;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -172,6 +189,15 @@ type
     function GetProjectFileWithDesigner(ADesigner: TIDesigner): TLazProjectFile; virtual; abstract;
   public
     property ActiveProject: TLazProject read GetActiveProject;
+    
+    // events
+    procedure RemoveAllHandlersOfObject(AnObject: TObject);
+    procedure AddHandlerOnSavingAll(const OnSaveAllEvent: TModalResultFunction;
+                                    AsLast: boolean = false);
+    procedure RemoveHandlerOnSavingAll(const OnSaveAllEvent: TModalResultFunction);
+    procedure AddHandlerOnSavedAll(const OnSaveAllEvent: TModalResultFunction;
+                                   AsLast: boolean = false);
+    procedure RemoveHandlerOnSavedAll(const OnSaveAllEvent: TModalResultFunction);
   end;
   
 var
@@ -180,6 +206,45 @@ var
 implementation
 
 { TLazIDEInterface }
+
+procedure TLazIDEInterface.AddHandler(HandlerType: TLazarusIDEHandlerType;
+  const AMethod: TMethod; AsLast: boolean);
+begin
+  if FLazarusIDEHandlers[HandlerType]=nil then
+    FLazarusIDEHandlers[HandlerType]:=TMethodList.Create;
+  FLazarusIDEHandlers[HandlerType].Add(AMethod);
+end;
+
+procedure TLazIDEInterface.RemoveHandler(HandlerType: TLazarusIDEHandlerType;
+  const AMethod: TMethod);
+begin
+  FLazarusIDEHandlers[HandlerType].Remove(AMethod);
+end;
+
+procedure TLazIDEInterface.DoCallNotifyHandler(
+  HandlerType: TLazarusIDEHandlerType);
+var
+  i: Integer;
+begin
+  i:=FLazarusIDEHandlers[HandlerType].Count;
+  while FLazarusIDEHandlers[HandlerType].NextDownIndex(i) do
+    TNotifyEvent(FLazarusIDEHandlers[HandlerType][i])(Self);
+end;
+
+function TLazIDEInterface.DoCallModalFunctionHandler(
+  HandlerType: TLazarusIDEHandlerType): TModalResult;
+var
+  i: Integer;
+  CurResult: TModalResult;
+begin
+  Result:=mrOk;
+  i:=FLazarusIDEHandlers[HandlerType].Count;
+  while FLazarusIDEHandlers[HandlerType].NextDownIndex(i) do begin
+    CurResult:=TModalResultFunction(FLazarusIDEHandlers[HandlerType][i])(Self);
+    if CurResult=mrAbort then exit(mrAbort);
+    if CurResult<>mrOk then Result:=mrCancel;
+  end;
+end;
 
 constructor TLazIDEInterface.Create(TheOwner: TComponent);
 begin
@@ -198,6 +263,38 @@ function TLazIDEInterface.DoNewEditorFile(
   const NewSource: string; NewFlags: TNewFlags): TModalResult;
 begin
   Result:=DoNewFile(NewFileDescriptor,NewFilename,NewSource,NewFlags,nil);
+end;
+
+procedure TLazIDEInterface.RemoveAllHandlersOfObject(AnObject: TObject);
+var
+  HandlerType: TLazarusIDEHandlerType;
+begin
+  for HandlerType:=Low(TLazarusIDEHandlerType) to High(TLazarusIDEHandlerType) do
+    FLazarusIDEHandlers[HandlerType].RemoveAllMethodsOfObject(AnObject);
+end;
+
+procedure TLazIDEInterface.AddHandlerOnSavingAll(
+  const OnSaveAllEvent: TModalResultFunction; AsLast: boolean);
+begin
+  AddHandler(lihtOnSavingAll,TMethod(OnSaveAllEvent));
+end;
+
+procedure TLazIDEInterface.RemoveHandlerOnSavingAll(
+  const OnSaveAllEvent: TModalResultFunction);
+begin
+  RemoveHandler(lihtOnSavingAll,TMethod(OnSaveAllEvent));
+end;
+
+procedure TLazIDEInterface.AddHandlerOnSavedAll(
+  const OnSaveAllEvent: TModalResultFunction; AsLast: boolean);
+begin
+  AddHandler(lihtOnSavedAll,TMethod(OnSaveAllEvent));
+end;
+
+procedure TLazIDEInterface.RemoveHandlerOnSavedAll(
+  const OnSaveAllEvent: TModalResultFunction);
+begin
+  RemoveHandler(lihtOnSavedAll,TMethod(OnSaveAllEvent));
 end;
 
 initialization

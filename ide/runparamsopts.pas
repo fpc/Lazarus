@@ -49,6 +49,7 @@ uses
   {$ENDIF}
   Classes, SysUtils, Controls, Forms, Buttons, StdCtrls, ComCtrls, Dialogs,
   ExtCtrls, LResources, Laz_XMLCfg,
+  BaseIDEIntf,
   IDEProcs, SysVarUserOverrideDlg, InputHistory, LazarusIDEStrConsts, FileUtil;
 
 { The xml format version:
@@ -320,7 +321,7 @@ procedure TRunParamsOptions.AssignEnvironmentTo(Strings: TStrings);
 var
   idx: integer;
 begin
-  IDEProcs.AssignEnvironmentTo(Strings, UserOverrides);
+  BaseIDEIntf.AssignEnvironmentTo(Strings, UserOverrides);
   if UseDisplay then
   begin
     // assignment is not allowed in a sorted list

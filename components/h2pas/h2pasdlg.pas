@@ -22,10 +22,12 @@ unit H2PasDlg;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, LCLType, LResources, Forms, Controls, Graphics,
-  Dialogs, ComCtrls, Buttons, StdCtrls, ExtCtrls, CheckLst, SynEdit,
-  LazConfigStorage, FileUtil,
-  MenuIntf, IDECommands, BaseIDEIntf, LazIDEIntf,
+  Classes, SysUtils, LCLProc, LCLType, LResources, Forms, Controls,
+  Graphics, Dialogs, ComCtrls, Buttons, StdCtrls, ExtCtrls, CheckLst,
+  LazConfigStorage,
+  SynEdit, SynHighlighterCPP,
+  FileProcs,
+  IDEMsgIntf, MenuIntf, IDECommands, BaseIDEIntf, IDEDialogs, LazIDEIntf,
   H2PasStrConsts, H2PasConvert;
 
 type
@@ -33,6 +35,9 @@ type
   { TH2PasDialog }
 
   TH2PasDialog = class(TForm)
+    h2pasOptionsCheckGroup: TCheckGroup;
+    ConvertButton: TButton;
+    NewSettingsButton: TButton;
     h2pasFilenameBrowseButton: TButton;
     H2PasFilenameEdit: TEdit;
     H2PasFilenameLabel: TLabel;
@@ -43,6 +48,7 @@ type
     FilesTabSheet: TTabSheet;
     CHeaderFilesSplitter1: TSplitter;
     AddCHeaderFilesButton: TButton;
+    ConvertTabSheet: TTabSheet;
     UnselectAllCHeaderFilesButton: TButton;
     SelectAllCHeaderFilesButton: TButton;
     DeleteCHeaderFilesButton: TButton;
@@ -50,20 +56,10 @@ type
 
     // h2pas
     h2pasOptionsTabSheet: TTabSheet;
-    ConstantsInsteadOfEnumsCheckBox: TCheckBox;
-    IncludeFileCheckBox: TCheckBox;
     LibnameEdit: TEdit;
     LibNameLabel: TLabel;
     OutputExtEdit: TEdit;
     OutputExtLabel: TLabel;
-    PalmOSSYSTrapCheckBox: TCheckBox;
-    PforPointersCheckBox: TCheckBox;
-    StripCommentsCheckBox: TCheckBox;
-    TforTypedefsCheckBox: TCheckBox;
-    UseExternalCheckBox: TCheckBox;
-    UseExternalLibnameCheckBox: TCheckBox;
-    VarParamsCheckBox: TCheckBox;
-    Win32HeaderCheckBox: TCheckBox;
     OutputDirEdit: TEdit;
     OutputDirLabel: TLabel;
 
@@ -82,44 +78,51 @@ type
       );
     procedure CloseButtonClick(Sender: TObject);
     procedure ConstantsInsteadOfEnumsCheckBoxChange(Sender: TObject);
+    procedure ConvertButtonClick(Sender: TObject);
     procedure DeleteCHeaderFilesButtonClick(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure H2PasFilenameEditEditingDone(Sender: TObject);
-    procedure IncludeFileCheckBoxChange(Sender: TObject);
     procedure LibnameEditEditingDone(Sender: TObject);
+    procedure NewSettingsButtonClick(Sender: TObject);
     procedure OpenLastProjectOnStartCheckBoxChange(Sender: TObject);
     procedure OpenSettingsButtonClick(Sender: TObject);
     procedure OutputDirBrowseButtonClick(Sender: TObject);
     procedure OutputDirEditEditingDone(Sender: TObject);
     procedure OutputExtEditEditingDone(Sender: TObject);
-    procedure PalmOSSYSTrapCheckBoxChange(Sender: TObject);
-    procedure PforPointersCheckBoxChange(Sender: TObject);
     procedure SaveSettingsAsButtonClick(Sender: TObject);
     procedure SaveSettingsButtonClick(Sender: TObject);
     procedure SelectAllCHeaderFilesButtonClick(Sender: TObject);
-    procedure StripCommentsCheckBoxChange(Sender: TObject);
-    procedure TforTypedefsCheckBoxChange(Sender: TObject);
     procedure UnselectAllCHeaderFilesButtonClick(Sender: TObject);
-    procedure UseExternalCheckBoxChange(Sender: TObject);
-    procedure UseExternalLibnameCheckBoxChange(Sender: TObject);
-    procedure VarParamsCheckBoxChange(Sender: TObject);
-    procedure Win32HeaderCheckBoxChange(Sender: TObject);
     procedure h2pasFilenameBrowseButtonClick(Sender: TObject);
+    procedure h2pasOptionsCheckGroupItemClick(Sender: TObject; Index: LongInt);
   private
     FConverter: TH2PasConverter;
     function GetProject: TH2PasProject;
+    
+    procedure UpdateAll;
+    procedure UpdateProjectChanged; // show project settings
     procedure UpdateCaption;
+    procedure ClearMessages;
+
+    // project settings
     procedure UpdateFilesPage;
     procedure UpdateH2PasPage;
+    procedure UpdateConvertPage;
+    // global settings
     procedure UpdateSettingsPage;
+    
     function ShowSelectDirDialog(const Title: string;
                                  var ADirectory: string): boolean;
     function ShowOpenFileDialog(const Title: string;
                                 var AFilename: string): boolean;
+    // IDE events
+    function OnIDESavedAll(Sender: TObject): TModalResult;
   public
+    function Convert: TModalResult;
+
     function SaveSettings: TModalResult;
     function SaveGlobalSettings: TModalResult;
     function LoadGlobalSettings: TModalResult;
@@ -127,7 +130,7 @@ type
     function OpenProject(const Filename: string; Flags: TOpenFlags): TModalResult;
     property Converter: TH2PasConverter read FConverter;
     property Project: TH2PasProject read GetProject;
-  end; 
+  end;
 
 var
   H2PasDialog: TH2PasDialog = nil;
@@ -142,13 +145,9 @@ implementation
 
 procedure ExecuteH2PasTool(Sender: TObject);
 begin
-  if H2PasDialog<>nil then exit;
-  H2PasDialog:=TH2PasDialog.Create(nil);
-  try
-    H2PasDialog.ShowModal;
-  finally
-    FreeAndNil(H2PasDialog);
-  end;
+  if H2PasDialog=nil then
+    H2PasDialog:=TH2PasDialog.Create(Application);
+  H2PasDialog.Show;
 end;
 
 procedure Register;
@@ -175,28 +174,40 @@ begin
     DeleteCHeaderFilesButton.Caption:='Delete selected .h files';
     SelectAllCHeaderFilesButton.Caption:='Enable all .h files';
     UnselectAllCHeaderFilesButton.Caption:='Disable all .h files';
-  h2pasOptionsTabSheet.Caption:='h2pas';
-    ConstantsInsteadOfEnumsCheckBox.Caption:='-e Emit a series of constants instead of an enumeration type for the C enum construct';
-    IncludeFileCheckBox.Caption:='-i Create an include file instead of a unit';
-    LibNameLabel.Caption:='-l Library name';
+  h2pasOptionsTabSheet.Caption:='h2pas Options';
+    h2pasOptionsCheckGroup.Caption:='Options';
+    with h2pasOptionsCheckGroup.Items do begin
+      Add('-d  '+'Use external; for all procedures');
+      Add('-D  '+'Use external libname name "func_name" for functions');
+      Add('-e  '+'constants instead of enumeration type for C enums');
+      Add('-c  '+'Compact outputmode, less spaces and empty lines');
+      Add('-i  '+'Create an include file instead of a unit');
+      Add('-p  '+'Use letter P for pointer types instead of "^"');
+      Add('-pr '+'Pack all records (1 byte alignment)');
+      Add('-P  '+'use proc. vars for imports');
+      Add('-s  '+'Strip comments');
+      Add('-S  '+'Strip comments and info');
+      Add('-t  '+'Prepend  typedef  types with T');
+      Add('-T  '+'Prepend  typedef  types with T, and remove _');
+      Add('-v  '+'Replace pointer parameters by  var');
+      Add('-w  '+'Handle special win32 macros');
+      Add('-x  '+'Handle SYS_TRAP of the PalmOS header files');
+    end;
     OutputExtLabel.Caption:='Output extension of new file';
-    PalmOSSYSTrapCheckBox.Caption:='-x Handle SYS_TRAP of the PalmOS header files';
-    PforPointersCheckBox.Caption:='-p Use the letter P in front of pointer type parameters instead of "^"';
-    StripCommentsCheckBox.Caption:='-s Strip comments';
-    TforTypedefsCheckBox.Caption:='-t Prepend  typedef  type names with the letter T';
-    UseExternalCheckBox.Caption:='-d Use external; for all procedures';
-    UseExternalLibnameCheckBox.Caption:='-D Use external libname name "func_name" for function and procedure';
-    VarParamsCheckBox.Caption:='-v Replace pointer parameters by call by reference parameters';
-    Win32HeaderCheckBox.Caption:='-w Handle special win32 macros';
     OutputDirLabel.Caption:='Output directory';
+    LibNameLabel.Caption:='-l Library name';
+  ConvertTabSheet.Caption:='Convert';
+    ConvertButton.Caption:='Run converter and h2pas';
   SettingsTabSheet.Caption:='Settings';
     H2PasFilenameLabel.Caption:='h2pas program path';
     OpenLastProjectOnStartCheckBox.Caption:='Open last settings on start';
     SaveSettingsAsButton.Caption:='Save settings as ...';
+    NewSettingsButton.Caption:='New/Clear settings';
   OpenSettingsButton.Caption:='&Open Settings';
   SaveSettingsButton.Caption:='&Save Settings';
   CloseButton.Caption:='&Close';
   
+  LazarusIDE.AddHandlerOnSavedAll(@OnIDESavedAll);
 
   // create converter
   FConverter:=TH2PasConverter.Create;
@@ -208,10 +219,9 @@ begin
     OpenProject(Converter.CurrentProjectFilename,[]);
   if Project=nil then begin
     Converter.Project:=TH2PasProject.Create;
-    UpdateH2PasPage;
   end;
 
-  UpdateCaption;
+  UpdateAll;
 end;
 
 procedure TH2PasDialog.FormCloseQuery(Sender: TObject; var CanClose: boolean);
@@ -240,7 +250,12 @@ end;
 
 procedure TH2PasDialog.ConstantsInsteadOfEnumsCheckBoxChange(Sender: TObject);
 begin
-  Project.ConstantsInsteadOfEnums:=ConstantsInsteadOfEnumsCheckBox.Checked;
+
+end;
+
+procedure TH2PasDialog.ConvertButtonClick(Sender: TObject);
+begin
+  Convert;
 end;
 
 procedure TH2PasDialog.DeleteCHeaderFilesButtonClick(Sender: TObject);
@@ -278,7 +293,7 @@ begin
     InitIDEFileDialog(OpenDialog);
     OpenDialog.Title:='Add *.h files ...';
     OpenDialog.Options:=OpenDialog.Options+[ofAllowMultiSelect,ofFileMustExist];
-    OpenDialog.Filter:='C header file (*.h)|*.h|All files (*.*)|'+GetAllFilesMask;
+    OpenDialog.Filter:='C header file (*.h)|*.h|All files (*.*)|'+FileMask;
     if OpenDialog.Execute then begin
       Project.AddFiles(OpenDialog.Files);
       UpdateFilesPage;
@@ -325,14 +340,16 @@ begin
   Converter.h2pasFilename:=H2PasFilenameEdit.Text;
 end;
 
-procedure TH2PasDialog.IncludeFileCheckBoxChange(Sender: TObject);
-begin
-  Project.CreateIncludeFile:=IncludeFileCheckBox.Checked;
-end;
-
 procedure TH2PasDialog.LibnameEditEditingDone(Sender: TObject);
 begin
   Project.Libname:=LibnameEdit.Text;
+end;
+
+procedure TH2PasDialog.NewSettingsButtonClick(Sender: TObject);
+begin
+  Project.Filename:='';
+  Project.Clear;
+  UpdateAll;
 end;
 
 procedure TH2PasDialog.OpenLastProjectOnStartCheckBoxChange(Sender: TObject);
@@ -349,7 +366,7 @@ begin
     InitIDEFileDialog(OpenDialog);
     OpenDialog.Title:='Open project (*.h2p) ...';
     OpenDialog.Options:=OpenDialog.Options+[ofFileMustExist];
-    OpenDialog.Filter:='h2pas project (*.h2p)|*.h2p|All files (*.*)|'+GetAllFilesMask;
+    OpenDialog.Filter:='h2pas project (*.h2p)|*.h2p|All files (*.*)|'+FileMask;
     if OpenDialog.Execute then begin
       OpenProject(OpenDialog.FileName,[]);
     end;
@@ -379,16 +396,6 @@ begin
   Project.OutputExt:=OutputExtEdit.Text;
 end;
 
-procedure TH2PasDialog.PalmOSSYSTrapCheckBoxChange(Sender: TObject);
-begin
-  Project.PalmOSSYSTrap:=PalmOSSYSTrapCheckBox.Checked;
-end;
-
-procedure TH2PasDialog.PforPointersCheckBoxChange(Sender: TObject);
-begin
-  Project.PforPointers:=PforPointersCheckBox.Checked;
-end;
-
 procedure TH2PasDialog.SaveSettingsAsButtonClick(Sender: TObject);
 begin
   SaveProject('',[sfSaveAs]);
@@ -407,42 +414,12 @@ begin
     CHeaderFilesCheckListBox.Selected[i]:=true;
 end;
 
-procedure TH2PasDialog.StripCommentsCheckBoxChange(Sender: TObject);
-begin
-  Project.StripComments:=StripCommentsCheckBox.Checked;
-end;
-
-procedure TH2PasDialog.TforTypedefsCheckBoxChange(Sender: TObject);
-begin
-  Project.TforTypedefs:=TforTypedefsCheckBox.Checked;
-end;
-
 procedure TH2PasDialog.UnselectAllCHeaderFilesButtonClick(Sender: TObject);
 var
   i: Integer;
 begin
   for i:=0 to CHeaderFilesCheckListBox.Items.Count-1 do
     CHeaderFilesCheckListBox.Selected[i]:=false;
-end;
-
-procedure TH2PasDialog.UseExternalCheckBoxChange(Sender: TObject);
-begin
-  Project.UseExternal:=UseExternalCheckBox.Checked;
-end;
-
-procedure TH2PasDialog.UseExternalLibnameCheckBoxChange(Sender: TObject);
-begin
-  Project.UseExternalLibname:=UseExternalLibnameCheckBox.Checked;
-end;
-
-procedure TH2PasDialog.VarParamsCheckBoxChange(Sender: TObject);
-begin
-  Project.VarParams:=VarParamsCheckBox.Checked;
-end;
-
-procedure TH2PasDialog.Win32HeaderCheckBoxChange(Sender: TObject);
-begin
-  Project.Win32Header:=Win32HeaderCheckBox.Checked;
 end;
 
 procedure TH2PasDialog.h2pasFilenameBrowseButtonClick(Sender: TObject);
@@ -455,9 +432,66 @@ begin
   H2PasFilenameEdit.Text:=Converter.h2pasFilename;
 end;
 
+procedure TH2PasDialog.h2pasOptionsCheckGroupItemClick(Sender: TObject;
+  Index: LongInt);
+var
+  s: string;
+  p: Integer;
+  OptionStr: String;
+  NewValue: boolean;
+begin
+  if Index<0 then exit;
+  NewValue:=h2pasOptionsCheckGroup.Checked[Index];
+  s:=h2pasOptionsCheckGroup.Items[Index];
+  p:=2;
+  while (p<=length(s)) and (s[p]<>' ') do inc(p);
+  OptionStr:=copy(s,2,p-2);
+  
+  if length(OptionStr)=1 then begin
+    case OptionStr[1] of
+    'd': Project.UseExternal:=NewValue;
+    'D': Project.UseExternalLibname:=NewValue;
+    'e': Project.ConstantsInsteadOfEnums:=NewValue;
+    'c': Project.CompactOutputmode:=NewValue;
+    'i': Project.CreateIncludeFile:=NewValue;
+    'p': Project.PforPointers:=NewValue;
+    'P': Project.UseProcVarsForImport:=NewValue;
+    's': Project.StripComments:=NewValue;
+    'S': Project.StripCommentsAndInfo:=NewValue;
+    't': Project.TforTypedefs:=NewValue;
+    'T': Project.TforTypedefsRemoveUnderscore:=NewValue;
+    'v': Project.VarParams:=NewValue;
+    'w': Project.Win32Header:=NewValue;
+    'x': Project.PalmOSSYSTrap:=NewValue;
+    else
+      raise Exception.Create('TH2PasDialog.h2pasOptionsCheckGroupItemClick: Unknown option '+OptionStr);
+    end;
+  end else begin
+    if OptionStr='pr' then
+      Project.PackAllRecords:=NewValue;
+  end;
+end;
+
 function TH2PasDialog.GetProject: TH2PasProject;
 begin
   Result:=Converter.Project;
+end;
+
+procedure TH2PasDialog.UpdateAll;
+begin
+  UpdateCaption;
+  UpdateFilesPage;
+  UpdateH2PasPage;
+  UpdateConvertPage;
+  UpdateSettingsPage;
+end;
+
+procedure TH2PasDialog.UpdateProjectChanged;
+begin
+  UpdateCaption;
+  UpdateFilesPage;
+  UpdateH2PasPage;
+  UpdateConvertPage;
 end;
 
 procedure TH2PasDialog.UpdateCaption;
@@ -468,6 +502,11 @@ begin
   if Project<>nil then
     s:=s+' - '+ExtractFileNameOnly(Project.Filename);
   Caption:=s;
+end;
+
+procedure TH2PasDialog.ClearMessages;
+begin
+  IDEMessagesWindow.Clear;
 end;
 
 procedure TH2PasDialog.UpdateFilesPage;
@@ -506,20 +545,44 @@ begin
 end;
 
 procedure TH2PasDialog.UpdateH2PasPage;
+
+  procedure Check(const Option: string; NewValue: boolean);
+  var
+    i: Integer;
+    s: string;
+  begin
+    for i:=0 to h2pasOptionsCheckGroup.Items.Count-1 do begin
+      s:=h2pasOptionsCheckGroup.Items[i];
+      if copy(s,1,length(Option)+1)=Option+' ' then
+        h2pasOptionsCheckGroup.Checked[i]:=NewValue;
+    end;
+  end;
+
 begin
-  ConstantsInsteadOfEnumsCheckBox.Checked:=Project.ConstantsInsteadOfEnums;
-  IncludeFileCheckBox.Checked:=Project.CreateIncludeFile;
+  Check('-d',Project.UseExternal);
+  Check('-D',Project.UseExternalLibname);
+  Check('-e',Project.ConstantsInsteadOfEnums);
+  Check('-c',Project.CompactOutputmode);
+  Check('-i',Project.CreateIncludeFile);
+  Check('-p',Project.PforPointers);
+  Check('-pr',Project.PackAllRecords);
+  Check('-P',Project.UseProcVarsForImport);
+  Check('-s',Project.StripComments);
+  Check('-S',Project.StripCommentsAndInfo);
+  Check('-t',Project.TforTypedefs);
+  Check('-T',Project.TforTypedefsRemoveUnderscore);
+  Check('-v',Project.VarParams);
+  Check('-w',Project.Win32Header);
+  Check('-x',Project.PalmOSSYSTrap);
+  
   LibnameEdit.Text:=Project.Libname;
   OutputExtEdit.Text:=Project.OutputExt;
-  PalmOSSYSTrapCheckBox.Checked:=Project.PalmOSSYSTrap;
-  PforPointersCheckBox.Checked:=Project.PforPointers;
-  StripCommentsCheckBox.Checked:=Project.StripComments;
-  TforTypedefsCheckBox.Checked:=Project.TforTypedefs;
-  UseExternalCheckBox.Checked:=Project.UseExternal;
-  UseExternalLibnameCheckBox.Checked:=Project.UseExternalLibname;
-  VarParamsCheckBox.Checked:=Project.VarParams;
-  Win32HeaderCheckBox.Checked:=Project.Win32Header;
-  OutputDirEdit.Text:=Project.ShortenFilename(Project.OutputDirectory);
+  OutputDirEdit.Text:=Project.OutputDirectory;
+end;
+
+procedure TH2PasDialog.UpdateConvertPage;
+begin
+  ClearMessages;
 end;
 
 procedure TH2PasDialog.UpdateSettingsPage;
@@ -576,6 +639,39 @@ begin
   end;
 end;
 
+function TH2PasDialog.OnIDESavedAll(Sender: TObject): TModalResult;
+begin
+  Result:=SaveSettings;
+end;
+
+function TH2PasDialog.Convert: TModalResult;
+begin
+  Result:=mrCancel;
+  
+  if not Project.HasEnabledFiles then begin
+    IDEMessageDialog('Nothing to do',
+      'No c header file is enabled, so nothing to do.',
+      mtInformation,[mbOk],'');
+    Result:=mrOK;
+    exit;
+  end;
+  
+  // save settings
+  if SaveSettings<>mrOk then begin
+    DebugLn(['TH2PasDialog.Convert SaveSettings failed']);
+    exit;
+  end;
+  
+  // save IDE files
+  if LazarusIDE.DoSaveProject([])<>mrOK then begin
+    DebugLn(['TH2PasDialog.Convert LazarusIDE.DoSaveProject failed']);
+    exit;
+  end;
+  LazarusIDE.SaveSourceEditorChangesToCodeCache(-1);
+  
+  Result:=Converter.Execute;
+end;
+
 function TH2PasDialog.SaveSettings: TModalResult;
 begin
   Result:=SaveGlobalSettings;
@@ -592,7 +688,7 @@ begin
   try
     Config:=GetIDEConfigStorage('h2pastool.xml',false);
     try
-      Converter.WindowSize:=Point(Width,Height);
+      Converter.WindowBounds:=BoundsRect;
       Converter.Save(Config);
       Config.WriteToDisk;
     finally
@@ -617,12 +713,14 @@ begin
     Config:=GetIDEConfigStorage('h2pastool.xml',true);
     try
       Converter.Load(Config);
-      if (Converter.WindowSize.X>50)
-      and (Converter.WindowSize.X<Screen.Width)
-      and (Converter.WindowSize.Y>50)
-      and (Converter.WindowSize.Y<Screen.Height)
+      if (Converter.WindowBounds.Left>-10)
+      and (Converter.WindowBounds.Right<Screen.Width+10)
+      and (Converter.WindowBounds.Top>-10)
+      and (Converter.WindowBounds.Bottom<Screen.Height+10)
+      and (Converter.WindowBounds.Right-Converter.WindowBounds.Left>100)
+      and (Converter.WindowBounds.Bottom-Converter.WindowBounds.Top>50)
       then
-        SetBounds(Left,Top,Converter.WindowSize.X,Converter.WindowSize.Y);
+        BoundsRect:=Converter.WindowBounds;
       UpdateSettingsPage;
     finally
       Config.Free;
@@ -661,7 +759,7 @@ begin
       if NewFilename='' then
         NewFilename:='project1.h2p';
       SaveDialog.FileName:=NewFilename;
-      SaveDialog.Filter:='h2pas project (*.h2p)|*.h2p|All files (*.*)|'+GetAllFilesMask;
+      SaveDialog.Filter:='h2pas project (*.h2p)|*.h2p|All files (*.*)|'+FileMask;
       NewPath:=ExtractFilePath(NewFilename);
       if NewPath<>'' then
         SaveDialog.InitialDir:=NewPath;
@@ -739,9 +837,7 @@ begin
     Project.Filename:=NewFilename;
   end;
   
-  UpdateCaption;
-  UpdateFilesPage;
-  UpdateH2PasPage;
+  UpdateProjectChanged;
 end;
 
 initialization

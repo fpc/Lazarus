@@ -27,16 +27,56 @@ uses
 type
   TGetIDEConfigStorage = function(const Filename: string; LoadFromDisk: Boolean
                                   ): TConfigStorage;
-  TInitIDEFileDialog = procedure(AFileDialog: TFileDialog) of object;
-  TStoreIDEFileDialog = procedure(AFileDialog: TFileDialog) of object;
 
 var
-  DefaultConfigClass: TConfigStorageClass = nil;   // will be set by the IDE
-  GetIDEConfigStorage: TGetIDEConfigStorage = nil; // will be set by the IDE
-  InitIDEFileDialog: TInitIDEFileDialog = nil;     // will be set by the IDE
-  StoreIDEFileDialog: TStoreIDEFileDialog = nil  ; // will be set by the IDE
+  // will be set by the IDE
+  DefaultConfigClass: TConfigStorageClass = nil;
+  GetIDEConfigStorage: TGetIDEConfigStorage = nil;
+
+function EnvironmentAsStringList: TStringList;
+procedure AssignEnvironmentTo(DestStrings, Overrides: TStrings);
 
 implementation
+
+function EnvironmentAsStringList: TStringList;
+var
+  i, SysVarCount, e: integer;
+  Variable, Value: string;
+Begin
+  Result:=TStringList.Create;
+  SysVarCount:=GetEnvironmentVariableCount;
+  for i:=0 to SysVarCount-1 do begin
+    Variable:=GetEnvironmentString(i+1);
+    e:=1;
+    while (e<=length(Variable)) and (Variable[e]<>'=') do inc(e);
+    Value:=copy(Variable,e+1,length(Variable)-e);
+    Variable:=LeftStr(Variable,e-1);
+    Result.Values[Variable]:=Value;
+  end;
+end;
+
+procedure AssignEnvironmentTo(DestStrings, Overrides: TStrings);
+var
+  EnvList: TStringList;
+  i: integer;
+  Variable, Value: string;
+begin
+  // get system environment
+  EnvList:=EnvironmentAsStringList;
+  try
+    if Overrides<>nil then begin
+      // merge overrides
+      for i:=0 to Overrides.Count-1 do begin
+        Variable:=Overrides.Names[i];
+        Value:=Overrides.Values[Variable];
+        EnvList.Values[Variable]:=Value;
+      end;
+    end;
+    DestStrings.Assign(EnvList);
+  finally
+    EnvList.Free;
+  end;
+end;
 
 end.
 

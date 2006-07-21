@@ -6,7 +6,9 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  Buttons, LazarusIDEStrConsts, FileUtil, IDEProcs, EnvironmentOpts,
+  Buttons, FileUtil,
+  IDEExternToolIntf,
+  IDEProcs, EnvironmentOpts, LazarusIDEStrConsts,
   CompilerOptions, ExtToolEditDlg, TransferMacros, LazConf;
 
 type

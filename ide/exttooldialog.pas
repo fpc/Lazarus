@@ -39,10 +39,12 @@ uses
   {$IFDEF IDE_MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, LCLType, LCLProc, Controls, Forms, Buttons, StdCtrls,
-  ComCtrls, Dialogs, LResources, Laz_XMLCfg, AsyncProcess,
-  ExtToolEditDlg, Process, IDECommands, KeyMapping, TransferMacros, IDEProcs,
-  CompilerOptions, OutputFilter, FileUtil, LazarusIDEStrConsts;
+  Classes, SysUtils, Process, LCLType, LCLProc, Controls, Forms, Buttons,
+  StdCtrls, ComCtrls, Dialogs, LResources, Laz_XMLCfg, AsyncProcess,
+  LazConfigStorage, FileUtil,
+  IDEExternToolIntf,
+  ExtToolEditDlg, IDECommands, KeyMapping, TransferMacros, IDEProcs,
+  CompilerOptions, OutputFilter, LazarusIDEStrConsts;
 
 const
   MaxExtTools = ecExtToolLast-ecExtToolFirst+1;
@@ -56,6 +58,9 @@ type
   {
     the storage object for all external tools
   }
+
+  { TExternalToolList }
+
   TExternalToolList = class(TList)
   private
     fOnFreeOutputFilter: TOnFreeOutputFilter;
@@ -73,7 +78,8 @@ type
     destructor Destroy; override;
     procedure FreeStoppedProcesses;
     procedure Insert(Index: integer; NewTool: TExternalToolOptions);
-    function Load(XMLConfig: TXMLConfig; const Path: string): TModalResult;
+    function Load(Config: TConfigStorage): TModalResult;
+    function Load(Config: TConfigStorage; const Path: string): TModalResult;
     procedure LoadShortCuts(KeyCommandRelationList: TKeyCommandRelationList);
     function Run(ExtTool: TExternalToolOptions;
                  Macros: TTransferMacroList): TModalResult;
@@ -82,7 +88,8 @@ type
                  TheOutputFilter: TOutputFilter;
                  CompilerOptions: TBaseCompilerOptions): TModalResult;
     function Run(Index: integer; Macros: TTransferMacroList): TModalResult;
-    function Save(XMLConfig: TXMLConfig; const Path: string): TModalResult;
+    function Save(Config: TConfigStorage): TModalResult;
+    function Save(Config: TConfigStorage; const Path: string): TModalResult;
     procedure SaveShortCuts(KeyCommandRelationList: TKeyCommandRelationList);
     
     property Items[Index: integer]: TExternalToolOptions
@@ -225,19 +232,36 @@ begin
   inherited Insert(Index,NewTool);
 end;
 
-function TExternalToolList.Load(XMLConfig: TXMLConfig;
-  const Path: string): TModalResult;
+function TExternalToolList.Load(Config: TConfigStorage): TModalResult;
 var i: integer;
   NewTool: TExternalToolOptions;
 begin
   Clear;
-  Count:=XMLConfig.GetValue(Path+'Count',0);
+  Count:=Config.GetValue('Count',0);
   for i:=0 to Count-1 do begin
     NewTool:=TExternalToolOptions.Create;
     Items[i]:=NewTool;
-    if NewTool.Load(XMLConfig,Path+'Tool'+IntToStr(i+1)+'/')<>mrOk then exit;
+    Config.AppendBasePath('Tool'+IntToStr(i+1)+'/');
+    try
+      if NewTool.Load(Config)<>mrOk then exit;
+    finally
+      Config.UndoAppendBasePath;
+    end;
   end;
   Result:=mrOk;
+end;
+
+function TExternalToolList.Load(Config: TConfigStorage; const Path: string
+  ): TModalResult;
+begin
+  if Path<>'' then
+    Config.AppendBasePath(Path);
+  try
+    Result:=Load(Config);
+  finally
+    if Path<>'' then
+      Config.UndoAppendBasePath;
+  end;
 end;
 
 procedure TExternalToolList.LoadShortCuts(
@@ -393,15 +417,32 @@ begin
   end;
 end;
 
-function TExternalToolList.Save(XMLConfig: TXMLConfig;
-  const Path: string): TModalResult;
+function TExternalToolList.Save(Config: TConfigStorage): TModalResult;
 var i: integer;
 begin
-  XMLConfig.SetValue(Path+'Count',Count);
+  Config.SetValue('Count',Count);
   for i:=0 to Count-1 do begin
-    if Items[i].Save(XMLConfig,Path+'Tool'+IntToStr(i+1)+'/')<>mrOk then exit;
+    Config.AppendBasePath('Tool'+IntToStr(i+1)+'/');
+    try
+      if Items[i].Save(Config)<>mrOk then exit;
+    finally
+      Config.UndoAppendBasePath;
+    end;
   end;
   Result:=mrOk;
+end;
+
+function TExternalToolList.Save(Config: TConfigStorage; const Path: string
+  ): TModalResult;
+begin
+  if Path<>'' then
+    Config.AppendBasePath(Path);
+  try
+    Result:=Save(Config);
+  finally
+    if Path<>'' then
+      Config.UndoAppendBasePath;
+  end;
 end;
 
 procedure TExternalToolList.SaveShortCuts(

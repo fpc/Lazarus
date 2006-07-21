@@ -33,6 +33,7 @@ uses
   HelpFPDoc,
   IDECommands,
   IDEDialogs,
+  IDEExternToolIntf,
   IDEHelpIntf,
   IDEMsgIntf,
   IDEWindowIntf,

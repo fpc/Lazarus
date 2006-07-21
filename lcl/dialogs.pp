@@ -410,6 +410,8 @@ function MessageDlg(const aMsg: string; DlgType: TMsgDlgType;
             Buttons: TMsgDlgButtons; HelpCtx: Longint): Integer;
 function MessageDlg(const aCaption, aMsg: string; DlgType: TMsgDlgType;
             Buttons: TMsgDlgButtons; HelpCtx: Longint): Integer;
+function MessageDlg(const aCaption, aMsg: string; DlgType: TMsgDlgType;
+            Buttons: TMsgDlgButtons; const HelpKeyword: string): Integer;
 function MessageDlgPos(const aMsg: string; DlgType: TMsgDlgType;
             Buttons: TMsgDlgButtons; HelpCtx: Longint; X, Y: Integer): Integer;
 function MessageDlgPosHelp(const aMsg: string; DlgType: TMsgDlgType;
@@ -417,7 +419,9 @@ function MessageDlgPosHelp(const aMsg: string; DlgType: TMsgDlgType;
             const HelpFileName: string): Integer;
 function QuestionDlg(const aCaption, aMsg: string; DlgType: TMsgDlgType;
             Buttons: array of const; HelpCtx: Longint): TModalResult;
-            
+function QuestionDlg(const aCaption, aMsg: string; DlgType: TMsgDlgType;
+            Buttons: array of const; const HelpKeyword: string): TModalResult;
+
 procedure ShowMessage(const aMsg: string);
 procedure ShowMessageFmt(const aMsg: string; Params: array of const);
 procedure ShowMessagePos(const aMsg: string; X, Y: Integer);

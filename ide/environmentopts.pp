@@ -1171,7 +1171,7 @@ begin
       Path+'Recent/PackageFiles/');
 
     // external tools
-    fExternalTools.Load(XMLConfig,Path+'ExternalTools/');
+    fExternalTools.Load(FConfigStore,Path+'ExternalTools/');
     
     // naming
     LoadPascalFileExt(Path+'');
@@ -1386,7 +1386,7 @@ begin
       Path+'Recent/PackageFiles/');
 
     // external tools
-    fExternalTools.Save(XMLConfig,Path+'ExternalTools/');
+    fExternalTools.Save(FConfigStore,Path+'ExternalTools/');
 
     // naming
     XMLConfig.SetDeleteValue(Path+'Naming/PascalFileExtension',

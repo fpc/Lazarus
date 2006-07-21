@@ -5,6 +5,7 @@
     <CompilerOptions>
       <Version Value="5"/>
       <SearchPaths>
+        <OtherUnitFiles Value="$(LazarusDir)/components/codetools/units/$(TargetCPU)-$(TargetOS)/"/>
         <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
       <CodeGeneration>
@@ -14,10 +15,10 @@
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
-    <Files Count="5">
+    <Files Count="6">
       <Item1>
         <Filename Value="h2pasconvert.pas"/>
-        <UnitName Value="h2pasconvert"/>
+        <UnitName Value="H2PasConvert"/>
       </Item1>
       <Item2>
         <Filename Value="h2pasdlg.pas"/>
@@ -36,6 +37,10 @@
         <Filename Value="h2passtrconsts.pas"/>
         <UnitName Value="H2PasStrConsts"/>
       </Item5>
+      <Item6>
+        <Filename Value="textconverter.pas"/>
+        <UnitName Value="textconverter"/>
+      </Item6>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="3">

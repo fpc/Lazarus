@@ -50,7 +50,8 @@ uses
   CodeToolManager, CodeCache, BasicCodeTools,
   AVL_Tree, Laz_XMLCfg,
   // IDE Interface
-  NewItemIntf, ProjectIntf, PackageIntf, MenuIntf, LazIDEIntf,
+  IDEExternToolIntf, NewItemIntf, ProjectIntf, PackageIntf, MenuIntf,
+  LazIDEIntf,
   // IDE
   LazConf, LazarusIDEStrConsts, IDEProcs, ObjectLists, DialogProcs, IDECommands,
   EnvironmentOpts, MiscOptions, InputHistory, ProjectDefs, Project,

@@ -72,8 +72,8 @@ uses
   SynEditKeyCmds,
   // IDE interface
   AllIDEIntf, BaseIDEIntf, ObjectInspector, PropEdits, MacroIntf, IDECommands,
-  SrcEditorIntf, NewItemIntf, IDEMsgIntf, PackageIntf, ProjectIntf, MenuIntf,
-  LazIDEIntf, IDEDialogs,
+  SrcEditorIntf, NewItemIntf, IDEExternToolIntf, IDEMsgIntf, PackageIntf,
+  ProjectIntf, MenuIntf, LazIDEIntf, IDEDialogs,
   // protocol
   IDEProtocol,
   // compile
@@ -306,6 +306,12 @@ type
     function OnSelectDirectory(const Title, InitialDir: string): string;
     procedure OnInitIDEFileDialog(AFileDialog: TFileDialog);
     procedure OnStoreIDEFileDialog(AFileDialog: TFileDialog);
+    function OnIDEMessageDialog(const aCaption, aMsg: string;
+                                DlgType: TMsgDlgType; Buttons: TMsgDlgButtons;
+                                const HelpKeyword: string): Integer;
+    function OnIDEQuestionDialog(const aCaption, aMsg: string;
+                                 DlgType: TMsgDlgType; Buttons: array of const;
+                                 const HelpKeyword: string): Integer;
 
     // Environment options dialog events
     procedure OnLoadEnvironmentSettings(Sender: TObject;
@@ -1436,6 +1442,8 @@ begin
   LazIDESelectDirectory:=@OnSelectDirectory;
   InitIDEFileDialog:=@OnInitIDEFileDialog;
   StoreIDEFileDialog:=@OnStoreIDEFileDialog;
+  IDEMessageDialog:=@OnIDEMessageDialog;
+  IDEQuestionDialog:=@OnIDEQuestionDialog;
 end;
 
 procedure TMainIDE.SetupComponentNoteBook;
@@ -1858,7 +1866,6 @@ begin
   SetupEnvironmentMenu;
   SetupWindowsMenu;
   SetupHelpMenu;
-  ProcedureList.Register;
   mnuMain.MenuItem:=MainIDEBar.mnuMainMenu.Items;
 end;
 
@@ -2621,6 +2628,20 @@ end;
 procedure TMainIDE.OnStoreIDEFileDialog(AFileDialog: TFileDialog);
 begin
   InputHistories.StoreFileDialogSettings(AFileDialog);
+end;
+
+function TMainIDE.OnIDEMessageDialog(const aCaption, aMsg: string;
+  DlgType: TMsgDlgType; Buttons: TMsgDlgButtons; const HelpKeyword: string
+  ): Integer;
+begin
+  Result:=MessageDlg(aCaption,aMsg,DlgType,Buttons,HelpKeyword);
+end;
+
+function TMainIDE.OnIDEQuestionDialog(const aCaption, aMsg: string;
+  DlgType: TMsgDlgType; Buttons: array of const; const HelpKeyword: string
+  ): Integer;
+begin
+  Result:=QuestionDlg(aCaption,aMsg,DlgType,Buttons,HelpKeyword);
 end;
 
 procedure TMainIDE.OnExecuteIDEShortCut(Sender: TObject; var Key: word;
@@ -7812,13 +7833,23 @@ begin
 end;
 
 function TMainIDE.DoSaveAll(Flags: TSaveFlags): TModalResult;
+var
+  CurResult: TModalResult;
 begin
   DebugLn('TMainIDE.DoSaveAll');
-  Result:=DoSaveProject(Flags);
+  Result:=mrOk;
+  CurResult:=DoCallModalFunctionHandler(lihtOnSavingAll);
+  if CurResult=mrAbort then exit(mrAbort);
+  if CurResult<>mrOk then Result:=mrCancel;
+  CurResult:=DoSaveProject(Flags);
   SaveEnvironment;
   SaveIncludeLinks;
   InputHistories.Save;
-  // ToDo: save open packages, cvs settings, ...
+  if CurResult=mrAbort then exit(mrAbort);
+  if CurResult<>mrOk then Result:=mrCancel;
+  CurResult:=DoCallModalFunctionHandler(lihtOnSavedAll);
+  if CurResult=mrAbort then exit(mrAbort);
+  if CurResult<>mrOk then Result:=mrCancel;
 end;
 
 procedure TMainIDE.DoRestart;

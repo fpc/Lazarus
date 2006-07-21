@@ -101,7 +101,6 @@ type
 
 
 
-procedure Register;
 procedure ExecuteProcedureList(Sender: TObject);
 
 implementation
@@ -137,10 +136,6 @@ resourcestring
   SSearch               = '&Search';
   
   
-var
-  CmdProcedureList: TIDECommand;
-
-
 { This is where it all starts. Gets called from Lazarus. }
 procedure ExecuteProcedureList(Sender: TObject);
 var
@@ -160,30 +155,6 @@ begin
   finally
     frm.Free;
   end;
-end;
-
-
-{ Registers a keyboard shortcut and menu item with Lazarus. }
-procedure Register;
-var
-  Key: TIDEShortCut;
-  Cat: TIDECommandCategory;
-begin
-{  Key := IDEShortCut(VK_G,[ssCtrl,ssShift],VK_UNKNOWN,[]);
-  Cat := IDECommandList.CreateCategory(Nil,
-                                    cProcedureList,
-                                    SProcedureListCaption,
-                                    IDECmdScopeSrcEditOnly);
-
-  CmdProcedureList := RegisterIDECommand(Cat,
-                                         cProcedureList,
-                                         SProcedureListCaption,
-                                         Key,nil,@ExecuteProcedureList);
-  RegisterIDEMenuCommand(itmCodeToolSearches,
-                         cProcedureList,
-                         SProcedureListCaption,
-                         nil, nil, CmdProcedureList);
-}
 end;
 
 
