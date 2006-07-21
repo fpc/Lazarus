@@ -196,12 +196,7 @@
         <seealso/>
       </element>
       <!-- object Visibility: default -->
-      <element name="TWinControl">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
+      <element name="TWinControl"/>
       <!-- object Visibility: default -->
       <element name="TControl">
         <short/>
@@ -10524,15 +10519,25 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
       </element>
       <!-- object Visibility: default -->
       <element name="TGraphicControl">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>TGraphicControl is the base class for all lightweight controls.</short>
+        <descr>
+          <p>TGraphicControl supports simple lightweight controls that do not 
+need the ability to accept keyboard input or contain other controls.  Since 
+lightweight controls do not wrap GUI screen objects, they are faster and uses 
+fewer resources than controls based on TWinControl.</p>
+          <p>TGraphicControl provides a Canvas property for access to the 
+control's drawing surface and a virtual Paint method called in response to 
+paint requests received by the parent control.</p>
+        </descr>
+        <seealso>
+          <link id="TWinControl"/>
+          <link id="TWinControl.Canvas"/>
+        </seealso>
       </element>
       <!-- variable Visibility: private -->
       <element name="TGraphicControl.FCanvas">
-        <short/>
-        <descr/>
+        <short>A reference to the parents Canvas.</short>
+        <descr>The canvas isn't "owned" by the TGraphicControl, but by its parent.</descr>
         <seealso/>
       </element>
       <!-- variable Visibility: private -->
@@ -10554,8 +10559,8 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TGraphicControl.Paint">
-        <short/>
-        <descr/>
+        <short>Virtual Paint method called in response to paint requests.</short>
+        <descr>Virtual Paint method called in response to paint requests received by the parent control.</descr>
         <errors/>
         <seealso/>
       </element>
@@ -10579,9 +10584,15 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
       </element>
       <!-- property Visibility: public -->
       <element name="TGraphicControl.Canvas">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>A clipping window to the parent canvas.</short>
+        <descr><p>The TGraphicsControl.Canvas is a clipping window to the parent 
+canvas.</p><p>If you ask for the Canvas.Width or Canvas.Height, you are actually 
+getting the parent control's Canvas dimensions. To get the dimensions of the 
+TGraphicControl, you must query the ClientRect.</p>
+        </descr>
+        <seealso>
+          <link id="TGraphicControl.FCanvas"/>
+        </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TGraphicControl.OnPaint">
