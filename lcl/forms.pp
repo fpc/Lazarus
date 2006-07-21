@@ -454,7 +454,7 @@ type
     procedure WndProc(var TheMessage : TLMessage); override;
     function VisibleIsStored: boolean;
     function ColorIsStored: boolean; override;
-    procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: integer); override;
+    procedure DoSendBoundsToInterface; override;
   protected
     // drag and dock
     procedure DoDock(NewDockSite: TWinControl; var ARect: TRect); override;

@@ -929,9 +929,9 @@ begin
   Result:=(Color<>clBtnFace);
 end;
 
-procedure TCustomForm.DoSetBounds(ALeft, ATop, AWidth, AHeight: integer);
+procedure TCustomForm.DoSendBoundsToInterface;
 begin
-  inherited DoSetBounds(ALeft, ATop, AWidth, AHeight);
+  inherited DoSendBoundsToInterface;
   if WindowState=wsNormal then begin
     FRestoredLeft:=Left;
     FRestoredTop:=Top;
