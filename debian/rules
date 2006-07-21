@@ -26,7 +26,7 @@ build-stamp: configure-stamp
 	dh_testdir
 
 	# Add here commands to compile the package.
-	$(MAKE)
+	$(MAKE) USESVN2REVISIONINC=0
 	#/usr/bin/docbook-to-man debian/lazarus.sgml > lazarus.1
 
 	touch build-stamp
@@ -50,7 +50,6 @@ install: build
 	# Add here commands to install the package into debian/lazarus.
 	
 	# copy lazarus to /usr/share
-	install -d $(LAZDEBDIR)/usr/share/lazarus
 	install -d $(LAZDEBDIR)/usr/lib/lazarus
 	install -d $(LAZDEBDIR)/usr/bin
 	
@@ -58,12 +57,12 @@ install: build
 	
 	# copy icons and menu entries for the GNOME menu
 	install -d $(LAZDEBDIR)/usr/share/pixmaps
-	install -d $(LAZDEBDIR)/usr/share/gnome/apps/Development
+	install -d $(LAZDEBDIR)/usr/share/applications
 	install -d $(LAZDEBDIR)/usr/bin
 	
 	convert -geometry 32x32 $(CURDIR)/images/ide_icon48x48.png $(LAZDEBDIR)/usr/share/pixmaps/lazarus.xpm
 	chmod 644 $(LAZDEBDIR)/usr/share/pixmaps/lazarus.xpm
-	install -m 644 $(CURDIR)/install/lazarus.desktop $(LAZDEBDIR)/usr/share/gnome/apps/Development/lazarus.desktop
+	install -m 644 $(CURDIR)/install/lazarus.desktop $(LAZDEBDIR)/usr/share/applications/lazarus.desktop
 	
 # Build architecture-independent files here.
 binary-indep: build install

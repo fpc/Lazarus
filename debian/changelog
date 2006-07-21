@@ -1,8 +1,8 @@
-lazarus (0.9.13-1) experimental; urgency=low
+lazarus (0.9.17-1) experimental; urgency=low
 
-  * New upstream release.
+  * Snapshot.
 
- -- Micha Nelissen <micha@neli.hopto.org>  Sun, 26 Mar 2006 14:56:00 +0100
+ -- Micha Nelissen <micha@neli.hopto.org>  Fri, 21 Jul 2006 16:09:00 +0200
 
 lazarus (0.9.2-2) experimental; urgency=low
 

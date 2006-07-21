@@ -1,12 +1,12 @@
 [Desktop Entry]
 Name=Lazarus
 Comment=Lazarus IDE
-Exec=startlazarus %f
-Terminal=0
+Exec=/usr/lib/lazarus/startlazarus %f
+Terminal=false
 Type=Application
-Icon=lazarus.png
+Icon=lazarus.xpm
 Encoding=UTF-8
-Categories=IDE;Development;X-Red-Hat-Base;Application;
+Categories=Application;IDE;Development;Programming;
 StartupWMClass=Lazarus
 MimeType=text/x-pascal;
 
