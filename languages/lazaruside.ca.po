@@ -142,6 +142,10 @@ msgstr ""
 msgid "&Add Breakpoint"
 msgstr "&Afegeix punt de ruptura"
 
+#: lazarusidestrconsts:lisclose
+msgid "&Close"
+msgstr ""
+
 #: lazarusidestrconsts:uemclosepage
 msgid "&Close Page"
 msgstr "Tan&ca la pàgina"
@@ -2830,6 +2834,10 @@ msgstr "Color primer pla "
 msgid "Form Editor"
 msgstr "Editor de forma"
 
+#: lazarusidestrconsts:rsformdatafiledfm
+msgid "Form data file (*.dfm)|*.dfm"
+msgstr ""
+
 #: lazarusidestrconsts:lisformloaderror
 msgid "Form load error"
 msgstr "S'ha produït un error mentre es carregava la forma"
@@ -4657,6 +4665,10 @@ msgstr ""
 #: lazarusidestrconsts:lisnoresourcestringsectionfound
 msgid "No ResourceString Section found"
 msgstr "No s'ha trobat la secció de la cadena del recurs"
+
+#: lazarusidestrconsts:lisnobackupfiles
+msgid "No backup files"
+msgstr ""
 
 #: lazarusidestrconsts:lisnochange
 msgid "No change"

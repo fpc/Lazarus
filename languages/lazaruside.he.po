@@ -153,6 +153,10 @@ msgstr ""
 msgid "&Add Breakpoint"
 msgstr "הוסף מיפסק&"
 
+#: lazarusidestrconsts:lisclose
+msgid "&Close"
+msgstr ""
+
 #: lazarusidestrconsts:uemclosepage
 msgid "&Close Page"
 msgstr "סגור דף&"
@@ -2841,6 +2845,10 @@ msgstr ""
 msgid "Form Editor"
 msgstr ""
 
+#: lazarusidestrconsts:rsformdatafiledfm
+msgid "Form data file (*.dfm)|*.dfm"
+msgstr ""
+
 #: lazarusidestrconsts:lisformloaderror
 msgid "Form load error"
 msgstr ""
@@ -4667,6 +4675,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisnoresourcestringsectionfound
 msgid "No ResourceString Section found"
+msgstr ""
+
+#: lazarusidestrconsts:lisnobackupfiles
+msgid "No backup files"
 msgstr ""
 
 #: lazarusidestrconsts:lisnochange

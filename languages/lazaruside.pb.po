@@ -145,6 +145,10 @@ msgstr ""
 msgid "&Add Breakpoint"
 msgstr "&Adicionar Ponto de Interrupção"
 
+#: lazarusidestrconsts:lisclose
+msgid "&Close"
+msgstr ""
+
 #: lazarusidestrconsts:uemclosepage
 msgid "&Close Page"
 msgstr "&Fechar Página"
@@ -2833,6 +2837,10 @@ msgstr "Cor de Plano de Fundo"
 msgid "Form Editor"
 msgstr "Editor de Formulário"
 
+#: lazarusidestrconsts:rsformdatafiledfm
+msgid "Form data file (*.dfm)|*.dfm"
+msgstr ""
+
 #: lazarusidestrconsts:lisformloaderror
 msgid "Form load error"
 msgstr "Erro em carregamento de Formulário"
@@ -4660,6 +4668,10 @@ msgstr "Próximo Marcador"
 #: lazarusidestrconsts:lisnoresourcestringsectionfound
 msgid "No ResourceString Section found"
 msgstr "Nao foi encontrada uma Seção de 'ResourceString'"
+
+#: lazarusidestrconsts:lisnobackupfiles
+msgid "No backup files"
+msgstr ""
 
 #: lazarusidestrconsts:lisnochange
 msgid "No change"

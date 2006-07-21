@@ -153,6 +153,10 @@ msgstr ""
 msgid "&Add Breakpoint"
 msgstr "&Voeg Breekpunt toe"
 
+#: lazarusidestrconsts:lisclose
+msgid "&Close"
+msgstr ""
+
 #: lazarusidestrconsts:uemclosepage
 msgid "&Close Page"
 msgstr "&Sluit Pagina"
@@ -2841,6 +2845,10 @@ msgstr "Voorgrond kleur"
 msgid "Form Editor"
 msgstr "Formulierbewerker"
 
+#: lazarusidestrconsts:rsformdatafiledfm
+msgid "Form data file (*.dfm)|*.dfm"
+msgstr ""
+
 #: lazarusidestrconsts:lisformloaderror
 msgid "Form load error"
 msgstr "Fout bij laden formulier"
@@ -4668,6 +4676,10 @@ msgstr "Volgend bookmark"
 #: lazarusidestrconsts:lisnoresourcestringsectionfound
 msgid "No ResourceString Section found"
 msgstr "Geen ResourceString sectie gevonden"
+
+#: lazarusidestrconsts:lisnobackupfiles
+msgid "No backup files"
+msgstr ""
 
 #: lazarusidestrconsts:lisnochange
 msgid "No change"

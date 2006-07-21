@@ -152,6 +152,10 @@ msgstr ""
 msgid "&Add Breakpoint"
 msgstr "ブレークポイント追加"
 
+#: lazarusidestrconsts:lisclose
+msgid "&Close"
+msgstr ""
+
 #: lazarusidestrconsts:uemclosepage
 msgid "&Close Page"
 msgstr "ページを閉じる"
@@ -2840,6 +2844,10 @@ msgstr "フォアグランドカラー"
 msgid "Form Editor"
 msgstr "フォームエディタ"
 
+#: lazarusidestrconsts:rsformdatafiledfm
+msgid "Form data file (*.dfm)|*.dfm"
+msgstr ""
+
 #: lazarusidestrconsts:lisformloaderror
 msgid "Form load error"
 msgstr "フォームロードエラー"
@@ -4666,6 +4674,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisnoresourcestringsectionfound
 msgid "No ResourceString Section found"
+msgstr ""
+
+#: lazarusidestrconsts:lisnobackupfiles
+msgid "No backup files"
 msgstr ""
 
 #: lazarusidestrconsts:lisnochange

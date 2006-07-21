@@ -156,6 +156,10 @@ msgstr ""
 msgid "&Add Breakpoint"
 msgstr "添加断点(&A)"
 
+#: lazarusidestrconsts:lisclose
+msgid "&Close"
+msgstr ""
+
 #: lazarusidestrconsts:uemclosepage
 msgid "&Close Page"
 msgstr "关闭页面(&C)"
@@ -2844,6 +2848,10 @@ msgstr "前景色"
 msgid "Form Editor"
 msgstr "窗体编辑器"
 
+#: lazarusidestrconsts:rsformdatafiledfm
+msgid "Form data file (*.dfm)|*.dfm"
+msgstr ""
+
 #: lazarusidestrconsts:lisformloaderror
 msgid "Form load error"
 msgstr "窗体装载错误"
@@ -4671,6 +4679,10 @@ msgstr "下一个书签"
 #: lazarusidestrconsts:lisnoresourcestringsectionfound
 msgid "No ResourceString Section found"
 msgstr "未找到任何资源字符串节"
+
+#: lazarusidestrconsts:lisnobackupfiles
+msgid "No backup files"
+msgstr ""
 
 #: lazarusidestrconsts:lisnochange
 msgid "No change"

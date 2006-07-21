@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2006-07-19 11:39+0100\n"
+"PO-Revision-Date: 2006-07-20 23:53+0100\n"
 "Last-Translator: Swen Heinig <x@y.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -155,6 +155,10 @@ msgstr ""
 #: lazarusidestrconsts:uemaddbreakpoint
 msgid "&Add Breakpoint"
 msgstr "H&altepunkt hinzufügen"
+
+#: lazarusidestrconsts:lisclose
+msgid "&Close"
+msgstr ""
 
 #: lazarusidestrconsts:uemclosepage
 msgid "&Close Page"
@@ -350,7 +354,7 @@ msgstr "Dateien hinzufügen"
 
 #: lazarusidestrconsts:lisa2paddlfmlrsfilesiftheyexist
 msgid "Add LFM, LRS files, if they exist"
-msgstr "LFS- und LRS-Dateien hinzufügen, wenn es sie gibt"
+msgstr "LFM- und LRS-Dateien hinzufügen, wenn es sie gibt"
 
 #: lazarusidestrconsts:lisa2paddunit
 msgid "Add Unit"
@@ -422,7 +426,7 @@ msgstr "Neuer Pfade für abhängige Pakete und Projekte"
 
 #: lazarusidestrconsts:dlgaddsemicolon
 msgid "Add semicolon"
-msgstr ""
+msgstr "Semikolon hinzufügen"
 
 #: lazarusidestrconsts:lisoifaddtofavouriteproperties
 msgid "Add to favourite properties"
@@ -1478,7 +1482,7 @@ msgstr "Hilfe konfigurieren"
 
 #: lazarusidestrconsts:lismenuconfigurebuildlazarus
 msgid "Configure \"Build Lazarus\""
-msgstr "Einstellungen für \"Lazarus erstellen\""
+msgstr "\"Lazarus erstellen\" einrichten..."
 
 #: lazarusidestrconsts:lismenuconfigcustomcomps
 msgid "Configure custom components"
@@ -2166,7 +2170,7 @@ msgstr "Wollen Sie die Änderungen am Paket %s wirklich verwerfen und es neu aus
 
 #: lazarusidestrconsts:lisconfirmlazarusrebuild
 msgid "Do you want to rebuild Lazarus?"
-msgstr "Wollen Sie Lazarus neu bauen"
+msgstr "Wollen Sie Lazarus neu bauen?"
 
 #: lazarusidestrconsts:rsiwpdocked
 msgid "Docked"
@@ -2534,7 +2538,7 @@ msgstr "Externe Werkzeuge"
 
 #: lazarusidestrconsts:srkmecexttoolsettings
 msgid "External tools settings"
-msgstr "Eigenschaften der externen Werkzeuge"
+msgstr "Einstellungen der externen Werkzeuge"
 
 #: lazarusidestrconsts:dlgextralinespacing
 msgid "Extra line spacing"
@@ -2762,7 +2766,7 @@ msgstr "Zu Quelltextblockanfang gehen"
 
 #: lazarusidestrconsts:liscomppalfindcomponent
 msgid "Find component"
-msgstr ""
+msgstr "Komponente finden"
 
 #: lazarusidestrconsts:srkmecfinddeclaration
 msgid "Find declaration"
@@ -2830,7 +2834,7 @@ msgstr "Cursor folgen"
 
 #: lazarusidestrconsts:lisuefontwith
 msgid "Font without UTF-8"
-msgstr "Schriftart ohne UTF-"
+msgstr "Schriftart ohne UTF-8"
 
 #: lazarusidestrconsts:lisforcerenaming
 msgid "Force renaming"
@@ -2843,6 +2847,10 @@ msgstr "Vordergrundfarbe"
 #: lazarusidestrconsts:dlgfrmeditor
 msgid "Form Editor"
 msgstr "Formulareditor"
+
+#: lazarusidestrconsts:rsformdatafiledfm
+msgid "Form data file (*.dfm)|*.dfm"
+msgstr ""
 
 #: lazarusidestrconsts:lisformloaderror
 msgid "Form load error"
@@ -2866,7 +2874,7 @@ msgstr "Einen weiter"
 
 #: lazarusidestrconsts:lisfrforwardsearch
 msgid "Forward search"
-msgstr "Vorwärtssuche"
+msgstr "Vorwärts suchen"
 
 #: lazarusidestrconsts:lisfreepascalcompilernotfound
 msgid "Free Pascal Compiler not found"
@@ -3702,7 +3710,7 @@ msgstr "Ungültiger Compilerdateiname"
 
 #: lazarusidestrconsts:lispkgsysinvalidcomponentclass
 msgid "Invalid component class"
-msgstr "Ungültiger Compilerdateiname"
+msgstr "Ungültige Komponentenklasse"
 
 #: lazarusidestrconsts:lisenvoptdlginvaliddebuggerfilename
 msgid "Invalid debugger filename"
@@ -3734,7 +3742,7 @@ msgstr "Ungültiger Dateiname"
 
 #: lazarusidestrconsts:lisenvoptdlginvalidmakefilename
 msgid "Invalid make filename"
-msgstr "Ungültige Make-Dateiname"
+msgstr "Ungültiger Make-Dateiname"
 
 #: lazarusidestrconsts:lispckeditinvalidmaximumversion
 msgid "Invalid maximum version"
@@ -3982,7 +3990,7 @@ msgstr "Letzter"
 
 #: lazarusidestrconsts:dlglast
 msgid "Last (i.e. at end of source)"
-msgstr "Letzter (z.B. am Ende des Quelltexts)"
+msgstr "Letzter (d.h. am Ende des Quelltexts)"
 
 #: lazarusidestrconsts:lisuselaunchingapplicationgroupbox
 msgid "Launching application"
@@ -4018,7 +4026,7 @@ msgstr "Lazarus"
 
 #: lazarusidestrconsts:lislazarusdesktopsettings
 msgid "Lazarus Desktop Settings"
-msgstr "Lazarus-Desktop-Eigenschaften"
+msgstr "Lazarus-Desktop-Einstellungen"
 
 #: lazarusidestrconsts:liscodetoolsdefslazarusdirectory
 msgid "Lazarus Directory"
@@ -4672,6 +4680,10 @@ msgstr "Nächstes Lesezeichen"
 msgid "No ResourceString Section found"
 msgstr "Kein ResourceString-Abschnitt gefunden"
 
+#: lazarusidestrconsts:lisnobackupfiles
+msgid "No backup files"
+msgstr ""
+
 #: lazarusidestrconsts:lisnochange
 msgid "No change"
 msgstr "Keine Änderung"
@@ -5066,7 +5078,7 @@ msgstr "Package-Name"
 
 #: lazarusidestrconsts:lisprojaddpackagename
 msgid "Package Name:"
-msgstr "Packagename:"
+msgstr "Package-Name:"
 
 #: lazarusidestrconsts:lispckoptspackageoptions
 msgid "Package Options"
@@ -8590,11 +8602,11 @@ msgstr "Anwendungstaste"
 
 #: lazarusidestrconsts:lisoipautoinstalldynamic
 msgid "auto install dynamic"
-msgstr "statische automatische Installation"
+msgstr "dynamische automatische Installation"
 
 #: lazarusidestrconsts:lisoipautoinstallstatic
 msgid "auto install static"
-msgstr "dynamische automatische Installation"
+msgstr "statische automatische Installation"
 
 #: lazarusidestrconsts:srkmecbuildall
 msgid "build all files of program/project"

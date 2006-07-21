@@ -1783,7 +1783,7 @@ msgid "SVN Revision: "
 msgstr ""
 
 #: lazarusidestrconsts:lisclose
-msgid "Close"
+msgid "&Close"
 msgstr ""
 
 #: lazarusidestrconsts:lisaboutlazarusmsg
@@ -2084,6 +2084,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgsmbfront
 msgid "Symbol in front (.~pp)"
+msgstr ""
+
+#: lazarusidestrconsts:lisnobackupfiles
+msgid "No backup files"
 msgstr ""
 
 #: lazarusidestrconsts:dlgsmbbehind
@@ -9244,6 +9248,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lislazbuildsavesettings
 msgid "Save settings"
+msgstr ""
+
+#: lazarusidestrconsts:rsformdatafiledfm
+msgid "Form data file (*.dfm)|*.dfm"
 msgstr ""
 
 #: lazarusidestrconsts:liswlwatchlist

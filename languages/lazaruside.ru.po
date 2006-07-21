@@ -153,6 +153,10 @@ msgstr ""
 msgid "&Add Breakpoint"
 msgstr "&Добав. точку останова"
 
+#: lazarusidestrconsts:lisclose
+msgid "&Close"
+msgstr ""
+
 #: lazarusidestrconsts:uemclosepage
 msgid "&Close Page"
 msgstr "&Закрыть страницу"
@@ -2841,6 +2845,10 @@ msgstr "Цвет текста"
 msgid "Form Editor"
 msgstr "Редактор форм"
 
+#: lazarusidestrconsts:rsformdatafiledfm
+msgid "Form data file (*.dfm)|*.dfm"
+msgstr ""
+
 #: lazarusidestrconsts:lisformloaderror
 msgid "Form load error"
 msgstr "Ошибка загрузки формы"
@@ -4668,6 +4676,10 @@ msgstr "Следующая Закладка"
 #: lazarusidestrconsts:lisnoresourcestringsectionfound
 msgid "No ResourceString Section found"
 msgstr "Не найдено секции ResourceString"
+
+#: lazarusidestrconsts:lisnobackupfiles
+msgid "No backup files"
+msgstr ""
 
 #: lazarusidestrconsts:lisnochange
 msgid "No change"

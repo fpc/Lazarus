@@ -154,6 +154,10 @@ msgstr ""
 msgid "&Add Breakpoint"
 msgstr "&Ajouter un point d'arrêt"
 
+#: lazarusidestrconsts:lisclose
+msgid "&Close"
+msgstr ""
+
 #: lazarusidestrconsts:uemclosepage
 msgid "&Close Page"
 msgstr "&Fermer la page"
@@ -2842,6 +2846,10 @@ msgstr "Couleur d'avant-plan"
 msgid "Form Editor"
 msgstr "Editeur de fiches"
 
+#: lazarusidestrconsts:rsformdatafiledfm
+msgid "Form data file (*.dfm)|*.dfm"
+msgstr ""
+
 #: lazarusidestrconsts:lisformloaderror
 msgid "Form load error"
 msgstr "Erreur au chargement de la fiche"
@@ -4669,6 +4677,10 @@ msgstr "Prochain signet"
 #: lazarusidestrconsts:lisnoresourcestringsectionfound
 msgid "No ResourceString Section found"
 msgstr "Section ResourceString non trouvée"
+
+#: lazarusidestrconsts:lisnobackupfiles
+msgid "No backup files"
+msgstr ""
 
 #: lazarusidestrconsts:lisnochange
 msgid "No change"

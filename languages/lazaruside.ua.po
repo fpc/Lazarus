@@ -142,6 +142,10 @@ msgstr ""
 msgid "&Add Breakpoint"
 msgstr "&Додати точку зупинки"
 
+#: lazarusidestrconsts:lisclose
+msgid "&Close"
+msgstr ""
+
 #: lazarusidestrconsts:uemclosepage
 msgid "&Close Page"
 msgstr "&Закрити сторінку"
@@ -2830,6 +2834,10 @@ msgstr "Колір переднього плану"
 msgid "Form Editor"
 msgstr "Редактор форм"
 
+#: lazarusidestrconsts:rsformdatafiledfm
+msgid "Form data file (*.dfm)|*.dfm"
+msgstr ""
+
 #: lazarusidestrconsts:lisformloaderror
 msgid "Form load error"
 msgstr "Помилка завантаження форми"
@@ -4657,6 +4665,10 @@ msgstr "Наступна закладка"
 #: lazarusidestrconsts:lisnoresourcestringsectionfound
 msgid "No ResourceString Section found"
 msgstr "Не знайдено розділу в ResourceString"
+
+#: lazarusidestrconsts:lisnobackupfiles
+msgid "No backup files"
+msgstr ""
 
 #: lazarusidestrconsts:lisnochange
 msgid "No change"

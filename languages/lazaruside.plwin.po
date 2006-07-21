@@ -153,6 +153,10 @@ msgstr ""
 msgid "&Add Breakpoint"
 msgstr "&Dodaj pu³apkê"
 
+#: lazarusidestrconsts:lisclose
+msgid "&Close"
+msgstr ""
+
 #: lazarusidestrconsts:uemclosepage
 msgid "&Close Page"
 msgstr "&Zamknij zak³adkê"
@@ -2841,6 +2845,10 @@ msgstr "Kolor tekstu"
 msgid "Form Editor"
 msgstr "Edytor formularza"
 
+#: lazarusidestrconsts:rsformdatafiledfm
+msgid "Form data file (*.dfm)|*.dfm"
+msgstr ""
+
 #: lazarusidestrconsts:lisformloaderror
 msgid "Form load error"
 msgstr "B³¹d podczas ³adowania formularza"
@@ -4668,6 +4676,10 @@ msgstr ""
 #: lazarusidestrconsts:lisnoresourcestringsectionfound
 msgid "No ResourceString Section found"
 msgstr "Nie znalaz³em sekcji ResourceString."
+
+#: lazarusidestrconsts:lisnobackupfiles
+msgid "No backup files"
+msgstr ""
 
 #: lazarusidestrconsts:lisnochange
 msgid "No change"

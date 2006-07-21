@@ -156,6 +156,10 @@ msgstr ""
 msgid "&Add Breakpoint"
 msgstr "&Tambah Breakpoint"
 
+#: lazarusidestrconsts:lisclose
+msgid "&Close"
+msgstr ""
+
 #: lazarusidestrconsts:uemclosepage
 msgid "&Close Page"
 msgstr "&Tutup Halaman"
@@ -2844,6 +2848,10 @@ msgstr "Warna latar depan"
 msgid "Form Editor"
 msgstr "Editor Form"
 
+#: lazarusidestrconsts:rsformdatafiledfm
+msgid "Form data file (*.dfm)|*.dfm"
+msgstr ""
+
 #: lazarusidestrconsts:lisformloaderror
 msgid "Form load error"
 msgstr "Pengambilan form salah"
@@ -4671,6 +4679,10 @@ msgstr "Penanda berikutnya"
 #: lazarusidestrconsts:lisnoresourcestringsectionfound
 msgid "No ResourceString Section found"
 msgstr "ResourceString Section tidak ditemukan"
+
+#: lazarusidestrconsts:lisnobackupfiles
+msgid "No backup files"
+msgstr ""
 
 #: lazarusidestrconsts:lisnochange
 msgid "No change"

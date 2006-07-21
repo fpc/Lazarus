@@ -142,6 +142,10 @@ msgstr ""
 msgid "&Add Breakpoint"
 msgstr ""
 
+#: lazarusidestrconsts:lisclose
+msgid "&Close"
+msgstr ""
+
 #: lazarusidestrconsts:uemclosepage
 msgid "&Close Page"
 msgstr "Sulje välilehti"
@@ -2830,6 +2834,10 @@ msgstr "Kirjaimien väri"
 msgid "Form Editor"
 msgstr "Lomake-editori"
 
+#: lazarusidestrconsts:rsformdatafiledfm
+msgid "Form data file (*.dfm)|*.dfm"
+msgstr ""
+
 #: lazarusidestrconsts:lisformloaderror
 msgid "Form load error"
 msgstr ""
@@ -4656,6 +4664,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisnoresourcestringsectionfound
 msgid "No ResourceString Section found"
+msgstr ""
+
+#: lazarusidestrconsts:lisnobackupfiles
+msgid "No backup files"
 msgstr ""
 
 #: lazarusidestrconsts:lisnochange
