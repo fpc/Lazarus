@@ -395,6 +395,7 @@ end;
 procedure TMainForm.MainFormDestroy(Sender: TObject);
 begin
   if Sender=nil then ;
+  SaveOptions;
   SaveRecent;
   FreeAndNil(FRecent);
 end;

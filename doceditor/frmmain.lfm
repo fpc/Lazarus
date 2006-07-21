@@ -1,197 +1,154 @@
 object MainForm: TMainForm
+  Left = 315
+  Height = 544
+  Top = 51
+  Width = 602
+  HorzScrollBar.Page = 601
+  VertScrollBar.Page = 513
   Caption = 'MainForm'
-  ClientHeight = 518
-  ClientWidth = 602
   Menu = MMain
   OnCloseQuery = MainFormCloseQuery
   OnCreate = MainFormCreate
   OnDestroy = MainFormDestroy
-  PixelsPerInch = 112
-  HorzScrollBar.Page = 601
-  VertScrollBar.Page = 517
-  Left = 189
-  Height = 544
-  Width = 602
   object TBMain: TToolBar
+    Height = 30
+    Width = 602
     ButtonHeight = 28
     ButtonWidth = 28
     Caption = 'TBMain'
-    Height = 30
     Images = ILMain
-    ParentColor = True
     TabOrder = 0
     TabStop = True
-    Height = 30
-    Width = 602
     object TBNewModule: TToolButton
-      Action = AInsertModule
       Left = 128
-      Height = 28
       Hint = 'Insert a new module'
       Top = 2
-      Width = 28
+      Action = AInsertModule
     end
     object TBNewPackage: TToolButton
-      Action = AInsertPackage
       Left = 100
-      Height = 28
       Hint = 'Insert a new package'
       Top = 2
-      Width = 28
+      Action = AInsertPackage
     end
     object TBNew: TToolButton
-      Action = ANew
       Left = 1
-      Height = 28
       Hint = 'Create a new documentation file'
       Top = 2
-      Width = 28
+      Action = ANew
     end
     object TBNewTopic: TToolButton
-      Action = AInsertTopic
       Left = 156
-      Height = 28
       Hint = 'Insert a new topic'
       Top = 2
-      Width = 28
+      Action = AInsertTopic
     end
     object ToolButton5: TToolButton
+      Left = 212
+      Top = 2
+      Width = 11
       Caption = 'ToolButton5'
       Style = tbsSeparator
-      Width = 11
-      Left = 212
-      Height = 28
-      Top = 2
-      Width = 11
     end
     object ToolButton6: TToolButton
-      Action = AFormatBold
       Left = 223
-      Height = 28
       Hint = 'Format selection bold'
       Top = 2
-      Width = 28
+      Action = AFormatBold
     end
     object ToolButton7: TToolButton
-      Action = AFormatUnderline
       Left = 279
-      Height = 28
       Hint = 'Format selection underline'
       Top = 2
-      Width = 28
+      Action = AFormatUnderline
     end
     object ToolButton8: TToolButton
-      Action = AFormatItalic
       Left = 251
-      Height = 28
       Hint = 'Format selection italic'
       Top = 2
-      Width = 28
+      Action = AFormatItalic
     end
     object TBNewElement: TToolButton
-      Action = AInsertElement
       Left = 184
-      Height = 28
       Hint = 'Insert a new element'
       Top = 2
-      Width = 28
+      Action = AInsertElement
     end
     object ToolButton1: TToolButton
+      Left = 391
+      Top = 2
+      Width = 22
       Caption = 'ToolButton1'
       Style = tbsSeparator
-      Width = 22
-      Left = 391
-      Height = 28
-      Top = 2
-      Width = 22
     end
     object ToolButton2: TToolButton
-      Action = AFormatVariable
       Left = 307
-      Height = 28
       Hint = 'Format selection as variable'
       Top = 2
-      Width = 28
+      Action = AFormatVariable
     end
     object ToolButton3: TToolButton
-      Action = AFormatParagraph
       Left = 335
-      Height = 28
       Hint = 'Format selection as paragraph'
       Top = 2
-      Width = 28
+      Action = AFormatParagraph
     end
     object ToolButton4: TToolButton
-      Action = AInsertTable
       Left = 413
-      Height = 28
       Hint = 'Insert a new table'
       Top = 2
-      Width = 28
+      Action = AInsertTable
     end
     object ToolButton9: TToolButton
-      Action = AInsertLink
       Left = 441
-      Height = 28
       Hint = 'Insert a new link'
       Top = 2
-      Width = 28
+      Action = AInsertLink
     end
     object ToolButton10: TToolButton
-      Action = AFormatRemark
       Left = 363
-      Height = 28
       Hint = 'Format selection as remark'
       Top = 2
-      Width = 28
+      Action = AFormatRemark
     end
     object TBSaveAs: TToolButton
-      Action = ASaveAs
       Left = 57
-      Height = 28
       Hint = 'Save the current file with a new name'
       Top = 2
-      Width = 28
+      Action = ASaveAs
     end
     object TBSave: TToolButton
-      Action = ASave
       Left = 29
-      Height = 28
       Hint = 'Save the current file'
       Top = 2
-      Width = 28
+      Action = ASave
     end
     object ToolButton13: TToolButton
-      Caption = 'ToolButton13'
-      Style = tbsSeparator
-      Width = 15
       Left = 85
-      Height = 28
       Top = 2
       Width = 15
+      Caption = 'ToolButton13'
+      Style = tbsSeparator
     end
   end
   object StatusBar1: TStatusBar
-    Panels = <>
-    Height = 20
-    Top = 498
+    Height = 24
+    Top = 490
     Width = 602
+    Panels = <>
   end
   object Splitter1: TSplitter
-    Height = 468
-    ParentColor = True
-    Cursor = crHSplit
-    Height = 468
+    Height = 460
     Top = 30
     Width = 5
   end
   object PCFiles: TPageControl
-    Align = alClient
-    TabOrder = 1
     Left = 5
-    Height = 468
+    Height = 460
     Top = 30
     Width = 597
+    Align = alClient
+    TabOrder = 1
   end
   object MMain: TMainMenu
     Images = ILMain
@@ -288,217 +245,215 @@ object MainForm: TMainForm
     left = 80
     top = 16
     object ANew: TAction
+      Category = 'File'
       Caption = '&New'
       Hint = 'Create a new documentation file'
       ImageIndex = 0
       OnExecute = ANewExecute
       ShortCut = 16462
-      Category = 'File'
     end
     object ANewFromFile: TAction
+      Category = 'File'
       Caption = 'New from fi&le'
       Hint = 'Create new documentation file from source'
       OnExecute = ANewFromFileExecute
-      Category = 'File'
     end
     object AOpen: TAction
+      Category = 'File'
       Caption = '&Open'
       Hint = 'Open an existing documentation file'
       OnExecute = AOpenExecute
       ShortCut = 16463
-      Category = 'File'
     end
     object ASave: TAction
+      Category = 'File'
       Caption = '&Save'
       Hint = 'Save the current file'
       ImageIndex = 1
       OnExecute = ASaveExecute
       OnUpdate = HaveEditor
       ShortCut = 16467
-      Category = 'File'
     end
     object ASaveAs: TAction
+      Category = 'File'
       Caption = 'Save &as'
       Hint = 'Save the current file with a new name'
       ImageIndex = 2
       OnExecute = ASaveAsExecute
       OnUpdate = HaveEditor
-      Category = 'File'
     end
     object AClose: TAction
+      Category = 'File'
       Caption = '&Close'
       Hint = 'Close current file'
       OnExecute = ACloseExecute
       OnUpdate = HaveEditor
       ShortCut = 16471
-      Category = 'File'
     end
     object AExit: TAction
+      Category = 'File'
       Caption = '&Quit'
       Hint = 'Exit from the program'
       OnExecute = AExitExecute
       ShortCut = 16465
-      Category = 'File'
     end
     object AInsertPackage: TAction
+      Tag = 1
+      Category = 'Insert'
       Caption = 'Package'
       Hint = 'Insert a new package'
       ImageIndex = 3
       OnExecute = InsertStructure
       OnUpdate = HaveEditor
-      Category = 'Insert'
-      Tag = 1
     end
     object AInsertModule: TAction
+      Tag = 2
+      Category = 'Insert'
       Caption = '&Module'
       Hint = 'Insert a new module'
       ImageIndex = 4
       OnExecute = InsertStructure
       OnUpdate = HaveEditor
-      Category = 'Insert'
-      Tag = 2
     end
     object AInsertElement: TAction
+      Tag = 3
+      Category = 'Insert'
       Caption = '&Element'
       Hint = 'Insert a new element'
       ImageIndex = 6
       OnExecute = InsertStructure
       OnUpdate = HaveEditor
-      Category = 'Insert'
-      Tag = 3
     end
     object AInsertTopic: TAction
+      Tag = 4
+      Category = 'Insert'
       Caption = '&Topic'
       Hint = 'Insert a new topic'
       ImageIndex = 5
       OnExecute = InsertStructure
       OnUpdate = HaveEditor
-      Category = 'Insert'
-      Tag = 4
     end
     object AInsertLink: TAction
+      Category = 'Insert'
       Caption = '&Link'
       Hint = 'Insert a new link'
       ImageIndex = 14
       OnExecute = AInsertLinkExecute
       OnUpdate = AInsertLinkUpdate
-      Category = 'Insert'
     end
     object AInsertTable: TAction
+      Category = 'Insert'
       Caption = 'T&able'
       Hint = 'Insert a new table'
       ImageIndex = 13
       OnExecute = AInsertTableExecute
       OnUpdate = AInsertTableUpdate
-      Category = 'Insert'
     end
     object AFormatParagraph: TAction
+      Tag = 3
+      Category = 'Format'
       Caption = '&Paragraph'
       Hint = 'Format selection as paragraph'
       ImageIndex = 10
       OnExecute = DoFormat
       OnUpdate = CanFormat
-      Category = 'Format'
-      Tag = 3
     end
     object AFormatBold: TAction
+      Category = 'Format'
       Caption = '&Bold'
       Hint = 'Format selection bold'
       ImageIndex = 7
       OnExecute = DoFormat
       ShortCut = 16450
-      Category = 'Format'
     end
     object AFormatItalic: TAction
+      Tag = 1
+      Category = 'Format'
       Caption = '&Italic'
       Hint = 'Format selection italic'
       ImageIndex = 8
       OnExecute = DoFormat
       OnUpdate = CanFormat
       ShortCut = 16457
-      Category = 'Format'
-      Tag = 1
     end
     object AFormatUnderline: TAction
+      Tag = 2
+      Category = 'Format'
       Caption = '&Underline'
       Hint = 'Format selection underline'
       ImageIndex = 9
       OnExecute = DoFormat
       OnUpdate = CanFormat
       ShortCut = 16469
-      Category = 'Format'
-      Tag = 2
     end
     object AFormatRemark: TAction
+      Tag = 5
+      Category = 'Format'
       Caption = '&Remark'
       Hint = 'Format selection as remark'
       ImageIndex = 11
       OnExecute = DoFormat
       OnUpdate = CanFormat
       ShortCut = 16466
-      Category = 'Format'
-      Tag = 5
     end
     object AFormatVariable: TAction
+      Tag = 4
+      Category = 'Format'
       Caption = '&Variable'
       Hint = 'Format selection as variable'
       ImageIndex = 12
       OnExecute = DoFormat
       OnUpdate = CanFormat
-      Category = 'Format'
-      Tag = 4
     end
     object AFormatCode: TAction
+      Tag = 14
+      Category = 'Format'
       Caption = '&Code'
       Hint = 'Format selection as code'
       OnExecute = DoFormat
       OnUpdate = CanFormat
-      Category = 'Format'
-      Tag = 14
     end
     object AFormatFile: TAction
+      Tag = 16
+      Category = 'Format'
       Caption = '&File'
       Hint = 'Format selection as file'
       OnExecute = DoFormat
       OnUpdate = CanFormat
-      Category = 'Format'
-      Tag = 16
     end
     object AHelpAbout: TAction
+      Category = 'Help'
       Caption = '&About...'
       Hint = 'About this program...'
       OnExecute = AHelpAboutExecute
-      Category = 'Help'
     end
     object AExtraOptions: TAction
+      Category = 'Extra'
       Caption = '&Options'
       Hint = 'Set program options'
       OnExecute = AExtraOptionsExecute
-      Category = 'Extra'
     end
     object AExtraBuild: TAction
+      Category = 'Extra'
       Caption = '&Build'
       OnExecute = AExtraBuildExecute
-      Category = 'Extra'
     end
   end
   object SDMain: TSaveDialog
-    Options = [ofPathMustExist, ofEnableSizing, ofViewDetail]
     Title = 'Save file as'
     DefaultExt = '.xml'
     Filter = 'XML files|*.xml|All files|*.*'
     FilterIndex = 0
-    Title = 'Save file as'
+    Options = [ofPathMustExist, ofEnableSizing, ofViewDetail]
     left = 80
     top = 64
   end
   object ODMain: TOpenDialog
-    Options = [ofFileMustExist, ofEnableSizing, ofViewDetail]
     Title = 'Open existing file'
     DefaultExt = '.xml'
     Filter = 'XML files|*.xml|All files|*.*'
     FilterIndex = 0
-    Title = 'Open existing file'
+    Options = [ofFileMustExist, ofEnableSizing, ofViewDetail]
     left = 80
     top = 101
   end
