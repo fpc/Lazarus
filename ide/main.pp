@@ -11980,7 +11980,7 @@ begin
   try
     InputHistories.ApplyFileDialogSettings(SaveDialog);
     SaveDialog.Title:=lisSaveSpace+SaveAsFilename+' (*'+SaveAsFileExt+')';
-    SaveDialog.FileName:=SaveAsFilename+SaveAsFileExt;
+    SaveDialog.FileName:=SaveAsFilename;
     // if this is a project file, start in project directory
     if AnUnitInfo.IsPartOfProject and (not Project1.IsVirtual)
     and (not FileIsInPath(SaveDialog.InitialDir,Project1.ProjectDirectory)) then
