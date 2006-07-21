@@ -69,8 +69,8 @@ var
 begin
   if AHandler = nil then exit;
   g_source_remove(lEventHandler^.GSourceID);
+  { channel will be freed with ref count drops to 0 }
   g_io_channel_unref(lEventHandler^.GIOChannel);
-  g_io_channel_close(lEventHandler^.GIOChannel);
   if lEventHandler^.PrevHandler = nil then
     FWaitHandles := lEventHandler^.NextHandler
   else
