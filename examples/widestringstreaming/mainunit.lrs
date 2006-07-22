@@ -1,5 +1,3 @@
-{ This is an automatically generated lazarus resource file }
-
 LazarusResources.Add('TStreamDemoForm','FORMDATA',[
   'TPF0'#15'TStreamDemoForm'#14'StreamDemoForm'#7'Caption'#6#28'Streaming compo'
   +'nents example'#12'ClientHeight'#3#229#1#11'ClientWidth'#3#13#2#8'OnCreate'#7

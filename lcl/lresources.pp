@@ -147,7 +147,7 @@ type
     procedure WriteDoubleContent(d: Double);
     procedure WriteExtendedContent(e: Extended);
     procedure WriteCurrencyContent(c: Currency);
-    procedure WriteWideStringContent(ws: WideString);
+    procedure WriteWideStringContent(const ws: WideString);
     procedure WriteWordsReversed(p: PWord; Count: integer);
     procedure WriteNulls(Count: integer);
   public
@@ -3521,7 +3521,7 @@ begin
   Write(c,8);
 end;
 
-procedure TLRSObjectWriter.WriteWideStringContent(ws: WideString);
+procedure TLRSObjectWriter.WriteWideStringContent(const ws: WideString);
 begin
   if ws='' then exit;
   {$IFDEF FPC_BIG_ENDIAN}
