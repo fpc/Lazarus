@@ -316,9 +316,13 @@ msgstr "Batalkan pengambilan proyek"
 msgid "About"
 msgstr "Tentang"
 
-#: lazarusidestrconsts:lismenuaboutlazarus
+#: lazarusidestrconsts:lisaboutlazarus
 msgid "About Lazarus"
 msgstr "Tentang Lazarus"
+
+#: lazarusidestrconsts:lismenuaboutlazarus
+msgid "About Lazarus ..."
+msgstr ""
 
 #: lazarusidestrconsts:srvk_accept
 msgid "Accept"
@@ -1193,8 +1197,8 @@ msgid "Clean all"
 msgstr "Bersihkan semua"
 
 #: lazarusidestrconsts:lismenucleandirectory
-msgid "Clean directory"
-msgstr "Bersihkan direktori"
+msgid "Clean directory ..."
+msgstr ""
 
 #: lazarusidestrconsts:liscldircleansubdirectories
 msgid "Clean sub directories"
@@ -1245,8 +1249,8 @@ msgid "Code Explorer"
 msgstr "Eksplorer Kode"
 
 #: lazarusidestrconsts:lismenueditcodetemplates
-msgid "Code Templates"
-msgstr "Template kode"
+msgid "Code Templates ..."
+msgstr ""
 
 #: lazarusidestrconsts:dlgcodetoolstab
 msgid "Code Tools"
@@ -1288,17 +1292,17 @@ msgstr "Nilai Direktori CodeTools"
 msgid "CodeTools Options"
 msgstr "Opsi CodeTools"
 
+#: lazarusidestrconsts:lismenucodetoolsoptions
+msgid "CodeTools Options ..."
+msgstr ""
+
 #: lazarusidestrconsts:srkmcatcodetools
 msgid "CodeTools commands"
 msgstr "Perintah CodeTools"
 
 #: lazarusidestrconsts:lismenucodetoolsdefineseditor
-msgid "CodeTools defines editor"
-msgstr "Editor definisi CodeTools"
-
-#: lazarusidestrconsts:lismenucodetoolsoptions
-msgid "CodeTools options"
-msgstr "Opsi CodeTools"
+msgid "CodeTools defines editor ..."
+msgstr ""
 
 #: lazarusidestrconsts:srkmeccodetoolsdefinesed
 msgid "Codetools defines editor"
@@ -1408,6 +1412,10 @@ msgstr "Kompilator"
 msgid "Compiler Options"
 msgstr "Opsi Kompilator"
 
+#: lazarusidestrconsts:lismenucompileroptions
+msgid "Compiler Options ..."
+msgstr ""
+
 #: lazarusidestrconsts:lispckeditcompileroptionsforpackage
 msgid "Compiler Options for Package %s"
 msgstr "Opsi Kompilator untuk Paket %s"
@@ -1415,10 +1423,6 @@ msgstr "Opsi Kompilator untuk Paket %s"
 #: lazarusidestrconsts:liscompileroptionsforproject
 msgid "Compiler Options for Project: %s"
 msgstr "Opsi Kompilator untuk Proyek: %s"
-
-#: lazarusidestrconsts:lismenucompileroptions
-msgid "Compiler Options..."
-msgstr "Opsi Kompilator..."
 
 #: lazarusidestrconsts:liscompilererror
 msgid "Compiler error"
@@ -1473,28 +1477,28 @@ msgid "Configure %sBuild Lazarus%s"
 msgstr "Konfigurasi %sBuild Lazarus%s"
 
 #: lazarusidestrconsts:lismenuconfigbuildfile
-msgid "Configure Build+Run File"
-msgstr "Konfigurasi Bangun+Jalankan File"
+msgid "Configure Build+Run File ..."
+msgstr ""
 
 #: lazarusidestrconsts:lismenuconfigurehelp
-msgid "Configure Help"
-msgstr "Konfigurasi Panduan"
+msgid "Configure Help ..."
+msgstr ""
 
 #: lazarusidestrconsts:lismenuconfigurebuildlazarus
-msgid "Configure \"Build Lazarus\""
-msgstr "Konfigurasi \"Bangun Lazarus\""
+msgid "Configure \"Build Lazarus\" ..."
+msgstr ""
 
 #: lazarusidestrconsts:lismenuconfigcustomcomps
-msgid "Configure custom components"
-msgstr "Konfigurasi komponen kustom"
+msgid "Configure custom components ..."
+msgstr ""
 
 #: lazarusidestrconsts:lismenusettings
 msgid "Configure custom tools ..."
 msgstr "Konfigurasi piranti kustom ..."
 
 #: lazarusidestrconsts:lismenueditinstallpkgs
-msgid "Configure installed packages"
-msgstr "Konfigurasi paket terinstalasi"
+msgid "Configure installed packages ..."
+msgstr ""
 
 #: lazarusidestrconsts:lislazbuildconfirmbuild
 msgid "Confirm Before ReBuild Lazarus"
@@ -1561,20 +1565,20 @@ msgid "Convert"
 msgstr "Konversi"
 
 #: lazarusidestrconsts:lismenuconvertdfmtolfm
-msgid "Convert DFM file to LFM"
-msgstr "Konversi file DFM ke LFM"
+msgid "Convert DFM file to LFM ..."
+msgstr ""
 
 #: lazarusidestrconsts:lismenuconvertdelphipackage
-msgid "Convert Delphi package to Lazarus package"
-msgstr "Konversi paket Delphi ke paket Lazarus"
+msgid "Convert Delphi package to Lazarus package ..."
+msgstr ""
 
 #: lazarusidestrconsts:lismenuconvertdelphiproject
-msgid "Convert Delphi project to Lazarus project"
-msgstr "Konversi proyek Delphi ke proyek Lazarus"
+msgid "Convert Delphi project to Lazarus project ..."
+msgstr ""
 
 #: lazarusidestrconsts:lismenuconvertdelphiunit
-msgid "Convert Delphi unit to Lazarus unit"
-msgstr "Konversi unit Delphi ke unit Lazarus"
+msgid "Convert Delphi unit to Lazarus unit ..."
+msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefsconvertnode
 msgid "Convert node"
@@ -1849,8 +1853,8 @@ msgid "Debug windows"
 msgstr "Jendela Debug"
 
 #: lazarusidestrconsts:lismendebuggeroptions
-msgid "Debugger Options"
-msgstr "Opsi Debugger"
+msgid "Debugger Options ..."
+msgstr ""
 
 #: lazarusidestrconsts:lisdebuggererror
 msgid "Debugger error"
@@ -2269,8 +2273,8 @@ msgid "Editor font height"
 msgstr "Tinggi font editor"
 
 #: lazarusidestrconsts:lismenueditoroptions
-msgid "Editor options"
-msgstr "Opsi editor"
+msgid "Editor options ..."
+msgstr ""
 
 #: lazarusidestrconsts:uemeditorproperties
 msgid "Editor properties"
@@ -2309,8 +2313,8 @@ msgid "Enclose Selection"
 msgstr "Tutup Pemilihan"
 
 #: lazarusidestrconsts:lismenuencloseselection
-msgid "Enclose selection"
-msgstr "Tutupi pilihan"
+msgid "Enclose selection ..."
+msgstr ""
 
 #: lazarusidestrconsts:srvk_end
 msgid "End"
@@ -2345,8 +2349,8 @@ msgid "Environment menu commands"
 msgstr "Perintah menu Lingkungan"
 
 #: lazarusidestrconsts:lismenugeneraloptions
-msgid "Environment options"
-msgstr "Opsi Lingkungan"
+msgid "Environment options ..."
+msgstr ""
 
 #: lazarusidestrconsts:liscodetemplerror
 msgid "Error"
@@ -2552,9 +2556,13 @@ msgstr "Ekstrak"
 msgid "Extract Procedure"
 msgstr "Ekstrak Procedure"
 
-#: lazarusidestrconsts:lismenuextractproc
+#: lazarusidestrconsts:srkmecextractproc
 msgid "Extract procedure"
 msgstr "Ekstraks prosedur"
+
+#: lazarusidestrconsts:lismenuextractproc
+msgid "Extract procedure ..."
+msgstr ""
 
 #: lazarusidestrconsts:lishofpcdochtmlpath
 msgid "FPC Doc HTML Path"
@@ -2733,16 +2741,24 @@ msgid "Find &Previous"
 msgstr "Cari &Sebelumnya"
 
 #: lazarusidestrconsts:lismenufindinfiles
-msgid "Find &in files"
-msgstr "Cari &dalam file"
+msgid "Find &in files ..."
+msgstr ""
+
+#: lazarusidestrconsts:lismenufind2
+msgid "Find ..."
+msgstr ""
 
 #: lazarusidestrconsts:lismenufinddeclarationatcursor
 msgid "Find Declaration at cursor"
 msgstr "Cari Deklarasi di kursor"
 
-#: lazarusidestrconsts:lismenufindidentifierrefs
+#: lazarusidestrconsts:uemfindidentifierreferences
 msgid "Find Identifier References"
 msgstr "Cari Referensi Pengenal"
+
+#: lazarusidestrconsts:lismenufindidentifierrefs
+msgid "Find Identifier References ..."
+msgstr ""
 
 #: lazarusidestrconsts:lismenutemplatefindnext
 msgid "Find Next"
@@ -3017,8 +3033,8 @@ msgid "Goto include directive"
 msgstr "Pergi ke direktif include"
 
 #: lazarusidestrconsts:lismenugotoline
-msgid "Goto line"
-msgstr "Pergi ke baris"
+msgid "Goto line ..."
+msgstr ""
 
 #: lazarusidestrconsts:lisuegotoline
 msgid "Goto line :"
@@ -4261,8 +4277,8 @@ msgid "Make Executable"
 msgstr "Buat Eksekutabel"
 
 #: lazarusidestrconsts:lismenumakeresourcestring
-msgid "Make Resource String"
-msgstr "Buat String Resource"
+msgid "Make Resource String ..."
+msgstr ""
 
 #: lazarusidestrconsts:lismakeresourcestring
 msgid "Make ResourceString"
@@ -4617,12 +4633,12 @@ msgid "New Form"
 msgstr "Form Baru"
 
 #: lazarusidestrconsts:lismenunewproject
-msgid "New Project"
-msgstr "Proyek Baru"
+msgid "New Project ..."
+msgstr ""
 
 #: lazarusidestrconsts:lismenunewprojectfromfile
-msgid "New Project from file"
-msgstr "Proyek Baru dari file"
+msgid "New Project from file ..."
+msgstr ""
 
 #: lazarusidestrconsts:lisprojaddnewrequirement
 msgid "New Requirement"
@@ -4848,6 +4864,10 @@ msgstr "Buka"
 msgid "Open %s"
 msgstr "Buka %s"
 
+#: lazarusidestrconsts:lisopen
+msgid "Open ..."
+msgstr ""
+
 #: lazarusidestrconsts:lisdiffdlgopendiffineditor
 msgid "Open Diff in editor"
 msgstr "Buka Diff dalam editor"
@@ -4865,8 +4885,8 @@ msgid "Open Preview"
 msgstr "Buka Peninjauan"
 
 #: lazarusidestrconsts:lismenuopenproject
-msgid "Open Project"
-msgstr "Buka Proyek"
+msgid "Open Project ..."
+msgstr ""
 
 #: lazarusidestrconsts:lisopenprojectfile
 msgid "Open Project File"
@@ -4876,13 +4896,17 @@ msgstr "Buka File Proyek"
 msgid "Open Project?"
 msgstr "Buka Proyek?"
 
-#: lazarusidestrconsts:lismenuopenrecent
+#: lazarusidestrconsts:lismenutemplateopenrecent
 msgid "Open Recent"
 msgstr "Buka yang Terakhir"
 
+#: lazarusidestrconsts:lismenuopenrecent
+msgid "Open Recent ..."
+msgstr ""
+
 #: lazarusidestrconsts:lismenuopenrecentproject
-msgid "Open Recent Project"
-msgstr "Buka Proyek Terakhir"
+msgid "Open Recent Project ..."
+msgstr ""
 
 #: lazarusidestrconsts:lisopenasxmlfile
 msgid "Open as XML file"
@@ -4904,17 +4928,21 @@ msgstr "Buka nama file di kursor"
 msgid "Open last project at start"
 msgstr "Buka proyek terakhir saat mulai"
 
-#: lazarusidestrconsts:lismenuopenpackage
+#: lazarusidestrconsts:lisoipopenloadedpackage
 msgid "Open loaded package"
 msgstr "Buka paket yang diambil"
+
+#: lazarusidestrconsts:lismenuopenpackage
+msgid "Open loaded package ..."
+msgstr ""
 
 #: lazarusidestrconsts:liscomppalopenpackage
 msgid "Open package"
 msgstr "Buka paket"
 
 #: lazarusidestrconsts:lismenuopenpackagefile
-msgid "Open package file (.lpk)"
-msgstr "Buka file paket (.lpk)"
+msgid "Open package file (.lpk) ..."
+msgstr ""
 
 #: lazarusidestrconsts:lismenuopenpackageofcurunit
 msgid "Open package of current unit"
@@ -4929,8 +4957,8 @@ msgid "Open project again"
 msgstr "Buka lagi proyek"
 
 #: lazarusidestrconsts:lismenuopenrecentpkg
-msgid "Open recent package"
-msgstr "Buka paket terbaru"
+msgid "Open recent package ..."
+msgstr ""
 
 #: lazarusidestrconsts:lisopenthefileasnormalsource
 msgid "Open the file as normal source"
@@ -5061,8 +5089,8 @@ msgid "Package %s%s%s not found."
 msgstr "Paket %s%s%s tidak ditemukan."
 
 #: lazarusidestrconsts:lismenupackagegraph
-msgid "Package Graph"
-msgstr "Paket Grafik"
+msgid "Package Graph ..."
+msgstr ""
 
 #: lazarusidestrconsts:lispackageinfo
 msgid "Package Info"
@@ -5332,8 +5360,12 @@ msgstr "Mungkin anda perlu menginstalasi beberapa paket sebelum melanjutkan. %s%
 msgid "Procedure"
 msgstr "Procedure"
 
+#: lazarusidestrconsts:uemprocedurejump
+msgid "Procedure Jump"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecprocedurelist
-msgid "Procedure List..."
+msgid "Procedure List ..."
 msgstr ""
 
 #: lazarusidestrconsts:dlgforwardprocsinsertpolicy
@@ -5405,8 +5437,8 @@ msgid "Project Options"
 msgstr "Opsi Proyek"
 
 #: lazarusidestrconsts:lismenuprojectoptions
-msgid "Project Options..."
-msgstr "Opsi Proyek..."
+msgid "Project Options ..."
+msgstr ""
 
 #: lazarusidestrconsts:lisprojprojectsourcedirectorymark
 msgid "Project Source Directory Mark"
@@ -5497,8 +5529,8 @@ msgid "Publish Package"
 msgstr "Publikasikan Paket"
 
 #: lazarusidestrconsts:lismenupublishproject
-msgid "Publish Project"
-msgstr "Publikasikan Proyek"
+msgid "Publish Project ..."
+msgstr ""
 
 #: lazarusidestrconsts:lispublishprojdir
 msgid "Publish project directory"
@@ -5677,8 +5709,8 @@ msgid "Remove files matching filter"
 msgstr "Hapus file yang memenuhi filter"
 
 #: lazarusidestrconsts:lismenuremovefromproject
-msgid "Remove from Project"
-msgstr "Hapus dari Proyek"
+msgid "Remove from Project ..."
+msgstr ""
 
 #: lazarusidestrconsts:lisoifremovefromfavouriteproperties
 msgid "Remove from favourite properties"
@@ -5716,9 +5748,13 @@ msgstr "Ganti nama"
 msgid "Rename File lowercase?"
 msgstr "Ganti nama File ke huruf kecil?"
 
-#: lazarusidestrconsts:lismenurenameidentifier
+#: lazarusidestrconsts:uemrenameidentifier
 msgid "Rename Identifier"
 msgstr "Ganti nama Pengenal"
+
+#: lazarusidestrconsts:lismenurenameidentifier
+msgid "Rename Identifier ..."
+msgstr ""
 
 #: lazarusidestrconsts:lisfrirenameallreferences
 msgid "Rename all References"
@@ -5755,6 +5791,10 @@ msgstr "Ganti"
 #: lazarusidestrconsts:dlgreplaceall
 msgid "Replace &All"
 msgstr "Ganti &Semua"
+
+#: lazarusidestrconsts:lismenureplace2
+msgid "Replace ..."
+msgstr ""
 
 #: lazarusidestrconsts:lispkgmangreplacefile
 msgid "Replace File"
@@ -5952,13 +5992,17 @@ msgstr "Simpan"
 msgid "Save All"
 msgstr "Simpan Semua"
 
-#: lazarusidestrconsts:lismenusaveas
+#: lazarusidestrconsts:lismenutemplatesaveas
 msgid "Save As"
 msgstr "Simpan Sebagai"
 
 #: lazarusidestrconsts:dlgcharcasefileact
 msgid "Save As - auto rename pascal files lower case"
 msgstr "Simpan Sebagai - otomatis mengganti nama file pascal ke huruf kecil"
+
+#: lazarusidestrconsts:lismenusaveas
+msgid "Save As ..."
+msgstr ""
 
 #: lazarusidestrconsts:lismenueditorsaveastemplate
 msgid "Save As Template..."
@@ -5985,8 +6029,8 @@ msgid "Save Project %s (*.lpi)"
 msgstr "Simpan Proyek %s (*.lpi)"
 
 #: lazarusidestrconsts:lismenusaveprojectas
-msgid "Save Project As..."
-msgstr "Simpan Proyek Sebagai..."
+msgid "Save Project As ..."
+msgstr ""
 
 #: lazarusidestrconsts:lissavesettings
 msgid "Save Settings"
@@ -6660,9 +6704,13 @@ msgstr "Maaf, belum diimplementasikan"
 msgid "Sorry, this type is not yet implemented"
 msgstr "Maaf, tipe ini belum diimplementasikan"
 
-#: lazarusidestrconsts:lismenusortselection
+#: lazarusidestrconsts:lissortselsortselection
 msgid "Sort selection"
 msgstr "Urut pilihan"
+
+#: lazarusidestrconsts:lismenusortselection
+msgid "Sort selection ..."
+msgstr ""
 
 #: lazarusidestrconsts:lismenuviewsourceeditor
 msgid "Source Editor"
@@ -8337,8 +8385,8 @@ msgid "View IDE speed buttons"
 msgstr "Lihat tombol cepat IDE"
 
 #: lazarusidestrconsts:lismenuviewjumphistory
-msgid "View Jump-History"
-msgstr "Lihat Histori-Lompatan"
+msgid "View Jump-History ..."
+msgstr ""
 
 #: lazarusidestrconsts:srkmectoggleobjectinsp
 msgid "View Object Inspector"
@@ -8369,8 +8417,8 @@ msgid "View Source Editor"
 msgstr "Lihat Editor Sumber"
 
 #: lazarusidestrconsts:lismenuviewprojecttodos
-msgid "View ToDo List"
-msgstr "Lihat Daftar ToDo"
+msgid "View ToDo List ..."
+msgstr ""
 
 #: lazarusidestrconsts:lismenuviewunitdependencies
 msgid "View Unit Dependencies"

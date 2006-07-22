@@ -312,9 +312,13 @@ msgstr "ロードプロジェクトについて"
 msgid "About"
 msgstr "関して"
 
-#: lazarusidestrconsts:lismenuaboutlazarus
+#: lazarusidestrconsts:lisaboutlazarus
 msgid "About Lazarus"
 msgstr "Lazarusについて"
+
+#: lazarusidestrconsts:lismenuaboutlazarus
+msgid "About Lazarus ..."
+msgstr ""
 
 #: lazarusidestrconsts:srvk_accept
 msgid "Accept"
@@ -1189,8 +1193,8 @@ msgid "Clean all"
 msgstr "すべて消去"
 
 #: lazarusidestrconsts:lismenucleandirectory
-msgid "Clean directory"
-msgstr "ディレクトリを消去"
+msgid "Clean directory ..."
+msgstr ""
 
 #: lazarusidestrconsts:liscldircleansubdirectories
 msgid "Clean sub directories"
@@ -1241,8 +1245,8 @@ msgid "Code Explorer"
 msgstr "コードエクスプローラー"
 
 #: lazarusidestrconsts:lismenueditcodetemplates
-msgid "Code Templates"
-msgstr "コードテンプレート"
+msgid "Code Templates ..."
+msgstr ""
 
 #: lazarusidestrconsts:dlgcodetoolstab
 msgid "Code Tools"
@@ -1284,17 +1288,17 @@ msgstr ""
 msgid "CodeTools Options"
 msgstr "コードツールスオプション"
 
+#: lazarusidestrconsts:lismenucodetoolsoptions
+msgid "CodeTools Options ..."
+msgstr ""
+
 #: lazarusidestrconsts:srkmcatcodetools
 msgid "CodeTools commands"
 msgstr "コードツールスコマンド"
 
 #: lazarusidestrconsts:lismenucodetoolsdefineseditor
-msgid "CodeTools defines editor"
-msgstr "コードツールス定義エディター"
-
-#: lazarusidestrconsts:lismenucodetoolsoptions
-msgid "CodeTools options"
-msgstr "コードツールスオプション"
+msgid "CodeTools defines editor ..."
+msgstr ""
 
 #: lazarusidestrconsts:srkmeccodetoolsdefinesed
 msgid "Codetools defines editor"
@@ -1404,6 +1408,10 @@ msgstr "コンパイラ"
 msgid "Compiler Options"
 msgstr "コンパイラオプション"
 
+#: lazarusidestrconsts:lismenucompileroptions
+msgid "Compiler Options ..."
+msgstr ""
+
 #: lazarusidestrconsts:lispckeditcompileroptionsforpackage
 msgid "Compiler Options for Package %s"
 msgstr "パッケージ %s のコンパイラオプション"
@@ -1411,10 +1419,6 @@ msgstr "パッケージ %s のコンパイラオプション"
 #: lazarusidestrconsts:liscompileroptionsforproject
 msgid "Compiler Options for Project: %s"
 msgstr "パッケージ %s のコンパイラオプション"
-
-#: lazarusidestrconsts:lismenucompileroptions
-msgid "Compiler Options..."
-msgstr "コンパイラオプション..."
 
 #: lazarusidestrconsts:liscompilererror
 msgid "Compiler error"
@@ -1469,28 +1473,28 @@ msgid "Configure %sBuild Lazarus%s"
 msgstr ""
 
 #: lazarusidestrconsts:lismenuconfigbuildfile
-msgid "Configure Build+Run File"
-msgstr "生成＋実行ファイルを設定"
+msgid "Configure Build+Run File ..."
+msgstr ""
 
 #: lazarusidestrconsts:lismenuconfigurehelp
-msgid "Configure Help"
-msgstr "コンフィギュアヘルプ"
+msgid "Configure Help ..."
+msgstr ""
 
 #: lazarusidestrconsts:lismenuconfigurebuildlazarus
-msgid "Configure \"Build Lazarus\""
+msgid "Configure \"Build Lazarus\" ..."
 msgstr ""
 
 #: lazarusidestrconsts:lismenuconfigcustomcomps
-msgid "Configure custom components"
-msgstr "カスタムコンポーネント設定"
+msgid "Configure custom components ..."
+msgstr ""
 
 #: lazarusidestrconsts:lismenusettings
 msgid "Configure custom tools ..."
 msgstr "カスタムツール設定 ..."
 
 #: lazarusidestrconsts:lismenueditinstallpkgs
-msgid "Configure installed packages"
-msgstr "インストール済みパッケージを設定"
+msgid "Configure installed packages ..."
+msgstr ""
 
 #: lazarusidestrconsts:lislazbuildconfirmbuild
 msgid "Confirm Before ReBuild Lazarus"
@@ -1557,20 +1561,20 @@ msgid "Convert"
 msgstr ""
 
 #: lazarusidestrconsts:lismenuconvertdfmtolfm
-msgid "Convert DFM file to LFM"
-msgstr "DFMファイルをLFMへ変換"
+msgid "Convert DFM file to LFM ..."
+msgstr ""
 
 #: lazarusidestrconsts:lismenuconvertdelphipackage
-msgid "Convert Delphi package to Lazarus package"
+msgid "Convert Delphi package to Lazarus package ..."
 msgstr ""
 
 #: lazarusidestrconsts:lismenuconvertdelphiproject
-msgid "Convert Delphi project to Lazarus project"
+msgid "Convert Delphi project to Lazarus project ..."
 msgstr ""
 
 #: lazarusidestrconsts:lismenuconvertdelphiunit
-msgid "Convert Delphi unit to Lazarus unit"
-msgstr "DelphiユニットをLazarusユニットへ変換"
+msgid "Convert Delphi unit to Lazarus unit ..."
+msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefsconvertnode
 msgid "Convert node"
@@ -1845,8 +1849,8 @@ msgid "Debug windows"
 msgstr "デバッグウィンドウ"
 
 #: lazarusidestrconsts:lismendebuggeroptions
-msgid "Debugger Options"
-msgstr "デバッガーオプション"
+msgid "Debugger Options ..."
+msgstr ""
 
 #: lazarusidestrconsts:lisdebuggererror
 msgid "Debugger error"
@@ -2265,8 +2269,8 @@ msgid "Editor font height"
 msgstr "エディタのフォント高さ"
 
 #: lazarusidestrconsts:lismenueditoroptions
-msgid "Editor options"
-msgstr "エディターオプション"
+msgid "Editor options ..."
+msgstr ""
 
 #: lazarusidestrconsts:uemeditorproperties
 msgid "Editor properties"
@@ -2305,8 +2309,8 @@ msgid "Enclose Selection"
 msgstr "選択部分を囲む"
 
 #: lazarusidestrconsts:lismenuencloseselection
-msgid "Enclose selection"
-msgstr "選択部分を囲む"
+msgid "Enclose selection ..."
+msgstr ""
 
 #: lazarusidestrconsts:srvk_end
 msgid "End"
@@ -2341,8 +2345,8 @@ msgid "Environment menu commands"
 msgstr "環境メニューコマンド"
 
 #: lazarusidestrconsts:lismenugeneraloptions
-msgid "Environment options"
-msgstr "環境オプション"
+msgid "Environment options ..."
+msgstr ""
 
 #: lazarusidestrconsts:liscodetemplerror
 msgid "Error"
@@ -2548,9 +2552,13 @@ msgstr "展開"
 msgid "Extract Procedure"
 msgstr "プロシジャーを展開"
 
-#: lazarusidestrconsts:lismenuextractproc
+#: lazarusidestrconsts:srkmecextractproc
 msgid "Extract procedure"
 msgstr "プロシジャーを展開"
+
+#: lazarusidestrconsts:lismenuextractproc
+msgid "Extract procedure ..."
+msgstr ""
 
 #: lazarusidestrconsts:lishofpcdochtmlpath
 msgid "FPC Doc HTML Path"
@@ -2729,16 +2737,24 @@ msgid "Find &Previous"
 msgstr "前を検索(&P)"
 
 #: lazarusidestrconsts:lismenufindinfiles
-msgid "Find &in files"
-msgstr "ファイルの中を検索(&i)"
+msgid "Find &in files ..."
+msgstr ""
+
+#: lazarusidestrconsts:lismenufind2
+msgid "Find ..."
+msgstr ""
 
 #: lazarusidestrconsts:lismenufinddeclarationatcursor
 msgid "Find Declaration at cursor"
 msgstr "カーソル位置の変数の宣言を検索"
 
-#: lazarusidestrconsts:lismenufindidentifierrefs
+#: lazarusidestrconsts:uemfindidentifierreferences
 msgid "Find Identifier References"
 msgstr "識別子参照を検索"
+
+#: lazarusidestrconsts:lismenufindidentifierrefs
+msgid "Find Identifier References ..."
+msgstr ""
 
 #: lazarusidestrconsts:lismenutemplatefindnext
 msgid "Find Next"
@@ -3013,8 +3029,8 @@ msgid "Goto include directive"
 msgstr ""
 
 #: lazarusidestrconsts:lismenugotoline
-msgid "Goto line"
-msgstr "行へ飛ぶ"
+msgid "Goto line ..."
+msgstr ""
 
 #: lazarusidestrconsts:lisuegotoline
 msgid "Goto line :"
@@ -4257,8 +4273,8 @@ msgid "Make Executable"
 msgstr "実行ファイル作成"
 
 #: lazarusidestrconsts:lismenumakeresourcestring
-msgid "Make Resource String"
-msgstr "リソース文字列作成"
+msgid "Make Resource String ..."
+msgstr ""
 
 #: lazarusidestrconsts:lismakeresourcestring
 msgid "Make ResourceString"
@@ -4613,12 +4629,12 @@ msgid "New Form"
 msgstr "新規フォーム"
 
 #: lazarusidestrconsts:lismenunewproject
-msgid "New Project"
-msgstr "新規プロジェクト"
+msgid "New Project ..."
+msgstr ""
 
 #: lazarusidestrconsts:lismenunewprojectfromfile
-msgid "New Project from file"
-msgstr "ファイルから新規プロジェクト"
+msgid "New Project from file ..."
+msgstr ""
 
 #: lazarusidestrconsts:lisprojaddnewrequirement
 msgid "New Requirement"
@@ -4844,6 +4860,10 @@ msgstr "開く"
 msgid "Open %s"
 msgstr "%s を開く"
 
+#: lazarusidestrconsts:lisopen
+msgid "Open ..."
+msgstr ""
+
 #: lazarusidestrconsts:lisdiffdlgopendiffineditor
 msgid "Open Diff in editor"
 msgstr ""
@@ -4861,8 +4881,8 @@ msgid "Open Preview"
 msgstr "プレビューを開く"
 
 #: lazarusidestrconsts:lismenuopenproject
-msgid "Open Project"
-msgstr "プロジェクトを開く"
+msgid "Open Project ..."
+msgstr ""
 
 #: lazarusidestrconsts:lisopenprojectfile
 msgid "Open Project File"
@@ -4872,13 +4892,17 @@ msgstr "プロジェクトファイルを開く"
 msgid "Open Project?"
 msgstr "プロジェクトを開く"
 
-#: lazarusidestrconsts:lismenuopenrecent
+#: lazarusidestrconsts:lismenutemplateopenrecent
 msgid "Open Recent"
 msgstr "最近開いたファイルを開く"
 
+#: lazarusidestrconsts:lismenuopenrecent
+msgid "Open Recent ..."
+msgstr ""
+
 #: lazarusidestrconsts:lismenuopenrecentproject
-msgid "Open Recent Project"
-msgstr "最近開いたプロジェクトを開く"
+msgid "Open Recent Project ..."
+msgstr ""
 
 #: lazarusidestrconsts:lisopenasxmlfile
 msgid "Open as XML file"
@@ -4900,17 +4924,21 @@ msgstr "カーソル位置のファイル名をオープン"
 msgid "Open last project at start"
 msgstr "起動時に最後に開いていたプロジェクトを開く"
 
-#: lazarusidestrconsts:lismenuopenpackage
+#: lazarusidestrconsts:lisoipopenloadedpackage
 msgid "Open loaded package"
 msgstr "ロードされているパッケージを開く"
+
+#: lazarusidestrconsts:lismenuopenpackage
+msgid "Open loaded package ..."
+msgstr ""
 
 #: lazarusidestrconsts:liscomppalopenpackage
 msgid "Open package"
 msgstr "パッケージを開く"
 
 #: lazarusidestrconsts:lismenuopenpackagefile
-msgid "Open package file (.lpk)"
-msgstr "パッケージファイル(.lpk)を開く"
+msgid "Open package file (.lpk) ..."
+msgstr ""
 
 #: lazarusidestrconsts:lismenuopenpackageofcurunit
 msgid "Open package of current unit"
@@ -4925,8 +4953,8 @@ msgid "Open project again"
 msgstr "プロジェクトを再オープン"
 
 #: lazarusidestrconsts:lismenuopenrecentpkg
-msgid "Open recent package"
-msgstr "最近使ったプロジェクトを開く"
+msgid "Open recent package ..."
+msgstr ""
 
 #: lazarusidestrconsts:lisopenthefileasnormalsource
 msgid "Open the file as normal source"
@@ -5057,8 +5085,8 @@ msgid "Package %s%s%s not found."
 msgstr "パッケージ %s%s%s はみつかりません"
 
 #: lazarusidestrconsts:lismenupackagegraph
-msgid "Package Graph"
-msgstr "パッケージグラフ"
+msgid "Package Graph ..."
+msgstr ""
 
 #: lazarusidestrconsts:lispackageinfo
 msgid "Package Info"
@@ -5328,8 +5356,12 @@ msgstr ""
 msgid "Procedure"
 msgstr ""
 
+#: lazarusidestrconsts:uemprocedurejump
+msgid "Procedure Jump"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecprocedurelist
-msgid "Procedure List..."
+msgid "Procedure List ..."
 msgstr ""
 
 #: lazarusidestrconsts:dlgforwardprocsinsertpolicy
@@ -5401,8 +5433,8 @@ msgid "Project Options"
 msgstr "プロジェクトオプション"
 
 #: lazarusidestrconsts:lismenuprojectoptions
-msgid "Project Options..."
-msgstr "プロジェクトオプション..."
+msgid "Project Options ..."
+msgstr ""
 
 #: lazarusidestrconsts:lisprojprojectsourcedirectorymark
 msgid "Project Source Directory Mark"
@@ -5493,8 +5525,8 @@ msgid "Publish Package"
 msgstr ""
 
 #: lazarusidestrconsts:lismenupublishproject
-msgid "Publish Project"
-msgstr "パブリッシュ(publish)プロジェクト"
+msgid "Publish Project ..."
+msgstr ""
 
 #: lazarusidestrconsts:lispublishprojdir
 msgid "Publish project directory"
@@ -5673,8 +5705,8 @@ msgid "Remove files matching filter"
 msgstr ""
 
 #: lazarusidestrconsts:lismenuremovefromproject
-msgid "Remove from Project"
-msgstr "プロジェクトから削除"
+msgid "Remove from Project ..."
+msgstr ""
 
 #: lazarusidestrconsts:lisoifremovefromfavouriteproperties
 msgid "Remove from favourite properties"
@@ -5712,9 +5744,13 @@ msgstr "名前変更"
 msgid "Rename File lowercase?"
 msgstr "ファイル名を小文字に変換しますか?"
 
-#: lazarusidestrconsts:lismenurenameidentifier
+#: lazarusidestrconsts:uemrenameidentifier
 msgid "Rename Identifier"
 msgstr "識別子をリネーム"
+
+#: lazarusidestrconsts:lismenurenameidentifier
+msgid "Rename Identifier ..."
+msgstr ""
 
 #: lazarusidestrconsts:lisfrirenameallreferences
 msgid "Rename all References"
@@ -5750,6 +5786,10 @@ msgstr "置換"
 
 #: lazarusidestrconsts:dlgreplaceall
 msgid "Replace &All"
+msgstr ""
+
+#: lazarusidestrconsts:lismenureplace2
+msgid "Replace ..."
 msgstr ""
 
 #: lazarusidestrconsts:lispkgmangreplacefile
@@ -5948,13 +5988,17 @@ msgstr "保存 "
 msgid "Save All"
 msgstr "すべて保存"
 
-#: lazarusidestrconsts:lismenusaveas
+#: lazarusidestrconsts:lismenutemplatesaveas
 msgid "Save As"
 msgstr "名前を付けて保存"
 
 #: lazarusidestrconsts:dlgcharcasefileact
 msgid "Save As - auto rename pascal files lower case"
 msgstr "Pascalファイル名を自動的に小文字へリネームして保存するとき"
+
+#: lazarusidestrconsts:lismenusaveas
+msgid "Save As ..."
+msgstr ""
 
 #: lazarusidestrconsts:lismenueditorsaveastemplate
 msgid "Save As Template..."
@@ -5981,8 +6025,8 @@ msgid "Save Project %s (*.lpi)"
 msgstr "プロジェクト保存 %s (*.lpi)"
 
 #: lazarusidestrconsts:lismenusaveprojectas
-msgid "Save Project As..."
-msgstr "名前を付けてプロジェクト保存..."
+msgid "Save Project As ..."
+msgstr ""
 
 #: lazarusidestrconsts:lissavesettings
 msgid "Save Settings"
@@ -6656,9 +6700,13 @@ msgstr "まだ実装していません"
 msgid "Sorry, this type is not yet implemented"
 msgstr "この型はまだ実装していません"
 
-#: lazarusidestrconsts:lismenusortselection
+#: lazarusidestrconsts:lissortselsortselection
 msgid "Sort selection"
 msgstr "選択部分をソートする"
+
+#: lazarusidestrconsts:lismenusortselection
+msgid "Sort selection ..."
+msgstr ""
 
 #: lazarusidestrconsts:lismenuviewsourceeditor
 msgid "Source Editor"
@@ -8333,8 +8381,8 @@ msgid "View IDE speed buttons"
 msgstr "IDEスピードボタンを表示"
 
 #: lazarusidestrconsts:lismenuviewjumphistory
-msgid "View Jump-History"
-msgstr "飛び先履歴を表示"
+msgid "View Jump-History ..."
+msgstr ""
 
 #: lazarusidestrconsts:srkmectoggleobjectinsp
 msgid "View Object Inspector"
@@ -8365,8 +8413,8 @@ msgid "View Source Editor"
 msgstr "ソースエディタを表示"
 
 #: lazarusidestrconsts:lismenuviewprojecttodos
-msgid "View ToDo List"
-msgstr "ToDoリストを表示"
+msgid "View ToDo List ..."
+msgstr ""
 
 #: lazarusidestrconsts:lismenuviewunitdependencies
 msgid "View Unit Dependencies"

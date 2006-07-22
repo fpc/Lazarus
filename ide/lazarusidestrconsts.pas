@@ -1226,6 +1226,7 @@ resourcestring
   // Unit editor
   uemFindDeclaration = '&Find Declaration';
   uemOpenFileAtCursor = '&Open file at cursor';
+  uemProcedureJump = 'Procedure Jump';
   uemClosePage = '&Close Page';
   uemCut = 'Cut';
   uemCopy = 'Copy';

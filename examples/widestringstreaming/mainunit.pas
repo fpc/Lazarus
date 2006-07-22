@@ -15,8 +15,11 @@ type
   TMyComponent = class(TCheckBox)
   private
     FDefaultText: WideString;
+    FInteger1: integer;
     FWideStr1: widestring;
+    function Integer1IsStored: boolean;
     procedure SetDefaultText(const AValue: WideString);
+    procedure SetInteger1(const AValue: integer);
     procedure SetWideStr1(const AValue: widestring);
     function WideStr1IsStored: boolean;
     procedure ReadText(Reader: TReader);
@@ -28,6 +31,7 @@ type
   published
     property WideStr1: widestring read FWideStr1 write SetWideStr1 stored WideStr1IsStored;
     property DefaultText: WideString read FDefaultText write SetDefaultText stored False;
+    property Integer1: integer read FInteger1 write SetInteger1 stored Integer1IsStored;
   end;
 
   { TStreamDemoForm }
@@ -205,9 +209,20 @@ begin
   FDefaultText:=AValue;
 end;
 
+function TMyComponent.Integer1IsStored: boolean;
+begin
+  Result:=FInteger1=3;
+end;
+
+procedure TMyComponent.SetInteger1(const AValue: integer);
+begin
+  if FInteger1=AValue then exit;
+  FInteger1:=AValue;
+end;
+
 function TMyComponent.WideStr1IsStored: boolean;
 begin
-  Result:=true;
+  Result:=WideStr1<>'Node';
 end;
 
 procedure TMyComponent.ReadText(Reader: TReader);
@@ -235,6 +250,7 @@ constructor TMyComponent.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   FWideStr1:='';
+  FInteger1:=0;
 end;
 
 initialization

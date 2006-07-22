@@ -742,6 +742,7 @@ begin
   CodePos.X:=CaretPos.X;
   CodePos.Y:=CaretPos.Y;
   if not CodeToolBoss.Explore(Code,ACodeTool,false) then exit;
+  if ACodeTool=nil then ;
   Result:=ConvertCodePosToPascalHelpContext(@CodePos);
 end;
 

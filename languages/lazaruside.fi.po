@@ -302,9 +302,13 @@ msgstr "Keskeytä projektin lataaminen"
 msgid "About"
 msgstr "Tietoja"
 
-#: lazarusidestrconsts:lismenuaboutlazarus
+#: lazarusidestrconsts:lisaboutlazarus
 msgid "About Lazarus"
 msgstr "Tietoja Lazarus:sta"
+
+#: lazarusidestrconsts:lismenuaboutlazarus
+msgid "About Lazarus ..."
+msgstr ""
 
 #: lazarusidestrconsts:srvk_accept
 msgid "Accept"
@@ -1179,8 +1183,8 @@ msgid "Clean all"
 msgstr ""
 
 #: lazarusidestrconsts:lismenucleandirectory
-msgid "Clean directory"
-msgstr "Ylimääräisten tiedostojen poisto"
+msgid "Clean directory ..."
+msgstr ""
 
 #: lazarusidestrconsts:liscldircleansubdirectories
 msgid "Clean sub directories"
@@ -1231,7 +1235,7 @@ msgid "Code Explorer"
 msgstr "Koodiselain"
 
 #: lazarusidestrconsts:lismenueditcodetemplates
-msgid "Code Templates"
+msgid "Code Templates ..."
 msgstr ""
 
 #: lazarusidestrconsts:dlgcodetoolstab
@@ -1274,16 +1278,16 @@ msgstr ""
 msgid "CodeTools Options"
 msgstr ""
 
+#: lazarusidestrconsts:lismenucodetoolsoptions
+msgid "CodeTools Options ..."
+msgstr ""
+
 #: lazarusidestrconsts:srkmcatcodetools
 msgid "CodeTools commands"
 msgstr ""
 
 #: lazarusidestrconsts:lismenucodetoolsdefineseditor
-msgid "CodeTools defines editor"
-msgstr ""
-
-#: lazarusidestrconsts:lismenucodetoolsoptions
-msgid "CodeTools options"
+msgid "CodeTools defines editor ..."
 msgstr ""
 
 #: lazarusidestrconsts:srkmeccodetoolsdefinesed
@@ -1394,6 +1398,10 @@ msgstr ""
 msgid "Compiler Options"
 msgstr ""
 
+#: lazarusidestrconsts:lismenucompileroptions
+msgid "Compiler Options ..."
+msgstr ""
+
 #: lazarusidestrconsts:lispckeditcompileroptionsforpackage
 msgid "Compiler Options for Package %s"
 msgstr ""
@@ -1401,10 +1409,6 @@ msgstr ""
 #: lazarusidestrconsts:liscompileroptionsforproject
 msgid "Compiler Options for Project: %s"
 msgstr ""
-
-#: lazarusidestrconsts:lismenucompileroptions
-msgid "Compiler Options..."
-msgstr "Kääntäjän optiot"
 
 #: lazarusidestrconsts:liscompilererror
 msgid "Compiler error"
@@ -1459,19 +1463,19 @@ msgid "Configure %sBuild Lazarus%s"
 msgstr ""
 
 #: lazarusidestrconsts:lismenuconfigbuildfile
-msgid "Configure Build+Run File"
+msgid "Configure Build+Run File ..."
 msgstr ""
 
 #: lazarusidestrconsts:lismenuconfigurehelp
-msgid "Configure Help"
+msgid "Configure Help ..."
 msgstr ""
 
 #: lazarusidestrconsts:lismenuconfigurebuildlazarus
-msgid "Configure \"Build Lazarus\""
+msgid "Configure \"Build Lazarus\" ..."
 msgstr ""
 
 #: lazarusidestrconsts:lismenuconfigcustomcomps
-msgid "Configure custom components"
+msgid "Configure custom components ..."
 msgstr ""
 
 #: lazarusidestrconsts:lismenusettings
@@ -1479,7 +1483,7 @@ msgid "Configure custom tools ..."
 msgstr ""
 
 #: lazarusidestrconsts:lismenueditinstallpkgs
-msgid "Configure installed packages"
+msgid "Configure installed packages ..."
 msgstr ""
 
 #: lazarusidestrconsts:lislazbuildconfirmbuild
@@ -1547,20 +1551,20 @@ msgid "Convert"
 msgstr ""
 
 #: lazarusidestrconsts:lismenuconvertdfmtolfm
-msgid "Convert DFM file to LFM"
-msgstr "Muunna tiedosto: DFM -> LFM"
+msgid "Convert DFM file to LFM ..."
+msgstr ""
 
 #: lazarusidestrconsts:lismenuconvertdelphipackage
-msgid "Convert Delphi package to Lazarus package"
-msgstr "Muunna tiedosto: DPK -> LPK"
+msgid "Convert Delphi package to Lazarus package ..."
+msgstr ""
 
 #: lazarusidestrconsts:lismenuconvertdelphiproject
-msgid "Convert Delphi project to Lazarus project"
-msgstr "Muunna tiedosto: DPR -> LPR"
+msgid "Convert Delphi project to Lazarus project ..."
+msgstr ""
 
 #: lazarusidestrconsts:lismenuconvertdelphiunit
-msgid "Convert Delphi unit to Lazarus unit"
-msgstr "Muunna tiedosto: Delphi unit -> Lazarus unit"
+msgid "Convert Delphi unit to Lazarus unit ..."
+msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefsconvertnode
 msgid "Convert node"
@@ -1835,8 +1839,8 @@ msgid "Debug windows"
 msgstr ""
 
 #: lazarusidestrconsts:lismendebuggeroptions
-msgid "Debugger Options"
-msgstr "Virheenjäljittimen asetukset"
+msgid "Debugger Options ..."
+msgstr ""
 
 #: lazarusidestrconsts:lisdebuggererror
 msgid "Debugger error"
@@ -2255,8 +2259,8 @@ msgid "Editor font height"
 msgstr "Editorin käyttämän kirjasimen koko"
 
 #: lazarusidestrconsts:lismenueditoroptions
-msgid "Editor options"
-msgstr "Editorin asetukset"
+msgid "Editor options ..."
+msgstr ""
 
 #: lazarusidestrconsts:uemeditorproperties
 msgid "Editor properties"
@@ -2295,8 +2299,8 @@ msgid "Enclose Selection"
 msgstr "Lauserakenteen lisäys"
 
 #: lazarusidestrconsts:lismenuencloseselection
-msgid "Enclose selection"
-msgstr "Lauserakenteen lisäys"
+msgid "Enclose selection ..."
+msgstr ""
 
 #: lazarusidestrconsts:srvk_end
 msgid "End"
@@ -2331,8 +2335,8 @@ msgid "Environment menu commands"
 msgstr ""
 
 #: lazarusidestrconsts:lismenugeneraloptions
-msgid "Environment options"
-msgstr "Käyttöliittymän asetukset"
+msgid "Environment options ..."
+msgstr ""
 
 #: lazarusidestrconsts:liscodetemplerror
 msgid "Error"
@@ -2538,9 +2542,13 @@ msgstr "Tee aliohjelma"
 msgid "Extract Procedure"
 msgstr "Tee valitusta lohkosta aliohjelma"
 
-#: lazarusidestrconsts:lismenuextractproc
+#: lazarusidestrconsts:srkmecextractproc
 msgid "Extract procedure"
 msgstr "Tee valitusta lohkosta aliohjelma"
+
+#: lazarusidestrconsts:lismenuextractproc
+msgid "Extract procedure ..."
+msgstr ""
 
 #: lazarusidestrconsts:lishofpcdochtmlpath
 msgid "FPC Doc HTML Path"
@@ -2719,16 +2727,24 @@ msgid "Find &Previous"
 msgstr "Etsi &Edellinen"
 
 #: lazarusidestrconsts:lismenufindinfiles
-msgid "Find &in files"
-msgstr "Etsi tiedostoista"
+msgid "Find &in files ..."
+msgstr ""
+
+#: lazarusidestrconsts:lismenufind2
+msgid "Find ..."
+msgstr ""
 
 #: lazarusidestrconsts:lismenufinddeclarationatcursor
 msgid "Find Declaration at cursor"
 msgstr "Etsi kohdistimen osoittaman kohdan määrittely"
 
-#: lazarusidestrconsts:lismenufindidentifierrefs
+#: lazarusidestrconsts:uemfindidentifierreferences
 msgid "Find Identifier References"
 msgstr "Etsi tunnisteiden nimiä"
+
+#: lazarusidestrconsts:lismenufindidentifierrefs
+msgid "Find Identifier References ..."
+msgstr ""
 
 #: lazarusidestrconsts:lismenutemplatefindnext
 msgid "Find Next"
@@ -3003,8 +3019,8 @@ msgid "Goto include directive"
 msgstr ""
 
 #: lazarusidestrconsts:lismenugotoline
-msgid "Goto line"
-msgstr "Hyppää riville"
+msgid "Goto line ..."
+msgstr ""
 
 #: lazarusidestrconsts:lisuegotoline
 msgid "Goto line :"
@@ -4247,7 +4263,7 @@ msgid "Make Executable"
 msgstr ""
 
 #: lazarusidestrconsts:lismenumakeresourcestring
-msgid "Make Resource String"
+msgid "Make Resource String ..."
 msgstr ""
 
 #: lazarusidestrconsts:lismakeresourcestring
@@ -4603,11 +4619,11 @@ msgid "New Form"
 msgstr "Uusi Lomake"
 
 #: lazarusidestrconsts:lismenunewproject
-msgid "New Project"
-msgstr "Luo uusi Projekti"
+msgid "New Project ..."
+msgstr ""
 
 #: lazarusidestrconsts:lismenunewprojectfromfile
-msgid "New Project from file"
+msgid "New Project from file ..."
 msgstr ""
 
 #: lazarusidestrconsts:lisprojaddnewrequirement
@@ -4834,6 +4850,10 @@ msgstr "Avaa"
 msgid "Open %s"
 msgstr "Avaa %s"
 
+#: lazarusidestrconsts:lisopen
+msgid "Open ..."
+msgstr ""
+
 #: lazarusidestrconsts:lisdiffdlgopendiffineditor
 msgid "Open Diff in editor"
 msgstr "Avaa eroavuudet editorissa"
@@ -4851,8 +4871,8 @@ msgid "Open Preview"
 msgstr ""
 
 #: lazarusidestrconsts:lismenuopenproject
-msgid "Open Project"
-msgstr "Avaa Projekti"
+msgid "Open Project ..."
+msgstr ""
 
 #: lazarusidestrconsts:lisopenprojectfile
 msgid "Open Project File"
@@ -4862,13 +4882,17 @@ msgstr ""
 msgid "Open Project?"
 msgstr "Avataanko projekti?"
 
-#: lazarusidestrconsts:lismenuopenrecent
+#: lazarusidestrconsts:lismenutemplateopenrecent
 msgid "Open Recent"
 msgstr "Avaa viimeksi esillä olleista"
 
+#: lazarusidestrconsts:lismenuopenrecent
+msgid "Open Recent ..."
+msgstr ""
+
 #: lazarusidestrconsts:lismenuopenrecentproject
-msgid "Open Recent Project"
-msgstr "Avaa esillä ollut projekti"
+msgid "Open Recent Project ..."
+msgstr ""
 
 #: lazarusidestrconsts:lisopenasxmlfile
 msgid "Open as XML file"
@@ -4890,16 +4914,20 @@ msgstr "Avaa kohdistimen osoittama tiedosto"
 msgid "Open last project at start"
 msgstr "Avaa viimeksi käsitelty projekti Lazaruksen käynnistyksen yhteydessä"
 
-#: lazarusidestrconsts:lismenuopenpackage
+#: lazarusidestrconsts:lisoipopenloadedpackage
 msgid "Open loaded package"
 msgstr "Avaa komponenttipaketti"
+
+#: lazarusidestrconsts:lismenuopenpackage
+msgid "Open loaded package ..."
+msgstr ""
 
 #: lazarusidestrconsts:liscomppalopenpackage
 msgid "Open package"
 msgstr "Avaa paketti"
 
 #: lazarusidestrconsts:lismenuopenpackagefile
-msgid "Open package file (.lpk)"
+msgid "Open package file (.lpk) ..."
 msgstr ""
 
 #: lazarusidestrconsts:lismenuopenpackageofcurunit
@@ -4915,7 +4943,7 @@ msgid "Open project again"
 msgstr ""
 
 #: lazarusidestrconsts:lismenuopenrecentpkg
-msgid "Open recent package"
+msgid "Open recent package ..."
 msgstr ""
 
 #: lazarusidestrconsts:lisopenthefileasnormalsource
@@ -5047,7 +5075,7 @@ msgid "Package %s%s%s not found."
 msgstr ""
 
 #: lazarusidestrconsts:lismenupackagegraph
-msgid "Package Graph"
+msgid "Package Graph ..."
 msgstr ""
 
 #: lazarusidestrconsts:lispackageinfo
@@ -5318,8 +5346,12 @@ msgstr ""
 msgid "Procedure"
 msgstr "Aliohjelma"
 
+#: lazarusidestrconsts:uemprocedurejump
+msgid "Procedure Jump"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecprocedurelist
-msgid "Procedure List..."
+msgid "Procedure List ..."
 msgstr ""
 
 #: lazarusidestrconsts:dlgforwardprocsinsertpolicy
@@ -5391,8 +5423,8 @@ msgid "Project Options"
 msgstr "Projektikohtaiset asetukset"
 
 #: lazarusidestrconsts:lismenuprojectoptions
-msgid "Project Options..."
-msgstr "Projektikohtaiset asetukset"
+msgid "Project Options ..."
+msgstr ""
 
 #: lazarusidestrconsts:lisprojprojectsourcedirectorymark
 msgid "Project Source Directory Mark"
@@ -5483,7 +5515,7 @@ msgid "Publish Package"
 msgstr ""
 
 #: lazarusidestrconsts:lismenupublishproject
-msgid "Publish Project"
+msgid "Publish Project ..."
 msgstr ""
 
 #: lazarusidestrconsts:lispublishprojdir
@@ -5663,8 +5695,8 @@ msgid "Remove files matching filter"
 msgstr "Poistettavien tiedostojen tiedostopäätteet"
 
 #: lazarusidestrconsts:lismenuremovefromproject
-msgid "Remove from Project"
-msgstr "Poista projektista"
+msgid "Remove from Project ..."
+msgstr ""
 
 #: lazarusidestrconsts:lisoifremovefromfavouriteproperties
 msgid "Remove from favourite properties"
@@ -5702,9 +5734,13 @@ msgstr "Nimeä uudelleen"
 msgid "Rename File lowercase?"
 msgstr ""
 
-#: lazarusidestrconsts:lismenurenameidentifier
+#: lazarusidestrconsts:uemrenameidentifier
 msgid "Rename Identifier"
 msgstr "Vaihda tunnisteen nimeä"
+
+#: lazarusidestrconsts:lismenurenameidentifier
+msgid "Rename Identifier ..."
+msgstr ""
 
 #: lazarusidestrconsts:lisfrirenameallreferences
 msgid "Rename all References"
@@ -5741,6 +5777,10 @@ msgstr "Etsi ja korvaa"
 #: lazarusidestrconsts:dlgreplaceall
 msgid "Replace &All"
 msgstr "Korvaa kaikki"
+
+#: lazarusidestrconsts:lismenureplace2
+msgid "Replace ..."
+msgstr ""
 
 #: lazarusidestrconsts:lispkgmangreplacefile
 msgid "Replace File"
@@ -5938,13 +5978,17 @@ msgstr ""
 msgid "Save All"
 msgstr "Tallenna kaikki"
 
-#: lazarusidestrconsts:lismenusaveas
+#: lazarusidestrconsts:lismenutemplatesaveas
 msgid "Save As"
 msgstr "Tallenna nimellä"
 
 #: lazarusidestrconsts:dlgcharcasefileact
 msgid "Save As - auto rename pascal files lower case"
 msgstr "'Tallenna nimellä'-toiminnossa, tiedoston nimen automaattinen muuntaminen pieniksi kirjaimiksi"
+
+#: lazarusidestrconsts:lismenusaveas
+msgid "Save As ..."
+msgstr ""
 
 #: lazarusidestrconsts:lismenueditorsaveastemplate
 msgid "Save As Template..."
@@ -5971,8 +6015,8 @@ msgid "Save Project %s (*.lpi)"
 msgstr ""
 
 #: lazarusidestrconsts:lismenusaveprojectas
-msgid "Save Project As..."
-msgstr "Tallenna Projekti nimellä ..."
+msgid "Save Project As ..."
+msgstr ""
 
 #: lazarusidestrconsts:lissavesettings
 msgid "Save Settings"
@@ -6646,9 +6690,13 @@ msgstr ""
 msgid "Sorry, this type is not yet implemented"
 msgstr ""
 
-#: lazarusidestrconsts:lismenusortselection
+#: lazarusidestrconsts:lissortselsortselection
 msgid "Sort selection"
 msgstr "Lajittele lohko"
+
+#: lazarusidestrconsts:lismenusortselection
+msgid "Sort selection ..."
+msgstr ""
 
 #: lazarusidestrconsts:lismenuviewsourceeditor
 msgid "Source Editor"
@@ -8323,8 +8371,8 @@ msgid "View IDE speed buttons"
 msgstr ""
 
 #: lazarusidestrconsts:lismenuviewjumphistory
-msgid "View Jump-History"
-msgstr "Näytä hyppy historia"
+msgid "View Jump-History ..."
+msgstr ""
 
 #: lazarusidestrconsts:srkmectoggleobjectinsp
 msgid "View Object Inspector"
@@ -8355,8 +8403,8 @@ msgid "View Source Editor"
 msgstr ""
 
 #: lazarusidestrconsts:lismenuviewprojecttodos
-msgid "View ToDo List"
-msgstr "Näytä tehtävälista (ToDo List)"
+msgid "View ToDo List ..."
+msgstr ""
 
 #: lazarusidestrconsts:lismenuviewunitdependencies
 msgid "View Unit Dependencies"

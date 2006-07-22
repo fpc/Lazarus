@@ -422,6 +422,7 @@ type
     procedure EditorPropertiesClicked(Sender: TObject);
     procedure HighlighterClicked(Sender: TObject);
     procedure FindDeclarationClicked(Sender: TObject);
+    procedure ProcedureJumpClicked(Sender: TObject);
     procedure MoveEditorLeftClicked(Sender: TObject);
     procedure MoveEditorRightClicked(Sender: TObject);
     procedure NotebookPageChanged(Sender: TObject);
@@ -760,6 +761,7 @@ const
 
 var
   SrcEditMenuFindDeclaration: TIDEMenuCommand;
+  SrcEditMenuProcedureJump: TIDEMenuCommand;
   SrcEditMenuOpenFileAtCursor: TIDEMenuCommand;
   SrcEditMenuClosePage: TIDEMenuCommand;
   SrcEditMenuCut: TIDEMenuCommand;
@@ -828,6 +830,8 @@ begin
   SubPath:=SrcEditMenuSectionFirstStatic.GetPath;
   SrcEditMenuFindDeclaration:=RegisterIDEMenuCommand(SubPath,'Find Declaration',
                                             uemFindDeclaration);
+  SrcEditMenuProcedureJump:=RegisterIDEMenuCommand(SubPath,'Procedure Jump',
+                                            uemProcedureJump);
   SrcEditMenuOpenFileAtCursor:=RegisterIDEMenuCommand(SubPath,
                                      'Open File At Cursor',uemOpenFileAtCursor);
   SrcEditMenuClosePage:=RegisterIDEMenuCommand(SubPath,
@@ -3736,6 +3740,7 @@ begin
   SourceEditorMenuRoot.MenuItem:=SrcPopupMenu.Items;
 
   SrcEditMenuFindDeclaration.OnClick:=@FindDeclarationClicked;
+  SrcEditMenuProcedureJump.OnClick:=@ProcedureJumpClicked;
   SrcEditMenuOpenFileAtCursor.OnClick:=@OpenAtCursorClicked;
 
   SrcEditMenuClosePage.OnClick:=@CloseClicked;
@@ -4630,6 +4635,14 @@ Procedure TSourceNotebook.FindDeclarationClicked(Sender: TObject);
 begin
   if Assigned(FOnFindDeclarationClicked) then
     FOnFindDeclarationClicked(Sender);
+end;
+
+procedure TSourceNotebook.ProcedureJumpClicked(Sender: TObject);
+var ActSE: TSourceEditor;
+begin
+  ActSE := GetActiveSE;
+  if ActSE <> nil then
+    ActSE.DoEditorExecuteCommand(ecFindProcedureDefinition);
 end;
 
 Procedure TSourceNotebook.CutClicked(Sender: TObject);

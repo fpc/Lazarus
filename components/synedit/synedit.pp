@@ -1988,8 +1988,8 @@ begin
   {$ENDIF}
   if Visible and HandleAllocated then
     if (FirstLine = -1) and (LastLine = -1) then begin
-      rcInval := Rect(0, 0, fGutterWidth
-         , ClientHeight{$IFDEF SYN_LAZARUS}-ScrollBarWidth{$ENDIF});
+      rcInval := Rect(0, 0, fGutterWidth,
+                      ClientHeight{$IFDEF SYN_LAZARUS}-ScrollBarWidth{$ENDIF});
       if sfLinesChanging in fStateFlags then
         UnionRect(fInvalidateRect, fInvalidateRect, rcInval)
       else

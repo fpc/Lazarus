@@ -1138,27 +1138,12 @@ var
   
   procedure DeleteNode(var DeletingNode: TLazDockConfigNode);
   
-    function HasNoSplitter: boolean;
-    { checks if node does not use any splitter
-      A node without splitter neighbours can be deleted. }
-    var
-      a: TAnchorKind;
-      SiblingNode: TLazDockConfigNode;
-    begin
-      for a:=Low(TAnchorKind) to High(TAnchorKind) do begin
-        SiblingNode:=FindNode(DeletingNode.Sides[a]);
-        if (SiblingNode<>nil)
-        and (SiblingNode.TheType in [ldcntSplitterLeftRight,ldcntSplitterUpDown])
-        then exit(false);
-      end;
-      Result:=true;
-    end;
-    
-    function HasOwnSideSplitter(Side: TAnchorKind): boolean;
-    { check if node has a splitter to Side, and the node is the only node
-      anchored to the splitter at this side.
-      If yes, it removes the splitter and the node and reconnects the nodes
-      using the splitter with the opposite side
+    function IsOwnSideSplitter(Side: TAnchorKind;
+      var SplitterNode: TLazDockConfigNode): boolean;
+    { check if DeletingNode has a splitter to Side, and this node is the only
+      node anchored to the splitter at this side.
+      If yes, it removes the splitter and the DeletingNode and reconnects the
+      nodes using the splitter with the opposite side
       For example:
         ---------+      --------+
         --+#+---+|          ---+|
@@ -1167,20 +1152,37 @@ var
         ---------+      --------+
     }
     var
-      SideNode: TLazDockConfigNode;
+      i: Integer;
+      Sibling: TLazDockConfigNode;
+      OppositeSide: TAnchorKind;
     begin
       Result:=false;
-      SideNode:=FindNode(DeletingNode.Sides[Side]);
-      if (SideNode=nil) then exit;
-      if not (SideNode.TheType in [ldcntSplitterLeftRight,ldcntSplitterUpDown])
-      then exit;
+      // check if this is the only node using this Side of the splitter
+      for i:=0 to DeletingNode.Parent.ChildCount-1 do begin
+        Sibling:=DeletingNode.Parent.Childs[i];
+        if (Sibling<>DeletingNode)
+        and (CompareText(Sibling.Sides[Side],SplitterNode.Name)=0) then
+          exit;
+      end;
       
-      // TODO
+      // All nodes, that uses the splitter from the other side will now be
+      // anchored to the other side of DeletingNode
+      OppositeSide:=OppositeAnchor[Side];
+      for i:=0 to DeletingNode.Parent.ChildCount-1 do begin
+        Sibling:=DeletingNode.Parent.Childs[i];
+        if CompareText(Sibling.Sides[OppositeSide],SplitterNode.Name)=0 then
+          Sibling.Sides[OppositeSide]:=DeletingNode.Sides[OppositeSide];
+      end;
+      
+      // delete splitter
+      SplitterNode.RemoveFromParentAndFree;
+      SplitterNode:=nil;
+      
       Result:=true;
     end;
     
-    function HasSpiralSplitter: boolean;
-    { check if node has 4 splitters like a spiral.
+    function UnbindSpiralNode: boolean;
+    { DeletingNode has 4 splitters like a spiral.
       In this case merge the two vertical splitters.
       For example:
              |             |
@@ -1191,9 +1193,36 @@ var
        |--------           |------
        |                   |
     }
+    var
+      LeftSplitter: TLazDockConfigNode;
+      RightSplitter: TLazDockConfigNode;
+      i: Integer;
+      Sibling: TLazDockConfigNode;
     begin
-      // TODO
-      Result:=false;
+      LeftSplitter:=FindNode(DeletingNode.Sides[akLeft]);
+      RightSplitter:=FindNode(DeletingNode.Sides[akRight]);
+      // remove LeftSplitter
+      
+      // 1. enlarge RightSplitter
+      if CompareText(RightSplitter.Sides[akTop],DeletingNode.Sides[akTop])=0 then
+        RightSplitter.Sides[akTop]:=LeftSplitter.Sides[akTop];
+      if CompareText(RightSplitter.Sides[akBottom],DeletingNode.Sides[akBottom])=0 then
+        RightSplitter.Sides[akBottom]:=LeftSplitter.Sides[akBottom];
+        
+      // 2. anchor all siblings using LeftSplitter to now use RightSplitter
+      for i:=0 to DeletingNode.Parent.ChildCount-1 do begin
+        Sibling:=DeletingNode.Parent.Childs[i];
+        if Sibling=DeletingNode then continue;
+        if CompareText(Sibling.Sides[akLeft],LeftSplitter.Name)=0 then
+          Sibling.Sides[akLeft]:=RightSplitter.Name;
+        if CompareText(Sibling.Sides[akRight],LeftSplitter.Name)=0 then
+          Sibling.Sides[akRight]:=RightSplitter.Name;
+      end;
+      
+      // 3. delete LeftSplitter
+      LeftSplitter.RemoveFromParentAndFree;
+      
+      Result:=true;
     end;
   
     procedure RaiseUnknownCase;
@@ -1201,13 +1230,27 @@ var
       raise Exception.Create('TCustomLazDockingManager.CreateLayout invalid Config');
     end;
 
+  var
+    a: TAnchorKind;
+    SiblingNode: TLazDockConfigNode;
+    SplitterCount: Integer;
   begin
-    if HasNoSplitter
-    or HasOwnSideSplitter(akLeft)
-    or HasOwnSideSplitter(akTop)
-    or HasOwnSideSplitter(akRight)
-    or HasOwnSideSplitter(akBottom)
-    or HasSpiralSplitter then begin
+    SplitterCount:=0;
+    for a:=Low(TAnchorKind) to High(TAnchorKind) do begin
+      SiblingNode:=FindNode(DeletingNode.Sides[a]);
+      if (SiblingNode<>nil)
+      and (SiblingNode.TheType in [ldcntSplitterLeftRight,ldcntSplitterUpDown])
+      then begin
+        // there is a splitter
+        if IsOwnSideSplitter(a,SiblingNode) then break;
+        inc(SplitterCount);
+      end;
+    end;
+    if SplitterCount=0 then begin
+      // no splitter -> simply delete the node
+    end else if SplitterCount=4 then begin
+      // this is a spiral splitter node
+      UnbindSpiralNode;
     end else begin
       // this should never be reached
       RaiseUnknownCase;
@@ -1253,6 +1296,7 @@ var
     end;
   end;
 
+
 var
   Config: TLazDockerConfig;
 begin
@@ -1263,11 +1307,24 @@ begin
     // no good config found
     exit(nil);
   end;
+  
   // create a copy of the config
   Root:=TLazDockConfigNode.Create(nil);
   Root.Assign(Config.Root);
-  // clean up
+  
+  // clean up by removing all invisible or unknown or empty nodes
   RemoveEmptyNodes(Root);
+
+  // check if all used controls are on the same dock form
+
+  // Now Root contains a Layout for the case that all visible controls are put
+  // into one dock form.
+  // For the case that there are different dock forms, the algorithm searches
+  // the nearest control in the Layout to DockerName. Then it removes the
+  // controls of the other dock forms.
+  // => Find the nearest control in the layout
+  
+  
   Result:=Root;
 end;
 
@@ -1377,8 +1434,12 @@ function TCustomLazDockingManager.ConfigIsCompatible(
     
     for a:=Low(TAnchorKind) to High(TAnchorKind) do begin
       if Node.Sides[a]<>'' then begin
+        if CompareText(Node.Sides[a],Node.Name)=0 then begin
+          Error('Node.Sides[a]=Node');
+          exit;
+        end;
         if RootNode.FindByName(Node.Sides[a],true)=nil then begin
-          Error('invalid Node.Sides[a]');
+          Error('unknown Node.Sides[a]');
           exit;
         end;
       end;

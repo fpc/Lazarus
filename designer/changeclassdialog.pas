@@ -240,6 +240,7 @@ var
       NewParent:=nil;
       if OldParents<>nil then begin
         ReadLFMHeader(MemStream,LFMType,LFMComponentName,LFMClassName);
+        if (LFMType='') or (LFMClassName='') then ;
         MemStream.Position:=0;
         if LFMComponentName<>'' then begin
           NewParentName:=OldParents.Values[LFMComponentName];

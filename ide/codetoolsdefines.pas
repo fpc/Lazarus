@@ -663,9 +663,9 @@ end;
 procedure TCodeToolsDefinesEditor.InsertFPCompilerDefinesTemplateMenuItemClick(
   Sender: TObject);
 var InputFileDlg: TInputFileDialog;
-  s, CompilerPath, DefaultCompiler: string;
+  CompilerPath, DefaultCompiler: string;
   FPCTemplate: TDefineTemplate;
-  TargetOS, TargetProcessor: string;
+  UnitSearchPath, TargetOS, TargetProcessor: string;
 begin
   InputFileDlg:=GetInputFileDialog;
   InputFileDlg.Macros:=Macros;
@@ -691,9 +691,12 @@ begin
     DebugLn('  CompilerPath="',CompilerPath,'"');
     
     FPCTemplate:=Boss.DefinePool.CreateFPCTemplate(CompilerPath,'',
-                                           CreateCompilerTestPascalFilename,s,
+                                           CreateCompilerTestPascalFilename,
+                                           UnitSearchPath,
                                            TargetOS,TargetProcessor,
                                            CodeToolsOpts);
+    if (TargetOS='') or (TargetProcessor='') or (UnitSearchPath='') then
+      DebugLn(['TCodeToolsDefinesEditor.InsertFPCompilerDefinesTemplateMenuItemClick TargetOS="',TargetOS,'" TargetProcessor="',TargetProcessor,'"']);
     if FPCTemplate=nil then exit;
     FPCTemplate.Name:='Free Pascal Compiler ('+CompilerPath+')';
     InsertTemplate(FPCTemplate);
