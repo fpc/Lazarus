@@ -355,7 +355,7 @@ begin
     CreateMenuSeparatorSection(mnuFile,itmFileOpenSave,'itmFileOpenSave');
     ParentMI:=itmFileOpenSave;
 
-    CreateMenuItem(ParentMI,itmFileOpen,'itmFileOpen',lisMenuOpen,'menu_open');
+    CreateMenuItem(ParentMI, itmFileOpen, 'itmFileOpen', lisOpen, 'menu_open');
     CreateMenuItem(ParentMI,itmFileRevert,'itmFileRevert',lisMenuRevert,'menu_undo');
     CreateMenuSubSection(ParentMI,itmFileRecentOpen,'itmFileRecentOpen',lisMenuOpenRecent);
     CreateMenuItem(ParentMI,itmFileSave,'itmFileSave',lisMenuSave,'menu_save');
@@ -476,11 +476,12 @@ begin
     CreateMenuSeparatorSection(mnuSearch,itmSearchFindReplace,'itmSearchFindReplace');
     ParentMI:=itmSearchFindReplace;
 
-    CreateMenuItem(ParentMI,itmSearchFind,'itmSearchFind',lisMenuFind);
+    CreateMenuItem(ParentMI, itmSearchFind, 'itmSearchFind', lisMenuFind2);
     CreateMenuItem(ParentMI,itmSearchFindNext,'itmSearchFindNext',lisMenuFindNext);
     CreateMenuItem(ParentMI,itmSearchFindPrevious,'itmSearchFindPrevious',lisMenuFindPrevious);
     CreateMenuItem(ParentMI,itmSearchFindInFiles,'itmSearchFindInFiles',lisMenuFindInFiles);
-    CreateMenuItem(ParentMI,itmSearchReplace,'itmSearchReplace',lisMenuReplace);
+    CreateMenuItem(ParentMI, itmSearchReplace, 'itmSearchReplace',
+      lisMenuReplace2);
     CreateMenuItem(ParentMI,itmIncrementalFind,'itmIncrementalFind',lisMenuIncrementalFind);
     CreateMenuItem(ParentMI,itmGotoLine,'itmGotoLine',lisMenuGotoLine);
 

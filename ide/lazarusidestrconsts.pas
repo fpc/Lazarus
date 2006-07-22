@@ -128,17 +128,18 @@ resourcestring
   lisMenuNewOther = 'New ...';
   lisMenuOpen = 'Open';
   lisMenuRevert = 'Revert';
+  lisOpen = 'Open ...';
   lisPkgEditPublishPackage = 'Publish Package';
-  lisMenuOpenRecent = 'Open Recent';
+  lisMenuOpenRecent = 'Open Recent ...';
   lisMenuSave = 'Save';
   lisDiscardChanges = 'Discard changes';
   lisDoNotCloseTheIDE = 'Do not close the IDE';
-  lisMenuSaveAs = 'Save As';
+  lisMenuSaveAs = 'Save As ...';
   lisMenuSaveAll = 'Save All';
   lisMenuClose = 'Close';
   lisCTDefDefineTemplates = 'Define templates';
   lisMenuCloseAll = 'Close all editor files';
-  lisMenuCleanDirectory = 'Clean directory';
+  lisMenuCleanDirectory = 'Clean directory ...';
   lisMenuQuit = 'Quit';
   lisMenuRestart = 'Restart';
 
@@ -152,11 +153,11 @@ resourcestring
   lisMenuUpperCaseSelection = 'Uppercase selection';
   lisMenuLowerCaseSelection = 'Lowercase selection';
   lisMenuTabsToSpacesSelection = 'Tabs to spaces in selection';
-  lisMenuEncloseSelection = 'Enclose selection';
+  lisMenuEncloseSelection = 'Enclose selection ...';
   lisMenuCommentSelection = 'Comment selection';
   lisMenuUncommentSelection = 'Uncomment selection';
   lisMenuConditionalSelection = 'Insert $IFDEF...';
-  lisMenuSortSelection = 'Sort selection';
+  lisMenuSortSelection = 'Sort selection ...';
   lisMenuBeakLinesInSelection = 'Break Lines in selection';
   lisMenuSelect = 'Select';
   lisMenuSelectAll = 'Select all';
@@ -170,9 +171,9 @@ resourcestring
   lisMenuInsertCVSKeyword = 'CVS keyword';
   lisMenuInsertGeneral = 'General';
   lisMenuCompleteCode = 'Complete Code';
-  lisMenuExtractProc = 'Extract procedure';
-  lisMenuFindIdentifierRefs = 'Find Identifier References';
-  lisMenuRenameIdentifier = 'Rename Identifier';
+  lisMenuExtractProc = 'Extract procedure ...';
+  lisMenuFindIdentifierRefs = 'Find Identifier References ...';
+  lisMenuRenameIdentifier = 'Rename Identifier ...';
 
   lisMenuInsertGPLNotice = 'GPL notice';
   lisMenuInsertLGPLNotice = 'LGPL notice';
@@ -182,15 +183,17 @@ resourcestring
 
   lisMenuFind = 'Find';
   lisMenuFindNext = 'Find &Next';
+  lisMenuFind2 = 'Find ...';
   lisMenuFindPrevious = 'Find &Previous';
-  lisMenuFindInFiles = 'Find &in files';
+  lisMenuFindInFiles = 'Find &in files ...';
   lisMenuReplace = 'Replace';
   lisMenuIncrementalFind = 'Incremental Find';
-  lisMenuGotoLine = 'Goto line';
+  lisMenuReplace2 = 'Replace ...';
+  lisMenuGotoLine = 'Goto line ...';
   lisMenuJumpBack = 'Jump back';
   lisMenuJumpForward = 'Jump forward';
   lisMenuAddJumpPointToHistory = 'Add jump point to history';
-  lisMenuViewJumpHistory = 'View Jump-History';
+  lisMenuViewJumpHistory = 'View Jump-History ...';
   lisMenuFindBlockOtherEndOfCodeBlock = 'Find other end of code block';
   lisMenuFindCodeBlockStart = 'Find code block start';
   lisMenuFindDeclarationAtCursor = 'Find Declaration at cursor';
@@ -229,19 +232,19 @@ resourcestring
   lisMenuViewCallStack = 'Call Stack';
   lisMenuViewDebugOutput = 'Debug output';
   
-  lisMenuNewProject = 'New Project';
-  lisMenuNewProjectFromFile = 'New Project from file';
-  lisMenuOpenProject = 'Open Project';
-  lisMenuOpenRecentProject = 'Open Recent Project';
+  lisMenuNewProject = 'New Project ...';
+  lisMenuNewProjectFromFile = 'New Project from file ...';
+  lisMenuOpenProject = 'Open Project ...';
+  lisMenuOpenRecentProject = 'Open Recent Project ...';
   lisMenuSaveProject = 'Save Project';
-  lisMenuSaveProjectAs = 'Save Project As...';
-  lisMenuPublishProject = 'Publish Project';
+  lisMenuSaveProjectAs = 'Save Project As ...';
+  lisMenuPublishProject = 'Publish Project ...';
   lisMenuProjectInspector = 'Project Inspector';
   lisMenuAddToProject = 'Add editor file to Project';
-  lisMenuRemoveFromProject = 'Remove from Project';
+  lisMenuRemoveFromProject = 'Remove from Project ...';
   lisMenuViewSource = 'View Source';
-  lisMenuViewProjectTodos = 'View ToDo List';
-  lisMenuProjectOptions = 'Project Options...';
+  lisMenuViewProjectTodos = 'View ToDo List ...';
+  lisMenuProjectOptions = 'Project Options ...';
   
   lisMenuBuild = 'Build';
   lisMenuBuildAll = 'Build all';
@@ -254,11 +257,11 @@ resourcestring
   lisMenuStop = 'Stop';
   lisContinue = 'Continue';
   lisMenuResetDebugger = 'Reset debugger';
-  lisMenuCompilerOptions = 'Compiler Options...';
+  lisMenuCompilerOptions = 'Compiler Options ...';
   lisMenuRunParameters = 'Run Parameters ...';
   lisMenuBuildFile = 'Build File';
   lisMenuRunFile = 'Run File';
-  lisMenuConfigBuildFile = 'Configure Build+Run File';
+  lisMenuConfigBuildFile = 'Configure Build+Run File ...';
   lisMenuInspect = 'Inspect ...';
   lisMenuEvaluate = 'Evaluate/Modify ...';
   lisMenuAddWatch= 'Add watch ...';
@@ -266,39 +269,39 @@ resourcestring
   lisMenuAddBpSource = 'Source breakpoint';
 
 
-  lisMenuOpenPackage = 'Open loaded package';
-  lisMenuOpenRecentPkg = 'Open recent package';
-  lisMenuOpenPackageFile = 'Open package file (.lpk)';
+  lisMenuOpenPackage = 'Open loaded package ...';
+  lisMenuOpenRecentPkg = 'Open recent package ...';
+  lisMenuOpenPackageFile = 'Open package file (.lpk) ...';
   lisMenuOpenPackageOfCurUnit = 'Open package of current unit';
   lisMenuAddCurUnitToPkg = 'Add active unit to a package';
-  lisMenuPackageGraph = 'Package Graph';
-  lisMenuEditInstallPkgs = 'Configure installed packages';
-  lisMenuConfigCustomComps = 'Configure custom components';
+  lisMenuPackageGraph = 'Package Graph ...';
+  lisMenuEditInstallPkgs = 'Configure installed packages ...';
+  lisMenuConfigCustomComps = 'Configure custom components ...';
 
   lisMenuSettings = 'Configure custom tools ...';
   lisMenuQuickSyntaxCheck = 'Quick syntax check';
   lisMenuGuessUnclosedBlock = 'Guess unclosed block';
   lisMenuGuessMisplacedIFDEF = 'Guess misplaced IFDEF/ENDIF';
-  lisMenuMakeResourceString = 'Make Resource String';
+  lisMenuMakeResourceString = 'Make Resource String ...';
   lisMenuDiff = 'Diff';
-  lisMenuConvertDFMtoLFM = 'Convert DFM file to LFM';
+  lisMenuConvertDFMtoLFM = 'Convert DFM file to LFM ...';
   lisMenuCheckLFM = 'Check LFM file in editor';
-  lisMenuConvertDelphiUnit = 'Convert Delphi unit to Lazarus unit';
-  lisMenuConvertDelphiProject = 'Convert Delphi project to Lazarus project';
-  lisMenuConvertDelphiPackage = 'Convert Delphi package to Lazarus package';
+  lisMenuConvertDelphiUnit = 'Convert Delphi unit to Lazarus unit ...';
+  lisMenuConvertDelphiProject = 'Convert Delphi project to Lazarus project ...';
+  lisMenuConvertDelphiPackage = 'Convert Delphi package to Lazarus package ...';
   lisMenuBuildLazarus = 'Build Lazarus';
-  lisMenuConfigureBuildLazarus = 'Configure "Build Lazarus"';
+  lisMenuConfigureBuildLazarus = 'Configure "Build Lazarus" ...';
   
-  lisMenuGeneralOptions = 'Environment options';
-  lisMenuEditorOptions = 'Editor options';
-  lisMenuEditCodeTemplates = 'Code Templates';
-  lisMenDebuggerOptions = 'Debugger Options';
-  lisMenuCodeToolsOptions = 'CodeTools options';
-  lisMenuCodeToolsDefinesEditor = 'CodeTools defines editor';
+  lisMenuGeneralOptions = 'Environment options ...';
+  lisMenuEditorOptions = 'Editor options ...';
+  lisMenuEditCodeTemplates = 'Code Templates ...';
+  lisMenDebuggerOptions = 'Debugger Options ...';
+  lisMenuCodeToolsOptions = 'CodeTools Options ...';
+  lisMenuCodeToolsDefinesEditor = 'CodeTools defines editor ...';
   
-  lisMenuAboutLazarus = 'About Lazarus';
+  lisMenuAboutLazarus = 'About Lazarus ...';
   lisMenuOnlineHelp = 'Online Help';
-  lisMenuConfigureHelp = 'Configure Help';
+  lisMenuConfigureHelp = 'Configure Help ...';
   lisMenuContextHelp = 'Context sensitive Help';
   lisMenuEditContextHelp = 'Edit context sensitive Help';
 
@@ -1444,7 +1447,7 @@ resourcestring
   srkmecAddJumpPoint              = 'Add jump point';
   srkmecOpenFileAtCursor          = 'Open file at cursor';
   srkmecGotoIncludeDirective      = 'Go to to include directive of current include file';
-  srkmecProcedureList             = 'Procedure List...';
+  srkmecProcedureList             = 'Procedure List ...';
   
   // view menu
   srkmecToggleFormUnit            = 'Switch between form and unit';
