@@ -83,7 +83,8 @@ type
   TPascalCodeFoldBlockType = (
     cfbtNone,
     cfbtBeginEnd,
-    cfbtNestedComment
+    cfbtNestedComment,
+    cfbtTryEnd
     );
   {$ENDIF}
 
@@ -634,7 +635,7 @@ begin
       {$IFDEF SYN_LAZARUS}
       //debugln('TSynPasSyn.Func23 END ',dbgs(ord(TopPascalCodeFoldBlockType)),' LineNumber=',dbgs(fLineNumber));
       //CodeFoldRange.WriteDebugReport;
-      if TopPascalCodeFoldBlockType in [cfbtBeginEnd] then
+      if TopPascalCodeFoldBlockType in [cfbtBeginEnd, cfbtTryEnd] then
         EndCodeFoldBlock;
       {$ENDIF}
     end else begin
@@ -811,7 +812,15 @@ begin
   if KeyComp('Public') then Result := tkKey else
     if KeyComp('Record') then Result := tkKey else
       if KeyComp('Array') then Result := tkKey else
-        if KeyComp('Try') then Result := tkKey else
+        if KeyComp('Try') then
+        {$IFDEF SYN_LAZARUS}
+        begin
+          StartPascalCodeFoldBlock(cfbtTryEnd);
+          Result := tkKey;
+        end else
+        {$ELSE}
+        Result := tkKey else
+        {$ENDIF}
           if KeyComp('Inline') then Result := tkKey else Result := tkIdentifier;
 end;
 
