@@ -100,15 +100,16 @@ type
     constructor Create(ParentNode: TLazDockConfigNode; const AName: string);
     destructor Destroy; override;
     procedure Clear;
-    procedure RemoveFromParentAndFree;
     procedure Assign(Source: TPersistent); override;
     function FindByName(const AName: string; Recursive: boolean = false;
                         WithRoot: boolean = true): TLazDockConfigNode;
+    function IndexOf(const AName: string): Integer;
     function GetScreenBounds: TRect;
     procedure SaveToConfig(Config: TConfigStorage; const Path: string = '');
     procedure LoadFromConfig(Config: TConfigStorage; const Path: string = '');
-    procedure WriteDebugReport;
     function GetPath: string;
+    procedure WriteDebugReport;
+    function DebugLayoutAsString: string;
   public
     property Bounds: TRect read FBounds write SetBounds;
     property ClientBounds: TRect read FClientBounds write SetClientBounds;
@@ -154,6 +155,8 @@ type
     destructor Destroy; override;
     function FindDockerByName(const ADockerName: string;
                 Ignore: TCustomLazControlDocker = nil): TCustomLazControlDocker;
+    function FindControlByDockerName(const ADockerName: string;
+                Ignore: TCustomLazControlDocker = nil): TControl;
     function FindDockerByControl(AControl: TControl;
                 Ignore: TCustomLazControlDocker = nil): TCustomLazControlDocker;
     function CreateUniqueName(const AName: string;
@@ -163,7 +166,6 @@ type
     procedure LoadFromConfig(Config: TConfigStorage; const Path: string = '');
     procedure AddOrReplaceConfig(const DockerName: string;
                                  Config: TLazDockConfigNode);
-    procedure WriteDebugReport;
     procedure ClearConfigs;
     function GetConfigWithDockerName(const DockerName: string
                                      ): TLazDockerConfig;
@@ -171,6 +173,8 @@ type
                           ): TLazDockConfigNode;
     function ConfigIsCompatible(RootNode: TLazDockConfigNode;
                                 ExceptionOnError: boolean): boolean;
+
+    procedure WriteDebugReport;
   public
     property Manager: TAnchoredDockManager read FManager;
     property DockerCount: Integer read GetDockerCount;
@@ -971,6 +975,18 @@ begin
   Result:=nil;
 end;
 
+function TCustomLazDockingManager.FindControlByDockerName(
+  const ADockerName: string; Ignore: TCustomLazControlDocker): TControl;
+var
+  Docker: TCustomLazControlDocker;
+begin
+  Docker:=FindDockerByName(ADockerName);
+  if Docker=nil then
+    Result:=nil
+  else
+    Result:=Docker.Control;
+end;
+
 function TCustomLazDockingManager.FindDockerByControl(AControl: TControl;
   Ignore: TCustomLazControlDocker): TCustomLazControlDocker;
 var
@@ -1121,11 +1137,16 @@ function TCustomLazDockingManager.CreateLayout(const DockerName: string;
 // and remove all nodes without visible controls.
 var
   Root: TLazDockConfigNode;
+  CurDockControl: TControl;
 
   function ControlIsVisible(AControl: TControl): boolean;
   begin
-    Result:=(AControl<>nil)
-            and ((AControl.IsVisible) or (AControl=VisibleControl));
+    Result:=false;
+    if (AControl=nil) then exit;
+    if (not AControl.IsVisible) and (AControl<>VisibleControl) then exit;
+    if (CurDockControl<>nil) and (CurDockControl<>AControl.GetTopParent) then
+      exit;
+    Result:=true;
   end;
   
   function FindNode(const AName: string): TLazDockConfigNode;
@@ -1136,6 +1157,39 @@ var
       Result:=Root.FindByName(AName,true,true);
   end;
   
+  function FindNodeUsingSplitter(Splitter: TLazDockConfigNode;
+    SiblingSide: TAnchorKind; NilIfAmbiguous: boolean): TLazDockConfigNode;
+  var
+    i: Integer;
+    ParentNode: TLazDockConfigNode;
+    Child: TLazDockConfigNode;
+  begin
+    Result:=nil;
+    ParentNode:=Splitter.Parent;
+    for i:=0 to ParentNode.ChildCount-1 do begin
+      Child:=ParentNode.Childs[i];
+      if CompareText(Child.Sides[SiblingSide],Splitter.Name)=0 then begin
+        if Result=nil then
+          Result:=Child
+        else if NilIfAmbiguous then
+          exit(nil);
+      end;
+    end;
+  end;
+  
+  function SplitterIsOnlyUsedByNodeAtSide(Splitter, Node: TLazDockConfigNode;
+    SiblingSide: TAnchorKind): boolean;
+  { check if one side of the Splitter is only used by Node.
+    For example: If only Node.Sides[SiblingSide]=Splitter.Name
+        ---------+      --------+
+        --+#+---+|          ---+|
+        B |#| A ||  ->       B ||
+        --+#+---+|          ---+|
+        ---------+      --------+}
+  begin
+    Result:=FindNodeUsingSplitter(Splitter,SiblingSide,true)<>nil;
+  end;
+
   procedure DeleteNode(var DeletingNode: TLazDockConfigNode);
   
     function IsOwnSideSplitter(Side: TAnchorKind;
@@ -1158,13 +1212,9 @@ var
     begin
       Result:=false;
       // check if this is the only node using this Side of the splitter
-      for i:=0 to DeletingNode.Parent.ChildCount-1 do begin
-        Sibling:=DeletingNode.Parent.Childs[i];
-        if (Sibling<>DeletingNode)
-        and (CompareText(Sibling.Sides[Side],SplitterNode.Name)=0) then
-          exit;
-      end;
-      
+      if not SplitterIsOnlyUsedByNodeAtSide(SplitterNode,DeletingNode,
+        Side) then exit;
+
       // All nodes, that uses the splitter from the other side will now be
       // anchored to the other side of DeletingNode
       OppositeSide:=OppositeAnchor[Side];
@@ -1175,9 +1225,8 @@ var
       end;
       
       // delete splitter
-      SplitterNode.RemoveFromParentAndFree;
-      SplitterNode:=nil;
-      
+      FreeAndNil(SplitterNode);
+
       Result:=true;
     end;
     
@@ -1220,7 +1269,7 @@ var
       end;
       
       // 3. delete LeftSplitter
-      LeftSplitter.RemoveFromParentAndFree;
+      FreeAndNil(LeftSplitter);
       
       Result:=true;
     end;
@@ -1255,8 +1304,47 @@ var
       // this should never be reached
       RaiseUnknownCase;
     end;
-    DeletingNode.RemoveFromParentAndFree;
-    DeletingNode:=nil;
+    FreeAndNil(DeletingNode);
+  end;
+  
+  procedure SimplifyOnePageNode(var PagesNode: TLazDockConfigNode);
+  { PagesNode has only one page left.
+    Remove Page and Pages node and move the content to the parent
+  }
+  var
+    ParentNode: TLazDockConfigNode;
+    PageNode: TLazDockConfigNode;
+    i: Integer;
+    Child: TLazDockConfigNode;
+    ChildBounds: TRect;
+    PagesBounds: TRect;
+    OffsetX: Integer;
+    OffsetY: Integer;
+    a: TAnchorKind;
+  begin
+    ParentNode:=PagesNode.Parent;
+    if ParentNode=nil then RaiseGDBException('');
+    if (PagesNode.TheType<>ldcntPages) then RaiseGDBException('');
+    if PagesNode.ChildCount<>1 then RaiseGDBException('');
+    PageNode:=PagesNode.Childs[0];
+    PagesBounds:=PagesNode.Bounds;
+    OffsetX:=PagesBounds.Left;
+    OffsetY:=PagesBounds.Top;
+    for i:=0 to PageNode.ChildCount-1 do begin
+      Child:=PageNode.Childs[i];
+      // changes parent of child
+      Child.Parent:=ParentNode;
+      // move childs to place where PagesNode was
+      ChildBounds:=Child.Bounds;
+      OffsetRect(ChildBounds,OffsetX,OffsetY);
+      Child.Bounds:=ChildBounds;
+      // change anchors of child
+      for a:=Low(TAnchorKind) to High(TAnchorKind) do begin
+        if CompareText(Child.Sides[a],PageNode.Name)=0 then
+          Child.Sides[a]:=PagesNode.Sides[a];
+      end;
+    end;
+    FreeAndNil(PagesNode);
   end;
 
   procedure RemoveEmptyNodes(var Node: TLazDockConfigNode);
@@ -1273,7 +1361,7 @@ var
     i:=Node.ChildCount-1;
     while i>=0 do begin
       Child:=Node.Childs[i];
-      RemoveEmptyNodes(Child);
+      RemoveEmptyNodes(Child);// beware: this can delete more than one child
       dec(i);
       if i>=Node.ChildCount then i:=Node.ChildCount-1;
     end;
@@ -1289,28 +1377,39 @@ var
         then
           DeleteNode(Node);
       end;
-    ldcntForm,ldcntPage,ldcntPages:
+    ldcntForm,ldcntPage:
       // these are auto created parent nodes. If they have no childs: delete
       if Node.ChildCount=0 then
         DeleteNode(Node);
+    ldcntPages:
+      // this is an auto created parent node. If it has no childs: delete
+      if Node.ChildCount=0 then
+        DeleteNode(Node)
+      else if Node.ChildCount=1 then begin
+        // Only one page left
+        SimplifyOnePageNode(Node);
+      end;
     end;
   end;
 
   function AllControlsAreOnSameForm: boolean;
+  var
+    RootForm: TControl;
   
     function Check(Node: TLazDockConfigNode): boolean;
     var
       i: Integer;
-      Docker: TCustomLazControlDocker;
       CurForm: TControl;
     begin
       if Node.TheType=ldcntControl then begin
-        Docker:=FindDockerByName(Node.Name);
-        if (Docker<>nil) and (Docker.Control<>nil) then begin
-          //if Docker.Control
-          CurForm:=Docker.Control;
+        CurForm:=FindControlByDockerName(Node.Name);
+        if (CurForm<>nil) then begin
           while CurForm.Parent<>nil do
             CurForm:=CurForm.Parent;
+          if RootForm=nil then
+            RootForm:=CurForm
+          else if RootForm<>CurForm then
+            exit(false);
         end;
       end;
       // check childs
@@ -1320,42 +1419,160 @@ var
     end;
   
   begin
+    RootForm:=nil;
     Result:=Check(Root);
+  end;
+  
+  function FindNearestControlNode: TLazDockConfigNode;
+  
+    function FindOwnSplitterSiblingWithControl(Node: TLazDockConfigNode
+      ): TLazDockConfigNode;
+    { find a sibling, that is a direct neighbour behind a splitter, and the
+      splitter is only used by the node and the sibling
+      For example:
+        ---------+
+        --+#+---+|
+        B |#| A ||
+        --+#+---+|
+        ---------+
+    }
+    var
+      a: TAnchorKind;
+      SplitterNode: TLazDockConfigNode;
+    begin
+      for a:=Low(TAnchorKind) to High(TAnchorKind) do begin
+        if Node.Sides[a]='' then continue;
+        SplitterNode:=FindNode(Node.Sides[a]);
+        if (SplitterNode.TheType in [ldcntSplitterLeftRight,ldcntSplitterUpDown])
+        and SplitterIsOnlyUsedByNodeAtSide(SplitterNode,Node,a) then
+        begin
+          Result:=FindNodeUsingSplitter(SplitterNode,OppositeAnchor[a],true);
+          if Result<>nil then exit;
+        end;
+      end;
+      Result:=nil;
+    end;
+    
+    function FindSiblingWithControl(Node: TLazDockConfigNode
+      ): TLazDockConfigNode;
+    var
+      ParentNode: TLazDockConfigNode;
+      i: Integer;
+    begin
+      ParentNode:=Node.Parent;
+      for i:=0 to ParentNode.ChildCount-1 do begin
+        Result:=ParentNode.Childs[i];
+        if CompareText(Result.Name,DockerName)=0 then continue;
+        if Result.TheType=ldcntControl then
+          exit;
+      end;
+      Result:=nil;
+    end;
+
+    function FindPageSiblingWithControl(Node: TLazDockConfigNode
+      ): TLazDockConfigNode;
+    { find direct page sibling
+      This means:
+        Node is the only child of a page
+        A sibling page has a single child with a control
+    }
+    var
+      PagesNode: TLazDockConfigNode;
+      PageNode: TLazDockConfigNode;
+      PageIndex: LongInt;
+    begin
+      // check if node is on a page without siblings
+      PageNode:=Node.Parent;
+      if (PageNode=nil) or (PageNode.TheType<>ldcntPage)
+      or (PageNode.ChildCount>1) then exit;
+      // check if left page has only one control
+      PagesNode:=PageNode.Parent;
+      PageIndex:=PagesNode.IndexOf(PageNode.Name);
+      if (PageIndex>0)
+      and (PagesNode[PageIndex-1].ChildCount=1) then begin
+        Result:=PagesNode[PageIndex-1].Childs[0];
+        if Result.TheType=ldcntControl then exit;
+      end;
+      // check if right page has only one control
+      if (PageIndex<PagesNode.ChildCount-1)
+      and (PagesNode[PageIndex+1].ChildCount=1) then begin
+        Result:=PagesNode[PageIndex+1].Childs[0];
+        if Result.TheType=ldcntControl then exit;
+      end;
+      Result:=nil;
+    end;
+
+    function FindOtherNodeWithControl(Node: TLazDockConfigNode
+      ): TLazDockConfigNode;
+    var
+      i: Integer;
+    begin
+      Result:=nil;
+      if (Node.TheType=ldcntControl)
+      and (CompareText(Node.Name,DockerName)<>0) then
+        exit(Node);
+      for i:=0 to Node.ChildCount-1 do begin
+        Result:=FindOtherNodeWithControl(Node.Childs[i]);
+        if Result<>nil then exit;
+      end;
+    end;
+  
+  var
+    Node: TLazDockConfigNode;
+  begin
+    Node:=FindNode(DockerName);
+    Result:=FindOwnSplitterSiblingWithControl(Node);
+    if Result<>nil then exit;
+    Result:=FindSiblingWithControl(Node);
+    Node:=Root.FindByName(DockerName);
+    Result:=FindPageSiblingWithControl(Node);
+    if Result<>nil then exit;
+    Result:=FindOtherNodeWithControl(Root);
   end;
 
 var
   Config: TLazDockerConfig;
+  CurControl: TControl;
+  NearestControlNode: TLazDockConfigNode;
 begin
-  Config:=GetConfigWithDockerName(DockerName);
-  if (Config=nil) or (Config.Root=nil)
-  or (Config.Root.FindByName(DockerName)=nil)
-  or (ConfigIsCompatible(Config.Root,false)) then begin
-    // no good config found
-    exit(nil);
-  end;
+  Result:=nil;
+  CurDockControl:=nil;
+  Root:=nil;
   
+  Config:=GetConfigWithDockerName(DockerName);
+  if (Config=nil) or (Config.Root=nil) then exit;
+  CurControl:=FindControlByDockerName(DockerName);
+  if not ControlIsVisible(CurControl) then exit;
+  if (ConfigIsCompatible(Config.Root,false)) then exit;
+
   // create a copy of the config
   Root:=TLazDockConfigNode.Create(nil);
-  Root.Assign(Config.Root);
-  
-  // clean up by removing all invisible or unknown or empty nodes
-  RemoveEmptyNodes(Root);
+  try
+    Root.Assign(Config.Root);
 
-  // check if all used controls are on the same dock form
-  if not AllControlsAreOnSameForm then begin
+    // clean up by removing all invisible or unknown or empty nodes
+    RemoveEmptyNodes(Root);
 
+    // check if all used controls are on the same dock form
+    if not AllControlsAreOnSameForm then begin
+      // the used controls are distributed on different dock forms
+      // => choose one dock form and remove the nodes of the others
+      NearestControlNode:=FindNearestControlNode;
+      if NearestControlNode<>nil then begin
+        CurDockControl:=FindControlByDockerName(NearestControlNode.Name);
+        if CurDockControl<>nil then begin
+          CurDockControl:=CurDockControl.GetTopParent;
+          // remove nodes of other dock forms
+          RemoveEmptyNodes(Root);
+        end;
+      end;
+    end;
+
+    Result:=Root;
+    Root:=nil;
+  finally
+    Root.Free;
   end;
-  
-
-  // Now Root contains a Layout for the case that all visible controls are put
-  // into one dock form.
-  // For the case that there are different dock forms, the algorithm searches
-  // the nearest control in the Layout to DockerName. Then it removes the
-  // controls of the other dock forms.
-  // => Find the nearest control in the layout
-  
-  
-  Result:=Root;
 end;
 
 function TCustomLazDockingManager.ConfigIsCompatible(
@@ -1621,7 +1838,10 @@ end;
 
 procedure TLazDockConfigNode.DoRemove(ChildNode: TLazDockConfigNode);
 begin
-  FChilds.Remove(ChildNode);
+  if TObject(FChilds[FChilds.Count-1])=ChildNode then
+    FChilds.Delete(FChilds.Count-1)
+  else
+    FChilds.Remove(ChildNode);
 end;
 
 constructor TLazDockConfigNode.Create(ParentNode: TLazDockConfigNode);
@@ -1640,6 +1860,7 @@ end;
 destructor TLazDockConfigNode.Destroy;
 begin
   Clear;
+  Parent:=nil;
   FChilds.Free;
   FChilds:=nil;
   inherited Destroy;
@@ -1652,12 +1873,6 @@ begin
   if FChilds=nil then exit;
   for i:=ChildCount-1 downto 0 do Childs[i].Free;
   FChilds.Clear;
-end;
-
-procedure TLazDockConfigNode.RemoveFromParentAndFree;
-begin
-  if Parent<>nil then Parent.FChilds.Remove(Self);
-  Free;
 end;
 
 procedure TLazDockConfigNode.Assign(Source: TPersistent);
@@ -1703,6 +1918,17 @@ begin
       end;
     end;
   Result:=nil;
+end;
+
+function TLazDockConfigNode.IndexOf(const AName: string): Integer;
+begin
+  if FChilds<>nil then begin
+    Result:=FChilds.Count-1;
+    while (Result>=0) and (CompareText(Childs[Result].Name,AName)<>0) do
+      dec(Result);
+  end else begin
+    Result:=-1;
+  end;
 end;
 
 function TLazDockConfigNode.GetScreenBounds: TRect;
@@ -1816,6 +2042,125 @@ procedure TLazDockConfigNode.WriteDebugReport;
 begin
   DebugLn('TLazDockConfigNode.WriteDebugReport Root=',dbgs(Self));
   WriteNode('  ',Self);
+  DebugLn(DebugLayoutAsString);
+end;
+
+function TLazDockConfigNode.DebugLayoutAsString: string;
+type
+  TArrayOfRect = array of TRect;
+var
+  Cols: LongInt;
+  Rows: LongInt;
+  LogCols: Integer;
+
+  procedure w(x,y: Integer; const s: string; MaxY: Integer = 0);
+  var
+    i: Integer;
+  begin
+    for i:=1 to length(s) do begin
+      if (MaxY>0) and (y>MaxY) then exit;
+      Result[LogCols*(y-1) + x + i-1]:=s[i];
+    end;
+  end;
+
+  procedure wfillrect(const ARect: TRect; c: char);
+  var
+    x: LongInt;
+    y: LongInt;
+  begin
+    for x:=ARect.Left to ARect.Right do
+      for y:=ARect.Top to ARect.Bottom do
+        w(x,y,c);
+  end;
+  
+  procedure wrectangle(const ARect: TRect);
+  begin
+    w(ARect.Left,ARect.Top,'+');
+    w(ARect.Right,ARect.Top,'+');
+    w(ARect.Left,ARect.Bottom,'+');
+    w(ARect.Right,ARect.Bottom,'+');
+    if ARect.Left<ARect.Right then begin
+      if ARect.Top<ARect.Bottom then begin
+        wfillrect(Rect(ARect.Left+1,ARect.Top,ARect.Right-1,ARect.Top),'-');// top line
+        wfillrect(Rect(ARect.Left+1,ARect.Bottom,ARect.Right-1,ARect.Bottom),'-');// bottom line
+        wfillrect(Rect(ARect.Left,ARect.Top+1,ARect.Left,ARect.Bottom-1),'|');// left line
+        wfillrect(Rect(ARect.Right,ARect.Top+1,ARect.Right,ARect.Bottom-1),'|');// right line
+      end else begin
+        wfillrect(Rect(ARect.Left+1,ARect.Top,ARect.Right-1,ARect.Top),'=');// horizontal line
+      end;
+    end else begin
+      wfillrect(Rect(ARect.Left,ARect.Top+1,ARect.Left,ARect.Bottom-1),'#');// vertical line
+    end;
+  end;
+  
+  function MapRect(const OriginalRect, OldBounds, NewBounds: TRect): TRect;
+  
+    function MapX(i: Integer): Integer;
+    begin
+      Result:=NewBounds.Left+
+        (((i-OldBounds.Left)*(NewBounds.Right-NewBounds.Left))
+         div (OldBounds.Right-OldBounds.Left));
+    end;
+  
+    function MapY(i: Integer): Integer;
+    begin
+      Result:=NewBounds.Top+
+        (((i-OldBounds.Top)*(NewBounds.Bottom-NewBounds.Top))
+         div (OldBounds.Bottom-OldBounds.Top));
+    end;
+
+  begin
+    Result.Left:=MapX(OriginalRect.Left);
+    Result.Top:=MapY(OriginalRect.Left);
+    Result.Right:=MapX(OriginalRect.Left);
+    Result.Bottom:=MapY(OriginalRect.Left);
+  end;
+  
+  procedure UnIntersect(Rects: TArrayOfRect);
+  var
+    i: Integer;
+    j: Integer;
+  begin
+    for i:=1 to length(Rects)-1 do begin
+      for j:=0 to i-1 do begin
+
+      end;
+    end;
+  end;
+  
+  procedure DrawNode(Node: TLazDockConfigNode; ARect: TRect);
+  var
+    i: Integer;
+    ChildRects: TArrayOfRect;
+  begin
+    wrectangle(ARect);
+    w(ARect.Left+1,ARect.Top,Node.Name,ARect.right);
+    
+    SetLength(ChildRects,Node.ChildCount);
+    for i:=0 to Node.ChildCount-1 do
+      ChildRects[i]:=MapRect(Node.Bounds,Node.ClientBounds,ARect);
+    UnIntersect(ChildRects);
+    for i:=0 to Node.ChildCount-1 do
+      DrawNode(Node.Childs[i],ChildRects[i]);
+    SetLength(ChildRects,0);
+  end;
+
+var
+  e: string;
+  y: Integer;
+begin
+  Cols:=StrToIntDef(Application.GetOptionValue('ldcn-colunms'),80);
+  Rows:=StrToIntDef(Application.GetOptionValue('ldcn-rows'),50);
+
+  e:=LineEnding;
+  LogCols:=Cols+length(e);
+  SetLength(Result,LogCols*Rows);
+  // fill space
+  FillChar(Result[1],length(Result),' ');
+  // add line endings
+  for y:=1 to Rows do
+    w(Cols+1,y,e);
+  DrawNode(Self,Rect(1,1,Cols,Rows));
 end;
 
 function TLazDockConfigNode.GetPath: string;

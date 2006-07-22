@@ -187,6 +187,7 @@ type
     property Component: TComponent read FComponent;
     property Designer: TComponentEditorDesigner read GetDesigner;
     function GetHook(out Hook: TPropertyEditorHook): boolean; override;
+    function HasHook: boolean;
     procedure Modified; override;
   end;
 
@@ -497,6 +498,13 @@ begin
   Result:=Hook<>nil;
 end;
 
+function TComponentEditor.HasHook: boolean;
+var
+  Hook: TPropertyEditorHook;
+begin
+  Result:=GetHook(Hook) and (Hook<>nil);
+end;
+
 procedure TComponentEditor.Modified;
 begin
   GetDesigner.Modified;
@@ -652,20 +660,17 @@ begin
 end;
 
 procedure TNotebookComponentEditor.DoAddPage;
-var
-  Hook: TPropertyEditorHook;
 begin
-  if not GetHook(Hook) then exit;
+  if not HasHook then exit;
   NoteBook.Pages.Add('');
   AddNewPageToDesigner(NoteBook.PageCount-1);
 end;
 
 procedure TNotebookComponentEditor.DoInsertPage;
 var
-  Hook: TPropertyEditorHook;
   NewIndex: integer;
 begin
-  if not GetHook(Hook) then exit;
+  if not HasHook then exit;
   NewIndex:=Notebook.PageIndex;
   if NewIndex<0 then NewIndex:=0;
   Notebook.Pages.Insert(NewIndex,'');
@@ -841,7 +846,6 @@ end;
 
 procedure TCheckListBoxComponentEditor.DoShowEditor;
 var Dlg: TCheckListBoxEditorDlg;
-    Hook: TPropertyEditorHook;
 begin
   Dlg:=TCheckListBoxEditorDlg.Create(nil);
   with Dlg do begin
@@ -859,7 +863,7 @@ begin
   try
     if GetComponent is TCheckListBox then begin
       Dlg.aCheck:=TCheckListBox(GetComponent);
-      GetHook(Hook);
+      if not HasHook then exit;
 
       AssignCheck(Dlg.FCheck, Dlg.aCheck);
 
@@ -1015,7 +1019,6 @@ end;
 
 procedure TCheckGroupComponentEditor.DoShowEditor;
 var Dlg : TCheckGroupEditorDlg;
-    Hook: TPropertyEditorHook;
     aCheck: TCheckGroup;
 begin
   Dlg:=TCheckGroupEditorDlg.Create(nil);
@@ -1035,7 +1038,7 @@ begin
   try
     if GetComponent is TCheckGroup then begin
       aCheck:=TCheckGroup(GetComponent);
-      GetHook(Hook);
+      if not HasHook then exit;
 
       AssignCheck(Dlg.FCheck, aCheck);
 

@@ -1155,6 +1155,7 @@ type
     function ColorIsStored: boolean; virtual;
     function HasParent: Boolean; override;
     function IsParentOf(AControl: TControl): boolean; virtual;
+    function GetTopParent: TControl;
     function IsVisible: Boolean; virtual;
     function IsControlVisible: Boolean;
     procedure Hide;

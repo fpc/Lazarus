@@ -3576,6 +3576,13 @@ begin
   end;
 end;
 
+function TControl.GetTopParent: TControl;
+begin
+  Result:=Self;
+  while Result.Parent<>nil do
+    Result:=Result.Parent;
+end;
+
 {------------------------------------------------------------------------------
   Method:  TControl.SendToBack
   Params:  None
