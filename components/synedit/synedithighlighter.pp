@@ -216,7 +216,8 @@ type
     property CodeFoldRange: TSynCustomHighlighterRange read FCodeFoldRange;
     function GetRangeClass: TSynCustomHighlighterRangeClass; virtual;
     function TopCodeFoldBlockType: Pointer;
-    function StartCodeFoldBlock(ABlockType: Pointer): TSynCustomCodeFoldBlock; virtual;
+    function StartCodeFoldBlock(ABlockType: Pointer; SubBlock: boolean = false
+                                ): TSynCustomCodeFoldBlock; virtual;
     procedure EndCodeFoldBlock; virtual;
     {$ENDIF}
   public
@@ -1199,17 +1200,31 @@ begin
     Result:=nil;
 end;
 
-function TSynCustomHighlighter.StartCodeFoldBlock(ABlockType: Pointer
-  ): TSynCustomCodeFoldBlock;
+function TSynCustomHighlighter.StartCodeFoldBlock(ABlockType: Pointer;
+  SubBlock: boolean): TSynCustomCodeFoldBlock;
 begin
-  Result:=CodeFoldRange.Add(ABlockType);
+  if SubBlock then begin
+    Result:=CodeFoldRange.Top;
+    if (Result.BlockType=ABlockType) then
+      Result.Level:=Result.Level+1
+    else
+      Result:=CodeFoldRange.Add(ABlockType);
+  end else
+    Result:=CodeFoldRange.Add(ABlockType);
 end;
 
 procedure TSynCustomHighlighter.EndCodeFoldBlock;
+var
+  TopBlock: TSynCustomCodeFoldBlock;
 begin
-  CodeFoldRange.Pop;
-  if FMinimumCodeFoldBlockLevel>CodeFoldRange.CodeFoldStackSize then
-    FMinimumCodeFoldBlockLevel:=CodeFoldRange.CodeFoldStackSize;
+  TopBlock:=CodeFoldRange.Top;
+  if TopBlock.Level>0 then
+    TopBlock.Level:=TopBlock.Level-1
+  else begin
+    CodeFoldRange.Pop;
+    if FMinimumCodeFoldBlockLevel>CodeFoldRange.CodeFoldStackSize then
+      FMinimumCodeFoldBlockLevel:=CodeFoldRange.CodeFoldStackSize;
+  end;
 end;
 {$ENDIF}
 

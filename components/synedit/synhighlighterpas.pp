@@ -83,8 +83,7 @@ type
   TPascalCodeFoldBlockType = (
     cfbtNone,
     cfbtBeginEnd,
-    cfbtNestedComment,
-    cfbtTryEnd
+    cfbtNestedComment
     );
   {$ENDIF}
 
@@ -252,8 +251,8 @@ type
     function GetIdentChars: TSynIdentChars; override;
     function IsFilterStored: boolean; override;                                 //mh 2000-10-08
     {$IFDEF SYN_LAZARUS}
-    function StartPascalCodeFoldBlock(ABlockType: TPascalCodeFoldBlockType
-                                ): TSynCustomCodeFoldBlock;
+    function StartPascalCodeFoldBlock(ABlockType: TPascalCodeFoldBlockType;
+                            SubBlock: boolean = false): TSynCustomCodeFoldBlock;
     {$ENDIF}
   public
     {$IFNDEF SYN_CPPB_1} class {$ENDIF}
@@ -635,7 +634,7 @@ begin
       {$IFDEF SYN_LAZARUS}
       //debugln('TSynPasSyn.Func23 END ',dbgs(ord(TopPascalCodeFoldBlockType)),' LineNumber=',dbgs(fLineNumber));
       //CodeFoldRange.WriteDebugReport;
-      if TopPascalCodeFoldBlockType in [cfbtBeginEnd, cfbtTryEnd] then
+      if TopPascalCodeFoldBlockType=cfbtBeginEnd then
         EndCodeFoldBlock;
       {$ENDIF}
     end else begin
@@ -662,7 +661,12 @@ begin
     begin
       if fRange = rsProperty then Result := tkKey else Result := tkIdentifier;
     end else
-      if KeyComp('Case') then Result := tkKey else Result := tkIdentifier;
+      if KeyComp('Case') then begin
+        {$IFDEF SYN_LAZARUS}
+        StartPascalCodeFoldBlock(cfbtBeginEnd,true);
+        {$ENDIF}
+        Result := tkKey;
+      end else Result := tkIdentifier;
 end;
 
 {$IFDEF SYN_LAZARUS}
@@ -815,7 +819,7 @@ begin
         if KeyComp('Try') then
         {$IFDEF SYN_LAZARUS}
         begin
-          StartPascalCodeFoldBlock(cfbtTryEnd);
+          StartPascalCodeFoldBlock(cfbtBeginEnd,true);
           Result := tkKey;
         end else
         {$ELSE}
@@ -1816,10 +1820,11 @@ begin
 end;
 
 function TSynPasSyn.StartPascalCodeFoldBlock(
-  ABlockType: TPascalCodeFoldBlockType): TSynCustomCodeFoldBlock;
+  ABlockType: TPascalCodeFoldBlockType;
+  SubBlock: boolean): TSynCustomCodeFoldBlock;
 begin
   Result:=TSynCustomCodeFoldBlock(
-                     inherited StartCodeFoldBlock(Pointer(PtrInt(ABlockType))));
+            inherited StartCodeFoldBlock(Pointer(PtrInt(ABlockType)),SubBlock));
 end;
 {$endif}
 
