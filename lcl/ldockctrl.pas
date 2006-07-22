@@ -1125,7 +1125,7 @@ var
   function ControlIsVisible(AControl: TControl): boolean;
   begin
     Result:=(AControl<>nil)
-            and ((AControl.Visible) or (AControl=VisibleControl));
+            and ((AControl.IsVisible) or (AControl=VisibleControl));
   end;
   
   function FindNode(const AName: string): TLazDockConfigNode;
@@ -1296,6 +1296,32 @@ var
     end;
   end;
 
+  function AllControlsAreOnSameForm: boolean;
+  
+    function Check(Node: TLazDockConfigNode): boolean;
+    var
+      i: Integer;
+      Docker: TCustomLazControlDocker;
+      CurForm: TControl;
+    begin
+      if Node.TheType=ldcntControl then begin
+        Docker:=FindDockerByName(Node.Name);
+        if (Docker<>nil) and (Docker.Control<>nil) then begin
+          //if Docker.Control
+          CurForm:=Docker.Control;
+          while CurForm.Parent<>nil do
+            CurForm:=CurForm.Parent;
+        end;
+      end;
+      // check childs
+      for i:=0 to Node.ChildCount-1 do
+        if not Check(Node.Childs[i]) then exit(false);
+      Result:=true;
+    end;
+  
+  begin
+    Result:=Check(Root);
+  end;
 
 var
   Config: TLazDockerConfig;
@@ -1316,6 +1342,10 @@ begin
   RemoveEmptyNodes(Root);
 
   // check if all used controls are on the same dock form
+  if not AllControlsAreOnSameForm then begin
+
+  end;
+  
 
   // Now Root contains a Layout for the case that all visible controls are put
   // into one dock form.

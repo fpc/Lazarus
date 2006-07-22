@@ -1203,7 +1203,7 @@ end;
 function TSynCustomHighlighter.StartCodeFoldBlock(ABlockType: Pointer;
   SubBlock: boolean): TSynCustomCodeFoldBlock;
 begin
-  if SubBlock then begin
+  if SubBlock and (CodeFoldRange.Top<>nil) then begin
     Result:=CodeFoldRange.Top;
     if (Result.BlockType=ABlockType) then
       Result.Level:=Result.Level+1
@@ -1218,7 +1218,7 @@ var
   TopBlock: TSynCustomCodeFoldBlock;
 begin
   TopBlock:=CodeFoldRange.Top;
-  if TopBlock.Level>0 then
+  if (TopBlock<>nil) and (TopBlock.Level>0) then
     TopBlock.Level:=TopBlock.Level-1
   else begin
     CodeFoldRange.Pop;

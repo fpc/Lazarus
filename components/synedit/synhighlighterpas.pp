@@ -663,7 +663,8 @@ begin
     end else
       if KeyComp('Case') then begin
         {$IFDEF SYN_LAZARUS}
-        StartPascalCodeFoldBlock(cfbtBeginEnd,true);
+        if TopPascalCodeFoldBlockType=cfbtBeginEnd then
+          StartPascalCodeFoldBlock(cfbtBeginEnd,true);
         {$ENDIF}
         Result := tkKey;
       end else Result := tkIdentifier;
@@ -819,7 +820,8 @@ begin
         if KeyComp('Try') then
         {$IFDEF SYN_LAZARUS}
         begin
-          StartPascalCodeFoldBlock(cfbtBeginEnd,true);
+          if TopPascalCodeFoldBlockType=cfbtBeginEnd then
+            StartPascalCodeFoldBlock(cfbtBeginEnd,true);
           Result := tkKey;
         end else
         {$ELSE}
