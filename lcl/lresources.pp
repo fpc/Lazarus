@@ -3523,6 +3523,7 @@ end;
 
 procedure TLRSObjectWriter.WriteWideStringContent(ws: WideString);
 begin
+  if ws='' then exit;
   {$IFDEF FPC_BIG_ENDIAN}
   WriteWordsReversed(PWord(@ws[1]),length(ws));
   {$ELSE}
