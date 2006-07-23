@@ -2465,7 +2465,7 @@ begin
   UseClientHeightForHeight:=(not (cfHeightLoaded in FControlFlags))
                  and (cfClientHeightLoaded in FControlFlags);
   if UseClientWidthForWidth or UseClientHeightForHeight then begin
-    DebugLn(['TControl.Loaded ',DbgSName(Self),' Note: Width and/or Height were not set during loading, using ClientWidth/ClientHeight']);
+    //DebugLn(['TControl.Loaded ',DbgSName(Self),' Note: Width and/or Height were not set during loading, using ClientWidth/ClientHeight']);
     NewWidth:=Width;
     if UseClientWidthForWidth then
       NewWidth:=FLoadedClientSize.X;

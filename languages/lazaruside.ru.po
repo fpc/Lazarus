@@ -319,7 +319,7 @@ msgstr "О проекте Lazarus"
 
 #: lazarusidestrconsts:lismenuaboutlazarus
 msgid "About Lazarus ..."
-msgstr ""
+msgstr "О проекте Lazarus ..."
 
 #: lazarusidestrconsts:srvk_accept
 msgid "Accept"
@@ -1195,7 +1195,7 @@ msgstr "Очистить всё"
 
 #: lazarusidestrconsts:lismenucleandirectory
 msgid "Clean directory ..."
-msgstr ""
+msgstr "Очистить каталог ..."
 
 #: lazarusidestrconsts:liscldircleansubdirectories
 msgid "Clean sub directories"
@@ -1247,7 +1247,7 @@ msgstr "Обозреватель кода"
 
 #: lazarusidestrconsts:lismenueditcodetemplates
 msgid "Code Templates ..."
-msgstr ""
+msgstr "Шаблоны кода ..."
 
 #: lazarusidestrconsts:dlgcodetoolstab
 msgid "Code Tools"
@@ -1291,7 +1291,7 @@ msgstr "Настройки CodeTools"
 
 #: lazarusidestrconsts:lismenucodetoolsoptions
 msgid "CodeTools Options ..."
-msgstr ""
+msgstr "Настройки CodeTools ..."
 
 #: lazarusidestrconsts:srkmcatcodetools
 msgid "CodeTools commands"
@@ -1299,7 +1299,7 @@ msgstr "Команды CodeTools"
 
 #: lazarusidestrconsts:lismenucodetoolsdefineseditor
 msgid "CodeTools defines editor ..."
-msgstr ""
+msgstr "Настройки редактора CodeTools ..."
 
 #: lazarusidestrconsts:srkmeccodetoolsdefinesed
 msgid "Codetools defines editor"
@@ -1411,7 +1411,7 @@ msgstr "Опции компилятора"
 
 #: lazarusidestrconsts:lismenucompileroptions
 msgid "Compiler Options ..."
-msgstr ""
+msgstr "Опции компилятора ..."
 
 #: lazarusidestrconsts:lispckeditcompileroptionsforpackage
 msgid "Compiler Options for Package %s"
@@ -1479,7 +1479,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuconfigurehelp
 msgid "Configure Help ..."
-msgstr ""
+msgstr "Настроить Справку ..."
 
 #: lazarusidestrconsts:lismenuconfigurebuildlazarus
 msgid "Configure \"Build Lazarus\" ..."
@@ -1487,7 +1487,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuconfigcustomcomps
 msgid "Configure custom components ..."
-msgstr ""
+msgstr "Настроить компоненты пользователя ..."
 
 #: lazarusidestrconsts:lismenusettings
 msgid "Configure custom tools ..."
@@ -1495,7 +1495,7 @@ msgstr "Настроить инструменты пользователя"
 
 #: lazarusidestrconsts:lismenueditinstallpkgs
 msgid "Configure installed packages ..."
-msgstr ""
+msgstr "Настроить установленные пакеты ..."
 
 #: lazarusidestrconsts:lislazbuildconfirmbuild
 msgid "Confirm Before ReBuild Lazarus"
@@ -1563,19 +1563,19 @@ msgstr "Преобразовать"
 
 #: lazarusidestrconsts:lismenuconvertdfmtolfm
 msgid "Convert DFM file to LFM ..."
-msgstr ""
+msgstr "Преобразовать DFM в LFM ..."
 
 #: lazarusidestrconsts:lismenuconvertdelphipackage
 msgid "Convert Delphi package to Lazarus package ..."
-msgstr ""
+msgstr "Преобразовать пакет Delphi в пакет Lazarus ..."
 
 #: lazarusidestrconsts:lismenuconvertdelphiproject
 msgid "Convert Delphi project to Lazarus project ..."
-msgstr ""
+msgstr "Преобразовать проект Delphi в проект Lazarus ..."
 
 #: lazarusidestrconsts:lismenuconvertdelphiunit
 msgid "Convert Delphi unit to Lazarus unit ..."
-msgstr ""
+msgstr "Преобразовать модуль Delphi в Lazarus ..."
 
 #: lazarusidestrconsts:liscodetoolsdefsconvertnode
 msgid "Convert node"
@@ -1851,7 +1851,7 @@ msgstr "Окна отладки"
 
 #: lazarusidestrconsts:lismendebuggeroptions
 msgid "Debugger Options ..."
-msgstr ""
+msgstr "Настройки отладчика ..."
 
 #: lazarusidestrconsts:lisdebuggererror
 msgid "Debugger error"
@@ -2271,7 +2271,7 @@ msgstr "Высота шрифта"
 
 #: lazarusidestrconsts:lismenueditoroptions
 msgid "Editor options ..."
-msgstr ""
+msgstr "Настройки редактора ..."
 
 #: lazarusidestrconsts:uemeditorproperties
 msgid "Editor properties"
@@ -2311,7 +2311,7 @@ msgstr "Заключить выделенное"
 
 #: lazarusidestrconsts:lismenuencloseselection
 msgid "Enclose selection ..."
-msgstr ""
+msgstr "Заключить выделение в ..."
 
 #: lazarusidestrconsts:srvk_end
 msgid "End"
@@ -2347,7 +2347,7 @@ msgstr "Команды меню окружения"
 
 #: lazarusidestrconsts:lismenugeneraloptions
 msgid "Environment options ..."
-msgstr ""
+msgstr "Настройки окружения ..."
 
 #: lazarusidestrconsts:liscodetemplerror
 msgid "Error"
@@ -2559,7 +2559,7 @@ msgstr "Выделить процедуру"
 
 #: lazarusidestrconsts:lismenuextractproc
 msgid "Extract procedure ..."
-msgstr ""
+msgstr "Выделить процедуру ..."
 
 #: lazarusidestrconsts:lishofpcdochtmlpath
 msgid "FPC Doc HTML Path"
@@ -2739,11 +2739,11 @@ msgstr "Найти сзади"
 
 #: lazarusidestrconsts:lismenufindinfiles
 msgid "Find &in files ..."
-msgstr ""
+msgstr "Поиск в файлах ..."
 
 #: lazarusidestrconsts:lismenufind2
 msgid "Find ..."
-msgstr ""
+msgstr "Найти ..."
 
 #: lazarusidestrconsts:lismenufinddeclarationatcursor
 msgid "Find Declaration at cursor"
@@ -2755,7 +2755,7 @@ msgstr "Найти ссылки на идентификатор"
 
 #: lazarusidestrconsts:lismenufindidentifierrefs
 msgid "Find Identifier References ..."
-msgstr ""
+msgstr "Найти ссылки на идентификатор ..."
 
 #: lazarusidestrconsts:lismenutemplatefindnext
 msgid "Find Next"
@@ -3031,7 +3031,7 @@ msgstr "Переход по директиве $I"
 
 #: lazarusidestrconsts:lismenugotoline
 msgid "Goto line ..."
-msgstr ""
+msgstr "Переход к строке ..."
 
 #: lazarusidestrconsts:lisuegotoline
 msgid "Goto line :"
@@ -4275,7 +4275,7 @@ msgstr "Создать исполняемый"
 
 #: lazarusidestrconsts:lismenumakeresourcestring
 msgid "Make Resource String ..."
-msgstr ""
+msgstr "Создать строку ресурсов ..."
 
 #: lazarusidestrconsts:lismakeresourcestring
 msgid "Make ResourceString"
@@ -4631,11 +4631,11 @@ msgstr "Создать форму"
 
 #: lazarusidestrconsts:lismenunewproject
 msgid "New Project ..."
-msgstr ""
+msgstr "Создать проект ..."
 
 #: lazarusidestrconsts:lismenunewprojectfromfile
 msgid "New Project from file ..."
-msgstr ""
+msgstr "Создать проект из файла ..."
 
 #: lazarusidestrconsts:lisprojaddnewrequirement
 msgid "New Requirement"
@@ -4863,7 +4863,7 @@ msgstr "Открыть %s"
 
 #: lazarusidestrconsts:lisopen
 msgid "Open ..."
-msgstr ""
+msgstr "Открыть ..."
 
 #: lazarusidestrconsts:lisdiffdlgopendiffineditor
 msgid "Open Diff in editor"
@@ -4883,7 +4883,7 @@ msgstr "Открыть предпросмотр"
 
 #: lazarusidestrconsts:lismenuopenproject
 msgid "Open Project ..."
-msgstr ""
+msgstr "Открыть проект ..."
 
 #: lazarusidestrconsts:lisopenprojectfile
 msgid "Open Project File"
@@ -4899,11 +4899,11 @@ msgstr "Открыть недавнее"
 
 #: lazarusidestrconsts:lismenuopenrecent
 msgid "Open Recent ..."
-msgstr ""
+msgstr "Открыть недавнее ..."
 
 #: lazarusidestrconsts:lismenuopenrecentproject
 msgid "Open Recent Project ..."
-msgstr ""
+msgstr "Открыть недавний проект ..."
 
 #: lazarusidestrconsts:lisopenasxmlfile
 msgid "Open as XML file"
@@ -4931,7 +4931,7 @@ msgstr "Открыть загруженный пакет"
 
 #: lazarusidestrconsts:lismenuopenpackage
 msgid "Open loaded package ..."
-msgstr ""
+msgstr "Открыть загруженный пакет ..."
 
 #: lazarusidestrconsts:liscomppalopenpackage
 msgid "Open package"
@@ -4955,7 +4955,7 @@ msgstr "Открыть проект снова"
 
 #: lazarusidestrconsts:lismenuopenrecentpkg
 msgid "Open recent package ..."
-msgstr ""
+msgstr "Открыть недавний пакет ..."
 
 #: lazarusidestrconsts:lisopenthefileasnormalsource
 msgid "Open the file as normal source"
@@ -5087,7 +5087,7 @@ msgstr "Пакет %s%s%s не найден"
 
 #: lazarusidestrconsts:lismenupackagegraph
 msgid "Package Graph ..."
-msgstr ""
+msgstr "Диаграмма пакетов ..."
 
 #: lazarusidestrconsts:lispackageinfo
 msgid "Package Info"
@@ -5363,7 +5363,7 @@ msgstr ""
 
 #: lazarusidestrconsts:srkmecprocedurelist
 msgid "Procedure List ..."
-msgstr ""
+msgstr " ..."
 
 #: lazarusidestrconsts:dlgforwardprocsinsertpolicy
 msgid "Procedure insert policy"
@@ -5435,7 +5435,7 @@ msgstr "Настройки проекта"
 
 #: lazarusidestrconsts:lismenuprojectoptions
 msgid "Project Options ..."
-msgstr ""
+msgstr "Настройки проекта ..."
 
 #: lazarusidestrconsts:lisprojprojectsourcedirectorymark
 msgid "Project Source Directory Mark"
@@ -5527,7 +5527,7 @@ msgstr "Опубликовать пакет"
 
 #: lazarusidestrconsts:lismenupublishproject
 msgid "Publish Project ..."
-msgstr ""
+msgstr "Опубликовать проект ..."
 
 #: lazarusidestrconsts:lispublishprojdir
 msgid "Publish project directory"
@@ -5707,7 +5707,7 @@ msgstr "Удалить файлы по фильтру"
 
 #: lazarusidestrconsts:lismenuremovefromproject
 msgid "Remove from Project ..."
-msgstr ""
+msgstr "Убрать из проекта ..."
 
 #: lazarusidestrconsts:lisoifremovefromfavouriteproperties
 msgid "Remove from favourite properties"
@@ -5751,7 +5751,7 @@ msgstr "Переименовать ID"
 
 #: lazarusidestrconsts:lismenurenameidentifier
 msgid "Rename Identifier ..."
-msgstr ""
+msgstr "Переименовать ID ..."
 
 #: lazarusidestrconsts:lisfrirenameallreferences
 msgid "Rename all References"
@@ -5791,7 +5791,7 @@ msgstr "Заменить &Все"
 
 #: lazarusidestrconsts:lismenureplace2
 msgid "Replace ..."
-msgstr ""
+msgstr "Замена ..."
 
 #: lazarusidestrconsts:lispkgmangreplacefile
 msgid "Replace File"
@@ -5999,7 +5999,7 @@ msgstr "Сохранить как-автопереименовать в нижн
 
 #: lazarusidestrconsts:lismenusaveas
 msgid "Save As ..."
-msgstr ""
+msgstr "Сохранить как ..."
 
 #: lazarusidestrconsts:lismenueditorsaveastemplate
 msgid "Save As Template..."
@@ -6027,7 +6027,7 @@ msgstr "Сохранить прокет %s (*.lpi)"
 
 #: lazarusidestrconsts:lismenusaveprojectas
 msgid "Save Project As ..."
-msgstr ""
+msgstr "Сохранить проект как ..."
 
 #: lazarusidestrconsts:lissavesettings
 msgid "Save Settings"
@@ -6707,7 +6707,7 @@ msgstr "Сортировка выбранного"
 
 #: lazarusidestrconsts:lismenusortselection
 msgid "Sort selection ..."
-msgstr ""
+msgstr "Сортировка выбранного ..."
 
 #: lazarusidestrconsts:lismenuviewsourceeditor
 msgid "Source Editor"
@@ -8383,7 +8383,7 @@ msgstr "Показать кнопки быстрого доступа IDE"
 
 #: lazarusidestrconsts:lismenuviewjumphistory
 msgid "View Jump-History ..."
-msgstr ""
+msgstr "Просмотр истории переходов ..."
 
 #: lazarusidestrconsts:srkmectoggleobjectinsp
 msgid "View Object Inspector"
@@ -8415,7 +8415,7 @@ msgstr "Показать редактор исходников"
 
 #: lazarusidestrconsts:lismenuviewprojecttodos
 msgid "View ToDo List ..."
-msgstr ""
+msgstr "Показать список ToDo ..."
 
 #: lazarusidestrconsts:lismenuviewunitdependencies
 msgid "View Unit Dependencies"

@@ -319,7 +319,7 @@ msgstr "Informatie over Lazarus"
 
 #: lazarusidestrconsts:lismenuaboutlazarus
 msgid "About Lazarus ..."
-msgstr ""
+msgstr "Informatie over Lazarus ..."
 
 #: lazarusidestrconsts:srvk_accept
 msgid "Accept"
@@ -1195,7 +1195,7 @@ msgstr "Maak alles schoon"
 
 #: lazarusidestrconsts:lismenucleandirectory
 msgid "Clean directory ..."
-msgstr ""
+msgstr "Maak directory schoon ..."
 
 #: lazarusidestrconsts:liscldircleansubdirectories
 msgid "Clean sub directories"
@@ -1247,7 +1247,7 @@ msgstr "Codeverkenner"
 
 #: lazarusidestrconsts:lismenueditcodetemplates
 msgid "Code Templates ..."
-msgstr ""
+msgstr "Broncodesjablonen ..."
 
 #: lazarusidestrconsts:dlgcodetoolstab
 msgid "Code Tools"
@@ -1291,7 +1291,7 @@ msgstr "CodeTools-nstellingen"
 
 #: lazarusidestrconsts:lismenucodetoolsoptions
 msgid "CodeTools Options ..."
-msgstr ""
+msgstr "CodeTools-nstellingen ..."
 
 #: lazarusidestrconsts:srkmcatcodetools
 msgid "CodeTools commands"
@@ -1299,7 +1299,7 @@ msgstr "CodeToolscommando's"
 
 #: lazarusidestrconsts:lismenucodetoolsdefineseditor
 msgid "CodeTools defines editor ..."
-msgstr ""
+msgstr "CodeTools-definitieseditor ..."
 
 #: lazarusidestrconsts:srkmeccodetoolsdefinesed
 msgid "Codetools defines editor"
@@ -1411,7 +1411,7 @@ msgstr "Compileropties"
 
 #: lazarusidestrconsts:lismenucompileroptions
 msgid "Compiler Options ..."
-msgstr ""
+msgstr "Compileropties ..."
 
 #: lazarusidestrconsts:lispckeditcompileroptionsforpackage
 msgid "Compiler Options for Package %s"
@@ -1479,7 +1479,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuconfigurehelp
 msgid "Configure Help ..."
-msgstr ""
+msgstr "Configureer Help ..."
 
 #: lazarusidestrconsts:lismenuconfigurebuildlazarus
 msgid "Configure \"Build Lazarus\" ..."
@@ -1487,7 +1487,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuconfigcustomcomps
 msgid "Configure custom components ..."
-msgstr ""
+msgstr "Configureer aanpasbare componenten ..."
 
 #: lazarusidestrconsts:lismenusettings
 msgid "Configure custom tools ..."
@@ -1495,7 +1495,7 @@ msgstr "Configureer aanpasbare hulpmiddelen ..."
 
 #: lazarusidestrconsts:lismenueditinstallpkgs
 msgid "Configure installed packages ..."
-msgstr ""
+msgstr "Configureer geinstalleerde packages ..."
 
 #: lazarusidestrconsts:lislazbuildconfirmbuild
 msgid "Confirm Before ReBuild Lazarus"
@@ -1563,19 +1563,19 @@ msgstr "Converteren"
 
 #: lazarusidestrconsts:lismenuconvertdfmtolfm
 msgid "Convert DFM file to LFM ..."
-msgstr ""
+msgstr "Converteer .dfm-bestand naar .lfm ..."
 
 #: lazarusidestrconsts:lismenuconvertdelphipackage
 msgid "Convert Delphi package to Lazarus package ..."
-msgstr ""
+msgstr "Converteer Delphi package naar een Lazarus package ..."
 
 #: lazarusidestrconsts:lismenuconvertdelphiproject
 msgid "Convert Delphi project to Lazarus project ..."
-msgstr ""
+msgstr "Converteer Delphi project naar een Lazarus project ..."
 
 #: lazarusidestrconsts:lismenuconvertdelphiunit
 msgid "Convert Delphi unit to Lazarus unit ..."
-msgstr ""
+msgstr "Converteer Delphi-unit naar Lazarus-unit ..."
 
 #: lazarusidestrconsts:liscodetoolsdefsconvertnode
 msgid "Convert node"
@@ -1851,7 +1851,7 @@ msgstr "Debug schermen"
 
 #: lazarusidestrconsts:lismendebuggeroptions
 msgid "Debugger Options ..."
-msgstr ""
+msgstr "Debuggeropties ..."
 
 #: lazarusidestrconsts:lisdebuggererror
 msgid "Debugger error"
@@ -2271,7 +2271,7 @@ msgstr "Tekstverwerker lettertype hoogte"
 
 #: lazarusidestrconsts:lismenueditoroptions
 msgid "Editor options ..."
-msgstr ""
+msgstr "Editor opties ..."
 
 #: lazarusidestrconsts:uemeditorproperties
 msgid "Editor properties"
@@ -2311,7 +2311,7 @@ msgstr "Omsluit Selectie"
 
 #: lazarusidestrconsts:lismenuencloseselection
 msgid "Enclose selection ..."
-msgstr ""
+msgstr "Omsluit Selectie ..."
 
 #: lazarusidestrconsts:srvk_end
 msgid "End"
@@ -2347,7 +2347,7 @@ msgstr "Omgeving Menu commando's"
 
 #: lazarusidestrconsts:lismenugeneraloptions
 msgid "Environment options ..."
-msgstr ""
+msgstr "Omgeving opties ..."
 
 #: lazarusidestrconsts:liscodetemplerror
 msgid "Error"
@@ -2559,7 +2559,7 @@ msgstr "Destilleer procedure"
 
 #: lazarusidestrconsts:lismenuextractproc
 msgid "Extract procedure ..."
-msgstr ""
+msgstr "Destilleer procedure ..."
 
 #: lazarusidestrconsts:lishofpcdochtmlpath
 msgid "FPC Doc HTML Path"
@@ -2739,11 +2739,11 @@ msgstr "Zoek V&orige"
 
 #: lazarusidestrconsts:lismenufindinfiles
 msgid "Find &in files ..."
-msgstr ""
+msgstr "Zoek in &Bestanden ..."
 
 #: lazarusidestrconsts:lismenufind2
 msgid "Find ..."
-msgstr ""
+msgstr "Zoeken ..."
 
 #: lazarusidestrconsts:lismenufinddeclarationatcursor
 msgid "Find Declaration at cursor"
@@ -2755,7 +2755,7 @@ msgstr "Zoek Identifier Referenties"
 
 #: lazarusidestrconsts:lismenufindidentifierrefs
 msgid "Find Identifier References ..."
-msgstr ""
+msgstr "Zoek Identifier Referenties ..."
 
 #: lazarusidestrconsts:lismenutemplatefindnext
 msgid "Find Next"
@@ -3031,7 +3031,7 @@ msgstr "Ga naar include directive"
 
 #: lazarusidestrconsts:lismenugotoline
 msgid "Goto line ..."
-msgstr ""
+msgstr "Ga naar lijn ..."
 
 #: lazarusidestrconsts:lisuegotoline
 msgid "Goto line :"
@@ -4275,7 +4275,7 @@ msgstr "Maak Executable"
 
 #: lazarusidestrconsts:lismenumakeresourcestring
 msgid "Make Resource String ..."
-msgstr ""
+msgstr "Maak Resource string ..."
 
 #: lazarusidestrconsts:lismakeresourcestring
 msgid "Make ResourceString"
@@ -4631,11 +4631,11 @@ msgstr "Nieuwe Form"
 
 #: lazarusidestrconsts:lismenunewproject
 msgid "New Project ..."
-msgstr ""
+msgstr "Nieuw Project ..."
 
 #: lazarusidestrconsts:lismenunewprojectfromfile
 msgid "New Project from file ..."
-msgstr ""
+msgstr "Nieuw Project van bestand ..."
 
 #: lazarusidestrconsts:lisprojaddnewrequirement
 msgid "New Requirement"
@@ -4863,7 +4863,7 @@ msgstr "Open %s"
 
 #: lazarusidestrconsts:lisopen
 msgid "Open ..."
-msgstr ""
+msgstr "Openen ..."
 
 #: lazarusidestrconsts:lisdiffdlgopendiffineditor
 msgid "Open Diff in editor"
@@ -4883,7 +4883,7 @@ msgstr "Open voorbeeld"
 
 #: lazarusidestrconsts:lismenuopenproject
 msgid "Open Project ..."
-msgstr ""
+msgstr "Open Project ..."
 
 #: lazarusidestrconsts:lisopenprojectfile
 msgid "Open Project File"
@@ -4899,11 +4899,11 @@ msgstr "Open Recent"
 
 #: lazarusidestrconsts:lismenuopenrecent
 msgid "Open Recent ..."
-msgstr ""
+msgstr "Open Recent ..."
 
 #: lazarusidestrconsts:lismenuopenrecentproject
 msgid "Open Recent Project ..."
-msgstr ""
+msgstr "Open Recent Project ..."
 
 #: lazarusidestrconsts:lisopenasxmlfile
 msgid "Open as XML file"
@@ -4931,7 +4931,7 @@ msgstr "Open een geladen Package"
 
 #: lazarusidestrconsts:lismenuopenpackage
 msgid "Open loaded package ..."
-msgstr ""
+msgstr "Open een geladen Package ..."
 
 #: lazarusidestrconsts:liscomppalopenpackage
 msgid "Open package"
@@ -4955,7 +4955,7 @@ msgstr "Project opnieuw openen"
 
 #: lazarusidestrconsts:lismenuopenrecentpkg
 msgid "Open recent package ..."
-msgstr ""
+msgstr "Open recente Package ..."
 
 #: lazarusidestrconsts:lisopenthefileasnormalsource
 msgid "Open the file as normal source"
@@ -5087,7 +5087,7 @@ msgstr "Package %s%s%s niet gevonden."
 
 #: lazarusidestrconsts:lismenupackagegraph
 msgid "Package Graph ..."
-msgstr ""
+msgstr "Package graph ..."
 
 #: lazarusidestrconsts:lispackageinfo
 msgid "Package Info"
@@ -5363,7 +5363,7 @@ msgstr ""
 
 #: lazarusidestrconsts:srkmecprocedurelist
 msgid "Procedure List ..."
-msgstr ""
+msgstr " ..."
 
 #: lazarusidestrconsts:dlgforwardprocsinsertpolicy
 msgid "Procedure insert policy"
@@ -5435,7 +5435,7 @@ msgstr "Project Opties"
 
 #: lazarusidestrconsts:lismenuprojectoptions
 msgid "Project Options ..."
-msgstr ""
+msgstr "Project Opties ..."
 
 #: lazarusidestrconsts:lisprojprojectsourcedirectorymark
 msgid "Project Source Directory Mark"
@@ -5527,7 +5527,7 @@ msgstr "Publiceer Package"
 
 #: lazarusidestrconsts:lismenupublishproject
 msgid "Publish Project ..."
-msgstr ""
+msgstr "Publiceer Project ..."
 
 #: lazarusidestrconsts:lispublishprojdir
 msgid "Publish project directory"
@@ -5707,7 +5707,7 @@ msgstr "Overeenkomende bestanden verwijderen"
 
 #: lazarusidestrconsts:lismenuremovefromproject
 msgid "Remove from Project ..."
-msgstr ""
+msgstr "Verwijder van Project ..."
 
 #: lazarusidestrconsts:lisoifremovefromfavouriteproperties
 msgid "Remove from favourite properties"
@@ -5751,7 +5751,7 @@ msgstr "Hernoem Identifier"
 
 #: lazarusidestrconsts:lismenurenameidentifier
 msgid "Rename Identifier ..."
-msgstr ""
+msgstr "Hernoem Identifier ..."
 
 #: lazarusidestrconsts:lisfrirenameallreferences
 msgid "Rename all References"
@@ -5791,7 +5791,7 @@ msgstr "Vervang &alles"
 
 #: lazarusidestrconsts:lismenureplace2
 msgid "Replace ..."
-msgstr ""
+msgstr "Vervangen ..."
 
 #: lazarusidestrconsts:lispkgmangreplacefile
 msgid "Replace File"
@@ -5999,7 +5999,7 @@ msgstr "Opslaan als - Pascal bestands namen converteren naar kleine letters."
 
 #: lazarusidestrconsts:lismenusaveas
 msgid "Save As ..."
-msgstr ""
+msgstr "Opslaan Als ..."
 
 #: lazarusidestrconsts:lismenueditorsaveastemplate
 msgid "Save As Template..."
@@ -6027,7 +6027,7 @@ msgstr "Opslaan Projecy %s (*.lpi)"
 
 #: lazarusidestrconsts:lismenusaveprojectas
 msgid "Save Project As ..."
-msgstr ""
+msgstr "Project Opslaan Als  ..."
 
 #: lazarusidestrconsts:lissavesettings
 msgid "Save Settings"
@@ -6707,7 +6707,7 @@ msgstr "Sorteer Selectie"
 
 #: lazarusidestrconsts:lismenusortselection
 msgid "Sort selection ..."
-msgstr ""
+msgstr "Sorteer Selectie ..."
 
 #: lazarusidestrconsts:lismenuviewsourceeditor
 msgid "Source Editor"
@@ -8383,7 +8383,7 @@ msgstr "Toon IDE speed buttons"
 
 #: lazarusidestrconsts:lismenuviewjumphistory
 msgid "View Jump-History ..."
-msgstr ""
+msgstr "Toon Springpunt geschiedenis ..."
 
 #: lazarusidestrconsts:srkmectoggleobjectinsp
 msgid "View Object Inspector"
@@ -8415,7 +8415,7 @@ msgstr "Toon Broncode Editor"
 
 #: lazarusidestrconsts:lismenuviewprojecttodos
 msgid "View ToDo List ..."
-msgstr ""
+msgstr "Toon ToDo Lijst ..."
 
 #: lazarusidestrconsts:lismenuviewunitdependencies
 msgid "View Unit Dependencies"

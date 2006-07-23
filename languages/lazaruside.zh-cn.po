@@ -322,7 +322,7 @@ msgstr "关于 Lazarus"
 
 #: lazarusidestrconsts:lismenuaboutlazarus
 msgid "About Lazarus ..."
-msgstr ""
+msgstr "关于 Lazarus ..."
 
 #: lazarusidestrconsts:srvk_accept
 msgid "Accept"
@@ -1198,7 +1198,7 @@ msgstr "清除所有"
 
 #: lazarusidestrconsts:lismenucleandirectory
 msgid "Clean directory ..."
-msgstr ""
+msgstr "清除目录 ..."
 
 #: lazarusidestrconsts:liscldircleansubdirectories
 msgid "Clean sub directories"
@@ -1250,7 +1250,7 @@ msgstr "代码浏览器"
 
 #: lazarusidestrconsts:lismenueditcodetemplates
 msgid "Code Templates ..."
-msgstr ""
+msgstr "代码模板 ..."
 
 #: lazarusidestrconsts:dlgcodetoolstab
 msgid "Code Tools"
@@ -1294,7 +1294,7 @@ msgstr "代码工具选项"
 
 #: lazarusidestrconsts:lismenucodetoolsoptions
 msgid "CodeTools Options ..."
-msgstr ""
+msgstr "代码工具选项 ..."
 
 #: lazarusidestrconsts:srkmcatcodetools
 msgid "CodeTools commands"
@@ -1302,7 +1302,7 @@ msgstr "代码工具命令行"
 
 #: lazarusidestrconsts:lismenucodetoolsdefineseditor
 msgid "CodeTools defines editor ..."
-msgstr ""
+msgstr "CodeTools 定义编辑器 ..."
 
 #: lazarusidestrconsts:srkmeccodetoolsdefinesed
 msgid "Codetools defines editor"
@@ -1414,7 +1414,7 @@ msgstr "编译选项"
 
 #: lazarusidestrconsts:lismenucompileroptions
 msgid "Compiler Options ..."
-msgstr ""
+msgstr "编译选项 ..."
 
 #: lazarusidestrconsts:lispckeditcompileroptionsforpackage
 msgid "Compiler Options for Package %s"
@@ -1482,7 +1482,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuconfigurehelp
 msgid "Configure Help ..."
-msgstr ""
+msgstr "配置帮助 ..."
 
 #: lazarusidestrconsts:lismenuconfigurebuildlazarus
 msgid "Configure \"Build Lazarus\" ..."
@@ -1490,7 +1490,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuconfigcustomcomps
 msgid "Configure custom components ..."
-msgstr ""
+msgstr "配置自定义组件 ..."
 
 #: lazarusidestrconsts:lismenusettings
 msgid "Configure custom tools ..."
@@ -1498,7 +1498,7 @@ msgstr "配置工具..."
 
 #: lazarusidestrconsts:lismenueditinstallpkgs
 msgid "Configure installed packages ..."
-msgstr ""
+msgstr "配置已安装的包 ..."
 
 #: lazarusidestrconsts:lislazbuildconfirmbuild
 msgid "Confirm Before ReBuild Lazarus"
@@ -1566,19 +1566,19 @@ msgstr "转换"
 
 #: lazarusidestrconsts:lismenuconvertdfmtolfm
 msgid "Convert DFM file to LFM ..."
-msgstr ""
+msgstr "转换 DFM 文件为 LFM 文件 ..."
 
 #: lazarusidestrconsts:lismenuconvertdelphipackage
 msgid "Convert Delphi package to Lazarus package ..."
-msgstr ""
+msgstr "转换 Delphi 包为 Lazarus 包 ..."
 
 #: lazarusidestrconsts:lismenuconvertdelphiproject
 msgid "Convert Delphi project to Lazarus project ..."
-msgstr ""
+msgstr "转换 Delphi 工程为 Lazarus 工程 ..."
 
 #: lazarusidestrconsts:lismenuconvertdelphiunit
 msgid "Convert Delphi unit to Lazarus unit ..."
-msgstr ""
+msgstr "转换 Delphi 单元为 Lazarus 单元 ..."
 
 #: lazarusidestrconsts:liscodetoolsdefsconvertnode
 msgid "Convert node"
@@ -1854,7 +1854,7 @@ msgstr "调试窗口"
 
 #: lazarusidestrconsts:lismendebuggeroptions
 msgid "Debugger Options ..."
-msgstr ""
+msgstr "调试器选项 ..."
 
 #: lazarusidestrconsts:lisdebuggererror
 msgid "Debugger error"
@@ -2274,7 +2274,7 @@ msgstr "编辑器字体高度"
 
 #: lazarusidestrconsts:lismenueditoroptions
 msgid "Editor options ..."
-msgstr ""
+msgstr "编辑器选项 ..."
 
 #: lazarusidestrconsts:uemeditorproperties
 msgid "Editor properties"
@@ -2314,7 +2314,7 @@ msgstr "封装所选"
 
 #: lazarusidestrconsts:lismenuencloseselection
 msgid "Enclose selection ..."
-msgstr ""
+msgstr "封装所选 ..."
 
 #: lazarusidestrconsts:srvk_end
 msgid "End"
@@ -2350,7 +2350,7 @@ msgstr "环境菜单命令"
 
 #: lazarusidestrconsts:lismenugeneraloptions
 msgid "Environment options ..."
-msgstr ""
+msgstr "环境选项 ..."
 
 #: lazarusidestrconsts:liscodetemplerror
 msgid "Error"
@@ -2562,7 +2562,7 @@ msgstr "解析过程"
 
 #: lazarusidestrconsts:lismenuextractproc
 msgid "Extract procedure ..."
-msgstr ""
+msgstr "解析过程 ..."
 
 #: lazarusidestrconsts:lishofpcdochtmlpath
 msgid "FPC Doc HTML Path"
@@ -2742,11 +2742,11 @@ msgstr "查找前一个(&P)"
 
 #: lazarusidestrconsts:lismenufindinfiles
 msgid "Find &in files ..."
-msgstr ""
+msgstr "在文件中查找(&I) ..."
 
 #: lazarusidestrconsts:lismenufind2
 msgid "Find ..."
-msgstr ""
+msgstr "查找 ..."
 
 #: lazarusidestrconsts:lismenufinddeclarationatcursor
 msgid "Find Declaration at cursor"
@@ -2758,7 +2758,7 @@ msgstr "查找标识符参考"
 
 #: lazarusidestrconsts:lismenufindidentifierrefs
 msgid "Find Identifier References ..."
-msgstr ""
+msgstr "查找标识符参考 ..."
 
 #: lazarusidestrconsts:lismenutemplatefindnext
 msgid "Find Next"
@@ -3034,7 +3034,7 @@ msgstr "前往包含指示处"
 
 #: lazarusidestrconsts:lismenugotoline
 msgid "Goto line ..."
-msgstr ""
+msgstr "转到行 ..."
 
 #: lazarusidestrconsts:lisuegotoline
 msgid "Goto line :"
@@ -4278,7 +4278,7 @@ msgstr "生成可执行程序"
 
 #: lazarusidestrconsts:lismenumakeresourcestring
 msgid "Make Resource String ..."
-msgstr ""
+msgstr "制作资源字符串 ..."
 
 #: lazarusidestrconsts:lismakeresourcestring
 msgid "Make ResourceString"
@@ -4634,11 +4634,11 @@ msgstr "新建窗体"
 
 #: lazarusidestrconsts:lismenunewproject
 msgid "New Project ..."
-msgstr ""
+msgstr "新建工程 ..."
 
 #: lazarusidestrconsts:lismenunewprojectfromfile
 msgid "New Project from file ..."
-msgstr ""
+msgstr "从文件新建工程 ..."
 
 #: lazarusidestrconsts:lisprojaddnewrequirement
 msgid "New Requirement"
@@ -4866,7 +4866,7 @@ msgstr "打开 %s"
 
 #: lazarusidestrconsts:lisopen
 msgid "Open ..."
-msgstr ""
+msgstr "打开 ..."
 
 #: lazarusidestrconsts:lisdiffdlgopendiffineditor
 msgid "Open Diff in editor"
@@ -4886,7 +4886,7 @@ msgstr "打开预览"
 
 #: lazarusidestrconsts:lismenuopenproject
 msgid "Open Project ..."
-msgstr ""
+msgstr "打开工程 ..."
 
 #: lazarusidestrconsts:lisopenprojectfile
 msgid "Open Project File"
@@ -4902,11 +4902,11 @@ msgstr "打开最近的文件"
 
 #: lazarusidestrconsts:lismenuopenrecent
 msgid "Open Recent ..."
-msgstr ""
+msgstr "打开最近的文件 ..."
 
 #: lazarusidestrconsts:lismenuopenrecentproject
 msgid "Open Recent Project ..."
-msgstr ""
+msgstr "打开最近的工程 ..."
 
 #: lazarusidestrconsts:lisopenasxmlfile
 msgid "Open as XML file"
@@ -4934,7 +4934,7 @@ msgstr "打开装载的包"
 
 #: lazarusidestrconsts:lismenuopenpackage
 msgid "Open loaded package ..."
-msgstr ""
+msgstr "打开装载的包 ..."
 
 #: lazarusidestrconsts:liscomppalopenpackage
 msgid "Open package"
@@ -4958,7 +4958,7 @@ msgstr "再次打开工程"
 
 #: lazarusidestrconsts:lismenuopenrecentpkg
 msgid "Open recent package ..."
-msgstr ""
+msgstr "打开最近的包 ..."
 
 #: lazarusidestrconsts:lisopenthefileasnormalsource
 msgid "Open the file as normal source"
@@ -5090,7 +5090,7 @@ msgstr "未找到 %s%s%s ."
 
 #: lazarusidestrconsts:lismenupackagegraph
 msgid "Package Graph ..."
-msgstr ""
+msgstr "包图表 ..."
 
 #: lazarusidestrconsts:lispackageinfo
 msgid "Package Info"
@@ -5366,7 +5366,7 @@ msgstr ""
 
 #: lazarusidestrconsts:srkmecprocedurelist
 msgid "Procedure List ..."
-msgstr ""
+msgstr " ..."
 
 #: lazarusidestrconsts:dlgforwardprocsinsertpolicy
 msgid "Procedure insert policy"
@@ -5438,7 +5438,7 @@ msgstr "工程选项"
 
 #: lazarusidestrconsts:lismenuprojectoptions
 msgid "Project Options ..."
-msgstr ""
+msgstr "工程选项 ..."
 
 #: lazarusidestrconsts:lisprojprojectsourcedirectorymark
 msgid "Project Source Directory Mark"
@@ -5530,7 +5530,7 @@ msgstr "发布包"
 
 #: lazarusidestrconsts:lismenupublishproject
 msgid "Publish Project ..."
-msgstr ""
+msgstr "发布工程 ..."
 
 #: lazarusidestrconsts:lispublishprojdir
 msgid "Publish project directory"
@@ -5710,7 +5710,7 @@ msgstr "移除匹配过滤器的文件"
 
 #: lazarusidestrconsts:lismenuremovefromproject
 msgid "Remove from Project ..."
-msgstr ""
+msgstr "从工程中移除 ..."
 
 #: lazarusidestrconsts:lisoifremovefromfavouriteproperties
 msgid "Remove from favourite properties"
@@ -5754,7 +5754,7 @@ msgstr "重命名标识符"
 
 #: lazarusidestrconsts:lismenurenameidentifier
 msgid "Rename Identifier ..."
-msgstr ""
+msgstr "重命名标识符 ..."
 
 #: lazarusidestrconsts:lisfrirenameallreferences
 msgid "Rename all References"
@@ -5794,7 +5794,7 @@ msgstr "替换所有(&A)"
 
 #: lazarusidestrconsts:lismenureplace2
 msgid "Replace ..."
-msgstr ""
+msgstr "替换 ..."
 
 #: lazarusidestrconsts:lispkgmangreplacefile
 msgid "Replace File"
@@ -6002,7 +6002,7 @@ msgstr "另存为- 自动重命名pascal文件为小写"
 
 #: lazarusidestrconsts:lismenusaveas
 msgid "Save As ..."
-msgstr ""
+msgstr "另存为 ..."
 
 #: lazarusidestrconsts:lismenueditorsaveastemplate
 msgid "Save As Template..."
@@ -6030,7 +6030,7 @@ msgstr "保存工程 %s (*.lpi)"
 
 #: lazarusidestrconsts:lismenusaveprojectas
 msgid "Save Project As ..."
-msgstr ""
+msgstr "工程另存为 ..."
 
 #: lazarusidestrconsts:lissavesettings
 msgid "Save Settings"
@@ -6710,7 +6710,7 @@ msgstr "排序所选"
 
 #: lazarusidestrconsts:lismenusortselection
 msgid "Sort selection ..."
-msgstr ""
+msgstr "排序所选 ..."
 
 #: lazarusidestrconsts:lismenuviewsourceeditor
 msgid "Source Editor"
@@ -8386,7 +8386,7 @@ msgstr "显示 IDE 快速按钮"
 
 #: lazarusidestrconsts:lismenuviewjumphistory
 msgid "View Jump-History ..."
-msgstr ""
+msgstr "查看 Jump 历史 ..."
 
 #: lazarusidestrconsts:srkmectoggleobjectinsp
 msgid "View Object Inspector"
@@ -8418,7 +8418,7 @@ msgstr "查看源代码编辑器"
 
 #: lazarusidestrconsts:lismenuviewprojecttodos
 msgid "View ToDo List ..."
-msgstr ""
+msgstr "查看 ToDo 列表 ..."
 
 #: lazarusidestrconsts:lismenuviewunitdependencies
 msgid "View Unit Dependencies"

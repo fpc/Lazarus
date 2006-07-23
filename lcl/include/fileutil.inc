@@ -1326,9 +1326,7 @@ var
 begin
   Result:='';
   CurDir:=ExtractFilePath(Filename);
-  if SysUtils.FindFirst(CurDir+GetAllFilesMask,faAnyFile,
-    FileInfo)=0
-  then begin
+  if SysUtils.FindFirst(CurDir+GetAllFilesMask,faAnyFile, FileInfo)=0 then begin
     ShortFilename:=ExtractFilename(Filename);
     repeat
       // check if special file
@@ -1339,7 +1337,7 @@ begin
         if FileInfo.Name=ShortFilename then begin
           // fits exactly
           Result:=Filename;
-          exit;
+          break;
         end;
         // fits case insensitive
         Result:=CurDir+FileInfo.Name;
@@ -1347,6 +1345,7 @@ begin
       end;
     until SysUtils.FindNext(FileInfo)<>0;
   end;
+  SysUtils.FindClose(FileInfo);
 end;
 
 function FindDefaultExecutablePath(const Executable: string): string;
