@@ -226,8 +226,6 @@ object BuildForm: TBuildForm
         Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goSmoothScroll]
         RowCount = 2
         ScrollBars = ssAutoBoth
-        VisibleColCount = 2
-        VisibleRowCount = 1
         Height = 170
         Width = 381
         ColWidths = (
