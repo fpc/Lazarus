@@ -334,7 +334,7 @@ begin
     TDOMElement(Node).RemoveAttribute(NodeName);
     FModified := True;
   end;
-  while (Node.ChildNodes.Count=0) and (Node.ParentNode<>nil)
+  while (Node.FirstChild=nil) and (Node.ParentNode<>nil)
   and (Node.ParentNode.ParentNode<>nil) do begin
     if (Node is TDOMElement) and (not TDOMElement(Node).IsEmpty) then break;
     ParentNode:=Node.ParentNode;
