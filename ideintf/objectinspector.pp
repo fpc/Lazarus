@@ -23,7 +23,6 @@
 
   ToDo:
    - backgroundcolor=clNone
-   - replace pair splitter with splitter
    - Define Init values
    - Set to init value
 }
@@ -38,7 +37,7 @@ interface
 uses
   Forms, SysUtils, Buttons, Classes, Graphics, GraphType, StdCtrls, LCLType,
   LCLIntf, LCLProc, Controls, ComCtrls, ExtCtrls, TypInfo, LMessages,
-  LResources, PairSplitter, LazConfigStorage, Menus, Dialogs, ObjInspStrConsts,
+  LResources, LazConfigStorage, Menus, Dialogs, ObjInspStrConsts,
   PropEdits, GraphPropEdits, ListViewPropEdit, ImageListEditor,
   ComponentTreeView, ComponentEditors;
 
@@ -526,7 +525,7 @@ type
 
   TObjectInspector = class (TForm)
     AvailPersistentComboBox: TComboBox;
-    PairSplitter1: TPairSplitter;
+    Splitter1: TSplitter;
     ComponentTree: TComponentTreeView;
     NoteBook: TNoteBook;
     PropertyGrid: TOICustomPropertyGrid;
@@ -586,7 +585,6 @@ type
     FShowFavouritePage: boolean;
     FUpdateLock: integer;
     FUpdatingAvailComboBox: boolean;
-    FUsePairSplitter: boolean;
     function GetGridControl(Page: TObjectInspectorPage): TOICustomPropertyGrid;
     procedure SetFavourites(const AValue: TOIFavouriteProperties);
     procedure SetShowFavouritePage(const AValue: boolean);
@@ -596,7 +594,6 @@ type
     procedure SetPropertyEditorHook(NewValue: TPropertyEditorHook);
     procedure SetSelection(const ASelection: TPersistentSelectionList);
     procedure SetShowComponentTree(const AValue: boolean);
-    procedure SetUsePairSplitter(const AValue: boolean);
   protected
     function PersistentToString(APersistent: TPersistent): string;
     procedure AddPersistentToList(APersistent: TPersistent; List: TStrings);
@@ -605,7 +602,7 @@ type
     procedure SetAvailComboBoxText;
     procedure HookGetSelection(const ASelection: TPersistentSelectionList);
     procedure HookSetSelection(const ASelection: TPersistentSelectionList);
-    procedure CreatePairSplitter;
+    procedure CreateSplitter;
     procedure DestroyNoteBook;
     procedure CreateNoteBook;
     procedure CreateFavouritePage;
@@ -646,8 +643,6 @@ type
                                         write SetShowComponentTree;
     property ComponentTreeHeight: integer read FComponentTreeHeight
                                           write SetComponentTreeHeight;
-    property UsePairSplitter: boolean read FUsePairSplitter
-                                      write SetUsePairSplitter;
     property ShowFavouritePage: boolean read FShowFavouritePage
                                         write SetShowFavouritePage;
     property GridControl[Page: TObjectInspectorPage]: TOICustomPropertyGrid
@@ -2996,7 +2991,6 @@ begin
   FDefaultItemHeight := 22;
   FComponentTreeHeight:=100;
   FShowComponentTree:=true;
-  FUsePairSplitter:=TPairSplitter.IsSupportedByInterface;
   FShowFavouritePage:=false;
 
   Caption := oisObjectInspector;
@@ -3077,24 +3071,19 @@ begin
     Visible:=not FShowComponentTree;
   end;
   
-  if FUsePairSplitter and ShowComponentTree then
-    CreatePairSplitter;
-
   // Component Tree at top (filled with available components)
   ComponentTree:=TComponentTreeView.Create(Self);
   with ComponentTree do begin
     Name:='ComponentTree';
+    Constraints.MinHeight:=16;
     Height:=ComponentTreeHeight;
-    if PairSplitter1<>nil then begin
-      Parent:=PairSplitter1.Sides[0];
-      Align:=alClient;
-    end else begin
-      Parent:=Self;
-      Align:=alTop;
-    end;
+    Parent:=Self;
+    Align:=alTop;
     OnSelectionChanged:=@ComponentTreeSelectionChanged;
     Visible:=FShowComponentTree;
   end;
+  if ShowComponentTree then
+    CreateSplitter;
 
   CreateNoteBook;
   
@@ -3555,51 +3544,41 @@ begin
   if FShowComponentTree=AValue then exit;
   FShowComponentTree:=AValue;
   BeginUpdate;
-  ShowComponentTreePopupMenuItem.Checked:=FShowComponentTree;
-  // hide controls while rebuilding
-  if PairSplitter1<>nil then
-    PairSplitter1.Visible:=false;
-  DestroyNoteBook;
-  ComponentTree.Visible:=false;
-  AvailPersistentComboBox.Visible:=false;
-  // rebuild controls
-  if FUsePairSplitter and FShowComponentTree then begin
-    CreatePairSplitter;
-    ComponentTree.Parent:=PairSplitter1.Sides[0];
-    ComponentTree.Align:=alClient;
-  end else begin
+  try
+    ShowComponentTreePopupMenuItem.Checked:=FShowComponentTree;
+    // hide controls while rebuilding
+    if Splitter1<>nil then
+      Splitter1.Visible:=false;
+    DestroyNoteBook;
+    ComponentTree.Visible:=false;
+    AvailPersistentComboBox.Visible:=false;
+    // rebuild controls
     ComponentTree.Parent:=Self;
     ComponentTree.Align:=alTop;
-    ComponentTree.Height:=ComponentTreeHeight;
-    if PairSplitter1<>nil then begin
-      PairSplitter1.Free;
-      PairSplitter1:=nil;
+    if FShowComponentTree then
+      CreateSplitter
+    else begin
+      ComponentTree.Height:=ComponentTreeHeight;
+      FreeAndNil(Splitter1);
     end;
+    ComponentTree.Visible:=FShowComponentTree;
+    AvailPersistentComboBox.Visible:=not FShowComponentTree;
+    CreateNoteBook;
+  finally
+    EndUpdate;
   end;
-  ComponentTree.Visible:=FShowComponentTree;
-  AvailPersistentComboBox.Visible:=not FShowComponentTree;
-  CreateNoteBook;
-  EndUpdate;
 end;
 
-procedure TObjectInspector.SetUsePairSplitter(const AValue: boolean);
+procedure TObjectInspector.CreateSplitter;
 begin
-  if FUsePairSplitter=AValue then exit;
-  FUsePairSplitter:=AValue;
-end;
-
-procedure TObjectInspector.CreatePairSplitter;
-begin
-  // pair splitter between component tree and notebook
-  PairSplitter1:=TPairSplitter.Create(Self);
-  with PairSplitter1 do begin
-    Name:='PairSplitter1';
+  // vertical splitter between component tree and notebook
+  Splitter1:=TSplitter.Create(Self);
+  with Splitter1 do begin
+    Name:='Splitter1';
     Parent:=Self;
-    SplitterType:=pstVertical;
-    Align:=alClient;
-    Position:=ComponentTreeHeight;
-    Sides[0].Name:=Name+'Side1';
-    Sides[1].Name:=Name+'Side2';
+    Align:=alTop;
+    Top:=ComponentTreeHeight;
+    Height:=3;
   end;
 end;
 
@@ -3621,11 +3600,7 @@ begin
   NoteBook:=TNoteBook.Create(Self);
   with NoteBook do begin
     Name:='NoteBook';
-    if PairSplitter1<>nil then begin
-      Parent:=PairSplitter1.Sides[1];
-    end else begin
-      Parent:=Self;
-    end;
+    Parent:=Self;
     Align:= alClient;
     if PageCount>0 then
       Pages.Strings[0]:=oisProperties
