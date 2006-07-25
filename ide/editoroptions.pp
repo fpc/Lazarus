@@ -241,7 +241,7 @@ type
     fAutoCodeParameters: Boolean;
     fAutoToolTipExprEval: Boolean;
     fAutoToolTipSymbTools: Boolean;
-    fAutoDelayInMSec:    Integer;
+    fAutoDelayInMSec: Integer;
     fCodeTemplateFileName: String;
     fCTemplIndentToTokenStart: Boolean;
   public
@@ -3830,12 +3830,9 @@ begin
   end;
 
   AutoDelayLabel.Caption := dlgEdDelay;
-
-  AutoDelayTrackBar.Position := EditorOpts.AutoDelayInMSec div 250;
-
+  AutoDelayTrackBar.Position := EditorOpts.AutoDelayInMSec;
   AutoDelayMinLabel.Caption := '0.5 ' + DlgTimeSecondUnit;
-
-  AutoDelayMaxLabel.Caption := '1.5 ' + dlgTimeSecondUnit;
+  AutoDelayMaxLabel.Caption := '4.0 ' + dlgTimeSecondUnit;
 end;
 
 procedure TEditorOptionsForm.SetupButtonBar;
@@ -3915,7 +3912,7 @@ begin
   EditorOpts.AutoCodeParameters := AutoCodeParametersCheckBox.Checked;
   EditorOpts.AutoToolTipExprEval := AutoToolTipExprEvalCheckBox.Checked;
   EditorOpts.AutoToolTipSymbTools := AutoToolTipSymbToolsCheckBox.Checked;
-  EditorOpts.AutoDelayInMSec    := AutoDelayTrackBar.Position * 250;
+  EditorOpts.AutoDelayInMSec    := AutoDelayTrackBar.Position;
 
   EditorOpts.Save;
 
