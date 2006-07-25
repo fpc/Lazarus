@@ -488,6 +488,10 @@ msgstr "Penjajaran"
 msgid "All Files"
 msgstr "Semua File"
 
+#: lazarusidestrconsts:lisallblockslooksok
+msgid "All blocks looks ok."
+msgstr ""
+
 #: lazarusidestrconsts:dlgallfiles
 msgid "All files"
 msgstr "Semua file"
@@ -6875,6 +6879,10 @@ msgstr "Sub direktori"
 #: lazarusidestrconsts:dlgsubpropkcolor
 msgid "Subpropertes"
 msgstr "Sub properti"
+
+#: lazarusidestrconsts:lissuccess
+msgid "Success"
+msgstr ""
 
 #: lazarusidestrconsts:lisa2pswitchpaths
 msgid "Switch Paths"

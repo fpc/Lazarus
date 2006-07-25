@@ -485,6 +485,10 @@ msgstr "Выравнивание"
 msgid "All Files"
 msgstr "Все файлы"
 
+#: lazarusidestrconsts:lisallblockslooksok
+msgid "All blocks looks ok."
+msgstr ""
+
 #: lazarusidestrconsts:dlgallfiles
 msgid "All files"
 msgstr "Все файлы"
@@ -6872,6 +6876,10 @@ msgstr "Подкаталог"
 #: lazarusidestrconsts:dlgsubpropkcolor
 msgid "Subpropertes"
 msgstr "Подсвойства"
+
+#: lazarusidestrconsts:lissuccess
+msgid "Success"
+msgstr ""
 
 #: lazarusidestrconsts:lisa2pswitchpaths
 msgid "Switch Paths"

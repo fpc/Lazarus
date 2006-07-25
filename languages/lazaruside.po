@@ -5966,6 +5966,14 @@ msgstr ""
 msgid "No string constant found"
 msgstr ""
 
+#: lazarusidestrconsts:lissuccess
+msgid "Success"
+msgstr ""
+
+#: lazarusidestrconsts:lisallblockslooksok
+msgid "All blocks looks ok."
+msgstr ""
+
 #: lazarusidestrconsts:lishintthemakeresourcestringfunctionexpectsastringcon
 msgid "Hint: The \"Make Resourcestring\" function expects a string constant.%sPlease select the expression and try again."
 msgstr ""

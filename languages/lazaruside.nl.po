@@ -485,6 +485,10 @@ msgstr "Uitlijning"
 msgid "All Files"
 msgstr "Alle bestanden"
 
+#: lazarusidestrconsts:lisallblockslooksok
+msgid "All blocks looks ok."
+msgstr ""
+
 #: lazarusidestrconsts:dlgallfiles
 msgid "All files"
 msgstr "Alle bestanden"
@@ -6872,6 +6876,10 @@ msgstr "Subdirectorie"
 #: lazarusidestrconsts:dlgsubpropkcolor
 msgid "Subpropertes"
 msgstr "Subproperties"
+
+#: lazarusidestrconsts:lissuccess
+msgid "Success"
+msgstr ""
 
 #: lazarusidestrconsts:lisa2pswitchpaths
 msgid "Switch Paths"

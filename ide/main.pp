@@ -11416,7 +11416,7 @@ begin
       NewSource, NewX, NewY, NewTopLine, true);
   end else begin
     if CodeToolBoss.ErrorMessage='' then begin
-      MessageDlg('Success','All blocks looks ok.',mtInformation,[mbOk],0);
+      MessageDlg(lisSuccess, lisAllBlocksLooksOk, mtInformation, [mbOk], 0);
     end else
       DoJumpToCodeToolBossError;
   end;

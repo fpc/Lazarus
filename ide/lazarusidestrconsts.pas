@@ -1882,6 +1882,8 @@ resourcestring
   lisMakeResStrInsertContexttSensitive = 'Insert context sensitive';
   lisMakeResStrSourcePreview = 'Source preview';
   lisNoStringConstantFound = 'No string constant found';
+  lisSuccess = 'Success';
+  lisAllBlocksLooksOk = 'All blocks looks ok.';
   lisHintTheMakeResourcestringFunctionExpectsAStringCon = 'Hint: The "Make '
     +'Resourcestring" function expects a string constant.%sPlease select the '
     +'expression and try again.';

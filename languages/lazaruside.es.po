@@ -484,6 +484,10 @@ msgstr "Alineación"
 msgid "All Files"
 msgstr "Todos los Archivos"
 
+#: lazarusidestrconsts:lisallblockslooksok
+msgid "All blocks looks ok."
+msgstr ""
+
 #: lazarusidestrconsts:dlgallfiles
 msgid "All files"
 msgstr "Todos los archivos"
@@ -6870,6 +6874,10 @@ msgstr "Subdirectorio"
 
 #: lazarusidestrconsts:dlgsubpropkcolor
 msgid "Subpropertes"
+msgstr ""
+
+#: lazarusidestrconsts:lissuccess
+msgid "Success"
 msgstr ""
 
 #: lazarusidestrconsts:lisa2pswitchpaths

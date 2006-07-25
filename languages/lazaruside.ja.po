@@ -484,6 +484,10 @@ msgstr ""
 msgid "All Files"
 msgstr "すべてのファイル"
 
+#: lazarusidestrconsts:lisallblockslooksok
+msgid "All blocks looks ok."
+msgstr ""
+
 #: lazarusidestrconsts:dlgallfiles
 msgid "All files"
 msgstr "すべてのファイル"
@@ -6870,6 +6874,10 @@ msgstr "サブディレクトリ"
 
 #: lazarusidestrconsts:dlgsubpropkcolor
 msgid "Subpropertes"
+msgstr ""
+
+#: lazarusidestrconsts:lissuccess
+msgid "Success"
 msgstr ""
 
 #: lazarusidestrconsts:lisa2pswitchpaths
