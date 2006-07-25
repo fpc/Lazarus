@@ -82,7 +82,7 @@ end;
 
 function TReplaceDialog.CreateForm: TForm;
 begin
-  Result:=TReplaceDialogForm.Create(Self);
+  Result:=TReplaceDialogForm.Create(nil);
   with TReplaceDialogForm(Result) do begin
     FindMoreButton.Caption:=rsFindMore;
     ReplaceButton.Caption:=rsReplace;

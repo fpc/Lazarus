@@ -164,7 +164,7 @@ end;
 
 function TFindDialog.CreateForm: TForm;
 begin
-  Result:=TFindDialogForm.Create(Self);
+  Result:=TFindDialogForm.Create(nil);
   with TFindDialogForm(Result) do begin
     FindButton.Caption:=rsFind;
     CancelButton.Caption:=rsMbCancel;

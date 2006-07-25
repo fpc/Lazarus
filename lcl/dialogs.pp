@@ -351,9 +351,9 @@ type
 
   TReplaceDialog = class(TFindDialog)
   protected
-    procedure DoCloseForm(Sender: TObject; var CloseAction: TCloseAction);override;
-    function CreateForm:TForm;override;
-    procedure UpdateValues;override;
+    procedure DoCloseForm(Sender: TObject; var CloseAction: TCloseAction); override;
+    function CreateForm: TForm; override;
+    procedure UpdateValues; override;
   public
     constructor Create(AOwner: TComponent); override;
   published
