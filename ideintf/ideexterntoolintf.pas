@@ -20,124 +20,152 @@ unit IDEExternToolIntf;
 interface
 
 uses
-  Classes, SysUtils, LCLType, LazConfigStorage, Forms, Controls,
-  BaseIDEIntf;
+  Classes, SysUtils, LCLType, LazConfigStorage, Forms, Controls, BaseIDEIntf;
 
 { The xml format version:
     When the format changes (new values, changed formats) we can distinguish old
     files and are able to convert them.
 }
-const ExternalToolOptionsFormat = '1.0';
+const
+  ExternalToolOptionsVersion = '1';
 
 type
+  TIDEExternalToolOptions = class;
+
+  { TIDEScanMessageLine }
+
+  TIDEScanMessageLine = class(TPersistent)
+  private
+    FCaller: TObject;
+    FLine: string;
+    FLineNumber: integer;
+    FTool: TIDEExternalToolOptions;
+    FWorkingDirectory: string;
+    procedure SetLine(const AValue: string);
+    procedure SetWorkingDirectory(const AValue: string);
+  protected
+    procedure SetTool(const AValue: TIDEExternalToolOptions);
+    procedure SetLineNumber(const NewLineNumber: integer);
+    procedure LineChanged(const OldValue: string); virtual; abstract;
+    procedure WorkingDirectoryChanged(const OldValue: string); virtual; abstract;
+  public
+    constructor Create(TheCaller: TObject = nil; TheTool: TIDEExternalToolOptions = nil);
+    property Caller: TObject read FCaller;
+    property Line: string read FLine write SetLine;
+    property WorkingDirectory: string read FWorkingDirectory write SetWorkingDirectory;
+    property LineNumber: integer read FLineNumber;
+    property Tool: TIDEExternalToolOptions read FTool;
+  end;
+
+
+  TOnIDEExtToolParseLine = procedure(Sender: TObject;
+                                     Line: TIDEScanMessageLine) of object;
+
   {
-    TExternalToolOptions - the storage object for a single external tool
+    TIDEExternalToolOptions - the storage object for a single external tool
   }
-  TExternalToolOptions = class
+  TIDEExternalToolOptions = class(TPersistent)
   private
     fCmdLineParams: string;
     FEnvironmentOverrides: TStringList;
     fFilename: string;
-    fKey: word;
+    FOnParseLine: TOnIDEExtToolParseLine;
     FScanOutput: boolean;
     fScanOutputForFPCMessages: boolean;
     fScanOutputForMakeMessages: boolean;
-    fShift: TShiftState;
     FShowAllOutput: boolean;
     fTitle: string;
     fWorkingDirectory: string;
     procedure SetScanOutput(const AValue: boolean);
     procedure SetShowAllOutput(const AValue: boolean);
   public
-    procedure Assign(Source: TExternalToolOptions);
     constructor Create;
     destructor Destroy; override;
-    procedure Clear;
+    procedure Assign(Source: TPersistent); override;
+    procedure Clear; virtual;
     function NeedsOutputFilter: boolean;
-    function Load(Config: TConfigStorage): TModalResult;
-    function Save(Config: TConfigStorage): TModalResult;
+    function Load(Config: TConfigStorage): TModalResult; virtual;
+    function Save(Config: TConfigStorage): TModalResult; virtual;
     function ShortDescription: string;
     procedure AssignEnvironmentTo(Strings: TStrings);
+    procedure ParseLine(Sender: TObject; Line: TIDEScanMessageLine); virtual;
 
     property CmdLineParams: string read fCmdLineParams write fCmdLineParams;
     property Filename: string read fFilename write fFilename;
-    property Key: word read fKey write fKey;
     property Title: string read fTitle write fTitle;
     property ScanOutputForFPCMessages: boolean
       read fScanOutputForFPCMessages write fScanOutputForFPCMessages;
     property ScanOutputForMakeMessages: boolean
       read fScanOutputForMakeMessages write fScanOutputForMakeMessages;
-    property Shift: TShiftState read fShift write fShift;
     property WorkingDirectory: string
       read fWorkingDirectory write fWorkingDirectory;
     property EnvironmentOverrides: TStringList read FEnvironmentOverrides;
     property ScanOutput: boolean read FScanOutput write SetScanOutput;
     property ShowAllOutput: boolean read FShowAllOutput write SetShowAllOutput;
+    property OnParseLine: TOnIDEExtToolParseLine read FOnParseLine write FOnParseLine;
   end;
 
 implementation
 
-{ TExternalToolOptions }
+{ TIDEExternalToolOptions }
 
-procedure TExternalToolOptions.SetScanOutput(const AValue: boolean);
+procedure TIDEExternalToolOptions.SetScanOutput(const AValue: boolean);
 begin
   if FScanOutput=AValue then exit;
   FScanOutput:=AValue;
 end;
 
-procedure TExternalToolOptions.SetShowAllOutput(const AValue: boolean);
+procedure TIDEExternalToolOptions.SetShowAllOutput(const AValue: boolean);
 begin
   if FShowAllOutput=AValue then exit;
   FShowAllOutput:=AValue;
 end;
 
-procedure TExternalToolOptions.Assign(Source: TExternalToolOptions);
+procedure TIDEExternalToolOptions.Assign(Source: TPersistent);
+var
+  Src: TIDEExternalToolOptions;
 begin
   if Source=Self then exit;
-  if Source=nil then
-    Clear
-  else begin
-    fTitle:=Source.fTitle;
-    fFilename:=Source.fFilename;
-    fCmdLineParams:=Source.fCmdLineParams;
-    fWorkingDirectory:=Source.fWorkingDirectory;
-    fKey:=Source.fKey;
-    fShift:=Source.fShift;
-    fScanOutputForFPCMessages:=Source.fScanOutputForFPCMessages;
-    fScanOutputForMakeMessages:=Source.fScanOutputForMakeMessages;
-    FScanOutput:=Source.FScanOutput;
-    FShowAllOutput:=Source.FShowAllOutput;
-  end;
+  if Source is TIDEExternalToolOptions then begin
+    Src:=TIDEExternalToolOptions(Source);
+    fTitle:=Src.fTitle;
+    fFilename:=Src.fFilename;
+    fCmdLineParams:=Src.fCmdLineParams;
+    fWorkingDirectory:=Src.fWorkingDirectory;
+    fScanOutputForFPCMessages:=Src.fScanOutputForFPCMessages;
+    fScanOutputForMakeMessages:=Src.fScanOutputForMakeMessages;
+    FScanOutput:=Src.FScanOutput;
+    FShowAllOutput:=Src.FShowAllOutput;
+  end else
+    inherited Assign(Source);
 end;
 
-constructor TExternalToolOptions.Create;
+constructor TIDEExternalToolOptions.Create;
 begin
   inherited Create;
   FEnvironmentOverrides:=TStringList.Create;
   Clear;
 end;
 
-destructor TExternalToolOptions.Destroy;
+destructor TIDEExternalToolOptions.Destroy;
 begin
   FEnvironmentOverrides.Free;
   inherited Destroy;
 end;
 
-procedure TExternalToolOptions.Clear;
+procedure TIDEExternalToolOptions.Clear;
 begin
   fTitle:='';
   fFilename:='';
   fCmdLineParams:='';
   fWorkingDirectory:='';
-  fKey:=VK_UNKNOWN;
-  fShift:=[];
   fScanOutputForFPCMessages:=false;
   fScanOutputForMakeMessages:=false;
   FScanOutput:=false;
   FShowAllOutput:=false;
 end;
 
-function TExternalToolOptions.Load(Config: TConfigStorage): TModalResult;
+function TIDEExternalToolOptions.Load(Config: TConfigStorage): TModalResult;
 begin
   Clear;
   fTitle:=Config.GetValue('Title/Value','');
@@ -150,13 +178,12 @@ begin
                                   'ScanOutputForMakeMessages/Value',false);
   FShowAllOutput:=Config.GetValue('ShowAllOutput/Value',false);
   Config.GetValue('EnvironmentOverrides/',FEnvironmentOverrides);
-  // key and shift are loaded with the keymapping in the editoroptions
   Result:=mrOk;
 end;
 
-function TExternalToolOptions.Save(Config: TConfigStorage): TModalResult;
+function TIDEExternalToolOptions.Save(Config: TConfigStorage): TModalResult;
 begin
-  Config.SetValue('Format/Version',ExternalToolOptionsFormat);
+  Config.SetValue('Format/Version',ExternalToolOptionsVersion);
   Config.SetDeleteValue('Title/Value',fTitle,'');
   Config.SetDeleteValue('Filename/Value',fFilename,'');
   Config.SetDeleteValue('CmdLineParams/Value',fCmdLineParams,'');
@@ -169,24 +196,69 @@ begin
              false);
   Config.SetDeleteValue('ShowAllOutput/Value',FShowAllOutput,false);
   Config.SetValue('EnvironmentOverrides/',FEnvironmentOverrides);
-  // key and shift are saved with the keymapping in the editoroptions
   Result:=mrOk;
 end;
 
-function TExternalToolOptions.ShortDescription: string;
+function TIDEExternalToolOptions.ShortDescription: string;
 begin
   Result:=Title;
 end;
 
-procedure TExternalToolOptions.AssignEnvironmentTo(Strings: TStrings);
+procedure TIDEExternalToolOptions.AssignEnvironmentTo(Strings: TStrings);
 begin
   BaseIDEIntf.AssignEnvironmentTo(Strings,EnvironmentOverrides);
 end;
 
-function TExternalToolOptions.NeedsOutputFilter: boolean;
+procedure TIDEExternalToolOptions.ParseLine(Sender: TObject;
+  Line: TIDEScanMessageLine);
+begin
+  if Assigned(OnParseLine) then
+    OnParseLine(Sender,Line);
+end;
+
+function TIDEExternalToolOptions.NeedsOutputFilter: boolean;
 begin
   Result:=ScanOutput or ScanOutputForFPCMessages or ScanOutputForMakeMessages
                      or ShowAllOutput;
+end;
+
+{ TIDEScanMessageLine }
+
+procedure TIDEScanMessageLine.SetLine(const AValue: string);
+var
+  OldLine: String;
+begin
+  if FLine=AValue then exit;
+  OldLine:=FLine;
+  FLine:=AValue;
+  LineChanged(OldLine);
+end;
+
+procedure TIDEScanMessageLine.SetWorkingDirectory(const AValue: string);
+var
+  OldDir: String;
+begin
+  if FWorkingDirectory=AValue then exit;
+  OldDir:=FWorkingDirectory;
+  FWorkingDirectory:=AValue;
+  WorkingDirectoryChanged(OldDir);
+end;
+
+procedure TIDEScanMessageLine.SetTool(const AValue: TIDEExternalToolOptions);
+begin
+  FTool:=AValue;
+end;
+
+procedure TIDEScanMessageLine.SetLineNumber(const NewLineNumber: integer);
+begin
+  FLineNumber:=NewLineNumber;
+end;
+
+constructor TIDEScanMessageLine.Create(TheCaller: TObject;
+  TheTool: TIDEExternalToolOptions);
+begin
+  FCaller:=TheCaller;
+  FTool:=TheTool;
 end;
 
 end.

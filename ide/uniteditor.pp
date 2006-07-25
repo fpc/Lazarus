@@ -669,6 +669,7 @@ type
     procedure PasteClicked(Sender: TObject);
     procedure CopyFilenameClicked(Sender: TObject);
 
+    // bookmarks
     Procedure ToggleBookmark(Value: Integer);
     Procedure SetBookmark(Value: Integer);
     Procedure GotoBookmark(Value: Integer);
@@ -676,6 +677,8 @@ type
     Procedure ReloadEditorOptions;
     procedure CheckFont;
     Procedure GetSynEditPreviewSettings(APreviewEditor: TObject);
+    function GetEditorControlSettings(EditControl: TControl): boolean; override;
+    function GetHighlighterSettings(Highlighter: TObject): boolean; override;
 
     Property CodeTemplateModul: TSynEditAutoComplete
                                read FCodeTemplateModul write FCodeTemplateModul;
@@ -5014,7 +5017,6 @@ Begin
     Notebook.Pages.Delete(PageIndex);
     //writeln('TSourceNotebook.CloseFile C  PageIndex=',PageIndex,' Notebook.PageCount=',Notebook.PageCount);
     UpdateStatusBar;
-    ActiveControl:=Notebook.Page[Notebook.PageIndex];
   end else
   begin
     //writeln('TSourceNotebook.CloseFile D  PageIndex=',PageIndex);
@@ -5687,6 +5689,29 @@ begin
   ASynEdit:=TSynEdit(APreviewEditor);
   EditorOpts.GetSynEditPreviewSettings(ASynEdit);
   ASynEdit.Highlighter:=Highlighters[lshFreePascal];
+end;
+
+function TSourceNotebook.GetEditorControlSettings(EditControl: TControl
+  ): boolean;
+begin
+  Result:=true;
+  if EditControl is TSynEdit then begin
+    EditorOpts.GetSynEditSettings(TSynEdit(EditControl));
+    Result:=true;
+  end else begin
+    Result:=false;
+  end;
+end;
+
+function TSourceNotebook.GetHighlighterSettings(Highlighter: TObject): boolean;
+begin
+  Result:=true;
+  if Highlighter is TSynCustomHighlighter then begin
+    EditorOpts.GetHighlighterSettings(TSynCustomHighlighter(Highlighter));
+    Result:=true;
+  end else begin
+    Result:=false;
+  end;
 end;
 
 procedure TSourceNotebook.ClearErrorLines;

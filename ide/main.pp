@@ -696,6 +696,7 @@ type
 
     // external tools
     function PrepareForCompile: TModalResult; override;
+    function RunExternalTool(Tool: TIDEExternalToolOptions): TModalResult; override;
     function DoRunExternalTool(Index: integer): TModalResult;
     function DoSaveBuildIDEConfigs(Flags: TBuildLazarusFlags): TModalResult; override;
     function DoBuildLazarus(Flags: TBuildLazarusFlags): TModalResult; override;
@@ -8519,6 +8520,13 @@ begin
     Result:=DebugBoss.DoStopProject;
     if Result<>mrOk then exit;
   end;
+end;
+
+function TMainIDE.RunExternalTool(Tool: TIDEExternalToolOptions): TModalResult;
+begin
+  SourceNotebook.ClearErrorLines;
+  Result:=EnvironmentOptions.ExternalTools.Run(Tool,MacroList);
+  DoCheckFilesOnDisk;
 end;
 
 function TMainIDE.DoCheckSyntax: TModalResult;

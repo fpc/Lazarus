@@ -23,7 +23,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, Dialogs, PropEdits, LazHelpHTML,
-  ProjectIntf, SrcEditorIntf;
+  IDEExternToolIntf, ProjectIntf, SrcEditorIntf;
 
 type
   // open file flags
@@ -132,10 +132,12 @@ type
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     
+    // find file
     function FindUnitFile(const AFilename: string): string; virtual; abstract;
     function FindSourceFile(const AFilename, BaseDirectory: string;
                             Flags: TFindSourceFlags): string; virtual; abstract;
 
+    // file
     function DoNewEditorFile(NewFileDescriptor: TProjectFileDescriptor;
         NewFilename: string; const NewSource: string;
         NewFlags: TNewFlags): TModalResult;
@@ -154,6 +156,8 @@ type
         const CursorPosition: TPoint; TopLine: integer;
         PageIndex: integer; Flags: TOpenFlags): TModalResult; virtual; abstract;
 
+    // project
+    property ActiveProject: TLazProject read GetActiveProject;
     function DoNewProject(ProjectDesc: TProjectDescriptor): TModalResult; virtual; abstract;
     function DoSaveProject(Flags: TSaveFlags): TModalResult; virtual; abstract;
     function DoCloseProject: TModalResult; virtual; abstract;
@@ -162,6 +166,7 @@ type
     function DoPublishProject(Flags: TSaveFlags;
                               ShowDialog: boolean): TModalResult; virtual; abstract;
 
+    // configs
     function GetPrimaryConfigPath: String; virtual; abstract;
     function GetSecondaryConfigPath: String; virtual; abstract;
     procedure CopySecondaryConfigFile(const AFilename: String); virtual; abstract;
@@ -169,13 +174,16 @@ type
     function CreateNewUniqueFilename(const Prefix, Ext: string;
                           NewOwner: TObject; Flags: TSearchIDEFileFlags;
                           TryWithoutNumber: boolean): string; virtual; abstract;
-       
+
+    // macros
     function SubstituteMacros(var s: string): boolean; virtual; abstract;
 
+    // codetools
     function BeginCodeTools: boolean; virtual; abstract;
     procedure DoJumpToCodeToolBossError; virtual; abstract;
     procedure SaveSourceEditorChangesToCodeCache(PageIndex: integer); virtual; abstract;
-    
+
+    // progress and error messages
     function ShowProgress(const SomeText: string;
                           Step, MaxStep: integer): boolean; virtual; abstract; // False if canceled by user
     function DoJumpToCompilerMessage(Index:integer;
@@ -183,13 +191,15 @@ type
     procedure DoJumpToNextError(DirectionDown: boolean); virtual; abstract;
     procedure DoShowMessagesView; virtual; abstract;
 
+    // designer
     function GetDesignerWithProjectFile(AFile: TLazProjectFile;
                               LoadForm: boolean): TIDesigner; virtual; abstract;
     function GetProjectFileWithRootComponent(AComponent: TComponent): TLazProjectFile; virtual; abstract;
     function GetProjectFileWithDesigner(ADesigner: TIDesigner): TLazProjectFile; virtual; abstract;
-  public
-    property ActiveProject: TLazProject read GetActiveProject;
     
+    // external tools
+    function RunExternalTool(Tool: TIDEExternalToolOptions): TModalResult; virtual; abstract;
+
     // events
     procedure RemoveAllHandlersOfObject(AnObject: TObject);
     procedure AddHandlerOnSavingAll(const OnSaveAllEvent: TModalResultFunction;

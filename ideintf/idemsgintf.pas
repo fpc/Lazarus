@@ -22,7 +22,7 @@ unit IDEMsgIntf;
 interface
 
 uses
-  Classes, SysUtils, Forms, LCLProc, TextTools, IDECommands;
+  Classes, SysUtils, Forms, LCLProc, TextTools, IDECommands, IDEExternToolIntf;
   
 type
 
@@ -184,7 +184,7 @@ type
     property Lines[Index: integer]: TIDEMessageLine read GetLines; default;
     function LinesCount: integer; virtual; abstract;
   end;
-  
+
 var
   IDEMsgQuickFixes: TIDEMsgQuickFixItems; // initialized by the IDE
   IDEMessagesWindow: TIDEMessagesWindowInterface;// initialized by the IDE

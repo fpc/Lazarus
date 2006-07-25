@@ -7,18 +7,19 @@ object H2PasDialog: TH2PasDialog
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnKeyDown = FormKeyDown
-  PixelsPerInch = 112
+  PixelsPerInch = 75
+  Position = poDesktopCenter
   HorzScrollBar.Page = 784
   VertScrollBar.Page = 500
-  Left = 326
+  Left = 258
   Height = 501
-  Top = 178
+  Top = 143
   Width = 785
   object MainPageControl: TPageControl
-    ActivePage = h2pasOptionsTabSheet
+    ActivePage = ConvertTabSheet
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
-    TabIndex = 1
+    TabIndex = 2
     TabOrder = 0
     AnchorSideBottom.Control = OpenSettingsButton
     Height = 465
@@ -117,7 +118,7 @@ object H2PasDialog: TH2PasDialog
         AnchorSideTop.Side = asrCenter
         Left = 6
         Height = 13
-        Top = 116
+        Top = 281
         Width = 81
       end
       object OutputExtLabel: TLabel
@@ -128,7 +129,7 @@ object H2PasDialog: TH2PasDialog
         AnchorSideTop.Side = asrCenter
         Left = 6
         Height = 13
-        Top = 301
+        Top = 313
         Width = 86
       end
       object OutputDirLabel: TLabel
@@ -139,161 +140,42 @@ object H2PasDialog: TH2PasDialog
         AnchorSideTop.Side = asrCenter
         Left = 6
         Height = 13
-        Top = 330
+        Top = 342
         Width = 85
-      end
-      object UseExternalCheckBox: TCheckBox
-        Caption = 'UseExternalCheckBox'
-        OnChange = UseExternalCheckBoxChange
-        TabOrder = 0
-        Left = 6
-        Height = 20
-        Top = 7
-        Width = 150
-      end
-      object UseExternalLibnameCheckBox: TCheckBox
-        BorderSpacing.Top = 6
-        Caption = 'UseExternalLibnameCheckBox'
-        OnChange = UseExternalLibnameCheckBoxChange
-        TabOrder = 1
-        AnchorSideTop.Control = UseExternalCheckBox
-        AnchorSideTop.Side = asrBottom
-        Left = 6
-        Height = 20
-        Top = 33
-        Width = 197
-      end
-      object ConstantsInsteadOfEnumsCheckBox: TCheckBox
-        BorderSpacing.Top = 6
-        Caption = 'ConstantsInsteadOfEnumsCheckBox'
-        OnChange = ConstantsInsteadOfEnumsCheckBoxChange
-        TabOrder = 2
-        AnchorSideTop.Control = UseExternalLibnameCheckBox
-        AnchorSideTop.Side = asrBottom
-        Left = 6
-        Height = 20
-        Top = 59
-        Width = 229
-      end
-      object IncludeFileCheckBox: TCheckBox
-        BorderSpacing.Top = 6
-        Caption = 'IncludeFileCheckBox'
-        OnChange = IncludeFileCheckBoxChange
-        TabOrder = 3
-        AnchorSideTop.Control = ConstantsInsteadOfEnumsCheckBox
-        AnchorSideTop.Side = asrBottom
-        Left = 6
-        Height = 20
-        Top = 85
-        Width = 146
       end
       object LibnameEdit: TEdit
         BorderSpacing.Left = 6
         BorderSpacing.Top = 6
         OnEditingDone = LibnameEditEditingDone
-        TabOrder = 4
+        TabOrder = 0
         Text = 'LibnameEdit'
         AnchorSideLeft.Control = LibNameLabel
         AnchorSideLeft.Side = asrBottom
-        AnchorSideTop.Control = IncludeFileCheckBox
         AnchorSideTop.Side = asrBottom
         Left = 93
         Height = 23
-        Top = 111
+        Top = 276
         Width = 113
-      end
-      object PforPointersCheckBox: TCheckBox
-        BorderSpacing.Top = 6
-        Caption = 'PforPointersCheckBox'
-        OnChange = PforPointersCheckBoxChange
-        TabOrder = 5
-        AnchorSideTop.Control = LibnameEdit
-        AnchorSideTop.Side = asrBottom
-        Left = 6
-        Height = 20
-        Top = 140
-        Width = 151
-      end
-      object StripCommentsCheckBox: TCheckBox
-        BorderSpacing.Top = 6
-        Caption = 'StripCommentsCheckBox'
-        OnChange = StripCommentsCheckBoxChange
-        TabOrder = 6
-        AnchorSideTop.Control = PforPointersCheckBox
-        AnchorSideTop.Side = asrBottom
-        Left = 6
-        Height = 20
-        Top = 166
-        Width = 166
-      end
-      object TforTypedefsCheckBox: TCheckBox
-        BorderSpacing.Top = 6
-        Caption = 'TforTypedefsCheckBox'
-        OnChange = TforTypedefsCheckBoxChange
-        TabOrder = 7
-        AnchorSideTop.Control = StripCommentsCheckBox
-        AnchorSideTop.Side = asrBottom
-        Left = 6
-        Height = 20
-        Top = 192
-        Width = 156
-      end
-      object VarParamsCheckBox: TCheckBox
-        BorderSpacing.Top = 6
-        Caption = 'VarParamsCheckBox'
-        OnChange = VarParamsCheckBoxChange
-        TabOrder = 8
-        AnchorSideTop.Control = TforTypedefsCheckBox
-        AnchorSideTop.Side = asrBottom
-        Left = 6
-        Height = 20
-        Top = 218
-        Width = 145
-      end
-      object Win32HeaderCheckBox: TCheckBox
-        BorderSpacing.Top = 6
-        Caption = 'Win32HeaderCheckBox'
-        OnChange = Win32HeaderCheckBoxChange
-        TabOrder = 9
-        AnchorSideTop.Control = VarParamsCheckBox
-        AnchorSideTop.Side = asrBottom
-        Left = 6
-        Height = 20
-        Top = 244
-        Width = 160
-      end
-      object PalmOSSYSTrapCheckBox: TCheckBox
-        BorderSpacing.Top = 6
-        Caption = 'PalmOSSYSTrapCheckBox'
-        OnChange = PalmOSSYSTrapCheckBoxChange
-        TabOrder = 10
-        AnchorSideTop.Control = Win32HeaderCheckBox
-        AnchorSideTop.Side = asrBottom
-        Left = 6
-        Height = 20
-        Top = 270
-        Width = 179
       end
       object OutputExtEdit: TEdit
         BorderSpacing.Left = 6
         BorderSpacing.Top = 6
         OnEditingDone = OutputExtEditEditingDone
-        TabOrder = 11
+        TabOrder = 1
         Text = 'OutputExtEdit'
         AnchorSideLeft.Control = OutputExtLabel
         AnchorSideLeft.Side = asrBottom
-        AnchorSideTop.Control = PalmOSSYSTrapCheckBox
         AnchorSideTop.Side = asrBottom
         Left = 98
         Height = 23
-        Top = 296
+        Top = 308
         Width = 80
       end
       object OutputDirEdit: TEdit
         BorderSpacing.Left = 6
         BorderSpacing.Top = 6
         OnEditingDone = OutputDirEditEditingDone
-        TabOrder = 12
+        TabOrder = 2
         Text = 'OutputDirEdit'
         AnchorSideLeft.Control = OutputDirLabel
         AnchorSideLeft.Side = asrBottom
@@ -301,7 +183,7 @@ object H2PasDialog: TH2PasDialog
         AnchorSideTop.Side = asrBottom
         Left = 97
         Height = 23
-        Top = 325
+        Top = 337
         Width = 397
       end
       object OutputDirBrowseButton: TButton
@@ -309,7 +191,7 @@ object H2PasDialog: TH2PasDialog
         BorderSpacing.InnerBorder = 4
         Caption = '...'
         OnClick = OutputDirBrowseButtonClick
-        TabOrder = 13
+        TabOrder = 3
         AnchorSideLeft.Control = OutputDirEdit
         AnchorSideLeft.Side = asrBottom
         AnchorSideTop.Control = OutputDirEdit
@@ -317,8 +199,404 @@ object H2PasDialog: TH2PasDialog
         AnchorSideBottom.Side = asrBottom
         Left = 494
         Height = 23
-        Top = 325
+        Top = 337
         Width = 32
+      end
+      object h2pasOptionsCheckGroup: TCheckGroup
+        AutoFill = True
+        Caption = 'h2pasOptionsCheckGroup'
+        ChildSizing.LeftRightSpacing = 6
+        ChildSizing.TopBottomSpacing = 6
+        ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+        ChildSizing.EnlargeVertical = crsHomogenousChildResize
+        ChildSizing.ShrinkHorizontal = crsScaleChilds
+        ChildSizing.ShrinkVertical = crsScaleChilds
+        ChildSizing.Layout = cclLeftToRightThenTopToBottom
+        ChildSizing.ControlsPerLine = 2
+        Columns = 2
+        OnItemClick = h2pasOptionsCheckGroupItemClick
+        TabOrder = 4
+        Left = 6
+        Height = 264
+        Top = 4
+        Width = 768
+      end
+    end
+    object ConvertTabSheet: TTabSheet
+      Caption = 'ConvertTabSheet'
+      ClientHeight = 435
+      ClientWidth = 781
+      Left = 2
+      Height = 435
+      Top = 28
+      Width = 781
+      object ConvertButton: TButton
+        AutoSize = True
+        BorderSpacing.InnerBorder = 4
+        Caption = 'ConvertButton'
+        OnClick = ConvertButtonClick
+        TabOrder = 0
+        Left = 14
+        Height = 26
+        Top = 12
+        Width = 93
+      end
+      object ConvertErrorGroupBox: TGroupBox
+        Anchors = [akTop, akLeft, akRight]
+        Caption = 'ConvertErrorGroupBox'
+        ClientHeight = 130
+        ClientWidth = 764
+        TabOrder = 1
+        Left = 6
+        Height = 147
+        Top = 52
+        Width = 768
+        object ConvertErrorSynEdit: TSynEdit
+          Align = alClient
+          Font.Height = -12
+          Font.Name = 'courier'
+          Height = 130
+          Name = 'ConvertErrorSynEdit'
+          ParentColor = False
+          TabOrder = 0
+          Width = 764
+          BookMarkOptions.Xoffset = 30
+          BookMarkOptions.OnChange = nil
+          Gutter.ShowLineNumbers = True
+          Gutter.OnChange = nil
+          Gutter.CodeFoldingWidth = 14
+          Highlighter = SynCppSyn1
+          Keystrokes = <          
+            item
+              Command = 3
+              ShortCut = 38
+            end          
+            item
+              Command = 103
+              ShortCut = 8230
+            end          
+            item
+              Command = 211
+              ShortCut = 16422
+            end          
+            item
+              Command = 4
+              ShortCut = 40
+            end          
+            item
+              Command = 104
+              ShortCut = 8232
+            end          
+            item
+              Command = 212
+              ShortCut = 16424
+            end          
+            item
+              Command = 1
+              ShortCut = 37
+            end          
+            item
+              Command = 101
+              ShortCut = 8229
+            end          
+            item
+              Command = 5
+              ShortCut = 16421
+            end          
+            item
+              Command = 105
+              ShortCut = 24613
+            end          
+            item
+              Command = 2
+              ShortCut = 39
+            end          
+            item
+              Command = 102
+              ShortCut = 8231
+            end          
+            item
+              Command = 6
+              ShortCut = 16423
+            end          
+            item
+              Command = 106
+              ShortCut = 24615
+            end          
+            item
+              Command = 10
+              ShortCut = 34
+            end          
+            item
+              Command = 110
+              ShortCut = 8226
+            end          
+            item
+              Command = 14
+              ShortCut = 16418
+            end          
+            item
+              Command = 114
+              ShortCut = 24610
+            end          
+            item
+              Command = 9
+              ShortCut = 33
+            end          
+            item
+              Command = 109
+              ShortCut = 8225
+            end          
+            item
+              Command = 13
+              ShortCut = 16417
+            end          
+            item
+              Command = 113
+              ShortCut = 24609
+            end          
+            item
+              Command = 7
+              ShortCut = 36
+            end          
+            item
+              Command = 107
+              ShortCut = 8228
+            end          
+            item
+              Command = 15
+              ShortCut = 16420
+            end          
+            item
+              Command = 115
+              ShortCut = 24612
+            end          
+            item
+              Command = 8
+              ShortCut = 35
+            end          
+            item
+              Command = 108
+              ShortCut = 8227
+            end          
+            item
+              Command = 16
+              ShortCut = 16419
+            end          
+            item
+              Command = 116
+              ShortCut = 24611
+            end          
+            item
+              Command = 223
+              ShortCut = 45
+            end          
+            item
+              Command = 201
+              ShortCut = 16429
+            end          
+            item
+              Command = 604
+              ShortCut = 8237
+            end          
+            item
+              Command = 502
+              ShortCut = 46
+            end          
+            item
+              Command = 603
+              ShortCut = 8238
+            end          
+            item
+              Command = 501
+              ShortCut = 8
+            end          
+            item
+              Command = 501
+              ShortCut = 8200
+            end          
+            item
+              Command = 504
+              ShortCut = 16392
+            end          
+            item
+              Command = 601
+              ShortCut = 32776
+            end          
+            item
+              Command = 602
+              ShortCut = 40968
+            end          
+            item
+              Command = 509
+              ShortCut = 13
+            end          
+            item
+              Command = 199
+              ShortCut = 16449
+            end          
+            item
+              Command = 201
+              ShortCut = 16451
+            end          
+            item
+              Command = 610
+              ShortCut = 24649
+            end          
+            item
+              Command = 509
+              ShortCut = 16461
+            end          
+            item
+              Command = 510
+              ShortCut = 16462
+            end          
+            item
+              Command = 503
+              ShortCut = 16468
+            end          
+            item
+              Command = 611
+              ShortCut = 24661
+            end          
+            item
+              Command = 604
+              ShortCut = 16470
+            end          
+            item
+              Command = 603
+              ShortCut = 16472
+            end          
+            item
+              Command = 507
+              ShortCut = 16473
+            end          
+            item
+              Command = 506
+              ShortCut = 24665
+            end          
+            item
+              Command = 601
+              ShortCut = 16474
+            end          
+            item
+              Command = 602
+              ShortCut = 24666
+            end          
+            item
+              Command = 301
+              ShortCut = 16432
+            end          
+            item
+              Command = 302
+              ShortCut = 16433
+            end          
+            item
+              Command = 303
+              ShortCut = 16434
+            end          
+            item
+              Command = 304
+              ShortCut = 16435
+            end          
+            item
+              Command = 305
+              ShortCut = 16436
+            end          
+            item
+              Command = 306
+              ShortCut = 16437
+            end          
+            item
+              Command = 307
+              ShortCut = 16438
+            end          
+            item
+              Command = 308
+              ShortCut = 16439
+            end          
+            item
+              Command = 309
+              ShortCut = 16440
+            end          
+            item
+              Command = 310
+              ShortCut = 16441
+            end          
+            item
+              Command = 351
+              ShortCut = 24624
+            end          
+            item
+              Command = 352
+              ShortCut = 24625
+            end          
+            item
+              Command = 353
+              ShortCut = 24626
+            end          
+            item
+              Command = 354
+              ShortCut = 24627
+            end          
+            item
+              Command = 355
+              ShortCut = 24628
+            end          
+            item
+              Command = 356
+              ShortCut = 24629
+            end          
+            item
+              Command = 357
+              ShortCut = 24630
+            end          
+            item
+              Command = 358
+              ShortCut = 24631
+            end          
+            item
+              Command = 359
+              ShortCut = 24632
+            end          
+            item
+              Command = 360
+              ShortCut = 24633
+            end          
+            item
+              Command = 231
+              ShortCut = 24654
+            end          
+            item
+              Command = 232
+              ShortCut = 24643
+            end          
+            item
+              Command = 233
+              ShortCut = 24652
+            end          
+            item
+              Command = 612
+              ShortCut = 9
+            end          
+            item
+              Command = 613
+              ShortCut = 8201
+            end          
+            item
+              Command = 250
+              ShortCut = 24642
+            end>
+          Lines.Strings = (
+            'ConvertErrorSynEdit'
+          )
+          Options = [eoAutoIndent, eoDragDropEditing, eoGroupUndo, eoShowScrollHint, eoShowSpecialChars, eoSmartTabDelete, eoSmartTabs, eoTabsToSpaces, eoTrimTrailingSpaces, eoBracketHighlight]
+          ReadOnly = True
+          SelectedColor.OnChange = nil
+          Cursor = crIBeam
+          Height = 130
+          Width = 764
+        end
       end
     end
     object SettingsTabSheet: TTabSheet
@@ -347,7 +625,7 @@ object H2PasDialog: TH2PasDialog
         Left = 6
         Height = 20
         Top = 42
-        Width = 219
+        Width = 216
       end
       object SaveSettingsAsButton: TButton
         AutoSize = True
@@ -388,6 +666,17 @@ object H2PasDialog: TH2PasDialog
         Height = 23
         Top = 4
         Width = 35
+      end
+      object NewSettingsButton: TButton
+        AutoSize = True
+        BorderSpacing.InnerBorder = 4
+        Caption = 'NewSettingsButton'
+        OnClick = NewSettingsButtonClick
+        TabOrder = 4
+        Left = 6
+        Height = 26
+        Top = 124
+        Width = 118
       end
     end
   end
@@ -440,5 +729,11 @@ object H2PasDialog: TH2PasDialog
     Height = 26
     Top = 470
     Width = 81
+  end
+  object SynCppSyn1: TSynCppSyn
+    DefaultFilter = 'C++-Quelltexte (*.c,*.cpp,*.h,*.hpp,*.hh)|*.c;*.cpp;*.h;*.hpp;*.hh'
+    Enabled = False
+    left = 174
+    top = 92
   end
 end

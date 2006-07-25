@@ -81,7 +81,7 @@ uses
 type
   TPreviewEditor = TSynEdit;
   TPreviewPasSyn = TSynFreePascalSyn;
-                                                                                                                                                                                                                                                                                                                                                                                        TCustomSyn     = TSynCustomHighlighter;
+  TCustomSyn     = TSynCustomHighlighter;
   TSynHighlightElement = TSynHighlighterAttributes;
   TCustomSynClass = class of TCustomSyn;
 

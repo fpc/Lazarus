@@ -81,9 +81,9 @@ type
     function Load(Config: TConfigStorage): TModalResult;
     function Load(Config: TConfigStorage; const Path: string): TModalResult;
     procedure LoadShortCuts(KeyCommandRelationList: TKeyCommandRelationList);
-    function Run(ExtTool: TExternalToolOptions;
+    function Run(ExtTool: TIDEExternalToolOptions;
                  Macros: TTransferMacroList): TModalResult;
-    function Run(ExtTool: TExternalToolOptions;
+    function Run(ExtTool: TIDEExternalToolOptions;
                  Macros: TTransferMacroList;
                  TheOutputFilter: TOutputFilter;
                  CompilerOptions: TBaseCompilerOptions): TModalResult;
@@ -164,6 +164,7 @@ begin
 end;
 
 { TExternalToolList }
+
 function TExternalToolList.GetToolOpts(Index: integer): TExternalToolOptions;
 begin
   Result:=TExternalToolOptions(inherited Items[Index]);
@@ -281,7 +282,7 @@ begin
   end;
 end;
 
-function TExternalToolList.Run(ExtTool: TExternalToolOptions;
+function TExternalToolList.Run(ExtTool: TIDEExternalToolOptions;
   Macros: TTransferMacroList): TModalResult;
 begin
   Result:=Run(ExtTool,Macros,nil,nil);
@@ -295,7 +296,7 @@ begin
   Run(Items[Index],Macros);
 end;
 
-function TExternalToolList.Run(ExtTool: TExternalToolOptions;
+function TExternalToolList.Run(ExtTool: TIDEExternalToolOptions;
   Macros: TTransferMacroList; TheOutputFilter: TOutputFilter;
   CompilerOptions: TBaseCompilerOptions): TModalResult;
 var WorkingDir, Filename, Params, CmdLine, Title: string;
@@ -368,8 +369,8 @@ begin
           try
             Result:=mrCancel;
             try
-              if TheOutputFilter.Execute(TheProcess) then begin
-                TheOutputFilter.ReadLine('"'+Title+'" completed',true);
+              if TheOutputFilter.Execute(TheProcess,Self,ExtTool) then begin
+                TheOutputFilter.ReadConstLine('"'+Title+'" completed',true);
               end;
               if TheOutputFilter.ErrorExists then begin
                 ErrorOccurred:=true;

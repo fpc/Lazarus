@@ -37,11 +37,12 @@ interface
 
 uses
   Classes, Math, SysUtils, Forms, Controls, CompilerOptions, Project, Process,
-  IDEProcs, DynQueue, FileUtil, LclProc, LazConf, AsyncProcess, IDEMsgIntf;
+  AsyncProcess, LCLProc, DynQueue, FileUtil,
+  IDEMsgIntf, IDEExternToolIntf,
+  IDEProcs, LazConf;
 
 type
-  TOnOutputString = procedure(const Msg, Directory: String;
-                              OriginalIndex: integer) of object;
+  TOnOutputString = procedure(Line: TIDEScanMessageLine) of object;
   TOnAddFilteredLine = procedure(const Msg, Directory: String;
                                  OriginalIndex: integer) of object;
   TOnGetIncludePath = function(const Directory: string;
@@ -87,7 +88,22 @@ type
   end;
   
   TOFOnEndReading = procedure(Sender: TObject; Lines: TIDEMessageLineList)
-                                                                      of object;
+                              of object;
+
+  TOutputFilter = class;
+
+  { TOFScanLine }
+
+  TOFScanLine = class(TIDEScanMessageLine)
+  private
+    FFilter: TOutputFilter;
+  public
+    constructor Create(TheFilter: TOutputFilter);
+    procedure Init(const aLine, aWorkDir: string; const aLineNumber: integer);
+    procedure LineChanged(const OldValue: string); override;
+    procedure WorkingDirectoryChanged(const OldValue: string); override;
+    property Filter: TOutputFilter read FFilter;
+  end;
 
   { TOutputFilter }
 
@@ -95,6 +111,7 @@ type
   private
     FAsyncDataAvailable: boolean;
     FAsyncProcessTerminated: boolean;
+    FCaller: TObject;
     FCompilerOptions: TBaseCompilerOptions;
     FBufferingOutputLock: integer;
     fCurrentDirectory: string;
@@ -109,6 +126,7 @@ type
     fOnGetIncludePath: TOnGetIncludePath;
     fOnAddFilteredLine: TOnAddFilteredLine;
     fOptions: TOuputFilterOptions;
+    FScanLine: TOFScanLine;
     FStopExecute: boolean;
     FLasTOutputLineParts: integer;
     fLastOutputTime: TDateTime;
@@ -116,6 +134,7 @@ type
     fLastSearchedIncFilename: string;
     fProcess: TProcess;
     FAsyncOutput: TDynamicDataQueue;
+    FTool: TIDEExternalToolOptions;
     procedure DoAddFilteredLine(const s: string; OriginalIndex: integer = -1);
     procedure DoAddLastLinkerMessages(SkipLastLine: boolean);
     procedure DoAddLastAssemblerMessages;
@@ -128,7 +147,8 @@ type
   public
     ErrorExists: boolean;
     Aborted: boolean;
-    function Execute(TheProcess: TProcess): boolean;
+    function Execute(TheProcess: TProcess; aCaller: TObject = nil;
+                     aTool: TIDEExternalToolOptions = nil): boolean;
     function GetSourcePosition(const Line: string; var Filename:string;
       var CaretXY: TPoint; var MsgType: TErrorType): boolean;
     procedure Clear;
@@ -138,7 +158,8 @@ type
                                  MainSrcFile: string): boolean;
     function IsHintForParameterSenderNotUsed(const OutputLine: string): boolean;
     function IsParsing: boolean;
-    procedure ReadLine(const s: string; DontFilterLine: boolean);
+    procedure ReadLine(var s: string; DontFilterLine: boolean);
+    procedure ReadConstLine(const s: string; DontFilterLine: boolean);
     function ReadFPCompilerLine(const s: string): boolean;
     function ReadMakeLine(const s: string): boolean;
     procedure WriteOutput(Flush: boolean);
@@ -154,15 +175,18 @@ type
     property LastMessageType: TOutputMessageType read fLastMessageType;
     property OnGetIncludePath: TOnGetIncludePath
                                  read fOnGetIncludePath write fOnGetIncludePath;
-    property OnReadLine: TOnOutputString read fOnReadLine write fOnReadLine;
+    property OnReadLine: TOnOutputString read fOnReadLine write fOnReadLine;// used by the messages window
     property OnAddFilteredLine: TOnAddFilteredLine
-                               read fOnAddFilteredLine write fOnAddFilteredLine;
+                               read fOnAddFilteredLine write fOnAddFilteredLine;// used by the messages window
     property Options: TOuputFilterOptions read fOptions write fOptions;
     property CompilerOptions: TBaseCompilerOptions read FCompilerOptions
                                                write FCompilerOptions;
     property CurrentMessageParts: TStrings read GetCurrentMessageParts;
     property AsyncProcessTerminated: boolean read FAsyncProcessTerminated;
     property OnEndReading: TOFOnEndReading read FOnEndReading write FOnEndReading;
+    property Caller: TObject read FCaller;
+    property ScanLine: TOFScanLine read FScanLine;
+    property Tool: TIDEExternalToolOptions read FTool;
   end;
   
   EOutputFilterError = class(Exception)
@@ -212,7 +236,8 @@ begin
   fLastSearchedIncFilename:='';
 end;
 
-function TOutputFilter.Execute(TheProcess: TProcess): boolean;
+function TOutputFilter.Execute(TheProcess: TProcess; aCaller: TObject;
+  aTool: TIDEExternalToolOptions): boolean;
 const
   BufSize = 4096;
 var
@@ -223,6 +248,10 @@ begin
   Result:=true;
   Clear;
   fProcess:=TheProcess;
+  FCaller:=aCaller;
+  FTool:=aTool;
+  FScanLine:=TOFScanLine.Create(Self);
+  
   //debugln('TOutputFilter.Execute A CurrentDirectory="',TheProcess.CurrentDirectory,'"');
   fCurrentDirectory:=TrimFilename(fProcess.CurrentDirectory);
   if fCurrentDirectory='' then fCurrentDirectory:=GetCurrentDir;
@@ -250,7 +279,7 @@ begin
         fProcess.Terminate(0);
         Aborted:=true;
         Result:=false;
-        ReadLine('aborted',true);
+        ReadConstLine('aborted',true);
         break;
       end;
 
@@ -314,10 +343,13 @@ begin
     fProcess:=nil;
     FreeAndNil(FAsyncOutput);
     if Assigned(OnEndReading) then OnEndReading(Self,fOutput);
+    FreeAndNil(FScanLine);
+    FTool:=nil;
+    FCaller:=nil;
   end;
 end;
 
-procedure TOutputFilter.ReadLine(const s: string; DontFilterLine: boolean);
+procedure TOutputFilter.ReadLine(var s: string; DontFilterLine: boolean);
 // this is called for every line written by the external tool (=Output)
 // it parses the output
 begin
@@ -326,8 +358,17 @@ begin
   fLastErrorType:=etNone;
   fOutput.Add(s);
   WriteOutput(false);
-  if Assigned(OnReadLine) then
-    OnReadLine(s,fCurrentDirectory,fOutput.Count-1);
+  if FScanLine<>nil then begin
+    FScanLine.Init(s,fCurrentDirectory,fOutput.Count-1);
+    if Tool<>nil then begin
+      Tool.ParseLine(Self,FScanLine);
+      s:=FScanLine.Line;
+    end;
+    if Assigned(OnReadLine) then begin
+      OnReadLine(FScanLine);
+      s:=FScanLine.Line;
+    end;
+  end;
 
   if DontFilterLine then begin
     DoAddFilteredLine(s);
@@ -340,6 +381,15 @@ begin
   end else if (ofoShowAll in Options) then begin
     DoAddFilteredLine(s);
   end;
+end;
+
+procedure TOutputFilter.ReadConstLine(const s: string; DontFilterLine: boolean
+  );
+var
+  Line: String;
+begin
+  Line:=s;
+  ReadLine(Line,DontFilterLine);
 end;
 
 function TOutputFilter.ReadFPCompilerLine(const s: string): boolean;
@@ -1205,6 +1255,32 @@ begin
   i:=FOriginalIndices[Index1];
   FOriginalIndices[Index1]:=FOriginalIndices[Index2];
   FOriginalIndices[Index2]:=i;
+end;
+
+{ TOFScanLine }
+
+constructor TOFScanLine.Create(TheFilter: TOutputFilter);
+begin
+  FFilter:=TheFilter;
+  inherited Create(Filter.Caller,Filter.Tool);
+end;
+
+procedure TOFScanLine.Init(const aLine, aWorkDir: string;
+  const aLineNumber: integer);
+begin
+  Line:=aLine;
+  WorkingDirectory:=aWorkDir;
+  SetLineNumber(aLineNumber);
+end;
+
+procedure TOFScanLine.LineChanged(const OldValue: string);
+begin
+
+end;
+
+procedure TOFScanLine.WorkingDirectoryChanged(const OldValue: string);
+begin
+
 end;
 
 end.

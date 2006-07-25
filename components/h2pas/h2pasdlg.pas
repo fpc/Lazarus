@@ -28,6 +28,8 @@ uses
   SynEdit, SynHighlighterCPP,
   FileProcs,
   IDEMsgIntf, MenuIntf, IDECommands, BaseIDEIntf, IDEDialogs, LazIDEIntf,
+  SrcEditorIntf,
+  CodeToolManager, CodeCache,
   H2PasStrConsts, H2PasConvert;
 
 type
@@ -35,20 +37,13 @@ type
   { TH2PasDialog }
 
   TH2PasDialog = class(TForm)
-    h2pasOptionsCheckGroup: TCheckGroup;
-    ConvertButton: TButton;
-    NewSettingsButton: TButton;
-    h2pasFilenameBrowseButton: TButton;
-    H2PasFilenameEdit: TEdit;
-    H2PasFilenameLabel: TLabel;
-    OutputDirBrowseButton: TButton;
     MainPageControl: TPageControl;
+    SynCppSyn1: TSynCppSyn;
 
     // c header files
     FilesTabSheet: TTabSheet;
     CHeaderFilesSplitter1: TSplitter;
     AddCHeaderFilesButton: TButton;
-    ConvertTabSheet: TTabSheet;
     UnselectAllCHeaderFilesButton: TButton;
     SelectAllCHeaderFilesButton: TButton;
     DeleteCHeaderFilesButton: TButton;
@@ -56,15 +51,27 @@ type
 
     // h2pas
     h2pasOptionsTabSheet: TTabSheet;
+    h2pasOptionsCheckGroup: TCheckGroup;
     LibnameEdit: TEdit;
     LibNameLabel: TLabel;
     OutputExtEdit: TEdit;
     OutputExtLabel: TLabel;
     OutputDirEdit: TEdit;
     OutputDirLabel: TLabel;
+    OutputDirBrowseButton: TButton;
+
+    // convert
+    ConvertTabSheet: TTabSheet;
+    ConvertButton: TButton;
+    ConvertErrorGroupBox: TGroupBox;
+    ConvertErrorSynEdit: TSynEdit;
 
     // settings
     SettingsTabSheet: TTabSheet;
+    h2pasFilenameBrowseButton: TButton;
+    H2PasFilenameEdit: TEdit;
+    H2PasFilenameLabel: TLabel;
+    NewSettingsButton: TButton;
     SaveSettingsAsButton: TButton;
     OpenLastProjectOnStartCheckBox: TCheckBox;
 
@@ -106,6 +113,7 @@ type
     procedure UpdateProjectChanged; // show project settings
     procedure UpdateCaption;
     procedure ClearMessages;
+    procedure UpdateHighlighter;
 
     // project settings
     procedure UpdateFilesPage;
@@ -122,6 +130,8 @@ type
     function OnIDESavedAll(Sender: TObject): TModalResult;
   public
     function Convert: TModalResult;
+    procedure ShowH2PasError(MsgLine: integer);
+    procedure ClearError;
 
     function SaveSettings: TModalResult;
     function SaveGlobalSettings: TModalResult;
@@ -213,6 +223,9 @@ begin
   FConverter:=TH2PasConverter.Create;
   LoadGlobalSettings;
   
+  ClearError;
+  UpdateHighlighter;
+
   // create project
   if Converter.AutoOpenLastProject
   and FileExists(Converter.CurrentProjectFilename) then
@@ -509,6 +522,13 @@ begin
   IDEMessagesWindow.Clear;
 end;
 
+procedure TH2PasDialog.UpdateHighlighter;
+begin
+  SourceEditorWindow.GetHighlighterSettings(SynCppSyn1);
+  SourceEditorWindow.GetEditorControlSettings(ConvertErrorSynEdit);
+  ConvertErrorSynEdit.Gutter.ShowLineNumbers:=true;
+end;
+
 procedure TH2PasDialog.UpdateFilesPage;
 var
   i: Integer;
@@ -647,6 +667,7 @@ end;
 function TH2PasDialog.Convert: TModalResult;
 begin
   Result:=mrCancel;
+  ClearError;
   
   if not Project.HasEnabledFiles then begin
     IDEMessageDialog('Nothing to do',
@@ -670,6 +691,62 @@ begin
   LazarusIDE.SaveSourceEditorChangesToCodeCache(-1);
   
   Result:=Converter.Execute;
+  if Result<>mrOk then begin
+    ShowH2PasError(-1);
+  end;
+end;
+
+procedure TH2PasDialog.ShowH2PasError(MsgLine: integer);
+var
+  Line: TIDEMessageLine;
+  LineNumber: integer;
+  Column: integer;
+  CodeBuf: TCodeBuffer;
+  NewPos: TPoint;
+  Filename: string;
+  s: String;
+begin
+  if MsgLine<0 then
+    MsgLine:=Converter.FindH2PasErrorMessage;
+  if (MsgLine<0) or (MsgLine>=IDEMessagesWindow.LinesCount) then begin
+    ClearError;
+    exit;
+  end;
+  
+  Line:=IDEMessagesWindow.Lines[MsgLine];
+  if not Converter.GetH2PasErrorPostion(Line.Msg,Filename,LineNumber,Column)
+  then exit;
+  DebugLn(['TH2PasDialog.ShowH2PasError LineNumber=',LineNumber,' Column=',Column,' Filename=',Filename]);
+  
+  // open error position in synedit
+  CodeBuf:=CodeToolBoss.LoadFile(Filename,false,false);
+  if CodeBuf=nil then exit;
+  ConvertErrorSynEdit.BeginUpdate;
+  CodeBuf.AssignTo(ConvertErrorSynEdit.Lines,false);
+  NewPos:=Point(Column,LineNumber);
+  if NewPos.Y<1 then NewPos.Y:=1;
+  if NewPos.X<1 then NewPos.X:=1;
+  ConvertErrorSynEdit.LogicalCaretXY:=NewPos;
+  ConvertErrorSynEdit.TopLine:=NewPos.Y-3;
+  ConvertErrorSynEdit.EndUpdate;
+
+  // show error position in groupbox
+  s:='Error: ';
+  if LineNumber>=1 then
+    s:=s+IntToStr(LineNumber);
+  if Column>=1 then begin
+    if LineNumber>=1 then
+      s:=s+',';
+    s:=s+IntToStr(Column);
+  end;
+  s:=s+' '+Filename;
+  ConvertErrorGroupBox.Caption:=s;
+end;
+
+procedure TH2PasDialog.ClearError;
+begin
+  ConvertErrorSynEdit.Lines.Clear;
+  ConvertErrorGroupBox.Caption:='No error';
 end;
 
 function TH2PasDialog.SaveSettings: TModalResult;
@@ -844,4 +921,5 @@ initialization
   {$I h2pasdlg.lrs}
 
 end.
+
 

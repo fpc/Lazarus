@@ -45,7 +45,7 @@ type
     procedure Add(const Msg, CurDir: String; ProgressLine: boolean;
                   OriginalIndex: integer);
     procedure AddMsg(const Msg, CurDir: String; OriginalIndex: integer);
-    procedure AddProgress(const Msg, CurDir: String; OriginalIndex: integer);
+    procedure AddProgress(Line: TIDEScanMessageLine);
   public
     property Options: TCompilerOptions read FOptions write SetOptions;
     property Test: TCompilerOptionsTest read FTest;
@@ -228,10 +228,9 @@ begin
   Add(Msg,CurDir,false,OriginalIndex);
 end;
 
-procedure TCheckCompilerOptsDlg.AddProgress(const Msg, CurDir: String;
-  OriginalIndex: integer);
+procedure TCheckCompilerOptsDlg.AddProgress(Line: TIDEScanMessageLine);
 begin
-  Add(Msg,CurDir,false,OriginalIndex);
+  Add(Line.Line,Line.WorkingDirectory,false,Line.LineNumber);
 end;
 
 initialization

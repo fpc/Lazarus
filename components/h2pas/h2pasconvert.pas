@@ -25,7 +25,7 @@ interface
 uses
   Classes, SysUtils, LCLProc, LazConfigStorage, XMLPropStorage, Forms, Controls,
   Dialogs, FileUtil, FileProcs,
-  IDEExternToolIntf, IDEDialogs;
+  TextTools, IDEExternToolIntf, IDEDialogs, LazIDEIntf, IDEMsgIntf;
   
 type
   TH2PasProject = class;
@@ -163,11 +163,21 @@ type
     property OutputDirectory: string read FOutputDirectory write SetOutputDirectory;
   end;
   
+  { TH2PasTool }
+
+  TH2PasTool = class(TIDEExternalToolOptions)
+  private
+    FH2PasFile: TH2PasFile;
+  public
+    property H2PasFile: TH2PasFile read FH2PasFile write FH2PasFile;
+  end;
+  
   { TH2PasConverter }
 
   TH2PasConverter = class(TPersistent)
   private
     FAutoOpenLastProject: boolean;
+    FExecuting: boolean;
     Fh2pasFilename: string;
     FModified: boolean;
     FProject: TH2PasProject;
@@ -180,6 +190,7 @@ type
     procedure SetProjectHistory(const AValue: TStrings);
     procedure SetWindowBounds(const AValue: TRect);
     procedure Seth2pasFilename(const AValue: string);
+    procedure OnParseH2PasLine(Sender: TObject; Line: TIDEScanMessageLine);
   public
     constructor Create;
     destructor Destroy; override;
@@ -195,6 +206,10 @@ type
     function Execute: TModalResult;
     function ConvertFile(AFile: TH2PasFile): TModalResult;
     function GetH2PasFilename: string;
+    function FindH2PasErrorMessage: integer;
+    function GetH2PasErrorPostion(const Line: string;
+                                  out aFilename: string;
+                                  out LineNumber, Column: integer): boolean;
   public
     property Project: TH2PasProject read FProject write SetProject;
     property ProjectHistory: TStrings read FProjectHistory write SetProjectHistory;
@@ -205,6 +220,7 @@ type
                                           write SetAutoOpenLastProject;
     property h2pasFilename: string read Fh2pasFilename write Seth2pasFilename;
     property Modified: boolean read FModified write FModified;
+    property Executing: boolean read FExecuting;
   end;
 
 implementation
@@ -848,6 +864,26 @@ end;
 
 { TH2PasConverter }
 
+procedure TH2PasConverter.OnParseH2PasLine(Sender: TObject;
+  Line: TIDEScanMessageLine);
+var
+  Tool: TH2PasTool;
+  LineNumber: String;
+  MsgType: String;
+  Msg: String;
+begin
+  if Line.Tool is TH2PasTool then begin
+    Tool:=TH2PasTool(Line.Tool);
+    if REMatches(Line.Line,'^at line ([0-9]+) (error) : (.*)$') then begin
+      LineNumber:=REVar(1);
+      MsgType:=REVar(2);
+      Msg:=REVar(3);
+      Line.Line:=Tool.H2PasFile.Filename+'('+LineNumber+') '+MsgType+': '+Msg;
+    end;
+    //DebugLn(['TH2PasConverter.OnParseH2PasLine ',Line.Line]);
+  end;
+end;
+
 function TH2PasConverter.GetCurrentProjectFilename: string;
 begin
   if FProjectHistory.Count>0 then
@@ -1036,18 +1072,27 @@ var
   AFile: TH2PasFile;
   CurResult: TModalResult;
 begin
-  Result:=mrOk;
+  if FExecuting then begin
+    DebugLn(['TH2PasConverter.Execute FAILED: Already executing']);
+    exit(mrCancel);
+  end;
 
-  // convert every c header file
-  for i:=0 to Project.CHeaderFileCount-1 do begin
-    AFile:=Project.CHeaderFiles[i];
-    if not AFile.Enabled then continue;
-    CurResult:=ConvertFile(AFile);
-    if CurResult=mrAbort then begin
-      DebugLn(['TH2PasConverter.Execute aborted on file ',AFile.Filename]);
-      exit(mrAbort);
+  Result:=mrOK;
+  FExecuting:=true;
+  try
+    // convert every c header file
+    for i:=0 to Project.CHeaderFileCount-1 do begin
+      AFile:=Project.CHeaderFiles[i];
+      if not AFile.Enabled then continue;
+      CurResult:=ConvertFile(AFile);
+      if CurResult=mrAbort then begin
+        DebugLn(['TH2PasConverter.Execute aborted on file ',AFile.Filename]);
+        exit(mrAbort);
+      end;
+      if CurResult<>mrOK then Result:=mrCancel;
     end;
-    if CurResult<>mrOK then Result:=mrCancel;
+  finally
+    FExecuting:=false;
   end;
 end;
 
@@ -1056,7 +1101,7 @@ var
   OutputFilename: String;
   TempCHeaderFilename: String;
   InputFilename: String;
-  Tool: TExternalToolOptions;
+  Tool: TH2PasTool;
 begin
   Result:=mrCancel;
 
@@ -1082,15 +1127,20 @@ begin
   // TODO: run converters for .h file to make it compatible for h2pas
 
   // run h2pas
-  Tool:=TExternalToolOptions.Create;
+  Tool:=TH2PasTool.Create;
   try
     Tool.Title:='h2pas';
+    Tool.H2PasFile:=AFile;
     Tool.Filename:=GetH2PasFilename;
     Tool.CmdLineParams:=AFile.GetH2PasParameters(TempCHeaderFilename);
     Tool.ScanOutput:=true;
     Tool.ShowAllOutput:=true;
     Tool.WorkingDirectory:=Project.BaseDir;
+    Tool.OnParseLine:=@OnParseH2PasLine;
     DebugLn(['TH2PasConverter.ConvertFile Tool.Filename="',Tool.Filename,'" Tool.CmdLineParams="',Tool.CmdLineParams,'"']);
+    Result:=LazarusIDE.RunExternalTool(Tool);
+    if Result<>mrOk then exit(mrAbort);
+    if FindH2PasErrorMessage>=0 then exit(mrAbort);
   finally
     Tool.Free;
   end;
@@ -1105,6 +1155,37 @@ begin
   Result:=FindDefaultExecutablePath(h2pasFilename);
 end;
 
+function TH2PasConverter.FindH2PasErrorMessage: integer;
+var
+  i: Integer;
+  Line: TIDEMessageLine;
+begin
+  for i:=0 to IDEMessagesWindow.LinesCount-1 do begin
+    Line:=IDEMessagesWindow.Lines[i];
+    if REMatches(Line.Msg,'^(.*)\([0-9]+\)') then begin
+      Result:=i;
+      exit;
+    end;
+  end;
+  Result:=-1;
+end;
+
+function TH2PasConverter.GetH2PasErrorPostion(const Line: string;
+  out aFilename: string; out LineNumber, Column: integer): boolean;
+begin
+  Result:=REMatches(Line,'^(.*)\(([0-9]+)\)');
+  if Result then begin
+    aFilename:=REVar(1);
+    LineNumber:=StrToIntDef(REVar(2),-1);
+    Column:=1;
+  end else begin
+    aFilename:='';
+    LineNumber:=-1;
+    Column:=-1;
+  end;
+end;
+
 end.
+
 
 

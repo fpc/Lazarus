@@ -136,6 +136,9 @@ type
                                                   write SetActiveEditor;
     function Count: integer; virtual; abstract;
     property Items[Index: integer]: TSourceEditorInterface read GetItems; default;
+    
+    function GetEditorControlSettings(EditControl: TControl): boolean; virtual; abstract;
+    function GetHighlighterSettings(Highlighter: TObject): boolean; virtual; abstract;
   end;
   
   

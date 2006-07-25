@@ -37,28 +37,12 @@ unit MsgView;
 interface
 
 uses
-  Classes,
-  AVL_Tree,
-  ClipBrd,
-  Controls,
-  DialogProcs,
-  Dialogs,
-  EnvironmentOpts,
-  FileUtil,
-  Forms,
-  IDECommands,
-  IDEOptionDefs,
-  IDEProcs,
-  InputHistory,
-  KeyMapping,
-  LazarusIDEStrConsts,
-  LCLProc,
-  LResources,
-  MenuIntf,
-  IDEMsgIntf,
-  Menus,
+  Classes, SysUtils, AVL_Tree,
+  LCLProc, LResources, ClipBrd, Controls, Dialogs, FileUtil, Forms, Menus,
   StdCtrls,
-  SysUtils;
+  IDEExternToolIntf, IDECommands, MenuIntf, IDEMsgIntf,
+  DialogProcs, EnvironmentOpts,
+  LazarusIDEStrConsts, IDEOptionDefs, IDEProcs, InputHistory, KeyMapping;
 
 type
 
@@ -128,7 +112,7 @@ type
     procedure Add(const Msg, CurDir: string;
                   ProgressLine, VisibleLine: boolean; OriginalIndex: integer);
     procedure AddMsg(const Msg, CurDir: string; OriginalIndex: integer); override;
-    procedure AddProgress(const Msg, CurDir: string; OriginalIndex: integer);
+    procedure AddProgress(ScanLine: TIDEScanMessageLine);
     procedure AddSeparator;
     procedure CollectLineParts(Sender: TObject; SrcLines: TIDEMessageLineList);
     procedure ClearTillLastSeparator;
@@ -419,10 +403,9 @@ begin
   Add(Msg, CurDir, False, True, OriginalIndex);
 end;
 
-procedure TMessagesView.AddProgress(const Msg, CurDir: string;
-  OriginalIndex: integer);
+procedure TMessagesView.AddProgress(ScanLine: TIDEScanMessageLine);
 begin
-  Add(Msg, CurDir, True, True, OriginalIndex);
+  Add(ScanLine.Line, ScanLine.WorkingDirectory, True, True,ScanLine.LineNumber);
 end;
 
 procedure TMessagesView.AddSeparator;

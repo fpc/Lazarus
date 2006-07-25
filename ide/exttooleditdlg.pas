@@ -48,6 +48,20 @@ uses
   KeyMapping, TransferMacros, IDEProcs, LazarusIDEStrConsts;
 
 type
+  { TExternalToolOptions }
+
+  TExternalToolOptions = class(TIDEExternalToolOptions)
+  private
+    fKey: word;
+    fShift: TShiftState;
+  public
+    procedure Assign(Source: TPersistent); override;
+    procedure Clear; override;
+    // key and shift are loaded with the keymapping in the editoroptions
+    property Key: word read fKey write fKey;
+    property Shift: TShiftState read fShift write fShift;
+  end;
+
   {
     the editor dialog for a single external tool
   }
@@ -83,7 +97,7 @@ type
     procedure MacrosInsertButtonClick(Sender: TObject);
     procedure MacrosListboxClick(Sender: TObject);
   private
-    fOptions: TExternalToolOptions; 
+    fOptions: TExternalToolOptions;
     fTransferMacros: TTransferMacroList;
     GrabbingKey: integer; // 0=none, 1=Default key
     procedure ActivateGrabbing(AGrabbingKey: integer);
@@ -685,6 +699,28 @@ end;
 procedure TExternalToolOptionDlg.MacrosListboxClick(Sender: TObject);
 begin
   MacrosInsertButton.Enabled:=(MacrosListbox.ItemIndex>=0);
+end;
+
+{ TExternalToolOptions }
+
+procedure TExternalToolOptions.Assign(Source: TPersistent);
+var
+  Src: TExternalToolOptions;
+begin
+  if Source is TExternalToolOptions then begin
+    Src:=TExternalToolOptions(Source);
+    fKey:=Src.fKey;
+    fShift:=Src.fShift;
+  end else begin
+    inherited Assign(Source);
+  end;
+end;
+
+procedure TExternalToolOptions.Clear;
+begin
+  fKey:=VK_UNKNOWN;
+  fShift:=[];
+  inherited Clear;
 end;
 
 end.

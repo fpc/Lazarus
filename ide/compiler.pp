@@ -157,7 +157,7 @@ begin
         if OutputFilter<>nil then begin
           OutputFilter.Options:=[ofoSearchForFPCMessages,ofoExceptionOnError];
           OutputFilter.CompilerOptions:=AProject.CompilerOptions;
-          OutputFilter.Execute(TheProcess);
+          OutputFilter.Execute(TheProcess,Self);
         end else begin
           TheProcess.Execute;
         end;
@@ -185,8 +185,9 @@ end;
 procedure TCompiler.WriteError(const Msg: string);
 begin
   DebugLn('TCompiler.WriteError ',Msg);
-  if OutputFilter<>nil then
-    OutputFilter.ReadLine(Msg,true);
+  if OutputFilter<>nil then begin
+    OutputFilter.ReadConstLine(Msg,true);
+  end;
 end;
 
 

@@ -1233,7 +1233,7 @@ function TMainIDEBase.DoCheckAmbiguousSources(const AFilename: string;
   begin
     Result:=mrOk;
     if Compiling then begin
-      TheOutputFilter.ReadLine(Format(lisWarningAmbiguousFileFoundSourceFileIs,
+      TheOutputFilter.ReadConstLine(Format(lisWarningAmbiguousFileFoundSourceFileIs,
         ['"', AmbiguousFilename, '"', '"', AFilename, '"']), true);
     end;
   end;
