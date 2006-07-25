@@ -44,7 +44,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisisalreadypartoftheproject
 msgid "%s is already part of the Project."
-msgstr ""
+msgstr "%s on jo osa projektia."
 
 #: lazarusidestrconsts:liscodetoolsdefsprojectdirectory2
 msgid "%s project directory"
@@ -144,7 +144,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisclose
 msgid "&Close"
-msgstr ""
+msgstr "&Sulje"
 
 #: lazarusidestrconsts:uemclosepage
 msgid "&Close Page"
@@ -684,11 +684,11 @@ msgstr ""
 
 #: lazarusidestrconsts:rslanguageautomatic
 msgid "Automatic (or english)"
-msgstr "Oletuskieli (tai englanti)"
+msgstr "oletuskieli (tai englanti)"
 
 #: lazarusidestrconsts:lisautomaticfeatures
 msgid "Automatic features"
-msgstr ""
+msgstr "Automaattiset ominaisuudet"
 
 #: lazarusidestrconsts:lispckoptsautomaticallyincrementversiononbuild
 msgid "Automatically increment version on build"
@@ -1236,7 +1236,7 @@ msgstr "Koodiselain"
 
 #: lazarusidestrconsts:lismenueditcodetemplates
 msgid "Code Templates ..."
-msgstr " ..."
+msgstr ""
 
 #: lazarusidestrconsts:dlgcodetoolstab
 msgid "Code Tools"
@@ -1280,7 +1280,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenucodetoolsoptions
 msgid "CodeTools Options ..."
-msgstr " ..."
+msgstr ""
 
 #: lazarusidestrconsts:srkmcatcodetools
 msgid "CodeTools commands"
@@ -1288,7 +1288,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenucodetoolsdefineseditor
 msgid "CodeTools defines editor ..."
-msgstr " ..."
+msgstr ""
 
 #: lazarusidestrconsts:srkmeccodetoolsdefinesed
 msgid "Codetools defines editor"
@@ -1312,7 +1312,7 @@ msgstr "Väri"
 
 #: lazarusidestrconsts:dlgclrscheme
 msgid "Color Scheme"
-msgstr ""
+msgstr "Värikaavio"
 
 #: lazarusidestrconsts:dlgenvcolors
 msgid "Colors"
@@ -1400,7 +1400,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenucompileroptions
 msgid "Compiler Options ..."
-msgstr " ..."
+msgstr ""
 
 #: lazarusidestrconsts:lispckeditcompileroptionsforpackage
 msgid "Compiler Options for Package %s"
@@ -1468,7 +1468,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuconfigurehelp
 msgid "Configure Help ..."
-msgstr " ..."
+msgstr "Ohjeen asetukset ..."
 
 #: lazarusidestrconsts:lismenuconfigurebuildlazarus
 msgid "Configure \"Build Lazarus\" ..."
@@ -1476,7 +1476,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuconfigcustomcomps
 msgid "Configure custom components ..."
-msgstr " ..."
+msgstr ""
 
 #: lazarusidestrconsts:lismenusettings
 msgid "Configure custom tools ..."
@@ -1484,11 +1484,11 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenueditinstallpkgs
 msgid "Configure installed packages ..."
-msgstr " ..."
+msgstr ""
 
 #: lazarusidestrconsts:lislazbuildconfirmbuild
 msgid "Confirm Before ReBuild Lazarus"
-msgstr "Pyydä vahvistus ennenkuin Lazarus uudelleen muodostetaan(/käännetään)"
+msgstr "Pyydä vahvistus ennenkuin Lazarus uudelleen muodostetaan (/käännetään)"
 
 #: lazarusidestrconsts:lisconfirmchanges
 msgid "Confirm changes"
@@ -3140,7 +3140,7 @@ msgstr "Ohje"
 
 #: lazarusidestrconsts:lishlpoptshelpoptions
 msgid "Help Options"
-msgstr ""
+msgstr "Ohjeen asetukset"
 
 #: lazarusidestrconsts:lishfmhelpforfreepascalcompilermessage
 msgid "Help for FreePascal Compiler message"
@@ -3376,7 +3376,7 @@ msgstr "Sisennä valittu lohko"
 
 #: lazarusidestrconsts:rslanguageindonesian
 msgid "Indonesian"
-msgstr ""
+msgstr "indonesia"
 
 #: lazarusidestrconsts:lisinformationaboutunit
 msgid "Information about %s"
@@ -4264,7 +4264,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenumakeresourcestring
 msgid "Make Resource String ..."
-msgstr " ..."
+msgstr ""
 
 #: lazarusidestrconsts:lismakeresourcestring
 msgid "Make ResourceString"
@@ -4624,7 +4624,7 @@ msgstr "Luo uusi Projekti ..."
 
 #: lazarusidestrconsts:lismenunewprojectfromfile
 msgid "New Project from file ..."
-msgstr " ..."
+msgstr ""
 
 #: lazarusidestrconsts:lisprojaddnewrequirement
 msgid "New Requirement"
@@ -4944,7 +4944,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuopenrecentpkg
 msgid "Open recent package ..."
-msgstr " ..."
+msgstr ""
 
 #: lazarusidestrconsts:lisopenthefileasnormalsource
 msgid "Open the file as normal source"
@@ -5076,7 +5076,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenupackagegraph
 msgid "Package Graph ..."
-msgstr " ..."
+msgstr ""
 
 #: lazarusidestrconsts:lispackageinfo
 msgid "Package Info"
@@ -5348,11 +5348,11 @@ msgstr "Aliohjelma"
 
 #: lazarusidestrconsts:uemprocedurejump
 msgid "Procedure Jump"
-msgstr ""
+msgstr "Siirry aliohjelman tai funktion esittelyn ja toteuksen välillä"
 
 #: lazarusidestrconsts:srkmecprocedurelist
 msgid "Procedure List ..."
-msgstr " ..."
+msgstr "Aliohjelmien ja funktioiden luettelo ..."
 
 #: lazarusidestrconsts:dlgforwardprocsinsertpolicy
 msgid "Procedure insert policy"
@@ -5516,7 +5516,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenupublishproject
 msgid "Publish Project ..."
-msgstr " ..."
+msgstr ""
 
 #: lazarusidestrconsts:lispublishprojdir
 msgid "Publish project directory"
@@ -8456,7 +8456,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgmainviewforms
 msgid "View project forms"
-msgstr "Näytä projektin lomakkeet(forms)"
+msgstr "Näytä projektin lomakkeet (forms)"
 
 #: lazarusidestrconsts:dlgmainviewunits
 msgid "View project units"
