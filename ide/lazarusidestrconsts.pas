@@ -2963,6 +2963,7 @@ resourcestring
   lisLazDocMainFormCaption = 'LazDoc editor';
   lisLazDocNoTagCaption = '<NONE>';
   lisLazDocNoDocumentation = 'Documentation entry does not exist';
+  lisLazDocInherited = 'Inherited';
   lisLazDocShortTag = 'Short';
   lisLazDocDescrTag = 'Description';
   lisLazDocErrorsTag = 'Errors';

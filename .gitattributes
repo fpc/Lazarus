@@ -1282,6 +1282,7 @@ ide/lazarus_dci.lrs svneol=native#text/pascal
 ide/lazarusidestrconsts.pas svneol=native#text/pascal
 ide/lazarusmanager.pas svneol=native#text/pascal
 ide/lazconf.pp svneol=native#text/pascal
+ide/lazdoc.pas svneol=native#text/plain
 ide/lazdocfrm.lfm svneol=native#text/plain
 ide/lazdocfrm.lrs svneol=native#text/plain
 ide/lazdocfrm.pas svneol=native#text/plain

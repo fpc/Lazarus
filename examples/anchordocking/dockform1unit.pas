@@ -24,7 +24,7 @@ type
   private
     function CreateNewForm: TCustomForm;
   public
-    DockerForm1: TLazControlDocker;
+    ControlDocker1: TLazControlDocker;
     DockingManager: TLazDockingManager;
   end;
 
@@ -86,11 +86,15 @@ begin
     DockingManager.LoadFromConfig(Config);
     Config.Free;
   end;
-
-  DockerForm1:=TLazControlDocker.Create(Self);
-  DockerForm1.Name:='DockerForm1';
-  DockerForm1.Manager:=DockingManager;
   
+  ControlDocker1:=TLazControlDocker.Create(Self);
+  ControlDocker1.Name:='DockerForm1';
+  ControlDocker1.Manager:=DockingManager;
+  
+  DockingManager.WriteDebugReport;
+  DockingManager.CreateLayout(ControlDocker1.DockerName,Self,true);
+  Halt;
+
   Form2:=CreateNewForm;
   Form3:=CreateNewForm;
 
@@ -102,7 +106,7 @@ begin
   
   DockingManager.WriteDebugReport;
   
-  DockerForm1.GetLayoutFromControl;
+  ControlDocker1.GetLayoutFromControl;
 end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);

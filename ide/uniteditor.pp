@@ -2931,7 +2931,7 @@ var
   CaretPos: TPoint;
 begin
   if LazDocForm = nil then exit;
-  
+
   SrcEdit:=GetActiveSE;
 
   // find a path that contains the .xml file

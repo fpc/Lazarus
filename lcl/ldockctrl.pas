@@ -36,13 +36,14 @@ unit LDockCtrl;
 interface
 
 uses
-  Classes, SysUtils, TypInfo, LCLProc, Controls, Forms, Menus, LCLStrConsts,
-  StringHashList, LazConfigStorage, LDockCtrlEdit, LDockTree;
+  Classes, Math, SysUtils, TypInfo, LCLProc, Controls, Forms, Menus,
+  LCLStrConsts, DynHashArray, StringHashList, LazConfigStorage, LDockCtrlEdit,
+  LDockTree;
 
 type
   TNonDockConfigNames = (
     ndcnControlName, // '-Name ' + AControl.Name
-    ndcnChildIndex,  // '-ID ' + IntToStr(AControl index in Parent) + AControl.ClassName
+    ndcnChildIndex,  // '-ID ' + IntToStr(AControl index in Parent) +' '+ AControl.ClassName
     ndcnParent       // '-Parent' : AControl.Parent
     );
 
@@ -130,6 +131,7 @@ type
     FRoot: TLazDockConfigNode;
   public
     constructor Create(const ADockerName: string; ANode: TLazDockConfigNode);
+    procedure WriteDebugReport;
     property DockerName: string read FDockerName;
     property Root: TLazDockConfigNode read FRoot;
   end;
@@ -169,10 +171,10 @@ type
     procedure ClearConfigs;
     function GetConfigWithDockerName(const DockerName: string
                                      ): TLazDockerConfig;
-    function CreateLayout(const DockerName: string; VisibleControl: TControl
-                          ): TLazDockConfigNode;
+    function CreateLayout(const DockerName: string; VisibleControl: TControl;
+                          ExceptionOnError: boolean = false): TLazDockConfigNode;
     function ConfigIsCompatible(RootNode: TLazDockConfigNode;
-                                ExceptionOnError: boolean): boolean;
+                                ExceptionOnError: boolean = false): boolean;
 
     procedure WriteDebugReport;
   public
@@ -244,6 +246,8 @@ type
 
 
 function LDConfigNodeTypeNameToType(const s: string): TLDConfigNodeType;
+
+function dbgs(Node: TLazDockConfigNode): string; overload;
   
 procedure Register;
 
@@ -255,6 +259,16 @@ begin
   for Result:=Low(TLDConfigNodeType) to High(TLDConfigNodeType) do
     if CompareText(LDConfigNodeTypeNames[Result],s)=0 then exit;
   Result:=ldcntControl;
+end;
+
+function dbgs(Node: TLazDockConfigNode): string;
+begin
+  if Node=nil then begin
+    Result:='nil';
+  end else begin
+    Result:=Node.Name+'{Type='+LDConfigNodeTypeNames[Node.TheType]
+                     +',ChildCnt='+IntToStr(Node.ChildCount)+'}';
+  end;
 end;
 
 procedure Register;
@@ -430,7 +444,7 @@ begin
     else if AControl.Parent<>nil then begin
       i:=AControl.Parent.ControlCount-1;
       while (i>=0) and (AControl.Parent.Controls[i]<>AControl) do dec(i);
-      Result:=NonDockConfigNamePrefixes[ndcnChildIndex]+IntToStr(i)
+      Result:=NonDockConfigNamePrefixes[ndcnChildIndex]+IntToStr(i)+' '
                    +AControl.ClassName;
     end;
   end;
@@ -1073,6 +1087,7 @@ begin
     NewRoot:=TLazDockConfigNode.Create(nil,NewRootName);
     NewRoot.LoadFromConfig(Config,SubPath);
     AddOrReplaceConfig(NewDockerName,NewRoot);
+    NewRoot.WriteDebugReport;
   end;
 end;
 
@@ -1131,7 +1146,7 @@ begin
 end;
 
 function TCustomLazDockingManager.CreateLayout(const DockerName: string;
-  VisibleControl: TControl): TLazDockConfigNode;
+  VisibleControl: TControl; ExceptionOnError: boolean): TLazDockConfigNode;
 // create a usable config
 // This means: search a config, create a copy
 // and remove all nodes without visible controls.
@@ -1322,6 +1337,7 @@ var
     OffsetY: Integer;
     a: TAnchorKind;
   begin
+    DebugLn(['SimplifyOnePageNode ',dbgs(PagesNode)]);
     ParentNode:=PagesNode.Parent;
     if ParentNode=nil then RaiseGDBException('');
     if (PagesNode.TheType<>ldcntPages) then RaiseGDBException('');
@@ -1356,6 +1372,7 @@ var
     Child: TLazDockConfigNode;
   begin
     if Node=nil then exit;
+    DebugLn(['RemoveEmptyNodes ',Node.Name,' Node.ChildCount=',Node.ChildCount]);
     
     // remove unneeded childs
     i:=Node.ChildCount-1;
@@ -1372,20 +1389,23 @@ var
         Docker:=FindDockerByName(Node.Name);
         // if the associated control does not exist or is not visible,
         // then delete the node
-        if (Docker=nil)
-        or not ControlIsVisible(Docker.Control)
-        then
+        if (Docker=nil) or not ControlIsVisible(Docker.Control) then begin
+          DebugLn(['RemoveEmptyNodes delete unknown or invisible node: ',dbgs(Node)]);
           DeleteNode(Node);
+        end;
       end;
     ldcntForm,ldcntPage:
       // these are auto created parent nodes. If they have no childs: delete
-      if Node.ChildCount=0 then
+      if Node.ChildCount=0 then begin
+        DebugLn(['RemoveEmptyNodes delete node without childs: ',dbgs(Node)]);
         DeleteNode(Node);
+      end;
     ldcntPages:
       // this is an auto created parent node. If it has no childs: delete
-      if Node.ChildCount=0 then
-        DeleteNode(Node)
-      else if Node.ChildCount=1 then begin
+      if Node.ChildCount=0 then begin
+        DebugLn(['RemoveEmptyNodes delete node without childs: ',dbgs(Node)]);
+        DeleteNode(Node);
+      end else if Node.ChildCount=1 then begin
         // Only one page left
         SimplifyOnePageNode(Node);
       end;
@@ -1540,17 +1560,22 @@ begin
   Root:=nil;
   
   Config:=GetConfigWithDockerName(DockerName);
+  DebugLn(['TCustomLazDockingManager.CreateLayout DockerName="',DockerName,'"']);
+  config.WriteDebugReport;
   if (Config=nil) or (Config.Root=nil) then exit;
   CurControl:=FindControlByDockerName(DockerName);
+  DebugLn(['TCustomLazDockingManager.CreateLayout CurControl=',DbgSName(CurControl)]);
   if not ControlIsVisible(CurControl) then exit;
-  if (ConfigIsCompatible(Config.Root,false)) then exit;
+  DebugLn(['TCustomLazDockingManager.CreateLayout CurControl is treated as visible']);
+  if (not ConfigIsCompatible(Config.Root,ExceptionOnError)) then exit;
+  DebugLn(['TCustomLazDockingManager.CreateLayout Config is compatible']);
 
   // create a copy of the config
   Root:=TLazDockConfigNode.Create(nil);
   try
     Root.Assign(Config.Root);
 
-    // clean up by removing all invisible or unknown or empty nodes
+    // clean up by removing all invisible, unknown and empty nodes
     RemoveEmptyNodes(Root);
 
     // check if all used controls are on the same dock form
@@ -1595,6 +1620,13 @@ function TCustomLazDockingManager.ConfigIsCompatible(
     var
       SiblingName: string;
       Sibling: TLazDockConfigNode;
+      
+      procedure ErrorWrongSplitter;
+      begin
+        Error('invalid Node.Sides[a] Node="'+Node.Name+'"'
+          +' Node.Sides['+AnchorNames[a]+']="'+Node.Sides[a]+'"');
+      end;
+      
     begin
       SiblingName:=Node.Sides[a];
       if SiblingName='' then begin
@@ -1615,7 +1647,7 @@ function TCustomLazDockingManager.ConfigIsCompatible(
       then
         exit(true); // top/bottom side anchored to a up/down splitter: ok
       // otherwise: not ok
-      Error('Node.Sides[a] invalid');
+      ErrorWrongSplitter;
       Result:=false;
     end;
     
@@ -1854,7 +1886,7 @@ constructor TLazDockConfigNode.Create(ParentNode: TLazDockConfigNode;
   const AName: string);
 begin
   FName:=AName;
-  Create(ParentNode,AName);
+  Create(ParentNode);
 end;
 
 destructor TLazDockConfigNode.Destroy;
@@ -1892,7 +1924,7 @@ begin
     for a:=Low(TAnchorKind) to High(TAnchorKind) do
       FSides[a]:=Src.FSides[a];
     FTheType:=Src.FTheType;
-    for i:=0 to Src.FChilds.Count-1 do begin
+    for i:=0 to Src.ChildCount-1 do begin
       SrcChild:=Src.Childs[i];
       NewChild:=TLazDockConfigNode.Create(Self);
       NewChild.Assign(SrcChild);
@@ -1991,7 +2023,7 @@ var
   SubPath: String;
 begin
   Clear;
-  // Note: 'Name' is stored for information, but not restored on load
+  // Note: 'Name' is stored only for information, but not restored on load
   TheType:=LDConfigNodeTypeNameToType(Config.GetValue(Path+'Type/Value',
                                       LDConfigNodeTypeNames[ldcntControl]));
   Config.GetValue(Path+'Bounds/',FBounds,Rect(0,0,0,0));
@@ -2008,8 +2040,8 @@ begin
     SubPath:=Path+'Child'+IntToStr(i+1)+'/';
     NewChildName:=Config.GetValue(SubPath+'Name/Value','');
     NewChild:=TLazDockConfigNode.Create(Self,NewChildName);
+    NewChild.Parent:=Self;
     NewChild.LoadFromConfig(Config,SubPath);
-    FChilds.Add(NewChild);
   end;
 end;
 
@@ -2048,10 +2080,33 @@ end;
 function TLazDockConfigNode.DebugLayoutAsString: string;
 type
   TArrayOfRect = array of TRect;
+  TNodeInfo = record
+    MinSizeValid: boolean;
+    MinSize: TPoint;
+  end;
+  PNodeInfo = ^TNodeInfo;
 var
   Cols: LongInt;
   Rows: LongInt;
   LogCols: Integer;
+  NodeInfos: TDynHashArray;// TLazDockConfigNode to PNodeInfo
+  
+  procedure InitNodeInfos;
+  begin
+    NodeInfos:=TDynHashArray.Create;
+  end;
+  
+  procedure FreeNodeInfos;
+  var
+    Item: PNodeInfo;
+  begin
+    repeat
+      Item:=PNodeInfo(NodeInfos.First);
+      if Item=nil then break;
+      NodeInfos.Remove(Item);
+      Dispose(Item);
+    until false;
+  end;
 
   procedure w(x,y: Integer; const s: string; MaxY: Integer = 0);
   var
@@ -2144,14 +2199,59 @@ var
       DrawNode(Node.Childs[i],ChildRects[i]);
     SetLength(ChildRects,0);
   end;
+  
+  function GetMinSize(Node: TLazDockConfigNode): TPoint; forward;
+
+  function GetChildsMinSize(Node: TLazDockConfigNode): TPoint;
+  var
+    i: Integer;
+    ChildMinSize: TPoint;
+    NodesVerticallyComplete: TFPList;
+    NodesHorizontallyComplete: TFPList;
+  begin
+    Result:=Point(0,0);
+    if Node.TheType=ldcntPages then begin
+      // maximum size of all pages
+      for i:=0 to Node.ChildCount-1 do begin
+        ChildMinSize:=GetMinSize(Node.Childs[i]);
+        Result.X:=Max(Result.X,ChildMinSize.X);
+        Result.Y:=Max(Result.Y,ChildMinSize.Y);
+      end;
+    end else begin
+      NodesVerticallyComplete:=TFPList.Create;
+      NodesHorizontallyComplete:=TFPList.Create;
+      // TODO
+      NodesVerticallyComplete.Free;
+      NodesHorizontallyComplete.Free;
+    end;
+  end;
+  
+  function GetMinSize(Node: TLazDockConfigNode): TPoint;
+  var
+    ChildMinSize: TPoint;
+  begin
+    Result.X:=2+length(Node.Name);
+    Result.Y:=2;
+    if (Node.ChildCount=0) then begin
+      case Node.TheType of
+      ldcntSplitterLeftRight,ldcntSplitterUpDown:
+        Result:=Point(1,1);
+      end;
+    end else begin
+      ChildMinSize:=GetChildsMinSize(Node);
+      Result.X:=Max(Result.X,ChildMinSize.X+2);
+      Result.Y:=Max(Result.Y,ChildMinSize.Y+2);
+    end;
+  end;
 
 var
   e: string;
   y: Integer;
 begin
-  Cols:=StrToIntDef(Application.GetOptionValue('ldcn-colunms'),80);
-  Rows:=StrToIntDef(Application.GetOptionValue('ldcn-rows'),50);
+  Cols:=StrToIntDef(Application.GetOptionValue('ldcn-colunms'),79);
+  Rows:=StrToIntDef(Application.GetOptionValue('ldcn-rows'),20);
 
+  InitNodeInfos;
   e:=LineEnding;
   LogCols:=Cols+length(e);
   SetLength(Result,LogCols*Rows);
@@ -2185,6 +2285,16 @@ constructor TLazDockerConfig.Create(const ADockerName: string;
 begin
   FDockerName:=ADockerName;
   FRoot:=ANode;
+end;
+
+procedure TLazDockerConfig.WriteDebugReport;
+begin
+  DebugLn(['TLazDockerConfig.WriteDebugReport DockerName="',DockerName,'"']);
+  if Root<>nil then begin
+    Root.WriteDebugReport;
+  end else begin
+    DebugLn(['  Root=nil']);
+  end;
 end;
 
 end.
