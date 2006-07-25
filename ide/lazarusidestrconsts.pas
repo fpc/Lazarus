@@ -721,6 +721,7 @@ resourcestring
   lisLazDoc = 'LazDoc';
   lisOkBtn = 'Ok';
   dlgCancel = 'Cancel';
+  lisOk = '&Ok';
   lisCMParameter = 'Parameter';
   lisCTPleaseSelectAMacro = 'please select a macro';
   lisA2PCreateNewFile = 'Create new file';

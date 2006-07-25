@@ -3841,7 +3841,7 @@ begin
 
   CancelControl := CancelButton;
 
-  OkButton.Caption := 'Ok';
+  OkButton.Caption := lisOk;
 end;
 
 procedure TEditorOptionsForm.OkButtonClick(Sender: TObject);
