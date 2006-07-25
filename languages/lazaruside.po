@@ -1998,6 +1998,10 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
+#: lazarusidestrconsts:lisok
+msgid "&Ok"
+msgstr ""
+
 #: lazarusidestrconsts:liscmparameter
 msgid "Parameter"
 msgstr ""

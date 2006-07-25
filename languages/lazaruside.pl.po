@@ -193,6 +193,10 @@ msgstr "&Idź do zakładki"
 msgid "&Help"
 msgstr "Pomo&c"
 
+#: lazarusidestrconsts:lisok
+msgid "&Ok"
+msgstr ""
+
 #: lazarusidestrconsts:uemopenfileatcursor
 msgid "&Open file at cursor"
 msgstr "&Otwórz plik przy kursorze"

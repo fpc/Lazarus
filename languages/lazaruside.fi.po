@@ -182,6 +182,10 @@ msgstr "&Siirry kirjaimerkkiin"
 msgid "&Help"
 msgstr "&Ohje"
 
+#: lazarusidestrconsts:lisok
+msgid "&Ok"
+msgstr ""
+
 #: lazarusidestrconsts:uemopenfileatcursor
 msgid "&Open file at cursor"
 msgstr "&Avaa kohdistimen osoittama tiedosto"

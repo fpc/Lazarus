@@ -185,6 +185,10 @@ msgstr "&Ir para Marcador"
 msgid "&Help"
 msgstr "&Ajuda"
 
+#: lazarusidestrconsts:lisok
+msgid "&Ok"
+msgstr ""
+
 #: lazarusidestrconsts:uemopenfileatcursor
 msgid "&Open file at cursor"
 msgstr "&Abrir Arquivo do Cursor"

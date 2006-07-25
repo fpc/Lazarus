@@ -194,6 +194,10 @@ msgstr "Vai al segnalibro"
 msgid "&Help"
 msgstr "&Aiuto"
 
+#: lazarusidestrconsts:lisok
+msgid "&Ok"
+msgstr ""
+
 #: lazarusidestrconsts:uemopenfileatcursor
 msgid "&Open file at cursor"
 msgstr "Apri il file al cursore"

@@ -196,6 +196,10 @@ msgstr "跳到书签(&G) "
 msgid "&Help"
 msgstr "帮助(&H)"
 
+#: lazarusidestrconsts:lisok
+msgid "&Ok"
+msgstr ""
+
 #: lazarusidestrconsts:uemopenfileatcursor
 msgid "&Open file at cursor"
 msgstr "在光标处打开文件(&O)"

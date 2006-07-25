@@ -194,6 +194,10 @@ msgstr "&Aller au signet"
 msgid "&Help"
 msgstr "&Aide"
 
+#: lazarusidestrconsts:lisok
+msgid "&Ok"
+msgstr ""
+
 #: lazarusidestrconsts:uemopenfileatcursor
 msgid "&Open file at cursor"
 msgstr "&Ouvrir le fichier sous le curseur"

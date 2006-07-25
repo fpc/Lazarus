@@ -182,6 +182,10 @@ msgstr "&Vés al marcador"
 msgid "&Help"
 msgstr "A&juda"
 
+#: lazarusidestrconsts:lisok
+msgid "&Ok"
+msgstr ""
+
 #: lazarusidestrconsts:uemopenfileatcursor
 msgid "&Open file at cursor"
 msgstr "&Obre el fitxer al cursor"

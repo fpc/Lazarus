@@ -193,6 +193,10 @@ msgstr "&Ga naar bladwijzer"
 msgid "&Help"
 msgstr "&Help"
 
+#: lazarusidestrconsts:lisok
+msgid "&Ok"
+msgstr ""
+
 #: lazarusidestrconsts:uemopenfileatcursor
 msgid "&Open file at cursor"
 msgstr "&Open bestand op positie van cursor"

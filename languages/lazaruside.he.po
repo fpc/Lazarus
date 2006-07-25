@@ -193,6 +193,10 @@ msgstr "גש לסמנייה"
 msgid "&Help"
 msgstr "עזרה&"
 
+#: lazarusidestrconsts:lisok
+msgid "&Ok"
+msgstr ""
+
 #: lazarusidestrconsts:uemopenfileatcursor
 msgid "&Open file at cursor"
 msgstr "פתח קובץ במיקום סמן&"

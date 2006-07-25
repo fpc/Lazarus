@@ -193,6 +193,10 @@ msgstr "&Переход по закладке"
 msgid "&Help"
 msgstr "&Справка"
 
+#: lazarusidestrconsts:lisok
+msgid "&Ok"
+msgstr ""
+
 #: lazarusidestrconsts:uemopenfileatcursor
 msgid "&Open file at cursor"
 msgstr "&Открыть файл у курсора"

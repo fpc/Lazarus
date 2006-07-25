@@ -192,6 +192,10 @@ msgstr "ブックマークへ飛ぶ(&G)"
 msgid "&Help"
 msgstr "ヘルプ(&H)"
 
+#: lazarusidestrconsts:lisok
+msgid "&Ok"
+msgstr ""
+
 #: lazarusidestrconsts:uemopenfileatcursor
 msgid "&Open file at cursor"
 msgstr "カーソルのファイルを開く(&O)"

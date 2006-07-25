@@ -196,6 +196,10 @@ msgstr "Per&gi ke penujuk"
 msgid "&Help"
 msgstr "&Panduan"
 
+#: lazarusidestrconsts:lisok
+msgid "&Ok"
+msgstr ""
+
 #: lazarusidestrconsts:uemopenfileatcursor
 msgid "&Open file at cursor"
 msgstr "&Buka file di kursor"

@@ -193,6 +193,10 @@ msgstr ""
 msgid "&Help"
 msgstr "م&عونة"
 
+#: lazarusidestrconsts:lisok
+msgid "&Ok"
+msgstr ""
+
 #: lazarusidestrconsts:uemopenfileatcursor
 msgid "&Open file at cursor"
 msgstr "إفتح الجذاذة التي تحت المؤشرة"
