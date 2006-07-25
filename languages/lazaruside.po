@@ -8922,6 +8922,10 @@ msgstr ""
 msgid "Documentation entry does not exist"
 msgstr ""
 
+#: lazarusidestrconsts:lislazdocinherited
+msgid "Inherited"
+msgstr ""
+
 #: lazarusidestrconsts:lislazdocshorttag
 msgid "Short"
 msgstr ""

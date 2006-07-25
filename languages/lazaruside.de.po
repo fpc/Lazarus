@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2006-07-20 23:53+0100\n"
+"PO-Revision-Date: 2006-07-24 14:43+0100\n"
 "Last-Translator: Swen Heinig <x@y.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -1246,7 +1246,7 @@ msgstr "Quelltexterzeugung"
 
 #: lazarusidestrconsts:lismenuviewcodeexplorer
 msgid "Code Explorer"
-msgstr "CodeExplorer..."
+msgstr "CodeExplorer ..."
 
 #: lazarusidestrconsts:lismenueditcodetemplates
 msgid "Code Templates ..."
@@ -1486,7 +1486,7 @@ msgstr "Hilfe konfigurieren ..."
 
 #: lazarusidestrconsts:lismenuconfigurebuildlazarus
 msgid "Configure \"Build Lazarus\" ..."
-msgstr ""
+msgstr "\"Lazarus erstellen\" einrichten ..."
 
 #: lazarusidestrconsts:lismenuconfigcustomcomps
 msgid "Configure custom components ..."
@@ -2882,7 +2882,7 @@ msgstr "Formulare"
 
 #: lazarusidestrconsts:lismenuviewforms
 msgid "Forms..."
-msgstr "Formulare..."
+msgstr "Formulare ..."
 
 #: lazarusidestrconsts:fdmorderforwardone
 msgid "Forward one"
@@ -3610,7 +3610,7 @@ msgstr "Formatzeichen für Var einfügen"
 
 #: lazarusidestrconsts:lismenuinspect
 msgid "Inspect ..."
-msgstr "Inspizieren..."
+msgstr "Inspizieren ..."
 
 #: lazarusidestrconsts:lispckeditinstall
 msgid "Install"
@@ -4350,7 +4350,7 @@ msgstr "Menüeditor"
 
 #: lazarusidestrconsts:lismenuviewmessages
 msgid "Messages"
-msgstr "Nachrichten..."
+msgstr "Nachrichten ..."
 
 #: lazarusidestrconsts:dlgmethodinspolicy
 msgid "Method insert policy"
@@ -4410,7 +4410,7 @@ msgstr "Modul"
 
 #: lazarusidestrconsts:lispckeditmore
 msgid "More ..."
-msgstr "Mehr..."
+msgstr "Mehr ..."
 
 #: lazarusidestrconsts:srvk_lbutton
 msgid "Mouse Button Left"
@@ -4942,7 +4942,7 @@ msgstr "Paket öffnen"
 
 #: lazarusidestrconsts:lismenuopenpackagefile
 msgid "Open package file (.lpk) ..."
-msgstr ""
+msgstr "Paketdatei (.lpk) öffnen ..."
 
 #: lazarusidestrconsts:lismenuopenpackageofcurunit
 msgid "Open package of current unit"
@@ -5274,7 +5274,7 @@ msgstr "Btte öffnen Sie eine Unit vor dem Starten."
 
 #: lazarusidestrconsts:srkmpresskey
 msgid "Please press a key ..."
-msgstr "Beliebige Taste drücken..."
+msgstr "Beliebige Taste drücken ..."
 
 #: lazarusidestrconsts:lispkgmangpleasesavethefilebeforeaddingittoapackage
 msgid "Please save the file before adding it to a package."
@@ -5366,7 +5366,7 @@ msgstr ""
 
 #: lazarusidestrconsts:srkmecprocedurelist
 msgid "Procedure List ..."
-msgstr " ..."
+msgstr "Prozedur-Liste ..."
 
 #: lazarusidestrconsts:dlgforwardprocsinsertpolicy
 msgid "Procedure insert policy"
@@ -5426,7 +5426,7 @@ msgstr "Projektinformation"
 
 #: lazarusidestrconsts:lismenuprojectinspector
 msgid "Project Inspector"
-msgstr "Projektinspektor..."
+msgstr "Projektinspektor ..."
 
 #: lazarusidestrconsts:lisprojinspprojectinspector
 msgid "Project Inspector - %s"
@@ -5946,7 +5946,7 @@ msgstr "Datei ausführen"
 
 #: lazarusidestrconsts:lismenurunparameters
 msgid "Run Parameters ..."
-msgstr "Startparameter..."
+msgstr "Startparameter ..."
 
 #: lazarusidestrconsts:srkmcatrunmenu
 msgid "Run menu commands"
@@ -5994,7 +5994,7 @@ msgstr "Alles speichern"
 
 #: lazarusidestrconsts:lismenutemplatesaveas
 msgid "Save As"
-msgstr "Speichern unter..."
+msgstr "Speichern unter ..."
 
 #: lazarusidestrconsts:dlgcharcasefileact
 msgid "Save As - auto rename pascal files lower case"
@@ -6006,7 +6006,7 @@ msgstr "Speichern unter ..."
 
 #: lazarusidestrconsts:lismenueditorsaveastemplate
 msgid "Save As Template..."
-msgstr "Als Vorlage speichern..."
+msgstr "Als Vorlage speichern ..."
 
 #: lazarusidestrconsts:lispckeditsavechanges
 msgid "Save Changes?"
@@ -6238,7 +6238,7 @@ msgstr "Suche"
 
 #: lazarusidestrconsts:dlgsearchcaption
 msgid "Searching..."
-msgstr "Suche..."
+msgstr "Suche ..."
 
 #: lazarusidestrconsts:lisuesearching
 msgid "Searching: %s"
@@ -7666,7 +7666,7 @@ msgstr "ToDo-Liste"
 
 #: lazarusidestrconsts:listodolistoptions
 msgid "ToDo options..."
-msgstr "ToDo-Einstellungen..."
+msgstr "ToDo-Einstellungen ..."
 
 #: lazarusidestrconsts:lishinttoggleformunit
 msgid "Toggle Form/Unit"
@@ -8218,7 +8218,7 @@ msgstr "Units nicht gefunden"
 
 #: lazarusidestrconsts:lismenuviewunits
 msgid "Units..."
-msgstr "Units..."
+msgstr "Units ..."
 
 #: lazarusidestrconsts:srvk_unknown
 msgid "Unknown"

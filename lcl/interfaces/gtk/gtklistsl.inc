@@ -271,11 +271,13 @@ end;
 
 function TGtkListStringList.Add(const S: string): Integer;
 begin
-  if FSorted then
-    Result := GetInsertPosition(S)
-  else
+  if FSorted then begin
+    Result := GetInsertPosition(S);
+    Insert(Count,S);
+  end else begin
     Result:=Count;
-  Insert(Count,S);
+    Insert(Result,S);
+  end;
 end;
 
 {------------------------------------------------------------------------------
