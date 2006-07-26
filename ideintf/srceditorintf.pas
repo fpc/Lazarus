@@ -23,9 +23,18 @@ uses
   Classes, SysUtils, LCLProc, FileUtil, Forms, Controls, ProjectIntf;
   
 type
-  TSrcEditSearchOption = (sesoMatchCase, sesoWholeWord, sesoBackwards,
-    sesoEntireScope, sesoSelectedOnly, sesoReplace, sesoReplaceAll, sesoPrompt,
-    sesoRegExpr, sesoRegExprMultiLine);
+  TSrcEditSearchOption = (
+    sesoMatchCase,
+    sesoWholeWord,
+    sesoBackwards,
+    sesoEntireScope,
+    sesoSelectedOnly,
+    sesoReplace,
+    sesoReplaceAll,
+    sesoPrompt,
+    sesoRegExpr,
+    sesoMultiLine
+    );
   TSrcEditSearchOptions = set of TSrcEditSearchOption;
 
   TSrcEditReplaceAction = (seraCancel, seraSkip, seraReplace, seraReplaceAll);
@@ -224,6 +233,37 @@ function RegisterCodeMacro(const Name: string;
   OnGetValueMethod: TIDECodeMacroGetValueMethod): TIDECodeMacro;
 
 
+{ SearchInFile to search in a file.
+  This can be interactively or without user interaction.
+  If the file is open in the source editor, changes will be added to the undo
+  history.
+}
+type
+  TIDESearchInTextAddMatch = procedure(const Filename: string;
+                                  const StartPos, EndPos: TPoint;
+                                  const Lines: string) of object;
+
+  { TIDESearchInTextProgress }
+
+  TIDESearchInTextProgress = class
+  private
+    FAbort: boolean;
+    FOnAddMatch: TIDESearchInTextAddMatch;
+  protected
+    procedure SetAbort(const AValue: boolean); virtual;
+  public
+    property Abort: boolean read FAbort write SetAbort;
+    property OnAddMatch: TIDESearchInTextAddMatch read FOnAddMatch write FOnAddMatch;
+  end;
+
+  TIDESearchInTextFunction = function(const TheFileName: string;
+    var TheText: string;// if TheFileName='' then use TheText
+    SearchFor, ReplaceText: string; Flags: TSrcEditSearchOptions;
+    var Prompt: boolean; Progress: TIDESearchInTextProgress = nil): TModalResult;
+
+var
+  IDESearchInText: TIDESearchInTextFunction = nil;// set by the IDE
+
 implementation
 
 function RegisterCodeMacro(const Name: string; const ShortDescription,
@@ -300,6 +340,14 @@ begin
     if CompareFilenames(Result.Filename,Filename)=0 then exit;
   end;
   Result:=nil;
+end;
+
+{ TIDESearchInTextProgress }
+
+procedure TIDESearchInTextProgress.SetAbort(const AValue: boolean);
+begin
+  if FAbort=AValue then exit;
+  fAbort:=AValue;
 end;
 
 end.

@@ -1101,6 +1101,7 @@ var
   SynAction: TSynReplaceAction;
 begin
   SynAction:=raCancel;
+  SourceNotebook.BringToFront;
   OnReplace(Sender, ASearch, AReplace, Line, Column, SynAction);
   case SynAction of
   raSkip: Action:=seraSkip;
@@ -2724,6 +2725,7 @@ end;
 constructor TSourceNotebook.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  IDESearchInText:=@SearchInText;
   Visible:=false;
   Name:=NonModalIDEWindowNames[nmiwSourceNoteBookName];
   Caption := locWndSrcEditor;

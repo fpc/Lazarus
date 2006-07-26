@@ -87,6 +87,8 @@ function GetPathElement(const Path: string; StartPos: integer;
                         Stopper: char): string;
 
 
+
+
 //------------------------------------------------------------------------------
 // Internal stuff.
 

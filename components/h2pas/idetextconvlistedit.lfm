@@ -1,0 +1,145 @@
+object TTextConvListEditor: TTTextConvListEditor
+  ActiveControl = ToolsListBox
+  Caption = 'TTextConvListEditor'
+  ClientHeight = 316
+  ClientWidth = 519
+  Constraints.MinHeight = 200
+  Constraints.MinWidth = 400
+  OnCreate = FormCreate
+  PixelsPerInch = 75
+  HorzScrollBar.Page = 518
+  VertScrollBar.Page = 315
+  Left = 290
+  Height = 316
+  Top = 202
+  Width = 519
+  object ToolsLabel: TLabel
+    Caption = 'ToolsLabel'
+    Color = clNone
+    ParentColor = False
+    Left = 12
+    Height = 13
+    Top = 9
+    Width = 62
+  end
+  object ToolsListBox: TListBox
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Top = 2
+    TabOrder = 0
+    TopIndex = -1
+    AnchorSideTop.Control = ToolsLabel
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = ToolsSplitter
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = UpDownSplitter
+    AnchorSideBottom.Side = asrBottom
+    Height = 125
+    Top = 24
+    Width = 236
+  end
+  object UpDownSplitter: TSplitter
+    Align = alNone
+    Anchors = [akTop, akLeft, akRight]
+    Beveled = True
+    Cursor = crVSplit
+    Height = 5
+    Width = 519
+    ResizeAnchor = akBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Cursor = crVSplit
+    Height = 5
+    Top = 144
+    Width = 519
+  end
+  object ToolsPanel: TPanel
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BevelOuter = bvNone
+    Caption = 'ToolsPanel'
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 2
+    ClientHeight = 149
+    ClientWidth = 287
+    TabOrder = 1
+    AnchorSideLeft.Control = ToolsSplitter
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = UpDownSplitter
+    AnchorSideBottom.Side = asrBottom
+    Left = 232
+    Height = 149
+    Width = 287
+    object AddToolButton: TButton
+      BorderSpacing.InnerBorder = 4
+      Caption = 'AddToolButton'
+      TabOrder = 0
+      Height = 26
+      Width = 120
+    end
+    object DeleteToolButton: TButton
+      BorderSpacing.InnerBorder = 4
+      Caption = 'DeleteToolButton'
+      TabOrder = 1
+      Left = 120
+      Height = 26
+      Width = 137
+    end
+    object MoveToolUpButton: TButton
+      BorderSpacing.InnerBorder = 4
+      Caption = 'MoveToolUpButton'
+      TabOrder = 2
+      Height = 26
+      Top = 26
+      Width = 120
+    end
+    object MoveToolDownButton: TButton
+      BorderSpacing.InnerBorder = 4
+      Caption = 'MoveToolDownButton'
+      TabOrder = 3
+      Left = 120
+      Height = 26
+      Top = 26
+      Width = 137
+    end
+    object CopyToolButton: TButton
+      BorderSpacing.InnerBorder = 4
+      Caption = 'CopyToolButton'
+      TabOrder = 4
+      Height = 26
+      Top = 52
+      Width = 120
+    end
+    object PasteButton: TButton
+      BorderSpacing.InnerBorder = 4
+      Caption = 'PasteButton'
+      TabOrder = 5
+      Left = 120
+      Height = 26
+      Top = 52
+      Width = 137
+    end
+    object CloneButton: TButton
+      BorderSpacing.InnerBorder = 4
+      Caption = 'CloneButton'
+      TabOrder = 6
+      Height = 26
+      Top = 78
+      Width = 120
+    end
+  end
+  object ToolsSplitter: TSplitter
+    Align = alNone
+    Anchors = [akTop, akLeft, akBottom]
+    Beveled = True
+    Height = 144
+    Width = 4
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = UpDownSplitter
+    Cursor = crHSplit
+    Left = 232
+    Height = 144
+    Width = 4
+  end
+end

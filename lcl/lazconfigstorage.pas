@@ -22,7 +22,7 @@ unit LazConfigStorage;
 interface
 
 uses
-  Classes, SysUtils; 
+  Classes, SysUtils;
   
 type
   { TConfigStorage }

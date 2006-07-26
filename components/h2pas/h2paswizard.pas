@@ -7,7 +7,8 @@ unit H2PasWizard;
 interface
 
 uses
-  H2PasConvert, H2PasDlg, H2PasStrConsts, TextConverter, LazarusPackageIntf; 
+  H2PasConvert, H2PasDlg, H2PasStrConsts, IDETextConvListEdit, 
+    LazarusPackageIntf; 
 
 implementation
 

@@ -36,6 +36,7 @@ uses
   IDEExternToolIntf,
   IDEHelpIntf,
   IDEMsgIntf,
+  IDETextConverter,
   IDEWindowIntf,
   ImageListEditor,
   LazIDEIntf,

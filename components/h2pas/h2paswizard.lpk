@@ -38,8 +38,8 @@
         <UnitName Value="H2PasStrConsts"/>
       </Item5>
       <Item6>
-        <Filename Value="textconverter.pas"/>
-        <UnitName Value="textconverter"/>
+        <Filename Value="idetextconvlistedit.pas"/>
+        <UnitName Value="idetextconvlistedit"/>
       </Item6>
     </Files>
     <Type Value="RunAndDesignTime"/>

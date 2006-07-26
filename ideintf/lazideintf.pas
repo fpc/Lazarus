@@ -171,9 +171,11 @@ type
     function GetSecondaryConfigPath: String; virtual; abstract;
     procedure CopySecondaryConfigFile(const AFilename: String); virtual; abstract;
 
+    // filenames, paths
     function CreateNewUniqueFilename(const Prefix, Ext: string;
                           NewOwner: TObject; Flags: TSearchIDEFileFlags;
                           TryWithoutNumber: boolean): string; virtual; abstract;
+    function GetTestBuildDirectory: string; virtual; abstract;
 
     // macros
     function SubstituteMacros(var s: string): boolean; virtual; abstract;

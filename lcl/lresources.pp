@@ -36,7 +36,8 @@ unit LResources;
 interface
 
 uses
-  Classes, SysUtils, Types, FPCAdds, TypInfo, DynQueue, LCLProc, LCLStrConsts;
+  Classes, SysUtils, Types, FPCAdds, TypInfo, DynQueue, LCLProc, LCLStrConsts,
+  LazConfigStorage;
 
 type
   { TLResourceList }
@@ -269,11 +270,22 @@ function GetClassNameFromLRSStream(s: TStream; out IsInherited: Boolean): shorts
 procedure GetComponentInfoFromLRSStream(s: TStream;
                                   out ComponentName, ComponentClassName: string;
                                   out IsInherited: Boolean);
-procedure WriteComponentAsBinaryToStream(AStream: TStream; AComponent: TComponent);
+procedure WriteComponentAsBinaryToStream(AStream: TStream;
+                                         AComponent: TComponent);
 procedure ReadComponentFromBinaryStream(AStream: TStream;
                            var RootComponent: TComponent;
                            OnFindComponentClass: TFindComponentClassEvent;
                            TheOwner: TComponent = nil);
+procedure SaveComponentToConfig(Config: TConfigStorage; const Path: string;
+                                AComponent: TComponent);
+procedure LoadComponentFromConfig(Config: TConfigStorage; const Path: string;
+                                 var RootComponent: TComponent;
+                                 OnFindComponentClass: TFindComponentClassEvent;
+                                 TheOwner: TComponent = nil);
+
+
+function CompareComponents(Component1, Component2: TComponent): boolean;
+function CompareMemStreams(Stream1, Stream2: TCustomMemoryStream): boolean;
 
 procedure BinaryToLazarusResourceCode(BinStream, ResStream: TStream;
   const ResourceName, ResourceType: String);
@@ -586,6 +598,120 @@ begin
       Reader.Driver.Free;
     Reader.Free;
   end;
+end;
+
+procedure SaveComponentToConfig(Config: TConfigStorage; const Path: string;
+  AComponent: TComponent);
+var
+  BinStream: TMemoryStream;
+  TxtStream: TMemoryStream;
+  s: string;
+begin
+  BinStream:=nil;
+  TxtStream:=nil;
+  try
+    // write component to stream
+    BinStream:=TMemoryStream.Create;
+    WriteComponentAsBinaryToStream(BinStream,AComponent);
+    // convert it to human readable text format
+    BinStream.Position:=0;
+    TxtStream:=TMemoryStream.Create;
+    LRSObjectBinaryToText(BinStream,TxtStream);
+    // convert stream to string
+    SetLength(s,TxtStream.Size);
+    TxtStream.Position:=0;
+    if s<>'' then
+      TxtStream.Read(s[1],length(s));
+    // write to config
+    Config.SetDeleteValue(Path,s,'');
+  finally
+    BinStream.Free;
+    TxtStream.Free;
+  end;
+end;
+
+procedure LoadComponentFromConfig(Config: TConfigStorage; const Path: string;
+  var RootComponent: TComponent;
+  OnFindComponentClass: TFindComponentClassEvent; TheOwner: TComponent);
+var
+  s: String;
+  TxtStream: TMemoryStream;
+  BinStream: TMemoryStream;
+begin
+  // read from config
+  s:=Config.GetValue(Path,'');
+  BinStream:=nil;
+  TxtStream:=nil;
+  try
+    // convert text format into binary format
+    TxtStream:=TMemoryStream.Create;
+    if s<>'' then
+      TxtStream.Write(s[1],length(s));
+    BinStream:=TMemoryStream.Create;
+    LRSObjectTextToBinary(TxtStream,BinStream);
+    // create component from stream
+    ReadComponentFromBinaryStream(BinStream,RootComponent,OnFindComponentClass,
+                                  TheOwner);
+  finally
+    BinStream.Free;
+    TxtStream.Free;
+  end;
+end;
+
+function CompareComponents(Component1, Component2: TComponent): boolean;
+var
+  Stream1: TMemoryStream;
+  Stream2: TMemoryStream;
+  i: Integer;
+begin
+  if Component1=Component2 then exit(true);
+  Result:=false;
+  // quick checks
+  if (Component1=nil) or (Component2=nil) then exit;
+  if (Component1.ClassType<>Component2.ClassType) then exit;
+  if Component1.ComponentCount<>Component2.ComponentCount then exit;
+  for i:=0 to Component1.ComponentCount-1 do begin
+    if Component1.Components[i].ClassType<>Component2.Components[i].ClassType
+    then exit;
+  end;
+  // expensive streaming test
+  try
+    Stream1:=nil;
+    Stream2:=nil;
+    try
+      Stream1:=TMemoryStream.Create;
+      WriteComponentAsBinaryToStream(Stream1,Component1);
+      Stream2:=TMemoryStream.Create;
+      WriteComponentAsBinaryToStream(Stream2,Component2);
+      Result:=CompareMemStreams(Stream1,Stream2);
+    finally
+      Stream1.Free;
+      Stream2.Free;
+    end;
+  except
+  end;
+end;
+
+function CompareMemStreams(Stream1, Stream2: TCustomMemoryStream
+  ): boolean;
+var
+  Buffer1, Buffer2: array[1..1024] of byte;
+  BufLength: Integer;
+  Count: LongInt;
+begin
+  if Stream1=Stream2 then exit(true);
+  Result:=false;
+  if (Stream1=nil) or (Stream2=nil) then exit;
+  if Stream1.Size<>Stream2.Size then exit;
+  Stream1.Position:=0;
+  Stream2.Position:=0;
+  BufLength:=High(Buffer1)-Low(Buffer1)+1;
+  repeat
+    Count:=Stream1.Read(Buffer1[1],BufLength);
+    if Count=0 then exit(true);
+    Stream2.Read(Buffer2[1],BufLength);
+    if not CompareMem(@Buffer1[1],@Buffer2[1],Count) then exit;
+  until false;
 end;
 
 procedure BinaryToLazarusResourceCode(BinStream,ResStream:TStream;

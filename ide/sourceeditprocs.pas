@@ -36,9 +36,21 @@ interface
 uses
   Classes, SysUtils, LCLProc, LCLType, GraphType, Graphics,
   SynEdit, SynRegExpr, SynCompletion,
-  BasicCodeTools, CodeTree, CodeToolManager, PascalParserTool,
+  BasicCodeTools, CodeTree, CodeToolManager, PascalParserTool, FileProcs,
   IdentCompletionTool,
-  TextTools, MainIntf, EditorOptions, CodeToolsOptions;
+  LazIDEIntf, TextTools, IDETextConverter,
+  MainIntf, EditorOptions, CodeToolsOptions;
+
+type
+
+  { TTextConverter }
+
+  TTextConverter = class(TIDETextConverter)
+  protected
+    function GetTempFilename: string; override;
+  end;
+  
+procedure SetupTextConverters;
 
 type
   TCompletionType = (
@@ -61,6 +73,12 @@ implementation
 
 var
   SynREEngine: TRegExpr;
+
+procedure SetupTextConverters;
+begin
+  TextConverterToolClasses:=TTextConverterToolClasses.Create;
+  TextConverterToolClasses.RegisterClass(TTextReplaceTool);
+end;
 
 function PaintCompletionItem(const AKey: string; ACanvas: TCanvas;
   X, Y, MaxX: integer; ItemSelected: boolean; Index: integer;
@@ -461,6 +479,23 @@ begin
   SynREEngine.ModifierStr:=ModifierStr;
   SynREEngine.Expression:=SeparatorRegExpr;
   SynREEngine.Split(TheText,Pieces);
+end;
+
+{ TTextConverter }
+
+function TTextConverter.GetTempFilename: string;
+var
+  BaseDir: String;
+begin
+  BaseDir:='';
+  if LazarusIDE.ActiveProject<>nil then
+    BaseDir:=ExtractFilePath(LazarusIDE.ActiveProject.ProjectInfoFile);
+  if BaseDir='' then
+    BaseDir:=LazarusIDE.GetTestBuildDirectory;
+  if BaseDir='' then
+    BaseDir:=GetCurrentDir;
+  BaseDir:=CleanAndExpandDirectory(BaseDir);
+  Result:=FileProcs.GetTempFilename(BaseDir,'convert_');
 end;
 
 initialization

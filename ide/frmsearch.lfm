@@ -1,92 +1,88 @@
 object SearchForm: TSearchForm
+  Left = 452
+  Height = 149
+  Top = 286
+  Width = 428
+  HorzScrollBar.Page = 427
+  VertScrollBar.Page = 148
   BorderStyle = bsDialog
   Caption = 'Searching....'
-  ClientHeight = 149
-  ClientWidth = 428
   OnCreate = SearchFormCREATE
   OnDestroy = SearchFormDESTROY
   ParentFont = True
-  PixelsPerInch = 112
   Position = poOwnerFormCenter
-  HorzScrollBar.Page = 427
-  VertScrollBar.Page = 148
-  Left = 461
-  Height = 149
-  Top = 289
-  Width = 428
   object Panel2: TPanel
+    Height = 149
+    Width = 428
     Align = alClient
     BevelInner = bvLowered
-    ClientHeight = 149
-    ClientWidth = 428
     FullRepaint = False
     ParentFont = True
     TabOrder = 0
     TabStop = True
-    Height = 149
-    Width = 428
+    OnClick = Panel2Click
     object lblMatches: TLabel
-      Color = clNone
-      ParentColor = False
       Left = 96
       Height = 17
       Top = 80
       Width = 321
-    end
-    object MatchesLabel: TLabel
-      Caption = 'Matches'
       Color = clNone
       ParentColor = False
+    end
+    object MatchesLabel: TLabel
       Left = 16
       Height = 17
       Top = 80
       Width = 64
-    end
-    object lblProgress: TLabel
+      Caption = 'Matches'
       Color = clNone
       ParentColor = False
+    end
+    object lblProgress: TLabel
       Left = 96
       Height = 17
       Top = 48
       Width = 320
-    end
-    object SearchingLabel: TLabel
-      Caption = 'Searching:'
       Color = clNone
       ParentColor = False
+    end
+    object SearchingLabel: TLabel
       Left = 16
       Height = 17
       Top = 48
       Width = 64
-    end
-    object SearchTextLabel: TLabel
-      Caption = 'Search Text:'
+      Caption = 'Searching:'
       Color = clNone
       ParentColor = False
+    end
+    object SearchTextLabel: TLabel
       Left = 16
       Height = 17
       Top = 16
       Width = 80
-    end
-    object lblSearchText: TLabel
+      Caption = 'Search Text:'
       Color = clNone
       ParentColor = False
+    end
+    object lblSearchText: TLabel
       Left = 96
       Height = 17
       Top = 16
       Width = 320
+      Color = clNone
+      ParentColor = False
     end
     object btnCancel: TButton
-      AutoSize = True
-      
-      Caption = 'Cancel'
-      Default = True
-      OnClick = btnAbortCLICK
-      TabOrder = 0
       Left = 177
       Height = 25
       Top = 112
       Width = 75
+      AutoSize = True
+      BorderSpacing.InnerBorder = 4
+      Caption = 'Cancel'
+      Default = True
+      OnClick = btnAbortCLICK
+      TabOrder = 0
     end
   end
 end

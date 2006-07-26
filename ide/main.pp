@@ -105,7 +105,7 @@ uses
   // source editing
   UnitEditor, CodeToolsOptions, IDEOptionDefs, CheckLFMDlg,
   CodeToolsDefines, DiffDialog, DiskDiffsDialog, UnitInfoDlg, EditorOptions,
-  MsgQuickFixes, ViewUnit_dlg,
+  SourceEditProcs, MsgQuickFixes, ViewUnit_dlg,
   // converter
   DelphiUnit2Laz, DelphiProject2Laz, LazXMLForms,
   // rest of the ide
@@ -825,7 +825,7 @@ type
     procedure DoArrangeSourceEditorAndMessageView(PutOnTop: boolean);
 
     // methods for debugging, compiling and external tools
-    function GetTestBuildDir: string; override;
+    function GetTestBuildDirectory: string; override;
     function GetProjectTargetFilename: string; override;
     function GetTargetOS: string;
     function GetTestProjectFilename: string;
@@ -1127,6 +1127,7 @@ begin
   SetupFormEditor;
   SetupSourceNotebook;
   SetupControlSelection;
+  SetupTextConverters;
 
   // Main IDE bar created and setup completed -> Show it
   MainIDEBar.Show;
@@ -5097,7 +5098,7 @@ end;
 procedure TMainIDE.OnProjectGetTestDirectory(TheProject: TProject;
   out TestDir: string);
 begin
-  TestDir:=GetTestBuildDir;
+  TestDir:=GetTestBuildDirectory;
 end;
 
 procedure TMainIDE.OnProjectChangeInfoFile(TheProject: TProject);
@@ -7605,7 +7606,7 @@ begin
       WorkingDir:=Project1.ProjectDirectory;
       SrcFilename:=CreateRelativePath(Project1.MainUnitInfo.Filename,WorkingDir);
     end else begin
-      WorkingDir:=GetTestBuildDir;
+      WorkingDir:=GetTestBuildDirectory;
       SrcFilename:=GetTestUnitFilename(Project1.MainUnitInfo);
     end;
     CompilerFilename:=Project1.GetCompilerFilename;
@@ -9351,7 +9352,7 @@ begin
       s:='';
   end else if MacroName='testdir' then begin
     if Project1<>nil then
-      s:=GetTestBuildDir
+      s:=GetTestBuildDirectory
     else
       s:='';
   end else if MacroName='runcmdline' then begin
@@ -9752,7 +9753,7 @@ begin
   end;
 end;
 
-function TMainIDE.GetTestBuildDir: string;
+function TMainIDE.GetTestBuildDirectory: string;
 begin
   Result:=EnvironmentOptions.TestBuildDirectory;
   if (Result='') then exit;
@@ -9799,7 +9800,7 @@ var TestDir: string;
 begin
   Result:='';
   if AnUnitInfo=nil then exit;
-  TestDir:=GetTestBuildDir;
+  TestDir:=GetTestBuildDirectory;
   if TestDir='' then exit;
   Result:=ExtractFilename(AnUnitInfo.Filename);
   if Result='' then exit;
@@ -9820,7 +9821,7 @@ var
 begin
   Result:=false;
   if Project1.IsVirtual then begin
-    TestDir:=GetTestBuildDir;
+    TestDir:=GetTestBuildDirectory;
     Result:=CompareFileNames(TestDir,ExtractFilePath(AFilename))=0;
   end;
 end;

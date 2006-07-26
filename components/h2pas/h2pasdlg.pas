@@ -30,7 +30,7 @@ uses
   IDEMsgIntf, MenuIntf, IDECommands, BaseIDEIntf, IDEDialogs, LazIDEIntf,
   SrcEditorIntf,
   CodeToolManager, CodeCache,
-  H2PasStrConsts, H2PasConvert;
+  H2PasStrConsts, H2PasConvert, IDETextConvListEdit;
 
 type
 
@@ -38,6 +38,7 @@ type
 
   TH2PasDialog = class(TForm)
     MainPageControl: TPageControl;
+    ConvertUpDownSplitter: TSplitter;
     SynCppSyn1: TSynCppSyn;
 
     // c header files
@@ -61,6 +62,7 @@ type
     OutputDirBrowseButton: TButton;
 
     // convert
+    PreH2PasEdit: TTTextConvListEditor;
     ConvertTabSheet: TTabSheet;
     ConvertButton: TButton;
     ConvertErrorGroupBox: TGroupBox;
@@ -217,6 +219,16 @@ begin
   SaveSettingsButton.Caption:='&Save Settings';
   CloseButton.Caption:='&Close';
   
+  PreH2PasEdit:=TTTextConvListEditor.Create(Self);
+  with PreH2PasEdit do begin
+    Name:='PreH2PasEdit';
+    Align:=alTop;
+    AnchorToNeighbour(akBottom,0,ConvertUpDownSplitter);
+    Parent:=ConvertTabSheet;
+    Visible:=true;
+    DebugLn(['TH2PasDialog.FormCreate ',dbgs(BoundsRect)]);
+  end;
+
   LazarusIDE.AddHandlerOnSavedAll(@OnIDESavedAll);
 
   // create converter

@@ -23,9 +23,10 @@ unit H2PasConvert;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, LazConfigStorage, XMLPropStorage, Forms, Controls,
-  Dialogs, FileUtil, FileProcs,
-  TextTools, IDEExternToolIntf, IDEDialogs, LazIDEIntf, IDEMsgIntf;
+  Classes, SysUtils, LCLProc, LResources, LazConfigStorage, XMLPropStorage,
+  Forms, Controls, Dialogs, FileUtil, FileProcs,
+  TextTools, IDEExternToolIntf, IDEDialogs, LazIDEIntf, IDEMsgIntf,
+  IDETextConverter;
   
 type
   TH2PasProject = class;
@@ -81,6 +82,7 @@ type
     FPackAllRecords: boolean;
     FPalmOSSYSTrap: boolean;
     FPforPointers: boolean;
+    FPreH2PasTools: TComponent;
     FStripComments: boolean;
     FStripCommentsAndInfo: boolean;
     FTforTypedefs: boolean;
@@ -141,6 +143,7 @@ type
     property BaseDir: string read FBaseDir;
     property IsVirtual: boolean read FIsVirtual;
     property Converter: TH2PasConverter read FConverter;
+    property PreH2PasTools: TComponent read FPreH2PasTools;
 
     // h2pas options
     property ConstantsInsteadOfEnums: boolean read FConstantsInsteadOfEnums write SetConstantsInsteadOfEnums;
@@ -554,6 +557,7 @@ end;
 constructor TH2PasProject.Create;
 begin
   FCHeaderFiles:=TFPList.Create;
+  FPreH2PasTools:=TComponent.Create(nil);
   Clear;
 end;
 
@@ -589,6 +593,8 @@ begin
   FOutputDirectory:='';
   while CHeaderFileCount>0 do
     CHeaderFiles[CHeaderFileCount-1].Free;
+  FPreH2PasTools.Free;
+  FPreH2PasTools:=TComponent.Create(nil);
   FModified:=false;
 end;
 
@@ -597,6 +603,8 @@ var
   Src: TH2PasProject;
   i: Integer;
   NewCHeaderFile: TH2PasFile;
+  SrcComponent: TComponent;
+  NewComponent: TObject;
 begin
   if Source is TH2PasProject then begin
     Src:=TH2PasProject(Source);
@@ -625,6 +633,16 @@ begin
         NewCHeaderFile:=TH2PasFile.Create;
         NewCHeaderFile.Project:=Self;
         NewCHeaderFile.Assign(Src.CHeaderFiles[i]);
+      end;
+      FPreH2PasTools.Free;
+      FPreH2PasTools:=TComponent.Create(nil);
+      for i:=0 to Src.FPreH2PasTools.ComponentCount-1 do begin
+        SrcComponent:=Src.FPreH2PasTools.Components[i];
+        if SrcComponent is TCustomTextConverterTool then begin
+          NewComponent:=
+                 TComponentClass(SrcComponent.ClassType).Create(FPreH2PasTools);
+          TCustomTextConverterTool(NewComponent).Assign(SrcComponent);
+        end;
       end;
       Modified:=true;
     end;
@@ -658,15 +676,21 @@ begin
       and (FOutputDirectory=AProject.FOutputDirectory);
   if not Result then exit;
   for i:=0 to CHeaderFileCount-1 do
-    if not CHeaderFiles[i].IsEqual(AProject.CHeaderFiles[i]) then exit(false);
+    if not CHeaderFiles[i].IsEqual(AProject.CHeaderFiles[i]) then
+      exit(false);
+  if not CompareComponents(FPreH2PasTools,AProject.FPreH2PasTools) then
+    exit(false);
 end;
 
 procedure TH2PasProject.Load(Config: TConfigStorage);
 var
-  NewCHeaderFileCount: LongInt;
-  NewCHeaderFile: TH2PasFile;
+  NewCount: LongInt;
   i: Integer;
+  NewCHeaderFile: TH2PasFile;
+  NewComponent: TComponent;
 begin
+  Clear;
+  
   // FFilename is not saved
   FConstantsInsteadOfEnums:=Config.GetValue('ConstantsInsteadOfEnums/Value',true);
   FCompactOutputmode:=Config.GetValue('CompactOutputmode/Value',false);
@@ -690,13 +714,31 @@ begin
   // load CHeaderFiles
   Config.AppendBasePath('CHeaderFiles');
   try
-    NewCHeaderFileCount:=Config.GetValue('Count',0);
-    for i:=0 to NewCHeaderFileCount-1 do begin
+    NewCount:=Config.GetValue('Count',0);
+    for i:=0 to NewCount-1 do begin
       Config.AppendBasePath('File'+IntToStr(i+1));
       try
         NewCHeaderFile:=TH2PasFile.Create;
         NewCHeaderFile.Project:=Self;
         NewCHeaderFile.Load(Config);
+      finally
+        Config.UndoAppendBasePath;
+      end;
+    end;
+  finally
+    Config.UndoAppendBasePath;
+  end;
+
+  // load PreH2PasTools
+  Config.AppendBasePath('PreH2PasTools');
+  try
+    NewCount:=Config.GetValue('Count',0);
+    for i:=0 to NewCount-1 do begin
+      Config.AppendBasePath('Tool'+IntToStr(i+1));
+      try
+        NewComponent:=nil;
+        LoadComponentFromConfig(Config,'Value',NewComponent,
+                            @TextConverterToolClasses.FindClass,FPreH2PasTools);
       finally
         Config.UndoAppendBasePath;
       end;
@@ -740,6 +782,21 @@ begin
       Config.AppendBasePath('File'+IntToStr(i+1));
       try
         CHeaderFiles[i].Save(Config);
+      finally
+        Config.UndoAppendBasePath;
+      end;
+    end;
+  finally
+    Config.UndoAppendBasePath;
+  end;
+  
+  Config.AppendBasePath('PreH2PasTools');
+  try
+    Config.SetDeleteValue('Count',FPreH2PasTools.ComponentCount,0);
+    for i:=0 to FPreH2PasTools.ComponentCount-1 do begin
+      Config.AppendBasePath('Tool'+IntToStr(i+1));
+      try
+        SaveComponentToConfig(Config,'Value',FPreH2PasTools.Components[i]);
       finally
         Config.UndoAppendBasePath;
       end;

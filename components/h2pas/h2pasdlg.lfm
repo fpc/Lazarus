@@ -11,9 +11,9 @@ object H2PasDialog: TH2PasDialog
   Position = poDesktopCenter
   HorzScrollBar.Page = 784
   VertScrollBar.Page = 500
-  Left = 258
+  Left = 245
   Height = 501
-  Top = 143
+  Top = 205
   Width = 785
   object MainPageControl: TPageControl
     ActivePage = ConvertTabSheet
@@ -93,6 +93,7 @@ object H2PasDialog: TH2PasDialog
         Width = 185
       end
       object CHeaderFilesSplitter1: TSplitter
+        Beveled = True
         Height = 435
         Width = 5
         Cursor = crHSplit
@@ -236,9 +237,9 @@ object H2PasDialog: TH2PasDialog
         Caption = 'ConvertButton'
         OnClick = ConvertButtonClick
         TabOrder = 0
-        Left = 14
+        Left = 6
         Height = 26
-        Top = 12
+        Top = 396
         Width = 93
       end
       object ConvertErrorGroupBox: TGroupBox
@@ -247,9 +248,11 @@ object H2PasDialog: TH2PasDialog
         ClientHeight = 130
         ClientWidth = 764
         TabOrder = 1
+        AnchorSideTop.Control = ConvertUpDownSplitter
+        AnchorSideTop.Side = asrBottom
         Left = 6
         Height = 147
-        Top = 52
+        Top = 217
         Width = 768
         object ConvertErrorSynEdit: TSynEdit
           Align = alClient
@@ -598,6 +601,19 @@ object H2PasDialog: TH2PasDialog
           Width = 764
         end
       end
+      object ConvertUpDownSplitter: TSplitter
+        Align = alNone
+        Beveled = True
+        Cursor = crVSplit
+        Height = 5
+        Width = 781
+        ResizeAnchor = akBottom
+        Cursor = crVSplit
+        Left = -10
+        Height = 5
+        Top = 212
+        Width = 781
+      end
     end
     object SettingsTabSheet: TTabSheet
       Caption = 'SettingsTabSheet'
@@ -733,7 +749,7 @@ object H2PasDialog: TH2PasDialog
   object SynCppSyn1: TSynCppSyn
     DefaultFilter = 'C++-Quelltexte (*.c,*.cpp,*.h,*.hpp,*.hh)|*.c;*.cpp;*.h;*.hpp;*.hh'
     Enabled = False
-    left = 174
-    top = 92
+    left = 312
+    top = 80
   end
 end
