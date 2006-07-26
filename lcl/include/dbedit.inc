@@ -34,7 +34,8 @@ begin
     //if the field is currently modifiable
     if Focused and FDataLink.CanModify then
       //display the real text since we can modify it
-      Text := FDataLink.Field.DisplayText//this is wrong, but Text seems Broken
+      //Text := FDataLink.Field.DisplayText//this is wrong, but Text seems Broken
+      Text := FDatalink.Field.Text
     else
       //otherwise display the pretified/formated text since we can't
       EditText := FDataLink.Field.DisplayText;
@@ -85,7 +86,7 @@ begin
   //the changes have been validated
   ValidateEdit;
   FDataLink.Field.Text := Text;
-  FDataLink.Field.AsString := Text;// I shouldn't have to do this, but text seems broken
+  //FDataLink.Field.AsString := Text;// I shouldn't have to do this, but text seems broken
 end;
 
 procedure TDBEdit.FocusRequest(Sender: TObject);
