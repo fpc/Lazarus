@@ -480,7 +480,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisallblockslooksok
 msgid "All blocks looks ok."
-msgstr ""
+msgstr "Kaikki lohkorakenteet vaikuttavat hyviltä."
 
 #: lazarusidestrconsts:dlgallfiles
 msgid "All files"
@@ -668,7 +668,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgautoident
 msgid "Auto indent"
-msgstr ""
+msgstr "Automaattinen sisennys"
 
 #: lazarusidestrconsts:lispckoptsautorebuildwhenrebuildingall
 msgid "Auto rebuild when rebuilding all"
@@ -1060,7 +1060,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgcheckconsistency
 msgid "Check consistency"
-msgstr ""
+msgstr "Tarkista yksikäsitteisyys"
 
 #: lazarusidestrconsts:dlgcochecks
 msgid "Checks:"
@@ -2152,7 +2152,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisuedonotsho
 msgid "Do not show this message again."
-msgstr ""
+msgstr "Älä näytä tätä viestiä uudelleen"
 
 #: lazarusidestrconsts:dlgnotsplitlinefront
 msgid "Do not split line In front of:"
@@ -2188,7 +2188,7 @@ msgstr "Lajittelu peruste"
 
 #: lazarusidestrconsts:dlgdoubleclickline
 msgid "Double click line"
-msgstr ""
+msgstr "Kaksoisklikkaus valitsee koko rivin"
 
 #: lazarusidestrconsts:lisenvdoubleclickonmessagesjumpsotherwisesingleclick
 msgid "Double click on messages jumps (otherwise: single click)"
@@ -3100,7 +3100,7 @@ msgstr "Reunuksen leveys"
 
 #: lazarusidestrconsts:dlghalfpagescroll
 msgid "Half page scroll"
-msgstr ""
+msgstr "Vain puolen sivun liikutus (scrollaus) (PageUp- & PageDown-näppäimillä)"
 
 #: lazarusidestrconsts:lismenueditorhandleonclickevent
 msgid "Handle OnClick Event"
@@ -4420,7 +4420,7 @@ msgstr "Hiiren oikea näppäin"
 
 #: lazarusidestrconsts:dlgmouselinks
 msgid "Mouse links"
-msgstr ""
+msgstr "Hiirilinkit (Toimii Ctrl-näppäimen painalluksen kanssa)"
 
 #: lazarusidestrconsts:lismenueditormovedown
 msgid "Move Down (or right)"
@@ -6872,7 +6872,7 @@ msgstr "Aliominaisuudet"
 
 #: lazarusidestrconsts:lissuccess
 msgid "Success"
-msgstr ""
+msgstr "Onnistui"
 
 #: lazarusidestrconsts:lisa2pswitchpaths
 msgid "Switch Paths"
@@ -7208,7 +7208,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisuethecurre
 msgid "The current editor font does not support UTF-8, but your system seems to use it.%sThat means non ASCII characters will probably be shown incorrect.%sYou can select another font in the editor options."
-msgstr ""
+msgstr "Nykyinen editorin kirjaisin ei tue UTF-8 merkistöä, mutta käyttöjärjestelmä tukee sitä. %sTämä merkitsee sitä että ei ASCII merkit voivat näkyä väärin.%sSopivamman kirjaisimen voi valita editorin asetuksista."
 
 #: lazarusidestrconsts:listhecurrentunitpathforthefileisthepathtothelclunits
 msgid "The current unit path for the file%s%s%s%s is%s%s%s%s.%s%sThe path to the LCL units %s%s%s is missing.%s%sHint for newbies:%sCreate a lazarus application and put the file into the project directory."
@@ -7720,7 +7720,7 @@ msgstr "Yläreunat"
 
 #: lazarusidestrconsts:dlgtrimtrailingspaces
 msgid "Trim trailing spaces"
-msgstr ""
+msgstr "Poista turhat välilyönnit rivinlopusta"
 
 #: lazarusidestrconsts:lismenutemplatetutorial
 msgid "Tutorial"
