@@ -7647,9 +7647,11 @@ end;
 
 procedure TGridColumn.SetVisible(const AValue: Boolean);
 begin
-  if FVisible = nil then
+  if FVisible = nil then begin
+    if AValue=GetDefaultVisible then
+      exit;
     New(FVisible)
-  else if FVisible^ = AValue then
+  end else if FVisible^ = AValue then
     exit;
   FVisible^ := AValue;
   AllColumnsChange;
