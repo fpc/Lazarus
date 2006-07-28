@@ -56,6 +56,7 @@ type
     procedure ReadData(Stream: TStream);
     procedure WriteData(Stream: TStream);
     procedure ClickChecked;
+    procedure ItemClick(const AIndex: Integer);
   public
     constructor Create(AOwner: TComponent); override;
     property Checked[const AIndex: Integer]: Boolean read GetChecked write SetChecked;
@@ -146,7 +147,7 @@ procedure TCustomCheckListBox.DoChange(var Msg: TLMessage);
 begin
   //DebugLn(['TCustomCheckListBox.DoChange ',DbgSName(Self),' ',Msg.WParam]);
   ClickChecked;
-  if Assigned(OnItemClick) then OnItemClick(Self,Msg.WParam);
+  ItemClick(Msg.WParam);
 end;
 
 function TCustomCheckListBox.GetCachedDataSize: Integer;
@@ -171,9 +172,13 @@ begin
 end;
 
 procedure TCustomCheckListBox.KeyDown(var Key: Word; Shift: TShiftState);
+var
+  Index: Integer;
 begin
   if (Key = VK_SPACE) and (Shift=[]) then begin
-    Checked[ItemIndex]:=not Checked[ItemIndex];
+    Index := ItemIndex;
+    Checked[Index]:=not Checked[Index];
+    ItemClick(Index);
     Key:=VK_UNKNOWN;
   end else
     inherited KeyDown(Key,Shift);
@@ -199,6 +204,11 @@ end;
 procedure TCustomCheckListBox.ClickChecked;
 begin
   if Assigned(fOnClickChecked) then FOnClickChecked(self);
+end;
+
+procedure TCustomCheckListBox.ItemClick(const AIndex: Integer);
+begin
+  if Assigned(OnItemClick) then OnItemClick(Self, AIndex);
 end;
 
 procedure TCustomCheckListBox.DefineProperties(Filer: TFiler);

@@ -428,6 +428,7 @@ Var
     I: Integer;
     ItemRect: Windows.Rect;
     MousePos: Windows.Point;
+    Message: TLMessage;
   begin
     MousePos.X := LMMouse.Pos.X;
     MousePos.Y := LMMouse.Pos.Y;
@@ -438,8 +439,12 @@ Var
       if Windows.PtInRect(@ItemRect, MousePos) then
       begin
         // item clicked: toggle
-        if I < TCheckListBox(lWinControl).Items.Count then
+        if I < TCheckListBox(lWinControl).Items.Count then begin
           TCheckListBox(lWinControl).Checked[I] := not TCheckListBox(lWinControl).Checked[I];
+          Message.Msg := LM_CHANGED;
+          Message.WParam := I;
+          DeliverMessage(lWinControl, Message);
+        end;
         // can only click one item
         exit;
       end;

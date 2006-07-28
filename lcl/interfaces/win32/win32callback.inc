@@ -482,10 +482,10 @@ Var
       begin
         // item clicked: toggle
         if I < TCheckListBox(lWinControl).Items.Count then begin
+          TCheckListBox(lWinControl).Checked[I] := not TCheckListBox(lWinControl).Checked[I];
           Message.Msg := LM_CHANGED;
           Message.WParam := I;
           DeliverMessage(lWinControl, Message);
-          TCheckListBox(lWinControl).Checked[I] := not TCheckListBox(lWinControl).Checked[I];
         end;
         // can only click one item
         exit;
