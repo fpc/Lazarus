@@ -187,9 +187,9 @@ begin
   ILElements:=TImageList.Create(Self);
   ILElements.Height:=22;
   ILElements.Width:=22;
-  ILElements.AddFromLazarusResource('add');
-  ILElements.AddFromLazarusResource('edit');
-  ILElements.AddFromLazarusResource('delete');
+  ILElements.AddFromLazarusResource('Insert_16N');
+  ILElements.AddFromLazarusResource('Edit_16N');
+  ILElements.AddFromLazarusResource('Delete_16N');
   P0:=TPanel.Create(Self);
   With P0 do
     begin
@@ -302,7 +302,8 @@ begin
     begin
     PArent:=P4;
     Align:=alRight;
-    Width:=72;
+    Width:=100;
+    Transparent := True;
     Images:=ILElements;
     end;
   BAddSeeAlso:=TToolButton.Create(Self);
@@ -311,6 +312,7 @@ begin
     Parent:=TBSeeAlso;
     OnClick:=@DoAddSeeAlso;
     ImageIndex:=0;
+    Hint := SHintToolbarAdd;
     end;
   BEditSeeAlso:=TToolButton.Create(Self);
   With BEditSeeAlso do
@@ -318,6 +320,7 @@ begin
     Parent:=TBSeeAlso;
     OnClick:=@DoEditSeeAlso;
     ImageIndex:=1;
+    Hint := SHintToolbarEdit;
     end;
   BDeleteSeeAlso:=TToolButton.Create(Self);
   With BDeleteSeeAlso do
@@ -325,6 +328,7 @@ begin
     Parent:=TBSeeAlso;
     OnClick:=@DoDeleteSeeAlso;
     ImageIndex:=2;
+    Hint := SHintToolbarDelete;
     end;
   FSeeAlso:=TListBox.Create(Self);
   With FSeealso do
@@ -361,7 +365,8 @@ begin
     begin
     PArent:=P4;
     Align:=alRight;
-    Width:=72;
+    Width:=100;
+    Transparent := True;
     Images:=ILElements;
     end;
   BAddExample:=TToolButton.Create(Self);
@@ -370,6 +375,7 @@ begin
     Parent:=TBexamples;
     OnClick:=@DoAddExample;
     ImageIndex:=0;
+    Hint := SHintToolbarAdd;
     end;
   BEditExample:=TToolButton.Create(Self);
   With BEditExample do
@@ -377,6 +383,7 @@ begin
     Parent:=TBexamples;
     OnClick:=@DoEditExample;
     ImageIndex:=1;
+    Hint := SHintToolbarEdit;
     end;
   BDeleteExample:=TToolButton.Create(Self);
   With BDeleteExample do
@@ -384,6 +391,7 @@ begin
     Parent:=TBexamples;
     OnClick:=@DoDeleteExample;
     ImageIndex:=2;
+    Hint := SHintToolbarDelete;
     end;
   L:=Tlabel.Create(Self);
   With L do
@@ -883,6 +891,7 @@ begin
 end;
 
 initialization
-{$i icons.lrs}
+  {$i icons.lrs}
+
 end.
 

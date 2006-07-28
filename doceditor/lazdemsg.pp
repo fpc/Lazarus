@@ -142,7 +142,11 @@ ResourceString
   
   SHMenuExtraOptions = 'Show options dialog';
   SHMenuHelpAbout        = 'About this program';   
-   
+  
+  SHintToolbarAdd    = 'Add';
+  SHintToolbarEdit   = 'Edit';
+  SHintToolbarDelete = 'Delete';
+
 { ---------------------------------------------------------------------
     Error messages.
   ---------------------------------------------------------------------}
