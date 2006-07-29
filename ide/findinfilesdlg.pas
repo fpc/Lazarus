@@ -25,7 +25,7 @@ interface
 uses
   Classes, SysUtils, LCLProc, LCLIntf, Controls, StdCtrls, Forms, Buttons,
   ExtCtrls, LResources, FileUtil, LazarusIDEStrConsts, Dialogs, SynEditTypes,
-  InputHistory;
+  IDEDialogs, InputHistory;
 
 type
   { TLazFindInFilesDialog }
@@ -102,9 +102,11 @@ end;
 
 procedure TLazFindInFilesDialog.DirectoryBrowseClick(Sender: TObject);
 begin
+  InitIDEFileDialog(SelectDirectoryDialog);
   SelectDirectoryDialog.InitialDir := GetCurrentDir;
   if SelectDirectoryDialog.Execute then
     DirectoryComboBox.Text := SelectDirectoryDialog.FileName;
+  StoreIDEFileDialog(SelectDirectoryDialog);
 end;
 
 procedure TLazFindInFilesDialog.FormCreate(Sender: TObject);

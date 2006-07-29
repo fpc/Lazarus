@@ -440,8 +440,7 @@ begin
       OriginalFile:=TSourceLog.Create('');
       OriginalFile.LoadFromFile(TheFileName);
     end else begin
-      OriginalFile:=TSourceLog.Create('');
-      OriginalFile.Source:=TheText;
+      OriginalFile:=TSourceLog.Create(TheText);
     end;
 
     // convert case
@@ -583,9 +582,8 @@ begin
   TrimmedCurLine:=TrimLineAndMatch(Lines,TrimmedMatch);
   MatchLen:=EndPos.X-StartPos.X;
   if MatchLen<1 then MatchLen:=1;
-  SearchResultsView.AddMatch(fResultsWindow,
-                                       FileName,StartPos,
-                                       TrimmedCurLine, TrimmedMatch, MatchLen);
+  SearchResultsView.AddMatch(fResultsWindow,FileName,StartPos,
+                             TrimmedCurLine, TrimmedMatch, MatchLen);
   UpdateMatches;
 end;
 

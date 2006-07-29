@@ -88,10 +88,12 @@ type
   TLazSearchResultLB = Class(TCustomListBox)
   private
     fSearchObject: TLazSearch;
+    FSkipped: integer;
     fUpdateStrings: TStrings;
     fUpdating: boolean;
     fUpdateCount: integer;
     fShortenPathNeeded: boolean;
+    procedure SetSkipped(const AValue: integer);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -101,6 +103,7 @@ type
     procedure ShortenPaths;
     property UpdateItems: TStrings read fUpdateStrings write fUpdateStrings;
     property UpdateState: boolean read fUpdating;
+    property Skipped: integer read FSkipped write SetSkipped;
   end;
 
 
@@ -130,10 +133,10 @@ type
     procedure ListBoxDoubleClicked(Sender: TObject);
     procedure SetItems(Index: Integer; Value: TStrings);
     function GetItems(Index: integer): TStrings;
-      fOnSelectionChanged: TNotifyEvent;
-      fListBoxFont: TFont;
-      fMouseOverIndex: integer;
-      procedure SetMaxItems(const AValue: integer);
+                      fOnSelectionChanged: TNotifyEvent;
+                      fListBoxFont: TFont;
+                      fMouseOverIndex: integer;
+    procedure SetMaxItems(const AValue: integer);
   public
     function AddSearch(const ResultsName: string;
                        const SearchText: string;
@@ -240,9 +243,15 @@ begin
   if Assigned(CurrentLB) then
   begin
     if CurrentLB.UpdateState then begin
-      if CurrentLB.UpdateItems.Count>=MaxItems then exit;
+      if CurrentLB.UpdateItems.Count>=MaxItems then begin
+        CurrentLB.Skipped:=CurrentLB.Skipped+1;
+        exit;
+      end;
     end else begin
-      if CurrentLB.Items.Count>=MaxItems then exit;
+      if CurrentLB.Items.Count>=MaxItems then begin
+        CurrentLB.Skipped:=CurrentLB.Skipped+1;
+        exit;
+      end;
     end;
     SearchPos:= TLazSearchMatchPos.Create;
     SearchPos.MatchStart:= MatchStart;
@@ -317,6 +326,7 @@ begin
         CurrentLB.UpdateItems.Assign(Value)
       else
         CurrentLB.Items.Assign(Value);
+      CurrentLB.Skipped:=0;
     end;//if
   end//if
 end;//SetItems
@@ -395,8 +405,10 @@ end;//PageExists
 procedure TSearchResultsView.ListBoxKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  if Key = 27 then
+  if Key = VK_ESCAPE then begin
+    Key:=VK_UNKNOWN;
     Close;
+  end;
 end;
 
 {Add Result will create a tab in the Results view window with an new
@@ -419,7 +431,7 @@ begin
     With ResultsNoteBook do
     begin
       i:= GetPageIndex(ResultsName);
-      if i > -1 then
+      if i>=0 then
       begin
         NewListBox:= GetListBox(i);
         ResultsNoteBook.PageIndex:= i;
@@ -462,6 +474,7 @@ begin
       SearchObj.SearchMask:= AMask;
       SearchObj.SearchOptions:= TheOptions;
     end;
+    NewListBox.Skipped:=0;
     Result:= ResultsNoteBook.PageIndex;
   end;//if
 end;//AddResult
@@ -677,6 +690,36 @@ begin
   end;//if
 end;//GetListBox
 
+procedure TLazSearchResultLB.SetSkipped(const AValue: integer);
+var
+  SrcList: TStrings;
+  s: String;
+  HasSkippedLine: Boolean;
+  SkippedLine: String;
+begin
+  if FSkipped=AValue then exit;
+  FSkipped:=AValue;
+  s:='Found, but not listed here: ';
+  if fUpdating then
+    SrcList:=fUpdateStrings
+  else
+    SrcList:=Items;
+  if (SrcList.Count>0) and (copy(SrcList[SrcList.Count-1],1,length(s))=s) then
+    HasSkippedLine:=true
+  else
+    HasSkippedLine:=false;
+  SkippedLine:=s+IntToStr(FSkipped);
+  if FSkipped>0 then begin
+    if HasSkippedLine then begin
+      SrcList[SrcList.Count-1]:=SkippedLine;
+    end else begin
+      SrcList.add(SkippedLine);
+    end;
+  end else begin
+    if HasSkippedLine then
+      SrcList.Delete(SrcList.Count-1);
+  end;
+end;
 
 {******************************************************************************
   TLazSearchResultLB

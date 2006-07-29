@@ -28,8 +28,8 @@
   Frees the widgetinfo.
    }
 function CarbonPrivateHIView_Dispose(ANextHandler: EventHandlerCallRef;
-                                     AEvent: EventRef;
-                                     AInfo: PWidgetInfo): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
+  AEvent: EventRef;
+  AInfo: PWidgetInfo): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
 var
   Msg: TLMessage;
   PrivateClass: TCarbonPrivateHiViewClass;
@@ -46,8 +46,8 @@ begin
 end;
 
 function CarbonPrivateHIView_Hit(ANextHandler: EventHandlerCallRef;
-                                AEvent: EventRef;
-                                AInfo: PWidgetInfo): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
+  AEvent: EventRef;
+  AInfo: PWidgetInfo): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
 var
   Msg: TLMessage;
 begin
@@ -58,53 +58,56 @@ begin
 end;
 
 function CarbonPrivateHIView_MouseMove(ANextHandler: EventHandlerCallRef;
-                                AEvent: EventRef;
-                                AInfo: PWidgetInfo): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
+  AEvent: EventRef;
+  AInfo: PWidgetInfo): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
 begin
   DebugLn('CarbonPrivateHIView_MouseMove');
   Result := CallNextEventHandler(ANextHandler, AEvent);
 end;
 
+function CarbonPrivateHIView_Update(ANextHandler: EventHandlerCallRef;
+  AEvent: EventRef;
+  AInfo: PWidgetInfo): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
+begin
+  debugln('CarbonPrivateHIView_Update ');
+  // first let carbon draw/update
+  Result := CallNextEventHandler(ANextHandler, AEvent);
+end;
 
 // ==================================================================
 // C L A S S 
 // ==================================================================
 
-  { TCarbonWSWinControlPrivate }
-
-(*
-class procedure TCarbonPrivateHiView.InstallControlHandler(AInfo: PWidgetInfo; AClass: UInt32; AKind: UInt32; AHandler: Pointer; var AUPP: EventHandlerUPP);
-var
-  eventSpec: EventTypeSpec;
-begin
-  if AUPP = nil
-  then AUPP := NewEventHandlerUPP(EventHandlerProcPtr(AHandler));
-
-  eventSpec := MakeEventSpec(AClass, AKind);
-  InstallControlEventHandler(AInfo^.Widget, AUPP, 1, eventSpec, Pointer(AInfo), nil);
-end;
-*)
+{ TCarbonWSWinControlPrivate }
 
 class procedure TCarbonPrivateHiView.RegisterEvents(AInfo: PWidgetInfo);
 var
   MouseSpec: array [0..6] of EventTypeSpec;
   TmpSpec: EventTypeSpec;
 begin
-  // TODO, move both to the CarbonPrivateHIView handler
   TmpSpec := MakeEventSpec(kEventClassControl, kEventControlDispose);
-  InstallControlEventHandler(AInfo^.Widget, RegisterEventHandler(@CarbonPrivateHIView_Dispose), 
+  InstallControlEventHandler(AInfo^.Widget,
+    RegisterEventHandler(@CarbonPrivateHIView_Dispose),
     1, @TmpSpec, Pointer(AInfo), nil);
 
   TmpSpec := MakeEventSpec(kEventClassControl, kEventControlHit);
-  InstallControlEventHandler(AInfo^.Widget, RegisterEventHandler(@CarbonPrivateHIView_Hit),
+  InstallControlEventHandler(AInfo^.Widget,
+    RegisterEventHandler(@CarbonPrivateHIView_Hit),
     1, @TmpSpec, Pointer(AInfo), nil);
 
   MouseSpec[0] := MakeEventSpec(kEventClassMouse, kEventMouseMoved);
   MouseSpec[1] := MakeEventSpec(kEventClassMouse, kEventMouseDragged);
   
-  InstallControlEventHandler(AInfo^.Widget, RegisterEventHandler(@CarbonPrivateHIView_MouseMove),
+  InstallControlEventHandler(AInfo^.Widget,
+    RegisterEventHandler(@CarbonPrivateHIView_MouseMove),
     2, @MouseSpec[0], Pointer(AInfo), nil);
-    
+
+  TmpSpec := MakeEventSpec(kEventClassControl, kEventControlDraw);
+  InstallControlEventHandler(AInfo^.Widget,
+    RegisterEventHandler(@CarbonPrivateHIView_Update),
+    1, @TmpSpec, Pointer(AInfo), nil);
+
+  
 //  InstallControlHandler(AInfo, kEventClassControl, kEventControlDispose, RegisterEventHandler(@CarbonWSWinControl_Dispose));
 //  InstallControlHandler(AInfo, kEventClassControl, kEventControlHit, @CarbonWSWinControl_Hit, MCarbonWSWinControl_Hit_UPP);
   DebugLN(TWinControl(Ainfo^.LCLObject).Name,':', TWinControl(Ainfo^.LCLObject).ClassName ,' Events set')

@@ -275,14 +275,14 @@ var
   IsHexNumberChar
      : array[char] of boolean;
 
-function Min(i1, i2: integer): integer;
+function Min(i1, i2: integer): integer; inline;
 begin
-  if i1<i2 then Result:=i1 else Result:=i2;
+  if i1<=i2 then Result:=i1 else Result:=i2;
 end;
 
-function Max(i1, i2: integer): integer;
+function Max(i1, i2: integer): integer; inline;
 begin
-  if i1>i2 then Result:=i1 else Result:=i2;
+  if i1>=i2 then Result:=i1 else Result:=i2;
 end;
 
 { most simple code tools - just methods }
@@ -1981,8 +1981,14 @@ var
   begin
     while StartPos<EndPos do begin
       case Src[StartPos] of
-      '{','/':
+      '{':
         ReadComment;
+        
+      '/':
+        if (StartPos<SrcLen) and (Src[StartPos]='/') then
+          ReadComment
+        else
+          inc(StartPos);
 
       '(':
         if (StartPos<SrcLen) and (Src[StartPos]='*') then

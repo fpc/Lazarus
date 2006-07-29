@@ -102,6 +102,7 @@ var
   Msg: TLMessage;
   PrivateClass: TCarbonPrivateWindowClass;
 begin
+  //debugln('CarbonPrivateWindow_Closed ',DbgSName(AInfo^.LCLObject));
   Result := CallNextEventHandler(ANextHandler, AEvent);
   PrivateClass := TCarbonPrivateWindowClass(AInfo^.WSClass.WSPrivate);
 
@@ -825,6 +826,22 @@ begin
   end;
 end;
 
+function CarbonPrivateWindow_Update(ANextHandler: EventHandlerCallRef;
+  AEvent: EventRef;
+  AWindowInfo: PWidgetInfo): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
+begin
+  debugln('CarbonPrivateWindow_Update ',DbgSName(AWindowInfo^.LCLObject));
+  Result := CallNextEventHandler(ANextHandler, AEvent);
+end;
+
+function CarbonPrivateWindow_DrawContent(ANextHandler: EventHandlerCallRef;
+  AEvent: EventRef;
+  AWindowInfo: PWidgetInfo): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
+begin
+  debugln('CarbonPrivateWindow_DrawContent ',DbgSName(AWindowInfo^.LCLObject));
+  Result := CallNextEventHandler(ANextHandler, AEvent);
+end;
+
 // ==================================================================
 // C L A S S 
 // ==================================================================
@@ -876,6 +893,17 @@ begin
   InstallWindowEventHandler(AInfo^.Widget,
     RegisterEventHandler(@CarbonPrivateWindow_KeyboardProc),
     3, @KeySpecs[0], Pointer(AInfo), nil);
+    
+  debugln('TCarbonPrivateWindow.RegisterEvents ',DbgSName(AInfo^.LCLObject));
+  TmpSpec := MakeEventSpec(kEventClassWindow, kEventWindowUpdate);
+  InstallWindowEventHandler(AInfo^.Widget,
+    RegisterEventHandler(@CarbonPrivateWindow_Update),
+    1, @TmpSpec, Pointer(AInfo), nil);
+
+  TmpSpec := MakeEventSpec(kEventClassWindow, kEventWindowDrawContent);
+  InstallWindowEventHandler(AInfo^.Widget,
+    RegisterEventHandler(@CarbonPrivateWindow_DrawContent),
+    1, @TmpSpec, Pointer(AInfo), nil);
 end;
 
 class procedure TCarbonPrivateWindow.UnregisterEvents;

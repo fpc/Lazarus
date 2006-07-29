@@ -138,6 +138,7 @@ type
     property AutoResizeViewport;
     property BorderSpacing;
     property Enabled;
+    property OnChangeBounds;
     property OnClick;
     property OnConstrainedResize;
     property OnDblClick;

@@ -658,14 +658,6 @@ implementation
 const MaxComboBoxCount: integer = 20;
 
 
-function Max(i, j: integer): integer;
-begin
-  if i<=j then
-    Result:=j
-  else
-    Result:=i;
-end;
-
 function DebuggerNameToType(const s: string): TDebuggerType;
 begin
   for Result:=Low(TDebuggerType) to High(TDebuggerType) do

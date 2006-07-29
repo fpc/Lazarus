@@ -20,7 +20,7 @@ unit newfield;
 interface
 
 uses
-  LCLIntf, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  Classes, SysUtils, DBConst, LCLIntf, Graphics, Controls, Forms, Dialogs,
   ExtCtrls, StdCtrls, Buttons, DB, LResources, ComponentEditors,
   PropEdits, TypInfo;
 
@@ -85,14 +85,6 @@ var
   NewFieldFrm: TNewFieldFrm;
 
 implementation
-
-uses dbconst;
-
-function min(i,j: integer): integer;
-begin
-  Result := i;
-  if j<i then Result := j;
-end;
 
 procedure SplitFieldsList(FldList: string; AList: TStrings);
 const

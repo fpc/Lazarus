@@ -42,7 +42,8 @@ interface
 
 uses
   {$IFDEF SYN_LAZARUS}
-  Math, LCLProc, LCLIntf, LCLType, SynEditTextBuffer, Messages, LMessages,
+  LCLProc, LCLIntf, LCLType, SynEditTextBuffer, Messages, LMessages,
+  SynEditMiscProcs,
   {$ELSE}
   Windows, SynEditTypes, Messages,
   {$ENDIF}

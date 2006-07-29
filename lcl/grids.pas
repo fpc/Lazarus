@@ -49,9 +49,9 @@ unit Grids;
 interface
 
 uses
-  Types, Classes, SysUtils, LCLStrConsts, LCLProc, LCLType, LCLIntf, Controls,
-  GraphType, Graphics, Forms, DynamicArray, LMessages, XMLCfg, StdCtrls,
-  LResources, MaskEdit, Buttons, Clipbrd;
+  Types, Classes, SysUtils, Math, LCLStrConsts, LCLProc, LCLType, LCLIntf,
+  Controls, GraphType, Graphics, Forms, DynamicArray, LMessages, XMLCfg,
+  StdCtrls, LResources, MaskEdit, Buttons, Clipbrd;
 
 const
   //GRIDFILEVERSION = 1; // Original
@@ -1322,7 +1322,7 @@ type
   end;
 
 
-  procedure DrawRubberRect(Canvas: TCanvas; aRect: TRect; Color: TColor);
+procedure DrawRubberRect(Canvas: TCanvas; aRect: TRect; Color: TColor);
 
 
 procedure Register;
@@ -1333,22 +1333,7 @@ function PointIgual(const P1,P2: TPoint): Boolean;
 begin
   result:=(P1.X=P2.X)and(P1.Y=P2.Y);
 end;
-{function RectIgual(const R1,R2: TRect): Boolean;
-begin
-  Result:=CompareMem(@R1,@R2, SizeOf(R1));
-end;}
-function Min(const I,J: Integer): Integer;
-begin
-  if I<J then Result:=I
 
-  else        Result:=J;
-end;
-function Max(const I,J: Integer): Integer;
-begin
-  if I>J then Result:=I
-
-  else        Result:=J;
-end;
 function NormalizarRect(const R:TRect): TRect;
 begin
   Result.Left:=Min(R.Left, R.Right);
