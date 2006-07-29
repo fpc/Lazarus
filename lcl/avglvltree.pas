@@ -129,6 +129,81 @@ type
   end;
 
 
+type
+  { TPointerToPointerTree - Associative array }
+
+  TPointerToPointerItem = record
+    Key: Pointer;
+    Value: Pointer;
+  end;
+  PPointerToPointerItem = ^TPointerToPointerItem;
+
+  TPointerToPointerTree = class
+  private
+    FItems: TAvgLvlTree;
+    function GetCount: Integer;
+    function GetValues(const Key: Pointer): Pointer;
+    procedure SetValues(const Key: Pointer; const AValue: Pointer);
+    function FindNode(const Key: Pointer): TAvgLvlTreeNode;
+    function GetNode(Node: TAvgLvlTreeNode; out Key, Value: Pointer): Boolean;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure Clear;
+    function Contains(const Key: Pointer): Boolean;
+    function GetFirst(out Key, Value: Pointer): Boolean;
+    function GetLast(out Key, Value: Pointer): Boolean;
+    function GetNext(const Key: Pointer; out NextKey, NextValue: Pointer): Boolean;
+    function GetPrev(const Key: Pointer; out PrevKey, PrevValue: Pointer): Boolean;
+    property Count: Integer read GetCount;
+    property Values[const Key: Pointer]: Pointer read GetValues write SetValues; default;
+    property Tree: TAvgLvlTree read FItems;
+  end;
+
+
+function ComparePointerToPointerItems(Data1, Data2: Pointer): integer;
+function ComparePointerWithPtrToPtrItem(Key, Data: Pointer): Integer;
+
+
+type
+  { TStringToStringTree - Associative array }
+
+  TStringToStringItem = record
+    Name: string;
+    Value: string;
+  end;
+  PStringToStringItem = ^TStringToStringItem;
+
+  TStringToStringTree = class
+  private
+    FItems: TAvgLvlTree;
+    fCaseSensitive: Boolean;
+    function GetCount: Integer;
+    function GetValues(const Name: string): string;
+    procedure SetValues(const Name: string; const AValue: string);
+    function FindNode(const Name: string): TAvgLvlTreeNode;
+    function GetNode(Node: TAvgLvlTreeNode; out Name, Value: string): Boolean;
+  public
+    constructor Create(CaseSensitive: boolean);
+    destructor Destroy; override;
+    procedure Clear;
+    function Contains(const Name: string): Boolean;
+    procedure Add(const Name, Value, Delimiter: string);
+    function GetFirst(out Name, Value: string): Boolean;
+    function GetLast(out Name, Value: string): Boolean;
+    function GetNext(const Name: string; out NextName, NextValue: string): Boolean;
+    function GetPrev(const Name: string; out PrevName, PrevValue: string): Boolean;
+    property Count: Integer read GetCount;
+    property Values[const Name: string]: string read GetValues write SetValues; default;
+    property Tree: TAvgLvlTree read FItems;
+  end;
+
+function CompareStringToStringItems(Data1, Data2: Pointer): integer;
+function CompareStringToStringItemsI(Data1, Data2: Pointer): integer;
+function ComparePAnsiStringWithStrToStrItem(Key, Data: Pointer): Integer;
+function ComparePAnsiStringWithStrToStrItemI(Key, Data: Pointer): Integer;
+
+
 implementation
 
 
@@ -141,6 +216,40 @@ begin
   else if Data1<Data2 then Result:=1
   else Result:=0;
 end;
+
+function ComparePointerToPointerItems(Data1, Data2: Pointer): integer;
+begin
+  Result:=ComparePointer(PPointerToPointerItem(Data1)^.Key,
+                         PPointerToPointerItem(Data2)^.Key);
+end;
+
+function ComparePointerWithPtrToPtrItem(Key, Data: Pointer): Integer;
+begin
+  Result:=ComparePointer(Key,PPointerToPointerItem(Data)^.Key);
+end;
+
+function CompareStringToStringItems(Data1, Data2: Pointer): integer;
+begin
+  Result:=CompareStr(PStringToStringItem(Data1)^.Name,
+                     PStringToStringItem(Data2)^.Name);
+end;
+
+function CompareStringToStringItemsI(Data1, Data2: Pointer): integer;
+begin
+  Result:=CompareText(PStringToStringItem(Data1)^.Name,
+                      PStringToStringItem(Data2)^.Name);
+end;
+
+function ComparePAnsiStringWithStrToStrItem(Key, Data: Pointer): Integer;
+begin
+  Result:=CompareStr(PAnsiString(Key)^,PStringToStringItem(Data)^.Name);
+end;
+
+function ComparePAnsiStringWithStrToStrItemI(Key, Data: Pointer): Integer;
+begin
+  Result:=CompareText(PAnsiString(Key)^,PStringToStringItem(Data)^.Name);
+end;
+
 
 { TAvgLvlTree }
 
@@ -1214,14 +1323,270 @@ begin
   OldNode.Free;
 end;
 
+{ TStringToStringTree }
+
+function TStringToStringTree.GetCount: Integer;
+begin
+  Result:=FItems.Count;
+end;
+
+function TStringToStringTree.GetValues(const Name: string): string;
+var
+  Node: TAvgLvlTreeNode;
+begin
+  Node:=FindNode(Name);
+  if Node<>nil then
+    Result:=PStringToStringItem(Node.Data)^.Value
+  else
+    Result:='';
+end;
+
+procedure TStringToStringTree.SetValues(const Name: string; const AValue: string
+  );
+var
+  NewItem: PStringToStringItem;
+  Node: TAvgLvlTreeNode;
+begin
+  Node:=FindNode(Name);
+  if (Node<>nil) then
+    PStringToStringItem(Node.Data)^.Value:=AValue
+  else begin
+    New(NewItem);
+    NewItem^.Name:=Name;
+    NewItem^.Value:=AValue;
+    FItems.Add(NewItem);
+  end;
+end;
+
+function TStringToStringTree.FindNode(const Name: string): TAvgLvlTreeNode;
+begin
+  if fCaseSensitive then
+    Result:=FItems.FindKey(@Name,@ComparePAnsiStringWithStrToStrItem)
+  else
+    Result:=FItems.FindKey(@Name,@ComparePAnsiStringWithStrToStrItemI)
+end;
+
+function TStringToStringTree.GetNode(Node: TAvgLvlTreeNode;
+  out Name, Value: string): Boolean;
+var
+  Item: PStringToStringItem;
+begin
+  if Node<>nil then begin
+    Item:=PStringToStringItem(Node.Data);
+    Name:=Item^.Name;
+    Value:=Item^.Value;
+    Result:=true;
+  end else begin
+    Name:='';
+    Value:='';
+    Result:=false;
+  end;
+end;
+
+constructor TStringToStringTree.Create(CaseSensitive: boolean);
+begin
+  fCaseSensitive:=CaseSensitive;
+  if fCaseSensitive then
+    FItems:=TAvgLvlTree.Create(@CompareStringToStringItems)
+  else
+    FItems:=TAvgLvlTree.Create(@CompareStringToStringItemsI);
+end;
+
+destructor TStringToStringTree.Destroy;
+begin
+  Clear;
+  FItems.Free;
+  inherited Destroy;
+end;
+
+procedure TStringToStringTree.Clear;
+var
+  Node: TAvgLvlTreeNode;
+  Item: PStringToStringItem;
+begin
+  Node:=FItems.FindLowest;
+  while Node<>nil do begin
+    Item:=PStringToStringItem(Node.Data);
+    Dispose(Item);
+    Node:=FItems.FindSuccessor(Node);
+  end;
+  FItems.Clear;
+end;
+
+function TStringToStringTree.Contains(const Name: string): Boolean;
+begin
+  Result:=FindNode(Name)<>nil;
+end;
+
+procedure TStringToStringTree.Add(const Name, Value, Delimiter: string);
+var
+  OldValue: string;
+begin
+  OldValue:=Values[Name];
+  if OldValue<>'' then
+    OldValue:=OldValue+Delimiter;
+  OldValue:=OldValue+Value;
+  Values[Name]:=OldValue;
+end;
+
+function TStringToStringTree.GetFirst(out Name, Value: string): Boolean;
+begin
+  Result:=GetNode(Tree.FindLowest,Name,Value);
+end;
+
+function TStringToStringTree.GetLast(out Name, Value: string): Boolean;
+begin
+  Result:=GetNode(Tree.FindHighest,Name,Value);
+end;
+
+function TStringToStringTree.GetNext(const Name: string; out NextName,
+  NextValue: string): Boolean;
+var
+  Node: TAvgLvlTreeNode;
+begin
+  Node:=FindNode(Name);
+  if Node<>nil then
+    Node:=Tree.FindSuccessor(Node);
+  Result:=GetNode(Node,NextName,NextValue);
+end;
+
+function TStringToStringTree.GetPrev(const Name: string; out PrevName,
+  PrevValue: string): Boolean;
+var
+  Node: TAvgLvlTreeNode;
+begin
+  Node:=FindNode(Name);
+  if Node<>nil then
+    Node:=Tree.FindPrecessor(Node);
+  Result:=GetNode(Node,PrevName,PrevValue);
+end;
+
+
+{ TPointerToPointerTree }
+
+function TPointerToPointerTree.GetCount: Integer;
+begin
+  Result:=FItems.Count;
+end;
+
+function TPointerToPointerTree.GetValues(const Key: Pointer): Pointer;
+var
+  Node: TAvgLvlTreeNode;
+begin
+  Node:=FindNode(Key);
+  if Node<>nil then
+    Result:=PPointerToPointerItem(Node.Data)^.Value
+  else
+    Result:=nil;
+end;
+
+procedure TPointerToPointerTree.SetValues(const Key: Pointer;
+  const AValue: Pointer);
+var
+  NewItem: PPointerToPointerItem;
+  Node: TAvgLvlTreeNode;
+begin
+  Node:=FindNode(Key);
+  if (Node<>nil) then
+    PPointerToPointerItem(Node.Data)^.Value:=AValue
+  else begin
+    New(NewItem);
+    NewItem^.Key:=Key;
+    NewItem^.Value:=AValue;
+    FItems.Add(NewItem);
+  end;
+end;
+
+function TPointerToPointerTree.FindNode(const Key: Pointer): TAvgLvlTreeNode;
+begin
+  Result:=FItems.FindKey(@Key,@ComparePointerWithPtrToPtrItem)
+end;
+
+function TPointerToPointerTree.GetNode(Node: TAvgLvlTreeNode; out Key,
+  Value: Pointer): Boolean;
+var
+  Item: PPointerToPointerItem;
+begin
+  if Node<>nil then begin
+    Item:=PPointerToPointerItem(Node.Data);
+    Key:=Item^.Key;
+    Value:=Item^.Value;
+    Result:=true;
+  end else begin
+    Key:=nil;
+    Value:=nil;
+    Result:=false;
+  end;
+end;
+
+constructor TPointerToPointerTree.Create;
+begin
+  FItems:=TAvgLvlTree.Create(@ComparePointerToPointerItems);
+end;
+
+destructor TPointerToPointerTree.Destroy;
+begin
+  Clear;
+  FItems.Free;
+  inherited Destroy;
+end;
+
+procedure TPointerToPointerTree.Clear;
+var
+  Node: TAvgLvlTreeNode;
+  Item: PPointerToPointerItem;
+begin
+  Node:=FItems.FindLowest;
+  while Node<>nil do begin
+    Item:=PPointerToPointerItem(Node.Data);
+    Dispose(Item);
+    Node:=FItems.FindSuccessor(Node);
+  end;
+  FItems.Clear;
+end;
+
+function TPointerToPointerTree.Contains(const Key: Pointer): Boolean;
+begin
+  Result:=FindNode(Key)<>nil;
+end;
+
+function TPointerToPointerTree.GetFirst(out Key, Value: Pointer): Boolean;
+begin
+  Result:=GetNode(Tree.FindLowest,Key,Value);
+end;
+
+function TPointerToPointerTree.GetLast(out Key, Value: Pointer): Boolean;
+begin
+  Result:=GetNode(Tree.FindHighest,Key,Value);
+end;
+
+function TPointerToPointerTree.GetNext(const Key: Pointer; out NextKey,
+  NextValue: Pointer): Boolean;
+var
+  Node: TAvgLvlTreeNode;
+begin
+  Node:=FindNode(Key);
+  if Node<>nil then
+    Node:=Tree.FindSuccessor(Node);
+  Result:=GetNode(Node,NextKey,NextValue);
+end;
+
+function TPointerToPointerTree.GetPrev(const Key: Pointer; out PrevKey,
+  PrevValue: Pointer): Boolean;
+var
+  Node: TAvgLvlTreeNode;
+begin
+  Node:=FindNode(Key);
+  if Node<>nil then
+    Node:=Tree.FindPrecessor(Node);
+  Result:=GetNode(Node,PrevKey,PrevValue);
+end;
 
 initialization
-
-NodeMemManager:=TAvgLvlTreeNodeMemManager.Create;
+  NodeMemManager:=TAvgLvlTreeNodeMemManager.Create;
 
 finalization
-
-NodeMemManager.Free;
-NodeMemManager:=nil;
+  NodeMemManager.Free;
+  NodeMemManager:=nil;
 
 end.

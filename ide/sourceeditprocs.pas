@@ -51,6 +51,7 @@ type
   end;
   
 procedure SetupTextConverters;
+procedure FreeTextConverters;
 
 type
   TCompletionType = (
@@ -78,6 +79,11 @@ procedure SetupTextConverters;
 begin
   TextConverterToolClasses:=TTextConverterToolClasses.Create;
   TextConverterToolClasses.RegisterClass(TTextReplaceTool);
+end;
+
+procedure FreeTextConverters;
+begin
+  FreeAndNil(TextConverterToolClasses);
 end;
 
 function PaintCompletionItem(const AKey: string; ACanvas: TCanvas;

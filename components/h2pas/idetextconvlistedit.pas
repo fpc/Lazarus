@@ -27,9 +27,9 @@ uses
 
 type
 
-  { TTTextConvListEditor }
+  { TTextConvListEditor }
 
-  TTTextConvListEditor = class(TForm)
+  TTextConvListEditor = class(TForm)
     AddToolButton: TButton;
     CloneButton: TButton;
     PasteButton: TButton;
@@ -49,13 +49,13 @@ type
   end;
 
 var
-  TTextConvListEditor: TTTextConvListEditor;
+  TextConvListEditor: TTextConvListEditor;
 
 implementation
 
-{ TTTextConvListEditor }
+{ TTextConvListEditor }
 
-procedure TTTextConvListEditor.FormCreate(Sender: TObject);
+procedure TTextConvListEditor.FormCreate(Sender: TObject);
 begin
   Caption:='Text conversion tools editor';
   ToolsLabel.Caption:='Tools:';

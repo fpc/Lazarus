@@ -62,7 +62,7 @@ type
     OutputDirBrowseButton: TButton;
 
     // convert
-    PreH2PasEdit: TTTextConvListEditor;
+    PreH2PasEdit: TTextConvListEditor;
     ConvertTabSheet: TTabSheet;
     ConvertButton: TButton;
     ConvertErrorGroupBox: TGroupBox;
@@ -219,7 +219,7 @@ begin
   SaveSettingsButton.Caption:='&Save Settings';
   CloseButton.Caption:='&Close';
   
-  PreH2PasEdit:=TTTextConvListEditor.Create(Self);
+  PreH2PasEdit:=TTextConvListEditor.Create(Self);
   with PreH2PasEdit do begin
     Name:='PreH2PasEdit';
     Align:=alTop;

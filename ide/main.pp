@@ -1185,6 +1185,7 @@ begin
   FreeThenNil(Project1);
 
   // free IDE parts
+  FreeTextConverters;
   FreeStandardIDEQuickFixItems;
   FreeFormEditor;
   FreeAndNil(LazFindReplaceDialog);

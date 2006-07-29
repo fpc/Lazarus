@@ -37,7 +37,7 @@ interface
 
 uses
   Classes, Math, SysUtils, TypInfo, LCLProc, Controls, Forms, Menus,
-  LCLStrConsts, DynHashArray, StringHashList, LazConfigStorage, LDockCtrlEdit,
+  LCLStrConsts, AvgLvlTree, StringHashList, LazConfigStorage, LDockCtrlEdit,
   LDockTree;
 
 type
@@ -2081,31 +2081,46 @@ function TLazDockConfigNode.DebugLayoutAsString: string;
 type
   TArrayOfRect = array of TRect;
   TNodeInfo = record
-    MinSizeValid: boolean;
     MinSize: TPoint;
+    MinSizeValid, MinSizeCalculating: boolean;
+    MinLeft: integer;
+    MinLeftValid, MinLeftCalculating: boolean;
+    MinTop: Integer;
+    MinTopValid, MinTopCalculating: boolean;
   end;
   PNodeInfo = ^TNodeInfo;
 var
   Cols: LongInt;
   Rows: LongInt;
   LogCols: Integer;
-  NodeInfos: TDynHashArray;// TLazDockConfigNode to PNodeInfo
+  NodeInfos: TPointerToPointerTree;// TLazDockConfigNode to PNodeInfo
   
   procedure InitNodeInfos;
   begin
-    NodeInfos:=TDynHashArray.Create;
+    NodeInfos:=TPointerToPointerTree.Create;
   end;
-  
+
   procedure FreeNodeInfos;
   var
     Item: PNodeInfo;
+    NodePtr, InfoPtr: Pointer;
   begin
+    NodeInfos.GetFirst(NodePtr,InfoPtr);
     repeat
-      Item:=PNodeInfo(NodeInfos.First);
+      Item:=PNodeInfo(InfoPtr);
       if Item=nil then break;
-      NodeInfos.Remove(Item);
       Dispose(Item);
-    until false;
+    until not  NodeInfos.GetNext(NodePtr,NodePtr,InfoPtr);
+  end;
+  
+  function GetNodeInfo(Node: TLazDockConfigNode): PNodeInfo;
+  begin
+    Result:=PNodeInfo(NodeInfos[Node]);
+    if Result=nil then begin
+      New(Result);
+      FillChar(Result^,SizeOf(Result),0);
+      NodeInfos[Node]:=Result;
+    end;
   end;
 
   procedure w(x,y: Integer; const s: string; MaxY: Integer = 0);
@@ -2171,43 +2186,73 @@ var
     Result.Bottom:=MapY(OriginalRect.Left);
   end;
   
-  procedure UnIntersect(Rects: TArrayOfRect);
-  var
-    i: Integer;
-    j: Integer;
-  begin
-    for i:=1 to length(Rects)-1 do begin
-      for j:=0 to i-1 do begin
-
-      end;
-    end;
-  end;
-  
-  procedure DrawNode(Node: TLazDockConfigNode; ARect: TRect);
-  var
-    i: Integer;
-    ChildRects: TArrayOfRect;
-  begin
-    wrectangle(ARect);
-    w(ARect.Left+1,ARect.Top,Node.Name,ARect.right);
-    
-    SetLength(ChildRects,Node.ChildCount);
-    for i:=0 to Node.ChildCount-1 do
-      ChildRects[i]:=MapRect(Node.Bounds,Node.ClientBounds,ARect);
-    UnIntersect(ChildRects);
-    for i:=0 to Node.ChildCount-1 do
-      DrawNode(Node.Childs[i],ChildRects[i]);
-    SetLength(ChildRects,0);
-  end;
-  
   function GetMinSize(Node: TLazDockConfigNode): TPoint; forward;
+  
+  function GetMinPos(Node: TLazDockConfigNode; Side: TAnchorKind): Integer;
+  // calculates left or top position of Node
+  
+    function Compute(var MinPosValid, MinPosCalculating: boolean; var MinPos: Integer): Integer;
+      
+      procedure Improve(Neighbour: TLazDockConfigNode);
+      var
+        NeighbourPos: LongInt;
+        NeighbourSize: TPoint;
+        NeighbourLength: LongInt;
+      begin
+        if Neighbour=nil then exit;
+        NeighbourPos:=GetMinPos(Neighbour,Side);
+        NeighbourSize:=GetMinSize(Neighbour);
+        if Side=akLeft then
+          NeighbourLength:=NeighbourSize.X
+        else
+          NeighbourLength:=NeighbourSize.Y;
+        MinPos:=Max(MinPos,NeighbourPos+NeighbourLength);
+      end;
+      
+    var
+      Sibling: TLazDockConfigNode;
+      i: Integer;
+    begin
+      if MinPosCalculating then begin
+        DebugLn(['DebugLayoutAsString.GetMinPos.Compute WARNING: anchor circle detected']);
+        exit(1);
+      end;
+      if (not MinPosValid) then begin
+        MinPosValid:=true;
+        MinPosCalculating:=true;
+        if Node.Sides[Side]<>'' then begin
+          Sibling:=FindByName(Node.Sides[Side],true,true);
+          Improve(Sibling);
+        end;
+        if Node.Parent<>nil then begin
+          for i:=0 to Node.Parent.ChildCount-1 do begin
+            Sibling:=Node.Parent.Childs[i];
+            if CompareText(Sibling.Sides[OppositeAnchor[Side]],Node.Name)=0 then
+              Improve(Sibling);
+          end;
+        end;
+        MinPosCalculating:=false;
+      end;
+      Result:=MinPos;
+    end;
+  
+  var
+    Info: PNodeInfo;
+  begin
+    Info:=GetNodeInfo(Node);
+    if Side=akLeft then
+      Result:=Compute(Info^.MinLeftValid,Info^.MinLeftCalculating,Info^.MinLeft)
+    else
+      Result:=Compute(Info^.MinTopValid,Info^.MinTopCalculating,Info^.MinTop);
+  end;
 
   function GetChildsMinSize(Node: TLazDockConfigNode): TPoint;
+  // calculate the minimum size needed to draw the content of the node
   var
     i: Integer;
     ChildMinSize: TPoint;
-    NodesVerticallyComplete: TFPList;
-    NodesHorizontallyComplete: TFPList;
+    Child: TLazDockConfigNode;
+    ChildSize: TPoint;
   begin
     Result:=Point(0,0);
     if Node.TheType=ldcntPages then begin
@@ -2218,29 +2263,73 @@ var
         Result.Y:=Max(Result.Y,ChildMinSize.Y);
       end;
     end else begin
-      NodesVerticallyComplete:=TFPList.Create;
-      NodesHorizontallyComplete:=TFPList.Create;
-      // TODO
-      NodesVerticallyComplete.Free;
-      NodesHorizontallyComplete.Free;
+      for i:=0 to Node.ChildCount-1 do begin
+        Child:=Node.Childs[i];
+        ChildSize:=GetMinSize(Child);
+        Result.X:=Max(Result.X,GetMinPos(Child,akLeft)+ChildSize.X);
+        Result.Y:=Max(Result.Y,GetMinPos(Child,akTop)+ChildSize.Y);
+      end;
     end;
   end;
   
   function GetMinSize(Node: TLazDockConfigNode): TPoint;
+  // calculate the minimum size needed to draw the node
   var
     ChildMinSize: TPoint;
+    Info: PNodeInfo;
   begin
-    Result.X:=2+length(Node.Name);
-    Result.Y:=2;
+    Info:=GetNodeInfo(Node);
+    if Info^.MinSizeValid then begin
+      Result:=Info^.MinSize;
+      exit;
+    end;
+    if Info^.MinSizeCalculating then begin
+      DebugLn(['DebugLayoutAsString.GetMinSize WARNING: anchor circle detected']);
+      Result:=Point(1,1);
+      exit;
+    end;
+    Info^.MinSizeCalculating:=true;
+    Result.X:=2+length(Node.Name);// border plus caption
+    Result.Y:=2;  // border
     if (Node.ChildCount=0) then begin
       case Node.TheType of
       ldcntSplitterLeftRight,ldcntSplitterUpDown:
-        Result:=Point(1,1);
+        Result:=Point(1,1); // splitters don't need captions
       end;
     end else begin
       ChildMinSize:=GetChildsMinSize(Node);
       Result.X:=Max(Result.X,ChildMinSize.X+2);
       Result.Y:=Max(Result.Y,ChildMinSize.Y+2);
+    end;
+    Info^.MinSizeCalculating:=false;
+    Info^.MinSize:=Result;
+    Info^.MinSizeValid:=true;
+  end;
+
+  procedure DrawNode(Node: TLazDockConfigNode; ARect: TRect);
+  var
+    i: Integer;
+    Child: TLazDockConfigNode;
+    ChildSize: TPoint;
+    ChildPos: TPoint;
+    ChildRect: TRect;
+  begin
+    wrectangle(ARect);
+    w(ARect.Left+1,ARect.Top,Node.Name,ARect.Right);
+    
+    for i := 0 to Node.ChildCount-1 do begin
+      Child:=Node.Childs[i];
+      ChildSize:=GetMinSize(Child);
+      ChildPos:=Point(GetMinPos(Child,akLeft),GetMinPos(Child,akTop));
+      ChildRect.Left:=ARect.Left+1+ChildPos.X;
+      ChildRect.Top:=ARect.Top+1+ChildPos.Y;
+      ChildRect.Right:=ChildRect.Left+ChildSize.X-1;
+      ChildRect.Bottom:=ChildRect.Top+ChildSize.Y-1;
+      DrawNode(Child,ChildRect);
+      if Node.TheType=ldcntPages then begin
+        // paint only one page
+        break;
+      end;
     end;
   end;
 
@@ -2252,15 +2341,20 @@ begin
   Rows:=StrToIntDef(Application.GetOptionValue('ldcn-rows'),20);
 
   InitNodeInfos;
-  e:=LineEnding;
-  LogCols:=Cols+length(e);
-  SetLength(Result,LogCols*Rows);
-  // fill space
-  FillChar(Result[1],length(Result),' ');
-  // add line endings
-  for y:=1 to Rows do
-    w(Cols+1,y,e);
-  DrawNode(Self,Rect(1,1,Cols,Rows));
+  try
+    e:=LineEnding;
+    LogCols:=Cols+length(e);
+    SetLength(Result,LogCols*Rows);
+    // fill space
+    FillChar(Result[1],length(Result),' ');
+    // add line endings
+    for y:=1 to Rows do
+      w(Cols+1,y,e);
+    // draw node
+    DrawNode(Self,Rect(1,1,Cols,Rows));
+  finally
+    FreeNodeInfos;
+  end;
 end;
 
 function TLazDockConfigNode.GetPath: string;

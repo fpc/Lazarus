@@ -1,4 +1,4 @@
-object TTextConvListEditor: TTTextConvListEditor
+object TextConvListEditor: TTextConvListEditor
   Left = 290
   Height = 316
   Top = 202
@@ -6,7 +6,7 @@ object TTextConvListEditor: TTTextConvListEditor
   HorzScrollBar.Page = 518
   VertScrollBar.Page = 315
   ActiveControl = ToolsListBox
-  Caption = 'TTextConvListEditor'
+  Caption = 'TextConvListEditor'
   Constraints.MinHeight = 200
   Constraints.MinWidth = 400
   OnCreate = FormCreate
