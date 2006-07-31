@@ -74,7 +74,7 @@ perl replace_in_files.pl -sR -f '=\d.\d.\d' -r =$CompilerVersionStr -m 'Makefile
 
 # create a source tar.gz
 cd $TmpDir/..
-tar -czf $RPMDIR/SOURCES/fpc-2.1.1-$LazRelease.source.tar.gz fpc
+tar -czf $RPMDIR/SOURCES/fpc-$CompilerVersionStr-$LazRelease.source.tar.gz fpc
 
 # remove the tempdir
 cd -
