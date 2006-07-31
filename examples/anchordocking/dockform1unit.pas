@@ -92,8 +92,6 @@ begin
   ControlDocker1.Manager:=DockingManager;
   
   DockingManager.WriteDebugReport;
-  DockingManager.CreateLayout(ControlDocker1.DockerName,Self,true);
-  Halt;
 
   Form2:=CreateNewForm;
   Form3:=CreateNewForm;
@@ -104,9 +102,8 @@ begin
     DockingManager.Manager.InsertControl(Form3,alBottom,Self);
   end;
   
-  DockingManager.WriteDebugReport;
-  
-  ControlDocker1.GetLayoutFromControl;
+  //DockingManager.WriteDebugReport;
+  //ControlDocker1.GetLayoutFromControl;
 end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);

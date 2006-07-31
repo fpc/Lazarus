@@ -20,10 +20,9 @@ unit newfield;
 interface
 
 uses
-  Classes, SysUtils, DBConst, LCLIntf, Graphics, Controls, Forms, Dialogs,
+  Classes, Math, SysUtils, DBConst, LCLIntf, Graphics, Controls, Forms, Dialogs,
   ExtCtrls, StdCtrls, Buttons, DB, LResources, ComponentEditors,
   PropEdits, TypInfo;
-
 
 type
 
