@@ -50,6 +50,7 @@ var
   {$else}
   GMode: TMWDMode = dm64;
   {$endif}
+  GBreakOnLibraryLoad: Boolean = False;
   
   GCurrentContext: PContext;
 

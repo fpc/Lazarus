@@ -71,6 +71,9 @@ begin
   if GMainProcess = nil
   then GMainProcess := Proc;
   GProcessMap.Add(AEvent.dwProcessId, Proc);
+  if GBreakOnLibraryLoad
+  then GState := dsPause;
+  GCurrentProcess := proc;
 end;
 
 procedure HandleCreateThread(const AEvent: TDebugEvent);
@@ -176,19 +179,21 @@ begin
 end;
 
 procedure HandleLoadDll(const AEvent: TDebugEvent);
-//var
-//  Proc: TDbgProcess;
-//  Lib: TDbgLibrary;
+var
+  Proc: TDbgProcess;
+  Lib: TDbgLibrary;
 begin
   WriteLN('Base adress: ', FormatAddress(AEvent.LoadDll.lpBaseOfDll));
 
 
-//  if GetProcess(AEvent.dwProcessId, Proc)
-//  then begin
-//    Lib := Proc.AddLib(AEvent.LoadDll);
-//    WriteLN('Name: ', Lib.Name);
-//    DumpPEImage(Proc.Handle, Lib.BaseAddr);
-//  end;
+  if GetProcess(AEvent.dwProcessId, Proc)
+  and Proc.GetLib(AEvent.LoadDll.hFile, Lib)
+  then begin
+    WriteLN('Name: ', Lib.Name);
+    DumpPEImage(Proc.Handle, Lib.BaseAddr);
+  end;
+  if GBreakOnLibraryLoad
+  then GState := dsPause;
 end;
 
 procedure HandleOutputDebug(const AEvent: TDebugEvent);

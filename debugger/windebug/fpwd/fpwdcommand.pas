@@ -481,6 +481,15 @@ begin
   else WriteLN('Unknown mode: "', AParams, '"')
 end;
 
+procedure HandleSetBoll(AParams: String);
+var
+  MODE: array[Boolean] of String = ('off', 'on');
+begin
+  if AParams = ''
+  then WriteLN(' Break on library load: ', MODE[GBreakOnLibraryLoad])
+  else GBreakOnLibraryLoad := (Length(Aparams) > 1) and (AParams[2] in ['n', 'N'])
+end;
+
 
 //=================
 //=================
@@ -590,6 +599,7 @@ begin
 
   MSetCommands.AddCommand(['help', 'h', '?'], @HandleSetHelp, 'set help [<param>]: Shows help for param or this help if none given');
   MSetCommands.AddCommand(['mode', 'm'], @HandleSetMode, 'set mode 32|64: Set the mode for retrieving process info');
+  MSetCommands.AddCommand(['break_on_library_load', 'boll'], @HandleSetBOLL, 'set break_on_library_load on|off: Pause running when a library is loaded (default off)');
 end;
 
 procedure Finalize;

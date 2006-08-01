@@ -55,7 +55,7 @@ const
 
 {$endif}
 
-{$alignment 2}
+{$packrecords 2}
 
 type
   _IMAGE_DOS_HEADER = record     // DOS .EXE header
@@ -81,7 +81,7 @@ type
   end;
   IMAGE_DOS_HEADER = _IMAGE_DOS_HEADER;
   TImageDosHeader = _IMAGE_DOS_HEADER;
-  PImageDosHeader = TImageDosHeader;
+  PImageDosHeader = ^TImageDosHeader;
 
 type
   _IMAGE_OS2_HEADER = record // OS/2 .EXE header
@@ -178,7 +178,7 @@ type
   TImageVXDHeader = _IMAGE_VXD_HEADER;
   PImageVXDHeader = ^TImageVXDHeader;
 
-{$alignement 4}
+{$packrecords 4}
 
 //
 // File header format.
@@ -430,12 +430,12 @@ type
 
 {$ifdef WIN64}
   IMAGE_NT_HEADERS             = IMAGE_NT_HEADERS64;
-  TImageNtHHeaders             = TImageNtHeaders64;
-  PImageNtHHeaders             = PImageNtHeaders64;
+  TImageNtHeaders             = TImageNtHeaders64;
+  PImageNtHeaders             = PImageNtHeaders64;
 {$else}
   IMAGE_NT_HEADERS             = IMAGE_NT_HEADERS32;
-  TImageNtHHeaders             = TImageNtHeaders32;
-  PImageNtHHeaders             = PImageNtHeaders32;
+  TImageNtHeaders             = TImageNtHeaders32;
+  PImageNtHeaders             = PImageNtHeaders32;
 {$endif}
 
 const
@@ -592,7 +592,274 @@ const
   IMAGE_SCN_MEM_EXECUTE               = $20000000;  // Section is executable.
   IMAGE_SCN_MEM_READ                  = $40000000;  // Section is readable.
   IMAGE_SCN_MEM_WRITE                 = $80000000;  // Section is writeable.
+  
+  //
+  // TLS Chaacteristic Flags
+  //
+  IMAGE_SCN_SCALE_INDEX               = $00000001;  // Tls index is scaled
+
+{$packrecords 2}
+
+  //
+  // Symbol format.
+  //
+type
+  TISName = record
+    case Byte of
+      0: (ShortName: array[0..7] of Char);
+      1: (Name: record
+            Short: DWORD;
+            Long:  DWORD;
+          end);
+      2: (LongName: array[0..1] of DWORD)    ;
+  end;
+
+  _IMAGE_SYMBOL = record
+      N:                  TISName;
+      Value:              DWORD;
+      SectionNumber:      SHORT;
+      _Type:              WORD;
+      StorageClass:       BYTE;
+      NumberOfAuxSymbols: BYTE;
+  end;
+  IMAGE_SYMBOL = _IMAGE_SYMBOL;
+  TImageSymbol = _IMAGE_SYMBOL;
+  PImageSymbol = ^TImageSymbol;
+
+const
+  IMAGE_SIZEOF_SYMBOL                 = 18;
+
+  //
+  // Section values.
+  //
+  // Symbols have a section number of the section in which they are
+  // defined. Otherwise, section numbers have the following meanings:
+  //
+
+  IMAGE_SYM_UNDEFINED           = SHORT(0);          // Symbol is undefined or is common.
+  IMAGE_SYM_ABSOLUTE            = SHORT(-1);         // Symbol is an absolute value.
+  IMAGE_SYM_DEBUG               = SHORT(-2);         // Symbol is a special debug item.
+  IMAGE_SYM_SECTION_MAX         = $FEFF;             // Values = $FF00-= $FFFF are special
+
+  //
+  // Type (fundamental) values.
+  //
+
+  IMAGE_SYM_TYPE_NULL                 = $0000;  // no type.
+  IMAGE_SYM_TYPE_VOID                 = $0001;  //
+  IMAGE_SYM_TYPE_CHAR                 = $0002;  // type character.
+  IMAGE_SYM_TYPE_SHORT                = $0003;  // type short integer.
+  IMAGE_SYM_TYPE_INT                  = $0004;  //
+  IMAGE_SYM_TYPE_LONG                 = $0005;  //
+  IMAGE_SYM_TYPE_FLOAT                = $0006;  //
+  IMAGE_SYM_TYPE_DOUBLE               = $0007;  //
+  IMAGE_SYM_TYPE_STRUCT               = $0008;  //
+  IMAGE_SYM_TYPE_UNION                = $0009;  //
+  IMAGE_SYM_TYPE_ENUM                 = $000A;  // enumeration.
+  IMAGE_SYM_TYPE_MOE                  = $000B;  // member of enumeration.
+  IMAGE_SYM_TYPE_BYTE                 = $000C;  //
+  IMAGE_SYM_TYPE_WORD                 = $000D;  //
+  IMAGE_SYM_TYPE_UINT                 = $000E;  //
+  IMAGE_SYM_TYPE_DWORD                = $000F;  //
+  IMAGE_SYM_TYPE_PCODE                = $8000;  //
+  //
+  // Type (derived) values.
+  //
+
+  IMAGE_SYM_DTYPE_NULL                = 0;       // no derived type.
+  IMAGE_SYM_DTYPE_POINTER             = 1;       // pointer.
+  IMAGE_SYM_DTYPE_FUNCTION            = 2;       // function.
+  IMAGE_SYM_DTYPE_ARRAY               = 3;       // array.
+
+  //
+  // Storage classes.
+  //
+  IMAGE_SYM_CLASS_END_OF_FUNCTION     = High(BYTE);
+  IMAGE_SYM_CLASS_NULL                = $0000;
+  IMAGE_SYM_CLASS_AUTOMATIC           = $0001;
+  IMAGE_SYM_CLASS_EXTERNAL            = $0002;
+  IMAGE_SYM_CLASS_STATIC              = $0003;
+  IMAGE_SYM_CLASS_REGISTER            = $0004;
+  IMAGE_SYM_CLASS_EXTERNAL_DEF        = $0005;
+  IMAGE_SYM_CLASS_LABEL               = $0006;
+  IMAGE_SYM_CLASS_UNDEFINED_LABEL     = $0007;
+  IMAGE_SYM_CLASS_MEMBER_OF_STRUCT    = $0008;
+  IMAGE_SYM_CLASS_ARGUMENT            = $0009;
+  IMAGE_SYM_CLASS_STRUCT_TAG          = $000A;
+  IMAGE_SYM_CLASS_MEMBER_OF_UNION     = $000B;
+  IMAGE_SYM_CLASS_UNION_TAG           = $000C;
+  IMAGE_SYM_CLASS_TYPE_DEFINITION     = $000D;
+  IMAGE_SYM_CLASS_UNDEFINED_STATIC    = $000E;
+  IMAGE_SYM_CLASS_ENUM_TAG            = $000F;
+  IMAGE_SYM_CLASS_MEMBER_OF_ENUM      = $0010;
+  IMAGE_SYM_CLASS_REGISTER_PARAM      = $0011;
+  IMAGE_SYM_CLASS_BIT_FIELD           = $0012;
+
+  IMAGE_SYM_CLASS_FAR_EXTERNAL        = $0044;  //
+
+  IMAGE_SYM_CLASS_BLOCK               = $0064;
+  IMAGE_SYM_CLASS_FUNCTION            = $0065;
+  IMAGE_SYM_CLASS_END_OF_STRUCT       = $0066;
+  IMAGE_SYM_CLASS_FILE                = $0067;
+  // new
+  IMAGE_SYM_CLASS_SECTION             = $0068;
+  IMAGE_SYM_CLASS_WEAK_EXTERNAL       = $0069;
+
+  IMAGE_SYM_CLASS_CLR_TOKEN           = $006B;
+
+  // type packing constants
+
+  N_BTMASK                            = $000F;
+  N_TMASK                             = $0030;
+  N_TMASK1                            = $00C0;
+  N_TMASK2                            = $00F0;
+  N_BTSHFT                            = 4;
+  N_TSHIFT                            = 2;
+
+  // MACROS
+
+  // Basic Type of  x
+  function BTYPE(x: Byte): Byte; inline;
+
+  // Is x a pointer?
+  function ISPTR(x: Byte): Boolean; inline;
+
+  // Is x a function?
+  function ISFCN(x: Byte): Boolean; inline;
+
+  // Is x an array?
+  function ISARY(x: Byte): Boolean; inline;
+
+  // Is x a structure, union, or enumeration TAG?
+  function ISTAG(x: Byte): Boolean; inline;
+
+  function INCREF(x: Byte): Byte; inline;
+
+  function DECREF(x: Byte): Byte; inline;
+
+  //
+  // Auxiliary entry format.
+  //
+type
+  TIASMisc = record
+    case Byte of
+      0: (
+        Linenumber: WORD;             // declaration line number
+        Size:       WORD;             // size of struct, union, or enum
+      );
+      1: (
+        LnSz: record
+          Linenumber: WORD;             // declaration line number
+          Size:       WORD;             // size of struct, union, or enum
+        end;
+      );
+      2: (TotalSize: DWORD);
+  end;
+
+  TIASFcnAry = record
+    case Byte of
+      0: (
+        _Function: record               // if ISFCN, tag, or .bb
+          PointerToLinenumber:   DWORD;
+          PointerToNextFunction: DWORD;
+        end;
+      );
+      1: (
+        _Array: record                  // if ISARY, up to 4 dimen.
+          Dimension: array[0..3] of WORD;
+        end;
+      );
+  end;
+
+  _IMAGE_AUX_SYMBOL = record
+    case Byte of
+      0: (
+        Sym: record
+          TagIndex: DWORD;                       // struct, union, or enum tag index
+          Misc:     TIASMisc;
+          FcnAry:   TIASFcnAry;
+          TvIndex:  WORD;                        // tv index
+        end;
+      );
+      1: (
+        _File: record
+          Name: array[0..IMAGE_SIZEOF_SYMBOL-1] of BYTE;
+        end;
+      );
+      2: (
+        Section: record
+          Length:              DWORD;              // section length
+          NumberOfRelocations: WORD;               // number of relocation entries
+          NumberOfLinenumbers: WORD;               // number of line numbers
+          CheckSum:            DWORD;              // checksum for communal
+          Number:              SHORT;              // section number to associate with
+          Selection:           BYTE;               // communal selection type
+        end;
+      );
+  end;
+  IMAGE_AUX_SYMBOL = _IMAGE_AUX_SYMBOL;
+  TImageAuxSymbol = _IMAGE_AUX_SYMBOL;
+  PImageAuxSymbol = ^TImageAuxSymbol;
+
+
+const
+  IMAGE_SIZEOF_AUX_SYMBOL             = 18;
+
+type
+  IMAGE_AUX_SYMBOL_TYPE = (
+    IMAGE_AUX_SYMBOL_TYPE_TOKEN_DEF = 1
+  );
+  TImageAuxSymbolType = IMAGE_AUX_SYMBOL_TYPE;
+
+{$packRecords 2}
+
+type
+  IMAGE_AUX_SYMBOL_TOKEN_DEF = record
+    bAuxType:         BYTE;           // IMAGE_AUX_SYMBOL_TYPE
+    bReserved:        BYTE;           // Must be 0
+    SymbolTableIndex: DWORD;
+    rgbReserved: array [0..11] of BYTE;           // Must be 0
+  end;
+  TImageAuxSymbolTokenDef = IMAGE_AUX_SYMBOL_TOKEN_DEF;
+  PImageAuxSymbolTokenDef = ^TImageAuxSymbolTokenDef;
+
+{$packrecords 4}
 
 implementation
 
+function BTYPE(x: Byte): Byte; inline;
+begin
+  Result := x and N_BTMASK;
+end;
+
+function ISPTR(x: Byte): Boolean; inline;
+begin
+  Result := (x and N_TMASK) = (IMAGE_SYM_DTYPE_POINTER shl N_BTSHFT);
+end;
+
+function ISFCN(x: Byte): Boolean; inline;
+begin
+  Result := (x and N_TMASK) = (IMAGE_SYM_DTYPE_FUNCTION shl N_BTSHFT);
+end;
+
+function ISARY(x: Byte): Boolean; inline;
+begin
+  Result := (x and N_TMASK) = (IMAGE_SYM_DTYPE_ARRAY shl N_BTSHFT);
+end;
+
+function ISTAG(x: Byte): Boolean; inline;
+begin
+  Result := (x = IMAGE_SYM_CLASS_STRUCT_TAG) or (x = IMAGE_SYM_CLASS_UNION_TAG) or (x = IMAGE_SYM_CLASS_ENUM_TAG);
+end;
+
+function INCREF(x: Byte): Byte; inline;
+begin
+  Result := ((x and not N_BTMASK) shl N_TSHIFT) or (IMAGE_SYM_DTYPE_POINTER shl N_BTSHFT) or (x and N_BTMASK);
+end;
+
+function DECREF(x: Byte): Byte; inline;
+begin
+  Result := ((x shr N_TSHIFT) and not N_BTMASK) or (x and N_BTMASK);
+end;
+  
 end.

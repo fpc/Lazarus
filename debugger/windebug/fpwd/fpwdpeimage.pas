@@ -36,153 +36,13 @@ unit FPWDPEImage;
 {$mode objfpc}{$H+}
 interface
 
-{$IF DECLARED(TImageNtHeaders)}
-{$DEFINE _headers_translated_in_rtl_}
-{$ENDIF}
-
 uses
-  Windows, SysUtils, FPWDGLobal, WinDExtra;
-
-const
-  IMAGE_FILE_MACHINE_IA64 = $0200;   { Intel IPF }
-  IMAGE_FILE_MACHINE_AMD64 = $8664;  { x64 }
-
-  IMAGE_FILE_LARGE_ADDRESS_AWARE = $0020;  { The application can handle addresses larger than 2 GB. }
-
-  IMAGE_DIRECTORY_ENTRY_DELAY_IMPORT = 13;  { Delay import table }
-  IMAGE_DIRECTORY_ENTRY_COM_DECRIPTOR = 14;  { COM descriptor table }
-
-  IMAGE_NT_OPTIONAL_HDR32_MAGIC            = $010B;
-  IMAGE_NT_OPTIONAL_HDR64_MAGIC            = $020B;
-
-  IMAGE_SUBSYSTEM_WINDOWS_CE_GUI = 8;      { Windows CE system }
-  IMAGE_SUBSYSTEM_XBOX = 9;                { Xbox system }
-
-
-  IMAGE_LIBRARY_PROCESS_INIT                     = $0001;  // Reserved.
-  IMAGE_LIBRARY_PROCESS_TERM                     = $0002;  // Reserved.
-  IMAGE_LIBRARY_THREAD_INIT                      = $0004;  // Reserved.
-  IMAGE_LIBRARY_THREAD_TERM                      = $0008;  // Reserved.
-  IMAGE_DLLCHARACTERISTICS_NO_ISOLATION          = $0200;  { Image understands isolation and doesn't want it }
-  IMAGE_DLLCHARACTERISTICS_NO_SEH                = $0400;  { Image does not use SEH.  No SE handler may reside in this image }
-  IMAGE_DLLCHARACTERISTICS_NO_BIND               = $0800;  { do not bind this image }
-//                                                 $1000;  { Reserved. }
-  IMAGE_DLLCHARACTERISTICS_WDM_DRIVER            = $2000;  { dll is a WDM driver }
-//                                                 $4000;  { Reserved. }
-  IMAGE_DLLCHARACTERISTICS_TERMINAL_SERVER_AWARE = $8000;
-
-
-  // Reserved section characteristics
-  IMAGE_SCN_TYPE_REG      = $00000000;  // Reserved.
-  IMAGE_SCN_TYPE_DSECT    = $00000001;  // Reserved.
-  IMAGE_SCN_TYPE_NOLOAD   = $00000002;  // Reserved.
-  IMAGE_SCN_TYPE_GROUP    = $00000004;  // Reserved.
-  IMAGE_SCN_TYPE_COPY     = $00000010;  // Reserved.
-  IMAGE_SCN_TYPE_OVER     = $00000400;  // Reserved.
-  IMAGE_SCN_MEM_PROTECTED = $00004000;  // Obsolete
-  IMAGE_SCN_MEM_SYSHEAP   = $00010000;  // Obsolete
-
-{$IFDEF _headers_translated_in_rtl_}
-
-type
-(*
-  typedef struct _IMAGE_OPTIONAL_HEADER64 {
- WORD        Magic;
- BYTE        MajorLinkerVersion;
- BYTE        MinorLinkerVersion;
- DWORD       SizeOfCode;
- DWORD       SizeOfInitializedData;
- DWORD       SizeOfUninitializedData;
- DWORD       AddressOfEntryPoint;
- DWORD       BaseOfCode;
- ULONGLONG   ImageBase;
- DWORD       SectionAlignment;
- DWORD       FileAlignment;
- WORD        MajorOperatingSystemVersion;
- WORD        MinorOperatingSystemVersion;
- WORD        MajorImageVersion;
- WORD        MinorImageVersion;
- WORD        MajorSubsystemVersion;
- WORD        MinorSubsystemVersion;
- DWORD       Win32VersionValue;
- DWORD       SizeOfImage;
- DWORD       SizeOfHeaders;
- DWORD       CheckSum;
- WORD        Subsystem;
- WORD        DllCharacteristics;
- ULONGLONG   SizeOfStackReserve;
- ULONGLONG   SizeOfStackCommit;
- ULONGLONG   SizeOfHeapReserve;
- ULONGLONG   SizeOfHeapCommit;
- DWORD       LoaderFlags;
- DWORD       NumberOfRvaAndSizes;
- IMAGE_DATA_DIRECTORY DataDirectory[IMAGE_NUMBEROF_DIRECTORY_ENTRIES];
-} IMAGE_OPTIONAL_HEADER64, *PIMAGE_OPTIONAL_HEADER64;
-*)
-  PImageOptionalHeader64 = ^TImageOptionalHeader64;
-  _IMAGE_OPTIONAL_HEADER64 = packed record
-    Magic: Word;
-    MajorLinkerVersion: Byte;
-    MinorLinkerVersion: Byte;
-    SizeOfCode: DWORD;
-    SizeOfInitializedData: DWORD;
-    SizeOfUninitializedData: DWORD;
-    AddressOfEntryPoint: DWORD;
-    BaseOfCode: DWORD;
-//    BaseOfData: DWORD;
-    ImageBase: Int64;
-    SectionAlignment: DWORD;
-    FileAlignment: DWORD;
-    MajorOperatingSystemVersion: Word;
-    MinorOperatingSystemVersion: Word;
-    MajorImageVersion: Word;
-    MinorImageVersion: Word;
-    MajorSubsystemVersion: Word;
-    MinorSubsystemVersion: Word;
-    Win32VersionValue: DWORD;
-    SizeOfImage: DWORD;
-    SizeOfHeaders: DWORD;
-    CheckSum: DWORD;
-    Subsystem: Word;
-    DllCharacteristics: Word;
-    SizeOfStackReserve: Int64;
-    SizeOfStackCommit: Int64;
-    SizeOfHeapReserve: Int64;
-    SizeOfHeapCommit: Int64;
-    LoaderFlags: DWORD;
-    NumberOfRvaAndSizes: DWORD;
-    DataDirectory: packed array[0..IMAGE_NUMBEROF_DIRECTORY_ENTRIES-1] of TImageDataDirectory;
-  end;
-  TImageOptionalHeader64 = _IMAGE_OPTIONAL_HEADER64;
-  IMAGE_OPTIONAL_HEADER64 = _IMAGE_OPTIONAL_HEADER64;
-
-
-
-(*
-typedef struct _IMAGE_NT_HEADERS64 {
-    DWORD Signature;
-    IMAGE_FILE_HEADER FileHeader;
-    IMAGE_OPTIONAL_HEADER64 OptionalHeader;
-} IMAGE_NT_HEADERS64, *PIMAGE_NT_HEADERS64;
-
-*)
-
-  PImageNtHeaders64 = ^TImageNtHeaders64;
-  _IMAGE_NT_HEADERS64 = packed record
-    Signature: DWORD;
-    FileHeader: TImageFileHeader;
-    OptionalHeader: TImageOptionalHeader64;
-  end;
-  TImageNtHeaders64 = _IMAGE_NT_HEADERS64;
-  IMAGE_NT_HEADERS64 = _IMAGE_NT_HEADERS64;
-
-{$ENDIF}
+  Windows, SysUtils, FPWDGLobal, WinDExtra, WinDPETypes;
 
 procedure DumpPEImage(const AProcessHandle: THandle; const AAdress: TDbgPtr);
 
 implementation
 
-{$IFDEF _headers_translated_in_rtl_}
 const
   DIR_NAMES: array[0..IMAGE_NUMBEROF_DIRECTORY_ENTRIES-1] of string = (
     'EXPORT',
@@ -223,13 +83,13 @@ begin
   end;
 
   if (DosHeader.e_magic <> IMAGE_DOS_SIGNATURE)
-  or (DosHeader._lfanew = 0)
+  or (DosHeader.e_lfanew = 0)
   then begin
     WriteLN('Invalid DOS header');
     Exit;
   end;
 
-  if not ReadProcessMemory(AProcessHandle, Pointer(PChar(AAdress) + DosHeader._lfanew), @NTHeaders, SizeOf(NTHeaders), BytesRead)
+  if not ReadProcessMemory(AProcessHandle, Pointer(PChar(AAdress) + DosHeader.e_lfanew), @NTHeaders, SizeOf(NTHeaders), BytesRead)
   then begin
     WriteLN('Unable to retrieve NT headers');
     Exit;
@@ -299,8 +159,8 @@ begin
   WriteLN('  SizeOfCode:                  ', OH^.SizeOfCode);
   WriteLN('  SizeOfInitializedData:       ', OH^.SizeOfInitializedData);
   WriteLN('  SizeOfUninitializedData:     ', OH^.SizeOfUninitializedData);
-  WriteLN('  AddressOfEntryPoint:         ', FormatAdress(OH^.AddressOfEntryPoint));
-  WriteLN('  BaseOfCode:                  ', FormatAdress(OH^.BaseOfCode));
+  WriteLN('  AddressOfEntryPoint:         ', FormatAddress(OH^.AddressOfEntryPoint));
+  WriteLN('  BaseOfCode:                  ', FormatAddress(OH^.BaseOfCode));
   if Is64
   then begin
     WriteLN('  ImageBase:                   $', IntToHex(OH^.ImageBase, 16));
@@ -393,7 +253,7 @@ begin
   WriteLN('Sections: ');
   for n := 0 to NtHeaders.FileHeader.NumberOfSections  - 1 do
   begin
-    if not ReadProcessMemory(AProcessHandle, Pointer(Cardinal(AAdress) + DosHeader._lfanew + SizeOF(NTHeaders) - SizeOF(NTHeaders.OptionalHeader) + NTHeaders.FileHeader.SizeOfOptionalHeader + SizeOf(SectionHeader) * n), @SectionHeader, SizeOf(SectionHeader), BytesRead)
+    if not ReadProcessMemory(AProcessHandle, Pointer(PtrUInt(AAdress + DosHeader.e_lfanew + SizeOF(NTHeaders) - SizeOF(NTHeaders.OptionalHeader) + NTHeaders.FileHeader.SizeOfOptionalHeader + SizeOf(SectionHeader) * n)), @SectionHeader, SizeOf(SectionHeader), BytesRead)
     then begin
       WriteLN('Unable to retrieve section: ', n);
       Continue;
@@ -403,13 +263,13 @@ begin
       Move(Name, SectionName, IMAGE_SIZEOF_SHORT_NAME);
       SectionName[IMAGE_SIZEOF_SHORT_NAME] := #0;
       WriteLN('  Name:                 ',SectionName);
-      WriteLN('  Misc.PhysicalAddress: ',FormatAdress(Misc.PhysicalAddress));
+      WriteLN('  Misc.PhysicalAddress: ',FormatAddress(Misc.PhysicalAddress));
       WriteLN('  Misc.VirtualSize:     ',Misc.VirtualSize);
-      WriteLN('  VirtualAddress:       ',FormatAdress(VirtualAddress));
+      WriteLN('  VirtualAddress:       ',FormatAddress(VirtualAddress));
       WriteLN('  SizeOfRawData:        ',SizeOfRawData);
-      WriteLN('  PointerToRawData:     ',FormatAdress(PointerToRawData));
-      WriteLN('  PointerToRelocations: ',FormatAdress(PointerToRelocations));
-      WriteLN('  PointerToLinenumbers: ',FormatAdress(PointerToLinenumbers));
+      WriteLN('  PointerToRawData:     ',FormatAddress(PointerToRawData));
+      WriteLN('  PointerToRelocations: ',FormatAddress(PointerToRelocations));
+      WriteLN('  PointerToLinenumbers: ',FormatAddress(PointerToLinenumbers));
       WriteLN('  NumberOfRelocations:  ',NumberOfRelocations);
       WriteLN('  NumberOfLinenumbers:  ',NumberOfLinenumbers);
       Write('  Characteristics:      ', IntToHex(Characteristics, 8), ' [');
@@ -449,12 +309,6 @@ begin
 
   end;
 end;
-{$ELSE}
-procedure DumpPEImage(const AProcessHandle: THandle; const AAdress: TDbgPtr);
-begin
-{$WARNING PEHeaders not yet translated}
-end;
-{$ENDIF}
 
 
 

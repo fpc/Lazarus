@@ -58,21 +58,83 @@ type
     property Handle: THandle read FHandle;
     property SingleStepping: boolean read FSingleStepping;
   end;
+  
+  TDbgSymbolKind = (
+    skNone,          // undefined type
+    skUser,          // userdefined type, this sym refers to another sym defined elswhere
+    skInstance,      // the main exe/dll, containing all other syms
+    skUnit,          // contains syms defined in this unit
+    //--------------------------------------------------------------------------
+    skRecord,        // the address member is the relative location within the
+    skObject,        // structure
+    skClass,
+    skInterface,
+    skProcedure,
+    skFunction,
+    //--------------------------------------------------------------------------
+    skArray,
+    //--------------------------------------------------------------------------
+    skInteger,       // Basic types, these cannot have references or children
+    skCardinal,      // only size matters ( char(1) = Char, char(2) = WideChar
+    skBoolean,       // cardinal(1) = Byte etc.
+    skChar,
+    skFloat,
+    skString,
+    skAnsiString,
+    skCurrency,
+    skVariant,
+    skWideString,
+    skEnum,
+    skSet,
+    //--------------------------------------------------------------------------
+    skRegister       // the Address member is the register number
+    //--------------------------------------------------------------------------
+  );
 
-(*
+  TDbgSymbolFlag =(
+    sfPointer,       // The sym is a pointer to the reference
+    sfConst,         // The sym is a constan and cannot be modified
+    sfVar,
+    sfOut,
+    sfpropGet,
+    sfPropSet,
+    sfPropStored
+  );
+  TDbgSymbolFlags = set of TDbgSymbolFlag;
+
+  { TDbgSymbol }
+
   TDbgSymbol = class(TObject)
   private
+    FList: TStringList;
     FName: String;
-    FOffset: Integer;
-    FLength: Integer;
-    function GetAddress: Pointer;
+    FKind: TDbgSymbolKind;
+    FAddress: TDbgPtr;
+    FParent: TDbgSymbol;
+    FSize: Integer;
+    FFile: String;
+    FLine: Integer;
+    FFlags: TDbgSymbolFlags;
+    FReference: TDbgSymbol;
+    function GetChild(AIndex: Integer): TDbgSymbol;
+    function GetCount: Integer;
   protected
   public
-    constructor Create(const AName: String; const AOffset: Integer);
-    property Address: Pointer read GetAddress;
-    property Length: Integer read FLength;
+    procedure AddChild(const AChild: TDbgSymbol);
+    constructor Create(const AName: String; AKind: TDbgSymbolKind; AAddress: TDbgPtr; ASize: Integer = 0; const AFile: String = ''; ALine: Integer = -1; AFlags: TDbgSymbolFlags = []; const AReference: TDbgSymbol = nil);
+    destructor Destroy; override;
+    property Count: Integer read GetCount;
+    property Name: String read FName;
+    property Kind: TDbgSymbolKind read FKind;
+    property Address: TDbgPtr read FAddress;
+    property Size: Integer read FSize;
+    property FileName: String read FFile;
+    property Line: Integer read FLine;
+    property Flags: TDbgSymbolFlags read FFlags;
+    property Reference: TDbgSymbol read FReference;
+    property Parent: TDbgSymbol read FParent;
+    property Children[AIndex: Integer]: TDbgSymbol read GetChild;
   end;
-*)
 
   TDbgBreakpoint = class;
   TDbgBreakpointEvent = procedure(const ASender: TDbgBreakpoint; const AContext: TContext) of object;
@@ -91,6 +153,8 @@ type
   end;
 
 
+  { TDbgInstance }
+
   TDbgInstance = class(TObject)
   private
     FName: String;
@@ -98,6 +162,8 @@ type
     FModuleHandle: THandle;
     FBaseAddr: TDbgPtr;
     FBreakList: TList;
+    FSymbols: TDbgSymbol;
+    procedure BuildSymbols;
     procedure CheckName;
     procedure SetName(const AValue: String);
   public
@@ -141,9 +207,9 @@ type
     function  AddBreak(const ALocation: TDbgPtr): TDbgBreakpoint;
     function  AddLib(const AInfo: TLoadDLLDebugInfo): TDbgLibrary;
     procedure AddThread(const AID: Integer; const AInfo: TCreateThreadDebugInfo);
-//    function  GetLib(const AHandle: THandle; var ALib: TDbgLibrary): Boolean;
+    function  GetLib(const AHandle: THandle; out ALib: TDbgLibrary): Boolean;
+    function  GetThread(const AID: Integer; out AThread: TDbgThread): Boolean;
     procedure Interrupt;
-    function  GetThread(const AID: Integer; var AThread: TDbgThread): Boolean;
     procedure ContinueDebugEvent(const AThread: TDbgThread; const ADebugEvent: TDebugEvent);
     function  HandleDebugEvent(const ADebugEvent: TDebugEvent): Boolean;
     function  RemoveBreak(const ALocation: TDbgPtr): TDbgBreakpoint;
@@ -166,7 +232,7 @@ type
 implementation
 
 uses
-  SysUtils;
+  SysUtils, WinDSymbols;
 
 procedure LogLastError;
 begin
@@ -175,6 +241,12 @@ end;
 
 { TDbgInstance }
 
+procedure TDbgInstance.BuildSymbols;
+begin
+  FSymbols := TDbgSymbol.Create(FName, skInstance, FBaseAddr);
+  AddSymbols(FSymbols, FModuleHandle);
+end;
+                      
 procedure TDbgInstance.CheckName;
 begin
   if FName = ''
@@ -191,6 +263,7 @@ begin
   FBaseAddr := ABaseAddr;
   FModuleHandle := AModuleHandle;
   FBreakList := TList.Create;
+  FProcess := AProcess;
 
   inherited Create;
 
@@ -224,6 +297,7 @@ begin
   then W := ADefaultName;
 
   SetName(W);
+  BuildSymbols;
 end;
 
 destructor TDbgInstance.Destroy;
@@ -237,6 +311,7 @@ begin
   FBreakList.Clear;
 
   FreeAndNil(FBreakList);
+  FreeAndNil(FSymbols);
   inherited;
 end;
 
@@ -324,26 +399,28 @@ begin
   inherited;
 end;
 
-(*
-function TDbgProcess.GetLib(const AHandle: THandle; var ALib: TDbgLibrary): Boolean;
+function TDbgProcess.GetLib(const AHandle: THandle; out ALib: TDbgLibrary): Boolean;
 var
-  n: Integer;
+  Iterator: TMapIterator;
   Lib: TDbgLibrary;
 begin
-  for n := 0 to FLibraries.Count - 1 do
-  begin
-    Lib := TDbgLibrary(FLibraries[n]);
-    if Lib.ModuleHandle <> AHandle then Continue;
-
-    Result := True;
-    ALib := Lib;
-    Exit;
-  end;
   Result := False;
+  Iterator := TMapIterator.Create(FLibMap);
+  while not Iterator.EOM do
+  begin
+    Iterator.GetData(Lib);
+    Result := Lib.ModuleHandle = AHandle;
+    if Result
+    then begin
+      ALib := Lib;
+      Break;
+    end;
+    Iterator.Next;
+  end;
+  Iterator.Free;
 end;
-*)
 
-function TDbgProcess.GetThread(const AID: Integer; var AThread: TDbgThread): Boolean;
+function TDbgProcess.GetThread(const AID: Integer; out AThread: TDbgThread): Boolean;
 var
   Thread: TDbgThread;
 begin
@@ -604,24 +681,52 @@ begin
 end;
 
 
-
-(*
 { TDbgSymbol }
 
-constructor TDbgSymbol.Create(const AName: String; const ASection: TDbgSection; const AOffset: Integer);
+function TDbgSymbol.GetChild(AIndex: Integer): TDbgSymbol;
 begin
+  Result := TDbgSymbol(FList.Objects[AIndex]);
+end;
+
+function TDbgSymbol.GetCount: Integer;
+begin
+  Result := FList.Count;
+end;
+
+procedure TDbgSymbol.AddChild(const AChild: TDbgSymbol);
+begin
+  FList.AddObject(AChild.Name, AChild);
+  AChild.FParent := Self;
+end;
+
+constructor TDbgSymbol.Create(const AName: String; AKind: TDbgSymbolKind; AAddress: TDbgPtr; ASize: Integer; const AFile: String; ALine: Integer; AFlags: TDbgSymbolFlags = []; const AReference: TDbgSymbol = nil);
+begin
+  FList := TStringList.Create;
+  FList.CaseSensitive := True;
+  FList.Duplicates := dupError;
+  FList.Sorted := True;
+
   FName := AName;
-  FSection := ASection;
-  FOffset := AOffset;
-  FLength := 0;
+  FKind := AKind;
+  FAddress := AAddress;
+  FSize := ASize;
+  FFile := AFile;
+  FLine := ALine;
+  FReference := AReference;
+  FFlags := AFlags;
+
   inherited Create;
 end;
 
-function TDbgSymbol.GetAddress: Pointer;
+destructor TDbgSymbol.Destroy;
+var
+  n: Integer;
 begin
-  Result := PChar(FSection.StartAddr) + FOffset - FSection.FOffset;
+  for n := 0 to FList.Count - 1 do
+    FList.Objects[n].Free;
+  FreeAndNil(FList);
+  inherited Destroy;
 end;
-*)
 
 { TDbgBreak }
 
