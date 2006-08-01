@@ -827,8 +827,14 @@ var
     To get space for A, either B is shrinked and/or the parent of B is enlarged
     (including the grand parents of B).
   }
+  var
+    SplitterNode: TLazDockConfigNode;
+    NeighbourNode: TLazDockConfigNode;
   begin
     // TODO
+    SplitterNode:=FindNode(SelfNode.Sides[Side]);
+    NeighbourNode:=FindNodeUsingSplitter(SplitterNode,OppositeAnchor[Side],true);
+    if NeighbourNode=nil then ;
     Result:=false;
   end;
 

@@ -186,6 +186,8 @@ type
     function IsUpdating: Boolean;
     function CanReadFromInterface: Boolean;
     function CanReadFromCache: Boolean;
+    procedure OnDefaultFindClass(Reader: TReader; const AClassName: string;
+                                 var ComponentClass: TComponentClass);
   public
     function AddFormat(FormatID: TClipboardFormat; Stream: TStream): Boolean;
     function AddFormat(FormatID: TClipboardFormat; var Buffer; Size: Integer): Boolean;
@@ -200,6 +202,14 @@ type
     function FindFormatID(const FormatName: string): TClipboardFormat;
     //function GetAsHandle(Format: integer): THandle;
     function GetComponent(Owner, Parent: TComponent): TComponent;
+    procedure GetComponent(var RootComponent: TComponent;
+                          OnFindComponentClass: TFindComponentClassEvent;
+                          Owner: TComponent = nil;
+                          Parent: TComponent = nil);
+    procedure GetComponentAsText(var RootComponent: TComponent;
+                                 OnFindComponentClass: TFindComponentClassEvent;
+                                 Owner: TComponent = nil;
+                                 Parent: TComponent = nil);
     function GetFormat(FormatID: TClipboardFormat; Stream: TStream): Boolean;
     procedure SupportedFormats(List: TStrings);
     procedure SupportedFormats(var AFormatCount: integer;
@@ -211,6 +221,7 @@ type
     procedure Open;
     //procedure SetAsHandle(Format: integer; Value: THandle);
     function SetComponent(Component: TComponent): Boolean;
+    function SetComponentAsText(Component: TComponent): Boolean;
     function SetFormat(FormatID: TClipboardFormat; Stream: TStream): Boolean;
     function SetSupportedFormats(AFormatCount: integer;
                                   FormatList: PClipboardFormat): Boolean;

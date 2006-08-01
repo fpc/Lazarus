@@ -31,7 +31,7 @@ type
   published
     property WideStr1: widestring read FWideStr1 write SetWideStr1 stored WideStr1IsStored;
     property DefaultText: WideString read FDefaultText write SetDefaultText stored False;
-    property Integer1: integer read FInteger1 write SetInteger1 stored Integer1IsStored;
+    property Integer1: integer read FInteger1 write SetInteger1;
   end;
 
   { TStreamDemoForm }
@@ -250,7 +250,7 @@ constructor TMyComponent.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   FWideStr1:='';
-  FInteger1:=0;
+  FInteger1:=3;
 end;
 
 initialization

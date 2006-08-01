@@ -21,6 +21,7 @@ object H2PasDialog: TH2PasDialog
     Anchors = [akTop, akLeft, akRight, akBottom]
     TabIndex = 2
     TabOrder = 0
+    TabStop = True
     AnchorSideBottom.Control = OpenSettingsButton
     Height = 465
     Width = 785
@@ -34,8 +35,10 @@ object H2PasDialog: TH2PasDialog
       Width = 781
       object CHeaderFilesCheckListBox: TCheckListBox
         Align = alLeft
+        BorderStyle = bsSingle
         OnItemClick = CHeaderFilesCheckListBoxItemClick
         TabOrder = 0
+        TabStop = True
         TopIndex = -1
         Height = 435
         Width = 255
@@ -264,9 +267,7 @@ object H2PasDialog: TH2PasDialog
           TabOrder = 0
           Width = 764
           BookMarkOptions.Xoffset = 30
-          BookMarkOptions.OnChange = nil
           Gutter.ShowLineNumbers = True
-          Gutter.OnChange = nil
           Gutter.CodeFoldingWidth = 14
           Highlighter = SynCppSyn1
           Keystrokes = <          
@@ -595,7 +596,6 @@ object H2PasDialog: TH2PasDialog
           )
           Options = [eoAutoIndent, eoDragDropEditing, eoGroupUndo, eoShowScrollHint, eoShowSpecialChars, eoSmartTabDelete, eoSmartTabs, eoTabsToSpaces, eoTrimTrailingSpaces, eoBracketHighlight]
           ReadOnly = True
-          SelectedColor.OnChange = nil
           Cursor = crIBeam
           Height = 130
           Width = 764

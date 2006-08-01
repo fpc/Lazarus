@@ -1,0 +1,23 @@
+{ Dies ist eine automatisch erzeugte Lazarus-Ressourcendatei }
+
+LazarusResources.Add('TIDETextConvListAddDlg','FORMDATA',[
+  'TPF0'#22'TIDETextConvListAddDlg'#21'IDETextConvListAddDlg'#7'Caption'#6#21'I'
+  +'DETextConvListAddDlg'#12'ClientHeight'#2'm'#11'ClientWidth'#3#19#1#8'OnCrea'
+  +'te'#7#10'FormCreate'#13'PixelsPerInch'#2'K'#18'HorzScrollBar.Page'#3#18#1#18
+  +'VertScrollBar.Page'#2'l'#4'Left'#3'"'#1#6'Height'#2'm'#3'Top'#3#202#0#5'Wid'
+  +'th'#3#19#1#0#6'TLabel'#10'ClassLabel'#7'Caption'#6#10'ClassLabel'#5'Color'#7
+  +#6'clNone'#12'FocusControl'#7#13'ClassComboBox'#11'ParentColor'#8#4'Left'#2#8
+  +#6'Height'#2#13#3'Top'#2#8#5'Width'#2'?'#0#0#7'TButton'#9'AddButton'#7'Ancho'
+  +'rs'#11#7'akRight'#8'akBottom'#0#8'AutoSize'#9#19'BorderSpacing.Right'#2#10
+  +#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6#9'AddButton'#7'Default'#9#7
+  +'OnClick'#7#14'AddButtonClick'#8'TabOrder'#2#0#23'AnchorSideRight.Control'#7
+  +#12'CancelButton'#4'Left'#2'Z'#6'Height'#2#26#3'Top'#2'H'#5'Width'#2'A'#0#0#7
+  +'TButton'#12'CancelButton'#7'Anchors'#11#7'akRight'#8'akBottom'#0#8'AutoSize'
+  +#9#25'BorderSpacing.InnerBorder'#2#4#6'Cancel'#9#7'Caption'#6#12'CancelButto'
+  +'n'#11'ModalResult'#2#2#8'TabOrder'#2#1#4'Left'#3#165#0#6'Height'#2#26#3'Top'
+  +#2'H'#5'Width'#2'Y'#0#0#9'TComboBox'#13'ClassComboBox'#7'Anchors'#11#5'akTop'
+  +#6'akLeft'#7'akRight'#0#16'AutoCompleteText'#11#22'cbactEndOfLineComplete'#20
+  +'cbactSearchAscending'#0#9'MaxLength'#2#0#13'OnEditingDone'#7#24'ClassComboB'
+  +'oxEditingDone'#8'TabOrder'#2#2#4'Text'#6#13'ClassComboBox'#4'Left'#2#8#6'He'
+  +'ight'#2#25#3'Top'#2' '#5'Width'#3#0#1#0#0#0
+]);

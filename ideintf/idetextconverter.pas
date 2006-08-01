@@ -64,7 +64,7 @@ type
     procedure SaveToFile(const NewFilename: string);
     procedure CreateTempFilename;
   protected
-    function GetTempFilename: string; virtual; abstract;
+    function GetTempFilename: string; virtual;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -83,15 +83,19 @@ type
   private
     FCaption: string;
     FDescription: string;
+    FEnabled: boolean;
     procedure SetCaption(const AValue: string);
     procedure SetDescription(const AValue: string);
   public
     function Execute(aText: TIDETextConverter): TModalResult; virtual; abstract;
     procedure Assign(Source: TPersistent); override;
+    class function ClassDescription: string; virtual; abstract;
+    class function FirstLineOfClassDescription: string;
   published
     property Name;
     property Caption: string read FCaption write SetCaption;
     property Description: string read FDescription write SetDescription;
+    property Enabled: boolean read FEnabled write FEnabled;
   end;
   TCustomTextConverterToolClass = class of TCustomTextConverterTool;
 
@@ -119,6 +123,7 @@ type
   public
     function Execute(aText: TIDETextConverter): TModalResult; override;
     procedure Assign(Source: TPersistent); override;
+    class function ClassDescription: string; override;
     property SearchFor: string read FSearchFor write SetSearchFor;
     property ReplaceWith: string read FReplaceWith write SetReplaceWith;
     property Options: TTextReplaceToolOptions read FOptions write SetOptions;
@@ -147,16 +152,45 @@ type
     procedure RegisterClass(AClass: TCustomTextConverterToolClass);
     procedure UnregisterClass(AClass: TCustomTextConverterToolClass);
     function FindByName(const aClassName: string): TCustomTextConverterToolClass;
+    function FindByFirstLineOfClassDescription(const Line: string
+                                               ): TCustomTextConverterToolClass;
     procedure FindClass(Reader: TReader; const aClassName: string;
                         var ComponentClass: TComponentClass);
     property Items[Index: integer]: TCustomTextConverterToolClass read GetItems; default;
     property Count: integer read GetCount;
+    function GetTempFilename: string; virtual; abstract;
   end;
   
 var
   TextConverterToolClasses: TTextConverterToolClasses = nil;// set by the IDE
   
+procedure ClearTextConverterToolList(List: TComponent);
+procedure CopyTextConverterToolList(Src, Dest: TComponent;
+                                    ClearDest: boolean = true);
+  
 implementation
+
+procedure ClearTextConverterToolList(List: TComponent);
+begin
+  if List=nil then exit;
+  while List.ComponentCount>0 do
+    List.Components[List.ComponentCount-1].Free;
+end;
+
+procedure CopyTextConverterToolList(Src, Dest: TComponent; ClearDest: boolean);
+var
+  i: Integer;
+  SrcTool: TCustomTextConverterTool;
+  NewTool: TCustomTextConverterTool;
+begin
+  if ClearDest then
+    ClearTextConverterToolList(Dest);
+  for i:=0 to Src.ComponentCount-1 do begin
+    SrcTool:=Src.Components[i] as TCustomTextConverterTool;
+    NewTool:=TCustomTextConverterToolClass(SrcTool.ClassType).Create(Dest);
+    NewTool.Assign(SrcTool);
+  end;
+end;
 
 { TIDETextConverter }
 
@@ -318,6 +352,14 @@ begin
   FFileIsTemporary:=true;
 end;
 
+function TIDETextConverter.GetTempFilename: string;
+begin
+  if TextConverterToolClasses<>nil then
+    Result:=TextConverterToolClasses.GetTempFilename;
+  if Result='' then
+    Result:='temp.txt';
+end;
+
 constructor TIDETextConverter.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
@@ -339,11 +381,13 @@ begin
   for i:=0 to ToolList.ComponentCount-1 do begin
     if ToolList.Components[i] is TCustomTextConverterTool then begin
       Tool:=TCustomTextConverterTool(ToolList.Components[i]);
-      CurResult:=Tool.Execute(Self);
-      if CurResult=mrIgnore then
-        Result:=mrCancel
-      else if CurResult<>mrOk then
-        exit(mrAbort);
+      if Tool.Enabled then begin
+        CurResult:=Tool.Execute(Self);
+        if CurResult=mrIgnore then
+          Result:=mrCancel
+        else if CurResult<>mrOk then
+          exit(mrAbort);
+      end;
     end;
   end;
 end;
@@ -373,6 +417,21 @@ begin
     Description:=Src.Description;
   end else
     inherited Assign(Source);
+end;
+
+class function TCustomTextConverterTool.FirstLineOfClassDescription: string;
+var
+  p: Integer;
+begin
+  Result:=ClassDescription;
+  p:=1;
+  while (p<=length(Result)) do begin
+    if Result[p] in [#10,#13] then begin
+      Result:=copy(Result,1,p-1);
+      exit;
+    end;
+    inc(p);
+  end;
 end;
 
 { TCustomTextReplaceTool }
@@ -430,6 +489,11 @@ begin
   inherited Assign(Source);
 end;
 
+class function TCustomTextReplaceTool.ClassDescription: string;
+begin
+  Result:='Search and replace';
+end;
+
 { TTextConverterToolClasses }
 
 function TTextConverterToolClasses.GetCount: integer;
@@ -476,6 +540,18 @@ begin
   for i:=0 to FItems.Count-1 do begin
     Result:=Items[i];
     if CompareText(Result.ClassName,aClassName)=0 then exit;
+  end;
+  Result:=nil;
+end;
+
+function TTextConverterToolClasses.FindByFirstLineOfClassDescription(
+  const Line: string): TCustomTextConverterToolClass;
+var
+  i: Integer;
+begin
+  for i:=0 to FItems.Count-1 do begin
+    Result:=Items[i];
+    if Result.FirstLineOfClassDescription=Line then exit;
   end;
   Result:=nil;
 end;

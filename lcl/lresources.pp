@@ -275,13 +275,22 @@ procedure WriteComponentAsBinaryToStream(AStream: TStream;
 procedure ReadComponentFromBinaryStream(AStream: TStream;
                            var RootComponent: TComponent;
                            OnFindComponentClass: TFindComponentClassEvent;
-                           TheOwner: TComponent = nil);
+                           TheOwner: TComponent = nil;
+                           Parent: TComponent = nil);
+procedure WriteComponentAsTextToStream(AStream: TStream;
+                                       AComponent: TComponent);
+procedure ReadComponentFromTextStream(AStream: TStream;
+                           var RootComponent: TComponent;
+                           OnFindComponentClass: TFindComponentClassEvent;
+                           TheOwner: TComponent = nil;
+                           Parent: TComponent = nil);
 procedure SaveComponentToConfig(Config: TConfigStorage; const Path: string;
                                 AComponent: TComponent);
 procedure LoadComponentFromConfig(Config: TConfigStorage; const Path: string;
                                  var RootComponent: TComponent;
                                  OnFindComponentClass: TFindComponentClassEvent;
-                                 TheOwner: TComponent = nil);
+                                 TheOwner: TComponent = nil;
+                                 Parent: TComponent = nil);
 
 
 function CompareComponents(Component1, Component2: TComponent): boolean;
@@ -553,7 +562,8 @@ end;
 
 procedure ReadComponentFromBinaryStream(AStream: TStream;
   var RootComponent: TComponent;
-  OnFindComponentClass: TFindComponentClassEvent; TheOwner: TComponent);
+  OnFindComponentClass: TFindComponentClassEvent; TheOwner: TComponent;
+  Parent: TComponent);
 var
   DestroyDriver: Boolean;
   Reader: TReader;
@@ -591,12 +601,48 @@ begin
   Reader:=nil;
   try
     Reader:=CreateLRSReader(AStream,DestroyDriver);
+    Reader.Parent:=Parent;
     Reader.OnFindComponentClass:=OnFindComponentClass;
     Reader.ReadRootComponent(RootComponent);
   finally
     if DestroyDriver then
       Reader.Driver.Free;
     Reader.Free;
+  end;
+end;
+
+procedure WriteComponentAsTextToStream(AStream: TStream; AComponent: TComponent
+  );
+var
+  BinStream: TMemoryStream;
+begin
+  BinStream:=nil;
+  try
+    BinStream:=TMemoryStream.Create;
+    WriteComponentAsBinaryToStream(BinStream,AComponent);
+    BinStream.Position:=0;
+    LRSObjectBinaryToText(BinStream,AStream);
+  finally
+    BinStream.Free;
+  end;
+end;
+
+procedure ReadComponentFromTextStream(AStream: TStream;
+  var RootComponent: TComponent;
+  OnFindComponentClass: TFindComponentClassEvent; TheOwner: TComponent;
+  Parent: TComponent);
+var
+  BinStream: TMemoryStream;
+begin
+  BinStream:=nil;
+  try
+    BinStream:=TMemoryStream.Create;
+    LRSObjectTextToBinary(AStream,BinStream);
+    BinStream.Position:=0;
+    ReadComponentFromBinaryStream(BinStream,RootComponent,OnFindComponentClass,
+                                  TheOwner,Parent);
+  finally
+    BinStream.Free;
   end;
 end;
 
@@ -632,7 +678,8 @@ end;
 
 procedure LoadComponentFromConfig(Config: TConfigStorage; const Path: string;
   var RootComponent: TComponent;
-  OnFindComponentClass: TFindComponentClassEvent; TheOwner: TComponent);
+  OnFindComponentClass: TFindComponentClassEvent; TheOwner: TComponent;
+  Parent: TComponent);
 var
   s: String;
   TxtStream: TMemoryStream;
@@ -651,7 +698,7 @@ begin
     LRSObjectTextToBinary(TxtStream,BinStream);
     // create component from stream
     ReadComponentFromBinaryStream(BinStream,RootComponent,OnFindComponentClass,
-                                  TheOwner);
+                                  TheOwner,Parent);
   finally
     BinStream.Free;
     TxtStream.Free;

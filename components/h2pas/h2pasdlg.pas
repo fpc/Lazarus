@@ -101,6 +101,7 @@ type
     procedure OutputDirBrowseButtonClick(Sender: TObject);
     procedure OutputDirEditEditingDone(Sender: TObject);
     procedure OutputExtEditEditingDone(Sender: TObject);
+    procedure PreH2PasEditModified(Sender: TObject);
     procedure SaveSettingsAsButtonClick(Sender: TObject);
     procedure SaveSettingsButtonClick(Sender: TObject);
     procedure SelectAllCHeaderFilesButtonClick(Sender: TObject);
@@ -224,9 +225,8 @@ begin
     Name:='PreH2PasEdit';
     Align:=alTop;
     AnchorToNeighbour(akBottom,0,ConvertUpDownSplitter);
+    OnModified:=@PreH2PasEditModified;
     Parent:=ConvertTabSheet;
-    Visible:=true;
-    DebugLn(['TH2PasDialog.FormCreate ',dbgs(BoundsRect)]);
   end;
 
   LazarusIDE.AddHandlerOnSavedAll(@OnIDESavedAll);
@@ -245,6 +245,7 @@ begin
   if Project=nil then begin
     Converter.Project:=TH2PasProject.Create;
   end;
+  PreH2PasEdit.ListOfTools:=Project.PreH2PasTools;
 
   UpdateAll;
 end;
@@ -344,6 +345,7 @@ end;
 
 procedure TH2PasDialog.FormDestroy(Sender: TObject);
 begin
+  PreH2PasEdit.ListOfTools:=nil;
   FreeAndNil(FConverter);
 end;
 
@@ -419,6 +421,11 @@ end;
 procedure TH2PasDialog.OutputExtEditEditingDone(Sender: TObject);
 begin
   Project.OutputExt:=OutputExtEdit.Text;
+end;
+
+procedure TH2PasDialog.PreH2PasEditModified(Sender: TObject);
+begin
+  Project.Modified:=true;
 end;
 
 procedure TH2PasDialog.SaveSettingsAsButtonClick(Sender: TObject);
@@ -615,6 +622,7 @@ end;
 procedure TH2PasDialog.UpdateConvertPage;
 begin
   ClearMessages;
+  PreH2PasEdit.ListOfTools:=Project.PreH2PasTools;
 end;
 
 procedure TH2PasDialog.UpdateSettingsPage;
@@ -836,7 +844,7 @@ begin
   NewFilename:=Filename;
   if NewFilename='' then
     NewFilename:=Project.Filename;
-
+    
   // choose a filename
   if (not FilenameIsAbsolute(NewFilename))
   or (sfSaveAs in Flags) then begin

@@ -268,6 +268,17 @@ begin
   Result:=FAllocated or IsUpdating;
 end;
 
+procedure TClipboard.OnDefaultFindClass(Reader: TReader;
+  const AClassName: string; var ComponentClass: TComponentClass);
+var
+  PersistentClass: TPersistentClass;
+begin
+  if Reader=nil then ;
+  PersistentClass:=FindClass(AClassName);
+  if (PersistentClass<>nil) and (PersistentClass.InheritsFrom(TComponent)) then
+    ComponentClass:=TComponentClass(PersistentClass);
+end;
+
 function TClipboard.GetFormat(FormatID: TClipboardFormat;
   Stream: TStream): Boolean;
 // request data from interface object or copy cached data to Stream
@@ -304,23 +315,13 @@ function TClipboard.SetComponent(Component: TComponent): Boolean;
 var
   i: integer;
   s: TMemoryStream;
-  DestroyDriver: Boolean;
-  Writer: TWriter;
 begin
   BeginUpdate;
   try
     i:=IndexOfCachedFormatID(PredefinedClipboardFormat(pcfCustomData),true);
     s:=FData[i].Stream;
     s.Clear;
-    s.WriteComponent(Component);
-    DestroyDriver:=false;
-    Writer := CreateLRSWriter(s,DestroyDriver);
-    Try
-      Writer.WriteDescendent(Component, nil);
-    Finally
-      if DestroyDriver then Writer.Driver.Free;
-      Writer.Destroy;
-    end;
+    WriteComponentAsBinaryToStream(s,Component);
     s.Position:=0;
     FSupportedFormatsChanged:=true;
   finally
@@ -328,35 +329,66 @@ begin
   end;
 end;
 
-function TClipboard.GetComponent(Owner, Parent: TComponent): TComponent;
+function TClipboard.SetComponentAsText(Component: TComponent): Boolean;
 var
   MemStream: TMemoryStream;
-  Reader: TReader;
-  ok: boolean;
-  DestroyDriver: boolean;
+  s: string;
 begin
-  Result := nil;
+  BeginUpdate;
+  MemStream:=nil;
+  try
+    MemStream:=TMemoryStream.Create;
+    WriteComponentAsTextToStream(MemStream,Component);
+    SetLength(s,MemStream.Size);
+    MemStream.Position:=0;
+    if s<>'' then
+      MemStream.Read(s[1],length(s));
+    AsText:=s;
+  finally
+    MemStream.Free;
+    Result:=EndUpdate;
+  end;
+end;
+
+function TClipboard.GetComponent(Owner, Parent: TComponent): TComponent;
+begin
+  Result:=nil;
+  GetComponent(Result,@OnDefaultFindClass,Owner,Parent);
+end;
+
+procedure TClipboard.GetComponent(var RootComponent: TComponent;
+  OnFindComponentClass: TFindComponentClassEvent; Owner: TComponent;
+  Parent: TComponent);
+var
+  MemStream: TMemoryStream;
+begin
   MemStream:=TMemoryStream.Create;
   try
     if GetFormat(PredefinedClipboardFormat(pcfComponent),MemStream) then begin
       MemStream.Position := 0;
-      DestroyDriver:=false;
-      Reader := CreateLRSReader(MemStream,DestroyDriver);
-      try
-        Reader.Parent := Parent;
-        Result := Reader.ReadRootComponent(nil);
-        ok:=false;
-        try
-          Owner.InsertComponent(Result);
-          ok:=true;
-        finally
-          if not ok then Result.Free;
-        end;
-      finally
-        if DestroyDriver then Reader.Driver.Free;
-        Reader.Free;
-      end;
+      ReadComponentFromBinaryStream(MemStream,RootComponent,
+                                    OnFindComponentClass,Owner,Parent);
     end;
+  finally
+    MemStream.Free;
+  end;
+end;
+
+procedure TClipboard.GetComponentAsText(var RootComponent: TComponent;
+  OnFindComponentClass: TFindComponentClassEvent; Owner: TComponent;
+  Parent: TComponent);
+var
+  s: String;
+  MemStream: TMemoryStream;
+begin
+  MemStream:=nil;
+  try
+    MemStream:=TMemoryStream.Create;
+    s:=AsText;
+    if s<>'' then
+      MemStream.Write(s[1],length(s));
+    ReadComponentFromTextStream(MemStream,RootComponent,OnFindComponentClass,
+                                Owner,Parent);
   finally
     MemStream.Free;
   end;

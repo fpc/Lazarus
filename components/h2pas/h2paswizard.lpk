@@ -15,7 +15,7 @@
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
-    <Files Count="6">
+    <Files Count="7">
       <Item1>
         <Filename Value="h2pasconvert.pas"/>
         <UnitName Value="H2PasConvert"/>
@@ -39,8 +39,12 @@
       </Item5>
       <Item6>
         <Filename Value="idetextconvlistedit.pas"/>
-        <UnitName Value="idetextconvlistedit"/>
+        <UnitName Value="IDETextConvListEdit"/>
       </Item6>
+      <Item7>
+        <Filename Value="idetextconvlistadd.pas"/>
+        <UnitName Value="idetextconvlistadd"/>
+      </Item7>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="3">

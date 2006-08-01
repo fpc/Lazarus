@@ -1159,6 +1159,7 @@ var
   TempCHeaderFilename: String;
   InputFilename: String;
   Tool: TH2PasTool;
+  TextConverter: TIDETextConverter;
 begin
   Result:=mrCancel;
 
@@ -1180,29 +1181,42 @@ begin
       mtError,[mbCancel,mbAbort],'');
     exit;
   end;
-
-  // TODO: run converters for .h file to make it compatible for h2pas
-
-  // run h2pas
-  Tool:=TH2PasTool.Create;
+  
+  TextConverter:=TIDETextConverter.Create(nil);
   try
-    Tool.Title:='h2pas';
-    Tool.H2PasFile:=AFile;
-    Tool.Filename:=GetH2PasFilename;
-    Tool.CmdLineParams:=AFile.GetH2PasParameters(TempCHeaderFilename);
-    Tool.ScanOutput:=true;
-    Tool.ShowAllOutput:=true;
-    Tool.WorkingDirectory:=Project.BaseDir;
-    Tool.OnParseLine:=@OnParseH2PasLine;
-    DebugLn(['TH2PasConverter.ConvertFile Tool.Filename="',Tool.Filename,'" Tool.CmdLineParams="',Tool.CmdLineParams,'"']);
-    Result:=LazarusIDE.RunExternalTool(Tool);
-    if Result<>mrOk then exit(mrAbort);
-    if FindH2PasErrorMessage>=0 then exit(mrAbort);
-  finally
-    Tool.Free;
-  end;
+    TextConverter.Filename:=TempCHeaderFilename;
 
-  // TODO: beautify unit
+    // run converters for .h file to make it compatible for h2pas
+    Result:=TextConverter.Execute(Project.PreH2PasTools);
+    if Result<>mrOk then begin
+      DebugLn(['TH2PasConverter.ConvertFile Failed running Project.PreH2PasTools on ',TempCHeaderFilename]);
+      exit;
+    end;
+
+    // run h2pas
+    Tool:=TH2PasTool.Create;
+    try
+      Tool.Title:='h2pas';
+      Tool.H2PasFile:=AFile;
+      Tool.Filename:=GetH2PasFilename;
+      Tool.CmdLineParams:=AFile.GetH2PasParameters(TempCHeaderFilename);
+      Tool.ScanOutput:=true;
+      Tool.ShowAllOutput:=true;
+      Tool.WorkingDirectory:=Project.BaseDir;
+      Tool.OnParseLine:=@OnParseH2PasLine;
+      DebugLn(['TH2PasConverter.ConvertFile Tool.Filename="',Tool.Filename,'" Tool.CmdLineParams="',Tool.CmdLineParams,'"']);
+      Result:=LazarusIDE.RunExternalTool(Tool);
+      if Result<>mrOk then exit(mrAbort);
+      if FindH2PasErrorMessage>=0 then exit(mrAbort);
+    finally
+      Tool.Free;
+    end;
+
+    // TODO: beautify unit
+
+  finally
+    TextConverter.Free;
+  end;
 
   Result:=mrOk;
 end;

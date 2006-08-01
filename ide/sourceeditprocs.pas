@@ -43,9 +43,9 @@ uses
 
 type
 
-  { TTextConverter }
+  { TLazTextConverterToolClasses }
 
-  TTextConverter = class(TIDETextConverter)
+  TLazTextConverterToolClasses = class(TTextConverterToolClasses)
   protected
     function GetTempFilename: string; override;
   end;
@@ -77,7 +77,7 @@ var
 
 procedure SetupTextConverters;
 begin
-  TextConverterToolClasses:=TTextConverterToolClasses.Create;
+  TextConverterToolClasses:=TLazTextConverterToolClasses.Create;
   TextConverterToolClasses.RegisterClass(TTextReplaceTool);
 end;
 
@@ -487,9 +487,9 @@ begin
   SynREEngine.Split(TheText,Pieces);
 end;
 
-{ TTextConverter }
+{ TLazTextConverterToolClasses }
 
-function TTextConverter.GetTempFilename: string;
+function TLazTextConverterToolClasses.GetTempFilename: string;
 var
   BaseDir: String;
 begin
