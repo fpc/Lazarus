@@ -1322,12 +1322,8 @@ begin
 end;
 
 procedure TControl.DoCallNotifyHandler(HandlerType: TControlHandlerType);
-var
-  i: Integer;
 begin
-  i:=FControlHandlers[HandlerType].Count;
-  while FControlHandlers[HandlerType].NextDownIndex(i) do
-    TNotifyEvent(FControlHandlers[HandlerType][i])(Self);
+  FControlHandlers[HandlerType].CallNotifyEvents(Self);
 end;
 
 {------------------------------------------------------------------------------

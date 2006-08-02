@@ -178,9 +178,7 @@ var
   HandlerType: TMenuItemHandlerType;
 begin
   //debugln('TMenuItem.Destroy A ',dbgsName(Self));
-  i:=FMenuItemHandlers[mihtDestroy].Count;
-  while FMenuItemHandlers[mihtDestroy].NextDownIndex(i) do
-    TNotifyEvent(FMenuItemHandlers[mihtDestroy][i])(Self);
+  FMenuItemHandlers[mihtDestroy].CallNotifyEvents(Self);
   if FBitmap<>nil then
     FreeAndNil(FBitmap);
   DestroyHandle;

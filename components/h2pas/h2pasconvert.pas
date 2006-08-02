@@ -171,8 +171,10 @@ type
   TH2PasTool = class(TIDEExternalToolOptions)
   private
     FH2PasFile: TH2PasFile;
+    FTargetFilename: string;
   public
     property H2PasFile: TH2PasFile read FH2PasFile write FH2PasFile;
+    property TargetFilename: string read FTargetFilename write FTargetFilename;
   end;
   
   { TH2PasConverter }
@@ -182,6 +184,7 @@ type
     FAutoOpenLastProject: boolean;
     FExecuting: boolean;
     Fh2pasFilename: string;
+    FLastUsedFilename: string;
     FModified: boolean;
     FProject: TH2PasProject;
     FProjectHistory: TStrings;
@@ -213,6 +216,7 @@ type
     function GetH2PasErrorPostion(const Line: string;
                                   out aFilename: string;
                                   out LineNumber, Column: integer): boolean;
+    function FileIsRelated(const aFilename: string): Boolean;
   public
     property Project: TH2PasProject read FProject write SetProject;
     property ProjectHistory: TStrings read FProjectHistory write SetProjectHistory;
@@ -224,6 +228,7 @@ type
     property h2pasFilename: string read Fh2pasFilename write Seth2pasFilename;
     property Modified: boolean read FModified write FModified;
     property Executing: boolean read FExecuting;
+    property LastUsedFilename: string read FLastUsedFilename;
   end;
 
 implementation
@@ -935,7 +940,7 @@ begin
       LineNumber:=REVar(1);
       MsgType:=REVar(2);
       Msg:=REVar(3);
-      Line.Line:=Tool.H2PasFile.Filename+'('+LineNumber+') '+MsgType+': '+Msg;
+      Line.Line:=Tool.TargetFilename+'('+LineNumber+') '+MsgType+': '+Msg;
     end;
     //DebugLn(['TH2PasConverter.OnParseH2PasLine ',Line.Line]);
   end;
@@ -1137,6 +1142,7 @@ begin
   Result:=mrOK;
   FExecuting:=true;
   try
+    FLastUsedFilename:='';
     // convert every c header file
     for i:=0 to Project.CHeaderFileCount-1 do begin
       AFile:=Project.CHeaderFiles[i];
@@ -1162,6 +1168,7 @@ var
   TextConverter: TIDETextConverter;
 begin
   Result:=mrCancel;
+  FLastUsedFilename:='';
 
   // check if file exists
   InputFilename:=AFile.Filename;
@@ -1173,7 +1180,7 @@ begin
   end;
 
   OutputFilename:=AFile.GetOutputFilename;
-  TempCHeaderFilename:=ChangeFileExt(OutputFilename,'.h.tmp');
+  TempCHeaderFilename:=ChangeFileExt(OutputFilename,'.tmp.h');
   if not CopyFile(InputFilename,TempCHeaderFilename) then begin
     Result:=IDEMessageDialog('Copying file failed',
       'Unable to copy file "'+InputFilename+'"'#13
@@ -1185,6 +1192,9 @@ begin
   TextConverter:=TIDETextConverter.Create(nil);
   try
     TextConverter.Filename:=TempCHeaderFilename;
+    FLastUsedFilename:=TextConverter.Filename;
+    TextConverter.LoadFromFile(InputFilename,true,true,false);
+    DebugLn(['TH2PasConverter.ConvertFile TempCHeaderFilename="',TempCHeaderFilename,'"']);
 
     // run converters for .h file to make it compatible for h2pas
     Result:=TextConverter.Execute(Project.PreH2PasTools);
@@ -1198,8 +1208,9 @@ begin
     try
       Tool.Title:='h2pas';
       Tool.H2PasFile:=AFile;
+      Tool.TargetFilename:=TextConverter.Filename;
       Tool.Filename:=GetH2PasFilename;
-      Tool.CmdLineParams:=AFile.GetH2PasParameters(TempCHeaderFilename);
+      Tool.CmdLineParams:=AFile.GetH2PasParameters(Tool.TargetFilename);
       Tool.ScanOutput:=true;
       Tool.ShowAllOutput:=true;
       Tool.WorkingDirectory:=Project.BaseDir;
@@ -1254,6 +1265,12 @@ begin
     LineNumber:=-1;
     Column:=-1;
   end;
+end;
+
+function TH2PasConverter.FileIsRelated(const aFilename: string): Boolean;
+begin
+  Result:=(CompareFilenames(AFilename,LastUsedFilename)=0)
+      or ((Project<>nil) and (Project.CHeaderFileWithFilename(aFilename)<>nil));
 end;
 
 end.

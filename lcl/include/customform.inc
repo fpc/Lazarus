@@ -608,14 +608,10 @@ end;
   Calls user handler
  ------------------------------------------------------------------------------}
 procedure TCustomForm.DoCreate;
-var
-  i: LongInt;
 begin
   LockRealizeBounds;
   if Assigned(FOnCreate) then FOnCreate(Self);
-  i:=FFormHandlers[fhtCreate].Count;
-  while FFormHandlers[fhtCreate].NextDownIndex(i) do
-    TNotifyEvent(FFormHandlers[fhtCreate][i])(Self);
+  FFormHandlers[fhtCreate].CallNotifyEvents(Self);
   UnlockRealizeBounds;
 end;
 
@@ -1829,12 +1825,8 @@ begin
 end;
 
 procedure TCustomForm.DoFirstShow;
-var
-  i: LongInt;
 begin
-  i:=FFormHandlers[fhtFirstShow].Count;
-  while FFormHandlers[fhtFirstShow].NextDownIndex(i) do
-    TNotifyEvent(FFormHandlers[fhtFirstShow][i])(Self);
+  FFormHandlers[fhtFirstShow].CallNotifyEvents(Self);
 end;
 
 {------------------------------------------------------------------------------}

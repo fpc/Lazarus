@@ -28,8 +28,7 @@ uses
   SynEdit, SynHighlighterCPP,
   FileProcs,
   IDEMsgIntf, MenuIntf, IDECommands, BaseIDEIntf, IDEDialogs, LazIDEIntf,
-  SrcEditorIntf,
-  CodeToolManager, CodeCache,
+  CodeToolManager, SrcEditorIntf, IDETextConverter,
   H2PasStrConsts, H2PasConvert, IDETextConvListEdit;
 
 type
@@ -38,8 +37,6 @@ type
 
   TH2PasDialog = class(TForm)
     MainPageControl: TPageControl;
-    ConvertUpDownSplitter: TSplitter;
-    SynCppSyn1: TSynCppSyn;
 
     // c header files
     FilesTabSheet: TTabSheet;
@@ -49,6 +46,11 @@ type
     SelectAllCHeaderFilesButton: TButton;
     DeleteCHeaderFilesButton: TButton;
     CHeaderFilesCheckListBox: TCheckListBox;
+
+    // pre h2pas
+    PreH2PasTabSheet: TTabSheet;
+    PreH2PasGroupBox: TGroupBox;
+    PreH2PasEdit: TTextConvListEditor;
 
     // h2pas
     h2pasOptionsTabSheet: TTabSheet;
@@ -60,13 +62,6 @@ type
     OutputDirEdit: TEdit;
     OutputDirLabel: TLabel;
     OutputDirBrowseButton: TButton;
-
-    // convert
-    PreH2PasEdit: TTextConvListEditor;
-    ConvertTabSheet: TTabSheet;
-    ConvertButton: TButton;
-    ConvertErrorGroupBox: TGroupBox;
-    ConvertErrorSynEdit: TSynEdit;
 
     // settings
     SettingsTabSheet: TTabSheet;
@@ -80,6 +75,7 @@ type
     // buttons at bottom
     OpenSettingsButton: TButton;
     SaveSettingsButton: TButton;
+    ConvertButton: TButton;
     CloseButton: TButton;
 
     procedure AddCHeaderFilesButtonClick(Sender: TObject);
@@ -108,15 +104,20 @@ type
     procedure UnselectAllCHeaderFilesButtonClick(Sender: TObject);
     procedure h2pasFilenameBrowseButtonClick(Sender: TObject);
     procedure h2pasOptionsCheckGroupItemClick(Sender: TObject; Index: LongInt);
+    procedure OnShowSrcEditSection(Sender: TObject);
+    procedure OnAddSearchAndReplaceBeforeH2PasClick(Sender: TObject);
   private
     FConverter: TH2PasConverter;
+    FSrcEditAddSearchReplaceMenuItem: TIDEMenuCommand;
+    FSrcEditSection: TIDEMenuSection;
+    
     function GetProject: TH2PasProject;
     
     procedure UpdateAll;
     procedure UpdateProjectChanged; // show project settings
     procedure UpdateCaption;
     procedure ClearMessages;
-    procedure UpdateHighlighter;
+    procedure CreateLazarusMenuItems;
 
     // project settings
     procedure UpdateFilesPage;
@@ -134,7 +135,6 @@ type
   public
     function Convert: TModalResult;
     procedure ShowH2PasError(MsgLine: integer);
-    procedure ClearError;
 
     function SaveSettings: TModalResult;
     function SaveGlobalSettings: TModalResult;
@@ -143,6 +143,9 @@ type
     function OpenProject(const Filename: string; Flags: TOpenFlags): TModalResult;
     property Converter: TH2PasConverter read FConverter;
     property Project: TH2PasProject read GetProject;
+    property SrcEditSection: TIDEMenuSection read FSrcEditSection;
+    property SrcEditAddSearchReplaceMenuItem: TIDEMenuCommand
+                                          read FSrcEditAddSearchReplaceMenuItem;
   end;
 
 var
@@ -160,7 +163,7 @@ procedure ExecuteH2PasTool(Sender: TObject);
 begin
   if H2PasDialog=nil then
     H2PasDialog:=TH2PasDialog.Create(Application);
-  H2PasDialog.Show;
+  H2PasDialog.ShowOnTop;
 end;
 
 procedure Register;
@@ -209,8 +212,8 @@ begin
     OutputExtLabel.Caption:='Output extension of new file';
     OutputDirLabel.Caption:='Output directory';
     LibNameLabel.Caption:='-l Library name';
-  ConvertTabSheet.Caption:='Convert';
-    ConvertButton.Caption:='Run converter and h2pas';
+  PreH2PasTabSheet.Caption:='Before h2pas';
+    PreH2PasGroupBox.Caption:='Conversions before running h2pas';
   SettingsTabSheet.Caption:='Settings';
     H2PasFilenameLabel.Caption:='h2pas program path';
     OpenLastProjectOnStartCheckBox.Caption:='Open last settings on start';
@@ -218,26 +221,25 @@ begin
     NewSettingsButton.Caption:='New/Clear settings';
   OpenSettingsButton.Caption:='&Open Settings';
   SaveSettingsButton.Caption:='&Save Settings';
+  ConvertButton.Caption:='Run converter and h2pas';
   CloseButton.Caption:='&Close';
   
   PreH2PasEdit:=TTextConvListEditor.Create(Self);
   with PreH2PasEdit do begin
     Name:='PreH2PasEdit';
-    Align:=alTop;
-    AnchorToNeighbour(akBottom,0,ConvertUpDownSplitter);
+    Align:=alClient;
     OnModified:=@PreH2PasEditModified;
-    Parent:=ConvertTabSheet;
+    Parent:=PreH2PasGroupBox;
+    Visible:=true;// Note: it's a form, and visible default is false
   end;
 
   LazarusIDE.AddHandlerOnSavedAll(@OnIDESavedAll);
+  CreateLazarusMenuItems;
 
   // create converter
   FConverter:=TH2PasConverter.Create;
   LoadGlobalSettings;
   
-  ClearError;
-  UpdateHighlighter;
-
   // create project
   if Converter.AutoOpenLastProject
   and FileExists(Converter.CurrentProjectFilename) then
@@ -345,6 +347,7 @@ end;
 
 procedure TH2PasDialog.FormDestroy(Sender: TObject);
 begin
+  FreeAndNil(fSrcEditSection);
   PreH2PasEdit.ListOfTools:=nil;
   FreeAndNil(FConverter);
 end;
@@ -504,6 +507,40 @@ begin
   end;
 end;
 
+procedure TH2PasDialog.OnShowSrcEditSection(Sender: TObject);
+var
+  SrcEdit: TSourceEditorInterface;
+begin
+  SrcEdit:=SourceEditorWindow.ActiveEditor;
+  SrcEditSection.Visible:=(SrcEdit<>nil)
+                          and Converter.FileIsRelated(SrcEdit.FileName);
+  //DebugLn(['TH2PasDialog.OnShowSrcEditSection ',SrcEditSection.Visible]);
+end;
+
+procedure TH2PasDialog.OnAddSearchAndReplaceBeforeH2PasClick(Sender: TObject);
+var
+  Tool: TCustomTextConverterTool;
+  SrcEdit: TSourceEditorInterface;
+  s: String;
+begin
+  //DebugLn(['TH2PasDialog.OnAddSearchAndReplaceBeforeH2PasClick']);
+  SrcEdit:=SourceEditorWindow.ActiveEditor;
+  if SrcEdit=nil then exit;
+  MainPageControl.ActivePage:=PreH2PasTabSheet;
+  ShowOnTop;
+  // get current source editor selection or line
+  s:=SrcEdit.Selection;
+  if s='' then
+    s:=SrcEdit.CurrentLineText;
+  // add a search and replace tool
+  Tool:=PreH2PasEdit.CreateTool(TTextReplaceTool);
+  TTextReplaceTool(Tool).SearchFor:=s;
+  if (System.Pos(#10,s)>0) or (System.Pos(#13,s)>0) then
+    TTextReplaceTool(Tool).Options:=TTextReplaceTool(Tool).Options+[trtMultiLine];
+  PreH2PasEdit.PropertyGrid.RefreshPropertyValues;
+  //DebugLn(['TH2PasDialog.OnAddSearchAndReplaceBeforeH2PasClick ',s]);
+end;
+
 function TH2PasDialog.GetProject: TH2PasProject;
 begin
   Result:=Converter.Project;
@@ -541,11 +578,18 @@ begin
   IDEMessagesWindow.Clear;
 end;
 
-procedure TH2PasDialog.UpdateHighlighter;
+procedure TH2PasDialog.CreateLazarusMenuItems;
 begin
-  SourceEditorWindow.GetHighlighterSettings(SynCppSyn1);
-  SourceEditorWindow.GetEditorControlSettings(ConvertErrorSynEdit);
-  ConvertErrorSynEdit.Gutter.ShowLineNumbers:=true;
+  // add a context menu to the source editor
+  fSrcEditSection:=RegisterIDESubMenu(SrcEditMenuSectionFirstStatic,
+                                      'h2pas project','h2pas',nil,nil);
+  fSrcEditSection.AddHandlerOnShow(@OnShowSrcEditSection);
+  // add a menu item to easily create a Search and replace from the current
+  // selection or line of the source editor.
+  fSrcEditAddSearchReplaceMenuItem:=RegisterIDEMenuCommand(SrcEditSection,
+      'Add "search and replace" tool before h2pas',
+      'Add "search and replace" tool before h2pas',
+      @OnAddSearchAndReplaceBeforeH2PasClick);
 end;
 
 procedure TH2PasDialog.UpdateFilesPage;
@@ -687,8 +731,7 @@ end;
 function TH2PasDialog.Convert: TModalResult;
 begin
   Result:=mrCancel;
-  ClearError;
-  
+
   if not Project.HasEnabledFiles then begin
     IDEMessageDialog('Nothing to do',
       'No c header file is enabled, so nothing to do.',
@@ -717,56 +760,14 @@ begin
 end;
 
 procedure TH2PasDialog.ShowH2PasError(MsgLine: integer);
-var
-  Line: TIDEMessageLine;
-  LineNumber: integer;
-  Column: integer;
-  CodeBuf: TCodeBuffer;
-  NewPos: TPoint;
-  Filename: string;
-  s: String;
 begin
   if MsgLine<0 then
     MsgLine:=Converter.FindH2PasErrorMessage;
   if (MsgLine<0) or (MsgLine>=IDEMessagesWindow.LinesCount) then begin
-    ClearError;
     exit;
   end;
   
-  Line:=IDEMessagesWindow.Lines[MsgLine];
-  if not Converter.GetH2PasErrorPostion(Line.Msg,Filename,LineNumber,Column)
-  then exit;
-  DebugLn(['TH2PasDialog.ShowH2PasError LineNumber=',LineNumber,' Column=',Column,' Filename=',Filename]);
-  
-  // open error position in synedit
-  CodeBuf:=CodeToolBoss.LoadFile(Filename,false,false);
-  if CodeBuf=nil then exit;
-  ConvertErrorSynEdit.BeginUpdate;
-  CodeBuf.AssignTo(ConvertErrorSynEdit.Lines,false);
-  NewPos:=Point(Column,LineNumber);
-  if NewPos.Y<1 then NewPos.Y:=1;
-  if NewPos.X<1 then NewPos.X:=1;
-  ConvertErrorSynEdit.LogicalCaretXY:=NewPos;
-  ConvertErrorSynEdit.TopLine:=NewPos.Y-3;
-  ConvertErrorSynEdit.EndUpdate;
-
-  // show error position in groupbox
-  s:='Error: ';
-  if LineNumber>=1 then
-    s:=s+IntToStr(LineNumber);
-  if Column>=1 then begin
-    if LineNumber>=1 then
-      s:=s+',';
-    s:=s+IntToStr(Column);
-  end;
-  s:=s+' '+Filename;
-  ConvertErrorGroupBox.Caption:=s;
-end;
-
-procedure TH2PasDialog.ClearError;
-begin
-  ConvertErrorSynEdit.Lines.Clear;
-  ConvertErrorGroupBox.Caption:='No error';
+  LazarusIDE.DoJumpToCompilerMessage(MsgLine,true);
 end;
 
 function TH2PasDialog.SaveSettings: TModalResult;

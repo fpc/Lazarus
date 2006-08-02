@@ -14,13 +14,6 @@
 
   Abstract:
     Interface to the IDE menus.
-    
-  ToDo:
-    - Create MainBar menu with the menu interface
-    - Create Source Editor Popupmenu with the menu interface
-    - Create CodeExplorer Popupmenu with the menu interface
-    - Create Project Inspector Popupmenu with the menu interface
-    - Create Messages Popupmenu with the menu interface
 }
 unit MenuIntf;
 
@@ -128,26 +121,36 @@ type
     imssClearing
     );
   TIDEMenuSectionStates = set of TIDEMenuSectionState;
+  
+  TIDEMenuSectionHandlerType = (
+    imshtOnShow  // called before showing. Use this to enable/disable context sensitive items.
+    );
 
   TIDEMenuSection = class(TIDEMenuItem)
   private
     FBottomSeparator: TMenuItem;
+    FChildMenuItemsCreated: boolean;
     FChildsAsSubMenu: boolean;
+    FInvalidChildEndIndex: Integer;
+    FInvalidChildStartIndex: Integer;
+    FItems: TFPList;
     FNeedBottomSeparator: boolean;
     FNeedTopSeparator: boolean;
+    FSectionHandlers: array[TIDEMenuSectionHandlerType] of TMethodList;
     FStates: TIDEMenuSectionStates;
     FSubMenuImages: TCustomImageList;
-    FItems: TFPList;
     FTopSeparator: TMenuItem;
-    FChildMenuItemsCreated: boolean;
-    FVisibleCount: integer;
-    FInvalidChildStartIndex: Integer;
-    FInvalidChildEndIndex: Integer;
     FUpdateLock: Integer;
+    FVisibleCount: integer;
     function GetItems(Index: Integer): TIDEMenuItem;
     procedure SeparatorDestroy(Sender : TObject);
     procedure FreeSeparators;
+    procedure AddHandler(HandlerType: TIDEMenuSectionHandlerType;
+                         const AMethod: TMethod; AsLast: boolean = false);
+    procedure RemoveHandler(HandlerType: TIDEMenuSectionHandlerType;
+                            const AMethod: TMethod);
   protected
+    procedure MenuItemClick(Sender: TObject); override;
     procedure SetMenuItem(const AValue: TMenuItem); override;
     procedure SetChildsAsSubMenu(const AValue: boolean); virtual;
     procedure SetSubMenuImages(const AValue: TCustomImageList); virtual;
@@ -177,6 +180,12 @@ type
     function Size: integer; override;
     procedure BeginUpdate;
     procedure EndUpdate;
+    procedure NotifySubSectionOnShow(Sender: TObject;
+                                     WithChilds: Boolean = true); virtual;
+    procedure RemoveAllHandlersOfObject(AnObject: TObject);
+    procedure AddHandlerOnShow(const OnShowEvent: TNotifyEvent;
+                               AsLast: boolean = false);
+    procedure RemoveHandlerOnShow(const OnShowEvent: TNotifyEvent);
     procedure WriteDebugReport(const Prefix: string;
                                MenuItemDebugReport: boolean); override;
     procedure ConsistencyCheck; override;
@@ -352,12 +361,14 @@ var
   // Source Editor: Popupmenu
   SourceEditorMenuRoot: TIDEMenuSection;
   // Source Editor: First dynamic section for often used context sensitive stuff
+  //                The items are cleared automatically after each popup.
   SrcEditMenuSectionFirstDynamic: TIDEMenuSection;
   // Source Editor: First static section (e.g. Find Declaration)
   SrcEditMenuSectionFirstStatic: TIDEMenuSection;
   // Source Editor: Clipboard section (e.g. cut, copy, paste)
   SrcEditMenuSectionClipboard: TIDEMenuSection;
   // Source Editor: File Specific dynamic section
+  //                The items are cleared automatically after each popup.
   SrcEditMenuSectionFileDynamic: TIDEMenuSection;
   // Source Editor: Marks section
   SrcEditMenuSectionMarks: TIDEMenuSection;
@@ -1065,6 +1076,25 @@ begin
   end;
 end;
 
+procedure TIDEMenuSection.NotifySubSectionOnShow(Sender: TObject;
+  WithChilds: Boolean);
+var
+  i: Integer;
+  Child: TIDEMenuItem;
+begin
+  //DebugLn(['TIDEMenuSection.NotifySubSectionOnShow ',Name,' ChildsAsSubMenu=',ChildsAsSubMenu,' Count=',Count]);
+  FSectionHandlers[imshtOnShow].CallNotifyEvents(Sender);
+  if WithChilds or (not ChildsAsSubMenu) then begin
+    i:=0;
+    while i<Count do begin
+      Child:=Items[i];
+      if Child is TIDEMenuSection then
+        TIDEMenuSection(Child).NotifySubSectionOnShow(Sender,false);
+      inc(i);
+    end;
+  end;
+end;
+
 procedure TIDEMenuSection.ItemVisibleActiveChanged(AnItem: TIDEMenuItem);
 var
   OldVisibleActive: Boolean;
@@ -1285,6 +1315,26 @@ begin
   UpdateMenuStructure;
 end;
 
+procedure TIDEMenuSection.RemoveAllHandlersOfObject(AnObject: TObject);
+var
+  HandlerType: TIDEMenuSectionHandlerType;
+begin
+  for HandlerType:=Low(TIDEMenuSectionHandlerType)
+  to High(TIDEMenuSectionHandlerType) do
+    FSectionHandlers[HandlerType].RemoveAllMethodsOfObject(AnObject);
+end;
+
+procedure TIDEMenuSection.AddHandlerOnShow(const OnShowEvent: TNotifyEvent;
+  AsLast: boolean);
+begin
+  AddHandler(imshtOnShow,TMethod(OnShowEvent));
+end;
+
+procedure TIDEMenuSection.RemoveHandlerOnShow(const OnShowEvent: TNotifyEvent);
+begin
+  RemoveHandler(imshtOnShow,TMethod(OnShowEvent));
+end;
+
 procedure TIDEMenuSection.WriteDebugReport(const Prefix: string;
   MenuItemDebugReport: boolean);
 var
@@ -1341,6 +1391,26 @@ begin
     FNeedBottomSeparator:=false;
   end;
   FreeAndNil(FBottomSeparator);
+end;
+
+procedure TIDEMenuSection.AddHandler(HandlerType: TIDEMenuSectionHandlerType;
+  const AMethod: TMethod; AsLast: boolean);
+begin
+  if FSectionHandlers[HandlerType]=nil then
+    FSectionHandlers[HandlerType]:=TMethodList.Create;
+  FSectionHandlers[HandlerType].Add(AMethod);
+end;
+
+procedure TIDEMenuSection.RemoveHandler(
+  HandlerType: TIDEMenuSectionHandlerType; const AMethod: TMethod);
+begin
+  FSectionHandlers[HandlerType].Remove(AMethod);
+end;
+
+procedure TIDEMenuSection.MenuItemClick(Sender: TObject);
+begin
+  inherited MenuItemClick(Sender);
+  NotifySubSectionOnShow(Sender);
 end;
 
 procedure TIDEMenuSection.SetMenuItem(const AValue: TMenuItem);

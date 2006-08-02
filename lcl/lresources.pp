@@ -402,7 +402,54 @@ type
     procedure WriteData(Writer: TWriter);
     function HasData: Boolean;
   end;
+  
+  { TReaderUniqueNamer - dummy class, used by the reader functions to rename
+    components, that are read from a stream, on the fly. }
 
+  TReaderUniqueNamer = class
+    procedure OnSetName(Reader: TReader; Component: TComponent;
+                        var Name: string);
+  end;
+
+{ TReaderUniqueNamer }
+
+procedure TReaderUniqueNamer.OnSetName(Reader: TReader; Component: TComponent;
+  var Name: string);
+  
+  procedure MakeValidIdentifier;
+  var
+    i: Integer;
+  begin
+    for i:=length(Name) downto 1 do
+      if not (Name[i] in ['0'..'9','_','a'..'z','A'..'Z']) then
+        System.Delete(Name,i,1);
+    if (Name<>'') and (Name[1] in ['0'..'9']) then
+      Name:='_'+Name;
+  end;
+
+  function NameIsUnique: Boolean;
+  var
+    Owner: TComponent;
+    i: Integer;
+    CurComponent: TComponent;
+  begin
+    Result:=true;
+    if Name='' then exit;
+    Owner:=Component.Owner;
+    if Owner=nil then exit;
+    for i:=0 to Owner.ComponentCount-1 do begin
+      CurComponent:=Owner.Components[i];
+      if CurComponent=Component then continue;
+      if CompareText(CurComponent.Name,Name)=0 then exit(false);
+    end;
+  end;
+  
+begin
+  MakeValidIdentifier;
+  while not NameIsUnique do
+    Name:=CreateNextIdentifier(Name);
+end;
+  
 { TDefineRectPropertyClass }
 
 constructor TDefineRectPropertyClass.Create(AValue, ADefaultRect: PRect);
@@ -570,6 +617,7 @@ var
   IsInherited: Boolean;
   AClassName: String;
   AClass: TComponentClass;
+  UniqueNamer: TReaderUniqueNamer;
 begin
   // get root class
   AClassName:=GetClassNameFromLRSStream(AStream,IsInherited);
@@ -599,14 +647,27 @@ begin
   // read the root component
   DestroyDriver:=false;
   Reader:=nil;
+  UniqueNamer:=nil;
   try
+    UniqueNamer:=TReaderUniqueNamer.Create;
     Reader:=CreateLRSReader(AStream,DestroyDriver);
+    Reader.Root:=RootComponent;
+    Reader.Owner:=TheOwner;
     Reader.Parent:=Parent;
     Reader.OnFindComponentClass:=OnFindComponentClass;
-    Reader.ReadRootComponent(RootComponent);
+    Reader.OnSetName:=@UniqueNamer.OnSetName;
+    Reader.BeginReferences;
+    try
+      Reader.Driver.BeginRootComponent;
+      RootComponent:=Reader.ReadComponent(RootComponent);
+      Reader.FixupReferences;
+    finally
+      Reader.EndReferences;
+    end;
   finally
     if DestroyDriver then
       Reader.Driver.Free;
+    UniqueNamer.Free;
     Reader.Free;
   end;
 end;
@@ -683,24 +744,19 @@ procedure LoadComponentFromConfig(Config: TConfigStorage; const Path: string;
 var
   s: String;
   TxtStream: TMemoryStream;
-  BinStream: TMemoryStream;
 begin
   // read from config
   s:=Config.GetValue(Path,'');
-  BinStream:=nil;
   TxtStream:=nil;
   try
-    // convert text format into binary format
     TxtStream:=TMemoryStream.Create;
     if s<>'' then
       TxtStream.Write(s[1],length(s));
-    BinStream:=TMemoryStream.Create;
-    LRSObjectTextToBinary(TxtStream,BinStream);
+    TxtStream.Position:=0;
     // create component from stream
-    ReadComponentFromBinaryStream(BinStream,RootComponent,OnFindComponentClass,
-                                  TheOwner,Parent);
+    ReadComponentFromTextStream(TxtStream,RootComponent,OnFindComponentClass,
+                                TheOwner,Parent);
   finally
-    BinStream.Free;
     TxtStream.Free;
   end;
 end;

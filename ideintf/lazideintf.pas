@@ -235,12 +235,8 @@ end;
 
 procedure TLazIDEInterface.DoCallNotifyHandler(
   HandlerType: TLazarusIDEHandlerType);
-var
-  i: Integer;
 begin
-  i:=FLazarusIDEHandlers[HandlerType].Count;
-  while FLazarusIDEHandlers[HandlerType].NextDownIndex(i) do
-    TNotifyEvent(FLazarusIDEHandlers[HandlerType][i])(Self);
+  FLazarusIDEHandlers[HandlerType].CallNotifyEvents(Self);
 end;
 
 function TLazIDEInterface.DoCallModalFunctionHandler(

@@ -5954,13 +5954,13 @@ begin
   RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('AnsiString'),
     TFileNameEdit, 'Filter', TFileDlgFilterProperty);
   RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TAnchorSide'),
-    nil, 'AnchorSideLeft', THiddenPropertyEditor);
+    TControl, 'AnchorSideLeft', THiddenPropertyEditor);
   RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TAnchorSide'),
-    nil, 'AnchorSideTop', THiddenPropertyEditor);
+    TControl, 'AnchorSideTop', THiddenPropertyEditor);
   RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TAnchorSide'),
-    nil, 'AnchorSideRight', THiddenPropertyEditor);
+    TControl, 'AnchorSideRight', THiddenPropertyEditor);
   RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TAnchorSide'),
-    nil, 'AnchorSideBottom', THiddenPropertyEditor);
+    TControl, 'AnchorSideBottom', THiddenPropertyEditor);
   RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('AnsiString'),
     TCustomPropertyStorage, 'Filename', TFileNamePropertyEditor);
 end;
@@ -5991,7 +5991,6 @@ begin
 end;
 
 initialization
-  {$I stringspropeditdlg.lrs}
   {$I collectionpropeditform.lrs}
   
   InitPropEdits;

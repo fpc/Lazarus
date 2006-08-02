@@ -27,7 +27,8 @@ unit IDETextConverter;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Controls, Forms, FileUtil, SrcEditorIntf;
+  Classes, SysUtils, LCLProc, Controls, Forms, FileUtil, SrcEditorIntf,
+  PropEdits;
   
 type
   TCustomTextConverterTool = class;
@@ -53,27 +54,40 @@ type
     FStrings: TStrings;
     FCurrentType: TTextConverterType;
     FFileIsTemporary: boolean;
+    FStringsIsTemporary: Boolean;
+    procedure CreateTempFilename;
     function GetFilename: string;
     function GetSource: string;
     function GetStrings: TStrings;
+    procedure RemoveStrings;
+    procedure SaveToFile(const NewFilename: string);
     procedure SetFilename(const AValue: string);
     procedure SetSource(const AValue: string);
     procedure SetStrings(const AValue: TStrings);
     procedure SetCurrentType(const AValue: TTextConverterType);
     procedure SetFileIsTemporary(const AValue: boolean);
-    procedure SaveToFile(const NewFilename: string);
-    procedure CreateTempFilename;
+    procedure SetStringsIsTemporary(const AValue: Boolean);
   protected
     function GetTempFilename: string; virtual;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
+    procedure Clear;
     function Execute(ToolList: TComponent): TModalResult;// run the tools
+    function LoadFromFile(const AFilename: string;
+                          UseIDECache: Boolean = true;
+                          UpdateFromDisk: Boolean = true;
+                          Revert: Boolean = false
+                          ): Boolean; virtual;
+    procedure InitWithFilename(const AFilename: string);
+    procedure InitWithSource(const ASource: string);
+    procedure InitWithStrings(const aStrings: TStrings);
     property CurrentType: TTextConverterType read FCurrentType write SetCurrentType;
     property Source: string read GetSource write SetSource;
     property Filename: string read GetFilename write SetFilename;
     property Strings: TStrings read GetStrings write SetStrings;
     property FileIsTemporary: boolean read FFileIsTemporary write SetFileIsTemporary;
+    property StringsIsTemporary: Boolean read FStringsIsTemporary write SetStringsIsTemporary;
   end;
 
   { TCustomTextConverterTool
@@ -87,15 +101,15 @@ type
     procedure SetCaption(const AValue: string);
     procedure SetDescription(const AValue: string);
   public
+    constructor Create(TheOwner: TComponent); override;
     function Execute(aText: TIDETextConverter): TModalResult; virtual; abstract;
     procedure Assign(Source: TPersistent); override;
-    class function ClassDescription: string; virtual; abstract;
+    class function ClassDescription: string; virtual; abstract;//the first line should be a short title
     class function FirstLineOfClassDescription: string;
   published
-    property Name;
     property Caption: string read FCaption write SetCaption;
     property Description: string read FDescription write SetDescription;
-    property Enabled: boolean read FEnabled write FEnabled;
+    property Enabled: boolean read FEnabled write FEnabled default True;
   end;
   TCustomTextConverterToolClass = class of TCustomTextConverterTool;
 
@@ -108,7 +122,7 @@ type
     trtRegExpr,         // use regular expressions for find and replace
     trtMultiLine        // ignore line boundaries. The expression can span multiple lines.
     //TODO trtSearchInReplacement,// when replaced, continue search at start of replacement, instead of end of replacement
-    //TODO trtReplaceUntilNotFound// restart replace until the pattern not found
+    //TODO trtReplaceUntilNotFound// restart replace until pattern not found
     );
   TTextReplaceToolOptions = set of TTextReplaceToolOption;
   
@@ -159,6 +173,8 @@ type
     property Items[Index: integer]: TCustomTextConverterToolClass read GetItems; default;
     property Count: integer read GetCount;
     function GetTempFilename: string; virtual; abstract;
+    function LoadFromFile(Converter: TIDETextConverter; const AFilename: string;
+                          UpdateFromDisk, Revert: Boolean): Boolean; virtual; abstract;
   end;
   
 var
@@ -189,6 +205,7 @@ begin
     SrcTool:=Src.Components[i] as TCustomTextConverterTool;
     NewTool:=TCustomTextConverterToolClass(SrcTool.ClassType).Create(Dest);
     NewTool.Assign(SrcTool);
+    NewTool.Name:=SrcTool.Name;
   end;
 end;
 
@@ -217,16 +234,28 @@ begin
   Result:=FStrings;
 end;
 
+procedure TIDETextConverter.RemoveStrings;
+begin
+  if StringsIsTemporary then
+    FStrings.Free;
+  FStrings:=nil;
+  FStringsIsTemporary:=false;
+end;
+
 procedure TIDETextConverter.SetSource(const AValue: string);
 begin
   FCurrentType:=tctSource;
+  RemoveStrings;
   FSource:=AValue;
 end;
 
 procedure TIDETextConverter.SetStrings(const AValue: TStrings);
 begin
   FCurrentType:=tctStrings;
+  if (AValue<>FStrings) and StringsIsTemporary then
+    FreeAndNil(FStrings);
   FStrings:=AValue;
+  FStringsIsTemporary:=false;
 end;
 
 procedure TIDETextConverter.SetCurrentType(const AValue: TTextConverterType);
@@ -243,7 +272,7 @@ begin
       tctStrings:
         if FStrings<>nil then begin
           FSource:=FStrings.Text;
-          FreeAndNil(FStrings);
+          RemoveStrings;
         end;
       tctFile:
         if FileExists(FFilename) then begin
@@ -266,6 +295,7 @@ begin
       if FStrings<>nil then
         RaiseGDBException('TTextConverterText.SetCurrentType FStrings<>nil');
       FStrings:=TStringList.Create;
+      fStringsIsTemporary:=true;
       case FCurrentType of
       tctSource:
         begin
@@ -284,6 +314,8 @@ begin
   tctFile:
     // convert to File
     begin
+      // keep old Filename, so that a Filename, Source, Filename combination
+      // uses the same Filename
       if FFilename='' then
         CreateTempFilename;
       case FCurrentType of
@@ -302,7 +334,7 @@ begin
       tctStrings:
         if FStrings<>nil then begin
           FStrings.SaveToFile(FFilename);
-          FreeAndNil(FStrings);
+          RemoveStrings;
         end;
       end;
     end;
@@ -340,6 +372,7 @@ begin
   tctStrings:
     begin
       fStrings.SaveToFile(TrimmedFilename);
+      RemoveStrings;
     end;
   end;
   FCurrentType:=tctFile;
@@ -350,6 +383,12 @@ procedure TIDETextConverter.CreateTempFilename;
 begin
   FFilename:=GetTempFilename;
   FFileIsTemporary:=true;
+end;
+
+procedure TIDETextConverter.SetStringsIsTemporary(const AValue: Boolean);
+begin
+  if FStringsIsTemporary=AValue then exit;
+  FStringsIsTemporary:=AValue;
 end;
 
 function TIDETextConverter.GetTempFilename: string;
@@ -368,7 +407,16 @@ end;
 
 destructor TIDETextConverter.Destroy;
 begin
+  RemoveStrings;
   inherited Destroy;
+end;
+
+procedure TIDETextConverter.Clear;
+begin
+  FFilename:='';
+  FSource:='';
+  RemoveStrings;
+  FCurrentType:=tctSource;
 end;
 
 function TIDETextConverter.Execute(ToolList: TComponent): TModalResult;
@@ -392,6 +440,61 @@ begin
   end;
 end;
 
+function TIDETextConverter.LoadFromFile(const AFilename: string;
+  UseIDECache: Boolean; UpdateFromDisk: Boolean; Revert: Boolean): Boolean;
+var
+  fs: TFileStream;
+begin
+  if UseIDECache and (TextConverterToolClasses<>nil) then begin
+    Result:=TextConverterToolClasses.LoadFromFile(Self,AFilename,
+                                                  UpdateFromDisk,Revert);
+  end else begin
+    Result:=false;
+    try
+      case CurrentType of
+      tctSource:
+        begin
+          fs:=TFileStream.Create(AFilename,fmOpenRead);
+          try
+            SetLength(FSource,fs.Size);
+            if fSource<>'' then
+              fs.Read(fSource[1],length(fSource));
+          finally
+            fs.Free;
+          end;
+        end;
+      tctFile:
+        CopyFile(AFilename,FFilename);
+      tctStrings:
+        FStrings.LoadFromFile(AFilename);
+      end;
+      Result:=true;
+    except
+    end;
+  end;
+end;
+
+procedure TIDETextConverter.InitWithFilename(const AFilename: string);
+begin
+  Clear;
+  FCurrentType:=tctFile;
+  FFilename:=AFilename;
+end;
+
+procedure TIDETextConverter.InitWithSource(const ASource: string);
+begin
+  Clear;
+  FCurrentType:=tctSource;
+  FSource:=ASource;
+end;
+
+procedure TIDETextConverter.InitWithStrings(const aStrings: TStrings);
+begin
+  Clear;
+  FCurrentType:=tctStrings;
+  FStrings:=aStrings;
+end;
+
 { TCustomTextConverterTool }
 
 procedure TCustomTextConverterTool.SetCaption(const AValue: string);
@@ -406,13 +509,18 @@ begin
   FDescription:=AValue;
 end;
 
+constructor TCustomTextConverterTool.Create(TheOwner: TComponent);
+begin
+  inherited Create(TheOwner);
+  Enabled:=true;
+end;
+
 procedure TCustomTextConverterTool.Assign(Source: TPersistent);
 var
   Src: TCustomTextConverterTool;
 begin
   if Source is TCustomTextConverterTool then begin
     Src:=TCustomTextConverterTool(Source);
-    Name:=Src.Name;
     Caption:=Src.Caption;
     Description:=Src.Description;
   end else
@@ -462,8 +570,10 @@ var
   Flags: TSrcEditSearchOptions;
   Prompt: Boolean;
 begin
+  DebugLn(['TCustomTextReplaceTool.Execute ',dbgsName(Self),' ',dbgsName(aText)]);
   Result:=mrCancel;
   if aText=nil then exit;
+  if SearchFor='' then exit(mrOk);
   Source:=aText.Source;
   Flags:=[];
   if trtMatchCase in Options then Include(Flags,sesoMatchCase);
@@ -474,6 +584,7 @@ begin
   Result:=IDESearchInText('',Source,SearchFor,ReplaceWith,Flags,Prompt,nil);
   if Result=mrOk then
     aText.Source:=Source;
+  DebugLn(['TCustomTextReplaceTool.Execute END Result=',Result=mrOk]);
 end;
 
 procedure TCustomTextReplaceTool.Assign(Source: TPersistent);
@@ -562,6 +673,12 @@ begin
   if Reader=nil then ;
   ComponentClass:=FindByName(aClassName);
 end;
+
+initialization
+  RegisterPropertyEditor(TypeInfo(AnsiString),
+    TCustomTextReplaceTool, 'SearchFor', TStringMultilinePropertyEditor);
+  RegisterPropertyEditor(TypeInfo(AnsiString),
+    TCustomTextReplaceTool, 'ReplaceWith', TStringMultilinePropertyEditor);
 
 end.
 

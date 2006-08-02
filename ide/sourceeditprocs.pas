@@ -34,12 +34,12 @@ unit SourceEditProcs;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, LCLType, GraphType, Graphics,
+  Classes, SysUtils, LCLProc, LCLType, GraphType, Graphics, Controls,
   SynEdit, SynRegExpr, SynCompletion,
-  BasicCodeTools, CodeTree, CodeToolManager, PascalParserTool, FileProcs,
-  IdentCompletionTool,
+  BasicCodeTools, CodeTree, CodeCache, CodeToolManager, PascalParserTool,
+  FileProcs, IdentCompletionTool,
   LazIDEIntf, TextTools, IDETextConverter,
-  MainIntf, EditorOptions, CodeToolsOptions;
+  DialogProcs, MainIntf, EditorOptions, CodeToolsOptions;
 
 type
 
@@ -48,6 +48,8 @@ type
   TLazTextConverterToolClasses = class(TTextConverterToolClasses)
   protected
     function GetTempFilename: string; override;
+    function LoadFromFile(Converter: TIDETextConverter; const AFilename: string;
+                          UpdateFromDisk, Revert: Boolean): Boolean; override;
   end;
   
 procedure SetupTextConverters;
@@ -502,6 +504,28 @@ begin
     BaseDir:=GetCurrentDir;
   BaseDir:=CleanAndExpandDirectory(BaseDir);
   Result:=FileProcs.GetTempFilename(BaseDir,'convert_');
+end;
+
+function TLazTextConverterToolClasses.LoadFromFile(
+  Converter: TIDETextConverter; const AFilename: string; UpdateFromDisk,
+  Revert: Boolean): Boolean;
+var
+  TheFilename: String;
+  CodeBuf: TCodeBuffer;
+begin
+  TheFilename:=CleanAndExpandFilename(AFilename);
+  CodeBuf:=CodeToolBoss.LoadFile(TheFilename,UpdateFromDisk,Revert);
+  if CodeBuf=nil then
+    exit(false);
+  Result:=true;
+  case Converter.CurrentType of
+  tctSource:
+    Converter.Source:=CodeBuf.Source;
+  tctFile:
+    Result:=SaveStringToFile(Converter.Filename,CodeBuf.Source,[])=mrOk;
+  tctStrings:
+    CodeBuf.AssignTo(Converter.Strings,true);
+  end;
 end;
 
 initialization

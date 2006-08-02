@@ -60,6 +60,7 @@ type
     procedure Insert(Index: integer; const AMethod: TMethod);
     procedure Move(OldIndex, NewIndex: integer);
     procedure RemoveAllMethodsOfObject(const AnObject: TObject);
+    procedure CallNotifyEvents(Sender: TObject);
   public
     property Items[Index: integer]: TMethod read GetItems write SetItems; default;
   end;
@@ -741,6 +742,15 @@ begin
     if TObject(FItems[i].Data)=AnObject then Delete(i);
     dec(i);
   end;
+end;
+
+procedure TMethodList.CallNotifyEvents(Sender: TObject);
+var
+  i: LongInt;
+begin
+  i:=Count;
+  while NextDownIndex(i) do
+    TNotifyEvent(Items[i])(Self);
 end;
 
 {------------------------------------------------------------------------------

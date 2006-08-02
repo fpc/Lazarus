@@ -22,9 +22,9 @@ unit IDETextConvListEdit;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  ClipBrd,
-  IDETextConverter, ExtCtrls, ObjectInspector, Buttons,
+  Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
+  StdCtrls, ClipBrd, Buttons, ExtCtrls,
+  IDETextConverter, ObjectInspector,
   IDETextConvListAdd;
 
 type
@@ -63,10 +63,16 @@ type
     procedure SetModified(const AValue: boolean);
     procedure UpdateAll;
     procedure UpdateToolsListBox;
+    procedure UpdateButtons;
     procedure MoveSelection(Offset: integer);
     function GetCurrentTool: TCustomTextConverterTool;
+    procedure MakeToolCaptionUnique(NewTool: TCustomTextConverterTool);
+    procedure MakeToolNameUnique(NewTool: TCustomTextConverterTool);
+    procedure MakeToolCaptionAndNameUnique(NewTool: TCustomTextConverterTool);
   public
     procedure SelectTool(Tool: TCustomTextConverterTool);
+    function CreateTool(ToolClass: TCustomTextConverterToolClass
+                        ): TCustomTextConverterTool;
     property ListOfTools: TComponent read FListOfTools write SetListOfTools;
     property Modified: boolean read FModified write SetModified;
     property OnModified: TNotifyEvent read FOnModified write FOnModified;
@@ -98,6 +104,8 @@ begin
   PropertyGrid.AnchorToNeighbour(akTop,0,UpDownSplitter);
   PropertyGrid.Parent:=Self;
   PropertyGrid.OnModified:=@PropertyGridModified;
+  
+  UpdateButtons;
 end;
 
 procedure TTextConvListEditor.MoveToolDownButtonClick(Sender: TObject);
@@ -127,6 +135,7 @@ begin
       raise Exception.Create('not a TCustomTextConverterTool');
     end;
     NewTool:=TCustomTextConverterTool(NewComponent);
+    MakeToolCaptionAndNameUnique(NewTool);
     Modified:=true;
     UpdateToolsListBox;
     SelectTool(NewTool);
@@ -140,9 +149,13 @@ begin
 end;
 
 procedure TTextConvListEditor.PropertyGridModified(Sender: TObject);
+var
+  Tool: TCustomTextConverterTool;
 begin
-  if GetCurrentTool<>nil then
-    Modified:=true;
+  Tool:=GetCurrentTool;
+  if Tool=nil then exit;
+  MakeToolCaptionAndNameUnique(Tool);
+  Modified:=true;
 end;
 
 procedure TTextConvListEditor.ToolsListBoxSelectionChange(Sender: TObject;
@@ -151,6 +164,8 @@ var
   Tool: TCustomTextConverterTool;
 begin
   if User then ;
+  if csDestroying in ComponentState then exit;
+  UpdateButtons;
   Tool:=GetCurrentTool;
   PropertyGrid.TIObject:=Tool;
 end;
@@ -158,14 +173,10 @@ end;
 procedure TTextConvListEditor.AddToolButtonClick(Sender: TObject);
 var
   ToolClass: TCustomTextConverterToolClass;
-  NewTool: TCustomTextConverterTool;
 begin
   if FListOfTools=nil then exit;
   if ShowIDETextConvListAddDlg(ToolClass)<>mrOk then exit;
-  NewTool:=ToolClass.Create(FListOfTools);
-  Modified:=true;
-  UpdateToolsListBox;
-  SelectTool(NewTool);
+  CreateTool(ToolClass);
 end;
 
 procedure TTextConvListEditor.CloneButtonClick(Sender: TObject);
@@ -177,6 +188,7 @@ begin
   if Tool=nil then exit;
   NewTool:=TCustomTextConverterToolClass(Tool.ClassType).Create(FListOfTools);
   NewTool.Assign(Tool);
+  MakeToolCaptionAndNameUnique(NewTool);
   Modified:=true;
   UpdateToolsListBox;
   SelectTool(NewTool);
@@ -251,7 +263,7 @@ begin
   sl:=TStringList.Create;
   if FListOfTools<>nil then begin
     for i:=0 to FListOfTools.ComponentCount-1 do begin
-      Tool:=FListOfTools as TCustomTextConverterTool;
+      Tool:=FListOfTools.Components[i] as TCustomTextConverterTool;
       sl.Add(Tool.Caption);
     end;
   end;
@@ -265,6 +277,19 @@ begin
   if OldSelected<>'' then
     ToolsListBox.ItemIndex:=ToolsListBox.Items.IndexOf(OldSelected);
   sl.Free;
+end;
+
+procedure TTextConvListEditor.UpdateButtons;
+var
+  i: LongInt;
+begin
+  i:=ToolsListBox.ItemIndex;
+  DeleteToolButton.Enabled:=(i>=0);
+  MoveToolDownButton.Enabled:=(i<ToolsListBox.Items.Count-1);
+  MoveToolUpButton.Enabled:=(i>0);
+  CloneButton.Enabled:=(i>=0);
+  PasteButton.Enabled:=true;
+  CopyToolButton.Enabled:=(i>=0);
 end;
 
 procedure TTextConvListEditor.MoveSelection(Offset: integer);
@@ -295,6 +320,82 @@ begin
   Result:=TCustomTextConverterTool(FListOfTools.Components[i]);
 end;
 
+procedure TTextConvListEditor.MakeToolCaptionUnique(NewTool: TCustomTextConverterTool);
+var
+  NewCaption: String;
+
+  function CaptionIsUnique: Boolean;
+  var
+    i: Integer;
+    CurTool: TCustomTextConverterTool;
+  begin
+    if NewCaption='' then exit(false);
+    for i:=0 to FListOfTools.ComponentCount-1 do begin
+      CurTool:=TCustomTextConverterTool(FListOfTools.Components[i]);
+      if CurTool=NewTool then continue;
+      if CompareText(CurTool.Caption,NewCaption)=0 then exit(false);
+    end;
+    Result:=true;
+    NewTool.Caption:=NewCaption;
+  end;
+
+begin
+  NewCaption:=NewTool.Caption;
+  if CaptionIsUnique then exit;
+  NewCaption:=NewTool.FirstLineOfClassDescription;
+  if NewCaption='' then NewCaption:=NewTool.ClassName;
+  while not CaptionIsUnique do
+    NewCaption:=CreateNextIdentifier(NewCaption);
+end;
+
+procedure TTextConvListEditor.MakeToolNameUnique(
+  NewTool: TCustomTextConverterTool);
+var
+  NewName: String;
+
+  procedure MakeValidIdentifier;
+  var
+    i: Integer;
+  begin
+    for i:=length(NewName) downto 1 do
+      if not (NewName[i] in ['0'..'9','_','a'..'z','A'..'Z']) then
+        System.Delete(NewName,i,1);
+    if (NewName<>'') and (NewName[1] in ['0'..'9']) then
+      NewName:='_'+NewName;
+  end;
+
+  function NameIsUnique: Boolean;
+  var
+    i: Integer;
+    CurTool: TCustomTextConverterTool;
+  begin
+    MakeValidIdentifier;
+    if NewName='' then exit(false);
+    for i:=0 to FListOfTools.ComponentCount-1 do begin
+      CurTool:=TCustomTextConverterTool(FListOfTools.Components[i]);
+      if CurTool=NewTool then continue;
+      if CompareText(CurTool.Name,NewName)=0 then exit(false);
+    end;
+    Result:=true;
+    NewTool.Name:=NewName;
+  end;
+  
+begin
+  NewName:=NewTool.Name;
+  if NameIsUnique then exit;
+  NewName:=NewTool.FirstLineOfClassDescription;
+  if NewName='' then NewName:=NewTool.ClassName;
+  while not NameIsUnique do
+    NewName:=CreateNextIdentifier(NewName);
+end;
+
+procedure TTextConvListEditor.MakeToolCaptionAndNameUnique(
+  NewTool: TCustomTextConverterTool);
+begin
+  MakeToolNameUnique(NewTool);
+  MakeToolCaptionUnique(NewTool);
+end;
+
 procedure TTextConvListEditor.SelectTool(Tool: TCustomTextConverterTool);
 var
   i: LongInt;
@@ -304,6 +405,18 @@ begin
   i:=Tool.ComponentIndex;
   if (i<=0) or (i>=ToolsListBox.Items.Count) then exit;
   ToolsListBox.ItemIndex:=i;
+end;
+
+function TTextConvListEditor.CreateTool(ToolClass: TCustomTextConverterToolClass
+  ): TCustomTextConverterTool;
+begin
+  Result:=nil;
+  if FListOfTools=nil then exit;
+  Result:=ToolClass.Create(FListOfTools);
+  MakeToolCaptionAndNameUnique(Result);
+  Modified:=true;
+  UpdateToolsListBox;
+  SelectTool(Result);
 end;
 
 initialization

@@ -524,12 +524,8 @@ end;
   procedure TApplication.NotifyIdleHandler;
  ------------------------------------------------------------------------------}
 procedure TApplication.NotifyIdleHandler;
-var
-  i: integer;
 begin
-  i:=FApplicationHandlers[ahtIdle].Count;
-  while FApplicationHandlers[ahtIdle].NextDownIndex(i) do
-    TNotifyEvent(FApplicationHandlers[ahtIdle][i])(Self);
+  FApplicationHandlers[ahtIdle].CallNotifyEvents(Self);
 end;
 
 {------------------------------------------------------------------------------
@@ -537,32 +533,20 @@ end;
 
  ------------------------------------------------------------------------------}
 procedure TApplication.NotifyIdleEndHandler;
-var
-  i: integer;
 begin
-  i:=FApplicationHandlers[ahtIdleEnd].Count;
-  while FApplicationHandlers[ahtIdleEnd].NextDownIndex(i) do
-    TNotifyEvent(FApplicationHandlers[ahtIdleEnd][i])(Self);
+  FApplicationHandlers[ahtIdleEnd].CallNotifyEvents(Self);
 end;
 
 procedure TApplication.NotifyActivateHandler;
-var
-  i: integer;
 begin
   if Assigned(OnActivate) then OnActivate(Self);
-  i:=FApplicationHandlers[ahtActivate].Count;
-  while FApplicationHandlers[ahtActivate].NextDownIndex(i) do
-    TNotifyEvent(FApplicationHandlers[ahtActivate][i])(Self);
+  FApplicationHandlers[ahtActivate].CallNotifyEvents(Self);
 end;
 
 procedure TApplication.NotifyDeactivateHandler;
-var
-  i: integer;
 begin
   if Assigned(OnDeactivate) then OnDeactivate(Self);
-  i:=FApplicationHandlers[ahtDeactivate].Count;
-  while FApplicationHandlers[ahtDeactivate].NextDownIndex(i) do
-    TNotifyEvent(FApplicationHandlers[ahtDeactivate][i])(Self);
+  FApplicationHandlers[ahtDeactivate].CallNotifyEvents(Self);
 end;
 
 {------------------------------------------------------------------------------

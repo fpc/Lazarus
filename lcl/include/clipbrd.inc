@@ -387,6 +387,7 @@ begin
     s:=AsText;
     if s<>'' then
       MemStream.Write(s[1],length(s));
+    MemStream.Position:=0;
     ReadComponentFromTextStream(MemStream,RootComponent,OnFindComponentClass,
                                 Owner,Parent);
   finally

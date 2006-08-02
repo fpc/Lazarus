@@ -1,16 +1,16 @@
 object TextConvListEditor: TTextConvListEditor
   ActiveControl = ToolsListBox
   Caption = 'TextConvListEditor'
-  ClientHeight = 316
+  ClientHeight = 227
   ClientWidth = 519
   Constraints.MinHeight = 200
   Constraints.MinWidth = 400
   OnCreate = FormCreate
   PixelsPerInch = 75
   HorzScrollBar.Page = 518
-  VertScrollBar.Page = 315
+  VertScrollBar.Page = 226
   Left = 290
-  Height = 316
+  Height = 227
   Top = 202
   Width = 519
   object ToolsLabel: TLabel
@@ -31,11 +31,10 @@ object TextConvListEditor: TTextConvListEditor
     AnchorSideTop.Control = ToolsLabel
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = ToolsSplitter
-    AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = UpDownSplitter
     Height = 120
     Top = 24
-    Width = 236
+    Width = 232
   end
   object UpDownSplitter: TSplitter
     Align = alNone
@@ -55,7 +54,10 @@ object TextConvListEditor: TTextConvListEditor
   object ToolsPanel: TPanel
     Anchors = [akTop, akLeft, akRight, akBottom]
     BevelOuter = bvNone
-    Caption = 'ToolsPanel'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.HorizontalSpacing = 6
+    ChildSizing.VerticalSpacing = 6
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 2
     ClientHeight = 144
@@ -74,7 +76,9 @@ object TextConvListEditor: TTextConvListEditor
       Caption = 'AddToolButton'
       OnClick = AddToolButtonClick
       TabOrder = 0
+      Left = 6
       Height = 26
+      Top = 6
       Width = 120
     end
     object DeleteToolButton: TButton
@@ -82,8 +86,9 @@ object TextConvListEditor: TTextConvListEditor
       Caption = 'DeleteToolButton'
       OnClick = DeleteToolButtonClick
       TabOrder = 1
-      Left = 120
+      Left = 132
       Height = 26
+      Top = 6
       Width = 137
     end
     object MoveToolUpButton: TButton
@@ -91,8 +96,9 @@ object TextConvListEditor: TTextConvListEditor
       Caption = 'MoveToolUpButton'
       OnClick = MoveToolUpButtonClick
       TabOrder = 2
+      Left = 6
       Height = 26
-      Top = 26
+      Top = 38
       Width = 120
     end
     object MoveToolDownButton: TButton
@@ -100,9 +106,9 @@ object TextConvListEditor: TTextConvListEditor
       Caption = 'MoveToolDownButton'
       OnClick = MoveToolDownButtonClick
       TabOrder = 3
-      Left = 120
+      Left = 132
       Height = 26
-      Top = 26
+      Top = 38
       Width = 137
     end
     object CopyToolButton: TButton
@@ -110,8 +116,9 @@ object TextConvListEditor: TTextConvListEditor
       Caption = 'CopyToolButton'
       OnClick = CopyToolButtonClick
       TabOrder = 4
+      Left = 6
       Height = 26
-      Top = 52
+      Top = 70
       Width = 120
     end
     object PasteButton: TButton
@@ -119,9 +126,9 @@ object TextConvListEditor: TTextConvListEditor
       Caption = 'PasteButton'
       OnClick = PasteButtonClick
       TabOrder = 5
-      Left = 120
+      Left = 132
       Height = 26
-      Top = 52
+      Top = 70
       Width = 137
     end
     object CloneButton: TButton
@@ -129,8 +136,9 @@ object TextConvListEditor: TTextConvListEditor
       Caption = 'CloneButton'
       OnClick = CloneButtonClick
       TabOrder = 6
+      Left = 6
       Height = 26
-      Top = 78
+      Top = 102
       Width = 120
     end
   end

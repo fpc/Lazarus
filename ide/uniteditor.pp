@@ -817,116 +817,124 @@ var
 
 procedure RegisterStandardSourceEditorMenuItems;
 var
-  Path: String;
-  SubPath: String;
-  SubSubPath: String;
+  AParent: TIDEMenuSection;
   I: Integer;
 begin
   SourceEditorMenuRoot:=RegisterIDEMenuRoot(SourceEditorMenuRootName);
-  Path:=SourceEditorMenuRoot.Name;
+  AParent:=SourceEditorMenuRoot;
   
   // register the first dynamic section for often used context sensitive stuff
-  SrcEditMenuSectionFirstDynamic:=RegisterIDEMenuSection(Path,
+  SrcEditMenuSectionFirstDynamic:=RegisterIDEMenuSection(AParent,
                                                          'First dynamic section');
   // register the first static section
-  SrcEditMenuSectionFirstStatic:=RegisterIDEMenuSection(Path,'First static section');
-  SubPath:=SrcEditMenuSectionFirstStatic.GetPath;
-  SrcEditMenuFindDeclaration:=RegisterIDEMenuCommand(SubPath,'Find Declaration',
+  SrcEditMenuSectionFirstStatic:=RegisterIDEMenuSection(AParent,'First static section');
+  AParent:=SrcEditMenuSectionFirstStatic;
+  SrcEditMenuFindDeclaration:=RegisterIDEMenuCommand(AParent,'Find Declaration',
                                             uemFindDeclaration);
-  SrcEditMenuProcedureJump:=RegisterIDEMenuCommand(SubPath,'Procedure Jump',
+  SrcEditMenuProcedureJump:=RegisterIDEMenuCommand(AParent,'Procedure Jump',
                                             uemProcedureJump);
-  SrcEditMenuOpenFileAtCursor:=RegisterIDEMenuCommand(SubPath,
+  SrcEditMenuOpenFileAtCursor:=RegisterIDEMenuCommand(AParent,
                                      'Open File At Cursor',uemOpenFileAtCursor);
-  SrcEditMenuClosePage:=RegisterIDEMenuCommand(SubPath,
+  SrcEditMenuClosePage:=RegisterIDEMenuCommand(AParent,
                                                      'Close Page',uemClosePage);
 
   // register the Clipboard section
-  SrcEditMenuSectionClipboard:=RegisterIDEMenuSection(Path,'Clipboard');
-  SubPath:=SrcEditMenuSectionClipboard.GetPath;
-  SrcEditMenuCut:=RegisterIDEMenuCommand(SubPath,'Cut',uemCut);
-  SrcEditMenuCopy:=RegisterIDEMenuCommand(SubPath,'Copy',uemCopy);
-  SrcEditMenuPaste:=RegisterIDEMenuCommand(SubPath,'Paste',uemPaste);
-  SrcEditMenuCopyFilename:=RegisterIDEMenuCommand(SubPath,'Copy filename',uemCopyFilename);
+  AParent:=SourceEditorMenuRoot;
+  SrcEditMenuSectionClipboard:=RegisterIDEMenuSection(AParent,'Clipboard');
+  AParent:=SrcEditMenuSectionClipboard;
+  SrcEditMenuCut:=RegisterIDEMenuCommand(AParent,'Cut',uemCut);
+  SrcEditMenuCopy:=RegisterIDEMenuCommand(AParent,'Copy',uemCopy);
+  SrcEditMenuPaste:=RegisterIDEMenuCommand(AParent,'Paste',uemPaste);
+  SrcEditMenuCopyFilename:=RegisterIDEMenuCommand(AParent,'Copy filename',
+                                                  uemCopyFilename);
 
   // register the Marks section
-  SrcEditMenuSectionMarks:=RegisterIDEMenuSection(Path,'Marks section');
-  SubPath:=SrcEditMenuSectionMarks.GetPath;
+  AParent:=SourceEditorMenuRoot;
+  SrcEditMenuSectionMarks:=RegisterIDEMenuSection(AParent,'Marks section');
+  AParent:=SrcEditMenuSectionMarks;
 
     // register the Goto Bookmarks Submenu
-    SrcEditSubMenuGotoBookmarks:=RegisterIDESubMenu(SubPath,'Goto bookmarks',
+    SrcEditSubMenuGotoBookmarks:=RegisterIDESubMenu(AParent,'Goto bookmarks',
                                                     uemGotoBookmark);
-    SubSubPath:=SrcEditSubMenuGotoBookmarks.GetPath;
+    AParent:=SrcEditSubMenuGotoBookmarks;
     for I := 0 to 9 do
-      RegisterIDEMenuCommand(SubSubPath,'GotoBookmark'+IntToStr(I),
+      RegisterIDEMenuCommand(AParent,'GotoBookmark'+IntToStr(I),
                              uemBookmarkN+IntToStr(i));
-    SrcEditMenuNextBookmark:=RegisterIDEMenuCommand(SubSubPath,
+    SrcEditMenuNextBookmark:=RegisterIDEMenuCommand(AParent,
                                           'Goto next Bookmark',uemNextBookmark);
-    SrcEditMenuPrevBookmark:=RegisterIDEMenuCommand(SubSubPath,
+    SrcEditMenuPrevBookmark:=RegisterIDEMenuCommand(AParent,
                                       'Goto previous Bookmark',uemPrevBookmark);
 
     // register the Set Bookmarks Submenu
-    SrcEditSubMenuSetBookmarks:=RegisterIDESubMenu(SubPath,'Set bookmarks',
+    AParent:=SrcEditMenuSectionMarks;
+    SrcEditSubMenuSetBookmarks:=RegisterIDESubMenu(AParent,'Set bookmarks',
                                                    uemSetBookmark);
-    SubSubPath:=SrcEditSubMenuSetBookmarks.GetPath;
+    AParent:=SrcEditSubMenuSetBookmarks;
     for I := 0 to 9 do
-      RegisterIDEMenuCommand(SubSubPath,'SetBookmark'+IntToStr(I),
+      RegisterIDEMenuCommand(AParent,'SetBookmark'+IntToStr(I),
                              uemBookmarkN+IntToStr(i));
-    SrcEditMenuSetFreeBookmark:=RegisterIDEMenuCommand(SubSubPath,
+    SrcEditMenuSetFreeBookmark:=RegisterIDEMenuCommand(AParent,
                                       'Set a free Bookmark',uemSetFreeBookmark);
 
+    // register the Debug submenu
+    AParent:=SrcEditMenuSectionMarks;
+    SrcEditSubMenuDebug:=RegisterIDESubMenu(AParent,'Debug',uemDebugWord);
+
   // register the File Specific dynamic section
-  SrcEditMenuSectionFileDynamic:=RegisterIDEMenuSection(Path,
+  AParent:=SourceEditorMenuRoot;
+  SrcEditMenuSectionFileDynamic:=RegisterIDEMenuSection(AParent,
                                                         'File dynamic section');
 
-  // register the Debug submenu
-  SrcEditSubMenuDebug:=RegisterIDESubMenu(SubPath,'Debug',uemDebugWord);
-  SubSubPath:=SrcEditSubMenuDebug.GetPath;
+  AParent:=SrcEditSubMenuDebug;
     // register the Debug submenu items
-    SrcEditMenuAddBreakpoint:=RegisterIDEMenuCommand(SubSubPath,'Add Breakpoint',
+    SrcEditMenuAddBreakpoint:=RegisterIDEMenuCommand(AParent,'Add Breakpoint',
                                                      uemAddBreakpoint);
-    SrcEditMenuAddWatchAtCursor:=RegisterIDEMenuCommand(SubSubPath,
+    SrcEditMenuAddWatchAtCursor:=RegisterIDEMenuCommand(AParent,
                                        'Add Watch at Cursor',uemAddWatchAtCursor);
-    SrcEditMenuRunToCursor:=RegisterIDEMenuCommand(SubSubPath,
+    SrcEditMenuRunToCursor:=RegisterIDEMenuCommand(AParent,
                                                   'Run to cursor',uemRunToCursor);
-    SrcEditMenuViewCallStack:=RegisterIDEMenuCommand(SubSubPath,
+    SrcEditMenuViewCallStack:=RegisterIDEMenuCommand(AParent,
                                           'View Call Stack',uemViewCallStack);
 
   // register the Move Page section
-  SrcEditMenuSectionMovePage:=RegisterIDEMenuSection(Path,'Move Page section');
-  SubPath:=SrcEditMenuSectionMovePage.GetPath;
-  SrcEditMenuMoveEditorLeft:=RegisterIDEMenuCommand(SubPath,'MoveEditorLeft',
+  AParent:=SourceEditorMenuRoot;
+  SrcEditMenuSectionMovePage:=RegisterIDEMenuSection(AParent,'Move Page section');
+  AParent:=SrcEditMenuSectionMovePage;
+  SrcEditMenuMoveEditorLeft:=RegisterIDEMenuCommand(AParent,'MoveEditorLeft',
                                                     uemMoveEditorLeft);
-  SrcEditMenuMoveEditorRight:=RegisterIDEMenuCommand(SubPath,'MoveEditorRight',
+  SrcEditMenuMoveEditorRight:=RegisterIDEMenuCommand(AParent,'MoveEditorRight',
                                                     uemMoveEditorRight);
 
   // register the Refactoring submenu
-  SrcEditSubMenuRefactor:=RegisterIDESubMenu(Path,'Refactoring',uemRefactor);
-  SubSubPath:=SrcEditSubMenuRefactor.GetPath;
-  SrcEditMenuCompleteCode:=RegisterIDEMenuCommand(SubSubPath,'CompleteCode',
+  AParent:=SourceEditorMenuRoot;
+  SrcEditSubMenuRefactor:=RegisterIDESubMenu(AParent,'Refactoring',uemRefactor);
+  AParent:=SrcEditSubMenuRefactor;
+  SrcEditMenuCompleteCode:=RegisterIDEMenuCommand(AParent,'CompleteCode',
                                                   uemCompleteCode);
-  SrcEditMenuEncloseSelection:=RegisterIDEMenuCommand(SubSubPath,
+  SrcEditMenuEncloseSelection:=RegisterIDEMenuCommand(AParent,
                                         'EncloseSelection',uemEncloseSelection);
-  SrcEditMenuExtractProc:=RegisterIDEMenuCommand(SubSubPath,
+  SrcEditMenuExtractProc:=RegisterIDEMenuCommand(AParent,
                                                  'ExtractProc',uemExtractProc);
-  SrcEditMenuInvertAssignment:=RegisterIDEMenuCommand(SubSubPath,
+  SrcEditMenuInvertAssignment:=RegisterIDEMenuCommand(AParent,
                                         'InvertAssignment',uemInvertAssignment);
-  SrcEditMenuFindIdentifierReferences:=RegisterIDEMenuCommand(SubSubPath,
+  SrcEditMenuFindIdentifierReferences:=RegisterIDEMenuCommand(AParent,
                         'FindIdentifierReferences',uemFindIdentifierReferences);
-  SrcEditMenuRenameIdentifier:=RegisterIDEMenuCommand(SubSubPath,
+  SrcEditMenuRenameIdentifier:=RegisterIDEMenuCommand(AParent,
                                         'RenameIdentifier',uemRenameIdentifier);
 
   // register the Flags section
-  SrcEditMenuSectionFlags:=RegisterIDEMenuSection(Path,'Flags section');
-  SubPath:=SrcEditMenuSectionFlags.GetPath;
-  SrcEditMenuReadOnly:=RegisterIDEMenuCommand(SubPath,'ReadOnly',uemReadOnly);
+  AParent:=SourceEditorMenuRoot;
+  SrcEditMenuSectionFlags:=RegisterIDEMenuSection(AParent,'Flags section');
+  AParent:=SrcEditMenuSectionFlags;
+  SrcEditMenuReadOnly:=RegisterIDEMenuCommand(AParent,'ReadOnly',uemReadOnly);
   SrcEditMenuReadOnly.ShowAlwaysCheckable:=true;
-  SrcEditMenuShowLineNumbers:=RegisterIDEMenuCommand(SubPath,'ShowLineNumbers',
+  SrcEditMenuShowLineNumbers:=RegisterIDEMenuCommand(AParent,'ShowLineNumbers',
                                                      uemShowLineNumbers);
   SrcEditMenuShowLineNumbers.ShowAlwaysCheckable:=true;
-  SrcEditMenuShowUnitInfo:=RegisterIDEMenuCommand(SubPath,'ShowUnitInfo',
+  SrcEditMenuShowUnitInfo:=RegisterIDEMenuCommand(AParent,'ShowUnitInfo',
                                                   uemShowUnitInfo);
-  SrcEditMenuSectionHighlighter:=RegisterIDEMenuSection(SubPath,'Highlighter');
-  SrcEditMenuEditorProperties:=RegisterIDEMenuCommand(SubPath,
+  SrcEditMenuSectionHighlighter:=RegisterIDEMenuSection(AParent,'Highlighter');
+  SrcEditMenuEditorProperties:=RegisterIDEMenuCommand(AParent,
                                         'EditorProperties',uemEditorProperties);
 end;
 
@@ -3686,6 +3694,8 @@ begin
   end;
 
   if Assigned(OnPopupMenu) then OnPopupMenu(@AddContextPopupMenuItem);
+
+  SourceEditorMenuRoot.NotifySubSectionOnShow(Self);
 end;
 
 procedure TSourceNotebook.NotebookShowTabHint(Sender: TObject;
