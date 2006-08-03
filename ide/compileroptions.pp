@@ -42,7 +42,7 @@ interface
 
 uses
   Classes, SysUtils, FileProcs, FileUtil, LCLProc,
-  Laz_XMLCfg, ProjectIntf,
+  Laz_XMLCfg, ProjectIntf, MacroIntf,
   IDEProcs, LazConf, TransferMacros;
 
 type
@@ -1353,19 +1353,20 @@ var
   UnitOutDir: String;
   OutFilename: String;
 begin
-  if (TargetFilename<>'') and FilenameIsAbsolute(TargetFilename) then begin
+  Result:=TargetFilename;
+  IDEMacros.SubstituteMacros(Result);
+  if (Result<>'') and FilenameIsAbsolute(Result) then begin
     // fully specified target filename
-    Result:=TargetFilename;
-  end else if TargetFilename<>'' then begin
+  end else if Result<>'' then begin
     // TargetFilename is relative to project directory
-    Result:=AppendPathDelim(ExtractFilePath(MainSourceFileName))+TargetFilename;
+    Result:=AppendPathDelim(ExtractFilePath(MainSourceFileName))+Result;
   end else begin
     // calculate output directory
     UnitOutDir:=GetUnitOutPath(false);
     if UnitOutDir='' then
       UnitOutDir:=ExtractFilePath(MainSourceFileName);
-    if TargetFilename<>'' then
-      OutFilename:=TargetFilename
+    if Result<>'' then
+      OutFilename:=Result
     else
       OutFilename:=ExtractFileNameOnly(MainSourceFileName);
     //debugln('TBaseCompilerOptions.CreateTargetFilename MainSourceFileName=',MainSourceFileName,' OutFilename=',OutFilename,' TargetFilename=',TargetFilename);
