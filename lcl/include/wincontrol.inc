@@ -3042,29 +3042,15 @@ begin
   end;
   // draw specials for the wincontrols:
   if FWinControls <> nil then
-    for I := 0 to FWinControls.Count - 1 do
-      with TWinControl(FWinControls.Items[I]) do
-        if FCtl3D and (csFramed in ControlStyle)
-        and IsVisible then begin
-         //TODO: CreateSolidBrush and FrameRect
-         {FrameBrush := CreateSolidBrush(clBtnShadow);
-          FrameRect(DC, Rect(Left - 1, Top - 1, Left + Width, Top + Height),
-            FrameBrush);
-          DeleteObject(FrameBrush);
-          FrameBrush := CreateSolidBrush(clBtnHighlight);
-          FrameRect(DC, Rect(Left, Top, Left + Width + 1, Top + Height + 1),
-            FrameBrush);
-          DeleteObject(FrameBrush);
-          }
-        end;
-//DebugLn('[TWinControl.PaintControls] END ',Name,':',ClassName,'  DC=',DbgS(DC,8));
+    for I := 0 to FWinControls.Count - 1 do ;
+  //DebugLn('[TWinControl.PaintControls] END ',Name,':',ClassName,'  DC=',DbgS(DC,8));
 end;
 
 procedure TWinControl.PaintWindow(DC: HDC);
 var
   Message: TLMessage;
 begin
-//DebugLn('[TWinControl.PaintWindow] ',Name,':',Classname,'  DC=',DbgS(DC,8));
+  //DebugLn('[TWinControl.PaintWindow] ',Name,':',Classname,'  DC=',DbgS(DC,8));
   if (csDestroying in ComponentState)
   or ((DC=0) and (not HandleAllocated)) then
     exit;

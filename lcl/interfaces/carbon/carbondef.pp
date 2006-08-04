@@ -71,6 +71,15 @@ const
   LCLCarbonEventClass    = 'Laz ';
   LCLCarbonEventKindWake = 'Wake';
   LCLCarbonEventKindMain = 'Main';
+  
+type
+
+  { TDeviceContext }
+
+  TDeviceContext = class
+  public
+    Info: PWidgetInfo;
+  end;
 
 implementation
 

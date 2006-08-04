@@ -67,6 +67,7 @@ type
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
     class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); override;
     class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
+    class procedure Invalidate(const AWinControl: TWinControl); override;
   end;
 
   { TCarbonWSGraphicControl }
@@ -178,6 +179,17 @@ begin
   CFRelease(Pointer(CFString));
 end;
 
+class procedure TCarbonWSWinControl.Invalidate(const AWinControl: TWinControl);
+var
+  Info: PWidgetInfo;
+begin
+  Info:=GetWidgetInfo(Pointer(AWinControl.Handle));
+  //debugln(['TCarbonWSWinControl.Invalidate ',dbgsName(AWinControl),' ',Info^.WidgetType=cwtControlRef]);
+  if Info^.WidgetType=cwtControlRef then begin
+    HIViewReshapeStructure(HIViewRef(Info^.Widget));
+  end;
+end;
+
 class procedure TCarbonWSWinControl.DestroyHandle(const AWinControl: TWinControl);
 begin
   if not WSCheckHandleAllocated(AWincontrol, 'DestroyHandle')
@@ -191,13 +203,26 @@ class function TCarbonWSWinControl.GetClientBounds(const AWincontrol: TWinContro
   var ARect: TRect): Boolean;
 var
   AHiRect: HIRect;
+  AWndRect: FPCMacOSAll.Rect;
+  Info: PWidgetInfo;
 begin
-  Result := HIViewGetBounds(HIViewRef(AWinControl.Handle), AHiRect) = 0;
-  if not Result then Exit;
-  ARect.Top := Trunc(AHiRect.Origin.y);
-  ARect.Left := Trunc(AHiRect.Origin.x);
-  ARect.Right := ARect.Left + Trunc(AHiRect.size.width);
-  ARect.Bottom := ARect.Top + Trunc(AHIRect.size.height);
+  Info:=GetWidgetInfo(Pointer(AWinControl.Handle));
+  if Info^.WidgetType=cwtWindowRef then begin
+    Result := GetWindowBounds(WindowRef(AWinControl.Handle),kWindowContentRgn, AWndRect) = 0;
+    if not Result then Exit;
+    ARect.Top := AWndRect.left;
+    ARect.Left := AWndRect.top;
+    ARect.Right := AWndRect.right-AWndRect.left;
+    ARect.Bottom := AWndRect.bottom-AWndRect.top;
+    //debugln(['TCarbonWSWinControl.GetClientRect ',dbgs(ARect)]);
+  end else begin
+    Result := HIViewGetBounds(HIViewRef(AWinControl.Handle), AHiRect) = 0;
+    if not Result then Exit;
+    ARect.Top := Trunc(AHiRect.Origin.y);
+    ARect.Left := Trunc(AHiRect.Origin.x);
+    ARect.Right := ARect.Left + Trunc(AHiRect.size.width);
+    ARect.Bottom := ARect.Top + Trunc(AHIRect.size.height);
+  end;
 end;
 
 class function TCarbonWSWinControl.GetClientRect(const AWincontrol: TWinControl;
@@ -205,9 +230,10 @@ class function TCarbonWSWinControl.GetClientRect(const AWincontrol: TWinControl;
 var
   AHiRect: HIRect;
   AWndRect: FPCMacOSAll.Rect;
+  Info: PWidgetInfo;
 begin
-  if (AWinControl is TCustomForm)
-  and (AWinControl.Parent=nil) then begin
+  Info:=GetWidgetInfo(Pointer(AWinControl.Handle));
+  if Info^.WidgetType=cwtWindowRef then begin
     Result := GetWindowBounds(WindowRef(AWinControl.Handle),kWindowContentRgn, AWndRect) = 0;
     if not Result then Exit;
     ARect.Top := 0;//AHiRect.Origin.y;

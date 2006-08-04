@@ -47,7 +47,9 @@ procedure UnRegisterEventHandler(AHandler: TCarbonWSEventHandlerProc);
 function GetCarbonRect(Left, Top, Width, Height: Integer): FPCMacOSAll.Rect;
 function GetCarbonRect(const ARect: TRect): FPCMacOSAll.Rect;
 
-
+function CreateDefaultDevContext: TDeviceContext;
+function CreateDevContextForInfo(AnInfo: PWidgetInfo): TDeviceContext;
+procedure FreeDevContext(DC: TDeviceContext);
 
 function Dbgs(const ARect: FPCMacOSAll.Rect): string; overload;
 
@@ -238,6 +240,22 @@ begin
   Result.top:=ARect.Top;
   Result.right:=ARect.Right;
   Result.bottom:=ARect.Bottom;
+end;
+
+function CreateDefaultDevContext: TDeviceContext;
+begin
+  Result:=TDeviceContext.Create;
+end;
+
+function CreateDevContextForInfo(AnInfo: PWidgetInfo): TDeviceContext;
+begin
+  Result:=TDeviceContext.Create;
+  Result.Info:=AnInfo;
+end;
+
+procedure FreeDevContext(DC: TDeviceContext);
+begin
+  DC.Free;
 end;
 
 function Dbgs(const ARect: FPCMacOSAll.Rect): string;

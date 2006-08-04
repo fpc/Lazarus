@@ -68,10 +68,113 @@ end;
 function CarbonPrivateHIView_Update(ANextHandler: EventHandlerCallRef;
   AEvent: EventRef;
   AInfo: PWidgetInfo): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
+var
+  WidgetBounds: TRect;
+  AWinControl: TWinControl;
+  PosChanged, SizeChanged: Boolean;
+
+  procedure UpdateBounds;
+  var
+    AWndRect: FPCMacOSAll.Rect;
+  begin
+    if AInfo^.widgetType=cwtWindowRef then begin
+      GetWindowBounds(WindowRef(AInfo^.Widget),kWindowStructureRgn, AWndRect);
+    end else begin
+      GetControlBounds(ControlRef(AInfo^.Widget), AWndRect);
+    end;
+    WidgetBounds:=Rect(AWndRect.left,AWndRect.top,AWndRect.right-AWndRect.left,
+                       AWndRect.bottom-AWndRect.top);
+    PosChanged:=(WidgetBounds.Left<>AWinControl.Left)
+               or (WidgetBounds.Top<>AWinControl.Top);
+    SizeChanged:=(WidgetBounds.Right-WidgetBounds.Left<>AWinControl.Width)
+               or (WidgetBounds.Bottom-WidgetBounds.Top<>AWinControl.Height);
+  end;
+  
+  procedure SendBoundsMessages;
+  var
+    PosMsg : TLMWindowPosChanged;
+    SizeMsg: TLMSize;
+    MoveMsg: TLMMove;
+  begin
+    if AWinControl<>nil then begin
+      // first send a LM_WINDOWPOSCHANGED message
+      UpdateBounds;
+      if PosChanged or SizeChanged then begin
+        FillChar(PosMsg,SizeOf(PosMsg),0);
+        PosMsg.Msg := LM_WINDOWPOSCHANGED;
+        New(PosMsg.WindowPos);
+        try
+          with PosMsg.WindowPos^ do begin
+            hWndInsertAfter := 0;
+            x := WidgetBounds.Left;
+            y := WidgetBounds.Top;
+            cx := WidgetBounds.Right-WidgetBounds.Left;
+            cy := WidgetBounds.Bottom-WidgetBounds.Top;
+            flags := 0;
+          end;
+          DeliverMessage(AInfo^.LCLObject, PosMsg);
+        finally
+          Dispose(PosMsg.WindowPos);
+        end;
+        UpdateBounds;
+      end;
+
+      // then send a LM_SIZE message
+      if SizeChanged then begin
+        FillChar(SizeMsg,SizeOf(SizeMsg),0);
+        SizeMsg.Msg := LM_SIZE;
+        SizeMsg.SizeType := Size_SourceIsInterface;
+        SizeMsg.Width := WidgetBounds.Right-WidgetBounds.Left;
+        SizeMsg.Height := WidgetBounds.Bottom-WidgetBounds.Top;
+        DeliverMessage(AInfo^.LCLObject, SizeMsg);
+        UpdateBounds;
+      end;
+
+      // then send a LM_MOVE message
+      if PosChanged then begin
+        FillChar(MoveMsg,SizeOf(MoveMsg),0);
+        MoveMsg.Msg := LM_MOVE;
+        MoveMsg.MoveType := Move_SourceIsInterface;
+        MoveMsg.XPos := WidgetBounds.Left;
+        MoveMsg.YPos := WidgetBounds.Top;
+        DeliverMessage(AInfo^.LCLObject, MoveMsg);
+        UpdateBounds;
+      end;
+    end;
+  end;
+  
+  procedure SendPaintMessage;
+  var
+    PaintMsg: TLMPaint;
+    AStruct: PPaintStruct;
+  begin
+    FillChar(PaintMsg,SizeOf(PaintMsg),0);
+    PaintMsg.Msg:=LM_PAINT;
+    PaintMsg.DC:=HDC(CreateDevContextForInfo(AInfo));
+    New(PaintMsg.PaintStruct);
+    AStruct:=PaintMsg.PaintStruct;
+    FillChar(AStruct^,SizeOf(TPaintStruct),0);
+    AStruct^.hdc:=PaintMsg.DC;
+    try
+      //debugln('CarbonPrivateHIView_Update LM_PAINT to ',DbgSName(AInfo^.LCLObject));
+      DeliverMessage(AInfo^.LCLObject, PaintMsg);
+    finally
+      Dispose(PaintMsg.PaintStruct);
+      FreeDevContext(TDeviceContext(PaintMsg.DC));
+    end;
+  end;
+  
 begin
-  debugln('CarbonPrivateHIView_Update ');
+  debugln('CarbonPrivateHIView_Update ',DbgSName(AInfo^.LCLObject));
   // first let carbon draw/update
   Result := CallNextEventHandler(ANextHandler, AEvent);
+  if AInfo^.LCLObject is TWinControl then begin
+    AWinControl:=TWinControl(AInfo^.LCLObject);
+  end else begin
+    AWinControl:=nil;
+  end;
+
+  SendPaintMessage;
 end;
 
 // ==================================================================

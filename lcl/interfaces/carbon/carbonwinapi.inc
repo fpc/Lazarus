@@ -402,8 +402,15 @@ begin
 end;
 
 function TCarbonWidgetSet.GetDC(hWnd: HWND): HDC;
+var
+  Info: PWidgetInfo;
 begin
-  Result:=inherited GetDC(hWnd);
+  if hWnd=0 then
+    Result:=HDC(CreateDefaultDevContext)
+  else begin
+    Info:=GetWidgetInfo(Pointer(HWnd));
+    Result:=HDC(CreateDevContextForInfo(Info));
+  end;
 end;
 
 function TCarbonWidgetSet.GetDCOriginRelativeToWindow(PaintDC: HDC;
@@ -780,7 +787,8 @@ end;
 
 function TCarbonWidgetSet.ReleaseDC(hWnd: HWND; DC: HDC): Integer;
 begin
-  Result:=inherited ReleaseDC(hWnd, DC);
+  FreeDevContext(TDeviceContext(DC));
+  Result:=0;
 end;
 
 function TCarbonWidgetSet.RestoreDC(DC: HDC; SavedDC: Integer): Boolean;
