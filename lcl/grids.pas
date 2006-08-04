@@ -2634,7 +2634,9 @@ end;
 
 procedure TCustomGrid.SetCanvasFont(aFont: TFont);
 begin
-  if aFont<>FLastFont then begin
+  if (aFont<>FLastFont) or
+    not Canvas.Font.IsEqual(aFont) then 
+  begin
     Canvas.Font := aFont;
     FLastFont := AFont;
   end;
