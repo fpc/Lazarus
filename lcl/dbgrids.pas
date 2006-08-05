@@ -283,6 +283,7 @@ type
     FTempText : string;
     FDrawingActiveRecord: Boolean;
     FDrawingMultiSelRecord: Boolean;
+    FDrawingEmptyDataset: Boolean;
     FEditingColumn: Integer;
     FOldPosition: Integer;
     FDefaultColWidths: boolean;
@@ -1674,7 +1675,8 @@ begin
     else
     if (aRow=0)and(ACol>=FixedCols) then
       DrawCellText(aCol,aRow,aRect,aState,GetColumnTitle(aCol));
-  end else begin
+  end else
+  if not FDrawingEmptyDataset then begin
     F := GetFieldFromGridColumn(aCol);
     case ColumnEditorStyle(aCol, F) of
       cbsCheckBoxColumn:
@@ -2306,7 +2308,9 @@ var
 begin
   if FDataLink.Active then begin
     CurActiveRecord:=FDataLink.ActiveRecord;
-  end;
+    FDrawingEmptyDataset:=FDatalink.DataSet.IsEmpty;
+  end else
+    FDrawingEmptyDataset:=True;
   try
     inherited DrawAllRows;
   finally
