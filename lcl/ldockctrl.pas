@@ -106,6 +106,10 @@ type
                         WithRoot: boolean = true): TLazDockConfigNode;
     function IndexOf(const AName: string): Integer;
     function GetScreenBounds: TRect;
+    function FindNeighbour(SiblingSide: TAnchorKind;
+                           NilIfAmbiguous: boolean): TLazDockConfigNode;
+    function IsTheOnlyNeighbour(Node: TLazDockConfigNode;
+                                SiblingSide: TAnchorKind): boolean;
     procedure SaveToConfig(Config: TConfigStorage; const Path: string = '');
     procedure LoadFromConfig(Config: TConfigStorage; const Path: string = '');
     function GetPath: string;
@@ -119,7 +123,8 @@ type
     property ChildCount: Integer read GetChildCount;
     property Childs[Index: integer]: TLazDockConfigNode read GetChilds; default;
   published
-    property TheType: TLDConfigNodeType read FTheType write SetTheType default ldcntControl;
+    property TheType: TLDConfigNodeType read FTheType write SetTheType
+                                                      default ldcntControl;
     property Name: string read FName write SetName;
   end;
   
@@ -217,6 +222,8 @@ type
     function GetLocalizedName: string;
     procedure ControlVisibleChanging(Sender: TObject);
     procedure ControlVisibleChanged(Sender: TObject);
+    function CreateFormAndDockWithSplitter(Layout: TLazDockConfigNode;
+                                           Side: TAnchorKind): boolean;
   public
     constructor Create(TheOwner: TComponent); override;
     procedure ShowDockingEditor; virtual;
@@ -431,6 +438,39 @@ procedure TCustomLazControlDocker.ControlVisibleChanged(Sender: TObject);
 begin
   DebugLn(['TCustomLazControlDocker.ControlVisibleChanged Sender=',DbgSName(Sender)]);
   DumpStack;
+end;
+
+function TCustomLazControlDocker.CreateFormAndDockWithSplitter(
+  Layout: TLazDockConfigNode; Side: TAnchorKind): boolean;
+{ Add a splitter to Side and dock to it. For example:
+      ----------------+      ----------------------+
+          -----------+|      ------------+#+------+|
+           Neighbour ||  ->    Neighbour |#| Self ||
+          -----------+|      ------------+#+------+|
+      ----------------+      ----------------------+
+  If B has no parent, a TLazDockForm is created.
+
+  To get space for A, either B is shrinked and/or the parent of B is enlarged
+  (including the grand parents of B).
+}
+var
+  SelfNode: TLazDockConfigNode;
+  SplitterNode: TLazDockConfigNode;
+  NeighbourNode: TLazDockConfigNode;
+  NeighbourControl: TControl;
+begin
+  Result:=false;
+  SelfNode:=Layout.FindByName(DockerName,true);
+  SplitterNode:=Layout.FindByName(SelfNode.Sides[Side]);
+  NeighbourNode:=Layout.FindByName(SplitterNode.Sides[Side]);
+  NeighbourControl:=Manager.FindControlByDockerName(NeighbourNode.Name);
+  if NeighbourControl.Parent=nil then begin
+
+  end else begin
+
+  end;
+
+  Result:=true;
 end;
 
 function TCustomLazControlDocker.GetControlName(AControl: TControl): string;
@@ -782,44 +822,16 @@ var
       Result:=Layout.FindByName(ANodeName,true,true);
   end;
   
-  function FindNodeUsingSplitter(Splitter: TLazDockConfigNode;
-    SiblingSide: TAnchorKind; NilIfAmbiguous: boolean): TLazDockConfigNode;
-  var
-    i: Integer;
-    ParentNode: TLazDockConfigNode;
-    Child: TLazDockConfigNode;
+  function FindControl(const ADockerName: string): TControl;
   begin
-    Result:=nil;
-    ParentNode:=Splitter.Parent;
-    for i:=0 to ParentNode.ChildCount-1 do begin
-      Child:=ParentNode.Childs[i];
-      if CompareText(Child.Sides[SiblingSide],Splitter.Name)=0 then begin
-        if Result=nil then
-          Result:=Child
-        else if NilIfAmbiguous then
-          exit(nil);
-      end;
-    end;
-  end;
-
-  function SplitterIsOnlyUsedByNodeAtSide(Splitter, Node: TLazDockConfigNode;
-    SiblingSide: TAnchorKind): boolean;
-  { check if one side of the Splitter is only used by Node.
-    For example: If only Node.Sides[SiblingSide]=Splitter.Name
-        ---------+
-        --+#+---+|
-        B |#| A ||
-        --+#+---+|
-        ---------+}
-  begin
-    Result:=FindNodeUsingSplitter(Splitter,SiblingSide,true)<>nil;
+    Result:=Manager.FindControlByDockerName(ADockerName);
   end;
 
   function DockWithOwnSplitter(Side: TAnchorKind): boolean;
   { Add a splitter to Side and dock to it. For example:
         --------+      -----------+
             ---+|      ----+#+---+|
-              B |  ->    B |#| A ||
+             B ||  ->    B |#| A ||
             ---+|      ----+#+---+|
         --------+      -----------+
     If B has no parent, a TLazDockForm is created.
@@ -830,11 +842,21 @@ var
   var
     SplitterNode: TLazDockConfigNode;
     NeighbourNode: TLazDockConfigNode;
+    NeighbourControl: TControl;
   begin
     // TODO
     SplitterNode:=FindNode(SelfNode.Sides[Side]);
-    NeighbourNode:=FindNodeUsingSplitter(SplitterNode,OppositeAnchor[Side],true);
-    if NeighbourNode=nil then ;
+    NeighbourNode:=SplitterNode.FindNeighbour(OppositeAnchor[Side],true);
+    NeighbourControl:=FindControl(NeighbourNode.Name);
+    if NeighbourControl=nil then RaiseGDBException('inconsistency');
+    if NeighbourNode.Parent=nil then begin
+      // Neighbour is a standalone control
+      // => combine Neighbour and Self onto a dummy form
+      Result:=CreateFormAndDockWithSplitter(Layout,Side);
+      exit;
+    end else begin
+
+    end;
     Result:=false;
   end;
 
@@ -856,7 +878,7 @@ var
       if (SideNode<>nil)
       and (SideNode.TheType in [ldcntSplitterLeftRight,ldcntSplitterUpDown])
       then begin
-        if SplitterIsOnlyUsedByNodeAtSide(SideNode,SelfNode,a)
+        if SideNode.IsTheOnlyNeighbour(SelfNode,a)
         and DockWithOwnSplitter(a) then
           exit(true);
         inc(SplitterCount);
@@ -1219,39 +1241,6 @@ var
       Result:=Root.FindByName(AName,true,true);
   end;
   
-  function FindNodeUsingSplitter(Splitter: TLazDockConfigNode;
-    SiblingSide: TAnchorKind; NilIfAmbiguous: boolean): TLazDockConfigNode;
-  var
-    i: Integer;
-    ParentNode: TLazDockConfigNode;
-    Child: TLazDockConfigNode;
-  begin
-    Result:=nil;
-    ParentNode:=Splitter.Parent;
-    for i:=0 to ParentNode.ChildCount-1 do begin
-      Child:=ParentNode.Childs[i];
-      if CompareText(Child.Sides[SiblingSide],Splitter.Name)=0 then begin
-        if Result=nil then
-          Result:=Child
-        else if NilIfAmbiguous then
-          exit(nil);
-      end;
-    end;
-  end;
-  
-  function SplitterIsOnlyUsedByNodeAtSide(Splitter, Node: TLazDockConfigNode;
-    SiblingSide: TAnchorKind): boolean;
-  { check if one side of the Splitter is only used by Node.
-    For example: If only Node.Sides[SiblingSide]=Splitter.Name
-        ---------+
-        --+#+---+|
-        B |#| A ||
-        --+#+---+|
-        ---------+}
-  begin
-    Result:=FindNodeUsingSplitter(Splitter,SiblingSide,true)<>nil;
-  end;
-
   procedure DeleteNode(var DeletingNode: TLazDockConfigNode);
   
     function DeleteOwnSideSplitter(Side: TAnchorKind;
@@ -1274,7 +1263,7 @@ var
     begin
       Result:=false;
       // check if this is the only node using this Side of the splitter
-      if not SplitterIsOnlyUsedByNodeAtSide(SplitterNode,DeletingNode,Side) then
+      if not SplitterNode.IsTheOnlyNeighbour(DeletingNode,Side) then
         exit;
 
       // All nodes, that uses the splitter from the other side will now be
@@ -1562,9 +1551,8 @@ var
         if Node.Sides[a]='' then continue;
         SplitterNode:=FindNode(Node.Sides[a]);
         if (SplitterNode.TheType in [ldcntSplitterLeftRight,ldcntSplitterUpDown])
-        and SplitterIsOnlyUsedByNodeAtSide(SplitterNode,Node,a) then
-        begin
-          Result:=FindNodeUsingSplitter(SplitterNode,OppositeAnchor[a],true);
+        and SplitterNode.IsTheOnlyNeighbour(Node,a) then begin
+          Result:=SplitterNode.FindNeighbour(OppositeAnchor[a],true);
           if Result<>nil then exit;
         end;
       end;
@@ -2107,6 +2095,40 @@ begin
     Node:=Node.Parent;
   end;
   Result:=Classes.Bounds(NewLeft,NewTop,NewWidth,NewHeight);
+end;
+
+function TLazDockConfigNode.FindNeighbour(SiblingSide: TAnchorKind;
+  NilIfAmbiguous: boolean): TLazDockConfigNode;
+var
+  i: Integer;
+  ParentNode: TLazDockConfigNode;
+  Child: TLazDockConfigNode;
+begin
+  Result:=nil;
+  ParentNode:=Parent;
+  for i:=0 to ParentNode.ChildCount-1 do begin
+    Child:=ParentNode.Childs[i];
+    if Child=Self then continue;
+    if CompareText(Child.Sides[SiblingSide],Name)=0 then begin
+      if Result=nil then
+        Result:=Child
+      else if NilIfAmbiguous then
+        exit(nil);
+    end;
+  end;
+end;
+
+function TLazDockConfigNode.IsTheOnlyNeighbour(Node: TLazDockConfigNode;
+  SiblingSide: TAnchorKind): boolean;
+{ check if one side is only used by Node.
+  For example: If only Node.Sides[SiblingSide]=Name
+      ---------+
+      --+#+---+|
+      B |#| A ||
+      --+#+---+|
+      ---------+}
+begin
+  Result:=FindNeighbour(SiblingSide,true)<>nil;
 end;
 
 procedure TLazDockConfigNode.SaveToConfig(Config: TConfigStorage;

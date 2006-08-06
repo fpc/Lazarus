@@ -170,6 +170,9 @@ resourcestring
   lisMenuInsertText = 'Insert text';
   lisMenuInsertCVSKeyword = 'CVS keyword';
   lisMenuInsertGeneral = 'General';
+  lisUnitPaths = 'Unit paths';
+  lisIncludePaths = 'Include paths';
+  lisSourcePaths = 'Source paths';
   lisMenuCompleteCode = 'Complete Code';
   lisMenuExtractProc = 'Extract procedure ...';
   lisMenuFindIdentifierRefs = 'Find Identifier References ...';

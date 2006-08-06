@@ -6351,13 +6351,14 @@ var ActiveSrcEdit:TSourceEditor;
   ActiveUnitInfo:TUnitInfo;
   ShortUnitName, AFilename, FileDir: string;
   ClearIncludedByFile: boolean;
+  DlgResult: TModalResult;
 begin
   GetCurrentUnit(ActiveSrcEdit,ActiveUnitInfo);
   if (ActiveSrcEdit=nil) or (ActiveUnitInfo=nil) then exit;
   ShortUnitName:=ActiveSrcEdit.PageName;
   AFilename:=ActiveUnitInfo.Filename;
   FileDir:=ExtractFilePath(AFilename);
-  ShowUnitInfoDlg(ShortUnitName,
+  DlgResult:=ShowUnitInfoDlg(ShortUnitName,
     LazSyntaxHighlighterNames[ActiveUnitInfo.SyntaxHighlighter],
     ActiveUnitInfo.IsPartOfProject, length(ActiveSrcEdit.Source.Text),
     ActiveSrcEdit.Source.Count,
@@ -6370,6 +6371,8 @@ begin
     );
   if ClearIncludedByFile then
     ActiveUnitInfo.Source.LastIncludedByFile:='';
+  if (DlgResult=mrYes) and (ActiveUnitInfo.Source.LastIncludedByFile<>'') then
+    DoGotoIncludeDirective;
 end;
 
 procedure TMainIDE.DoShowCodeExplorer;

@@ -35,6 +35,7 @@ type
   { TUnitInfoDialog }
 
   TUnitInfoDialog = class(TForm)
+    GotoIncludeDirectiveButton: TButton;
     CodeToolsDefsButton: TButton;
     OkButton: TBitBtn;
     ClearIncludedBy: TButton;
@@ -49,10 +50,10 @@ type
     OutPath: TLabel;
     OutSize: TLabel;
     OutType: TLabel;
-    Page1: TPage;
-    Page2: TPage;
-    Page3: TPage;
-    Page4: TPage;
+    GeneralPage: TPage;
+    UnitPathsPage: TPage;
+    IncludePathsPage: TPage;
+    CompleteUnitPathsPage: TPage;
     PathsGroupBox: TGroupBox;
     UIncludedBy: TLabel;
     UInProject: TLabel;
@@ -62,13 +63,14 @@ type
     USize: TLabel;
     UType: TLabel;
     procedure CodeToolsDefsButtonClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure GotoIncludeDirectiveButtonClick(Sender: TObject);
+    procedure OkButtonClick(Sender: TObject);
     procedure UnitInfoDlgResize(Sender: TObject);
     procedure clearIncludedByClick(Sender: TObject);
   private
     FFilePath: string;
     function getIncludedBy: string;
-  public
-    constructor Create(AOwner: TComponent); override;
   end;
 
 function ShowUnitInfoDlg(const AnUnitName, AType: string;
@@ -115,41 +117,16 @@ begin
     SrcPathMemo.Lines.Delimiter := ';';
     SrcPathMemo.Lines.DelimitedText := MinimizeSearchPath(SrcPath);
 
-    Width := Width + 1;
+    GotoIncludeDirectiveButton.Visible:=IncludedBy<>'';
   end;
 
   Result:=Dlg.ShowModal;
-  ClearIncludedBy:=(Result=mrOk) and (IncludedBy<>'') and (Dlg.getIncludedBy='');
+  ClearIncludedBy:=(Result in [mrOk,mrYes]) and (IncludedBy<>'')
+                   and (Dlg.getIncludedBy='');
   Dlg.Free;
 end;
 
 { TUnitInfoDialog }
-
-constructor TUnitInfoDialog.Create(AOwner:TComponent);
-begin
-  inherited Create(AOwner);
-
-  //if LazarusResources.Find(ClassName)=nil then
-  begin
-    Notebook.Page[0].Caption := 'General';
-    Notebook.Page[1].Caption := 'Unit paths';
-    Notebook.Page[2].Caption := 'Include paths';
-    Notebook.Page[3].Caption := 'Source paths';
-    Notebook.PageIndex := 0;
-
-    UName.Caption:=lisUIDName;
-    UType.Caption:=lisUIDType;
-    UInProject.Caption:=lisUIDinProject;
-    USize.Caption:=lisUIDSize;
-    ULines.Caption:=lisUIDLines;
-    UPath.Caption:='Path:';
-    UIncludedBy.Caption:=lisUIDIncludedBy;
-    ClearIncludedBy.Caption    := lisUIDClear;
-    CodeToolsDefsButton.Caption:=lisUIShowCodeToolsValues;
-  end;
-  
-  UnitInfoDlgResize(nil);
-end;
 
 procedure TUnitInfoDialog.UnitInfoDlgResize(Sender: TObject);
 var MaxLength: integer;
@@ -186,6 +163,35 @@ end;
 procedure TUnitInfoDialog.CodeToolsDefsButtonClick(Sender: TObject);
 begin
   ShowCodeToolsDefinesValuesDialog(CodeToolBoss.DefineTree, ExtractFilePath(FFilePath));
+end;
+
+procedure TUnitInfoDialog.FormCreate(Sender: TObject);
+begin
+  Notebook.Page[0].Caption := lisMenuInsertGeneral;
+  Notebook.Page[1].Caption := lisUnitPaths;
+  Notebook.Page[2].Caption := lisIncludePaths;
+  Notebook.Page[3].Caption := lisSourcePaths;
+  Notebook.PageIndex := 0;
+
+  UName.Caption:=lisUIDName;
+  UType.Caption:=lisUIDType;
+  UInProject.Caption:=lisUIDinProject;
+  USize.Caption:=lisUIDSize;
+  ULines.Caption:=lisUIDLines;
+  UPath.Caption:=lisToFPCPath;
+  UIncludedBy.Caption:=lisUIDIncludedBy;
+  ClearIncludedBy.Caption    := 'Clear included by reference';
+  CodeToolsDefsButton.Caption:=lisUIShowCodeToolsValues;
+end;
+
+procedure TUnitInfoDialog.GotoIncludeDirectiveButtonClick(Sender: TObject);
+begin
+
+end;
+
+procedure TUnitInfoDialog.OkButtonClick(Sender: TObject);
+begin
+
 end;
 
 procedure TUnitInfoDialog.clearIncludedByClick(Sender: TObject);
