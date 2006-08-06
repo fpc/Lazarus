@@ -2106,6 +2106,8 @@ resourcestring
   
   // component palette
   lisCompPalOpenPackage = 'Open package';
+  lisCPOpenPackage = 'Open Package %s';
+  lisCPOpenUnit = 'Open Unit %s';
   lisCompPalOpenUnit = 'Open unit';
   lisCompPalFindComponent = 'Find component';
 

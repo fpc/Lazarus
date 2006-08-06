@@ -184,7 +184,8 @@ begin
     OpenPackageMenuItem.Visible:=false;
     OpenUnitMenuItem.Visible:=false;
   end else begin
-    OpenPackageMenuItem.Caption:='Open Package '+APackage.IDAsString;
+    OpenPackageMenuItem.Caption:=Format(lisCPOpenPackage, [APackage.IDAsString]
+      );
     OpenPackageMenuItem.Visible:=true;
     ShownFilename:=PkgComponent.PkgFile.Filename;
     UnitFilename:=APackage.SubstitutePkgMacro(ShownFilename,true);
@@ -195,7 +196,7 @@ begin
       if FileExists(UnitFilename) then
         UnitFilename:=ShownFilename;
     end;
-    OpenUnitMenuItem.Caption:='Open Unit '+ShownFilename;
+    OpenUnitMenuItem.Caption:=Format(lisCPOpenUnit, [ShownFilename]);
     OpenUnitMenuItem.Visible:=true;
     OpenUnitMenuItem.Enabled:=FileExists(UnitFilename);
   end;
