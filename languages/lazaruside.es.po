@@ -3364,6 +3364,10 @@ msgstr ""
 msgid "Include file"
 msgstr "Incluir Archivo"
 
+#: lazarusidestrconsts:lisincludepaths
+msgid "Include paths"
+msgstr ""
+
 #: lazarusidestrconsts:lisfindfileincludesubdirectories
 msgid "Include sub directories"
 msgstr "Incluir subdirectorios"
@@ -6744,6 +6748,10 @@ msgstr "Fuente modificado"
 msgid "Source of page %s%s%s has changed. Save?"
 msgstr "El código fuente de la página %s%s%s ha cambiado.¿Guardar?"
 
+#: lazarusidestrconsts:lissourcepaths
+msgid "Source paths"
+msgstr ""
+
 #: lazarusidestrconsts:lismakeresstrsourcepreview
 msgid "Source preview"
 msgstr "Previsualizar fuente"
@@ -8206,6 +8214,10 @@ msgstr "Unidad no encontrada: %s%s%s"
 
 #: lazarusidestrconsts:dlgunitoutp
 msgid "Unit output directory (-FU):"
+msgstr ""
+
+#: lazarusidestrconsts:lisunitpaths
+msgid "Unit paths"
 msgstr ""
 
 #: lazarusidestrconsts:lisunitlfmfile

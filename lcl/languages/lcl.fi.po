@@ -640,7 +640,7 @@ msgstr ""
 
 #: lclstrconsts:rsfdselectdirectory
 msgid "Select Directory"
-msgstr ""
+msgstr "Valitse kansio"
 
 #: lclstrconsts:rspickdate
 msgid "Select a date"
@@ -772,7 +772,7 @@ msgstr ""
 
 #: lclstrconsts:rsdefaultfileinfovalue
 msgid "permissions user group size date time"
-msgstr ""
+msgstr "oikeudet käyttäjä ryhmä koko päivä aika"
 
 #: lclstrconsts:ifsvk_rwin
 msgid "right windows key"

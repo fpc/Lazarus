@@ -3365,6 +3365,10 @@ msgstr "Include filter"
 msgid "Include file"
 msgstr "Include bestand"
 
+#: lazarusidestrconsts:lisincludepaths
+msgid "Include paths"
+msgstr ""
+
 #: lazarusidestrconsts:lisfindfileincludesubdirectories
 msgid "Include sub directories"
 msgstr "Include sub directories"
@@ -6745,6 +6749,10 @@ msgstr "Bron gewijzigd"
 msgid "Source of page %s%s%s has changed. Save?"
 msgstr "Bron van pagina %s%s%s is gewijzigd. Opslaan?"
 
+#: lazarusidestrconsts:lissourcepaths
+msgid "Source paths"
+msgstr ""
+
 #: lazarusidestrconsts:lismakeresstrsourcepreview
 msgid "Source preview"
 msgstr "Bron preview"
@@ -8207,6 +8215,10 @@ msgstr "Unit niet gevonden: %s%s%s"
 
 #: lazarusidestrconsts:dlgunitoutp
 msgid "Unit output directory (-FU):"
+msgstr ""
+
+#: lazarusidestrconsts:lisunitpaths
+msgid "Unit paths"
 msgstr ""
 
 #: lazarusidestrconsts:lisunitlfmfile

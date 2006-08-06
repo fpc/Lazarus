@@ -3368,6 +3368,10 @@ msgstr "Maske"
 msgid "Include file"
 msgstr "Include-Datei"
 
+#: lazarusidestrconsts:lisincludepaths
+msgid "Include paths"
+msgstr ""
+
 #: lazarusidestrconsts:lisfindfileincludesubdirectories
 msgid "Include sub directories"
 msgstr "Unterverzeichnisse einfügen"
@@ -6748,6 +6752,10 @@ msgstr "Quelltext geändert"
 msgid "Source of page %s%s%s has changed. Save?"
 msgstr "Quelltext der Seite %s%s%s wurde ändert. Speichern?"
 
+#: lazarusidestrconsts:lissourcepaths
+msgid "Source paths"
+msgstr ""
+
 #: lazarusidestrconsts:lismakeresstrsourcepreview
 msgid "Source preview"
 msgstr "Quelltext-Vorschau"
@@ -8211,6 +8219,10 @@ msgstr "Unit nicht gefunden: %s%s%s"
 #: lazarusidestrconsts:dlgunitoutp
 msgid "Unit output directory (-FU):"
 msgstr "Unit-Ausgabeverzeichnis (-FU):"
+
+#: lazarusidestrconsts:lisunitpaths
+msgid "Unit paths"
+msgstr ""
 
 #: lazarusidestrconsts:lisunitlfmfile
 msgid "Unit: %s%sLFM file: %s"

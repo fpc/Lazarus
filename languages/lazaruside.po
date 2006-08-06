@@ -434,6 +434,18 @@ msgstr ""
 msgid "General"
 msgstr ""
 
+#: lazarusidestrconsts:lisunitpaths
+msgid "Unit paths"
+msgstr ""
+
+#: lazarusidestrconsts:lisincludepaths
+msgid "Include paths"
+msgstr ""
+
+#: lazarusidestrconsts:lissourcepaths
+msgid "Source paths"
+msgstr ""
+
 #: lazarusidestrconsts:lismenucompletecode
 msgid "Complete Code"
 msgstr ""

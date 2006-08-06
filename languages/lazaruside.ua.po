@@ -3354,6 +3354,10 @@ msgstr "Фільтр для вибору"
 msgid "Include file"
 msgstr "Включити файл"
 
+#: lazarusidestrconsts:lisincludepaths
+msgid "Include paths"
+msgstr ""
+
 #: lazarusidestrconsts:lisfindfileincludesubdirectories
 msgid "Include sub directories"
 msgstr "Включити підтеки"
@@ -6734,6 +6738,10 @@ msgstr "Код змінено"
 msgid "Source of page %s%s%s has changed. Save?"
 msgstr "Код сторінки %s%s%s змінено. Зберегти?"
 
+#: lazarusidestrconsts:lissourcepaths
+msgid "Source paths"
+msgstr ""
+
 #: lazarusidestrconsts:lismakeresstrsourcepreview
 msgid "Source preview"
 msgstr "Переглядання коду"
@@ -8196,6 +8204,10 @@ msgstr "Модул не знайдений: %s%s%s"
 
 #: lazarusidestrconsts:dlgunitoutp
 msgid "Unit output directory (-FU):"
+msgstr ""
+
+#: lazarusidestrconsts:lisunitpaths
+msgid "Unit paths"
 msgstr ""
 
 #: lazarusidestrconsts:lisunitlfmfile

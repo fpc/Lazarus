@@ -3354,6 +3354,10 @@ msgstr ""
 msgid "Include file"
 msgstr "Inclou el fitxer"
 
+#: lazarusidestrconsts:lisincludepaths
+msgid "Include paths"
+msgstr ""
+
 #: lazarusidestrconsts:lisfindfileincludesubdirectories
 msgid "Include sub directories"
 msgstr "Inclou els subdirectoris"
@@ -6734,6 +6738,10 @@ msgstr "S'ha modificat el codi font"
 msgid "Source of page %s%s%s has changed. Save?"
 msgstr "El codi font de la pàgina %s%s%s ha canviat. Voleu desar-lo?"
 
+#: lazarusidestrconsts:lissourcepaths
+msgid "Source paths"
+msgstr ""
+
 #: lazarusidestrconsts:lismakeresstrsourcepreview
 msgid "Source preview"
 msgstr "Visualització prèvia del codi font"
@@ -8196,6 +8204,10 @@ msgstr "No s'ha trobat la unitat: %s%s%s"
 
 #: lazarusidestrconsts:dlgunitoutp
 msgid "Unit output directory (-FU):"
+msgstr ""
+
+#: lazarusidestrconsts:lisunitpaths
+msgid "Unit paths"
 msgstr ""
 
 #: lazarusidestrconsts:lisunitlfmfile

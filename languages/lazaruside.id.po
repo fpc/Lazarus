@@ -3368,6 +3368,10 @@ msgstr "Filter Include"
 msgid "Include file"
 msgstr "File Include"
 
+#: lazarusidestrconsts:lisincludepaths
+msgid "Include paths"
+msgstr ""
+
 #: lazarusidestrconsts:lisfindfileincludesubdirectories
 msgid "Include sub directories"
 msgstr "Sertakan sub direktori"
@@ -6748,6 +6752,10 @@ msgstr "Sumber dimodifikasi"
 msgid "Source of page %s%s%s has changed. Save?"
 msgstr "Sumber dari halaman %s%s%s sudah diubah. Simpan?"
 
+#: lazarusidestrconsts:lissourcepaths
+msgid "Source paths"
+msgstr ""
+
 #: lazarusidestrconsts:lismakeresstrsourcepreview
 msgid "Source preview"
 msgstr "Peninjauan Sumber"
@@ -8211,6 +8219,10 @@ msgstr "Unit tidak ditemukan: %s%s%s"
 #: lazarusidestrconsts:dlgunitoutp
 msgid "Unit output directory (-FU):"
 msgstr "Direktori output unit (-FU):"
+
+#: lazarusidestrconsts:lisunitpaths
+msgid "Unit paths"
+msgstr ""
 
 #: lazarusidestrconsts:lisunitlfmfile
 msgid "Unit: %s%sLFM file: %s"

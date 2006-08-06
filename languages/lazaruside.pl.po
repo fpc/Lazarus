@@ -3365,6 +3365,10 @@ msgstr ""
 msgid "Include file"
 msgstr "Plik dołączany (include)"
 
+#: lazarusidestrconsts:lisincludepaths
+msgid "Include paths"
+msgstr ""
+
 #: lazarusidestrconsts:lisfindfileincludesubdirectories
 msgid "Include sub directories"
 msgstr "Dodaj podkatalogi"
@@ -6745,6 +6749,10 @@ msgstr "Źródło zmienione"
 msgid "Source of page %s%s%s has changed. Save?"
 msgstr "Źródło zakładki %s%s%s zostało zmienione. Chcesz je zapisać?"
 
+#: lazarusidestrconsts:lissourcepaths
+msgid "Source paths"
+msgstr ""
+
 #: lazarusidestrconsts:lismakeresstrsourcepreview
 msgid "Source preview"
 msgstr "Podgląd źródła"
@@ -8207,6 +8215,10 @@ msgstr "Nie znalazłem modułu: %s%s%s"
 
 #: lazarusidestrconsts:dlgunitoutp
 msgid "Unit output directory (-FU):"
+msgstr ""
+
+#: lazarusidestrconsts:lisunitpaths
+msgid "Unit paths"
 msgstr ""
 
 #: lazarusidestrconsts:lisunitlfmfile

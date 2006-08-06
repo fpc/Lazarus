@@ -2108,7 +2108,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgtestprjdir
 msgid "Directory for building test projects"
-msgstr ""
+msgstr "Kansio jossa käännetään testiprojektit"
 
 #: lazarusidestrconsts:lisenvoptdlgdirectorynotfound
 msgid "Directory not found"
@@ -2540,7 +2540,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgextralinespacing
 msgid "Extra line spacing"
-msgstr ""
+msgstr "Lisäpikselien määrä rivien välissä (tekstin erottaminen helpottuu)"
 
 #: lazarusidestrconsts:lisextract
 msgid "Extract"
@@ -3354,6 +3354,10 @@ msgstr ""
 msgid "Include file"
 msgstr ""
 
+#: lazarusidestrconsts:lisincludepaths
+msgid "Include paths"
+msgstr ""
+
 #: lazarusidestrconsts:lisfindfileincludesubdirectories
 msgid "Include sub directories"
 msgstr "Sisällytetään myös alikansiot "
@@ -4156,7 +4160,7 @@ msgstr "Aliohjelmakirjasto"
 
 #: lazarusidestrconsts:lislibraryafreepascallibrarydllunderwindowssounderlin
 msgid "Library%sA freepascal library (.dll under windows, .so under linux, .dylib under macosx). The library source file is automatically maintained by Lazarus."
-msgstr ""
+msgstr "Kirjasto%sFreePascal kirjasto (.dll windows:ssa, .so linux:ssa, .dylib MacOSX:ssa). Kirjaston lähdekoodia hallitaan Lazarus:lla."
 
 #: lazarusidestrconsts:lispckoptslicense
 msgid "License:"
@@ -4688,7 +4692,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisnobackupfiles
 msgid "No backup files"
-msgstr ""
+msgstr "Ei varmuuskopioita"
 
 #: lazarusidestrconsts:lisnochange
 msgid "No change"
@@ -5024,7 +5028,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgpooutputsettings
 msgid "Output Settings"
-msgstr ""
+msgstr "Sovelluksen tiedostoasetukset"
 
 #: lazarusidestrconsts:lispkgdefsoutputdirectory
 msgid "Output directory"
@@ -5476,7 +5480,7 @@ msgstr "Tunnistettiin 'Project Info'-tiedostoksi"
 
 #: lazarusidestrconsts:lisprojectisrunnable
 msgid "Project is runnable"
-msgstr ""
+msgstr "Projekti on ajettavissa virheenjäljittimessä"
 
 #: lazarusidestrconsts:lisprojectmacroproperties
 msgid "Project macro properties"
@@ -6734,6 +6738,10 @@ msgstr "Lähdekoodi muuttunut"
 msgid "Source of page %s%s%s has changed. Save?"
 msgstr ""
 
+#: lazarusidestrconsts:lissourcepaths
+msgid "Source paths"
+msgstr ""
+
 #: lazarusidestrconsts:lismakeresstrsourcepreview
 msgid "Source preview"
 msgstr ""
@@ -6972,7 +6980,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgpotargetfilename
 msgid "Target file name:"
-msgstr ""
+msgstr "Tehtävän sovelluksen tiedostonimi:"
 
 #: lazarusidestrconsts:listargetfilenameplusparams
 msgid "Target filename + params"
@@ -7128,7 +7136,7 @@ msgstr ""
 
 #: lazarusidestrconsts:listhetestdirectorycouldnotbefoundseeenvironmentopt
 msgid "The Test Directory could not be found:%s%s%s%s%s(see environment options)"
-msgstr ""
+msgstr "Projektien  testikansioksi merkittyä kansiota:%s%s%s%s%sei löydy (katso käyttöliittymän asetukset)!"
 
 #: lazarusidestrconsts:lisa2ptheancestortypehasthesamenameastheunit
 msgid "The ancestor type %s%s%s has the same name as%sthe unit %s%s%s."
@@ -8196,6 +8204,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgunitoutp
 msgid "Unit output directory (-FU):"
+msgstr ""
+
+#: lazarusidestrconsts:lisunitpaths
+msgid "Unit paths"
 msgstr ""
 
 #: lazarusidestrconsts:lisunitlfmfile
