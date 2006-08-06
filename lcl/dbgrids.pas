@@ -78,20 +78,31 @@ type
   TDbGridExtraOptions = set of TDbGridExtraOption;
 
   TDbGridStatusItem = (gsVisibleMove, gsUpdatingData, gsAddingAutoColumns,
-    gsRemovingAutoColumns);
+                       gsRemovingAutoColumns);
   TDbGridStatus = set of TDbGridStatusItem;
 
   TDBGridCheckBoxState = (gcbpUnChecked, gcbpChecked, gcbpGrayed);
 
-  TDataSetScrolledEvent = procedure(DataSet: TDataSet; Distance: Integer) of object;
-  TDBGridClickEvent = procedure(Column: TColumn) of object;
-  TMovedEvent = procedure(Sender: TObject; FromIndex, ToIndex: Integer) of object;
-  TDrawColumnCellEvent = procedure(Sender: TObject; const Rect: TRect;
-    DataCol: Integer; Column: TColumn; State: TGridDrawState) of object;
+  TDataSetScrolledEvent =
+    procedure(DataSet: TDataSet; Distance: Integer) of object;
+
+  TDBGridClickEvent =
+    procedure(Column: TColumn) of object;
+    
+  TMovedEvent =
+    procedure(Sender: TObject; FromIndex, ToIndex: Integer) of object;
+    
+  TDrawColumnCellEvent =
+    procedure(Sender: TObject; const Rect: TRect; DataCol: Integer;
+              Column: TColumn; State: TGridDrawState) of object;
+              
   TGetDbEditMaskEvent =
-    procedure (Sender: TObject; const Field: TField; var Value: string) of object;
-  TUserCheckBoxBitmapEvent = procedure(Sender: TObject;
-    const CheckedState: TDbGridCheckboxState; ABitmap: TBitmap) of object;
+    procedure (Sender: TObject; const Field: TField;
+               var Value: string) of object;
+               
+  TUserCheckBoxBitmapEvent =
+    procedure(Sender: TObject; const CheckedState: TDbGridCheckboxState;
+              ABitmap: TBitmap) of object;
 
 type
 
@@ -268,6 +279,7 @@ type
     FOnCellClick: TDBGridClickEvent;
     FOnColEnter,FOnColExit: TNotifyEvent;
     FOnColumnMoved: TMovedEvent;
+    FOnColumnSized: TNotifyEvent;
     FOnDrawColumnCell: TDrawColumnCellEvent;
     FOnFieldEditMask: TGetDbEditMaskEvent;
     FOnTitleClick: TDBGridClickEvent;
@@ -420,6 +432,7 @@ type
     property OnColEnter: TNotifyEvent read FOnColEnter write FOnColEnter;
     property OnColExit: TNotifyEvent read FOnColExit write FOnColExit;
     property OnColumnMoved: TMovedEvent read FOnColumnMoved write FOnColumnMoved;
+    property OnColumnSized: TNotifyEvent read FOnColumnSized write FOnColumnSized;
     property OnDrawColumnCell: TDrawColumnCellEvent read FOnDrawColumnCell write FOnDrawColumnCell;
     property OnFieldEditMask: TGetDbEditMaskEvent read FOnFieldEditMask write FOnFieldEditMask;
     property OnTitleClick: TDBGridClickEvent read FOnTitleClick write FOnTitleClick;
@@ -436,7 +449,6 @@ type
     property SelectedColumn: TColumn read GetCurrentColumn;
     property ThumbTracking: boolean read GetThumbTracking write SetThumbTracking;
   end;
-
 
   TdbGrid=class(TCustomDbGrid)
   public
@@ -497,6 +509,7 @@ type
     property OnColEnter;
     property OnColExit;
     property OnColumnMoved;
+    property OnColumnSized;
     property OnDrawColumnCell;
     property OnDblClick;
     //property OnDragDrop;
@@ -2436,6 +2449,8 @@ begin
         Columns[i].Width := ColWidths[Index];
     end;
     FDefaultColWidths := False;
+    if Assigned(OnColumnSized) then
+      OnColumnSized(Self);
   end;
 end;
 
