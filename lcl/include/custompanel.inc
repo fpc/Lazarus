@@ -144,6 +144,25 @@ begin
   InflateRect(Rect, -BevelSize, -BevelSize);
 end;
 
+procedure TCustomPanel.Loaded;
+begin
+  UpdateParentColorChange;
+end;
+
+procedure TCustomPanel.UpdateParentColorChange;
+begin
+  if ParentColor then
+    ControlStyle := ControlStyle - [csOpaque]
+  else
+    ControlStyle := ControlStyle + [csOpaque];
+end;
+
+procedure TCustomPanel.CMParentColorChanged(var Message: TLMessage);
+begin
+  UpdateParentColorChange;
+  inherited;
+end;
+
 procedure TCustomPanel.RealSetText(const Value: TCaption);
 begin
   if Caption <> Value 

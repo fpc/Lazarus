@@ -155,6 +155,12 @@ begin
   Result := (-3 <= moveX) and (moveX <= 3) and (-3 <= moveY) and (moveY <= 3);
 end;
 
+function GetNeedParentPaint(AWindowInfo: PWindowInfo; AWinControl: TWinControl): boolean;
+begin
+  Result := AWindowInfo^.needParentPaint 
+    and ((AWinControl = nil) or not (csOpaque in AWinControl.ControlStyle));
+end;
+
 //TODO: added temporarily to fix compilation,
 //should probably removed soon, as the LCL does not listen to it.
 type
@@ -195,6 +201,7 @@ Var
   P: TPoint;
   NewLeft, NewTop, NewWidth, NewHeight: integer;
   lWinControl, ChildWinControl: TWinControl;
+  ChildWindowInfo: PWindowInfo;
   TargetObject: TObject;
   WinProcess: Boolean;
   NotifyUserInput: Boolean;
@@ -282,6 +289,7 @@ Var
     useDoubleBuffer: boolean;
     isNotebook: boolean;
     isNativeControl: boolean;
+    needParentPaint: boolean;
     lNotebookFound: boolean;
   begin
     // note: ignores the received DC
@@ -298,10 +306,11 @@ Var
       CompareMem(@winClassName, @TabControlClsName, High(TabControlClsName)+1);
     isNativeControl := not CompareMem(@winClassName, @ClsName, High(ClsName)+1);
     ParentPaintWindow := 0;
+    needParentPaint := GetNeedParentPaint(WindowInfo, lWinControl);
     // if needParentPaint and not isTabPage then background will be drawn in
     // WM_ERASEBKGND and WM_CTLCOLORSTATIC for native controls
     // sent by default paint handler
-    if WindowInfo^.isTabPage or (WindowInfo^.needParentPaint
+    if WindowInfo^.isTabPage or (needParentPaint
       and (not isNativeControl or (WParam <> 0))) then
     begin
       ParentPaintWindow := Window;
@@ -414,7 +423,7 @@ Var
       PaintMsg.PaintStruct := @PS;
       if not useDoubleBuffer then
         PaintMsg.DC := DC;
-      if not WindowInfo^.needParentPaint and not isNotebook then
+      if not needParentPaint and not isNotebook then
         lWinControl.EraseBackground(PaintMsg.DC);
       if ParentPaintWindow <> 0 then
       begin
@@ -428,7 +437,7 @@ Var
         Windows.SendMessage(ParentPaintWindow, WM_PAINT, PaintMsg.DC, 0);
         Windows.RestoreDC(PaintMsg.DC, DCIndex);
       end;
-      if (WParam = 0) or not WindowInfo^.needParentPaint then
+      if (WParam = 0) or not needParentPaint then
       begin
         DCIndex := Windows.SaveDC(PaintMsg.DC);
         MoveWindowOrgEx(PaintMsg.DC, ORect.Left, ORect.Top);
@@ -1008,10 +1017,14 @@ Begin
       // only static and button controls have transparent parts
       // others need to erased with their window color
       // scrollbar also has buttons
+      ChildWindowInfo := GetWindowInfo(LParam);
+      ChildWinControl := ChildWindowInfo^.WinControl;
+      if ChildWinControl = nil then
+        ChildWinControl := ChildWindowInfo^.AWinControl;
       if (Msg = WM_CTLCOLORSTATIC) or (Msg = WM_CTLCOLORBTN)
           or (Msg = WM_CTLCOLORSCROLLBAR) then
       begin
-        if GetWindowInfo(LParam)^.needParentPaint then
+        if GetNeedParentPaint(ChildWindowInfo, ChildWinControl) then
         begin
           // need to draw transparently, draw background
           GetWin32ControlPos(LParam, Window, P.X, P.Y);
@@ -1025,9 +1038,6 @@ Begin
       end;
       if WinProcess then
       begin
-        ChildWinControl := GetWindowInfo(LParam)^.WinControl;
-        if ChildWinControl = nil then
-          ChildWinControl := GetWindowInfo(LParam)^.AWinControl;
         if ChildWinControl <> nil then
         begin
           Windows.SetTextColor(HDC(WParam), Windows.COLORREF(ColorToRGB(ChildWinControl.Font.Color)));
@@ -1172,7 +1182,7 @@ Begin
         Result := 0;
         exit;
       end;
-      if (not WindowInfo^.needParentPaint) or (eraseBkgndCommand = ecDoubleBufferNoRemove) then
+      if not GetNeedParentPaint(WindowInfo, lWinControl) or (eraseBkgndCommand = ecDoubleBufferNoRemove) then
       begin
         if TWin32WidgetSet(WidgetSet).ThemesActive and WindowInfo^.isGroupBox
             and (lWinControl <> nil) then
@@ -1186,11 +1196,8 @@ Begin
           LMessage.LParam := LParam;
         end;
       end else begin
-        if (lWinControl = nil) or not (csOpaque in lWinControl.ControlStyle) then
-        begin
-          SendPaintMessage;
-          LMessage.Result := 1;
-        end;
+        SendPaintMessage;
+        LMessage.Result := 1;
       end;
       WinProcess := false;
     End;

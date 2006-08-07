@@ -938,8 +938,11 @@ type
     procedure SetBorderWidth(const Value: TBorderWidth);
   protected
     procedure AdjustClientRect(var Rect: TRect); override;
+    procedure CMParentColorChanged(var Message: TLMessage); message CM_PARENTCOLORCHANGED;
+    procedure Loaded; override;
     procedure RealSetText(const Value: TCaption); override;
     procedure Paint; override;
+    procedure UpdateParentColorChange;
     Function CanTab: Boolean; override;
   public
     constructor Create(TheOwner: TComponent); override;
