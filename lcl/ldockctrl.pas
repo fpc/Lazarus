@@ -224,6 +224,8 @@ type
     procedure ControlVisibleChanged(Sender: TObject);
     function CreateFormAndDockWithSplitter(Layout: TLazDockConfigNode;
                                            Side: TAnchorKind): boolean;
+    procedure FixControlBounds(Layout: TLazDockConfigNode;
+                               AddedControl: TControl);
   public
     constructor Create(TheOwner: TComponent); override;
     procedure ShowDockingEditor; virtual;
@@ -458,6 +460,9 @@ var
   SplitterNode: TLazDockConfigNode;
   NeighbourNode: TLazDockConfigNode;
   NeighbourControl: TControl;
+  NewParent: TLazDockForm;
+  Splitter: TLazDockSplitter;
+  a: TAnchorKind;
 begin
   Result:=false;
   SelfNode:=Layout.FindByName(DockerName,true);
@@ -465,12 +470,281 @@ begin
   NeighbourNode:=Layout.FindByName(SplitterNode.Sides[Side]);
   NeighbourControl:=Manager.FindControlByDockerName(NeighbourNode.Name);
   if NeighbourControl.Parent=nil then begin
+    // create a new TLazDockForm and put both controls into it
+    NewParent:=TLazDockForm.Create(nil);
+    NewParent.DisableAlign;
+    try
+      // move Control and Neighbour to the new parent
+      NeighbourControl.Parent:=NewParent;
+      Control.Parent:=NewParent;
 
+      // create a splitter
+      Splitter:=TLazDockSplitter.Create(nil);
+      Splitter.Align:=alNone;
+      Splitter.Beveled:=true;
+      Splitter.ResizeAnchor:=Side;
+      Splitter.Parent:=NewParent;
+
+      for a:=Low(TAnchorKind) to High(TAnchorKind) do begin
+        // anchor Neighbour
+        if a=OppositeAnchor[Side] then
+          NeighbourControl.AnchorParallel(a,0,Splitter)
+        else
+          NeighbourControl.AnchorParallel(a,0,NewParent);
+        // anchor Control
+        if a=Side then
+          Control.AnchorParallel(a,0,Splitter)
+        else
+          Control.AnchorParallel(a,0,NewParent);
+        // anchor Splitter
+        if (Side in [akLeft,akRight]) <> (a in [akLeft,akRight]) then
+          Splitter.AnchorParallel(a,0,NewParent);
+      end;
+      
+      FixControlBounds(Layout,Control);
+
+    finally
+      NewParent.EnableAlign;
+    end;
   end else begin
 
   end;
 
   Result:=true;
+end;
+
+procedure TCustomLazControlDocker.FixControlBounds(Layout: TLazDockConfigNode;
+  AddedControl: TControl);
+{ Fix bounds after inserting AddedControl
+}
+type
+  TControlInfo = record
+    Control: TControl;
+    Docker: TLazDockerConfig;
+    Node: TLazDockConfigNode;
+    MinLeft: integer;
+    MinLeftValid: boolean;
+    MinLeftCalculating: boolean;
+    MinTop: integer;
+    MinTopValid: boolean;
+    MinTopCalculating: boolean;
+    MinClientSize: TPoint;
+    MinClientSizeValid: boolean;
+  end;
+  PControlInfo = ^TControlInfo;
+var
+  ControlToInfo: TPointerToPointerTree;
+  NodeToInfo: TPointerToPointerTree;
+
+  procedure InitInfos;
+  begin
+    ControlToInfo:=TPointerToPointerTree.Create;
+    NodeToInfo:=TPointerToPointerTree.Create;
+  end;
+  
+  procedure FreeInfos;
+  var
+    AControlPtr: Pointer;
+    AnInfo: Pointer;
+    Info: PControlInfo;
+  begin
+    if ControlToInfo.GetFirst(AControlPtr,AnInfo) then begin
+      repeat
+        Info:=PControlInfo(AnInfo);
+        Dispose(Info);
+      until not ControlToInfo.GetNext(AControlPtr,AControlPtr,AnInfo);
+    end;
+    ControlToInfo.Free;
+    NodeToInfo.Free;
+  end;
+  
+  function GetInfo(AControl: TControl): PControlInfo;
+  begin
+    Result:=ControlToInfo[AControl];
+    if Result=nil then begin
+      New(Result);
+      FillChar(Result^,SizeOf(TControlInfo),0);
+      Result^.Control:=AControl;
+      Result^.Node:=
+                 Layout.FindByName(Manager.GetControlConfigName(AControl),true);
+      ControlToInfo[AControl]:=Result;
+    end;
+  end;
+  
+  function CalculateMinimumLeft(AControl: TControl): integer;
+  var
+    Info: PControlInfo;
+
+    procedure Improve(Neighbour: TControl);
+    begin
+      if Neighbour=nil then exit;
+      if Neighbour.Parent<>AControl.Parent then exit;
+      Info^.MinLeft:=Max(Info^.MinLeft,
+                         CalculateMinimumLeft(Neighbour)+Neighbour.Width);
+    end;
+
+  var
+    i: Integer;
+    Sibling: TControl;
+  begin
+    Info:=GetInfo(AControl);
+    if not Info^.MinLeftValid then begin
+      if Info^.MinLeftCalculating then
+        raise Exception.Create('anchor circle');
+      Info^.MinLeftCalculating:=true;
+      
+      Info^.MinLeft:=0;
+      if (akLeft in AControl.Anchors) then
+        Improve(AControl.AnchorSide[akLeft].Control);
+      if AControl.Parent<>nil then begin
+        for i:=0 to AControl.Parent.ControlCount-1 do begin
+          Sibling:=AControl.Parent.Controls[i];
+          if (akRight in Sibling.Anchors)
+          and (Sibling.AnchorSide[akRight].Control=AControl) then
+            Improve(Sibling.AnchorSide[akRight].Control);
+        end;
+      end;
+      
+      Info^.MinLeftCalculating:=true;
+      Info^.MinLeftValid:=true;
+    end;
+    Result:=Info^.MinLeft;
+  end;
+
+  function CalculateMinimumTop(AControl: TControl): integer;
+  var
+    Info: PControlInfo;
+
+    procedure Improve(Neighbour: TControl);
+    begin
+      if Neighbour=nil then exit;
+      if Neighbour.Parent<>AControl.Parent then exit;
+      Info^.MinTop:=Max(Info^.MinTop,
+                        CalculateMinimumTop(Neighbour)+Neighbour.Height);
+    end;
+
+  var
+    i: Integer;
+    Sibling: TControl;
+  begin
+    Info:=GetInfo(AControl);
+    if not Info^.MinTopValid then begin
+      if Info^.MinTopCalculating then
+        raise Exception.Create('anchor circle');
+      Info^.MinTopCalculating:=true;
+      
+      Info^.MinTop:=0;
+      if (akTop in AControl.Anchors) then
+        Improve(AControl.AnchorSide[akTop].Control);
+      if AControl.Parent<>nil then begin
+        for i:=0 to AControl.Parent.ControlCount-1 do begin
+          Sibling:=AControl.Parent.Controls[i];
+          if (akBottom in Sibling.Anchors)
+          and (Sibling.AnchorSide[akBottom].Control=AControl) then
+            Improve(Sibling.AnchorSide[akBottom].Control);
+        end;
+      end;
+      
+      Info^.MinTopCalculating:=true;
+      Info^.MinTopValid:=true;
+    end;
+    Result:=Info^.MinTop;
+  end;
+
+  function CalculateClientSize(AControl: TControl): TPoint;
+  var
+    Info: PControlInfo;
+    AWinControl: TWinControl;
+    i: Integer;
+    ChildControl: TControl;
+  begin
+    Info:=GetInfo(AControl);
+    if not Info^.MinClientSizeValid then begin
+      Info^.MinClientSizeValid:=true;
+      Info^.MinClientSize:=Point(0,0);
+      if AControl is TWinControl then begin
+        AWinControl:=TWinControl(AControl);
+        for i:=0 to AWinControl.ControlCount-1 do begin
+          ChildControl:=AWinControl.Controls[i];
+          Info^.MinClientSize.X:=Max(Info^.MinClientSize.X,
+                                     CalculateMinimumLeft(ChildControl));
+          Info^.MinClientSize.Y:=Max(Info^.MinClientSize.Y,
+                                     CalculateMinimumTop(ChildControl));
+        end;
+      end;
+    end;
+    Result:=Info^.MinClientSize;
+  end;
+  
+  procedure ApplyBounds;
+  var
+    i: Integer;
+    Sibling: TControl;
+    Info: PControlInfo;
+    NewRect: TRect;
+    OldRect: TRect;
+  begin
+    for i:=0 to AddedControl.Parent.ControlCount-1 do begin
+      Sibling:=AddedControl.Parent.Controls[i];
+      Info:=GetInfo(Sibling);
+      NewRect.Left:=Info^.MinLeft;
+      NewRect.Right:=NewRect.Left+Sibling.Width;
+      if (akRight in Sibling.Anchors)
+      and (Sibling.AnchorSide[akRight].Control<>nil) then
+        NewRect.Right:=CalculateMinimumLeft(Sibling.AnchorSide[akRight].Control);
+      NewRect.Top:=Info^.MinTop;
+      NewRect.Bottom:=NewRect.Top+Sibling.Height;
+      if (akBottom in Sibling.Anchors)
+      and (Sibling.AnchorSide[akBottom].Control<>nil) then
+        NewRect.Bottom:=CalculateMinimumTop(Sibling.AnchorSide[akBottom].Control);
+      OldRect:=Sibling.BoundsRect;
+      if not CompareRect(@OldRect,@NewRect) then begin
+        DebugLn(['ApplyBounds Sibling=',DbgSName(Sibling),' NewRect=',dbgs(NewRect)]);
+        Sibling.BoundsRect:=NewRect;
+      end;
+    end;
+  end;
+
+var
+  ParentSize: TPoint;
+  CurParent: TWinControl;
+  DiffWidth: Integer;
+  DiffHeight: Integer;
+begin
+  DebugLn(['TCustomLazControlDocker.FixControlBounds ',DbgSName(AddedControl)]);
+  CurParent:=AddedControl.Parent;
+  CurParent.DisableAlign;
+  try
+    InitInfos;
+    // calculate minimum left, top, right, bottom of all siblings
+    ParentSize:=CalculateClientSize(CurParent);
+    DiffWidth:=ParentSize.X-CurParent.ClientWidth;
+    DiffHeight:=ParentSize.Y-CurParent.ClientHeight;
+    if (DiffWidth<>0) or (DiffHeight<>0) then begin
+      // parent needs resizing
+      CurParent.Parent.DisableAlign;
+      try
+        CurParent.ClientWidth:=ParentSize.X;
+        CurParent.ClientHeight:=ParentSize.Y;
+        if CurParent.Parent<>nil then begin
+          // parent is a child
+          // => resize parent and fix the position recursively
+          FixControlBounds(Layout,CurParent);
+        end else begin
+          // parent is a free form
+          // => decide where to move the form on the screen using the Layout
+          // TODO
+          DebugLn(['TCustomLazControlDocker.FixControlBounds TODO move parent ',DbgSName(CurParent)]);
+        end;
+      finally
+        CurParent.Parent.EnableAlign;
+      end;
+    end;
+    ApplyBounds;
+  finally
+    FreeInfos;
+    CurParent.EnableAlign;
+  end;
 end;
 
 function TCustomLazControlDocker.GetControlName(AControl: TControl): string;

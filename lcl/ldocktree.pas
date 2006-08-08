@@ -179,6 +179,8 @@ type
     procedure SaveToStream(Stream: TStream); override;
     procedure SetReplacingControl(Control: TControl); override;
     procedure ReplaceAnchoredControl(OldControl, NewControl: TControl);
+    function GetSplitterWidth(Splitter: TControl): integer;
+    function GetSplitterHeight(Splitter: TControl): integer;
     property SplitterSize: integer read FSplitterSize write FSplitterSize default 5;
   end;
   
@@ -948,6 +950,7 @@ var
   NewPageIndex: Integer;
   NewPage: TLazDockPage;
   NewParent: TLazDockForm;
+  ParentDiabledAlign: Boolean;
 begin
   if Control.Parent<>nil then
     RaiseGDBException('TAnchoredDockManager.InsertControl Control.Parent<>nil');
@@ -962,31 +965,38 @@ begin
       DropCtlAnchor:=MainAlignAnchor[InsertAt];
       ControlAnchor:=OppositeAnchor[DropCtlAnchor];
 
-      // make sure, there is a parent HostSite
-      if DropCtl.Parent=nil then begin
-        // create a TLazDockForm as new parent
-        NewParent:=TLazDockForm.Create(Application);
-        NewParent.BoundsRect:=DropCtl.BoundsRect;
-        DropCtl.Parent:=NewParent;
-        // init anchors of DropCtl
-        DropCtl.Align:=alNone;
-        for a:=Low(TAnchorKind) to High(TAnchorKind) do
-          DropCtl.AnchorParallel(a,0,DropCtl.Parent);
-        DropCtl.Anchors:=[akLeft,akTop,akRight,akBottom];
-        NewParent.Visible:=true;
-        //DebugLn('TAnchoredDockManager.DockControl DropCtl=',DbgSName(DropCtl),' NewParent.BoundsRect=',dbgs(NewParent.BoundsRect));
-      end else begin
-        if (DropCtl.Parent is TLazDockForm) then begin
-          // ok
-        end else if (DropCtl.Parent is TLazDockPage) then begin
-          // ok
-        end else begin
-          RaiseGDBException('TAnchoredDockManager.InsertControl DropCtl has invalid parent');
-        end;
-      end;
-
-      DropCtl.Parent.DisableAlign;
+      ParentDiabledAlign:=false;
       try
+        // make sure, there is a parent HostSite
+        if DropCtl.Parent=nil then begin
+          // create a TLazDockForm as new parent
+          NewParent:=TLazDockForm.Create(Application);// starts with Visible=false
+          NewParent.DisableAlign;
+          ParentDiabledAlign:=true;
+          NewParent.BoundsRect:=DropCtl.BoundsRect;
+          // first move DropCtl to the invsible parent, so changes do not cause flicker
+          DropCtl.Parent:=NewParent;
+          // init anchors of DropCtl
+          DropCtl.Align:=alNone;
+          for a:=Low(TAnchorKind) to High(TAnchorKind) do
+            DropCtl.AnchorParallel(a,0,DropCtl.Parent);
+          DropCtl.Anchors:=[akLeft,akTop,akRight,akBottom];
+          NewParent.Visible:=true;
+          //DebugLn('TAnchoredDockManager.DockControl DropCtl=',DbgSName(DropCtl),' NewParent.BoundsRect=',dbgs(NewParent.BoundsRect));
+        end else begin
+          if (DropCtl.Parent is TLazDockForm) then begin
+            // ok
+          end else if (DropCtl.Parent is TLazDockPage) then begin
+            // ok
+          end else begin
+            RaiseGDBException('TAnchoredDockManager.InsertControl DropCtl has invalid parent');
+          end;
+        end;
+
+        if not ParentDiabledAlign then begin
+          DropCtl.Parent.DisableAlign;
+          ParentDiabledAlign:=true;
+        end;
         // create a splitter
         Splitter:=TLazDockSplitter.Create(Control);
         Splitter.Align:=alNone;
@@ -1071,7 +1081,8 @@ begin
 
         //debugln('TAnchoredDockManager.InsertControl BEFORE ALIGNING Control.Bounds=',DbgSName(Control),dbgs(Control.BoundsRect),' DropCtl.Bounds=',DbgSName(DropCtl),dbgs(DropCtl.BoundsRect),' Splitter.Bounds=',DbgSName(Splitter),dbgs(Splitter.BoundsRect));
       finally
-        DropCtl.Parent.EnableAlign;
+        if ParentDiabledAlign then
+          DropCtl.Parent.EnableAlign;
       end;
       //debugln('TAnchoredDockManager.InsertControl END Control.Bounds=',DbgSName(Control),dbgs(Control.BoundsRect),' DropCtl.Bounds=',DbgSName(DropCtl),dbgs(DropCtl.BoundsRect),' Splitter.Bounds=',DbgSName(Splitter),dbgs(Splitter.BoundsRect));
     end;
@@ -1398,6 +1409,16 @@ begin
     NewControl.Align:=alNone;
     NewControl.BoundsRect:=OldControl.BoundsRect;
   end;
+end;
+
+function TAnchoredDockManager.GetSplitterWidth(Splitter: TControl): integer;
+begin
+  Result:=Splitter.Constraints.MinMaxWidth(SplitterSize);
+end;
+
+function TAnchoredDockManager.GetSplitterHeight(Splitter: TControl): integer;
+begin
+  Result:=Splitter.Constraints.MinMaxHeight(SplitterSize);
 end;
 
 { TLazDockPage }

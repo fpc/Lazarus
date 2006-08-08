@@ -13,6 +13,8 @@ lcl
  +--- units
  |
  +--- widgetset
+ |
+ +--- tests
 
 
 lcl: 
@@ -36,3 +38,6 @@ lcl/units:
 lcl/widgetset
   Contains the definition of the widgetset class 
   and the sceleton WSxxxComponent classes
+  
+lcl/tests
+  Contains various tests for the LCL
