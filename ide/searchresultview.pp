@@ -90,9 +90,12 @@ type
     fSearchObject: TLazSearch;
     FSkipped: integer;
     fUpdateStrings: TStrings;
+    fBackUpStrings: TStrings;
     fUpdating: boolean;
     fUpdateCount: integer;
     fShortenPathNeeded: boolean;
+    FSearchInListPhrases: string;
+    fFiltered: Boolean;
     procedure SetSkipped(const AValue: integer);
   public
     constructor Create(AOwner: TComponent); override;
@@ -101,6 +104,10 @@ type
     procedure BeginUpdate;
     procedure EndUpdate;
     procedure ShortenPaths;
+    procedure FreeObjects(var slItems: TStrings);
+    property BackUpStrings: TStrings read fBackUpStrings write fBackUpStrings;
+    property Filtered: Boolean read fFiltered write fFiltered;
+    property SearchInListPhrases: string read FSearchInListPhrases write FSearchInListPhrases;
     property UpdateItems: TStrings read fUpdateStrings write fUpdateStrings;
     property UpdateState: boolean read fUpdating;
     property Skipped: integer read FSkipped write SetSkipped;
@@ -112,6 +119,11 @@ type
   TSearchResultsView = class(TForm)
     btnSearchAgain: TButton;
     ResultsNoteBook: TNotebook;
+    gbSearchPhraseInList: TGroupBox;
+    edSearchInList: TEdit;
+    bnForwardSearch: TButton;
+    bnResetResults: TButton;
+    bnFilter: TButton;
     procedure Form1Create(Sender: TObject);
     procedure ListBoxKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure ResultsNoteBookClosetabclicked(Sender: TObject);
@@ -124,6 +136,13 @@ type
                              X, Y: Integer);
     Procedure LazLBMouseWheel(Sender: TObject; Shift: TShiftState;
                    WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
+    procedure edSearchInListChange (Sender: TObject );
+    procedure ResultsNoteBookPageChanged (Sender: TObject );
+    procedure bnForwardSearchClick (Sender: TObject );
+    procedure bnResetResultsClick (Sender: TObject );
+    procedure edSearchInListKeyDown (Sender: TObject; var Key: Word;
+     Shift: TShiftState );
+    procedure bnFilterClick (Sender: TObject );
   private
     FMaxItems: integer;
     function PageExists(const APageName: string): boolean;
@@ -155,6 +174,7 @@ type
                        const MatchStart: integer; const MatchLen: integer);
     procedure BeginUpdate(AIndex: integer);
     procedure EndUpdate(AIndex: integer);
+    procedure Parse_Search_Phrases(var slPhrases: TStrings);
     property ListBoxFont: TFont read fListBoxFont write fListBoxFont;
     property OnSelectionChanged: TNotifyEvent read fOnSelectionChanged
                                               write fOnSelectionChanged;
@@ -171,6 +191,19 @@ implementation
 
 const
   SPACE = ' ';
+  
+function CopySearchMatchPos(var Src, Dest: TLazSearchMatchPos): Boolean;
+begin
+ Result := False;
+ if ((Src = nil) or (Dest = nil)) then Exit;
+ Dest.MatchStart := Src.MatchStart;
+ Dest.MatchLen := Src.MatchLen;
+ Dest.Filename := Src.Filename;
+ Dest.FilePosition := Src.FilePosition;
+ Dest.TheText := Src.TheText;
+ Dest.ShownFilename := Dest.Filename;
+ Result := True;
+end;
   
 procedure TSearchResultsView.Form1Create(Sender: TObject);
 var
@@ -229,6 +262,181 @@ begin
   LazLBMouseMove(Sender,Shift,MousePos.X, MousePos.Y);
   Handled:= false;
 end;//LazLBMouseWheel
+
+procedure TSearchResultsView.edSearchInListChange (Sender: TObject );
+var CurrentLB: TLazSearchResultLB;
+begin
+ CurrentLB := GetListBox(ResultsNoteBook.PageIndex);
+ if Assigned(CurrentLB) then
+  CurrentLB.SearchInListPhrases := edSearchInList.Text;
+end;
+
+procedure TSearchResultsView.ResultsNoteBookPageChanged (Sender: TObject );
+var CurrentLB: TLazSearchResultLB;
+begin
+ CurrentLB := GetListBox(ResultsNoteBook.PageIndex);
+ if Assigned(CurrentLB) then
+  edSearchInList.Text := CurrentLB.SearchInListPhrases;
+end;
+
+procedure TSearchResultsView.bnForwardSearchClick (Sender: TObject );
+var CurrentLB: TLazSearchResultLB;
+    slPhrases: TStrings;
+    i, j, iCurrentIndex: Integer;
+    S: string;
+begin
+ CurrentLB := GetListBox(ResultsNoteBook.PageIndex);
+ if Assigned(CurrentLB) then
+  begin
+   if (Length(edSearchInList.Text) = 0) then Exit;//No Search Phrases specified.
+   if (CurrentLB.Items.Count <= 0) then Exit;
+   slPhrases := TStringList.Create;
+   try
+    iCurrentIndex := CurrentLB.ItemIndex + 1;
+    if (iCurrentIndex > CurrentLB.Items.Count) then iCurrentIndex := CurrentLB.Items.Count;
+    if (iCurrentIndex < 0) then iCurrentIndex := 0;//Set to 1st list-item if none are selected
+    //Parse Phrases
+    Parse_Search_Phrases(slPhrases);
+    if (slPhrases.Count > 0) then
+     begin
+      for i:=iCurrentIndex to CurrentLB.Items.Count-1 do
+       begin
+        S := UpperCase(CurrentLB.Items[i]);//for case-insensitive search
+        for j:=0 to slPhrases.Count-1 do
+         begin
+          if (Pos(slPhrases[j], S) <> 0) then
+           begin
+            CurrentLB.ItemIndex := i;//Set listbox's itemindex
+            CurrentLB.MakeCurrentVisible;
+            Exit;//Found what we looking for, exit
+           end;//End if (Pos(slPhrases[j], CurrentLB.Items[i]) <> 0)
+         end;//End for-loop j
+       end;//End for-loop i
+     end;//End if if (slPhrases.Count > 0)
+   finally
+    FreeAndNil(slPhrases);
+    edSearchInList.SetFocus;
+   end;//End try-finally
+  end;//End if Assigned(CurrentLB)
+end;
+
+procedure TSearchResultsView.bnResetResultsClick (Sender: TObject );
+var i: Integer;
+    oObject: TObject;
+    CurrentLB: TLazSearchResultLB;
+    mpMatchPos, mpOrgMatchPos: TLazSearchMatchPos;
+begin
+ CurrentLB := GetListBox(ResultsNoteBook.PageIndex);
+ try
+  if CurrentLB.Filtered then
+   begin
+    if (CurrentLB.Items.Count > 0) then
+     begin
+      CurrentLB.FreeObjects(CurrentLB.Items);//Free the objects
+      CurrentLB.Items.Clear;
+     end;//End if (CurrentLB.Items.Count > 0)
+
+    if (CurrentLB.BackUpStrings.Count > 0) then
+     begin
+      for i:=0 to CurrentLB.BackUpStrings.Count-1 do
+       begin
+        oObject := CurrentLB.BackUpStrings.Objects[i];
+        if not (oObject is TLazSearchMatchPos) then Continue;
+        mpOrgMatchPos := TLazSearchMatchPos(oObject);
+        if Assigned(mpOrgMatchPos) then
+         begin
+          mpMatchPos := TLazSearchMatchPos.Create;
+          if CopySearchMatchPos(mpOrgMatchPos, mpMatchPos) then
+           CurrentLB.Items.AddObject(CurrentLB.BackUpStrings[i], mpMatchPos);
+         end;//End if Assigned(mpOrgMatchPos)
+       end;//End for-loop i
+     end;//End if (CurrentLB.BackUpStrings.Count > 0)
+    CurrentLB.Filtered := False;
+   end;//End if CurrentLB.Filtered
+ finally
+  edSearchInList.SetFocus;
+ end;//End try-finally
+end;
+
+procedure TSearchResultsView.edSearchInListKeyDown (Sender: TObject;
+ var Key: Word; Shift: TShiftState );
+begin
+ if (Key = VK_RETURN) then
+  bnForwardSearchClick(bnForwardSearch);
+end;
+
+procedure TSearchResultsView.bnFilterClick (Sender: TObject );
+var CurrentLB: TLazSearchResultLB;
+    mpMatchPos, mpOrgMatchPos: TLazSearchMatchPos;
+    slPhrases: TStrings;
+    i, j: Integer;
+    S: string;
+    oObject: TObject;
+begin
+ CurrentLB := GetListBox(ResultsNoteBook.PageIndex);
+ if Assigned(CurrentLB) then
+  begin
+   if (Length(edSearchInList.Text) = 0) then Exit;//No Filter Phrases specified.
+   slPhrases := TStringList.Create;
+   try
+    //Parse Phrases
+    Parse_Search_Phrases(slPhrases);
+    //BackUp Result List
+    if not (CurrentLB.Filtered or (CurrentLB.BackUpStrings.Count > 0)) then
+     begin
+      if (CurrentLB.Items.Count <= 1) then Exit;
+      for i:=0 to CurrentLB.Items.Count-1 do
+       begin
+        oObject := CurrentLB.Items.Objects[i];
+        if not (oObject is TLazSearchMatchPos) then Continue;
+        mpOrgMatchPos := TLazSearchMatchPos(CurrentLB.Items.Objects[i]);
+        if Assigned(mpOrgMatchPos) then
+         begin
+          mpMatchPos := TLazSearchMatchPos.Create;
+          if CopySearchMatchPos(mpOrgMatchPos, mpMatchPos) then
+           CurrentLB.BackUpStrings.AddObject(CurrentLB.Items[i], mpMatchPos);
+         end;//End if Assigned(mpOrgMatchPos)
+       end;//End for-loop i
+     end;//End if not (CurrentLB.Filtered or (CurrentLB.BackUpStrings.Count > 0))
+     
+    if (CurrentLB.BackUpStrings.Count <= 0) then Exit;//Empty list
+
+    if (CurrentLB.Items.Count > 0) then
+     begin
+      CurrentLB.FreeObjects(CurrentLB.Items);//Free the objects
+      CurrentLB.Items.Clear;//Clear the list
+     end;//End if (CurrentLB.Items.Count > 0)
+    if (slPhrases.Count > 0) then
+     begin
+      for i:=0 to CurrentLB.BackUpStrings.Count-1 do
+       begin
+        S := UpperCase(CurrentLB.BackUpStrings[i]);//for case-insensitive search
+        for j:=0 to slPhrases.Count-1 do
+         begin
+          if (Pos(slPhrases[j], S) <> 0) then
+           begin
+            oObject := CurrentLB.BackUpStrings.Objects[i];
+            if not (oObject is TLazSearchMatchPos) then Continue;
+            mpOrgMatchPos := TLazSearchMatchPos(CurrentLB.BackUpStrings.Objects[i]);
+            if Assigned(mpOrgMatchPos) then
+             begin
+              mpMatchPos := TLazSearchMatchPos.Create;
+              if CopySearchMatchPos(mpOrgMatchPos, mpMatchPos) then
+               CurrentLB.Items.AddObject(CurrentLB.BackUpStrings[i], mpMatchPos);
+             end;//End if Assigned(mpOrgMatchPos)
+            Break;
+           end;//End if (Pos(slPhrases[j], S) <> 0)
+         end;//End for-loop j
+       end;//End for-loop i
+      CurrentLB.Filtered := True;
+     end;//End if if (slPhrases.Count > 0)
+   finally
+    FreeAndNil(slPhrases);
+    edSearchInList.SetFocus;
+    if (CurrentLB.Items.Count > 0) then CurrentLB.ItemIndex := 0;//Goto first item
+   end;//End try-finally
+  end;//End if Assigned(CurrentLB)
+end;
 
 procedure TSearchResultsView.AddMatch(const AIndex: integer;
   const Filename: string; const FilePosition: TPoint;
@@ -299,6 +507,30 @@ begin
       CurrentLB.TopIndex:= 0;
     end;
   end;
+end;
+
+procedure TSearchResultsView.Parse_Search_Phrases(var slPhrases: TStrings);
+var i, iLength: Integer;
+    sPhrases, sPhrase: string;
+begin
+ //Parse Phrases
+ sPhrases := edSearchInList.Text;
+ iLength := Length(sPhrases);
+ for i:=1 to iLength do
+  begin
+   if ((sPhrases[i] = ' ') or (sPhrases[i] = ',') or (i = iLength)) then
+    begin
+     if not ((sPhrases[i] = ' ') or (sPhrases[i] = ',')) then
+      sPhrase := sPhrase + sPhrases[i];
+     if (sPhrase > ' ') then
+      slPhrases.Add(UpperCase(sPhrase));//End of phrase, add to phrase list
+     sPhrase := '';//Reset sPhrase
+    end else
+    begin
+     if (sPhrases[i] > ' ') then
+      sPhrase := sPhrase + sPhrases[i];
+    end;//End if ((sPhrases[i] = ' ') or (sPhrases[i] = ','))
+  end;//End for-loop i
 end;
 
 {Brings the results tab named APageName to front.
@@ -476,6 +708,7 @@ begin
     end;
     NewListBox.Skipped:=0;
     Result:= ResultsNoteBook.PageIndex;
+    edSearchInList.Clear;
   end;//if
 end;//AddResult
 
@@ -731,24 +964,26 @@ begin
   fUpdating:= false;
   fUpdateCount:= 0;
   fUpdateStrings:= TStringList.Create;
+  fBackUpStrings := TStringList.Create;
+  FSearchInListPhrases := '';
+  fFiltered := False;
 end;//Create
 
 Destructor TLazSearchResultLB.Destroy;
-var
-  i: integer;
 begin
   if Assigned(fSearchObject) then
     FreeAndNil(fSearchObject);
   if Assigned(fUpdateStrings) then
   begin
-    for i:= 0 to fUpdateStrings.Count -1 do
-    begin
-      if Assigned(fUpdateStrings.Objects[i]) then
-        fUpdateStrings.Objects[i].free;
-    end;//for
+    FreeObjects(fUpdateStrings);
     FreeAndNil(fUpdateStrings);
   end;//if
-  
+  if Assigned(fBackUpStrings) then
+  begin
+   FreeObjects(fBackUpStrings);
+   FreeAndNil(fBackUpStrings);
+  end;//End if Assigned(fBackUpStrings)
+  FreeObjects(Items);
   inherited Destroy;
 end;//Destroy
 
@@ -845,6 +1080,17 @@ begin
       SrcList.Objects[i]:=MatchPos;
     end;
   end;
+end;
+
+procedure TLazSearchResultLB.FreeObjects(var slItems: TStrings);
+var i: Integer;
+begin
+ if (slItems.Count <= 0) then Exit;
+ for i:=0 to slItems.Count-1 do
+  begin
+   if Assigned(slItems.Objects[i]) then
+    slItems.Objects[i].Free;
+ end;//End for-loop
 end;
 
 initialization

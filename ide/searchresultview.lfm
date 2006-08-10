@@ -1,42 +1,89 @@
 object SearchResultsView: TSearchResultsView
-  ActiveControl = btnSearchAgain
-  Caption = 'SearchResultsView'
-  ClientHeight = 229
-  ClientWidth = 799
-  OnCreate = Form1Create
-  OnDestroy = SearchResultsViewDestroy
-  OnKeyDown = ListBoxKeyDown
-  PixelsPerInch = 112
-  Position = poScreenCenter
-  HorzScrollBar.Page = 798
-  VertScrollBar.Page = 228
-  Left = 267
+  Left = 217
   Height = 229
   Top = 482
   Width = 799
+  HorzScrollBar.Page = 798
+  VertScrollBar.Page = 228
+  ActiveControl = btnSearchAgain
+  Caption = 'SearchResultsView'
+  OnCreate = Form1Create
+  OnDestroy = SearchResultsViewDestroy
+  OnKeyDown = ListBoxKeyDown
+  Position = poScreenCenter
   object ResultsNoteBook: TNotebook
-    Align = alBottom
-    Anchors = [akTop, akLeft]
-    OnCloseTabClicked = ResultsNoteBookClosetabclicked
-    Options = [nboShowCloseButtons, nboMultiLine]
     AnchorSideTop.Control = btnSearchAgain
     AnchorSideTop.Side = asrBottom
     Height = 192
     Top = 37
     Width = 799
+    Align = alBottom
+    Anchors = [akTop, akLeft]
+    OnCloseTabClicked = ResultsNoteBookClosetabclicked
+    OnPageChanged = ResultsNoteBookPageChanged
+    Options = [nboShowCloseButtons, nboMultiLine]
   end
   object btnSearchAgain: TButton
-    BorderSpacing.Around = 6
-    
-    Caption = 'Search Again'
-    OnClick = btnSearchAgainClick
-    OnKeyDown = ListBoxKeyDown
-    TabOrder = 1
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     Left = 6
     Height = 25
     Top = 6
     Width = 115
+    BorderSpacing.Around = 6
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Search Again'
+    OnClick = btnSearchAgainClick
+    OnKeyDown = ListBoxKeyDown
+    TabOrder = 1
+  end
+  object gbSearchPhraseInList: TGroupBox
+    Left = 237
+    Height = 37
+    Width = 562
+    Align = alRight
+    Caption = 'Search or Filter Phrases In List'
+    TabOrder = 2
+    object edSearchInList: TEdit
+      Height = 20
+      Hint = 'Enter one or more phrases that you want'#10'to Search or Filter in the list,'#10'seperated by space ( '' '' ), or comma ( , )'
+      Width = 263
+      Align = alClient
+      OnChange = edSearchInListChange
+      OnKeyDown = edSearchInListKeyDown
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 0
+    end
+    object bnForwardSearch: TButton
+      Left = 338
+      Height = 20
+      Width = 100
+      Align = alRight
+      BorderSpacing.InnerBorder = 4
+      Caption = 'Forward Search'
+      OnClick = bnForwardSearchClick
+      TabOrder = 1
+    end
+    object bnResetResults: TButton
+      Left = 438
+      Height = 20
+      Width = 120
+      Align = alRight
+      BorderSpacing.InnerBorder = 4
+      Caption = 'Reset Result List'
+      OnClick = bnResetResultsClick
+      TabOrder = 2
+    end
+    object bnFilter: TButton
+      Left = 263
+      Height = 20
+      Width = 75
+      Align = alRight
+      BorderSpacing.InnerBorder = 4
+      Caption = 'Filter'
+      OnClick = bnFilterClick
+      TabOrder = 3
+    end
   end
 end
