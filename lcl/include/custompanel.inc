@@ -124,7 +124,6 @@ begin
   end;
 
   inherited Paint;
-
 end;
 
 function TCustomPanel.CanTab: Boolean;
@@ -146,6 +145,7 @@ end;
 
 procedure TCustomPanel.Loaded;
 begin
+  inherited Loaded;
   UpdateParentColorChange;
 end;
 

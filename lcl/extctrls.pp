@@ -929,7 +929,6 @@ type
     FBevelWidth : TBevelWidth;
     FBorderWidth : TBorderWidth;
     FAlignment : TAlignment;
-//    FCaption : TCaption;
     FFullRepaint: Boolean;
     procedure SetAlignment(const Value : TAlignment);
     procedure SetBevelInner(const Value: TPanelBevel);

@@ -462,12 +462,12 @@ begin
       end;
     end;
 
-    //writeln('TheFileName=',TheFileName,' len=',OriginalFile.SourceLength,' Cnt=',OriginalFile.LineCount,' TempSearch=',TempSearch);
+    //debugln(['TheFileName=',TheFileName,' len=',OriginalFile.SourceLength,' Cnt=',OriginalFile.LineCount,' TempSearch=',TempSearch]);
     ProcessMessages;
 
     CurLine:='';
-    for Line:= 0 to OriginalFile.LineCount -1 do begin
-      if (Line and $fff)=0 then begin
+    for Line:= 0 to OriginalFile.LineCount-1 do begin
+      if (Line and $ff)=0 then begin
         EndLocks;
         ProcessMessages;
       end;
@@ -768,7 +768,8 @@ end;//ParseMask
 procedure TSearchForm.UpdateMatches;
 begin
   inc(fMatches);
-  lblMatches.Caption:= IntToStr(fMatches);
+  //DebugLn(['TSearchForm.UpdateMatches ',lblMatches.Caption]);
+  lblMatches.Caption:=IntToStr(fMatches);
 end;//UpdateMatches
 
 
