@@ -4884,6 +4884,10 @@ msgstr "Buka ..."
 msgid "Open Diff in editor"
 msgstr "Buka Diff dalam editor"
 
+#: lazarusidestrconsts:liscpopenpackage
+msgid "Open Package %s"
+msgstr ""
+
 #: lazarusidestrconsts:lisopenpackagefile
 msgid "Open Package File"
 msgstr "Buka File Paket"
@@ -4919,6 +4923,10 @@ msgstr "Buka yang Terakhir ..."
 #: lazarusidestrconsts:lismenuopenrecentproject
 msgid "Open Recent Project ..."
 msgstr "Buka Proyek Terakhir ..."
+
+#: lazarusidestrconsts:liscpopenunit
+msgid "Open Unit %s"
+msgstr ""
 
 #: lazarusidestrconsts:lisopenasxmlfile
 msgid "Open as XML file"

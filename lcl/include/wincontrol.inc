@@ -5082,6 +5082,7 @@ begin
   if [csLoading,csDesigning]*ComponentState=[csLoading] then begin
     DebugLn('[HINT] TWinControl.CreateWnd creating Handle during loading ',DbgSName(Self),' csDesigning=',dbgs(csDesigning in ComponentState));
     //DumpStack;
+    //RaiseGDBException('');
   end;
 
   Include(FWinControlFlags,wcfCreatingHandle);

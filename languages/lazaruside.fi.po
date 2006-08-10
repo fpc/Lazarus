@@ -4870,6 +4870,10 @@ msgstr "Avaa ..."
 msgid "Open Diff in editor"
 msgstr "Avaa eroavuudet editorissa"
 
+#: lazarusidestrconsts:liscpopenpackage
+msgid "Open Package %s"
+msgstr ""
+
 #: lazarusidestrconsts:lisopenpackagefile
 msgid "Open Package File"
 msgstr ""
@@ -4905,6 +4909,10 @@ msgstr "Avaa viimeksi esillä olleista ..."
 #: lazarusidestrconsts:lismenuopenrecentproject
 msgid "Open Recent Project ..."
 msgstr "Avaa esillä ollut projekti ..."
+
+#: lazarusidestrconsts:liscpopenunit
+msgid "Open Unit %s"
+msgstr ""
 
 #: lazarusidestrconsts:lisopenasxmlfile
 msgid "Open as XML file"

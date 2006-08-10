@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2006-07-24 14:43+0100\n"
+"PO-Revision-Date: 2006-08-06 13:10+0100\n"
 "Last-Translator: Swen Heinig <x@y.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -1502,7 +1502,7 @@ msgstr "Externe Komponenten einrichten ..."
 
 #: lazarusidestrconsts:lismenusettings
 msgid "Configure custom tools ..."
-msgstr "Externe Werkzeuge einrichten..."
+msgstr "Externe Werkzeuge einrichten ..."
 
 #: lazarusidestrconsts:lismenueditinstallpkgs
 msgid "Configure installed packages ..."
@@ -2818,7 +2818,7 @@ msgstr "Anderes Ende des Quelltextblocks suchen"
 
 #: lazarusidestrconsts:lisfpfindpalettecomponent
 msgid "Find palette component"
-msgstr ""
+msgstr "Komponente in der Palette finden"
 
 #: lazarusidestrconsts:srkmecfindprevious
 msgid "Find previous"
@@ -3370,7 +3370,7 @@ msgstr "Include-Datei"
 
 #: lazarusidestrconsts:lisincludepaths
 msgid "Include paths"
-msgstr ""
+msgstr "Include-Pfade"
 
 #: lazarusidestrconsts:lisfindfileincludesubdirectories
 msgid "Include sub directories"
@@ -4622,7 +4622,7 @@ msgstr "Neu"
 
 #: lazarusidestrconsts:lismenunewother
 msgid "New ..."
-msgstr "Neu..."
+msgstr "Neu ..."
 
 #: lazarusidestrconsts:lisnewancestors
 msgid "New Ancestors"
@@ -4658,7 +4658,7 @@ msgstr "Neue Anforderung"
 
 #: lazarusidestrconsts:lismenueditornewtemplatedescription
 msgid "New Template Description..."
-msgstr "Neue Vorlagenbeschreibung..."
+msgstr "Neue Vorlagenbeschreibung ..."
 
 #: lazarusidestrconsts:lismenunewunit
 msgid "New Unit"
@@ -4706,7 +4706,7 @@ msgstr "Kein ResourceString-Abschnitt gefunden"
 
 #: lazarusidestrconsts:lisnobackupfiles
 msgid "No backup files"
-msgstr ""
+msgstr "Keine Backup Dateien"
 
 #: lazarusidestrconsts:lisnochange
 msgid "No change"
@@ -4884,6 +4884,10 @@ msgstr "Öffnen ..."
 msgid "Open Diff in editor"
 msgstr "Öffne Diff im Editor"
 
+#: lazarusidestrconsts:liscpopenpackage
+msgid "Open Package %s"
+msgstr ""
+
 #: lazarusidestrconsts:lisopenpackagefile
 msgid "Open Package File"
 msgstr "Paketdatei wählen"
@@ -4919,6 +4923,10 @@ msgstr "Wieder öffnen ..."
 #: lazarusidestrconsts:lismenuopenrecentproject
 msgid "Open Recent Project ..."
 msgstr "Letzte Projekte ..."
+
+#: lazarusidestrconsts:liscpopenunit
+msgid "Open Unit %s"
+msgstr ""
 
 #: lazarusidestrconsts:lisopenasxmlfile
 msgid "Open as XML file"
@@ -6754,7 +6762,7 @@ msgstr "Quelltext der Seite %s%s%s wurde ändert. Speichern?"
 
 #: lazarusidestrconsts:lissourcepaths
 msgid "Source paths"
-msgstr ""
+msgstr "Quelltext-Pfade"
 
 #: lazarusidestrconsts:lismakeresstrsourcepreview
 msgid "Source preview"
@@ -6894,7 +6902,7 @@ msgstr "Untergeordnete Eigenschaften"
 
 #: lazarusidestrconsts:lissuccess
 msgid "Success"
-msgstr ""
+msgstr "Erfolg"
 
 #: lazarusidestrconsts:lisa2pswitchpaths
 msgid "Switch Paths"
@@ -8222,7 +8230,7 @@ msgstr "Unit-Ausgabeverzeichnis (-FU):"
 
 #: lazarusidestrconsts:lisunitpaths
 msgid "Unit paths"
-msgstr ""
+msgstr "Unit-Pfade"
 
 #: lazarusidestrconsts:lisunitlfmfile
 msgid "Unit: %s%sLFM file: %s"

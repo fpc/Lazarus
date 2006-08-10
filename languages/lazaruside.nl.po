@@ -4881,6 +4881,10 @@ msgstr "Openen ..."
 msgid "Open Diff in editor"
 msgstr "Toon verschillen in editor"
 
+#: lazarusidestrconsts:liscpopenpackage
+msgid "Open Package %s"
+msgstr ""
+
 #: lazarusidestrconsts:lisopenpackagefile
 msgid "Open Package File"
 msgstr "Open Package bestand"
@@ -4916,6 +4920,10 @@ msgstr "Open Recent ..."
 #: lazarusidestrconsts:lismenuopenrecentproject
 msgid "Open Recent Project ..."
 msgstr "Open Recent Project ..."
+
+#: lazarusidestrconsts:liscpopenunit
+msgid "Open Unit %s"
+msgstr ""
 
 #: lazarusidestrconsts:lisopenasxmlfile
 msgid "Open as XML file"

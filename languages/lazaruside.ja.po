@@ -4880,6 +4880,10 @@ msgstr "開く ..."
 msgid "Open Diff in editor"
 msgstr ""
 
+#: lazarusidestrconsts:liscpopenpackage
+msgid "Open Package %s"
+msgstr ""
+
 #: lazarusidestrconsts:lisopenpackagefile
 msgid "Open Package File"
 msgstr "パッケージファイルを開く"
@@ -4915,6 +4919,10 @@ msgstr "最近開いたファイルを開く ..."
 #: lazarusidestrconsts:lismenuopenrecentproject
 msgid "Open Recent Project ..."
 msgstr "最近開いたプロジェクトを開く ..."
+
+#: lazarusidestrconsts:liscpopenunit
+msgid "Open Unit %s"
+msgstr ""
 
 #: lazarusidestrconsts:lisopenasxmlfile
 msgid "Open as XML file"

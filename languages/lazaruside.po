@@ -6594,6 +6594,14 @@ msgstr ""
 msgid "Open package"
 msgstr ""
 
+#: lazarusidestrconsts:liscpopenpackage
+msgid "Open Package %s"
+msgstr ""
+
+#: lazarusidestrconsts:liscpopenunit
+msgid "Open Unit %s"
+msgstr ""
+
 #: lazarusidestrconsts:liscomppalopenunit
 msgid "Open unit"
 msgstr ""

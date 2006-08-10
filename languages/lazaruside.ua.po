@@ -4870,6 +4870,10 @@ msgstr "Відкрити ..."
 msgid "Open Diff in editor"
 msgstr "Відкрити різницю в редакторі"
 
+#: lazarusidestrconsts:liscpopenpackage
+msgid "Open Package %s"
+msgstr ""
+
 #: lazarusidestrconsts:lisopenpackagefile
 msgid "Open Package File"
 msgstr "Відкрити файл пакунку"
@@ -4905,6 +4909,10 @@ msgstr "Відкрити нещодавні ..."
 #: lazarusidestrconsts:lismenuopenrecentproject
 msgid "Open Recent Project ..."
 msgstr "Відкрити останній проект ..."
+
+#: lazarusidestrconsts:liscpopenunit
+msgid "Open Unit %s"
+msgstr ""
 
 #: lazarusidestrconsts:lisopenasxmlfile
 msgid "Open as XML file"
