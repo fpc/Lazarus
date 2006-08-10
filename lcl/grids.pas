@@ -888,6 +888,7 @@ type
     procedure BeginUpdate;
     function  CellRect(ACol, ARow: Integer): TRect;
     function  CellToGridZone(aCol,aRow: Integer): TGridZone;
+    procedure CheckPosition;
     procedure Clear;
 
     function  EditorByStyle(Style: TColumnButtonStyle): TWinControl; virtual;
@@ -4959,6 +4960,53 @@ begin
   if aRow>RowCount-1 then aRow:=RowCount-1;
 end;
 
+// This procedure checks if cursor cell position is allowed
+// if not it tries to find a suitable position based on
+// AutoAdvance and SelectCell.
+procedure TCustomGrid.CheckPosition;
+var
+  OldAA: TAutoAdvance;
+  DeltaCol,DeltaRow: Integer;
+begin
+  // first tries to find if current position is allowed
+  if SelectCell(Col,Row) then
+    exit;
+
+  // current position is not valid, look for another position
+  OldAA := FAutoAdvance;
+  
+  if OldAA=aaNone then
+    FAutoAdvance := aaRightDown;
+
+  try
+    // try first normal movement then inverse movement
+    if GetDeltaMoveNext(false, DeltaCol,DeltaRow) or
+       GetDeltaMoveNext(true,  DeltaCol,DeltaRow)
+    then begin
+      MoveNextSelectable(True, DeltaCol, DeltaRow)
+    end else begin
+      // some combinations of AutoAdvance and current position
+      // will always fail, for example if user set current
+      // column not selectable and autoadvance is aaDown will
+      // fail always, in this case as a last resource do a full
+      // scan until a cell is available
+      for DeltaCol:=FixedCols to ColCount-1 do
+        for DeltaRow:=FixedRows to RowCount-1 do begin
+          if SelectCell(DeltaCol,DeltaRow) then begin
+            // found one selectable cell
+            MoveNextSelectable(False, DeltaCol,DeltaRow);
+            exit;
+          end;
+        end;
+      // user has created weird situation.
+      // can't do more about it.
+    end;
+
+  finally
+    FAutoAdvance := OldAA;
+  end;
+end;
+
 procedure TCustomGrid.MoveSelection;
 begin
   if Assigned(OnSelection) then OnSelection(Self, FCol, FRow);
@@ -5346,7 +5394,6 @@ procedure TCustomGrid.FixPosition;
       FCol := FCols.Count - 1
     else if (FCol < FixedCols) and (FixedCols<FCols.Count) then
       FCol := FixedCols;
-    UpdateSelectionRange;
   end;
   procedure FixTopLeft;
   var
@@ -5372,6 +5419,8 @@ procedure TCustomGrid.FixPosition;
 begin
   FixTopleft;
   FixSelection;
+  CheckPosition;
+  UpdateSelectionRange;
   VisualChange;
 end;
 
@@ -5602,6 +5651,10 @@ begin
     exit; // quick case, no auto movement allowed
   
   // invert direction if necessary
+  //
+  // TODO: inverse of aaRightDown is aaLeftUP
+  //       inverse of aaLeftDown is aaRightUP
+  //       move this to CalcNextStep
   aa := FAutoAdvance;
   if Inverse then
     case FAutoAdvance of
@@ -5909,6 +5962,7 @@ end;
 procedure TCustomGrid.Loaded;
 begin
   inherited Loaded;
+  CheckPosition;
   VisualChange;
 end;
 
