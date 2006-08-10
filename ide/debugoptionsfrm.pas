@@ -407,6 +407,9 @@ begin
   mnuiHandledByDebugger.Caption := lisDebugOptionsFrmHandledByDebugger;
   mnuResumeHandled.Caption := lisDebugOptionsFrmResumeHandled;
   mnuResumeUnhandled.Caption := lisDebugOptionsFrmResumeUnhandled;
+  
+  cmdOK.Caption:=lisOkBtn;
+  cmdCancel.Caption:=dlgCancel;
 
   FCurDebuggerClass := nil;
   
