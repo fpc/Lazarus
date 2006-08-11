@@ -456,7 +456,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisfriadditionalfilestosearchegpathpaspath2pp
 msgid "Additional files to search (e.g. /path/*.pas;/path2/*.pp)"
-msgstr ""
+msgstr "Laajennetaan toiminta koskemaan myös näihin tiedostoihin (esim. /path/*.pas;/path2/*.pp)"
 
 #: lazarusidestrconsts:lisdebugoptionsfrmadditionalsearchpath
 msgid "Additional search path"
@@ -1620,7 +1620,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgcopywordatcursoroncopynone
 msgid "Copy word on copy none"
-msgstr ""
+msgstr "Valitse kopioinnissa kursorin osoittama sana jos muuta ei ole valittu"
 
 #: lazarusidestrconsts:liscopyingawholeformisnotimplemented
 msgid "Copying a whole form is not implemented."
@@ -2444,7 +2444,7 @@ msgstr ""
 
 #: lazarusidestrconsts:liserrors
 msgid "Errors"
-msgstr ""
+msgstr "Virheet"
 
 #: lazarusidestrconsts:srvk_escape
 msgid "Escape"
@@ -3968,7 +3968,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lislfmfile
 msgid "LFM file"
-msgstr ""
+msgstr "LFM tiedosto"
 
 #: lazarusidestrconsts:lislfmfilecorrupt
 msgid "LFM file corrupt"
@@ -4872,7 +4872,7 @@ msgstr "Avaa eroavuudet editorissa"
 
 #: lazarusidestrconsts:liscpopenpackage
 msgid "Open Package %s"
-msgstr ""
+msgstr "Avaa komponenttipaketti %s"
 
 #: lazarusidestrconsts:lisopenpackagefile
 msgid "Open Package File"
@@ -4912,7 +4912,7 @@ msgstr "Avaa esillä ollut projekti ..."
 
 #: lazarusidestrconsts:liscpopenunit
 msgid "Open Unit %s"
-msgstr ""
+msgstr "Avaa käännösyksikkö %s"
 
 #: lazarusidestrconsts:lisopenasxmlfile
 msgid "Open as XML file"
@@ -5684,7 +5684,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisremoveallinvalidproperties
 msgid "Remove all invalid properties"
-msgstr ""
+msgstr "Poista kaikki vikaantuneet\toimimattomat ominaisuudet"
 
 #: lazarusidestrconsts:lispckeditremovedependency
 msgid "Remove dependency"
@@ -7116,7 +7116,7 @@ msgstr ""
 
 #: lazarusidestrconsts:listhelfmlazarusformfilecontainsinvalidpropertiesthis
 msgid "The LFM (Lazarus form) file contains invalid properties. This means for example it contains some properties/classes, which do not exist in the current LCL. The normal fix is to remove these properties from the lfm and fix the pascal code manually."
-msgstr ""
+msgstr "Lazaruksen lomake eli LFM-tiedosto sisältää vääränlaisia ominaisuuksia. Tämä tarkoittanee esimerkiksi jotain luokkaa tai sen ominaisuutta mitä ei ole käytettävissä käytössä olevassa LCL-kirjastossa. Normaali korjaus on poistaa nämä ominaisuudet LFM-tiedostosta ja korjata Pascal-koodi käsin."
 
 #: lazarusidestrconsts:listhelazarusdirectorywasnotfoundyouwillnotbeabletocr
 msgid "The Lazarus directory was not found.%sYou will not be able to create LCL applications.%sPlz check Environment -> Environment Options -> Files"
@@ -8728,11 +8728,11 @@ msgstr ""
 
 #: lazarusidestrconsts:lisfriincurrentunit
 msgid "in current unit"
-msgstr ""
+msgstr "vain käytössä oleva lähdekoodiyksikkö (unit)"
 
 #: lazarusidestrconsts:lisfriinmainproject
 msgid "in main project"
-msgstr ""
+msgstr "kaikista tämän projektin tiedostoista"
 
 #: lazarusidestrconsts:lisfriinprojectpackageowningcurrentunit
 msgid "in project/package owning current unit"
