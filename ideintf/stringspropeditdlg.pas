@@ -66,9 +66,9 @@ begin
   for I := 0 to Memo.Lines.Count - 1 do Inc(NumChars, Length(Memo.Lines[I]));
 
   if Memo.Lines.Count = 1 then
-    StatusLabel.Text := Format(ois1LineDChars, [NumChars])
+    StatusLabel.Caption := Format(ois1LineDChars, [NumChars])
   else
-    StatusLabel.Text := Format(oisDLinesDChars, [Memo.Lines.Count, NumChars]);
+    StatusLabel.Caption := Format(oisDLinesDChars, [Memo.Lines.Count, NumChars]);
 end;
 
 procedure TStringsPropEditorFrm.SortButtonClick(Sender: TObject);

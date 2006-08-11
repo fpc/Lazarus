@@ -591,7 +591,6 @@ type
       BinaryOperator: TAtomPosition;
       Params: TFindDeclarationParams): TExpressionType;
     function GetParameterNode(Node: TCodeTreeNode): TCodeTreeNode;
-    function GetFirstParameterNode(Node: TCodeTreeNode): TCodeTreeNode;
     function GetExpressionTypeOfTypeIdentifier(
       Params: TFindDeclarationParams): TExpressionType;
     function FindTermTypeAsString(TermAtom: TAtomPosition;
@@ -605,10 +604,7 @@ type
       ContextNode: TCodeTreeNode; Params: TFindDeclarationParams): boolean;
     function FindContextNodeAtCursor(
       Params: TFindDeclarationParams): TFindContext;
-    function FindIdentifierInContext(Params: TFindDeclarationParams): boolean;
     function FindClassOfMethod(ProcNode: TCodeTreeNode;
-      Params: TFindDeclarationParams; FindClassContext: boolean): boolean;
-    function FindAncestorOfClass(ClassNode: TCodeTreeNode;
       Params: TFindDeclarationParams; FindClassContext: boolean): boolean;
     function FindForwardIdentifier(Params: TFindDeclarationParams;
       var IsForward: boolean): boolean;
@@ -629,11 +625,6 @@ type
     function IsParamExprListCompatibleToNodeList(
       FirstTargetParameterNode: TCodeTreeNode;
       SourceExprParamList: TExprTypeList; IgnoreMissingParameters: boolean;
-      Params: TFindDeclarationParams;
-      CompatibilityList: TTypeCompatibilityList): TTypeCompatibility;
-    function IsParamNodeListCompatibleToExprList(
-      TargetExprParamList: TExprTypeList;
-      FirstSourceParameterNode: TCodeTreeNode;
       Params: TFindDeclarationParams;
       CompatibilityList: TTypeCompatibilityList): TTypeCompatibility;
     function IsParamNodeListCompatibleToParamNodeList(FirstTargetParameterNode,
@@ -657,8 +648,6 @@ type
     function CheckParameterSyntax(CursorNode: TCodeTreeNode;
       CleanCursorPos: integer; out ParameterAtom, ProcNameAtom: TAtomPosition;
       out ParameterIndex: integer): boolean;
-    function FindNthParameterNode(Node: TCodeTreeNode;
-                                  ParameterIndex: integer): TCodeTreeNode;
   protected
     function OpenCodeToolForUnit(UnitNameAtom, UnitInFileAtom: TAtomPosition;
       ExceptionOnNotFound: boolean): TFindDeclarationTool;
@@ -713,6 +702,18 @@ type
       
     function CleanPosIsDeclarationIdentifier(CleanPos: integer;
                                  Node: TCodeTreeNode): boolean;
+
+    function FindIdentifierInContext(Params: TFindDeclarationParams): boolean;
+    function FindAncestorOfClass(ClassNode: TCodeTreeNode;
+      Params: TFindDeclarationParams; FindClassContext: boolean): boolean;
+    function FindNthParameterNode(Node: TCodeTreeNode;
+                                  ParameterIndex: integer): TCodeTreeNode;
+    function GetFirstParameterNode(Node: TCodeTreeNode): TCodeTreeNode;
+    function IsParamNodeListCompatibleToExprList(
+      TargetExprParamList: TExprTypeList;
+      FirstSourceParameterNode: TCodeTreeNode;
+      Params: TFindDeclarationParams;
+      CompatibilityList: TTypeCompatibilityList): TTypeCompatibility;
 
     function JumpToNode(ANode: TCodeTreeNode;
         var NewPos: TCodeXYPosition; var NewTopLine: integer;

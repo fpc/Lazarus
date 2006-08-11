@@ -2035,7 +2035,10 @@ end;
 procedure TDefinePropertiesPersistent.PublicDefineProperties(Filer: TFiler);
 begin
   debugln('TDefinePropertiesPersistent.PublicDefineProperties START ',ClassName,' ',dbgsName(FTarget));
-  Target.DefineProperties(Filer);
+  {$IFOPT R+}{$DEFINE RangeCheckOn}{$ENDIF}
+  {$R-}
+  TDefinePropertiesPersistent(Target).DefineProperties(Filer);
+  {$IFDEF RangeCheckOn}{$R+}{$ENDIF}
   debugln('TDefinePropertiesPersistent.PublicDefineProperties END ',ClassName,' ',dbgsName(FTarget));
 end;
 

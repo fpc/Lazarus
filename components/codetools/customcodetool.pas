@@ -144,15 +144,6 @@ type
     LastErrorBehindIgnorePosition: boolean;
     LastErrorCheckedForIgnored: boolean;
     CurrentPhase: integer;
-    procedure RaiseExceptionInstance(TheException: ECodeToolError); virtual;
-    procedure RaiseExceptionClass(const AMessage: string;
-      ExceptionClass: ECodeToolErrors); virtual;
-    procedure RaiseException(const AMessage: string); virtual;
-    procedure RaiseExceptionFmt(const AMessage: string;
-      const args : array of const);
-    procedure SaveRaiseException(const AMessage: string); virtual;
-    procedure SaveRaiseExceptionFmt(const AMessage: string;
-      const args : array of const);
     procedure ClearLastError;
     procedure RaiseLastError;
     procedure DoProgress;
@@ -288,6 +279,15 @@ type
       read FOnSetGlobalWriteLock write FOnSetGlobalWriteLock;
       
     // error handling
+    procedure RaiseExceptionInstance(TheException: ECodeToolError); virtual;
+    procedure RaiseExceptionClass(const AMessage: string;
+      ExceptionClass: ECodeToolErrors); virtual;
+    procedure RaiseException(const AMessage: string); virtual;
+    procedure RaiseExceptionFmt(const AMessage: string;
+      const args : array of const);
+    procedure SaveRaiseException(const AMessage: string); virtual;
+    procedure SaveRaiseExceptionFmt(const AMessage: string;
+      const args : array of const);
     property IgnoreErrorAfter: TCodePosition
       read FIgnoreErrorAfter write SetIgnoreErrorAfter;
     procedure ClearIgnoreErrorAfter;

@@ -758,7 +758,7 @@ begin
       CheckAndWriteNode('short', ShortEdit.Text, SHORT);
       CheckAndWriteNode('descr', DescrMemo.Text, DESCR);
       CheckAndWriteNode('errors', ErrorsMemo.Text, ERRORS);
-      CheckAndWriteNode('seealso', LinkListBox.Text, SEEALSO);
+      CheckAndWriteNode('seealso', LinkListBox.Caption, SEEALSO);
       CheckAndWriteExampleNode(ExampleEdit.Text);
     end;
     Node := Node.NextSibling;
@@ -776,7 +776,7 @@ begin
         ERRORS:
           InsertNodeElement('errors', ErrorsMemo.Text);
         SEEALSO:
-          InsertNodeElement('seealso', LinkListBox.Text);
+          InsertNodeElement('seealso', LinkListBox.Caption);
         EXAMPLE:
           InsertNodeElement('example', ExampleEdit.Text);
       end;

@@ -197,7 +197,6 @@ type
     function GetCaptionOfKind(aKind: TBitBtnKind): String;
   protected
     procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); override;
-    procedure Click; override;
     procedure GlyphChanged(Sender: TObject);
     procedure InitializeWnd; override;
     procedure TextChanged; override;
@@ -205,6 +204,7 @@ type
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; Override;
+    procedure Click; override;
   public
     property Glyph: TBitmap read GetGlyph write SetGlyph stored IsGlyphStored;
     property NumGlyphs: Integer read GetNumGlyphs write SetNumGlyphs default 1;
@@ -330,6 +330,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function FindDownButton: TCustomSpeedButton;
+    procedure Click; override; // make Click public
   public
     property AllowAllUp: Boolean read FAllowAllUp write SetAllowAllUp default false;
     property Down: Boolean read FDown write SetDown default false;

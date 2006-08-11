@@ -426,7 +426,6 @@ type
   protected
     FFormBorderStyle: TFormBorderStyle;
     FActionLists: TList;
-    function CloseQuery: boolean; virtual;
     function FormUpdating: boolean;
     procedure Activate; dynamic;
     procedure ActiveChanged; dynamic;
@@ -473,6 +472,7 @@ type
     function GetIconHandle: HICON;
     destructor Destroy; override;
     procedure Close;
+    function CloseQuery: boolean; virtual;
     procedure Release;
     procedure Hide;
     procedure Show;

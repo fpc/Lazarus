@@ -467,7 +467,7 @@ begin
     // split description into lines
     LabelsAsText.Text:=FFileDescs[ListIndex];
     for i:=0 to LabelListCount(ListIndex)-1 do begin
-      GetLabel(ListIndex,i).Text:=LabelsAsText[i];
+      GetLabel(ListIndex,i).Caption:=LabelsAsText[i];
     end;
   end;
   LabelsAsText.Free;

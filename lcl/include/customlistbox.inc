@@ -518,6 +518,11 @@ begin
   dec(FLockSelectionChange);
 end;
 
+procedure TCustomListBox.Click;
+begin
+  inherited Click;
+end;
+
 {------------------------------------------------------------------------------
   procedure TCustomListBox.MeasureItem(Index: Integer; var TheHeight: Integer);
 

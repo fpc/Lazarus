@@ -241,8 +241,8 @@ begin
   if (not (csDesigning in ComponentState)) and (FAssociate <> nil) 
   then begin
     if Thousands 
-    then FAssociate.Text := FloatToStrF(FPosition, ffNumber, 0, 0)
-    else FAssociate.Text := IntToStr(FPosition);
+    then FAssociate.Caption := FloatToStrF(FPosition, ffNumber, 0, 0)
+    else FAssociate.Caption := IntToStr(FPosition);
   end;
 end;
 
@@ -409,7 +409,7 @@ var
   InvalidNumber : Boolean;
 begin
   If Associate <> nil then begin
-    str := Trim(Associate.Text);
+    str := Trim(Associate.Caption);
     InvalidNumber := str = '';
     For I := Length(str) downto 1 do
       if str[I] = ThousandSeparator then

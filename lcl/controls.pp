@@ -1519,7 +1519,6 @@ type
     procedure CMDrag(var Message: TCMDrag); message CM_DRAG;
     procedure CMShowingChanged(var Message: TLMessage); message CM_SHOWINGCHANGED;
     procedure CMVisibleChanged(var TheMessage: TLMessage); message CM_VISIBLECHANGED;
-    function  ContainsControl(Control: TControl): Boolean;
     procedure ControlsAligned; virtual;
     procedure DoSendBoundsToInterface; virtual;
     procedure RealizeBounds; virtual;
@@ -1598,11 +1597,9 @@ type
     function  DialogChar(var Message: TLMKey): boolean; override;
     procedure ControlKeyDown(var Key: Word; Shift: TShiftState); dynamic;
     procedure ControlKeyUp(var Key: Word; Shift: TShiftState); dynamic;
-    procedure KeyDown(var Key: Word; Shift: TShiftState); dynamic;
     procedure KeyDownBeforeInterface(var Key: Word; Shift: TShiftState); dynamic;
     procedure KeyDownAfterInterface(var Key: Word; Shift: TShiftState); dynamic;
     procedure KeyPress(var Key: char); dynamic;
-    procedure KeyUp(var Key: Word; Shift: TShiftState); dynamic;
     procedure KeyUpBeforeInterface(var Key: Word; Shift: TShiftState); dynamic;
     procedure KeyUpAfterInterface(var Key: Word; Shift: TShiftState); dynamic;
     procedure UTF8KeyPress(var UTF8Key: TUTF8Char); dynamic;
@@ -1697,6 +1694,7 @@ type
       AllowDisabled, AllowWinControls: Boolean): TControl;
     Function ControlAtPos(const Pos: TPoint;
       AllowDisabled, AllowWinControls, OnlyClientAreas: Boolean): TControl; virtual;
+    function  ContainsControl(Control: TControl): Boolean;
     procedure DoAdjustClientRectChange;
     procedure InvalidateClientRectCache(WithChildControls: boolean);
     function ClientRectNeedsInterfaceUpdate: boolean;
@@ -1736,6 +1734,8 @@ type
     procedure HandleNeeded;
     function BrushCreated: Boolean;
     procedure EraseBackground(DC: HDC); virtual;
+    procedure KeyDown(var Key: Word; Shift: TShiftState); dynamic;
+    procedure KeyUp(var Key: Word; Shift: TShiftState); dynamic;
     function IntfUTF8KeyPress(var UTF8Key: TUTF8Char;
                               RepeatCount: integer; SystemKey: boolean): boolean; dynamic;
   end;

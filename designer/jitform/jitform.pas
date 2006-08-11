@@ -68,20 +68,23 @@ begin
   TSetDesigningComponent.SetDesigningOfComponent(AComponent,true);
 end;
 
+{$IFOPT R+}{$DEFINE RangeCheckOn}{$ENDIF}
 class procedure TSetDesigningComponent.SetDesigningOfComponent(
   AComponent: TComponent; Value: Boolean);
 begin
-  AComponent.SetDesigning(Value);
+  TSetDesigningComponent(AComponent).SetDesigning(Value);
 end;
 
 { TPersistentWithTemplates }
 {$IFOPT S+}{$DEFINE StackCheckOn}{$ENDIF}
+{$R-}
 {$S-}
 procedure TPersistentWithTemplates.DoNothing;
 // this is the template procedure for all events of the designed components
 begin
   // !!! do not write any code in here !!!
 end;
+{$IFDEF RangeCheckOn}{$R+}{$ENDIF}
 {$IFDEF StackCheckOn}{$S+}{$ENDIF}
 
 end.

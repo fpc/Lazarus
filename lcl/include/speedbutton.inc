@@ -101,6 +101,11 @@ begin
   Result:=FindDown(GetFirstParentForm(Self));
 end;
 
+procedure TCustomSpeedButton.Click;
+begin
+  inherited Click;
+end;
+
 {------------------------------------------------------------------------------
   Method: TCustomSpeedButton.SetAllowAllUp
   Params: Value:

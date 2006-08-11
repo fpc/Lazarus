@@ -415,14 +415,14 @@ function TManagedLocals.GetName(const AnIndex: Integer): String;
 begin
   if Master = nil
   then Result := inherited GetName(AnIndex)
-  else Result := Master.GetName(AnIndex);
+  else Result := Master.Names[AnIndex];
 end;
 
 function TManagedLocals.GetValue(const AnIndex: Integer): String;
 begin
   if Master = nil
   then Result := inherited GetValue(AnIndex)
-  else Result := Master.GetValue(AnIndex);
+  else Result := Master.Values[AnIndex];
 end;
 
 function TManagedLocals.Count: Integer;
@@ -449,14 +449,14 @@ function TManagedWatch.GetValid: TValidState;
 begin
   if FMaster = nil
   then Result := inherited GetValid
-  else Result := FMaster.GetValid;
+  else Result := FMaster.Valid;
 end;
 
 function TManagedWatch.GetValue: String;
 begin
   if FMaster = nil
   then Result := inherited GetValue
-  else Result := FMaster.GetValue;
+  else Result := FMaster.Value;
 end;
 
 procedure TManagedWatch.SetEnabled(const AValue: Boolean);

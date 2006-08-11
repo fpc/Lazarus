@@ -483,6 +483,7 @@ type
     procedure Clear; virtual;
     procedure LockSelectionChange;
     procedure UnlockSelectionChange;
+    procedure Click; override; // make it public
   public
     property Align;
     property Anchors;

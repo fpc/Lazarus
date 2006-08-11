@@ -177,18 +177,18 @@ end;
 
 function TTabControlNoteBookStrings.GetObject(Index: Integer): TObject;
 begin
-  Result:=FNoteBook.Pages.GetObject(Index);
+  Result:=FNoteBook.Pages.Objects[Index];
 end;
 
 procedure TTabControlNoteBookStrings.Put(Index: Integer; const S: string);
 begin
-  FNoteBook.Pages.Put(Index, S);
+  FNoteBook.Pages[Index]:=S;
 end;
 
 procedure TTabControlNoteBookStrings.PutObject(Index: Integer; AObject: TObject
   );
 begin
-  FNoteBook.Pages.PutObject(Index, AObject);
+  FNoteBook.Pages.Objects[Index]:=AObject;
 end;
 
 procedure TTabControlNoteBookStrings.SetImages(const AValue: TCustomImageList);
@@ -201,7 +201,10 @@ end;
 
 procedure TTabControlNoteBookStrings.SetUpdateState(Updating: Boolean);
 begin
-  FNoteBook.Pages.SetUpdateState(Updating);
+  if Updating then
+    FNoteBook.Pages.BeginUpdate
+  else
+    FNoteBook.Pages.EndUpdate;
 end;
 
 procedure TTabControlNoteBookStrings.SetTabHeight(const AValue: Smallint);

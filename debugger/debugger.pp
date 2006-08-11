@@ -673,12 +673,12 @@ type
     function CheckCount: Boolean; virtual;
     procedure Clear;
     function CreateStackEntry(const AIndex: Integer): TCallStackEntry; virtual;
-    function GetStackEntry(const AIndex: Integer): TCallStackEntry; virtual;
     procedure SetCount(const ACount: Integer); virtual;
   public
     function Count: Integer;
     constructor Create;
     destructor Destroy; override;
+    function GetStackEntry(const AIndex: Integer): TCallStackEntry; virtual;
     property Entries[const AIndex: Integer]: TCallStackEntry read GetEntry;
   end;
   

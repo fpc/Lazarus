@@ -503,7 +503,7 @@ begin
     end;
   end;
   
-  MenuItem^.CaptionLabel.Text:=MenuItem^.Caption;
+  MenuItem^.CaptionLabel.Caption:=MenuItem^.Caption;
   
   if (MenuItem^.NextItem <> nil) then Draw(MenuItem^.NextItem, FormPanel, SubMenuPanel);
   with MenuItem^.SelfPanel do

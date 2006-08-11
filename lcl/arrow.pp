@@ -65,6 +65,7 @@ Type
     property ShadowType: TShadowType read fShadowType write SetShadowType default stEtchedIn;
     property Visible;
     property OnClick;
+    property OnDblClick;
     property OnMouseMove;
     property OnMouseDown;
     property OnMouseUp;

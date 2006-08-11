@@ -1273,6 +1273,7 @@ type
   public
     constructor Create(TheOwner: TComponent); override;
     function CheckMenuDropdown: Boolean; dynamic;
+    procedure Click; override;
     procedure GetCurrentIcon(var ImageList: TCustomImageList;
                              var TheIndex: integer); virtual;
     property Index: Integer read GetIndex;
