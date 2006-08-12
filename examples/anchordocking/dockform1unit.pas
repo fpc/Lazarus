@@ -94,6 +94,7 @@ begin
   DockingManager.WriteDebugReport;
 
   Form2:=CreateNewForm;
+  DebugLn(['TMainForm.FormCreate =============================================================']);
   Form3:=CreateNewForm;
 
   if not UseConfig then begin

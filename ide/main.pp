@@ -85,7 +85,7 @@ uses
   // help manager
   IDEContextHelpEdit, HelpManager,
   // designer
-  ComponentPalette, ComponentReg, ObjInspExt,
+  JITForm, ComponentPalette, ComponentReg, ObjInspExt,
   Designer, FormEditor, CustomFormEditor,
   ControlSelection, AnchorEditor,
   {$DEFINE UseNewMenuEditor}
@@ -2153,8 +2153,7 @@ end;
 
 Procedure TMainIDE.SetDesigning(AComponent: TComponent; Value: Boolean);
 Begin
-  AComponent.SetDesigning(Value);
-  //TODO: Remove widgetset from this code
+  SetComponentDesignMode(AComponent,Value);
   if Value then WidgetSet.SetDesigning(AComponent);
 end;
 

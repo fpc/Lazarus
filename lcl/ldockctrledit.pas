@@ -97,6 +97,8 @@ begin
   DockGroupBox.Caption:='Dock to control';
   DockControlLabel.Caption:='To control';
   
+  CancelButton.Caption:='Cancel';
+  
   UpdateButtonEnabled;
 end;
 

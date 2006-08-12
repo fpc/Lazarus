@@ -1123,6 +1123,7 @@ type
     procedure AnchorToCompanion(Side: TAnchorKind; Space: integer;
                                 Sibling: TControl;
                                 FreeCompositeSide: boolean = true);
+    procedure AnchorSame(Side: TAnchorKind; Sibling: TControl);
     function AnchoredControlCount: integer;
     property AnchoredControls[Index: integer]: TControl read GetAnchoredControls;
     procedure SetBounds(aLeft, aTop, aWidth, aHeight: integer); virtual;

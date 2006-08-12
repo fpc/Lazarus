@@ -27,8 +27,8 @@
 
 { $DEFINE CHECK_POSITION}
 {$IFDEF CHECK_POSITION}
-const CheckPostionClassName = 'TButton';
-const CheckPostionName = 'WhereRadioGroup';
+const CheckPostionClassName = 'TButtonX';
+const CheckPostionName = 'MainForm';
 
 function CheckPosition(AControl: TControl): boolean;
 begin
@@ -1316,7 +1316,7 @@ var
       {$IFDEF CHECK_POSITION}
       //if csDesigning in ComponentState then
       if CheckPosition(Control) then
-      with Control do
+      with Control do begin
         DebugLn('[TWinControl.AlignControls.DoPosition] After Anchoring',
           ' ',Name,':',ClassName,
           ' Align=',AlignNames[AAlign],
@@ -1324,6 +1324,8 @@ var
           ' Old=',DbgS(Left,Top,Width,Height),
           ' New=',DbgS(NewLeft,NewTop,NewWidth,NewHeight),
           '');
+        DebugLn(['DoPosition akRight=',akRight in CurAnchors,' ',GetAnchorSidePosition(akRight,NewRight)]);
+      end;
       {$ENDIF}
     end;
 
@@ -1648,14 +1650,14 @@ begin
       RemainingBorderSpace:=Rect(0,0,0,0);
       // adjust RemainingClientRect by ChildSizing properties
       AdjustBorderSpace(RemainingClientRect,RemainingBorderSpace,
-        ChildSizing.LeftRightSpacing,ChildSizing.TopBottomSpacing,
-        ChildSizing.LeftRightSpacing,ChildSizing.TopBottomSpacing);
+                     ChildSizing.LeftRightSpacing,ChildSizing.TopBottomSpacing,
+                     ChildSizing.LeftRightSpacing,ChildSizing.TopBottomSpacing);
       //DebugLn('[TWinControl.AlignControls] ',Name,':',Classname,' ',Left,',',Top,',',Width,',',Height,' ClientRect=',RemainingClientRect.Left,',',RemainingClientRect.Top,',',RemainingClientRect.Right,',',RemainingClientRect.Bottom);
       AlignList := TFPList.Create;
       try
         // Auto aligning/anchoring can be very interdependent.
         // In worst case the n-2 depends on the n-1, the n-3 depends on n-2
-        // and so forth. This is allowed, so do up to n steps.
+        // and so forth. This is allowed, so do up to n loop step.
         // Do not more, to avoid endless loops, if there are circle
         // dependencies.
         for i:=0 to ControlCount-1 do begin

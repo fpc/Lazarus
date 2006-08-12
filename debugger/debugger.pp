@@ -192,7 +192,6 @@ type
     procedure DoEnableChange; virtual;
     procedure DoHit(const ACount: Integer; var AContinue: Boolean); virtual;
     procedure SetHitCount(const AValue: Integer);
-    procedure SetLocation(const ASource: String; const ALine: Integer); virtual;
     procedure SetValid(const AValue: TValidState);
 
   protected
@@ -210,6 +209,7 @@ type
     procedure SetInitialEnabled(const AValue: Boolean); virtual;
   public
     constructor Create(ACollection: TCollection); override;
+    procedure SetLocation(const ASource: String; const ALine: Integer); virtual;// PublicProtectedFix ide/debugmanager.pas(867,32) Error: identifier idents no member "SetLocation"
     property Enabled: Boolean read GetEnabled write SetEnabled;
     property Expression: String read GetExpression write SetExpression;
     property HitCount: Integer read GetHitCount;

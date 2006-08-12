@@ -3690,6 +3690,15 @@ begin
   end;
 end;
 
+procedure TControl.AnchorSame(Side: TAnchorKind; Sibling: TControl);
+begin
+  if Side in Sibling.Anchors then
+    Anchors:=Anchors+[Side]
+  else
+    Anchors:=Anchors-[Side];
+  AnchorSide[Side].Assign(Sibling.AnchorSide[Side]);
+end;
+
 function TControl.AnchoredControlCount: integer;
 begin
   if fAnchoredControls=nil then

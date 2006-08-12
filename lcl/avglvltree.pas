@@ -1499,7 +1499,7 @@ end;
 
 function TPointerToPointerTree.FindNode(const Key: Pointer): TAvgLvlTreeNode;
 begin
-  Result:=FItems.FindKey(@Key,@ComparePointerWithPtrToPtrItem)
+  Result:=FItems.FindKey(Key,@ComparePointerWithPtrToPtrItem)
 end;
 
 function TPointerToPointerTree.GetNode(Node: TAvgLvlTreeNode; out Key,

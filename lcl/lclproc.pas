@@ -750,7 +750,7 @@ var
 begin
   i:=Count;
   while NextDownIndex(i) do
-    TNotifyEvent(Items[i])(Self);
+    TNotifyEvent(Items[i])(Sender);
 end;
 
 {------------------------------------------------------------------------------
