@@ -938,17 +938,16 @@ type
     procedure DrawCell(aCol,aRow: Integer; aRect: TRect; aState:TGridDrawState); override;
     procedure DrawCellAutonumbering(aCol,aRow: Integer; aRect: TRect; const aValue: string); virtual;
     procedure DrawFocusRect(aCol,aRow: Integer; ARect: TRect); override;
-    procedure HeaderClick(IsColumn: Boolean; index: Integer); override;
-    procedure HeaderSized(IsColumn: Boolean; index: Integer); override;
     procedure GetAutoFillColumnInfo(const Index: Integer; var aMin,aMax,aPriority: Integer); override;
     function  GetEditMask(aCol, aRow: Longint): string; override;
     function  GetEditText(aCol, aRow: Longint): string; override;
+    procedure HeaderClick(IsColumn: Boolean; index: Integer); override;
+    procedure HeaderSized(IsColumn: Boolean; index: Integer); override;
     procedure NotifyColRowChange(WasInsert,IsColumn:boolean; FromIndex,ToIndex:Integer);
     function  SelectCell(aCol,aRow: Integer): boolean; override;
     procedure SetColor(Value: TColor); override;
     procedure SetEditText(ACol, ARow: Longint; const Value: string); override;
     procedure SizeChanged(OldColCount, OldRowCount: Integer); override;
-
     
   public
 
@@ -1175,7 +1174,7 @@ type
 
   TCustomStringGrid = class(TCustomDrawGrid)
     private
-      //FDefEditor: TStringCellEditor;
+      FModified: boolean;
       function  GetCells(ACol, ARow: Integer): string;
       function  GetCols(index: Integer): TStrings;
       function  GetObjects(ACol, ARow: Integer): TObject;
@@ -1200,11 +1199,14 @@ type
       //procedure EditordoSetValue; override;
       function  GetEditText(aCol, aRow: Integer): string; override;
       procedure LoadContent(cfg: TXMLConfig; Version: Integer); override;
+      procedure Loaded; override;
       procedure SaveContent(cfg: TXMLConfig); override;
       //procedure DrawInteriorCells; override;
       //procedure SelectEditor; override;
       procedure SelectionSetText(TheText: String);
       procedure SetEditText(aCol, aRow: Longint; const aValue: string); override;
+      
+      property Modified: boolean read FModified write FModified;
 
     public
       constructor Create(AOwner: TComponent); override;
@@ -1229,6 +1231,8 @@ type
   { TStringGrid }
 
   TStringGrid = class(TCustomStringGrid)
+  public
+    property Modified;
   published
     property Align;
     property AlternateColor;
@@ -6831,6 +6835,7 @@ begin
     if C^.Text<>nil then StrDispose(C^.Text);
     C^.Text:=StrNew(pchar(aValue));
     UpdateCell;
+    FModified := True;
   end else begin
     if AValue<>'' then begin
       New(C);
@@ -6839,6 +6844,7 @@ begin
       C^.Data:=nil;
       FGrid.Celda[aCol,aRow]:=C;
       UpdateCell;
+      FModified := True;
     end;
   end;
 end;
@@ -7135,6 +7141,12 @@ begin
       end;
     end;
   end;
+end;
+
+procedure TCustomStringGrid.Loaded;
+begin
+  inherited Loaded;
+  FModified := False;
 end;
 
 procedure TCustomStringGrid.SetEditText(aCol, aRow: Longint; const aValue: string);
