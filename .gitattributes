@@ -16,6 +16,7 @@ components/cgi/ide/cgilazide.pas svneol=native#text/plain
 components/cgi/ide/cgilazideintf.pas svneol=native#text/pascal
 components/cgi/ide/lib/README.txt svneol=native#text/plain
 components/cgi/lib/README.txt svneol=native#text/plain
+components/chmhelp/README.txt svneol=native#text/plain
 components/chmhelp/democontrol/project1.lpi svneol=native#text/plain
 components/chmhelp/democontrol/project1.lpr svneol=native#text/plain
 components/chmhelp/democontrol/unit1.lfm svneol=native#text/plain
