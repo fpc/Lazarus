@@ -269,16 +269,12 @@ begin
     end;
     //debugln('RemoveDanglingEvents ',s);
 
-    MsgResult:=QuestionDlg('Missing Events',
-      'The following methods used by '+DbgSName(RootComponent)
-       +' are not in the source'#13
-       +PascalBuffer.Filename+#13
-       +#13
-       +s
-       +#13
-       +'Remove the dangling references?'
+    MsgResult:=QuestionDlg(lisMissingEvents,
+      Format(lisTheFollowingMethodsUsedByAreNotInTheSourceRemoveTh, [DbgSName(
+        RootComponent), #13, PascalBuffer.Filename, #13, #13, s, #13])
        ,mtConfirmation,
-       [mrYes,'Remove',mrIgnore,'Keep them and continue',mrCancel],0);
+       [mrYes, lisRemoveThem, mrIgnore, lisKeepThemAndContinue, mrCancel],
+         0);
      if MsgResult=mrYes then begin
        ClearDanglingEvents(ListOfPInstancePropInfo);
        ComponentModified:=true;

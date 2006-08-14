@@ -22,18 +22,16 @@ type
   { TFindDialogForm }
 
   TFindDialogForm = class(TForm)
-    FindButton: TButton;
-    CancelButton: TButton;
-    HelpButton: TButton;
-    WholeWordsOnlyCheckBox: TCheckBox;
+    ButtonPanel1: TButtonPanel;
+    CancelButton: TPanelBitBtn;
     CaseSensitiveCheckBox: TCheckBox;
-    EditFind: TEdit;
-    FindLabel: TLabel;
     DirectionRadioGroup: TRadioGroup;
+    EditFind: TEdit;
+    FindButton: TPanelBitBtn;
+    FindLabel: TLabel;
+    WholeWordsOnlyCheckBox: TCheckBox;
     procedure EditFindChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
-  private
-  public
   end;
 
 procedure TFindDialogForm.EditFindChange(Sender: TObject);

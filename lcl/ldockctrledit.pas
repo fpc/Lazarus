@@ -42,7 +42,11 @@ type
     ldcedrDockRight,
     ldcedrDockTop,
     ldcedrDockBottom,
-    ldcedrDockPage
+    ldcedrDockPage,
+    ldcedrEnlargeLeft,
+    ldcedrEnlargeTop,
+    ldcedrEnlargeRight,
+    ldcedrEnlargeBottom
     );
 
   { TLazDockControlEditorDlg }
@@ -57,6 +61,11 @@ type
     DockLeftButton: TButton;
     DockGroupBox: TGroupBox;
     DockControlLabel: TLabel;
+    EnlargeGroupBox: TGroupBox;
+    EnlargeLeftSpeedButton: TSpeedButton;
+    EnlargeRightSpeedButton: TSpeedButton;
+    EnlargeTopSpeedButton: TSpeedButton;
+    EnlargeBottomSpeedButton: TSpeedButton;
     UndockButton: TButton;
     UndockGroupBox: TGroupBox;
     procedure DockBottomButtonClick(Sender: TObject);
@@ -65,6 +74,10 @@ type
     procedure DockPageButtonClick(Sender: TObject);
     procedure DockRightButtonClick(Sender: TObject);
     procedure DockTopButtonClick(Sender: TObject);
+    procedure EnlargeBottomSpeedButtonClick(Sender: TObject);
+    procedure EnlargeLeftSpeedButtonClick(Sender: TObject);
+    procedure EnlargeRightSpeedButtonClick(Sender: TObject);
+    procedure EnlargeTopSpeedButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure UndockButtonClick(Sender: TObject);
   private
@@ -96,7 +109,13 @@ begin
   DockLeftButton.Caption:='Dock to left';
   DockGroupBox.Caption:='Dock to control';
   DockControlLabel.Caption:='To control';
-  
+
+  EnlargeGroupBox.Caption:='Enlarge one side';
+  EnlargeLeftSpeedButton.Hint:='Left';
+  EnlargeTopSpeedButton.Hint:='Top';
+  EnlargeRightSpeedButton.Hint:='Right';
+  EnlargeBottomSpeedButton.Hint:='Bottom';
+
   CancelButton.Caption:='Cancel';
   
   UpdateButtonEnabled;
@@ -131,6 +150,28 @@ end;
 procedure TLazDockControlEditorDlg.DockTopButtonClick(Sender: TObject);
 begin
   CheckSetDlgResult(ldcedrDockTop);
+end;
+
+procedure TLazDockControlEditorDlg.EnlargeBottomSpeedButtonClick(Sender: TObject
+  );
+begin
+  CheckSetDlgResult(ldcedrEnlargeBottom);
+end;
+
+procedure TLazDockControlEditorDlg.EnlargeLeftSpeedButtonClick(Sender: TObject);
+begin
+  CheckSetDlgResult(ldcedrEnlargeLeft);
+end;
+
+procedure TLazDockControlEditorDlg.EnlargeRightSpeedButtonClick(Sender: TObject
+  );
+begin
+  CheckSetDlgResult(ldcedrEnlargeRight);
+end;
+
+procedure TLazDockControlEditorDlg.EnlargeTopSpeedButtonClick(Sender: TObject);
+begin
+  CheckSetDlgResult(ldcedrEnlargeTop);
 end;
 
 procedure TLazDockControlEditorDlg.UndockButtonClick(Sender: TObject);
@@ -172,6 +213,8 @@ begin
   DockTopButton.Enabled:=SelectionValid;
   DockRightButton.Enabled:=SelectionValid;
   DockLeftButton.Enabled:=SelectionValid;
+  
+  
 end;
 
 initialization

@@ -345,6 +345,7 @@ var
   TargetDocker: TCustomLazControlDocker;
   Side: TAlign;
   CurDocker: TCustomLazControlDocker;
+  Anchor: TAnchorKind;
 begin
   Dlg:=TLazDockControlEditorDlg.Create(nil);
   try
@@ -369,7 +370,17 @@ begin
     // enable Undock button, if Control is docked
     Dlg.UndockGroupBox.Enabled:=(Control.Parent<>nil)
                                  and (Control.Parent.ControlCount>1);
-    
+                                 
+    // enable enlarge buttons
+    Dlg.EnlargeLeftSpeedButton.Enabled:=
+                            Manager.Manager.EnlargeControl(Control,akLeft,true);
+    Dlg.EnlargeTopSpeedButton.Enabled:=
+                             Manager.Manager.EnlargeControl(Control,akTop,true);
+    Dlg.EnlargeRightSpeedButton.Enabled:=
+                           Manager.Manager.EnlargeControl(Control,akRight,true);
+    Dlg.EnlargeBottomSpeedButton.Enabled:=
+                          Manager.Manager.EnlargeControl(Control,akBottom,true);
+
     if Dlg.ShowModal=mrOk then begin
       // dock or undock
       case Dlg.DlgResult of
@@ -399,6 +410,18 @@ begin
           else RaiseGDBException('TCustomLazControlDocker.ShowDockingEditor ?');
           end;
           Manager.Manager.DockControl(Control,Side,TargetDocker.Control);
+        end;
+      ldcedrEnlargeLeft,ldcedrEnlargeTop,ldcedrEnlargeRight,ldcedrEnlargeBottom:
+        begin
+          // enlarge
+          case Dlg.DlgResult of
+          ldcedrEnlargeLeft: Anchor:=akLeft;
+          ldcedrEnlargeRight: Anchor:=akRight;
+          ldcedrEnlargeTop: Anchor:=akTop;
+          ldcedrEnlargeBottom: Anchor:=akBottom;
+          else RaiseGDBException('TCustomLazControlDocker.ShowDockingEditor ?');
+          end;
+          Manager.Manager.EnlargeControl(Control,Anchor);
         end;
       end;
     end;

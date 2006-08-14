@@ -1,56 +1,175 @@
+{ This is an automatically generated lazarus resource file }
+
 LazarusResources.Add('TLazDockControlEditorDlg','FORMDATA',[
   'TPF0'#24'TLazDockControlEditorDlg'#23'LazDockControlEditorDlg'#4'Left'#3#30#1
-  +#6'Height'#3'H'#1#3'Top'#3#202#0#5'Width'#3'6'#1#18'HorzScrollBar.Page'#3'5'
-  +#1#18'VertScrollBar.Page'#3'G'#1#13'ActiveControl'#7#12'UndockButton'#7'Capt'
-  +'ion'#6#23'LazDockControlEditorDlg'#12'ClientHeight'#3'H'#1#11'ClientWidth'#3
-  +'6'#1#8'OnCreate'#7#10'FormCreate'#13'PixelsPerInch'#2'_'#0#9'TGroupBox'#14
-  +'UndockGroupBox'#4'Left'#2#8#6'Height'#2'5'#3'Top'#2#8#5'Width'#3''''#1#7'An'
-  +'chors'#11#5'akTop'#6'akLeft'#7'akRight'#0#8'AutoSize'#9#7'Caption'#6#14'Und'
+  +#6'Height'#3'w'#1#3'Top'#3#202#0#5'Width'#3'6'#1#18'HorzScrollBar.Page'#3'5'
+  +#1#18'VertScrollBar.Page'#3'v'#1#13'ActiveControl'#7#12'UndockButton'#7'Capt'
+  +'ion'#6#23'LazDockControlEditorDlg'#8'OnCreate'#7#10'FormCreate'#0#9'TGroupB'
+  +'ox'#14'UndockGroupBox'#4'Left'#2#8#6'Height'#2'5'#3'Top'#2#8#5'Width'#3''''
+  +#1#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#0#8'AutoSize'#9#7'Caption'#6
+  +#14'UndockGroupBox'#28'ChildSizing.LeftRightSpacing'#2#5#28'ChildSizing.TopB'
+  +'ottomSpacing'#2#5#8'TabOrder'#2#0#0#7'TButton'#12'UndockButton'#4'Left'#2#5
+  +#6'Height'#2#26#3'Top'#2#5#5'Width'#2'W'#8'AutoSize'#9#25'BorderSpacing.Inne'
+  +'rBorder'#2#4#7'Caption'#6#12'UndockButton'#7'OnClick'#7#17'UndockButtonClic'
+  +'k'#8'TabOrder'#2#0#0#0#0#9'TGroupBox'#12'DockGroupBox'#21'AnchorSideTop.Con'
+  +'trol'#7#14'UndockGroupBox'#18'AnchorSideTop.Side'#7#9'asrBottom'#4'Left'#2#8
+  +#6'Height'#3#207#0#3'Top'#2'C'#5'Width'#3''''#1#7'Anchors'#11#5'akTop'#6'akL'
+  +'eft'#7'akRight'#0#8'AutoSize'#9#17'BorderSpacing.Top'#2#6#7'Caption'#6#12'D'
   +'ockGroupBox'#28'ChildSizing.LeftRightSpacing'#2#5#28'ChildSizing.TopBottomS'
-  +'pacing'#2#5#12'ClientHeight'#2'$'#11'ClientWidth'#3'#'#1#8'TabOrder'#2#0#0#7
-  +'TButton'#12'UndockButton'#4'Left'#2#5#6'Height'#2#26#3'Top'#2#5#5'Width'#2
-  +'W'#8'AutoSize'#9#7'Caption'#6#12'UndockButton'#7'OnClick'#7#17'UndockButton'
-  +'Click'#8'TabOrder'#2#0#0#0#0#9'TGroupBox'#12'DockGroupBox'#21'AnchorSideTop'
-  +'.Control'#7#14'UndockGroupBox'#18'AnchorSideTop.Side'#7#9'asrBottom'#4'Left'
-  +#2#8#6'Height'#3#207#0#3'Top'#2'C'#5'Width'#3''''#1#7'Anchors'#11#5'akTop'#6
-  +'akLeft'#7'akRight'#0#8'AutoSize'#9#17'BorderSpacing.Top'#2#6#7'Caption'#6#12
-  +'DockGroupBox'#28'ChildSizing.LeftRightSpacing'#2#5#28'ChildSizing.TopBottom'
-  +'Spacing'#2#5#12'ClientHeight'#3#190#0#11'ClientWidth'#3'#'#1#8'TabOrder'#2#1
-  +#0#6'TLabel'#16'DockControlLabel'#21'AnchorSideTop.Control'#7#19'DockControl'
-  +'ComboBox'#18'AnchorSideTop.Side'#7#9'asrCenter'#4'Left'#2#9#6'Height'#2#13#3
-  +'Top'#2#11#5'Width'#2'e'#20'BorderSpacing.Around'#2#2#7'Caption'#6#16'DockCo'
-  +'ntrolLabel'#5'Color'#7#6'clNone'#11'ParentColor'#8#0#0#7'TButton'#14'DockLe'
-  +'ftButton'#21'AnchorSideTop.Control'#7#19'DockControlComboBox'#18'AnchorSide'
-  +'Top.Side'#7#9'asrBottom'#4'Left'#2#5#6'Height'#2#26#3'Top'#2'#'#5'Width'#2
-  +'^'#8'AutoSize'#9#17'BorderSpacing.Top'#2#5#7'Caption'#6#14'DockLeftButton'#7
-  +'OnClick'#7#19'DockLeftButtonClick'#8'TabOrder'#2#0#0#0#7'TButton'#15'DockRi'
-  +'ghtButton'#22'AnchorSideLeft.Control'#7#14'DockLeftButton'#21'AnchorSideTop'
-  +'.Control'#7#14'DockLeftButton'#18'AnchorSideTop.Side'#7#9'asrBottom'#4'Left'
-  +#2#5#6'Height'#2#26#3'Top'#2'B'#5'Width'#2'f'#8'AutoSize'#9#17'BorderSpacing'
-  +'.Top'#2#5#7'Caption'#6#15'DockRightButton'#7'OnClick'#7#20'DockRightButtonC'
-  +'lick'#8'TabOrder'#2#1#0#0#7'TButton'#13'DockTopButton'#22'AnchorSideLeft.Co'
-  +'ntrol'#7#14'DockLeftButton'#21'AnchorSideTop.Control'#7#15'DockRightButton'
-  +#18'AnchorSideTop.Side'#7#9'asrBottom'#4'Left'#2#5#6'Height'#2#26#3'Top'#2'a'
-  +#5'Width'#2'_'#8'AutoSize'#9#17'BorderSpacing.Top'#2#5#7'Caption'#6#13'DockT'
-  +'opButton'#7'OnClick'#7#18'DockTopButtonClick'#8'TabOrder'#2#2#0#0#7'TButton'
-  +#16'DockBottomButton'#22'AnchorSideLeft.Control'#7#14'DockLeftButton'#21'Anc'
-  +'horSideTop.Control'#7#13'DockTopButton'#18'AnchorSideTop.Side'#7#9'asrBotto'
-  +'m'#4'Left'#2#5#6'Height'#2#26#3'Top'#3#128#0#5'Width'#2'o'#8'AutoSize'#9#17
-  +'BorderSpacing.Top'#2#5#7'Caption'#6#16'DockBottomButton'#7'OnClick'#7#21'Do'
-  +'ckBottomButtonClick'#8'TabOrder'#2#3#0#0#7'TButton'#14'DockPageButton'#22'A'
-  +'nchorSideLeft.Control'#7#14'DockLeftButton'#21'AnchorSideTop.Control'#7#16
-  +'DockBottomButton'#18'AnchorSideTop.Side'#7#9'asrBottom'#4'Left'#2#5#6'Heigh'
-  +'t'#2#26#3'Top'#3#159#0#5'Width'#2'g'#8'AutoSize'#9#17'BorderSpacing.Top'#2#5
-  +#7'Caption'#6#14'DockPageButton'#7'OnClick'#7#19'DockPageButtonClick'#8'TabO'
-  +'rder'#2#4#0#0#9'TComboBox'#19'DockControlComboBox'#22'AnchorSideLeft.Contro'
-  +'l'#7#16'DockControlLabel'#19'AnchorSideLeft.Side'#7#9'asrBottom'#4'Left'#2
-  +'r'#6'Height'#2#25#3'Top'#2#5#5'Width'#3#172#0#7'Anchors'#11#5'akTop'#6'akLe'
-  +'ft'#7'akRight'#0#16'AutoCompleteText'#11#22'cbactEndOfLineComplete'#20'cbac'
-  +'tSearchAscending'#0#18'BorderSpacing.Left'#2#4#9'MaxLength'#2#0#13'OnEditin'
-  +'gDone'#7#30'DockControlComboBoxEditingDone'#8'TabOrder'#2#5#4'Text'#6#19'Do'
-  +'ckControlComboBox'#0#0#0#7'TButton'#12'CancelButton'#21'AnchorSideTop.Contr'
-  +'ol'#7#12'DockGroupBox'#18'AnchorSideTop.Side'#7#9'asrBottom'#4'Left'#2'p'#6
-  +'Height'#2#26#3'Top'#3#28#1#5'Width'#2'U'#7'Anchors'#11#5'akTop'#0#8'AutoSiz'
-  +'e'#9#17'BorderSpacing.Top'#2#10#7'Caption'#6#12'CancelButton'#11'ModalResul'
-  +'t'#2#2#8'TabOrder'#2#2#0#0#0
+  +'pacing'#2#5#8'TabOrder'#2#1#0#6'TLabel'#16'DockControlLabel'#21'AnchorSideT'
+  +'op.Control'#7#19'DockControlComboBox'#18'AnchorSideTop.Side'#7#9'asrCenter'
+  +#4'Left'#2#9#6'Height'#2#13#3'Top'#2#11#5'Width'#2'e'#20'BorderSpacing.Aroun'
+  +'d'#2#2#7'Caption'#6#16'DockControlLabel'#5'Color'#7#6'clNone'#11'ParentColo'
+  +'r'#8#0#0#7'TButton'#14'DockLeftButton'#21'AnchorSideTop.Control'#7#19'DockC'
+  +'ontrolComboBox'#18'AnchorSideTop.Side'#7#9'asrBottom'#4'Left'#2#5#6'Height'
+  +#2#26#3'Top'#2'#'#5'Width'#2'^'#8'AutoSize'#9#17'BorderSpacing.Top'#2#5#25'B'
+  +'orderSpacing.InnerBorder'#2#4#7'Caption'#6#14'DockLeftButton'#7'OnClick'#7
+  +#19'DockLeftButtonClick'#8'TabOrder'#2#0#0#0#7'TButton'#15'DockRightButton'
+  +#22'AnchorSideLeft.Control'#7#14'DockLeftButton'#21'AnchorSideTop.Control'#7
+  +#14'DockLeftButton'#18'AnchorSideTop.Side'#7#9'asrBottom'#4'Left'#2#5#6'Heig'
+  +'ht'#2#26#3'Top'#2'B'#5'Width'#2'f'#8'AutoSize'#9#17'BorderSpacing.Top'#2#5
+  +#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6#15'DockRightButton'#7'OnClic'
+  +'k'#7#20'DockRightButtonClick'#8'TabOrder'#2#1#0#0#7'TButton'#13'DockTopButt'
+  +'on'#22'AnchorSideLeft.Control'#7#14'DockLeftButton'#21'AnchorSideTop.Contro'
+  +'l'#7#15'DockRightButton'#18'AnchorSideTop.Side'#7#9'asrBottom'#4'Left'#2#5#6
+  +'Height'#2#26#3'Top'#2'a'#5'Width'#2'_'#8'AutoSize'#9#17'BorderSpacing.Top'#2
+  +#5#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6#13'DockTopButton'#7'OnClic'
+  +'k'#7#18'DockTopButtonClick'#8'TabOrder'#2#2#0#0#7'TButton'#16'DockBottomBut'
+  +'ton'#22'AnchorSideLeft.Control'#7#14'DockLeftButton'#21'AnchorSideTop.Contr'
+  +'ol'#7#13'DockTopButton'#18'AnchorSideTop.Side'#7#9'asrBottom'#4'Left'#2#5#6
+  +'Height'#2#26#3'Top'#3#128#0#5'Width'#2'o'#8'AutoSize'#9#17'BorderSpacing.To'
+  +'p'#2#5#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6#16'DockBottomButton'#7
+  +'OnClick'#7#21'DockBottomButtonClick'#8'TabOrder'#2#3#0#0#7'TButton'#14'Dock'
+  +'PageButton'#22'AnchorSideLeft.Control'#7#14'DockLeftButton'#21'AnchorSideTo'
+  +'p.Control'#7#16'DockBottomButton'#18'AnchorSideTop.Side'#7#9'asrBottom'#4'L'
+  +'eft'#2#5#6'Height'#2#26#3'Top'#3#159#0#5'Width'#2'g'#8'AutoSize'#9#17'Borde'
+  +'rSpacing.Top'#2#5#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6#14'DockPag'
+  +'eButton'#7'OnClick'#7#19'DockPageButtonClick'#8'TabOrder'#2#4#0#0#9'TComboB'
+  +'ox'#19'DockControlComboBox'#22'AnchorSideLeft.Control'#7#16'DockControlLabe'
+  +'l'#19'AnchorSideLeft.Side'#7#9'asrBottom'#4'Left'#2'r'#6'Height'#2#25#3'Top'
+  +#2#5#5'Width'#3#172#0#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#0#16'AutoC'
+  +'ompleteText'#11#22'cbactEndOfLineComplete'#20'cbactSearchAscending'#0#18'Bo'
+  +'rderSpacing.Left'#2#4#9'MaxLength'#2#0#13'OnEditingDone'#7#30'DockControlCo'
+  +'mboBoxEditingDone'#8'TabOrder'#2#5#4'Text'#6#19'DockControlComboBox'#0#0#0#7
+  +'TButton'#12'CancelButton'#21'AnchorSideTop.Control'#7#15'EnlargeGroupBox'#18
+  +'AnchorSideTop.Side'#7#9'asrBottom'#4'Left'#2'n'#6'Height'#2#26#3'Top'#3'U'#1
+  +#5'Width'#2'Y'#7'Anchors'#11#5'akTop'#0#8'AutoSize'#9#17'BorderSpacing.Top'#2
+  +#10#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6#12'CancelButton'#11'Modal'
+  +'Result'#2#2#8'TabOrder'#2#2#0#0#9'TGroupBox'#15'EnlargeGroupBox'#4'Left'#2#8
+  +#6'Height'#2'8'#3'Top'#3#19#1#5'Width'#3''''#1#7'Anchors'#11#5'akTop'#6'akLe'
+  +'ft'#7'akRight'#0#8'AutoSize'#9#7'Caption'#6#15'EnlargeGroupBox'#28'ChildSiz'
+  +'ing.LeftRightSpacing'#2#6#28'ChildSizing.TopBottomSpacing'#2#6#29'ChildSizi'
+  +'ng.HorizontalSpacing'#2#6#27'ChildSizing.VerticalSpacing'#2#6#18'ChildSizin'
+  +'g.Layout'#7#29'cclTopToBottomThenLeftToRight'#8'TabOrder'#2#3#0#12'TSpeedBu'
+  +'tton'#22'EnlargeLeftSpeedButton'#4'Left'#2#6#6'Height'#2#27#3'Top'#2#6#5'Wi'
+  +'dth'#2#25#5'Color'#7#9'clBtnFace'#10'Glyph.Data'#10#3#6#0#0#255#5#0#0'/* XP'
+  +'M */'#10'static char *graphic[] = {'#10'"22 22 61 1",'#10'". c None",'#10'"'
+  +', c #FFFFFF",'#10'"- c #BDD7A7",'#10'"* c #3B7304",'#10'"a c #397308",'#10
+  ,'"b c #3B7703",'#10'"c c #C7DFAF",'#10'"d c #C6DFAD",'#10'"e c #AFD78C",'#10
+  +'"f c #87BD52",'#10'"g c #85BF53",'#10'"h c #87BF57",'#10'"i c #8DBD5B",'#10
+  +'"j c #8EBD5A",'#10'"k c #86BD57",'#10'"l c #BDDEA5",'#10'"m c #3B7704",'#10
+  +'"n c #86B74F",'#10'"o c #84B74F",'#10'"p c #84B74E",'#10'"q c #BDD69D",'#10
+  +'"r c #3D7703",'#10'"s c #7BBF39",'#10'"t c #7FBF3D",'#10'"u c #578C21",'#10
+  +'"v c #A5D77B",'#10'"w c #8DCE4E",'#10'"x c #73BF2B",'#10'"y c #77BF31",'#10
+  +'"z c #73BF29",'#10'"A c #67B71F",'#10'"B c #5FAF13",'#10'"C c #4E9E06",'#10
+  +'"D c #4B8614",'#10'"E c #9ECF73",'#10'"F c #8CCF4E",'#10'"G c #63BF0F",'#10
+  +'"H c #63B70E",'#10'"I c #5FB50C",'#10'"J c #5BAF0A",'#10'"K c #56A508",'#10
+  +'"L c #529D06",'#10'"M c #529F09",'#10'"N c #A5CF7B",'#10'"O c #397304",'#10
+  +'"P c #5BAF0B",'#10'"Q c #56A709",'#10'"R c #539F07",'#10'"S c #000000",'#10
+  +'"T c #3D7708",'#10'"U c #9FD76B",'#10'"V c #ADD784",'#10'"W c #254704",'#10
+  +'"X c #3D7704",'#10'"Y c #7BAF46",'#10'"Z c #A7D773",'#10'"0 c #6BB71E",'#10
+  +'"1 c #172B00",'#10'"2 c #679D35",'#10'"3 c #A7D677",'#10'"4 c #ADD684",'#10
+  +'"......................",'#10'"......................",'#10'"......,,......'
+  +'........",'#10'"....,..........,,,,,,,",'#10'"...........-*.........",'#10
+  +'"...,.............,,,,.",'#10'"......ab..............",'#10'",,,,,.........'
+  +'cd......",'#10'".......efghijjihklm...",'#10'"..............nopqm,,,",'#10
+  +'",,r...st.............,",'#10'",,ruvwxyzAB...CC......",'#10'"...mDEFGHIJKLC'
+  +'CCMNO...",'#10'"..........PQRCCCMNOSS,",'#10'",,,...T.U..V......OSSS",'#10
+  +'",,,SSSWXYZ0.....**....",'#10'"...SSSS1*234*SSSSSS...",'#10'",..S.........S'
+  +'SSSSSSSS",'#10'",,,...................",'#10'",,,,SSSSSSS....SSSSSSS",'#10
+  +'".......SSSSSSSSSSSS...",'#10'"...,............SS,,,."}'#10#9'NumGlyphs'#2#0
+  +#7'OnClick'#7#27'EnlargeLeftSpeedButtonClick'#8'ShowHint'#9#14'ParentShowHin'
+  +'t'#8#0#0#12'TSpeedButton'#23'EnlargeRightSpeedButton'#4'Left'#2'%'#6'Height'
+  +#2#27#3'Top'#2#6#5'Width'#2#25#5'Color'#7#9'clBtnFace'#10'Glyph.Data'#10#214
+  +#5#0#0#210#5#0#0'/* XPM */'#10'static char *graphic[] = {'#10'"22 22 58 1",'
+  +#10'". c None",'#10'", c #FFFFFF",'#10'"- c #3B7704",'#10'"* c #BFDEA5",'#10
+  +'"a c #3B7304",'#10'"b c #BDD79D",'#10'"c c #C6DFA7",'#10'"d c #97BF6F",'#10
+  +'"e c #3D7707",'#10'"f c #B7D79E",'#10'"g c #84BD53",'#10'"h c #87BF57",'#10
+  +'"i c #8DBD5B",'#10'"j c #8EBD5A",'#10'"k c #AFD78C",'#10'"l c #86B74F",'#10
+  +'"m c #86BD4F",'#10'"n c #86BF4B",'#10'"o c #85BD4A",'#10'"p c #A5CF77",'#10
+  +'"q c #AFD787",'#10'"r c #4F851B",'#10'"s c #000000",'#10'"t c #73AD35",'#10
+  +'"u c #6BAF2F",'#10'"v c #3D7703",'#10'"w c #A7CF7F",'#10'"x c #579E10",'#10
+  +'"y c #4E9E06",'#10'"z c #77BD33",'#10'"A c #77BF2D",'#10'"B c #9DC677",'#10
+  +'"C c #539D0D",'#10'"D c #4F9C06",'#10'"E c #56A508",'#10'"F c #5BAF0A",'#10
+  +'"G c #5FB50C",'#10'"H c #63B70E",'#10'"I c #8DCF4A",'#10'"J c #A5D673",'#10
+  +'"K c #4E8717",'#10'"L c #3B7703",'#10'"M c #56A709",'#10'"N c #5BAF0B",'#10
+  +'"O c #63B50F",'#10'"P c #94D65A",'#10'"Q c #9DCF6B",'#10'"R c #437B0F",'#10
+  +'"S c #356B04",'#10'"T c #A7CE7F",'#10'"U c #5BAD0D",'#10'"V c #67B51E",'#10
+  +'"W c #397304",'#10'"X c #6B9D39",'#10'"Y c #0F1F00",'#10'"Z c #5A8E29",'#10
+  +'"0 c #356F03",'#10'"1 c #070E00",'#10'"......................",'#10'"......'
+  +'................",'#10'"......,,..............",'#10'".,.............,,,,,,'
+  +',",'#10'".........-*...........",'#10'"...,.............,,,,.",'#10'"......'
+  +'aa..............",'#10'".,,abc........de......",'#10'"...-fgghijjihhk......'
+  +'.",'#10'"...........lmnopqr-s,,",'#10'"......tu...........v,,",'#10'",,,-wx'
+  +'yyy.....zA......",'#10'"...-BCyyyyDEFGHIJKL...",'#10'"...........MNOPQRSsss'
+  +',",'#10'",,,a..T.T..U.......sss",'#10'",,,Laaaaa-TV....ss....",'#10'"...sss'
+  +'sssWTpXWYssss...",'#10'",..s.......Z01ssssssss",'#10'",..................ss'
+  +'s",'#10'",,,,ssss.......sssssss",'#10'"...,,ssssssssss.......",'#10'"...,..'
+  +'...........s,,,,"}'#10#9'NumGlyphs'#2#0#7'OnClick'#7#28'EnlargeRightSpeedBu'
+  +'ttonClick'#8'ShowHint'#9#14'ParentShowHint'#8#0#0#12'TSpeedButton'#21'Enlar'
+  +'geTopSpeedButton'#4'Left'#2'D'#6'Height'#2#27#3'Top'#2#6#5'Width'#2#25#5'Co'
+  +'lor'#7#9'clBtnFace'#10'Glyph.Data'#10#139#5#0#0#135#5#0#0'/* XPM */'#10'sta'
+  +'tic char *graphic[] = {'#10'"22 22 53 1",'#10'". c None",'#10'", c #FFFFFF"'
+  +','#10'"- c #639633",'#10'"* c #5A8F25",'#10'"a c #3B7305",'#10'"b c #3D7706'
+  +'",'#10'"c c #377706",'#10'"d c #A7CE85",'#10'"e c #73AF3B",'#10'"f c #6BAD2'
+  +'D",'#10'"g c #63A51F",'#10'"h c #579F13",'#10'"i c #8EBD5A",'#10'"j c #6FA7'
+  +'3F",'#10'"k c #3B7704",'#10'"l c #428400",'#10'"m c #5A8E2B",'#10'"n c #BDD'
+  +'69C",'#10'"o c #8EC65E",'#10'"p c #7FBD47",'#10'"q c #BFDF9D",'#10'"r c #BF'
+  +'DE9F",'#10'"s c #BDDF9D",'#10'"t c #77BF33",'#10'"u c #67B51C",'#10'"v c #5'
+  +'EB70E",'#10'"w c #5EB70C",'#10'"x c #5FB50C",'#10'"y c #5EAF0C",'#10'"z c #'
+  +'A5D67B",'#10'"A c #A7D67F",'#10'"B c #A7D684",'#10'"C c #63BD0E",'#10'"D c '
+  +'#63B70E",'#10'"E c #AFD77F",'#10'"F c #427F0C",'#10'"G c #3B7705",'#10'"H c'
+  ,' #397704",'#10'"I c #3B7304",'#10'"J c #6BC611",'#10'"K c #ADDE86",'#10'"L '
+  +'c #67BD10",'#10'"M c #6BC711",'#10'"N c #6FCE13",'#10'"O c #67BF10",'#10'"P'
+  +' c #6BC712",'#10'"Q c #6FCF14",'#10'"R c #73D715",'#10'"S c #AFDF84",'#10'"'
+  +'T c #3D7708",'#10'"U c #6FCF13",'#10'"V c #ADDE84",'#10'"W c #000000",'#10
+  +'"......................",'#10'"......................",'#10'"......,,......'
+  +'........",'#10'"...............,,,,,,,",'#10'"..........-*..........",'#10
+  +'"...,..............,,,.",'#10'"......,a..............",'#10'".,,,,.........'
+  +'bc......",'#10'"........defghi........",'#10'"...............jkl,,,,",'#10
+  +'"......................",'#10'",,,kmnop..............",'#10'".....qrstuvwxy'
+  +'zAB.....",'#10'"............CDEFGHIk,,",'#10'",,....I.C..J........,,",'#10
+  +'",,,,,,IKLMN.....,,....",'#10'"...,,,IKOPQRQPST,,,...",'#10'",..,......PUPJ'
+  +'VT,,,,,,",'#10'",,,,..................",'#10'",,WWWWII.......IWWWWW,",'#10
+  +'"......WWWWWWWWWW......",'#10'"...,..........WWWW,,,,"}'#10#9'NumGlyphs'#2#0
+  +#7'OnClick'#7#26'EnlargeTopSpeedButtonClick'#8'ShowHint'#9#14'ParentShowHint'
+  +#8#0#0#12'TSpeedButton'#24'EnlargeBottomSpeedButton'#4'Left'#2'c'#6'Height'#2
+  +#27#3'Top'#2#6#5'Width'#2#25#5'Color'#7#9'clBtnFace'#10'Glyph.Data'#10'!'#6#0
+  +#0#29#6#0#0'/* XPM */'#10'static char *graphic[] = {'#10'"22 22 63 1",'#10'"'
+  +'. c None",'#10'", c #3B7704",'#10'"- c #3B7304",'#10'"* c #FFFFFF",'#10'"a '
+  +'c #C6DFA7",'#10'"b c #C6DEA7",'#10'"c c #85B74F",'#10'"d c #7BB746",'#10'"e'
+  +' c #73AF3B",'#10'"f c #6FAF31",'#10'"g c #67A727",'#10'"h c #5EA71C",'#10'"'
+  +'i c #A5CE85",'#10'"j c #A5CE84",'#10'"k c #A5CF7F",'#10'"l c #3D7705",'#10
+  +'"m c #BFDEA5",'#10'"n c #7FBD4B",'#10'"o c #7BB743",'#10'"p c #77B537",'#10
+  +'"q c #73B531",'#10'"r c #67B521",'#10'"s c #57A70B",'#10'"t c #A7D684",'#10
+  +'"u c #AFD785",'#10'"v c #A7D67F",'#10'"w c #9EC773",'#10'"x c #467F11",'#10
+  +'"y c #397703",'#10'"z c #3D7703",'#10'"A c #6F9F42",'#10'"B c #BDDF9D",'#10
+  +'"C c #8DC753",'#10'"D c #7BBF3B",'#10'"E c #63B713",'#10'"F c #63BD0F",'#10
+  +'"G c #67BD10",'#10'"H c #575700",'#10'"I c #7FAD52",'#10'"J c #B5DE8D",'#10
+  +'"K c #67B71B",'#10'"L c #67BF10",'#10'"M c #6BC612",'#10'"N c #6BC712",'#10
+  +'"O c #6FC716",'#10'"P c #A7DE6F",'#10'"Q c #7BB547",'#10'"R c #428400",'#10
+  +'"S c #73CE14",'#10'"T c #9DDF63",'#10'"U c #8FC75A",'#10'"V c #357700",'#10
+  +'"W c #3F7300",'#10'"X c #8EC75E",'#10'"Y c #3B7305",'#10'"Z c #437B0B",'#10
+  +'"0 c #9ECE6B",'#10'"1 c #3B7703",'#10'"2 c #467F12",'#10'"3 c #A7D773",'#10
+  +'"4 c #ADD77B",'#10'"5 c #528E1E",'#10'"6 c #000000",'#10'".................'
+  +'.....",'#10'"......................",'#10'"......,-..............",'#10'"**'
+  +'****-a.......-******",'#10'"......-bcdefghi-......",'#10'"...*..........j-*'
+  +'*****",'#10'"......-a..............",'#10'"******-a......k-......",'#10'"..'
+  +'....lmnopqrstl......",'#10'"..............uvvwxy**",'#10'".................'
+  +'.,***",'#10'"****zABCDEFG..........",'#10'"...*H,IJKFLMNOPQlR*...",'#10'"..'
+  +'..........STUlV*****",'#10'"***...W.X..N........**",'#10'"*******YZ0......*'
+  +'*....",'#10'".....***12345,***.....",'#10'"*..*..........********",'#10'"..'
+  +'....................",'#10'"**66666........666666*",'#10'"........666666...'
+  +'.....",'#10'"...*.............6***."}'#10#9'NumGlyphs'#2#0#7'OnClick'#7#29
+  +'EnlargeBottomSpeedButtonClick'#8'ShowHint'#9#14'ParentShowHint'#8#0#0#0#0
 ]);

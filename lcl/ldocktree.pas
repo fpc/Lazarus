@@ -170,6 +170,8 @@ type
     procedure UndockControl(Control: TControl; Float: boolean);
     procedure InsertControl(Control: TControl; InsertAt: TAlign;
                             DropCtl: TControl); override;
+    function EnlargeControl(Control: TControl; Side: TAnchorKind;
+                            Simulate: boolean = false): boolean;
     procedure LoadFromStream(Stream: TStream); override;
     procedure PaintSite(DC: HDC); override;
     procedure PositionDockRect(Client, DropCtl: TControl; DropAlign: TAlign;
@@ -1331,6 +1333,50 @@ procedure TAnchoredDockManager.InsertControl(Control: TControl;
   InsertAt: TAlign; DropCtl: TControl);
 begin
   DockControl(Control, InsertAt, DropCtl);
+end;
+
+function TAnchoredDockManager.EnlargeControl(Control: TControl;
+  Side: TAnchorKind; Simulate: boolean): boolean;
+{ If Simulate=true then it will only test if control can be enlarged.
+
+  Example: Move one neigbour, enlarge Control. Two splitters are resized.
+
+      |#|         |#         |#|         |#
+      |#| Control |#         |#|         |#
+    --+#+---------+#   --> --+#| Control |#
+    ===============#       ===#|         |#
+    --------------+#       --+#|         |#
+        A         |#        A|#|         |#
+                  |#         |#|         |#
+    --------------+#       --+#+---------+#
+    ==================     ===================
+
+
+  Example: Move two neigbours, enlarge Control, resize one splitter, turn the
+           other splitter.
+
+      |#|         |#|          |#|         |#|
+      |#| Control |#|          |#|         |#|
+    --+#+---------+#+--  --> --+#| Control |#+--
+    ===================      ===#|         |#===
+    --------+#+--------      --+#|         |#+--
+        A   |#|   B           A|#|         |#|B
+            |#|                |#|         |#|
+    --------+#+--------      --+#+---------+#+--
+    ===================      ===================
+   }
+var
+  SideControl: TControl;
+begin
+  Result:=false;
+  if Control=nil then exit;
+  // find first splitter.
+  if not (Side in Control.Anchors) then exit;
+  SideControl:=Control.AnchorSide[Side].Control;
+  if SideControl=nil then exit;
+  if SideControl.Parent<>Control.Parent then exit;
+  if not (SideControl is TLazDockSplitter) then exit;
+
 end;
 
 procedure TAnchoredDockManager.LoadFromStream(Stream: TStream);

@@ -2181,6 +2181,8 @@ resourcestring
   lisExtToolUnableToRunTheTool = 'Unable to run the tool %s%s%s:%s%s';
   lisExtToolExternalTools = 'External tools';
   lisExtToolRemove = 'Remove';
+  lisKeepThemAndContinue = 'Keep them and continue';
+  lisRemoveThem = 'Remove them';
   lisExtToolMoveUp = 'Up';
   lisExtToolMoveDown = 'Down';
   lisExtToolMaximumToolsReached = 'Maximum Tools reached';
@@ -2814,6 +2816,10 @@ resourcestring
     +'LCL. The normal fix is to remove these properties from the lfm and fix '
     +'the pascal code manually.';
   lisFixLFMFile = 'Fix LFM file';
+  lisMissingEvents = 'Missing Events';
+  lisTheFollowingMethodsUsedByAreNotInTheSourceRemoveTh = 'The following '
+    +'methods used by %s are not in the source%s%s%s%s%s%sRemove the dangling '
+    +'references?';
 
   // extract proc dialog
   lisNoCodeSelected = 'No code selected';
