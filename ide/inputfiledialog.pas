@@ -32,7 +32,7 @@ uses
   Classes, SysUtils, Math, Forms, Controls, Dialogs, Buttons, StdCtrls,
   FileUtil, LResources,
   // IDE
-  TransferMacros, InputHistory, IDEProcs;
+  LazarusIDEStrConsts, TransferMacros, InputHistory, IDEProcs;
 
 type
   TInputFileFlag = (iftDirectory, iftFilename, iftCmdLine,
@@ -566,7 +566,7 @@ begin
   with OkButton do begin
     Name:='OkButton';
     Parent:=Self;
-    Caption:='OK';
+    Caption:=lisIFDOK;
     OnClick:=@OkButtonClick;
     Visible:=true;
   end;
@@ -575,7 +575,7 @@ begin
   with CancelButton do begin
     Name:='CancelButton';
     Parent:=Self;
-    Caption:='Cancel';
+    Caption:=dlgCancel;
     OnClick:=@CancelButtonClick;
     Visible:=true;
   end;

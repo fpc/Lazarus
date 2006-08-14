@@ -116,9 +116,9 @@ begin
     XMLConfig:=TXMLConfig.Create(Filename);
   except
     on E: Exception do begin
-      Result:=MessageDlg('Error loading xml',
-        'Error loading xml file "'+Filename+'":'#13
-        +E.Message,mtError,[mbCancel],0);
+      Result:=MessageDlg(lisIECOErrorLoadingXml,
+        Format(lisIECOErrorLoadingXmlFile, ['"', Filename, '"', #13, E.Message]
+          ), mtError, [mbCancel], 0);
     end;
   end;
   FreeCompilerOpts:=false;
@@ -165,9 +165,9 @@ begin
       end;
     except
       on E: Exception do begin
-        Result:=MessageDlg('Error accessing xml',
-          'Error accessing xml file "'+Filename+'":'#13
-          +E.Message,mtError,[mbCancel],0);
+        Result:=MessageDlg(lisIECOErrorAccessingXml,
+          Format(lisIECOErrorAccessingXmlFile, ['"', Filename, '"', #13,
+            E.Message]), mtError, [mbCancel], 0);
       end;
     end;
   finally
@@ -222,13 +222,13 @@ procedure TImExportCompOptsDlg.ImExportCompOptsDlgCREATE(Sender: TObject);
 begin
   ImExportResult:=iecorCancel;
   
-  Caption:='Open or Load Compiler Options';
-  OpenRecentGroupbox.Caption:='Recent files';
-  SaveToRecentButton.Caption:='Save to recent';
-  OpenRecentButton.Caption:='Open recent';
-  SaveButton.Caption:='Save to file';
-  OpenButton.Caption:='Load from file';
-  CancelButton.Caption:='Cancel';
+  Caption:=lisIECOOpenOrLoadCompilerOptions;
+  OpenRecentGroupbox.Caption:=lisIECORecentFiles;
+  SaveToRecentButton.Caption:=lisIECOSaveToRecent;
+  OpenRecentButton.Caption:=lisIECOOpenRecent;
+  SaveButton.Caption:=lisIECOSaveToFile;
+  OpenButton.Caption:=lisIECOLoadFromFile;
+  CancelButton.Caption:=dlgCancel;
   
   LoadRecentList;
 end;
@@ -364,10 +364,9 @@ begin
   if DirPathExists(AFilename) then exit;
   Filename:=AFilename;
   if FileExists(AFilename) then begin
-    MsgResult:=MessageDlg('Export file exists',
-      'Export file "'+AFilename+'" exists.'#13
-      +'Open file and replace only compiler options?'#13
-      +'(Other settings will be kept.)',
+    MsgResult:=MessageDlg(lisIECOExportFileExists,
+      Format(lisIECOExportFileExistsOpenFileAndReplaceOnlyCompilerOpti, ['"',
+        AFilename, '"', #13, #13]),
       mtConfirmation,[mbYes,mbCancel],0);
     if MsgResult<>mrYes then exit;
   end;

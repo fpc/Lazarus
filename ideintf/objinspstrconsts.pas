@@ -56,6 +56,9 @@ resourcestring
   oisCopy = 'Copy';
   oisPaste = 'Paste';
   oisDelete = 'Delete';
+  rscdMoveUp = 'Move up';
+  rscdMoveDown = 'Move down';
+  rscdOK = 'OK';
   oisShowHints = 'Show Hints';
   oisShowComponentTree = 'Show Component Tree';
   oisOptions = 'Options';
@@ -119,6 +122,9 @@ resourcestring
   sccsILEdtStretch     = 'Stretch';
   sccsILEdtCrop        = 'Crop';
   sccsILEdtCenter      = 'Center';
+  rscdRight = 'Right';
+  rscdVisible = 'Visible';
+  rscdAutoSize = 'Auto Size';
   sccsILEdtOpenDialog  = 'Add Images';
   sccsILEdtSaveDialog  = 'Save Image';
   
@@ -292,6 +298,12 @@ resourcestring
   oisErrorLoadingImage2 = 'Error loading image %s%s%s:%s%s';
   oisOk2 = 'Ok';
   oisCreateANewPascalUnit = 'Create a new pascal unit.';
+  rscdColumnEditor = 'Column Editor';
+  rscdCaption = 'Caption';
+  rscdInvalidNumericValue = 'Invalid numeric Value';
+  rscdWidth = 'Width';
+  rscdAlignment = 'Alignment';
+  rscdLeft = 'Left';
 
 implementation
 

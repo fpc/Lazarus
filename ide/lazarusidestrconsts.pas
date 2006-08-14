@@ -575,6 +575,20 @@ resourcestring
 
   // file dialogs
   lisOpenFile = 'Open file';
+  lisIECOExportFileExists = 'Export file exists';
+  lisIECOExportFileExistsOpenFileAndReplaceOnlyCompilerOpti = 'Export file %s%'
+    +'s%s exists.%sOpen file and replace only compiler options?%s(Other '
+    +'settings will be kept.)';
+  lisIECOOpenOrLoadCompilerOptions = 'Open or Load Compiler Options';
+  lisIECOErrorAccessingXml = 'Error accessing xml';
+  lisIECOErrorLoadingXml = 'Error loading xml';
+  lisIECOErrorLoadingXmlFile = 'Error loading xml file %s%s%s:%s%s';
+  lisIECOErrorAccessingXmlFile = 'Error accessing xml file %s%s%s:%s%s';
+  lisIECORecentFiles = 'Recent files';
+  lisIECOSaveToRecent = 'Save to recent';
+  lisIECOOpenRecent = 'Open recent';
+  lisIECOSaveToFile = 'Save to file';
+  lisIECOLoadFromFile = 'Load from file';
   lisLazarusFile = 'Lazarus File';
   lisPascalUnit = 'Pascal unit';
   lisPascalSourceFile = 'Pascal source file';
@@ -724,6 +738,32 @@ resourcestring
   lisLazDoc = 'LazDoc';
   lisOkBtn = 'Ok';
   dlgCancel = 'Cancel';
+  lisKMClassic = 'Classic';
+  lisPEFilename = 'Filename:';
+  lisPEUnitname = 'Unitname:';
+  lisPVUTheUnitnameIsUsedWhenTheIDEExtendsUsesClauses = 'The unitname is used '
+    +'when the IDE extends uses clauses.';
+  lisPETheUnitnameIsUsedWhenTheIDEExtendsUsesClauses = 'The unitname is used '
+    +'when the IDE extends uses clauses.';
+  lisPEInvalidUnitFilename = 'Invalid unit filename';
+  lisPVUAPascalUnitMustHaveTheExtensionPpOrPas = 'A pascal unit must have the '
+    +'extension .pp or .pas';
+  lisPEAPascalUnitMustHaveTheExtensionPpOrPas = 'A pascal unit must have the '
+    +'extension .pp or .pas';
+  lisPEInvalidUnitname = 'Invalid unitname';
+  lisPVUTheUnitnameIsNotAValidPascalIdentifier = 'The unitname is not a valid '
+    +'pascal identifier.';
+  lisPVUUnitnameAndFilenameDoNotMatchExampleUnit1PasAndUni = 'Unitname and '
+    +'Filename do not match.%sExample: unit1.pas and Unit1';
+  lisPETheUnitnameIsNotAValidPascalIdentifier = 'The unitname is not a valid '
+    +'pascal identifier.';
+  lisPEConflictFound = 'Conflict found';
+  lisPVUThereIsAlreadyAnUnitWithThisNameFile = 'There is already an unit with '
+    +'this name.%sFile: %s';
+  lisPEThereIsAlreadyAnUnitWithThisNameFile = 'There is already an unit with '
+    +'this name.%sFile: %s';
+  lisPEUnitnameAndFilenameDoNotMatchExampleUnit1PasAndUni = 'Unitname and '
+    +'Filename do not match.%sExample: unit1.pas and Unit1';
   lisOk = '&Ok';
   lisCMParameter = 'Parameter';
   lisCTPleaseSelectAMacro = 'please select a macro';
@@ -3070,6 +3110,12 @@ resourcestring
   rsFormDataFileDfm = 'Form data file (*.dfm)|*.dfm';
   liswlWatchList = 'Watch list';
   liswlExpression = 'Expression';
+  lisKMChooseKeymappingScheme = 'Choose Keymapping scheme';
+  lisKMNoteAllKeysWillBeSetToTheValuesOfTheChoosenScheme = 'Note: All keys '
+    +'will be set to the values of the choosen scheme.';
+  lisKMKeymappingScheme = 'Keymapping Scheme';
+  lisIFDOK = 'OK';
+  lisPVUEditVirtualUnit = 'Edit virtual unit';
 
 implementation
 end.

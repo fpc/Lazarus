@@ -22,16 +22,18 @@ type
   { TFindDialogForm }
 
   TFindDialogForm = class(TForm)
-    ButtonPanel1: TButtonPanel;
-    CancelButton: TPanelBitBtn;
-    CaseSensitiveCheckBox: TCheckBox;
-    DirectionRadioGroup: TRadioGroup;
-    EditFind: TEdit;
-    FindButton: TPanelBitBtn;
-    FindLabel: TLabel;
+    FindButton: TButton;
+    CancelButton: TButton;
+    HelpButton: TButton;
     WholeWordsOnlyCheckBox: TCheckBox;
+    CaseSensitiveCheckBox: TCheckBox;
+    EditFind: TEdit;
+    FindLabel: TLabel;
+    DirectionRadioGroup: TRadioGroup;
     procedure EditFindChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+  private
+  public
   end;
 
 procedure TFindDialogForm.EditFindChange(Sender: TObject);
@@ -162,7 +164,7 @@ end;
 
 function TFindDialog.CreateForm: TForm;
 begin
-  Result:=TFindDialogForm.Create(nil);
+  Result:=TFindDialogForm.Create(Self);
   with TFindDialogForm(Result) do begin
     FindButton.Caption:=rsFind;
     CancelButton.Caption:=rsMbCancel;

@@ -39,7 +39,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, Buttons,
-  StdCtrls, FileUtil, PackageDefs;
+  StdCtrls, FileUtil, LazarusIDEStrConsts, PackageDefs;
 
 type
   TEditVirtualUnitDialog = class(TForm)
@@ -79,12 +79,12 @@ end;
 
 procedure TEditVirtualUnitDialog.EditVirtualUnitDialogCreate(Sender: TObject);
 begin
-  Caption:='Edit virtual unit';
-  OkButton.Caption:='Ok';
-  CancelButton.Caption:='Cancel';
-  FilenameLabel.Caption:='Filename:';
-  UnitnameLabel.Caption:='Unitname:';
-  UnitnameEdit.Hint:='The unitname is used when the IDE extends uses clauses.';
+  Caption:=lisPVUEditVirtualUnit;
+  OkButton.Caption:=lisOkBtn;
+  CancelButton.Caption:=dlgCancel;
+  FilenameLabel.Caption:=lisPEFilename;
+  UnitnameLabel.Caption:=lisPEUnitname;
+  UnitnameEdit.Hint:=lisPVUTheUnitnameIsUsedWhenTheIDEExtendsUsesClauses;
   UnitnameEdit.ShowHint:=true;
 end;
 
@@ -99,22 +99,21 @@ begin
   NewFilename:=FilenameEdit.Text;
   NewUnitName:=UnitnameEdit.Text;
   if not FilenameIsPascalUnit(NewFilename) then begin
-    MessageDlg('Invalid unit filename',
-      'A pascal unit must have the extension .pp or .pas',
+    MessageDlg(lisPEInvalidUnitFilename,
+      lisPVUAPascalUnitMustHaveTheExtensionPpOrPas,
       mtError,[mbCancel],0);
     exit;
   end;
   NewFilenameOnly:=ExtractFilenameOnly(NewFilename);
   if CompareText(NewUnitName,NewFilenameOnly)<>0 then begin
-    MessageDlg('Invalid unitname',
-      'Unitname and Filename do not match.'#13
-      +'Example: unit1.pas and Unit1',
+    MessageDlg(lisPEInvalidUnitname,
+      Format(lisPVUUnitnameAndFilenameDoNotMatchExampleUnit1PasAndUni, [#13]),
       mtError,[mbCancel],0);
     exit;
   end;
   if (NewUnitName='') or (not IsValidIdent(NewUnitName)) then begin
-    MessageDlg('Invalid unitname',
-      'The unitname is not a valid pascal identifier.',
+    MessageDlg(lisPEInvalidUnitname,
+      lisPVUTheUnitnameIsNotAValidPascalIdentifier,
       mtError,[mbCancel],0);
     exit;
   end;
@@ -122,9 +121,9 @@ begin
   if LazPackage<>nil then begin
     ConflictUnit:=LazPackage.FindUnit(NewUnitName,true,PkgFile);
     if ConflictUnit<>nil then begin
-      MessageDlg('Conflict found',
-        'There is already an unit with this name.'#13
-        +'File: '+ConflictUnit.Filename,
+      MessageDlg(lisPEConflictFound,
+        Format(lisPVUThereIsAlreadyAnUnitWithThisNameFile, [#13,
+          ConflictUnit.Filename]),
         mtError,[mbCancel],0);
       exit;
     end;

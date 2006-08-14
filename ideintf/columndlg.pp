@@ -18,7 +18,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs, LResources,
-  ComCtrls, StdCtrls, Buttons, ExtCtrls;
+  ComCtrls, StdCtrls, Buttons, ExtCtrls, ObjInspStrConsts;
 
 type
   // TODO create more generic collection editor.
@@ -70,7 +70,7 @@ implementation
 constructor TColumnDlg.Create(TheOwner: TComponent);
 Begin
   inherited Create(TheOwner);
-  Caption := 'Column Editor';
+  Caption := rscdColumnEditor;
   Width := 400;
   Height := 340;
   OnShow := @FormOnShow;
@@ -91,7 +91,7 @@ Begin
   with CaptionLabel do
    Begin
       Parent := self;
-      Caption := 'Caption';
+      Caption := rscdCaption;
       Left := ColumnsListBox.Left+ColumnsListBox.Width+10;
       Top := 15;
    end;
@@ -111,7 +111,7 @@ Begin
   with WidthLabel do
    Begin
      Parent := self;
-     Caption := 'Width';
+     Caption := rscdWidth;
      Left := CaptionLabel.Left;
      Top := CaptionEdit.Top+CaptionEdit.Height+5;
    end;
@@ -131,15 +131,15 @@ Begin
   with AlignmentRadioGroup do
    Begin
      Parent := Self;
-     Caption := 'Alignment';
+     Caption := rscdAlignment;
      Left := CaptionLabel.Left;
      Top := WidthEdit.Top+WidthEdit.Height+5;
      Columns := 3;
      Height := 50;
      Width := 200;
-     Items.Add('Left');
-     Items.Add('Center');
-     Items.Add('Right');
+     Items.Add(rscdLeft);
+     Items.Add(sccsILEdtCenter);
+     Items.Add(rscdRight);
      ItemIndex := 0;
      OnClick := @AlignmentRadioGroupOnClick;
    end;
@@ -148,7 +148,7 @@ Begin
   with cbVisible do
    begin
      Parent := Self;
-     Caption := 'Visible';
+     Caption := rscdVisible;
      Left := CaptionLabel.Left;
      Top :=  AlignmentRadioGroup.Top+AlignmentRadioGroup.Height+5;
      Height := 25;
@@ -160,7 +160,7 @@ Begin
   with cbAutoSize do
    begin
      Parent := Self;
-     Caption := 'Auto Size';
+     Caption := rscdAutoSize;
      Left := CaptionLabel.Left;
      Top :=  cbVisible.Top + cbVisible.Height + 5;
      Height := 25;
@@ -172,7 +172,7 @@ Begin
   with AddButton do
    Begin
      Parent := self;
-     Caption := 'Add';
+     Caption := oiColEditAdd;
      Left := CaptionLabel.Left;
      Top := cbAutoSize.Top+cbAutoSize.Height+5;
      OnClick := @AddButtonOnClick;
@@ -182,7 +182,7 @@ Begin
   with DeleteButton do
    Begin
      Parent := self;
-     Caption := 'Delete';
+     Caption := oisDelete;
      Left := AddButton.Left+AddButton.Width+5;
      Top := AddButton.Top;
      OnClick := @DeleteButtonOnClick;
@@ -192,7 +192,7 @@ Begin
   with MoveUpButton do
    Begin
      Parent := self;
-     Caption := 'Move up';
+     Caption := rscdMoveUp;
      Left := 5;
      Top := ColumnsListBox.Top+ColumnsListBox.Height+5;
      OnClick := @MoveUpButtonOnClick;
@@ -202,7 +202,7 @@ Begin
   with MoveDownButton do
    Begin
      Parent := self;
-     Caption := 'Move down';
+     Caption := rscdMoveDown;
      Left := MoveUpButton.Left+MoveUpButton.Width+5;
      Top := MoveUpButton.Top;
      OnClick := @MoveDownButtonOnClick;
@@ -212,7 +212,7 @@ Begin
   with btnOK do
    Begin
      Parent := self;
-     Caption := 'OK';
+     Caption := rscdOK;
      Left := CaptionLabel.Left;
      Top := MoveUpButton.Top;
      kind := bkOK;
@@ -222,7 +222,7 @@ Begin
   with btnCancel do
    Begin
      Parent := self;
-     Caption := 'Cancel';
+     Caption := oiStdActDataSetCancel1Hint;
      Left := btnOK.Left + btnOK.Width + 5;
      Top := btnOK.Top;
      Kind := bkCancel;
@@ -244,7 +244,7 @@ var
 Begin
   //add
   Column := FColumns.Add;
-  Column.Caption := 'Caption';
+  Column.Caption := rscdCaption;
   FSelectedIndex := Column.Index;
   ColumnsListBox.Items.Add(Column.Caption);
   ColumnsListBox.Selected[FSelectedIndex] := True;
@@ -289,7 +289,7 @@ begin
     try
       ListColumn.Width := StrToInt(WidthEdit.Caption);
     except
-      showmessage('Invalid numeric Value');
+      showmessage(rscdInvalidNumericValue);
       // revert to previous value
       WidthEdit.Caption := IntToStr(ListColumn.Width);
     end;
