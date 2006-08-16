@@ -405,7 +405,10 @@ begin
      begin
       CurrentLB.FreeObjects(CurrentLB.Items);//Free the objects
       CurrentLB.Items.Clear;//Clear the list
+      //Clear update items as their objects are freed together with CurrentLB.Items
+      CurrentLB.UpdateItems.Clear;
      end;//End if (CurrentLB.Items.Count > 0)
+
     if (slPhrases.Count > 0) then
      begin
       for i:=0 to CurrentLB.BackUpStrings.Count-1 do
@@ -667,6 +670,10 @@ begin
       begin
         NewListBox:= GetListBox(i);
         ResultsNoteBook.PageIndex:= i;
+        //Free backup objects and list since its a new search with the same listbox
+        NewListBox.FreeObjects(NewListBox.BackUpStrings);
+        NewListBox.BackUpStrings.Clear;
+        NewListBox.Filtered := False;
       end//if
       else
       begin
@@ -973,6 +980,11 @@ Destructor TLazSearchResultLB.Destroy;
 begin
   if Assigned(fSearchObject) then
     FreeAndNil(fSearchObject);
+  //if UpdateStrings is empty,
+  //means the objects are stored in Items due to filtering
+  //filtering clears UpdateStrings
+  if (fUpdateStrings.Count = 0) then
+   FreeObjects(Items);
   if Assigned(fUpdateStrings) then
   begin
     FreeObjects(fUpdateStrings);
@@ -983,7 +995,6 @@ begin
    FreeObjects(fBackUpStrings);
    FreeAndNil(fBackUpStrings);
   end;//End if Assigned(fBackUpStrings)
-  FreeObjects(Items);
   inherited Destroy;
 end;//Destroy
 
@@ -1009,13 +1020,7 @@ begin
   begin
     ShortenPaths;
     fUpdating:= false;
-    for i:= 0 to Items.Count -1 do
-    begin
-      if Assigned(Items.Objects[i]) then
-      begin
-        Items.Objects[i].free;
-      end;//if
-    end;//for
+    FreeObjects(Items);
     Items.Assign(fUpdateStrings);
   end;//if
 end;//EndUpdate
@@ -1090,7 +1095,7 @@ begin
   begin
    if Assigned(slItems.Objects[i]) then
     slItems.Objects[i].Free;
- end;//End for-loop
+  end;//End for-loop
 end;
 
 initialization
