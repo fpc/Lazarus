@@ -328,7 +328,6 @@ end;
 function TFPCUnitConsoleApplicationDescriptor.InitProject(
   AProject: TLazProject): TModalResult;
 var
-  le: string;
   NewSource: string;
   MainFile: TLazProjectFile;
 begin
@@ -340,128 +339,12 @@ begin
   AProject.MainFileID:=0;
 
   // create program source
-  le:=LineEnding;
-  NewSource:='program FPCUnitProject1;'+le
-    +le
-    +'{$mode objfpc}{$H+}'+le
-    +le
-    +'uses'+le
-    +'  custapp, classes, sysutils, fpcunit, testreport, testregistry;'+le
-    +le
-    +'Const'+le
-    +'  ShortOpts = ''alh'';'+le
-    +'  Longopts : Array[1..5] of String = ('+le
-    +'  ''all'',''list'',''format:'',''suite:'',''help'');'+le
-    +'  Version = ''Version 0.1'';'+le
-    +le
-    +'Type'+le
-    +'  TTestRunner = Class(TCustomApplication)'+le
-    +'  private'+le
-    +'    FXMLResultsWriter: TXMLResultsWriter;'+le
-    +'  protected'+le
-    +'    procedure DoRun ; Override;'+le
-    +'    procedure doTestRun(aTest: TTest); virtual;'+le
-    +'  public'+le
-    +'    constructor Create(AOwner: TComponent); override;'+le
-    +'    destructor Destroy; override;'+le
-    +'  end;'+le
-    +le
-    +'constructor TTestRunner.Create(AOwner: TComponent);'+le
-    +'begin'+le
-    +'  inherited Create(AOwner);'+le
-    +'  FXMLResultsWriter := TXMLResultsWriter.Create;'+le
-    +'end;'+le
-    +le
-    +'destructor TTestRunner.Destroy;'+le
-    +'begin'+le
-    +'  FXMLResultsWriter.Free;'+le
-    +'end;'+le
-    +le
-    +'procedure TTestRunner.doTestRun(aTest: TTest);'+le
-    +'var'+le
-    +'  testResult: TTestResult;'+le
-    +'begin'+le
-    +'  testResult := TTestResult.Create;'+le
-    +'  try'+le
-    +'    testResult.AddListener(FXMLResultsWriter);'+le
-    +'    FXMLResultsWriter.WriteHeader;'+le
-    +'    aTest.Run(testResult);'+le
-    +'    FXMLResultsWriter.WriteResult(testResult);'+le
-    +'  finally'+le
-    +'    testResult.Free;'+le
-    +'  end;'+le
-    +'end;'+le
-    +le
-    +'procedure TTestRunner.DoRun;'+le
-    +'var'+le
-    +'  I : Integer;'+le
-    +'  S : String;'+le
-    +'begin'+le
-    +'  S:=CheckOptions(ShortOpts,LongOpts);'+le
-    +'  If (S<>'''') then'+le
-    +'    Writeln(S);'+le
-    +'  if HasOption(''h'', ''help'') or (ParamCount = 0) then'+le
-    +'  begin'+le
-    +'    writeln(Title);'+le
-    +'    writeln(Version);'+le
-    +'    writeln(''Usage: '');'+le
-    +'    writeln(''-l or --list to show a list of registered tests'');'+le
-    +'    writeln(''default format is xml, add --format=latex to output the list as latex source'');'+le
-    +'    writeln(''-a or --all to run all the tests and show the results in xml format'');'+le
-    +'    writeln(''The results can be redirected to an xml file,'');'+le
-    +'    writeln(''for example: ./testrunner --all > results.xml'');'+le
-    +'    writeln(''use --suite=MyTestSuiteName to run only the tests in a single test suite class'');'+le
-    +'  end;'+le
-    +'  if HasOption(''l'', ''list'') then'+le
-    +'  begin'+le
-    +'    if HasOption(''format'') then'+le
-    +'    begin'+le
-    +'      if GetOptionValue(''format'') = ''latex'' then'+le
-    +'        writeln(GetSuiteAsLatex(GetTestRegistry))'+le
-    +'      else'+le
-    +'        writeln(GetSuiteAsXML(GetTestRegistry));'+le
-    +'    end'+le
-    +'    else'+le
-    +'      writeln(GetSuiteAsXML(GetTestRegistry));'+le
-    +'  end;'+le
-    +'  if HasOption(''a'', ''all'') then'+le
-    +'  begin'+le
-    +'    doTestRun(GetTestRegistry)'+le
-    +'  end'+le
-    +'  else'+le
-    +'    if HasOption(''suite'') then'+le
-    +'    begin'+le
-    +'      S := '''';'+le
-    +'      S:=GetOptionValue(''suite'');'+le
-    +'      if S = '''' then'+le
-    +'        for I := 0 to GetTestRegistry.Tests.count - 1 do'+le
-    +'          writeln(GetTestRegistry[i].TestName)'+le
-    +'      else'+le
-    +'        for I := 0 to GetTestRegistry.Tests.count - 1 do'+le
-    +'          if GetTestRegistry[i].TestName = S then'+le
-    +'          begin'+le
-    +'            doTestRun(GetTestRegistry[i]);'+le
-    +'          end;'+le
-    +'    end;'+le
-    +'  Terminate;'+le
-    +'end;'+le
-    +le
-    +'Var'+le
-    +'  App : TTestRunner;'+le
-    +le
-    +'begin'+le
-    +'  App:=TTestRunner.Create(Nil);'+le
-    +'  App.Initialize;'+le
-    +'  App.Title := ''FPCUnit Console Test Case runner.'';'+le
-    +'  App.Run;'+le
-    +'  App.Free;'+le
-    +'end.'+le
-    +le;
+  {$i fpcunitproject1.inc}
+
   AProject.MainFile.SetSourceText(NewSource);
 
-  // add
+  // add FCL dependency
   AProject.AddPackageDependency('FCL');
-  AProject.AddPackageDependency('FPCUnitTestRunner');
 
   // compiler options
   AProject.LazCompilerOptions.UseLineInfoUnit:=true;

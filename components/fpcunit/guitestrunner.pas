@@ -24,11 +24,13 @@ unit GuiTestRunner;
 
 {$mode objfpc}{$H+}
 
-{ Uncomment this define, to use the old XML output routines. If it is left
-  commented out, it will use the XMLWrite unit that comes
-  with FPC. The benefit of using XMLWrite is that it creates valid XML data with
-  reserved characters escaped and allows for further processing with XSLT etc. }
-{.$DEFINE UseOldXML}
+{ By default the old XML unit will be used for FPC 2.0.2 and the new XML unit
+  for any FPC versions above 2.0.2. The benefit of using the new XML unit is
+  that it creates valid XML data with reserved characters escaped and allows
+  for further processing with XSLT etc. }
+{$IFDEF VER2_0_2}
+  {$DEFINE UseOldXML}
+{$ENDIF}
 
 interface
 

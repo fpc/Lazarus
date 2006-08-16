@@ -7,7 +7,7 @@ unit FPCUnitTestRunner;
 interface
 
 uses
-  GuiTestRunner, xmlreporter; 
+  GuiTestRunner; 
 
 implementation
 
