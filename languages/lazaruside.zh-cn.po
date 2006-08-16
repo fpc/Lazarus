@@ -280,7 +280,7 @@ msgstr "%s 不能包含 TControls类.%s你只能在上面放置非可见组件. 
 msgid "A file %s%s%s already exists.%sReplace it?"
 msgstr "文件 %s%s%s 已经存在.%s替换吗?"
 
-#: lazarusidestrconsts:lisa2papascalunitmusthavetheextensionpporpas
+#: lazarusidestrconsts:lispvuapascalunitmusthavetheextensionpporpas
 msgid "A pascal unit must have the extension .pp or .pas"
 msgstr "一个pascal单元必须以 .pp 或者 .pas 为后缀"
 
@@ -1104,6 +1104,10 @@ msgstr "选择路径"
 msgid "Choose FPC source directory"
 msgstr "选择 FPC 源代码路径"
 
+#: lazarusidestrconsts:liskmchoosekeymappingscheme
+msgid "Choose Keymapping scheme"
+msgstr ""
+
 #: lazarusidestrconsts:lischooselazarussourcedirectory
 msgid "Choose Lazarus Directory"
 msgstr "选择 Lazarus 路径"
@@ -1191,6 +1195,10 @@ msgstr "排序类"
 #: lazarusidestrconsts:dlgclassinsertpolicy
 msgid "Class part insert policy"
 msgstr "类部分插入规则"
+
+#: lazarusidestrconsts:liskmclassic
+msgid "Classic"
+msgstr ""
 
 #: lazarusidestrconsts:liscldircleandirectory
 msgid "Clean Directory"
@@ -1527,6 +1535,10 @@ msgstr "确认移除文件"
 #: lazarusidestrconsts:srkmconflic
 msgid "Conflict "
 msgstr "冲突"
+
+#: lazarusidestrconsts:lispeconflictfound
+msgid "Conflict found"
+msgstr ""
 
 #: lazarusidestrconsts:dlginitdoneonly
 msgid "Constructor name must be 'init' (destructor must be 'done')"
@@ -2264,6 +2276,10 @@ msgstr "编辑上下文帮助"
 msgid "Edit keys for command"
 msgstr "编辑命令的快捷键"
 
+#: lazarusidestrconsts:lispvueditvirtualunit
+msgid "Edit virtual unit"
+msgstr ""
+
 #: lazarusidestrconsts:dlgededit
 msgid "Edit..."
 msgstr "编辑..."
@@ -2372,6 +2388,14 @@ msgstr "读取包错误"
 msgid "Error Writing Package"
 msgstr "写包错误"
 
+#: lazarusidestrconsts:lisiecoerroraccessingxml
+msgid "Error accessing xml"
+msgstr ""
+
+#: lazarusidestrconsts:lisiecoerroraccessingxmlfile
+msgid "Error accessing xml file %s%s%s:%s%s"
+msgstr ""
+
 #: lazarusidestrconsts:liserrorcreatingfile
 msgid "Error creating file"
 msgstr "创建文件时错误"
@@ -2395,6 +2419,14 @@ msgstr "正则表达式错误"
 #: lazarusidestrconsts:liserrorinitializingprogramserrors
 msgid "Error initializing program%s%s%s%s%sError: %s"
 msgstr "初始化程序错误%s%s%s%s%s错误: %s"
+
+#: lazarusidestrconsts:lisiecoerrorloadingxml
+msgid "Error loading xml"
+msgstr ""
+
+#: lazarusidestrconsts:lisiecoerrorloadingxmlfile
+msgid "Error loading xml file %s%s%s:%s%s"
+msgstr ""
 
 #: lazarusidestrconsts:liserrormovingcomponent
 msgid "Error moving component"
@@ -2527,6 +2559,14 @@ msgstr "不保存退出"
 #: lazarusidestrconsts:lisexpandedfilenameofcurrenteditor
 msgid "Expanded filename of current editor file"
 msgstr "展开当前编辑器中文件的名称"
+
+#: lazarusidestrconsts:lisiecoexportfileexistsopenfileandreplaceonlycompileropti
+msgid "Export file %s%s%s exists.%sOpen file and replace only compiler options?%s(Other settings will be kept.)"
+msgstr ""
+
+#: lazarusidestrconsts:lisiecoexportfileexists
+msgid "Export file exists"
+msgstr ""
 
 #: lazarusidestrconsts:lisexportlist
 msgid "Export list"
@@ -2723,6 +2763,10 @@ msgstr "文件名已经被其他包使用"
 #: lazarusidestrconsts:lispkgmangfilenameisusedbyproject
 msgid "Filename is used by project"
 msgstr "文件名被工程使用"
+
+#: lazarusidestrconsts:lispefilename
+msgid "Filename:"
+msgstr ""
 
 #: lazarusidestrconsts:lisoipfilename
 msgid "Filename:  %s"
@@ -3836,6 +3880,14 @@ msgstr "无效工程文件名"
 msgid "Invalid selection"
 msgstr "无效的选择"
 
+#: lazarusidestrconsts:lispeinvalidunitfilename
+msgid "Invalid unit filename"
+msgstr ""
+
+#: lazarusidestrconsts:lispeinvalidunitname
+msgid "Invalid unitname"
+msgstr ""
+
 #: lazarusidestrconsts:lissvuoinvalidvariablename
 msgid "Invalid variable name"
 msgstr "无效变量名"
@@ -3936,6 +3988,10 @@ msgstr "保存名字"
 msgid "Keep order of procedures"
 msgstr "保存程序的顺序"
 
+#: lazarusidestrconsts:liskeepthemandcontinue
+msgid "Keep them and continue"
+msgstr ""
+
 #: lazarusidestrconsts:srkmkey
 msgid "Key"
 msgstr "快捷键"
@@ -3951,6 +4007,10 @@ msgstr "键盘映射"
 #: lazarusidestrconsts:dlgkeymappingerrors
 msgid "Key mapping errors"
 msgstr "键盘映射错误"
+
+#: lazarusidestrconsts:liskmkeymappingscheme
+msgid "Keymapping Scheme"
+msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsoptskeyword
 msgid "Keyword"
@@ -4228,6 +4288,10 @@ msgstr "链接"
 msgid "Load desktop settings from file"
 msgstr "从文件载入 Lazarus 工作区域设置"
 
+#: lazarusidestrconsts:lisiecoloadfromfile
+msgid "Load from file"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcoloadsave
 msgid "Load/Save"
 msgstr "装载/保存"
@@ -4395,6 +4459,10 @@ msgstr "垂直翻转"
 #: lazarusidestrconsts:dlgenvmisc
 msgid "Miscellaneous"
 msgstr "杂项"
+
+#: lazarusidestrconsts:lismissingevents
+msgid "Missing Events"
+msgstr ""
 
 #: lazarusidestrconsts:lismissingpackages
 msgid "Missing Packages"
@@ -4796,6 +4864,10 @@ msgstr "还没有实现"
 msgid "Not now"
 msgstr "不是现在"
 
+#: lazarusidestrconsts:liskmnoteallkeyswillbesettothevaluesofthechoosenscheme
+msgid "Note: All keys will be set to the values of the choosen scheme."
+msgstr ""
+
 #: lazarusidestrconsts:dlgenvbackuphelpnote
 msgid "Notes: Project files are all files in the project directory"
 msgstr "注意: 工程文件是所有文件在一个工程目录下"
@@ -4811,6 +4883,10 @@ msgstr "小键盘区锁定键"
 #: lazarusidestrconsts:srvk_numpad
 msgid "Numpad %d"
 msgstr "小键盘区 %d"
+
+#: lazarusidestrconsts:lisifdok
+msgid "OK"
+msgstr ""
 
 #: lazarusidestrconsts:lisdebugoptionsfrmosexceptions
 msgid "OS Exceptions"
@@ -4956,6 +5032,10 @@ msgstr "打开装载的包"
 msgid "Open loaded package ..."
 msgstr "打开装载的包 ..."
 
+#: lazarusidestrconsts:lisiecoopenorloadcompileroptions
+msgid "Open or Load Compiler Options"
+msgstr ""
+
 #: lazarusidestrconsts:liscomppalopenpackage
 msgid "Open package"
 msgstr "打开包"
@@ -4975,6 +5055,10 @@ msgstr "打开工程"
 #: lazarusidestrconsts:lisopenprojectagain
 msgid "Open project again"
 msgstr "再次打开工程"
+
+#: lazarusidestrconsts:lisiecoopenrecent
+msgid "Open recent"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuopenrecentpkg
 msgid "Open recent package ..."
@@ -5612,6 +5696,10 @@ msgstr "只读"
 msgid "Rebuild Lazarus?"
 msgstr "重新编译 Lazarus?"
 
+#: lazarusidestrconsts:lisiecorecentfiles
+msgid "Recent files"
+msgstr ""
+
 #: lazarusidestrconsts:lispckeditrecompileallrequired
 msgid "Recompile all required"
 msgstr "重新编译所需要的"
@@ -5747,6 +5835,10 @@ msgstr "移除路径"
 #: lazarusidestrconsts:lispckeditremoveselecteditem
 msgid "Remove selected item"
 msgstr "移除所选项目"
+
+#: lazarusidestrconsts:lisremovethem
+msgid "Remove them"
+msgstr ""
 
 #: lazarusidestrconsts:lispckeditremovedfilestheseentriesarenotsavedtothelpkfile
 msgid "Removed Files (these entries are not saved to the lpk file)"
@@ -6150,6 +6242,14 @@ msgstr "保存会话信息到"
 
 #: lazarusidestrconsts:lislazbuildsavesettings
 msgid "Save settings"
+msgstr ""
+
+#: lazarusidestrconsts:lisiecosavetofile
+msgid "Save to file"
+msgstr ""
+
+#: lazarusidestrconsts:lisiecosavetorecent
+msgid "Save to recent"
 msgstr ""
 
 #: lazarusidestrconsts:fdmscaleword
@@ -7352,6 +7452,10 @@ msgstr "文件名 %s%s%s 不符合包名 %s%s%s .%s更改包名为 %s%s%s?"
 msgid "The filename %s%s%s is ambiguous, because the package has no default directory yet.%sPlease specify a filename with full path."
 msgstr "文件名 %s%s%s 不明确, 因为包还没有默认目录.%s请输入包含路径的文件名."
 
+#: lazarusidestrconsts:listhefollowingmethodsusedbyarenotinthesourceremoveth
+msgid "The following methods used by %s are not in the source%s%s%s%s%s%sRemove the dangling references?"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgmangthefollowingpackagefailedtoload
 msgid "The following package failed to load:"
 msgstr "下面的包无法装载:"
@@ -7544,6 +7648,14 @@ msgstr "单元名 %s%s%s 已经存在于包:%s%s"
 msgid "The unitname %s%s%s already exists in this package."
 msgstr "单元名 %s%s%s 已经存在包中."
 
+#: lazarusidestrconsts:lispvutheunitnameisnotavalidpascalidentifier
+msgid "The unitname is not a valid pascal identifier."
+msgstr ""
+
+#: lazarusidestrconsts:lispvutheunitnameisusedwhentheideextendsusesclauses
+msgid "The unitname is used when the IDE extends uses clauses."
+msgstr ""
+
 #: lazarusidestrconsts:lispkgedtherearemorefunctionsinthepopupmenu
 msgid "There are more functions in the popupmenu"
 msgstr "弹出菜单中有更多功能"
@@ -7595,6 +7707,10 @@ msgstr "已经有一个包 %s%s%s %s从文件 %s%s%s装载.%s查看 组件 -> �
 #: lazarusidestrconsts:listhereisalreadyaunitwiththenamepascalidentifiersmus
 msgid "There is already a unit with the name %s%s%s. Pascal identifiers must be unique."
 msgstr "已经有一个单元使用 %s%s%s 这个名字. Pascal 标识符必须唯一."
+
+#: lazarusidestrconsts:lispvuthereisalreadyanunitwiththisnamefile
+msgid "There is already an unit with this name.%sFile: %s"
+msgstr ""
 
 #: lazarusidestrconsts:lisdesthereisalreadyanothercomponentwiththename
 msgid "There is already another component with the name %s%s%s."
@@ -8243,6 +8359,14 @@ msgstr "单元名已经存在"
 #: lazarusidestrconsts:lisunitnamealreadyexistscap
 msgid "Unitname already in project"
 msgstr "工程中已存在此单元名"
+
+#: lazarusidestrconsts:lispvuunitnameandfilenamedonotmatchexampleunit1pasanduni
+msgid "Unitname and Filename do not match.%sExample: unit1.pas and Unit1"
+msgstr ""
+
+#: lazarusidestrconsts:lispeunitname
+msgid "Unitname:"
+msgstr ""
 
 #: lazarusidestrconsts:lisunitsnotfound2
 msgid "Units not found"

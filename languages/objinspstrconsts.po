@@ -130,6 +130,18 @@ msgstr ""
 msgid "Delete"
 msgstr ""
 
+#: objinspstrconsts:rscdmoveup
+msgid "Move up"
+msgstr ""
+
+#: objinspstrconsts:rscdmovedown
+msgid "Move down"
+msgstr ""
+
+#: objinspstrconsts:rscdok
+msgid "OK"
+msgstr ""
+
 #: objinspstrconsts:oisshowhints
 msgid "Show Hints"
 msgstr ""
@@ -344,6 +356,18 @@ msgstr ""
 
 #: objinspstrconsts:sccsiledtcenter
 msgid "Center"
+msgstr ""
+
+#: objinspstrconsts:rscdright
+msgid "Right"
+msgstr ""
+
+#: objinspstrconsts:rscdvisible
+msgid "Visible"
+msgstr ""
+
+#: objinspstrconsts:rscdautosize
+msgid "Auto Size"
 msgstr ""
 
 #: objinspstrconsts:sccsiledtopendialog
@@ -932,5 +956,29 @@ msgstr ""
 
 #: objinspstrconsts:oiscreateanewpascalunit
 msgid "Create a new pascal unit."
+msgstr ""
+
+#: objinspstrconsts:rscdcolumneditor
+msgid "Column Editor"
+msgstr ""
+
+#: objinspstrconsts:rscdcaption
+msgid "Caption"
+msgstr ""
+
+#: objinspstrconsts:rscdinvalidnumericvalue
+msgid "Invalid numeric Value"
+msgstr ""
+
+#: objinspstrconsts:rscdwidth
+msgid "Width"
+msgstr ""
+
+#: objinspstrconsts:rscdalignment
+msgid "Alignment"
+msgstr ""
+
+#: objinspstrconsts:rscdleft
+msgid "Left"
 msgstr ""
 

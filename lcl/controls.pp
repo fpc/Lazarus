@@ -2028,20 +2028,13 @@ type
 
 const
   AnchorAlign: array[TAlign] of TAnchors = (
-    { alNone }
-    [akLeft, akTop],
-    { alTop }
-    [akLeft, akTop, akRight],
-    { alBottom }
-    [akLeft, akRight, akBottom],
-    { alLeft }
-    [akLeft, akTop, akBottom],
-    { alRight }
-    [akRight, akTop, akBottom],
-    { alClient }
-    [akLeft, akTop, akRight, akBottom],
-    { alCustom }
-    [akLeft, akTop]
+    [akLeft, akTop],                   // alNone
+    [akLeft, akTop, akRight],          // alTop
+    [akLeft, akRight, akBottom],       // alBottom
+    [akLeft, akTop, akBottom],         // alLeft
+    [akRight, akTop, akBottom],        // alRight
+    [akLeft, akTop, akRight, akBottom],// alClient
+    [akLeft, akTop]                    // alCustom
     );
   MainAlignAnchor: array[TAlign] of TAnchorKind = (
     akLeft,   // alNone
@@ -2058,15 +2051,17 @@ const
     akLeft,   // akRight,
     akTop     // akBottom
     );
+  ClockwiseAnchor: array[TAnchorKind] of TAnchorKind = (
+    akRight,  // akTop,
+    akTop,    // akLeft,
+    akBottom, // akRight,
+    akLeft    // akBottom
+    );
   DefaultSideForAnchorKind: array[TAnchorKind] of TAnchorSideReference = (
-    // akTop
-    asrBottom,
-    // akLeft
-    asrBottom,
-    // akRight
-    asrTop,
-    // akBottom
-    asrTop
+    asrBottom, // akTop
+    asrBottom, // akLeft
+    asrTop,    // akRight
+    asrTop     // akBottom
     );
   AnchorReferenceSide: array[TAnchorKind,TAnchorSideReference] of TAnchorKind =(
     // akTop -> asrTop, asrBottom, asrCenter
@@ -2085,10 +2080,10 @@ const
 
 
 function FindDragTarget(const Position: TPoint; AllowDisabled: Boolean): TControl;
-Function FindControlAtPosition(const Position: TPoint; AllowDisabled: Boolean): TControl;
-Function FindLCLWindow(const ScreenPos: TPoint): TWinControl;
-Function FindControl(Handle: hwnd): TWinControl;
-Function FindOwnerControl(Handle: hwnd): TWinControl;
+function FindControlAtPosition(const Position: TPoint; AllowDisabled: Boolean): TControl;
+function FindLCLWindow(const ScreenPos: TPoint): TWinControl;
+function FindControl(Handle: hwnd): TWinControl;
+function FindOwnerControl(Handle: hwnd): TWinControl;
 function FindLCLControl(const ScreenPos: TPoint): TControl;
 
 function SendAppMessage(Msg: Cardinal; WParam: WParam; LParam: LParam): Longint;
@@ -2136,7 +2131,7 @@ procedure Register;
 implementation
 
 uses
-  WSControls, // Widgetset uses circle is allowed
+  WSControls, // circle with base widgetset is allowed
   Forms, // the circle can't be broken without breaking Delphi compatibility
   Math;  // Math is in RTL and only a few functions are used.
 

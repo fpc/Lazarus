@@ -839,25 +839,6 @@ procedure TCustomLazControlDocker.ShrinkNeighbourhood(
   A neighbour is the first control left or top of AControl, that can be shrinked
   and is only anchored to AControl.
 }
-  function CountAnchoredControls(CurControl: TControl; Side: TAnchorKind
-    ): Integer;
-  { return the number of siblings, that are anchored on Side of CurControl
-    For example: if Side=akLeft it will return the number of controls, which
-    right side is anchored to the left of CurControl }
-  var
-    i: Integer;
-    Neighbour: TControl;
-  begin
-    Result:=0;
-    for i:=0 to CurControl.Parent.ControlCount-1 do begin
-      Neighbour:=CurControl.Parent.Controls[i];
-      if Neighbour=CurControl then continue;
-      if (OppositeAnchor[Side] in Neighbour.Anchors)
-      and (Neighbour.AnchorSide[OppositeAnchor[Side]].Control=CurControl) then
-        inc(Result);
-    end;
-  end;
-
   procedure ShrinkControl(CurControl: TControl; Side: TAnchorKind); forward;
 
   procedure ShrinkNeighboursOnSide(CurControl: TControl; Side: TAnchorKind);
@@ -902,7 +883,7 @@ procedure TCustomLazControlDocker.ShrinkNeighbourhood(
       ShrinkNeighboursOnSide(CurControl,Side);
       exit;
     end;
-    // shrink accoring to Layout
+    // shrink according to Layout
     NodeName:=Manager.GetControlConfigName(CurControl);
     if NodeName='' then exit;
     Node:=Layout.FindByName(NodeName,true);

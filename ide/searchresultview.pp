@@ -1010,8 +1010,6 @@ begin
 end;//BeginUpdate
 
 procedure TLazSearchResultLB.EndUpdate;
-var
-  i: integer;
 begin
   if (fUpdateCount = 0) then
     RaiseGDBException('TLazSearchResultLB.EndUpdate');

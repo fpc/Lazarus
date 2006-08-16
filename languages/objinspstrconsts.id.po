@@ -164,6 +164,10 @@ msgstr "Tambah..."
 msgid "Adjustment"
 msgstr "Penyesuaian"
 
+#: objinspstrconsts:rscdalignment
+msgid "Alignment"
+msgstr ""
+
 #: objinspstrconsts:oisall
 msgid "All"
 msgstr "Semua"
@@ -180,6 +184,10 @@ msgstr "Terapkan"
 msgid "Array"
 msgstr "Array"
 
+#: objinspstrconsts:rscdautosize
+msgid "Auto Size"
+msgstr ""
+
 #: objinspstrconsts:oisstdactionlisteditorclass
 msgid "Available Action Classes:"
 msgstr "Kelas Aksi Tersedia"
@@ -195,6 +203,10 @@ msgstr "&Bersihkan"
 #: objinspstrconsts:oistdactdatasetcancel1hint
 msgid "Cancel"
 msgstr "Batal"
+
+#: objinspstrconsts:rscdcaption
+msgid "Caption"
+msgstr ""
 
 #: objinspstrconsts:sccslvedtlabelcaption
 msgid "Caption:"
@@ -243,6 +255,10 @@ msgstr "Bersihkan gambar"
 #: objinspstrconsts:oistdactcolorselecthint
 msgid "Color Select"
 msgstr "Pilih Warna"
+
+#: objinspstrconsts:rscdcolumneditor
+msgid "Column Editor"
+msgstr ""
 
 #: objinspstrconsts:oiscomponentnameisnotavalididentifier
 msgid "Component name %s%s%s is not a valid identifier"
@@ -472,6 +488,10 @@ msgstr "Integer"
 msgid "Interface"
 msgstr "Interface"
 
+#: objinspstrconsts:rscdinvalidnumericvalue
+msgid "Invalid numeric Value"
+msgstr ""
+
 #: objinspstrconsts:oisinvalidpropertyvalue
 msgid "Invalid property value"
 msgstr "Nilai properti tidak benar"
@@ -495,6 +515,10 @@ msgstr "Lompat ke deklarasi"
 #: objinspstrconsts:oistdactdatasetlasthint
 msgid "Last"
 msgstr "Terakhir"
+
+#: objinspstrconsts:rscdleft
+msgid "Left"
+msgstr ""
 
 #: objinspstrconsts:sccslvedtcaption
 msgid "ListView Items Editor"
@@ -540,6 +564,10 @@ msgstr ""
 msgid "Move Up"
 msgstr "Naikan"
 
+#: objinspstrconsts:rscdmovedown
+msgid "Move down"
+msgstr ""
+
 #: objinspstrconsts:nbcesmovepageleft
 msgid "Move page left"
 msgstr "Pindahkan halaman kekiri"
@@ -554,6 +582,10 @@ msgstr ""
 
 #: objinspstrconsts:tccesmovetabright
 msgid "Move tab right"
+msgstr ""
+
+#: objinspstrconsts:rscdmoveup
+msgid "Move up"
 msgstr ""
 
 #: objinspstrconsts:cactionlisteditornewaction
@@ -579,6 +611,10 @@ msgstr "Berikut"
 #: objinspstrconsts:sccsiledtnone
 msgid "None"
 msgstr "Tidak ada"
+
+#: objinspstrconsts:rscdok
+msgid "OK"
+msgstr ""
 
 #: objinspstrconsts:oisobject
 msgid "Object"
@@ -647,6 +683,10 @@ msgstr "Segarkan"
 #: objinspstrconsts:oisremovefromfavorites
 msgid "Remove from Favorites"
 msgstr "Hapus dari Favorit"
+
+#: objinspstrconsts:rscdright
+msgid "Right"
+msgstr ""
 
 #: objinspstrconsts:oissamplemasks
 msgid "Sample Masks:"
@@ -811,6 +851,14 @@ msgstr "Nilai:"
 #: objinspstrconsts:oisvariant
 msgid "Variant"
 msgstr "Varian"
+
+#: objinspstrconsts:rscdvisible
+msgid "Visible"
+msgstr ""
+
+#: objinspstrconsts:rscdwidth
+msgid "Width"
+msgstr ""
 
 #: objinspstrconsts:oisword
 msgid "Word"

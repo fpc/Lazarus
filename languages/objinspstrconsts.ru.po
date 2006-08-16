@@ -161,6 +161,10 @@ msgstr "Добавить..."
 msgid "Adjustment"
 msgstr "Выравнивание"
 
+#: objinspstrconsts:rscdalignment
+msgid "Alignment"
+msgstr ""
+
 #: objinspstrconsts:oisall
 msgid "All"
 msgstr "Все"
@@ -177,6 +181,10 @@ msgstr "Применить"
 msgid "Array"
 msgstr "Массив"
 
+#: objinspstrconsts:rscdautosize
+msgid "Auto Size"
+msgstr ""
+
 #: objinspstrconsts:oisstdactionlisteditorclass
 msgid "Available Action Classes:"
 msgstr "Доступные Классы Действий:"
@@ -192,6 +200,10 @@ msgstr "О&чистить"
 #: objinspstrconsts:oistdactdatasetcancel1hint
 msgid "Cancel"
 msgstr "Отменить"
+
+#: objinspstrconsts:rscdcaption
+msgid "Caption"
+msgstr ""
 
 #: objinspstrconsts:sccslvedtlabelcaption
 msgid "Caption:"
@@ -240,6 +252,10 @@ msgstr "Очистить картинку"
 #: objinspstrconsts:oistdactcolorselecthint
 msgid "Color Select"
 msgstr "Выбор цвета"
+
+#: objinspstrconsts:rscdcolumneditor
+msgid "Column Editor"
+msgstr ""
 
 #: objinspstrconsts:oiscomponentnameisnotavalididentifier
 msgid "Component name %s%s%s is not a valid identifier"
@@ -469,6 +485,10 @@ msgstr "Integer"
 msgid "Interface"
 msgstr "Interface"
 
+#: objinspstrconsts:rscdinvalidnumericvalue
+msgid "Invalid numeric Value"
+msgstr ""
+
 #: objinspstrconsts:oisinvalidpropertyvalue
 msgid "Invalid property value"
 msgstr "Неверное значение свойства"
@@ -492,6 +512,10 @@ msgstr "Перейти к объявлению"
 #: objinspstrconsts:oistdactdatasetlasthint
 msgid "Last"
 msgstr "Последний"
+
+#: objinspstrconsts:rscdleft
+msgid "Left"
+msgstr ""
 
 #: objinspstrconsts:sccslvedtcaption
 msgid "ListView Items Editor"
@@ -537,6 +561,10 @@ msgstr ""
 msgid "Move Up"
 msgstr "Переместить вверх"
 
+#: objinspstrconsts:rscdmovedown
+msgid "Move down"
+msgstr ""
+
 #: objinspstrconsts:nbcesmovepageleft
 msgid "Move page left"
 msgstr "Переместить страницу налево"
@@ -552,6 +580,10 @@ msgstr "Переместить вкладку налево"
 #: objinspstrconsts:tccesmovetabright
 msgid "Move tab right"
 msgstr "Переместить вкладку направо"
+
+#: objinspstrconsts:rscdmoveup
+msgid "Move up"
+msgstr ""
 
 #: objinspstrconsts:cactionlisteditornewaction
 msgid "New Action"
@@ -576,6 +608,10 @@ msgstr "Следующий"
 #: objinspstrconsts:sccsiledtnone
 msgid "None"
 msgstr "Нет"
+
+#: objinspstrconsts:rscdok
+msgid "OK"
+msgstr ""
 
 #: objinspstrconsts:oisobject
 msgid "Object"
@@ -644,6 +680,10 @@ msgstr "Обновить"
 #: objinspstrconsts:oisremovefromfavorites
 msgid "Remove from Favorites"
 msgstr "Удалить из Избранного"
+
+#: objinspstrconsts:rscdright
+msgid "Right"
+msgstr ""
 
 #: objinspstrconsts:oissamplemasks
 msgid "Sample Masks:"
@@ -808,6 +848,14 @@ msgstr "Значение:"
 #: objinspstrconsts:oisvariant
 msgid "Variant"
 msgstr "Variant"
+
+#: objinspstrconsts:rscdvisible
+msgid "Visible"
+msgstr ""
+
+#: objinspstrconsts:rscdwidth
+msgid "Width"
+msgstr ""
 
 #: objinspstrconsts:oisword
 msgid "Word"

@@ -198,7 +198,62 @@ const
     doPages      //alCustom
     );
 
+function GetLazDockSplitter(Control: TControl; Side: TAnchorKind;
+                            out Splitter: TLazDockSplitter): boolean;
+function GetLazDockSplitterOrParent(Control: TControl; Side: TAnchorKind;
+                                    out AnchorControl: TControl): boolean;
+function CountAnchoredControls(Control: TControl; Side: TAnchorKind
+                               ): Integer;
+
 implementation
+
+function GetLazDockSplitter(Control: TControl; Side: TAnchorKind; out
+  Splitter: TLazDockSplitter): boolean;
+begin
+  Result:=false;
+  Splitter:=nil;
+  if not (Side in Control.Anchors) then exit;
+  Splitter:=TLazDockSplitter(Control.AnchorSide[Side].Control);
+  if not (Splitter is TLazDockSplitter) then begin
+    Splitter:=nil;
+    exit;
+  end;
+  if Splitter.Parent<>Control.Parent then exit;
+  Result:=true;
+end;
+
+function GetLazDockSplitterOrParent(Control: TControl; Side: TAnchorKind; out
+  AnchorControl: TControl): boolean;
+begin
+  Result:=false;
+  AnchorControl:=nil;
+  if not (Side in Control.Anchors) then exit;
+  AnchorControl:=Control.AnchorSide[Side].Control;
+  if (AnchorControl is TLazDockSplitter)
+  and (AnchorControl.Parent=Control.Parent)
+  then
+    Result:=true
+  else if AnchorControl=Control.Parent then
+    Result:=true;
+end;
+
+function CountAnchoredControls(Control: TControl; Side: TAnchorKind): Integer;
+{ return the number of siblings, that are anchored on Side of Control
+  For example: if Side=akLeft it will return the number of controls, which
+  right side is anchored to the left of Control }
+var
+  i: Integer;
+  Neighbour: TControl;
+begin
+  Result:=0;
+  for i:=0 to Control.Parent.ControlCount-1 do begin
+    Neighbour:=Control.Parent.Controls[i];
+    if Neighbour=Control then continue;
+    if (OppositeAnchor[Side] in Neighbour.Anchors)
+    and (Neighbour.AnchorSide[OppositeAnchor[Side]].Control=Control) then
+      inc(Result);
+  end;
+end;
 
 { TLazDockPages }
 
@@ -876,6 +931,7 @@ begin
   Result:=0;
   while (AControl<>nil) do begin
     inc(Result);
+    if not (Side in AControl.Anchors) then break; // loose end
     NewControl:=AControl.AnchorSide[Side].Control;
     if NewControl=nil then break; // loose end
     if NewControl.Parent<>AControl.Parent then break; // parent end
@@ -1339,7 +1395,7 @@ function TAnchoredDockManager.EnlargeControl(Control: TControl;
   Side: TAnchorKind; Simulate: boolean): boolean;
 { If Simulate=true then it will only test if control can be enlarged.
 
-  Example: Move one neigbour, enlarge Control. Two splitters are resized.
+  Example: Move one neighbour, enlarge Control. Two splitters are resized.
 
       |#|         |#         |#|         |#
       |#| Control |#         |#|         |#
@@ -1352,7 +1408,7 @@ function TAnchoredDockManager.EnlargeControl(Control: TControl;
     ==================     ===================
 
 
-  Example: Move two neigbours, enlarge Control, resize one splitter, turn the
+  Example: Move two neigbours, enlarge Control, resize one splitter, rotate the
            other splitter.
 
       |#|         |#|          |#|         |#|
@@ -1364,19 +1420,89 @@ function TAnchoredDockManager.EnlargeControl(Control: TControl;
             |#|                |#|         |#|
     --------+#+--------      --+#+---------+#+--
     ===================      ===================
-   }
+}
 var
-  SideControl: TControl;
+  MainSplitter: TLazDockSplitter;
+  Side2: TAnchorKind;
+  Side3: TAnchorKind;
+  Side2Anchor: TControl;
+  Side3Anchor: TControl;
+  Parent: TWinControl;
+  i: Integer;
+  Sibling: TControl;
+  CurSplitter: TLazDockSplitter;
+  Neighbour1: TControl;
+  Neighbour2: TControl;
 begin
   Result:=false;
   if Control=nil then exit;
-  // find first splitter.
-  if not (Side in Control.Anchors) then exit;
-  SideControl:=Control.AnchorSide[Side].Control;
-  if SideControl=nil then exit;
-  if SideControl.Parent<>Control.Parent then exit;
-  if not (SideControl is TLazDockSplitter) then exit;
+  if Side in [akLeft,akRight] then
+    Side2:=akTop
+  else
+    Side2:=akLeft;
+  Side3:=OppositeAnchor[Side2];
+  if not GetLazDockSplitter(Control,Side,MainSplitter) then exit;
+  if not GetLazDockSplitterOrParent(Control,Side2,Side2Anchor) then exit;
+  if not GetLazDockSplitterOrParent(Control,Side3,Side3Anchor) then exit;
+  Parent:=Control.Parent;
+  if (Side2Anchor=Parent) and (Side3Anchor=Parent) then exit;
+  
+  // search controls anchored to the MainSplitter on the other side
+  Neighbour1:=nil;
+  Neighbour2:=nil;
+  for i:=0 to Parent.ControlCount-1 do begin
+    Sibling:=Parent.Controls[i];
+    if (not GetLazDockSplitter(Sibling,OppositeAnchor[Side],CurSplitter))
+    or (CurSplitter<>MainSplitter) then continue;
+    // Sibling is anchored to MainSplitter on the other side
+    // check if it is at the same height as Control
+    if Side in [akLeft,akRight] then begin
+      if (Side2Anchor is TLazDockSplitter) then begin
+        if (Sibling.Left+Sibling.Width<Side2Anchor.Left) then continue;
+      end else begin
+        // Side2Anchor is Parent
+        if Sibling.Left+Sibling.Width<Control.Left then continue;
+      end;
+      if (Side3Anchor is TLazDockSplitter) then begin
+        if (Sibling.Left>Side3Anchor.Left+Side3Anchor.Width) then continue;
+      end else begin
+        // Side3Anchor is Parent
+        if Sibling.Left>Control.Left+Control.Width then continue;
+      end;
+    end else begin
+      if (Side2Anchor is TLazDockSplitter) then begin
+        if (Sibling.Top+Sibling.Height<Side2Anchor.Top) then continue;
+      end else begin
+        // Side2Anchor is Parent
+        if Sibling.Top+Sibling.Height<Control.Top then continue;
+      end;
+      if (Side3Anchor is TLazDockSplitter) then begin
+        if (Sibling.Top>Side3Anchor.Top+Side3Anchor.Height) then continue;
+      end else begin
+        // Side3Anchor is Parent
+        if Sibling.Top>Control.Top+Control.Height then continue;
+      end;
+    end;
+    if Neighbour1=nil then
+      Neighbour1:=Sibling
+    else if Neighbour2=nil then
+      Neighbour2:=Sibling
+    else  begin
+      // too many Neighbours
+      exit;
+    end;
+  end;
 
+  if Neighbour1=nil then exit; // no neighbour found
+  if Neighbour2=nil then begin
+    // one neighbour
+    
+    
+  end else begin
+    // two neigbours
+    
+    
+  end;
 end;
 
 procedure TAnchoredDockManager.LoadFromStream(Stream: TStream);

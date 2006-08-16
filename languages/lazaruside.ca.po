@@ -266,7 +266,7 @@ msgstr "Un %s no pot manegar TControls. %sNomés hi podeu posar components no vis
 msgid "A file %s%s%s already exists.%sReplace it?"
 msgstr "Ja existeix un fitxer %s%s%s. %sVoleu que el substitueixi?"
 
-#: lazarusidestrconsts:lisa2papascalunitmusthavetheextensionpporpas
+#: lazarusidestrconsts:lispvuapascalunitmusthavetheextensionpporpas
 msgid "A pascal unit must have the extension .pp or .pas"
 msgstr "Una unitat Pascal ha de tenir l'extensió .pp o .pas"
 
@@ -1090,6 +1090,10 @@ msgstr "Tria un directori"
 msgid "Choose FPC source directory"
 msgstr "Tria un directori del codi font del FPC"
 
+#: lazarusidestrconsts:liskmchoosekeymappingscheme
+msgid "Choose Keymapping scheme"
+msgstr ""
+
 #: lazarusidestrconsts:lischooselazarussourcedirectory
 msgid "Choose Lazarus Directory"
 msgstr "Tria un directori del Lazarus"
@@ -1177,6 +1181,10 @@ msgstr "Ordre de la classe"
 #: lazarusidestrconsts:dlgclassinsertpolicy
 msgid "Class part insert policy"
 msgstr "Política d'inserir parts de classes"
+
+#: lazarusidestrconsts:liskmclassic
+msgid "Classic"
+msgstr ""
 
 #: lazarusidestrconsts:liscldircleandirectory
 msgid "Clean Directory"
@@ -1513,6 +1521,10 @@ msgstr "Confirma l'eliminació del fitxer"
 #: lazarusidestrconsts:srkmconflic
 msgid "Conflict "
 msgstr "Conflicte"
+
+#: lazarusidestrconsts:lispeconflictfound
+msgid "Conflict found"
+msgstr ""
 
 #: lazarusidestrconsts:dlginitdoneonly
 msgid "Constructor name must be 'init' (destructor must be 'done')"
@@ -2250,6 +2262,10 @@ msgstr ""
 msgid "Edit keys for command"
 msgstr "Edita les tecles per l'ordre"
 
+#: lazarusidestrconsts:lispvueditvirtualunit
+msgid "Edit virtual unit"
+msgstr ""
+
 #: lazarusidestrconsts:dlgededit
 msgid "Edit..."
 msgstr "Edita"
@@ -2358,6 +2374,14 @@ msgstr "S'ha produït un error mentre es llegia el paquet"
 msgid "Error Writing Package"
 msgstr "S'ha produït un error mentre s'escrivia el paquet"
 
+#: lazarusidestrconsts:lisiecoerroraccessingxml
+msgid "Error accessing xml"
+msgstr ""
+
+#: lazarusidestrconsts:lisiecoerroraccessingxmlfile
+msgid "Error accessing xml file %s%s%s:%s%s"
+msgstr ""
+
 #: lazarusidestrconsts:liserrorcreatingfile
 msgid "Error creating file"
 msgstr "S'ha produït un error mentre es creava el fitxer"
@@ -2381,6 +2405,14 @@ msgstr "Hi ha un error a l'expressió regular"
 #: lazarusidestrconsts:liserrorinitializingprogramserrors
 msgid "Error initializing program%s%s%s%s%sError: %s"
 msgstr "S'ha produït un error mentre s'inicialitzava el programa%s%s%s%s%sError: %s"
+
+#: lazarusidestrconsts:lisiecoerrorloadingxml
+msgid "Error loading xml"
+msgstr ""
+
+#: lazarusidestrconsts:lisiecoerrorloadingxmlfile
+msgid "Error loading xml file %s%s%s:%s%s"
+msgstr ""
 
 #: lazarusidestrconsts:liserrormovingcomponent
 msgid "Error moving component"
@@ -2513,6 +2545,14 @@ msgstr "Surt sense desar"
 #: lazarusidestrconsts:lisexpandedfilenameofcurrenteditor
 msgid "Expanded filename of current editor file"
 msgstr "Nom del fitxer estès de l'actual fitxer editor"
+
+#: lazarusidestrconsts:lisiecoexportfileexistsopenfileandreplaceonlycompileropti
+msgid "Export file %s%s%s exists.%sOpen file and replace only compiler options?%s(Other settings will be kept.)"
+msgstr ""
+
+#: lazarusidestrconsts:lisiecoexportfileexists
+msgid "Export file exists"
+msgstr ""
 
 #: lazarusidestrconsts:lisexportlist
 msgid "Export list"
@@ -2709,6 +2749,10 @@ msgstr "El nom del fitxer està essent utilitzat per un altre paquet"
 #: lazarusidestrconsts:lispkgmangfilenameisusedbyproject
 msgid "Filename is used by project"
 msgstr "El nom del fitxer està essent utilitzat pel projecte"
+
+#: lazarusidestrconsts:lispefilename
+msgid "Filename:"
+msgstr ""
 
 #: lazarusidestrconsts:lisoipfilename
 msgid "Filename:  %s"
@@ -3822,6 +3866,14 @@ msgstr "El nom del fitxer del projecte no és vàlid"
 msgid "Invalid selection"
 msgstr "La selecció no és vàlida"
 
+#: lazarusidestrconsts:lispeinvalidunitfilename
+msgid "Invalid unit filename"
+msgstr ""
+
+#: lazarusidestrconsts:lispeinvalidunitname
+msgid "Invalid unitname"
+msgstr ""
+
 #: lazarusidestrconsts:lissvuoinvalidvariablename
 msgid "Invalid variable name"
 msgstr "El nom de la variable no és vàlid"
@@ -3922,6 +3974,10 @@ msgstr ""
 msgid "Keep order of procedures"
 msgstr "Manté l'ordre dels procediments"
 
+#: lazarusidestrconsts:liskeepthemandcontinue
+msgid "Keep them and continue"
+msgstr ""
+
 #: lazarusidestrconsts:srkmkey
 msgid "Key"
 msgstr "Tecla"
@@ -3937,6 +3993,10 @@ msgstr "Accessos ràpids"
 #: lazarusidestrconsts:dlgkeymappingerrors
 msgid "Key mapping errors"
 msgstr "Errors dels accessos ràpids"
+
+#: lazarusidestrconsts:liskmkeymappingscheme
+msgid "Keymapping Scheme"
+msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsoptskeyword
 msgid "Keyword"
@@ -4214,6 +4274,10 @@ msgstr "Enllaçament"
 msgid "Load desktop settings from file"
 msgstr "Carrega els paràmetres de l'escriptori des del fitxer"
 
+#: lazarusidestrconsts:lisiecoloadfromfile
+msgid "Load from file"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcoloadsave
 msgid "Load/Save"
 msgstr "Carrega/Desa"
@@ -4381,6 +4445,10 @@ msgstr "Mirall vertical"
 #: lazarusidestrconsts:dlgenvmisc
 msgid "Miscellaneous"
 msgstr "Miscel·lània"
+
+#: lazarusidestrconsts:lismissingevents
+msgid "Missing Events"
+msgstr ""
 
 #: lazarusidestrconsts:lismissingpackages
 msgid "Missing Packages"
@@ -4782,6 +4850,10 @@ msgstr "Encara no està implementat"
 msgid "Not now"
 msgstr "Ara no"
 
+#: lazarusidestrconsts:liskmnoteallkeyswillbesettothevaluesofthechoosenscheme
+msgid "Note: All keys will be set to the values of the choosen scheme."
+msgstr ""
+
 #: lazarusidestrconsts:dlgenvbackuphelpnote
 msgid "Notes: Project files are all files in the project directory"
 msgstr "Nota: Els fitxers del projecte son tots els fitxers del directori del projecte"
@@ -4797,6 +4869,10 @@ msgstr "Fixació de teclat numèric"
 #: lazarusidestrconsts:srvk_numpad
 msgid "Numpad %d"
 msgstr "Teclat numèric %d"
+
+#: lazarusidestrconsts:lisifdok
+msgid "OK"
+msgstr ""
 
 #: lazarusidestrconsts:lisdebugoptionsfrmosexceptions
 msgid "OS Exceptions"
@@ -4942,6 +5018,10 @@ msgstr "Obre el paquet carregat"
 msgid "Open loaded package ..."
 msgstr "Obre el paquet carregat ..."
 
+#: lazarusidestrconsts:lisiecoopenorloadcompileroptions
+msgid "Open or Load Compiler Options"
+msgstr ""
+
 #: lazarusidestrconsts:liscomppalopenpackage
 msgid "Open package"
 msgstr "Obre el paquet"
@@ -4960,6 +5040,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisopenprojectagain
 msgid "Open project again"
+msgstr ""
+
+#: lazarusidestrconsts:lisiecoopenrecent
+msgid "Open recent"
 msgstr ""
 
 #: lazarusidestrconsts:lismenuopenrecentpkg
@@ -5598,6 +5682,10 @@ msgstr "Només de lectura"
 msgid "Rebuild Lazarus?"
 msgstr "Voleu tornar a muntar el Lazarus?"
 
+#: lazarusidestrconsts:lisiecorecentfiles
+msgid "Recent files"
+msgstr ""
+
 #: lazarusidestrconsts:lispckeditrecompileallrequired
 msgid "Recompile all required"
 msgstr "S'ha de tornar a compilar tot"
@@ -5733,6 +5821,10 @@ msgstr ""
 #: lazarusidestrconsts:lispckeditremoveselecteditem
 msgid "Remove selected item"
 msgstr "Elimina l'element seleccionat"
+
+#: lazarusidestrconsts:lisremovethem
+msgid "Remove them"
+msgstr ""
 
 #: lazarusidestrconsts:lispckeditremovedfilestheseentriesarenotsavedtothelpkfile
 msgid "Removed Files (these entries are not saved to the lpk file)"
@@ -6136,6 +6228,14 @@ msgstr ""
 
 #: lazarusidestrconsts:lislazbuildsavesettings
 msgid "Save settings"
+msgstr ""
+
+#: lazarusidestrconsts:lisiecosavetofile
+msgid "Save to file"
+msgstr ""
+
+#: lazarusidestrconsts:lisiecosavetorecent
+msgid "Save to recent"
 msgstr ""
 
 #: lazarusidestrconsts:fdmscaleword
@@ -7338,6 +7438,10 @@ msgstr "El nom de fitxer %s%s%s no correspon al nom del paquet %s%s%s en el fitx
 msgid "The filename %s%s%s is ambiguous, because the package has no default directory yet.%sPlease specify a filename with full path."
 msgstr ""
 
+#: lazarusidestrconsts:listhefollowingmethodsusedbyarenotinthesourceremoveth
+msgid "The following methods used by %s are not in the source%s%s%s%s%s%sRemove the dangling references?"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgmangthefollowingpackagefailedtoload
 msgid "The following package failed to load:"
 msgstr ""
@@ -7530,6 +7634,14 @@ msgstr "El nom d'unitat %s%s%s ja existeix en el paquet:%s%s"
 msgid "The unitname %s%s%s already exists in this package."
 msgstr "El nom d'unitat %s%s%s ja existeix en aquest paquet."
 
+#: lazarusidestrconsts:lispvutheunitnameisnotavalidpascalidentifier
+msgid "The unitname is not a valid pascal identifier."
+msgstr ""
+
+#: lazarusidestrconsts:lispvutheunitnameisusedwhentheideextendsusesclauses
+msgid "The unitname is used when the IDE extends uses clauses."
+msgstr ""
+
 #: lazarusidestrconsts:lispkgedtherearemorefunctionsinthepopupmenu
 msgid "There are more functions in the popupmenu"
 msgstr "Hi ha més funcions en el menú emergent"
@@ -7581,6 +7693,10 @@ msgstr "Ja hi ha un paquet %s%s%s carregat%s des del fitxer %s%s%s.%sMireu Compo
 #: lazarusidestrconsts:listhereisalreadyaunitwiththenamepascalidentifiersmus
 msgid "There is already a unit with the name %s%s%s. Pascal identifiers must be unique."
 msgstr "Ja hi ha una unitat amb el nom %s%s%s. Els identificadors pascal han de ser únics."
+
+#: lazarusidestrconsts:lispvuthereisalreadyanunitwiththisnamefile
+msgid "There is already an unit with this name.%sFile: %s"
+msgstr ""
 
 #: lazarusidestrconsts:lisdesthereisalreadyanothercomponentwiththename
 msgid "There is already another component with the name %s%s%s."
@@ -8229,6 +8345,14 @@ msgstr "Ja existeix el nom de la unitat"
 #: lazarusidestrconsts:lisunitnamealreadyexistscap
 msgid "Unitname already in project"
 msgstr "El nom de la unitat ja és al projecte"
+
+#: lazarusidestrconsts:lispvuunitnameandfilenamedonotmatchexampleunit1pasanduni
+msgid "Unitname and Filename do not match.%sExample: unit1.pas and Unit1"
+msgstr ""
+
+#: lazarusidestrconsts:lispeunitname
+msgid "Unitname:"
+msgstr ""
 
 #: lazarusidestrconsts:lisunitsnotfound2
 msgid "Units not found"

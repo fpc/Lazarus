@@ -278,7 +278,7 @@ msgstr "Un %s non può controllare TControls.$sÈ possibile mettervi sopra solo 
 msgid "A file %s%s%s already exists.%sReplace it?"
 msgstr "Un file %s%s%s esiste gia.%sLo rimpiazzo?"
 
-#: lazarusidestrconsts:lisa2papascalunitmusthavetheextensionpporpas
+#: lazarusidestrconsts:lispvuapascalunitmusthavetheextensionpporpas
 msgid "A pascal unit must have the extension .pp or .pas"
 msgstr "Una unit pascal deve avere un'estensione .pp o .pas"
 
@@ -1102,6 +1102,10 @@ msgstr "Scegli la directory"
 msgid "Choose FPC source directory"
 msgstr "Scegliere la directory sorgente FPC"
 
+#: lazarusidestrconsts:liskmchoosekeymappingscheme
+msgid "Choose Keymapping scheme"
+msgstr ""
+
 #: lazarusidestrconsts:lischooselazarussourcedirectory
 msgid "Choose Lazarus Directory"
 msgstr "Scegliere la directory Lazarus"
@@ -1189,6 +1193,10 @@ msgstr "Ordine delle classi"
 #: lazarusidestrconsts:dlgclassinsertpolicy
 msgid "Class part insert policy"
 msgstr "Criterio di inserimento classi"
+
+#: lazarusidestrconsts:liskmclassic
+msgid "Classic"
+msgstr ""
 
 #: lazarusidestrconsts:liscldircleandirectory
 msgid "Clean Directory"
@@ -1525,6 +1533,10 @@ msgstr "Conferma la rimozione del file"
 #: lazarusidestrconsts:srkmconflic
 msgid "Conflict "
 msgstr "Conflitto"
+
+#: lazarusidestrconsts:lispeconflictfound
+msgid "Conflict found"
+msgstr ""
 
 #: lazarusidestrconsts:dlginitdoneonly
 msgid "Constructor name must be 'init' (destructor must be 'done')"
@@ -2262,6 +2274,10 @@ msgstr ""
 msgid "Edit keys for command"
 msgstr "Modifica tasti per il comando"
 
+#: lazarusidestrconsts:lispvueditvirtualunit
+msgid "Edit virtual unit"
+msgstr ""
+
 #: lazarusidestrconsts:dlgededit
 msgid "Edit..."
 msgstr "Modifica..."
@@ -2370,6 +2386,14 @@ msgstr "Errore durante la lettura del pacchetto"
 msgid "Error Writing Package"
 msgstr "Errore nella scrittura del pacchetto"
 
+#: lazarusidestrconsts:lisiecoerroraccessingxml
+msgid "Error accessing xml"
+msgstr ""
+
+#: lazarusidestrconsts:lisiecoerroraccessingxmlfile
+msgid "Error accessing xml file %s%s%s:%s%s"
+msgstr ""
+
 #: lazarusidestrconsts:liserrorcreatingfile
 msgid "Error creating file"
 msgstr "Errore nella creazione del file"
@@ -2393,6 +2417,14 @@ msgstr "Errore nell'espressione regolare"
 #: lazarusidestrconsts:liserrorinitializingprogramserrors
 msgid "Error initializing program%s%s%s%s%sError: %s"
 msgstr "Errore nell'inizializzazione del programma%s%s%s%s%sErrore: %s"
+
+#: lazarusidestrconsts:lisiecoerrorloadingxml
+msgid "Error loading xml"
+msgstr ""
+
+#: lazarusidestrconsts:lisiecoerrorloadingxmlfile
+msgid "Error loading xml file %s%s%s:%s%s"
+msgstr ""
 
 #: lazarusidestrconsts:liserrormovingcomponent
 msgid "Error moving component"
@@ -2525,6 +2557,14 @@ msgstr "Esci senza salvare"
 #: lazarusidestrconsts:lisexpandedfilenameofcurrenteditor
 msgid "Expanded filename of current editor file"
 msgstr "Nome file espanso del file dell'editor corrente"
+
+#: lazarusidestrconsts:lisiecoexportfileexistsopenfileandreplaceonlycompileropti
+msgid "Export file %s%s%s exists.%sOpen file and replace only compiler options?%s(Other settings will be kept.)"
+msgstr ""
+
+#: lazarusidestrconsts:lisiecoexportfileexists
+msgid "Export file exists"
+msgstr ""
 
 #: lazarusidestrconsts:lisexportlist
 msgid "Export list"
@@ -2721,6 +2761,10 @@ msgstr "Il nome del file è in uso da un altro pacchetto"
 #: lazarusidestrconsts:lispkgmangfilenameisusedbyproject
 msgid "Filename is used by project"
 msgstr "Il nome del file è in uso dal progetto"
+
+#: lazarusidestrconsts:lispefilename
+msgid "Filename:"
+msgstr ""
 
 #: lazarusidestrconsts:lisoipfilename
 msgid "Filename:  %s"
@@ -3834,6 +3878,14 @@ msgstr "Nome file progetto non valido"
 msgid "Invalid selection"
 msgstr "Selezione non valida"
 
+#: lazarusidestrconsts:lispeinvalidunitfilename
+msgid "Invalid unit filename"
+msgstr ""
+
+#: lazarusidestrconsts:lispeinvalidunitname
+msgid "Invalid unitname"
+msgstr ""
+
 #: lazarusidestrconsts:lissvuoinvalidvariablename
 msgid "Invalid variable name"
 msgstr "Nome variabile non valido"
@@ -3934,6 +3986,10 @@ msgstr "Mantieni il nome"
 msgid "Keep order of procedures"
 msgstr "Mantieni l'ordine delle procedure"
 
+#: lazarusidestrconsts:liskeepthemandcontinue
+msgid "Keep them and continue"
+msgstr ""
+
 #: lazarusidestrconsts:srkmkey
 msgid "Key"
 msgstr "Tasto"
@@ -3949,6 +4005,10 @@ msgstr "Mappatura tasti"
 #: lazarusidestrconsts:dlgkeymappingerrors
 msgid "Key mapping errors"
 msgstr "Errori di mappatura tasti"
+
+#: lazarusidestrconsts:liskmkeymappingscheme
+msgid "Keymapping Scheme"
+msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsoptskeyword
 msgid "Keyword"
@@ -4226,6 +4286,10 @@ msgstr "Linking"
 msgid "Load desktop settings from file"
 msgstr "Carica impostazioni del desktop dal file"
 
+#: lazarusidestrconsts:lisiecoloadfromfile
+msgid "Load from file"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcoloadsave
 msgid "Load/Save"
 msgstr "Carica/Salva"
@@ -4393,6 +4457,10 @@ msgstr "Speculare verticale"
 #: lazarusidestrconsts:dlgenvmisc
 msgid "Miscellaneous"
 msgstr "Varie"
+
+#: lazarusidestrconsts:lismissingevents
+msgid "Missing Events"
+msgstr ""
 
 #: lazarusidestrconsts:lismissingpackages
 msgid "Missing Packages"
@@ -4794,6 +4862,10 @@ msgstr "Non ancora implementato"
 msgid "Not now"
 msgstr "Non ora"
 
+#: lazarusidestrconsts:liskmnoteallkeyswillbesettothevaluesofthechoosenscheme
+msgid "Note: All keys will be set to the values of the choosen scheme."
+msgstr ""
+
 #: lazarusidestrconsts:dlgenvbackuphelpnote
 msgid "Notes: Project files are all files in the project directory"
 msgstr "Nota: i file progetto sono tutti i file presenti nella directory del progetto"
@@ -4809,6 +4881,10 @@ msgstr "Bloc Num"
 #: lazarusidestrconsts:srvk_numpad
 msgid "Numpad %d"
 msgstr "Tast Num %d"
+
+#: lazarusidestrconsts:lisifdok
+msgid "OK"
+msgstr ""
 
 #: lazarusidestrconsts:lisdebugoptionsfrmosexceptions
 msgid "OS Exceptions"
@@ -4954,6 +5030,10 @@ msgstr "Apri pacchetto caricato"
 msgid "Open loaded package ..."
 msgstr "Apri pacchetto caricato ..."
 
+#: lazarusidestrconsts:lisiecoopenorloadcompileroptions
+msgid "Open or Load Compiler Options"
+msgstr ""
+
 #: lazarusidestrconsts:liscomppalopenpackage
 msgid "Open package"
 msgstr "Apri pachetto"
@@ -4973,6 +5053,10 @@ msgstr "Apri progetto"
 #: lazarusidestrconsts:lisopenprojectagain
 msgid "Open project again"
 msgstr "Apri di nuovo il progetto"
+
+#: lazarusidestrconsts:lisiecoopenrecent
+msgid "Open recent"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuopenrecentpkg
 msgid "Open recent package ..."
@@ -5610,6 +5694,10 @@ msgstr "Sola lettura"
 msgid "Rebuild Lazarus?"
 msgstr "Eseguire un rebuild di Lazarus?"
 
+#: lazarusidestrconsts:lisiecorecentfiles
+msgid "Recent files"
+msgstr ""
+
 #: lazarusidestrconsts:lispckeditrecompileallrequired
 msgid "Recompile all required"
 msgstr "Ricompila tutto quello che serve"
@@ -5745,6 +5833,10 @@ msgstr "Rimuovi il percorso"
 #: lazarusidestrconsts:lispckeditremoveselecteditem
 msgid "Remove selected item"
 msgstr "Rimuovi voce selezionata"
+
+#: lazarusidestrconsts:lisremovethem
+msgid "Remove them"
+msgstr ""
 
 #: lazarusidestrconsts:lispckeditremovedfilestheseentriesarenotsavedtothelpkfile
 msgid "Removed Files (these entries are not saved to the lpk file)"
@@ -6148,6 +6240,14 @@ msgstr "Salva l'informazione di sessione in "
 
 #: lazarusidestrconsts:lislazbuildsavesettings
 msgid "Save settings"
+msgstr ""
+
+#: lazarusidestrconsts:lisiecosavetofile
+msgid "Save to file"
+msgstr ""
+
+#: lazarusidestrconsts:lisiecosavetorecent
+msgid "Save to recent"
 msgstr ""
 
 #: lazarusidestrconsts:fdmscaleword
@@ -7350,6 +7450,10 @@ msgstr "Il nome del file %s%s%s non corrisponde ad un nome pacchetto %s%s%s nel 
 msgid "The filename %s%s%s is ambiguous, because the package has no default directory yet.%sPlease specify a filename with full path."
 msgstr "Il nome del file %s%s%s è ambiguo dato che il pacchetto non possiede ancora una cartella predefinita.%sSpecificare un nomefile con un percorso completo."
 
+#: lazarusidestrconsts:listhefollowingmethodsusedbyarenotinthesourceremoveth
+msgid "The following methods used by %s are not in the source%s%s%s%s%s%sRemove the dangling references?"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgmangthefollowingpackagefailedtoload
 msgid "The following package failed to load:"
 msgstr "Il seguente pacchetto non è stato caricato: "
@@ -7542,6 +7646,14 @@ msgstr "Il nome unit %s%s%s esiste già nel pacchetto:%s%s"
 msgid "The unitname %s%s%s already exists in this package."
 msgstr "In nome unit %s%s%s esiste già in questo pacchetto."
 
+#: lazarusidestrconsts:lispvutheunitnameisnotavalidpascalidentifier
+msgid "The unitname is not a valid pascal identifier."
+msgstr ""
+
+#: lazarusidestrconsts:lispvutheunitnameisusedwhentheideextendsusesclauses
+msgid "The unitname is used when the IDE extends uses clauses."
+msgstr ""
+
 #: lazarusidestrconsts:lispkgedtherearemorefunctionsinthepopupmenu
 msgid "There are more functions in the popupmenu"
 msgstr "Ci sono più funzioni nel menu a scomparsa"
@@ -7593,6 +7705,10 @@ msgstr "Esiste già un pacchetto %s%s%s caricato%sdal file %s%s%s.%sVedere Compo
 #: lazarusidestrconsts:listhereisalreadyaunitwiththenamepascalidentifiersmus
 msgid "There is already a unit with the name %s%s%s. Pascal identifiers must be unique."
 msgstr "C'è già una unit con il nome %s%s%s. Gli identificativi Pascal devono essere unici."
+
+#: lazarusidestrconsts:lispvuthereisalreadyanunitwiththisnamefile
+msgid "There is already an unit with this name.%sFile: %s"
+msgstr ""
 
 #: lazarusidestrconsts:lisdesthereisalreadyanothercomponentwiththename
 msgid "There is already another component with the name %s%s%s."
@@ -8241,6 +8357,14 @@ msgstr "Il nome unit esiste già"
 #: lazarusidestrconsts:lisunitnamealreadyexistscap
 msgid "Unitname already in project"
 msgstr "Nome unit già nel progetto"
+
+#: lazarusidestrconsts:lispvuunitnameandfilenamedonotmatchexampleunit1pasanduni
+msgid "Unitname and Filename do not match.%sExample: unit1.pas and Unit1"
+msgstr ""
+
+#: lazarusidestrconsts:lispeunitname
+msgid "Unitname:"
+msgstr ""
 
 #: lazarusidestrconsts:lisunitsnotfound2
 msgid "Units not found"

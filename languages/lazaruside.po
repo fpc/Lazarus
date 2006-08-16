@@ -1674,6 +1674,54 @@ msgstr ""
 msgid "Open file"
 msgstr ""
 
+#: lazarusidestrconsts:lisiecoexportfileexists
+msgid "Export file exists"
+msgstr ""
+
+#: lazarusidestrconsts:lisiecoexportfileexistsopenfileandreplaceonlycompileropti
+msgid "Export file %s%s%s exists.%sOpen file and replace only compiler options?%s(Other settings will be kept.)"
+msgstr ""
+
+#: lazarusidestrconsts:lisiecoopenorloadcompileroptions
+msgid "Open or Load Compiler Options"
+msgstr ""
+
+#: lazarusidestrconsts:lisiecoerroraccessingxml
+msgid "Error accessing xml"
+msgstr ""
+
+#: lazarusidestrconsts:lisiecoerrorloadingxml
+msgid "Error loading xml"
+msgstr ""
+
+#: lazarusidestrconsts:lisiecoerrorloadingxmlfile
+msgid "Error loading xml file %s%s%s:%s%s"
+msgstr ""
+
+#: lazarusidestrconsts:lisiecoerroraccessingxmlfile
+msgid "Error accessing xml file %s%s%s:%s%s"
+msgstr ""
+
+#: lazarusidestrconsts:lisiecorecentfiles
+msgid "Recent files"
+msgstr ""
+
+#: lazarusidestrconsts:lisiecosavetorecent
+msgid "Save to recent"
+msgstr ""
+
+#: lazarusidestrconsts:lisiecoopenrecent
+msgid "Open recent"
+msgstr ""
+
+#: lazarusidestrconsts:lisiecosavetofile
+msgid "Save to file"
+msgstr ""
+
+#: lazarusidestrconsts:lisiecoloadfromfile
+msgid "Load from file"
+msgstr ""
+
 #: lazarusidestrconsts:lislazarusfile
 msgid "Lazarus File"
 msgstr ""
@@ -2008,6 +2056,70 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgcancel
 msgid "Cancel"
+msgstr ""
+
+#: lazarusidestrconsts:liskmclassic
+msgid "Classic"
+msgstr ""
+
+#: lazarusidestrconsts:lispefilename
+msgid "Filename:"
+msgstr ""
+
+#: lazarusidestrconsts:lispeunitname
+msgid "Unitname:"
+msgstr ""
+
+#: lazarusidestrconsts:lispvutheunitnameisusedwhentheideextendsusesclauses
+msgid "The unitname is used when the IDE extends uses clauses."
+msgstr ""
+
+#: lazarusidestrconsts:lispetheunitnameisusedwhentheideextendsusesclauses
+msgid "The unitname is used when the IDE extends uses clauses."
+msgstr ""
+
+#: lazarusidestrconsts:lispeinvalidunitfilename
+msgid "Invalid unit filename"
+msgstr ""
+
+#: lazarusidestrconsts:lispvuapascalunitmusthavetheextensionpporpas
+msgid "A pascal unit must have the extension .pp or .pas"
+msgstr ""
+
+#: lazarusidestrconsts:lispeapascalunitmusthavetheextensionpporpas
+msgid "A pascal unit must have the extension .pp or .pas"
+msgstr ""
+
+#: lazarusidestrconsts:lispeinvalidunitname
+msgid "Invalid unitname"
+msgstr ""
+
+#: lazarusidestrconsts:lispvutheunitnameisnotavalidpascalidentifier
+msgid "The unitname is not a valid pascal identifier."
+msgstr ""
+
+#: lazarusidestrconsts:lispvuunitnameandfilenamedonotmatchexampleunit1pasanduni
+msgid "Unitname and Filename do not match.%sExample: unit1.pas and Unit1"
+msgstr ""
+
+#: lazarusidestrconsts:lispetheunitnameisnotavalidpascalidentifier
+msgid "The unitname is not a valid pascal identifier."
+msgstr ""
+
+#: lazarusidestrconsts:lispeconflictfound
+msgid "Conflict found"
+msgstr ""
+
+#: lazarusidestrconsts:lispvuthereisalreadyanunitwiththisnamefile
+msgid "There is already an unit with this name.%sFile: %s"
+msgstr ""
+
+#: lazarusidestrconsts:lispethereisalreadyanunitwiththisnamefile
+msgid "There is already an unit with this name.%sFile: %s"
+msgstr ""
+
+#: lazarusidestrconsts:lispeunitnameandfilenamedonotmatchexampleunit1pasanduni
+msgid "Unitname and Filename do not match.%sExample: unit1.pas and Unit1"
 msgstr ""
 
 #: lazarusidestrconsts:lisok
@@ -6798,6 +6910,14 @@ msgstr ""
 msgid "Remove"
 msgstr ""
 
+#: lazarusidestrconsts:liskeepthemandcontinue
+msgid "Keep them and continue"
+msgstr ""
+
+#: lazarusidestrconsts:lisremovethem
+msgid "Remove them"
+msgstr ""
+
 #: lazarusidestrconsts:lisexttoolmoveup
 msgid "Up"
 msgstr ""
@@ -8506,6 +8626,14 @@ msgstr ""
 msgid "Fix LFM file"
 msgstr ""
 
+#: lazarusidestrconsts:lismissingevents
+msgid "Missing Events"
+msgstr ""
+
+#: lazarusidestrconsts:listhefollowingmethodsusedbyarenotinthesourceremoveth
+msgid "The following methods used by %s are not in the source%s%s%s%s%s%sRemove the dangling references?"
+msgstr ""
+
 #: lazarusidestrconsts:lisnocodeselected
 msgid "No code selected"
 msgstr ""
@@ -9308,5 +9436,25 @@ msgstr ""
 
 #: lazarusidestrconsts:liswlexpression
 msgid "Expression"
+msgstr ""
+
+#: lazarusidestrconsts:liskmchoosekeymappingscheme
+msgid "Choose Keymapping scheme"
+msgstr ""
+
+#: lazarusidestrconsts:liskmnoteallkeyswillbesettothevaluesofthechoosenscheme
+msgid "Note: All keys will be set to the values of the choosen scheme."
+msgstr ""
+
+#: lazarusidestrconsts:liskmkeymappingscheme
+msgid "Keymapping Scheme"
+msgstr ""
+
+#: lazarusidestrconsts:lisifdok
+msgid "OK"
+msgstr ""
+
+#: lazarusidestrconsts:lispvueditvirtualunit
+msgid "Edit virtual unit"
 msgstr ""
 

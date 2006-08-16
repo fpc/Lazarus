@@ -150,6 +150,10 @@ msgstr "Adicionar..."
 msgid "Adjustment"
 msgstr "Ajuste"
 
+#: objinspstrconsts:rscdalignment
+msgid "Alignment"
+msgstr ""
+
 #: objinspstrconsts:oisall
 msgid "All"
 msgstr "Tudo"
@@ -166,6 +170,10 @@ msgstr "Aplicar"
 msgid "Array"
 msgstr "Array"
 
+#: objinspstrconsts:rscdautosize
+msgid "Auto Size"
+msgstr ""
+
 #: objinspstrconsts:oisstdactionlisteditorclass
 msgid "Available Action Classes:"
 msgstr "Classes de Ação Disponíveis:"
@@ -181,6 +189,10 @@ msgstr "&Limpar"
 #: objinspstrconsts:oistdactdatasetcancel1hint
 msgid "Cancel"
 msgstr "Cancelar"
+
+#: objinspstrconsts:rscdcaption
+msgid "Caption"
+msgstr ""
 
 #: objinspstrconsts:sccslvedtlabelcaption
 msgid "Caption:"
@@ -229,6 +241,10 @@ msgstr "Limpar Imagem"
 #: objinspstrconsts:oistdactcolorselecthint
 msgid "Color Select"
 msgstr "Selecionar Cor"
+
+#: objinspstrconsts:rscdcolumneditor
+msgid "Column Editor"
+msgstr ""
 
 #: objinspstrconsts:oiscomponentnameisnotavalididentifier
 msgid "Component name %s%s%s is not a valid identifier"
@@ -458,6 +474,10 @@ msgstr "Integer"
 msgid "Interface"
 msgstr "Interfaces"
 
+#: objinspstrconsts:rscdinvalidnumericvalue
+msgid "Invalid numeric Value"
+msgstr ""
+
 #: objinspstrconsts:oisinvalidpropertyvalue
 msgid "Invalid property value"
 msgstr "Valor de propriedade Inválido"
@@ -481,6 +501,10 @@ msgstr ""
 #: objinspstrconsts:oistdactdatasetlasthint
 msgid "Last"
 msgstr "ultimo"
+
+#: objinspstrconsts:rscdleft
+msgid "Left"
+msgstr ""
 
 #: objinspstrconsts:sccslvedtcaption
 msgid "ListView Items Editor"
@@ -526,6 +550,10 @@ msgstr ""
 msgid "Move Up"
 msgstr "Mover Acima"
 
+#: objinspstrconsts:rscdmovedown
+msgid "Move down"
+msgstr ""
+
 #: objinspstrconsts:nbcesmovepageleft
 msgid "Move page left"
 msgstr "Mover página a esquerda"
@@ -540,6 +568,10 @@ msgstr ""
 
 #: objinspstrconsts:tccesmovetabright
 msgid "Move tab right"
+msgstr ""
+
+#: objinspstrconsts:rscdmoveup
+msgid "Move up"
 msgstr ""
 
 #: objinspstrconsts:cactionlisteditornewaction
@@ -565,6 +597,10 @@ msgstr "Proximo"
 #: objinspstrconsts:sccsiledtnone
 msgid "None"
 msgstr "Nenhum"
+
+#: objinspstrconsts:rscdok
+msgid "OK"
+msgstr ""
 
 #: objinspstrconsts:oisobject
 msgid "Object"
@@ -633,6 +669,10 @@ msgstr "Atualizar"
 #: objinspstrconsts:oisremovefromfavorites
 msgid "Remove from Favorites"
 msgstr "Remover dos Favoritos"
+
+#: objinspstrconsts:rscdright
+msgid "Right"
+msgstr ""
 
 #: objinspstrconsts:oissamplemasks
 msgid "Sample Masks:"
@@ -797,6 +837,14 @@ msgstr "Valor:"
 #: objinspstrconsts:oisvariant
 msgid "Variant"
 msgstr "Variant"
+
+#: objinspstrconsts:rscdvisible
+msgid "Visible"
+msgstr ""
+
+#: objinspstrconsts:rscdwidth
+msgid "Width"
+msgstr ""
 
 #: objinspstrconsts:oisword
 msgid "Word"

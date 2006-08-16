@@ -280,7 +280,7 @@ msgstr "%s tidak bisa menampung TControls.%sAnda hanya bisa menaruh komponen vis
 msgid "A file %s%s%s already exists.%sReplace it?"
 msgstr "File %s%s%s sudah ada.%sTimpa saja?"
 
-#: lazarusidestrconsts:lisa2papascalunitmusthavetheextensionpporpas
+#: lazarusidestrconsts:lispvuapascalunitmusthavetheextensionpporpas
 msgid "A pascal unit must have the extension .pp or .pas"
 msgstr "Unit pascal harus mempunyai ekstensi .pp atau .pas"
 
@@ -1104,6 +1104,10 @@ msgstr "Pilih Direktori"
 msgid "Choose FPC source directory"
 msgstr "Pilih direktori sumber FPC"
 
+#: lazarusidestrconsts:liskmchoosekeymappingscheme
+msgid "Choose Keymapping scheme"
+msgstr ""
+
 #: lazarusidestrconsts:lischooselazarussourcedirectory
 msgid "Choose Lazarus Directory"
 msgstr "Pilih Direktori Lazarus"
@@ -1191,6 +1195,10 @@ msgstr "Urutan Class"
 #: lazarusidestrconsts:dlgclassinsertpolicy
 msgid "Class part insert policy"
 msgstr "Bagian Class menyisipkan kebijakan"
+
+#: lazarusidestrconsts:liskmclassic
+msgid "Classic"
+msgstr ""
 
 #: lazarusidestrconsts:liscldircleandirectory
 msgid "Clean Directory"
@@ -1527,6 +1535,10 @@ msgstr "Konfirmasi penghapusan file"
 #: lazarusidestrconsts:srkmconflic
 msgid "Conflict "
 msgstr "Konflik"
+
+#: lazarusidestrconsts:lispeconflictfound
+msgid "Conflict found"
+msgstr ""
 
 #: lazarusidestrconsts:dlginitdoneonly
 msgid "Constructor name must be 'init' (destructor must be 'done')"
@@ -2264,6 +2276,10 @@ msgstr ""
 msgid "Edit keys for command"
 msgstr "Edit kunci untuk perintah"
 
+#: lazarusidestrconsts:lispvueditvirtualunit
+msgid "Edit virtual unit"
+msgstr ""
+
 #: lazarusidestrconsts:dlgededit
 msgid "Edit..."
 msgstr "Edit..."
@@ -2372,6 +2388,14 @@ msgstr "Kesalahan Pembacaan Paket"
 msgid "Error Writing Package"
 msgstr "Kesalahan Penulisan Paket"
 
+#: lazarusidestrconsts:lisiecoerroraccessingxml
+msgid "Error accessing xml"
+msgstr ""
+
+#: lazarusidestrconsts:lisiecoerroraccessingxmlfile
+msgid "Error accessing xml file %s%s%s:%s%s"
+msgstr ""
+
 #: lazarusidestrconsts:liserrorcreatingfile
 msgid "Error creating file"
 msgstr "Kesalahan pembuatan file"
@@ -2395,6 +2419,14 @@ msgstr "Kesalahan dalam ekspresi reguler"
 #: lazarusidestrconsts:liserrorinitializingprogramserrors
 msgid "Error initializing program%s%s%s%s%sError: %s"
 msgstr "Kesalahan menginisialisasi program%s%s%s%s%sKesalahan: %s"
+
+#: lazarusidestrconsts:lisiecoerrorloadingxml
+msgid "Error loading xml"
+msgstr ""
+
+#: lazarusidestrconsts:lisiecoerrorloadingxmlfile
+msgid "Error loading xml file %s%s%s:%s%s"
+msgstr ""
 
 #: lazarusidestrconsts:liserrormovingcomponent
 msgid "Error moving component"
@@ -2527,6 +2559,14 @@ msgstr "Keluar tanpa Menyimpan"
 #: lazarusidestrconsts:lisexpandedfilenameofcurrenteditor
 msgid "Expanded filename of current editor file"
 msgstr "Nama file lebar dari file editor saat ini"
+
+#: lazarusidestrconsts:lisiecoexportfileexistsopenfileandreplaceonlycompileropti
+msgid "Export file %s%s%s exists.%sOpen file and replace only compiler options?%s(Other settings will be kept.)"
+msgstr ""
+
+#: lazarusidestrconsts:lisiecoexportfileexists
+msgid "Export file exists"
+msgstr ""
 
 #: lazarusidestrconsts:lisexportlist
 msgid "Export list"
@@ -2723,6 +2763,10 @@ msgstr "Nama file sedang digunakan oleh paket lain"
 #: lazarusidestrconsts:lispkgmangfilenameisusedbyproject
 msgid "Filename is used by project"
 msgstr "Nama file sedang digunakan oleh proyek"
+
+#: lazarusidestrconsts:lispefilename
+msgid "Filename:"
+msgstr ""
 
 #: lazarusidestrconsts:lisoipfilename
 msgid "Filename:  %s"
@@ -3836,6 +3880,14 @@ msgstr "Nama file proyek tidak benar"
 msgid "Invalid selection"
 msgstr "Pilihan tidak benar"
 
+#: lazarusidestrconsts:lispeinvalidunitfilename
+msgid "Invalid unit filename"
+msgstr ""
+
+#: lazarusidestrconsts:lispeinvalidunitname
+msgid "Invalid unitname"
+msgstr ""
+
 #: lazarusidestrconsts:lissvuoinvalidvariablename
 msgid "Invalid variable name"
 msgstr "Nama variabel tidak benar"
@@ -3936,6 +3988,10 @@ msgstr "Biarkan nama"
 msgid "Keep order of procedures"
 msgstr "Biarkan urutan dari procedure"
 
+#: lazarusidestrconsts:liskeepthemandcontinue
+msgid "Keep them and continue"
+msgstr ""
+
 #: lazarusidestrconsts:srkmkey
 msgid "Key"
 msgstr "Kunci"
@@ -3951,6 +4007,10 @@ msgstr "Pemetaan Kunci"
 #: lazarusidestrconsts:dlgkeymappingerrors
 msgid "Key mapping errors"
 msgstr "Pemetaan kunci salah"
+
+#: lazarusidestrconsts:liskmkeymappingscheme
+msgid "Keymapping Scheme"
+msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsoptskeyword
 msgid "Keyword"
@@ -4228,6 +4288,10 @@ msgstr "Penggabungan"
 msgid "Load desktop settings from file"
 msgstr "Ambil seting desktop dari file"
 
+#: lazarusidestrconsts:lisiecoloadfromfile
+msgid "Load from file"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcoloadsave
 msgid "Load/Save"
 msgstr "Ambil/Simpan"
@@ -4395,6 +4459,10 @@ msgstr "Cerminkan vertikal"
 #: lazarusidestrconsts:dlgenvmisc
 msgid "Miscellaneous"
 msgstr "Lain-lain"
+
+#: lazarusidestrconsts:lismissingevents
+msgid "Missing Events"
+msgstr ""
 
 #: lazarusidestrconsts:lismissingpackages
 msgid "Missing Packages"
@@ -4796,6 +4864,10 @@ msgstr "Belum Di Imlementasikan"
 msgid "Not now"
 msgstr "Tdak sekarang"
 
+#: lazarusidestrconsts:liskmnoteallkeyswillbesettothevaluesofthechoosenscheme
+msgid "Note: All keys will be set to the values of the choosen scheme."
+msgstr ""
+
 #: lazarusidestrconsts:dlgenvbackuphelpnote
 msgid "Notes: Project files are all files in the project directory"
 msgstr "Catatan: File Proyek adalah semua file dalam direktori proyek"
@@ -4811,6 +4883,10 @@ msgstr "Numlock"
 #: lazarusidestrconsts:srvk_numpad
 msgid "Numpad %d"
 msgstr "Numpad %d"
+
+#: lazarusidestrconsts:lisifdok
+msgid "OK"
+msgstr ""
 
 #: lazarusidestrconsts:lisdebugoptionsfrmosexceptions
 msgid "OS Exceptions"
@@ -4956,6 +5032,10 @@ msgstr "Buka paket yang diambil"
 msgid "Open loaded package ..."
 msgstr "Buka paket yang diambil ..."
 
+#: lazarusidestrconsts:lisiecoopenorloadcompileroptions
+msgid "Open or Load Compiler Options"
+msgstr ""
+
 #: lazarusidestrconsts:liscomppalopenpackage
 msgid "Open package"
 msgstr "Buka paket"
@@ -4975,6 +5055,10 @@ msgstr "Buka proyek"
 #: lazarusidestrconsts:lisopenprojectagain
 msgid "Open project again"
 msgstr "Buka lagi proyek"
+
+#: lazarusidestrconsts:lisiecoopenrecent
+msgid "Open recent"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuopenrecentpkg
 msgid "Open recent package ..."
@@ -5612,6 +5696,10 @@ msgstr "Hanya-baca"
 msgid "Rebuild Lazarus?"
 msgstr "Bangun ulang Lazarus?"
 
+#: lazarusidestrconsts:lisiecorecentfiles
+msgid "Recent files"
+msgstr ""
+
 #: lazarusidestrconsts:lispckeditrecompileallrequired
 msgid "Recompile all required"
 msgstr "Kompilasi ulang semua yang dibutuhkan"
@@ -5747,6 +5835,10 @@ msgstr "Hapus path"
 #: lazarusidestrconsts:lispckeditremoveselecteditem
 msgid "Remove selected item"
 msgstr "Hapus item yang dipilih"
+
+#: lazarusidestrconsts:lisremovethem
+msgid "Remove them"
+msgstr ""
 
 #: lazarusidestrconsts:lispckeditremovedfilestheseentriesarenotsavedtothelpkfile
 msgid "Removed Files (these entries are not saved to the lpk file)"
@@ -6150,6 +6242,14 @@ msgstr "Simpan informasi sesi dalam"
 
 #: lazarusidestrconsts:lislazbuildsavesettings
 msgid "Save settings"
+msgstr ""
+
+#: lazarusidestrconsts:lisiecosavetofile
+msgid "Save to file"
+msgstr ""
+
+#: lazarusidestrconsts:lisiecosavetorecent
+msgid "Save to recent"
 msgstr ""
 
 #: lazarusidestrconsts:fdmscaleword
@@ -7352,6 +7452,10 @@ msgstr "Nama file %s%s%s tidak terkait ke nama paket %s%s%s dalam file.%sUbah na
 msgid "The filename %s%s%s is ambiguous, because the package has no default directory yet.%sPlease specify a filename with full path."
 msgstr "Nama file %s%s%s dwimakna, karena paket belum mempunyai direktori default. %sSilahkan tetapkan nama file dengan path penuh."
 
+#: lazarusidestrconsts:listhefollowingmethodsusedbyarenotinthesourceremoveth
+msgid "The following methods used by %s are not in the source%s%s%s%s%s%sRemove the dangling references?"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgmangthefollowingpackagefailedtoload
 msgid "The following package failed to load:"
 msgstr "Paket berikut gagal diambil:"
@@ -7544,6 +7648,14 @@ msgstr "Nama unit %s%s%s sudah ada dalam paket:%s%s"
 msgid "The unitname %s%s%s already exists in this package."
 msgstr "Nama unit %s%s%s sudah ada dalam paket ini."
 
+#: lazarusidestrconsts:lispvutheunitnameisnotavalidpascalidentifier
+msgid "The unitname is not a valid pascal identifier."
+msgstr ""
+
+#: lazarusidestrconsts:lispvutheunitnameisusedwhentheideextendsusesclauses
+msgid "The unitname is used when the IDE extends uses clauses."
+msgstr ""
+
 #: lazarusidestrconsts:lispkgedtherearemorefunctionsinthepopupmenu
 msgid "There are more functions in the popupmenu"
 msgstr "Ada fungsi lebih banyak dalam menu popup"
@@ -7595,6 +7707,10 @@ msgstr "Sudah ada paket %s%s%s diambil%sdari file %s%s%s.%sLihat Komponen -> Gra
 #: lazarusidestrconsts:listhereisalreadyaunitwiththenamepascalidentifiersmus
 msgid "There is already a unit with the name %s%s%s. Pascal identifiers must be unique."
 msgstr "Sudah ada unit dengan nama%s%s%s. Pengenal Pascal harus unik."
+
+#: lazarusidestrconsts:lispvuthereisalreadyanunitwiththisnamefile
+msgid "There is already an unit with this name.%sFile: %s"
+msgstr ""
 
 #: lazarusidestrconsts:lisdesthereisalreadyanothercomponentwiththename
 msgid "There is already another component with the name %s%s%s."
@@ -8243,6 +8359,14 @@ msgstr "Nama unit sudah ada"
 #: lazarusidestrconsts:lisunitnamealreadyexistscap
 msgid "Unitname already in project"
 msgstr "Nama unit sudah ada dalam proyek"
+
+#: lazarusidestrconsts:lispvuunitnameandfilenamedonotmatchexampleunit1pasanduni
+msgid "Unitname and Filename do not match.%sExample: unit1.pas and Unit1"
+msgstr ""
+
+#: lazarusidestrconsts:lispeunitname
+msgid "Unitname:"
+msgstr ""
 
 #: lazarusidestrconsts:lisunitsnotfound2
 msgid "Units not found"

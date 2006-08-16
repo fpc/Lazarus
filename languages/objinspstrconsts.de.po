@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2006-05-18 20:17+0100\n"
-"Last-Translator: Jörg Braun <jb@toolbox-mag.de>\n"
+"PO-Revision-Date: 2006-08-15 22:14+0100\n"
+"Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -161,6 +161,10 @@ msgstr "Hinzufügen"
 msgid "Adjustment"
 msgstr "Justierung"
 
+#: objinspstrconsts:rscdalignment
+msgid "Alignment"
+msgstr ""
+
 #: objinspstrconsts:oisall
 msgid "All"
 msgstr "Alle"
@@ -177,6 +181,10 @@ msgstr "Anwenden"
 msgid "Array"
 msgstr "Array"
 
+#: objinspstrconsts:rscdautosize
+msgid "Auto Size"
+msgstr ""
+
 #: objinspstrconsts:oisstdactionlisteditorclass
 msgid "Available Action Classes:"
 msgstr "Verfügbare Action-Klassen:"
@@ -192,6 +200,10 @@ msgstr "&Löschen"
 #: objinspstrconsts:oistdactdatasetcancel1hint
 msgid "Cancel"
 msgstr "Abbrechen"
+
+#: objinspstrconsts:rscdcaption
+msgid "Caption"
+msgstr ""
 
 #: objinspstrconsts:sccslvedtlabelcaption
 msgid "Caption:"
@@ -240,6 +252,10 @@ msgstr "Bild löschen"
 #: objinspstrconsts:oistdactcolorselecthint
 msgid "Color Select"
 msgstr "Farbauswahl"
+
+#: objinspstrconsts:rscdcolumneditor
+msgid "Column Editor"
+msgstr ""
 
 #: objinspstrconsts:oiscomponentnameisnotavalididentifier
 msgid "Component name %s%s%s is not a valid identifier"
@@ -469,6 +485,10 @@ msgstr "Integer"
 msgid "Interface"
 msgstr "Interface"
 
+#: objinspstrconsts:rscdinvalidnumericvalue
+msgid "Invalid numeric Value"
+msgstr ""
+
 #: objinspstrconsts:oisinvalidpropertyvalue
 msgid "Invalid property value"
 msgstr "Ungültiger Eigenschaftswert"
@@ -492,6 +512,10 @@ msgstr "Sprung zur Deklaration"
 #: objinspstrconsts:oistdactdatasetlasthint
 msgid "Last"
 msgstr "Letzter"
+
+#: objinspstrconsts:rscdleft
+msgid "Left"
+msgstr ""
 
 #: objinspstrconsts:sccslvedtcaption
 msgid "ListView Items Editor"
@@ -531,11 +555,15 @@ msgstr "Nach unten bewegen"
 
 #: objinspstrconsts:sccssgedtmoverowscols
 msgid "Move Rows/Cols"
-msgstr ""
+msgstr "Zeilen/Spalten verschieben"
 
 #: objinspstrconsts:sccsiledtmoveup
 msgid "Move Up"
 msgstr "Nach oben bewegen"
+
+#: objinspstrconsts:rscdmovedown
+msgid "Move down"
+msgstr ""
 
 #: objinspstrconsts:nbcesmovepageleft
 msgid "Move page left"
@@ -552,6 +580,10 @@ msgstr "Tab nach links bewegen"
 #: objinspstrconsts:tccesmovetabright
 msgid "Move tab right"
 msgstr "Tab nach rechts bewegen"
+
+#: objinspstrconsts:rscdmoveup
+msgid "Move up"
+msgstr ""
 
 #: objinspstrconsts:cactionlisteditornewaction
 msgid "New Action"
@@ -576,6 +608,10 @@ msgstr "Nächster"
 #: objinspstrconsts:sccsiledtnone
 msgid "None"
 msgstr "Keiner"
+
+#: objinspstrconsts:rscdok
+msgid "OK"
+msgstr ""
 
 #: objinspstrconsts:oisobject
 msgid "Object"
@@ -644,6 +680,10 @@ msgstr "Refresh"
 #: objinspstrconsts:oisremovefromfavorites
 msgid "Remove from Favorites"
 msgstr "Von Favoriten entfernen"
+
+#: objinspstrconsts:rscdright
+msgid "Right"
+msgstr ""
 
 #: objinspstrconsts:oissamplemasks
 msgid "Sample Masks:"
@@ -808,6 +848,14 @@ msgstr "Wert:"
 #: objinspstrconsts:oisvariant
 msgid "Variant"
 msgstr "Variant"
+
+#: objinspstrconsts:rscdvisible
+msgid "Visible"
+msgstr ""
+
+#: objinspstrconsts:rscdwidth
+msgid "Width"
+msgstr ""
 
 #: objinspstrconsts:oisword
 msgid "Word"

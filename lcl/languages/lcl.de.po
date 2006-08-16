@@ -4,7 +4,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2006-06-16 13:28+0100\n"
+"PO-Revision-Date: 2006-08-15 22:13+0100\n"
 "Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -163,7 +163,7 @@ msgstr "Rückschritt"
 
 #: lclstrconsts:rsbackward
 msgid "Backward"
-msgstr ""
+msgstr "Rückwärts"
 
 #: lclstrconsts:rsbitmaps
 msgid "Bitmaps"
@@ -207,7 +207,7 @@ msgstr "Großbuchstabe"
 
 #: lclstrconsts:rscasesensitive
 msgid "Case sensitive"
-msgstr ""
+msgstr "Schreibweisenabhängig"
 
 #: lclstrconsts:ifsvk_clear
 msgid "Clear"
@@ -239,7 +239,7 @@ msgstr "Löschen"
 
 #: lclstrconsts:rsdirection
 msgid "Direction"
-msgstr ""
+msgstr "Richtung"
 
 #: lclstrconsts:rsfddirectorymustexist
 msgid "Directory must exist"
@@ -323,11 +323,11 @@ msgstr "Schluß"
 
 #: lclstrconsts:rsfind
 msgid "Find"
-msgstr ""
+msgstr "Suchen"
 
 #: lclstrconsts:rsfindmore
 msgid "Find more"
-msgstr ""
+msgstr "Weitersuchen"
 
 #: lclstrconsts:rsfixedcolstoobig
 msgid "FixedCols can't be >= ColCount"
@@ -343,7 +343,7 @@ msgstr "Form-Streaming \"%s\" Fehler: %s"
 
 #: lclstrconsts:rsforward
 msgid "Forward"
-msgstr ""
+msgstr "Vorwärts"
 
 #: lclstrconsts:rsgridfiledoesnotexists
 msgid "Grid file doesn't exists"
@@ -615,11 +615,11 @@ msgstr "Eigenschaft %s fehlt"
 
 #: lclstrconsts:rsreplace
 msgid "Replace"
-msgstr ""
+msgstr "Ersetzen"
 
 #: lclstrconsts:rsreplaceall
 msgid "Replace all"
-msgstr ""
+msgstr "Alle ersetzen"
 
 #: lclstrconsts:lislclresourcesnotfound
 msgid "Resource %s not found"
@@ -687,7 +687,7 @@ msgstr "Tabulator"
 
 #: lclstrconsts:rstext
 msgid "Text"
-msgstr ""
+msgstr "Text"
 
 #: lclstrconsts:rsfddirectorynotexist
 msgid "The directory \"%s\" does not exist."
@@ -763,7 +763,7 @@ msgstr "Warnung:"
 
 #: lclstrconsts:rswholewordsonly
 msgid "Whole words only"
-msgstr ""
+msgstr "Nur ganze Wörter"
 
 #: lclstrconsts:rsmbyestoall
 msgid "Yes to &All"

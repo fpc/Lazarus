@@ -150,6 +150,10 @@ msgstr ""
 msgid "Adjustment"
 msgstr ""
 
+#: objinspstrconsts:rscdalignment
+msgid "Alignment"
+msgstr ""
+
 #: objinspstrconsts:oisall
 msgid "All"
 msgstr "Tous"
@@ -166,6 +170,10 @@ msgstr ""
 msgid "Array"
 msgstr "Tableau"
 
+#: objinspstrconsts:rscdautosize
+msgid "Auto Size"
+msgstr ""
+
 #: objinspstrconsts:oisstdactionlisteditorclass
 msgid "Available Action Classes:"
 msgstr ""
@@ -180,6 +188,10 @@ msgstr "&Effacer"
 
 #: objinspstrconsts:oistdactdatasetcancel1hint
 msgid "Cancel"
+msgstr ""
+
+#: objinspstrconsts:rscdcaption
+msgid "Caption"
 msgstr ""
 
 #: objinspstrconsts:sccslvedtlabelcaption
@@ -228,6 +240,10 @@ msgstr ""
 
 #: objinspstrconsts:oistdactcolorselecthint
 msgid "Color Select"
+msgstr ""
+
+#: objinspstrconsts:rscdcolumneditor
+msgid "Column Editor"
 msgstr ""
 
 #: objinspstrconsts:oiscomponentnameisnotavalididentifier
@@ -458,6 +474,10 @@ msgstr "Entier"
 msgid "Interface"
 msgstr "Interface"
 
+#: objinspstrconsts:rscdinvalidnumericvalue
+msgid "Invalid numeric Value"
+msgstr ""
+
 #: objinspstrconsts:oisinvalidpropertyvalue
 msgid "Invalid property value"
 msgstr ""
@@ -480,6 +500,10 @@ msgstr ""
 
 #: objinspstrconsts:oistdactdatasetlasthint
 msgid "Last"
+msgstr ""
+
+#: objinspstrconsts:rscdleft
+msgid "Left"
 msgstr ""
 
 #: objinspstrconsts:sccslvedtcaption
@@ -526,6 +550,10 @@ msgstr ""
 msgid "Move Up"
 msgstr ""
 
+#: objinspstrconsts:rscdmovedown
+msgid "Move down"
+msgstr ""
+
 #: objinspstrconsts:nbcesmovepageleft
 msgid "Move page left"
 msgstr ""
@@ -540,6 +568,10 @@ msgstr ""
 
 #: objinspstrconsts:tccesmovetabright
 msgid "Move tab right"
+msgstr ""
+
+#: objinspstrconsts:rscdmoveup
+msgid "Move up"
 msgstr ""
 
 #: objinspstrconsts:cactionlisteditornewaction
@@ -564,6 +596,10 @@ msgstr ""
 
 #: objinspstrconsts:sccsiledtnone
 msgid "None"
+msgstr ""
+
+#: objinspstrconsts:rscdok
+msgid "OK"
 msgstr ""
 
 #: objinspstrconsts:oisobject
@@ -632,6 +668,10 @@ msgstr ""
 
 #: objinspstrconsts:oisremovefromfavorites
 msgid "Remove from Favorites"
+msgstr ""
+
+#: objinspstrconsts:rscdright
+msgid "Right"
 msgstr ""
 
 #: objinspstrconsts:oissamplemasks
@@ -797,6 +837,14 @@ msgstr "Valeur:"
 #: objinspstrconsts:oisvariant
 msgid "Variant"
 msgstr "Variant"
+
+#: objinspstrconsts:rscdvisible
+msgid "Visible"
+msgstr ""
+
+#: objinspstrconsts:rscdwidth
+msgid "Width"
+msgstr ""
 
 #: objinspstrconsts:oisword
 msgid "Word"

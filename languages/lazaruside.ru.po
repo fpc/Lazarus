@@ -277,7 +277,7 @@ msgstr "%s не может содержать компоненты TControl.%sВ
 msgid "A file %s%s%s already exists.%sReplace it?"
 msgstr "Файл %s%s%s уже существует.%s Заменить?"
 
-#: lazarusidestrconsts:lisa2papascalunitmusthavetheextensionpporpas
+#: lazarusidestrconsts:lispvuapascalunitmusthavetheextensionpporpas
 msgid "A pascal unit must have the extension .pp or .pas"
 msgstr "Модуль Паскаля должен иметь расширение .pp или .pas"
 
@@ -1101,6 +1101,10 @@ msgstr "Выберите каталог"
 msgid "Choose FPC source directory"
 msgstr "Выберите каталог исходников FPC"
 
+#: lazarusidestrconsts:liskmchoosekeymappingscheme
+msgid "Choose Keymapping scheme"
+msgstr ""
+
 #: lazarusidestrconsts:lischooselazarussourcedirectory
 msgid "Choose Lazarus Directory"
 msgstr "Выберите каталог Lazarus"
@@ -1188,6 +1192,10 @@ msgstr "В порядке классов"
 #: lazarusidestrconsts:dlgclassinsertpolicy
 msgid "Class part insert policy"
 msgstr "Политика вставки частей класса"
+
+#: lazarusidestrconsts:liskmclassic
+msgid "Classic"
+msgstr ""
 
 #: lazarusidestrconsts:liscldircleandirectory
 msgid "Clean Directory"
@@ -1524,6 +1532,10 @@ msgstr "Подтвердите удаление файла"
 #: lazarusidestrconsts:srkmconflic
 msgid "Conflict "
 msgstr "Конфликт "
+
+#: lazarusidestrconsts:lispeconflictfound
+msgid "Conflict found"
+msgstr ""
 
 #: lazarusidestrconsts:dlginitdoneonly
 msgid "Constructor name must be 'init' (destructor must be 'done')"
@@ -2261,6 +2273,10 @@ msgstr "Редактировать контекстную помощь"
 msgid "Edit keys for command"
 msgstr "Править клавиши для команды"
 
+#: lazarusidestrconsts:lispvueditvirtualunit
+msgid "Edit virtual unit"
+msgstr ""
+
 #: lazarusidestrconsts:dlgededit
 msgid "Edit..."
 msgstr "Правка"
@@ -2369,6 +2385,14 @@ msgstr "Ошибка чтения пакета"
 msgid "Error Writing Package"
 msgstr "Ошибка записи пакета"
 
+#: lazarusidestrconsts:lisiecoerroraccessingxml
+msgid "Error accessing xml"
+msgstr ""
+
+#: lazarusidestrconsts:lisiecoerroraccessingxmlfile
+msgid "Error accessing xml file %s%s%s:%s%s"
+msgstr ""
+
 #: lazarusidestrconsts:liserrorcreatingfile
 msgid "Error creating file"
 msgstr "Ошибка создания файла"
@@ -2392,6 +2416,14 @@ msgstr "Ошибка в регулярном выражении"
 #: lazarusidestrconsts:liserrorinitializingprogramserrors
 msgid "Error initializing program%s%s%s%s%sError: %s"
 msgstr "Ошибка инициализации программы %s%s%s%s%sОшибка: %s"
+
+#: lazarusidestrconsts:lisiecoerrorloadingxml
+msgid "Error loading xml"
+msgstr ""
+
+#: lazarusidestrconsts:lisiecoerrorloadingxmlfile
+msgid "Error loading xml file %s%s%s:%s%s"
+msgstr ""
 
 #: lazarusidestrconsts:liserrormovingcomponent
 msgid "Error moving component"
@@ -2524,6 +2556,14 @@ msgstr "Выход без сохранения"
 #: lazarusidestrconsts:lisexpandedfilenameofcurrenteditor
 msgid "Expanded filename of current editor file"
 msgstr "Полное имя файла в данном редакторе"
+
+#: lazarusidestrconsts:lisiecoexportfileexistsopenfileandreplaceonlycompileropti
+msgid "Export file %s%s%s exists.%sOpen file and replace only compiler options?%s(Other settings will be kept.)"
+msgstr ""
+
+#: lazarusidestrconsts:lisiecoexportfileexists
+msgid "Export file exists"
+msgstr ""
 
 #: lazarusidestrconsts:lisexportlist
 msgid "Export list"
@@ -2720,6 +2760,10 @@ msgstr "Имя файла использовано другим пакетом"
 #: lazarusidestrconsts:lispkgmangfilenameisusedbyproject
 msgid "Filename is used by project"
 msgstr "Имя файла использовано проектом"
+
+#: lazarusidestrconsts:lispefilename
+msgid "Filename:"
+msgstr ""
 
 #: lazarusidestrconsts:lisoipfilename
 msgid "Filename:  %s"
@@ -3833,6 +3877,14 @@ msgstr "Неправильное имя файла проекта"
 msgid "Invalid selection"
 msgstr "Неправильное выделение"
 
+#: lazarusidestrconsts:lispeinvalidunitfilename
+msgid "Invalid unit filename"
+msgstr ""
+
+#: lazarusidestrconsts:lispeinvalidunitname
+msgid "Invalid unitname"
+msgstr ""
+
 #: lazarusidestrconsts:lissvuoinvalidvariablename
 msgid "Invalid variable name"
 msgstr "Неправильное имя переменной"
@@ -3933,6 +3985,10 @@ msgstr "Сохранить имя"
 msgid "Keep order of procedures"
 msgstr "Сохранять порядок процедур"
 
+#: lazarusidestrconsts:liskeepthemandcontinue
+msgid "Keep them and continue"
+msgstr ""
+
 #: lazarusidestrconsts:srkmkey
 msgid "Key"
 msgstr "Клавиша"
@@ -3948,6 +4004,10 @@ msgstr "Клавиши"
 #: lazarusidestrconsts:dlgkeymappingerrors
 msgid "Key mapping errors"
 msgstr "Ошибки комбинаций клавиш"
+
+#: lazarusidestrconsts:liskmkeymappingscheme
+msgid "Keymapping Scheme"
+msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsoptskeyword
 msgid "Keyword"
@@ -4225,6 +4285,10 @@ msgstr "Связывание"
 msgid "Load desktop settings from file"
 msgstr "Загр. рабочий стол из файла"
 
+#: lazarusidestrconsts:lisiecoloadfromfile
+msgid "Load from file"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcoloadsave
 msgid "Load/Save"
 msgstr "Загрузка/сохранение"
@@ -4392,6 +4456,10 @@ msgstr "Отразить по вертикали"
 #: lazarusidestrconsts:dlgenvmisc
 msgid "Miscellaneous"
 msgstr "Разное"
+
+#: lazarusidestrconsts:lismissingevents
+msgid "Missing Events"
+msgstr ""
 
 #: lazarusidestrconsts:lismissingpackages
 msgid "Missing Packages"
@@ -4793,6 +4861,10 @@ msgstr "Еще не реализовано"
 msgid "Not now"
 msgstr "Не сейчас"
 
+#: lazarusidestrconsts:liskmnoteallkeyswillbesettothevaluesofthechoosenscheme
+msgid "Note: All keys will be set to the values of the choosen scheme."
+msgstr ""
+
 #: lazarusidestrconsts:dlgenvbackuphelpnote
 msgid "Notes: Project files are all files in the project directory"
 msgstr "Внимание, файлы проекта - все файлы в его каталоге"
@@ -4808,6 +4880,10 @@ msgstr "NumLock"
 #: lazarusidestrconsts:srvk_numpad
 msgid "Numpad %d"
 msgstr "%d цифровой клавиатуры"
+
+#: lazarusidestrconsts:lisifdok
+msgid "OK"
+msgstr ""
 
 #: lazarusidestrconsts:lisdebugoptionsfrmosexceptions
 msgid "OS Exceptions"
@@ -4953,6 +5029,10 @@ msgstr "Открыть загруженный пакет"
 msgid "Open loaded package ..."
 msgstr "Открыть загруженный пакет ..."
 
+#: lazarusidestrconsts:lisiecoopenorloadcompileroptions
+msgid "Open or Load Compiler Options"
+msgstr ""
+
 #: lazarusidestrconsts:liscomppalopenpackage
 msgid "Open package"
 msgstr "Открыть пакет"
@@ -4972,6 +5052,10 @@ msgstr "Открыть проект"
 #: lazarusidestrconsts:lisopenprojectagain
 msgid "Open project again"
 msgstr "Открыть проект снова"
+
+#: lazarusidestrconsts:lisiecoopenrecent
+msgid "Open recent"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuopenrecentpkg
 msgid "Open recent package ..."
@@ -5609,6 +5693,10 @@ msgstr "Только чтение"
 msgid "Rebuild Lazarus?"
 msgstr "Пересобрать Lazarus?"
 
+#: lazarusidestrconsts:lisiecorecentfiles
+msgid "Recent files"
+msgstr ""
+
 #: lazarusidestrconsts:lispckeditrecompileallrequired
 msgid "Recompile all required"
 msgstr "Требуется пересобрать все"
@@ -5744,6 +5832,10 @@ msgstr "Удалить путь"
 #: lazarusidestrconsts:lispckeditremoveselecteditem
 msgid "Remove selected item"
 msgstr "Удалить выбранный элемент"
+
+#: lazarusidestrconsts:lisremovethem
+msgid "Remove them"
+msgstr ""
 
 #: lazarusidestrconsts:lispckeditremovedfilestheseentriesarenotsavedtothelpkfile
 msgid "Removed Files (these entries are not saved to the lpk file)"
@@ -6147,6 +6239,14 @@ msgstr "Сохранять информацию о сеансе работы в"
 
 #: lazarusidestrconsts:lislazbuildsavesettings
 msgid "Save settings"
+msgstr ""
+
+#: lazarusidestrconsts:lisiecosavetofile
+msgid "Save to file"
+msgstr ""
+
+#: lazarusidestrconsts:lisiecosavetorecent
+msgid "Save to recent"
 msgstr ""
 
 #: lazarusidestrconsts:fdmscaleword
@@ -7349,6 +7449,10 @@ msgstr "Имя файла %s%s%s не соответствует имени па
 msgid "The filename %s%s%s is ambiguous, because the package has no default directory yet.%sPlease specify a filename with full path."
 msgstr "Имя файла %s%s%s не определено, так как пакет ещё не имеет каталога по умолчанию.%sПожалуйста, укажите имя файла с полным путём."
 
+#: lazarusidestrconsts:listhefollowingmethodsusedbyarenotinthesourceremoveth
+msgid "The following methods used by %s are not in the source%s%s%s%s%s%sRemove the dangling references?"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgmangthefollowingpackagefailedtoload
 msgid "The following package failed to load:"
 msgstr "Следующий пакет не был загружен:"
@@ -7541,6 +7645,14 @@ msgstr "Имя модуля %s%s%s уже занято в этом пакете:
 msgid "The unitname %s%s%s already exists in this package."
 msgstr "Имя модуля %s%s%s уже занято в этом пакете."
 
+#: lazarusidestrconsts:lispvutheunitnameisnotavalidpascalidentifier
+msgid "The unitname is not a valid pascal identifier."
+msgstr ""
+
+#: lazarusidestrconsts:lispvutheunitnameisusedwhentheideextendsusesclauses
+msgid "The unitname is used when the IDE extends uses clauses."
+msgstr ""
+
 #: lazarusidestrconsts:lispkgedtherearemorefunctionsinthepopupmenu
 msgid "There are more functions in the popupmenu"
 msgstr "Во всплывающем меню больше функций"
@@ -7592,6 +7704,10 @@ msgstr "Уже загружен пакет %s%s%s %sиз файла %s%s%s.%sС�
 #: lazarusidestrconsts:listhereisalreadyaunitwiththenamepascalidentifiersmus
 msgid "There is already a unit with the name %s%s%s. Pascal identifiers must be unique."
 msgstr "Уже есть модуль, называемый %s%s%s. Идентификаторы Паскаля должны быть уникальны."
+
+#: lazarusidestrconsts:lispvuthereisalreadyanunitwiththisnamefile
+msgid "There is already an unit with this name.%sFile: %s"
+msgstr ""
 
 #: lazarusidestrconsts:lisdesthereisalreadyanothercomponentwiththename
 msgid "There is already another component with the name %s%s%s."
@@ -8240,6 +8356,14 @@ msgstr "Имя модуля уже есть"
 #: lazarusidestrconsts:lisunitnamealreadyexistscap
 msgid "Unitname already in project"
 msgstr "Модуль с таким именем уже в проекте"
+
+#: lazarusidestrconsts:lispvuunitnameandfilenamedonotmatchexampleunit1pasanduni
+msgid "Unitname and Filename do not match.%sExample: unit1.pas and Unit1"
+msgstr ""
+
+#: lazarusidestrconsts:lispeunitname
+msgid "Unitname:"
+msgstr ""
 
 #: lazarusidestrconsts:lisunitsnotfound2
 msgid "Units not found"

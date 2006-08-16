@@ -608,7 +608,7 @@ begin
   Changing;
   RequiredState([csHandleValid, csBrushValid, csPenValid]);
   LCLIntf.Pie(FHandle,EllipseX1,EllipseY1,EllipseX2,EllipseY2,
-               StartX,StartY,EndX,EndY);
+              StartX,StartY,EndX,EndY);
   Changed;
 end;
 

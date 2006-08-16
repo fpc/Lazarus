@@ -164,6 +164,10 @@ msgstr "添加..."
 msgid "Adjustment"
 msgstr "调整"
 
+#: objinspstrconsts:rscdalignment
+msgid "Alignment"
+msgstr ""
+
 #: objinspstrconsts:oisall
 msgid "All"
 msgstr "所有"
@@ -180,6 +184,10 @@ msgstr "应用"
 msgid "Array"
 msgstr "Array"
 
+#: objinspstrconsts:rscdautosize
+msgid "Auto Size"
+msgstr ""
+
 #: objinspstrconsts:oisstdactionlisteditorclass
 msgid "Available Action Classes:"
 msgstr "可用的动作类:"
@@ -195,6 +203,10 @@ msgstr "清除(&L)"
 #: objinspstrconsts:oistdactdatasetcancel1hint
 msgid "Cancel"
 msgstr "取消"
+
+#: objinspstrconsts:rscdcaption
+msgid "Caption"
+msgstr ""
 
 #: objinspstrconsts:sccslvedtlabelcaption
 msgid "Caption:"
@@ -243,6 +255,10 @@ msgstr "清除图片"
 #: objinspstrconsts:oistdactcolorselecthint
 msgid "Color Select"
 msgstr "选择颜色"
+
+#: objinspstrconsts:rscdcolumneditor
+msgid "Column Editor"
+msgstr ""
 
 #: objinspstrconsts:oiscomponentnameisnotavalididentifier
 msgid "Component name %s%s%s is not a valid identifier"
@@ -472,6 +488,10 @@ msgstr "Integer"
 msgid "Interface"
 msgstr "界面"
 
+#: objinspstrconsts:rscdinvalidnumericvalue
+msgid "Invalid numeric Value"
+msgstr ""
+
 #: objinspstrconsts:oisinvalidpropertyvalue
 msgid "Invalid property value"
 msgstr "属性值错误"
@@ -495,6 +515,10 @@ msgstr "跳转到声明"
 #: objinspstrconsts:oistdactdatasetlasthint
 msgid "Last"
 msgstr "最后"
+
+#: objinspstrconsts:rscdleft
+msgid "Left"
+msgstr ""
 
 #: objinspstrconsts:sccslvedtcaption
 msgid "ListView Items Editor"
@@ -540,6 +564,10 @@ msgstr ""
 msgid "Move Up"
 msgstr "上移"
 
+#: objinspstrconsts:rscdmovedown
+msgid "Move down"
+msgstr ""
+
 #: objinspstrconsts:nbcesmovepageleft
 msgid "Move page left"
 msgstr "左移页面"
@@ -555,6 +583,10 @@ msgstr "左移页面"
 #: objinspstrconsts:tccesmovetabright
 msgid "Move tab right"
 msgstr "右移页面"
+
+#: objinspstrconsts:rscdmoveup
+msgid "Move up"
+msgstr ""
 
 #: objinspstrconsts:cactionlisteditornewaction
 msgid "New Action"
@@ -579,6 +611,10 @@ msgstr "下一个"
 #: objinspstrconsts:sccsiledtnone
 msgid "None"
 msgstr "无"
+
+#: objinspstrconsts:rscdok
+msgid "OK"
+msgstr ""
 
 #: objinspstrconsts:oisobject
 msgid "Object"
@@ -647,6 +683,10 @@ msgstr "刷新"
 #: objinspstrconsts:oisremovefromfavorites
 msgid "Remove from Favorites"
 msgstr "从收藏中移除"
+
+#: objinspstrconsts:rscdright
+msgid "Right"
+msgstr ""
 
 #: objinspstrconsts:oissamplemasks
 msgid "Sample Masks:"
@@ -811,6 +851,14 @@ msgstr "值:"
 #: objinspstrconsts:oisvariant
 msgid "Variant"
 msgstr "变量"
+
+#: objinspstrconsts:rscdvisible
+msgid "Visible"
+msgstr ""
+
+#: objinspstrconsts:rscdwidth
+msgid "Width"
+msgstr ""
 
 #: objinspstrconsts:oisword
 msgid "Word"
