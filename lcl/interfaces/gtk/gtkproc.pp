@@ -19,7 +19,7 @@ unit GTKProc;
 interface
 
 {$IFDEF win32}
-{.$DEFINE NoGdkPixbufLib}
+{off $DEFINE NoGdkPixbufLib}
 {$ELSE}
 {off $DEFINE NoGdkPixbufLib}
 {$ENDIF}
@@ -29,16 +29,25 @@ interface
 
 {off $DEFINE VerboseAccelerator}
 
+{$IFDEF Unix}
+  {$DEFINE HasX}
+  {$IFDEF Gtk1}
+    {$DEFINE HasGtkX}
+  {$ENDIF}
+{$ENDIF}
+
 uses
   {$IFDEF win32}
     // use windows unit first,
     // if not, Rect and Point are taken from the windows unit instead of classes.
     Windows, // needed for keyboard handling
   {$endif}
+  {$IFDEF Unix}
+    baseunix, unix,
+  {$ENDIF}
   SysUtils, Classes, FPCAdds,
-  {$IFDEF UNIX}
-    baseunix, unix, XAtom,
-    X, XLib, XUtil, //Font retrieval and Keyboard handling
+  {$IFDEF HasX}
+    XAtom, X, XLib, XUtil, //Font retrieval and Keyboard handling
   {$ENDIF}
   InterfaceBase,
   {$IFDEF gtk2}
@@ -125,7 +134,7 @@ const
 
 // missing gtk2 functions/vars
 {$IFDEF GTK2}
-{$IFDEF UNIX}
+{$IFDEF Unix}
   var
     gdk_display: PDisplay; external gdkdll name 'gdk_display';
 
@@ -420,6 +429,11 @@ procedure HideCaretOfWidgetGroup(ChildWidget: PGtkWidget;
 procedure SetFormShowInTaskbar(AForm: TCustomForm;
                                     const AValue: TShowInTaskbar);
 procedure SetGtkWindowShowInTaskbar(AGtkWindow: PGtkWindow; Value: boolean);
+procedure SetWindowFullScreen(AForm: TCustomForm; const AValue: Boolean);
+procedure GrabKeyBoardToForm(AForm: TCustomForm);
+procedure ReleaseKeyBoardFromForm(AForm: TCustomForm);
+procedure GrabMouseToForm(AForm: TCustomForm);
+procedure ReleaseMouseFromForm(AForm: TCustomForm);
 
 // combobox
 procedure SetComboBoxText(ComboWidget: PGtkCombo; NewText: PChar);
@@ -540,6 +554,10 @@ function GetDefaultMouseCaptureWidget(Widget: PGtkWidget): PGtkWidget;
 procedure ReleaseMouseCapture;
 procedure ReleaseCaptureWidget(Widget : PGtkWidget);
 procedure UpdateMouseCaptureControl;
+
+// mouse cursor
+function GetGDKMouseCursor(Cursor: TCursor): PGdkCursor;
+Procedure FreeGDKCursors;
 
 // designing
 type
@@ -679,6 +697,7 @@ procedure Accelerate(Component: TComponent; const Widget: PGtkWidget;
 procedure ShareWindowAccelGroups(AWindow: PGtkWidget);
 procedure UnshareWindowAccelGroups(AWindow: PGtkWidget);
 
+// pixbuf
 procedure LoadPixbufFromLazResource(const ResourceName: string;
   var Pixbuf: PGdkPixbuf);
 procedure LoadXPMFromLazResource(const ResourceName: string;
@@ -785,10 +804,6 @@ function  XGetWorkarea(var ax,ay,awidth,aheight:gint): gint;
 // decoration
 Function GetWindowDecorations(AForm: TCustomForm): Longint;
 Function GetWindowFunction(AForm: TCustomForm): Longint;
-
-// mouse cursor
-function GetGDKMouseCursor(Cursor: TCursor): PGdkCursor;
-Procedure FreeGDKCursors;
 
 // functions for easier GTK2<->GTK1 Compatibility/Consistency  ---->
 function gtk_widget_get_xthickness(Style: PGTKStyle): gint; overload;
@@ -909,11 +924,17 @@ var
         LineLength: Longint; lbearing, rbearing, width, ascent, descent: Pgint);
 {$EndIf}
 
+{$IFDEF HasGtkX}
+// X functions
+function FormToX11Window(const AForm: TCustomForm): X.TWindow;
+{$ENDIF}
+
 implementation
 
 
-uses {$IFDEF StaticXinerama} Xinerama, {$ENDIF}
-     {$IFDEF USE_UTF8BIDI_LCL} utf8bidi, {$ENDIF} dynlibs;
+uses
+  {$IFDEF StaticXinerama} Xinerama, {$ENDIF}
+  dynlibs;
 
 const
   VKEY_FLAG_SHIFT    = $01;

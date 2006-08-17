@@ -369,6 +369,19 @@ begin
   result := gdk_window_get_colormap(Drawable);
 end;
 
+function FormToX11Window(const AForm: TCustomForm): X.TWindow;
+var
+  GdkWindow: PGdkWindowPrivate;
+  Widget: PGtkWidget;
+begin
+  Result:=0;
+  if (AForm=nil) or (not AForm.HandleAllocated) then exit;
+  Widget:=PGtkWidget(AForm.Handle);
+  GdkWindow := PGdkWindowPrivate(Widget^.window);
+  if GdkWindow=nil then exit;
+  Result := GdkWindow^.xwindow;
+end;
+
 {$EndIf}
 
 {$Ifdef GTK2}
@@ -997,6 +1010,90 @@ begin
                              Value);
   {$ELSE}
   gtk_window_set_skip_taskbar_hint(AGtkWindow, not Value);
+  {$ENDIF}
+end;
+
+procedure SetWindowFullScreen(AForm: TCustomForm; const AValue: Boolean);
+{$IFDEF HasGtkX}
+var
+  XDisplay: PDisplay;
+  XScreen: PScreen;
+  XRootWindow,
+  XWindow: TWindow;
+  XEvent: TXClientMessageEvent;
+  _NET_WM_STATE: Integer;
+  //_NET_WM_STATE_MODAL: Integer;
+  //_NET_WM_STATE_ABOVE: Integer;
+  //_NET_WM_STATE_FULLSCREEN: Integer;
+  _NET_WM_STATE_ATOMS: array [0..2] of Integer;
+  I: Integer;
+begin
+  XDisplay := gdk_display;
+  XScreen := XDefaultScreenOfDisplay(xdisplay);
+  XRootWindow := XRootWindowOfScreen(xscreen);
+  XWindow := FormToX11Window(AForm);
+
+  _NET_WM_STATE := XInternAtom(xdisplay, '_NET_WM_STATE', false);
+  //_NET_WM_STATE_MODAL := XInternAtom(xdisplay, '_NET_WM_STATE_MODAL', false);
+  //_NET_WM_STATE_ABOVE := XInternAtom(xdisplay, '_NET_WM_STATE_ABOVE', false);
+  //_NET_WM_STATE_FULLSCREEN := XInternAtom(xdisplay, '_NET_WM_STATE_FULLSCREEN', false);
+  _NET_WM_STATE_ATOMS[0] := XInternAtom(xdisplay, '_NET_WM_STATE_MODAL', false);
+  _NET_WM_STATE_ATOMS[1] := XInternAtom(xdisplay, '_NET_WM_STATE_ABOVE', false);
+  _NET_WM_STATE_ATOMS[2] := XInternAtom(xdisplay, '_NET_WM_STATE_FULLSCREEN', false);
+
+  for I := 0 to 2 do begin
+    XEvent._type := ClientMessage;
+    XEvent.window := XWindow;
+    XEvent.message_type := _NET_WM_STATE;
+    XEvent.format := 32;
+    XEvent.data.l[0] := Ord(AValue);// 0=Remove 1=Add 2=Toggle
+    XEvent.data.l[1] := _NET_WM_STATE_ATOMS[I];
+
+    XSendEvent(XDisplay, XRootWindow, False, SubstructureNotifyMask, @XEvent);
+  end;
+end;
+{$ELSE}
+begin
+  RaiseGDBException('not implemented');
+end;
+{$ENDIF}
+
+procedure GrabKeyBoardToForm(AForm: TCustomForm);
+begin
+  {$IFDEF HasGtkX}
+  XGrabKeyboard(gdk_display, FormToX11Window(AForm), true, GrabModeASync,
+                GrabModeASync, CurrentTime);
+  {$ENDIF}
+end;
+
+procedure ReleaseKeyBoardFromForm(AForm: TCustomForm);
+begin
+  {$IFDEF HasGtkX}
+  XUngrabKeyboard(gdk_display, CurrentTime);
+  {$ENDIF}
+end;
+
+procedure GrabMouseToForm(AForm: TCustomForm);
+{$IFDEF HasGtkX}
+var
+  eventMask: LongInt;
+begin
+  eventMask := ButtonPressMask or ButtonReleaseMask
+               or PointerMotionMask or PointerMotionHintMask;
+
+  XGrabPointer(gdk_display, FormToX11Window(AForm), true,
+               eventMask, GrabModeASync, GrabModeAsync,  FormToX11Window(AForm),
+               None, CurrentTime);
+end;
+{$ELSE}
+begin
+end;
+{$ENDIF}
+
+procedure ReleaseMouseFromForm(AForm: TCustomForm);
+begin
+  {$IFDEF HasGtkX}
+  XUngrabPointer(gdk_display, CurrentTime);
   {$ENDIF}
 end;
 
