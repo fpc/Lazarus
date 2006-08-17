@@ -160,7 +160,6 @@ begin
   if Key=VK_DELETE then begin
     if not IsReadOnly then
       FDatalink.Edit;
-    Key:=VK_UNKNOWN;
   end;
 end;
 
