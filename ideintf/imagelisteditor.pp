@@ -98,10 +98,14 @@ type
   end;
 
   //Editor call by Lazarus with 1 verbe only
+
+  { TImageListComponentEditor }
+
   TImageListComponentEditor = class(TDefaultComponentEditor)
   protected
     procedure DoShowEditor;
   public
+    procedure Edit; override;
     procedure ExecuteVerb(Index: Integer); override;
     function GetVerb(Index: Integer): String; override;
     function GetVerbCount: Integer; override;
@@ -517,6 +521,11 @@ begin
       if Assigned(Hook) then Hook.Modified(Self);
   end;
   DebugLn('TImageListComponentEditor.DoShowEditor END ');
+end;
+
+procedure TImageListComponentEditor.Edit;
+begin
+  DoShowEditor;
 end;
 
 procedure TImageListComponentEditor.ExecuteVerb(Index: Integer);

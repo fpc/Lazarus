@@ -79,8 +79,11 @@ type
     function  GetAttributes: TPropertyAttributes; override;
   end;
 
+  { TTreeViewComponentEditor }
+
   TTreeViewComponentEditor = class(TDefaultComponentEditor)
   public
+    procedure Edit; override;
     procedure ExecuteVerb(Index: Integer); override;
     function GetVerb(Index: Integer): string; override;
     function GetVerbCount: Integer; override;
@@ -251,8 +254,12 @@ begin
   Result := [paDialog, paReadOnly, paRevertable];
 end;
 
-
 { TTreeViewComponentEditor }
+procedure TTreeViewComponentEditor.Edit;
+begin
+  ExecuteVerb(0);
+end;
+
 procedure TTreeViewComponentEditor.ExecuteVerb(Index: Integer);
 var
   Hook: TPropertyEditorHook;

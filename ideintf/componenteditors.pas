@@ -279,6 +279,7 @@ type
 
   TStringGridComponentEditor = class(TDefaultComponentEditor)
   public
+    procedure Edit; override;
     procedure ExecuteVerb(Index: Integer); override;
     function GetVerb(Index: Integer): string; override;
     function GetVerbCount: Integer; override;
@@ -291,6 +292,7 @@ type
   protected
     procedure DoShowEditor;
   public
+    procedure Edit; override;
     procedure ExecuteVerb(Index: Integer); override;
     function GetVerb(Index: Integer): string; override;
     function GetVerbCount: Integer; override;
@@ -818,6 +820,11 @@ end;
 
 { TStringGridComponentEditor }
 
+procedure TStringGridComponentEditor.Edit;
+begin
+  ExecuteVerb(0);
+end;
+
 procedure TStringGridComponentEditor.ExecuteVerb(Index: Integer);
 var
   Hook: TPropertyEditorHook;
@@ -880,9 +887,14 @@ begin
   end;
 end;
 
+procedure TCheckListBoxComponentEditor.Edit;
+begin
+  DoShowEditor;
+end;
+
 procedure TCheckListBoxComponentEditor.ExecuteVerb(Index: Integer);
 begin
-  doShowEditor;
+  DoShowEditor;
 end;
 
 function TCheckListBoxComponentEditor.GetVerb(Index: Integer): string;
