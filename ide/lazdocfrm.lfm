@@ -151,7 +151,6 @@ object LazDocForm: TLazDocForm
     end
     object InheritedTabSheet: TTabSheet
       Caption = 'InheritedTabSheet'
-      TabVisible = False
       object InheritedShortLabel: TLabel
         Left = 5
         Height = 13
@@ -172,8 +171,35 @@ object LazDocForm: TLazDocForm
         Width = 732
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Top = 2
+        ReadOnly = True
         TabOrder = 0
         Text = 'InheritedShortEdit'
+      end
+      object MoveToInheritedButton: TButton
+        Height = 26
+        Top = 54
+        Width = 143
+        AutoSize = True
+        BorderSpacing.InnerBorder = 4
+        Caption = 'MoveToInheritedButton'
+        OnClick = MoveToInheritedButtonClick
+        TabOrder = 1
+      end
+      object CopyFromInheritedButton: TButton
+        AnchorSideLeft.Control = MoveToInheritedButton
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = MoveToInheritedButton
+        AnchorSideTop.Side = asrCenter
+        Left = 153
+        Height = 26
+        Top = 54
+        Width = 155
+        AutoSize = True
+        BorderSpacing.Left = 10
+        BorderSpacing.InnerBorder = 4
+        Caption = 'CopyFromInheritedButton'
+        OnClick = CopyFromInheritedButtonClick
+        TabOrder = 2
       end
     end
   end

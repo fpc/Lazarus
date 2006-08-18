@@ -369,19 +369,6 @@ begin
   result := gdk_window_get_colormap(Drawable);
 end;
 
-function FormToX11Window(const AForm: TCustomForm): X.TWindow;
-var
-  GdkWindow: PGdkWindowPrivate;
-  Widget: PGtkWidget;
-begin
-  Result:=0;
-  if (AForm=nil) or (not AForm.HandleAllocated) then exit;
-  Widget:=PGtkWidget(AForm.Handle);
-  GdkWindow := PGdkWindowPrivate(Widget^.window);
-  if GdkWindow=nil then exit;
-  Result := GdkWindow^.xwindow;
-end;
-
 {$EndIf}
 
 {$Ifdef GTK2}
@@ -1096,6 +1083,21 @@ begin
   XUngrabPointer(gdk_display, CurrentTime);
   {$ENDIF}
 end;
+
+{$IFDEF HasGtkX}
+function FormToX11Window(const AForm: TCustomForm): X.TWindow;
+var
+  GdkWindow: PGdkWindowPrivate;
+  Widget: PGtkWidget;
+begin
+  Result:=0;
+  if (AForm=nil) or (not AForm.HandleAllocated) then exit;
+  Widget:=PGtkWidget(AForm.Handle);
+  GdkWindow := PGdkWindowPrivate(Widget^.window);
+  if GdkWindow=nil then exit;
+  Result := GdkWindow^.xwindow;
+end;
+{$ENDIF}
 
 {------------------------------------------------------------------------------
   procedure SetComboBoxText(ComboWidget: PGtkCombo; const NewText: string);

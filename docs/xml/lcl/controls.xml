@@ -6986,9 +6986,11 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.Align">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Used to align the control in one of four directions.</short>
+        <descr></descr>
+        <seealso></seealso>
+        <errors></errors>
+        <example file=""/>
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.Anchors">
@@ -10585,8 +10587,10 @@ paint requests received by the parent control.</p>
       <!-- property Visibility: public -->
       <element name="TGraphicControl.Canvas">
         <short>A clipping window to the parent canvas.</short>
-        <descr><p>The TGraphicsControl.Canvas is a clipping window to the parent 
-canvas.</p><p>If you ask for the Canvas.Width or Canvas.Height, you are actually 
+        <descr>
+          <p>The TGraphicsControl.Canvas is a clipping window to the parent 
+canvas.</p>
+          <p>If you ask for the Canvas.Width or Canvas.Height, you are actually 
 getting the parent control's Canvas dimensions. To get the dimensions of the 
 TGraphicControl, you must query the ClientRect.</p>
         </descr>

@@ -1,0 +1,17 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TLazDocSelectInheritedDlg','FORMDATA',[
+  'TPF0'#25'TLazDocSelectInheritedDlg'#24'LazDocSelectInheritedDlg'#4'Left'#3'&'
+  +#1#6'Height'#2'K'#3'Top'#3#164#0#5'Width'#3'J'#1#18'HorzScrollBar.Page'#3'I'
+  +#1#18'VertScrollBar.Page'#2'J'#7'Caption'#6#24'LazDocSelectInheritedDlg'#8'O'
+  +'nCreate'#7#10'FormCreate'#0#9'TComboBox'#17'InheritedComboBox'#4'Left'#2#8#6
+  +'Height'#2#25#3'Top'#2#8#5'Width'#3'8'#1#7'Anchors'#11#5'akTop'#6'akLeft'#7
+  +'akRight'#0#16'AutoCompleteText'#11#22'cbactEndOfLineComplete'#20'cbactSearc'
+  +'hAscending'#0#9'MaxLength'#2#0#8'TabOrder'#2#0#4'Text'#6#17'InheritedComboB'
+  +'ox'#0#0#7'TButton'#8'OkButton'#4'Left'#2#24#6'Height'#2#25#3'Top'#2'('#5'Wi'
+  +'dth'#2'K'#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6#8'OkButton'#7'Defa'
+  +'ult'#9#11'ModalResult'#2#1#8'TabOrder'#2#1#0#0#7'TButton'#12'CancelButton'#4
+  +'Left'#3#136#0#6'Height'#2#25#3'Top'#2'('#5'Width'#2'K'#25'BorderSpacing.Inn'
+  +'erBorder'#2#4#6'Cancel'#9#7'Caption'#6#12'CancelButton'#11'ModalResult'#2#2
+  +#8'TabOrder'#2#2#0#0#0
+]);

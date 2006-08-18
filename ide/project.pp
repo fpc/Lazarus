@@ -422,14 +422,6 @@ type
 
   { TProject }
   
-  TProjectFileSearchFlag = (
-    pfsfResolveFileLinks,
-    pfsfOnlyEditorFiles,
-    pfsfOnlyVirtualFiles,
-    pfsfOnlyProjectFiles
-    );
-  TProjectFileSearchFlags = set of TProjectFileSearchFlag;
-
   TEndUpdateProjectEvent =
     procedure(Sender: TObject; ProjectChanged: boolean) of object;
     
@@ -590,6 +582,8 @@ type
     function UnitWithUnitname(const AnUnitname: string): TUnitInfo;
     function SearchFile(const ShortFilename: string;
                         SearchFlags: TSearchIDEFileFlags): TUnitInfo;
+    function FindFile(const AFilename: string;
+                      SearchFlags: TProjectFileSearchFlags): TLazProjectFile; override;
 
     // units in editor
     procedure CloseEditorIndex(EditorIndex:integer);
@@ -3424,6 +3418,12 @@ begin
       Result:=Result.NextUnitWithEditorIndex;
     end;
   end;
+end;
+
+function TProject.FindFile(const AFilename: string;
+  SearchFlags: TProjectFileSearchFlags): TLazProjectFile;
+begin
+  Result:=UnitInfoWithFilename(AFilename, SearchFlags);
 end;
 
 function TProject.IndexOfFilename(const AFilename: string): integer;

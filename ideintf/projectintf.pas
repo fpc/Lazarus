@@ -498,6 +498,14 @@ type
 
   { TLazProject - interface class to a Lazarus project }
 
+  TProjectFileSearchFlag = (
+    pfsfResolveFileLinks,
+    pfsfOnlyEditorFiles,
+    pfsfOnlyVirtualFiles,
+    pfsfOnlyProjectFiles
+    );
+  TProjectFileSearchFlags = set of TProjectFileSearchFlag;
+
   TLazProject = class(TPersistent)
   private
     FLazCompilerOptions: TLazCompilerOptions;
@@ -535,6 +543,8 @@ type
     procedure AddPackageDependency(const PackageName: string); virtual; abstract;
     function ShortDescription: string;
     procedure ClearModifieds;
+    function FindFile(const AFilename: string;
+                      SearchFlags: TProjectFileSearchFlags): TLazProjectFile; virtual; abstract;
   public
     property MainFileID: Integer read GetMainFileID write SetMainFileID;
     property Files[Index: integer]: TLazProjectFile read GetFiles;

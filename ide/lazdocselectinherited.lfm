@@ -1,0 +1,43 @@
+object LazDocSelectInheritedDlg: TLazDocSelectInheritedDlg
+  Left = 294
+  Height = 75
+  Top = 164
+  Width = 330
+  HorzScrollBar.Page = 329
+  VertScrollBar.Page = 74
+  Caption = 'LazDocSelectInheritedDlg'
+  OnCreate = FormCreate
+  object InheritedComboBox: TComboBox
+    Left = 8
+    Height = 25
+    Top = 8
+    Width = 312
+    Anchors = [akTop, akLeft, akRight]
+    AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+    MaxLength = 0
+    TabOrder = 0
+    Text = 'InheritedComboBox'
+  end
+  object OkButton: TButton
+    Left = 24
+    Height = 25
+    Top = 40
+    Width = 75
+    BorderSpacing.InnerBorder = 4
+    Caption = 'OkButton'
+    Default = True
+    ModalResult = 1
+    TabOrder = 1
+  end
+  object CancelButton: TButton
+    Left = 136
+    Height = 25
+    Top = 40
+    Width = 75
+    BorderSpacing.InnerBorder = 4
+    Cancel = True
+    Caption = 'CancelButton'
+    ModalResult = 2
+    TabOrder = 2
+  end
+end

@@ -390,8 +390,8 @@ Constructors allocate memory and system resources needed by the object. They als
       </element>
       <!-- property Visibility: published -->
       <element name="TButton.Align">
-        <short>Is used to align a button to a border of a parent control.</short>
-        <descr>Align is used to align a control to a border of a parent control, even if the parent control is resized.<br/><br/>
+        <short></short>
+        <descr><br/><br/>
 Possible values fo Allign are:<br/>
 alTop: Places the control at the top, using the full clientwidth of its parent control.<br/>
 alBottom: Places the control at the bottom, using the full clientwidth of its parent control.<br/>
@@ -399,6 +399,9 @@ alLeft: Places the control at the left side of its parent and uses the available
 alRight: Like alLeft but on the right side of the parent control.<br/>
 alNone: The control can be placed anywhere on the parent control.<br/>
 alClient: The control takes al available space on parent control next to controls aligned to the top, bottom, right or left.</descr>
+        <errors></errors>
+        <seealso></seealso>
+        <example file=""/>
       </element>
       <!-- property Visibility: published -->
       <element name="TButton.Anchors">
