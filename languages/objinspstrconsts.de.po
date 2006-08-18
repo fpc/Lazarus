@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2006-08-15 22:14+0100\n"
+"PO-Revision-Date: 2006-08-18 12:36+0100\n"
 "Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -163,7 +163,7 @@ msgstr "Justierung"
 
 #: objinspstrconsts:rscdalignment
 msgid "Alignment"
-msgstr ""
+msgstr "Ausrichtung"
 
 #: objinspstrconsts:oisall
 msgid "All"
@@ -183,7 +183,7 @@ msgstr "Array"
 
 #: objinspstrconsts:rscdautosize
 msgid "Auto Size"
-msgstr ""
+msgstr "Automatische Größe"
 
 #: objinspstrconsts:oisstdactionlisteditorclass
 msgid "Available Action Classes:"
@@ -203,7 +203,7 @@ msgstr "Abbrechen"
 
 #: objinspstrconsts:rscdcaption
 msgid "Caption"
-msgstr ""
+msgstr "Caption"
 
 #: objinspstrconsts:sccslvedtlabelcaption
 msgid "Caption:"
@@ -255,7 +255,7 @@ msgstr "Farbauswahl"
 
 #: objinspstrconsts:rscdcolumneditor
 msgid "Column Editor"
-msgstr ""
+msgstr "Spalteneditor"
 
 #: objinspstrconsts:oiscomponentnameisnotavalididentifier
 msgid "Component name %s%s%s is not a valid identifier"
@@ -487,7 +487,7 @@ msgstr "Interface"
 
 #: objinspstrconsts:rscdinvalidnumericvalue
 msgid "Invalid numeric Value"
-msgstr ""
+msgstr "Ungültige Zahl"
 
 #: objinspstrconsts:oisinvalidpropertyvalue
 msgid "Invalid property value"
@@ -515,7 +515,7 @@ msgstr "Letzter"
 
 #: objinspstrconsts:rscdleft
 msgid "Left"
-msgstr ""
+msgstr "Links"
 
 #: objinspstrconsts:sccslvedtcaption
 msgid "ListView Items Editor"
@@ -563,7 +563,7 @@ msgstr "Nach oben bewegen"
 
 #: objinspstrconsts:rscdmovedown
 msgid "Move down"
-msgstr ""
+msgstr "Nach unten bewegen"
 
 #: objinspstrconsts:nbcesmovepageleft
 msgid "Move page left"
@@ -583,7 +583,7 @@ msgstr "Tab nach rechts bewegen"
 
 #: objinspstrconsts:rscdmoveup
 msgid "Move up"
-msgstr ""
+msgstr "Nach oben bewegen"
 
 #: objinspstrconsts:cactionlisteditornewaction
 msgid "New Action"
@@ -611,7 +611,7 @@ msgstr "Keiner"
 
 #: objinspstrconsts:rscdok
 msgid "OK"
-msgstr ""
+msgstr "Ok"
 
 #: objinspstrconsts:oisobject
 msgid "Object"
@@ -639,7 +639,7 @@ msgstr "Optionen"
 
 #: objinspstrconsts:oistdactdatasetpostheadline
 msgid "P&ost"
-msgstr ""
+msgstr "&Senden"
 
 #: objinspstrconsts:cactionlisteditorpaneldescrriptions
 msgid "Panel Descriptions"
@@ -655,7 +655,7 @@ msgstr "Popup für das Ein-/Ausschalten der Einträge"
 
 #: objinspstrconsts:oistdactdatasetposthint
 msgid "Post"
-msgstr ""
+msgstr "Senden"
 
 #: objinspstrconsts:oistdactdatasetpriorhint
 msgid "Prior"
@@ -683,7 +683,7 @@ msgstr "Von Favoriten entfernen"
 
 #: objinspstrconsts:rscdright
 msgid "Right"
-msgstr ""
+msgstr "Rechts"
 
 #: objinspstrconsts:oissamplemasks
 msgid "Sample Masks:"
@@ -851,11 +851,11 @@ msgstr "Variant"
 
 #: objinspstrconsts:rscdvisible
 msgid "Visible"
-msgstr ""
+msgstr "Sichtbar"
 
 #: objinspstrconsts:rscdwidth
 msgid "Width"
-msgstr ""
+msgstr "Breite"
 
 #: objinspstrconsts:oisword
 msgid "Word"
