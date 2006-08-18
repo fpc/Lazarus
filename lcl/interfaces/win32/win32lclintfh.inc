@@ -41,6 +41,7 @@ procedure DrawArrow(Arrow: TComponent; Canvas: TPersistent); override;
 function GetAcceleratorString(const AVKey: Byte; const AShiftState: TShiftState): String; override;
 function GetControlConstraints(Constraints: TObject): boolean; override;
 function GetListBoxIndexAtY(ListBox: TComponent; y: integer): integer; override;
+function GetListBoxItemRect(ListBox: TComponent; Index: integer; var ARect: TRect): boolean; override;
 
 procedure RemoveEventHandler(var AHandler: PEventHandler); override;
 procedure RemovePipeEventHandler(var AHandler: PPipeEventHandler); override;

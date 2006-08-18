@@ -244,4 +244,13 @@ begin
   end;
 end;
 
+function TWin32WidgetSet.GetListBoxItemRect(ListBox: TComponent;
+  Index: integer; var ARect: TRect): boolean;
+begin
+  Result := false;
+  if ListBox is TCustomListBox then
+    Result := Windows.SendMessage(TCustomListBox(ListBox).Handle,
+                LB_GETITEMRECT, Index, LPARAM(@ARect)) <> LB_ERR;
+end;
+
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line
