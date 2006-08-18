@@ -1198,6 +1198,9 @@ type
                                       write SetTransparentColor default clDefault;
     property TransparentMode: TTransparentMode read FTransparentMode
                                         write SetTransparentMode default tmAuto;
+    {$IFDEF DebugBitmap}
+    DebugEnabled: boolean;
+    {$ENDIF}
   end;
 
 

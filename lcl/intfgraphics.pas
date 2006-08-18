@@ -1482,6 +1482,8 @@ begin
       RaiseGDBException('');
   end;}
   OnSetInternalColor(x,y,Value);
+  {if y=Height-1 then
+    DebugLn(['TLazIntfImage.SetInternalColor x=',x,' y=',y,' ',dbgs(Value),' ',dbgs(GetInternalColor(x,y))]);}
 end;
 
 function TLazIntfImage.GetInternalColor(x, y: integer): TFPColor;
@@ -1678,7 +1680,8 @@ begin
   SetRawImage(ARawImage);
 end;
 
-procedure TLazIntfImage.LoadFromBitmap(Bitmap, MaskBitmap: HBitmap; AWidth, AHeight: integer);
+procedure TLazIntfImage.LoadFromBitmap(Bitmap, MaskBitmap: HBitmap;
+  AWidth, AHeight: integer);
 var
   ARect: TRect;
   ARawImage: TRawImage;

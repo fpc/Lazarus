@@ -792,7 +792,7 @@ begin
   if OldBytesPerLine>NewBytesPerLine then begin
     // compress
     for y:=0 to Height-1 do begin
-      System.Move(OldPos,NewPos,OldBytesPerLine);
+      System.Move(OldPos^,NewPos^,NewBytesPerLine);
       inc(OldPos,OldBytesPerLine);
       inc(NewPos,NewBytesPerLine);
     end;
@@ -803,7 +803,7 @@ begin
     for y:=Height-1 downto 0 do begin
       dec(OldPos,OldBytesPerLine);
       dec(NewPos,NewBytesPerLine);
-      System.Move(OldPos,NewPos,OldBytesPerLine);
+      System.Move(OldPos^,NewPos^,OldBytesPerLine);
     end;
   end;
       

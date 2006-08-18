@@ -2786,7 +2786,7 @@ var
   BytesPerLine: Integer;
 begin
   Result:=false;
-  
+
   Width:=SrcRect.Right-SrcRect.Left;
   Height:=SrcRect.Bottom-SrcRect.Top;
 
@@ -2841,7 +2841,7 @@ begin
 
     RawImage.MaskSize:=AnImage^.bpl * AnImage^.Height;
     {$IFDEF VerboseRawImage}
-    DebugLn('TGtkWidgetSet.GetRawImageFromGdkWindow G Width=',dbgs(AnImage^.Width),' Height=',dbgs(AnImage^.Height),' BitsPerPixel=',dbgs(RawImage.Description.AlphaBitsPerPixel),' bpl=',dbgs(AnImage^.bpl));
+    DebugLn(['TGtkWidgetSet.GetRawImageFromGdkWindow G Width=',AnImage^.Width,' Height=',AnImage^.Height,' BitsPerPixel=',RawImage.Description.AlphaBitsPerPixel,' bpl=',AnImage^.bpl,' MaskSize=',RawImage.MaskSize]);
     {$ENDIF}
     if RawImage.MaskSize<>PtrUInt(AnImage^.bpl) * PtrUInt(AnImage^.Height)
     then
@@ -2854,6 +2854,11 @@ begin
       
     // gdk_bitmap_create_from_data expects rileByteBoundary
     if RawImage.Description.AlphaLineEnd<>rileByteBoundary then begin
+      {DebugLn(['TGTKWidgetSet.GetRawImageMaskFromGdkBitmap BEFORE ReAlignRawImageLines']);
+      debugln(dbgMemRange(RawImage.Mask,RawImage.MaskSize,
+                          GetBytesPerLine(RawImage.Description.Width,
+                                         RawImage.Description.AlphaBitsPerPixel,
+                                         RawImage.Description.AlphaLineEnd)));}
       // re align data
       ReAlignRawImageLines(RawImage.Mask,RawImage.MaskSize,
         RawImage.Description.Width,RawImage.Description.Height,
@@ -2861,10 +2866,10 @@ begin
         RawImage.Description.AlphaLineEnd,rileByteBoundary);
     end;
 
-    //debugln(dbgMemRange(RawImage.Mask,RawImage.MaskSize,
-    //                    GetBytesPerLine(RawImage.Description.Width,
-    //                                     RawImage.Description.AlphaBitsPerPixel,
-    //                                     RawImage.Description.AlphaLineEnd)));
+    {debugln(dbgMemRange(RawImage.Mask,RawImage.MaskSize,
+                        GetBytesPerLine(RawImage.Description.Width,
+                                         RawImage.Description.AlphaBitsPerPixel,
+                                         RawImage.Description.AlphaLineEnd)));}
 
     {$IFDEF VerboseRawImage}
     DebugLn('TGtkWidgetSet.GetRawImageMaskFromGdkBitmap H ',

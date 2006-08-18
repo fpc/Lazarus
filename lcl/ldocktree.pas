@@ -204,6 +204,8 @@ function GetLazDockSplitterOrParent(Control: TControl; Side: TAnchorKind;
                                     out AnchorControl: TControl): boolean;
 function CountAnchoredControls(Control: TControl; Side: TAnchorKind
                                ): Integer;
+function NeighbourCanBeShrinked(EnlargeControl, Neighbour: TControl;
+  Side: TAnchorKind): boolean;
 
 implementation
 
@@ -252,6 +254,30 @@ begin
     if (OppositeAnchor[Side] in Neighbour.Anchors)
     and (Neighbour.AnchorSide[OppositeAnchor[Side]].Control=Control) then
       inc(Result);
+  end;
+end;
+
+function NeighbourCanBeShrinked(EnlargeControl, Neighbour: TControl;
+  Side: TAnchorKind): boolean;
+const
+  MinControlSize = 20;
+var
+  Splitter: TLazDockSplitter;
+begin
+  Result:=false;
+  if not GetLazDockSplitter(EnlargeControl,OppositeAnchor[Side],Splitter) then
+    exit;
+  case Side of
+  akLeft: // check if left side of Neighbour can be moved
+    Result:=Neighbour.Left+Neighbour.Width
+        >EnlargeControl.Left+EnlargeControl.Width+Splitter.Width+MinControlSize;
+  akRight: // check if right side of Neighbour can be moved
+    Result:=Neighbour.Left+MinControlSize+Splitter.Width<EnlargeControl.Left;
+  akTop: // check if top side of Neighbour can be moved
+    Result:=Neighbour.Top+Neighbour.Height
+       >EnlargeControl.Top+EnlargeControl.Height+Splitter.Height+MinControlSize;
+  akBottom: // check if bottom side of Neighbour can be moved
+    Result:=Neighbour.Top+MinControlSize+Splitter.Height<EnlargeControl.Top;
   end;
 end;
 
@@ -1395,7 +1421,8 @@ function TAnchoredDockManager.EnlargeControl(Control: TControl;
   Side: TAnchorKind; Simulate: boolean): boolean;
 { If Simulate=true then it will only test if control can be enlarged.
 
-  Example: Move one neighbour, enlarge Control. Two splitters are resized.
+  Case A:
+  Shrink one neighbour control, enlarge Control. Two splitters are resized.
 
       |#|         |#         |#|         |#
       |#| Control |#         |#|         |#
@@ -1403,24 +1430,29 @@ function TAnchoredDockManager.EnlargeControl(Control: TControl;
     ===============#       ===#|         |#
     --------------+#       --+#|         |#
         A         |#        A|#|         |#
-                  |#         |#|         |#
     --------------+#       --+#+---------+#
     ==================     ===================
 
 
-  Example: Move two neigbours, enlarge Control, resize one splitter, rotate the
-           other splitter.
+  Case B:
+  Move one neighbour splitter, enlarge Control, resize one splitter,
+  rotate the other splitter.
 
       |#|         |#|          |#|         |#|
       |#| Control |#|          |#|         |#|
     --+#+---------+#+--  --> --+#| Control |#+--
     ===================      ===#|         |#===
     --------+#+--------      --+#|         |#+--
-        A   |#|   B           A|#|         |#|B
-            |#|                |#|         |#|
+            |#|   B            |#|         |#|B
+            |#+--------        |#|         |#+--
+        A   |#=========       A|#|         |#===
+            |#+--------        |#|         |#+--
+            |#|   C            |#|         |#|C
     --------+#+--------      --+#+---------+#+--
     ===================      ===================
 }
+const
+  MinControlSize = 20;
 var
   MainSplitter: TLazDockSplitter;
   Side2: TAnchorKind;
@@ -1431,8 +1463,19 @@ var
   i: Integer;
   Sibling: TControl;
   CurSplitter: TLazDockSplitter;
-  Neighbour1: TControl;
-  Neighbour2: TControl;
+  Neighbour: TControl;
+  ShrinkSide: TAnchorKind;
+  ParentDisabledAlign: Boolean;
+  EnlargeSplitter: TLazDockSplitter;
+  RotateSplitter: TLazDockSplitter;
+  
+  procedure ParentDisableAlign;
+  begin
+    if ParentDisabledAlign then exit;
+    ParentDisabledAlign:=true;
+    Parent.DisableAlign;
+  end;
+  
 begin
   Result:=false;
   if Control=nil then exit;
@@ -1448,15 +1491,14 @@ begin
   if (Side2Anchor=Parent) and (Side3Anchor=Parent) then exit;
   
   // search controls anchored to the MainSplitter on the other side
-  Neighbour1:=nil;
-  Neighbour2:=nil;
+  Neighbour:=nil;
   for i:=0 to Parent.ControlCount-1 do begin
     Sibling:=Parent.Controls[i];
     if (not GetLazDockSplitter(Sibling,OppositeAnchor[Side],CurSplitter))
     or (CurSplitter<>MainSplitter) then continue;
     // Sibling is anchored to MainSplitter on the other side
     // check if it is at the same height as Control
-    if Side in [akLeft,akRight] then begin
+    if Side in [akTop,akBottom] then begin
       if (Side2Anchor is TLazDockSplitter) then begin
         if (Sibling.Left+Sibling.Width<Side2Anchor.Left) then continue;
       end else begin
@@ -1483,25 +1525,162 @@ begin
         if Sibling.Top>Control.Top+Control.Height then continue;
       end;
     end;
-    if Neighbour1=nil then
-      Neighbour1:=Sibling
-    else if Neighbour2=nil then
-      Neighbour2:=Sibling
-    else  begin
-      // too many Neighbours
-      exit;
+    
+    if Neighbour=nil then
+      Neighbour:=Sibling
+    else if Sibling is TLazDockSplitter then begin
+      if Neighbour is TLazDockSplitter then begin
+        // two splitters means, there is at least one Neighbour which can not
+        // be shrinked
+        exit;
+      end;
+      Neighbour:=Sibling;
     end;
   end;
 
-  if Neighbour1=nil then exit; // no neighbour found
-  if Neighbour2=nil then begin
-    // one neighbour
-    
-    
-  end else begin
-    // two neigbours
-    
-    
+  if Neighbour=nil then exit; // no neighbour found
+  
+  ParentDisabledAlign:=false;
+  try
+    if Neighbour is TLazDockSplitter then begin
+      // one splitter as Neighbour
+      RotateSplitter:=TLazDockSplitter(Neighbour);
+      // check that all anchored controls of this splitter can be shrinked
+      for i:=0 to Parent.ControlCount-1 do begin
+        Sibling:=Parent.Controls[i];
+        if Sibling=RotateSplitter then continue;
+        if GetLazDockSplitter(Sibling,Side2,CurSplitter)
+        and (CurSplitter=RotateSplitter)
+        and (not NeighbourCanBeShrinked(Control,Sibling,Side2))
+        then begin
+          // this Sibling is anchored with Side2 at RotateSplitter
+          // but can not be shrinked
+          exit;
+        end;
+        if GetLazDockSplitter(Sibling,Side3,CurSplitter)
+        and (CurSplitter=RotateSplitter)
+        and (not NeighbourCanBeShrinked(Control,Sibling,Side3))
+        then begin
+          // this Sibling is anchored with Side3 at RotateSplitter
+          // but can not be shrinked
+          exit;
+        end;
+      end;
+
+      {   |#|         |#|          |#|         |#|
+          |#| Control |#|          |#|         |#|
+        --+#+---------+#+--  --> --+#| Control |#+--
+        ===================      ===#|         |#===
+        --------+#+--------      --+#|         |#+--
+                |#|   B            |#|         |#|B
+                |#+--------        |#|         |#+--
+            A   |#=========       A|#|         |#===
+                |#+--------        |#|         |#+--
+                |#|   C            |#|         |#|C
+        --------+#+--------      --+#+---------+#+--
+        ===================      =================== }
+
+      Result:=true;
+      if not Simulate then begin
+        ParentDisableAlign;
+        GetLazDockSplitter(Control,OppositeAnchor[Side2],EnlargeSplitter);
+        // enlarge Control and its two side splitters
+        Control.AnchorSame(Side,RotateSplitter);
+        Side2Anchor.AnchorSame(Side,RotateSplitter);
+        Side3Anchor.AnchorSame(Side,RotateSplitter);
+        // shrink controls anchored to RotateSplitter
+        for i:=0 to Parent.ControlCount-1 do begin
+          Sibling:=Parent.Controls[i];
+          if Sibling=RotateSplitter then continue;
+          if GetLazDockSplitter(Sibling,Side2,CurSplitter)
+          and (CurSplitter=RotateSplitter) then begin
+            // this Sibling is anchored with Side2 at RotateSplitter
+            Sibling.AnchorToNeighbour(Side2,0,Side3Anchor);
+          end;
+          if GetLazDockSplitter(Sibling,Side3,CurSplitter)
+          and (CurSplitter=RotateSplitter) then begin
+            // this Sibling is anchored with Side3 at RotateSplitter
+            Sibling.AnchorToNeighbour(Side3,0,Side2Anchor);
+          end;
+        end;
+        // rotate RotateSplitter
+        RotateSplitter.AnchorSide[Side].Control:=nil;
+        RotateSplitter.AnchorSide[OppositeAnchor[Side]].Control:=nil;
+        RotateSplitter.ResizeAnchor:=Side;
+        RotateSplitter.AnchorToNeighbour(Side2,0,Side3Anchor);
+        RotateSplitter.AnchorSame(Side3,MainSplitter);
+        if Side in [akLeft,akRight] then
+          RotateSplitter.Anchors:=RotateSplitter.Anchors-[akRight]+[akLeft]
+        else
+          RotateSplitter.Anchors:=RotateSplitter.Anchors-[akBottom]+[akTop];
+        // shrink MainSplitter
+        MainSplitter.AnchorToNeighbour(Side2,0,Side2Anchor);
+        // reanchor controls from MainSplitter to RotateSplitter
+        for i:=0 to Parent.ControlCount-1 do begin
+          Sibling:=Parent.Controls[i];
+          if GetLazDockSplitter(Sibling,Side,CurSplitter)
+          and (CurSplitter=MainSplitter) then begin
+            if Side in [akLeft,akRight] then begin
+              if Sibling.Top>Control.Top then
+                Sibling.AnchorSide[Side].Control:=RotateSplitter;
+            end else begin
+              if Sibling.Left>Control.Left then
+                Sibling.AnchorSide[Side].Control:=RotateSplitter;
+            end;
+          end;
+        end;
+      end;
+      
+    end else begin
+      // shrink a neighbour control
+      // check if Neighbour already shares a side with Control
+      if (Neighbour.AnchorSide[Side2].Control<>Side2Anchor)
+      and (Neighbour.AnchorSide[Side3].Control<>Side3Anchor) then begin
+        { Neighbour is too broad.
+            |#|         |#|
+            |#| Control |#|
+          --+#+---------+#+--
+          ===================
+          -------------------
+               Neighbour
+          ------------------- }
+        exit;
+      end;
+      
+      // check if the Neighbour can be shrinked
+      if NeighbourCanBeShrinked(Control,Neighbour,Side2) then begin
+        ShrinkSide:=Side2;
+      end else if NeighbourCanBeShrinked(Control,Neighbour,Side3) then begin
+        ShrinkSide:=Side2;
+      end else begin
+        // Neighbour can not be shrinked
+        exit;
+      end;
+      
+
+      {              EnlargeSplitter
+                           ^
+                          |#|         |#         |#|         |#
+                          |#| Control |#         |#|         |#
+                        --+#+---------+#   --> --+#| Control |#
+       MainSplitter <-- ===============#       ===#|         |#
+                        --------------+#       --+#|         |#
+                             Neighbour|#        N|#|         |#
+                        --------------+#       --+#+---------+#
+                        ==================     =================== }
+      Result:=true;
+      if not Simulate then begin
+        ParentDisableAlign;
+        GetLazDockSplitter(Control,OppositeAnchor[ShrinkSide],EnlargeSplitter);
+        Neighbour.AnchorToNeighbour(ShrinkSide,0,EnlargeSplitter);
+        MainSplitter.AnchorToNeighbour(ShrinkSide,0,EnlargeSplitter);
+        EnlargeSplitter.AnchorSame(Side,Neighbour);
+        Control.AnchorSame(Side,Neighbour);
+      end;
+    end;
+  finally
+    if ParentDisabledAlign then
+      Parent.EnableAlign;
   end;
 end;
 

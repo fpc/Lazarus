@@ -25,7 +25,7 @@ interface
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
   ExtCtrls, Buttons, ButtonPanel, ExtDlgs,
-  ObjInspStrConsts;
+  IDEDialogs, ObjInspStrConsts;
 
 type
 
@@ -88,6 +88,7 @@ end;
 
 procedure TGraphicPropertyEditorForm.LoadButtonClick(Sender: TObject);
 begin
+  InitIDEFileDialog(OpenDialog);
   if OpenDialog.Execute then
   begin
     FileName := OpenDialog.FileName;
@@ -99,9 +100,11 @@ begin
         MessageDlg(oisErrorLoadingImage,
           Format(oisErrorLoadingImage2, ['"', FileName, '"', #13, E.Message]),
           mtError, [mbOk], 0);
+        exit;
       end;
     end;
   end;
+  StoreIDEFileDialog(OpenDialog);
   
   SaveButton.Enabled := False;
   if Assigned(Preview.Picture.Graphic) then
@@ -111,8 +114,10 @@ end;
 
 procedure TGraphicPropertyEditorForm.SaveButtonClick(Sender: TObject);
 begin
+  InitIDEFileDialog(SaveDialog);
   if SaveDialog.Execute then
     Preview.Picture.SaveToFile(SaveDialog.FileName);
+  StoreIDEFileDialog(SaveDialog);
 end;
 
 procedure TGraphicPropertyEditorForm.SetModified(const AValue: Boolean);

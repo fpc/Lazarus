@@ -52,13 +52,14 @@ var
 begin
   if Source=Self then exit;
   if Source is TBitmap then begin
-    ChangingAll(Self);
-    //DebugLn('TBitMap.Assign ',ClassName,' ',Source.ClassName);
+    SrcBitmap:=TBitmap(Source);
     // TBitmap can share image data
     // -> check if already shared
-    SrcBitmap:=TBitmap(Source);
+    if SrcBitmap.FImage=FImage then exit;// already sharing
+
+    ChangingAll(Self);
+    //DebugLn(['TBitMap.Assign Self=',ClassName,' Source=',Source.ClassName,' HandleAllocated=',HandleAllocated,' Canvas=',DbgSName(FCanvas)]);
     FTransparent := SrcBitmap.Transparent;
-    if SrcBitmap.FImage=FImage then exit;
 
     //DebugLn('TBitMap.Assign A  RefCount=',FImage.RefCount);
     // image is not shared => new image data
@@ -69,7 +70,7 @@ begin
     // share FImage with assigned graphic
     FImage:=SrcBitmap.FImage;
     FImage.Reference;
-    //DebugLn('TBitMap.Assign B ',Width,',',Height,' ',HandleAllocated,' RefCount=',FImage.RefCount);
+    //DebugLn(['TBitMap.Assign B ',Width,',',Height,' ',HandleAllocated,' RefCount=',FImage.RefCount]);
     Changed(Self);
   end else if Source is TFPCustomImage then begin
     ChangingAll(Self);
@@ -783,7 +784,7 @@ end;
 procedure TBitmap.WriteStreamWithFPImage(Stream: TStream; WriteSize: boolean;
   WriterClass: TFPCustomImageWriterClass);
 
-  Procedure DoWriteStreamSize(DestStream: TStream; Size: longint);
+  procedure DoWriteStreamSize(DestStream: TStream; Size: longint);
   begin
     //DebugLn('DoWriteStreamSize ',ClassName,' Size=',Size,' WriteSize=',WriteSize);
     if WriteSize then
@@ -838,11 +839,11 @@ begin
         WriterClass:=TFPWriterBMP
       else
         WriterClass:=TLazWriterXPM;
-      //debugln('WriteStreamWithFPImage WriterClass=',WriterClass.ClassName,' ',RawImageDescriptionAsString(@RawImage),' MaskSize=',dbgs(RawImage.MaskSize));
-      //debugln(dbgMemRange(RawImage.Mask,RawImage.MaskSize,
-      //                    GetBytesPerLine(RawImage.Description.Width,
-      //                                   RawImage.Description.AlphaBitsPerPixel,
-      //                                   RawImage.Description.AlphaLineEnd)));
+      {debugln('WriteStreamWithFPImage WriterClass=',WriterClass.ClassName,' ',RawImageDescriptionAsString(@RawImage),' MaskSize=',dbgs(RawImage.MaskSize));
+      debugln(dbgMemRange(RawImage.Mask,RawImage.MaskSize,
+                          GetBytesPerLine(RawImage.Description.Width,
+                                         RawImage.Description.AlphaBitsPerPixel,
+                                         RawImage.Description.AlphaLineEnd)));}
     end;
 
     ImgWriter:=WriterClass.Create;
