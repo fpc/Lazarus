@@ -401,7 +401,6 @@ alNone: The control can be placed anywhere on the parent control.<br/>
 alClient: The control takes al available space on parent control next to controls aligned to the top, bottom, right or left.</descr>
         <errors></errors>
         <seealso></seealso>
-        <example file=""/>
       </element>
       <!-- property Visibility: published -->
       <element name="TButton.Anchors">

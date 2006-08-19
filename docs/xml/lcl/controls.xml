@@ -6990,7 +6990,6 @@
         <descr></descr>
         <seealso></seealso>
         <errors></errors>
-        <example file=""/>
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.Anchors">
