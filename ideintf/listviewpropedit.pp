@@ -74,9 +74,8 @@ type
 
   { TListViewComponentEditor }
 
-  TListViewComponentEditor = class(TDefaultComponentEditor)
+  TListViewComponentEditor = class(TComponentEditor)
   public
-    procedure Edit; override;
     procedure ExecuteVerb(Index: Integer); override;
     function GetVerb(Index: Integer): string; override;
     function GetVerbCount: Integer; override;
@@ -301,11 +300,6 @@ begin
 end;
 
 { TListViewComponentEditor }
-
-procedure TListViewComponentEditor.Edit;
-begin
-  ExecuteVerb(0);
-end;
 
 procedure TListViewComponentEditor.ExecuteVerb(Index: Integer);
 var

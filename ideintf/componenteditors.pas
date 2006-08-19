@@ -277,9 +277,8 @@ type
 { TStringGridComponentEditor
   The default componenteditor for TStringGrid }
 
-  TStringGridComponentEditor = class(TDefaultComponentEditor)
+  TStringGridComponentEditor = class(TComponentEditor)
   public
-    procedure Edit; override;
     procedure ExecuteVerb(Index: Integer); override;
     function GetVerb(Index: Integer): string; override;
     function GetVerbCount: Integer; override;
@@ -288,11 +287,10 @@ type
 { TCheckListBoxComponentEditor
   The default componenteditor for TCheckListBox }
 
-  TCheckListBoxComponentEditor = class(TDefaultComponentEditor)
+  TCheckListBoxComponentEditor = class(TComponentEditor)
   protected
     procedure DoShowEditor;
   public
-    procedure Edit; override;
     procedure ExecuteVerb(Index: Integer); override;
     function GetVerb(Index: Integer): string; override;
     function GetVerbCount: Integer; override;
@@ -336,7 +334,6 @@ type
     function GetVerbCount:integer;override;
     function GetVerb(Index:integer):string;override;
     procedure ExecuteVerb(Index:integer);override;
-    procedure Edit;override;
   end;
   
 
@@ -820,11 +817,6 @@ end;
 
 { TStringGridComponentEditor }
 
-procedure TStringGridComponentEditor.Edit;
-begin
-  ExecuteVerb(0);
-end;
-
 procedure TStringGridComponentEditor.ExecuteVerb(Index: Integer);
 var
   Hook: TPropertyEditorHook;
@@ -885,11 +877,6 @@ begin
   finally
     Dlg.Free;
   end;
-end;
-
-procedure TCheckListBoxComponentEditor.Edit;
-begin
-  DoShowEditor;
 end;
 
 procedure TCheckListBoxComponentEditor.ExecuteVerb(Index: Integer);
@@ -1080,7 +1067,7 @@ end;
 
 procedure TCheckGroupComponentEditor.ExecuteVerb(Index: Integer);
 begin
-  doShowEditor;
+  DoShowEditor;
 end;
 
 function TCheckGroupComponentEditor.GetVerb(Index: Integer): string;
@@ -1170,11 +1157,6 @@ begin
   else
     inherited ExecuteVerb(Index);
   end;
-end;
-
-procedure TCommonDialogComponentEditor.Edit;
-begin
-  TestDialog;
 end;
 
 //------------------------------------------------------------------------------
