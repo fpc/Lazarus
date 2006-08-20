@@ -76,9 +76,9 @@ begin
   
   // no need for temp buf and moving
   // the result is without null terminator.
-  PWord(@Result[1])^ := len;
-  len := SendMessage(fHandle, EM_GETLINE, Index, lparam(@Result[1]));
-  // readjust length in case somethng went wrong
+  PWord(@Result[1])^ := len+1;
+  len := SendMessage(fHandle, EM_GETLINE, Index, lparam(pchar(Result)));
+  // readjust length in case something went wrong
   Setlength(Result, len);
 end;
 
