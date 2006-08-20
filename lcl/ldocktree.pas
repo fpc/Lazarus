@@ -132,6 +132,8 @@ type
     function GetActiveNotebookPageComponent: TLazDockPage;
     function GetNoteBookPage(Index: Integer): TLazDockPage;
     procedure SetActiveNotebookPageComponent(const AValue: TLazDockPage);
+  protected
+    function GetFloatingDockSiteClass: TWinControlClass; override;
   public
     constructor Create(TheOwner: TComponent); override;
     property Page[Index: Integer]: TLazDockPage read GetNoteBookPage;
@@ -297,6 +299,11 @@ procedure TLazDockPages.SetActiveNotebookPageComponent(
   const AValue: TLazDockPage);
 begin
   ActivePageComponent:=AValue;
+end;
+
+function TLazDockPages.GetFloatingDockSiteClass: TWinControlClass;
+begin
+  Result:=TLazDockForm;
 end;
 
 constructor TLazDockPages.Create(TheOwner: TComponent);
@@ -1034,7 +1041,7 @@ var
   NewPageIndex: Integer;
   NewPage: TLazDockPage;
   NewParent: TLazDockForm;
-  ParentDiabledAlign: Boolean;
+  ParentDisabledAlign: Boolean;
 begin
   if Control.Parent<>nil then
     RaiseGDBException('TAnchoredDockManager.InsertControl Control.Parent<>nil');
@@ -1049,15 +1056,20 @@ begin
       DropCtlAnchor:=MainAlignAnchor[InsertAt];
       ControlAnchor:=OppositeAnchor[DropCtlAnchor];
 
-      ParentDiabledAlign:=false;
+      ParentDisabledAlign:=false;
       try
         // make sure, there is a parent HostSite
         if DropCtl.Parent=nil then begin
           // create a TLazDockForm as new parent
           NewParent:=TLazDockForm.Create(Application);// starts with Visible=false
           NewParent.DisableAlign;
-          ParentDiabledAlign:=true;
+          ParentDisabledAlign:=true;
           NewParent.BoundsRect:=DropCtl.BoundsRect;
+          // move the WindowState to the new parent
+          if DropCtl is TCustomForm then begin
+            NewParent.WindowState:=TCustomForm(DropCtl).WindowState;
+            TCustomForm(DropCtl).WindowState:=wsNormal;
+          end;
           // first move DropCtl to the invsible parent, so changes do not cause flicker
           DropCtl.Parent:=NewParent;
           // init anchors of DropCtl
@@ -1077,9 +1089,9 @@ begin
           end;
         end;
 
-        if not ParentDiabledAlign then begin
+        if not ParentDisabledAlign then begin
           DropCtl.Parent.DisableAlign;
-          ParentDiabledAlign:=true;
+          ParentDisabledAlign:=true;
         end;
         // create a splitter
         Splitter:=TLazDockSplitter.Create(Control);
@@ -1165,7 +1177,7 @@ begin
 
         //debugln('TAnchoredDockManager.InsertControl BEFORE ALIGNING Control.Bounds=',DbgSName(Control),dbgs(Control.BoundsRect),' DropCtl.Bounds=',DbgSName(DropCtl),dbgs(DropCtl.BoundsRect),' Splitter.Bounds=',DbgSName(Splitter),dbgs(Splitter.BoundsRect));
       finally
-        if ParentDiabledAlign then
+        if ParentDisabledAlign then
           DropCtl.Parent.EnableAlign;
       end;
       //debugln('TAnchoredDockManager.InsertControl END Control.Bounds=',DbgSName(Control),dbgs(Control.BoundsRect),' DropCtl.Bounds=',DbgSName(DropCtl),dbgs(DropCtl.BoundsRect),' Splitter.Bounds=',DbgSName(Splitter),dbgs(Splitter.BoundsRect));
@@ -1192,8 +1204,14 @@ begin
         // add DockCtl as page to DockPages
         DockPages.Pages.Add(DropCtl.Caption);
         DropCtlPage:=DockPages.Page[0];
-        DropCtl.Parent:=DropCtlPage;
-        DropCtl.Align:=alClient;
+        DropCtlPage.DisableAlign;
+        try
+          DropCtl.Parent:=DropCtlPage;
+          for a:=Low(TAnchorKind) to High(TAnchorKind) do
+            DropCtl.AnchorParallel(a,0,DropCtl.Parent);
+        finally
+          DropCtlPage.EnableAlign;
+        end;
       end;
       // add Control as new page behind the page of DockCtl
       DropCtlPage:=DropCtl.Parent as TLazDockPage;
@@ -1201,8 +1219,16 @@ begin
       NewPageIndex:=DropCtlPage.PageIndex+1;
       DockPages.Pages.Insert(NewPageIndex,Control.Caption);
       NewPage:=DockPages.Page[NewPageIndex];
-      Control.Parent:=NewPage;
-      Control.Align:=alClient;
+      NewPage.DisableAlign;
+      try
+        Control.Parent:=NewPage;
+        if Control is TCustomForm then
+          TCustomForm(Control).WindowState:=wsNormal;
+        for a:=Low(TAnchorKind) to High(TAnchorKind) do
+          Control.AnchorParallel(a,0,Control.Parent);
+      finally
+        NewPage.EnableAlign;
+      end;
     end;
   else
     RaiseGDBException('TAnchoredDockManager.InsertControl TODO');
@@ -1479,6 +1505,7 @@ var
 begin
   Result:=false;
   if Control=nil then exit;
+  DebugLn(['TAnchoredDockManager.EnlargeControl Control=',DbgSName(Control),' Side=',AnchorNames[Side]]);
   if Side in [akLeft,akRight] then
     Side2:=akTop
   else
@@ -1496,6 +1523,7 @@ begin
     Sibling:=Parent.Controls[i];
     if (not GetLazDockSplitter(Sibling,OppositeAnchor[Side],CurSplitter))
     or (CurSplitter<>MainSplitter) then continue;
+    DebugLn(['TAnchoredDockManager.EnlargeControl neighbour Sibling=',DbgSName(Sibling)]);
     // Sibling is anchored to MainSplitter on the other side
     // check if it is at the same height as Control
     if Side in [akTop,akBottom] then begin
@@ -1539,12 +1567,14 @@ begin
   end;
 
   if Neighbour=nil then exit; // no neighbour found
+  DebugLn(['TAnchoredDockManager.EnlargeControl Neighbour=',DbgSName(Neighbour)]);
   
   ParentDisabledAlign:=false;
   try
     if Neighbour is TLazDockSplitter then begin
       // one splitter as Neighbour
       RotateSplitter:=TLazDockSplitter(Neighbour);
+      DebugLn(['TAnchoredDockManager.EnlargeControl rotate splitter RotateSplitter=',DbgSName(RotateSplitter)]);
       // check that all anchored controls of this splitter can be shrinked
       for i:=0 to Parent.ControlCount-1 do begin
         Sibling:=Parent.Controls[i];
@@ -1633,6 +1663,7 @@ begin
       
     end else begin
       // shrink a neighbour control
+      DebugLn(['TAnchoredDockManager.EnlargeControl Shrink one control: Neighbour=',DbgSName(Neighbour)]);
       // check if Neighbour already shares a side with Control
       if (Neighbour.AnchorSide[Side2].Control<>Side2Anchor)
       and (Neighbour.AnchorSide[Side3].Control<>Side3Anchor) then begin
@@ -1651,7 +1682,7 @@ begin
       if NeighbourCanBeShrinked(Control,Neighbour,Side2) then begin
         ShrinkSide:=Side2;
       end else if NeighbourCanBeShrinked(Control,Neighbour,Side3) then begin
-        ShrinkSide:=Side2;
+        ShrinkSide:=Side3;
       end else begin
         // Neighbour can not be shrinked
         exit;

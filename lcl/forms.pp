@@ -37,7 +37,7 @@ interface
 {$DEFINE HasDefaultValues}
 
 uses
-  Classes, SysUtils, Math, LCLStrConsts, LCLType, LCLProc, LCLIntf,
+  Classes, SysUtils, TypInfo, Math, LCLStrConsts, LCLType, LCLProc, LCLIntf,
   InterfaceBase, LResources, GraphType, Graphics, Menus, LMessages, CustomTimer,
   ActnList, ClipBrd, CustApp, HelpIntfs, LCLClasses, Controls;
 
@@ -1228,6 +1228,9 @@ const
 function KeysToShiftState(Keys: Word): TShiftState;
 function KeyDataToShiftState(KeyData: Longint): TShiftState;
 
+function WindowStateToStr(const State: TWindowState): string;
+function StrToWindowState(const Name: string): TWindowState;
+
 type
   TFocusState = Pointer;
 
@@ -1277,6 +1280,7 @@ const
      [biSystemMenu],                            // bsDialog
      [biSystemMenu, biMinimize],                // bsToolWindow
      [biSystemMenu, biMinimize, biMaximize]);   // bsSizeToolWin
+     
 
 procedure FreeWidgetSet;
 
@@ -1379,6 +1383,17 @@ end;
 function KeyDataToShiftState(KeyData: Longint): TShiftState;
 begin
   Result := MsgKeyDataToShiftState(KeyData);
+end;
+
+function WindowStateToStr(const State: TWindowState): string;
+begin
+  Result:=GetEnumName(TypeInfo(TWindowState),ord(State));
+end;
+
+function StrToWindowState(const Name: string): TWindowState;
+begin
+  Result:=TWindowState(GetEnumValueDef(TypeInfo(TWindowState),Name,
+                                       ord(wsNormal)));
 end;
 
 //------------------------------------------------------------------------------

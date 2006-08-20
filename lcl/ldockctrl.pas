@@ -26,6 +26,7 @@
 
   ToDo:
     - restoring layout, when a docked control becomes visible
+    - restoring minimzed, maximized
     - save TLazDockConfigNode to stream
     - load TLazDockConfigNode from stream
 }
@@ -85,6 +86,7 @@ type
     FSides: array[TAnchorKind] of string;
     FTheType: TLDConfigNodeType;
     FChilds: TFPList;
+    FWindowState: TWindowState;
     function GetChildCount: Integer;
     function GetChilds(Index: integer): TLazDockConfigNode;
     function GetSides(Side: TAnchorKind): string;
@@ -107,7 +109,8 @@ type
     function IndexOf(const AName: string): Integer;
     function GetScreenBounds: TRect;
     function FindNeighbour(SiblingSide: TAnchorKind;
-                           NilIfAmbiguous: boolean): TLazDockConfigNode;
+                           NilIfAmbiguous: boolean;
+                           IgnoreSplitters: boolean = true): TLazDockConfigNode;
     function IsTheOnlyNeighbour(Node: TLazDockConfigNode;
                                 SiblingSide: TAnchorKind): boolean;
     procedure SaveToConfig(Config: TConfigStorage; const Path: string = '');
@@ -126,6 +129,7 @@ type
     property TheType: TLDConfigNodeType read FTheType write SetTheType
                                                       default ldcntControl;
     property Name: string read FName write SetName;
+    property WindowState: TWindowState read FWindowState write FWindowState;
   end;
   
   { TLazDockerConfig }
@@ -227,7 +231,7 @@ type
     procedure FixControlBounds(Layout: TLazDockConfigNode;
                                AddedControl: TControl);
     procedure ShrinkNeighbourhood(Layout: TLazDockConfigNode;
-                                  AControl: TControl);
+                                  AControl: TControl; Sides: TAnchors);
   public
     constructor Create(TheOwner: TComponent); override;
     procedure ShowDockingEditor; virtual;
@@ -372,13 +376,13 @@ begin
                                  and (Control.Parent.ControlCount>1);
                                  
     // enable enlarge buttons
-    Dlg.EnlargeLeftSpeedButton.Enabled:=
+    Dlg.EnlargeLeftSpeedButton.Visible:=
                             Manager.Manager.EnlargeControl(Control,akLeft,true);
-    Dlg.EnlargeTopSpeedButton.Enabled:=
+    Dlg.EnlargeTopSpeedButton.Visible:=
                              Manager.Manager.EnlargeControl(Control,akTop,true);
-    Dlg.EnlargeRightSpeedButton.Enabled:=
+    Dlg.EnlargeRightSpeedButton.Visible:=
                            Manager.Manager.EnlargeControl(Control,akRight,true);
-    Dlg.EnlargeBottomSpeedButton.Enabled:=
+    Dlg.EnlargeBottomSpeedButton.Visible:=
                           Manager.Manager.EnlargeControl(Control,akBottom,true);
 
     if Dlg.ShowModal=mrOk then begin
@@ -470,16 +474,85 @@ end;
 function TCustomLazControlDocker.CreateFormAndDockWithSplitter(
   Layout: TLazDockConfigNode; Side: TAnchorKind): boolean;
 { Add a splitter to Side and dock to it. For example:
-      ----------------+      ----------------------+
-          -----------+|      ------------+#+------+|
-           Neighbour ||  ->    Neighbour |#| Self ||
-          -----------+|      ------------+#+------+|
-      ----------------+      ----------------------+
-  If B has no parent, a TLazDockForm is created.
+      --------+      -------------+
+          ---+|      ---+#+------+|
+           A ||       A |#|      ||
+          ---+|      ---+#|      ||
+          ====|  ->  ====#| Self ||
+          ---+|      ---+#|      ||
+           B ||       B |#|      ||
+          ---+|      ---+#+------+|
+      --------+      -------------+
+  If A has no parent, a TLazDockForm is created.
 
-  To get space for A, either B is shrinked and/or the parent of B is enlarged
-  (including the grand parents of B).
+  To get space for Self, either A,B are shrinked
+  and/or the parent of A,B is enlarged (including the grand parents of A,B).
 }
+
+  function FindNextNeighbour(SplitterNode: TLazDockConfigNode;
+    Neighbours: TFPList; Append: boolean): boolean;
+  var
+    Neighbour: TControl;
+    i: Integer;
+    Sibling: TControl;
+    Search: TAnchorKind;
+    Splitter, CurSplitter: TLazDockSplitter;
+    OldAnchor, CurAnchor: TControl;
+    NewNeighbour: TControl;
+    NodeName: String;
+    Node: TLazDockConfigNode;
+  begin
+    Result:=false;
+    if Neighbours=nil then exit;
+    if Append then
+      Neighbour:=TControl(Neighbours[Neighbours.Count-1])
+    else
+      Neighbour:=TControl(Neighbours[0]);
+    if Neighbour.Parent=nil then exit;
+    if not GetLazDockSplitterOrParent(Neighbour,OppositeAnchor[Side],OldAnchor)
+    then exit;
+    // search direction
+    if (Side in [akLeft,akRight]) then begin
+      if Append then Search:=akBottom else Search:=akTop;
+    end else begin
+      if Append then Search:=akRight else Search:=akLeft;
+    end;
+    // find splitter
+    if not GetLazDockSplitter(Neighbour,Search,Splitter) then exit;
+    if (not GetLazDockSplitterOrParent(Splitter,OppositeAnchor[Side],CurAnchor))
+    or (CurAnchor<>OldAnchor) then exit;
+    // find neighbour (anchored to Splitter and OldAnchor)
+    NewNeighbour:=nil;
+    for i:=0 to Neighbour.Parent.ControlCount-1 do begin
+      Sibling:=Neighbour.Parent.Controls[i];
+      if Sibling=Neighbour then continue;
+      if (not GetLazDockSplitter(Sibling,OppositeAnchor[Search],CurSplitter))
+      or (CurSplitter<>Splitter) then continue;
+      if (not GetLazDockSplitterOrParent(Splitter,OppositeAnchor[Side],CurAnchor))
+      or (CurAnchor<>OldAnchor) then continue;
+      // Neighbour control found
+      NewNeighbour:=Sibling;
+      break;
+    end;
+    if NewNeighbour=nil then exit;
+    // check if this control is mentioned in Layout as Neighbour
+    NodeName:=Manager.GetControlConfigName(NewNeighbour);
+    if NodeName='' then exit;
+    Node:=Layout.FindByName(NodeName,true);
+    if Node=nil then exit;
+    if CompareText(Node.Sides[OppositeAnchor[Side]],SplitterNode.Name)<>0 then
+      exit;
+    // success: NewNeighbour is a neigbour on the current form and in the Layout
+    if Append then begin
+      Neighbours.Add(Splitter);
+      Neighbours.Add(NewNeighbour);
+    end else begin
+      Neighbours.Insert(0,Neighbour);
+      Neighbours.Insert(0,Splitter);
+    end;
+    Result:=true;
+  end;
+
 var
   SelfNode: TLazDockConfigNode;
   SplitterNode: TLazDockConfigNode;
@@ -490,27 +563,54 @@ var
   a: TAnchorKind;
   NewParentCreated: Boolean;
   SplitterSize: LongInt;
+  i: Integer;
+  Side2: TAnchorKind;
+  Side3: TAnchorKind;
+  Neighbours: TFPList;
+  LeftTopNeighbour: TControl;
+  RightBottomNeighbour: TControl;
 begin
   Result:=false;
   DebugLn(['TCustomLazControlDocker.CreateFormAndDockWithSplitter DockerName="',DockerName,'"']);
   SelfNode:=Layout.FindByName(DockerName,true);
+  if SelfNode=nil then begin
+    DebugLn(['TCustomLazControlDocker.CreateFormAndDockWithSplitter SelfNode not found DockerName="',DockerName,'"']);
+    exit;
+  end;
   SplitterNode:=Layout.FindByName(SelfNode.Sides[Side]);
-  NeighbourNode:=SplitterNode.FindNeighbour(OppositeAnchor[Side],true);
-  NeighbourControl:=Manager.FindControlByDockerName(NeighbourNode.Name);
-  
-  if NeighbourControl.Parent=nil then begin
-    // NeighbourControl is a standalone control (e.g. an undocked form)
-    // => create a new TLazDockForm and put both controls into it
-    NewParent:=TLazDockForm.Create(nil);
-    NewParentCreated:=true;
-  end else begin
-    // NeighbourControl is docked
-    NewParent:=NeighbourControl.Parent;
-    NewParentCreated:=false;
+  if SplitterNode=nil then begin
+    DebugLn(['TCustomLazControlDocker.CreateFormAndDockWithSplitter SplitterNode not found "',SelfNode.Sides[Side],'"']);
+    exit;
   end;
 
-  NewParent.DisableAlign;
+  // search one Neighbour
+  NeighbourNode:=SplitterNode.FindNeighbour(OppositeAnchor[Side],false);
+  if NeighbourNode=nil then begin
+    DebugLn(['TCustomLazControlDocker.CreateFormAndDockWithSplitter NeighbourNode not found']);
+    exit;
+  end;
+  NeighbourControl:=Manager.FindControlByDockerName(NeighbourNode.Name);
+  if NeighbourControl=nil then begin
+    DebugLn(['TCustomLazControlDocker.CreateFormAndDockWithSplitter NeighbourControl not found "',NeighbourNode.Name,'"']);
+    exit;
+  end;
+  
+  Neighbours:=nil;
+  NewParent:=nil;
   try
+    if NeighbourControl.Parent=nil then begin
+      // NeighbourControl is a standalone control (e.g. an undocked form)
+      // => create a new TLazDockForm and put both controls into it
+      NewParent:=TLazDockForm.Create(nil);
+      NewParentCreated:=true;
+    end else begin
+      // NeighbourControl is docked
+      NewParent:=NeighbourControl.Parent;
+      NewParentCreated:=false;
+    end;
+
+    NewParent.DisableAlign;
+
     // create a splitter
     Splitter:=TLazDockSplitter.Create(nil);
     Splitter.Align:=alNone;
@@ -529,6 +629,10 @@ begin
 
     if NewParentCreated then begin
       // resize NewParent to bounds of NeighbourControl
+      if (NewParent is TCustomForm)
+      and (NeighbourControl is TCustomForm) then;
+        TCustomForm(NewParent).WindowState:=
+                                      TCustomForm(NeighbourControl).WindowState;
       NewParent.BoundsRect:=NeighbourControl.BoundsRect;
       NeighbourControl.Parent:=NewParent;
     end;
@@ -541,6 +645,7 @@ begin
     DebugLn(['TCustomLazControlDocker.CreateFormAndDockWithSplitter Control=',DbgSName(Control),' ',dbgs(Control.BoundsRect)]);
 
     if NewParentCreated then begin
+      // one Neighbour, one splitter and the Control
       for a:=Low(TAnchorKind) to High(TAnchorKind) do begin
         // anchor Control
         if a=Side then
@@ -557,26 +662,54 @@ begin
           NeighbourControl.AnchorParallel(a,0,NewParent);
       end;
     end else begin
-      for a:=Low(TAnchorKind) to High(TAnchorKind) do begin
-        // anchor Control
-        if a=Side then
-          Control.AnchorToNeighbour(a,0,Splitter)
-        else
-          Control.AnchorSame(a,NeighbourControl);
-        // anchor Splitter
-        if (Side in [akLeft,akRight]) <> (a in [akLeft,akRight]) then
-          Splitter.AnchorSame(a,NeighbourControl);
+      // several Neighbours
+
+      // find all Neighbours
+      Neighbours:=TFPList.Create;
+      Neighbours.Add(NeighbourControl);
+      while FindNextNeighbour(SplitterNode,Neighbours,false) do ;
+      while FindNextNeighbour(SplitterNode,Neighbours,true) do ;
+      // Neighbours now contains all controls, that needs to be reanchored
+      // to the new Splitter
+
+      if Side in [akLeft,akRight] then
+        Side2:=akTop
+      else
+        Side2:=akLeft;
+      Side3:=OppositeAnchor[Side2];
+      LeftTopNeighbour:=TControl(Neighbours[0]);
+      RightBottomNeighbour:=TControl(Neighbours[Neighbours.Count-1]);
+
+      // anchor Control
+      Control.AnchorToNeighbour(Side,0,Splitter);
+      Control.AnchorSame(OppositeAnchor[Side],NeighbourControl);
+      Control.AnchorSame(Side2,LeftTopNeighbour);
+      Control.AnchorSame(Side3,RightBottomNeighbour);
+      
+      // anchor Splitter
+      Splitter.AnchorSame(Side2,LeftTopNeighbour);
+      Splitter.AnchorSame(Side3,RightBottomNeighbour);
+
+      // anchor Neighbours
+      for i:=0 to Neighbours.Count-1 do begin
+        NeighbourControl:=TControl(Neighbours[i]);
+        DebugLn(['TCustomLazControlDocker.CreateFormAndDockWithSplitter NeighbourControl=',DbgSName(NeighbourControl),' i=',i]);
+        NeighbourControl.AnchorToNeighbour(OppositeAnchor[Side],0,Splitter);
       end;
-      // anchor Neighbour
-      NeighbourControl.AnchorToNeighbour(OppositeAnchor[Side],0,Splitter);
     end;
 
-    ShrinkNeighbourhood(Layout,Control);
+    if Side in [akLeft,akRight] then
+      ShrinkNeighbourhood(Layout,Control,[akLeft,akRight])
+    else
+      ShrinkNeighbourhood(Layout,Control,[akTop,akBottom]);
     FixControlBounds(Layout,Control);
 
   finally
-    NewParent.EnableAlign;
-    NewParent.Visible:=true;
+    Neighbours.Free;
+    if NewParent<>nil then begin
+      NewParent.EnableAlign;
+      NewParent.Visible:=true;
+    end;
   end;
 
   Result:=true;
@@ -834,7 +967,7 @@ begin
 end;
 
 procedure TCustomLazControlDocker.ShrinkNeighbourhood(
-  Layout: TLazDockConfigNode; AControl: TControl);
+  Layout: TLazDockConfigNode; AControl: TControl; Sides: TAnchors);
 { shrink neighbour controls according to Layout
   A neighbour is the first control left or top of AControl, that can be shrinked
   and is only anchored to AControl.
@@ -872,11 +1005,6 @@ procedure TCustomLazControlDocker.ShrinkNeighbourhood(
     if (CurControl=nil) or (CurControl=AControl)
     or (CurControl.Parent<>AControl.Parent) then
       exit;
-    if CountAnchoredControls(CurControl,OppositeAnchor[Side])>1 then begin
-      // CurControl is not only anchored at AControl
-      // do not shrink it
-      exit;
-    end;
     if CurControl is TCustomSplitter then begin
       // a splitter can not be shrinked
       // => try to shrink the controls on the other side of the splitter
@@ -903,7 +1031,8 @@ begin
   AControl.Parent.DisableAlign;
   try
     for a:=Low(TAnchorKind) to High(TAnchorKind) do
-      ShrinkNeighboursOnSide(AControl,a);
+      if a in Sides then
+        ShrinkNeighboursOnSide(AControl,a);
   finally
     AControl.Parent.EnableAlign;
   end;
@@ -1012,6 +1141,10 @@ function TCustomLazControlDocker.GetLayoutFromControl: TLazDockConfigNode;
     else
       Result.FClientBounds:=Rect(0,0,Result.FBounds.Right-Result.FBounds.Left,
                                  Result.FBounds.Bottom-Result.FBounds.Top);
+
+    // windowstate
+    if AControl is TCustomForm then
+      Result.WindowState:=TCustomForm(AControl).WindowState;
 
     // Childs
     if (AControl is TWinControl) then begin
@@ -1329,6 +1462,9 @@ begin
     Control.SetBoundsKeepBase(NewBounds.Left,NewBounds.Top,
                               NewBounds.Right-NewBounds.Left,
                               NewBounds.Bottom-NewBounds.Top);
+    DebugLn(['TCustomLazControlDocker.RestoreLayout ',WindowStateToStr(Layout.WindowState),' Layout.Name=',Layout.Name]);
+    if (Control is TCustomForm) and (Control.Parent=nil) then
+      TCustomForm(Control).WindowState:=Layout.WindowState;
   finally
     Layout.Free;
   end;
@@ -1656,7 +1792,11 @@ var
       For example:
         ---------+      --------+
         --+#+---+|          ---+|
-        B |#| A ||  ->       B ||
+        B |#|   ||           B ||
+        --+#|   ||          ---+|
+        ====| A ||  ->      ====|
+        --+#|   ||          ---+|
+        C |#|   ||           C ||
         --+#+---+|          ---+|
         ---------+      --------+
     }
@@ -1822,6 +1962,7 @@ var
     Child:=FormNode.Childs[0];
     // changes parent of child
     Child.Parent:=FormNode.Parent;
+    Child.WindowState:=FormNode.WindowState;
     // move child to place where FormNode was
     ChildBounds:=Child.Bounds;
     OffsetRect(ChildBounds,OffsetX,OffsetY);
@@ -2064,7 +2205,8 @@ begin
   Config:=GetConfigWithDockerName(DockerName);
   
   DebugLn(['TCustomLazDockingManager.CreateLayout DockerName="',DockerName,'"']);
-  config.WriteDebugReport;
+  if Config<>nil then
+    Config.WriteDebugReport;
   
   if (Config=nil) or (Config.Root=nil) then begin
     DebugLn(['TCustomLazDockingManager.CreateLayout DockerName="',DockerName,'" No control']);
@@ -2276,6 +2418,7 @@ function TCustomLazDockingManager.ConfigIsCompatible(
     ldcntPages:
       begin
         // a pages node has only page nodes as childs
+        if not CheckHasParent then exit;
         if not CheckHasChilds then exit;
         for i:=0 to Node.ChildCount-1 do
           if Node.Childs[i].TheType<>ldcntPage then begin
@@ -2302,8 +2445,8 @@ function TCustomLazDockingManager.ConfigIsCompatible(
         if not CheckHasNoChilds then exit;
         if not CheckSideNotAnchored(akLeft) then exit;
         if not CheckSideNotAnchored(akRight) then exit;
-        CheckSideAnchored(akTop);
-        CheckSideAnchored(akBottom);
+        if not CheckSideAnchored(akTop) then exit;
+        if not CheckSideAnchored(akBottom) then exit;
       end;
     ldcntSplitterUpDown:
       begin
@@ -2315,8 +2458,8 @@ function TCustomLazDockingManager.ConfigIsCompatible(
         if not CheckHasNoChilds then exit;
         if not CheckSideNotAnchored(akTop) then exit;
         if not CheckSideNotAnchored(akBottom) then exit;
-        CheckSideAnchored(akLeft);
-        CheckSideAnchored(akRight);
+        if not CheckSideAnchored(akLeft) then exit;
+        if not CheckSideAnchored(akRight) then exit;
       end;
     else
       Error('unknown type');
@@ -2459,6 +2602,7 @@ begin
     FBounds:=Src.FBounds;
     FClientBounds:=Src.FClientBounds;
     FName:=Src.FName;
+    FWindowState:=Src.FWindowState;
     for a:=Low(TAnchorKind) to High(TAnchorKind) do
       FSides[a]:=Src.FSides[a];
     FTheType:=Src.FTheType;
@@ -2522,7 +2666,7 @@ begin
 end;
 
 function TLazDockConfigNode.FindNeighbour(SiblingSide: TAnchorKind;
-  NilIfAmbiguous: boolean): TLazDockConfigNode;
+  NilIfAmbiguous: boolean; IgnoreSplitters: boolean): TLazDockConfigNode;
 var
   i: Integer;
   ParentNode: TLazDockConfigNode;
@@ -2533,6 +2677,9 @@ begin
   for i:=0 to ParentNode.ChildCount-1 do begin
     Child:=ParentNode.Childs[i];
     if Child=Self then continue;
+    if IgnoreSplitters
+    and (Child.TheType in [ldcntSplitterLeftRight,ldcntSplitterUpDown]) then
+      continue;
     if CompareText(Child.Sides[SiblingSide],Name)=0 then begin
       if Result=nil then
         Result:=Child
@@ -2569,6 +2716,8 @@ begin
   Config.SetDeleteValue(Path+'Bounds/',FBounds,Rect(0,0,0,0));
   Config.SetDeleteValue(Path+'ClientBounds/',FClientBounds,
                 Rect(0,0,FBounds.Right-FBounds.Left,FBounds.Bottom-FBounds.Top));
+  Config.SetDeleteValue(Path+'WindowState/Value',WindowStateToStr(WindowState),
+                        WindowStateToStr(wsNormal));
 
   // Sides
   for a:=Low(TAnchorKind) to High(TAnchorKind) do
@@ -2600,6 +2749,7 @@ begin
   Config.GetValue(Path+'Bounds/',FBounds,Rect(0,0,0,0));
   Config.GetValue(Path+'ClientBounds/',FClientBounds,
                Rect(0,0,FBounds.Right-FBounds.Left,FBounds.Bottom-FBounds.Top));
+  WindowState:=StrToWindowState(config.GetValue(Path+'WindowState/Value',''));
 
   // Sides
   for a:=Low(TAnchorKind) to High(TAnchorKind) do
@@ -2630,6 +2780,7 @@ procedure TLazDockConfigNode.WriteDebugReport;
     DbgOut(' Bounds='+dbgs(ANode.Bounds));
     DbgOut(' ClientBounds='+dbgs(ANode.ClientBounds));
     DbgOut(' Childs='+dbgs(ANode.ChildCount));
+    DbgOut(' WindowState='+WindowStateToStr(ANode.WindowState));
     for a:=Low(TAnchorKind) to High(TAnchorKind) do begin
       s:=ANode.Sides[a];
       if s='' then
@@ -2763,7 +2914,8 @@ var
   function GetMinPos(Node: TLazDockConfigNode; Side: TAnchorKind): Integer;
   // calculates left or top position of Node
   
-    function Compute(var MinPosValid, MinPosCalculating: boolean; var MinPos: Integer): Integer;
+    function Compute(var MinPosValid, MinPosCalculating: boolean;
+      var MinPos: Integer): Integer;
       
       procedure Improve(Neighbour: TLazDockConfigNode);
       var
@@ -2890,6 +3042,7 @@ var
     Child: TLazDockConfigNode;
     ChildSize: TPoint;
     ChildRect: TRect;
+    AnchorNode: TLazDockConfigNode;
   begin
     //DebugLn(['DrawNode Node=',Node.Name,' ARect=',dbgs(ARect)]);
     wrectangle(ARect);
@@ -2902,10 +3055,20 @@ var
       ChildSize:=GetMinSize(Child);
       ChildRect.Right:=ChildRect.Left+ChildSize.X-1;
       ChildRect.Bottom:=ChildRect.Top+ChildSize.Y-1;
-      if CompareText(Child.Sides[akRight],Node.Name)=0 then
-        ChildRect.Right:=ARect.Right-1;
-      if CompareText(Child.Sides[akBottom],Node.Name)=0 then
-        ChildRect.Bottom:=ARect.Bottom-1;
+      if Child.Sides[akRight]<>'' then begin
+        AnchorNode:=FindByName(Child.Sides[akRight]);
+        if AnchorNode=Node then
+          ChildRect.Right:=ARect.Right-1
+        else if AnchorNode.Parent=Node then
+          ChildRect.Right:=ARect.Left+1+GetMinPos(AnchorNode,akLeft)-1;
+      end;
+      if Child.Sides[akBottom]<>'' then begin
+        AnchorNode:=FindByName(Child.Sides[akBottom]);
+        if AnchorNode=Node then
+          ChildRect.Bottom:=ARect.Bottom-1
+        else if AnchorNode.Parent=Node then
+          ChildRect.Bottom:=ARect.Top+1+GetMinPos(AnchorNode,akTop)-1;
+      end;
       DrawNode(Child,ChildRect);
       if Node.TheType=ldcntPages then begin
         // paint only one page

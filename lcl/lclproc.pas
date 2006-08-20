@@ -36,8 +36,8 @@ unit LCLProc;
 interface
 
 uses
-  Classes, SysUtils, Math, Types, FPCAdds, AvgLvlTree, FileUtil, LCLStrConsts,
-  LCLType;
+  Classes, SysUtils, Math, TypInfo, Types, FPCAdds, AvgLvlTree, FileUtil,
+  LCLStrConsts, LCLType;
 
 type
   { TMethodList - array of TMethod }
@@ -122,6 +122,9 @@ type
 
 procedure MergeSort(List: TFPList; const OnCompare: TListSortCompare);
 procedure MergeSort(List: TStrings; const OnCompare: TStringsSortCompare);
+
+function GetEnumValueDef(TypeInfo: PTypeInfo; const Name: string;
+                         const DefaultValue: Integer): Integer;
 
 function ShortCutToText(ShortCut: TShortCut): string;
 function TextToShortCut(const ShortCutText: string): TShortCut;
@@ -443,6 +446,14 @@ end;
 function CompareAddrWithLineInfoCacheItem(Addr, Item: Pointer): integer;
 begin
   Result:=ComparePointers(Addr,PLineInfoCacheItem(Item)^.Addr);
+end;
+
+function GetEnumValueDef(TypeInfo: PTypeInfo; const Name: string;
+  const DefaultValue: Integer): Integer;
+begin
+  Result:=GetEnumValue(TypeInfo,Name);
+  if Result<0 then
+    Result:=DefaultValue;
 end;
 
 function ShortCutToText(ShortCut: TShortCut): string;
