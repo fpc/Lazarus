@@ -386,7 +386,7 @@ Constructors allocate memory and system resources needed by the object. They als
       <!-- property Visibility: published -->
       <element name="TButton.Action">
         <short>The action executed when the user clicks the button.</short>
-        <descr>If you assign an action from an ActionList to a TButton.Action the correspondig execute-method is assigned to the OnClick event of the button. Assigning a action sets ohter properties of the button as well, like Enabled and Caption.</descr>
+        <descr>If you assign an action from an ActionList to a TButton.Action the correspondig execute-method is assigned to the OnClick event of the button. Assigning a action sets other properties of the button as well, like Enabled and Caption.</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TButton.Align">
@@ -1031,7 +1031,7 @@ Take the following precautions when creating your own Destroy method:
       <!-- property Visibility: published -->
       <element name="TBitBtn.Action">
         <short>The action executed when the user clicks the button.</short>
-        <descr>If you assign an action from an ActionList to a TBitBtn.Action the correspondig execute-method is assigned to the OnClick event of the button. Assigning a action sets ohter properties of the button as well, like Enabled and Caption.</descr>
+        <descr>If you assign an action from an ActionList to a TBitBtn.Action the correspondig execute-method is assigned to the OnClick event of the button. Assigning a action sets other properties of the button as well, like Enabled and Caption.</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TBitBtn.Align">
@@ -1817,7 +1817,7 @@ When a user clicks on a SpeedButton focus is not shifted; a Speed Button never g
       <!-- property Visibility: published -->
       <element name="TSpeedButton.Action">
         <short>The action executed when the user clicks the speedbutton.</short>
-        <descr>If you assign an action from an ActionList to a TSpeedButton.Action the correspondig execute-method is assigned to the OnClick event of the SpeedButton. Assigning a action sets ohter properties of the button as well, like Enabled and Caption.</descr>
+        <descr>If you assign an action from an ActionList to a TSpeedButton.Action the correspondig execute-method is assigned to the OnClick event of the SpeedButton. Assigning a action sets other properties of the button as well, like Enabled and Caption.</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TSpeedButton.Align">
