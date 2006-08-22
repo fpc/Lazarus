@@ -169,6 +169,7 @@ type
     function  CreateCallStack: TDBGCallStack; override;
     function  CreateWatches: TDBGWatches; override;
     function  GetSupportedCommands: TDBGCommands; override;
+    function  GetTargetWidth: Byte; override;
     procedure InterruptTarget; virtual;
     {$IFdef MSWindows}
     procedure InterruptTargetCallback(const AResult: TGDBMIExecResult; const ATag: Integer); virtual;
@@ -1258,6 +1259,11 @@ function TGDBMIDebugger.GetSupportedCommands: TDBGCommands;
 begin
   Result := [dcRun, dcPause, dcStop, dcStepOver, dcStepInto, dcRunTo, dcJumpto,
              dcBreak, dcWatch, dcLocal, dcEvaluate, dcModify, dcEnvironment]
+end;
+
+function TGDBMIDebugger.GetTargetWidth: Byte;
+begin
+  Result := FTargetPtrSize*8;
 end;
 
 procedure TGDBMIDebugger.Init;

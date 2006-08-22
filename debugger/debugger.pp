@@ -963,7 +963,6 @@ type
     procedure DebuggerEnvironmentChanged(Sender: TObject);
     procedure EnvironmentChanged(Sender: TObject);
     function  GetState: TDBGState;
-    function GetTargetWidth: Byte;
     function  ReqCmd(const ACommand: TDBGCommand;
                      const AParams: array of const): Boolean;
     procedure SetDebuggerEnvironment (const AValue: TStrings );
@@ -984,6 +983,7 @@ type
     function  ChangeFileName: Boolean; virtual;
     function  GetCommands: TDBGCommands;
     function  GetSupportedCommands: TDBGCommands; virtual;
+    function  GetTargetWidth: Byte; virtual;
     function  RequestCommand(const ACommand: TDBGCommand;
                              const AParams: array of const): Boolean;
                              virtual; abstract; // True if succesful
@@ -1406,7 +1406,7 @@ end;
 
 function TDebugger.GetTargetWidth: Byte;
 begin
-  Result := 32;
+  Result := SizeOf(PtrInt)*8;
 end;
 
 procedure TDebugger.Init;
