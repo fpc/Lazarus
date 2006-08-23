@@ -1297,7 +1297,6 @@ begin
     EndFormUpdate;
   end;
   //DebugLn('[TCustomForm.Create] END Class=',Classname);
-
 end;
 
 {------------------------------------------------------------------------------

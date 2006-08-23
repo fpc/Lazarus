@@ -2595,7 +2595,7 @@ function InitLazResourceComponent(Instance: TComponent;
     DestroyDriver: Boolean;
     Driver: TAbstractObjectReader;
   begin
-    //DebugLn('[InitComponent] ',ClassType.Classname,' ',Instance<>nil);
+    //DebugLn(['[InitComponent] ',ClassType.Classname,' ',Instance<>nil]);
     Result:=false;
     if (ClassType=TComponent) or (ClassType=RootAncestor) then exit;
     if Assigned(ClassType.ClassParent) then
