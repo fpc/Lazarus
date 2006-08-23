@@ -91,6 +91,7 @@ end;
 
 procedure TToolButton.MouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
+var DropDownMenuDropped:boolean;
 begin
   //DebugLn('TToolButton.MouseUp ',Name,':',ClassName,' ',ord(Button),' ',X,',',Y);
   if (Button=mbLeft) and (tbfPressed in FToolButtonFlags) then begin
@@ -101,17 +102,18 @@ begin
   inherited MouseUp(Button, Shift, X, Y);
   
   if (Button=mbLeft) then begin
+    DropDownMenuDropped:=false;
     //DebugLn('TToolButton.MouseUp ',Name,':',ClassName,' ',Style=tbsCheck);
     if (Style=tbsButton) then Down:=false;
     if (Style=tbsDropDown) then begin
       if (FToolBar<>nil) and FMouseInControl
       and (X>ClientWidth-FToolBar.FDropDownWidth) then begin
-        CheckMenuDropdown;
+        DropDownMenuDropped:=CheckMenuDropdown;
       end;
       Down:=false;
     end;
 
-    if FMouseInControl then begin
+    if FMouseInControl and not DropDownMenuDropped then begin
       if (Style=tbsCheck) then Down:=not Down;
       Click;
     end;
