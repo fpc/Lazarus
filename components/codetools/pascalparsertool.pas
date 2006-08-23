@@ -781,7 +781,7 @@ end;
 function TPascalParserTool.KeyWordFuncClassVarTypeClass: boolean;
 // class and object as type are not allowed, because they would have no name
 begin
-  SaveRaiseExceptionFmt(ctsAnoymDefinitionsAreNotAllowed,[GetAtom]);
+  SaveRaiseExceptionFmt(ctsAnonymDefinitionsAreNotAllowed,[GetAtom]);
   Result:=false;
 end;
 
@@ -2897,10 +2897,11 @@ function TPascalParserTool.KeyWordFuncTypePacked: boolean;
 begin
   ReadNextAtom;
   if not PackedTypesKeyWordFuncList.DoItUpperCase(UpperSrc,CurPos.StartPos,
-    CurPos.EndPos-CurPos.StartPos) then
+    CurPos.EndPos-CurPos.StartPos)
+  then
     RaiseStringExpectedButAtomFound('"record"');
   Result:=TypeKeyWordFuncList.DoItUpperCase(UpperSrc,CurPos.StartPos,
-        CurPos.EndPos-CurPos.StartPos);
+                                            CurPos.EndPos-CurPos.StartPos);
 end;
 
 function TPascalParserTool.KeyWordFuncGeneric: boolean;
@@ -2909,7 +2910,7 @@ function TPascalParserTool.KeyWordFuncGeneric: boolean;
 //   type TGenericList = generic(A,B) class end;
 begin
   if (CurNode.Desc<>ctnTypeDefinition) then
-    SaveRaiseExceptionFmt(ctsAnoymDefinitionsAreNotAllowed,['generic']);
+    SaveRaiseExceptionFmt(ctsAnonymDefinitionsAreNotAllowed,['generic']);
   CreateChildNode;
   CurNode.Desc:=ctnGenericType;
   // read parameter list
@@ -2953,7 +2954,7 @@ function TPascalParserTool.KeyWordFuncSpecialize: boolean;
 //   type TListOfChar = specialize Classes.TGenericList(integer,objpas.integer);
 begin
   if (CurNode.Desc<>ctnTypeDefinition) then
-    SaveRaiseExceptionFmt(ctsAnoymDefinitionsAreNotAllowed,['specialize']);
+    SaveRaiseExceptionFmt(ctsAnonymDefinitionsAreNotAllowed,['specialize']);
   CreateChildNode;
   CurNode.Desc:=ctnSpecialize;
   // read identifier (the name of the generic)
@@ -3016,9 +3017,9 @@ var
   Level: integer;
 begin
   if not (CurNode.Desc in [ctnTypeDefinition,ctnGenericType]) then
-    SaveRaiseExceptionFmt(ctsAnoymDefinitionsAreNotAllowed,['class']);
+    SaveRaiseExceptionFmt(ctsAnonymDefinitionsAreNotAllowed,['class']);
   if (LastUpAtomIs(0,'PACKED')) then begin
-    ClassAtomPos:=LastAtoms.GetValueAt(1);
+    ClassAtomPos:=LastAtoms.GetValueAt(0);
   end else begin
     ClassAtomPos:=CurPos;
   end;
@@ -3089,7 +3090,7 @@ var
   IntfAtomPos: TAtomPosition;
 begin
   if not (CurNode.Desc in [ctnTypeDefinition,ctnGenericType]) then
-    SaveRaiseExceptionFmt(ctsAnoymDefinitionsAreNotAllowed,['interface']);
+    SaveRaiseExceptionFmt(ctsAnonymDefinitionsAreNotAllowed,['interface']);
   IntfAtomPos:=CurPos;
   // class interface start found
   ChildCreated:=true;

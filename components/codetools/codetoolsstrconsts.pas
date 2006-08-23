@@ -71,7 +71,7 @@ ResourceString
   ctsUnexpectedKeyword = 'unexpected keyword "%s"';
   ctsNoPascalCodeFound = 'no pascal code found (first token is %s)';
   ctsStringConstant = 'string constant';
-  ctsAnoymDefinitionsAreNotAllowed = 'Anonymous %s definitions are not allowed';
+  ctsAnonymDefinitionsAreNotAllowed = 'Anonymous %s definitions are not allowed';
   ctsEndForRecordNotFound = 'end for record not found';
   ctsMissingEnumList = 'missing enum list';
   ctsMissingTypeIdentifier = 'missing type identifier';
