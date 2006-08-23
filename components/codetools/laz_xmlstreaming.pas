@@ -12,8 +12,11 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
  **********************************************************************}
-
-
+{
+  Extended by Mattias Gaertner:
+    Reading/Writing childs, all kinds of properties,
+    custom properties (via DefineProperties).
+}
 unit Laz_XMLStreaming;
 
 {$MODE objfpc}
@@ -30,8 +33,8 @@ type
   TXMLObjectWriterStackEl = class
   public
     Element, Parent: TDOMElement;
-    ElType: TXMLObjectWriterStackElType;
-    CurName: String;
+    ElemType: TXMLObjectWriterStackElType;
+    PropertyName: String;
   end;
 
   { TXMLObjectWriter }
@@ -40,9 +43,10 @@ type
   private
     FDoc: TDOMDocument;
     FRootEl: TDOMElement;
-    FStack: TList;
+    FStack: TFPList;
     StackEl: TXMLObjectWriterStackEl;
-    procedure StackPush;
+    procedure StackPush(const Element: string = '';
+                        ElementType: TXMLObjectWriterStackElType = elUnknown);
     procedure StackPop;
     function GetPropertyElement(const TypeName: String): TDOMElement;
   public
@@ -152,28 +156,54 @@ begin
   end;
 end;
 
-procedure TXMLObjectWriter.StackPush;
+procedure TXMLObjectWriter.StackPush(const Element: string;
+  ElementType: TXMLObjectWriterStackElType);
 var
   Parent: TDOMElement;
+  i: Integer;
 begin
   if Assigned(FStack) then
   begin
+    // append to stack
     Parent := StackEl.Element;
+    if Parent=nil then begin
+      i:=FStack.Count-1;
+      while (i>=0) do begin
+        if (TXMLObjectWriterStackEl(FStack[i]).Element=nil) then
+          dec(i)
+        else begin
+          Parent:=TXMLObjectWriterStackEl(FStack[i]).Element;
+          break;
+        end;
+      end;
+      if Parent=nil then
+        Parent:=FRootEl;
+    end;
     FStack.Add(StackEl);
     StackEl := TXMLObjectWriterStackEl.Create;
     StackEl.Parent := Parent;
   end else
   begin
-    FStack := TList.Create;
+    // start stack
+    FStack := TFPList.Create;
     StackEl := TXMLObjectWriterStackEl.Create;
     StackEl.Parent := FRootEl;
   end;
-  //DebugLn('TXMLObjectWriter.StackPush ',dbgs(FStack.Count));
+
+  if Element<>'' then begin
+    // create element
+    StackEl.Element := FDoc.CreateElement(Element);
+    StackEl.Parent.AppendChild(StackEl.Element);
+    StackEl.ElemType:=ElementType;
+  end;
+  DebugLn('TXMLObjectWriter.StackPush Element="',Element,'" FStack.Count=',dbgs(FStack.Count),' ',DbgSName(StackEl.Parent));
 end;
 
 procedure TXMLObjectWriter.StackPop;
 begin
-  //DebugLn('TXMLObjectWriter.StackPop ',dbgs(FStack.Count));
+  DebugLn('TXMLObjectWriter.StackPop ',dbgs(FStack.Count));
+  if FStack=nil then
+    raise Exception.Create('TXMLObjectWriter.StackPop stack empty');
   StackEl.Free;
   if FStack.Count > 0 then
   begin
@@ -189,15 +219,25 @@ end;
 
 function TXMLObjectWriter.GetPropertyElement(const TypeName: String
   ): TDOMElement;
+var
+  CustomElement: TDOMElement;
 begin
-  if not Assigned(StackEl.Element) then
-  begin
-    StackEl.Element := FDoc.CreateElement(TypeName);
-    StackEl.Parent.AppendChild(StackEl.Element);
-    StackEl.Element['name'] := StackEl.CurName;
-    Result := StackEl.Element;
-  end else
-    Result := nil;
+  if StackEl.PropertyName<>'' then begin
+    // normal property
+    if not Assigned(StackEl.Element) then begin
+      StackEl.Element := FDoc.CreateElement(TypeName);
+      StackEl.Parent.AppendChild(StackEl.Element);
+      StackEl.Element['name'] := StackEl.PropertyName;
+      Result := StackEl.Element;
+    end else begin
+      raise Exception.Create('TXMLObjectWriter.GetPropertyElement property already saved');
+    end;
+  end else begin
+    // custom defined property (via DefineProperties)
+    CustomElement := FDoc.CreateElement(TypeName);
+    StackEl.Element.AppendChild(CustomElement);
+    Result := CustomElement;
+  end;
 end;
 
 constructor TXMLObjectWriter.Create(ADoc: TDOMDocument;
@@ -264,9 +304,7 @@ end;
 procedure TXMLObjectWriter.BeginCollection;
 begin
   GetPropertyElement('collectionproperty');
-  StackPush;
-  StackEl.Element := FDoc.CreateElement('collection');
-  StackEl.Parent.AppendChild(StackEl.Element);
+  StackPush('collection');
 end;
 
 procedure TXMLObjectWriter.BeginComponent(Component: TComponent; Flags: TFilerFlags;
@@ -274,41 +312,31 @@ procedure TXMLObjectWriter.BeginComponent(Component: TComponent; Flags: TFilerFl
 // TWriter expects to push two elements on the stack, which are popped by
 // two EndList calls.
 begin
-  StackPush;
-  StackEl.Element := FDoc.CreateElement('component');
-  StackEl.Parent.AppendChild(StackEl.Element);
+  StackPush('component');
 
   if Length(Component.Name) > 0 then
     StackEl.Element['name'] := Component.Name;
   StackEl.Element['class'] := Component.ClassName;
 
-  StackPush;
-  StackEl.Element := FDoc.CreateElement('properties');
-  StackEl.Parent.AppendChild(StackEl.Element);
-  StackEl.ElType := elPropertyList;
+  StackPush('properties',elPropertyList);
 end;
 
 procedure TXMLObjectWriter.BeginList;
 begin
-  StackPush;
-  StackEl.Element := FDoc.CreateElement('list');
-  StackEl.Parent.AppendChild(StackEl.Element);
+  StackPush('list');
 end;
 
 procedure TXMLObjectWriter.EndList;
 begin
-  if StackEl.ElType = elPropertyList then
+  if StackEl.ElemType = elPropertyList then
   begin
     // end the property list and start the children list
     if not StackEl.Element.HasChildNodes then
       StackEl.Parent.RemoveChild(StackEl.Element);
     StackPop;
 
-    StackPush;
-    StackEl.Element := FDoc.CreateElement('children');
-    StackEl.Parent.AppendChild(StackEl.Element);
-    StackEl.ElType := elChildrenList;
-  end else if StackEl.ElType = elChildrenList then
+    StackPush('children',elChildrenList);
+  end else if StackEl.ElemType = elChildrenList then
   begin
     // end the children list and the component
     if not StackEl.Element.HasChildNodes then
@@ -323,7 +351,7 @@ procedure TXMLObjectWriter.BeginProperty(const PropName: String);
 begin
   //DebugLn('TXMLObjectWriter.BeginProperty "',PropName,'"');
   StackPush;
-  StackEl.CurName := PropName;
+  StackEl.PropertyName := PropName;
 end;
 
 procedure TXMLObjectWriter.EndProperty;

@@ -34,9 +34,11 @@ type
     FMySet: TMySet;
     FMySingle: Single;
     FMyString: string;
+    FMyStrings: TStrings;
     FMyWideString: widestring;
   public
     constructor Create(TheOwner: TComponent); override;
+    destructor Destroy; override;
     procedure WriteDebugReport;
   published
     property MyDouble: Double read FMyDouble write FMyDouble;
@@ -49,6 +51,7 @@ type
     property MyBoolean: Boolean read FMyBoolean write FMyBoolean;
     property MyEnum: TMyEnum read FMyEnum write FMyEnum;
     property MyCollection: TCollection read FMyCollection write FMyCollection;
+    property MyStrings: TStrings read FMyStrings write FMyStrings;
   end;
   
   { TMyGroupBox }
@@ -277,8 +280,8 @@ begin
   XMLConfig:=TXMLConfig.Create(Filename);
   try
     //WriteComponentToXMLConfig(XMLConfig,'Component',Self);
-    //WriteComponentToXMLConfig(XMLConfig,'Component',MyComponent);
-    WriteComponentToXMLConfig(XMLConfig,'Component',DemoGroupBox);
+    WriteComponentToXMLConfig(XMLConfig,'Component',MyComponent);
+    //WriteComponentToXMLConfig(XMLConfig,'Component',DemoGroupBox);
     XMLConfig.Flush;
   finally
     XMLConfig.Free;
@@ -310,7 +313,7 @@ begin
   finally
     XMLConfig.Free;
   end;
-
+  
   sl:=TStringList.Create;
   sl.LoadFromFile(Filename);
   DebugLn('TStreamAsXMLForm.StreamComponents ',sl.Text);
@@ -349,6 +352,14 @@ begin
   TMyCollectionItem(MyCollection.Add).MyString:='First';
   TMyCollectionItem(MyCollection.Add).MyString:='Second';
   TMyCollectionItem(MyCollection.Add).MyString:='Third';
+  FMyStrings:=TStringList.Create;
+  FMyStrings.Text:='FirstLine'#10'NextLine';
+end;
+
+destructor TMyComponent.Destroy;
+begin
+  FreeAndNil(FMyStrings);
+  inherited Destroy;
 end;
 
 procedure TMyComponent.WriteDebugReport;
@@ -370,6 +381,7 @@ begin
     Item:=TMyCollectionItem(MyCollection.Items[i]);
     writeln('    ',i,' MyString=',Item.MyString);
   end;
+  writeln('  MyStrings='+dbgstr(MyStrings.Text));
 end;
 
 { TMyGroupBox }
