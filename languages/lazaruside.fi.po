@@ -740,7 +740,7 @@ msgstr "Varmistus"
 
 #: lazarusidestrconsts:lisbackupfilefailed
 msgid "Backup file failed"
-msgstr ""
+msgstr "Varmuuskopiointi epäonnistui"
 
 #: lazarusidestrconsts:lisfrbackwardsearch
 msgid "Backward search"
@@ -3356,7 +3356,7 @@ msgstr "Jätä välilyönnit huomiotta (ei koske tyhjiä rivejä)"
 
 #: lazarusidestrconsts:lisdiffdlgignorespacesatendofline
 msgid "Ignore spaces at end of line"
-msgstr "Jätä huomiotta välilyöntejä rivin lopussa"
+msgstr "Jätä huomiotta välilyönnit rivin lopussa"
 
 #: lazarusidestrconsts:lisdiffdlgignorespacesatstartofline
 msgid "Ignore spaces at start of line"
@@ -4924,7 +4924,7 @@ msgstr "Esittävä sana ei voi olla osa toista sanaa"
 
 #: lazarusidestrconsts:lisdiffdlgonlyselection
 msgid "Only selection"
-msgstr ""
+msgstr "Ainoastaan valittu osa"
 
 #: lazarusidestrconsts:lisfindfileonlytextfiles
 msgid "Only text files"
@@ -7896,7 +7896,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisunabletobackupfileto
 msgid "Unable to backup file %s%s%s to %s%s%s!"
-msgstr ""
+msgstr "Ei voida tehdä varmuuskopiota tiedostosta %s%s%s tiedostoon %s%s%s!"
 
 #: lazarusidestrconsts:lisprojoptsunabletochangetheautocreateformlist
 msgid "Unable to change the auto create form list in the program source.%sPlz fix errors first."

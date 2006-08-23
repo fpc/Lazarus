@@ -60,7 +60,7 @@ msgstr ". mulai di"
 msgid "; expected after \"%s\" property specifier, but %s found"
 msgstr "; diharapkan setelah \"%s\" pemisah properti, tetapi %s ditemukan"
 
-#: codetoolsstrconsts:ctsanoymdefinitionsarenotallowed
+#: codetoolsstrconsts:ctsanonymdefinitionsarenotallowed
 msgid "Anonymous %s definitions are not allowed"
 msgstr "Definisi anonim %s tidak dibolehkan"
 

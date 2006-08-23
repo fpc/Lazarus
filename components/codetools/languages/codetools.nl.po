@@ -57,7 +57,7 @@ msgstr ""
 msgid "; expected after \"%s\" property specifier, but %s found"
 msgstr ""
 
-#: codetoolsstrconsts:ctsanoymdefinitionsarenotallowed
+#: codetoolsstrconsts:ctsanonymdefinitionsarenotallowed
 msgid "Anonymous %s definitions are not allowed"
 msgstr "Anonieme %s definities zijn niet toegestaan"
 
