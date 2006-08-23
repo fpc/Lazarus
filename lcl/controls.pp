@@ -1124,6 +1124,7 @@ type
                                 Sibling: TControl;
                                 FreeCompositeSide: boolean = true);
     procedure AnchorSame(Side: TAnchorKind; Sibling: TControl);
+    procedure AnchorClient(Space: Integer);
     function AnchoredControlCount: integer;
     property AnchoredControls[Index: integer]: TControl read GetAnchoredControls;
     procedure SetBounds(aLeft, aTop, aWidth, aHeight: integer); virtual;

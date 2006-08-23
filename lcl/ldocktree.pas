@@ -1074,8 +1074,7 @@ begin
           DropCtl.Parent:=NewParent;
           // init anchors of DropCtl
           DropCtl.Align:=alNone;
-          for a:=Low(TAnchorKind) to High(TAnchorKind) do
-            DropCtl.AnchorParallel(a,0,DropCtl.Parent);
+          DropCtl.AnchorClient(0);
           DropCtl.Anchors:=[akLeft,akTop,akRight,akBottom];
           NewParent.Visible:=true;
           //DebugLn('TAnchoredDockManager.DockControl DropCtl=',DbgSName(DropCtl),' NewParent.BoundsRect=',dbgs(NewParent.BoundsRect));
@@ -1207,8 +1206,7 @@ begin
         DropCtlPage.DisableAlign;
         try
           DropCtl.Parent:=DropCtlPage;
-          for a:=Low(TAnchorKind) to High(TAnchorKind) do
-            DropCtl.AnchorParallel(a,0,DropCtl.Parent);
+          DropCtl.AnchorClient(0);
         finally
           DropCtlPage.EnableAlign;
         end;
@@ -1224,8 +1222,7 @@ begin
         Control.Parent:=NewPage;
         if Control is TCustomForm then
           TCustomForm(Control).WindowState:=wsNormal;
-        for a:=Low(TAnchorKind) to High(TAnchorKind) do
-          Control.AnchorParallel(a,0,Control.Parent);
+        Control.AnchorClient(0);
       finally
         NewPage.EnableAlign;
       end;

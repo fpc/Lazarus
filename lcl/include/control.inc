@@ -3699,6 +3699,28 @@ begin
   AnchorSide[Side].Assign(Sibling.AnchorSide[Side]);
 end;
 
+procedure TControl.AnchorClient(Space: Integer);
+var
+  a: TAnchorKind;
+begin
+  Parent.DisableAlign;
+  try
+    BorderSpacing.Left:=Space;
+    BorderSpacing.Top:=Space;
+    BorderSpacing.Right:=Space;
+    BorderSpacing.Bottom:=Space;
+    AnchorSide[akLeft].Side:=asrLeft;
+    AnchorSide[akTop].Side:=asrTop;
+    AnchorSide[akRight].Side:=asrRight;
+    AnchorSide[akBottom].Side:=asrBottom;
+    for a:=Low(TAnchorKind) to High(TAnchorKind) do
+      AnchorSide[a].Control:=Parent;
+    Anchors:=[akLeft,akTop,akRight,akBottom];
+  finally
+    Parent.EnableAlign;
+  end;
+end;
+
 function TControl.AnchoredControlCount: integer;
 begin
   if fAnchoredControls=nil then

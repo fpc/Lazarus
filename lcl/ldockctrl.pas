@@ -25,8 +25,9 @@
     This unit contains visual components for docking and streaming.
 
   ToDo:
-    - restoring layout, when a docked control becomes visible
-    - restoring minimzed, maximized
+    - restoring layout: pages
+    - restoring layout: move form after inserting a control
+    - restoring layout: spiral splitter
     - save TLazDockConfigNode to stream
     - load TLazDockConfigNode from stream
 }
@@ -43,7 +44,7 @@ uses
 
 type
   TNonDockConfigNames = (
-    ndcnControlName, // '-Name ' + AControl.Name
+    ndcnControlName, // '-Control ' + AControl.Name
     ndcnChildIndex,  // '-ID ' + IntToStr(AControl index in Parent) +' '+ AControl.ClassName
     ndcnParent       // '-Parent' : AControl.Parent
     );
@@ -228,6 +229,7 @@ type
     procedure ControlVisibleChanged(Sender: TObject);
     function CreateFormAndDockWithSplitter(Layout: TLazDockConfigNode;
                                            Side: TAnchorKind): boolean;
+    function DockAsPage(Layout: TLazDockConfigNode): boolean;
     procedure FixControlBounds(Layout: TLazDockConfigNode;
                                AddedControl: TControl);
     procedure ShrinkNeighbourhood(Layout: TLazDockConfigNode;
@@ -715,10 +717,113 @@ begin
   Result:=true;
 end;
 
+function TCustomLazControlDocker.DockAsPage(Layout: TLazDockConfigNode
+  ): boolean;
+var
+  SelfNode: TLazDockConfigNode;
+  PageNode: TLazDockConfigNode;
+  PageNodeIndex: LongInt;
+  PagesNode: TLazDockConfigNode;
+  NeighbourNode: TLazDockConfigNode;
+  NeighbourControl: TControl;
+  TopForm: TLazDockForm;
+  Pages: TLazDockPages;
+  NeighbourPage: TLazDockPage;
+  NeighbourControlPageIndex: LongInt;
+  Page: TLazDockPage;
+  PageIndex: LongInt;
+begin
+  Result:=false;
+  DebugLn(['TCustomLazControlDocker.DockAsPage DockerName="',DockerName,'"']);
+  SelfNode:=Layout.FindByName(DockerName,true);
+  if SelfNode=nil then begin
+    DebugLn(['TCustomLazControlDocker.DockAsPage SelfNode not found DockerName="',DockerName,'"']);
+    exit;
+  end;
+  PageNode:=SelfNode.Parent;
+  if PageNode=nil then begin
+    DebugLn(['TCustomLazControlDocker.DockAsPage SelfNode.Parent=nil DockerName="',DockerName,'"']);
+    exit;
+  end;
+  if PageNode.TheType<>ldcntPage then begin
+    DebugLn(['TCustomLazControlDocker.DockAsPage PageNode.TheType<>ldcntPage DockerName="',DockerName,'"']);
+    exit;
+  end;
+  if PageNode.ChildCount<>1 then begin
+    DebugLn(['TCustomLazControlDocker.DockAsPage SelfNode.Parent.TheType<>ldcntPage DockerName="',DockerName,'"']);
+    exit;
+  end;
+  
+  PagesNode:=PageNode.Parent;
+  PageNodeIndex:=PagesNode.IndexOf(PageNode.Name);
+  if PageNodeIndex>0 then
+    NeighbourNode:=PagesNode.Childs[PageNodeIndex-1].Childs[0]
+  else
+    NeighbourNode:=PagesNode.Childs[PageNodeIndex+1].Childs[0];
+  NeighbourControl:=Manager.FindControlByDockerName(NeighbourNode.Name);
+  if NeighbourControl=nil then begin
+    DebugLn(['TCustomLazControlDocker.CreateFormAndDockWithSplitter NeighbourControl not found "',NeighbourNode.Name,'"']);
+    exit;
+  end;
+  
+  if NeighbourControl.Parent=nil then begin
+    // NeighbourControl is a single top level control
+    // => create a TLazDockForm with a TLazDockPages and two TLazDockPage
+    TopForm:=TLazDockForm.Create(nil);
+    // TODO: resize TopForm
+    Pages:=TLazDockPages.Create(nil);
+    Pages.DisableAlign;
+    try
+      Pages.Parent:=TopForm;
+      Pages.AnchorClient(0);
+      if PageNodeIndex>0 then begin
+        Pages.Pages.Add(NeighbourControl.Caption);
+        Pages.Pages.Add(Control.Caption);
+        NeighbourPage:=Pages.Page[0];
+        Page:=Pages.Page[1];
+      end else begin
+        Pages.Pages.Add(Control.Caption);
+        Pages.Pages.Add(NeighbourControl.Caption);
+        Page:=Pages.Page[0];
+        NeighbourPage:=Pages.Page[1];
+      end;
+      NeighbourControl.Parent:=NeighbourPage;
+      NeighbourControl.AnchorClient(0);
+      Control.Parent:=Page;
+      Control.AnchorClient(0);
+    finally
+      Pages.EnableAlign;
+    end;
+  end else if NeighbourControl.Parent is TLazDockPage then begin
+    // NeighbourControl is on a page
+    // => insert a new page
+    NeighbourPage:=TLazDockPage(NeighbourControl.Parent);
+    NeighbourControlPageIndex:=NeighbourPage.PageIndex;
+    if PageNodeIndex>0 then begin
+      // insert left
+      PageIndex:=NeighbourControlPageIndex;
+    end else begin
+      // insert right
+      PageIndex:=NeighbourControlPageIndex+1;
+    end;
+    Pages.Pages.Insert(PageIndex,Control.Caption);
+    Page:=Pages.Page[PageIndex];
+    Control.Parent:=Page;
+    Control.AnchorClient(0);
+    // TODO resize parents
+  end else begin
+    // NeighbourControl is a child control, but the parent is not yet a page
+    // => collect all neighbour controls for a page
+    
+    // TODO
+  end;
+
+  Result:=true;
+end;
+
 procedure TCustomLazControlDocker.FixControlBounds(Layout: TLazDockConfigNode;
   AddedControl: TControl);
-{ Fix bounds after inserting AddedControl
-}
+{ Fix bounds after inserting AddedControl }
 type
   TControlInfo = record
     Control: TControl;
@@ -1195,9 +1300,7 @@ begin
 end;
 
 procedure TCustomLazControlDocker.RestoreLayout;
-  { TODO
-  
-  Goals of this algorithm:
+{ Goals of this algorithm:
   - If a form is hidden and immediately shown again, the layout should be
     restored 1:1.
     That's why a TCustomLazControlDocker stores the complete layout on every
@@ -1408,6 +1511,7 @@ var
     SplitterCount: Integer;
     SideNode: TLazDockConfigNode;
   begin
+    Result:=false;
     SplitterCount:=0;
     for a:=Low(TAnchorKind) to High(TAnchorKind) do begin
       SideNode:=FindNode(SelfNode.Sides[a]);
@@ -1422,7 +1526,14 @@ var
           exit(true);
       end;
     end;
+  end;
+  
+  function PageDocking: boolean;
+  begin
     Result:=false;
+    if (SelfNode.TheType<>ldcntPage) then exit;
+    if (SelfNode.Parent.ChildCount<>1) then exit;
+    Result:=DockAsPage(Layout);
   end;
   
 var
@@ -1439,21 +1550,8 @@ begin
 
     if SelfNode.Parent<>nil then begin
       // this control was docked
-      case SelfNode.Parent.TheType of
-      ldcntPage:
-        begin
-          // this control was docked as child of a page
-          DebugLn(['TCustomLazControlDocker.RestoreLayout TODO restore page']);
-        end;
-      ldcntControl,ldcntForm:
-        begin
-          // this control was docked on a form as child
-          DebugLn(['TCustomLazControlDocker.RestoreLayout restore splitter']);
-          if SplitterDocking then exit;
-        end;
-      else
-        exit;
-      end;
+      if SplitterDocking then exit;
+      if PageDocking then exit;
     end;
 
     // default: do not dock, just move

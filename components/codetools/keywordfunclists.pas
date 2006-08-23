@@ -659,6 +659,7 @@ begin
     Add('REINTRODUCE' ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('STDCALL'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('VIRTUAL'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('STATIC'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
   
   IsKeyWordProcedureSpecifier:=TKeyWordFunctionList.Create;
