@@ -295,7 +295,7 @@ type
        ): TRadioButton;
     procedure SetPlacementRadioButtons(APlacement: TIDEWindowPlacement;
       const AValue: TRadioButton);
-    procedure LoadFrom(AnLayout: TIDEWindowLayout);
+    procedure LoadFrom(ALayout: TIDEWindowLayout);
     procedure BoundsChanged; override;
   public
     constructor Create(TheOwner: TComponent); override;
@@ -844,7 +844,7 @@ begin
   LoadFrom(fLayout);
 end;
 
-procedure TIDEWindowSetupLayoutComponent.LoadFrom(AnLayout: TIDEWindowLayout);
+procedure TIDEWindowSetupLayoutComponent.LoadFrom(ALayout: TIDEWindowLayout);
 var
   APlacement: TIDEWindowPlacement;
   CurY: LongInt;
@@ -854,7 +854,7 @@ var
   procedure SetLabelAndEdit(var ALabel: TLabel;
     var AnEdit: TEdit;  const ACaption: string; x, y: integer);
   begin
-    if iwpCustomPosition in AnLayout.WindowPlacementsAllowed then begin
+    if iwpCustomPosition in ALayout.WindowPlacementsAllowed then begin
       if ALabel=nil then ALabel:=TLabel.Create(Self);
       with ALabel do begin
         Parent:=Self;
@@ -887,13 +887,13 @@ var
   end;
   
 begin
-  if AnLayout=nil then exit;
+  if ALayout=nil then exit;
   CurY:=5;
   Col2X:=300;
   PreviousButton:= nil;
   for APlacement:=Low(TIDEWindowPlacement) to High(TIDEWindowPlacement) do
   begin
-    if APlacement in AnLayout.WindowPlacementsAllowed then
+    if APlacement in ALayout.WindowPlacementsAllowed then
     begin
       if PlacementRadioButtons[APlacement]=nil then
         PlacementRadioButtons[APlacement]:=TRadioButton.Create(Self);
@@ -907,7 +907,7 @@ begin
           AnchorToNeighbour(akTop,6,PreviousButton);
         OnClick:=@RadioButtonClick;
         Caption:=GetRadioBtnCaptions(APlacement);
-        Checked:=(APlacement=AnLayout.WindowPlacement);
+        Checked:=(APlacement=ALayout.WindowPlacement);
       end;
       PreviousButton := PlacementRadioButtons[APlacement];
       
@@ -923,16 +923,16 @@ begin
           SetLabelAndEdit(HeightLabel,HeightEdit,DlgHeightPos,
             WidthEdit.Left+WidthEdit.Width+15,CurY);
           inc(CurY,WidthEdit.Height+6);
-          if AnLayout.CustomCoordinatesAreValid then begin
-            LeftEdit.Text:=IntToStr(AnLayout.Left);
-            TopEdit.Text:=IntToStr(AnLayout.Top);
-            WidthEdit.Text:=IntToStr(AnLayout.Width);
-            HeightEdit.Text:=IntToStr(AnLayout.Height);
-          end else if AnLayout.Form<>nil then begin
-            LeftEdit.Text:=IntToStr(AnLayout.Form.Left);
-            TopEdit.Text:=IntToStr(AnLayout.Form.Top);
-            WidthEdit.Text:=IntToStr(AnLayout.Form.Width);
-            HeightEdit.Text:=IntToStr(AnLayout.Form.Height);
+          if ALayout.CustomCoordinatesAreValid then begin
+            LeftEdit.Text:=IntToStr(ALayout.Left);
+            TopEdit.Text:=IntToStr(ALayout.Top);
+            WidthEdit.Text:=IntToStr(ALayout.Width);
+            HeightEdit.Text:=IntToStr(ALayout.Height);
+          end else if ALayout.Form<>nil then begin
+            LeftEdit.Text:=IntToStr(ALayout.Form.Left);
+            TopEdit.Text:=IntToStr(ALayout.Form.Top);
+            WidthEdit.Text:=IntToStr(ALayout.Form.Width);
+            HeightEdit.Text:=IntToStr(ALayout.Form.Height);
           end;
         end;
       end;
@@ -959,7 +959,7 @@ begin
     AutoSize:=true;
   end;
 
-  if iwpCustomPosition in AnLayout.WindowPlacementsAllowed then
+  if iwpCustomPosition in ALayout.WindowPlacementsAllowed then
   begin
     if GetWindowPositionButton=nil then
       GetWindowPositionButton:=TButton.Create(Self);
@@ -971,6 +971,7 @@ begin
       AutoSize:=true;
       AnchorToNeighbour(akLeft,6,ApplyButton);
       AnchorParallel(akTop,0,ApplyButton);
+      Enabled := ALayout.Form <> nil;
     end;
   end;
   //inc(CurY,ApplyButton.Height+7);
@@ -1055,14 +1056,16 @@ end;
 procedure TIDEWindowSetupLayoutComponent.GetWindowPositionButtonClick(
   Sender: TObject);
 begin
-  if LeftEdit<>nil then
-    LeftEdit.Text:=IntToStr(Layout.Form.Left);
-  if TopEdit<>nil then
-    TopEdit.Text:=IntToStr(Layout.Form.Top);
-  if WidthEdit<>nil then
-    WidthEdit.Text:=IntToStr(Layout.Form.Width);
-  if HeightEdit<>nil then
-    HeightEdit.Text:=IntToStr(Layout.Form.Height);
+  if Layout.Form<>nil then begin
+    if LeftEdit<>nil then
+      LeftEdit.Text:=IntToStr(Layout.Form.Left);
+    if TopEdit<>nil then
+      TopEdit.Text:=IntToStr(Layout.Form.Top);
+    if WidthEdit<>nil then
+      WidthEdit.Text:=IntToStr(Layout.Form.Width);
+    if HeightEdit<>nil then
+      HeightEdit.Text:=IntToStr(Layout.Form.Height);
+  end;
 end;
 
 function TIDEWindowSetupLayoutComponent.GetLayout: TIDEWindowLayout;
