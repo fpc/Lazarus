@@ -1,13 +1,15 @@
 msgid ""
 msgstr ""
 "Last-Translator: AlbercikCD\n"
-"PO-Revision-Date: 2006-03-11 22:36+0100\n"
+"PO-Revision-Date: 2006-08-10 20:48+0100\n"
 "Project-Id-Version: lazaruside\n"
 "Language-Team: polski <pl@li.org>\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.3\n"
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"POT-Creation-Date: \n"
+"MIME-Version: 1.0\n"
 
 #: lazarusidestrconsts:srkmcommand1
 msgid "    command1 \""
@@ -155,7 +157,7 @@ msgstr "&Dodaj pułapkę"
 
 #: lazarusidestrconsts:lisclose
 msgid "&Close"
-msgstr ""
+msgstr "&Zamknij"
 
 #: lazarusidestrconsts:uemclosepage
 msgid "&Close Page"
@@ -247,7 +249,7 @@ msgstr "&Okna"
 
 #: lazarusidestrconsts:liscefilter
 msgid "(Filter)"
-msgstr ""
+msgstr "(Filtr)"
 
 #: lazarusidestrconsts:dlgbaknosubdirectory
 msgid "(no subdirectory)"
@@ -319,11 +321,11 @@ msgstr "Informacja"
 
 #: lazarusidestrconsts:lisaboutlazarus
 msgid "About Lazarus"
-msgstr "O lazarusie"
+msgstr "O programie Lazarus"
 
 #: lazarusidestrconsts:lismenuaboutlazarus
 msgid "About Lazarus ..."
-msgstr "O lazarusie ..."
+msgstr "O Lazarusie..."
 
 #: lazarusidestrconsts:srvk_accept
 msgid "Accept"
@@ -1263,7 +1265,7 @@ msgstr "Przeglądarka źródeł"
 
 #: lazarusidestrconsts:lismenueditcodetemplates
 msgid "Code Templates ..."
-msgstr "Szablony źródeł ..."
+msgstr "Szablony źródeł..."
 
 #: lazarusidestrconsts:dlgcodetoolstab
 msgid "Code Tools"
@@ -1291,7 +1293,7 @@ msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefscodetoolsdefineseditor
 msgid "CodeTools Defines Editor"
-msgstr ""
+msgstr "Edytor definicji CodeTools"
 
 #: lazarusidestrconsts:liscodetoolsdefscodetoolsdefinespreview
 msgid "CodeTools Defines Preview"
@@ -1303,11 +1305,11 @@ msgstr "Wartości katalogu Code Tools"
 
 #: lazarusidestrconsts:dlgcodetoolsopts
 msgid "CodeTools Options"
-msgstr ""
+msgstr "Ustawienia CodeTools"
 
 #: lazarusidestrconsts:lismenucodetoolsoptions
 msgid "CodeTools Options ..."
-msgstr " ..."
+msgstr "Ustawienia CodeTools..."
 
 #: lazarusidestrconsts:srkmcatcodetools
 msgid "CodeTools commands"
@@ -1315,7 +1317,7 @@ msgstr "CodeTools"
 
 #: lazarusidestrconsts:lismenucodetoolsdefineseditor
 msgid "CodeTools defines editor ..."
-msgstr "Edytor definicji CodeTools ..."
+msgstr "Edytor definicji CodeTools..."
 
 #: lazarusidestrconsts:srkmeccodetoolsdefinesed
 msgid "Codetools defines editor"
@@ -1495,7 +1497,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuconfigurehelp
 msgid "Configure Help ..."
-msgstr " ..."
+msgstr ""
 
 #: lazarusidestrconsts:lismenuconfigurebuildlazarus
 msgid "Configure \"Build Lazarus\" ..."
@@ -1511,7 +1513,7 @@ msgstr "Konfiguruj zewnętrzne narzędzia"
 
 #: lazarusidestrconsts:lismenueditinstallpkgs
 msgid "Configure installed packages ..."
-msgstr " ..."
+msgstr ""
 
 #: lazarusidestrconsts:lislazbuildconfirmbuild
 msgid "Confirm Before ReBuild Lazarus"
@@ -1587,11 +1589,11 @@ msgstr "Importuj formularz Delphi ..."
 
 #: lazarusidestrconsts:lismenuconvertdelphipackage
 msgid "Convert Delphi package to Lazarus package ..."
-msgstr " ..."
+msgstr ""
 
 #: lazarusidestrconsts:lismenuconvertdelphiproject
 msgid "Convert Delphi project to Lazarus project ..."
-msgstr " ..."
+msgstr ""
 
 #: lazarusidestrconsts:lismenuconvertdelphiunit
 msgid "Convert Delphi unit to Lazarus unit ..."
@@ -2231,7 +2233,7 @@ msgstr ""
 
 #: lazarusidestrconsts:rslanguagedutch
 msgid "Dutch"
-msgstr ""
+msgstr "holenderski"
 
 #: lazarusidestrconsts:liswlenableall
 msgid "E&nable All"
@@ -2295,7 +2297,7 @@ msgstr "Wysokość czcionki"
 
 #: lazarusidestrconsts:lismenueditoroptions
 msgid "Editor options ..."
-msgstr "Ustawienia edytora ..."
+msgstr "Ustawienia edytora..."
 
 #: lazarusidestrconsts:uemeditorproperties
 msgid "Editor properties"
@@ -2315,7 +2317,7 @@ msgstr "ElseIf"
 
 #: lazarusidestrconsts:lisenablemacros
 msgid "Enable Macros"
-msgstr ""
+msgstr "Włącz makra"
 
 #: lazarusidestrconsts:lisenabled
 msgid "Enabled"
@@ -2371,7 +2373,7 @@ msgstr "Menu środowisko"
 
 #: lazarusidestrconsts:lismenugeneraloptions
 msgid "Environment options ..."
-msgstr "Ustawienia środowiska ..."
+msgstr "Ustawienia środowiska..."
 
 #: lazarusidestrconsts:liscodetemplerror
 msgid "Error"
@@ -2807,7 +2809,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenufindidentifierrefs
 msgid "Find Identifier References ..."
-msgstr " ..."
+msgstr ""
 
 #: lazarusidestrconsts:lismenutemplatefindnext
 msgid "Find Next"
@@ -3031,7 +3033,7 @@ msgstr "Kod:"
 
 #: lazarusidestrconsts:rslanguagegerman
 msgid "German"
-msgstr ""
+msgstr "niemiecki"
 
 #: lazarusidestrconsts:dlggetposition
 msgid "Get position"
@@ -3191,7 +3193,7 @@ msgstr "Rozmiar stosu"
 
 #: lazarusidestrconsts:rslanguagehebrew
 msgid "Hebrew"
-msgstr ""
+msgstr "hebrajski"
 
 #: lazarusidestrconsts:dlgheightpos
 msgid "Height:"
@@ -3919,7 +3921,7 @@ msgstr "Wysokość elementu"
 
 #: lazarusidestrconsts:rslanguagejapanese
 msgid "Japanese"
-msgstr ""
+msgstr "japoński"
 
 #: lazarusidestrconsts:lismenujumpback
 msgid "Jump back"
@@ -4263,7 +4265,7 @@ msgstr "Wiersza"
 
 #: lazarusidestrconsts:lisuidlines
 msgid "Lines:"
-msgstr ""
+msgstr "Linii:"
 
 #: lazarusidestrconsts:dlglinksmart
 msgid "Link Smart"
@@ -4943,7 +4945,7 @@ msgstr "Tylko pliki tekstowe"
 
 #: lazarusidestrconsts:lismenuopen
 msgid "Open"
-msgstr "Otwórz ..."
+msgstr "Otwórz"
 
 #: lazarusidestrconsts:lisopenlfm
 msgid "Open %s"
@@ -4951,7 +4953,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisopen
 msgid "Open ..."
-msgstr "Otwórz  ..."
+msgstr "Otwórz..."
 
 #: lazarusidestrconsts:lisdiffdlgopendiffineditor
 msgid "Open Diff in editor"
@@ -4975,11 +4977,11 @@ msgstr "Pokaż podgląd"
 
 #: lazarusidestrconsts:lismenuopenproject
 msgid "Open Project ..."
-msgstr "Otwórz projekt ..."
+msgstr "Otwórz projekt..."
 
 #: lazarusidestrconsts:lisopenprojectfile
 msgid "Open Project File"
-msgstr "Otwórz projekt"
+msgstr "Otwórz plik projektu"
 
 #: lazarusidestrconsts:lisopenproject
 msgid "Open Project?"
@@ -5419,7 +5421,7 @@ msgstr ""
 
 #: lazarusidestrconsts:rslanguageportugues
 msgid "Portuguese"
-msgstr ""
+msgstr "portugalski"
 
 #: lazarusidestrconsts:dlgwrdpreview
 msgid "Preview"
@@ -5467,7 +5469,7 @@ msgstr ""
 
 #: lazarusidestrconsts:srkmecprocedurelist
 msgid "Procedure List ..."
-msgstr " ..."
+msgstr ""
 
 #: lazarusidestrconsts:dlgforwardprocsinsertpolicy
 msgid "Procedure insert policy"
@@ -5531,7 +5533,7 @@ msgstr "Inspektor projektu"
 
 #: lazarusidestrconsts:lisprojinspprojectinspector
 msgid "Project Inspector - %s"
-msgstr "Inspektor projektu- %s"
+msgstr "Inspektor projektu - %s"
 
 #: lazarusidestrconsts:dlgprojectoptions
 msgid "Project Options"
@@ -5539,7 +5541,7 @@ msgstr "Opcje projektu"
 
 #: lazarusidestrconsts:lismenuprojectoptions
 msgid "Project Options ..."
-msgstr "Opcje projektu ..."
+msgstr "Opcje projektu..."
 
 #: lazarusidestrconsts:lisprojprojectsourcedirectorymark
 msgid "Project Source Directory Mark"
@@ -5863,7 +5865,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenurenameidentifier
 msgid "Rename Identifier ..."
-msgstr " ..."
+msgstr ""
 
 #: lazarusidestrconsts:lisfrirenameallreferences
 msgid "Rename all References"
@@ -5935,7 +5937,7 @@ msgstr "Wymagane pakiety"
 
 #: lazarusidestrconsts:lismenurescanfpcsourcedirectory
 msgid "Rescan FPC source directory"
-msgstr "Skanuj ponownie katalog źródeł FPC"
+msgstr "Przeskanuj katalog źródeł FPC"
 
 #: lazarusidestrconsts:lismenuresetdebugger
 msgid "Reset debugger"
@@ -6695,7 +6697,7 @@ msgstr "Podpowiedzi edytora"
 
 #: lazarusidestrconsts:dlgshoweverything
 msgid "Show everything"
-msgstr ""
+msgstr "Pokaż wszystko"
 
 #: lazarusidestrconsts:dlgshowexecutableinfo
 msgid "Show executable info (Win32 only)"
@@ -6771,7 +6773,7 @@ msgstr "Rozmiar"
 
 #: lazarusidestrconsts:lisuidsize
 msgid "Size:"
-msgstr ""
+msgstr "Rozmiar:"
 
 #: lazarusidestrconsts:liscoskipcallingcompiler
 msgid "Skip calling Compiler"
@@ -8579,7 +8581,7 @@ msgstr "Zależności modułów"
 
 #: lazarusidestrconsts:lismenuviewunitinfo
 msgid "View Unit Information"
-msgstr ""
+msgstr "Pokaż informacje o module"
 
 #: lazarusidestrconsts:lishintviewunits
 msgid "View Units"
@@ -9063,7 +9065,7 @@ msgstr ""
 
 #: lazarusidestrconsts:srkmecunknown
 msgid "unknown editor command"
-msgstr "Nieznane polecenie edytora"
+msgstr "nieznane polecenie edytora"
 
 #: lazarusidestrconsts:lisedtdefuseheaptrcunit
 msgid "use HeapTrc unit"
