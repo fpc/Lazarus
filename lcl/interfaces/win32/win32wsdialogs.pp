@@ -191,7 +191,13 @@ end;
 
 { TWin32WSSaveDialog }
 
-procedure PrepareFileDialog(const AOpenDialog: TOpenDialog; var OpenFile: OPENFILENAME);
+type
+  TWinFileDialogFunc = function(OpenFile: LPOPENFILENAME): WINBOOL; stdcall;
+
+procedure ShowFileDialog(AOpenDialog: TOpenDialog; AWinFunc: TWinFileDialogFunc);
+var
+  OpenFile: OPENFILENAME;
+  UserResult: WINBOOL;
 
   function GetFlagsFromOptions(Options: TOpenOptions): DWord;
   begin
@@ -223,46 +229,6 @@ procedure PrepareFileDialog(const AOpenDialog: TOpenDialog; var OpenFile: OPENFI
       if AFilter[i]='|' then AFilter[i]:=#0;
     AFilter:=AFilter + #0#0;
   end;
-
-var
-  FName: PChar;
-  FFilter: string;
-  SizeStr:Integer;
-begin
-  //TODO: HistoryList
-  if ofAllowMultiSelect in AOpenDialog.Options then
-    SizeStr:=15*MAX_PATH  // Tested with 210 selected files
-  else
-    SizeStr:=MAX_PATH;
-  GetMem(FName,SizeStr+2);
-  FillChar(FName^, SizeStr+2, 0);
-  StrLCopy(FName,PChar(AOpenDialog.Filename),SizeStr);
-  if AOpenDialog.Filter <> '' then 
-  begin
-    FFilter := AOpenDialog.Filter;
-    ReplacePipe(FFilter);
-  end
-  else
-    FFilter:='All File Types(*.*)'+#0+'*.*'+#0#0; // Default -> avoid empty combobox
-  ZeroMemory(@OpenFile, sizeof(OpenFileName));
-  with OpenFile Do
-  begin
-    lStructSize := sizeof(OpenFileName);
-    hWndOwner := GetOwnerHandle(AOpenDialog);
-    hInstance := System.hInstance;
-    lpStrFilter := StrAlloc(Length(FFilter)+1);
-    nFilterIndex := AOpenDialog.FilterIndex;
-    Move(PChar(FFilter)^, lpStrFilter^, Length(FFilter)+1);
-    lpStrFile := FName;
-    lpStrTitle := PChar(AOpenDialog.Title);
-    lpStrInitialDir := PChar(AOpenDialog.InitialDir);
-    nMaxFile := SizeStr;
-    Flags := GetFlagsFromOptions(AOpenDialog.Options);
-  end;
-end;
-
-procedure CleanupFileDialog(const AOpenDialog: TOpenDialog; var OpenFile: OPENFILENAME;
-  UserResult: WINBOOL);
 
   procedure SetFilesProperty(AFiles:TStrings);
   var 
@@ -307,7 +273,36 @@ procedure CleanupFileDialog(const AOpenDialog: TOpenDialog; var OpenFile: OPENFI
     end;
   end;
 
+var
+  FFilter: string;
+  FileNameBuffer: array[0..32000] of char;
 begin
+  FillChar(FileNameBuffer[0], sizeof(FileNameBuffer), 0);
+  StrLCopy(@FileNameBuffer[0],PChar(AOpenDialog.Filename),sizeof(FileNameBuffer)-1);
+  if AOpenDialog.Filter <> '' then 
+  begin
+    FFilter := AOpenDialog.Filter;
+    ReplacePipe(FFilter);
+  end
+  else
+    FFilter:='All File Types(*.*)'+#0+'*.*'+#0#0; // Default -> avoid empty combobox
+  ZeroMemory(@OpenFile, sizeof(OpenFileName));
+  with OpenFile Do
+  begin
+    lStructSize := sizeof(OpenFileName);
+    hWndOwner := GetOwnerHandle(AOpenDialog);
+    hInstance := System.hInstance;
+    lpStrFilter := StrAlloc(Length(FFilter)+1);
+    nFilterIndex := AOpenDialog.FilterIndex;
+    Move(PChar(FFilter)^, lpStrFilter^, Length(FFilter)+1);
+    lpStrFile := FileNameBuffer;
+    lpStrTitle := PChar(AOpenDialog.Title);
+    lpStrInitialDir := PChar(AOpenDialog.InitialDir);
+    nMaxFile := sizeof(FileNameBuffer);
+    Flags := GetFlagsFromOptions(AOpenDialog.Options);
+  end;
+  UserResult := AWinFunc(@OpenFile);
+  SetDialogResult(AOpenDialog, UserResult);
   with AOpenDialog do
   begin
     Files.Clear;
@@ -328,28 +323,16 @@ begin
 end;
 
 class function TWin32WSSaveDialog.CreateHandle(const ACommonDialog: TCommonDialog): integer;
-var
-  OpenFile: OPENFILENAME;
-  UserResult: WINBOOL;
 begin
-  PrepareFileDialog(TOpenDialog(ACommonDialog), OpenFile);
-  UserResult := GetSaveFileName(@OpenFile);
-  SetDialogResult(ACommonDialog, UserResult);
-  CleanupFileDialog(TOpenDialog(ACommonDialog), OpenFile, UserResult);
+  ShowFileDialog(TOpenDialog(ACommonDialog), @GetSaveFileName);
   Result := 0;
 end;
 
 { TWin32WSOpenDialog }
 
 class function TWin32WSOpenDialog.CreateHandle(const ACommonDialog: TCommonDialog): integer;
-var
-  OpenFile: OpenFileName;
-  UserResult: WINBOOL;
 begin
-  PrepareFileDialog(TOpenDialog(ACommonDialog), OpenFile);
-  UserResult := GetOpenFileName(@OpenFile);
-  SetDialogResult(ACommonDialog, UserResult);
-  CleanupFileDialog(TOpenDialog(ACommonDialog), OpenFile, UserResult);
+  ShowFileDialog(TOpenDialog(ACommonDialog), @GetOpenFileName);
   Result := 0;
 end;
 
