@@ -212,11 +212,12 @@ end;
  Unfortunately, this only works with win9x and the unicode versions of later
  windows versions.
 
- Therefore in the hook function, if the size of the initial buffer is not large
- enough, the selected files are copied into another buffer. When dialog is
- closed with a FNERR_BUFFERTOOSMALL error, this buffer is used to get the
- selected files. If this error did not occur, the normal way of retrieving the
- files is used.
+ Therefore in the hook function, if the size of the initial buffer (lpStrFile)
+ is not large enough, the selected files are copied into a string. A pointer to
+ this string is kept in the lCustData field of the the OpenFileName struct.
+ When dialog is closed with a FNERR_BUFFERTOOSMALL error, this string is used to
+ get the selected files. If this error did not occur, the normal way of
+ retrieving the files is used.
 }
 
 type
@@ -236,10 +237,11 @@ begin
       OpenFileName := OpenFileNotify^.lpOFN;
       // NeededSize is the size that the lpStrFile buffer must have.
       // the lpstrFile buffer contains the directory and a list of files
-      // for example 'c:\winnt'#0'file1.txt'#0'file2.txt'#0#0
-      // GetFolderPath is upper limit for the path, GetSpec for the files.
+      // for example 'c:\winnt'#0'file1.txt'#0'file2.txt'#0#0.
+      // GetFolderPath returns upper limit for the path, GetSpec for the files.
       // This is not exact because the GetSpec returns the size for
-      // '"file1.txt" "file2.txt"'
+      // '"file1.txt" "file2.txt"', so that size will be two bytes per filename
+      // more than needed in the lpStrFile buffer.
       NeededSize := CommDlg_OpenSave_GetFolderPath(GetParent(hwnd), nil, 0) +
                       CommDlg_OpenSave_GetSpec(GetParent(hwnd), nil, 0);
       // test if we need to use our own storage
