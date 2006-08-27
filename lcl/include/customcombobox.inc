@@ -414,16 +414,6 @@ begin
     end;
   end;
   
-  if Style=csDropDownList then begin
-    //debugln('TCustomComboBox.KeyDown ');
-    // DropDownList: allow only navigation keys
-    if not (Key in [VK_UP,VK_DOWN,VK_END,VK_HOME,VK_PRIOR,VK_NEXT,VK_TAB,
-      VK_RETURN])
-    then begin
-      Skip := True;
-    end;
-  end;
-
   if Skip then
     Key := VK_UNKNOWN
   else

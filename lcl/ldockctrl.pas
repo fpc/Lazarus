@@ -76,6 +76,8 @@ const
     );
 
 type
+  TAnchorControls = array[TAnchorKind] of TControl;
+
   { TLazDockConfigNode }
 
   TLazDockConfigNode = class(TPersistent)
@@ -234,6 +236,9 @@ type
                                AddedControl: TControl);
     procedure ShrinkNeighbourhood(Layout: TLazDockConfigNode;
                                   AControl: TControl; Sides: TAnchors);
+    function FindPageNeighbours(Layout: TLazDockConfigNode;
+                     StartControl: TControl; out AnchorControls: TAnchorControls
+                     ): TFPList; // list of TControls
   public
     constructor Create(TheOwner: TComponent); override;
     procedure ShowDockingEditor; virtual;
@@ -732,6 +737,8 @@ var
   NeighbourControlPageIndex: LongInt;
   Page: TLazDockPage;
   PageIndex: LongInt;
+  NeighbourList: TFPList;
+  AnchorControls: TAnchorControls;
 begin
   Result:=false;
   DebugLn(['TCustomLazControlDocker.DockAsPage DockerName="',DockerName,'"']);
@@ -814,8 +821,13 @@ begin
   end else begin
     // NeighbourControl is a child control, but the parent is not yet a page
     // => collect all neighbour controls for a page
-    
-    // TODO
+    NeighbourList:=FindPageNeighbours(Layout,NeighbourControl,AnchorControls);
+    try
+      if AnchorControls[akLeft]=nil then ;
+      // TODO
+    finally
+      NeighbourList.Free;
+    end;
   end;
 
   Result:=true;
@@ -1141,6 +1153,18 @@ begin
   finally
     AControl.Parent.EnableAlign;
   end;
+end;
+
+function TCustomLazControlDocker.FindPageNeighbours(Layout: TLazDockConfigNode;
+  StartControl: TControl; out AnchorControls: TAnchorControls): TFPList;
+var
+  a: TAnchorKind;
+begin
+  Result:=TFPList.Create;
+  Result.Add(StartControl);
+  for a:=Low(TAnchorKind) to High(TAnchorKind) do
+    AnchorControls[a]:=StartControl.AnchorSide[a].Control;
+  // TODO: extend
 end;
 
 function TCustomLazControlDocker.GetControlName(AControl: TControl): string;
