@@ -249,9 +249,11 @@ begin
     exit;
   end;
   PropPath:=AnInspector.GetActivePropertyGrid.PropertyPath(Row);
-  if APersistent is TComponent then
+  if APersistent is TComponent then begin
     PropPath:=TComponent(APersistent).Name+'.'+PropPath;
-  PropPath:=LookupRoot.ClassName+'.'+PropPath;
+    if TComponent(APersistent).Owner=LookupRoot then
+      PropPath:=LookupRoot.ClassName+'.'+PropPath;
+  end;
   // find the property declaration
   if not CodeToolBoss.FindDeclarationOfPropertyPath(Code,PropPath,NewCode,
     NewX,NewY,NewTopLine) then
@@ -261,7 +263,7 @@ begin
   end;
   Code:=NewCode;
   Caret:=Point(NewX,NewY);
-  DebugLn('FindDeclarationOfOIProperty SUCCESS ',Code.Filename,' ',dbgs(Caret));
+  //DebugLn('FindDeclarationOfOIProperty SUCCESS ',Code.Filename,' ',dbgs(Caret));
   Result:=true;
 end;
 

@@ -711,7 +711,7 @@ var
   ErrMsg: string;
   NewTopLine: integer;
 begin
-  DebugLn('THelpManager.ShowHelpForObjectInspector ',dbgsName(Sender));
+  //DebugLn('THelpManager.ShowHelpForObjectInspector ',dbgsName(Sender));
   if Sender=nil then Sender:=ObjectInspector1;
   if Sender is TObjectInspector then begin
     AnInspector:=TObjectInspector(Sender);

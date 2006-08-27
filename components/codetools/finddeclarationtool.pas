@@ -1394,18 +1394,24 @@ begin
   if PropertyPath='' then exit;
   BuildTree(false);
 
-  // first search the class in the interface
+  // first search the class/variable in the interface
   StartPos:=1;
   Identifier:=GetNextIdentifier;
   if Identifier='' then exit;
   Context.Tool:=Self;
   Context.Node:=FindDeclarationNodeInInterface(Identifier,true);
-  if Context.Node=nil then exit;
-  Context.Node:=FindTypeNodeOfDefinition(Context.Node);
-  if Context.Node=nil then exit;
+  if Context.Node=nil then begin
+    //DebugLn(['TFindDeclarationTool.FindDeclarationOfPropertyPath Identifier not found in interface ',Identifier]);
+    exit;
+  end;
   Params:=TFindDeclarationParams.Create;
   ActivateGlobalWriteLock;
   try
+    Context:=FindBaseTypeOfNode(Params,Context.Node);
+    if Context.Node=nil then begin
+      //DebugLn(['TFindDeclarationTool.FindDeclarationOfPropertyPath context not found']);
+      exit;
+    end;
     // then search the properties
     repeat
       //DebugLn('TFindDeclarationTool.FindDeclarationOfPropertyPath ',Context.Node.DescAsString);
