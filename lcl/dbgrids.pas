@@ -252,8 +252,8 @@ type
 
   TColumnOrder = (coDesignOrder, coFieldIndexOrder);
 
-  { TDbGridColumns }
-  TDbGridColumns = class(TGridColumns)
+  { TDBGridColumns }
+  TDBGridColumns = class(TGridColumns)
   private
     function GetColumn(Index: Integer): TColumn;
     procedure SetColumn(Index: Integer; Value: TColumn);
@@ -270,12 +270,12 @@ type
     property Items[Index: Integer]: TColumn read GetColumn write SetColumn; default;
   end;
 
-  { TCustomDbGrid }
+  { TCustomDBGrid }
 
-  TCustomDbGrid=class(TCustomGrid)
+  TCustomDBGrid=class(TCustomGrid)
   private
     FDataLink: TComponentDataLink;
-    FExtraOptions: TDbgridExtraOptions;
+    FExtraOptions: TDBGridExtraOptions;
     FOnCellClick: TDBGridClickEvent;
     FOnColEnter,FOnColExit: TNotifyEvent;
     FOnColumnMoved: TMovedEvent;
@@ -284,7 +284,7 @@ type
     FOnFieldEditMask: TGetDbEditMaskEvent;
     FOnTitleClick: TDBGridClickEvent;
     FOnUserCheckboxBitmap: TUserCheckboxBitmapEvent;
-    FOptions: TDbGridOptions;
+    FOptions: TDBGridOptions;
     FReadOnly: Boolean;
     FColEnterPending: Boolean;
     FLayoutChangedCount: integer;
@@ -299,7 +299,7 @@ type
     FEditingColumn: Integer;
     FOldPosition: Integer;
     FDefaultColWidths: boolean;
-    FGridStatus: TDbGridStatus;
+    FGridStatus: TDBGridStatus;
     FOldControlStyle: TControlStyle;
     FIsEditingCheckBox: Boolean;  // For checkbox column editing emulation (by SSY)
     FCheckedBitmap, FUnCheckedBitmap, FGrayedBitmap: TBitmap;
@@ -328,8 +328,8 @@ type
     //procedure SetColumns(const AValue: TDBGridColumns);
     procedure SetCurrentField(const AValue: TField);
     procedure SetDataSource(const AValue: TDataSource);
-    procedure SetExtraOptions(const AValue: TDbgridExtraOptions);
-    procedure SetOptions(const AValue: TDbGridOptions);
+    procedure SetExtraOptions(const AValue: TDBGridExtraOptions);
+    procedure SetOptions(const AValue: TDBGridOptions);
     procedure SetSelectedIndex(const AValue: Integer);
     procedure SetThumbTracking(const AValue: boolean);
     procedure UpdateBufferCount;
@@ -420,11 +420,11 @@ type
     procedure WMVScroll(var Message : TLMVScroll); message LM_VScroll;
     procedure WndProc(var TheMessage : TLMessage); override;
 
-    property GridStatus: TDbGridStatus read FGridStatus write FGridStatus;
+    property GridStatus: TDBGridStatus read FGridStatus write FGridStatus;
     property DataSource: TDataSource read GetDataSource write SetDataSource;
     property NeedUpdateWidths: boolean write FNeedUpdateWidths;
-    property Options: TDbGridOptions read FOptions write SetOptions;
-    property OptionsExtra: TDbgridExtraOptions read FExtraOptions write SetExtraOptions;
+    property Options: TDBGridOptions read FOptions write SetOptions;
+    property OptionsExtra: TDBGridExtraOptions read FExtraOptions write SetExtraOptions;
     property ReadOnly: Boolean read FReadOnly write FReadOnly default false;
     property SelectedRows: TBookmarkList read FSelectedRows;
 
@@ -450,7 +450,7 @@ type
     property ThumbTracking: boolean read GetThumbTracking write SetThumbTracking;
   end;
 
-  TdbGrid=class(TCustomDbGrid)
+  TDBGrid=class(TCustomDBGrid)
   public
     property BorderColor;
     property Canvas;
@@ -726,13 +726,13 @@ begin
   end; // if (Field=nil) or (Field.DisplayWidth=0) ...
 end;
 
-{ TCustomdbGrid }
+{ TCustomDBGrid }
 
-procedure TCustomDbGrid.OnRecordChanged(Field: TField);
+procedure TCustomDBGrid.OnRecordChanged(Field: TField);
 var
   c: Integer;
 begin
-  {$IfDef dbgdbgrid}
+  {$IfDef dbgDBGrid}
   DBGOut('('+name+') ','TCustomDBGrid.OnRecordChanged(Field=');
   if Field=nil then DebugLn('nil)')
   else              DebugLn(Field.FieldName,')');
@@ -748,17 +748,17 @@ begin
   end;
 end;
 
-function TCustomDbGrid.GetDataSource: TDataSource;
+function TCustomDBGrid.GetDataSource: TDataSource;
 begin
   Result:= FDataLink.DataSource;
 end;
 
-function TCustomDbGrid.GetRecordCount: Integer;
+function TCustomDBGrid.GetRecordCount: Integer;
 begin
   result := FDataLink.DataSet.RecordCount;
 end;
 
-function TCustomDbGrid.GetSelectedIndex: Integer;
+function TCustomDBGrid.GetSelectedIndex: Integer;
 begin
   if Columns.Enabled then
     Result := ColumnIndexFromGridColumn( Col )
@@ -766,12 +766,12 @@ begin
     Result := FieldIndexFromGridColumn( Col );
 end;
 
-function TCustomDbGrid.GetThumbTracking: boolean;
+function TCustomDBGrid.GetThumbTracking: boolean;
 begin
   Result :=  goThumbTracking in inherited Options;
 end;
 
-procedure TCustomDbGrid.EmptyGrid;
+procedure TCustomDBGrid.EmptyGrid;
 begin
   ColCount := 2;
   RowCount := 2;
@@ -780,7 +780,7 @@ begin
   ColWidths[0]:=12;
 end;
 
-procedure TCustomDbGrid.CheckWidths;
+procedure TCustomDBGrid.CheckWidths;
 begin
   if FNeedUpdateWidths then begin
     BeginUpdate;
@@ -790,7 +790,7 @@ begin
   end;
 end;
 
-function TCustomDbGrid.GetCurrentColumn: TColumn;
+function TCustomDBGrid.GetCurrentColumn: TColumn;
 begin
   if Columns.Enabled then
     Result := TColumn(Columns[SelectedIndex])
@@ -798,14 +798,14 @@ begin
     Result := nil;
 end;
 
-function TCustomDbGrid.GetCurrentField: TField;
+function TCustomDBGrid.GetCurrentField: TField;
 begin
   result := GetFieldFromGridColumn( Col );
 end;
 
-procedure TCustomDbGrid.OnDataSetChanged(aDataSet: TDataSet);
+procedure TCustomDBGrid.OnDataSetChanged(aDataSet: TDataSet);
 begin
-  {$Ifdef dbgdbgrid}
+  {$Ifdef dbgDBGrid}
   DBGOut('('+name+') ','TCustomDBDrid.OnDataSetChanged(aDataSet=');
   if aDataSet=nil then DebugLn('nil)')
   else DebugLn(aDataSet.Name,')');
@@ -819,9 +819,9 @@ begin
   //RestoreEditor;
 end;
 
-procedure TCustomDbGrid.OnDataSetOpen(aDataSet: TDataSet);
+procedure TCustomDBGrid.OnDataSetOpen(aDataSet: TDataSet);
 begin
-  {$Ifdef dbgdbgrid}
+  {$Ifdef dbgDBGrid}
   DebugLn('(',name,') ','TCustomDBGrid.OnDataSetOpen');
   {$endif}
   FDefaultColWidths := True;
@@ -829,17 +829,17 @@ begin
   UpdateActive;
 end;
 
-procedure TCustomDbGrid.OnDataSetClose(aDataSet: TDataSet);
+procedure TCustomDBGrid.OnDataSetClose(aDataSet: TDataSet);
 begin
-  {$ifdef dbgdbgrid}
+  {$ifdef dbgDBGrid}
   DebugLn('(',name,') ','TCustomDBGrid.OnDataSetClose');
   {$endif}
   LinkActive(False);
 end;
 
-procedure TCustomDbGrid.OnEditingChanged(aDataSet: TDataSet);
+procedure TCustomDBGrid.OnEditingChanged(aDataSet: TDataSet);
 begin
-  {$ifdef dbgdbgrid}
+  {$ifdef dbgDBGrid}
   DebugLn('(',name,') ','TCustomDBGrid.OnEditingChanged');
   if aDataSet<>nil then begin
     DebugLn('Editing=', BoolToStr(dsEdit = aDataSet.State));
@@ -851,33 +851,33 @@ begin
   UpdateActive;
 end;
 
-procedure TCustomDbGrid.OnInvalidDataSet(aDataSet: TDataSet);
+procedure TCustomDBGrid.OnInvalidDataSet(aDataSet: TDataSet);
 begin
-  {$ifdef dbgdbgrid}
+  {$ifdef dbgDBGrid}
   DebugLn('(',name,') ','TCustomDBGrid.OnInvalidDataSet');
   {$endif}
   LinkActive(False);
 end;
 
-procedure TCustomDbGrid.OnInvalidDataSource(aDataSet: TDataset);
+procedure TCustomDBGrid.OnInvalidDataSource(aDataSet: TDataset);
 begin
-  {$ifdef dbgdbgrid}
+  {$ifdef dbgDBGrid}
   DebugLn('(',name,') ','TCustomDBGrid.OnInvalidDataSource');
   {$endif}
   LinkActive(False);
 end;
 
-procedure TCustomDbGrid.OnLayoutChanged(aDataSet: TDataSet);
+procedure TCustomDBGrid.OnLayoutChanged(aDataSet: TDataSet);
 begin
-  {$ifdef dbgdbgrid}
+  {$ifdef dbgDBGrid}
   DebugLn('(',name,') ','TCustomDBGrid.OnLayoutChanged');
   {$endif}
   LayoutChanged;
 end;
 
-procedure TCustomDbGrid.OnNewDataSet(aDataSet: TDataset);
+procedure TCustomDBGrid.OnNewDataSet(aDataSet: TDataset);
 begin
-  {$ifdef dbgdbgrid}
+  {$ifdef dbgDBGrid}
   DebugLn('(',name,') ','TCustomDBGrid.OnNewDataSet');
   {$endif}
   FDefaultColWidths := True;
@@ -885,9 +885,9 @@ begin
   UpdateActive;
 end;
 
-procedure TCustomDbGrid.OnDataSetScrolled(aDataset: TDataSet; Distance: Integer);
+procedure TCustomDBGrid.OnDataSetScrolled(aDataset: TDataSet; Distance: Integer);
 begin
-  {$ifdef dbgdbgrid}
+  {$ifdef dbgDBGrid}
   DebugLn(ClassName, ' (',name,')', '.OnDataSetScrolled(',IntToStr(Distance),')');
   Debugln('Dataset.RecordCount=',IntToStr(aDataSet.RecordCount));
   {$endif}
@@ -902,23 +902,23 @@ begin
     UpdateActive;
 end;
 
-procedure TCustomDbGrid.OnUpdateData(aDataSet: TDataSet);
+procedure TCustomDBGrid.OnUpdateData(aDataSet: TDataSet);
 begin
   UpdateData;
 end;
 {
-procedure TCustomDbGrid.ReadColumns(Reader: TReader);
+procedure TCustomDBGrid.ReadColumns(Reader: TReader);
 begin
   Columns.Clear;
   Reader.ReadValue;
   Reader.ReadCollection(Columns);
 end;
-procedure TCustomDbGrid.SetColumns(const AValue: TDBGridColumns);
+procedure TCustomDBGrid.SetColumns(const AValue: TDBGridColumns);
 begin
   Columns.Assign(AValue);
 end;
 }
-procedure TCustomDbGrid.SetCurrentField(const AValue: TField);
+procedure TCustomDBGrid.SetCurrentField(const AValue: TField);
 var
   i: Integer;
 begin
@@ -929,7 +929,7 @@ begin
   end;
 end;
 
-procedure TCustomDbGrid.SetDataSource(const AValue: TDataSource);
+procedure TCustomDBGrid.SetDataSource(const AValue: TDataSource);
 begin
   if AValue = FDatalink.Datasource then Exit;
   FDefaultColWidths := True;
@@ -937,11 +937,11 @@ begin
   UpdateActive;
 end;
 
-procedure TCustomDbGrid.SetExtraOptions(const AValue: TDbgridExtraOptions);
+procedure TCustomDBGrid.SetExtraOptions(const AValue: TDBGridExtraOptions);
 var
-  OldOptions: TDbGridExtraOptions;
+  OldOptions: TDBGridExtraOptions;
 
-  function IsOptionChanged(Op: TDbgridExtraOption): boolean;
+  function IsOptionChanged(Op: TDBGridExtraOption): boolean;
   begin
     result := ((op in OldOptions) and not (op in AValue)) or
       (not (op in OldOptions) and (op in AValue));
@@ -958,14 +958,14 @@ begin
   if IsOptionChanged(dgeAutoColumns) then begin
     if dgeAutoColumns in aValue then
       AddAutomaticColumns
-    else if TDbGridColumns(Columns).HasAutomaticColumns then
+    else if TDBGridColumns(Columns).HasAutomaticColumns then
       RemoveAutomaticColumns;
     UpdateActive;
   end;
 
 end;
 
-procedure TCustomDbGrid.SetOptions(const AValue: TDbGridOptions);
+procedure TCustomDBGrid.SetOptions(const AValue: TDBGridOptions);
 var
   OldOptions: TGridOptions;
   MultiSel: boolean;
@@ -1029,12 +1029,12 @@ begin
   end;
 end;
 
-procedure TCustomDbGrid.SetSelectedIndex(const AValue: Integer);
+procedure TCustomDBGrid.SetSelectedIndex(const AValue: Integer);
 begin
   Col := FixedCols + AValue;
 end;
 
-procedure TCustomDbGrid.SetThumbTracking(const AValue: boolean);
+procedure TCustomDBGrid.SetThumbTracking(const AValue: boolean);
 begin
   BeginUpdate;
   if Avalue then
@@ -1044,7 +1044,7 @@ begin
   EndUpdate(uoNone);
 end;
 
-procedure TCustomDbGrid.UpdateBufferCount;
+procedure TCustomDBGrid.UpdateBufferCount;
 var
   BuffCount: Integer;
 begin
@@ -1052,13 +1052,13 @@ begin
     BuffCount := GCache.ClientHeight div DefaultRowHeight;
     if dgTitles in Options then Dec(BuffCount, 1);
     FDataLink.BufferCount:= BuffCount;
-    {$ifdef dbgdbgrid}
+    {$ifdef dbgDBGrid}
     DebugLn(ClassName, ' (',name,')', ' FdataLink.BufferCount=' + IntToStr(Fdatalink.BufferCount));
     {$endif}
   end;
 end;
 
-procedure TCustomDbGrid.UpdateData;
+procedure TCustomDBGrid.UpdateData;
 var
   selField,edField: TField;
 begin
@@ -1068,7 +1068,7 @@ begin
     edField := GetFieldFromGridColumn(FEditingColumn);
 
     if (edField<>nil) and (edField = SelField) then begin
-      {$ifdef dbgdbgrid}
+      {$ifdef dbgDBGrid}
       DebugLn('---> UpdateData: Field[', edField.Fieldname, '(',edField.AsString,')]=', FTempText,' INIT');
       {$endif}
 
@@ -1077,7 +1077,7 @@ begin
       EndUpdating;
 
       EditingColumn(FEditingColumn, False);
-      {$ifdef dbgdbgrid}
+      {$ifdef dbgDBGrid}
       DebugLn('<--- UpdateData: Chk: Field:=',edField.ASString,' END');
       {$endif}
     end;
@@ -1085,7 +1085,7 @@ begin
   end;
 end;
 
-{$ifdef dbgdbgrid}
+{$ifdef dbgDBGrid}
 function SBCodeToStr(Code: Integer): String;
 begin
   Case Code of
@@ -1103,7 +1103,7 @@ begin
 end;
 {$endif}
 
-procedure TCustomDbGrid.WMVScroll(var Message: TLMVScroll);
+procedure TCustomDBGrid.WMVScroll(var Message: TLMVScroll);
 var
   IsSeq: boolean;
   aPos: Integer;
@@ -1145,7 +1145,7 @@ var
 begin
   if not FDatalink.Active then exit;
 
-  {$ifdef dbgdbgrid}
+  {$ifdef dbgDBGrid}
   DebugLn('VSCROLL: Code=',SbCodeToStr(Message.ScrollCode),
           ' Position=', dbgs(Message.Pos),' OldPos=',Dbgs(FOldPosition));
   {$endif}
@@ -1191,15 +1191,15 @@ begin
 
   ScrollBarPosition(SB_VERT, aPos);
   FOldPosition:=aPos;
-  {$ifdef dbgdbgrid}
+  {$ifdef dbgDBGrid}
   DebugLn('---- Diff=',dbgs(DeltaRec), ' FinalPos=',dbgs(aPos));
   {$endif}
 end;
 
-procedure TCustomDbGrid.WndProc(var TheMessage: TLMessage);
+procedure TCustomDBGrid.WndProc(var TheMessage: TLMessage);
 begin
   if (TheMessage.Msg=LM_SETFOCUS) and (gsUpdatingData in FGridStatus) then begin
-    {$ifdef dbgGrid}DebugLn('dbgrid.LM_SETFOCUS while updating');{$endif}
+    {$ifdef dbgGrid}DebugLn('DBGrid.LM_SETFOCUS while updating');{$endif}
     if EditorMode then begin
       LCLIntf.SetFocus(Editor.Handle);
       EditorSelectAll;
@@ -1210,7 +1210,7 @@ begin
 end;
 
 
-function TCustomDbGrid.DefaultFieldColWidth(F: TField): Integer;
+function TCustomDBGrid.DefaultFieldColWidth(F: TField): Integer;
 begin
   if not HandleAllocated or (F=nil) then
     result:=DefaultColWidth
@@ -1225,7 +1225,7 @@ begin
   end;
 end;
 
-function TCustomDbGrid.GetColumnCount: Integer;
+function TCustomDBGrid.GetColumnCount: Integer;
 var
   i: integer;
   F: TField;
@@ -1243,7 +1243,7 @@ begin
 end;
 
 // Get the visible field (from dataset fields) that corresponds to given column
-function TCustomDbGrid.GetDsFieldFromGridColumn(Column: Integer): TField;
+function TCustomDBGrid.GetDsFieldFromGridColumn(Column: Integer): TField;
 var
   i: Integer;
 begin
@@ -1255,14 +1255,14 @@ begin
 end;
 
 // obtain the field either from a Db column or directly from dataset fields
-function TCustomDbGrid.GetFieldFromGridColumn(Column: Integer): TField;
+function TCustomDBGrid.GetFieldFromGridColumn(Column: Integer): TField;
 var
   i: integer;
 begin
   if Columns.Enabled then begin
     i := ColumnIndexFromGridColumn( Column );
     if i>=0 then
-      result := TDbGridColumns(Columns)[i].FField
+      result := TDBGridColumns(Columns)[i].FField
     else
       result := nil;
   end else
@@ -1270,7 +1270,7 @@ begin
 end;
 
 // obtain the corresponding grid column for the given field
-function TCustomDbGrid.GetGridColumnFromField(F: TField): Integer;
+function TCustomDBGrid.GetGridColumnFromField(F: TField): Integer;
 var
   i: Integer;
 begin
@@ -1284,7 +1284,7 @@ begin
 end;
 
 // obtain the visible field index corresponding to the grid column index
-function TCustomDbGrid.FieldIndexFromGridColumn(Column: Integer): Integer;
+function TCustomDBGrid.FieldIndexFromGridColumn(Column: Integer): Integer;
 var
   i: Integer;
 begin
@@ -1304,7 +1304,7 @@ begin
   end;
 end;
 
-procedure TCustomDbGrid.UpdateGridColumnSizes;
+procedure TCustomDBGrid.UpdateGridColumnSizes;
 var
   i: Integer;
 begin
@@ -1316,7 +1316,7 @@ begin
   end;
 end;
 
-procedure TCustomDbGrid.UpdateScrollbarRange;
+procedure TCustomDBGrid.UpdateScrollbarRange;
 var
   aRange, aPage: Integer;
   aPos: Integer;
@@ -1374,36 +1374,36 @@ begin
   );
   
   FOldPosition := aPos;
-  {$ifdef dbgdbgrid}
+  {$ifdef dbgDBGrid}
   DebugLn('UpdateScrollBarRange: Handle=',IntToStr(Handle),
    ' aRange=', IntToStr(aRange),
    ' aPage=', IntToStr(aPage), ' aPos=', IntToStr(aPos));
   {$endif}
 end;
-procedure TCustomDbGrid.BeginVisualChange;
+procedure TCustomDBGrid.BeginVisualChange;
 begin
   inc(FVisualChangeCount);
 end;
 
-procedure TCustomDbGrid.EndVisualChange;
+procedure TCustomDBGrid.EndVisualChange;
 begin
   dec(FVisualChangecount);
   if FVisualChangeCount = 0 then
     VisualChange;
 end;
 
-procedure TCustomDbGrid.doLayoutChanged;
+procedure TCustomDBGrid.doLayoutChanged;
 begin
   if csDestroying in ComponentState then
     exit;
-  {$ifdef dbgdbgrid} DebugLn('doLayoutChanged INIT'); {$endif}
+  {$ifdef dbgDBGrid} DebugLn('doLayoutChanged INIT'); {$endif}
   if UpdateGridCounts=0 then
     EmptyGrid;
   UpdateScrollBarRange;
-  {$ifdef dbgdbgrid} DebugLn('doLayoutChanged FIN'); {$endif}
+  {$ifdef dbgDBGrid} DebugLn('doLayoutChanged FIN'); {$endif}
 end;
 {
-procedure TCustomDbGrid.WriteColumns(Writer: TWriter);
+procedure TCustomDBGrid.WriteColumns(Writer: TWriter);
 begin
   if Columns.IsDefault then
     Writer.WriteCollection(nil)
@@ -1411,7 +1411,7 @@ begin
     Writer.WriteCollection(Columns);
 end;
 }
-procedure TCustomDbGrid.RestoreEditor;
+procedure TCustomDBGrid.RestoreEditor;
 begin
   if EditorMode then begin
     EditorMode := False;
@@ -1419,40 +1419,40 @@ begin
   end;
 end;
 
-function TCustomDbGrid.IsEOF: boolean;
+function TCustomDBGrid.IsEOF: boolean;
 begin
   with FDatalink do
     result :=
       Active and DataSet.EOF;
 end;
 
-function TCustomDbGrid.ValidDataSet: boolean;
+function TCustomDBGrid.ValidDataSet: boolean;
 begin
   result := FDatalink.Active And (FDatalink.DataSet<>nil)
 end;
 
-function TCustomDbGrid.InsertCancelable: boolean;
+function TCustomDBGrid.InsertCancelable: boolean;
 begin
   with FDatalink.DataSet do
   Result := (State=dsInsert) and not (Modified or FDataLink.FModified);
 end;
 
-procedure TCustomDbGrid.StartUpdating;
+procedure TCustomDBGrid.StartUpdating;
 begin
   if not UpdatingData then begin
-    {$ifdef dbgdbgrid} DebugLn('dbgrid.StartUpdating');{$endif}
+    {$ifdef dbgDBGrid} DebugLn('DBGrid.StartUpdating');{$endif}
     Include(FGridStatus, gsUpdatingData);
     FOldControlStyle := ControlStyle;
     ControlStyle := ControlStyle + [csActionClient];
     LockEditor;
   end
   else
-    {$ifdef dbgdbgrid} DebugLn('WARNING: multiple call to StartUpdating');{$endif}
+    {$ifdef dbgDBGrid} DebugLn('WARNING: multiple call to StartUpdating');{$endif}
 end;
 
-procedure TCustomDbGrid.EndUpdating;
+procedure TCustomDBGrid.EndUpdating;
 begin
-  {$ifdef dbgdbgrid} DebugLn('dbGrid.EndUpdating');{$endif}
+  {$ifdef dbgDBGrid} DebugLn('DBGrid.EndUpdating');{$endif}
   Exclude(FGridStatus, gsUpdatingData);
   ControlStyle := FOldControlStyle;
   UnLockEditor;
@@ -1460,12 +1460,12 @@ begin
     DebugLn('WARNING: still got csActionClient');
 end;
 
-function TCustomDbGrid.UpdatingData: boolean;
+function TCustomDBGrid.UpdatingData: boolean;
 begin
   result := gsUpdatingData in FGridStatus;
 end;
 
-procedure TCustomDbGrid.AddAutomaticColumns;
+procedure TCustomDBGrid.AddAutomaticColumns;
 var
   i: Integer;
   F: TField;
@@ -1482,14 +1482,14 @@ begin
 
       F:= FDataLink.DataSet.Fields[i];
 
-      if TDbGridColumns(Columns).ColumnFromField(F) <> nil then
+      if TDBGridColumns(Columns).ColumnFromField(F) <> nil then
         // this field is already in the collection. This could only happen
         // if AddAutomaticColumns was called out of LayoutChanged.
         // to avoid duplicate columns skip this field.
         continue;
 
       if (F<>nil) then begin
-        with TDbGridColumns(Columns).Add do begin
+        with TDBGridColumns(Columns).Add do begin
           FIsAutomaticColumn := True;
           Field := F;
           Visible := F.Visible;
@@ -1498,14 +1498,14 @@ begin
 
     end;
     // honor the field.index
-    TDbGridColumns(Columns).ResetColumnsOrder(coFieldIndexOrder);
+    TDBGridColumns(Columns).ResetColumnsOrder(coFieldIndexOrder);
   finally
     Exclude(FGridStatus, gsAddingAutoColumns);
   end;
   
 end;
 
-procedure TCustomDbGrid.SwapCheckBox;
+procedure TCustomDBGrid.SwapCheckBox;
 var
   SelField: TField;
   TempColumn: TColumn;
@@ -1533,7 +1533,7 @@ begin
   end;
 end;
 
-function TCustomDbGrid.ValueMatch(const BaseValue, TestValue: string): Boolean;
+function TCustomDBGrid.ValueMatch(const BaseValue, TestValue: string): Boolean;
 begin
   if BaseValue=TestValue then
     Result := True
@@ -1541,12 +1541,12 @@ begin
     Result := False;
 end;
 
-procedure TCustomDbGrid.ToggleSelectedRow;
+procedure TCustomDBGrid.ToggleSelectedRow;
 begin
   SelectRecord(not FSelectedRows.CurrentRowSelected);
 end;
 
-procedure TCustomDbGrid.LinkActive(Value: Boolean);
+procedure TCustomDBGrid.LinkActive(Value: Boolean);
 begin
   if not Value then
     RemoveAutomaticColumns;
@@ -1560,7 +1560,7 @@ begin
   if FLayoutChangedCount=0 then begin
     BeginLayout;
     if Columns.Count>0 then
-      TDbGridColumns(Columns).LinkFields
+      TDBGridColumns(Columns).LinkFields
     else if not FDataLink.Active then
       FDataLink.BufferCount := 0
     else
@@ -1569,7 +1569,7 @@ begin
   end;
 end;
 
-procedure TCustomDbGrid.Loaded;
+procedure TCustomDBGrid.Loaded;
 begin
   LayoutChanged;
   inherited Loaded;
@@ -1579,7 +1579,7 @@ type
   TProtFields=class(TFields)
   end;
 
-procedure TCustomDbGrid.ColRowMoved(IsColumn: Boolean; FromIndex,
+procedure TCustomDBGrid.ColRowMoved(IsColumn: Boolean; FromIndex,
   ToIndex: Integer);
 var
   F,CurField: TField;
@@ -1611,7 +1611,7 @@ begin
   end;
 end;
 
-function TCustomDbGrid.ColumnEditorStyle(aCol: Integer; F: TField): TColumnButtonStyle;
+function TCustomDBGrid.ColumnEditorStyle(aCol: Integer; F: TField): TColumnButtonStyle;
 begin
   Result := cbsAuto;
   if Columns.Enabled then
@@ -1626,12 +1626,12 @@ begin
     Result := cbsAuto;
 end;
 
-function TCustomDbGrid.CreateColumns: TGridColumns;
+function TCustomDBGrid.CreateColumns: TGridColumns;
 begin
-  result := TDbGridColumns.Create(Self, TColumn);
+  result := TDBGridColumns.Create(Self, TColumn);
 end;
 
-procedure TCustomDbGrid.CreateWnd;
+procedure TCustomDBGrid.CreateWnd;
 begin
   inherited CreateWnd;
   LayoutChanged;
@@ -1639,7 +1639,7 @@ begin
     ScrollBarShow(SB_VERT, True);
 end;
 
-procedure TCustomDbGrid.DefineProperties(Filer: TFiler);
+procedure TCustomDBGrid.DefineProperties(Filer: TFiler);
   {
   function HasColumns: boolean;
   var
@@ -1661,7 +1661,7 @@ begin
   //Filer.DefineProperty('Columns',  @ReadColumns,  @WriteColumns,  HasColumns);
 end;
 
-procedure TCustomDbGrid.DefaultDrawCell(aCol, aRow: Integer; aRect: TRect;
+procedure TCustomDBGrid.DefaultDrawCell(aCol, aRow: Integer; aRect: TRect;
   aState: TGridDrawState);
 
   function GetDatasetState: TDataSetState;
@@ -1709,7 +1709,7 @@ begin
 end;
 
 
-procedure TCustomDbGrid.DoOnChangeBounds;
+procedure TCustomDBGrid.DoOnChangeBounds;
 begin
   BeginUpdate;
   inherited DoOnChangeBounds;
@@ -1718,27 +1718,27 @@ begin
   EndUpdate(False);
 end;
 
-procedure TCustomDbGrid.BeforeMoveSelection(const DCol,DRow: Integer);
+procedure TCustomDBGrid.BeforeMoveSelection(const DCol,DRow: Integer);
 begin
   if FSelectionLock then
     exit;
-  {$ifdef dbgdbgrid}DebugLn('dbgrid.BefMovSel INIT');{$endif}
+  {$ifdef dbgDBGrid}DebugLn('DBGrid.BefMovSel INIT');{$endif}
   inherited BeforeMoveSelection(DCol, DRow);
   if DCol<>Col then begin
     if assigned(OnColExit) then
       OnColExit(Self);
     FColEnterPending:=True;
   end;
-{$ifdef dbgdbgrid}DebugLn('dbgrid.BefMovSel END');{$endif}
+{$ifdef dbgDBGrid}DebugLn('DBGrid.BefMovSel END');{$endif}
 end;
 
-procedure TCustomDbGrid.HeaderClick(IsColumn: Boolean; index: Integer);
+procedure TCustomDBGrid.HeaderClick(IsColumn: Boolean; index: Integer);
 begin
   if IsColumn and Assigned(OnTitleClick) then
     OnTitleClick(TColumn(ColumnFromGridColumn(Index)));
 end;
 
-procedure TCustomDbGrid.KeyDown(var Key: Word; Shift: TShiftState);
+procedure TCustomDBGrid.KeyDown(var Key: Word; Shift: TShiftState);
 var
   DeltaCol,DeltaRow: Integer;
   WasCancelled: boolean;
@@ -1814,7 +1814,7 @@ var
       doMoveBySmall(-1);
   end;
 begin
-  {$IfDef dbgGrid}DebugLn('DbGrid.KeyDown INIT Key= ',IntToStr(Key));{$Endif}
+  {$IfDef dbgGrid}DebugLn('DBGrid.KeyDown INIT Key= ',IntToStr(Key));{$Endif}
   case Key of
 
     VK_TAB:
@@ -1962,10 +1962,10 @@ begin
     else
       inherited KeyDown(Key, Shift);
   end;
-  {$IfDef dbgGrid}DebugLn('DbGrid.KeyDown END Key= ',IntToStr(Key));{$Endif}
+  {$IfDef dbgGrid}DebugLn('DBGrid.KeyDown END Key= ',IntToStr(Key));{$Endif}
 end;
 
-procedure TCustomDbGrid.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
+procedure TCustomDBGrid.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
   Y: Integer);
 var
   Gz: TGridZone;
@@ -1981,25 +1981,25 @@ var
   end;
   procedure doMoveBy;
   begin
-    {$IfDef dbgGrid} DebugLn('DbGrid.MouseDown MoveBy INIT'); {$Endif}
+    {$IfDef dbgGrid} DebugLn('DBGrid.MouseDown MoveBy INIT'); {$Endif}
     Include(FGridStatus, gsVisibleMove);
     FDatalink.MoveBy(P.Y - Row);
     Exclude(FGridStatus, gsVisibleMove);
-    {$IfDef dbgGrid} DebugLn('DbGrid.MouseDown MoveBy END'); {$Endif}
+    {$IfDef dbgGrid} DebugLn('DBGrid.MouseDown MoveBy END'); {$Endif}
   end;
   procedure doMoveToColumn;
   begin
-    {$IfDef dbgGrid} DebugLn('DbGrid.MouseDown MoveToCol INIT Col=', IntToStr(P.X)); {$Endif}
+    {$IfDef dbgGrid} DebugLn('DBGrid.MouseDown MoveToCol INIT Col=', IntToStr(P.X)); {$Endif}
     Col := P.X;
-    {$IfDef dbgGrid} DebugLn('DbGrid.MouseDown MoveToCol END'); {$Endif}
+    {$IfDef dbgGrid} DebugLn('DBGrid.MouseDown MoveToCol END'); {$Endif}
   end;
   procedure DoCancel;
   begin
-    {$IfDef dbgGrid}DebugLn('DbGrid.MouseDown Dataset.CANCEL INIT');{$Endif}
+    {$IfDef dbgGrid}DebugLn('DBGrid.MouseDown Dataset.CANCEL INIT');{$Endif}
     if EditorMode then
       EditorCancelEditing;
     FDatalink.Dataset.cancel;
-    {$IfDef dbgGrid}DebugLn('DbGrid.MouseDown Dataset.CANCEL FIN');{$Endif}
+    {$IfDef dbgGrid}DebugLn('DBGrid.MouseDown Dataset.CANCEL FIN');{$Endif}
   end;
   procedure DoAcceptValue;
   begin
@@ -2007,12 +2007,12 @@ var
       EditorMode := False;
   end;
 begin
-  {$ifdef dbgdbgrid}DebugLn('dbgrid.mousedown - INIT');{$endif}
+  {$ifdef dbgDBGrid}DebugLn('DBGrid.mousedown - INIT');{$endif}
   if (csDesigning in componentState) {or not GCache.ValidGrid }then
     exit;
 
   if UpdatingData then begin
-    {$ifdef dbgdbgrid}DebugLn('DbGrid.MouseDown - UpdatingData');{$endif}
+    {$ifdef dbgDBGrid}DebugLn('DBGrid.MouseDown - UpdatingData');{$endif}
     exit;
   end;
 
@@ -2021,7 +2021,7 @@ begin
     exit;
   end;
 
-  {$IfDef dbgGrid} DebugLn('DbGrid.MouseDown INIT'); {$Endif}
+  {$IfDef dbgGrid} DebugLn('DBGrid.MouseDown INIT'); {$Endif}
   Gz:=MouseToGridZone(X,Y);
   case Gz of
     gzFixedRows, gzFixedCols:
@@ -2049,16 +2049,16 @@ begin
         end;
       end;
   end;
-  {$IfDef dbgGrid} DebugLn('DbGrid.MouseDown END'); {$Endif}
+  {$IfDef dbgGrid} DebugLn('DBGrid.MouseDown END'); {$Endif}
 end;
 
-procedure TCustomDbGrid.Paint;
+procedure TCustomDBGrid.Paint;
 begin
   CheckWidths;
   inherited Paint;
 end;
 
-procedure TCustomDbGrid.PrepareCanvas(aCol, aRow: Integer;
+procedure TCustomDBGrid.PrepareCanvas(aCol, aRow: Integer;
   aState: TGridDrawState);
 begin
   inherited PrepareCanvas(aCol, aRow, aState);
@@ -2067,13 +2067,13 @@ begin
     Canvas.Brush.Color := Self.Color;
 end;
 
-procedure TCustomDbGrid.RemoveAutomaticColumns;
+procedure TCustomDBGrid.RemoveAutomaticColumns;
 begin
   if not (csDesigning in ComponentState) then
-    TDbgridColumns(Columns).RemoveAutoColumns;
+    TDBGridColumns(Columns).RemoveAutoColumns;
 end;
 
-procedure TCustomDbGrid.SelectEditor;
+procedure TCustomDBGrid.SelectEditor;
 begin
   if FDatalink.Active then
     inherited SelectEditor
@@ -2081,47 +2081,47 @@ begin
     Editor := nil;
 end;
 
-procedure TCustomDbGrid.SetEditText(ACol, ARow: Longint; const Value: string);
+procedure TCustomDBGrid.SetEditText(ACol, ARow: Longint; const Value: string);
 begin
   //SelectedField.AsString := AValue; // Delayed to avoid frequent updates
   FTempText := Value;
 end;
 
-function TCustomDbGrid.ScrollBarAutomatic(Which: TScrollStyle): boolean;
+function TCustomDBGrid.ScrollBarAutomatic(Which: TScrollStyle): boolean;
 begin
   if Which=ssHorizontal then
     Result:= true
   else
     Result:=inherited ScrollBarAutomatic(Which);
   {$ifdef dbgScroll}
-  DebugLn('TCustomDbGrid.ScrollbarAutomatic Which=',dbgs(Ord(Which)),
+  DebugLn('TCustomDBGrid.ScrollbarAutomatic Which=',dbgs(Ord(Which)),
     ' Result=',dbgs(Result));
   {$endif}
 end;
 
-function TCustomDbGrid.SelectCell(aCol, aRow: Integer): boolean;
+function TCustomDBGrid.SelectCell(aCol, aRow: Integer): boolean;
 begin
   Result:= (ColWidths[aCol] > 0) and (RowHeights[aRow] > 0);
 end;
 
-procedure TCustomDbGrid.BeginLayout;
+procedure TCustomDBGrid.BeginLayout;
 begin
   inc(FLayoutChangedCount);
 end;
 
-procedure TCustomDbGrid.EditingColumn(aCol: Integer; Ok: Boolean);
+procedure TCustomDBGrid.EditingColumn(aCol: Integer; Ok: Boolean);
 begin
-  {$ifdef dbgdbgrid} DebugLn('Dbgrid.EditingColumn INIT aCol=', InttoStr(aCol), ' Ok=', BoolToStr(ok)); {$endif}
+  {$ifdef dbgDBGrid} DebugLn('DBGrid.EditingColumn INIT aCol=', InttoStr(aCol), ' Ok=', BoolToStr(ok)); {$endif}
   if Ok then begin
     FEditingColumn := aCol;
     FDatalink.Modified := True;
   end
   else
     FEditingColumn := -1;
-  {$ifdef dbgdbgrid} DebugLn('Dbgrid.EditingColumn END'); {$endif}
+  {$ifdef dbgDBGrid} DebugLn('DBGrid.EditingColumn END'); {$endif}
 end;
 
-procedure TCustomDbGrid.EditorCancelEditing;
+procedure TCustomDBGrid.EditorCancelEditing;
 begin
   EditingColumn(FEditingColumn, False); // prevents updating the value
   if EditorMode then begin
@@ -2131,15 +2131,15 @@ begin
   end;
 end;
 
-procedure TCustomDbGrid.EditorDoGetValue;
+procedure TCustomDBGrid.EditorDoGetValue;
 begin
-  {$ifdef dbgdbgrid}DebugLn('dbgrid.EditorDoGetValue INIT');{$endif}
+  {$ifdef dbgDBGrid}DebugLn('DBGrid.EditorDoGetValue INIT');{$endif}
   inherited EditordoGetValue;
   UpdateData;
-  {$ifdef dbgdbgrid}DebugLn('dbgrid.EditorDoGetValue FIN');{$endif}
+  {$ifdef dbgDBGrid}DebugLn('DBGrid.EditorDoGetValue FIN');{$endif}
 end;
 
-procedure TCustomDbGrid.CellClick(const aCol, aRow: Integer);
+procedure TCustomDBGrid.CellClick(const aCol, aRow: Integer);
 begin
   if (aCol>=FixedCols)and(aRow>=FixedRows) then begin
     if ColumnEditorStyle(ACol, SelectedField) = cbsCheckboxColumn then
@@ -2152,19 +2152,19 @@ begin
     OnCellClick(TColumn(ColumnFromGridColumn(aCol)));
 end;
 
-procedure TCustomDbGrid.ChangeBounds(ALeft, ATop, AWidth, AHeight: integer);
+procedure TCustomDBGrid.ChangeBounds(ALeft, ATop, AWidth, AHeight: integer);
 begin
   inherited ChangeBounds(ALeft, ATop, AWidth, AHeight);
 end;
 
-procedure TCustomDbGrid.EndLayout;
+procedure TCustomDBGrid.EndLayout;
 begin
   dec(FLayoutChangedCount);
   if FLayoutChangedCount = 0 then
     DoLayoutChanged;
 end;
 
-function TCustomDbGrid.GetDefaultColumnAlignment(Column: Integer): TAlignment;
+function TCustomDBGrid.GetDefaultColumnAlignment(Column: Integer): TAlignment;
 var
   F: TField;
 begin
@@ -2175,12 +2175,12 @@ begin
     result := taLeftJustify;
 end;
 
-function TCustomDbGrid.GetDefaultColumnWidth(Column: Integer): Integer;
+function TCustomDBGrid.GetDefaultColumnWidth(Column: Integer): Integer;
 begin
   Result := DefaultFieldColWidth(GetDsFieldFromGridColumn(Column));
 end;
 
-function TCustomDbGrid.GetDefaultColumnReadOnly(Column: Integer): boolean;
+function TCustomDBGrid.GetDefaultColumnReadOnly(Column: Integer): boolean;
 var
   F: Tfield;
 begin
@@ -2191,7 +2191,7 @@ begin
   end;
 end;
 
-function TCustomDbGrid.GetDefaultColumnTitle(Column: Integer): string;
+function TCustomDBGrid.GetDefaultColumnTitle(Column: Integer): string;
 var
   F: Tfield;
 begin
@@ -2202,9 +2202,9 @@ begin
     Result := '';
 end;
 
-procedure TCustomDbGrid.DoExit;
+procedure TCustomDBGrid.DoExit;
 begin
-  {$ifdef dbgdbgrid}DebugLn('DbGrid.DoExit INIT');{$Endif}
+  {$ifdef dbgDBGrid}DebugLn('DBGrid.DoExit INIT');{$Endif}
   if not EditorShowing then begin
     if ValidDataSet and (dgCancelOnExit in Options) and
       InsertCancelable then
@@ -2214,10 +2214,10 @@ begin
     end;
   end;
   inherited DoExit;
-  {$ifdef dbgdbgrid}DebugLn('DbGrid.DoExit FIN');{$Endif}
+  {$ifdef dbgDBGrid}DebugLn('DBGrid.DoExit FIN');{$Endif}
 end;
 
-function TCustomDbGrid.DoMouseWheelDown(Shift: TShiftState; MousePos: TPoint
+function TCustomDBGrid.DoMouseWheelDown(Shift: TShiftState; MousePos: TPoint
   ): Boolean;
 begin
   Result := False;
@@ -2231,7 +2231,7 @@ begin
   end;
 end;
 
-function TCustomDbGrid.DoMouseWheelUp(Shift: TShiftState; MousePos: TPoint
+function TCustomDBGrid.DoMouseWheelUp(Shift: TShiftState; MousePos: TPoint
   ): Boolean;
 begin
   Result := False;
@@ -2245,7 +2245,7 @@ begin
   end;
 end;
 
-function TCustomDbGrid.GetEditMask(aCol, aRow: Longint): string;
+function TCustomDBGrid.GetEditMask(aCol, aRow: Longint): string;
 var
   aField: TField;
 begin
@@ -2263,7 +2263,7 @@ begin
   end;
 end;
 
-function TCustomDbGrid.GetEditText(aCol, aRow: Longint): string;
+function TCustomDBGrid.GetEditText(aCol, aRow: Longint): string;
 var
   aField: TField;
 begin
@@ -2275,7 +2275,7 @@ begin
   end;
 end;
 
-function  TCustomDbGrid.GetImageForCheckBox(CheckBoxView: TDBGridCheckBoxState): TBitmap;
+function  TCustomDBGrid.GetImageForCheckBox(CheckBoxView: TDBGridCheckBoxState): TBitmap;
 begin
   if CheckboxView=gcbpUnchecked then
     Result := FUncheckedBitmap
@@ -2288,34 +2288,34 @@ begin
     OnUserCheckboxBitmap(Self, CheckBoxView, Result);
 end;
 
-function TCustomDbGrid.GetIsCellSelected(aCol, aRow: Integer): boolean;
+function TCustomDBGrid.GetIsCellSelected(aCol, aRow: Integer): boolean;
 begin
   Result:=inherited GetIsCellSelected(aCol, aRow) or
     FDrawingMultiSelRecord;
 end;
 
-function TCustomDbGrid.GridCanModify: boolean;
+function TCustomDBGrid.GridCanModify: boolean;
 begin
   result := not ReadOnly and (dgEditing in Options) and not FDataLink.ReadOnly
     and FDataLink.Active and FDatalink.DataSet.CanModify;
 end;
 
-procedure TCustomDbGrid.MoveSelection;
+procedure TCustomDBGrid.MoveSelection;
 begin
   if FSelectionLock then
     exit;
   FIsEditingCheckBox := False;
-  {$ifdef dbgdbgrid}DebugLn('DbGrid.MoveSelection INIT');{$Endif}
+  {$ifdef dbgDBGrid}DebugLn('DBGrid.MoveSelection INIT');{$Endif}
   inherited MoveSelection;
   if FColEnterPending and Assigned(OnColEnter) then begin
     OnColEnter(Self);
   end;
   FColEnterPending:=False;
   UpdateActive;
-  {$ifdef dbgdbgrid}DebugLn('DbGrid.MoveSelection FIN');{$Endif}
+  {$ifdef dbgDBGrid}DebugLn('DBGrid.MoveSelection FIN');{$Endif}
 end;
 
-procedure TCustomDbGrid.DrawAllRows;
+procedure TCustomDBGrid.DrawAllRows;
 var
   CurActiveRecord: Integer;
 begin
@@ -2332,7 +2332,7 @@ begin
   end;
 end;
 
-procedure TCustomDbGrid.DrawFocusRect(aCol, aRow: Integer; ARect: TRect);
+procedure TCustomDBGrid.DrawFocusRect(aCol, aRow: Integer; ARect: TRect);
 begin
   // Draw focused cell if we have the focus
   if Self.Focused and (dgAlwaysShowSelection in Options) and
@@ -2344,7 +2344,7 @@ begin
 end;
 
 //
-procedure TCustomDbGrid.DrawRow(ARow: Integer);
+procedure TCustomDBGrid.DrawRow(ARow: Integer);
 begin
   if (ARow>=FixedRows) and FDataLink.Active then begin
     //if (Arow>=FixedRows) and FCanBrowse then
@@ -2365,7 +2365,7 @@ begin
   {$endif}
 end;
 
-procedure TCustomDbGrid.DrawCell(aCol, aRow: Integer; aRect: TRect;
+procedure TCustomDBGrid.DrawCell(aCol, aRow: Integer; aRect: TRect;
   aState: TGridDrawState);
 begin
   inherited DrawCell(aCol, aRow, aRect, aState);
@@ -2381,7 +2381,7 @@ begin
     DefaultDrawCell(aCol, aRow, aRect, aState);
 end;
 
-procedure TCustomDbGrid.DrawCheckboxBitmaps(aCol: Integer; aRect: TRect;
+procedure TCustomDBGrid.DrawCheckboxBitmaps(aCol: Integer; aRect: TRect;
   F: TField);
 var
   ChkBitmap: TBitmap;
@@ -2415,7 +2415,7 @@ begin
   end;
 end;
 
-function TCustomDbGrid.EditorCanAcceptKey(const ch: Char): boolean;
+function TCustomDBGrid.EditorCanAcceptKey(const ch: Char): boolean;
 var
   aField: TField;
 begin
@@ -2429,7 +2429,7 @@ begin
   end;
 end;
 
-function TCustomDbGrid.EditorIsReadOnly: boolean;
+function TCustomDBGrid.EditorIsReadOnly: boolean;
 begin
   Result := inherited EditorIsReadOnly;
   if not Result then begin
@@ -2438,7 +2438,7 @@ begin
   end;
 end;
 
-procedure TCustomDbGrid.HeaderSized(IsColumn: Boolean; Index: Integer);
+procedure TCustomDBGrid.HeaderSized(IsColumn: Boolean; Index: Integer);
 var
   i: Integer;
 begin
@@ -2454,13 +2454,13 @@ begin
   end;
 end;
 
-procedure TCustomDbGrid.UpdateActive;
+procedure TCustomDBGrid.UpdateActive;
 var
   PrevRow: Integer;
 begin
   if (csDestroying in ComponentState) or not FDatalink.Active then
     exit;
-    {$IfDef dbgdbgrid}
+    {$IfDef dbgDBGrid}
   DebugLn(Name,'.UpdateActive: ActiveRecord=', dbgs(FDataLink.ActiveRecord),
             ' FixedRows=',dbgs(FixedRows), ' Row=', dbgs(Row));
     {$endif}
@@ -2471,7 +2471,7 @@ begin
   InvalidateRow(Row);
 end;
 
-function TCustomDbGrid.UpdateGridCounts: Integer;
+function TCustomDBGrid.UpdateGridCounts: Integer;
 var
   RecCount: Integer;
   FRCount, FCCount: Integer;
@@ -2513,7 +2513,7 @@ begin
   end;
 end;
 
-procedure TCustomDbGrid.UpdateVertScrollbar(const aVisible: boolean;
+procedure TCustomDBGrid.UpdateVertScrollbar(const aVisible: boolean;
   const aRange, aPage: Integer);
 begin
   {$ifdef DbgScroll}
@@ -2529,14 +2529,14 @@ begin
     ScrollBarShow(SB_VERT, AVisible);
 end;
 
-procedure TCustomDbGrid.VisualChange;
+procedure TCustomDBGrid.VisualChange;
 begin
   if FVisualChangeCount=0 then begin
     inherited VisualChange;
   end;
 end;
 
-constructor TCustomDbGrid.Create(AOwner: TComponent);
+constructor TCustomDBGrid.Create(AOwner: TComponent);
 begin
   FEditingColumn:=-1;
   DragDx:=5;
@@ -2590,9 +2590,9 @@ begin
     GetSysColor(COLOR_BTNFACE));
 end;
 
-procedure TCustomDbGrid.InitiateAction;
+procedure TCustomDBGrid.InitiateAction;
 begin
-  {$ifdef dbgdbgrid}DebugLn('===> dbgrid.InitiateAction INIT');{$endif}
+  {$ifdef dbgDBGrid}DebugLn('===> DBGrid.InitiateAction INIT');{$endif}
   inherited InitiateAction;
   if (gsUpdatingData in FGridStatus) then begin
     EndUpdating;
@@ -2603,10 +2603,10 @@ begin
     end;
     }
   end;
-  {$ifdef dbgdbgrid}DebugLn('<=== dbgrid.InitiateAction FIN');{$endif}
+  {$ifdef dbgDBGrid}DebugLn('<=== DBGrid.InitiateAction FIN');{$endif}
 end;
 
-procedure TCustomDbGrid.DefaultDrawColumnCell(const Rect: TRect;
+procedure TCustomDBGrid.DefaultDrawColumnCell(const Rect: TRect;
   DataCol: Integer; Column: TColumn; State: TGridDrawState);
 
   function GetDatasetState: TDataSetState;
@@ -2649,7 +2649,7 @@ begin
   end;
 end;
 
-function TCustomDbGrid.EditorByStyle(Style: TColumnButtonStyle): TWinControl;
+function TCustomDBGrid.EditorByStyle(Style: TColumnButtonStyle): TWinControl;
 begin
   // we want override the editor style if it is cbsAuto because
   // field.datatype might be ftBoolean or some other cases
@@ -2659,7 +2659,7 @@ begin
   Result:=inherited EditorByStyle(Style);
 end;
 
-procedure TCustomDbGrid.ResetColWidths;
+procedure TCustomDBGrid.ResetColWidths;
 begin
   if not FDefaultColWidths then begin
     FDefaultColWidths := True;
@@ -2667,13 +2667,13 @@ begin
   end;
 end;
 
-procedure TCustomDbGrid.SelectRecord(AValue: boolean);
+procedure TCustomDBGrid.SelectRecord(AValue: boolean);
 begin
   if dgMultiSelect in Options then
     FSelectedRows.CurrentRowSelected := AValue;
 end;
 
-destructor TCustomDbGrid.Destroy;
+destructor TCustomDBGrid.Destroy;
 begin
   FUncheckedBitmap.Free;
   FCheckedBitmap.Free;
@@ -2705,7 +2705,7 @@ end;
 
 procedure TComponentDataLink.RecordChanged(Field: TField);
 begin
-  {$ifdef dbgdbgrid}
+  {$ifdef dbgDBGrid}
   DebugLn('TComponentDataLink.RecordChanged');
   {$endif}
   if Assigned(OnRecordChanged) then
@@ -2714,7 +2714,7 @@ end;
 
 procedure TComponentDataLink.DataSetChanged;
 begin
-  {$ifdef dbgdbgrid}
+  {$ifdef dbgDBGrid}
   DebugLn('TComponentDataLink.DataSetChanged, FirstRecord=', dbgs(FirstRecord));
   {$Endif}
   // todo: improve this routine, for example: OnDatasetInserted
@@ -2724,7 +2724,7 @@ end;
 
 procedure TComponentDataLink.ActiveChanged;
 begin
-  {$ifdef dbgdbgrid}
+  {$ifdef dbgDBGrid}
   DebugLn('TComponentDataLink.ActiveChanged');
   {$endif}
   if Active then begin
@@ -2755,7 +2755,7 @@ end;
 
 procedure TComponentDataLink.LayoutChanged;
 begin
-  {$ifdef dbgdbgrid}
+  {$ifdef dbgDBGrid}
   DebugLn('TComponentDataLink.LayoutChanged');
   {$Endif}
   if Assigned(OnLayoutChanged) then
@@ -2764,7 +2764,7 @@ end;
 
 procedure TComponentDataLink.DataSetScrolled(Distance: Integer);
 begin
-  {$ifdef dbgdbgrid}
+  {$ifdef dbgDBGrid}
   DebugLn('TComponentDataLink.DataSetScrolled(',IntToStr(Distance),')');
   {$endif}
   if Assigned(OnDataSetScrolled) then
@@ -2773,14 +2773,14 @@ end;
 
 procedure TComponentDataLink.FocusControl(Field: TFieldRef);
 begin
-  {$ifdef dbgdbgrid}
+  {$ifdef dbgDBGrid}
   DebugLn('TComponentDataLink.FocusControl');
   {$endif}
 end;
 
 procedure TComponentDataLink.CheckBrowseMode;
 begin
-  {$ifdef dbgdbgrid}
+  {$ifdef dbgDBGrid}
   DebugLn(ClassName,'.CheckBrowseMode');
   {$endif}
   inherited CheckBrowseMode;
@@ -2794,7 +2794,7 @@ end;
 
 procedure TComponentDataLink.EditingChanged;
 begin
-  {$ifdef dbgdbgrid}
+  {$ifdef dbgDBGrid}
   DebugLn(ClassName,'.EditingChanged');
   {$endif}
   if Assigned(OnEditingChanged) then
@@ -2803,7 +2803,7 @@ end;
 
 procedure TComponentDataLink.UpdateData;
 begin
-  {$ifdef dbgdbgrid}
+  {$ifdef dbgDBGrid}
   DebugLn(ClassName,'.UpdateData');
   {$endif}
   if Assigned(OnUpdatedata) then
@@ -2813,37 +2813,37 @@ end;
 function TComponentDataLink.MoveBy(Distance: Integer): Integer;
 begin
   (*
-  {$ifdef dbgdbgrid}
+  {$ifdef dbgDBGrid}
   DebugLn(ClassName,'.MoveBy  INIT: Distance=',Distance);
   {$endif}
   *)
   Result:=inherited MoveBy(Distance);
   (*
-  {$ifdef dbgdbgrid}
+  {$ifdef dbgDBGrid}
   DebugLn(ClassName,'.MoveBy  END: Distance=',Distance);
   {$endif}
   *)
 end;
 
-{ TDbGridColumns }
+{ TDBGridColumns }
 
-function TDbGridColumns.GetColumn(Index: Integer): TColumn;
+function TDBGridColumns.GetColumn(Index: Integer): TColumn;
 begin
   result := TColumn( inherited Items[Index] );
 end;
 
-procedure TDbGridColumns.SetColumn(Index: Integer; Value: TColumn);
+procedure TDBGridColumns.SetColumn(Index: Integer; Value: TColumn);
 begin
   Items[Index].Assign( Value );
 end;
 
-procedure TDbGridColumns.Update(Item: TCollectionItem);
+procedure TDBGridColumns.Update(Item: TCollectionItem);
 begin
   if (Grid<>nil) and not (csLoading in Grid.ComponentState) then
     TCustomDBGrid(Grid).LayoutChanged;
 end;
 
-function TDbGridColumns.ColumnFromField(Field: TField): TColumn;
+function TDBGridColumns.ColumnFromField(Field: TField): TColumn;
 var
   i: Integer;
 begin
@@ -2856,7 +2856,7 @@ begin
   result:=nil;
 end;
 
-function TDbGridColumns.HasAutomaticColumns: boolean;
+function TDBGridColumns.HasAutomaticColumns: boolean;
 var
   i: Integer;
 begin
@@ -2868,7 +2868,7 @@ begin
     end;
 end;
 
-function TDbGridColumns.HasDesignColumns: boolean;
+function TDBGridColumns.HasDesignColumns: boolean;
 var
   i: Integer;
 begin
@@ -2880,13 +2880,13 @@ begin
     end;
 end;
 
-procedure TDbGridColumns.RemoveAutoColumns;
+procedure TDBGridColumns.RemoveAutoColumns;
 var
   i: Integer;
-  G: TCustomDbGrid;
+  G: TCustomDBGrid;
 begin
   if HasAutomaticColumns then begin
-    G := TCustomDbGrid(Grid);
+    G := TCustomDBGrid(Grid);
     Include(G.GridStatus, gsRemovingAutoColumns);
     BeginUpdate;
     try
@@ -2917,7 +2917,7 @@ begin
   result := TColumn(P1).DesignIndex - TColumn(P2).DesignIndex;
 end;
 
-procedure TDbGridColumns.ResetColumnsOrder(ColumnOrder: TColumnOrder);
+procedure TDBGridColumns.ResetColumnsOrder(ColumnOrder: TColumnOrder);
 var
   L: TList;
   i: Integer;
@@ -2950,11 +2950,11 @@ begin
   end;
 end;
 
-function TDbGridColumns.Add: TColumn;
+function TDBGridColumns.Add: TColumn;
 var
-  G: TCustomDbGrid;
+  G: TCustomDBGrid;
 begin
-  G := TCustomDbGrid(Grid);
+  G := TCustomDBGrid(Grid);
   if G<>nil then begin
     // remove automatic columns before adding user columns
     if not (gsAddingAutoColumns in G.GridStatus) then
@@ -2963,7 +2963,7 @@ begin
   result := TColumn( inherited add );
 end;
 
-procedure TDbGridColumns.LinkFields;
+procedure TDBGridColumns.LinkFields;
 var
   i: Integer;
   G: TCustomDBGrid;
@@ -3124,7 +3124,7 @@ end;
 
 function TColumn.GetDefaultWidth: Integer;
 var
-  AGrid: TCustomDbGrid;
+  AGrid: TCustomDBGrid;
   WasAllocated: boolean;
   aDC: HDC;
 begin
@@ -3171,8 +3171,8 @@ var
   AGrid: TCustomGrid;
 begin
   inherited Create(ACollection);
-  if ACollection is TDbGridColumns then begin
-    AGrid := TDbGridColumns(ACollection).Grid;
+  if ACollection is TDBGridColumns then begin
+    AGrid := TDBGridColumns(ACollection).Grid;
     if (AGrid<>nil) and (csLoading in AGrid.ComponentState) then
       FDesignIndex := Index
     else
@@ -3194,7 +3194,7 @@ end;
 
 procedure TColumn.LinkField;
 var
-  AGrid: TCustomDbGrid;
+  AGrid: TCustomDBGrid;
 begin
   AGrid:= TCustomDBGrid(Grid);
   if (AGrid<>nil) and AGrid.FDatalink.Active then begin
@@ -3326,7 +3326,7 @@ begin
     raise EInvalidGridOperation.Create('Dataset Inactive');
 end;
 
-constructor TBookmarkList.Create(AGrid: TCustomDbGrid);
+constructor TBookmarkList.Create(AGrid: TCustomDBGrid);
 begin
   inherited Create;
   FGrid := AGrid;
