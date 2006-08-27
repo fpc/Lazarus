@@ -487,7 +487,8 @@ type
     );
 
   TFindDeclarationListFlag = (
-    fdlfWithoutEmptyProperties // omit properties without type and attributes
+    fdlfWithoutEmptyProperties, // omit properties without type and attributes
+    fdlfWithoutForwards         // omit foward classes and procedures
     );
   TFindDeclarationListFlags = set of TFindDeclarationListFlag;
   
@@ -3037,18 +3038,50 @@ var
   NewTopLine: integer;
   CurTool: TFindDeclarationTool;
   OldPositions: TFPList;
-  Add: Boolean;
+  NodeList: TFPList;
+  CleanPos: integer;
+
+  procedure AddPos;
+  begin
+    AddCodePosition(OldPositions,NewPos);
+    if (NodeList.IndexOf(NewNode)>=0) then
+      exit;
+    NodeList.Add(NewNode);
+
+    if (fdlfWithoutEmptyProperties in Flags)
+    and (NewNode.Desc=ctnProperty)
+    and (NewTool.PropNodeIsTypeLess(NewNode)) then
+      exit;
+    if (fdlfWithoutForwards in Flags) then begin
+      if (NewNode.Desc=ctnTypeDefinition)
+      and NewTool.NodeIsForwardDeclaration(NewNode)
+      then
+        exit;
+      if (NewNode.Desc=ctnProcedure)
+      and ((NewNode.SubDesc and ctnsForwardDeclaration)>0) then
+        exit;
+    end;
+    AddCodePosition(ListOfPCodeXYPosition,NewPos);
+  end;
+
 begin
   Result:=true;
   ListOfPCodeXYPosition:=nil;
-  AddCodePosition(ListOfPCodeXYPosition,CursorPos);
   NewTool:=nil;
   NewNode:=nil;
   OldPositions:=nil;
+  NodeList:=nil;
 
   ActivateGlobalWriteLock;
   try
-    AddCodePosition(OldPositions,CursorPos);
+    BuildTreeAndGetCleanPos(trAll,CursorPos,CleanPos,[]);
+
+    NodeList:=TFPList.Create;
+    NewTool:=Self;
+    NewNode:=FindDeepestExpandedNodeAtPos(CleanPos,true);
+    NewPos:=CursorPos;
+    AddPos;
+
     CurCursorPos:=CursorPos;
     CurTool:=Self;
     try
@@ -3057,32 +3090,26 @@ begin
         NewTool,NewNode,NewPos,NewTopLine) do
       begin
         if IndexOfCodePosition(OldPositions,@NewPos)>=0 then break;
-        AddCodePosition(OldPositions,NewPos);
-        Add:=true;
-        if (fdlfWithoutEmptyProperties in Flags)
-        and (NewNode.Desc=ctnProperty)
-        and (NewTool.PropNodeIsTypeLess(NewNode)) then
-          Add:=false;
-        if Add then
-          AddCodePosition(ListOfPCodeXYPosition,NewPos);
+        AddPos;
         CurCursorPos:=NewPos;
         CurTool:=NewTool;
-        {debugln('TFindDeclarationTool.FindDeclarationAndOverload ',
+        debugln('TFindDeclarationTool.FindDeclarationAndOverload ',
           ' Self="',MainFilename,'" ');
         if CurCursorPos.Code<>nil then
           debugln('  CurCursorPos=',CurCursorPos.Code.Filename,' ',dbgs(CurCursorPos.X),',',dbgs(CurCursorPos.Y));
         if CurTool<>nil then
-          debugln('  CurTool=',CurTool.MainFilename);}
+          debugln('  CurTool=',CurTool.MainFilename);
         if (CurTool=nil) then exit;
       end;
     except
-      // just stop on errors
+      // ignore normal errors
       on E: ECodeToolError do ;
       on E: ELinkScannerError do ;
     end;
   finally
     DeactivateGlobalWriteLock;
     FreeListOfPCodeXYPosition(OldPositions);
+    NodeList.Free;
   end;
 end;
 

@@ -531,8 +531,8 @@ function THelpManager.ShowHelpForSourcePosition(const Filename: string;
     try
       // get all possible declarations of this identifier
       if CodeToolBoss.FindDeclarationAndOverload(CodeBuffer,CodePos.X,CodePos.Y,
-        ListOfPCodeXYPosition,[fdlfWithoutEmptyProperties]) then
-      begin
+        ListOfPCodeXYPosition,[fdlfWithoutEmptyProperties,fdlfWithoutForwards])
+      then begin
         debugln('THelpManager.ShowHelpForSourcePosition B Success ',dbgs(ListOfPCodeXYPosition.Count));
         // convert the source positions in pascal help context list
         if ListOfPCodeXYPosition=nil then exit;
