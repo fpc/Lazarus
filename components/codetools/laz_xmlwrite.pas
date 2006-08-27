@@ -65,6 +65,7 @@ const
     (@WriteElement, @WriteAttribute, @WriteText, @WriteCDATA, @WriteEntityRef,
      @WriteEntity, @WritePI, @WriteComment, @WriteDocument, @WriteDocumentType,
      @WriteDocumentFragment, @WriteNotation);
+  LineEnd: shortstring = LineEnding;
 
 procedure WriteNode(node: TDOMNode);
 begin
@@ -116,7 +117,7 @@ procedure Stream_WriteLn(const Buffer; Count: Longint);
 begin
   if Count > 0 then begin
     stream.Write(Buffer, Count);
-    stream.WriteByte(10);
+    stream.Write(LineEnd[1],length(LineEnd));
   end;
 end;
 
@@ -139,7 +140,7 @@ end;
 
 procedure wrtLineEnd;
 begin
-  wrt(#10,1);
+  wrt(LineEnd[1],length(LineEnd));
 end;
 
 // -------------------------------------------------------------------

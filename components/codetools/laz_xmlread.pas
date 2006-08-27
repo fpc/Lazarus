@@ -263,9 +263,11 @@ begin
   x := 1;
   y := 1;
   while apos < buf do begin
-    if apos[0] = #10 then begin
+    if apos^ in [#10,#13] then begin
       Inc(y);
       x := 1;
+      if (apos[1] in [#10,#13]) and (apos[0]<>apos[1]) then
+        inc(apos);
     end else
       Inc(x);
     Inc(apos);
