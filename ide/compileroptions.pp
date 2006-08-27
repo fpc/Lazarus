@@ -1109,7 +1109,8 @@ begin
   StripSymbols := XMLConfigFile.GetValue(p+'Debugging/StripSymbols/Value', false);
   ReadLinkSmart;
   PassLinkerOptions := XMLConfigFile.GetValue(p+'Options/PassLinkerOptions/Value', false);
-  LinkerOptions := f(XMLConfigFile.GetValue(p+'Options/LinkerOptions/Value', ''));
+  LinkerOptions := LineBreaksToSystemLineBreaks(
+                f(XMLConfigFile.GetValue(p+'Options/LinkerOptions/Value', '')));
   Win32GraphicApp := XMLConfigFile.GetValue(p+'Options/Win32/GraphicApplication/Value', false);
   ExecutableType := CompilationExecutableTypeNameToType(
                     XMLConfigFile.GetValue(p+'Options/ExecutableType/Value',''));
@@ -1147,7 +1148,7 @@ begin
   else
     CustomConfigFile := XMLConfigFile.GetValue(p+'ConfigFile/CustomConfigFile/Value', false);
   ConfigFilePath := f(XMLConfigFile.GetValue(p+'ConfigFile/ConfigFilePath/Value', 'extrafpc.cfg'));
-  CustomOptions := XMLConfigFile.GetValue(p+'CustomOptions/Value', '');
+  CustomOptions := LineBreaksToSystemLineBreaks(XMLConfigFile.GetValue(p+'CustomOptions/Value', ''));
 
   { Compilation }
   CompilerPath := f(XMLConfigFile.GetValue(p+'CompilerPath/Value','$(CompPath)'));
@@ -1259,7 +1260,8 @@ begin
   XMLConfigFile.SetDeleteValue(p+'Debugging/StripSymbols/Value', StripSymbols,false);
   XMLConfigFile.SetDeleteValue(p+'LinkSmart/Value', LinkSmart,false);
   XMLConfigFile.SetDeleteValue(p+'Options/PassLinkerOptions/Value', PassLinkerOptions,false);
-  XMLConfigFile.SetDeleteValue(p+'Options/LinkerOptions/Value', LinkerOptions,'');
+  XMLConfigFile.SetDeleteValue(p+'Options/LinkerOptions/Value',
+                               LineBreaksToSystemLineBreaks(LinkerOptions),'');
   XMLConfigFile.SetDeleteValue(p+'Options/Win32/GraphicApplication/Value', Win32GraphicApp,false);
   XMLConfigFile.SetDeleteValue(p+'Options/ExecutableType/Value',
                                  CompilationExecutableTypeNames[ExecutableType],
@@ -1295,7 +1297,8 @@ begin
   XMLConfigFile.SetDeleteValue(p+'ConfigFile/DontUseConfigFile/Value', DontUseConfigFile,false);
   XMLConfigFile.SetDeleteValue(p+'ConfigFile/CustomConfigFile/Value', CustomConfigFile,false);
   XMLConfigFile.SetDeleteValue(p+'ConfigFile/ConfigFilePath/Value', ConfigFilePath,'extrafpc.cfg');
-  XMLConfigFile.SetDeleteValue(p+'CustomOptions/Value', CustomOptions,'');
+  XMLConfigFile.SetDeleteValue(p+'CustomOptions/Value',
+                               LineBreaksToSystemLineBreaks(CustomOptions),'');
 
   { Compilation }
   XMLConfigFile.SetDeleteValue(p+'CompilerPath/Value', CompilerPath,'');

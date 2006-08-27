@@ -823,10 +823,14 @@ begin
     // => collect all neighbour controls for a page
     NeighbourList:=FindPageNeighbours(Layout,NeighbourControl,AnchorControls);
     try
+      NeighbourControl.Parent.DisableAlign;
       if AnchorControls[akLeft]=nil then ;
-      // TODO
+      // TODO: create a PageControl and two pages. And move the neigbbours onto
+      // one page and Control to the other page.
+      
     finally
       NeighbourList.Free;
+      NeighbourControl.Parent.EnableAlign;
     end;
   end;
 
@@ -1157,14 +1161,100 @@ end;
 
 function TCustomLazControlDocker.FindPageNeighbours(Layout: TLazDockConfigNode;
   StartControl: TControl; out AnchorControls: TAnchorControls): TFPList;
+{ Creates a list of TControl, containing StartControl and neighbours,
+  which are on the same page according to Layout and are a rectangular area.
+  AnchorControls are the four boundaries of the rectangular area and the list
+  contains all controls within these boundaries (and with the same Parent as
+  StartControl).
+}
+var
+  ControlList: TFPList;
+  PageNode: TLazDockConfigNode;
+
+  function AddNeighbour(AControl: TControl): boolean;
+  var
+    i: Integer;
+    Sibling: TControl;
+    a: TAnchorKind;
+    NodeName: String;
+    Node: TLazDockConfigNode;
+    OldAnchorControls: TAnchorControls;
+  begin
+    Result:=false;
+    if (AControl=nil) or (AControl.Parent<>StartControl.Parent) then exit;
+    if ControlList.IndexOf(AControl)>=0 then begin
+      // already added
+      exit(true);
+    end;
+    NodeName:=Manager.GetControlConfigName(AControl);
+    Node:=Layout.FindByName(NodeName);
+    if (Node=nil) or (Node.Parent<>PageNode) then begin
+      // this control does not belong to this page
+      exit;
+    end;
+
+    // add AControl to the list of neighbours
+    ControlList.Add(AControl);
+    // fix AnchorControls, so
+    for a:=Low(TAnchorKind) to High(TAnchorKind) do begin
+      OldAnchorControls[a]:=nil;
+      Sibling:=AControl.AnchorSide[a].Control;
+      if (Sibling<>nil)
+      and ((AnchorControls[a]=AControl)
+        or (AnchorControls[a]=AControl.AnchorSide[OppositeAnchor[a]].Control))
+      then begin
+        OldAnchorControls[a]:=AnchorControls[a];
+        AnchorControls[a]:=Sibling;
+      end;
+    end;
+    
+    try
+      // add all controls anchored to this control
+      for i:=0 to StartControl.Parent.ControlCount-1 do begin
+        Sibling:=StartControl.Parent.Controls[i];
+        for a:=Low(TAnchorKind) to High(TAnchorKind) do begin
+          if Sibling.AnchorSide[a].Control=AControl then
+            if not AddNeighbour(Sibling) then exit;
+        end;
+      end;
+      Result:=true;
+    finally
+      if not Result then begin
+        // remove AControl from list and restore AnchorControls
+        ControlList.Remove(AControl);
+        for a:=Low(TAnchorKind) to High(TAnchorKind) do begin
+          if OldAnchorControls[a]<>nil then
+            AnchorControls[a]:=OldAnchorControls[a];
+        end;
+      end;
+    end;
+  end;
+  
 var
   a: TAnchorKind;
+  Added: Boolean;
+  NodeName: String;
+  StartNode: TLazDockConfigNode;
 begin
-  Result:=TFPList.Create;
-  Result.Add(StartControl);
+  ControlList:=TFPList.Create;
+  ControlList.Add(StartControl);
   for a:=Low(TAnchorKind) to High(TAnchorKind) do
     AnchorControls[a]:=StartControl.AnchorSide[a].Control;
-  // TODO: extend
+
+  NodeName:=Manager.GetControlConfigName(StartControl);
+  if NodeName='' then exit;
+  StartNode:=Layout.FindByName(NodeName);
+  if StartNode=nil then exit;
+  PageNode:=StartNode.Parent;
+  if PageNode=nil then exit;
+  repeat
+    Added:=false;
+    for a:=Low(TAnchorKind) to High(TAnchorKind) do begin
+      if AddNeighbour(AnchorControls[a]) then
+        Added:=true;
+    end;
+  until not Added;
+  Result:=ControlList;
 end;
 
 function TCustomLazControlDocker.GetControlName(AControl: TControl): string;
