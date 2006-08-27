@@ -360,31 +360,41 @@ var
   end;
 
 var
-  FFilter: string;
+  Filter: string;
+  FileName: string;
+  InitialDir: String;
   FileNameBuffer: array[0..1000] of char;
   BufferTooSmall: boolean;
 begin
   FillChar(FileNameBuffer[0], sizeof(FileNameBuffer), 0);
-  StrLCopy(@FileNameBuffer[0],PChar(AOpenDialog.Filename),sizeof(FileNameBuffer)-1);
+  FileName := AOpenDialog.FileName;
+  InitialDir := AOpenDialog.InitialDir;
+  if (FileName<>'') and (FileName[length(FileName)]=PathDelim) then begin
+    // if the filename contains a directory, set the initial directory
+    // and clear the filename
+    InitialDir := Copy(FileName,1, Length(FileName)-1);
+    FileName := '';
+  end;
+  StrLCopy(@FileNameBuffer[0],PChar(Filename),sizeof(FileNameBuffer)-1);
   if AOpenDialog.Filter <> '' then 
   begin
-    FFilter := AOpenDialog.Filter;
-    ReplacePipe(FFilter);
+    Filter := AOpenDialog.Filter;
+    ReplacePipe(Filter);
   end
   else
-    FFilter:='All File Types(*.*)'+#0+'*.*'+#0#0; // Default -> avoid empty combobox
+    Filter:='All File Types(*.*)'+#0+'*.*'+#0#0; // Default -> avoid empty combobox
   ZeroMemory(@OpenFile, sizeof(OpenFileName));
   with OpenFile Do
   begin
     lStructSize := sizeof(OpenFileName);
     hWndOwner := GetOwnerHandle(AOpenDialog);
     hInstance := System.hInstance;
-    lpStrFilter := StrAlloc(Length(FFilter)+1);
-    StrPCopy(lpStrFilter, FFilter);
+    lpStrFilter := StrAlloc(Length(Filter)+1);
+    StrPCopy(lpStrFilter, Filter);
     nFilterIndex := AOpenDialog.FilterIndex;
     lpStrFile := FileNameBuffer;
     lpStrTitle := PChar(AOpenDialog.Title);
-    lpStrInitialDir := PChar(AOpenDialog.InitialDir);
+    lpStrInitialDir := PChar(InitialDir);
     nMaxFile := sizeof(FileNameBuffer);
     lpfnHook := @OpenFileDialogCallBack;
     Flags := GetFlagsFromOptions(AOpenDialog.Options);
