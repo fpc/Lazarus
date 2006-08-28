@@ -68,7 +68,7 @@ begin
   result:=(pos(#10,s)>0) or (pos(#13,s)>0);
 end;
 
-Procedure TCustomLabel.DoAutoSize;
+procedure TCustomLabel.DoAutoSize;
 var
   NewWidth, NewHeight: integer;
   CurAnchors: TAnchors;
@@ -84,7 +84,7 @@ begin
   AutoSizing := True;
   try
     CalcSize(NewWidth, NewHeight);
-    //debugln('TCustomLabel.DoAutoSize ',dbgs(Left),' ',dbgs(Top),' ',dbgs(NewWidth),' ',dbgs(NewHeight));
+    //debugln('TCustomLabel.DoAutoSize Nice ',dbgs(Left),',',dbgs(Top),',w=',dbgs(NewWidth),',h',dbgs(NewHeight));
     CurAnchors:=[];
     if Align in [alLeft,alRight,alBottom,alTop,alClient] then
       CurAnchors:=AnchorAlign[Align];
@@ -94,13 +94,14 @@ begin
     if CurAnchors*[akTop,akBottom]=[akTop,akBottom] then
       NewHeight:=Height;
 
+    //debugln('TCustomLabel.DoAutoSize Anchored ',dbgs(Left),',',dbgs(Top),',w=',dbgs(NewWidth),',h=',dbgs(NewHeight));
     SetBoundsKeepBase(Left, Top, NewWidth, NewHeight);
   finally
     AutoSizing := False;
   end;
 end;
 
-Procedure TCustomLabel.SetAlignment(Value : TAlignment);
+procedure TCustomLabel.SetAlignment(Value : TAlignment);
 begin
   //debugln('TCustomLabel.SetAlignment Old=',dbgs(ord(Alignment)),' New=',dbgs(ord(Value)),' csLoading=',dbgs(csLoading in ComponentState));
   if FAlignment <> Value then begin

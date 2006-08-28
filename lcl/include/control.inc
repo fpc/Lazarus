@@ -33,21 +33,21 @@
   Calls DoAutoSize smart.
   During loading and handle creation the calls are delayed.
 
-  This method do the same as TWinControl.DoAutoSize at the beginning.
+  This method does the same as TWinControl.DoAutoSize at the beginning.
   But since DoAutoSize is commonly overriden by existing Delphi components,
   they do not all tests, which can result in too much overhead. To reduce this
   the LCL calls AdjustSize instead.
 ------------------------------------------------------------------------------}
 procedure TControl.Adjustsize;
 begin
-  If not AutoSizeCanStart then exit;
-  if AutoSizeDelayed then begin
+  if (not AutoSizeCanStart) or AutoSizeDelayed then begin
     //debugln('TControl.AdjustSize AutoSizeDelayed ',DbgSName(Self));
     Include(FControlFlags,cfAutoSizeNeeded);
     exit;
   end;
   //debugln('TControl.AdjustSize DoAutoSize ',DbgSName(Self));
   DoAutoSize;
+  Exclude(FControlFlags,cfAutoSizeNeeded);
 end;
 
 {------------------------------------------------------------------------------
@@ -365,7 +365,7 @@ begin
       TWinControl(Self).DisableAlign;
     try
       // resize parents client area
-      If Parent <> nil then
+      if Parent <> nil then
         Parent.AdjustSize;
       if UpdatePosSizeChanged then exit;
       // notify before autosizing
@@ -385,6 +385,8 @@ begin
       // (this will autosize the childs)
       if Self is TWinControl then
         TWinControl(Self).EnableAlign;
+      // autosize self
+      AdjustSize;
     end;
   finally
     dec(FSizeLock);
@@ -404,6 +406,7 @@ begin
     Resize;
     CheckOnChangeBounds;
     // for delphi compatibility send size/move messages
+    UpdatePosSizeChanged;
     SendMoveSizeMessages(SizeChanged,PosChanged);
   end;
 end;
@@ -2546,9 +2549,10 @@ var
   OldAlign: TAlign;
 begin
   if FAlign = Value then exit;
-  //DebugLn('TControl.SetAlign ',Name,':',ClassName,' Old=',AlignNames[FAlign],' New=',AlignNames[Value]);
+  //DebugLn(['TControl.SetAlign ',DbgSName(Self),' Old=',AlignNames[FAlign],' New=',AlignNames[Value],' ',Anchors<>AnchorAlign[FAlign]]);
   OldAlign:=FAlign;
   FAlign := Value;
+  Exclude(FControlFlags,cfLastAlignedBoundsValid);
   // if anchors were on default then change them to new default
   // This is done for Delphi compatibility.
   if (Anchors=AnchorAlign[OldAlign]) and (Anchors<>AnchorAlign[FAlign]) then
@@ -2564,6 +2568,7 @@ procedure TControl.SetAnchors(const AValue: TAnchors);
 begin
   if Anchors=AValue then exit;
   FAnchors:=AValue;
+  Exclude(FControlFlags,cfLastAlignedBoundsValid);
   RequestAlign;
 end;
 
@@ -3764,7 +3769,7 @@ end;
   undefined values will be replaced by the current width and height.
 
   WithThemeSpace: If true, adds space for stacking. For example: TRadioButton
-  has a minimum size. But for staking multiple TRadioButtons there should be
+  has a minimum size. But for stacking multiple TRadioButtons there should be
   some space around. This space is theme dependent, so it passed parameter to
   the widgetset.
 

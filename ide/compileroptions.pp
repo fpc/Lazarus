@@ -1361,7 +1361,7 @@ begin
   if (Result<>'') and FilenameIsAbsolute(Result) then begin
     // fully specified target filename
   end else if Result<>'' then begin
-    // TargetFilename is relative to project directory
+    // TargetFilename is relative to main source file
     Result:=AppendPathDelim(ExtractFilePath(MainSourceFileName))+Result;
   end else begin
     // calculate output directory

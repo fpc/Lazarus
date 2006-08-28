@@ -170,10 +170,10 @@ function TrimFilename(const AFilename: string): string;
       Result:=true;
       exit;
     end;
-    l:=length(TheFilename);
     // check heading spaces
     if TheFilename[1]=' ' then exit;
     // check trailing spaces
+    l:=length(TheFilename);
     if TheFilename[l]=' ' then exit;
     i:=1;
     while i<=l do begin

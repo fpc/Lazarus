@@ -1067,7 +1067,7 @@ var
     CurBaseBounds: TRect;
     NewRight: Integer;
     NewBottom: Integer;
-  var
+
     MinWidth: Integer;
     MaxWidth: Integer;
     MinHeight: Integer;
@@ -1080,6 +1080,8 @@ var
     AnchorSideCache: array[TAnchorKind] of integer;
     CurAnchors: TAnchors;
     CurAlignAnchors: TAnchors;
+    OldBounds: TRect;
+    NewBounds: TRect;
 
     function ConstraintWidth(NewWidth: integer): Integer;
     begin
@@ -1158,7 +1160,7 @@ var
 
   begin
     {$IFDEF CHECK_POSITION}
-    if CheckPosition(Control) then
+    //if CheckPosition(Control) then
     with Control do
       DebugLn('[TWinControl.AlignControls.DoPosition] A Control=',Name,':',ClassName,' ',dbgs(Left),',',dbgs(Top),',',dbgs(Width),',',dbgs(Height),' recalculate the anchors=',dbgs(Control.Anchors <> AnchorAlign[AAlign]),' Align=',AlignNames[AAlign]);
     {$ENDIF}
@@ -1451,8 +1453,11 @@ var
       {$ENDIF}
       // lock the base bounds, so that the new automatic bounds do not override
       // the user settings
-      BoundsMutated:=true;
+      OldBounds:=Control.BoundsRect;
       Control.SetAlignedBounds(NewLeft, NewTop, NewWidth, NewHeight);
+      //DebugLn(['DoPosition ',DbgSName(Control),' ',cfAutoSizeNeeded in Control.FControlFlags]);
+      NewBounds:=Control.BoundsRect;
+      BoundsMutated:=not CompareRect(@OldBounds,@NewBounds);
       // Sometimes SetBounds change the bounds. For example due to constraints.
       // update the new bounds
       with Control do
@@ -1686,8 +1691,14 @@ begin
   finally
     Exclude(FWinControlFlags,wcfAligningControls);
   end;
-
-  if Showing then AdjustSize;
+  // let childs autosize themselves
+  for i:=0 to ControlCount-1 do begin
+    ChildControl:=Controls[i];
+    if cfAutoSizeNeeded in ChildControl.FControlFlags then begin
+      //DebugLn(['TWinControl.AlignControls AdjustSize: ',DbgSName(ChildControl),' ',(not ChildControl.AutoSizeCanStart),' ',ChildControl.AutoSizeDelayed]);
+      ChildControl.AdjustSize;
+    end;
+  end;
 end;
 
 function TWinControl.DoAlignChildControls(TheAlign: TAlign; AControl: TControl;
@@ -1830,8 +1841,7 @@ begin
   {$IFDEF VerboseAutoSize}
   debugln('TWinControl.DoAutoSize ',DbgSName(Self));
   {$ENDIF}
-  If not AutoSizeCanStart then exit;
-  if AutoSizeDelayed then begin
+  if (not AutoSizeCanStart) or AutoSizeDelayed then begin
     Include(FControlFlags,cfAutoSizeNeeded);
     exit;
   end;

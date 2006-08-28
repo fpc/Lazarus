@@ -276,7 +276,7 @@ begin
     FShortCut := ShortCut(Char2VK(ParseStr[AccelIndex]), [ssCtrl]);
     TWSButtonClass(WidgetSetClass).SetShortCut(Self, OldShortCut, FShortCut);
   end;
-  DoAutoSize;
+  AdjustSize;
 end;
 
 function TCustomButton.ChildClassAllowed(ChildClass: TClass): boolean;

@@ -940,11 +940,11 @@ type
     procedure ChangeBounds(ALeft, ATop, AWidth, AHeight: integer); virtual;
     procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: integer); virtual;
     procedure ChangeScale(Multiplier, Divider: Integer); dynamic;
-    Function CanAutoSize(var NewWidth, NewHeight: Integer): Boolean; virtual;
+    function CanAutoSize(var NewWidth, NewHeight: Integer): Boolean; virtual;
     procedure SetAlignedBounds(aLeft, aTop, aWidth, aHeight: integer); virtual;
-    Function GetClientOrigin: TPoint; virtual;
-    Function GetClientRect: TRect; virtual;
-    Function GetScrolledClientRect: TRect; virtual;
+    function GetClientOrigin: TPoint; virtual;
+    function GetClientRect: TRect; virtual;
+    function GetScrolledClientRect: TRect; virtual;
     function GetClientScrollOffset: TPoint; virtual;
     function GetControlOrigin: TPoint; virtual;
   protected
@@ -2124,6 +2124,7 @@ procedure AdjustBorderSpace(var RemainingClientRect, CurBorderSpace: TRect;
   const Space: TRect);
   
 function DbgS(a: TAnchorKind): string; overload;
+function DbgS(Anchors: TAnchors): string; overload;
 
 // register (called by the package initialization in design mode)
 procedure Register;
@@ -2212,6 +2213,20 @@ end;
 function DbgS(a: TAnchorKind): string;
 begin
   Result:=AnchorNames[a];
+end;
+
+function DbgS(Anchors: TAnchors): string;
+var
+  a: TAnchorKind;
+begin
+  Result:='';
+  for a:=Low(TAnchorKind) to High(TAnchorKind) do begin
+    if a in Anchors then begin
+      if Result<>'' then Result:=Result+',';
+      Result:=Result+AnchorNames[a];
+    end;
+  end;
+  Result:='['+Result+']';
 end;
 
 {------------------------------------------------------------------------------
