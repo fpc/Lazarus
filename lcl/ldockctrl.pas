@@ -826,7 +826,7 @@ begin
       NeighbourControl.Parent.DisableAlign;
       // TODO: create a PageControl and two pages. And move the neigbbours onto
       // one page and Control to the other page.
-      
+      if AnchorControls[akLeft]=nil then ;
       
     finally
       NeighbourList.Free;

@@ -36,12 +36,19 @@ end;
 
 function TScrollingWinControl.GetClientScrollOffset: TPoint;
 begin
-  Result.X:=HorzScrollBar.Position;
-  Result.Y:=VertScrollBar.Position;
+  if (HorzScrollBar<>nil) and (VertScrollBar<>nil) then begin
+    Result.X:=HorzScrollBar.Position;
+    Result.Y:=VertScrollBar.Position;
+  end else begin
+    Result.X:=0;
+    Result.Y:=0;
+  end;
 end;
 
-procedure TScrollingWinControl.AlignControls(AControl: TControl; var ARect: TRect);
+procedure TScrollingWinControl.AlignControls(AControl: TControl;
+  var ARect: TRect);
 begin
+  if (HorzScrollBar=nil) or (VertScrollBar=nil) then exit;
   HorzScrollBar.AutoCalcRange;
   VertScrollBar.AutoCalcRange;
   If not AutoScroll then
@@ -117,7 +124,8 @@ end;
 
 function TScrollingWinControl.HasVisibleScrollbars: boolean;
 begin
-  Result:=VertScrollBar.Visible and HorzScrollBar.Visible;
+  Result:=(VertScrollBar<>nil) and VertScrollBar.Visible
+      and (HorzScrollBar<>nil) and HorzScrollBar.Visible;
 end;
 
 procedure TScrollingWinControl.DestroyWnd;
@@ -134,8 +142,10 @@ end;
 
 procedure TScrollingWinControl.ScrollBy(DeltaX, DeltaY: Integer);
 begin
-  TWSScrollingWinControlClass(WidgetSetClass).ScrollBy(Self, DeltaX, DeltaY);
-  Invalidate;
+  if HandleAllocated then begin
+    TWSScrollingWinControlClass(WidgetSetClass).ScrollBy(Self, DeltaX, DeltaY);
+    Invalidate;
+  end;
 end;
 
 Procedure TScrollingWinControl.WMVScroll(var Message : TLMVScroll);
