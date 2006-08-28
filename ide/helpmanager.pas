@@ -335,7 +335,7 @@ procedure THelpManager.RegisterIDEHelpDatabases;
                    'file://index.html');
     HTMLHelp.TOCNode:=THelpNode.Create(HTMLHelp,FPDocNode);// once as TOC
     DirItem:=THelpDBISourceDirectory.Create(FPDocNode,'$(FPCSrcDir)/fcl',
-                                   '*.pp;*.pas',true);// and once as normal page
+                                   '*.pp;*.pas',false);// and once as normal page
     HTMLHelp.RegisterItem(DirItem);
   end;
 
