@@ -4619,17 +4619,19 @@ end;
 
 function TFindDeclarationTool.FindIdentifierInHiddenUsedUnits(
   Params: TFindDeclarationParams): boolean;
-const
-  sutSystem   = 1;
-  sutObjPas   = 2;
-  sutLineInfo = 3;
-  sutHeapTrc  = 4;
-  sutSysThrds = 5;
-  sutNone     = 6;
+type
+  SystemUnitType = (
+    sutSystem,
+    sutObjPas,
+    sutMacPas,
+    sutLineInfo,
+    sutHeapTrc,
+    sutSysThrds,
+    sutNone);
 var
   OldInput: TFindDeclarationInput;
   SystemAlias: string;
-  CurUnitType: integer;
+  CurUnitType: SystemUnitType;
 begin
   Result:=false;
   {$IFDEF ShowTriedContexts}
@@ -4660,6 +4662,8 @@ begin
       CurUnitType:=sutSystem
     else if UpAtomIs('OBJPAS') then
       CurUnitType:=sutObjPas
+    else if UpAtomIs('MACPAS') then
+      CurUnitType:=sutMacPas
     else if UpAtomIs('LINEINFO') then
       CurUnitType:=sutLineInfo
     else if UpAtomIs('HEAPTRC') then
@@ -4695,6 +4699,13 @@ begin
     and (Scanner.PascalCompiler=pcFPC) then begin
       // try hidden used fpc unit 'objpas'
       Result:=FindIdentifierInUsedUnit('ObjPas',Params);
+      if Result then exit;
+    end;
+    if (CurUnitType>sutMacPas)
+    and (Scanner.CompilerMode=cmMacPas)
+    and (Scanner.PascalCompiler=pcFPC) then begin
+      // try hidden used fpc unit 'macpas'
+      Result:=FindIdentifierInUsedUnit('MacPas',Params);
       if Result then exit;
     end;
     if (CurUnitType>sutSystem) then begin
