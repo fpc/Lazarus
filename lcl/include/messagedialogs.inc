@@ -60,10 +60,14 @@ begin
       Result := mrAll
   else
     If mbYesToAll in Buttons then
-      Result := mrYesToAll;
+      Result := mrYesToAll
+  else
+    Result:=mrCancel;
 end;
 
 Function ModalDefaultButton(Buttons : TMsgDlgButtons) : TMsgDlgbtn;
+var
+  b: TMsgDlgBtn;
 begin
   If mbYes in Buttons then
     Result := mbYes
@@ -93,7 +97,12 @@ begin
       Result := mbAbort
   else
     If mbIgnore in Buttons then
-      Result := mbIgnore;
+      Result := mbIgnore
+  else begin
+    for b:=Low(TMsgDlgBtn) to High(TMsgDlgBtn) do
+      if b in Buttons then
+        Result:=b;
+  end;
 end;
 
 const
