@@ -50,8 +50,12 @@ const
 type
   TSynIdentChars = set of char;
 
+  {$IFDEF SYN_LAZARUS}
+  // NOTE: the note below is not valid for the LCL which uses UTF-8
+  {$ELSE}
   //NOTE: This will need to be localized and currently will not work with
   //      MBCS languages like Japanese or Korean.
+  {$ENDIF}
 
   PSynSelectionMode = ^TSynSelectionMode;
   // to be binary (clipboard) compatible with other (Delphi compiled) synedits
@@ -62,7 +66,9 @@ type
 
   TSynSearchOption = (ssoMatchCase, ssoWholeWord, ssoBackwards,
     ssoEntireScope, ssoSelectedOnly, ssoReplace, ssoReplaceAll, ssoPrompt
-    {$IFDEF SYN_LAZARUS}, ssoRegExpr, ssoRegExprMultiLine{$ENDIF});
+    {$IFDEF SYN_LAZARUS},
+    ssoSearchInReplacement,// continue search in replacement
+    ssoRegExpr, ssoRegExprMultiLine{$ENDIF});
   TSynSearchOptions = set of TSynSearchOption;
 
 implementation

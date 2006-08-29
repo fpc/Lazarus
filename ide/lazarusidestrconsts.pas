@@ -1366,16 +1366,17 @@ resourcestring
   // keyMapping
   //
   srkmEditKeys ='Edit Keys';
-  srkmCommand  = 'Command ';
+  srkmCommand  = 'Command:';
   srkmConflic  = 'Conflict ';
   srkmConflicW = ' conflicts with ';
   srkmCommand1 = '    command1 "';
   srkmCommand2 = '    command2 "';
   srkmEditForCmd='Edit keys for command';
-  srkmKey      = 'Key';
-  srkmGrabKey  = 'Grab Key';
+  srkmKey      = 'Key (or 2 keys combination)';
+  srkmGrabKey  = 'Grab key';
+  srkmGrabSecondKey  = 'Grab second key';
   srkmPressKey = 'Please press a key ...';
-  srkmAlternKey= 'Alternative Key';
+  srkmAlternKey= 'Alternative key (or 2 keys combination)';
   srkmAlreadyConnected = ' The key "%s" is already connected to "%s".';
 
   //Commands

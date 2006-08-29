@@ -78,6 +78,8 @@ const
   PPWSrcPathMacroName      = ExternalMacroStart+'PPWSrcPath';
   DCUSrcPathMacroName      = ExternalMacroStart+'DCUSrcPath';
   CompiledSrcPathMacroName = ExternalMacroStart+'CompiledSrcPath';
+  UnitLinksMacroName       = ExternalMacroStart+'UnitLinks';
+  FPCUnitPathMacroName     = ExternalMacroStart+'FPCUnitPath';
 
   // virtual directories
   VirtualDirectory='VIRTUALDIRECTORY';
@@ -201,7 +203,9 @@ type
     constructor Create;
     destructor Destroy; override;
     function  ConsistencyCheck: integer; // 0 = ok
-    function  CreateCopy(OnlyMarked, WithSiblings, WithChilds: boolean): TDefineTemplate;
+    function  CreateCopy(OnlyMarked: boolean = false;
+                         WithSiblings: boolean = true;
+                         WithChilds: boolean = true): TDefineTemplate;
     function  CreateMergeCopy: TDefineTemplate;
     function  FindByName(const AName: string;
                      WithSubChilds, WithNextSiblings: boolean): TDefineTemplate;
@@ -975,8 +979,8 @@ begin
   Action:=AnAction;
 end;
 
-function TDefineTemplate.CreateCopy(OnlyMarked,
-  WithSiblings, WithChilds: boolean): TDefineTemplate;
+function TDefineTemplate.CreateCopy(OnlyMarked: boolean;
+  WithSiblings: boolean; WithChilds: boolean): TDefineTemplate;
 var LastNewNode, NewNode, ANode: TDefineTemplate;
 begin
   Result:=nil;
@@ -2647,13 +2651,19 @@ var
       Result:=Result.Prior;
   end;
 
-  procedure DefineSymbol(const SymbolName, SymbolValue: string);
+  procedure DefineSymbol(const SymbolName, SymbolValue: string;
+    const Description: string = '');
   var NewDefTempl: TDefineTemplate;
+    Desc: String;
   begin
     NewDefTempl:=FindSymbol(SymbolName);
     if NewDefTempl=nil then begin
+      if Description<>'' then
+        Desc:=Description
+      else
+        Desc:=ctsDefaultppc386Symbol;
       NewDefTempl:=TDefineTemplate.Create('Define '+SymbolName,
-           ctsDefaultppc386Symbol,SymbolName,SymbolValue,da_DefineRecurse);
+           Desc,SymbolName,SymbolValue,da_DefineRecurse);
       AddTemplate(NewDefTempl);
     end else begin
       NewDefTempl.Value:=SymbolValue;
@@ -2716,12 +2726,10 @@ var
       {$IFDEF VerboseFPCSrcScan}
       DebugLn('Using unit path: "',NewPath,'"');
       {$ENDIF}
-      UnitSearchPath:=UnitSearchPath+NewPath+#13;
+      UnitSearchPath:=UnitSearchPath+NewPath+';';
     end;
   end;
   
-// function TDefinePool.CreateFPCTemplate(
-//   const PPC386Path: string): TDefineTemplate;
 var CmdLine: string;
   i, OutLen, LineStart: integer;
   TheProcess: TProcess;
@@ -2787,6 +2795,8 @@ begin
       //DebugLn('TDefinePool.CreateFPCTemplate Run with -va: OutputLine="',OutputLine,'"');
       TheProcess.Free;
     end;
+    DefineSymbol(FPCUnitPathMacroName,UnitSearchPath,'FPC default unit search path');
+
     //DebugLn('TDefinePool.CreateFPCTemplate First done UnitSearchPath="',UnitSearchPath,'"');
 
     // ask for target operating system -> ask compiler with switch -iTO
@@ -3222,12 +3232,12 @@ var
     //DebugLn('FindStandardPPUSources UnitSearchPath="',UnitSearchPath,'"');
     while PathStart<=length(UnitSearchPath) do begin
       while (PathStart<=length(UnitSearchPath))
-      and (UnitSearchPath[PathStart]=#13) do
+      and (UnitSearchPath[PathStart]=';') do
         inc(PathStart);
       PathEnd:=PathStart;
       // extract single path from unit search path
       while (PathEnd<=length(UnitSearchPath))
-      and (UnitSearchPath[PathEnd]<>#13) do
+      and (UnitSearchPath[PathEnd]<>';') do
         inc(PathEnd);
       if PathEnd>PathStart then begin
         ADirPath:=copy(UnitSearchPath,PathStart,PathEnd-PathStart);
@@ -3339,7 +3349,7 @@ begin
   TargetProcessor:='$('+ExternalMacroStart+'TargetProcessor)';
   IncPathMacro:='$('+ExternalMacroStart+'IncPath)';
   SrcPathMacro:='$('+ExternalMacroStart+'SrcPath)';
-  UnitLinks:=ExternalMacroStart+'UnitLinks';
+  UnitLinks:=UnitLinksMacroName;
   UnitTree:=nil;
   DefaultSrcOS:=GetDefaultSrcOSForTargetOS(DefaultTargetOS);
   DefaultSrcOS2:=GetDefaultSrcOS2ForTargetOS(DefaultTargetOS);

@@ -514,17 +514,28 @@ var
   CodeBuf: TCodeBuffer;
 begin
   TheFilename:=CleanAndExpandFilename(AFilename);
-  CodeBuf:=CodeToolBoss.LoadFile(TheFilename,UpdateFromDisk,Revert);
-  if CodeBuf=nil then
-    exit(false);
-  Result:=true;
-  case Converter.CurrentType of
-  tctSource:
-    Converter.Source:=CodeBuf.Source;
-  tctFile:
-    Result:=SaveStringToFile(Converter.Filename,CodeBuf.Source,[])=mrOk;
-  tctStrings:
-    CodeBuf.AssignTo(Converter.Strings,true);
+  CodeBuf:=CodeToolBoss.FindFile(TheFilename);
+  if CodeBuf=nil then begin
+    // it is not in cache
+    // to save memory do not load it into the cache and use the default way
+    //DebugLn(['TLazTextConverterToolClasses.LoadFromFile not in cache, using default ...']);
+    Result:=Converter.LoadFromFile(AFilename,false,UpdateFromDisk,Revert);
+  end else begin
+    // use cache
+    //DebugLn(['TLazTextConverterToolClasses.LoadFromFile using cache']);
+    CodeBuf:=CodeToolBoss.LoadFile(TheFilename,UpdateFromDisk,Revert);
+    if CodeBuf=nil then
+      exit(false);
+    Result:=true;
+    //DebugLn(['TLazTextConverterToolClasses.LoadFromFile Converter.CurrentType=',ord(Converter.CurrentType)]);
+    case Converter.CurrentType of
+    tctSource:
+      Converter.Source:=CodeBuf.Source;
+    tctFile:
+      Result:=SaveStringToFile(Converter.Filename,CodeBuf.Source,[])=mrOk;
+    tctStrings:
+      CodeBuf.AssignTo(Converter.Strings,true);
+    end;
   end;
 end;
 

@@ -184,11 +184,11 @@ procedure GetDefaultKeyForClassicScheme(Command: word;
   var TheKeyA, TheKeyB: TIDEShortCut);
 function KeySchemeNameToSchemeType(const SchemeName: string): TKeyMapScheme;
 
-function ShiftStateToStr(Shift:TShiftState):AnsiString;
+function ShiftStateToStr(Shift:TShiftState):string;
 function KeyValuesToStr(const ShortcutA, ShortcutB: TIDEShortCut): string;
 function EditorKeyStringIsIrregular(const s: string): boolean;
 
-var KeyMappingEditForm: TKeyMappingEditForm;
+var KeyMappingEditForm: TKeyMappingEditForm = nil;
 
 const
   UnknownVKPrefix = 'Word(''';
@@ -1051,7 +1051,7 @@ begin
     Result:=kmsCustom;
 end;
 
-function ShiftStateToStr(Shift:TShiftState):AnsiString;
+function ShiftStateToStr(Shift:TShiftState):string;
 var i:integer;
 begin
   i:=0;
@@ -1109,7 +1109,7 @@ begin
 
       with KeyCommandRelationList.Relations[Index] do
       begin
-        CommandLabel.Caption:=srkmCommand+LocalizedName;
+        CommandLabel.Caption:=srkmCommand+' "'+LocalizedName+'"';
         if (ShortcutA.Key1<>VK_UNKNOWN) then
         begin
           KeyCtrlCheckBox[0].Checked:=ssCtrl in ShortcutA.Shift1;
@@ -1493,7 +1493,7 @@ begin
   end;
 end;
 
-function KeyAndShiftStateToEditorKeyString(Key: word; ShiftState: TShiftState): AnsiString;
+function KeyAndShiftStateToEditorKeyString(Key: word; ShiftState: TShiftState): string;
 var
   p: integer;
 
@@ -1620,7 +1620,7 @@ end;
 constructor TKeyMappingEditForm.Create(TheOwner:TComponent);
 var
   a, j, k, n: word;
-  s: AnsiString;
+  s: string;
 begin
   inherited Create(TheOwner);
   if LazarusResources.Find(ClassName)=nil then
@@ -1741,7 +1741,10 @@ begin
           Top := KeyComboBox[n].Top+KeyComboBox[n].Height+5;
           Width := KeyComboBox[n].Width;
           Height := 25;
-          Caption := srkmGrabKey;
+          if k=0 then
+            Caption := srkmGrabKey
+          else
+            Caption := srkmGrabSecondKey;
           Name := 'KeyGrabButton' + IntToStr(n);
           Tag := n;
           OnClick := @KeyGrabButtonClick;

@@ -34,49 +34,23 @@ unit EditorOptions;
 interface
 
 uses
-  Buttons,
-  Classes,
-  ComCtrls,
-  Controls,
-  Dialogs,
-  ExtCtrls,
-  FileCtrl,
-  Forms,
-  Graphics,
-  GraphType,
-  IDECommands,
-  IDEOptionDefs,
-  IDEProcs,
-  IDEWindowIntf,
-  InputHistory,
-  KeyMapping,
-  KeymapSchemeDlg,
+  // RTL, FCL
+  Classes, Math, SysUtils,
+  // LCL
+  Buttons, ComCtrls, Controls, Dialogs, ExtCtrls, FileCtrl, Forms, Graphics,
+  GraphType, LCLIntf, LCLProc, LCLType, LResources, StdCtrls,
+  // synedit
+  SynEdit, SynEditAutoComplete, SynEditHighlighter, SynEditKeyCmds,
+  SynHighlighterCPP, SynHighlighterHTML, SynHighlighterJava, SynHighlighterLFM,
+  SynHighlighterPas, SynHighlighterPerl, SynHighlighterPHP, SynHighlighterSQL,
+  SynHighlighterPython, SynHighlighterUNIXShellScript, SynHighlighterXML,
+  // codetools
   Laz_XMLCfg,
-  LazarusIDEStrConsts,
-  LazConf,
-  LCLIntf,
-  LCLProc,
-  LCLType,
-  LResources,
-  Math,
-  SrcEditorIntf,
-  StdCtrls,
-  SynEdit,
-  SynEditAutoComplete,
-  SynEditHighlighter,
-  SynEditKeyCmds,
-  SynHighlighterCPP,
-  SynHighlighterHTML,
-  SynHighlighterJava,
-  SynHighlighterLFM,
-  SynHighlighterPas,
-  SynHighlighterPerl,
-  SynHighlighterPHP,
-  SynHighlighterSQL,
-  SynHighlighterPython,
-  SynHighlighterUNIXShellScript,
-  SynHighlighterXML,
-  SysUtils;
+  // IDEIntf
+  IDECommands, IDEWindowIntf, SrcEditorIntf,
+  // IDE
+  LazarusIDEStrConsts, IDEOptionDefs, IDEProcs, InputHistory, KeyMapping,
+  KeymapSchemeDlg, LazConf;
 
 type
   TPreviewEditor = TSynEdit;

@@ -1846,7 +1846,7 @@ end;
 
 procedure TSourceEditor.FindHelpForSourceAtCursor;
 begin
-  DebugLn('TSourceEditor.FindHelpForSourceAtCursor A');
+  //DebugLn('TSourceEditor.FindHelpForSourceAtCursor A');
   ShowHelpOrErrorForSourcePosition(Filename,FEditor.LogicalCaretXY);
 end;
 

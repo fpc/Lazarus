@@ -174,8 +174,6 @@ begin
     Result := Pos(SubStr, Str) > 0
   else
     Result := Pos(AnsiUpperCase(SubStr), AnsiUpperCase(Str)) > 0;
-  {$Note Still need to implement this correctly }
-//    Result := CaseInsensitivePos(SubStr, Str) > 0;
 end;
 
 
@@ -484,8 +482,9 @@ end;
 
 
 { Do we pass all the filter tests to continue? }
-function TProcedureListForm.PassFilter(pSearchAll: boolean; pProcName, pSearchStr: string;
-    pCodeTool: TCodeTool; pNode: TCodeTreeNode): boolean;
+function TProcedureListForm.PassFilter(pSearchAll: boolean;
+  pProcName, pSearchStr: string; pCodeTool: TCodeTool; pNode: TCodeTreeNode
+  ): boolean;
 var
   lClass: string;
   
@@ -501,7 +500,6 @@ var
   end;
   
 begin
-  {$NOTE Still need to complete this. StartsWith filter not working yet! }
   Result := False;
   if (Length(pSearchStr) = 0) then    // seach string is empty
   begin
@@ -510,9 +508,11 @@ begin
     else
       Result := ClassMatches;
   end
-  else if not pSearchAll and tbFilterStart.Down and SameText(pSearchStr, Copy(pProcName, 1, Length(pSearchStr))) then
+  else if not pSearchAll and tbFilterStart.Down
+  and SameText(pSearchStr, Copy(pProcName, 1, Length(pSearchStr))) then
     Result := True
-  else if not pSearchAll and tbFilterAny.Down and ClassMatches and FilterFits(pSearchStr, pProcName) then
+  else if not pSearchAll and tbFilterAny.Down and ClassMatches
+  and FilterFits(pSearchStr, pProcName) then
     Result := True
   else if pSearchAll and FilterFits(pSearchStr, pProcName) then
     Result := True;

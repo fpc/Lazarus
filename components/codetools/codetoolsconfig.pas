@@ -256,11 +256,16 @@ end;
 
 procedure TCodeToolsOptions.LoadFromXMLConfig(XMLConfig: TXMLConfig;
   const Path: string);
+var
+  i: Integer;
 begin
   FPCOptions:=XMLConfig.GetValue(Path+'FPC/Options/Value','');
   FPCPath:=XMLConfig.GetValue(Path+'FPC/CompilerPath/Value','');
   FPCSrcDir:=XMLConfig.GetValue(Path+'FPC/SrcDir/Value','');
   FPCUnitPath:=XMLConfig.GetValue(Path+'FPC/UnitPath/Value','');
+  for i:=1 to length(FPCUnitPath) do
+    if (FPCUnitPath[i] in [#0..#8,#10..#31]) then
+      FPCUnitPath[i]:=';';
   TargetOS:=XMLConfig.GetValue(Path+'FPC/TargetOS/Value','');
   TargetProcessor:=XMLConfig.GetValue(Path+'FPC/TargetProcessor/Value','');
   PPUExt:=XMLConfig.GetValue(Path+'FPC/PPUExt/Value','');

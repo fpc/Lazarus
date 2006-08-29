@@ -309,7 +309,7 @@ end;
 
 procedure THelpOptions.Clear;
 begin
-
+  FFPCDocsHTMLDirectory:='';
 end;
 
 procedure THelpOptions.Load;
@@ -324,7 +324,8 @@ begin
       FileVersion:=XMLConfig.GetValue('HelpOptions/Version/Value',0);
       if (FileVersion<>0) and (FileVersion<HelpOptionsVersion) then
         DebugLn('Note: Loading old Help options file', FFileName);
-      FPCDocsHTMLDirectory:=XMLConfig.GetValue('HelpOptions/FPCDocs/HTML/Directory','');
+      FPCDocsHTMLDirectory:=
+                    XMLConfig.GetValue('HelpOptions/FPCDocs/HTML/Directory','');
         
       if HelpViewers<>nil then begin
         Storage:=TXMLOptionsStorage.Create(XMLConfig,'Viewers');
@@ -411,12 +412,12 @@ end;
 
 procedure THelpOptions.Assign(HelpOpts: THelpOptions);
 begin
-
+  FPCDocsHTMLDirectory:=HelpOpts.FPCDocsHTMLDirectory;
 end;
 
 function THelpOptions.IsEqual(HelpOpts: THelpOptions): boolean;
 begin
-  Result:=true;
+  Result:=FPCDocsHTMLDirectory=HelpOpts.FPCDocsHTMLDirectory;
 end;
 
 function THelpOptions.CreateCopy: THelpOptions;

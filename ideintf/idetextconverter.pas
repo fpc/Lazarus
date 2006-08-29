@@ -263,6 +263,7 @@ var
   fs: TFileStream;
 begin
   if FCurrentType=AValue then exit;
+  //DebugLn(['TIDETextConverter.SetCurrentType ',ord(FCurrentType),' ',ord(AValue)]);
   case AValue of
   tctSource:
     // convert to Source
@@ -276,7 +277,7 @@ begin
         end;
       tctFile:
         if FileExists(FFilename) then begin
-          fs:=TFileStream.Create(FFilename,fmCreate);
+          fs:=TFileStream.Create(FFilename,fmOpenRead);
           try
             SetLength(FSource,fs.Size);
             fs.Read(FSource[1],length(FSource));
@@ -446,9 +447,11 @@ var
   fs: TFileStream;
 begin
   if UseIDECache and (TextConverterToolClasses<>nil) then begin
+    //DebugLn(['TIDETextConverter.LoadFromFile using IDE cache']);
     Result:=TextConverterToolClasses.LoadFromFile(Self,AFilename,
                                                   UpdateFromDisk,Revert);
   end else begin
+    //DebugLn(['TIDETextConverter.LoadFromFile loading directly CurrentType=',ord(CurrentType),' FFilename="',FFilename,'"']);
     Result:=false;
     try
       case CurrentType of
@@ -570,7 +573,7 @@ var
   Flags: TSrcEditSearchOptions;
   Prompt: Boolean;
 begin
-  DebugLn(['TCustomTextReplaceTool.Execute ',dbgsName(Self),' ',dbgsName(aText)]);
+  DebugLn(['TCustomTextReplaceTool.Execute ',dbgsName(Self),' aText=',dbgsName(aText),' SearchFor="',dbgstr(SearchFor),'"']);
   Result:=mrCancel;
   if aText=nil then exit;
   if SearchFor='' then exit(mrOk);

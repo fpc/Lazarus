@@ -750,11 +750,10 @@ begin
       exit;
     end;
       
-    // create FPC CVS Source defines
+    // create FPC Source defines
     FPCSrcDir:=FileNames[0];
     if Macros<>nil then Macros.SubstituteStr(FPCSrcDir);
     DebugLn('  FPCSrcDir="',FPCSrcDir,'"');
-    UnitSearchPath:='';
     FPCSrcTemplate:=Boss.DefinePool.CreateFPCSrcTemplate(FPCSrcDir,
                         UnitSearchPath, 'ppu', TargetOS, TargetProcessor, false,
                         UnitLinks, CodeToolsOpts);

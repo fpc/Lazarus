@@ -916,7 +916,8 @@ procedure TFPCConfigCacheItem.LoadFromXMLConfig(XMLConfig: TXMLConfig;
   const Path: string);
 begin
   Options:=XMLConfig.GetValue(Path+'Options/Value','');
-  SearchPath:=XMLConfig.GetValue(Path+'SearchPath/Value','');
+  SearchPath:=LineBreaksToDelimiter(
+                            XMLConfig.GetValue(Path+'SearchPath/Value',''),';');
   FPCSrcDir:=XMLConfig.GetValue(Path+'FPCSrcDir/Value','');
   UnitLinks:=XMLConfig.GetValue(Path+'UnitLinks/Value','');
 end;

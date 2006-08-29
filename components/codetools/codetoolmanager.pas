@@ -259,6 +259,8 @@ type
     function FindUnitInUnitLinks(const Directory, UnitName: string): string;
     function GetUnitLinksForDirectory(const Directory: string;
                                       UseCache: boolean = false): string;
+    function GetFPCUnitPathForDirectory(const Directory: string;
+                                        UseCache: boolean = false): string;
     procedure GetFPCVersionForDirectory(const Directory: string;
                                  out FPCVersion, FPCRelease, FPCPatch: integer);
 
@@ -728,6 +730,9 @@ procedure TCodeToolManager.Init(Config: TCodeToolsOptions);
 var
   FPCUnitPath, TargetOS, TargetProcessor: string;
   UnitLinkList: String;
+  FPCDefines: TDefineTemplate;
+  FPCSrcDefines: TDefineTemplate;
+  LazarusSrcDefines: TDefineTemplate;
 begin
   // set global values
   with GlobalValues do begin
@@ -742,28 +747,33 @@ begin
     FPCUnitPath:=Config.FPCUnitPath;
     TargetOS:=Config.TargetOS;
     TargetProcessor:=Config.TargetProcessor;
-    Add(CreateFPCTemplate(Config.FPCPath, Config.FPCOptions,
+    FPCDefines:=CreateFPCTemplate(Config.FPCPath, Config.FPCOptions,
                           Config.TestPascalFile,
                           FPCUnitPath, TargetOS, TargetProcessor,
-                          nil));
+                          nil);
+    Add(FPCDefines);
     Config.FPCUnitPath:=FPCUnitPath;
     Config.TargetOS:=TargetOS;
     Config.TargetProcessor:=TargetProcessor;
     UnitLinkList:=Config.UnitLinkList;
-    Add(CreateFPCSrcTemplate(Config.FPCSrcDir,Config.FPCUnitPath,Config.PPUExt,
+    FPCSrcDefines:=CreateFPCSrcTemplate(Config.FPCSrcDir,Config.FPCUnitPath,
+                          Config.PPUExt,
                           Config.TargetOS, Config.TargetProcessor,
                           Config.UnitLinkListValid,UnitLinkList,
-                          nil));
+                          nil);
+    Add(FPCSrcDefines);
     Config.UnitLinkListValid:=true;
     Config.UnitLinkList:=UnitLinkList;
-    Add(CreateLazarusSrcTemplate('$(#LazarusSrcDir)','$(#LCLWidgetType)',
-                                 Config.LazarusSrcOptions,nil));
+    LazarusSrcDefines:=CreateLazarusSrcTemplate('$(#LazarusSrcDir)',
+                                 '$(#LCLWidgetType)',
+                                 Config.LazarusSrcOptions,nil);
+    Add(LazarusSrcDefines);
   end;
 
   // build define tree
-  DefineTree.Add(DefinePool[0].CreateCopy(false,true,true));
-  DefineTree.Add(DefinePool[1].CreateCopy(false,true,true));
-  DefineTree.Add(DefinePool[2].CreateCopy(false,true,true));
+  DefineTree.Add(FPCDefines.CreateCopy);
+  DefineTree.Add(FPCSrcDefines.CreateCopy);
+  DefineTree.Add(LazarusSrcDefines.CreateCopy);
   DefineTree.Add(DefinePool.CreateLCLProjectTemplate(
                  '$(#LazarusSrcDir)','$(#LCLWidgetType)','$(#ProjectDir)',nil));
 end;
@@ -1188,7 +1198,22 @@ begin
     Result:='';
     Evaluator:=DefineTree.GetDefinesForDirectory(Directory,true);
     if Evaluator=nil then exit;
-    Result:=Evaluator[ExternalMacroStart+'UnitLinks'];
+    Result:=Evaluator[UnitLinksMacroName];
+  end;
+end;
+
+function TCodeToolManager.GetFPCUnitPathForDirectory(const Directory: string;
+  UseCache: boolean): string;
+var
+  Evaluator: TExpressionEvaluator;
+begin
+  if UseCache then begin
+    Result:=DirectoryCachePool.GetString(Directory,ctdcsFPCUnitPath,true)
+  end else begin
+    Result:='';
+    Evaluator:=DefineTree.GetDefinesForDirectory(Directory,true);
+    if Evaluator=nil then exit;
+    Result:=Evaluator[FPCUnitPathMacroName];
   end;
 end;
 
@@ -3913,7 +3938,8 @@ begin
   ctdcsSrcPath: Result:=GetSrcPathForDirectory(ADirectory,false);
   ctdcsIncludePath: Result:=GetIncludePathForDirectory(ADirectory,false);
   ctdcsCompleteSrcPath: Result:=GetCompleteSrcPathForDirectory(ADirectory,false);
-  ctdcsUnitLinks: Result:=GetUnitLinksForDirectory(ADirectory,false)
+  ctdcsUnitLinks: Result:=GetUnitLinksForDirectory(ADirectory,false);
+  ctdcsFPCUnitPath: Result:=GetFPCUnitPathForDirectory(ADirectory,false);
   else RaiseCatchableException('');
   end;
 end;

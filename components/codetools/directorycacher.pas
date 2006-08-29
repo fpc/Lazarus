@@ -47,7 +47,8 @@ type
     ctdcsSrcPath,
     ctdcsIncludePath,
     ctdcsCompleteSrcPath, // including unit path, src path and compiled src paths
-    ctdcsUnitLinks
+    ctdcsUnitLinks,
+    ctdcsFPCUnitPath
     );
     
   TCTDirCacheStringRecord = record
@@ -169,6 +170,12 @@ type
                                  AnyCase: boolean = false): string;
     function FindVirtualFile(const Filename: string): string;
     function FindVirtualUnit(const UnitName: string): string;
+    function FindUnitSourceInCompletePath(const Directory: string;
+                                          var UnitName, InFilename: string;
+                                          AnyCase: boolean = false): string;
+    function FindCompiledUnitInCompletePath(const Directory: string;
+                                            var ShortFilename: string;
+                                            AnyCase: boolean = false): string;
     property TimeStamp: cardinal read FTimeStamp;
     property OnGetString: TCTDirCacheGetString read FOnGetString write FOnGetString;
     property OnFindVirtualFile: TCTDirCacheFindVirtualFile read FOnFindVirtualFile
@@ -885,26 +892,26 @@ begin
   end else begin
     // not found in cache -> search
 
+    CurDir:=Directory;
+
+    if AnyCase then
+      SearchCase:=ctsfcAllCase
+    else
+      SearchCase:=ctsfcLoUpCase;
+
     // search in unit, src and compiled src path
     UnitPath:=Strings[ctdcsUnitPath];
-
-    CurDir:=Directory;
-    if CurDir<>'' then begin
-      // search in search path
-      if AnyCase then
-        SearchCase:=ctsfcAllCase
-      else
-        SearchCase:=ctsfcLoUpCase;
-      Result:=SearchPascalFileInPath(ShortFilename,CurDir,UnitPath,';',SearchCase);
-      if Result<>'' then begin
-        NewShortFilename:=ExtractFileName(Result);
-        if (NewShortFilename<>lowercase(NewShortFilename))
-        and (ShortFilename<>NewShortFilename) then
-          ShortFilename:=NewShortFilename;
-      end;
-    end else begin
-      // virtual directory -> TODO
-      Result:='';
+    Result:=SearchPascalFileInPath(ShortFilename,CurDir,UnitPath,';',SearchCase);
+    if Result='' then begin
+      // search in fpc unit path
+      UnitPath:=Strings[ctdcsFPCUnitPath];
+      Result:=SearchPascalFileInPath(ShortFilename,'',UnitPath,';',SearchCase);
+    end;
+    if Result<>'' then begin
+      NewShortFilename:=ExtractFileName(Result);
+      if (NewShortFilename<>lowercase(NewShortFilename))
+      and (ShortFilename<>NewShortFilename) then
+        ShortFilename:=NewShortFilename;
     end;
 
     AddToCache(UnitSrc,ShortFilename,Result);
@@ -1067,6 +1074,26 @@ begin
     if Result<>'' then exit;
   end;
   Result:='';
+end;
+
+function TCTDirectoryCachePool.FindUnitSourceInCompletePath(
+  const Directory: string; var UnitName, InFilename: string; AnyCase: boolean
+  ): string;
+var
+  Cache: TCTDirectoryCache;
+begin
+  Cache:=GetCache(Directory,true,false);
+  Result:=Cache.FindUnitSourceInCompletePath(UnitName,InFilename,AnyCase);
+end;
+
+function TCTDirectoryCachePool.FindCompiledUnitInCompletePath(
+  const Directory: string; var ShortFilename: string; AnyCase: boolean
+    ): string;
+var
+  Cache: TCTDirectoryCache;
+begin
+  Cache:=GetCache(Directory,true,false);
+  Result:=Cache.FindCompiledUnitInCompletePath(ShortFilename,AnyCase);
 end;
 
 { TCTDirectoryListing }

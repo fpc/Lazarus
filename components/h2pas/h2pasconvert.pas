@@ -1193,8 +1193,8 @@ begin
   try
     TextConverter.Filename:=TempCHeaderFilename;
     FLastUsedFilename:=TextConverter.Filename;
-    TextConverter.LoadFromFile(InputFilename,true,true,false);
-    DebugLn(['TH2PasConverter.ConvertFile TempCHeaderFilename="',TempCHeaderFilename,'"']);
+    TextConverter.LoadFromFile(InputFilename);
+    DebugLn(['TH2PasConverter.ConvertFile TempCHeaderFilename="',TempCHeaderFilename,'" CurrentType=',ord(TextConverter.CurrentType),' ',FileSize(TempCHeaderFilename)]);
 
     // run converters for .h file to make it compatible for h2pas
     Result:=TextConverter.Execute(Project.PreH2PasTools);
@@ -1208,7 +1208,9 @@ begin
     try
       Tool.Title:='h2pas';
       Tool.H2PasFile:=AFile;
+    DebugLn(['TH2PasConverter.ConvertFile AAA TempCHeaderFilename="',TempCHeaderFilename,'" CurrentType=',ord(TextConverter.CurrentType),' ',FileSize(TempCHeaderFilename)]);
       Tool.TargetFilename:=TextConverter.Filename;
+    DebugLn(['TH2PasConverter.ConvertFile BBB TempCHeaderFilename="',TempCHeaderFilename,'" CurrentType=',ord(TextConverter.CurrentType),' ',FileSize(TempCHeaderFilename)]);
       Tool.Filename:=GetH2PasFilename;
       Tool.CmdLineParams:=AFile.GetH2PasParameters(Tool.TargetFilename);
       Tool.ScanOutput:=true;

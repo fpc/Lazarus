@@ -1134,6 +1134,7 @@ begin
   Result:='';
   if SearchCase=ctsfcAllCase then
     Base:=FindDiskFilename(Base);
+    
   if SearchCase in [ctsfcDefault,ctsfcLoUpCase] then begin
     LowerCaseFilename:=lowercase(ShortFilename);
     UpperCaseFilename:=uppercase(ShortFilename);
@@ -1141,6 +1142,7 @@ begin
     LowerCaseFilename:='';
     UpperCaseFilename:='';
   end;
+  
   if SysUtils.FindFirst(Base+FileMask,faAnyFile,FileInfo)=0 then
   begin
     repeat
@@ -1181,8 +1183,12 @@ var
 begin
   Base:=ExpandFilename(AppendPathDelim(BasePath));
   // search in current directory
-  Result:=SearchPascalUnitInDir(ShortFilename,Base,SearchCase);
-  if Result<>'' then exit;
+  if not FilenameIsAbsolute(Base) then
+    Base:='';
+  if Base<>'' then begin
+    Result:=SearchPascalFileInDir(ShortFilename,Base,SearchCase);
+    if Result<>'' then exit;
+  end;
   // search in search path
   StartPos:=1;
   l:=length(SearchPath);
@@ -1194,8 +1200,10 @@ begin
       if not FilenameIsAbsolute(CurPath) then
         CurPath:=Base+CurPath;
       CurPath:=ExpandFilename(AppendPathDelim(CurPath));
-      Result:=SearchPascalUnitInDir(ShortFilename,CurPath,SearchCase);
-      if Result<>'' then exit;
+      if FilenameIsAbsolute(CurPath) then begin
+        Result:=SearchPascalFileInDir(ShortFilename,CurPath,SearchCase);
+        if Result<>'' then exit;
+      end;
     end;
     StartPos:=p+1;
   end;

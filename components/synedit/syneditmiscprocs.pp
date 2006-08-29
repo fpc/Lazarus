@@ -54,12 +54,12 @@ type
   TIntArray = array[0..MaxListSize - 1] of integer;
 
 {$IFDEF FPC}
-function MulDiv(Factor1,Factor2,Divisor:integer):integer;
+function MulDiv(Factor1,Factor2,Divisor:integer):integer;{$IFDEF HasInline}inline;{$ENDIF}
 {$ENDIF}
-function Max(x, y: integer): integer;
-function Min(x, y: integer): integer;
-function MinMax(x, mi, ma: integer): integer;
-procedure SwapInt(var l, r: integer);
+function Max(x, y: integer): integer;{$IFDEF HasInline}inline;{$ENDIF}
+function Min(x, y: integer): integer;{$IFDEF HasInline}inline;{$ENDIF}
+function MinMax(x, mi, ma: integer): integer;{$IFDEF HasInline}inline;{$ENDIF}
+procedure SwapInt(var l, r: integer);{$IFDEF HasInline}inline;{$ENDIF}
 function maxPoint(P1, P2: TPoint): TPoint;
 function minPoint(P1, P2: TPoint): TPoint;
 
@@ -117,6 +117,7 @@ function GetEOL(Line: PChar): PChar;
 function EncodeString(s: string): string;
 {$IFDEF SYN_LAZARUS}
 function EncodeStringLength(s: string): integer;
+function CompareCarets(const FirstCaret, SecondCaret: TPoint): integer;
 {$ENDIF}
 
 // Decodes string, encoded with EncodeString.
@@ -687,6 +688,21 @@ begin
     if (s[i] in ['\','/']) then
       Inc(Result);
 end;
+
+function CompareCarets(const FirstCaret, SecondCaret: TPoint): integer;
+begin
+  if (FirstCaret.Y<SecondCaret.Y) then
+    Result:=1
+  else if (FirstCaret.Y>SecondCaret.Y) then
+    Result:=-1
+  else if (FirstCaret.X<SecondCaret.X) then
+    Result:=1
+  else if (FirstCaret.X>SecondCaret.X) then
+    Result:=-1
+  else
+    Result:=0;
+end;
+
 {$ENDIF}
 
 function DecodeString(s: string): string;

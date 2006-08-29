@@ -83,6 +83,7 @@ type
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
+    procedure UpdateFPCDocsHTMLDirectory;
 
     procedure ConnectMainBarEvents; override;
     procedure LoadHelpOptions; override;
@@ -418,6 +419,108 @@ begin
   inherited Destroy;
 end;
 
+procedure THelpManager.UpdateFPCDocsHTMLDirectory;
+
+  function IsFPCDocsHTMDirectory(const Directory: string): boolean;
+  var
+    RefFilename: String;
+  begin
+    if Directory='' then exit(false);
+    RefFilename:=AppendPathDelim(TrimFilename(Directory))
+                                 +'ref'+PathDelim+'ref.kwd';
+    Result:=FileExists(RefFilename);
+    //DebugLn(['IsFPCDocsHTMDirectory RefFilename="',RefFilename,'" Result=',Result]);
+  end;
+  
+  function TryDirectory(const Directory: string): boolean;
+  var
+    NewDir: String;
+  begin
+    NewDir:=CleanAndExpandDirectory(Directory);
+    if not IsFPCDocsHTMDirectory(NewDir) then exit(false);
+    HelpOpts.FPCDocsHTMLDirectory:=NewDir;
+    DebugLn(['TryDirectory Changing FPCDocsHTMLDirectory to "',HelpOpts.FPCDocsHTMLDirectory,'"']);
+    SaveHelpOptions;
+    Result:=true;
+  end;
+  
+  function TryDirectoryMask(const Directory: string): boolean;
+  var
+    DirMask: String;
+    CurDir: String;
+    FileInfo: TSearchRec;
+    NewDir: String;
+  begin
+    Result:=false;
+    DirMask:=TrimFilename(Directory);
+    CurDir:=ExtractFilePath(DirMask);
+    if SysUtils.FindFirst(DirMask,faDirectory,FileInfo)=0 then begin
+      repeat
+        // skip special files
+        if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='') then
+          continue;
+        if ((FileInfo.Attr and faDirectory)>0) then begin
+          NewDir:=CurDir+FileInfo.Name;
+          if TryDirectory(NewDir) then
+            exit(true);
+        end;
+      until SysUtils.FindNext(FileInfo)<>0;
+    end;
+    SysUtils.FindClose(FileInfo);
+  end;
+  
+  function SearchInCommonInstallDir: boolean;
+  var
+    SystemPPU: String;
+    p: LongInt;
+    FPCInstallDir: String;
+    FPCVersion: String;
+    UnitName: String;
+  begin
+    Result:=false;
+    { Linux:
+        normally fpc ppu are installed in
+          /somewhere/lib/fpc/$fpcversion/units/$fpctarget/
+        and the docs are installed in
+          /somewhere/share/doc/fpcdocs-$fpcversion/
+      }
+    UnitName:='system.ppu';
+    SystemPPU:=CodeToolBoss.DirectoryCachePool.FindCompiledUnitInCompletePath(
+                                                    '',UnitName);
+    DebugLn(['SearchInCommonInstallDir SystemPPU=',SystemPPU]);
+    // SystemPPU is now e.g. /usr/lib/fpc/2.0.4/units/i386-linux/rtl/system.ppu
+    if SystemPPU='' then exit;
+    p:=System.Pos(PathDelim+'fpc'+PathDelim,SystemPPU);
+    if p<1 then exit;
+    FPCInstallDir:=copy(SystemPPU,1,p);// FPCInstallDir is now e.g. /usr/lib/
+    FPCVersion:=copy(SystemPPU,p+5,length(SystemPPU));
+    p:=System.Pos(PathDelim,FPCVersion);
+    FPCVersion:=copy(FPCVersion,1,p-1);// FPCVersion is now e.g. 2.0.4
+    DebugLn(['SearchInCommonInstallDir FPCInstallDir="',FPCInstallDir,'" FPCVersion="',FPCVersion,'"']);
+    // try first with the current fpc version
+    if (FPCVersion<>'') then begin
+      if TryDirectory(FPCInstallDir
+                      +SetDirSeparators('../share/doc/fpdocs-'+FPCVersion))
+      then exit;
+      if TryDirectory(FPCInstallDir+SetDirSeparators('doc/fpdocs-'+FPCVersion))
+      then exit;
+    end;
+    // try any fpc version
+    if TryDirectoryMask(FPCInstallDir
+                        +SetDirSeparators('../share/doc/fpdocs-*'))
+    then exit;
+    if TryDirectoryMask(FPCInstallDir+SetDirSeparators('doc/fpdocs-*')) then
+      exit;
+  end;
+  
+begin
+  if IsFPCDocsHTMDirectory(HelpOpts.FPCDocsHTMLDirectory) then exit;
+  // search the docs at common places
+  if SearchInCommonInstallDir then exit;
+  if TryDirectoryMask('/usr/share/doc/fpdocs-*') then exit;
+  if TryDirectoryMask('/usr/local/share/doc/fpdocs-*') then exit;
+end;
+
 procedure THelpManager.ConnectMainBarEvents;
 begin
   with MainIDEBar do begin
@@ -456,7 +559,6 @@ function THelpManager.ShowHelpForSourcePosition(const Filename: string;
   const CodePos: TPoint; var ErrMsg: string): TShowHelpResult;
   
   function ShowHelpForFPCKeyWord(const KeyWord: string): TShowHelpResult;
-  // true: help found
   var
     RefFilename: String;
     i: Integer;
@@ -468,10 +570,14 @@ function THelpManager.ShowHelpForSourcePosition(const Filename: string;
   begin
     Result:=shrHelpNotFound;
     if Keyword='' then exit;
+    UpdateFPCDocsHTMLDirectory;
     RefFilename:=HelpOpts.FPCDocsHTMLDirectory;
     if (RefFilename='') then exit;
-    RefFilename:=AppendPathDelim(RefFilename)+'ref.kwd';
-    if not FileExists(RefFilename) then exit;
+    RefFilename:=AppendPathDelim(RefFilename)+'ref'+PathDelim+'ref.kwd';
+    if not FileExists(RefFilename) then begin
+      DebugLn(['ShowHelpForFPCKeyWord file not found RefFilename="',RefFilename,'"']);
+      exit;
+    end;
     List:=nil;
     try
       if LoadStringListFromFile(RefFilename,'FPC keyword list',List)<>mrOk then

@@ -4012,18 +4012,18 @@ begin
   Params.Height := FHeight;
 end;
 
-{------------------------------------------------------------------------------}
-{  TWinControl Invalidate                                                      }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  TWinControl Invalidate
+------------------------------------------------------------------------------}
 Procedure TWinControl.Invalidate;
 Begin
   if HandleAllocated and ([csDestroying,csLoading]*ComponentState=[]) then
     TWSWinControlClass(WidgetSetClass).Invalidate(Self);
 end;
 
-{------------------------------------------------------------------------------}
-{  TWinControl Repaint                                                         }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  TWinControl Repaint
+------------------------------------------------------------------------------}
 Procedure TWinControl.Repaint;
 Begin
   if (not HandleAllocated) or (csDestroying in ComponentState) then exit;
@@ -4035,10 +4035,11 @@ Begin
   Update;
 end;
 
-{------------------------------------------------------------------------------}
-{  TWinControl DoMouseWheel  "Event Handler"                                     }
-{------------------------------------------------------------------------------}
-function TWinControl.DoMouseWheel(Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint): Boolean;
+{------------------------------------------------------------------------------
+  TWinControl DoMouseWheel  "Event Handler"
+ ------------------------------------------------------------------------------}
+function TWinControl.DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;
+  MousePos: TPoint): Boolean;
 begin
   Result := False;
 
@@ -4053,9 +4054,9 @@ begin
   end;
 end;
 
-{------------------------------------------------------------------------------}
-{  TWinControl DoMouseWheelDown  "Event Handler"                                     }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  TWinControl DoMouseWheelDown  "Event Handler"
+------------------------------------------------------------------------------}
 function TWinControl.DoMouseWheelDown(Shift: TShiftState; MousePos: TPoint): Boolean;
 begin
   Result := False;
@@ -4063,9 +4064,9 @@ begin
     FOnMouseWheelDown(Self, Shift, MousePos, Result);
 end;
 
-{------------------------------------------------------------------------------}
-{  TWinControl DoMouseWheelUp  "Event Handler"                                     }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  TWinControl DoMouseWheelUp  "Event Handler"
+------------------------------------------------------------------------------}
 function TWinControl.DoMouseWheelUp(Shift: TShiftState; MousePos: TPoint): Boolean;
 begin
   Result := False;
@@ -4073,9 +4074,9 @@ begin
     FOnMouseWheelUp(Self, Shift, MousePos, Result);
 end;
 
-{------------------------------------------------------------------------------}
-{  TWinControl Insert                                                      }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  TWinControl Insert
+------------------------------------------------------------------------------}
 procedure TWinControl.Insert(AControl : TControl);
 begin
   Insert(AControl,ControlCount);
@@ -4954,6 +4955,7 @@ begin
 
   MousePos.X := Message.X;
   MousePos.Y := Message.Y;
+  Shift := Message.State;
 
   if not DoMouseWheel(Shift, Message.WheelDelta, MousePos) then
     inherited;
