@@ -5917,28 +5917,6 @@
 </seealso>
 </element>
 
-<!-- object Visibility: default -->
-<element name="TDBNavButton">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- object Visibility: default -->
-<element name="TDBNavDataLink">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
 <!-- enumeration type Visibility: default -->
 <element name="TDBNavGlyph">
 <short></short>

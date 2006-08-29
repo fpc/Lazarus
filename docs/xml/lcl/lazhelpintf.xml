@@ -417,17 +417,6 @@
 </seealso>
 </element>
 
-<!-- object Visibility: default -->
-<element name="THelpDatabase">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
 <!-- enumeration type Visibility: default -->
 <element name="THelpNodeType">
 <short></short>
@@ -1644,28 +1633,6 @@
 <short></short>
 <descr>
 </descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- object Visibility: default -->
-<element name="THelpDatabases">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- object Visibility: default -->
-<element name="THelpViewer">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>

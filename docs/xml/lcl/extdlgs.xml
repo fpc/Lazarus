@@ -158,17 +158,6 @@
 </element>
 
 <!-- object Visibility: default -->
-<element name="TPreviewFileDialog">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- object Visibility: default -->
 <element name="TPreviewFileControl">
 <short></short>
 <descr>
@@ -623,17 +612,6 @@
 <!-- enumeration value Visibility: default -->
 <element name="TCalculatorLayout.clSimple">
 <short></short>
-</element>
-
-<!-- object Visibility: default -->
-<element name="TCalculatorForm">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- object Visibility: default -->

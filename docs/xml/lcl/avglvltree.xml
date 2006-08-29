@@ -12,7 +12,6 @@
 <short></short>
 <descr>
 </descr>
-
 <!-- unresolved type reference Visibility: default -->
 <element name="Classes">
 <short></short>
@@ -21,7 +20,6 @@
 <seealso>
 </seealso>
 </element>
-
 <!-- unresolved type reference Visibility: default -->
 <element name="SysUtils">
 <short></short>
@@ -30,7 +28,6 @@
 <seealso>
 </seealso>
 </element>
-
 <!-- unresolved type reference Visibility: default -->
 <element name="FPCAdds">
 <short></short>
@@ -39,18 +36,6 @@
 <seealso>
 </seealso>
 </element>
-
-<!-- object Visibility: default -->
-<element name="TAvgLvlTree">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
 <!-- function type Visibility: default -->
 <element name="TObjectSortCompare">
 <short></short>
@@ -59,27 +44,22 @@
 <seealso>
 </seealso>
 </element>
-
 <!-- function result Visibility: default -->
 <element name="TObjectSortCompare.Result">
 <short></short>
 </element>
-
 <!-- argument Visibility: default -->
 <element name="TObjectSortCompare.Tree">
 <short></short>
 </element>
-
 <!-- argument Visibility: default -->
 <element name="TObjectSortCompare.Data1">
 <short></short>
 </element>
-
 <!-- argument Visibility: default -->
 <element name="TObjectSortCompare.Data2">
 <short></short>
 </element>
-
 <!-- object Visibility: default -->
 <element name="TAvgLvlTreeNode">
 <short></short>
@@ -90,7 +70,6 @@
 <seealso>
 </seealso>
 </element>
-
 <!-- variable Visibility: public -->
 <element name="TAvgLvlTreeNode.Parent">
 <short></short>
@@ -99,7 +78,6 @@
 <seealso>
 </seealso>
 </element>
-
 <!-- variable Visibility: public -->
 <element name="TAvgLvlTreeNode.Left">
 <short></short>
@@ -108,7 +86,6 @@
 <seealso>
 </seealso>
 </element>
-
 <!-- variable Visibility: public -->
 <element name="TAvgLvlTreeNode.Right">
 <short></short>
@@ -117,7 +94,6 @@
 <seealso>
 </seealso>
 </element>
-
 <!-- variable Visibility: public -->
 <element name="TAvgLvlTreeNode.Balance">
 <short></short>
@@ -126,7 +102,6 @@
 <seealso>
 </seealso>
 </element>
-
 <!-- variable Visibility: public -->
 <element name="TAvgLvlTreeNode.Data">
 <short></short>
@@ -135,7 +110,6 @@
 <seealso>
 </seealso>
 </element>
-
 <!-- procedure Visibility: public -->
 <element name="TAvgLvlTreeNode.Clear">
 <short></short>
@@ -146,7 +120,6 @@
 <seealso>
 </seealso>
 </element>
-
 <!-- function Visibility: public -->
 <element name="TAvgLvlTreeNode.TreeDepth">
 <short></short>
@@ -157,12 +130,10 @@
 <seealso>
 </seealso>
 </element>
-
 <!-- function result Visibility: default -->
 <element name="TAvgLvlTreeNode.TreeDepth.Result">
 <short></short>
 </element>
-
 <!-- pointer type Visibility: default -->
 <element name="PAvgLvlTreeNode">
 <short></short>
@@ -171,7 +142,6 @@
 <seealso>
 </seealso>
 </element>
-
 <!-- object Visibility: default -->
 <element name="TAvgLvlTree">
 <short></short>
@@ -182,7 +152,6 @@
 <seealso>
 </seealso>
 </element>
-
 <!-- variable Visibility: private -->
 <element name="TAvgLvlTree.FCount">
 <short></short>
@@ -191,7 +160,6 @@
 <seealso>
 </seealso>
 </element>
-
 <!-- variable Visibility: private -->
 <element name="TAvgLvlTree.FOnCompare">
 <short></short>
@@ -200,7 +168,6 @@
 <seealso>
 </seealso>
 </element>
-
 <!-- variable Visibility: private -->
 <element name="TAvgLvlTree.FOnObjectCompare">
 <short></short>
@@ -209,7 +176,6 @@
 <seealso>
 </seealso>
 </element>
-
 <!-- procedure Visibility: private -->
 <element name="TAvgLvlTree.BalanceAfterInsert">
 <short></short>
@@ -220,12 +186,10 @@
 <seealso>
 </seealso>
 </element>
-
 <!-- argument Visibility: default -->
 <element name="TAvgLvlTree.BalanceAfterInsert.ANode">
 <short></short>
 </element>
-
 <!-- procedure Visibility: private -->
 <element name="TAvgLvlTree.BalanceAfterDelete">
 <short></short>
@@ -236,12 +200,10 @@
 <seealso>
 </seealso>
 </element>
-
 <!-- argument Visibility: default -->
 <element name="TAvgLvlTree.BalanceAfterDelete.ANode">
 <short></short>
 </element>
-
 <!-- function Visibility: private -->
 <element name="TAvgLvlTree.FindInsertPos">
 <short></short>
@@ -252,7 +214,6 @@
 <seealso>
 </seealso>
 </element>
-
 <!-- function result Visibility: default -->
 <element name="TAvgLvlTree.FindInsertPos.Result">
 <short></short>

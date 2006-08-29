@@ -530,13 +530,6 @@
         <descr/>
         <seealso/>
       </element>
-      <!-- object Visibility: default -->
-      <element name="TCustomGrid">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
       <!-- pointer type Visibility: default -->
       <element name="PCellProps">
         <short/>

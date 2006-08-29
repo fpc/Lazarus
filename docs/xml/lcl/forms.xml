@@ -213,11 +213,6 @@
       <element name="TCloseAction.caMinimize">
         <short/>
       </element>
-      <!-- object Visibility: default -->
-      <element name="TScrollingWinControl">
-        <short>Scrolling Window Control</short>
-        <descr>Scrolling Window Control: A window control with scroll bars</descr>
-      </element>
       <!-- enumeration type Visibility: default -->
       <element name="TScrollBarKind">
         <short/>
@@ -707,8 +702,8 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TScrollingWinControl">
-        <short/>
-        <descr/>
+        <short>Scrolling Window Control</short>
+        <descr>Scrolling Window Control: A window control with scroll bars</descr>
         <errors/>
         <seealso/>
       </element>
@@ -1590,11 +1585,6 @@
         <short/>
         <descr/>
         <seealso/>
-      </element>
-      <!-- object Visibility: default -->
-      <element name="TIDesigner">
-        <short>IDesigner</short>
-        <descr>IDesigner</descr>
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TBorderIcon">
@@ -6869,10 +6859,6 @@ It can be invoked like a procedure call (ie as a 'MessageBox()' statement rather
         <short/>
         <descr/>
         <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DataModule">
-        <short/>
       </element>
       <!-- constant Visibility: default -->
       <element name="RemoveDataModule">

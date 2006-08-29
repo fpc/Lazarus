@@ -195,15 +195,6 @@
         <descr/>
         <seealso/>
       </element>
-      <!-- object Visibility: default -->
-      <element name="TWinControl"/>
-      <!-- object Visibility: default -->
-      <element name="TControl">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
       <!-- "class of" type Visibility: default -->
       <element name="TWinControlClass">
         <short/>
@@ -1155,13 +1146,6 @@
       <!-- argument Visibility: default -->
       <element name="TMouseWheelUpDownEvent.Handled">
         <short/>
-      </element>
-      <!-- object Visibility: default -->
-      <element name="TDragObject">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TDragState">
@@ -9838,9 +9822,8 @@
       <!-- property Visibility: public -->
       <element name="TWinControl.TabStop">
         <short>Determines if the user can tab to a control.</short>
-        <descr>Use the TabStop to allow or disallow access to the control using the Tab key.
-
-If the TabStop is True, the control is in the tab order. If TabStop is False, the control is not in the tab order and the user can't press the Tab key to move to the control.</descr>
+        <descr/>
+        <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.OnDockDrop">
@@ -10748,13 +10731,6 @@ TGraphicControl, you must query the ClientRect.</p>
       <!-- argument Visibility: default -->
       <element name="TControlPropertyStorage.GetPropertyList.List">
         <short/>
-      </element>
-      <!-- object Visibility: default -->
-      <element name="TDockTree">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
       </element>
       <!-- object Visibility: default -->
       <element name="TDockZone">
@@ -11893,25 +11869,6 @@ TGraphicControl, you must query the ClientRect.</p>
       </element>
       <!-- argument Visibility: default -->
       <element name="AdjustBorderSpace.Bottom">
-        <short/>
-      </element>
-      <!-- procedure Visibility: default -->
-      <element name="AdjustBorderSpace">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="AdjustBorderSpace.RemainingClientRect">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="AdjustBorderSpace.CurBorderSpace">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="AdjustBorderSpace.Space">
         <short/>
       </element>
       <!-- procedure Visibility: default -->

@@ -46,13 +46,6 @@
         <seealso/>
       </element>
       <!-- object Visibility: default -->
-      <element name="TCustomActionList">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- object Visibility: default -->
       <element name="TContainedAction">
         <short/>
         <descr/>
@@ -275,9 +268,16 @@ Take the following precautions when creating your own Destroy method:
       <!-- object Visibility: default -->
       <element name="TCustomActionList">
         <short>A generic class for all action list components</short>
-        <descr>TCustomActionList is a generic class for all components that represent action lists. TCustomActionList is the ancestor for TActionList. If you want to define your own action list class, you should use this class to derive it from.
+        <descr>TCustomActionList is a generic class for all components that
+ represent action lists. TCustomActionList is the ancestor for TActionList.
+ If you want to define your own action list class, you should use this
+ class to derive it from.
 
-TActionList, TAction, TActionLink and TContainedAction are used to centralize the implementation of user commands, and can then be linked to the apropriete button, menu or another component. This an Object-Oriented programming strategy to reuse the code, as oposed to the Event-Oriented approach of writing an OnClick event for each component.</descr>
+TActionList, TAction, TActionLink and TContainedAction are used to centralize
+ the implementation of user commands, and can then be linked to the apropriete
+ button, menu or another component. This an Object-Oriented programming strategy
+ to reuse the code, as oposed to the Event-Oriented approach of writing an
+ OnClick event for each component.</descr>
         <errors/>
         <seealso>
           <link id="TActionList"/>
@@ -1672,10 +1672,6 @@ Constructors allocate memory and system resources needed by the object. They als
       </element>
       <!-- argument Visibility: default -->
       <element name="CategoryName">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="AClasses">
         <short/>
       </element>
       <!-- argument Visibility: default -->

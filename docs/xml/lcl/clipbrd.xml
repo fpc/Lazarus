@@ -1067,43 +1067,6 @@
 </element>
 
 <!-- function Visibility: default -->
-<element name="Clipboard">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="Clipboard.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="SetClipboard">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="SetClipboard.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="SetClipboard.NewClipboard">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
 <element name="PrimarySelection">
 <short></short>
 <descr>

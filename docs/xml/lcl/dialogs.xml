@@ -1327,38 +1327,6 @@ Call the Execute function to show the color dialog.</descr>
       </element>
       <!-- function Visibility: default -->
       <element name="MessageDlg">
-        <short>Show a message to the user and receive his response.</short>
-        <descr>A MessageDlg can be used to show a message to the user and receive his response. The MessageDlg can be one of several types.
-
-There are two versions of this function. The first version displays a dialog with the standard caption, the second version enables you to set the caption.</descr>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="MessageDlg.Result">
-        <short>The result of this function is the button the user pressed to close the dialog.</short>
-        <descr>The result of this function is the button the user pressed to close the dialog.</descr>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="MessageDlg.aMsg">
-        <short>The message to be shown.</short>
-        <descr>The message shown to the user.</descr>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="MessageDlg.DlgType">
-        <short>The type of dialog to be shown</short>
-        <descr>The DlgType parameter indicates the type of dialog to show. You can choose from mtWarning, mtError, mtInformation, mtConfirmation or mtCustom.</descr>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="MessageDlg.Buttons">
-        <short>Determines the buttons shown on the messagedialog</short>
-        <descr>Buttons indicate which set of button captions have to be shown on the dialog. You can choose from predefined sets: mbAbortRetryIgnore, mbOKCancel, mbYesNo, mbYesNoCancel, or you can make your own set.</descr>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="MessageDlg.HelpCtx">
-        <short>HelpCtx is used to specify which topic form the help should be shown.</short>
-        <descr>HelpCtx is used to specify which topic form the help should be shown.</descr>
-      </element>
-      <!-- function Visibility: default -->
-      <element name="MessageDlg">
         <short>Message Dialog</short>
         <descr>Message Dialog:  show a message to the user and receive his response. 
 
@@ -1696,32 +1664,6 @@ Function PasswordBox(const ACaption, APrompt : String) : String;
       <!-- argument Visibility: default -->
       <element name="PasswordBox.APrompt">
         <short>A prompt to ask for the users input.</short>
-      </element>
-      <!-- function Visibility: default -->
-      <element name="SelectDirectory">
-        <short>A function that allows to user to select a directory.</short>
-        <descr>This function wil show a dialog which allows the user to select the required directory when the directory structure is displayed as a tree. <br/>Under Windows the caption from the resulting dialog cannot be set, but the label above the directory tree will have this value.<br/>
-There are two version of this function, the second one having the ability to indicate whether hidden folders should be shown as well.</descr>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="SelectDirectory.Result">
-        <short>A boolean indicating if the user pressed OK.</short>
-        <descr>A boolean indicating if the user selected a directory and pressed OK.</descr>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="SelectDirectory.Caption">
-        <short>A constant which sets the caption of the shown dialog.</short>
-        <descr>A constant which sets the caption of the shown dialog.</descr>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="SelectDirectory.InitialDirectory">
-        <short>The directory the dialog should start in.</short>
-        <descr>The directory the dialog should start in. <br/>If a valid directory is given, the selected directory in the tree will be set to this directory.</descr>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="SelectDirectory.Directory">
-        <short>A variable which on exit contains the selected directory.</short>
-        <descr>A variable which on exit contains the selected directory.</descr>
       </element>
       <!-- function Visibility: default -->
       <element name="SelectDirectory">

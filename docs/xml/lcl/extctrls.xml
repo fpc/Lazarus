@@ -336,8 +336,6 @@
         <seealso/>
       </element>
       <!-- object Visibility: default -->
-      <element name="TCustomNotebook"/>
-      <!-- object Visibility: default -->
       <element name="TNBPages">
         <short>NB Pages</short>
         <descr>NB Pages: The set of instances of Notebook Page</descr>

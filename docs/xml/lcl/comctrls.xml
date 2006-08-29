@@ -195,13 +195,6 @@
       <element name="TStatusPanelBevel.pbRaised">
         <short/>
       </element>
-      <!-- object Visibility: default -->
-      <element name="TStatusBar">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
       <!-- enumeration type Visibility: default -->
       <element name="TPanelPart">
         <short/>
@@ -772,13 +765,6 @@
       <element name="TStatusBar.OnMouseDown">
         <short/>
         <descr/>
-        <seealso/>
-      </element>
-      <!-- object Visibility: default -->
-      <element name="TPageControl">
-        <short/>
-        <descr/>
-        <errors/>
         <seealso/>
       </element>
       <!-- enumeration type Visibility: default -->
@@ -1392,13 +1378,6 @@
       <element name="TPageControl.OnResize">
         <short/>
         <descr/>
-        <seealso/>
-      </element>
-      <!-- object Visibility: default -->
-      <element name="TCustomTabControl">
-        <short/>
-        <descr/>
-        <errors/>
         <seealso/>
       </element>
       <!-- object Visibility: default -->
@@ -3266,17 +3245,6 @@ cdsIndeterminate</descr>
       <element name="TCustomDrawState">
         <short>A subset of TCustomDrawStateFlag</short>
         <descr>TCustomDrawState determines how a item will be drawn.</descr>
-      </element>
-      <!-- object Visibility: default -->
-      <element name="TListItems">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- object Visibility: default -->
-      <element name="TCustomListView">
-        <short>A forward declaration</short>
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TSortType">
@@ -7219,25 +7187,6 @@ To add, change or delete a column use the Columns property.</descr>
         <seealso/>
       </element>
       <!-- object Visibility: default -->
-      <element name="TToolBar">
-        <short>TToolbar manages tool buttons and other controls, arranging them in rows and automatically adjusting their sizes and positions.</short>
-        <descr>
-          <p>TToolbar is a container for tool buttons (TToolButton).  it provides an easy way to arrange and manage visual controls.</p>
-          <ul>
-            <li>All tool buttons on a toolbar maintain a uniform width and height. </li>
-            <li>Other controls can sit on a toolbar. These controls (which are held in place by invisible tool buttons) maintain a uniform height.</li>
-            <li>Controls can automatically wrap around and start a new row when they do not fit horizontally on the toolbar.</li>
-            <li>The Flat property allows the background to show through the toolbar and gives pop-up borders to the tool buttons.</li>
-            <li>Spaces and dividers (which are in fact specially configured tool buttons) can group controls on the toolbar both visually and functionally.</li>
-          </ul>
-          <p>Typically, the tool buttons correspond to items in an application's menu and gives the user more direct access to the application's commands.</p>
-        </descr>
-        <seealso>
-          <link id="TToolButton"/>
-        </seealso>
-        <example file="comctrls/ttoolbutton.pas"/>
-      </element>
-      <!-- object Visibility: default -->
       <element name="TToolButton">
         <short>TToolButton is a button control in a TToolBar object.</short>
         <descr>
@@ -9747,27 +9696,6 @@ To add, change or delete a column use the Columns property.</descr>
       <element name="TTrackBar.Visible">
         <short/>
         <descr/>
-        <seealso/>
-      </element>
-      <!-- object Visibility: default -->
-      <element name="TCustomTreeView">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- object Visibility: default -->
-      <element name="TTreeNodes">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- object Visibility: default -->
-      <element name="TTreeNode">
-        <short/>
-        <descr/>
-        <errors/>
         <seealso/>
       </element>
       <!-- enumeration type Visibility: default -->

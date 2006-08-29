@@ -59,28 +59,6 @@
 </element>
 
 <!-- object Visibility: default -->
-<element name="TResourceCache">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- object Visibility: default -->
-<element name="TResourceCacheDescriptor">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- object Visibility: default -->
 <element name="TResourceCacheItem">
 <short></short>
 <descr>
