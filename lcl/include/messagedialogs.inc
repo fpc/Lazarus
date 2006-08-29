@@ -35,11 +35,11 @@ begin
   If mbCancel in Buttons then
     Result := mrCancel
   else
-    If mbAbort in Buttons then
-      Result := mrAbort
-  else
     If mbNo in Buttons then
       Result := mrNo
+  else
+    If mbAbort in Buttons then
+      Result := mrAbort
   else
     If mbIgnore in Buttons then
       Result := mrIgnore

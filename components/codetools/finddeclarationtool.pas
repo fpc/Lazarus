@@ -7695,11 +7695,9 @@ begin
   NewPos.Code:=nil;
   if NewCodeTool<>nil then begin
     if (NewCleanPos>=1) then
-      NewCodeTool.CleanPosToCaretAndTopLine(NewCleanPos,
-                 NewPos,NewTopLine)
+      NewCodeTool.CleanPosToCaretAndTopLine(NewCleanPos,NewPos,NewTopLine)
     else if (NewNode<>nil) then
-      NewCodeTool.CleanPosToCaretAndTopLine(NewNode.StartPos,
-                 NewPos,NewTopLine);
+      NewCodeTool.CleanPosToCaretAndTopLine(NewNode.StartPos,NewPos,NewTopLine);
   end;
 end;
 
