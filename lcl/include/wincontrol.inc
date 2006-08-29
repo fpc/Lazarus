@@ -4955,9 +4955,6 @@ begin
   MousePos.X := Message.X;
   MousePos.Y := Message.Y;
 
-  { always the middle button }
-  Shift := [ssMiddle];
-
   if not DoMouseWheel(Shift, Message.WheelDelta, MousePos) then
     inherited;
 end;
