@@ -42,6 +42,19 @@ Type
   { Pointer to @link(COMBOBOXINFO) }
   PComboBoxInfo = ^COMBOBOXINFO;
 
+  TNMLVCustomDraw = Record
+                   hdr          : NMHDR;
+                   dwDrawStage  : DWORD;
+                   hdc          : HDC;
+                   rc           : TRECT;
+                   dwItemSpec   : DWORD;
+                   uItemState   : UINT;
+                   lItemlParam  : longint;
+				   clrText,clrTextBk:COLORREF;
+                   iSubItem     :longint;
+                END;
+  PNMLVCustomDraw=^TNMLVCustomDraw;
+
 { Win32 API constants not included in windows.pp }
 Const
   { Recommended modal-dialog style }
@@ -106,6 +119,7 @@ Const
   LVM_GETHEADER                = LVM_FIRST + 31;
   LVM_SETEXTENDEDLISTVIEWSTYLE = LVM_FIRST + 54;
   LVM_GETEXTENDEDLISTVIEWSTYLE = LVM_FIRST + 55;
+  LVM_GETSUBITEMRECT           = LVM_FIRST + 56;
   LVM_SETHOVERTIME             = LVM_FIRST + 71;
   LVM_GETHOVERTIME             = LVM_FIRST + 72;
 
@@ -141,6 +155,40 @@ Const
   LVS_EX_SINGLEROW        = $00040000;
   LVS_EX_SNAPTOGRID       = $00080000;
   LVS_EX_SIMPLESELECT     = $00100000;
+  
+  //state information for common control items (used for listview)
+  CDIS_SELECTED           = $001;
+  CDIS_GRAYED             = $002;
+  CDIS_DISABLED           = $004;
+  CDIS_CHECKED            = $008;
+  CDIS_FOCUS              = $010;
+  CDIS_DEFAULT            = $020;
+  CDIS_HOT                = $040;
+  CDIS_MARKED             = $080;
+  CDIS_INDETERMINATE      = $100;
+  
+  //custom draw event stage information
+  CDDS_PREPAINT      = $00001;
+  CDDS_POSTPAINT     = $00002;
+  CDDS_PREERASE      = $00003;
+  CDDS_POSTERASE     = $00004;
+  
+  CDDS_ITEM          = $10000;
+  CDDS_ITEMPREPAINT  = $10001;
+  CDDS_ITEMPOSTPAINT = $10002;
+  CDDS_ITEMPREERASE  = $10003;
+  CDDS_ITEMPOSTERASE = $10004;
+
+  CDDS_SUBITEM       = $20000;
+  
+  //values returned by an custom draw event
+  CDRF_DODEFAULT         = $00;
+  CDRF_SKIPDEFAULT       = $04;
+  CDRF_NOTIFYPOSTPAINT   = $10;
+  CDRF_NOTIFYITEMDRAW    = $20; 
+  CDRF_NOTIFYSUBITEMDRAW = $20; // flags are the same, we can distinguish by context
+  CDRF_NOTIFYPOSTERASE   = $40;
+  CDRF_NOTIFYITEMERASE   = $80; 
   
 // progressbar
   PBM_SETRANGE32          = 1030;
@@ -219,6 +267,9 @@ begin
   Result := SendMessage(hwndLV, LVM_SETHOVERTIME, 0, dwHoverTimeMs);
 end;
 
+procedure ListView_SetCheckState(hwndLV: HWND; iIndex: UINT;fCheck:BOOL);
+begin
+end;
 
 
 Var

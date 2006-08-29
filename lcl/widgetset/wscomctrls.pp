@@ -92,8 +92,11 @@ type
               
     // Item          
     class procedure ItemDelete(const ALV: TCustomListView; const AIndex: Integer); virtual;
+    class function  ItemDisplayRect(const ALV: TCustomListView; const AIndex, ASubItem: Integer; ACode: TDisplayCode): TRect; virtual;
+    class function  ItemGetChecked(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem): Boolean; virtual;
     class function  ItemGetState(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const AState: TListItemState; out AIsSet: Boolean): Boolean; virtual; // returns True if supported
     class procedure ItemInsert(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem); virtual;
+    class procedure ItemSetChecked(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const AChecked: Boolean); virtual;
     class procedure ItemSetImage(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const ASubIndex, AImageIndex: Integer); virtual;
     class procedure ItemSetState(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const AState: TListItemState; const AIsSet: Boolean); virtual;
     class procedure ItemSetText(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const ASubIndex: Integer; const AText: String); virtual;
@@ -107,6 +110,7 @@ type
     class function GetDropTarget(const ALV: TCustomListView): Integer; virtual;
     class function GetFocused(const ALV: TCustomListView): Integer; virtual;
     class function GetHoverTime(const ALV: TCustomListView): Integer; virtual;
+    class function GetItemAt(const ALV: TCustomListView; x,y: integer): Integer; virtual;
     class function GetSelCount(const ALV: TCustomListView): Integer; virtual;
     class function GetSelection(const ALV: TCustomListView): Integer; virtual;
     class function GetTopItem(const ALV: TCustomListView): Integer; virtual;
@@ -272,6 +276,16 @@ class procedure TWSCustomListView.ItemDelete(const ALV: TCustomListView;
 begin
 end;
 
+class function TWSCustomListView.ItemDisplayRect(const ALV: TCustomListView; const AIndex, ASubItem: Integer; ACode: TDisplayCode): TRect;
+begin
+  Result := Rect(0,0,0,0);
+end;
+
+class function TWSCustomListView.ItemGetChecked(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem): Boolean;
+begin
+  Result := False;
+end;
+
 class function TWSCustomListView.ItemGetState(const ALV: TCustomListView;
   const AIndex: Integer; const AItem: TListItem; const AState: TListItemState;
   out AIsSet: Boolean): Boolean;
@@ -283,6 +297,10 @@ end;
 
 class procedure TWSCustomListView.ItemInsert(const ALV: TCustomListView;
   const AIndex: Integer; const AItem: TListItem);
+begin
+end;
+
+class procedure TWSCustomListView.ItemSetChecked(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const AChecked: Boolean);
 begin
 end;
 
@@ -335,6 +353,11 @@ end;
 class function TWSCustomListView.GetHoverTime(const ALV: TCustomListView): Integer;
 begin
   Result := -1;
+end;
+
+class function TWSCustomListView.GetItemAt(const ALV: TCustomListView; x,y: integer): Integer;
+begin
+  result:=-1;
 end;
 
 class function TWSCustomListView.GetSelCount(const ALV: TCustomListView): Integer;

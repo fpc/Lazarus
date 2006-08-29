@@ -272,6 +272,39 @@ begin
   ListView_DeleteItem(ALV.Handle, AIndex);
 end;
 
+class function TWin32WSCustomListView.ItemDisplayRect(const ALV: TCustomListView; const AIndex, ASubItem: Integer; ACode: TDisplayCode):TRect; 
+const 
+  DISPLAYCODES: array[TDisplayCode] of DWORD=(LVIR_BOUNDS, LVIR_ICON, LVIR_LABEL, LVIR_SELECTBOUNDS);
+var
+  mes: uint;
+begin
+  Result := Rect(0,0,0,0);
+  if not WSCheckHandleAllocated(ALV, 'ItemDisplayRect')
+  then Exit;                                          
+  
+  if ASubItem = 0 
+  then mes:=LVM_GETITEMRECT
+  else begin
+    mes:=LVM_GETSUBITEMRECT;
+    if ACode = drSelectBounds 
+    then ACode := drBounds;
+  end;
+  Result.top := ASubItem;
+  Result.left := DISPLAYCODES[ACode];
+  SendMessage(ALV.Handle, mes, AIndex, lparam(@Result));
+end;
+
+class function TWin32WSCustomListView.ItemGetChecked(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem): Boolean;
+begin
+  Result := False;
+  if not WSCheckHandleAllocated(ALV, 'ItemGetChecked')
+  then Exit;
+  // shr 12 will give teh stateimage index, however a value of 
+  // 0 means no image and 1 means unchecked. All other 14 are checked (?)
+  // so shifting 13 will always result in something <> 0 when checked.
+  Result := SendMessage(ALV.Handle, LVM_GETITEMSTATE, AIndex, LVIS_STATEIMAGEMASK) shr 13 <> 0;
+end;
+
 class function TWin32WSCustomListView.ItemGetState(const ALV: TCustomListView;
   const AIndex: Integer; const AItem: TListItem; const AState: TListItemState;
   out AIsSet: Boolean): Boolean;
@@ -301,6 +334,17 @@ begin
   lvi.pszText := PChar(AItem.Caption);
 
   ListView_InsertItem(ALV.Handle, lvi);
+end;
+
+class procedure TWin32WSCustomListView.ItemSetChecked(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const AChecked: Boolean);
+begin
+  if not WSCheckHandleAllocated(ALV, 'ItemSetChecked')
+  then Exit;
+
+  if AChecked then
+    ListView_SetItemState(ALV.Handle, AIndex, IndexToStateImageMask(2), LVIS_STATEIMAGEMASK)
+   else
+    ListView_SetItemState(ALV.Handle, AIndex, IndexToStateImageMask(1), LVIS_STATEIMAGEMASK);
 end;
 
 class procedure TWin32WSCustomListView.ItemSetImage(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const ASubIndex, AImageIndex: Integer);
@@ -395,6 +439,7 @@ end;
 
 class function TWin32WSCustomListView.GetBoundingRect(const ALV: TCustomListView): TRect;
 begin
+  Result := Rect(0,0,0,0); 
   if not WSCheckHandleAllocated(ALV, 'GetBoundingRect')
   then Exit;
 
@@ -403,6 +448,7 @@ end;
 
 class function TWin32WSCustomListView.GetDropTarget(const ALV: TCustomListView): Integer;
 begin
+  Result := -1; 
   if not WSCheckHandleAllocated(ALV, 'GetDropTarget')
   then Exit;
 
@@ -410,7 +456,8 @@ begin
 end;
 
 class function TWin32WSCustomListView.GetFocused(const ALV: TCustomListView): Integer;
-begin
+begin       
+  Result := -1; 
   if not WSCheckHandleAllocated(ALV, 'GetFocused')
   then Exit;
 
@@ -419,14 +466,31 @@ end;
 
 class function TWin32WSCustomListView.GetHoverTime(const ALV: TCustomListView): Integer;
 begin
+  Result := -1; 
   if not WSCheckHandleAllocated(ALV, 'GetHoverTime')
   then Exit;
 
   Result := ListView_GetHoverTime(ALV.Handle);
 end;
 
+class function TWin32WSCustomListView.GetItemAt(const ALV: TCustomListView; x,y: integer): Integer;
+var 
+  HitInfo: LV_HITTESTINFO;
+begin
+  Result := -1; 
+  if not WSCheckHandleAllocated(ALV, 'GetItemAt')
+  then Exit;
+
+  HitInfo.pt.x:=x;
+  HitInfo.pt.y:=y;
+  ListView_HitTest(alv.Handle,HitInfo);
+  if HitInfo.flags <> LVHT_NOWHERE 
+  then Result:=HitInfo.iItem;
+end;
+
 class function TWin32WSCustomListView.GetSelCount(const ALV: TCustomListView): Integer;
 begin
+  Result := 0;
   if not WSCheckHandleAllocated(ALV, 'GetSelCount')
   then Exit;
 
@@ -435,6 +499,7 @@ end;
 
 class function TWin32WSCustomListView.GetSelection(const ALV: TCustomListView): Integer;
 begin
+  Result := -1;
   if not WSCheckHandleAllocated(ALV, 'GetSelection')
   then Exit;
 
@@ -443,6 +508,7 @@ end;
 
 class function TWin32WSCustomListView.GetTopItem(const ALV: TCustomListView): Integer;
 begin
+  Result := -1;
   if not WSCheckHandleAllocated(ALV, 'GetTopItem')
   then Exit;
 
@@ -456,6 +522,7 @@ end;
 
 class function TWin32WSCustomListView.GetVisibleRowCount(const ALV: TCustomListView): Integer;
 begin
+  Result := 0;
   if not WSCheckHandleAllocated(ALV, 'GetVisibleRowCount')
   then Exit;
 

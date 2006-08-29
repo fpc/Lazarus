@@ -101,8 +101,11 @@ type
 
     // items
     class procedure ItemDelete(const ALV: TCustomListView; const AIndex: Integer); override;
+    class function  ItemDisplayRect(const ALV: TCustomListView; const AIndex, ASubItem: Integer; ACode: TDisplayCode): TRect; override;
+    class function  ItemGetChecked(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem): Boolean; override;
     class function  ItemGetState(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const AState: TListItemState; out AIsSet: Boolean): Boolean; override; // returns True if supported
     class procedure ItemInsert(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem); override;
+    class procedure ItemSetChecked(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const AChecked: Boolean); override;
     class procedure ItemSetImage(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const ASubIndex, AImageIndex: Integer); override;
     class procedure ItemSetState(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const AState: TListItemState; const AIsSet: Boolean); override;
     class procedure ItemSetText(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const ASubIndex: Integer; const AText: String); override;
@@ -118,6 +121,7 @@ type
     class function GetDropTarget(const ALV: TCustomListView): Integer; override;
     class function GetFocused(const ALV: TCustomListView): Integer; override;
     class function GetHoverTime(const ALV: TCustomListView): Integer; override;
+    class function GetItemAt(const ALV: TCustomListView; x,y: Integer): Integer; override;
     class function GetSelCount(const ALV: TCustomListView): Integer; override;
     class function GetSelection(const ALV: TCustomListView): Integer; override;
     class function GetTopItem(const ALV: TCustomListView): Integer; override;

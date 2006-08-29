@@ -787,8 +787,88 @@ Var
       SetWin32SizePoint(MaxWidth, MaxHeight, MinMaxInfo.ptMaxTrackSize);
     end;
   end;
+  
+  //MWE: I noticed to late that eventhandlers are called here (to much code cleanup otherwise the patch was rejected)
+  // this should not be done here.
+  // we need a proper place in tcustomlistview.
+  // to be compatible (or consistent) with other controls, 
+  // each OnXXX should be called from a virtual DoXXX, so descendants can override these.
+  //TODO: remove this code from here !!!!
+  procedure HandleListViewCustomDraw(ListView: TListView);
+    function ConvState(const state:uint): TCustomDrawState;
+    begin
+      Result := [];
+      if state and CDIS_CHECKED <> 0 then Include(Result, cdsChecked);
+      if state and CDIS_DEFAULT <> 0 then Include(Result, cdsDefault);
+      if state and CDIS_DISABLED <> 0 then Include(Result, cdsDisabled);
+      if state and CDIS_FOCUS <> 0 then Include(Result, cdsFocused);
+      if state and CDIS_GRAYED <> 0 then Include(Result, cdsGrayed);
+      if state and CDIS_HOT <> 0 then Include(Result, cdsHot);
+      if state and CDIS_INDETERMINATE <> 0 then Include(Result, cdsIndeterminate);
+      if state and CDIS_MARKED <> 0 then Include(Result, cdsMarked);
+      if state and CDIS_SELECTED <> 0 then Include(Result, cdsSelected);
+    end;
 
-Begin
+  var 
+    DefaultDraw: boolean;
+    DrawInfo:PNMLVCustomDraw;
+    Stage: TCustomDrawStage;
+  begin
+    DefaultDraw:=true;
+    DrawInfo:=PNMLVCustomDraw(lmnotify.NMHdr);
+    lmnotify.result:=CDRF_DODEFAULT;
+    WinProcess:=false;
+    case drawInfo^.dwDrawStage and $7 of //Get drawing state
+      CDDS_PREPAINT:  Stage:=cdPrePaint;
+      CDDS_POSTPAINT: Stage:=cdPostPaint;
+      CDDS_PREERASE:  Stage:=cdPreErase; 
+      CDDS_POSTERASE: Stage:=cdPostErase;
+    end;  
+
+    case DrawInfo^.dwDrawStage and (CDDS_ITEM or CDDS_SUBITEM) of //Get drawn part
+      $0: begin //Whole control
+            if assigned(listView.OnAdvancedCustomDraw) then
+              listView.OnAdvancedCustomDraw(listView,drawInfo^.rc,Stage,defaultDraw);
+            if Stage = cdPrePaint then 
+            begin
+              if assigned(listView.OnCustomDraw) then
+                listView.OnCustomDraw(listView,drawInfo^.rc,defaultDraw);
+              if assigned(listView.OnCustomDrawItem) or assigned(listView.OnCustomDrawSubItem) then
+                lmnotify.result:=lmnotify.result or CDRF_NOTIFYITEMDRAW;
+              if assigned(listView.OnAdvancedCustomDrawItem) or assigned (listView.OnAdvancedCustomDrawSubItem) then
+                lmnotify.result:=lmnotify.result or CDRF_NOTIFYITEMDRAW or CDRF_NOTIFYITEMERASE;
+              if assigned(listView.OnAdvancedCustomDraw) then
+                lmnotify.result:=lmnotify.result or CDRF_NOTIFYPOSTERASE or CDRF_NOTIFYPOSTPAINT;
+            end;
+            if not defaultDraw then 
+              lmnotify.result:=lmnotify.result or CDRF_SKIPDEFAULT;
+          end;
+      CDDS_ITEM: begin //One item (= line in report mode)
+            if assigned(listView.OnAdvancedCustomDrawItem) then
+              listView.OnAdvancedCustomDrawItem(listView,listView.Items[drawInfo^.dwItemSpec], convState(drawInfo^.uItemState),Stage,defaultDraw);
+            if Stage = cdPrePaint then 
+            begin
+              if assigned(listView.OnCustomDrawItem) then
+                listView.OnCustomDrawItem(listView,listView.Items[drawInfo^.dwItemSpec], convState(drawInfo^.uItemState),defaultDraw);
+              if (assigned(listView.OnCustomDrawSubItem) or assigned(listView.OnAdvancedCustomDrawSubItem)) and (listView.viewStyle=vsReport) then
+                lmnotify.result:=lmnotify.result or CDRF_NOTIFYSUBITEMDRAW;
+            end;
+            if not defaultDraw then 
+              lmnotify.result:=lmnotify.result or CDRF_SKIPDEFAULT;
+      end;
+      CDDS_SUBITEM or CDDS_ITEM: begin //One sub item
+            if assigned(listView.OnAdvancedCustomDrawSubItem) then
+              listView.OnAdvancedCustomDrawSubItem(listView,listView.Items[drawInfo^.dwItemSpec],drawInfo^.iSubItem,
+                                           convState(drawInfo^.uItemState),Stage,defaultDraw);
+            if assigned(listView.OnCustomDrawSubItem) then
+              listView.OnCustomDrawSubItem(listView,listView.Items[drawInfo^.dwItemSpec],drawInfo^.iSubItem,
+                                           convState(drawInfo^.uItemState),defaultDraw);
+            if not defaultDraw then lmnotify.result:=CDRF_SKIPDEFAULT;
+      end;
+    end;
+  end;
+  
+begin
   Assert(False, 'Trace:WindowProc - Start');
 
   LMessage.Result := 0;
@@ -1488,6 +1568,11 @@ Begin
           LMessage.Msg := LM_CHANGED;
           if WindowInfo^.WinControl <> nil then
             lWinControl := WindowInfo^.WinControl;
+        end;
+        NM_CUSTOMDRAW:
+        begin
+          if WindowInfo^.WinControl is TListView //what about TCustomlistView
+          then HandleListViewCustomDraw(TListView(WindowInfo^.WinControl));
         end;
         UDN_DELTAPOS:
         begin

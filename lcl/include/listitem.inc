@@ -338,6 +338,33 @@ begin
 end;
 
 {------------------------------------------------------------------------------}
+{   TListItem DisplayRect                                                      }
+{------------------------------------------------------------------------------}
+function TListItem.DisplayRect(Code: TDisplayCode): TRect;
+var
+  LV: TCustomListView;
+begin
+  LV := FOwner.FOwner;
+  Result := TWSCustomListViewClass(LV.WidgetSetClass).ItemDisplayRect(
+                                                         LV, GetIndex, 0, code);
+end;
+
+{------------------------------------------------------------------------------}
+{   TListItem DisplayRectSubItem                                               }
+{   The same as DisplayRect, except that it works for the sub items in the     }
+{   tecord view                                                                }
+{   If subItem = 0 then it will should return DisplayRect(code)                }
+{------------------------------------------------------------------------------}
+function TListItem.DisplayRectSubItem(subItem: integer; Code: TDisplayCode): TRect;
+var
+  LV: TCustomListView;
+begin
+  LV := FOwner.FOwner;
+  Result := TWSCustomListViewClass(LV.WidgetSetClass).ItemDisplayRect(
+                                                   LV, GetIndex, subItem, code);
+end;
+
+{------------------------------------------------------------------------------}
 {   TListItem IntfUpdateText                                                   }
 {------------------------------------------------------------------------------}
 procedure TListItem.IntfUpdateText;
@@ -422,22 +449,35 @@ begin
 end;
 
 {------------------------------------------------------------------------------}
+{   TListItem GetChecked                                                       }
+{------------------------------------------------------------------------------}
+function TListItem.GetChecked(): Boolean;
+var
+  LV: TCustomListView;
+begin
+  LV := FOwner.FOwner;
+  Result := LV.Checkboxes and
+      TWSCustomListViewClass(LV.WidgetSetClass).ItemGetChecked(LV, GetIndex, Self);
+end;
+
+{------------------------------------------------------------------------------}
 {   TListItem GetState                                                         }
 {------------------------------------------------------------------------------}
 function TListItem.GetState(const ALisOrd: Integer): Boolean;
 var
   AState: TListItemState;
+  LV: TCustomListView;
 begin
   AState := TListItemState(ALisOrd);
+  LV := FOwner.FOwner;
 
-  if IntfUpdateAllowed 
-  and TWSCustomListViewClass(FOwner.FOwner.WidgetSetClass)
-    .ItemGetState(FOwner.FOwner, GetIndex, Self, AState, Result)
+  if IntfUpdateAllowed
+  and TWSCustomListViewClass(LV.WidgetSetClass).ItemGetState(LV, GetIndex, Self, AState, Result)
   then begin
     // update FStates
-    if Result 
+    if Result
     then Include(FStates, AState)
-    else Exclude(FStates, AState); 
+    else Exclude(FStates, AState);
   end
   else Result := AState in FStates;
 end;
@@ -482,11 +522,26 @@ end;
 {   TListItem SetCaption                                                       }
 {------------------------------------------------------------------------------}
 procedure TListItem.SetCaption(const AValue : String);
+var
+  LV: TCustomListView;
 begin
   if FCaption = AValue then Exit;
   FCaption := AValue;
+  LV := FOwner.FOwner;
   if IntfUpdateAllowed
-  then TWSCustomListViewClass(FOwner.FOwner.WidgetSetClass).ItemSetText(FOwner.FOwner, GetIndex, Self, 0, FCaption);
+  then TWSCustomListViewClass(LV.WidgetSetClass).ItemSetText(LV, GetIndex, Self, 0, FCaption);
+end;
+
+{------------------------------------------------------------------------------}
+{   TListItem SetChecked                                                       }
+{------------------------------------------------------------------------------}
+procedure TListItem.SetChecked(AValue: Boolean);
+var
+  LV: TCustomListView;
+begin
+  LV := FOwner.FOwner;
+  if LV.Checkboxes and IntfUpdateAllowed 
+  then TWSCustomListViewClass(LV.WidgetSetClass).ItemSetChecked(LV, GetIndex, Self, AValue);
 end;
 
 {------------------------------------------------------------------------------}
@@ -548,3 +603,4 @@ begin
   if (AValue = nil) and (FSubItems = nil) then Exit;
   SubItems.Assign(AValue);
 end;
+

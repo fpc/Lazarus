@@ -564,6 +564,8 @@ type
   
   TListItemFlag = (lifDestroying, lifCreated);
   TListItemFlags = set of TListItemFlag;
+
+  TDisplayCode = (drBounds, drIcon, drLabel, drSelectBounds);
   
   { TListItem }
 
@@ -576,6 +578,7 @@ type
     FData: Pointer;
     FImageIndex: Integer;
     FStates: TListItemStates;
+    function GetChecked: Boolean;
     function GetListView: TCustomListView;
     function GetState(const ALisOrd: Integer): Boolean;
     function GetIndex: Integer;
@@ -586,6 +589,7 @@ type
     procedure IntfUpdateText;
     procedure IntfUpdateImages;
 
+    procedure SetChecked(AValue: Boolean);
     procedure SetState(const ALisOrd: Integer; const AIsSet: Boolean);
     procedure SetData(const AValue: Pointer);
     procedure SetImageIndex(const AValue: Integer);
@@ -601,8 +605,11 @@ type
     destructor Destroy; override;
     procedure Delete;
     procedure MakeVisible(PartialOK: Boolean);
+    function DisplayRect(Code: TDisplayCode): TRect;
+    function DisplayRectSubItem(subItem: integer;Code: TDisplayCode): TRect;
 
     property Caption : String read FCaption write SetCaption;
+    property Checked : Boolean read GetChecked write SetChecked;
     property Cut: Boolean index Ord(lisCut) read GetState write SetState;
     property Data: Pointer read FData write SetData;
     property DropTarget: Boolean index Ord(lisDropTarget) read GetState write SetState;
@@ -613,8 +620,7 @@ type
     property Owner: TListItems read FOwner;
     property Selected: Boolean index Ord(lisSelected) read GetState write SetState;
     property SubItems: TStrings read GetSubItems write SetSubItems;
-    property SubItemImages[const AIndex: Integer]: Integer
-      read GetSubItemImages write SetSubItemImages;
+    property SubItemImages[const AIndex: Integer]: Integer read GetSubItemImages write SetSubItemImages;
   end;
 
 
@@ -751,6 +757,22 @@ type
   TLVInsertEvent = TLVDeletedEvent;
   TLVSelectItemEvent = procedure(Sender: TObject; Item: TListItem;
                                  Selected: Boolean) of object;
+  //currently the draw events are only called from the win32 interface
+  TLVCustomDrawEvent = procedure(Sender: TCustomListView; const ARect: TRect;
+                                  var DefaultDraw: Boolean) of object;
+  TLVCustomDrawItemEvent = procedure(Sender: TCustomListView; Item: TListItem; 
+                                State: TCustomDrawState; var DefaultDraw: Boolean) of object;
+  TLVCustomDrawSubItemEvent=procedure(Sender: TCustomListView; Item: TListItem; 
+                                 SubItem: Integer; State: TCustomDrawState;
+                                 var DefaultDraw: Boolean) of object;
+  TLVAdvancedCustomDrawEvent = procedure(Sender: TCustomListView; const ARect: TRect;
+                                Stage: TCustomDrawStage; var DefaultDraw: Boolean) of object;
+  TLVAdvancedCustomDrawItemEvent = procedure(Sender: TCustomListView; Item: TListItem; 
+                                State: TCustomDrawState; Stage: TCustomDrawStage; 
+                                var DefaultDraw: Boolean) of object;
+  TLVAdvancedCustomDrawSubItemEvent=procedure(Sender: TCustomListView; Item: TListItem; 
+                                 SubItem: Integer; State: TCustomDrawState;
+                                 Stage: TCustomDrawStage; var DefaultDraw: Boolean) of object;
 
   TListViewProperty = (
     lvpAutoArrange,
@@ -814,6 +836,12 @@ type
     FOnDeletion: TLVDeletedEvent;
     FOnInsert: TLVInsertEvent;
     FOnSelectItem: TLVSelectItemEvent;
+    FOnCustomDraw: TLVCustomDrawEvent;
+    FOnCustomDrawItem: TLVCustomDrawItemEvent;
+    FOnCustomDrawSubItem: TLVCustomDrawSubItemEvent;
+    FOnAdvancedCustomDraw: TLVAdvancedCustomDrawEvent;
+    FOnAdvancedCustomDrawItem: TLVAdvancedCustomDrawItemEvent;
+    FOnAdvancedCustomDrawSubItem: TLVAdvancedCustomDrawSubItemEvent;
     FProperties: TListViewProperties;
     function GetBoundingRect: TRect;
     function GetColumnFromIndex(AIndex: Integer): TListColumn;
@@ -858,6 +886,7 @@ type
 
   protected
     procedure InitializeWnd; override;
+    procedure DestroyWnd; override;
     procedure Change(AItem: TListItem; AChange: Integer); dynamic;
     procedure ColClick(AColumn: TListColumn); dynamic;
 
@@ -902,6 +931,12 @@ type
     property OnDeletion: TLVDeletedEvent read FOnDeletion write FOnDeletion;
     property OnInsert: TLVInsertEvent read FOnInsert write FOnInsert;
     property OnSelectItem: TLVSelectItemEvent read FOnSelectItem write FOnSelectItem;
+    property OnCustomDraw: TLVCustomDrawEvent read FOnCustomDraw write FOnCustomDraw;
+    property OnCustomDrawItem: TLVCustomDrawItemEvent read FOnCustomDrawItem write FOnCustomDrawItem;
+    property OnCustomDrawSubItem: TLVCustomDrawSubItemEvent read FOnCustomDrawSubItem write FOnCustomDrawSubItem;
+    property OnAdvancedCustomDraw: TLVAdvancedCustomDrawEvent read FOnAdvancedCustomDraw write FOnAdvancedCustomDraw;
+    property OnAdvancedCustomDrawItem: TLVAdvancedCustomDrawItemEvent read FOnAdvancedCustomDrawItem write FOnAdvancedCustomDrawItem;
+    property OnAdvancedCustomDrawSubItem: TLVAdvancedCustomDrawSubItemEvent read FOnAdvancedCustomDrawSubItem write FOnAdvancedCustomDrawSubItem;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -909,6 +944,7 @@ type
     procedure Clear;
     procedure EndUpdate;
     function FindCaption(StartIndex: Integer; Value: string; Partial, Inclusive, Wrap: Boolean; PartStart: Boolean = True): TListItem;
+    function GetItemAt(x,y: integer): TListItem;
     property BoundingRect: TRect read GetBoundingRect;
     property Canvas: TCanvas read FCanvas;
     property Checkboxes: Boolean index Ord(lvpCheckboxes) read GetProperty write SetProperty default False;
@@ -939,7 +975,7 @@ type
     property BorderSpacing;
 //    property BorderStyle;
     property BorderWidth;
-//    property Checkboxes;
+    property Checkboxes;
     property Color default clWindow;
     property Columns;
     property ColumnClick;
@@ -987,6 +1023,12 @@ type
     property OnKeyDown;
     property OnDeletion;
     property OnSelectItem;
+    property OnCustomDraw;
+    property OnCustomDrawItem;
+    property OnCustomDrawSubItem;
+    property OnAdvancedCustomDraw;
+    property OnAdvancedCustomDrawItem;
+    property OnAdvancedCustomDrawSubItem;
   end;
 
   TProgressBarOrientation = (pbHorizontal, pbVertical, pbRightToLeft, pbTopDown);

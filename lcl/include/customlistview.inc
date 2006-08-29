@@ -27,17 +27,31 @@ begin
   FCompStyle := csListView;
   FViewStyle := vsList;
   FSortType := stNone;
+
+// MWE: 
+// A class is initalized to 0 when created
+// so no need to initialize these here again   
+(*
   FSortColumn := 0;
   FOnCompare := nil;
-  FImageChangeLink := TChangeLink.Create;
-  FImageChangeLink.OnChange := @ImageChanged;
+  FOnCustomDraw := nil;
+  FOnCustomDrawItem := nil;
+  FOnCustomDrawSubItem := nil;
+  FOnAdvancedCustomDraw := nil;
+  FOnAdvancedCustomDrawItem := nil;
+  FOnAdvancedCustomDrawSubItem := nil;
   FSelected := nil;
   FFocused := nil;
+*)  
+  FImageChangeLink := TChangeLink.Create;
+  FImageChangeLink.OnChange := @ImageChanged;
   FHoverTime := -1;
   TabStop := true;
   SetInitialBounds(0,0,100,90);
   ParentColor := False;
   Color := clWindow;  
+  FCanvas := TControlCanvas.Create;
+  TControlCanvas(FCanvas).Control := Self;
   FProperties := [lvpColumnClick, lvpHideSelection, lvpShowColumnHeaders];
 end;
 
@@ -78,11 +92,13 @@ var
 begin
   nm := PNMListView(AMessage.NMHdr);
   if nm^.iItem>=Items.Count then exit;
-
-  case AMessage.NMHdr^.code of
-//    HDN_TRACK:
-//    NM_CUSTOMDRAW:
-//    LVN_BEGINDRAG:
+  //remark: NMHdr^.code is normally unhanged by the win32 interface, so the others
+  //        maps there codes to the of win32
+  case AMessage.NMHdr^.code of 
+//  HDN_TRACK:
+//  NM_CUSTOMDRAW: //Custom Drawing is handled direct from the interfaces 
+                   //(at least win32 does so)
+//  LVN_BEGINDRAG:
     LVN_DELETEITEM: begin
       Item := FListItems[nm^.iItem];
       if FSelected = Item then
@@ -393,10 +409,25 @@ destructor TCustomListView.Destroy;
 begin
   // Better destroy the wincontrol (=widget) first. So wo don't have to delete
   // all items/columns and we won't get notifications for each.
+  FreeAndNil(FCanvas);
   inherited Destroy;
   FreeAndNil(FColumns);
   FreeAndNil(FImageChangeLink);
   FreeAndNil(FListItems);
+end;
+
+{------------------------------------------------------------------------------
+   TCustomListView DestroyWnd
+   Params: None
+   Result: none
+
+   Frees the canvas
+ ------------------------------------------------------------------------------}
+procedure TCustomListView.DestroyWnd; 
+begin
+  if FCanvas<>nil then
+    TControlCanvas(FCanvas).FreeHandle;
+  inherited DestroyWnd;
 end;
 
 {------------------------------------------------------------------------------
@@ -477,6 +508,19 @@ begin
   if HandleAllocated
   then Result := TWSCustomListViewClass(WidgetSetClass).GetHoverTime(Self)
   else Result := FHoverTime;
+end;
+
+function TCustomListView.GetItemAt(x,y: Integer): TListItem;
+var 
+  Item: Integer;
+begin      
+  Result := nil; 
+  if HandleAllocated
+  then begin
+    Item := TWSCustomListViewClass(WidgetSetClass).GetItemAt(Self,x,y);
+    if Item <> -1 
+    then Result := Items[Item];
+  end;
 end;
 
 function TCustomListView.GetProperty(const ALvpOrd: Integer): Boolean;

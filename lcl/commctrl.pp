@@ -45,8 +45,24 @@ uses
     
 const
   //all controls
-  NM_FIRST     = 0;      
-  NM_LAST      = -99;
+  NM_FIRST           = 0;      
+  NM_OUTOFMEMORY     = NM_FIRST - 1;
+  NM_CLICK           = NM_FIRST - 2;
+  NM_DBLCLK          = NM_FIRST - 3;
+  NM_RETURN          = NM_FIRST - 4;
+  NM_RCLICK          = NM_FIRST - 5;
+  NM_RDBLCLK         = NM_FIRST - 6;
+  NM_SETFOCUS        = NM_FIRST - 7;
+  NM_KILLFOCUS       = NM_FIRST - 8;
+  NM_CUSTOMDRAW      = NM_FIRST - 12;
+  NM_HOVER           = NM_FIRST - 13;
+  NM_NCHITTEST       = NM_FIRST - 14;   
+  NM_KEYDOWN         = NM_FIRST - 15;   
+  NM_RELEASEDCAPTURE = NM_FIRST - 16;
+  NM_SETCURSOR       = NM_FIRST - 17;   
+  NM_CHAR            = NM_FIRST - 18;   
+
+  NM_LAST            = NM_FIRST - 99;
     
   //listview
   LVN_FIRST    = -100;   
