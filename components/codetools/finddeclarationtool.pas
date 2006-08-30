@@ -426,7 +426,7 @@ type
     IdentifierTool: TFindDeclarationTool;
     FoundProc: PFoundProc;
   end;
-  
+
   { TFindDeclarationParams }
 
   TFindDeclarationParams = class(TObject)

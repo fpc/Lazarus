@@ -927,8 +927,8 @@ function RegExprSubExpressions (const ARegExpr : string;
 
   // check if entire r.e. added
   if (ASubExprs.Count = 0)
-   or ((integer (ASubExprs.Objects [0]) and $FFFF) <> 1)
-   or (((integer (ASubExprs.Objects [0]) ShR 16) and $FFFF) <> Len)
+   or ((PtrInt (ASubExprs.Objects [0]) and $FFFF) <> 1)
+   or (((PtrInt (ASubExprs.Objects [0]) ShR 16) and $FFFF) <> Len)
     // whole r.e. wasn't added because it isn't bracketed
     // well, we add it now:
     then ASubExprs.InsertObject (0, ARegExpr, TObject ((Len ShL 16) or 1));
