@@ -252,6 +252,7 @@ type
 
   TPkgDependency = class
   private
+    FDefaultFilename: string;
     FFlags: TPkgDependencyFlags;
     FHoldPackage: boolean;
     FLoadPackageResult: TLoadPackageResult;
@@ -276,7 +277,7 @@ type
     destructor Destroy; override;
     procedure Clear;
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string;
-      FileVersion: integer);
+                                FileVersion: integer);
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     function MakeSense: boolean;
     function IsCompatible(const Version: TPkgVersion): boolean;
@@ -301,6 +302,7 @@ type
       ListType: TPkgDependencyList);
     procedure MoveDownInList(var FirstDependency: TPkgDependency;
       ListType: TPkgDependencyList);
+    function MakeFilenameRelativeToOwner(const AFilename: string): string;
   public
     property PackageName: string read FPackageName write SetPackageName;
     property Flags: TPkgDependencyFlags read FFlags write SetFlags;
@@ -312,6 +314,7 @@ type
     property LoadPackageResult: TLoadPackageResult read FLoadPackageResult write SetLoadPackageResult;
     property HoldPackage: boolean read FHoldPackage write SetHoldPackage;
     property MarkerFlags: TPKgMarkerFlags read FMarkerFlags write FMarkerFlags;
+    property DefaultFilename: string read FDefaultFilename write FDefaultFilename;
   end;
   PPkgDependency = ^TPkgDependency;
   
@@ -1576,6 +1579,7 @@ begin
   FPackageName:=AValue;
   if (PackageDependencies<>nil) and (FPackageName<>'') then
     PackageDependencies.Add(Self);
+  FDefaultFilename:='';
 end;
 
 procedure TPkgDependency.SetRemoved(const AValue: boolean);
@@ -1623,6 +1627,20 @@ end;
 
 procedure TPkgDependency.LoadFromXMLConfig(XMLConfig: TXMLConfig;
   const Path: string; FileVersion: integer);
+  
+  function LoadFilename(const SubPath: string): string;
+  var
+    BaseDir: String;
+  begin
+    Result:=SetDirSeparators(XMLConfig.GetValue(Path+SubPath,''));
+    if (Result<>'') and (Owner<>nil)
+    and (not FilenameIsAbsolute(Result)) then begin
+      BaseDir:=GetDependencyOwnerDirectory(Self);
+      if BaseDir<>'' then
+        Result:=TrimFilename(AppendPathDelim(BaseDir)+Result);
+    end;
+  end;
+  
 begin
   if FileVersion=1 then ;
   Clear;
@@ -1633,16 +1651,32 @@ begin
     Include(FFlags,pdfMaxVersion);
   if XMLConfig.GetValue(Path+'MinVersion/Valid',false) then
     Include(FFlags,pdfMinVersion);
+  FDefaultFilename:=LoadFilename('DefaultFilename/Value');
 end;
 
 procedure TPkgDependency.SaveToXMLConfig(XMLConfig: TXMLConfig;
   const Path: string);
+  
+  procedure SaveFilename(const aPath: string; AFilename: string);
+  var
+    BaseDir: String;
+  begin
+    if (AFilename<>'')
+    and (Owner<>nil) then begin
+      BaseDir:=GetDependencyOwnerDirectory(Self);
+      if BaseDir<>'' then
+        AFilename:=CreateRelativePath(AFilename,BaseDir);
+    end;
+    XMLConfig.SetDeleteValue(Path+aPath,AFilename,'');
+  end;
+  
 begin
   XMLConfig.SetDeleteValue(Path+'PackageName/Value',PackageName,'');
   MaxVersion.SaveToXMLConfig(XMLConfig,Path+'MaxVersion/');
   MinVersion.SaveToXMLConfig(XMLConfig,Path+'MinVersion/');
   XMLConfig.SetDeleteValue(Path+'MaxVersion/Valid',pdfMaxVersion in FFlags,false);
   XMLConfig.SetDeleteValue(Path+'MinVersion/Valid',pdfMinVersion in FFlags,false);
+  SaveFilename('DefaultFilename/Value',FDefaultFilename);
 end;
 
 function TPkgDependency.MakeSense: boolean;
@@ -1802,6 +1836,20 @@ begin
   PrevDependency[ListType]:=OldNext;
   OldNext.NextDependency[ListType]:=Self;
   if FirstDependency=Self then FirstDependency:=OldNext;
+end;
+
+function TPkgDependency.MakeFilenameRelativeToOwner(const AFilename: string
+  ): string;
+var
+  BaseDir: String;
+begin
+  Result:=AFilename;
+  if (Result<>'')
+  and (Owner<>nil) then begin
+    BaseDir:=GetDependencyOwnerDirectory(Self);
+    if BaseDir<>'' then
+      Result:=CreateRelativePath(Result,BaseDir);
+  end;
 end;
 
 { TPkgVersion }

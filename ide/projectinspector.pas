@@ -79,6 +79,8 @@ type
     procedure ItemsTreeViewSelectionChanged(Sender: TObject);
     procedure MoveDependencyUpClick(Sender: TObject);
     procedure MoveDependencyDownClick(Sender: TObject);
+    procedure SetDependencyFilenameMenuItemClick(Sender: TObject);
+    procedure ClearDependencyFilenameMenuItemClick(Sender: TObject);
     procedure OpenBitBtnClick(Sender: TObject);
     procedure OptionsBitBtnClick(Sender: TObject);
     procedure ProjectInspectorFormShow(Sender: TObject);
@@ -202,6 +204,38 @@ begin
   ItemsTreeView.EndUpdate;
 end;
 
+procedure TProjectInspectorForm.SetDependencyFilenameMenuItemClick(
+  Sender: TObject);
+var
+  CurDependency: TPkgDependency;
+  NewFilename: String;
+begin
+  CurDependency:=GetSelectedDependency;
+  if (CurDependency=nil) then exit;
+  if CurDependency.RequiredPackage=nil then exit;
+  NewFilename:=CurDependency.RequiredPackage.Filename;
+  if NewFilename=CurDependency.DefaultFilename then exit;
+  CurDependency.DefaultFilename:=NewFilename;
+  LazProject.Modified:=true;
+  UpdateRequiredPackages;
+  UpdateButtons;
+end;
+
+procedure TProjectInspectorForm.ClearDependencyFilenameMenuItemClick(
+  Sender: TObject);
+var
+  CurDependency: TPkgDependency;
+begin
+  CurDependency:=GetSelectedDependency;
+  if (CurDependency=nil) then exit;
+  if CurDependency.RequiredPackage=nil then exit;
+  if CurDependency.DefaultFilename='' then exit;
+  CurDependency.DefaultFilename:='';
+  LazProject.Modified:=true;
+  UpdateRequiredPackages;
+  UpdateButtons;
+end;
+
 procedure TProjectInspectorForm.AddBitBtnClick(Sender: TObject);
 var
   AddResult: TAddToProjectResult;
@@ -293,6 +327,12 @@ begin
                        (CurDependency.PrevRequiresDependency<>nil));
       AddPopupMenuItem(lisPckEditMoveDependencyDown, @MoveDependencyDownClick,
                        (CurDependency.NextRequiresDependency<>nil));
+      AddPopupMenuItem(lisPckEditSetDependencyDefaultFilename,
+                       @SetDependencyFilenameMenuItemClick,
+                       (CurDependency.RequiredPackage<>nil));
+      AddPopupMenuItem(lisPckEditClearDependencyDefaultFilename,
+                       @ClearDependencyFilenameMenuItemClick,
+                       (CurDependency.DefaultFilename<>''));
     end;
   end;
 
@@ -468,6 +508,10 @@ begin
     CurNode:=DependenciesNode.GetFirstChild;
     while Dependency<>nil do begin
       NodeText:=Dependency.AsString;
+      if Dependency.DefaultFilename<>'' then
+        NodeText:=NodeText+' in '
+                  +Dependency.MakeFilenameRelativeToOwner(
+                                                    Dependency.DefaultFilename);
       if CurNode=nil then
         CurNode:=ItemsTreeView.Items.AddChild(DependenciesNode,NodeText)
       else

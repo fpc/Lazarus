@@ -2245,6 +2245,30 @@ begin
           if OpenDependencyWithPackageLink(Dependency,PkgLink) then break;
           PkgLinks.RemoveLink(PkgLink);
         until false;
+        if (Dependency.LoadPackageResult=lprNotFound)
+        and (Dependency.DefaultFilename<>'') then begin
+          // try defaultfilename
+          AFilename:=Dependency.DefaultFilename;
+          if (CompareFileExt(AFilename,'lpk')=0)
+          and (CompareText(ExtractFileNameOnly(AFilename),Dependency.PackageName)=0)
+          then begin
+            if not FilenameIsAbsolute(AFilename) then begin
+              CurDir:=GetDependencyOwnerDirectory(Dependency);
+              if (CurDir<>'') then
+                AFilename:=AppendPathDelim(CurDir)+AFilename;
+            end;
+            if FilenameIsAbsolute(AFilename) then begin
+              AFilename:=FindDiskFileCaseInsensitive(AFilename);
+              if FileExistsCached(AFilename) then begin
+                PkgLink:=PkgLinks.AddUserLink(AFilename,Dependency.PackageName);
+                if (PkgLink<>nil) then begin
+                  if not OpenDependencyWithPackageLink(Dependency,PkgLink) then
+                    PkgLinks.RemoveLink(PkgLink);
+                end;
+              end;
+            end;
+          end;
+        end;
         if Dependency.LoadPackageResult=lprNotFound then begin
           // try in owner directory (some projects put all their packages into
           //   one directory)

@@ -2658,6 +2658,8 @@ resourcestring
   lisPckEditMoveDependencyUp = 'Move dependency up';
   lisPckEditMoveDependencyDown = 'Move dependency down';
   lisPckEditReAddDependency = 'Re-Add dependency';
+  lisPckEditSetDependencyDefaultFilename = 'Store dependency filename';
+  lisPckEditClearDependencyDefaultFilename = 'Clear dependency filename';
   lisPckEditCompile = 'Compile';
   lisPckEditRecompileClean = 'Recompile clean';
   lisPckEditRecompileAllRequired = 'Recompile all required';
