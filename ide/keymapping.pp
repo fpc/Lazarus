@@ -483,6 +483,7 @@ begin
   // run menu
   ecBuild: SetResult(VK_F9,[ssCtrl],VK_UNKNOWN,[]);
   ecBuildAll: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecQuickCompile: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecAbortBuild: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecRun: SetResult(VK_F9,[],VK_UNKNOWN,[]);
   ecPause: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -794,6 +795,7 @@ begin
   // run menu
   ecBuild: SetResult(VK_F9,[ssCtrl],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecBuildAll: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecQuickCompile: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecAbortBuild: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecRun: SetResult(VK_F9,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecPause: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -1362,6 +1364,7 @@ begin
     // run menu (menu string resource)
     ecBuild                 : Result:= srkmecBuild;
     ecBuildAll              : Result:= srkmecBuildAll;
+    ecQuickCompile          : Result:= srkmecQuickCompile;
     ecAbortBuild            : Result:= srkmecAbortBuild;
     ecRun                   : Result:= srkmecRun;
     ecPause                 : Result:= srkmecPause;
@@ -2287,6 +2290,7 @@ begin
   C:=Categories[AddCategory('RunMenu',srkmCatRunMenu,nil)];
   AddDefault(C,'Build project/program',ecBuild);
   AddDefault(C,'Build all files of project/program',ecBuildAll);
+  AddDefault(C,'Quick compile, no linking',ecQuickCompile);
   AddDefault(C,'Abort building',ecAbortBuild);
   AddDefault(C,'Run program',ecRun);
   AddDefault(C,'Pause program',ecPause);

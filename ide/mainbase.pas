@@ -615,6 +615,7 @@ begin
 
     CreateMenuItem(ParentMI,itmRunMenuBuild,'itmRunMenuBuild',lisMenuBuild,'menu_build');
     CreateMenuItem(ParentMI,itmRunMenuBuildAll,'itmRunMenuBuildAll',lisMenuBuildAll,'menu_buildall');
+    CreateMenuItem(ParentMI,itmRunMenuQuickCompile,'itmRunMenuQuickCompile',lisMenuQuickCompile);
     CreateMenuItem(ParentMI,itmRunMenuAbortBuild,'itmRunMenuAbortBuild',lisMenuAbortBuild);
 
     CreateMenuSeparatorSection(mnuRun,itmRunnning,'itmRunnning');
@@ -896,6 +897,7 @@ begin
     // run menu
     itmRunMenuBuild.Command:=GetCommand(ecBuild);
     itmRunMenuBuildAll.Command:=GetCommand(ecBuildAll);
+    itmRunMenuQuickCompile.Command:=GetCommand(ecQuickCompile);
     itmRunMenuAbortBuild.Command:=GetCommand(ecAbortBuild);
     itmRunMenuRun.Command:=GetCommand(ecRun);
     itmRunMenuPause.Command:=GetCommand(ecPause);

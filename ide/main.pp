@@ -247,6 +247,7 @@ type
     // run menu
     procedure mnuBuildProjectClicked(Sender: TObject);
     procedure mnuBuildAllProjectClicked(Sender: TObject);
+    procedure mnuQuickCompileProjectClicked(Sender: TObject);
     procedure mnuAbortBuildProjectClicked(Sender: TObject);
     procedure mnuRunProjectClicked(Sender: TObject);
     procedure mnuPauseProjectClicked(Sender: TObject);
@@ -672,6 +673,7 @@ type
     function DoBuildProject(const AReason: TCompileReason;
                             Flags: TProjectBuildFlags): TModalResult;
     function DoAbortBuild: TModalResult;
+    procedure DoQuickCompile;
     function DoInitProjectRun: TModalResult; override;
     function DoRunProject: TModalResult;
     function SomethingOfProjectIsModified: boolean;
@@ -2054,6 +2056,7 @@ begin
   with MainIDEBar do begin
     itmRunMenuBuild.OnClick := @mnuBuildProjectClicked;
     itmRunMenuBuildAll.OnClick := @mnuBuildAllProjectClicked;
+    itmRunMenuQuickCompile.OnClick := @mnuQuickCompileProjectClicked;
     itmRunMenuAbortBuild.OnClick := @mnuAbortBuildProjectClicked;
     itmRunMenuRun.OnClick := @mnuRunProjectClicked;
     itmRunMenuPause.Enabled := false;
@@ -2457,6 +2460,7 @@ begin
 
   ecBuildAll:    DoBuildProject(crBuild,[pbfCleanCompile,
                                          pbfCompileDependenciesClean]);
+  ecQuickCompile:DoQuickCompile;
   ecAbortBuild:  DoAbortBuild;
 
   ecRun:
@@ -3226,6 +3230,11 @@ end;
 Procedure TMainIDE.mnuBuildAllProjectClicked(Sender: TObject);
 Begin
   DoBuildProject(crBuild,[pbfCleanCompile,pbfCompileDependenciesClean]);
+end;
+
+procedure TMainIDE.mnuQuickCompileProjectClicked(Sender: TObject);
+begin
+  DoQuickCompile;
 end;
 
 Procedure TMainIDE.mnuAbortBuildProjectClicked(Sender: TObject);
@@ -7637,13 +7646,15 @@ begin
     end;
 
     // execute compilation tool 'Before'
-    ToolBefore:=TProjectCompilationToolOptions(
+    if not (pbfSkipTools in Flags) then begin
+      ToolBefore:=TProjectCompilationToolOptions(
                                         Project1.CompilerOptions.ExecuteBefore);
-    if (AReason in ToolBefore.CompileReasons) then begin
-      Result:=DoExecuteCompilationTool(Project1.CompilerOptions.ExecuteBefore,
-                                       Project1.ProjectDirectory,
-                                       lisExecutingCommandBefore);
-      if Result<>mrOk then exit;
+      if (AReason in ToolBefore.CompileReasons) then begin
+        Result:=DoExecuteCompilationTool(Project1.CompilerOptions.ExecuteBefore,
+                                         Project1.ProjectDirectory,
+                                         lisExecutingCommandBefore);
+        if Result<>mrOk then exit;
+      end;
     end;
 
     if (AReason in Project1.CompilerOptions.CompileReasons)
@@ -7655,8 +7666,10 @@ begin
         ConnectOutputFilter;
 
         // compile
-        Result:=TheCompiler.Compile(Project1, pbfCleanCompile in Flags,
-                                    WorkingDir,CompilerFilename,CompilerParams);
+        Result:=TheCompiler.Compile(Project1,
+                                WorkingDir,CompilerFilename,CompilerParams,
+                                pbfCleanCompile in Flags,pbfSkipLinking in Flags,
+                                pbfSkipAssembler in Flags);
         if Result<>mrOk then begin
           DoJumpToCompilerMessage(-1,true);
           exit;
@@ -7670,13 +7683,16 @@ begin
     end;
 
     // execute compilation tool 'After'
-    ToolAfter:=TProjectCompilationToolOptions(Project1.CompilerOptions.ExecuteAfter);
-    // no need to check for mrOk, we are exit if it wasn't
-    if (AReason in ToolAfter.CompileReasons) then begin
-      Result:=DoExecuteCompilationTool(Project1.CompilerOptions.ExecuteAfter,
-                                       Project1.ProjectDirectory,
-                                       lisExecutingCommandAfter);
-      if Result<>mrOk then exit;
+    if not (pbfSkipTools in Flags) then begin
+      ToolAfter:=TProjectCompilationToolOptions(
+                                         Project1.CompilerOptions.ExecuteAfter);
+      // no need to check for mrOk, we are exit if it wasn't
+      if (AReason in ToolAfter.CompileReasons) then begin
+        Result:=DoExecuteCompilationTool(Project1.CompilerOptions.ExecuteAfter,
+                                         Project1.ProjectDirectory,
+                                         lisExecutingCommandAfter);
+        if Result<>mrOk then exit;
+      end;
     end;
 
     // add success message
@@ -7697,6 +7713,11 @@ begin
   Result:=mrOk;
   if ToolStatus<>itBuilder then exit;
   TheOutputFilter.StopExecute:=true;
+end;
+
+procedure TMainIDE.DoQuickCompile;
+begin
+  DoBuildProject(crCompile,[pbfSkipLinking,pbfSkipTools,pbfSkipAssembler]);
 end;
 
 function TMainIDE.DoInitProjectRun: TModalResult;

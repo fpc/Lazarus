@@ -85,6 +85,9 @@ type
     pbfCompileDependenciesClean,
     pbfOnlyIfNeeded,
     pbfDoNotSaveEditorFiles,
+    pbfSkipLinking,
+    pbfSkipAssembler,
+    pbfSkipTools,
     pbfCreateMakefile
     );
   TProjectBuildFlags = set of TProjectBuildFlag;

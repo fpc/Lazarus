@@ -200,21 +200,22 @@ const
   // compile menu
   ecBuild                = ecFirstLazarus + 400;
   ecBuildAll             = ecFirstLazarus + 401;
-  ecAbortBuild           = ecFirstLazarus + 402;
-  ecRun                  = ecFirstLazarus + 403;
-  ecPause                = ecFirstLazarus + 404;
-  ecStepInto             = ecFirstLazarus + 405;
-  ecStepOver             = ecFirstLazarus + 406;
-  ecRunToCursor          = ecFirstLazarus + 407;
-  ecStopProgram          = ecFirstLazarus + 408;
-  ecResetDebugger        = ecFirstLazarus + 409;
-  ecBuildLazarus         = ecFirstLazarus + 410;
-  ecBuildFile            = ecFirstLazarus + 411;
-  ecRunFile              = ecFirstLazarus + 412;
-  ecConfigBuildFile      = ecFirstLazarus + 413;
-  ecInspect              = ecFirstLazarus + 414;
-  ecEvaluate             = ecFirstLazarus + 415;
-  ecAddWatch             = ecFirstLazarus + 416;
+  ecQuickCompile         = ecFirstLazarus + 402;
+  ecAbortBuild           = ecFirstLazarus + 403;
+  ecRun                  = ecFirstLazarus + 404;
+  ecPause                = ecFirstLazarus + 405;
+  ecStepInto             = ecFirstLazarus + 406;
+  ecStepOver             = ecFirstLazarus + 407;
+  ecRunToCursor          = ecFirstLazarus + 408;
+  ecStopProgram          = ecFirstLazarus + 409;
+  ecResetDebugger        = ecFirstLazarus + 410;
+  ecBuildLazarus         = ecFirstLazarus + 411;
+  ecBuildFile            = ecFirstLazarus + 412;
+  ecRunFile              = ecFirstLazarus + 413;
+  ecConfigBuildFile      = ecFirstLazarus + 414;
+  ecInspect              = ecFirstLazarus + 415;
+  ecEvaluate             = ecFirstLazarus + 416;
+  ecAddWatch             = ecFirstLazarus + 417;
 
   // project menu
   ecNewProject           = ecFirstLazarus + 500;

@@ -229,6 +229,7 @@ type
       //itmRunBuilding: TIDEMenuSection;
         itmRunMenuBuild: TIDEMenuCommand;
         itmRunMenuBuildAll: TIDEMenuCommand;
+        itmRunMenuQuickCompile: TIDEMenuCommand;
         itmRunMenuAbortBuild: TIDEMenuCommand;
       //itmRunnning: TIDEMenuSection;
         itmRunMenuRun: TIDEMenuCommand;

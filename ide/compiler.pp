@@ -56,9 +56,9 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    function Compile(AProject: TProject; BuildAll: boolean;
-                     const WorkingDir, CompilerFilename, CompilerParams: string
-                     ): TModalResult;
+    function Compile(AProject: TProject;
+                   const WorkingDir, CompilerFilename, CompilerParams: string;
+                   BuildAll, SkipLinking, SkipAssembler: boolean): TModalResult;
     procedure WriteError(const Msg: string);
     property OnCommandLineCreate: TOnCmdLineCreate read FOnCmdLineCreate
                                                    write FOnCmdLineCreate;
@@ -92,8 +92,9 @@ end;
 {------------------------------------------------------------------------------
   TCompiler Compile
 ------------------------------------------------------------------------------}
-function TCompiler.Compile(AProject: TProject; BuildAll: boolean;
-  const WorkingDir, CompilerFilename, CompilerParams: string): TModalResult;
+function TCompiler.Compile(AProject: TProject;
+  const WorkingDir, CompilerFilename, CompilerParams: string;
+  BuildAll, SkipLinking, SkipAssembler: boolean): TModalResult;
 var
   CmdLine : String;
   Abort : Boolean;
@@ -132,6 +133,11 @@ begin
     end;
     if BuildAll then
       CmdLine := CmdLine+' -B';
+    if SkipLinking and SkipAssembler then
+      CmdLine := CmdLine+' -s'
+    else if SkipLinking then
+      CmdLine := CmdLine+' -Cn';
+      
     if CompilerParams<>'' then
     CmdLine := CmdLine+' '+CompilerParams;
     if Assigned(FOnCmdLineCreate) then begin
