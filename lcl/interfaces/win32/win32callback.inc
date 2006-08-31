@@ -1569,11 +1569,6 @@ begin
           if WindowInfo^.WinControl <> nil then
             lWinControl := WindowInfo^.WinControl;
         end;
-        NM_CUSTOMDRAW:
-        begin
-          if WindowInfo^.WinControl is TListView //what about TCustomlistView
-          then HandleListViewCustomDraw(TListView(WindowInfo^.WinControl));
-        end;
         UDN_DELTAPOS:
         begin
           if WindowInfo^.WinControl <> nil then
@@ -1590,6 +1585,11 @@ begin
             case code of
               TCN_SELCHANGE:
                 idFrom := ShowHideTabPage(HWndFrom, true);
+              NM_CUSTOMDRAW:
+              begin
+                if WindowInfo^.WinControl is TListView //what about TCustomlistView
+                then HandleListViewCustomDraw(TListView(WindowInfo^.WinControl));
+              end;
             end;
         end;
       end;
