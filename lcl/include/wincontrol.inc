@@ -2895,15 +2895,15 @@ var
   i: Integer;
 begin
   ParentFont := False;
-  if HandleAllocated and ([csLoading,csDestroying]*ComponentState=[]) then
+  if HandleAllocated and ([csLoading, csDestroying]*ComponentState=[]) then
   begin
     TWSWinControlClass(WidgetSetClass).SetFont(Self, Font);
     Exclude(FWinControlFlags,wcfFontChanged);
     Invalidate;
-    for i := 0 to ControlCount - 1 do
-      Controls[i].ParentFontChanged;
   end else
     Include(FWinControlFlags,wcfFontChanged);
+  for i := 0 to ControlCount - 1 do
+    Controls[i].ParentFontChanged;
 end;
 
 procedure TWinControl.SetColor(Value: TColor);
