@@ -83,23 +83,11 @@ begin
   ARect := ClientRect;
   Canvas.Brush.Color := Color;
   Canvas.Pen.Width := 1;
-  //debugln('THintWindow.Paint A ',dbgs(ARect));
   DrawEdge(Canvas.Handle, ARect, BDR_RAISEDOUTER, BF_RECT);
   InflateRect(ARect,-2*HintBorderWidth,-2*HintBorderWidth);
-  //debugln('THintWindow.Paint B ',dbgs(ARect));
-  with TS do
-  begin
-    Alignment  := taCenter;
-    Layout     := tlCenter;
-    SingleLine := false;
-    Clipping   := true;
-    ExpandTabs := true;
-    ShowPrefix := false;
-    WordBreak  := true;
-    Opaque     := false;
-    SystemFont := false;
-  end;
-  Canvas.TextRect(ARect, ARect.Left, ARect.Top, Caption, TS);
+  DrawText(Canvas.GetUpdatedHandle([csFontValid]),
+           PChar(Caption), Length(Caption), ARect,
+           DT_NOPREFIX or DT_CENTER or DT_VCENTER or DT_WORDBREAK);
 end;
 
 procedure THintWindow.ActivateHint(ARect: TRect; const AHint: String);
@@ -138,10 +126,10 @@ end;
 function THintWindow.CalcHintRect(MaxWidth: Integer; const AHint: String;
   AData: Pointer): TRect;
 begin
-  Result := Rect(0,0, MaxWidth, ClientHeight);
+  Result := Rect(0,0, MaxWidth, Screen.Height-4*HintBorderWidth);
   if AHint='' then exit;
   DrawText(Canvas.GetUpdatedHandle([csFontValid]), PChar(AHint), Length(AHint),
-           Result, DT_CalcRect or DT_NOPREFIX);
+           Result, DT_CalcRect or DT_NOPREFIX or DT_WORDBREAK);
   inc(Result.Right,4*HintBorderWidth);
   inc(Result.Bottom,4*HintBorderWidth);
   //debugln('THintWindow.CalcHintRect Result=',dbgs(Result));

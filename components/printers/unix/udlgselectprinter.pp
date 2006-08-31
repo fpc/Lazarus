@@ -42,7 +42,7 @@ interface
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
   Buttons, ExtCtrls, Spin, MaskEdit, ComCtrls, LCLType,
-  Printers, OsPrinters in '../osprinters.pas', CUPSDyn;
+  Printers, OsPrinters, CUPSDyn;
 
 type
 
