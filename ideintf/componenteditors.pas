@@ -1089,6 +1089,7 @@ var
   NewToolButton: TToolButton;
   NewName: string;
   CurToolBar: TToolBar;
+  SiblingButton: TToolButton;
 begin
   Hook:=nil;
   if not GetHook(Hook) then exit;
@@ -1104,6 +1105,12 @@ begin
   NewToolButton.Caption:=NewName;
   NewToolButton.Name:=NewName;
   NewToolButton.Style:=NewStyle;
+  // position the button next to the last button
+  if CurToolBar.ButtonCount>0 then begin
+    SiblingButton := CurToolBar.Buttons[CurToolBar.ButtonCount-1];
+    NewToolButton.SetBounds(SiblingButton.Left + SiblingButton.Width,
+      SiblingButton.Top, NewToolButton.Width, NewToolButton.Height);
+  end;
   NewToolButton.Parent:=CurToolBar;
   Hook.PersistentAdded(NewToolButton,true);
   Modified;
