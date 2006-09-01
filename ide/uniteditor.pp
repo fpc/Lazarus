@@ -4235,7 +4235,7 @@ var
   ListIndex: integer;
 begin
   ShowSearchResultsView;
-  ListIndex:=SearchResultsView.AddSearch(lisSearchFor+ASearchForm.SearchText,
+  ListIndex:=SearchResultsView.AddSearch(ASearchForm.SearchText,
                                          ASearchForm.SearchText,
                                          ASearchForm.ReplaceText,
                                          ASearchForm.SearchDirectory,

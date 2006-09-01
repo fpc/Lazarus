@@ -187,6 +187,7 @@ function SplitString(const s: string; Delimiter: char): TStrings;
 procedure SplitString(const s: string; Delimiter: char; AddTo: TStrings;
                       ClearList: boolean = true);
 function SpecialCharsToSpaces(const s: string): string;
+function SpecialCharsToHex(const s: string): string;
 function LineBreaksToDelimiter(const s: string; Delimiter: char): string;
 function LineBreaksToSystemLineBreaks(const s: string): string;
 function StringListToText(List: TStrings; const Delimiter: string;
@@ -1513,6 +1514,19 @@ begin
   if Result='' then exit;
   if (Result[1]=' ') or (Result[length(Result)]=' ') then
     Result:=Trim(Result);
+end;
+
+function SpecialCharsToHex(const s: string): string;
+var
+  i: Integer;
+begin
+  Result:=s;
+  if Result='' then exit;
+  for i:=length(Result) downto 1 do
+    if Result[i]<' ' then
+      Result:=copy(Result,1,i-1)
+              +'#'+Format('%d',[ord(Result[i])])
+              +copy(Result,i+1,length(Result));
 end;
 
 function LineBreaksToDelimiter(const s: string; Delimiter: char): string;

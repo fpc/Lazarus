@@ -35,7 +35,7 @@ uses
   Classes, SysUtils, LCLProc, LResources, LCLType, LCLIntf, Forms, Controls,
   Graphics, Dialogs, ExtCtrls, StdCtrls, Buttons, FileUtil,
   // synedit, codetools
-  SynEditSearch, SynRegExpr, SourceLog, KeywordFuncLists,
+  SynEditSearch, SynRegExpr, SourceLog, KeywordFuncLists, BasicCodeTools,
   // IDEIntf
   LazIDEIntf, SrcEditorIntf,
   // ide
@@ -54,8 +54,8 @@ type
     lblProgress: TLABEL;
     lblSearchText: TLABEL;
     Panel2: TPANEL;
-    procedure OnAddMatch(const Filename: string; const StartPos,
-      EndPos: TPoint; const Lines: string);
+    procedure OnAddMatch(const Filename: string; const StartPos, EndPos: TPoint;
+                         const Lines: string);
     procedure Panel2Click(Sender: TObject);
     procedure SearchFormCREATE(Sender: TObject);
     procedure SearchFormDESTROY(Sender: TObject);
@@ -116,14 +116,10 @@ function SearchInText(const TheFileName: string;
   Flags: TSrcEditSearchOptions; var Prompt: boolean;
   Progress: TIDESearchInTextProgress = nil
   ): TModalResult;
-function TrimLineAndAdjustPos(const Line: string; var APosition: integer): string;
+function TrimLinesAndAdjustPos(const Lines: string; var APosition: integer): string;
 function SearchInLine(const SearchStr: string; SrcLog: TSourceLog;
   LineNumber: integer; WholeWords: boolean; StartInLine: integer;
   out MatchStartInLine: integer): boolean;
-function SearchNextInText(const SearchStr: string; Src: PChar;
-  SrcLen: PtrInt; WholeWords: boolean;
-  var MatchPos: PtrInt // 0 based
-  ): boolean;
 
 
 implementation
@@ -193,88 +189,27 @@ begin
   end;
 end;
 
-function SearchNextInText(const SearchStr: string; Src: PChar;
-  SrcLen: PtrInt; WholeWords: boolean;
-  var MatchPos: PtrInt): boolean;
-// search SearchStr in Src
-var
-  StartPos: PChar;
-  EndPos: PChar;
-  i: PtrInt;
-  SearchLen: PtrInt;
-  FirstChar: Char;
-  Found: Boolean;
-  CharInFront: PChar;
-  CharBehind: PChar;
-  FirstLineEnd: Integer;
-  IsMultiLinePattern: Boolean;
-begin
-  Result:=false;
-  if SearchStr='' then exit;
-  if MatchPos<0 then MatchPos:=0;
-  SearchLen:=length(SearchStr);
-  FirstLineEnd:=1;
-  while (FirstLineEnd<=SearchLen) and (SearchStr[FirstLineEnd] in [#10,#13]) do
-    inc(FirstLineEnd);
-  if FirstLineEnd<=SearchLen then begin
-    IsMultiLinePattern:=true;
-  end else begin
-    IsMultiLinePattern:=false;
-  end;
-
-  StartPos:=@Src[MatchPos];
-  EndPos:=@Src[SrcLen];
-  FirstChar:=SearchStr[1];
-  while (StartPos<EndPos) do begin
-    if FirstChar=StartPos^ then begin
-      i:=1;
-      while (i<FirstLineEnd) and (StartPos[i-1]=SearchStr[i]) do
-        inc(i);
-      if i=FirstLineEnd then begin
-        // first line of pattern found
-        // TODO:
-        if IsMultiLinePattern then begin
-
-        end;
-        Found:=true;
-        MatchPos:=StartPos-Src+1;
-        if WholeWords then begin
-          CharInFront:=StartPos-1;
-          CharBehind:=StartPos+SearchLen;
-          if ((MatchPos=1)
-              or (CharInFront^ in WordBreakChars))
-          and ((CharBehind=EndPos)
-               or (CharBehind^ in WordBreakChars))
-          then begin
-            // word start and word end
-          end else begin
-            // not whole word
-            Found:=false;
-          end;
-        end;
-        if Found then begin
-          Result:=true;
-          exit;
-        end;
-      end;
-    end;
-    inc(StartPos);
-  end;
-end;
-
-function TrimLineAndAdjustPos(const Line: string; var APosition: integer): string;
+function TrimLinesAndAdjustPos(const Lines: string;
+  var APosition: integer): string;
 var
   StartPos: Integer;
   EndPos: Integer;
 begin
-  StartPos:=1;
-  while (StartPos<=length(Line)) and (Line[StartPos] in WhiteSpaceChars) do
-    inc(StartPos);
-  EndPos:=length(Line)+1;
-  while (EndPos>=StartPos) and (Line[EndPos-1] in WhiteSpaceChars) do
-    dec(EndPos);
-  dec(APosition,StartPos-1);
-  Result:=copy(Line,StartPos,EndPos-StartPos);
+  if Lines='' then begin
+    Result:='';
+    exit;
+  end;
+  if LineEndCount(Lines)=0 then begin
+    StartPos:=1;
+    while (StartPos<=length(Lines)) and (Lines[StartPos] in WhiteSpaceChars) do
+      inc(StartPos);
+    EndPos:=length(Lines)+1;
+    while (EndPos>=StartPos) and (Lines[EndPos-1] in WhiteSpaceChars) do
+      dec(EndPos);
+    dec(APosition,StartPos-1);
+    Result:=copy(Lines,StartPos,EndPos-StartPos);
+  end else
+    Result:=Lines;
 end;
 
 function SearchInText(const TheFileName: string;
@@ -288,12 +223,11 @@ var
   CaseFile: TSourceLog;  // The working File being searched
   FoundStartPos: TPoint; // Position of match in line. 1 based.
   FoundEndPos: TPoint;
-  CurLine: String;
-  CurLineReplaceOffset: integer; // e.g. if in the current line 'ABC'
-                         // was replaced by 'a', then CurLineReplaceOffset is -2
+  ReplaceLineOffset: integer;// number of lines added/deleted by replacement.
+  LastReplaceLine: integer;  // last changed line by replace. 1 based
+  LastReplaceColOffset: integer;// bytes added/deleted by replace in last line
   TempSearch: string;    // Temp Storage for the search string.
   RE: TRegExpr;
-  SearchAllHitsInLine: boolean;
 
   SrcEditValid: Boolean;// true if SrcEdit is valid
   SrcEdit: TSourceEditorInterface;
@@ -381,14 +315,24 @@ var
     NewLength: Integer;
     SrcEditPosValid: boolean;
     SrcEditStartPos, SrcEditEndPos: TPoint;
+    aLastLineLength: integer;
+    aLineCount: integer;
     
     procedure GetSrcEditPos;
     begin
       if not SrcEditPosValid then begin
         SrcEditStartPos:=FoundStartPos;
         SrcEditEndPos:=FoundEndPos;
-        inc(SrcEditStartPos.X,CurLineReplaceOffset);
-        inc(SrcEditEndPos.X,CurLineReplaceOffset);
+        // FoundStart/EndPos contain the original position
+        // add the changes due to replacement to SrcEditStart/EndPos
+        if SrcEditStartPos.Y=LastReplaceLine then
+          inc(SrcEditStartPos.X,LastReplaceColOffset);
+        if SrcEditStartPos.Y>=LastReplaceLine then
+          inc(SrcEditStartPos.Y,ReplaceLineOffset);
+        if SrcEditEndPos.Y=LastReplaceLine then
+          inc(SrcEditEndPos.X,LastReplaceColOffset);
+        if SrcEditEndPos.Y>=LastReplaceLine then
+          inc(SrcEditEndPos.Y,ReplaceLineOffset);
         SrcEditPosValid:=true;
       end;
     end;
@@ -405,6 +349,11 @@ var
     if Prompt and (TheFileName<>'') then begin
       // open the place in the source editor
       EndLocks;
+
+      // update windows
+      ProcessMessages;
+      if Result=mrAbort then exit;
+      
       GetSrcEditPos;
       if LazarusIDE.DoOpenFileAndJumpToPos(TheFileName,SrcEditStartPos,
              -1,-1,[ofUseCache,ofDoNotLoadResource,ofVirtualFile,ofRegularFile])
@@ -437,8 +386,28 @@ var
       SrcEdit.SelectText(SrcEditStartPos.Y,SrcEditStartPos.X,
                          SrcEditEndPos.Y,SrcEditEndPos.X);
       SrcEdit.Selection:=AReplace;
-      // adjust CurLine and FoundEndPos for next search
-      DebugLn('DoReplaceLine CurLine="',CurLine,'" FoundStartPos=',dbgs(FoundStartPos),' FoundEndPos=',dbgs(FoundEndPos));
+      // count total replacements and adjust offsets
+      aLineCount:=LineEndCount(AReplace,aLastLineLength);
+      if aLineCount>0 then begin
+        // replaced with multiple lines
+        LastReplaceColOffset:=aLastLineLength+1-FoundEndPos.X;
+      end else begin
+        if FoundStartPos.Y<>LastReplaceLine then
+          LastReplaceColOffset:=0;
+        // replaced with some words
+        if FoundStartPos.Y=FoundEndPos.Y then begin
+          // replaced some words with some words
+          inc(LastReplaceColOffset,
+                               aLastLineLength-(FoundEndPos.X-FoundStartPos.X));
+        end else begin
+          // replaced several lines with some words
+          inc(LastReplaceColOffset,FoundStartPos.X+aLastLineLength-FoundEndPos.X);
+        end;
+      end;
+      LastReplaceLine:=FoundEndPos.Y;
+      inc(ReplaceLineOffset,aLineCount-(FoundEndPos.Y-FoundStartPos.Y));
+
+      //DebugLn(['DoReplaceLine FoundStartPos=',dbgs(FoundStartPos),' FoundEndPos=',dbgs(FoundEndPos),' aLastLineLength=',aLastLineLength,' LastReplaceLine=',LastReplaceLine,' LastReplaceColOffset=',LastReplaceColOffset,' ReplaceLineOffset=',ReplaceLineOffset]);
     end else begin
       // change text in memory/disk
       OriginalFile.LineColToPosition(FoundStartPos.Y,FoundStartPos.X,
@@ -461,8 +430,6 @@ var
       OriginalFile.LineColToPosition(FoundEndPos.Y,FoundEndPos.X,
                                      ReplacedTextOriginalPos);
     end;
-    // adjust replace offset
-    inc(CurLineReplaceOffset,length(AReplace)-(FoundEndPos.X-FoundStartPos.X));
   end;
 
   procedure CommitChanges;
@@ -504,10 +471,11 @@ var
   end;
 
 var
-  LastMatchStart: LongInt;
-  LastMatchEnd: Integer;
   Found: Boolean;
-  Line: integer;         // Loop Counter. 0 based.
+  Src: String;
+  NewMatchStartPos: PtrInt;
+  NewMatchEndPos: PtrInt;
+  Lines: String;
 begin
   if (Progress<>nil) and Progress.Abort then exit(mrAbort);
   Result:=mrOk;
@@ -515,7 +483,6 @@ begin
   OriginalFile:=nil;
   CaseFile:=nil;
   RE:=nil;
-  SearchAllHitsInLine:=sesoReplace in Flags;
   SrcEdit:=nil;
   SrcEditValid:=false;
   PaintLockEnabled:=false;
@@ -523,6 +490,10 @@ begin
   ReplacedTextCapacity:=0;
   ReplacedTextLength:=0;
   ReplacedTextOriginalPos:=1;
+
+  ReplaceLineOffset:=0;
+  LastReplaceLine:=0;
+  LastReplaceColOffset:=0;
 
   try
     FoundEndPos:= Point(0,0);
@@ -547,79 +518,83 @@ begin
     end;
 
     if sesoRegExpr in Flags then begin
-      // Setup the regular expression search engine.
-      RE:= TRegExpr.Create;
-      with RE do begin
+      // Setup the regular expression search engine
+      RE:=TRegExpr.Create;
+      RE.ModifierI:=(sesoReplace in Flags) and (not (sesoMatchCase in Flags));
+      RE.ModifierM:= sesoMultiLine in Flags;
+      if (sesoReplace in Flags) then begin
+        Src:=OriginalFile.Source;
         if sesoWholeWord in Flags then
-          Expression:= '\b'+SearchFor+'\b'
+          RE.Expression:= '\b'+SearchFor+'\b'
         else
-          Expression:= SearchFor;
-        ModifierI:= not (sesoMatchCase in Flags);
-        ModifierM:= False;  //for now
+          RE.Expression:= SearchFor;
+      end else begin
+        Src:=CaseFile.Source;
+        if sesoWholeWord in Flags then
+          RE.Expression:= '\b'+TempSearch+'\b'
+        else
+          RE.Expression:= TempSearch;
       end;
+    end else begin
+      Src:=CaseFile.Source;
     end;
 
     //debugln(['TheFileName=',TheFileName,' len=',OriginalFile.SourceLength,' Cnt=',OriginalFile.LineCount,' TempSearch=',TempSearch]);
     ProcessMessages;
 
-    CurLine:='';
-    for Line:=0 to OriginalFile.LineCount-1 do begin
-      if (Line and $ff)=0 then begin
-        EndLocks;
-        ProcessMessages;
+    NewMatchEndPos:=1;
+    repeat
+      Found:=false;
+      if sesoRegExpr in Flags then begin
+        // search the text for regular expression
+        RE.InputString:=Src;
+        if RE.ExecPos(NewMatchEndPos) then begin
+          Found:=true;
+          NewMatchStartPos:=RE.MatchPos[0];
+          NewMatchEndPos:=NewMatchStartPos+RE.MatchLen[0];
+        end;
+      end else begin
+        // search for normal text
+        if SearchNextInText(PChar(TempSearch),length(TempSearch),
+                            PChar(Src),length(Src),
+                            NewMatchEndPos-1,NewMatchStartPos,NewMatchEndPos,
+                            sesoWholeWord in Flags,sesoMultiLine in Flags)
+        then begin
+          Found:=true;
+          inc(NewMatchStartPos);
+          inc(NewMatchEndPos);
+        end;
       end;
-      FoundStartPos.X:=1;
-      FoundStartPos.Y:=Line+1;
-      FoundEndPos:=Point(0,0);
-      CurLineReplaceOffset:=0;
-      repeat
-        LastMatchStart:=FoundStartPos.X;
-        LastMatchEnd:=1;
-
-        // search
-        Found:=false;
-        if sesoRegExpr in Flags then begin
-          // search the line for regular expression
-          CurLine:=OriginalFile.GetLine(Line);
-          RE.InputString:=CurLine;
-          if RE.ExecPos(LastMatchEnd) then begin
-            Found:=true;
-            FoundStartPos.X:=RE.MatchPos[0]+LastMatchEnd-1;
-            FoundEndPos.X:=FoundStartPos.X+Re.MatchLen[0];
-            FoundEndPos.Y:=FoundStartPos.Y;
-          end;
+      
+      if Found then begin
+        // found => convert position, report and/or replace
+        OriginalFile.AbsoluteToLineCol(NewMatchStartPos,
+                                       FoundStartPos.Y,FoundStartPos.X);
+        OriginalFile.AbsoluteToLineCol(NewMatchEndPos,
+                                       FoundEndPos.Y,FoundEndPos.X);
+        //DebugLn(['SearchInText NewMatchStartPos=',NewMatchStartPos,' NewMatchEndPos=',NewMatchEndPos,' FoundStartPos=',dbgs(FoundStartPos),' FoundEndPos=',dbgs(FoundEndPos),' Found="',dbgstr(copy(Src,NewMatchStartPos,NewMatchEndPos-NewMatchStartPos)),'"']);
+        if sesoReplace in Flags then begin
+          DoReplaceLine
         end else begin
-          // search the line for text
-          Found:=SearchInLine(TempSearch,CaseFile,FoundStartPos.Y,
-                              sesoWholeWord in Flags,LastMatchEnd,FoundStartPos.X);
-          if Found then begin
-            if (LastMatchStart=LastMatchEnd) then
-              CurLine:=OriginalFile.GetLine(FoundStartPos.Y-1);
-            FoundEndPos.X:=FoundStartPos.X+length(TempSearch);
-            FoundEndPos.Y:=FoundStartPos.Y;
+          if (Progress<>nil)
+          and (Progress.OnAddMatch<>nil) then begin
+            Lines:=OriginalFile.GetLines(FoundStartPos.Y,FoundEndPos.Y);
+            Lines:=ChompOneLineEndAtEnd(Lines);
+            Progress.OnAddMatch(TheFileName,FoundStartPos,FoundEndPos,Lines);
           end;
         end;
-
-        // add found place
-        if Found then begin
-          //DebugLn('TSearchForm.SearchFile CurLine="',CurLine,'" Found=',dbgs(Found),' FoundStartPos=',dbgs(FoundStartPos),' FoundEndPos=',dbgs(FoundEndPos),' Line=',dbgs(Line));
-          if sesoReplace in Flags then begin
-            DoReplaceLine
-          end else begin
-            if (Progress<>nil)
-            and (Progress.OnAddMatch<>nil) then
-              Progress.OnAddMatch(TheFileName,FoundStartPos,FoundEndPos,CurLine);
-          end;
-        end else
-          break;
-      until (Result=mrAbort) or (not SearchAllHitsInLine) or (FoundEndPos.X<1);
+      end else begin
+        // not found
+        break;
+      end;
 
       // check abort
       if (Result=mrAbort) then begin
         exit;
       end;
-
-    end;//for
+      
+      ProcessMessages;
+    until false;
   finally
     CommitChanges;
     if OriginalFile=CaseFile then
@@ -672,15 +647,18 @@ procedure TSearchForm.OnAddMatch(const Filename: string; const StartPos,
 var
   MatchLen: Integer;
   TrimmedMatch: LongInt;
-  TrimmedCurLine: String;
+  TrimmedLines: String;
+  LastLineLen: integer;
 begin
-  TrimmedMatch:=StartPos.X;
-  TrimmedCurLine:=TrimLineAndAdjustPos(Lines,TrimmedMatch);
-  MatchLen:=EndPos.X-StartPos.X;
+  LineEndCount(Lines,LastLineLen);
+  MatchLen:=length(Lines)-(LastLineLen+1-EndPos.X)-StartPos.X+1;
   if MatchLen<1 then MatchLen:=1;
+  //DebugLn(['TSearchForm.OnAddMatch length(Lines)=',length(Lines),' LastLineLen=',LastLineLen,' MatchLen=',MatchLen]);
+  TrimmedMatch:=StartPos.X;
+  TrimmedLines:=TrimLinesAndAdjustPos(Lines,TrimmedMatch);
   //DebugLn(['TSearchForm.OnAddMatch StartPos=',dbgs(StartPos),' EndPos=',dbgs(EndPos),' Lines="',Lines,'"']);
-  SearchResultsView.AddMatch(fResultsWindow,FileName,StartPos,
-                             TrimmedCurLine, TrimmedMatch, MatchLen);
+  SearchResultsView.AddMatch(fResultsWindow,FileName,StartPos,EndPos,
+                             TrimmedLines, TrimmedMatch, MatchLen);
   UpdateMatches;
 end;
 

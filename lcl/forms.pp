@@ -725,6 +725,7 @@ type
     procedure DestroyCursors;
     function GetCursors(Index: Integer): HCURSOR;
     function GetCustomFormCount: Integer;
+    function GetCustomFormZOrderCount: Integer;
     function GetCustomForms(Index: Integer): TCustomForm;
     function GetCustomFormsZOrdered(Index: Integer): TCustomForm;
     function GetFonts : TStrings;
@@ -758,19 +759,19 @@ type
     procedure UpdateScreen;
     // handler
     procedure AddHandlerFormAdded(OnFormAdded: TScreenFormEvent;
-                         AsLast: Boolean{$IFDEF HasDefaultValues}=true{$ENDIF});
+                                  AsLast: Boolean=true);
     procedure RemoveHandlerFormAdded(OnFormAdded: TScreenFormEvent);
     procedure AddHandlerRemoveForm(OnRemoveForm: TScreenFormEvent;
-                         AsLast: Boolean{$IFDEF HasDefaultValues}=true{$ENDIF});
+                                   AsLast: Boolean=true);
     procedure RemoveHandlerRemoveForm(OnRemoveForm: TScreenFormEvent);
     procedure AddHandlerActiveControlChanged(
-                         OnActiveControlChanged: TScreenControlEvent;
-                         AsLast: Boolean{$IFDEF HasDefaultValues}=true{$ENDIF});
+                                    OnActiveControlChanged: TScreenControlEvent;
+                                    AsLast: Boolean=true);
     procedure RemoveHandlerActiveControlChanged(
                                    OnActiveControlChanged: TScreenControlEvent);
     procedure AddHandlerActiveFormChanged(
-                         OnActiveFormChanged: TScreenActiveFormChangedEvent;
-                         AsLast: Boolean{$IFDEF HasDefaultValues}=true{$ENDIF});
+                             OnActiveFormChanged: TScreenActiveFormChangedEvent;
+                             AsLast: Boolean=true);
     procedure RemoveHandlerActiveFormChanged(
                             OnActiveFormChanged: TScreenActiveFormChangedEvent);
     procedure RemoveAllHandlersOfObject(AnObject: TObject); override;
@@ -782,6 +783,7 @@ type
     property Cursors[Index: Integer]: HCURSOR read GetCursors write SetCursors;
     property CustomFormCount: Integer read GetCustomFormCount;
     property CustomForms[Index: Integer]: TCustomForm read GetCustomForms;
+    property CustomFormZOrderCount: Integer read GetCustomFormZOrderCount;
     property CustomFormsZOrdered[Index: Integer]: TCustomForm
                                                     read GetCustomFormsZOrdered;
     property FocusedForm: TCustomForm read FFocusedForm;

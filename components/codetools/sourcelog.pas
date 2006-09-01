@@ -129,8 +129,8 @@ type
     property Source: string read FSource write SetSource;
     property Modified: boolean read FModified write FModified;
     // Line and Column begin at 1
-    procedure LineColToPosition(Line, Column: integer; var Position: integer);
-    procedure AbsoluteToLineCol(Position: integer; var Line, Column: integer);
+    procedure LineColToPosition(Line, Column: integer; out Position: integer);
+    procedure AbsoluteToLineCol(Position: integer; out Line, Column: integer);
     procedure Insert(Pos: integer; const Txt: string);
     procedure Delete(Pos, Len: integer);
     procedure Replace(Pos, Len: integer; const Txt: string);
@@ -576,7 +576,7 @@ begin
 end;
 
 procedure TSourceLog.LineColToPosition(Line, Column: integer;
-  var Position: integer);
+  out Position: integer);
 begin
   BuildLineRanges;
   if (Line>=1) and (Line<=FLineCount) and (Column>=1) then begin
@@ -602,7 +602,7 @@ begin
 end;
 
 procedure TSourceLog.AbsoluteToLineCol(Position: integer;
-  var Line, Column: integer);
+  out Line, Column: integer);
 var l,r,m:integer;
 begin
   BuildLineRanges;

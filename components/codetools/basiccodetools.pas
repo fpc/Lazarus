@@ -80,7 +80,7 @@ function FindNextIdentifier(const Source: string; StartPos, MaxPos: integer
 
 // line/code ends
 function LineEndCount(const Txt: string): integer;
-function LineEndCount(const Txt: string; var LengthOfLastLine:integer): integer;
+function LineEndCount(const Txt: string; out LengthOfLastLine:integer): integer;
 function EmptyCodeLineCount(const Source: string; StartPos, EndPos: integer;
     NestedComments: boolean): integer;
 function PositionsInSameLine(const Source: string;
@@ -97,6 +97,7 @@ function FindFirstLineEndInFrontOfInCode(const Source: string;
 function FindFirstLineEndAfterInCode(const Source: string;
     Position, MaxPosition: integer; NestedComments: boolean): integer;
 function ChompLineEndsAtEnd(const s: string): string;
+function ChompOneLineEndAtEnd(const s: string): string;
 function TrimLineEnds(const s: string; TrimStart, TrimEnd: boolean): string;
 
 // brackets
@@ -139,6 +140,14 @@ function SplitStringConstant(const StringConstant: string;
     const NewLine: string): string;
 procedure ImproveStringConstantStart(const ACode: string; var StartPos: integer);
 procedure ImproveStringConstantEnd(const ACode: string; var EndPos: integer);
+
+// search
+function SearchNextInText(Search: PChar; SearchLen: PtrInt;
+    Src: PChar; SrcLen: PtrInt;
+    StartPos: PtrInt;// 0 based
+    out MatchStart, MatchEnd: PtrInt;// 0 based
+    WholeWords: boolean = false; MultiLine: boolean = false): boolean;
+
 
 // files
 type
@@ -271,9 +280,10 @@ implementation
 var
   IsIDChar,          // ['a'..'z','A'..'Z','0'..'9','_']
   IsIDStartChar,     // ['a'..'z','A'..'Z','_']
-  IsSpaceChar,
-  IsNumberChar,
-  IsHexNumberChar
+  IsSpaceChar,       // [#0..#32];
+  IsNumberChar,      // ['0'..'9']
+  IsHexNumberChar,   // ['0'..'9','A'..'Z','a'..'z']
+  IsNonWordChar      // [#0..#127]-IsIDChar
      : array[char] of boolean;
 
 function Min(i1, i2: integer): integer; inline;
@@ -297,7 +307,7 @@ begin
   Result:=false;
   // find section
   Position:=SearchCodeInSource(Source,Section,1,EndPos,false);
-  if Position<1 then exit;
+  if (Position<1) or (EndPos<1) then exit;
   // search for include directives
   repeat
     Atom:=ReadNextPascalAtom(Source,Position,AtomStart);
@@ -1574,7 +1584,7 @@ begin
 end;
 
 function LineEndCount(const Txt: string;
-  var LengthOfLastLine: integer): integer;
+  out LengthOfLastLine: integer): integer;
 var i, LastLineEndPos: integer;
 begin
   i:=1;
@@ -1913,6 +1923,21 @@ begin
   while (EndPos>1) and (s[EndPos-1] in [#10,#13]) do dec(EndPos);
   Result:=s;
   SetLength(Result,EndPos-1);
+end;
+
+function ChompOneLineEndAtEnd(const s: string): string;
+var
+  EndPos: Integer;
+begin
+  Result:=s;
+  EndPos:=length(s)+1;
+  if (EndPos>1) and (s[EndPos-1] in [#10,#13]) then begin
+    dec(EndPos);
+    if (EndPos>1) and (s[EndPos-1] in [#10,#13]) and (s[EndPos]<>s[EndPos-1])
+    then
+      dec(EndPos);
+    SetLength(Result,EndPos-1);
+  end;
 end;
 
 function TrimLineEnds(const s: string; TrimStart, TrimEnd: boolean): string;
@@ -3239,6 +3264,71 @@ begin
   until AtomEndPos>=EndPos;
 end;
 
+function SearchNextInText(Search: PChar; SearchLen: PtrInt; Src: PChar;
+  SrcLen: PtrInt; StartPos: PtrInt; out MatchStart, MatchEnd: PtrInt;
+  WholeWords: boolean; MultiLine: boolean): boolean;
+{ search Search in Src starting at StartPos.
+  MatchEnd will be the position of the first character after the found pattern.
+  if WholeWords then in front of MatchStart and behind MatchEnd will be
+    a non word character.
+  if MultiLine then newline characters are the same #13#10 = #10 = #13. }
+var
+  EndSrc: PChar;
+  EndSearch: PChar;
+  FirstChar: Char;
+  CurPos: PChar;
+  CmpSearch: PChar;
+  CmpSrc: PChar;
+begin
+  Result:=false;
+  MatchStart:=0;
+  MatchEnd:=0;
+  if (Search=nil) or (Src=nil) then exit;
+
+  EndSrc:=@Src[SrcLen];
+  EndSearch:=@Search[SearchLen];
+  FirstChar:=Search^;
+  CurPos:=@Src[StartPos];
+  while (CurPos<EndSrc) do begin
+    if (FirstChar=CurPos^)
+    and ((not WholeWords) or (CurPos>Src) or (IsNonWordChar[PChar(CurPos-1)^]))
+    then begin
+      CmpSearch:=Search;
+      CmpSrc:=CurPos;
+      while (CmpSearch<EndSearch) and (CmpSrc<EndSrc) do begin
+        if CmpSearch^=CmpSrc^ then begin
+          inc(CmpSearch);
+          inc(CmpSrc);
+        end else if MultiLine
+        and (CmpSrc^ in [#13,#10]) and (CmpSearch^ in [#13,#10]) then begin
+          if (CmpSrc+1<EndSrc) and (CmpSrc[1] in [#13,#10])
+          and (CmpSrc^<>CmpSrc[1]) then
+            inc(CmpSrc,2)
+          else
+            inc(CmpSrc);
+          if (CmpSearch+1<EndSearch) and (CmpSearch[1] in [#13,#10])
+          and (CmpSearch^<>CmpSearch[1]) then
+            inc(CmpSearch,2)
+          else
+            inc(CmpSearch);
+        end else begin
+          break;
+        end;
+      end;
+      if (CmpSearch=EndSearch)
+      and ((not WholeWords) or (CmpSrc=EndSrc) or (IsNonWordChar[CmpSrc^])) then
+      begin
+        // pattern found
+        Result:=true;
+        MatchStart:=CurPos-Src;
+        MatchEnd:=CmpSrc-Src;
+        exit;
+      end;
+    end;
+    inc(CurPos);
+  end;
+end;
+
 function GatherUnitFiles(const BaseDir, SearchPath,
   Extensions: string; KeepDoubles, CaseInsensitive: boolean;
   var TreeOfUnitFiles: TAVLTree): boolean;
@@ -3580,6 +3670,7 @@ begin
     IsSpaceChar[c]:=c in [#0..#32];
     IsNumberChar[c]:=c in ['0'..'9'];
     IsHexNumberChar[c]:=c in ['0'..'9','A'..'Z','a'..'z'];
+    IsNonWordChar[c]:=(c in [#0..#127]) and (not IsIDChar[c]);
   end;
 end;
 

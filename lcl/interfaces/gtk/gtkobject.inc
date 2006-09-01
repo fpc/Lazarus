@@ -709,6 +709,7 @@ begin
       then begin
         gdk_window_get_user_data(PGDKWindow(List^.Data), @Window);
         if GtkWidgetIsA(PGtkWidget(Window), GTK_TYPE_WINDOW)
+        and gtk_widget_visible(PGtkWidget(Window))
         then begin
           // visible window found -> add to list
           New(ATransientWindow);
@@ -724,13 +725,20 @@ begin
           else
             ATransientWindow^.SortIndex:=-1;
           ATransientWindow^.IsModal:=(ATransientWindow^.SortIndex>=0)
-            and (GTK_WIDGET_VISIBLE(PGtkWidget(Window)));
+                                   and (GTK_WIDGET_VISIBLE(PGtkWidget(Window)));
           if not ATransientWindow^.IsModal then begin
             if (LCLObject is TCustomForm)
             and (TCustomForm(LCLObject).Parent=nil) then
               ATransientWindow^.SortIndex:=
-                Screen.CustomFormIndex(TCustomForm(LCLObject));
+                Screen.CustomFormZIndex(TCustomForm(LCLObject));
           end;
+          
+          if ATransientWindow^.SortIndex<0 then begin
+            // this window has no form. Move it to the back.
+            ATransientWindow^.SortIndex:=Screen.CustomFormCount;
+          end;
+          
+          //DebugLn(['TGtkWidgetSet.UpdateTransientWindows LCLObject=',DbgSName(LCLObject),' ATransientWindow^.SortIndex=',ATransientWindow^.SortIndex]);
           if AllWindows=nil then AllWindows:=TFPList.Create;
           AllWindows.Add(ATransientWindow);
         end;
@@ -739,9 +747,12 @@ begin
     end;
 
     if AllWindows=nil then exit;
-
+    
+    //for i:=0 to SCreen.CustomFormZOrderCount-1 do
+    //  DebugLn(['TGtkWidgetSet.UpdateTransientWindows i=',i,'/',SCreen.CustomFormZOrderCount,' ',DbgSName(SCreen.CustomFormsZOrdered[i])]);
+    
     // sort
-    // move all modal windows at the end of the window list
+    // move all modal windows to the end of the window list
     i:=AllWindows.Count-1;
     FirstModal:=AllWindows.Count;
     while i>=0 do begin
@@ -771,6 +782,8 @@ begin
     end else begin
       // there are modal windows
       // -> sort windows in z order and setup transient relationships
+
+      //DebugLn(['TGtkWidgetSet.UpdateTransientWindows ModalWindows=',AllWindows.Count-FirstModal,' NonModalWindows=',FirstModal]);
 
       // sort modal windows (bubble sort)
       for i:=FirstModal to AllWindows.Count-2 do begin

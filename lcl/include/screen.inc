@@ -347,6 +347,11 @@ begin
   Result:=FCustomForms.Count;
 end;
 
+function TScreen.GetCustomFormZOrderCount: Integer;
+begin
+  Result:=FCustomFormsZOrdered.Count;
+end;
+
 {------------------------------------------------------------------------------
   function TScreen.GetCustomForms(Index: Integer): TCustomForm;
  ------------------------------------------------------------------------------}
@@ -467,8 +472,6 @@ begin
   FCustomFormsZOrdered.Remove(AForm);
   FFormList.Remove(AForm);
   Application.UpdateVisible;
-  //if (FCustomForms.Count = 0) and (Application.FHintWindow <> nil) then
-  //  Application.FHintWindow.ReleaseHandle;
 end;
 
 {------------------------------------------------------------------------------

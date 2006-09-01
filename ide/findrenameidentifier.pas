@@ -247,6 +247,7 @@ begin
       SearchResultsView.AddMatch(SearchPageIndex,
                                  CodePos^.Code.Filename,
                                  Point(CodePos^.X,CodePos^.Y),
+                                 Point(CodePos^.X+length(Identifier),CodePos^.Y),
                                  TrimmedLine,
                                  CodePos^.X-TrimCnt, length(Identifier));
       ANode:=TreeOfPCodeXYPosition.FindPrecessor(ANode);
