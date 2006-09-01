@@ -5398,6 +5398,22 @@ Includes useful function MessageBox, a simple dialog</descr>
         <short/>
       </element>
       <!-- procedure Visibility: public -->
+      <element name="TApplication.QueueAsyncCall">
+        <short>Queues a given method after all other events have been processed.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+        <example file="forms\tapplication_queueasynccall.pas"/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TApplication.QueueAsyncCall.AMethod">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TApplication.QueueAsyncCall.Data">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
       <element name="TApplication.ReleaseComponent">
         <short/>
         <descr/>
