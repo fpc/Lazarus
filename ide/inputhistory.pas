@@ -149,7 +149,10 @@ type
   { TInputHistories }
 
   TLazFindInFileSearchOption = (
-    fifMatchCase, fifWholeWord, fifRegExpr,
+    fifMatchCase,
+    fifWholeWord,
+    fifRegExpr,
+    fifMultiLine,
     fifSearchProject, // search in all project files
     fifSearchOpen,    // search in all open files in editor
     fifSearchDirectories,// search in directories
@@ -270,6 +273,7 @@ const
     'MatchCase',
     'WholeWord',
     'RegExpr',
+    'MultiLine',
     'SearchProject',
     'SearchOpen',
     'SearchDirectories',

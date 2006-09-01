@@ -1,14 +1,15 @@
 object LazFindInFilesDialog: TLazFindInFilesDialog
   Left = 391
-  Height = 423
+  Height = 460
   Top = 158
-  Width = 385
-  HorzScrollBar.Page = 384
-  VertScrollBar.Page = 422
+  Width = 420
+  HorzScrollBar.Page = 419
+  VertScrollBar.Page = 459
   ActiveControl = TextToFindComboBox
   Caption = 'Find in files'
   Constraints.MinHeight = 400
   Constraints.MinWidth = 260
+  OnClose = FormClose
   OnCreate = FormCreate
   Position = poScreenCenter
   object TextToFindLabel: TLabel
@@ -26,7 +27,7 @@ object LazFindInFilesDialog: TLazFindInFilesDialog
     Left = 102
     Height = 21
     Top = 6
-    Width = 277
+    Width = 312
     Anchors = [akTop, akLeft, akRight]
     AutoComplete = True
     AutoCompleteText = [cbactEnabled, cbactEndOfLineComplete, cbactRetainPrefixCase, cbactSearchAscending]
@@ -35,9 +36,9 @@ object LazFindInFilesDialog: TLazFindInFilesDialog
   end
   object OptionsCheckGroupBox: TCheckGroup
     Left = 6
-    Height = 86
+    Height = 115
     Top = 65
-    Width = 373
+    Width = 408
     Anchors = [akTop, akLeft, akRight]
     AutoFill = True
     BorderSpacing.InnerBorder = 6
@@ -56,17 +57,18 @@ object LazFindInFilesDialog: TLazFindInFilesDialog
       'Case sensitive'
       'Whole words only'
       'Regular expressions'
+      'Multi Line'
     )
     TabOrder = 1
     Data = {
-      03000000020202
+      0400000002020202
     }
   end
   object WhereRadioGroup: TRadioGroup
     Left = 6
     Height = 82
-    Top = 155
-    Width = 373
+    Top = 185
+    Width = 408
     Anchors = [akTop, akLeft, akRight]
     AutoFill = True
     Caption = 'Where'
@@ -91,9 +93,9 @@ object LazFindInFilesDialog: TLazFindInFilesDialog
   end
   object DirectoryOptionsGroupBox: TGroupBox
     Left = 6
-    Height = 137
-    Top = 240
-    Width = 373
+    Height = 139
+    Top = 275
+    Width = 408
     Anchors = [akTop, akLeft, akRight, akBottom]
     Caption = 'Directory Options'
     Enabled = False
@@ -120,14 +122,14 @@ object LazFindInFilesDialog: TLazFindInFilesDialog
       Left = 88
       Height = 21
       Top = 6
-      Width = 241
+      Width = 260
       Anchors = [akTop, akLeft, akRight]
       AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
       MaxLength = 0
       TabOrder = 0
     end
     object DirectoryBrowse: TBitBtn
-      Left = 335
+      Left = 354
       Height = 21
       Top = 6
       Width = 21
@@ -142,7 +144,7 @@ object LazFindInFilesDialog: TLazFindInFilesDialog
       Left = 6
       Height = 21
       Top = 56
-      Width = 323
+      Width = 342
       Anchors = [akTop, akLeft, akRight]
       AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
       MaxLength = 0
@@ -151,7 +153,7 @@ object LazFindInFilesDialog: TLazFindInFilesDialog
     end
     object IncludeSubDirsCheckBox: TCheckBox
       Left = 6
-      Height = 24
+      Height = 20
       Top = 92
       Width = 154
       Caption = 'Include sub directories'
@@ -159,9 +161,9 @@ object LazFindInFilesDialog: TLazFindInFilesDialog
     end
   end
   object OKButton: TButton
-    Left = 221
+    Left = 256
     Height = 25
-    Top = 391
+    Top = 428
     Width = 75
     Anchors = [akRight, akBottom]
     BorderSpacing.Around = 6
@@ -172,9 +174,9 @@ object LazFindInFilesDialog: TLazFindInFilesDialog
     TabOrder = 4
   end
   object CancelButton: TButton
-    Left = 304
+    Left = 339
     Height = 25
-    Top = 391
+    Top = 428
     Width = 75
     Anchors = [akRight, akBottom]
     BorderSpacing.Around = 6
@@ -188,7 +190,7 @@ object LazFindInFilesDialog: TLazFindInFilesDialog
     Left = 102
     Height = 25
     Top = 33
-    Width = 277
+    Width = 312
     Anchors = [akTop, akLeft, akRight]
     AutoComplete = True
     AutoCompleteText = [cbactEnabled, cbactEndOfLineComplete, cbactRetainPrefixCase, cbactSearchAscending]

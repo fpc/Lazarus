@@ -2254,6 +2254,7 @@ resourcestring
   lisFindFileCaseSensitive = 'Case sensitive';
   lisFindFileWholeWordsOnly = 'Whole words only';
   lisFindFileRegularExpressions = 'Regular expressions';
+  lisFindFileMultiLine = 'Multi line pattern';
   lisFindFileWhere = 'Where';
   lisFindFilesearchAllFilesInProject = 'search all files in project';
   lisFindFilesearchAllOpenFiles = 'search all open files';

@@ -25,7 +25,7 @@ interface
 uses
   Classes, SysUtils, LCLProc, LCLIntf, Controls, StdCtrls, Forms, Buttons,
   ExtCtrls, LResources, FileUtil, LazarusIDEStrConsts, Dialogs, SynEditTypes,
-  IDEDialogs, InputHistory;
+  IDEDialogs, IDEWindowIntf, InputHistory;
 
 type
   { TLazFindInFilesDialog }
@@ -48,6 +48,7 @@ type
     TextToFindLabel: TLabel;
     WhereRadioGroup: TRadioGroup;
     procedure DirectoryBrowseClick(Sender: TObject);
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure ReplaceCheckBoxChange(Sender: TObject);
     procedure WhereRadioGroupClick(Sender: TObject);
@@ -111,6 +112,12 @@ begin
   StoreIDEFileDialog(SelectDirectoryDialog);
 end;
 
+procedure TLazFindInFilesDialog.FormClose(Sender: TObject;
+  var CloseAction: TCloseAction);
+begin
+  IDEDialogLayoutList.SaveLayout(Self);
+end;
+
 procedure TLazFindInFilesDialog.FormCreate(Sender: TObject);
 begin
   Caption := srkmecFindInFiles;
@@ -122,6 +129,7 @@ begin
   OptionsCheckGroupBox.Items[0] := lisFindFileCaseSensitive;
   OptionsCheckGroupBox.Items[1] := lisFindFileWholeWordsOnly;
   OptionsCheckGroupBox.Items[2] := lisFindFileRegularExpressions;
+  OptionsCheckGroupBox.Items[3] := lisFindFileMultiLine;
 
   WhereRadioGroup.Caption:=lisFindFileWhere;
   WhereRadioGroup.Items[0] := lisFindFilesearchAllFilesInProject;
@@ -141,6 +149,8 @@ begin
 
   UpdateReplaceCheck;
   DirectoryOptionsGroupBox.Enabled:=WhereRadioGroup.ItemIndex=2;
+
+  IDEDialogLayoutList.ApplyLayout(Self,420,460);
 end;
 
 procedure TLazFindInFilesDialog.ReplaceCheckBoxChange(Sender: TObject);
@@ -153,6 +163,7 @@ begin
   OptionsCheckGroupBox.Checked[0] := fifMatchCase in NewOptions;
   OptionsCheckGroupBox.Checked[1] := fifWholeWord in NewOptions;
   OptionsCheckGroupBox.Checked[2] := fifRegExpr in NewOptions;
+  OptionsCheckGroupBox.Checked[3] := fifMultiLine in NewOptions;
   DirectoryOptionsGroupBox.Enabled := fifSearchDirectories in NewOptions;
   IncludeSubDirsCheckBox.Checked := fifIncludeSubDirs in NewOptions;
   ReplaceCheckBox.Checked := [fifReplace,fifReplaceAll]*NewOptions<>[];
@@ -170,6 +181,7 @@ begin
   if OptionsCheckGroupBox.Checked[0] then Include(Result, fifMatchCase);
   if OptionsCheckGroupBox.Checked[1] then Include(Result, fifWholeWord);
   if OptionsCheckGroupBox.Checked[2] then Include(Result, fifRegExpr);
+  if OptionsCheckGroupBox.Checked[3] then Include(Result, fifMultiLine);
   if IncludeSubDirsCheckBox.Checked then Include(Result, fifIncludeSubDirs);
   if ReplaceCheckBox.Checked then Include(Result, fifReplace);
 
@@ -186,6 +198,7 @@ begin
   if OptionsCheckGroupBox.Checked[0] then Include(Result, ssoMatchCase);
   if OptionsCheckGroupBox.Checked[1] then Include(Result, ssoWholeWord);
   if OptionsCheckGroupBox.Checked[2] then Include(Result, ssoRegExpr);
+  if OptionsCheckGroupBox.Checked[3] then Include(Result, ssoRegExprMultiLine);
   if ReplaceCheckBox.Checked then Include(Result, ssoReplace);
 end;//GetSynOptions
 
@@ -199,6 +212,7 @@ begin
   OptionsCheckGroupBox.Checked[0] := ssoMatchCase in NewOptions;
   OptionsCheckGroupBox.Checked[1] := ssoWholeWord in NewOptions;
   OptionsCheckGroupBox.Checked[2] := ssoRegExpr in NewOptions;
+  OptionsCheckGroupBox.Checked[3] := ssoRegExprMultiLine in NewOptions;
   ReplaceCheckBox.Checked := ([ssoReplace,ssoReplaceAll]*NewOptions <> []);
 
   UpdateReplaceCheck;

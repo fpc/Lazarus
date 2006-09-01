@@ -675,6 +675,7 @@ begin
   SetFlag(sesoReplaceAll,fifReplaceAll in TheOptions);
   SetFlag(sesoMatchCase,fifMatchCase in TheOptions);
   SetFlag(sesoRegExpr,fifRegExpr in TheOptions);
+  SetFlag(sesoMultiLine,fifMultiLine in TheOptions);
   fRecursive:= (fifIncludeSubDirs in TheOptions);
   fSearchProject:= (fifSearchProject in TheOptions);
   fSearchOpen:= (fifSearchOpen in TheOptions);
@@ -689,6 +690,7 @@ begin
   if sesoReplace in fFlags then include(Result,fifReplace);
   if sesoReplaceAll in fFlags then include(Result,fifReplaceAll);
   if sesoRegExpr in fFlags then include(Result,fifRegExpr);
+  if sesoMultiLine in fFlags then include(Result,fifMultiLine);
   if fRecursive then include(Result,fifIncludeSubDirs);
   if fSearchProject then include(Result, fifSearchProject);
   if fSearchOpen then include(Result,fifSearchOpen);
