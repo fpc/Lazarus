@@ -294,7 +294,8 @@ begin
 
   BrowseExampleButton.Caption := lisLazDocBrowseExampleButton;
   
-  MoveToInheritedButton.Caption:='Move entries to inherited';
+  MoveToInheritedButton.Caption:=lisLDMoveEntriesToInherited;
+  CopyFromInheritedButton.Caption:=lisLDCopyFromInherited;
   
   Reset;
   
@@ -675,6 +676,7 @@ begin
   end;
   MoveToInheritedButton.Enabled:=(fInheritedEntries<>nil)
                                  and (fInheritedEntries.Count>1);
+  CopyFromInheritedButton.Enabled:=(Entry<>nil);
 end;
 
 procedure TLazDocForm.UpdateInherited;
@@ -1067,45 +1069,51 @@ var
     NodeIndex: TFPDocItem);
   var
     child: TDOMNode;
+    FileAttribute: TDOMAttr;
+    OldNode: TDOMNode;
+    NewValue: String;
   begin
     {$ifdef dbgLazDoc}
     DebugLn('TLazDocForm.Save[CheckAndWriteNode]: checking element: ' +
       NodeName);
     {$endif}
 
-    if CurNodeName = NodeName then
-    begin
-      if not Assigned(Node.FirstChild) then
-      begin
-        child := Entry.DocFile.Doc.CreateTextNode(ToUnixLineEnding(NodeText));
+    if CurNodeName <> NodeName then exit;
+    
+    NewValue:=ToUnixLineEnding(NodeText);
+    if CurNodeName = 'example' then begin
+      OldNode:=Node.Attributes.GetNamedItem('file');
+      if (NodeText<>'')
+      or (not (OldNode is TDOMAttr))
+      or (TDOMAttr(OldNode).Value<>NewValue) then begin
+        DebugLn(['TLazDocForm.CheckAndWriteNode Changing NodeName=',NodeName,' NodeText="',NewValue,'"']);
+        // add or change example
+        FileAttribute := Entry.DocFile.Doc.CreateAttribute('file');
+        FileAttribute.Value := NewValue;
+        OldNode:=Node.Attributes.SetNamedItem(FileAttribute);
+        OldNode.Free;
+      end;
+    end
+    else if not Assigned(Node.FirstChild) then begin
+      // add node
+      if NodeText<>'' then begin
+        DebugLn(['TLazDocForm.CheckAndWriteNode Adding NodeName=',NodeName,' NodeText="',NewValue,'"']);
+        child := Entry.DocFile.Doc.CreateTextNode(NewValue);
         Node.AppendChild(child);
-      end
-      else
-        Node.FirstChild.NodeValue := ToUnixLineEnding(NodeText);
-      NodeWritten[NodeIndex] := True;
+      end;
+    end else begin
+      // change node
+      if Node.FirstChild.NodeValue <> NewValue then begin
+        DebugLn(['TLazDocForm.CheckAndWriteNode Changing NodeName=',NodeName,' NodeText="',NewValue,'"']);
+        Node.FirstChild.NodeValue := NewValue;
+      end;
     end;
+    NodeWritten[NodeIndex] := True;
   end;
 
   procedure CheckAndWriteNode(const NodeName: String; NodeType: TFPDocItem);
   begin
     CheckAndWriteNode(NodeName,DocNode[NodeType],NodeType);
-  end;
-
-  procedure CheckAndWriteExampleNode(const NodeText: String);
-  var
-    FileAttribute: TDOMAttr;
-  begin
-    {$ifdef dbgLazDoc}
-    DebugLn('TLazDocForm.Save[CheckAndWriteExampleNode]');
-    {$endif}
-
-    if CurNodeName = 'example' then
-    begin
-      FileAttribute := Entry.DocFile.Doc.CreateAttribute('file');
-      FileAttribute.Value := NodeText;
-      Node.Attributes.SetNamedItem(FileAttribute);
-      NodeWritten[fpdiExample] := True;
-    end;
   end;
 
   procedure InsertNodeElement(const ElementName, ElementText: String);
@@ -1117,16 +1125,19 @@ var
     DebugLn('TLazDocForm.Save[InsertNodeElement]: inserting element: ' +
       ElementName);
     {$endif}
+    if (ElementText='') then exit;
 
+    DebugLn(['InsertNodeElement Adding node ElementName=',ElementName,' ElementText="',ElementText,'"']);
     child := Entry.DocFile.doc.CreateElement(ElementName);
     if ElementName='example' then begin
       FileAttribute := Entry.DocFile.Doc.CreateAttribute('file');
       FileAttribute.Value := ElementText;
       child.Attributes.SetNamedItem(FileAttribute);
     end
-    else
+    else begin
       child.AppendChild(Entry.DocFile.Doc.CreateTextNode(
                                                 ToUnixLineEnding(ElementText)));
+    end;
     TopNode.AppendChild(child);
   end;
   
@@ -1162,7 +1173,7 @@ begin
       CheckAndWriteNode('descr', fpdiDescription);
       CheckAndWriteNode('errors', fpdiErrors);
       CheckAndWriteNode('seealso', fpdiSeeAlso);
-      CheckAndWriteExampleNode(DocNode[fpdiExample]);
+      CheckAndWriteNode('example', fpdiExample);
     end;
     Node := Node.NextSibling;
   end;

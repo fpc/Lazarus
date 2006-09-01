@@ -3041,6 +3041,8 @@ resourcestring
   lisLazDocDeleteLinkButton = 'Delete link';
   lisLazDocExampleTag = 'Example';
   lisLazDocBrowseExampleButton = 'Browse';
+  lisLDMoveEntriesToInherited = 'Move entries to inherited';
+  lisLDCopyFromInherited = 'Copy from inherited';
   lisEnableMacros = 'Enable Macros';
   lisCTSelectCodeMacro = 'Select Code Macro';
   lisPDProgress = 'Progress';
