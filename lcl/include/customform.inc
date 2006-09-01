@@ -1040,6 +1040,7 @@ procedure TCustomForm.UpdateActions;
     CurControl: TControl;
   begin
     if not Container.Showing then exit;
+    //DebugLn(['RecursiveInitiate ',DbgSName(Container)]);
     for i := 0 to Container.ControlCount - 1 do begin
       CurControl := Container.Controls[i];
       if (csActionClient in CurControl.ControlStyle)
@@ -1059,8 +1060,10 @@ begin
   // update main menu's top-most items
   if Menu <> nil then
     for I := 0 to Menu.Items.Count - 1 do
-      with Menu.Items[I] do
+      with Menu.Items[I] do begin
+        //DebugLn(['TCustomForm.UpdateActions ',Name,' Visible=',Visible]);
         if Visible then InitiateAction;
+      end;
   // update all controls
   RecursiveInitiate(Self);
 end;

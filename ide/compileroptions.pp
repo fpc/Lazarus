@@ -1046,7 +1046,7 @@ begin
 
   { Target }
   p:=Path+'Target/';
-  TargetFilename := XMLConfigFile.GetValue(p+'Filename/Value', '');
+  TargetFilename := f(XMLConfigFile.GetValue(p+'Filename/Value', ''));
 
   { SearchPaths }
   p:=Path+'SearchPaths/';

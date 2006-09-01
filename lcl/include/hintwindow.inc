@@ -78,7 +78,6 @@ End;
 procedure THintWindow.Paint;
 var
   ARect: TRect;
-  TS : TTextStyle;
 begin
   ARect := ClientRect;
   Canvas.Brush.Color := Color;
@@ -126,6 +125,8 @@ end;
 function THintWindow.CalcHintRect(MaxWidth: Integer; const AHint: String;
   AData: Pointer): TRect;
 begin
+  if MaxWidth<=0 then
+    MaxWidth:=Screen.Width-4*HintBorderWidth;
   Result := Rect(0,0, MaxWidth, Screen.Height-4*HintBorderWidth);
   if AHint='' then exit;
   DrawText(Canvas.GetUpdatedHandle([csFontValid]), PChar(AHint), Length(AHint),
