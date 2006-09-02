@@ -118,7 +118,7 @@ begin
     StretchMaskBlt(DestDC,
             DestRect.Left,DestRect.Top,
             DestRect.Right-DestRect.Left,DestRect.Bottom-DestRect.Top,
-            SrcDC,0,0,Width,Height, UseMaskHandle,0,0,SRCCOPY);
+            SrcDC,0,0,Width,Height, UseMaskHandle,0,0,DestCanvas.CopyMode);
     DestCanvas.Changed;
   end;
 end;

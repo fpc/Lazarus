@@ -3595,6 +3595,7 @@ var
   EnvironmentOptionsDialog: TEnvironmentOptionsDialog;
   MacroValueChanged, FPCSrcDirChanged, FPCCompilerChanged: boolean;
   OldCompilerFilename: string;
+  OldLanguage: String;
 
   procedure ChangeMacroValue(const MacroName, NewValue: string);
   begin
@@ -3646,7 +3647,12 @@ Begin
       // load settings from EnvironmentOptions to EnvironmentOptionsDialog
       ReadSettings(EnvironmentOptions);
     end;
+    OldLanguage:=EnvironmentOptions.LanguageID;
     if EnvironmentOptionsDialog.ShowModal=mrOk then begin
+      if OldLanguage<>EnvironmentOptions.LanguageID then
+        TranslateResourceStrings(EnvironmentOptions.LazarusDirectory,
+                                 EnvironmentOptions.LanguageID);
+
       // invalidate cached substituted macros
       IncreaseCompilerParseStamp;
 
