@@ -179,4 +179,28 @@ begin
   Result := (DC <> 0);
 end;
 
+{------------------------------------------------------------------------------
+  Function: TQtWidgetSet.IsValidGDIObject
+  Params:   GDIObject  -  handle to a GDI Object (TQtFont, TQtBrush, etc)
+  Returns:  True       -  if the DC is valid
+  
+  Remark: All handles for GDI objects must be pascal objects so we can
+ distinguish between them
+ ------------------------------------------------------------------------------}
+function TQtWidgetSet.IsValidGDIObject(const GDIObject: HGDIOBJ): Boolean;
+var
+  aObject: TObject;
+begin
+  Result := False;
+  
+  if GDIObject = 0 then Exit;
+  
+  aObject := TObject(GDIObject);
+
+  if aObject is TObject then
+  begin
+    Result := (aObject is TQtFont) or (aObject is TQtBrush) or (aObject is TQtImage);
+  end;
+end;
+
 //------------------------------------------------------------------------

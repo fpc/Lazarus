@@ -29,11 +29,14 @@
 
 function BeginPaint(Handle: hWnd; Var PS : TPaintStruct) : hdc; override;
 
+Function CombineRgn(Dest, Src1, Src2: HRGN; fnCombineMode: Longint): Longint;  override;
 function CreateBitmapFromRawImage(const RawImage: TRawImage; var Bitmap, MaskBitmap: HBitmap; AlwaysCreateMask: boolean): boolean; override;
 function CreateBrushIndirect(const LogBrush: TLogBrush): HBRUSH; override;
 function CreateCompatibleDC(DC: HDC): HDC; override;
 function CreateFontIndirect(const LogFont: TLogFont): HFONT; override;
+function CreateRectRgn(X1, Y1, X2, Y2: Integer): HRGN; override;
 
+function DeleteObject(GDIObject: HGDIOBJ): Boolean; override;
 function DrawText(DC: HDC; Str: PChar; Count: Integer; var Rect: TRect; Flags: Cardinal): Integer; override;
 
 function Ellipse(DC: HDC; x1, y1, x2, y2: Integer): Boolean; override;
@@ -43,6 +46,7 @@ function ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect; Str: 
 function GetBitmapRawImageDescription(Bitmap: HBITMAP; Desc: PRawImageDescription): Boolean; override;
 function GetClientBounds(handle : HWND; var ARect : TRect) : Boolean; override;
 function GetClientRect(handle : HWND; var ARect : TRect) : Boolean; override;
+Function GetClipRGN(DC: hDC; RGN: hRGN): Longint; override;
 function GetCursorPos(var lpPoint: TPoint ): Boolean; override;
 function GetDeviceRawImageDescription(DC: HDC; Desc: PRawImageDescription): boolean; override;
 function GetDC(hWnd: HWND): HDC; override;

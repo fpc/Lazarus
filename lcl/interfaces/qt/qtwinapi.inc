@@ -41,7 +41,7 @@
 function TQtWidgetSet.BeginPaint(Handle: hWnd; Var PS : TPaintStruct): hdc;
 begin
   {$ifdef VerboseQtWinAPI}
-    WriteLn('WinAPI BeginPaint');
+    WriteLn('[WinAPI BeginPaint] Handle=', dbgs(Handle));
   {$endif}
 
 {  if IsDoubleBuffered then
@@ -56,6 +56,41 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Function: CombineRgn
+  Params:  Dest, Src1, Src2, fnCombineMode
+  Returns: longint
+
+  Combine the 2 Source Regions into the Destination Region using the specified
+  Combine Mode. The Destination must already be initialized. The Return value
+  is the Destination's Region type, or ERROR.
+
+  The Combine Mode can be one of the following:
+      RGN_AND  : Gets a region of all points which are in both source regions
+
+      RGN_COPY : Gets an exact copy of the first source region
+
+      RGN_DIFF : Gets a region of all points which are in the first source
+                 region but not in the second.(Source1 - Source2)
+
+      RGN_OR   : Gets a region of all points which are in either the first
+                 source region or in the second.(Source1 + Source2)
+
+      RGN_XOR  : Gets all points which are in either the first Source Region
+                 or in the second, but not in both.
+
+  The result can be one of the following constants
+      Error
+      NullRegion
+      SimpleRegion
+      ComplexRegion
+
+ ------------------------------------------------------------------------------}
+function TQtWidgetSet.CombineRgn(Dest, Src1, Src2: HRGN; fnCombineMode: Longint): Longint;
+begin
+  Result := SimpleRegion;
+end;
+
+{------------------------------------------------------------------------------
   Method:  TQtWidgetSet.CreateBitmapFromRawImage
   Params:
   Returns:
@@ -66,14 +101,14 @@ function TQtWidgetSet.CreateBitmapFromRawImage(const RawImage: TRawImage;
   var Bitmap, MaskBitmap: HBitmap; AlwaysCreateMask: boolean): boolean;
 begin
   {$ifdef VerboseQtWinAPI}
-    WriteLn('WinAPI CreateBitmapFromRawImage');
+    WriteLn('[WinAPI CreateBitmapFromRawImage]');
   {$endif}
 
   Result := False;
   Bitmap := 0;
   MaskBitmap := 0;
 
-  Bitmap := HBitmap(QImage_create(RawImage.Data, RawImage.Description.Width,
+  Bitmap := HBitmap(TQtImage.Create(RawImage.Data, RawImage.Description.Width,
    RawImage.Description.Height, QImageFormat_ARGB32));
 
   Result := True;
@@ -88,11 +123,13 @@ function TQtWidgetSet.CreateBrushIndirect(const LogBrush: TLogBrush): HBRUSH;
 var
   QtBrush: TQtBrush;
 begin
-  Assert(False, Format('Trace:> [TQtWidgetSet.CreateBrushIndirect]  Style: %d, Color: %8x', [LogBrush.lbStyle, LogBrush.lbColor]));
+  {$ifdef VerboseQtWinAPI}
+    WriteLn(Format('Trace:> [WinAPI CreateBrushIndirect]  Style: %d, Color: %8x', [LogBrush.lbStyle, LogBrush.lbColor]));
+  {$endif}
 
   result := 0;
 
-  QtBrush := TQtBrush.Create;
+  QtBrush := TQtBrush.Create(True);
 
   try
     case LogBrush.lbStyle of
@@ -136,7 +173,7 @@ begin
       begin
       end;
     else
-      RaiseGDBException(Format('unsupported Style %d',[LogBrush.lbStyle]));
+      WriteLn(Format('Unsupported Style %d',[LogBrush.lbStyle]));
     end;
 
     {   Other non-utilized Qt brushes:
@@ -153,12 +190,16 @@ begin
     QtConicalGradientPattern,
     QtTexturePattern = 24 );}
   except
-    DebugLn('TQtWidgetSet.CreateBrushIndirect failed');
+    {$ifdef VerboseQtWinAPI}
+      WriteLn('[WinAPI CreateBrushIndirect] Failed');
+    {$endif}
   end;
 
   Result := HBRUSH(QtBrush);
 
-  Assert(False, Format('Trace:< [TGtkWidgetSet.CreateBrushIndirect] Got --> %x', [Result]));
+  {$ifdef VerboseQtWinAPI}
+    WriteLn(Format('Trace:< [WinAPI CreateBrushIndirect] Got --> %x', [Result]));
+  {$endif}
 end;
 
 {------------------------------------------------------------------------------
@@ -171,7 +212,7 @@ end;
 function TQtWidgetSet.CreateCompatibleDC(DC: HDC): HDC;
 begin
   {$ifdef VerboseQtWinAPI}
-    WriteLn('WinAPI CreateCompatibleDC ( DC: ', IntToStr(DC), ' )');
+    WriteLn('[WinAPI CreateCompatibleDC] DC: ', IntToStr(DC));
   {$endif}
 
   Result := GetDC(0);
@@ -189,46 +230,133 @@ var
   QtFont: TQtFont;
   FamilyName: string;
 begin
+  {$ifdef VerboseQtWinAPI}
+    WriteLn('[WinAPI CreateFontIndirect]');
+  {$endif}
+
   Result := 0;
   
-  QtFont := TQtFont.Create;
+  QtFont := TQtFont.Create(True);
   try
-    with LogFont do
-    begin
-      if lfHeight > 0 then QtFont.setPointSize(lfHeight)
-      else if lfHeight < 0 then QtFont.setPointSize(-1 * lfHeight);
+    if LogFont.lfHeight > 0 then QtFont.setPointSize(LogFont.lfHeight)
+    else if LogFont.lfHeight < 0 then QtFont.setPointSize(-1 * LogFont.lfHeight);
     
-      // Some values at available on Qt documentation at a table
-      // Others are guesses. The best would be to test different values for those
-      // See: http://doc.trolltech.com/4.1/qfont.html#Weight-enum
-      case lfWeight of
-        FW_THIN       : QtFont.setWeight(10);
-        FW_EXTRALIGHT : QtFont.setWeight(15);
-        FW_LIGHT      : QtFont.setWeight(25);
-        FW_NORMAL     : QtFont.setWeight(50);
-        FW_MEDIUM     : QtFont.setWeight(55);
-        FW_SEMIBOLD   : QtFont.setWeight(63);
-        FW_BOLD       : QtFont.setWeight(75);
-        FW_EXTRABOLD  : QtFont.setWeight(80);
-        FW_HEAVY      : QtFont.setWeight(87);
-      end;
+    // Some values at available on Qt documentation at a table
+    // Others are guesses. The best would be to test different values for those
+    // See: http://doc.trolltech.com/4.1/qfont.html#Weight-enum
+    case LogFont.lfWeight of
+      FW_THIN       : QtFont.setWeight(10);
+      FW_EXTRALIGHT : QtFont.setWeight(15);
+      FW_LIGHT      : QtFont.setWeight(25);
+      FW_NORMAL     : QtFont.setWeight(50);
+      FW_MEDIUM     : QtFont.setWeight(55);
+      FW_SEMIBOLD   : QtFont.setWeight(63);
+      FW_BOLD       : QtFont.setWeight(75);
+      FW_EXTRABOLD  : QtFont.setWeight(80);
+      FW_HEAVY      : QtFont.setWeight(87);
+    end;
 
-//    lfOrientation: Longint;
+//    LogFont.lfOrientation: Longint;
 
-      QtFont.setItalic(lfItalic = High(Byte));
-      QtFont.setUnderline(lfUnderline = High(Byte));
-      QtFont.setStrikeOut(lfStrikeOut = High(Byte));
+    QtFont.setItalic(LogFont.lfItalic = High(Byte));
+    QtFont.setUnderline(LogFont.lfUnderline = High(Byte));
+    QtFont.setStrikeOut(LogFont.lfStrikeOut = High(Byte));
 
-      FamilyName := StrPas(lfFaceName);
+    FamilyName := StrPas(LogFont.lfFaceName);
 
-      if (CompareText(FamilyName,'default')<>0) then
-      begin
-        QtFont.setRawName(FamilyName);
-      end;
+    if (CompareText(FamilyName, 'default') <> 0) then
+    begin
+      QtFont.setRawName(FamilyName);
     end;
   finally
     Result := HFONT(QtFont);
   end;
+end;
+
+{------------------------------------------------------------------------------
+  Function: CreateRectRgn
+  Params:  none
+  Returns: Nothing
+
+
+ ------------------------------------------------------------------------------}
+function TQtWidgetSet.CreateRectRgn(X1,Y1,X2,Y2 : Integer): HRGN;
+begin
+  Result := 0;
+end;
+
+{------------------------------------------------------------------------------
+  Function: DeleteObject
+  Params:  none
+  Returns: Nothing
+
+ ------------------------------------------------------------------------------}
+function TQtWidgetSet.DeleteObject(GDIObject: HGDIOBJ): Boolean;
+var
+  aObject: TObject;
+  {$ifdef VerboseQtWinAPI}
+    ObjType: string;
+  {$endif}
+begin
+  {$ifdef VerboseQtWinAPI}
+    WriteLn('Trace:> [WinAPI DeleteObject] GDIObject: ', IntToStr(GDIObject));
+  {$endif}
+
+  Result := False;
+
+  if GDIObject = 0 then
+  begin
+    Result := true;
+
+    {$ifdef VerboseQtWinAPI}
+      WriteLn('Trace:< [WinAPI DeleteObject]');
+    {$endif}
+
+    Exit;
+  end;
+  
+  if not IsValidGDIObject(GDIObject) then
+  begin
+    {$ifdef VerboseQtWinAPI}
+      WriteLn('Trace:< [WinAPI DeleteObject] Invalid GDI Object');
+    {$endif}
+
+    Exit;
+  end;
+
+  aObject := TObject(GDIObject);
+
+  if aObject is TQtFont then
+  begin
+    {$ifdef VerboseQtWinAPI}
+      ObjType := 'Font';
+    {$endif}
+    
+  end
+  else if aObject is TQtBrush then
+  begin
+    {$ifdef VerboseQtWinAPI}
+      ObjType := 'Brush';
+    {$endif}
+
+  end;
+
+  // Find out if we want to release internal GDI object
+{    case GDIType of
+      gdiBrush:
+      gdiBitmap:
+      gdiPen:
+      gdiRegion:
+      gdiPalette:
+      else begin
+        Result:= false;
+        DebugLn('[TGtkWidgetSet.DeleteObject] TODO : Unimplemented GDI type');
+        Assert(False, 'Trace:TODO : Unimplemented GDI object in delete object');
+  end;}
+
+  {$ifdef VerboseQtWinAPI}
+    WriteLn('Trace:< [WinAPI DeleteObject] Result=', dbgs(Result), ' ObjectType=', ObjType);
+  {$endif}
 end;
 
 {------------------------------------------------------------------------------
@@ -243,7 +371,9 @@ var
   WideStr: WideString;
 begin
   {$ifdef VerboseQtWinAPI}
-    WriteLn('WinAPI DrawText');
+    WriteLn('[WinAPI DrawText] DC: ', dbgs(DC), ' Str: ', string(Str),
+     ' CalcRect: ', dbgs((Flags and DT_CALCRECT) = DT_CALCRECT),
+     ' Rect.Left: ', Rect.Left, ' Rect.Top: ', Rect.Top);
   {$endif}
 
   Result := 0;
@@ -290,7 +420,7 @@ end;
 function TQtWidgetSet.EndPaint(Handle: hwnd; var PS: TPaintStruct): Integer;
 begin
   {$ifdef VerboseQtWinAPI}
-    WriteLn('WinAPI EndPaint ( Handle=', IntToStr(Handle), ' PS.HDC=', IntToStr(PS.HDC), ' )');
+    WriteLn('[WinAPI EndPaint] Handle: ', IntToStr(Handle), ' PS.HDC: ', IntToStr(PS.HDC));
   {$endif}
 
   Result := 1;
@@ -316,7 +446,7 @@ var
   WideStr: WideString;
 begin
   {$ifdef VerboseQtWinAPI}
-    WriteLn('WinAPI ExtTextOut');
+    WriteLn('[WinAPI ExtTextOut]');
   {$endif}
 
   Result := False;
@@ -344,7 +474,7 @@ function TQtWidgetSet.GetBitmapRawImageDescription(Bitmap: HBITMAP;
   Desc: PRawImageDescription): Boolean;
 begin
   {$ifdef VerboseQtWinAPI}
-    WriteLn('WinAPI GetBitmapRawImageDescription');
+    WriteLn('[WinAPI GetBitmapRawImageDescription]');
   {$endif}
   Result := true;
 
@@ -364,7 +494,7 @@ end;
 Function TQtWidgetSet.GetClientBounds(handle : HWND; var ARect : TRect) : Boolean;
 begin
   {$ifdef VerboseQtWinAPI}
-    WriteLn('WinAPI GetClientBounds');
+    WriteLn('[WinAPI GetClientBounds]');
   {$endif}
 
   QWidget_rect(TQtWidget(handle).Widget, @ARect);
@@ -385,12 +515,29 @@ end;
 Function TQtWidgetSet.GetClientRect(handle : HWND; var ARect : TRect) : Boolean;
 begin
   {$ifdef VerboseQtWinAPI}
-    WriteLn('WinAPI GetClientRect');
+    WriteLn('[WinAPI GetClientRect]');
   {$endif}
 
   QWidget_rect(TQtWidget(handle).Widget, @ARect);
 
   Result:=true;
+end;
+
+{------------------------------------------------------------------------------
+  Function: GetClipRGN
+  Params: dc, rgn
+  Returns: Integer
+
+  Returns a copy of the current Clipping Region.
+
+  The result can be one of the following constants
+     0 = no clipping set
+     1 = ok
+    -1 = error
+ ------------------------------------------------------------------------------}
+Function TQtWidgetSet.GetClipRGN(DC : hDC; RGN : hRGN): Longint;
+begin
+  Result := 1;
 end;
 
 {------------------------------------------------------------------------------
@@ -418,7 +565,7 @@ end;
 function TQtWidgetSet.GetDC(hWnd: HWND): HDC;
 begin
   {$ifdef VerboseQtWinAPI}
-    WriteLn('WinAPI GetDC ( hWnd: ', IntToStr(hWnd), ' )');
+    WriteLn('[WinAPI GetDC] hWnd: ', IntToStr(hWnd));
   {$endif}
 
   Result := HDC(TQtDeviceContext.Create(0));
@@ -437,7 +584,7 @@ end;
 function TQtWidgetSet.GetDeviceRawImageDescription(DC: HDC; Desc: PRawImageDescription): boolean;
 begin
   {$ifdef VerboseQtWinAPI}
-    WriteLn('WinAPI GetDeviceRawImageDescription');
+    WriteLn('[WinAPI GetDeviceRawImageDescription]');
   {$endif}
   Result := true;
 
@@ -460,7 +607,7 @@ var
   hOldObject: HGDIOBJ;}
 begin
   {$ifdef VerboseQtWinAPI}
-    WriteLn('WinAPI GetRawImageFromDevice');
+    WriteLn('[WinAPI GetRawImageFromDevice]');
   {$endif}
   Result:=false;
   FillChar(NewRawImage, SizeOf(NewRawImage), 0);
@@ -503,14 +650,14 @@ end;
 function TQtWidgetSet.GetRawImageFromBitmap(SrcBitmap, SrcMaskBitmap: HBITMAP;
   const SrcRect: TRect; var NewRawImage: TRawImage): boolean;
 var
-  Image: QImageH;
+  Image: TQtImage;
 begin
   {$ifdef VerboseQtWinAPI}
-    WriteLn('WinAPI GetRawImageFromBitmap');
+    WriteLn('[WinAPI GetRawImageFromBitmap]');
   {$endif}
   Result := false;
   
-  Image := QImageH(SrcBitmap);
+  Image := TQtImage.Create(QImageH(SrcBitmap));
   
   FillChar(NewRawImage, SizeOf(NewRawImage), 0);
 
@@ -530,11 +677,11 @@ begin
     exit;
   end;}
 
-  NewRawImage.Description.Width := QImage_width(Image);
-  NewRawImage.Description.Height := QImage_height(Image);
+  NewRawImage.Description.Width := Image.width;
+  NewRawImage.Description.Height := Image.height;
 
   try
-    NewRawImage.DataSize := QImage_numBytes(Image);
+    NewRawImage.DataSize := Image.numBytes;
 
     // copy data
     ReAllocMem(NewRawImage.Data, NewRawImage.DataSize);
@@ -577,10 +724,12 @@ function TQtWidgetSet.GetSysColor(nIndex: Integer): DWORD;
 
 begin
   if (nIndex < 0) or (nIndex > MAX_SYS_COLORS) then
-    begin
-    Assert(False, 'Trace:Unknown lcl system color: [TQtWidgetSet.GetSysColor]');
+  begin
+    {$ifdef VerboseQtWinAPI}
+      WriteLn('Trace:Unknown lcl system color: [TQtWidgetSet.GetSysColor]');
+    {$endif}
     exit;
-    end;
+  end;
     
   case nIndex of
     COLOR_SCROLLBAR               : Result:=GetColor(QPaletteActive,   QPaletteMid);
@@ -638,15 +787,22 @@ end;
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.GetSystemMetrics(nIndex: Integer): Integer;
 begin
-  Assert(False, Format('Trace:> [TGtkWidgetSet.GetSystemMetrics] %d', [nIndex]));
+  {$ifdef VerboseQtWinAPI}
+    WriteLn(Format('Trace:> [TQtWidgetSet.GetSystemMetrics] %d', [nIndex]));
+  {$endif}
+
   case nIndex of
     SM_ARRANGE:
       begin
-        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_ARRANGE          ');
+        {$ifdef VerboseQtWinAPI}
+          WriteLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_ARRANGE          ');
+        {$endif}
       end;
     SM_CLEANBOOT:
       begin
-        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CLEANBOOT        ');
+        {$ifdef VerboseQtWinAPI}
+          WriteLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CLEANBOOT          ');
+        {$endif}
       end;
     SM_CMOUSEBUTTONS:
       begin
@@ -933,6 +1089,10 @@ end;
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.GetTextColor(DC: HDC) : TColorRef;
 begin
+  {$ifdef VerboseQtWinAPI}
+    WriteLn('[WinAPI GetTextColor]');
+  {$endif}
+
   Result := 0;
   
 {  if IsValidDC(DC) then
@@ -949,6 +1109,10 @@ end;
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer; var Size: TSize): Boolean;
 begin
+  {$ifdef VerboseQtWinAPI}
+    WriteLn('[WinAPI GetTextExtentPoint]');
+  {$endif}
+
   Result := False;
 
   if not IsValidDC(DC) then Exit;
@@ -965,6 +1129,10 @@ end;
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.GetTextMetrics(DC: HDC; var TM: TTextMetric): Boolean;
 begin
+  {$ifdef VerboseQtWinAPI}
+    WriteLn('[WinAPI GetTextMetrics]');
+  {$endif}
+
   Result := IsValidDC(DC);
 
   if Result then
@@ -984,6 +1152,10 @@ end;
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.GetWindowRect(Handle: HWND; Var ARect: TRect): Integer;
 begin
+  {$ifdef VerboseQtWinAPI}
+    WriteLn('[WinAPI GetWindowRect]');
+  {$endif}
+
   Result := 0;
   
   ARect.Top := QWidget_y(TQtWidget(Handle).Widget);
@@ -1009,6 +1181,10 @@ function TQtWidgetSet.GetWindowRelativePosition(Handle: HWND; var Left, Top: int
   ParentHandle: THandle;
   WindowInfo: PWindowInfo;}
 begin
+  {$ifdef VerboseQtWinAPI}
+    WriteLn('[WinAPI GetWindowRelativePosition]');
+  {$endif}
+
   Result := False;
   
 {  WindowInfo := GetWindowInfo(Handle);
@@ -1040,6 +1216,10 @@ end;
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.GetWindowSize(Handle: hwnd; var Width, Height: integer): boolean;
 begin
+  {$ifdef VerboseQtWinAPI}
+    WriteLn('[WinAPI GetWindowSize]');
+  {$endif}
+
   Result := False;
 
   Height := QWidget_height(TQtWidget(Handle).Widget);
@@ -1084,6 +1264,10 @@ end;
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.InvalidateRect(aHandle: HWND; Rect: pRect; bErase: Boolean): Boolean;
 begin
+  {$ifdef VerboseQtWinAPI}
+    WriteLn('[WinAPI Invalidate Rect]');
+  {$endif}
+
   TQtWidget(aHandle).Update;
   
   Result := True;
@@ -1097,18 +1281,22 @@ end;
 
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.LineTo(DC: HDC; X, Y: Integer): Boolean;
+var
+  BrushPos: TPoint;
 begin
   {$ifdef VerboseQtWinAPI}
-    WriteLn('WinAPI LineTo');
+    WriteLn('[WinAPI LineTo]');
   {$endif}
 
   Result := False;
 
   if not IsValidDC(DC) then Exit;
 
+  TQtDeviceContext(DC).brushOrigin(@BrushPos);
+
   TQtDeviceContext(DC).drawLine(
-   TQtDeviceContext(DC).PenPos.X,
-   TQtDeviceContext(DC).PenPos.Y,
+   TQtDeviceContext(DC).Origin.X + BrushPos.X,
+   TQtDeviceContext(DC).Origin.Y + BrushPos.Y,
    X, Y);
    
   MoveToEx(DC, X, Y, nil);
@@ -1126,16 +1314,16 @@ end;
 function TQtWidgetSet.MoveToEx(DC: HDC; X, Y: Integer; OldPoint: PPoint): Boolean;
 begin
   {$ifdef VerboseQtWinAPI}
-    WriteLn('WinAPI MoveToEx');
+    WriteLn('[WinAPI MoveToEx]');
   {$endif}
 
   Result := False;
 
   if not IsValidDC(DC) then Exit;
 
-  if (OldPoint <> nil) then OldPoint^ := TQtDeviceContext(DC).PenPos;
+  if (OldPoint <> nil) then TQtDeviceContext(DC).brushOrigin(OldPoint);
 
-  TQtDeviceContext(DC).PenPos := Point(X, Y);
+  TQtDeviceContext(DC).setBrushOrigin(X, Y);
   
   Result := True;
 end;
@@ -1153,7 +1341,7 @@ begin
   //  Result := IsValidDC(DC);
 
   {$ifdef VerboseQtWinAPI}
-    WriteLn('WinAPI Rectangle');
+    WriteLn('[WinAPI Rectangle]');
   {$endif}
 
   Result := False;
@@ -1174,7 +1362,7 @@ end;
 function TQtWidgetSet.ReleaseDC(hWnd: HWND; DC: HDC): Integer;
 begin
   {$ifdef VerboseQtWinAPI}
-    WriteLn('WinAPI ReleaseDC');
+    WriteLn('[WinAPI ReleaseDC]');
   {$endif}
 
   Result := 0;
@@ -1187,17 +1375,73 @@ end;
 {------------------------------------------------------------------------------
   Function: SelectObject
   Params:  none
-  Returns: Nothing
+  Returns: The GDI object of the same type previously associated with the DC
 
-
+  Changes one of the GDI objects (Font, Brush, etc) of a Device Context;
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.SelectObject(DC: HDC; GDIObj: HGDIOBJ): HGDIOBJ;
+var
+  aObject: TObject;
+  {$ifdef VerboseQtWinAPI}
+    ObjType: string;
+  {$endif}
 begin
   {$ifdef VerboseQtWinAPI}
-    WriteLn('WinAPI SelectObject ( DC=', IntToStr(DC), ' GDIObj=', IntToStr(GDIObj), ' )');
+    WriteLn('Trace:> [WinAPI SelectObject] DC=', dbgs(DC), ' GDIObj=', dbgs(GDIObj));
   {$endif}
 
   Result := 0;
+  
+  if not IsValidDC(DC) then
+  begin
+    {$ifdef VerboseQtWinAPI}
+      WriteLn('Trace:< [WinAPI SelectObject] Invalid DC');
+    {$endif}
+
+    Exit;
+  end;
+  
+  if not IsValidGDIObject(GDIObj) then
+  begin
+    {$ifdef VerboseQtWinAPI}
+      WriteLn('Trace:< [WinAPI SelectObject] Invalid GDI Object');
+    {$endif}
+
+    Exit;
+  end;
+
+  aObject := TObject(GDIObj);
+  
+  if aObject is TQtFont then
+  begin
+    {$ifdef VerboseQtWinAPI}
+      ObjType := 'Font';
+    {$endif}
+    
+    Result := HGDIOBJ(TQtDeviceContext(DC).font);
+    
+//    TQtDeviceContext(DC).setFont(TQtFont(aObject));
+  end
+  else if aObject is TQtBrush then
+  begin
+    {$ifdef VerboseQtWinAPI}
+      ObjType := 'Brush';
+    {$endif}
+    
+    Result := HGDIOBJ(TQtDeviceContext(DC).brush);
+  end
+  else if aObject is TQtImage then
+  begin
+    {$ifdef VerboseQtWinAPI}
+      ObjType := 'Image';
+    {$endif}
+
+//    Result := HGDIOBJ(TQtDeviceContext(DC).brush);
+  end;
+
+  {$ifdef VerboseQtWinAPI}
+    WriteLn('Trace:< [WinAPI SelectObject] Result=', dbgs(Result), ' ObjectType=', ObjType);
+  {$endif}
 end;
 
 {------------------------------------------------------------------------------
@@ -1210,7 +1454,7 @@ end;
 function TQtWidgetSet.SetCursorPos(X, Y: Integer): Boolean;
 begin
   {$ifdef VerboseQtWinAPI}
-    WriteLn('WinAPI SetCursorPos');
+    WriteLn('[WinAPI SetCursorPos]');
   {$endif}
 
   QCursor_setPos(X, Y);
@@ -1230,12 +1474,18 @@ end;
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.SetWindowOrgEx(DC : HDC; NewX, NewY : Integer; OldPoint: PPoint) : Boolean;
 begin
+  {$ifdef VerboseQtWinAPI}
+    WriteLn('[WinAPI SetWindowOrgEx] NewX: ', dbgs(NewX), ' NewY: ', dbgs(NewY));
+  {$endif}
+
   Result := False;
 
   if IsValidDC(DC) then
   begin
-    TQtDeviceContext(DC).setBrushOrigin(NewX, NewY);
-    if OldPoint <> nil then TQtDeviceContext(DC).brushOrigin(OldPoint);
+    TQtDeviceContext(DC).Origin.X := -NewX;
+    TQtDeviceContext(DC).Origin.Y := -NewY;
+    
+    if OldPoint <> nil then OldPoint^ := TQtDeviceContext(DC).Origin;
   end;
 
   Result := True;
@@ -1252,7 +1502,7 @@ var
   Widget: QWidgetH;
 begin
   {$ifdef VerboseQtWinAPI}
-    WriteLn('WinAPI ShowWindow');
+    WriteLn('[WinAPI ShowWindow]');
   {$endif}
 
   Result := False;
@@ -1331,10 +1581,8 @@ function TQtWidgetSet.StretchMaskBlt(DestDC: HDC; X, Y, Width, Height: Integer;
   XMask, YMask: Integer; Rop: DWORD): Boolean;
 begin
   {$ifdef VerboseQtWinAPI}
-    WriteLn('WinAPI StretchMaskBlt ( DestDC=' + IntToStr(DestDC) + ' SrcDC=' +
-     IntToStr(SrcDC) + ' )');
+    WriteLn('[WinAPI StretchMaskBlt] DestDC:', IntToStr(DestDC), ' SrcDC:', IntToStr(SrcDC));
   {$endif}
-
 
   Result := True;
 end;
@@ -1354,7 +1602,7 @@ var
   WideStr: WideString;
 begin
   {$ifdef VerboseQtWinAPI}
-    WriteLn('WinAPI TextOut');
+    WriteLn('[WinAPI TextOut]');
   {$endif}
 
   Result := False;

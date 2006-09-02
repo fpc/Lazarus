@@ -40,6 +40,21 @@ type
     function TextChangedHandler(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
   end;
 
+  { TQtImage }
+
+  TQtImage = class(TObject)
+  private
+    Handle: QImageH;
+  public
+    constructor Create(vHandle: QImageH); overload;
+    constructor Create(data: PByte; width: Integer; height: Integer; format: QImageFormat); overload;
+    destructor Destroy; override;
+  public
+    function height: Integer;
+    function width: Integer;
+    function numBytes: Integer;
+  end;
+
 Implementation
 
 uses qtprivate, LMessages;
@@ -156,12 +171,11 @@ var
 begin
   inherited Create;
 
-{$ifdef VerboseQt}
-  if TextEdit = nil then WriteLn(
-    'TQtMemoStrings.Create Unspecified TextEdit widget');
-  if TheOwner = nil then WriteLn(
-    'TQtMemoStrings.Create Unspecified owner');
-{$endif}
+  {$ifdef VerboseQt}
+    if (TextEdit = nil) then WriteLn('TQtMemoStrings.Create Unspecified TextEdit widget');
+    if (TheOwner = nil) then WriteLn('TQtMemoStrings.Create Unspecified owner');
+  {$endif}
+
   FStringList := TStringList.Create;
   FQtTextEdit := TextEdit;
   QTextEdit_toPlainText(TextEdit,@Astr); // get the memo content
@@ -281,7 +295,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TQtMemoStrings.Delete
+  Method: TQtMemoStrings.Insert
   Params:  Index, string
   Returns: Nothing
 
@@ -320,6 +334,72 @@ begin
   FTextChanged := False;
 end;
 
+
+{ TQtImage }
+
+{------------------------------------------------------------------------------
+  Method: TQtImage.Create
+
+  Contructor for the class.
+ ------------------------------------------------------------------------------}
+constructor TQtImage.Create(vHandle: QImageH);
+begin
+  Handle := vHandle;
+end;
+
+{------------------------------------------------------------------------------
+  Method: TQtImage.Create
+
+  Contructor for the class.
+ ------------------------------------------------------------------------------}
+constructor TQtImage.Create(data: PByte; width: Integer; height: Integer; format: QImageFormat);
+begin
+  Handle := QImage_create(data, width, height, format);
+end;
+
+{------------------------------------------------------------------------------
+  Method: TQtImage.Destroy
+  Params:  None
+  Returns: Nothing
+
+  Destructor for the class.
+ ------------------------------------------------------------------------------}
+destructor TQtImage.Destroy;
+begin
+  if Handle <> nil then QImage_destroy(Handle);
+  
+  inherited Destroy;
+end;
+
+{------------------------------------------------------------------------------
+  Method: TQtImage.height
+  Params:  None
+  Returns: The height of the image
+ ------------------------------------------------------------------------------}
+function TQtImage.height: Integer;
+begin
+  Result := QImage_height(Handle);
+end;
+
+{------------------------------------------------------------------------------
+  Method: TQtImage.width
+  Params:  None
+  Returns: The width of the image
+ ------------------------------------------------------------------------------}
+function TQtImage.width: Integer;
+begin
+  Result := QImage_width(Handle);
+end;
+
+{------------------------------------------------------------------------------
+  Method: TQtImage.numBytes
+  Params:  None
+  Returns: The number of bytes the image occupies in memory
+ ------------------------------------------------------------------------------}
+function TQtImage.numBytes: Integer;
+begin
+  Result := QImage_numBytes(Handle);
+end;
 
 end.
 

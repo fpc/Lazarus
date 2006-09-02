@@ -235,10 +235,12 @@ begin
   else QWidget_setVisible(TQtWidget(AWinControl.Handle).Widget, False);
   
   {$ifdef VerboseQt}
-    if AWinControl is TForm then WriteLn('Is TForm');
+    Write('TQtWSWinControl.ShowHide ');
 
-    if AWinControl.Visible then
-     WriteLn('True') else WriteLn('False');
+    if AWinControl is TForm then Write('Is TForm, ');
+
+    if AWinControl.Visible then WriteLn('Visible: True')
+    else WriteLn('Visible: False');
   {$endif}
 end;
 

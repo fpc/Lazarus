@@ -37,7 +37,7 @@ uses
   Types, InterfaceBase, SysUtils, LCLProc, LCLType, LMessages, Classes,
   Controls, ExtCtrls, Forms, Dialogs, StdCtrls, Comctrls, LCLIntf,
   GraphType, Math,
-  qt4, qtprivate;
+  qt4;
 
 type
 
@@ -73,6 +73,7 @@ type
 
     // device contexts
     function IsValidDC(const DC: HDC): Boolean; virtual;
+    function IsValidGDIObject(const GDIObject: HGDIOBJ): Boolean; virtual;
   public
     {$I qtwinapih.inc}
     {$I qtlclintfh.inc}
@@ -134,7 +135,8 @@ uses
  QtWSStdCtrls,
 // QtWSToolwin,
 ////////////////////////////////////////////////////
-  Graphics, buttons, Menus;
+  Graphics, buttons, Menus,
+  qtprivate, qtobjects;
 
 
 const

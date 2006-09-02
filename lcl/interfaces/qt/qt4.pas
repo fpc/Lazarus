@@ -472,13 +472,13 @@ type
     QtCustomDashLine,
     QtMPenStyle = $0f );
 
-  QtPenCapStyle = (  //Qt::PenCapStyle (2)
+  QtPenCapStyle = (  //Qt::PenCapStyle (2s)
     QtFlatCap = $00,
     QtSquareCap = $10,
     QtRoundCap = $20,
     QtMPenCapStyle = $30 );
 
-  QtPenJoinStyle = (  //Qt::PenJoinStyle (2)
+  QtPenJoinStyle = (  //Qt::PenJoinStyle (2s)
     QtMiterJoin = $00,
     QtBevelJoin = $40,
     QtRoundJoin = $80,
@@ -505,7 +505,7 @@ type
     QtConicalGradientPattern,
     QtTexturePattern = 24 );
 
-  QtDayOfWeek = (  //Qt::DayOfWeek (2)
+  QtDayOfWeek = (  //Qt::DayOfWeek (2s)
     QtMonday = 1,
     QtTuesday = 2,
     QtWednesday = 3,
@@ -514,7 +514,7 @@ type
     QtSaturday = 6,
     QtSunday = 7 );
 
-  QtCorner = (  //Qt::Corner (2)
+  QtCorner = (  //Qt::Corner (2s)
     QtTopLeftCorner = $00000,
     QtTopRightCorner = $00001,
     QtBottomLeftCorner = $00002,
@@ -533,7 +533,7 @@ const
 
 
 type
-  QtItemDataRole = (  //Qt::ItemDataRole (2)
+  QtItemDataRole = (  //Qt::ItemDataRole (2s)
     QtDisplayRole = 0,
     QtDecorationRole = 1,
     QtEditRole = 2,
@@ -581,7 +581,7 @@ type
   QInternalRelayoutType = ( // QInternal::RelayoutType (1)
     QInternalRelayoutNormal, QInternalRelayoutDragging, QInternalRelayoutDropped );
 
-  QInternalPaintDeviceFlags = (  //QInternal::PaintDeviceFlags (2)
+  QInternalPaintDeviceFlags = (  //QInternal::PaintDeviceFlags (2s)
     QInternalUnknownDevice = $00,
     QInternalWidget = $01,
     QInternalPixmap = $02,
@@ -731,7 +731,8 @@ const
     QtWA_WindowPropagation = 80 { $50 };
     QtWA_NoX11EventCompression = 81 { $51 };
     QtWA_TintedBackground = 82 { $52 };
-    QtWA_AttributeCount = 83 { $53 };
+    QtWA_X11OpenGLOverlay = 83 { $53 };
+    QtWA_AttributeCount = 84 { $54 };
 
 type
   QtKey = cardinal; //  Qt::Key (4)
@@ -1072,6 +1073,7 @@ const
     QtBusyCursor = 16 { $10 };
     QtLastCursor = 16 { $10 };
     QtBitmapCursor = 24 { $18 };
+    QtCustomCursor = 25 { $19 };
 
 type
   QtDockWidgetArea = cardinal; //  Qt::DockWidgetArea (4)
@@ -1130,7 +1132,7 @@ procedure QObject_deleteLater(handle: QObjectH); cdecl; external QtShareName nam
 
 
 type
-  QEventType = (  //QEvent::Type (2)
+  QEventType = (  //QEvent::Type (2s)
     QEventNone = 0,
     QEventTimer = 1,
     QEventMouseButtonPress = 2,
@@ -1153,7 +1155,6 @@ type
     QEventClose = 19,
     QEventQuit = 20,
     QEventParentChange = 21,
-    QEventParentAboutToChange = 131,
     QEventThreadChange = 22,
     QEventWindowActivate = 24,
     QEventWindowDeactivate = 25,
@@ -1171,7 +1172,7 @@ type
     QEventSpeech = 42,
     QEventMetaCall = 43,
     QEventSockAct = 50,
-    QEventWinEventAct = 132,
+    QEventShortcutOverride = 51,
     QEventDeferredDelete = 52,
     QEventDragEnter = 60,
     QEventDragMove = 61,
@@ -1209,10 +1210,10 @@ type
     QEventStyleChange = 100,
     QEventIconTextChange = 101,
     QEventModifiedChange = 102,
-    QEventMouseTrackingChange = 109,
     QEventWindowBlocked = 103,
     QEventWindowUnblocked = 104,
     QEventWindowStateChange = 105,
+    QEventMouseTrackingChange = 109,
     QEventToolTip = 110,
     QEventWhatsThis = 111,
     QEventStatusTip = 112,
@@ -1221,8 +1222,8 @@ type
     QEventActionRemoved = 115,
     QEventFileOpen = 116,
     QEventShortcut = 117,
-    QEventShortcutOverride = 51,
     QEventWhatsThisClicked = 118,
+    QEventAccessibilityHelp = 119,
     QEventToolBarChange = 120,
     QEventApplicationActivated = 121,
     QEventApplicationDeactivated = 122,
@@ -1233,8 +1234,9 @@ type
     QEventHoverEnter = 127,
     QEventHoverLeave = 128,
     QEventHoverMove = 129,
-    QEventAccessibilityHelp = 119,
     QEventAccessibilityDescription = 130,
+    QEventParentAboutToChange = 131,
+    QEventWinEventAct = 132,
     QEventAcceptDropsChange = 152,
     QEventMenubarUpdated = 153,
     QEventZeroTimerEvent = 154,
@@ -1360,7 +1362,7 @@ type
 
 
 type
-  QVariantType = (  //QVariant::Type (2)
+  QVariantType = (  //QVariant::Type (2s)
     QVariantInvalid = 0,
     QVariantBool = 1,
     QVariantInt = 2,
@@ -1630,7 +1632,7 @@ type
   QApplicationType = ( // QApplication::Type (1)
     QApplicationTty, QApplicationGuiClient, QApplicationGuiServer );
 
-  QApplicationColorSpec = (  //QApplication::ColorSpec (2)
+  QApplicationColorSpec = (  //QApplication::ColorSpec (2s)
     QApplicationNormalColor = 0,
     QApplicationCustomColor = 1,
     QApplicationManyColor = 2 );
@@ -1805,7 +1807,7 @@ procedure QPalette_resolve(handle: QPaletteH; mask: Cardinal); overload; cdecl; 
 
 
 type
-  QSizePolicyPolicyFlag = (  //QSizePolicy::PolicyFlag (2)
+  QSizePolicyPolicyFlag = (  //QSizePolicy::PolicyFlag (2s)
     QSizePolicyGrowFlag = 1,
     QSizePolicyExpandFlag = 2,
     QSizePolicyShrinkFlag = 4,
@@ -3238,7 +3240,7 @@ type
   QFontStyle = ( // QFont::Style (1)
     QFontStyleNormal, QFontStyleItalic, QFontStyleOblique );
 
-  QFontStyleStrategy = (  //QFont::StyleStrategy (2)
+  QFontStyleStrategy = (  //QFont::StyleStrategy (2s)
     QFontPreferDefault = $0001,
     QFontPreferBitmap = $0002,
     QFontPreferDevice = $0004,
@@ -3250,14 +3252,14 @@ type
     QFontNoAntialias = $0100,
     QFontOpenGLCompatible = $0200 );
 
-  QFontWeight = (  //QFont::Weight (2)
+  QFontWeight = (  //QFont::Weight (2s)
     QFontLight = 25,
     QFontNormal = 50,
     QFontDemiBold = 63,
     QFontBold = 75,
     QFontBlack = 87 );
 
-  QFontStretch = (  //QFont::Stretch (2)
+  QFontStretch = (  //QFont::Stretch (2s)
     QFontUltraCondensed = 50,
     QFontExtraCondensed = 62,
     QFontCondensed = 75,
@@ -3495,7 +3497,7 @@ const
 
 
 type
-  QTextDocumentResourceType = (  //QTextDocument::ResourceType (2)
+  QTextDocumentResourceType = (  //QTextDocument::ResourceType (2s)
     QTextDocumentHtmlResource = 1,
     QTextDocumentImageResource = 2,
     QTextDocumentUserResource = 100 );
@@ -3630,7 +3632,7 @@ type
     QImageInvertRgb, QImageInvertRgba );
 
   QImageFormat = ( // QImage::Format (1)
-    QImageFormat_Invalid, QImageFormat_Mono, QImageFormat_MonoLSB, QImageFormat_Indexed8, QImageFormat_RGB32, QImageFormat_ARGB32, QImageFormat_ARGB32_Premultiplied );
+    QImageFormat_Invalid, QImageFormat_Mono, QImageFormat_MonoLSB, QImageFormat_Indexed8, QImageFormat_RGB32, QImageFormat_ARGB32, QImageFormat_ARGB32_Premultiplied, QImageNImageFormats );
 
 function QImage_create(): QImageH; overload; cdecl; external QtShareName name QtNamePrefix + 'QImage_create';
 procedure QImage_destroy(handle: QImageH); cdecl; external QtShareName name QtNamePrefix + 'QImage_destroy'; 
@@ -3874,7 +3876,7 @@ function QRegExpValidator_regExp(handle: QRegExpValidatorH): QRegExpH; cdecl; ex
 
 
 type
-  QFrameShape = (  //QFrame::Shape (2)
+  QFrameShape = (  //QFrame::Shape (2s)
     QFrameNoFrame = 0,
     QFrameBox = $0001,
     QFramePanel = $0002,
@@ -3883,7 +3885,7 @@ type
     QFrameVLine = $0005,
     QFrameStyledPanel = $0006 );
 
-  QFrameShadow = (  //QFrame::Shadow (2)
+  QFrameShadow = (  //QFrame::Shadow (2s)
     QFramePlain = $0010,
     QFrameRaised = $0020,
     QFrameSunken = $0030 );
@@ -5090,11 +5092,13 @@ procedure QListView_doItemsLayout(handle: QListViewH); cdecl; external QtShareNa
 procedure QListView_reset(handle: QListViewH); cdecl; external QtShareName name QtNamePrefix + 'QListView_reset';
 procedure QListView_setRootIndex(handle: QListViewH; index: QModelIndexH); cdecl; external QtShareName name QtNamePrefix + 'QListView_setRootIndex';
 
-
 type
-  QListWidgetItemNoName = (  //QListWidgetItem::NoName (2)
-    QListWidgetItemType = 0,
-    QListWidgetItemUserType = 1000 );
+  QListWidgetItemNoName = cardinal; //  QListWidgetItem::NoName (4)
+
+const
+    QListWidgetItemType = 0 { $0 };
+    QListWidgetItemUserType = 1000 { $3e8 };
+
 
 function QListWidgetItem_create(view: QListWidgetH = nil; _type: Integer = QListWidgetItemType): QListWidgetItemH; overload; cdecl; external QtShareName name QtNamePrefix + 'QListWidgetItem_create';
 procedure QListWidgetItem_destroy(handle: QListWidgetItemH); cdecl; external QtShareName name QtNamePrefix + 'QListWidgetItem_destroy'; 
@@ -5376,14 +5380,14 @@ procedure QFontDialog_getFont(retval: QFontH; ok: PBoolean; parent: QWidgetH = n
 
 
 type
-  QMessageBoxIcon = (  //QMessageBox::Icon (2)
+  QMessageBoxIcon = (  //QMessageBox::Icon (2s)
     QMessageBoxNoIcon = 0,
     QMessageBoxInformation = 1,
     QMessageBoxWarning = 2,
     QMessageBoxCritical = 3,
     QMessageBoxQuestion = 4 );
 
-  QMessageBoxButton = (  //QMessageBox::Button (2)
+  QMessageBoxButton = (  //QMessageBox::Button (2s)
     QMessageBoxNoButton = 0,
     QMessageBoxOk = 1,
     QMessageBoxCancel = 2,

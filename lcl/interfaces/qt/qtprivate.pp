@@ -31,7 +31,7 @@ uses
   // Free Pascal
   Classes, SysUtils, Types,
   // LCL
-  LMessages, Forms, Controls, LCLType, ExtCtrls, StdCtrls;
+  LMessages, Forms, Controls, LCLType, LCLProc, ExtCtrls, StdCtrls;
 
 type
   { TQtWidget }
@@ -91,9 +91,32 @@ type
   public
     Widget: QBrushH;
   public
-    constructor Create; virtual;
+    constructor Create(CreateHandle: Boolean); virtual;
     destructor Destroy; override;
     procedure setStyle(style: QtBrushStyle);
+  end;
+
+  { TQtFont }
+
+  TQtFont = class(QBrushH)
+  private
+  public
+    Widget: QFontH;
+  public
+    constructor Create(CreateHandle: Boolean); virtual;
+    destructor Destroy; override;
+  public
+    function pointSize: Integer;
+    procedure setPointSize(p1: Integer);
+    function pixelSize: Integer;
+    procedure setPixelSize(p1: Integer);
+    function weight: Integer;
+    procedure setWeight(p1: Integer);
+    procedure setBold(p1: Boolean);
+    procedure setItalic(b: Boolean);
+    procedure setUnderline(p1: Boolean);
+    procedure setStrikeOut(p1: Boolean);
+    procedure setRawName(p1: string);
   end;
 
   { TQtDeviceContext }
@@ -102,8 +125,9 @@ type
   private
   public
     Widget: QPainterH;
-    Brush: TQtBrush;
-    PenPos: TPoint;
+    Origin: TPoint;
+    vBrush: TQtBrush;
+    vFont: TQtFont;
   public
     constructor Create(WidgetHandle: HWND); virtual;
     destructor Destroy; override;
@@ -114,6 +138,10 @@ type
     procedure drawEllipse(x: Integer; y: Integer; w: Integer; h: Integer);
     procedure setBrushOrigin(x, y: Integer);
     procedure brushOrigin(retval: PPoint);
+    function font: TQtFont;
+    procedure setFont(f: TQtFont);
+    function brush: TQtBrush;
+    procedure setBrush(brush: TQtBrush);
   end;
 
   { TQtMainWindow }
@@ -245,29 +273,6 @@ type
     destructor Destroy; override;
   end;
 
-  { TQtFont }
-
-  TQtFont = class(QBrushH)
-  private
-  public
-    Widget: QFontH;
-  public
-    constructor Create; virtual;
-    destructor Destroy; override;
-  public
-    function pointSize: Integer;
-    procedure setPointSize(p1: Integer);
-    function pixelSize: Integer;
-    procedure setPixelSize(p1: Integer);
-    function weight: Integer;
-    procedure setWeight(p1: Integer);
-    procedure setBold(p1: Boolean);
-    procedure setItalic(b: Boolean);
-    procedure setUnderline(p1: Boolean);
-    procedure setStrikeOut(p1: Boolean);
-    procedure setRawName(p1: string);
-  end;
-  
 implementation
 
 { TQtWidget }
@@ -431,7 +436,7 @@ var
   Msg: TLMKey;
 begin
   {$ifdef VerboseQt}
-    WriteLn('SlotKey');
+    WriteLn('TQtWidget.SlotKey');
   {$endif}
 
   FillChar(Msg, SizeOf(Msg), #0);
@@ -474,14 +479,19 @@ end;
  ------------------------------------------------------------------------------}
 procedure TQtWidget.SlotPaint(Event: QEventH); cdecl;
 var
-  Msg: TLMessage;
+  Msg: TLMPaint;
 begin
+  {$ifdef VerboseQt}
+    WriteLn('TQtWidget.SlotPaint');
+  {$endif}
+
   if (LCLObject is TCustomControl) or (LCLObject is TCustomForm) then
   begin
     FillChar(Msg, SizeOf(Msg), #0);
 
     Msg.Msg := LM_PAINT;
-
+    Msg.DC := 0;
+    
     try
       LCLObject.WindowProc(TLMessage(Msg));
     except
@@ -502,7 +512,7 @@ var
   Msg: TLMSize;
 begin
   {$ifdef VerboseQt}
-    WriteLn('SlotResize');
+    WriteLn('TQtWidget.SlotResize');
   {$endif}
 
   FillChar(Msg, SizeOf(Msg), #0);
@@ -961,8 +971,9 @@ begin
 
   // Creates the widget
   {$ifdef VerboseQt}
-    WriteLn('Calling QPushButton_create');
+    WriteLn('TQtPushButton.Create');
   {$endif}
+  
   Str := WideString(AWinControl.Caption);
   Parent := TQtWidget(AWinControl.Parent.Handle).Widget;
   Widget := QPushButton_create(@Str, Parent);
@@ -980,7 +991,7 @@ end;
 destructor TQtPushButton.Destroy;
 begin
   {$ifdef VerboseQt}
-    WriteLn('Calling QPushButton_destroy');
+    WriteLn('TQtPushButton.Destroy');
   {$endif}
 
   QPushButton_destroy(QPushButtonH(Widget));
@@ -1021,6 +1032,97 @@ begin
   CurrentSentPaintMessageTarget:=nil;}
 end;
 
+{ TQtFont }
+
+{------------------------------------------------------------------------------
+  Function: TQtFont.Create
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+constructor TQtFont.Create(CreateHandle: Boolean);
+begin
+  {$ifdef VerboseQt}
+    WriteLn('TQtFont.Create CreateHandle: ', dbgs(CreateHandle));
+  {$endif}
+
+  if CreateHandle then Widget := QFont_create;
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtFont.Destroy
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+destructor TQtFont.Destroy;
+begin
+  {$ifdef VerboseQt}
+    WriteLn('TQtFont.Destroy');
+  {$endif}
+
+  if Widget <> nil then QFont_destroy(Widget);
+
+  inherited Destroy;
+end;
+
+function TQtFont.pointSize: Integer;
+begin
+  Result := QFont_pointSize(Widget);
+end;
+
+procedure TQtFont.setPointSize(p1: Integer);
+begin
+  QFont_setPointSize(Widget, p1);
+end;
+
+function TQtFont.pixelSize: Integer;
+begin
+  Result := QFont_pixelSize(Widget);
+end;
+
+procedure TQtFont.setPixelSize(p1: Integer);
+begin
+  QFont_setPixelSize(Widget, p1);
+end;
+
+function TQtFont.weight: Integer;
+begin
+  Result := QFont_weight(Widget);
+end;
+
+procedure TQtFont.setWeight(p1: Integer);
+begin
+  QFont_setWeight(Widget, p1);
+end;
+
+procedure TQtFont.setBold(p1: Boolean);
+begin
+  QFont_setBold(Widget, p1);
+end;
+
+procedure TQtFont.setItalic(b: Boolean);
+begin
+  QFont_setItalic(Widget, b);
+end;
+
+procedure TQtFont.setUnderline(p1: Boolean);
+begin
+  QFont_setUnderline(Widget, p1);
+end;
+
+procedure TQtFont.setStrikeOut(p1: Boolean);
+begin
+  QFont_setStrikeOut(Widget, p1);
+end;
+
+procedure TQtFont.setRawName(p1: string);
+var
+  Str: WideString;
+begin
+  Str := WideString(p1);
+
+  QFont_setRawName(Widget, @Str);
+end;
+
 { TQtDeviceContext }
 
 {------------------------------------------------------------------------------
@@ -1033,7 +1135,7 @@ var
   parent: QWidgetH;
 begin
   {$ifdef VerboseQt}
-    WriteLn('Calling QPainter_create');
+    WriteLn('TQtDeviceContext.Create ( WidgetHandle: ' + IntToStr(WidgetHandle) + ' )');
   {$endif}
 
   if WidgetHandle = 0 then Widget := QPainter_create
@@ -1043,7 +1145,8 @@ begin
     Widget := QPainter_create(QWidget_to_QPaintDevice(Parent));
   end;
 
-//  QPainter_setBrush(QPainterH(Widget), QBrushH(Brush.Widget));
+  vBrush := TQtBrush.Create(False);
+  vFont := TQtFont.Create(False);
 end;
 
 {------------------------------------------------------------------------------
@@ -1054,8 +1157,13 @@ end;
 destructor TQtDeviceContext.Destroy;
 begin
   {$ifdef VerboseQt}
-    WriteLn('Calling QPainter_destroy');
+    WriteLn('TQtDeviceContext.Destroy');
   {$endif}
+
+  vBrush.Widget := nil;
+  vBrush.Free;
+  vFont.Widget := nil;
+  vFont.Free;
 
   QPainter_destroy(Widget);
 
@@ -1083,7 +1191,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TQtDeviceContext.drawText(x: Integer; y: Integer; s: PWideString);
 begin
-  QPainter_drawText(Widget, x, y, s);
+  QPainter_drawText(Widget, Origin.X + x, Origin.Y + y, s);
 end;
 
 {------------------------------------------------------------------------------
@@ -1130,6 +1238,50 @@ begin
   QPainter_brushOrigin(Widget, retval);
 end;
 
+{------------------------------------------------------------------------------
+  Function: TQtDeviceContext.font
+  Params:  None
+  Returns: The current font object of the DC
+ ------------------------------------------------------------------------------}
+function TQtDeviceContext.font: TQtFont;
+begin
+  vFont.Widget := QPainter_font(Widget);
+
+  Result := vFont;
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtDeviceContext.setFont
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+procedure TQtDeviceContext.setFont(f: TQtFont);
+begin
+//  if (f.Widget <> nil) and (Widget <> nil) then QPainter_setFont(Widget, f.Widget);
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtDeviceContext.brush
+  Params:  None
+  Returns: The current brush object of the DC
+ ------------------------------------------------------------------------------}
+function TQtDeviceContext.brush: TQtBrush;
+begin
+  vBrush.Widget := QPainter_brush(Widget);
+
+  Result := vBrush;
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtDeviceContext.setBrush
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+procedure TQtDeviceContext.setBrush(brush: TQtBrush);
+begin
+  if (brush.Widget <> nil) and (Widget <> nil) then QPainter_setBrush(Widget, brush.Widget);
+end;
+
 { TQtBrush }
 
 {------------------------------------------------------------------------------
@@ -1137,14 +1289,14 @@ end;
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
-constructor TQtBrush.Create;
+constructor TQtBrush.Create(CreateHandle: Boolean);
 begin
   // Creates the widget
   {$ifdef VerboseQt}
-    WriteLn('Calling QBrush_create');
+    WriteLn('TQtBrush.Create CreateHandle: ', dbgs(CreateHandle));
   {$endif}
 
-  Widget := QBrush_create;
+  if CreateHandle then Widget := QBrush_create;
 end;
 
 {------------------------------------------------------------------------------
@@ -1155,7 +1307,7 @@ end;
 destructor TQtBrush.Destroy;
 begin
   {$ifdef VerboseQt}
-    WriteLn('Calling QBrush_destroy');
+    WriteLn('TQtBrush.Destroy');
   {$endif}
 
   QBrush_destroy(Widget);
@@ -1187,7 +1339,7 @@ begin
 
   // Creates the widget
   {$ifdef VerboseQt}
-    WriteLn('Calling QWidget_Create');
+    WriteLn('TQtMainWindow.Create');
   {$endif}
   Widget := QWidget_Create(nil, QtWindow);
 
@@ -1219,7 +1371,7 @@ end;
 destructor TQtMainWindow.Destroy;
 begin
   {$ifdef VerboseQt}
-    WriteLn('Calling QWidget_destroy');
+    WriteLn('TQtMainWindow.Destroy');
   {$endif}
 
   QWidget_destroy(Widget);
@@ -1255,7 +1407,7 @@ var
   Msg: TLMSize;
 begin
   {$ifdef VerboseQt}
-    WriteLn('SlotWindowStateChange');
+    WriteLn('TQtMainWindow.SlotWindowStateChange');
   {$endif}
 
   FillChar(Msg, SizeOf(Msg), #0);
@@ -1299,7 +1451,7 @@ begin
 
   // Creates the widget
   {$ifdef VerboseQt}
-    WriteLn('Calling QLabel_create');
+    WriteLn('TQtStaticText.Create');
   {$endif}
   Parent := TQtWidget(AWinControl.Parent.Handle).Widget;
   Widget := QLabel_create(Parent);
@@ -1320,7 +1472,7 @@ end;
 destructor TQtStaticText.Destroy;
 begin
   {$ifdef VerboseQt}
-    WriteLn('Calling QLabel_destroy');
+    WriteLn('TQtStaticText.Destroy');
   {$endif}
 
   QLabel_destroy(QLabelH(Widget));
@@ -1421,7 +1573,7 @@ begin
 
   // Creates the widget
   {$ifdef VerboseQt}
-    WriteLn('Calling QCheckBox_create');
+    WriteLn('TQtCheckBox.Create');
   {$endif}
 
   if (AWinControl.Parent is TCustomCheckGroup) then
@@ -1451,7 +1603,7 @@ end;
 destructor TQtCheckBox.Destroy;
 begin
   {$ifdef VerboseQt}
-    WriteLn('Calling QCheckBox_destroy');
+    WriteLn('TQtCheckBox.Destroy');
   {$endif}
 
   QCheckBox_destroy(QCheckBoxH(Widget));
@@ -1509,7 +1661,7 @@ begin
 
   // Creates the widget
   {$ifdef VerboseQt}
-    WriteLn('Calling QRadioButton_create');
+    WriteLn('TQtRadioButton.Create');
   {$endif}
   
   if (AWinControl.Parent is TCustomRadioGroup) then
@@ -1539,7 +1691,7 @@ end;
 destructor TQtRadioButton.Destroy;
 begin
   {$ifdef VerboseQt}
-    WriteLn('Calling QRadioButton_destroy');
+    WriteLn('TQtRadioButton.Destroy');
   {$endif}
 
   QRadioButton_destroy(QRadioButtonH(Widget));
@@ -1577,7 +1729,7 @@ begin
 
   // Creates the widget
   {$ifdef VerboseQt}
-    WriteLn('Calling QGroupBox_create');
+    WriteLn('TQtGroupBox.Create');
   {$endif}
   Parent := TQtWidget(AWinControl.Parent.Handle).Widget;
   Widget := QGroupBox_create(Parent);
@@ -1605,7 +1757,7 @@ end;
 destructor TQtGroupBox.Destroy;
 begin
   {$ifdef VerboseQt}
-    WriteLn('Calling QGroupBox_destroy');
+    WriteLn('TQtGroupBox.Destroy');
   {$endif}
 
   QGroupBox_destroy(QGroupBoxH(Widget));
@@ -1630,7 +1782,7 @@ begin
 
   // Creates the widget
   {$ifdef VerboseQt}
-    WriteLn('Calling QFrame_create');
+    WriteLn('TQtFrame.Create');
   {$endif}
   Parent := TQtWidget(AWinControl.Parent.Handle).Widget;
   Widget := QFrame_create(Parent);
@@ -1648,7 +1800,7 @@ end;
 destructor TQtFrame.Destroy;
 begin
   {$ifdef VerboseQt}
-    WriteLn('Calling QFrame_destroy');
+    WriteLn('TQtFrame.Destroy');
   {$endif}
 
   QFrame_destroy(QFrameH(Widget));
@@ -1704,7 +1856,7 @@ begin
 
   // Creates the widget
   {$ifdef VerboseQt}
-    WriteLn('Calling QLineEdit_create');
+    WriteLn('TQtLineEdit.Create');
   {$endif}
   Parent := TQtWidget(AWinControl.Parent.Handle).Widget;
   Str := WideString((AWinControl as TCustomEdit).Text);
@@ -1723,7 +1875,7 @@ end;
 destructor TQtLineEdit.Destroy;
 begin
   {$ifdef VerboseQt}
-    WriteLn('Calling QLineEdit_destroy');
+    WriteLn('TQtLineEdit.Destroy');
   {$endif}
 
   QLineEdit_destroy(QLineEditH(Widget));
@@ -1750,8 +1902,9 @@ begin
 
   // Creates the widget
   {$ifdef VerboseQt}
-    WriteLn('Calling QTextEdit_create');
+    WriteLn('TQtTextEdit.Create');
   {$endif}
+  
   Parent := TQtWidget(AWinControl.Parent.Handle).Widget;
   Str := (AWinControl as TCustomMemo).Text;
   Widget := QTextEdit_create(@Str, Parent);
@@ -1774,7 +1927,7 @@ end;
 destructor TQtTextEdit.Destroy;
 begin
   {$ifdef VerboseQt}
-    WriteLn('Calling QTextEdit_destroy');
+    WriteLn('TQtTextEdit.Destroy');
   {$endif}
 
   QTextEdit_destroy(QTextEditH(Widget));
@@ -1799,7 +1952,7 @@ begin
 
   // Creates the widget
   {$ifdef VerboseQt}
-    WriteLn('Calling QTabWidget_create');
+    WriteLn('TQtTabWidget.Create');
   {$endif}
   Parent := TQtWidget(AWinControl.Parent.Handle).Widget;
   Widget := QTabWidget_create(Parent);
@@ -1817,7 +1970,7 @@ end;
 destructor TQtTabWidget.Destroy;
 begin
   {$ifdef VerboseQt}
-    WriteLn('Calling QTabWidget_destroy');
+    WriteLn('TQtTabWidget.Destroy');
   {$endif}
 
   QTabWidget_destroy(QTabWidgetH(Widget));
@@ -1862,7 +2015,7 @@ begin
 
   // Creates the widget
   {$ifdef VerboseQt}
-    WriteLn('Calling QComboBox_create');
+    WriteLn('TQtComboBox.Create');
   {$endif}
   Parent := TQtWidget(AWinControl.Parent.Handle).Widget;
   Widget := QComboBox_create(Parent);
@@ -1890,7 +2043,7 @@ end;
 destructor TQtComboBox.Destroy;
 begin
   {$ifdef VerboseQt}
-    WriteLn('Calling QComboBox_destroy');
+    WriteLn('TQtComboBox.Destroy');
   {$endif}
 
   QComboBox_destroy(QComboBoxH(Widget));
@@ -1935,7 +2088,7 @@ begin
 
   // Creates the widget
   {$ifdef VerboseQt}
-    WriteLn('Calling QSpinBox_create');
+    WriteLn('TQtSpinBox.Create');
   {$endif}
   Parent := TQtWidget(AWinControl.Parent.Handle).Widget;
   Widget := QSpinBox_create(Parent);
@@ -1953,103 +2106,12 @@ end;
 destructor TQtSpinBox.Destroy;
 begin
   {$ifdef VerboseQt}
-    WriteLn('Calling QSpinBox_destroy');
+    WriteLn('TQtSpinBox.Destroy');
   {$endif}
 
   QSpinBox_destroy(QSpinBoxH(Widget));
 
   inherited Destroy;
-end;
-
-{ TQtFont }
-
-{------------------------------------------------------------------------------
-  Function: TQtFont.Create
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-constructor TQtFont.Create;
-begin
-  {$ifdef VerboseQt}
-    WriteLn('Calling QFont_create');
-  {$endif}
-
-  Widget := QFont_create;
-end;
-
-{------------------------------------------------------------------------------
-  Function: TQtFont.Destroy
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-destructor TQtFont.Destroy;
-begin
-  {$ifdef VerboseQt}
-    WriteLn('Calling QFont_destroy');
-  {$endif}
-
-  QFont_destroy(Widget);
-
-  inherited Destroy;
-end;
-
-function TQtFont.pointSize: Integer;
-begin
-  Result := QFont_pointSize(Widget);
-end;
-
-procedure TQtFont.setPointSize(p1: Integer);
-begin
-  QFont_setPointSize(Widget, p1);
-end;
-
-function TQtFont.pixelSize: Integer;
-begin
-  Result := QFont_pixelSize(Widget);
-end;
-
-procedure TQtFont.setPixelSize(p1: Integer);
-begin
-  QFont_setPixelSize(Widget, p1);
-end;
-
-function TQtFont.weight: Integer;
-begin
-  Result := QFont_weight(Widget);
-end;
-
-procedure TQtFont.setWeight(p1: Integer);
-begin
-  QFont_setWeight(Widget, p1);
-end;
-
-procedure TQtFont.setBold(p1: Boolean);
-begin
-  QFont_setBold(Widget, p1);
-end;
-
-procedure TQtFont.setItalic(b: Boolean);
-begin
-  QFont_setItalic(Widget, b);
-end;
-
-procedure TQtFont.setUnderline(p1: Boolean);
-begin
-  QFont_setUnderline(Widget, p1);
-end;
-
-procedure TQtFont.setStrikeOut(p1: Boolean);
-begin
-  QFont_setStrikeOut(Widget, p1);
-end;
-
-procedure TQtFont.setRawName(p1: string);
-var
-  Str: WideString;
-begin
-  Str := WideString(p1);
-
-  QFont_setRawName(Widget, @Str);
 end;
 
 end.

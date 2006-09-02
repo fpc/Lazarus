@@ -2925,8 +2925,7 @@ procedure TWinControl.PaintHandler(var TheMessage: TLMPaint);
 
   function ControlMustBeClipped(AControl: TControl): boolean;
   begin
-    with AControl do
-      Result:=(csOpaque in ControlStyle) and IsVisible;
+    Result := (csOpaque in AControl.ControlStyle) and AControl.IsVisible;
   end;
 
 var
