@@ -585,9 +585,9 @@ type
     function GetSubItemImages(const AIndex: Integer): Integer;
     function GetSubItems: TStrings;
 
-    function IntfUpdateAllowed: Boolean;
-    procedure IntfUpdateText;
-    procedure IntfUpdateImages;
+    function WSUpdateAllowed: Boolean;
+    procedure WSUpdateText;
+    procedure WSUpdateImages;
 
     procedure SetChecked(AValue: Boolean);
     procedure SetState(const ALisOrd: Integer; const AIsSet: Boolean);
@@ -638,8 +638,8 @@ type
     FItems: TList;        
     FCacheIndex: Integer;  // Caches the last used item 
     FCacheItem: TListItem; //
-    procedure IntfCreateCacheItem;
-    function IntfUpdateAllowed: Boolean;
+    procedure WSCreateCacheItem;
+    function WSUpdateAllowed: Boolean;
     procedure ItemDestroying(const AItem: TListItem); //called by TListItem when freed
     procedure ReadData(Stream: TStream);
     procedure WriteData(Stream: TStream);
@@ -647,7 +647,7 @@ type
     procedure DefineProperties(Filer: TFiler); override;
     function GetCount : Integer;
     function GetItem(const AIndex: Integer): TListItem;
-    procedure IntfCreateItems;
+    procedure WSCreateItems;
     procedure SetItem(const AIndex: Integer; const AValue: TListItem);
   public
     function Add: TListItem;
@@ -685,8 +685,8 @@ type
     FImageIndex: Integer;
     FTag: Integer;
     function GetWidth: TWidth;
-    procedure IntfCreateColumn;
-    function IntfUpdateAllowed: Boolean;
+    procedure WSCreateColumn;
+    function  WSUpdateAllowed: Boolean;
     procedure SetVisible(const AValue: Boolean);
     procedure SetAutoSize(const AValue: Boolean);
     procedure SetMinWidth(const AValue: TWidth);
@@ -724,7 +724,7 @@ type
     FItemNeedsUpdate: TCollectionItem;
     FNeedsUpdate: boolean;
     function GetItem(const AIndex: Integer): TListColumn;
-    procedure IntfCreateColumns;
+    procedure WSCreateColumns;
     procedure SetItem(const AIndex: Integer; const AValue: TListColumn);
   protected
   public

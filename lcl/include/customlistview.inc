@@ -209,7 +209,7 @@ begin
   LVC.SetViewStyle(Self, FViewStyle);
   
   // add columns
-  FColumns.IntfCreateColumns;
+  FColumns.WSCreateColumns;
   
   // set imagelists and item depending properties
   for lvil := Low(TListViewImageList) to High(TListViewImageList) do
@@ -223,7 +223,7 @@ begin
   LVC.SetSort(Self, FSortType, FSortColumn);
 
   // add items
-  FListItems.IntfCreateItems;
+  FListItems.WSCreateItems;
   
   // set other properties
   LVC.SetAllocBy(Self, FAllocBy);
@@ -702,7 +702,7 @@ end;
 procedure TCustomListView.Loaded;
 begin
   // create interface columns if needed
-  FColumns.IntfCreateColumns;
+  FColumns.WSCreateColumns;
   inherited Loaded;
 end;
 

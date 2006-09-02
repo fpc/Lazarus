@@ -86,12 +86,12 @@ begin
   Result := TListColumn(inherited GetItem(AIndex));
 end;
 
-procedure TListColumns.IntfCreateColumns;
+procedure TListColumns.WSCreateColumns;
 var
   n: Integer;
 begin
   for n :=0 to Count - 1 do
-    GetItem(n).IntfCreateColumn;
+    GetItem(n).WSCreateColumn;
 end;
 
 procedure TListColumns.SetItem(const AIndex: Integer; const AValue: TListColumn);

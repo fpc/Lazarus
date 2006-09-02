@@ -51,8 +51,8 @@ begin
   FImageIndex := -1;
   inherited Create(ACollection);
   
-  if not IntfUpdateAllowed then Exit;
-  IntfCreateColumn;
+  if not WSUpdateAllowed then Exit;
+  WSCreateColumn;
 end;
 
 destructor TListColumn.Destroy;
@@ -64,7 +64,7 @@ var
   WSC: TWSCustomListViewClass;
 begin
   idx := Index;
-  UpdAllowed := IntfUpdateAllowed;
+  UpdAllowed := WSUpdateAllowed;
   
   if Collection is TListColumns
   then begin
@@ -83,7 +83,7 @@ begin
   WSC.ColumnDelete(LV, Idx);
 end;
 
-procedure TListColumn.IntfCreateColumn;
+procedure TListColumn.WSCreateColumn;
 var
   LV: TCustomListView;
   WSC: TWSCustomListViewClass;
@@ -101,7 +101,7 @@ begin
   WSC.ColumnSetVisible(LV, Index, Self, FVisible);
 end;
 
-function TListColumn.IntfUpdateAllowed: Boolean;
+function TListColumn.WSUpdateAllowed: Boolean;
 begin
   Result := (Collection <> nil)
     and (TListColumns(Collection).FOwner <> nil)
@@ -115,7 +115,7 @@ var
   LV: TCustomListView;
   WSC: TWSCustomListViewClass;
 begin
-  if IntfUpdateAllowed
+  if WSUpdateAllowed
   then begin
     LV := TListColumns(Collection).FOwner;
     WSC := TWSCustomListViewClass(LV.WidgetSetClass);
@@ -134,7 +134,7 @@ begin
   if FAlignment = AValue then Exit;
   FAlignment := AValue;
   Changed(False);  
-  if not IntfUpdateAllowed then Exit;
+  if not WSUpdateAllowed then Exit;
   
   LV := TListColumns(Collection).FOwner;
   WSC := TWSCustomListViewClass(LV.WidgetSetClass);
@@ -149,7 +149,7 @@ begin
   if AValue = FCaption then Exit;
   FCaption := AValue;
   Changed(False);  
-  if not IntfUpdateAllowed then Exit;
+  if not WSUpdateAllowed then Exit;
   
   LV := TListColumns(Collection).FOwner;
   WSC := TWSCustomListViewClass(LV.WidgetSetClass);
@@ -164,7 +164,7 @@ begin
   if FWidth = AValue then Exit;
   FWidth := AValue;
   Changed(False);  
-  if not IntfUpdateAllowed then Exit;
+  if not WSUpdateAllowed then Exit;
   
   LV := TListColumns(Collection).FOwner;
   WSC := TWSCustomListViewClass(LV.WidgetSetClass);
@@ -179,7 +179,7 @@ begin
   if FMaxWidth = AValue then Exit;
   FMaxWidth := AValue;
   Changed(False);  
-  if not IntfUpdateAllowed then Exit;
+  if not WSUpdateAllowed then Exit;
   
   LV := TListColumns(Collection).FOwner;
   WSC := TWSCustomListViewClass(LV.WidgetSetClass);
@@ -194,7 +194,7 @@ begin
   if FMinWidth = AValue then Exit;
   FMinWidth := AValue;
   Changed(False);  
-  if not IntfUpdateAllowed then Exit;
+  if not WSUpdateAllowed then Exit;
   
   LV := TListColumns(Collection).FOwner;
   WSC := TWSCustomListViewClass(LV.WidgetSetClass);
@@ -209,7 +209,7 @@ begin
   if FAutoSize = AValue then Exit;
   FAutoSize := AValue;
   Changed(False);  
-  if not IntfUpdateAllowed then Exit;
+  if not WSUpdateAllowed then Exit;
   
   LV := TListColumns(Collection).FOwner;
   WSC := TWSCustomListViewClass(LV.WidgetSetClass);
@@ -224,7 +224,7 @@ begin
   if FImageIndex = AValue then Exit;
   FImageIndex := AValue;
   Changed(False);
-  if not IntfUpdateAllowed then Exit;
+  if not WSUpdateAllowed then Exit;
   
   LV := TListColumns(Collection).FOwner;
   WSC := TWSCustomListViewClass(LV.WidgetSetClass);
@@ -241,7 +241,7 @@ begin
   inherited;
                      
   if OldIndex = Index then Exit;
-  if not IntfUpdateAllowed then Exit;
+  if not WSUpdateAllowed then Exit;
   
   LV := TListColumns(Collection).FOwner;
   WSC := TWSCustomListViewClass(LV.WidgetSetClass);
@@ -262,7 +262,7 @@ begin
   if FVisible = AValue then Exit;
   FVisible := AValue;
   Changed(False);  
-  if not IntfUpdateAllowed then Exit;
+  if not WSUpdateAllowed then Exit;
   
   LV := TListColumns(Collection).FOwner;
   WSC := TWSCustomListViewClass(LV.WidgetSetClass);

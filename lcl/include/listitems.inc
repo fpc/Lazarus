@@ -70,10 +70,10 @@ begin
   FCacheIndex := AIndex;
   FCacheItem := AValue;
   
-  if AValue.IntfUpdateAllowed
+  if AValue.WSUpdateAllowed
   then begin
-    AValue.IntfUpdateText;
-    AValue.IntfUpdateImages;
+    AValue.WSUpdateText;
+    AValue.WSUpdateImages;
   end;
 end;
 
@@ -94,8 +94,8 @@ begin
   FCacheIndex := FItems.Add(AItem);
   FCacheItem := AItem;
 
-  if IntfUpdateAllowed
-  then IntfCreateCacheItem;
+  if WSUpdateAllowed
+  then WSCreateCacheItem;
 
   //Notify parent TListView that something was added.
   if FOwner <> nil
@@ -122,18 +122,18 @@ end;
 {------------------------------------------------------------------------------}
 {   TListItems IntfCreateItem                                                  }
 {------------------------------------------------------------------------------}
-procedure TListItems.IntfCreateCacheItem;
+procedure TListItems.WSCreateCacheItem;
 begin
   TWSCustomListViewClass(FOwner.WidgetSetClass).ItemInsert(FOwner, FCacheIndex, FCacheItem);
   Include(FCacheItem.FFlags, lifCreated);
-  FCacheItem.IntfUpdateText;
-  FCacheItem.IntfUpdateImages;
+  FCacheItem.WSUpdateText;
+  FCacheItem.WSUpdateImages;
 end;
 
 {------------------------------------------------------------------------------}
 {   TListItems IntfCreateItems                                                 }
 {------------------------------------------------------------------------------}
-procedure TListItems.IntfCreateItems;
+procedure TListItems.WSCreateItems;
 var
   n: integer;
 begin
@@ -141,14 +141,14 @@ begin
   begin
     FCacheItem := TListItem(FItems[n]);
     FCacheIndex := n;
-    IntfCreateCacheItem;
+    WSCreateCacheItem;
   end;
 end;
 
 {------------------------------------------------------------------------------}
 {   TListItems IntfUpdateAllowed                                               }
 {------------------------------------------------------------------------------}
-function TListItems.IntfUpdateAllowed: Boolean;
+function TListItems.WSUpdateAllowed: Boolean;
 begin
   Result := (FOwner <> nil)
     and FOwner.HandleAllocated
@@ -225,8 +225,8 @@ begin
   FCacheIndex := AIndex;
   FCacheItem := AItem;
 
-  if IntfUpdateAllowed
-  then IntfCreateCacheItem;
+  if WSUpdateAllowed
+  then WSCreateCacheItem;
 
   //Notify parent TListView that something was added.
   if FOwner <> nil

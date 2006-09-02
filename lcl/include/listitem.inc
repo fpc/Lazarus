@@ -71,7 +71,7 @@ var
   WSC: TWSCustomListViewClass;
 begin
   if (FOwner <> nil)
-  and FOwner.IntfUpdateAllowed
+  and FOwner.WSUpdateAllowed
   and ((FChangeIndex = -1) or (FUpdate <> []))
   then begin                  
     LV := FOwner.FOwner.FOwner;
@@ -367,7 +367,7 @@ end;
 {------------------------------------------------------------------------------}
 {   TListItem IntfUpdateText                                                   }
 {------------------------------------------------------------------------------}
-procedure TListItem.IntfUpdateText;
+procedure TListItem.WSUpdateText;
 var
   LV: TCustomListView;
   n, Idx, Cnt, ColCnt: Integer;
@@ -399,7 +399,7 @@ end;
 {------------------------------------------------------------------------------}
 {   TListItem IntfUpdateImages                                                 }
 {------------------------------------------------------------------------------}
-procedure TListItem.IntfUpdateImages;
+procedure TListItem.WSUpdateImages;
 var
   LV: TCustomListView;
   n, Idx, Cnt, ColCnt: Integer;
@@ -431,11 +431,11 @@ end;
 {------------------------------------------------------------------------------}
 {   TListItem IntfUpdateAllowed                                                }
 {------------------------------------------------------------------------------}
-function TListItem.IntfUpdateAllowed: Boolean;
+function TListItem.WSUpdateAllowed: Boolean;
 begin
   Result := (FFlags * [lifDestroying, lifCreated] = [lifCreated])
     and (FOwner <> nil)
-    and FOwner.IntfUpdateAllowed;
+    and FOwner.WSUpdateAllowed;
 end;
 
 {------------------------------------------------------------------------------}
@@ -471,7 +471,7 @@ begin
   AState := TListItemState(ALisOrd);
   LV := FOwner.FOwner;
 
-  if IntfUpdateAllowed
+  if WSUpdateAllowed
   and TWSCustomListViewClass(LV.WidgetSetClass).ItemGetState(LV, GetIndex, Self, AState, Result)
   then begin
     // update FStates
@@ -528,7 +528,7 @@ begin
   if FCaption = AValue then Exit;
   FCaption := AValue;
   LV := FOwner.FOwner;
-  if IntfUpdateAllowed
+  if WSUpdateAllowed
   then TWSCustomListViewClass(LV.WidgetSetClass).ItemSetText(LV, GetIndex, Self, 0, FCaption);
 end;
 
@@ -540,7 +540,7 @@ var
   LV: TCustomListView;
 begin
   LV := FOwner.FOwner;
-  if LV.Checkboxes and IntfUpdateAllowed 
+  if LV.Checkboxes and WSUpdateAllowed
   then TWSCustomListViewClass(LV.WidgetSetClass).ItemSetChecked(LV, GetIndex, Self, AValue);
 end;
 
@@ -562,7 +562,7 @@ begin
 
   FImageIndex := AValue;
 
-  if IntfUpdateAllowed
+  if WSUpdateAllowed
   then TWSCustomListViewClass(FOwner.FOwner.WidgetSetClass).ItemSetImage(FOwner.FOwner, GetIndex, Self, 0, FImageIndex);
 end;
 
@@ -582,7 +582,7 @@ begin
   then Include(FStates, AState)
   else Exclude(FStates, AState);
 
-  if not IntfUpdateAllowed then Exit;
+  if not WSUpdateAllowed then Exit;
   LV := FOwner.FOwner;
   TWSCustomListViewClass(LV.WidgetSetClass).ItemSetState(LV, GetIndex, Self, AState, AIsSet);
 end;
