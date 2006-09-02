@@ -1083,6 +1083,7 @@ var
     NewValue:=ToUnixLineEnding(NodeText);
     if CurNodeName = 'example' then begin
       OldNode:=Node.Attributes.GetNamedItem('file');
+      NewValue:=FilenameToURLPath(NewValue);
       if (NodeText<>'')
       or (not (OldNode is TDOMAttr))
       or (TDOMAttr(OldNode).Value<>NewValue) then begin
@@ -1131,7 +1132,7 @@ var
     child := Entry.DocFile.doc.CreateElement(ElementName);
     if ElementName='example' then begin
       FileAttribute := Entry.DocFile.Doc.CreateAttribute('file');
-      FileAttribute.Value := ElementText;
+      FileAttribute.Value := FilenameToURLPath(ElementText);
       child.Attributes.SetNamedItem(FileAttribute);
     end
     else begin
