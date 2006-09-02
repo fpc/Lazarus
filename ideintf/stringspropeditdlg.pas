@@ -53,6 +53,8 @@ begin
   Caption := oisStringsEditorDialog;
   StatusLabel.Caption := ois0Lines0Chars;
   SortButton.Caption := oisSort;
+  OKButton.Caption:=oisOk2;
+  CancelButton.Caption:=oiStdActDataSetCancel1Hint;
 
   AddButtons;
 end;

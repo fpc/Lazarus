@@ -7,7 +7,7 @@
       <MainUnit Value="0"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=""/>
-      <ActiveEditorIndexAtStart Value="3"/>
+      <ActiveEditorIndexAtStart Value="4"/>
     </General>
     <PublishOptions>
       <Version Value="2"/>
@@ -29,7 +29,7 @@
         <PackageName Value="IDEIntf"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="25">
+    <Units Count="26">
       <Unit0>
         <Filename Value="lazbuild.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -37,13 +37,13 @@
         <CursorPos X="18" Y="37"/>
         <TopLine Value="11"/>
         <EditorIndex Value="0"/>
-        <UsageCount Value="39"/>
+        <UsageCount Value="40"/>
         <Loaded Value="True"/>
       </Unit0>
       <Unit1>
         <Filename Value="main.pp"/>
         <UnitName Value="Main"/>
-        <CursorPos X="16" Y="3663"/>
+        <CursorPos X="9" Y="3661"/>
         <TopLine Value="3628"/>
         <EditorIndex Value="2"/>
         <UsageCount Value="19"/>
@@ -62,11 +62,9 @@
       <Unit3>
         <Filename Value="idetranslations.pas"/>
         <UnitName Value="IDETranslations"/>
-        <CursorPos X="5" Y="189"/>
-        <TopLine Value="163"/>
-        <EditorIndex Value="3"/>
+        <CursorPos X="22" Y="34"/>
+        <TopLine Value="1"/>
         <UsageCount Value="17"/>
-        <Loaded Value="True"/>
       </Unit3>
       <Unit4>
         <Filename Value="lazarusidestrconsts.pas"/>
@@ -114,9 +112,9 @@
       <Unit10>
         <Filename Value="environmentopts.pp"/>
         <UnitName Value="EnvironmentOpts"/>
-        <CursorPos X="1" Y="2339"/>
+        <CursorPos X="35" Y="2334"/>
         <TopLine Value="2313"/>
-        <EditorIndex Value="4"/>
+        <EditorIndex Value="3"/>
         <UsageCount Value="10"/>
         <Loaded Value="True"/>
       </Unit10>
@@ -218,12 +216,61 @@
         <TopLine Value="38"/>
         <UsageCount Value="10"/>
       </Unit24>
+      <Unit25>
+        <Filename Value="lazarus.pp"/>
+        <UnitName Value="Lazarus"/>
+        <CursorPos X="30" Y="77"/>
+        <TopLine Value="61"/>
+        <EditorIndex Value="4"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit25>
     </Units>
-    <JumpHistory Count="1" HistoryIndex="0">
+    <JumpHistory Count="11" HistoryIndex="10">
       <Position1>
         <Filename Value="main.pp"/>
-        <Caret Line="3663" Column="16" TopLine="3628"/>
+        <Caret Line="3653" Column="9" TopLine="3628"/>
       </Position1>
+      <Position2>
+        <Filename Value="environmentopts.pp"/>
+        <Caret Line="165" Column="14" TopLine="145"/>
+      </Position2>
+      <Position3>
+        <Filename Value="environmentopts.pp"/>
+        <Caret Line="229" Column="16" TopLine="203"/>
+      </Position3>
+      <Position4>
+        <Filename Value="environmentopts.pp"/>
+        <Caret Line="403" Column="24" TopLine="377"/>
+      </Position4>
+      <Position5>
+        <Filename Value="environmentopts.pp"/>
+        <Caret Line="795" Column="13" TopLine="769"/>
+      </Position5>
+      <Position6>
+        <Filename Value="environmentopts.pp"/>
+        <Caret Line="988" Column="16" TopLine="962"/>
+      </Position6>
+      <Position7>
+        <Filename Value="environmentopts.pp"/>
+        <Caret Line="1247" Column="59" TopLine="1221"/>
+      </Position7>
+      <Position8>
+        <Filename Value="environmentopts.pp"/>
+        <Caret Line="2187" Column="2" TopLine="2161"/>
+      </Position8>
+      <Position9>
+        <Filename Value="environmentopts.pp"/>
+        <Caret Line="2188" Column="1" TopLine="2162"/>
+      </Position9>
+      <Position10>
+        <Filename Value="lazarus.pp"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
+      </Position10>
+      <Position11>
+        <Filename Value="lazarus.pp"/>
+        <Caret Line="114" Column="1" TopLine="61"/>
+      </Position11>
     </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
