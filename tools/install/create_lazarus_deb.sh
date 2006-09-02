@@ -22,7 +22,7 @@ LazBuildDir=$TmpDir/lazarus_build
 LazDeb=$CurDir/lazarus_${LazVersion}-${LazRelease}_$Arch.deb
 DebianSrcDir=$CurDir/debian_lazarus
 LazDestDir=$LazBuildDir/usr/share/lazarus
-FPCVersion=2.0.2
+FPCVersion=$(ppc386 -v | grep version| sed 's/.*\([0-9]\+\.[0-9]\+\.[0-9]\+\).*/\1/')
 ChangeLogDate=`date --rfc-822`
 
 # download/export lazarus svn if needed

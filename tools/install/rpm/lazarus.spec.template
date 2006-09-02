@@ -48,7 +48,6 @@ mkdir -p %{buildroot}%{_datadir}/pixmaps
 mkdir -p %{buildroot}%{_datadir}/applications
 cp -a lazarus/* %{buildroot}%{_libdir}/%{name}/
   install -m 644 lazarus/images/ide_icon48x48.png %{buildroot}%{_datadir}/pixmaps/lazarus.png
-#  install -m 644 lazarus/gnome.ide.desktop %{buildroot}%{_datadir}/gnome/apps/Development/lazarus.desktop
   install -m 644 lazarus/install/lazarus.desktop %{buildroot}%{_datadir}/applications/lazarus.desktop
 ln -sf ../%{_lib}/%{name}/lazarus %{buildroot}%{_bindir}/lazarus
 ln -sf ../%{_lib}/%{name}/startlazarus %{buildroot}%{_bindir}/startlazarus
