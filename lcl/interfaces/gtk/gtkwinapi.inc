@@ -2822,9 +2822,9 @@ var
   theRect     : TRect;
   Lines : PPChar;
   I, NumLines : Longint;
-  TempDC,
-  TempPen,
-  TempBrush : Longint;
+  TempDC : HDC;
+  TempPen : HPEN;
+  TempBrush : HBRUSH;
 
   Function LeftOffset : Longint;
   begin
@@ -5553,7 +5553,7 @@ end;
 
 
  ------------------------------------------------------------------------------}
-function TGtkWidgetSet.GetStockObject(Value: Integer): LongInt;
+function TGtkWidgetSet.GetStockObject(Value: Integer): THandle;
 begin
   Assert(False, Format('Trace:> [TGtkWidgetSet.GetStockObject] %d', [Value]));
   Result := 0;

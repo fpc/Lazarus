@@ -401,7 +401,7 @@ begin
   Result := WidgetSet.GetScrollInfo(Handle, SBStyle, ScrollInfo);
 end;
 
-function GetStockObject(Value : Integer): Longint;
+function GetStockObject(Value : Integer): THandle;
 begin
   Result := WidgetSet.GetStockObject(Value);
 end;

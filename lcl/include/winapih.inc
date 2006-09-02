@@ -129,7 +129,7 @@ function GetROP2(DC: HDC): integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetScrollInfo(Handle: HWND; SBStyle: Integer; var ScrollInfo: TScrollInfo): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 //function GetScrollPos --> independent
 //function GetScrollRange --> independent
-function GetStockObject(Value: Integer): LongInt; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function GetStockObject(Value: Integer): THandle; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetSysColor(nIndex: Integer): DWORD; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetSystemPaletteEntries(DC: HDC; StartIndex, NumEntries: UINT;
   var PaletteEntries): UINT; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}

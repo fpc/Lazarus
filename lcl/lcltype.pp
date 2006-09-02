@@ -109,9 +109,9 @@ type
   Bool    = LongBool;
   Short   = SmallInt;
 
-  WPARAM = type PtrInt; //LongInt;
-  LPARAM = type PtrInt; //LongInt;
-  LRESULT = type PtrInt; //LongInt;
+  WPARAM = type PtrInt; //LongInt or Int64 on CPU64;
+  LPARAM = type PtrInt; //LongInt or Int64 on CPU64;
+  LRESULT = type PtrInt; //LongInt or Int64 on CPU64;
 
   ULONG_PTR = type PtrUInt;
 

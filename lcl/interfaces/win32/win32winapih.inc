@@ -113,7 +113,7 @@ function GetParent(Handle: HWND): HWND; Override;
 function GetProp(Handle: HWND; Str: PChar): Pointer; Override;
 function GetROP2(DC: HDC): Integer; override;
 function GetScrollInfo(Handle: HWND; BarFlag: Integer; Var ScrollInfo: TScrollInfo): Boolean; Override;
-function GetStockObject(Value: Integer): LongInt; Override;
+function GetStockObject(Value: Integer): THandle; Override;
 function GetSysColor(NIndex: Integer): DWORD; Override;
 function GetSystemMetrics(NIndex: Integer): Integer; Override;
 function GetTextColor(DC: HDC): TColorRef; Override;

@@ -1991,7 +1991,7 @@ End;
 
   Retrieves a handle to one of the predefined stock objects.
  ------------------------------------------------------------------------------}
-Function TWin32WidgetSet.GetStockObject(Value: Integer): LongInt;
+Function TWin32WidgetSet.GetStockObject(Value: Integer): THandle;
 Begin
   Assert(False, Format('Trace:> [TWin32WidgetSet.GetStockObject] %d ', [Value]));
   Result := Windows.GetStockObject(Value);

@@ -879,7 +879,7 @@ begin
   Result := False;
 end;
 
-function TWidgetSet.GetStockObject(Value: Integer): LongInt;
+function TWidgetSet.GetStockObject(Value: Integer): THandle;
 begin
   Result := 0;
 end;

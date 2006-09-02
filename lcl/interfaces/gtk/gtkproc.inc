@@ -3591,7 +3591,7 @@ end;
   Generic function which calls the WindowProc if defined, otherwise the
   dispatcher
  ------------------------------------------------------------------------------}
-function DeliverMessage(const Target: Pointer; var AMessage): Integer;
+function DeliverMessage(const Target: Pointer; var AMessage): PtrInt;
 begin
   if Target=nil then DebugLn('[DeliverMessage] Target = nil');
   {$IFDEF VerboseDeliverMessage}

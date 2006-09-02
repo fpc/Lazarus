@@ -372,7 +372,7 @@ procedure Set_RC_Name(Sender: TObject; AWidget: PGtkWidget);
 
 // messages
 function DeliverPostMessage(const Target: Pointer; var TheMessage): GBoolean;
-function DeliverMessage(const Target: Pointer; var AMessage): Integer;
+function DeliverMessage(const Target: Pointer; var AMessage): PtrInt;
 
 // PChar
 function CreatePChar(const s: string): PChar;
