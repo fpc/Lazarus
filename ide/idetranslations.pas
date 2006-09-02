@@ -31,7 +31,8 @@ unit IDETranslations;
 interface
 
 uses
-  Classes, SysUtils, GetText, Translations, FileUtil, LazarusIDEStrConsts;
+  Classes, SysUtils, GetText, LCLProc, Translations, FileUtil,
+  LazarusIDEStrConsts;
   { IDE Language (Human, not computer) }
 
 type

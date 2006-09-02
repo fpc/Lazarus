@@ -3647,19 +3647,21 @@ Begin
       // load settings from EnvironmentOptions to EnvironmentOptionsDialog
       ReadSettings(EnvironmentOptions);
     end;
-    OldLanguage:=EnvironmentOptions.LanguageID;
     if EnvironmentOptionsDialog.ShowModal=mrOk then begin
-      if OldLanguage<>EnvironmentOptions.LanguageID then
-        TranslateResourceStrings(EnvironmentOptions.LazarusDirectory,
-                                 EnvironmentOptions.LanguageID);
-
       // invalidate cached substituted macros
       IncreaseCompilerParseStamp;
 
       // load settings from EnvironmentOptionsDialog to EnvironmentOptions
       OldCompilerFilename:=EnvironmentOptions.CompilerFilename;
+      OldLanguage:=EnvironmentOptions.LanguageID;
       EnvironmentOptionsDialog.WriteSettings(EnvironmentOptions);
+      
       UpdateDefaultPascalFileExtensions;
+
+      //DebugLn(['TMainIDE.DoShowEnvGeneralOptions OldLanguage=',OldLanguage,' EnvironmentOptions.LanguageID=',EnvironmentOptions.LanguageID]);
+      if OldLanguage<>EnvironmentOptions.LanguageID then
+        TranslateResourceStrings(EnvironmentOptions.LazarusDirectory,
+                                 EnvironmentOptions.LanguageID);
 
       // set global variables
       UpdateEnglishErrorMsgFilename;

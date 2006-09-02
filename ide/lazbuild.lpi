@@ -7,7 +7,7 @@
       <MainUnit Value="0"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=""/>
-      <ActiveEditorIndexAtStart Value="2"/>
+      <ActiveEditorIndexAtStart Value="3"/>
     </General>
     <PublishOptions>
       <Version Value="2"/>
@@ -29,7 +29,7 @@
         <PackageName Value="IDEIntf"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="24">
+    <Units Count="25">
       <Unit0>
         <Filename Value="lazbuild.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -43,7 +43,7 @@
       <Unit1>
         <Filename Value="main.pp"/>
         <UnitName Value="Main"/>
-        <CursorPos X="20" Y="3656"/>
+        <CursorPos X="16" Y="3663"/>
         <TopLine Value="3628"/>
         <EditorIndex Value="2"/>
         <UsageCount Value="19"/>
@@ -62,8 +62,8 @@
       <Unit3>
         <Filename Value="idetranslations.pas"/>
         <UnitName Value="IDETranslations"/>
-        <CursorPos X="3" Y="163"/>
-        <TopLine Value="136"/>
+        <CursorPos X="5" Y="189"/>
+        <TopLine Value="163"/>
         <EditorIndex Value="3"/>
         <UsageCount Value="17"/>
         <Loaded Value="True"/>
@@ -114,9 +114,11 @@
       <Unit10>
         <Filename Value="environmentopts.pp"/>
         <UnitName Value="EnvironmentOpts"/>
-        <CursorPos X="14" Y="21"/>
-        <TopLine Value="1"/>
-        <UsageCount Value="9"/>
+        <CursorPos X="1" Y="2339"/>
+        <TopLine Value="2313"/>
+        <EditorIndex Value="4"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
       </Unit10>
       <Unit11>
         <Filename Value="initialsetupdlgs.pas"/>
@@ -130,9 +132,7 @@
         <UnitName Value="MainBase"/>
         <CursorPos X="1" Y="143"/>
         <TopLine Value="143"/>
-        <EditorIndex Value="5"/>
         <UsageCount Value="19"/>
-        <Loaded Value="True"/>
       </Unit12>
       <Unit13>
         <Filename Value="miscoptions.pas"/>
@@ -153,9 +153,7 @@
         <UnitName Value="MainIntf"/>
         <CursorPos X="1" Y="171"/>
         <TopLine Value="139"/>
-        <EditorIndex Value="8"/>
         <UsageCount Value="19"/>
-        <Loaded Value="True"/>
       </Unit15>
       <Unit16>
         <Filename Value="../ideintf/macrointf.pas"/>
@@ -176,57 +174,57 @@
         <UnitName Value="DialogProcs"/>
         <CursorPos X="29" Y="68"/>
         <TopLine Value="44"/>
-        <EditorIndex Value="7"/>
         <UsageCount Value="19"/>
-        <Loaded Value="True"/>
       </Unit18>
       <Unit19>
         <Filename Value="ideprocs.pp"/>
         <UnitName Value="IDEProcs"/>
         <CursorPos X="11" Y="95"/>
         <TopLine Value="70"/>
-        <EditorIndex Value="6"/>
         <UsageCount Value="19"/>
-        <Loaded Value="True"/>
       </Unit19>
       <Unit20>
         <Filename Value="../packager/pkgmanager.pas"/>
         <UnitName Value="PkgManager"/>
         <CursorPos X="9" Y="136"/>
         <TopLine Value="125"/>
-        <EditorIndex Value="9"/>
         <UsageCount Value="19"/>
-        <Loaded Value="True"/>
       </Unit20>
       <Unit21>
         <Filename Value="../packager/basepkgmanager.pas"/>
         <UnitName Value="BasePkgManager"/>
         <CursorPos X="19" Y="109"/>
         <TopLine Value="70"/>
-        <EditorIndex Value="10"/>
         <UsageCount Value="19"/>
-        <Loaded Value="True"/>
       </Unit21>
       <Unit22>
         <Filename Value="../ideintf/packageintf.pas"/>
         <UnitName Value="PackageIntf"/>
         <CursorPos X="3" Y="65"/>
         <TopLine Value="34"/>
-        <EditorIndex Value="11"/>
         <UsageCount Value="19"/>
-        <Loaded Value="True"/>
       </Unit22>
       <Unit23>
         <Filename Value="../lcl/defaulttranslator.pas"/>
         <UnitName Value="DefaultTranslator"/>
         <CursorPos X="5" Y="236"/>
         <TopLine Value="202"/>
-        <EditorIndex Value="4"/>
         <UsageCount Value="17"/>
-        <Loaded Value="True"/>
       </Unit23>
+      <Unit24>
+        <Filename Value="../../../../freepascal/fpc/fcl/inc/gettext.pp"/>
+        <UnitName Value="gettext"/>
+        <CursorPos X="1" Y="88"/>
+        <TopLine Value="38"/>
+        <UsageCount Value="10"/>
+      </Unit24>
     </Units>
-    <JumpHistory Count="0" HistoryIndex="-1"/>
+    <JumpHistory Count="1" HistoryIndex="0">
+      <Position1>
+        <Filename Value="main.pp"/>
+        <Caret Line="3663" Column="16" TopLine="3628"/>
+      </Position1>
+    </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>
