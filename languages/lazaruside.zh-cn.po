@@ -529,8 +529,8 @@ msgid "Alt-Key sets column mode"
 msgstr "Alt-Key 设置为列编辑模式"
 
 #: lazarusidestrconsts:srkmalternkey
-msgid "Alternative Key"
-msgstr "备选键"
+msgid "Alternative key (or 2 keys combination)"
+msgstr ""
 
 #: lazarusidestrconsts:lisprojoptsalwaysbuildevenifnothingchanged
 msgid "Always build (even if nothing changed)"
@@ -1232,6 +1232,10 @@ msgstr "重建后清除程序"
 msgid "Clear"
 msgstr "清除"
 
+#: lazarusidestrconsts:lispckeditcleardependencydefaultfilename
+msgid "Clear dependency filename"
+msgstr ""
+
 #: lazarusidestrconsts:lisdebugoptionsfrmclearlogonrun
 msgid "Clear log on run"
 msgstr "运行时清除日志"
@@ -1355,10 +1359,6 @@ msgstr "列选择模式"
 #: lazarusidestrconsts:liscodetoolsoptscomma
 msgid "Comma"
 msgstr "逗号"
-
-#: lazarusidestrconsts:srkmcommand
-msgid "Command "
-msgstr "命令"
 
 #: lazarusidestrconsts:liscommandafter
 msgid "Command after"
@@ -1631,6 +1631,10 @@ msgstr "复制错误"
 #: lazarusidestrconsts:uemcopyfilename
 msgid "Copy filename"
 msgstr "复制文件名"
+
+#: lazarusidestrconsts:lisldcopyfrominherited
+msgid "Copy from inherited"
+msgstr ""
 
 #: lazarusidestrconsts:lisdsgcopycomponents
 msgid "Copy selected components to clipboard"
@@ -3105,8 +3109,12 @@ msgid "Goto selected source line"
 msgstr "前往所选代码行"
 
 #: lazarusidestrconsts:srkmgrabkey
-msgid "Grab Key"
-msgstr "扫描键"
+msgid "Grab key"
+msgstr ""
+
+#: lazarusidestrconsts:srkmgrabsecondkey
+msgid "Grab second key"
+msgstr ""
 
 #: lazarusidestrconsts:dlggrabbercolor
 msgid "Grabber color"
@@ -3992,9 +4000,13 @@ msgstr "保存程序的顺序"
 msgid "Keep them and continue"
 msgstr ""
 
-#: lazarusidestrconsts:srkmkey
+#: lazarusidestrconsts:lisedtexttoolkey
 msgid "Key"
 msgstr "快捷键"
+
+#: lazarusidestrconsts:srkmkey
+msgid "Key (or 2 keys combination)"
+msgstr ""
 
 #: lazarusidestrconsts:dlgkeymappingscheme
 msgid "Key Mapping Scheme"
@@ -4604,6 +4616,10 @@ msgstr "左移编辑器"
 msgid "Move editor right"
 msgstr "右移编辑器"
 
+#: lazarusidestrconsts:lisldmoveentriestoinherited
+msgid "Move entries to inherited"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefsmovenodedown
 msgid "Move node down"
 msgstr "下移节点"
@@ -4643,6 +4659,10 @@ msgstr "多行"
 #: lazarusidestrconsts:dlgmultiselect
 msgid "Multi Select"
 msgstr "多选"
+
+#: lazarusidestrconsts:lisfindfilemultiline
+msgid "Multi line pattern"
+msgstr ""
 
 #: lazarusidestrconsts:fdinvalidmultiselectiontext
 msgid "Multiselected components must be of a single form."
@@ -5643,6 +5663,10 @@ msgstr "发布工程目录"
 #: lazarusidestrconsts:lispublishedmethod
 msgid "Published Method"
 msgstr "Published Method"
+
+#: lazarusidestrconsts:lismenuquickcompile
+msgid "Quick compile"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuquicksyntaxcheck
 msgid "Quick syntax check"
@@ -6955,6 +6979,10 @@ msgstr "停止调试?"
 #: lazarusidestrconsts:lisstopthedebugging
 msgid "Stop the debugging?"
 msgstr "停止调试?"
+
+#: lazarusidestrconsts:lispckeditsetdependencydefaultfilename
+msgid "Store dependency filename"
+msgstr ""
 
 #: lazarusidestrconsts:dlgcdtstoredpostfix
 msgid "Stored postfix"
@@ -8967,6 +8995,10 @@ msgstr "请选择一个宏"
 #: lazarusidestrconsts:lisprimaryconfigdirectorywherelazarusstoresitsconfig
 msgid "primary config directory, where Lazarus stores its config files. Default is "
 msgstr "主要配置目录, Lazrus 将默认在此保存配置文件.默认"
+
+#: lazarusidestrconsts:srkmecquickcompile
+msgid "quick compile, no linking"
+msgstr ""
 
 #: lazarusidestrconsts:lisoipreadonly
 msgid "readonly"

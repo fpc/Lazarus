@@ -1,7 +1,7 @@
 {  $Id$  }
 {
  /***************************************************************************
-                    mainbase.pas  -  the "integrated" in IDE
+                    mainintf.pas  -  the "integrated" in IDE
                     ----------------------------------------
   TMainIDEInterface is the ancestor of TMainIDEBase.
   TMainIDEInterface is used by functions/units, that uses several different
@@ -64,14 +64,14 @@ uses
   Controls, Graphics, ExtCtrls, Dialogs, FileUtil, Forms, CodeToolManager,
   CodeCache, AVL_Tree, SynEditKeyCmds,
   // IDE
-  ObjectInspector, MenuIntf,
-  LazConf, LazarusIDEStrConsts, MacroIntf,
-  ProjectIntf, ProjectDefs, Project, PublishModule, BuildLazDialog, Compiler,
+  PropEdits, ObjectInspector, MenuIntf, SrcEditorIntf, ProjectIntf, MacroIntf,
   LazIDEIntf,
+  LazConf, LazarusIDEStrConsts,
+  ProjectDefs, Project, PublishModule, BuildLazDialog, Compiler,
   ComponentReg,
-  TransferMacros, PropEdits, OutputFilter, IDEDefs, MsgView, ProgressDlg,
+  TransferMacros, OutputFilter, IDEDefs, MsgView, ProgressDlg,
   EnvironmentOpts, EditorOptions, CompilerOptions, KeyMapping, IDEProcs,
-  IDEOptionDefs, CodeToolsDefines, SrcEditorIntf;
+  IDEOptionDefs, CodeToolsDefines;
 
 type
   // The IDE is at anytime in a specific state:
@@ -169,8 +169,6 @@ type
                              ): TModalResult; virtual; abstract;
     function DoCheckAmbiguousSources(const AFilename: string;
                                      Compiling: boolean): TModalResult; virtual; abstract;
-    function DoCheckCreatingFile(const AFilename: string;
-                                 CheckReadable: boolean): TModalResult; virtual; abstract;
     function DoSaveStringToFile(const Filename, Src,
                                 FileDescription: string): TModalResult; virtual; abstract;
     function DoSaveCodeBufferToFile(ABuffer: TCodeBuffer;

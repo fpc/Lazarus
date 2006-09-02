@@ -63,6 +63,8 @@ function LoadStringListFromFile(const Filename, ListTitle: string;
                                 var sl: TStrings): TModalResult;
 function CreateEmptyFile(const Filename: string;
                          ErrorButtons: TMsgDlgButtons): TModalResult;
+function CheckCreatingFile(const AFilename: string;
+                           CheckReadable: boolean): TModalResult;
 function CheckFileIsWritable(const Filename: string;
                              ErrorButtons: TMsgDlgButtons): TModalResult;
 function ForceDirectoryInteractive(Directory: string;
@@ -248,6 +250,63 @@ begin
       if Result<>mrRetry then exit;
     end;
   until false;
+  Result:=mrOk;
+end;
+
+function CheckCreatingFile(const AFilename: string; CheckReadable: boolean
+  ): TModalResult;
+var
+  fs: TFileStream;
+  c: char;
+begin
+  // create if not yet done
+  if not FileExists(AFilename) then begin
+    try
+      InvalidateFileStateCache;
+      fs:=TFileStream.Create(AFilename,fmCreate);
+      fs.Free;
+    except
+      Result:=MessageDlg(lisUnableToCreateFile,
+        Format(lisUnableToCreateFilename, ['"', AFilename, '"']), mtError, [
+          mbCancel, mbAbort], 0);
+      exit;
+    end;
+  end;
+  // check writable
+  try
+    if CheckReadable then begin
+      InvalidateFileStateCache;
+      fs:=TFileStream.Create(AFilename,fmOpenWrite)
+    end else
+      fs:=TFileStream.Create(AFilename,fmOpenReadWrite);
+    try
+      fs.Position:=fs.Size;
+      fs.Write(' ',1);
+    finally
+      fs.Free;
+    end;
+  except
+    Result:=MessageDlg(lisUnableToWriteFile,
+      Format(lisUnableToWriteFilename, ['"', AFilename, '"']), mtError, [
+        mbCancel, mbAbort], 0);
+    exit;
+  end;
+  // check readable
+  try
+    InvalidateFileStateCache;
+    fs:=TFileStream.Create(AFilename,fmOpenReadWrite);
+    try
+      fs.Position:=fs.Size-1;
+      fs.Read(c,1);
+    finally
+      fs.Free;
+    end;
+  except
+    Result:=MessageDlg(lisUnableToReadFile,
+      Format(lisUnableToReadFilename, ['"', AFilename, '"']), mtError, [
+        mbCancel, mbAbort], 0);
+    exit;
+  end;
   Result:=mrOk;
 end;
 

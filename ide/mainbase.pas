@@ -147,8 +147,6 @@ type
 
     function DoCheckAmbiguousSources(const AFilename: string;
                                      Compiling: boolean): TModalResult; override;
-    function DoCheckCreatingFile(const AFilename: string;
-                                 CheckReadable: boolean): TModalResult; override;
     function DoDeleteAmbiguousFiles(const Filename:string
                                     ): TModalResult; override;
     function DoCheckUnitPathForAmbiguousPascalFiles(const BaseDir, TheUnitPath,
@@ -178,8 +176,6 @@ type
 
 var
   MainIDE: TMainIDEBase;
-
-  ObjectInspector1 : TObjectInspector;
   SourceNotebook : TSourceNotebook;
 
 implementation
@@ -964,67 +960,6 @@ begin
                   [ofOnlyIfExists,ofAddToRecent,ofRegularFile,ofConvertMacros]);
 end;
 
-{-------------------------------------------------------------------------------
-  function TMainIDEBase.DoCheckCreatingFile(const AFilename: string;
-    CheckReadable: boolean): TModalResult;
--------------------------------------------------------------------------------}
-function TMainIDEBase.DoCheckCreatingFile(const AFilename: string;
-  CheckReadable: boolean): TModalResult;
-var
-  fs: TFileStream;
-  c: char;
-begin
-  // create if not yet done
-  if not FileExists(AFilename) then begin
-    try
-      InvalidateFileStateCache;
-      fs:=TFileStream.Create(AFilename,fmCreate);
-      fs.Free;
-    except
-      Result:=MessageDlg(lisUnableToCreateFile,
-        Format(lisUnableToCreateFilename, ['"', AFilename, '"']), mtError, [
-          mbCancel, mbAbort], 0);
-      exit;
-    end;
-  end;
-  // check writable
-  try
-    if CheckReadable then begin
-      InvalidateFileStateCache;
-      fs:=TFileStream.Create(AFilename,fmOpenWrite)
-    end else
-      fs:=TFileStream.Create(AFilename,fmOpenReadWrite);
-    try
-      fs.Position:=fs.Size;
-      fs.Write(' ',1);
-    finally
-      fs.Free;
-    end;
-  except
-    Result:=MessageDlg(lisUnableToWriteFile,
-      Format(lisUnableToWriteFilename, ['"', AFilename, '"']), mtError, [
-        mbCancel, mbAbort], 0);
-    exit;
-  end;
-  // check readable
-  try
-    InvalidateFileStateCache;
-    fs:=TFileStream.Create(AFilename,fmOpenReadWrite);
-    try
-      fs.Position:=fs.Size-1;
-      fs.Read(c,1);
-    finally
-      fs.Free;
-    end;
-  except
-    Result:=MessageDlg(lisUnableToReadFile,
-      Format(lisUnableToReadFilename, ['"', AFilename, '"']), mtError, [
-        mbCancel, mbAbort], 0);
-    exit;
-  end;
-  Result:=mrOk;
-end;
-
 function TMainIDEBase.DoDeleteAmbiguousFiles(const Filename: string
   ): TModalResult;
 var
@@ -1041,7 +976,8 @@ begin
     in [afaAsk,afaAutoDelete,afaAutoRename]
   then begin
     ADirectory:=AppendPathDelim(ExtractFilePath(Filename));
-    if SysUtils.FindFirst(ADirectory+GetAllFilesMask,faAnyFile,FileInfo)=0 then begin
+    if SysUtils.FindFirst(ADirectory+GetAllFilesMask,faAnyFile,FileInfo)=0 then
+    begin
       ShortFilename:=ExtractFileName(Filename);
       IsPascalUnit:=FilenameIsPascalUnit(ShortFilename);
       UnitName:=ExtractFilenameOnly(ShortFilename);

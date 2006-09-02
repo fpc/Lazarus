@@ -40,6 +40,18 @@ interface
 uses
   Classes, SysUtils; 
 
+const
+  PrimaryConfPathOptLong='--primary-config-path=';
+  PrimaryConfPathOptShort='--pcp=';
+  SecondaryConfPathOptLong='--secondary-config-path=';
+  SecondaryConfPathOptShort='--scp=';
+  NoSplashScreenOptLong='--no-splash-screen';
+  NoSplashScreenOptShort='--nsc';
+  StartedByStartLazarusOpt='--started-by-startlazarus';
+  SkipLastProjectOpt='--skip-last-project';
+  DebugLogOpt='--debug-log=';
+  LanguageOpt='--language=';
+
 resourcestring
   lisEnterTransla = 'Enter translation language';
   // version

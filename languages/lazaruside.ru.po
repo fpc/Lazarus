@@ -526,8 +526,8 @@ msgid "Alt-Key sets column mode"
 msgstr "Кнопка Alt - режим колонок"
 
 #: lazarusidestrconsts:srkmalternkey
-msgid "Alternative Key"
-msgstr "Альтернативная клавиша"
+msgid "Alternative key (or 2 keys combination)"
+msgstr ""
 
 #: lazarusidestrconsts:lisprojoptsalwaysbuildevenifnothingchanged
 msgid "Always build (even if nothing changed)"
@@ -1229,6 +1229,10 @@ msgstr "Очистить+Собрать"
 msgid "Clear"
 msgstr "Очистить"
 
+#: lazarusidestrconsts:lispckeditcleardependencydefaultfilename
+msgid "Clear dependency filename"
+msgstr ""
+
 #: lazarusidestrconsts:lisdebugoptionsfrmclearlogonrun
 msgid "Clear log on run"
 msgstr "Очищать протокол при запуске"
@@ -1352,10 +1356,6 @@ msgstr "Режим выбора колонки"
 #: lazarusidestrconsts:liscodetoolsoptscomma
 msgid "Comma"
 msgstr "Запятая"
-
-#: lazarusidestrconsts:srkmcommand
-msgid "Command "
-msgstr "Команда"
 
 #: lazarusidestrconsts:liscommandafter
 msgid "Command after"
@@ -1628,6 +1628,10 @@ msgstr "Ошибка копирования"
 #: lazarusidestrconsts:uemcopyfilename
 msgid "Copy filename"
 msgstr "Копировать имя файла"
+
+#: lazarusidestrconsts:lisldcopyfrominherited
+msgid "Copy from inherited"
+msgstr ""
 
 #: lazarusidestrconsts:lisdsgcopycomponents
 msgid "Copy selected components to clipboard"
@@ -3102,8 +3106,12 @@ msgid "Goto selected source line"
 msgstr "Переход к выделенной строке исходника"
 
 #: lazarusidestrconsts:srkmgrabkey
-msgid "Grab Key"
-msgstr "Захват клавиш"
+msgid "Grab key"
+msgstr ""
+
+#: lazarusidestrconsts:srkmgrabsecondkey
+msgid "Grab second key"
+msgstr ""
 
 #: lazarusidestrconsts:dlggrabbercolor
 msgid "Grabber color"
@@ -3989,9 +3997,13 @@ msgstr "Сохранять порядок процедур"
 msgid "Keep them and continue"
 msgstr ""
 
-#: lazarusidestrconsts:srkmkey
+#: lazarusidestrconsts:lisedtexttoolkey
 msgid "Key"
 msgstr "Клавиша"
+
+#: lazarusidestrconsts:srkmkey
+msgid "Key (or 2 keys combination)"
+msgstr ""
 
 #: lazarusidestrconsts:dlgkeymappingscheme
 msgid "Key Mapping Scheme"
@@ -4601,6 +4613,10 @@ msgstr "Сместить редактор влево"
 msgid "Move editor right"
 msgstr "Сместить редактор вправо"
 
+#: lazarusidestrconsts:lisldmoveentriestoinherited
+msgid "Move entries to inherited"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefsmovenodedown
 msgid "Move node down"
 msgstr "Переместить элемент вниз"
@@ -4640,6 +4656,10 @@ msgstr "Многострочный"
 #: lazarusidestrconsts:dlgmultiselect
 msgid "Multi Select"
 msgstr "Множественное выделение"
+
+#: lazarusidestrconsts:lisfindfilemultiline
+msgid "Multi line pattern"
+msgstr ""
 
 #: lazarusidestrconsts:fdinvalidmultiselectiontext
 msgid "Multiselected components must be of a single form."
@@ -5640,6 +5660,10 @@ msgstr "Каталог публикации проекта"
 #: lazarusidestrconsts:lispublishedmethod
 msgid "Published Method"
 msgstr "Опубликованный метод"
+
+#: lazarusidestrconsts:lismenuquickcompile
+msgid "Quick compile"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuquicksyntaxcheck
 msgid "Quick syntax check"
@@ -6952,6 +6976,10 @@ msgstr "Остановить отладку?"
 #: lazarusidestrconsts:lisstopthedebugging
 msgid "Stop the debugging?"
 msgstr "Остановить отладку?"
+
+#: lazarusidestrconsts:lispckeditsetdependencydefaultfilename
+msgid "Store dependency filename"
+msgstr ""
 
 #: lazarusidestrconsts:dlgcdtstoredpostfix
 msgid "Stored postfix"
@@ -8964,6 +8992,10 @@ msgstr "пожалуйста, выберите макрос"
 #: lazarusidestrconsts:lisprimaryconfigdirectorywherelazarusstoresitsconfig
 msgid "primary config directory, where Lazarus stores its config files. Default is "
 msgstr "первичный каталог настроек, где Lazarus хранит свои файлы настроек. По умолчанию - "
+
+#: lazarusidestrconsts:srkmecquickcompile
+msgid "quick compile, no linking"
+msgstr ""
 
 #: lazarusidestrconsts:lisoipreadonly
 msgid "readonly"

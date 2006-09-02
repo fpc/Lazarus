@@ -44,8 +44,9 @@ uses
 {$IFDEF IDE_MEM_CHECK}
   MemCheck,
 {$ENDIF}
-  Classes, SysUtils, Forms, LazIDEIntf,
-  PackageDefs, ComponentReg, CompilerOptions, Project, PackageIntf, MenuIntf;
+  Classes, SysUtils, Forms,
+  LazIDEIntf, PackageIntf, MenuIntf,
+  PackageDefs, ComponentReg, CompilerOptions, Project;
 
 type
   { TBasePkgManager }
@@ -55,6 +56,7 @@ type
     // initialization and menu
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
+    
     procedure ConnectMainBarEvents; virtual; abstract;
     procedure ConnectSourceNotebookEvents; virtual; abstract;
     procedure SetupMainBarShortCuts; virtual; abstract;

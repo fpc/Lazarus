@@ -515,7 +515,7 @@ msgid "Alt-Key sets column mode"
 msgstr ""
 
 #: lazarusidestrconsts:srkmalternkey
-msgid "Alternative Key"
+msgid "Alternative key (or 2 keys combination)"
 msgstr ""
 
 #: lazarusidestrconsts:lisprojoptsalwaysbuildevenifnothingchanged
@@ -1218,6 +1218,10 @@ msgstr ""
 msgid "Clear"
 msgstr "Tyhjennä"
 
+#: lazarusidestrconsts:lispckeditcleardependencydefaultfilename
+msgid "Clear dependency filename"
+msgstr ""
+
 #: lazarusidestrconsts:lisdebugoptionsfrmclearlogonrun
 msgid "Clear log on run"
 msgstr ""
@@ -1341,10 +1345,6 @@ msgstr ""
 #: lazarusidestrconsts:liscodetoolsoptscomma
 msgid "Comma"
 msgstr "Pilkku (,)"
-
-#: lazarusidestrconsts:srkmcommand
-msgid "Command "
-msgstr ""
 
 #: lazarusidestrconsts:liscommandafter
 msgid "Command after"
@@ -1617,6 +1617,10 @@ msgstr ""
 #: lazarusidestrconsts:uemcopyfilename
 msgid "Copy filename"
 msgstr "Kopio tiedoston nimi leikepöydälle"
+
+#: lazarusidestrconsts:lisldcopyfrominherited
+msgid "Copy from inherited"
+msgstr ""
 
 #: lazarusidestrconsts:lisdsgcopycomponents
 msgid "Copy selected components to clipboard"
@@ -3091,7 +3095,11 @@ msgid "Goto selected source line"
 msgstr "Mene valitun kohdan osoittamalle lähdekoodiriville"
 
 #: lazarusidestrconsts:srkmgrabkey
-msgid "Grab Key"
+msgid "Grab key"
+msgstr ""
+
+#: lazarusidestrconsts:srkmgrabsecondkey
+msgid "Grab second key"
 msgstr ""
 
 #: lazarusidestrconsts:dlggrabbercolor
@@ -3978,8 +3986,12 @@ msgstr ""
 msgid "Keep them and continue"
 msgstr ""
 
-#: lazarusidestrconsts:srkmkey
+#: lazarusidestrconsts:lisedtexttoolkey
 msgid "Key"
+msgstr ""
+
+#: lazarusidestrconsts:srkmkey
+msgid "Key (or 2 keys combination)"
 msgstr ""
 
 #: lazarusidestrconsts:dlgkeymappingscheme
@@ -4590,6 +4602,10 @@ msgstr "Siirry vasemmalla olevalle välilehdelle"
 msgid "Move editor right"
 msgstr "Siirry oikealla olevalle välilehdelle"
 
+#: lazarusidestrconsts:lisldmoveentriestoinherited
+msgid "Move entries to inherited"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefsmovenodedown
 msgid "Move node down"
 msgstr ""
@@ -4629,6 +4645,10 @@ msgstr ""
 #: lazarusidestrconsts:dlgmultiselect
 msgid "Multi Select"
 msgstr "Monivalinta"
+
+#: lazarusidestrconsts:lisfindfilemultiline
+msgid "Multi line pattern"
+msgstr ""
 
 #: lazarusidestrconsts:fdinvalidmultiselectiontext
 msgid "Multiselected components must be of a single form."
@@ -5629,6 +5649,10 @@ msgstr ""
 #: lazarusidestrconsts:lispublishedmethod
 msgid "Published Method"
 msgstr "Published - metodi"
+
+#: lazarusidestrconsts:lismenuquickcompile
+msgid "Quick compile"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuquicksyntaxcheck
 msgid "Quick syntax check"
@@ -6941,6 +6965,10 @@ msgstr "Pysäytetäänkö virheenjäljitys?"
 #: lazarusidestrconsts:lisstopthedebugging
 msgid "Stop the debugging?"
 msgstr "Pysäytetäänkö virheenjäljitys?"
+
+#: lazarusidestrconsts:lispckeditsetdependencydefaultfilename
+msgid "Store dependency filename"
+msgstr ""
 
 #: lazarusidestrconsts:dlgcdtstoredpostfix
 msgid "Stored postfix"
@@ -8952,6 +8980,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisprimaryconfigdirectorywherelazarusstoresitsconfig
 msgid "primary config directory, where Lazarus stores its config files. Default is "
+msgstr ""
+
+#: lazarusidestrconsts:srkmecquickcompile
+msgid "quick compile, no linking"
 msgstr ""
 
 #: lazarusidestrconsts:lisoipreadonly

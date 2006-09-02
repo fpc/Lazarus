@@ -526,8 +526,8 @@ msgid "Alt-Key sets column mode"
 msgstr "Alt-toets stelt kolommodus in"
 
 #: lazarusidestrconsts:srkmalternkey
-msgid "Alternative Key"
-msgstr "Alternatieve toets"
+msgid "Alternative key (or 2 keys combination)"
+msgstr ""
 
 #: lazarusidestrconsts:lisprojoptsalwaysbuildevenifnothingchanged
 msgid "Always build (even if nothing changed)"
@@ -1229,6 +1229,10 @@ msgstr "Maak schoon + Bouw"
 msgid "Clear"
 msgstr "Leeg"
 
+#: lazarusidestrconsts:lispckeditcleardependencydefaultfilename
+msgid "Clear dependency filename"
+msgstr ""
+
 #: lazarusidestrconsts:lisdebugoptionsfrmclearlogonrun
 msgid "Clear log on run"
 msgstr ""
@@ -1352,10 +1356,6 @@ msgstr "Kolom selectie methode"
 #: lazarusidestrconsts:liscodetoolsoptscomma
 msgid "Comma"
 msgstr "Komma"
-
-#: lazarusidestrconsts:srkmcommand
-msgid "Command "
-msgstr "Commando "
 
 #: lazarusidestrconsts:liscommandafter
 msgid "Command after"
@@ -1628,6 +1628,10 @@ msgstr "Kopieerfout"
 #: lazarusidestrconsts:uemcopyfilename
 msgid "Copy filename"
 msgstr "Kopieer bestandsnaam"
+
+#: lazarusidestrconsts:lisldcopyfrominherited
+msgid "Copy from inherited"
+msgstr ""
 
 #: lazarusidestrconsts:lisdsgcopycomponents
 msgid "Copy selected components to clipboard"
@@ -3102,8 +3106,12 @@ msgid "Goto selected source line"
 msgstr "Ga naar geselecteerde broncode regel"
 
 #: lazarusidestrconsts:srkmgrabkey
-msgid "Grab Key"
-msgstr "Toets opnemen"
+msgid "Grab key"
+msgstr ""
+
+#: lazarusidestrconsts:srkmgrabsecondkey
+msgid "Grab second key"
+msgstr ""
 
 #: lazarusidestrconsts:dlggrabbercolor
 msgid "Grabber color"
@@ -3989,9 +3997,13 @@ msgstr "Houd procedure volgorde aan"
 msgid "Keep them and continue"
 msgstr ""
 
-#: lazarusidestrconsts:srkmkey
+#: lazarusidestrconsts:lisedtexttoolkey
 msgid "Key"
 msgstr "Toets"
+
+#: lazarusidestrconsts:srkmkey
+msgid "Key (or 2 keys combination)"
+msgstr ""
 
 #: lazarusidestrconsts:dlgkeymappingscheme
 msgid "Key Mapping Scheme"
@@ -4601,6 +4613,10 @@ msgstr "Editor naar links"
 msgid "Move editor right"
 msgstr "Editor naar rechts"
 
+#: lazarusidestrconsts:lisldmoveentriestoinherited
+msgid "Move entries to inherited"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefsmovenodedown
 msgid "Move node down"
 msgstr "Verplaats node omlaag"
@@ -4640,6 +4656,10 @@ msgstr "Meervoudige regel"
 #: lazarusidestrconsts:dlgmultiselect
 msgid "Multi Select"
 msgstr "Meervoudige selectie"
+
+#: lazarusidestrconsts:lisfindfilemultiline
+msgid "Multi line pattern"
+msgstr ""
 
 #: lazarusidestrconsts:fdinvalidmultiselectiontext
 msgid "Multiselected components must be of a single form."
@@ -5640,6 +5660,10 @@ msgstr "Publiceer project directory"
 #: lazarusidestrconsts:lispublishedmethod
 msgid "Published Method"
 msgstr "Gepubliceerde methode"
+
+#: lazarusidestrconsts:lismenuquickcompile
+msgid "Quick compile"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuquicksyntaxcheck
 msgid "Quick syntax check"
@@ -6952,6 +6976,10 @@ msgstr "Stop debugsessie"
 #: lazarusidestrconsts:lisstopthedebugging
 msgid "Stop the debugging?"
 msgstr "Stoppen met debuggen?"
+
+#: lazarusidestrconsts:lispckeditsetdependencydefaultfilename
+msgid "Store dependency filename"
+msgstr ""
 
 #: lazarusidestrconsts:dlgcdtstoredpostfix
 msgid "Stored postfix"
@@ -8964,6 +8992,10 @@ msgstr "selecteer een macro"
 #: lazarusidestrconsts:lisprimaryconfigdirectorywherelazarusstoresitsconfig
 msgid "primary config directory, where Lazarus stores its config files. Default is "
 msgstr "eerste configuratie directory, waar Lazarus de configuratie bestanden opslaat. Standaard is "
+
+#: lazarusidestrconsts:srkmecquickcompile
+msgid "quick compile, no linking"
+msgstr ""
 
 #: lazarusidestrconsts:lisoipreadonly
 msgid "readonly"

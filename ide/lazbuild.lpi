@@ -1,0 +1,303 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <ProjectOptions>
+    <PathDelim Value="/"/>
+    <Version Value="5"/>
+    <General>
+      <MainUnit Value="0"/>
+      <IconPath Value="./"/>
+      <TargetFileExt Value=""/>
+      <ActiveEditorIndexAtStart Value="1"/>
+    </General>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IgnoreBinaries Value="False"/>
+      <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
+      <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
+    </PublishOptions>
+    <RunParams>
+      <local>
+        <FormatVersion Value="1"/>
+        <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
+      </local>
+    </RunParams>
+    <RequiredPackages Count="2">
+      <Item1>
+        <PackageName Value="SynEdit"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="IDEIntf"/>
+      </Item2>
+    </RequiredPackages>
+    <Units Count="23">
+      <Unit0>
+        <Filename Value="lazbuild.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="lazbuild"/>
+        <CursorPos X="52" Y="30"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="0"/>
+        <UsageCount Value="24"/>
+        <Loaded Value="True"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="main.pp"/>
+        <UnitName Value="Main"/>
+        <CursorPos X="14" Y="1593"/>
+        <TopLine Value="1590"/>
+        <EditorIndex Value="2"/>
+        <UsageCount Value="12"/>
+        <Bookmarks Count="1">
+          <Item0 X="8" Y="923" ID="0"/>
+        </Bookmarks>
+        <Loaded Value="True"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="../../../../freepascal/fpc/fcl/inc/custapp.pp"/>
+        <UnitName Value="CustApp"/>
+        <CursorPos X="107" Y="60"/>
+        <TopLine Value="38"/>
+        <UsageCount Value="10"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="idetranslations.pas"/>
+        <UnitName Value="IDETranslations"/>
+        <CursorPos X="11" Y="67"/>
+        <TopLine Value="42"/>
+        <UsageCount Value="10"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="lazarusidestrconsts.pas"/>
+        <UnitName Value="LazarusIDEStrConsts"/>
+        <CursorPos X="15" Y="265"/>
+        <TopLine Value="241"/>
+        <EditorIndex Value="1"/>
+        <UsageCount Value="11"/>
+        <Loaded Value="True"/>
+      </Unit4>
+      <Unit5>
+        <Filename Value="ideprotocol.pas"/>
+        <UnitName Value="IDEProtocol"/>
+        <CursorPos X="1" Y="29"/>
+        <TopLine Value="2"/>
+        <UsageCount Value="10"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="ideoptiondefs.pas"/>
+        <UnitName Value="IDEOptionDefs"/>
+        <CursorPos X="1" Y="319"/>
+        <TopLine Value="298"/>
+        <UsageCount Value="10"/>
+      </Unit6>
+      <Unit7>
+        <Filename Value="idedefs.pas"/>
+        <UnitName Value="IDEDefs"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+      </Unit7>
+      <Unit8>
+        <Filename Value="lazconf.pp"/>
+        <UnitName Value="LazConf"/>
+        <CursorPos X="13" Y="81"/>
+        <TopLine Value="56"/>
+        <UsageCount Value="10"/>
+      </Unit8>
+      <Unit9>
+        <Filename Value="include/unix/lazbaseconf.inc"/>
+        <CursorPos X="3" Y="90"/>
+        <TopLine Value="84"/>
+        <UsageCount Value="10"/>
+      </Unit9>
+      <Unit10>
+        <Filename Value="environmentopts.pp"/>
+        <UnitName Value="EnvironmentOpts"/>
+        <CursorPos X="14" Y="21"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+      </Unit10>
+      <Unit11>
+        <Filename Value="initialsetupdlgs.pas"/>
+        <UnitName Value="InitialSetupDlgs"/>
+        <CursorPos X="3" Y="64"/>
+        <TopLine Value="54"/>
+        <UsageCount Value="10"/>
+      </Unit11>
+      <Unit12>
+        <Filename Value="mainbase.pas"/>
+        <UnitName Value="MainBase"/>
+        <CursorPos X="1" Y="143"/>
+        <TopLine Value="143"/>
+        <EditorIndex Value="3"/>
+        <UsageCount Value="12"/>
+        <Loaded Value="True"/>
+      </Unit12>
+      <Unit13>
+        <Filename Value="miscoptions.pas"/>
+        <UnitName Value="MiscOptions"/>
+        <CursorPos X="3" Y="88"/>
+        <TopLine Value="53"/>
+        <UsageCount Value="10"/>
+      </Unit13>
+      <Unit14>
+        <Filename Value="codetoolsoptions.pas"/>
+        <UnitName Value="CodeToolsOptions"/>
+        <CursorPos X="3" Y="94"/>
+        <TopLine Value="44"/>
+        <UsageCount Value="10"/>
+      </Unit14>
+      <Unit15>
+        <Filename Value="mainintf.pas"/>
+        <UnitName Value="MainIntf"/>
+        <CursorPos X="1" Y="171"/>
+        <TopLine Value="139"/>
+        <EditorIndex Value="6"/>
+        <UsageCount Value="12"/>
+        <Loaded Value="True"/>
+      </Unit15>
+      <Unit16>
+        <Filename Value="../ideintf/macrointf.pas"/>
+        <UnitName Value="MacroIntf"/>
+        <CursorPos X="3" Y="29"/>
+        <TopLine Value="4"/>
+        <UsageCount Value="10"/>
+      </Unit16>
+      <Unit17>
+        <Filename Value="exttooleditdlg.pas"/>
+        <UnitName Value="ExtToolEditDlg"/>
+        <CursorPos X="22" Y="34"/>
+        <TopLine Value="10"/>
+        <UsageCount Value="10"/>
+      </Unit17>
+      <Unit18>
+        <Filename Value="dialogprocs.pas"/>
+        <UnitName Value="DialogProcs"/>
+        <CursorPos X="29" Y="68"/>
+        <TopLine Value="44"/>
+        <EditorIndex Value="5"/>
+        <UsageCount Value="12"/>
+        <Loaded Value="True"/>
+      </Unit18>
+      <Unit19>
+        <Filename Value="ideprocs.pp"/>
+        <UnitName Value="IDEProcs"/>
+        <CursorPos X="11" Y="95"/>
+        <TopLine Value="70"/>
+        <EditorIndex Value="4"/>
+        <UsageCount Value="12"/>
+        <Loaded Value="True"/>
+      </Unit19>
+      <Unit20>
+        <Filename Value="../packager/pkgmanager.pas"/>
+        <UnitName Value="PkgManager"/>
+        <CursorPos X="9" Y="136"/>
+        <TopLine Value="125"/>
+        <EditorIndex Value="7"/>
+        <UsageCount Value="11"/>
+        <Loaded Value="True"/>
+      </Unit20>
+      <Unit21>
+        <Filename Value="../packager/basepkgmanager.pas"/>
+        <UnitName Value="BasePkgManager"/>
+        <CursorPos X="19" Y="109"/>
+        <TopLine Value="70"/>
+        <EditorIndex Value="8"/>
+        <UsageCount Value="11"/>
+        <Loaded Value="True"/>
+      </Unit21>
+      <Unit22>
+        <Filename Value="../ideintf/packageintf.pas"/>
+        <UnitName Value="PackageIntf"/>
+        <CursorPos X="3" Y="65"/>
+        <TopLine Value="34"/>
+        <EditorIndex Value="9"/>
+        <UsageCount Value="11"/>
+        <Loaded Value="True"/>
+      </Unit22>
+    </Units>
+    <JumpHistory Count="17" HistoryIndex="16">
+      <Position1>
+        <Filename Value="main.pp"/>
+        <Caret Line="1593" Column="14" TopLine="1590"/>
+      </Position1>
+      <Position2>
+        <Filename Value="lazbuild.lpr"/>
+        <Caret Line="110" Column="3" TopLine="96"/>
+      </Position2>
+      <Position3>
+        <Filename Value="lazbuild.lpr"/>
+        <Caret Line="52" Column="15" TopLine="25"/>
+      </Position3>
+      <Position4>
+        <Filename Value="mainbase.pas"/>
+        <Caret Line="196" Column="26" TopLine="156"/>
+      </Position4>
+      <Position5>
+        <Filename Value="dialogprocs.pas"/>
+        <Caret Line="261" Column="1" TopLine="205"/>
+      </Position5>
+      <Position6>
+        <Filename Value="mainbase.pas"/>
+        <Caret Line="1011" Column="7" TopLine="976"/>
+      </Position6>
+      <Position7>
+        <Filename Value="dialogprocs.pas"/>
+        <Caret Line="265" Column="10" TopLine="244"/>
+      </Position7>
+      <Position8>
+        <Filename Value="mainbase.pas"/>
+        <Caret Line="1322" Column="3" TopLine="1281"/>
+      </Position8>
+      <Position9>
+        <Filename Value="../packager/pkgmanager.pas"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
+      </Position9>
+      <Position10>
+        <Filename Value="../packager/pkgmanager.pas"/>
+        <Caret Line="1186" Column="23" TopLine="1159"/>
+      </Position10>
+      <Position11>
+        <Filename Value="../packager/pkgmanager.pas"/>
+        <Caret Line="945" Column="1" TopLine="945"/>
+      </Position11>
+      <Position12>
+        <Filename Value="../packager/pkgmanager.pas"/>
+        <Caret Line="4456" Column="1" TopLine="4406"/>
+      </Position12>
+      <Position13>
+        <Filename Value="../packager/pkgmanager.pas"/>
+        <Caret Line="78" Column="27" TopLine="36"/>
+      </Position13>
+      <Position14>
+        <Filename Value="lazbuild.lpr"/>
+        <Caret Line="30" Column="52" TopLine="1"/>
+      </Position14>
+      <Position15>
+        <Filename Value="lazarusidestrconsts.pas"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
+      </Position15>
+      <Position16>
+        <Filename Value="lazarusidestrconsts.pas"/>
+        <Caret Line="686" Column="25" TopLine="660"/>
+      </Position16>
+      <Position17>
+        <Filename Value="lazarusidestrconsts.pas"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
+      </Position17>
+    </JumpHistory>
+  </ProjectOptions>
+  <CompilerOptions>
+    <Version Value="5"/>
+    <SearchPaths>
+      <IncludeFiles Value="include/;include/$(TargetOS)/"/>
+      <OtherUnitFiles Value="../designer/;../packager/;../components/codetools/units/$(TargetCPU)-$(TargetOS)/"/>
+      <UnitOutputDirectory Value="../units/$(TargetCPU)-$(TargetOS)"/>
+    </SearchPaths>
+    <CodeGeneration>
+      <Generate Value="Faster"/>
+    </CodeGeneration>
+    <Other>
+      <CompilerPath Value="$(CompPath)"/>
+    </Other>
+  </CompilerOptions>
+</CONFIG>

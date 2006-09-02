@@ -912,22 +912,11 @@ var
   Parses the command line for the IDE.
 -------------------------------------------------------------------------------}
 class procedure TMainIDE.ParseCmdLineOptions;
-const
-  PrimaryConfPathOptLong='--primary-config-path=';
-  PrimaryConfPathOptShort='--pcp=';
-  SecondaryConfPathOptLong='--secondary-config-path=';
-  SecondaryConfPathOptShort='--scp=';
-  NoSplashScreenOptLong='--no-splash-screen';
-  NoSplashScreenOptShort='--nsc';
-  StartedByStartLazarusOpt='--started-by-startlazarus';
-  SkipLastProjectOpt='--skip-last-project';
-  DebugLogOpt='--debug-log=';
-  LanguageOpt='--language=';
 
   function ParamIsOption(ParamIndex: integer;
     const Option: string): boolean;
   begin
-    Result:=AnsiCompareText(ParamStr(ParamIndex),Option)=0;
+    Result:=CompareText(ParamStr(ParamIndex),Option)=0;
   end;
 
   function ParamIsOptionPlusValue(ParamIndex: integer;

@@ -529,8 +529,8 @@ msgid "Alt-Key sets column mode"
 msgstr "Mode kolom set Alt-Key"
 
 #: lazarusidestrconsts:srkmalternkey
-msgid "Alternative Key"
-msgstr "Kunci Alternatif"
+msgid "Alternative key (or 2 keys combination)"
+msgstr ""
 
 #: lazarusidestrconsts:lisprojoptsalwaysbuildevenifnothingchanged
 msgid "Always build (even if nothing changed)"
@@ -1232,6 +1232,10 @@ msgstr "Bersihkan+Bangun"
 msgid "Clear"
 msgstr "Clear"
 
+#: lazarusidestrconsts:lispckeditcleardependencydefaultfilename
+msgid "Clear dependency filename"
+msgstr ""
+
 #: lazarusidestrconsts:lisdebugoptionsfrmclearlogonrun
 msgid "Clear log on run"
 msgstr "bersihkan log saat dijalankan"
@@ -1355,10 +1359,6 @@ msgstr "Mode pemilihan kolom"
 #: lazarusidestrconsts:liscodetoolsoptscomma
 msgid "Comma"
 msgstr "Koma"
-
-#: lazarusidestrconsts:srkmcommand
-msgid "Command "
-msgstr "Perintah"
 
 #: lazarusidestrconsts:liscommandafter
 msgid "Command after"
@@ -1631,6 +1631,10 @@ msgstr "Copy salah"
 #: lazarusidestrconsts:uemcopyfilename
 msgid "Copy filename"
 msgstr "Copy nama file"
+
+#: lazarusidestrconsts:lisldcopyfrominherited
+msgid "Copy from inherited"
+msgstr ""
 
 #: lazarusidestrconsts:lisdsgcopycomponents
 msgid "Copy selected components to clipboard"
@@ -3105,8 +3109,12 @@ msgid "Goto selected source line"
 msgstr "Pergi ke baris sumber yang dipilih"
 
 #: lazarusidestrconsts:srkmgrabkey
-msgid "Grab Key"
-msgstr "Ambil Kunci"
+msgid "Grab key"
+msgstr ""
+
+#: lazarusidestrconsts:srkmgrabsecondkey
+msgid "Grab second key"
+msgstr ""
 
 #: lazarusidestrconsts:dlggrabbercolor
 msgid "Grabber color"
@@ -3992,9 +4000,13 @@ msgstr "Biarkan urutan dari procedure"
 msgid "Keep them and continue"
 msgstr ""
 
-#: lazarusidestrconsts:srkmkey
+#: lazarusidestrconsts:lisedtexttoolkey
 msgid "Key"
 msgstr "Kunci"
+
+#: lazarusidestrconsts:srkmkey
+msgid "Key (or 2 keys combination)"
+msgstr ""
 
 #: lazarusidestrconsts:dlgkeymappingscheme
 msgid "Key Mapping Scheme"
@@ -4604,6 +4616,10 @@ msgstr "Pindahkan editor ke kiri"
 msgid "Move editor right"
 msgstr "Pindahkan editor ke kanan"
 
+#: lazarusidestrconsts:lisldmoveentriestoinherited
+msgid "Move entries to inherited"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefsmovenodedown
 msgid "Move node down"
 msgstr "Turunkan node"
@@ -4643,6 +4659,10 @@ msgstr "Multi Baris"
 #: lazarusidestrconsts:dlgmultiselect
 msgid "Multi Select"
 msgstr "Pilihan Multi"
+
+#: lazarusidestrconsts:lisfindfilemultiline
+msgid "Multi line pattern"
+msgstr ""
 
 #: lazarusidestrconsts:fdinvalidmultiselectiontext
 msgid "Multiselected components must be of a single form."
@@ -5643,6 +5663,10 @@ msgstr "Direktori publikasi proyek"
 #: lazarusidestrconsts:lispublishedmethod
 msgid "Published Method"
 msgstr "Metode Published"
+
+#: lazarusidestrconsts:lismenuquickcompile
+msgid "Quick compile"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuquicksyntaxcheck
 msgid "Quick syntax check"
@@ -6955,6 +6979,10 @@ msgstr "Hentikan debugging?"
 #: lazarusidestrconsts:lisstopthedebugging
 msgid "Stop the debugging?"
 msgstr "Hentikan debugging?"
+
+#: lazarusidestrconsts:lispckeditsetdependencydefaultfilename
+msgid "Store dependency filename"
+msgstr ""
 
 #: lazarusidestrconsts:dlgcdtstoredpostfix
 msgid "Stored postfix"
@@ -8967,6 +8995,10 @@ msgstr "silahkan pilih makro"
 #: lazarusidestrconsts:lisprimaryconfigdirectorywherelazarusstoresitsconfig
 msgid "primary config directory, where Lazarus stores its config files. Default is "
 msgstr "direktori konfigurasi utama, dimana Lazarus menyimpan file konfigurasinya. Default adalah"
+
+#: lazarusidestrconsts:srkmecquickcompile
+msgid "quick compile, no linking"
+msgstr ""
 
 #: lazarusidestrconsts:lisoipreadonly
 msgid "readonly"

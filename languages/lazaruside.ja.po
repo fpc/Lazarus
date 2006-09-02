@@ -525,7 +525,7 @@ msgid "Alt-Key sets column mode"
 msgstr ""
 
 #: lazarusidestrconsts:srkmalternkey
-msgid "Alternative Key"
+msgid "Alternative key (or 2 keys combination)"
 msgstr ""
 
 #: lazarusidestrconsts:lisprojoptsalwaysbuildevenifnothingchanged
@@ -1228,6 +1228,10 @@ msgstr "消去＋生成"
 msgid "Clear"
 msgstr "消去"
 
+#: lazarusidestrconsts:lispckeditcleardependencydefaultfilename
+msgid "Clear dependency filename"
+msgstr ""
+
 #: lazarusidestrconsts:lisdebugoptionsfrmclearlogonrun
 msgid "Clear log on run"
 msgstr ""
@@ -1350,10 +1354,6 @@ msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsoptscomma
 msgid "Comma"
-msgstr ""
-
-#: lazarusidestrconsts:srkmcommand
-msgid "Command "
 msgstr ""
 
 #: lazarusidestrconsts:liscommandafter
@@ -1626,6 +1626,10 @@ msgstr ""
 
 #: lazarusidestrconsts:uemcopyfilename
 msgid "Copy filename"
+msgstr ""
+
+#: lazarusidestrconsts:lisldcopyfrominherited
+msgid "Copy from inherited"
 msgstr ""
 
 #: lazarusidestrconsts:lisdsgcopycomponents
@@ -3101,7 +3105,11 @@ msgid "Goto selected source line"
 msgstr "選択ソース行へ行く"
 
 #: lazarusidestrconsts:srkmgrabkey
-msgid "Grab Key"
+msgid "Grab key"
+msgstr ""
+
+#: lazarusidestrconsts:srkmgrabsecondkey
+msgid "Grab second key"
 msgstr ""
 
 #: lazarusidestrconsts:dlggrabbercolor
@@ -3988,8 +3996,12 @@ msgstr ""
 msgid "Keep them and continue"
 msgstr ""
 
-#: lazarusidestrconsts:srkmkey
+#: lazarusidestrconsts:lisedtexttoolkey
 msgid "Key"
+msgstr ""
+
+#: lazarusidestrconsts:srkmkey
+msgid "Key (or 2 keys combination)"
 msgstr ""
 
 #: lazarusidestrconsts:dlgkeymappingscheme
@@ -4600,6 +4612,10 @@ msgstr ""
 msgid "Move editor right"
 msgstr ""
 
+#: lazarusidestrconsts:lisldmoveentriestoinherited
+msgid "Move entries to inherited"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefsmovenodedown
 msgid "Move node down"
 msgstr ""
@@ -4639,6 +4655,10 @@ msgstr ""
 #: lazarusidestrconsts:dlgmultiselect
 msgid "Multi Select"
 msgstr "多重選択"
+
+#: lazarusidestrconsts:lisfindfilemultiline
+msgid "Multi line pattern"
+msgstr ""
 
 #: lazarusidestrconsts:fdinvalidmultiselectiontext
 msgid "Multiselected components must be of a single form."
@@ -5638,6 +5658,10 @@ msgstr "パブリッシュプロジェクトディレクトリ"
 
 #: lazarusidestrconsts:lispublishedmethod
 msgid "Published Method"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuquickcompile
+msgid "Quick compile"
 msgstr ""
 
 #: lazarusidestrconsts:lismenuquicksyntaxcheck
@@ -6951,6 +6975,10 @@ msgstr "デバッグを停止してよろしいですか?"
 #: lazarusidestrconsts:lisstopthedebugging
 msgid "Stop the debugging?"
 msgstr "デバッグを停止してよろしいですか?"
+
+#: lazarusidestrconsts:lispckeditsetdependencydefaultfilename
+msgid "Store dependency filename"
+msgstr ""
 
 #: lazarusidestrconsts:dlgcdtstoredpostfix
 msgid "Stored postfix"
@@ -8962,6 +8990,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisprimaryconfigdirectorywherelazarusstoresitsconfig
 msgid "primary config directory, where Lazarus stores its config files. Default is "
+msgstr ""
+
+#: lazarusidestrconsts:srkmecquickcompile
+msgid "quick compile, no linking"
 msgstr ""
 
 #: lazarusidestrconsts:lisoipreadonly

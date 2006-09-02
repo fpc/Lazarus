@@ -47,7 +47,7 @@ uses
   // FCL, LCL
   Classes, SysUtils, LCLProc, Forms, Controls, FileUtil, Dialogs, Menus,
   // codetools
-  CodeToolManager, CodeCache, BasicCodeTools,
+  CodeToolManager, CodeCache, BasicCodeTools, DefineTemplates,
   AVL_Tree, Laz_XMLCfg,
   // IDE Interface
   IDEExternToolIntf, NewItemIntf, ProjectIntf, PackageIntf, MenuIntf,
@@ -58,7 +58,7 @@ uses
   ComponentReg, UComponentManMain, PackageEditor, AddToPackageDlg, PackageDefs,
   PackageLinks, PackageSystem, OpenInstalledPkgDlg, PkgGraphExplorer,
   BrokenDependenciesDlg, CompilerOptions, ExtToolEditDlg,
-  MsgView, BuildLazDialog, DefineTemplates, NewDialog,
+  MsgView, BuildLazDialog, NewDialog,
   ProjectInspector, ComponentPalette, UnitEditor, AddFileToAPackageDlg,
   LazarusPackageIntf, PublishProjectDlg, InstallPkgSetDlg,
   // bosses
@@ -126,9 +126,6 @@ type
     procedure PackageGraphEndUpdate(Sender: TObject; GraphChanged: boolean);
     procedure PackageGraphFindFPCUnit(const UnitName, Directory: string;
                                       var Filename: string);
-    // package links
-    function PkgLinksDependencyOwnerGetPkgFilename(PkgLinks: TPackageLinks;
-      Dependency: TPkgDependency): boolean;
 
     // menu
     procedure MainIDEitmPkgOpenPackageFileClick(Sender: TObject);
@@ -146,8 +143,14 @@ type
     procedure IDEComponentPaletteOpenPackage(Sender: TObject);
     procedure IDEComponentPaletteOpenUnit(Sender: TObject);
 
-    // misc
+    // LCL
     procedure OnApplicationIdle(Sender: TObject);
+
+    // package links
+    function PkgLinksDependencyOwnerGetPkgFilename(PkgLinks: TPackageLinks;
+      Dependency: TPkgDependency): boolean;
+
+    // misc
     procedure GetDependencyOwnerDescription(Dependency: TPkgDependency;
                                             var Description: string);
     procedure GetDependencyOwnerDirectory(Dependency: TPkgDependency;
@@ -1183,7 +1186,7 @@ begin
       end;
       
       // check if new file is read/writable
-      Result:=MainIDE.DoCheckCreatingFile(NewFileName,true);
+      Result:=CheckCreatingFile(NewFileName,true);
       if Result=mrAbort then exit;
 
     until Result<>mrRetry;

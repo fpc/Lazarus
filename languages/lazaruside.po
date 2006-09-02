@@ -734,6 +734,10 @@ msgstr ""
 msgid "Build all"
 msgstr ""
 
+#: lazarusidestrconsts:lismenuquickcompile
+msgid "Quick compile"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuabortbuild
 msgid "Abort Build"
 msgstr ""
@@ -4283,7 +4287,7 @@ msgid "Edit Keys"
 msgstr ""
 
 #: lazarusidestrconsts:srkmcommand
-msgid "Command "
+msgid "Command:"
 msgstr ""
 
 #: lazarusidestrconsts:srkmconflic
@@ -4307,11 +4311,15 @@ msgid "Edit keys for command"
 msgstr ""
 
 #: lazarusidestrconsts:srkmkey
-msgid "Key"
+msgid "Key (or 2 keys combination)"
 msgstr ""
 
 #: lazarusidestrconsts:srkmgrabkey
-msgid "Grab Key"
+msgid "Grab key"
+msgstr ""
+
+#: lazarusidestrconsts:srkmgrabsecondkey
+msgid "Grab second key"
 msgstr ""
 
 #: lazarusidestrconsts:srkmpresskey
@@ -4319,7 +4327,7 @@ msgid "Please press a key ..."
 msgstr ""
 
 #: lazarusidestrconsts:srkmalternkey
-msgid "Alternative Key"
+msgid "Alternative key (or 2 keys combination)"
 msgstr ""
 
 #: lazarusidestrconsts:srkmalreadyconnected
@@ -4876,6 +4884,10 @@ msgstr ""
 
 #: lazarusidestrconsts:srkmecbuildall
 msgid "build all files of program/project"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecquickcompile
+msgid "quick compile, no linking"
 msgstr ""
 
 #: lazarusidestrconsts:srkmecabortbuild
@@ -7006,6 +7018,10 @@ msgstr ""
 msgid "Regular expressions"
 msgstr ""
 
+#: lazarusidestrconsts:lisfindfilemultiline
+msgid "Multi line pattern"
+msgstr ""
+
 #: lazarusidestrconsts:lisfindfilewhere
 msgid "Where"
 msgstr ""
@@ -8012,6 +8028,14 @@ msgstr ""
 
 #: lazarusidestrconsts:lispckeditreadddependency
 msgid "Re-Add dependency"
+msgstr ""
+
+#: lazarusidestrconsts:lispckeditsetdependencydefaultfilename
+msgid "Store dependency filename"
+msgstr ""
+
+#: lazarusidestrconsts:lispckeditcleardependencydefaultfilename
+msgid "Clear dependency filename"
 msgstr ""
 
 #: lazarusidestrconsts:lispckeditcompile
@@ -9152,6 +9176,14 @@ msgstr ""
 
 #: lazarusidestrconsts:lislazdocbrowseexamplebutton
 msgid "Browse"
+msgstr ""
+
+#: lazarusidestrconsts:lisldmoveentriestoinherited
+msgid "Move entries to inherited"
+msgstr ""
+
+#: lazarusidestrconsts:lisldcopyfrominherited
+msgid "Copy from inherited"
 msgstr ""
 
 #: lazarusidestrconsts:lisenablemacros

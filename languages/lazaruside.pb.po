@@ -518,8 +518,8 @@ msgid "Alt-Key sets column mode"
 msgstr "Tecla Alt ajusta o modo de coluna"
 
 #: lazarusidestrconsts:srkmalternkey
-msgid "Alternative Key"
-msgstr "Tecla Alternativa"
+msgid "Alternative key (or 2 keys combination)"
+msgstr ""
 
 #: lazarusidestrconsts:lisprojoptsalwaysbuildevenifnothingchanged
 msgid "Always build (even if nothing changed)"
@@ -1221,6 +1221,10 @@ msgstr "Clean+Build"
 msgid "Clear"
 msgstr "Clear"
 
+#: lazarusidestrconsts:lispckeditcleardependencydefaultfilename
+msgid "Clear dependency filename"
+msgstr ""
+
 #: lazarusidestrconsts:lisdebugoptionsfrmclearlogonrun
 msgid "Clear log on run"
 msgstr "Limpar log ao executar"
@@ -1344,10 +1348,6 @@ msgstr "Modo de seleção da coluna"
 #: lazarusidestrconsts:liscodetoolsoptscomma
 msgid "Comma"
 msgstr "Virgula"
-
-#: lazarusidestrconsts:srkmcommand
-msgid "Command "
-msgstr "Comando "
 
 #: lazarusidestrconsts:liscommandafter
 msgid "Command after"
@@ -1619,6 +1619,10 @@ msgstr "Erro de Copia"
 
 #: lazarusidestrconsts:uemcopyfilename
 msgid "Copy filename"
+msgstr ""
+
+#: lazarusidestrconsts:lisldcopyfrominherited
+msgid "Copy from inherited"
 msgstr ""
 
 #: lazarusidestrconsts:lisdsgcopycomponents
@@ -3094,8 +3098,12 @@ msgid "Goto selected source line"
 msgstr "Ir para linha de codigo selecioanda"
 
 #: lazarusidestrconsts:srkmgrabkey
-msgid "Grab Key"
-msgstr "Pegar Chave"
+msgid "Grab key"
+msgstr ""
+
+#: lazarusidestrconsts:srkmgrabsecondkey
+msgid "Grab second key"
+msgstr ""
 
 #: lazarusidestrconsts:dlggrabbercolor
 msgid "Grabber color"
@@ -3981,9 +3989,13 @@ msgstr "Ajustar a ordem das procedures"
 msgid "Keep them and continue"
 msgstr ""
 
-#: lazarusidestrconsts:srkmkey
+#: lazarusidestrconsts:lisedtexttoolkey
 msgid "Key"
 msgstr "Tecla"
+
+#: lazarusidestrconsts:srkmkey
+msgid "Key (or 2 keys combination)"
+msgstr ""
 
 #: lazarusidestrconsts:dlgkeymappingscheme
 msgid "Key Mapping Scheme"
@@ -4593,6 +4605,10 @@ msgstr "Mover editor a esquerda"
 msgid "Move editor right"
 msgstr "Mover editor a direita"
 
+#: lazarusidestrconsts:lisldmoveentriestoinherited
+msgid "Move entries to inherited"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefsmovenodedown
 msgid "Move node down"
 msgstr "Mover Ramificação abaixo"
@@ -4632,6 +4648,10 @@ msgstr "Multiplas Linhas"
 #: lazarusidestrconsts:dlgmultiselect
 msgid "Multi Select"
 msgstr "Seleção Multipla"
+
+#: lazarusidestrconsts:lisfindfilemultiline
+msgid "Multi line pattern"
+msgstr ""
 
 #: lazarusidestrconsts:fdinvalidmultiselectiontext
 msgid "Multiselected components must be of a single form."
@@ -5632,6 +5652,10 @@ msgstr "Diretório para publicação do projeto"
 #: lazarusidestrconsts:lispublishedmethod
 msgid "Published Method"
 msgstr "Método Publicado"
+
+#: lazarusidestrconsts:lismenuquickcompile
+msgid "Quick compile"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuquicksyntaxcheck
 msgid "Quick syntax check"
@@ -6944,6 +6968,10 @@ msgstr "Para debugging?"
 #: lazarusidestrconsts:lisstopthedebugging
 msgid "Stop the debugging?"
 msgstr "Para o debugging?"
+
+#: lazarusidestrconsts:lispckeditsetdependencydefaultfilename
+msgid "Store dependency filename"
+msgstr ""
 
 #: lazarusidestrconsts:dlgcdtstoredpostfix
 msgid "Stored postfix"
@@ -8956,6 +8984,10 @@ msgstr "por favor selecione uma macro"
 #: lazarusidestrconsts:lisprimaryconfigdirectorywherelazarusstoresitsconfig
 msgid "primary config directory, where Lazarus stores its config files. Default is "
 msgstr "diretório primario de configuração, onde Lazarus armazena seus arquivos de configuração. O Padrão é "
+
+#: lazarusidestrconsts:srkmecquickcompile
+msgid "quick compile, no linking"
+msgstr ""
 
 #: lazarusidestrconsts:lisoipreadonly
 msgid "readonly"
