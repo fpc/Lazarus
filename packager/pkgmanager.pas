@@ -51,7 +51,7 @@ uses
   AVL_Tree, Laz_XMLCfg,
   // IDE Interface
   IDEExternToolIntf, NewItemIntf, ProjectIntf, PackageIntf, MenuIntf,
-  LazIDEIntf,
+  MacroIntf, LazIDEIntf,
   // IDE
   LazConf, LazarusIDEStrConsts, IDEProcs, ObjectLists, DialogProcs, IDECommands,
   EnvironmentOpts, MiscOptions, InputHistory, ProjectDefs, Project,
@@ -557,47 +557,14 @@ end;
 
 procedure TPkgManager.GetDependencyOwnerDescription(
   Dependency: TPkgDependency; var Description: string);
-var
-  DepOwner: TObject;
 begin
-  DepOwner:=Dependency.Owner;
-  if (DepOwner<>nil) then begin
-    if DepOwner is TLazPackage then begin
-      Description:=Format(lisPkgMangPackage, [TLazPackage(DepOwner).IDAsString]
-        );
-    end else if DepOwner is TProject then begin
-      Description:=Format(lisPkgMangProject, [ExtractFileNameOnly(TProject(
-        DepOwner).ProjectInfoFile)]);
-    end else if DepOwner=Self then begin
-      Description:=lisPkgMangLazarus;
-    end else begin
-      Description:=DepOwner.ClassName
-    end;
-  end else begin
-    Description:=Format(lisPkgMangDependencyWithoutOwner, [Dependency.AsString]
-      );
-  end;
+  GetDescriptionOfDependencyOwner(Dependency,Description);
 end;
 
 procedure TPkgManager.GetDependencyOwnerDirectory(Dependency: TPkgDependency;
   var Directory: string);
-var
-  DepOwner: TObject;
 begin
-  DepOwner:=Dependency.Owner;
-  if (DepOwner<>nil) then begin
-    if DepOwner is TLazPackage then begin
-      Directory:=TLazPackage(DepOwner).Directory;
-    end else if DepOwner is TProject then begin
-      Directory:=TProject(DepOwner).ProjectDirectory;
-    end else if DepOwner=Self then begin
-      Directory:=EnvironmentOptions.LazarusDirectory;
-    end else begin
-      Directory:=''
-    end;
-  end else begin
-    Directory:=''
-  end;
+  GetDirectoryOfDependencyOwner(Dependency,Directory);
 end;
 
 procedure TPkgManager.GetWritablePkgOutputDirectory(APackage: TLazPackage;
@@ -613,9 +580,9 @@ begin
   //debugln('TPkgManager.GetWritablePkgOutputDirectory AnOutDirectory=',AnOutDirectory,' ',dbgs(DirectoryIsWritable(AnOutDirectory)));
   
   // output directory is not writable
-  // -> redirect to home directory
+  // -> redirect to config directory
   NewOutDir:=SetDirSeparators('/$(TargetCPU)-$(TargetOS)');
-  MainIDE.MacroList.SubstituteStr(NewOutDir);
+  IDEMacros.SubstituteMacros(NewOutDir);
   NewOutDir:=TrimFilename(GetPrimaryConfigPath+PathDelim+'lib'+PathDelim
                           +APackage.Name+NewOutDir);
   AnOutDirectory:=NewOutDir;
@@ -1390,8 +1357,7 @@ begin
     SourceNotebook.ClearErrorLines;
 
     // compile package
-    Result:=EnvironmentOptions.ExternalTools.Run(FPCMakeTool,
-                          MainIDE.MacroList,nil,nil);
+    Result:=LazarusIDE.RunExternalTool(FPCMakeTool);
     if Result<>mrOk then begin
       Result:=MessageDlg('fpcmake failed',
         'Calling '+FPCMakeTool.Filename+' to create Makefile from '
@@ -1831,7 +1797,7 @@ begin
       // check output state file of required package
       if RequiredPackage.OutputStateFile<>'' then begin
         OtherStateFile:=RequiredPackage.OutputStateFile;
-        MainIDE.MacroList.SubstituteStr(OtherStateFile);
+        IDEMacros.SubstituteMacros(OtherStateFile);
         if FileExists(OtherStateFile)
         and (FileAge(OtherStateFile)>StateFileAge) then begin
           DebugLn('TPkgManager.CheckIfDependenciesNeedCompilation  Required ',
@@ -2346,7 +2312,7 @@ end;
 function TPkgManager.GetPublishPackageDir(APackage: TLazPackage): string;
 begin
   Result:=APackage.PublishOptions.DestinationDirectory;
-  if MainIDE.MacroList.SubstituteStr(Result) then begin
+  if IDEMacros.SubstituteMacros(Result) then begin
     if FilenameIsAbsolute(Result) then begin
       Result:=AppendPathDelim(TrimFilename(Result));
     end else begin
@@ -4148,7 +4114,7 @@ begin
   if Result<>mrOk then exit;
 
   TargetDir:=MiscellaneousOptions.BuildLazOpts.TargetDirectory;
-  MainIDE.MacroList.SubstituteStr(TargetDir);
+  IDEMacros.SubstituteMacros(TargetDir);
   if not ForceDirectory(TargetDir) then begin
     Result:=MessageDlg(lisPkgMangUnableToCreateDirectory,
       Format(lisPkgMangUnableToCreateTargetDirectoryForLazarus, [#13, '"',
@@ -4202,14 +4168,6 @@ begin
   // add include path to config directory
   ConfigDir:=AppendPathDelim(GetPrimaryConfigPath);
   AddOption(PrepareCmdLineOption('-Fi'+ConfigDir));
-  
-  // add target option
-  // ToDo
-  {TargetDir:=MiscellaneousOptions.BuildLazOpts.TargetDirectory;
-  MainIDE.MacroList.SubstituteStr(TargetDir);
-  // ToDo write a function in lazconf for this
-  //if TargetDir<>'' then
-    AddOption('-FE'+TargetFilename);}
 end;
 
 function TPkgManager.DoPublishPackage(APackage: TLazPackage;

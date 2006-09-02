@@ -44,8 +44,9 @@ uses
 {$IFDEF IDE_MEM_CHECK}
   MemCheck,
 {$ENDIF}
-  Classes, SysUtils, Forms,
+  Classes, SysUtils, Forms, FileUtil,
   LazIDEIntf, PackageIntf, MenuIntf,
+  LazarusIDEStrConsts, EnvironmentOpts,
   PackageDefs, ComponentReg, CompilerOptions, Project;
 
 type
@@ -158,6 +159,12 @@ function PkgSaveFlagsToString(Flags: TPkgSaveFlags): string;
 function PkgOpenFlagsToString(Flags: TPkgOpenFlags): string;
 function PkgCompileFlagsToString(Flags: TPkgCompileFlags): string;
 
+procedure GetDescriptionOfDependencyOwner(Dependency: TPkgDependency;
+                                          var Description: string);
+procedure GetDirectoryOfDependencyOwner(Dependency: TPkgDependency;
+                                        var Directory: string);
+
+
 implementation
 
 function PkgSaveFlagsToString(Flags: TPkgSaveFlags): string;
@@ -197,6 +204,51 @@ begin
     Result:=Result+PkgCompileFlagNames[f];
   end;
   Result:='['+Result+']';
+end;
+
+procedure GetDescriptionOfDependencyOwner(Dependency: TPkgDependency;
+  var Description: string);
+var
+  DepOwner: TObject;
+begin
+  DepOwner:=Dependency.Owner;
+  if (DepOwner<>nil) then begin
+    if DepOwner is TLazPackage then begin
+      Description:=Format(lisPkgMangPackage, [TLazPackage(DepOwner).IDAsString]
+        );
+    end else if DepOwner is TProject then begin
+      Description:=Format(lisPkgMangProject, [ExtractFileNameOnly(TProject(
+        DepOwner).ProjectInfoFile)]);
+    end else if DepOwner=PkgBoss then begin
+      Description:=lisPkgMangLazarus;
+    end else begin
+      Description:=DepOwner.ClassName
+    end;
+  end else begin
+    Description:=Format(lisPkgMangDependencyWithoutOwner, [Dependency.AsString]
+      );
+  end;
+end;
+
+procedure GetDirectoryOfDependencyOwner(Dependency: TPkgDependency;
+  var Directory: string);
+var
+  DepOwner: TObject;
+begin
+  DepOwner:=Dependency.Owner;
+  if (DepOwner<>nil) then begin
+    if DepOwner is TLazPackage then begin
+      Directory:=TLazPackage(DepOwner).Directory;
+    end else if DepOwner is TProject then begin
+      Directory:=TProject(DepOwner).ProjectDirectory;
+    end else if DepOwner=PkgBoss then begin
+      Directory:=EnvironmentOptions.LazarusDirectory;
+    end else begin
+      Directory:=''
+    end;
+  end else begin
+    Directory:=''
+  end;
 end;
 
 { TBasePkgManager }
