@@ -124,7 +124,8 @@ procedure TIpChmDataProvider.DoGetImage(Sender: TIpHtmlNode; const URL: string;
   var Picture: TPicture);
 var
 Stream: TMemoryStream = nil;
-OrigImage: TFPCustomImageReader;
+ImageClass: TFPCustomImageReaderClass;
+ImageReader: TFPCustomImageReader;
 OutImage: TFPWriterBMP= nil;
 Img : TFPMemoryImage = nil;
 FileExt: String;
@@ -132,21 +133,10 @@ begin
   //DebugLn('Getting Image ',(Url));
 
   FileExt := ExtractFileExt(URL);
-  if FileExt = '.jpg' then
-    OrigImage := TFPReaderJPEG.Create
-  else if FileExt = '.png' then
-    OrigImage := TFPReaderPNG.Create
-  else if FileExt = '.xpm' then
-    OrigImage := TFPReaderXPM.Create
-  else if FileExt = '.bmp' then
-    OrigImage := TFPReaderBMP.Create
-  else if FileExt = '.ico' then
-    OrigImage := TFPReaderBMP.Create
-  else begin
-    OrigImage := nil;
-  end;
+  ImageClass := GetFPImageReaderForFileExtension(FileExt);
 
-  if OrigImage <> nil then begin
+  if ImageClass <> nil then begin
+    ImageReader := ImageClass.Create;
     try
       Picture := TPicture.Create;
       Picture.Graphic := TBitmap.Create;
@@ -154,7 +144,7 @@ begin
       if Stream = nil then exit;
       Img := TFPMemoryImage.Create(0,0);
       Img.UsePalette:=False;
-      Img.LoadFromStream(Stream, OrigImage);
+      Img.LoadFromStream(Stream, ImageReader);
       Stream.Free;
       Stream := TMemoryStream.Create;
       OutImage := TFPWriterBMP.Create;
@@ -167,7 +157,7 @@ begin
     finally
       if Assigned(OutImage) then OutImage.Free;
       if Assigned(Img) then Img.Free;
-      if Assigned(OrigImage) then OrigImage.Free;
+      if Assigned(ImageReader) then ImageReader.Free;
       if Assigned(Stream) then Stream.Free;
     end;
   end

@@ -21,7 +21,7 @@
 unit chmreader;
 
 {$mode objfpc}{$H+}
-
+{ $DEFINE CHM_DEBUG}
 interface
 
 uses
@@ -74,7 +74,7 @@ type
     //procedure LookupPMGIchunk(var PMGLChunk: TPMGIndexChunk);
     procedure FillDirectoryEntries(StartCount: Integer);
     procedure GetSections(out Sections: TStringList);
-    function GetBlockFromSection(SectionPrefix: String; StartPos: QWord; Length: QWord): TMemoryStream;
+    function GetBlockFromSection(SectionPrefix: String; StartPos: QWord; BlockLength: QWord): TMemoryStream;
     function FindBlocksFromUnCompressedAddr(var ResetTableEntry: TPMGListChunkEntry;
        out CompressedSize: Int64; out UnCompressedSize: Int64; out LZXResetTable: TLZXResetTableArr): QWord;  // Returns the blocksize
   public
@@ -175,6 +175,7 @@ begin
 
   if fChmHeader.Version > 2 then
     fStream.Read(fHeaderSuffix.Offset, SizeOf(QWord));
+  fHeaderSuffix.Offset := LEtoN(fHeaderSuffix.Offset);
   // otherwise this is set in fill directory entries
   
   fStream.Position := LEtoN(fHeaderEntries[1].PosFromZero);
@@ -188,9 +189,9 @@ begin
     ChunkSize := LEtoN(ChunkSize);
     Density := LEtoN(Density);
     IndexTreeDepth := LEtoN(IndexTreeDepth);
-    IndexOfRootTrunk := LEtoN(IndexOfRootChunk);
-    FirstPMGLChunk := LEtoN(FirstPMGLChunkIndex);
-    LastPMGLChunk := LEtoN(LastPMGLChunkIndex);
+    IndexOfRootChunk := LEtoN(IndexOfRootChunk);
+    FirstPMGLChunkIndex := LEtoN(FirstPMGLChunkIndex);
+    LastPMGLChunkIndex := LEtoN(LastPMGLChunkIndex);
     //Unknown2
     DirectoryChunkCount := LEtoN(DirectoryChunkCount);
     LanguageID := LEtoN(LanguageID);
@@ -270,7 +271,7 @@ procedure TChmReader.ReadCommonData;
            fLocaleID := LEtoN(fSystem.ReadDWord);
            fSystem.Position := (fSystem.Position + EntryLength) - SizeOf(DWord);
          end;
-         6: // chm file name. use this to get the index an toc name
+         6: // chm file name. use this to get the index and toc name
          begin
            if EntryLength > 511 then EntryLength := 511;
            fSystem.Read(Data[0], EntryLength);
@@ -389,8 +390,10 @@ begin
    ReadFromSystem;
    ReadFromWindows;
    ReadContextIds;
-   //WriteLn('TOC=',fTocfile);
-   //WriteLn('DefaultPage=',fDefaultPage);
+   {$IFDEF CHM_DEBUG}   
+   WriteLn('TOC=',fTocfile);
+   WriteLn('DefaultPage=',fDefaultPage);
+   {$ENDIF}
 end;
 
 function TChmReader.GetChunkType(Stream: TMemoryStream; ChunkIndex: LongInt): TPMGchunktype;
@@ -584,7 +587,7 @@ procedure TChmReader.GetSections(out Sections: TStringList);
 var
   Stream: TStream;
   EntryCount: Word;
-  X: Integer;
+  X, I: Integer;
   WString: array [0..31] of WideChar;
   StrLength: Word;
 begin
@@ -598,8 +601,11 @@ begin
   for X := 0 to EntryCount -1 do begin
     StrLength := LEtoN(Stream.ReadWord);
     if StrLength > 31 then StrLength := 31;
-    // are widestrings endian specfic?
     Stream.Read(WString, SizeOf(WideChar)*(StrLength+1)); // the strings are stored null terminated
+    {$IFDEF ENDIAN_BIG}
+    for I := 0 to StrLength-1 do
+      WString[I] := WideChar(LEtoN(Ord(WString[I])));
+    {$ENDIF}
     Sections.Add(WString);
   end;
   // the sections are sorted alphabetically, this way section indexes will jive
@@ -608,7 +614,7 @@ begin
 end;
 
 function TChmReader.GetBlockFromSection(SectionPrefix: String; StartPos: QWord;
-  Length: QWord): TMemoryStream;
+  BlockLength: QWord): TMemoryStream;
 var
   Compressed: Boolean;
   Sig: Array [0..3] of char;
@@ -625,12 +631,18 @@ var
   WriteStart: LongWord;
   ReadCount:LongInt;
   LZXState: PLZXState;
-  InBuf: PByte;
+  InBuf: array of Byte;
   OutBuf: PByte;
   BlockSize: QWord;
   X: Integer;
   FirstBlock, LastBlock: LongInt;
   ResultCode: LongInt;
+  procedure ReadBlock;
+  begin
+    if ReadCount > Length(InBuf) then
+      SetLength(InBuf, ReadCount);
+    fStream.Read(InBuf[0], ReadCount);
+  end;
 begin
   // okay now the fun stuff ;)
   Result := nil;
@@ -640,7 +652,7 @@ begin
     if ObjectExists(SectionPrefix+'Content') > 0 then begin
       Result := TMemoryStream.Create;
       fStream.Position := fHeaderSuffix.Offset + fCachedEntry.ContentOffset + StartPos;
-      Result.CopyFrom(fStream, Length);
+      Result.CopyFrom(fStream, BlockLength);
     end;
     Exit;
   end
@@ -664,12 +676,12 @@ begin
       FirstBlock := StartPos div BlockSize
     else
       FirstBlock := 0;
-    LastBlock := (StartPos+Length) div BlockSize;
+    LastBlock := (StartPos+BlockLength) div BlockSize;
 
     if ObjectExists(SectionPrefix+'Content') = 0 then exit;
     Result := TMemoryStream.Create;
-    Result.Size := Length;
-    InBuf := AllocMem(BlockSize);
+    Result.Size := BlockLength;
+    SetLength(InBuf,BlockSize);
     OutBuf := GetMem(BlockSize);
     // First Init a PLZXState
     LZXState := LZXinit(16);
@@ -681,8 +693,8 @@ begin
       fStream.Position := fHeaderSuffix.Offset + fCachedEntry.ContentOffset + (ResetTable[FirstBLock-1]);
       ReadCount := ResetTable[FirstBlock] - ResetTable[FirstBlock-1];
       BlockWriteLength:=BlockSize;
-      fStream.Read(InBuf^, ReadCount);
-      ResultCode := LZXdecompress(LZXState, InBuf, OutBuf, ReadCount, LongInt(BlockWriteLength));
+      ReadBlock;
+      ResultCode := LZXdecompress(LZXState, @InBuf[0], OutBuf, ReadCount, LongInt(BlockWriteLength));
     end;
     // now start the actual decompression loop
     for X := FirstBlock to LastBlock do begin
@@ -701,24 +713,25 @@ begin
       BlockWriteLength := BlockSize;
       
       if FirstBlock = LastBlock then begin
-        WriteCount := Length;
+        WriteCount := BlockLength;
       end
       else if X = LastBlock then
-        WriteCount := (StartPos+Length) - (X*BlockSize)
+        WriteCount := (StartPos+BlockLength) - (X*BlockSize)
       else WriteCount := BlockSize - WriteStart;
 
-      ReadCount := fStream.Read(InBuf^, ReadCount);
-      ResultCode := LZXdecompress(LZXState, InBuf, OutBuf, ReadCount, LongInt(BlockWriteLength));
+      ReadBlock;
+      ResultCode := LZXdecompress(LZXState, @InBuf[0], OutBuf, ReadCount, LongInt(BlockWriteLength));
 
       //now write the decompressed data to the stream
       if ResultCode = DECR_OK then begin
         Result.Write(OutBuf[WriteStart], Int64(WriteCount));
       end
       else begin
-        //WriteLn('Decompress FAILED with error code: ', ResultCode);
+        {$IFDEF CHM_DEBUG} // windows gui program will cause an exception with writeln's
+        WriteLn('Decompress FAILED with error code: ', ResultCode);
+        {$ENDIF}
         Result.Free;
         Result := Nil;
-        FreeMem(InBuf);
         FreeMem(OutBuf);
         SetLength(ResetTable,0);
         LZXteardown(LZXState);
@@ -729,7 +742,6 @@ begin
       if (X < LastBlock) and (X mod 2 > 0) then LZXreset(LZXState);
 
     end;
-    Freemem(InBuf);
     FreeMem(OutBuf);
     SetLength(ResetTable,0);
     LZXteardown(LZXState);
@@ -740,7 +752,7 @@ function TChmReader.FindBlocksFromUnCompressedAddr(var ResetTableEntry: TPMGList
   out CompressedSize: Int64; out UnCompressedSize: Int64; out LZXResetTable: TLZXResetTableArr): QWord;
 var
   BlockCount: LongWord;
-  X: Integer;
+  I: Integer;
 begin
   Result := 0;
   fStream.Position := fHeaderSuffix.Offset + ResetTableEntry.ContentOffset;
@@ -759,8 +771,10 @@ begin
 
   SetLength(LZXResetTable, BlockCount);
   fStream.Read(LZXResetTable[0], SizeOf(QWord)*BlockCount);
-
-
+  {$IFDEF ENDIAN_BIG}
+  for I := 0 to High(LZXResetTable) do
+    LZXResetTable[I] := LEtoN(LZXResetTable[I]);
+  {$ENDIF}
 end;
 
 { TContextList }

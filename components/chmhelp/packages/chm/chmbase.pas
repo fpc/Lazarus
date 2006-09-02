@@ -121,7 +121,6 @@ begin
     end;
   end;
   Result := (total shl 7) + temp;
-  Result := LEtoN(Result);
 
 end;
 
