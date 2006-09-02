@@ -416,10 +416,16 @@ begin
   end;
   if FDefaultBrowser='' then begin
     // Then search in path. Prefer open source ;)
-    if Find('mozilla')
+    if Find('htmlview')
+    or Find('firefox')
+    or Find('mozilla')
     or Find('galeon')
     or Find('konqueror')
     or Find('safari')
+    {$IFDEF DARWIN}
+    { safari is not on path for MacOS }
+    or Find('/Applications/Safari.app/Contents/MacOS/Safari')
+    {$ENDIF}
     or Find('netscape')
     or Find('opera')
     or Find('iexplore') then ;

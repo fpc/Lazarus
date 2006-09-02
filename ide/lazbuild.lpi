@@ -43,7 +43,7 @@
       <Unit1>
         <Filename Value="main.pp"/>
         <UnitName Value="Main"/>
-        <CursorPos X="29" Y="3655"/>
+        <CursorPos X="20" Y="3656"/>
         <TopLine Value="3628"/>
         <EditorIndex Value="2"/>
         <UsageCount Value="19"/>
@@ -226,32 +226,7 @@
         <Loaded Value="True"/>
       </Unit23>
     </Units>
-    <JumpHistory Count="6" HistoryIndex="5">
-      <Position1>
-        <Filename Value="main.pp"/>
-        <Caret Line="3650" Column="12" TopLine="3628"/>
-      </Position1>
-      <Position2>
-        <Filename Value="../lcl/defaulttranslator.pas"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
-      </Position2>
-      <Position3>
-        <Filename Value="main.pp"/>
-        <Caret Line="3653" Column="33" TopLine="3624"/>
-      </Position3>
-      <Position4>
-        <Filename Value="main.pp"/>
-        <Caret Line="1027" Column="5" TopLine="1002"/>
-      </Position4>
-      <Position5>
-        <Filename Value="idetranslations.pas"/>
-        <Caret Line="67" Column="11" TopLine="42"/>
-      </Position5>
-      <Position6>
-        <Filename Value="main.pp"/>
-        <Caret Line="3653" Column="9" TopLine="3628"/>
-      </Position6>
-    </JumpHistory>
+    <JumpHistory Count="0" HistoryIndex="-1"/>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>

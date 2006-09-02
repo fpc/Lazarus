@@ -651,20 +651,20 @@ begin
   // skip the '//' after the colon
   if (URLStartPos<=len) and (URL[URLStartPos]='/') then inc(URLStartPos);
   if (URLStartPos<=len) and (URL[URLStartPos]='/') then inc(URLStartPos);
-  // search param delimiter ?
+  // search for param delimiter (?) or anchor delimiter (#)
   ParamStartPos:=ColonPos+1;
-  while (ParamStartPos<=len) and (URL[ParamStartPos]<>'?') do
+  while (ParamStartPos<=len) and not (URL[ParamStartPos]in ['?', '#']) do
     inc(ParamStartPos);
   // get URLPath and URLParams
   URLPath:=copy(URL,URLStartPos,ParamStartPos-URLStartPos);
-  URLParams:=copy(URL,ParamStartPos+1,len-ParamStartPos);
+  URLParams:=copy(URL,ParamStartPos,len-ParamStartPos+1);
 end;
 
 function CombineURL(const URLType, URLPath, URLParams: string): string;
 begin
   Result:=URLType+'://'+URLPath;
   if URLParams<>'' then
-    Result:=Result+'?'+URLParams;
+    Result:=Result+URLParams;
 end;
 
 function URLFilenameIsAbsolute(const Filename: string): boolean;
@@ -698,7 +698,7 @@ var
 begin
   Result:=1;
   Len:=length(URL);
-  while (Result<=Len) and (URL[Result]<>'?') do inc(Result);
+  while (Result<=Len) and not (URL[Result] in ['?','#']) do inc(Result);
 end;
 
 function ChompURLParams(const URL: string): string;
@@ -715,7 +715,9 @@ begin
   PathStart:=FindURLPathStart(URL);
   if PathStart<1 then exit;
   p:=FindURLPathEnd(URL);
-  while (p>0) and (URL[p]<>'/') do dec(p);
+  repeat
+    dec(p);
+  until (p<=0) or (URL[p]='/');
   if p<=PathStart then exit;
   Result:=copy(URL,1,p);
 end;
