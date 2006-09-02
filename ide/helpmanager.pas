@@ -253,7 +253,7 @@ end;
 
 function TIDEHelpDatabases.SubstituteMacros(var s: string): boolean;
 begin
-  Result:=LazarusIDE.SubstituteMacros(s);
+  Result:=IDEMacros.SubstituteMacros(s);
 end;
 
 { THelpManager }

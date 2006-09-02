@@ -180,9 +180,6 @@ type
                           TryWithoutNumber: boolean): string; virtual; abstract;
     function GetTestBuildDirectory: string; virtual; abstract;
 
-    // macros
-    function SubstituteMacros(var s: string): boolean; virtual; abstract;
-
     // codetools
     function BeginCodeTools: boolean; virtual; abstract;
     procedure DoJumpToCodeToolBossError; virtual; abstract;

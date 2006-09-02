@@ -880,9 +880,6 @@ type
     procedure SaveEnvironment; override;
     procedure LoadDesktopSettings(TheEnvironmentOptions: TEnvironmentOptions);
     procedure SaveDesktopSettings(TheEnvironmentOptions: TEnvironmentOptions);
-
-    // macros
-    function SubstituteMacros(var s: string): boolean; override;
   end;
 
 
@@ -1190,7 +1187,7 @@ begin
   FreeThenNil(TheCompiler);
   FreeThenNil(HiddenWindowsOnRun);
   FreeThenNil(TheOutputFilter);
-  FreeThenNil(MacroList);
+  FreeThenNil(GlobalMacroList);
   FreeThenNil(IDEMacros);
   FreeThenNil(IDECodeMacros);
   FreeThenNil(LazProjectFileDescriptors);
@@ -1589,70 +1586,74 @@ end;
 
 procedure TMainIDE.SetupTransferMacros;
 begin
-  MacroList:=TTransferMacroList.Create;
+  GlobalMacroList:=TTransferMacroList.Create;
   IDEMacros:=TLazIDEMacros.Create;
-
-  MacroList.Add(TTransferMacro.Create('Col','',
-                    lisCursorColumnInCurrentEditor,nil,[]));
-  MacroList.Add(TTransferMacro.Create('Row','',
-                    lisCursorRowInCUrrentEditor,nil,[]));
-  MacroList.Add(TTransferMacro.Create('CompPath','',
-                    lisCompilerFilename,nil,[]));
-  MacroList.Add(TTransferMacro.Create('CurToken','',
-                    lisWordAtCursorInCurrentEditor,nil,[]));
-  MacroList.Add(TTransferMacro.Create('EdFile','',
-                    lisExpandedFilenameOfCurrentEditor,nil,[]));
-  MacroList.Add(TTransferMacro.Create('FPCSrcDir','',
-                    lisFreePascalSourceDirectory,nil,[]));
-  MacroList.Add(TTransferMacro.Create('LazarusDir','',
-                    lisLazarusDirectory,nil,[]));
-  MacroList.Add(TTransferMacro.Create('LCLWidgetType','',
-                    lisLCLWidgetType,nil,[]));
-  MacroList.Add(TTransferMacro.Create('TargetCPU','',
-                    lisTargetCPU,nil,[]));
-  MacroList.Add(TTransferMacro.Create('TargetOS','',
-                    lisTargetOS,nil,[]));
-  MacroList.Add(TTransferMacro.Create('LanguageID','',
-                    lisLazarusLanguageID,nil,[]));
-  MacroList.Add(TTransferMacro.Create('LanguageName','',
-                    lisLazarusLanguageName,nil,[]));
-  MacroList.Add(TTransferMacro.Create('Params','',
-                    lisCommandLineParamsOfProgram,nil,[]));
-  MacroList.Add(TTransferMacro.Create('Prompt','',
-                    lisPromptForValue,@OnMacroPromptFunction,[tmfInteractive]));
-  MacroList.Add(TTransferMacro.Create('ProjFile','',
-                    lisProjectFilename,nil,[]));
-  MacroList.Add(TTransferMacro.Create('ProjPath','',
-                    lisProjectDirectory,nil,[]));
-  MacroList.Add(TTransferMacro.Create('Save','',
-                    lisSaveCurrentEditorFile,nil,[tmfInteractive]));
-  MacroList.Add(TTransferMacro.Create('SaveAll','',
-                    lisSaveAllModified,nil,[tmfInteractive]));
-  MacroList.Add(TTransferMacro.Create('TargetFile','',
-                    lisTargetFilenameOfProject,nil,[]));
-  MacroList.Add(TTransferMacro.Create('TargetCmdLine','',
-                    lisTargetFilenamePlusParams,nil,[]));
-  MacroList.Add(TTransferMacro.Create('TestDir','',
-                    lisTestDirectory,nil,[]));
-  MacroList.Add(TTransferMacro.Create('RunCmdLine','',
-                    lisLaunchingCmdLine,nil,[]));
-  MacroList.Add(TTransferMacro.Create('ProjPublishDir','',
-                    lisPublishProjDir,nil,[]));
-  MacroList.Add(TTransferMacro.Create('ProjUnitPath','',
-                    lisProjectUnitPath,nil,[]));
-  MacroList.Add(TTransferMacro.Create('ProjIncPath','',
-                    lisProjectIncPath,nil,[]));
-  MacroList.Add(TTransferMacro.Create('ProjSrcPath','',
-                    lisProjectSrcPath,nil,[]));
-  MacroList.Add(TTransferMacro.Create('ConfDir','',
-                    lisProjectSrcPath,nil,[]));
-  MacroList.Add(TTransferMacro.Create('MakeExe','',
-                    lisMakeExe,@OnMacroFuncMakeExe,[]));
-  MacroList.Add(TTransferMacro.Create('Project','',
-                    lisProjectMacroProperties,@OnMacroFuncProject,[]));
-
-  MacroList.OnSubstitution:=@OnMacroSubstitution;
   CompilerOptions.OnParseString:=@OnSubstituteCompilerOption;
+  GlobalMacroList.OnSubstitution:=@OnMacroSubstitution;
+
+  // source editor
+  GlobalMacroList.Add(TTransferMacro.Create('Col','',
+                    lisCursorColumnInCurrentEditor,nil,[]));
+  GlobalMacroList.Add(TTransferMacro.Create('Row','',
+                    lisCursorRowInCUrrentEditor,nil,[]));
+  GlobalMacroList.Add(TTransferMacro.Create('CurToken','',
+                    lisWordAtCursorInCurrentEditor,nil,[]));
+  GlobalMacroList.Add(TTransferMacro.Create('EdFile','',
+                    lisExpandedFilenameOfCurrentEditor,nil,[]));
+  GlobalMacroList.Add(TTransferMacro.Create('Prompt','',
+                    lisPromptForValue,@OnMacroPromptFunction,[tmfInteractive]));
+  GlobalMacroList.Add(TTransferMacro.Create('Save','',
+                    lisSaveCurrentEditorFile,nil,[tmfInteractive]));
+  GlobalMacroList.Add(TTransferMacro.Create('SaveAll','',
+                    lisSaveAllModified,nil,[tmfInteractive]));
+
+  // environment
+  GlobalMacroList.Add(TTransferMacro.Create('CompPath','',
+                    lisCompilerFilename,nil,[]));
+  GlobalMacroList.Add(TTransferMacro.Create('FPCSrcDir','',
+                    lisFreePascalSourceDirectory,nil,[]));
+  GlobalMacroList.Add(TTransferMacro.Create('LazarusDir','',
+                    lisLazarusDirectory,nil,[]));
+  GlobalMacroList.Add(TTransferMacro.Create('LanguageID','',
+                    lisLazarusLanguageID,nil,[]));
+  GlobalMacroList.Add(TTransferMacro.Create('LanguageName','',
+                    lisLazarusLanguageName,nil,[]));
+  GlobalMacroList.Add(TTransferMacro.Create('TestDir','',
+                    lisTestDirectory,nil,[]));
+  GlobalMacroList.Add(TTransferMacro.Create('ConfDir','',
+                    lisProjectSrcPath,nil,[]));
+  GlobalMacroList.Add(TTransferMacro.Create('MakeExe','',
+                    lisMakeExe,@OnMacroFuncMakeExe,[]));
+
+  // project
+  GlobalMacroList.Add(TTransferMacro.Create('LCLWidgetType','',
+                    lisLCLWidgetType,nil,[]));
+  GlobalMacroList.Add(TTransferMacro.Create('TargetCPU','',
+                    lisTargetCPU,nil,[]));
+  GlobalMacroList.Add(TTransferMacro.Create('TargetOS','',
+                    lisTargetOS,nil,[]));
+  GlobalMacroList.Add(TTransferMacro.Create('Params','',
+                    lisCommandLineParamsOfProgram,nil,[]));
+  GlobalMacroList.Add(TTransferMacro.Create('ProjFile','',
+                    lisProjectFilename,nil,[]));
+  GlobalMacroList.Add(TTransferMacro.Create('ProjPath','',
+                    lisProjectDirectory,nil,[]));
+  GlobalMacroList.Add(TTransferMacro.Create('TargetFile','',
+                    lisTargetFilenameOfProject,nil,[]));
+  GlobalMacroList.Add(TTransferMacro.Create('TargetCmdLine','',
+                    lisTargetFilenamePlusParams,nil,[]));
+  GlobalMacroList.Add(TTransferMacro.Create('RunCmdLine','',
+                    lisLaunchingCmdLine,nil,[]));
+  GlobalMacroList.Add(TTransferMacro.Create('ProjPublishDir','',
+                    lisPublishProjDir,nil,[]));
+  GlobalMacroList.Add(TTransferMacro.Create('ProjUnitPath','',
+                    lisProjectUnitPath,nil,[]));
+  GlobalMacroList.Add(TTransferMacro.Create('ProjIncPath','',
+                    lisProjectIncPath,nil,[]));
+  GlobalMacroList.Add(TTransferMacro.Create('ProjSrcPath','',
+                    lisProjectSrcPath,nil,[]));
+  GlobalMacroList.Add(TTransferMacro.Create('Project','',
+                    lisProjectMacroProperties,@OnMacroFuncProject,[]));
 
   // projects macro functions
   CodeToolBoss.DefineTree.MacroFunctions.AddExtended(
@@ -2308,7 +2309,7 @@ end;
 
 procedure TMainIDE.mnuCleanDirectoryClicked(Sender: TObject);
 begin
-  ShowCleanDirectoryDialog(Project1.ProjectDirectory,MacroList);
+  ShowCleanDirectoryDialog(Project1.ProjectDirectory,GlobalMacroList);
 end;
 
 Procedure TMainIDE.OnSrcNotebookFileNew(Sender: TObject);
@@ -3311,7 +3312,7 @@ end;
 
 procedure TMainIDE.mnuToolConfigureClicked(Sender: TObject);
 begin
-  if ShowExtToolDialog(EnvironmentOptions.ExternalTools,MacroList)=mrOk then
+  if ShowExtToolDialog(EnvironmentOptions.ExternalTools,GlobalMacroList)=mrOk then
   begin
     // save to enviroment options
     SaveDesktopSettings(EnvironmentOptions);
@@ -3542,11 +3543,6 @@ begin
   end;
 end;
 
-function TMainIDE.SubstituteMacros(var s: string): boolean;
-begin
-  Result:=MacroList.SubstituteStr(s);
-end;
-
 procedure TMainIDE.LoadDesktopSettings(
   TheEnvironmentOptions: TEnvironmentOptions);
 begin
@@ -3717,7 +3713,7 @@ end;
 
 procedure TMainIDE.mnuEnvCodeToolsDefinesEditorClicked(Sender: TObject);
 begin
-  ShowCodeToolsDefinesEditor(CodeToolBoss,CodeToolsOpts,MacroList);
+  ShowCodeToolsDefinesEditor(CodeToolBoss,CodeToolsOpts,GlobalMacroList);
 end;
 
 procedure TMainIDE.mnuEnvRescanFPCSrcDirClicked(Sender: TObject);
@@ -5583,7 +5579,7 @@ begin
 
   // convert macros in filename
   if nfConvertMacros in NewFlags then begin
-    if not MacroList.SubstituteStr(NewFilename) then begin
+    if not GlobalMacroList.SubstituteStr(NewFilename) then begin
       Result:=mrCancel;
       exit;
     end;
@@ -6004,7 +6000,7 @@ begin
 
   // replace macros
   if ofConvertMacros in Flags then begin
-    if not MacroList.SubstituteStr(AFilename) then exit;
+    if not GlobalMacroList.SubstituteStr(AFilename) then exit;
     AFilename:=ExpandFilename(AFilename);
   end;
 
@@ -7562,7 +7558,7 @@ begin
   CheckCompilerOptsDlg:=TCheckCompilerOptsDlg.Create(nil);
   try
     CheckCompilerOptsDlg.Options:=TheCompilerOptions;
-    CheckCompilerOptsDlg.MacroList:=MacroList;
+    CheckCompilerOptsDlg.MacroList:=GlobalMacroList;
     Result:=CheckCompilerOptsDlg.ShowModal;
   finally
     FreeThenNil(CheckCompilerOptsDlg);
@@ -7773,7 +7769,7 @@ begin
       WorkingDir:=Project1.RunParameterOptions.WorkingDirectory;
       if WorkingDir='' then
         WorkingDir:=ExtractFilePath(GetProjectTargetFilename);
-      if not MacroList.SubstituteStr(WorkingDir) then begin
+      if not GlobalMacroList.SubstituteStr(WorkingDir) then begin
         Result:=mrCancel;
         exit;
       end;
@@ -7919,7 +7915,7 @@ end;
 function TMainIDE.DoRunExternalTool(Index: integer): TModalResult;
 begin
   SourceNotebook.ClearErrorLines;
-  Result:=EnvironmentOptions.ExternalTools.Run(Index,MacroList);
+  Result:=EnvironmentOptions.ExternalTools.Run(Index,GlobalMacroList);
   DoCheckFilesOnDisk;
 end;
 
@@ -7952,7 +7948,7 @@ begin
   // save extra options
   IDEBuildFlags:=Flags+[blfOnlyIDE];
   Result:=SaveIDEMakeOptions(MiscellaneousOptions.BuildLazOpts,
-                             MacroList,PkgOptions,IDEBuildFlags);
+                             GlobalMacroList,PkgOptions,IDEBuildFlags);
   if Result<>mrOk then exit;
 end;
 
@@ -7979,7 +7975,7 @@ begin
     // first compile all lazarus components (LCL, SynEdit, CodeTools, ...)
     SourceNotebook.ClearErrorLines;
     Result:=BuildLazarus(MiscellaneousOptions.BuildLazOpts,
-                         EnvironmentOptions.ExternalTools,MacroList,
+                         EnvironmentOptions.ExternalTools,GlobalMacroList,
                          '',EnvironmentOptions.CompilerFilename,
                          EnvironmentOptions.MakeFilename,
                          Flags+[blfWithoutLinkingIDE]);
@@ -8033,7 +8029,7 @@ begin
     // save extra options
     IDEBuildFlags:=Flags+[blfOnlyIDE];
     Result:=SaveIDEMakeOptions(MiscellaneousOptions.BuildLazOpts,
-                               MacroList,PkgOptions,IDEBuildFlags);
+                               GlobalMacroList,PkgOptions,IDEBuildFlags);
     if Result<>mrOk then begin
       DebugLn('TMainIDE.DoBuildLazarus: Save IDEMake options failed.');
       exit;
@@ -8042,7 +8038,7 @@ begin
     // make ide
     SourceNotebook.ClearErrorLines;
     Result:=BuildLazarus(MiscellaneousOptions.BuildLazOpts,
-                         EnvironmentOptions.ExternalTools,MacroList,
+                         EnvironmentOptions.ExternalTools,GlobalMacroList,
                          PkgOptions,EnvironmentOptions.CompilerFilename,
                          EnvironmentOptions.MakeFilename,
                          IDEBuildFlags+[blfUseMakeIDECfg,blfDontClean]);
@@ -8090,7 +8086,7 @@ begin
     ExtTool.CmdLineParams:=Params;
 
     // run
-    Result:=EnvironmentOptions.ExternalTools.Run(ExtTool,MacroList);
+    Result:=EnvironmentOptions.ExternalTools.Run(ExtTool,GlobalMacroList);
   finally
     // clean up
     ExtTool.Free;
@@ -8127,14 +8123,14 @@ begin
                                          '');
     if BuildWorkingDir='' then
       BuildWorkingDir:=ExtractFilePath(ActiveUnitInfo.Filename);
-    if not MacroList.SubstituteStr(BuildWorkingDir) then begin
+    if not GlobalMacroList.SubstituteStr(BuildWorkingDir) then begin
       Result:=mrCancel;
       exit;
     end;
     BuildCommand:=GetIDEStringDirective(DirectiveList,
                                       IDEDirectiveNames[idedBuildCommand],
                                       IDEDirDefaultBuildCommand);
-    if (not MacroList.SubstituteStr(BuildCommand))
+    if (not GlobalMacroList.SubstituteStr(BuildCommand))
     or (BuildCommand='') then begin
       Result:=mrCancel;
       exit;
@@ -8165,7 +8161,7 @@ begin
       ExtTool.CmdLineParams:=Params;
 
       // run
-      Result:=EnvironmentOptions.ExternalTools.Run(ExtTool,MacroList);
+      Result:=EnvironmentOptions.ExternalTools.Run(ExtTool,GlobalMacroList);
     finally
       // clean up
       ExtTool.Free;
@@ -8214,14 +8210,14 @@ begin
                                        IDEDirectiveNames[idedRunWorkingDir],'');
     if RunWorkingDir='' then
       RunWorkingDir:=ExtractFilePath(ActiveUnitInfo.Filename);
-    if not MacroList.SubstituteStr(RunWorkingDir) then begin
+    if not GlobalMacroList.SubstituteStr(RunWorkingDir) then begin
       Result:=mrCancel;
       exit;
     end;
     RunCommand:=GetIDEStringDirective(DirectiveList,
                                     IDEDirectiveNames[idedRunCommand],
                                     IDEDirDefaultRunCommand);
-    if (not MacroList.SubstituteStr(RunCommand))
+    if (not GlobalMacroList.SubstituteStr(RunCommand))
     or (RunCommand='') then begin
       Result:=mrCancel;
       exit;
@@ -8247,7 +8243,7 @@ begin
       ExtTool.CmdLineParams:=Params;
 
       // run
-      Result:=EnvironmentOptions.ExternalTools.Run(ExtTool,MacroList);
+      Result:=EnvironmentOptions.ExternalTools.Run(ExtTool,GlobalMacroList);
     finally
       // clean up
       ExtTool.Free;
@@ -8282,7 +8278,7 @@ begin
       BuildFileDialog.DirectiveList:=DirectiveList;
       BuildFileDialog.BuildFileIfActive:=ActiveUnitInfo.BuildFileIfActive;
       BuildFileDialog.RunFileIfActive:=ActiveUnitInfo.RunFileIfActive;
-      BuildFileDialog.MacroList:=MacroList;
+      BuildFileDialog.MacroList:=GlobalMacroList;
       BuildFileDialog.Filename:=
         CreateRelativePath(ActiveUnitInfo.Filename,Project1.ProjectDirectory);
       if BuildFileDialog.ShowModal<>mrOk then begin
@@ -8547,7 +8543,7 @@ end;
 function TMainIDE.RunExternalTool(Tool: TIDEExternalToolOptions): TModalResult;
 begin
   SourceNotebook.ClearErrorLines;
-  Result:=EnvironmentOptions.ExternalTools.Run(Tool,MacroList);
+  Result:=EnvironmentOptions.ExternalTools.Run(Tool,GlobalMacroList);
   DoCheckFilesOnDisk;
 end;
 
@@ -9021,7 +9017,7 @@ begin
 
   // check command after
   CommandAfter:=Options.CommandAfter;
-  if not MacroList.SubstituteStr(CommandAfter) then begin
+  if not GlobalMacroList.SubstituteStr(CommandAfter) then begin
     Result:=mrCancel;
     exit;
   end;
@@ -9091,7 +9087,7 @@ begin
       Tool.Title:=lisCommandAfterPublishingModule;
       Tool.WorkingDirectory:=DestDir;
       Tool.CmdLineParams:=CmdAfterParams;
-      Result:=EnvironmentOptions.ExternalTools.Run(Tool,MacroList);
+      Result:=EnvironmentOptions.ExternalTools.Run(Tool,GlobalMacroList);
       if Result<>mrOk then exit;
     end else begin
       ShowErrorForCommandAfter;
@@ -9398,9 +9394,9 @@ begin
   CurrentParsedCompilerOption:=Options;
   Result:=UnparsedValue;
   if PlatformIndependent then
-    MacroList.SubstituteStr(Result,CompilerOptionMacroPlatformIndependent)
+    GlobalMacroList.SubstituteStr(Result,CompilerOptionMacroPlatformIndependent)
   else
-    MacroList.SubstituteStr(Result,CompilerOptionMacroNormal);
+    GlobalMacroList.SubstituteStr(Result,CompilerOptionMacroNormal);
 end;
 
 function TMainIDE.OnMacroPromptFunction(const s:string;
@@ -9484,7 +9480,7 @@ end;
 procedure TMainIDE.OnCmdLineCreate(var CmdLine: string; var Abort:boolean);
 // replace all transfer macros in command line
 begin
-  Abort:=not MacroList.SubstituteStr(CmdLine);
+  Abort:=not GlobalMacroList.SubstituteStr(CmdLine);
 end;
 
 procedure TMainIDE.GetIDEFileState(Sender: TObject; const AFilename: string;
@@ -9859,7 +9855,7 @@ begin
   if Result=''
   then begin
     Result:=Project1.RunParameterOptions.CmdLineParams;
-    if MacroList.SubstituteStr(Result) then begin
+    if GlobalMacroList.SubstituteStr(Result) then begin
       TargetFileName:='"'+GetProjectTargetFilename+'"';
       if Result='' then
         Result:=TargetFileName
@@ -9868,14 +9864,14 @@ begin
     end else
       Result:='';
   end else begin
-    if not MacroList.SubstituteStr(Result) then Result:='';
+    if not GlobalMacroList.SubstituteStr(Result) then Result:='';
   end;
 end;
 
 function TMainIDE.GetProjPublishDir: string;
 begin
   Result:=Project1.PublishOptions.DestinationDirectory;
-  if MacroList.SubstituteStr(Result) then begin
+  if GlobalMacroList.SubstituteStr(Result) then begin
     if FilenameIsAbsolute(Result) then begin
       Result:=AppendPathDelim(TrimFilename(Result));
     end else begin
@@ -11173,7 +11169,7 @@ var
     if (Options.ExtraFiles=nil) then begin
       for i:=0 to Options.ExtraFiles.Count-1 do begin
         CurFileMask:=Options.ExtraFiles[i];
-        if not MacroList.SubstituteStr(CurFileMask) then exit;
+        if not GlobalMacroList.SubstituteStr(CurFileMask) then exit;
         if SysUtils.FindFirst(CurFileMask,faAnyFile,FileInfo)=0
         then begin
           CurDirectory:=AppendPathDelim(ExtractFilePath(CurFileMask));

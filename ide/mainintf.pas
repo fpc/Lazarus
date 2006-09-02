@@ -118,7 +118,6 @@ type
     function GetToolStatus: TIDEToolStatus; virtual; abstract;
     function GetActiveProject: TLazProject; override;
   public
-    MacroList: TTransferMacroList;
     HiddenWindowsOnRun: TList; // list of forms, that were automatically hidden
                                // and will be shown when debugged program stops
 
@@ -287,16 +286,6 @@ type
   end;
   
 
-{ TLazIDEMacros }
-
-type
-  TLazIDEMacros = class(TIDEMacros)
-  public
-    function StrHasMacros(const s: string): boolean; override;
-    function SubstituteMacros(var s: string): boolean; override;
-  end;
-
-
 implementation
 
 
@@ -328,18 +317,6 @@ begin
     end;
   end;
   Result:='['+Result+']';
-end;
-
-{ TLazIDEMacros }
-
-function TLazIDEMacros.StrHasMacros(const s: string): boolean;
-begin
-  Result:=MainIDEInterface.MacroList.StrHasMacros(s);
-end;
-
-function TLazIDEMacros.SubstituteMacros(var s: string): boolean;
-begin
-  Result:=MainIDEInterface.MacroList.SubstituteStr(s);
 end;
 
 { TMainIDEInterface }

@@ -38,7 +38,7 @@ unit IDEDefs;
 interface
 
 uses
-  Classes, SysUtils, Menus;
+  Classes, SysUtils, Menus, MacroIntf;
 
 type
   TIDEFileStateFlag = (
@@ -55,7 +55,7 @@ type
   TGetIDEFileStateEvent = procedure(Sender: TObject; const Filename: string;
     NeededFlags: TIDEFileStateFlags; var ResultFlags: TIDEFileStateFlags)
     of object;
-    
+
 implementation
 
 end.

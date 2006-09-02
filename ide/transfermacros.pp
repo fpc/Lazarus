@@ -108,6 +108,18 @@ type
                                           write SetMarkUnhandledMacros;
   end;
 
+{ TLazIDEMacros }
+
+type
+  TLazIDEMacros = class(TIDEMacros)
+  public
+    function StrHasMacros(const s: string): boolean; override;
+    function SubstituteMacros(var s: string): boolean; override;
+  end;
+  
+var
+  GlobalMacroList: TTransferMacroList = nil;
+
 implementation
 
 var
@@ -486,6 +498,18 @@ function TTransferMacroList.MF_Trim(const Filename: string; const Data: PtrInt;
   var Abort: boolean): string;
 begin
   Result:=TrimFilename(Filename);
+end;
+
+{ TLazIDEMacros }
+
+function TLazIDEMacros.StrHasMacros(const s: string): boolean;
+begin
+  Result:=GlobalMacroList.StrHasMacros(s);
+end;
+
+function TLazIDEMacros.SubstituteMacros(var s: string): boolean;
+begin
+  Result:=GlobalMacroList.SubstituteStr(s);
 end;
 
 procedure InternalInit;

@@ -32,7 +32,8 @@ program lazbuild;
 uses
   Classes, SysUtils, CustApp, LCLProc, Forms, Controls, FileUtil,
   CodeToolManager,
-  InitialSetupDlgs, OutputFilter, Compiler,
+  MacroIntf,
+  IDEProcs, InitialSetupDlgs, OutputFilter, Compiler,
   EnvironmentOpts, IDETranslations, LazarusIDEStrConsts, LazConf, MainIntf,
   BasePkgManager, PackageDefs, PackageLinks, PackageSystem;
   
@@ -59,6 +60,8 @@ type
                                           var Directory: string);
     procedure GetWritablePkgOutputDirectory(APackage: TLazPackage;
                                             var AnOutDirectory: string);
+    // package graph
+    procedure PackageGraphAddPackage(Pkg: TLazPackage);
   protected
     function BuildFile(Filename: string): boolean;
     function BuildPackage(const Filename: string): boolean;
@@ -119,11 +122,16 @@ begin
   // output directory is not writable
   // -> redirect to config directory
   NewOutDir:=SetDirSeparators('/$(TargetCPU)-$(TargetOS)');
-  MacroList.SubstituteStr(NewOutDir);
+  IDEMacros.SubstituteMacros(NewOutDir);
   NewOutDir:=TrimFilename(GetPrimaryConfigPath+PathDelim+'lib'+PathDelim
                           +APackage.Name+NewOutDir);
   AnOutDirectory:=NewOutDir;
   //debugln('TPkgManager.GetWritablePkgOutputDirectory APackage=',APackage.IDAsString,' AnOutDirectory="',AnOutDirectory,'"');
+end;
+
+procedure TLazBuildApplication.PackageGraphAddPackage(Pkg: TLazPackage);
+begin
+  if FileExists(Pkg.FileName) then PkgLinks.AddUserLink(Pkg);
 end;
 
 function TLazBuildApplication.BuildFile(Filename: string): boolean;
@@ -243,16 +251,16 @@ begin
   // package links
   PkgLinks:=TPackageLinks.Create;
   PkgLinks.UpdateAll;
-  PkgLinks.DependencyOwnerGetPkgFilename:=@PkgLinksDependencyOwnerGetPkgFilename;
+  //PkgLinks.DependencyOwnerGetPkgFilename:=@PkgLinksDependencyOwnerGetPkgFilename;
   
   // package graph
   PackageGraph:=TLazPackageGraph.Create;
-  PackageGraph.OnChangePackageName:=@PackageGraphChangePackageName;
+  //PackageGraph.OnChangePackageName:=@PackageGraphChangePackageName;
   PackageGraph.OnAddPackage:=@PackageGraphAddPackage;
-  PackageGraph.OnDeletePackage:=@PackageGraphDeletePackage;
-  PackageGraph.OnDependencyModified:=@PackageGraphDependencyModified;
-  PackageGraph.OnBeginUpdate:=@PackageGraphBeginUpdate;
-  PackageGraph.OnEndUpdate:=@PackageGraphEndUpdate;
+  //PackageGraph.OnDeletePackage:=@PackageGraphDeletePackage;
+  //PackageGraph.OnDependencyModified:=@PackageGraphDependencyModified;
+  //PackageGraph.OnBeginUpdate:=@PackageGraphBeginUpdate;
+  //PackageGraph.OnEndUpdate:=@PackageGraphEndUpdate;
 
   // package macros
   {CodeToolBoss.DefineTree.MacroFunctions.AddExtended(

@@ -40,7 +40,7 @@ interface
 uses
   Classes, SysUtils, LCLProc, Controls, Dialogs, Graphics, ExtCtrls, Buttons,
   Menus, LResources, AVL_Tree,
-  PropEdits, FormEditingIntf, LazIDEIntf,
+  PropEdits, FormEditingIntf, LazIDEIntf, MacroIntf,
   {$IFDEF CustomIDEComps}
   CustomIDEComps,
   {$ENDIF}
@@ -189,7 +189,7 @@ begin
     OpenPackageMenuItem.Visible:=true;
     ShownFilename:=PkgComponent.PkgFile.Filename;
     UnitFilename:=APackage.SubstitutePkgMacro(ShownFilename,true);
-    LazarusIDE.SubstituteMacros(UnitFilename);
+    IDEMacros.SubstituteMacros(UnitFilename);
     if not FileExists(UnitFilename) then begin
       UnitFilename:=LazarusIDE.FindSourceFile(ExtractFilename(UnitFilename),
                                               APackage.Directory,[]);

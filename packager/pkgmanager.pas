@@ -58,7 +58,7 @@ uses
   ComponentReg, UComponentManMain, PackageEditor, AddToPackageDlg, PackageDefs,
   PackageLinks, PackageSystem, OpenInstalledPkgDlg, PkgGraphExplorer,
   BrokenDependenciesDlg, CompilerOptions, ExtToolEditDlg,
-  MsgView, BuildLazDialog, NewDialog,
+  TransferMacros, MsgView, BuildLazDialog, NewDialog,
   ProjectInspector, ComponentPalette, UnitEditor, AddFileToAPackageDlg,
   LazarusPackageIntf, PublishProjectDlg, InstallPkgSetDlg,
   // bosses
@@ -3019,7 +3019,7 @@ begin
 
           // compile package
           Result:=EnvironmentOptions.ExternalTools.Run(PkgCompileTool,
-                                MainIDE.MacroList,nil,APackage.CompilerOptions);
+                                  GlobalMacroList,nil,APackage.CompilerOptions);
           if Result<>mrOk then exit;
           // compilation succeded -> write state file
           Result:=DoSavePackageCompiledState(APackage,
