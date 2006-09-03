@@ -31,7 +31,7 @@ interface
 
 uses
   Classes, SysUtils, Laz_XMLCfg, FileUtil, LCLProc,
-  FileProcs, SynRegExpr, LazConf;
+  FileProcs, LazConf;
 
 type
   // comments
