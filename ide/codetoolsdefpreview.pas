@@ -88,7 +88,7 @@ begin
   CodeToolsDefinesDialog:=TCodeToolsDefinesDialog.Create(nil);
   if InitialDirectory<>'' then
     CodeToolsDefinesDialog.SetComboBox(CodeToolsDefinesDialog.DirectoryCombobox,
-      InitialDirectory);
+                                       InitialDirectory);
   CodeToolsDefinesDialog.DefineTree:=ADefineTree;
   Result:=CodeToolsDefinesDialog.ShowModal;
   CodeToolsDefinesDialog.Free;

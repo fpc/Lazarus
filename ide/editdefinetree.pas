@@ -310,7 +310,6 @@ begin
   end else begin
     ParentTemplate.DeleteChild(FPCCmdLineDefTemplName);
   end;
-  
 
   // clear cache
   if ClearCache and Result then CodeToolBoss.DefineTree.ClearCache;

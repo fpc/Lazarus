@@ -325,7 +325,6 @@ type
     FMain: TDefineTemplate;
     FOutputDir: TDefineTemplate;
     FOutPutSrcPath: TDefineTemplate;
-    FProjectDir: TDefineTemplate;
     FOwnerProject: TProject;
     FUpdateLock: integer;
     fLastSourceDirectories: TStringList;
@@ -345,7 +344,6 @@ type
     procedure Clear;
     procedure BeginUpdate;
     procedure EndUpdate;
-    procedure CompilerFlagsChanged;
     procedure AllChanged;
     procedure ProjectIDChanged;
     procedure SourceDirectoriesChanged;// a source directory was added/deleted
@@ -2980,7 +2978,7 @@ begin
   Dependency.AddToList(FFirstRequiredDependency,pdlRequires);
   Dependency.Owner:=Self;
   Dependency.HoldPackage:=true;
-  FDefineTemplates.CompilerFlagsChanged;
+  FDefineTemplates.CustomDefinesChanged;
   Modified:=true;
   EndUpdate;
 end;
@@ -2992,7 +2990,7 @@ begin
   Dependency.RequiredPackage:=nil;
   Dependency.AddToList(FFirstRemovedDependency,pdlRequires);
   Dependency.Removed:=true;
-  FDefineTemplates.CompilerFlagsChanged;
+  FDefineTemplates.CustomDefinesChanged;
   Modified:=true;
   EndUpdate;
 end;
@@ -3003,7 +3001,7 @@ begin
   Dependency.RequiredPackage:=nil;
   Dependency.RemoveFromList(FFirstRequiredDependency,pdlRequires);
   Dependency.Free;
-  FDefineTemplates.CompilerFlagsChanged;
+  FDefineTemplates.CustomDefinesChanged;
   EndUpdate;
 end;
 
@@ -3037,7 +3035,7 @@ begin
   if Dependency.PrevRequiresDependency=nil then exit;
   BeginUpdate(true);
   Dependency.MoveUpInList(FFirstRequiredDependency,pdlRequires);
-  FDefineTemplates.CompilerFlagsChanged;
+  FDefineTemplates.CustomDefinesChanged;
   EndUpdate;
 end;
 
@@ -3046,7 +3044,7 @@ begin
   if Dependency.NextRequiresDependency=nil then exit;
   BeginUpdate(true);
   Dependency.MoveDownInList(FFirstRequiredDependency,pdlRequires);
-  FDefineTemplates.CompilerFlagsChanged;
+  FDefineTemplates.CustomDefinesChanged;
   EndUpdate;
 end;
 
@@ -4074,7 +4072,6 @@ begin
     if CodeToolBoss<>nil then
       CodeToolBoss.DefineTree.RemoveDefineTemplate(FMain);
     FMain:=nil;
-    FProjectDir:=nil;
     FSrcDirIfDef:=nil;
     FSrcDirectories:=nil;
     FOutPutSrcPath:=nil;
@@ -4093,30 +4090,16 @@ begin
   if FUpdateLock=0 then RaiseException('TProjectDefineTemplates.EndUpdate');
   dec(FUpdateLock);
   if FUpdateLock=0 then begin
-    if ptfFlagsChanged in FFlags then CompilerFlagsChanged;
+    if ptfFlagsChanged in FFlags then CustomDefinesChanged;
     if ptfSourceDirsChanged in FFlags then SourceDirectoriesChanged;
     if ptfOutputDirChanged in FFlags then OutputDirectoryChanged;
     if ptfCustomDefinesChanged in FFlags then CustomDefinesChanged;
   end;
 end;
 
-procedure TProjectDefineTemplates.CompilerFlagsChanged;
-begin
-  if FUpdateLock>0 then begin
-    Include(FFlags,ptfFlagsChanged);
-    exit;
-  end;
-  Exclude(FFlags,ptfFlagsChanged);
-  if Owner.Destroying then exit;
-  if FMain=nil then UpdateMain;
-
-  if (FProjectDir=nil) then exit;
-  UpdateCompilerOptionsTemplates(FProjectDir,Owner.CompilerOptions,true,true);
-end;
-
 procedure TProjectDefineTemplates.AllChanged;
 begin
-  CompilerFlagsChanged;
+  CustomDefinesChanged;
   SourceDirectoriesChanged;
   UpdateGlobalValues;
   CodeToolBoss.DefineTree.ClearCache;

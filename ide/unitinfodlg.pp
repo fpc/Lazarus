@@ -162,6 +162,7 @@ end;
 
 procedure TUnitInfoDialog.CodeToolsDefsButtonClick(Sender: TObject);
 begin
+  DebugLn(['TUnitInfoDialog.CodeToolsDefsButtonClick FFilePath=',FFilePath]);
   ShowCodeToolsDefinesValuesDialog(CodeToolBoss.DefineTree, ExtractFilePath(FFilePath));
 end;
 

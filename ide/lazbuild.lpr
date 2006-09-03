@@ -93,7 +93,7 @@ end;
 procedure TLazBuildApplication.OnExtToolNeedsOutputFilter(
   var OutputFilter: TOutputFilter; var Abort: boolean);
 begin
-
+  OutputFilter:=TheOutputFilter;
 end;
 
 procedure TLazBuildApplication.OnCmdLineCreate(var CmdLine: string;
@@ -261,6 +261,8 @@ procedure TLazBuildApplication.SetupMacros;
 begin
   GlobalMacroList:=TTransferMacroList.Create;
   IDEMacros:=TLazIDEMacros.Create;
+  
+  {$WARNING TODO TLazBuildApplication.SetupMacros}
 end;
 
 procedure TLazBuildApplication.SetupPackageSystem;
