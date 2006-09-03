@@ -200,7 +200,7 @@ function StringListPartToText(List: TStrings; FromIndex, ToIndex: integer;
 // environment
 function GetCurrentUserName: string;
 function GetCurrentMailAddress: string;
-procedure GetProgramSearchPath(var SearchPath: string; var Delim: char);
+procedure GetProgramSearchPath(var SearchPath: string; out Delim: char);
 function ProgramDirectory: string;
 
 // debugging
@@ -2002,7 +2002,7 @@ begin
   Result:='<'+GetCurrentUserName+'@'+GetEnvironmentVariable('HOSTNAME')+'>';
 end;
 
-procedure GetProgramSearchPath(var SearchPath: string; var Delim: char);
+procedure GetProgramSearchPath(var SearchPath: string; out Delim: char);
 begin
   SearchPath:=GetEnvironmentVariable('PATH');
   Delim:=':';

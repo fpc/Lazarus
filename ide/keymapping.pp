@@ -35,7 +35,7 @@ uses
   LCLIntf, LCLType, LCLProc,
   Forms, Classes, SysUtils, Buttons, LResources, StdCtrls, Controls,
   Dialogs, StringHashList,
-  SynEdit, SynEditKeyCmds, Laz_XMLCfg,
+  SynEditKeyCmds, Laz_XMLCfg,
   LazarusIDEStrConsts, TextTools, IDECommands;
 
 type
