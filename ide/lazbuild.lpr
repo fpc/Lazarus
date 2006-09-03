@@ -23,7 +23,6 @@
   
   ToDo:
     Separate the visual parts in the IDE from the package and build system.
-    Then use the non visual parts here.
 }
 program lazbuild;
 
@@ -31,10 +30,10 @@ program lazbuild;
 
 uses
   Classes, SysUtils, CustApp, LCLProc, Forms, Controls, FileUtil,
-  CodeToolManager,
+  CodeToolManager, Laz_XMLCfg,
   MacroIntf,
-  IDEProcs, InitialSetupDlgs, OutputFilter, Compiler,
-  EnvironmentOpts, IDETranslations, LazarusIDEStrConsts, LazConf, MainIntf,
+  IDEProcs, InitialSetupDlgs, OutputFilter, Compiler, TransferMacros,
+  EnvironmentOpts, IDETranslations, LazarusIDEStrConsts, LazConf,
   BasePkgManager, PackageDefs, PackageLinks, PackageSystem;
   
 type
@@ -52,6 +51,7 @@ type
                                         ErrorOccurred: boolean);
     procedure OnExtToolNeedsOutputFilter(var OutputFilter: TOutputFilter;
                                          var Abort: boolean);
+    procedure OnCmdLineCreate(var CmdLine: string; var Abort: boolean);
 
     // global package functions
     procedure GetDependencyOwnerDescription(Dependency: TPkgDependency;
@@ -64,12 +64,13 @@ type
     procedure PackageGraphAddPackage(Pkg: TLazPackage);
   protected
     function BuildFile(Filename: string): boolean;
-    function BuildPackage(const Filename: string): boolean;
-    function LoadPackage(const Filename: string): TLazPackage;
+    function BuildPackage(const AFilename: string): boolean;
+    function LoadPackage(const AFilename: string): TLazPackage;
     function Init: boolean;
     procedure LoadEnvironmentOptions;
     procedure SetupOutputFilter;
     procedure SetupCompilerInterface;
+    procedure SetupMacros;
     procedure SetupPackageSystem;
   public
     Files: TStringList;
@@ -93,6 +94,13 @@ procedure TLazBuildApplication.OnExtToolNeedsOutputFilter(
   var OutputFilter: TOutputFilter; var Abort: boolean);
 begin
 
+end;
+
+procedure TLazBuildApplication.OnCmdLineCreate(var CmdLine: string;
+  var Abort: boolean);
+// replace all transfer macros in command line
+begin
+  Abort:=not GlobalMacroList.SubstituteStr(CmdLine);
 end;
 
 procedure TLazBuildApplication.GetDependencyOwnerDescription(
@@ -147,13 +155,22 @@ begin
     Result:=BuildPackage(Filename);
 end;
 
-function TLazBuildApplication.BuildPackage(const Filename: string): boolean;
+function TLazBuildApplication.BuildPackage(const AFilename: string): boolean;
+var
+  APackage: TLazPackage;
 begin
   Result:=false;
   Init;
+  APackage:=LoadPackage(AFilename);
+  if APackage=nil then
+    Error('unable to load package "'+AFilename+'"');
+    
 end;
 
-function TLazBuildApplication.LoadPackage(const Filename: string): TLazPackage;
+function TLazBuildApplication.LoadPackage(const AFilename: string): TLazPackage;
+var
+  XMLConfig: TXMLConfig;
+  ConflictPkg: TLazPackage;
 begin
   // check if package is already loaded
   Result:=PackageGraph.FindPackageWithFilename(AFilename,true);
@@ -162,17 +179,15 @@ begin
   // load the package file
   XMLConfig:=TXMLConfig.Create(AFilename);
   try
-    APackage.Filename:=AFilename;
-    APackage.LoadFromXMLConfig(XMLConfig,'Package/');
+    Result.Filename:=AFilename;
+    Result.LoadFromXMLConfig(XMLConfig,'Package/');
   finally
     XMLConfig.Free;
   end;
   // check Package Name
   if (Result.Name='') or (not IsValidIdent(Result.Name)) then begin
-    Error(
-      Format(lisPkgMangThePackageNameOfTheFileIsInvalid, ['"', Result.Name,
-        '"', #13, '"', Result.Filename, '"']),
-      mtError,[mbCancel,mbAbort],0);
+    Error(Format(lisPkgMangThePackageNameOfTheFileIsInvalid, ['"', Result.Name,
+                 '"', #13, '"', Result.Filename, '"']));
   end;
   // check if Package with same name is already loaded
   ConflictPkg:=PackageGraph.FindAPackageWithName(Result.Name,nil);
@@ -201,7 +216,7 @@ begin
   InteractiveSetup:=false;
   SetupCompilerFilename(InteractiveSetup);
   SetupLazarusDirectory(InteractiveSetup);
-  //SetupMacros;
+  SetupMacros;
   SetupPackageSystem;
   SetupOutputFilter;
   SetupCompilerInterface;
@@ -242,6 +257,12 @@ begin
   end;
 end;
 
+procedure TLazBuildApplication.SetupMacros;
+begin
+  GlobalMacroList:=TTransferMacroList.Create;
+  IDEMacros:=TLazIDEMacros.Create;
+end;
+
 procedure TLazBuildApplication.SetupPackageSystem;
 begin
   OnGetDependencyOwnerDescription:=@GetDependencyOwnerDescription;
@@ -251,24 +272,10 @@ begin
   // package links
   PkgLinks:=TPackageLinks.Create;
   PkgLinks.UpdateAll;
-  //PkgLinks.DependencyOwnerGetPkgFilename:=@PkgLinksDependencyOwnerGetPkgFilename;
-  
+
   // package graph
   PackageGraph:=TLazPackageGraph.Create;
-  //PackageGraph.OnChangePackageName:=@PackageGraphChangePackageName;
   PackageGraph.OnAddPackage:=@PackageGraphAddPackage;
-  //PackageGraph.OnDeletePackage:=@PackageGraphDeletePackage;
-  //PackageGraph.OnDependencyModified:=@PackageGraphDependencyModified;
-  //PackageGraph.OnBeginUpdate:=@PackageGraphBeginUpdate;
-  //PackageGraph.OnEndUpdate:=@PackageGraphEndUpdate;
-
-  // package macros
-  {CodeToolBoss.DefineTree.MacroFunctions.AddExtended(
-    'PKGSRCPATH',nil,@MacroFunctionPkgSrcPath);
-  CodeToolBoss.DefineTree.MacroFunctions.AddExtended(
-    'PKGUNITPATH',nil,@MacroFunctionPkgUnitPath);
-  CodeToolBoss.DefineTree.MacroFunctions.AddExtended(
-    'PKGINCPATH',nil,@MacroFunctionPkgIncPath);}
 end;
 
 constructor TLazBuildApplication.Create(TheOwner: TComponent);
@@ -286,8 +293,8 @@ begin
   FreeThenNil(PkgLinks);
   FreeThenNil(TheCompiler);
   FreeThenNil(TheOutputFilter);
-  //FreeThenNil(MacroList);
-  //FreeThenNil(IDEMacros);
+  FreeThenNil(GlobalMacroList);
+  FreeThenNil(IDEMacros);
   FreeThenNil(EnvironmentOptions);
 
   FreeAndNil(Files);
