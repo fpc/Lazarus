@@ -120,6 +120,7 @@ begin
       if SrcIndex=FItemCapacity then
         SrcIndex:=0;
     until false;
+    FreeMem(FItems);
   end;
   FTopIndex:=0;
   FLastIndex:=DestIndex;
