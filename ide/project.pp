@@ -4040,17 +4040,14 @@ begin
   if OptionsDefTempl=nil then begin
     // no custom options -> delete old template
     if FSrcDirIfDef<>nil then begin
-      FSrcDirIfDef.UnBind;
-      FSrcDirIfDef.Free;
-      FSrcDirIfDef:=nil;
+      if FSrcDirIfDef.DeleteChild('Custom Options') then
+        CodeToolBoss.DefineTree.ClearCache;
     end;
-    exit;
+  end else begin
+    UpdateSrcDirIfDef;
+    FSrcDirIfDef.ReplaceChild(OptionsDefTempl);
+    CodeToolBoss.DefineTree.ClearCache;
   end;
-
-  UpdateSrcDirIfDef;
-  FSrcDirIfDef.ReplaceChild(OptionsDefTempl);
-
-  CodeToolBoss.DefineTree.ClearCache;
 end;
 
 constructor TProjectDefineTemplates.Create(OwnerProject: TProject);

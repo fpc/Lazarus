@@ -3835,17 +3835,14 @@ begin
   if OptionsDefTempl=nil then begin
     // no custom options -> delete old template
     if FCustomDefines<>nil then begin
-      FCustomDefines.UnBind;
-      FCustomDefines.Free;
-      FCustomDefines:=nil;
+      if FCustomDefines.DeleteChild('Custom Options') then
+        CodeToolBoss.DefineTree.ClearCache;
     end;
-    exit;
+  end else begin
+    UpdateSrcDirIfDef;
+    FCustomDefines.ReplaceChild(OptionsDefTempl);
+    CodeToolBoss.DefineTree.ClearCache;
   end;
-
-  UpdateSrcDirIfDef;
-  FCustomDefines.ReplaceChild(OptionsDefTempl);
-
-  CodeToolBoss.DefineTree.ClearCache;
 end;
 
 { TBasePackageEditor }

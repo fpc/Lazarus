@@ -223,7 +223,7 @@ type
     function  SelfOrParentContainsFlag(AFlag: TDefineTemplateFlag): boolean;
     procedure AddChild(ADefineTemplate: TDefineTemplate);
     procedure ReplaceChild(ADefineTemplate: TDefineTemplate);
-    procedure DeleteChild(const AName: string);
+    function DeleteChild(const AName: string): boolean;
     procedure Assign(ADefineTemplate: TDefineTemplate; WithSubNodes,
                      WithNextSiblings, ClearOldSiblings: boolean); virtual;
     procedure AssignValues(ADefineTemplate: TDefineTemplate);
@@ -819,15 +819,17 @@ begin
     AddChild(ADefineTemplate);
 end;
 
-procedure TDefineTemplate.DeleteChild(const AName: string);
+function TDefineTemplate.DeleteChild(const AName: string): boolean;
 var
   OldTempl: TDefineTemplate;
 begin
   OldTempl:=FindChildByName(AName);
   if OldTempl<>nil then begin
+    Result:=true;
     OldTempl.Unbind;
     OldTempl.Free;
-  end;
+  end else
+    Result:=false;
 end;
 
 procedure TDefineTemplate.InsertBehind(APrior: TDefineTemplate);
