@@ -84,8 +84,14 @@ type
     procedure Run;
     function ParseParameters: boolean;
     procedure WriteUsage;
-    procedure Error(const ErrorMsg: string);
+    procedure Error(ErrorCode: Byte; const ErrorMsg: string);
   end;
+  
+const
+  ErrorFileNotFound = 1;
+  ErrorBuildFailed = 2;
+  ErrorLoadPackageFailed = 3;
+  ErrorPackageNameInvalid = 4;
 
 { TLazBuildApplication }
 
@@ -160,8 +166,8 @@ begin
   Result:=false;
   Filename:=CleanAndExpandFilename(Filename);
   if not FileExists(Filename) then begin
-    Error('File not found: '+Filename);
-    exit;
+    Error(ErrorFileNotFound, 'File not found: '+Filename);
+    Exit;
   end;
   
   if CompareFileExt(Filename,'.lpk')=0 then
@@ -176,8 +182,7 @@ begin
   Init;
   APackage:=LoadPackage(AFilename);
   if APackage=nil then
-    Error('unable to load package "'+AFilename+'"');
-    
+    Error(ErrorLoadPackageFailed, 'unable to load package "'+AFilename+'"');
 end;
 
 function TLazBuildApplication.LoadPackage(const AFilename: string): TLazPackage;
@@ -199,8 +204,8 @@ begin
   end;
   // check Package Name
   if (Result.Name='') or (not IsValidIdent(Result.Name)) then begin
-    Error(Format(lisPkgMangThePackageNameOfTheFileIsInvalid, ['"', Result.Name,
-                 '"', #13, '"', Result.Filename, '"']));
+    Error(ErrorPackageNameInvalid, Format(lisPkgMangThePackageNameOfTheFileIsInvalid,
+           ['"', Result.Name,'"', #13, '"', Result.Filename, '"']));
   end;
   // check if Package with same name is already loaded
   ConflictPkg:=PackageGraph.FindAPackageWithName(Result.Name,nil);
@@ -326,6 +331,7 @@ begin
   for i:=0 to Files.Count-1 do begin
     if not BuildFile(Files[i]) then begin
       writeln('Failed building ',Files[i]);
+      ExitCode := ErrorBuildFailed;
       exit;
     end;
   end;
@@ -420,10 +426,10 @@ begin
   writeln(BreakString(space+lisOverrideLanguage,75, 22));
 end;
 
-procedure TLazBuildApplication.Error(const ErrorMsg: string);
+procedure TLazBuildApplication.Error(ErrorCode: Byte; const ErrorMsg: string);
 begin
   writeln('ERROR: ',ErrorMsg);
-  Halt;
+  Halt(ErrorCode);
 end;
 
 var
