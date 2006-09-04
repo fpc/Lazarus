@@ -49,6 +49,7 @@ type
       procedure InternalUpdate; virtual; abstract;
       function Hide: Boolean; virtual; abstract;
       function Show: Boolean; virtual; abstract;
+      function GetPosition: TPoint; virtual; abstract;
     published
   end;
 

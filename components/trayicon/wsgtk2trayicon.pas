@@ -52,6 +52,7 @@ type
       property Canvas: TCanvas read GetCanvas;
       procedure InternalUpdate; override;
       procedure PaintForm(Sender: TObject);
+      function GetPosition: TPoint; override;
     published
   end;
 
@@ -474,6 +475,24 @@ end;
 procedure TWidgetTrayIcon.InternalUpdate;
 begin
   if Assigned(Tips) then gtk_tooltips_set_tip(GTK_TOOLTIPS(Tips), GtkForm, PChar(Hint), '');
+end;
+
+{*******************************************************************
+*  TWidgetTrayIcon.GetPosition ()
+*
+*  DESCRIPTION:    Returns the position of the tray icon on the display.
+*                  This function is utilized to show message boxes near
+*                  the icon
+*
+*  PARAMETERS:     None
+*
+*  RETURNS:        Nothing
+*
+*******************************************************************}
+function TWidgetTrayIcon.GetPosition: TPoint;
+begin
+  Result.X := 0;
+  Result.Y := 0;
 end;
 
 end.

@@ -538,6 +538,7 @@ components/trayicon/wsgtk2trayicon.pas svneol=native#text/plain
 components/trayicon/wsgtktrayicon.pas svneol=native#text/plain
 components/trayicon/wstrayicon.pas svneol=native#text/plain
 components/trayicon/wswin32trayicon.pas svneol=native#text/plain
+components/trayicon/wsx11trayicon.pas svneol=native#text/plain
 components/turbopower_ipro/Makefile svneol=native#text/plain
 components/turbopower_ipro/Makefile.fpc svneol=native#text/plain
 components/turbopower_ipro/ipanim.pas svneol=native#text/pascal

@@ -16,7 +16,7 @@
       </Other>
     </CompilerOptions>
     <Version Minor="2"/>
-    <Files Count="5">
+    <Files Count="6">
       <Item1>
         <Filename Value="wswin32trayicon.pas"/>
         <AddToUsesPkgSection Value="False"/>
@@ -41,6 +41,10 @@
         <Filename Value="wstrayicon.pas"/>
         <UnitName Value="wstrayicon"/>
       </Item5>
+      <Item6>
+        <Filename Value="wsx11trayicon.pas"/>
+        <UnitName Value="wsx11trayicon"/>
+      </Item6>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="2">

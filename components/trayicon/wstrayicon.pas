@@ -36,9 +36,14 @@ interface
 
 uses
 
-{$ifdef MSWindows}
+{$ifdef Win32}
 
   wswin32trayicon,
+
+{$endif}
+{$ifdef WinCE}
+
+  wswincetrayicon,
 
 {$endif}
 {$ifdef UNIX}
@@ -53,6 +58,10 @@ uses
 
   {$ifdef LCLGtk2}
     wsgtk2trayicon,
+  {$endif}
+
+  {$ifdef LCLQt}
+    wsx11trayicon,
   {$endif}
 
 {$endif}

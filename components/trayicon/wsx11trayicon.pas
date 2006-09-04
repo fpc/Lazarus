@@ -1,5 +1,5 @@
 {
- wsgtktrayicon.pas
+ wsx11trayicon.pas
 
  *****************************************************************************
  *                                                                           *
@@ -16,19 +16,19 @@
 
  Special thanks for: Danny Milosavljevic and the Lazarus Team
 
- Gtk1 specific code. Works on gnome also.
+ X11 specific code.
 }
-unit wsgtktrayicon;
+unit wsx11trayicon;
 
 {$ifdef FPC}
-  {$mode delphi}{$H+}
+  {$mode objfpc}{$H+}
 {$endif}
 
 interface
 
 uses
-  Graphics, Classes, ExtCtrls, SysUtils, Forms, Controls, Dialogs,
-  Menus, wscommontrayicon, x, xlib, xutil, gtk, gdk;
+  Classes, SysUtils, Graphics, ExtCtrls, Menus, Controls, Lclintf,
+  wscommontrayicon, X, XLib, XUtil;
 
 type
 
@@ -42,18 +42,43 @@ type
       fScreenID: longint;
       fTrayParent: TWindow;
       fOwner: TComponent;
-      GtkForm: TForm;
       fEmbedded: Boolean;
       fMsgCount: Integer;
+
+      fDrawable: TWindow;
+      fWindowID: TWindow;
+      fVisual: PVisual;
+      fDepth: Integer;
+      fRootWindow: TWindow;
+      gc: Xlib.TGC;
+{      fIcon: TIcon;
+      fEmbedded: Boolean;
+      fMenu: TPopupMenu;
+      fMouseEnter: TNotifyEvent;
+      fMouseLeave: TNotifyEvent;
+      fMouseDown: TMouseEvent;
+      fMouseUp: TMouseEvent;
+      fMouseMove: TMouseMoveEvent;
+      fClick: TNotifyEvent;
+      fTrayParent: TWindow;
+      fWidth, fHeight: Integer;
+      fIconWidth,
+      fIconHeight: Integer;
+      fTimer: TTimer;
+      Image: xlib.PXImage;
+      fMsgCount: Integer;
+      WindowHandle: Cardinal;}
       procedure SetEmbedded;
-      function Send_Message(window: TWindow; msg: Integer;data1, data2,data3: Integer): boolean;
+      procedure InitWM;
       procedure SetMinSize(AWidth, AHeight: Integer);
-      procedure PaintForm(Sender: TObject);
-      procedure CreateForm(id: Integer);
-      procedure RemoveForm(id: Integer);
+      function Send_Message(window: TWindow; msg: Integer;data1, data2,data3: Integer): boolean;
+      function AttachIcon: TWindow;
       function GetCanvas: TCanvas;
     protected
     public
+      hIcon, hSmallIcon: Cardinal;
+      ShowToolTip: Boolean;
+      ToolTip: string;
       function Hide: Boolean; override;
       function Show: Boolean; override;
       property Canvas: TCanvas read GetCanvas;
@@ -76,7 +101,6 @@ begin
   Result:=0;
 end;
 
-
 { TWidgetTrayIcon }
 
 {*******************************************************************
@@ -91,28 +115,36 @@ end;
 *******************************************************************}
 procedure TWidgetTrayIcon.SetEmbedded;
 var
-  old_error: TXErrorHandler;
-  buf: array [0..32] of char;
-  selection_atom : TAtom;
+  Event: TXEvent;
+  buf: array[0..19] of char;
+  GCVals: TXGCValues;
 begin
-  old_error := XSetErrorHandler(@TempX11ErrorHandler);
-  Sleep(80);
-  xsync(fdisplay,true);
-  buf :=  PChar('_NET_SYSTEM_TRAY_S' + IntToStr(fScreenID));
-  selection_atom := XInternAtom(fDisplay, buf, false);
-  XGrabServer(fDisplay);
-  fTrayParent := XGetSelectionOwner(fDisplay, selection_atom);
-  if fTrayParent <> None then
-  begin
-    XSelectInput(fDisplay, fTrayParent, StructureNotifyMask);
-  end;
-  XUngrabServer(fDisplay);
-  XFlush(fDisplay);
+  fDisplay := XOpenDisplay(nil);
+  fScreen := XDefaultScreenOfDisplay(fDisplay);
+  fVisual := DefaultVisualOfScreen(fScreen);
+  fDepth:= DefaultDepthOfScreen(fScreen);
+  fRootWindow := RootWindow(fDisplay, DefaultScreen(fDisplay));
+  fWindowID  := XCreateSimpleWindow(fDisplay, XRootWindow(fDisplay, 0), 0, 0, 34, 34, 0,
+                            fScreen^.black_pixel, fScreen^.white_pixel);
+  fDrawable := fWindowID;
 
-  if fTrayParent <> None then
-    Send_Message(fTrayParent, SYSTEM_TRAY_REQUEST_DOCK, fWindow, 0, 0);
+  GCVals.background := WhitePixel(fDisplay, DefaultScreen(fDisplay));
+  GCVals.foreground := BlackPixel(fDisplay, DefaultScreen(fDisplay));
+  XSelectInput(fDisplay, fWindowID, ButtonPressMask or ButtonReleaseMask or PointerMotionMask
+    or EnterWindowMask or LeaveWindowMask or VisibilityChangeMask or ExposureMask
+    or SubstructureNotifyMask or ResizeRedirectMask);
 
-  XSetErrorHandler(old_error);
+
+  gc := XCreateGC(fDisplay, fWindowID, GCForeground or GCBackground, @GCVals);
+
+  buf := 'TEST';
+  XChangeProperty(fDisplay, fWindowID, XInternAtom(fDisplay,'_NET_WM_NAME', false), XInternAtom(fDisplay, 'UTF8_STRING', False), 8, PropModeAppend, @buf, 4);
+  XChangeProperty(fDisplay, fWindowID, XInternAtom(fDisplay,'_NET_WM_VISIBLE_NAME', false), XInternAtom(fDisplay, 'UTF8_STRING', False), 8, PropModeAppend, @buf, 4);
+  buf := 'CONTEXT';
+  XChangeProperty(fDisplay, fWindowID,  XInternAtom(fDisplay, '_MB_SYSTEM_TRAY_CONTEXT', False), XInternAtom(fDisplay, 'UTF8_STRING', False), 8, PropModeAppend, @buf, 7);
+
+  XSync (fdisplay, False);
+  AttachIcon;
 end;
 
 {*******************************************************************
@@ -147,135 +179,30 @@ begin
   Result := false;//(untrap_errors() = 0);
 end;
 
-{*******************************************************************
-*  TWidgetTrayIcon.CreateForm ()
-*
-*  DESCRIPTION:
-*
-*  PARAMETERS:     None
-*
-*  RETURNS:        Nothing
-*
-*******************************************************************}
-procedure TWidgetTrayIcon.CreateForm(id: Integer);
+procedure TWidgetTrayIcon.InitWM;
+var
+  // set the class hint
+  classhint: TXClassHint;
+  hints: PXWMHints;
 begin
-  GtkForm := TForm.Create(nil);
-  fEmbedded := False;
-  //fWindow := GDK_WINDOW_XWINDOW (Pointer(PGtkWidget(GtkForm.Handle)^.window));
-  //SHowMessage(IntToStr(Integer(fWindow)));
-  //GtkForm.Parent := TWinConTrol(fOwner);
-  GtkForm.WindowState := wsMinimized;
-  GtkForm.BorderStyle := bsNone; //without this gnome will make a 1 pixel wide window!
-  //GtkForm.Canvas.AutoRedraw := True; //not working :(
+  classhint.res_name  := pchar('TTrayIcon');
+  classhint.res_class := pchar('TTrayIcon');
 
-  // needed because some things aparently don't get fully initialized until
-  // visible at least once!  This is Gtk related NOT LCL related.
-  GtkForm.Visible :=True;
-  GtkForm.Width := 22;
-  GtkForm.Height := 22;
-  GtkForm.Visible := False;
+  XSetClassHint(fDisplay, fWindowID, @classhint);
 
-  Application.ProcessMessages;
+  // set the Window Manager hints
 
-  fDisplay := GDK_WINDOW_XDISPLAY(Pointer(PGtkWidget(GtkForm.Handle)^.window));
-  fWindow := GDK_WINDOW_XWINDOW (Pointer(PGtkWidget(GtkForm.Handle)^.window));
-  fScreen := XDefaultScreenOfDisplay(fDisplay); // get the screen
-  fScreenID := XScreenNumberOfScreen(fScreen); // and it's number
-end;
-
-{*******************************************************************
-*  TWidgetTrayIcon.RemoveForm ()
-*
-*  DESCRIPTION:
-*
-*  PARAMETERS:     None
-*
-*  RETURNS:        Nothing
-*
-*******************************************************************}
-procedure TWidgetTrayIcon.RemoveForm(id: Integer);
-begin
-  GtkForm.Free;
-end;
-
-{*******************************************************************
-*  TWidgetTrayIcon.GetCanvas ()
-*
-*  DESCRIPTION:
-*
-*  PARAMETERS:     None
-*
-*  RETURNS:        Nothing
-*
-*******************************************************************}
-function TWidgetTrayIcon.GetCanvas: TCanvas;
-begin
-  Result := GtkForm.Canvas;
-end;
-
-{*******************************************************************
-*  TWidgetTrayIcon.Hide ()
-*
-*  DESCRIPTION:    Hides the main tray icon of the program
-*
-*  PARAMETERS:     None
-*
-*  RETURNS:        True if sucessfull, otherwise False
-*
-*******************************************************************}
-function TWidgetTrayIcon.Hide: Boolean;
-begin
-  Result := False;
-
-  if not vVisible then Exit;
-
-  RemoveForm(0);
-
-  vVisible := False;
-
-  Result := True;
-end;
-
-{*******************************************************************
-*  TWidgetTrayIcon.Show ()
-*
-*  DESCRIPTION:    Shows the main tray icon of the program
-*
-*  PARAMETERS:     None
-*
-*  RETURNS:        True if sucessfull, otherwise False
-*
-*******************************************************************}
-function TWidgetTrayIcon.Show: Boolean;
-begin
-  Result := False;
-
-  if vVisible then Exit;
-
-  CreateForm(0);
-  
-  SetEmbedded;
-
-  GTK_WIDGET_SET_FLAGS(PGtkWidget(GtkForm.Handle),GTK_VISIBLE);
-  GTK_WIDGET_SET_FLAGS(PGtkWidget(GtkForm.Handle),GTK_MAPPED);
-
-  GtkForm.Width := 22; //needed for gnome
-  GtkForm.Height := 22;
-  SetMinSize(Icon.Width, Icon.Height);
-
-  GtkForm.OnMouseDown := Self.OnMouseDown;
-  GtkForm.OnMouseMove := Self.OnMouseMove;
-  GtkForm.OnMouseUp := Self.OnMouseUp;
-  GtkForm.OnClick := Self.OnClick;
-  GtkForm.OnPaint := PaintForm;
-  GtkForm.PopupMenu := Self.PopUpMenu;
-  GtkForm.Hint := Self.Hint;
-
-  fEmbedded := True;
-  
-  vVisible := True;
-
-  Result := True;
+  hints := XGetWMHints(fDisplay, fWindowID);	// init hints
+  if Hints <> nil then begin
+    hints^.flags := WindowGroupHint or IconWindowHint or StateHint;	// set the window group hint
+    hints^.window_group := fWindowID;		// set the window hint
+    hints^.initial_state := NormalState;//WithdrawnState;	// initial state
+    hints^.icon_window := fWindowID;		// in WM, this should be winId() of separate widget
+    hints^.icon_x := 0;
+    hints^.icon_y := 0;
+    XSetWMHints(fDisplay, fWindowID, hints);	// set the window hints for WM to use.
+    XFree( hints );
+  end;
 end;
 
 {*******************************************************************
@@ -303,21 +230,128 @@ begin
   XSetStandardProperties(fDisplay, fWindow, nil, nil, None, nil, 0, @size_hints);
 end;
 
+function TWidgetTrayIcon.AttachIcon: TWindow;
+var
+buf: array [0..32] of char;
+selection_atom : TAtom;
+Manager_Window: TWindow;
+old_error: TXErrorHandler;
+data: array [0..3] of longint;
+begin
+  old_error := XSetErrorHandler(@TempX11ErrorHandler);
+  initWM;
+  //SetMinSize(fIconWidth, fIconHeight);
+  fScreenID := XScreenNumberOfScreen(fScreen);
+  buf :=  PChar('_NET_SYSTEM_TRAY_S' + IntToStr(fScreenID));
+
+  selection_atom := XInternAtom(fDisplay, buf, false);
+  XGrabServer(fDisplay);
+  Manager_Window := XGetSelectionOwner(fDisplay, selection_atom);
+  if Manager_Window <> None then
+  begin
+    XSelectInput(fDisplay, Manager_Window, StructureNotifyMask);
+    Result := Manager_Window;
+    fTrayParent := Result;
+  end;
+  XUngrabServer(fDisplay);
+  XFlush(fDisplay);
+  data[0] := 34;
+  data[1] := 34;
+  data[2] := 34;
+  data[3] := 34;
+
+  if ( manager_window <> None ) then
+    send_message(Manager_Window, SYSTEM_TRAY_REQUEST_DOCK, fWindowID, 0, 0);
+  SetMinSize(Icon.Width,Icon.Height);
+  XChangeProperty(fDisplay, fWindowID, XInternAtom( fdisplay, '_NET_WM_ICON_GEOMETRY',False),
+          TAtom(6), 32, PropModeReplace, @data, 4);
+//   XResizeWindow(fDisplay, fWindowID, 22, 22);
+  XSetErrorHandler(old_error);
+  //fTimer.Enabled := True;
+end;
+
 {*******************************************************************
-*  TWidgetTrayIcon.PaintForm ()
+*  TWidgetTrayIcon.GetCanvas ()
 *
-*  DESCRIPTION:    Paint method of the Icon Window
+*  DESCRIPTION:
 *
-*  PARAMETERS:     Sender of the event
+*  PARAMETERS:     None
 *
 *  RETURNS:        Nothing
 *
 *******************************************************************}
-procedure TWidgetTrayIcon.PaintForm(Sender: TObject);
+function TWidgetTrayIcon.GetCanvas: TCanvas;
 begin
-  if ShowIcon then GtkForm.Canvas.Draw(0, 0, Icon);
-  
-  if Assigned(OnPaint) then OnPaint(Self);
+  Result := Icon.Canvas;
+end;
+
+{*******************************************************************
+*  TWidgetTrayIcon.Hide ()
+*
+*  DESCRIPTION:    Hides the main tray icon of the program
+*
+*  PARAMETERS:     None
+*
+*  RETURNS:        True if sucessfull, otherwise False
+*
+*******************************************************************}
+function TWidgetTrayIcon.Hide: Boolean;
+begin
+  Result := False;
+
+  if not vVisible then Exit;
+
+  if fWindowID <> 0 then XDestroyWindow(fDisplay, fWindowID);
+  fWindowID := 0;
+  XFreeGC(fDisplay, gc);
+  XCloseDisplay(fDisplay);
+  fDisplay := nil;
+
+  vVisible := False;
+
+  Result := True;
+end;
+
+{*******************************************************************
+*  TWidgetTrayIcon.Show ()
+*
+*  DESCRIPTION:    Shows the main tray icon of the program
+*
+*  PARAMETERS:     None
+*
+*  RETURNS:        True if sucessfull, otherwise False
+*
+*******************************************************************}
+function TWidgetTrayIcon.Show: Boolean;
+begin
+  Result := False;
+
+  if vVisible then Exit;
+
+//  CreateForm(0);
+
+  SetEmbedded;
+
+{  GTK_WIDGET_SET_FLAGS(PGtkWidget(GtkForm.Handle),GTK_VISIBLE);
+  GTK_WIDGET_SET_FLAGS(PGtkWidget(GtkForm.Handle),GTK_MAPPED);
+
+  GtkForm.Width := 22; //needed for gnome
+  GtkForm.Height := 22;
+  SetMinSize(Icon.Width, Icon.Height);
+
+  GtkForm.OnMouseDown := Self.OnMouseDown;
+  GtkForm.OnMouseMove := Self.OnMouseMove;
+  GtkForm.OnMouseUp := Self.OnMouseUp;
+  GtkForm.OnClick := Self.OnClick;
+  GtkForm.OnPaint := PaintForm;
+  GtkForm.PopupMenu := Self.PopUpMenu;
+  GtkForm.Hint := Self.Hint;}
+
+  fEmbedded := True;
+
+  vVisible := True;
+
+  Result := True;
 end;
 
 {*******************************************************************
@@ -333,7 +367,7 @@ end;
 *******************************************************************}
 procedure TWidgetTrayIcon.InternalUpdate;
 begin
-  if Assigned(GtkForm) then GtkForm.PopupMenu := Self.PopUpMenu;
+
 end;
 
 {*******************************************************************
@@ -355,5 +389,4 @@ begin
 end;
 
 end.
-
 
