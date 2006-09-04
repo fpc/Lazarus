@@ -546,11 +546,39 @@ type
 
   { Custom draw }
 
-  TCustomDrawTarget = (dtControl, dtItem, dtSubItem);
-  TCustomDrawStage = (cdPrePaint, cdPostPaint, cdPreErase, cdPostErase);
-  TCustomDrawStateFlag = (cdsSelected, cdsGrayed, cdsDisabled, cdsChecked,
-    cdsFocused, cdsDefault, cdsHot, cdsMarked, cdsIndeterminate);
+  TCustomDrawTarget = (
+    dtControl,   // the whole control
+    dtItem,      // one item (= line in report mode)
+    dtSubItem    // one subitem, except for subitem 0, this one is drawn by dtItem
+  );
+  TCustomDrawStage = (
+    cdPrePaint,
+    cdPostPaint,
+    cdPreErase,
+    cdPostErase
+  );
+  TCustomDrawStateFlag = (
+    cdsSelected,
+    cdsGrayed,
+    cdsDisabled,
+    cdsChecked,
+    cdsFocused,
+    cdsDefault,
+    cdsHot,
+    cdsMarked,
+    cdsIndeterminate
+  );
   TCustomDrawState = set of TCustomDrawStateFlag;
+  
+  TCustomDrawResultFlag = (
+    cdrSkipDefault,
+    cdrNotifyPostpaint,
+    cdrNotifyItemdraw,
+    cdrNotifySubitemdraw,
+    cdrNotifyPosterase,
+    cdrNotifyItemerase
+  );
+  TCustomDrawResult = set of TCustomDrawResultFlag;
 
 
   { TListView }
@@ -757,7 +785,6 @@ type
   TLVInsertEvent = TLVDeletedEvent;
   TLVSelectItemEvent = procedure(Sender: TObject; Item: TListItem;
                                  Selected: Boolean) of object;
-  //currently the draw events are only called from the win32 interface
   TLVCustomDrawEvent = procedure(Sender: TCustomListView; const ARect: TRect;
                                   var DefaultDraw: Boolean) of object;
   TLVCustomDrawItemEvent = procedure(Sender: TCustomListView; Item: TListItem; 
@@ -899,6 +926,13 @@ type
     function GetMaxScrolledTop : Integer;
     procedure ImageChanged(Sender : TObject);
     procedure Loaded; override;
+    
+    function IsCustomDrawn(ATarget: TCustomDrawTarget; AStage: TCustomDrawStage): Boolean; virtual;
+    function CustomDraw(const ARect: TRect; AStage: TCustomDrawStage): Boolean; virtual;                                                   // Return True if default drawing should be done
+    function CustomDrawItem(AItem: TListItem; AState: TCustomDrawState; AStage: TCustomDrawStage): Boolean; virtual;                       //
+    function CustomDrawSubItem(AItem: TListItem; ASubItem: Integer; AState: TCustomDrawState; AStage: TCustomDrawStage): Boolean; virtual; //
+    function IntfCustomDraw(ATarget: TCustomDrawTarget; AStage: TCustomDrawStage; AItem, ASubItem: Integer; AState: TCustomDrawState; const ARect: PRect): TCustomDrawResult;
+
     procedure WMHScroll(var Msg: TLMScroll); message LM_HSCROLL;
     procedure WMVScroll(var Msg: TLMScroll); message LM_VSCROLL;
   protected

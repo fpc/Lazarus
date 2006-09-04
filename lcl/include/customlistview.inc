@@ -56,6 +56,46 @@ begin
 end;
 
 {------------------------------------------------------------------------------}
+{   TCustomListView CustomDraw                                                 }
+{------------------------------------------------------------------------------}
+function TCustomListView.CustomDraw(const ARect: TRect; AStage: TCustomDrawStage): Boolean;
+begin
+  Result := True;
+  if Assigned(FOnCustomDraw) and (AStage = cdPrePaint)
+  then FOnCustomDraw(Self, ARect, Result);
+
+  if Assigned(FOnAdvancedCustomDraw)
+  then FOnAdvancedCustomDraw(Self, ARect, AStage, Result)
+end;
+
+{------------------------------------------------------------------------------}
+{   TCustomListView CustomDrawItem                                             }
+{------------------------------------------------------------------------------}
+function TCustomListView.CustomDrawItem(AItem: TListItem; AState: TCustomDrawState; AStage: TCustomDrawStage): Boolean;
+begin
+  Result := True;
+  if Assigned(FOnCustomDrawItem) and (AStage = cdPrePaint)
+  then FOnCustomDrawItem(Self, AItem, AState, Result);
+  
+  if Assigned(FOnAdvancedCustomDrawItem)
+  then FOnAdvancedCustomDrawItem(Self, AItem, AState, AStage, Result);
+end;
+
+{------------------------------------------------------------------------------}
+{   TCustomListView CustomDrawSubItem                                          }
+{------------------------------------------------------------------------------}
+function TCustomListView.CustomDrawSubItem(AItem: TListItem; ASubItem: Integer; AState: TCustomDrawState; AStage: TCustomDrawStage): Boolean;
+begin
+  Result := True;
+  if Assigned(FOnCustomDrawSubItem) and (AStage = cdPrePaint)
+  then FOnCustomDrawSubItem(Self, AItem, ASubItem, AState, Result);
+  
+  if Assigned(FOnAdvancedCustomDrawSubItem)
+  then FOnAdvancedCustomDrawSubItem(Self, AItem, ASubItem, AState, AStage, Result);
+
+end;
+
+{------------------------------------------------------------------------------}
 {   TCustomListView Change                                                     }
 {------------------------------------------------------------------------------}
 procedure TCustomListView.Change(AItem: TListItem; AChange: Integer);
@@ -96,8 +136,8 @@ begin
   //        maps there codes to the of win32
   case AMessage.NMHdr^.code of 
 //  HDN_TRACK:
-//  NM_CUSTOMDRAW: //Custom Drawing is handled direct from the interfaces 
-                   //(at least win32 does so)
+//  NM_CUSTOMDRAW:
+      // Custom Drawing is handled direct from the interfaces by IntfCustomDraw
 //  LVN_BEGINDRAG:
     LVN_DELETEITEM: begin
       Item := FListItems[nm^.iItem];
@@ -191,6 +231,35 @@ procedure TCustomListView.InvalidateSelected;
 begin
   FSelected:=nil;
   Exclude(FFlags,lffSelectedValid);
+end;
+
+{------------------------------------------------------------------------------}
+{   TCustomListView IsCustomDrawn                                              }
+{------------------------------------------------------------------------------}
+function TCustomListView.IsCustomDrawn(ATarget: TCustomDrawTarget; AStage: TCustomDrawStage): Boolean;
+begin
+  case ATarget of
+    dtControl: Result := Assigned(FOnAdvancedCustomDraw)
+                      or Assigned(FOnAdvancedCustomDrawItem)
+                      or Assigned(FOnAdvancedCustomDrawSubItem);
+    dtItem:    Result := Assigned(FOnAdvancedCustomDrawItem)
+                      or Assigned(FOnAdvancedCustomDrawSubItem);
+    dtSubItem: Result := Assigned(FOnAdvancedCustomDrawSubItem);
+  end;
+  
+  if Result then exit;
+
+  // check the normal events only in the prepaint stage
+  if AStage <> cdPrePaint then Exit;
+
+  case ATarget of
+    dtControl: Result := Assigned(FOnCustomDraw)
+                      or Assigned(FOnCustomDrawItem)
+                      or Assigned(FOnCustomDrawSubItem);
+    dtItem:    Result := Assigned(FOnCustomDrawItem)
+                      or Assigned(FOnCustomDrawSubItem);
+    dtSubItem: Result := Assigned(FOnCustomDrawSubItem);
+  end;
 end;
 
 {------------------------------------------------------------------------------}
@@ -314,6 +383,61 @@ end;
 {------------------------------------------------------------------------------}
 procedure TCustomListView.InsertItem(Item : TListItem);
 begin
+end;
+
+function TCustomListView.IntfCustomDraw(ATarget: TCustomDrawTarget; AStage: TCustomDrawStage; AItem, ASubItem: Integer; AState: TCustomDrawState; const ARect: PRect): TCustomDrawResult;
+begin
+  Result := [];
+  
+  // in the prepaint stage, return the notifications we want
+  if AStage = cdPrePaint
+  then begin
+    case ATarget of
+      dtControl: begin
+        if IsCustomDrawn(dtItem, cdPrePaint) or IsCustomDrawn(dtItem, cdPreErase)
+        then Include(Result, cdrNotifyItemDraw);
+
+        if IsCustomDrawn(dtItem, cdPostPaint)
+        then Include(Result, cdrNotifyPostPaint);
+
+        if IsCustomDrawn(dtItem, cdPostErase)
+        then Include(Result, cdrNotifyPostErase);
+
+        if IsCustomDrawn(dtSubItem, cdPrePaint)
+        then Include(Result, cdrNotifySubitemDraw);
+      end;
+      dtItem: begin
+        if IsCustomDrawn(dtItem, cdPostPaint)
+        then Include(Result, cdrNotifyPostPaint);
+
+        if IsCustomDrawn(dtItem, cdPostErase)
+        then Include(Result, cdrNotifyPostErase);
+
+        if IsCustomDrawn(dtSubItem, cdPrePaint)
+        then Include(Result, cdrNotifySubitemDraw);
+      end;
+      dtSubItem: begin
+        if IsCustomDrawn(dtSubItem, cdPostPaint)
+        then Include(Result, cdrNotifyPostPaint);
+
+        if IsCustomDrawn(dtSubItem, cdPostErase)
+        then Include(Result, cdrNotifyPostErase);
+      end;
+    end;
+  end;
+
+  if not IsCustomDrawn(ATarget, AStage) then Exit;
+
+
+  case ATarget of
+    dtControl: if CustomDraw(ARect^, AStage) then Exit;
+    dtItem:    if CustomDrawItem(Items[AItem], AState, AStage) then Exit;
+    dtSubItem: if CustomDrawSubItem(Items[AItem], ASubItem, AState, AStage) then Exit;
+  end;
+
+  // if we are here, a custom step returned false, so no default drawing
+  if AStage = cdPrePaint
+  then Result := [cdrSkipDefault];
 end;
 
 {------------------------------------------------------------------------------}
