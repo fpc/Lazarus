@@ -730,6 +730,7 @@ begin
   //end;
   // finally try the history lists of the Dependency Owner (Project/Package)
   if (Result=nil) and (Dependency.Owner<>nil)
+  and assigned(DependencyOwnerGetPkgFilename)
   and DependencyOwnerGetPkgFilename(Self,Dependency) then
     Result:=FindLinkWithDependencyInTree(FUserLinksSortID,Dependency);
 end;

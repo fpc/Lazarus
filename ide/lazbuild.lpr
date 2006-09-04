@@ -32,9 +32,9 @@ uses
   Classes, SysUtils, CustApp, LCLProc, Forms, Controls, FileUtil,
   CodeToolManager, Laz_XMLCfg,
   MacroIntf,
-  IDEProcs, InitialSetupDlgs, OutputFilter, Compiler, TransferMacros,
-  EnvironmentOpts, IDETranslations, LazarusIDEStrConsts, LazConf,
-  BasePkgManager, PackageDefs, PackageLinks, PackageSystem;
+  IDEProcs, InitialSetupDlgs, OutputFilter, Compiler, CompilerOptions,
+  TransferMacros, EnvironmentOpts, IDETranslations, LazarusIDEStrConsts,
+  LazConf, BasePkgManager, PackageDefs, PackageLinks, PackageSystem;
   
 type
 
@@ -62,6 +62,11 @@ type
                                             var AnOutDirectory: string);
     // package graph
     procedure PackageGraphAddPackage(Pkg: TLazPackage);
+    
+    // compiler options
+    function OnSubstituteCompilerOption(Options: TParsedCompilerOptions;
+             const UnparsedValue: string; PlatformIndependent: boolean
+             ): string;
   protected
     function BuildFile(Filename: string): boolean;
     function BuildPackage(const AFilename: string): boolean;
@@ -140,6 +145,14 @@ end;
 procedure TLazBuildApplication.PackageGraphAddPackage(Pkg: TLazPackage);
 begin
   if FileExists(Pkg.FileName) then PkgLinks.AddUserLink(Pkg);
+end;
+
+function TLazBuildApplication.OnSubstituteCompilerOption(
+  Options: TParsedCompilerOptions; const UnparsedValue: string;
+  PlatformIndependent: boolean): string;
+begin
+  // TODO: real parsing and substution
+  Result:=UnparsedValue;
 end;
 
 function TLazBuildApplication.BuildFile(Filename: string): boolean;
@@ -262,6 +275,7 @@ begin
   GlobalMacroList:=TTransferMacroList.Create;
   IDEMacros:=TLazIDEMacros.Create;
   
+  CompilerOptions.OnParseString:=@OnSubstituteCompilerOption;
   {$WARNING TODO TLazBuildApplication.SetupMacros}
 end;
 
