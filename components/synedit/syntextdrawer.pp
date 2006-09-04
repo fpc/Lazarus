@@ -297,9 +297,7 @@ type
 {$IFNDEF VER90}
 {$IFNDEF VER80}
 {$DEFINE HE_ASSERT}
-{$IFNDEF FPC}
-  {$DEFINE HE_LEADBYTES}
-{$ENDIF}
+{$DEFINE HE_LEADBYTES}
 {$DEFINE HE_COMPAREMEM}
 {$ENDIF}
 {$ENDIF}
@@ -1399,7 +1397,7 @@ initialization
   SynTextDrawerFinalization:=false;
 {$ENDIF}
 {$IFNDEF HE_LEADBYTES}
-  InitializeLeadBytes;
+  Ini tializeLeadBytes;
 {$ENDIF} 
 
 finalization
