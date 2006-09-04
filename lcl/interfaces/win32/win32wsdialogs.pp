@@ -247,7 +247,7 @@ begin
       // test if we need to use our own storage
       if OpenFileName^.nMaxFile<NeededSize then begin
         if OpenFileName^.lCustData=0 then
-          OpenFileName^.lCustData := DWord(new(PString));
+          OpenFileName^.lCustData := Windows.LParam(new(PString));
         FileNames := PString(OpenFileName^.lCustData);
         if length(FileNames^)<NeededSize then
           SetLength(FileNames^, NeededSize*2);
