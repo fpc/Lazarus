@@ -209,7 +209,6 @@ var
   MainIDEInterface: TMainIDEInterface;
 
   ObjectInspector1: TObjectInspector;
-  Project1: TProject;
 
 const
   OpenFlagNames: array[TOpenFlag] of string = (

@@ -28,12 +28,22 @@
         <PackageName Value="IDEIntf"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="1">
+    <Units Count="3">
       <Unit0>
         <Filename Value="lazbuild.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="lazbuild"/>
       </Unit0>
+      <Unit1>
+        <Filename Value="buildmanager.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="BuildManager"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="basebuildmanager.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="BaseBuildManager"/>
+      </Unit2>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

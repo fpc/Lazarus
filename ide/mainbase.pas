@@ -67,7 +67,8 @@ uses
   TransferMacros, ObjectInspector, PropEdits, IDEDefs, MsgView,
   EnvironmentOpts, EditorOptions, CompilerOptions, KeyMapping, IDEProcs,
   Debugger, IDEOptionDefs, CodeToolsDefines, Splash, Designer,
-  UnitEditor, MainBar, MainIntf;
+  UnitEditor, BuildManager,
+  MainBar, MainIntf;
 
 type
   { TMainIDEBase }
@@ -76,9 +77,6 @@ type
   private
     FToolStatus: TIDEToolStatus;
   protected
-    CurrentParsedCompilerOption: TParsedCompilerOptions;
-    TheCompiler: TCompiler;
-    TheOutputFilter: TOutputFilter;
     OwningComponent: TComponent;
 
     function CreateMenuSeparator : TMenuItem;
@@ -175,8 +173,8 @@ type
   end;
 
 var
-  MainIDE: TMainIDEBase;
-  SourceNotebook : TSourceNotebook;
+  MainIDE: TMainIDEBase = nil;
+  SourceNotebook: TSourceNotebook = nil;
 
 implementation
 

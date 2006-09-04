@@ -30,11 +30,15 @@ program lazbuild;
 
 uses
   Classes, SysUtils, CustApp, LCLProc, Forms, Controls, FileUtil,
+  // codetools
   CodeToolManager, Laz_XMLCfg,
+  // IDEIntf
   MacroIntf,
+  // IDE
   IDEProcs, InitialSetupDlgs, OutputFilter, Compiler, CompilerOptions,
   TransferMacros, EnvironmentOpts, IDETranslations, LazarusIDEStrConsts,
-  LazConf, BasePkgManager, PackageDefs, PackageLinks, PackageSystem;
+  LazConf, BasePkgManager, PackageDefs, PackageLinks, PackageSystem,
+  BuildManager, BaseBuildManager;
   
 type
 
@@ -62,11 +66,6 @@ type
                                             var AnOutDirectory: string);
     // package graph
     procedure PackageGraphAddPackage(Pkg: TLazPackage);
-    
-    // compiler options
-    function OnSubstituteCompilerOption(Options: TParsedCompilerOptions;
-             const UnparsedValue: string; PlatformIndependent: boolean
-             ): string;
   protected
     function BuildFile(Filename: string): boolean;
     function BuildPackage(const AFilename: string): boolean;
@@ -74,7 +73,6 @@ type
     function Init: boolean;
     procedure LoadEnvironmentOptions;
     procedure SetupOutputFilter;
-    procedure SetupCompilerInterface;
     procedure SetupMacros;
     procedure SetupPackageSystem;
   public
@@ -153,14 +151,6 @@ begin
   if FileExists(Pkg.FileName) then PkgLinks.AddUserLink(Pkg);
 end;
 
-function TLazBuildApplication.OnSubstituteCompilerOption(
-  Options: TParsedCompilerOptions; const UnparsedValue: string;
-  PlatformIndependent: boolean): string;
-begin
-  // TODO: real parsing and substution
-  Result:=UnparsedValue;
-end;
-
 function TLazBuildApplication.BuildFile(Filename: string): boolean;
 begin
   Result:=false;
@@ -230,6 +220,7 @@ begin
   
   CreatePrimaryConfigPath;
 
+  BuildBoss:=TBuildManager.Create;
   LoadEnvironmentOptions;
   InteractiveSetup:=false;
   SetupCompilerFilename(InteractiveSetup);
@@ -237,7 +228,7 @@ begin
   SetupMacros;
   SetupPackageSystem;
   SetupOutputFilter;
-  SetupCompilerInterface;
+  BuildBoss.SetupCompilerInterface;
 
   fInitResult:=true;
 end;
@@ -266,22 +257,9 @@ begin
   TheOutputFilter.OnGetIncludePath:=@CodeToolBoss.GetIncludePathForDirectory;
 end;
 
-procedure TLazBuildApplication.SetupCompilerInterface;
-begin
-  TheCompiler := TCompiler.Create;
-  with TheCompiler do begin
-    OnCommandLineCreate:=@OnCmdLineCreate;
-    OutputFilter:=Self.TheOutputFilter;
-  end;
-end;
-
 procedure TLazBuildApplication.SetupMacros;
 begin
-  GlobalMacroList:=TTransferMacroList.Create;
-  IDEMacros:=TLazIDEMacros.Create;
-  
-  CompilerOptions.OnParseString:=@OnSubstituteCompilerOption;
-  {$WARNING TODO TLazBuildApplication.SetupMacros}
+  BuildBoss.SetupTransferMacros;
 end;
 
 procedure TLazBuildApplication.SetupPackageSystem;
@@ -317,6 +295,7 @@ begin
   FreeThenNil(GlobalMacroList);
   FreeThenNil(IDEMacros);
   FreeThenNil(EnvironmentOptions);
+  FreeThenNil(BuildBoss);
 
   FreeAndNil(Files);
   inherited Destroy;

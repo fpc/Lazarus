@@ -707,6 +707,8 @@ type
 const
   ResourceFileExt = '.lrs';
 
+var
+  Project1: TProject = nil;
 
 procedure AddCompileReasonsDiff(Tool: TCompilerDiffTool;
   const PropertyName: string; const Old, New: TCompileReasons);

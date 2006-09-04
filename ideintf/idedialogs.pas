@@ -31,10 +31,10 @@ type
   TStoreIDEFileDialog = procedure(AFileDialog: TFileDialog) of object;
   TIDEMessageDialog = function(const aCaption, aMsg: string;
                                 DlgType: TMsgDlgType; Buttons: TMsgDlgButtons;
-                                const HelpKeyword: string): Integer of object;
+                                const HelpKeyword: string = ''): Integer of object;
   TIDEQuestionDialog = function(const aCaption, aMsg: string;
                                 DlgType: TMsgDlgType; Buttons: array of const;
-                                const HelpKeyword: string): Integer of object;
+                                const HelpKeyword: string = ''): Integer of object;
 function LazSelectDirectory(const Title: string; const InitialDir: string = ''
   ): string;
 

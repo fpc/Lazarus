@@ -55,7 +55,7 @@ uses
   // IDE units
   LazarusIDEStrConsts, LazConf, IDECommands, EditorOptions, KeyMapping, Project,
   WordCompletion, FindReplaceDialog, FindInFilesDlg, IDEProcs, IDEOptionDefs,
-  CodeContextForm,
+  MacroPromptDlg, TransferMacros, CodeContextForm,
   EnvironmentOpts, MsgView, SearchResultView, InputHistory, CodeMacroPrompt,
   SortSelectionDlg, EncloseSelectionDlg, DiffDialog, ConDef, InvertAssignTool,
   SourceEditProcs, SourceMarks, CharacterMapDlg, frmSearch, LazDocFrm,
@@ -502,6 +502,18 @@ type
     procedure UpdateActiveEditColors;
     procedure SetIncrementalSearchStr(const AValue: string);
     procedure DoIncrementalSearch;
+    
+    // macros
+    function MacroFuncCol(const s:string; const Data: PtrInt;
+                          var Abort: boolean): string;
+    function MacroFuncRow(const s:string; const Data: PtrInt;
+                          var Abort: boolean): string;
+    function MacroFuncEdFile(const s:string; const Data: PtrInt;
+                             var Abort: boolean): string;
+    function MacroFuncCurToken(const s:string; const Data: PtrInt;
+                               var Abort: boolean): string;
+    function MacroFuncPrompt(const s:string; const Data: PtrInt;
+                             var Abort: boolean): string;
   protected
     ccSelection: String;
     States: TSourceNotebookStates;
@@ -576,6 +588,7 @@ type
 
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure InitMacros(AMacroList: TTransferMacroList);
 
     procedure ShowLazDoc;
     procedure UpdateLazDoc;
@@ -2858,6 +2871,20 @@ begin
   SourceEditorWindow:=nil;
 
   inherited Destroy;
+end;
+
+procedure TSourceNotebook.InitMacros(AMacroList: TTransferMacroList);
+begin
+  AMacroList.Add(TTransferMacro.Create('Col','',
+                 lisCursorColumnInCurrentEditor,@MacroFuncCol,[]));
+  AMacroList.Add(TTransferMacro.Create('Row','',
+                 lisCursorRowInCUrrentEditor,@MacroFuncRow,[]));
+  AMacroList.Add(TTransferMacro.Create('CurToken','',
+                 lisWordAtCursorInCurrentEditor,@MacroFuncCurToken,[]));
+  AMacroList.Add(TTransferMacro.Create('EdFile','',
+                 lisExpandedFilenameOfCurrentEditor,@MacroFuncEdFile,[]));
+  AMacroList.Add(TTransferMacro.Create('Prompt','',
+                 lisPromptForValue,@MacroFuncPrompt,[tmfInteractive]));
 end;
 
 procedure TSourceNotebook.ShowLazDoc;
@@ -5571,6 +5598,62 @@ begin
     Exclude(States,snIncrementalSearching);
   end;
   UpdateStatusBar;
+end;
+
+function TSourceNotebook.MacroFuncCol(const s: string; const Data: PtrInt;
+  var Abort: boolean): string;
+var
+  SrcEdit: TSourceEditor;
+begin
+  SrcEdit:=GetActiveSE;
+  if (SrcEdit<>nil) then
+    Result:=IntToStr(SrcEdit.EditorComponent.CaretX)
+  else
+    Result:='';
+end;
+
+function TSourceNotebook.MacroFuncRow(const s: string; const Data: PtrInt;
+  var Abort: boolean): string;
+var
+  SrcEdit: TSourceEditor;
+begin
+  SrcEdit:=GetActiveSE;
+  if (SrcEdit<>nil) then
+    Result:=IntToStr(SrcEdit.EditorComponent.CaretY)
+  else
+    Result:='';
+end;
+
+function TSourceNotebook.MacroFuncEdFile(const s: string; const Data: PtrInt;
+  var Abort: boolean): string;
+var
+  SrcEdit: TSourceEditor;
+begin
+  SrcEdit:=GetActiveSE;
+  if (SrcEdit<>nil) then
+    Result:=SrcEdit.FileName
+  else
+    Result:='';
+end;
+
+function TSourceNotebook.MacroFuncCurToken(const s: string; const Data: PtrInt;
+  var Abort: boolean): string;
+var
+  SrcEdit: TSourceEditor;
+begin
+  SrcEdit:=GetActiveSE;
+  if (SrcEdit<>nil) then begin
+    with SrcEdit.EditorComponent do
+      Result:=GetWordAtRowCol(LogicalCaretXY)
+  end else
+    Result:='';
+end;
+
+function TSourceNotebook.MacroFuncPrompt(const s: string; const Data: PtrInt;
+  var Abort: boolean): string;
+begin
+  Result:=s;
+  Abort:=(ShowMacroPromptDialog(Result)<>mrOk);
 end;
 
 procedure TSourceNotebook.UpdateActiveEditColors;

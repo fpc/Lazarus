@@ -39,7 +39,7 @@ interface
 uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Dialogs, FileUtil,
   CodeCache, CodeToolManager, AVL_Tree, LazIDEIntf,
-  IDEProcs, LazarusIDEStrConsts;
+  IDEProcs, LazarusIDEStrConsts, IDEDialogs;
 
 type
   // load buffer flags
@@ -82,7 +82,6 @@ procedure NotImplementedDialog(const Feature: string);
 
 implementation
 
-
 function RenameFileWithErrorDialogs(const SrcFilename, DestFilename: string;
   ExtraButtons: TMsgDlgButtons): TModalResult;
 var
@@ -97,10 +96,10 @@ begin
       break;
     end else begin
       DlgButtons:=[mbCancel,mbRetry]+ExtraButtons;
-      Result:=MessageDlg(lisUnableToRenameFile,
+      Result:=IDEMessageDialog(lisUnableToRenameFile,
         Format(lisUnableToRenameFileTo2, ['"', SrcFilename, '"', #13, '"',
           DestFilename, '"']),
-        mtError,DlgButtons,0);
+        mtError,DlgButtons);
       if (Result<>mrRetry) then exit;
     end;
   until false;
@@ -114,9 +113,9 @@ var
 begin
   if CompareFilenames(SrcFilename,DestFilename)=0 then begin
     Result:=mrAbort;
-    MessageDlg(lisUnableToCopyFile,
+    IDEMessageDialog(lisUnableToCopyFile,
       Format(lisSourceAndDestinationAreTheSame, [#13, SrcFilename]), mtError, [
-        mbAbort], 0);
+        mbAbort]);
     exit;
   end;
   repeat
@@ -124,10 +123,10 @@ begin
       break;
     end else begin
       DlgButtons:=[mbCancel,mbRetry]+ExtraButtons;
-      Result:=MessageDlg(lisUnableToCopyFile,
+      Result:=IDEMessageDialog(lisUnableToCopyFile,
         Format(lisUnableToCopyFileTo2, ['"', SrcFilename, '"', #13, '"',
           DestFilename, '"']),
-        mtError,DlgButtons,0);
+        mtError,DlgButtons);
       if (Result<>mrRetry) then exit;
     end;
   until false;
@@ -162,8 +161,8 @@ begin
         ACaption:=lisFileNotText;
         AText:=Format(lisFileDoesNotLookLikeATextFileOpenItAnyway2, ['"',
           AFilename, '"', #13, #13]);
-        Result:=MessageDlg(ACaption, AText, mtConfirmation,
-                           [mbOk, mbIgnore, mbAbort], 0);
+        Result:=IDEMessageDialog(ACaption, AText, mtConfirmation,
+                           [mbOk, mbIgnore, mbAbort]);
       end;
       if Result<>mrOk then break;
     end;
@@ -181,7 +180,7 @@ begin
       else begin
         ACaption:=lisReadError;
         AText:=Format(lisUnableToReadFile2, ['"', AFilename, '"']);
-        Result:=MessageDlg(ACaption,AText,mtError,[mbAbort,mbRetry,mbIgnore],0);
+        Result:=IDEMessageDialog(ACaption,AText,mtError,[mbAbort,mbRetry,mbIgnore]);
       end;
       if Result=mrAbort then break;
     end;
@@ -199,9 +198,9 @@ begin
     if ACodeBuffer.Save then begin
       Result:=mrOk;
     end else begin
-      Result:=MessageDlg('Write error',
+      Result:=IDEMessageDialog('Write error',
         'Unable to write "'+ACodeBuffer.Filename+'"',
-        mtError,[mbAbort,mbRetry,mbIgnore],0);
+        mtError,[mbAbort,mbRetry,mbIgnore]);
     end;
   until Result<>mrRetry;
 end;
@@ -217,9 +216,9 @@ begin
     Result:=mrOk;
   except
     on E: Exception do begin
-      MessageDlg('Error','Error loading '+ListTitle+' from'#13
+      IDEMessageDialog('Error','Error loading '+ListTitle+' from'#13
       +Filename+#13#13
-        +E.Message,mtError,[mbOk],0);
+        +E.Message,mtError,[mbOk]);
     end;
   end;
 end;
@@ -234,9 +233,9 @@ begin
     if Buffer<>nil then begin
       break;
     end else begin
-      Result:=MessageDlg(lisUnableToCreateFile,
+      Result:=IDEMessageDialog(lisUnableToCreateFile,
         Format(lisUnableToCreateFilename, ['"', Filename, '"']),
-        mtError,ErrorButtons+[mbCancel],0);
+        mtError,ErrorButtons+[mbCancel]);
       if Result<>mrRetry then exit;
     end;
   until false;
@@ -244,9 +243,9 @@ begin
     if Buffer.Save then begin
       break;
     end else begin
-      Result:=MessageDlg(lisUnableToWriteFile,
+      Result:=IDEMessageDialog(lisUnableToWriteFile,
         Format(lisUnableToWriteFile2, ['"', Buffer.Filename, '"']),
-        mtError,ErrorButtons+[mbCancel],0);
+        mtError,ErrorButtons+[mbCancel]);
       if Result<>mrRetry then exit;
     end;
   until false;
@@ -266,9 +265,9 @@ begin
       fs:=TFileStream.Create(AFilename,fmCreate);
       fs.Free;
     except
-      Result:=MessageDlg(lisUnableToCreateFile,
+      Result:=IDEMessageDialog(lisUnableToCreateFile,
         Format(lisUnableToCreateFilename, ['"', AFilename, '"']), mtError, [
-          mbCancel, mbAbort], 0);
+          mbCancel, mbAbort]);
       exit;
     end;
   end;
@@ -286,9 +285,9 @@ begin
       fs.Free;
     end;
   except
-    Result:=MessageDlg(lisUnableToWriteFile,
+    Result:=IDEMessageDialog(lisUnableToWriteFile,
       Format(lisUnableToWriteFilename, ['"', AFilename, '"']), mtError, [
-        mbCancel, mbAbort], 0);
+        mbCancel, mbAbort]);
     exit;
   end;
   // check readable
@@ -302,9 +301,9 @@ begin
       fs.Free;
     end;
   except
-    Result:=MessageDlg(lisUnableToReadFile,
+    Result:=IDEMessageDialog(lisUnableToReadFile,
       Format(lisUnableToReadFilename, ['"', AFilename, '"']), mtError, [
-        mbCancel, mbAbort], 0);
+        mbCancel, mbAbort]);
     exit;
   end;
   Result:=mrOk;
@@ -315,9 +314,9 @@ function CheckFileIsWritable(const Filename: string;
 begin
   Result:=mrOk;
   while not FileIsWritable(Filename) do begin
-    Result:=MessageDlg(lisFileIsNotWritable,
+    Result:=IDEMessageDialog(lisFileIsNotWritable,
       Format(lisUnableToWriteToFile2, ['"', Filename, '"']),
-      mtError,ErrorButtons+[mbCancel],0);
+      mtError,ErrorButtons+[mbCancel]);
     if Result<>mrRetry then exit;
   end;
 end;
@@ -335,9 +334,9 @@ begin
       Dir:=copy(Directory,1,i-1);
       if not DirPathExists(Dir) then begin
         while not CreateDir(Dir) do begin
-          Result:=MessageDlg(lisPkgMangUnableToCreateDirectory,
+          Result:=IDEMessageDialog(lisPkgMangUnableToCreateDirectory,
             Format(lisUnableToCreateDirectory2, ['"', Dir, '"']),
-            mtError,ErrorButtons+[mbCancel],0);
+            mtError,ErrorButtons+[mbCancel]);
           if Result<>mrRetry then exit;
         end;
       end;
@@ -354,9 +353,9 @@ begin
     Result:=mrOk;
     if not FileExists(Filename) then exit;
     if not DeleteFile(Filename) then begin
-      Result:=MessageDlg(lisDeleteFileFailed,
+      Result:=IDEMessageDialog(lisDeleteFileFailed,
         Format(lisPkgMangUnableToDeleteFile, ['"', Filename, '"']),
-        mtError,[mbCancel,mbRetry],0);
+        mtError,[mbCancel,mbRetry]);
       if Result<>mrRetry then exit;
     end;
   until false;
@@ -379,9 +378,9 @@ begin
     Result:=mrOk;
   except
     on E: Exception do begin
-      Result:=MessageDlg('Write error',
+      Result:=IDEMessageDialog('Write error',
          'Write error: '+E.Message+#13
-         +'File: '+Filename,mtError,[mbAbort]+ErrorButtons,0);
+         +'File: '+Filename,mtError,[mbAbort]+ErrorButtons);
     end;
   end;
 end;
@@ -405,14 +404,14 @@ begin
     LRSMemStream:=TMemoryStream.Create;
     // convert
     if not LFMtoLRSstream(LFMMemStream,LRSMemStream) then begin
-      Result:=MessageDlg('Stream Error',
+      Result:=IDEMessageDialog('Stream Error',
         'Unable to update the binary resource file'#13
         +LRSFilename+#13
         +'from file the text resource file'#13
         +LFMFilename+#13
         +#13
         +'Probably the text file is corrupt.',
-        mtError,[mbCancel,mbAbort,mbIgnore],0);
+        mtError,[mbCancel,mbAbort,mbIgnore]);
       exit;
     end;
     LRSMemStream.Position:=0;
@@ -463,8 +462,8 @@ end;
 
 procedure NotImplementedDialog(const Feature: string);
 begin
-  MessageDlg('Not implemented','Not implemented yet:'#13
-    +Feature,mtError,[mbCancel],0);
+  IDEMessageDialog('Not implemented','Not implemented yet:'#13+Feature,mtError,
+                   [mbCancel]);
 end;
 
 end.

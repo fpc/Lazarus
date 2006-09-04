@@ -38,8 +38,8 @@ uses
   Classes, SysUtils, FPCAdds, LCLProc, Forms, Controls, Buttons, GraphType,
   Graphics, ExtCtrls, StdCtrls, Spin, FileUtil, LResources, Dialogs,
   Laz_XMLCfg, ObjectInspector, IDEWindowIntf,
-  LazarusIDEStrConsts, LazConf, ExtToolDialog, IDEProcs, IDEOptionDefs,
-  InputHistory, EditorOptions, IDETranslations;
+  LazarusIDEStrConsts, TransferMacros, LazConf, ExtToolDialog, IDEProcs,
+  IDEOptionDefs, InputHistory, EditorOptions, IDETranslations;
 
 const
   EnvOptsVersion: integer = 106;
@@ -252,6 +252,26 @@ type
     procedure GetDefaultFPCSourceDirectory;
     procedure CreateWindowLayout(const TheFormID: string);
     function IsDebuggerClassDefined: boolean;
+    function GetTestBuildDirectory: string;
+
+    // macro functions
+    procedure InitMacros(AMacroList: TTransferMacroList);
+    function MacroFuncCompPath(const s:string; const Data: PtrInt;
+                               var Abort: boolean): string;
+    function MacroFuncFPCSrcDir(const s:string; const Data: PtrInt;
+                                var Abort: boolean): string;
+    function MacroFuncLazarusDir(const s:string; const Data: PtrInt;
+                                 var Abort: boolean): string;
+    function MacroFuncLanguageID(const s:string; const Data: PtrInt;
+                                 var Abort: boolean): string;
+    function MacroFuncLanguageName(const s:string; const Data: PtrInt;
+                                   var Abort: boolean): string;
+    function MacroFuncTestDir(const s:string; const Data: PtrInt;
+                              var Abort: boolean): string;
+    function MacroFuncConfDir(const s:string; const Data: PtrInt;
+                              var Abort: boolean): string;
+
+    // event
     property OnApplyWindowLayout: TOnApplyIDEWindowLayout
                          read FOnApplyWindowLayout write SetOnApplyWindowLayout;
 
@@ -1472,7 +1492,72 @@ end;
 function TEnvironmentOptions.IsDebuggerClassDefined: boolean;
 begin
   Result := (FDebuggerClass <> '')
-         and  (AnsiCompareText(FDebuggerClass, DebuggerName[dtNone]) <> 0);
+         and (CompareText(FDebuggerClass, DebuggerName[dtNone]) <> 0);
+end;
+
+function TEnvironmentOptions.GetTestBuildDirectory: string;
+begin
+  Result:=AppendPathDelim(TestBuildDirectory);
+end;
+
+procedure TEnvironmentOptions.InitMacros(AMacroList: TTransferMacroList);
+begin
+  AMacroList.Add(TTransferMacro.Create('CompPath','',
+                 lisCompilerFilename,@MacroFuncCompPath,[]));
+  AMacroList.Add(TTransferMacro.Create('FPCSrcDir','',
+                 lisFreePascalSourceDirectory,@MacroFuncFPCSrcDir,[]));
+  AMacroList.Add(TTransferMacro.Create('LazarusDir','',
+                 lisLazarusDirectory,@MacroFuncLazarusDir,[]));
+  AMacroList.Add(TTransferMacro.Create('LanguageID','',
+                 lisLazarusLanguageID,@MacroFuncLanguageID,[]));
+  AMacroList.Add(TTransferMacro.Create('LanguageName','',
+                 lisLazarusLanguageName,@MacroFuncLanguageName,[]));
+  AMacroList.Add(TTransferMacro.Create('TestDir','',
+                 lisTestDirectory,@MacroFuncTestDir,[]));
+  AMacroList.Add(TTransferMacro.Create('ConfDir','',
+                 lisProjectSrcPath,@MacroFuncConfDir,[]));
+end;
+
+function TEnvironmentOptions.MacroFuncCompPath(const s: string;
+  const Data: PtrInt; var Abort: boolean): string;
+begin
+  Result:=CompilerFilename;
+end;
+
+function TEnvironmentOptions.MacroFuncFPCSrcDir(const s: string;
+  const Data: PtrInt; var Abort: boolean): string;
+begin
+  Result:=FPCSourceDirectory;
+end;
+
+function TEnvironmentOptions.MacroFuncLazarusDir(const s: string;
+  const Data: PtrInt; var Abort: boolean): string;
+begin
+  Result:=LazarusDirectory;
+end;
+
+function TEnvironmentOptions.MacroFuncLanguageID(const s: string;
+  const Data: PtrInt; var Abort: boolean): string;
+begin
+  Result:=LanguageID;
+end;
+
+function TEnvironmentOptions.MacroFuncLanguageName(const s: string;
+  const Data: PtrInt; var Abort: boolean): string;
+begin
+  Result:=GetLazarusLanguageLocalizedName(LanguageID);
+end;
+
+function TEnvironmentOptions.MacroFuncTestDir(const s: string;
+  const Data: PtrInt; var Abort: boolean): string;
+begin
+  Result:=GetTestBuildDirectory;
+end;
+
+function TEnvironmentOptions.MacroFuncConfDir(const s: string;
+  const Data: PtrInt; var Abort: boolean): string;
+begin
+  Result:=GetPrimaryConfigPath;
 end;
 
 function TEnvironmentOptions.FileHasChangedOnDisk: boolean;

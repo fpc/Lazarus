@@ -112,12 +112,12 @@ uses
   Splash, IDEDefs, LazarusIDEStrConsts, LazConf, MsgView, SearchResultView,
   CodeTemplatesDlg,
   PublishModule, EnvironmentOpts, TransferMacros, KeyMapping, IDETranslations,
-  IDEProcs, ExtToolDialog, ExtToolEditDlg, MacroPromptDlg, OutputFilter,
+  IDEProcs, ExtToolDialog, ExtToolEditDlg, OutputFilter,
   BuildLazDialog, MiscOptions, InputHistory, UnitDependencies, ClipBoardHistory,
   ProcessList, InitialSetupDlgs, NewDialog, MakeResStrDlg, ToDoList,
   DialogProcs, FindReplaceDialog, FindInFilesDlg, CodeExplorer, BuildFileDlg,
   ProcedureList, ExtractProcDlg, FindRenameIdentifier,
-  CleanDirDlg, CodeContextForm, AboutFrm,
+  CleanDirDlg, CodeContextForm, AboutFrm, BuildManager,
   // main ide
   MainBar, MainIntf, MainBase;
 
@@ -519,7 +519,6 @@ type
     procedure SetupHints;
     procedure SetupOutputFilter;
     procedure SetupObjectInspector;
-    procedure SetupCompilerInterface;
     procedure SetupFormEditor;
     procedure SetupSourceNotebook;
     procedure SetupTransferMacros;
@@ -600,17 +599,7 @@ type
         Data: TObject);
     procedure OnCopyError(const ErrorData: TCopyErrorData;
         var Handled: boolean; Data: TObject);
-
-    // methods for building
-    procedure SetBuildTarget(const TargetOS, TargetCPU, LCLWidgetType: string);
-    procedure SetBuildTargetIDE;
   public
-    CurDefinesCompilerFilename: String;
-    CurDefinesCompilerOptions: String;
-    OverrideTargetOS: string;
-    OverrideTargetCPU: string;
-    OverrideLCLWidgetType: string;
-
     class procedure ParseCmdLineOptions;
 
     constructor Create(TheOwner: TComponent); override;
@@ -773,8 +762,6 @@ type
 
     // methods for codetools
     procedure InitCodeToolBoss;
-    procedure RescanCompilerDefines(OnlyIfCompilerChanged: boolean);
-    procedure GetFPCCompilerParamsForEnvironmentTest(out Params: string);
     procedure UpdateEnglishErrorMsgFilename;
     procedure ActivateCodeToolAbortableMode;
     function BeginCodeTools: boolean; override;
@@ -829,32 +816,15 @@ type
     // methods for debugging, compiling and external tools
     function GetTestBuildDirectory: string; override;
     function GetProjectTargetFilename: string; override;
-    function GetTargetOS: string;
     function GetTestProjectFilename: string;
     function GetTestUnitFilename(AnUnitInfo: TUnitInfo): string; override;
     function GetTargetUnitFilename(AnUnitInfo: TUnitInfo): string;
     function IsTestUnitFilename(const AFilename: string): boolean; override;
     function GetRunCommandLine: string; override;
     function GetProjPublishDir: string;
-    function GetLCLWidgetType(UseCache: boolean): string;
-    function GetTargetCPU(UseCache: boolean): string;
-    function GetTargetOS(UseCache: boolean): string;
     procedure OnMacroSubstitution(TheMacro: TTransferMacro; var s: string;
                                   const Data: PtrInt;
                                   var Handled, Abort: boolean);
-    function OnSubstituteCompilerOption(Options: TParsedCompilerOptions;
-                                        const UnparsedValue: string;
-                                        PlatformIndependent: boolean): string;
-    function OnMacroPromptFunction(const s:string; const Data: PtrInt;
-                                   var Abort: boolean): string;
-    function OnMacroFuncMakeExe(const Filename:string; const Data: PtrInt;
-                                var Abort: boolean): string;
-    function OnMacroFuncProject(const Param: string; const Data: PtrInt;
-                                var Abort: boolean): string;
-    function OnMacroFuncProjectUnitPath(Data: Pointer): boolean;
-    function OnMacroFuncProjectIncPath(Data: Pointer): boolean;
-    function OnMacroFuncProjectSrcPath(Data: Pointer): boolean;
-    procedure OnCmdLineCreate(var CmdLine: string; var Abort: boolean);
     procedure GetIDEFileState(Sender: TObject; const AFilename: string;
       NeededFlags: TIDEFileStateFlags; var ResultFlags: TIDEFileStateFlags); override;
 
@@ -1063,6 +1033,10 @@ constructor TMainIDE.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
 
+  SetupDialogs;
+
+  BuildBoss:=TBuildManager.Create;
+
   // load options
   CreatePrimaryConfigPath;
   StartProtocol;
@@ -1092,7 +1066,6 @@ begin
   SetupStandardIDEMenuItems;
   SetupMainMenu;
   SetupSpeedButtons;
-  SetupDialogs;
   SetupComponentNoteBook;
   ConnectMainBarEvents;
 
@@ -1110,7 +1083,7 @@ begin
   // setup the IDE components
   LoadMenuShortCuts;
   SetupOutputFilter;
-  SetupCompilerInterface;
+  BuildBoss.SetupCompilerInterface;
   SetupObjectInspector;
   SetupFormEditor;
   SetupSourceNotebook;
@@ -1205,6 +1178,7 @@ begin
   DebugLn('[TMainIDE.Destroy] B  -> inherited Destroy... ',ClassName);
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Destroy B ');{$ENDIF}
   FreeThenNil(SourceNotebook);
+  FreeThenNil(BuildBoss);
   inherited Destroy;
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Destroy C ');{$ENDIF}
 
@@ -1520,15 +1494,6 @@ begin
   ShowAnchorDesigner:=@mnuViewAnchorEditorClicked;
 end;
 
-procedure TMainIDE.SetupCompilerInterface;
-begin
-  TheCompiler := TCompiler.Create;
-  with TheCompiler do begin
-    OnCommandLineCreate:=@OnCmdLineCreate;
-    OutputFilter:=TheOutputFilter;
-  end;
-end;
-
 procedure TMainIDE.SetupFormEditor;
 begin
   CreateFormEditor;
@@ -1582,48 +1547,20 @@ begin
   MainIDEBar.itmFindBlockOtherEnd.OnClick:=@mnuSearchFindBlockOtherEnd;
   MainIDEBar.itmFindDeclaration.OnClick:=@mnuSearchFindDeclaration;
   MainIDEBar.itmOpenFileAtCursor.OnClick:=@mnuOpenFileAtCursorClicked;
+  
+  SourceNotebook.InitMacros(GlobalMacroList);
 end;
 
 procedure TMainIDE.SetupTransferMacros;
 begin
-  GlobalMacroList:=TTransferMacroList.Create;
-  IDEMacros:=TLazIDEMacros.Create;
-  CompilerOptions.OnParseString:=@OnSubstituteCompilerOption;
+  BuildBoss.SetupTransferMacros;
   GlobalMacroList.OnSubstitution:=@OnMacroSubstitution;
 
   // source editor
-  GlobalMacroList.Add(TTransferMacro.Create('Col','',
-                    lisCursorColumnInCurrentEditor,nil,[]));
-  GlobalMacroList.Add(TTransferMacro.Create('Row','',
-                    lisCursorRowInCUrrentEditor,nil,[]));
-  GlobalMacroList.Add(TTransferMacro.Create('CurToken','',
-                    lisWordAtCursorInCurrentEditor,nil,[]));
-  GlobalMacroList.Add(TTransferMacro.Create('EdFile','',
-                    lisExpandedFilenameOfCurrentEditor,nil,[]));
-  GlobalMacroList.Add(TTransferMacro.Create('Prompt','',
-                    lisPromptForValue,@OnMacroPromptFunction,[tmfInteractive]));
   GlobalMacroList.Add(TTransferMacro.Create('Save','',
-                    lisSaveCurrentEditorFile,nil,[tmfInteractive]));
+                      lisSaveCurrentEditorFile,nil,[tmfInteractive]));
   GlobalMacroList.Add(TTransferMacro.Create('SaveAll','',
-                    lisSaveAllModified,nil,[tmfInteractive]));
-
-  // environment
-  GlobalMacroList.Add(TTransferMacro.Create('CompPath','',
-                    lisCompilerFilename,nil,[]));
-  GlobalMacroList.Add(TTransferMacro.Create('FPCSrcDir','',
-                    lisFreePascalSourceDirectory,nil,[]));
-  GlobalMacroList.Add(TTransferMacro.Create('LazarusDir','',
-                    lisLazarusDirectory,nil,[]));
-  GlobalMacroList.Add(TTransferMacro.Create('LanguageID','',
-                    lisLazarusLanguageID,nil,[]));
-  GlobalMacroList.Add(TTransferMacro.Create('LanguageName','',
-                    lisLazarusLanguageName,nil,[]));
-  GlobalMacroList.Add(TTransferMacro.Create('TestDir','',
-                    lisTestDirectory,nil,[]));
-  GlobalMacroList.Add(TTransferMacro.Create('ConfDir','',
-                    lisProjectSrcPath,nil,[]));
-  GlobalMacroList.Add(TTransferMacro.Create('MakeExe','',
-                    lisMakeExe,@OnMacroFuncMakeExe,[]));
+                      lisSaveAllModified,nil,[tmfInteractive]));
 
   // project
   GlobalMacroList.Add(TTransferMacro.Create('LCLWidgetType','',
@@ -1652,16 +1589,6 @@ begin
                     lisProjectIncPath,nil,[]));
   GlobalMacroList.Add(TTransferMacro.Create('ProjSrcPath','',
                     lisProjectSrcPath,nil,[]));
-  GlobalMacroList.Add(TTransferMacro.Create('Project','',
-                    lisProjectMacroProperties,@OnMacroFuncProject,[]));
-
-  // projects macro functions
-  CodeToolBoss.DefineTree.MacroFunctions.AddExtended(
-    'PROJECTUNITPATH',nil,@OnMacroFuncProjectUnitPath);
-  CodeToolBoss.DefineTree.MacroFunctions.AddExtended(
-    'PROJECTINCPATH',nil,@OnMacroFuncProjectIncPath);
-  CodeToolBoss.DefineTree.MacroFunctions.AddExtended(
-    'PROJECTSRCPATH',nil,@OnMacroFuncProjectSrcPath);
 end;
 
 procedure TMainIDE.SetupCodeMacros;
@@ -3279,7 +3206,7 @@ begin
     frmCompilerOptions.OnTest:=@OnCompilerOptionsDialogTest;
     frmCompilerOptions.OnImExportCompilerOptions:=@OnCompilerOptionsImExport;
     if frmCompilerOptions.ShowModal=mrOk then begin
-      RescanCompilerDefines(true);
+      BuildBoss.RescanCompilerDefines(true);
       Project1.DefineTemplates.AllChanged;
       IncreaseCompilerGraphStamp;
     end;
@@ -3670,7 +3597,7 @@ Begin
 
       if MacroValueChanged then CodeToolBoss.DefineTree.ClearCache;
       if FPCCompilerChanged or FPCSrcDirChanged then begin
-        RescanCompilerDefines(false);
+        BuildBoss.RescanCompilerDefines(false);
       end;
 
       // save to disk
@@ -3718,7 +3645,7 @@ end;
 
 procedure TMainIDE.mnuEnvRescanFPCSrcDirClicked(Sender: TObject);
 begin
-  RescanCompilerDefines(false);
+  BuildBoss.RescanCompilerDefines(false);
 end;
 
 procedure TMainIDE.SaveEnvironment;
@@ -5390,7 +5317,7 @@ begin
   UpdateCaption;
   EnvironmentOptions.LastSavedProjectFile:=Project1.ProjectInfoFile;
   EnvironmentOptions.Save(false);
-  RescanCompilerDefines(true);
+  BuildBoss.RescanCompilerDefines(true);
 
   // load required packages
   PkgBoss.OpenProjectDependencies(Project1,true);
@@ -5429,64 +5356,6 @@ begin
           ErrorData.Param1, '"']),
         mtError,[mbCancel],0);
   end;
-end;
-
-procedure TMainIDE.SetBuildTarget(const TargetOS, TargetCPU,
-  LCLWidgetType: string);
-var
-  OldTargetOS: String;
-  OldTargetCPU: String;
-  OldLCLWidgetType: String;
-  NewTargetOS: String;
-  NewTargetCPU: String;
-  NewLCLWidgetType: String;
-  FPCTargetChanged: Boolean;
-  LCLTargetChanged: Boolean;
-begin
-  OldTargetOS:=GetTargetOS(true);
-  OldTargetCPU:=GetTargetCPU(true);
-  OldLCLWidgetType:=GetLCLWidgetType(true);
-  OverrideTargetOS:=TargetOS;
-  OverrideTargetCPU:=TargetCPU;
-  OverrideLCLWidgetType:=LCLWidgetType;
-  NewTargetOS:=GetTargetOS(false);
-  NewTargetCPU:=GetTargetCPU(false);
-  NewLCLWidgetType:=GetLCLWidgetType(false);
-
-  FPCTargetChanged:=(OldTargetOS<>NewTargetOS)
-                    or (OldTargetCPU<>NewTargetCPU);
-  LCLTargetChanged:=(OldLCLWidgetType<>NewLCLWidgetType);
-
-  //DebugLn('TMainIDE.SetBuildTarget Old=',OldTargetCPU,'-',OldTargetOS,'-',OldLCLWidgetType,
-  //  ' New=',NewTargetCPU,'-',NewTargetOS,'-',NewLCLWidgetType,' FPC=',dbgs(FPCTargetChanged),' LCL=',dbgs(LCLTargetChanged));
-
-  if LCLTargetChanged then
-    CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'LCLWidgetType']:=
-                                                               NewLCLWidgetType;
-  if FPCTargetChanged then
-    RescanCompilerDefines(true);
-
-  if FPCTargetChanged or LCLTargetChanged then begin
-    IncreaseCompilerParseStamp;
-  end;
-end;
-
-procedure TMainIDE.SetBuildTargetIDE;
-var
-  NewTargetOS: String;
-  NewTargetCPU: String;
-  NewLCLWidgetSet: String;
-begin
-  NewTargetOS:=MiscellaneousOptions.BuildLazOpts.TargetOS;
-  NewTargetCPU:=MiscellaneousOptions.BuildLazOpts.TargetCPU;
-  NewLCLWidgetSet:=LCLPlatformNames[MiscellaneousOptions.BuildLazOpts.LCLPlatform];
-  if (NewTargetOS='') or (NewTargetOS='default') then
-    NewTargetOS:=GetDefaultTargetOS;
-  if (NewTargetCPU='') or (NewTargetCPU='default') then
-    NewTargetCPU:=GetDefaultTargetCPU;
-  if (NewLCLWidgetSet='') or (NewLCLWidgetSet='default') then
-    NewLCLWidgetSet:=GetDefaultLCLWidgetType;
-  SetBuildTarget(NewTargetOS,NewTargetCPU,NewLCLWidgetSet);
 end;
 
 function TMainIDE.DoOpenFileInSourceEditor(AnUnitInfo: TUnitInfo;
@@ -6709,7 +6578,7 @@ Begin
     end;
 
     // rebuild codetools defines
-    RescanCompilerDefines(true);
+    BuildBoss.RescanCompilerDefines(true);
     // (i.e. remove old project specific things and create new)
     IncreaseCompilerParseStamp;
     Project1.DefineTemplates.AllChanged;
@@ -7970,7 +7839,7 @@ begin
 
   MessagesView.BeginBlock;
   try
-    SetBuildTargetIDE;
+    BuildBoss.SetBuildTargetIDE;
 
     // first compile all lazarus components (LCL, SynEdit, CodeTools, ...)
     SourceNotebook.ClearErrorLines;
@@ -8045,7 +7914,7 @@ begin
     if Result<>mrOk then exit;
 
   finally
-    SetBuildTarget('','','');
+    BuildBoss.SetBuildTarget('','','');
 
     DoCheckFilesOnDisk;
     MessagesView.EndBlock;
@@ -9278,17 +9147,6 @@ begin
   end else if MacroName='saveall' then begin
     Abort:=(DoSaveAll([sfCheckAmbiguousFiles])<>mrOk);
     s:='';
-  end else if MacroName='edfile' then begin
-    if (SourceNoteBook<>nil) and (SourceNoteBook.NoteBook<>nil) then
-      s:=Project1.UnitWithEditorIndex(SourceNoteBook.NoteBook.PageIndex).Filename
-    else
-      s:='';
-  end else if MacroName='col' then begin
-    if (SourceNoteBook<>nil) and (SourceNoteBook.NoteBook<>nil) then
-      s:=IntToStr(SourceNoteBook.GetActiveSE.EditorComponent.CaretX);
-  end else if MacroName='row' then begin
-    if (SourceNoteBook<>nil) and (SourceNoteBook.NoteBook<>nil) then
-      s:=IntToStr(SourceNoteBook.GetActiveSE.EditorComponent.CaretY);
   end else if MacroName='projfile' then begin
     if Project1<>nil then
       s:=Project1.MainFilename
@@ -9319,35 +9177,21 @@ begin
       s:=Project1.PublishOptions.DestinationDirectory
     else
       s:='';
-  end else if MacroName='curtoken' then begin
-    if (SourceNoteBook<>nil) and (SourceNoteBook.NoteBook<>nil) then
-      with SourceNoteBook.GetActiveSE.EditorComponent do
-        s:=GetWordAtRowCol(LogicalCaretXY);
-  end else if MacroName='lazarusdir' then begin
-    s:=EnvironmentOptions.LazarusDirectory;
   end else if MacroName='lclwidgettype' then begin
     if Data=CompilerOptionMacroPlatformIndependent then
       s:='%(LCL_PLATFORM)'
     else
-      s:=GetLCLWidgetType(true);
+      s:=BuildBoss.GetLCLWidgetType(true);
   end else if MacroName='targetcpu' then begin
     if Data=CompilerOptionMacroPlatformIndependent then
       s:='%(CPU_TARGET)'
     else
-      s:=GetTargetCPU(true);
+      s:=BuildBoss.GetTargetCPU(true);
   end else if MacroName='targetos' then begin
     if Data=CompilerOptionMacroPlatformIndependent then
       s:='%(OS_TARGET)'
     else
-      s:=GetTargetOS(true);
-  end else if MacroName='fpcsrcdir' then begin
-    s:=EnvironmentOptions.FPCSourceDirectory;
-  end else if MacroName='comppath' then begin
-    s:=EnvironmentOptions.CompilerFilename;
-  end else if MacroName='languageid' then begin
-    s:=EnvironmentOptions.LanguageID;
-  end else if MacroName='languagename' then begin
-    s:=GetLazarusLanguageLocalizedName(EnvironmentOptions.LanguageID);
+      s:=BuildBoss.GetTargetOS(true);
   end else if MacroName='params' then begin
     if Project1<>nil then
       s:=Project1.RunParameterOptions.CmdLineParams
@@ -9367,11 +9211,6 @@ begin
         s:=GetProjectTargetFilename+' '+s;
     end else
       s:='';
-  end else if MacroName='testdir' then begin
-    if Project1<>nil then
-      s:=GetTestBuildDirectory
-    else
-      s:='';
   end else if MacroName='runcmdline' then begin
     if Project1<>nil then
       s:=GetRunCommandLine
@@ -9382,105 +9221,8 @@ begin
       s:=GetProjPublishDir
     else
       s:='';
-  end else if MacroName='confdir' then begin
-    s:=GetPrimaryConfigPath;
   end else
     Handled:=false;
-end;
-
-function TMainIDE.OnSubstituteCompilerOption(Options: TParsedCompilerOptions;
-  const UnparsedValue: string; PlatformIndependent: boolean): string;
-begin
-  CurrentParsedCompilerOption:=Options;
-  Result:=UnparsedValue;
-  if PlatformIndependent then
-    GlobalMacroList.SubstituteStr(Result,CompilerOptionMacroPlatformIndependent)
-  else
-    GlobalMacroList.SubstituteStr(Result,CompilerOptionMacroNormal);
-end;
-
-function TMainIDE.OnMacroPromptFunction(const s:string;
-  const Data: PtrInt; var Abort: boolean):string;
-begin
-  Result:=s;
-  Abort:=(ShowMacroPromptDialog(Result)<>mrOk);
-end;
-
-function TMainIDE.OnMacroFuncMakeExe(const Filename: string; const Data: PtrInt;
-  var Abort: boolean): string;
-var
-  OldExt: String;
-  ExeExt: String;
-begin
-  Result:=Filename;
-  OldExt:=ExtractFileExt(Filename);
-  ExeExt:=LazConf.GetExecutableExt(GetTargetOS(true));
-  if OldExt<>ExeExt then
-    Result:=copy(Result,1,length(Result)-length(OldExt))+ExeExt;
-  DebugLn('TMainIDE.OnMacroFuncMakeExe A ',Filename,' ',Result);
-end;
-
-function TMainIDE.OnMacroFuncProject(const Param: string; const Data: PtrInt;
-  var Abort: boolean): string;
-begin
-  if Project1<>nil then begin
-    if CompareText(Param,'SrcPath')=0 then
-      Result:=Project1.CompilerOptions.GetSrcPath(false)
-    else if CompareText(Param,'IncPath')=0 then
-      Result:=Project1.CompilerOptions.GetIncludePath(false)
-    else if CompareText(Param,'UnitPath')=0 then
-      Result:=Project1.CompilerOptions.GetUnitPath(false)
-    else begin
-      Result:='<Invalid parameter for macro Project:'+Param+'>';
-      debugln('WARNING: TMainIDE.OnMacroFuncProject: ',Result);
-    end;
-  end else begin
-    Result:='';
-  end;
-end;
-
-function TMainIDE.OnMacroFuncProjectUnitPath(Data: Pointer): boolean;
-var
-  FuncData: PReadFunctionData;
-begin
-  FuncData:=PReadFunctionData(Data);
-  Result:=false;
-  if Project1<>nil then begin
-    FuncData^.Result:=Project1.CompilerOptions.GetUnitPath(false);
-    //DebugLn('TMainIDE.OnMacroFuncProjectSrcPath "',FuncData^.Result,'"');
-    Result:=true;
-  end;
-end;
-
-function TMainIDE.OnMacroFuncProjectIncPath(Data: Pointer): boolean;
-var
-  FuncData: PReadFunctionData;
-begin
-  FuncData:=PReadFunctionData(Data);
-  Result:=false;
-  if Project1<>nil then begin
-    FuncData^.Result:=Project1.CompilerOptions.GetIncludePath(false);
-    Result:=true;
-  end;
-end;
-
-function TMainIDE.OnMacroFuncProjectSrcPath(Data: Pointer): boolean;
-var
-  FuncData: PReadFunctionData;
-begin
-  FuncData:=PReadFunctionData(Data);
-  Result:=false;
-  if Project1<>nil then begin
-    FuncData^.Result:=Project1.CompilerOptions.GetSrcPath(false);
-    //DebugLn('TMainIDE.OnMacroFuncProjectSrcPath "',FuncData^.Result,'"');
-    Result:=true;
-  end;
-end;
-
-procedure TMainIDE.OnCmdLineCreate(var CmdLine: string; var Abort:boolean);
-// replace all transfer macros in command line
-begin
-  Abort:=not GlobalMacroList.SubstituteStr(CmdLine);
 end;
 
 procedure TMainIDE.GetIDEFileState(Sender: TObject; const AFilename: string;
@@ -9772,9 +9514,7 @@ end;
 
 function TMainIDE.GetTestBuildDirectory: string;
 begin
-  Result:=EnvironmentOptions.TestBuildDirectory;
-  if (Result='') then exit;
-  Result:=AppendPathDelim(Result);
+  Result:=EnvironmentOptions.GetTestBuildDirectory;
 end;
 
 function TMainIDE.GetProjectTargetFilename: string;
@@ -9792,15 +9532,6 @@ begin
       end;
     end;
   end;
-end;
-
-function TMainIDE.GetTargetOS: string;
-begin
-  result := '';
-  if (Project1<>nil) then
-    result := lowercase(Project1.CompilerOptions.TargetOS);
-  if (result='') or (result='default') then
-    result := GetDefaultTargetOS;
 end;
 
 function TMainIDE.GetTestProjectFilename: string;
@@ -9880,45 +9611,6 @@ begin
   end else begin
     Result:='';
   end;
-end;
-
-function TMainIDE.GetLCLWidgetType(UseCache: boolean): string;
-begin
-  if UseCache and (CodeToolBoss<>nil) then begin
-    Result:=CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'LCLWidgetType'];
-  end else begin
-    if OverrideLCLWidgetType<>'' then
-      Result:=OverrideLCLWidgetType
-    else if Project1<>nil then
-      Result:=lowercase(Project1.CompilerOptions.LCLWidgetType)
-    else
-      Result:='';
-  end;
-  if (Result='') or (Result='default') then Result:=GetDefaultLCLWidgetType;
-end;
-
-function TMainIDE.GetTargetCPU(UseCache: boolean): string;
-begin
-  if UseCache then ;
-  if OverrideTargetCPU<>'' then
-    Result:=OverrideTargetCPU
-  else if Project1<>nil then
-    Result:=lowercase(Project1.CompilerOptions.TargetCPU)
-  else
-    Result:='';
-  if (Result='') or (Result='default') then Result:=GetDefaultTargetCPU;
-end;
-
-function TMainIDE.GetTargetOS(UseCache: boolean): string;
-begin
-  if UseCache then ;
-  if OverrideTargetOS<>'' then
-    Result:=OverrideTargetOS
-  else if Project1<>nil then
-    Result:=lowercase(Project1.CompilerOptions.TargetOS)
-  else
-    Result:='';
-  if (Result='') or (Result='default') then Result:=GetDefaultTargetOS;
 end;
 
 function TMainIDE.FindUnitFile(const AFilename: string): string;
@@ -10514,12 +10206,13 @@ begin
     // start the compiler and ask for his settings
     TargetOS:='';
     TargetProcessor:='';
-    CurDefinesCompilerFilename:=EnvironmentOptions.CompilerFilename;
-    CurDefinesCompilerOptions:='';
-    GetFPCCompilerParamsForEnvironmentTest(CurDefinesCompilerOptions);
+    BuildBoss.CurDefinesCompilerFilename:=EnvironmentOptions.CompilerFilename;
+    BuildBoss.CurDefinesCompilerOptions:='';
+    BuildBoss.GetFPCCompilerParamsForEnvironmentTest(
+                                           BuildBoss.CurDefinesCompilerOptions);
     //DebugLn('TMainIDE.InitCodeToolBoss CurDefinesCompilerOptions="',CurDefinesCompilerOptions,'"');
-    ADefTempl:=CreateFPCTemplate(CurDefinesCompilerFilename,
-                       CurDefinesCompilerOptions,
+    ADefTempl:=CreateFPCTemplate(BuildBoss.CurDefinesCompilerFilename,
+                       BuildBoss.CurDefinesCompilerOptions,
                        CreateCompilerTestPascalFilename,CompilerUnitSearchPath,
                        TargetOS,TargetProcessor,CodeToolsOpts);
     AddTemplate(ADefTempl,false,
@@ -10587,128 +10280,6 @@ begin
   if c<>0 then begin
     RaiseException('CodeToolBoss.ConsistencyCheck='+IntToStr(c));
   end;
-end;
-
-procedure TMainIDE.RescanCompilerDefines(OnlyIfCompilerChanged: boolean);
-var
-  CompilerTemplate, FPCSrcTemplate: TDefineTemplate;
-  CompilerUnitSearchPath, CompilerUnitLinks: string;
-  CurOptions: String;
-  TargetOS, TargetProcessor: string;
-  UnitLinksValid: boolean;
-  i: Integer;
-  
-  function SearchSystemInUnitLinks: boolean;
-  begin
-    Result:=System.Pos('system ',CompilerUnitLinks)>0;
-  end;
-  
-begin
-  GetFPCCompilerParamsForEnvironmentTest(CurOptions);
-  {$IFDEF VerboseFPCSrcScan}
-  writeln('TMainIDE.RescanCompilerDefines A ',CurOptions,
-    ' OnlyIfCompilerChanged=',OnlyIfCompilerChanged,
-    ' Valid=',InputHistories.FPCConfigCache.Valid(true),
-    ' ID=',InputHistories.FPCConfigCache.FindItem(CurOptions),
-    ' CurDefinesCompilerFilename=',CurDefinesCompilerFilename,
-    ' EnvCompilerFilename=',EnvironmentOptions.CompilerFilename,
-    ' CurDefinesCompilerOptions="',CurDefinesCompilerOptions,'"',
-    ' CurOptions="',CurOptions,'"',
-    '');
-  {$ENDIF}
-  // rescan compiler defines
-  // ask the compiler for its settings
-  if OnlyIfCompilerChanged
-  and (CurDefinesCompilerFilename=EnvironmentOptions.CompilerFilename)
-  and (CurDefinesCompilerOptions=CurOptions) then
-    exit;
-  {$IFDEF VerboseFPCSrcScan}
-  debugln('TMainIDE.RescanCompilerDefines B rebuilding FPC templates CurOptions="',CurOptions,'"');
-  {$ENDIF}
-  CompilerTemplate:=CodeToolBoss.DefinePool.CreateFPCTemplate(
-                    EnvironmentOptions.CompilerFilename,CurOptions,
-                    CreateCompilerTestPascalFilename,CompilerUnitSearchPath,
-                    TargetOS,TargetProcessor,CodeToolsOpts);
-  //DebugLn('TMainIDE.RescanCompilerDefines CompilerUnitSearchPath="',CompilerUnitSearchPath,'"');
-
-  if CompilerTemplate<>nil then begin
-    CurDefinesCompilerFilename:=EnvironmentOptions.CompilerFilename;
-    CurDefinesCompilerOptions:=CurOptions;
-    CodeToolBoss.DefineTree.ReplaceRootSameNameAddFirst(CompilerTemplate);
-    UnitLinksValid:=OnlyIfCompilerChanged
-                    and InputHistories.FPCConfigCache.Valid(true);
-    if UnitLinksValid then begin
-      i:=InputHistories.FPCConfigCache.FindItem(CurOptions);
-      if i<0 then begin
-        UnitLinksValid:=false;
-      end
-      else if CompareFilenames(InputHistories.FPCConfigCache.Items[i].FPCSrcDir,
-          EnvironmentOptions.FPCSourceDirectory)<>0
-      then
-        UnitLinksValid:=false;
-    end;
-    {$IFDEF VerboseFPCSrcScan}
-    debugln(['TMainIDE.RescanCompilerDefines B rescanning FPC sources  UnitLinksValid=',UnitLinksValid]);
-    {$ENDIF}
-
-    // create compiler macros to simulate the Makefiles of the FPC sources
-    CompilerUnitLinks:='';
-    if UnitLinksValid then
-      CompilerUnitLinks:=InputHistories.FPCConfigCache.GetUnitLinks(CurOptions);
-    if not SearchSystemInUnitLinks then begin
-      UnitLinksValid:=false;
-    end;
-
-    FPCSrcTemplate:=CodeToolBoss.DefinePool.CreateFPCSrcTemplate(
-      CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'FPCSrcDir'],
-      CompilerUnitSearchPath,
-      CodeToolBoss.GetCompiledSrcExtForDirectory(''),
-      TargetOS,TargetProcessor,
-      UnitLinksValid, CompilerUnitLinks, CodeToolsOpts);
-    {$IFDEF VerboseFPCSrcScan}
-    debugln('TMainIDE.RescanCompilerDefines C UnitLinks=',copy(CompilerUnitLinks,1,100));
-    {$ENDIF}
-    if not SearchSystemInUnitLinks then begin
-      MessageDlg('Error',
-        'The system.ppu was not found in the FPC directories. '
-        +'Make sure fpc is installed correctly and the fpc.cfg points to the right directory.',
-        mtError,[mbOk],0);
-    end;
-      
-    if FPCSrcTemplate<>nil then begin
-      CodeToolBoss.DefineTree.RemoveRootDefineTemplateByName(
-                                                           FPCSrcTemplate.Name);
-      FPCSrcTemplate.InsertBehind(CompilerTemplate);
-      CodeToolBoss.DefineTree.ClearCache;
-      // save unitlinks
-      InputHistories.SetLastFPCUnitLinks(EnvironmentOptions.CompilerFilename,
-                                         CurOptions,CompilerUnitSearchPath,
-                                         EnvironmentOptions.FPCSourceDirectory,
-                                         CompilerUnitLinks);
-      InputHistories.Save;
-    end else begin
-      MessageDlg(lisFPCSourceDirectoryError,
-        lisPlzCheckTheFPCSourceDirectory,
-        mtError,[mbOk],0);
-    end;
-  end else begin
-    MessageDlg(lisCompilerError,lisPlzCheckTheCompilerName,
-      mtError,[mbOk],0);
-  end;
-end;
-
-procedure TMainIDE.GetFPCCompilerParamsForEnvironmentTest(out Params: string);
-var
-  CurTargetOS: string;
-  CurTargetCPU: string;
-begin
-  Params:='';
-  CurTargetOS:=GetTargetOS(false);
-  if CurTargetOS<>'' then
-    Params:=AddCmdLineParameter(Params,'-T'+CurTargetOS);
-  CurTargetCPU:=GetTargetCPU(false);
-  if CurTargetCPU<>'' then
-    Params:=AddCmdLineParameter(Params,'-P'+CurTargetCPU);
 end;
 
 procedure TMainIDE.UpdateEnglishErrorMsgFilename;

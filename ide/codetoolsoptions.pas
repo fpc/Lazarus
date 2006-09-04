@@ -261,7 +261,7 @@ type
     procedure UpdatePreviewSettings;
   end;
 
-var CodeToolsOpts: TCodeToolsOptions;
+var CodeToolsOpts: TCodeToolsOptions = nil;
 
 function ShowCodeToolsOptions(Options: TCodeToolsOptions;
   OnGetSynEditSettings: TNotifyEvent): TModalResult;
