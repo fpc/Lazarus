@@ -155,7 +155,7 @@ Type
     Procedure AssignSelf(Window: HWnd; Data: Pointer);
 
     procedure AllocAndCopy(const BitmapInfo: Windows.TBitmap; const BitmapHandle: HBITMAP;
-      const SrcRect: TRect; var Data: PByte; var Size: Cardinal);
+      const SrcRect: TRect; var Data: PByte; var Size: PtrUInt);
     procedure FillRawImageDescriptionColors(Desc: PRawImageDescription);
     procedure FillRawImageDescription(const BitmapInfo: Windows.TBitmap;
         Desc: PRawImageDescription);

@@ -1774,7 +1774,7 @@ end;
 
 procedure TWin32WidgetSet.AllocAndCopy(const BitmapInfo: Windows.TBitmap;
   const BitmapHandle: HBITMAP; const SrcRect: TRect; var Data: PByte;
-  var Size: Cardinal);
+  var Size: PtrUInt);
 var
   bmInfoBuffer: array[0..sizeof(TBitmapInfo)+256*sizeof(Windows.RGBQUAD)] of byte;
   bmInfo: TBitmapInfo absolute bmInfoBuffer;
