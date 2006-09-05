@@ -313,9 +313,6 @@ begin
             exit;
           end;
         end;
-        if MacroName='CompPath' then begin
-          writeln('TTransferMacroList.SubstituteStr MacroName=',MacroName,' Handled=',Handled);
-        end;
         if (not Handled) and (AMacro<>nil) and (Assigned(AMacro.MacroFunction))
         then begin
           MacroStr:=AMacro.MacroFunction(MacroParam,Data,Abort);

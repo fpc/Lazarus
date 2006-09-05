@@ -62,7 +62,7 @@ type
   TIteratePackagesEvent =
     procedure(APackage: TLazPackageID) of object;
   TGetAllRequiredPackagesEvent =
-    procedure(FirstDependency: TPkgDependency; var List: TList) of object;
+    procedure(FirstDependency: TPkgDependency; var List: TFPList) of object;
   TGetDependencyOwnerDescription =
     procedure(Dependency: TPkgDependency; var Description: string) of object;
   TGetDependencyOwnerDirectory =
@@ -148,7 +148,7 @@ type
   private
     FAutoReferenceSourceDir: boolean;
     FComponentPriority: TComponentPriority;
-    FComponents: TList; // list of TPkgComponent
+    FComponents: TFPList; // list of TPkgComponent
     FDirectory: string;
     FRemoved: boolean;
     FFilename: string;
@@ -169,7 +169,7 @@ type
     procedure SetFlags(const AValue: TPkgFileFlags);
     procedure SetHasRegisterProc(const AValue: boolean);
     procedure UpdateUnitName;
-    function GetComponentList: TList;
+    function GetComponentList: TFPList;
   public
     constructor Create(ThePackage: TLazPackage);
     destructor Destroy; override;
@@ -367,7 +367,7 @@ type
   public
     constructor Create(const AOwner: TObject); override;
     procedure Clear; override;
-    procedure GetInheritedCompilerOptions(var OptionsList: TList); override;
+    procedure GetInheritedCompilerOptions(var OptionsList: TFPList); override;
     function GetOwnerName: string; override;
     procedure InvalidateOptions;
     function GetDefaultMainSourceFileName: string; override;
@@ -554,13 +554,13 @@ type
     FAutoInstall: TPackageInstallType;
     FAutoUpdate: TPackageUpdatePolicy;
     FCompilerOptions: TPkgCompilerOptions;
-    FComponents: TList; // TList of TPkgComponent
+    FComponents: TFPList; // TFPList of TPkgComponent
     FDefineTemplates: TLazPackageDefineTemplates;
     FDescription: string;
     FDirectory: string;
     FFilename: string;
     FFileReadOnly: boolean;
-    FFiles: TList; // TList of TPkgFile
+    FFiles: TFPList; // TFPList of TPkgFile
     FFirstRemovedDependency: TPkgDependency;
     FFirstRequiredDependency: TPkgDependency;
     FFirstUsedByDependency: TPkgDependency;
@@ -581,7 +581,7 @@ type
     FPackageEditor: TBasePackageEditor;
     FPackageType: TLazPackageType;
     fPublishOptions: TPublishPackageOptions;
-    FRemovedFiles: TList; // TList of TPkgFile
+    FRemovedFiles: TFPList; // TFPList of TPkgFile
     FRegistered: boolean;
     FSourceDirectories: TFileReferenceList;
     FStateFileDate: longint;
@@ -645,7 +645,7 @@ type
     function HasStaticDirectory: boolean;
     function GetResolvedFilename: string;
     function GetSourceDirs(WithPkgDir, WithoutOutputDir: boolean): string;
-    procedure GetInheritedCompilerOptions(var OptionsList: TList);
+    procedure GetInheritedCompilerOptions(var OptionsList: TFPList);
     function GetCompileSourceFilename: string;
     function GetOutputDirectory: string;
     function GetStateFilename: string;
@@ -698,7 +698,7 @@ type
     procedure MoveRequiredDependencyDown(Dependency: TPkgDependency);
     function CreateDependencyWithOwner(NewOwner: TObject): TPkgDependency;
     function Requires(APackage: TLazPackage): boolean;
-    procedure GetAllRequiredPackages(var List: TList);
+    procedure GetAllRequiredPackages(var List: TFPList);
     // components
     function IndexOfPkgComponent(PkgComponent: TPkgComponent): integer;
     function AddComponent(PkgFile: TPkgFile; const Page: string;
@@ -831,7 +831,7 @@ function ComparePackageWithUnitsTree(Package: TLazPackage;
                                      UnitTree: TPkgUnitsTree): integer;
 function ComparePkgFilesAlphabetically(PkgFile1, PkgFile2: TPkgFile): integer;
 
-function GetUsageOptionsList(PackageList: TList): TList;
+function GetUsageOptionsList(PackageList: TFPList): TFPList;
 
 function PkgFileTypeIdentToType(const s: string): TPkgFileType;
 function LazPackageTypeIdentToType(const s: string): TLazPackageType;
@@ -839,13 +839,13 @@ function GetPkgFileTypeLocalizedName(FileType: TPkgFileType): string;
 function NameToAutoUpdatePolicy(const s: string): TPackageUpdatePolicy;
 function FileNameToPkgFileType(const AFilename: string): TPkgFileType;
 
-procedure SortDependencyList(Dependencies: TList);
+procedure SortDependencyList(Dependencies: TFPList);
 procedure LoadPkgDependencyList(XMLConfig: TXMLConfig; const ThePath: string;
   var First: TPkgDependency; ListType: TPkgDependencyList; Owner: TObject;
   HoldPackages: boolean);
 procedure SavePkgDependencyList(XMLConfig: TXMLConfig; const ThePath: string;
   First: TPkgDependency; ListType: TPkgDependencyList);
-procedure ListPkgIDToDependencyList(ListOfTLazPackageID: TList;
+procedure ListPkgIDToDependencyList(ListOfTLazPackageID: TFPList;
   var First: TPkgDependency; ListType: TPkgDependencyList; Owner: TObject;
   HoldPackages: boolean);
 procedure FreeDependencyList(var First: TPkgDependency;
@@ -934,12 +934,12 @@ var
   i: Integer;
   PkgDependency: TPkgDependency;
   NewCount: Integer;
-  List: TList;
+  List: TFPList;
   FileVersion: Integer;
 begin
   FileVersion:=XMLConfig.GetValue(ThePath+'Version',0);
   NewCount:=XMLConfig.GetValue(ThePath+'Count',0);
-  List:=TList.Create;
+  List:=TFPList.Create;
   for i:=0 to NewCount-1 do begin
     PkgDependency:=TPkgDependency.Create;
     PkgDependency.LoadFromXMLConfig(XMLConfig,ThePath+'Item'+IntToStr(i+1)+'/',
@@ -974,7 +974,7 @@ begin
   XMLConfig.SetDeleteValue(ThePath+'Count',i,0);
 end;
 
-procedure ListPkgIDToDependencyList(ListOfTLazPackageID: TList;
+procedure ListPkgIDToDependencyList(ListOfTLazPackageID: TFPList;
   var First: TPkgDependency; ListType: TPkgDependencyList; Owner: TObject;
   HoldPackages: boolean);
 var
@@ -1015,7 +1015,7 @@ begin
   end;
 end;
 
-procedure SortDependencyList(Dependencies: TList);
+procedure SortDependencyList(Dependencies: TFPList);
 var
   Count: Integer;
   i, j: Integer;
@@ -1151,7 +1151,7 @@ begin
   Result:=CompareFilenames(PkgFile1.FileName,PkgFile2.FileName);
 end;
 
-function GetUsageOptionsList(PackageList: TList): TList;
+function GetUsageOptionsList(PackageList: TFPList): TFPList;
 // returns a list of TPkgAdditionalCompilerOptions
 // from the list of TLazPackage
 var
@@ -1159,7 +1159,7 @@ var
   i: Integer;
 begin
   if PackageList<>nil then begin
-    Result:=TList.Create;
+    Result:=TFPList.Create;
     Cnt:=PackageList.Count;
     for i:=0 to Cnt-1 do begin
       Result.Add(TLazPackage(PackageList[i]).UsageOptions);
@@ -1379,9 +1379,9 @@ begin
     FUnitName:='';
 end;
 
-function TPkgFile.GetComponentList: TList;
+function TPkgFile.GetComponentList: TFPList;
 begin
-  if FComponents=nil then FComponents:=TList.Create;
+  if FComponents=nil then FComponents:=TFPList.Create;
   Result:=FComponents;
 end;
 
@@ -1512,7 +1512,7 @@ end;
 
 procedure TPkgFile.AddPkgComponent(APkgComponent: TPkgComponent);
 begin
-  if FComponents=nil then FComponents:=TList.Create;
+  if FComponents=nil then FComponents:=TFPList.Create;
   FComponents.Add(APkgComponent);
   if LazPackage<>nil then
     LazPackage.AddPkgComponent(APkgComponent);
@@ -2013,7 +2013,7 @@ end;
 
 procedure TLazPackage.WriteInheritedUnparsedOptions;
 var
-  OptionsList: TList;
+  OptionsList: TFPList;
   AddOptions: TAdditionalCompilerOptions;
   i: Integer;
 begin
@@ -2228,11 +2228,11 @@ end;
 constructor TLazPackage.Create;
 begin
   inherited Create;
-  FComponents:=TList.Create;
+  FComponents:=TFPList.Create;
   FSourceDirectories:=TFileReferenceList.Create;
   FSourceDirectories.OnChanged:=@SourceDirectoriesChanged;
-  FFiles:=TList.Create;
-  FRemovedFiles:=TList.Create;
+  FFiles:=TFPList.Create;
+  FRemovedFiles:=TFPList.Create;
   FMacros:=TTransferMacroList.Create;
   FMacros.MarkUnhandledMacros:=false;
   FMacros.OnSubstitution:=@OnMacroListSubstitution;
@@ -2389,7 +2389,7 @@ var
   OldFilename: String;
   PathDelimChanged: boolean;
 
-  procedure LoadFiles(const ThePath: string; List: TList);
+  procedure LoadFiles(const ThePath: string; List: TFPList);
   var
     i: Integer;
     NewCount: Integer;
@@ -2460,7 +2460,7 @@ end;
 procedure TLazPackage.SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string
   );
   
-  procedure SaveFiles(const ThePath: string; List: TList);
+  procedure SaveFiles(const ThePath: string; List: TFPList);
   var
     i: Integer;
     PkgFile: TPkgFile;
@@ -2824,12 +2824,12 @@ end;
 
 procedure TLazPackage.SortFiles;
 var
-  NewList: TList;
+  NewList: TFPList;
   Cnt: Integer;
   i: Integer;
 begin
   if FileCount=0 then exit;
-  NewList:=TList.Create;
+  NewList:=TFPList.Create;
   try
     Cnt:=FileCount;
     for i:=0 to Cnt-1 do NewList.Add(FFiles[i]);
@@ -3049,15 +3049,15 @@ begin
   Name:=NewName;
 end;
 
-procedure TLazPackage.GetAllRequiredPackages(var List: TList);
+procedure TLazPackage.GetAllRequiredPackages(var List: TFPList);
 begin
   if Assigned(OnGetAllRequiredPackages) then
     OnGetAllRequiredPackages(FirstRequiredDependency,List);
 end;
 
-procedure TLazPackage.GetInheritedCompilerOptions(var OptionsList: TList);
+procedure TLazPackage.GetInheritedCompilerOptions(var OptionsList: TFPList);
 var
-  PkgList: TList; // list of TLazPackage
+  PkgList: TFPList; // list of TLazPackage
 begin
   PkgList:=nil;
   GetAllRequiredPackages(PkgList);
@@ -3418,8 +3418,8 @@ begin
   FSkipCompiler:=false;
 end;
 
-procedure TPkgCompilerOptions.GetInheritedCompilerOptions(var OptionsList: TList
-  );
+procedure TPkgCompilerOptions.GetInheritedCompilerOptions(
+  var OptionsList: TFPList);
 begin
   if LazPackage<>nil then
     LazPackage.GetInheritedCompilerOptions(OptionsList);

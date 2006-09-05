@@ -46,7 +46,7 @@ type
   PRegisteredPackage = ^TRegisteredPackage;
 
 var
-  RegisteredPackages: TList; // list of PRegisteredPackage
+  RegisteredPackages: TFPList; // list of PRegisteredPackage
   RegisterUnitProc: TRegisterUnitProc;
   
 procedure RegisterUnit(const TheUnitName: string; RegisterProc: TRegisterProc);
@@ -66,7 +66,7 @@ procedure RegisterPackage(const ThePackageName: string;
 var
   NewRegisteredPackage: PRegisteredPackage;
 begin
-  if RegisteredPackages=nil then RegisteredPackages:=TList.Create;
+  if RegisteredPackages=nil then RegisteredPackages:=TFPList.Create;
   New(NewRegisteredPackage);
   NewRegisteredPackage^.Name:=ThePackageName;
   NewRegisteredPackage^.RegisterProc:=RegisterProc;

@@ -212,10 +212,13 @@ function CompareCaret(const FirstCaret, SecondCaret: TPoint): integer;
 function CompareBoolean(b1, b2: boolean): integer;
 function CompareStringPointerI(Data1, Data2: Pointer): integer;
 procedure CheckList(List: TList; TestListNil, TestDoubles, TestNils: boolean);
+procedure CheckList(List: TFPList; TestListNil, TestDoubles, TestNils: boolean);
 procedure CheckEmptyListCut(List1, List2: TList);
 function AnsiSearchInStringList(List: TStrings; const s: string): integer;
 procedure ReverseList(List: TList);
+procedure ReverseList(List: TFPList);
 procedure FreeListObjects(List: TList; FreeList: boolean);
+procedure FreeListObjects(List: TFPList; FreeList: boolean);
 
 implementation
 
@@ -1096,6 +1099,35 @@ begin
   end;
 end;
 
+procedure CheckList(List: TFPList; TestListNil, TestDoubles, TestNils: boolean);
+var
+  Cnt: Integer;
+  i: Integer;
+  CurItem: Pointer;
+  j: Integer;
+begin
+  if List=nil then begin
+    if TestListNil then
+      RaiseException('CheckList List is Nil');
+    exit;
+  end;
+  Cnt:=List.Count;
+  if TestNils then begin
+    for i:=0 to Cnt-1 do
+      if List[i]=nil then
+        RaiseException('CheckList item is Nil');
+  end;
+  if TestDoubles then begin
+    for i:=0 to Cnt-2 do begin
+      CurItem:=List[i];
+      for j:=i+1 to Cnt-1 do begin
+        if List[j]=CurItem then
+          RaiseException('CheckList Double');
+      end;
+    end;
+  end;
+end;
+
 {-------------------------------------------------------------------------------
   procedure CheckEmptyListCut(List1, List2: TList);
 -------------------------------------------------------------------------------}
@@ -1185,7 +1217,33 @@ begin
   end;
 end;
 
+procedure ReverseList(List: TFPList);
+var
+  i: Integer;
+  j: Integer;
+begin
+  if List=nil then exit;
+  i:=0;
+  j:=List.Count-1;
+  while i<j do begin
+    List.Exchange(i,j);
+    inc(i);
+    dec(j);
+  end;
+end;
+
 procedure FreeListObjects(List: TList; FreeList: boolean);
+var
+  i: Integer;
+begin
+  for i:=0 to List.Count-1 do
+    TObject(List[i]).Free;
+  List.Clear;
+  if FreeList then
+    List.Free;
+end;
+
+procedure FreeListObjects(List: TFPList; FreeList: boolean);
 var
   i: Integer;
 begin

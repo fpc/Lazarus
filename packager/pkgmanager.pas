@@ -58,7 +58,7 @@ uses
   ComponentReg, UComponentManMain, PackageEditor, AddToPackageDlg, PackageDefs,
   PackageLinks, PackageSystem, OpenInstalledPkgDlg, PkgGraphExplorer,
   BrokenDependenciesDlg, CompilerOptions, ExtToolEditDlg,
-  TransferMacros, MsgView, BuildLazDialog, NewDialog,
+  TransferMacros, MsgView, BuildLazDialog, NewDialog, IDEDialogs,
   ProjectInspector, ComponentPalette, UnitEditor, AddFileToAPackageDlg,
   LazarusPackageIntf, PublishProjectDlg, InstallPkgSetDlg,
   // bosses
@@ -157,7 +157,7 @@ type
                                           var Directory: string);
     procedure GetWritablePkgOutputDirectory(APackage: TLazPackage;
                                             var AnOutDirectory: string);
-    procedure OnCheckInstallPackageList(PkgIDList: TList; var Ok: boolean);
+    procedure OnCheckInstallPackageList(PkgIDList: TFPList; var Ok: boolean);
     function LoadDependencyList(FirstDependency: TPkgDependency): TModalResult;
     procedure OnOpenPackageForCurrentSrcEditFile(Sender: TObject);
   private
@@ -225,9 +225,9 @@ type
     function GetMissingDependenciesForUnit(const UnitFilename: string;
                          ComponentClassnames: TStrings;
                          var List: TObjectArray): TModalResult;
-    function GetOwnersOfUnit(const UnitFilename: string): TList; override;
-    procedure ExtendOwnerListWithUsedByOwners(OwnerList: TList); override;
-    function GetSourceFilesOfOwners(OwnerList: TList): TStrings; override;
+    function GetOwnersOfUnit(const UnitFilename: string): TFPList; override;
+    procedure ExtendOwnerListWithUsedByOwners(OwnerList: TFPList); override;
+    function GetSourceFilesOfOwners(OwnerList: TFPList): TStrings; override;
     function GetPackageOfCurrentSourceEditor: TPkgFile;
     function DoOpenPkgFile(PkgFile: TPkgFile): TModalResult;
     function FindVirtualUnitSource(PkgFile: TPkgFile): string;
@@ -238,8 +238,8 @@ type
     // package graph
     function AddPackageToGraph(APackage: TLazPackage; Replace: boolean): TModalResult;
     function DoShowPackageGraph: TModalResult;
-    procedure DoShowPackageGraphPathList(PathList: TList); override;
-    function ShowBrokenDependenciesReport(Dependencies: TList): TModalResult;
+    procedure DoShowPackageGraphPathList(PathList: TFPList); override;
+    function ShowBrokenDependenciesReport(Dependencies: TFPList): TModalResult;
     procedure RebuildDefineTemplates; override;
 
     // project
@@ -312,7 +312,7 @@ type
   TLazPackageDescriptors = class(TPackageDescriptors)
   private
     fDestroying: boolean;
-    fItems: TList; // list of TProjectDescriptor
+    fItems: TFPList; // list of TProjectDescriptor
   protected
     function GetItems(Index: integer): TPackageDescriptor; override;
   public
@@ -425,12 +425,12 @@ procedure TPkgManager.MainIDEitmPkgEditInstallPkgsClick(Sender: TObject);
 
 var
   RebuildIDE: Boolean;
-  PkgIDList: TList;
+  PkgIDList: TFPList;
   NewFirstAutoInstallDependency: TPkgDependency;
   BuildIDEFlags: TBuildLazarusFlags;
   ok: boolean;
   Report: String;
-  PkgList: TList;
+  PkgList: TFPList;
   RequiredPackage: TLazPackage;
   i: Integer;
   CurDependency: TPkgDependency;
@@ -458,9 +458,9 @@ begin
     // which will be newly installed
     Report:=CreateChangeReport(FirstAutoInstallDependency,
                                NewFirstAutoInstallDependency);
-    if MessageDlg('Confirm new package set for the IDE',
+    if IDEMessageDialog('Confirm new package set for the IDE',
       'This will happen:'#13#13
-      +Report+#13'Continue?',mtConfirmation,[mbYes,mbNo],0)<>mrYes then exit;
+      +Report+#13'Continue?',mtConfirmation,[mbYes,mbNo])<>mrYes then exit;
 
     // try to commit changes -> replace install list
     PackageGraph.BeginUpdate(true);
@@ -589,11 +589,11 @@ begin
   debugln('TPkgManager.GetWritablePkgOutputDirectory APackage=',APackage.IDAsString,' AnOutDirectory="',AnOutDirectory,'"');
 end;
 
-procedure TPkgManager.OnCheckInstallPackageList(PkgIDList: TList;
+procedure TPkgManager.OnCheckInstallPackageList(PkgIDList: TFPList;
   var Ok: boolean);
 var
   NewFirstAutoInstallDependency: TPkgDependency;
-  PkgList: TList;
+  PkgList: TFPList;
   i: Integer;
   APackage: TLazPackage;
 begin
@@ -613,10 +613,10 @@ begin
       if (APackage.PackageType=lptRunTime)
       and (APackage.FirstUsedByDependency=nil) then begin
         // this is a runtime only package, not needed by any other package
-        if MessageDlg(lisPkgMangPackageIsNoDesigntimePackage,
+        if IDEMessageDialog(lisPkgMangPackageIsNoDesigntimePackage,
           Format(lisPkgMangThePackageIsARuntimeOnlyPackageRuntimeOnlyPackages, [
             APackage.IDAsString, #13]),
-          mtWarning,[mbIgnore,mbCancel],0)<>mrIgnore
+          mtWarning,[mbIgnore,mbCancel])<>mrIgnore
         then
           exit;
       end;
@@ -650,9 +650,9 @@ begin
   while CurDependency<>nil do begin
     OpenResult:=PackageGraph.OpenDependency(CurDependency);
     if OpenResult<>lprSuccess then begin
-      MessageDlg('Error',
+      IDEMessageDialog('Error',
         'Unable to load package "'+CurDependency.AsString+'"',
-        mtError,[mbCancel],0);
+        mtError,[mbCancel]);
       exit;
     end;
     CurDependency:=CurDependency.NextRequiresDependency;
@@ -689,9 +689,9 @@ begin
   PkgFile:=PackageGraph.FindFileInAllPackages(Filename,false,true,
                                             not ActiveUnitInfo.IsPartOfProject);
   if PkgFile=nil then begin
-    MessageDlg(lisProjAddPackageNotFound,
+    IDEMessageDialog(lisProjAddPackageNotFound,
       lisPkgThisFileIsNotInAnyLoadedPackage, mtInformation,
-      [mbCancel],0);
+      [mbCancel]);
     exit;
   end;
   DoOpenPackageFile(PkgFile.LazPackage.Filename,[pofAddToRecent])
@@ -1000,7 +1000,7 @@ var
   ConflictPkg: TLazPackage;
   PkgFile: TPkgFile;
   LowerFilename: String;
-  BrokenDependencies: TList;
+  BrokenDependencies: TFPList;
   RenameDependencies: Boolean;
   OldPkgName: String;
   
@@ -1056,19 +1056,19 @@ begin
         // append extension
         NewFileName:=NewFileName+'.lpk';
       end else if ExtractFileExt(NewFilename)<>'.lpk' then begin
-        Result:=MessageDlg(lisPkgMangInvalidPackageFileExtension,
+        Result:=IDEMessageDialog(lisPkgMangInvalidPackageFileExtension,
           lisPkgMangPackagesMustHaveTheExtensionLpk,
-          mtInformation,[mbRetry,mbAbort],0);
+          mtInformation,[mbRetry,mbAbort]);
         if Result=mrAbort then exit;
         continue; // try again
       end;
 
       // check filename
       if (NewPkgName='') or (not IsValidIdent(NewPkgName)) then begin
-        Result:=MessageDlg(lisPkgMangInvalidPackageName,
+        Result:=IDEMessageDialog(lisPkgMangInvalidPackageName,
           Format(lisPkgMangThePackageNameIsNotAValidPackageNamePleaseChooseAn, [
             '"', NewPkgName, '"', #13]),
-          mtInformation,[mbRetry,mbAbort],0);
+          mtInformation,[mbRetry,mbAbort]);
         if Result=mrAbort then exit;
         continue; // try again
       end;
@@ -1080,10 +1080,10 @@ begin
         LowerFilename:=ExtractFilePath(NewFilename)+lowercase(ExtractFileName(NewFilename));
         if EnvironmentOptions.CharcaseFileAction = ccfaAsk then
         begin
-          if MessageDlg(lisPkgMangRenameFileLowercase,
+          if IDEMessageDialog(lisPkgMangRenameFileLowercase,
             Format(lisPkgMangShouldTheFileRenamedLowercaseTo, [#13, '"',
               LowerFilename, '"']),
-            mtConfirmation,[mbYes,mbNo],0)=mrYes
+            mtConfirmation,[mbYes,mbNo])=mrYes
           then
             NewFileName:=LowerFilename;
         end
@@ -1096,21 +1096,21 @@ begin
       // check package name conflict
       ConflictPkg:=PackageGraph.FindAPackageWithName(NewPkgName,APackage);
       if ConflictPkg<>nil then begin
-        Result:=MessageDlg(lisPkgMangPackageNameAlreadyExists,
+        Result:=IDEMessageDialog(lisPkgMangPackageNameAlreadyExists,
           Format(lisPkgMangThereIsAlreadyAnotherPackageWithTheName, ['"',
             NewPkgName, '"', #13, '"', ConflictPkg.IDAsString, '"', #13, '"',
             ConflictPkg.Filename, '"']),
-          mtInformation,[mbRetry,mbAbort,mbIgnore],0);
+          mtInformation,[mbRetry,mbAbort,mbIgnore]);
         if Result=mrAbort then exit;
         if Result<>mrIgnore then continue; // try again
       end;
       
       // check file name conflict with project
       if Project1.ProjectUnitWithFilename(NewFilename)<>nil then begin
-        Result:=MessageDlg(lisPkgMangFilenameIsUsedByProject,
+        Result:=IDEMessageDialog(lisPkgMangFilenameIsUsedByProject,
           Format(lisPkgMangTheFileNameIsPartOfTheCurrentProject, ['"',
             NewFilename, '"', #13]),
-          mtInformation,[mbRetry,mbAbort],0);
+          mtInformation,[mbRetry,mbAbort]);
         if Result=mrAbort then exit;
         continue; // try again
       end;
@@ -1118,11 +1118,11 @@ begin
       // check file name conflicts with files in other packages
       PkgFile:=PackageGraph.FindFileInAllPackages(NewFilename,true,true,false);
       if PkgFile<>nil then begin
-        Result:=MessageDlg(lisPkgMangFilenameIsUsedByOtherPackage,
+        Result:=IDEMessageDialog(lisPkgMangFilenameIsUsedByOtherPackage,
           Format(lisPkgMangTheFileNameIsUsedByThePackageInFile, ['"',
             NewFilename, '"', #13, '"', PkgFile.LazPackage.IDAsString, '"',
             #13, '"', PkgFile.LazPackage.Filename, '"']),
-          mtWarning,[mbRetry,mbAbort],0);
+          mtWarning,[mbRetry,mbAbort]);
         if Result=mrAbort then exit;
         continue; // try again
       end;
@@ -1146,9 +1146,9 @@ begin
       // check existing file
       if (CompareFilenames(NewFileName,OldPkgFilename)<>0)
       and FileExists(NewFileName) then begin
-        Result:=MessageDlg(lisPkgMangReplaceFile,
+        Result:=IDEMessageDialog(lisPkgMangReplaceFile,
           Format(lisPkgMangReplaceExistingFile, ['"', NewFilename, '"']),
-          mtConfirmation,[mbOk,mbCancel],0);
+          mtConfirmation,[mbOk,mbCancel]);
         if Result<>mrOk then exit;
       end;
       
@@ -1174,17 +1174,17 @@ begin
   // clean up old package file to reduce ambiguousities
   if FileExists(OldPkgFilename)
   and (CompareFilenames(OldPkgFilename,NewFilename)<>0) then begin
-    if MessageDlg(lisPkgMangDeleteOldPackageFile,
+    if IDEMessageDialog(lisPkgMangDeleteOldPackageFile,
       Format(lisPkgMangDeleteOldPackageFile2, ['"', OldPkgFilename, '"']),
-      mtConfirmation,[mbOk,mbCancel],0)=mrOk
+      mtConfirmation,[mbOk,mbCancel])=mrOk
     then begin
       if DeleteFile(OldPkgFilename) then begin
         RemoveFromRecentList(OldPkgFilename,
                              EnvironmentOptions.RecentPackageFiles);
       end else begin
-        MessageDlg(lisPkgMangDeleteFailed,
+        IDEMessageDialog(lisPkgMangDeleteFailed,
           Format(lisPkgMangUnableToDeleteFile, ['"', OldPkgFilename, '"']),
-            mtError, [mbOk], 0);
+            mtError, [mbOk]);
       end;
     end;
   end;
@@ -1359,10 +1359,10 @@ begin
     // compile package
     Result:=LazarusIDE.RunExternalTool(FPCMakeTool);
     if Result<>mrOk then begin
-      Result:=MessageDlg('fpcmake failed',
+      Result:=IDEMessageDialog('fpcmake failed',
         'Calling '+FPCMakeTool.Filename+' to create Makefile from '
         +MakefileFPCFilename+' failed.',
-        mtError,[mbCancel],0);
+        mtError,[mbCancel]);
       exit;
     end;
   finally
@@ -1377,7 +1377,7 @@ function TPkgManager.CompileRequiredPackages(APackage: TLazPackage;
   FirstDependency: TPkgDependency; Globals: TGlobalCompilerOptions;
   Policies: TPackageUpdatePolicies): TModalResult;
 var
-  AutoPackages: TList;
+  AutoPackages: TFPList;
   i: Integer;
 begin
   {$IFDEF VerbosePkgCompile}
@@ -1409,7 +1409,7 @@ end;
 function TPkgManager.CheckPackageGraphForCompilation(APackage: TLazPackage;
   FirstDependency: TPkgDependency; const Directory: string): TModalResult;
 var
-  PathList: TList;
+  PathList: TFPList;
   Dependency: TPkgDependency;
   PkgFile1,PkgFile2: TPkgFile;
   ConflictPkg: TLazPackage;
@@ -1424,9 +1424,9 @@ begin
     PathList:=PackageGraph.FindUnsavedDependencyPath(APackage,FirstDependency);
     if PathList<>nil then begin
       DoShowPackageGraphPathList(PathList);
-      Result:=MessageDlg(lisPkgMangUnsavedPackage,
+      Result:=IDEMessageDialog(lisPkgMangUnsavedPackage,
         lisPkgMangThereIsAnUnsavedPackageInTheRequiredPackages,
-        mtError,[mbCancel,mbAbort],0);
+        mtError,[mbCancel,mbAbort]);
       exit;
     end;
 
@@ -1439,18 +1439,18 @@ begin
           // check if project
           if Dependency.Owner is TProject then begin
             MainIDE.DoShowProjectInspector;
-            Result:=MessageDlg(lisPkgMangBrokenDependency,
+            Result:=IDEMessageDialog(lisPkgMangBrokenDependency,
               Format(lisPkgMangTheProjectRequiresThePackageButItWasNotFound, [
                 '"', Dependency.AsString, '"', #13]),
-              mtError,[mbCancel,mbAbort],0);
+              mtError,[mbCancel,mbAbort]);
             exit;
           end;
         end;
       end;
       DoShowPackageGraphPathList(PathList);
-      Result:=MessageDlg(lisPkgMangBrokenDependency,
+      Result:=IDEMessageDialog(lisPkgMangBrokenDependency,
         lisPkgMangARequiredPackagesWasNotFound,
-        mtError,[mbCancel,mbAbort],0);
+        mtError,[mbCancel,mbAbort]);
       exit;
     end;
 
@@ -1458,9 +1458,9 @@ begin
     PathList:=PackageGraph.FindCircleDependencyPath(APackage,FirstDependency);
     if PathList<>nil then begin
       DoShowPackageGraphPathList(PathList);
-      Result:=MessageDlg(lisPkgMangCircleInPackageDependencies,
+      Result:=IDEMessageDialog(lisPkgMangCircleInPackageDependencies,
         lisPkgMangThereIsACircleInTheRequiredPackages,
-        mtError,[mbCancel,mbAbort],0);
+        mtError,[mbCancel,mbAbort]);
       exit;
     end;
 
@@ -1480,13 +1480,13 @@ begin
       end else
         s:='Internal inconsistency FindAmbiguousUnits: '
           +'Please report this bug and how you got here.'#13;
-      Result:=MessageDlg(lisPkgMangAmbiguousUnitsFound, Format(
+      Result:=IDEMessageDialog(lisPkgMangAmbiguousUnitsFound, Format(
         lisPkgMangBothPackagesAreConnectedThisMeansEitherOnePackageU, [s]),
-          mtError,[mbCancel,mbAbort],0);
+          mtError,[mbCancel,mbAbort]);
       exit;
     end;
 
-    // check for ambiguous units between packages
+    // check for ambiguous units between packages and FPC units
     if PackageGraph.FindFPCConflictUnit(APackage,FirstDependency,Directory,
       @PackageGraphFindFPCUnit,PkgFile1,ConflictPkg)
     then begin
@@ -1499,8 +1499,8 @@ begin
       end else
         s:='Internal inconsistency FindFPCConflictUnits: '
           +'Please report this bug and how you got here.'#13;
-      Result:=MessageDlg(lisPkgMangAmbiguousUnitsFound, s,
-          mtError,[mbCancel,mbAbort],0);
+      Result:=IDEMessageDialog(lisPkgMangAmbiguousUnitsFound, s,
+          mtError,[mbCancel,mbAbort]);
       exit;
     end;
 
@@ -1541,10 +1541,10 @@ begin
     APackage.Flags:=APackage.Flags+[lpfStateFileLoaded];
   except
     on E: Exception do begin
-      Result:=MessageDlg(lisPkgMangErrorWritingFile,
+      Result:=IDEMessageDialog(lisPkgMangErrorWritingFile,
         Format(lisPkgMangUnableToWriteStateFileOfPackageError, ['"', StateFile,
           '"', #13, APackage.IDAsString, #13, E.Message]),
-        mtError,[mbAbort,mbCancel],0);
+        mtError,[mbAbort,mbCancel]);
       exit;
     end;
   end;
@@ -1588,10 +1588,10 @@ begin
         if IgnoreErrors then begin
           Result:=mrOk;
         end else begin
-          Result:=MessageDlg(lisPkgMangErrorReadingFile,
+          Result:=IDEMessageDialog(lisPkgMangErrorReadingFile,
             Format(lisPkgMangUnableToReadStateFileOfPackageError, ['"',
               StateFile, '"', #13, APackage.IDAsString, #13, E.Message]),
-            mtError,[mbCancel,mbAbort],0);
+            mtError,[mbCancel,mbAbort]);
         end;
         exit;
       end;
@@ -1620,29 +1620,29 @@ begin
 
   // create the output directory
   if not ForceDirectory(OutputDir) then begin
-    Result:=MessageDlg(lisPkgMangUnableToCreateDirectory,
+    Result:=IDEMessageDialog(lisPkgMangUnableToCreateDirectory,
       Format(lisPkgMangUnableToCreateOutputDirectoryForPackage, ['"',
         OutputDir, '"', #13, APackage.IDAsString]),
-      mtError,[mbCancel,mbAbort],0);
+      mtError,[mbCancel,mbAbort]);
     exit;
   end;
 
   // delete old Compile State file
   if FileExists(StateFile) and not DeleteFile(StateFile) then begin
-    Result:=MessageDlg(lisPkgMangUnableToDeleteFilename,
+    Result:=IDEMessageDialog(lisPkgMangUnableToDeleteFilename,
       Format(lisPkgMangUnableToDeleteOldStateFileForPackage, ['"', StateFile,
         '"', #13, APackage.IDAsString]),
-      mtError,[mbCancel,mbAbort],0);
+      mtError,[mbCancel,mbAbort]);
     exit;
   end;
   APackage.Flags:=APackage.Flags-[lpfStateFileLoaded];
   
   // create the package src directory
   if not ForceDirectory(PkgSrcDir) then begin
-    Result:=MessageDlg(lisPkgMangUnableToCreateDirectory,
+    Result:=IDEMessageDialog(lisPkgMangUnableToCreateDirectory,
       Format(lisPkgMangUnableToCreatePackageSourceDirectoryForPackage, ['"',
         PkgSrcDir, '"', #13, APackage.IDAsString]),
-      mtError,[mbCancel,mbAbort],0);
+      mtError,[mbCancel,mbAbort]);
     exit;
   end;
   
@@ -1838,10 +1838,10 @@ var
                                           SearchFlags);
       if (AmbiguousFilename='') then exit;
       if not YesToAll then
-        Result:=MessageDlg(lisAmbiguousUnitFound,
+        Result:=IDEMessageDialog(lisAmbiguousUnitFound,
           Format(lisTheFileWasFoundInOneOfTheSourceDirectoriesOfThePac, ['"',
             AmbiguousFilename, '"', #13, APackage.IDAsString, #13, #13]),
-          mtWarning,[mbYes,mbYesToAll,mbNo,mbAbort],0)
+          mtWarning,[mbYes,mbYesToAll,mbNo,mbAbort])
       else
         Result:=mrYesToAll;
       if Result=mrNo then
@@ -1849,8 +1849,8 @@ var
       if Result in [mrYes,mrYesToAll] then begin
         YesToAll:=Result=mrYesToAll;
         if (not DeleteFile(AmbiguousFilename))
-        and (MessageDlg(lisPkgMangDeleteFailed, Format(lisDeletingOfFileFailed,
-          ['"', AmbiguousFilename, '"']), mtError, [mbIgnore, mbCancel], 0)
+        and (IDEMessageDialog(lisPkgMangDeleteFailed, Format(lisDeletingOfFileFailed,
+          ['"', AmbiguousFilename, '"']), mtError, [mbIgnore, mbCancel])
           <>mrIgnore) then
         begin
           Result:=mrCancel;
@@ -2047,7 +2047,7 @@ end;
 
 procedure TPkgManager.LoadStaticCustomPackages;
 var
-  StaticPackages: TList;
+  StaticPackages: TFPList;
   StaticPackage: PRegisteredPackage;
   i: Integer;
   APackage: TLazPackage;
@@ -2127,9 +2127,9 @@ begin
     Dependency.PackageName:=PackageName;
     Dependency.AddToList(FirstAutoInstallDependency,pdlRequires);
     if PackageGraph.OpenDependency(Dependency)<>lprSuccess then begin
-      MessageDlg(lisPkgMangUnableToLoadPackage,
+      IDEMessageDialog(lisPkgMangUnableToLoadPackage,
         Format(lisPkgMangUnableToOpenThePackage, ['"', PackageName, '"', #13]),
-        mtWarning,[mbOk],0);
+        mtWarning,[mbOk]);
       continue;
     end;
     if not Dependency.RequiredPackage.Missing then
@@ -2389,10 +2389,10 @@ var
 begin
   // check Package Name
   if (APackage.Name='') or (not IsValidIdent(APackage.Name)) then begin
-    Result:=MessageDlg(lisPkgMangInvalidPackageName2,
+    Result:=IDEMessageDialog(lisPkgMangInvalidPackageName2,
       Format(lisPkgMangThePackageNameOfTheFileIsInvalid, ['"', APackage.Name,
         '"', #13, '"', APackage.Filename, '"']),
-      mtError,[mbCancel,mbAbort],0);
+      mtError,[mbCancel,mbAbort]);
     exit;
   end;
 
@@ -2400,20 +2400,20 @@ begin
   ConflictPkg:=PackageGraph.FindAPackageWithName(APackage.Name,nil);
   if ConflictPkg<>nil then begin
     if not PackageGraph.PackageCanBeReplaced(ConflictPkg,APackage) then begin
-      Result:=MessageDlg(lisPkgMangPackageConflicts,
+      Result:=IDEMessageDialog(lisPkgMangPackageConflicts,
         Format(lisPkgMangThereIsAlreadyAPackageLoadedFromFile, ['"',
           ConflictPkg.IDAsString, '"', #13, '"', ConflictPkg.Filename, '"',
           #13, #13]),
-        mtError,[mbCancel,mbAbort],0);
+        mtError,[mbCancel,mbAbort]);
       exit;
     end;
     
     if ConflictPkg.Modified and (not ConflictPkg.ReadOnly) then begin
-      Result:=MessageDlg(lisPkgMangSavePackage,
+      Result:=IDEMessageDialog(lisPkgMangSavePackage,
         Format(lisPkgMangLoadingPackageWillReplacePackage, [
           APackage.IDAsString, ConflictPkg.IDAsString, #13,
           ConflictPkg.Filename, #13, #13, #13, ConflictPkg.Filename]),
-        mtConfirmation,[mbYes,mbNo,mbCancel,mbAbort],0);
+        mtConfirmation,[mbYes,mbNo,mbCancel,mbAbort]);
       if Result=mrNo then Result:=mrOk;
       if Result=mrYes then begin
         Result:=DoSavePackage(ConflictPkg,[]);
@@ -2437,7 +2437,7 @@ end;
 function TPkgManager.OpenProjectDependencies(AProject: TProject;
   ReportMissing: boolean): TModalResult;
 var
-  BrokenDependencies: TList;
+  BrokenDependencies: TFPList;
 begin
   PackageGraph.OpenRequiredDependencyList(AProject.FirstRequiredDependency);
   if ReportMissing then begin
@@ -2508,7 +2508,7 @@ end;
 function TPkgManager.CheckProjectHasInstalledPackages(AProject: TProject
   ): TModalResult;
 var
-  MissingUnits: TList;
+  MissingUnits: TFPList;
   i: Integer;
   PkgFile: TPkgFile;
   Msg: String;
@@ -2524,8 +2524,8 @@ begin
       Msg:=Msg+' unit '+PkgFile.UnitName
               +' in package '+PkgFile.LazPackage.IDAsString+#13;
     end;
-    Result:=MessageDlg(lisPackageNeedsInstallation,
-      Msg,mtWarning,[mbIgnore,mbCancel],0);
+    Result:=IDEMessageDialog(lisPackageNeedsInstallation,
+      Msg,mtWarning,[mbIgnore,mbCancel]);
     if Result<>mrIgnore then
       AProject.AutoOpenDesignerFormsDisabled:=true;
     MissingUnits.Free;
@@ -2584,9 +2584,9 @@ begin
   
   // check file extension
   if CompareFileExt(AFilename,'.lpk',false)<>0 then begin
-    Result:=MessageDlg(lisPkgMangInvalidFileExtension,
+    Result:=IDEMessageDialog(lisPkgMangInvalidFileExtension,
       Format(lisPkgMangTheFileIsNotALazarusPackage, ['"', AFilename, '"']),
-      mtError,[mbCancel,mbAbort],0);
+      mtError,[mbCancel,mbAbort]);
     RemoveFromRecentList(AFilename,EnvironmentOptions.RecentPackageFiles);
     SetRecentPackagesMenu;
     exit;
@@ -2596,10 +2596,10 @@ begin
   AlternativePkgName:=ExtractFileNameOnly(AFilename);
   if (AlternativePkgName='') or (not IsValidIdent(AlternativePkgName)) then
   begin
-    Result:=MessageDlg(lisPkgMangInvalidPackageFilename,
+    Result:=IDEMessageDialog(lisPkgMangInvalidPackageFilename,
       Format(lisPkgMangThePackageFileNameInIsNotAValidLazarusPackageName, ['"',
         AlternativePkgName, '"', #13, '"', AFilename, '"']),
-      mtError,[mbCancel,mbAbort],0);
+      mtError,[mbCancel,mbAbort]);
     RemoveFromRecentList(AFilename,EnvironmentOptions.RecentPackageFiles);
     SetRecentPackagesMenu;
     exit;
@@ -2618,9 +2618,9 @@ begin
     // package not yet loaded
     
     if not FileExists(AFilename) then begin
-      MessageDlg(lisFileNotFound,
+      IDEMessageDialog(lisFileNotFound,
         Format(lisPkgMangFileNotFound, ['"', AFilename, '"']),
-        mtError,[mbCancel],0);
+        mtError,[mbCancel]);
       RemoveFromRecentList(AFilename,EnvironmentOptions.RecentPackageFiles);
       SetRecentPackagesMenu;
       Result:=mrCancel;
@@ -2643,10 +2643,10 @@ begin
         end;
       except
         on E: Exception do begin
-          Result:=MessageDlg(lisPkgMangErrorReadingPackage,
+          Result:=IDEMessageDialog(lisPkgMangErrorReadingPackage,
             Format(lisPkgUnableToReadPackageFileError, ['"', AFilename, '"',
               #13, E.Message]),
-            mtError,[mbAbort,mbCancel],0);
+            mtError,[mbAbort,mbCancel]);
           exit;
         end;
       end;
@@ -2656,11 +2656,11 @@ begin
 
       // check if package name and file name correspond
       if (SysUtils.CompareText(AlternativePkgName,APackage.Name)<>0) then begin
-        Result:=MessageDlg(lisPkgMangFilenameDiffersFromPackagename,
+        Result:=IDEMessageDialog(lisPkgMangFilenameDiffersFromPackagename,
           Format(lisPkgMangTheFilenameDoesNotCorrespondToThePackage, ['"',
             ExtractFileName(AFilename), '"', '"', APackage.Name, '"', #13, '"',
             AlternativePkgName, '"']),
-          mtConfirmation,[mbYes,mbCancel,mbAbort],0);
+          mtConfirmation,[mbYes,mbCancel,mbAbort]);
         if Result<>mrYes then exit;
         APackage.Name:=AlternativePkgName;
       end;
@@ -2699,10 +2699,10 @@ begin
 
   // ask user if package should be saved
   if psfAskBeforeSaving in Flags then begin
-    Result:=MessageDlg(lisPkgMangSavePackage2,
+    Result:=IDEMessageDialog(lisPkgMangSavePackage2,
                Format(lisPkgMangPackageChangedSave, ['"', APackage.IDAsString,
                  '"']),
-               mtConfirmation,[mbYes,mbNo,mbAbort],0);
+               mtConfirmation,[mbYes,mbNo,mbAbort]);
     if (Result=mrNo) then Result:=mrIgnore;
     if Result<>mrYes then exit;
   end;
@@ -2747,11 +2747,11 @@ begin
     end;
   except
     on E: Exception do begin
-      Result:=MessageDlg(lisPkgMangErrorWritingPackage,
+      Result:=IDEMessageDialog(lisPkgMangErrorWritingPackage,
         Format(lisPkgMangUnableToWritePackageToFileError, ['"',
           APackage.IDAsString, '"', #13, '"', APackage.Filename, '"', #13,
           E.Message]),
-        mtError,[mbAbort,mbCancel],0);
+        mtError,[mbAbort,mbCancel]);
       exit;
     end;
   end;
@@ -2791,13 +2791,13 @@ begin
   Result:=mrOk;
 end;
 
-procedure TPkgManager.DoShowPackageGraphPathList(PathList: TList);
+procedure TPkgManager.DoShowPackageGraphPathList(PathList: TFPList);
 begin
   if DoShowPackageGraph<>mrOk then exit;
   PackageGraphExplorer.ShowPath(PathList);
 end;
 
-function TPkgManager.ShowBrokenDependenciesReport(Dependencies: TList
+function TPkgManager.ShowBrokenDependenciesReport(Dependencies: TFPList
   ): TModalResult;
 var
   Msg: String;
@@ -2826,7 +2826,7 @@ begin
     end;
   end;
   
-  Result:=MessageDlg(lisMissingPackages, Msg, mtError, [mbOk], 0);
+  Result:=IDEMessageDialog(lisMissingPackages, Msg, mtError, [mbOk]);
 end;
 
 procedure TPkgManager.RebuildDefineTemplates;
@@ -2988,10 +2988,10 @@ begin
           CheckIfFileIsExecutable(CompilerFilename);
         except
           on e: Exception do begin
-            Result:=MessageDlg(lisPkgManginvalidCompilerFilename,
+            Result:=IDEMessageDialog(lisPkgManginvalidCompilerFilename,
               Format(lisPkgMangTheCompilerFileForPackageIsNotAValidExecutable, [
                 APackage.IDAsString, #13, E.Message]),
-              mtError,[mbCancel,mbAbort],0);
+              mtError,[mbCancel,mbAbort]);
             exit;
           end;
         end;
@@ -3047,11 +3047,11 @@ begin
           // package was tried to install, but failed
           // -> ask user if the package should be removed from the installation
           // list
-          if MessageDlg(lisInstallationFailed,
+          if IDEMessageDialog(lisInstallationFailed,
             Format(
               lisPkgMangThePackageFailedToCompileRemoveItFromTheInstallati, [
               '"', APackage.IDAsString, '"', #13]), mtConfirmation,
-            [mbYes,mbIgnore],0)=mrYes then
+            [mbYes,mbIgnore])=mrYes then
           begin
             DoUninstallPackage(APackage,[puifDoNotConfirm,puifDoNotBuildIDE]);
           end;
@@ -3095,10 +3095,10 @@ begin
   // check if package is ready for saving
   OutputDir:=APackage.GetOutputDirectory;
   if not DirPathExists(OutputDir) then begin
-    Result:=MessageDlg(lisEnvOptDlgDirectoryNotFound,
+    Result:=IDEMessageDialog(lisEnvOptDlgDirectoryNotFound,
       Format(lisPkgMangPackageHasNoValidOutputDirectory, ['"',
         APackage.IDAsString, '"', #13, '"', OutputDir, '"']),
-      mtError,[mbCancel,mbAbort],0);
+      mtError,[mbCancel,mbAbort]);
     exit;
   end;
 
@@ -3257,10 +3257,10 @@ begin
   NewPkgFile:=PackageGraph.FindFileInAllPackages(NewFilename,false,true,false);
   if (NewPkgFile<>nil) and (OldPackage<>NewPkgFile.LazPackage) then exit;
 
-  Result:=MessageDlg(lisPkgMangRenameFileInPackage,
+  Result:=IDEMessageDialog(lisPkgMangRenameFileInPackage,
     Format(lisPkgMangThePackageOwnsTheFileShouldTheFileBeRenamed, [
       OldPackage.IDAsString, #13, '"', OldFilename, '"', #13]),
-    mtConfirmation,[mbYes,mbNo,mbAbort],0);
+    mtConfirmation,[mbYes,mbNo,mbAbort]);
   if Result=mrNo then begin
     Result:=mrOk;
     exit;
@@ -3285,7 +3285,7 @@ function TPkgManager.FindIncludeFileInProjectDependencies(Project1: TProject;
 var
   APackage: TLazPackage;
   IncPath: String;
-  PkgList: Tlist;
+  PkgList: TFPList;
   i: Integer;
 begin
   Result:='';
@@ -3313,7 +3313,7 @@ function TPkgManager.AddUnitDependenciesForComponentClasses(
 var
   UnitBuf: TCodeBuffer;
   UnitNames: TStringList;
-  Packages: TList;
+  Packages: TFPList;
   MissingDependencies: TObjectArray;
   
   function LoadAndParseUnitBuf: TModalResult;
@@ -3325,9 +3325,9 @@ var
     end;
     UnitBuf:=CodeToolBoss.LoadFile(UnitFilename,false,false);
     if UnitBuf=nil then begin
-      Result:=MessageDlg('Error loading file',
+      Result:=IDEMessageDialog('Error loading file',
         'Loading '+UnitFilename+' failed.',
-        mtError,[mbCancel,mbAbort],0);
+        mtError,[mbCancel,mbAbort]);
       exit;
     end;
     Result:=mrOk;
@@ -3422,8 +3422,8 @@ var
       Msg:=Msg+PackageAdditions;
     end;
     if Msg<>'' then begin
-      Result:=MessageDlg(lisConfirmChanges,
-        Msg,mtConfirmation,[mbOk,mbAbort],0);
+      Result:=IDEMessageDialog(lisConfirmChanges,
+        Msg,mtConfirmation,[mbOk,mbAbort]);
       exit;
     end;
     Result:=mrOk;
@@ -3469,7 +3469,7 @@ var
 begin
   Result:=mrCancel;
   UnitNames:=TStringList.Create;
-  Packages:=TList.Create;
+  Packages:=TFPList.Create;
   MissingDependencies:=nil;
   try
   
@@ -3511,7 +3511,7 @@ function TPkgManager.GetMissingDependenciesForUnit(
   var List: TObjectArray): TModalResult;
 // returns a list of packages needed to use the Component in the unit
 var
-  UnitOwners: TList;
+  UnitOwners: TFPList;
   UnitOwner: TObject;
   FirstDependency: TPkgDependency;
   CurClassID: Integer;
@@ -3560,11 +3560,11 @@ begin
   Result:=mrOk;
 end;
 
-function TPkgManager.GetOwnersOfUnit(const UnitFilename: string): TList;
+function TPkgManager.GetOwnersOfUnit(const UnitFilename: string): TFPList;
 var
   PkgFile: TPkgFile;
 begin
-  Result:=TList.Create;
+  Result:=TFPList.Create;
   // check if unit is part of project
   if Project1<>nil then begin
     if Project1.UnitInfoWithFilename(UnitFilename,
@@ -3580,13 +3580,13 @@ begin
     FreeThenNil(Result);
 end;
 
-procedure TPkgManager.ExtendOwnerListWithUsedByOwners(OwnerList: TList);
+procedure TPkgManager.ExtendOwnerListWithUsedByOwners(OwnerList: TFPList);
 // use items (packages and projects) in OwnerList as leaves and create the
 // list of all packages and projects using them.
 // The result will be the topologically sorted list of projects and packages
 // using the projects/packages in OwnerList, beginning with the top levels.
 var
-  AddedNonPackages: TList;
+  AddedNonPackages: TFPList;
 
   procedure AddUsedByOwners(ADependenyOwner: TObject);
   var
@@ -3612,20 +3612,20 @@ var
   
 var
   i: Integer;
-  OldOwnerList: TList;
+  OldOwnerList: TFPList;
 begin
-  OldOwnerList:=TList.Create;
+  OldOwnerList:=TFPList.Create;
   for i:=0 to OwnerList.Count-1 do
     OldOwnerList.Add(OwnerList[i]);
   OwnerList.Clear;
-  AddedNonPackages:=TList.Create;
+  AddedNonPackages:=TFPList.Create;
   PackageGraph.MarkAllPackagesAsNotVisited;
   for i:=0 to OldOwnerList.Count-1 do
     AddUsedByOwners(TObject(OldOwnerList[i]));
   OldOwnerList.Free;
 end;
 
-function TPkgManager.GetSourceFilesOfOwners(OwnerList: TList): TStrings;
+function TPkgManager.GetSourceFilesOfOwners(OwnerList: TFPList): TStrings;
 
   procedure AddFile(TheOwner: TObject; const Filename: string);
   begin
@@ -3746,28 +3746,28 @@ begin
   
   // check if filename is absolute
   if ActiveUnitInfo.IsVirtual or (not FileExists(Filename)) then begin
-    Result:=MessageDlg(lisPkgMangFileNotSaved,
+    Result:=IDEMessageDialog(lisPkgMangFileNotSaved,
       lisPkgMangPleaseSaveTheFileBeforeAddingItToAPackage,
-      mtWarning,[mbCancel],0);
+      mtWarning,[mbCancel]);
     exit;
   end;
   
   // check if file is part of project
   if ActiveUnitInfo.IsPartOfProject then begin
-    Result:=MessageDlg(lisPkgMangFileIsInProject,
+    Result:=IDEMessageDialog(lisPkgMangFileIsInProject,
       Format(lisPkgMangWarningTheFileBelongsToTheCurrentProject, ['"',
         Filename, '"', #13])
-      ,mtWarning,[mbIgnore,mbCancel,mbAbort],0);
+      ,mtWarning,[mbIgnore,mbCancel,mbAbort]);
     if Result<>mrIgnore then exit;
   end;
   
   // check if file is already in a package
   PkgFile:=PackageGraph.FindFileInAllPackages(Filename,false,true,true);
   if PkgFile<>nil then begin
-    Result:=MessageDlg(lisPkgMangFileIsAlreadyInPackage,
+    Result:=IDEMessageDialog(lisPkgMangFileIsAlreadyInPackage,
       Format(lisPkgMangTheFileIsAlreadyInThePackage, ['"', Filename, '"', #13,
         PkgFile.LazPackage.IDAsString]),
-      mtWarning,[mbIgnore,mbCancel,mbAbort],0);
+      mtWarning,[mbIgnore,mbCancel,mbAbort]);
     if Result<>mrIgnore then exit;
   end;
   
@@ -3802,10 +3802,10 @@ begin
       if not FileExistsCached(AFilename) then begin
         if not APackage.IsVirtual then
           AFilename:=CreateRelativePath(AFilename,APackage.Directory);
-        Result:=QuestionDlg(lisPkgMangPackageFileMissing,
+        Result:=IDEQuestionDialog(lisPkgMangPackageFileMissing,
           Format(lisPkgMangTheFileOfPackageIsMissing, ['"', AFilename, '"',
             #13, APackage.IDAsString]),
-          mtWarning,[mrIgnore,mrAbort],0);
+          mtWarning,[mrIgnore,mrAbort]);
         if Result<>mrAbort then
           Result:=mrOk;
         // one warning is enough
@@ -3814,11 +3814,10 @@ begin
     end else begin
       if not APackage.IsVirtual then begin
         // an unsaved file
-        Result:=QuestionDlg(lisPkgMangPackageFileNotSaved,
+        Result:=IDEQuestionDialog(lisPkgMangPackageFileNotSaved,
           Format(lisPkgMangTheFileOfPackageNeedsToBeSavedFirst, ['"',
             AFilename, '"', #13, APackage.IDAsString]),
-          mtWarning, [mrIgnore, lisPkgMangIgnoreAndSavePackageNow, mrAbort], 0
-            );
+          mtWarning, [mrIgnore, lisPkgMangIgnoreAndSavePackageNow, mrAbort]);
         if Result<>mrAbort then
           Result:=mrOk;
       end;
@@ -3828,7 +3827,7 @@ end;
 
 function TPkgManager.DoInstallPackage(APackage: TLazPackage): TModalResult;
 var
-  PkgList: TList;
+  PkgList: TFPList;
   
   function GetPkgListIndex(APackage: TLazPackage): integer;
   begin
@@ -3851,10 +3850,10 @@ begin
   try
     // check if package is designtime package
     if APackage.PackageType=lptRunTime then begin
-      Result:=MessageDlg(lisPkgMangPackageIsNoDesigntimePackage,
+      Result:=IDEMessageDialog(lisPkgMangPackageIsNoDesigntimePackage,
         Format(lisPkgMangThePackageIsARuntimeOnlyPackageRuntimeOnlyPackages, [
           APackage.IDAsString, #13]),
-        mtError,[mbIgnore,mbAbort],0);
+        mtError,[mbIgnore,mbAbort]);
       if Result<>mrIgnore then exit;
     end;
   
@@ -3871,7 +3870,7 @@ begin
     
     // get all required packages, which will also be auto installed
     APackage.GetAllRequiredPackages(PkgList);
-    if PkgList=nil then PkgList:=TList.Create;
+    if PkgList=nil then PkgList:=TFPList.Create;
     
     // remove packages already marked for installation
     for i:=PkgList.Count-1 downto 0 do begin
@@ -3897,8 +3896,8 @@ begin
         Msg:=Format(
           lisPkgMangInstallingThePackageWillAutomaticallyInstallThePac2, [
           APackage.IDAsString]);
-      Result:=MessageDlg(lisPkgMangAutomaticallyInstalledPackages,
-        Msg+#13+s,mtConfirmation,[mbOk,mbCancel,mbAbort],0);
+      Result:=IDEMessageDialog(lisPkgMangAutomaticallyInstalledPackages,
+        Msg+#13+s,mtConfirmation,[mbOk,mbCancel,mbAbort]);
       if Result<>mrOk then exit;
     end;
 
@@ -3932,10 +3931,10 @@ begin
   if Result<>mrOk then exit;
 
   // ask user to rebuilt Lazarus now
-  Result:=MessageDlg(lisPkgMangRebuildLazarus,
+  Result:=IDEMessageDialog(lisPkgMangRebuildLazarus,
     Format(lisPkgMangThePackageWasMarkedForInstallationCurrentlyLazarus, [
       '"', APackage.IDAsString, '"', #13, #13, #13]),
-    mtConfirmation,[mbYes,mbNo],0);
+    mtConfirmation,[mbYes,mbNo]);
   if Result=mrNo then begin
     Result:=mrOk;
     exit;
@@ -3951,7 +3950,7 @@ end;
 function TPkgManager.DoUninstallPackage(APackage: TLazPackage;
   Flags: TPkgUninstallFlags): TModalResult;
 var
-  DependencyPath: TList;
+  DependencyPath: TFPList;
   ParentPackage: TLazPackage;
   Dependency: TPkgDependency;
   BuildIDEFlags: TBuildLazarusFlags;
@@ -3963,18 +3962,18 @@ begin
   if DependencyPath<>nil then begin
     DoShowPackageGraphPathList(DependencyPath);
     ParentPackage:=TLazPackage(DependencyPath[0]);
-    Result:=MessageDlg(lisPkgMangPackageIsRequired,
+    Result:=IDEMessageDialog(lisPkgMangPackageIsRequired,
       Format(lisPkgMangThePackageIsRequiredByWhichIsMarkedForInstallation, [
         APackage.IDAsString, ParentPackage.IDAsString, #13]),
-      mtError,[mbCancel,mbAbort],0);
+      mtError,[mbCancel,mbAbort]);
     exit;
   end;
 
   // confirm uninstall package
   if not (puifDoNotConfirm in Flags) then begin
-    Result:=MessageDlg(lisPkgMangUninstallPackage,
+    Result:=IDEMessageDialog(lisPkgMangUninstallPackage,
       Format(lisPkgMangUninstallPackage2, [APackage.IDAsString]),
-      mtConfirmation,[mbYes,mbCancel,mbAbort],0);
+      mtConfirmation,[mbYes,mbCancel,mbAbort]);
     if Result<>mrYes then exit;
   end;
   
@@ -4006,10 +4005,10 @@ begin
 
     if not (puifDoNotBuildIDE in Flags) then begin
       // ask user to rebuilt Lazarus now
-      Result:=MessageDlg(lisPkgMangRebuildLazarus,
+      Result:=IDEMessageDialog(lisPkgMangRebuildLazarus,
         Format(lisPkgMangThePackageWasMarkedCurrentlyLazarus, ['"',
           APackage.IDAsString, '"', #13, #13, #13]),
-        mtConfirmation,[mbYes,mbNo],0);
+        mtConfirmation,[mbYes,mbNo]);
       if Result=mrNo then begin
         Result:=mrOk;
         exit;
@@ -4031,13 +4030,15 @@ var
 begin
   Result:=mrCancel;
   if APackage.IsVirtual then begin
-    MessageDlg(lisPkgMangThisIsAVirtualPackageItHasNoSourceYetPleaseSaveThe,
-      mtError, [mbCancel], 0);
+    IDEMessageDialog('Error',
+      lisPkgMangThisIsAVirtualPackageItHasNoSourceYetPleaseSaveThe,
+      mtError, [mbCancel]);
     exit;
   end;
   Filename:=APackage.GetSrcFilename;
   if (not FilenameIsAbsolute(Filename)) or (not FileExists(Filename)) then begin
-    MessageDlg(lisPkgMangPleaseSaveThePackageFirst, mtError, [mbCancel], 0);
+    IDEMessageDialog('Error',lisPkgMangPleaseSaveThePackageFirst, mtError,
+                     [mbCancel]);
     exit;
   end;
   Result:=MainIDE.DoOpenEditorFile(Filename,-1,[ofRegularFile]);
@@ -4056,10 +4057,10 @@ begin
       OldDependency:=Dependency;
       Dependency:=Dependency.NextRequiresDependency;
       if OldDependency.LoadPackageResult<>lprSuccess then begin
-        Result:=MessageDlg(lisProjAddPackageNotFound,
+        Result:=IDEMessageDialog(lisProjAddPackageNotFound,
           Format(lisPkgMangThePackageIsMarkedForInstallationButCanNotBeFound, [
             '"', OldDependency.AsString, '"', #13]),
-          mtError,[mbYes,mbNo,mbAbort],0);
+          mtError,[mbYes,mbNo,mbAbort]);
         if Result=mrNo then Result:=mrCancel;
         if Result<>mrYes then exit;
         OldDependency.RemoveFromList(FirstAutoInstallDependency,pdlRequires);
@@ -4116,10 +4117,10 @@ begin
   TargetDir:=MiscellaneousOptions.BuildLazOpts.TargetDirectory;
   IDEMacros.SubstituteMacros(TargetDir);
   if not ForceDirectory(TargetDir) then begin
-    Result:=MessageDlg(lisPkgMangUnableToCreateDirectory,
+    Result:=IDEMessageDialog(lisPkgMangUnableToCreateDirectory,
       Format(lisPkgMangUnableToCreateTargetDirectoryForLazarus, [#13, '"',
         TargetDir, '"', #13]),
-      mtError,[mbCancel,mbAbort],0);
+      mtError,[mbCancel,mbAbort]);
     exit;
   end;
 
@@ -4139,8 +4140,8 @@ function TPkgManager.DoGetIDEInstallPackageOptions(
   end;
   
 var
-  PkgList: TList;
-  AddOptionsList: TList;
+  PkgList: TFPList;
+  AddOptionsList: TFPList;
   ConfigDir: String;
 begin
   Result:='';
@@ -4314,7 +4315,7 @@ end;
 constructor TLazPackageDescriptors.Create;
 begin
   PackageDescriptors:=Self;
-  FItems:=TList.Create;
+  FItems:=TFPList.Create;
 end;
 
 destructor TLazPackageDescriptors.Destroy;

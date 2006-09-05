@@ -106,7 +106,7 @@ type
     function DoCloseAllPackageEditors: TModalResult; virtual; abstract;
 
     // package graph
-    procedure DoShowPackageGraphPathList(PathList: TList); virtual; abstract;
+    procedure DoShowPackageGraphPathList(PathList: TFPList); virtual; abstract;
     procedure RebuildDefineTemplates; virtual; abstract;
 
     // package compilation

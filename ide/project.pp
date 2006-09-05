@@ -291,7 +291,7 @@ type
     destructor Destroy; override;
     function GetOwnerName: string; override;
     function GetDefaultMainSourceFileName: string; override;
-    procedure GetInheritedCompilerOptions(var OptionsList: TList); override;
+    procedure GetInheritedCompilerOptions(var OptionsList: TFPList); override;
     procedure Assign(Source: TPersistent); override;
     procedure CreateDiff(CompOpts: TBaseCompilerOptions;
                          Tool: TCompilerDiffTool); override;
@@ -471,7 +471,7 @@ type
     FStateFileDate: longint;
     FStateFlags: TLazProjectStateFlags;
     FTargetFileExt: String;
-    FUnitList: TList;  // list of _all_ units (TUnitInfo)
+    FUnitList: TFPList;  // list of _all_ units (TUnitInfo)
     FUpdateLock: integer;
     function GetFirstAutoRevertLockedUnit: TUnitInfo;
     function GetFirstLoadedUnit: TUnitInfo;
@@ -534,7 +534,7 @@ type
     function IsVirtual: boolean;
     function SomethingModified(CheckData, CheckSession: boolean): boolean;
     procedure MainSourceFilenameChanged;
-    procedure GetUnitsChangedOnDisk(var AnUnitList: TList);
+    procedure GetUnitsChangedOnDisk(var AnUnitList: TFPList);
     function ReadProject(const NewProjectInfoFile: string): TModalResult;
     function WriteProject(ProjectWriteFlags: TProjectWriteFlags;
                           const OverrideProjectInfoFile: string): TModalResult;
@@ -626,7 +626,7 @@ type
     procedure MoveRequiredDependencyUp(Dependency: TPkgDependency);
     procedure MoveRequiredDependencyDown(Dependency: TPkgDependency);
     function Requires(APackage: TLazPackage): boolean;
-    procedure GetAllRequiredPackages(var List: TList);
+    procedure GetAllRequiredPackages(var List: TFPList);
     procedure AddPackageDependency(const PackageName: string); override;
 
     // paths
@@ -1457,7 +1457,7 @@ begin
   FRunParameterOptions:=TRunParamsOptions.Create;
   FTargetFileExt := GetExecutableExt;
   Title := '';
-  FUnitList := TList.Create;  // list of TUnitInfo
+  FUnitList := TFPList.Create;  // list of TUnitInfo
 end;
 
 {------------------------------------------------------------------------------
@@ -2915,7 +2915,7 @@ begin
   ExtendPath(SrcPathMacroName,CompilerOptions.SrcPath);
 end;
 
-procedure TProject.GetUnitsChangedOnDisk(var AnUnitList: TList);
+procedure TProject.GetUnitsChangedOnDisk(var AnUnitList: TFPList);
 var
   AnUnitInfo: TUnitInfo;
 begin
@@ -2924,7 +2924,7 @@ begin
   while (AnUnitInfo<>nil) do begin
     if AnUnitInfo.ChangedOnDisk(false) then begin
       if AnUnitList=nil then
-        AnUnitList:=TList.Create;
+        AnUnitList:=TFPList.Create;
       AnUnitList.Add(AnUnitInfo);
     end;
     AnUnitInfo:=AnUnitInfo.fNext[uilAutoRevertLocked];
@@ -3056,7 +3056,7 @@ begin
                                          APackage)<>nil;
 end;
 
-procedure TProject.GetAllRequiredPackages(var List: TList);
+procedure TProject.GetAllRequiredPackages(var List: TFPList);
 begin
   if Assigned(OnGetAllRequiredPackages) then
     OnGetAllRequiredPackages(FirstRequiredDependency,List);
@@ -3828,9 +3828,9 @@ begin
 end;
 
 procedure TProjectCompilerOptions.GetInheritedCompilerOptions(
-  var OptionsList: TList);
+  var OptionsList: TFPList);
 var
-  PkgList: TList;
+  PkgList: TFPList;
 begin
   PkgList:=nil;
   OwnerProject.GetAllRequiredPackages(PkgList);

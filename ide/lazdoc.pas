@@ -201,7 +201,7 @@ var
   
   procedure CheckIfInAPackage;
   var
-    PkgList: TList;
+    PkgList: TFPList;
     i: Integer;
     Dirs: String;
     APackage: TLazPackage;

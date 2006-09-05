@@ -113,7 +113,7 @@ type
     procedure SelectPackage(Pkg: TLazPackage);
     procedure OpenDependencyOwner(DependencyOwner: TObject);
     function FindMainNodeWithText(const s: string): TTreeNode;
-    procedure ShowPath(PathList: TList);
+    procedure ShowPath(PathList: TFPList);
   public
     property OnOpenPackage: TOnOpenPackage read FOnOpenPackage write FOnOpenPackage;
     property OnOpenProject: TOnOpenProject read FOnOpenProject write FOnOpenProject;
@@ -582,7 +582,7 @@ begin
   while (Result<>nil) and (Result.Text<>s) do Result:=Result.GetNextSibling;
 end;
 
-procedure TPkgGraphExplorerDlg.ShowPath(PathList: TList);
+procedure TPkgGraphExplorerDlg.ShowPath(PathList: TFPList);
 var
   AnObject: TObject;
   CurNode, LastNode: TTreeNode;

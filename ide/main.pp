@@ -8762,7 +8762,7 @@ end;
 
 function TMainIDE.DoCheckFilesOnDisk(Instantaneous: boolean): TModalResult;
 var
-  AnUnitList: TList; // list of TUnitInfo
+  AnUnitList: TFPList; // list of TUnitInfo
   i: integer;
   CurUnit: TUnitInfo;
 begin
@@ -10570,7 +10570,7 @@ var
   NewSource: TCodeBuffer;
   NewX, NewY, NewTopLine: integer;
   LogCaretXY, DeclarationCaretXY: TPoint;
-  OwnerList: TList;
+  OwnerList: TFPList;
   ExtraFiles: TStrings;
   Files: TStringList;
   Identifier: string;
@@ -10621,7 +10621,7 @@ begin
     case Options.Scope of
     frProject:
       begin
-        OwnerList:=TList.Create;
+        OwnerList:=TFPList.Create;
         OwnerList.Add(Project1);
       end;
     frOwnerProjectPackage,frAllOpenProjectsAndPackages:

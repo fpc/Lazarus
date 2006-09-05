@@ -329,7 +329,7 @@ type
     function GetXMLConfigPath: String; virtual;
     function CreateTargetFilename(const MainSourceFileName: string): string; virtual;
     function GetTargetFileExt: string; virtual;
-    procedure GetInheritedCompilerOptions(var OptionsList: TList); virtual;
+    procedure GetInheritedCompilerOptions(var OptionsList: TFPList); virtual;
     function GetOwnerName: string; virtual;
     function GetInheritedOption(Option: TInheritedCompilerOption;
                                 RelativeToBaseDir: boolean;
@@ -466,7 +466,7 @@ function ParseString(Options: TParsedCompilerOptions;
                      const UnparsedValue: string;
                      PlatformIndependent: boolean): string;
                      
-procedure GatherInheritedOptions(AddOptionsList: TList;
+procedure GatherInheritedOptions(AddOptionsList: TFPList;
   Parsed: TCompilerOptionsParseType;
   var InheritedOptionStrings: TInheritedCompOptsStrings);
 function InheritedOptionsToCompilerParameters(
@@ -518,7 +518,7 @@ begin
   Result:=OnParseString(Options,UnparsedValue,PlatformIndependent);
 end;
 
-procedure GatherInheritedOptions(AddOptionsList: TList;
+procedure GatherInheritedOptions(AddOptionsList: TFPList;
   Parsed: TCompilerOptionsParseType;
   var InheritedOptionStrings: TInheritedCompOptsStrings);
 var
@@ -1394,7 +1394,7 @@ begin
 end;
 
 procedure TBaseCompilerOptions.GetInheritedCompilerOptions(
-  var OptionsList: TList);
+  var OptionsList: TFPList);
 begin
   OptionsList:=nil;
 end;
@@ -1416,7 +1416,7 @@ function TBaseCompilerOptions.GetInheritedOption(
   Option: TInheritedCompilerOption; RelativeToBaseDir: boolean;
   Parsed: TCompilerOptionsParseType): string;
 var
-  OptionsList: TList;
+  OptionsList: TFPList;
   p: TCompilerOptionsParseType;
 begin
   if (fInheritedOptParseStamps<>CompilerParseStamp)

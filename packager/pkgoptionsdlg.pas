@@ -326,7 +326,7 @@ procedure TPackageOptionsDialog.OkButtonClick(Sender: TObject);
 var
   NewPackageType: TLazPackageType;
   NewVersion: TPkgVersion;
-  BrokenDependencies: TList;
+  BrokenDependencies: TFPList;
   RenameDependencies: Boolean;
   MsgResult: TModalResult;
 begin

@@ -57,7 +57,7 @@ type
     procedure SetupComponents;
     procedure ClearButtons;
   public
-    DependencyList: TList;
+    DependencyList: TFPList;
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     property Buttons[Btn: TMsgDlgBtn]: TBitBtn read GetButtons;
@@ -69,14 +69,14 @@ const
   DefaultBrokenDepButtons = [mbYes,mbIgnore,mbCancel,mbAbort];
 
 
-function ShowBrokenDependencies(DependencyList: TList;
+function ShowBrokenDependencies(DependencyList: TFPList;
   BtnSet: TMsgDlgButtons): TModalResult;
 
 
 implementation
 
 
-function ShowBrokenDependencies(DependencyList: TList;
+function ShowBrokenDependencies(DependencyList: TFPList;
   BtnSet: TMsgDlgButtons): TModalResult;
 var
   BrokenDependenciesDialog: TBrokenDependenciesDialog;

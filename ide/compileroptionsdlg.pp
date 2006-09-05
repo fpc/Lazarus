@@ -1075,7 +1075,7 @@ end;
 
 procedure TfrmCompilerOptions.UpdateInheritedTab;
 var
-  OptionsList: TList;
+  OptionsList: TFPList;
   i: Integer;
   AncestorOptions: TAdditionalCompilerOptions;
   AncestorNode: TTreeNode;

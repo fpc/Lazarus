@@ -61,27 +61,27 @@ type
           Shift: TShiftState; X, Y: Integer);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
   private
-    FUnitList: TList;
-    FCachedDiffs: TList; // List of PDiffItem
+    FUnitList: TFPList;
+    FCachedDiffs: TFPList; // List of PDiffItem
     procedure FillFilesListBox;
-    procedure SetUnitList(const AValue: TList);
+    procedure SetUnitList(const AValue: TFPList);
     procedure ShowDiff;
     function GetCachedDiff(AnUnitInfo: TUnitInfo): PDiffItem;
     procedure ClearCache;
   public
-    property UnitList: TList read FUnitList write SetUnitList; // list of TUnitInfo
+    property UnitList: TFPList read FUnitList write SetUnitList; // list of TUnitInfo
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
   end;
   
-function ShowDiskDiffsDialog(AnUnitList: TList): TModalResult;
+function ShowDiskDiffsDialog(AnUnitList: TFPList): TModalResult;
 
 implementation
 
 var
   DiskDiffsDlg: TDiskDiffsDlg = nil;
 
-function ShowDiskDiffsDialog(AnUnitList: TList): TModalResult;
+function ShowDiskDiffsDialog(AnUnitList: TFPList): TModalResult;
 
   procedure CheckWithLoading;
   var
@@ -166,7 +166,7 @@ begin
   FilesListBox.Items.EndUpdate;
 end;
 
-procedure TDiskDiffsDlg.SetUnitList(const AValue: TList);
+procedure TDiskDiffsDlg.SetUnitList(const AValue: TFPList);
 begin
   FUnitList:=AValue;
   FillFilesListBox;
@@ -192,7 +192,7 @@ var
   fs: TFileStream;
 begin
   if FCachedDiffs=nil then
-    FCachedDiffs:=TList.Create;
+    FCachedDiffs:=TFPList.Create;
   for i:=0 to FCachedDiffs.Count-1 do begin
     Result:=PDiffItem(FCachedDiffs[i]);
     if (Result<>nil) and (Result^.UnitInfo=AnUnitInfo) then exit;

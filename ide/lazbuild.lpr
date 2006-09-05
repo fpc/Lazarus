@@ -33,7 +33,7 @@ uses
   // codetools
   CodeToolManager, Laz_XMLCfg,
   // IDEIntf
-  MacroIntf,
+  MacroIntf, PackageIntf,
   // IDE
   IDEProcs, InitialSetupDlgs, OutputFilter, Compiler, CompilerOptions,
   TransferMacros, EnvironmentOpts, IDETranslations, LazarusIDEStrConsts,
@@ -46,6 +46,8 @@ type
 
   TLazBuildApplication = class(TCustomApplication)
   private
+    FBuildAll: boolean;
+    FBuildRecursive: boolean;
     fInitialized: boolean;
     fInitResult: boolean;
     TheOutputFilter: TOutputFilter;
@@ -55,7 +57,6 @@ type
                                         ErrorOccurred: boolean);
     procedure OnExtToolNeedsOutputFilter(var OutputFilter: TOutputFilter;
                                          var Abort: boolean);
-    procedure OnCmdLineCreate(var CmdLine: string; var Abort: boolean);
 
     // global package functions
     procedure GetDependencyOwnerDescription(Dependency: TPkgDependency;
@@ -70,6 +71,9 @@ type
     function BuildFile(Filename: string): boolean;
     function BuildPackage(const AFilename: string): boolean;
     function LoadPackage(const AFilename: string): TLazPackage;
+    procedure CompilePackage(APackage: TLazPackage; Flags: TPkgCompileFlags);
+    procedure CheckPackageGraphForCompilation(APackage: TLazPackage;
+                                 FirstDependency: TPkgDependency);
     function Init: boolean;
     procedure LoadEnvironmentOptions;
     procedure SetupOutputFilter;
@@ -83,8 +87,11 @@ type
     function ParseParameters: boolean;
     procedure WriteUsage;
     procedure Error(ErrorCode: Byte; const ErrorMsg: string);
+    property BuildAll: boolean read FBuildAll write FBuildAll;// build all files of project/package
+    property BuildRecursive: boolean read FBuildRecursive // apply BuildAll flag to dependencies
+                                     write FBuildRecursive;
   end;
-  
+
 const
   ErrorFileNotFound = 1;
   ErrorBuildFailed = 2;
@@ -96,20 +103,13 @@ const
 procedure TLazBuildApplication.OnExtToolFreeOutputFilter(
   OutputFilter: TOutputFilter; ErrorOccurred: boolean);
 begin
-  OutputFilter:=TheOutputFilter;
+  if ErrorOccurred then Error(ErrorBuildFailed,'tool reported error');
 end;
 
 procedure TLazBuildApplication.OnExtToolNeedsOutputFilter(
   var OutputFilter: TOutputFilter; var Abort: boolean);
 begin
   OutputFilter:=TheOutputFilter;
-end;
-
-procedure TLazBuildApplication.OnCmdLineCreate(var CmdLine: string;
-  var Abort: boolean);
-// replace all transfer macros in command line
-begin
-  Abort:=not GlobalMacroList.SubstituteStr(CmdLine);
 end;
 
 procedure TLazBuildApplication.GetDependencyOwnerDescription(
@@ -167,13 +167,19 @@ end;
 function TLazBuildApplication.BuildPackage(const AFilename: string): boolean;
 var
   APackage: TLazPackage;
+  Flags: TPkgCompileFlags;
 begin
   Result:=false;
   Init;
   APackage:=LoadPackage(AFilename);
   if APackage=nil then
     Error(ErrorLoadPackageFailed, 'unable to load package "'+AFilename+'"');
-    
+  Flags:=[];
+  if BuildAll then
+    Include(Flags,pcfCleanCompile);
+  if BuildRecursive and BuildAll then
+    Include(Flags,pcfCompileDependenciesClean);
+  CompilePackage(APackage,Flags);
 end;
 
 function TLazBuildApplication.LoadPackage(const AFilename: string): TLazPackage;
@@ -210,6 +216,58 @@ begin
   end;
   // save package file links
   PkgLinks.SaveUserLinks;
+end;
+
+procedure TLazBuildApplication.CompilePackage(APackage: TLazPackage;
+  Flags: TPkgCompileFlags);
+begin
+  if APackage.AutoCreated then
+    Error(ErrorBuildFailed,APackage.IDAsString+' is an auto created package');
+
+  // check graph for circles and broken dependencies
+  if not (pcfDoNotCompileDependencies in Flags) then begin
+    CheckPackageGraphForCompilation(APackage,nil);
+  end;
+
+  {$NOTE TODO: move code from package manager to packagegraph and use it here}
+end;
+
+procedure TLazBuildApplication.CheckPackageGraphForCompilation(
+  APackage: TLazPackage; FirstDependency: TPkgDependency);
+  
+  function PathListToString(PathList: TFPList): string;
+  var
+    Dependency: TPkgDependency;
+    i: Integer;
+  begin
+    Result:='';
+    for i:=0 to PathList.Count-1 do begin
+      Dependency:=TPkgDependency(PathList[0]);
+      if Dependency is TPkgDependency then begin
+        if Result<>'' then
+          Result:=Result+'>';
+        Result:=Result+Dependency.AsString;
+      end;
+    end;
+  end;
+  
+var
+  PathList: TFPList;
+begin
+  PathList:=nil;
+  try
+    // check for broken dependencies
+    PathList:=PackageGraph.FindBrokenDependencyPath(APackage,FirstDependency);
+    if PathList<>nil then
+      Error(ErrorLoadPackageFailed,'Broken dependency: '+PathListToString(PathList));
+
+    // check for circle dependencies
+    PathList:=PackageGraph.FindCircleDependencyPath(APackage,FirstDependency);
+    if PathList<>nil then
+      Error(ErrorLoadPackageFailed,'Circle dependency: '+PathListToString(PathList));
+  finally
+    PathList.Free;
+  end;
 end;
 
 function TLazBuildApplication.Init: boolean;
@@ -348,7 +406,9 @@ begin
     LongOptions.Add('secondary-config-path');
     LongOptions.Add('scp');
     LongOptions.Add('language');
-    ErrorMsg:=CheckOptions('l',LongOptions,Options,NonOptions);
+    LongOptions.Add('build-all');
+    LongOptions.Add('recursive');
+    ErrorMsg:=CheckOptions('lBR',LongOptions,Options,NonOptions);
     if ErrorMsg<>'' then begin
       writeln(ErrorMsg);
       writeln('');
@@ -373,6 +433,12 @@ begin
       SetPrimaryConfigPath(GetOptionValue('secondary-config-path'))
     else if HasOption('scp') then
       SetSecondaryConfigPath(GetOptionValue('scp'));
+      
+    // build all
+    if HasOption('B','build-all') then
+      BuildAll:=true;
+    if HasOption('R','recursive') then
+      BuildRecursive:=true;
   finally
     Options.Free;
     NonOptions.Free;
@@ -392,6 +458,9 @@ begin
   writeln('Options:');
   writeln('');
   writeln('--help or -?             ', listhisHelpMessage);
+  writeln('');
+  writeln('-B or --buildall         ','build all files of project/package');
+  writeln('-R or --recursive        ','apply build flags (-B) to dependencies too.');
   writeln('');
   writeln(PrimaryConfPathOptLong,' <path>');
   writeln('or ',PrimaryConfPathOptShort,' <path>');

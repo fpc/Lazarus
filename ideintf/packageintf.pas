@@ -63,9 +63,9 @@ type
 
     function AddUnitDependenciesForComponentClasses(const UnitFilename: string;
                          ComponentClassnames: TStrings): TModalResult; virtual; abstract;
-    function GetOwnersOfUnit(const UnitFilename: string): TList; virtual; abstract;
-    procedure ExtendOwnerListWithUsedByOwners(OwnerList: TList); virtual; abstract;
-    function GetSourceFilesOfOwners(OwnerList: TList): TStrings; virtual; abstract;
+    function GetOwnersOfUnit(const UnitFilename: string): TFPList; virtual; abstract;
+    procedure ExtendOwnerListWithUsedByOwners(OwnerList: TFPList); virtual; abstract;
+    function GetSourceFilesOfOwners(OwnerList: TFPList): TStrings; virtual; abstract;
   end;
   
 var

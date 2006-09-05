@@ -46,7 +46,7 @@ uses
 
 type
   TOnCheckInstallPackageList =
-                            procedure(PkgIDs: TList; var Ok: boolean) of object;
+                          procedure(PkgIDs: TFPList; var Ok: boolean) of object;
 
   { TInstallPkgSetDialog }
 
@@ -76,7 +76,7 @@ type
     procedure SaveAndExitButtonClick(Sender: TObject);
     procedure UninstallButtonClick(Sender: TObject);
   private
-    FNewInstalledPackages: TList;
+    FNewInstalledPackages: TFPList;
     FOldInstalledPackages: TPkgDependency;
     FOnCheckInstallPackageList: TOnCheckInstallPackageList;
     fPackages: TAVLTree;// tree of TLazPackageID (all available packages and links)
@@ -98,10 +98,10 @@ type
     procedure SavePackageListToFile(const AFilename: string);
     procedure LoadPackageListFromFile(const AFilename: string);
   public
-    function GetNewInstalledPackages: TList;
+    function GetNewInstalledPackages: TFPList;
     property OldInstalledPackages: TPkgDependency read FOldInstalledPackages
                                                   write SetOldInstalledPackages;
-    property NewInstalledPackages: TList read FNewInstalledPackages;
+    property NewInstalledPackages: TFPList read FNewInstalledPackages;
     property RebuildIDE: boolean read FRebuildIDE write FRebuildIDE;
     property OnCheckInstallPackageList: TOnCheckInstallPackageList
                read FOnCheckInstallPackageList write FOnCheckInstallPackageList;
@@ -109,14 +109,14 @@ type
 
 function ShowEditInstallPkgsDialog(OldInstalledPackages: TPkgDependency;
   CheckInstallPackageList: TOnCheckInstallPackageList;
-  var NewInstalledPackages: TList; // list of TLazPackageID (must be freed)
+  var NewInstalledPackages: TFPList; // list of TLazPackageID (must be freed)
   var RebuildIDE: boolean): TModalResult;
 
 implementation
 
 function ShowEditInstallPkgsDialog(OldInstalledPackages: TPkgDependency;
   CheckInstallPackageList: TOnCheckInstallPackageList;
-  var NewInstalledPackages: TList; // list of TLazPackageID
+  var NewInstalledPackages: TFPList; // list of TLazPackageID
   var RebuildIDE: boolean): TModalResult;
 var
   InstallPkgSetDialog: TInstallPkgSetDialog;
@@ -152,7 +152,7 @@ begin
   CancelButton.Caption:=dlgCancel;
 
   fPackages:=TAVLTree.Create(@CompareLazPackageIDNames);
-  FNewInstalledPackages:=TList.Create;
+  FNewInstalledPackages:=TFPList.Create;
   
   PkgInfoMemo.Clear;
 end;
@@ -221,9 +221,9 @@ var
   NewPackageID: TLazPackageID;
   j: LongInt;
   APackage: TLazPackage;
-  Additions: TList;
+  Additions: TFPList;
 begin
-  Additions:=TList.Create;
+  Additions:=TFPList.Create;
   NewPackageID:=TLazPackageID.Create;
   try
     for i:=0 to AvailableListBox.Items.Count-1 do begin
@@ -324,9 +324,9 @@ var
   i: Integer;
   OldPackageID: TLazPackageID;
   APackage: TLazPackage;
-  Deletions: TList;
+  Deletions: TFPList;
 begin
-  Deletions:=TList.Create;
+  Deletions:=TFPList.Create;
   try
     for i:=0 to InstallListBox.Items.Count-1 do begin
       if not InstallListBox.Selected[i] then continue;
@@ -617,7 +617,7 @@ end;
 procedure TInstallPkgSetDialog.LoadPackageListFromFile(const AFilename: string
   );
   
-  function PkgNameExists(List: TList; ID: TLazPackageID): boolean;
+  function PkgNameExists(List: TFPList; ID: TLazPackageID): boolean;
   var
     i: Integer;
     LazPackageID: TLazPackageID;
@@ -638,7 +638,7 @@ var
   i: Integer;
   LazPackageID: TLazPackageID;
   NewCount: LongInt;
-  NewList: TList;
+  NewList: TFPList;
   ID: String;
 begin
   NewList:=nil;
@@ -657,7 +657,7 @@ begin
         // ignore doubles
         if PkgNameExists(NewList,LazPackageID) then continue;
         // add
-        if NewList=nil then NewList:=TList.Create;
+        if NewList=nil then NewList:=TFPList.Create;
         NewList.Add(LazPackageID);
         LazPackageID:=TLazPackageID.Create;
       end;
@@ -687,12 +687,12 @@ begin
   end;
 end;
 
-function TInstallPkgSetDialog.GetNewInstalledPackages: TList;
+function TInstallPkgSetDialog.GetNewInstalledPackages: TFPList;
 var
   i: Integer;
   NewPackageID: TLazPackageID;
 begin
-  Result:=TList.Create;
+  Result:=TFPList.Create;
   for i:=0 to FNewInstalledPackages.Count-1 do begin
     NewPackageID:=TLazPackageID.Create;
     NewPackageID.AssignID(TLazPackageID(FNewInstalledPackages[i]));
