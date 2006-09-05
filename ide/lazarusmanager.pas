@@ -108,6 +108,7 @@ type
     FLazarusProcess: TLazarusProcess;
     FLazarusPath: string;
     FLazarusPID: Integer;
+    FLazarusDebug: Boolean;
     FCmdLineParams: TStrings;
     procedure ParseCommandLine;
     function GetCommandLineParameters: string;
@@ -143,14 +144,18 @@ end;
 procedure TLazarusManager.ParseCommandLine;
 const
   LazarusPidOpt='--lazarus-pid=';
+  LazarusDebugOpt ='--debug';
 var
   i: Integer;
   Param: string;
 begin
   FCmdLineParams := TStringList.Create;
   FLazarusPID := 0;
+  FLazarusDebug := false;
   for i := 1 to ParamCount do begin
     Param := ParamStr(i);
+    if LeftStr(Param,length(LazarusDebugOpt))=LazarusDebugOpt then 
+      FLazarusDebug := true;
     if LeftStr(Param,length(LazarusPidOpt))=LazarusPidOpt then begin
       try
         FLazarusPID :=
@@ -172,6 +177,9 @@ begin
   Result := ' --no-splash-screen --started-by-startlazarus';
   for i := 0 to FCmdLineParams.Count - 1 do
     Result := Result + ' ' + FCmdLineParams[i];
+  if FLazarusDebug then
+   Result := Result + ' --debug-log=' +
+                        AppendPathDelim(GetPrimaryConfigPath) + 'debug.log';
 end;
 
 function TLazarusManager.GetLazarusPath(const FileName: string) : string;
@@ -243,9 +251,8 @@ procedure TLazarusManager.WaitForLazarus;
   {$ENDIF}
   {$ENDIF}
 begin
-  if FLazarusPID<>0 then begin
+  if FLazarusPID<>0 then
     WaitForPID(FLazarusPID);
-  end;
 end;
 
 procedure TLazarusManager.Run;

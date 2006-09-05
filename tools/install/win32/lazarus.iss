@@ -47,6 +47,7 @@ Name: {group}\Lazarus Forums; Filename: {app}\Lazarus Forums.url; IconFilename: 
 Name: {group}\Lazarus Wiki Help; Filename: {app}\Lazarus Wiki Help.url; IconFilename: {app}\images\LazarusProject.ico
 Name: {group}\{cm:UninstallProgram,Lazarus}; Filename: {uninstallexe}
 Name: {userdesktop}\Lazarus; Filename: {app}\lazarus.exe; Tasks: desktopicon
+Name: {group}\{#AppName} (debug); Filename: {app}\startlazarus.exe; Parameters: --debug; WorkingDir: {app}
 
 [Run]
 Filename: {app}\fpc\{#FPCVersion}\bin\i386-win32\fpcmkcfg.exe; Parameters: "-d ""basepath={app}\fpc\{#FPCVersion}"" -o fpc.cfg"; Flags: runhidden; Tasks: ; Languages: 

@@ -1397,7 +1397,7 @@ initialization
   SynTextDrawerFinalization:=false;
 {$ENDIF}
 {$IFNDEF HE_LEADBYTES}
-  Ini tializeLeadBytes;
+  InitializeLeadBytes;
 {$ENDIF} 
 
 finalization
