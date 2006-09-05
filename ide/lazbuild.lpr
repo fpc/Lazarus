@@ -459,7 +459,7 @@ begin
   writeln('');
   writeln('--help or -?             ', listhisHelpMessage);
   writeln('');
-  writeln('-B or --buildall         ','build all files of project/package');
+  writeln('-B or --build-all        ','build all files of project/package');
   writeln('-R or --recursive        ','apply build flags (-B) to dependencies too.');
   writeln('');
   writeln(PrimaryConfPathOptLong,' <path>');
