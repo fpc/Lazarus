@@ -313,6 +313,9 @@ begin
             exit;
           end;
         end;
+        if MacroName='CompPath' then begin
+          writeln('TTransferMacroList.SubstituteStr MacroName=',MacroName,' Handled=',Handled);
+        end;
         if (not Handled) and (AMacro<>nil) and (Assigned(AMacro.MacroFunction))
         then begin
           MacroStr:=AMacro.MacroFunction(MacroParam,Data,Abort);
@@ -337,7 +340,15 @@ begin
         end;
         if (not Handled) and (AMacro<>nil) then begin
           // standard macro
-          MacroStr:=AMacro.Value;
+          if Assigned(AMacro.MacroFunction) then begin
+            MacroStr:=AMacro.MacroFunction('',Data,Abort);
+            if Abort then begin
+              Result:=false;
+              exit;
+            end;
+          end else begin
+            MacroStr:=AMacro.Value;
+          end;
           Handled:=true;
         end;
       end;

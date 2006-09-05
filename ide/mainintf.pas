@@ -138,10 +138,6 @@ type
 
     procedure DoCommand(EditorCommand: integer); virtual; abstract;
 
-    function GetProjectTargetFilename: string; virtual; abstract;
-    function GetTestUnitFilename(AnUnitInfo: TUnitInfo): string; virtual; abstract;
-    function IsTestUnitFilename(const AFilename: string): boolean; virtual; abstract;
-    function GetRunCommandLine: string; virtual; abstract;
     procedure GetIDEFileState(Sender: TObject; const AFilename: string;
                         NeededFlags: TIDEFileStateFlags;
                         var ResultFlags: TIDEFileStateFlags); virtual; abstract;

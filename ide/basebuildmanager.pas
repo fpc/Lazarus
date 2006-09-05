@@ -33,13 +33,49 @@ unit BaseBuildManager;
 interface
 
 uses
-  Classes, SysUtils; 
+  Classes, SysUtils, Project;
   
 type
+
+  { TBaseBuildManager }
+
   TBaseBuildManager = class
+  public
+    constructor Create;
+    destructor Destroy; override;
+
+    function GetTargetOS(UseCache: boolean): string; virtual; abstract;
+    function GetTargetCPU(UseCache: boolean): string; virtual; abstract;
+    function GetLCLWidgetType(UseCache: boolean): string; virtual; abstract;
+    function GetRunCommandLine: string; virtual; abstract;
+
+    function GetProjectPublishDir: string; virtual; abstract;
+    function GetProjectTargetFilename: string; virtual; abstract;
+    function GetTestProjectFilename: string; virtual; abstract;
+    function GetTestUnitFilename(AnUnitInfo: TUnitInfo): string; virtual; abstract;
+    function GetTestBuildDirectory: string; virtual; abstract;
+    function IsTestUnitFilename(const AFilename: string): boolean; virtual; abstract;
+    function GetTargetUnitFilename(AnUnitInfo: TUnitInfo): string; virtual; abstract;
   end;
 
+var
+  BuildBoss: TBaseBuildManager = nil;
+
 implementation
+
+{ TBaseBuildManager }
+
+constructor TBaseBuildManager.Create;
+begin
+  BuildBoss:=Self;
+  inherited Create;
+end;
+
+destructor TBaseBuildManager.Destroy;
+begin
+  inherited Destroy;
+  BuildBoss:=nil;
+end;
 
 end.
 

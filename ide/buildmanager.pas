@@ -35,7 +35,7 @@ interface
 uses
   Classes, SysUtils,
   // LCL
-  LCLProc, Dialogs,
+  LCLProc, Dialogs, FileUtil,
   // codetools
   CodeToolManager, DefineTemplates,
   // IDEIntf
@@ -59,9 +59,35 @@ type
                               var Abort: boolean): string;
     function MacroFuncProject(const Param: string; const Data: PtrInt;
                               var Abort: boolean): string;
-    function MacroFuncProjectUnitPath(Data: Pointer): boolean;
-    function MacroFuncProjectIncPath(Data: Pointer): boolean;
-    function MacroFuncProjectSrcPath(Data: Pointer): boolean;
+    function MacroFuncLCLWidgetType(const Param: string; const Data: PtrInt;
+                                    var Abort: boolean): string;
+    function MacroFuncTargetCPU(const Param: string; const Data: PtrInt;
+                                var Abort: boolean): string;
+    function MacroFuncTargetOS(const Param: string; const Data: PtrInt;
+                               var Abort: boolean): string;
+    function MacroFuncParams(const Param: string; const Data: PtrInt;
+                             var Abort: boolean): string;
+    function MacroFuncProjFile(const Param: string; const Data: PtrInt;
+                               var Abort: boolean): string;
+    function MacroFuncProjPath(const Param: string; const Data: PtrInt;
+                               var Abort: boolean): string;
+    function MacroFuncTargetFile(const Param: string; const Data: PtrInt;
+                                 var Abort: boolean): string;
+    function MacroFuncTargetCmdLine(const Param: string; const Data: PtrInt;
+                                    var Abort: boolean): string;
+    function MacroFuncRunCmdLine(const Param: string; const Data: PtrInt;
+                                 var Abort: boolean): string;
+    function MacroFuncProjPublishDir(const Param: string; const Data: PtrInt;
+                                     var Abort: boolean): string;
+    function MacroFuncProjUnitPath(const Param: string; const Data: PtrInt;
+                                   var Abort: boolean): string;
+    function MacroFuncProjIncPath(const Param: string; const Data: PtrInt;
+                                  var Abort: boolean): string;
+    function MacroFuncProjSrcPath(const Param: string; const Data: PtrInt;
+                                  var Abort: boolean): string;
+    function CTMacroFuncProjectUnitPath(Data: Pointer): boolean;
+    function CTMacroFuncProjectIncPath(Data: Pointer): boolean;
+    function CTMacroFuncProjectSrcPath(Data: Pointer): boolean;
     procedure OnCmdLineCreate(var CmdLine: string; var Abort: boolean);
   protected
     OverrideTargetOS: string;
@@ -76,9 +102,18 @@ type
     procedure SetupTransferMacros;
     procedure SetupCompilerInterface;
 
-    function GetTargetOS(UseCache: boolean): string;
-    function GetTargetCPU(UseCache: boolean): string;
-    function GetLCLWidgetType(UseCache: boolean): string;
+    function GetTargetOS(UseCache: boolean): string; override;
+    function GetTargetCPU(UseCache: boolean): string; override;
+    function GetLCLWidgetType(UseCache: boolean): string; override;
+    function GetRunCommandLine: string; override;
+
+    function GetProjectPublishDir: string; override;
+    function GetProjectTargetFilename: string; override;
+    function GetTestProjectFilename: string; override;
+    function GetTestUnitFilename(AnUnitInfo: TUnitInfo): string; override;
+    function GetTestBuildDirectory: string; override;
+    function IsTestUnitFilename(const AFilename: string): boolean; override;
+    function GetTargetUnitFilename(AnUnitInfo: TUnitInfo): string; override;
 
     procedure GetFPCCompilerParamsForEnvironmentTest(out Params: string);
     procedure RescanCompilerDefines(OnlyIfCompilerChanged: boolean);
@@ -89,7 +124,7 @@ type
   end;
   
 var
-  BuildBoss: TBuildManager = nil;
+  MainBuildBoss: TBuildManager = nil;
   TheCompiler: TCompiler = nil;
   TheOutputFilter: TOutputFilter = nil;
 
@@ -107,16 +142,20 @@ begin
     GlobalMacroList.SubstituteStr(Result,CompilerOptionMacroPlatformIndependent)
   else
     GlobalMacroList.SubstituteStr(Result,CompilerOptionMacroNormal);
+  if System.Pos('CompPath',UnparsedValue)>0 then
+    DebugLn(['TBuildManager.OnSubstituteCompilerOption UnparsedValue="',UnparsedValue,'" Result="',Result,'" ',GlobalMacroList.FindByName('CompPath')<>nil]);
 end;
 
 constructor TBuildManager.Create;
 begin
-
+  MainBuildBoss:=Self;
+  inherited Create;
 end;
 
 destructor TBuildManager.Destroy;
 begin
   inherited Destroy;
+  MainBuildBoss:=nil;
 end;
 
 procedure TBuildManager.SetupTransferMacros;
@@ -132,15 +171,41 @@ begin
   GlobalMacroList.Add(TTransferMacro.Create('MakeExe','',
                       lisMakeExe,@MacroFuncMakeExe,[]));
   GlobalMacroList.Add(TTransferMacro.Create('Project','',
-                    lisProjectMacroProperties,@MacroFuncProject,[]));
+                      lisProjectMacroProperties,@MacroFuncProject,[]));
+  GlobalMacroList.Add(TTransferMacro.Create('LCLWidgetType','',
+                    lisLCLWidgetType,@MacroFuncLCLWidgetType,[]));
+  GlobalMacroList.Add(TTransferMacro.Create('TargetCPU','',
+                    lisTargetCPU,@MacroFuncTargetCPU,[]));
+  GlobalMacroList.Add(TTransferMacro.Create('TargetOS','',
+                    lisTargetOS,@MacroFuncTargetOS,[]));
+  GlobalMacroList.Add(TTransferMacro.Create('Params','',
+                    lisCommandLineParamsOfProgram,@MacroFuncParams,[]));
+  GlobalMacroList.Add(TTransferMacro.Create('ProjFile','',
+                    lisProjectFilename,@MacroFuncProjFile,[]));
+  GlobalMacroList.Add(TTransferMacro.Create('ProjPath','',
+                    lisProjectDirectory,@MacroFuncProjPath,[]));
+  GlobalMacroList.Add(TTransferMacro.Create('TargetFile','',
+                    lisTargetFilenameOfProject,@MacroFuncTargetFile,[]));
+  GlobalMacroList.Add(TTransferMacro.Create('TargetCmdLine','',
+                    lisTargetFilenamePlusParams,@MacroFuncTargetCmdLine,[]));
+  GlobalMacroList.Add(TTransferMacro.Create('RunCmdLine','',
+                    lisLaunchingCmdLine,@MacroFuncRunCmdLine,[]));
+  GlobalMacroList.Add(TTransferMacro.Create('ProjPublishDir','',
+                    lisPublishProjDir,@MacroFuncProjPublishDir,[]));
+  GlobalMacroList.Add(TTransferMacro.Create('ProjUnitPath','',
+                    lisProjectUnitPath,@MacroFuncProjUnitPath,[]));
+  GlobalMacroList.Add(TTransferMacro.Create('ProjIncPath','',
+                    lisProjectIncPath,@MacroFuncProjIncPath,[]));
+  GlobalMacroList.Add(TTransferMacro.Create('ProjSrcPath','',
+                    lisProjectSrcPath,@MacroFuncProjSrcPath,[]));
 
   // codetools macro functions
   CodeToolBoss.DefineTree.MacroFunctions.AddExtended(
-    'PROJECTUNITPATH',nil,@MacroFuncProjectUnitPath);
+    'PROJECTUNITPATH',nil,@CTMacroFuncProjectUnitPath);
   CodeToolBoss.DefineTree.MacroFunctions.AddExtended(
-    'PROJECTINCPATH',nil,@MacroFuncProjectIncPath);
+    'PROJECTINCPATH',nil,@CTMacroFuncProjectIncPath);
   CodeToolBoss.DefineTree.MacroFunctions.AddExtended(
-    'PROJECTSRCPATH',nil,@MacroFuncProjectSrcPath);
+    'PROJECTSRCPATH',nil,@CTMacroFuncProjectSrcPath);
 end;
 
 procedure TBuildManager.SetupCompilerInterface;
@@ -192,6 +257,113 @@ begin
   end;
   if (Result='') or (Result='default') then
     Result:=GetDefaultLCLWidgetType;
+end;
+
+function TBuildManager.GetRunCommandLine: string;
+var
+  TargetFileName: string;
+begin
+  if Project1.RunParameterOptions.UseLaunchingApplication then
+    Result := Project1.RunParameterOptions.LaunchingApplicationPathPlusParams
+  else
+    Result := '';
+
+  if Result=''
+  then begin
+    Result:=Project1.RunParameterOptions.CmdLineParams;
+    if GlobalMacroList.SubstituteStr(Result) then begin
+      TargetFileName:='"'+GetProjectTargetFilename+'"';
+      if Result='' then
+        Result:=TargetFileName
+      else
+        Result:=TargetFilename+' '+Result;
+    end else
+      Result:='';
+  end else begin
+    if not GlobalMacroList.SubstituteStr(Result) then Result:='';
+  end;
+end;
+
+function TBuildManager.GetProjectPublishDir: string;
+begin
+  if Project1=nil then begin
+    Result:='';
+    exit;
+  end;
+  Result:=Project1.PublishOptions.DestinationDirectory;
+  if GlobalMacroList.SubstituteStr(Result) then begin
+    if FilenameIsAbsolute(Result) then begin
+      Result:=AppendPathDelim(TrimFilename(Result));
+    end else begin
+      Result:='';
+    end;
+  end else begin
+    Result:='';
+  end;
+end;
+
+function TBuildManager.GetProjectTargetFilename: string;
+begin
+  Result:='';
+  if Project1=nil then exit;
+  Result:=Project1.RunParameterOptions.HostApplicationFilename;
+  if Result='' then begin
+    if Project1.IsVirtual then
+      Result:=GetTestProjectFilename
+    else begin
+      if Project1.MainUnitID>=0 then begin
+        Result:=
+          Project1.CompilerOptions.CreateTargetFilename(Project1.MainFilename)
+      end;
+    end;
+  end;
+end;
+
+function TBuildManager.GetTestProjectFilename: string;
+begin
+  Result:='';
+  if Project1=nil then exit;
+  if (Project1.MainUnitID<0) then exit;
+  Result:=GetTestUnitFilename(Project1.MainUnitInfo);
+  if Result='' then exit;
+  Result:=Project1.CompilerOptions.CreateTargetFilename(Result);
+end;
+
+function TBuildManager.GetTestUnitFilename(AnUnitInfo: TUnitInfo): string;
+var
+  TestDir: String;
+begin
+  Result:='';
+  if AnUnitInfo=nil then exit;
+  TestDir:=GetTestBuildDirectory;
+  if TestDir='' then exit;
+  Result:=ExtractFilename(AnUnitInfo.Filename);
+  if Result='' then exit;
+  Result:=TestDir+Result;
+end;
+
+function TBuildManager.GetTestBuildDirectory: string;
+begin
+  Result:=EnvironmentOptions.GetTestBuildDirectory;
+end;
+
+function TBuildManager.IsTestUnitFilename(const AFilename: string): boolean;
+var
+  TestDir: string;
+begin
+  Result:=false;
+  if Project1.IsVirtual then begin
+    TestDir:=GetTestBuildDirectory;
+    Result:=CompareFileNames(TestDir,ExtractFilePath(AFilename))=0;
+  end;
+end;
+
+function TBuildManager.GetTargetUnitFilename(AnUnitInfo: TUnitInfo): string;
+begin
+  if Project1.IsVirtual then
+    Result:=GetTestUnitFilename(AnUnitInfo)
+  else
+    Result:=AnUnitInfo.Filename;
 end;
 
 procedure TBuildManager.GetFPCCompilerParamsForEnvironmentTest(out
@@ -349,7 +521,128 @@ begin
   end;
 end;
 
-function TBuildManager.MacroFuncProjectUnitPath(Data: Pointer): boolean;
+function TBuildManager.MacroFuncLCLWidgetType(const Param: string;
+  const Data: PtrInt; var Abort: boolean): string;
+begin
+  if Data=CompilerOptionMacroPlatformIndependent then
+    Result:='%(LCL_PLATFORM)'
+  else
+    Result:=GetLCLWidgetType(true);
+end;
+
+function TBuildManager.MacroFuncTargetCPU(const Param: string;
+  const Data: PtrInt; var Abort: boolean): string;
+begin
+  if Data=CompilerOptionMacroPlatformIndependent then
+    Result:='%(CPU_TARGET)'
+  else
+    Result:=GetTargetCPU(true);
+end;
+
+function TBuildManager.MacroFuncTargetOS(const Param: string;
+  const Data: PtrInt; var Abort: boolean): string;
+begin
+  if Data=CompilerOptionMacroPlatformIndependent then
+    Result:='%(OS_TARGET)'
+  else
+    Result:=GetTargetOS(true);
+end;
+
+function TBuildManager.MacroFuncParams(const Param: string; const Data: PtrInt;
+  var Abort: boolean): string;
+begin
+  if Project1<>nil then
+    Result:=Project1.RunParameterOptions.CmdLineParams
+  else
+    Result:='';
+end;
+
+function TBuildManager.MacroFuncProjFile(const Param: string;
+  const Data: PtrInt; var Abort: boolean): string;
+begin
+  if Project1<>nil then
+    Result:=Project1.MainFilename
+  else
+    Result:='';
+end;
+
+function TBuildManager.MacroFuncProjPath(const Param: string;
+  const Data: PtrInt; var Abort: boolean): string;
+begin
+  if Project1<>nil then
+    Result:=Project1.ProjectDirectory
+  else
+    Result:='';
+end;
+
+function TBuildManager.MacroFuncTargetFile(const Param: string;
+  const Data: PtrInt; var Abort: boolean): string;
+begin
+  if Project1<>nil then
+    Result:=GetProjectTargetFilename
+  else
+    Result:='';
+end;
+
+function TBuildManager.MacroFuncTargetCmdLine(const Param: string;
+  const Data: PtrInt; var Abort: boolean): string;
+begin
+  if Project1<>nil then begin
+    Result:=Project1.RunParameterOptions.CmdLineParams;
+    if Result='' then
+      Result:=GetProjectTargetFilename
+    else
+      Result:=GetProjectTargetFilename+' '+Result;
+  end else
+    Result:='';
+end;
+
+function TBuildManager.MacroFuncRunCmdLine(const Param: string;
+  const Data: PtrInt; var Abort: boolean): string;
+begin
+  if Project1<>nil then
+    Result:=GetRunCommandLine
+  else
+    Result:='';
+end;
+
+function TBuildManager.MacroFuncProjPublishDir(const Param: string;
+  const Data: PtrInt; var Abort: boolean): string;
+begin
+  if Project1<>nil then
+    Result:=GetProjectPublishDir
+  else
+    Result:='';
+end;
+
+function TBuildManager.MacroFuncProjUnitPath(const Param: string;
+  const Data: PtrInt; var Abort: boolean): string;
+begin
+  if Project1<>nil then
+    Result:=Project1.CompilerOptions.GetUnitPath(false)
+  else
+    Result:='';
+end;
+
+function TBuildManager.MacroFuncProjIncPath(const Param: string;
+  const Data: PtrInt; var Abort: boolean): string;
+begin
+  if Project1<>nil then
+    Result:=Project1.CompilerOptions.GetIncludePath(false)
+  else
+    Result:='';
+end;
+
+function TBuildManager.MacroFuncProjSrcPath(const Param: string;
+  const Data: PtrInt; var Abort: boolean): string;
+begin
+  if Project1<>nil then
+    Result:=Project1.CompilerOptions.GetSrcPath(false)
+  else
+    Result:='';
+end;
+
+function TBuildManager.CTMacroFuncProjectUnitPath(Data: Pointer): boolean;
 var
   FuncData: PReadFunctionData;
 begin
@@ -357,12 +650,11 @@ begin
   Result:=false;
   if Project1<>nil then begin
     FuncData^.Result:=Project1.CompilerOptions.GetUnitPath(false);
-    //DebugLn('TMainIDE.MacroFuncProjectSrcPath "',FuncData^.Result,'"');
     Result:=true;
   end;
 end;
 
-function TBuildManager.MacroFuncProjectIncPath(Data: Pointer): boolean;
+function TBuildManager.CTMacroFuncProjectIncPath(Data: Pointer): boolean;
 var
   FuncData: PReadFunctionData;
 begin
@@ -374,7 +666,7 @@ begin
   end;
 end;
 
-function TBuildManager.MacroFuncProjectSrcPath(Data: Pointer): boolean;
+function TBuildManager.CTMacroFuncProjectSrcPath(Data: Pointer): boolean;
 var
   FuncData: PReadFunctionData;
 begin
@@ -382,7 +674,6 @@ begin
   Result:=false;
   if Project1<>nil then begin
     FuncData^.Result:=Project1.CompilerOptions.GetSrcPath(false);
-    //DebugLn('TMainIDE.OnMacroFuncProjectSrcPath "',FuncData^.Result,'"');
     Result:=true;
   end;
 end;

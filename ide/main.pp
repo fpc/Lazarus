@@ -456,7 +456,7 @@ type
                const PersistentClassName, AncestorClassName, Identifier: string;
                var IsDefined: boolean);
     procedure CodeToolBossPrepareTree(Sender: TObject);
-    function MacroFunctionProject(Data: Pointer): boolean;
+    function CTMacroFunctionProject(Data: Pointer): boolean;
     procedure OnCompilerGraphStampIncreased;
 
     // MessagesView events
@@ -815,13 +815,6 @@ type
 
     // methods for debugging, compiling and external tools
     function GetTestBuildDirectory: string; override;
-    function GetProjectTargetFilename: string; override;
-    function GetTestProjectFilename: string;
-    function GetTestUnitFilename(AnUnitInfo: TUnitInfo): string; override;
-    function GetTargetUnitFilename(AnUnitInfo: TUnitInfo): string;
-    function IsTestUnitFilename(const AFilename: string): boolean; override;
-    function GetRunCommandLine: string; override;
-    function GetProjPublishDir: string;
     procedure OnMacroSubstitution(TheMacro: TTransferMacro; var s: string;
                                   const Data: PtrInt;
                                   var Handled, Abort: boolean);
@@ -1035,7 +1028,7 @@ begin
 
   SetupDialogs;
 
-  BuildBoss:=TBuildManager.Create;
+  MainBuildBoss:=TBuildManager.Create;
 
   // load options
   CreatePrimaryConfigPath;
@@ -1083,7 +1076,7 @@ begin
   // setup the IDE components
   LoadMenuShortCuts;
   SetupOutputFilter;
-  BuildBoss.SetupCompilerInterface;
+  MainBuildBoss.SetupCompilerInterface;
   SetupObjectInspector;
   SetupFormEditor;
   SetupSourceNotebook;
@@ -1178,7 +1171,7 @@ begin
   DebugLn('[TMainIDE.Destroy] B  -> inherited Destroy... ',ClassName);
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Destroy B ');{$ENDIF}
   FreeThenNil(SourceNotebook);
-  FreeThenNil(BuildBoss);
+  FreeThenNil(MainBuildBoss);
   inherited Destroy;
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Destroy C ');{$ENDIF}
 
@@ -1553,7 +1546,7 @@ end;
 
 procedure TMainIDE.SetupTransferMacros;
 begin
-  BuildBoss.SetupTransferMacros;
+  MainBuildBoss.SetupTransferMacros;
   GlobalMacroList.OnSubstitution:=@OnMacroSubstitution;
 
   // source editor
@@ -1561,34 +1554,6 @@ begin
                       lisSaveCurrentEditorFile,nil,[tmfInteractive]));
   GlobalMacroList.Add(TTransferMacro.Create('SaveAll','',
                       lisSaveAllModified,nil,[tmfInteractive]));
-
-  // project
-  GlobalMacroList.Add(TTransferMacro.Create('LCLWidgetType','',
-                    lisLCLWidgetType,nil,[]));
-  GlobalMacroList.Add(TTransferMacro.Create('TargetCPU','',
-                    lisTargetCPU,nil,[]));
-  GlobalMacroList.Add(TTransferMacro.Create('TargetOS','',
-                    lisTargetOS,nil,[]));
-  GlobalMacroList.Add(TTransferMacro.Create('Params','',
-                    lisCommandLineParamsOfProgram,nil,[]));
-  GlobalMacroList.Add(TTransferMacro.Create('ProjFile','',
-                    lisProjectFilename,nil,[]));
-  GlobalMacroList.Add(TTransferMacro.Create('ProjPath','',
-                    lisProjectDirectory,nil,[]));
-  GlobalMacroList.Add(TTransferMacro.Create('TargetFile','',
-                    lisTargetFilenameOfProject,nil,[]));
-  GlobalMacroList.Add(TTransferMacro.Create('TargetCmdLine','',
-                    lisTargetFilenamePlusParams,nil,[]));
-  GlobalMacroList.Add(TTransferMacro.Create('RunCmdLine','',
-                    lisLaunchingCmdLine,nil,[]));
-  GlobalMacroList.Add(TTransferMacro.Create('ProjPublishDir','',
-                    lisPublishProjDir,nil,[]));
-  GlobalMacroList.Add(TTransferMacro.Create('ProjUnitPath','',
-                    lisProjectUnitPath,nil,[]));
-  GlobalMacroList.Add(TTransferMacro.Create('ProjIncPath','',
-                    lisProjectIncPath,nil,[]));
-  GlobalMacroList.Add(TTransferMacro.Create('ProjSrcPath','',
-                    lisProjectSrcPath,nil,[]));
 end;
 
 procedure TMainIDE.SetupCodeMacros;
@@ -3206,7 +3171,7 @@ begin
     frmCompilerOptions.OnTest:=@OnCompilerOptionsDialogTest;
     frmCompilerOptions.OnImExportCompilerOptions:=@OnCompilerOptionsImExport;
     if frmCompilerOptions.ShowModal=mrOk then begin
-      BuildBoss.RescanCompilerDefines(true);
+      MainBuildBoss.RescanCompilerDefines(true);
       Project1.DefineTemplates.AllChanged;
       IncreaseCompilerGraphStamp;
     end;
@@ -3597,7 +3562,7 @@ Begin
 
       if MacroValueChanged then CodeToolBoss.DefineTree.ClearCache;
       if FPCCompilerChanged or FPCSrcDirChanged then begin
-        BuildBoss.RescanCompilerDefines(false);
+        MainBuildBoss.RescanCompilerDefines(false);
       end;
 
       // save to disk
@@ -3645,7 +3610,7 @@ end;
 
 procedure TMainIDE.mnuEnvRescanFPCSrcDirClicked(Sender: TObject);
 begin
-  BuildBoss.RescanCompilerDefines(false);
+  MainBuildBoss.RescanCompilerDefines(false);
 end;
 
 procedure TMainIDE.SaveEnvironment;
@@ -4082,7 +4047,7 @@ begin
       if ComponentSavingOk then begin
         if ResourceCode=nil then begin
           if (sfSaveToTestDir in Flags) then
-            UnitSaveFilename:=GetTestUnitFilename(AnUnitInfo)
+            UnitSaveFilename:=MainBuildBoss.GetTestUnitFilename(AnUnitInfo)
           else
             UnitSaveFilename:=AnUnitInfo.Filename;
           ResTestFilename:=ChangeFileExt(UnitSaveFilename,ResourceFileExt);
@@ -4250,7 +4215,7 @@ begin
         if not Result=mrOk then exit;
       end;
     end else begin
-      TestFilename:=GetTestUnitFilename(AnUnitInfo);
+      TestFilename:=MainBuildBoss.GetTestUnitFilename(AnUnitInfo);
       Result:=DoSaveCodeBufferToFile(ResourceCode,
                  ChangeFileExt(TestFilename,
                                ExtractFileExt(ResourceCode.Filename)),
@@ -5317,7 +5282,7 @@ begin
   UpdateCaption;
   EnvironmentOptions.LastSavedProjectFile:=Project1.ProjectInfoFile;
   EnvironmentOptions.Save(false);
-  BuildBoss.RescanCompilerDefines(true);
+  MainBuildBoss.RescanCompilerDefines(true);
 
   // load required packages
   PkgBoss.OpenProjectDependencies(Project1,true);
@@ -5699,7 +5664,7 @@ begin
     end;
   end else begin
     // save source to test directory
-    TestFilename:=GetTestUnitFilename(ActiveUnitInfo);
+    TestFilename:=MainBuildBoss.GetTestUnitFilename(ActiveUnitInfo);
     if TestFilename<>'' then begin
       Result:=ActiveUnitInfo.WriteUnitSourceToFile(TestFilename);
       if Result<>mrOk then exit;
@@ -6578,7 +6543,7 @@ Begin
     end;
 
     // rebuild codetools defines
-    BuildBoss.RescanCompilerDefines(true);
+    MainBuildBoss.RescanCompilerDefines(true);
     // (i.e. remove old project specific things and create new)
     IncreaseCompilerParseStamp;
     Project1.DefineTemplates.AllChanged;
@@ -6688,7 +6653,7 @@ begin
         if not MainUnitInfo.NeedsSaveToDisk then
           SkipSavingMainSource:=true;
       end else
-        DestFilename:=GetTestUnitFilename(MainUnitInfo);
+        DestFilename:=MainBuildBoss.GetTestUnitFilename(MainUnitInfo);
       if not SkipSavingMainSource then begin
         Result:=DoSaveCodeBufferToFile(MainUnitInfo.Source, DestFilename,
                                        not (sfSaveToTestDir in Flags));
@@ -6971,7 +6936,7 @@ begin
   // publish project
   //debugln('TMainIDE.DoPublishProject B');
   Result:=DoPublishModule(Project1.PublishOptions,Project1.ProjectDirectory,
-                          GetProjPublishDir);
+                          MainBuildBoss.GetProjectPublishDir);
 end;
 
 function TMainIDE.DoImExportCompilerOptions(Sender: TObject): TModalResult;
@@ -7215,7 +7180,7 @@ begin
   for i:=0 to Project1.UnitCount-1 do begin
     AnUnitInfo:=Project1.Units[i];
     if (AnUnitInfo.IsPartOfProject) and (not AnUnitInfo.IsVirtual) then begin
-      DestFilename:=GetTargetUnitFilename(AnUnitInfo);
+      DestFilename:=MainBuildBoss.GetTargetUnitFilename(AnUnitInfo);
       Result:=DoCheckAmbiguousSources(DestFilename,true);
       if Result<>mrOk then exit;
     end;
@@ -7481,9 +7446,14 @@ begin
       SrcFilename:=CreateRelativePath(Project1.MainUnitInfo.Filename,WorkingDir);
     end else begin
       WorkingDir:=GetTestBuildDirectory;
-      SrcFilename:=GetTestUnitFilename(Project1.MainUnitInfo);
+      SrcFilename:=MainBuildBoss.GetTestUnitFilename(Project1.MainUnitInfo);
     end;
+    CompilerFilename:=Project1.CompilerOptions.CompilerPath;
+    GlobalMacroList.SubstituteStr(CompilerFilename);
+    DebugLn(['TMainIDE.DoBuildProject A Project1.GetCompilerFilename="',Project1.GetCompilerFilename,'" CompilerFilename="',CompilerFilename,'" CompilerPath="',Project1.CompilerOptions.CompilerPath,'"']);
     CompilerFilename:=Project1.GetCompilerFilename;
+    DebugLn(['TMainIDE.DoBuildProject CompilerFilename="',CompilerFilename,'" CompilerPath="',Project1.CompilerOptions.CompilerPath,'"']);
+    
     CompilerParams:=Project1.CompilerOptions.MakeOptionsString(SrcFilename,nil,[])
                     +' '+PrepareCmdLineOption(SrcFilename);
     //DebugLn('TMainIDE.DoBuildProject WorkingDir="',WorkingDir,'" SrcFilename="',SrcFilename,'" CompilerFilename="',CompilerFilename,'" CompilerParams="',CompilerParams,'"');
@@ -7610,7 +7580,7 @@ begin
   then Exit;
 
   // Check project build
-  ProgramFilename := GetProjectTargetFilename;
+  ProgramFilename := MainBuildBoss.GetProjectTargetFilename;
   if not FileExists(ProgramFilename)
   then begin
     MessageDlg(lisFileNotFound,
@@ -7839,7 +7809,7 @@ begin
 
   MessagesView.BeginBlock;
   try
-    BuildBoss.SetBuildTargetIDE;
+    MainBuildBoss.SetBuildTargetIDE;
 
     // first compile all lazarus components (LCL, SynEdit, CodeTools, ...)
     SourceNotebook.ClearErrorLines;
@@ -7914,7 +7884,7 @@ begin
     if Result<>mrOk then exit;
 
   finally
-    BuildBoss.SetBuildTarget('','','');
+    MainBuildBoss.SetBuildTarget('','','');
 
     DoCheckFilesOnDisk;
     MessagesView.EndBlock;
@@ -9147,80 +9117,6 @@ begin
   end else if MacroName='saveall' then begin
     Abort:=(DoSaveAll([sfCheckAmbiguousFiles])<>mrOk);
     s:='';
-  end else if MacroName='projfile' then begin
-    if Project1<>nil then
-      s:=Project1.MainFilename
-    else
-      s:='';
-  end else if MacroName='projpath' then begin
-    if Project1<>nil then
-      s:=Project1.ProjectDirectory
-    else
-      s:='';
-  end else if MacroName='projunitpath' then begin
-    if Project1<>nil then
-      s:=Project1.CompilerOptions.GetUnitPath(false)
-    else
-      s:='';
-  end else if MacroName='projincpath' then begin
-    if Project1<>nil then
-      s:=Project1.CompilerOptions.GetIncludePath(false)
-    else
-      s:='';
-  end else if MacroName='projsrcpath' then begin
-    if Project1<>nil then
-      s:=Project1.CompilerOptions.GetSrcPath(false)
-    else
-      s:='';
-  end else if MacroName='projpublishdir' then begin
-    if Project1<>nil then
-      s:=Project1.PublishOptions.DestinationDirectory
-    else
-      s:='';
-  end else if MacroName='lclwidgettype' then begin
-    if Data=CompilerOptionMacroPlatformIndependent then
-      s:='%(LCL_PLATFORM)'
-    else
-      s:=BuildBoss.GetLCLWidgetType(true);
-  end else if MacroName='targetcpu' then begin
-    if Data=CompilerOptionMacroPlatformIndependent then
-      s:='%(CPU_TARGET)'
-    else
-      s:=BuildBoss.GetTargetCPU(true);
-  end else if MacroName='targetos' then begin
-    if Data=CompilerOptionMacroPlatformIndependent then
-      s:='%(OS_TARGET)'
-    else
-      s:=BuildBoss.GetTargetOS(true);
-  end else if MacroName='params' then begin
-    if Project1<>nil then
-      s:=Project1.RunParameterOptions.CmdLineParams
-    else
-      s:='';
-  end else if MacroName='targetfile' then begin
-    if Project1<>nil then
-      s:=GetProjectTargetFilename
-    else
-      s:='';
-  end else if MacroName='targetcmdline' then begin
-    if Project1<>nil then begin
-      s:=Project1.RunParameterOptions.CmdLineParams;
-      if s='' then
-        s:=GetProjectTargetFilename
-      else
-        s:=GetProjectTargetFilename+' '+s;
-    end else
-      s:='';
-  end else if MacroName='runcmdline' then begin
-    if Project1<>nil then
-      s:=GetRunCommandLine
-    else
-      s:='';
-  end else if MacroName='projpublishdir' then begin
-    if Project1<>nil then
-      s:=GetProjPublishDir
-    else
-      s:='';
   end else
     Handled:=false;
 end;
@@ -9295,7 +9191,7 @@ begin
     end;
 
     OpenFlags:=[ofOnlyIfExists,ofRegularFile];
-    if IsTestUnitFilename(Filename) then begin
+    if MainBuildBoss.IsTestUnitFilename(Filename) then begin
       SearchedFilename := ExtractFileName(Filename);
       Include(OpenFlags,ofVirtualFile);
     end else begin
@@ -9406,7 +9302,7 @@ begin
     if AFilename='' then exit;
     LogCaretXY:= SearchResultsView.GetSourcePositon;
     OpenFlags:=[ofOnlyIfExists,ofRegularFile];
-    if IsTestUnitFilename(AFilename) then begin
+    if MainBuildBoss.IsTestUnitFilename(AFilename) then begin
       SearchedFilename := ExtractFileName(AFilename);
       Include(OpenFlags,ofVirtualFile);
     end else begin
@@ -9514,103 +9410,7 @@ end;
 
 function TMainIDE.GetTestBuildDirectory: string;
 begin
-  Result:=EnvironmentOptions.GetTestBuildDirectory;
-end;
-
-function TMainIDE.GetProjectTargetFilename: string;
-begin
-  Result:='';
-  if Project1=nil then exit;
-  Result:=Project1.RunParameterOptions.HostApplicationFilename;
-  if Result='' then begin
-    if Project1.IsVirtual then
-      Result:=GetTestProjectFilename
-    else begin
-      if Project1.MainUnitID>=0 then begin
-        Result:=
-          Project1.CompilerOptions.CreateTargetFilename(Project1.MainFilename)
-      end;
-    end;
-  end;
-end;
-
-function TMainIDE.GetTestProjectFilename: string;
-begin
-  Result:='';
-  if (Project1.MainUnitID<0) then exit;
-  Result:=GetTestUnitFilename(Project1.MainUnitInfo);
-  if Result='' then exit;
-  Result:=Project1.CompilerOptions.CreateTargetFilename(Result);
-end;
-
-function TMainIDE.GetTestUnitFilename(AnUnitInfo: TUnitInfo): string;
-var TestDir: string;
-begin
-  Result:='';
-  if AnUnitInfo=nil then exit;
-  TestDir:=GetTestBuildDirectory;
-  if TestDir='' then exit;
-  Result:=ExtractFilename(AnUnitInfo.Filename);
-  if Result='' then exit;
-  Result:=TestDir+Result;
-end;
-
-function TMainIDE.GetTargetUnitFilename(AnUnitInfo: TUnitInfo): string;
-begin
-  if Project1.IsVirtual then
-    Result:=GetTestUnitFilename(AnUnitInfo)
-  else
-    Result:=AnUnitInfo.Filename;
-end;
-
-function TMainIDE.IsTestUnitFilename(const AFilename: string): boolean;
-var
-  TestDir: string;
-begin
-  Result:=false;
-  if Project1.IsVirtual then begin
-    TestDir:=GetTestBuildDirectory;
-    Result:=CompareFileNames(TestDir,ExtractFilePath(AFilename))=0;
-  end;
-end;
-
-function TMainIDE.GetRunCommandLine: string;
-var
-  TargetFileName: string;
-begin
-  if Project1.RunParameterOptions.UseLaunchingApplication then
-    Result := Project1.RunParameterOptions.LaunchingApplicationPathPlusParams
-  else
-    Result := '';
-
-  if Result=''
-  then begin
-    Result:=Project1.RunParameterOptions.CmdLineParams;
-    if GlobalMacroList.SubstituteStr(Result) then begin
-      TargetFileName:='"'+GetProjectTargetFilename+'"';
-      if Result='' then
-        Result:=TargetFileName
-      else
-        Result:=TargetFilename+' '+Result;
-    end else
-      Result:='';
-  end else begin
-    if not GlobalMacroList.SubstituteStr(Result) then Result:='';
-  end;
-end;
-
-function TMainIDE.GetProjPublishDir: string;
-begin
-  Result:=Project1.PublishOptions.DestinationDirectory;
-  if GlobalMacroList.SubstituteStr(Result) then begin
-    if FilenameIsAbsolute(Result) then begin
-      Result:=AppendPathDelim(TrimFilename(Result));
-    end else begin
-      Result:='';
-    end;
-  end else begin
-    Result:='';
-  end;
+  Result:=MainBuildBoss.GetTestBuildDirectory;
 end;
 
 function TMainIDE.FindUnitFile(const AFilename: string): string;
@@ -10170,7 +9970,7 @@ begin
   CodeToolBoss.DefineTree.OnPrepareTree:=@CodeToolBossPrepareTree;
 
   CodeToolBoss.DefineTree.MacroFunctions.AddExtended(
-    'PROJECT',nil,@MacroFunctionProject);
+    'PROJECT',nil,@CTMacroFunctionProject);
 
   CodeToolsOpts.AssignTo(CodeToolBoss);
   if (not FileExists(EnvironmentOptions.CompilerFilename)) then begin
@@ -10206,13 +10006,13 @@ begin
     // start the compiler and ask for his settings
     TargetOS:='';
     TargetProcessor:='';
-    BuildBoss.CurDefinesCompilerFilename:=EnvironmentOptions.CompilerFilename;
-    BuildBoss.CurDefinesCompilerOptions:='';
-    BuildBoss.GetFPCCompilerParamsForEnvironmentTest(
-                                           BuildBoss.CurDefinesCompilerOptions);
+    MainBuildBoss.CurDefinesCompilerFilename:=EnvironmentOptions.CompilerFilename;
+    MainBuildBoss.CurDefinesCompilerOptions:='';
+    MainBuildBoss.GetFPCCompilerParamsForEnvironmentTest(
+                                       MainBuildBoss.CurDefinesCompilerOptions);
     //DebugLn('TMainIDE.InitCodeToolBoss CurDefinesCompilerOptions="',CurDefinesCompilerOptions,'"');
-    ADefTempl:=CreateFPCTemplate(BuildBoss.CurDefinesCompilerFilename,
-                       BuildBoss.CurDefinesCompilerOptions,
+    ADefTempl:=CreateFPCTemplate(MainBuildBoss.CurDefinesCompilerFilename,
+                       MainBuildBoss.CurDefinesCompilerOptions,
                        CreateCompilerTestPascalFilename,CompilerUnitSearchPath,
                        TargetOS,TargetProcessor,CodeToolsOpts);
     AddTemplate(ADefTempl,false,
@@ -10404,7 +10204,7 @@ begin
   end;
 end;
 
-function TMainIDE.MacroFunctionProject(Data: Pointer): boolean;
+function TMainIDE.CTMacroFunctionProject(Data: Pointer): boolean;
 var
   FuncData: PReadFunctionData;
   Param: String;

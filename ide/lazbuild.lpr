@@ -173,6 +173,7 @@ begin
   APackage:=LoadPackage(AFilename);
   if APackage=nil then
     Error(ErrorLoadPackageFailed, 'unable to load package "'+AFilename+'"');
+    
 end;
 
 function TLazBuildApplication.LoadPackage(const AFilename: string): TLazPackage;
@@ -194,7 +195,8 @@ begin
   end;
   // check Package Name
   if (Result.Name='') or (not IsValidIdent(Result.Name)) then begin
-    Error(ErrorPackageNameInvalid, Format(lisPkgMangThePackageNameOfTheFileIsInvalid,
+    Error(ErrorPackageNameInvalid,
+          Format(lisPkgMangThePackageNameOfTheFileIsInvalid,
            ['"', Result.Name,'"', #13, '"', Result.Filename, '"']));
   end;
   // check if Package with same name is already loaded
@@ -220,7 +222,7 @@ begin
   
   CreatePrimaryConfigPath;
 
-  BuildBoss:=TBuildManager.Create;
+  MainBuildBoss:=TBuildManager.Create;
   LoadEnvironmentOptions;
   InteractiveSetup:=false;
   SetupCompilerFilename(InteractiveSetup);
@@ -228,7 +230,7 @@ begin
   SetupMacros;
   SetupPackageSystem;
   SetupOutputFilter;
-  BuildBoss.SetupCompilerInterface;
+  MainBuildBoss.SetupCompilerInterface;
 
   fInitResult:=true;
 end;
@@ -259,7 +261,7 @@ end;
 
 procedure TLazBuildApplication.SetupMacros;
 begin
-  BuildBoss.SetupTransferMacros;
+  MainBuildBoss.SetupTransferMacros;
 end;
 
 procedure TLazBuildApplication.SetupPackageSystem;
@@ -295,7 +297,7 @@ begin
   FreeThenNil(GlobalMacroList);
   FreeThenNil(IDEMacros);
   FreeThenNil(EnvironmentOptions);
-  FreeThenNil(BuildBoss);
+  FreeThenNil(MainBuildBoss);
 
   FreeAndNil(Files);
   inherited Destroy;

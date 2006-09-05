@@ -49,11 +49,12 @@ uses
   CompilerOptions, EditorOptions, EnvironmentOpts, KeyMapping, UnitEditor,
   ProjectDefs, Project, IDEProcs, InputHistory, Debugger,
   IDEOptionDefs, LazarusIDEStrConsts,
-  MainBar, MainIntf, MainBase, BaseDebugManager,
+  MainBar, MainIntf, MainBase, BaseBuildManager,
   SourceMarks,
   DebuggerDlg, Watchesdlg, BreakPointsdlg, LocalsDlg, WatchPropertyDlg,
   CallStackDlg, EvaluateDlg, DBGOutputForm,
-  GDBMIDebugger, SSHGDBMIDebugger, ProcessDebugger;
+  GDBMIDebugger, SSHGDBMIDebugger, ProcessDebugger,
+  BaseDebugManager;
 
 
 type
@@ -1638,7 +1639,7 @@ begin
   Result := False;
   if (Project1.MainUnitID < 0) or Destroying then Exit;
 
-  LaunchingCmdLine := MainIDE.GetRunCommandLine;
+  LaunchingCmdLine := BuildBoss.GetRunCommandLine;
   SplitCmdLine(LaunchingCmdLine,LaunchingApplication, LaunchingParams);
   if not FileIsExecutable(LaunchingApplication)
   then begin
@@ -1719,7 +1720,7 @@ begin
   Project1.RunParameterOptions.AssignEnvironmentTo(FDebugger.Environment);
   NewWorkingDir:=Project1.RunParameterOptions.WorkingDirectory;
   if NewWorkingDir='' then
-    NewWorkingDir:=ExtractFilePath(MainIDE.GetProjectTargetFilename);
+    NewWorkingDir:=ExtractFilePath(BuildBoss.GetProjectTargetFilename);
   FDebugger.WorkingDir:=CleanAndExpandDirectory(NewWorkingDir);
   // set filename after workingdir
   FDebugger.FileName := LaunchingApplication;
@@ -1937,7 +1938,7 @@ begin
 
   if not ActiveUnitInfo.Source.IsVirtual
   then UnitFilename:=ActiveUnitInfo.Filename
-  else UnitFilename:=MainIDE.GetTestUnitFilename(ActiveUnitInfo);
+  else UnitFilename:=BuildBoss.GetTestUnitFilename(ActiveUnitInfo);
 
   DebugLn('TDebugManager.DoRunToCursor C');
   FDebugger.RunTo(ExtractFilename(UnitFilename),
