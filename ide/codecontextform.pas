@@ -69,6 +69,7 @@ type
     procedure Paint; override;
   public
     constructor Create(TheOwner: TComponent); override;
+    destructor Destroy; override;
     procedure SetCodeContexts(const CodeContexts: TCodeContextInfo);
     procedure UpdateHints;
     property ProcNameCodeXYPos: TCodeXYPosition read FProcNameCodeXYPos;
@@ -690,6 +691,13 @@ begin
   OnKeyDown:=@FormKeyDown;
   OnUTF8KeyPress:=@FormUTF8KeyPress;
   FormCreate(Self);
+end;
+
+destructor TCodeContextFrm.Destroy;
+begin
+  inherited Destroy;
+  if CodeContextFrm=Self then
+    CodeContextFrm:=nil;
 end;
 
 end.

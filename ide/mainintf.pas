@@ -204,7 +204,7 @@ type
 var
   MainIDEInterface: TMainIDEInterface;
 
-  ObjectInspector1: TObjectInspector;
+  ObjectInspector1: TObjectInspector = nil;
 
 const
   OpenFlagNames: array[TOpenFlag] of string = (

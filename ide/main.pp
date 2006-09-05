@@ -360,6 +360,7 @@ type
     // ObjectInspector + PropertyEditorHook events
     procedure OIOnSelectPersistents(Sender: TObject);
     procedure OIOnShowOptions(Sender: TObject);
+    procedure OIOnDestroy(Sender: TObject);
     procedure OIRemainingKeyDown(Sender: TObject; var Key: Word;
        Shift: TShiftState);
     procedure OIOnAddToFavourites(Sender: TObject);
@@ -528,6 +529,9 @@ type
     procedure SetupIDEMsgQuickFixItems;
     procedure SetupStartProject;
     procedure ReOpenIDEWindows;
+    procedure CloseIDEWindows;
+    procedure FreeIDEWindows;
+    function CloseQueryIDEWindows: boolean;
 
     procedure ReloadMenuShortCuts;
 
@@ -1118,8 +1122,6 @@ begin
 
   DebugLn('[TMainIDE.Destroy] A ');
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Destroy A ');{$ENDIF}
-  FreeThenNil(ProjInspector);
-  FreeThenNil(CodeExplorerView);
 
   if DebugBoss<>nil then DebugBoss.EndDebugging;
 
@@ -1130,6 +1132,14 @@ begin
     FreeThenNil(TheControlSelection);
   end;
 
+  FreeThenNil(ProjInspector);
+  FreeThenNil(CodeExplorerView);
+  FreeAndNil(LazFindReplaceDialog);
+  FreeAndNil(MessagesView);
+  FreeThenNil(AnchorDesigner);
+  FreeThenNil(ObjectInspector1);
+  FreeThenNil(SourceNotebook);
+
   // disconnect handlers
   Application.RemoveAllHandlersOfObject(Self);
   Screen.RemoveAllHandlersOfObject(Self);
@@ -1139,13 +1149,9 @@ begin
   FreeThenNil(Project1);
 
   // free IDE parts
+  FreeFormEditor;
   FreeTextConverters;
   FreeStandardIDEQuickFixItems;
-  FreeFormEditor;
-  FreeAndNil(LazFindReplaceDialog);
-  FreeAndNil(MessagesView);
-  FreeThenNil(AnchorDesigner);
-  FreeThenNil(ObjectInspector1);
   FreeThenNil(GlobalDesignHook);
   FreeThenNil(PkgBoss);
   FreeThenNil(HelpBoss);
@@ -1170,7 +1176,6 @@ begin
 
   DebugLn('[TMainIDE.Destroy] B  -> inherited Destroy... ',ClassName);
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Destroy B ');{$ENDIF}
-  FreeThenNil(SourceNotebook);
   FreeThenNil(MainBuildBoss);
   inherited Destroy;
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Destroy C ');{$ENDIF}
@@ -1203,6 +1208,12 @@ end;
 procedure TMainIDE.OIOnShowOptions(Sender: TObject);
 begin
   DoShowEnvGeneralOptions(eodpObjectInspector);
+end;
+
+procedure TMainIDE.OIOnDestroy(Sender: TObject);
+begin
+  if ObjectInspector1=Sender then
+    ObjectInspector1:=nil;
 end;
 
 procedure TMainIDE.OIRemainingKeyDown(Sender: TObject; var Key: Word;
@@ -1259,12 +1270,14 @@ end;
 procedure TMainIDE.MainIDEFormClose(Sender: TObject;
   var CloseAction: TCloseAction);
 begin
+  CloseIDEWindows;
   SaveEnvironment;
   SaveIncludeLinks;
   InputHistories.Save;
   PkgBoss.SaveSettings;
   if TheControlSelection<>nil then TheControlSelection.Clear;
   if SourceNoteBook<>nil then SourceNoteBook.ClearUnUsedEditorComponents(true);
+  FreeIDEWindows;
 end;
 
 procedure TMainIDE.MainIDEFormCloseQuery(Sender: TObject;
@@ -1272,18 +1285,16 @@ procedure TMainIDE.MainIDEFormCloseQuery(Sender: TObject;
 var
   MsgResult: integer;
 begin
+  CanClose:=false;
   // stop debugging/compiling/...
-  if not DoResetToolStatus(true) then begin
-    CanClose:=false;
-    exit;
-  end;
+  if not DoResetToolStatus(true) then exit;
+
+  // check foreign windows
+  if not CloseQueryIDEWindows then exit;
 
   // check packages
   if (PkgBoss.DoSaveAllPackages([psfAskBeforeSaving])<>mrOk)
-  or (PkgBoss.DoCloseAllPackageEditors<>mrOk) then begin
-    CanClose:=false;
-    exit;
-  end;
+  or (PkgBoss.DoCloseAllPackageEditors<>mrOk) then exit;
 
   // check project
   if SomethingOfProjectIsModified then begin
@@ -1302,12 +1313,11 @@ begin
 
     mrCancel, mrAbort:
       begin
-        CanClose:= false;
         Exit;
       end;
     end;
   end;
-
+  
   CanClose:=(DoCloseProject <> mrAbort);
 end;
 
@@ -1452,16 +1462,17 @@ end;
 procedure TMainIDE.SetupObjectInspector;
 begin
   ObjectInspector1 := TObjectInspector.Create(OwningComponent);
+  ObjectInspector1.BorderStyle:=bsSizeToolWin;
+  ObjectInspector1.Favourites:=LoadOIFavouriteProperties;
+  ObjectInspector1.FindDeclarationPopupmenuItem.Visible:=true;
+  ObjectInspector1.OnAddToFavourites:=@OIOnAddToFavourites;
+  ObjectInspector1.OnFindDeclarationOfProperty:=@OIOnFindDeclarationOfProperty;
+  ObjectInspector1.OnRemainingKeyDown:=@OIRemainingKeyDown;
+  ObjectInspector1.OnRemoveFromFavourites:=@OIOnRemoveFromFavourites;
   ObjectInspector1.OnSelectPersistentsInOI:=@OIOnSelectPersistents;
   ObjectInspector1.OnShowOptions:=@OIOnShowOptions;
-  ObjectInspector1.OnRemainingKeyDown:=@OIRemainingKeyDown;
+  ObjectInspector1.OnDestroy:=@OIOnDestroy;
   ObjectInspector1.ShowFavouritePage:=true;
-  ObjectInspector1.Favourites:=LoadOIFavouriteProperties;
-  ObjectInspector1.OnAddToFavourites:=@OIOnAddToFavourites;
-  ObjectInspector1.OnRemoveFromFavourites:=@OIOnRemoveFromFavourites;
-  ObjectInspector1.FindDeclarationPopupmenuItem.Visible:=true;
-  ObjectInspector1.OnFindDeclarationOfProperty:=@OIOnFindDeclarationOfProperty;
-  ObjectInspector1.BorderStyle:=bsSizeToolWin;
   IDECmdScopeObjectInspectorOnly.AddWindowClass(TObjectInspector);
 
   GlobalDesignHook:=TPropertyEditorHook.Create;
@@ -1731,6 +1742,51 @@ begin
       ;//itmViewCallStack.OnClick(Self);
     end;
   end;
+end;
+
+procedure TMainIDE.CloseIDEWindows;
+var
+  i: Integer;
+  AForm: TCustomForm;
+begin
+  i:=Screen.CustomFormCount-1;
+  while i>=0 do begin
+    AForm:=Screen.CustomForms[i];
+    if AForm<>MainIDEBar then
+      AForm.Close;
+    i:=Math.Min(i,Screen.CustomFormCount)-1;
+  end;
+end;
+
+procedure TMainIDE.FreeIDEWindows;
+var
+  i: Integer;
+  AForm: TCustomForm;
+begin
+  i:=Screen.CustomFormCount-1;
+  while i>=0 do begin
+    AForm:=Screen.CustomForms[i];
+    if (AForm<>MainIDEBar)
+    and ((AForm.Owner=nil) or (AForm.Owner=Application)) then begin
+      DebugLn(['TMainIDE.FreeIDEWindows ',dbgsName(AForm)]);
+      AForm.Free;
+    end;
+    i:=Math.Min(i,Screen.CustomFormCount)-1;
+  end;
+end;
+
+function TMainIDE.CloseQueryIDEWindows: boolean;
+var
+  i: Integer;
+  AForm: TCustomForm;
+begin
+  for i:=0 to Screen.CustomFormCount-1 do begin
+    AForm:=Screen.CustomForms[i];
+    if AForm<>MainIDEBar then begin
+      if not AForm.CloseQuery then exit(false);
+    end;
+  end;
+  Result:=true;
 end;
 
 procedure TMainIDE.ReloadMenuShortCuts;

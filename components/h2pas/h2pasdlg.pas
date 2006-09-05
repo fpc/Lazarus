@@ -36,6 +36,8 @@ type
   { TH2PasDialog }
 
   TH2PasDialog = class(TForm)
+    FileInfoGroupBox: TGroupBox;
+    FileInfoLabel: TLabel;
     MainPageControl: TPageControl;
 
     // c header files
@@ -79,6 +81,7 @@ type
     CloseButton: TButton;
 
     procedure AddCHeaderFilesButtonClick(Sender: TObject);
+    procedure CHeaderFilesCheckListBoxClick(Sender: TObject);
     procedure CHeaderFilesCheckListBoxItemClick(Sender: TObject; Index: LongInt
       );
     procedure CloseButtonClick(Sender: TObject);
@@ -116,8 +119,10 @@ type
     procedure UpdateAll;
     procedure UpdateProjectChanged; // show project settings
     procedure UpdateCaption;
+    procedure UpdateFileInfo;
     procedure ClearMessages;
     procedure CreateLazarusMenuItems;
+    function GetCurrentCHeaderFile: TH2PasFile;
 
     // project settings
     procedure UpdateFilesPage;
@@ -190,6 +195,7 @@ begin
     DeleteCHeaderFilesButton.Caption:='Delete selected .h files';
     SelectAllCHeaderFilesButton.Caption:='Enable all .h files';
     UnselectAllCHeaderFilesButton.Caption:='Disable all .h files';
+    FileInfoGroupBox.Caption:='File information';
   h2pasOptionsTabSheet.Caption:='h2pas Options';
     h2pasOptionsCheckGroup.Caption:='Options';
     with h2pasOptionsCheckGroup.Items do begin
@@ -332,15 +338,17 @@ begin
   end;
 end;
 
+procedure TH2PasDialog.CHeaderFilesCheckListBoxClick(Sender: TObject);
+begin
+  UpdateFileInfo;
+end;
+
 procedure TH2PasDialog.CHeaderFilesCheckListBoxItemClick(Sender: TObject;
   Index: LongInt);
 var
-  AFilename: string;
   AFile: TH2PasFile;
 begin
-  if (Index<0) then exit;
-  AFilename:=Project.LongenFilename(CHeaderFilesCheckListBox.Items[Index]);
-  AFile:=Project.CHeaderFileWithFilename(AFilename);
+  AFile:=GetCurrentCHeaderFile;
   if AFile<>nil then
     AFile.Enabled:=CHeaderFilesCheckListBox.Checked[Index];
 end;
@@ -573,6 +581,22 @@ begin
   Caption:=s;
 end;
 
+procedure TH2PasDialog.UpdateFileInfo;
+var
+  AFile: TH2PasFile;
+  s: String;
+begin
+  AFile:=GetCurrentCHeaderFile;
+  if AFile<>nil then begin
+    s:='File: '+AFile.Filename;
+    if not FileExistsCached(AFile.Filename) then
+      s:=s+#13+'ERROR: file not found';
+    FileInfoLabel.Caption:=s;
+  end else begin
+    FileInfoLabel.Caption:='No file selected.';
+  end;
+end;
+
 procedure TH2PasDialog.ClearMessages;
 begin
   IDEMessagesWindow.Clear;
@@ -590,6 +614,18 @@ begin
       'Add "search and replace" tool before h2pas',
       'Add "search and replace" tool before h2pas',
       @OnAddSearchAndReplaceBeforeH2PasClick);
+end;
+
+function TH2PasDialog.GetCurrentCHeaderFile: TH2PasFile;
+var
+  Index: LongInt;
+  AFilename: String;
+begin
+  Result:=nil;
+  Index:=CHeaderFilesCheckListBox.ItemIndex;
+  if Index<0 then exit;
+  AFilename:=Project.LongenFilename(CHeaderFilesCheckListBox.Items[Index]);
+  Result:=Project.CHeaderFileWithFilename(AFilename);
 end;
 
 procedure TH2PasDialog.UpdateFilesPage;
@@ -625,6 +661,8 @@ begin
     Target.Delete(Target.Count-1);
   Target.EndUpdate;
   OldSelected.Free;
+  
+  UpdateFileInfo;
 end;
 
 procedure TH2PasDialog.UpdateH2PasPage;

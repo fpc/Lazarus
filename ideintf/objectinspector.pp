@@ -391,6 +391,7 @@ type
                                  TypeFilter: TTypeKinds;
                                  DefItemHeight: integer);
     destructor Destroy;  override;
+    function InitHints: boolean;
     function CanEditRowValue: boolean;
     procedure SaveChanges;
     function ConsistencyCheck: integer;
@@ -810,18 +811,6 @@ begin
 
   BuildPropertyList;
 
-  FHintTimer := TTimer.Create(nil);
-  FHintTimer.Interval := 500;
-  FHintTimer.Enabled := False;
-  FHintTimer.OnTimer := @HintTimer;
-
-  FHintWindow := THintWindow.Create(nil);
-
-  FHIntWindow.Visible := False;
-  FHintWindow.Caption := 'This is a hint window'#13#10'Neat huh?';
-  FHintWindow.HideInterval := 4000;
-  FHintWindow.AutoHide := True;
-  
   Application.AddOnUserInputHandler(@OnUserInput,true);
 end;
 
@@ -932,6 +921,23 @@ begin
   FreeAndNil(FHintWindow);
   FreeAndNil(FNewComboBoxItems);
   inherited Destroy;
+end;
+
+function TOICustomPropertyGrid.InitHints: boolean;
+begin
+  if not ShowHint then exit(false);
+  Result:=true;
+  FHintTimer := TTimer.Create(nil);
+  FHintTimer.Interval := 500;
+  FHintTimer.Enabled := False;
+  FHintTimer.OnTimer := @HintTimer;
+
+  FHintWindow := THintWindow.Create(Self);
+
+  FHIntWindow.Visible := False;
+  FHintWindow.Caption := 'This is a hint window'#13#10'Neat huh?';
+  FHintWindow.HideInterval := 4000;
+  FHintWindow.AutoHide := True;
 end;
 
 function TOICustomPropertyGrid.ConsistencyCheck: integer;
@@ -1638,7 +1644,8 @@ begin
   inherited MouseDown(Button,Shift,X,Y);
 
   //hide the hint
-  FHintWindow.Visible := False;
+  if FHintWindow<>nil then
+    FHintWindow.Visible := False;
   
   if Button=mbLeft then begin
     if Cursor=crHSplit then begin
@@ -1710,9 +1717,9 @@ begin
         if X < SplitterX then begin
           // Mouse is over property name...
           fHint := fPropRow.Name;
-          if (Canvas.TextWidth(fHint)+BorderWidth+GetTreeIconX(Index)+Indent)
-          >= SplitterX
-          then begin
+          if ((Canvas.TextWidth(fHint)+BorderWidth+GetTreeIconX(Index)+Indent)
+          >= SplitterX)
+          and InitHints then begin
             fHintRect := FHintWindow.CalcHintRect(0,fHint,nil);
             fpoint := ClientToScreen(
                                    Point(BorderWidth+GetTreeIconX(Index)+Indent,
@@ -1725,7 +1732,8 @@ begin
           // Mouse is over property value...
           fHint := fPropRow.LastPaintedValue;
           if length(fHint)>100 then fHint:=copy(fHint,1,100)+'...';
-          if Canvas.TextWidth(fHint) > (ClientWidth - BorderWidth - SplitterX)
+          if (Canvas.TextWidth(fHint) > (ClientWidth - BorderWidth - SplitterX))
+          and InitHints
           then begin
             fHintRect := FHintWindow.CalcHintRect(0,fHint,nil);
             fpoint := ClientToScreen(Point(SplitterX,fPropRow.Top - TopY-1));
@@ -2409,8 +2417,9 @@ var
   HintType: TPropEditHint;
 begin
   // ToDo: use LCL hintsystem
-  FHintTimer.Enabled := False;
-  if not ShowHint then exit;
+  if FHintTimer<>nil then
+    FHintTimer.Enabled := False;
+  if (not InitHints) then exit;
 
   Position := Mouse.CursorPos;
 
@@ -2450,6 +2459,8 @@ end;
 
 Procedure TOICustomPropertyGrid.ResetHintTimer;
 begin
+  if FHintWindow=nil then exit;
+
   if FHintWIndow.Visible then
     FHintWindow.Visible := False;
      
@@ -2462,7 +2473,8 @@ procedure TOICustomPropertyGrid.ValueControlMouseDown(Sender : TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: integer);
 begin
   //hide the hint window!
-  if FHintWindow.Visible then FHintWindow.Visible := False;
+  if (FHintWindow<>nil) and FHintWindow.Visible then
+    FHintWindow.Visible := False;
   ScrollToActiveItem;
 end;
 
@@ -2498,7 +2510,8 @@ begin
     exit;
   end;
 
-  FHintTimer.Enabled := False;
+  if FHintTimer<>nil then
+    FHintTimer.Enabled := False;
 
   if (FCurrentEdit=ValueComboBox) then Begin
     //either an Event or an enumeration or Boolean

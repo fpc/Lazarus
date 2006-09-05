@@ -107,7 +107,8 @@ type
       read GetComponentText write SetComponentText;
   end;
 
-var LazFindReplaceDialog: TLazFindReplaceDialog;
+var
+  LazFindReplaceDialog: TLazFindReplaceDialog = nil;
 
 
 implementation
@@ -177,6 +178,8 @@ destructor TLazFindReplaceDialog.Destroy;
 begin
   RegExpr.Free;
   inherited Destroy;
+  if LazFindReplaceDialog=Self then
+    LazFindReplaceDialog:=nil;
 end;
 
 procedure TLazFindReplaceDialog.TextToFindComboBoxKeyDown(

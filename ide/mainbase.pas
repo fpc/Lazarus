@@ -174,7 +174,6 @@ type
 
 var
   MainIDE: TMainIDEBase = nil;
-  SourceNotebook: TSourceNotebook = nil;
 
 implementation
 

@@ -149,6 +149,7 @@ type
     function AnchorDesignerNoSiblingText: string;
   public
     Values: TAnchorDesignerValues;
+    destructor Destroy; override;
     procedure Refresh(Force: boolean);
     procedure OnRefreshPropertyValues;
     function GetSelectedControls: TList;
@@ -170,8 +171,8 @@ type
   end;
   
 var
-  AnchorDesigner: TAnchorDesigner;
-  ShowAnchorDesigner: TNotifyEvent;
+  AnchorDesigner: TAnchorDesigner = nil;
+  ShowAnchorDesigner: TNotifyEvent = nil;
 
 implementation
 
@@ -546,6 +547,12 @@ end;
 function TAnchorDesigner.AnchorDesignerNoSiblingText: string;
 begin
   Result:='(nil)';
+end;
+
+destructor TAnchorDesigner.Destroy;
+begin
+  inherited Destroy;
+  if AnchorDesigner=Self then AnchorDesigner:=nil;
 end;
 
 procedure TAnchorDesigner.Refresh(Force: boolean);

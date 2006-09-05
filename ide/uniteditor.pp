@@ -227,6 +227,7 @@ type
     function DoFindAndReplace: Integer;
     procedure FindNext;
     procedure FindPrevious;
+    procedure InitGotoDialog;
     procedure ShowGotoLineDialog;
     procedure GetDialogPosition(Width, Height:integer; out Left,Top:integer);
     procedure ActivateHint(ClientPos: TPoint; const TheHint: string);
@@ -756,10 +757,13 @@ type
     property OnPopupMenu: TSrcEditPopupMenuEvent read FOnPopupMenu write FOnPopupMenu;
   end;
 
+var
+  SourceNotebook: TSourceNotebook = nil;
+
   //=============================================================================
 
 { Goto dialog }
-
+type
   TfrmGoto = class(TForm)
     Label1: TLabel;
     Edit1: TEdit;
@@ -816,16 +820,16 @@ var
   // aCompletion:
   //   The component controlling the completion form. It is created on demand
   //   and killed when the IDE ends.
-  aCompletion: TSynCompletion;
+  aCompletion: TSynCompletion = nil;
   // CurCompletionControl contains aCompletion whenever the completion form is
   // active
-  CurCompletionControl: TSynCompletion;
+  CurCompletionControl: TSynCompletion = nil;
   CurrentCompletionType: TCompletionType;
-  IdentCompletionTimer: TIdleTimer;
+  IdentCompletionTimer: TIdleTimer = nil;
   IdentCompletionCaretXY: TPoint;
-  AWordCompletion: TWordCompletion;
+  AWordCompletion: TWordCompletion = nil;
 
-  GotoDialog: TfrmGoto;
+  GotoDialog: TfrmGoto = nil;
 
 procedure RegisterStandardSourceEditorMenuItems;
 var
@@ -1017,6 +1021,7 @@ var
   NewLeft: integer;
   NewTop: integer;
 begin
+  InitGotoDialog;
   GotoDialog.Edit1.Text:='';
   GetDialogPosition(GotoDialog.Width,GotoDialog.Height,NewLeft,NewTop);
   GotoDialog.SetBounds(NewLeft,NewTop,GotoDialog.Width,GotoDialog.Height);
@@ -1163,6 +1168,12 @@ Begin
   DoFindAndReplace;
   LazFindReplaceDialog.Options:=OldOptions;
 End;
+
+procedure TSourceEditor.InitGotoDialog;
+begin
+  if GotoDialog=nil then
+    GotoDialog := TfrmGoto.Create(SourceNotebook);
+end;
 
 function TSourceEditor.DoFindAndReplace: integer;
 var
@@ -2805,7 +2816,7 @@ begin
   BuildPopupMenu;
 
   // completion form
-  aCompletion := TSynCompletion.Create(nil);
+  aCompletion := TSynCompletion.Create(Self);
     with aCompletion do
       Begin
         EndOfTokenChr:='()[].,;:-+=^*<>/';
@@ -2824,11 +2835,8 @@ begin
         ShortCut:=Menus.ShortCut(VK_UNKNOWN,[]);
       end;
 
-  // goto dialog
-  GotoDialog := TfrmGoto.Create(self);
-
   // HintTimer
-  FHintTimer := TTimer.Create(nil);
+  FHintTimer := TTimer.Create(Self);
   with FHintTimer do begin
     Interval := 1000;
     Enabled := False;
@@ -2836,7 +2844,7 @@ begin
   end;
 
   // HintWindow
-  FHintWindow := THintWindow.Create(nil);
+  FHintWindow := THintWindow.Create(Self);
   with FHintWindow do begin
     Visible := False;
     Caption := '';
@@ -2862,7 +2870,7 @@ begin
   FKeyStrokes.Free;
   FCodeTemplateModul.Free;
   FSourceEditorList.Free;
-  Gotodialog.free;
+  FreeAndNil(Gotodialog);
 
   FreeThenNil(CodeContextFrm);
   FreeThenNil(aCompletion);
@@ -2871,6 +2879,8 @@ begin
   SourceEditorWindow:=nil;
 
   inherited Destroy;
+  if SourceNotebook=Self then
+    SourceNotebook:=nil;
 end;
 
 procedure TSourceNotebook.InitMacros(AMacroList: TTransferMacroList);
@@ -5855,11 +5865,6 @@ var h: TLazSyntaxHighlighter;
 begin
   for h:=Low(TLazSyntaxHighlighter) to High(TLazSyntaxHighlighter) do
     Highlighters[h]:=nil;
-  aCompletion:=nil;
-  CurCompletionControl:=nil;
-  GotoDialog:=nil;
-  IdentCompletionTimer:=nil;
-  AWordCompletion:=nil;
 end;
 
 procedure InternalFinal;

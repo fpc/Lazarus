@@ -114,6 +114,7 @@ type
   protected
     procedure KeyUp(var Key: Word; Shift: TShiftState); override;
   public
+    destructor Destroy; override;
     procedure BeginUpdate;
     procedure EndUpdate;
     procedure Refresh;
@@ -488,6 +489,13 @@ procedure TCodeExplorerView.KeyUp(var Key: Word; Shift: TShiftState);
 begin
   inherited KeyUp(Key, Shift);
   ExecuteIDEShortCut(Self,Key,Shift,nil);
+end;
+
+destructor TCodeExplorerView.Destroy;
+begin
+  inherited Destroy;
+  if CodeExplorerView=Self then
+    CodeExplorerView:=nil;
 end;
 
 procedure TCodeExplorerView.BeginUpdate;

@@ -700,6 +700,7 @@ begin
   BeginUpdate;
   LazProject:=nil;
   inherited Destroy;
+  if ProjInspector=Self then ProjInspector:=nil;
 end;
 
 procedure TProjectInspectorForm.BeginUpdate;

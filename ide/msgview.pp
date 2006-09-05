@@ -146,7 +146,7 @@ type
   end;
 
 var
-  MessagesView: TMessagesView;
+  MessagesView: TMessagesView = nil;
   MsgClearIDEMenuCommand: TIDEMenuCommand;
   MsgCopyIDEMenuCommand: TIDEMenuCommand;
   MsgCopyAllIDEMenuCommand: TIDEMenuCommand;
@@ -307,7 +307,10 @@ begin
   FreeThenNil(FVisibleItems);
   FreeThenNil(FQuickFixItems);
   inherited Destroy;
-  IDEMessagesWindow:=nil;
+  if IDEMessagesWindow=nil then
+    IDEMessagesWindow:=nil;
+  if MessagesView=Self then
+    MessagesView:=nil;
 end;
 
 procedure TMessagesView.DeleteLine(Index: integer);
