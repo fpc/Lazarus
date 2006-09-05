@@ -286,6 +286,7 @@ type
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
+    property OnPageChanged;
     property OnResize;
     //property OnStartDock;
     //property OnStartDrag;

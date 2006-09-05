@@ -1442,7 +1442,7 @@ end;
 ------------------------------------------------------------------------------}
 procedure TCustomForm.Hide;
 begin
-  If (fsModal in FormState) and (ModalResult=0) then
+  if (fsModal in FormState) and (ModalResult=0) then
     ModalResult := mrCancel;
   Visible := False;
 end;
