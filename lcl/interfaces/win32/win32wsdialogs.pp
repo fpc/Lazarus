@@ -228,7 +228,7 @@ function OpenFileDialogCallBack(hwnd : Handle; uMsg : UINT; wParam: WPARAM;
 var
   OpenFileNotify: LPOFNOTIFY;
   OpenFileName: POPENFILENAME;
-  NeededSize: DWORD;
+  NeededSize: SizeInt;
   FileNames: pstring;
 begin
   if uMsg = WM_NOTIFY then begin
@@ -241,11 +241,11 @@ begin
       // GetFolderPath returns upper limit for the path, GetSpec for the files.
       // This is not exact because the GetSpec returns the size for
       // '"file1.txt" "file2.txt"', so that size will be two bytes per filename
-      // more than needed in the lpStrFile buffer.
+      // more than needed in thlengthe lpStrFile buffer.
       NeededSize := CommDlg_OpenSave_GetFolderPath(GetParent(hwnd), nil, 0) +
                       CommDlg_OpenSave_GetSpec(GetParent(hwnd), nil, 0);
       // test if we need to use our own storage
-      if OpenFileName^.nMaxFile<NeededSize then begin
+      if SizeInt(OpenFileName^.nMaxFile)<NeededSize then begin
         if OpenFileName^.lCustData=0 then
           OpenFileName^.lCustData := Windows.LParam(new(PString));
         FileNames := PString(OpenFileName^.lCustData);
