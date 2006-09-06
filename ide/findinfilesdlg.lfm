@@ -1,44 +1,46 @@
 object LazFindInFilesDialog: TLazFindInFilesDialog
-  Left = 391
-  Height = 460
-  Top = 158
-  Width = 420
-  HorzScrollBar.Page = 419
-  VertScrollBar.Page = 459
   ActiveControl = TextToFindComboBox
   Caption = 'Find in files'
+  ClientHeight = 460
+  ClientWidth = 420
   Constraints.MinHeight = 400
   Constraints.MinWidth = 260
   OnClose = FormClose
   OnCreate = FormCreate
+  PixelsPerInch = 90
   Position = poScreenCenter
+  HorzScrollBar.Page = 419
+  VertScrollBar.Page = 459
+  Left = 391
+  Height = 460
+  Top = 158
+  Width = 420
   object TextToFindLabel: TLabel
+    Caption = 'Text To Find:'
+    Color = clNone
+    ParentColor = False
     AnchorSideTop.Control = TextToFindComboBox
     AnchorSideTop.Side = asrCenter
     Left = 6
     Height = 13
     Top = 10
     Width = 74
-    Caption = 'Text To Find:'
-    Color = clNone
-    ParentColor = False
   end
   object TextToFindComboBox: TComboBox
-    Left = 102
-    Height = 21
-    Top = 6
-    Width = 312
     Anchors = [akTop, akLeft, akRight]
     AutoComplete = True
     AutoCompleteText = [cbactEnabled, cbactEndOfLineComplete, cbactRetainPrefixCase, cbactSearchAscending]
+    BorderSpacing.Left = 6
     MaxLength = 0
     TabOrder = 0
+    AnchorSideLeft.Control = TextToFindLabel
+    AnchorSideLeft.Side = asrBottom
+    Left = 86
+    Height = 21
+    Top = 6
+    Width = 328
   end
   object OptionsCheckGroupBox: TCheckGroup
-    Left = 6
-    Height = 115
-    Top = 65
-    Width = 408
     Anchors = [akTop, akLeft, akRight]
     AutoFill = True
     BorderSpacing.InnerBorder = 6
@@ -60,15 +62,15 @@ object LazFindInFilesDialog: TLazFindInFilesDialog
       'Multi Line'
     )
     TabOrder = 1
+    Left = 6
+    Height = 115
+    Top = 65
+    Width = 408
     Data = {
       0400000002020202
     }
   end
   object WhereRadioGroup: TRadioGroup
-    Left = 6
-    Height = 82
-    Top = 185
-    Width = 408
     Anchors = [akTop, akLeft, akRight]
     AutoFill = True
     Caption = 'Where'
@@ -90,81 +92,85 @@ object LazFindInFilesDialog: TLazFindInFilesDialog
     )
     OnClick = WhereRadioGroupClick
     TabOrder = 2
+    Left = 6
+    Height = 82
+    Top = 185
+    Width = 408
   end
   object DirectoryOptionsGroupBox: TGroupBox
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    Caption = 'Directory Options'
+    ClientHeight = 122
+    ClientWidth = 404
+    Enabled = False
+    TabOrder = 3
     Left = 6
     Height = 139
     Top = 275
     Width = 408
-    Anchors = [akTop, akLeft, akRight, akBottom]
-    Caption = 'Directory Options'
-    Enabled = False
-    TabOrder = 3
     object DirectoryLabel: TLabel
+      Caption = 'Directory:'
+      Color = clNone
+      ParentColor = False
       Left = 6
       Height = 13
       Top = 8
       Width = 55
-      Caption = 'Directory:'
-      Color = clNone
-      ParentColor = False
     end
     object FileMaskLabel: TLabel
+      Caption = 'File mask (*;*.*;*.bak?):'
+      Color = clNone
+      ParentColor = False
       Left = 6
       Height = 13
       Top = 38
       Width = 128
-      Caption = 'File mask (*;*.*;*.bak?):'
-      Color = clNone
-      ParentColor = False
     end
     object DirectoryComboBox: TComboBox
-      Left = 88
-      Height = 21
-      Top = 6
-      Width = 260
       Anchors = [akTop, akLeft, akRight]
       AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
       MaxLength = 0
       TabOrder = 0
-    end
-    object DirectoryBrowse: TBitBtn
-      Left = 354
+      AnchorSideLeft.Control = DirectoryLabel
+      AnchorSideLeft.Side = asrBottom
+      Left = 61
       Height = 21
       Top = 6
-      Width = 21
+      Width = 283
+    end
+    object DirectoryBrowse: TBitBtn
       Anchors = [akTop, akRight]
       Caption = '...'
       Layout = blGlyphTop
       NumGlyphs = 0
       OnClick = DirectoryBrowseClick
       TabOrder = 1
+      Left = 350
+      Height = 21
+      Top = 6
+      Width = 21
     end
     object FileMaskComboBox: TComboBox
-      Left = 6
-      Height = 21
-      Top = 56
-      Width = 342
       Anchors = [akTop, akLeft, akRight]
       AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
       MaxLength = 0
       TabOrder = 2
       Text = '*.pas;*.pp;*.inc'
+      Left = 6
+      Height = 21
+      Top = 56
+      Width = 338
     end
     object IncludeSubDirsCheckBox: TCheckBox
+      Caption = 'Include sub directories'
+      TabOrder = 3
       Left = 6
       Height = 20
       Top = 92
       Width = 154
-      Caption = 'Include sub directories'
-      TabOrder = 3
     end
   end
   object OKButton: TButton
-    Left = 256
-    Height = 25
-    Top = 428
-    Width = 75
     Anchors = [akRight, akBottom]
     BorderSpacing.Around = 6
     BorderSpacing.InnerBorder = 4
@@ -172,12 +178,12 @@ object LazFindInFilesDialog: TLazFindInFilesDialog
     Default = True
     ModalResult = 1
     TabOrder = 4
-  end
-  object CancelButton: TButton
-    Left = 339
+    Left = 256
     Height = 25
     Top = 428
     Width = 75
+  end
+  object CancelButton: TButton
     Anchors = [akRight, akBottom]
     BorderSpacing.Around = 6
     BorderSpacing.InnerBorder = 4
@@ -185,35 +191,43 @@ object LazFindInFilesDialog: TLazFindInFilesDialog
     Caption = 'Cancel'
     ModalResult = 2
     TabOrder = 5
+    Left = 339
+    Height = 25
+    Top = 428
+    Width = 75
   end
   object ReplaceTextComboBox: TComboBox
-    Left = 102
-    Height = 25
-    Top = 33
-    Width = 312
     Anchors = [akTop, akLeft, akRight]
     AutoComplete = True
     AutoCompleteText = [cbactEnabled, cbactEndOfLineComplete, cbactRetainPrefixCase, cbactSearchAscending]
+    BorderSpacing.Left = 6
     Enabled = False
     MaxLength = 0
     TabOrder = 6
+    AnchorSideLeft.Control = ReplaceCheckBox
+    AnchorSideLeft.Side = asrBottom
+    Left = 84
+    Height = 21
+    Top = 33
+    Width = 330
   end
   object ReplaceCheckBox: TCheckBox
-    AnchorSideTop.Control = ReplaceTextComboBox
-    AnchorSideTop.Side = asrCenter
-    Left = 5
-    Height = 20
-    Top = 35
-    Width = 73
     Caption = 'Replace'
     Enabled = False
     OnChange = ReplaceCheckBoxChange
     TabOrder = 7
+    AnchorSideTop.Control = ReplaceTextComboBox
+    AnchorSideTop.Side = asrCenter
+    Left = 5
+    Height = 20
+    Top = 33
+    Width = 73
   end
   object SelectDirectoryDialog: TSelectDirectoryDialog
+    Options = [ofFileMustExist, ofEnableSizing, ofViewDetail]
     Title = 'Select Directory'
     FilterIndex = 0
-    Options = [ofFileMustExist, ofEnableSizing, ofViewDetail]
+    Title = 'Select Directory'
     left = 260
     top = 215
   end
