@@ -926,18 +926,21 @@ end;
 function TOICustomPropertyGrid.InitHints: boolean;
 begin
   if not ShowHint then exit(false);
+  
   Result:=true;
-  FHintTimer := TTimer.Create(nil);
-  FHintTimer.Interval := 500;
-  FHintTimer.Enabled := False;
-  FHintTimer.OnTimer := @HintTimer;
+  if FHintTimer=nil then begin
+    FHintTimer := TTimer.Create(nil);
+    FHintTimer.Interval := 500;
+    FHintTimer.Enabled := False;
+    FHintTimer.OnTimer := @HintTimer;
 
-  FHintWindow := THintWindow.Create(Self);
+    FHintWindow := THintWindow.Create(Self);
 
-  FHIntWindow.Visible := False;
-  FHintWindow.Caption := 'This is a hint window'#13#10'Neat huh?';
-  FHintWindow.HideInterval := 4000;
-  FHintWindow.AutoHide := True;
+    FHIntWindow.Visible := False;
+    FHintWindow.Caption := 'This is a hint window'#13#10'Neat huh?';
+    FHintWindow.HideInterval := 4000;
+    FHintWindow.AutoHide := True;
+  end;
 end;
 
 function TOICustomPropertyGrid.ConsistencyCheck: integer;

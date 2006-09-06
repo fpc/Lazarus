@@ -39,7 +39,7 @@ function LazSelectDirectory(const Title: string; const InitialDir: string = ''
   ): string;
 
 var
-  LazIDESelectDirectory: TIDESelectDirectory;// set by the IDE
+  LazIDESelectDirectory: TIDESelectDirectory = nil;// set by the IDE
   InitIDEFileDialog: TInitIDEFileDialog = nil;
   StoreIDEFileDialog: TStoreIDEFileDialog = nil  ;
   IDEMessageDialog: TIDEMessageDialog = nil;
