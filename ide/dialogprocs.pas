@@ -51,14 +51,23 @@ type
     lbfCreateClearOnError
     );
   TLoadBufferFlags = set of TLoadBufferFlag;
+  
+  TOnBackupFileInteractive =
+                       function(const Filename: string): TModalResult of object;
+                       
+var
+  OnBackupFileInteractive: TOnBackupFileInteractive = nil;
 
+function BackupFileInteractive(const Filename: string): TModalResult;
 function RenameFileWithErrorDialogs(const SrcFilename, DestFilename: string;
                                     ExtraButtons: TMsgDlgButtons): TModalResult;
 function CopyFileWithErrorDialogs(const SrcFilename, DestFilename: string;
                                   ExtraButtons: TMsgDlgButtons): TModalResult;
 function LoadCodeBuffer(var ACodeBuffer: TCodeBuffer; const AFilename: string;
                         Flags: TLoadBufferFlags): TModalResult;
-function SaveCodeBuffer(var ACodeBuffer: TCodeBuffer): TModalResult;
+function SaveCodeBuffer(ACodeBuffer: TCodeBuffer): TModalResult;
+function SaveCodeBufferToFile(ACodeBuffer: TCodeBuffer;
+                         const Filename: string; Backup: boolean = false): TModalResult;
 function LoadStringListFromFile(const Filename, ListTitle: string;
                                 var sl: TStrings): TModalResult;
 function CreateEmptyFile(const Filename: string;
@@ -72,7 +81,8 @@ function ForceDirectoryInteractive(Directory: string;
 function DeleteFileInteractive(const Filename: string;
                                ErrorButtons: TMsgDlgButtons): TModalResult;
 function SaveStringToFile(const Filename, Content: string;
-                          ErrorButtons: TMsgDlgButtons): TModalResult;
+                        ErrorButtons: TMsgDlgButtons; const Context: string = ''
+                        ): TModalResult;
 function ConvertLFMToLRSFileInteractive(const LFMFilename,
                                         LRSFilename: string): TModalResult;
 function IfNotOkJumpToCodetoolErrorAndAskToAbort(Ok: boolean;
@@ -81,6 +91,14 @@ function JumpToCodetoolErrorAndAskToAbort(Ask: boolean): TModalResult;
 procedure NotImplementedDialog(const Feature: string);
 
 implementation
+
+function BackupFileInteractive(const Filename: string): TModalResult;
+begin
+  if Assigned(OnBackupFileInteractive) then
+    Result:=OnBackupFileInteractive(Filename)
+  else
+    Result:=mrOk;
+end;
 
 function RenameFileWithErrorDialogs(const SrcFilename, DestFilename: string;
   ExtraButtons: TMsgDlgButtons): TModalResult;
@@ -192,7 +210,7 @@ begin
   end;
 end;
 
-function SaveCodeBuffer(var ACodeBuffer: TCodeBuffer): TModalResult;
+function SaveCodeBuffer(ACodeBuffer: TCodeBuffer): TModalResult;
 begin
   repeat
     if ACodeBuffer.Save then begin
@@ -201,6 +219,30 @@ begin
       Result:=IDEMessageDialog('Write error',
         'Unable to write "'+ACodeBuffer.Filename+'"',
         mtError,[mbAbort,mbRetry,mbIgnore]);
+    end;
+  until Result<>mrRetry;
+end;
+
+function SaveCodeBufferToFile(ACodeBuffer: TCodeBuffer; const Filename: string;
+  Backup: boolean): TModalResult;
+var
+  ACaption,AText:string;
+begin
+  if Backup then begin
+    Result:=BackupFileInteractive(Filename);
+    if Result<>mrOk then exit;
+  end else
+    Result:=mrOk;
+  repeat
+    if ACodeBuffer.SaveToFile(Filename) then begin
+      Result:=mrOk;
+    end else begin
+      ACaption:=lisWriteError;
+      AText:=Format(lisUnableToWriteToFile, ['"', Filename, '"']);
+      Result:=IDEMessageDialog(ACaption,AText,mtError,
+                               [mbAbort, mbRetry, mbIgnore]);
+      if Result=mrAbort then exit;
+      if Result=mrIgnore then Result:=mrOk;
     end;
   until Result<>mrRetry;
 end;
@@ -362,7 +404,7 @@ begin
 end;
 
 function SaveStringToFile(const Filename, Content: string;
-  ErrorButtons: TMsgDlgButtons): TModalResult;
+  ErrorButtons: TMsgDlgButtons; const Context: string): TModalResult;
 var
   fs: TFileStream;
 begin
@@ -380,7 +422,9 @@ begin
     on E: Exception do begin
       Result:=IDEMessageDialog('Write error',
          'Write error: '+E.Message+#13
-         +'File: '+Filename,mtError,[mbAbort]+ErrorButtons);
+         +'File: '+Filename+#13
+         +Context,
+         mtError,[mbAbort]+ErrorButtons);
     end;
   end;
 end;

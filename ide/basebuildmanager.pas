@@ -33,7 +33,8 @@ unit BaseBuildManager;
 interface
 
 uses
-  Classes, SysUtils, Project;
+  Classes, SysUtils, Forms,
+  Project;
   
 type
 
@@ -56,6 +57,16 @@ type
     function GetTestBuildDirectory: string; virtual; abstract;
     function IsTestUnitFilename(const AFilename: string): boolean; virtual; abstract;
     function GetTargetUnitFilename(AnUnitInfo: TUnitInfo): string; virtual; abstract;
+
+    function CheckAmbiguousSources(const AFilename: string;
+                                   Compiling: boolean): TModalResult; virtual; abstract;
+    function DeleteAmbiguousFiles(const Filename:string
+                                  ): TModalResult; virtual; abstract;
+    function CheckUnitPathForAmbiguousPascalFiles(const BaseDir, TheUnitPath,
+                                    CompiledExt, ContextDescription: string
+                                    ): TModalResult; virtual; abstract;
+
+    function BackupFile(const Filename: string): TModalResult; virtual; abstract;
   end;
 
 var

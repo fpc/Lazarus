@@ -143,13 +143,6 @@ type
           var ActiveSourceEditor: TSourceEditor; var ActiveUnitInfo: TUnitInfo); virtual; abstract;
     function GetSourceEditorForUnitInfo(AnUnitInfo: TUnitInfo): TSourceEditor; virtual; abstract;
 
-    function DoCheckAmbiguousSources(const AFilename: string;
-                                     Compiling: boolean): TModalResult; override;
-    function DoDeleteAmbiguousFiles(const Filename:string
-                                    ): TModalResult; override;
-    function DoCheckUnitPathForAmbiguousPascalFiles(const BaseDir, TheUnitPath,
-                                    CompiledExt, ContextDescription: string
-                                    ): TModalResult; override;
     function DoOpenMacroFile(Sender: TObject; const AFilename: string
                              ): TModalResult; override;
 
@@ -177,24 +170,6 @@ var
 
 implementation
 
-
-type
-  TUnitFile = record
-    UnitName: string;
-    Filename: string;
-  end;
-  PUnitFile = ^TUnitFile;
-
-function CompareUnitFiles(UnitFile1, UnitFile2: PUnitFile): integer;
-begin
-  Result:=AnsiCompareText(UnitFile1^.UnitName,UnitFile2^.UnitName);
-end;
-
-function CompareUnitNameAndUnitFile(UnitName: PChar;
-  UnitFile: PUnitFile): integer;
-begin
-  Result:=CompareStringPointerI(UnitName,PChar(UnitFile^.UnitName));
-end;
 
 { TMainIDEBase }
 
@@ -957,286 +932,14 @@ begin
                   [ofOnlyIfExists,ofAddToRecent,ofRegularFile,ofConvertMacros]);
 end;
 
-function TMainIDEBase.DoDeleteAmbiguousFiles(const Filename: string
-  ): TModalResult;
-var
-  ADirectory: String;
-  FileInfo: TSearchRec;
-  ShortFilename: String;
-  CurFilename: String;
-  IsPascalUnit: Boolean;
-  UnitName: String;
-begin
-  Result:=mrOk;
-  if EnvironmentOptions.AmbiguousFileAction=afaIgnore then exit;
-  if EnvironmentOptions.AmbiguousFileAction
-    in [afaAsk,afaAutoDelete,afaAutoRename]
-  then begin
-    ADirectory:=AppendPathDelim(ExtractFilePath(Filename));
-    if SysUtils.FindFirst(ADirectory+GetAllFilesMask,faAnyFile,FileInfo)=0 then
-    begin
-      ShortFilename:=ExtractFileName(Filename);
-      IsPascalUnit:=FilenameIsPascalUnit(ShortFilename);
-      UnitName:=ExtractFilenameOnly(ShortFilename);
-      repeat
-        if (FileInfo.Name='.') or (FileInfo.Name='..')
-        or (FileInfo.Name='')
-        or ((FileInfo.Attr and faDirectory)<>0) then continue;
-        if (ShortFilename=FileInfo.Name) then continue;
-        if (AnsiCompareText(ShortFilename,FileInfo.Name)<>0)
-        and ((not IsPascalUnit) or (not FilenameIsPascalUnit(FileInfo.Name))
-           or (AnsiCompareText(UnitName,ExtractFilenameOnly(FileInfo.Name))<>0))
-        then
-          continue;
-
-        CurFilename:=ADirectory+FileInfo.Name;
-        if EnvironmentOptions.AmbiguousFileAction=afaAsk then begin
-          if MessageDlg(lisDeleteAmbiguousFile,
-            Format(lisAmbiguousFileFoundThisFileCanBeMistakenWithDelete, ['"',
-              CurFilename, '"', #13, '"', ShortFilename, '"', #13, #13]),
-            mtConfirmation,[mbYes,mbNo],0)=mrNo
-          then continue;
-        end;
-        if EnvironmentOptions.AmbiguousFileAction in [afaAutoDelete,afaAsk]
-        then begin
-          if not DeleteFile(CurFilename) then begin
-            MessageDlg(lisDeleteFileFailed,
-              Format(lisPkgMangUnableToDeleteFile, ['"', CurFilename, '"']),
-              mtError,[mbOk],0);
-          end;
-        end else if EnvironmentOptions.AmbiguousFileAction=afaAutoRename then
-        begin
-          Result:=DoBackupFile(CurFilename,false);
-          if Result=mrABort then exit;
-          Result:=mrOk;
-        end;
-      until SysUtils.FindNext(FileInfo)<>0;
-    end;
-    FindClose(FileInfo);
-  end;
-end;
-
-{-------------------------------------------------------------------------------
-  function TMainIDEBase.DoCheckUnitPathForAmbiguousPascalFiles(
-    const BaseDir, TheUnitPath, CompiledExt, ContextDescription: string
-    ): TModalResult;
-
-  Collect all pascal files and all compiled units in the unit path and check
-  for ambiguous files. For example: doubles.
--------------------------------------------------------------------------------}
-function TMainIDEBase.DoCheckUnitPathForAmbiguousPascalFiles(
-  const BaseDir, TheUnitPath, CompiledExt, ContextDescription: string): TModalResult;
-
-  procedure FreeUnitTree(var Tree: TAVLTree);
-  var
-    ANode: TAVLTreeNode;
-    AnUnitFile: PUnitFile;
-  begin
-    if Tree<>nil then begin
-      ANode:=Tree.FindLowest;
-      while ANode<>nil do begin
-        AnUnitFile:=PUnitFile(ANode.Data);
-        Dispose(AnUnitFile);
-        ANode:=Tree.FindSuccessor(ANode);
-      end;
-      Tree.Free;
-      Tree:=nil;
-    end;
-  end;
-
-var
-  EndPos: Integer;
-  StartPos: Integer;
-  CurDir: String;
-  FileInfo: TSearchRec;
-  SourceUnitTree, CompiledUnitTree: TAVLTree;
-  ANode: TAVLTreeNode;
-  CurUnitName: String;
-  CurFilename: String;
-  AnUnitFile: PUnitFile;
-  CurUnitTree: TAVLTree;
-  FileInfoNeedClose: Boolean;
-  UnitPath: String;
-begin
-  Result:=mrOk;
-  UnitPath:=TrimSearchPath(TheUnitPath,BaseDir);
-
-  //writeln('TMainIDEBase.DoCheckUnitPathForAmbiguousPascalFiles A UnitPath="',UnitPath,'" Ext=',CompiledExt,' Context=',ContextDescription);
-
-  SourceUnitTree:=TAVLTree.Create(TListSortCompare(@CompareUnitFiles));
-  CompiledUnitTree:=TAVLTree.Create(TListSortCompare(@CompareUnitFiles));
-  FileInfoNeedClose:=false;
-  try
-    // collect all units (.pas, .pp, compiled units)
-    EndPos:=1;
-    while EndPos<=length(UnitPath) do begin
-      StartPos:=EndPos;
-      while (StartPos<=length(UnitPath)) and (UnitPath[StartPos]=';') do
-        inc(StartPos);
-      EndPos:=StartPos;
-      while (EndPos<=length(UnitPath)) and (UnitPath[EndPos]<>';') do
-        inc(EndPos);
-      if EndPos>StartPos then begin
-        CurDir:=AppendPathDelim(TrimFilename(copy(
-                                             UnitPath,StartPos,EndPos-StartPos)));
-        FileInfoNeedClose:=true;
-        if SysUtils.FindFirst(CurDir+GetAllFilesMask,faAnyFile,FileInfo)=0 then begin
-          repeat
-            if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='')
-            or ((FileInfo.Attr and faDirectory)<>0) then continue;
-            if FilenameIsPascalUnit(FileInfo.Name) then
-              CurUnitTree:=SourceUnitTree
-            else if (CompareFileExt(FileInfo.Name,CompiledExt,false)=0) then
-              CurUnitTree:=CompiledUnitTree
-            else
-              continue;
-            CurUnitName:=ExtractFilenameOnly(FileInfo.Name);
-            CurFilename:=CurDir+FileInfo.Name;
-            // check if unit already found
-            ANode:=CurUnitTree.FindKey(PChar(CurUnitName),
-                                 TListSortCompare(@CompareUnitNameAndUnitFile));
-            if ANode<>nil then begin
-              // pascal unit exists twice
-              Result:=MessageDlg('Ambiguous unit found',
-                'The unit '+CurUnitName+' exists twice in the unit path of the '
-                +ContextDescription+':'#13
-                +#13
-                +'1. "'+PUnitFile(ANode.Data)^.Filename+'"'#13
-                +'2. "'+CurFilename+'"'#13
-                +#13
-                +'Hint: Check if two packages contain a unit with the same name.',
-                mtWarning,[mbAbort,mbIgnore],0);
-              if Result<>mrIgnore then exit;
-            end;
-            // add unit to tree
-            New(AnUnitFile);
-            AnUnitFile^.UnitName:=CurUnitName;
-            AnUnitFile^.Filename:=CurFilename;
-            CurUnitTree.Add(AnUnitFile);
-          until SysUtils.FindNext(FileInfo)<>0;
-        end;
-        FindClose(FileInfo);
-        FileInfoNeedClose:=false;
-      end;
-    end;
-  finally
-    // clean up
-    if FileInfoNeedClose then FindClose(FileInfo);
-    FreeUnitTree(SourceUnitTree);
-    FreeUnitTree(CompiledUnitTree);
-  end;
-  Result:=mrOk;
-end;
-
-{-------------------------------------------------------------------------------
-  function TMainIDEBase.DoCheckAmbiguousSources(const AFilename: string
-    ): TModalResult;
-
-  Checks if file exists with same name and similar extension. The compiler
-  prefers for example .pp to .pas files. So, if we save a .pas file delete .pp
-  file, so that compiling does what is expected.
--------------------------------------------------------------------------------}
-function TMainIDEBase.DoCheckAmbiguousSources(const AFilename: string;
-  Compiling: boolean): TModalResult;
-
-  function DeleteAmbiguousFile(const AmbiguousFilename: string): TModalResult;
-  begin
-    if not DeleteFile(AmbiguousFilename) then begin
-      Result:=MessageDlg(lisErrorDeletingFile,
-       Format(lisUnableToDeleteAmbiguousFile, ['"', AmbiguousFilename, '"']),
-       mtError,[mbOk,mbAbort],0);
-    end else
-      Result:=mrOk;
-  end;
-
-  function RenameAmbiguousFile(const AmbiguousFilename: string): TModalResult;
-  var
-    NewFilename: string;
-  begin
-    NewFilename:=AmbiguousFilename+'.ambiguous';
-    if not RenameFile(AmbiguousFilename,NewFilename) then
-    begin
-      Result:=MessageDlg(lisErrorRenamingFile,
-       Format(lisUnableToRenameAmbiguousFileTo, ['"', AmbiguousFilename, '"',
-         #13, '"', NewFilename, '"']),
-       mtError,[mbOk,mbAbort],0);
-    end else
-      Result:=mrOk;
-  end;
-
-  function AddCompileWarning(const AmbiguousFilename: string): TModalResult;
-  begin
-    Result:=mrOk;
-    if Compiling then begin
-      TheOutputFilter.ReadConstLine(Format(lisWarningAmbiguousFileFoundSourceFileIs,
-        ['"', AmbiguousFilename, '"', '"', AFilename, '"']), true);
-    end;
-  end;
-
-  function CheckFile(const AmbiguousFilename: string): TModalResult;
-  begin
-    Result:=mrOk;
-    if not FileExists(AmbiguousFilename) then exit;
-    if Compiling then begin
-      Result:=AddCompileWarning(AmbiguousFilename);
-      exit;
-    end;
-    case EnvironmentOptions.AmbiguousFileAction of
-    afaAsk:
-      begin
-        Result:=MessageDlg(lisAmbiguousFileFound,
-          Format(lisThereIsAFileWithTheSameNameAndASimilarExtension, [#13,
-            AFilename, #13, AmbiguousFilename, #13, #13]),
-          mtWarning,[mbYes,mbIgnore,mbAbort],0);
-        case Result of
-        mrYes:    Result:=DeleteAmbiguousFile(AmbiguousFilename);
-        mrIgnore: Result:=mrOk;
-        end;
-      end;
-
-    afaAutoDelete:
-      Result:=DeleteAmbiguousFile(AmbiguousFilename);
-
-    afaAutoRename:
-      Result:=RenameAmbiguousFile(AmbiguousFilename);
-
-    afaWarnOnCompile:
-      Result:=AddCompileWarning(AmbiguousFilename);
-
-    else
-      Result:=mrOk;
-    end;
-  end;
-
-var
-  Ext, LowExt: string;
-  i: integer;
-begin
-  Result:=mrOk;
-  if EnvironmentOptions.AmbiguousFileAction=afaIgnore then exit;
-  if (EnvironmentOptions.AmbiguousFileAction=afaWarnOnCompile)
-  and not Compiling then exit;
-
-  if FilenameIsPascalUnit(AFilename) then begin
-    Ext:=ExtractFileExt(AFilename);
-    LowExt:=lowercase(Ext);
-    for i:=Low(PascalFileExt) to High(PascalFileExt) do begin
-      if LowExt<>PascalFileExt[i] then begin
-        Result:=CheckFile(ChangeFileExt(AFilename,PascalFileExt[i]));
-        if Result<>mrOk then exit;
-      end;
-    end;
-  end;
-end;
-
 procedure TMainIDEBase.UpdateWindowsMenu;
 var
-  WindowsList: TList;
+  WindowsList: TFPList;
   i: Integer;
   CurMenuItem: TIDEMenuItem;
   AForm: TForm;
 begin
-  WindowsList:=TList.Create;
+  WindowsList:=TFPList.Create;
   // add typical IDE windows at the start of the list
   if (SourceNotebook<>nil) and (SourceNotebook.Visible) then
     WindowsList.Add(SourceNotebook);
@@ -1245,7 +948,7 @@ begin
   // add special IDE windows
   for i:=0 to Screen.FormCount-1 do begin
     AForm:=Screen.Forms[i];
-    if (AForm<>MainIDEBar) and (AForm<>SplashForm)
+    if (AForm.Parent=nil) and (AForm<>MainIDEBar) and (AForm<>SplashForm)
     and (AForm.Designer=nil) and (AForm.Visible)
     and (WindowsList.IndexOf(AForm)<0) then
       WindowsList.Add(AForm);

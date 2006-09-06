@@ -44,7 +44,7 @@ uses
 {$IFDEF IDE_MEM_CHECK}
   MemCheck,
 {$ENDIF}
-  Classes, SysUtils, Forms, FileUtil,
+  Classes, SysUtils, Forms, FileUtil, LCLProc,
   LazIDEIntf, PackageIntf, MenuIntf,
   LazarusIDEStrConsts, EnvironmentOpts,
   PackageDefs, ComponentReg, CompilerOptions, Project;
@@ -114,10 +114,6 @@ type
                       Flags: TPkgCompileFlags): TModalResult; virtual; abstract;
     function DoCompilePackage(APackage: TLazPackage; Flags: TPkgCompileFlags;
                               Globals: TGlobalCompilerOptions = nil): TModalResult; virtual; abstract;
-    function DoSavePackageMainSource(APackage: TLazPackage;
-                      Flags: TPkgCompileFlags): TModalResult; virtual; abstract;
-    function DoCheckIfDependenciesNeedCompilation(DependencyOwner: TObject;
-                            StateFileAge: longint): TModalResult; virtual; abstract;
 
     // package installation
     procedure LoadInstalledPackages; virtual; abstract;
@@ -145,24 +141,13 @@ const
     'pofRevert'
     );
 
-  PkgCompileFlagNames: array[TPkgCompileFlag] of string = (
-    'pcfCleanCompile',
-    'pcfDoNotCompileDependencies',
-    'pcfDoNotCompilePackage',
-    'pcfCompileDependenciesClean',
-    'pcfOnlyIfNeeded',
-    'pcfDoNotSaveEditorFiles',
-    'pcfCreateMakefile'
-    );
-
 function PkgSaveFlagsToString(Flags: TPkgSaveFlags): string;
 function PkgOpenFlagsToString(Flags: TPkgOpenFlags): string;
-function PkgCompileFlagsToString(Flags: TPkgCompileFlags): string;
 
 procedure GetDescriptionOfDependencyOwner(Dependency: TPkgDependency;
-                                          var Description: string);
+                                          out Description: string);
 procedure GetDirectoryOfDependencyOwner(Dependency: TPkgDependency;
-                                        var Directory: string);
+                                        out Directory: string);
 
 
 implementation
@@ -193,21 +178,8 @@ begin
   Result:='['+Result+']';
 end;
 
-function PkgCompileFlagsToString(Flags: TPkgCompileFlags): string;
-var
-  f: TPkgCompileFlag;
-begin
-  Result:='';
-  for f:=Low(TPkgCompileFlag) to High(TPkgCompileFlag) do begin
-    if not (f in Flags) then continue;
-    if Result<>'' then Result:=Result+',';
-    Result:=Result+PkgCompileFlagNames[f];
-  end;
-  Result:='['+Result+']';
-end;
-
 procedure GetDescriptionOfDependencyOwner(Dependency: TPkgDependency;
-  var Description: string);
+  out Description: string);
 var
   DepOwner: TObject;
 begin
@@ -222,7 +194,7 @@ begin
     end else if DepOwner=PkgBoss then begin
       Description:=lisPkgMangLazarus;
     end else begin
-      Description:=DepOwner.ClassName
+      Description:=dbgsName(DepOwner)
     end;
   end else begin
     Description:=Format(lisPkgMangDependencyWithoutOwner, [Dependency.AsString]
@@ -231,7 +203,7 @@ begin
 end;
 
 procedure GetDirectoryOfDependencyOwner(Dependency: TPkgDependency;
-  var Directory: string);
+  out Directory: string);
 var
   DepOwner: TObject;
 begin

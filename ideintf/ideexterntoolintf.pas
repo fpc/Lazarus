@@ -104,6 +104,12 @@ type
     property ShowAllOutput: boolean read FShowAllOutput write SetShowAllOutput;
     property OnParseLine: TOnIDEExtToolParseLine read FOnParseLine write FOnParseLine;
   end;
+  
+type
+  TRunExternalTool = function (Tool: TIDEExternalToolOptions): TModalResult of object;
+
+var
+  RunExternalTool: TRunExternalTool = nil;// set by the IDE
 
 implementation
 

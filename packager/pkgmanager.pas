@@ -51,7 +51,7 @@ uses
   AVL_Tree, Laz_XMLCfg,
   // IDE Interface
   IDEExternToolIntf, NewItemIntf, ProjectIntf, PackageIntf, MenuIntf,
-  MacroIntf, LazIDEIntf,
+  IDEMsgIntf, MacroIntf, LazIDEIntf,
   // IDE
   LazConf, LazarusIDEStrConsts, IDEProcs, ObjectLists, DialogProcs, IDECommands,
   EnvironmentOpts, MiscOptions, InputHistory, ProjectDefs, Project,
@@ -62,17 +62,10 @@ uses
   ProjectInspector, ComponentPalette, UnitEditor, AddFileToAPackageDlg,
   LazarusPackageIntf, PublishProjectDlg, InstallPkgSetDlg,
   // bosses
-  BasePkgManager,
+  BaseBuildManager, BasePkgManager,
   MainBar, MainIntf, MainBase;
 
 type
-  TPkgUninstallFlag = (
-    puifDoNotConfirm,
-    puifDoNotBuildIDE
-    );
-
-  TPkgUninstallFlags = set of TPkgUninstallFlag;
-
   { TPkgManager }
 
   TPkgManager = class(TBasePkgManager)
@@ -152,9 +145,9 @@ type
 
     // misc
     procedure GetDependencyOwnerDescription(Dependency: TPkgDependency;
-                                            var Description: string);
+                                            out Description: string);
     procedure GetDependencyOwnerDirectory(Dependency: TPkgDependency;
-                                          var Directory: string);
+                                          out Directory: string);
     procedure GetWritablePkgOutputDirectory(APackage: TLazPackage;
                                             var AnOutDirectory: string);
     procedure OnCheckInstallPackageList(PkgIDList: TFPList; var Ok: boolean);
@@ -165,23 +158,9 @@ type
     // helper functions
     function DoShowSavePackageAsDialog(APackage: TLazPackage): TModalResult;
     function DoWriteMakefile(APackage: TLazPackage): TModalResult;
-    function CompileRequiredPackages(APackage: TLazPackage;
-                                 FirstDependency: TPkgDependency;
-                                 Globals: TGlobalCompilerOptions;
-                                 Policies: TPackageUpdatePolicies): TModalResult;
     function CheckPackageGraphForCompilation(APackage: TLazPackage;
                                  FirstDependency: TPkgDependency;
                                  const Directory: string): TModalResult;
-    function DoPreparePackageOutputDirectory(APackage: TLazPackage;
-                                             CleanUp: boolean): TModalResult;
-    function DoSavePackageCompiledState(APackage: TLazPackage;
-                  const CompilerFilename, CompilerParams: string): TModalResult;
-    function DoLoadPackageCompiledState(APackage: TLazPackage;
-                                        IgnoreErrors: boolean): TModalResult;
-    function CheckIfPackageNeedsCompilation(APackage: TLazPackage;
-                            const CompilerFilename, CompilerParams,
-                            SrcFilename: string): TModalResult;
-    function CheckAmbiguousPackageUnits(APackage: TLazPackage): TModalResult;
     function MacroFunctionPkgSrcPath(Data: Pointer): boolean;
     function MacroFunctionPkgUnitPath(Data: Pointer): boolean;
     function MacroFunctionPkgIncPath(Data: Pointer): boolean;
@@ -282,11 +261,7 @@ type
                                Flags: TPkgCompileFlags): TModalResult; override;
     function DoCompilePackage(APackage: TLazPackage; Flags: TPkgCompileFlags;
                               Globals: TGlobalCompilerOptions = nil): TModalResult; override;
-    function DoSavePackageMainSource(APackage: TLazPackage;
-                              Flags: TPkgCompileFlags): TModalResult; override;
     function DoCreatePackageMakefile(APackage: TLazPackage): TModalResult;
-    function DoCheckIfDependenciesNeedCompilation(DependencyOwner: TObject;
-                            StateFileAge: longint): TModalResult; override;
 
     // package installation
     procedure LoadInstalledPackages; override;
@@ -556,13 +531,13 @@ begin
 end;
 
 procedure TPkgManager.GetDependencyOwnerDescription(
-  Dependency: TPkgDependency; var Description: string);
+  Dependency: TPkgDependency; out Description: string);
 begin
   GetDescriptionOfDependencyOwner(Dependency,Description);
 end;
 
 procedure TPkgManager.GetDependencyOwnerDirectory(Dependency: TPkgDependency;
-  var Directory: string);
+  out Directory: string);
 begin
   GetDirectoryOfDependencyOwner(Dependency,Directory);
 end;
@@ -775,7 +750,7 @@ end;
 function TPkgManager.OnPackageEditorDeleteAmbiguousFiles(Sender: TObject;
   APackage: TLazPackage; const Filename: string): TModalResult;
 begin
-  Result:=MainIDE.DoDeleteAmbiguousFiles(Filename);
+  Result:=BuildBoss.DeleteAmbiguousFiles(Filename);
 end;
 
 function TPkgManager.OnPackageEditorAddToProject(Sender: TObject;
@@ -1248,7 +1223,7 @@ var
   MakefileFPCFilename: String;
   UnitOutputPath: String;
   UnitPath: String;
-  FPCMakeTool: TExternalToolOptions;
+  FPCMakeTool: TIDEExternalToolOptions;
   CodeBuffer: TCodeBuffer;
   MainSrcFile: String;
   CustomOptions: String;
@@ -1339,11 +1314,11 @@ begin
   CodeBuffer.Source:=s;
 
   //debugln('TPkgManager.DoWriteMakefile MakefileFPCFilename="',MakefileFPCFilename,'"');
-  Result:=MainIDE.DoSaveCodeBufferToFile(CodeBuffer,MakefileFPCFilename,false);
+  Result:=SaveCodeBufferToFile(CodeBuffer,MakefileFPCFilename);
   if Result<>mrOk then exit;
   
   // call fpcmake to create the Makefile
-  FPCMakeTool:=TExternalToolOptions.Create;
+  FPCMakeTool:=TIDEExternalToolOptions.Create;
   try
     FPCMakeTool.Title:='Creating Makefile for package '+APackage.IDAsString;
     FPCMakeTool.WorkingDirectory:=APackage.Directory;
@@ -1357,7 +1332,7 @@ begin
     SourceNotebook.ClearErrorLines;
 
     // compile package
-    Result:=LazarusIDE.RunExternalTool(FPCMakeTool);
+    Result:=RunExternalTool(FPCMakeTool);
     if Result<>mrOk then begin
       Result:=IDEMessageDialog('fpcmake failed',
         'Calling '+FPCMakeTool.Filename+' to create Makefile from '
@@ -1370,39 +1345,6 @@ begin
     FPCMakeTool.Free;
   end;
   
-  Result:=mrOk;
-end;
-
-function TPkgManager.CompileRequiredPackages(APackage: TLazPackage;
-  FirstDependency: TPkgDependency; Globals: TGlobalCompilerOptions;
-  Policies: TPackageUpdatePolicies): TModalResult;
-var
-  AutoPackages: TFPList;
-  i: Integer;
-begin
-  {$IFDEF VerbosePkgCompile}
-  writeln('TPkgManager.CompileRequiredPackages A ');
-  {$ENDIF}
-  AutoPackages:=PackageGraph.GetAutoCompilationOrder(APackage,FirstDependency,
-                                                     Policies);
-  if AutoPackages<>nil then begin
-    //DebugLn('TPkgManager.CompileRequiredPackages B Count=',IntToStr(AutoPackages.Count));
-    try
-      i:=0;
-      while i<AutoPackages.Count do begin
-        Result:=DoCompilePackage(TLazPackage(AutoPackages[i]),
-                      [pcfDoNotCompileDependencies,pcfOnlyIfNeeded,
-                       pcfDoNotSaveEditorFiles],Globals);
-        if Result<>mrOk then exit;
-        inc(i);
-      end;
-    finally
-      AutoPackages.Free;
-    end;
-  end;
-  {$IFDEF VerbosePkgCompile}
-  writeln('TPkgManager.CompileRequiredPackages END ');
-  {$ENDIF}
   Result:=mrOk;
 end;
 
@@ -1511,380 +1453,6 @@ begin
   {$IFDEF VerbosePkgCompile}
   writeln('TPkgManager.CheckPackageGraphForCompilation END');
   {$ENDIF}
-  Result:=mrOk;
-end;
-
-function TPkgManager.DoSavePackageCompiledState(APackage: TLazPackage;
-  const CompilerFilename, CompilerParams: string): TModalResult;
-var
-  XMLConfig: TXMLConfig;
-  StateFile: String;
-  CompilerFileDate: Integer;
-begin
-  StateFile:=APackage.GetStateFilename;
-  try
-    CompilerFileDate:=FileAge(CompilerFilename);
-    XMLConfig:=TXMLConfig.CreateClean(StateFile);
-    try
-      XMLConfig.SetValue('Compiler/Value',CompilerFilename);
-      XMLConfig.SetValue('Compiler/Date',CompilerFileDate);
-      XMLConfig.SetValue('Params/Value',CompilerParams);
-      InvalidateFileStateCache;
-      XMLConfig.Flush;
-    finally
-      XMLConfig.Free;
-    end;
-    APackage.LastCompilerFilename:=CompilerFilename;
-    APackage.LastCompilerFileDate:=CompilerFileDate;
-    APackage.LastCompilerParams:=CompilerParams;
-    APackage.StateFileDate:=FileAge(StateFile);
-    APackage.Flags:=APackage.Flags+[lpfStateFileLoaded];
-  except
-    on E: Exception do begin
-      Result:=IDEMessageDialog(lisPkgMangErrorWritingFile,
-        Format(lisPkgMangUnableToWriteStateFileOfPackageError, ['"', StateFile,
-          '"', #13, APackage.IDAsString, #13, E.Message]),
-        mtError,[mbAbort,mbCancel]);
-      exit;
-    end;
-  end;
-
-  Result:=MainIDE.DoDeleteAmbiguousFiles(StateFile);
-  if Result<>mrOk then exit;
-end;
-
-function TPkgManager.DoLoadPackageCompiledState(APackage: TLazPackage;
-  IgnoreErrors: boolean): TModalResult;
-var
-  XMLConfig: TXMLConfig;
-  StateFile: String;
-  StateFileAge: Integer;
-begin
-  StateFile:=APackage.GetStateFilename;
-  if not FileExists(StateFile) then begin
-    DebugLn('TPkgManager.DoLoadPackageCompiledState Statefile not found: ',StateFile);
-    APackage.Flags:=APackage.Flags-[lpfStateFileLoaded];
-    Result:=mrOk;
-    exit;
-  end;
-
-  // read the state file
-  StateFileAge:=FileAge(StateFile);
-  if (not (lpfStateFileLoaded in APackage.Flags))
-  or (APackage.StateFileDate<>StateFileAge) then begin
-    APackage.Flags:=APackage.Flags-[lpfStateFileLoaded];
-    try
-      XMLConfig:=TXMLConfig.Create(StateFile);
-      try
-        APackage.LastCompilerFilename:=XMLConfig.GetValue('Compiler/Value','');
-        APackage.LastCompilerFileDate:=XMLConfig.GetValue('Compiler/Date',0);
-        APackage.LastCompilerParams:=XMLConfig.GetValue('Params/Value','');
-      finally
-        XMLConfig.Free;
-      end;
-      APackage.StateFileDate:=StateFileAge;
-    except
-      on E: Exception do begin
-        if IgnoreErrors then begin
-          Result:=mrOk;
-        end else begin
-          Result:=IDEMessageDialog(lisPkgMangErrorReadingFile,
-            Format(lisPkgMangUnableToReadStateFileOfPackageError, ['"',
-              StateFile, '"', #13, APackage.IDAsString, #13, E.Message]),
-            mtError,[mbCancel,mbAbort]);
-        end;
-        exit;
-      end;
-    end;
-    APackage.Flags:=APackage.Flags+[lpfStateFileLoaded];
-  end;
-  
-  Result:=mrOk;
-end;
-
-function TPkgManager.DoPreparePackageOutputDirectory(APackage: TLazPackage;
-  CleanUp: boolean): TModalResult;
-var
-  OutputDir: String;
-  StateFile: String;
-  PkgSrcDir: String;
-  i: Integer;
-  CurFile: TPkgFile;
-  CompiledUnitExt: String;
-  FPCVersion, FPCRelease, FPCPatch: integer;
-  OutputFileName: String;
-begin
-  OutputDir:=APackage.GetOutputDirectory;
-  StateFile:=APackage.GetStateFilename;
-  PkgSrcDir:=ExtractFilePath(APackage.GetSrcFilename);
-
-  // create the output directory
-  if not ForceDirectory(OutputDir) then begin
-    Result:=IDEMessageDialog(lisPkgMangUnableToCreateDirectory,
-      Format(lisPkgMangUnableToCreateOutputDirectoryForPackage, ['"',
-        OutputDir, '"', #13, APackage.IDAsString]),
-      mtError,[mbCancel,mbAbort]);
-    exit;
-  end;
-
-  // delete old Compile State file
-  if FileExists(StateFile) and not DeleteFile(StateFile) then begin
-    Result:=IDEMessageDialog(lisPkgMangUnableToDeleteFilename,
-      Format(lisPkgMangUnableToDeleteOldStateFileForPackage, ['"', StateFile,
-        '"', #13, APackage.IDAsString]),
-      mtError,[mbCancel,mbAbort]);
-    exit;
-  end;
-  APackage.Flags:=APackage.Flags-[lpfStateFileLoaded];
-  
-  // create the package src directory
-  if not ForceDirectory(PkgSrcDir) then begin
-    Result:=IDEMessageDialog(lisPkgMangUnableToCreateDirectory,
-      Format(lisPkgMangUnableToCreatePackageSourceDirectoryForPackage, ['"',
-        PkgSrcDir, '"', #13, APackage.IDAsString]),
-      mtError,[mbCancel,mbAbort]);
-    exit;
-  end;
-  
-  // clean up if wanted
-  if CleanUp then begin
-    CodeToolBoss.GetFPCVersionForDirectory(PkgSrcDir,
-                                           FPCVersion,FPCRelease,FPCPatch);
-    if FPCPatch=0 then ;
-    CompiledUnitExt:=GetDefaultCompiledUnitExt(FPCVersion,FPCRelease);
-    for i:=0 to APackage.FileCount-1 do begin
-      CurFile:=APackage.Files[i];
-      if not (CurFile.FileType in PkgFileUnitTypes) then continue;
-      OutputFileName:=AppendPathDelim(OutputDir)+CurFile.UnitName+CompiledUnitExt;
-      Result:=DeleteFileInteractive(OutputFileName,[mbIgnore,mbAbort]);
-      if Result in [mrCancel,mrAbort] then exit;
-    end;
-  end;
-
-  Result:=mrOk;
-end;
-
-function TPkgManager.CheckIfPackageNeedsCompilation(APackage: TLazPackage;
-  const CompilerFilename, CompilerParams, SrcFilename: string): TModalResult;
-var
-  StateFilename: String;
-  StateFileAge: Integer;
-  i: Integer;
-  CurFile: TPkgFile;
-begin
-  Result:=mrYes;
-  {$IFDEF VerbosePkgCompile}
-  writeln('TPkgManager.CheckIfPackageNeedsCompilation A ',APackage.IDAsString);
-  {$ENDIF}
-
-  // check state file
-  StateFilename:=APackage.GetStateFilename;
-  Result:=DoLoadPackageCompiledState(APackage,false);
-  if Result<>mrOk then exit;
-  if not (lpfStateFileLoaded in APackage.Flags) then begin
-    DebugLn('TPkgManager.CheckIfPackageNeedsCompilation  No state file for ',APackage.IDAsString);
-    Result:=mrYes;
-    exit;
-  end;
-
-  StateFileAge:=FileAge(StateFilename);
-
-  // check main source file
-  if FileExists(SrcFilename) and (StateFileAge<FileAge(SrcFilename)) then
-  begin
-    DebugLn('TPkgManager.CheckIfPackageNeedsCompilation  SrcFile outdated ',APackage.IDAsString);
-    Result:=mrYes;
-    exit;
-  end;
-
-  // check all required packages
-  Result:=DoCheckIfDependenciesNeedCompilation(APackage,StateFileAge);
-  if Result<>mrNo then exit;
-
-  Result:=mrYes;
-
-  // check compiler and params
-  if CompilerFilename<>APackage.LastCompilerFilename then begin
-    DebugLn('TPkgManager.CheckIfPackageNeedsCompilation  Compiler filename changed for ',APackage.IDAsString);
-    DebugLn('  Old="',APackage.LastCompilerFilename,'"');
-    DebugLn('  Now="',CompilerFilename,'"');
-    exit;
-  end;
-  if not FileExists(CompilerFilename) then begin
-    DebugLn('TPkgManager.CheckIfPackageNeedsCompilation  Compiler filename not found for ',APackage.IDAsString);
-    DebugLn('  File="',CompilerFilename,'"');
-    exit;
-  end;
-  if FileAge(CompilerFilename)<>APackage.LastCompilerFileDate then begin
-    DebugLn('TPkgManager.CheckIfPackageNeedsCompilation  Compiler file changed for ',APackage.IDAsString);
-    DebugLn('  File="',CompilerFilename,'"');
-    exit;
-  end;
-  if CompilerParams<>APackage.LastCompilerParams then begin
-    DebugLn('TPkgManager.CheckIfPackageNeedsCompilation  Compiler params changed for ',APackage.IDAsString);
-    DebugLn('  Old="',APackage.LastCompilerParams,'"');
-    DebugLn('  Now="',CompilerParams,'"');
-    exit;
-  end;
-  
-  // check package files
-  if StateFileAge<FileAge(APackage.Filename) then begin
-    DebugLn('TPkgManager.CheckIfPackageNeedsCompilation  StateFile older than lpk ',APackage.IDAsString);
-    exit;
-  end;
-  for i:=0 to APackage.FileCount-1 do begin
-    CurFile:=APackage.Files[i];
-    //writeln('TPkgManager.CheckIfPackageNeedsCompilation  CurFile.Filename="',CurFile.Filename,'" ',FileExists(CurFile.Filename),' ',StateFileAge<FileAge(CurFile.Filename));
-    if FileExists(CurFile.Filename)
-    and (StateFileAge<FileAge(CurFile.Filename)) then begin
-      DebugLn('TPkgManager.CheckIfPackageNeedsCompilation  Src has changed ',APackage.IDAsString,' ',CurFile.Filename);
-      exit;
-    end;
-  end;
-
-  {$IFDEF VerbosePkgCompile}
-  writeln('TPkgManager.CheckIfPackageNeedsCompilation END ',APackage.IDAsString);
-  {$ENDIF}
-  Result:=mrNo;
-end;
-
-function TPkgManager.DoCheckIfDependenciesNeedCompilation(
-  DependencyOwner: TObject; StateFileAge: longint): TModalResult;
-  
-  function GetOwnerID: string;
-  begin
-    if DependencyOwner is TLazPackageID then
-      Result:=TLazPackageID(DependencyOwner).IDAsString
-    else if DependencyOwner is TProject then
-      Result:=TProject(DependencyOwner).IDAsString
-    else
-      Result:=dbgsName(DependencyOwner);
-  end;
-  
-var
-  Dependency: TPkgDependency;
-  RequiredPackage: TLazPackage;
-  OtherStateFile: String;
-begin
-  if DependencyOwner is TLazPackage then
-    Dependency:=TLazPackage(DependencyOwner).FirstRequiredDependency
-  else if DependencyOwner is TProject then
-    Dependency:=TProject(DependencyOwner).FirstRequiredDependency
-  else begin
-    Result:=mrNo;
-    exit;
-  end;
-    
-  while Dependency<>nil do begin
-    if (Dependency.LoadPackageResult=lprSuccess) then begin
-      RequiredPackage:=Dependency.RequiredPackage;
-      // check compile state file of required package
-      if not RequiredPackage.AutoCreated then begin
-        Result:=DoLoadPackageCompiledState(RequiredPackage,false);
-        if Result<>mrOk then exit;
-        Result:=mrYes;
-        if not (lpfStateFileLoaded in RequiredPackage.Flags) then begin
-          DebugLn('TPkgManager.CheckIfDependenciesNeedCompilation  No state file for ',RequiredPackage.IDAsString);
-          exit;
-        end;
-        if StateFileAge<RequiredPackage.StateFileDate then begin
-          DebugLn('TPkgManager.CheckIfDependenciesNeedCompilation  Required ',
-            RequiredPackage.IDAsString,' State file is newer than ',
-            'State file ',GetOwnerID);
-          exit;
-        end;
-      end;
-      // check output state file of required package
-      if RequiredPackage.OutputStateFile<>'' then begin
-        OtherStateFile:=RequiredPackage.OutputStateFile;
-        IDEMacros.SubstituteMacros(OtherStateFile);
-        if FileExists(OtherStateFile)
-        and (FileAge(OtherStateFile)>StateFileAge) then begin
-          DebugLn('TPkgManager.CheckIfDependenciesNeedCompilation  Required ',
-            RequiredPackage.IDAsString,' OtherState file "',OtherStateFile,'"'
-            ,' is newer than State file ',GetOwnerID);
-          Result:=mrYes;
-          exit;
-        end;
-      end;
-    end;
-    Dependency:=Dependency.NextRequiresDependency;
-  end;
-  Result:=mrNo;
-end;
-
-function TPkgManager.CheckAmbiguousPackageUnits(APackage: TLazPackage
-  ): TModalResult;
-var
-  i: Integer;
-  CurFile: TPkgFile;
-  CurUnitName: String;
-  SrcDirs: String;
-  PkgDir: String;
-  PkgOutputDir: String;
-  YesToAll: Boolean;
-
-  function CheckFile(const ShortFilename: string): TModalResult;
-  var
-    AmbiguousFilename: String;
-    SearchFlags: TSearchFileInPathFlags;
-  begin
-    Result:=mrOk;
-    SearchFlags:=[];
-    if CompareFilenames(PkgDir,PkgOutputDir)=0 then
-      Include(SearchFlags,sffDontSearchInBasePath);
-    repeat
-      AmbiguousFilename:=SearchFileInPath(ShortFilename,PkgDir,SrcDirs,';',
-                                          SearchFlags);
-      if (AmbiguousFilename='') then exit;
-      if not YesToAll then
-        Result:=IDEMessageDialog(lisAmbiguousUnitFound,
-          Format(lisTheFileWasFoundInOneOfTheSourceDirectoriesOfThePac, ['"',
-            AmbiguousFilename, '"', #13, APackage.IDAsString, #13, #13]),
-          mtWarning,[mbYes,mbYesToAll,mbNo,mbAbort])
-      else
-        Result:=mrYesToAll;
-      if Result=mrNo then
-        Result:=mrOk;
-      if Result in [mrYes,mrYesToAll] then begin
-        YesToAll:=Result=mrYesToAll;
-        if (not DeleteFile(AmbiguousFilename))
-        and (IDEMessageDialog(lisPkgMangDeleteFailed, Format(lisDeletingOfFileFailed,
-          ['"', AmbiguousFilename, '"']), mtError, [mbIgnore, mbCancel])
-          <>mrIgnore) then
-        begin
-          Result:=mrCancel;
-          exit;
-        end;
-        Result:=mrOk;
-      end else
-        break;
-    until false;
-  end;
-  
-begin
-  Result:=mrOk;
-  YesToAll:=False;
-  // search in every source directory for compiled versions of the units
-  // A source directory is a directory with a used unit and it is not the output
-  // directory
-  SrcDirs:=APackage.GetSourceDirs(true,true);
-  PkgOutputDir:=AppendPathDelim(APackage.GetOutputDirectory);
-  SrcDirs:=RemoveSearchPaths(SrcDirs,PkgOutputDir);
-  if SrcDirs='' then exit;
-  PkgDir:=AppendPathDelim(APackage.Directory);
-  for i:=0 to APackage.FileCount-1 do begin
-    CurFile:=APackage.Files[i];
-    if CurFile.FileType<>pftUnit then continue;
-    CurUnitName:=lowercase(CurFile.UnitName);
-    if CurUnitName='' then continue;
-    Result:=CheckFile(CurUnitName+'.ppu');
-    if Result<>mrOk then exit;
-    Result:=CheckFile(CurUnitName+'.ppw');
-    if Result<>mrOk then exit;
-    Result:=CheckFile(CurUnitName+'.ppl');
-    if Result<>mrOk then exit;
-  end;
   Result:=mrOk;
 end;
 
@@ -2192,6 +1760,9 @@ begin
   PackageGraph.OnDependencyModified:=@PackageGraphDependencyModified;
   PackageGraph.OnBeginUpdate:=@PackageGraphBeginUpdate;
   PackageGraph.OnEndUpdate:=@PackageGraphEndUpdate;
+  PackageGraph.OnDeleteAmbiguousFiles:=@BuildBoss.DeleteAmbiguousFiles;
+  PackageGraph.OnWriteMakeFile:=@DoWriteMakefile;
+  PackageGraph.OnUninstallPackage:=@DoUninstallPackage;
 
   // package editors
   PackageEditors:=TPackageEditors.Create;
@@ -2721,11 +2292,11 @@ begin
   end;
   
   // backup old file
-  Result:=MainIDE.DoBackupFile(APackage.Filename,true);
+  Result:=BuildBoss.BackupFile(APackage.Filename);
   if Result=mrAbort then exit;
 
   // delete ambiguous files
-  Result:=MainIDE.DoDeleteAmbiguousFiles(APackage.Filename);
+  Result:=BuildBoss.DeleteAmbiguousFiles(APackage.Filename);
   if Result=mrAbort then exit;
 
   // save
@@ -2855,7 +2426,8 @@ begin
   try
     // automatically compile required packages
     if not (pcfDoNotCompileDependencies in Flags) then begin
-      Result:=CompileRequiredPackages(nil,AProject.FirstRequiredDependency,
+      Result:=PackageGraph.CompileRequiredPackages(nil,
+                                      AProject.FirstRequiredDependency,
                                       AProject.CompilerOptions.Globals,
                                       [pupAsNeeded]);
       if Result<>mrOk then exit;
@@ -2869,13 +2441,6 @@ end;
 
 function TPkgManager.DoCompilePackage(APackage: TLazPackage;
   Flags: TPkgCompileFlags; Globals: TGlobalCompilerOptions): TModalResult;
-var
-  PkgCompileTool: TExternalToolOptions;
-  CompilerFilename: String;
-  CompilerParams: String;
-  EffektiveCompilerParams: String;
-  SrcFilename: String;
-  CompilePolicies: TPackageUpdatePolicies;
 begin
   Result:=mrCancel;
   
@@ -2904,330 +2469,7 @@ begin
   Result:=WarnAboutMissingPackageFiles(APackage);
   if Result<>mrOk then exit;
 
-  PackageGraph.BeginUpdate(false);
-  try
-    // automatically compile required packages
-    if not (pcfDoNotCompileDependencies in Flags) then begin
-      CompilePolicies:=[pupAsNeeded];
-      if pcfCompileDependenciesClean in Flags then
-        Include(CompilePolicies,pupOnRebuildingAll);
-      Result:=CompileRequiredPackages(APackage,nil,Globals,CompilePolicies);
-      if Result<>mrOk then exit;
-    end;
-
-    SrcFilename:=APackage.GetSrcFilename;
-    CompilerFilename:=APackage.GetCompilerFilename;
-    CompilerParams:=APackage.CompilerOptions.MakeOptionsString(Globals,
-                               APackage.CompilerOptions.DefaultMakeOptionsFlags)
-                    +' '+CreateRelativePath(SrcFilename,APackage.Directory);
-
-    // check if compilation is neccessary
-    if (pcfOnlyIfNeeded in Flags) then begin
-      Result:=CheckIfPackageNeedsCompilation(APackage,
-                                             CompilerFilename,CompilerParams,
-                                             SrcFilename);
-      if Result=mrNo then begin
-        Result:=mrOk;
-        exit;
-      end;
-      if Result<>mrYes then exit;
-    end;
-    
-    // auto increase version
-    // ToDo
-    
-    MessagesView.BeginBlock;
-    try
-      Result:=DoPreparePackageOutputDirectory(APackage,pcfCleanCompile in Flags);
-      if Result<>mrOk then begin
-        DebugLn('TPkgManager.DoCompilePackage DoPreparePackageOutputDirectory failed');
-        exit;
-      end;
-
-      // create package main source file
-      Result:=DoSavePackageMainSource(APackage,Flags);
-      if Result<>mrOk then begin
-        DebugLn('TPkgManager.DoCompilePackage DoSavePackageMainSource failed');
-        exit;
-      end;
-
-      // check ambiguous units
-      Result:=CheckAmbiguousPackageUnits(APackage);
-      if Result<>mrOk then begin
-        DebugLn('TPkgManager.DoCompilePackage CheckAmbiguousPackageUnits failed');
-        exit;
-      end;
-      
-      // create Makefile
-      if (pcfCreateMakefile in Flags)
-      or (APackage.CompilerOptions.CreateMakefileOnBuild) then begin
-        Result:=DoWriteMakefile(APackage);
-        if Result<>mrOk then begin
-          DebugLn('TPkgManager.DoCompilePackage DoWriteMakefile failed');
-          exit;
-        end;
-      end;
-
-      // run compilation tool 'Before'
-      if not (pcfDoNotCompilePackage in Flags) then begin
-        Result:=MainIDE.DoExecuteCompilationTool(
-          APackage.CompilerOptions.ExecuteBefore,
-          APackage.Directory,'Executing command before');
-        if Result<>mrOk then exit;
-      end;
-
-      // create external tool to run the compiler
-      DebugLn('TPkgManager.DoCompilePackage Compiler="',CompilerFilename,'"');
-      DebugLn('TPkgManager.DoCompilePackage Params="',CompilerParams,'"');
-      DebugLn('TPkgManager.DoCompilePackage WorkingDir="',APackage.Directory,'"');
-
-      if (not APackage.CompilerOptions.SkipCompiler)
-      and (not (pcfDoNotCompilePackage in Flags)) then begin
-        // check compiler filename
-        try
-          CheckIfFileIsExecutable(CompilerFilename);
-        except
-          on e: Exception do begin
-            Result:=IDEMessageDialog(lisPkgManginvalidCompilerFilename,
-              Format(lisPkgMangTheCompilerFileForPackageIsNotAValidExecutable, [
-                APackage.IDAsString, #13, E.Message]),
-              mtError,[mbCancel,mbAbort]);
-            exit;
-          end;
-        end;
-
-        // change compiler parameters for compiling clean
-        EffektiveCompilerParams:=CompilerParams;
-        if pcfCleanCompile in Flags then begin
-          if EffektiveCompilerParams<>'' then
-            EffektiveCompilerParams:='-B '+EffektiveCompilerParams
-          else
-            EffektiveCompilerParams:='-B';
-        end;
-
-        PkgCompileTool:=TExternalToolOptions.Create;
-        try
-          PkgCompileTool.Title:='Compiling package '+APackage.IDAsString;
-          PkgCompileTool.ScanOutputForFPCMessages:=true;
-          PkgCompileTool.ScanOutputForMakeMessages:=true;
-          PkgCompileTool.WorkingDirectory:=APackage.Directory;
-          PkgCompileTool.Filename:=CompilerFilename;
-          PkgCompileTool.CmdLineParams:=EffektiveCompilerParams;
-
-          // clear old errors
-          SourceNotebook.ClearErrorLines;
-
-          // compile package
-          Result:=EnvironmentOptions.ExternalTools.Run(PkgCompileTool,
-                                  GlobalMacroList,nil,APackage.CompilerOptions);
-          if Result<>mrOk then exit;
-          // compilation succeded -> write state file
-          Result:=DoSavePackageCompiledState(APackage,
-                                             CompilerFilename,CompilerParams);
-          if Result<>mrOk then exit;
-        finally
-          // clean up
-          PkgCompileTool.Free;
-        end;
-      end;
-
-      // run compilation tool 'After'
-      if not (pcfDoNotCompilePackage in Flags) then begin
-        Result:=MainIDE.DoExecuteCompilationTool(
-          APackage.CompilerOptions.ExecuteAfter,
-          APackage.Directory,'Executing command after');
-        if Result<>mrOk then exit;
-      end;
-    finally
-      MessagesView.EndBlock;
-
-      if Result<>mrOk then begin
-        if (APackage.AutoInstall<>pitNope) and (APackage.Installed=pitNope) then
-        begin
-          // package was tried to install, but failed
-          // -> ask user if the package should be removed from the installation
-          // list
-          if IDEMessageDialog(lisInstallationFailed,
-            Format(
-              lisPkgMangThePackageFailedToCompileRemoveItFromTheInstallati, [
-              '"', APackage.IDAsString, '"', #13]), mtConfirmation,
-            [mbYes,mbIgnore])=mrYes then
-          begin
-            DoUninstallPackage(APackage,[puifDoNotConfirm,puifDoNotBuildIDE]);
-          end;
-        end;
-      end;
-    end;
-
-  finally
-    if not (pcfDoNotSaveEditorFiles in Flags) then begin
-      // check for changed files on disk
-      MainIDE.DoCheckFilesOnDisk;
-    end;
-
-    PackageGraph.EndUpdate;
-  end;
-  Result:=mrOk;
-end;
-
-function TPkgManager.DoSavePackageMainSource(APackage: TLazPackage;
-  Flags: TPkgCompileFlags): TModalResult;
-var
-  SrcFilename: String;
-  UsedUnits: String;
-  Src: String;
-  i: Integer;
-  e: String;
-  CurFile: TPkgFile;
-  CodeBuffer: TCodeBuffer;
-  CurUnitName: String;
-  RegistrationCode: String;
-  HeaderSrc: String;
-  OutputDir: String;
-  OldShortenSrc: String;
-  NeedsRegisterProcCall: boolean;
-  CurSrcUnitName: String;
-  NewShortenSrc: String;
-begin
-  {$IFDEF VerbosePkgCompile}
-  writeln('TPkgManager.DoSavePackageMainSource A');
-  {$ENDIF}
-  // check if package is ready for saving
-  OutputDir:=APackage.GetOutputDirectory;
-  if not DirPathExists(OutputDir) then begin
-    Result:=IDEMessageDialog(lisEnvOptDlgDirectoryNotFound,
-      Format(lisPkgMangPackageHasNoValidOutputDirectory, ['"',
-        APackage.IDAsString, '"', #13, '"', OutputDir, '"']),
-      mtError,[mbCancel,mbAbort]);
-    exit;
-  end;
-
-  SrcFilename:=APackage.GetSrcFilename;
-
-  // delete ambiguous files
-  Result:=MainIDE.DoDeleteAmbiguousFiles(SrcFilename);
-  if Result=mrAbort then begin
-    DebugLn('TPkgManager.DoSavePackageMainSource DoDeleteAmbiguousFiles failed');
-    exit;
-  end;
-
-  // collect unitnames
-  e:=LineEnding;
-  UsedUnits:='';
-  RegistrationCode:='';
-  for i:=0 to APackage.FileCount-1 do begin
-    CurFile:=APackage.Files[i];
-    // update unitname
-    if FilenameIsPascalUnit(CurFile.Filename)
-    and (CurFile.FileType in PkgFileUnitTypes) then begin
-      CurUnitName:=ExtractFileNameOnly(CurFile.Filename);
-      
-      if CurUnitName=lowercase(CurUnitName) then begin
-        // the filename is all lowercase, so we can use the nicer unitname from
-        // the source.
-
-        CodeBuffer:=CodeToolBoss.LoadFile(CurFile.Filename,false,false);
-        if CodeBuffer<>nil then begin
-          // if the unit is edited, the unitname is probably already cached
-          CurSrcUnitName:=CodeToolBoss.GetCachedSourceName(CodeBuffer);
-          // if not then parse it
-          if SysUtils.CompareText(CurSrcUnitName,CurUnitName)<>0 then
-            CurSrcUnitName:=CodeToolBoss.GetSourceName(CodeBuffer,false);
-          // if it makes sense, update unitname
-          if SysUtils.CompareText(CurSrcUnitName,CurFile.UnitName)=0 then
-            CurFile.UnitName:=CurSrcUnitName;
-        end;
-        if SysUtils.CompareText(CurUnitName,CurFile.UnitName)=0 then
-          CurUnitName:=CurFile.UnitName
-        else
-          CurFile.UnitName:=CurUnitName;
-      end;
-
-      if (CurUnitName<>'') and IsValidIdent(CurUnitName) then begin
-        NeedsRegisterProcCall:=CurFile.HasRegisterProc
-          and (APackage.PackageType in [lptDesignTime,lptRunAndDesignTime]);
-        if NeedsRegisterProcCall or CurFile.AddToUsesPkgSection then begin
-          if UsedUnits<>'' then
-            UsedUnits:=UsedUnits+', ';
-          UsedUnits:=UsedUnits+CurUnitName;
-        end;
-        if NeedsRegisterProcCall then begin
-          RegistrationCode:=RegistrationCode+
-            '  RegisterUnit('''+CurUnitName+''',@'+CurUnitName+'.Register);'+e;
-        end;
-      end else begin
-        MessagesView.AddMsg('WARNING: unit name invalid '+CurFile.Filename
-           +', package='+APackage.IDAsString,
-           APackage.Directory,-1);
-      end;
-    end;
-  end;
-  // append registration code only for design time packages
-  if (APackage.PackageType in [lptDesignTime,lptRunAndDesignTime]) then begin
-    RegistrationCode:=
-      'procedure Register;'+e
-      +'begin'+e
-      +RegistrationCode
-      +'end;'+e
-      +e
-      +'initialization'+e
-      +'  RegisterPackage('''+APackage.Name+''',@Register);'
-      +e;
-    if UsedUnits<>'' then UsedUnits:=UsedUnits+', ';
-    UsedUnits:=UsedUnits+'LazarusPackageIntf';
-  end;
-
-  // create source
-  HeaderSrc:=lisPkgMangThisSourceIsOnlyUsedToCompileAndInstallThePackage;
-  HeaderSrc:= '{ '
-           +lisPkgMangThisFileWasAutomaticallyCreatedByLazarusDoNotEdit+e
-           +lisPkgMangThisSourceIsOnlyUsedToCompileAndInstallThePackage+e
-           +' }'+e+e;
-  Src:='unit '+APackage.Name+';'+e
-      +e
-      +'interface'+e
-      +e;
-  if UsedUnits<>'' then
-    Src:=Src
-      +'uses'+e
-      +'  '+UsedUnits+';'+e
-      +e;
-  Src:=Src
-      +'implementation'+e
-      +e
-      +RegistrationCode
-      +'end.'+e;
-  Src:=CodeToolBoss.SourceChangeCache.BeautifyCodeOptions.
-                                                       BeautifyStatement(Src,0);
-  Src:=HeaderSrc+Src;
-
-  // check if old code is already uptodate
-  Result:=LoadCodeBuffer(CodeBuffer,SrcFilename,[lbfQuiet,lbfCheckIfText,
-                                      lbfUpdateFromDisk,lbfCreateClearOnError]);
-  if Result<>mrOk then begin
-    DebugLn('TPkgManager.DoSavePackageMainSource LoadCodeBuffer ',SrcFilename,' failed');
-    exit;
-  end;
-  OldShortenSrc:=CodeToolBoss.ExtractCodeWithoutComments(CodeBuffer);
-  NewShortenSrc:=CleanCodeFromComments(Src,
-                CodeToolBoss.GetNestedCommentsFlagForFile(CodeBuffer.Filename));
-  if CompareTextIgnoringSpace(OldShortenSrc,NewShortenSrc,true)=0 then begin
-    Result:=mrOk;
-    exit;
-  end;
-  if OldShortenSrc<>NewShortenSrc then begin
-    DebugLn('TPkgManager.DoSavePackageMainSource Src changed ',dbgs(length(OldShortenSrc)),' ',dbgs(length(NewShortenSrc)));
-  end;
-
-  // save source
-  Result:=MainIDE.DoSaveStringToFile(SrcFilename, Src,
-    lisPkgMangpackageMainSourceFile);
-  if Result<>mrOk then begin
-    DebugLn('TPkgManager.DoSavePackageMainSource DoSaveStringToFile ',SrcFilename,' failed');
-    exit;
-  end;
-
-  Result:=mrOk;
+  Result:=PackageGraph.CompilePackage(APackage,Flags,Globals);
 end;
 
 function TPkgManager.DoCreatePackageMakefile(APackage: TLazPackage
@@ -4081,7 +3323,7 @@ begin
     end;
     
     // compile all auto install dependencies
-    Result:=CompileRequiredPackages(nil,FirstAutoInstallDependency,
+    Result:=PackageGraph.CompileRequiredPackages(nil,FirstAutoInstallDependency,
                        MiscellaneousOptions.BuildLazOpts.Globals,[pupAsNeeded]);
     if Result<>mrOk then exit;
     
@@ -4110,8 +3352,8 @@ begin
     Dependency:=Dependency.NextRequiresDependency;
   end;
   StaticPckIncludeFile:=ConfigDir+'staticpackages.inc';
-  Result:=MainIDE.DoSaveStringToFile(StaticPckIncludeFile,StaticPackagesInc,
-                                     lisPkgMangstaticPackagesConfigFile);
+  Result:=SaveStringToFile(StaticPckIncludeFile,StaticPackagesInc,[],
+                           lisPkgMangstaticPackagesConfigFile);
   if Result<>mrOk then exit;
 
   TargetDir:=MiscellaneousOptions.BuildLazOpts.TargetDirectory;

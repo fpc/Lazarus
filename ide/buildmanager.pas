@@ -33,13 +33,13 @@ unit BuildManager;
 interface
 
 uses
-  Classes, SysUtils,
+  Classes, SysUtils, AVL_Tree,
   // LCL
-  LCLProc, Dialogs, FileUtil,
+  LCLProc, Dialogs, FileUtil, Forms, Controls,
   // codetools
   CodeToolManager, DefineTemplates,
   // IDEIntf
-  MacroIntf, IDEDialogs,
+  SrcEditorIntf, ProjectIntf, MacroIntf, IDEDialogs, IDEExternToolIntf,
   // IDE
   LazarusIDEStrConsts, DialogProcs, IDEProcs, CodeToolsOptions, InputHistory,
   MiscOptions, LazConf, EnvironmentOpts, TransferMacros, CompilerOptions,
@@ -89,6 +89,8 @@ type
     function CTMacroFuncProjectIncPath(Data: Pointer): boolean;
     function CTMacroFuncProjectSrcPath(Data: Pointer): boolean;
     procedure OnCmdLineCreate(var CmdLine: string; var Abort: boolean);
+    function OnRunCompilerWithOptions(ExtTool: TIDEExternalToolOptions;
+                           CompOptions: TBaseCompilerOptions): TModalResult;
   protected
     OverrideTargetOS: string;
     OverrideTargetCPU: string;
@@ -118,6 +120,15 @@ type
     procedure GetFPCCompilerParamsForEnvironmentTest(out Params: string);
     procedure RescanCompilerDefines(OnlyIfCompilerChanged: boolean);
 
+    function CheckAmbiguousSources(const AFilename: string;
+                                   Compiling: boolean): TModalResult; override;
+    function DeleteAmbiguousFiles(const Filename:string
+                                  ): TModalResult; override;
+    function CheckUnitPathForAmbiguousPascalFiles(const BaseDir, TheUnitPath,
+                                    CompiledExt, ContextDescription: string
+                                    ): TModalResult; override;
+    function BackupFile(const Filename: string): TModalResult; override;
+
     // methods for building
     procedure SetBuildTarget(const TargetOS, TargetCPU, LCLWidgetType: string);
     procedure SetBuildTargetIDE;
@@ -129,6 +140,24 @@ var
   TheOutputFilter: TOutputFilter = nil;
 
 implementation
+
+type
+  TUnitFile = record
+    UnitName: string;
+    Filename: string;
+  end;
+  PUnitFile = ^TUnitFile;
+
+function CompareUnitFiles(UnitFile1, UnitFile2: PUnitFile): integer;
+begin
+  Result:=CompareText(UnitFile1^.UnitName,UnitFile2^.UnitName);
+end;
+
+function CompareUnitNameAndUnitFile(UnitName: PChar;
+  UnitFile: PUnitFile): integer;
+begin
+  Result:=CompareStringPointerI(UnitName,PChar(UnitFile^.UnitName));
+end;
 
 { TBuildManager }
 
@@ -142,18 +171,21 @@ begin
     GlobalMacroList.SubstituteStr(Result,CompilerOptionMacroPlatformIndependent)
   else
     GlobalMacroList.SubstituteStr(Result,CompilerOptionMacroNormal);
-  if System.Pos('CompPath',UnparsedValue)>0 then
-    DebugLn(['TBuildManager.OnSubstituteCompilerOption UnparsedValue="',UnparsedValue,'" Result="',Result,'" ',GlobalMacroList.FindByName('CompPath')<>nil]);
 end;
 
 constructor TBuildManager.Create;
 begin
   MainBuildBoss:=Self;
   inherited Create;
+
+  OnBackupFileInteractive:=@BackupFile;
+  RunCompilerWithOptions:=@OnRunCompilerWithOptions;
 end;
 
 destructor TBuildManager.Destroy;
 begin
+  OnBackupFileInteractive:=nil;
+
   inherited Destroy;
   MainBuildBoss:=nil;
 end;
@@ -488,6 +520,404 @@ begin
   end;
 end;
 
+function TBuildManager.CheckAmbiguousSources(const AFilename: string;
+  Compiling: boolean): TModalResult;
+
+  function DeleteAmbiguousFile(const AmbiguousFilename: string): TModalResult;
+  begin
+    if not DeleteFile(AmbiguousFilename) then begin
+      Result:=IDEMessageDialog(lisErrorDeletingFile,
+       Format(lisUnableToDeleteAmbiguousFile, ['"', AmbiguousFilename, '"']),
+       mtError,[mbOk,mbAbort]);
+    end else
+      Result:=mrOk;
+  end;
+
+  function RenameAmbiguousFile(const AmbiguousFilename: string): TModalResult;
+  var
+    NewFilename: string;
+  begin
+    NewFilename:=AmbiguousFilename+'.ambiguous';
+    if not RenameFile(AmbiguousFilename,NewFilename) then
+    begin
+      Result:=IDEMessageDialog(lisErrorRenamingFile,
+       Format(lisUnableToRenameAmbiguousFileTo, ['"', AmbiguousFilename, '"',
+         #13, '"', NewFilename, '"']),
+       mtError,[mbOk,mbAbort]);
+    end else
+      Result:=mrOk;
+  end;
+
+  function AddCompileWarning(const AmbiguousFilename: string): TModalResult;
+  begin
+    Result:=mrOk;
+    if Compiling then begin
+      TheOutputFilter.ReadConstLine(
+        Format(lisWarningAmbiguousFileFoundSourceFileIs,
+        ['"', AmbiguousFilename, '"', '"', AFilename, '"']), true);
+    end;
+  end;
+
+  function CheckFile(const AmbiguousFilename: string): TModalResult;
+  begin
+    Result:=mrOk;
+    if not FileExists(AmbiguousFilename) then exit;
+    if Compiling then begin
+      Result:=AddCompileWarning(AmbiguousFilename);
+      exit;
+    end;
+    case EnvironmentOptions.AmbiguousFileAction of
+    afaAsk:
+      begin
+        Result:=IDEMessageDialog(lisAmbiguousFileFound,
+          Format(lisThereIsAFileWithTheSameNameAndASimilarExtension, [#13,
+            AFilename, #13, AmbiguousFilename, #13, #13]),
+          mtWarning,[mbYes,mbIgnore,mbAbort]);
+        case Result of
+        mrYes:    Result:=DeleteAmbiguousFile(AmbiguousFilename);
+        mrIgnore: Result:=mrOk;
+        end;
+      end;
+
+    afaAutoDelete:
+      Result:=DeleteAmbiguousFile(AmbiguousFilename);
+
+    afaAutoRename:
+      Result:=RenameAmbiguousFile(AmbiguousFilename);
+
+    afaWarnOnCompile:
+      Result:=AddCompileWarning(AmbiguousFilename);
+
+    else
+      Result:=mrOk;
+    end;
+  end;
+
+var
+  Ext, LowExt: string;
+  i: integer;
+begin
+  Result:=mrOk;
+  if EnvironmentOptions.AmbiguousFileAction=afaIgnore then exit;
+  if (EnvironmentOptions.AmbiguousFileAction=afaWarnOnCompile)
+  and not Compiling then exit;
+
+  if FilenameIsPascalUnit(AFilename) then begin
+    Ext:=ExtractFileExt(AFilename);
+    LowExt:=lowercase(Ext);
+    for i:=Low(PascalFileExt) to High(PascalFileExt) do begin
+      if LowExt<>PascalFileExt[i] then begin
+        Result:=CheckFile(ChangeFileExt(AFilename,PascalFileExt[i]));
+        if Result<>mrOk then exit;
+      end;
+    end;
+  end;
+end;
+
+function TBuildManager.DeleteAmbiguousFiles(const Filename: string
+  ): TModalResult;
+var
+  ADirectory: String;
+  FileInfo: TSearchRec;
+  ShortFilename: String;
+  CurFilename: String;
+  IsPascalUnit: Boolean;
+  UnitName: String;
+begin
+  Result:=mrOk;
+  if EnvironmentOptions.AmbiguousFileAction=afaIgnore then exit;
+  if EnvironmentOptions.AmbiguousFileAction
+    in [afaAsk,afaAutoDelete,afaAutoRename]
+  then begin
+    ADirectory:=AppendPathDelim(ExtractFilePath(Filename));
+    if SysUtils.FindFirst(ADirectory+GetAllFilesMask,faAnyFile,FileInfo)=0 then
+    begin
+      ShortFilename:=ExtractFileName(Filename);
+      IsPascalUnit:=FilenameIsPascalUnit(ShortFilename);
+      UnitName:=ExtractFilenameOnly(ShortFilename);
+      repeat
+        if (FileInfo.Name='.') or (FileInfo.Name='..')
+        or (FileInfo.Name='')
+        or ((FileInfo.Attr and faDirectory)<>0) then continue;
+        if (ShortFilename=FileInfo.Name) then continue;
+        if (AnsiCompareText(ShortFilename,FileInfo.Name)<>0)
+        and ((not IsPascalUnit) or (not FilenameIsPascalUnit(FileInfo.Name))
+           or (AnsiCompareText(UnitName,ExtractFilenameOnly(FileInfo.Name))<>0))
+        then
+          continue;
+
+        CurFilename:=ADirectory+FileInfo.Name;
+        if EnvironmentOptions.AmbiguousFileAction=afaAsk then begin
+          if IDEMessageDialog(lisDeleteAmbiguousFile,
+            Format(lisAmbiguousFileFoundThisFileCanBeMistakenWithDelete, ['"',
+              CurFilename, '"', #13, '"', ShortFilename, '"', #13, #13]),
+            mtConfirmation,[mbYes,mbNo])=mrNo
+          then continue;
+        end;
+        if EnvironmentOptions.AmbiguousFileAction in [afaAutoDelete,afaAsk]
+        then begin
+          if not DeleteFile(CurFilename) then begin
+            IDEMessageDialog(lisDeleteFileFailed,
+              Format(lisPkgMangUnableToDeleteFile, ['"', CurFilename, '"']),
+              mtError,[mbOk]);
+          end;
+        end else if EnvironmentOptions.AmbiguousFileAction=afaAutoRename then
+        begin
+          Result:=BackupFile(CurFilename);
+          if Result=mrABort then exit;
+          Result:=mrOk;
+        end;
+      until SysUtils.FindNext(FileInfo)<>0;
+    end;
+    FindClose(FileInfo);
+  end;
+end;
+
+{-------------------------------------------------------------------------------
+  function TBuildManager.CheckUnitPathForAmbiguousPascalFiles(
+    const BaseDir, TheUnitPath, CompiledExt, ContextDescription: string
+    ): TModalResult;
+
+  Collect all pascal files and all compiled units in the unit path and check
+  for ambiguous files. For example: doubles.
+-------------------------------------------------------------------------------}
+function TBuildManager.CheckUnitPathForAmbiguousPascalFiles(const BaseDir,
+  TheUnitPath, CompiledExt, ContextDescription: string): TModalResult;
+
+  procedure FreeUnitTree(var Tree: TAVLTree);
+  var
+    ANode: TAVLTreeNode;
+    AnUnitFile: PUnitFile;
+  begin
+    if Tree<>nil then begin
+      ANode:=Tree.FindLowest;
+      while ANode<>nil do begin
+        AnUnitFile:=PUnitFile(ANode.Data);
+        Dispose(AnUnitFile);
+        ANode:=Tree.FindSuccessor(ANode);
+      end;
+      Tree.Free;
+      Tree:=nil;
+    end;
+  end;
+
+var
+  EndPos: Integer;
+  StartPos: Integer;
+  CurDir: String;
+  FileInfo: TSearchRec;
+  SourceUnitTree, CompiledUnitTree: TAVLTree;
+  ANode: TAVLTreeNode;
+  CurUnitName: String;
+  CurFilename: String;
+  AnUnitFile: PUnitFile;
+  CurUnitTree: TAVLTree;
+  FileInfoNeedClose: Boolean;
+  UnitPath: String;
+begin
+  Result:=mrOk;
+  UnitPath:=TrimSearchPath(TheUnitPath,BaseDir);
+
+  SourceUnitTree:=TAVLTree.Create(TListSortCompare(@CompareUnitFiles));
+  CompiledUnitTree:=TAVLTree.Create(TListSortCompare(@CompareUnitFiles));
+  FileInfoNeedClose:=false;
+  try
+    // collect all units (.pas, .pp, compiled units)
+    EndPos:=1;
+    while EndPos<=length(UnitPath) do begin
+      StartPos:=EndPos;
+      while (StartPos<=length(UnitPath)) and (UnitPath[StartPos]=';') do
+        inc(StartPos);
+      EndPos:=StartPos;
+      while (EndPos<=length(UnitPath)) and (UnitPath[EndPos]<>';') do
+        inc(EndPos);
+      if EndPos>StartPos then begin
+        CurDir:=AppendPathDelim(TrimFilename(copy(
+                                             UnitPath,StartPos,EndPos-StartPos)));
+        FileInfoNeedClose:=true;
+        if SysUtils.FindFirst(CurDir+GetAllFilesMask,faAnyFile,FileInfo)=0 then begin
+          repeat
+            if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='')
+            or ((FileInfo.Attr and faDirectory)<>0) then continue;
+            if FilenameIsPascalUnit(FileInfo.Name) then
+              CurUnitTree:=SourceUnitTree
+            else if (CompareFileExt(FileInfo.Name,CompiledExt,false)=0) then
+              CurUnitTree:=CompiledUnitTree
+            else
+              continue;
+            CurUnitName:=ExtractFilenameOnly(FileInfo.Name);
+            CurFilename:=CurDir+FileInfo.Name;
+            // check if unit already found
+            ANode:=CurUnitTree.FindKey(PChar(CurUnitName),
+                                 TListSortCompare(@CompareUnitNameAndUnitFile));
+            if ANode<>nil then begin
+              // pascal unit exists twice
+              Result:=MessageDlg('Ambiguous unit found',
+                'The unit '+CurUnitName+' exists twice in the unit path of the '
+                +ContextDescription+':'#13
+                +#13
+                +'1. "'+PUnitFile(ANode.Data)^.Filename+'"'#13
+                +'2. "'+CurFilename+'"'#13
+                +#13
+                +'Hint: Check if two packages contain a unit with the same name.',
+                mtWarning,[mbAbort,mbIgnore],0);
+              if Result<>mrIgnore then exit;
+            end;
+            // add unit to tree
+            New(AnUnitFile);
+            AnUnitFile^.UnitName:=CurUnitName;
+            AnUnitFile^.Filename:=CurFilename;
+            CurUnitTree.Add(AnUnitFile);
+          until SysUtils.FindNext(FileInfo)<>0;
+        end;
+        FindClose(FileInfo);
+        FileInfoNeedClose:=false;
+      end;
+    end;
+  finally
+    // clean up
+    if FileInfoNeedClose then FindClose(FileInfo);
+    FreeUnitTree(SourceUnitTree);
+    FreeUnitTree(CompiledUnitTree);
+  end;
+  Result:=mrOk;
+end;
+
+function TBuildManager.BackupFile(const Filename: string): TModalResult;
+var BackupFilename, CounterFilename: string;
+  AText,ACaption:string;
+  BackupInfo: TBackupInfo;
+  FilePath, FileNameOnly, FileExt, SubDir: string;
+  i: integer;
+  IsPartOfProject: boolean;
+begin
+  Result:=mrOk;
+  if not (FileExists(Filename)) then exit;
+  IsPartOfProject:=(Project1<>nil)
+                  and (Project1.FindFile(Filename,[pfsfOnlyProjectFiles])<>nil);
+  if IsPartOfProject then
+    BackupInfo:=EnvironmentOptions.BackupInfoProjectFiles
+  else
+    BackupInfo:=EnvironmentOptions.BackupInfoOtherFiles;
+  if (BackupInfo.BackupType=bakNone)
+  or ((BackupInfo.BackupType=bakSameName) and (BackupInfo.SubDirectory='')) then
+    exit;
+  FilePath:=ExtractFilePath(Filename);
+  FileExt:=ExtractFileExt(Filename);
+  FileNameOnly:=ExtractFilenameOnly(Filename);
+  if BackupInfo.SubDirectory<>'' then begin
+    SubDir:=FilePath+BackupInfo.SubDirectory;
+    repeat
+      if not DirPathExists(SubDir) then begin
+        if not CreateDir(SubDir) then begin
+          Result:=IDEMessageDialog('Warning',
+                   Format(lisUnableToCreateBackupDirectory, ['"',SubDir, '"'])
+                   ,mtWarning,[mbAbort,mbRetry,mbIgnore]);
+          if Result=mrAbort then exit;
+          if Result=mrIgnore then Result:=mrOk;
+        end;
+      end;
+    until Result<>mrRetry;
+  end;
+  if BackupInfo.BackupType in
+     [bakSymbolInFront,bakSymbolBehind,bakUserDefinedAddExt,bakSameName] then
+  begin
+    case BackupInfo.BackupType of
+      bakSymbolInFront:
+        BackupFilename:=FileNameOnly+'.~'+copy(FileExt,2,length(FileExt)-1);
+      bakSymbolBehind:
+        BackupFilename:=FileNameOnly+FileExt+'~';
+      bakUserDefinedAddExt:
+        BackupFilename:=FileNameOnly+FileExt+'.'+BackupInfo.AdditionalExtension;
+      bakSameName:
+        BackupFilename:=FileNameOnly+FileExt;
+    end;
+    if BackupInfo.SubDirectory<>'' then
+      BackupFilename:=SubDir+PathDelim+BackupFilename
+    else
+      BackupFilename:=FilePath+BackupFilename;
+    // remove old backup file
+    repeat
+      if FileExists(BackupFilename) then begin
+        if not DeleteFile(BackupFilename) then begin
+          ACaption:=lisDeleteFileFailed;
+          AText:=Format(lisUnableToRemoveOldBackupFile, ['"', BackupFilename,
+            '"']);
+          Result:=IDEMessageDialog(ACaption,AText,mtError,
+                                   [mbAbort,mbRetry,mbIgnore]);
+          if Result=mrAbort then exit;
+          if Result=mrIgnore then Result:=mrOk;
+        end;
+      end;
+    until Result<>mrRetry;
+  end else begin
+    // backup with counter
+    if BackupInfo.SubDirectory<>'' then
+      BackupFilename:=SubDir+PathDelim+FileNameOnly+FileExt+';'
+    else
+      BackupFilename:=Filename+';';
+    if BackupInfo.MaxCounter<=0 then begin
+      // search first non existing backup filename
+      i:=1;
+      while FileExists(BackupFilename+IntToStr(i)) do inc(i);
+      BackupFilename:=BackupFilename+IntToStr(i);
+    end else begin
+      // rename all backup files (increase number)
+      i:=1;
+      while FileExists(BackupFilename+IntToStr(i))
+      and (i<=BackupInfo.MaxCounter) do inc(i);
+      if i>BackupInfo.MaxCounter then begin
+        dec(i);
+        CounterFilename:=BackupFilename+IntToStr(BackupInfo.MaxCounter);
+        // remove old backup file
+        repeat
+          if FileExists(CounterFilename) then begin
+            if not DeleteFile(CounterFilename) then begin
+              ACaption:=lisDeleteFileFailed;
+              AText:=Format(lisUnableToRemoveOldBackupFile, ['"',
+                CounterFilename, '"']);
+              Result:=MessageDlg(ACaption,AText,mtError,
+                                 [mbAbort,mbRetry,mbIgnore],0);
+              if Result=mrAbort then exit;
+              if Result=mrIgnore then Result:=mrOk;
+            end;
+          end;
+        until Result<>mrRetry;
+      end;
+      // rename all old backup files
+      dec(i);
+      while i>=1 do begin
+        repeat
+          if not RenameFile(BackupFilename+IntToStr(i),
+             BackupFilename+IntToStr(i+1)) then
+          begin
+            ACaption:=lisRenameFileFailed;
+            AText:=Format(lisUnableToRenameFileTo, ['"', BackupFilename+IntToStr
+              (i), '"', '"', BackupFilename+IntToStr(i+1), '"']);
+            Result:=MessageDlg(ACaption,AText,mtError,
+                               [mbAbort,mbRetry,mbIgnore],0);
+            if Result=mrAbort then exit;
+            if Result=mrIgnore then Result:=mrOk;
+          end;
+        until Result<>mrRetry;
+        dec(i);
+      end;
+      BackupFilename:=BackupFilename+'1';
+    end;
+  end;
+  // backup file
+  repeat
+    if not IDEProcs.BackupFile(Filename,BackupFilename) then begin
+      ACaption:=lisBackupFileFailed;
+      AText:=Format(lisUnableToBackupFileTo, ['"', Filename, '"', '"',
+        BackupFilename, '"']);
+      Result:=IDEMessageDialog(ACaption,AText,mterror,[mbabort,mbretry,mbignore]);
+      if Result=mrAbort then exit;
+      if Result=mrIgnore then Result:=mrOk;
+    end;
+  until Result<>mrRetry;
+end;
+
 function TBuildManager.MacroFuncMakeExe(const Filename: string;
   const Data: PtrInt; var Abort: boolean): string;
 var
@@ -683,6 +1113,16 @@ procedure TBuildManager.OnCmdLineCreate(var CmdLine: string; var Abort: boolean
 // replace all transfer macros in command line
 begin
   Abort:=not GlobalMacroList.SubstituteStr(CmdLine);
+end;
+
+function TBuildManager.OnRunCompilerWithOptions(
+  ExtTool: TIDEExternalToolOptions; CompOptions: TBaseCompilerOptions
+  ): TModalResult;
+begin
+  if SourceEditorWindow<>nil then
+    SourceEditorWindow.ClearErrorLines;
+  Result:=EnvironmentOptions.ExternalTools.Run(ExtTool,GlobalMacroList,
+                                               TheOutputFilter,CompOptions);
 end;
 
 procedure TBuildManager.SetBuildTarget(const TargetOS, TargetCPU,

@@ -621,7 +621,7 @@ type
     function SomethingModified: boolean;
     procedure UpdateStatusBar;
     Procedure ClearUnusedEditorComponents(Force: boolean);
-    procedure ClearErrorLines;
+    procedure ClearErrorLines; override;
     procedure ClearExecutionLines;
 
     procedure CloseTabClicked(Sender: TObject);

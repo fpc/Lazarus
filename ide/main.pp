@@ -53,6 +53,15 @@ unit Main;
 
 interface
 
+// TODO: Test on all platforms
+{$IFNDEF DisableAsyncProcess}
+  {$IFDEF Linux}
+    {$IFDEF CPUI386}
+      {off $DEFINE UseAsyncProcess}
+    {$ENDIF}
+  {$ENDIF}
+{$ENDIF}
+
 {$I ide.inc}
 
 uses
@@ -60,7 +69,7 @@ uses
   MemCheck,
 {$ENDIF}
   // fpc packages
-  Classes, SysUtils, Process, TypInfo,
+  Classes, SysUtils, Process, AsyncProcess, TypInfo,
   // lcl
   LCLProc, LCLMemManager, LCLType, LCLIntf, LMessages, LResources, StdCtrls,
   Forms, Buttons, Menus, FileUtil, Controls, GraphType, Graphics, ExtCtrls,
@@ -101,7 +110,7 @@ uses
   // debugger
   RunParamsOpts, BaseDebugManager, DebugManager,
   // packager
-  PkgManager, BasePkgManager,
+  PackageSystem, PkgManager, BasePkgManager,
   // source editing
   UnitEditor, CodeToolsOptions, IDEOptionDefs, CheckLFMDlg,
   CodeToolsDefines, DiffDialog, DiskDiffsDialog, UnitInfoDlg, EditorOptions,
@@ -691,13 +700,10 @@ type
 
     // external tools
     function PrepareForCompile: TModalResult; override;
-    function RunExternalTool(Tool: TIDEExternalToolOptions): TModalResult; override;
+    function OnRunExternalTool(Tool: TIDEExternalToolOptions): TModalResult;
     function DoRunExternalTool(Index: integer): TModalResult;
     function DoSaveBuildIDEConfigs(Flags: TBuildLazarusFlags): TModalResult; override;
     function DoBuildLazarus(Flags: TBuildLazarusFlags): TModalResult; override;
-    function DoExecuteCompilationTool(Tool: TCompilationToolOptions;
-                                      const WorkingDir, ToolTitle: string
-                                      ): TModalResult; override;
     function DoBuildFile: TModalResult;
     function DoRunFile: TModalResult;
     function DoConfigBuildFile: TModalResult;
@@ -733,20 +739,11 @@ type
                             Flags: TFindSourceFlags): string; override;
     function FileExistsInIDE(const Filename: string;
                              SearchFlags: TProjectFileSearchFlags): boolean;
-    function DoSaveStreamToFile(AStream:TStream; const Filename:string;
-                                IsPartOfProject:boolean): TModalResult;
-    function DoSaveStringToFile(const Filename, Src,
-                               FileDescription: string): TModalResult; override;
     function LoadIDECodeBuffer(var ACodeBuffer: TCodeBuffer;
                                const AFilename: string;
                                Flags: TLoadBufferFlags): TModalResult;
     function DoLoadMemoryStreamFromFile(MemStream: TMemoryStream;
                                         const AFilename:string): TModalResult;
-    function DoSaveCodeBufferToFile(ABuffer: TCodeBuffer;
-                                    const AFilename: string;
-                                    IsPartOfProject:boolean): TModalResult; override;
-    function DoBackupFile(const Filename:string;
-                          IsPartOfProject:boolean): TModalResult; override;
     function DoRenameUnitLowerCase(AnUnitInfo: TUnitInfo;
                                    AskUser: boolean): TModalresult;
     function DoCheckFilesOnDisk(Instantaneous: boolean = false): TModalResult; override;
@@ -1031,6 +1028,12 @@ begin
   inherited Create(TheOwner);
 
   SetupDialogs;
+  RunExternalTool:=@OnRunExternalTool;
+  {$IFDEF UseAsyncProcess}
+  TOutputFilterProcess:=TAsyncProcess;
+  {$ELSE}
+  TOutputFilterProcess:=TProcess;
+  {$ENDIF}
 
   MainBuildBoss:=TBuildManager.Create;
 
@@ -4203,8 +4206,7 @@ begin
                   // stream text to file
                   TxtCompStream.Position:=0;
                   LFMCode.LoadFromStream(TxtCompStream);
-                  Result:=DoSaveCodeBufferToFile(LFMCode,LFMCode.Filename,
-                                   AnUnitInfo.IsPartOfProject);
+                  Result:=SaveCodeBufferToFile(LFMCode,LFMCode.Filename);
                   if not Result=mrOk then exit;
                   Result:=mrCancel;
                 finally
@@ -4266,16 +4268,14 @@ begin
   if ResourceCode<>nil then begin
     if not (sfSaveToTestDir in Flags) then begin
       if (ResourceCode.Modified) then begin
-        Result:=DoSaveCodeBufferToFile(ResourceCode,ResourceCode.Filename,
-                                       AnUnitInfo.IsPartOfProject);
+        Result:=SaveCodeBufferToFile(ResourceCode,ResourceCode.Filename);
         if not Result=mrOk then exit;
       end;
     end else begin
       TestFilename:=MainBuildBoss.GetTestUnitFilename(AnUnitInfo);
-      Result:=DoSaveCodeBufferToFile(ResourceCode,
+      Result:=SaveCodeBufferToFile(ResourceCode,
                  ChangeFileExt(TestFilename,
-                               ExtractFileExt(ResourceCode.Filename)),
-                 false);
+                               ExtractFileExt(ResourceCode.Filename)));
       if not Result=mrOk then exit;
     end;
   end;
@@ -4483,8 +4483,7 @@ begin
   end;
 
   // save file
-  Result:=DoSaveCodeBufferToFile(NewSource,NewSource.Filename,
-                                 AnUnitInfo.IsPartOfProject);
+  Result:=SaveCodeBufferToFile(NewSource,NewSource.Filename);
   if Result<>mrOk then exit;
 
   // change packages containing the file
@@ -5023,7 +5022,7 @@ begin
   Result.EndUpdate;
 
   Result.MainProject:=true;
-  Result.OnFileBackup:=@DoBackupFile;
+  Result.OnFileBackup:=@MainBuildBoss.BackupFile;
   Result.OnLoadProjectInfo:=@OnLoadProjectInfoFromXMLConfig;
   Result.OnSaveProjectInfo:=@OnSaveProjectInfoToXMLConfig;
   Result.OnGetTestDirectory:=@OnProjectGetTestDirectory;
@@ -5730,7 +5729,7 @@ begin
   end;
 
   if sfCheckAmbiguousFiles in Flags then
-    DoCheckAmbiguousSources(DestFilename,false);
+    MainBuildBoss.CheckAmbiguousSources(DestFilename,false);
 
   {$IFDEF IDE_DEBUG}
   writeln('*** HasResources=',ActiveUnitInfo.HasResources);
@@ -6324,32 +6323,6 @@ begin
   until FileIsUnique(Result);
 end;
 
-function TMainIDE.DoSaveStringToFile(const Filename, Src,
-  FileDescription: string): TModalResult;
-var
-  fs: TFileStream;
-begin
-  try
-    ClearFile(Filename,true);
-    InvalidateFileStateCache;
-    fs:=TFileStream.Create(Filename,fmCreate);
-    try
-      if Src<>'' then
-        fs.Write(Src[1],length(Src));
-    finally
-      fs.Free;
-    end;
-  except
-    on E: Exception do begin
-      Result:=MessageDlg(lisPkgMangErrorWritingFile,
-        Format(lisUnableToWrite, [FileDescription, #13, '"', Filename, '"']),
-        mtError,[mbCancel,mbAbort],0);
-      exit;
-    end;
-  end;
-  Result:=mrOk;
-end;
-
 function TMainIDE.LoadIDECodeBuffer(var ACodeBuffer: TCodeBuffer;
   const AFilename: string; Flags: TLoadBufferFlags): TModalResult;
 begin
@@ -6711,8 +6684,7 @@ begin
       end else
         DestFilename:=MainBuildBoss.GetTestUnitFilename(MainUnitInfo);
       if not SkipSavingMainSource then begin
-        Result:=DoSaveCodeBufferToFile(MainUnitInfo.Source, DestFilename,
-                                       not (sfSaveToTestDir in Flags));
+        Result:=SaveCodeBufferToFile(MainUnitInfo.Source, DestFilename);
         if Result=mrAbort then exit;
       end;
     end;
@@ -7237,7 +7209,7 @@ begin
     AnUnitInfo:=Project1.Units[i];
     if (AnUnitInfo.IsPartOfProject) and (not AnUnitInfo.IsVirtual) then begin
       DestFilename:=MainBuildBoss.GetTargetUnitFilename(AnUnitInfo);
-      Result:=DoCheckAmbiguousSources(DestFilename,true);
+      Result:=MainBuildBoss.CheckAmbiguousSources(DestFilename,true);
       if Result<>mrOk then exit;
     end;
   end;
@@ -7348,7 +7320,8 @@ begin
   end;
 
   // check all required packages
-  Result:=PkgBoss.DoCheckIfDependenciesNeedCompilation(AProject,StateFileAge);
+  Result:=PackageGraph.CheckIfDependenciesNeedCompilation(
+                                 AProject.FirstRequiredDependency,StateFileAge);
   if Result<>mrNo then exit;
 
   Result:=mrYes;
@@ -7506,9 +7479,9 @@ begin
     end;
     CompilerFilename:=Project1.CompilerOptions.CompilerPath;
     GlobalMacroList.SubstituteStr(CompilerFilename);
-    DebugLn(['TMainIDE.DoBuildProject A Project1.GetCompilerFilename="',Project1.GetCompilerFilename,'" CompilerFilename="',CompilerFilename,'" CompilerPath="',Project1.CompilerOptions.CompilerPath,'"']);
+    //DebugLn(['TMainIDE.DoBuildProject A Project1.GetCompilerFilename="',Project1.GetCompilerFilename,'" CompilerFilename="',CompilerFilename,'" CompilerPath="',Project1.CompilerOptions.CompilerPath,'"']);
     CompilerFilename:=Project1.GetCompilerFilename;
-    DebugLn(['TMainIDE.DoBuildProject CompilerFilename="',CompilerFilename,'" CompilerPath="',Project1.CompilerOptions.CompilerPath,'"']);
+    //DebugLn(['TMainIDE.DoBuildProject CompilerFilename="',CompilerFilename,'" CompilerPath="',Project1.CompilerOptions.CompilerPath,'"']);
     
     CompilerParams:=Project1.CompilerOptions.MakeOptionsString(SrcFilename,nil,[])
                     +' '+PrepareCmdLineOption(SrcFilename);
@@ -7538,9 +7511,8 @@ begin
       ToolBefore:=TProjectCompilationToolOptions(
                                         Project1.CompilerOptions.ExecuteBefore);
       if (AReason in ToolBefore.CompileReasons) then begin
-        Result:=DoExecuteCompilationTool(Project1.CompilerOptions.ExecuteBefore,
-                                         Project1.ProjectDirectory,
-                                         lisExecutingCommandBefore);
+        Result:=Project1.CompilerOptions.ExecuteBefore.Execute(
+                           Project1.ProjectDirectory,lisExecutingCommandBefore);
         if Result<>mrOk then exit;
       end;
     end;
@@ -7576,9 +7548,8 @@ begin
                                          Project1.CompilerOptions.ExecuteAfter);
       // no need to check for mrOk, we are exit if it wasn't
       if (AReason in ToolAfter.CompileReasons) then begin
-        Result:=DoExecuteCompilationTool(Project1.CompilerOptions.ExecuteAfter,
-                                         Project1.ProjectDirectory,
-                                         lisExecutingCommandAfter);
+        Result:=Project1.CompilerOptions.ExecuteAfter.Execute(
+                            Project1.ProjectDirectory,lisExecutingCommandAfter);
         if Result<>mrOk then exit;
       end;
     end;
@@ -7911,7 +7882,7 @@ begin
       if FPCPatch=0 then ;
       CompiledUnitExt:=MiscellaneousOptions.BuildLazOpts.CompiledUnitExt(
                          FPCVersion,FPCRelease);
-      Result:=DoCheckUnitPathForAmbiguousPascalFiles(
+      Result:=MainBuildBoss.CheckUnitPathForAmbiguousPascalFiles(
                        EnvironmentOptions.LazarusDirectory,
                        InheritedOptionStrings[icoUnitPath],
                        CompiledUnitExt,'IDE');
@@ -7947,45 +7918,6 @@ begin
   end;
   if (Result=mrOK) and MiscellaneousOptions.BuildLazOpts.RestartAfterBuild then
      mnuRestartClicked(nil);
-end;
-
-function TMainIDE.DoExecuteCompilationTool(Tool: TCompilationToolOptions;
-  const WorkingDir, ToolTitle: string): TModalResult;
-var
-  ProgramFilename, Params: string;
-  ExtTool: TExternalToolOptions;
-  Filename: String;
-begin
-  if Tool.Command='' then begin
-    Result:=mrOk;
-    exit;
-  end;
-
-  SourceNotebook.ClearErrorLines;
-
-  SplitCmdLine(Tool.Command,ProgramFilename,Params);
-  if not FilenameIsAbsolute(ProgramFilename) then begin
-    Filename:=FindProgram(ProgramFilename,WorkingDir,true);
-    if Filename<>'' then ProgramFilename:=Filename;
-  end;
-
-  ExtTool:=TExternalToolOptions.Create;
-  try
-    ExtTool.Filename:=ProgramFilename;
-    ExtTool.ScanOutputForFPCMessages:=Tool.ScanForFPCMessages;
-    ExtTool.ScanOutputForMakeMessages:=Tool.ScanForMakeMessages;
-    ExtTool.ScanOutput:=true;
-    ExtTool.ShowAllOutput:=Tool.ShowAllMessages;
-    ExtTool.Title:=ToolTitle;
-    ExtTool.WorkingDirectory:=WorkingDir;
-    ExtTool.CmdLineParams:=Params;
-
-    // run
-    Result:=EnvironmentOptions.ExternalTools.Run(ExtTool,GlobalMacroList);
-  finally
-    // clean up
-    ExtTool.Free;
-  end;
 end;
 
 function TMainIDE.DoBuildFile: TModalResult;
@@ -8435,7 +8367,7 @@ begin
   end;
 end;
 
-function TMainIDE.RunExternalTool(Tool: TIDEExternalToolOptions): TModalResult;
+function TMainIDE.OnRunExternalTool(Tool: TIDEExternalToolOptions): TModalResult;
 begin
   SourceNotebook.ClearErrorLines;
   Result:=EnvironmentOptions.ExternalTools.Run(Tool,GlobalMacroList);
@@ -8570,26 +8502,6 @@ begin
   Result:=SourceNoteBook.FindSourceEditorWithPageIndex(AnUnitInfo.EditorIndex);
 end;
 
-function TMainIDE.DoSaveStreamToFile(AStream:TStream;
-  const Filename:string; IsPartOfProject:boolean):TModalResult;
-// save to file with backup and user interaction
-var AText,ACaption:string;
-  NewBuf: TCodeBuffer;
-begin
-  Result:=DoBackupFile(Filename,IsPartOfProject);
-  if Result<>mrOk then exit;
-  repeat
-    NewBuf:=CodeToolBoss.CreateFile(FileName);
-    if (NewBuf<>nil) or (not NewBuf.SaveToFile(Filename)) then begin
-      ACaption:=lisCodeToolsDefsWriteError;
-      AText:=Format(lisUnableToSaveFile, ['"', Filename, '"']);
-      Result:=MessageDlg(ACaption,AText,mterror, [mbabort, mbretry, mbignore],0);
-      if Result=mrIgnore then Result:=mrOk;
-      if Result=mrAbort then exit;
-    end;
-  until Result<>mrRetry;
-end;
-
 function TMainIDE.DoLoadMemoryStreamFromFile(MemStream: TMemoryStream;
   const AFilename:string): TModalResult;
 var FileStream: TFileStream;
@@ -8611,168 +8523,6 @@ begin
       AText:=Format(lisUnableToReadFile2, ['"', AFilename, '"']);
       result := Application.MessageBox(PChar(aText),pChar(aCaption),mb_IconError+mb_AbortRetryIgnore);
       if Result=mrAbort then exit;
-    end;
-  until Result<>mrRetry;
-end;
-
-function TMainIDE.DoSaveCodeBufferToFile(ABuffer: TCodeBuffer;
-  const AFilename: string; IsPartOfProject:boolean): TModalResult;
-var
-  ACaption,AText:string;
-begin
-  Result:=DoBackupFile(AFilename,IsPartOfProject);
-  if Result<>mrOk then exit;
-  repeat
-    if ABuffer.SaveToFile(AFilename) then begin
-      Result:=mrOk;
-    end else begin
-      ACaption:=lisWriteError;
-      AText:=Format(lisUnableToWriteToFile, ['"', AFilename, '"']);
-      Result:=MessageDlg(ACaption,AText,mtError,[mbAbort, mbRetry, mbIgnore],0);
-      if Result=mrAbort then exit;
-      if Result=mrIgnore then Result:=mrOk;
-    end;
-  until Result<>mrRetry;
-end;
-
-{-------------------------------------------------------------------------------
-  TMainIDE DoBackupFile
-
-  Params:  const Filename:string;
-           IsPartOfProject:boolean
-  Returns: TModalResult
-
-  Rename existing file to backup file.
--------------------------------------------------------------------------------}
-function TMainIDE.DoBackupFile(const Filename:string;
-  IsPartOfProject:boolean): TModalResult;
-var BackupFilename, CounterFilename: string;
-  AText,ACaption:string;
-  BackupInfo: TBackupInfo;
-  FilePath, FileNameOnly, FileExt, SubDir: string;
-  i: integer;
-begin
-  Result:=mrOk;
-  if not (FileExists(Filename)) then exit;
-  if IsPartOfProject then
-    BackupInfo:=EnvironmentOptions.BackupInfoProjectFiles
-  else
-    BackupInfo:=EnvironmentOptions.BackupInfoOtherFiles;
-  if (BackupInfo.BackupType=bakNone)
-  or ((BackupInfo.BackupType=bakSameName) and (BackupInfo.SubDirectory='')) then
-    exit;
-  FilePath:=ExtractFilePath(Filename);
-  FileExt:=ExtractFileExt(Filename);
-  FileNameOnly:=ExtractFilenameOnly(Filename);
-  if BackupInfo.SubDirectory<>'' then begin
-    SubDir:=FilePath+BackupInfo.SubDirectory;
-    repeat
-      if not DirPathExists(SubDir) then begin
-        if not CreateDir(SubDir) then begin
-          Result:=MessageDlg(Format(lisUnableToCreateBackupDirectory, ['"',
-            SubDir, '"'])
-                ,mtWarning,[mbAbort,mbRetry,mbIgnore],0);
-          if Result=mrAbort then exit;
-          if Result=mrIgnore then Result:=mrOk;
-        end;
-      end;
-    until Result<>mrRetry;
-  end;
-  if BackupInfo.BackupType in
-     [bakSymbolInFront,bakSymbolBehind,bakUserDefinedAddExt,bakSameName] then
-  begin
-    case BackupInfo.BackupType of
-      bakSymbolInFront:
-        BackupFilename:=FileNameOnly+'.~'+copy(FileExt,2,length(FileExt)-1);
-      bakSymbolBehind:
-        BackupFilename:=FileNameOnly+FileExt+'~';
-      bakUserDefinedAddExt:
-        BackupFilename:=FileNameOnly+FileExt+'.'+BackupInfo.AdditionalExtension;
-      bakSameName:
-        BackupFilename:=FileNameOnly+FileExt;
-    end;
-    if BackupInfo.SubDirectory<>'' then
-      BackupFilename:=SubDir+PathDelim+BackupFilename
-    else
-      BackupFilename:=FilePath+BackupFilename;
-    // remove old backup file
-    repeat
-      if FileExists(BackupFilename) then begin
-        if not DeleteFile(BackupFilename) then begin
-          ACaption:=lisDeleteFileFailed;
-          AText:=Format(lisUnableToRemoveOldBackupFile, ['"', BackupFilename,
-            '"']);
-          Result:=MessageDlg(ACaption,AText,mtError,[mbAbort,mbRetry,mbIgnore],
-                             0);
-          if Result=mrAbort then exit;
-          if Result=mrIgnore then Result:=mrOk;
-        end;
-      end;
-    until Result<>mrRetry;
-  end else begin
-    // backup with counter
-    if BackupInfo.SubDirectory<>'' then
-      BackupFilename:=SubDir+PathDelim+FileNameOnly+FileExt+';'
-    else
-      BackupFilename:=Filename+';';
-    if BackupInfo.MaxCounter<=0 then begin
-      // search first non existing backup filename
-      i:=1;
-      while FileExists(BackupFilename+IntToStr(i)) do inc(i);
-      BackupFilename:=BackupFilename+IntToStr(i);
-    end else begin
-      // rename all backup files (increase number)
-      i:=1;
-      while FileExists(BackupFilename+IntToStr(i))
-      and (i<=BackupInfo.MaxCounter) do inc(i);
-      if i>BackupInfo.MaxCounter then begin
-        dec(i);
-        CounterFilename:=BackupFilename+IntToStr(BackupInfo.MaxCounter);
-        // remove old backup file
-        repeat
-          if FileExists(CounterFilename) then begin
-            if not DeleteFile(CounterFilename) then begin
-              ACaption:=lisDeleteFileFailed;
-              AText:=Format(lisUnableToRemoveOldBackupFile, ['"',
-                CounterFilename, '"']);
-              Result:=MessageDlg(ACaption,AText,mtError,
-                                 [mbAbort,mbRetry,mbIgnore],0);
-              if Result=mrAbort then exit;
-              if Result=mrIgnore then Result:=mrOk;
-            end;
-          end;
-        until Result<>mrRetry;
-      end;
-      // rename all old backup files
-      dec(i);
-      while i>=1 do begin
-        repeat
-          if not RenameFile(BackupFilename+IntToStr(i),
-             BackupFilename+IntToStr(i+1)) then
-          begin
-            ACaption:=lisRenameFileFailed;
-            AText:=Format(lisUnableToRenameFileTo, ['"', BackupFilename+IntToStr
-              (i), '"', '"', BackupFilename+IntToStr(i+1), '"']);
-            Result:=MessageDlg(ACaption,AText,mtError,
-                               [mbAbort,mbRetry,mbIgnore],0);
-            if Result=mrAbort then exit;
-            if Result=mrIgnore then Result:=mrOk;
-          end;
-        until Result<>mrRetry;
-        dec(i);
-      end;
-      BackupFilename:=BackupFilename+'1';
-    end;
-  end;
-  // backup file
-  repeat
-    if not BackupFile(Filename,BackupFilename) then begin
-      ACaption:=lisBackupFileFailed;
-      AText:=Format(lisUnableToBackupFileTo, ['"', Filename, '"', '"',
-        BackupFilename, '"']);
-      Result:=MessageDlg(ACaption,AText,mterror,[mbabort,mbretry,mbignore],0);
-      if Result=mrAbort then exit;
-      if Result=mrIgnore then Result:=mrOk;
     end;
   until Result<>mrRetry;
 end;

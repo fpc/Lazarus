@@ -154,28 +154,11 @@ type
     function PrepareForCompile: TModalResult; virtual; abstract;
     function DoSaveBuildIDEConfigs(Flags: TBuildLazarusFlags): TModalResult; virtual; abstract;
     function DoBuildLazarus(Flags: TBuildLazarusFlags): TModalResult; virtual; abstract;
-    function DoExecuteCompilationTool(Tool: TCompilationToolOptions;
-                                      const WorkingDir, ToolTitle: string
-                                      ): TModalResult; virtual; abstract;
     function DoSaveForBuild: TModalResult; virtual; abstract;
     function DoCheckFilesOnDisk(Instantaneous: boolean = false): TModalResult; virtual; abstract;
     function DoPublishModule(Options: TPublishModuleOptions;
                              const SrcDirectory, DestDirectory: string
                              ): TModalResult; virtual; abstract;
-    function DoCheckAmbiguousSources(const AFilename: string;
-                                     Compiling: boolean): TModalResult; virtual; abstract;
-    function DoSaveStringToFile(const Filename, Src,
-                                FileDescription: string): TModalResult; virtual; abstract;
-    function DoSaveCodeBufferToFile(ABuffer: TCodeBuffer;
-                                    const AFilename: string;
-                                    IsPartOfProject:boolean): TModalResult; virtual; abstract;
-    function DoBackupFile(const Filename:string;
-                      IsPartOfProject:boolean): TModalResult; virtual; abstract;
-    function DoDeleteAmbiguousFiles(const Filename:string
-                                    ): TModalResult; virtual; abstract;
-    function DoCheckUnitPathForAmbiguousPascalFiles(const BaseDir, TheUnitPath,
-                                    CompiledExt, ContextDescription: string
-                                    ): TModalResult; virtual; abstract;
 
     procedure UpdateWindowsMenu; virtual; abstract;
     procedure SaveEnvironment; virtual; abstract;

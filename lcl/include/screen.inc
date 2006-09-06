@@ -102,14 +102,18 @@ begin
       FFormList.Insert(0, ACustomForm);
     end;
   end;
+  MoveFormToZFront(ACustomForm);
 end;
 
 procedure TScreen.MoveFormToZFront(ACustomForm: TCustomForm);
+//var i: Integer;
 begin
   if (FCustomFormsZOrdered.Count=0)
   or (TObject(FCustomFormsZOrdered[0])<>ACustomForm) then begin
     FCustomFormsZOrdered.Remove(ACustomForm);
     FCustomFormsZOrdered.Insert(0, ACustomForm);
+    //for i:=0 to FCustomFormsZOrdered.Count-1 do
+    //  DebugLn(['TScreen.MoveFormToZFront ',i,'/',FCustomFormsZOrdered.Count,' ',dbgsName(CustomFormsZOrdered[i])]);
   end;
 end;
 

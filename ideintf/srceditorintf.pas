@@ -148,6 +148,7 @@ type
     
     function GetEditorControlSettings(EditControl: TControl): boolean; virtual; abstract;
     function GetHighlighterSettings(Highlighter: TObject): boolean; virtual; abstract;
+    procedure ClearErrorLines; virtual; abstract;
   end;
   
   

@@ -41,8 +41,8 @@ unit CompilerOptions;
 interface
 
 uses
-  Classes, SysUtils, FileProcs, FileUtil, LCLProc,
-  Laz_XMLCfg, ProjectIntf, MacroIntf,
+  Classes, SysUtils, FileProcs, FileUtil, LCLProc, Forms, Controls,
+  Laz_XMLCfg, ProjectIntf, MacroIntf, IDEExternToolIntf, SrcEditorIntf,
   IDEProcs, LazConf, TransferMacros;
 
 type
@@ -256,6 +256,7 @@ type
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string); virtual;
     procedure CreateDiff(CompOpts: TCompilationToolOptions;
                          Tool: TCompilerDiffTool); virtual;
+    function Execute(const WorkingDir, ToolTitle: string): TModalResult;
   end;
   TCompilationToolClass = class of TCompilationToolOptions;
 
@@ -453,12 +454,16 @@ const
 
 type
   TCompilerGraphStampIncreasedEvent = procedure of object;
+  TRunCompilerWithOptions = function(ExtTool: TIDEExternalToolOptions;
+                ACompilerOptions: TBaseCompilerOptions): TModalResult of object;
 
 var
   CompilerParseStamp: integer; // TimeStamp of base value for macros
   CompilerGraphStamp: integer; // TimeStamp of IDE graph (e.g. packages)
-  OnParseString: TParseStringEvent;
-  CompilerGraphStampIncreased: TCompilerGraphStampIncreasedEvent;
+  OnParseString: TParseStringEvent = nil;
+  CompilerGraphStampIncreased: TCompilerGraphStampIncreasedEvent = nil;
+  
+  RunCompilerWithOptions: TRunCompilerWithOptions = nil;
 
 procedure IncreaseCompilerParseStamp;
 procedure IncreaseCompilerGraphStamp;
@@ -2951,6 +2956,46 @@ begin
   Tool.AddDiff('ScanForFPCMessages',ScanForFPCMessages,CompOpts.ScanForFPCMessages);
   Tool.AddDiff('ScanForMakeMessages',ScanForMakeMessages,CompOpts.ScanForMakeMessages);
   Tool.AddDiff('ShowAllMessages',ShowAllMessages,CompOpts.ShowAllMessages);
+end;
+
+function TCompilationToolOptions.Execute(const WorkingDir, ToolTitle: string
+  ): TModalResult;
+var
+  ProgramFilename, Params: string;
+  ExtTool: TIDEExternalToolOptions;
+  Filename: String;
+begin
+  if Command='' then begin
+    Result:=mrOk;
+    exit;
+  end;
+
+  if SourceEditorWindow<>nil then
+    SourceEditorWindow.ClearErrorLines;
+
+  SplitCmdLine(Command,ProgramFilename,Params);
+  if not FilenameIsAbsolute(ProgramFilename) then begin
+    Filename:=FindProgram(ProgramFilename,WorkingDir,true);
+    if Filename<>'' then ProgramFilename:=Filename;
+  end;
+
+  ExtTool:=TIDEExternalToolOptions.Create;
+  try
+    ExtTool.Filename:=ProgramFilename;
+    ExtTool.ScanOutputForFPCMessages:=ScanForFPCMessages;
+    ExtTool.ScanOutputForMakeMessages:=ScanForMakeMessages;
+    ExtTool.ScanOutput:=true;
+    ExtTool.ShowAllOutput:=ShowAllMessages;
+    ExtTool.Title:=ToolTitle;
+    ExtTool.WorkingDirectory:=WorkingDir;
+    ExtTool.CmdLineParams:=Params;
+
+    // run
+    Result:=RunExternalTool(ExtTool);
+  finally
+    // clean up
+    ExtTool.Free;
+  end;
 end;
 
 { TGlobalCompilerOptions }

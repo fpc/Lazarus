@@ -64,9 +64,9 @@ type
   TGetAllRequiredPackagesEvent =
     procedure(FirstDependency: TPkgDependency; var List: TFPList) of object;
   TGetDependencyOwnerDescription =
-    procedure(Dependency: TPkgDependency; var Description: string) of object;
+    procedure(Dependency: TPkgDependency; out Description: string) of object;
   TGetDependencyOwnerDirectory =
-    procedure(Dependency: TPkgDependency; var Directory: string) of object;
+    procedure(Dependency: TPkgDependency; out Directory: string) of object;
   TGetWritablePkgOutputDirectory =
     procedure(APackage: TLazPackage; var AnOutDirectory: string) of object;
 
@@ -814,12 +814,12 @@ const
     
 var
   // All TPkgDependency are added to this AVL tree (sorted for names, not version!)
-  PackageDependencies: TAVLTree; // tree of TPkgDependency
+  PackageDependencies: TAVLTree = nil; // tree of TPkgDependency
 
-  OnGetAllRequiredPackages: TGetAllRequiredPackagesEvent;
-  OnGetDependencyOwnerDescription: TGetDependencyOwnerDescription;
-  OnGetDependencyOwnerDirectory: TGetDependencyOwnerDirectory;
-  OnGetWritablePkgOutputDirectory: TGetWritablePkgOutputDirectory;
+  OnGetAllRequiredPackages: TGetAllRequiredPackagesEvent = nil;
+  OnGetDependencyOwnerDescription: TGetDependencyOwnerDescription = nil;
+  OnGetDependencyOwnerDirectory: TGetDependencyOwnerDirectory = nil;
+  OnGetWritablePkgOutputDirectory: TGetWritablePkgOutputDirectory = nil;
 
 function CompareLazPackageID(Data1, Data2: Pointer): integer;
 function CompareNameWithPackageID(Key, Data: Pointer): integer;

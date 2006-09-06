@@ -183,11 +183,13 @@ type
     procedure AddMsg(const Msg, CurDir: string; OriginalIndex: integer); virtual; abstract;
     property Lines[Index: integer]: TIDEMessageLine read GetLines; default;
     function LinesCount: integer; virtual; abstract;
+    procedure BeginBlock; virtual; abstract;
+    procedure EndBlock; virtual; abstract;
   end;
 
 var
-  IDEMsgQuickFixes: TIDEMsgQuickFixItems; // initialized by the IDE
-  IDEMessagesWindow: TIDEMessagesWindowInterface;// initialized by the IDE
+  IDEMsgQuickFixes: TIDEMsgQuickFixItems = nil; // initialized by the IDE
+  IDEMessagesWindow: TIDEMessagesWindowInterface = nil;// initialized by the IDE
   
 procedure RegisterIDEMsgQuickFix(Item: TIDEMsgQuickFixItem);
 function RegisterIDEMsgQuickFix(const Name, Caption, RegExpr: string;

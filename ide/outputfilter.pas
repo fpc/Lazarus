@@ -26,15 +26,6 @@ unit OutputFilter;
 
 interface
 
-// TODO: Test on all platforms
-{$IFNDEF DisableAsyncProcess}
-  {$IFDEF Linux}
-    {$IFDEF CPUI386}
-      {off $DEFINE UseAsyncProcess}
-    {$ENDIF}
-  {$ENDIF}
-{$ENDIF}
-
 uses
   Classes, Math, SysUtils, Forms, Controls, CompilerOptions, Project, Process,
   AsyncProcess, LCLProc, DynQueue, FileUtil,
@@ -47,12 +38,6 @@ type
                                  OriginalIndex: integer) of object;
   TOnGetIncludePath = function(const Directory: string;
                                UseCache: boolean): string of object;
-
-  {$IFDEF UseAsyncProcess}
-  TOutputFilterProcess = TAsyncProcess;
-  {$ELSE}
-  TOutputFilterProcess = TProcess;
-  {$ENDIF}
 
   TOuputFilterOption = (
     ofoShowAll,              // don't filter
@@ -192,6 +177,12 @@ type
   EOutputFilterError = class(Exception)
   end;
 
+type
+  TProcessClass = class of TProcess;
+
+var
+  TOutputFilterProcess: TProcessClass = nil;
+
 const
   ErrorTypeNames : array[TErrorType] of string = (
       'None','Hint','Note','Warning','Error','Fatal','Panic'
@@ -274,7 +265,7 @@ begin
 
     fProcess.Execute;
     repeat
-      Application.ProcessMessages;
+      if Application<>nil then Application.ProcessMessages;
       if StopExecute then begin
         fProcess.Terminate(0);
         Aborted:=true;
@@ -1284,5 +1275,4 @@ begin
 end;
 
 end.
-
 

@@ -153,6 +153,7 @@ var
   Tool: TCustomTextConverterTool;
 begin
   Tool:=GetCurrentTool;
+  //DebugLn(['TTextConvListEditor.PropertyGridModified ',dbgsName(Tool)]);
   if Tool=nil then exit;
   MakeToolCaptionAndNameUnique(Tool);
   Modified:=true;
@@ -265,6 +266,7 @@ begin
     for i:=0 to FListOfTools.ComponentCount-1 do begin
       Tool:=FListOfTools.Components[i] as TCustomTextConverterTool;
       sl.Add(Tool.Caption);
+      //DebugLn(['TTextConvListEditor.UpdateToolsListBox Caption=',Tool.Caption,' ',dbgsName(Tool)]);
     end;
   end;
   // save selection
@@ -320,7 +322,8 @@ begin
   Result:=TCustomTextConverterTool(FListOfTools.Components[i]);
 end;
 
-procedure TTextConvListEditor.MakeToolCaptionUnique(NewTool: TCustomTextConverterTool);
+procedure TTextConvListEditor.MakeToolCaptionUnique(
+  NewTool: TCustomTextConverterTool);
 var
   NewCaption: String;
 
@@ -337,6 +340,15 @@ var
     end;
     Result:=true;
     NewTool.Caption:=NewCaption;
+    if (FListOfTools<>nil) then begin
+      for i:=0 to FListOfTools.ComponentCount-1 do begin
+        if FListOfTools.Components[i]=NewTool then begin
+          if (i<ToolsListBox.Items.Count) then begin
+            ToolsListBox.Items[i]:=NewTool.Caption;
+          end;
+        end;
+      end;
+    end;
   end;
 
 begin

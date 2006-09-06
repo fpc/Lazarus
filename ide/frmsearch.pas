@@ -247,7 +247,7 @@ var
   
   procedure ProcessMessages;
   begin
-    Application.ProcessMessages;
+    if Application<>nil then Application.ProcessMessages;
     if (Progress<>nil) and Progress.Abort then
       Result:=mrAbort;
   end;
@@ -342,6 +342,7 @@ var
     AReplace:=ReplaceText;
     if sesoRegExpr in Flags then
       AReplace:=RE.Substitute(AReplace);
+    DebugLn(['DoReplaceLine Replace with "',AReplace,'"']);
       
     SrcEditPosValid:=false;
       
@@ -572,7 +573,7 @@ begin
                                        FoundStartPos.Y,FoundStartPos.X);
         OriginalFile.AbsoluteToLineCol(NewMatchEndPos,
                                        FoundEndPos.Y,FoundEndPos.X);
-        //DebugLn(['SearchInText NewMatchStartPos=',NewMatchStartPos,' NewMatchEndPos=',NewMatchEndPos,' FoundStartPos=',dbgs(FoundStartPos),' FoundEndPos=',dbgs(FoundEndPos),' Found="',dbgstr(copy(Src,NewMatchStartPos,NewMatchEndPos-NewMatchStartPos)),'"']);
+        DebugLn(['SearchInText NewMatchStartPos=',NewMatchStartPos,' NewMatchEndPos=',NewMatchEndPos,' FoundStartPos=',dbgs(FoundStartPos),' FoundEndPos=',dbgs(FoundEndPos),' Found="',dbgstr(copy(Src,NewMatchStartPos,NewMatchEndPos-NewMatchStartPos)),'" Replace=',sesoReplace in Flags]);
         if sesoReplace in Flags then begin
           DoReplaceLine
         end else begin

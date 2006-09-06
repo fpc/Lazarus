@@ -119,8 +119,8 @@ type
     procedure ShowTopMessage;
     procedure Clear; override;
     procedure GetVisibleMessageAt(Index: integer; var Msg, MsgDirectory: string);
-    procedure BeginBlock;
-    procedure EndBlock;
+    procedure BeginBlock; override;
+    procedure EndBlock; override;
     procedure ClearItems;
     function LinesCount: integer; override;
     function VisibleItemCount: integer;

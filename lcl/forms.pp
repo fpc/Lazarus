@@ -1244,7 +1244,7 @@ type
     function(AComponent: TComponent): TCustomForm of object;
 
 var
-  OnGetDesignerForm: TGetDesignerFormEvent;
+  OnGetDesignerForm: TGetDesignerFormEvent = nil;
 
 function GetParentForm(Control:TControl): TCustomForm;
 function GetFirstParentForm(Control:TControl): TCustomForm;
@@ -1263,16 +1263,16 @@ function GetLongHint(const Hint: string): string;
 
 
 var
-  Application: TApplication;
-  Screen: TScreen;
+  Application: TApplication = nil;
+  Screen: TScreen = nil;
   ExceptionObject: TExceptObject;
-  HintWindowClass: THintWindowClass=THintWindow;
+  HintWindowClass: THintWindowClass = THintWindow;
 
 type
   TMessageBoxFunction =
     function(Text, Caption : PChar; Flags : Longint) : Integer;
 var
-  MessageBoxFunction: TMessageBoxFunction;
+  MessageBoxFunction: TMessageBoxFunction = nil;
 
 const
   DefaultBorderIcons : array[TFormBorderStyle] of TBorderIcons =
@@ -1747,8 +1747,8 @@ end;
 
 initialization
   LCLProc.OwnerFormDesignerModifiedProc:=@IfOwnerIsFormThenDesignerModified;
-  Screen:= TScreen.Create(nil);
-  Application:= TApplication.Create(nil);
+  Screen:=TScreen.Create(nil);
+  Application:=TApplication.Create(nil);
 
   {$IFDEF UseFCLDataModule}
   RegisterInitComponentHandler(TComponent,@InitResourceComponent);

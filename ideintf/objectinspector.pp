@@ -524,7 +524,7 @@ type
   
   { TObjectInspector }
 
-  TObjectInspector = class (TForm)
+  TObjectInspector = class(TForm)
     AvailPersistentComboBox: TComboBox;
     Splitter1: TSplitter;
     ComponentTree: TComponentTreeView;
@@ -1106,6 +1106,7 @@ begin
     DoPaint(true)
   else
     FPropertyEditorHook.RefreshPropertyValues;
+  //DebugLn(['TOICustomPropertyGrid.SetRowValue ',CurRow.Name,' ',CurRow.Editor.GetVisualValue,' ',Assigned(FOnModified)]);
   if Assigned(FOnModified) then FOnModified(Self);
 end;
 

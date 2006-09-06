@@ -734,7 +734,7 @@ begin
     if LFMCode<>nil then begin
       // save LFM file
       DebugLn('ConvertDelphiToLazarusUnit Save LFM');
-      Result:=MainIDEInterface.DoSaveCodeBufferToFile(LFMCode,LFMCode.Filename,false);
+      Result:=SaveCodeBufferToFile(LFMCode,LFMCode.Filename);
       if Result<>mrOk then exit;
 
       // convert lfm to lrs

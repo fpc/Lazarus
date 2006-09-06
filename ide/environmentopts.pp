@@ -24,6 +24,7 @@
     This unit defines a dialog for the lazarus environment options and a class to
     store the options in a xml file.
 
+  ToDo: split this into two units - the dialog and the options.
 }
 unit EnvironmentOpts;
 
@@ -37,7 +38,8 @@ uses
 {$ENDIF}
   Classes, SysUtils, FPCAdds, LCLProc, Forms, Controls, Buttons, GraphType,
   Graphics, ExtCtrls, StdCtrls, Spin, FileUtil, LResources, Dialogs,
-  Laz_XMLCfg, ObjectInspector, IDEWindowIntf,
+  Laz_XMLCfg,
+  ObjectInspector, IDEWindowIntf,
   LazarusIDEStrConsts, TransferMacros, LazConf, ExtToolDialog, IDEProcs,
   IDEOptionDefs, InputHistory, EditorOptions, IDETranslations;
 

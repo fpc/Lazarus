@@ -45,9 +45,14 @@ uses
 {$IFDEF IDE_MEM_CHECK}
   MemCheck,
 {$ENDIF}
-  Classes, SysUtils, FileUtil,
-  AVL_Tree, Laz_XMLCfg,
-  LCLProc, Forms, Controls, Dialogs, LazarusIDEStrConsts, IDEProcs, LazConf,
+  // FPC + LCL
+  Classes, SysUtils, FileUtil, LCLProc, Forms, Controls, Dialogs,
+  // codetools
+  AVL_Tree, Laz_XMLCfg, CodeCache, BasicCodeTools, CodeToolManager,
+  // IDEIntf,
+  SrcEditorIntf, IDEExternToolIntf, IDEDialogs, IDEMsgIntf, PackageIntf,
+  // IDE
+  LazarusIDEStrConsts, IDEProcs, LazConf, TransferMacros, DialogProcs,
   CompilerOptions, PackageLinks, PackageDefs, LazarusPackageIntf, ComponentReg,
   RegisterFCL, RegisterLCL, RegisterSynEdit, RegisterIDEIntf;
   
@@ -70,12 +75,23 @@ const
   fpfSearchAllExisting = fpfSearchEverywhere+[fpfPkgLinkMustExist];
 
 type
+  TPkgUninstallFlag = (
+    puifDoNotConfirm,
+    puifDoNotBuildIDE
+    );
+
+  TPkgUninstallFlags = set of TPkgUninstallFlag;
+
   TPkgAddedEvent = procedure(APackage: TLazPackage) of object;
   TPkgDeleteEvent = procedure(APackage: TLazPackage) of object;
+  TPkgWriteMakeFile = function(APackage: TLazPackage): TModalResult of object;
+  TPkgUninstall = function(APackage: TLazPackage;
+                           Flags: TPkgUninstallFlags): TModalResult of object;
   TDependencyModifiedEvent = procedure(ADependency: TPkgDependency) of object;
   TEndUpdateEvent = procedure(Sender: TObject; GraphChanged: boolean) of object;
   TFindFPCUnitEvent = procedure(const UnitName, Directory: string;
                                 var Filename: string) of object;
+  TPkgDeleteAmbiguousFiles = function(const Filename: string): TModalResult of object;
 
   { TLazPackageGraph }
 
@@ -93,9 +109,12 @@ type
     FOnAddPackage: TPkgAddedEvent;
     FOnBeginUpdate: TNotifyEvent;
     FOnChangePackageName: TPkgChangeNameEvent;
+    FOnDeleteAmbiguousFiles: TPkgDeleteAmbiguousFiles;
     FOnDeletePackage: TPkgDeleteEvent;
     FOnDependencyModified: TDependencyModifiedEvent;
     FOnEndUpdate: TEndUpdateEvent;
+    FOnUninstallPackage: TPkgUninstall;
+    FOnWriteMakeFile: TPkgWriteMakeFile;
     FRegistrationFile: TPkgFile;
     FRegistrationPackage: TLazPackage;
     FRegistrationUnitName: string;
@@ -115,6 +134,8 @@ type
     procedure UpdateBrokenDependenciesToPackage(APackage: TLazPackage);
     function OpenDependencyWithPackageLink(Dependency: TPkgDependency;
                                            PkgLink: TPackageLink): boolean;
+    function DeleteAmbiguousFiles(const Filename: string): TModalResult;
+    procedure AddMessage(const Msg, Directory: string);
   public
     constructor Create;
     destructor Destroy; override;
@@ -213,6 +234,26 @@ type
     procedure ChangePackageID(APackage: TLazPackage;
                               const NewName: string; NewVersion: TPkgVersion;
                               RenameDependencies: boolean);
+    function SavePackageCompiledState(APackage: TLazPackage;
+                  const CompilerFilename, CompilerParams: string): TModalResult;
+    function LoadPackageCompiledState(APackage: TLazPackage;
+                                      IgnoreErrors: boolean): TModalResult;
+    function CheckIfDependenciesNeedCompilation(FirstDependency: TPkgDependency;
+                                           StateFileAge: longint): TModalResult;
+    function CheckIfPackageNeedsCompilation(APackage: TLazPackage;
+                     const CompilerFilename, CompilerParams, SrcFilename: string
+                     ): TModalResult;
+    function PreparePackageOutputDirectory(APackage: TLazPackage;
+                                           CleanUp: boolean): TModalResult;
+    function CheckAmbiguousPackageUnits(APackage: TLazPackage): TModalResult;
+    function SavePackageMainSource(APackage: TLazPackage;
+                                   Flags: TPkgCompileFlags): TModalResult;
+    function CompileRequiredPackages(APackage: TLazPackage;
+                                FirstDependency: TPkgDependency;
+                                Globals: TGlobalCompilerOptions;
+                                Policies: TPackageUpdatePolicies): TModalResult;
+    function CompilePackage(APackage: TLazPackage; Flags: TPkgCompileFlags;
+                            Globals: TGlobalCompilerOptions = nil): TModalResult;
   public
     // registration
     procedure RegisterUnitHandler(const TheUnitName: string;
@@ -260,6 +301,12 @@ type
     property OnDeletePackage: TPkgDeleteEvent read FOnDeletePackage
                                               write FOnDeletePackage;
     property OnEndUpdate: TEndUpdateEvent read FOnEndUpdate write FOnEndUpdate;
+    property OnDeleteAmbiguousFiles: TPkgDeleteAmbiguousFiles
+                     read FOnDeleteAmbiguousFiles write FOnDeleteAmbiguousFiles;
+    property OnWriteMakeFile: TPkgWriteMakeFile read FOnWriteMakeFile
+                                                write FOnWriteMakeFile;
+    property OnUninstallPackage: TPkgUninstall read FOnUninstallPackage
+                                               write FOnUninstallPackage;
     property Packages[Index: integer]: TLazPackage read GetPackages; default; // see Count for the number
     property RegistrationFile: TPkgFile read FRegistrationFile;
     property RegistrationPackage: TLazPackage read FRegistrationPackage
@@ -269,7 +316,7 @@ type
   end;
   
 var
-  PackageGraph: TLazPackageGraph;
+  PackageGraph: TLazPackageGraph = nil;
 
 implementation
 
@@ -375,7 +422,7 @@ begin
       DebugLn('invalid Package file "'+AFilename+'".');
       exit;
     end;
-    if CompareText(PkgLink.Name,NewPackage.Name)<>0 then exit;
+    if SysUtils.CompareText(PkgLink.Name,NewPackage.Name)<>0 then exit;
     // ok
     Result:=true;
     AddPackage(NewPackage);
@@ -384,6 +431,23 @@ begin
       NewPackage.Free;
     EndUpdate;
   end;
+end;
+
+function TLazPackageGraph.DeleteAmbiguousFiles(const Filename: string
+  ): TModalResult;
+begin
+  if Assigned(OnDeleteAmbiguousFiles) then
+    Result:=OnDeleteAmbiguousFiles(Filename)
+  else
+    Result:=mrOk;
+end;
+
+procedure TLazPackageGraph.AddMessage(const Msg, Directory: string);
+begin
+  if Assigned(IDEMessagesWindow) then
+    IDEMessagesWindow.AddMsg(Msg, Directory,-1)
+  else
+    DebugLn(['TLazPackageGraph.AddMessage Msg="',Msg,'" Directory="',Directory,'"']);
 end;
 
 constructor TLazPackageGraph.Create;
@@ -1909,6 +1973,756 @@ begin
   EndUpdate;
 end;
 
+function TLazPackageGraph.SavePackageCompiledState(APackage: TLazPackage;
+  const CompilerFilename, CompilerParams: string): TModalResult;
+var
+  XMLConfig: TXMLConfig;
+  StateFile: String;
+  CompilerFileDate: Integer;
+begin
+  Result:=mrCancel;
+  StateFile:=APackage.GetStateFilename;
+  try
+    CompilerFileDate:=FileAge(CompilerFilename);
+    XMLConfig:=TXMLConfig.CreateClean(StateFile);
+    try
+      XMLConfig.SetValue('Compiler/Value',CompilerFilename);
+      XMLConfig.SetValue('Compiler/Date',CompilerFileDate);
+      XMLConfig.SetValue('Params/Value',CompilerParams);
+      InvalidateFileStateCache;
+      XMLConfig.Flush;
+    finally
+      XMLConfig.Free;
+    end;
+    APackage.LastCompilerFilename:=CompilerFilename;
+    APackage.LastCompilerFileDate:=CompilerFileDate;
+    APackage.LastCompilerParams:=CompilerParams;
+    APackage.StateFileDate:=FileAge(StateFile);
+    APackage.Flags:=APackage.Flags+[lpfStateFileLoaded];
+  except
+    on E: Exception do begin
+      Result:=IDEMessageDialog(lisPkgMangErrorWritingFile,
+        Format(lisPkgMangUnableToWriteStateFileOfPackageError, ['"', StateFile,
+          '"', #13, APackage.IDAsString, #13, E.Message]),
+        mtError,[mbAbort,mbCancel]);
+      exit;
+    end;
+  end;
+
+  Result:=mrOk;
+end;
+
+function TLazPackageGraph.LoadPackageCompiledState(APackage: TLazPackage;
+  IgnoreErrors: boolean): TModalResult;
+var
+  XMLConfig: TXMLConfig;
+  StateFile: String;
+  StateFileAge: Integer;
+begin
+  StateFile:=APackage.GetStateFilename;
+  if not FileExists(StateFile) then begin
+    DebugLn('TLazPackageGraph.LoadPackageCompiledState Statefile not found: ',StateFile);
+    APackage.Flags:=APackage.Flags-[lpfStateFileLoaded];
+    Result:=mrOk;
+    exit;
+  end;
+
+  // read the state file
+  StateFileAge:=FileAge(StateFile);
+  if (not (lpfStateFileLoaded in APackage.Flags))
+  or (APackage.StateFileDate<>StateFileAge) then begin
+    APackage.Flags:=APackage.Flags-[lpfStateFileLoaded];
+    try
+      XMLConfig:=TXMLConfig.Create(StateFile);
+      try
+        APackage.LastCompilerFilename:=XMLConfig.GetValue('Compiler/Value','');
+        APackage.LastCompilerFileDate:=XMLConfig.GetValue('Compiler/Date',0);
+        APackage.LastCompilerParams:=XMLConfig.GetValue('Params/Value','');
+      finally
+        XMLConfig.Free;
+      end;
+      APackage.StateFileDate:=StateFileAge;
+    except
+      on E: Exception do begin
+        if IgnoreErrors then begin
+          Result:=mrOk;
+        end else begin
+          Result:=IDEMessageDialog(lisPkgMangErrorReadingFile,
+            Format(lisPkgMangUnableToReadStateFileOfPackageError, ['"',
+              StateFile, '"', #13, APackage.IDAsString, #13, E.Message]),
+            mtError,[mbCancel,mbAbort]);
+        end;
+        exit;
+      end;
+    end;
+    APackage.Flags:=APackage.Flags+[lpfStateFileLoaded];
+  end;
+
+  Result:=mrOk;
+end;
+
+function TLazPackageGraph.CheckIfDependenciesNeedCompilation(
+  FirstDependency: TPkgDependency; StateFileAge: longint): TModalResult;
+
+  function GetOwnerID: string;
+  begin
+    OnGetDependencyOwnerDescription(FirstDependency,Result);
+  end;
+
+var
+  Dependency: TPkgDependency;
+  RequiredPackage: TLazPackage;
+  OtherStateFile: String;
+begin
+  Dependency:=FirstDependency;
+  if Dependency=nil then begin
+    Result:=mrNo;
+    exit;
+  end;
+
+  while Dependency<>nil do begin
+    if (Dependency.LoadPackageResult=lprSuccess) then begin
+      RequiredPackage:=Dependency.RequiredPackage;
+      // check compile state file of required package
+      if not RequiredPackage.AutoCreated then begin
+        Result:=LoadPackageCompiledState(RequiredPackage,false);
+        if Result<>mrOk then exit;
+        Result:=mrYes;
+        if not (lpfStateFileLoaded in RequiredPackage.Flags) then begin
+          DebugLn('TPkgManager.CheckIfDependenciesNeedCompilation  No state file for ',RequiredPackage.IDAsString);
+          exit;
+        end;
+        if StateFileAge<RequiredPackage.StateFileDate then begin
+          DebugLn('TPkgManager.CheckIfDependenciesNeedCompilation  Required ',
+            RequiredPackage.IDAsString,' State file is newer than ',
+            'State file ',GetOwnerID);
+          exit;
+        end;
+      end;
+      // check output state file of required package
+      if RequiredPackage.OutputStateFile<>'' then begin
+        OtherStateFile:=RequiredPackage.OutputStateFile;
+        GlobalMacroList.SubstituteStr(OtherStateFile);
+        if FileExists(OtherStateFile)
+        and (FileAge(OtherStateFile)>StateFileAge) then begin
+          DebugLn('TPkgManager.CheckIfDependenciesNeedCompilation  Required ',
+            RequiredPackage.IDAsString,' OtherState file "',OtherStateFile,'"'
+            ,' is newer than State file ',GetOwnerID);
+          Result:=mrYes;
+          exit;
+        end;
+      end;
+    end;
+    Dependency:=Dependency.NextRequiresDependency;
+  end;
+  Result:=mrNo;
+end;
+
+function TLazPackageGraph.CheckIfPackageNeedsCompilation(APackage: TLazPackage;
+  const CompilerFilename, CompilerParams, SrcFilename: string): TModalResult;
+var
+  StateFilename: String;
+  StateFileAge: Integer;
+  i: Integer;
+  CurFile: TPkgFile;
+begin
+  Result:=mrYes;
+  {$IFDEF VerbosePkgCompile}
+  writeln('TLazPackageGraph.CheckIfPackageNeedsCompilation A ',APackage.IDAsString);
+  {$ENDIF}
+
+  // check state file
+  StateFilename:=APackage.GetStateFilename;
+  Result:=LoadPackageCompiledState(APackage,false);
+  if Result<>mrOk then exit;
+  if not (lpfStateFileLoaded in APackage.Flags) then begin
+    DebugLn('TLazPackageGraph.CheckIfPackageNeedsCompilation  No state file for ',APackage.IDAsString);
+    Result:=mrYes;
+    exit;
+  end;
+
+  StateFileAge:=FileAge(StateFilename);
+
+  // check main source file
+  if FileExists(SrcFilename) and (StateFileAge<FileAge(SrcFilename)) then
+  begin
+    DebugLn('TLazPackageGraph.CheckIfPackageNeedsCompilation  SrcFile outdated ',APackage.IDAsString);
+    Result:=mrYes;
+    exit;
+  end;
+
+  // check all required packages
+  Result:=CheckIfDependenciesNeedCompilation(APackage.FirstRequiredDependency,
+                                             StateFileAge);
+  if Result<>mrNo then exit;
+
+  Result:=mrYes;
+
+  // check compiler and params
+  if CompilerFilename<>APackage.LastCompilerFilename then begin
+    DebugLn('TLazPackageGraph.CheckIfPackageNeedsCompilation  Compiler filename changed for ',APackage.IDAsString);
+    DebugLn('  Old="',APackage.LastCompilerFilename,'"');
+    DebugLn('  Now="',CompilerFilename,'"');
+    exit;
+  end;
+  if not FileExists(CompilerFilename) then begin
+    DebugLn('TLazPackageGraph.CheckIfPackageNeedsCompilation  Compiler filename not found for ',APackage.IDAsString);
+    DebugLn('  File="',CompilerFilename,'"');
+    exit;
+  end;
+  if FileAge(CompilerFilename)<>APackage.LastCompilerFileDate then begin
+    DebugLn('TLazPackageGraph.CheckIfPackageNeedsCompilation  Compiler file changed for ',APackage.IDAsString);
+    DebugLn('  File="',CompilerFilename,'"');
+    exit;
+  end;
+  if CompilerParams<>APackage.LastCompilerParams then begin
+    DebugLn('TLazPackageGraph.CheckIfPackageNeedsCompilation  Compiler params changed for ',APackage.IDAsString);
+    DebugLn('  Old="',APackage.LastCompilerParams,'"');
+    DebugLn('  Now="',CompilerParams,'"');
+    exit;
+  end;
+
+  // check package files
+  if StateFileAge<FileAge(APackage.Filename) then begin
+    DebugLn('TLazPackageGraph.CheckIfPackageNeedsCompilation  StateFile older than lpk ',APackage.IDAsString);
+    exit;
+  end;
+  for i:=0 to APackage.FileCount-1 do begin
+    CurFile:=APackage.Files[i];
+    //debugln('TLazPackageGraph.CheckIfPackageNeedsCompilation  CurFile.Filename="',CurFile.Filename,'" ',FileExists(CurFile.Filename),' ',StateFileAge<FileAge(CurFile.Filename));
+    if FileExists(CurFile.Filename)
+    and (StateFileAge<FileAge(CurFile.Filename)) then begin
+      DebugLn('TLazPackageGraph.CheckIfPackageNeedsCompilation  Src has changed ',APackage.IDAsString,' ',CurFile.Filename);
+      exit;
+    end;
+  end;
+
+  {$IFDEF VerbosePkgCompile}
+  writeln('TLazPackageGraph.CheckIfPackageNeedsCompilation END ',APackage.IDAsString);
+  {$ENDIF}
+  Result:=mrNo;
+end;
+
+function TLazPackageGraph.CompileRequiredPackages(APackage: TLazPackage;
+  FirstDependency: TPkgDependency; Globals: TGlobalCompilerOptions;
+  Policies: TPackageUpdatePolicies): TModalResult;
+var
+  AutoPackages: TFPList;
+  i: Integer;
+begin
+  {$IFDEF VerbosePkgCompile}
+  writeln('TLazPackageGraph.CompileRequiredPackages A ');
+  {$ENDIF}
+  AutoPackages:=PackageGraph.GetAutoCompilationOrder(APackage,FirstDependency,
+                                                     Policies);
+  if AutoPackages<>nil then begin
+    //DebugLn('TLazPackageGraph.CompileRequiredPackages B Count=',IntToStr(AutoPackages.Count));
+    try
+      i:=0;
+      while i<AutoPackages.Count do begin
+        Result:=CompilePackage(TLazPackage(AutoPackages[i]),
+                               [pcfDoNotCompileDependencies,pcfOnlyIfNeeded,
+                                pcfDoNotSaveEditorFiles],Globals);
+        if Result<>mrOk then exit;
+        inc(i);
+      end;
+    finally
+      AutoPackages.Free;
+    end;
+  end;
+  {$IFDEF VerbosePkgCompile}
+  writeln('TLazPackageGraph.CompileRequiredPackages END ');
+  {$ENDIF}
+  Result:=mrOk;
+end;
+
+function TLazPackageGraph.CompilePackage(APackage: TLazPackage;
+  Flags: TPkgCompileFlags; Globals: TGlobalCompilerOptions): TModalResult;
+var
+  PkgCompileTool: TIDEExternalToolOptions;
+  CompilerFilename: String;
+  CompilerParams: String;
+  EffektiveCompilerParams: String;
+  SrcFilename: String;
+  CompilePolicies: TPackageUpdatePolicies;
+begin
+  Result:=mrCancel;
+
+  DebugLn('TLazPackageGraph.CompilePackage A ',APackage.IDAsString,' Flags=',PkgCompileFlagsToString(Flags));
+
+  if APackage.AutoCreated then begin
+    DebugLn(['TLazPackageGraph.CompilePackage failed because autocreated: ',APackage.IDAsString]);
+    exit;
+  end;
+
+  BeginUpdate(false);
+  try
+    // automatically compile required packages
+    if not (pcfDoNotCompileDependencies in Flags) then begin
+      CompilePolicies:=[pupAsNeeded];
+      if pcfCompileDependenciesClean in Flags then
+        Include(CompilePolicies,pupOnRebuildingAll);
+      Result:=CompileRequiredPackages(APackage,nil,Globals,
+                                                   CompilePolicies);
+      if Result<>mrOk then begin
+        DebugLn(['TLazPackageGraph.CompilePackage CompileRequiredPackages failed: ',APackage.IDAsString]);
+        exit;
+      end;
+    end;
+
+    SrcFilename:=APackage.GetSrcFilename;
+    CompilerFilename:=APackage.GetCompilerFilename;
+    CompilerParams:=APackage.CompilerOptions.MakeOptionsString(Globals,
+                               APackage.CompilerOptions.DefaultMakeOptionsFlags)
+                        +' '+CreateRelativePath(SrcFilename,APackage.Directory);
+    //DebugLn(['TLazPackageGraph.CompilePackage SrcFilename="',SrcFilename,'" CompilerFilename="',CompilerFilename,'" CompilerParams="',CompilerParams,'"']);
+
+    // check if compilation is neccessary
+    if (pcfOnlyIfNeeded in Flags) then begin
+      Result:=CheckIfPackageNeedsCompilation(APackage,
+                                             CompilerFilename,CompilerParams,
+                                             SrcFilename);
+      if Result=mrNo then begin
+        DebugLn(['TLazPackageGraph.CompilePackage ',APackage.IDAsString,' does not need compilation.']);
+        Result:=mrOk;
+        exit;
+      end;
+      if Result<>mrYes then begin
+        DebugLn(['TLazPackageGraph.CompilePackage CheckIfPackageNeedsCompilation failed: ',APackage.IDAsString]);
+        exit;
+      end;
+    end;
+
+    // auto increase version
+    // ToDo
+
+    if IDEMessagesWindow<>nil then
+      IDEMessagesWindow.BeginBlock;
+    try
+      Result:=PreparePackageOutputDirectory(APackage,pcfCleanCompile in Flags);
+      if Result<>mrOk then begin
+        DebugLn('TLazPackageGraph.CompilePackage PreparePackageOutputDirectory failed: ',APackage.IDAsString);
+        exit;
+      end;
+
+      // create package main source file
+      Result:=SavePackageMainSource(APackage,Flags);
+      if Result<>mrOk then begin
+        DebugLn('TLazPackageGraph.CompilePackage SavePackageMainSource failed: ',APackage.IDAsString);
+        exit;
+      end;
+
+      // check ambiguous units
+      Result:=CheckAmbiguousPackageUnits(APackage);
+      if Result<>mrOk then begin
+        DebugLn('TLazPackageGraph.CompilePackage CheckAmbiguousPackageUnits failed: ',APackage.IDAsString);
+        exit;
+      end;
+
+      // create Makefile
+      if ((pcfCreateMakefile in Flags)
+      or (APackage.CompilerOptions.CreateMakefileOnBuild))
+      and Assigned(OnWriteMakeFile) then begin
+        Result:=OnWriteMakeFile(APackage);
+        if Result<>mrOk then begin
+          DebugLn('TLazPackageGraph.CompilePackage DoWriteMakefile failed: ',APackage.IDAsString);
+          exit;
+        end;
+      end;
+
+      // run compilation tool 'Before'
+      if not (pcfDoNotCompilePackage in Flags) then begin
+        Result:=APackage.CompilerOptions.ExecuteBefore.Execute(
+                                 APackage.Directory,'Executing command before');
+        if Result<>mrOk then begin
+          DebugLn(['TLazPackageGraph.CompilePackage ExecuteBefore failed: ',APackage.IDAsString]);
+          exit;
+        end;
+      end;
+
+      // create external tool to run the compiler
+      DebugLn('TPkgManager.DoCompilePackage Compiler="',CompilerFilename,'"');
+      DebugLn('TPkgManager.DoCompilePackage Params="',CompilerParams,'"');
+      DebugLn('TPkgManager.DoCompilePackage WorkingDir="',APackage.Directory,'"');
+
+      if (not APackage.CompilerOptions.SkipCompiler)
+      and (not (pcfDoNotCompilePackage in Flags)) then begin
+        // check compiler filename
+        try
+          CheckIfFileIsExecutable(CompilerFilename);
+        except
+          on e: Exception do begin
+            DebugLn(['TLazPackageGraph.CompilePackage ',APackage.IDAsString,' ',e.Message]);
+            Result:=IDEMessageDialog(lisPkgManginvalidCompilerFilename,
+              Format(lisPkgMangTheCompilerFileForPackageIsNotAValidExecutable, [
+                APackage.IDAsString, #13, E.Message]),
+              mtError,[mbCancel,mbAbort]);
+            exit;
+          end;
+        end;
+
+        // change compiler parameters for compiling clean
+        EffektiveCompilerParams:=CompilerParams;
+        if pcfCleanCompile in Flags then begin
+          if EffektiveCompilerParams<>'' then
+            EffektiveCompilerParams:='-B '+EffektiveCompilerParams
+          else
+            EffektiveCompilerParams:='-B';
+        end;
+
+        PkgCompileTool:=TIDEExternalToolOptions.Create;
+        try
+          PkgCompileTool.Title:='Compiling package '+APackage.IDAsString;
+          PkgCompileTool.ScanOutputForFPCMessages:=true;
+          PkgCompileTool.ScanOutputForMakeMessages:=true;
+          PkgCompileTool.WorkingDirectory:=APackage.Directory;
+          PkgCompileTool.Filename:=CompilerFilename;
+          PkgCompileTool.CmdLineParams:=EffektiveCompilerParams;
+
+          // clear old errors
+          if SourceEditorWindow<>nil then
+            SourceEditorWindow.ClearErrorLines;
+
+          // compile package
+          Result:=RunCompilerWithOptions(PkgCompileTool,APackage.CompilerOptions);
+          if Result<>mrOk then exit;
+          // compilation succeded -> write state file
+          Result:=SavePackageCompiledState(APackage,
+                                           CompilerFilename,CompilerParams);
+          if Result<>mrOk then begin
+            DebugLn(['TLazPackageGraph.CompilePackage SavePackageCompiledState failed: ',APackage.IDAsString]);
+            exit;
+          end;
+        finally
+          // clean up
+          PkgCompileTool.Free;
+        end;
+      end;
+
+      // run compilation tool 'After'
+      if not (pcfDoNotCompilePackage in Flags) then begin
+        Result:=APackage.CompilerOptions.ExecuteAfter.Execute(
+                                  APackage.Directory,'Executing command after');
+        if Result<>mrOk then begin
+          DebugLn(['TLazPackageGraph.CompilePackage ExecuteAfter failed: ',APackage.IDAsString]);
+          exit;
+        end;
+      end;
+    finally
+      if IDEMessagesWindow<>nil then
+        IDEMessagesWindow.BeginBlock;
+      if Result<>mrOk then begin
+        if (APackage.AutoInstall<>pitNope) and (APackage.Installed=pitNope)
+        and (OnUninstallPackage<>nil) then begin
+          // package was tried to install, but failed
+          // -> ask user if the package should be removed from the installation
+          // list
+          if IDEMessageDialog(lisInstallationFailed,
+            Format(lisPkgMangThePackageFailedToCompileRemoveItFromTheInstallati,
+              ['"', APackage.IDAsString, '"', #13]), mtConfirmation,
+              [mbYes,mbIgnore])=mrYes then
+          begin
+            OnUninstallPackage(APackage,[puifDoNotConfirm,puifDoNotBuildIDE]);
+          end;
+        end;
+      end;
+    end;
+  finally
+    PackageGraph.EndUpdate;
+  end;
+  Result:=mrOk;
+end;
+
+function TLazPackageGraph.PreparePackageOutputDirectory(APackage: TLazPackage;
+  CleanUp: boolean): TModalResult;
+var
+  OutputDir: String;
+  StateFile: String;
+  PkgSrcDir: String;
+  i: Integer;
+  CurFile: TPkgFile;
+  OutputFileName: String;
+begin
+  OutputDir:=APackage.GetOutputDirectory;
+  StateFile:=APackage.GetStateFilename;
+  PkgSrcDir:=ExtractFilePath(APackage.GetSrcFilename);
+
+  // create the output directory
+  if not ForceDirectory(OutputDir) then begin
+    Result:=IDEMessageDialog(lisPkgMangUnableToCreateDirectory,
+      Format(lisPkgMangUnableToCreateOutputDirectoryForPackage, ['"',
+        OutputDir, '"', #13, APackage.IDAsString]),
+      mtError,[mbCancel,mbAbort]);
+    exit;
+  end;
+
+  // delete old Compile State file
+  if FileExists(StateFile) and not DeleteFile(StateFile) then begin
+    Result:=IDEMessageDialog(lisPkgMangUnableToDeleteFilename,
+      Format(lisPkgMangUnableToDeleteOldStateFileForPackage, ['"', StateFile,
+        '"', #13, APackage.IDAsString]),
+      mtError,[mbCancel,mbAbort]);
+    exit;
+  end;
+  APackage.Flags:=APackage.Flags-[lpfStateFileLoaded];
+
+  // create the package src directory
+  if not ForceDirectory(PkgSrcDir) then begin
+    Result:=IDEMessageDialog(lisPkgMangUnableToCreateDirectory,
+      Format(lisPkgMangUnableToCreatePackageSourceDirectoryForPackage, ['"',
+        PkgSrcDir, '"', #13, APackage.IDAsString]),
+      mtError,[mbCancel,mbAbort]);
+    exit;
+  end;
+
+  // clean up if wanted
+  if CleanUp then begin
+    for i:=0 to APackage.FileCount-1 do begin
+      CurFile:=APackage.Files[i];
+      if not (CurFile.FileType in PkgFileUnitTypes) then continue;
+      OutputFileName:=AppendPathDelim(OutputDir)+CurFile.UnitName+'.ppu';
+      Result:=DeleteFileInteractive(OutputFileName,[mbIgnore,mbAbort]);
+      if Result in [mrCancel,mrAbort] then exit;
+    end;
+  end;
+
+  Result:=mrOk;
+end;
+
+function TLazPackageGraph.CheckAmbiguousPackageUnits(APackage: TLazPackage
+  ): TModalResult;
+var
+  i: Integer;
+  CurFile: TPkgFile;
+  CurUnitName: String;
+  SrcDirs: String;
+  PkgDir: String;
+  PkgOutputDir: String;
+  YesToAll: Boolean;
+
+  function CheckFile(const ShortFilename: string): TModalResult;
+  var
+    AmbiguousFilename: String;
+    SearchFlags: TSearchFileInPathFlags;
+  begin
+    Result:=mrOk;
+    SearchFlags:=[];
+    if CompareFilenames(PkgDir,PkgOutputDir)=0 then
+      Include(SearchFlags,sffDontSearchInBasePath);
+    repeat
+      AmbiguousFilename:=SearchFileInPath(ShortFilename,PkgDir,SrcDirs,';',
+                                          SearchFlags);
+      if (AmbiguousFilename='') then exit;
+      if not YesToAll then
+        Result:=IDEMessageDialog(lisAmbiguousUnitFound,
+          Format(lisTheFileWasFoundInOneOfTheSourceDirectoriesOfThePac, ['"',
+            AmbiguousFilename, '"', #13, APackage.IDAsString, #13, #13]),
+          mtWarning,[mbYes,mbYesToAll,mbNo,mbAbort])
+      else
+        Result:=mrYesToAll;
+      if Result=mrNo then
+        Result:=mrOk;
+      if Result in [mrYes,mrYesToAll] then begin
+        YesToAll:=Result=mrYesToAll;
+        if (not DeleteFile(AmbiguousFilename))
+        and (IDEMessageDialog(lisPkgMangDeleteFailed, Format(lisDeletingOfFileFailed,
+          ['"', AmbiguousFilename, '"']), mtError, [mbIgnore, mbCancel])
+          <>mrIgnore) then
+        begin
+          Result:=mrCancel;
+          exit;
+        end;
+        Result:=mrOk;
+      end else
+        break;
+    until false;
+  end;
+
+begin
+  Result:=mrOk;
+  YesToAll:=False;
+  // search in every source directory for compiled versions of the units
+  // A source directory is a directory with a used unit and it is not the output
+  // directory
+  SrcDirs:=APackage.GetSourceDirs(true,true);
+  PkgOutputDir:=AppendPathDelim(APackage.GetOutputDirectory);
+  SrcDirs:=RemoveSearchPaths(SrcDirs,PkgOutputDir);
+  if SrcDirs='' then exit;
+  PkgDir:=AppendPathDelim(APackage.Directory);
+  for i:=0 to APackage.FileCount-1 do begin
+    CurFile:=APackage.Files[i];
+    if CurFile.FileType<>pftUnit then continue;
+    CurUnitName:=lowercase(CurFile.UnitName);
+    if CurUnitName='' then continue;
+    Result:=CheckFile(CurUnitName+'.ppu');
+    if Result<>mrOk then exit;
+    Result:=CheckFile(CurUnitName+'.ppw');
+    if Result<>mrOk then exit;
+    Result:=CheckFile(CurUnitName+'.ppl');
+    if Result<>mrOk then exit;
+  end;
+  Result:=mrOk;
+end;
+
+function TLazPackageGraph.SavePackageMainSource(APackage: TLazPackage;
+  Flags: TPkgCompileFlags): TModalResult;
+var
+  SrcFilename: String;
+  UsedUnits: String;
+  Src: String;
+  i: Integer;
+  e: String;
+  CurFile: TPkgFile;
+  CodeBuffer: TCodeBuffer;
+  CurUnitName: String;
+  RegistrationCode: String;
+  HeaderSrc: String;
+  OutputDir: String;
+  OldShortenSrc: String;
+  NeedsRegisterProcCall: boolean;
+  CurSrcUnitName: String;
+  NewShortenSrc: String;
+begin
+  {$IFDEF VerbosePkgCompile}
+  writeln('TLazPackageGraph.SavePackageMainSource A');
+  {$ENDIF}
+  // check if package is ready for saving
+  OutputDir:=APackage.GetOutputDirectory;
+  if not DirPathExists(OutputDir) then begin
+    Result:=IDEMessageDialog(lisEnvOptDlgDirectoryNotFound,
+      Format(lisPkgMangPackageHasNoValidOutputDirectory, ['"',
+        APackage.IDAsString, '"', #13, '"', OutputDir, '"']),
+      mtError,[mbCancel,mbAbort]);
+    exit;
+  end;
+
+  SrcFilename:=APackage.GetSrcFilename;
+
+  // delete ambiguous files
+  Result:=DeleteAmbiguousFiles(SrcFilename);
+  if Result=mrAbort then begin
+    DebugLn('TLazPackageGraph.SavePackageMainSource DoDeleteAmbiguousFiles failed');
+    exit;
+  end;
+
+  // collect unitnames
+  e:=LineEnding;
+  UsedUnits:='';
+  RegistrationCode:='';
+  for i:=0 to APackage.FileCount-1 do begin
+    CurFile:=APackage.Files[i];
+    // update unitname
+    if FilenameIsPascalUnit(CurFile.Filename)
+    and (CurFile.FileType in PkgFileUnitTypes) then begin
+      CurUnitName:=ExtractFileNameOnly(CurFile.Filename);
+
+      if CurUnitName=lowercase(CurUnitName) then begin
+        // the filename is all lowercase, so we can use the nicer unitname from
+        // the source.
+
+        CodeBuffer:=CodeToolBoss.LoadFile(CurFile.Filename,false,false);
+        if CodeBuffer<>nil then begin
+          // if the unit is edited, the unitname is probably already cached
+          CurSrcUnitName:=CodeToolBoss.GetCachedSourceName(CodeBuffer);
+          // if not then parse it
+          if SysUtils.CompareText(CurSrcUnitName,CurUnitName)<>0 then
+            CurSrcUnitName:=CodeToolBoss.GetSourceName(CodeBuffer,false);
+          // if it makes sense, update unitname
+          if SysUtils.CompareText(CurSrcUnitName,CurFile.UnitName)=0 then
+            CurFile.UnitName:=CurSrcUnitName;
+        end;
+        if SysUtils.CompareText(CurUnitName,CurFile.UnitName)=0 then
+          CurUnitName:=CurFile.UnitName
+        else
+          CurFile.UnitName:=CurUnitName;
+      end;
+
+      if (CurUnitName<>'') and IsValidIdent(CurUnitName) then begin
+        NeedsRegisterProcCall:=CurFile.HasRegisterProc
+          and (APackage.PackageType in [lptDesignTime,lptRunAndDesignTime]);
+        if NeedsRegisterProcCall or CurFile.AddToUsesPkgSection then begin
+          if UsedUnits<>'' then
+            UsedUnits:=UsedUnits+', ';
+          UsedUnits:=UsedUnits+CurUnitName;
+        end;
+        if NeedsRegisterProcCall then begin
+          RegistrationCode:=RegistrationCode+
+            '  RegisterUnit('''+CurUnitName+''',@'+CurUnitName+'.Register);'+e;
+        end;
+      end else begin
+        AddMessage('WARNING: unit name invalid '+CurFile.Filename
+           +', package='+APackage.IDAsString,
+           APackage.Directory);
+      end;
+    end;
+  end;
+  // append registration code only for design time packages
+  if (APackage.PackageType in [lptDesignTime,lptRunAndDesignTime]) then begin
+    RegistrationCode:=
+      'procedure Register;'+e
+      +'begin'+e
+      +RegistrationCode
+      +'end;'+e
+      +e
+      +'initialization'+e
+      +'  RegisterPackage('''+APackage.Name+''',@Register);'
+      +e;
+    if UsedUnits<>'' then UsedUnits:=UsedUnits+', ';
+    UsedUnits:=UsedUnits+'LazarusPackageIntf';
+  end;
+
+  // create source
+  HeaderSrc:=lisPkgMangThisSourceIsOnlyUsedToCompileAndInstallThePackage;
+  HeaderSrc:= '{ '
+           +lisPkgMangThisFileWasAutomaticallyCreatedByLazarusDoNotEdit+e
+           +lisPkgMangThisSourceIsOnlyUsedToCompileAndInstallThePackage+e
+           +' }'+e+e;
+  Src:='unit '+APackage.Name+';'+e
+      +e
+      +'interface'+e
+      +e;
+  if UsedUnits<>'' then
+    Src:=Src
+      +'uses'+e
+      +'  '+UsedUnits+';'+e
+      +e;
+  Src:=Src
+      +'implementation'+e
+      +e
+      +RegistrationCode
+      +'end.'+e;
+  Src:=CodeToolBoss.SourceChangeCache.BeautifyCodeOptions.
+                                                       BeautifyStatement(Src,0);
+  Src:=HeaderSrc+Src;
+
+  // check if old code is already uptodate
+  Result:=LoadCodeBuffer(CodeBuffer,SrcFilename,[lbfQuiet,lbfCheckIfText,
+                                      lbfUpdateFromDisk,lbfCreateClearOnError]);
+  if Result<>mrOk then begin
+    DebugLn('TLazPackageGraph.SavePackageMainSource LoadCodeBuffer ',SrcFilename,' failed');
+    exit;
+  end;
+  OldShortenSrc:=CodeToolBoss.ExtractCodeWithoutComments(CodeBuffer);
+  NewShortenSrc:=CleanCodeFromComments(Src,
+                CodeToolBoss.GetNestedCommentsFlagForFile(CodeBuffer.Filename));
+  if CompareTextIgnoringSpace(OldShortenSrc,NewShortenSrc,true)=0 then begin
+    Result:=mrOk;
+    exit;
+  end;
+  if OldShortenSrc<>NewShortenSrc then begin
+    DebugLn('TLazPackageGraph.SavePackageMainSource Src changed ',dbgs(length(OldShortenSrc)),' ',dbgs(length(NewShortenSrc)));
+  end;
+
+  // save source
+  Result:=SaveStringToFile(SrcFilename,Src,[],lisPkgMangpackageMainSourceFile);
+  if Result<>mrOk then begin
+    DebugLn('TLazPackageGraph.SavePackageMainSource SaveStringToFile ',SrcFilename,' failed');
+    exit;
+  end;
+
+  Result:=mrOk;
+end;
+
 function TLazPackageGraph.GetBrokenDependenciesWhenChangingPkgID(
   APackage: TLazPackage; const NewName: string; NewVersion: TPkgVersion
     ): TFPList;
@@ -2250,7 +3064,8 @@ begin
           // try defaultfilename
           AFilename:=Dependency.DefaultFilename;
           if (CompareFileExt(AFilename,'lpk')=0)
-          and (CompareText(ExtractFileNameOnly(AFilename),Dependency.PackageName)=0)
+          and (SysUtils.CompareText(
+                       ExtractFileNameOnly(AFilename),Dependency.PackageName)=0)
           then begin
             if not FilenameIsAbsolute(AFilename) then begin
               CurDir:=GetDependencyOwnerDirectory(Dependency);

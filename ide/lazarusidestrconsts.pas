@@ -53,6 +53,10 @@ const
   LanguageOpt='--language=';
 
 resourcestring
+  lisErrInvalidOption = 'Invalid option at position %d: "%s"';
+  lisErrNoOptionAllowed = 'Option at position %d does not allow an argument: %s';
+  lisErrOptionNeeded = 'Option at position %d needs an argument : %s';
+
   lisEnterTransla = 'Enter translation language';
   // version
   lisLazarusVersionString = '%s beta'; // %s is the versionstring (eg. 0.9.10)

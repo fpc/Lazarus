@@ -1823,11 +1823,11 @@ begin
   for i:=Low(Args) to High(Args) do begin
     case Args[i].VType of
     vtInteger: DbgOut(dbgs(Args[i].vinteger));
-    vtInt64: DbgOut(dbgs(Args[i].VInt64));
-    vtQWord: DbgOut(dbgs(Args[i].VQWord));
+    vtInt64: DbgOut(dbgs(Args[i].VInt64^));
+    vtQWord: DbgOut(dbgs(Args[i].VQWord^));
     vtBoolean: DbgOut(dbgs(Args[i].vboolean));
     vtExtended: DbgOut(dbgs(Args[i].VExtended^));
-    vtCurrency: DbgOut(dbgs(Args[i].vCurrency));
+    vtCurrency: DbgOut(dbgs(Args[i].vCurrency^));
     vtString: DbgOut(Args[i].VString^);
     vtAnsiString: DbgOut(AnsiString(Args[i].VAnsiString));
     vtChar: DbgOut(Args[i].VChar);

@@ -57,8 +57,7 @@ type
   TUnitInfo = class;
   TProject = class;
 
-  TOnFileBackup = function(const FileToBackup:string; 
-                           IsPartOfProject:boolean):TModalResult of object;
+  TOnFileBackup = function(const FileToBackup: string):TModalResult of object;
   TOnUnitNameChange = procedure(AnUnitInfo: TUnitInfo;
        const OldUnitName, NewUnitName: string;
        CheckIfAllowed: boolean;
@@ -484,8 +483,7 @@ type
     function GetUnits(Index: integer): TUnitInfo;
     function JumpHistoryCheckPosition(
                                 APosition:TProjectJumpHistoryPosition): boolean;
-    function OnUnitFileBackup(const Filename: string;
-                              IsPartOfProject:boolean): TModalResult;
+    function OnUnitFileBackup(const Filename: string): TModalResult;
     procedure OnLoadSaveFilename(var AFilename: string; Load: boolean);
     procedure OnUnitNameChange(AnUnitInfo: TUnitInfo;
                                const OldUnitName, NewUnitName: string;
@@ -766,7 +764,7 @@ begin
     exit;
   end;
   if Assigned(fOnFileBackup) then begin
-    Result:=fOnFileBackup(Filename,IsPartOfProject);
+    Result:=fOnFileBackup(Filename);
     if Result=mrAbort then exit;
   end;
   repeat
@@ -795,7 +793,7 @@ begin
     exit;
   end;
   if Assigned(fOnFileBackup) then begin
-    Result:=fOnFileBackup(Filename,false);
+    Result:=fOnFileBackup(Filename);
     if Result=mrAbort then exit;
   end;
   repeat
@@ -1579,7 +1577,7 @@ begin
   else
     CfgFilename := ProjectInfoFile;
   if Assigned(fOnFileBackup) then begin
-    Result:=fOnFileBackup(CfgFilename,true);
+    Result:=fOnFileBackup(CfgFilename);
     if Result=mrAbort then exit;
   end;
   CfgFilename:=SetDirSeparators(CfgFilename);
@@ -1695,7 +1693,7 @@ begin
     //DebugLn('TProject.WriteProject Write Session File="',CurSessionFilename,'"');
 
     if Assigned(fOnFileBackup) then begin
-      Result:=fOnFileBackup(CurSessionFilename,true);
+      Result:=fOnFileBackup(CurSessionFilename);
       if Result=mrAbort then exit;
     end;
     CurSessionFilename:=SetDirSeparators(CurSessionFilename);
@@ -2806,11 +2804,10 @@ begin
   UpdateSessionFilename;
 end;
 
-function TProject.OnUnitFileBackup(const Filename:string;
-  IsPartOfProject: boolean):TModalResult;
+function TProject.OnUnitFileBackup(const Filename: string): TModalResult;
 begin
   if Assigned(fOnFileBackup) then
-    Result:=fOnFileBackup(Filename,IsPartOfProject)
+    Result:=fOnFileBackup(Filename)
   else
     Result:=mrOk;
 end;

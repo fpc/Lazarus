@@ -642,7 +642,6 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomForm.DoDestroy;
 begin
-  DebugLn(['TCustomForm.DoDestroy ',dbgsName(Self)]);
   if Assigned(FOnDestroy) then FOnDestroy(Self);
 end;
 

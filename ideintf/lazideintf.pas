@@ -199,9 +199,6 @@ type
     function GetProjectFileWithRootComponent(AComponent: TComponent): TLazProjectFile; virtual; abstract;
     function GetProjectFileWithDesigner(ADesigner: TIDesigner): TLazProjectFile; virtual; abstract;
     
-    // external tools
-    function RunExternalTool(Tool: TIDEExternalToolOptions): TModalResult; virtual; abstract;
-
     // events
     procedure RemoveAllHandlersOfObject(AnObject: TObject);
     procedure AddHandlerOnSavingAll(const OnSaveAllEvent: TModalResultFunction;
@@ -213,7 +210,7 @@ type
   end;
   
 var
-  LazarusIDE: TLazIDEInterface; // will be set by the IDE
+  LazarusIDE: TLazIDEInterface = nil; // will be set by the IDE
 
 implementation
 

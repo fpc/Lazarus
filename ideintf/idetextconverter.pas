@@ -120,7 +120,7 @@ type
     trtMatchCase,       // search case sensitive
     trtWholeWord,       // search at word boundaries
     trtRegExpr,         // use regular expressions for find and replace
-    trtMultiLine        // ignore line boundaries. The expression can span multiple lines.
+    trtMultiLine        // ignore type of line endings in pattern (e.g. #10 = #13#10)
     //TODO trtSearchInReplacement,// when replaced, continue search at start of replacement, instead of end of replacement
     //TODO trtReplaceUntilNotFound// restart replace until pattern not found
     );
@@ -578,7 +578,7 @@ begin
   if aText=nil then exit;
   if SearchFor='' then exit(mrOk);
   Source:=aText.Source;
-  Flags:=[];
+  Flags:=[sesoReplace,sesoReplaceAll];
   if trtMatchCase in Options then Include(Flags,sesoMatchCase);
   if trtWholeWord in Options then Include(Flags,sesoWholeWord);
   if trtRegExpr in Options then Include(Flags,sesoRegExpr);

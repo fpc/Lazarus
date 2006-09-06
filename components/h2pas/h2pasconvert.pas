@@ -1188,13 +1188,13 @@ begin
       mtError,[mbCancel,mbAbort],'');
     exit;
   end;
-  
+
   TextConverter:=TIDETextConverter.Create(nil);
   try
     TextConverter.Filename:=TempCHeaderFilename;
     FLastUsedFilename:=TextConverter.Filename;
     TextConverter.LoadFromFile(InputFilename);
-    DebugLn(['TH2PasConverter.ConvertFile TempCHeaderFilename="',TempCHeaderFilename,'" CurrentType=',ord(TextConverter.CurrentType),' ',FileSize(TempCHeaderFilename)]);
+    DebugLn(['TH2PasConverter.ConvertFile TempCHeaderFilename="',TempCHeaderFilename,'" CurrentType=',ord(TextConverter.CurrentType),' FileSize=',FileSize(TempCHeaderFilename)]);
 
     // run converters for .h file to make it compatible for h2pas
     Result:=TextConverter.Execute(Project.PreH2PasTools);
@@ -1208,9 +1208,9 @@ begin
     try
       Tool.Title:='h2pas';
       Tool.H2PasFile:=AFile;
-    DebugLn(['TH2PasConverter.ConvertFile AAA TempCHeaderFilename="',TempCHeaderFilename,'" CurrentType=',ord(TextConverter.CurrentType),' ',FileSize(TempCHeaderFilename)]);
+    DebugLn(['TH2PasConverter.ConvertFile AAA TempCHeaderFilename="',TempCHeaderFilename,'" CurrentType=',ord(TextConverter.CurrentType),' FileSize=',FileSize(TempCHeaderFilename)]);
       Tool.TargetFilename:=TextConverter.Filename;
-    DebugLn(['TH2PasConverter.ConvertFile BBB TempCHeaderFilename="',TempCHeaderFilename,'" CurrentType=',ord(TextConverter.CurrentType),' ',FileSize(TempCHeaderFilename)]);
+    DebugLn(['TH2PasConverter.ConvertFile BBB TempCHeaderFilename="',TempCHeaderFilename,'" CurrentType=',ord(TextConverter.CurrentType),' FileSize=',FileSize(TempCHeaderFilename)]);
       Tool.Filename:=GetH2PasFilename;
       Tool.CmdLineParams:=AFile.GetH2PasParameters(Tool.TargetFilename);
       Tool.ScanOutput:=true;
@@ -1218,7 +1218,7 @@ begin
       Tool.WorkingDirectory:=Project.BaseDir;
       Tool.OnParseLine:=@OnParseH2PasLine;
       DebugLn(['TH2PasConverter.ConvertFile Tool.Filename="',Tool.Filename,'" Tool.CmdLineParams="',Tool.CmdLineParams,'"']);
-      Result:=LazarusIDE.RunExternalTool(Tool);
+      Result:=RunExternalTool(Tool);
       if Result<>mrOk then exit(mrAbort);
       if FindH2PasErrorMessage>=0 then exit(mrAbort);
     finally

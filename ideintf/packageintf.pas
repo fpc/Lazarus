@@ -53,6 +53,18 @@ type
     );
   TPkgCompileFlags = set of TPkgCompileFlag;
 
+const
+  PkgCompileFlagNames: array[TPkgCompileFlag] of string = (
+    'pcfCleanCompile',
+    'pcfDoNotCompileDependencies',
+    'pcfDoNotCompilePackage',
+    'pcfCompileDependenciesClean',
+    'pcfOnlyIfNeeded',
+    'pcfDoNotSaveEditorFiles',
+    'pcfCreateMakefile'
+    );
+
+type
   { TPackageEditingInterface }
 
   TPackageEditingInterface = class(TComponent)
@@ -134,9 +146,24 @@ var
 procedure RegisterPackageDescriptor(PkgDesc: TPackageDescriptor);
 function PackageDescriptorStd: TPackageDescriptor;
 
+function PkgCompileFlagsToString(Flags: TPkgCompileFlags): string;
+
 
 implementation
 
+
+function PkgCompileFlagsToString(Flags: TPkgCompileFlags): string;
+var
+  f: TPkgCompileFlag;
+begin
+  Result:='';
+  for f:=Low(TPkgCompileFlag) to High(TPkgCompileFlag) do begin
+    if not (f in Flags) then continue;
+    if Result<>'' then Result:=Result+',';
+    Result:=Result+PkgCompileFlagNames[f];
+  end;
+  Result:='['+Result+']';
+end;
 
 procedure RegisterPackageDescriptor(PkgDesc: TPackageDescriptor);
 var
