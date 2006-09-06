@@ -243,9 +243,9 @@ type
     procedure ResizeLineSplittingPage;
     procedure ResizeSpacePage;
     procedure CreateAtomCheckBoxes(ParentGroupBox: TGroupBox;
-      AtomTypes: TAtomTypes; Columns: integer);
+                                   AtomTypes: TAtomTypes; Columns: integer);
     procedure SetAtomCheckBoxes(AtomTypes: TAtomTypes;
-      ParentGroupBox: TGroupBox);
+                                ParentGroupBox: TGroupBox);
     function ReadAtomCheckBoxes(ParentGroupBox: TGroupBox): TAtomTypes;
     procedure UpdateSinglePreviewSettings(APreview: TSynEdit);
     procedure WriteBeautifyCodeOptions(Options: TBeautifyCodeOptions);
@@ -264,8 +264,9 @@ type
 var CodeToolsOpts: TCodeToolsOptions = nil;
 
 function ShowCodeToolsOptions(Options: TCodeToolsOptions;
-  OnGetSynEditSettings: TNotifyEvent): TModalResult;
+                        const OnGetSynEditSettings: TNotifyEvent): TModalResult;
 function GetTranslatedAtomTypes(a: TAtomType): string;
+function TranslatedAtomToType(const s: string): TAtomType;
 
 
 implementation
@@ -275,12 +276,6 @@ const
   CodeToolsOptionsVersion = 1;
   DefaultCodeToolsOptsFile = 'codetoolsoptions.xml';
   
-  AtomTypeDescriptions: array[TAtomType] of shortstring = (
-      'None', 'Keyword', 'Identifier', 'Colon', 'Semicolon', 'Comma', 'Point',
-      'At', 'Number', 'String constant', 'Newline', 'Space',
-      'Comment start', 'Compiler directive start', 'Comment end',
-      'Symbol'
-    );
   DoNotSplitAtoms = [atKeyword, atIdentifier, atColon, atSemicolon, atComma,
                atPoint, atAt, atNumber, atStringConstant, atSpace, atSymbol];
   DoInsertSpaceAtoms = [atKeyword, atIdentifier, atColon, atSemicolon, atComma,
@@ -299,14 +294,6 @@ const
       +'  {$I unit1.lrs}'#13
       +'  {$R-}{$R+}'#13
       +'end;';
-
-function AtomTypeDescriptionToType(const s: string): TAtomType;
-begin
-  for Result:=Low(TAtomType) to High(TAtomType) do begin
-    if s=AtomTypeDescriptions[Result] then exit;
-  end;
-  Result:=atNone;
-end;
 
 function GetTranslatedAtomTypes(a: TAtomType): string;
 begin
@@ -327,6 +314,13 @@ begin
   else
     Result:='???';
   end;
+end;
+
+function TranslatedAtomToType(const s: string): TAtomType;
+begin
+  for Result:=Low(TAtomType) to High(TAtomType) do
+    if s=GetTranslatedAtomTypes(Result) then exit;
+  Result:=atNone;
 end;
 
 function ReadAtomTypesFromXML(XMLConfig: TXMLConfig; const Path: string;
@@ -1248,7 +1242,7 @@ begin
     Parent:=NoteBook.Page[PageID];
     SetBounds(6,6,
       (Self.ClientWidth-24) div 2,150);
-    Caption:=dlgInsSpaceFront ;
+    Caption:=dlgInsSpaceFront;
     CreateAtomCheckBoxes(DoInsertSpaceInFrontGroupBox,DoInsertSpaceAtoms,2);
     OnClick:=@UpdateExamples;
   end;
@@ -1262,7 +1256,7 @@ begin
       DoInsertSpaceInFrontGroupBox.Top,
       DoInsertSpaceInFrontGroupBox.Width,
       DoInsertSpaceInFrontGroupBox.Height);
-    Caption:=dlgInsSpaceAfter ;
+    Caption:=dlgInsSpaceAfter;
     CreateAtomCheckBoxes(DoInsertSpaceAfterGroupBox,DoInsertSpaceAtoms,2);
     OnClick:=@UpdateExamples;
   end;
@@ -1275,7 +1269,7 @@ begin
     Top:=DoInsertSpaceInFrontGroupBox.Top+DoInsertSpaceInFrontGroupBox.Height+7;
     Width:=Self.ClientWidth-10-Left;
     Height:=Self.ClientHeight-92-Top;
-    Caption:=dlgWRDPreview ;
+    Caption:=dlgWRDPreview;
   end;
 
   SpacePreviewSynEdit:=TSynEdit.Create(Self);
@@ -1578,7 +1572,7 @@ begin
         Name:=ParentGroupBox.Name+'CheckBox'+IntToStr(i+1);
         Parent:=ParentGroupBox;
         SetBounds(CurX,CurY,XStep-10,Height);
-        Caption:=AtomTypeDescriptions[a];
+        Caption:=GetTranslatedAtomTypes(a);
         OnClick:=@UpdateExamples;
         Visible:=true;
       end;
@@ -1748,7 +1742,7 @@ begin
   for i:=0 to ParentGroupBox.ComponentCount-1 do begin
     if (ParentGroupBox.Components[i] is TCheckBox) then begin
       ACheckBox:=TCheckBox(ParentGroupBox.Components[i]);
-      a:=AtomTypeDescriptionToType(ACheckBox.Caption);
+      a:=TranslatedAtomToType(ACheckBox.Caption);
       ACheckBox.Checked:=(a<>atNone) and (a in AtomTypes);
     end;
   end;
@@ -1765,7 +1759,7 @@ begin
   for i:=0 to ParentGroupBox.ComponentCount-1 do begin
     if (ParentGroupBox.Components[i] is TCheckBox) then begin
       ACheckBox:=TCheckBox(ParentGroupBox.Components[i]);
-      a:=AtomTypeDescriptionToType(ACheckBox.Caption);
+      a:=TranslatedAtomToType(ACheckBox.Caption);
       if (a<>atNone) and (ACheckBox.Checked) then
         Include(Result,a);
     end;
@@ -1865,7 +1859,7 @@ end;
 //------------------------------------------------------------------------------
 
 function ShowCodeToolsOptions(Options: TCodeToolsOptions;
-  OnGetSynEditSettings: TNotifyEvent): TModalResult;
+  const OnGetSynEditSettings: TNotifyEvent): TModalResult;
 var CodeToolsOptsDlg: TCodeToolsOptsDlg;
 begin
   Result:=mrCancel;
