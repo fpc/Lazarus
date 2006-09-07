@@ -18,11 +18,6 @@
  ***************************************************************************
  
   Command line utility to compile lazarus projects and packages.
-  
-  !!! Under construction. !!!
-  
-  ToDo:
-    Separate the visual parts in the IDE from the project and build system.
 }
 program lazbuild;
 
