@@ -1245,7 +1245,7 @@ resourcestring
   dlgRegularExpressions = 'Regular Expressions';
   lisActivateRegularExpressionSyntaxForTextAndReplaceme = 'Activate regular '
     +'expression syntax for text and replacement (pretty much like perl)';
-  dlgMultiLine = 'Multi Line';
+  dlgMultiLine = 'Multiline';
   lisAllowSearchingForMultipleLines = 'Allow searching for multiple lines';
   dlgPromptOnReplace = 'Prompt On Replace';
   lisAskBeforeReplacingEachFoundText = 'Ask before replacing each found text';
@@ -2270,7 +2270,7 @@ resourcestring
   lisFindFileCaseSensitive = 'Case sensitive';
   lisFindFileWholeWordsOnly = 'Whole words only';
   lisFindFileRegularExpressions = 'Regular expressions';
-  lisFindFileMultiLine = 'Multi line pattern';
+  lisFindFileMultiLine = 'Multiline pattern';
   lisFindFileWhere = 'Where';
   lisFindFilesearchAllFilesInProject = 'search all files in project';
   lisFindFilesearchAllOpenFiles = 'search all open files';
