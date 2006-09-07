@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.9.16\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2006-06-04 16:31+0800\n"
+"PO-Revision-Date: 2006-07-27 11:28+0800\n"
 "Last-Translator: 巫山霏云 <freefcw@gmail.com>\n"
 "Language-Team: freefcw <freefcw@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -134,7 +134,7 @@ msgstr "Modelica 文件 (*.mo)|*.mo"
 
 #: syneditstrconst:syns_filtermodula3
 msgid "Modula-3 Files (*.m3)|*.m3"
-msgstr ""
+msgstr "Modula-3 Files (*.m3)|*.m3"
 
 #: syneditstrconst:syns_filtersyngenmsgfiles
 msgid "Msg files (*.msg)|*.msg"

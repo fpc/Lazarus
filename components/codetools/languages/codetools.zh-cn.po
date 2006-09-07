@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2006-06-04 16:53+0800\n"
+"PO-Revision-Date: 2006-07-27 11:51+0800\n"
 "Last-Translator: 巫山霏云 <freefcw@gmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -307,7 +307,7 @@ msgstr "表达式语法错误 \"%s\""
 
 #: codetoolsstrconsts:ctstcodetoolmanagerconsistencycheck
 msgid "TCodeToolManager.ConsistencyCheck=%d"
-msgstr ""
+msgstr "TCodeToolManager.ConsistencyCheck=%d"
 
 #: codetoolsstrconsts:ctstermnotsimple
 msgid "Term has no simple type"
@@ -463,7 +463,7 @@ msgstr "插入类的部分时错误"
 
 #: codetoolsstrconsts:ctserrorduringinsertingnewusessection
 msgid "error during inserting new units to the main uses section"
-msgstr ""
+msgstr "在uses节插入新的单元时出错"
 
 #: codetoolsstrconsts:ctserrorindirectiveexpression
 msgid "error in directive expression"
@@ -763,5 +763,5 @@ msgstr "未知的节关键字 %s 出现"
 
 #: codetoolsstrconsts:ctsusedunitisnotapascalunit
 msgid "used unit is not a pascal unit"
-msgstr "used unit is not a pascal unit"
+msgstr "use的单元不是一个pascal单元"
 

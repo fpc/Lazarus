@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.9.16\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2006-06-04 02:30+0800\n"
+"PO-Revision-Date: 2006-09-07 21:47+0800\n"
 "Last-Translator: 巫山霏云 <freefcw@gmail.com>\n"
 "Language-Team: newsfree <freefcw@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -166,7 +166,7 @@ msgstr "调整"
 
 #: objinspstrconsts:rscdalignment
 msgid "Alignment"
-msgstr ""
+msgstr "对齐方式"
 
 #: objinspstrconsts:oisall
 msgid "All"
@@ -186,7 +186,7 @@ msgstr "Array"
 
 #: objinspstrconsts:rscdautosize
 msgid "Auto Size"
-msgstr ""
+msgstr "大小自动"
 
 #: objinspstrconsts:oisstdactionlisteditorclass
 msgid "Available Action Classes:"
@@ -206,7 +206,7 @@ msgstr "取消"
 
 #: objinspstrconsts:rscdcaption
 msgid "Caption"
-msgstr ""
+msgstr "标题"
 
 #: objinspstrconsts:sccslvedtlabelcaption
 msgid "Caption:"
@@ -258,7 +258,7 @@ msgstr "选择颜色"
 
 #: objinspstrconsts:rscdcolumneditor
 msgid "Column Editor"
-msgstr ""
+msgstr "列编辑器"
 
 #: objinspstrconsts:oiscomponentnameisnotavalididentifier
 msgid "Component name %s%s%s is not a valid identifier"
@@ -490,7 +490,7 @@ msgstr "界面"
 
 #: objinspstrconsts:rscdinvalidnumericvalue
 msgid "Invalid numeric Value"
-msgstr ""
+msgstr "无效数字"
 
 #: objinspstrconsts:oisinvalidpropertyvalue
 msgid "Invalid property value"
@@ -518,7 +518,7 @@ msgstr "最后"
 
 #: objinspstrconsts:rscdleft
 msgid "Left"
-msgstr ""
+msgstr "左"
 
 #: objinspstrconsts:sccslvedtcaption
 msgid "ListView Items Editor"
@@ -558,7 +558,7 @@ msgstr "下移"
 
 #: objinspstrconsts:sccssgedtmoverowscols
 msgid "Move Rows/Cols"
-msgstr ""
+msgstr "移动 行/列"
 
 #: objinspstrconsts:sccsiledtmoveup
 msgid "Move Up"
@@ -566,7 +566,7 @@ msgstr "上移"
 
 #: objinspstrconsts:rscdmovedown
 msgid "Move down"
-msgstr ""
+msgstr "下移"
 
 #: objinspstrconsts:nbcesmovepageleft
 msgid "Move page left"
@@ -586,7 +586,7 @@ msgstr "右移页面"
 
 #: objinspstrconsts:rscdmoveup
 msgid "Move up"
-msgstr ""
+msgstr "上移"
 
 #: objinspstrconsts:cactionlisteditornewaction
 msgid "New Action"
@@ -614,7 +614,7 @@ msgstr "无"
 
 #: objinspstrconsts:rscdok
 msgid "OK"
-msgstr ""
+msgstr "确定"
 
 #: objinspstrconsts:oisobject
 msgid "Object"
@@ -686,7 +686,7 @@ msgstr "从收藏中移除"
 
 #: objinspstrconsts:rscdright
 msgid "Right"
-msgstr ""
+msgstr "右"
 
 #: objinspstrconsts:oissamplemasks
 msgid "Sample Masks:"
@@ -854,11 +854,11 @@ msgstr "变量"
 
 #: objinspstrconsts:rscdvisible
 msgid "Visible"
-msgstr ""
+msgstr "可视"
 
 #: objinspstrconsts:rscdwidth
 msgid "Width"
-msgstr ""
+msgstr "宽度:"
 
 #: objinspstrconsts:oisword
 msgid "Word"
