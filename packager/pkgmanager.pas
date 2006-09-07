@@ -573,10 +573,11 @@ var
   APackage: TLazPackage;
 begin
   Ok:=false;
+  PkgList:=nil;
   try
     // create new auto install dependency PkgIDList
     ListPkgIDToDependencyList(PkgIDList,NewFirstAutoInstallDependency,
-      pdlRequires,Self,true);
+                              pdlRequires,Self,true);
 
     // get all required packages
     if LoadDependencyList(NewFirstAutoInstallDependency)<>mrOk then exit;
