@@ -32,9 +32,9 @@ uses
   Classes, SysUtils, CustApp, LCLProc, Dialogs, Forms, Controls, FileUtil,
   Process,
   // codetools
-  CodeToolManager, Laz_XMLCfg,
+  CodeToolManager, DefineTemplates, Laz_XMLCfg,
   // IDEIntf
-  MacroIntf, PackageIntf, IDEDialogs,
+  MacroIntf, PackageIntf, IDEDialogs, ProjectIntf,
   // IDE
   IDEProcs, InitialSetupDlgs, OutputFilter, Compiler, CompilerOptions,
   TransferMacros, EnvironmentOpts, IDETranslations, LazarusIDEStrConsts,
@@ -51,8 +51,6 @@ type
     FBuildRecursive: boolean;
     fInitialized: boolean;
     fInitResult: boolean;
-    TheOutputFilter: TOutputFilter;
-    TheCompiler: TCompiler;
     // external tools
     procedure OnExtToolFreeOutputFilter(OutputFilter: TOutputFilter;
                                         ErrorOccurred: boolean);
@@ -69,6 +67,11 @@ type
     // package graph
     procedure PackageGraphAddPackage(Pkg: TLazPackage);
     
+    // project
+    procedure OnProjectChangeInfoFile(TheProject: TProject);
+    procedure OnProjectGetTestDirectory(TheProject: TProject; out
+      TestDir: string);
+
     // dialogs
     function OnIDEMessageDialog(const aCaption, aMsg: string;
                                 DlgType: TMsgDlgType; Buttons: TMsgDlgButtons;
@@ -78,18 +81,24 @@ type
                                  const HelpKeyword: string): Integer;
   protected
     function BuildFile(Filename: string): boolean;
+
     function BuildPackage(const AFilename: string): boolean;
     function LoadPackage(const AFilename: string): TLazPackage;
     procedure CompilePackage(APackage: TLazPackage; Flags: TPkgCompileFlags);
     procedure CheckPackageGraphForCompilation(APackage: TLazPackage;
                                  FirstDependency: TPkgDependency);
+
+    function BuildProject(const AFilename: string): boolean;
+    function LoadProject(const AFilename: string): TProject;
+    procedure CloseProject(var AProject: TProject);
+
     function Init: boolean;
     procedure LoadEnvironmentOptions;
     procedure SetupOutputFilter;
     procedure SetupMacros;
     procedure SetupPackageSystem;
     procedure SetupDialogs;
-    Function RepairedCheckOptions(Const ShortOptions : String;
+    function RepairedCheckOptions(Const ShortOptions : String;
                    Const Longopts : TStrings; Opts,NonOpts : TStrings) : String;
   public
     Files: TStringList;
@@ -112,6 +121,7 @@ const
   ErrorBuildFailed = 2;
   ErrorLoadPackageFailed = 3;
   ErrorPackageNameInvalid = 4;
+  ErrorLoadProjectFailed = 5;
 
 procedure GetDescriptionOfDependencyOwner(Dependency: TPkgDependency;
   out Description: string);
@@ -207,6 +217,22 @@ begin
   if FileExists(Pkg.FileName) then PkgLinks.AddUserLink(Pkg);
 end;
 
+procedure TLazBuildApplication.OnProjectChangeInfoFile(TheProject: TProject);
+begin
+  if TheProject<>Project1 then exit;
+  if TheProject.IsVirtual then
+    CodeToolBoss.SetGlobalValue(ExternalMacroStart+'ProjPath',VirtualDirectory)
+  else
+    CodeToolBoss.SetGlobalValue(ExternalMacroStart+'ProjPath',
+                                Project1.ProjectDirectory)
+end;
+
+procedure TLazBuildApplication.OnProjectGetTestDirectory(TheProject: TProject;
+  out TestDir: string);
+begin
+  TestDir:=BuildBoss.GetTestBuildDirectory;
+end;
+
 function TLazBuildApplication.OnIDEMessageDialog(const aCaption, aMsg: string;
   DlgType: TMsgDlgType; Buttons: TMsgDlgButtons; const HelpKeyword: string
   ): Integer;
@@ -235,7 +261,16 @@ begin
   end;
   
   if CompareFileExt(Filename,'.lpk')=0 then
-    Result:=BuildPackage(Filename);
+    Result:=BuildPackage(Filename)
+  else if CompareFileExt(Filename,'.lpi')=0 then
+    Result:=BuildProject(Filename)
+  else if CompareFileExt(Filename,'.lpr')=0 then begin
+    Filename:=ChangeFileExt(Filename,'.lpi');
+    if FileExists(Filename) then
+      Result:=BuildProject(Filename)
+    else
+      Error(ErrorFileNotFound,'file not found: '+Filename);
+  end;
 end;
 
 function TLazBuildApplication.BuildPackage(const AFilename: string): boolean;
@@ -363,6 +398,135 @@ begin
   finally
     PathList.Free;
   end;
+end;
+
+function TLazBuildApplication.BuildProject(const AFilename: string): boolean;
+var
+  PkgFlags: TPkgCompileFlags;
+  CompilerFilename: String;
+  WorkingDir: String;
+  SrcFilename: String;
+  CompilerParams: String;
+  ToolBefore: TProjectCompilationToolOptions;
+  ToolAfter: TProjectCompilationToolOptions;
+begin
+  Result:=false;
+  CloseProject(Project1);
+
+  Init;
+
+  Project1:=LoadProject(AFilename);
+  
+  if Project1.MainUnitInfo=nil then
+    Error(ErrorBuildFailed,'project has no main unit');
+
+  // compile required packages
+  CheckPackageGraphForCompilation(nil,Project1.FirstRequiredDependency);
+
+  PackageGraph.BeginUpdate(false);
+  try
+    // automatically compile required packages
+    if PackageGraph.CompileRequiredPackages(nil,
+                                    Project1.FirstRequiredDependency,
+                                    Project1.CompilerOptions.Globals,
+                                    [pupAsNeeded])<>mrOk
+    then
+      Error(ErrorBuildFailed,'Project dependencies of '+AFilename);
+  finally
+    PackageGraph.EndUpdate;
+  end;
+  
+  WorkingDir:=Project1.ProjectDirectory;
+  SrcFilename:=CreateRelativePath(Project1.MainUnitInfo.Filename,WorkingDir);
+  CompilerFilename:=Project1.GetCompilerFilename;
+  //DebugLn(['TMainIDE.DoBuildProject CompilerFilename="',CompilerFilename,'" CompilerPath="',Project1.CompilerOptions.CompilerPath,'"']);
+
+  CompilerParams:=Project1.CompilerOptions.MakeOptionsString(SrcFilename,nil,[])
+                  +' '+PrepareCmdLineOption(SrcFilename);
+
+  // execute compilation tool 'Before'
+  ToolBefore:=TProjectCompilationToolOptions(
+                                    Project1.CompilerOptions.ExecuteBefore);
+  if (crCompile in ToolBefore.CompileReasons) then begin
+    if ToolBefore.Execute(
+                     Project1.ProjectDirectory,lisExecutingCommandBefore)<>mrOk
+    then
+      Error(ErrorBuildFailed,'failed "tool before" of project '+AFilename);
+  end;
+
+  if (crCompile in Project1.CompilerOptions.CompileReasons) then begin
+    // compile
+    if TheCompiler.Compile(Project1,
+                            WorkingDir,CompilerFilename,CompilerParams,
+                            BuildAll,false,false)<>mrOk
+    then
+      Error(ErrorBuildFailed,'failed compiling of project '+AFilename);
+    // compilation succeded -> write state file
+    if Project1.SaveStateFile(CompilerFilename,CompilerParams)<>mrOk then
+      Error(ErrorBuildFailed,'failed saving statefile of project '+AFilename);
+  end;
+
+  // execute compilation tool 'After'
+  ToolAfter:=TProjectCompilationToolOptions(
+                                     Project1.CompilerOptions.ExecuteAfter);
+  // no need to check for mrOk, we are exit if it wasn't
+  if (crCompile in ToolAfter.CompileReasons) then begin
+    if ToolAfter.Execute(
+                      Project1.ProjectDirectory,lisExecutingCommandAfter)<>mrOk
+    then
+      Error(ErrorBuildFailed,'failed "tool after" of project '+AFilename);
+  end;
+
+  Result:=true;
+end;
+
+function TLazBuildApplication.LoadProject(const AFilename: string): TProject;
+var
+  ProjectDesc: TProjectDescriptor;
+begin
+  ProjectDesc:=TProjectDescriptor.Create;
+  try
+    Result:=TProject.Create(ProjectDesc);
+    // custom initialization
+    Result.BeginUpdate(true);
+    if ProjectDesc.InitProject(Result)<>mrOk then begin
+      Result.EndUpdate;
+      Result.Free;
+      Result:=nil;
+    end;
+    Result.EndUpdate;
+
+    Result.MainProject:=true;
+    Result.OnFileBackup:=@BuildBoss.BackupFile;
+    Result.OnGetTestDirectory:=@OnProjectGetTestDirectory;
+    Result.OnChangeProjectInfoFile:=@OnProjectChangeInfoFile;
+
+  finally
+    ProjectDesc.Free;
+  end;
+
+  Result.BeginUpdate(true);
+  try
+    // read project info file
+    if Result.ReadProject(AFilename)<>mrOk then
+      Error(ErrorLoadProjectFailed,'Project '+AFilename);
+    //BuildBoss.RescanCompilerDefines(true);
+
+    // load required packages
+    PackageGraph.OpenRequiredDependencyList(Result.FirstRequiredDependency);
+
+    //Result.DefineTemplates.AllChanged;
+    //Result.DefineTemplates.Active:=true;
+  finally
+    Result.EndUpdate;
+  end;
+  IncreaseCompilerParseStamp;
+end;
+
+procedure TLazBuildApplication.CloseProject(var AProject: TProject);
+begin
+  // free project, if it is still there
+  FreeThenNil(AProject);
 end;
 
 function TLazBuildApplication.Init: boolean;
@@ -583,9 +747,8 @@ end;
 
 destructor TLazBuildApplication.Destroy;
 begin
-  // free project, if it is still there
-  //FreeThenNil(Project1);
-  
+  CloseProject(Project1);
+
   FreeThenNil(PackageGraph);
   FreeThenNil(PkgLinks);
   FreeThenNil(TheCompiler);

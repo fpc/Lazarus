@@ -7477,9 +7477,6 @@ begin
       WorkingDir:=GetTestBuildDirectory;
       SrcFilename:=MainBuildBoss.GetTestUnitFilename(Project1.MainUnitInfo);
     end;
-    CompilerFilename:=Project1.CompilerOptions.CompilerPath;
-    GlobalMacroList.SubstituteStr(CompilerFilename);
-    //DebugLn(['TMainIDE.DoBuildProject A Project1.GetCompilerFilename="',Project1.GetCompilerFilename,'" CompilerFilename="',CompilerFilename,'" CompilerPath="',Project1.CompilerOptions.CompilerPath,'"']);
     CompilerFilename:=Project1.GetCompilerFilename;
     //DebugLn(['TMainIDE.DoBuildProject CompilerFilename="',CompilerFilename,'" CompilerPath="',Project1.CompilerOptions.CompilerPath,'"']);
     
