@@ -49,6 +49,7 @@ type
   private
     FBuildAll: boolean;
     FBuildRecursive: boolean;
+    FSkipDependencies: boolean;
     fInitialized: boolean;
     fInitResult: boolean;
     // external tools
@@ -111,6 +112,8 @@ type
     property BuildAll: boolean read FBuildAll write FBuildAll;// build all files of project/package
     property BuildRecursive: boolean read FBuildRecursive // apply BuildAll flag to dependencies
                                      write FBuildRecursive;
+    property SkipDependencies: boolean read FSkipDependencies
+                                            write FSkipDependencies;
   end;
 
 var
@@ -293,6 +296,8 @@ begin
     Include(Flags,pcfOnlyIfNeeded);
   if BuildRecursive and BuildAll then
     Include(Flags,pcfCompileDependenciesClean);
+  if SkipDependencies then
+    Include(Flags,pcfDoNotCompileDependencies);
   CompilePackage(APackage,Flags);
   
   Result:=true;
@@ -402,7 +407,6 @@ end;
 
 function TLazBuildApplication.BuildProject(const AFilename: string): boolean;
 var
-  PkgFlags: TPkgCompileFlags;
   CompilerFilename: String;
   WorkingDir: String;
   SrcFilename: String;
@@ -420,20 +424,22 @@ begin
   if Project1.MainUnitInfo=nil then
     Error(ErrorBuildFailed,'project has no main unit');
 
-  // compile required packages
-  CheckPackageGraphForCompilation(nil,Project1.FirstRequiredDependency);
+  if not SkipDependencies then begin
+    // compile required packages
+    CheckPackageGraphForCompilation(nil,Project1.FirstRequiredDependency);
 
-  PackageGraph.BeginUpdate(false);
-  try
-    // automatically compile required packages
-    if PackageGraph.CompileRequiredPackages(nil,
-                                    Project1.FirstRequiredDependency,
-                                    Project1.CompilerOptions.Globals,
-                                    [pupAsNeeded])<>mrOk
-    then
-      Error(ErrorBuildFailed,'Project dependencies of '+AFilename);
-  finally
-    PackageGraph.EndUpdate;
+    PackageGraph.BeginUpdate(false);
+    try
+      // automatically compile required packages
+      if PackageGraph.CompileRequiredPackages(nil,
+                                      Project1.FirstRequiredDependency,
+                                      Project1.CompilerOptions.Globals,
+                                      [pupAsNeeded])<>mrOk
+      then
+        Error(ErrorBuildFailed,'Project dependencies of '+AFilename);
+    finally
+      PackageGraph.EndUpdate;
+    end;
   end;
   
   WorkingDir:=Project1.ProjectDirectory;
@@ -809,7 +815,8 @@ begin
     LongOptions.Add('language');
     LongOptions.Add('build-all');
     LongOptions.Add('recursive');
-    ErrorMsg:=RepairedCheckOptions('lBR',LongOptions,Options,NonOptions);
+    LongOptions.Add('skip-dependencies');
+    ErrorMsg:=RepairedCheckOptions('lBrd',LongOptions,Options,NonOptions);
     if ErrorMsg<>'' then begin
       writeln(ErrorMsg);
       writeln('');
@@ -839,8 +846,10 @@ begin
     // build all
     if HasOption('B','build-all') then
       BuildAll:=true;
-    if HasOption('R','recursive') then
+    if HasOption('r','recursive') then
       BuildRecursive:=true;
+    if HasOption('d','skip-dependencies') then
+      SkipDependencies:=true;
   finally
     Options.Free;
     NonOptions.Free;
@@ -859,10 +868,11 @@ begin
   writeln('');
   writeln('Options:');
   writeln('');
-  writeln('--help or -?             ', listhisHelpMessage);
+  writeln('--help or -?              ', listhisHelpMessage);
   writeln('');
-  writeln('-B or --build-all        ','build all files of project/package');
-  writeln('-R or --recursive        ','apply build flags (-B) to dependencies too.');
+  writeln('-B or --build-all         ','build all files of project/package');
+  writeln('-r or --recursive         ','apply build flags (-B) to dependencies too.');
+  writeln('-d or --skip-dependencies ','do not compile dependencies');
   writeln('');
   writeln(PrimaryConfPathOptLong,' <path>');
   writeln('or ',PrimaryConfPathOptShort,' <path>');
