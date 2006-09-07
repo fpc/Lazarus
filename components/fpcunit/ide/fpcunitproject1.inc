@@ -4,7 +4,8 @@ NewSource :=
   + '{$mode objfpc}{$H+}' + #13
   + #13
   + 'uses' + #13
-  + '  custapp, Classes, SysUtils, fpcunit, testreport, testregistry;' + #13
+  + '  custapp, Classes, SysUtils, fpcunit, testregistry,'#13
+  + '  dom, testreport, xmlreporter, xmlwrite;'#13
   + #13
   + 'const' + #13
   + '  ShortOpts = ''alh'';' + #13
@@ -29,16 +30,16 @@ NewSource :=
   + '  var' + #13
   + '    testResult: TTestResult;' + #13
   + #13
-  + '    procedure doXMLTestRun(aText: TTest);' + #13
+  + '    procedure doXMLTestRun(aTest: TTest);' + #13
   + '    var' + #13
   + '      XMLResultsWriter: TXMLResultsWriter;' + #13
   + '    begin' + #13
   + '      try' + #13
   + '        XMLResultsWriter := TXMLResultsWriter.Create;' + #13
   + '        testResult.AddListener(XMLResultsWriter);' + #13
-  + '        XMLResultsWriter.WriteHeader;' + #13
   + '        aTest.Run(testResult);' + #13
   + '        XMLResultsWriter.WriteResult(testResult);' + #13
+  + '        WriteXMLFile(XMLResultsWriter.Document, output);'#13
   + '      finally' + #13
   + '        XMLResultsWriter.Free;' + #13
   + '        testResult.Free;' + #13
@@ -46,7 +47,7 @@ NewSource :=
   + '    end;' + #13
   + #13
   + '    {$IFNDEF VER2_0}' + #13
-  + '      procedure doPlainTestRun(aText: TTest);' + #13
+  + '      procedure doPlainTestRun(aTest: TTest);' + #13
   + '      var' + #13
   + '        PlainResultsWriter: TPlainResultsWriter;' + #13
   + '      begin' + #13
