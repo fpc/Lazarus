@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2006-08-18 12:34+0100\n"
-"Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
+"PO-Revision-Date: 2006-09-07 11:48+0100\n"
+"Last-Translator: Swen Heinig <x@y.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -530,7 +530,7 @@ msgstr "ALT-Taste aktiviert Spaltenmodus"
 
 #: lazarusidestrconsts:srkmalternkey
 msgid "Alternative key (or 2 keys combination)"
-msgstr ""
+msgstr "Alternative Taste (oder 2-Tastenkombination)"
 
 #: lazarusidestrconsts:lisprojoptsalwaysbuildevenifnothingchanged
 msgid "Always build (even if nothing changed)"
@@ -3836,6 +3836,10 @@ msgstr "Ungültige Minimalvesion"
 msgid "Invalid multiselection"
 msgstr "Ungültige Mehrfachauswahl"
 
+#: lazarusidestrconsts:liserrinvalidoption
+msgid "Invalid option at position %d: \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts:lisaf2pinvalidpackageid
 msgid "Invalid package ID: %s%s%s"
 msgstr "Ungültige Paket-ID: %s%s%s"
@@ -4006,7 +4010,7 @@ msgstr "Taste"
 
 #: lazarusidestrconsts:srkmkey
 msgid "Key (or 2 keys combination)"
-msgstr ""
+msgstr "Taste (oder 2-Tastenkombination)"
 
 #: lazarusidestrconsts:dlgkeymappingscheme
 msgid "Key Mapping Scheme"
@@ -5104,6 +5108,14 @@ msgstr "Unit öffnen"
 msgid "Optimizations:"
 msgstr "Optimierungen:"
 
+#: lazarusidestrconsts:liserrnooptionallowed
+msgid "Option at position %d does not allow an argument: %s"
+msgstr ""
+
+#: lazarusidestrconsts:liserroptionneeded
+msgid "Option at position %d needs an argument : %s"
+msgstr ""
+
 #: lazarusidestrconsts:fdmsnaptogridoption
 msgid "Option: Snap to grid"
 msgstr "Option: Ans Gitter kleben"
@@ -5666,7 +5678,7 @@ msgstr "Veröffentlichte Methode"
 
 #: lazarusidestrconsts:lismenuquickcompile
 msgid "Quick compile"
-msgstr ""
+msgstr "Schnelles Kompilieren"
 
 #: lazarusidestrconsts:lismenuquicksyntaxcheck
 msgid "Quick syntax check"
@@ -6610,7 +6622,7 @@ msgstr "Umsch-Tab"
 
 #: lazarusidestrconsts:lislazdocshorttag
 msgid "Short"
-msgstr ""
+msgstr "Kurz"
 
 #: lazarusidestrconsts:lisa2pshortenorexpandfilename
 msgid "Shorten or expand filename"
@@ -8998,7 +9010,7 @@ msgstr "primäres Konfigurationsverzeichnis in dem Lazarus seine Konfigurationsd
 
 #: lazarusidestrconsts:srkmecquickcompile
 msgid "quick compile, no linking"
-msgstr ""
+msgstr "Schnelles Kompilieren, kein Linken"
 
 #: lazarusidestrconsts:lisoipreadonly
 msgid "readonly"

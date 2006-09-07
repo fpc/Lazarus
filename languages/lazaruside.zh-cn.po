@@ -3836,6 +3836,10 @@ msgstr "无效最小版本"
 msgid "Invalid multiselection"
 msgstr "无效的多选"
 
+#: lazarusidestrconsts:liserrinvalidoption
+msgid "Invalid option at position %d: \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts:lisaf2pinvalidpackageid
 msgid "Invalid package ID: %s%s%s"
 msgstr "无效包 ID : %s%s%s"
@@ -5103,6 +5107,14 @@ msgstr "打开单元"
 #: lazarusidestrconsts:dlgoptimiz
 msgid "Optimizations:"
 msgstr "优化:"
+
+#: lazarusidestrconsts:liserrnooptionallowed
+msgid "Option at position %d does not allow an argument: %s"
+msgstr ""
+
+#: lazarusidestrconsts:liserroptionneeded
+msgid "Option at position %d needs an argument : %s"
+msgstr ""
 
 #: lazarusidestrconsts:fdmsnaptogridoption
 msgid "Option: Snap to grid"

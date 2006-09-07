@@ -3833,6 +3833,10 @@ msgstr "Неправильная минимальная версия"
 msgid "Invalid multiselection"
 msgstr "Неправильный множественный выбор"
 
+#: lazarusidestrconsts:liserrinvalidoption
+msgid "Invalid option at position %d: \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts:lisaf2pinvalidpackageid
 msgid "Invalid package ID: %s%s%s"
 msgstr "Неправильный идентификатор пакета: %s%s%s"
@@ -5100,6 +5104,14 @@ msgstr "Открыть модуль"
 #: lazarusidestrconsts:dlgoptimiz
 msgid "Optimizations:"
 msgstr "Оптимизация:"
+
+#: lazarusidestrconsts:liserrnooptionallowed
+msgid "Option at position %d does not allow an argument: %s"
+msgstr ""
+
+#: lazarusidestrconsts:liserroptionneeded
+msgid "Option at position %d needs an argument : %s"
+msgstr ""
 
 #: lazarusidestrconsts:fdmsnaptogridoption
 msgid "Option: Snap to grid"

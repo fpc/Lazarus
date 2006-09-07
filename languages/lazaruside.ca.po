@@ -3822,6 +3822,10 @@ msgstr "La versió mínima no és vàlida"
 msgid "Invalid multiselection"
 msgstr "La multiselecció no és vàlida"
 
+#: lazarusidestrconsts:liserrinvalidoption
+msgid "Invalid option at position %d: \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts:lisaf2pinvalidpackageid
 msgid "Invalid package ID: %s%s%s"
 msgstr "L'ID del paquet no és vàlida: %s%s%s"
@@ -5089,6 +5093,14 @@ msgstr "Obre la unitat"
 #: lazarusidestrconsts:dlgoptimiz
 msgid "Optimizations:"
 msgstr "Optimitzacions:"
+
+#: lazarusidestrconsts:liserrnooptionallowed
+msgid "Option at position %d does not allow an argument: %s"
+msgstr ""
+
+#: lazarusidestrconsts:liserroptionneeded
+msgid "Option at position %d needs an argument : %s"
+msgstr ""
 
 #: lazarusidestrconsts:fdmsnaptogridoption
 msgid "Option: Snap to grid"
