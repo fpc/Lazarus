@@ -43,6 +43,7 @@
       </Item5>
       <Item6>
         <Filename Value="wsx11trayicon.pas"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="wsx11trayicon"/>
       </Item6>
     </Files>
