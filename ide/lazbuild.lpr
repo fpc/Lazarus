@@ -426,22 +426,6 @@ begin
   if Project1.MainUnitInfo=nil then
     Error(ErrorBuildFailed,'project has no main unit');
 
-  if WidgetSetOverride <> '' then begin
-    //WriteLn('Overriding TargetWS=',WidgetSetOverride);
-    Project1.CompilerOptions.LCLWidgetType := WidgetSetOverride;
-    Project1.DefineTemplates.UpdateGlobalValues;
-  end;
-  if OSOverride <> '' then begin
-    //WriteLn('Overriding TargetOS=',OSOverride);
-    Project1.CompilerOptions.TargetOS := OSOverride;
-  end;
-  if CPUOverride <> '' then begin
-    //WriteLn('Overriding TargetCPU=',CPUOverride);
-    Project1.CompilerOptions.TargetCPU := CPUOverride;
-  end;
-
-
-    
   if not SkipDependencies then begin
     // compile required packages
     CheckPackageGraphForCompilation(nil,Project1.FirstRequiredDependency);
@@ -564,6 +548,7 @@ begin
   CreatePrimaryConfigPath;
 
   MainBuildBoss:=TBuildManager.Create;
+  MainBuildBoss.ScanningCompilerDisabled:=true;
   LoadEnvironmentOptions;
   InteractiveSetup:=false;
   SetupCompilerFilename(InteractiveSetup);
@@ -575,6 +560,8 @@ begin
 
   // create static base packages
   PackageGraph.AddStaticBasePackages;
+
+  MainBuildBoss.SetBuildTarget(OSOverride,CPUOverride,WidgetSetOverride);
 
   fInitResult:=true;
 end;
@@ -699,7 +686,7 @@ begin
           If FindLongopt(O) then
             begin
             If HaveArg then
-              //Result:=Format(lisErrNoOptionAllowed,[I,O]) // stops all longoptions with args from working
+              Result:=Format(lisErrNoOptionAllowed,[I,O]) // stops all longoptions with args from working
             end
           else
             begin // Required argument
@@ -765,6 +752,7 @@ end;
 constructor TLazBuildApplication.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
+  SetupDialogs;
   TOutputFilterProcess:=TProcess;
   Files:=TStringList.Create;
 end;
@@ -826,19 +814,19 @@ begin
   NonOptions:=TStringList.Create;
   LongOptions:=TStringList.Create;
   try
-    LongOptions.Add('primary-config-path');
-    LongOptions.Add('pcp');
-    LongOptions.Add('secondary-config-path');
-    LongOptions.Add('scp');
-    LongOptions.Add('language');
+    LongOptions.Add('primary-config-path:');
+    LongOptions.Add('pcp:');
+    LongOptions.Add('secondary-config-path:');
+    LongOptions.Add('scp:');
+    LongOptions.Add('language:');
     LongOptions.Add('build-all');
     LongOptions.Add('recursive');
     LongOptions.Add('skip-dependencies');
-    LongOptions.Add('widgetset');
-    LongOptions.Add('ws');
-    LongOptions.Add('operating-system');
-    LongOptions.Add('os');
-    LongOptions.Add('cpu');
+    LongOptions.Add('widgetset:');
+    LongOptions.Add('ws:');
+    LongOptions.Add('operating-system:');
+    LongOptions.Add('os:');
+    LongOptions.Add('cpu:');
     ErrorMsg:=RepairedCheckOptions('lBrd',LongOptions,Options,NonOptions);
     if ErrorMsg<>'' then begin
       writeln(ErrorMsg);

@@ -1015,11 +1015,7 @@ begin
     Load;
   end;
 
-  InputHistories:=TInputHistories.Create;
-  with InputHistories do begin
-    SetLazarusDefaultFilename;
-    Load;
-  end;
+  MainBuildBoss.SetupInputHistories;
 
   CreateDir(GetProjectSessionsConfigPath);
 end;
@@ -1175,7 +1171,6 @@ begin
   FreeThenNil(MiscellaneousOptions);
   FreeThenNil(EditorOpts);
   FreeThenNil(EnvironmentOptions);
-  FreeThenNil(InputHistories);
   FreeThenNil(IDECommandScopes);
 
   DebugLn('[TMainIDE.Destroy] B  -> inherited Destroy... ',ClassName);

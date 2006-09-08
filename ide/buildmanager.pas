@@ -53,6 +53,7 @@ type
   TBuildManager = class(TBaseBuildManager)
   private
     CurrentParsedCompilerOption: TParsedCompilerOptions;
+    FScanningCompilerDisabled: boolean;
     function OnSubstituteCompilerOption(Options: TParsedCompilerOptions;
                                         const UnparsedValue: string;
                                         PlatformIndependent: boolean): string;
@@ -104,6 +105,7 @@ type
     destructor Destroy; override;
     procedure SetupTransferMacros;
     procedure SetupCompilerInterface;
+    procedure SetupInputHistories;
 
     function GetTargetOS(UseCache: boolean): string; override;
     function GetTargetCPU(UseCache: boolean): string; override;
@@ -120,6 +122,8 @@ type
 
     procedure GetFPCCompilerParamsForEnvironmentTest(out Params: string);
     procedure RescanCompilerDefines(OnlyIfCompilerChanged: boolean);
+    property ScanningCompilerDisabled: boolean read FScanningCompilerDisabled
+                                              write FScanningCompilerDisabled;
 
     function CheckAmbiguousSources(const AFilename: string;
                                    Compiling: boolean): TModalResult; override;
@@ -186,7 +190,8 @@ end;
 destructor TBuildManager.Destroy;
 begin
   OnBackupFileInteractive:=nil;
-
+  FreeAndNil(InputHistories);
+  
   inherited Destroy;
   MainBuildBoss:=nil;
 end;
@@ -247,6 +252,16 @@ begin
   with TheCompiler do begin
     OnCommandLineCreate:=@OnCmdLineCreate;
     OutputFilter:=TheOutputFilter;
+  end;
+end;
+
+procedure TBuildManager.SetupInputHistories;
+begin
+  if InputHistories<>nil then exit;
+  InputHistories:=TInputHistories.Create;
+  with InputHistories do begin
+    SetLazarusDefaultFilename;
+    Load;
   end;
 end;
 
@@ -423,12 +438,13 @@ var
   UnitLinksValid: boolean;
   i: Integer;
 
-  function SearchSystemInUnitLinks: boolean;
+  function FoundSystemPPU: boolean;
   begin
     Result:=System.Pos('system ',CompilerUnitLinks)>0;
   end;
 
 begin
+  if ScanningCompilerDisabled then exit;
   GetFPCCompilerParamsForEnvironmentTest(CurOptions);
   {$IFDEF VerboseFPCSrcScan}
   writeln('TMainIDE.RescanCompilerDefines A ',CurOptions,
@@ -450,6 +466,7 @@ begin
   {$IFDEF VerboseFPCSrcScan}
   debugln('TMainIDE.RescanCompilerDefines B rebuilding FPC templates CurOptions="',CurOptions,'"');
   {$ENDIF}
+  SetupInputHistories;
   CompilerTemplate:=CodeToolBoss.DefinePool.CreateFPCTemplate(
                     EnvironmentOptions.CompilerFilename,CurOptions,
                     CreateCompilerTestPascalFilename,CompilerUnitSearchPath,
@@ -480,7 +497,7 @@ begin
     CompilerUnitLinks:='';
     if UnitLinksValid then
       CompilerUnitLinks:=InputHistories.FPCConfigCache.GetUnitLinks(CurOptions);
-    if not SearchSystemInUnitLinks then begin
+    if not FoundSystemPPU then begin
       UnitLinksValid:=false;
     end;
 
@@ -493,7 +510,7 @@ begin
     {$IFDEF VerboseFPCSrcScan}
     debugln('TMainIDE.RescanCompilerDefines C UnitLinks=',copy(CompilerUnitLinks,1,100));
     {$ENDIF}
-    if not SearchSystemInUnitLinks then begin
+    if not FoundSystemPPU then begin
       IDEMessageDialog('Error',
         'The system.ppu was not found in the FPC directories. '
         +'Make sure fpc is installed correctly and the fpc.cfg points to the right directory.',

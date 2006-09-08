@@ -283,7 +283,7 @@ const
     );
 
 var
-  InputHistories: TInputHistories;
+  InputHistories: TInputHistories = nil;
   
 
 implementation
