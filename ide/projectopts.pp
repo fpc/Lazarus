@@ -474,8 +474,13 @@ begin
 end;
 
 procedure TProjectOptionsDialog.AdditionalInfoButtonClick(Sender: TObject);
+var
+  InfoModified: Boolean;
 begin
-   ShowVersionInfoAdditionailInfoForm(Project.VersionInfo,Project.Modified);
+   InfoModified:=false;
+   ShowVersionInfoAdditionailInfoForm(Project.VersionInfo,InfoModified);
+   if InfoModified then
+      Project.Modified:=InfoModified;
 end;
 
 procedure TProjectOptionsDialog.LazDocBrowseButtonClick(Sender: TObject);
