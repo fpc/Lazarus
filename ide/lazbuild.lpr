@@ -44,9 +44,12 @@ type
   private
     FBuildAll: boolean;
     FBuildRecursive: boolean;
+    fCPUOverride: String;
+    fOSOverride: String;
     FSkipDependencies: boolean;
     fInitialized: boolean;
     fInitResult: boolean;
+    fWidgetsetOverride: String;
     // external tools
     procedure OnExtToolFreeOutputFilter(OutputFilter: TOutputFilter;
                                         ErrorOccurred: boolean);
@@ -109,6 +112,10 @@ type
                                      write FBuildRecursive;
     property SkipDependencies: boolean read FSkipDependencies
                                             write FSkipDependencies;
+    property WidgetSetOverride: String read fWidgetsetOverride
+                                            write fWidgetsetOverride;
+    property OSOverride: String read fOSOverride write fOSOverride;
+    property CPUOverride: String read fCPUOverride write fCPUOverride;
   end;
 
 var
@@ -419,6 +426,22 @@ begin
   if Project1.MainUnitInfo=nil then
     Error(ErrorBuildFailed,'project has no main unit');
 
+  if WidgetSetOverride <> '' then begin
+    //WriteLn('Overriding TargetWS=',WidgetSetOverride);
+    Project1.CompilerOptions.LCLWidgetType := WidgetSetOverride;
+    Project1.DefineTemplates.UpdateGlobalValues;
+  end;
+  if OSOverride <> '' then begin
+    //WriteLn('Overriding TargetOS=',OSOverride);
+    Project1.CompilerOptions.TargetOS := OSOverride;
+  end;
+  if CPUOverride <> '' then begin
+    //WriteLn('Overriding TargetCPU=',CPUOverride);
+    Project1.CompilerOptions.TargetCPU := CPUOverride;
+  end;
+
+
+    
   if not SkipDependencies then begin
     // compile required packages
     CheckPackageGraphForCompilation(nil,Project1.FirstRequiredDependency);
@@ -676,7 +699,7 @@ begin
           If FindLongopt(O) then
             begin
             If HaveArg then
-              Result:=Format(lisErrNoOptionAllowed,[I,O])
+              //Result:=Format(lisErrNoOptionAllowed,[I,O]) // stops all longoptions with args from working
             end
           else
             begin // Required argument
@@ -811,6 +834,11 @@ begin
     LongOptions.Add('build-all');
     LongOptions.Add('recursive');
     LongOptions.Add('skip-dependencies');
+    LongOptions.Add('widgetset');
+    LongOptions.Add('ws');
+    LongOptions.Add('operating-system');
+    LongOptions.Add('os');
+    LongOptions.Add('cpu');
     ErrorMsg:=RepairedCheckOptions('lBrd',LongOptions,Options,NonOptions);
     if ErrorMsg<>'' then begin
       writeln(ErrorMsg);
@@ -845,6 +873,23 @@ begin
       BuildRecursive:=true;
     if HasOption('d','skip-dependencies') then
       SkipDependencies:=true;
+      
+    // overides
+    // widgetset
+    if HasOption('ws') then
+      WidgetSetOverride := GetOptionValue('ws')
+    else if HasOption('widgetset') then
+      WidgetSetOverride := GetOptionValue('widgetset');
+      
+    // operating system
+    if HasOption('os') then
+      OSOverride := GetOptionValue('os')
+    else if HasOption('operating-system') then
+      OSOverride := GetOptionValue('operating-system');
+    // cpu
+    if HasOption('cpu') then
+      CPUOverride := GetOptionValue('cpu')
+
   finally
     Options.Free;
     NonOptions.Free;
@@ -878,6 +923,20 @@ begin
   writeln('or ',SecondaryConfPathOptShort,' <path>');
   writeln(BreakString(space+lissecondaryConfigDirectoryWhereLazarusSearchesFor,
                       75, 22), LazConf.GetSecondaryConfigPath);
+  writeln('');
+  writeln('--operating-system=<operating-system>');
+  writeln('or --os=<operating-system>');
+  writeln(BreakString(space+'override the project operating system. e.g. win32 linux.',
+                      75, 22));
+  writeln('');
+  writeln('--widgetset=<widgetset>');
+  writeln('or --ws=<widgetset>');
+  writeln(BreakString(space+'override the project widgetset. e.g. gtk gtk2 qt win32 carbon.',
+                      75, 22));
+  writeln('');
+  writeln('--cpu=<cpu>');
+  writeln(BreakString(space+'override the project cpu. e.g. i386 x86_64 powerpc powerpc_64 etc.',
+                      75, 22));
   writeln('');
   writeln(LanguageOpt);
   writeln(BreakString(space+lisOverrideLanguage,75, 22));
