@@ -3141,5 +3141,7 @@ resourcestring
   lisIFDOK = 'OK';
   lisPVUEditVirtualUnit = 'Edit virtual unit';
 
+  // version info tab
+  VersionInfoTitle = 'Version Info';
 implementation
 end.

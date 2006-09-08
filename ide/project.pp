@@ -51,7 +51,9 @@ uses
   Dialogs, Laz_XMLCfg, LazConf, FileUtil,
   LazarusIDEStrConsts, CompilerOptions, CodeToolManager, CodeCache,
   EditorOptions, IDEProcs, RunParamsOpts, ProjectIntf, ProjectDefs,
-  FileReferenceList, EditDefineTree, DefineTemplates, PackageDefs, LazIDEIntf;
+  FileReferenceList, EditDefineTree, DefineTemplates, PackageDefs, LazIDEIntf,
+  // for versioninfo
+  W32VersionInfo;
 
 type
   TUnitInfo = class;
@@ -520,6 +522,8 @@ type
     procedure AddToOrRemoveFromLoadedList(AnUnitInfo: TUnitInfo);
     procedure AddToOrRemoveFromPartOfProjectList(AnUnitInfo: TUnitInfo);
   public
+    VersionInfo: TVersionInfo;
+    
     constructor Create(ProjectDescription: TProjectDescriptor); override;
     destructor Destroy; override;
     procedure Clear;
@@ -1456,6 +1460,8 @@ begin
   FTargetFileExt := GetExecutableExt;
   Title := '';
   FUnitList := TFPList.Create;  // list of TUnitInfo
+  
+  VersionInfo := TVersionInfo.Create;
 end;
 
 {------------------------------------------------------------------------------
@@ -1635,6 +1641,25 @@ begin
 
       //lazdoc
       xmlconfig.SetDeleteValue(Path+'LazDoc/Paths', LazDocPaths, '');
+      
+      // VersionInfo
+      xmlconfig.SetValue(Path+'VersionInfo/UseVersionInfo/Value', VersionInfo.UseVersionInfo);
+      xmlconfig.SetValue(Path+'VersionInfo/AutoIncrementBuild/Value', VersionInfo.AutoIncrementBuild);
+      xmlconfig.SetValue(Path+'VersionInfo/CurrentVersionNr/Value', VersionInfo.VersionNr);
+      xmlconfig.SetValue(Path+'VersionInfo/CurrentMajorRevNr/Value', VersionInfo.MajorRevNr);
+      xmlconfig.SetValue(Path+'VersionInfo/CurrentMinorRevNr/Value', VersionInfo.MinorRevNr);
+      xmlconfig.SetValue(Path+'VersionInfo/CurrentBuildNr/Value', VersionInfo.BuildNr);
+      xmlconfig.SetValue(Path+'VersionInfo/ProjectVersion/Value', VersionInfo.ProductVersionString);
+      xmlconfig.SetValue(Path+'VersionInfo/Language/Value', VersionInfo.HexLang);
+      xmlconfig.SetValue(Path+'VersionInfo/CharSet/Value', VersionInfo.HexCharSet);
+      xmlconfig.SetValue(Path+'VersionInfo/Comments/Value', VersionInfo.CommentsString);
+      xmlconfig.SetValue(Path+'VersionInfo/CompanyName/Value', VersionInfo.CompanyString);
+      xmlconfig.SetValue(Path+'VersionInfo/FileDescription/Value', VersionInfo.DescriptionString);
+      xmlconfig.SetValue(Path+'VersionInfo/InternalName/Value', VersionInfo.InternalNameString);
+      xmlconfig.SetValue(Path+'VersionInfo/LegalCopyright/Value', VersionInfo.CopyrightString);
+      xmlconfig.SetValue(Path+'VersionInfo/LegalTrademarks/Value', VersionInfo.TrademarksString);
+      xmlconfig.SetValue(Path+'VersionInfo/OriginalFilename/Value', VersionInfo.OriginalFilenameString);
+      xmlconfig.SetValue(Path+'VersionInfo/ProductName/Value', VersionInfo.ProdNameString);
 
       // Save the compiler options
       CompilerOptions.SaveToXMLConfig(XMLConfig,'CompilerOptions/');
@@ -1980,6 +2005,27 @@ begin
 
       // Lazdoc
       LazDocPaths := xmlconfig.GetValue(Path+'LazDoc/Paths', '');
+      
+      // VersionInfo
+      VersionInfo.UseVersionInfo := xmlconfig.GetValue(Path+'VersionInfo/UseVersionInfo/Value', False);
+      VersionInfo.AutoIncrementBuild := xmlconfig.GetValue(Path+'VersionInfo/AutoIncrementBuild/Value', False);
+      VersionInfo.VersionNr := xmlconfig.GetValue(Path+'VersionInfo/CurrentVersionNr/Value', 0);
+      VersionInfo.MajorRevNr := xmlconfig.GetValue(Path+'VersionInfo/CurrentMajorRevNr/Value', 0);
+      VersionInfo.MinorRevNr := xmlconfig.GetValue(Path+'VersionInfo/CurrentMinorRevNr/Value', 0);
+      VersionInfo.BuildNr := xmlconfig.GetValue(Path+'VersionInfo/CurrentBuildNr/Value', 0);
+      VersionInfo.ProductVersionString := xmlconfig.GetValue(Path+'VersionInfo/ProjectVersion/Value', '1,0,0,0');
+      VersionInfo.HexLang := xmlconfig.GetValue(Path+'VersionInfo/Language/Value', '0409');
+      VersionInfo.HexCharSet := xmlconfig.GetValue(Path+'VersionInfo/CharSet/Value', '04E4');
+      VersionInfo.CommentsString := xmlconfig.GetValue(Path+'VersionInfo/Comments/Value', '');
+      VersionInfo.CompanyString := xmlconfig.GetValue(Path+'VersionInfo/CompanyName/Value', '');
+      VersionInfo.DescriptionString := xmlconfig.GetValue(Path+'VersionInfo/FileDescription/Value', '');
+      VersionInfo.InternalNameString := xmlconfig.GetValue(Path+'VersionInfo/InternalName/Value', '');
+      VersionInfo.CopyrightString := xmlconfig.GetValue(Path+'VersionInfo/LegalCopyright/Value', '');
+      VersionInfo.TrademarksString := xmlconfig.GetValue(Path+'VersionInfo/LegalTrademarks/Value', '');
+      VersionInfo.OriginalFilenameString := xmlconfig.GetValue(Path+'VersionInfo/OriginalFilename/Value', '');
+      VersionInfo.ProdNameString := xmlconfig.GetValue(Path+'VersionInfo/ProductName/Value', '');
+      VersionInfo.TargetOS := VersionInfo.SetTargetOS(CompilerOptions.TargetOS);
+      VersionInfo.SetFileNames(ProjectInfoFile);
 
       {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject E reading comp sets');{$ENDIF}
       // Load the compiler options
@@ -2302,6 +2348,10 @@ begin
   if AValue=SessionModified then exit;
   inherited SetSessionModified(AValue);
 end;
+
+//function TProject.GetVersionInfo: TVersionInfo;
+//begin
+//end;
 
 function TProject.UnitCount:integer;
 begin

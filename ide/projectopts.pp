@@ -38,7 +38,8 @@ interface
 uses
   Arrow, Buttons, LCLProc, Classes, CodeToolManager, Controls, Dialogs,
   ExtCtrls, Forms, Graphics, IDEOptionDefs, IDEWindowIntf, LazarusIDEStrConsts,
-  LCLIntf, LResources, Project, ProjectIntf, StdCtrls, SysUtils, IDEProcs;
+  LCLIntf, LResources, Project, ProjectIntf, StdCtrls, SysUtils, IDEProcs, Spin,
+  VersionInfoAdditionalInfo;
 
 type
 
@@ -53,6 +54,7 @@ type
     MiscPage:    TPage;
     LazDocPage:    TPage;
     SavePage: TPage;
+    VersionInfoPage: TPage;
 
     // Application
     AppSettingsGroupBox: TGroupBox;
@@ -96,10 +98,36 @@ type
     SaveOnlyProjectUnitInfoCheckBox: TCheckBox;
     SaveSessionLocationRadioGroup: TRadioGroup;
 
+    // VersionInfo
+    UseVersionInfoCheckBox: TCheckBox;
+    VersionInfoGroupBox: TGroupBox;
+       VersionLabel: TLabel;
+       MajorRevisionLabel: TLabel;
+       MinorRevisionLabel: TLabel;
+       BuildLabel: TLabel;
+       VersionSpinEdit: TSpinEdit;
+       MajorRevisionSpinEdit: TSpinEdit;
+       MinorRevisionSpinEdit: TSpinEdit;
+       BuildEdit: TEdit;
+       AutomaticallyIncreaseBuildCheckBox: TCheckBox;
+    LanguageSettingsGroupBox: TGroupBox;
+       LanguageSelectionLabel: TLabel;
+       CharacterSetLabel: TLabel;
+       LanguageSelectionComboBox: TComboBox;
+       CharacterSetComboBox: TComboBox;
+    OtherInfoGroupBox: TGroupBox;
+       AdditionalInfoButton: TButton;
+       DescriptionEdit: TEdit;
+       CopyrightEdit: TEdit;
+       DescriptionLabel: TLabel;
+       CopyrightLabel: TLabel;
+       AdditionalInfoForm: TVersionInfoAdditinalInfoForm;
+
     // buttons at bottom
     OKButton: TButton;
     CancelButton: TButton;
 
+    procedure AdditionalInfoButtonClick(Sender: TObject);
     procedure FormsPageResize(Sender: TObject);
     procedure LazDocAddPathButtonClick(Sender: TObject);
     procedure LazDocBrowseButtonClick(Sender: TObject);
@@ -111,6 +139,7 @@ type
     procedure FormsRemoveFromAutoCreatedFormsBtnClick(Sender: TObject);
     procedure FormsMoveAutoCreatedFormUpBtnClick(Sender: TObject);
     procedure FormsMoveAutoCreatedFormDownBtnClick(Sender: TObject);
+    procedure UseVersionInfoCheckBoxChange(Sender: TObject);
   private
     FProject: TProject;
     procedure SetProject(AProject: TProject);
@@ -119,6 +148,7 @@ type
     procedure SetupMiscPage(PageIndex: Integer);
     procedure SetupLazDocPage(PageIndex: Integer);
     procedure SetupSavePage(PageIndex: Integer);
+    procedure SetupVersionInfoPage(PageIndex: Integer);
     procedure FillAutoCreateFormsListbox;
     procedure FillAvailFormsListBox;
     function IndexOfAutoCreateForm(FormName: String): Integer;
@@ -196,6 +226,7 @@ begin
   SetupMiscPage(2);
   SetupLazDocPage(3);
   SetupSavePage(4);
+  SetupVersionInfoPage(5);
 
   ProjectOptionsResize(TheOwner);
 
@@ -260,7 +291,13 @@ begin
   AlwaysBuildCheckBox.Caption := lisProjOptsAlwaysBuildEvenIfNothingChanged;
 end;
 
+procedure TProjectOptionsDialog.SetupVersionInfoPage(PageIndex: Integer);
+begin
+  NoteBook.Page[PageIndex].Caption := VersionInfoTitle;
+end;
+
 procedure TProjectOptionsDialog.SetProject(AProject: TProject);
+var Count: integer;
 begin
   FProject := AProject;
   if AProject = Nil then
@@ -294,6 +331,54 @@ begin
 
   //lazdoc
   SplitString(Project.LazDocPaths,';',LazDocListBox.Items,true);
+  
+  // VersionInfo
+//  Project.VersionInfo.SetFileNames(Project.MainFilename);
+  UseVersionInfoCheckBox.Enabled :=  (Project.VersionInfo.TargetOS = 'win32');
+//  UseVersionInfoCheckBox.Enabled :=  Project.VersionInfo.UseVersionInfo;
+  VersionSpinEdit.Value := Project.VersionInfo.VersionNr;
+  MajorRevisionSpinEdit.Value := Project.VersionInfo.MajorRevNr;
+  MinorRevisionSpinEdit.Value := Project.VersionInfo.MinorRevNr;
+  BuildEdit.Text := IntToStr(Project.VersionInfo.BuildNr);
+  if Project.VersionInfo.UseVersionInfo then
+     begin
+        UseVersionInfoCheckBox.Checked := true;
+
+        VersionInfoGroupBox.Enabled := true;
+        VersionLabel.Enabled := true;
+        MajorRevisionLabel.Enabled := true;
+        MinorRevisionLabel.Enabled := true;
+        BuildLabel.Enabled := true;
+        VersionSpinEdit.Enabled := true;
+        MajorRevisionSpinEdit.Enabled := true;
+        MinorRevisionSpinEdit.Enabled := true;
+        BuildEdit.Enabled := true;
+        AutomaticallyIncreaseBuildCheckBox.Enabled := true;
+        
+        LanguageSettingsGroupBox.Enabled := true;
+        LanguageSelectionLabel.Enabled := true;
+        CharacterSetLabel.Enabled := true;
+        LanguageSelectionComboBox.Enabled := true;
+        CharacterSetComboBox.Enabled := true;
+        
+        OtherInfoGroupBox.Enabled := true;
+        DescriptionLabel.Enabled := true;
+        CopyrightLabel.Enabled := true;
+        DescriptionEdit.Enabled := true;
+        CopyrightEdit.Enabled := true;
+        AdditionalInfoButton.Enabled := true;
+     end;
+  if Project.VersionInfo.AutoIncrementBuild then AutomaticallyIncreaseBuildCheckBox.Checked := true;
+  for Count := 0 to (Project.VersionInfo.Languages.Count - 1) do
+     LanguageSelectionComboBox.Items.Add(Project.VersionInfo.Languages[Count]);
+  for Count := 0 to (Project.VersionInfo.CharSets.Count - 1) do
+     CharacterSetComboBox.Items.Add(Project.VersionInfo.CharSets[Count]);
+  LanguageSelectionComboBox.ItemIndex := Project.VersionInfo.HexLanguages.IndexOf(
+     Project.VersionInfo.HexLang);
+  CharacterSetComboBox.ItemIndex := Project.VersionInfo.HexCharSets.IndexOf(
+     Project.VersionInfo.HexCharSet);
+  DescriptionEdit.Text := Project.VersionInfo.DescriptionString;
+  CopyrightEdit.Text := Project.VersionInfo.CopyrightString;
 end;
 
 procedure TProjectOptionsDialog.ProjectOptionsClose(Sender: TObject;
@@ -347,8 +432,21 @@ begin
     SetProjectTitle;
     
     //lazdoc
-
     Project.LazDocPaths:=StringListToText(LazDocListBox.Items,';',true);
+
+    // VersionInfo
+    Project.VersionInfo.SetUseVersionInfo(UseVersionInfoCheckBox.Checked, Project.Modified);
+    Project.VersionInfo.SetAutoIncrementBuild(AutomaticallyIncreaseBuildCheckBox.Checked, Project.Modified);
+    Project.VersionInfo.SetVersionNr(VersionSpinEdit.Value, Project.Modified);
+    Project.VersionInfo.SetMajorRevNr(MajorRevisionSpinEdit.Value, Project.Modified);
+    Project.VersionInfo.SetMinorRevNr(MinorRevisionSpinEdit.Value, Project.Modified);
+    Project.VersionInfo.SetBuildNr(StrToInt(BuildEdit.Text), Project.Modified);
+    Project.VersionInfo.SetDescriptionString(DescriptionEdit.Text, Project.Modified);
+    Project.VersionInfo.SetCopyrightString(CopyrightEdit.Text, Project.Modified);
+    Project.VersionInfo.SetHexLang(LanguageSelectionComboBox.Items[LanguageSelectionComboBox.ItemIndex], Project.Modified);
+    Project.VersionInfo.SetHexCharSet(CharacterSetComboBox.Items[CharacterSetComboBox.ItemIndex], Project.Modified);
+//    Project.VersionInfo.HexLang := Project.VersionInfo.HexLanguages[Project.VersionInfo.Languages.IndexOf(LanguageSelectionComboBox.Items[LanguageSelectionComboBox.ItemIndex])];
+//    Project.VersionInfo.HexCharSet := Project.VersionInfo.HexCharSets[Project.VersionInfo.CharSets.IndexOf(CharacterSetComboBox.Items[CharacterSetComboBox.ItemIndex])];
   end;
 
   IDEDialogLayoutList.SaveLayout(Self);
@@ -369,6 +467,11 @@ begin
 
   with FormsAvailFormsLabel do
     Left := FormsAvailFormsListBox.Left;
+end;
+
+procedure TProjectOptionsDialog.AdditionalInfoButtonClick(Sender: TObject);
+begin
+   ShowVersionInfoAdditionailInfoForm(Project.VersionInfo,Project.Modified);
 end;
 
 procedure TProjectOptionsDialog.LazDocBrowseButtonClick(Sender: TObject);
@@ -594,6 +697,68 @@ begin
     Items.EndUpdate;
   end;
   SelectOnlyThisAutoCreateForm(i + 1);
+end;
+
+procedure TProjectOptionsDialog.UseVersionInfoCheckBoxChange(Sender: TObject);
+begin
+  if UseVersionInfoCheckBox.Checked then
+     begin
+        { checkbox is checked }
+        UseVersionInfoCheckBox.Checked := true;
+
+        VersionInfoGroupBox.Enabled := true;
+        VersionLabel.Enabled := true;
+        MajorRevisionLabel.Enabled := true;
+        MinorRevisionLabel.Enabled := true;
+        BuildLabel.Enabled := true;
+        VersionSpinEdit.Enabled := true;
+        MajorRevisionSpinEdit.Enabled := true;
+        MinorRevisionSpinEdit.Enabled := true;
+        BuildEdit.Enabled := true;
+        AutomaticallyIncreaseBuildCheckBox.Enabled := true;
+
+        LanguageSettingsGroupBox.Enabled := true;
+        LanguageSelectionLabel.Enabled := true;
+        CharacterSetLabel.Enabled := true;
+        LanguageSelectionComboBox.Enabled := true;
+        CharacterSetComboBox.Enabled := true;
+
+        OtherInfoGroupBox.Enabled := true;
+        DescriptionLabel.Enabled := true;
+        CopyrightLabel.Enabled := true;
+        DescriptionEdit.Enabled := true;
+        CopyrightEdit.Enabled := true;
+        AdditionalInfoButton.Enabled := true;
+     end
+  else
+     begin
+        { checkbox in unchecked }
+        UseVersionInfoCheckBox.Checked := false;
+
+        VersionInfoGroupBox.Enabled := false;
+        VersionLabel.Enabled := false;
+        MajorRevisionLabel.Enabled := false;
+        MinorRevisionLabel.Enabled := false;
+        BuildLabel.Enabled := false;
+        VersionSpinEdit.Enabled := false;
+        MajorRevisionSpinEdit.Enabled := false;
+        MinorRevisionSpinEdit.Enabled := false;
+        BuildEdit.Enabled := false;
+        AutomaticallyIncreaseBuildCheckBox.Enabled := false;
+
+        LanguageSettingsGroupBox.Enabled := false;
+        LanguageSelectionLabel.Enabled := false;
+        CharacterSetLabel.Enabled := false;
+        LanguageSelectionComboBox.Enabled := false;
+        CharacterSetComboBox.Enabled := false;
+
+        OtherInfoGroupBox.Enabled := false;
+        DescriptionLabel.Enabled := false;
+        CopyrightLabel.Enabled := false;
+        DescriptionEdit.Enabled := false;
+        CopyrightEdit.Enabled := false;
+        AdditionalInfoButton.Enabled := false;
+     end;
 end;
 
 procedure TProjectOptionsDialog.ProjectOptionsResize(Sender: TObject);

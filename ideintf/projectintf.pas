@@ -24,7 +24,7 @@ interface
 uses
   Classes, SysUtils, LCLProc, FileUtil, Controls, Forms, NewItemIntf,
   ObjInspStrConsts;
-  
+
 const
   FileDescGroupName = 'File';
   FileDescNamePascalUnit = 'Unit';
@@ -494,7 +494,6 @@ type
   public
     property Descriptor: TProjectDescriptor read FDescriptor write FDescriptor;
   end;
-
 
   { TLazProject - interface class to a Lazarus project }
 

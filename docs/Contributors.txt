@@ -38,6 +38,7 @@ Jeroen van Idekinge
 Jesus Reyes
 Joerg Braun - german translation
 Joost van der Sluis
+Jouke Rensma
 Karl Brandt
 Keith Bowes
 Ladislav Michl
