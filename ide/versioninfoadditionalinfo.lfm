@@ -1,0 +1,157 @@
+object VersionInfoAdditinalInfoForm: TVersionInfoAdditinalInfoForm
+  ActiveControl = OKButton
+  BorderIcons = []
+  Caption = 'Additional Information'
+  ClientHeight = 296
+  ClientWidth = 395
+  PixelsPerInch = 96
+  Position = poOwnerFormCenter
+  HorzScrollBar.Page = 394
+  VertScrollBar.Page = 295
+  Left = 300
+  Height = 296
+  Top = 402
+  Width = 395
+  object OKButton: TButton
+    BorderSpacing.InnerBorder = 4
+    Caption = 'OK'
+    OnClick = Button1Click
+    TabOrder = 0
+    Left = 216
+    Height = 25
+    Top = 264
+    Width = 75
+  end
+  object AdditionalInfoGroupBox: TGroupBox
+    Caption = 'Additional Information'
+    ClientHeight = 230
+    ClientWidth = 372
+    TabOrder = 1
+    Left = 8
+    Height = 248
+    Top = 8
+    Width = 376
+    object CommentsLabel: TLabel
+      Caption = 'Comments:'
+      Color = clNone
+      ParentColor = False
+      Left = 6
+      Height = 14
+      Top = 8
+      Width = 55
+    end
+    object CompanyLabel: TLabel
+      Caption = 'Company:'
+      Color = clNone
+      ParentColor = False
+      Left = 6
+      Height = 14
+      Top = 40
+      Width = 50
+    end
+    object InternalNameLabel: TLabel
+      Caption = 'Internal Name:'
+      Color = clNone
+      ParentColor = False
+      Left = 6
+      Height = 14
+      Top = 72
+      Width = 73
+    end
+    object LegalTrademarksLabel: TLabel
+      Caption = 'Legal Trademarks:'
+      Color = clNone
+      ParentColor = False
+      Left = 6
+      Height = 14
+      Top = 104
+      Width = 89
+    end
+    object OriginalFileNameLabel: TLabel
+      Caption = 'Original File Name:'
+      Color = clNone
+      ParentColor = False
+      Left = 6
+      Height = 14
+      Top = 136
+      Width = 90
+    end
+    object ProductNameLabel: TLabel
+      Caption = 'Product Name:'
+      Color = clNone
+      ParentColor = False
+      Left = 6
+      Height = 14
+      Top = 168
+      Width = 72
+    end
+    object ProductVersionLabel: TLabel
+      Caption = 'Product Version:'
+      Color = clNone
+      ParentColor = False
+      Left = 6
+      Height = 14
+      Top = 200
+      Width = 80
+    end
+    object CommentsEdit: TEdit
+      TabOrder = 0
+      Left = 102
+      Height = 23
+      Top = 8
+      Width = 264
+    end
+    object CompanyEdit: TEdit
+      TabOrder = 1
+      Left = 102
+      Height = 23
+      Top = 40
+      Width = 264
+    end
+    object InternalNameEdit: TEdit
+      TabOrder = 2
+      Left = 102
+      Height = 23
+      Top = 72
+      Width = 264
+    end
+    object LegalTrademarksEdit: TEdit
+      TabOrder = 3
+      Left = 102
+      Height = 23
+      Top = 104
+      Width = 264
+    end
+    object OriginalFileNameEdit: TEdit
+      TabOrder = 4
+      Left = 102
+      Height = 23
+      Top = 136
+      Width = 264
+    end
+    object ProductNameEdit: TEdit
+      TabOrder = 5
+      Left = 102
+      Height = 23
+      Top = 168
+      Width = 264
+    end
+    object ProductVersionEdit: TEdit
+      TabOrder = 6
+      Left = 102
+      Height = 23
+      Top = 200
+      Width = 264
+    end
+  end
+  object CancelButton: TButton
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Cancel'
+    OnClick = CancelButtonClick
+    TabOrder = 2
+    Left = 304
+    Height = 25
+    Top = 264
+    Width = 75
+  end
+end
