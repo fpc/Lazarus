@@ -168,6 +168,7 @@ begin
   if csDestroying in ComponentState then exit;
   UpdateButtons;
   Tool:=GetCurrentTool;
+  //DebugLn(['TTextConvListEditor.ToolsListBoxSelectionChange Tool=',dbgsName(Tool)]);
   PropertyGrid.TIObject:=Tool;
 end;
 
@@ -318,6 +319,7 @@ begin
   Result:=nil;
   if FListOfTools=nil then exit;
   i:=ToolsListBox.ItemIndex;
+  //DebugLn(['TTextConvListEditor.GetCurrentTool ',dbgsName(Self),' ToolsListBox.ItemIndex=',ToolsListBox.ItemIndex,' FListOfTools.ComponentCount=',FListOfTools.ComponentCount]);
   if (i<0) or (i>=FListOfTools.ComponentCount) then exit;
   Result:=TCustomTextConverterTool(FListOfTools.Components[i]);
 end;

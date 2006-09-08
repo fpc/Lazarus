@@ -641,6 +641,7 @@ type
     function DoOpenFileAndJumpToPos(const AFilename: string;
         const CursorPosition: TPoint; TopLine: integer;
         PageIndex: integer; Flags: TOpenFlags): TModalResult; override;
+    function DoRevertEditorFile(const Filename: string): TModalResult; override;
     function DoSaveAll(Flags: TSaveFlags): TModalResult;
     procedure DoRestart;
     function DoOpenMainUnit(Flags: TOpenFlags): TModalResult;
@@ -5383,6 +5384,11 @@ function TMainIDE.DoOpenFileInSourceEditor(AnUnitInfo: TUnitInfo;
 var NewSrcEdit: TSourceEditor;
   AFilename: string;
   NewSrcEditorCreated: boolean;
+  NewCaretXY: TPoint;
+  NewTopLine: LongInt;
+  NewLeftChar: LongInt;
+  NewErrorLine: LongInt;
+  NewExecutionLine: LongInt;
 begin
   AFilename:=AnUnitInfo.Filename;
 
@@ -5405,9 +5411,19 @@ begin
     NewSrcEditorCreated:=true;
     MainIDEBar.itmFileClose.Enabled:=True;
     MainIDEBar.itmFileCloseAll.Enabled:=True;
+    NewCaretXY:=AnUnitInfo.CursorPos;
+    NewTopLine:=AnUnitInfo.TopLine;
+    NewLeftChar:=1;
+    NewErrorLine:=-1;
+    NewExecutionLine:=-1;
   end else begin
     // revert code in existing source editor
     NewSrcEdit:=SourceNotebook.FindSourceEditorWithPageIndex(PageIndex);
+    NewCaretXY:=NewSrcEdit.EditorComponent.CaretXY;
+    NewTopLine:=NewSrcEdit.EditorComponent.TopLine;
+    NewLeftChar:=NewSrcEdit.EditorComponent.LeftChar;
+    NewErrorLine:=NewSrcEdit.ErrorLine;
+    NewExecutionLine:=NewSrcEdit.ExecutionLine;
     NewSrcEdit.EditorComponent.BeginUpdate;
     NewSrcEdit.CodeBuffer:=AnUnitInfo.Source;
     NewSrcEdit.Modified:=false;
@@ -5423,9 +5439,11 @@ begin
   DoRestoreBookMarks(AnUnitInfo,NewSrcEdit);
   DebugBoss.DoRestoreDebuggerMarks(AnUnitInfo);
   NewSrcEdit.SyntaxHighlighterType:=AnUnitInfo.SyntaxHighlighter;
-  NewSrcEdit.EditorComponent.CaretXY:=AnUnitInfo.CursorPos;
-  NewSrcEdit.EditorComponent.TopLine:=AnUnitInfo.TopLine;
-  NewSrcEdit.EditorComponent.LeftChar:=1;
+  NewSrcEdit.EditorComponent.CaretXY:=NewCaretXY;
+  NewSrcEdit.EditorComponent.TopLine:=NewTopLine;
+  NewSrcEdit.EditorComponent.LeftChar:=NewLeftChar;
+  NewSrcEdit.ErrorLine:=NewErrorLine;
+  NewSrcEdit.ExecutionLine:=NewExecutionLine;
   NewSrcEdit.ReadOnly:=AnUnitInfo.ReadOnly;
 
   // mark unit as loaded
@@ -5904,9 +5922,7 @@ begin
   FilenameNoPath:=ExtractFilename(AFilename);
 
   // check to not open directories
-  if (not (ofRevert in Flags))
-  and ((FilenameNoPath='') or (FilenameNoPath='.') or (FilenameNoPath='..'))
-  then
+  if ((FilenameNoPath='') or (FilenameNoPath='.') or (FilenameNoPath='..')) then
     exit;
 
   if ([ofAddToRecent,ofRevert,ofVirtualFile]*Flags=[ofAddToRecent])
@@ -6518,6 +6534,18 @@ begin
     Result:=mrOk;
   end else begin
     Result:=mrCancel;
+  end;
+end;
+
+function TMainIDE.DoRevertEditorFile(const Filename: string): TModalResult;
+var
+  AnUnitInfo: TUnitInfo;
+begin
+  Result:=mrOk;
+  if (Project1<>nil) then begin
+    AnUnitInfo:=Project1.UnitInfoWithFilename(Filename,[]);
+    if AnUnitInfo.EditorIndex>=0 then
+      Result:=DoOpenEditorFile(Filename,AnUnitInfo.EditorIndex,[ofRevert]);
   end;
 end;
 
@@ -7450,7 +7478,6 @@ begin
   if Result<>mrOk then exit;
 
   // show messages
-  MessagesView.Clear;
   MessagesView.BeginBlock;
 
   try
@@ -11588,14 +11615,9 @@ begin
   SourceNotebook.ClearErrorLines;
 
   ToolStatus:=itBuilder;
-  if CheckCompilerOptsDlg<>nil then begin
-    TheOutputFilter.OnAddFilteredLine:=@CheckCompilerOptsDlg.AddMsg;
-    TheOutputFilter.OnReadLine:=@CheckCompilerOptsDlg.AddProgress;
-  end else begin
-    MessagesView.Clear;
-    DoArrangeSourceEditorAndMessageView(false);
-    ConnectOutputFilter;
-  end;
+  MessagesView.Clear;
+  DoArrangeSourceEditorAndMessageView(false);
+  ConnectOutputFilter;
 end;
 
 procedure TMainIDE.OnExtToolFreeOutputFilter(OutputFilter: TOutputFilter;

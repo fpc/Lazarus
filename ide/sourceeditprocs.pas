@@ -452,7 +452,7 @@ begin
     Result:='';
 end;
 
-procedure SynREVarPos(Index: Integer; var MatchStart, MatchLength: integer);
+procedure SynREVarPos(Index: Integer; out MatchStart, MatchLength: integer);
 begin
   if SynREEngine<>nil then begin
     MatchStart:=SynREEngine.MatchPos[Index];

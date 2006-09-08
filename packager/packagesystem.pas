@@ -2021,7 +2021,7 @@ var
 begin
   StateFile:=APackage.GetStateFilename;
   if not FileExists(StateFile) then begin
-    DebugLn('TLazPackageGraph.LoadPackageCompiledState Statefile not found: ',StateFile);
+    //DebugLn('TLazPackageGraph.LoadPackageCompiledState Statefile not found: ',StateFile);
     APackage.Flags:=APackage.Flags-[lpfStateFileLoaded];
     Result:=mrOk;
     exit;
@@ -2245,6 +2245,7 @@ var
   EffektiveCompilerParams: String;
   SrcFilename: String;
   CompilePolicies: TPackageUpdatePolicies;
+  BlockBegan: Boolean;
 begin
   Result:=mrCancel;
 
@@ -2296,7 +2297,8 @@ begin
     // auto increase version
     // ToDo
 
-    if IDEMessagesWindow<>nil then
+    BlockBegan:=IDEMessagesWindow<>nil;
+    if BlockBegan then
       IDEMessagesWindow.BeginBlock;
     try
       Result:=PreparePackageOutputDirectory(APackage,pcfCleanCompile in Flags);
@@ -2341,9 +2343,9 @@ begin
       end;
 
       // create external tool to run the compiler
-      DebugLn('TPkgManager.DoCompilePackage Compiler="',CompilerFilename,'"');
-      DebugLn('TPkgManager.DoCompilePackage Params="',CompilerParams,'"');
-      DebugLn('TPkgManager.DoCompilePackage WorkingDir="',APackage.Directory,'"');
+      //DebugLn('TPkgManager.DoCompilePackage Compiler="',CompilerFilename,'"');
+      //DebugLn('TPkgManager.DoCompilePackage Params="',CompilerParams,'"');
+      //DebugLn('TPkgManager.DoCompilePackage WorkingDir="',APackage.Directory,'"');
 
       if (not APackage.CompilerOptions.SkipCompiler)
       and (not (pcfDoNotCompilePackage in Flags)) then begin
@@ -2409,8 +2411,8 @@ begin
         end;
       end;
     finally
-      if IDEMessagesWindow<>nil then
-        IDEMessagesWindow.BeginBlock;
+      if BlockBegan and (IDEMessagesWindow<>nil) then
+        IDEMessagesWindow.EndBlock;
       if Result<>mrOk then begin
         if (APackage.AutoInstall<>pitNope) and (APackage.Installed=pitNope)
         and (OnUninstallPackage<>nil) then begin

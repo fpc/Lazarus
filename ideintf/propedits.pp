@@ -1037,7 +1037,7 @@ type
   TPersistentSelectionList = class
   protected
     FUpdateLock: integer;
-    FPersistentList: TList;
+    FPersistentList: TFPList;
     function GetItems(AIndex: integer): TPersistent;
     procedure SetItems(AIndex: integer; const APersistent: TPersistent);
     function GetCount: integer;
@@ -1056,6 +1056,7 @@ type
     property Capacity:integer read GetCapacity write SetCapacity;
     function Add(APersistent: TPersistent): integer;
     function Remove(APersistent: TPersistent): integer;
+    procedure Delete(Index: Integer);
     procedure Assign(SourceSelectionList: TPersistentSelectionList);
     property Items[AIndex: integer]: TPersistent read GetItems write SetItems; default;
   end;
@@ -4845,7 +4846,13 @@ end;
 function TPersistentSelectionList.Remove(APersistent: TPersistent): integer;
 begin
   Result:=IndexOf(APersistent);
-  if Result>=0 then FPersistentList.Remove(APersistent);
+  if Result>=0 then
+    FPersistentList.Delete(Result);
+end;
+
+procedure TPersistentSelectionList.Delete(Index: Integer);
+begin
+  FPersistentList.Delete(Index);
 end;
 
 procedure TPersistentSelectionList.Clear;
@@ -4856,7 +4863,7 @@ end;
 constructor TPersistentSelectionList.Create;
 begin
   inherited Create;
-  FPersistentList:=TList.Create;
+  FPersistentList:=TFPList.Create;
 end;
 
 destructor TPersistentSelectionList.Destroy;

@@ -16,10 +16,10 @@ object H2PasDialog: TH2PasDialog
     AnchorSideBottom.Control = OpenSettingsButton
     Height = 465
     Width = 785
-    ActivePage = FilesTabSheet
+    ActivePage = SettingsTabSheet
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
-    TabIndex = 0
+    TabIndex = 3
     TabOrder = 4
     object FilesTabSheet: TTabSheet
       Caption = 'FilesTabSheet'

@@ -241,8 +241,12 @@ type
   end;
 
   //----------------------------------------------------------------------------
-  TOIPropertyGridState = (pgsChangingItemIndex, pgsApplyingValue,
-    pgsUpdatingEditControl);
+  TOIPropertyGridState = (
+    pgsChangingItemIndex,
+    pgsApplyingValue,
+    pgsUpdatingEditControl,
+    pgsBuildPropertyListNeeded
+    );
   TOIPropertyGridStates = set of TOIPropertyGridState;
   
   { TOICustomPropertyGrid }
@@ -285,6 +289,7 @@ type
     FPropertyEditorHook: TPropertyEditorHook;
     FRows: TList;
     FSelection: TPersistentSelectionList;
+    FNotificationComponents: TFPList;
     FSplitterX: integer; // current splitter position
     FStates: TOIPropertyGridStates;
     FTopY: integer;
@@ -297,6 +302,7 @@ type
     procedure OnUserInput(Sender: TObject; Msg: Cardinal);
 
     procedure IncreaseChangeStep;
+    function GridIsUpdating: boolean;
 
     function GetRow(Index:integer):TOIPropertyGridRow;
     function GetRowCount:integer;
@@ -324,6 +330,7 @@ type
 
     procedure SetSelection(const ASelection:TPersistentSelectionList);
     procedure SetPropertyEditorHook(NewPropertyEditorHook:TPropertyEditorHook);
+    procedure UpdateSelectionNotifications;
 
     procedure AddPropertyEditor(PropEditor: TPropertyEditor);
     procedure AddStringToComboBox(const s: string);
@@ -334,7 +341,7 @@ type
     procedure SetRowValue;
     procedure DoCallEdit;
     procedure RefreshValueEdit;
-    Procedure ValueEditDblClick(Sender : TObject);
+    procedure ValueEditDblClick(Sender : TObject);
     procedure ValueControlMouseDown(Sender: TObject; Button:TMouseButton;
       Shift: TShiftState; X,Y:integer);
     procedure ValueControlMouseMove(Sender: TObject; Shift: TShiftState;
@@ -366,6 +373,7 @@ type
   protected
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CreateWnd; override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
 
     procedure MouseDown(Button:TMouseButton; Shift:TShiftState; X,Y:integer); override;
     procedure MouseMove(Shift:TShiftState; X,Y:integer);  override;
@@ -404,7 +412,7 @@ type
     function PropertyPath(Index: integer):string;
     function PropertyPath(Row: TOIPropertyGridRow):string;
     function TopMax: integer;
-    procedure BuildPropertyList;
+    procedure BuildPropertyList(OnlyIfNeeded: boolean = false);
     procedure Clear;
     procedure Paint;  override;
     procedure PropEditLookupRootChange;
@@ -709,6 +717,7 @@ begin
   FLayout := oilHorizontal;
 
   FSelection:=TPersistentSelectionList.Create;
+  FNotificationComponents:=TFPList.Create;
   FPropertyEditorHook:=APropertyEditorHook;
   FFilter:=TypeFilter;
   FItemIndex:=-1;
@@ -885,6 +894,22 @@ begin
   UpdateScrollBar;
 end;
 
+procedure TOICustomPropertyGrid.Notification(AComponent: TComponent;
+  Operation: TOperation);
+var
+  i: LongInt;
+begin
+  if Operation=opRemove then begin
+    FNotificationComponents.Remove(AComponent);
+    i:=FSelection.IndexOf(AComponent);
+    if i>=0 then begin
+      FSelection.Delete(i);
+      Include(FStates,pgsBuildPropertyListNeeded);
+    end;
+  end;
+  inherited Notification(AComponent, Operation);
+end;
+
 procedure TOICustomPropertyGrid.WMVScroll(var Msg: TLMScroll);
 begin
   case Msg.ScrollCode of
@@ -913,6 +938,7 @@ begin
   for a:=0 to FRows.Count-1 do Rows[a].Free;
   FreeAndNil(FRows);
   FreeAndNil(FSelection);
+  FreeAndNil(FNotificationComponents);
   FreeAndNil(FValueFont);
   FreeAndNil(FDefaultValueFont);
   FreeAndNil(FNameFont);
@@ -975,6 +1001,7 @@ begin
   ItemIndex:=-1;
   ClearRows;
   FSelection.Assign(ASelection);
+  UpdateSelectionNotifications;
   BuildPropertyList;
   CurRow:=GetRowByPath(OldSelectedRowPath);
   if CurRow<>nil then
@@ -988,6 +1015,30 @@ begin
   FPropertyEditorHook:=NewPropertyEditorHook;
   IncreaseChangeStep;
   SetSelection(FSelection);
+end;
+
+procedure TOICustomPropertyGrid.UpdateSelectionNotifications;
+var
+  i: Integer;
+  AComponent: TComponent;
+begin
+  for i:=0 to FSelection.Count-1 do begin
+    if FSelection[i] is TComponent then begin
+      AComponent:=TComponent(FSelection[i]);
+      if FNotificationComponents.IndexOf(AComponent)<0 then begin
+        FNotificationComponents.Add(AComponent);
+        AComponent.FreeNotification(Self);
+      end;
+    end;
+  end;
+  for i:=FNotificationComponents.Count-1 downto 0 do begin
+    AComponent:=TComponent(FNotificationComponents[i]);
+    if FSelection.IndexOf(AComponent)<0 then begin
+      FNotificationComponents.Delete(i);
+      AComponent.RemoveFreeNotification(Self);
+    end;
+  end;
+  //DebugLn(['TOICustomPropertyGrid.UpdateSelectionNotifications FNotificationComponents=',FNotificationComponents.Count,' FSelection=',FSelection.Count]);
 end;
 
 function TOICustomPropertyGrid.PropertyPath(Index:integer):string;
@@ -1116,7 +1167,7 @@ var
   OldChangeStep: integer;
 begin
   //writeln('#################### TOICustomPropertyGrid.DoCallEdit ...');
-  if (FStates*[pgsChangingItemIndex,pgsApplyingValue]<>[])
+  if GridIsUpdating
   or (FCurrentEdit=nil)
   or (FItemIndex<0)
   or (FItemIndex>=FRows.Count)
@@ -1168,7 +1219,7 @@ var
   CurRow: TOIPropertyGridRow;
   NewValue: string;
 begin
-  if (FStates*[pgsChangingItemIndex,pgsApplyingValue]=[])
+  if (not GridIsUpdating)
   and (FCurrentEdit<>nil)
   and (FItemIndex>=0) and (FItemIndex<FRows.Count) then begin
     CurRow:=Rows[FItemIndex];
@@ -1275,8 +1326,7 @@ procedure TOICustomPropertyGrid.SetItemIndex(NewIndex:integer);
 var NewRow:TOIPropertyGridRow;
   NewValue:string;
 begin
-  if (FStates*[pgsChangingItemIndex,pgsApplyingValue]<>[])
-  or (FItemIndex=NewIndex) then
+  if GridIsUpdating or (FItemIndex=NewIndex) then
     exit;
     
   // save old edit value
@@ -1369,11 +1419,14 @@ begin
   Result:=FRows.Count;
 end;
 
-procedure TOICustomPropertyGrid.BuildPropertyList;
+procedure TOICustomPropertyGrid.BuildPropertyList(OnlyIfNeeded: boolean);
 var a:integer;
   CurRow:TOIPropertyGridRow;
   OldSelectedRowPath:string;
 begin
+  if OnlyIfNeeded and (not (pgsBuildPropertyListNeeded in FStates)) then exit;
+  Exclude(FStates,pgsBuildPropertyListNeeded);
+  
   OldSelectedRowPath:=PropertyPath(ItemIndex);
   // unselect
   ItemIndex:=-1;
@@ -1588,7 +1641,7 @@ end;
 
 function TOICustomPropertyGrid.CanEditRowValue: boolean;
 begin
-  if (FStates*[pgsChangingItemIndex,pgsApplyingValue,pgsUpdatingEditControl]<>[])
+  if GridIsUpdating
   or (FCurrentEdit=nil)
   or (FItemIndex<0)
   or (FItemIndex>=FRows.Count)
@@ -2169,6 +2222,7 @@ procedure TOICustomPropertyGrid.DoPaint(PaintOnlyChangedValues:boolean);
 var a:integer;
   SpaceRect:TRect;
 begin
+  BuildPropertyList(true);
   if not PaintOnlyChangedValues then begin
     with Canvas do begin
       // draw properties
@@ -2498,12 +2552,18 @@ begin
     FChangeStep:=-$7fffffff;
 end;
 
+function TOICustomPropertyGrid.GridIsUpdating: boolean;
+begin
+  Result:=(FStates*[pgsChangingItemIndex,pgsApplyingValue,
+                    pgsBuildPropertyListNeeded]<>[])
+end;
+
 procedure TOICustomPropertyGrid.ValueEditDblClick(Sender : TObject);
 var
   CurRow: TOIPropertyGridRow;
   TypeKind : TTypeKind;
 begin
-  if (FStates*[pgsChangingItemIndex,pgsApplyingValue]<>[])
+  if GridIsUpdating
   or (FCurrentEdit=nil)
   or (FItemIndex<0)
   or (FItemIndex>=FRows.Count)

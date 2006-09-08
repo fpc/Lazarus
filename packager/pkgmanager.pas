@@ -2451,7 +2451,7 @@ begin
 
   Result:=MainIDE.PrepareForCompile;
   if Result<>mrOk then exit;
-
+  
   // check graph for circles and broken dependencies
   if not (pcfDoNotCompileDependencies in Flags) then begin
     Result:=CheckPackageGraphForCompilation(APackage,nil,APackage.Directory);

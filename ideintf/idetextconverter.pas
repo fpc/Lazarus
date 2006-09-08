@@ -101,11 +101,11 @@ type
     procedure SetCaption(const AValue: string);
     procedure SetDescription(const AValue: string);
   public
+    class function ClassDescription: string; virtual; abstract;//the first line should be a short title
+    class function FirstLineOfClassDescription: string;
     constructor Create(TheOwner: TComponent); override;
     function Execute(aText: TIDETextConverter): TModalResult; virtual; abstract;
     procedure Assign(Source: TPersistent); override;
-    class function ClassDescription: string; virtual; abstract;//the first line should be a short title
-    class function FirstLineOfClassDescription: string;
   published
     property Caption: string read FCaption write SetCaption;
     property Description: string read FDescription write SetDescription;
@@ -135,9 +135,9 @@ type
     procedure SetReplaceWith(const AValue: string);
     procedure SetSearchFor(const AValue: string);
   public
+    class function ClassDescription: string; override;
     function Execute(aText: TIDETextConverter): TModalResult; override;
     procedure Assign(Source: TPersistent); override;
-    class function ClassDescription: string; override;
     property SearchFor: string read FSearchFor write SetSearchFor;
     property ReplaceWith: string read FReplaceWith write SetReplaceWith;
     property Options: TTextReplaceToolOptions read FOptions write SetOptions;
@@ -612,7 +612,10 @@ end;
 
 function TTextConverterToolClasses.GetCount: integer;
 begin
-  Result:=FItems.Count;
+  if Self<>nil then
+    Result:=FItems.Count
+  else
+    Result:=0;
 end;
 
 function TTextConverterToolClasses.GetItems(Index: integer
@@ -636,6 +639,7 @@ end;
 procedure TTextConverterToolClasses.RegisterClass(
   AClass: TCustomTextConverterToolClass);
 begin
+  if Self=nil then exit;
   if FItems.IndexOf(AClass)<0 then
     FItems.Add(AClass);
 end;
@@ -643,6 +647,7 @@ end;
 procedure TTextConverterToolClasses.UnregisterClass(
   AClass: TCustomTextConverterToolClass);
 begin
+  if Self=nil then exit;
   FItems.Remove(AClass);
 end;
 
@@ -651,10 +656,11 @@ function TTextConverterToolClasses.FindByName(const aClassName: string
 var
   i: Integer;
 begin
-  for i:=0 to FItems.Count-1 do begin
-    Result:=Items[i];
-    if CompareText(Result.ClassName,aClassName)=0 then exit;
-  end;
+  if Self<>nil then
+    for i:=0 to FItems.Count-1 do begin
+      Result:=Items[i];
+      if CompareText(Result.ClassName,aClassName)=0 then exit;
+    end;
   Result:=nil;
 end;
 
@@ -663,10 +669,11 @@ function TTextConverterToolClasses.FindByFirstLineOfClassDescription(
 var
   i: Integer;
 begin
-  for i:=0 to FItems.Count-1 do begin
-    Result:=Items[i];
-    if Result.FirstLineOfClassDescription=Line then exit;
-  end;
+  if Self<>nil then
+    for i:=0 to FItems.Count-1 do begin
+      Result:=Items[i];
+      if Result.FirstLineOfClassDescription=Line then exit;
+    end;
   Result:=nil;
 end;
 

@@ -37,8 +37,7 @@ type
 var
   ShowSortSelectionDialogFunc: TShowSortSelectionDialogFunc;
   SortTextFunc: TSortTextFunc;
-  
-  
+
   { Regular expressions
 
     This is a simple interface to regular expressions. The syntax is similar
@@ -72,7 +71,7 @@ var
 function REMatches(const TheText, RegExpr: string;
                    const ModifierStr: string = ''): boolean;
 function REVar(Index: Integer): string; // 1 is the first
-procedure REVarPos(Index: Integer; var MatchStart, MatchLength: integer);
+procedure REVarPos(Index: Integer; out MatchStart, MatchLength: integer);
 function REVarCount: Integer;
 function REReplace(const TheText, FindRegExpr, ReplaceRegExpr: string;
                     UseSubstutition: boolean;
@@ -97,7 +96,7 @@ type
                                 ): boolean;
   TREVarFunction = function(Index: Integer): string;
   TREVarPosProcedure = procedure(Index: Integer;
-                                 var MatchStart, MatchLength: integer);
+                                 out MatchStart, MatchLength: integer);
   TREVarCountFunction = function: Integer;
   TREReplaceProcedure = function(const TheText, FindRegExpr,
                             ReplaceRegExpr: string; UseSubstutition: boolean;
@@ -105,12 +104,12 @@ type
   TRESplitFunction = procedure(const TheText, SeparatorRegExpr: string;
                                Pieces: TStrings; const ModifierStr: string);
 var
-  REMatchesFunction: TREMatchesFunction; // initialized by the IDE ...
-  REVarFunction: TREVarFunction;
-  REVarPosProcedure: TREVarPosProcedure;
-  REVarCountFunction: TREVarCountFunction;
-  REReplaceProcedure: TREReplaceProcedure;
-  RESplitFunction: TRESplitFunction;
+  REMatchesFunction: TREMatchesFunction = nil; // initialized by the IDE ...
+  REVarFunction: TREVarFunction = nil;
+  REVarPosProcedure: TREVarPosProcedure = nil;
+  REVarCountFunction: TREVarCountFunction = nil;
+  REReplaceProcedure: TREReplaceProcedure = nil;
+  RESplitFunction: TRESplitFunction = nil;
 
 implementation
 
@@ -125,7 +124,7 @@ begin
   Result:=REVarFunction(Index);
 end;
 
-procedure REVarPos(Index: Integer; var MatchStart, MatchLength: integer);
+procedure REVarPos(Index: Integer; out MatchStart, MatchLength: integer);
 begin
   REVarPosProcedure(Index,MatchStart,MatchLength);
 end;

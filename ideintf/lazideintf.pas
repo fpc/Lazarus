@@ -158,6 +158,7 @@ type
     function DoOpenFileAndJumpToPos(const AFilename: string;
         const CursorPosition: TPoint; TopLine: integer;
         PageIndex: integer; Flags: TOpenFlags): TModalResult; virtual; abstract;
+    function DoRevertEditorFile(const Filename: string): TModalResult; virtual; abstract;
 
     // project
     property ActiveProject: TLazProject read GetActiveProject;
@@ -192,6 +193,7 @@ type
       FocusEditor: boolean): boolean; virtual; abstract;
     procedure DoJumpToNextError(DirectionDown: boolean); virtual; abstract;
     procedure DoShowMessagesView; virtual; abstract;
+    function DoCheckFilesOnDisk(Instantaneous: boolean = false): TModalResult; virtual; abstract;
 
     // designer
     function GetDesignerWithProjectFile(AFile: TLazProjectFile;

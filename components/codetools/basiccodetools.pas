@@ -3291,7 +3291,7 @@ begin
   CurPos:=@Src[StartPos];
   while (CurPos<EndSrc) do begin
     if (FirstChar=CurPos^)
-    and ((not WholeWords) or (CurPos>Src) or (IsNonWordChar[PChar(CurPos-1)^]))
+    and ((not WholeWords) or (CurPos=Src) or (IsNonWordChar[PChar(CurPos-1)^]))
     then begin
       CmpSearch:=Search;
       CmpSrc:=CurPos;

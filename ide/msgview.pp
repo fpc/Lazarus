@@ -493,7 +493,6 @@ begin
   
   ImproveMessages(DestStartIndex);
   
-  
   {for i:=0 to SrcLines.Count-1 do begin
     SrcLine:=SrcLines[i];
     DebugLn('TMessagesView.CollectLineParts i=',dbgs(i),' SrcLine=',MsgAsString(SrcLine));
@@ -509,16 +508,19 @@ var
   LastSeparator: integer;
 begin
   BeginBlock;
-  LastSeparator := VisibleItemCount - 1;
-  while (LastSeparator >= 0) and (VisibleItems[LastSeparator].Msg <> SeparatorLine) do
-    Dec(LastSeparator);
-  if LastSeparator >= 0 then
-  begin
-    while (VisibleItemCount > LastSeparator) do
-      DeleteLine(LinesCount - 1);
-    FLastLineIsProgress := False;
+  try
+    LastSeparator := VisibleItemCount - 1;
+    while (LastSeparator >= 0) and (VisibleItems[LastSeparator].Msg <> SeparatorLine) do
+      Dec(LastSeparator);
+    if LastSeparator >= 0 then
+    begin
+      while (VisibleItemCount > LastSeparator) do
+        DeleteLine(LinesCount - 1);
+      FLastLineIsProgress := False;
+    end;
+  finally
+    EndBlock;
   end;
-  EndBlock;
 end;
 
 procedure TMessagesView.ShowTopMessage;
@@ -686,6 +688,7 @@ end;
 procedure TMessagesView.BeginBlock;
 begin
   Clear;
+  //if fBlockCount=0 then DumpStack;
   Inc(fBlockCount);
 end;
 
@@ -694,6 +697,7 @@ begin
   if fBlockCount <= 0 then
     RaiseException('TMessagesView.EndBlock Internal Error');
   Dec(fBlockCount);
+  //if fBlockCount=0 then DumpStack;
 end;
 
 procedure TMessagesView.ClearItems;

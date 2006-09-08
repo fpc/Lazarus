@@ -155,7 +155,6 @@ type
     function DoSaveBuildIDEConfigs(Flags: TBuildLazarusFlags): TModalResult; virtual; abstract;
     function DoBuildLazarus(Flags: TBuildLazarusFlags): TModalResult; virtual; abstract;
     function DoSaveForBuild: TModalResult; virtual; abstract;
-    function DoCheckFilesOnDisk(Instantaneous: boolean = false): TModalResult; virtual; abstract;
     function DoPublishModule(Options: TPublishModuleOptions;
                              const SrcDirectory, DestDirectory: string
                              ): TModalResult; virtual; abstract;

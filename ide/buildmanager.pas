@@ -40,6 +40,7 @@ uses
   CodeToolManager, DefineTemplates,
   // IDEIntf
   SrcEditorIntf, ProjectIntf, MacroIntf, IDEDialogs, IDEExternToolIntf,
+  LazIDEIntf,
   // IDE
   LazarusIDEStrConsts, DialogProcs, IDEProcs, CodeToolsOptions, InputHistory,
   MiscOptions, LazConf, EnvironmentOpts, TransferMacros, CompilerOptions,
@@ -1122,7 +1123,9 @@ begin
   if SourceEditorWindow<>nil then
     SourceEditorWindow.ClearErrorLines;
   Result:=EnvironmentOptions.ExternalTools.Run(ExtTool,GlobalMacroList,
-                                               TheOutputFilter,CompOptions);
+                                               nil,CompOptions);
+  if LazarusIDE<>nil then
+    LazarusIDE.DoCheckFilesOnDisk;
 end;
 
 procedure TBuildManager.SetBuildTarget(const TargetOS, TargetCPU,

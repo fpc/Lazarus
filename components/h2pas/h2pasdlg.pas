@@ -176,13 +176,17 @@ var
   Key: TIDEShortCut;
   Cat: TIDECommandCategory;
 begin
+  // register IDE shortcut and menu item
   Key := IDEShortCut(VK_UNKNOWN,[],VK_UNKNOWN,[]);
-
   Cat:=IDECommandList.FindCategoryByName(CommandCategoryToolMenuName);
   CmdH2PasTool := RegisterIDECommand(Cat                 ,
          h2pH2Pas, h2pCreateUnitsFromCHeaderFiles, Key, nil, @ExecuteH2PasTool);
   RegisterIDEMenuCommand(itmSecondaryTools, h2pH2PasTool, h2pH2Pas, nil, nil,
                          CmdH2PasTool);
+
+  // register text converter tools
+  TextConverterToolClasses.RegisterClass(TRemoveCPlusPlusExternCTool);
+  TextConverterToolClasses.RegisterClass(TRemoveEmptyCMacrosTool);
 end;
 
 { TH2PasDialog }
@@ -200,7 +204,7 @@ begin
     h2pasOptionsCheckGroup.Caption:='Options';
     with h2pasOptionsCheckGroup.Items do begin
       Add('-d  '+'Use external; for all procedures');
-      Add('-D  '+'Use external libname name "func_name" for functions');
+      Add('-D  '+'Use external libname name "func__name" for functions');
       Add('-e  '+'constants instead of enumeration type for C enums');
       Add('-c  '+'Compact outputmode, less spaces and empty lines');
       Add('-i  '+'Create an include file instead of a unit');
@@ -210,10 +214,10 @@ begin
       Add('-s  '+'Strip comments');
       Add('-S  '+'Strip comments and info');
       Add('-t  '+'Prepend  typedef  types with T');
-      Add('-T  '+'Prepend  typedef  types with T, and remove _');
+      Add('-T  '+'Prepend  typedef  types with T, and remove __');
       Add('-v  '+'Replace pointer parameters by  var');
       Add('-w  '+'Handle special win32 macros');
-      Add('-x  '+'Handle SYS_TRAP of the PalmOS header files');
+      Add('-x  '+'Handle SYS__TRAP of the PalmOS header files');
     end;
     OutputExtLabel.Caption:='Output extension of new file';
     OutputDirLabel.Caption:='Output directory';
@@ -386,7 +390,7 @@ end;
 procedure TH2PasDialog.NewSettingsButtonClick(Sender: TObject);
 begin
   Project.Filename:='';
-  Project.Clear;
+  Project.Clear(true);
   UpdateAll;
 end;
 
@@ -705,6 +709,7 @@ procedure TH2PasDialog.UpdateConvertPage;
 begin
   ClearMessages;
   PreH2PasEdit.ListOfTools:=Project.PreH2PasTools;
+  //DebugLn(['TH2PasDialog.UpdateConvertPage PreH2PasEdit.ListOfTools=',PreH2PasEdit.ListOfTools.COmponentCount]);
 end;
 
 procedure TH2PasDialog.UpdateSettingsPage;
@@ -968,7 +973,7 @@ begin
     end;
   end else begin
     // new project
-    Project.Clear;
+    Project.Clear(true);
     Converter.CurrentProjectFilename:=NewFilename;
     Project.Filename:=NewFilename;
   end;

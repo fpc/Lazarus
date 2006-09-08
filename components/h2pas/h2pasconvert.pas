@@ -24,11 +24,31 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LResources, LazConfigStorage, XMLPropStorage,
-  Forms, Controls, Dialogs, FileUtil, FileProcs,
-  TextTools, IDEExternToolIntf, IDEDialogs, LazIDEIntf, IDEMsgIntf,
-  IDETextConverter;
+  Forms, Controls, Dialogs, FileUtil, FileProcs, AvgLvlTree,
+  // CodeTools
+  BasicCodeTools,
+  // IDEIntf
+  TextTools, IDEExternToolIntf, IDEDialogs, LazIDEIntf,
+  IDEMsgIntf, IDETextConverter;
   
 type
+
+  { TRemoveCPlusPlusExternCTool }
+
+  TRemoveCPlusPlusExternCTool = class(TCustomTextConverterTool)
+  public
+    class function ClassDescription: string; override;
+    function Execute(aText: TIDETextConverter): TModalResult; override;
+  end;
+
+  { TRemoveEmptyCMacrosTool }
+
+  TRemoveEmptyCMacrosTool = class(TCustomTextConverterTool)
+  public
+    class function ClassDescription: string; override;
+    function Execute(aText: TIDETextConverter): TModalResult; override;
+  end;
+
   TH2PasProject = class;
   TH2PasConverter = class;
 
@@ -120,7 +140,7 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    procedure Clear;
+    procedure Clear(AddDefaults: boolean);
     procedure Assign(Source: TPersistent); override;
     function IsEqual(AProject: TH2PasProject): boolean;
     procedure Load(Config: TConfigStorage);
@@ -135,6 +155,7 @@ type
     function LongenFilename(const AFilename: string): string;
     function NormalizeFilename(const AFilename: string): string;
     function HasEnabledFiles: boolean;
+    procedure AddDefaultPreH2PasTools;
   public
     property CHeaderFileCount: integer read GetCHeaderFileCount;
     property CHeaderFiles[Index: integer]: TH2PasFile read GetCHeaderFiles;
@@ -562,20 +583,19 @@ end;
 constructor TH2PasProject.Create;
 begin
   FCHeaderFiles:=TFPList.Create;
-  FPreH2PasTools:=TComponent.Create(nil);
-  Clear;
+  Clear(true);
 end;
 
 destructor TH2PasProject.Destroy;
 begin
-  Clear;
+  Clear(false);
   if (Converter<>nil) and (Converter.Project=Self) then
     Converter.Project:=nil;
   FreeAndNil(FCHeaderFiles);
   inherited Destroy;
 end;
 
-procedure TH2PasProject.Clear;
+procedure TH2PasProject.Clear(AddDefaults: boolean);
 begin
   // FFilename is kept
   FConstantsInsteadOfEnums:=true;
@@ -600,6 +620,8 @@ begin
     CHeaderFiles[CHeaderFileCount-1].Free;
   FPreH2PasTools.Free;
   FPreH2PasTools:=TComponent.Create(nil);
+  if AddDefaults then
+    AddDefaultPreH2PasTools;
   FModified:=false;
 end;
 
@@ -633,7 +655,7 @@ begin
       FVarParams:=Src.FVarParams;
       FWin32Header:=Src.FWin32Header;
       FOutputDirectory:=Src.FOutputDirectory;
-      Clear;
+      Clear(false);
       for i:=0 to Src.CHeaderFileCount-1 do begin
         NewCHeaderFile:=TH2PasFile.Create;
         NewCHeaderFile.Project:=Self;
@@ -694,7 +716,7 @@ var
   NewCHeaderFile: TH2PasFile;
   NewComponent: TComponent;
 begin
-  Clear;
+  Clear(false);
   
   // FFilename is not saved
   FConstantsInsteadOfEnums:=Config.GetValue('ConstantsInsteadOfEnums/Value',true);
@@ -922,6 +944,12 @@ begin
   for i:=0 to CHeaderFileCount-1 do
     if CHeaderFiles[i].Enabled then exit(true);
   Result:=false;
+end;
+
+procedure TH2PasProject.AddDefaultPreH2PasTools;
+begin
+  TRemoveCPlusPlusExternCTool.Create(FPreH2PasTools);
+  TRemoveEmptyCMacrosTool.Create(FPreH2PasTools);
 end;
 
 { TH2PasConverter }
@@ -1181,16 +1209,16 @@ begin
 
   OutputFilename:=AFile.GetOutputFilename;
   TempCHeaderFilename:=ChangeFileExt(OutputFilename,'.tmp.h');
-  if not CopyFile(InputFilename,TempCHeaderFilename) then begin
-    Result:=IDEMessageDialog('Copying file failed',
-      'Unable to copy file "'+InputFilename+'"'#13
-      +'to "'+TempCHeaderFilename+'"',
-      mtError,[mbCancel,mbAbort],'');
-    exit;
-  end;
-
   TextConverter:=TIDETextConverter.Create(nil);
   try
+    if not CopyFile(InputFilename,TempCHeaderFilename) then begin
+      Result:=IDEMessageDialog('Copying file failed',
+        'Unable to copy file "'+InputFilename+'"'#13
+        +'to "'+TempCHeaderFilename+'"',
+        mtError,[mbCancel,mbAbort],'');
+      exit;
+    end;
+
     TextConverter.Filename:=TempCHeaderFilename;
     FLastUsedFilename:=TextConverter.Filename;
     TextConverter.LoadFromFile(InputFilename);
@@ -1229,6 +1257,8 @@ begin
 
   finally
     TextConverter.Free;
+    if (LazarusIDE<>nil) then
+      LazarusIDE.DoRevertEditorFile(TempCHeaderFilename);
   end;
 
   Result:=mrOk;
@@ -1273,6 +1303,157 @@ function TH2PasConverter.FileIsRelated(const aFilename: string): Boolean;
 begin
   Result:=(CompareFilenames(AFilename,LastUsedFilename)=0)
       or ((Project<>nil) and (Project.CHeaderFileWithFilename(aFilename)<>nil));
+end;
+
+{ TRemoveCPlusPlusExternCTool }
+
+function TRemoveCPlusPlusExternCTool.ClassDescription: string;
+begin
+  Result:='Remove C++ ''extern "C"'' lines';
+end;
+
+function TRemoveCPlusPlusExternCTool.Execute(aText: TIDETextConverter
+  ): TModalResult;
+var
+  i: Integer;
+  Lines: TStrings;
+  Line: string;
+begin
+  Result:=mrCancel;
+  if aText=nil then exit;
+  Lines:=aText.Strings;
+  i:=0;
+  while i<=Lines.Count-1 do begin
+    Line:=Trim(Lines[i]);
+    if Line='extern "C" {' then begin
+      Lines[i]:='';
+    end
+    else if (i>0) and (Line='}') and (Lines[i-1]='#if defined(__cplusplus)')
+    then begin
+      Lines[i]:='';
+    end;
+    inc(i);
+  end;
+  Result:=mrOk;
+end;
+
+{ TRemoveEmptyCMacrosTool }
+
+function TRemoveEmptyCMacrosTool.ClassDescription: string;
+begin
+  Result:='Remove empty C macros';
+end;
+
+function TRemoveEmptyCMacrosTool.Execute(aText: TIDETextConverter
+  ): TModalResult;
+var
+  EmptyMacros: TAvgLvlTree;// tree of PChar
+
+  procedure AddEmptyMacro(const MacroName: string);
+  var
+    TempStr: String;
+    Identifier: PChar;
+  begin
+    DebugLn(['AddEmptyMacro MacroName="',MacroName,'"']);
+    if EmptyMacros=nil then
+      EmptyMacros:=TAvgLvlTree.Create(TListSortCompare(@CompareIdentifiers));
+    Identifier:=@MacroName[1];
+    if EmptyMacros.Find(Identifier)<>nil then exit;
+    TempStr:=MacroName; // increase refcount
+    if TempStr<>'' then
+      Pointer(TempStr):=nil;
+    EmptyMacros.Add(Identifier);
+  end;
+  
+  procedure DeleteEmptyMacro(const MacroName: string);
+  var
+    OldMacroName: String;
+    Identifier: PChar;
+    Node: TAvgLvlTreeNode;
+  begin
+    DebugLn(['DeleteEmptyMacro MacroName="',MacroName,'"']);
+    if EmptyMacros=nil then exit;
+    Identifier:=@MacroName[1];
+    Node:=EmptyMacros.Find(Identifier);
+    if Node=nil then exit;
+    OldMacroName:='';
+    Pointer(OldMacroName):=Node.Data;
+    if OldMacroName<>'' then OldMacroName:=''; // decrease refcount
+    EmptyMacros.Delete(Node);
+  end;
+
+  procedure FreeMacros;
+  var
+    CurMacroName: String;
+    Node: TAvgLvlTreeNode;
+  begin
+    if EmptyMacros=nil then exit;
+    CurMacroName:='';
+    Node:=EmptyMacros.FindLowest;
+    while Node<>nil do begin
+      Pointer(CurMacroName):=Node.Data;
+      if CurMacroName<>'' then CurMacroName:=''; // decrease refcount
+      Node:=EmptyMacros.FindSuccessor(Node);
+    end;
+    EmptyMacros.Free;
+  end;
+  
+  procedure RemoveEmptyMacrosFromString(var s: string);
+  var
+    IdentEnd: Integer;
+    IdentStart: LongInt;
+    Identifier: PChar;
+    IdentLen: LongInt;
+  begin
+    if EmptyMacros=nil then exit;
+    IdentEnd:=1;
+    repeat
+      IdentStart:=FindNextIdentifier(s,IdentEnd,length(s));
+      if IdentStart>length(s) then exit;
+      Identifier:=@s[IdentStart];
+      IdentLen:=GetIdentLen(Identifier);
+      if EmptyMacros.Find(Identifier)<>nil then begin
+        // empty macro found -> remove
+        System.Delete(s,IdentStart,IdentLen);
+        IdentEnd:=IdentStart;
+      end else begin
+        IdentEnd:=IdentStart+IdentLen;
+      end;
+    until false;
+  end;
+  
+var
+  MacroStart, MacroLen: integer;
+  Lines: TStrings;
+  i: Integer;
+  Line: string;
+  MacroName: String;
+begin
+  Result:=mrCancel;
+  if aText=nil then exit;
+  Lines:=aText.Strings;
+  EmptyMacros:=nil;
+  try
+    i:=0;
+    while i<=Lines.Count-1 do begin
+      Line:=Lines[i];
+      if REMatches(Line,'^#define\s+([a-zA-Z0-9_]+)\b(.*)$') then begin
+        REVarPos(1,MacroStart,MacroLen);
+        MacroName:=copy(Line,MacroStart,MacroLen);
+        if Trim(copy(Line,MacroStart+MacroLen,length(Line)))='' then
+          AddEmptyMacro(MacroName)
+        else
+          DeleteEmptyMacro(MacroName);
+      end;
+      if (Line<>'') and (Line[1]<>'#') then
+        RemoveEmptyMacrosFromString(Line);
+      Lines[i]:=Line;
+      inc(i);
+    end;
+  finally
+    FreeMacros;
+  end;
+  Result:=mrOk;
 end;
 
 end.

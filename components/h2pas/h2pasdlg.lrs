@@ -7,11 +7,11 @@ LazarusResources.Add('TH2PasDialog','FORMDATA',[
   +#7#14'FormCloseQuery'#8'OnCreate'#7#10'FormCreate'#9'OnDestroy'#7#11'FormDes'
   +'troy'#9'OnKeyDown'#7#11'FormKeyDown'#8'Position'#7#15'poDesktopCenter'#0#12
   +'TPageControl'#15'MainPageControl'#24'AnchorSideBottom.Control'#7#18'OpenSet'
-  +'tingsButton'#6'Height'#3#209#1#5'Width'#3#17#3#10'ActivePage'#7#13'FilesTab'
-  +'Sheet'#5'Align'#7#5'alTop'#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#8'ak'
-  +'Bottom'#0#8'TabIndex'#2#0#8'TabOrder'#2#4#0#9'TTabSheet'#13'FilesTabSheet'#7
-  +'Caption'#6#13'FilesTabSheet'#0#13'TCheckListBox'#24'CHeaderFilesCheckListBo'
-  +'x'#6'Height'#3#179#1#5'Width'#3#255#0#5'Align'#7#6'alLeft'#7'OnClick'#7#29
+  +'tingsButton'#6'Height'#3#209#1#5'Width'#3#17#3#10'ActivePage'#7#16'Settings'
+  +'TabSheet'#5'Align'#7#5'alTop'#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#8
+  +'akBottom'#0#8'TabIndex'#2#3#8'TabOrder'#2#4#0#9'TTabSheet'#13'FilesTabSheet'
+  +#7'Caption'#6#13'FilesTabSheet'#0#13'TCheckListBox'#24'CHeaderFilesCheckList'
+  +'Box'#6'Height'#3#179#1#5'Width'#3#255#0#5'Align'#7#6'alLeft'#7'OnClick'#7#29
   +'CHeaderFilesCheckListBoxClick'#11'OnItemClick'#7'!CHeaderFilesCheckListBoxI'
   +'temClick'#8'TabOrder'#2#0#8'TopIndex'#2#255#0#0#7'TButton'#21'AddCHeaderFil'
   +'esButton'#22'AnchorSideLeft.Control'#7#21'CHeaderFilesSplitter1'#19'AnchorS'
