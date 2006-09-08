@@ -2248,7 +2248,7 @@ var
 begin
   Result:=mrCancel;
 
-  DebugLn('TLazPackageGraph.CompilePackage A ',APackage.IDAsString,' Flags=',PkgCompileFlagsToString(Flags));
+  //DebugLn('TLazPackageGraph.CompilePackage A ',APackage.IDAsString,' Flags=',PkgCompileFlagsToString(Flags));
 
   if APackage.AutoCreated then begin
     DebugLn(['TLazPackageGraph.CompilePackage failed because autocreated: ',APackage.IDAsString]);
@@ -2283,7 +2283,7 @@ begin
                                              CompilerFilename,CompilerParams,
                                              SrcFilename);
       if Result=mrNo then begin
-        DebugLn(['TLazPackageGraph.CompilePackage ',APackage.IDAsString,' does not need compilation.']);
+        //DebugLn(['TLazPackageGraph.CompilePackage ',APackage.IDAsString,' does not need compilation.']);
         Result:=mrOk;
         exit;
       end;

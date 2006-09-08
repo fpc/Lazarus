@@ -385,6 +385,7 @@ procedure TProjectOptionsDialog.ProjectOptionsClose(Sender: TObject;
   var CloseAction: TCloseAction);
 var
   NewFlags: TProjectFlags;
+  VersionInfoModified: Boolean;
 
   procedure SetProjectFlag(AFlag: TProjectFlag; AValue: Boolean);
   begin
@@ -435,18 +436,21 @@ begin
     Project.LazDocPaths:=StringListToText(LazDocListBox.Items,';',true);
 
     // VersionInfo
-    Project.VersionInfo.SetUseVersionInfo(UseVersionInfoCheckBox.Checked, Project.Modified);
-    Project.VersionInfo.SetAutoIncrementBuild(AutomaticallyIncreaseBuildCheckBox.Checked, Project.Modified);
-    Project.VersionInfo.SetVersionNr(VersionSpinEdit.Value, Project.Modified);
-    Project.VersionInfo.SetMajorRevNr(MajorRevisionSpinEdit.Value, Project.Modified);
-    Project.VersionInfo.SetMinorRevNr(MinorRevisionSpinEdit.Value, Project.Modified);
-    Project.VersionInfo.SetBuildNr(StrToInt(BuildEdit.Text), Project.Modified);
-    Project.VersionInfo.SetDescriptionString(DescriptionEdit.Text, Project.Modified);
-    Project.VersionInfo.SetCopyrightString(CopyrightEdit.Text, Project.Modified);
-    Project.VersionInfo.SetHexLang(LanguageSelectionComboBox.Items[LanguageSelectionComboBox.ItemIndex], Project.Modified);
-    Project.VersionInfo.SetHexCharSet(CharacterSetComboBox.Items[CharacterSetComboBox.ItemIndex], Project.Modified);
+    VersionInfoModified:=false;
+    Project.VersionInfo.SetUseVersionInfo(UseVersionInfoCheckBox.Checked, VersionInfoModified);
+    Project.VersionInfo.SetAutoIncrementBuild(AutomaticallyIncreaseBuildCheckBox.Checked, VersionInfoModified);
+    Project.VersionInfo.SetVersionNr(VersionSpinEdit.Value, VersionInfoModified);
+    Project.VersionInfo.SetMajorRevNr(MajorRevisionSpinEdit.Value, VersionInfoModified);
+    Project.VersionInfo.SetMinorRevNr(MinorRevisionSpinEdit.Value, VersionInfoModified);
+    Project.VersionInfo.SetBuildNr(StrToInt(BuildEdit.Text), VersionInfoModified);
+    Project.VersionInfo.SetDescriptionString(DescriptionEdit.Text, VersionInfoModified);
+    Project.VersionInfo.SetCopyrightString(CopyrightEdit.Text, VersionInfoModified);
+    Project.VersionInfo.SetHexLang(LanguageSelectionComboBox.Items[LanguageSelectionComboBox.ItemIndex], VersionInfoModified);
+    Project.VersionInfo.SetHexCharSet(CharacterSetComboBox.Items[CharacterSetComboBox.ItemIndex], VersionInfoModified);
 //    Project.VersionInfo.HexLang := Project.VersionInfo.HexLanguages[Project.VersionInfo.Languages.IndexOf(LanguageSelectionComboBox.Items[LanguageSelectionComboBox.ItemIndex])];
 //    Project.VersionInfo.HexCharSet := Project.VersionInfo.HexCharSets[Project.VersionInfo.CharSets.IndexOf(CharacterSetComboBox.Items[CharacterSetComboBox.ItemIndex])];
+    if VersionInfoModified then
+      Project.Modified:=true;
   end;
 
   IDEDialogLayoutList.SaveLayout(Self);

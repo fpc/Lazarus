@@ -7455,8 +7455,6 @@ begin
 
   try
     // handle versioninfo
-    Project1.VersionInfo.VersionInfoCodeBuf := Project1.MainUnitInfo.Source;
-  //  ShowMessage(IntToStr(Project1.VersionInfo.VersionNr));
     Result := Project1.VersionInfo.CompileRCFile(Project1.MainFilename);
     for Count := 1 to Project1.VersionInfo.VersionInfoMessages.Count do
        MessagesView.AddMsg(Format(Project1.VersionInfo.VersionInfoMessages[Count - 1],

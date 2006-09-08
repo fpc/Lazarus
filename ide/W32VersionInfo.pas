@@ -57,7 +57,7 @@ type
       procedure AppendToRCFile;
       procedure RewriteRCFile;
       function DoTheRealCompile: TModalResult;
-      function CheckLPRFile: TModalResult;
+      function UpdateMainSourceFile(const AFilename: string): TModalResult;
       function HexToDec(Str: string): Integer;
    public
       TargetOS: string;
@@ -81,7 +81,6 @@ type
       ProductVersionString: string;
 
       VersionInfoMessages: TStringList;
-      VersionInfoCodeBuf: TCodeBuffer;
 
       Languages: TStringList;            // for Project Options pull-down
       HexLanguages: TStringList;         // for Project Options pull-down
@@ -249,7 +248,7 @@ begin
                            VersionInfoMessages.Clear;
                            VersionInfoMessages.Add('Resource file ' + rcFilename + ' has been compiled successfully!');
                            { we got a compiled .res file, check if it's included in the .lpr file }
-                           Result := CheckLPRFile;
+                           Result := UpdateMainSourceFile(MainFilename);
                         end
                      else
                         begin
@@ -527,13 +526,18 @@ begin
       VersionInfoMessages.Add(rcStringList[n - 1]);
 end;
 
-{-----------------------------------------------------------------------------}
-{ TVersionInfo CheckLPRFile                                                   }
-{-----------------------------------------------------------------------------}
-function TVersionInfo.CheckLPRFile: TModalResult;
-var NewX, NewY, NewTopLine: integer;
+{-----------------------------------------------------------------------------
+ TVersionInfo UpdateMainSourceFile
+-----------------------------------------------------------------------------}
+function TVersionInfo.UpdateMainSourceFile(const AFilename: string
+   ): TModalResult;
+var
+   NewX, NewY, NewTopLine: integer;
+   VersionInfoCodeBuf: TCodeBuffer;
 begin
-   Result := mrOk;
+   Result := mrCancel;
+   VersionInfoCodeBuf:=CodeToolBoss.LoadFile(AFilename,false,false);
+   if VersionInfoCodeBuf=nil then exit;
    if not CodeToolBoss.FindResourceDirective(VersionInfoCodeBuf,1,1,
                                VersionInfoCodeBuf,NewX,NewY,
                                NewTopLine,ExtractFileName(resFilename)) then
@@ -543,14 +547,15 @@ begin
         begin
            VersionInfoMessages.Add('Could not add "{$R '
                            + ExtractFileName(resFilename)+'}" to main source!');
-           Result := mrCancel;
+           exit;
         end
    end;
+   Result:=mrOk;
 end;
 
-{-----------------------------------------------------------------------------}
-{ TVersionInfo SetTargetOS                                                    }
-{-----------------------------------------------------------------------------}
+{-----------------------------------------------------------------------------
+ TVersionInfo SetTargetOS
+-----------------------------------------------------------------------------}
 function TVersionInfo.SetTargetOS(CurrentProjectsTargetOS: string): string;
 begin
    if CurrentProjectsTargetOS <> '' then
