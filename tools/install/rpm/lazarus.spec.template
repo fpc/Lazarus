@@ -7,6 +7,7 @@ Group:          Development/Languages
 License:        GPL and modified LGPL
 URL:            http://www.lazarus.freepascal.org/
 Source0:        http://prdownloads.sourceforge.net/%{name}/%{name}-%{version}-%{release}.tar.gz
+Packager:       Mattias Gaertner
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 #BuildRequires:  
@@ -32,6 +33,7 @@ if [ -n "$FPCCfg" ]; then
 fi
 make bigide OPT="$MAKEOPTS" USESVN2REVISIONINC=0
 make tools OPT="$MAKEOPTS"
+make lazbuild OPT="$MAKEOPTS"
 # build gtk2 .ppu
 export LCL_PLATFORM=gtk2
 make lcl ideintf packager/registration bigidecomponents OPT="$MAKEOPTS"
@@ -46,11 +48,14 @@ mkdir -p %{buildroot}%{_bindir}
 mkdir -p %{buildroot}%{_datadir}/pixmaps
 # mkdir -p %{buildroot}%{_datadir}/gnome/apps/Development
 mkdir -p %{buildroot}%{_datadir}/applications
+mkdir -p %{buildroot}%{_mandir}
 cp -a lazarus/* %{buildroot}%{_libdir}/%{name}/
   install -m 644 lazarus/images/ide_icon48x48.png %{buildroot}%{_datadir}/pixmaps/lazarus.png
   install -m 644 lazarus/install/lazarus.desktop %{buildroot}%{_datadir}/applications/lazarus.desktop
 ln -sf ../%{_lib}/%{name}/lazarus %{buildroot}%{_bindir}/lazarus
 ln -sf ../%{_lib}/%{name}/startlazarus %{buildroot}%{_bindir}/startlazarus
+ln -sf ../%{_lib}/%{name}/lazbuild %{buildroot}%{_bindir}/lazbuild
+cat lazarus/docs/lazbuild.1 | gzip > %{_mandir}/man1/lazbuild.1.gz
 
 %clean
 [ %{buildroot} != "/" ] && ( rm -rf %{buildroot} )
@@ -68,8 +73,11 @@ update-desktop-database &> /dev/null ||:
 %{_bindir}/*
   %{_datadir}/pixmaps/lazarus.png
   %{_datadir}/applications/lazarus.desktop
+%{_mandir}/*/*
 
 %changelog
+* Sat Sep 9 2006 Mattias Gaertner <mattias@freepascal.org> 0.9.18-0
+- Initial build.
 * Wed Jul 20 2005 Joost van der Sluis <joost@cnoc.nl> 0.9.8-0.1
 - Initial build.
 
