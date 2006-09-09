@@ -385,7 +385,7 @@ type
     procedure MergeTemplates(SourceTemplate: TDefineTemplate;
                              const NewNamePrefix: string);
     procedure ReadValue(const DirDef: TDirectoryDefines;
-                   const PreValue, CurDefinePath: string; var NewValue: string);
+                   const PreValue, CurDefinePath: string; out NewValue: string);
     procedure RemoveDefineTemplate(ADefTempl: TDefineTemplate);
     procedure RemoveMarked;
     procedure RemoveRootDefineTemplateByName(const AName: string);
@@ -1928,7 +1928,7 @@ begin
 end;
 
 procedure TDefineTree.ReadValue(const DirDef: TDirectoryDefines;
-  const PreValue, CurDefinePath: string; var NewValue: string);
+  const PreValue, CurDefinePath: string; out NewValue: string);
 var
   Buffer: PChar;
   BufferPos: integer;

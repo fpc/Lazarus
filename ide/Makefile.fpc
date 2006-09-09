@@ -10,7 +10,7 @@ version=0.9b
 packages=fcl regexpr
 
 [target]
-programs=lazarus startlazarus
+programs=lazarus startlazarus lazbuild
 
 [compiler]
 options=-gl
@@ -59,7 +59,6 @@ ifneq ($(findstring $(OS_TARGET),win32 win64),)
 LCL_PLATFORM=win32
 else
 LCL_PLATFORM=gtk
-override COMPILER_UNITDIR+=../lcl/nonwin32
 endif
 endif
 export LCL_PLATFORM
@@ -112,7 +111,7 @@ endif
 
 #-----------------------------------------------------------------------------
 [rules]
-.PHONY: ide idepkg bigide starter all clean cleanide purge
+.PHONY: ide idepkg bigide starter lazbuilder all clean cleanide purge
 .SUFFIXES: .rc .res
 
 %.res: %.rc
@@ -130,14 +129,14 @@ ifeq ($(OS_TARGET), win32)
         $(MAKE) lazarus.res
 endif
 ifeq ($(LAZARUS_OPT),)
-        $(MAKE) --assume-new=../lazarus.pp lazarus$(EXEEXT)
+        $(MAKE) --assume-new=lazarus.pp lazarus$(EXEEXT)
 else
-        $(MAKE) --assume-new=../lazarus.pp lazarus$(EXEEXT) OPT='$(LAZARUS_OPT) $(OPT)'
+        $(MAKE) --assume-new=lazarus.pp lazarus$(EXEEXT) OPT='$(LAZARUS_OPT) $(OPT)'
 endif
 
 #-----------------------------------------------------------------------------
 idepkg: $(COMPILER_UNITTARGETDIR)
-        $(MAKE) --assume-new=../lazarus.pp lazarus$(EXEEXT) OPT='$(LAZARUS_OPT) $(OPT) @$(LAZARUS_IDE_CONFIG)'
+        $(MAKE) --assume-new=lazarus.pp lazarus$(EXEEXT) OPT='$(LAZARUS_OPT) $(OPT) @$(LAZARUS_IDE_CONFIG)'
 
 #-----------------------------------------------------------------------------
 bigide: $(COMPILER_UNITTARGETDIR)
@@ -145,7 +144,7 @@ bigide: $(COMPILER_UNITTARGETDIR)
 ifeq ($(OS_TARGET), win32)
         $(MAKE) lazarus.res
 endif
-        $(MAKE) --assume-new=../lazarus.pp lazarus$(EXEEXT) OPT='$(OPT) $(BIG_IDE_OPTIONS)'
+        $(MAKE) --assume-new=lazarus.pp lazarus$(EXEEXT) OPT='$(OPT) $(BIG_IDE_OPTIONS)'
 
 #-----------------------------------------------------------------------------
 starter: $(COMPILER_UNITTARGETDIR)
@@ -153,13 +152,21 @@ ifeq ($(OS_TARGET), win32)
         $(MAKE) startlazarus.res
 endif
 ifeq ($(LAZARUS_OPT),)
-        $(MAKE) --assume-new=../startlazarus.lpr startlazarus$(EXEEXT)
+        $(MAKE) --assume-new=startlazarus.lpr startlazarus$(EXEEXT)
 else
-        $(MAKE) --assume-new=../startlazarus.lpr startlazarus$(EXEEXT) OPT='$(LAZARUS_OPT) $(OPT)'
+        $(MAKE) --assume-new=startlazarus.lpr startlazarus$(EXEEXT) OPT='$(LAZARUS_OPT) $(OPT)'
 endif
 
 #-----------------------------------------------------------------------------
-all: ide starter
+lazbuilder:
+ifeq ($(LAZARUS_OPT),)
+        $(MAKE) --assume-new=lazbuild.lpr lazbuild$(EXEEXT)
+else
+        $(MAKE) --assume-new=lazbuild.lpr lazbuild$(EXEEXT) OPT='$(LAZARUS_OPT) $(OPT)'
+endif
+
+#-----------------------------------------------------------------------------
+all: ide starter lazbuilder
 
 #-----------------------------------------------------------------------------
 cleanide:

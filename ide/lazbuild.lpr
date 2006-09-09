@@ -628,7 +628,7 @@ function TLazBuildApplication.RepairedCheckOptions(const ShortOptions: String;
 
 Var
   I,J,L,P : Integer;
-  O,OV,SO : String;
+  O,OV : String;
   HaveArg : Boolean;
   NeedArg: Boolean;
 
@@ -655,10 +655,6 @@ Var
   end;
 
 begin
-  If CaseSensitiveOptions then
-    SO:=Shortoptions
-  else
-    SO:=LowerCase(Shortoptions);
   Result:='';
   I:=1;
   While (I<=ParamCount) and (Result='') do

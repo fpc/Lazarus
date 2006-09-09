@@ -497,7 +497,7 @@ type
     // Application.Createform(ClassName,VarName) statements in program source
     function FindCreateFormStatement(Code: TCodeBuffer; StartPos: integer;
           const AClassName, AVarName: string;
-          var Position: integer): integer; // 0=found, -1=not found, 1=found, but wrong classname
+          out Position: integer): integer; // 0=found, -1=not found, 1=found, but wrong classname
     function AddCreateFormStatement(Code: TCodeBuffer;
           const AClassName, AVarName: string): boolean;
     function RemoveCreateFormStatement(Code: TCodeBuffer;
@@ -3291,7 +3291,7 @@ end;
 function TCodeToolManager.FindCreateFormStatement(Code: TCodeBuffer;
   StartPos: integer;
   const AClassName, AVarName: string;
-  var Position: integer): integer;
+  out Position: integer): integer;
 // 0=found, -1=not found, 1=found, but wrong classname
 var PosAtom: TAtomPosition;
 begin

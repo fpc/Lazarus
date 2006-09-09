@@ -39,7 +39,7 @@ endif
 
 #-----------------------------------------------------------------------------
 [rules]
-.PHONY: lcl components packager/registration ideintf packager bigidecomponents ide idepkg idebig bigide starter tools all clean cleanide purge examples install
+.PHONY: lcl components packager/registration ideintf packager bigidecomponents ide idepkg idebig bigide starter lazbuilder tools all clean cleanide purge examples install
 
 #-----------------------------------------------------------------------------
 ide: 
@@ -63,6 +63,10 @@ bigidecomponents:
 #-----------------------------------------------------------------------------
 starter:
 	$(MAKE) -C ide starter
+
+#-----------------------------------------------------------------------------
+lazbuilder:
+	$(MAKE) -C ide lazbuilder
 
 #-----------------------------------------------------------------------------
 tools: lcl components
