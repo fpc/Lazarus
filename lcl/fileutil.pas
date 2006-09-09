@@ -94,6 +94,7 @@ type
   TSearchFileInPathFlags = set of TSearchFileInPathFlag;
 
 function GetAllFilesMask: string;
+function GetExeExt: string;
 function SearchFileInPath(const Filename, BasePath, SearchPath,
   Delimiter: string; Flags: TSearchFileInPathFlags): string;
 function SearchAllFilesInPath(const Filename, BasePath, SearchPath,

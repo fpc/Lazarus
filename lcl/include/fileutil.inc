@@ -1385,6 +1385,15 @@ begin
   {$ENDIF}
 end;
 
+function GetExeExt: string;
+begin
+  {$IFDEF WINDOWS}
+  Result:='.exe';
+  {$ELSE}
+  Result:='';
+  {$ENDIF}
+end;
+
 {------------------------------------------------------------------------------
   function ReadFileToString(const Filename: string): string;
  ------------------------------------------------------------------------------}
