@@ -393,13 +393,12 @@ object ProjectOptionsDialog: TProjectOptionsDialog
       Caption = 'VersionInfoPage'
       object VersionInfoGroupBox: TGroupBox
         Left = 6
-        Height = 65
+        Height = 48
         Top = 24
         Width = 441
         Anchors = [akTop, akLeft, akRight]
         AutoSize = True
         Caption = 'Version Numbering'
-        Enabled = False
         TabOrder = 0
         object VersionLabel: TLabel
           Height = 13
@@ -407,7 +406,6 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           Width = 47
           Caption = 'Version:'
           Color = clNone
-          Enabled = False
           ParentColor = False
         end
         object MajorRevisionLabel: TLabel
@@ -420,7 +418,6 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           BorderSpacing.Left = 10
           Caption = 'Major Revision:'
           Color = clNone
-          Enabled = False
           ParentColor = False
         end
         object MinorRevisionLabel: TLabel
@@ -433,7 +430,6 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           BorderSpacing.Left = 10
           Caption = 'Minor Revision:'
           Color = clNone
-          Enabled = False
           ParentColor = False
         end
         object BuildLabel: TLabel
@@ -446,7 +442,6 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           BorderSpacing.Left = 6
           Caption = 'Build:'
           Color = clNone
-          Enabled = False
           ParentColor = False
         end
         object BuildEdit: TEdit
@@ -457,7 +452,6 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           Top = 2
           Width = 32
           BorderSpacing.Left = 6
-          Enabled = False
           TabOrder = 0
           Text = '0'
         end
@@ -469,7 +463,6 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           Top = 1
           Width = 32
           BorderSpacing.Left = 6
-          Enabled = False
           TabOrder = 1
         end
         object MajorRevisionSpinEdit: TSpinEdit
@@ -479,7 +472,6 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           Height = 20
           Width = 32
           BorderSpacing.Left = 6
-          Enabled = False
           TabOrder = 2
         end
         object MinorRevisionSpinEdit: TSpinEdit
@@ -490,7 +482,6 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           Top = 2
           Width = 32
           BorderSpacing.Left = 6
-          Enabled = False
           TabOrder = 3
         end
         object AutomaticallyIncreaseBuildCheckBox: TCheckBox
@@ -508,18 +499,16 @@ object ProjectOptionsDialog: TProjectOptionsDialog
         Top = 6
         Width = 218
         Caption = 'Include Version Info in executable'
-        Enabled = False
         OnChange = UseVersionInfoCheckBoxChange
         TabOrder = 1
       end
       object LanguageSettingsGroupBox: TGroupBox
         Left = 6
         Height = 66
-        Top = 98
+        Top = 77
         Width = 441
         Anchors = [akTop, akLeft, akRight]
         Caption = 'Language Options'
-        Enabled = False
         TabOrder = 2
         object LanguageSelectionLabel: TLabel
           Left = 12
@@ -528,7 +517,6 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           Width = 116
           Caption = 'Language Selection:'
           Color = clNone
-          Enabled = False
           ParentColor = False
         end
         object CharacterSetLabel: TLabel
@@ -538,7 +526,6 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           Width = 81
           Caption = 'Character Set:'
           Color = clNone
-          Enabled = False
           ParentColor = False
         end
         object LanguageSelectionComboBox: TComboBox
@@ -550,7 +537,6 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           Width = 248
           AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
           BorderSpacing.Top = 2
-          Enabled = False
           MaxLength = 0
           TabOrder = 0
           Text = 'Enlish (US)'
@@ -562,7 +548,6 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           Top = 21
           Width = 128
           AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
-          Enabled = False
           MaxLength = 0
           TabOrder = 1
           Text = 'MultiLingual'
@@ -571,11 +556,10 @@ object ProjectOptionsDialog: TProjectOptionsDialog
       object OtherInfoGroupBox: TGroupBox
         Left = 6
         Height = 105
-        Top = 178
+        Top = 152
         Width = 441
         Anchors = [akTop, akLeft, akRight]
         Caption = 'Other Info'
-        Enabled = False
         TabOrder = 3
         object DescriptionLabel: TLabel
           AnchorSideTop.Control = DescriptionEdit
@@ -586,7 +570,6 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           Width = 67
           Caption = 'Description:'
           Color = clNone
-          Enabled = False
           ParentColor = False
         end
         object CopyrightLabel: TLabel
@@ -598,7 +581,6 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           Width = 58
           Caption = 'Copyright:'
           Color = clNone
-          Enabled = False
           ParentColor = False
         end
         object DescriptionEdit: TEdit
@@ -613,7 +595,6 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Left = 6
           BorderSpacing.Right = 6
-          Enabled = False
           TabOrder = 0
         end
         object CopyrightEdit: TEdit
@@ -631,7 +612,6 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           BorderSpacing.Left = 6
           BorderSpacing.Top = 6
           BorderSpacing.Right = 6
-          Enabled = False
           TabOrder = 1
         end
         object AdditionalInfoButton: TButton
@@ -652,30 +632,32 @@ object ProjectOptionsDialog: TProjectOptionsDialog
     end
   end
   object CancelButton: TButton
-    Left = 392
+    Left = 371
     Height = 26
     Top = 346
-    Width = 54
+    Width = 75
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.InnerBorder = 4
     Cancel = True
     Caption = 'Cancel'
+    Constraints.MinWidth = 75
     ModalResult = 2
     TabOrder = 1
   end
   object OKButton: TButton
     AnchorSideRight.Control = CancelButton
-    Left = 344
+    Left = 280
     Height = 26
     Top = 346
-    Width = 32
+    Width = 75
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Right = 10
     BorderSpacing.Around = 6
     BorderSpacing.InnerBorder = 4
     Caption = 'OK'
+    Constraints.MinWidth = 75
     Default = True
     ModalResult = 1
     TabOrder = 2

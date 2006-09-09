@@ -38,86 +38,260 @@ unit W32VersionInfo;
 interface
 
 uses
-   LazConf, Controls, Forms, SysUtils, Process, Classes, CodeToolManager,
-   CodeCache;
+   Classes, SysUtils, Process, LCLProc, Controls, Forms,
+   CodeToolManager, CodeCache,
+   LazConf, Dialogprocs;
    
 type
-   { TProjectVersionInfo }
+  { TProjectVersionInfo }
 
-   TProjectVersionInfo = class(TObject)
-   private
-      rcFilename: string;
-      resFilename: string;
-      rcInFile: text;
-      rcOutFile: text;
-      rcLine: string;
+  TProjectVersionInfo = class(TObject)
+  private
+    FAutoIncrementBuild: boolean;
+    FBuildNr: integer;
+    FCommentsString: string;
+    FCompanyString: string;
+    FCopyrightString: string;
+    FDescriptionString: string;
+    FHexCharSet: string;
+    FHexLang: string;
+    FInternalNameString: string;
+    FMajorRevNr: integer;
+    FMinorRevNr: integer;
+    FModified: boolean;
+    FOnModified: TNotifyEvent;
+    FOriginalFilenameString: string;
+    FProdNameString: string;
+    FProductVersionString: string;
+    FTrademarksString: string;
+    FUseVersionInfo: boolean;
+    FVersionNr: integer;
+    rcFilename: string;
+    resFilename: string;
+    rcInFile: text;
+    rcOutFile: text;
+    rcLine: string;
+    fVersionInfoMessages: TStringList;
+    procedure BackupRCFile;
+    function GetCharSets: TStringList;
+    function GetHexCharSets: TStringList;
+    function GetHexLanguages: TStringList;
+    function GetLanguages: TStringList;
+    function GetVersionInfoMessages: TStringList;
+    procedure RewriteAndSkipRCFile;
+    procedure AppendToRCFile;
+    procedure RewriteRCFile;
+    function DoTheRealCompile: TModalResult;
+    procedure SetAutoIncrementBuild(const AValue: boolean);
+    procedure SetBuildNr(const AValue: integer);
+    procedure SetCommentsString(const AValue: string);
+    procedure SetCompanyString(const AValue: string);
+    procedure SetCopyrightString(const AValue: string);
+    procedure SetDescriptionString(const AValue: string);
+    procedure SetHexCharSet(const AValue: string);
+    procedure SetHexLang(const AValue: string);
+    procedure SetInternalNameString(const AValue: string);
+    procedure SetMajorRevNr(const AValue: integer);
+    procedure SetMinorRevNr(const AValue: integer);
+    procedure SetModified(const AValue: boolean);
+    procedure SetOriginalFilenameString(const AValue: string);
+    procedure SetProdNameString(const AValue: string);
+    procedure SetProductVersionString(const AValue: string);
+    procedure SetTrademarksString(const AValue: string);
+    procedure SetUseVersionInfo(const AValue: boolean);
+    procedure SetVersionNr(const AValue: integer);
+    function UpdateMainSourceFile(const AFilename: string): TModalResult;
+    procedure SetFileNames(const MainFilename: string);
+  public
+    property Modified: boolean read FModified write SetModified;
 
-      procedure BackupRCFile;
-      procedure RewriteAndSkipRCFile;
-      procedure AppendToRCFile;
-      procedure RewriteRCFile;
-      function DoTheRealCompile: TModalResult;
-      function UpdateMainSourceFile(const AFilename: string): TModalResult;
-      function HexToDec(Str: string): Integer;
-   public
-      TargetOS: string;
+    property UseVersionInfo: boolean read FUseVersionInfo write SetUseVersionInfo;
+    property AutoIncrementBuild: boolean read FAutoIncrementBuild write SetAutoIncrementBuild;
+    property VersionNr: integer read FVersionNr write SetVersionNr;
+    property MajorRevNr: integer read FMajorRevNr write SetMajorRevNr;
+    property MinorRevNr: integer read FMinorRevNr write SetMinorRevNr;
+    property BuildNr: integer read FBuildNr write SetBuildNr;
+    property HexLang: string read FHexLang write SetHexLang;
+    property HexCharSet: string read FHexCharSet write SetHexCharSet;
+    property DescriptionString: string read FDescriptionString write SetDescriptionString;
+    property CopyrightString: string read FCopyrightString write SetCopyrightString;
+    property CommentsString: string read FCommentsString write SetCommentsString;
+    property CompanyString: string read FCompanyString write SetCompanyString;
+    property InternalNameString: string read FInternalNameString write SetInternalNameString;
+    property TrademarksString: string read FTrademarksString write SetTrademarksString;
+    property OriginalFilenameString: string read FOriginalFilenameString write SetOriginalFilenameString;
+    property ProdNameString: string read FProdNameString write SetProdNameString;
+    property ProductVersionString: string read FProductVersionString write SetProductVersionString;
 
-      UseVersionInfo: boolean;
-      AutoIncrementBuild: boolean;
-      VersionNr: integer;
-      MajorRevNr: integer;
-      MinorRevNr: integer;
-      BuildNr: integer;
-      HexLang: string;
-      HexCharSet: string;
-      DescriptionString: string;
-      CopyrightString: string;
-      CommentsString: string;
-      CompanyString: string;
-      InternalNameString: string;
-      TrademarksString: string;
-      OriginalFilenameString: string;
-      ProdNameString: string;
-      ProductVersionString: string;
+    constructor Create;
+    destructor Destroy; override;
+    function CompileRCFile(const MainFilename, TargetOS: string): TModalResult;
 
-      VersionInfoMessages: TStringList;
+    property VersionInfoMessages: TStringList read GetVersionInfoMessages;
+    
+    property OnModified: TNotifyEvent read FOnModified write FOnModified;
+  end;
 
-      Languages: TStringList;            // for Project Options pull-down
-      HexLanguages: TStringList;         // for Project Options pull-down
+function MSLanguageToHex(const s: string): string;
+function MSHexToLanguage(const s: string): string;
+function MSCharacterSetToHex(const s: string): string;
+function MSHexToCharacterSet(const s: string): string;
 
-      CharSets: TStringList;             // for Project Options pull-down
-      HexCharSets: TStringList;          // for Project Options pull-down
-
-      constructor Create;
-      destructor Destroy; override;
-      function CompileRCFile(MainFilename: string): TModalResult;
-      function SetTargetOS(CurrentProjectsTargetOS: string): string;
-      procedure SetFileNames(MainFilename: string);
-      procedure SetUseVersionInfo(BoxContents: boolean; var ProjectModified: boolean);
-      procedure SetAutoIncrementBuild(BoxContents: boolean; var ProjectModified: boolean);
-      procedure SetVersionNr(BoxContents: integer; var ProjectModified: boolean);
-      procedure SetMajorRevNr(BoxContents: integer; var ProjectModified: boolean);
-      procedure SetMinorRevNr(BoxContents: integer; var ProjectModified: boolean);
-      procedure SetBuildNr(BoxContents: integer; var ProjectModified: boolean);
-      procedure SetDescriptionString(BoxContents: string; var ProjectModified: boolean);
-      procedure SetCopyrightString(BoxContents: string; var ProjectModified: boolean);
-      procedure SetHexLang(BoxContents: string; var ProjectModified: boolean);
-      procedure SetHexCharSet(BoxContents: string; var ProjectModified: boolean);
-      procedure SetCommentsString(BoxContents: string; var ProjectModified: boolean);
-      procedure SetCompanyString(BoxContents: string; var ProjectModified: boolean);
-      procedure SetInternalNameString(BoxContents: string; var ProjectModified: boolean);
-      procedure SetTrademarksString(BoxContents: string; var ProjectModified: boolean);
-      procedure SetOriginalFilenameString(BoxContents: string; var ProjectModified: boolean);
-      procedure SetProdNameString(BoxContents: string; var ProjectModified: boolean);
-      procedure SetProductVersionString(BoxContents: string; var ProjectModified: boolean);
-   end;
-
-var
-  LocalesList : TStringList;
+function MSLanguages: TStringList;
+function MSHexLanguages: TStringList;
+function MSCharacterSets: TStringList;
+function MSHexCharacterSets: TStringList;
 
 implementation
 
+var
+  // languages
+  fLanguages: TStringList = nil;
+  fHexLanguages: TStringList = nil;
 
+  // character sets
+  fCharSets: TStringList = nil;
+  fHexCharSets: TStringList = nil;
+
+procedure CreateCharSets;
+begin
+  if fCharSets<>nil then exit;
+  fCharSets := TStringList.Create;
+  fHexCharSets := TStringList.Create;
+
+  fCharSets.Add('7-bit ASCII');                fHexCharSets.Add('0000');
+  fCharSets.Add('Japan (Shift - JIS X-0208)'); fHexCharSets.Add('03A4');
+  fCharSets.Add('Korea (Shift - KSC 5601)');   fHexCharSets.Add('03B5');
+  fCharSets.Add('Taiwan (Big5)');              fHexCharSets.Add('03B6');
+  fCharSets.Add('Unicode');                    fHexCharSets.Add('04B0');
+  fCharSets.Add('Latin-2 (Eastern European)'); fHexCharSets.Add('04E2');
+  fCharSets.Add('Cyrillic');                   fHexCharSets.Add('04E3');
+  fCharSets.Add('Multilingual');               fHexCharSets.Add('04E4');
+  fCharSets.Add('Greek');                      fHexCharSets.Add('04E5');
+  fCharSets.Add('Turkish');                    fHexCharSets.Add('04E6');
+  fCharSets.Add('Hebrew');                     fHexCharSets.Add('04E7');
+  fCharSets.Add('Arabic');                     fHexCharSets.Add('04E8');
+end;
+
+procedure CreateLanguages;
+begin
+  if fLanguages<>nil then exit;
+  fLanguages := TStringList.Create;
+  fHexLanguages := TStringList.Create;
+  fLanguages.Add('Arabic');                    fHexLanguages.Add('0401');
+  fLanguages.Add('Bulgarian');                 fHexLanguages.Add('0402');
+  fLanguages.Add('Catalan');                   fHexLanguages.Add('0403');
+  fLanguages.Add('Traditional Chinese');       fHexLanguages.Add('0404');
+  fLanguages.Add('Czech');                     fHexLanguages.Add('0405');
+  fLanguages.Add('Danish');                    fHexLanguages.Add('0406');
+  fLanguages.Add('German');                    fHexLanguages.Add('0407');
+  fLanguages.Add('Greek');                     fHexLanguages.Add('0408');
+  fLanguages.Add('U.S. English');              fHexLanguages.Add('0409');
+  fLanguages.Add('Castillian Spanish');        fHexLanguages.Add('040A');
+  fLanguages.Add('Finnish');                   fHexLanguages.Add('040B');
+  fLanguages.Add('French');                    fHexLanguages.Add('040C');
+  fLanguages.Add('Hebrew');                    fHexLanguages.Add('040D');
+  fLanguages.Add('Hungarian');                 fHexLanguages.Add('040E');
+  fLanguages.Add('Icelandic');                 fHexLanguages.Add('040F');
+  fLanguages.Add('Italian');                   fHexLanguages.Add('0410');
+  fLanguages.Add('Japanese');                  fHexLanguages.Add('0411');
+  fLanguages.Add('Korean');                    fHexLanguages.Add('0412');
+  fLanguages.Add('Dutch');                     fHexLanguages.Add('0413');
+  fLanguages.Add('Norwegian - Bokmal');        fHexLanguages.Add('0414');
+  fLanguages.Add('Swiss Italian');             fHexLanguages.Add('0810');
+  fLanguages.Add('Belgian Dutch');             fHexLanguages.Add('0813');
+  fLanguages.Add('Norwegian - Nynorsk');       fHexLanguages.Add('0814');
+  fLanguages.Add('Polish');                    fHexLanguages.Add('0415');
+  fLanguages.Add('Portugese (Brazil)');        fHexLanguages.Add('0416');
+  fLanguages.Add('Rhaeto-Romantic');           fHexLanguages.Add('0417');
+  fLanguages.Add('Romanian');                  fHexLanguages.Add('0418');
+  fLanguages.Add('Russian');                   fHexLanguages.Add('0419');
+  fLanguages.Add('Croato-Serbian (Latin)');    fHexLanguages.Add('041A');
+  fLanguages.Add('Slovak');                    fHexLanguages.Add('041B');
+  fLanguages.Add('Albanian');                  fHexLanguages.Add('041C');
+  fLanguages.Add('Swedish');                   fHexLanguages.Add('041D');
+  fLanguages.Add('Thai');                      fHexLanguages.Add('041E');
+  fLanguages.Add('Turkish');                   fHexLanguages.Add('041F');
+  fLanguages.Add('Urdu');                      fHexLanguages.Add('0420');
+  fLanguages.Add('Bahasa');                    fHexLanguages.Add('0421');
+  fLanguages.Add('Simplified Chinese');        fHexLanguages.Add('0804');
+  fLanguages.Add('Swiss German');              fHexLanguages.Add('0807');
+  fLanguages.Add('U.K. English');              fHexLanguages.Add('0809');
+  fLanguages.Add('Mexican Spanish');           fHexLanguages.Add('080A');
+  fLanguages.Add('Belgian French');            fHexLanguages.Add('080C');
+  fLanguages.Add('Canadian French');           fHexLanguages.Add('0C0C');
+  fLanguages.Add('Swiss French');              fHexLanguages.Add('100C');
+  fLanguages.Add('Portugese (Portugal)');      fHexLanguages.Add('0816');
+  fLanguages.Add('Sebro-Croatian (Cyrillic)'); fHexLanguages.Add('081A');
+end;
+
+function MSLanguageToHex(const s: string): string;
+var
+  i: LongInt;
+begin
+  i:=MSLanguages.IndexOf(s);
+  if i>=0 then
+    Result:=fHexLanguages[i]
+  else
+    Result:='';
+end;
+
+function MSHexToLanguage(const s: string): string;
+var
+  i: LongInt;
+begin
+  i:=MSHexLanguages.IndexOf(s);
+  if i>=0 then
+    Result:=fLanguages[i]
+  else
+    Result:='';
+end;
+
+function MSCharacterSetToHex(const s: string): string;
+var
+  i: LongInt;
+begin
+  i:=MSCharacterSets.IndexOf(s);
+  if i>=0 then
+    Result:=fHexCharSets[i]
+  else
+    Result:='';
+end;
+
+function MSHexToCharacterSet(const s: string): string;
+var
+  i: LongInt;
+begin
+  i:=MSHexCharacterSets.IndexOf(s);
+  if i>=0 then
+    Result:=fCharSets[i]
+  else
+    Result:='';
+end;
+
+function MSLanguages: TStringList;
+begin
+  CreateLanguages;
+  Result:=fLanguages;
+end;
+
+function MSHexLanguages: TStringList;
+begin
+  CreateLanguages;
+  Result:=fHexLanguages;
+end;
+
+function MSCharacterSets: TStringList;
+begin
+  CreateCharSets;
+  Result:=fCharSets;
+end;
+
+function MSHexCharacterSets: TStringList;
+begin
+  CreateCharSets;
+  Result:=fHexCharSets;
+end;
 
 { VersionInfo }
 
@@ -126,90 +300,7 @@ implementation
 -----------------------------------------------------------------------------}
 constructor TProjectVersionInfo.Create;
 begin
-   inherited Create;
-   VersionInfoMessages := TStringList.Create;
-   LocalesList := TStringList.Create;
-   Languages := TStringList.Create;
-   HexLanguages := TStringList.Create;
-   CharSets := TStringList.Create;
-   HexCharSets := TStringList.Create;
-
-   Languages.Add('Arabic');                    HexLanguages.Add('0401');
-   Languages.Add('Bulgarian');                 HexLanguages.Add('0402');
-   Languages.Add('Catalan');                   HexLanguages.Add('0403');
-   Languages.Add('Traditional Chinese');       HexLanguages.Add('0404');
-   Languages.Add('Czech');                     HexLanguages.Add('0405');
-   Languages.Add('Danish');                    HexLanguages.Add('0406');
-   Languages.Add('German');                    HexLanguages.Add('0407');
-   Languages.Add('Greek');                     HexLanguages.Add('0408');
-   Languages.Add('U.S. English');              HexLanguages.Add('0409');
-   Languages.Add('Castillian Spanish');        HexLanguages.Add('040A');
-   Languages.Add('Finnish');                   HexLanguages.Add('040B');
-   Languages.Add('French');                    HexLanguages.Add('040C');
-   Languages.Add('Hebrew');                    HexLanguages.Add('040D');
-   Languages.Add('Hungarian');                 HexLanguages.Add('040E');
-   Languages.Add('Icelandic');                 HexLanguages.Add('040F');
-   Languages.Add('Italian');                   HexLanguages.Add('0410');
-   Languages.Add('Japanese');                  HexLanguages.Add('0411');
-   Languages.Add('Korean');                    HexLanguages.Add('0412');
-   Languages.Add('Dutch');                     HexLanguages.Add('0413');
-   Languages.Add('Norwegian - Bokmal');        HexLanguages.Add('0414');
-   Languages.Add('Swiss Italian');             HexLanguages.Add('0810');
-   Languages.Add('Belgian Dutch');             HexLanguages.Add('0813');
-   Languages.Add('Norwegian - Nynorsk');       HexLanguages.Add('0814');
-   Languages.Add('Polish');                    HexLanguages.Add('0415');
-   Languages.Add('Portugese (Brazil)');        HexLanguages.Add('0416');
-   Languages.Add('Rhaeto-Romantic');           HexLanguages.Add('0417');
-   Languages.Add('Romanian');                  HexLanguages.Add('0418');
-   Languages.Add('Russian');                   HexLanguages.Add('0419');
-   Languages.Add('Croato-Serbian (Latin)');    HexLanguages.Add('041A');
-   Languages.Add('Slovak');                    HexLanguages.Add('041B');
-   Languages.Add('Albanian');                  HexLanguages.Add('041C');
-   Languages.Add('Swedish');                   HexLanguages.Add('041D');
-   Languages.Add('Thai');                      HexLanguages.Add('041E');
-   Languages.Add('Turkish');                   HexLanguages.Add('041F');
-   Languages.Add('Urdu');                      HexLanguages.Add('0420');
-   Languages.Add('Bahasa');                    HexLanguages.Add('0421');
-   Languages.Add('Simplified Chinese');        HexLanguages.Add('0804');
-   Languages.Add('Swiss German');              HexLanguages.Add('0807');
-   Languages.Add('U.K. English');              HexLanguages.Add('0809');
-   Languages.Add('Mexican Spanish');           HexLanguages.Add('080A');
-   Languages.Add('Belgian French');            HexLanguages.Add('080C');
-   Languages.Add('Canadian French');           HexLanguages.Add('0C0C');
-   Languages.Add('Swiss French');              HexLanguages.Add('100C');
-   Languages.Add('Portugese (Portugal)');      HexLanguages.Add('0816');
-   Languages.Add('Sebro-Croatian (Cyrillic)'); HexLanguages.Add('081A');
-
-   { fill charset stringlists }
-   CharSets.Add('7-bit ASCII');                HexCharSets.Add('0000');
-   CharSets.Add('Japan (Shift - JIS X-0208)'); HexCharSets.Add('03A4');
-   CharSets.Add('Korea (Shift - KSC 5601)');   HexCharSets.Add('03B5');
-   CharSets.Add('Taiwan (Big5)');              HexCharSets.Add('03B6');
-   CharSets.Add('Unicode');                    HexCharSets.Add('04B0');
-   CharSets.Add('Latin-2 (Eastern European)'); HexCharSets.Add('04E2');
-   CharSets.Add('Cyrillic');                   HexCharSets.Add('04E3');
-   CharSets.Add('Multilingual');               HexCharSets.Add('04E4');
-   CharSets.Add('Greek');                      HexCharSets.Add('04E5');
-   CharSets.Add('Turkish');                    HexCharSets.Add('04E6');
-   CharSets.Add('Hebrew');                     HexCharSets.Add('04E7');
-   CharSets.Add('Arabic');                     HexCharSets.Add('04E8');
-
-   { initialize version digits }
-   VersionNr  := 0;
-   MajorRevNr := 0;
-   MinorRevNr := 0;
-   BuildNr    := 0;
-
-   { initialize strings }
-   ProductVersionString   := '';
-   CommentsString         := '';
-   CompanyString          := '';
-   DescriptionString      := '';
-   InternalNameString     := '';
-   CopyrightString        := '';
-   TrademarksString       := '';
-   OriginalFilenameString := '';
-   ProdNameString         := '';
+  inherited Create;
 end;
 
 {-----------------------------------------------------------------------------
@@ -217,16 +308,19 @@ end;
 -----------------------------------------------------------------------------}
 destructor TProjectVersionInfo.Destroy;
 begin
+  FreeAndNil(fVersionInfoMessages);
   inherited Destroy;
 end;
 
 {-----------------------------------------------------------------------------
  TProjectVersionInfo CompileRCFile
 -----------------------------------------------------------------------------}
-function TProjectVersionInfo.CompileRCFile(MainFilename: string): TModalResult;
+function TProjectVersionInfo.CompileRCFile(const MainFilename, TargetOS: string
+  ): TModalResult;
 begin
    Result := mrCancel;
-   if (GetDefaultTargetOS = 'win32') then
+   SetFileNames(MainFilename);
+   if (TargetOS = 'win32') then
       begin
          { we are building a win32 application }
          if UseVersionInfo then
@@ -282,6 +376,7 @@ end;
 -----------------------------------------------------------------------------}
 procedure TProjectVersionInfo.BackupRCFile;
 begin
+  //BackupFileInteractive(rcFilename);
    if (FileExists(rcFilename + '.bak')) then
       begin
          { a previous .bak file exists, so erase it }
@@ -290,6 +385,37 @@ begin
       end;
    AssignFile(rcInFile, rcFilename);
    Rename(rcInFile, rcFilename + '.bak');
+end;
+
+function TProjectVersionInfo.GetCharSets: TStringList;
+begin
+  CreateCharSets;
+  Result:=fHexCharSets;
+end;
+
+function TProjectVersionInfo.GetHexCharSets: TStringList;
+begin
+  CreateCharSets;
+  Result:=fHexCharSets;
+end;
+
+function TProjectVersionInfo.GetHexLanguages: TStringList;
+begin
+  CreateLanguages;
+  Result:=fHexLanguages;
+end;
+
+function TProjectVersionInfo.GetLanguages: TStringList;
+begin
+  CreateLanguages;
+  Result:=fLanguages;
+end;
+
+function TProjectVersionInfo.GetVersionInfoMessages: TStringList;
+begin
+  if fVersionInfoMessages<>nil then exit;
+  fVersionInfoMessages:=TStringList.Create;
+  Result:=fVersionInfoMessages;
 end;
 
 {-----------------------------------------------------------------------------
@@ -454,24 +580,30 @@ procedure TProjectVersionInfo.RewriteRCFile;
        3 - append the new version-info to the rc file.                       }
 
 begin
-   { first make a backup of the current rc file }
-   BackupRCFile;
-   
-   { open the backup for input and create a new file for output }
-   AssignFile(rcInFile, rcFilename + '.bak');
-   Reset(rcInFile);
-   AssignFile(rcOutFile, rcFilename);
-   Rewrite(rcOutFile);
+  try
+    { first make a backup of the current rc file }
+    BackupRCFile;
 
-   { read from input, skip all version-info and write back the remainder }
-   RewriteAndSkipRCFile;
-   
-   { append the new version-info }
-   AppendToRCFile;
+    { open the backup for input and create a new file for output }
+    AssignFile(rcInFile, rcFilename + '.bak');
+    Reset(rcInFile);
+    AssignFile(rcOutFile, rcFilename);
+    Rewrite(rcOutFile);
 
-   { close the files }
-   CloseFile(rcInFile);
-   CloseFile(rcOutFile);
+    { read from input, skip all version-info and write back the remainder }
+    RewriteAndSkipRCFile;
+
+    { append the new version-info }
+    AppendToRCFile;
+
+    { close the files }
+    CloseFile(rcInFile);
+    CloseFile(rcOutFile);
+  except
+    on E: Exception do begin
+      DebugLn(['TProjectVersionInfo.RewriteRCFile ',e.Message]);
+    end;
+  end;
 end;
 
 {-----------------------------------------------------------------------------
@@ -526,6 +658,135 @@ begin
       VersionInfoMessages.Add(rcStringList[n - 1]);
 end;
 
+procedure TProjectVersionInfo.SetAutoIncrementBuild(const AValue: boolean);
+begin
+  if FAutoIncrementBuild=AValue then exit;
+  FAutoIncrementBuild:=AValue;
+  Modified:=true;
+end;
+
+procedure TProjectVersionInfo.SetBuildNr(const AValue: integer);
+begin
+  if FBuildNr=AValue then exit;
+  FBuildNr:=AValue;
+  Modified:=true;
+end;
+
+procedure TProjectVersionInfo.SetCommentsString(const AValue: string);
+begin
+  if FCommentsString=AValue then exit;
+  FCommentsString:=AValue;
+  Modified:=true;
+end;
+
+procedure TProjectVersionInfo.SetCompanyString(const AValue: string);
+begin
+  if FCompanyString=AValue then exit;
+  FCompanyString:=AValue;
+  Modified:=true;
+end;
+
+procedure TProjectVersionInfo.SetCopyrightString(const AValue: string);
+begin
+  if FCopyrightString=AValue then exit;
+  FCopyrightString:=AValue;
+  Modified:=true;
+end;
+
+procedure TProjectVersionInfo.SetDescriptionString(const AValue: string);
+begin
+  if FDescriptionString=AValue then exit;
+  FDescriptionString:=AValue;
+  Modified:=true;
+end;
+
+procedure TProjectVersionInfo.SetHexCharSet(const AValue: string);
+begin
+  if FHexCharSet=AValue then exit;
+  FHexCharSet:=AValue;
+  Modified:=true;
+end;
+
+procedure TProjectVersionInfo.SetHexLang(const AValue: string);
+begin
+  if FHexLang=AValue then exit;
+  FHexLang:=AValue;
+  Modified:=true;
+end;
+
+procedure TProjectVersionInfo.SetInternalNameString(const AValue: string);
+begin
+  if FInternalNameString=AValue then exit;
+  FInternalNameString:=AValue;
+  Modified:=true;
+end;
+
+procedure TProjectVersionInfo.SetMajorRevNr(const AValue: integer);
+begin
+  if FMajorRevNr=AValue then exit;
+  FMajorRevNr:=AValue;
+  Modified:=true;
+end;
+
+procedure TProjectVersionInfo.SetMinorRevNr(const AValue: integer);
+begin
+  if FMinorRevNr=AValue then exit;
+  FMinorRevNr:=AValue;
+  Modified:=true;
+end;
+
+procedure TProjectVersionInfo.SetModified(const AValue: boolean);
+begin
+  if FModified=AValue then exit;
+  FModified:=AValue;
+  if Assigned(OnModified) then OnModified(Self);
+end;
+
+procedure TProjectVersionInfo.SetOriginalFilenameString(const AValue: string);
+begin
+  if FOriginalFilenameString=AValue then exit;
+  FOriginalFilenameString:=AValue;
+  Modified:=true;
+end;
+
+procedure TProjectVersionInfo.SetProdNameString(const AValue: string);
+begin
+  if FProdNameString=AValue then exit;
+  FProdNameString:=AValue;
+  Modified:=true;
+end;
+
+procedure TProjectVersionInfo.SetProductVersionString(const AValue: string);
+var
+  NewValue: String;
+begin
+  NewValue:=StringReplace(AValue, ',', '.', [rfReplaceAll]);
+  if FProductVersionString=NewValue then exit;
+  FProductVersionString:=NewValue;
+  Modified:=true;
+end;
+
+procedure TProjectVersionInfo.SetTrademarksString(const AValue: string);
+begin
+  if FTrademarksString=AValue then exit;
+  FTrademarksString:=AValue;
+  Modified:=true;
+end;
+
+procedure TProjectVersionInfo.SetUseVersionInfo(const AValue: boolean);
+begin
+  if FUseVersionInfo=AValue then exit;
+  FUseVersionInfo:=AValue;
+  Modified:=true;
+end;
+
+procedure TProjectVersionInfo.SetVersionNr(const AValue: integer);
+begin
+  if FVersionNr=AValue then exit;
+  FVersionNr:=AValue;
+  Modified:=true;
+end;
+
 {-----------------------------------------------------------------------------
  TProjectVersionInfo UpdateMainSourceFile
 -----------------------------------------------------------------------------}
@@ -554,254 +815,19 @@ begin
 end;
 
 {-----------------------------------------------------------------------------
- TProjectVersionInfo SetTargetOS
------------------------------------------------------------------------------}
-function TProjectVersionInfo.SetTargetOS(CurrentProjectsTargetOS: string): string;
-begin
-   if CurrentProjectsTargetOS <> '' then
-     TargetOS := LowerCase(CurrentProjectsTargetOS)
-   else
-     TargetOS := LowerCase(GetDefaultTargetOS);
-   Result := TargetOS;
-end;
-
-{-----------------------------------------------------------------------------
  TProjectVersionInfo SetFileNames
 -----------------------------------------------------------------------------}
-procedure TProjectVersionInfo.SetFileNames(MainFilename: string);
+procedure TProjectVersionInfo.SetFileNames(const MainFilename: string);
 begin
    rcFilename := Copy(MainFilename, 1, Length(MainFilename) - 4) + '.rc';
    resFilename := Copy(MainFilename, 1, Length(MainFilename) - 4) + '.res';
 end;
 
-{-----------------------------------------------------------------------------
- TProjectVersionInfo SetUseVersionInfo
------------------------------------------------------------------------------}
-procedure TProjectVersionInfo.SetUseVersionInfo(BoxContents: boolean;
-  var ProjectModified: boolean);
-begin
-   if (UseVersionInfo <> BoxContents) then
-      begin
-         UseVersionInfo := BoxContents;
-         ProjectModified := True;
-      end;
-end;
-
-{-----------------------------------------------------------------------------
- TProjectVersionInfo SetAutoIncrementBuild
------------------------------------------------------------------------------}
-procedure TProjectVersionInfo.SetAutoIncrementBuild(BoxContents: boolean;
-  var ProjectModified: boolean);
-begin
-   if (AutoIncrementBuild <> BoxContents) then
-      begin
-         AutoIncrementBuild := BoxContents;
-         ProjectModified := True;
-      end;
-end;
-
-{-----------------------------------------------------------------------------
- TProjectVersionInfo SetVersionNr
------------------------------------------------------------------------------}
-procedure TProjectVersionInfo.SetVersionNr(BoxContents: integer; var ProjectModified: boolean);
-begin
-   if (VersionNr <> BoxContents) then
-      begin
-         VersionNr := BoxContents;
-         ProjectModified := True;
-      end;
-end;
-
-{-----------------------------------------------------------------------------
- TProjectVersionInfo SetMajorRevNr
------------------------------------------------------------------------------}
-procedure TProjectVersionInfo.SetMajorRevNr(BoxContents: integer; var ProjectModified: boolean);
-begin
-   if (MajorRevNr <> BoxContents) then
-      begin
-         MajorRevNr := BoxContents;
-         ProjectModified := True;
-      end;
-end;
-
-{-----------------------------------------------------------------------------
- TProjectVersionInfo SetMinorRevNr
------------------------------------------------------------------------------}
-procedure TProjectVersionInfo.SetMinorRevNr(BoxContents: integer; var ProjectModified: boolean);
-begin
-   if (MinorRevNr <> BoxContents) then
-      begin
-         MinorRevNr := BoxContents;
-         ProjectModified := True;
-      end;
-end;
-
-{-----------------------------------------------------------------------------
- TProjectVersionInfo SetBuildNr
------------------------------------------------------------------------------}
-procedure TProjectVersionInfo.SetBuildNr(BoxContents: integer; var ProjectModified: boolean);
-begin
-   if (BuildNr <> BoxContents) then
-      begin
-         BuildNr := BoxContents;
-         ProjectModified := True;
-      end;
-end;
-
-{-----------------------------------------------------------------------------
- TProjectVersionInfo SetDescriptionString
------------------------------------------------------------------------------}
-procedure TProjectVersionInfo.SetDescriptionString(BoxContents: string; var ProjectModified: boolean);
-begin
-   if (DescriptionString <> BoxContents) then
-      begin
-         DescriptionString := BoxContents;
-         ProjectModified := True;
-      end;
-end;
-
-{-----------------------------------------------------------------------------
- TProjectVersionInfo SetCopyrightString
------------------------------------------------------------------------------}
-procedure TProjectVersionInfo.SetCopyrightString(BoxContents: string; var ProjectModified: boolean);
-begin
-   if (CopyrightString <> BoxContents) then
-      begin
-         CopyrightString := BoxContents;
-         ProjectModified := True;
-      end;
-end;
-
-{-----------------------------------------------------------------------------
- TProjectVersionInfo SetHexLang
------------------------------------------------------------------------------}
-procedure TProjectVersionInfo.SetHexLang(BoxContents: string; var ProjectModified: boolean);
-begin
-   BoxContents := HexLanguages[Languages.IndexOf(BoxContents)];
-   if (HexLang <> BoxContents) then
-      begin
-         HexLang := BoxContents;
-         ProjectModified := True;
-      end;
-end;
-
-{-----------------------------------------------------------------------------
- TProjectVersionInfo SetHexCharSet
------------------------------------------------------------------------------}
-procedure TProjectVersionInfo.SetHexCharSet(BoxContents: string; var ProjectModified: boolean);
-begin
-   BoxContents := HexCharSets[CharSets.IndexOf(BoxContents)];
-   if (HexCharSet <> BoxContents) then
-      begin
-         HexCharSet := BoxContents;
-         ProjectModified := True;
-      end;
-end;
-
-{-----------------------------------------------------------------------------
- TProjectVersionInfo SetCommentsString
------------------------------------------------------------------------------}
-procedure TProjectVersionInfo.SetCommentsString(BoxContents: string; var ProjectModified: boolean);
-begin
-   if (CommentsString <> BoxContents) then
-      begin
-         CommentsString := BoxContents;
-         ProjectModified := True;
-      end;
-end;
-
-{-----------------------------------------------------------------------------
- TProjectVersionInfo SetCompanyString
------------------------------------------------------------------------------}
-procedure TProjectVersionInfo.SetCompanyString(BoxContents: string; var ProjectModified: boolean);
-begin
-   if (CompanyString <> BoxContents) then
-      begin
-         CompanyString := BoxContents;
-         ProjectModified := True;
-      end;
-end;
-
-{-----------------------------------------------------------------------------
- TProjectVersionInfo SetInternalNameString
------------------------------------------------------------------------------}
-procedure TProjectVersionInfo.SetInternalNameString(BoxContents: string; var ProjectModified: boolean);
-begin
-   if (InternalNameString <> BoxContents) then
-      begin
-         InternalNameString := BoxContents;
-         ProjectModified := True;
-      end;
-end;
-
-{-----------------------------------------------------------------------------
- TProjectVersionInfo SetTrademarksString
------------------------------------------------------------------------------}
-procedure TProjectVersionInfo.SetTrademarksString(BoxContents: string; var ProjectModified: boolean);
-begin
-   if (TrademarksString <> BoxContents) then
-      begin
-         TrademarksString := BoxContents;
-         ProjectModified := True;
-      end;
-end;
-
-{-----------------------------------------------------------------------------
- TProjectVersionInfo SetOriginalFilenameString
------------------------------------------------------------------------------}
-procedure TProjectVersionInfo.SetOriginalFilenameString(BoxContents: string; var ProjectModified: boolean);
-begin
-   if (OriginalFilenameString <> BoxContents) then
-      begin
-         OriginalFilenameString := BoxContents;
-         ProjectModified := True;
-      end;
-end;
-
-{-----------------------------------------------------------------------------
- TProjectVersionInfo SetProdNameString
------------------------------------------------------------------------------}
-procedure TProjectVersionInfo.SetProdNameString(BoxContents: string; var ProjectModified: boolean);
-begin
-   if (ProdNameString <> BoxContents) then
-      begin
-         ProdNameString := BoxContents;
-         ProjectModified := True;
-      end;
-end;
-
-{-----------------------------------------------------------------------------
- TProjectVersionInfo SetProductVersionString
------------------------------------------------------------------------------}
-procedure TProjectVersionInfo.SetProductVersionString(BoxContents: string; var ProjectModified: boolean);
-begin
-   BoxContents := StringReplace(BoxContents, ',', '.', [rfReplaceAll]);
-   if (ProductVersionString <> BoxContents) then
-      begin
-         ProductVersionString := BoxContents;
-         ProjectModified := True;
-      end;
-end;
-
-{-----------------------------------------------------------------------------
- TProjectVersionInfo HexToDec
------------------------------------------------------------------------------}
-function TProjectVersionInfo.HexToDec(Str: string): Integer;
-var
-  i, M: Integer;
-begin
-  Result:=0;
-  M:=1;
-  Str:=AnsiUpperCase(Str);
-  for i:=Length(Str) downto 1 do
-  begin
-    case Str[i] of
-      '1'..'9': Result:=Result+(Ord(Str[i])-Ord('0'))*M;
-      'A'..'F': Result:=Result+(Ord(Str[i])-Ord('A')+10)*M;
-    end;
-    M:=M shl 4;
-  end;
-end;
+finalization
+  FreeAndNil(fHexCharSets);
+  FreeAndNil(fHexLanguages);
+  FreeAndNil(fLanguages);
+  FreeAndNil(fCharSets);
 
 end.
 

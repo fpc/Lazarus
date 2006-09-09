@@ -39,7 +39,7 @@ uses
   Arrow, Buttons, LCLProc, Classes, CodeToolManager, Controls, Dialogs,
   ExtCtrls, Forms, Graphics, IDEOptionDefs, IDEWindowIntf, LazarusIDEStrConsts,
   LCLIntf, LResources, Project, ProjectIntf, StdCtrls, SysUtils, IDEProcs, Spin,
-  VersionInfoAdditionalInfo;
+  W32VersionInfo, VersionInfoAdditionalInfo;
 
 type
 
@@ -297,7 +297,6 @@ begin
 end;
 
 procedure TProjectOptionsDialog.SetProject(AProject: TProject);
-var Count: integer;
 begin
   FProject := AProject;
   if AProject = Nil then
@@ -333,9 +332,6 @@ begin
   SplitString(Project.LazDocPaths,';',LazDocListBox.Items,true);
   
   // VersionInfo
-//  Project.VersionInfo.SetFileNames(Project.MainFilename);
-  UseVersionInfoCheckBox.Enabled :=  (Project.VersionInfo.TargetOS = 'win32');
-//  UseVersionInfoCheckBox.Enabled :=  Project.VersionInfo.UseVersionInfo;
   VersionSpinEdit.Value := Project.VersionInfo.VersionNr;
   MajorRevisionSpinEdit.Value := Project.VersionInfo.MajorRevNr;
   MinorRevisionSpinEdit.Value := Project.VersionInfo.MinorRevNr;
@@ -368,15 +364,14 @@ begin
         CopyrightEdit.Enabled := true;
         AdditionalInfoButton.Enabled := true;
      end;
-  if Project.VersionInfo.AutoIncrementBuild then AutomaticallyIncreaseBuildCheckBox.Checked := true;
-  for Count := 0 to (Project.VersionInfo.Languages.Count - 1) do
-     LanguageSelectionComboBox.Items.Add(Project.VersionInfo.Languages[Count]);
-  for Count := 0 to (Project.VersionInfo.CharSets.Count - 1) do
-     CharacterSetComboBox.Items.Add(Project.VersionInfo.CharSets[Count]);
-  LanguageSelectionComboBox.ItemIndex := Project.VersionInfo.HexLanguages.IndexOf(
-     Project.VersionInfo.HexLang);
-  CharacterSetComboBox.ItemIndex := Project.VersionInfo.HexCharSets.IndexOf(
-     Project.VersionInfo.HexCharSet);
+  if Project.VersionInfo.AutoIncrementBuild then
+    AutomaticallyIncreaseBuildCheckBox.Checked := true;
+  LanguageSelectionComboBox.Items.Assign(MSLanguages);
+  LanguageSelectionComboBox.ItemIndex :=
+                            MSHexLanguages.IndexOf(Project.VersionInfo.HexLang);
+  CharacterSetComboBox.Items.Assign(MSCharacterSets);
+  CharacterSetComboBox.ItemIndex :=
+                     MSHexCharacterSets.IndexOf(Project.VersionInfo.HexCharSet);
   DescriptionEdit.Text := Project.VersionInfo.DescriptionString;
   CopyrightEdit.Text := Project.VersionInfo.CopyrightString;
 end;
@@ -385,7 +380,6 @@ procedure TProjectOptionsDialog.ProjectOptionsClose(Sender: TObject;
   var CloseAction: TCloseAction);
 var
   NewFlags: TProjectFlags;
-  VersionInfoModified: Boolean;
 
   procedure SetProjectFlag(AFlag: TProjectFlag; AValue: Boolean);
   begin
@@ -436,21 +430,16 @@ begin
     Project.LazDocPaths:=StringListToText(LazDocListBox.Items,';',true);
 
     // VersionInfo
-    VersionInfoModified:=false;
-    Project.VersionInfo.SetUseVersionInfo(UseVersionInfoCheckBox.Checked, VersionInfoModified);
-    Project.VersionInfo.SetAutoIncrementBuild(AutomaticallyIncreaseBuildCheckBox.Checked, VersionInfoModified);
-    Project.VersionInfo.SetVersionNr(VersionSpinEdit.Value, VersionInfoModified);
-    Project.VersionInfo.SetMajorRevNr(MajorRevisionSpinEdit.Value, VersionInfoModified);
-    Project.VersionInfo.SetMinorRevNr(MinorRevisionSpinEdit.Value, VersionInfoModified);
-    Project.VersionInfo.SetBuildNr(StrToInt(BuildEdit.Text), VersionInfoModified);
-    Project.VersionInfo.SetDescriptionString(DescriptionEdit.Text, VersionInfoModified);
-    Project.VersionInfo.SetCopyrightString(CopyrightEdit.Text, VersionInfoModified);
-    Project.VersionInfo.SetHexLang(LanguageSelectionComboBox.Items[LanguageSelectionComboBox.ItemIndex], VersionInfoModified);
-    Project.VersionInfo.SetHexCharSet(CharacterSetComboBox.Items[CharacterSetComboBox.ItemIndex], VersionInfoModified);
-//    Project.VersionInfo.HexLang := Project.VersionInfo.HexLanguages[Project.VersionInfo.Languages.IndexOf(LanguageSelectionComboBox.Items[LanguageSelectionComboBox.ItemIndex])];
-//    Project.VersionInfo.HexCharSet := Project.VersionInfo.HexCharSets[Project.VersionInfo.CharSets.IndexOf(CharacterSetComboBox.Items[CharacterSetComboBox.ItemIndex])];
-    if VersionInfoModified then
-      Project.Modified:=true;
+    Project.VersionInfo.UseVersionInfo:=UseVersionInfoCheckBox.Checked;
+    Project.VersionInfo.AutoIncrementBuild:=AutomaticallyIncreaseBuildCheckBox.Checked;
+    Project.VersionInfo.VersionNr:=VersionSpinEdit.Value;
+    Project.VersionInfo.MajorRevNr:=MajorRevisionSpinEdit.Value;
+    Project.VersionInfo.MinorRevNr:=MinorRevisionSpinEdit.Value;
+    Project.VersionInfo.BuildNr:=StrToIntDef(BuildEdit.Text,Project.VersionInfo.BuildNr);
+    Project.VersionInfo.DescriptionString:=DescriptionEdit.Text;
+    Project.VersionInfo.CopyrightString:=CopyrightEdit.Text;
+    Project.VersionInfo.HexLang:=MSLanguageToHex(LanguageSelectionComboBox.Text);
+    Project.VersionInfo.HexCharSet:=MSCharacterSetToHex(CharacterSetComboBox.Text);
   end;
 
   IDEDialogLayoutList.SaveLayout(Self);

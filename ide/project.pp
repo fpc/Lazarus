@@ -432,6 +432,7 @@ type
   { TProject }
 
   TProject = class(TLazProject)
+    procedure VersionInfoModified(Sender: TObject);
   private
     fActiveEditorIndexAtStart: integer;
     FAutoCreateForms: boolean;
@@ -1462,6 +1463,7 @@ begin
   FUnitList := TFPList.Create;  // list of TUnitInfo
   
   FVersionInfo := TProjectVersionInfo.Create;
+  FVersionInfo.OnModified:=@VersionInfoModified;
 end;
 
 {------------------------------------------------------------------------------
@@ -2007,6 +2009,10 @@ begin
       // Lazdoc
       LazDocPaths := xmlconfig.GetValue(Path+'LazDoc/Paths', '');
       
+      {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject E reading comp sets');{$ENDIF}
+      // Load the compiler options
+      LoadCompilerOptions(XMLConfig,Path);
+
       // VersionInfo
       VersionInfo.UseVersionInfo := xmlconfig.GetValue(Path+'VersionInfo/UseVersionInfo/Value', False);
       VersionInfo.AutoIncrementBuild := xmlconfig.GetValue(Path+'VersionInfo/AutoIncrementBuild/Value', False);
@@ -2014,23 +2020,17 @@ begin
       VersionInfo.MajorRevNr := xmlconfig.GetValue(Path+'VersionInfo/CurrentMajorRevNr/Value', 0);
       VersionInfo.MinorRevNr := xmlconfig.GetValue(Path+'VersionInfo/CurrentMinorRevNr/Value', 0);
       VersionInfo.BuildNr := xmlconfig.GetValue(Path+'VersionInfo/CurrentBuildNr/Value', 0);
-      VersionInfo.ProductVersionString := xmlconfig.GetValue(Path+'VersionInfo/ProjectVersion/Value', '1,0,0,0');
+      VersionInfo.ProductVersionString := LineBreaksToSystemLineBreaks(xmlconfig.GetValue(Path+'VersionInfo/ProjectVersion/Value', '1,0,0,0'));
       VersionInfo.HexLang := xmlconfig.GetValue(Path+'VersionInfo/Language/Value', '0409');
       VersionInfo.HexCharSet := xmlconfig.GetValue(Path+'VersionInfo/CharSet/Value', '04E4');
-      VersionInfo.CommentsString := xmlconfig.GetValue(Path+'VersionInfo/Comments/Value', '');
-      VersionInfo.CompanyString := xmlconfig.GetValue(Path+'VersionInfo/CompanyName/Value', '');
-      VersionInfo.DescriptionString := xmlconfig.GetValue(Path+'VersionInfo/FileDescription/Value', '');
-      VersionInfo.InternalNameString := xmlconfig.GetValue(Path+'VersionInfo/InternalName/Value', '');
-      VersionInfo.CopyrightString := xmlconfig.GetValue(Path+'VersionInfo/LegalCopyright/Value', '');
-      VersionInfo.TrademarksString := xmlconfig.GetValue(Path+'VersionInfo/LegalTrademarks/Value', '');
+      VersionInfo.CommentsString := LineBreaksToSystemLineBreaks(xmlconfig.GetValue(Path+'VersionInfo/Comments/Value', ''));
+      VersionInfo.CompanyString := LineBreaksToSystemLineBreaks(xmlconfig.GetValue(Path+'VersionInfo/CompanyName/Value', ''));
+      VersionInfo.DescriptionString := LineBreaksToSystemLineBreaks(xmlconfig.GetValue(Path+'VersionInfo/FileDescription/Value', ''));
+      VersionInfo.InternalNameString := LineBreaksToSystemLineBreaks(xmlconfig.GetValue(Path+'VersionInfo/InternalName/Value', ''));
+      VersionInfo.CopyrightString := LineBreaksToSystemLineBreaks(xmlconfig.GetValue(Path+'VersionInfo/LegalCopyright/Value', ''));
+      VersionInfo.TrademarksString := LineBreaksToSystemLineBreaks(xmlconfig.GetValue(Path+'VersionInfo/LegalTrademarks/Value', ''));
       VersionInfo.OriginalFilenameString := xmlconfig.GetValue(Path+'VersionInfo/OriginalFilename/Value', '');
-      VersionInfo.ProdNameString := xmlconfig.GetValue(Path+'VersionInfo/ProductName/Value', '');
-      VersionInfo.TargetOS := VersionInfo.SetTargetOS(CompilerOptions.TargetOS);
-      VersionInfo.SetFileNames(ProjectInfoFile);
-
-      {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject E reading comp sets');{$ENDIF}
-      // Load the compiler options
-      LoadCompilerOptions(XMLConfig,Path);
+      VersionInfo.ProdNameString := LineBreaksToSystemLineBreaks(xmlconfig.GetValue(Path+'VersionInfo/ProductName/Value', ''));
 
       {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject update ct boss');{$ENDIF}
       CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'ProjPath']:=
@@ -2341,6 +2341,7 @@ begin
     PublishOptions.Modified:=false;
     CompilerOptions.Modified:=false;
     SessionModified:=false;
+    VersionInfo.Modified:=false;
   end;
 end;
 
@@ -2790,6 +2791,12 @@ end;
 function TProject.GetFirstLoadedUnit: TUnitInfo;
 begin
   Result:=fFirst[uilLoaded];
+end;
+
+procedure TProject.VersionInfoModified(Sender: TObject);
+begin
+  if VersionInfo.Modified then
+    Modified:=true;
 end;
 
 function TProject.GetFirstAutoRevertLockedUnit: TUnitInfo;

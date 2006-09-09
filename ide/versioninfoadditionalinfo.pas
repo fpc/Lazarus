@@ -95,15 +95,15 @@ begin
    VersionInfoAdditionalInfoForm.ProductVersionEdit.Text := LocalVersionInfo.ProductVersionString;
 
    Result := VersionInfoAdditionalInfoForm.ShowModal;
-   if Result = MrOk then
+   if Result = mrOk then
       begin
-         LocalVersionInfo.SetCommentsString(VersionInfoAdditionalInfoForm.CommentsEdit.Text,ProjectModified);
-         LocalVersionInfo.SetCompanyString(VersionInfoAdditionalInfoForm.CompanyEdit.Text,ProjectModified);
-         LocalVersionInfo.SetInternalNameString(VersionInfoAdditionalInfoForm.InternalNameEdit.Text,ProjectModified);
-         LocalVersionInfo.SetTrademarksString(VersionInfoAdditionalInfoForm.LegalTrademarksEdit.Text,ProjectModified);
-         LocalVersionInfo.SetOriginalFilenameString(VersionInfoAdditionalInfoForm.OriginalFilenameEdit.Text,ProjectModified);
-         LocalVersionInfo.SetProdNameString(VersionInfoAdditionalInfoForm.ProductNameEdit.Text,ProjectModified);
-         LocalVersionInfo.SetProductVersionString(VersionInfoAdditionalInfoForm.ProductVersionEdit.Text,ProjectModified);
+         LocalVersionInfo.CommentsString:=VersionInfoAdditionalInfoForm.CommentsEdit.Text;
+         LocalVersionInfo.CompanyString:=VersionInfoAdditionalInfoForm.CompanyEdit.Text;
+         LocalVersionInfo.InternalNameString:=VersionInfoAdditionalInfoForm.InternalNameEdit.Text;
+         LocalVersionInfo.TrademarksString:=VersionInfoAdditionalInfoForm.LegalTrademarksEdit.Text;
+         LocalVersionInfo.OriginalFilenameString:=VersionInfoAdditionalInfoForm.OriginalFilenameEdit.Text;
+         LocalVersionInfo.ProdNameString:=VersionInfoAdditionalInfoForm.ProductNameEdit.Text;
+         LocalVersionInfo.ProductVersionString:=VersionInfoAdditionalInfoForm.ProductVersionEdit.Text;
       end;
    VersionInfoAdditionalInfoForm.Free;
 end;

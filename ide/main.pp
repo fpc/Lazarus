@@ -87,7 +87,7 @@ uses
   IDEProtocol,
   // compile
   Compiler, CompilerOptions, CompilerOptionsDlg, CheckCompilerOpts,
-  ImExportCompilerOpts,
+  W32VersionInfo, ImExportCompilerOpts,
   // projects
   Project, ProjectDefs, NewProjectDlg, ProjectOpts,
   PublishProjectDlg, ProjectInspector,
@@ -7478,7 +7478,8 @@ begin
 
   try
     // handle versioninfo
-    Result := Project1.VersionInfo.CompileRCFile(Project1.MainFilename);
+    Result := Project1.VersionInfo.CompileRCFile(Project1.MainFilename,
+                                               MainBuildBoss.GetTargetOS(true));
     for Count := 1 to Project1.VersionInfo.VersionInfoMessages.Count do
        MessagesView.AddMsg(Format(Project1.VersionInfo.VersionInfoMessages[Count - 1],
                                   ['"', Project1.ShortDescription, '"']), '' ,-1);
