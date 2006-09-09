@@ -1,0 +1,80 @@
+.TH lazbuild 1 "9 Sep 2006" "Lazarus" "Lazarus build utility"
+.SH NAME
+lazbuild \- The Lazarus project and package build program.
+
+.SH SYNOPSIS
+
+.B lazbuild
+.I "[options] filename..."
+
+.SH DESCRIPTION
+
+.B lazbuild
+builds a Lazarus project or package. It compiles projects (.lpi) and packages
+(.lpk). It checks and automatically compiles required packages.
+
+.SH USAGE
+
+lazbuild is a command-line tool that builds Lazarus projects and packages. It
+checks recursively all dependencies and compiles needed packages first. It uses
+the
+.B Free Pascal compiler (fpc)
+to compile.
+
+.SH OPTIONS
+
+.TP
+.B \-h or --help
+write the list of options.
+.TP
+.B \-B or --build-all
+build all files of project/package. Normally the compiler only compiles the
+main source and all sources with a newer date.
+.TP
+.B \-r or --recursive
+apply build flags (-B) to dependencies too.
+.TP
+.B \-d or --skip-dependencies
+do not compile dependencies
+.TP
+.B \--primary-config-path=<path> or --pcp=<path>
+primary config directory, where Lazarus stores its
+config files. Default is $HOME/.lazarus
+.TP
+.B \--secondary-config-path=<path> or --scp=<path>
+secondary config directory, where Lazarus searches
+for config template files. Default is /etc/lazarus
+.TP
+.B \--operating-system=<operating-system> or --os=<operating-system>
+override the project operating system. e.g. win32 or linux.
+.TP
+.B \--widgetset=<widgetset> or --ws=<widgetset>
+override the project widgetset. e.g. gtk, gtk2, qt, win32, or carbon.
+.TP
+.B \--cpu=<cpu>
+override the project cpu. e.g. i386, x86_64, powerpc, powerpc_64 etc.
+.TP
+.B \--compiler=<ppcXXX>
+override the default compiler. e.g. ppc386, ppcx64, ppcppc etc.
+.TP
+.B \--language=
+Override language. For example --language=de. For
+possible values see files in the lazarus/languages directory.
+
+
+.SH .lpi and .lpk files
+The .lpi and .lpk files are best created and edited with the Lazarus IDE.
+The files are in xml. There is no reason to edit them manually, except for
+very rare cases like renaming hundreds of files.
+
+.IP 
+
+.SH SEE ALSO
+.IP 
+.BR  ppc386 (1)
+.BR  ld (1)
+
+.SH Websites
+.IP
+.BR  http://www.lazarus.freepascal.org
+
