@@ -7463,6 +7463,7 @@ var
   WorkingDir: String;
   CompilerParams: String;
   Count: integer;
+  VersionInfo: TProjectVersionInfo;
 begin
   if Project1.MainUnitInfo=nil then begin
     // this project has not source to compile
@@ -7477,16 +7478,16 @@ begin
   MessagesView.BeginBlock;
 
   try
-    // handle versioninfo
-    Result := Project1.VersionInfo.CompileRCFile(Project1.MainFilename,
-                                               MainBuildBoss.GetTargetOS(true));
-    for Count := 1 to Project1.VersionInfo.VersionInfoMessages.Count do
-       MessagesView.AddMsg(Format(Project1.VersionInfo.VersionInfoMessages[Count - 1],
-                                  ['"', Project1.ShortDescription, '"']), '' ,-1);
-    if Result <> MrOk then exit;
-
     Result:=DoSaveForBuild;
     if Result<>mrOk then exit;
+
+    // handle versioninfo
+    VersionInfo:=Project1.VersionInfo;
+    Result := VersionInfo.CompileRCFile(Project1.MainFilename,MainBuildBoss.GetTargetOS(true));
+    if Result <> mrOk then exit;
+    for Count := 1 to VersionInfo.VersionInfoMessages.Count do
+      MessagesView.AddMsg(Format(VersionInfo.VersionInfoMessages[Count - 1],
+                                  ['"', Project1.ShortDescription, '"']), '' ,-1);
 
     // compile required packages
     if not (pbfDoNotCompileDependencies in Flags) then begin

@@ -32,15 +32,14 @@
 }
 unit W32VersionInfo;
 
-{$mode objfpc}
-{$H+}
+{$mode objfpc}{$H+}
 
 interface
 
 uses
-   Classes, SysUtils, Process, LCLProc, Controls, Forms,
-   CodeToolManager, CodeCache,
-   LazConf, Dialogprocs;
+  Classes, SysUtils, Process, LCLProc, Controls, Forms,
+  CodeToolManager, CodeCache,
+  LazConf, Dialogprocs;
    
 type
   { TProjectVersionInfo }
@@ -103,6 +102,10 @@ type
     function UpdateMainSourceFile(const AFilename: string): TModalResult;
     procedure SetFileNames(const MainFilename: string);
   public
+    constructor Create;
+    destructor Destroy; override;
+    function CompileRCFile(const MainFilename, TargetOS: string): TModalResult;
+
     property Modified: boolean read FModified write SetModified;
 
     property UseVersionInfo: boolean read FUseVersionInfo write SetUseVersionInfo;
@@ -122,11 +125,6 @@ type
     property OriginalFilenameString: string read FOriginalFilenameString write SetOriginalFilenameString;
     property ProdNameString: string read FProdNameString write SetProdNameString;
     property ProductVersionString: string read FProductVersionString write SetProductVersionString;
-
-    constructor Create;
-    destructor Destroy; override;
-    function CompileRCFile(const MainFilename, TargetOS: string): TModalResult;
-
     property VersionInfoMessages: TStringList read GetVersionInfoMessages;
     
     property OnModified: TNotifyEvent read FOnModified write FOnModified;
@@ -413,8 +411,8 @@ end;
 
 function TProjectVersionInfo.GetVersionInfoMessages: TStringList;
 begin
-  if fVersionInfoMessages<>nil then exit;
-  fVersionInfoMessages:=TStringList.Create;
+  if fVersionInfoMessages=nil then
+    fVersionInfoMessages:=TStringList.Create;
   Result:=fVersionInfoMessages;
 end;
 

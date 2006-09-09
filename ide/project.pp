@@ -2484,8 +2484,8 @@ function TProject.FormIsCreatedInProjectFile(
 var p: integer;
 begin
   Result:=(CodeToolBoss.FindCreateFormStatement(MainUnitInfo.Source,
-                                                1,AClassName,AName,p)
-           =0);
+                                                1,AClassName,AName,p)=0);
+  if p=0 then ;
 end;
 
 function TProject.IndexOfUnitWithName(const AnUnitName:string; 
