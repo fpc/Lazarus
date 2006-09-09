@@ -7,8 +7,27 @@
       <MainUnit Value="0"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=".exe"/>
-      <ActiveEditorIndexAtStart Value="4"/>
+      <ActiveEditorIndexAtStart Value="1"/>
     </General>
+    <VersionInfo>
+      <UseVersionInfo Value="False"/>
+      <AutoIncrementBuild Value="False"/>
+      <CurrentVersionNr Value="0"/>
+      <CurrentMajorRevNr Value="0"/>
+      <CurrentMinorRevNr Value="0"/>
+      <CurrentBuildNr Value="0"/>
+      <ProjectVersion Value="1,0,0,0"/>
+      <Language Value="0409"/>
+      <CharSet Value="04E4"/>
+      <Comments Value=""/>
+      <CompanyName Value=""/>
+      <FileDescription Value=""/>
+      <InternalName Value=""/>
+      <LegalCopyright Value=""/>
+      <LegalTrademarks Value=""/>
+      <OriginalFilename Value=""/>
+      <ProductName Value=""/>
+    </VersionInfo>
     <PublishOptions>
       <Version Value="2"/>
       <IgnoreBinaries Value="False"/>
@@ -22,19 +41,22 @@
         <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
-    <RequiredPackages Count="1">
+    <RequiredPackages Count="2">
       <Item1>
-        <PackageName Value="FCL"/>
+        <PackageName Value="LCL"/>
       </Item1>
+      <Item2>
+        <PackageName Value="FCL"/>
+      </Item2>
     </RequiredPackages>
     <Units Count="12">
       <Unit0>
         <Filename Value="runtests.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="runtests"/>
-        <CursorPos X="1" Y="46"/>
-        <TopLine Value="26"/>
-        <EditorIndex Value="3"/>
+        <CursorPos X="28" Y="23"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="1"/>
         <UsageCount Value="27"/>
         <Loaded Value="True"/>
       </Unit0>
@@ -95,9 +117,7 @@
         <UnitName Value="testreport"/>
         <CursorPos X="3" Y="318"/>
         <TopLine Value="195"/>
-        <EditorIndex Value="1"/>
         <UsageCount Value="13"/>
-        <Loaded Value="True"/>
       </Unit8>
       <Unit9>
         <Filename Value="..\..\source\fpc\2.0\fcl\fpcunit\xmlreporter.pas"/>
@@ -111,23 +131,19 @@
         <UnitName Value="xmlreporter"/>
         <CursorPos X="23" Y="49"/>
         <TopLine Value="170"/>
-        <EditorIndex Value="2"/>
         <UsageCount Value="13"/>
-        <Loaded Value="True"/>
       </Unit10>
       <Unit11>
         <Filename Value="..\..\source\lazarus\components\fpcunit\ide\fpcunitproject1.inc"/>
         <CursorPos X="66" Y="42"/>
         <TopLine Value="118"/>
-        <EditorIndex Value="4"/>
         <UsageCount Value="10"/>
-        <Loaded Value="True"/>
       </Unit11>
     </Units>
     <JumpHistory Count="1" HistoryIndex="0">
       <Position1>
-        <Filename Value="..\..\source\lazarus\components\fpcunit\ide\fpcunitproject1.inc"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
+        <Filename Value="runtests.lpr"/>
+        <Caret Line="46" Column="1" TopLine="26"/>
       </Position1>
     </JumpHistory>
   </ProjectOptions>
