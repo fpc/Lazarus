@@ -1,7 +1,7 @@
 object SearchResultsView: TSearchResultsView
-  Left = 217
+  Left = 236
   Height = 229
-  Top = 482
+  Top = 483
   Width = 799
   HorzScrollBar.Page = 798
   VertScrollBar.Page = 228
@@ -14,8 +14,8 @@ object SearchResultsView: TSearchResultsView
   object ResultsNoteBook: TNotebook
     AnchorSideTop.Control = btnSearchAgain
     AnchorSideTop.Side = asrBottom
-    Height = 192
-    Top = 37
+    Height = 191
+    Top = 38
     Width = 799
     Align = alBottom
     Anchors = [akTop, akLeft]
@@ -27,9 +27,10 @@ object SearchResultsView: TSearchResultsView
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     Left = 6
-    Height = 25
+    Height = 26
     Top = 6
-    Width = 115
+    Width = 91
+    AutoSize = True
     BorderSpacing.Around = 6
     BorderSpacing.InnerBorder = 4
     Caption = 'Search Again'
@@ -39,15 +40,16 @@ object SearchResultsView: TSearchResultsView
   end
   object gbSearchPhraseInList: TGroupBox
     Left = 237
-    Height = 37
+    Height = 38
     Width = 562
     Align = alRight
+    AutoSize = True
     Caption = 'Search or Filter Phrases In List'
     TabOrder = 2
     object edSearchInList: TEdit
-      Height = 20
+      Height = 21
       Hint = 'Enter one or more phrases that you want'#10'to Search or Filter in the list,'#10'seperated by space ( '' '' ), or comma ( , )'
-      Width = 263
+      Width = 306
       Align = alClient
       OnChange = edSearchInListChange
       OnKeyDown = edSearchInListKeyDown
@@ -56,30 +58,33 @@ object SearchResultsView: TSearchResultsView
       TabOrder = 0
     end
     object bnForwardSearch: TButton
-      Left = 338
-      Height = 20
-      Width = 100
+      Left = 348
+      Height = 21
+      Width = 104
       Align = alRight
+      AutoSize = True
       BorderSpacing.InnerBorder = 4
       Caption = 'Forward Search'
       OnClick = bnForwardSearchClick
       TabOrder = 1
     end
     object bnResetResults: TButton
-      Left = 438
-      Height = 20
-      Width = 120
+      Left = 452
+      Height = 21
+      Width = 106
       Align = alRight
+      AutoSize = True
       BorderSpacing.InnerBorder = 4
       Caption = 'Reset Result List'
       OnClick = bnResetResultsClick
       TabOrder = 2
     end
     object bnFilter: TButton
-      Left = 263
-      Height = 20
-      Width = 75
+      Left = 306
+      Height = 21
+      Width = 42
       Align = alRight
+      AutoSize = True
       BorderSpacing.InnerBorder = 4
       Caption = 'Filter'
       OnClick = bnFilterClick
