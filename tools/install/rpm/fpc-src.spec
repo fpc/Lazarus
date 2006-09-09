@@ -1,7 +1,7 @@
 Name: fpc-src
 Version: LAZVERSION
 Release: LAZRELEASE
-Copyright: LGPL2
+License: LGPL2
 Group: Development/Languages
 Source: %{name}-%{version}-%{release}.source.tar.gz
 Summary: FreePascal sources
