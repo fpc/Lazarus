@@ -393,11 +393,10 @@ object ProjectOptionsDialog: TProjectOptionsDialog
       Caption = 'VersionInfoPage'
       object VersionInfoGroupBox: TGroupBox
         Left = 6
-        Height = 48
-        Top = 24
+        Height = 73
+        Top = 32
         Width = 441
         Anchors = [akTop, akLeft, akRight]
-        AutoSize = True
         Caption = 'Version Numbering'
         TabOrder = 0
         object VersionLabel: TLabel
@@ -504,8 +503,8 @@ object ProjectOptionsDialog: TProjectOptionsDialog
       end
       object LanguageSettingsGroupBox: TGroupBox
         Left = 6
-        Height = 66
-        Top = 77
+        Height = 81
+        Top = 112
         Width = 441
         Anchors = [akTop, akLeft, akRight]
         Caption = 'Language Options'
@@ -556,7 +555,7 @@ object ProjectOptionsDialog: TProjectOptionsDialog
       object OtherInfoGroupBox: TGroupBox
         Left = 6
         Height = 105
-        Top = 152
+        Top = 197
         Width = 441
         Anchors = [akTop, akLeft, akRight]
         Caption = 'Other Info'
