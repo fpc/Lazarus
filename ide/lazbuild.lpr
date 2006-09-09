@@ -44,6 +44,7 @@ type
   private
     FBuildAll: boolean;
     FBuildRecursive: boolean;
+    fCompilerOverride: String;
     fCPUOverride: String;
     fOSOverride: String;
     FSkipDependencies: boolean;
@@ -116,6 +117,7 @@ type
                                             write fWidgetsetOverride;
     property OSOverride: String read fOSOverride write fOSOverride;
     property CPUOverride: String read fCPUOverride write fCPUOverride;
+    property CompilerOverride: String read fCompilerOverride write fCompilerOverride;
   end;
 
 var
@@ -275,7 +277,8 @@ begin
       Result:=BuildProject(Filename)
     else
       Error(ErrorFileNotFound,'file not found: '+Filename);
-  end;
+  end else
+    Error(ErrorBuildFailed,'don''t know how to build: '+Filename);
 end;
 
 function TLazBuildApplication.BuildPackage(const AFilename: string): boolean;
@@ -446,7 +449,11 @@ begin
   
   WorkingDir:=Project1.ProjectDirectory;
   SrcFilename:=CreateRelativePath(Project1.MainUnitInfo.Filename,WorkingDir);
-  CompilerFilename:=Project1.GetCompilerFilename;
+
+  if CompilerOverride <> '' then
+    CompilerFilename := CompilerOverride
+  else
+    CompilerFilename:=Project1.GetCompilerFilename;
   //DebugLn(['TMainIDE.DoBuildProject CompilerFilename="',CompilerFilename,'" CompilerPath="',Project1.CompilerOptions.CompilerPath,'"']);
 
   CompilerParams:=Project1.CompilerOptions.MakeOptionsString(SrcFilename,nil,[])
@@ -686,7 +693,7 @@ begin
           If FindLongopt(O) then
             begin
             If HaveArg then
-              Result:=Format(lisErrNoOptionAllowed,[I,O]) // stops all longoptions with args from working
+              Result:=Format(lisErrNoOptionAllowed,[I,O]);
             end
           else
             begin // Required argument
@@ -779,7 +786,7 @@ var
   i: Integer;
 begin
   if not ParseParameters then exit;
-  
+
   for i:=0 to Files.Count-1 do begin
     if not BuildFile(Files[i]) then begin
       writeln('Failed building ',Files[i]);
@@ -827,6 +834,7 @@ begin
     LongOptions.Add('operating-system:');
     LongOptions.Add('os:');
     LongOptions.Add('cpu:');
+    LongOptions.Add('compiler:');
     ErrorMsg:=RepairedCheckOptions('lBrd',LongOptions,Options,NonOptions);
     if ErrorMsg<>'' then begin
       writeln(ErrorMsg);
@@ -874,9 +882,14 @@ begin
       OSOverride := GetOptionValue('os')
     else if HasOption('operating-system') then
       OSOverride := GetOptionValue('operating-system');
+
     // cpu
     if HasOption('cpu') then
-      CPUOverride := GetOptionValue('cpu')
+      CPUOverride := GetOptionValue('cpu');
+      
+    // compiler
+    if HasOption('compiler') then
+      CompilerOverride := GetOptionValue('compiler');
 
   finally
     Options.Free;
@@ -902,13 +915,13 @@ begin
   writeln('-r or --recursive         ','apply build flags (-B) to dependencies too.');
   writeln('-d or --skip-dependencies ','do not compile dependencies');
   writeln('');
-  writeln(PrimaryConfPathOptLong,' <path>');
-  writeln('or ',PrimaryConfPathOptShort,' <path>');
+  writeln(PrimaryConfPathOptLong,'<path>');
+  writeln('or ',PrimaryConfPathOptShort,'<path>');
   writeln(BreakString(space+lisprimaryConfigDirectoryWhereLazarusStoresItsConfig,
                       75, 22), LazConf.GetPrimaryConfigPath);
   writeln('');
-  writeln(SecondaryConfPathOptLong,' <path>');
-  writeln('or ',SecondaryConfPathOptShort,' <path>');
+  writeln(SecondaryConfPathOptLong,'<path>');
+  writeln('or ',SecondaryConfPathOptShort,'<path>');
   writeln(BreakString(space+lissecondaryConfigDirectoryWhereLazarusSearchesFor,
                       75, 22), LazConf.GetSecondaryConfigPath);
   writeln('');
@@ -924,6 +937,10 @@ begin
   writeln('');
   writeln('--cpu=<cpu>');
   writeln(BreakString(space+'override the project cpu. e.g. i386 x86_64 powerpc powerpc_64 etc.',
+                      75, 22));
+  writeln('');
+  writeln('--compiler=<ppcXXX>');
+  writeln(BreakString(space+'override the default compiler. e.g. ppc386 ppcx64 ppcppc etc.',
                       75, 22));
   writeln('');
   writeln(LanguageOpt);
