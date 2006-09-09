@@ -33,13 +33,14 @@ if [ -n "$FPCCfg" ]; then
 fi
 make bigide OPT="$MAKEOPTS" USESVN2REVISIONINC=0
 make tools OPT="$MAKEOPTS"
-make lazbuild OPT="$MAKEOPTS"
+make lazbuilder OPT="$MAKEOPTS"
 # build gtk2 .ppu
 export LCL_PLATFORM=gtk2
 make lcl ideintf packager/registration bigidecomponents OPT="$MAKEOPTS"
 export LCL_PLATFORM=
 strip lazarus
 strip startlazarus
+strip lazbuild
 
 %install
 [ %{buildroot} != "/" ] && ( rm -rf %{buildroot} )
@@ -48,14 +49,14 @@ mkdir -p %{buildroot}%{_bindir}
 mkdir -p %{buildroot}%{_datadir}/pixmaps
 # mkdir -p %{buildroot}%{_datadir}/gnome/apps/Development
 mkdir -p %{buildroot}%{_datadir}/applications
-mkdir -p %{buildroot}%{_mandir}
+mkdir -p %{buildroot}%{_mandir}/man1
 cp -a lazarus/* %{buildroot}%{_libdir}/%{name}/
   install -m 644 lazarus/images/ide_icon48x48.png %{buildroot}%{_datadir}/pixmaps/lazarus.png
   install -m 644 lazarus/install/lazarus.desktop %{buildroot}%{_datadir}/applications/lazarus.desktop
 ln -sf ../%{_lib}/%{name}/lazarus %{buildroot}%{_bindir}/lazarus
 ln -sf ../%{_lib}/%{name}/startlazarus %{buildroot}%{_bindir}/startlazarus
 ln -sf ../%{_lib}/%{name}/lazbuild %{buildroot}%{_bindir}/lazbuild
-cat lazarus/docs/lazbuild.1 | gzip > %{_mandir}/man1/lazbuild.1.gz
+cat lazarus/docs/lazbuild.1 | gzip > %{buildroot}%{_mandir}/man1/lazbuild.1.gz
 
 %clean
 [ %{buildroot} != "/" ] && ( rm -rf %{buildroot} )

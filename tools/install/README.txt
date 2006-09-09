@@ -70,11 +70,11 @@ Creating the fpc and the fpc-src rpm:
   If you have your own fpc sources you can build the fpc rpm with:
 
   []$ cd <lazarus_directory>/tools/install
-  []$ ./build_fpc_rpm.sh nodocs /path/to/your/fpc/sources/fpc
+  []$ ./create_fpc_rpm.sh nodocs /path/to/your/fpc/sources/fpc
 
   Then build the fpc-src rpm:
 
-  []$ ./build_fpc-src_rpm.sh /path/to/your/fpc/sources/fpc
+  []$ ./create_fpc-src_rpm.sh /path/to/your/fpc/sources/fpc
 
   Normally you can find the rpms under /usr/src/redhat/RPMS/i386/
   and /usr/src/redhat/SRPMS/.

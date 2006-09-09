@@ -52,6 +52,7 @@ if [ -n "$FPCCfg" ]; then
   MAKEOPTS="$MAKEOPTS -n @$FPCCfg"
 fi
 make bigide OPT="$MAKEOPTS" USESVN2REVISIONINC=0
+make lazbuilder OPT="$MAKEOPTS"
 make tools OPT="$MAKEOPTS"
 # build gtk2 .ppu
 export LCL_PLATFORM=gtk2
@@ -59,6 +60,7 @@ make lcl ideintf packager/registration bigidecomponents OPT="$MAKEOPTS"
 export LCL_PLATFORM=
 strip lazarus
 strip startlazarus
+strip lazbuild
 cd -
 
 # create control file
@@ -85,6 +87,10 @@ install -m 644 $LazDestDir/images/ide_icon48x48.png $LazBuildDir/usr/share/pixma
 install -m 644 $LazDestDir/install/lazarus.desktop $LazBuildDir/usr/share/applications/lazarus.desktop
 ln -s $LazDestDir/lazarus $LazBuildDir/usr/bin/lazarus
 ln -s $LazDestDir/startlazarus $LazBuildDir/usr/bin/startlazarus
+ln -s $LazDestDir/lazbuild $LazBuildDir/usr/bin/lazbuild
+
+# docs
+cat $LazBuildDir/docs/lazbuild.1 | gzip > $LazBuildDir/usr/share/man/man1/lazbuild.1.gz
 
 # fixing permissions
 echo "fixing permissions ..."
