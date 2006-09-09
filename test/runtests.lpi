@@ -1,0 +1,190 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <ProjectOptions>
+    <PathDelim Value="\"/>
+    <Version Value="5"/>
+    <General>
+      <MainUnit Value="0"/>
+      <IconPath Value="./"/>
+      <TargetFileExt Value=".exe"/>
+      <ActiveEditorIndexAtStart Value="4"/>
+    </General>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IgnoreBinaries Value="False"/>
+      <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
+      <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
+    </PublishOptions>
+    <RunParams>
+      <local>
+        <FormatVersion Value="1"/>
+        <CommandLineParams Value="-a"/>
+        <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
+      </local>
+    </RunParams>
+    <RequiredPackages Count="1">
+      <Item1>
+        <PackageName Value="FCL"/>
+      </Item1>
+    </RequiredPackages>
+    <Units Count="12">
+      <Unit0>
+        <Filename Value="runtests.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="runtests"/>
+        <CursorPos X="1" Y="46"/>
+        <TopLine Value="26"/>
+        <EditorIndex Value="3"/>
+        <UsageCount Value="27"/>
+        <Loaded Value="True"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="testlpi.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="TestLpi"/>
+        <CursorPos X="55" Y="69"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="0"/>
+        <UsageCount Value="27"/>
+        <Loaded Value="True"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="..\..\source\fpc\2.1\fcl\inc\process.pp"/>
+        <UnitName Value="process"/>
+        <CursorPos X="37" Y="128"/>
+        <TopLine Value="106"/>
+        <UsageCount Value="10"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="..\..\source\fpc\2.1\fcl\image\fpwritebmp.pp"/>
+        <UnitName Value="FPWriteBMP"/>
+        <CursorPos X="40" Y="699"/>
+        <TopLine Value="677"/>
+        <UsageCount Value="9"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="..\..\source\lazarus\lcl\intfgraphics.pas"/>
+        <UnitName Value="IntfGraphics"/>
+        <CursorPos X="9" Y="3273"/>
+        <TopLine Value="3251"/>
+        <UsageCount Value="9"/>
+      </Unit4>
+      <Unit5>
+        <Filename Value="..\..\source\fpc\2.1\packages\extra\zlib\zlib.pp"/>
+        <UnitName Value="zlib"/>
+        <CursorPos X="16" Y="131"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="9"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="..\..\source\fpc\2.1\packages\base\paszlib\gzio.pas"/>
+        <UnitName Value="gzio"/>
+        <CursorPos X="11" Y="24"/>
+        <TopLine Value="2"/>
+        <UsageCount Value="9"/>
+      </Unit6>
+      <Unit7>
+        <Filename Value="..\..\source\fpc\2.1\packages\base\hash\crc.pas"/>
+        <UnitName Value="crc"/>
+        <CursorPos X="78" Y="14"/>
+        <TopLine Value="66"/>
+        <UsageCount Value="9"/>
+      </Unit7>
+      <Unit8>
+        <Filename Value="..\..\source\fpc\2.1\fcl\fpcunit\testreport.pp"/>
+        <UnitName Value="testreport"/>
+        <CursorPos X="3" Y="318"/>
+        <TopLine Value="195"/>
+        <EditorIndex Value="1"/>
+        <UsageCount Value="13"/>
+        <Loaded Value="True"/>
+      </Unit8>
+      <Unit9>
+        <Filename Value="..\..\source\fpc\2.0\fcl\fpcunit\xmlreporter.pas"/>
+        <UnitName Value="xmlreporter"/>
+        <CursorPos X="35" Y="115"/>
+        <TopLine Value="93"/>
+        <UsageCount Value="9"/>
+      </Unit9>
+      <Unit10>
+        <Filename Value="..\..\source\fpc\2.1\fcl\fpcunit\xmlreporter.pas"/>
+        <UnitName Value="xmlreporter"/>
+        <CursorPos X="23" Y="49"/>
+        <TopLine Value="170"/>
+        <EditorIndex Value="2"/>
+        <UsageCount Value="13"/>
+        <Loaded Value="True"/>
+      </Unit10>
+      <Unit11>
+        <Filename Value="..\..\source\lazarus\components\fpcunit\ide\fpcunitproject1.inc"/>
+        <CursorPos X="66" Y="42"/>
+        <TopLine Value="118"/>
+        <EditorIndex Value="4"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit11>
+    </Units>
+    <JumpHistory Count="1" HistoryIndex="0">
+      <Position1>
+        <Filename Value="..\..\source\lazarus\components\fpcunit\ide\fpcunitproject1.inc"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
+      </Position1>
+    </JumpHistory>
+  </ProjectOptions>
+  <CompilerOptions>
+    <Version Value="5"/>
+    <PathDelim Value="\"/>
+    <CodeGeneration>
+      <Generate Value="Faster"/>
+    </CodeGeneration>
+    <Other>
+      <CompilerPath Value="$(CompPath)"/>
+    </Other>
+  </CompilerOptions>
+  <Debugging>
+    <BreakPoints Count="8">
+      <Item1>
+        <Source Value="..\..\source\lazarus\ide\main.pp"/>
+        <Line Value="5295"/>
+      </Item1>
+      <Item2>
+        <Source Value="..\..\source\fpc\2.1\rtl\objpas\classes\stringl.inc"/>
+        <Line Value="188"/>
+      </Item2>
+      <Item3>
+        <Source Value="..\..\source\lazarus\lcl\lresources.pp"/>
+        <Line Value="2114"/>
+      </Item3>
+      <Item4>
+        <Source Value="..\..\source\lazarus\lcl\lresources.pp"/>
+        <Line Value="2176"/>
+      </Item4>
+      <Item5>
+        <Source Value="..\..\source\lazarus\lcl\lresources.pp"/>
+        <Line Value="1075"/>
+      </Item5>
+      <Item6>
+        <Source Value="..\..\source\lazarus\lcl\lresources.pp"/>
+        <Line Value="1077"/>
+      </Item6>
+      <Item7>
+        <Source Value="..\..\source\lazarus\ide\main.pp"/>
+        <Line Value="9215"/>
+      </Item7>
+      <Item8>
+        <Source Value="..\..\source\lazarus\lcl\lresources.pp"/>
+        <Line Value="2530"/>
+      </Item8>
+    </BreakPoints>
+    <Watches Count="1">
+      <Item1>
+        <Expression Value="name"/>
+      </Item1>
+    </Watches>
+    <Exceptions Count="1">
+      <Item1>
+        <Name Value="EAssertionFailedError"/>
+      </Item1>
+    </Exceptions>
+  </Debugging>
+</CONFIG>
