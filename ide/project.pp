@@ -474,6 +474,7 @@ type
     FTargetFileExt: String;
     FUnitList: TFPList;  // list of _all_ units (TUnitInfo)
     FUpdateLock: integer;
+    FVersionInfo: TProjectVersionInfo;
     function GetFirstAutoRevertLockedUnit: TUnitInfo;
     function GetFirstLoadedUnit: TUnitInfo;
     function GetFirstPartOfProject: TUnitInfo;
@@ -522,8 +523,6 @@ type
     procedure AddToOrRemoveFromLoadedList(AnUnitInfo: TUnitInfo);
     procedure AddToOrRemoveFromPartOfProjectList(AnUnitInfo: TUnitInfo);
   public
-    VersionInfo: TVersionInfo;
-    
     constructor Create(ProjectDescription: TProjectDescriptor); override;
     destructor Destroy; override;
     procedure Clear;
@@ -704,6 +703,7 @@ type
                                  read GetTargetFilename write SetTargetFilename;
     property Units[Index: integer]: TUnitInfo read GetUnits;
     property UpdateLock: integer read FUpdateLock;
+    property VersionInfo: TProjectVersionInfo read FVersionInfo;
   end;
 
 const
@@ -1461,7 +1461,7 @@ begin
   Title := '';
   FUnitList := TFPList.Create;  // list of TUnitInfo
   
-  VersionInfo := TVersionInfo.Create;
+  FVersionInfo := TProjectVersionInfo.Create;
 end;
 
 {------------------------------------------------------------------------------
@@ -1472,6 +1472,7 @@ begin
   FDefineTemplates.Active:=false;
   fDestroying:=true;
   Clear;
+  FreeThenNil(FVersionInfo);
   FreeThenNil(FBookmarks);
   FreeThenNil(FUnitList);
   FreeThenNil(FJumpHistory);

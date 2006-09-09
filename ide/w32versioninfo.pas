@@ -42,9 +42,9 @@ uses
    CodeCache;
    
 type
-   { TVersionInfo }
+   { TProjectVersionInfo }
 
-   TVersionInfo = class(TObject)
+   TProjectVersionInfo = class(TObject)
    private
       rcFilename: string;
       resFilename: string;
@@ -121,10 +121,10 @@ implementation
 
 { VersionInfo }
 
-{-----------------------------------------------------------------------------}
-{ TVersionInfo Constructor                                                    }
-{-----------------------------------------------------------------------------}
-constructor TVersionInfo.Create;
+{-----------------------------------------------------------------------------
+ TProjectVersionInfo Constructor
+-----------------------------------------------------------------------------}
+constructor TProjectVersionInfo.Create;
 begin
    inherited Create;
    VersionInfoMessages := TStringList.Create;
@@ -212,18 +212,18 @@ begin
    ProdNameString         := '';
 end;
 
-{-----------------------------------------------------------------------------}
-{ TVersionInfo Destructor                                                     }
-{-----------------------------------------------------------------------------}
-destructor TVersionInfo.Destroy;
+{-----------------------------------------------------------------------------
+ TProjectVersionInfo Destructor
+-----------------------------------------------------------------------------}
+destructor TProjectVersionInfo.Destroy;
 begin
   inherited Destroy;
 end;
 
-{-----------------------------------------------------------------------------}
-{ TVersionInfo CompileRCFile                                                  }
-{-----------------------------------------------------------------------------}
-function TVersionInfo.CompileRCFile(MainFilename: string): TModalResult;
+{-----------------------------------------------------------------------------
+ TProjectVersionInfo CompileRCFile
+-----------------------------------------------------------------------------}
+function TProjectVersionInfo.CompileRCFile(MainFilename: string): TModalResult;
 begin
    Result := mrCancel;
    if (GetDefaultTargetOS = 'win32') then
@@ -277,10 +277,10 @@ begin
       end;
 end;
 
-{-----------------------------------------------------------------------------}
-{ TVersionInfo BackupRCFile                                                   }
-{-----------------------------------------------------------------------------}
-procedure TVersionInfo.BackupRCFile;
+{-----------------------------------------------------------------------------
+ TProjectVersionInfo BackupRCFile
+-----------------------------------------------------------------------------}
+procedure TProjectVersionInfo.BackupRCFile;
 begin
    if (FileExists(rcFilename + '.bak')) then
       begin
@@ -292,10 +292,10 @@ begin
    Rename(rcInFile, rcFilename + '.bak');
 end;
 
-{-----------------------------------------------------------------------------}
-{ TVersionInfo RewriteAndSkipRCFile                                           }
-{-----------------------------------------------------------------------------}
-procedure TVersionInfo.RewriteAndSkipRCFile;
+{-----------------------------------------------------------------------------
+ TProjectVersionInfo RewriteAndSkipRCFile
+-----------------------------------------------------------------------------}
+procedure TProjectVersionInfo.RewriteAndSkipRCFile;
 var Stage : integer;
 begin
    Stage := 0;   { 0 = no versioninfo found yet                               }
@@ -336,10 +336,10 @@ begin
       end;
 end;
 
-{-----------------------------------------------------------------------------}
-{ TVersionInfo AppendToRCFile                                                 }
-{-----------------------------------------------------------------------------}
-procedure TVersionInfo.AppendToRCFile;
+{-----------------------------------------------------------------------------
+ TProjectVersionInfo AppendToRCFile
+-----------------------------------------------------------------------------}
+procedure TProjectVersionInfo.AppendToRCFile;
 begin
    rcLine := '1 VERSIONINFO';
    WriteLn(rcoutFile, rcLine);
@@ -402,9 +402,9 @@ begin
 end;
 
 {-----------------------------------------------------------------------------
- TVersionInfo RewriteRCFile
+ TProjectVersionInfo RewriteRCFile
 -----------------------------------------------------------------------------}
-procedure TVersionInfo.RewriteRCFile;
+procedure TProjectVersionInfo.RewriteRCFile;
 
    { File structure
     A rc file can contain several pieces of information. One of those pieces
@@ -474,10 +474,10 @@ begin
    CloseFile(rcOutFile);
 end;
 
-{-----------------------------------------------------------------------------}
-{ TVersionInfo DoTheRealCompile                                               }
-{-----------------------------------------------------------------------------}
-function TVersionInfo.DoTheRealCompile: TModalResult;
+{-----------------------------------------------------------------------------
+ TProjectVersionInfo DoTheRealCompile
+-----------------------------------------------------------------------------}
+function TProjectVersionInfo.DoTheRealCompile: TModalResult;
 const READ_BYTES = 2048;
 var rcProcess: TProcess;
     rcMemStream: TMemoryStream;
@@ -527,9 +527,9 @@ begin
 end;
 
 {-----------------------------------------------------------------------------
- TVersionInfo UpdateMainSourceFile
+ TProjectVersionInfo UpdateMainSourceFile
 -----------------------------------------------------------------------------}
-function TVersionInfo.UpdateMainSourceFile(const AFilename: string
+function TProjectVersionInfo.UpdateMainSourceFile(const AFilename: string
    ): TModalResult;
 var
    NewX, NewY, NewTopLine: integer;
@@ -554,9 +554,9 @@ begin
 end;
 
 {-----------------------------------------------------------------------------
- TVersionInfo SetTargetOS
+ TProjectVersionInfo SetTargetOS
 -----------------------------------------------------------------------------}
-function TVersionInfo.SetTargetOS(CurrentProjectsTargetOS: string): string;
+function TProjectVersionInfo.SetTargetOS(CurrentProjectsTargetOS: string): string;
 begin
    if CurrentProjectsTargetOS <> '' then
      TargetOS := LowerCase(CurrentProjectsTargetOS)
@@ -565,19 +565,19 @@ begin
    Result := TargetOS;
 end;
 
-{-----------------------------------------------------------------------------}
-{ TVersionInfo SetFileNames                                                     }
-{-----------------------------------------------------------------------------}
-procedure TVersionInfo.SetFileNames(MainFilename: string);
+{-----------------------------------------------------------------------------
+ TProjectVersionInfo SetFileNames
+-----------------------------------------------------------------------------}
+procedure TProjectVersionInfo.SetFileNames(MainFilename: string);
 begin
    rcFilename := Copy(MainFilename, 1, Length(MainFilename) - 4) + '.rc';
    resFilename := Copy(MainFilename, 1, Length(MainFilename) - 4) + '.res';
 end;
 
-{-----------------------------------------------------------------------------}
-{ TVersionInfo SetUseVersionInfo                                              }
-{-----------------------------------------------------------------------------}
-procedure TVersionInfo.SetUseVersionInfo(BoxContents: boolean;
+{-----------------------------------------------------------------------------
+ TProjectVersionInfo SetUseVersionInfo
+-----------------------------------------------------------------------------}
+procedure TProjectVersionInfo.SetUseVersionInfo(BoxContents: boolean;
   var ProjectModified: boolean);
 begin
    if (UseVersionInfo <> BoxContents) then
@@ -587,10 +587,10 @@ begin
       end;
 end;
 
-{-----------------------------------------------------------------------------}
-{ TVersionInfo SetAutoIncrementBuild                                          }
-{-----------------------------------------------------------------------------}
-procedure TVersionInfo.SetAutoIncrementBuild(BoxContents: boolean;
+{-----------------------------------------------------------------------------
+ TProjectVersionInfo SetAutoIncrementBuild
+-----------------------------------------------------------------------------}
+procedure TProjectVersionInfo.SetAutoIncrementBuild(BoxContents: boolean;
   var ProjectModified: boolean);
 begin
    if (AutoIncrementBuild <> BoxContents) then
@@ -600,10 +600,10 @@ begin
       end;
 end;
 
-{-----------------------------------------------------------------------------}
-{ TVersionInfo SetVersionNr                                                   }
-{-----------------------------------------------------------------------------}
-procedure TVersionInfo.SetVersionNr(BoxContents: integer; var ProjectModified: boolean);
+{-----------------------------------------------------------------------------
+ TProjectVersionInfo SetVersionNr
+-----------------------------------------------------------------------------}
+procedure TProjectVersionInfo.SetVersionNr(BoxContents: integer; var ProjectModified: boolean);
 begin
    if (VersionNr <> BoxContents) then
       begin
@@ -612,10 +612,10 @@ begin
       end;
 end;
 
-{-----------------------------------------------------------------------------}
-{ TVersionInfo SetMajorRevNr                                                  }
-{-----------------------------------------------------------------------------}
-procedure TVersionInfo.SetMajorRevNr(BoxContents: integer; var ProjectModified: boolean);
+{-----------------------------------------------------------------------------
+ TProjectVersionInfo SetMajorRevNr
+-----------------------------------------------------------------------------}
+procedure TProjectVersionInfo.SetMajorRevNr(BoxContents: integer; var ProjectModified: boolean);
 begin
    if (MajorRevNr <> BoxContents) then
       begin
@@ -624,10 +624,10 @@ begin
       end;
 end;
 
-{-----------------------------------------------------------------------------}
-{ TVersionInfo SetMinorRevNr                                                  }
-{-----------------------------------------------------------------------------}
-procedure TVersionInfo.SetMinorRevNr(BoxContents: integer; var ProjectModified: boolean);
+{-----------------------------------------------------------------------------
+ TProjectVersionInfo SetMinorRevNr
+-----------------------------------------------------------------------------}
+procedure TProjectVersionInfo.SetMinorRevNr(BoxContents: integer; var ProjectModified: boolean);
 begin
    if (MinorRevNr <> BoxContents) then
       begin
@@ -636,10 +636,10 @@ begin
       end;
 end;
 
-{-----------------------------------------------------------------------------}
-{ TVersionInfo SetBuildNr                                                     }
-{-----------------------------------------------------------------------------}
-procedure TVersionInfo.SetBuildNr(BoxContents: integer; var ProjectModified: boolean);
+{-----------------------------------------------------------------------------
+ TProjectVersionInfo SetBuildNr
+-----------------------------------------------------------------------------}
+procedure TProjectVersionInfo.SetBuildNr(BoxContents: integer; var ProjectModified: boolean);
 begin
    if (BuildNr <> BoxContents) then
       begin
@@ -648,10 +648,10 @@ begin
       end;
 end;
 
-{-----------------------------------------------------------------------------}
-{ TVersionInfo SetDescriptionString                                           }
-{-----------------------------------------------------------------------------}
-procedure TVersionInfo.SetDescriptionString(BoxContents: string; var ProjectModified: boolean);
+{-----------------------------------------------------------------------------
+ TProjectVersionInfo SetDescriptionString
+-----------------------------------------------------------------------------}
+procedure TProjectVersionInfo.SetDescriptionString(BoxContents: string; var ProjectModified: boolean);
 begin
    if (DescriptionString <> BoxContents) then
       begin
@@ -660,10 +660,10 @@ begin
       end;
 end;
 
-{-----------------------------------------------------------------------------}
-{ TVersionInfo SetCopyrightString                                             }
-{-----------------------------------------------------------------------------}
-procedure TVersionInfo.SetCopyrightString(BoxContents: string; var ProjectModified: boolean);
+{-----------------------------------------------------------------------------
+ TProjectVersionInfo SetCopyrightString
+-----------------------------------------------------------------------------}
+procedure TProjectVersionInfo.SetCopyrightString(BoxContents: string; var ProjectModified: boolean);
 begin
    if (CopyrightString <> BoxContents) then
       begin
@@ -672,10 +672,10 @@ begin
       end;
 end;
 
-{-----------------------------------------------------------------------------}
-{ TVersionInfo SetHexLang                                                     }
-{-----------------------------------------------------------------------------}
-procedure TVersionInfo.SetHexLang(BoxContents: string; var ProjectModified: boolean);
+{-----------------------------------------------------------------------------
+ TProjectVersionInfo SetHexLang
+-----------------------------------------------------------------------------}
+procedure TProjectVersionInfo.SetHexLang(BoxContents: string; var ProjectModified: boolean);
 begin
    BoxContents := HexLanguages[Languages.IndexOf(BoxContents)];
    if (HexLang <> BoxContents) then
@@ -685,10 +685,10 @@ begin
       end;
 end;
 
-{-----------------------------------------------------------------------------}
-{ TVersionInfo SetHexCharSet                                                  }
-{-----------------------------------------------------------------------------}
-procedure TVersionInfo.SetHexCharSet(BoxContents: string; var ProjectModified: boolean);
+{-----------------------------------------------------------------------------
+ TProjectVersionInfo SetHexCharSet
+-----------------------------------------------------------------------------}
+procedure TProjectVersionInfo.SetHexCharSet(BoxContents: string; var ProjectModified: boolean);
 begin
    BoxContents := HexCharSets[CharSets.IndexOf(BoxContents)];
    if (HexCharSet <> BoxContents) then
@@ -698,10 +698,10 @@ begin
       end;
 end;
 
-{-----------------------------------------------------------------------------}
-{ TVersionInfo SetCommentsString                                              }
-{-----------------------------------------------------------------------------}
-procedure TVersionInfo.SetCommentsString(BoxContents: string; var ProjectModified: boolean);
+{-----------------------------------------------------------------------------
+ TProjectVersionInfo SetCommentsString
+-----------------------------------------------------------------------------}
+procedure TProjectVersionInfo.SetCommentsString(BoxContents: string; var ProjectModified: boolean);
 begin
    if (CommentsString <> BoxContents) then
       begin
@@ -710,10 +710,10 @@ begin
       end;
 end;
 
-{-----------------------------------------------------------------------------}
-{ TVersionInfo SetCompanyString                                               }
-{-----------------------------------------------------------------------------}
-procedure TVersionInfo.SetCompanyString(BoxContents: string; var ProjectModified: boolean);
+{-----------------------------------------------------------------------------
+ TProjectVersionInfo SetCompanyString
+-----------------------------------------------------------------------------}
+procedure TProjectVersionInfo.SetCompanyString(BoxContents: string; var ProjectModified: boolean);
 begin
    if (CompanyString <> BoxContents) then
       begin
@@ -722,10 +722,10 @@ begin
       end;
 end;
 
-{-----------------------------------------------------------------------------}
-{ TVersionInfo SetInternalNameString                                          }
-{-----------------------------------------------------------------------------}
-procedure TVersionInfo.SetInternalNameString(BoxContents: string; var ProjectModified: boolean);
+{-----------------------------------------------------------------------------
+ TProjectVersionInfo SetInternalNameString
+-----------------------------------------------------------------------------}
+procedure TProjectVersionInfo.SetInternalNameString(BoxContents: string; var ProjectModified: boolean);
 begin
    if (InternalNameString <> BoxContents) then
       begin
@@ -734,10 +734,10 @@ begin
       end;
 end;
 
-{-----------------------------------------------------------------------------}
-{ TVersionInfo SetTrademarksString                                            }
-{-----------------------------------------------------------------------------}
-procedure TVersionInfo.SetTrademarksString(BoxContents: string; var ProjectModified: boolean);
+{-----------------------------------------------------------------------------
+ TProjectVersionInfo SetTrademarksString
+-----------------------------------------------------------------------------}
+procedure TProjectVersionInfo.SetTrademarksString(BoxContents: string; var ProjectModified: boolean);
 begin
    if (TrademarksString <> BoxContents) then
       begin
@@ -746,10 +746,10 @@ begin
       end;
 end;
 
-{-----------------------------------------------------------------------------}
-{ TVersionInfo SetOriginalFilenameString                                      }
-{-----------------------------------------------------------------------------}
-procedure TVersionInfo.SetOriginalFilenameString(BoxContents: string; var ProjectModified: boolean);
+{-----------------------------------------------------------------------------
+ TProjectVersionInfo SetOriginalFilenameString
+-----------------------------------------------------------------------------}
+procedure TProjectVersionInfo.SetOriginalFilenameString(BoxContents: string; var ProjectModified: boolean);
 begin
    if (OriginalFilenameString <> BoxContents) then
       begin
@@ -758,10 +758,10 @@ begin
       end;
 end;
 
-{-----------------------------------------------------------------------------}
-{ TVersionInfo SetProdNameString                                              }
-{-----------------------------------------------------------------------------}
-procedure TVersionInfo.SetProdNameString(BoxContents: string; var ProjectModified: boolean);
+{-----------------------------------------------------------------------------
+ TProjectVersionInfo SetProdNameString
+-----------------------------------------------------------------------------}
+procedure TProjectVersionInfo.SetProdNameString(BoxContents: string; var ProjectModified: boolean);
 begin
    if (ProdNameString <> BoxContents) then
       begin
@@ -770,10 +770,10 @@ begin
       end;
 end;
 
-{-----------------------------------------------------------------------------}
-{ TVersionInfo SetProductVersionString                                        }
-{-----------------------------------------------------------------------------}
-procedure TVersionInfo.SetProductVersionString(BoxContents: string; var ProjectModified: boolean);
+{-----------------------------------------------------------------------------
+ TProjectVersionInfo SetProductVersionString
+-----------------------------------------------------------------------------}
+procedure TProjectVersionInfo.SetProductVersionString(BoxContents: string; var ProjectModified: boolean);
 begin
    BoxContents := StringReplace(BoxContents, ',', '.', [rfReplaceAll]);
    if (ProductVersionString <> BoxContents) then
@@ -783,10 +783,10 @@ begin
       end;
 end;
 
-{-----------------------------------------------------------------------------}
-{ TVersionInfo HexToDec                                                       }
-{-----------------------------------------------------------------------------}
-function TVersionInfo.HexToDec(Str: string): Integer;
+{-----------------------------------------------------------------------------
+ TProjectVersionInfo HexToDec
+-----------------------------------------------------------------------------}
+function TProjectVersionInfo.HexToDec(Str: string): Integer;
 var
   i, M: Integer;
 begin
