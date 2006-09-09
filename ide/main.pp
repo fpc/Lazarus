@@ -1108,12 +1108,13 @@ begin
   Application.AddOnKeyDownHandler(@OnApplicationKeyDown);
   Screen.AddHandlerRemoveForm(@OnScreenRemoveForm);
   SetupHints;
-
+  
   // Now load a project
   SetupStartProject;
 
   // reopen extra windows
   ReOpenIDEWindows;
+  DoShowMessagesView;
 end;
 
 destructor TMainIDE.Destroy;
