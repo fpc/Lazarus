@@ -15,6 +15,7 @@ type
   TLpiTest= class(TTestCase)
   private
     FPath: string;
+    procedure RunScript;
   public
     constructor Create(const APath: string; const ATestName: string); overload;
     class function Suite(const APath: string): TTestSuite;
@@ -29,11 +30,33 @@ implementation
 var
   LazarusDir: string;
   ExamplesDir: string;
+  ScriptEngine: string;
   
 procedure InitDirectories;
 begin
   LazarusDir := ExpandFileName(ExtractFilePath(ParamStr(0)) + '../');
   ExamplesDir := LazarusDir + 'examples' + PathDelim;
+  ScriptEngine := 'C:\Program Files\AutoHotkey\AutoHotKey.exe';
+end;
+
+function GetScriptFileName(const LpiFileName: string): string;
+begin
+  Result := AppendPathDelim(ProgramDirectory) +
+              ExtractFileNameOnly(LpiFileName) +'.ahk';
+end;
+
+procedure TLpiTest.RunScript;
+var
+  ScriptProcess : TProcess;
+begin
+  ScriptProcess := TProcess.Create(nil);
+  try
+    ScriptProcess.CommandLine := ScriptEngine + ' ' + GetScriptFileName(FPath);
+    ScriptProcess.Execute;
+    ScriptProcess.WaitOnExit;
+  finally
+    ScriptProcess.Free;
+  end;
 end;
 
 constructor TLpiTest.Create(const APath: string; const ATestName: string);
@@ -43,9 +66,18 @@ begin
 end;
 
 class function TLpiTest.Suite(const APath: string): TTestSuite;
+var
+  AhkFileName: String;
 begin
   Result := TTestSuite.Create(APath);
   Result.AddTest(TLpiTest.Create(APath, 'TestCompile'));
+{$IFDEF win32}
+  AhkFileName := GetScriptFileName(APath);
+  if FileExists(AhkFileName) then
+    Result.AddTest(TLpiTest.Create(APath, 'TestRun'));
+{$ELSE}
+  {$NOTE scripting is only available on windows}
+{$ENDIF}
 end;
 
 class function TLpiTest.ExamplesSuite: TTestSuite;
@@ -87,8 +119,21 @@ begin
 end;
 
 procedure TLpiTest.TestRun;
+var
+  TestProcess : TProcess;
+  ExeName: string;
 begin
-
+  ExeName := ChangeFileExt(FPath, GetExeExt);
+  AssertTrue(ExeName + 'does not exist.', FileExists(ExeName));
+  TestProcess := TProcess.Create(nil);
+  try
+    TestProcess.CommandLine := ExeName;
+    TestProcess.Execute;
+    RunScript;
+    TestProcess.WaitOnExit;
+  finally
+    TestProcess.Free;
+  end;
 end;
 
 initialization
