@@ -991,6 +991,11 @@ begin
       End;
       WinProcess := false;
     End;
+    WM_MENUCHAR:
+    Begin
+      PLMsg^.Result := FindMenuItemAccelerator(chr(lo(WParam)), LParam);
+      WinProcess := false;
+    End;
     WM_CLOSE:
     Begin
       if (Window = TWin32WidgetSet(WidgetSet).AppHandle) and

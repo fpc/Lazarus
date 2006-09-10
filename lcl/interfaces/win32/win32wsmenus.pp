@@ -86,9 +86,12 @@ type
   function MenuItemLength(const aMenuItem: TMenuItem; const aHDC: HDC): integer;
   function MenuItemHeight(const aMenuItem: TMenuItem; const aHDC: HDC): integer;
   procedure DrawMenuItem(const aMenuItem: TMenuItem; const aHDC: HDC; const aRect: Windows.RECT; const aSelected: boolean);
+  function FindMenuItemAccelerator(const ACharCode: char; const AMenuHandle: HMENU): integer;
 
 
 implementation
+
+uses strutils;
 
 { helper routines }
 
@@ -97,7 +100,57 @@ const SpaceBetweenIcons = 5;
 type
   TCaptionFlags = (cfBold, cfUnderline);
   TCaptionFlagsSet = set of TCaptionFlags;
-  
+
+(* Returns index of the character in the menu item caption that is displayed
+   as underlined and is therefore the hot key of the menu item.
+   If the caption does not contain any underlined character, 0 is returned.
+   If there are more "underscored" characters in the caption, the last one is returned.
+   Does some Windows API function exists which can do the same?
+   AnUnderlinedChar - character which tells that tne following character should be underlined
+   ACaption - menu item caption which is parsed *)
+function SearchMenuItemHotKeyIndex(const AnUnderlinedChar: char; ACaption: string): integer;
+var position: integer;
+begin
+  position := pos(AnUnderlinedChar, ACaption);
+  Result := 0;
+  // if aChar is on the last position then there is nothing to underscore, ignore this character
+  while (position > 0) and (position < length(ACaption)) do
+  begin
+    // two 'AnUnderlinedChar' characters together are not valid hot key, they are replaced by one
+    if ACaption[position + 1] <> AnUnderlinedChar then
+      Result := position + 1;
+    position := posEx(AnUnderlinedChar, ACaption, position + 2);
+  end;
+end;
+
+function FindMenuItemAccelerator(const ACharCode: char; const AMenuHandle: HMENU): integer;
+var MenuItemIndex: integer;
+    ItemInfo: MENUITEMINFO;
+    FirstMenuItem: TMenuItem;
+    SiblingMenuItem: TmenuItem;
+    HotKeyIndex: integer;
+    i: integer;
+begin
+  MenuItemIndex := -1;
+  ItemInfo.cbSize := sizeOf(MENUITEMINFO);
+  ItemInfo.fMask := MIIM_DATA;
+  GetMenuItemInfo(AMenuHandle, 0, true, @ItemInfo);
+  FirstMenuItem := TMenuItem(ItemInfo.dwItemData);
+  i := 0;
+  while (i < FirstMenuItem.Parent.Count) and (MenuItemIndex < 0) do
+  begin
+    SiblingMenuItem := FirstMenuItem.Parent.Items[i];
+    HotKeyIndex := SearchMenuItemHotKeyIndex('&', SiblingMenuItem.Caption);
+    if (HotKeyIndex > 0) and 
+      (Upcase(ACharCode) = Upcase(SiblingMenuItem.Caption[HotKeyIndex])) then
+        MenuItemIndex := i;
+    inc(i);
+  end;
+  if MenuItemIndex > -1 then Result := MakeLResult(MenuItemIndex, 2)
+  else Result := MakeLResult(0, 0);
+end;
+
+
 function GetMenuItemFont(const aFlags: TCaptionFlagsSet): HFONT;
 var lf: LOGFONT;
     ncm: NONCLIENTMETRICS;
