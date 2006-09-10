@@ -139,7 +139,7 @@ type
   WPARAM = Windows.WPARAM;
   LPARAM = Windows.LPARAM;
   LRESULT = Windows.LRESULT;
-  
+
 {$if defined(VER2_0_2)}
   ULONG_PTR = type PtrUInt;
 {$endif}
@@ -178,7 +178,7 @@ type
 
   PABC = ^TABC;
 
-  _ABC = packed record
+  _ABC = record
     abcA: Integer;
     abcB: UINT;
     abcC: Integer;
@@ -571,7 +571,7 @@ const
   VK_NONAME     = $FC;
   VK_PA1        = $FD;
   VK_OEM_CLEAR  = $FE;
-  
+
   VK_HIGHESTVALUE = $FE;
 
 //==============================================
@@ -855,7 +855,7 @@ const
 
 type
   PNMHdr = ^TNMHdr;
-  tagNMHDR = packed record
+  tagNMHDR = record
     hwndFrom: HWND;
     idFrom: UINT;
     code: Integer;
@@ -874,7 +874,7 @@ type
 {painting stuff}
 
   PDrawItemStruct = ^TDrawItemStruct;
-  tagDrawItemStruct = packed record
+  tagDrawItemStruct = record
     ctlType: UINT;
     ctlID : UINT;
     itemID : UINT;
@@ -916,7 +916,7 @@ type
   end;
 
   PPaintStruct = ^TPaintStruct;
-  tagPAINTSTRUCT = packed record
+  tagPAINTSTRUCT = record
     hdc: HDC;
     fErase: BOOL;
     rcPaint: TRect;
@@ -930,7 +930,7 @@ type
 
 
   PWindowPos = ^TWIndowPos;
-  tagWindowPos = packed record
+  tagWindowPos = record
     _hwnd : HWND;
     hwndInsertAfter: HWND;
     x : Integer;
@@ -942,7 +942,7 @@ type
   TWindowPos = tagWindowPos;
   WindowPos = tagWindowPos;
 
-  tagScrollInfo = packed record
+  tagScrollInfo = record
     cbSize : UINT;
     fMask : UINT;
     nMin: Integer;
@@ -956,7 +956,7 @@ type
 
 { Palette Structures }
   PPaletteEntry = ^tagPaletteEntry;
-  tagPALETTEENTRY = packed record
+  tagPALETTEENTRY = record
     peRed: Byte;
     peGreen: Byte;
     peBlue: Byte;
@@ -966,7 +966,7 @@ type
   PALETTEENTRY = tagPALETTEENTRY;
 
   PLogPalette = ^tagLogPalette;
-  tagLOGPALETTE = packed record
+  tagLOGPALETTE = record
     palVersion: Word;
     palNumEntries: Word;
     palPalEntry: array[0..0] of tagPaletteEntry;
@@ -976,7 +976,7 @@ type
 
 { GradientFill Structures }
   PTriVertex = ^tagTriVertex;
-  tagTRIVERTEX = packed record
+  tagTRIVERTEX = record
     x: Longint;
     y: Longint;
     Red: Shortint;
@@ -987,7 +987,7 @@ type
   TRIVERTEX = tagTRIVERTEX;
 
   PGradientTriangle = ^tagGradientTriangle;
-  tagGRADIENTTRIANGLE = packed record
+  tagGRADIENTTRIANGLE = record
     Vertex1: Longint;
     Vertex2: Longint;
     Vertex3: Longint;
@@ -995,7 +995,7 @@ type
   GRADIENTTRIANGLE = tagGRADIENTTRIANGLE;
 
   PGradientRect = ^tagGradientRect;
-  tagGRADIENTRECT = packed record
+  tagGRADIENTRECT = record
     UpperLeft: Longint;
     LowerRight: Longint;
   end;
@@ -1006,7 +1006,7 @@ type
 
   { TBitmap is an encapsulation of a matrix of pixels. }
   PBitmap = ^TagBitmap;
-  tagBITMAP = packed record
+  tagBITMAP = record
     bmType: Longint;
     bmWidth: Longint;
     bmHeight: Longint;
@@ -1019,7 +1019,7 @@ type
 
 
   PBitmapCoreHeader = ^TBitmapCoreHeader;
-  tagBITMAPCOREHEADER = packed record
+  tagBITMAPCOREHEADER = record
     bcSize: DWORD;
     bcWidth: Word;
     bcHeight: Word;
@@ -1031,7 +1031,7 @@ type
 
 
   PBitmapInfoHeader = ^TBitmapInfoHeader;
-  tagBITMAPINFOHEADER = packed record
+  tagBITMAPINFOHEADER = record
     biSize : DWORD;
     biWidth : Longint;
     biHeight : Longint;
@@ -1049,7 +1049,7 @@ type
 
 
   PRGBTriple = ^TRGBTriple;
-  tagRGBTRIPLE = packed record
+  tagRGBTRIPLE = record
     rgbtBlue: Byte;
     rgbtGreen: Byte;
     rgbtRed: Byte;
@@ -1058,7 +1058,7 @@ type
   RGBTRIPLE = tagRGBTRIPLE;
 
   PRGBQUAD = ^TRGBQUAD;
-  tagRGBQUAD = packed record
+  tagRGBQUAD = record
           rgbBlue : BYTE;
           rgbGreen : BYTE;
           rgbRed : BYTE;
@@ -1068,7 +1068,7 @@ type
   RGBQUAD = tagRGBQUAD;
 
   PBitmapInfo = ^TBitmapInfo;
-  tagBITMAPINFO = packed record
+  tagBITMAPINFO = record
     bmiHeader: TBitmapInfoHeader;
     bmiColors: array[0..0] of TRGBQuad;
   end;
@@ -1098,7 +1098,7 @@ type
 
 
   PDIBSection = ^TDIBSection;
-  tagDIBSECTION = packed record
+  tagDIBSECTION = record
     dsBm: TagBitmap;
     dsBmih: tagBITMAPINFOHEADER;
     dsBitfields: array[0..2] of DWORD;
@@ -1252,7 +1252,7 @@ const
   FW_DEMIBOLD   = FW_SEMIBOLD;
   FW_ULTRABOLD  = FW_EXTRABOLD;
   FW_BLACK      = FW_HEAVY;
-  
+
   FOUNDRYCHAR_OPEN  = '[';  // added for support foundry encoded in family name
   FOUNDRYCHAR_CLOSE = ']';  // also needed to drop foundry when creating font in windows
 
@@ -1274,9 +1274,9 @@ const
   XLFD_AVG_WIDTH    = 12;
   XLFD_CHARSET_REG  = 13;
   XLFD_CHARSET_COD  = 14;
-  
-  
-  
+
+
+
 //==============================================
 // Brush constants
 //==============================================
@@ -1488,7 +1488,7 @@ const
   R2_NOTXORPEN    = 13;
   R2_WHITE        = 14;
   R2_XORPEN       = 15;
-  
+
 {$else}
   R2_BLACK        = Windows.R2_BLACK;
   R2_COPYPEN      = Windows.R2_COPYPEN;
@@ -1707,7 +1707,7 @@ type
   PLogFontW = ^TLogFontW;
   PLogFont = PLogFontA;
 
-  tagLOGFONTA = packed record
+  tagLOGFONTA = record
     lfHeight: Longint;
     lfWidth: Longint;
     lfEscapement: Longint;
@@ -1724,7 +1724,7 @@ type
     lfFaceName: array[0..LF_FACESIZE - 1] of AnsiChar;
   end;
 
-  tagLOGFONTW = packed record
+  tagLOGFONTW = record
     lfHeight: Longint;
     lfWidth: Longint;
     lfEscapement: Longint;
@@ -1764,7 +1764,7 @@ type
 
 
   PMaxLogPalette = ^TMaxLogPalette; // not in Windows Headers
-  TMaxLogPalette = packed record
+  TMaxLogPalette = record
     palVersion: Word;
     palNumEntries: Word;
     palPalEntry: array [Byte] of TPaletteEntry;
@@ -1774,13 +1774,13 @@ type
   PEnumLogFontW = ^TEnumLogFontW;
   PEnumLogFont = PEnumLogFontA;
 
-  tagENUMLOGFONTA = packed record
+  tagENUMLOGFONTA = record
     elfLogFont: TLogFontA;
     elfFullName: array[0..LF_FULLFACESIZE - 1] of AnsiChar;
     elfStyle: array[0..LF_FACESIZE - 1] of AnsiChar;
   end;
 
-  tagENUMLOGFONTW = packed record
+  tagENUMLOGFONTW = record
     elfLogFont: TLogFontW;
     elfFullName: array[0..LF_FULLFACESIZE - 1] of WideChar;
     elfStyle: array[0..LF_FACESIZE - 1] of WideChar;
@@ -1801,14 +1801,14 @@ type
   PEnumLogFontExW = ^TEnumLogFontExW;
   PEnumLogFontEx = PEnumLogFontExA;
 
-  tagENUMLOGFONTEXA = packed record
+  tagENUMLOGFONTEXA = record
     elfLogFont: TLogFontA;
     elfFullName: array[0..LF_FULLFACESIZE - 1] of AnsiChar;
     elfStyle: array[0..LF_FACESIZE - 1] of AnsiChar;
     elfScript: array[0..LF_FACESIZE - 1] of AnsiChar;
   end;
 
-  tagENUMLOGFONTEXW = packed record
+  tagENUMLOGFONTEXW = record
     elfLogFont: TLogFontW;
     elfFullName: array[0..LF_FULLFACESIZE - 1] of WideChar;
     elfStyle: array[0..LF_FACESIZE - 1] of WideChar;
@@ -1827,7 +1827,7 @@ type
   ENUMLOGFONTEX = ENUMLOGFONTEXA;
 
   PLogPen = ^TLogPen;
-  tagLOGPEN = packed record
+  tagLOGPEN = record
     lopnStyle: LongWord;
     lopnWidth: TPoint;
     lopnColor: TColorRef;
@@ -1894,7 +1894,7 @@ type
   TEXTMETRICA = tagTEXTMETRICA;
   TEXTMETRICW = tagTEXTMETRICW;
   TEXTMETRIC = TEXTMETRICA;
-  
+
 
   TNewTextMetric = record
     tmHeight: Longint;
@@ -1935,7 +1935,7 @@ type
 
   FontEnumProc = function (var ELogFont:TEnumLogFont; var Metric:TNewTextMetric;
     FontType:longint; Data:LParam):longint; stdcall;
-     
+
   FontEnumExProc = function (var ELogFont: TEnumLogFontEx; var Metric: TNewTextMetricEx;
     FontType: Longint; Data:LParam):Longint; stdcall;
 
@@ -1943,7 +1943,7 @@ type
   PWndClassExW = ^TWndClassExW;
   PWndClassEx = PWndClassExA;
 
-  tagWNDCLASSEXA = packed record
+  tagWNDCLASSEXA = record
     cbSize: UINT;
     style: UINT;
     lpfnWndProc: TFNWndProc;
@@ -1958,7 +1958,7 @@ type
     hIconSm: HICON;
   end;
 
-  tagWNDCLASSEXW = packed record
+  tagWNDCLASSEXW = record
     cbSize: UINT;
     style: UINT;
     lpfnWndProc: TFNWndProc;
@@ -1985,7 +1985,7 @@ type
   PWndClassW = ^TWndClassW;
   PWndClass = PWndClassA;
 
-  tagWNDCLASSA = packed record
+  tagWNDCLASSA = record
     style: UINT;
     lpfnWndProc: TFNWndProc;
     cbClsExtra: Integer;
@@ -1998,7 +1998,7 @@ type
     lpszClassName: PAnsiChar;
   end;
 
-  tagWNDCLASSW = packed record
+  tagWNDCLASSW = record
     style: UINT;
     lpfnWndProc: TFNWndProc;
     cbClsExtra: Integer;
@@ -2504,7 +2504,7 @@ begin
   if Charset = 'FCS_ISO_8859_15' then result := FCS_ISO_8859_15
   else
     result := DEFAULT_CHARSET;
-  
+
 end;
 
 { TListWithEvent }
