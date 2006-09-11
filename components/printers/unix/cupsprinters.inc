@@ -397,7 +397,7 @@ var
     CurPath: String;
   begin
     CurPath:=CleanAndExpandDirectory(Path);
-    Result:=DirPathExists(NewPath);
+    Result:=DirPathExists(CurPath);
     if Result then NewPath:=CurPath;
   end;
 
