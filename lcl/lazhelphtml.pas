@@ -387,15 +387,9 @@ procedure THTMLBrowserHelpViewer.FindDefaultBrowser(var Browser,
 
   function Find(const ShortFilename: string): boolean;
   var
-    Ext: String;
     Filename: String;
   begin
-    {$IFDEF MSWindows}
-    Ext:='.exe';
-    {$ELSE}
-    Ext:='';
-    {$ENDIF}
-    Filename:=SearchFileInPath(ShortFilename+Ext,'',
+    Filename:=SearchFileInPath(ShortFilename+GetExeExt,'',
                       SysUtils.GetEnvironmentVariable('PATH'),PathSeparator,
                       [sffDontSearchInBasePath]);
     Result:=Filename<>'';
