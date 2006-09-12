@@ -2579,6 +2579,7 @@ packager/addtopackagedlg.pas svneol=native#text/pascal
 packager/basepkgmanager.pas svneol=native#text/pascal
 packager/brokendependenciesdlg.pas svneol=native#text/pascal
 packager/globallinks/README.txt svneol=native#text/plain
+packager/globallinks/h2paswizard-0.lpl svneol=native#text/plain
 packager/globallinks/lazcustomform-0.lpl svneol=native#text/plain
 packager/globallinks/lazopenglcontext-0.lpl svneol=native#text/plain
 packager/globallinks/macosfiles-0.lpl svneol=native#text/plain

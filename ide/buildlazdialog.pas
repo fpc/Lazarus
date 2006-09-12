@@ -542,10 +542,12 @@ begin
       end;
     end;
 
-    if NewTargetDirectory<>'' then
+    if NewTargetDirectory<>'' then begin
       // FPC interpretes '\ ' as an escape for a space in a path,
       // so make sure the directory doesn't end with the path delimeter.
+      AppendExtraOption('-FU'+ChompPathDelim(NewTargetDirectory));
       AppendExtraOption('-FE'+ChompPathDelim(NewTargetDirectory));
+    end;
 
     if NewTargetFilename<>'' then begin
       // FPC automatically changes the last extension (append or replace)

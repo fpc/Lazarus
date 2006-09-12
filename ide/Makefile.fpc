@@ -27,6 +27,7 @@ unitdir=../lcl/units/$(CPU_TARGET)-$(OS_TARGET) \
         ../converter \
         ../packager \
         ../packager/units/$(CPU_TARGET)-$(OS_TARGET) \
+        ../units/$(CPU_TARGET)-$(OS_TARGET) \
         .
 includedir=include include/$(OS_TARGET) ../images
 targetdir=..
