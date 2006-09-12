@@ -27,8 +27,10 @@ unit UnitInfoDlg;
 interface
 
 uses
-  Classes, SysUtils, LCLType, Controls, StdCtrls, Forms, Buttons, FileProcs,
-  LazarusIDEStrConsts, CodeToolsDefPreview, CodeToolManager, ExtCtrls;
+  Classes, SysUtils, LCLProc, LCLType, Controls, StdCtrls, Forms, Buttons,
+  FileProcs, ExtCtrls,
+  CodeToolsDefPreview, CodeToolManager,
+  LazarusIDEStrConsts;
 
 type
 
@@ -66,7 +68,6 @@ type
     procedure FormCreate(Sender: TObject);
     procedure GotoIncludeDirectiveButtonClick(Sender: TObject);
     procedure OkButtonClick(Sender: TObject);
-    procedure UnitInfoDlgResize(Sender: TObject);
     procedure clearIncludedByClick(Sender: TObject);
   private
     FFilePath: string;
@@ -127,38 +128,6 @@ begin
 end;
 
 { TUnitInfoDialog }
-
-procedure TUnitInfoDialog.UnitInfoDlgResize(Sender: TObject);
-var MaxLength: integer;
-begin
-  MaxLength := UName.Width;
-
-  if UType.Width > MaxLength then
-    MaxLength := UType.Width;
-
-  if UInProject.Width > MaxLength then
-    MaxLength := UInProject.Width;
-
-  if USize.Width > MaxLength then
-    MaxLength := USize.Width;
-
-  if ULines.Width > MaxLength then
-    MaxLength := ULines.Width;
-
-  if UPath.Width > MaxLength then
-    MaxLength := UPath.Width;
-
-  if UIncludedBy.Width > MaxLength then
-    MaxLength := UIncludedBy.Width;
-
-  UName.Width := MaxLength;
-  UType.Width := MaxLength;
-  UInProject.Width := MaxLength;
-  USize.Width := MaxLength;
-  ULines.Width := MaxLength;
-  UPath.Width := MaxLength;
-  UIncludedBy.Width := MaxLength;
-end;
 
 procedure TUnitInfoDialog.CodeToolsDefsButtonClick(Sender: TObject);
 begin

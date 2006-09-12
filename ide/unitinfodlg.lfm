@@ -9,7 +9,6 @@ object UnitInfoDialog: TUnitInfoDialog
   BorderStyle = bsSizeToolWin
   Caption = 'UnitInfoDialog'
   OnCreate = FormCreate
-  OnResize = UnitInfoDlgResize
   Position = poScreenCenter
   object OkButton: TBitBtn
     Left = 439
@@ -198,7 +197,6 @@ object UnitInfoDialog: TUnitInfoDialog
         Color = clNone
         Font.Style = [fsBold]
         ParentColor = False
-        OnResize = UnitInfoDlgResize
       end
       object ClearIncludedBy: TButton
         AnchorSideTop.Control = UIncludedBy

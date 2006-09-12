@@ -84,7 +84,7 @@ begin
   AutoSizing := True;
   try
     CalcSize(NewWidth, NewHeight);
-    //debugln('TCustomLabel.DoAutoSize Nice ',dbgs(Left),',',dbgs(Top),',w=',dbgs(NewWidth),',h',dbgs(NewHeight));
+    //debugln('TCustomLabel.DoAutoSize ',dbgsName(Self),' Nice ',dbgs(Left),',',dbgs(Top),',w=',dbgs(NewWidth),',h=',dbgs(NewHeight),' Caption="',dbgstr(Caption),'"');
     CurAnchors:=[];
     if Align in [alLeft,alRight,alBottom,alTop,alClient] then
       CurAnchors:=AnchorAlign[Align];
@@ -94,7 +94,7 @@ begin
     if CurAnchors*[akTop,akBottom]=[akTop,akBottom] then
       NewHeight:=Height;
 
-    //debugln('TCustomLabel.DoAutoSize Anchored ',dbgs(Left),',',dbgs(Top),',w=',dbgs(NewWidth),',h=',dbgs(NewHeight));
+    //debugln('TCustomLabel.DoAutoSize ',dbgsName(Self),' Anchored ',dbgs(Left),',',dbgs(Top),',w=',dbgs(NewWidth),',h=',dbgs(NewHeight));
     SetBoundsKeepBase(Left, Top, NewWidth, NewHeight);
   finally
     AutoSizing := False;
