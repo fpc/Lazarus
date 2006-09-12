@@ -1,85 +1,84 @@
 object GraphicPropertyEditorForm: TGraphicPropertyEditorForm
-  ActiveControl = LoadButton
-  Caption = 'Load Image Dialog'
-  ClientHeight = 330
-  ClientWidth = 370
-  Constraints.MinHeight = 180
-  Constraints.MinWidth = 200
-  OnCreate = FormCreate
-  PixelsPerInch = 112
-  Position = poDesktopCenter
-  HorzScrollBar.Page = 369
-  VertScrollBar.Page = 329
   Left = 290
   Height = 330
   Top = 153
   Width = 370
+  HorzScrollBar.Page = 369
+  VertScrollBar.Page = 329
+  ActiveControl = LoadButton
+  Caption = 'Load Image Dialog'
+  Constraints.MinHeight = 180
+  Constraints.MinWidth = 200
+  OnCreate = FormCreate
+  Position = poDesktopCenter
   object GroupBox1: TGroupBox
-    Align = alTop
-    Anchors = [akTop, akLeft, akRight, akBottom]
-    BorderSpacing.Around = 6
-    Caption = 'Picture'
-    ClientHeight = 272
-    ClientWidth = 354
-    TabOrder = 0
     Left = 6
     Height = 289
     Top = 6
     Width = 358
+    Align = alTop
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Around = 6
+    Caption = 'Picture'
+    TabOrder = 0
     object LoadButton: TButton
+      Left = 275
+      Height = 25
+      Width = 75
       Anchors = [akTop, akRight]
       BorderSpacing.Around = 6
       BorderSpacing.InnerBorder = 4
       Caption = 'Load'
       OnClick = LoadButtonClick
       TabOrder = 0
-      Left = 275
-      Height = 25
-      Width = 75
     end
     object SaveButton: TButton
+      Left = 275
+      Height = 25
+      Top = 31
+      Width = 75
       Anchors = [akTop, akRight]
       BorderSpacing.Around = 6
       BorderSpacing.InnerBorder = 4
       Caption = 'Save'
       OnClick = SaveButtonClick
       TabOrder = 1
-      Left = 275
-      Height = 25
-      Top = 31
-      Width = 75
     end
     object ClearButton: TButton
+      Left = 275
+      Height = 25
+      Top = 62
+      Width = 75
       Anchors = [akTop, akRight]
       BorderSpacing.Around = 6
       BorderSpacing.InnerBorder = 4
       Caption = 'Clear'
       OnClick = ClearButtonClick
       TabOrder = 2
-      Left = 275
-      Height = 25
-      Top = 62
-      Width = 75
     end
     object ScrollBox: TScrollBox
-      Anchors = [akTop, akLeft, akRight, akBottom]
-      BorderSpacing.Around = 6
-      ParentColor = False
-      TabOrder = 3
-      AutoScroll = True
       Left = 5
       Height = 262
       Top = 2
       Width = 261
+      AutoScroll = True
+      Anchors = [akTop, akLeft, akRight, akBottom]
+      BorderSpacing.Around = 6
+      ParentColor = False
+      TabOrder = 3
       object ImagePreview: TImage
-        AutoSize = True
-        Center = True
         Height = 100
         Width = 100
+        AutoSize = True
+        Center = True
       end
     end
   end
   object OKButton: TBitBtn
+    Left = 207
+    Height = 25
+    Top = 301
+    Width = 75
     Anchors = [akRight, akBottom]
     BorderSpacing.Bottom = 6
     BorderSpacing.Around = 6
@@ -89,12 +88,12 @@ object GraphicPropertyEditorForm: TGraphicPropertyEditorForm
     ModalResult = 1
     NumGlyphs = 0
     TabOrder = 1
-    Left = 207
+  end
+  object CancelButton: TBitBtn
+    Left = 289
     Height = 25
     Top = 301
     Width = 75
-  end
-  object CancelButton: TBitBtn
     Anchors = [akRight, akBottom]
     BorderSpacing.Around = 6
     Cancel = True
@@ -103,26 +102,18 @@ object GraphicPropertyEditorForm: TGraphicPropertyEditorForm
     ModalResult = 2
     NumGlyphs = 0
     TabOrder = 2
-    Left = 289
-    Height = 25
-    Top = 301
-    Width = 75
   end
   object OpenDialog: TOpenPictureDialog
-    Filter = 'Graphic (*.ico;*.ppm;*.pgm;*.pbm;*.png;*.xpm;*.bmp)|*.ico;*.ppm;*.pgm;*.pbm;*.png;*.xpm;*.bmp|Icon (*.ico)|*.ico|Portable PixMap (*.ppm)|*.ppm|Portable GrayMap (*.pgm)|*.pgm|Portable BitMap (*.pbm)|*.pbm|Portable Network Graphic (*.png)|*.png|Pixmap (*.xpm)|*.xpm|Bitmaps (*.bmp)|*.bmp|All files (*.*)|*.*|'
     Title = 'Open existing file'
     Filter = 'Graphic (*.ico;*.ppm;*.pgm;*.pbm;*.png;*.xpm;*.bmp)|*.ico;*.ppm;*.pgm;*.pbm;*.png;*.xpm;*.bmp|Icon (*.ico)|*.ico|Portable PixMap (*.ppm)|*.ppm|Portable GrayMap (*.pgm)|*.pgm|Portable BitMap (*.pbm)|*.pbm|Portable Network Graphic (*.png)|*.png|Pixmap (*.xpm)|*.xpm|Bitmaps (*.bmp)|*.bmp|All files (*.*)|*.*|'
     FilterIndex = 0
-    Title = 'Open existing file'
     left = 136
     top = 288
   end
   object SaveDialog: TSavePictureDialog
-    Filter = 'Graphic (*.ico;*.ppm;*.pgm;*.pbm;*.png;*.xpm;*.bmp)|*.ico;*.ppm;*.pgm;*.pbm;*.png;*.xpm;*.bmp|Icon (*.ico)|*.ico|Portable PixMap (*.ppm)|*.ppm|Portable GrayMap (*.pgm)|*.pgm|Portable BitMap (*.pbm)|*.pbm|Portable Network Graphic (*.png)|*.png|Pixmap (*.xpm)|*.xpm|Bitmaps (*.bmp)|*.bmp|All files (*.*)|*.*|'
     Title = 'Save file as'
     Filter = 'Graphic (*.ico;*.ppm;*.pgm;*.pbm;*.png;*.xpm;*.bmp)|*.ico;*.ppm;*.pgm;*.pbm;*.png;*.xpm;*.bmp|Icon (*.ico)|*.ico|Portable PixMap (*.ppm)|*.ppm|Portable GrayMap (*.pgm)|*.pgm|Portable BitMap (*.pbm)|*.pbm|Portable Network Graphic (*.png)|*.png|Pixmap (*.xpm)|*.xpm|Bitmaps (*.bmp)|*.bmp|All files (*.*)|*.*|'
     FilterIndex = 0
-    Title = 'Save file as'
     left = 136
     top = 320
   end

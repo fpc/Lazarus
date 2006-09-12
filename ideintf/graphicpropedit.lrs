@@ -1,57 +1,46 @@
 { This is an automatically generated lazarus resource file }
 
 LazarusResources.Add('TGraphicPropertyEditorForm','FORMDATA',[
-  'TPF0'#26'TGraphicPropertyEditorForm'#25'GraphicPropertyEditorForm'#13'Active'
-  +'Control'#7#10'LoadButton'#7'Caption'#6#17'Load Image Dialog'#12'ClientHeigh'
-  +'t'#3'J'#1#11'ClientWidth'#3'r'#1#21'Constraints.MinHeight'#3#180#0#20'Const'
-  +'raints.MinWidth'#3#200#0#8'OnCreate'#7#10'FormCreate'#13'PixelsPerInch'#2'p'
-  +#8'Position'#7#15'poDesktopCenter'#18'HorzScrollBar.Page'#3'q'#1#18'VertScro'
-  +'llBar.Page'#3'I'#1#4'Left'#3'"'#1#6'Height'#3'J'#1#3'Top'#3#153#0#5'Width'#3
-  +'r'#1#0#9'TGroupBox'#9'GroupBox1'#5'Align'#7#5'alTop'#7'Anchors'#11#5'akTop'
-  +#6'akLeft'#7'akRight'#8'akBottom'#0#20'BorderSpacing.Around'#2#6#7'Caption'#6
-  +#7'Picture'#12'ClientHeight'#3#16#1#11'ClientWidth'#3'b'#1#8'TabOrder'#2#0#4
-  +'Left'#2#6#6'Height'#3'!'#1#3'Top'#2#6#5'Width'#3'f'#1#0#7'TButton'#10'LoadB'
-  +'utton'#7'Anchors'#11#5'akTop'#7'akRight'#0#20'BorderSpacing.Around'#2#6#25
-  +'BorderSpacing.InnerBorder'#2#4#7'Caption'#6#4'Load'#7'OnClick'#7#15'LoadBut'
-  +'tonClick'#8'TabOrder'#2#0#4'Left'#3#19#1#6'Height'#2#25#5'Width'#2'K'#0#0#7
-  +'TButton'#10'SaveButton'#7'Anchors'#11#5'akTop'#7'akRight'#0#20'BorderSpacin'
-  +'g.Around'#2#6#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6#4'Save'#7'OnCl'
-  +'ick'#7#15'SaveButtonClick'#8'TabOrder'#2#1#4'Left'#3#19#1#6'Height'#2#25#3
-  +'Top'#2#31#5'Width'#2'K'#0#0#7'TButton'#11'ClearButton'#7'Anchors'#11#5'akTo'
-  +'p'#7'akRight'#0#20'BorderSpacing.Around'#2#6#25'BorderSpacing.InnerBorder'#2
-  +#4#7'Caption'#6#5'Clear'#7'OnClick'#7#16'ClearButtonClick'#8'TabOrder'#2#2#4
-  +'Left'#3#19#1#6'Height'#2#25#3'Top'#2'>'#5'Width'#2'K'#0#0#10'TScrollBox'#9
-  +'ScrollBox'#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#8'akBottom'#0#20'Bor'
-  +'derSpacing.Around'#2#6#11'ParentColor'#8#8'TabOrder'#2#3#10'AutoScroll'#9#4
-  +'Left'#2#5#6'Height'#3#6#1#3'Top'#2#2#5'Width'#3#5#1#0#6'TImage'#12'ImagePre'
-  +'view'#8'AutoSize'#9#6'Center'#9#6'Height'#2'd'#5'Width'#2'd'#0#0#0#0#7'TBit'
-  +'Btn'#8'OKButton'#7'Anchors'#11#7'akRight'#8'akBottom'#0#20'BorderSpacing.Bo'
-  +'ttom'#2#6#20'BorderSpacing.Around'#2#6#7'Caption'#6#3'&OK'#7'Default'#9#4'K'
-  +'ind'#7#4'bkOK'#11'ModalResult'#2#1#9'NumGlyphs'#2#0#8'TabOrder'#2#1#4'Left'
-  +#3#207#0#6'Height'#2#25#3'Top'#3'-'#1#5'Width'#2'K'#0#0#7'TBitBtn'#12'Cancel'
-  +'Button'#7'Anchors'#11#7'akRight'#8'akBottom'#0#20'BorderSpacing.Around'#2#6
-  +#6'Cancel'#9#7'Caption'#6#6'Cancel'#4'Kind'#7#8'bkCancel'#11'ModalResult'#2#2
-  +#9'NumGlyphs'#2#0#8'TabOrder'#2#2#4'Left'#3'!'#1#6'Height'#2#25#3'Top'#3'-'#1
-  +#5'Width'#2'K'#0#0#18'TOpenPictureDialog'#10'OpenDialog'#6'Filter'#12'2'#1#0
-  +#0'Graphic (*.ico;*.ppm;*.pgm;*.pbm;*.png;*.xpm;*.bmp)|*.ico;*.ppm;*.pgm;*.p'
-  +'bm;*.png;*.xpm;*.bmp|Icon (*.ico)|*.ico|Portable PixMap (*.ppm)|*.ppm|Porta'
-  +'ble GrayMap (*.pgm)|*.pgm|Portable BitMap (*.pbm)|*.pbm|Portable Network Gr'
-  +'aphic (*.png)|*.png|Pixmap (*.xpm)|*.xpm|Bitmaps (*.bmp)|*.bmp|All files (*'
-  +'.*)|*.*|'#5'Title'#6#18'Open existing file'#6'Filter'#12'2'#1#0#0'Graphic ('
-  +'*.ico;*.ppm;*.pgm;*.pbm;*.png;*.xpm;*.bmp)|*.ico;*.ppm;*.pgm;*.pbm;*.png;*.'
-  +'xpm;*.bmp|Icon (*.ico)|*.ico|Portable PixMap (*.ppm)|*.ppm|Portable GrayMap'
-  +' (*.pgm)|*.pgm|Portable BitMap (*.pbm)|*.pbm|Portable Network Graphic (*.pn'
-  +'g)|*.png|Pixmap (*.xpm)|*.xpm|Bitmaps (*.bmp)|*.bmp|All files (*.*)|*.*|'#11
-  +'FilterIndex'#2#0#5'Title'#6#18'Open existing file'#4'left'#3#136#0#3'top'#3
-  +' '#1#0#0#18'TSavePictureDialog'#10'SaveDialog'#6'Filter'#12'2'#1#0#0'Graphi'
-  +'c (*.ico;*.ppm;*.pgm;*.pbm;*.png;*.xpm;*.bmp)|*.ico;*.ppm;*.pgm;*.pbm;*.png'
-  +';*.xpm;*.bmp|Icon (*.ico)|*.ico|Portable PixMap (*.ppm)|*.ppm|Portable Gray'
-  +'Map (*.pgm)|*.pgm|Portable BitMap (*.pbm)|*.pbm|Portable Network Graphic (*'
-  +'.png)|*.png|Pixmap (*.xpm)|*.xpm|Bitmaps (*.bmp)|*.bmp|All files (*.*)|*.*|'
-  +#5'Title'#6#12'Save file as'#6'Filter'#12'2'#1#0#0'Graphic (*.ico;*.ppm;*.pg'
-  +'m;*.pbm;*.png;*.xpm;*.bmp)|*.ico;*.ppm;*.pgm;*.pbm;*.png;*.xpm;*.bmp|Icon ('
-  +'*.ico)|*.ico|Portable PixMap (*.ppm)|*.ppm|Portable GrayMap (*.pgm)|*.pgm|P'
-  +'ortable BitMap (*.pbm)|*.pbm|Portable Network Graphic (*.png)|*.png|Pixmap '
-  +'(*.xpm)|*.xpm|Bitmaps (*.bmp)|*.bmp|All files (*.*)|*.*|'#11'FilterIndex'#2
-  +#0#5'Title'#6#12'Save file as'#4'left'#3#136#0#3'top'#3'@'#1#0#0#0
+  'TPF0'#26'TGraphicPropertyEditorForm'#25'GraphicPropertyEditorForm'#4'Left'#3
+  +'"'#1#6'Height'#3'J'#1#3'Top'#3#153#0#5'Width'#3'r'#1#18'HorzScrollBar.Page'
+  +#3'q'#1#18'VertScrollBar.Page'#3'I'#1#13'ActiveControl'#7#10'LoadButton'#7'C'
+  +'aption'#6#17'Load Image Dialog'#21'Constraints.MinHeight'#3#180#0#20'Constr'
+  +'aints.MinWidth'#3#200#0#8'OnCreate'#7#10'FormCreate'#8'Position'#7#15'poDes'
+  +'ktopCenter'#0#9'TGroupBox'#9'GroupBox1'#4'Left'#2#6#6'Height'#3'!'#1#3'Top'
+  +#2#6#5'Width'#3'f'#1#5'Align'#7#5'alTop'#7'Anchors'#11#5'akTop'#6'akLeft'#7
+  +'akRight'#8'akBottom'#0#20'BorderSpacing.Around'#2#6#7'Caption'#6#7'Picture'
+  +#8'TabOrder'#2#0#0#7'TButton'#10'LoadButton'#4'Left'#3#19#1#6'Height'#2#25#5
+  +'Width'#2'K'#7'Anchors'#11#5'akTop'#7'akRight'#0#20'BorderSpacing.Around'#2#6
+  +#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6#4'Load'#7'OnClick'#7#15'Load'
+  +'ButtonClick'#8'TabOrder'#2#0#0#0#7'TButton'#10'SaveButton'#4'Left'#3#19#1#6
+  +'Height'#2#25#3'Top'#2#31#5'Width'#2'K'#7'Anchors'#11#5'akTop'#7'akRight'#0
+  +#20'BorderSpacing.Around'#2#6#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6
+  +#4'Save'#7'OnClick'#7#15'SaveButtonClick'#8'TabOrder'#2#1#0#0#7'TButton'#11
+  +'ClearButton'#4'Left'#3#19#1#6'Height'#2#25#3'Top'#2'>'#5'Width'#2'K'#7'Anch'
+  +'ors'#11#5'akTop'#7'akRight'#0#20'BorderSpacing.Around'#2#6#25'BorderSpacing'
+  +'.InnerBorder'#2#4#7'Caption'#6#5'Clear'#7'OnClick'#7#16'ClearButtonClick'#8
+  +'TabOrder'#2#2#0#0#10'TScrollBox'#9'ScrollBox'#4'Left'#2#5#6'Height'#3#6#1#3
+  +'Top'#2#2#5'Width'#3#5#1#10'AutoScroll'#9#7'Anchors'#11#5'akTop'#6'akLeft'#7
+  +'akRight'#8'akBottom'#0#20'BorderSpacing.Around'#2#6#11'ParentColor'#8#8'Tab'
+  +'Order'#2#3#0#6'TImage'#12'ImagePreview'#6'Height'#2'd'#5'Width'#2'd'#8'Auto'
+  +'Size'#9#6'Center'#9#0#0#0#0#7'TBitBtn'#8'OKButton'#4'Left'#3#207#0#6'Height'
+  +#2#25#3'Top'#3'-'#1#5'Width'#2'K'#7'Anchors'#11#7'akRight'#8'akBottom'#0#20
+  +'BorderSpacing.Bottom'#2#6#20'BorderSpacing.Around'#2#6#7'Caption'#6#3'&OK'#7
+  +'Default'#9#4'Kind'#7#4'bkOK'#11'ModalResult'#2#1#9'NumGlyphs'#2#0#8'TabOrde'
+  +'r'#2#1#0#0#7'TBitBtn'#12'CancelButton'#4'Left'#3'!'#1#6'Height'#2#25#3'Top'
+  +#3'-'#1#5'Width'#2'K'#7'Anchors'#11#7'akRight'#8'akBottom'#0#20'BorderSpacin'
+  +'g.Around'#2#6#6'Cancel'#9#7'Caption'#6#6'Cancel'#4'Kind'#7#8'bkCancel'#11'M'
+  +'odalResult'#2#2#9'NumGlyphs'#2#0#8'TabOrder'#2#2#0#0#18'TOpenPictureDialog'
+  +#10'OpenDialog'#5'Title'#6#18'Open existing file'#6'Filter'#12'2'#1#0#0'Grap'
+  +'hic (*.ico;*.ppm;*.pgm;*.pbm;*.png;*.xpm;*.bmp)|*.ico;*.ppm;*.pgm;*.pbm;*.p'
+  +'ng;*.xpm;*.bmp|Icon (*.ico)|*.ico|Portable PixMap (*.ppm)|*.ppm|Portable Gr'
+  +'ayMap (*.pgm)|*.pgm|Portable BitMap (*.pbm)|*.pbm|Portable Network Graphic '
+  +'(*.png)|*.png|Pixmap (*.xpm)|*.xpm|Bitmaps (*.bmp)|*.bmp|All files (*.*)|*.'
+  +'*|'#11'FilterIndex'#2#0#4'left'#3#136#0#3'top'#3' '#1#0#0#18'TSavePictureDi'
+  +'alog'#10'SaveDialog'#5'Title'#6#12'Save file as'#6'Filter'#12'2'#1#0#0'Grap'
+  +'hic (*.ico;*.ppm;*.pgm;*.pbm;*.png;*.xpm;*.bmp)|*.ico;*.ppm;*.pgm;*.pbm;*.p'
+  +'ng;*.xpm;*.bmp|Icon (*.ico)|*.ico|Portable PixMap (*.ppm)|*.ppm|Portable Gr'
+  +'ayMap (*.pgm)|*.pgm|Portable BitMap (*.pbm)|*.pbm|Portable Network Graphic '
+  +'(*.png)|*.png|Pixmap (*.xpm)|*.xpm|Bitmaps (*.bmp)|*.bmp|All files (*.*)|*.'
+  +'*|'#11'FilterIndex'#2#0#4'left'#3#136#0#3'top'#3'@'#1#0#0#0
 ]);

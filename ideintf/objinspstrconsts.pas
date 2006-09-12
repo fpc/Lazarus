@@ -287,6 +287,7 @@ resourcestring
     +'valid identifier';
   oisLoadImageDialog = 'Load Image Dialog';
   oisOK = '&OK';
+  oisPEPicture = 'Picture';
   oisCancel = '&Cancel';
   oisLoadPicture = 'Load picture';
   oisSavePicture = 'Save picture';
@@ -294,6 +295,8 @@ resourcestring
   oisLoad = '&Load';
   oisSave = '&Save';
   oisClear = 'C&lear';
+  oisPEOpenImageFile = 'Open image file';
+  oisPESaveImageAs = 'Save image as';
   oisErrorLoadingImage = 'Error loading image';
   oisErrorLoadingImage2 = 'Error loading image %s%s%s:%s%s';
   oisOk2 = 'Ok';

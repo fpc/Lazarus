@@ -67,11 +67,14 @@ procedure TGraphicPropertyEditorForm.FormCreate(Sender: TObject);
 begin
   FileName := '';
   Caption := oisLoadImageDialog;
+  GroupBox1.Caption:=oisPEPicture;
   OKButton.Caption := oisOK;
   CancelButton.Caption := oisCancel;
   LoadButton.Caption := oisLoad;
   SaveButton.Caption := oisSave;
   ClearButton.Caption := oisClear;
+  OpenDialog.Title:=oisPEOpenImageFile;
+  SaveDialog.Title:=oisPESaveImageAs;
 end;
 
 procedure TGraphicPropertyEditorForm.ClearButtonClick(Sender: TObject);
