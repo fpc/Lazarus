@@ -1767,7 +1767,7 @@ begin
   while i>=0 do begin
     AForm:=Screen.CustomForms[i];
     if (AForm<>MainIDEBar)
-    and ((AForm.Owner=nil) or (AForm.Owner=Application)) then begin
+    and ((AForm.Owner=MainIDEBar) or (AForm.Owner=Self)) then begin
       DebugLn(['TMainIDE.FreeIDEWindows ',dbgsName(AForm)]);
       AForm.Free;
     end;
@@ -5424,7 +5424,7 @@ begin
     NewSrcEdit.EditorComponent.BeginUpdate;
     NewSrcEdit.CodeBuffer:=AnUnitInfo.Source;
     AnUnitInfo.ClearModifieds;
-    DebugLn(['TMainIDE.DoOpenFileInSourceEditor NewCaretXY=',dbgs(NewCaretXY),' NewTopLine=',NewTopLine]);
+    //DebugLn(['TMainIDE.DoOpenFileInSourceEditor NewCaretXY=',dbgs(NewCaretXY),' NewTopLine=',NewTopLine]);
   end;
 
   // update editor indices in project
