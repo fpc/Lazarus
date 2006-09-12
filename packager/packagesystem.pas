@@ -99,6 +99,7 @@ type
   private
     FAbortRegistration: boolean;
     fChanged: boolean;
+    FCodeToolsPackage: TLazPackage;
     FDefaultPackage: TLazPackage;
     FErrorMsg: string;
     FFCLPackage: TLazPackage;
@@ -124,6 +125,7 @@ type
     function CreateFCLPackage: TLazPackage;
     function CreateLCLPackage: TLazPackage;
     function CreateSynEditPackage: TLazPackage;
+    function CreateCodeToolsPackage: TLazPackage;
     function CreateIDEIntfPackage: TLazPackage;
     function CreateDefaultPackage: TLazPackage;
     function GetCount: Integer;
@@ -289,6 +291,7 @@ type
     property FCLPackage: TLazPackage read FFCLPackage;
     property LCLPackage: TLazPackage read FLCLPackage;
     property SynEditPackage: TLazPackage read FSynEditPackage;
+    property CodeToolsPackage: TLazPackage read FCodeToolsPackage;
     property IDEIntfPackage: TLazPackage read FIDEIntfPackage;
     property LazarusBasePackages: TFPList read FLazarusBasePackages;
     property DefaultPackage: TLazPackage read FDefaultPackage;
@@ -941,7 +944,7 @@ begin
     AutoInstall:=pitStatic;
     AutoUpdate:=pupManually;
     Description:=lisPkgSysTheFCLFreePascalComponentLibraryProvidesTheBase;
-    PackageType:=lptDesignTime;
+    PackageType:=lptRunAndDesignTime;
     Installed:=pitStatic;
     CompilerOptions.UnitOutputDirectory:='';
     
@@ -991,7 +994,7 @@ begin
     AutoInstall:=pitStatic;
     AutoUpdate:=pupManually;
     Description:=lisPkgSysTheLCLLazarusComponentLibraryContainsAllBase;
-    PackageType:=lptDesignTime;
+    PackageType:=lptRunAndDesignTime;
     Installed:=pitStatic;
     CompilerOptions.UnitOutputDirectory:='$(LazarusDir)/lcl/units/$(TargetCPU)-$(TargetOS)/';
 
@@ -1067,7 +1070,7 @@ begin
     AutoInstall:=pitStatic;
     AutoUpdate:=pupManually;
     Description:=lisPkgSysSynEditTheEditorComponentUsedByLazarus;
-    PackageType:=lptDesignTime;
+    PackageType:=lptRunAndDesignTime;
     Installed:=pitStatic;
     CompilerOptions.UnitOutputDirectory:='';
 
@@ -1106,6 +1109,80 @@ begin
     // if synedit has been recompiled
     OutputStateFile:=SetDirSeparators(
       '$(LazarusDir)/components/synedit/units/$(TargetCPU)-$(TargetOS)/allsyneditunits.o');
+
+    Modified:=false;
+  end;
+end;
+
+function TLazPackageGraph.CreateCodeToolsPackage: TLazPackage;
+begin
+  Result:=TLazPackage.Create;
+  with Result do begin
+    AutoCreated:=true;
+    Name:='CodeToolst';
+    Filename:=SetDirSeparators('$(LazarusDir)/components/codetools/');
+    Version.SetValues(1,0,0,0);
+    Author:='Mattias Gaertner';
+    License:='GPL-2';
+    AutoInstall:=pitStatic;
+    AutoUpdate:=pupManually;
+    Description:='CodeTools - tools and functions to parse, browse and edit pascal sources';
+    PackageType:=lptRunAndDesignTime;
+    Installed:=pitStatic;
+    CompilerOptions.UnitOutputDirectory:='';
+
+    // add requirements
+    AddRequiredDependency(FCLPackage.CreateDependencyWithOwner(Result));
+
+    // add units
+    AddFile('basiccodetools.pas','BasicCodeTools',pftUnit,[],cpBase);
+    AddFile('codeatom.pas','CodeAtom',pftUnit,[],cpBase);
+    AddFile('codebeautifier.pas','CodeBeautifier',pftUnit,[],cpBase);
+    AddFile('codecache.pas','CodeCache',pftUnit,[],cpBase);
+    AddFile('codecompletiontool.pas','CodeCompletionTool',pftUnit,[],cpBase);
+    AddFile('codetemplatestool.pas','CodeTemplatesTool',pftUnit,[],cpBase);
+    AddFile('codetoolmanager.pas','CodeToolManager',pftUnit,[],cpBase);
+    AddFile('codetoolmemmanager.pas','CodeToolMemManager',pftUnit,[],cpBase);
+    AddFile('codetoolsconfig.pas','CodeToolsConfig',pftUnit,[],cpBase);
+    AddFile('codetoolsstrconsts.pas','CodeToolsStrConsts',pftUnit,[],cpBase);
+    AddFile('codetoolsstructs.pas','CodeToolsStructs',pftUnit,[],cpBase);
+    AddFile('codetree.pas','CodeTree',pftUnit,[],cpBase);
+    AddFile('customcodetool.pas','CustomCodeTool',pftUnit,[],cpBase);
+    AddFile('definetemplates.pas','DefineTemplates',pftUnit,[],cpBase);
+    AddFile('directorycacher.pas','DirectoryCacher',pftUnit,[],cpBase);
+    AddFile('eventcodetool.pas','EventCodeTool',pftUnit,[],cpBase);
+    AddFile('expreval.pas','ExprEval',pftUnit,[],cpBase);
+    AddFile('extractproctool.pas','ExtractProctool',pftUnit,[],cpBase);
+    AddFile('fileprocs.pas','FileProcs',pftUnit,[],cpBase);
+    AddFile('finddeclarationcache.pas','FindDeclarationCache',pftUnit,[],cpBase);
+    AddFile('finddeclarationtool.pas','FindDeclarationTool',pftUnit,[],cpBase);
+    AddFile('identcompletiontool.pas','IdentCompletionTool',pftUnit,[],cpBase);
+    AddFile('keywordfunclists.pas','KeywordFuncLists',pftUnit,[],cpBase);
+    AddFile('laz_dom.pas','Laz_DOM',pftUnit,[],cpBase);
+    AddFile('laz_xmlcfg.pas','Laz_XMLCfg',pftUnit,[],cpBase);
+    AddFile('laz_xmlread.pas','Laz_XMLRead',pftUnit,[],cpBase);
+    AddFile('laz_xmlstreaming.pas','Laz_XMLStreaming',pftUnit,[],cpBase);
+    AddFile('laz_xmlwrite.pas','Laz_XMLWrite',pftUnit,[],cpBase);
+    AddFile('lfmtrees.pas','LFMTrees',pftUnit,[],cpBase);
+    AddFile('linkscanner.pas','LinkScanner',pftUnit,[],cpBase);
+    AddFile('memcheck.pas','MemCheck',pftUnit,[],cpBase);
+    AddFile('methodjumptool.pas','MethodJumpTool',pftUnit,[],cpBase);
+    AddFile('multikeywordlisttool.pas','MultiKeywordListTool',pftUnit,[],cpBase);
+    AddFile('pascalparsertool.pas','PascalParserTool',pftUnit,[],cpBase);
+    AddFile('pascalreadertool.pas','PascalReaderTool',pftUnit,[],cpBase);
+    AddFile('resourcecodetool.pas','ResourceCodeTool',pftUnit,[],cpBase);
+    AddFile('sourcechanger.pas','SourceChanger',pftUnit,[],cpBase);
+    AddFile('sourcelog.pas','SourceLog',pftUnit,[],cpBase);
+    AddFile('stdcodetools.pas','StdCodeTools',pftUnit,[],cpBase);
+
+    // add unit paths
+    UsageOptions.UnitPath:=SetDirSeparators(
+           '$(LazarusDir)/components/codetools/units/$(TargetCPU)-$(TargetOS)');
+
+    // use the components/units/..../allcodetoolsunits.o file as indicator,
+    // if codetools have been recompiled
+    OutputStateFile:=SetDirSeparators(
+      '$(LazarusDir)/components/codetools/units/$(TargetCPU)-$(TargetOS)/allcodetoolsunits.o');
 
     Modified:=false;
   end;
@@ -1301,6 +1378,7 @@ begin
   AddStaticBasePackage(CreateFCLPackage,FFCLPackage);
   AddStaticBasePackage(CreateLCLPackage,FLCLPackage);
   AddStaticBasePackage(CreateSynEditPackage,FSynEditPackage);
+  AddStaticBasePackage(CreateCodeToolsPackage,FCodeToolsPackage);
   AddStaticBasePackage(CreateIDEIntfPackage,FIDEIntfPackage);
   // the default package will be added on demand
   FDefaultPackage:=CreateDefaultPackage;
@@ -2919,7 +2997,7 @@ procedure TLazPackageGraph.RegisterStaticBasePackages;
 begin
   BeginUpdate(true);
   
-  // register IDE built-in packages
+  // register IDE built-in packages (Note: codetools do not need)
   RegisterStaticPackage(FCLPackage,@RegisterFCL.Register);
   RegisterStaticPackage(LCLPackage,@RegisterLCL.Register);
   RegisterStaticPackage(SynEditPackage,@RegisterSynEdit.Register);
