@@ -1393,6 +1393,7 @@ ide/uniteditor.pp svneol=native#text/pascal
 ide/unitinfodlg.lfm svneol=native#text/plain
 ide/unitinfodlg.lrs svneol=native#text/plain
 ide/unitinfodlg.pp svneol=native#text/pascal
+ide/version.inc svneol=native#text/plain
 ide/versioninfoadditionalinfo.lfm svneol=native#text/plain
 ide/versioninfoadditionalinfo.lrs svneol=native#text/plain
 ide/versioninfoadditionalinfo.pas svneol=native#text/plain

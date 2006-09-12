@@ -129,6 +129,7 @@ const
   ErrorLoadPackageFailed = 3;
   ErrorPackageNameInvalid = 4;
   ErrorLoadProjectFailed = 5;
+  VersionStr = {$I version.inc};
 
 procedure GetDescriptionOfDependencyOwner(Dependency: TPkgDependency;
   out Description: string);
@@ -813,6 +814,10 @@ begin
     WriteUsage;
     exit;
   end;
+  if HasOption('v','version') then begin
+    writeln(VersionStr);
+    exit;
+  end;
   Options:=TStringList.Create;
   NonOptions:=TStringList.Create;
   LongOptions:=TStringList.Create;
@@ -910,6 +915,7 @@ begin
   writeln('-B or --build-all         ','build all files of project/package');
   writeln('-r or --recursive         ','apply build flags (-B) to dependencies too.');
   writeln('-d or --skip-dependencies ','do not compile dependencies');
+  writeln('-v or --version           ','show version and exit');
   writeln('');
   writeln(PrimaryConfPathOptLong,'<path>');
   writeln('or ',PrimaryConfPathOptShort,'<path>');
