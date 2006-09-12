@@ -377,7 +377,6 @@ begin
   // find a Resource component registered for this ActionClass
   ResourceClass := RegisteredActions.FindResource(ActionClass);
   if ResourceClass = nil then Exit;
-showmessage(TCustomAction(ResourceClass).Caption);
   ResInstance := ResourceClass.Create(nil);
   try
     // find an action owned by the Resource component

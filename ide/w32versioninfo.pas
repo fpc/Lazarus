@@ -39,7 +39,9 @@ interface
 uses
   Classes, SysUtils, Process, LCLProc, Controls, Forms,
   CodeToolManager, CodeCache,
-  LazConf, Dialogprocs;
+  LazConf, Dialogprocs,
+
+  Dialogs;
    
 type
   { TProjectVersionInfo }
@@ -324,36 +326,43 @@ begin
          if UseVersionInfo then
             begin
                { project indicates to use the versioninfo }
+               if AutoIncrementBuild then
+                  begin
+                     { project indicate to use autoincrementbuild }
+                     Inc(BuildNr);
+                  end;
+               if ProductVersionString = '' then
+                  ProductVersionString := IntToStr(VersionNr) + '.' +
+                                          IntToStr(MajorRevNr) + '.' +
+                                          IntToStr(MinorRevNr) + '.' +
+                                          IntToStr(BuildNr);
                if (FileExists(rcFilename)) then
                   begin
                      { we found an existing .rc file }
-                     if AutoIncrementBuild then
-                        begin
-                           Inc(BuildNr);
-                           RewriteRCFile;
-                        end;
-                     { now it's time to do the real compile }
-                     Result := DoTheRealCompile;
-                     if (Result = mrOk) then
-                        begin
-                           { compilation succeeded }
-                           VersionInfoMessages.Clear;
-                           VersionInfoMessages.Add('Resource file ' + rcFilename + ' has been compiled successfully!');
-                           { we got a compiled .res file, check if it's included in the .lpr file }
-                           Result := UpdateMainSourceFile(MainFilename);
-                        end
-                     else
-                        begin
-                           { compilation failed }
-                           VersionInfoMessages.Add('Errors found while compiling ' + rcFilename);
-                        end;
+                     RewriteRCFile;
                   end
                else
                   begin
                      { there is no .rc file }
-                     VersionInfoMessages.Add(rcFilename + ' does not exist!!!');
+                     AssignFile(rcOutFile, rcFilename);
+                     Rewrite(rcOutFile);
+                     AppendToRCFile;
+                     CloseFile(rcOutFile);
+                  end;
+               { now it's time to do the real compile }
+               Result := DoTheRealCompile;
+               if (Result = mrOk) then
+                  begin
+                     { compilation succeeded }
+                     VersionInfoMessages.Clear;
+                     VersionInfoMessages.Add('Resource file ' + rcFilename + ' has been compiled successfully!');
+                     { we got a compiled .res file, check if it's included in the .lpr file }
+                     Result := UpdateMainSourceFile(MainFilename);
+                  end
+               else
+                  begin
+                     { compilation failed }
                      VersionInfoMessages.Add('Errors found while compiling ' + rcFilename);
-                     Result := mrCancel;
                   end;
             end
          else

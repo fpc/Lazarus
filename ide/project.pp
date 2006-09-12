@@ -52,7 +52,7 @@ uses
   LazarusIDEStrConsts, CompilerOptions, CodeToolManager, CodeCache,
   EditorOptions, IDEProcs, RunParamsOpts, ProjectIntf, ProjectDefs,
   FileReferenceList, EditDefineTree, DefineTemplates, PackageDefs, LazIDEIntf,
-  // for versioninfo
+  // for
   W32VersionInfo;
 
 type
@@ -2020,7 +2020,7 @@ begin
       VersionInfo.MajorRevNr := xmlconfig.GetValue(Path+'VersionInfo/CurrentMajorRevNr/Value', 0);
       VersionInfo.MinorRevNr := xmlconfig.GetValue(Path+'VersionInfo/CurrentMinorRevNr/Value', 0);
       VersionInfo.BuildNr := xmlconfig.GetValue(Path+'VersionInfo/CurrentBuildNr/Value', 0);
-      VersionInfo.ProductVersionString := LineBreaksToSystemLineBreaks(xmlconfig.GetValue(Path+'VersionInfo/ProjectVersion/Value', '1,0,0,0'));
+      VersionInfo.ProductVersionString := xmlconfig.GetValue(Path+'VersionInfo/ProjectVersion/Value', '1.0.0.0');
       VersionInfo.HexLang := xmlconfig.GetValue(Path+'VersionInfo/Language/Value', '0409');
       VersionInfo.HexCharSet := xmlconfig.GetValue(Path+'VersionInfo/CharSet/Value', '04E4');
       VersionInfo.CommentsString := LineBreaksToSystemLineBreaks(xmlconfig.GetValue(Path+'VersionInfo/Comments/Value', ''));

@@ -343,7 +343,8 @@ Var TN   : TTreeNode;
     if ItemDel.Count>0 then
     begin
       TN:=ItemDel;
-      ShowMessage('You must delete all childrens items before.');
+      MessageDlg('Error','You must delete all childrens items before.',mtError,
+                 [mbCancel]);
       Exit;
     end;
     //delete all child before

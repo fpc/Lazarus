@@ -7795,8 +7795,8 @@ procedure TMainIDE.DoRestart;
       ExeName := AppendPathDelim(StartLazProcess.CurrentDirectory) +
         'startlazarus' + GetExecutableExt;
       if not FileExists(ExeName) then begin
-        ShowMessage(format(lisCannotFindLazarusStarter,
-          [LineEnding, ExeName]));
+        IDEMessageDialog('Error',Format(lisCannotFindLazarusStarter,
+                            [LineEnding, ExeName]),mtError,[mbCancel]);
         exit;
       end;
       StartLazProcess.CommandLine := format('%s --lazarus-pid=%d',
