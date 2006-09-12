@@ -571,7 +571,7 @@ begin
   then Assert(False, Format('Trace:  [TGtk2WidgetSet.SetLabel] %s --> label %s', [Sender.ClassName, TControl(Sender).Caption]))
   else begin
     Assert(False, Format('Trace:WARNING: [TGtk2WidgetSet.SetLabel] %s --> No Decendant of TWinControl', [Sender.ClassName]));
-    RaiseException('[TGtk2WidgetSet.SetLabel] ERROR: Sender ('+Sender.Classname+')'
+    RaiseGDBException('[TGtk2WidgetSet.SetLabel] ERROR: Sender ('+Sender.Classname+')'
         +' is not TWinControl ');
   end;
 
@@ -667,7 +667,7 @@ begin
   then
     Assert(False, Format('Trace:  [TGtk2WidgetSet.SetProperties] %s', [Sender.ClassName]))
   else
-    RaiseException('TGtk2WidgetSet.SetProperties: '
+    RaiseGDBException('TGtk2WidgetSet.SetProperties: '
                    +' Sender.ClassName='+Sender.ClassName);
 
   wHandle:= Pointer(TWinControl(Sender).Handle);

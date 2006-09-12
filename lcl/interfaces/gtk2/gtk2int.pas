@@ -194,17 +194,17 @@ constructor TGtkListStoreStringList.Create(ListStore : PGtkListStore;
   ColumnIndex : Integer; TheOwner: TWinControl);
 begin
   inherited Create;
-  if ListStore = nil then RaiseException(
+  if ListStore = nil then RaiseGDBException(
     'TGtkListStoreStringList.Create Unspecified list store');
   FGtkListStore:= ListStore;
 
   if (ColumnIndex < 0) or
     (ColumnIndex >= gtk_tree_model_get_n_columns(GTK_TREE_MODEL(ListStore)))
   then
-    RaiseException('TGtkListStoreStringList.Create Invalid Column Index');
+    RaiseGDBException('TGtkListStoreStringList.Create Invalid Column Index');
   FColumnIndex:=ColumnIndex;
 
-  if TheOwner = nil then RaiseException(
+  if TheOwner = nil then RaiseGDBException(
     'TGtkListStoreStringList.Create Unspecified owner');
   FOwner:=TheOwner;
   Include(FStates,glsItemCacheNeedsUpdate);
@@ -273,7 +273,7 @@ var
   ListItem : TGtkTreeIter;
 begin
   if (Index < 0) or (Index >= Count) then
-    RaiseException('TGtkListStoreStringList.PutObject Out of bounds.')
+    RaiseGDBException('TGtkListStoreStringList.PutObject Out of bounds.')
   else if FGtkListStore<>nil then begin
     UpdateItemCache;
     ListItem:=FCachedItems[Index];
@@ -351,7 +351,7 @@ begin
   if ((Source is TGtkListStoreStringList)
     and (TGtkListStoreStringList(Source).FGtkListStore=FGtkListStore))
   then
-    RaiseException('TGtkListStoreStringList.Assign: There are 2 lists with the same FGtkListStore');
+    RaiseGDBException('TGtkListStoreStringList.Assign: There are 2 lists with the same FGtkListStore');
   BeginUpdate;
   OldSorted:=Sorted;
   CmpList:=nil;
@@ -396,7 +396,7 @@ var
   ListItem : TGtkTreeIter;
 begin
   if (Index < 0) or (Index >= Count) then
-    RaiseException('TGtkListStoreStringList.Get Out of bounds.')
+    RaiseGDBException('TGtkListStoreStringList.Get Out of bounds.')
   else begin
     UpdateItemCache;
     ListItem:=FCachedItems[Index];
@@ -419,7 +419,7 @@ var
 begin
   Result:=nil;
   if (Index < 0) or (Index >= Count) then
-    RaiseException('TGtkListStoreStringList.GetObject Out of bounds.')
+    RaiseGDBException('TGtkListStoreStringList.GetObject Out of bounds.')
   else if FGtkListStore<>nil then begin
     UpdateItemCache;
     ListItem:=FCachedItems[Index];
@@ -432,7 +432,7 @@ var
   ListItem : TGtkTreeIter;
 begin
   if (Index < 0) or (Index >= Count) then
-    RaiseException('TGtkListStoreStringList.Put Out of bounds.')
+    RaiseGDBException('TGtkListStoreStringList.Put Out of bounds.')
   else if FGtkListStore<>nil then begin
     UpdateItemCache;
     ListItem:=FCachedItems[Index];
@@ -544,9 +544,9 @@ begin
       Index:=m;
     end;
     if (Index < 0) or (Index > Count) then
-      RaiseException('TGtkListStoreStringList.Insert: Index '+IntToStr(Index)
+      RaiseGDBException('TGtkListStoreStringList.Insert: Index '+IntToStr(Index)
         +' out of bounds. Count='+IntToStr(Count));
-    if Owner = nil then RaiseException(
+    if Owner = nil then RaiseGDBException(
       'TGtkListStoreStringList.Insert Unspecified owner');
 
     gtk_list_store_insert(FGtkListStore, @li, Index);

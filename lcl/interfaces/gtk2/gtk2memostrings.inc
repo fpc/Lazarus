@@ -76,11 +76,11 @@ constructor TGtk2MemoStrings.Create(TextView: PGtkTextView;
   TheOwner: TWinControl);
 begin
   inherited Create;
-  if TextView = nil then RaiseException(
+  if TextView = nil then RaiseGDBException(
     'TGtk2MemoStrings.Create Unspecified Text widget');
   FGtkText:= TextView;
   FGtkBuf := gtk_text_view_get_buffer(FGtkText);
-  if TheOwner = nil then RaiseException(
+  if TheOwner = nil then RaiseGDBException(
     'TGtk2MemoStrings.Create Unspecified owner');
   FOwner:=TheOwner;
 end;
