@@ -5394,6 +5394,7 @@ begin
       ExtensionToLazSyntaxHighlighter(ExtractFileExt(AFilename));
 
   NewSrcEditorCreated:=false;
+  //DebugLn(['TMainIDE.DoOpenFileInSourceEditor Revert=',ofRevert in Flags,' ',AnUnitInfo.Filename]);
   if (not (ofRevert in Flags)) or (PageIndex<0) then begin
     // create a new source editor
 
@@ -5422,7 +5423,6 @@ begin
     NewExecutionLine:=NewSrcEdit.ExecutionLine;
     NewSrcEdit.EditorComponent.BeginUpdate;
     NewSrcEdit.CodeBuffer:=AnUnitInfo.Source;
-    NewSrcEdit.Modified:=false;
     AnUnitInfo.ClearModifieds;
   end;
 
@@ -5441,6 +5441,7 @@ begin
   NewSrcEdit.ErrorLine:=NewErrorLine;
   NewSrcEdit.ExecutionLine:=NewExecutionLine;
   NewSrcEdit.ReadOnly:=AnUnitInfo.ReadOnly;
+  NewSrcEdit.Modified:=false;
 
   // mark unit as loaded
   NewSrcEdit.EditorComponent.EndUpdate;
@@ -5919,7 +5920,10 @@ begin
 
   // check to not open directories
   if ((FilenameNoPath='') or (FilenameNoPath='.') or (FilenameNoPath='..')) then
+  begin
+    DebugLn(['TMainIDE.DoOpenEditorFile ignoring special file: ',AFilename]);
     exit;
+  end;
 
   if ([ofAddToRecent,ofRevert,ofVirtualFile]*Flags=[ofAddToRecent])
   and (AFilename<>'') and FilenameIsAbsolute(AFilename) then
@@ -6044,7 +6048,10 @@ begin
         Include(LoadBufferFlags,lbfRevert);
     end;
     Result:=LoadCodeBuffer(NewBuf,AFileName,LoadBufferFlags);
-    if Result<>mrOk then exit;
+    if Result<>mrOk then begin
+      DebugLn(['TMainIDE.DoOpenEditorFile failed LoadCodeBuffer: ',AFilename]);
+      exit;
+    end;
     NewUnitInfo.Source:=NewBuf;
     NewUnitInfo.Modified:=NewUnitInfo.Source.FileOnDiskNeedsUpdate;
     if FilenameIsPascalUnit(NewUnitInfo.Filename) then
@@ -6067,14 +6074,20 @@ begin
   {$ENDIF}
   // open file in source notebook
   Result:=DoOpenFileInSourceEditor(NewUnitInfo,PageIndex,Flags);
-  if Result<>mrOk then exit;
+  if Result<>mrOk then begin
+    DebugLn(['TMainIDE.DoOpenEditorFile failed DoOpenFileInSourceEditor: ',AFilename]);
+    exit;
+  end;
 
   {$IFDEF IDE_DEBUG}
   writeln('[TMainIDE.DoOpenEditorFile] C');
   {$ENDIF}
 
   Result:=OpenResource;
-  if Result<>mrOk then exit;
+  if Result<>mrOk then begin
+    DebugLn(['TMainIDE.DoOpenEditorFile failed OpenResource: ',AFilename]);
+    exit;
+  end;
 
   Result:=mrOk;
   //writeln('TMainIDE.DoOpenEditorFile END "',AFilename,'"');
@@ -8625,15 +8638,19 @@ begin
       Result:=mrOk;
     for i:=0 to AnUnitList.Count-1 do begin
       CurUnit:=TUnitInfo(AnUnitList[i]);
+      //DebugLn(['TMainIDE.DoCheckFilesOnDisk revert ',CurUnit.Filename,' EditorIndex=',CurUnit.EditorIndex]);
       if Result=mrOk then begin
         if CurUnit.EditorIndex>=0 then begin
-          Result:=DoOpenEditorFile('',CurUnit.EditorIndex,[ofRevert]);
+          Result:=DoOpenEditorFile(CurUnit.Filename,CurUnit.EditorIndex,[ofRevert]);
+          //DebugLn(['TMainIDE.DoCheckFilesOnDisk DoOpenEditorFile=',Result]);
         end else if CurUnit.IsMainUnit then begin
           Result:=DoRevertMainUnit;
+          //DebugLn(['TMainIDE.DoCheckFilesOnDisk DoRevertMainUnit=',Result]);
         end else
           Result:=mrIgnore;
         if Result=mrAbort then exit;
       end else begin
+        //DebugLn(['TMainIDE.DoCheckFilesOnDisk IgnoreCurrentFileDateOnDisk']);
         CurUnit.IgnoreCurrentFileDateOnDisk;
       end;
     end;
