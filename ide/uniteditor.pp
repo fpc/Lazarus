@@ -50,7 +50,7 @@ uses
   SynEditTypes, SynEdit, SynRegExpr, SynEditHighlighter, SynEditAutoComplete,
   SynEditKeyCmds, SynCompletion,
   // IDE interface
-  MacroIntf, ProjectIntf, SrcEditorIntf, MenuIntf, LazIDEIntf,
+  MacroIntf, ProjectIntf, SrcEditorIntf, MenuIntf, LazIDEIntf, PackageIntf,
   IDEWindowIntf,
   // IDE units
   LazarusIDEStrConsts, LazConf, IDECommands, EditorOptions, KeyMapping, Project,
@@ -435,6 +435,7 @@ type
     procedure OnPopupMenuOpenPFile(Sender: TObject);
     procedure OnPopupMenuOpenLFMFile(Sender: TObject);
     procedure OnPopupMenuOpenLRSFile(Sender: TObject);
+    procedure OnPopupMenuOpenFile(Sender: TObject);
     procedure ShowUnitInfo(Sender: TObject);
     procedure SrcPopUpMenuPopup(Sender: TObject);
     procedure ToggleLineNumbersClicked(Sender: TObject);
@@ -3622,33 +3623,38 @@ begin
 
   // add context specific menu items
   CurFilename:=ASrcEdit.FileName;
-  if FilenameIsPascalUnit(CurFilename)
-  and (FilenameIsAbsolute(CurFilename)) then begin
-    if FileExists(ChangeFileExt(CurFilename,'.lfm')) then
-      AddContextPopupMenuItem(
-        'Open '+ChangeFileExt(ExtractFileName(CurFilename),'.lfm'),
-        true,@OnPopupMenuOpenLFMFile);
-    if FileExists(ChangeFileExt(CurFilename,'.lrs')) then
-      AddContextPopupMenuItem(
-        'Open '+ChangeFileExt(ExtractFileName(CurFilename),'.lrs'),
-        true,@OnPopupMenuOpenLRSFile);
+  if (FilenameIsAbsolute(CurFilename)) then begin
+    if FilenameIsPascalUnit(CurFilename) then begin
+      if FileExists(ChangeFileExt(CurFilename,'.lfm')) then
+        AddContextPopupMenuItem(
+          'Open '+ChangeFileExt(ExtractFileName(CurFilename),'.lfm'),
+          true,@OnPopupMenuOpenLFMFile);
+      if FileExists(ChangeFileExt(CurFilename,'.lrs')) then
+        AddContextPopupMenuItem(
+          'Open '+ChangeFileExt(ExtractFileName(CurFilename),'.lrs'),
+          true,@OnPopupMenuOpenLRSFile);
+    end;
+    if (CompareFileExt(CurFilename,'.lfm',true)=0) then begin
+      if FileExists(ChangeFileExt(CurFilename,'.pas')) then
+        AddContextPopupMenuItem(
+          'Open '+ChangeFileExt(ExtractFileName(CurFilename),'.pas'),
+          true,@OnPopupMenuOpenPasFile);
+      if FileExists(ChangeFileExt(CurFilename,'.pp')) then
+        AddContextPopupMenuItem(
+          'Open '+ChangeFileExt(ExtractFileName(CurFilename),'.pp'),
+          true,@OnPopupMenuOpenPPFile);
+      if FileExists(ChangeFileExt(CurFilename,'.p')) then
+        AddContextPopupMenuItem(
+          'Open '+ChangeFileExt(ExtractFileName(CurFilename),'.p'),
+          true,@OnPopupMenuOpenPFile);
+    end;
+    if (CompareFileExt(CurFilename,'.lpi',true)=0)
+    or (CompareFileExt(CurFilename,'.lpk',true)=0) then begin
+      AddContextPopupMenuItem('Open '+ExtractFileName(CurFilename),true,
+                              @OnPopupMenuOpenFile);
+    end;
   end;
-  if (CompareFileExt(CurFilename,'.lfm',true)=0)
-  and (FilenameIsAbsolute(CurFilename)) then begin
-    if FileExists(ChangeFileExt(CurFilename,'.pas')) then
-      AddContextPopupMenuItem(
-        'Open '+ChangeFileExt(ExtractFileName(CurFilename),'.pas'),
-        true,@OnPopupMenuOpenPasFile);
-    if FileExists(ChangeFileExt(CurFilename,'.pp')) then
-      AddContextPopupMenuItem(
-        'Open '+ChangeFileExt(ExtractFileName(CurFilename),'.pp'),
-        true,@OnPopupMenuOpenPPFile);
-    if FileExists(ChangeFileExt(CurFilename,'.p')) then
-      AddContextPopupMenuItem(
-        'Open '+ChangeFileExt(ExtractFileName(CurFilename),'.p'),
-        true,@OnPopupMenuOpenPFile);
-  end;
-
+  
   if Assigned(OnPopupMenu) then OnPopupMenu(@AddContextPopupMenuItem);
 
   SourceEditorMenuRoot.NotifySubSectionOnShow(Self);
@@ -4572,6 +4578,18 @@ begin
   MainIDEInterface.DoOpenEditorFile(ChangeFileExt(GetActiveSE.Filename,'.lrs'),
     Notebook.PageIndex+1,
     [ofOnlyIfExists,ofAddToRecent,ofRegularFile,ofUseCache,ofDoNotLoadResource]);
+end;
+
+procedure TSourceNotebook.OnPopupMenuOpenFile(Sender: TObject);
+var
+  AFilename: String;
+begin
+  AFilename:=GetActiveSE.Filename;
+  if CompareFileExt(AFilename,'.lpi')=0 then
+    MainIDEInterface.DoOpenProjectFile(AFilename,
+      [ofOnlyIfExists,ofAddToRecent,ofUseCache])
+  else if CompareFileExt(AFilename,'.lpk')=0 then
+    PackageEditingInterface.DoOpenPackageFile(AFilename,[pofAddToRecent]);
 end;
 
 Procedure TSourceNotebook.ShowUnitInfo(Sender: TObject);

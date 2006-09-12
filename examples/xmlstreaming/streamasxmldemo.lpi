@@ -9,6 +9,25 @@
       <IconPath Value="./"/>
       <TargetFileExt Value=""/>
     </General>
+    <VersionInfo>
+      <UseVersionInfo Value="False"/>
+      <AutoIncrementBuild Value="False"/>
+      <CurrentVersionNr Value="0"/>
+      <CurrentMajorRevNr Value="0"/>
+      <CurrentMinorRevNr Value="0"/>
+      <CurrentBuildNr Value="0"/>
+      <ProjectVersion Value="1.0.0.0"/>
+      <Language Value="0409"/>
+      <CharSet Value="04E4"/>
+      <Comments Value=""/>
+      <CompanyName Value=""/>
+      <FileDescription Value=""/>
+      <InternalName Value=""/>
+      <LegalCopyright Value=""/>
+      <LegalTrademarks Value=""/>
+      <OriginalFilename Value=""/>
+      <ProductName Value=""/>
+    </VersionInfo>
     <PublishOptions>
       <Version Value="2"/>
       <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
@@ -20,10 +39,13 @@
         <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
-    <RequiredPackages Count="1">
+    <RequiredPackages Count="2">
       <Item1>
-        <PackageName Value="LCL"/>
+        <PackageName Value="CodeTools"/>
       </Item1>
+      <Item2>
+        <PackageName Value="LCL"/>
+      </Item2>
     </RequiredPackages>
     <Units Count="2">
       <Unit0>
@@ -42,9 +64,6 @@
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>
-    <SearchPaths>
-      <OtherUnitFiles Value="$(LazarusDir)/components/codetools/units/$(TargetCPU)-$(TargetOS)/"/>
-    </SearchPaths>
     <CodeGeneration>
       <Generate Value="Faster"/>
     </CodeGeneration>

@@ -2512,6 +2512,8 @@ resourcestring
     +'Component Library contains all base components for form editing.';
   lisPkgSysSynEditTheEditorComponentUsedByLazarus = 'SynEdit - the editor '
     +'component used by Lazarus. http://sourceforge.net/projects/synedit/';
+  lisPkgSysCodeToolsToolsAndFunctionsToParseBrowseAndEditPasc = 'CodeTools - '
+    +'tools and functions to parse, browse and edit pascal sources';
   lisPkgSysThisIsTheDefaultPackageUsedOnlyForComponents = 'This is the '
     +'default package. Used only for components without a package. These '
     +'components are outdated.';

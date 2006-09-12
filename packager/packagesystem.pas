@@ -1119,14 +1119,14 @@ begin
   Result:=TLazPackage.Create;
   with Result do begin
     AutoCreated:=true;
-    Name:='CodeToolst';
+    Name:='CodeTools';
     Filename:=SetDirSeparators('$(LazarusDir)/components/codetools/');
     Version.SetValues(1,0,0,0);
     Author:='Mattias Gaertner';
     License:='GPL-2';
     AutoInstall:=pitStatic;
     AutoUpdate:=pupManually;
-    Description:='CodeTools - tools and functions to parse, browse and edit pascal sources';
+    Description:=lisPkgSysCodeToolsToolsAndFunctionsToParseBrowseAndEditPasc;
     PackageType:=lptRunAndDesignTime;
     Installed:=pitStatic;
     CompilerOptions.UnitOutputDirectory:='';

@@ -5,8 +5,7 @@
     <CompilerOptions>
       <Version Value="5"/>
       <SearchPaths>
-        <OtherUnitFiles Value="$(LazarusDir)/units/$(TargetCPU)-$(TargetOS)/;$(LazarusDir)/components/codetools/units/$(TargetCPU)-$(TargetOS)/;$(LazarusDir)/components/synedit/units/$(TargetCPU)-$(TargetOS)/"/>
-        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)/"/>
+        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
       <CodeGeneration>
         <Generate Value="Faster"/>
@@ -24,17 +23,20 @@
       </Item1>
     </Files>
     <Type Value="DesignTime"/>
-    <RequiredPkgs Count="3">
+    <RequiredPkgs Count="4">
       <Item1>
-        <PackageName Value="lhelpcontrolpkg"/>
+        <PackageName Value="CodeTools"/>
       </Item1>
       <Item2>
-        <PackageName Value="IDEIntf"/>
+        <PackageName Value="lhelpcontrolpkg"/>
       </Item2>
       <Item3>
+        <PackageName Value="IDEIntf"/>
+      </Item3>
+      <Item4>
         <PackageName Value="FCL"/>
         <MinVersion Major="1" Valid="True"/>
-      </Item3>
+      </Item4>
     </RequiredPkgs>
     <UsageOptions>
       <UnitPath Value="$(PkgOutDir)/"/>
