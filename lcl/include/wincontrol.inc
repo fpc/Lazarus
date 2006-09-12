@@ -1747,42 +1747,51 @@ end;
 -------------------------------------------------------------------------------}
 procedure TWinControl.DoAutoSize;
 
-  function FindChildFixatedSides: TAnchors;
+  function FindChildFixatedSides(CurControl: TControl): TAnchors;
+  var
+    a: TAnchorKind;
+    Side: TAnchorSide;
+  begin
+    Result:=[];
+    for a:=Low(TAnchorKind) to High(TAnchorKind) do begin
+      Side:=CurControl.AnchorSide[a];
+      if (a in CurControl.Anchors)
+      and ((Side.Control=Self)
+      or ((Side.Control=nil) and (a in [akRight,akBottom])))
+      then begin
+        // CurControl is anchored to its parent = this control
+        if a in [akLeft,akRight] then begin
+          case Side.Side of
+          asrLeft: Include(Result,akLeft);
+          asrCenter: Result:=Result+[akLeft,akRight];
+          asrRight: Include(Result,akRight);
+          end;
+        end else begin
+          case Side.Side of
+          asrTop: Include(Result,akTop);
+          asrCenter: Result:=Result+[akTop,akBottom];
+          asrBottom: Include(Result,akBottom);
+          end;
+        end;
+      end;
+    end;
+    if CurControl.Align in [alLeft,alRight,alTop,alBottom,alClient] then
+      // CurControl is aligned to its parent = this control
+      Result:=Result+AnchorAlign[CurControl.Align];
+  end;
+
+  function FindChildsFixatedSides: TAnchors;
   // Returns all sides, that has a child control keeping distance to.
   // These sides should not be moved.
   var
     i: Integer;
     CurControl: TControl;
-    a: TAnchorKind;
-    Side: TAnchorSide;
   begin
     Result:=[];
     for i:=0 to ControlCount-1 do begin
       CurControl:=Controls[i];
       if not CurControl.IsControlVisible then continue;
-      for a:=Low(TAnchorKind) to High(TAnchorKind) do begin
-        Side:=CurControl.AnchorSide[a];
-        if (a in CurControl.Anchors) and (Side.Control=Self)
-        then begin
-          // CurControl is anchored to its parent = this control
-          if a in [akLeft,akRight] then begin
-            case Side.Side of
-            asrLeft: Include(Result,akLeft);
-            asrCenter: Result:=Result+[akLeft,akRight];
-            asrRight: Include(Result,akRight);
-            end;
-          end else begin
-            case Side.Side of
-            asrTop: Include(Result,akTop);
-            asrCenter: Result:=Result+[akTop,akBottom];
-            asrBottom: Include(Result,akBottom);
-            end;
-          end;
-        end;
-      end;
-      if CurControl.Align in [alLeft,alRight,alTop,alBottom,alClient] then
-        // CurControl is aligned to its parent = this control
-        Result:=Result+AnchorAlign[CurControl.Align];
+      Result:=Result+FindChildFixatedSides(CurControl);
     end;
   end;
   
@@ -1836,7 +1845,9 @@ var
   CurClientRect: TRect;
   dx: Integer;
   dy: Integer;
-  ChildFixedSides: TAnchors;
+  ChildsFixedSides: TAnchors;
+  ChildAnchors: TAnchors;
+  NewChildBounds: TRect;
 begin
   {$IFDEF VerboseAutoSize}
   debugln('TWinControl.DoAutoSize ',DbgSName(Self));
@@ -1853,8 +1864,8 @@ begin
     // test if resizing is possible
     CurAnchors:=Anchors;
     if Align<>alNone then CurAnchors:=CurAnchors+AnchorAlign[Align];
-    ChildFixedSides:=FindChildFixatedSides;
-    CurAnchors:=CurAnchors+ChildFixedSides;
+    ChildsFixedSides:=FindChildsFixatedSides;
+    CurAnchors:=CurAnchors+ChildsFixedSides;
     WidthIsFixed:=WidthAnchored(CurAnchors)
                  or WidthDependsOnChilds
                  or WidthDependsOnParent;
@@ -1869,23 +1880,37 @@ begin
       CurClientRect:=ClientRect;
       AdjustClientRect(CurClientRect);
 
-      if (akLeft in ChildFixedSides) then
+      if (akLeft in ChildsFixedSides) then
         dx:=0
       else
         dx:=CurClientRect.Left-ChildBounds.Left;
-      if (akTop in ChildFixedSides) then
+      if (akTop in ChildsFixedSides) then
         dy:=0
       else
         dy:=CurClientRect.Top-ChildBounds.Top;
 
       if (dx<>0) or (dy<>0) then begin
         // move all childs to left and top of client area
-        //DebugLn('TWinControl.DoAutoSize ',DbgSName(Self),' ',dbgs(dx),' ',dbgs(dy),' ChildBounds=',dbgs(ChildBounds),' CurClientRect=',dbgs(CurClientRect));
+        //DebugLn(['TWinControl.DoAutoSize ',DbgSName(Self),' ',dbgs(dx),' ',dbgs(dy),' ChildBounds=',dbgs(ChildBounds),' CurClientRect=',dbgs(CurClientRect),' ChildFixedSides=',dbgs(ChildsFixedSides),' CurAnchors=',dbgs(CurAnchors),' IsFixed: w=',WidthIsFixed,'h=',HeightIsFixed]);
         For I := 0 to ControlCount - 1 do begin
           AControl:=Controls[I];
           If AControl.IsControlVisible then begin
-            AControl.SetBoundsKeepBase(AControl.Left + dx, AControl.Top + dy,
-                                       AControl.Width,AControl.Height,true);
+            //DebugLn(['TWinControl.DoAutoSize BEFORE ',DbgSName(AControl),' ',dbgs(AControl.BoundsRect)]);
+            ChildAnchors:=FindChildFixatedSides(AControl);
+            NewChildBounds:=AControl.BoundsRect;
+            if not (akLeft in ChildAnchors) then begin
+              inc(NewChildBounds.Left,dx);
+              if not (akRight in ChildAnchors) then
+                inc(NewChildBounds.Right,dx);
+            end;
+            if not (akTop in ChildAnchors) then begin
+              inc(NewChildBounds.Top,dy);
+              if not (akBottom in ChildAnchors) then
+                inc(NewChildBounds.Bottom,dy);
+            end;
+            // Important: change the BaseBounds too
+            AControl.BoundsRect:=NewChildBounds;
+            //DebugLn(['TWinControl.DoAutoSize AFTER ',DbgSName(AControl),' ',dbgs(AControl.BoundsRect)]);
           end;
         end;
       end;
@@ -5724,13 +5749,12 @@ var
 begin
   ChildBounds := Rect(High(Integer),High(Integer),0,0);
   SpaceAround:=Rect(0,0,0,0);
+  FixatedAnchors:=[];
   for I := 0 to ControlCount - 1 do begin
     AControl:=Controls[I];
     if not AControl.IsControlVisible then continue;
     
-    FixatedAnchors:=GetBoundsDependingOnParent(false);
-    for a:=Low(TAnchorKind) to High(TAnchorKind) do
-      if a in FixatedAnchors then FixateSide(a);
+    FixatedAnchors:=FixatedAnchors+AControl.GetAnchorsDependingOnParent(false);
 
     if AControl.AutoSize then
       AControl.GetPreferredSize(ChildWidth,ChildHeight,false,false)
@@ -5741,14 +5765,10 @@ begin
 
     if WithBorderSpace then begin
       AControl.BorderSpacing.GetSpaceAround(SpaceAround);
-      if SpaceAround.Left<ChildSizing.LeftRightSpacing then
-        SpaceAround.Left:=ChildSizing.LeftRightSpacing;
-      if SpaceAround.Right<ChildSizing.LeftRightSpacing then
-        SpaceAround.Right:=ChildSizing.LeftRightSpacing;
-      if SpaceAround.Top<ChildSizing.TopBottomSpacing then
-        SpaceAround.Top:=ChildSizing.TopBottomSpacing;
-      if SpaceAround.Bottom<ChildSizing.TopBottomSpacing then
-        SpaceAround.Bottom:=ChildSizing.TopBottomSpacing;
+      SpaceAround.Left:=Max(SpaceAround.Left,ChildSizing.LeftRightSpacing);
+      SpaceAround.Right:=Max(SpaceAround.Right,ChildSizing.LeftRightSpacing);
+      SpaceAround.Top:=Max(SpaceAround.Top,ChildSizing.TopBottomSpacing);
+      SpaceAround.Bottom:=Max(SpaceAround.Bottom,ChildSizing.TopBottomSpacing);
     end;
     with ChildBounds do begin
       Left := Min(AControl.Left-SpaceAround.Left, Left);
@@ -5759,6 +5779,8 @@ begin
 
     //DebugLn('TWinControl.GetChildBounds ',DbgSName(Self),' ChildBounds=',dbgs(ChildBounds),' ',DbgSName(AControl),'.BoundsRect=',dbgs(AControl.BoundsRect),' SpaceAround=',dbgs(SpaceAround));
   end;
+  for a:=Low(TAnchorKind) to High(TAnchorKind) do
+    if a in FixatedAnchors then FixateSide(a);
   if ChildBounds.Left>ChildBounds.Right then begin
     ChildBounds.Left:=0;
     ChildBounds.Right:=0;

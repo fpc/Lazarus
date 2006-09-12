@@ -1136,7 +1136,7 @@ type
                                WithThemeSpace: boolean = true); virtual;
     procedure CNPreferredSizeChanged;
     procedure InvalidatePreferredSize; virtual;
-    function GetBoundsDependingOnParent(WithNormalAnchors: Boolean): TAnchors;
+    function GetAnchorsDependingOnParent(WithNormalAnchors: Boolean): TAnchors;
     procedure DisableAutoSizing;
     procedure EnableAutoSizing;
     procedure UpdateBaseBounds(StoreBounds, StoreParentClientSize,

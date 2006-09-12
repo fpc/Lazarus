@@ -3834,7 +3834,7 @@ begin
   end;
 end;
 
-function TControl.GetBoundsDependingOnParent(WithNormalAnchors: Boolean
+function TControl.GetAnchorsDependingOnParent(WithNormalAnchors: Boolean
   ): TAnchors;
 var
   a: TAnchorKind;
@@ -3846,11 +3846,16 @@ begin
     // center horizontally
     Result:=Result+[akLeft,akRight];
   end;
+  if (Anchors*[akTop,akBottom]=[]) then begin
+    // center vertically
+    Result:=Result+[akTop,akBottom];
+  end;
 
   for a:=Low(TAnchorKind) to High(TAnchorKind) do begin
     if (a in Anchors) then begin
       if WithNormalAnchors
-      or (AnchorSide[a].Control=Parent) then begin
+      or (AnchorSide[a].Control=Parent)
+      or ((AnchorSide[a].Control=nil) and (a in [akRight,akBottom])) then begin
         // side anchored
         Include(Result,a);
       end;
