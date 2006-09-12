@@ -36,10 +36,11 @@ unit ProjectOpts;
 interface
 
 uses
-  Arrow, Buttons, LCLProc, Classes, CodeToolManager, Controls, Dialogs,
-  ExtCtrls, Forms, Graphics, IDEOptionDefs, IDEWindowIntf, LazarusIDEStrConsts,
-  LCLIntf, LResources, Project, ProjectIntf, StdCtrls, SysUtils, IDEProcs, Spin,
-  W32VersionInfo, VersionInfoAdditionalInfo;
+  Arrow, Buttons, StdCtrls, SysUtils, LCLProc, Classes, CodeToolManager,
+  Controls, Dialogs, LCLIntf, LResources, ExtCtrls, Forms, Graphics, Spin,
+  IDEWindowIntf, ProjectIntf,
+  IDEOptionDefs, LazarusIDEStrConsts, Project, IDEProcs, W32VersionInfo,
+  VersionInfoAdditionalInfo;
 
 type
 
@@ -85,7 +86,7 @@ type
     RunnableCheckBox: TCheckBox;
     AlwaysBuildCheckBox: TCheckBox;
 
-    //lazdoc settings
+    // Lazdoc settings
     LazDocBrowseButton: TButton;
     LazDocPathEdit: TEdit;
     LazDocDeletePathButton: TButton;
@@ -101,27 +102,27 @@ type
     // VersionInfo
     UseVersionInfoCheckBox: TCheckBox;
     VersionInfoGroupBox: TGroupBox;
-       VersionLabel: TLabel;
-       MajorRevisionLabel: TLabel;
-       MinorRevisionLabel: TLabel;
-       BuildLabel: TLabel;
-       VersionSpinEdit: TSpinEdit;
-       MajorRevisionSpinEdit: TSpinEdit;
-       MinorRevisionSpinEdit: TSpinEdit;
-       BuildEdit: TEdit;
-       AutomaticallyIncreaseBuildCheckBox: TCheckBox;
+      VersionLabel: TLabel;
+      MajorRevisionLabel: TLabel;
+      MinorRevisionLabel: TLabel;
+      BuildLabel: TLabel;
+      VersionSpinEdit: TSpinEdit;
+      MajorRevisionSpinEdit: TSpinEdit;
+      MinorRevisionSpinEdit: TSpinEdit;
+      BuildEdit: TEdit;
+      AutomaticallyIncreaseBuildCheckBox: TCheckBox;
     LanguageSettingsGroupBox: TGroupBox;
-       LanguageSelectionLabel: TLabel;
-       CharacterSetLabel: TLabel;
-       LanguageSelectionComboBox: TComboBox;
-       CharacterSetComboBox: TComboBox;
+      LanguageSelectionLabel: TLabel;
+      CharacterSetLabel: TLabel;
+      LanguageSelectionComboBox: TComboBox;
+      CharacterSetComboBox: TComboBox;
     OtherInfoGroupBox: TGroupBox;
-       AdditionalInfoButton: TButton;
-       DescriptionEdit: TEdit;
-       CopyrightEdit: TEdit;
-       DescriptionLabel: TLabel;
-       CopyrightLabel: TLabel;
-       AdditionalInfoForm: TVersionInfoAdditinalInfoForm;
+      AdditionalInfoButton: TButton;
+      DescriptionEdit: TEdit;
+      CopyrightEdit: TEdit;
+      DescriptionLabel: TLabel;
+      CopyrightLabel: TLabel;
+      AdditionalInfoForm: TVersionInfoAdditinalInfoForm;
 
     // buttons at bottom
     OKButton: TButton;
@@ -133,7 +134,7 @@ type
     procedure LazDocBrowseButtonClick(Sender: TObject);
     procedure LazDocDeletePathButtonClick(Sender: TObject);
     procedure ProjectOptionsClose(Sender: TObject;
-      var CloseAction: TCloseAction);
+                                  var CloseAction: TCloseAction);
     procedure ProjectOptionsResize(Sender: TObject);
     procedure FormsAddToAutoCreatedFormsBtnClick(Sender: TObject);
     procedure FormsRemoveFromAutoCreatedFormsBtnClick(Sender: TObject);
@@ -403,15 +404,15 @@ begin
     NewFlags := Project.Flags;
     SetProjectFlag(pfSaveClosedUnits, SaveClosedUnitInfoCheckBox.Checked);
     SetProjectFlag(pfSaveOnlyProjectUnits,
-      SaveOnlyProjectUnitInfoCheckBox.Checked);
+                   SaveOnlyProjectUnitInfoCheckBox.Checked);
     SetProjectFlag(pfMainUnitIsPascalSource,
-      MainUnitIsPascalSourceCheckBox.Checked);
+                   MainUnitIsPascalSourceCheckBox.Checked);
     SetProjectFlag(pfMainUnitHasUsesSectionForAllUnits,
-      MainUnitHasUsesSectionForAllUnitsCheckBox.Checked);
+                   MainUnitHasUsesSectionForAllUnitsCheckBox.Checked);
     SetProjectFlag(pfMainUnitHasCreateFormStatements,
-      MainUnitHasCreateFormStatementsCheckBox.Checked);
+                   MainUnitHasCreateFormStatementsCheckBox.Checked);
     SetProjectFlag(pfMainUnitHasTitleStatement,
-      MainUnitHasTitleStatementCheckBox.Checked);
+                   MainUnitHasTitleStatementCheckBox.Checked);
     SetProjectFlag(pfRunnable, RunnableCheckBox.Checked);
     SetProjectFlag(pfAlwaysBuild, AlwaysBuildCheckBox.Checked);
     Project.Flags := NewFlags;
@@ -832,6 +833,7 @@ begin
         CodeToolBoss.ErrorMessage,
         mtWarning, [mbCancel], 0);
       Result := False;
+      exit;
     end// set Application.Title:= statement
   ;
 
@@ -844,6 +846,7 @@ begin
         CodeToolBoss.ErrorMessage,
         mtWarning, [mbCancel], 0);
       Result := False;
+      exit;
     end// delete title
   ;
 end;
