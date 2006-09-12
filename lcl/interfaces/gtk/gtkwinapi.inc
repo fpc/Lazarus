@@ -740,7 +740,7 @@ begin
     AtomName:=PChar(AMimeType);
     Result:=gdk_atom_intern(AtomName,GdkFalse);
   end else
-    RaiseException(
+    RaiseGDBException(
       'ERROR: TGtkWidgetSet.ClipboardRegisterFormat gdk not initialized');
 end;
 
@@ -3144,7 +3144,7 @@ begin
     Widget:=PGtkWidget(Handle);
     DevContext:=TDeviceContext(PS.HDC);
     if Widget<>PGtkWidget(DevContext.Wnd) then
-      RaiseException('');
+      RaiseGDBException('');
     DCDrawable:=DevContext.Drawable;
     IsDoubleBuffer:=dcfDoubleBuffer in DevContext.DCFlags;
     if IsDoubleBuffer then begin
@@ -7097,9 +7097,9 @@ function TGtkWidgetSet.PostMessage(Handle: HWND; Msg: Cardinal; wParam: WParam;
         NewMsg^.Message:=LM_PAINT;
       end;
     end else if (NewMsg^.Message<>LM_GtkPAINT) then begin
-      RaiseException('CombinePaintMessages A unknown paint message');
+      RaiseGDBException('CombinePaintMessages A unknown paint message');
     end else if (OldMsg^.Message<>LM_GtkPAINT) then begin
-      RaiseException('CombinePaintMessages B unknown paint message');
+      RaiseGDBException('CombinePaintMessages B unknown paint message');
     end else begin
       // combine the two LM_GtkPAINT messages
       NewData:=TLMGtkPaintData(NewMsg^.WParam);
@@ -7896,7 +7896,7 @@ function TGtkWidgetSet.SelectObject(DC: HDC; GDIObj: HGDIOBJ): HGDIOBJ;
 
   procedure RaiseInvalidGDIType;
   begin
-    RaiseException('TGtkWidgetSet.SelectObject Invalid GDIType '+IntToStr(ord(PGdiObject(GDIObj)^.GDIType)));
+    RaiseGDBException('TGtkWidgetSet.SelectObject Invalid GDIType '+IntToStr(ord(PGdiObject(GDIObj)^.GDIType)));
   end;
   
   procedure DebugInvalidGDIObject;
@@ -8262,7 +8262,7 @@ var
 begin
   Result:=true;
   if not (GtkWidgetIsA(PgtkWidget(Handle),GTK_TYPE_COMBO)) then
-    RaiseException('TGtkWidgetSet.SetComboMinDropDownSize invalid handle');
+    RaiseGDBException('TGtkWidgetSet.SetComboMinDropDownSize invalid handle');
 
   // get current items width and height
   ComboWidget:=PGtkCombo(Handle);
@@ -9345,7 +9345,7 @@ begin
   Result:=false;
   GtkWindow:=PGtkWindow(hWnd);
   if GtkWindow=nil then
-    RaiseException('TGtkWidgetSet.ShowWindow  hWnd is nil');
+    RaiseGDBException('TGtkWidgetSet.ShowWindow  hWnd is nil');
 
   {$IFDEF Gtk2}
   //debugln('TGtkWidgetSet.ShowWindow A ',GetWidgetDebugReport(PGtkWidget(GtkWindow)),' nCmdShow=',dbgs(nCmdShow),' SW_MINIMIZE=',dbgs(SW_MINIMIZE=nCmdShow));

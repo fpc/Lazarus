@@ -444,7 +444,6 @@ type
   { TEnvironmentOptionsDialog }
 
   TEnvironmentOptionsDialog = class(TForm)
-    Label1: TLabel;
     NoteBook: TNoteBook;
     FilesPage: TPage;
     DesktopPage: TPage;
@@ -463,6 +462,7 @@ type
     LazDocAddPathButton: TButton;
     LazDocPathsGroupBox: TGroupBox;
     LazDocListBox: TListBox;
+    LazDocNoteLabel: TLabel;
 
     // language
     LanguageGroupBox: TGroupBox;
@@ -607,6 +607,7 @@ type
     procedure LazDocAddPathButtonClick(Sender: TObject);
     procedure LazDocBrowseButtonClick(Sender: TObject);
     procedure LazDocDeletePathButtonClick(Sender: TObject);
+    procedure NotebookChangeBounds(Sender: TObject);
     procedure OkButtonClick(Sender: TObject);
     procedure CancelButtonClick(Sender: TObject);
     procedure SaveDesktopSettingsToFileButtonClick(Sender: TObject);
@@ -2044,6 +2045,7 @@ begin
   LazDocPathsGroupBox.Caption := lisLazDocPathsGroupBox;
   LazDocAddPathButton.Caption := lisLazDocAddPathButton;
   LazDocDeletePathButton.Caption := lisLazDocDeletePathButton;
+  LazDocNoteLabel.Caption:=lisEONOTEOnlyAbsolutePathsAreSupportedNow;
   
   LazDocPathEdit.Clear;
 end;
@@ -2178,6 +2180,11 @@ procedure TEnvironmentOptionsDialog.LazDocDeletePathButtonClick(Sender: TObject
   );
 begin
   LazDocListBox.Items.Delete(LazDocListBox.ItemIndex);
+end;
+
+procedure TEnvironmentOptionsDialog.NotebookChangeBounds(Sender: TObject);
+begin
+
 end;
 
 procedure TEnvironmentOptionsDialog.OkButtonClick(Sender: TObject);

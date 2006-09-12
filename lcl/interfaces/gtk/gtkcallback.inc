@@ -2183,7 +2183,7 @@ begin
             DbgS(Data),' ',GetWidgetClassName(Widget));
     if Data<>nil then
       DebugLn('  Data=',TObject(Data).ClassName);
-    RaiseException('');
+    RaiseGDBException('');
     exit;
   end;
 

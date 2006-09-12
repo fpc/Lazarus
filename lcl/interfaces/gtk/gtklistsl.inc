@@ -20,9 +20,9 @@
 }
 
 
-{*************************************************************}
-{                      Default compare functions              }
-{*************************************************************}
+{*************************************************************
+                      Default compare functions
+*************************************************************}
 
 {function DefaultCompareFunc(a, b : gpointer) : gint; cdecl;
 var AStr, BStr : PChar;
@@ -63,11 +63,11 @@ begin
   // get context
   GtkList:=PGtkList(gtk_object_get_data(PGtkObject(Data),GtkListItemGtkListTag));
   if GtkList=nil then
-    RaiseException('gtkListItemDrawAfterCB GtkList=nil');
+    RaiseGDBException('gtkListItemDrawAfterCB GtkList=nil');
   LCLList:=TGtkListStringList(gtk_object_get_data(PGtkObject(Data),
                               GtkListItemLCLListTag));
   if LCLList=nil then
-    RaiseException('gtkListItemDrawAfterCB LCLList=nil');
+    RaiseGDBException('gtkListItemDrawAfterCB LCLList=nil');
   if [csDestroying,csLoading]*LCLList.Owner.ComponentState<>[] then exit;
   
   // only owner draw lists are interested in drawing items themselves.
@@ -145,11 +145,11 @@ begin
   // get context
   GtkList:=PGtkList(gtk_object_get_data(PGtkObject(Data),GtkListItemGtkListTag));
   if GtkList=nil then
-    RaiseException('gtkListItemToggledCB GtkList=nil');
+    RaiseGDBException('gtkListItemToggledCB GtkList=nil');
   LCLList:=TGtkListStringList(gtk_object_get_data(PGtkObject(Data),
                               GtkListItemLCLListTag));
   if LCLList=nil then
-    RaiseException('gtkListItemToggledCB LCLList=nil');
+    RaiseGDBException('gtkListItemToggledCB LCLList=nil');
   if [csDestroying,csLoading]*LCLList.Owner.ComponentState<>[] then exit;
 
   // get itemindex and area
@@ -197,7 +197,7 @@ procedure GtkListItemSelectAfterCB(Widget: PGtkWidget; data: gpointer); cdecl;
       gtk_label_get(LabelWidget, @LabelText);
       s:=s+' Text="'+DbgStr(StrPas(LabelText))+'"';
     end;
-    RaiseException(s);
+    RaiseGDBException(s);
   end;
 
 var
@@ -216,7 +216,7 @@ begin
   LCLList:=TGtkListStringList(gtk_object_get_data(PGtkObject(Data),
                               GtkListItemLCLListTag));
   if LCLList=nil then
-    RaiseException('gtkListItemSelectAfterCB LCLList=nil');
+    RaiseGDBException('gtkListItemSelectAfterCB LCLList=nil');
   if [csDestroying,csLoading]*LCLList.Owner.ComponentState<>[] then exit;
 
   // get itemindex and area
@@ -242,10 +242,10 @@ constructor TGtkListStringList.Create(List: PGtkList; TheOwner: TWinControl;
   const AWithCheckBox: Boolean);
 begin
   inherited Create;
-  if List = nil then RaiseException(
+  if List = nil then RaiseGDBException(
     'TGtkListStringList.Create Unspecified list widget');
   FGtkList:= List;
-  if TheOwner = nil then RaiseException(
+  if TheOwner = nil then RaiseGDBException(
     'TGtkListStringList.Create Unspecified owner');
   FOwner:=TheOwner;
   FWithCheckBox := AWithCheckBox;
@@ -575,9 +575,9 @@ var
   Str1: string;
   Str2: string;
 begin
-  if FCachedCount>FCachedCapacity then RaiseException('');
-  if (FCachedItems=nil) and (FCachedCapacity>0) then RaiseException('');
-  if (FCachedItems<>nil) and (FCachedCapacity=0) then RaiseException('');
+  if FCachedCount>FCachedCapacity then RaiseGDBException('');
+  if (FCachedItems=nil) and (FCachedCapacity>0) then RaiseGDBException('');
+  if (FCachedItems<>nil) and (FCachedCapacity=0) then RaiseGDBException('');
 
   UpdateItemCache;
   if (FGtkList<>nil) and (FGtkList^.children<>nil) then
@@ -585,14 +585,14 @@ begin
   else
     RealCachedCount:=0;
   if RealCachedCount<>FCachedCount then
-    RaiseException('RealCachedCount='+IntToStr(RealCachedCount)
+    RaiseGDBException('RealCachedCount='+IntToStr(RealCachedCount)
       +' FCachedCount='+IntToStr(FCachedCount));
   if FGtkList<>nil then begin
     CurListItem:=FGtkList^.children;
     i:=0;
     while CurListItem<>nil do begin
       if FCachedItems[i]<>PGtkListItem(CurListItem^.Data) then
-        RaiseException(IntToStr(i));
+        RaiseGDBException(IntToStr(i));
       inc(i);
       CurListItem:=CurListItem^.Next;
     end;
@@ -603,7 +603,7 @@ begin
       Str1:=Strings[i];
       Str2:=Strings[i+1];
       if (AnsiCompareText(Str1,Str2)>0) then
-        RaiseException(IntToStr(i)+':'+Str1+'>'+IntToStr(i+1)+':'+Str2);
+        RaiseGDBException(IntToStr(i)+':'+Str1+'>'+IntToStr(i+1)+':'+Str2);
     end;
   end;
 end;
@@ -623,7 +623,7 @@ begin
   if ((Source is TGtkListStringList)
     and (TGtkListStringList(Source).FGtkList=FGtkList))
   then
-    RaiseException('TGtkListStringList.Assign: There 2 lists with the same FGtkList');
+    RaiseGDBException('TGtkListStringList.Assign: There 2 lists with the same FGtkList');
   BeginUpdate;
 //DebugLn('[TGtkListStringList.Assign] A ',Source.Classname,' Self=',DbgS(Self),' Source=',DbgS(Source));
   try
@@ -702,7 +702,7 @@ begin
   // change label
   ALabel:=GetLabel(Index);
   if ALabel = nil then
-    RaiseException('TGtkListStringList.Put');
+    RaiseGDBException('TGtkListStringList.Put');
   if S<>'' then
     NewText:=PChar(S)
   else
@@ -718,7 +718,7 @@ end;
 function TGtkListStringList.GetListItem(Index: integer): PGtkListItem;
 begin
   if (Index < 0) or (Index >= Count) then
-    RaiseException('TGtkListStringList.Get Out of bounds.')
+    RaiseGDBException('TGtkListStringList.Get Out of bounds.')
   else begin
     UpdateItemCache;
     Result:=FCachedItems[Index];
@@ -879,7 +879,7 @@ var
   
   procedure RaiseIndexOutOfBounds;
   begin
-    RaiseException('TGtkListStringList.Insert: Index '+IntToStr(Index)
+    RaiseGDBException('TGtkListStringList.Insert: Index '+IntToStr(Index)
       +' out of bounds. Count='+IntToStr(OldCount));
   end;
   
@@ -892,7 +892,7 @@ begin
     end;
     if (Index < 0) or (Index > OldCount) then
       RaiseIndexOutOfBounds;
-    if Owner = nil then RaiseException(
+    if Owner = nil then RaiseGDBException(
       'TGtkListStringList.Insert Unspecified owner');
 
     // ToDo:
@@ -1026,7 +1026,7 @@ constructor TGtkCListStringList.Create(List : PGtkCList);
 begin
   inherited Create;
   if List = nil then
-    RaiseException('TGtkCListStringList.Create: Unspecified list widget');
+    RaiseGDBException('TGtkCListStringList.Create: Unspecified list widget');
   FGtkCList:= List;
 end;
 
@@ -1109,7 +1109,7 @@ var
   Item : PChar;
 begin
   if (Index < 0) or (Index >= Count) 
-  then RaiseException('TGtkCListStringList.Get  Out of bounds.')
+  then RaiseGDBException('TGtkCListStringList.Get  Out of bounds.')
   else begin
     Item := nil;
     gtk_clist_get_text(FGtkCList, Index, 0, @Item);

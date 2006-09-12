@@ -521,7 +521,7 @@ begin
 
   {$IfDef REPORT_GDK_ERRORS}
   If (Xerror<>0) then
-    RaiseException('A GDK/X Error occured, this is normally fatal. The error code was : ' + IntToStr(Xerror));
+    RaiseGDBException('A GDK/X Error occured, this is normally fatal. The error code was : ' + IntToStr(Xerror));
   {$EndIf}
 end;
 
@@ -535,26 +535,6 @@ begin
   end;
 end;
 
-
-{------------------------------------------------------------------------------
-  procedure RaiseException(const Msg: string);
-
-  Raises an exception.
-  gdb does not catch fpc Exception objects, therefore this procedure raises
-  a standard AV which is catched by gdb.
- ------------------------------------------------------------------------------}
-procedure RaiseException(const Msg: string);
-begin
-  DebugLn('ERROR in gtk-interface: ',Msg);
-  // creates an exception, that gdb catches:
-  DebugLn('Creating gdb catchable error:');
-  if (length(Msg) div (length(Msg) div 10000))=0 then ;
-end;
-
-procedure RaiseException(const Msg: string; Args: array of const);
-begin
-  RaiseException(Format(Msg, Args));
-end;
 
 {------------------------------------------------------------------------------
   function CreatePChar(const s: string): PChar;
@@ -3907,9 +3887,9 @@ var
 begin
   if (Item=After) or (Item^.Next=After) then exit;
   if (g_list_position(First,Item)<0) then
-    RaiseException('MoveGListLinkBehind Item not found');
+    RaiseGDBException('MoveGListLinkBehind Item not found');
   if (After<>nil) and (g_list_position(First,After)<0) then
-    RaiseException('MoveGListLinkBehind After not found');
+    RaiseGDBException('MoveGListLinkBehind After not found');
   Data:=Item^.Data;
   g_list_remove_link(First,Item);
   if After<>nil then begin
@@ -3970,7 +3950,7 @@ begin
     else
       Result := PGtkLayout(Widget)^.bin_window;
   end else
-    RaiseException('GetControlWindow Widget=nil');
+    RaiseGDBException('GetControlWindow Widget=nil');
 end;
 
 {------------------------------------------------------------------------------
@@ -5395,7 +5375,7 @@ var
   AccelGroup: PGTKAccelGroup;
 begin
   if (Component=nil) or (Widget=nil) then
-    RaiseException('RealizeAccelerate: invalid input');
+    RaiseGDBException('RealizeAccelerate: invalid input');
 
   // Set the accelerator
   AccelKey:=GetAccelKey(Widget);
@@ -5428,7 +5408,7 @@ var
   AccelKey: PAcceleratorKey;
 begin
   if (Widget=nil) then
-    RaiseException('UnrealizeAccelerate: invalid input');
+    RaiseGDBException('UnrealizeAccelerate: invalid input');
     
   AccelKey:=GetAccelKey(Widget);
   if (AccelKey=nil) or (not AccelKey^.Realized) then exit;
@@ -5462,7 +5442,7 @@ var
   OldAccelKey: PAcceleratorKey;
 begin
   if (Component=nil) or (Widget=nil) or (Signal='') then
-    RaiseException('Accelerate: invalid input');
+    RaiseGDBException('Accelerate: invalid input');
   {$IFDEF VerboseAccelerator}
   DebugLn('Accelerate ',DbgSName(Component),' Key=',dbgs(Key),' Mods=',DbgS(Mods),' Signal=',Signal);
   {$ENDIF}
@@ -6281,7 +6261,7 @@ begin
     //DebugLn(' KKK21 i=',i,' Widget=',DbgS(TopologicalList[i].Widget));
     LCLControl:=TControl(GetLCLObject(TopologicalList[i].Widget));
     if (LCLControl=nil) or (not (LCLControl is TControl)) then
-      RaiseException('CreateTopologicalSortedWidgets: '
+      RaiseGDBException('CreateTopologicalSortedWidgets: '
                              +'Widget without LCL control');
     Lvl:=GetParentLevel(LCLControl);
     TopologicalList[i].ParentLevel:=Lvl;
@@ -6906,7 +6886,7 @@ var
 begin
   if Styles=nil then exit;
   if aStyle in [lgsUserDefined] then
-    RaiseException('');// user styles are defined by name
+    RaiseGDBException('');// user styles are defined by name
   StyleObject:=StandardStyles[aStyle];
   if StyleObject<>nil then begin
     l:=IndexOfStyle(aStyle);
@@ -6939,7 +6919,7 @@ function GetStyle(aStyle: TLazGtkStyle): PGTKStyle;
 begin
   if Styles=nil then exit(nil);
   if aStyle in [lgsUserDefined] then
-    RaiseException('');// user styles are defined by name
+    RaiseGDBException('');// user styles are defined by name
   if StandardStyles[aStyle]<>nil then
     // already created
     Result:=StandardStyles[aStyle]^.Style
@@ -7153,12 +7133,12 @@ begin
       // unknown style name -> bug
       FreeStyleObject(StyleObject);
       AddToStyleWindow:=false;
-      RaiseException('');
+      RaiseGDBException('');
     end;
     
     if (lgs<>lgsUserDefined) and (StandardStyles[lgs]<>nil) then begin
       // consistency error
-      RaiseException('');
+      RaiseGDBException('');
     end;
     
     // ensure style of the widget
@@ -7228,7 +7208,7 @@ end;
 function GetStyleWidget(aStyle: TLazGtkStyle) : PGTKWidget;
 begin
   if aStyle in [lgsUserDefined] then
-    RaiseException('');// user styles are defined by name
+    RaiseGDBException('');// user styles are defined by name
   if StandardStyles[aStyle]<>nil then
     // already created
     Result:=StandardStyles[aStyle]^.Widget

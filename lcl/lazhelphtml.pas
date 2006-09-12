@@ -252,8 +252,10 @@ begin
   Result:='';
   if BaseURL<>'' then begin
     Result:=BaseURL;
-    if (Databases<>nil) then
+    if (Databases<>nil) then begin
       Databases.SubstituteMacros(Result);
+      Result:=FilenameToURLPath(Result);
+    end;
     //debugln('THTMLHelpDatabase.GetEffectiveBaseURL using BaseURL="',Result,'"');
   end else if (BasePathObject<>nil) and (Databases<>nil) then begin
     Result:=Databases.GetBaseURLForBasePathObject(BasePathObject);
@@ -261,8 +263,10 @@ begin
   end;
   if (Result='') and (DefaultBaseURL<>'') then begin
     Result:=DefaultBaseURL;
-    if (Databases<>nil) then
+    if (Databases<>nil) then begin
       Databases.SubstituteMacros(Result);
+      Result:=FilenameToURLPath(Result);
+    end;
     //debugln('THTMLHelpDatabase.GetEffectiveBaseURL using DefaultBaseURL="',Result,'"');
   end;
   Result:=AppendURLPathDelim(Result);

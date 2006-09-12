@@ -3046,6 +3046,8 @@ resourcestring
   lisLazDocSeeAlsoTag = 'See also';
   lisLazDocAddPathButton = 'Add path';
   lisLazDocDeletePathButton = 'Remove path';
+  lisEONOTEOnlyAbsolutePathsAreSupportedNow = 'NOTE: only absolute paths are '
+    +'supported now';
   lisLazDocPathsGroupBox = 'LazDoc settings';
   lisLazDocHintBoldFormat = 'Insert bold formatting tag';
   lisLazDocHintItalicFormat = 'Insert italic formatting tag';

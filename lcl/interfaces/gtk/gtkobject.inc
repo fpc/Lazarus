@@ -943,7 +943,7 @@ procedure TGtkWidgetSet.SendCachedLCLMessages;
 
     procedure RaiseWidgetWithoutControl;
     begin
-      RaiseException('ERROR: TGtkWidgetSet.SendCachedLCLMessages Widget '
+      RaiseGDBException('ERROR: TGtkWidgetSet.SendCachedLCLMessages Widget '
         +DbgS(Widget)+' without LCL control');
     end;
 
@@ -1223,8 +1223,8 @@ procedure TGtkWidgetSet.SendCachedGtkMessages;
 
     procedure RaiseInvalidLCLControl;
     begin
-      RaiseException('SendCachedGtkResizeNotifications FixWidget=%p MainWidget=%p LCLControl=%p',
-                    [FixWidget, MainWidget, Pointer(LCLControl)]);
+      RaiseGDBException(Format('SendCachedGtkResizeNotifications FixWidget=%p MainWidget=%p LCLControl=%p',
+                    [FixWidget, MainWidget, Pointer(LCLControl)]));
     end;
 
   begin
@@ -2060,7 +2060,7 @@ var
   Width, Height, Depth : Longint;
 begin
   if not (Bitmap is TBitmap) then
-    RaiseException('TGtkWidgetSet.LoadFromXPMFile Bitmap is not TBitmap: '
+    RaiseGDBException('TGtkWidgetSet.LoadFromXPMFile Bitmap is not TBitmap: '
                    +Bitmap.ClassName);
   TheBitmap:=TBitmap(Bitmap);
   GdiObject := NewGDIObject(gdiBitmap);
@@ -2177,7 +2177,7 @@ var
 
 begin
   if not (Bitmap is TBitmap) then
-    RaiseException('TGtkWidgetSet.LoadFromPixbufFile Bitmap is not TBitmap: '
+    RaiseGDBException('TGtkWidgetSet.LoadFromPixbufFile Bitmap is not TBitmap: '
                    +Bitmap.ClassName);
   TheBitmap:=TBitmap(Bitmap);
   if not LoadFile then
@@ -2720,7 +2720,7 @@ begin
   end;
 
   if NewRawImage.Description.Depth=1 then begin
-    RaiseException('TGtkWidgetSet.GetRawImageFromGdkWindow Depth=1 invalid');
+    RaiseGDBException('TGtkWidgetSet.GetRawImageFromGdkWindow Depth=1 invalid');
     exit;
   end;
 
@@ -2805,13 +2805,13 @@ begin
 
   // check consistency
   if not RawImage.Description.AlphaSeparate then
-    RaiseException('TGTKWidgetSet.GetRawImageMaskFromGdkBitmap RawImage.Description.AlphaSeparate=false');
+    RaiseGDBException('TGTKWidgetSet.GetRawImageMaskFromGdkBitmap RawImage.Description.AlphaSeparate=false');
   if (Width<>RawImage.Description.Width) then
-    RaiseException('TGTKWidgetSet.GetRawImageMaskFromGdkBitmap Width<>RawImage.Description.Width');
+    RaiseGDBException('TGTKWidgetSet.GetRawImageMaskFromGdkBitmap Width<>RawImage.Description.Width');
   if (Height<>RawImage.Description.Height) then
-    RaiseException('TGTKWidgetSet.GetRawImageMaskFromGdkBitmap Height<>RawImage.Description.Height');
+    RaiseGDBException('TGTKWidgetSet.GetRawImageMaskFromGdkBitmap Height<>RawImage.Description.Height');
   if RawImage.Mask<>nil then
-    RaiseException('TGTKWidgetSet.GetRawImageMaskFromGdkBitmap RawImage.Mask<>nil');
+    RaiseGDBException('TGTKWidgetSet.GetRawImageMaskFromGdkBitmap RawImage.Mask<>nil');
 
   // get gdk_image from gdkbitmap
   AnImage:=gdk_image_get(MaskBitmap,SrcRect.Left,SrcRect.Top,Width,Height);
@@ -3264,12 +3264,12 @@ var
 
   procedure RaiseSrcDrawableNil;
   begin
-    RaiseException('TGtkWidgetSet.StretchCopyArea SrcDC=%p Drawable=nil', [Pointer(SrcDevContext)]);
+    RaiseGDBException(Format('TGtkWidgetSet.StretchCopyArea SrcDC=%p Drawable=nil', [Pointer(SrcDevContext)]));
   end;
 
   procedure RaiseDestDrawableNil;
   begin
-    RaiseException('TGtkWidgetSet.StretchCopyArea DestDC=%p Drawable=nil', [Pointer(DestDevContext)]);
+    RaiseGDBException(Format('TGtkWidgetSet.StretchCopyArea DestDC=%p Drawable=nil', [Pointer(DestDevContext)]));
   end;
 
 var
@@ -5481,9 +5481,9 @@ begin
       // get the VBox, the form has one child, a VBox
       ParentForm:=TCustomForm(TMenu(Sender).Parent);
       if (ParentForm=nil) or (not (ParentForm is TCustomForm)) then
-        RaiseException('MainMenu without form');
+        RaiseGDBException('MainMenu without form');
       if ParentForm.Menu<>TMenu(Sender) then
-        RaiseException('form has already a MainMenu');
+        RaiseGDBException('form has already a MainMenu');
       if ParentForm.HandleAllocated then begin
         Box := PGTKBin(ParentForm.Handle)^.Child;
         gtk_box_pack_start(Box, p, False, False, 0);
@@ -5731,7 +5731,7 @@ var
   SubMenuWidget: PGtkMenu;
 begin
   if not (Sender is TMenuItem) then
-    RaiseException('TGtkWidgetSet.DestroyEmptySubmenu');
+    RaiseGDBException('TGtkWidgetSet.DestroyEmptySubmenu');
   // destroying a TMenuItem
   LCLMenuItem:=TMenuItem(Sender);
   // check if in a sub menu
@@ -5767,7 +5767,7 @@ procedure TGtkWidgetSet.ShowHide(Sender : TObject);
 
   procedure RaiseWrongClass;
   begin
-    RaiseException('TGtkWidgetSet.ShowHide Sender.ClassName='+Sender.ClassName);
+    RaiseGDBException('TGtkWidgetSet.ShowHide Sender.ClassName='+Sender.ClassName);
   end;
 
 var FormIconGdiObject: PGDIObject;
@@ -6306,7 +6306,7 @@ function TGtkWidgetSet.CreateDCForWidget(TheWidget: PGtkWidget;
 
   procedure RaiseWidgetWithoutClientArea;
   begin
-    RaiseException('TGtkWidgetSet.CreateWindowDC widget '
+    RaiseGDBException('TGtkWidgetSet.CreateWindowDC widget '
       +DbgS(TheWidget)+' has no client area');
   end;
 
@@ -6340,7 +6340,7 @@ begin
         gtk_widget_realize(ClientWidget);
         TheWindow := GetControlWindow(ClientWidget);
         if TheWindow=nil then
-          RaiseException('TGtkWidgetSet.CreateDCForWidget: Unable to realize GdkWindow');
+          RaiseGDBException('TGtkWidgetSet.CreateDCForWidget: Unable to realize GdkWindow');
       end;
     end else
       ClientWidget:=TheWidget;
@@ -7229,7 +7229,7 @@ begin
     inc(i,2);
   end;
   if PtrInt(Lines)+TotalSize<>PtrInt(CurLineStart) then
-    RaiseException('TGtkWidgetSet.WordWrap Consistency Error:'
+    RaiseGDBException('TGtkWidgetSet.WordWrap Consistency Error:'
       +' Lines+TotalSize<>CurLineStart');
   CurLineEntry[i shr 1]:=nil;
 

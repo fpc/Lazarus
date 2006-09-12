@@ -111,10 +111,10 @@ begin
   begin
     MenuItem := PGtkWidget(Handle);
     if MenuItem=nil then
-      RaiseException('TGtkWidgetSet.AttachMenu Handle=0');
+      RaiseGDBException('TGtkWidgetSet.AttachMenu Handle=0');
     ParentMenuWidget := PGtkWidget(Parent.Handle);
     if ParentMenuWidget=nil then
-      RaiseException('TGtkWidgetSet.AttachMenu ParentMenuWidget=nil');
+      RaiseGDBException('TGtkWidgetSet.AttachMenu ParentMenuWidget=nil');
 
     if GtkWidgetIsA(ParentMenuWidget,GTK_TYPE_MENU_BAR) then begin
       // mainmenu (= a menu bar)

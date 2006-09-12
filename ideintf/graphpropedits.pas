@@ -178,7 +178,6 @@ var
   ABitmap: TBitmap;
   Ext : String;
 begin
-  //debugln('TGraphicPropertyEditor.Edit');
   ABitmap := TBitmap(GetObjectValue(TBitmap));
   TheDialog := TGraphicPropertyEditorForm.Create(nil);
   try
@@ -273,7 +272,6 @@ var
   TheDialog: TGraphicPropertyEditorForm;
   ABitmap: TBitmap;
 begin
-  //debugln('TButtonGlyphPropEditor.Edit');
   ABitmap := TBitmap(GetObjectValue(TBitmap));
   TheDialog := TGraphicPropertyEditorForm.Create(nil);
   try

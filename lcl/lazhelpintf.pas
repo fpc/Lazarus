@@ -589,16 +589,8 @@ begin
 end;
 
 function FilenameToURL(const Filename: string): string;
-var
-  i: Integer;
 begin
-  Result:=Filename;
-  {$warnings off}
-  if PathDelim<>'/' then
-    for i:=1 to length(Result) do
-      if Result[i]=PathDelim then
-        Result[i]:='/';
-  {$warnings on}
+  Result:=FilenameToURLPath(Filename);
   if Result<>'' then
     Result:='file://'+Result;
 end;

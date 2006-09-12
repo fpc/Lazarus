@@ -348,8 +348,6 @@ var
 // functions
 
 // debugging
-procedure RaiseException(const Msg: string);
-procedure RaiseException(const Msg: string; Args: array of const);
 function GtkWidgetIsA(Widget: PGtkWidget; AType: TGtkType): boolean;
 function GetWidgetClassName(Widget: PGtkWidget): string;
 function GetWidgetDebugReport(Widget: PGtkWidget): string;
