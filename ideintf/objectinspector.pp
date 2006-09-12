@@ -899,7 +899,7 @@ procedure TOICustomPropertyGrid.Notification(AComponent: TComponent;
 var
   i: LongInt;
 begin
-  if Operation=opRemove then begin
+  if (Operation=opRemove) and (FNotificationComponents<>nil) then begin
     FNotificationComponents.Remove(AComponent);
     i:=FSelection.IndexOf(AComponent);
     if i>=0 then begin

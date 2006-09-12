@@ -5424,6 +5424,7 @@ begin
     NewSrcEdit.EditorComponent.BeginUpdate;
     NewSrcEdit.CodeBuffer:=AnUnitInfo.Source;
     AnUnitInfo.ClearModifieds;
+    DebugLn(['TMainIDE.DoOpenFileInSourceEditor NewCaretXY=',dbgs(NewCaretXY),' NewTopLine=',NewTopLine]);
   end;
 
   // update editor indices in project
@@ -5866,6 +5867,7 @@ var
   FilenameNoPath: String;
   LoadBufferFlags: TLoadBufferFlags;
   DiskFilename: String;
+  NewSrcEdit: TSourceEditor;
 
   function OpenResource: TModalResult;
   begin
@@ -6047,7 +6049,11 @@ begin
       if ofRevert in Flags then
         Include(LoadBufferFlags,lbfRevert);
     end;
+    NewSrcEdit:=SourceNotebook.FindSourceEditorWithPageIndex(PageIndex);
+    if NewSrcEdit<>nil then DebugLn(['TMainIDE.DoOpenEditorFile AAA ',AFilename,' TopLine=',NewSrcEdit.EditorComponent.TopLine]);
     Result:=LoadCodeBuffer(NewBuf,AFileName,LoadBufferFlags);
+    NewSrcEdit:=SourceNotebook.FindSourceEditorWithPageIndex(PageIndex);
+    if NewSrcEdit<>nil then DebugLn(['TMainIDE.DoOpenEditorFile BBB ',AFilename,' TopLine=',NewSrcEdit.EditorComponent.TopLine]);
     if Result<>mrOk then begin
       DebugLn(['TMainIDE.DoOpenEditorFile failed LoadCodeBuffer: ',AFilename]);
       exit;

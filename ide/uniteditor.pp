@@ -2108,9 +2108,9 @@ procedure TSourceEditor.OnCodeBufferChanged(Sender: TSourceLog;
 
 var StartPos, EndPos, MoveToPos: TPoint;
 begin
-{$IFDEF IDE_DEBUG}
-writeln('[TSourceEditor.OnCodeBufferChanged] A ',FIgnoreCodeBufferLock,' ',SrcLogEntry<>nil);
-{$ENDIF}
+  { $IFDEF IDE_DEBUG}
+  writeln('[TSourceEditor.OnCodeBufferChanged] A ',FIgnoreCodeBufferLock,' ',SrcLogEntry<>nil);
+  { $ENDIF}
   if FIgnoreCodeBufferLock>0 then exit;
   if SrcLogEntry<>nil then begin
     FEditor.BeginUpdate;
