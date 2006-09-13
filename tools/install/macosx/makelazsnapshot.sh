@@ -64,7 +64,7 @@ make lazbuilder PP=$COMPILER
 make lcl LCL_PLATFORM=carbon PP=$COMPILER
 strip lazarus
 strip startlazarus
-strip lazbuilder
+strip lazbuild
 
 # create symlinks
 mkdir -p $BUILDDIR/bin
