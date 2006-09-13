@@ -1832,7 +1832,7 @@ procedure TWinControl.DoAutoSize;
   end;
 
 var
-  I : Integer;
+  I: Integer;
   AControl: TControl;
   PreferredWidth: LongInt;
   PreferredHeight: LongInt;
@@ -1874,7 +1874,7 @@ begin
                  or HeightDependsOnParent;
 
     // move childs tight to left and top (so no space left and above childs)
-    If (ControlCount > 0) then begin
+    if (ControlCount > 0) then begin
       // get current bounds of all childs
       GetChildBounds(ChildBounds,true);
       CurClientRect:=ClientRect;
@@ -1892,9 +1892,9 @@ begin
       if (dx<>0) or (dy<>0) then begin
         // move all childs to left and top of client area
         //DebugLn(['TWinControl.DoAutoSize ',DbgSName(Self),' ',dbgs(dx),' ',dbgs(dy),' ChildBounds=',dbgs(ChildBounds),' CurClientRect=',dbgs(CurClientRect),' ChildFixedSides=',dbgs(ChildsFixedSides),' CurAnchors=',dbgs(CurAnchors),' IsFixed: w=',WidthIsFixed,'h=',HeightIsFixed]);
-        For I := 0 to ControlCount - 1 do begin
+        for I := 0 to ControlCount - 1 do begin
           AControl:=Controls[I];
-          If AControl.IsControlVisible then begin
+          if AControl.IsControlVisible then begin
             //DebugLn(['TWinControl.DoAutoSize BEFORE ',DbgSName(AControl),' ',dbgs(AControl.BoundsRect)]);
             ChildAnchors:=FindChildFixatedSides(AControl);
             NewChildBounds:=AControl.BoundsRect;
@@ -1919,8 +1919,7 @@ begin
     // autosize control to preferred size
     if (not WidthIsFixed) or (not HeightIsFixed) then begin
       GetPreferredSize(PreferredWidth,PreferredHeight,false,false);
-      //if ControlCount>0 then
-      //  DebugLn('TWinControl.DoAutoSize ',DbgSName(Self),' PreferredWidth=',dbgs(PreferredWidth),' PreferredHeight=',dbgs(PreferredHeight));
+      //if ControlCount>0 then DebugLn(['TWinControl.DoAutoSize ',DbgSName(Self),' PreferredWidth=',PreferredWidth,' PreferredHeight=',PreferredHeight,' ControlCount=',ControlCount]);
     end else begin
       PreferredWidth:=0;
       PreferredHeight:=0;
@@ -2050,7 +2049,7 @@ var r: TRect;
 begin
   r:=GetClientRect;
   AdjustClientRect(r);
-  //DebugLn(' TWinControl.DoAdjustClientRectChange ',Name,':',ClassName,' ',dbgs(r.Right),',',dbgs(r.Bottom));
+  //DebugLn(['TWinControl.DoAdjustClientRectChange ',DbgSName(Self),' ',r.Right,',',r.Bottom,' ',CompareRect(@r,@FAdjustClientRectRealized)]);
   if not CompareRect(@r,@FAdjustClientRectRealized) then begin
     // client rect changed since last AlignControl
     {$IFDEF VerboseClientRectBugFix}
@@ -2061,6 +2060,7 @@ begin
     FAdjustClientRectRealized:=r;
     ReAlign;
     Resize;
+    AdjustSize;
   end;
 end;
 
@@ -2089,7 +2089,7 @@ var
   I: Integer;
 begin
   {$IFDEF VerboseClientRectBugFix}
-  DebugLn('[TWinControl.InvalidateClientRectCache] ',Name,':',ClassName);
+  DebugLn('[TWinControl.InvalidateClientRectCache] ',DbgSName(Self));
   {$ENDIF}
   Include(FWinControlFlags,wcfClientRectNeedsUpdate);
 

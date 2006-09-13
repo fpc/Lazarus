@@ -98,6 +98,7 @@ resourcestring
   lisLazarusLanguageID = 'Lazarus language ID (e.g. en, de, br, fi)';
   lisLazarusLanguageName = 'Lazarus language name (e.g. english, deutsch)';
   lisLCLWidgetType = 'LCL Widget Type';
+  lisCOVarious = '%s (various)';
   lisTargetCPU = 'Target CPU';
   lisTargetOS = 'Target OS';
   lisCommandLineParamsOfProgram = 'Command line parameters of program';

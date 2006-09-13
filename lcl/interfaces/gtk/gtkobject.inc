@@ -1131,7 +1131,7 @@ procedure TGtkWidgetSet.SendCachedGtkMessages;
     UpdateLCLRect;
 
     {$IFDEF VerboseSizeMsg}
-    DebugLn('JJJ2 ',LCLControl.Name,
+    DebugLn('SendSizeNotificationToLCL ',DbgSName(LCLControl),
       ' GTK=',dbgs(GtkLeft)+','+dbgs(GtkTop)+','+dbgs(GtkWidth)+'x'+dbgs(GtkHeight),
       ' LCL=',dbgs(LCLLeft)+','+dbgs(LCLTop)+','+dbgs(LCLWidth)+'x'+dbgs(LCLHeight)
       );
@@ -1162,7 +1162,7 @@ procedure TGtkWidgetSet.SendCachedGtkMessages;
     // then send a LM_SIZE message
     if WidthHeightChanged then begin
       {$IFDEF VerboseSizeMsg}
-      DebugLn('JJJ3 Send LM_SIZE To LCL ',LCLControl.Name,':',LCLControl.ClassName);
+      DebugLn('Send LM_SIZE To LCL ',LCLControl.Name,':',LCLControl.ClassName);
       {$ENDIF}
       with SizeMsg do
       begin
@@ -1188,7 +1188,7 @@ procedure TGtkWidgetSet.SendCachedGtkMessages;
     // then send a LM_MOVE message
     if TopLeftChanged then begin
       {$IFDEF VerboseSizeMsg}
-      DebugLn('JJJ4 Send LM_MOVE To LCL ',LCLControl.Name,':',LCLControl.ClassName);
+      DebugLn('Send LM_MOVE To LCL ',LCLControl.Name,':',LCLControl.ClassName);
       {$ENDIF}
       with MoveMsg do
       begin

@@ -3606,34 +3606,44 @@ end;
 procedure TControl.AnchorToNeighbour(Side: TAnchorKind; Space: integer;
   Sibling: TControl);
 begin
-  case Side of
-  akLeft: BorderSpacing.Left:=Space;
-  akTop: BorderSpacing.Top:=Space;
-  akRight: BorderSpacing.Right:=Space;
-  akBottom: BorderSpacing.Bottom:=Space;
+  if Parent<>nil then Parent.DisableAlign;
+  try
+    case Side of
+    akLeft: BorderSpacing.Left:=Space;
+    akTop: BorderSpacing.Top:=Space;
+    akRight: BorderSpacing.Right:=Space;
+    akBottom: BorderSpacing.Bottom:=Space;
+    end;
+    AnchorSide[Side].Side:=DefaultSideForAnchorKind[Side];
+    AnchorSide[Side].Control:=Sibling;
+    Anchors:=Anchors+[Side];
+  finally
+    if Parent<>nil then Parent.EnableAlign;
   end;
-  AnchorSide[Side].Side:=DefaultSideForAnchorKind[Side];
-  AnchorSide[Side].Control:=Sibling;
-  Anchors:=Anchors+[Side];
 end;
 
 procedure TControl.AnchorParallel(Side: TAnchorKind; Space: integer;
   Sibling: TControl);
 begin
-  case Side of
-  akLeft: BorderSpacing.Left:=Space;
-  akTop: BorderSpacing.Top:=Space;
-  akRight: BorderSpacing.Right:=Space;
-  akBottom: BorderSpacing.Bottom:=Space;
+  if Parent<>nil then Parent.DisableAlign;
+  try
+    case Side of
+    akLeft: BorderSpacing.Left:=Space;
+    akTop: BorderSpacing.Top:=Space;
+    akRight: BorderSpacing.Right:=Space;
+    akBottom: BorderSpacing.Bottom:=Space;
+    end;
+    case Side of
+    akLeft: AnchorSide[Side].Side:=asrLeft;
+    akTop: AnchorSide[Side].Side:=asrTop;
+    akRight: AnchorSide[Side].Side:=asrRight;
+    akBottom: AnchorSide[Side].Side:=asrBottom;
+    end;
+    AnchorSide[Side].Control:=Sibling;
+    Anchors:=Anchors+[Side];
+  finally
+    if Parent<>nil then Parent.EnableAlign;
   end;
-  case Side of
-  akLeft: AnchorSide[Side].Side:=asrLeft;
-  akTop: AnchorSide[Side].Side:=asrTop;
-  akRight: AnchorSide[Side].Side:=asrRight;
-  akBottom: AnchorSide[Side].Side:=asrBottom;
-  end;
-  AnchorSide[Side].Control:=Sibling;
-  Anchors:=Anchors+[Side];
 end;
 
 {------------------------------------------------------------------------------
@@ -3643,9 +3653,14 @@ end;
  ------------------------------------------------------------------------------}
 procedure TControl.AnchorHorizontalCenterTo(Sibling: TControl);
 begin
-  AnchorSide[akLeft].Side:=asrCenter;
-  AnchorSide[akLeft].Control:=Sibling;
-  Anchors:=Anchors+[akLeft]-[akRight];
+  if Parent<>nil then Parent.DisableAlign;
+  try
+    AnchorSide[akLeft].Side:=asrCenter;
+    AnchorSide[akLeft].Control:=Sibling;
+    Anchors:=Anchors+[akLeft]-[akRight];
+  finally
+    if Parent<>nil then Parent.EnableAlign;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -3655,9 +3670,14 @@ end;
  ------------------------------------------------------------------------------}
 procedure TControl.AnchorVerticalCenterTo(Sibling: TControl);
 begin
-  AnchorSide[akTop].Side:=asrCenter;
-  AnchorSide[akTop].Control:=Sibling;
-  Anchors:=Anchors+[akTop]-[akBottom];
+  if Parent<>nil then Parent.DisableAlign;
+  try
+    AnchorSide[akTop].Side:=asrCenter;
+    AnchorSide[akTop].Control:=Sibling;
+    Anchors:=Anchors+[akTop]-[akBottom];
+  finally
+    if Parent<>nil then Parent.EnableAlign;
+  end;
 end;
 
 procedure TControl.AnchorToCompanion(Side: TAnchorKind; Space: integer;
@@ -3672,58 +3692,80 @@ procedure TControl.AnchorToCompanion(Side: TAnchorKind; Space: integer;
   begin
     if not (OppositeAnchor[Side] in Anchors) then
       AnchorSide[OppositeResizeSide].Control:=nil;
-    AnchorToNeighbour(ResizeSide,0,Sibling);
+    AnchorToNeighbour(ResizeSide,Space,Sibling);
     AnchorParallel(FixedSide1,0,Sibling);
     AnchorParallel(FixedSide2,0,Sibling);
-    BorderSpacing.SetSpace(ResizeSide,Space);
   end;
 
 var
   NewAnchors: TAnchors;
 begin
-  // anchor all. Except for the opposite side.
-  NewAnchors:=[akLeft,akTop,akRight,akBottom];
-  if FreeCompositeSide or (not (OppositeAnchor[Side] in Anchors)) then
-    Exclude(NewAnchors,OppositeAnchor[Side]);
-  Anchors:=NewAnchors;
+  if Parent<>nil then Parent.DisableAlign;
+  try
+    // anchor all. Except for the opposite side.
+    NewAnchors:=[akLeft,akTop,akRight,akBottom];
+    if FreeCompositeSide or (not (OppositeAnchor[Side] in Anchors)) then
+      Exclude(NewAnchors,OppositeAnchor[Side]);
+    Anchors:=NewAnchors;
 
-  case Side of
-  akLeft:   AnchorCompanionSides(akLeft,akRight,akTop,akBottom);
-  akRight:  AnchorCompanionSides(akRight,akLeft,akTop,akBottom);
-  akTop:    AnchorCompanionSides(akTop,akBottom,akLeft,akRight);
-  akBottom: AnchorCompanionSides(akBottom,akTop,akLeft,akRight);
+    case Side of
+    akLeft:   AnchorCompanionSides(akLeft,akRight,akTop,akBottom);
+    akRight:  AnchorCompanionSides(akRight,akLeft,akTop,akBottom);
+    akTop:    AnchorCompanionSides(akTop,akBottom,akLeft,akRight);
+    akBottom: AnchorCompanionSides(akBottom,akTop,akLeft,akRight);
+    end;
+  finally
+    if Parent<>nil then Parent.EnableAlign;
   end;
 end;
 
 procedure TControl.AnchorSame(Side: TAnchorKind; Sibling: TControl);
 begin
-  if Side in Sibling.Anchors then
-    Anchors:=Anchors+[Side]
-  else
-    Anchors:=Anchors-[Side];
-  AnchorSide[Side].Assign(Sibling.AnchorSide[Side]);
+  if Parent<>nil then Parent.DisableAlign;
+  try
+    if Side in Sibling.Anchors then
+      Anchors:=Anchors+[Side]
+    else
+      Anchors:=Anchors-[Side];
+    AnchorSide[Side].Assign(Sibling.AnchorSide[Side]);
+  finally
+    if Parent<>nil then Parent.EnableAlign;
+  end;
 end;
 
-procedure TControl.AnchorClient(Space: Integer);
-var
-  a: TAnchorKind;
+procedure TControl.AnchorAsAlign(TheAlign: TAlign; Space: Integer);
 begin
   Parent.DisableAlign;
   try
-    BorderSpacing.Left:=Space;
-    BorderSpacing.Top:=Space;
-    BorderSpacing.Right:=Space;
-    BorderSpacing.Bottom:=Space;
-    AnchorSide[akLeft].Side:=asrLeft;
-    AnchorSide[akTop].Side:=asrTop;
-    AnchorSide[akRight].Side:=asrRight;
-    AnchorSide[akBottom].Side:=asrBottom;
-    for a:=Low(TAnchorKind) to High(TAnchorKind) do
-      AnchorSide[a].Control:=Parent;
-    Anchors:=[akLeft,akTop,akRight,akBottom];
+    if akLeft in AnchorAlign[TheAlign] then begin
+      BorderSpacing.Left:=Space;
+      AnchorSide[akLeft].Side:=asrLeft;
+      AnchorSide[akLeft].Control:=Parent;
+    end;
+    if akTop in AnchorAlign[TheAlign] then begin
+      BorderSpacing.Top:=Space;
+      AnchorSide[akTop].Side:=asrTop;
+      AnchorSide[akTop].Control:=Parent;
+    end;
+    if akRight in AnchorAlign[TheAlign] then begin
+      BorderSpacing.Right:=Space;
+      AnchorSide[akRight].Side:=asrRight;
+      AnchorSide[akRight].Control:=Parent;
+    end;
+    if akBottom in AnchorAlign[TheAlign] then begin
+      BorderSpacing.Bottom:=Space;
+      AnchorSide[akBottom].Side:=asrBottom;
+      AnchorSide[akBottom].Control:=Parent;
+    end;
+    Anchors:=Anchors+AnchorAlign[TheAlign];
   finally
     Parent.EnableAlign;
   end;
+end;
+
+procedure TControl.AnchorClient(Space: Integer);
+begin
+  AnchorAsAlign(alClient,Space);
 end;
 
 function TControl.AnchoredControlCount: integer;
@@ -3791,7 +3833,7 @@ begin
     if PreferredWidth<=0 then PreferredWidth:=Width;
     if PreferredHeight<=0 then PreferredHeight:=Height;
     
-    // if this control is aligned adjust PreferredWidth and or PreferredHeight
+    // if this control is aligned adjust PreferredWidth and/or PreferredHeight
     if Parent<>nil then begin
       if AnchorAlign[Align]*[akLeft,akRight]=[akLeft,akRight] then begin
         // the control will be expanded to maximum width

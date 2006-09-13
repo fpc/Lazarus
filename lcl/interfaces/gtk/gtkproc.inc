@@ -6316,9 +6316,11 @@ begin
   PreferredHeight:=Requisition.height;
   if not WithThemeSpace then begin
     //DebugLn('GetGTKDefaultWidgetSize ',DbgSName(AWinControl),' ',dbgs(gtk_widget_get_xthickness(Widget)),' ythickness=',dbgs(gtk_widget_get_ythickness(Widget)));
+    //DebugLn(['GetGTKDefaultWidgetSize ',GetWidgetDebugReport(Widget)]);
     //dec(PreferredWidth,gtk_widget_get_xthickness(Widget));
     {$IFDEF Gtk1}
-    dec(PreferredHeight,2*gtk_widget_get_ythickness(Widget));
+    if not GtkWidgetIsA(Widget,GTK_ENTRY_TYPE) then
+      dec(PreferredHeight,2*gtk_widget_get_ythickness(Widget));
     {$ENDIF}
   end;
   {DebugLn(['GetGTKDefaultWidgetSize Allocation=',Widget^.allocation.x,',',Widget^.allocation.y,',',Widget^.allocation.width,',',Widget^.allocation.height,
