@@ -83,8 +83,7 @@ uses
 {$ENDIF}
   Classes, SysUtils, Process,
   LCLProc, FileUtil, Forms, Controls, Dialogs,
-  LazConf,
-  StartLazOpts, Splash;
+  LazConf, Splash;
   
 type
   TLazarusProcess = class
@@ -104,7 +103,6 @@ type
 type
   TLazarusManager = class(TComponent)
   private
-    FStartLazarusOptions: TStartLazarusOptions;
     FLazarusProcess: TLazarusProcess;
     FLazarusPath: string;
     FLazarusPID: Integer;
@@ -130,14 +128,12 @@ begin
   inherited Create(nil);
   SplashForm := nil;
   ShowSplash;
-  FStartLazarusOptions := TStartLazarusOptions.Create;
   ParseCommandLine;
 end;
 
 destructor TLazarusManager.Destroy;
 begin
   FreeAndNil(FCmdLineParams);
-  FreeAndNil(FStartLazarusOptions);
   inherited Destroy;
 end;
 
@@ -184,8 +180,14 @@ end;
 
 function TLazarusManager.GetLazarusPath(const FileName: string) : string;
 begin
-  Result := AppendPathDelim(FStartLazarusOptions.LazarusDir) + FileName +
-    GetExecutableExt;
+  // first try in the bin dir of the primary config directory
+  Result := AppendPathDelim(GetPrimaryConfigPath) + 'bin' + PathDelim +
+    FileName + GetExeExt;
+  // if no lazarus executable exists in that directory, try the same directory
+  // as the startlazarus executable
+  if not FileExists(Result) then
+    Result := AppendPathDelim(ExtractFilePath(ExpandFileName(ParamStr(0)))) +
+      FileName + GetExeExt;
 end;
 
 function TLazarusManager.RenameLazarusExecutables: TModalResult;

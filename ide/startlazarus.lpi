@@ -1,0 +1,83 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <ProjectOptions>
+    <PathDelim Value="\"/>
+    <Version Value="5"/>
+    <General>
+      <SessionStorage Value="InIDEConfig"/>
+      <MainUnit Value="0"/>
+      <IconPath Value="./"/>
+      <TargetFileExt Value=".exe"/>
+    </General>
+    <VersionInfo>
+      <UseVersionInfo Value="False"/>
+      <AutoIncrementBuild Value="False"/>
+      <CurrentVersionNr Value="0"/>
+      <CurrentMajorRevNr Value="0"/>
+      <CurrentMinorRevNr Value="0"/>
+      <CurrentBuildNr Value="0"/>
+      <ProjectVersion Value="1.0.0.0"/>
+      <Language Value="0409"/>
+      <CharSet Value="04E4"/>
+      <Comments Value=""/>
+      <CompanyName Value=""/>
+      <FileDescription Value=""/>
+      <InternalName Value=""/>
+      <LegalCopyright Value=""/>
+      <LegalTrademarks Value=""/>
+      <OriginalFilename Value=""/>
+      <ProductName Value=""/>
+    </VersionInfo>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
+      <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
+    </PublishOptions>
+    <RunParams>
+      <local>
+        <FormatVersion Value="1"/>
+        <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
+      </local>
+    </RunParams>
+    <RequiredPackages Count="1">
+      <Item1>
+        <PackageName Value="LCL"/>
+      </Item1>
+    </RequiredPackages>
+    <Units Count="2">
+      <Unit0>
+        <Filename Value="startlazarus.lpr"/>
+        <IsPartOfProject Value="True"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="lazarusmanager.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="LazarusManager"/>
+      </Unit1>
+    </Units>
+  </ProjectOptions>
+  <CompilerOptions>
+    <Version Value="5"/>
+    <PathDelim Value="\"/>
+    <Target>
+      <Filename Value="D:\lazarus\source\lazarus\startlazarus.exe"/>
+    </Target>
+    <SearchPaths>
+      <UnitOutputDirectory Value="D:\lazarus\source\lazarus\units\i386-win32"/>
+      <SrcPath Value="$(LazarusDir)\lcl\;$(LazarusDir)\lcl\interfaces\$(LCLWidgetType)\"/>
+    </SearchPaths>
+    <CodeGeneration>
+      <Generate Value="Faster"/>
+    </CodeGeneration>
+    <Linking>
+      <Options>
+        <Win32>
+          <GraphicApplication Value="True"/>
+        </Win32>
+      </Options>
+    </Linking>
+    <Other>
+      <CompilerPath Value="$(CompPath)"/>
+    </Other>
+  </CompilerOptions>
+</CONFIG>
