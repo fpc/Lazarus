@@ -382,6 +382,22 @@
 														<key>UID</key>
 														<integer>0</integer>
 													</dict>
+													<dict>
+														<key>Children</key>
+														<array/>
+														<key>GID</key>
+														<integer>0</integer>
+														<key>Path</key>
+														<string>./bin/lazbuilder</string>
+														<key>Path Type</key>
+														<integer>2</integer>
+														<key>Privileges</key>
+														<integer>493</integer>
+														<key>Type</key>
+														<integer>3</integer>
+														<key>UID</key>
+														<integer>0</integer>
+													</dict>
 												</array>
 												<key>GID</key>
 												<integer>0</integer>
