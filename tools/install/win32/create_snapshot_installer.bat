@@ -6,7 +6,9 @@ SET LAZVERSION=0.9.17
 SET ISCC="C:\Program Files\Inno Setup 5\iscc.exe"
 
 :: Path to the fpc sources checked out of svn
-SET FPCSVNDIR=c:\lazarus\source\fpc\2.1
+::SET FPCSVNDIR=c:\lazarus\source\fpc\2.1
+SET FPCSVNDIR=c:\lazarus\source\fpcbuild\2.0.4\fpcsrc
+::SET FPCSVNDIR=c:\lazarus\source\fpc\2.0
 
 :: Path to the lazarus sources checked out of subversion
 SET LAZSVNDIR=c:\lazarus\source\lazsource
