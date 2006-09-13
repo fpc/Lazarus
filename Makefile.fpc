@@ -30,6 +30,7 @@ destdir=$(BASEDIR)/dist
 RCPP?=$(strip $(firstword cpp$(SRCEXEEXT)))
 #
 LAZARUS_INSTALL_DIR=/usr/share/lazarus
+LAZARUS_MAN_DIR=/usr/share/man
 ifneq ($(findstring $(OS_TARGET),win32 win64),)
 LAZARUS_INSTALL_DIR=C:\lazarus
 endif
@@ -77,7 +78,7 @@ examples: lcl components
         $(MAKE) -C examples
 
 #-----------------------------------------------------------------------------
-all: lcl components packager/registration ideintf designer packager ide starter
+all: lcl components packager/registration ideintf designer packager ide starter lazbuilder
 
 #-----------------------------------------------------------------------------
 cleanide:
@@ -107,6 +108,10 @@ ifeq ($(OS_TARGET),win32)
 
 else
         ln -sf $(LAZARUS_INSTALL_DIR)/lazarus /usr/bin/lazarus
+        ln -sf $(LAZARUS_INSTALL_DIR)/startlazarus /usr/bin/startlazarus
+        ln -sf $(LAZARUS_INSTALL_DIR)/lazbuild /usr/bin/lazbuild
+        mkdir -p $(LAZARUS_MAN_DIR)
+        cat $(LAZARUS_INSTALL_DIR)/docs/lazbuild.1 | gzip > $(LAZARUS_MAN_DIR)/man1/lazbuild.1.gz
 endif
 
 

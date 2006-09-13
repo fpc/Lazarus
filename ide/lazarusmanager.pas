@@ -101,6 +101,9 @@ type
   end;
   
 type
+
+  { TLazarusManager }
+
   TLazarusManager = class(TComponent)
   private
     FLazarusProcess: TLazarusProcess;
