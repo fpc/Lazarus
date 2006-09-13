@@ -1224,7 +1224,7 @@ begin
     AddFile('idecommands.pas','IDECommands',pftUnit,[],cpBase);
     AddFile('idewindowintf.pas','IDEWindowIntf',pftUnit,[pffHasRegisterProc],cpBase);
     AddFile('imagelisteditor.pp','ImageListEditor',pftUnit,[],cpBase);
-    AddFile('lazideintf.pp','LazIDEIntf',pftUnit,[],cpBase);
+    AddFile('lazideintf.pas','LazIDEIntf',pftUnit,[],cpBase);
     AddFile('listviewpropedit.pp','ListViewPropEdit',pftUnit,[],cpBase);
     AddFile('newitemintf.pas','NewItemIntf',pftUnit,[],cpBase);
     AddFile('macrointf.pas','MacroIntf',pftUnit,[],cpBase);
