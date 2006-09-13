@@ -567,6 +567,7 @@ type
     FGridBorderStyle: TBorderStyle;
     FGridFlags: TGridFlags;
     FGridPropBackup: TGridPropertyBackup;
+    FStrictSort: boolean;
     procedure AdjustCount(IsColumn:Boolean; OldValue, NewValue:Integer);
     procedure CacheVisibleGrid;
     procedure CancelSelection;
@@ -860,6 +861,7 @@ type
     property SelectedColumn: TGridColumn read GetSelectedColumn;
     property Selection: TGridRect read GetSelection write SetSelection;
     property ScrollBars: TScrollStyle read FScrollBars write SetScrollBars;
+    property StrictSort: boolean read FStrictSort write FStrictSort;
     property TitleFont: TFont read FTitleFont write SetTitleFont;
     property TitleStyle: TTitleStyle read FTitleStyle write SetTitleStyle;
     property TopRow: Integer read GetTopRow write SetTopRow;
@@ -986,6 +988,7 @@ type
     property SelectedColor;
     property SelectedColumn;
     property Selection;
+    property StrictSort;
     //property TabStops;
     property TopRow;
     property UseXORFeatures;
@@ -2011,7 +2014,7 @@ end;
 procedure TCustomGrid.Sort(ColSorting: Boolean; index, IndxFrom, IndxTo: Integer);
   procedure QuickSort(L,R: Integer);
   var
-    i,j: Integer;
+    I,J: Integer;
     P{,Q}: Integer;
   begin
     repeat
@@ -2020,20 +2023,34 @@ procedure TCustomGrid.Sort(ColSorting: Boolean; index, IndxFrom, IndxTo: Integer
       P:=(L+R) div 2;
       repeat
         if ColSorting then begin
-          while DoCompareCells(index, P, index, i)>0 do I:=I+1;
-          while DoCompareCells(index, P, index, j)<0 do J:=J-1;
+          while DoCompareCells(index, P, index, I)>0 do I:=I+1;
+          while DoCompareCells(index, P, index, J)<0 do J:=J-1;
         end else begin
-          while DoCompareCells(P, index, i, index)>0 do I:=I+1;
-          while DoCompareCells(P, index, j, index)<0 do J:=J-1;
+          while DoCompareCells(P, index, I, index)>0 do I:=I+1;
+          while DoCompareCells(P, index, J, index)<0 do J:=J-1;
         end;
         if I<=J then begin
+
           if I<>J then
-          DoOPExchangeColRow(not ColSorting, i,j);
+            if not FStrictSort or
+              (ColSorting     and (DoCompareCells(index, I, index, J)<>0)) or
+              (not ColSorting and (DoCompareCells(I, index, J, index)<>0))
+            then
+              DoOPExchangeColRow(not ColSorting, I,J);
+          
+          if P=I then
+            P:=J
+          else if P=J then
+            P:=I;
+
           I:=I+1;
-          J:=j-1;
+          J:=J-1;
         end;
       until I>J;
-      if L<J then QuickSort(L,J);
+      
+      if L<J then
+        QuickSort(L,J);
+
       L:=I;
     until I>=R;
   end;
