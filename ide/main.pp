@@ -12271,10 +12271,10 @@ begin
   nmiwPkgGraphExplorer:
     ALayout.Form.SetBounds(250,150,500,350);
   nmiwProjectInspector:
-    ALayout.Form.SetBounds(210,150,400,300);
+    ALayout.Form.SetBounds(200,150,400,300);
   nmiwMessagesViewName:
     begin
-      ALayout.Form.SetBounds(260,SourceNotebook.Top+SourceNotebook.Height+30,
+      ALayout.Form.SetBounds(250,SourceNotebook.Top+SourceNotebook.Height+30,
         Max(50,Screen.Width-300),80);
     end;
   else
