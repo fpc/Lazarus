@@ -34,10 +34,10 @@ interface
 {$endif}
  
 uses 
+  qt4, // Must be the first unit to avoid type redefinition problems on Windows
   Types, InterfaceBase, SysUtils, LCLProc, LCLType, LMessages, Classes,
   Controls, ExtCtrls, Forms, Dialogs, StdCtrls, Comctrls, LCLIntf,
-  GraphType, Math,
-  qt4;
+  GraphType, Math;
 
 type
 

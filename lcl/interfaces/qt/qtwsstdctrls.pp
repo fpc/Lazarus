@@ -109,6 +109,23 @@ type
   private
   protected
   public
+    class function  CreateHandle(const AWinControl: TWinControl;
+     const AParams: TCreateParams): TLCLIntfHandle; override;
+    class procedure DestroyHandle(const AWinControl: TWinControl); override;
+  public
+    class function  GetSelCount(const ACustomListBox: TCustomListBox): integer; override;
+    class function  GetSelected(const ACustomListBox: TCustomListBox; const AIndex: integer): boolean; override;
+    class function  GetStrings(const ACustomListBox: TCustomListBox): TStrings; override;
+    class function  GetItemIndex(const ACustomListBox: TCustomListBox): integer; override;
+    class function  GetTopIndex(const ACustomListBox: TCustomListBox): integer; override;
+
+    class procedure SelectItem(const ACustomListBox: TCustomListBox; AIndex: integer; ASelected: boolean); override;
+    class procedure SetBorder(const ACustomListBox: TCustomListBox); override;
+    class procedure SetItemIndex(const ACustomListBox: TCustomListBox; const AIndex: integer); override;
+    class procedure SetSelectionMode(const ACustomListBox: TCustomListBox; const AExtendedSelect, AMultiSelect: boolean); override;
+    class procedure SetSorted(const ACustomListBox: TCustomListBox; AList: TStrings; ASorted: boolean); override;
+    class procedure SetTopIndex(const ACustomListBox: TCustomListBox; const NewTopIndex: integer); override;
+//    class procedure SetColor(const AWinControl: TWinControl); override;
   end;
 
   { TQtWSListBox }
@@ -286,6 +303,148 @@ type
 implementation
 
 uses LMessages;
+
+{ TQtWSCustomListBox }
+
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomListBox.CreateHandle
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+class function TQtWSCustomListBox.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND;
+var
+  QtListWidget: TQtListWidget;
+begin
+  QtListWidget := TQtListWidGet.Create(AWinControl, AParams);
+  Result := THandle(QtListWidget);
+end;
+
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomListBox.DestroyHandle
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+class procedure TQtWSCustomListBox.DestroyHandle(const AWinControl: TWinControl);
+begin
+  TQtListWidget(AWinControl.Handle).Free;
+end;
+
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomListBox.GetSelCount
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+class function TQtWSCustomListBox.GetSelCount(const ACustomListBox: TCustomListBox): integer;
+begin
+  Result := 0;
+end;
+
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomListBox.GetSelected
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+class function TQtWSCustomListBox.GetSelected(const ACustomListBox: TCustomListBox; const AIndex: integer): boolean;
+begin
+  Result := True;
+end;
+
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomListBox.GetStrings
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+class function TQtWSCustomListBox.GetStrings(const ACustomListBox: TCustomListBox): TStrings;
+var
+  ListWidgetH: QListWidgetH;
+begin
+  ListWidgetH := QListWidgetH((TQtWidget(ACustomListBox.Handle).Widget));
+  Result := TQtListStrings.Create(ListWidgetH, ACustomListBox);
+end;
+
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomListBox.GetItemIndex
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+class function TQtWSCustomListBox.GetItemIndex(const ACustomListBox: TCustomListBox): integer;
+begin
+  Result := TQtListWidget(ACustomListBox.Handle).currentRow;
+end;
+
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomListBox.GetTopIndex
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+class function TQtWSCustomListBox.GetTopIndex(const ACustomListBox: TCustomListBox): integer;
+begin
+  Result := 0;
+end;
+
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomListBox.SelectItem
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+class procedure TQtWSCustomListBox.SelectItem(const ACustomListBox: TCustomListBox;
+  AIndex: integer; ASelected: boolean);
+begin
+
+end;
+
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomListBox.SetBorder
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+class procedure TQtWSCustomListBox.SetBorder(const ACustomListBox: TCustomListBox);
+begin
+
+end;
+
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomListBox.SetItemIndex
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+class procedure TQtWSCustomListBox.SetItemIndex(const ACustomListBox: TCustomListBox; const AIndex: integer);
+begin
+  TQtListWidget(ACustomListBox.Handle).setCurrentRow(AIndex);
+end;
+
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomListBox.SetSelectionMode
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+class procedure TQtWSCustomListBox.SetSelectionMode(
+  const ACustomListBox: TCustomListBox; const AExtendedSelect, AMultiSelect: boolean);
+begin
+
+end;
+
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomListBox.SetSorted
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+class procedure TQtWSCustomListBox.SetSorted(const ACustomListBox: TCustomListBox;
+  AList: TStrings; ASorted: boolean);
+begin
+
+end;
+
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomListBox.SetTopIndex
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+class procedure TQtWSCustomListBox.SetTopIndex(const ACustomListBox: TCustomListBox;
+  const NewTopIndex: integer);
+begin
+
+end;
 
 { TQtWSCustomMemo }
 
@@ -902,7 +1061,7 @@ initialization
 //  RegisterWSComponent(TGroupBox, TQtWSGroupBox);
   RegisterWSComponent(TCustomComboBox, TQtWSCustomComboBox);
 //  RegisterWSComponent(TComboBox, TQtWSComboBox);
-//  RegisterWSComponent(TCustomListBox, TQtWSCustomListBox);
+  RegisterWSComponent(TCustomListBox, TQtWSCustomListBox);
 //  RegisterWSComponent(TListBox, TQtWSListBox);
   RegisterWSComponent(TCustomEdit, TQtWSCustomEdit);
   RegisterWSComponent(TCustomMemo, TQtWSCustomMemo);

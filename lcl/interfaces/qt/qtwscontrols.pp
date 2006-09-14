@@ -244,6 +244,14 @@ begin
   {$endif}
 end;
 
+{------------------------------------------------------------------------------
+  Method: TQtWSWinControl.SetColor
+  Params:  AWinControl     - the calling object
+
+  Returns: Nothing
+
+  Sets the color of the widget.
+ ------------------------------------------------------------------------------}
 class procedure TQtWSWinControl.SetColor(const AWinControl: TWinControl);
 var QColor : TQColor;
     Color  : TColor;

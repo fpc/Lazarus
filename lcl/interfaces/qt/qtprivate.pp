@@ -273,6 +273,29 @@ type
     destructor Destroy; override;
   end;
 
+  { TQtAbstractItemView }
+
+  TQtAbstractItemView = class(TQtWidget)
+  public
+  end;
+
+  { TQtListView }
+
+  TQtListView = class(TQtAbstractItemView)
+  public
+  end;
+
+  
+  TQtListWidget = class(TQtListView)
+  private
+  public
+    constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); override;
+    destructor Destroy; override;
+  public
+    function currentRow: Integer;
+    procedure setCurrentRow(row: Integer);
+  end;  
+  
 implementation
 
 { TQtWidget }
@@ -2112,6 +2135,76 @@ begin
   QSpinBox_destroy(QSpinBoxH(Widget));
 
   inherited Destroy;
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtListWidget.Create
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}//Luis Digital
+constructor TQtListWidget.Create(const AWinControl: TWinControl;
+  const AParams: TCreateParams);
+var
+  Parent: QWidgetH;
+  Text: WideString;
+  i: Integer;
+begin
+  // Initializes the properties
+  LCLObject := AWinControl;
+
+  // Creates the widget
+  {$ifdef VerboseQt}
+    WriteLn('TQListWidget.Create');
+  {$endif}
+  Parent := TQtWidget(AWinControl.Parent.Handle).Widget;
+  Widget := QListWidget_create(Parent);
+  
+  // Sets the initial items
+  for I := 0 to TCustomListBox(AWinControl).Items.Count - 1 do
+  begin
+    Text := WideString(TCustomListBox(AWinControl).Items.Strings[i]);
+    QListWidget_addItem(QListWidgetH(Widget), @Text);
+  end;
+
+  // Sets it´ s initial properties
+  QWidget_setGeometry(Widget, AWinControl.Left, AWinControl.Top,
+   AWinControl.Width, AWinControl.Height);
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtListWidget.Destroy
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+destructor TQtListWidget.Destroy;
+begin
+  {$ifdef VerboseQt}
+    WriteLn('TQtListWidget.Destroy');
+  {$endif}
+
+  QListWidget_destroy(QListWidgetH(Widget));
+
+  inherited Destroy;
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtListWidget.currentRow
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+function TQtListWidget.currentRow: Integer;
+begin
+  Result := QListWidget_currentRow(QListWidgetH(Widget));
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtListWidget.setCurrentRow
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+procedure TQtListWidget.setCurrentRow(row: Integer);
+begin
+  QListWidget_setCurrentRow(QListWidgetH(Widget), row);
 end;
 
 end.

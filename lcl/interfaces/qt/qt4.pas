@@ -1,5 +1,7 @@
 unit qt4;
 
+{ Version : 1.18 }
+
 {$ifdef fpc}
   {$mode delphi}
 {$endif}
@@ -13,7 +15,7 @@ uses Types;
 
 const
 {$IFDEF MSWINDOWS}
-  QtNamePrefix = '_';
+  QtNamePrefix = '';
   QtShareName = 'libqt4intf.dll';
 {$ENDIF}
 {$IFDEF LINUX}
@@ -66,6 +68,31 @@ type
     MenuRef                             = MenuHandle;
     EventHandlerCallRef                 = ^LongInt;
 {$ENDIF}
+
+
+{$IFDEF MSWINDOWS}
+  { Message structure }
+  PMsg = ^tagMSG;
+  tagMSG = packed record
+    hwnd: LongWord;
+    message: Cardinal;
+    wParam: Longint;
+    lParam: Longint;
+    time: DWORD;
+    pt: TPoint;
+  end;
+
+  WINHANDLE = type integer;
+  HCURSOR = type WINHANDLE;
+  HPALETTE = type WINHANDLE;
+  HFONT = type WINHANDLE;
+  HDC = type WINHANDLE;
+  HBITMAP = type WINHANDLE;
+  HBRUSH = type WINHANDLE;
+  HPEN = type WINHANDLE;
+  HRGN = type WINHANDLE;
+{$ENDIF}
+
 
 
 QBitArrayH = class(TObject) end;
@@ -1326,7 +1353,7 @@ procedure QCoreApplication_translate(retval: PWideString; context: PAnsiChar; ke
 procedure QCoreApplication_flush(); cdecl; external QtShareName name QtNamePrefix + 'QCoreApplication_flush';
 procedure QCoreApplication_watchUnixSignal(signal: Integer; watch: Boolean); cdecl; external QtShareName name QtNamePrefix + 'QCoreApplication_watchUnixSignal';
 function QCoreApplication_setEventFilter(handle: QCoreApplicationH; filter: TCoreApplicationEventFilter): TCoreApplicationEventFilter; cdecl; external QtShareName name QtNamePrefix + 'QCoreApplication_setEventFilter';
-function QCoreApplication_filterEvent(handle: QCoreApplicationH; message: Pointer; result: PInteger): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QCoreApplication_filterEvent';
+function QCoreApplication_filterEvent(handle: QCoreApplicationH; message: Pointer; _result: PInteger): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QCoreApplication_filterEvent';
 procedure QCoreApplication_quit(); cdecl; external QtShareName name QtNamePrefix + 'QCoreApplication_quit';
 
 
@@ -2065,7 +2092,7 @@ function QWidget_isAncestorOf(handle: QWidgetH; child: QWidgetH): Boolean; cdecl
 function QWidget_autoFillBackground(handle: QWidgetH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QWidget_autoFillBackground';
 procedure QWidget_setAutoFillBackground(handle: QWidgetH; enabled: Boolean); cdecl; external QtShareName name QtNamePrefix + 'QWidget_setAutoFillBackground';
 procedure QWidget_inputMethodQuery(handle: QWidgetH; retval: QVariantH; p1: QtInputMethodQuery); cdecl; external QtShareName name QtNamePrefix + 'QWidget_inputMethodQuery';
-function QWidget_to_QPaintDevice(handle: QWidgetH): QPaintDeviceH; cdecl; external QtSharename name QtNamePrefix + 'QWidget_to_QPaintDevice';
+function QWidget_to_QPaintDevice(handle: QWidgetH): QPaintDeviceH; cdecl; external QtShareName name QtNamePrefix + 'QWidget_to_QPaintDevice';
 
 type
   QWidget_customContextMenuRequested_Event = procedure (pos: PPoint) of object cdecl;
@@ -2154,7 +2181,7 @@ function QLayout_layout(handle: QLayoutH): QLayoutH; cdecl; external QtShareName
 procedure QLayout_setEnabled(handle: QLayoutH; p1: Boolean); cdecl; external QtShareName name QtNamePrefix + 'QLayout_setEnabled';
 function QLayout_isEnabled(handle: QLayoutH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QLayout_isEnabled';
 procedure QLayout_closestAcceptableSize(retval: PSize; w: QWidgetH; s: PSize); cdecl; external QtShareName name QtNamePrefix + 'QLayout_closestAcceptableSize';
-function QLayout_to_QLayoutItem(handle: QLayoutH): QLayoutItemH; cdecl; external QtSharename name QtNamePrefix + 'QLayout_to_QLayoutItem';
+function QLayout_to_QLayoutItem(handle: QLayoutH): QLayoutItemH; cdecl; external QtShareName name QtNamePrefix + 'QLayout_to_QLayoutItem';
 type
   QBoxLayoutDirection = cardinal; //  QBoxLayout::Direction (4)
 
@@ -5370,7 +5397,7 @@ procedure QDialog_showExtension(handle: QDialogH; p1: Boolean); cdecl; external 
 
 
 type
-  QDialog_finished_Event = procedure (result: Integer) of object cdecl;
+  QDialog_finished_Event = procedure (_result: Integer) of object cdecl;
   QDialog_accepted_Event = procedure () of object cdecl;
   QDialog_rejected_Event = procedure () of object cdecl;
 
