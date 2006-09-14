@@ -5930,6 +5930,8 @@ begin
     TCustomLabel, 'Caption', TStringMultilinePropertyEditor);
   RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('AnsiString'),
     TCustomStaticText, 'Caption', TStringMultilinePropertyEditor);
+  RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('AnsiString'),
+    TCustomCheckBox, 'Caption', TStringMultilinePropertyEditor);
   RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TTranslateString'),
     TControl, 'Hint', TStringMultilinePropertyEditor);
   RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('longint'),

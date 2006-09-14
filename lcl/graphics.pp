@@ -1302,10 +1302,12 @@ function ColorToRGB(Color: TColor): TColor;
 function ColorToString(Color: TColor): AnsiString;
 function StringToColor(const S: shortstring): TColor;
 procedure GetColorValues(Proc: TGetColorStringProc);
+function InvertColor(AColor: TColor): TColor;
 
 Function Blue(rgb: TColor): BYTE;
 Function Green(rgb: TColor): BYTE;
 Function Red(rgb: TColor): BYTE;
+function RGBToColor(R, G, B: Byte): TColor;
 procedure RedGreenBlue(rgb: TColor; out Red, Green, Blue: Byte);
 function FPColorToTColor(const FPColor: TFPColor): TColor;
 function TColorToFPColor(const c: TColor): TFPColor;
@@ -1639,6 +1641,30 @@ begin
   for I := Low(Colors) to High(Colors) do Proc(Colors[I].Name);
 end;
 
+function InvertColor(AColor: TColor): TColor;
+var
+  R, G, B: Integer;
+begin
+  R := AColor and $ff;
+  G := (AColor shr 8) and $ff;
+  B := (AColor shr 16) and $ff;
+
+  if Abs($80 - R) + Abs($80 - G) + Abs($80 - B) < $140 then
+  begin
+    Inc(R, $a0);
+    Inc(G, $a0);
+    Inc(B, $a0);
+  end
+  else
+  begin
+    R := $ff - R;
+    G := $ff - G;
+    B := $ff - B;
+  end;
+  
+  Result := ((B and $ff) shl 16) or ((G and $ff) shl 8) or (R and $ff);
+end;
+
 Function Blue(rgb: TColor): BYTE;
 begin
   Result := (rgb shr 16) and $000000ff;
@@ -1652,6 +1678,11 @@ end;
 Function Red(rgb: TColor): BYTE;
 begin
   Result := rgb and $000000ff;
+end;
+
+function RGBToColor(R, G, B: Byte): TColor;
+begin
+  Result := (B shl 16) or (G shl 8) or R;
 end;
 
 procedure RedGreenBlue(rgb: TColor; out Red, Green, Blue: Byte);

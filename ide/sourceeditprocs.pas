@@ -98,24 +98,6 @@ var
   BGBlue: Integer;
   TokenStart: Integer;
 
-  function InvertColor(AColor: TColor): TColor;
-  var Red, Green, Blue: integer;
-  begin
-    Red:=(AColor shr 16) and $ff;
-    Green:=(AColor shr 8) and $ff;
-    Blue:=AColor and $ff;
-    if Abs($80-Red)+Abs($80-Green)+Abs($80-Blue)<$140 then begin
-      Red:=Red+$a0;
-      Green:=Green+$a0;
-      Blue:=Blue+$a0;
-    end else begin
-      Red:=$ff-Red;
-      Green:=$ff-Green;
-      Blue:=$ff-Blue;
-    end;
-    Result:=((Red and $ff) shl 16)+((Green and $ff) shl 8)+(Blue and $ff);
-  end;
-
   procedure SetFontColor(NewColor: TColor);
   var
     FGRed: Integer;

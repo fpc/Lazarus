@@ -233,11 +233,16 @@ uses
 
 var
   Identifiers: array[#0..#255] of ByteBool;
+{$IFNDEF SYN_LAZARUS}
   mHashTable: array[#0..#255] of Integer;
+{$ENDIF}
 
 procedure MakeIdentTable;
 var
-  I, J: Char;
+  I: Char;
+  {$IFNDEF SYN_LAZARUS}
+  J: Char;
+  {$ENDIF}
   idents:string;
 begin
   idents:='_0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-?!';
@@ -248,11 +253,13 @@ begin
 //    case I in ['_', '0'..'9', 'a'..'z', 'A'..'Z','-','?','!'] of true: Identifiers[I] := True;
 //    else Identifiers[I] := False;
 //    end;
+    {$IFNDEF SYN_LAZARUS}
     J := UpCase(I);
     Case I in ['_', 'a'..'z', 'A'..'Z'] of
       True: mHashTable[I] := Ord(J) - 64
     else mHashTable[I] := 0;
     end;
+    {$ENDIF}
   end;
 end;
 
