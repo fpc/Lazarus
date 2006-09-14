@@ -743,6 +743,7 @@ begin
   Result:=ifrProceedSearch;
 
   {$IFDEF ShowFoundIdents}
+  if FoundContext.Tool=Self then
   DebugLn('::: COLLECT IDENT ',FoundContext.Node.DescAsString,
     ' "',StringToPascalConst(copy(FoundContext.Tool.Src,FoundContext.Node.StartPos,50)),'"'
     ,' '+dbgs(fdfIgnoreUsedUnits in Params.Flags));
@@ -1255,7 +1256,7 @@ begin
     InitCollectIdentifiers(CursorPos,IdentifierList);
     ParseSourceTillCollectionStart(CursorPos,CleanCursorPos,CursorNode,
                                    IdentStartPos,IdentEndPos);
-    
+
     // find context
     {$IFDEF CTDEBUG}
     DebugLn('TIdentCompletionTool.GatherIdentifiers B',
@@ -1289,7 +1290,6 @@ begin
         Params.Flags:=[fdfSearchInAncestors,fdfCollect,fdfFindVariable];
         if not StartInSubContext then
           Include(Params.Flags,fdfSearchInParentNodes);
-
         if Params.ContextNode.Desc in [ctnClass,ctnClassInterface] then
           Exclude(Params.Flags,fdfSearchInParentNodes);
         {$IFDEF CTDEBUG}

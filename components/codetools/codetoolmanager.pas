@@ -733,6 +733,7 @@ var
   FPCDefines: TDefineTemplate;
   FPCSrcDefines: TDefineTemplate;
   LazarusSrcDefines: TDefineTemplate;
+  ATestPascalFile: String;
 begin
   // set global values
   with GlobalValues do begin
@@ -747,8 +748,11 @@ begin
     FPCUnitPath:=Config.FPCUnitPath;
     TargetOS:=Config.TargetOS;
     TargetProcessor:=Config.TargetProcessor;
+    ATestPascalFile:=Config.TestPascalFile;
+    if ATestPascalFile='' then
+      ATestPascalFile:=GetTempFilename('fpctest.pas','');
     FPCDefines:=CreateFPCTemplate(Config.FPCPath, Config.FPCOptions,
-                          Config.TestPascalFile,
+                          ATestPascalFile,
                           FPCUnitPath, TargetOS, TargetProcessor,
                           nil);
     Add(FPCDefines);

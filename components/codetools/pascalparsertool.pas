@@ -544,6 +544,7 @@ begin
     if (not IgnoreErrorAfterValid)
     or (not IgnoreErrorAfterPositionIsInFrontOfLastErrMessage) then
       raise;
+    FForceUpdateNeeded:=false;
     {$IFDEF ShowIgnoreErrorAfter}
     DebugLn('TPascalParserTool.BuildTree ',MainFilename,' IGNORING ERROR: ',LastErrorMessage);
     {$ENDIF}
@@ -2628,6 +2629,8 @@ function TPascalParserTool.KeyWordFuncVar: boolean;
     var d:e;
       f:g=h;
 }
+var
+  LastIdentifierEnd: LongInt;
 begin
   if not (CurSection in [ctnProgram,ctnLibrary,ctnInterface,ctnImplementation])
   then
@@ -2640,15 +2643,16 @@ begin
     if AtomIsIdentifier(false) then begin
       CreateChildNode;
       CurNode.Desc:=ctnVarDefinition;
-      CurNode.EndPos:=CurPos.EndPos;
+      LastIdentifierEnd:=CurPos.EndPos;
       ReadNextAtom;
       while (CurPos.Flag=cafComma) do begin
+        CurNode.EndPos:=LastIdentifierEnd;
         EndChildNode; // close variable definition
         ReadNextAtom;
         AtomIsIdentifier(true);
         CreateChildNode;
         CurNode.Desc:=ctnVarDefinition;
-        CurNode.EndPos:=CurPos.EndPos;
+        LastIdentifierEnd:=CurPos.EndPos;
         ReadNextAtom;
       end;
       if (CurPos.Flag<>cafColon) then begin
@@ -3759,6 +3763,7 @@ var
   CaretType: integer;
   IgnorePos: TCodePosition;
 begin
+  //DebugLn(['TPascalParserTool.BuildTreeAndGetCleanPos ',MainFilename,' btSetIgnoreErrorPos=',btSetIgnoreErrorPos in BuildTreeFlags,' btKeepIgnoreErrorPos=',btKeepIgnoreErrorPos in BuildTreeFlags,' CursorPos=x=',CursorPos.X,',y=',CursorPos.Y]);
   if (btSetIgnoreErrorPos in BuildTreeFlags) then begin
     // ignore errors after cursor position
     if (CursorPos.Code<>nil) then begin

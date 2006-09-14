@@ -189,6 +189,9 @@ const
 
   
 type
+
+  { TCodeTreeNode }
+
   TCodeTreeNode = class
   public
     Desc: TCodeTreeNodeDesc;
@@ -210,6 +213,7 @@ type
     procedure Clear;
     constructor Create;
     function ConsistencyCheck: integer; // 0 = ok
+    procedure WriteDebugReport(const Prefix: string; WithChilds: boolean);
   end;
 
   { TCodeTree }
@@ -228,7 +232,7 @@ type
     constructor Create;
     destructor Destroy; override;
     function ConsistencyCheck: integer; // 0 = ok
-    procedure WriteDebugReport;
+    procedure WriteDebugReport(WithChilds: boolean);
   end;
 
   TCodeTreeNodeExtension = class
@@ -520,6 +524,21 @@ begin
   Result:=0;
 end;
 
+procedure TCodeTreeNode.WriteDebugReport(const Prefix: string;
+  WithChilds: boolean);
+var
+  Node: TCodeTreeNode;
+begin
+  DebugLn([Prefix,DescAsString,' Range=',StartPos,'..',EndPos,' Cache=',DbgSName(Cache)]);
+  if WithChilds then begin
+    Node:=FirstChild;
+    while Node<>nil do begin
+      Node.WriteDebugReport(Prefix+'  ',true);
+      Node:=Node.NextBrother;
+    end;
+  end;
+end;
+
 function TCodeTreeNode.HasAsParent(Node: TCodeTreeNode): boolean;
 var CurNode: TCodeTreeNode;
 begin
@@ -719,10 +738,12 @@ begin
   Result:=0;
 end;
 
-procedure TCodeTree.WriteDebugReport;
+procedure TCodeTree.WriteDebugReport(WithChilds: boolean);
 begin
   DebugLn('[TCodeTree.WriteDebugReport] Consistency=',dbgs(ConsistencyCheck),
     ' Root=',dbgs(Root<>nil));
+  if Root<>nil then
+    Root.WriteDebugReport(' ',true);
 end;
 
 { TCodeTreeNodeExtension }

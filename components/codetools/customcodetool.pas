@@ -37,6 +37,7 @@ interface
 
 { $DEFINE ShowIgnoreError}
 {$DEFINE ShowDirtySrc}
+{ $DEFINE VerboseUpdateNeeded}
 
 uses
   {$IFDEF MEM_CHECK}
@@ -176,7 +177,7 @@ type
     function MainFilename: string;
     
     function FindDeepestNodeAtPos(P: integer;
-      ExceptionOnNotFound: boolean): TCodeTreeNode;
+      ExceptionOnNotFound: boolean): TCodeTreeNode; inline;
     function FindDeepestNodeAtPos(StartNode: TCodeTreeNode; P: integer;
       ExceptionOnNotFound: boolean): TCodeTreeNode;
     function CaretToCleanPos(Caret: TCodeXYPosition;
@@ -458,6 +459,9 @@ begin
     FLastScannerChangeStep:=Scanner.ChangeStep;
     Scanner.SetIgnoreErrorAfter(IgnoreErrorAfter.P,IgnoreErrorAfter.Code);
   end;
+  {$IFDEF VerboseUpdateNeeded}
+  DebugLn(['TCustomCodeTool.SetScanner FForceUpdateNeeded:=true ',MainFilename]);
+  {$ENDIF}
   FForceUpdateNeeded:=true;
 end;
 
@@ -1612,6 +1616,9 @@ begin
       Src:=Scanner.CleanedSrc;
       UpperSrc:=UpperCaseStr(Src);
       SrcLen:=length(Src);
+      {$IFDEF VerboseUpdateNeeded}
+      DebugLn(['TCustomCodeTool.BeginParsing FForceUpdateNeeded:=true ',MainFilename]);
+      {$ENDIF}
       FForceUpdateNeeded:=true;
       DirtySrc.Free;
       DirtySrc:=nil;
@@ -2007,7 +2014,8 @@ var
   ChildNode: TCodeTreeNode;
   Brother: TCodeTreeNode;
 begin
-  if StartNode<>nil then begin
+  Result:=nil;
+  while StartNode<>nil do begin
 //DebugLn('SearchInNode ',NodeDescriptionAsString(ANode.Desc),
 //',',ANode.StartPos,',',ANode.EndPos,', p=',p,
 //' "',copy(Src,ANode.StartPos,4),'" - "',copy(Src,ANode.EndPos-5,4),'"');
@@ -2029,11 +2037,12 @@ begin
         end;
         Brother:=Brother.NextBrother;
       end;
-    end else
+      break;
+    end else begin
       // search in next node
-      Result:=FindDeepestNodeAtPos(StartNode.NextBrother,P,false);
-  end else
-    Result:=nil;
+      StartNode:=StartNode.NextBrother;
+    end;
+  end;
   if (Result=nil) and ExceptionOnNotFound then begin
     MoveCursorToCleanPos(P);
     RaiseNoNodeFoundAtCursor;
@@ -2266,6 +2275,9 @@ begin
     exit;
   end;
   if (FLastScannerChangeStep<>Scanner.ChangeStep) then begin
+    {$IFDEF VerboseUpdateNeeded}
+    DebugLn(['TCustomCodeTool.UpdateNeeded because FLastScannerChangeStep<>Scanner.ChangeStep ',MainFilename]);
+    {$ENDIF}
     Result:=true;
   end else begin
     if OnlyInterfaceNeeded then
@@ -2273,6 +2285,10 @@ begin
     else
       LinkScanRange:=lsrEnd;
     Result:=Scanner.UpdateNeeded(LinkScanRange, CheckFilesOnDisk);
+    {$IFDEF VerboseUpdateNeeded}
+    if Result then
+      DebugLn(['TCustomCodeTool.UpdateNeeded because Scanner.UpdateNeeded ',MainFilename]);
+    {$ENDIF}
   end;
   FForceUpdateNeeded:=Result;
   {$IFDEF CTDEBUG}

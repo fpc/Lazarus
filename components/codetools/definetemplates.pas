@@ -2741,8 +2741,11 @@ var CmdLine: string;
   SrcOS2: String;
   Step: String;
 begin
-  //DebugLn('TDefinePool.CreateFPCTemplate PPC386Path="',CompilerPath,'" PPCOptions="',CompilerOptions,'"');
   Result:=nil;
+  //DebugLn('TDefinePool.CreateFPCTemplate PPC386Path="',CompilerPath,'" PPCOptions="',CompilerOptions,'"');
+  if TestPascalFile='' then begin
+    DebugLn(['WARNING: TDefinePool.CreateFPCTemplate TestPascalFile empty']);
+  end;
   UnitSearchPath:='';
   TargetOS:='';
   SrcOS:='';
@@ -3341,8 +3344,14 @@ begin
   {$IFDEF VerboseFPCSrcScan}
   DebugLn('CreateFPCSrcTemplate ',FPCSrcDir,': length(UnitSearchPath)=',DbgS(length(UnitSearchPath)),' Valid=',DbgS(UnitLinkListValid),' PPUExt=',PPUExt);
   {$ENDIF}
+  if UnitSearchPath='' then begin
+    DebugLn(['Note: TDefinePool.CreateFPCSrcTemplate UnitSearchPath empty']);
+  end;
   Result:=nil;
-  if (FPCSrcDir='') or (not DirPathExists(FPCSrcDir)) then exit;
+  if (FPCSrcDir='') or (not DirPathExists(FPCSrcDir)) then begin
+    DebugLn(['TDefinePool.CreateFPCSrcTemplate FPCSrcDir does not exist: FPCSrcDir="',FPCSrcDir,'"']);
+    exit;
+  end;
   DS:=PathDelim;
   Dir:=AppendPathDelim(FPCSrcDir);
   TargetOS:='$('+ExternalMacroStart+'TargetOS)';
