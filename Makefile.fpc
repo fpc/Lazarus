@@ -29,7 +29,7 @@ destdir=$(BASEDIR)/dist
 [prerules]
 RCPP?=$(strip $(firstword cpp$(SRCEXEEXT)))
 #
-LAZARUS_INSTALL_DIR=/usr/share/lazarus
+LAZARUS_INSTALL_DIR=$(INSTALL_PREFIX)/share/lazarus
 LAZARUS_MAN_DIR=/usr/share/man
 ifneq ($(findstring $(OS_TARGET),win32 win64),)
 LAZARUS_INSTALL_DIR=C:\lazarus
@@ -99,15 +99,25 @@ purge: cleanlaz
 
 clean: cleanlaz
 
+# create dirs
+installbase:
+ifeq ($(OS_TARGET),win32)
+
+else
+        $(MKDIR) $(INSTALL_PREFIX)/share
+        $(MKDIR) $(INSTALL_PREFIX)/share/lazarus
+        $(MKDIR) $(INSTALL_BINDIR)
+endif
 #-----------------------------------------------------------------------------
 # Many C expect 'make install' to copy the binaries to somewhere
 # Copy the lazarus tree to the install directory and set a link
 install:
+        $(MAKE) installbase
 	$(COPYTREE) . $(LAZARUS_INSTALL_DIR)
 ifeq ($(OS_TARGET),win32)
 
 else
-        ln -sf $(LAZARUS_INSTALL_DIR)/lazarus /usr/bin/lazarus
+        ln -sf $(LAZARUS_INSTALL_DIR)/lazarus $(LAZARUS_INSTALL_DIR)/../../bin/lazarus
         ln -sf $(LAZARUS_INSTALL_DIR)/startlazarus /usr/bin/startlazarus
         ln -sf $(LAZARUS_INSTALL_DIR)/lazbuild /usr/bin/lazbuild
         mkdir -p $(LAZARUS_MAN_DIR)

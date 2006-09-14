@@ -232,7 +232,7 @@ PACKAGESDIR:=$(wildcard $(FPCDIR) $(FPCDIR)/packages/base $(FPCDIR)/packages/ext
 override PACKAGE_NAME=lazarus
 override PACKAGE_VERSION=0.9b
 RCPP?=$(strip $(firstword cpp$(SRCEXEEXT)))
-LAZARUS_INSTALL_DIR=/usr/share/lazarus
+LAZARUS_INSTALL_DIR=$(INSTALL_PREFIX)/share/lazarus
 LAZARUS_MAN_DIR=/usr/share/man
 ifneq ($(findstring $(OS_TARGET),win32 win64),)
 LAZARUS_INSTALL_DIR=C:\lazarus
@@ -3827,11 +3827,19 @@ purge: cleanlaz
 	$(MAKE) -C doceditor clean
 	$(MAKE) -C tools clean
 clean: cleanlaz
+installbase:
+ifeq ($(OS_TARGET),win32)
+else
+	$(MKDIR) $(INSTALL_PREFIX)/share
+	$(MKDIR) $(INSTALL_PREFIX)/share/lazarus
+	$(MKDIR) $(INSTALL_BINDIR)
+endif
 install:
+	$(MAKE) installbase
 	$(COPYTREE) . $(LAZARUS_INSTALL_DIR)
 ifeq ($(OS_TARGET),win32)
 else
-	ln -sf $(LAZARUS_INSTALL_DIR)/lazarus /usr/bin/lazarus
+	ln -sf $(LAZARUS_INSTALL_DIR)/lazarus $(LAZARUS_INSTALL_DIR)/../../bin/lazarus
 	ln -sf $(LAZARUS_INSTALL_DIR)/startlazarus /usr/bin/startlazarus
 	ln -sf $(LAZARUS_INSTALL_DIR)/lazbuild /usr/bin/lazbuild
 	mkdir -p $(LAZARUS_MAN_DIR)
