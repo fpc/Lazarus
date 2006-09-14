@@ -618,6 +618,10 @@ msgstr "Гаразд"
 msgid "Open"
 msgstr "Відкрити"
 
+#: objinspstrconsts:oispeopenimagefile
+msgid "Open image file"
+msgstr ""
+
 #: objinspstrconsts:oisopenmaskfile
 msgid "Open masks file (*.dem)"
 msgstr ""
@@ -637,6 +641,10 @@ msgstr "Панель Описи"
 #: objinspstrconsts:oispaste
 msgid "Paste"
 msgstr "Вставити"
+
+#: objinspstrconsts:oispepicture
+msgid "Picture"
+msgstr ""
 
 #: objinspstrconsts:clbdisable
 msgid "Popup to disable/enable items"
@@ -697,6 +705,10 @@ msgstr ""
 #: objinspstrconsts:oissaveliteralcharacters
 msgid "Save Literal Characters"
 msgstr "Зберегти Літеральні Символи"
+
+#: objinspstrconsts:oispesaveimageas
+msgid "Save image as"
+msgstr ""
 
 #: objinspstrconsts:oissavepicture
 msgid "Save picture"

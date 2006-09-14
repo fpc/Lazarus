@@ -38,6 +38,10 @@ msgstr "%s (compilation ...)"
 msgid "%s (debugging ...)"
 msgstr "%s (débogage ...)"
 
+#: lazarusidestrconsts:liscovarious
+msgid "%s (various)"
+msgstr ""
+
 #: lazarusidestrconsts:lisnewproject
 msgid "%s - (new project)"
 msgstr "%s - (nouveau projet)"
@@ -1292,6 +1296,10 @@ msgstr "Modêles de code"
 
 #: lazarusidestrconsts:lisceocodeexplorer
 msgid "CodeExplorer Options"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgsyscodetoolstoolsandfunctionstoparsebrowseandeditpasc
+msgid "CodeTools - tools and functions to parse, browse and edit pascal sources"
 msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefscodetoolsdefineseditor
@@ -4654,16 +4662,16 @@ msgstr "Déplacer en arrière"
 msgid "Move to front"
 msgstr "Déplacer en avant"
 
-#: lazarusidestrconsts:dlgmultiline
-msgid "Multi Line"
-msgstr "Lignes multiples"
-
 #: lazarusidestrconsts:dlgmultiselect
 msgid "Multi Select"
 msgstr "Multi sélection"
 
+#: lazarusidestrconsts:dlgmultiline
+msgid "Multiline"
+msgstr ""
+
 #: lazarusidestrconsts:lisfindfilemultiline
-msgid "Multi line pattern"
+msgid "Multiline pattern"
 msgstr ""
 
 #: lazarusidestrconsts:fdinvalidmultiselectiontext
@@ -4685,6 +4693,10 @@ msgstr "NOTE : fichier de configuration codetools non trouvé. Valeurs par défa
 #: lazarusidestrconsts:liscompilernoteloadingoldcodetoolsoptionsfile
 msgid "NOTE: loading old codetools options file: "
 msgstr "NOTE: chargement de l'ancien fichier d'options de codetools"
+
+#: lazarusidestrconsts:liseonoteonlyabsolutepathsaresupportednow
+msgid "NOTE: only absolute paths are supported now"
+msgstr ""
 
 #: lazarusidestrconsts:lisdebugoptionsfrmname
 msgid "Name"
@@ -8545,6 +8557,10 @@ msgstr "Messages détaillés pendant la compilation:"
 #: lazarusidestrconsts:lisversion
 msgid "Version"
 msgstr "Version"
+
+#: lazarusidestrconsts:versioninfotitle
+msgid "Version Info"
+msgstr ""
 
 #: lazarusidestrconsts:lisvertical
 msgid "Vertical"

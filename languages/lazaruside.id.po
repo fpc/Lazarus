@@ -40,6 +40,10 @@ msgstr "%s (kompilasi ...)"
 msgid "%s (debugging ...)"
 msgstr "%s (debugging ...)"
 
+#: lazarusidestrconsts:liscovarious
+msgid "%s (various)"
+msgstr ""
+
 #: lazarusidestrconsts:lisnewproject
 msgid "%s - (new project)"
 msgstr "%s - (proyek baru)"
@@ -1295,6 +1299,10 @@ msgstr "Template kode"
 #: lazarusidestrconsts:lisceocodeexplorer
 msgid "CodeExplorer Options"
 msgstr "Opsi CodeExplorer"
+
+#: lazarusidestrconsts:lispkgsyscodetoolstoolsandfunctionstoparsebrowseandeditpasc
+msgid "CodeTools - tools and functions to parse, browse and edit pascal sources"
+msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefscodetoolsdefineseditor
 msgid "CodeTools Defines Editor"
@@ -4656,16 +4664,16 @@ msgstr "Pindahkan ke belakang"
 msgid "Move to front"
 msgstr "Pindahkan ke depan"
 
-#: lazarusidestrconsts:dlgmultiline
-msgid "Multi Line"
-msgstr "Multi Baris"
-
 #: lazarusidestrconsts:dlgmultiselect
 msgid "Multi Select"
 msgstr "Pilihan Multi"
 
+#: lazarusidestrconsts:dlgmultiline
+msgid "Multiline"
+msgstr ""
+
 #: lazarusidestrconsts:lisfindfilemultiline
-msgid "Multi line pattern"
+msgid "Multiline pattern"
 msgstr ""
 
 #: lazarusidestrconsts:fdinvalidmultiselectiontext
@@ -4687,6 +4695,10 @@ msgstr "CATATAN: file konfig codetools tidak ditemukan - menggunakan default"
 #: lazarusidestrconsts:liscompilernoteloadingoldcodetoolsoptionsfile
 msgid "NOTE: loading old codetools options file: "
 msgstr "CATATAN: pengambilan file opsi codetools lama:"
+
+#: lazarusidestrconsts:liseonoteonlyabsolutepathsaresupportednow
+msgid "NOTE: only absolute paths are supported now"
+msgstr ""
 
 #: lazarusidestrconsts:lisdebugoptionsfrmname
 msgid "Name"
@@ -8547,6 +8559,10 @@ msgstr "Perlihatkan selama kompilasi:"
 #: lazarusidestrconsts:lisversion
 msgid "Version"
 msgstr "Versi"
+
+#: lazarusidestrconsts:versioninfotitle
+msgid "Version Info"
+msgstr ""
 
 #: lazarusidestrconsts:lisvertical
 msgid "Vertical"

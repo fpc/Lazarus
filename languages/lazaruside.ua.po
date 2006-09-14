@@ -26,6 +26,10 @@ msgstr "%s (компілюю ...)"
 msgid "%s (debugging ...)"
 msgstr "%s (йде налагодження ...)"
 
+#: lazarusidestrconsts:liscovarious
+msgid "%s (various)"
+msgstr ""
+
 #: lazarusidestrconsts:lisnewproject
 msgid "%s - (new project)"
 msgstr "%s - (новий проект)"
@@ -1281,6 +1285,10 @@ msgstr "Кодові шаблони"
 #: lazarusidestrconsts:lisceocodeexplorer
 msgid "CodeExplorer Options"
 msgstr "Параметри CodeExplorer"
+
+#: lazarusidestrconsts:lispkgsyscodetoolstoolsandfunctionstoparsebrowseandeditpasc
+msgid "CodeTools - tools and functions to parse, browse and edit pascal sources"
+msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefscodetoolsdefineseditor
 msgid "CodeTools Defines Editor"
@@ -4642,16 +4650,16 @@ msgstr "До попереднього"
 msgid "Move to front"
 msgstr "Пересунути наперед"
 
-#: lazarusidestrconsts:dlgmultiline
-msgid "Multi Line"
-msgstr "Багаторядковий"
-
 #: lazarusidestrconsts:dlgmultiselect
 msgid "Multi Select"
 msgstr ""
 
+#: lazarusidestrconsts:dlgmultiline
+msgid "Multiline"
+msgstr ""
+
 #: lazarusidestrconsts:lisfindfilemultiline
-msgid "Multi line pattern"
+msgid "Multiline pattern"
 msgstr ""
 
 #: lazarusidestrconsts:fdinvalidmultiselectiontext
@@ -4673,6 +4681,10 @@ msgstr "ЗАУВАЖЕННЯ:не знайдено конфігураційно�
 #: lazarusidestrconsts:liscompilernoteloadingoldcodetoolsoptionsfile
 msgid "NOTE: loading old codetools options file: "
 msgstr "ЗАУВАЖЕННЯ:завантажую старий файл з налаштуваннями codetools"
+
+#: lazarusidestrconsts:liseonoteonlyabsolutepathsaresupportednow
+msgid "NOTE: only absolute paths are supported now"
+msgstr ""
 
 #: lazarusidestrconsts:lisdebugoptionsfrmname
 msgid "Name"
@@ -8533,6 +8545,10 @@ msgstr "Подробиці при компіляції:"
 #: lazarusidestrconsts:lisversion
 msgid "Version"
 msgstr "Версія"
+
+#: lazarusidestrconsts:versioninfotitle
+msgid "Version Info"
+msgstr ""
 
 #: lazarusidestrconsts:lisvertical
 msgid "Vertical"

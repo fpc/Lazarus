@@ -188,7 +188,7 @@ msgstr "Tyhjennä"
 
 #: objinspstrconsts:oistdactdatasetcancel1hint
 msgid "Cancel"
-msgstr ""
+msgstr "Peru"
 
 #: objinspstrconsts:rscdcaption
 msgid "Caption"
@@ -618,6 +618,10 @@ msgstr ""
 msgid "Open"
 msgstr ""
 
+#: objinspstrconsts:oispeopenimagefile
+msgid "Open image file"
+msgstr "Avaa kuvatiedosto"
+
 #: objinspstrconsts:oisopenmaskfile
 msgid "Open masks file (*.dem)"
 msgstr "Avaa maskitiedosto (*.dem)"
@@ -637,6 +641,10 @@ msgstr ""
 #: objinspstrconsts:oispaste
 msgid "Paste"
 msgstr "Liitä"
+
+#: objinspstrconsts:oispepicture
+msgid "Picture"
+msgstr "Kuva"
 
 #: objinspstrconsts:clbdisable
 msgid "Popup to disable/enable items"
@@ -697,6 +705,10 @@ msgstr ""
 #: objinspstrconsts:oissaveliteralcharacters
 msgid "Save Literal Characters"
 msgstr ""
+
+#: objinspstrconsts:oispesaveimageas
+msgid "Save image as"
+msgstr "Tallenna kuva"
 
 #: objinspstrconsts:oissavepicture
 msgid "Save picture"

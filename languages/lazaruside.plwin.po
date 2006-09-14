@@ -37,6 +37,10 @@ msgstr "%s (kompilacja ...)"
 msgid "%s (debugging ...)"
 msgstr "%s (odpluskwianie ...)"
 
+#: lazarusidestrconsts:liscovarious
+msgid "%s (various)"
+msgstr ""
+
 #: lazarusidestrconsts:lisnewproject
 msgid "%s - (new project)"
 msgstr "%s - (nowy projekt)"
@@ -1291,6 +1295,10 @@ msgstr "Szablony Ÿróde³"
 
 #: lazarusidestrconsts:lisceocodeexplorer
 msgid "CodeExplorer Options"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgsyscodetoolstoolsandfunctionstoparsebrowseandeditpasc
+msgid "CodeTools - tools and functions to parse, browse and edit pascal sources"
 msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefscodetoolsdefineseditor
@@ -4653,16 +4661,16 @@ msgstr ""
 msgid "Move to front"
 msgstr ""
 
-#: lazarusidestrconsts:dlgmultiline
-msgid "Multi Line"
-msgstr "Wiele wierszy"
-
 #: lazarusidestrconsts:dlgmultiselect
 msgid "Multi Select"
 msgstr ""
 
+#: lazarusidestrconsts:dlgmultiline
+msgid "Multiline"
+msgstr ""
+
 #: lazarusidestrconsts:lisfindfilemultiline
-msgid "Multi line pattern"
+msgid "Multiline pattern"
 msgstr ""
 
 #: lazarusidestrconsts:fdinvalidmultiselectiontext
@@ -4684,6 +4692,10 @@ msgstr "UWAGA: brak plik konfiguracji codetools - u¿yjê opcji domyœlnych"
 #: lazarusidestrconsts:liscompilernoteloadingoldcodetoolsoptionsfile
 msgid "NOTE: loading old codetools options file: "
 msgstr "UWAGA: ³adujê stary plik opcji codetools"
+
+#: lazarusidestrconsts:liseonoteonlyabsolutepathsaresupportednow
+msgid "NOTE: only absolute paths are supported now"
+msgstr ""
 
 #: lazarusidestrconsts:lisdebugoptionsfrmname
 msgid "Name"
@@ -8544,6 +8556,10 @@ msgstr ""
 #: lazarusidestrconsts:lisversion
 msgid "Version"
 msgstr "Wersja"
+
+#: lazarusidestrconsts:versioninfotitle
+msgid "Version Info"
+msgstr ""
 
 #: lazarusidestrconsts:lisvertical
 msgid "Vertical"

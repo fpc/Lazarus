@@ -618,6 +618,10 @@ msgstr ""
 msgid "Open"
 msgstr "Obre"
 
+#: objinspstrconsts:oispeopenimagefile
+msgid "Open image file"
+msgstr ""
+
 #: objinspstrconsts:oisopenmaskfile
 msgid "Open masks file (*.dem)"
 msgstr ""
@@ -637,6 +641,10 @@ msgstr "Descipcions del tauler"
 #: objinspstrconsts:oispaste
 msgid "Paste"
 msgstr "Enganxa"
+
+#: objinspstrconsts:oispepicture
+msgid "Picture"
+msgstr ""
 
 #: objinspstrconsts:clbdisable
 msgid "Popup to disable/enable items"
@@ -696,6 +704,10 @@ msgstr ""
 
 #: objinspstrconsts:oissaveliteralcharacters
 msgid "Save Literal Characters"
+msgstr ""
+
+#: objinspstrconsts:oispesaveimageas
+msgid "Save image as"
 msgstr ""
 
 #: objinspstrconsts:oissavepicture

@@ -37,6 +37,10 @@ msgstr "%s (compileren ...)"
 msgid "%s (debugging ...)"
 msgstr "%s (aan het debuggen ...)"
 
+#: lazarusidestrconsts:liscovarious
+msgid "%s (various)"
+msgstr ""
+
 #: lazarusidestrconsts:lisnewproject
 msgid "%s - (new project)"
 msgstr "%s - (nieuw project)"
@@ -1292,6 +1296,10 @@ msgstr "Broncode templates"
 #: lazarusidestrconsts:lisceocodeexplorer
 msgid "CodeExplorer Options"
 msgstr "CodeEplorer-opties"
+
+#: lazarusidestrconsts:lispkgsyscodetoolstoolsandfunctionstoparsebrowseandeditpasc
+msgid "CodeTools - tools and functions to parse, browse and edit pascal sources"
+msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefscodetoolsdefineseditor
 msgid "CodeTools Defines Editor"
@@ -4653,16 +4661,16 @@ msgstr "Breng naar achter"
 msgid "Move to front"
 msgstr "Breng naar voren"
 
-#: lazarusidestrconsts:dlgmultiline
-msgid "Multi Line"
-msgstr "Meervoudige regel"
-
 #: lazarusidestrconsts:dlgmultiselect
 msgid "Multi Select"
 msgstr "Meervoudige selectie"
 
+#: lazarusidestrconsts:dlgmultiline
+msgid "Multiline"
+msgstr ""
+
 #: lazarusidestrconsts:lisfindfilemultiline
-msgid "Multi line pattern"
+msgid "Multiline pattern"
 msgstr ""
 
 #: lazarusidestrconsts:fdinvalidmultiselectiontext
@@ -4684,6 +4692,10 @@ msgstr "NB: Configuratie bestand voor code tools niet gevonden - de standaard wo
 #: lazarusidestrconsts:liscompilernoteloadingoldcodetoolsoptionsfile
 msgid "NOTE: loading old codetools options file: "
 msgstr "NB: Oude configuratie bestand voor code tools wordt geladen: "
+
+#: lazarusidestrconsts:liseonoteonlyabsolutepathsaresupportednow
+msgid "NOTE: only absolute paths are supported now"
+msgstr ""
 
 #: lazarusidestrconsts:lisdebugoptionsfrmname
 msgid "Name"
@@ -8544,6 +8556,10 @@ msgstr "Aantal melding tijdens compilatie:"
 #: lazarusidestrconsts:lisversion
 msgid "Version"
 msgstr "Versie"
+
+#: lazarusidestrconsts:versioninfotitle
+msgid "Version Info"
+msgstr ""
 
 #: lazarusidestrconsts:lisvertical
 msgid "Vertical"

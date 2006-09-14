@@ -37,6 +37,10 @@ msgstr "(... מהדר) %s"
 msgid "%s (debugging ...)"
 msgstr "(... מנפה) %s"
 
+#: lazarusidestrconsts:liscovarious
+msgid "%s (various)"
+msgstr ""
+
 #: lazarusidestrconsts:lisnewproject
 msgid "%s - (new project)"
 msgstr "(מיזם חדש) - %s"
@@ -1291,6 +1295,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisceocodeexplorer
 msgid "CodeExplorer Options"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgsyscodetoolstoolsandfunctionstoparsebrowseandeditpasc
+msgid "CodeTools - tools and functions to parse, browse and edit pascal sources"
 msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefscodetoolsdefineseditor
@@ -4653,16 +4661,16 @@ msgstr ""
 msgid "Move to front"
 msgstr ""
 
-#: lazarusidestrconsts:dlgmultiline
-msgid "Multi Line"
-msgstr ""
-
 #: lazarusidestrconsts:dlgmultiselect
 msgid "Multi Select"
 msgstr ""
 
+#: lazarusidestrconsts:dlgmultiline
+msgid "Multiline"
+msgstr ""
+
 #: lazarusidestrconsts:lisfindfilemultiline
-msgid "Multi line pattern"
+msgid "Multiline pattern"
 msgstr ""
 
 #: lazarusidestrconsts:fdinvalidmultiselectiontext
@@ -4683,6 +4691,10 @@ msgstr ""
 
 #: lazarusidestrconsts:liscompilernoteloadingoldcodetoolsoptionsfile
 msgid "NOTE: loading old codetools options file: "
+msgstr ""
+
+#: lazarusidestrconsts:liseonoteonlyabsolutepathsaresupportednow
+msgid "NOTE: only absolute paths are supported now"
 msgstr ""
 
 #: lazarusidestrconsts:lisdebugoptionsfrmname
@@ -8543,6 +8555,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisversion
 msgid "Version"
+msgstr ""
+
+#: lazarusidestrconsts:versioninfotitle
+msgid "Version Info"
 msgstr ""
 
 #: lazarusidestrconsts:lisvertical

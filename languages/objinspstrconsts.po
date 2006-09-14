@@ -914,6 +914,10 @@ msgstr ""
 msgid "&OK"
 msgstr ""
 
+#: objinspstrconsts:oispepicture
+msgid "Picture"
+msgstr ""
+
 #: objinspstrconsts:oiscancel
 msgid "&Cancel"
 msgstr ""
@@ -940,6 +944,14 @@ msgstr ""
 
 #: objinspstrconsts:oisclear
 msgid "C&lear"
+msgstr ""
+
+#: objinspstrconsts:oispeopenimagefile
+msgid "Open image file"
+msgstr ""
+
+#: objinspstrconsts:oispesaveimageas
+msgid "Save image as"
 msgstr ""
 
 #: objinspstrconsts:oiserrorloadingimage

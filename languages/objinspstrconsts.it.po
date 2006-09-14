@@ -630,6 +630,10 @@ msgstr "Ok"
 msgid "Open"
 msgstr "Apri"
 
+#: objinspstrconsts:oispeopenimagefile
+msgid "Open image file"
+msgstr ""
+
 #: objinspstrconsts:oisopenmaskfile
 msgid "Open masks file (*.dem)"
 msgstr "Apri il file delle maschere (*.dem)"
@@ -649,6 +653,10 @@ msgstr "Descrizioni pannello"
 #: objinspstrconsts:oispaste
 msgid "Paste"
 msgstr "Incolla"
+
+#: objinspstrconsts:oispepicture
+msgid "Picture"
+msgstr ""
 
 #: objinspstrconsts:clbdisable
 msgid "Popup to disable/enable items"
@@ -709,6 +717,10 @@ msgstr "Salva Immagine"
 #: objinspstrconsts:oissaveliteralcharacters
 msgid "Save Literal Characters"
 msgstr "Salva Caratteri Letterali"
+
+#: objinspstrconsts:oispesaveimageas
+msgid "Save image as"
+msgstr ""
 
 #: objinspstrconsts:oissavepicture
 msgid "Save picture"

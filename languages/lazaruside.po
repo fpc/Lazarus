@@ -114,6 +114,10 @@ msgstr ""
 msgid "LCL Widget Type"
 msgstr ""
 
+#: lazarusidestrconsts:liscovarious
+msgid "%s (various)"
+msgstr ""
+
 #: lazarusidestrconsts:listargetcpu
 msgid "Target CPU"
 msgstr ""
@@ -3843,7 +3847,7 @@ msgid "Activate regular expression syntax for text and replacement (pretty much 
 msgstr ""
 
 #: lazarusidestrconsts:dlgmultiline
-msgid "Multi Line"
+msgid "Multiline"
 msgstr ""
 
 #: lazarusidestrconsts:lisallowsearchingformultiplelines
@@ -7031,7 +7035,7 @@ msgid "Regular expressions"
 msgstr ""
 
 #: lazarusidestrconsts:lisfindfilemultiline
-msgid "Multi line pattern"
+msgid "Multiline pattern"
 msgstr ""
 
 #: lazarusidestrconsts:lisfindfilewhere
@@ -7596,6 +7600,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lispkgsyssynedittheeditorcomponentusedbylazarus
 msgid "SynEdit - the editor component used by Lazarus. http://sourceforge.net/projects/synedit/"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgsyscodetoolstoolsandfunctionstoparsebrowseandeditpasc
+msgid "CodeTools - tools and functions to parse, browse and edit pascal sources"
 msgstr ""
 
 #: lazarusidestrconsts:lispkgsysthisisthedefaultpackageusedonlyforcomponents
@@ -9146,6 +9154,10 @@ msgstr ""
 msgid "Remove path"
 msgstr ""
 
+#: lazarusidestrconsts:liseonoteonlyabsolutepathsaresupportednow
+msgid "NOTE: only absolute paths are supported now"
+msgstr ""
+
 #: lazarusidestrconsts:lislazdocpathsgroupbox
 msgid "LazDoc settings"
 msgstr ""
@@ -9500,5 +9512,9 @@ msgstr ""
 
 #: lazarusidestrconsts:lispvueditvirtualunit
 msgid "Edit virtual unit"
+msgstr ""
+
+#: lazarusidestrconsts:versioninfotitle
+msgid "Version Info"
 msgstr ""
 

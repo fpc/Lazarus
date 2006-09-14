@@ -632,6 +632,10 @@ msgstr "Ok"
 msgid "Open"
 msgstr "Buka"
 
+#: objinspstrconsts:oispeopenimagefile
+msgid "Open image file"
+msgstr ""
+
 #: objinspstrconsts:oisopenmaskfile
 msgid "Open masks file (*.dem)"
 msgstr "Buka f ile masks (*.dem)"
@@ -651,6 +655,10 @@ msgstr "Deskripsi Panel"
 #: objinspstrconsts:oispaste
 msgid "Paste"
 msgstr "Paste"
+
+#: objinspstrconsts:oispepicture
+msgid "Picture"
+msgstr ""
 
 #: objinspstrconsts:clbdisable
 msgid "Popup to disable/enable items"
@@ -711,6 +719,10 @@ msgstr "Simpan Gambar"
 #: objinspstrconsts:oissaveliteralcharacters
 msgid "Save Literal Characters"
 msgstr "Simpan Karakter Literal"
+
+#: objinspstrconsts:oispesaveimageas
+msgid "Save image as"
+msgstr ""
 
 #: objinspstrconsts:oissavepicture
 msgid "Save picture"

@@ -26,6 +26,10 @@ msgstr "%s (käännetään ...)"
 msgid "%s (debugging ...)"
 msgstr ""
 
+#: lazarusidestrconsts:liscovarious
+msgid "%s (various)"
+msgstr ""
+
 #: lazarusidestrconsts:lisnewproject
 msgid "%s - (new project)"
 msgstr ""
@@ -644,7 +648,7 @@ msgstr "Varmistetaan vielä erikseen että korvataanko kyseinen kohta"
 
 #: lazarusidestrconsts:liscodetoolsoptsat
 msgid "At"
-msgstr ""
+msgstr "At (@)"
 
 #: lazarusidestrconsts:lispckoptsauthor
 msgid "Author:"
@@ -1280,6 +1284,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisceocodeexplorer
 msgid "CodeExplorer Options"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgsyscodetoolstoolsandfunctionstoparsebrowseandeditpasc
+msgid "CodeTools - tools and functions to parse, browse and edit pascal sources"
 msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefscodetoolsdefineseditor
@@ -3284,7 +3292,7 @@ msgstr "Lisää"
 
 #: lazarusidestrconsts:liscodetoolsoptsidentifier
 msgid "Identifier"
-msgstr "Käsiteltävä tunniste on"
+msgstr "Tunniste (mm muuttuja)"
 
 #: lazarusidestrconsts:dlgedidcomlet
 msgid "Identifier completion"
@@ -3640,11 +3648,11 @@ msgstr ""
 
 #: lazarusidestrconsts:dlginsspaceafter
 msgid "Insert space after"
-msgstr ""
+msgstr "Lisää välilyönti seuraavien jälkeen"
 
 #: lazarusidestrconsts:dlginsspacefront
 msgid "Insert space in front of"
-msgstr ""
+msgstr "Lisää välilyönti ennen seuraavia (merkkejä)"
 
 #: lazarusidestrconsts:lismenuinserttext
 msgid "Insert text"
@@ -4642,16 +4650,16 @@ msgstr "Siirrä taainmaksi"
 msgid "Move to front"
 msgstr "Siirrä päällimmäksi"
 
-#: lazarusidestrconsts:dlgmultiline
-msgid "Multi Line"
-msgstr ""
-
 #: lazarusidestrconsts:dlgmultiselect
 msgid "Multi Select"
 msgstr "Monivalinta"
 
+#: lazarusidestrconsts:dlgmultiline
+msgid "Multiline"
+msgstr ""
+
 #: lazarusidestrconsts:lisfindfilemultiline
-msgid "Multi line pattern"
+msgid "Multiline pattern"
 msgstr ""
 
 #: lazarusidestrconsts:fdinvalidmultiselectiontext
@@ -4672,6 +4680,10 @@ msgstr ""
 
 #: lazarusidestrconsts:liscompilernoteloadingoldcodetoolsoptionsfile
 msgid "NOTE: loading old codetools options file: "
+msgstr ""
+
+#: lazarusidestrconsts:liseonoteonlyabsolutepathsaresupportednow
+msgid "NOTE: only absolute paths are supported now"
 msgstr ""
 
 #: lazarusidestrconsts:lisdebugoptionsfrmname
@@ -6892,7 +6904,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgspacenotcosmos
 msgid "Space"
-msgstr ""
+msgstr "Välilyönnit"
 
 #: lazarusidestrconsts:lisspaceequally
 msgid "Space equally"
@@ -8533,6 +8545,10 @@ msgstr ""
 #: lazarusidestrconsts:lisversion
 msgid "Version"
 msgstr "Versio"
+
+#: lazarusidestrconsts:versioninfotitle
+msgid "Version Info"
+msgstr ""
 
 #: lazarusidestrconsts:lisvertical
 msgid "Vertical"
