@@ -222,6 +222,11 @@ CompilerVersionStr="$CompilerVersion.$CompilerRelease.$CompilerPatch"
 #===============================================================================
 # build binutils
 if [ $BuildBinutils = "yes" ]; then
+  # check if cc is there
+  cc -v
+  # check if bison is there
+  bison -V
+  
   # create custom version of buildcrossbinutils
   echo "building cross binutils for targets:"
   echo "  WIN=$TARGETS_WIN"
