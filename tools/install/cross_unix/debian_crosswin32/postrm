@@ -1,0 +1,6 @@
+#!/bin/sh
+# remove crosswin32 additions from fpc.cfg
+cat /etc/fpc.cfg | egrep -v '# fpc_crosswin32|-XPfpc-i386-win32-' > /etc/fpc.cfg.rpmtemp
+mv /etc/fpc.cfg.rpmtemp /etc/fpc.cfg
+# end.
+

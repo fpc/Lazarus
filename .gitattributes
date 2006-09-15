@@ -2672,6 +2672,7 @@ tools/install/cross_unix/debian_crosswin32/changelog.Debian svneol=native#text/p
 tools/install/cross_unix/debian_crosswin32/control svneol=native#text/plain
 tools/install/cross_unix/debian_crosswin32/copyright svneol=native#text/plain
 tools/install/cross_unix/debian_crosswin32/postinst svneol=native#text/plain
+tools/install/cross_unix/debian_crosswin32/postrm svneol=native#text/plain
 tools/install/cross_unix/update_cross_fpc.sh svneol=native#text/plain
 tools/install/cvsexportlocal.pas svneol=native#text/pascal
 tools/install/debian_fpc/changelog svneol=native#text/plain

@@ -4,7 +4,7 @@ Section: devel
 Priority: optional
 Maintainer: Mattias Gaertner <mattias@cvs.freepascal.org>
 Architecture: i386
-Pre-Depends: binutils, glibc-devel
+Pre-Depends: binutils, libc6-dev
 Description: Free Pascal units cross compiled to win32 for linux
   Units and binutils needed by Freepascal to cross compile to target win32.
   This deb was built from sources built by the scripts of the lazarus project.

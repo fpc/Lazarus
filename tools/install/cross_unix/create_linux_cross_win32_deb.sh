@@ -198,9 +198,16 @@ if [ $BuildCrossWin32DEB = "yes" ]; then
 
   # create postinst if needed
   if [ -f "$ResourceDir/postinst" ]; then
-      echo "creating DEBIAN/postinst file"
-      cat $ResourceDir/postinst | sed -e "s/FPCVERSION/$FPCVersion/g" > $DebianRulezDir/postinst
-      chmod a+x $DebianRulezDir/postinst
+    echo "creating DEBIAN/postinst file"
+    cat $ResourceDir/postinst | sed -e "s/FPCVERSION/$FPCVersion/g" > $DebianRulezDir/postinst
+    chmod a+x $DebianRulezDir/postinst
+  fi
+
+  # create postinst if needed
+  if [ -f "$ResourceDir/postrm" ]; then
+    echo "creating DEBIAN/postrm file"
+    cat $ResourceDir/postrm | sed -e "s/FPCVERSION/$FPCVersion/g" > $DebianRulezDir/postrm
+    chmod a+x $DebianRulezDir/postrm
   fi
 
   # create changelog.Debian file

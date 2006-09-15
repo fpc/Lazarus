@@ -1,2 +1,8 @@
 #!/bin/sh
+# add -FD and -XP entry for cross compiling
+echo '# set binutils paths for crosscompiling # fpc_crosswin32' >> /etc/fpc.cfg
+echo '#IFDEF FPC_CROSSCOMPILING               # fpc_crosswin32' >> /etc/fpc.cfg
+echo '  -XPfpc-i386-win32-' >> /etc/fpc.cfg
+echo '#ENDIF                                  # fpc_crosswin32' >> /etc/fpc.cfg
+# end.
 
