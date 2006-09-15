@@ -38,10 +38,7 @@ interface
 
 uses
   Classes, SysUtils, Process, LCLProc, Controls, Forms,
-  CodeToolManager, CodeCache,
-  LazConf, Dialogprocs,
-
-  Dialogs;
+  CodeToolManager, CodeCache, LazConf;
    
 type
   { TProjectVersionInfo }
@@ -101,12 +98,12 @@ type
     procedure SetTrademarksString(const AValue: string);
     procedure SetUseVersionInfo(const AValue: boolean);
     procedure SetVersionNr(const AValue: integer);
-    function UpdateMainSourceFile(const AFilename: string): TModalResult;
     procedure SetFileNames(const MainFilename: string);
   public
     constructor Create;
     destructor Destroy; override;
     function CompileRCFile(const MainFilename, TargetOS: string): TModalResult;
+    function UpdateMainSourceFile(const AFilename: string): TModalResult;
 
     property Modified: boolean read FModified write SetModified;
 
@@ -355,14 +352,14 @@ begin
                   begin
                      { compilation succeeded }
                      VersionInfoMessages.Clear;
-                     VersionInfoMessages.Add('Resource file ' + rcFilename + ' has been compiled successfully!');
-                     { we got a compiled .res file, check if it's included in the .lpr file }
-                     Result := UpdateMainSourceFile(MainFilename);
+                     VersionInfoMessages.Add('Resource file ' + rcFilename +
+                                             ' has been compiled successfully!');
                   end
                else
                   begin
                      { compilation failed }
-                     VersionInfoMessages.Add('Errors found while compiling ' + rcFilename);
+                     VersionInfoMessages.Add('Errors found while compiling ' +
+                                             rcFilename);
                   end;
             end
          else
@@ -373,7 +370,8 @@ begin
       end
    else
       begin
-         { on systems other then win32, there is nothing to do, just return with Result = mrOk }
+         { on systems other then win32, there is nothing to do, just return
+           with Result = mrOk }
          Result := mrOk;
       end;
 end;

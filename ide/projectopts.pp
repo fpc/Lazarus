@@ -381,6 +381,7 @@ procedure TProjectOptionsDialog.ProjectOptionsClose(Sender: TObject;
   var CloseAction: TCloseAction);
 var
   NewFlags: TProjectFlags;
+  OldUseVersionInfo: Boolean;
 
   procedure SetProjectFlag(AFlag: TProjectFlag; AValue: Boolean);
   begin
@@ -431,6 +432,7 @@ begin
     Project.LazDocPaths:=StringListToText(LazDocListBox.Items,';',true);
 
     // VersionInfo
+    OldUseVersionInfo:=Project.VersionInfo.UseVersionInfo;
     Project.VersionInfo.UseVersionInfo:=UseVersionInfoCheckBox.Checked;
     Project.VersionInfo.AutoIncrementBuild:=AutomaticallyIncreaseBuildCheckBox.Checked;
     Project.VersionInfo.VersionNr:=VersionSpinEdit.Value;
@@ -441,6 +443,8 @@ begin
     Project.VersionInfo.CopyrightString:=CopyrightEdit.Text;
     Project.VersionInfo.HexLang:=MSLanguageToHex(LanguageSelectionComboBox.Text);
     Project.VersionInfo.HexCharSet:=MSCharacterSetToHex(CharacterSetComboBox.Text);
+    if Project.VersionInfo.UseVersionInfo and Project.VersionInfo.Modified then
+      Project.VersionInfo.UpdateMainSourceFile(Project.MainFilename);
   end;
 
   IDEDialogLayoutList.SaveLayout(Self);
