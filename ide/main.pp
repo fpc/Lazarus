@@ -7497,7 +7497,8 @@ begin
 
     // handle versioninfo
     VersionInfo:=Project1.VersionInfo;
-    Result := VersionInfo.CompileRCFile(Project1.MainFilename,MainBuildBoss.GetTargetOS(true));
+    Result := VersionInfo.CompileRCFile(Project1.MainFilename,MainBuildBoss.
+                                        GetTargetOS(true));
     if Result <> mrOk then exit;
     for Count := 1 to VersionInfo.VersionInfoMessages.Count do
       MessagesView.AddMsg(Format(VersionInfo.VersionInfoMessages[Count - 1],

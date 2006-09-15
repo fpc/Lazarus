@@ -5420,9 +5420,13 @@ begin
   and ((EditorOpts.DoNotWarnForFont='')
        or (EditorOpts.DoNotWarnForFont<>CurFont.Name))
   then begin
+    {$IFDEF HasMonoSpaceFonts}
     DummyResult:=QuestionDlg(lisUEFontWith,
       Format(lisUETheCurre, [#13, #13]),
       mtWarning, [mrIgnore, mrYesToAll, lisUEDoNotSho], 0);
+    {$ELSE}
+    DummyResult:=mrYesToAll;
+    {$ENDIF}
     if DummyResult=mrYesToAll then begin
       if EditorOpts.DoNotWarnForFont<>CurFont.Name then begin
         EditorOpts.DoNotWarnForFont:=CurFont.Name;
