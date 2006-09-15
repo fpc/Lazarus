@@ -32,14 +32,14 @@ uses
 Type
   TTagType = (ttBold,ttItalic,ttUnderline,ttParagraph,ttVariable,ttRemark,
               ttNumberedList,ttUnnumberedList,ttListItem,ttTable,ttRow,
-              ttCell,TTHeader,ttPre,ttCode,ttLink,ttFile);
+              ttCell,TTHeader,ttPre,ttCode,ttLink,ttFile,ttPrintShort);
               
   TElementEvent = Procedure (Node : TDomElement) of Object;
 
 Const
   TagNames : Array[TTagType] of string = ('b','i','u','p','var','remark',
               'ol','ul','li','table','tr',
-              'td','th','pre','code','link','file');
+              'td','th','pre','code','link','file', 'printshort');
 
 Function IsPackageNode (Node : TDomNode) : Boolean;
 Function IsModuleNode (Node : TDomNode) : Boolean;

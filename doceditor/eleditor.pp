@@ -66,6 +66,7 @@ Type
     Procedure InsertTag (TagType : TTagType); virtual; abstract;
     Procedure InsertLink(LinkTarget,LinkText : String); virtual; abstract;
     Procedure InsertTable(Cols,Rows : Integer; UseHeader : Boolean); virtual; abstract;
+    procedure InsertPrintShortLink(pLinkTarget: string); virtual; abstract;
     Property  Element : TDomElement Read FElement Write SetElement;
     Property  CurrentSelection : String Read GetCurrentSelection;
     Property  Modified : Boolean Read FModified Write SetModified;
@@ -130,6 +131,7 @@ Type
     Procedure InsertTag (TagType : TTagType); override;
     Procedure InsertLink(LinkTarget,LinkText : String); override;
     Procedure InsertTable(Cols,Rows : Integer; UseHeader : Boolean); override;
+    procedure InsertPrintShortLink(pLinkTarget: string); override;
   end;
 
 
@@ -693,6 +695,19 @@ begin
       SelText:=t;
     end;
 end;
+
+
+procedure TElementEditor.InsertPrintShortLink(pLinkTarget: string);
+begin
+  { Should be Limit insert only to Long Description edit box? }
+  if (CurrentEditable <> nil) and (CurrentEditable is TCustomEdit) then
+  begin
+    (CurrentEditable as TCustomEdit).SelText :=
+        Format('<%s id="%s"/>', [TagNames[ttPrintShort], pLinkTarget]);
+  end;
+  Modified := True;
+end;
+
 
 Procedure TElementEditor.GetNodes;
 

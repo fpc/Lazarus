@@ -725,13 +725,27 @@ doceditor/images/Delete_16N.bmp -text
 doceditor/images/Edit_16N.bmp -text
 doceditor/images/Insert_16N.bmp -text
 doceditor/images/add.xpm -text svneol=native#image/x-xpixmap
+doceditor/images/bold_blue24.bmp -text
 doceditor/images/build_icons.sh -text svneol=native#application/x-sh
+doceditor/images/comment24.bmp -text
+doceditor/images/db_register24.bmp -text
 doceditor/images/delete.xpm -text svneol=native#image/x-xpixmap
 doceditor/images/edit.xpm -text svneol=native#image/x-xpixmap
+doceditor/images/flow_chart24.bmp -text
+doceditor/images/insert24.bmp -text
+doceditor/images/insert_doc24.bmp -text
+doceditor/images/insert_hyperlink24.bmp -text
+doceditor/images/insert_table24.bmp -text
+doceditor/images/italic_blue24.bmp -text
 doceditor/images/node_edit.xpm -text svneol=native#image/x-xpixmap
 doceditor/images/node_finished.xpm -text svneol=native#image/x-xpixmap
 doceditor/images/node_modified.xpm -text svneol=native#image/x-xpixmap
 doceditor/images/node_new.xpm -text svneol=native#image/x-xpixmap
+doceditor/images/save_as24.bmp -text
+doceditor/images/show_symbols24.bmp -text
+doceditor/images/styles_formatting24.bmp -text
+doceditor/images/treenode_add24.bmp -text
+doceditor/images/underline_blue24.bmp -text
 doceditor/lazde.lpi svneol=native#text/plain
 doceditor/lazde.lpr svneol=native#text/pascal
 doceditor/lazdemsg.pp svneol=native#text/pascal

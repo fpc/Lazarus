@@ -41,6 +41,7 @@ ResourceString
   SNew         = 'New';
   SInsertLink  = 'Insert link';
   SInsertTable = 'Insert table';
+  SInsertPrintShortLink = 'Insert short description link';
   SForFile     = ' in file ';
   SForPackage  = ' in package ';
   SForModule   = ' in module ';
@@ -137,7 +138,8 @@ ResourceString
   SHintInsertElement = 'New element';
   SHintInsertLink    = 'Insert link';
   ShintInsertTable   = 'Insert table';
-  
+  SHintInsertPrintShortLink = 'Insert a short description link';
+
   SMarkSelection     = 'Mark selection %s';
   
   SHMenuExtraOptions = 'Show options dialog';

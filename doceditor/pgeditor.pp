@@ -95,6 +95,7 @@ Type
     Procedure InsertTag(TagType : TTagType);
     Procedure InsertLink(LinkTarget,LinkText : String);
     Procedure InsertTable(Cols,Rows : Integer; UseHeader : Boolean);
+    Procedure InsertShortPrintLink(pLinkTarget: string);
     Procedure NewPackage(APackageName : String);
     Procedure NewModule(AModuleName : String);
     Procedure NewTopic(ATopicName : String);
@@ -286,6 +287,13 @@ Procedure TEditorPage.InsertTable(Cols,Rows : Integer; UseHeader : Boolean);
 begin
   Felement.InsertTable(Cols,Rows,UseHeader);
 end;
+
+
+procedure TEditorPage.InsertShortPrintLink(pLinkTarget: string);
+begin
+  FElement.InsertPrintShortLink(pLinkTarget);
+end;
+
 
 Function TEditorPage.GetCurrentSelection : String;
 

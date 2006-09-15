@@ -28,13 +28,14 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
-  Menus, ActnList, ExtCtrls, ComCtrls, StdCtrls, pgeditor,process, fpdeutil;
+  Menus, ActnList, ExtCtrls, ComCtrls, StdCtrls, pgeditor, process, fpdeutil;
 
 type
   TNodeType = (ntFile,ntPackage,ntModule,ntElement,ntTopic);
   { TMainForm }
 
   TMainForm = class(TForm)
+    AInsertPrintShort: TAction;
     AExtraBuild: TAction;
     AExtraOptions: TAction;
     AHelpAbout: TAction;
@@ -62,6 +63,7 @@ type
     ALMain: TActionList;
     ILMain: TImageList;
     LIBuild: TMenuItem;
+    MenuItem1: TMenuItem;
     MISeparate: TMenuItem;
     MISaveAs: TMenuItem;
     MISave: TMenuItem;
@@ -100,6 +102,7 @@ type
     ToolButton10: TToolButton;
     TBSaveAs: TToolButton;
     TBSave: TToolButton;
+    ToolButton11: TToolButton;
     ToolButton13: TToolButton;
     ToolButton2: TToolButton;
     ToolButton3: TToolButton;
@@ -120,6 +123,8 @@ type
     procedure AInsertLinkUpdate(Sender: TObject);
     procedure AInsertTableExecute(Sender: TObject);
     procedure AInsertTableUpdate(Sender: TObject);
+    procedure AInsertShortPrintLinkExecute(Sender: TObject);
+    procedure AInsertShortPrintLinkUpdate(Sender: TObject);
     procedure ANewExecute(Sender: TObject);
     procedure ANewFromFileExecute(Sender: TObject);
     procedure AOpenExecute(Sender: TObject);
@@ -132,7 +137,6 @@ type
     procedure MainFormCreate(Sender: TObject);
     procedure MainFormDestroy(Sender: TObject);
   private
-    { private declarations }
     FRecent : TStringList;
     FRecentBuildSettingsFile: String;
     // Editor functions.
@@ -154,6 +158,7 @@ type
     Procedure InsertNode (NT : TNodeType);
     Procedure InsertLink;
     Procedure InsertTable;
+    procedure InsertPrintShortLink;
     Procedure ShowAbout;
     Procedure GetCurrentFiles(List : TStrings);
     Procedure ApplyOptions;
@@ -169,8 +174,9 @@ var
 
 implementation
 
-uses lazdeopts,lazdemsg,inifiles, frmmakeskel,frmOptions,frmNewNode,
-     frmLink,frmTable,frmAbout,frmBuild;
+uses
+ lazdeopts, lazdemsg, inifiles, frmmakeskel, frmOptions, frmNewNode,
+ frmLink, frmTable, frmAbout, frmBuild;
 
 { Fixes & additions to LCL}
 
@@ -332,11 +338,32 @@ begin
   (Sender as TAction).Enabled:=B;
 end;
 
+
+procedure TMainForm.AInsertShortPrintLinkExecute(Sender: TObject);
+begin
+  if Sender = nil then;
+  InsertPrintShortLink;
+end;
+
+
+procedure TMainForm.AInsertShortPrintLinkUpdate(Sender: TObject);
+var
+  B: Boolean;
+begin
+  if Sender = nil then;
+  B := (CurrentEditor <> nil);
+  if B then
+    B := CurrentEditor.CanInsertTag(ttPrintShort);
+  (Sender as TAction).Enabled := B;
+end;
+
+
 procedure TMainForm.ANewExecute(Sender: TObject);
 begin
   if Sender=nil then ;
   NewFile;
 end;
+
 
 procedure TMainForm.ANewFromFileExecute(Sender: TObject);
 begin
@@ -799,6 +826,35 @@ begin
       Free;
     end;
 end;
+
+
+procedure TMainForm.InsertPrintShortLink;
+begin
+  if Assigned(CurrentEditor) then
+  begin
+    with TLinkForm.Create(Self) do
+      try
+        Caption             := SInsertPrintShortLink;
+        ELinkText.Visible   := False;
+        ELinkText.Enabled   := False;
+        LELinkText.Visible  := False;
+        CBTarget.Items.BeginUpdate;
+        try
+          CurrentEditor.GetElementList(CBTarget.Items);
+          { Find & Select current item. It will be the most used option anyway }
+          CBTarget.ItemIndex :=
+              CBTarget.Items.IndexOf(CurrentEditor.CurrentElement['name']);
+        finally
+          CBTarget.Items.EndUpdate;
+        end;
+        if ShowModal = mrOK then
+          CurrentEditor.InsertShortPrintLink(CBTarget.Text);
+      finally
+        free;
+      end;
+  end;
+end;
+
 
 procedure TMainForm.ShowAbout;
 
