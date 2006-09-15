@@ -1646,23 +1646,23 @@ begin
       xmlconfig.SetDeleteValue(Path+'LazDoc/Paths', LazDocPaths, '');
       
       // VersionInfo
-      xmlconfig.SetValue(Path+'VersionInfo/UseVersionInfo/Value', VersionInfo.UseVersionInfo);
-      xmlconfig.SetValue(Path+'VersionInfo/AutoIncrementBuild/Value', VersionInfo.AutoIncrementBuild);
-      xmlconfig.SetValue(Path+'VersionInfo/CurrentVersionNr/Value', VersionInfo.VersionNr);
-      xmlconfig.SetValue(Path+'VersionInfo/CurrentMajorRevNr/Value', VersionInfo.MajorRevNr);
-      xmlconfig.SetValue(Path+'VersionInfo/CurrentMinorRevNr/Value', VersionInfo.MinorRevNr);
-      xmlconfig.SetValue(Path+'VersionInfo/CurrentBuildNr/Value', VersionInfo.BuildNr);
-      xmlconfig.SetValue(Path+'VersionInfo/ProjectVersion/Value', VersionInfo.ProductVersionString);
-      xmlconfig.SetValue(Path+'VersionInfo/Language/Value', VersionInfo.HexLang);
-      xmlconfig.SetValue(Path+'VersionInfo/CharSet/Value', VersionInfo.HexCharSet);
-      xmlconfig.SetValue(Path+'VersionInfo/Comments/Value', VersionInfo.CommentsString);
-      xmlconfig.SetValue(Path+'VersionInfo/CompanyName/Value', VersionInfo.CompanyString);
-      xmlconfig.SetValue(Path+'VersionInfo/FileDescription/Value', VersionInfo.DescriptionString);
-      xmlconfig.SetValue(Path+'VersionInfo/InternalName/Value', VersionInfo.InternalNameString);
-      xmlconfig.SetValue(Path+'VersionInfo/LegalCopyright/Value', VersionInfo.CopyrightString);
-      xmlconfig.SetValue(Path+'VersionInfo/LegalTrademarks/Value', VersionInfo.TrademarksString);
-      xmlconfig.SetValue(Path+'VersionInfo/OriginalFilename/Value', VersionInfo.OriginalFilenameString);
-      xmlconfig.SetValue(Path+'VersionInfo/ProductName/Value', VersionInfo.ProdNameString);
+      xmlconfig.SetDeleteValue(Path+'VersionInfo/UseVersionInfo/Value', VersionInfo.UseVersionInfo,false);
+      xmlconfig.SetDeleteValue(Path+'VersionInfo/AutoIncrementBuild/Value', VersionInfo.AutoIncrementBuild,false);
+      xmlconfig.SetDeleteValue(Path+'VersionInfo/CurrentVersionNr/Value', VersionInfo.VersionNr,0);
+      xmlconfig.SetDeleteValue(Path+'VersionInfo/CurrentMajorRevNr/Value', VersionInfo.MajorRevNr,0);
+      xmlconfig.SetDeleteValue(Path+'VersionInfo/CurrentMinorRevNr/Value', VersionInfo.MinorRevNr,0);
+      xmlconfig.SetDeleteValue(Path+'VersionInfo/CurrentBuildNr/Value', VersionInfo.BuildNr,0);
+      xmlconfig.SetDeleteValue(Path+'VersionInfo/ProjectVersion/Value', VersionInfo.ProductVersionString,'1.0.0.0');
+      xmlconfig.SetDeleteValue(Path+'VersionInfo/Language/Value', VersionInfo.HexLang,'0409');
+      xmlconfig.SetDeleteValue(Path+'VersionInfo/CharSet/Value', VersionInfo.HexCharSet,'04E4');
+      xmlconfig.SetDeleteValue(Path+'VersionInfo/Comments/Value', VersionInfo.CommentsString,'');
+      xmlconfig.SetDeleteValue(Path+'VersionInfo/CompanyName/Value', VersionInfo.CompanyString,'');
+      xmlconfig.SetDeleteValue(Path+'VersionInfo/FileDescription/Value', VersionInfo.DescriptionString,'');
+      xmlconfig.SetDeleteValue(Path+'VersionInfo/InternalName/Value', VersionInfo.InternalNameString,'');
+      xmlconfig.SetDeleteValue(Path+'VersionInfo/LegalCopyright/Value', VersionInfo.CopyrightString,'');
+      xmlconfig.SetDeleteValue(Path+'VersionInfo/LegalTrademarks/Value', VersionInfo.TrademarksString,'');
+      xmlconfig.SetDeleteValue(Path+'VersionInfo/OriginalFilename/Value', VersionInfo.OriginalFilenameString,'');
+      xmlconfig.SetDeleteValue(Path+'VersionInfo/ProductName/Value', VersionInfo.ProdNameString,'');
 
       // Save the compiler options
       CompilerOptions.SaveToXMLConfig(XMLConfig,'CompilerOptions/');
