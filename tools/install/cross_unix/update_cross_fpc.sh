@@ -189,6 +189,7 @@ if [ $DownloadFPC = "yes" ]; then
     echo "SVN update for FPC ..."
     svn cleanup
     svn up
+    cd -
   else
     echo "SVN checkout for FPC 2.0 ..."
     svn co http://svn.freepascal.org/svn/fpc/branches/fixes_2_0 fpc
@@ -198,6 +199,7 @@ if [ $DownloadFPC = "yes" ]; then
     echo "SVN update for FPC install ..."
     svn cleanup
     svn up
+    cd -
   else
     echo "SVN checkout for FPC 2.0 install ..."
     svn co http://svn.freepascal.org/svn/fpcbuild/branches/fixes_2_0/install install
