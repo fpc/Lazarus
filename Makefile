@@ -233,7 +233,7 @@ override PACKAGE_NAME=lazarus
 override PACKAGE_VERSION=0.9b
 RCPP?=$(strip $(firstword cpp$(SRCEXEEXT)))
 LAZARUS_INSTALL_DIR=$(INSTALL_PREFIX)/share/lazarus
-LAZARUS_MAN_DIR=/usr/share/man
+INSTALL_MAN_DIR=$(INSTALL_PREFIX)/share/man
 ifneq ($(findstring $(OS_TARGET),win32 win64),)
 LAZARUS_INSTALL_DIR=C:\lazarus
 endif
@@ -3833,15 +3833,15 @@ else
 	$(MKDIR) $(INSTALL_PREFIX)/share
 	$(MKDIR) $(INSTALL_PREFIX)/share/lazarus
 	$(MKDIR) $(INSTALL_BINDIR)
+	$(MKDIR) $(INSTALL_MAN_DIR)
 endif
 install:
 	$(MAKE) installbase
 	$(COPYTREE) . $(LAZARUS_INSTALL_DIR)
 ifeq ($(OS_TARGET),win32)
 else
-	ln -sf $(LAZARUS_INSTALL_DIR)/lazarus $(LAZARUS_INSTALL_DIR)/../../bin/lazarus
-	ln -sf $(LAZARUS_INSTALL_DIR)/startlazarus /usr/bin/startlazarus
-	ln -sf $(LAZARUS_INSTALL_DIR)/lazbuild /usr/bin/lazbuild
-	mkdir -p $(LAZARUS_MAN_DIR)
-	cat $(LAZARUS_INSTALL_DIR)/docs/lazbuild.1 | gzip > $(LAZARUS_MAN_DIR)/man1/lazbuild.1.gz
+	ln -sf $(LAZARUS_INSTALL_DIR)/lazarus $(INSTALL_PREFIX)/bin/lazarus
+	ln -sf $(LAZARUS_INSTALL_DIR)/startlazarus $(INSTALL_PREFIX)/bin/startlazarus
+	ln -sf $(LAZARUS_INSTALL_DIR)/lazbuild $(INSTALL_PREFIX)/bin/lazbuild
+	cat $(LAZARUS_INSTALL_DIR)/docs/lazbuild.1 | gzip > $(INSTALL_MAN_DIR)/man1/lazbuild.1.gz
 endif
