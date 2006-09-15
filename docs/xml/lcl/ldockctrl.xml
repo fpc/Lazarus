@@ -103,13 +103,9 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomLazDockingManager.GetDockers.Result">
-        <short/>
-      </element>
+      <element name="TCustomLazDockingManager.GetDockers.Result"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomLazDockingManager.GetDockers.Index">
-        <short/>
-      </element>
+      <element name="TCustomLazDockingManager.GetDockers.Index"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomLazDockingManager.Remove">
         <short/>
@@ -118,9 +114,7 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomLazDockingManager.Remove.Docker">
-        <short/>
-      </element>
+      <element name="TCustomLazDockingManager.Remove.Docker"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TCustomLazDockingManager.Add">
         <short/>
@@ -129,13 +123,9 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomLazDockingManager.Add.Result">
-        <short/>
-      </element>
+      <element name="TCustomLazDockingManager.Add.Result"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomLazDockingManager.Add.Docker">
-        <short/>
-      </element>
+      <element name="TCustomLazDockingManager.Add.Docker"><short/></element>
       <!-- constructor Visibility: public -->
       <element name="TCustomLazDockingManager.Create">
         <short/>
@@ -144,9 +134,7 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomLazDockingManager.Create.TheOwner">
-        <short/>
-      </element>
+      <element name="TCustomLazDockingManager.Create.TheOwner"><short/></element>
       <!-- destructor Visibility: public -->
       <element name="TCustomLazDockingManager.Destroy">
         <short/>
@@ -162,17 +150,11 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomLazDockingManager.FindDockerByName.Result">
-        <short/>
-      </element>
+      <element name="TCustomLazDockingManager.FindDockerByName.Result"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomLazDockingManager.FindDockerByName.ADockerName">
-        <short/>
-      </element>
+      <element name="TCustomLazDockingManager.FindDockerByName.ADockerName"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomLazDockingManager.FindDockerByName.Ignore">
-        <short/>
-      </element>
+      <element name="TCustomLazDockingManager.FindDockerByName.Ignore"><short/></element>
       <!-- function Visibility: public -->
       <element name="TCustomLazDockingManager.CreateUniqueName">
         <short/>
@@ -181,17 +163,11 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomLazDockingManager.CreateUniqueName.Result">
-        <short/>
-      </element>
+      <element name="TCustomLazDockingManager.CreateUniqueName.Result"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomLazDockingManager.CreateUniqueName.AName">
-        <short/>
-      </element>
+      <element name="TCustomLazDockingManager.CreateUniqueName.AName"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomLazDockingManager.CreateUniqueName.Ignore">
-        <short/>
-      </element>
+      <element name="TCustomLazDockingManager.CreateUniqueName.Ignore"><short/></element>
       <!-- property Visibility: public -->
       <element name="TCustomLazDockingManager.Manager">
         <short/>
@@ -211,9 +187,7 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomLazDockingManager.Dockers.Index">
-        <short/>
-      </element>
+      <element name="TCustomLazDockingManager.Dockers.Index"><short/></element>
       <!-- object Visibility: default -->
       <element name="TLazDockingManager">
         <short/>
@@ -272,9 +246,7 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomLazControlDocker.SetControl.AValue">
-        <short/>
-      </element>
+      <element name="TCustomLazControlDocker.SetControl.AValue"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomLazControlDocker.SetDockerName">
         <short/>
@@ -283,9 +255,7 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomLazControlDocker.SetDockerName.AValue">
-        <short/>
-      </element>
+      <element name="TCustomLazControlDocker.SetDockerName.AValue"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomLazControlDocker.SetExtendPopupMenu">
         <short/>
@@ -294,9 +264,7 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomLazControlDocker.SetExtendPopupMenu.AValue">
-        <short/>
-      </element>
+      <element name="TCustomLazControlDocker.SetExtendPopupMenu.AValue"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomLazControlDocker.SetLocalizedName">
         <short/>
@@ -305,9 +273,7 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomLazControlDocker.SetLocalizedName.AValue">
-        <short/>
-      </element>
+      <element name="TCustomLazControlDocker.SetLocalizedName.AValue"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomLazControlDocker.SetManager">
         <short/>
@@ -316,9 +282,7 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomLazControlDocker.SetManager.AValue">
-        <short/>
-      </element>
+      <element name="TCustomLazControlDocker.SetManager.AValue"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomLazControlDocker.PopupMenuItemClick">
         <short/>
@@ -327,9 +291,7 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomLazControlDocker.PopupMenuItemClick.Sender">
-        <short/>
-      </element>
+      <element name="TCustomLazControlDocker.PopupMenuItemClick.Sender"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomLazControlDocker.UpdatePopupMenu">
         <short/>
@@ -359,9 +321,7 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomLazControlDocker.GetLocalizedName.Result">
-        <short/>
-      </element>
+      <element name="TCustomLazControlDocker.GetLocalizedName.Result"><short/></element>
       <!-- constructor Visibility: public -->
       <element name="TCustomLazControlDocker.Create">
         <short/>
@@ -370,9 +330,7 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomLazControlDocker.Create.TheOwner">
-        <short/>
-      </element>
+      <element name="TCustomLazControlDocker.Create.TheOwner"><short/></element>
       <!-- property Visibility: public -->
       <element name="TCustomLazControlDocker.Control">
         <short/>

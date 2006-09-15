@@ -1,1157 +1,685 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0"?>
 <fpdoc-descriptions>
-<package name="lcl">
-
-<!--
+  <package name="lcl">
+    <!--
   ====================================================================
     maps
   ====================================================================
 -->
-
-<module name="maps">
-<short></short>
-<descr>
-</descr>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="Classes">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="SysUtils">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="AvgLvlTree">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- enumeration type Visibility: default -->
-<element name="TMapIdType">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TMapIdType.itu1">
-<short></short>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TMapIdType.its1">
-<short></short>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TMapIdType.itu2">
-<short></short>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TMapIdType.its2">
-<short></short>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TMapIdType.itu4">
-<short></short>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TMapIdType.its4">
-<short></short>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TMapIdType.itu8">
-<short></short>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TMapIdType.its8">
-<short></short>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TMapIdType.itu16">
-<short></short>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TMapIdType.its16">
-<short></short>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TMapIdType.itu32">
-<short></short>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TMapIdType.its32">
-<short></short>
-</element>
-
-<!-- pointer type Visibility: default -->
-<element name="PMapItem">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- pointer type Visibility: default -->
-<element name="PMapLink">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- record type Visibility: default -->
-<element name="TMapLink">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TMapLink.Previous">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TMapLink.Next">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- pointer type Visibility: default -->
-<element name="PMapID">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- record type Visibility: default -->
-<element name="TMapID">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TMapID.U1">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TMapID.S1">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TMapID.U2">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TMapID.S2">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TMapID.U4">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TMapID.S4">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TMapID.U8">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TMapID.S8">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TMapID.U16H">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TMapID.U16L">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TMapID.S16H">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TMapID.S16L">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TMapID.U32HH">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TMapID.U32HL">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TMapID.U32LH">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TMapID.U32LL">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TMapID.S32HH">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TMapID.S32HL">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TMapID.S32LH">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TMapID.S32LL">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- record type Visibility: default -->
-<element name="TMapItem">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TMapItem.Link">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TMapItem.ID">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- object Visibility: default -->
-<element name="TBaseMapIterator">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- object Visibility: default -->
-<element name="TBaseMap">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TBaseMap.FTree">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TBaseMap.FIdType">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TBaseMap.FDataSize">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TBaseMap.FFirst">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TBaseMap.FLast">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TBaseMap.FIterators">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TBaseMap.FindNode">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TBaseMap.FindNode.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TBaseMap.FindNode.AId">
-<short></short>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TBaseMap.FindItem">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TBaseMap.FindItem.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TBaseMap.FindItem.AId">
-<short></short>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TBaseMap.TreeCompareID">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TBaseMap.TreeCompareID.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TBaseMap.TreeCompareID.Sender">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TBaseMap.TreeCompareID.AItem1">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TBaseMap.TreeCompareID.AItem2">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TBaseMap.IteratorAdd">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TBaseMap.IteratorAdd.AIterator">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TBaseMap.IteratorRemove">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TBaseMap.IteratorRemove.AIterator">
-<short></short>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TBaseMap.InternalGetData">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TBaseMap.InternalGetData.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TBaseMap.InternalGetData.AItem">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TBaseMap.InternalGetData.AData">
-<short></short>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TBaseMap.InternalGetId">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TBaseMap.InternalGetId.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TBaseMap.InternalGetId.AItem">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TBaseMap.InternalGetId.AID">
-<short></short>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TBaseMap.InternalSetData">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TBaseMap.InternalSetData.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TBaseMap.InternalSetData.AItem">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TBaseMap.InternalSetData.AData">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TBaseMap.Add">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TBaseMap.Add.AId">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TBaseMap.Add.AData">
-<short></short>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="TBaseMap.Create">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TBaseMap.Create.AIdType">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TBaseMap.Create.ADataSize">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TBaseMap.Count">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TBaseMap.Count.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TBaseMap.Delete">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TBaseMap.Delete.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TBaseMap.Delete.AId">
-<short></short>
-</element>
-
-<!-- destructor Visibility: public -->
-<element name="TBaseMap.Destroy">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- object Visibility: default -->
-<element name="TBaseMapIterator">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TBaseMapIterator.FMap">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TBaseMapIterator.FCurrent">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TBaseMapIterator.FInValid">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TBaseMapIterator.FBOM">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TBaseMapIterator.FEOM">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TBaseMapIterator.MapDestroyed">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TBaseMapIterator.ItemRemove">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TBaseMapIterator.ItemRemove.AData">
-<short></short>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TBaseMapIterator.InternalLocate">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TBaseMapIterator.InternalLocate.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TBaseMapIterator.InternalLocate.AId">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TBaseMapIterator.Validate">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TBaseMapIterator.ValidateMap">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: protected -->
-<element name="TBaseMapIterator.Current">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="TBaseMapIterator.Create">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TBaseMapIterator.Create.AMap">
-<short></short>
-</element>
-
-<!-- destructor Visibility: public -->
-<element name="TBaseMapIterator.Destroy">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TBaseMapIterator.First">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TBaseMapIterator.Next">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TBaseMapIterator.Previous">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TBaseMapIterator.Last">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TBaseMapIterator.Valid">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TBaseMapIterator.Valid.Result">
-<short></short>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TBaseMapIterator.BOM">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TBaseMapIterator.EOM">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- object Visibility: default -->
-<element name="TMap">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TMap.HasId">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TMap.HasId.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TMap.HasId.AID">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TMap.GetData">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TMap.GetData.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TMap.GetData.AId">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TMap.GetData.AData">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TMap.SetData">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TMap.SetData.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TMap.SetData.AId">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TMap.SetData.AData">
-<short></short>
-</element>
-
-<!-- object Visibility: default -->
-<element name="TMapIterator">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TMapIterator.GetData">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TMapIterator.GetData.AData">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TMapIterator.GetID">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TMapIterator.GetID.AID">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TMapIterator.Locate">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TMapIterator.Locate.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TMapIterator.Locate.AId">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TMapIterator.SetData">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TMapIterator.SetData.AData">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="MapReport">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="MapReport.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="MapReport.AMap">
-<short></short>
-</element>
-</module> <!-- maps -->
-</package>
+    <module name="maps">
+      <short/>
+      <descr/>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="Classes">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="SysUtils">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="AvgLvlTree">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- enumeration type Visibility: default -->
+      <element name="TMapIdType">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TMapIdType.itu1"><short/></element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TMapIdType.its1"><short/></element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TMapIdType.itu2"><short/></element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TMapIdType.its2"><short/></element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TMapIdType.itu4"><short/></element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TMapIdType.its4"><short/></element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TMapIdType.itu8"><short/></element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TMapIdType.its8"><short/></element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TMapIdType.itu16"><short/></element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TMapIdType.its16"><short/></element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TMapIdType.itu32"><short/></element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TMapIdType.its32"><short/></element>
+      <!-- pointer type Visibility: default -->
+      <element name="PMapItem">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- pointer type Visibility: default -->
+      <element name="PMapLink">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- record type Visibility: default -->
+      <element name="TMapLink">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TMapLink.Previous">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TMapLink.Next">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- pointer type Visibility: default -->
+      <element name="PMapID">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- record type Visibility: default -->
+      <element name="TMapID">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TMapID.U1">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TMapID.S1">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TMapID.U2">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TMapID.S2">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TMapID.U4">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TMapID.S4">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TMapID.U8">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TMapID.S8">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TMapID.U16H">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TMapID.U16L">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TMapID.S16H">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TMapID.S16L">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TMapID.U32HH">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TMapID.U32HL">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TMapID.U32LH">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TMapID.U32LL">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TMapID.S32HH">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TMapID.S32HL">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TMapID.S32LH">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TMapID.S32LL">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- record type Visibility: default -->
+      <element name="TMapItem">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TMapItem.Link">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TMapItem.ID">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TBaseMapIterator">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TBaseMap">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TBaseMap.FTree">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TBaseMap.FIdType">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TBaseMap.FDataSize">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TBaseMap.FFirst">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TBaseMap.FLast">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TBaseMap.FIterators">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TBaseMap.FindNode">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TBaseMap.FindNode.Result"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TBaseMap.FindNode.AId"><short/></element>
+      <!-- function Visibility: private -->
+      <element name="TBaseMap.FindItem">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TBaseMap.FindItem.Result"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TBaseMap.FindItem.AId"><short/></element>
+      <!-- function Visibility: private -->
+      <element name="TBaseMap.TreeCompareID">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TBaseMap.TreeCompareID.Result"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TBaseMap.TreeCompareID.Sender"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TBaseMap.TreeCompareID.AItem1"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TBaseMap.TreeCompareID.AItem2"><short/></element>
+      <!-- procedure Visibility: private -->
+      <element name="TBaseMap.IteratorAdd">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TBaseMap.IteratorAdd.AIterator"><short/></element>
+      <!-- procedure Visibility: private -->
+      <element name="TBaseMap.IteratorRemove">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TBaseMap.IteratorRemove.AIterator"><short/></element>
+      <!-- function Visibility: protected -->
+      <element name="TBaseMap.InternalGetData">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TBaseMap.InternalGetData.Result"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TBaseMap.InternalGetData.AItem"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TBaseMap.InternalGetData.AData"><short/></element>
+      <!-- function Visibility: protected -->
+      <element name="TBaseMap.InternalGetId">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TBaseMap.InternalGetId.Result"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TBaseMap.InternalGetId.AItem"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TBaseMap.InternalGetId.AID"><short/></element>
+      <!-- function Visibility: protected -->
+      <element name="TBaseMap.InternalSetData">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TBaseMap.InternalSetData.Result"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TBaseMap.InternalSetData.AItem"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TBaseMap.InternalSetData.AData"><short/></element>
+      <!-- procedure Visibility: public -->
+      <element name="TBaseMap.Add">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TBaseMap.Add.AId"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TBaseMap.Add.AData"><short/></element>
+      <!-- constructor Visibility: public -->
+      <element name="TBaseMap.Create">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TBaseMap.Create.AIdType"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TBaseMap.Create.ADataSize"><short/></element>
+      <!-- function Visibility: public -->
+      <element name="TBaseMap.Count">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TBaseMap.Count.Result"><short/></element>
+      <!-- function Visibility: public -->
+      <element name="TBaseMap.Delete">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TBaseMap.Delete.Result"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TBaseMap.Delete.AId"><short/></element>
+      <!-- destructor Visibility: public -->
+      <element name="TBaseMap.Destroy">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TBaseMapIterator">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TBaseMapIterator.FMap">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TBaseMapIterator.FCurrent">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TBaseMapIterator.FInValid">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TBaseMapIterator.FBOM">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TBaseMapIterator.FEOM">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TBaseMapIterator.MapDestroyed">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TBaseMapIterator.ItemRemove">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TBaseMapIterator.ItemRemove.AData"><short/></element>
+      <!-- function Visibility: protected -->
+      <element name="TBaseMapIterator.InternalLocate">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TBaseMapIterator.InternalLocate.Result"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TBaseMapIterator.InternalLocate.AId"><short/></element>
+      <!-- procedure Visibility: protected -->
+      <element name="TBaseMapIterator.Validate">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TBaseMapIterator.ValidateMap">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: protected -->
+      <element name="TBaseMapIterator.Current">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TBaseMapIterator.Create">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TBaseMapIterator.Create.AMap"><short/></element>
+      <!-- destructor Visibility: public -->
+      <element name="TBaseMapIterator.Destroy">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TBaseMapIterator.First">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TBaseMapIterator.Next">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TBaseMapIterator.Previous">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TBaseMapIterator.Last">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TBaseMapIterator.Valid">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TBaseMapIterator.Valid.Result"><short/></element>
+      <!-- property Visibility: public -->
+      <element name="TBaseMapIterator.BOM">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TBaseMapIterator.EOM">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TMap">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TMap.HasId">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TMap.HasId.Result"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TMap.HasId.AID"><short/></element>
+      <!-- function Visibility: public -->
+      <element name="TMap.GetData">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TMap.GetData.Result"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TMap.GetData.AId"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TMap.GetData.AData"><short/></element>
+      <!-- function Visibility: public -->
+      <element name="TMap.SetData">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TMap.SetData.Result"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TMap.SetData.AId"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TMap.SetData.AData"><short/></element>
+      <!-- object Visibility: default -->
+      <element name="TMapIterator">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TMapIterator.GetData">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TMapIterator.GetData.AData"><short/></element>
+      <!-- procedure Visibility: public -->
+      <element name="TMapIterator.GetID">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TMapIterator.GetID.AID"><short/></element>
+      <!-- function Visibility: public -->
+      <element name="TMapIterator.Locate">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TMapIterator.Locate.Result"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TMapIterator.Locate.AId"><short/></element>
+      <!-- procedure Visibility: public -->
+      <element name="TMapIterator.SetData">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TMapIterator.SetData.AData"><short/></element>
+      <!-- function Visibility: default -->
+      <element name="MapReport">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="MapReport.Result"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="MapReport.AMap"><short/></element>
+    </module>
+    <!-- maps -->
+  </package>
 </fpdoc-descriptions>

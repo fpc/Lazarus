@@ -1,1652 +1,995 @@
-<?xml version="1.0" encoding="ISO8859-1"?>
+<?xml version="1.0"?>
 <fpdoc-descriptions>
-<package name="lcl">
-
-<!--
+  <package name="lcl">
+    <!--
   ====================================================================
     Printers
   ====================================================================
 -->
-
-<module name="Printers">
-<short></short>
-<descr>
-</descr>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="Classes">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="SysUtils">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="Graphics">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- object Visibility: default -->
-<element name="TPrinter">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- object Visibility: default -->
-<element name="EPrinter">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- enumeration type Visibility: default -->
-<element name="TPrinterOrientation">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TPrinterOrientation.poPortrait">
-<short></short>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TPrinterOrientation.poLandscape">
-<short></short>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TPrinterOrientation.poReverseLandscape">
-<short></short>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TPrinterOrientation.poReversePortrait">
-<short></short>
-</element>
-
-<!-- enumeration type Visibility: default -->
-<element name="TPrinterCapability">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TPrinterCapability.pcCopies">
-<short></short>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TPrinterCapability.pcOrientation">
-<short></short>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TPrinterCapability.pcCollation">
-<short></short>
-</element>
-
-<!-- set type Visibility: default -->
-<element name="TPrinterCapabilities">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- enumeration type Visibility: default -->
-<element name="TPrinterState">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TPrinterState.psNoDefine">
-<short></short>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TPrinterState.psReady">
-<short></short>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TPrinterState.psPrinting">
-<short></short>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TPrinterState.psStopped">
-<short></short>
-</element>
-
-<!-- enumeration type Visibility: default -->
-<element name="TPrinterType">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TPrinterType.ptLocal">
-<short></short>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TPrinterType.ptNetWork">
-<short></short>
-</element>
-
-<!-- object Visibility: default -->
-<element name="TPrinterCanvas">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TPrinterCanvas.fPrinter">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TPrinterCanvas.fTitle">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TPrinterCanvas.fHeight">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TPrinterCanvas.fWidth">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TPrinterCanvas.fPageNum">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TPrinterCanvas.fTopMarging">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TPrinterCanvas.fLeftMarging">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TPrinterCanvas.GetPageHeight">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TPrinterCanvas.GetPageHeight.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TPrinterCanvas.GetPageWidth">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TPrinterCanvas.GetPageWidth.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TPrinterCanvas.GetTitle">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TPrinterCanvas.GetTitle.Result">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TPrinterCanvas.SetPageHeight">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPrinterCanvas.SetPageHeight.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TPrinterCanvas.SetPageWidth">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPrinterCanvas.SetPageWidth.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TPrinterCanvas.SetTitle">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPrinterCanvas.SetTitle.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TPrinterCanvas.BeginDoc">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TPrinterCanvas.NewPage">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TPrinterCanvas.EndDoc">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="TPrinterCanvas.Create">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPrinterCanvas.Create.APrinter">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TPrinterCanvas.Changing">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TPrinterCanvas.Printer">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TPrinterCanvas.Title">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TPrinterCanvas.PageHeight">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TPrinterCanvas.PageWidth">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TPrinterCanvas.PageNumber">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TPrinterCanvas.TopMarging">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TPrinterCanvas.LeftMarging">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- "class of" type Visibility: default -->
-<element name="TPrinterCanvasRef">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- record type Visibility: default -->
-<element name="TPaperRect">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TPaperRect.PhysicalRect">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TPaperRect.WorkRect">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- object Visibility: default -->
-<element name="TPaperSize">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TPaperSize.fOwnedPrinter">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TPaperSize.fSupportedPapers">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TPaperSize.fLastPrinterIndex">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TPaperSize.GetDefaultPaperName">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TPaperSize.GetDefaultPaperName.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TPaperSize.GetPaperName">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TPaperSize.GetPaperName.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TPaperSize.GetPaperRect">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TPaperSize.GetPaperRect.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TPaperSize.GetSupportedPapers">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TPaperSize.GetSupportedPapers.Result">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TPaperSize.SetPaperName">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPaperSize.SetPaperName.AName">
-<short></short>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TPaperSize.PaperRectOfName">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TPaperSize.PaperRectOfName.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPaperSize.PaperRectOfName.AName">
-<short></short>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="TPaperSize.Create">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPaperSize.Create.aOwner">
-<short></short>
-</element>
-
-<!-- destructor Visibility: public -->
-<element name="TPaperSize.Destroy">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TPaperSize.PaperName">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TPaperSize.DefaultPaperName">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TPaperSize.PaperRect">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TPaperSize.SupportedPapers">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TPaperSize.PaperRectOf">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPaperSize.PaperRectOf.aName">
-<short></short>
-</element>
-
-<!-- object Visibility: default -->
-<element name="TPrinter">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TPrinter.fCanvas">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TPrinter.fFonts">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TPrinter.fPageNumber">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TPrinter.fPrinters">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TPrinter.fPrinterIndex">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TPrinter.fTitle">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TPrinter.fPrinting">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TPrinter.fAborted">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TPrinter.fPaperSize">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TPrinter.GetCanvas">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TPrinter.GetCanvas.Result">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TPrinter.CheckPrinting">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPrinter.CheckPrinting.Value">
-<short></short>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TPrinter.GetCopies">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TPrinter.GetCopies.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TPrinter.GetFonts">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TPrinter.GetFonts.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TPrinter.GetOrientation">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TPrinter.GetOrientation.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TPrinter.GetPageHeight">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TPrinter.GetPageHeight.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TPrinter.GetPageWidth">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TPrinter.GetPageWidth.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TPrinter.GetPaperSize">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TPrinter.GetPaperSize.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TPrinter.GetPrinterIndex">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TPrinter.GetPrinterIndex.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TPrinter.GetPrinters">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TPrinter.GetPrinters.Result">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TPrinter.SetCopies">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPrinter.SetCopies.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TPrinter.SetOrientation">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPrinter.SetOrientation.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TPrinter.SetPrinterIndex">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPrinter.SetPrinterIndex.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TPrinter.SelectCurrentPrinterOrDefault">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TPrinter.GetCanvasRef">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TPrinter.GetCanvasRef.Result">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TPrinter.DoBeginDoc">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TPrinter.DoNewPage">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TPrinter.DoEndDoc">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPrinter.DoEndDoc.aAborded">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TPrinter.DoAbort">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TPrinter.DoResetPrintersList">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TPrinter.DoResetFontsList">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TPrinter.DoEnumPrinters">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPrinter.DoEnumPrinters.Lst">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TPrinter.DoEnumFonts">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPrinter.DoEnumFonts.Lst">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TPrinter.DoEnumPapers">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPrinter.DoEnumPapers.Lst">
-<short></short>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TPrinter.DoSetPrinter">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TPrinter.DoSetPrinter.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPrinter.DoSetPrinter.aName">
-<short></short>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TPrinter.DoGetCopies">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TPrinter.DoGetCopies.Result">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TPrinter.DoSetCopies">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPrinter.DoSetCopies.aValue">
-<short></short>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TPrinter.DoGetOrientation">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TPrinter.DoGetOrientation.Result">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TPrinter.DoSetOrientation">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPrinter.DoSetOrientation.aValue">
-<short></short>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TPrinter.DoGetDefaultPaperName">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TPrinter.DoGetDefaultPaperName.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TPrinter.DoGetPaperName">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TPrinter.DoGetPaperName.Result">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TPrinter.DoSetPaperName">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPrinter.DoSetPaperName.aName">
-<short></short>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TPrinter.DoGetPaperRect">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TPrinter.DoGetPaperRect.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPrinter.DoGetPaperRect.aName">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPrinter.DoGetPaperRect.aPaperRc">
-<short></short>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TPrinter.DoGetPrinterState">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TPrinter.DoGetPrinterState.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TPrinter.GetPrinterType">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TPrinter.GetPrinterType.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TPrinter.GetCanPrint">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TPrinter.GetCanPrint.Result">
-<short></short>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="TPrinter.Create">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- destructor Visibility: public -->
-<element name="TPrinter.Destroy">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TPrinter.Abort">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TPrinter.BeginDoc">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TPrinter.EndDoc">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TPrinter.NewPage">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TPrinter.Refresh">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TPrinter.SetPrinter">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPrinter.SetPrinter.aName">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TPrinter.ExecuteSetup">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TPrinter.ExecuteSetup.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TPrinter.ExecuteProperties">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TPrinter.ExecuteProperties.Result">
-<short></short>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TPrinter.PrinterIndex">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TPrinter.PaperSize">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TPrinter.Orientation">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TPrinter.PrinterState">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TPrinter.Copies">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TPrinter.Printers">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TPrinter.Fonts">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TPrinter.Canvas">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TPrinter.PageHeight">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TPrinter.PageWidth">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TPrinter.PageNumber">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TPrinter.Aborted">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TPrinter.Printing">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TPrinter.Title">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TPrinter.PrinterType">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TPrinter.CanPrint">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="Printer">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-</module> <!-- Printers -->
-</package>
+    <module name="Printers">
+      <short/>
+      <descr/>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="Classes">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="SysUtils">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="Graphics">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TPrinter">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="EPrinter">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- enumeration type Visibility: default -->
+      <element name="TPrinterOrientation">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TPrinterOrientation.poPortrait"><short/></element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TPrinterOrientation.poLandscape"><short/></element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TPrinterOrientation.poReverseLandscape"><short/></element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TPrinterOrientation.poReversePortrait"><short/></element>
+      <!-- enumeration type Visibility: default -->
+      <element name="TPrinterCapability">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TPrinterCapability.pcCopies"><short/></element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TPrinterCapability.pcOrientation"><short/></element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TPrinterCapability.pcCollation"><short/></element>
+      <!-- set type Visibility: default -->
+      <element name="TPrinterCapabilities">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- enumeration type Visibility: default -->
+      <element name="TPrinterState">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TPrinterState.psNoDefine"><short/></element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TPrinterState.psReady"><short/></element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TPrinterState.psPrinting"><short/></element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TPrinterState.psStopped"><short/></element>
+      <!-- enumeration type Visibility: default -->
+      <element name="TPrinterType">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TPrinterType.ptLocal"><short/></element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TPrinterType.ptNetWork"><short/></element>
+      <!-- object Visibility: default -->
+      <element name="TPrinterCanvas">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TPrinterCanvas.fPrinter">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TPrinterCanvas.fTitle">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TPrinterCanvas.fHeight">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TPrinterCanvas.fWidth">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TPrinterCanvas.fPageNum">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TPrinterCanvas.fTopMarging">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TPrinterCanvas.fLeftMarging">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TPrinterCanvas.GetPageHeight">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TPrinterCanvas.GetPageHeight.Result"><short/></element>
+      <!-- function Visibility: private -->
+      <element name="TPrinterCanvas.GetPageWidth">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TPrinterCanvas.GetPageWidth.Result"><short/></element>
+      <!-- function Visibility: private -->
+      <element name="TPrinterCanvas.GetTitle">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TPrinterCanvas.GetTitle.Result"><short/></element>
+      <!-- procedure Visibility: private -->
+      <element name="TPrinterCanvas.SetPageHeight">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TPrinterCanvas.SetPageHeight.AValue"><short/></element>
+      <!-- procedure Visibility: private -->
+      <element name="TPrinterCanvas.SetPageWidth">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TPrinterCanvas.SetPageWidth.AValue"><short/></element>
+      <!-- procedure Visibility: private -->
+      <element name="TPrinterCanvas.SetTitle">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TPrinterCanvas.SetTitle.AValue"><short/></element>
+      <!-- procedure Visibility: protected -->
+      <element name="TPrinterCanvas.BeginDoc">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TPrinterCanvas.NewPage">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TPrinterCanvas.EndDoc">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TPrinterCanvas.Create">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TPrinterCanvas.Create.APrinter"><short/></element>
+      <!-- procedure Visibility: public -->
+      <element name="TPrinterCanvas.Changing">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TPrinterCanvas.Printer">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TPrinterCanvas.Title">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TPrinterCanvas.PageHeight">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TPrinterCanvas.PageWidth">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TPrinterCanvas.PageNumber">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TPrinterCanvas.TopMarging">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TPrinterCanvas.LeftMarging">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- "class of" type Visibility: default -->
+      <element name="TPrinterCanvasRef">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- record type Visibility: default -->
+      <element name="TPaperRect">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TPaperRect.PhysicalRect">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TPaperRect.WorkRect">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TPaperSize">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TPaperSize.fOwnedPrinter">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TPaperSize.fSupportedPapers">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TPaperSize.fLastPrinterIndex">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TPaperSize.GetDefaultPaperName">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TPaperSize.GetDefaultPaperName.Result"><short/></element>
+      <!-- function Visibility: private -->
+      <element name="TPaperSize.GetPaperName">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TPaperSize.GetPaperName.Result"><short/></element>
+      <!-- function Visibility: private -->
+      <element name="TPaperSize.GetPaperRect">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TPaperSize.GetPaperRect.Result"><short/></element>
+      <!-- function Visibility: private -->
+      <element name="TPaperSize.GetSupportedPapers">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TPaperSize.GetSupportedPapers.Result"><short/></element>
+      <!-- procedure Visibility: private -->
+      <element name="TPaperSize.SetPaperName">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TPaperSize.SetPaperName.AName"><short/></element>
+      <!-- function Visibility: private -->
+      <element name="TPaperSize.PaperRectOfName">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TPaperSize.PaperRectOfName.Result"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TPaperSize.PaperRectOfName.AName"><short/></element>
+      <!-- constructor Visibility: public -->
+      <element name="TPaperSize.Create">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TPaperSize.Create.aOwner"><short/></element>
+      <!-- destructor Visibility: public -->
+      <element name="TPaperSize.Destroy">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TPaperSize.PaperName">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TPaperSize.DefaultPaperName">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TPaperSize.PaperRect">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TPaperSize.SupportedPapers">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TPaperSize.PaperRectOf">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TPaperSize.PaperRectOf.aName"><short/></element>
+      <!-- object Visibility: default -->
+      <element name="TPrinter">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TPrinter.fCanvas">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TPrinter.fFonts">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TPrinter.fPageNumber">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TPrinter.fPrinters">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TPrinter.fPrinterIndex">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TPrinter.fTitle">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TPrinter.fPrinting">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TPrinter.fAborted">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TPrinter.fPaperSize">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TPrinter.GetCanvas">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TPrinter.GetCanvas.Result"><short/></element>
+      <!-- procedure Visibility: private -->
+      <element name="TPrinter.CheckPrinting">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TPrinter.CheckPrinting.Value"><short/></element>
+      <!-- function Visibility: private -->
+      <element name="TPrinter.GetCopies">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TPrinter.GetCopies.Result"><short/></element>
+      <!-- function Visibility: private -->
+      <element name="TPrinter.GetFonts">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TPrinter.GetFonts.Result"><short/></element>
+      <!-- function Visibility: private -->
+      <element name="TPrinter.GetOrientation">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TPrinter.GetOrientation.Result"><short/></element>
+      <!-- function Visibility: private -->
+      <element name="TPrinter.GetPageHeight">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TPrinter.GetPageHeight.Result"><short/></element>
+      <!-- function Visibility: private -->
+      <element name="TPrinter.GetPageWidth">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TPrinter.GetPageWidth.Result"><short/></element>
+      <!-- function Visibility: private -->
+      <element name="TPrinter.GetPaperSize">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TPrinter.GetPaperSize.Result"><short/></element>
+      <!-- function Visibility: private -->
+      <element name="TPrinter.GetPrinterIndex">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TPrinter.GetPrinterIndex.Result"><short/></element>
+      <!-- function Visibility: private -->
+      <element name="TPrinter.GetPrinters">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TPrinter.GetPrinters.Result"><short/></element>
+      <!-- procedure Visibility: private -->
+      <element name="TPrinter.SetCopies">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TPrinter.SetCopies.AValue"><short/></element>
+      <!-- procedure Visibility: private -->
+      <element name="TPrinter.SetOrientation">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TPrinter.SetOrientation.AValue"><short/></element>
+      <!-- procedure Visibility: private -->
+      <element name="TPrinter.SetPrinterIndex">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TPrinter.SetPrinterIndex.AValue"><short/></element>
+      <!-- procedure Visibility: protected -->
+      <element name="TPrinter.SelectCurrentPrinterOrDefault">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TPrinter.GetCanvasRef">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TPrinter.GetCanvasRef.Result"><short/></element>
+      <!-- procedure Visibility: protected -->
+      <element name="TPrinter.DoBeginDoc">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TPrinter.DoNewPage">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TPrinter.DoEndDoc">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TPrinter.DoEndDoc.aAborded"><short/></element>
+      <!-- procedure Visibility: protected -->
+      <element name="TPrinter.DoAbort">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TPrinter.DoResetPrintersList">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TPrinter.DoResetFontsList">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TPrinter.DoEnumPrinters">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TPrinter.DoEnumPrinters.Lst"><short/></element>
+      <!-- procedure Visibility: protected -->
+      <element name="TPrinter.DoEnumFonts">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TPrinter.DoEnumFonts.Lst"><short/></element>
+      <!-- procedure Visibility: protected -->
+      <element name="TPrinter.DoEnumPapers">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TPrinter.DoEnumPapers.Lst"><short/></element>
+      <!-- function Visibility: protected -->
+      <element name="TPrinter.DoSetPrinter">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TPrinter.DoSetPrinter.Result"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TPrinter.DoSetPrinter.aName"><short/></element>
+      <!-- function Visibility: protected -->
+      <element name="TPrinter.DoGetCopies">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TPrinter.DoGetCopies.Result"><short/></element>
+      <!-- procedure Visibility: protected -->
+      <element name="TPrinter.DoSetCopies">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TPrinter.DoSetCopies.aValue"><short/></element>
+      <!-- function Visibility: protected -->
+      <element name="TPrinter.DoGetOrientation">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TPrinter.DoGetOrientation.Result"><short/></element>
+      <!-- procedure Visibility: protected -->
+      <element name="TPrinter.DoSetOrientation">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TPrinter.DoSetOrientation.aValue"><short/></element>
+      <!-- function Visibility: protected -->
+      <element name="TPrinter.DoGetDefaultPaperName">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TPrinter.DoGetDefaultPaperName.Result"><short/></element>
+      <!-- function Visibility: protected -->
+      <element name="TPrinter.DoGetPaperName">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TPrinter.DoGetPaperName.Result"><short/></element>
+      <!-- procedure Visibility: protected -->
+      <element name="TPrinter.DoSetPaperName">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TPrinter.DoSetPaperName.aName"><short/></element>
+      <!-- function Visibility: protected -->
+      <element name="TPrinter.DoGetPaperRect">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TPrinter.DoGetPaperRect.Result"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TPrinter.DoGetPaperRect.aName"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TPrinter.DoGetPaperRect.aPaperRc"><short/></element>
+      <!-- function Visibility: protected -->
+      <element name="TPrinter.DoGetPrinterState">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TPrinter.DoGetPrinterState.Result"><short/></element>
+      <!-- function Visibility: protected -->
+      <element name="TPrinter.GetPrinterType">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TPrinter.GetPrinterType.Result"><short/></element>
+      <!-- function Visibility: protected -->
+      <element name="TPrinter.GetCanPrint">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TPrinter.GetCanPrint.Result"><short/></element>
+      <!-- constructor Visibility: public -->
+      <element name="TPrinter.Create">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- destructor Visibility: public -->
+      <element name="TPrinter.Destroy">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TPrinter.Abort">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TPrinter.BeginDoc">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TPrinter.EndDoc">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TPrinter.NewPage">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TPrinter.Refresh">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TPrinter.SetPrinter">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TPrinter.SetPrinter.aName"><short/></element>
+      <!-- function Visibility: public -->
+      <element name="TPrinter.ExecuteSetup">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TPrinter.ExecuteSetup.Result"><short/></element>
+      <!-- function Visibility: public -->
+      <element name="TPrinter.ExecuteProperties">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TPrinter.ExecuteProperties.Result"><short/></element>
+      <!-- property Visibility: public -->
+      <element name="TPrinter.PrinterIndex">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TPrinter.PaperSize">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TPrinter.Orientation">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TPrinter.PrinterState">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TPrinter.Copies">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TPrinter.Printers">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TPrinter.Fonts">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TPrinter.Canvas">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TPrinter.PageHeight">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TPrinter.PageWidth">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TPrinter.PageNumber">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TPrinter.Aborted">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TPrinter.Printing">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TPrinter.Title">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TPrinter.PrinterType">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TPrinter.CanPrint">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="Printer">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+    </module>
+    <!-- Printers -->
+  </package>
 </fpdoc-descriptions>

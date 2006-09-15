@@ -140,17 +140,6 @@
 </element>
 
 <!-- object Visibility: default -->
-<element name="TCustomImageList">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- object Visibility: default -->
 <element name="TChangeLink">
 <short></short>
 <descr>

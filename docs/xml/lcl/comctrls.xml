@@ -5211,8 +5211,8 @@ cdsIndeterminate</descr>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomListView.Change">
-        <short>Internal procedure called when an itme has changed</short>
-        <descr>This is an internal procedure which is called after an item has been changed. This procedure makes sure the OnChange-event is called if the user assigned a method to this event.</descr>
+        <short>Internal procedure called when an item has changed.</short>
+        <descr>This is an internal procedure which is called after an item has been changed. This procedure makes sure the OnChange event is called if the user assigned a method to this event.</descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomListView.Change.AItem">

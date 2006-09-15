@@ -1,683 +1,414 @@
-<?xml version="1.0" encoding="ISO8859-1"?>
+<?xml version="1.0"?>
 <fpdoc-descriptions>
-<package name="lcl">
-
-<!--
+  <package name="lcl">
+    <!--
   ====================================================================
     LDockTree
   ====================================================================
 -->
-
-<module name="LDockTree">
-<short></short>
-<descr>
-</descr>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="Classes">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="SysUtils">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="LCLProc">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="Forms">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="Controls">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="ExtCtrls">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- object Visibility: default -->
-<element name="TLazDockPages">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- object Visibility: default -->
-<element name="TLazDockPage">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- object Visibility: default -->
-<element name="TLazDockSplitter">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- object Visibility: default -->
-<element name="TLazDockZone">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TLazDockZone.FPage">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TLazDockZone.FPages">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TLazDockZone.FSplitter">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- destructor Visibility: public -->
-<element name="TLazDockZone.Destroy">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TLazDockZone.GetCaption">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TLazDockZone.GetCaption.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TLazDockZone.GetParentControl">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TLazDockZone.GetParentControl.Result">
-<short></short>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TLazDockZone.Splitter">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TLazDockZone.Pages">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TLazDockZone.Page">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- object Visibility: default -->
-<element name="TLazDockTree">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TLazDockTree.FAutoFreeDockSite">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TLazDockTree.UndockControlForDocking">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TLazDockTree.UndockControlForDocking.AControl">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TLazDockTree.BreakAnchors">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TLazDockTree.BreakAnchors.Zone">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TLazDockTree.CreateDockLayoutHelperControls">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TLazDockTree.CreateDockLayoutHelperControls.Zone">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TLazDockTree.AnchorDockLayout">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TLazDockTree.AnchorDockLayout.Zone">
-<short></short>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="TLazDockTree.Create">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TLazDockTree.Create.TheDockSite">
-<short></short>
-</element>
-
-<!-- destructor Visibility: public -->
-<element name="TLazDockTree.Destroy">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TLazDockTree.InsertControl">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TLazDockTree.InsertControl.AControl">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TLazDockTree.InsertControl.InsertAt">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TLazDockTree.InsertControl.DropControl">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TLazDockTree.BuildDockLayout">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TLazDockTree.BuildDockLayout.Zone">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TLazDockTree.FindBorderControls">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TLazDockTree.FindBorderControls.Zone">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TLazDockTree.FindBorderControls.Side">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TLazDockTree.FindBorderControls.List">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TLazDockTree.FindBorderControl">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TLazDockTree.FindBorderControl.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TLazDockTree.FindBorderControl.Zone">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TLazDockTree.FindBorderControl.Side">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TLazDockTree.GetAnchorControl">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TLazDockTree.GetAnchorControl.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TLazDockTree.GetAnchorControl.Zone">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TLazDockTree.GetAnchorControl.Side">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TLazDockTree.GetAnchorControl.OutSide">
-<short></short>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TLazDockTree.AutoFreeDockSite">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- object Visibility: default -->
-<element name="TLazDockForm">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TLazDockForm.FDockZone">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TLazDockForm.FPageControl">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TLazDockForm.DockZone">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TLazDockForm.PageControl">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- object Visibility: default -->
-<element name="TLazDockPage">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TLazDockPage.FDockZone">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TLazDockPage.FPageControl">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TLazDockPage.DockZone">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TLazDockPage.PageControl">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- object Visibility: default -->
-<element name="TLazDockPages">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TLazDockPages.GetActiveNotebookPageComponent">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TLazDockPages.GetActiveNotebookPageComponent.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TLazDockPages.GetNoteBookPage">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TLazDockPages.GetNoteBookPage.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TLazDockPages.GetNoteBookPage.Index">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TLazDockPages.SetActiveNotebookPageComponent">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TLazDockPages.SetActiveNotebookPageComponent.AValue">
-<short></short>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="TLazDockPages.Create">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TLazDockPages.Create.TheOwner">
-<short></short>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TLazDockPages.Page">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TLazDockPages.Page.Index">
-<short></short>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TLazDockPages.ActivePageComponent">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TLazDockPages.Pages">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- object Visibility: default -->
-<element name="TLazDockSplitter">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="DockAlignOrientations">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-</module> <!-- LDockTree -->
-</package>
+    <module name="LDockTree">
+      <short/>
+      <descr/>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="Classes">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="SysUtils">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="LCLProc">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="Forms">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="Controls">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="ExtCtrls">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TLazDockPages">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TLazDockPage">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TLazDockSplitter">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TLazDockZone">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TLazDockZone.FPage">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TLazDockZone.FPages">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TLazDockZone.FSplitter">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- destructor Visibility: public -->
+      <element name="TLazDockZone.Destroy">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TLazDockZone.GetCaption">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TLazDockZone.GetCaption.Result"><short/></element>
+      <!-- function Visibility: public -->
+      <element name="TLazDockZone.GetParentControl">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TLazDockZone.GetParentControl.Result"><short/></element>
+      <!-- property Visibility: public -->
+      <element name="TLazDockZone.Splitter">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TLazDockZone.Pages">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TLazDockZone.Page">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TLazDockTree">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TLazDockTree.FAutoFreeDockSite">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TLazDockTree.UndockControlForDocking">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TLazDockTree.UndockControlForDocking.AControl"><short/></element>
+      <!-- procedure Visibility: protected -->
+      <element name="TLazDockTree.BreakAnchors">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TLazDockTree.BreakAnchors.Zone"><short/></element>
+      <!-- procedure Visibility: protected -->
+      <element name="TLazDockTree.CreateDockLayoutHelperControls">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TLazDockTree.CreateDockLayoutHelperControls.Zone"><short/></element>
+      <!-- procedure Visibility: protected -->
+      <element name="TLazDockTree.AnchorDockLayout">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TLazDockTree.AnchorDockLayout.Zone"><short/></element>
+      <!-- constructor Visibility: public -->
+      <element name="TLazDockTree.Create">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TLazDockTree.Create.TheDockSite"><short/></element>
+      <!-- destructor Visibility: public -->
+      <element name="TLazDockTree.Destroy">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TLazDockTree.InsertControl">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TLazDockTree.InsertControl.AControl"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TLazDockTree.InsertControl.InsertAt"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TLazDockTree.InsertControl.DropControl"><short/></element>
+      <!-- procedure Visibility: public -->
+      <element name="TLazDockTree.BuildDockLayout">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TLazDockTree.BuildDockLayout.Zone"><short/></element>
+      <!-- procedure Visibility: public -->
+      <element name="TLazDockTree.FindBorderControls">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TLazDockTree.FindBorderControls.Zone"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TLazDockTree.FindBorderControls.Side"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TLazDockTree.FindBorderControls.List"><short/></element>
+      <!-- function Visibility: public -->
+      <element name="TLazDockTree.FindBorderControl">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TLazDockTree.FindBorderControl.Result"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TLazDockTree.FindBorderControl.Zone"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TLazDockTree.FindBorderControl.Side"><short/></element>
+      <!-- function Visibility: public -->
+      <element name="TLazDockTree.GetAnchorControl">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TLazDockTree.GetAnchorControl.Result"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TLazDockTree.GetAnchorControl.Zone"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TLazDockTree.GetAnchorControl.Side"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TLazDockTree.GetAnchorControl.OutSide"><short/></element>
+      <!-- property Visibility: public -->
+      <element name="TLazDockTree.AutoFreeDockSite">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TLazDockForm">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TLazDockForm.FDockZone">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TLazDockForm.FPageControl">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TLazDockForm.DockZone">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TLazDockForm.PageControl">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TLazDockPage">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TLazDockPage.FDockZone">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TLazDockPage.FPageControl">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TLazDockPage.DockZone">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TLazDockPage.PageControl">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TLazDockPages">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TLazDockPages.GetActiveNotebookPageComponent">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TLazDockPages.GetActiveNotebookPageComponent.Result"><short/></element>
+      <!-- function Visibility: private -->
+      <element name="TLazDockPages.GetNoteBookPage">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TLazDockPages.GetNoteBookPage.Result"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TLazDockPages.GetNoteBookPage.Index"><short/></element>
+      <!-- procedure Visibility: private -->
+      <element name="TLazDockPages.SetActiveNotebookPageComponent">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TLazDockPages.SetActiveNotebookPageComponent.AValue"><short/></element>
+      <!-- constructor Visibility: public -->
+      <element name="TLazDockPages.Create">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TLazDockPages.Create.TheOwner"><short/></element>
+      <!-- property Visibility: public -->
+      <element name="TLazDockPages.Page">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TLazDockPages.Page.Index"><short/></element>
+      <!-- property Visibility: public -->
+      <element name="TLazDockPages.ActivePageComponent">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TLazDockPages.Pages">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TLazDockSplitter">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="DockAlignOrientations">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+    </module>
+    <!-- LDockTree -->
+  </package>
 </fpdoc-descriptions>

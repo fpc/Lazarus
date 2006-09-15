@@ -1,850 +1,538 @@
-<?xml version="1.0" encoding="ISO8859-1"?>
+<?xml version="1.0"?>
 <fpdoc-descriptions>
-<package name="lcl">
-
-<!--
+  <package name="lcl">
+    <!--
   ====================================================================
     PairSplitter
   ====================================================================
 -->
-
-<module name="PairSplitter">
-<short></short>
-<descr>
-</descr>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="Classes">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="SysUtils">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="LCLType">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="LCLProc">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="LMessages">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="Graphics">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="GraphType">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="LCLIntf">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="Controls">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- object Visibility: default -->
-<element name="TCustomPairSplitter">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- object Visibility: default -->
-<element name="TPairSplitterSide">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TPairSplitterSide.fCreatedBySplitter">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TPairSplitterSide.GetSplitter">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TPairSplitterSide.GetSplitter.Result">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TPairSplitterSide.SetParent">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPairSplitterSide.SetParent.AParent">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TPairSplitterSide.WMPaint">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPairSplitterSide.WMPaint.PaintMessage">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TPairSplitterSide.Paint">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: protected -->
-<element name="TPairSplitterSide.Align">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: protected -->
-<element name="TPairSplitterSide.Anchors">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="TPairSplitterSide.Create">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPairSplitterSide.Create.TheOwner">
-<short></short>
-</element>
-
-<!-- destructor Visibility: public -->
-<element name="TPairSplitterSide.Destroy">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TPairSplitterSide.Splitter">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TPairSplitterSide.Visible">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TPairSplitterSide.Left">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TPairSplitterSide.Top">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TPairSplitterSide.Width">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TPairSplitterSide.Height">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TPairSplitterSide.ChildSizing">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TPairSplitterSide.ClientWidth">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TPairSplitterSide.ClientHeight">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TPairSplitterSide.Enabled">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TPairSplitterSide.OnMouseDown">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TPairSplitterSide.OnMouseMove">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TPairSplitterSide.OnMouseUp">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TPairSplitterSide.OnResize">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TPairSplitterSide.ShowHint">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TPairSplitterSide.ParentShowHint">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TPairSplitterSide.PopupMenu">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- enumeration type Visibility: default -->
-<element name="TPairSplitterType">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TPairSplitterType.pstHorizontal">
-<short></short>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TPairSplitterType.pstVertical">
-<short></short>
-</element>
-
-<!-- object Visibility: default -->
-<element name="TCustomPairSplitter">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCustomPairSplitter.FPosition">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCustomPairSplitter.FSides">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCustomPairSplitter.FSplitterType">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCustomPairSplitter.fDoNotCreateSides">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TCustomPairSplitter.GetPosition">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TCustomPairSplitter.GetPosition.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TCustomPairSplitter.GetSides">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TCustomPairSplitter.GetSides.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomPairSplitter.GetSides.Index">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCustomPairSplitter.SetPosition">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomPairSplitter.SetPosition.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCustomPairSplitter.SetSplitterType">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomPairSplitter.SetSplitterType.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCustomPairSplitter.AddSide">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomPairSplitter.AddSide.ASide">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCustomPairSplitter.RemoveSide">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomPairSplitter.RemoveSide.ASide">
-<short></short>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="TCustomPairSplitter.Create">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomPairSplitter.Create.TheOwner">
-<short></short>
-</element>
-
-<!-- destructor Visibility: public -->
-<element name="TCustomPairSplitter.Destroy">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TCustomPairSplitter.CreateWnd">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TCustomPairSplitter.UpdatePosition">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TCustomPairSplitter.CreateSides">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TCustomPairSplitter.Loaded">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TCustomPairSplitter.IsSupportedByInterface">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TCustomPairSplitter.IsSupportedByInterface.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TCustomPairSplitter.ChildClassAllowed">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TCustomPairSplitter.ChildClassAllowed.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomPairSplitter.ChildClassAllowed.ChildClass">
-<short></short>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TCustomPairSplitter.Sides">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomPairSplitter.Sides.Index">
-<short></short>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TCustomPairSplitter.SplitterType">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TCustomPairSplitter.Position">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- object Visibility: default -->
-<element name="TPairSplitter">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TPairSplitter.Align">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TPairSplitter.Anchors">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TPairSplitter.BorderSpacing">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TPairSplitter.Enabled">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TPairSplitter.OnMouseDown">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TPairSplitter.OnMouseMove">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TPairSplitter.OnMouseUp">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TPairSplitter.OnResize">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TPairSplitter.OnChangeBounds">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TPairSplitter.ShowHint">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TPairSplitter.SplitterType">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TPairSplitter.ParentShowHint">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TPairSplitter.PopupMenu">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TPairSplitter.Position">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TPairSplitter.Visible">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: default -->
-<element name="Register">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-</module> <!-- PairSplitter -->
-</package>
+    <module name="PairSplitter">
+      <short/>
+      <descr/>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="Classes">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="SysUtils">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="LCLType">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="LCLProc">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="LMessages">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="Graphics">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="GraphType">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="LCLIntf">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="Controls">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TCustomPairSplitter">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TPairSplitterSide">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TPairSplitterSide.fCreatedBySplitter">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TPairSplitterSide.GetSplitter">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TPairSplitterSide.GetSplitter.Result"><short/></element>
+      <!-- procedure Visibility: protected -->
+      <element name="TPairSplitterSide.SetParent">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TPairSplitterSide.SetParent.AParent"><short/></element>
+      <!-- procedure Visibility: protected -->
+      <element name="TPairSplitterSide.WMPaint">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TPairSplitterSide.WMPaint.PaintMessage"><short/></element>
+      <!-- procedure Visibility: protected -->
+      <element name="TPairSplitterSide.Paint">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: protected -->
+      <element name="TPairSplitterSide.Align">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: protected -->
+      <element name="TPairSplitterSide.Anchors">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TPairSplitterSide.Create">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TPairSplitterSide.Create.TheOwner"><short/></element>
+      <!-- destructor Visibility: public -->
+      <element name="TPairSplitterSide.Destroy">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TPairSplitterSide.Splitter">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TPairSplitterSide.Visible">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TPairSplitterSide.Left">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TPairSplitterSide.Top">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TPairSplitterSide.Width">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TPairSplitterSide.Height">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TPairSplitterSide.ChildSizing">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TPairSplitterSide.ClientWidth">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TPairSplitterSide.ClientHeight">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TPairSplitterSide.Enabled">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TPairSplitterSide.OnMouseDown">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TPairSplitterSide.OnMouseMove">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TPairSplitterSide.OnMouseUp">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TPairSplitterSide.OnResize">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TPairSplitterSide.ShowHint">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TPairSplitterSide.ParentShowHint">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TPairSplitterSide.PopupMenu">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- enumeration type Visibility: default -->
+      <element name="TPairSplitterType">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TPairSplitterType.pstHorizontal"><short/></element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TPairSplitterType.pstVertical"><short/></element>
+      <!-- object Visibility: default -->
+      <element name="TCustomPairSplitter">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCustomPairSplitter.FPosition">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCustomPairSplitter.FSides">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCustomPairSplitter.FSplitterType">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCustomPairSplitter.fDoNotCreateSides">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TCustomPairSplitter.GetPosition">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomPairSplitter.GetPosition.Result"><short/></element>
+      <!-- function Visibility: private -->
+      <element name="TCustomPairSplitter.GetSides">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomPairSplitter.GetSides.Result"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomPairSplitter.GetSides.Index"><short/></element>
+      <!-- procedure Visibility: private -->
+      <element name="TCustomPairSplitter.SetPosition">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomPairSplitter.SetPosition.AValue"><short/></element>
+      <!-- procedure Visibility: private -->
+      <element name="TCustomPairSplitter.SetSplitterType">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomPairSplitter.SetSplitterType.AValue"><short/></element>
+      <!-- procedure Visibility: private -->
+      <element name="TCustomPairSplitter.AddSide">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomPairSplitter.AddSide.ASide"><short/></element>
+      <!-- procedure Visibility: private -->
+      <element name="TCustomPairSplitter.RemoveSide">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomPairSplitter.RemoveSide.ASide"><short/></element>
+      <!-- constructor Visibility: public -->
+      <element name="TCustomPairSplitter.Create">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomPairSplitter.Create.TheOwner"><short/></element>
+      <!-- destructor Visibility: public -->
+      <element name="TCustomPairSplitter.Destroy">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TCustomPairSplitter.CreateWnd">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TCustomPairSplitter.UpdatePosition">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TCustomPairSplitter.CreateSides">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TCustomPairSplitter.Loaded">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TCustomPairSplitter.IsSupportedByInterface">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomPairSplitter.IsSupportedByInterface.Result"><short/></element>
+      <!-- function Visibility: public -->
+      <element name="TCustomPairSplitter.ChildClassAllowed">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomPairSplitter.ChildClassAllowed.Result"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomPairSplitter.ChildClassAllowed.ChildClass"><short/></element>
+      <!-- property Visibility: public -->
+      <element name="TCustomPairSplitter.Sides">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomPairSplitter.Sides.Index"><short/></element>
+      <!-- property Visibility: public -->
+      <element name="TCustomPairSplitter.SplitterType">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TCustomPairSplitter.Position">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TPairSplitter">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TPairSplitter.Align">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TPairSplitter.Anchors">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TPairSplitter.BorderSpacing">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TPairSplitter.Enabled">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TPairSplitter.OnMouseDown">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TPairSplitter.OnMouseMove">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TPairSplitter.OnMouseUp">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TPairSplitter.OnResize">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TPairSplitter.OnChangeBounds">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TPairSplitter.ShowHint">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TPairSplitter.SplitterType">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TPairSplitter.ParentShowHint">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TPairSplitter.PopupMenu">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TPairSplitter.Position">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TPairSplitter.Visible">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="Register">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+    </module>
+    <!-- PairSplitter -->
+  </package>
 </fpdoc-descriptions>

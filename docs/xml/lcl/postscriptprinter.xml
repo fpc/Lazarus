@@ -1,1797 +1,1084 @@
-<?xml version="1.0" encoding="ISO8859-1"?>
+<?xml version="1.0"?>
 <fpdoc-descriptions>
-<package name="lcl">
-
-<!--
+  <package name="lcl">
+    <!--
   ====================================================================
     PostScriptPrinter
   ====================================================================
 -->
-
-<module name="PostScriptPrinter">
-<short></short>
-<descr>
-</descr>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="Classes">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="SysUtils">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="LCLProc">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="GraphType">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="Graphics">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="GraphMath">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="LCLIntf">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="Forms">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- object Visibility: default -->
-<element name="TPostScript">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- enumeration type Visibility: default -->
-<element name="TPSPaintType">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TPSPaintType.ptColored">
-<short></short>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TPSPaintType.ptUncolored">
-<short></short>
-</element>
-
-<!-- enumeration type Visibility: default -->
-<element name="TPSTileType">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TPSTileType.ttConstant">
-<short></short>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TPSTileType.ttNoDistortion">
-<short></short>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TPSTileType.ttFast">
-<short></short>
-</element>
-
-<!-- object Visibility: default -->
-<element name="TPostScriptCanvas">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- object Visibility: default -->
-<element name="TPSPattern">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TPSPattern.FOldName">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TPSPattern.FOnChange">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TPSPattern.FBBox">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TPSPattern.FCanvas">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TPSPattern.FName">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TPSPattern.FPaintType">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TPSPattern.FPostScript">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TPSPattern.FTilingType">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TPSPattern.FXStep">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TPSPattern.FYStep">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TPSPattern.GetpostScript">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TPSPattern.GetpostScript.Result">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TPSPattern.SetBBox">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPSPattern.SetBBox.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TPSPattern.SetName">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPSPattern.SetName.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TPSPattern.SetPaintType">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPSPattern.SetPaintType.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TPSPattern.SetTilingType">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPSPattern.SetTilingType.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TPSPattern.SetXStep">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPSPattern.SetXStep.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TPSPattern.SetYStep">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPSPattern.SetYStep.AValue">
-<short></short>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="TPSPattern.Create">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- destructor Visibility: public -->
-<element name="TPSPattern.Destroy">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TPSPattern.Changed">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TPSPattern.BBox">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TPSPattern.PaintType">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TPSPattern.TilingType">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TPSPattern.XStep">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TPSPattern.YStep">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TPSPattern.Name">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TPSPattern.Canvas">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TPSPattern.GetPS">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TPSPattern.OldName">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TPSPattern.OnChange">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- pointer type Visibility: default -->
-<element name="PPSPattern">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- object Visibility: default -->
-<element name="TPSObject">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TPSObject.FOnChange">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TPSObject.Changed">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TPSObject.Lock">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TPSObject.UnLock">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TPSObject.OnChange">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- object Visibility: default -->
-<element name="TPSPen">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TPSPen.FColor">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TPSPen.FPattern">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TPSPen.FWidth">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TPSPen.SetPattern">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPSPen.SetPattern.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TPSPen.SetColor">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPSPen.SetColor.Value">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TPSPen.Setwidth">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPSPen.Setwidth.value">
-<short></short>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="TPSPen.Create">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- destructor Visibility: public -->
-<element name="TPSPen.Destroy">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TPSPen.Assign">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPSPen.Assign.Source">
-<short></short>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TPSPen.Color">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TPSPen.Pattern">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TPSPen.Width">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TPSPen.AsString">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TPSPen.AsString.Result">
-<short></short>
-</element>
-
-<!-- object Visibility: default -->
-<element name="TPostScriptCanvas">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TPostScriptCanvas.FBrush">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TPostScriptCanvas.FFontFace">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TPostScriptCanvas.FFontSize">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TPostScriptCanvas.FHeight">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TPostScriptCanvas.FLineSpacing">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TPostScriptCanvas.FColor">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TPostScriptCanvas.FPen">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TPostScriptCanvas.LastX">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TPostScriptCanvas.LastY">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TPostScriptCanvas.FPostScript">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TPostScriptCanvas.GetColor">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TPostScriptCanvas.GetColor.Result">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TPostScriptCanvas.SetBrush">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostScriptCanvas.SetBrush.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TPostScriptCanvas.SetColor">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostScriptCanvas.SetColor.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TPostScriptCanvas.SetFontFace">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostScriptCanvas.SetFontFace.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TPostScriptCanvas.SetFontSize">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostScriptCanvas.SetFontSize.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TPostScriptCanvas.SetPen">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostScriptCanvas.SetPen.AValue">
-<short></short>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TPostScriptCanvas.TranslateY">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TPostScriptCanvas.TranslateY.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostScriptCanvas.TranslateY.Ycoord">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TPostScriptCanvas.AddFill">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TPostScriptCanvas.ResetPos">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TPostScriptCanvas.PenChanged">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostScriptCanvas.PenChanged.Sender">
-<short></short>
-</element>
-
-<!-- variable Visibility: public -->
-<element name="TPostScriptCanvas.MPostScript">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="TPostScriptCanvas.Create">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostScriptCanvas.Create.APostScript">
-<short></short>
-</element>
-
-<!-- destructor Visibility: public -->
-<element name="TPostScriptCanvas.Destroy">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TPostScriptCanvas.Clear">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TPostScriptCanvas.PostScript">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TPostScriptCanvas.FontFace">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TPostScriptCanvas.FontSize">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TPostScriptCanvas.LineSpacing">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TPostScriptCanvas.MoveTo">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostScriptCanvas.MoveTo.X1">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostScriptCanvas.MoveTo.Y1">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TPostScriptCanvas.LineTo">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostScriptCanvas.LineTo.X1">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostScriptCanvas.LineTo.Y1">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TPostScriptCanvas.Line">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostScriptCanvas.Line.X1">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostScriptCanvas.Line.Y1">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostScriptCanvas.Line.X2">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostScriptCanvas.Line.Y2">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TPostScriptCanvas.Rectangle">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostScriptCanvas.Rectangle.X1">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostScriptCanvas.Rectangle.Y1">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostScriptCanvas.Rectangle.X2">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostScriptCanvas.Rectangle.Y2">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TPostScriptCanvas.Rectangle">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostScriptCanvas.Rectangle.Rect">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TPostScriptCanvas.Polyline">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostScriptCanvas.Polyline.Points">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostScriptCanvas.Polyline.NumPts">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TPostScriptCanvas.Ellipse">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostScriptCanvas.Ellipse.x1">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostScriptCanvas.Ellipse.y1">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostScriptCanvas.Ellipse.x2">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostScriptCanvas.Ellipse.y2">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TPostScriptCanvas.Ellipse">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostScriptCanvas.Ellipse.Rect">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TPostScriptCanvas.Pie">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostScriptCanvas.Pie.x">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostScriptCanvas.Pie.y">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostScriptCanvas.Pie.width">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostScriptCanvas.Pie.mheight">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostScriptCanvas.Pie.angle1">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostScriptCanvas.Pie.angle2">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TPostScriptCanvas.Writeln">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostScriptCanvas.Writeln.AString">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TPostScriptCanvas.TextOut">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostScriptCanvas.TextOut.X">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostScriptCanvas.TextOut.Y">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostScriptCanvas.TextOut.Text">
-<short></short>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TPostScriptCanvas.Height">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TPostScriptCanvas.Color">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TPostScriptCanvas.Pen">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TPostScriptCanvas.Brush">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- object Visibility: default -->
-<element name="TPostScript">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TPostScript.FCanvas">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TPostScript.FHeight">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TPostScript.FLineSpacing">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TPostScript.FPageNumber">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TPostScript.FTitle">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TPostScript.FWidth">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TPostScript.FDocument">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TPostScript.Patterns">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TPostScript.NumPatterns">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TPostScript.SetHeight">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostScript.SetHeight.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TPostScript.SetLineSpacing">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostScript.SetLineSpacing.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TPostScript.SetTitle">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostScript.SetTitle.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TPostScript.SetWidth">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostScript.SetWidth.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TPostScript.GrabCanvas">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TPostScript.UpdateBoundingBox">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TPostScript.PatternChanged">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostScript.PatternChanged.Sender">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TPostScript.InsertPattern">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostScript.InsertPattern.APattern">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TPostScript.RemovePattern">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostScript.RemovePattern.APattern">
-<short></short>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="TPostScript.Create">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- destructor Visibility: public -->
-<element name="TPostScript.Destroy">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TPostScript.AddPattern">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostScript.AddPattern.APSPattern">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TPostScript.FindPattern">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TPostScript.FindPattern.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostScript.FindPattern.AName">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TPostScript.DelPattern">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TPostScript.DelPattern.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostScript.DelPattern.AName">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TPostScript.NewPattern">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TPostScript.NewPattern.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostScript.NewPattern.AName">
-<short></short>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TPostScript.Canvas">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TPostScript.Height">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TPostScript.Width">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TPostScript.Document">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TPostScript.PageNumber">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TPostScript.Title">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TPostScript.LineSpacing">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TPostScript.BeginDoc">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TPostScript.NewPage">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TPostScript.EndDoc">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-</module> <!-- PostScriptPrinter -->
-</package>
+    <module name="PostScriptPrinter">
+      <short/>
+      <descr/>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="Classes">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="SysUtils">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="LCLProc">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="GraphType">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="Graphics">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="GraphMath">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="LCLIntf">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="Forms">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TPostScript">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- enumeration type Visibility: default -->
+      <element name="TPSPaintType">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TPSPaintType.ptColored"><short/></element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TPSPaintType.ptUncolored"><short/></element>
+      <!-- enumeration type Visibility: default -->
+      <element name="TPSTileType">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TPSTileType.ttConstant"><short/></element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TPSTileType.ttNoDistortion"><short/></element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TPSTileType.ttFast"><short/></element>
+      <!-- object Visibility: default -->
+      <element name="TPostScriptCanvas">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TPSPattern">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TPSPattern.FOldName">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TPSPattern.FOnChange">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TPSPattern.FBBox">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TPSPattern.FCanvas">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TPSPattern.FName">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TPSPattern.FPaintType">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TPSPattern.FPostScript">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TPSPattern.FTilingType">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TPSPattern.FXStep">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TPSPattern.FYStep">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TPSPattern.GetpostScript">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TPSPattern.GetpostScript.Result"><short/></element>
+      <!-- procedure Visibility: private -->
+      <element name="TPSPattern.SetBBox">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TPSPattern.SetBBox.AValue"><short/></element>
+      <!-- procedure Visibility: private -->
+      <element name="TPSPattern.SetName">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TPSPattern.SetName.AValue"><short/></element>
+      <!-- procedure Visibility: private -->
+      <element name="TPSPattern.SetPaintType">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TPSPattern.SetPaintType.AValue"><short/></element>
+      <!-- procedure Visibility: private -->
+      <element name="TPSPattern.SetTilingType">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TPSPattern.SetTilingType.AValue"><short/></element>
+      <!-- procedure Visibility: private -->
+      <element name="TPSPattern.SetXStep">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TPSPattern.SetXStep.AValue"><short/></element>
+      <!-- procedure Visibility: private -->
+      <element name="TPSPattern.SetYStep">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TPSPattern.SetYStep.AValue"><short/></element>
+      <!-- constructor Visibility: public -->
+      <element name="TPSPattern.Create">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- destructor Visibility: public -->
+      <element name="TPSPattern.Destroy">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TPSPattern.Changed">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TPSPattern.BBox">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TPSPattern.PaintType">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TPSPattern.TilingType">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TPSPattern.XStep">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TPSPattern.YStep">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TPSPattern.Name">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TPSPattern.Canvas">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TPSPattern.GetPS">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TPSPattern.OldName">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TPSPattern.OnChange">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- pointer type Visibility: default -->
+      <element name="PPSPattern">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TPSObject">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TPSObject.FOnChange">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TPSObject.Changed">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TPSObject.Lock">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TPSObject.UnLock">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TPSObject.OnChange">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TPSPen">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TPSPen.FColor">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TPSPen.FPattern">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TPSPen.FWidth">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TPSPen.SetPattern">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TPSPen.SetPattern.AValue"><short/></element>
+      <!-- procedure Visibility: protected -->
+      <element name="TPSPen.SetColor">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TPSPen.SetColor.Value"><short/></element>
+      <!-- procedure Visibility: protected -->
+      <element name="TPSPen.Setwidth">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TPSPen.Setwidth.value"><short/></element>
+      <!-- constructor Visibility: public -->
+      <element name="TPSPen.Create">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- destructor Visibility: public -->
+      <element name="TPSPen.Destroy">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TPSPen.Assign">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TPSPen.Assign.Source"><short/></element>
+      <!-- property Visibility: public -->
+      <element name="TPSPen.Color">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TPSPen.Pattern">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TPSPen.Width">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TPSPen.AsString">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TPSPen.AsString.Result"><short/></element>
+      <!-- object Visibility: default -->
+      <element name="TPostScriptCanvas">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TPostScriptCanvas.FBrush">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TPostScriptCanvas.FFontFace">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TPostScriptCanvas.FFontSize">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TPostScriptCanvas.FHeight">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TPostScriptCanvas.FLineSpacing">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TPostScriptCanvas.FColor">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TPostScriptCanvas.FPen">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TPostScriptCanvas.LastX">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TPostScriptCanvas.LastY">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TPostScriptCanvas.FPostScript">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TPostScriptCanvas.GetColor">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TPostScriptCanvas.GetColor.Result"><short/></element>
+      <!-- procedure Visibility: private -->
+      <element name="TPostScriptCanvas.SetBrush">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TPostScriptCanvas.SetBrush.AValue"><short/></element>
+      <!-- procedure Visibility: private -->
+      <element name="TPostScriptCanvas.SetColor">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TPostScriptCanvas.SetColor.AValue"><short/></element>
+      <!-- procedure Visibility: private -->
+      <element name="TPostScriptCanvas.SetFontFace">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TPostScriptCanvas.SetFontFace.AValue"><short/></element>
+      <!-- procedure Visibility: private -->
+      <element name="TPostScriptCanvas.SetFontSize">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TPostScriptCanvas.SetFontSize.AValue"><short/></element>
+      <!-- procedure Visibility: private -->
+      <element name="TPostScriptCanvas.SetPen">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TPostScriptCanvas.SetPen.AValue"><short/></element>
+      <!-- function Visibility: private -->
+      <element name="TPostScriptCanvas.TranslateY">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TPostScriptCanvas.TranslateY.Result"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TPostScriptCanvas.TranslateY.Ycoord"><short/></element>
+      <!-- procedure Visibility: private -->
+      <element name="TPostScriptCanvas.AddFill">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TPostScriptCanvas.ResetPos">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TPostScriptCanvas.PenChanged">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TPostScriptCanvas.PenChanged.Sender"><short/></element>
+      <!-- variable Visibility: public -->
+      <element name="TPostScriptCanvas.MPostScript">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TPostScriptCanvas.Create">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TPostScriptCanvas.Create.APostScript"><short/></element>
+      <!-- destructor Visibility: public -->
+      <element name="TPostScriptCanvas.Destroy">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TPostScriptCanvas.Clear">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TPostScriptCanvas.PostScript">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TPostScriptCanvas.FontFace">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TPostScriptCanvas.FontSize">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TPostScriptCanvas.LineSpacing">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TPostScriptCanvas.MoveTo">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TPostScriptCanvas.MoveTo.X1"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TPostScriptCanvas.MoveTo.Y1"><short/></element>
+      <!-- procedure Visibility: public -->
+      <element name="TPostScriptCanvas.LineTo">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TPostScriptCanvas.LineTo.X1"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TPostScriptCanvas.LineTo.Y1"><short/></element>
+      <!-- procedure Visibility: public -->
+      <element name="TPostScriptCanvas.Line">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TPostScriptCanvas.Line.X1"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TPostScriptCanvas.Line.Y1"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TPostScriptCanvas.Line.X2"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TPostScriptCanvas.Line.Y2"><short/></element>
+      <!-- procedure Visibility: public -->
+      <element name="TPostScriptCanvas.Rectangle">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TPostScriptCanvas.Rectangle.X1"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TPostScriptCanvas.Rectangle.Y1"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TPostScriptCanvas.Rectangle.X2"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TPostScriptCanvas.Rectangle.Y2"><short/></element>
+      <!-- procedure Visibility: public -->
+      <element name="TPostScriptCanvas.Rectangle">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TPostScriptCanvas.Rectangle.Rect"><short/></element>
+      <!-- procedure Visibility: public -->
+      <element name="TPostScriptCanvas.Polyline">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TPostScriptCanvas.Polyline.Points"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TPostScriptCanvas.Polyline.NumPts"><short/></element>
+      <!-- procedure Visibility: public -->
+      <element name="TPostScriptCanvas.Ellipse">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TPostScriptCanvas.Ellipse.x1"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TPostScriptCanvas.Ellipse.y1"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TPostScriptCanvas.Ellipse.x2"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TPostScriptCanvas.Ellipse.y2"><short/></element>
+      <!-- procedure Visibility: public -->
+      <element name="TPostScriptCanvas.Ellipse">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TPostScriptCanvas.Ellipse.Rect"><short/></element>
+      <!-- procedure Visibility: public -->
+      <element name="TPostScriptCanvas.Pie">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TPostScriptCanvas.Pie.x"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TPostScriptCanvas.Pie.y"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TPostScriptCanvas.Pie.width"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TPostScriptCanvas.Pie.mheight"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TPostScriptCanvas.Pie.angle1"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TPostScriptCanvas.Pie.angle2"><short/></element>
+      <!-- procedure Visibility: public -->
+      <element name="TPostScriptCanvas.Writeln">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TPostScriptCanvas.Writeln.AString"><short/></element>
+      <!-- procedure Visibility: public -->
+      <element name="TPostScriptCanvas.TextOut">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TPostScriptCanvas.TextOut.X"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TPostScriptCanvas.TextOut.Y"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TPostScriptCanvas.TextOut.Text"><short/></element>
+      <!-- property Visibility: public -->
+      <element name="TPostScriptCanvas.Height">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TPostScriptCanvas.Color">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TPostScriptCanvas.Pen">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TPostScriptCanvas.Brush">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TPostScript">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TPostScript.FCanvas">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TPostScript.FHeight">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TPostScript.FLineSpacing">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TPostScript.FPageNumber">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TPostScript.FTitle">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TPostScript.FWidth">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TPostScript.FDocument">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TPostScript.Patterns">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TPostScript.NumPatterns">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TPostScript.SetHeight">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TPostScript.SetHeight.AValue"><short/></element>
+      <!-- procedure Visibility: private -->
+      <element name="TPostScript.SetLineSpacing">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TPostScript.SetLineSpacing.AValue"><short/></element>
+      <!-- procedure Visibility: private -->
+      <element name="TPostScript.SetTitle">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TPostScript.SetTitle.AValue"><short/></element>
+      <!-- procedure Visibility: private -->
+      <element name="TPostScript.SetWidth">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TPostScript.SetWidth.AValue"><short/></element>
+      <!-- procedure Visibility: private -->
+      <element name="TPostScript.GrabCanvas">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TPostScript.UpdateBoundingBox">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TPostScript.PatternChanged">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TPostScript.PatternChanged.Sender"><short/></element>
+      <!-- procedure Visibility: private -->
+      <element name="TPostScript.InsertPattern">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TPostScript.InsertPattern.APattern"><short/></element>
+      <!-- procedure Visibility: private -->
+      <element name="TPostScript.RemovePattern">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TPostScript.RemovePattern.APattern"><short/></element>
+      <!-- constructor Visibility: public -->
+      <element name="TPostScript.Create">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- destructor Visibility: public -->
+      <element name="TPostScript.Destroy">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TPostScript.AddPattern">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TPostScript.AddPattern.APSPattern"><short/></element>
+      <!-- function Visibility: public -->
+      <element name="TPostScript.FindPattern">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TPostScript.FindPattern.Result"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TPostScript.FindPattern.AName"><short/></element>
+      <!-- function Visibility: public -->
+      <element name="TPostScript.DelPattern">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TPostScript.DelPattern.Result"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TPostScript.DelPattern.AName"><short/></element>
+      <!-- function Visibility: public -->
+      <element name="TPostScript.NewPattern">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TPostScript.NewPattern.Result"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TPostScript.NewPattern.AName"><short/></element>
+      <!-- property Visibility: public -->
+      <element name="TPostScript.Canvas">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TPostScript.Height">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TPostScript.Width">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TPostScript.Document">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TPostScript.PageNumber">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TPostScript.Title">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TPostScript.LineSpacing">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TPostScript.BeginDoc">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TPostScript.NewPage">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TPostScript.EndDoc">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+    </module>
+    <!-- PostScriptPrinter -->
+  </package>
 </fpdoc-descriptions>

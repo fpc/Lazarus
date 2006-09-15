@@ -108,17 +108,11 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TMenuChangeEvent.Sender">
-        <short/>
-      </element>
+      <element name="TMenuChangeEvent.Sender"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TMenuChangeEvent.Source">
-        <short/>
-      </element>
+      <element name="TMenuChangeEvent.Source"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TMenuChangeEvent.Rebuild">
-        <short/>
-      </element>
+      <element name="TMenuChangeEvent.Rebuild"><short/></element>
       <!-- object Visibility: default -->
       <element name="TMenuActionLink">
         <short>Menu Action Link</short>
@@ -138,9 +132,7 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TMenuActionLink.AssignClient.AClient">
-        <short/>
-      </element>
+      <element name="TMenuActionLink.AssignClient.AClient"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TMenuActionLink.IsAutoCheckLinked">
         <short/>
@@ -149,9 +141,7 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TMenuActionLink.IsAutoCheckLinked.Result">
-        <short/>
-      </element>
+      <element name="TMenuActionLink.IsAutoCheckLinked.Result"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TMenuActionLink.IsCaptionLinked">
         <short/>
@@ -160,9 +150,7 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TMenuActionLink.IsCaptionLinked.Result">
-        <short/>
-      </element>
+      <element name="TMenuActionLink.IsCaptionLinked.Result"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TMenuActionLink.IsCheckedLinked">
         <short/>
@@ -171,9 +159,7 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TMenuActionLink.IsCheckedLinked.Result">
-        <short/>
-      </element>
+      <element name="TMenuActionLink.IsCheckedLinked.Result"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TMenuActionLink.IsEnabledLinked">
         <short/>
@@ -182,9 +168,7 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TMenuActionLink.IsEnabledLinked.Result">
-        <short/>
-      </element>
+      <element name="TMenuActionLink.IsEnabledLinked.Result"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TMenuActionLink.IsHelpContextLinked">
         <short/>
@@ -193,9 +177,7 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TMenuActionLink.IsHelpContextLinked.Result">
-        <short/>
-      </element>
+      <element name="TMenuActionLink.IsHelpContextLinked.Result"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TMenuActionLink.IsHintLinked">
         <short/>
@@ -204,9 +186,7 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TMenuActionLink.IsHintLinked.Result">
-        <short/>
-      </element>
+      <element name="TMenuActionLink.IsHintLinked.Result"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TMenuActionLink.IsGroupIndexLinked">
         <short/>
@@ -215,9 +195,7 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TMenuActionLink.IsGroupIndexLinked.Result">
-        <short/>
-      </element>
+      <element name="TMenuActionLink.IsGroupIndexLinked.Result"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TMenuActionLink.IsImageIndexLinked">
         <short/>
@@ -226,9 +204,7 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TMenuActionLink.IsImageIndexLinked.Result">
-        <short/>
-      </element>
+      <element name="TMenuActionLink.IsImageIndexLinked.Result"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TMenuActionLink.IsShortCutLinked">
         <short/>
@@ -237,9 +213,7 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TMenuActionLink.IsShortCutLinked.Result">
-        <short/>
-      </element>
+      <element name="TMenuActionLink.IsShortCutLinked.Result"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TMenuActionLink.IsVisibleLinked">
         <short/>
@@ -248,9 +222,7 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TMenuActionLink.IsVisibleLinked.Result">
-        <short/>
-      </element>
+      <element name="TMenuActionLink.IsVisibleLinked.Result"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TMenuActionLink.IsOnExecuteLinked">
         <short/>
@@ -259,9 +231,7 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TMenuActionLink.IsOnExecuteLinked.Result">
-        <short/>
-      </element>
+      <element name="TMenuActionLink.IsOnExecuteLinked.Result"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TMenuActionLink.SetAutoCheck">
         <short/>
@@ -270,9 +240,7 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TMenuActionLink.SetAutoCheck.Value">
-        <short/>
-      </element>
+      <element name="TMenuActionLink.SetAutoCheck.Value"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TMenuActionLink.SetCaption">
         <short/>
@@ -281,9 +249,7 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TMenuActionLink.SetCaption.Value">
-        <short/>
-      </element>
+      <element name="TMenuActionLink.SetCaption.Value"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TMenuActionLink.SetChecked">
         <short/>
@@ -292,9 +258,7 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TMenuActionLink.SetChecked.Value">
-        <short/>
-      </element>
+      <element name="TMenuActionLink.SetChecked.Value"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TMenuActionLink.SetEnabled">
         <short/>
@@ -303,9 +267,7 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TMenuActionLink.SetEnabled.Value">
-        <short/>
-      </element>
+      <element name="TMenuActionLink.SetEnabled.Value"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TMenuActionLink.SetHelpContext">
         <short/>
@@ -314,9 +276,7 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TMenuActionLink.SetHelpContext.Value">
-        <short/>
-      </element>
+      <element name="TMenuActionLink.SetHelpContext.Value"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TMenuActionLink.SetHint">
         <short/>
@@ -325,9 +285,7 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TMenuActionLink.SetHint.Value">
-        <short/>
-      </element>
+      <element name="TMenuActionLink.SetHint.Value"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TMenuActionLink.SetImageIndex">
         <short/>
@@ -336,9 +294,7 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TMenuActionLink.SetImageIndex.Value">
-        <short/>
-      </element>
+      <element name="TMenuActionLink.SetImageIndex.Value"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TMenuActionLink.SetShortCut">
         <short/>
@@ -347,9 +303,7 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TMenuActionLink.SetShortCut.Value">
-        <short/>
-      </element>
+      <element name="TMenuActionLink.SetShortCut.Value"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TMenuActionLink.SetVisible">
         <short/>
@@ -358,9 +312,7 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TMenuActionLink.SetVisible.Value">
-        <short/>
-      </element>
+      <element name="TMenuActionLink.SetVisible.Value"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TMenuActionLink.SetOnExecute">
         <short/>
@@ -369,9 +321,7 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TMenuActionLink.SetOnExecute.Value">
-        <short/>
-      </element>
+      <element name="TMenuActionLink.SetOnExecute.Value"><short/></element>
       <!-- "class of" type Visibility: default -->
       <element name="TMenuActionLinkClass">
         <short/>
@@ -543,9 +493,7 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TMenuItem.GetBitmap.Result">
-        <short/>
-      </element>
+      <element name="TMenuItem.GetBitmap.Result"><short/></element>
       <!-- function Visibility: private -->
       <element name="TMenuItem.GetCount">
         <short/>
@@ -554,9 +502,7 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TMenuItem.GetCount.Result">
-        <short/>
-      </element>
+      <element name="TMenuItem.GetCount.Result"><short/></element>
       <!-- function Visibility: private -->
       <element name="TMenuItem.GetItem">
         <short/>
@@ -565,13 +511,9 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TMenuItem.GetItem.Result">
-        <short/>
-      </element>
+      <element name="TMenuItem.GetItem.Result"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TMenuItem.GetItem.Index">
-        <short/>
-      </element>
+      <element name="TMenuItem.GetItem.Index"><short/></element>
       <!-- function Visibility: private -->
       <element name="TMenuItem.GetMenuIndex">
         <short/>
@@ -580,9 +522,7 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TMenuItem.GetMenuIndex.Result">
-        <short/>
-      </element>
+      <element name="TMenuItem.GetMenuIndex.Result"><short/></element>
       <!-- function Visibility: private -->
       <element name="TMenuItem.GetParent">
         <short/>
@@ -591,9 +531,7 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TMenuItem.GetParent.Result">
-        <short/>
-      </element>
+      <element name="TMenuItem.GetParent.Result"><short/></element>
       <!-- function Visibility: private -->
       <element name="TMenuItem.IsBitmapStored">
         <short/>
@@ -602,9 +540,7 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TMenuItem.IsBitmapStored.Result">
-        <short/>
-      </element>
+      <element name="TMenuItem.IsBitmapStored.Result"><short/></element>
       <!-- function Visibility: private -->
       <element name="TMenuItem.IsCaptionStored">
         <short/>
@@ -613,9 +549,7 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TMenuItem.IsCaptionStored.Result">
-        <short/>
-      </element>
+      <element name="TMenuItem.IsCaptionStored.Result"><short/></element>
       <!-- function Visibility: private -->
       <element name="TMenuItem.IsCheckedStored">
         <short/>
@@ -624,9 +558,7 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TMenuItem.IsCheckedStored.Result">
-        <short/>
-      </element>
+      <element name="TMenuItem.IsCheckedStored.Result"><short/></element>
       <!-- function Visibility: private -->
       <element name="TMenuItem.IsEnabledStored">
         <short/>
@@ -635,9 +567,7 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TMenuItem.IsEnabledStored.Result">
-        <short/>
-      </element>
+      <element name="TMenuItem.IsEnabledStored.Result"><short/></element>
       <!-- function Visibility: private -->
       <element name="TMenuItem.IsHelpContextStored">
         <short/>
@@ -646,9 +576,7 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TMenuItem.IsHelpContextStored.Result">
-        <short/>
-      </element>
+      <element name="TMenuItem.IsHelpContextStored.Result"><short/></element>
       <!-- function Visibility: private -->
       <element name="TMenuItem.IsHintStored">
         <short/>
@@ -657,9 +585,7 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TMenuItem.IsHintStored.Result">
-        <short/>
-      </element>
+      <element name="TMenuItem.IsHintStored.Result"><short/></element>
       <!-- function Visibility: private -->
       <element name="TMenuItem.IsImageIndexStored">
         <short/>
@@ -668,9 +594,7 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TMenuItem.IsImageIndexStored.Result">
-        <short/>
-      </element>
+      <element name="TMenuItem.IsImageIndexStored.Result"><short/></element>
       <!-- function Visibility: private -->
       <element name="TMenuItem.IsOnClickStored">
         <short/>
@@ -679,9 +603,7 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TMenuItem.IsOnClickStored.Result">
-        <short/>
-      </element>
+      <element name="TMenuItem.IsOnClickStored.Result"><short/></element>
       <!-- function Visibility: private -->
       <element name="TMenuItem.IsShortCutStored">
         <short/>
@@ -690,9 +612,7 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TMenuItem.IsShortCutStored.Result">
-        <short/>
-      </element>
+      <element name="TMenuItem.IsShortCutStored.Result"><short/></element>
       <!-- function Visibility: private -->
       <element name="TMenuItem.IsVisibleStored">
         <short/>
@@ -701,9 +621,7 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TMenuItem.IsVisibleStored.Result">
-        <short/>
-      </element>
+      <element name="TMenuItem.IsVisibleStored.Result"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TMenuItem.SetAutoCheck">
         <short/>
@@ -712,9 +630,7 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TMenuItem.SetAutoCheck.AValue">
-        <short/>
-      </element>
+      <element name="TMenuItem.SetAutoCheck.AValue"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TMenuItem.SetCaption">
         <short/>
@@ -723,9 +639,7 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TMenuItem.SetCaption.AValue">
-        <short/>
-      </element>
+      <element name="TMenuItem.SetCaption.AValue"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TMenuItem.SetChecked">
         <short/>
@@ -734,9 +648,7 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TMenuItem.SetChecked.AValue">
-        <short/>
-      </element>
+      <element name="TMenuItem.SetChecked.AValue"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TMenuItem.SetDefault">
         <short/>
@@ -745,9 +657,7 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TMenuItem.SetDefault.AValue">
-        <short/>
-      </element>
+      <element name="TMenuItem.SetDefault.AValue"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TMenuItem.SetEnabled">
         <short/>
@@ -756,9 +666,7 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TMenuItem.SetEnabled.AValue">
-        <short/>
-      </element>
+      <element name="TMenuItem.SetEnabled.AValue"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TMenuItem.SetBitmap">
         <short/>
@@ -767,9 +675,7 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TMenuItem.SetBitmap.AValue">
-        <short/>
-      </element>
+      <element name="TMenuItem.SetBitmap.AValue"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TMenuItem.SetMenuIndex">
         <short/>
@@ -778,9 +684,7 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TMenuItem.SetMenuIndex.AValue">
-        <short/>
-      </element>
+      <element name="TMenuItem.SetMenuIndex.AValue"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TMenuItem.SetRadioItem">
         <short/>
@@ -789,9 +693,7 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TMenuItem.SetRadioItem.AValue">
-        <short/>
-      </element>
+      <element name="TMenuItem.SetRadioItem.AValue"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TMenuItem.SetRightJustify">
         <short/>
@@ -800,9 +702,7 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TMenuItem.SetRightJustify.AValue">
-        <short/>
-      </element>
+      <element name="TMenuItem.SetRightJustify.AValue"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TMenuItem.SetShowAlwaysCheckable">
         <short/>
@@ -811,9 +711,7 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TMenuItem.SetShowAlwaysCheckable.AValue">
-        <short/>
-      </element>
+      <element name="TMenuItem.SetShowAlwaysCheckable.AValue"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TMenuItem.SetSubMenuImages">
         <short/>
@@ -822,9 +720,7 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TMenuItem.SetSubMenuImages.AValue">
-        <short/>
-      </element>
+      <element name="TMenuItem.SetSubMenuImages.AValue"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TMenuItem.ShortcutChanged">
         <short/>
@@ -833,13 +729,9 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TMenuItem.ShortcutChanged.OldValue">
-        <short/>
-      </element>
+      <element name="TMenuItem.ShortcutChanged.OldValue"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TMenuItem.ShortcutChanged.Value">
-        <short/>
-      </element>
+      <element name="TMenuItem.ShortcutChanged.Value"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TMenuItem.SubItemChanged">
         <short/>
@@ -848,17 +740,11 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TMenuItem.SubItemChanged.Sender">
-        <short/>
-      </element>
+      <element name="TMenuItem.SubItemChanged.Sender"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TMenuItem.SubItemChanged.Source">
-        <short/>
-      </element>
+      <element name="TMenuItem.SubItemChanged.Source"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TMenuItem.SubItemChanged.Rebuild">
-        <short/>
-      </element>
+      <element name="TMenuItem.SubItemChanged.Rebuild"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TMenuItem.TurnSiblingsOff">
         <short/>
@@ -874,9 +760,7 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TMenuItem.DoActionChange.Sender">
-        <short/>
-      </element>
+      <element name="TMenuItem.DoActionChange.Sender"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TMenuItem.ActionChange">
         <short/>
@@ -885,13 +769,9 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TMenuItem.ActionChange.Sender">
-        <short/>
-      </element>
+      <element name="TMenuItem.ActionChange.Sender"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TMenuItem.ActionChange.CheckDefaults">
-        <short/>
-      </element>
+      <element name="TMenuItem.ActionChange.CheckDefaults"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TMenuItem.AssignTo">
         <short/>
@@ -900,9 +780,7 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TMenuItem.AssignTo.Dest">
-        <short/>
-      </element>
+      <element name="TMenuItem.AssignTo.Dest"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TMenuItem.GetAction">
         <short/>
@@ -911,9 +789,7 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TMenuItem.GetAction.Result">
-        <short/>
-      </element>
+      <element name="TMenuItem.GetAction.Result"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TMenuItem.GetActionLinkClass">
         <short/>
@@ -922,9 +798,7 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TMenuItem.GetActionLinkClass.Result">
-        <short/>
-      </element>
+      <element name="TMenuItem.GetActionLinkClass.Result"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TMenuItem.GetHandle">
         <short/>
@@ -933,9 +807,7 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TMenuItem.GetHandle.Result">
-        <short/>
-      </element>
+      <element name="TMenuItem.GetHandle.Result"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TMenuItem.DoClicked">
         <short/>
@@ -944,9 +816,7 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TMenuItem.DoClicked.msg">
-        <short/>
-      </element>
+      <element name="TMenuItem.DoClicked.msg"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TMenuItem.CreateHandle">
         <short/>
@@ -976,13 +846,9 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TMenuItem.Notification.AComponent">
-        <short/>
-      </element>
+      <element name="TMenuItem.Notification.AComponent"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TMenuItem.Notification.Operation">
-        <short/>
-      </element>
+      <element name="TMenuItem.Notification.Operation"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TMenuItem.GetChildren">
         <short/>
@@ -991,13 +857,9 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TMenuItem.GetChildren.Proc">
-        <short/>
-      </element>
+      <element name="TMenuItem.GetChildren.Proc"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TMenuItem.GetChildren.Root">
-        <short/>
-      </element>
+      <element name="TMenuItem.GetChildren.Root"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TMenuItem.InitiateActions">
         <short/>
@@ -1013,9 +875,7 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TMenuItem.MenuChanged.Rebuild">
-        <short/>
-      </element>
+      <element name="TMenuItem.MenuChanged.Rebuild"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TMenuItem.SetAction">
         <short/>
@@ -1024,9 +884,7 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TMenuItem.SetAction.NewAction">
-        <short/>
-      </element>
+      <element name="TMenuItem.SetAction.NewAction"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TMenuItem.SetChildOrder">
         <short/>
@@ -1035,13 +893,9 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TMenuItem.SetChildOrder.Child">
-        <short/>
-      </element>
+      <element name="TMenuItem.SetChildOrder.Child"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TMenuItem.SetChildOrder.Order">
-        <short/>
-      </element>
+      <element name="TMenuItem.SetChildOrder.Order"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TMenuItem.SetGroupIndex">
         <short/>
@@ -1050,9 +904,7 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TMenuItem.SetGroupIndex.AValue">
-        <short/>
-      </element>
+      <element name="TMenuItem.SetGroupIndex.AValue"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TMenuItem.SetImageIndex">
         <short/>
@@ -1061,9 +913,7 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TMenuItem.SetImageIndex.value">
-        <short/>
-      </element>
+      <element name="TMenuItem.SetImageIndex.value"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TMenuItem.SetParentComponent">
         <short/>
@@ -1072,9 +922,7 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TMenuItem.SetParentComponent.AValue">
-        <short/>
-      </element>
+      <element name="TMenuItem.SetParentComponent.AValue"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TMenuItem.SetShortCut">
         <short/>
@@ -1083,9 +931,7 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TMenuItem.SetShortCut.AValue">
-        <short/>
-      </element>
+      <element name="TMenuItem.SetShortCut.AValue"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TMenuItem.SetVisible">
         <short/>
@@ -1094,9 +940,7 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TMenuItem.SetVisible.AValue">
-        <short/>
-      </element>
+      <element name="TMenuItem.SetVisible.AValue"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TMenuItem.UpdateImages">
         <short/>
@@ -1112,9 +956,7 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TMenuItem.ImageListChange.Sender">
-        <short/>
-      </element>
+      <element name="TMenuItem.ImageListChange.Sender"><short/></element>
       <!-- property Visibility: protected -->
       <element name="TMenuItem.ActionLink">
         <short/>
@@ -1135,9 +977,7 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TMenuItem.Create.TheOwner">
-        <short/>
-      </element>
+      <element name="TMenuItem.Create.TheOwner"><short/></element>
       <!-- destructor Visibility: public -->
       <element name="TMenuItem.Destroy">
         <short/>
@@ -1153,9 +993,7 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TMenuItem.GetImageList.Result">
-        <short/>
-      </element>
+      <element name="TMenuItem.GetImageList.Result"><short/></element>
       <!-- function Visibility: public -->
       <element name="TMenuItem.GetParentComponent">
         <short/>
@@ -1164,9 +1002,7 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TMenuItem.GetParentComponent.Result">
-        <short/>
-      </element>
+      <element name="TMenuItem.GetParentComponent.Result"><short/></element>
       <!-- function Visibility: public -->
       <element name="TMenuItem.GetParentMenu">
         <short/>
@@ -1175,9 +1011,7 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TMenuItem.GetParentMenu.Result">
-        <short/>
-      </element>
+      <element name="TMenuItem.GetParentMenu.Result"><short/></element>
       <!-- function Visibility: public -->
       <element name="TMenuItem.HandleAllocated">
         <short/>
@@ -1186,9 +1020,7 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TMenuItem.HandleAllocated.Result">
-        <short/>
-      </element>
+      <element name="TMenuItem.HandleAllocated.Result"><short/></element>
       <!-- function Visibility: public -->
       <element name="TMenuItem.HasIcon">
         <short/>
@@ -1197,9 +1029,7 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TMenuItem.HasIcon.Result">
-        <short/>
-      </element>
+      <element name="TMenuItem.HasIcon.Result"><short/></element>
       <!-- function Visibility: public -->
       <element name="TMenuItem.HasParent">
         <short/>
@@ -1208,9 +1038,7 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TMenuItem.HasParent.Result">
-        <short/>
-      </element>
+      <element name="TMenuItem.HasParent.Result"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TMenuItem.InitiateAction">
         <short/>
@@ -1226,13 +1054,9 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TMenuItem.IndexOf.Result">
-        <short/>
-      </element>
+      <element name="TMenuItem.IndexOf.Result"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TMenuItem.IndexOf.Item">
-        <short/>
-      </element>
+      <element name="TMenuItem.IndexOf.Item"><short/></element>
       <!-- function Visibility: public -->
       <element name="TMenuItem.IndexOfCaption">
         <short/>
@@ -1241,13 +1065,9 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TMenuItem.IndexOfCaption.Result">
-        <short/>
-      </element>
+      <element name="TMenuItem.IndexOfCaption.Result"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TMenuItem.IndexOfCaption.ACaption">
-        <short/>
-      </element>
+      <element name="TMenuItem.IndexOfCaption.ACaption"><short/></element>
       <!-- function Visibility: public -->
       <element name="TMenuItem.VisibleIndexOf">
         <short/>
@@ -1256,13 +1076,9 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TMenuItem.VisibleIndexOf.Result">
-        <short/>
-      </element>
+      <element name="TMenuItem.VisibleIndexOf.Result"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TMenuItem.VisibleIndexOf.Item">
-        <short/>
-      </element>
+      <element name="TMenuItem.VisibleIndexOf.Item"><short/></element>
       <!-- function Visibility: public -->
       <element name="TMenuItem.IsCheckItem">
         <short/>
@@ -1271,9 +1087,7 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TMenuItem.IsCheckItem.Result">
-        <short/>
-      </element>
+      <element name="TMenuItem.IsCheckItem.Result"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TMenuItem.Add">
         <short/>
@@ -1282,9 +1096,7 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TMenuItem.Add.Item">
-        <short/>
-      </element>
+      <element name="TMenuItem.Add.Item"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TMenuItem.AddSeparator">
         <short/>
@@ -1307,9 +1119,7 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TMenuItem.Delete.Index">
-        <short/>
-      </element>
+      <element name="TMenuItem.Delete.Index"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TMenuItem.HandleNeeded">
         <short/>
@@ -1325,13 +1135,9 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TMenuItem.Insert.Index">
-        <short/>
-      </element>
+      <element name="TMenuItem.Insert.Index"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TMenuItem.Insert.Item">
-        <short/>
-      </element>
+      <element name="TMenuItem.Insert.Item"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TMenuItem.RecreateHandle">
         <short/>
@@ -1347,9 +1153,7 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TMenuItem.Remove.Item">
-        <short/>
-      </element>
+      <element name="TMenuItem.Remove.Item"><short/></element>
       <!-- function Visibility: public -->
       <element name="TMenuItem.IsInMenuBar">
         <short/>
@@ -1358,9 +1162,7 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TMenuItem.IsInMenuBar.Result">
-        <short/>
-      </element>
+      <element name="TMenuItem.IsInMenuBar.Result"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TMenuItem.Clear">
         <short/>
@@ -1376,9 +1178,7 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TMenuItem.HasBitmap.Result">
-        <short/>
-      </element>
+      <element name="TMenuItem.HasBitmap.Result"><short/></element>
       <!-- function Visibility: public -->
       <element name="TMenuItem.GetIconSize">
         <short/>
@@ -1387,9 +1187,7 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TMenuItem.GetIconSize.Result">
-        <short/>
-      </element>
+      <element name="TMenuItem.GetIconSize.Result"><short/></element>
       <!-- property Visibility: public -->
       <element name="TMenuItem.Count">
         <short/>
@@ -1409,9 +1207,7 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TMenuItem.Items.Index">
-        <short/>
-      </element>
+      <element name="TMenuItem.Items.Index"><short/></element>
       <!-- property Visibility: public -->
       <element name="TMenuItem.MenuIndex">
         <short/>
@@ -1438,9 +1234,7 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TMenuItem.MenuVisibleIndex.Result">
-        <short/>
-      </element>
+      <element name="TMenuItem.MenuVisibleIndex.Result"><short/></element>
       <!-- property Visibility: published -->
       <element name="TMenuItem.Action">
         <short/>
@@ -1546,17 +1340,11 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TFindItemKind.fkCommand">
-        <short/>
-      </element>
+      <element name="TFindItemKind.fkCommand"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TFindItemKind.fkHandle">
-        <short/>
-      </element>
+      <element name="TFindItemKind.fkHandle"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TFindItemKind.fkShortCut">
-        <short/>
-      </element>
+      <element name="TFindItemKind.fkShortCut"><short/></element>
       <!-- object Visibility: default -->
       <element name="TMenu">
         <short>Menu</short>
@@ -1600,9 +1388,7 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TMenu.SetImages.AValue">
-        <short/>
-      </element>
+      <element name="TMenu.SetImages.AValue"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TMenu.SetParent">
         <short/>
@@ -1611,9 +1397,7 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TMenu.SetParent.AValue">
-        <short/>
-      </element>
+      <element name="TMenu.SetParent.AValue"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TMenu.ImageListChange">
         <short/>
@@ -1622,9 +1406,7 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TMenu.ImageListChange.Sender">
-        <short/>
-      </element>
+      <element name="TMenu.ImageListChange.Sender"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TMenu.CreateHandle">
         <short/>
@@ -1640,13 +1422,9 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TMenu.DoChange.Source">
-        <short/>
-      </element>
+      <element name="TMenu.DoChange.Source"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TMenu.DoChange.Rebuild">
-        <short/>
-      </element>
+      <element name="TMenu.DoChange.Rebuild"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TMenu.GetHandle">
         <short/>
@@ -1655,9 +1433,7 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TMenu.GetHandle.Result">
-        <short/>
-      </element>
+      <element name="TMenu.GetHandle.Result"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TMenu.GetChildren">
         <short/>
@@ -1666,13 +1442,9 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TMenu.GetChildren.Proc">
-        <short/>
-      </element>
+      <element name="TMenu.GetChildren.Proc"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TMenu.GetChildren.Root">
-        <short/>
-      </element>
+      <element name="TMenu.GetChildren.Root"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TMenu.MenuChanged">
         <short/>
@@ -1681,17 +1453,11 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TMenu.MenuChanged.Sender">
-        <short/>
-      </element>
+      <element name="TMenu.MenuChanged.Sender"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TMenu.MenuChanged.Source">
-        <short/>
-      </element>
+      <element name="TMenu.MenuChanged.Source"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TMenu.MenuChanged.Rebuild">
-        <short/>
-      </element>
+      <element name="TMenu.MenuChanged.Rebuild"><short/></element>
       <!-- property Visibility: protected -->
       <element name="TMenu.OnChange">
         <short/>
@@ -1719,9 +1485,7 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TMenu.Create.AOwner">
-        <short/>
-      </element>
+      <element name="TMenu.Create.AOwner"><short/></element>
       <!-- destructor Visibility: public -->
       <element name="TMenu.Destroy">
         <short/>
@@ -1744,17 +1508,11 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TMenu.FindItem.Result">
-        <short/>
-      </element>
+      <element name="TMenu.FindItem.Result"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TMenu.FindItem.AValue">
-        <short/>
-      </element>
+      <element name="TMenu.FindItem.AValue"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TMenu.FindItem.Kind">
-        <short/>
-      </element>
+      <element name="TMenu.FindItem.Kind"><short/></element>
       <!-- function Visibility: public -->
       <element name="TMenu.HandleAllocated">
         <short/>
@@ -1763,9 +1521,7 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TMenu.HandleAllocated.Result">
-        <short/>
-      </element>
+      <element name="TMenu.HandleAllocated.Result"><short/></element>
       <!-- function Visibility: public -->
       <element name="TMenu.IsRightToLeft">
         <short/>
@@ -1774,9 +1530,7 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TMenu.IsRightToLeft.Result">
-        <short/>
-      </element>
+      <element name="TMenu.IsRightToLeft.Result"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TMenu.HandleNeeded">
         <short/>
@@ -1792,13 +1546,9 @@ This Component does the hard work of processing the Items found in the various t
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TMenu.DispatchCommand.Result">
-        <short/>
-      </element>
+      <element name="TMenu.DispatchCommand.Result"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TMenu.DispatchCommand.ACommand">
-        <short/>
-      </element>
+      <element name="TMenu.DispatchCommand.ACommand"><short/></element>
       <!-- property Visibility: public -->
       <element name="TMenu.Handle">
         <short/>
@@ -1873,9 +1623,7 @@ the action is to be associated with the menu item.</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TMainMenu.Create.AOwner">
-        <short/>
-      </element>
+      <element name="TMainMenu.Create.AOwner"><short/></element>
       <!-- property Visibility: published -->
       <element name="TMainMenu.Items">
         <short/>
@@ -1932,9 +1680,7 @@ clicked. <br/>Inherits all the properties of TMenu (including the properties of 
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TPopupMenu.DoPopup.Sender">
-        <short/>
-      </element>
+      <element name="TPopupMenu.DoPopup.Sender"><short/></element>
       <!-- constructor Visibility: public -->
       <element name="TPopupMenu.Create">
         <short/>
@@ -1943,9 +1689,7 @@ clicked. <br/>Inherits all the properties of TMenu (including the properties of 
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TPopupMenu.Create.AOwner">
-        <short/>
-      </element>
+      <element name="TPopupMenu.Create.AOwner"><short/></element>
       <!-- destructor Visibility: public -->
       <element name="TPopupMenu.Destroy">
         <short/>
@@ -1961,13 +1705,9 @@ clicked. <br/>Inherits all the properties of TMenu (including the properties of 
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TPopupMenu.PopUp.X">
-        <short/>
-      </element>
+      <element name="TPopupMenu.PopUp.X"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TPopupMenu.PopUp.Y">
-        <short/>
-      </element>
+      <element name="TPopupMenu.PopUp.Y"><short/></element>
       <!-- property Visibility: public -->
       <element name="TPopupMenu.PopupComponent">
         <short/>
@@ -2020,17 +1760,11 @@ clicked. <br/>Inherits all the properties of TMenu (including the properties of 
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="ShortCut.Result">
-        <short/>
-      </element>
+      <element name="ShortCut.Result"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="ShortCut.Key">
-        <short/>
-      </element>
+      <element name="ShortCut.Key"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="ShortCut.Shift">
-        <short/>
-      </element>
+      <element name="ShortCut.Shift"><short/></element>
       <!-- procedure Visibility: default -->
       <element name="ShortCutToKey">
         <short/>
@@ -2039,17 +1773,11 @@ clicked. <br/>Inherits all the properties of TMenu (including the properties of 
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="ShortCutToKey.ShortCut">
-        <short/>
-      </element>
+      <element name="ShortCutToKey.ShortCut"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="ShortCutToKey.Key">
-        <short/>
-      </element>
+      <element name="ShortCutToKey.Key"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="ShortCutToKey.Shift">
-        <short/>
-      </element>
+      <element name="ShortCutToKey.Shift"><short/></element>
       <!-- variable Visibility: default -->
       <element name="DesignerMenuItemClick">
         <short/>
