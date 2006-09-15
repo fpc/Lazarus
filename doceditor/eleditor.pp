@@ -478,10 +478,10 @@ Var
 begin
   GetNodes;
   If Assigned(Felement) then
-    FLabel.Text:=Format(SDataForElement,[FElement['name']])
+    FLabel.Caption := Format(SDataForElement,[FElement['name']])
   else
-    FLabel.Text:=SNoElement;
-  S:=TStringStream.Create('');
+    FLabel.Caption := SNoElement;
+  S := TStringStream.Create('');
   LockOnChange;
   Try
     FShortEntry.Text:=RemoveLineFeeds(NodeToString(FShortNode));
