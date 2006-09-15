@@ -684,7 +684,7 @@ begin
   TargetCPULabel.Caption := lisLazBuildTargetCPU;
   TargetDirectoryLabel.Caption := lisLazBuildTargetDirectory;
 
-  IDEDialogLayoutList.ApplyLayout(Self, 500, 476);
+  IDEDialogLayoutList.ApplyLayout(Self, 500, 500);
 
   Load(Options);
 end;
