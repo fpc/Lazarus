@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2006-09-07 11:48+0100\n"
+"PO-Revision-Date: 2006-09-15 16:09+0100\n"
 "Last-Translator: Swen Heinig <x@y.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -1302,7 +1302,7 @@ msgstr "CodeExplorer Einstellungen"
 
 #: lazarusidestrconsts:lispkgsyscodetoolstoolsandfunctionstoparsebrowseandeditpasc
 msgid "CodeTools - tools and functions to parse, browse and edit pascal sources"
-msgstr ""
+msgstr "CodeTools - Werkzeuge und Funktionen, um Pascal Quelltexte zu analysieren, zu durchsuchen und zu bearbeiten"
 
 #: lazarusidestrconsts:liscodetoolsdefscodetoolsdefineseditor
 msgid "CodeTools Defines Editor"
@@ -1406,7 +1406,7 @@ msgstr "Kommentar:"
 
 #: lazarusidestrconsts:dlgcocompilation
 msgid "Compilation"
-msgstr "Übersetzen"
+msgstr "Kompilierung"
 
 #: lazarusidestrconsts:liscocalloncompile
 msgid "Compile"
@@ -1630,7 +1630,7 @@ msgstr "Alle und versteckte Meldungen in die Zwischenablage kopieren"
 
 #: lazarusidestrconsts:liscopyallmessagestoclipboard
 msgid "Copy all messages to clipboard"
-msgstr "Kopiere alle Meldungen die Zwischenablage"
+msgstr "Kopiere alle Meldungen in die Zwischenablage"
 
 #: lazarusidestrconsts:liscopyerror2
 msgid "Copy error"
@@ -3750,7 +3750,7 @@ msgstr "Ungültiger Ausschlußfilter"
 
 #: lazarusidestrconsts:lisinvalidfreepascalsourcedirectory
 msgid "Invalid Free Pascal source directory"
-msgstr "Ungültiger Free-Pascal-Quelltextverzeichnis"
+msgstr "Ungültiges Free-Pascal-Quelltextverzeichnis"
 
 #: lazarusidestrconsts:lisfriinvalididentifier
 msgid "Invalid Identifier"
@@ -4670,7 +4670,7 @@ msgstr "Mehrfachauswahl"
 
 #: lazarusidestrconsts:dlgmultiline
 msgid "Multiline"
-msgstr ""
+msgstr "Mehrzeilig"
 
 #: lazarusidestrconsts:lisfindfilemultiline
 msgid "Multiline pattern"
@@ -4698,7 +4698,7 @@ msgstr "HINWEIS: Lade alte CodeTools-Einstellungsdatei:"
 
 #: lazarusidestrconsts:liseonoteonlyabsolutepathsaresupportednow
 msgid "NOTE: only absolute paths are supported now"
-msgstr ""
+msgstr "Notiz: nur absolute Pfade werden jetzt unterstützt"
 
 #: lazarusidestrconsts:lisdebugoptionsfrmname
 msgid "Name"
@@ -6014,7 +6014,7 @@ msgstr "Neustart"
 
 #: lazarusidestrconsts:lislazbuildrestartafterbuild
 msgid "Restart After Successfull Build"
-msgstr "Neustart nach erfolgreichen Erstellen"
+msgstr "Neustart nach erfolgreichem Erstellen"
 
 #: lazarusidestrconsts:rsiwprestorewindowgeometry
 msgid "Restore window geometry"
