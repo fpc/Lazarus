@@ -90,7 +90,8 @@ ln -s $LazDestDir/startlazarus $LazBuildDir/usr/bin/startlazarus
 ln -s $LazDestDir/lazbuild $LazBuildDir/usr/bin/lazbuild
 
 # docs
-cat $LazBuildDir/docs/lazbuild.1 | gzip > $LazBuildDir/usr/share/man/man1/lazbuild.1.gz
+mkdir -p $LazBuildDir/usr/share/man/man1
+cat $LazDestDir/docs/lazbuild.1 | gzip > $LazBuildDir/usr/share/man/man1/lazbuild.1.gz
 
 # fixing permissions
 echo "fixing permissions ..."
