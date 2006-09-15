@@ -199,17 +199,17 @@ begin
   Clear;
   FTemplateDir:=IncludeTrailingPathDelimiter(ATemplateDir);
   D:=FTemplateDir;
-  If FindFirst(D+'*',faDirectory,Info)=0 then
-    try
+  try
+    If FindFirst(D+'*',faDirectory,Info)=0 then
       Repeat
         If ((Info.Attr and faDirectory)<>0)
            and not ((Info.Name='.') or (Info.Name='..') or (Info.Name='')) then
           With Add as TProjectTemplate do
             InitFromDir(D+Info.Name);
       Until FindNext(Info)<>0;
-    finally
-      FindClose(Info);
-    end;
+  finally
+    FindClose(Info);
+  end;
 end;
 
 
