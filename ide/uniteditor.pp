@@ -5787,58 +5787,61 @@ Constructor TfrmGoto.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
 
-  if LazarusResources.Find(ClassName)=nil then begin
-    Position := poDesigned;
-    Width := 250;
-    Height := 100;
-    Caption := lisMenuGotoLine;
-    BorderStyle:= bsDialog;
+  Position := poDesigned;
+  Width := 250;
+  Height := 100;
+  Caption := lisMenuGotoLine;
+  BorderStyle:= bsDialog;
+  ChildSizing.SetGridSpacing(6);
 
-    Label1 := TLabel.Create(self);
-    with Label1 do
-    Begin
-      Parent := self;
-      Top := 10;
-      Left := 5;
-      Width:=Self.Width-2*Left;
-      Caption := lisUEGotoLine;
-    end;
-
-    Edit1 := TEdit.Create(self);
-    with Edit1 do
-    Begin
-      Parent := self;
-      Top := 30;
-      Width := Self.width-40;
-      Left := 5;
-      Caption := '';
-      OnKeyDown:=@Edit1KeyDown;
-    end;
-
-    btnOK := TBitbtn.Create(self);
-    with btnOK do
-    Begin
-      Name:='btnOK';
-      Top := 70;
-      Left := 40;
-      kind := bkOK;
-      Default:=true;
-      AutoSize:=true;
-      Parent := self;
-    end;
-
-    btnCancel := TBitbtn.Create(self);
-    with btnCancel do
-    Begin
-      Name:='btnCancel';
-      Top := 70;
-      Left := 120;
-      kind := bkCancel;
-      AutoSize:=true;
-      Default:=false;
-      Parent := self;
-    end;
+  Label1 := TLabel.Create(self);
+  with Label1 do
+  Begin
+    Parent := Self;
+    Left := 5;
+    Top := 6;
+    AnchorParallel(akRight,5,Parent);
+    Caption := lisUEGotoLine;
   end;
+
+  Edit1 := TEdit.Create(self);
+  with Edit1 do
+  Begin
+    Parent := self;
+    Left := 5;
+    AnchorToNeighbour(akTop,6,Label1);
+    AnchorParallel(akRight,5,Parent);
+    Constraints.MinWidth:=200;
+    Caption := '';
+    OnKeyDown:=@Edit1KeyDown;
+  end;
+
+  btnOK := TBitbtn.Create(self);
+  with btnOK do
+  Begin
+    Name:='btnOK';
+    AnchorToNeighbour(akTop,6,Edit1);
+    Left := 40;
+    kind := bkOK;
+    Default:=true;
+    AutoSize:=true;
+    Parent := self;
+  end;
+
+  btnCancel := TBitbtn.Create(self);
+  with btnCancel do
+  Begin
+    Name:='btnCancel';
+    AnchorToNeighbour(akTop,6,Edit1);
+    Left := 120;
+    kind := bkCancel;
+    AutoSize:=true;
+    Default:=false;
+    Parent := self;
+  end;
+
+  AutoSize:=true;
+  
   ActiveControl:=Edit1;
 end;
 
