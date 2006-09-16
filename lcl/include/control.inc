@@ -662,10 +662,7 @@ end;
 
 function TControl.IsVisible: Boolean;
 begin
-  Result := (FVisible
-             or ((csDesigning in ComponentState)
-                  and (not (csNoDesignVisible in ControlStyle))))
-             and ((Parent = nil) or (Parent.IsVisible));
+  Result := IsControlVisible and ((Parent = nil) or (Parent.IsVisible));
 end;
 
 function TControl.IsControlVisible: Boolean;

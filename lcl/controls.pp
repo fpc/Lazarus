@@ -681,8 +681,8 @@ type
   public
     constructor Create(TheOwner: TControl; TheKind: TAnchorKind);
     destructor Destroy; override;
-    procedure GetSidePosition(var ReferenceControl: TControl;
-                var ReferenceSide: TAnchorSideReference; var Position: Integer);
+    procedure GetSidePosition(out ReferenceControl: TControl;
+                out ReferenceSide: TAnchorSideReference; out Position: Integer);
     procedure Assign(Source: TPersistent); override;
   public
     property Owner: TControl read FOwner;
@@ -1160,7 +1160,7 @@ type
     function IsParentOf(AControl: TControl): boolean; virtual;
     function GetTopParent: TControl;
     function IsVisible: Boolean; virtual;
-    function IsControlVisible: Boolean;
+    function IsControlVisible: Boolean; virtual;
     procedure Hide;
     procedure Refresh;
     procedure Repaint; virtual;
@@ -2942,8 +2942,8 @@ begin
   inherited Destroy;
 end;
 
-procedure TAnchorSide.GetSidePosition(var ReferenceControl: TControl;
-  var ReferenceSide: TAnchorSideReference; var Position: Integer);
+procedure TAnchorSide.GetSidePosition(out ReferenceControl: TControl;
+  out ReferenceSide: TAnchorSideReference; out Position: Integer);
   
   procedure RaiseInvalidSide;
   begin
@@ -2963,6 +2963,7 @@ begin
   OwnerParent:=FOwner.Parent;
   if OwnerParent=nil then begin
     // AnchorSide is only between siblings or its direct parent allowed
+    //if CheckPosition(Owner) then DebugLn(['TAnchorSide.GetSidePosition OwnerParent=nil']);
     ReferenceControl:=nil;
     exit;
   end;
@@ -2974,6 +2975,7 @@ begin
     inc(ChainLength);
     if ChainLength>MaxChainLength then begin
       // the chain has more elements than there are siblings -> circle
+      //if CheckPosition(Owner) then DebugLn(['TAnchorSide.GetSidePosition Circle']);
       ReferenceControl:=nil;
       exit;
     end;
@@ -2982,6 +2984,7 @@ begin
     if (ReferenceControl.Parent<>OwnerParent)
     and (ReferenceControl<>OwnerParent) then begin
       // not a sibling and not the parent -> invalid AnchorSide
+      //if CheckPosition(Owner) then DebugLn(['TAnchorSide.GetSidePosition invalid AnchorSide ',dbgsName(ReferenceControl)]);
       ReferenceControl:=nil;
       exit;
     end;
@@ -3110,6 +3113,8 @@ begin
       NextReferenceSide:=ReferenceControl.AnchorSide[
                                        AnchorReferenceSide[Kind,ReferenceSide]];
     if (NextReferenceSide=nil) then begin
+      //if CheckPosition(Owner) and (Kind=akRight) then
+      //  DebugLn(['TAnchorSide.GetSidePosition not IsControlVisible ReferenceControl=',dbgsName(ReferenceControl)]);
       ReferenceControl:=nil;
       exit;
     end;

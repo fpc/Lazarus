@@ -186,14 +186,14 @@ begin
     Result:=inherited DialogChar(Message);
 end;
 
-function TCustomPage.IsVisible: Boolean;
+function TCustomPage.IsControlVisible: Boolean;
 begin
   if Parent is TCustomNotebook then
   begin
-    Result := PageIndex = TCustomNotebook(Parent).PageIndex;
-  //DebugLn(['TCustomPage.IsVisible PageIndex=',PageIndex,' Parent.PageIndex=',TCustomNotebook(Parent).PageIndex]);
+    Result := (PageIndex = TCustomNotebook(Parent).PageIndex);
+    //if Name='FormEditorPage' then DebugLn(['TCustomPage.IsControlVisible PageIndex=',PageIndex,' Parent.PageIndex=',TCustomNotebook(Parent).PageIndex]);
   end else begin
-    Result := inherited IsVisible;
+    Result := inherited IsControlVisible;
   end;
 end;
 

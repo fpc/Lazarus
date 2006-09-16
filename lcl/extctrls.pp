@@ -71,7 +71,7 @@ type
     procedure AdjustClientRect(var ARect: TRect); override;
     function CanTab: boolean; override;
     function AutoSizeDelayed: boolean; override;
-    function IsVisible: Boolean; override;
+    function IsControlVisible: Boolean; override;
     function VisibleIndex: integer;
     property PageIndex: Integer read GetPageIndex write SetPageIndex;
     property TabVisible: Boolean read GetTabVisible write SetTabVisible default True;

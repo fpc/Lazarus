@@ -28,7 +28,7 @@
 { $DEFINE CHECK_POSITION}
 {$IFDEF CHECK_POSITION}
 const CheckPostionClassName = 'TButtonX';
-const CheckPostionName = 'MainForm';
+const CheckPostionName = 'RubberbandGroupBox';
 
 function CheckPosition(AControl: TControl): boolean;
 begin
@@ -51,8 +51,8 @@ type
     A TAutoSizeBox is a node in a tree.
     A TAutoSizeBox can be a cell. Then it is a leaf in the tree and can have a
     Control.
-    A TAutoSizeBoxcan can be a row or column. Then it has only one Childs array.
-    A TAutoSizeBoxcan can be a table. Then it has both Childs arrays.
+    A TAutoSizeBoxc can be a row or column. Then it has only one Childs array.
+    A TAutoSizeBox can be a table. Then it has both Childs arrays.
   }
 
   TAutoSizeBox = class
@@ -1149,22 +1149,23 @@ var
       end;
       Result:=DefaultPosition;
       CurAnchorSide:=Control.AnchorSide[Kind];
-      //debugln('GetAnchorSidePosition A Self=',DbgSName(Self),' Control=',DbgSName(Control),' CurAnchorSide.Control=',DbgSName(CurAnchorSide.Control));
+      //if CheckPosition(Control) and (Kind=akRight) then
+      //  debugln('GetAnchorSidePosition A Self=',DbgSName(Self),' Control=',DbgSName(Control),' CurAnchorSide.Control=',DbgSName(CurAnchorSide.Control));
       CurAnchorSide.GetSidePosition(ReferenceControl,ReferenceSide,Position);
       if ReferenceControl<>nil then
         Result:=Position;
-      //debugln('GetAnchorSidePosition B Self=',DbgSName(Self),' Control=',DbgSName(Control),' Result=',dbgs(Result));
+      //if CheckPosition(Control) and (Kind=akRight) then
+      //  debugln('GetAnchorSidePosition B Self=',DbgSName(Self),' Control=',DbgSName(Control),' Result=',dbgs(Result),' ReferenceControl=',dbgsName(ReferenceControl));
       AnchorSideCacheValid[Kind]:=true;
       AnchorSideCache[Kind]:=Result;
     end;
 
   begin
     {$IFDEF CHECK_POSITION}
-    //if CheckPosition(Control) then
+    if CheckPosition(Control) then
     with Control do
-      DebugLn('[TWinControl.AlignControls.DoPosition] A Control=',Name,':',ClassName,' ',dbgs(Left),',',dbgs(Top),',',dbgs(Width),',',dbgs(Height),' recalculate the anchors=',dbgs(Control.Anchors <> AnchorAlign[AAlign]),' Align=',AlignNames[AAlign]);
+      DebugLn('[TWinControl.AlignControls.DoPosition] A Control=',dbgsName(Self),' ',dbgs(Left),',',dbgs(Top),',',dbgs(Width),',',dbgs(Height),' recalculate the anchors=',dbgs(Control.Anchors <> AnchorAlign[AAlign]),' Align=',AlignNames[AAlign]);
     {$ENDIF}
-
 
     with Control do begin
       // get constraints
@@ -1635,7 +1636,7 @@ var
 begin
   if wcfAligningControls in FWinControlFlags then exit;
   Include(FWinControlFlags,wcfAligningControls);
-  //debugln('TWinControl.AlignControls ',DbgSName(Self));
+  // debugln('TWinControl.AlignControls ',DbgSName(Self));
 
   // unset all align needed flags
   Exclude(FWinControlFlags,wcfReAlignNeeded);
@@ -2036,7 +2037,8 @@ end;
 procedure TWinControl.DisableAlign;
 begin
   Inc(FAlignLevel);
-End;
+  //DebugLn(['TWinControl.DisableAlign ',dbgsName(Self),' ',FAlignLevel]);
+end;
 
 {-------------------------------------------------------------------------------
   TWinControl DoAdjustClientRectChange
@@ -2159,6 +2161,7 @@ end;
 procedure TWinControl.EnableAlign;
 begin
   Dec(FAlignLevel);
+  //DebugLn(['TWinControl.EnableAlign ',dbgsName(Self),' ',FAlignLevel]);
   if FAlignLevel = 0 then begin
     if csAlignmentNeeded in ControlState then ReAlign;
   end;
