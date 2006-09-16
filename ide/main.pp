@@ -11758,7 +11758,7 @@ begin
   try
     // create published method
     r:=CodeToolBoss.CreatePublishedMethod(ActiveUnitInfo.Source,
-        ActiveUnitInfo.Component.ClassName,AMethodName,ATypeInfo,true,
+        ActiveUnitInfo.Component.ClassName,AMethodName,ATypeInfo,false,
         ATypeUnitName);
     {$IFDEF IDE_DEBUG}
     writeln('');

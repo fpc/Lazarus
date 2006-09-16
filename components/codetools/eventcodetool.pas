@@ -383,17 +383,21 @@ begin
   end;
 
   ActivateGlobalWriteLock;
+  Params:=nil;
   try
-
     // find method type declaration
     TypeName:=ATypeInfo^.Name;
     CheckDependsOnNodeCaches;
     Params:=TFindDeclarationParams.Create;
     try
-      // find method type in used units
-      Params.ContextNode:=FindMainUsesSection;
+      // find method in interface and used units
+      Params.ContextNode:=FindImplementationNode;
       if Params.ContextNode=nil then
-        Params.ContextNode:=Tree.Root;
+        Params.ContextNode:=FindMainBeginEndNode;
+      if Params.ContextNode=nil then begin
+        MoveCursorToNodeStart(Tree.Root);
+        RaiseException(Format(ctsIdentifierNotFound,[GetIdentifier(@TypeName[1])]));
+      end;
       Params.SetIdentifier(Self,@TypeName[1],nil);
       Params.Flags:=[fdfExceptionOnNotFound,fdfSearchInParentNodes];
       FindIdentifierInContext(Params);
@@ -636,7 +640,7 @@ begin
     if (ClassNode=nil) or (ClassNode.Desc<>ctnClass) or (AMethodName='')
     or (ATypeInfo=nil) or (SourceChangeCache=nil) or (Scanner=nil) then exit;
     {$IFDEF CTDEBUG}
-    DebugLn('[TEventsCodeTool.CreateMethod] A AMethodName="',AMethodName,'" in "',MainFilename,'"');
+    DebugLn(['[TEventsCodeTool.CreateMethod] A AMethodName="',AMethodName,'" in "',MainFilename,'" UseTypeInfoForParameters=',UseTypeInfoForParameters,' ATypeUnitName=',ATypeUnitName]);
     {$ENDIF}
     // initialize class for code completion
     CodeCompleteClassNode:=ClassNode;
