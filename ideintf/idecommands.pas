@@ -56,225 +56,227 @@ const
    IDE experts: They are handled in the IDE interface units.
 
   }
-  ecNone                 = 0;
+  ecNone                    = 0;
   
-  ecFirstLazarus         = 1001;
+  ecFirstLazarus            = 1001;
 
   // search
-  ecFind                 = ecFirstLazarus + 1;
-  ecFindAgain            = ecFirstLazarus + 2;
-  ecFindNext             = ecFindAgain;
-  ecReplace              = ecFirstLazarus + 3;
-  ecIncrementalFind      = ecFirstLazarus + 4;
-  ecFindProcedureDefinition = ecFirstLazarus + 5;
-  ecFindProcedureMethod  = ecFirstLazarus + 6;
-  ecGotoLineNumber       = ecFirstLazarus + 7;
-  ecFindPrevious         = ecFirstLazarus + 8;
-  ecFindInFiles          = ecFirstLazarus + 9;
-  ecJumpBack             = ecFirstLazarus + 10;
-  ecJumpForward          = ecFirstLazarus + 11;
-  ecAddJumpPoint         = ecFirstLazarus + 12;
-  ecViewJumpHistory      = ecFirstLazarus + 13;
-  ecJumpToNextError      = ecFirstLazarus + 14;
-  ecJumpToPrevError      = ecFirstLazarus + 15;
-  ecProcedureList        = ecFirstLazarus + 16;
+  ecFind                    = ecFirstLazarus + 1;
+  ecFindAgain               = ecFirstLazarus + 2;
+  ecFindNext                = ecFindAgain;
+  ecFindPrevious            = ecFirstLazarus + 3;
+  ecReplace                 = ecFirstLazarus + 4;
+  ecIncrementalFind         = ecFirstLazarus + 5;
+  ecFindProcedureDefinition = ecFirstLazarus + 6;
+  ecFindProcedureMethod     = ecFirstLazarus + 7;
+  ecGotoLineNumber          = ecFirstLazarus + 8;
+  ecFindNextWordOccurrence  = ecFirstLazarus + 9;
+  ecFindPrevWordOccurrence  = ecFirstLazarus + 10;
+  ecFindInFiles             = ecFirstLazarus + 11;
+  ecJumpBack                = ecFirstLazarus + 12;
+  ecJumpForward             = ecFirstLazarus + 13;
+  ecAddJumpPoint            = ecFirstLazarus + 14;
+  ecViewJumpHistory         = ecFirstLazarus + 15;
+  ecJumpToNextError         = ecFirstLazarus + 16;
+  ecJumpToPrevError         = ecFirstLazarus + 17;
+  ecProcedureList           = ecFirstLazarus + 18;
 
   // search code
-  ecFindDeclaration      = ecFirstLazarus + 20;
-  ecFindBlockOtherEnd    = ecFirstLazarus + 21;
-  ecFindBlockStart       = ecFirstLazarus + 22;
-  ecOpenFileAtCursor     = ecFirstLazarus + 23;
-  ecGotoIncludeDirective = ecFirstLazarus + 24;
+  ecFindDeclaration         = ecFirstLazarus + 20;
+  ecFindBlockOtherEnd       = ecFirstLazarus + 21;
+  ecFindBlockStart          = ecFirstLazarus + 22;
+  ecOpenFileAtCursor        = ecFirstLazarus + 23;
+  ecGotoIncludeDirective    = ecFirstLazarus + 24;
 
   // edit selection
-  ecSelectionUpperCase   = ecFirstLazarus + 50;
-  ecSelectionLowerCase   = ecFirstLazarus + 51;
-  ecSelectionTabs2Spaces = ecFirstLazarus + 52;
-  ecSelectionEnclose     = ecFirstLazarus + 53;
-  ecSelectionComment     = ecFirstLazarus + 54;
-  ecSelectionUncomment   = ecFirstLazarus + 55;
-  ecSelectionSort        = ecFirstLazarus + 56;
-  ecSelectionBreakLines  = ecFirstLazarus + 57;
-  ecSelectToBrace        = ecFirstLazarus + 58;
-  ecSelectCodeBlock      = ecFirstLazarus + 59;
-  ecSelectWord           = ecFirstLazarus + 60;
-  ecSelectLine           = ecFirstLazarus + 61;
-  ecSelectParagraph      = ecFirstLazarus + 62;
-  ecSelectionConditional = ecFirstLazarus + 63;
+  ecSelectionUpperCase      = ecFirstLazarus + 50;
+  ecSelectionLowerCase      = ecFirstLazarus + 51;
+  ecSelectionTabs2Spaces    = ecFirstLazarus + 52;
+  ecSelectionEnclose        = ecFirstLazarus + 53;
+  ecSelectionComment        = ecFirstLazarus + 54;
+  ecSelectionUncomment      = ecFirstLazarus + 55;
+  ecSelectionSort           = ecFirstLazarus + 56;
+  ecSelectionBreakLines     = ecFirstLazarus + 57;
+  ecSelectToBrace           = ecFirstLazarus + 58;
+  ecSelectCodeBlock         = ecFirstLazarus + 59;
+  ecSelectWord              = ecFirstLazarus + 60;
+  ecSelectLine              = ecFirstLazarus + 61;
+  ecSelectParagraph         = ecFirstLazarus + 62;
+  ecSelectionConditional    = ecFirstLazarus + 63;
 
   // insert text
-  ecInsertCharacter      = ecFirstLazarus + 80;
-  ecInsertGPLNotice      = ecFirstLazarus + 81;
-  ecInsertLGPLNotice     = ecFirstLazarus + 82;
-  ecInsertUserName       = ecFirstLazarus + 83;
-  ecInsertDateTime       = ecFirstLazarus + 84;
-  ecInsertChangeLogEntry = ecFirstLazarus + 85;
-  ecInsertCVSAuthor      = ecFirstLazarus + 86;
-  ecInsertCVSDate        = ecFirstLazarus + 87;
-  ecInsertCVSHeader      = ecFirstLazarus + 88;
-  ecInsertCVSID          = ecFirstLazarus + 89;
-  ecInsertCVSLog         = ecFirstLazarus + 90;
-  ecInsertCVSName        = ecFirstLazarus + 91;
-  ecInsertCVSRevision    = ecFirstLazarus + 92;
-  ecInsertCVSSource      = ecFirstLazarus + 93;
+  ecInsertCharacter         = ecFirstLazarus + 80;
+  ecInsertGPLNotice         = ecFirstLazarus + 81;
+  ecInsertLGPLNotice        = ecFirstLazarus + 82;
+  ecInsertUserName          = ecFirstLazarus + 83;
+  ecInsertDateTime          = ecFirstLazarus + 84;
+  ecInsertChangeLogEntry    = ecFirstLazarus + 85;
+  ecInsertCVSAuthor         = ecFirstLazarus + 86;
+  ecInsertCVSDate           = ecFirstLazarus + 87;
+  ecInsertCVSHeader         = ecFirstLazarus + 88;
+  ecInsertCVSID             = ecFirstLazarus + 89;
+  ecInsertCVSLog            = ecFirstLazarus + 90;
+  ecInsertCVSName           = ecFirstLazarus + 91;
+  ecInsertCVSRevision       = ecFirstLazarus + 92;
+  ecInsertCVSSource         = ecFirstLazarus + 93;
 
   // source tools
-  ecWordCompletion       = ecFirstLazarus + 100;
-  ecCompleteCode         = ecFirstLazarus + 101;
-  ecIdentCompletion      = ecFirstLazarus + 102;
-  ecSyntaxCheck          = ecFirstLazarus + 103;
-  ecGuessUnclosedBlock   = ecFirstLazarus + 104;
-  ecGuessMisplacedIFDEF  = ecFirstLazarus + 105;
-  ecConvertDFM2LFM       = ecFirstLazarus + 106;
-  ecCheckLFM             = ecFirstLazarus + 107;
-  ecConvertDelphiUnit    = ecFirstLazarus + 108;
-  ecConvertDelphiProject = ecFirstLazarus + 109;
-  ecConvertDelphiPackage = ecFirstLazarus + 110;
-  ecMakeResourceString   = ecFirstLazarus + 111;
-  ecDiff                 = ecFirstLazarus + 112;
-  ecExtractProc          = ecFirstLazarus + 113;
-  ecFindIdentifierRefs   = ecFirstLazarus + 114;
-  ecRenameIdentifier     = ecFirstLazarus + 115;
-  ecInvertAssignment     = ecFirstLazarus + 116;
-  ecShowCodeContext      = ecFirstLazarus + 117;
+  ecWordCompletion          = ecFirstLazarus + 100;
+  ecCompleteCode            = ecFirstLazarus + 101;
+  ecIdentCompletion         = ecFirstLazarus + 102;
+  ecSyntaxCheck             = ecFirstLazarus + 103;
+  ecGuessUnclosedBlock      = ecFirstLazarus + 104;
+  ecGuessMisplacedIFDEF     = ecFirstLazarus + 105;
+  ecConvertDFM2LFM          = ecFirstLazarus + 106;
+  ecCheckLFM                = ecFirstLazarus + 107;
+  ecConvertDelphiUnit       = ecFirstLazarus + 108;
+  ecConvertDelphiProject    = ecFirstLazarus + 109;
+  ecConvertDelphiPackage    = ecFirstLazarus + 110;
+  ecMakeResourceString      = ecFirstLazarus + 111;
+  ecDiff                    = ecFirstLazarus + 112;
+  ecExtractProc             = ecFirstLazarus + 113;
+  ecFindIdentifierRefs      = ecFirstLazarus + 114;
+  ecRenameIdentifier        = ecFirstLazarus + 115;
+  ecInvertAssignment        = ecFirstLazarus + 116;
+  ecShowCodeContext         = ecFirstLazarus + 117;
 
   // file menu
-  ecNew                  = ecFirstLazarus + 201;
-  ecNewUnit              = ecFirstLazarus + 202;
-  ecNewForm              = ecFirstLazarus + 203;
-  ecOpen                 = ecFirstLazarus + 205;
-  ecRevert               = ecFirstLazarus + 206;
-  ecSave                 = ecFirstLazarus + 207;
-  ecSaveAs               = ecFirstLazarus + 208;
-  ecSaveAll              = ecFirstLazarus + 209;
-  ecClose                = ecFirstLazarus + 210;
-  ecCloseAll             = ecFirstLazarus + 211;
-  ecCleanDirectory       = ecFirstLazarus + 212;
-  ecRestart              = ecFirstLazarus + 213;
-  ecQuit                 = ecFirstLazarus + 214;
+  ecNew                     = ecFirstLazarus + 201;
+  ecNewUnit                 = ecFirstLazarus + 202;
+  ecNewForm                 = ecFirstLazarus + 203;
+  ecOpen                    = ecFirstLazarus + 205;
+  ecRevert                  = ecFirstLazarus + 206;
+  ecSave                    = ecFirstLazarus + 207;
+  ecSaveAs                  = ecFirstLazarus + 208;
+  ecSaveAll                 = ecFirstLazarus + 209;
+  ecClose                   = ecFirstLazarus + 210;
+  ecCloseAll                = ecFirstLazarus + 211;
+  ecCleanDirectory          = ecFirstLazarus + 212;
+  ecRestart                 = ecFirstLazarus + 213;
+  ecQuit                    = ecFirstLazarus + 214;
 
   // IDE navigation
-  ecJumpToEditor         = ecFirstLazarus + 300;
-  ecToggleFormUnit       = ecFirstLazarus + 301;
-  ecToggleObjectInsp     = ecFirstLazarus + 302;
-  ecToggleSourceEditor   = ecFirstLazarus + 303;
-  ecToggleCodeExpl       = ecFirstLazarus + 304;
-  ecToggleMessages       = ecFirstLazarus + 305;
-  ecToggleWatches        = ecFirstLazarus + 306;
-  ecToggleBreakPoints    = ecFirstLazarus + 307;
-  ecToggleDebuggerOut    = ecFirstLazarus + 308;
-  ecViewUnits            = ecFirstLazarus + 309;
-  ecViewForms            = ecFirstLazarus + 310;
-  ecViewUnitDependencies = ecFirstLazarus + 311;
-  ecViewUnitInfo         = ecFirstLazarus + 312;
-  ecToggleLocals         = ecFirstLazarus + 313;
-  ecToggleCallStack      = ecFirstLazarus + 314;
-  ecToggleSearchResults  = ecFirstLazarus + 315;
-  ecViewAnchorEditor     = ecFirstLazarus + 316;
-  ecToggleCompPalette    = ecFirstLazarus + 317;
-  ecToggleIDESpeedBtns   = ecFirstLazarus + 318;
+  ecJumpToEditor            = ecFirstLazarus + 300;
+  ecToggleFormUnit          = ecFirstLazarus + 301;
+  ecToggleObjectInsp        = ecFirstLazarus + 302;
+  ecToggleSourceEditor      = ecFirstLazarus + 303;
+  ecToggleCodeExpl          = ecFirstLazarus + 304;
+  ecToggleMessages          = ecFirstLazarus + 305;
+  ecToggleWatches           = ecFirstLazarus + 306;
+  ecToggleBreakPoints       = ecFirstLazarus + 307;
+  ecToggleDebuggerOut       = ecFirstLazarus + 308;
+  ecViewUnits               = ecFirstLazarus + 309;
+  ecViewForms               = ecFirstLazarus + 310;
+  ecViewUnitDependencies    = ecFirstLazarus + 311;
+  ecViewUnitInfo            = ecFirstLazarus + 312;
+  ecToggleLocals            = ecFirstLazarus + 313;
+  ecToggleCallStack         = ecFirstLazarus + 314;
+  ecToggleSearchResults     = ecFirstLazarus + 315;
+  ecViewAnchorEditor        = ecFirstLazarus + 316;
+  ecToggleCompPalette       = ecFirstLazarus + 317;
+  ecToggleIDESpeedBtns      = ecFirstLazarus + 318;
 
   // sourcenotebook commands
-  ecNextEditor           = ecFirstLazarus + 330;
-  ecPrevEditor           = ecFirstLazarus + 331;
-  ecMoveEditorLeft       = ecFirstLazarus + 332;
-  ecMoveEditorRight      = ecFirstLazarus + 333;
-  ecAddBreakPoint        = ecFirstLazarus + 334;
-  ecRemoveBreakPoint     = ecFirstLazarus + 335;
-  ecGotoEditor1          = ecFirstLazarus + 350;
-  ecGotoEditor2          = ecGotoEditor1 + 1;
-  ecGotoEditor3          = ecGotoEditor2 + 1;
-  ecGotoEditor4          = ecGotoEditor3 + 1;
-  ecGotoEditor5          = ecGotoEditor4 + 1;
-  ecGotoEditor6          = ecGotoEditor5 + 1;
-  ecGotoEditor7          = ecGotoEditor6 + 1;
-  ecGotoEditor8          = ecGotoEditor7 + 1;
-  ecGotoEditor9          = ecGotoEditor8 + 1;
-  ecGotoEditor0          = ecGotoEditor9 + 1;
+  ecNextEditor              = ecFirstLazarus + 330;
+  ecPrevEditor              = ecFirstLazarus + 331;
+  ecMoveEditorLeft          = ecFirstLazarus + 332;
+  ecMoveEditorRight         = ecFirstLazarus + 333;
+  ecAddBreakPoint           = ecFirstLazarus + 334;
+  ecRemoveBreakPoint        = ecFirstLazarus + 335;
+  ecGotoEditor1             = ecFirstLazarus + 350;
+  ecGotoEditor2             = ecGotoEditor1 + 1;
+  ecGotoEditor3             = ecGotoEditor2 + 1;
+  ecGotoEditor4             = ecGotoEditor3 + 1;
+  ecGotoEditor5             = ecGotoEditor4 + 1;
+  ecGotoEditor6             = ecGotoEditor5 + 1;
+  ecGotoEditor7             = ecGotoEditor6 + 1;
+  ecGotoEditor8             = ecGotoEditor7 + 1;
+  ecGotoEditor9             = ecGotoEditor8 + 1;
+  ecGotoEditor0             = ecGotoEditor9 + 1;
 
   // marker
-  ecSetFreeBookmark      = ecFirstLazarus + 381;
-  ecPrevBookmark         = ecFirstLazarus + 382;
-  ecNextBookmark         = ecFirstLazarus + 383;
+  ecSetFreeBookmark         = ecFirstLazarus + 381;
+  ecPrevBookmark            = ecFirstLazarus + 382;
+  ecNextBookmark            = ecFirstLazarus + 383;
 
   // compile menu
-  ecBuild                = ecFirstLazarus + 400;
-  ecBuildAll             = ecFirstLazarus + 401;
-  ecQuickCompile         = ecFirstLazarus + 402;
-  ecAbortBuild           = ecFirstLazarus + 403;
-  ecRun                  = ecFirstLazarus + 404;
-  ecPause                = ecFirstLazarus + 405;
-  ecStepInto             = ecFirstLazarus + 406;
-  ecStepOver             = ecFirstLazarus + 407;
-  ecRunToCursor          = ecFirstLazarus + 408;
-  ecStopProgram          = ecFirstLazarus + 409;
-  ecResetDebugger        = ecFirstLazarus + 410;
-  ecBuildLazarus         = ecFirstLazarus + 411;
-  ecBuildFile            = ecFirstLazarus + 412;
-  ecRunFile              = ecFirstLazarus + 413;
-  ecConfigBuildFile      = ecFirstLazarus + 414;
-  ecInspect              = ecFirstLazarus + 415;
-  ecEvaluate             = ecFirstLazarus + 416;
-  ecAddWatch             = ecFirstLazarus + 417;
+  ecBuild                   = ecFirstLazarus + 400;
+  ecBuildAll                = ecFirstLazarus + 401;
+  ecQuickCompile            = ecFirstLazarus + 402;
+  ecAbortBuild              = ecFirstLazarus + 403;
+  ecRun                     = ecFirstLazarus + 404;
+  ecPause                   = ecFirstLazarus + 405;
+  ecStepInto                = ecFirstLazarus + 406;
+  ecStepOver                = ecFirstLazarus + 407;
+  ecRunToCursor             = ecFirstLazarus + 408;
+  ecStopProgram             = ecFirstLazarus + 409;
+  ecResetDebugger           = ecFirstLazarus + 410;
+  ecBuildLazarus            = ecFirstLazarus + 411;
+  ecBuildFile               = ecFirstLazarus + 412;
+  ecRunFile                 = ecFirstLazarus + 413;
+  ecConfigBuildFile         = ecFirstLazarus + 414;
+  ecInspect                 = ecFirstLazarus + 415;
+  ecEvaluate                = ecFirstLazarus + 416;
+  ecAddWatch                = ecFirstLazarus + 417;
 
   // project menu
-  ecNewProject           = ecFirstLazarus + 500;
-  ecNewProjectFromFile   = ecFirstLazarus + 501;
-  ecOpenProject          = ecFirstLazarus + 502;
-  ecSaveProject          = ecFirstLazarus + 503;
-  ecSaveProjectAs        = ecFirstLazarus + 504;
-  ecPublishProject       = ecFirstLazarus + 505;
-  ecProjectInspector     = ecFirstLazarus + 506;
-  ecAddCurUnitToProj     = ecFirstLazarus + 507;
-  ecRemoveFromProj       = ecFirstLazarus + 508;
-  ecViewProjectSource    = ecFirstLazarus + 509;
-  ecViewProjectTodos     = ecFirstLazarus + 510;
-  ecProjectOptions       = ecFirstLazarus + 511;
+  ecNewProject              = ecFirstLazarus + 500;
+  ecNewProjectFromFile      = ecFirstLazarus + 501;
+  ecOpenProject             = ecFirstLazarus + 502;
+  ecSaveProject             = ecFirstLazarus + 503;
+  ecSaveProjectAs           = ecFirstLazarus + 504;
+  ecPublishProject          = ecFirstLazarus + 505;
+  ecProjectInspector        = ecFirstLazarus + 506;
+  ecAddCurUnitToProj        = ecFirstLazarus + 507;
+  ecRemoveFromProj          = ecFirstLazarus + 508;
+  ecViewProjectSource       = ecFirstLazarus + 509;
+  ecViewProjectTodos        = ecFirstLazarus + 510;
+  ecProjectOptions          = ecFirstLazarus + 511;
 
   // components menu
-  ecOpenPackage          = ecFirstLazarus + 600;
-  ecOpenPackageFile      = ecFirstLazarus + 601;
-  ecOpenPackageOfCurUnit = ecFirstLazarus + 602;
-  ecAddCurUnitToPkg      = ecFirstLazarus + 603;
-  ecPackageGraph         = ecFirstLazarus + 604;
-  ecEditInstallPkgs      = ecFirstLazarus + 605;
-  ecConfigCustomComps    = ecFirstLazarus + 606;
+  ecOpenPackage             = ecFirstLazarus + 600;
+  ecOpenPackageFile         = ecFirstLazarus + 601;
+  ecOpenPackageOfCurUnit    = ecFirstLazarus + 602;
+  ecAddCurUnitToPkg         = ecFirstLazarus + 603;
+  ecPackageGraph            = ecFirstLazarus + 604;
+  ecEditInstallPkgs         = ecFirstLazarus + 605;
+  ecConfigCustomComps       = ecFirstLazarus + 606;
 
   // custom tools menu
-  ecExtToolFirst         = ecFirstLazarus + 700;
-  ecExtToolLast          = ecFirstLazarus + 799;
+  ecExtToolFirst            = ecFirstLazarus + 700;
+  ecExtToolLast             = ecFirstLazarus + 799;
 
   // option commmands
-  ecRunParameters        = ecFirstLazarus + 800;
-  ecCompilerOptions      = ecFirstLazarus + 801;
-  ecExtToolSettings      = ecFirstLazarus + 802;
-  ecConfigBuildLazarus   = ecFirstLazarus + 803;
-  ecEnvironmentOptions   = ecFirstLazarus + 804;
-  ecEditorOptions        = ecFirstLazarus + 805;
-  ecEditCodeTemplates    = ecFirstLazarus + 806;
-  ecCodeToolsOptions     = ecFirstLazarus + 807;
-  ecCodeToolsDefinesEd   = ecFirstLazarus + 808;
-  ecRescanFPCSrcDir      = ecFirstLazarus + 809;
+  ecRunParameters           = ecFirstLazarus + 800;
+  ecCompilerOptions         = ecFirstLazarus + 801;
+  ecExtToolSettings         = ecFirstLazarus + 802;
+  ecConfigBuildLazarus      = ecFirstLazarus + 803;
+  ecEnvironmentOptions      = ecFirstLazarus + 804;
+  ecEditorOptions           = ecFirstLazarus + 805;
+  ecEditCodeTemplates       = ecFirstLazarus + 806;
+  ecCodeToolsOptions        = ecFirstLazarus + 807;
+  ecCodeToolsDefinesEd      = ecFirstLazarus + 808;
+  ecRescanFPCSrcDir         = ecFirstLazarus + 809;
 
   // help menu
-  ecAboutLazarus         = ecFirstLazarus + 900;
-  ecOnlineHelp           = ecFirstLazarus + 901;
-  ecConfigureHelp        = ecFirstLazarus + 902;
-  ecContextHelp          = ecFirstLazarus + 903;
-  ecEditContextHelp      = ecFirstLazarus + 904;
+  ecAboutLazarus            = ecFirstLazarus + 900;
+  ecOnlineHelp              = ecFirstLazarus + 901;
+  ecConfigureHelp           = ecFirstLazarus + 902;
+  ecContextHelp             = ecFirstLazarus + 903;
+  ecEditContextHelp         = ecFirstLazarus + 904;
 
   // designer
-  ecDesignerCopy         = ecFirstLazarus + 1000;
-  ecDesignerCut          = ecFirstLazarus + 1001;
-  ecDesignerPaste        = ecFirstLazarus + 1002;
-  ecDesignerSelectParent = ecFirstLazarus + 1003;
-  ecDesignerMoveToFront  = ecFirstLazarus + 1004;
-  ecDesignerMoveToBack   = ecFirstLazarus + 1005;
-  ecDesignerForwardOne   = ecFirstLazarus + 1006;
-  ecDesignerBackOne      = ecFirstLazarus + 1007;
+  ecDesignerCopy            = ecFirstLazarus + 1000;
+  ecDesignerCut             = ecFirstLazarus + 1001;
+  ecDesignerPaste           = ecFirstLazarus + 1002;
+  ecDesignerSelectParent    = ecFirstLazarus + 1003;
+  ecDesignerMoveToFront     = ecFirstLazarus + 1004;
+  ecDesignerMoveToBack      = ecFirstLazarus + 1005;
+  ecDesignerForwardOne      = ecFirstLazarus + 1006;
+  ecDesignerBackOne         = ecFirstLazarus + 1007;
 
   // custom commands
-  ecLazarusLast          = ecFirstLazarus + 2000;
+  ecLazarusLast             = ecFirstLazarus + 2000;
 
 
 type

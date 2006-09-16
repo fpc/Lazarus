@@ -218,7 +218,7 @@ type
     procedure DecreaseIgnoreCodeBufferLock; override;
     procedure UpdateCodeBuffer; override;// copy the source from EditorComponent
 
-    // dialogs
+    // find
     procedure StartFindAndReplace(Replace:boolean);
     procedure AskReplace(Sender: TObject; const ASearch, AReplace:
        string; Line, Column: integer; var Action: TSrcEditReplaceAction); override;
@@ -227,8 +227,11 @@ type
     function DoFindAndReplace: Integer;
     procedure FindNext;
     procedure FindPrevious;
+    procedure FindNextWordOccurrence(DirectionForward: boolean);
     procedure InitGotoDialog;
     procedure ShowGotoLineDialog;
+    
+    // dialogs
     procedure GetDialogPosition(Width, Height:integer; out Left,Top:integer);
     procedure ActivateHint(ClientPos: TPoint; const TheHint: string);
 
@@ -424,6 +427,8 @@ type
     procedure HighlighterClicked(Sender: TObject);
     procedure FindDeclarationClicked(Sender: TObject);
     procedure ProcedureJumpClicked(Sender: TObject);
+    procedure FindNextWordOccurrenceClicked(Sender: TObject);
+    procedure FindPrevWordOccurrenceClicked(Sender: TObject);
     procedure MoveEditorLeftClicked(Sender: TObject);
     procedure MoveEditorRightClicked(Sender: TObject);
     procedure NotebookPageChanged(Sender: TObject);
@@ -781,7 +786,10 @@ const
 
 var
   SrcEditMenuFindDeclaration: TIDEMenuCommand;
-  SrcEditMenuProcedureJump: TIDEMenuCommand;
+    // finding / jumping
+    SrcEditMenuProcedureJump: TIDEMenuCommand;
+    SrcEditMenuFindNextWordOccurrence: TIDEMenuCommand;
+    SrcEditMenuFindPrevWordOccurrence: TIDEMenuCommand;
   SrcEditMenuOpenFileAtCursor: TIDEMenuCommand;
   SrcEditMenuClosePage: TIDEMenuCommand;
   SrcEditMenuCut: TIDEMenuCommand;
@@ -842,116 +850,124 @@ begin
   
   // register the first dynamic section for often used context sensitive stuff
   SrcEditMenuSectionFirstDynamic:=RegisterIDEMenuSection(AParent,
-                                                         'First dynamic section');
+                                                       'First dynamic section');
   // register the first static section
-  SrcEditMenuSectionFirstStatic:=RegisterIDEMenuSection(AParent,'First static section');
+  SrcEditMenuSectionFirstStatic:=RegisterIDEMenuSection(AParent,
+                                                        'First static section');
   AParent:=SrcEditMenuSectionFirstStatic;
-  SrcEditMenuFindDeclaration:=RegisterIDEMenuCommand(AParent,'Find Declaration',
-                                            uemFindDeclaration);
-  SrcEditMenuProcedureJump:=RegisterIDEMenuCommand(AParent,'Procedure Jump',
-                                            uemProcedureJump);
-  SrcEditMenuOpenFileAtCursor:=RegisterIDEMenuCommand(AParent,
+    SrcEditMenuFindDeclaration:=RegisterIDEMenuCommand(AParent,
+                                         'Find Declaration',uemFindDeclaration);
+    // register the sub menu Find
+    SrcEditSubMenuFind:=RegisterIDESubMenu(AParent, 'Find section', lisMenuFind
+      );
+    AParent:=SrcEditSubMenuFind;
+      SrcEditMenuProcedureJump:=RegisterIDEMenuCommand(AParent,'Procedure Jump',
+                                                       uemProcedureJump);
+      SrcEditMenuFindNextWordOccurrence:=RegisterIDEMenuCommand(AParent,
+                      'Find next word occurrence',srkmecFindNextWordOccurrence);
+      SrcEditMenuFindPrevWordOccurrence:=RegisterIDEMenuCommand(AParent,
+                  'Find previous word occurrence',srkmecFindPrevWordOccurrence);
+    
+    AParent:=SrcEditMenuSectionFirstStatic;
+    SrcEditMenuOpenFileAtCursor:=RegisterIDEMenuCommand(AParent,
                                      'Open File At Cursor',uemOpenFileAtCursor);
-  SrcEditMenuClosePage:=RegisterIDEMenuCommand(AParent,
+    SrcEditMenuClosePage:=RegisterIDEMenuCommand(AParent,
                                                      'Close Page',uemClosePage);
 
   // register the Clipboard section
-  AParent:=SourceEditorMenuRoot;
-  SrcEditMenuSectionClipboard:=RegisterIDEMenuSection(AParent,'Clipboard');
+  SrcEditMenuSectionClipboard:=RegisterIDEMenuSection(SourceEditorMenuRoot,
+                                                      'Clipboard');
   AParent:=SrcEditMenuSectionClipboard;
-  SrcEditMenuCut:=RegisterIDEMenuCommand(AParent,'Cut',uemCut);
-  SrcEditMenuCopy:=RegisterIDEMenuCommand(AParent,'Copy',uemCopy);
-  SrcEditMenuPaste:=RegisterIDEMenuCommand(AParent,'Paste',uemPaste);
-  SrcEditMenuCopyFilename:=RegisterIDEMenuCommand(AParent,'Copy filename',
-                                                  uemCopyFilename);
+    SrcEditMenuCut:=RegisterIDEMenuCommand(AParent,'Cut',uemCut);
+    SrcEditMenuCopy:=RegisterIDEMenuCommand(AParent,'Copy',uemCopy);
+    SrcEditMenuPaste:=RegisterIDEMenuCommand(AParent,'Paste',uemPaste);
+    SrcEditMenuCopyFilename:=RegisterIDEMenuCommand(AParent,'Copy filename',
+                                                    uemCopyFilename);
 
   // register the Marks section
-  AParent:=SourceEditorMenuRoot;
-  SrcEditMenuSectionMarks:=RegisterIDEMenuSection(AParent,'Marks section');
-  AParent:=SrcEditMenuSectionMarks;
-
+  SrcEditMenuSectionMarks:=RegisterIDEMenuSection(SourceEditorMenuRoot,
+                                                  'Marks section');
     // register the Goto Bookmarks Submenu
-    SrcEditSubMenuGotoBookmarks:=RegisterIDESubMenu(AParent,'Goto bookmarks',
-                                                    uemGotoBookmark);
+    SrcEditSubMenuGotoBookmarks:=RegisterIDESubMenu(SrcEditMenuSectionMarks,
+                                              'Goto bookmarks',uemGotoBookmark);
     AParent:=SrcEditSubMenuGotoBookmarks;
-    for I := 0 to 9 do
-      RegisterIDEMenuCommand(AParent,'GotoBookmark'+IntToStr(I),
-                             uemBookmarkN+IntToStr(i));
-    SrcEditMenuNextBookmark:=RegisterIDEMenuCommand(AParent,
+      for I := 0 to 9 do
+        RegisterIDEMenuCommand(AParent,'GotoBookmark'+IntToStr(I),
+                               uemBookmarkN+IntToStr(i));
+      SrcEditMenuNextBookmark:=RegisterIDEMenuCommand(AParent,
                                           'Goto next Bookmark',uemNextBookmark);
-    SrcEditMenuPrevBookmark:=RegisterIDEMenuCommand(AParent,
+      SrcEditMenuPrevBookmark:=RegisterIDEMenuCommand(AParent,
                                       'Goto previous Bookmark',uemPrevBookmark);
 
     // register the Set Bookmarks Submenu
-    AParent:=SrcEditMenuSectionMarks;
-    SrcEditSubMenuSetBookmarks:=RegisterIDESubMenu(AParent,'Set bookmarks',
-                                                   uemSetBookmark);
+    SrcEditSubMenuSetBookmarks:=RegisterIDESubMenu(SrcEditMenuSectionMarks,
+                                                'Set bookmarks',uemSetBookmark);
     AParent:=SrcEditSubMenuSetBookmarks;
-    for I := 0 to 9 do
-      RegisterIDEMenuCommand(AParent,'SetBookmark'+IntToStr(I),
-                             uemBookmarkN+IntToStr(i));
-    SrcEditMenuSetFreeBookmark:=RegisterIDEMenuCommand(AParent,
+      for I := 0 to 9 do
+        RegisterIDEMenuCommand(AParent,'SetBookmark'+IntToStr(I),
+                               uemBookmarkN+IntToStr(i));
+      SrcEditMenuSetFreeBookmark:=RegisterIDEMenuCommand(AParent,
                                       'Set a free Bookmark',uemSetFreeBookmark);
 
     // register the Debug submenu
-    AParent:=SrcEditMenuSectionMarks;
-    SrcEditSubMenuDebug:=RegisterIDESubMenu(AParent,'Debug',uemDebugWord);
+    SrcEditSubMenuDebug:=RegisterIDESubMenu(SrcEditMenuSectionMarks,
+                                            'Debug',uemDebugWord);
+    AParent:=SrcEditSubMenuDebug;
+      // register the Debug submenu items
+      SrcEditMenuAddBreakpoint:=RegisterIDEMenuCommand(AParent,'Add Breakpoint',
+                                                       uemAddBreakpoint);
+      SrcEditMenuAddWatchAtCursor:=RegisterIDEMenuCommand(AParent,
+                                     'Add Watch at Cursor',uemAddWatchAtCursor);
+      SrcEditMenuRunToCursor:=RegisterIDEMenuCommand(AParent,
+                                                'Run to cursor',uemRunToCursor);
+      SrcEditMenuViewCallStack:=RegisterIDEMenuCommand(AParent,
+                                            'View Call Stack',uemViewCallStack);
 
   // register the File Specific dynamic section
   AParent:=SourceEditorMenuRoot;
   SrcEditMenuSectionFileDynamic:=RegisterIDEMenuSection(AParent,
                                                         'File dynamic section');
 
-  AParent:=SrcEditSubMenuDebug;
-    // register the Debug submenu items
-    SrcEditMenuAddBreakpoint:=RegisterIDEMenuCommand(AParent,'Add Breakpoint',
-                                                     uemAddBreakpoint);
-    SrcEditMenuAddWatchAtCursor:=RegisterIDEMenuCommand(AParent,
-                                       'Add Watch at Cursor',uemAddWatchAtCursor);
-    SrcEditMenuRunToCursor:=RegisterIDEMenuCommand(AParent,
-                                                  'Run to cursor',uemRunToCursor);
-    SrcEditMenuViewCallStack:=RegisterIDEMenuCommand(AParent,
-                                          'View Call Stack',uemViewCallStack);
 
   // register the Move Page section
-  AParent:=SourceEditorMenuRoot;
-  SrcEditMenuSectionMovePage:=RegisterIDEMenuSection(AParent,'Move Page section');
+  SrcEditMenuSectionMovePage:=RegisterIDEMenuSection(SourceEditorMenuRoot,
+                                                     'Move Page section');
   AParent:=SrcEditMenuSectionMovePage;
-  SrcEditMenuMoveEditorLeft:=RegisterIDEMenuCommand(AParent,'MoveEditorLeft',
-                                                    uemMoveEditorLeft);
-  SrcEditMenuMoveEditorRight:=RegisterIDEMenuCommand(AParent,'MoveEditorRight',
-                                                    uemMoveEditorRight);
+    SrcEditMenuMoveEditorLeft:=RegisterIDEMenuCommand(AParent,'MoveEditorLeft',
+                                                      uemMoveEditorLeft);
+    SrcEditMenuMoveEditorRight:=RegisterIDEMenuCommand(AParent,'MoveEditorRight',
+                                                      uemMoveEditorRight);
 
   // register the Refactoring submenu
-  AParent:=SourceEditorMenuRoot;
-  SrcEditSubMenuRefactor:=RegisterIDESubMenu(AParent,'Refactoring',uemRefactor);
+  SrcEditSubMenuRefactor:=RegisterIDESubMenu(SourceEditorMenuRoot,
+                                             'Refactoring',uemRefactor);
   AParent:=SrcEditSubMenuRefactor;
-  SrcEditMenuCompleteCode:=RegisterIDEMenuCommand(AParent,'CompleteCode',
-                                                  uemCompleteCode);
-  SrcEditMenuEncloseSelection:=RegisterIDEMenuCommand(AParent,
+    SrcEditMenuCompleteCode:=RegisterIDEMenuCommand(AParent,'CompleteCode',
+                                                    uemCompleteCode);
+    SrcEditMenuEncloseSelection:=RegisterIDEMenuCommand(AParent,
                                         'EncloseSelection',uemEncloseSelection);
-  SrcEditMenuExtractProc:=RegisterIDEMenuCommand(AParent,
+    SrcEditMenuExtractProc:=RegisterIDEMenuCommand(AParent,
                                                  'ExtractProc',uemExtractProc);
-  SrcEditMenuInvertAssignment:=RegisterIDEMenuCommand(AParent,
+    SrcEditMenuInvertAssignment:=RegisterIDEMenuCommand(AParent,
                                         'InvertAssignment',uemInvertAssignment);
-  SrcEditMenuFindIdentifierReferences:=RegisterIDEMenuCommand(AParent,
+    SrcEditMenuFindIdentifierReferences:=RegisterIDEMenuCommand(AParent,
                         'FindIdentifierReferences',uemFindIdentifierReferences);
-  SrcEditMenuRenameIdentifier:=RegisterIDEMenuCommand(AParent,
+    SrcEditMenuRenameIdentifier:=RegisterIDEMenuCommand(AParent,
                                         'RenameIdentifier',uemRenameIdentifier);
 
   // register the Flags section
-  AParent:=SourceEditorMenuRoot;
-  SrcEditMenuSectionFlags:=RegisterIDEMenuSection(AParent,'Flags section');
+  SrcEditMenuSectionFlags:=RegisterIDEMenuSection(SourceEditorMenuRoot,
+                                                  'Flags section');
   AParent:=SrcEditMenuSectionFlags;
-  SrcEditMenuReadOnly:=RegisterIDEMenuCommand(AParent,'ReadOnly',uemReadOnly);
-  SrcEditMenuReadOnly.ShowAlwaysCheckable:=true;
-  SrcEditMenuShowLineNumbers:=RegisterIDEMenuCommand(AParent,'ShowLineNumbers',
-                                                     uemShowLineNumbers);
-  SrcEditMenuShowLineNumbers.ShowAlwaysCheckable:=true;
-  SrcEditMenuShowUnitInfo:=RegisterIDEMenuCommand(AParent,'ShowUnitInfo',
-                                                  uemShowUnitInfo);
-  SrcEditMenuSectionHighlighter:=RegisterIDEMenuSection(AParent,'Highlighter');
-  SrcEditMenuEditorProperties:=RegisterIDEMenuCommand(AParent,
+    SrcEditMenuReadOnly:=RegisterIDEMenuCommand(AParent,'ReadOnly',uemReadOnly);
+    SrcEditMenuReadOnly.ShowAlwaysCheckable:=true;
+    SrcEditMenuShowLineNumbers:=RegisterIDEMenuCommand(AParent,
+                                          'ShowLineNumbers',uemShowLineNumbers);
+    SrcEditMenuShowLineNumbers.ShowAlwaysCheckable:=true;
+    SrcEditMenuShowUnitInfo:=RegisterIDEMenuCommand(AParent,'ShowUnitInfo',
+                                                    uemShowUnitInfo);
+    SrcEditMenuSectionHighlighter:=RegisterIDEMenuSection(AParent,'Highlighter');
+    SrcEditMenuEditorProperties:=RegisterIDEMenuCommand(AParent,
                                         'EditorProperties',uemEditorProperties);
 end;
 
@@ -1170,6 +1186,28 @@ Begin
   LazFindReplaceDialog.Options:=OldOptions;
 End;
 
+procedure TSourceEditor.FindNextWordOccurrence(DirectionForward: boolean);
+var
+  StartX, EndX: Integer;
+  Word: String;
+  Flags: TSynSearchOptions;
+  LogCaret: TPoint;
+begin
+  LogCaret:=EditorComponent.LogicalCaretXY;
+  EditorComponent.GetWordBoundsAtRowCol(LogCaret,StartX,EndX);
+  if EndX<=StartX then exit;
+  Flags:=[ssoWholeWord];
+  if DirectionForward then begin
+    LogCaret.X:=EndX;
+  end else begin
+    LogCaret.X:=StartX;
+    Include(Flags,ssoBackwards);
+  end;
+  EditorComponent.LogicalCaretXY:=LogCaret;
+  EditorComponent.SearchReplace(EditorComponent.GetWordAtRowCol(LogCaret),
+                                '',Flags);
+end;
+
 procedure TSourceEditor.InitGotoDialog;
 begin
   if GotoDialog=nil then
@@ -1178,8 +1216,8 @@ end;
 
 function TSourceEditor.DoFindAndReplace: integer;
 var
-  OldCaretXY:TPoint;
-  AText,ACaption:AnsiString;
+  OldCaretXY: TPoint;
+  AText, ACaption: String;
   NewTopLine: integer;
 begin
   Result:=0;
@@ -1414,6 +1452,12 @@ Begin
 
   ecGotoLineNumber :
     ShowGotoLineDialog;
+
+  ecFindNextWordOccurrence:
+    FindNextWordOccurrence(true);
+
+  ecFindPrevWordOccurrence:
+    FindNextWordOccurrence(false);
 
   ecSelectionEnclose:
     EncloseSelection;
@@ -3718,6 +3762,8 @@ begin
 
   SrcEditMenuFindDeclaration.OnClick:=@FindDeclarationClicked;
   SrcEditMenuProcedureJump.OnClick:=@ProcedureJumpClicked;
+  SrcEditMenuFindNextWordOccurrence.OnClick:=@FindNextWordOccurrenceClicked;
+  SrcEditMenuFindPrevWordOccurrence.OnClick:=@FindPrevWordOccurrenceClicked;
   SrcEditMenuOpenFileAtCursor.OnClick:=@OpenAtCursorClicked;
 
   SrcEditMenuClosePage.OnClick:=@CloseClicked;
@@ -4632,6 +4678,24 @@ begin
   ActSE := GetActiveSE;
   if ActSE <> nil then
     ActSE.DoEditorExecuteCommand(ecFindProcedureDefinition);
+end;
+
+procedure TSourceNotebook.FindNextWordOccurrenceClicked(Sender: TObject);
+var
+  SrcEdit: TSourceEditor;
+begin
+  SrcEdit := GetActiveSE;
+  if SrcEdit<>nil then
+    SrcEdit.FindNextWordOccurrence(true);
+end;
+
+procedure TSourceNotebook.FindPrevWordOccurrenceClicked(Sender: TObject);
+var
+  SrcEdit: TSourceEditor;
+begin
+  SrcEdit := GetActiveSE;
+  if SrcEdit<>nil then
+    SrcEdit.FindNextWordOccurrence(false);
 end;
 
 Procedure TSourceNotebook.CutClicked(Sender: TObject);

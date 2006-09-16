@@ -1508,6 +1508,8 @@ resourcestring
   srkmecFindProcedureDefinition   = 'Find procedure definiton';
   srkmecFindProcedureMethod       = 'Find procedure method';
   srkmecGotoLineNumber            = 'Go to line number';
+  srkmecFindNextWordOccurrence    = 'Find next word occurrence';
+  srkmecFindPrevWordOccurrence    = 'Find previous word occurrence';
   srkmecAddJumpPoint              = 'Add jump point';
   srkmecOpenFileAtCursor          = 'Open file at cursor';
   srkmecGotoIncludeDirective      = 'Go to to include directive of current include file';

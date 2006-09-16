@@ -365,6 +365,8 @@ var
   SrcEditMenuSectionFirstDynamic: TIDEMenuSection;
   // Source Editor: First static section (e.g. Find Declaration)
   SrcEditMenuSectionFirstStatic: TIDEMenuSection;
+    // Source Editor: Find sub menu section (e.g. Procedure Jump)
+    SrcEditSubMenuFind: TIDEMenuSection;
   // Source Editor: Clipboard section (e.g. cut, copy, paste)
   SrcEditMenuSectionClipboard: TIDEMenuSection;
   // Source Editor: File Specific dynamic section

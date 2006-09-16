@@ -761,6 +761,7 @@ var
     or MultiLinePatternFits then begin
       // the whole pattern fits
       Result:=true;
+      //DebugLn(['CheckFound Found=',dbgs(FoundStartPos),'..',dbgs(FoundEndPos),' Range=',dbgs(StartPos),'..',dbgs(EndPos)]);
       FoundInRange:=(CompareCarets(FoundEndPos,EndPos)>=0)
              and (CompareCarets(FoundStartPos,StartPos)<=0);
     end else
@@ -772,9 +773,15 @@ var
 begin
   Result:=false;
   if Pattern='' then exit;
-  if Lines.Count=0 then exit;
+  if Lines.Count=0 then begin
+    //DebugLn(['TSynEditSearch.FindNextOne Lines.Count=0']);
+    exit;
+  end;
   FixRange;
-  if StartPos.Y>Lines.Count then exit;
+  if StartPos.Y>Lines.Count then begin
+    //DebugLn(['TSynEditSearch.FindNextOne StartPos.Y>Lines.Count']);
+    exit;
+  end;
   MinY:=Max(0,StartPos.Y-1);
   MaxY:=Min(Lines.Count-1,EndPos.Y-1);
   if MinY>MaxY then exit;
@@ -832,19 +839,26 @@ begin
     LineLen:=length(LineStr);
     Line:=PChar(LineStr);
     if not IsFirstLine then begin
-      if FBackwards then
-        x:=LineLen-1
-      else
+      if FBackwards then begin
+        if fRegExpr then
+          x:=LineLen-1
+        else
+          x:=LineLen-SearchLen;
+      end else
         x:=0;
     end else begin
       IsFirstLine:=false;
       if FBackwards then begin
-        x:=EndPos.X-1;
+        if fRegExpr then
+          x:=EndPos.X-2
+        else
+          x:=EndPos.X-SearchLen-1;
       end else begin
         x:=StartPos.X-1;
       end;
     end;
     x:=MinMax(x,0,LineLen-1);
+    //DebugLn(['TSynEditSearch.FindNextOne Line="',LineStr,'" x=',x,' LineLen=',LineLen]);
     
     // search in the line
     if fRegExpr then begin
@@ -872,8 +886,9 @@ begin
       end else begin
         //DebugLn(['TSynEditSearch.FindNextOne x=',x,' MaxPos=',MaxPos,' Line="',Line,'"']);
         while (x>=0) and (x<=MaxPos) do begin
+          //DebugLn(['TSynEditSearch.FindNextOne x=',x]);
           if CompTable[Line[x]]=CompTable[SearchFor^] then begin
-            //DebugLn(['TSynEditSearch.FindNextOne x=',x,' Line[x]=',Line[x]]);
+            //DebugLn(['TSynEditSearch.FindNextOne First character found x=',x,' Line[x]=',Line[x]]);
             if (not fWhole)
             or (x=0) or DelimTable[Line[x-1]] then begin
               i:=1;
@@ -885,7 +900,12 @@ begin
                 // the pattern fits to this position
                 FoundStartPos:=Point(x+1,y+1);
                 FoundEndPos:=Point(x+i+1,y+1);
-                if CheckFound(Result) then exit;
+                if CheckFound(Result) then begin
+                  //DebugLn(['TSynEditSearch.FindNextOne CheckFound success Result=',Result]);
+                  exit;
+                end else begin
+                  //DebugLn(['TSynEditSearch.FindNextOne CheckFound failed']);
+                end;
               end;
             end;
           end;

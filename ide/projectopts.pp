@@ -381,7 +381,6 @@ procedure TProjectOptionsDialog.ProjectOptionsClose(Sender: TObject;
   var CloseAction: TCloseAction);
 var
   NewFlags: TProjectFlags;
-  OldUseVersionInfo: Boolean;
 
   procedure SetProjectFlag(AFlag: TProjectFlag; AValue: Boolean);
   begin
@@ -432,7 +431,6 @@ begin
     Project.LazDocPaths:=StringListToText(LazDocListBox.Items,';',true);
 
     // VersionInfo
-    OldUseVersionInfo:=Project.VersionInfo.UseVersionInfo;
     Project.VersionInfo.UseVersionInfo:=UseVersionInfoCheckBox.Checked;
     Project.VersionInfo.AutoIncrementBuild:=AutomaticallyIncreaseBuildCheckBox.Checked;
     Project.VersionInfo.VersionNr:=VersionSpinEdit.Value;
