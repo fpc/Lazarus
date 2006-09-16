@@ -53,31 +53,32 @@ type
 
     { Search Paths Controls }
     PathPage: TPage;
-    grpOtherUnits: TGroupBox;
+    
+    lblOtherUnits: TLabel;
     edtOtherUnits: TEdit;
     OtherUnitsPathEditBtn: TPathEditorButton;
 
-    grpIncludeFiles: TGroupBox;
+    lblIncludeFiles: TLabel;
     edtIncludeFiles: TEdit;
     IncludeFilesPathEditBtn: TPathEditorButton;
 
-    grpOtherSources: TGroupBox;
+    lblOtherSources: TLabel;
     edtOtherSources: TEdit;
     OtherSourcesPathEditBtn: TPathEditorButton;
 
-    grpLibraries: TGroupBox;
+    lblLibraries: TLabel;
     edtLibraries: TEdit;
     LibrariesPathEditBtn: TPathEditorButton;
 
-    grpUnitOutputDir: TGroupBox;
+    lblUnitOutputDir: TLabel;
     edtUnitOutputDir: TEdit;
     btnUnitOutputDir: TButton;
 
-    grpDebugPath: TGroupBox;
+    lblDebugPath: TLabel;
     edtDebugPath: TEdit;
     DebugPathEditBtn: TPathEditorButton;
 
-    LCLWidgetTypeGroupBox: TGroupBox;
+    LCLWidgetTypeLabel: TLabel;
     LCLWidgetTypeComboBox: TComboBox;
 
     { Parsing Controls }
@@ -542,7 +543,7 @@ begin
   edtOtherUnits.Text := Options.OtherUnitFiles;
   edtIncludeFiles.Text := Options.IncludePath;
   edtLibraries.Text := Options.Libraries;
-  grpLibraries.Enabled:=EnabledLinkerOpts;
+  lblLibraries.Enabled:=EnabledLinkerOpts;
   edtOtherSources.Text := Options.SrcPath;
   edtUnitOutputDir.Text := Options.UnitOutputDirectory;
   edtDebugPath.Text := Options.DebugPath;
@@ -2163,13 +2164,14 @@ begin
   // Setup the Search Paths Tab
   PathPage:=nbMain.Page[Page];
   PathPage.Name:='PathsPage';
+  PathPage.ChildSizing.SetGridSpacing(6);
 
-  grpOtherUnits := TGroupBox.Create(Self);
-  with grpOtherUnits do begin
-    Name:='grpOtherUnits';
+  lblOtherUnits := TLabel.Create(Self);
+  with lblOtherUnits do begin
+    Name:='lblOtherUnits';
     Parent := PathPage;
-    AnchorAsAlign(alTop,6);
-    AutoSize:=true;
+    Left:=6;
+    Top:=6;
     Caption := dlgOtherUnitFiles;
   end;
 
@@ -2177,10 +2179,11 @@ begin
   with edtOtherUnits do begin
     Name:='edtOtherUnits';
     Text := '';
-    SetBounds(0,0,Width,Height);
+    Left:=6;
+    AnchorToNeighbour(akTop,6,lblOtherUnits);
     Constraints.MinWidth:=200;
     AutoSize:=true;
-    Parent := grpOtherUnits;
+    Parent := PathPage;
   end;
 
   OtherUnitsPathEditBtn:=TPathEditorButton.Create(Self);
@@ -2190,21 +2193,21 @@ begin
     Anchors:=[akRight,akTop,akBottom];
     AnchorParallel(akTop,0,edtOtherUnits);
     AnchorParallel(akBottom,0,edtOtherUnits);
-    AnchorParallel(akRight,0,grpOtherUnits);
+    AnchorParallel(akRight,6,PathPage);
     AutoSize:=true;
     OnClick:=@PathEditBtnClick;
     OnExecuted:=@PathEditBtnExecuted;
-    Parent:=grpOtherUnits;
+    Parent:=PathPage;
   end;
   edtOtherUnits.AnchorToNeighbour(akRight,2,OtherUnitsPathEditBtn);
 
   {------------------------------------------------------------}
 
-  grpIncludeFiles := TGroupBox.Create(Self);
-  with grpIncludeFiles do begin
+  lblIncludeFiles := TLabel.Create(Self);
+  with lblIncludeFiles do begin
     Name:='grpIncludeFiles';
-    AnchorToCompanion(akTop,6,grpOtherUnits);
-    AutoSize:=true;
+    Left:=6;
+    AnchorToNeighbour(akTop,10,edtOtherUnits);
     Caption := dlgCOIncFiles;
     Parent := PathPage;
   end;
@@ -2213,10 +2216,11 @@ begin
   with edtIncludeFiles do begin
     Name:='edtIncludeFiles';
     Text := '';
-    SetBounds(0,0,Width,Height);
+    Left:=6;
+    AnchorToNeighbour(akTop,2,lblIncludeFiles);
     Constraints.MinWidth:=200;
     AutoSize:=true;
-    Parent := grpIncludeFiles;
+    Parent := PathPage;
   end;
 
   IncludeFilesPathEditBtn:=TPathEditorButton.Create(Self);
@@ -2225,22 +2229,22 @@ begin
     Anchors:=[akRight,akTop,akBottom];
     AnchorParallel(akTop,0,edtIncludeFiles);
     AnchorParallel(akBottom,0,edtIncludeFiles);
-    AnchorParallel(akRight,0,grpIncludeFiles);
+    AnchorParallel(akRight,6,PathPage);
     AutoSize:=true;
     Caption:='...';
     OnClick:=@PathEditBtnClick;
     OnExecuted:=@PathEditBtnExecuted;
-    Parent:=grpIncludeFiles;
+    Parent:=PathPage;
   end;
   edtIncludeFiles.AnchorToNeighbour(akRight,2,IncludeFilesPathEditBtn);
 
   {------------------------------------------------------------}
 
-  grpOtherSources := TGroupBox.Create(Self);
-  with grpOtherSources do begin
-    Name:='grpOtherSources';
-    AnchorToCompanion(akTop,6,grpIncludeFiles);
-    AutoSize:=true;
+  lblOtherSources := TLabel.Create(Self);
+  with lblOtherSources do begin
+    Name:='lblOtherSources';
+    Left:=6;
+    AnchorToNeighbour(akTop,10,edtIncludeFiles);
     Caption := dlgCOSources;
     Parent := PathPage;
   end;
@@ -2249,10 +2253,11 @@ begin
   with edtOtherSources do begin
     Name:='edtOtherSources';
     Text := '';
-    SetBounds(0,0,Width,Height);
+    Left:=6;
+    AnchorToNeighbour(akTop,2,lblOtherSources);
     Constraints.MinWidth:=200;
     AutoSize:=true;
-    Parent := grpOtherSources;
+    Parent := PathPage;
   end;
 
   OtherSourcesPathEditBtn:=TPathEditorButton.Create(Self);
@@ -2261,22 +2266,22 @@ begin
     Anchors:=[akRight,akTop,akBottom];
     AnchorParallel(akTop,0,edtOtherSources);
     AnchorParallel(akBottom,0,edtOtherSources);
-    AnchorParallel(akRight,0,grpOtherSources);
+    AnchorParallel(akRight,6,PathPage);
     AutoSize:=true;
     Caption:='...';
     OnClick:=@PathEditBtnClick;
     OnExecuted:=@PathEditBtnExecuted;
-    Parent:=grpOtherSources;
+    Parent:=PathPage;
   end;
   edtOtherSources.AnchorToNeighbour(akRight,2,OtherSourcesPathEditBtn);
 
   {------------------------------------------------------------}
 
-  grpLibraries := TGroupBox.Create(Self);
-  with grpLibraries do begin
-    Name:='grpLibraries';
-    AnchorToCompanion(akTop,6,grpOtherSources);
-    AutoSize:=true;
+  lblLibraries := TLabel.Create(Self);
+  with lblLibraries do begin
+    Name:='lblLibraries';
+    Left:=6;
+    AnchorToNeighbour(akTop,10,edtOtherSources);
     Caption := dlgCOLibraries;
     Parent := PathPage;
   end;
@@ -2285,10 +2290,11 @@ begin
   with edtLibraries do begin
     Name:='edtLibraries';
     Text := '';
-    SetBounds(0,0,Width,Height);
     Constraints.MinWidth:=200;
+    Left:=6;
+    AnchorToNeighbour(akTop,2,lblLibraries);
     AutoSize:=true;
-    Parent := grpLibraries;
+    Parent := PathPage;
   end;
 
   LibrariesPathEditBtn:=TPathEditorButton.Create(Self);
@@ -2297,22 +2303,22 @@ begin
     Anchors:=[akRight,akTop,akBottom];
     AnchorParallel(akTop,0,edtLibraries);
     AnchorParallel(akBottom,0,edtLibraries);
-    AnchorParallel(akRight,0,grpLibraries);
+    AnchorParallel(akRight,6,PathPage);
     AutoSize:=true;
     Caption:='...';
     OnClick:=@PathEditBtnClick;
     OnExecuted:=@PathEditBtnExecuted;
-    Parent:=grpLibraries;
+    Parent:=PathPage;
   end;
   edtLibraries.AnchorToNeighbour(akRight,2,LibrariesPathEditBtn);
 
   {------------------------------------------------------------}
 
-  grpUnitOutputDir := TGroupBox.Create(Self);
-  with grpUnitOutputDir do begin
-    Name:='grpUnitOutputDir';
-    AnchorToCompanion(akTop,6,grpLibraries);
-    AutoSize:=true;
+  lblUnitOutputDir := TLabel.Create(Self);
+  with lblUnitOutputDir do begin
+    Name:='lblUnitOutputDir';
+    Left:=6;
+    AnchorToNeighbour(akTop,10,edtLibraries);
     Caption := dlgUnitOutp;
     Parent := PathPage;
   end;
@@ -2321,10 +2327,11 @@ begin
   with edtUnitOutputDir do begin
     Name:='edtUnitOutputDir';
     Text := '';
-    SetBounds(0,0,Width,Height);
+    Left:=6;
+    AnchorToNeighbour(akTop,2,lblUnitOutputDir);
     Constraints.MinWidth:=200;
     AutoSize:=true;
-    Parent := grpUnitOutputDir;
+    Parent := PathPage;
   end;
 
   btnUnitOutputDir:=TButton.Create(Self);
@@ -2333,21 +2340,21 @@ begin
     Anchors:=[akRight,akTop,akBottom];
     AnchorParallel(akTop,0,edtUnitOutputDir);
     AnchorParallel(akBottom,0,edtUnitOutputDir);
-    AnchorParallel(akRight,0,grpUnitOutputDir);
+    AnchorParallel(akRight,6,PathPage);
     AutoSize:=true;
     Caption:='...';
     OnClick:=@FileBrowseBtnClick;
-    Parent:=grpUnitOutputDir;
+    Parent:=PathPage;
   end;
   edtUnitOutputDir.AnchorToNeighbour(akRight,2,btnUnitOutputDir);
 
   {------------------------------------------------------------}
 
-  grpDebugPath := TGroupBox.Create(Self);
-  with grpDebugPath do begin
-    Name:='grpDebugPath';
-    AnchorToCompanion(akTop,6,grpUnitOutputDir);
-    AutoSize:=true;
+  lblDebugPath := TLabel.Create(Self);
+  with lblDebugPath do begin
+    Name:='lblDebugPath';
+    Left:=6;
+    AnchorToNeighbour(akTop,10,edtUnitOutputDir);
     Caption := dlgCODebugPath;
     Parent := PathPage;
   end;
@@ -2356,10 +2363,11 @@ begin
   with edtDebugPath do begin
     Name:='edtDebugPath';
     Text := '';
-    SetBounds(0,0,Width,Height);
+    Left:=6;
+    AnchorToNeighbour(akTop,2,lblDebugPath);
     Constraints.MinWidth:=200;
     AutoSize:=true;
-    Parent := grpDebugPath;
+    Parent := PathPage;
   end;
 
   DebugPathEditBtn:=TPathEditorButton.Create(Self);
@@ -2368,22 +2376,21 @@ begin
     Anchors:=[akRight,akTop,akBottom];
     AnchorParallel(akTop,0,edtDebugPath);
     AnchorParallel(akBottom,0,edtDebugPath);
-    AnchorParallel(akRight,0,grpDebugPath);
+    AnchorParallel(akRight,6,PathPage);
     AutoSize:=true;
     Caption:='...';
     OnClick:=@PathEditBtnClick;
     OnExecuted:=@PathEditBtnExecuted;
-    Parent:=grpDebugPath;
+    Parent:=PathPage;
   end;
   edtDebugPath.AnchorToNeighbour(akRight,2,DebugPathEditBtn);
 
   {------------------------------------------------------------}
 
-  LCLWidgetTypeGroupBox:=TGroupBox.Create(Self);
-  with LCLWidgetTypeGroupBox do begin
-    Name:='LCLWidgetTypeGroupBox';
-    AnchorToCompanion(akTop,6,grpDebugPath);
-    AutoSize:=true;
+  LCLWidgetTypeLabel:=TLabel.Create(Self);
+  with LCLWidgetTypeLabel do begin
+    Name:='LCLWidgetTypeLabel';
+    Left:=6;
     Caption:=Format(lisCOVarious, [lisLCLWidgetType]);
     Parent := PathPage;
   end;
@@ -2391,6 +2398,8 @@ begin
   LCLWidgetTypeComboBox:=TComboBox.Create(Self);
   with LCLWidgetTypeComboBox do begin
     Name:='LCLWidgetTypeComboBox';
+    AnchorToNeighbour(akLeft,6,LCLWidgetTypeLabel);
+    AnchorToNeighbour(akTop,10,edtDebugPath);
     with Items do begin
       BeginUpdate;
       Add(Format(lisCOdefault, [GetDefaultLCLWidgetType]));
@@ -2402,8 +2411,9 @@ begin
     ItemIndex:=1;
     Constraints.MinWidth:=150;
     AutoSize:=true;
-    Parent := LCLWidgetTypeGroupBox;
+    Parent := PathPage;
   end;
+  LCLWidgetTypeLabel.AnchorVerticalCenterTo(LCLWidgetTypeComboBox);
 end;
 
 {------------------------------------------------------------------------------
