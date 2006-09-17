@@ -146,7 +146,7 @@ const
   lihLCLURL = lihBaseUrl+'lcl/';
 
 var
-  HelpBoss: TBaseHelpManager;
+  HelpBoss: TBaseHelpManager = nil;
   
 implementation
 

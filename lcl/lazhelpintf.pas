@@ -986,12 +986,12 @@ begin
   if (ListOfPascalHelpContextList=nil)
   or (ListOfPascalHelpContextList.Count=0) then exit;
   // add the registered nodes
-  //debugln('THelpDatabase.GetNodesForPascalContexts A ListOfPascalHelpContextList.Count=',dbgs(ListOfPascalHelpContextList.Count));
+  debugln('THelpDatabase.GetNodesForPascalContexts A ListOfPascalHelpContextList.Count=',dbgs(ListOfPascalHelpContextList.Count));
   if FSearchItems<>nil then begin
     // check every pascal context
     for j:=0 to ListOfPascalHelpContextList.Count-1 do begin
       PascalContext:=TPascalHelpContextList(ListOfPascalHelpContextList[j]);
-      //debugln('THelpDatabase.GetNodesForPascalContexts A PascalContext.Count=',dbgs(PascalContext.Count));
+      debugln('THelpDatabase.GetNodesForPascalContexts A PascalContext.Count=',dbgs(PascalContext.Count));
       if (PascalContext.Count>0)
       and (PascalContext.List[0].Descriptor=pihcFilename) then begin
         // search file item
@@ -1000,10 +1000,10 @@ begin
           if not (SearchItem is THelpDBISourceFile) then continue;
           FileItem:=THelpDBISourceFile(SearchItem);
           Filename:=PascalContext.List[0].Context;
-          //debugln('THelpDatabase.GetNodesForPascalContexts B FileItem.ClassName=',FileItem.ClassName,' Filename=',Filename);
+          debugln('THelpDatabase.GetNodesForPascalContexts B FileItem.ClassName=',FileItem.ClassName,' Filename=',Filename,' FileItem.GetFullFilename="',FileItem.GetFullFilename,'"');
           if (FileItem.FileMatches(Filename)) then begin
             CreateNodeQueryListAndAdd(FileItem.Node,PascalContext,ListOfNodes,true);
-            //debugln('THelpDatabase.GetNodesForPascalContexts C FileItem.ClassName=',FileItem.ClassName,' Filename=',Filename,' ',dbgs(ListOfNodes.Count),' ',TempNode.Title,' ',dbgs(TempNode));
+            debugln('THelpDatabase.GetNodesForPascalContexts C FileItem.ClassName=',FileItem.ClassName,' Filename=',Filename,' ',dbgs(ListOfNodes.Count));
           end;
         end;
       end;

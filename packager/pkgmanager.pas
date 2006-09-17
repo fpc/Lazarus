@@ -161,6 +161,7 @@ type
     function CheckPackageGraphForCompilation(APackage: TLazPackage;
                                  FirstDependency: TPkgDependency;
                                  const Directory: string): TModalResult;
+    function MacroFunctionPkgPath(Data: Pointer): boolean;
     function MacroFunctionPkgSrcPath(Data: Pointer): boolean;
     function MacroFunctionPkgUnitPath(Data: Pointer): boolean;
     function MacroFunctionPkgIncPath(Data: Pointer): boolean;
@@ -1457,6 +1458,29 @@ begin
   Result:=mrOk;
 end;
 
+function TPkgManager.MacroFunctionPkgPath(Data: Pointer): boolean;
+var
+  FuncData: PReadFunctionData;
+  PkgID: TLazPackageID;
+  APackage: TLazPackage;
+begin
+  FuncData:=PReadFunctionData(Data);
+  PkgID:=TLazPackageID.Create;
+  Result:=false;
+  if PkgID.StringToID(FuncData^.Param) then begin
+    APackage:=PackageGraph.FindPackageWithID(PkgID);
+    if APackage<>nil then begin
+      FuncData^.Result:=APackage.Directory;
+      Result:=true;
+    end else begin
+      DebugLn('WARNING: TPkgManager.MacroFunctionPkgPath unknown package id: ',FuncData^.Param);
+    end;
+  end else begin
+    DebugLn('WARNING: TPkgManager.MacroFunctionPkgPath invalid package id: ',FuncData^.Param);
+  end;
+  PkgID.Free;
+end;
+
 function TPkgManager.MacroFunctionPkgSrcPath(Data: Pointer): boolean;
 var
   FuncData: PReadFunctionData;
@@ -1787,6 +1811,8 @@ begin
   PackageEditors.OnCreateMakefile:=@OnPackageEditorCreateMakefile;
 
   // package macros
+  CodeToolBoss.DefineTree.MacroFunctions.AddExtended(
+    'PKGPATH',nil,@MacroFunctionPkgPath);
   CodeToolBoss.DefineTree.MacroFunctions.AddExtended(
     'PKGSRCPATH',nil,@MacroFunctionPkgSrcPath);
   CodeToolBoss.DefineTree.MacroFunctions.AddExtended(

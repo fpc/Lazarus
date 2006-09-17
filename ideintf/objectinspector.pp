@@ -3108,16 +3108,16 @@ begin
      @OnFindDeclarationPopupmenuItemClick,false,true,false);
   AddSeparatorMenuItem(nil,'OptionsSeparatorMenuItem',true);
   AddPopupMenuItem(CutPopupMenuItem,nil,'CutPopupMenuItem',
-     oisCut,'Cut selected item',
+     oisCutComponents,'Cut selected item',
      @OnCutPopupmenuItemClick,false,true,true);
   AddPopupMenuItem(CopyPopupMenuItem,nil,'CopyPopupMenuItem',
-     oisCopy,'Copy selected item',
+     oisCopyComponents,'Copy selected item',
      @OnCopyPopupmenuItemClick,false,true,true);
   AddPopupMenuItem(PastePopupMenuItem,nil,'PastePopupMenuItem',
-     oisPaste,'Paste selected item',
+     oisPasteComponents,'Paste selected item',
      @OnPastePopupmenuItemClick,false,true,true);
   AddPopupMenuItem(DeletePopupMenuItem,nil,'DeletePopupMenuItem',
-     oisDelete,'Delete selected item',
+     oisDeleteComponents,'Delete selected item',
      @OnDeletePopupmenuItemClick,false,true,true);
   AddPopupMenuItem(OptionsSeparatorMenuItem2,nil,'',
      '-','',nil,false,true,true);
@@ -3563,7 +3563,7 @@ begin
   if Selection.Count > 0 then begin
     ADesigner:=FindRootDesigner(TComponent(Selection[0]));
     if ADesigner is TComponentEditorDesigner then begin
-      TComponentEditorDesigner(ADesigner).PasteSelection([cpsfReplace]);
+      TComponentEditorDesigner(ADesigner).PasteSelection([]);
     end;
   end;
 end;
