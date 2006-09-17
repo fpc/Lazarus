@@ -2860,6 +2860,10 @@ msgstr "ファイルの中を検索"
 msgid "Find next"
 msgstr "次を検索"
 
+#: lazarusidestrconsts:srkmecfindnextwordoccurrence
+msgid "Find next word occurrence"
+msgstr ""
+
 #: lazarusidestrconsts:lisfrifindorrenameidentifier
 msgid "Find or Rename Identifier"
 msgstr ""
@@ -2875,6 +2879,10 @@ msgstr ""
 #: lazarusidestrconsts:srkmecfindprevious
 msgid "Find previous"
 msgstr "前を検索"
+
+#: lazarusidestrconsts:srkmecfindprevwordoccurrence
+msgid "Find previous word occurrence"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecfindproceduredefinition
 msgid "Find procedure definiton"

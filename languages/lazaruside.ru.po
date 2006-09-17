@@ -2861,6 +2861,10 @@ msgstr "Найти в файлах"
 msgid "Find next"
 msgstr "Найти далее"
 
+#: lazarusidestrconsts:srkmecfindnextwordoccurrence
+msgid "Find next word occurrence"
+msgstr ""
+
 #: lazarusidestrconsts:lisfrifindorrenameidentifier
 msgid "Find or Rename Identifier"
 msgstr "Найти или переименовать ID"
@@ -2876,6 +2880,10 @@ msgstr ""
 #: lazarusidestrconsts:srkmecfindprevious
 msgid "Find previous"
 msgstr "Найти предыдущее"
+
+#: lazarusidestrconsts:srkmecfindprevwordoccurrence
+msgid "Find previous word occurrence"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecfindproceduredefinition
 msgid "Find procedure definiton"

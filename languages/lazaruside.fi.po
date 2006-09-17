@@ -2850,6 +2850,10 @@ msgstr "Etsi tiedostoista"
 msgid "Find next"
 msgstr ""
 
+#: lazarusidestrconsts:srkmecfindnextwordoccurrence
+msgid "Find next word occurrence"
+msgstr ""
+
 #: lazarusidestrconsts:lisfrifindorrenameidentifier
 msgid "Find or Rename Identifier"
 msgstr "Etsi tai vaihda tunnisteiden nimiä"
@@ -2864,6 +2868,10 @@ msgstr "Etsi komponenttipaletista komponentti"
 
 #: lazarusidestrconsts:srkmecfindprevious
 msgid "Find previous"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecfindprevwordoccurrence
+msgid "Find previous word occurrence"
 msgstr ""
 
 #: lazarusidestrconsts:srkmecfindproceduredefinition

@@ -268,8 +268,12 @@ msgstr ""
 msgid "Confirm delete"
 msgstr ""
 
-#: objinspstrconsts:oiscopy
+#: objinspstrconsts:oistdacteditcopyshorthint
 msgid "Copy"
+msgstr ""
+
+#: objinspstrconsts:oiscopycomponents
+msgid "Copy components"
 msgstr ""
 
 #: objinspstrconsts:oiscreateanewpascalunit
@@ -312,8 +316,12 @@ msgstr ""
 msgid "Cu&t"
 msgstr ""
 
-#: objinspstrconsts:oiscut
+#: objinspstrconsts:oistdacteditcutshorthint
 msgid "Cut"
+msgstr ""
+
+#: objinspstrconsts:oiscutcomponents
+msgid "Cut components"
 msgstr ""
 
 #: objinspstrconsts:cactionlisteditordatabasecategory
@@ -330,6 +338,10 @@ msgstr ""
 
 #: objinspstrconsts:cactionlisteditordeleteactionhint
 msgid "Delete Action"
+msgstr ""
+
+#: objinspstrconsts:oisdeletecomponents
+msgid "Delete components"
 msgstr ""
 
 #: objinspstrconsts:oisdeleteitem
@@ -648,8 +660,12 @@ msgstr ""
 msgid "Panel Descriptions"
 msgstr ""
 
-#: objinspstrconsts:oispaste
+#: objinspstrconsts:oistdacteditpasteshorthint
 msgid "Paste"
+msgstr ""
+
+#: objinspstrconsts:oispastecomponents
+msgid "Paste components"
 msgstr ""
 
 #: objinspstrconsts:oispepicture

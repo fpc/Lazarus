@@ -2864,6 +2864,10 @@ msgstr "Cari dalam file"
 msgid "Find next"
 msgstr "Cari berikutnya"
 
+#: lazarusidestrconsts:srkmecfindnextwordoccurrence
+msgid "Find next word occurrence"
+msgstr ""
+
 #: lazarusidestrconsts:lisfrifindorrenameidentifier
 msgid "Find or Rename Identifier"
 msgstr "Cari atau Ganti nama Pengenal"
@@ -2879,6 +2883,10 @@ msgstr ""
 #: lazarusidestrconsts:srkmecfindprevious
 msgid "Find previous"
 msgstr "Cari sebelumnya"
+
+#: lazarusidestrconsts:srkmecfindprevwordoccurrence
+msgid "Find previous word occurrence"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecfindproceduredefinition
 msgid "Find procedure definiton"

@@ -272,9 +272,13 @@ msgstr "Komponen"
 msgid "Confirm delete"
 msgstr "Konfirmasi hapus"
 
-#: objinspstrconsts:oiscopy
+#: objinspstrconsts:oistdacteditcopyshorthint
 msgid "Copy"
 msgstr "Copy"
+
+#: objinspstrconsts:oiscopycomponents
+msgid "Copy components"
+msgstr ""
 
 #: objinspstrconsts:oiscreateanewpascalunit
 msgid "Create a new pascal unit."
@@ -316,9 +320,13 @@ msgstr "Ctrl+Z"
 msgid "Cu&t"
 msgstr "Cu&t"
 
-#: objinspstrconsts:oiscut
+#: objinspstrconsts:oistdacteditcutshorthint
 msgid "Cut"
 msgstr "Cut"
+
+#: objinspstrconsts:oiscutcomponents
+msgid "Cut components"
+msgstr ""
 
 #: objinspstrconsts:cactionlisteditordatabasecategory
 msgid "Database"
@@ -335,6 +343,10 @@ msgstr "Hapus"
 #: objinspstrconsts:cactionlisteditordeleteactionhint
 msgid "Delete Action"
 msgstr "Hapus Aksi"
+
+#: objinspstrconsts:oisdeletecomponents
+msgid "Delete components"
+msgstr ""
 
 #: objinspstrconsts:oisdeleteitem
 msgid "Delete item %s%s%s?"
@@ -652,9 +664,13 @@ msgstr "Tu&lis"
 msgid "Panel Descriptions"
 msgstr "Deskripsi Panel"
 
-#: objinspstrconsts:oispaste
+#: objinspstrconsts:oistdacteditpasteshorthint
 msgid "Paste"
 msgstr "Paste"
+
+#: objinspstrconsts:oispastecomponents
+msgid "Paste components"
+msgstr ""
 
 #: objinspstrconsts:oispepicture
 msgid "Picture"

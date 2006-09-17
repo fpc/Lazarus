@@ -2861,6 +2861,10 @@ msgstr "Vind in bestanden"
 msgid "Find next"
 msgstr "Vind volgende"
 
+#: lazarusidestrconsts:srkmecfindnextwordoccurrence
+msgid "Find next word occurrence"
+msgstr ""
+
 #: lazarusidestrconsts:lisfrifindorrenameidentifier
 msgid "Find or Rename Identifier"
 msgstr "Vind of hernoem identifier"
@@ -2876,6 +2880,10 @@ msgstr "Vind palette component"
 #: lazarusidestrconsts:srkmecfindprevious
 msgid "Find previous"
 msgstr "Vind vorige"
+
+#: lazarusidestrconsts:srkmecfindprevwordoccurrence
+msgid "Find previous word occurrence"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecfindproceduredefinition
 msgid "Find procedure definiton"

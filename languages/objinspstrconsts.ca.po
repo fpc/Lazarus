@@ -258,9 +258,13 @@ msgstr ""
 msgid "Confirm delete"
 msgstr "Confirma l'eliminació"
 
-#: objinspstrconsts:oiscopy
+#: objinspstrconsts:oistdacteditcopyshorthint
 msgid "Copy"
 msgstr "Copia"
+
+#: objinspstrconsts:oiscopycomponents
+msgid "Copy components"
+msgstr ""
 
 #: objinspstrconsts:oiscreateanewpascalunit
 msgid "Create a new pascal unit."
@@ -302,9 +306,13 @@ msgstr "Ctrl+Z"
 msgid "Cu&t"
 msgstr "&Talla"
 
-#: objinspstrconsts:oiscut
+#: objinspstrconsts:oistdacteditcutshorthint
 msgid "Cut"
 msgstr "Talla"
+
+#: objinspstrconsts:oiscutcomponents
+msgid "Cut components"
+msgstr ""
 
 #: objinspstrconsts:cactionlisteditordatabasecategory
 msgid "Database"
@@ -321,6 +329,10 @@ msgstr "Elimina"
 #: objinspstrconsts:cactionlisteditordeleteactionhint
 msgid "Delete Action"
 msgstr "Elimina l'acció"
+
+#: objinspstrconsts:oisdeletecomponents
+msgid "Delete components"
+msgstr ""
 
 #: objinspstrconsts:oisdeleteitem
 msgid "Delete item %s%s%s?"
@@ -638,9 +650,13 @@ msgstr "Envi&a"
 msgid "Panel Descriptions"
 msgstr "Descipcions del tauler"
 
-#: objinspstrconsts:oispaste
+#: objinspstrconsts:oistdacteditpasteshorthint
 msgid "Paste"
 msgstr "Enganxa"
+
+#: objinspstrconsts:oispastecomponents
+msgid "Paste components"
+msgstr ""
 
 #: objinspstrconsts:oispepicture
 msgid "Picture"

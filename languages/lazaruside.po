@@ -4758,6 +4758,14 @@ msgstr ""
 msgid "Go to line number"
 msgstr ""
 
+#: lazarusidestrconsts:srkmecfindnextwordoccurrence
+msgid "Find next word occurrence"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecfindprevwordoccurrence
+msgid "Find previous word occurrence"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecaddjumppoint
 msgid "Add jump point"
 msgstr ""

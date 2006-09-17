@@ -258,9 +258,13 @@ msgstr "Компонент"
 msgid "Confirm delete"
 msgstr "Підтвердити видалення"
 
-#: objinspstrconsts:oiscopy
+#: objinspstrconsts:oistdacteditcopyshorthint
 msgid "Copy"
 msgstr "Копіювати"
+
+#: objinspstrconsts:oiscopycomponents
+msgid "Copy components"
+msgstr ""
 
 #: objinspstrconsts:oiscreateanewpascalunit
 msgid "Create a new pascal unit."
@@ -302,9 +306,13 @@ msgstr "Ctrl+Z"
 msgid "Cu&t"
 msgstr "Вир&ізати"
 
-#: objinspstrconsts:oiscut
+#: objinspstrconsts:oistdacteditcutshorthint
 msgid "Cut"
 msgstr "Вирізати"
+
+#: objinspstrconsts:oiscutcomponents
+msgid "Cut components"
+msgstr ""
 
 #: objinspstrconsts:cactionlisteditordatabasecategory
 msgid "Database"
@@ -321,6 +329,10 @@ msgstr "Видалити"
 #: objinspstrconsts:cactionlisteditordeleteactionhint
 msgid "Delete Action"
 msgstr "Видалити дію"
+
+#: objinspstrconsts:oisdeletecomponents
+msgid "Delete components"
+msgstr ""
 
 #: objinspstrconsts:oisdeleteitem
 msgid "Delete item %s%s%s?"
@@ -638,9 +650,13 @@ msgstr "В&ідправити"
 msgid "Panel Descriptions"
 msgstr "Панель Описи"
 
-#: objinspstrconsts:oispaste
+#: objinspstrconsts:oistdacteditpasteshorthint
 msgid "Paste"
 msgstr "Вставити"
+
+#: objinspstrconsts:oispastecomponents
+msgid "Paste components"
+msgstr ""
 
 #: objinspstrconsts:oispepicture
 msgid "Picture"

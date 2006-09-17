@@ -2864,6 +2864,10 @@ msgstr "在文件中查找"
 msgid "Find next"
 msgstr "查找下一个"
 
+#: lazarusidestrconsts:srkmecfindnextwordoccurrence
+msgid "Find next word occurrence"
+msgstr ""
+
 #: lazarusidestrconsts:lisfrifindorrenameidentifier
 msgid "Find or Rename Identifier"
 msgstr "查找并重命名一个标识符"
@@ -2879,6 +2883,10 @@ msgstr "查找组件面板"
 #: lazarusidestrconsts:srkmecfindprevious
 msgid "Find previous"
 msgstr "查找前一个"
+
+#: lazarusidestrconsts:srkmecfindprevwordoccurrence
+msgid "Find previous word occurrence"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecfindproceduredefinition
 msgid "Find procedure definiton"

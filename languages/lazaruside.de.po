@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2006-09-15 16:09+0100\n"
-"Last-Translator: Swen Heinig <x@y.de>\n"
+"PO-Revision-Date: 2006-09-17 12:20+0100\n"
+"Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -42,7 +42,7 @@ msgstr "%s (Debuggen...)"
 
 #: lazarusidestrconsts:liscovarious
 msgid "%s (various)"
-msgstr ""
+msgstr "%s (verschiedene)"
 
 #: lazarusidestrconsts:lisnewproject
 msgid "%s - (new project)"
@@ -1238,7 +1238,7 @@ msgstr "Leeren"
 
 #: lazarusidestrconsts:lispckeditcleardependencydefaultfilename
 msgid "Clear dependency filename"
-msgstr ""
+msgstr "Namen der Abhängigkeit löschen"
 
 #: lazarusidestrconsts:lisdebugoptionsfrmclearlogonrun
 msgid "Clear log on run"
@@ -1642,7 +1642,7 @@ msgstr "Dateiname kopieren"
 
 #: lazarusidestrconsts:lisldcopyfrominherited
 msgid "Copy from inherited"
-msgstr ""
+msgstr "Vom Vorläufer kopieren"
 
 #: lazarusidestrconsts:lisdsgcopycomponents
 msgid "Copy selected components to clipboard"
@@ -2864,6 +2864,10 @@ msgstr "In Dateien suchen"
 msgid "Find next"
 msgstr "Nächstes suchen"
 
+#: lazarusidestrconsts:srkmecfindnextwordoccurrence
+msgid "Find next word occurrence"
+msgstr ""
+
 #: lazarusidestrconsts:lisfrifindorrenameidentifier
 msgid "Find or Rename Identifier"
 msgstr "Bezeichner suchen oder umbenennen"
@@ -2879,6 +2883,10 @@ msgstr "Komponente in der Palette finden"
 #: lazarusidestrconsts:srkmecfindprevious
 msgid "Find previous"
 msgstr "Vorheriges suchen"
+
+#: lazarusidestrconsts:srkmecfindprevwordoccurrence
+msgid "Find previous word occurrence"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecfindproceduredefinition
 msgid "Find procedure definiton"
@@ -3118,11 +3126,11 @@ msgstr "Zu ausgewählter Quelltextzeile springen"
 
 #: lazarusidestrconsts:srkmgrabkey
 msgid "Grab key"
-msgstr ""
+msgstr "Taste fangen"
 
 #: lazarusidestrconsts:srkmgrabsecondkey
 msgid "Grab second key"
-msgstr ""
+msgstr "Zweiten Taste fangen"
 
 #: lazarusidestrconsts:dlggrabbercolor
 msgid "Grabber color"
@@ -3846,7 +3854,7 @@ msgstr "Ungültige Mehrfachauswahl"
 
 #: lazarusidestrconsts:liserrinvalidoption
 msgid "Invalid option at position %d: \"%s\""
-msgstr ""
+msgstr "Ungültige Option an der Position %d: \"%s\""
 
 #: lazarusidestrconsts:lisaf2pinvalidpackageid
 msgid "Invalid package ID: %s%s%s"
@@ -4630,7 +4638,7 @@ msgstr "Editor nach rechts bewegen"
 
 #: lazarusidestrconsts:lisldmoveentriestoinherited
 msgid "Move entries to inherited"
-msgstr ""
+msgstr "Einträge zu den abgeleiteten verschieben"
 
 #: lazarusidestrconsts:liscodetoolsdefsmovenodedown
 msgid "Move node down"
@@ -4674,7 +4682,7 @@ msgstr "Mehrzeilig"
 
 #: lazarusidestrconsts:lisfindfilemultiline
 msgid "Multiline pattern"
-msgstr ""
+msgstr "Mehrzeiliges Muster"
 
 #: lazarusidestrconsts:fdinvalidmultiselectiontext
 msgid "Multiselected components must be of a single form."
@@ -5122,11 +5130,11 @@ msgstr "Optimierungen:"
 
 #: lazarusidestrconsts:liserrnooptionallowed
 msgid "Option at position %d does not allow an argument: %s"
-msgstr ""
+msgstr "Die Option an der Position %s erlaubt keinen Parameter: %s"
 
 #: lazarusidestrconsts:liserroptionneeded
 msgid "Option at position %d needs an argument : %s"
-msgstr ""
+msgstr "Die Option an der Position %s benötigt einen Parameter: %s"
 
 #: lazarusidestrconsts:fdmsnaptogridoption
 msgid "Option: Snap to grid"
@@ -7006,7 +7014,7 @@ msgstr "Debuggen abbrechen?"
 
 #: lazarusidestrconsts:lispckeditsetdependencydefaultfilename
 msgid "Store dependency filename"
-msgstr ""
+msgstr "Namen der Abhängigkeit speichern"
 
 #: lazarusidestrconsts:dlgcdtstoredpostfix
 msgid "Stored postfix"
@@ -8562,7 +8570,7 @@ msgstr "Version"
 
 #: lazarusidestrconsts:versioninfotitle
 msgid "Version Info"
-msgstr ""
+msgstr "Versionsinformation"
 
 #: lazarusidestrconsts:lisvertical
 msgid "Vertical"

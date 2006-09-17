@@ -114,16 +114,20 @@ msgstr ""
 msgid "Jump to declaration"
 msgstr ""
 
-#: objinspstrconsts:oiscut
-msgid "Cut"
+#: objinspstrconsts:oiscutcomponents
+msgid "Cut components"
 msgstr ""
 
-#: objinspstrconsts:oiscopy
-msgid "Copy"
+#: objinspstrconsts:oiscopycomponents
+msgid "Copy components"
 msgstr ""
 
-#: objinspstrconsts:oispaste
-msgid "Paste"
+#: objinspstrconsts:oispastecomponents
+msgid "Paste components"
+msgstr ""
+
+#: objinspstrconsts:oisdeletecomponents
+msgid "Delete components"
 msgstr ""
 
 #: objinspstrconsts:oisdelete

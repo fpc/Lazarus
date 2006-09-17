@@ -258,9 +258,13 @@ msgstr ""
 msgid "Confirm delete"
 msgstr "Vahvista poisto"
 
-#: objinspstrconsts:oiscopy
+#: objinspstrconsts:oistdacteditcopyshorthint
 msgid "Copy"
 msgstr "Kopioi"
+
+#: objinspstrconsts:oiscopycomponents
+msgid "Copy components"
+msgstr ""
 
 #: objinspstrconsts:oiscreateanewpascalunit
 msgid "Create a new pascal unit."
@@ -302,9 +306,13 @@ msgstr ""
 msgid "Cu&t"
 msgstr ""
 
-#: objinspstrconsts:oiscut
+#: objinspstrconsts:oistdacteditcutshorthint
 msgid "Cut"
 msgstr "Leikkaa"
+
+#: objinspstrconsts:oiscutcomponents
+msgid "Cut components"
+msgstr ""
 
 #: objinspstrconsts:cactionlisteditordatabasecategory
 msgid "Database"
@@ -320,6 +328,10 @@ msgstr "Poista"
 
 #: objinspstrconsts:cactionlisteditordeleteactionhint
 msgid "Delete Action"
+msgstr ""
+
+#: objinspstrconsts:oisdeletecomponents
+msgid "Delete components"
 msgstr ""
 
 #: objinspstrconsts:oisdeleteitem
@@ -638,9 +650,13 @@ msgstr ""
 msgid "Panel Descriptions"
 msgstr ""
 
-#: objinspstrconsts:oispaste
+#: objinspstrconsts:oistdacteditpasteshorthint
 msgid "Paste"
 msgstr "Liitä"
+
+#: objinspstrconsts:oispastecomponents
+msgid "Paste components"
+msgstr ""
 
 #: objinspstrconsts:oispepicture
 msgid "Picture"

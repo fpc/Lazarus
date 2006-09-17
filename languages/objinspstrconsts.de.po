@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2006-08-18 12:36+0100\n"
+"PO-Revision-Date: 2006-09-17 12:21+0100\n"
 "Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -269,9 +269,13 @@ msgstr "Komponenten"
 msgid "Confirm delete"
 msgstr "Löschen bestätigen"
 
-#: objinspstrconsts:oiscopy
+#: objinspstrconsts:oistdacteditcopyshorthint
 msgid "Copy"
 msgstr "Kopieren"
+
+#: objinspstrconsts:oiscopycomponents
+msgid "Copy components"
+msgstr ""
 
 #: objinspstrconsts:oiscreateanewpascalunit
 msgid "Create a new pascal unit."
@@ -313,9 +317,13 @@ msgstr "Strg+Z"
 msgid "Cu&t"
 msgstr "&Ausschneiden"
 
-#: objinspstrconsts:oiscut
+#: objinspstrconsts:oistdacteditcutshorthint
 msgid "Cut"
 msgstr "Ausschneiden"
+
+#: objinspstrconsts:oiscutcomponents
+msgid "Cut components"
+msgstr ""
 
 #: objinspstrconsts:cactionlisteditordatabasecategory
 msgid "Database"
@@ -332,6 +340,10 @@ msgstr "Löschen"
 #: objinspstrconsts:cactionlisteditordeleteactionhint
 msgid "Delete Action"
 msgstr "Action löschen"
+
+#: objinspstrconsts:oisdeletecomponents
+msgid "Delete components"
+msgstr ""
 
 #: objinspstrconsts:oisdeleteitem
 msgid "Delete item %s%s%s?"
@@ -631,7 +643,7 @@ msgstr "Öffnen"
 
 #: objinspstrconsts:oispeopenimagefile
 msgid "Open image file"
-msgstr ""
+msgstr "Grafikdatei öffnen"
 
 #: objinspstrconsts:oisopenmaskfile
 msgid "Open masks file (*.dem)"
@@ -649,13 +661,17 @@ msgstr "&Senden"
 msgid "Panel Descriptions"
 msgstr "Panel-Beschreibungen"
 
-#: objinspstrconsts:oispaste
+#: objinspstrconsts:oistdacteditpasteshorthint
 msgid "Paste"
 msgstr "Einfügen"
 
+#: objinspstrconsts:oispastecomponents
+msgid "Paste components"
+msgstr ""
+
 #: objinspstrconsts:oispepicture
 msgid "Picture"
-msgstr ""
+msgstr "Bild"
 
 #: objinspstrconsts:clbdisable
 msgid "Popup to disable/enable items"
@@ -711,7 +727,7 @@ msgstr "Sichern als"
 
 #: objinspstrconsts:sccsiledtsavedialog
 msgid "Save Image"
-msgstr "Bild sichern"
+msgstr "Grafik speichern"
 
 #: objinspstrconsts:oissaveliteralcharacters
 msgid "Save Literal Characters"
@@ -719,7 +735,7 @@ msgstr "Buchstaben sichern"
 
 #: objinspstrconsts:oispesaveimageas
 msgid "Save image as"
-msgstr ""
+msgstr "Grafik speichern unter"
 
 #: objinspstrconsts:oissavepicture
 msgid "Save picture"
