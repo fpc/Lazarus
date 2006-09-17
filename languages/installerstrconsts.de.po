@@ -1,0 +1,27 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2006-09-17 14:06+0100\n"
+"Last-Translator: Swen Heinig <x@y.de>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: installerstrconsts:wiseditform
+msgid "&Edit form"
+msgstr "&Formular bearbeiten"
+
+#: installerstrconsts:wiseditsource
+msgid "&Edit source"
+msgstr "&Quellcode bearbeiten"
+
+#: installerstrconsts:wisopenpackage
+msgid "&Open package"
+msgstr "&Package öffnen"
+
+#: installerstrconsts:wisopenproject
+msgid "&Open project"
+msgstr "&Projekt öffnen"
+
