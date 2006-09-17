@@ -993,7 +993,7 @@ begin
   if MeasureText(AWinControl, AWinControl.Caption, PreferredWidth, PreferredHeight) then
   begin
     Inc(PreferredWidth, 20);
-    Inc(PreferredHeight, 12);
+    Inc(PreferredHeight, 4);
     if WithThemeSpace then begin
       Inc(PreferredWidth, 6);
       Inc(PreferredHeight, 6);
