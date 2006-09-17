@@ -236,6 +236,11 @@ Function Replace(Const Str, OrigStr, ReplStr: String; Const Global: Boolean): St
   Str into substrings around SplitStr }
 Function Split(Const Str: String; SplitStr: String; Count: Integer; Const CaseSensitive: Boolean): TStringList;
 
+{$ifdef VER2_0}
+function GET_X_LPARAM(lp : Windows.LParam) : longint;
+function GET_Y_LPARAM(lp : Windows.LParam) : longint;
+{$endif VER2_0}
+
 Implementation
 
 Uses SysUtils;
@@ -332,6 +337,19 @@ Begin
     Result.Add(Copy(Str, (Length(Str) - Length(S)) + 1, Pos(SplitStr, Str) - 1));
   End;
 End;
+
+{$ifdef VER2_0}
+function GET_X_LPARAM(lp : Windows.LParam) : longint;
+  begin
+    result:=smallint(LOWORD(lp));
+  end;
+
+
+function GET_Y_LPARAM(lp : Windows.LParam) : longint;
+  begin
+    result:=smallint(HIWORD(lp));
+  end;
+{$endif VER2_0}
 
 Initialization
 

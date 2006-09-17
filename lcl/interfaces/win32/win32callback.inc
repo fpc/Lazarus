@@ -265,12 +265,12 @@ Var
     if PopupMenu<>nil then //processing popup menu
     begin
       WindowInfo^.PopupMenu := nil;
-      Result := PopupMenu.FindItem(Lo(WParam), fkCommand);
+      Result := PopupMenu.FindItem(LOWORD(WParam), fkCommand);
     end;
     if Result=nil then //if Result is still nil, process main menu
     begin
       MainMenuHandle := GetMenu(Window);
-      if GetMenuItemInfo(MainMenuHandle, Lo(WParam), false, @MenuInfo) then
+      if GetMenuItemInfo(MainMenuHandle, LOWORD(WParam), false, @MenuInfo) then
         Result := TObject(MenuInfo.dwItemData);
     end;
   end;
@@ -580,18 +580,18 @@ Var
     with LMScroll do
     begin
       Msg := LMsg;
-      ScrollCode := SmallInt(Lo(WParam));
+      ScrollCode := LOWORD(WParam);
       SmallPos := 0;
       ScrollBar := ScrollbarHandle;
       Pos := 0;
     end;
 
-    if not (Lo(WParam) in [SB_THUMBTRACK, SB_THUMBPOSITION])
+    if not (LOWORD(WParam) in [SB_THUMBTRACK, SB_THUMBPOSITION])
     then begin
       WindowInfo^.TrackValid := False;
       Exit;
     end;
-    
+
     // Note on thumb tracking
     // When using the scrollwheel, windows sends SB_THUMBTRACK
     // messages, but only when scroll.max < 32K. So in that case
@@ -615,17 +615,17 @@ Var
 
 
     ScrollInfo.cbSize := SizeOf(ScrollInfo);
-    if Lo(WParam) = SB_THUMBTRACK
+    if LOWORD(WParam) = SB_THUMBTRACK
     then begin
       ScrollInfo.fMask := SIF_TRACKPOS;
       // older windows versions may not support trackpos, so fill it with some default
       if WindowInfo^.TrackValid
-      then ScrollInfo.nTrackPos := (WindowInfo^.TrackPos and $FFFF0000) or Hi(WParam)
-      else ScrollInfo.nTrackPos := Hi(WParam);
+      then ScrollInfo.nTrackPos := (WindowInfo^.TrackPos and $FFFF0000) or HIWORD(WParam)
+      else ScrollInfo.nTrackPos := HIWORD(WParam);
     end
     else begin
       ScrollInfo.fMask := SIF_POS;
-      ScrollInfo.nPos := Hi(WParam);
+      ScrollInfo.nPos := HIWORD(WParam);
     end;
 
     if ScrollbarHandle <> 0
@@ -640,7 +640,7 @@ Var
       else GetScrollInfo(Window, SB_VERT, ScrollInfo);
     end;
 
-    if Lo(WParam) = SB_THUMBTRACK
+    if LOWORD(WParam) = SB_THUMBTRACK
     then begin
       LMScroll.Pos := ScrollInfo.nTrackPos;
       WindowInfo^.TrackPos := ScrollInfo.nTrackPos;
@@ -648,8 +648,8 @@ Var
     end
     else begin
       if WindowInfo^.TrackValid
-      then LMScroll.Pos := (WindowInfo^.TrackPos and $FFFF0000) or Hi(WParam)
-      else LMScroll.Pos := (ScrollInfo.nPos and $FFFF0000) or Hi(WParam);
+      then LMScroll.Pos := (WindowInfo^.TrackPos and $FFFF0000) or HIWORD(WParam)
+      else LMScroll.Pos := (ScrollInfo.nPos and $FFFF0000) or HIWORD(WParam);
     end;
 
     if LMScroll.Pos < High(LMScroll.SmallPos)
@@ -663,7 +663,7 @@ Var
     BoundsOffset: TRect;
   begin
     if (lWinControl <> nil) and not (csDesigning in lWinControl.ComponentState)
-      and (Lo(LParam) = HTCLIENT) then
+      and (LOWORD(LParam) = HTCLIENT) then
     begin
       Windows.GetCursorPos(Windows.POINT(P));
       Windows.ScreenToClient(Window, Windows.POINT(P));
@@ -921,12 +921,12 @@ begin
   Assert(False, 'Trace:WindowProc - Getting Callback Object');
 
   Assert(False, 'Trace:WindowProc - Checking Proc');
-  Assert(False, Format('Trace:WindowProc - Window Value: $%S-%d; Msg Value: %S; WParam: $%S; LParam: $%S', [IntToHex(Window, 4), Window, WM_To_String(Msg), IntToHex(WParam, 4), IntToHex(LParam, 4)]));
+  Assert(False, Format('Trace:WindowProc - Window Value: $%S-%d; Msg Value: %S; WParam: $%S; LParam: $%S', [IntToHex(Window, 4), Window, WM_To_String(Msg), IntToHex(WParam, sizeof(WParam)*4), IntToHex(LParam, sizeof(LParam)*4)]));
 
   Case Msg Of
     WM_ACTIVATE:
     Begin
-      Case Lo(WParam) Of
+      Case LOWORD(WParam) Of
         WA_ACTIVE, WA_CLICKACTIVE:
         Begin
           LMessage.Msg := LM_ACTIVATE
@@ -993,7 +993,7 @@ begin
     End;
     WM_MENUCHAR:
     Begin
-      PLMsg^.Result := FindMenuItemAccelerator(chr(lo(WParam)), LParam);
+      PLMsg^.Result := FindMenuItemAccelerator(chr(LOWORD(WParam)), LParam);
       WinProcess := false;
     End;
     WM_CLOSE:
@@ -1016,7 +1016,7 @@ begin
         TargetObject := GetMenuItemObject;
         if TargetObject is TMenuItem then
         begin
-          if (Hi(WParam) = 0) or (Hi(WParam) = 1) then
+          if (HIWORD(WParam) = 0) or (HIWORD(WParam) = 1) then
           begin
             LMessage.Msg := LM_ACTIVATE;
             TargetObject.Dispatch(LMessage);
@@ -1029,29 +1029,29 @@ begin
         if lWinControl = nil then
           lWinControl := GetWindowInfo(LParam)^.AWinControl;
         if lWinControl is TCustomButton then
-          case Hi(WParam) of
+          case HIWORD(WParam) of
             BN_CLICKED:   LMessage.Msg := LM_CLICKED;
             BN_KILLFOCUS: LMessage.Msg := LM_EXIT;
           end
         else if (lWinControl is TCustomEdit) then
-          case Hi(WParam) of
+          case HIWORD(WParam) of
             EN_CHANGE: LMessage.Msg := CM_TEXTCHANGED;
           end
         else if (lWinControl is TCustomFloatSpinEdit) then
-          case Hi(WParam) of
+          case HIWORD(WParam) of
             EN_CHANGE: HandleSpinEditChange(TCustomFloatSpinEdit(lWinControl));
           end
         else if (lWinControl is TCustomMemo) then
-          case Hi(WParam) of
+          case HIWORD(WParam) of
             // multiline edit doesn't send EN_CHANGE, so use EN_UPDATE
             EN_UPDATE: LMessage.Msg := CM_TEXTCHANGED;
           end
         else if (lWinControl is TCustomListBox) then
-          case Hi(WParam) of
+          case HIWORD(WParam) of
             LBN_SELCHANGE:  LMessage.Msg := LM_SELCHANGE;
           end
         else if lWinControl is TCustomCombobox then
-          case Hi(WParam) of
+          case HIWORD(WParam) of
             CBN_EDITCHANGE: LMessage.Msg := LM_CHANGED;
             { CBN_EDITCHANGE is only sent after the user changes the edit box.
               CBN_SELCHANGE is sent when the user changes the text by
@@ -1117,10 +1117,12 @@ begin
           Windows.SetTextColor(HDC(WParam), Windows.COLORREF(ColorToRGB(ChildWinControl.Font.Color)));
           Windows.SetBkColor(HDC(WParam), Windows.COLORREF(ColorToRGB(ChildWinControl.Brush.Color)));
           LMessage.Result := LResult(ChildWinControl.Brush.Handle);
+          DebugLn(['WindowProc ', ChildWinControl.Name, ' Brush: ', LMessage.Result]);
           // Override default handling
           WinProcess := false;
         end;
       end;
+      if (Msg = WM_CTLCOLORSCROLLBAR) then WinProcess := true;
     end;
     WM_CLEAR:
     begin
@@ -1344,8 +1346,8 @@ begin
       With LMMouse Do
       Begin
         Msg := LM_LBUTTONDBLCLK;
-        XPos := SmallInt(Lo(LParam));
-        YPos := SmallInt(Hi(LParam));
+        XPos := GET_X_LPARAM(LParam);
+        YPos := GET_Y_LPARAM(LParam);
         Keys := WParam;
       End;
 
@@ -1374,8 +1376,8 @@ begin
       With LMMouse Do
       Begin
         Msg := LM_LBUTTONDOWN;
-        XPos := SmallInt(Lo(LParam));
-        YPos := SmallInt(Hi(LParam));
+        XPos := GET_X_LPARAM(LParam);
+        YPos := GET_Y_LPARAM(LParam);
         Keys := WParam;
       End;
 
@@ -1396,8 +1398,8 @@ begin
       With LMMouse Do
       Begin
         Msg := LM_LBUTTONUP;
-        XPos := SmallInt(Lo(LParam));
-        YPos := SmallInt(Hi(LParam));
+        XPos := GET_X_LPARAM(LParam);
+        YPos := GET_Y_LPARAM(LParam);
         Keys := WParam;
       End;
     End;
@@ -1408,8 +1410,8 @@ begin
       With LMMouse Do
       Begin
         Msg := LM_MBUTTONDBLCLK;
-        XPos := SmallInt(Lo(LParam));
-        YPos := SmallInt(Hi(LParam));
+        XPos := GET_X_LPARAM(LParam);
+        YPos := GET_Y_LPARAM(LParam);
         Keys := WParam;
       End;
     End;
@@ -1420,8 +1422,8 @@ begin
       With LMMouse Do
       Begin
         Msg := LM_MBUTTONDOWN;
-        XPos := SmallInt(Lo(LParam));
-        YPos := SmallInt(Hi(LParam));
+        XPos := GET_X_LPARAM(LParam);
+        YPos := GET_Y_LPARAM(LParam);
         Keys := WParam;
       End;
     End;
@@ -1432,8 +1434,8 @@ begin
       With LMMouse Do
       Begin
         Msg := LM_MBUTTONUP;
-        XPos := SmallInt(Lo(LParam));
-        YPos := SmallInt(Hi(LParam));
+        XPos := GET_X_LPARAM(LParam);
+        YPos := GET_Y_LPARAM(LParam);
         Keys := WParam;
       End;
     End;
@@ -1454,8 +1456,8 @@ begin
       With LMMouseMove Do
       Begin
         Msg := LM_MOUSEMOVE;
-        XPos := SmallInt(Lo(LParam));
-        YPos := SmallInt(Hi(LParam));
+        XPos := GET_X_LPARAM(LParam);
+        YPos := GET_Y_LPARAM(LParam);
         Keys := WParam;
         // check if this is a spurious WM_MOUSEMOVE message, pos not actually changed
         if (XPos = WindowInfo^.MouseX) and (YPos = WindowInfo^.MouseY) then
@@ -1478,8 +1480,8 @@ begin
       PLMsg:=@LMMouseEvent;
       With LMMouseEvent Do
       Begin
-        X := SmallInt(Lo(LParam));
-        Y := SmallInt(Hi(LParam));
+        X := GET_X_LPARAM(LParam);
+        Y := GET_Y_LPARAM(LParam);
         // check if mouse cursor within this window, otherwise send message to window the mouse is hovering over
         P.X := X;
         P.Y := Y;
@@ -1503,8 +1505,8 @@ begin
         if lWinControl.FCompStyle <> csComboBox then
         begin
           Msg := LM_MOUSEWHEEL;
-          Button := Lo(WParam);
-          WheelDelta := SmallInt(Hi(WParam));
+          Button := LOWORD(WParam);
+          WheelDelta := SmallInt(HIWORD(WParam));
           State := GetShiftState;
           UserData := Pointer(GetWindowLong(Window, GWL_USERDATA));
           WinProcess := false;
@@ -1581,7 +1583,7 @@ begin
                 idFrom := ShowHideTabPage(HWndFrom, true);
               NM_CUSTOMDRAW:
               begin
-                if WindowInfo^.WinControl is TCustomListView 
+                if WindowInfo^.WinControl is TCustomListView
                 then HandleListViewCustomDraw(TCustomListViewAccess(WindowInfo^.WinControl));
               end;
             end;
@@ -1604,8 +1606,8 @@ begin
       With LMMouse Do
       Begin
         Msg := LM_RBUTTONDBLCLK;
-        XPos := SmallInt(Lo(LParam));
-        YPos := SmallInt(Hi(LParam));
+        XPos := GET_X_LPARAM(LParam);
+        YPos := GET_Y_LPARAM(LParam);
         Keys := WParam;
       End;
     End;
@@ -1616,8 +1618,8 @@ begin
       With LMMouse Do
       Begin
         Msg := LM_RBUTTONDOWN;
-        XPos := SmallInt(Lo(LParam));
-        YPos := SmallInt(Hi(LParam));
+        XPos := GET_X_LPARAM(LParam);
+        YPos := GET_Y_LPARAM(LParam);
         Keys := WParam;
       End;
     End;
@@ -1629,8 +1631,8 @@ begin
       With LMMouse Do
       Begin
         Msg := LM_RBUTTONUP;
-        XPos := SmallInt(Lo(LParam));
-        YPos := SmallInt(Hi(LParam));
+        XPos := GET_X_LPARAM(LParam);
+        YPos := GET_Y_LPARAM(LParam);
         Keys := WParam;
         Result := 0;
       End;
@@ -2086,7 +2088,7 @@ function WindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
     LParam: Windows.LParam): LResult; stdcall;
 begin
   DebugLn(MessageStackDepth, 'WindowProc called for window=', IntToHex(Window, 8),' msg=',
-    WM_To_String(msg),' wparam=', IntToHex(WParam, 8), ' lparam=', IntToHex(lparam, 8));
+    WM_To_String(msg),' wparam=', IntToHex(WParam, sizeof(WParam)*4), ' lparam=', IntToHex(lparam, sizeof(lparam)*4));
   MessageStackDepth := MessageStackDepth + ' ';
 
   Result := RealWindowProc(Window, Msg, WParam, LParam);

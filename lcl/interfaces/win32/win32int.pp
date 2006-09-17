@@ -96,7 +96,7 @@ const
 
 Type
   PInitCommonControlsEx = ^TInitCommonControlsEx;
-  TInitCommonControlsEx = packed record
+  TInitCommonControlsEx = record
     dwSize: dword;
     dwICC: dword;
   end;
