@@ -79,7 +79,7 @@ mkdir -p $BUILDDIR/bin
 cd $BUILDDIR/bin
 ln -s ../share/lazarus/lazarus lazarus
 ln -s ../share/lazarus/startlazarus startlazarus
-ln -s ../share/lazarus/lazbuilder lazbuild
+ln -s ../share/lazarus/lazbuild lazbuild
 
 # copy license file, it must be a txt file.
 cp $LAZBUILDDIR/COPYING.GPL $BUILDDIR/License.txt
