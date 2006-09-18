@@ -28,7 +28,7 @@
 { $DEFINE CHECK_POSITION}
 {$IFDEF CHECK_POSITION}
 const CheckPostionClassName = 'TButtonX';
-const CheckPostionName = 'RubberbandGroupBox';
+const CheckPostionName = 'GroupBox2';
 
 function CheckPosition(AControl: TControl): boolean;
 begin
@@ -1022,6 +1022,7 @@ end;
 ------------------------------------------------------------------------------}
 procedure TWinControl.AlignControls(AControl: TControl;
   var RemainingClientRect: TRect);
+{ $DEFINE CHECK_POSITION}
 var
   AlignList: TFPList;
   BoundsMutated: boolean;
@@ -1158,13 +1159,14 @@ var
       //  debugln('GetAnchorSidePosition B Self=',DbgSName(Self),' Control=',DbgSName(Control),' Result=',dbgs(Result),' ReferenceControl=',dbgsName(ReferenceControl));
       AnchorSideCacheValid[Kind]:=true;
       AnchorSideCache[Kind]:=Result;
+      if ReferenceSide=asrTop then ;
     end;
 
   begin
     {$IFDEF CHECK_POSITION}
     if CheckPosition(Control) then
     with Control do
-      DebugLn('[TWinControl.AlignControls.DoPosition] A Control=',dbgsName(Self),' ',dbgs(Left),',',dbgs(Top),',',dbgs(Width),',',dbgs(Height),' recalculate the anchors=',dbgs(Control.Anchors <> AnchorAlign[AAlign]),' Align=',AlignNames[AAlign]);
+      DebugLn('[TWinControl.AlignControls.DoPosition] A Control=',dbgsName(Control),' ',dbgs(Left),',',dbgs(Top),',',dbgs(Width),',',dbgs(Height),' recalculate the anchors=',dbgs(Control.Anchors <> AnchorAlign[AAlign]),' Align=',AlignNames[AAlign]);
     {$ENDIF}
 
     with Control do begin
@@ -1243,8 +1245,8 @@ var
       DebugLn('[TWinControl.AlignControls.DoPosition] Before Anchoring ',
         ' Self='+DbgSName(Self),' Control='+DbgSName(Control),
         ' CurBaseBounds='+dbgs(CurBaseBounds.Left)+','+dbgs(CurBaseBounds.Top)+','+dbgs(CurBaseBounds.Right-CurBaseBounds.Left)+','+dbgs(CurBaseBounds.Bottom-CurBaseBounds.Top),
-        ' ParBaseClient='+dbgs(ParentBaseClientSize.X)+','+dbgs(ParentBaseClientSize.Y),
-        ' ParClient='+dbgs(Control.Parent.ClientWidth)+','+dbgs(Control.Parent.ClientHeight),
+        ' ParentBaseClientSize='+dbgs(ParentBaseClientSize.X)+','+dbgs(ParentBaseClientSize.Y),
+        ' ControlParent.Client='+dbgs(Control.Parent.ClientWidth)+','+dbgs(Control.Parent.ClientHeight),
         ' NewBounds='+dbgs(NewLeft)+','+dbgs(NewTop)+','+dbgs(NewWidth)+','+dbgs(NewHeight),
         '');
       {$ENDIF}
@@ -5315,7 +5317,30 @@ procedure TWinControl.Loaded;
 var
   CachedText: string;
   i: Integer;
+  AChild: TControl;
+  LoadedClientSize: TPoint;
 begin
+  //DebugLn(['TWinControl.Loaded ',DbgSName(Self),' cfWidthLoaded=',cfWidthLoaded in FControlFlags,' cfHeightLoaded=',cfHeightLoaded in FControlFlags,' ']);
+  if cfClientWidthLoaded in FControlFlags then
+    LoadedClientSize.X:=FLoadedClientSize.X
+  else begin
+    LoadedClientSize.X:=ClientWidth;
+    if LoadedClientSize.X<=0 then
+      LoadedClientSize.X:=Width;
+  end;
+  if cfClientHeightLoaded in FControlFlags then
+    LoadedClientSize.Y:=FLoadedClientSize.Y
+  else begin
+    LoadedClientSize.Y:=ClientHeight;
+    if LoadedClientSize.Y<=0 then
+      LoadedClientSize.Y:=Height;
+  end;
+  for i:=0 to ControlCount-1 do begin
+    AChild:=Controls[i];
+    if AChild=nil then ;
+    AChild.FBaseParentClientSize:=LoadedClientSize;
+    //DebugLn(['TWinControl.Loaded Self=',DbgSName(Self),' AChild=',AChild,' AChild.FBaseParentClientSize=',dbgs(AChild.FBaseParentClientSize)]);
+  end;
   if HandleAllocated then begin
     // Set cached caption
     if GetCachedText(CachedText) then

@@ -2079,18 +2079,18 @@ end;
 {------------------------------------------------------------------------------
   TControl SetClientSize
 ------------------------------------------------------------------------------}
-procedure TControl.SetClientSize(Value: TPoint);
+procedure TControl.SetClientSize(const Value: TPoint);
 var
   Client: TRect;
 begin
   Client := GetClientRect;
-  SetBounds(FLeft, FTop, Width - Client.Right + Value.X, Height -
-    Client.Bottom + Value.Y);
+  SetBounds(FLeft, FTop,
+            Width - Client.Right + Value.X, Height - Client.Bottom + Value.Y);
 end;
 
-{------------------------------------------------------------------------------}
-{  TControl SetClientWidth                                                     }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  TControl SetClientWidth
+------------------------------------------------------------------------------}
 procedure TControl.SetClientWidth(Value: Integer);
 begin
   if csLoading in ComponentState then begin
@@ -2104,9 +2104,9 @@ begin
   end;
 end;
 
-{------------------------------------------------------------------------------}
-{  TControl SetTempCursor                                                      }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  TControl SetTempCursor
+------------------------------------------------------------------------------}
 procedure TControl.SetTempCursor(Value: TCursor);
 begin
   TWSControlClass(WidgetSetClass).SetCursor(Self, Value);
@@ -2122,9 +2122,9 @@ begin
   // has changed
 end;
 
-{------------------------------------------------------------------------------}
-{  TControl SetCursor                                                          }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  TControl SetCursor
+------------------------------------------------------------------------------}
 procedure TControl.SetCursor(Value: TCursor);
 begin
   if FCursor <> Value

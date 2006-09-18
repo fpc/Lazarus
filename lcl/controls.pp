@@ -886,7 +886,7 @@ type
     procedure SetBoundsRect(const ARect: TRect);
     procedure SetBoundsRectForNewParent(const AValue: TRect);
     procedure SetClientHeight(Value: Integer);
-    procedure SetClientSize(Value: TPoint);
+    procedure SetClientSize(const Value: TPoint);
     procedure SetClientWidth(Value: Integer);
     procedure SetConstraints(const Value: TSizeConstraints);
     procedure SetCursor(Value: TCursor);
@@ -1164,7 +1164,7 @@ type
     procedure Hide;
     procedure Refresh;
     procedure Repaint; virtual;
-    Procedure Invalidate; virtual;
+    procedure Invalidate; virtual;
     procedure AddControl; virtual;
     function CheckChildClassAllowed(ChildClass: TClass;
                                     ExceptionOnInvalid: boolean): boolean;
@@ -1175,12 +1175,12 @@ type
     procedure ActiveDefaultControlChanged(NewControl: TControl); virtual;
     function  GetTextBuf(Buffer: PChar; BufSize: Integer): Integer; virtual;
     function  GetTextLen: Integer; virtual;
-    Procedure SetTextBuf(Buffer: PChar); virtual;
-    Function  Perform(Msg:Cardinal; WParam: WParam; LParam: LParam): LRESULT;
-    Function  ScreenToClient(const APoint: TPoint): TPoint;
-    Function  ClientToScreen(const APoint: TPoint): TPoint;
-    Function  ScreenToControl(const APoint: TPoint): TPoint;
-    Function  ControlToScreen(const APoint: TPoint): TPoint;
+    procedure SetTextBuf(Buffer: PChar); virtual;
+    function  Perform(Msg:Cardinal; WParam: WParam; LParam: LParam): LRESULT;
+    function  ScreenToClient(const APoint: TPoint): TPoint;
+    function  ClientToScreen(const APoint: TPoint): TPoint;
+    function  ScreenToControl(const APoint: TPoint): TPoint;
+    function  ControlToScreen(const APoint: TPoint): TPoint;
     function GetChildsRect(Scrolled: boolean): TRect; virtual;
     procedure Show;
     procedure Update; virtual;
@@ -1655,6 +1655,8 @@ type
     property Brush: TBrush read GetBrush;
     property CachedClientHeight: integer read FClientHeight;
     property CachedClientWidth: integer read FClientWidth;
+    property ClientWidth: Integer read GetClientWidth write SetClientWidth stored True;
+    property ClientHeight: Integer read GetClientHeight write SetClientHeight stored True;
     property ChildSizing: TControlChildSizing read FChildSizing write SetChildSizing;
     property ControlCount: Integer read GetControlCount;
     property Controls[Index: Integer]: TControl read GetControl;
