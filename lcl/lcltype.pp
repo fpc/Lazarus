@@ -857,7 +857,7 @@ type
   PNMHdr = ^TNMHdr;
   tagNMHDR = record
     hwndFrom: HWND;
-    idFrom: UINT_PTR;
+    idFrom: PtrUInt;
     code: Integer;
   end;
   TNMHdr = tagNMHDR;
