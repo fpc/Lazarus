@@ -1,5 +1,3 @@
-:: This setting need to change for every build
-SET LAZVERSION=0.9.17
 
 :: These settings are dependent on the configuration of the build machine
 :: Path to the Inno Setup Compiler
@@ -45,6 +43,7 @@ SET LOGFILE=%CD%\installer.log
 SET DATESTAMP=%date:~-4,4%%date:~-7,2%%date:~-10,2%
 SET BUILDDRIVE=%BUILDDIR:~,2%
 SET CP=%FPCBINDIR%\cp.exe
+FOR /F "delims='" %%F IN (%LAZSVNDIR%\ide\version.inc) DO (set LAZVERSION=%%F)
 
 ECHO Starting at: > %LOGFILE%
 %FPCBINDIR%\gdate >> %LOGFILE%

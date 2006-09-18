@@ -1,15 +1,12 @@
-:: This setting need to change for every build
-SET LAZVERSION=0.9.16
-
 :: These settings are dependent on the configuration of the build machine
 :: Path to the Inno Setup Compiler
 SET ISCC="C:\Program Files\Inno Setup 5\iscc.exe"
 
 :: Path to the fpc sources checked out of svn
-SET FPCSVNDIR=C:\lazarus\source\fpc\fpcbuild-2.0.2\fpcsrc
+SET FPCSVNDIR=c:\lazarus\source\fpcbuild\2.0.4\fpcsrc
 
 :: Path to the lazarus sources checked out of svn
-SET LAZSVNDIR=c:\lazarus\source\lazarus-0.9.16
+SET LAZSVNDIR=c:\lazarus\source\lazarus-0.9.18
 
 :: Path to fpc 2.0.2 compiler
 SET RELEASE_PPC=c:\fpc\2.0.2\bin\i386-win32\ppc386.exe
@@ -43,6 +40,7 @@ SET LOGFILE=%CD%\installer.log
 SET DATESTAMP=%date:~-4,4%%date:~-7,2%%date:~-10,2%
 SET BUILDDRIVE=%BUILDDIR:~,2%
 SET CP=%FPCBINDIR%\cp.exe
+FOR /F "delims='" %%F IN (%LAZSVNDIR%\ide\version.inc) DO (set LAZVERSION=%%F)
 
 ECHO Starting at: > %LOGFILE%
 %FPCBINDIR%\gdate >> %LOGFILE%
