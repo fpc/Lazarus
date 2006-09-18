@@ -35,7 +35,7 @@ LAZBUILDDIR=$BUILDDIR/lazarus
 DATESTAMP=`date +%Y%m%d`
 PACKPROJ=lazarus.packproj
 TEMPLATEDIR=$LAZSOURCEDIR/tools/install/macosx
-rm -rf $BUILDDIR
+
 
 # copy sources
 cd $LAZSOURCEDIR
@@ -45,9 +45,17 @@ cd $LAZSOURCEDIR/tools/install
 LAZVERSION=`./get_lazarus_version.sh`
 cd -
 
-if [ -d $BUILDDIR ]; then
-  rm -rf $BUILDDIR
+# clean builddir: since I am not root and the install dir can contain files owned by root 
+# created by a previous freeze, I just move it out of the way
+TRASHDIR=/tmp/`whoami`/trash
+if [ ! -d $TRASHDIR ] ; then
+  mkdir -p $TRASHDIR
 fi
+if [ -d $BUILDDIR ] ; then
+  mv $BUILDDIR $TRASHDIR/lazbuild-`date +%Y%m%d%H%M%S`
+fi
+
+
 mkdir -p $BUILDDIR
 $SVN export $LAZSOURCEDIR $LAZBUILDDIR
 if [ ! -e tools/svn2revisioninc ]; then
