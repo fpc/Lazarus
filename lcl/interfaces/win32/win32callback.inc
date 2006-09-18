@@ -1117,12 +1117,11 @@ begin
           Windows.SetTextColor(HDC(WParam), Windows.COLORREF(ColorToRGB(ChildWinControl.Font.Color)));
           Windows.SetBkColor(HDC(WParam), Windows.COLORREF(ColorToRGB(ChildWinControl.Brush.Color)));
           LMessage.Result := LResult(ChildWinControl.Brush.Handle);
-          DebugLn(['WindowProc ', ChildWinControl.Name, ' Brush: ', LMessage.Result]);
+          //DebugLn(['WindowProc ', ChildWinControl.Name, ' Brush: ', LMessage.Result]);
           // Override default handling
           WinProcess := false;
         end;
       end;
-      if (Msg = WM_CTLCOLORSCROLLBAR) then WinProcess := true;
     end;
     WM_CLEAR:
     begin
