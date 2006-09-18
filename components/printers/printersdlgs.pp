@@ -74,10 +74,12 @@ procedure Register;
 implementation
 
 {$IFDEF UNIX}
+uses Controls, udlgSelectPrinter,udlgpropertiesprinter, FileUtil, StrUtils;
 {$I ./unix/cupsprndialogs.inc}
 {$ENDIF}
 
 {$IFDEF MSWindows}
+uses Windows, WinUtilPrn, InterfaceBase, Win32Int, LCLIntf,LCLType,WinVer;
 {$I win32/winprndialogs.inc}
 {$ENDIF}
 

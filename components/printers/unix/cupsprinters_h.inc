@@ -87,6 +87,8 @@ type
      fCachePaperRect: TPaperRect;
      fCachePaperRectResult: Integer;
      FBeginDocCount: Integer;
+     fRawModefileName: string;
+     fRawModeStream: TMemoryStream;
 
      function GetCupsRequest : Pipp_t;
      procedure DoCupsConnect;
@@ -119,6 +121,7 @@ type
      
      function GetXDPI: Integer; override;
      function GetYDPI: Integer; override;
+     function Write(const Buffer; Count:Integer; var Written: Integer): Boolean; override;
 
      {-------------------------------------------------
          SPECIFIC CUPS METHODS OR PROPERTIES

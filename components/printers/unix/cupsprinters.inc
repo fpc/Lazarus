@@ -16,6 +16,18 @@ begin
   Result:=72;
 end;
 
+//write count bytes from buffer to raw mode stream
+function TCUPSPrinter.Write(const Buffer; Count: Integer; var Written: Integer
+  ): Boolean;
+begin
+  result := False;
+  CheckRawMode(True);
+  if not Assigned(FRawModeStream) then
+    FRawModeStream := TMemoryStream.Create;
+  Written := FRawModeStream.Write(Buffer, Count);
+  Result := True;
+end;
+
 constructor TCUPSPrinter.Create;
 begin
   inherited Create;
@@ -26,10 +38,15 @@ begin
   fcupsPPD     :=nil;
   fcupsOptions :=nil;
   fcupsNumOpts :=0;
+  
+  FRawModeStream:=nil;
 end;
 
 destructor TCUPSPrinter.destroy;
 begin
+  if assigned(fRawModeStream) then
+    fRawModeStream.Free;
+
   FreeOptions;
 
   if Assigned(fcupsHttp) then
@@ -402,7 +419,7 @@ var
   end;
 
 var
-  NewOutputFileName: String;
+  Extension: String;
 begin
   if FBeginDocCount>0 then
     raise Exception.Create('TCUPSPrinter.DoBeginDoc already called. Maybe you forgot an EndDoc?');
@@ -414,10 +431,16 @@ begin
   and (not TryTemporaryPath('/var/tmp/')) then
     NewPath:='';
 
-  NewOutputFileName:=AppendPathDelim(NewPath)
-                   +'OutPrinter_'+FormatDateTime('yyyymmmddd-hhnnss',Now)+'.ps';
-  
-  TPostscriptPrinterCanvas(Canvas).OutputFileName:=NewOutputFileName;
+  if RawMode then
+    Extension:='.raw'
+  else
+    Extension:='.ps';
+
+  fRawModeFileName:=AppendPathDelim(NewPath)
+                   +'OutPrinter_'+FormatDateTime('yyyymmmddd-hhnnss',Now)+Extension;
+                   
+  if not RawMode then
+    TPostscriptPrinterCanvas(Canvas).OutputFileName:=fRawModeFileName;
 end;
 
 //If not aborted, send PostScript file to printer.
@@ -429,12 +452,21 @@ begin
   Exclude(FStates,cpsPaperRectValid);
 
   //exit;
-  
-  if not aAborded then
-    PrintFile(TPostscriptPrinterCanvas(Canvas).OutPutFileName);
+  if RawMode then begin
 
-  DeleteFile(TPostscriptPrinterCanvas(Canvas).OutPutFileName);
-  TPostscriptPrinterCanvas(Canvas).OutPutFileName:='';
+    if not aAborded and assigned(fRawModeStream) then begin
+      fRawModeStream.SaveToFile(FRawModeFileName);
+      PrintFile(FRawModeFileName);
+      DeleteFile(FRawModeFileName);
+    end;
+    
+  end else begin
+    if not aAborded then
+      PrintFile(TPostscriptPrinterCanvas(Canvas).OutPutFileName);
+
+    DeleteFile(TPostscriptPrinterCanvas(Canvas).OutPutFileName);
+    TPostscriptPrinterCanvas(Canvas).OutPutFileName:='';
+  end;
 end;
 
 procedure TCUPSPrinter.DoResetPrintersList;

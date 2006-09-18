@@ -133,6 +133,7 @@ type
     fAborted     : Boolean;      //Abort  process
     //fCapabilities: TPrinterCapabilities;
     fPaperSize   : TPaperSize;
+    fRawMode     : Boolean;
     
     function GetCanvas: TCanvas;
     procedure CheckPrinting(Value: Boolean);
@@ -147,6 +148,7 @@ type
     procedure SetCopies(AValue: Integer);
     procedure SetOrientation(const AValue: TPrinterOrientation);
     procedure SetPrinterIndex(AValue: integer);
+    procedure SetRawMode(const AValue: boolean);
   protected
      procedure SelectCurrentPrinterOrDefault;
      
@@ -178,6 +180,8 @@ type
      function GetCanRenderCopies : Boolean; virtual;
      function GetXDPI: Integer; virtual;
      function GetYDPI: Integer; virtual;
+     procedure CheckRawMode(const Value: boolean; Msg:string='');
+     procedure RawModeChanging; virtual;
   public
      constructor Create; virtual;
      destructor Destroy; override;
@@ -188,6 +192,8 @@ type
      procedure NewPage;
      procedure Refresh;
      procedure SetPrinter(aName : String);
+     function  Write(const Buffer; Count:Integer; var Written: Integer): Boolean; virtual;
+
 
      property PrinterIndex : integer read GetPrinterIndex write SetPrinterIndex;
      property PaperSize : TPaperSize read GetPaperSize;
@@ -208,6 +214,7 @@ type
      property CanRenderCopies : Boolean read GetCanRenderCopies;
      property XDPI : Integer read GetXDPI;
      property YDPI : Integer read GetYDPI;
+     property RawMode: boolean read FRawMode write SetRawMode;
   end;
   
 var
@@ -279,15 +286,20 @@ begin
   //If not selected printer, set default printer
   SelectCurrentPrinterOrDefault;
   
-  Canvas.Refresh;
   fPrinting := True;
   fAborted := False;
   fPageNumber := 1;
-  TPrinterCanvas(Canvas).BeginDoc;
+  
+  if not FRawMode then begin
+    Canvas.Refresh;
+    TPrinterCanvas(Canvas).BeginDoc;
+  end;
   //Call the specifique Begindoc
   DoBeginDoc;
+  
   // Set font resolution
-  Canvas.Font.PixelsPerInch := YDPI;
+  if not FRawMode then
+    Canvas.Font.PixelsPerInch := YDPI;
 end;
 
 //End the current document
@@ -296,7 +308,8 @@ begin
   //Check if Printer print otherwise, exception
   CheckPrinting(True);
 
-  TPrinterCanvas(Canvas).EndDoc;
+  if not FRawMode then
+    TPrinterCanvas(Canvas).EndDoc;
   
   DoEndDoc(fAborted);
 
@@ -310,8 +323,8 @@ procedure TPrinter.NewPage;
 begin
   CheckPrinting(True);
   Inc(fPageNumber);
-  
-  TPrinterCanvas(Canvas).NewPage;
+  if not RawMode then
+    TPrinterCanvas(Canvas).NewPage;
   DoNewPage;
 end;
 
@@ -389,9 +402,18 @@ begin
   end
 end;
 
+function TPrinter.Write(const Buffer; Count:Integer; var Written: Integer): Boolean;
+begin
+  result := False;
+end;
+
 //Return an Canvas object
 function TPrinter.GetCanvas: TCanvas;
 begin
+  Result := nil;
+  
+  CheckRawMode(False, 'Canvas not allowed in Raw Mode');
+  
   if not Assigned(fCanvas) then
   begin
     if not Assigned(GetCanvasRef) then
@@ -413,6 +435,24 @@ begin
     else
       raise Eprinter.Create('Printer print');
   end;
+end;
+
+procedure TPrinter.CheckRawMode(const Value:boolean; msg:string ='');
+begin
+  if FRawMode<>Value then
+  begin
+    if msg='' then
+      if Value then
+        Msg:='Printer is in Raw Mode'
+      else
+        Msg:='Printer is not in Raw Mode';
+    raise EPrinter.Create(msg);
+  end;
+end;
+
+procedure TPrinter.RawModeChanging;
+begin
+  //
 end;
 
 //Get current copies number
@@ -546,6 +586,15 @@ begin
     raise EPrinter.Create('No printers defined !');
 end;
 
+procedure TPrinter.SetRawMode(const AValue: boolean);
+begin
+  if AValue<>FRawMode then begin
+    CheckPrinting(False);
+    RawModeChanging;
+    FRawMode := AValue;
+  end;
+end;
+
 //If not Printer selected, Select the default printer
 procedure TPrinter.SelectCurrentPrinterOrDefault;
 begin
@@ -556,7 +605,10 @@ end;
 //Specify here the Canvas class used by your TPrinter object
 function TPrinter.GetCanvasRef: TPrinterCanvasRef;
 begin
-  Result:=TPrinterCanvas;
+  if FRawMode then
+    result := nil
+  else
+    Result:=TPrinterCanvas;
 end;
 
 

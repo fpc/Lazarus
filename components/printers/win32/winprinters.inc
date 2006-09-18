@@ -26,19 +26,27 @@ constructor TWinPrinter.Create;
 begin
   inherited Create;
 
-  fLastHandleType:=0; //None
+  fLastHandleType:=htNone;
   fPrinterHandle :=0; //None
 end;
 
 destructor TWinPrinter.Destroy;
 begin
   ClearDC;
+    
   DoResetPrintersList;
 
   if fPrinterHandle<>0 then
       ClosePrinter(fPrinterHandle);
 
   inherited Destroy;
+end;
+
+function TWinPrinter.Write(const Buffer; Count: Integer;
+  var Written: Integer): Boolean;
+begin
+  CheckRawMode(True);
+  result := WritePrinter(FPrinterHandle, @Buffer, Count, @Written);
 end;
 
 function TWinPrinter.GetHandlePrinter : HDC;
@@ -50,19 +58,27 @@ end;
 
 procedure TWinPrinter.SetHandlePrinter(aValue : HDC);
 begin
+  CheckRawMode(False);
   if aValue <> fDC then
   begin
    ClearDC;
    fDC := aValue;
    if Assigned(Canvas) then Canvas.Handle:=fDC;
-   fLastHandleType:=2;
+   fLastHandleType:=htDC;
   end;
+end;
+
+procedure TWinPrinter.RawModeChanging;
+begin
+  // if old mode was standard free DC if it was created
+  if not RawMode and (fDC<>0) then
+    FreeDC;
 end;
 
 function TWinPrinter.GetXDPI: Integer;
 begin
   Result:=72;
-  if (Printers.Count>0) then
+  if (Printers.Count>0) and not RawMode then
   begin
     SetDC;
     Result:=GetDeviceCaps(fDC, LOGPIXELSX);
@@ -72,7 +88,7 @@ end;
 function TWinPrinter.GetYDPI: Integer;
 begin
   Result:=72;
-  if (Printers.Count>0) then
+  if (Printers.Count>0) and not RawMode then
   begin
     SetDC;
     Result:=GetDeviceCaps(fDC,LOGPIXELSY);
@@ -82,7 +98,7 @@ end;
 procedure TWinPrinter.SetIC;
 var PDev : TPrinterDevice;
 begin
-  if (fLastHandleType=0) and (Printers.Count>0) then
+  if (fLastHandleType=htNone) and (Printers.Count>0) then
   begin
     PDev:=TPrinterDevice(Printers.Objects[PrinterIndex]);
     
@@ -94,17 +110,22 @@ begin
            PChar(PDev.Port),PDev.DevMode);
 
     if fDC=0 then
-      raise EPrinter.Create(Format('Invalid printer (DC=%d Driver=%s Device=%s Port=%s)',[fDC,Pdev.Driver,PDev.Device,PDev.Port]));
+      raise EPrinter.Create(
+        Format('Invalid printer (DC=%d Driver=%s Device=%s Port=%s)',
+          [fDC,Pdev.Driver,PDev.Device,PDev.Port]));
+          
     if Assigned(Canvas) then
       Canvas.Handle:=fDC;
-    fLastHandleType:=1;
+      
+    fLastHandleType:=htIC;
   end;
 end;
 
 procedure TWinPrinter.SetDC;
 var PDev : TPrinterDevice;
 begin
-  if (fLastHandleType<>2) and (Printers.Count>0) then
+
+  if (fLastHandleType<>htDC) and (Printers.Count>0) then
   begin
     ClearDC;
     PDev:=TPrinterDevice(Printers.Objects[PrinterIndex]);
@@ -114,7 +135,8 @@ begin
     //if the Printername or share is longer than 32 chars, this will return 0
     fDC:=CreateDC(nil,PChar(Printers[PrinterIndex]),nil, PDev.DevMode);
     if fDC=0 then
-      fDC:=CreateDC(PChar('WINSPOOL'),PChar(Printers[PrinterIndex]),nil,PDev.DevMode);
+      fDC:=CreateDC(PChar('WINSPOOL'),PChar(Printers[PrinterIndex]),nil,
+        PDev.DevMode);
 
     {Workaround (hack) for Lexmark 1020 JetPrinter (Mono)}
     if fDC=0 then
@@ -123,28 +145,44 @@ begin
       fDC:=CreateDC(pChar('WINSPOOL'),PChar(PDev.Driver),nil,PDev.DevMode);
 
     except on E:Exception do
-       raise EPrinter.Create(Format('CreateDC exception: %s (LastError : %s,DC=%d Driver="%s" Device="%s" Port="%s")',[E.Message,SysErrorMessage(GetLastError),fDC,Pdev.Driver,Printers[PrinterIndex],PDev.Port]));
+      raise EPrinter.Create(Format('CreateDC Exception:"%s" (Error:"%s", '+
+          'DC=%d Driver="%s" Device="%s" Port="%s")', [E.Message,
+          SysErrorMessage(GetLastError),fDC, Pdev.Driver,
+          Printers[PrinterIndex],PDev.Port]));
     end;
     
     if fDC=0 then
-      raise EPrinter.Create(Format('Invalid printer (Error : %s,DC=%d Driver="%s" Device="%s" Port="%s")',[SysErrorMessage(GetLastError),fDC,Pdev.Driver,Printers[PrinterIndex],PDev.Port]));
+      raise EPrinter.Create(Format('Invalid printer (Error:%s, '+
+          'DC=%d Driver="%s" Device="%s" Port="%s")',
+          [SysErrorMessage(GetLastError),fDC,Pdev.Driver,Printers[PrinterIndex],
+           PDev.Port]));
+      
     if Assigned(Canvas) then
       Canvas.Handle:=fDC;
-    fLastHandleType:=2;
+      
+    fLastHandleType:=htDC;
 
   end;
 end;
 
 procedure TWinPrinter.ClearDC;
 begin
+  if not RawMode then
+    FreeDC
+end;
+
+procedure TWinPrinter.FreeDC;
+begin
   if Assigned(Canvas) then
     Canvas.Handle:=0;
+
   if fDC<>0 then
   begin
     DeleteDC(fDC);
     fDc := 0;
   end;
-  fLastHandleType:=0;
+
+  fLastHandleType:=htNone;
 end;
 
 
@@ -183,47 +221,89 @@ begin
 end;
 
 procedure TWinPrinter.DoBeginDoc;
-var Inf: TDocInfo;
+var
+  Inf: TDocInfo;
+  Doc1: DOC_INFO_1;
 begin
   inherited DoBeginDoc;
 
   if fPrinterHandle=0 then
     raise EPrinter.Create('Printer handle not defined');
 
-  SetDC;
-  Canvas.Handle:=fDC;
-  Canvas.Refresh;
+  if RawMode then begin
 
-  FillChar(Inf,SizeOf(Inf),0);
-  Inf.cbSize:=SizeOf(Inf);
-  Inf.lpszDocName:=PChar(Title);
+    Doc1.DocName    := pchar(Title);
+    Doc1.OutputFile := nil;
+    Doc1.DataType   := 'RAW';
+    
+    if StartDocPrinter(FPrinterHandle, 1, @Doc1)=0 then begin
+      ClosePrinter(FPrinterHandle);
+      FPrinterHandle:=0;
+    end else
+    if StartPagePrinter(FPrinterHandle)=0 then begin
+      EndDocPrinter(FPrinterHandle);
+      ClosePrinter(FPrinterHandle);
+      FPrinterHandle:=0;
+    end;
+      
+  end else begin
 
-  StartDoc(fDC,Inf);
-  StartPage(fDC);
+    SetDC;
+    Canvas.Handle:=fDC;
+    Canvas.Refresh;
+
+    FillChar(Inf,SizeOf(Inf),0);
+    Inf.cbSize:=SizeOf(Inf);
+    Inf.lpszDocName:=PChar(Title);
+
+    StartDoc(fDC,Inf);
+    StartPage(fDC);
+    
+  end;
 end;
 
 procedure TWinPrinter.DoNewPage;
 begin
   inherited DoNewPage;
+  
+  if RawMode then begin
 
-  EndPage(fDC);
-  StartPage(fDC);
-  Canvas.Refresh;
+    EndPagePrinter(FPrinterHandle);
+    StartPagePrinter(FPrinterHandle);
+    
+  end else begin
+    EndPage(fDC);
+    StartPage(fDC);
+    Canvas.Refresh;
+  end;
 end;
 
 procedure TWinPrinter.DoEndDoc(aAborded: Boolean);
 begin
   inherited DoEndDoc(aAborded);
 
-  EndPage(fDC);
-  if not aAborded then
-    WinUtilPrn.EndDoc(fDC);
+  if RawMode then begin
+
+    EndPagePrinter(FPrinterHandle);
+    EndDocPrinter(FPrinterHandle);
+    {
+    ClosePrinter(FPrinterHandle);
+    FPrinterHandle:=0;
+    }
+  end else begin
+    EndPage(fDC);
+    if not aAborded then
+      WinUtilPrn.EndDoc(fDC);
+  end;
 end;
 
 procedure TWinPrinter.DoAbort;
 begin
   inherited DoAbort;
-  AbortDoc(fDC);
+  if RawMode then
+    AbortPrinter(FPrinterHandle)
+  else
+    AbortDoc(fDC);
 end;
 
 //Enum all defined printers. First printer it's default
@@ -260,7 +340,8 @@ begin
   end
   else
   begin
-    GetProfileString(PChar('windows'),PChar('device'),PChar(''),DefaultPrinter,SizeOf(DefaultPrinter));
+    GetProfileString(PChar('windows'),PChar('device'),PChar(''),
+                     DefaultPrinter,SizeOf(DefaultPrinter));
     if pos(',',DefaultPrinter)<>0 then
        DefaultPrinter:=Copy(DefaultPrinter,1,Pos(',',DefaultPrinter)-1);
   end;
@@ -298,8 +379,8 @@ begin
               //    have not extra settings at all.
               //
               // PDev.DevMode:=PPRINTER_INFO_2(InfoPrt)^.PDevMode^;
-              PDev.Device:= TmpDevMode^.dmDeviceName; //PDev.DevMode.dmDeviceName;
-              PDev.DefaultPaper:=TmpDevMode^.dmPaperSize; //PDev.DevMode.dmPaperSize;
+              PDev.Device:= TmpDevMode^.dmDeviceName;
+              PDev.DefaultPaper:=TmpDevMode^.dmPaperSize;
             end
             else begin
               PDev.Device:='';
@@ -363,7 +444,9 @@ begin
     PaperC:=0;
     Count := DeviceCapabilities(PChar(Pdev.Name),PCHar(PDev.Port),
           DC_PAPERNAMES,nil,nil);
-    if Count<=0 then raise EPrinter.CreateFmt('DoEnumPapers<DC_PAPERNAMES> error : %d, (%s)',[GetLastError,SysErrorMessage(GetLastError)]);
+    if Count<=0 then
+      raise EPrinter.CreateFmt('DoEnumPapers<DC_PAPERNAMES> error : %d, (%s)',
+          [GetLastError,SysErrorMessage(GetLastError)]);
     GetMem(Buffer,64*Count);
     try
       PaperC:=DeviceCapabilities(PChar(Pdev.Name),PCHar(PDev.Port),
@@ -381,9 +464,12 @@ begin
     FillChar(ArPapers,SizeOf(ArPapers),0);
     PaperC:=DeviceCapabilities(PChar(Pdev.Name),PCHar(PDev.Port),
           DC_PAPERS,@ArPapers,nil);
-    if PaperC<=0 then raise EPrinter.CreateFmt('DoEnumPapers<DC_PAPERS> error : %d, (%s)',[GetLastError,SysErrorMessage(GetLastError)]);
-      for i:=0 to PaperC-1 do
-       Lst.Objects[i]:=TObject(ptrint(ArPapers[i]));
+    if PaperC<=0 then
+      raise EPrinter.CreateFmt('DoEnumPapers<DC_PAPERS> error : %d, (%s)',
+          [GetLastError,SysErrorMessage(GetLastError)]);
+      
+    for i:=0 to PaperC-1 do
+      Lst.Objects[i]:=TObject(ptrint(ArPapers[i]));
   end;
 end;
 
@@ -410,10 +496,11 @@ begin
   if (Printers.Count>0) then
   begin
     PDev:=TPrinterDevice(Printers.Objects[PrinterIndex]);
-
-    i:=PaperSize.SupportedPapers.IndexOfObject(TObject(ptrint(PDev.DefaultPaper)));
-    if i<>-1 then
-      Result:=PaperSize.SupportedPapers.Strings[i];
+    with PaperSize.SupportedPapers do begin
+      i:=IndexOfObject(TObject(ptrint(PDev.DefaultPaper)));
+      if i<>-1 then
+        Result:= Strings[i];
+    end;
   end;
 end;
 
@@ -431,14 +518,15 @@ begin
   end;
 end;
 
-function TWinPrinter.DoGetPaperRect(aName: string; var aPaperRc: TPaperRect): Integer;
+function TWinPrinter.DoGetPaperRect(aName: string;
+  var aPaperRc: TPaperRect): Integer;
 var NSize, i : Integer;
     PDev     : TPrinterDevice;
     ArSizes  : Array[0..255] of TPoint;
 begin
   Result:=Inherited DoGetPaperRect(aName,aPaperRc);
 
-  if (Printers.Count>0) then
+  if (Printers.Count>0) and not RawMode then
   begin
     // Information for physical sizes can be obtained for any paper supported
     // by the printer, the same is not true for printable paper size, this can
@@ -497,14 +585,18 @@ begin
   if i<>-1 then
   begin
     ClearDC;
+
+    if FPrinterHandle<>0 then
+      ClosePrinter(FPrinterHandle);
+
     PDev:=TPrinterDevice(Printers.Objects[i]);
-    if fPrinterHandle<>0 then
-      ClosePrinter(fPrinterHandle);
     if not OpenPrinter(PChar(PDev.Name),fPrinterHandle, nil) then
-      raise EPrinter.CreateFmt('OpenPrinter exception : %s',[SysErrorMessage(GetlastError)])
-    else
-      UpdateDevMode;
-     Result:=i;
+      raise EPrinter.CreateFmt('OpenPrinter exception : %s',
+                                   [SysErrorMessage(GetlastError)]);
+
+    UpdateDevMode;
+
+    Result:=i;
   end;
 end;
 
@@ -569,7 +661,8 @@ begin
   try
   if not GetPrinter(fPRinterHandle,4,InfoPrt,Size,Size)
   then
-    raise EPrinter.CreateFmt('GetPrinterType failed : %s',[SysErrorMessage(GetLastError)]);
+    raise EPrinter.CreateFmt('GetPrinterType failed : %s',
+        [SysErrorMessage(GetLastError)]);
   if PPRINTER_INFO_4(InfoPrt)^.Attributes = PRINTER_ATTRIBUTE_NETWORK then
      Result := ptNetwork;
   finally
@@ -591,7 +684,8 @@ begin
   try
   if not GetPrinter(fPrinterHandle,2,InfoPrt,Size,Size)
   then
-    raise EPrinter.CreateFmt('GetPrinterState failed : %s',[SysErrorMessage(GetLastError)]);
+    raise EPrinter.CreateFmt('GetPrinterState failed : %s',
+        [SysErrorMessage(GetLastError)]);
 
   Jobs := PPRINTER_INFO_2(InfoPrt)^.cJobs;
   Status := PPRINTER_INFO_2(InfoPrt)^.Status;
@@ -637,7 +731,8 @@ begin
   if (Printers.Count>0) then
   begin
     PDev:=TPrinterDevice(Printers.Objects[PrinterIndex]);
-    Count := DeviceCapabilities(PChar(Pdev.Name),PCHar(PDev.Port),DC_COPIES,nil,PDev.DevMode);
+    Count := DeviceCapabilities(PChar(Pdev.Name),PCHar(PDev.Port),
+                                DC_COPIES,nil,PDev.DevMode);
     Result := (Count>1);
   end;
 end;

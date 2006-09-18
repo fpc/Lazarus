@@ -29,19 +29,21 @@ uses
   Classes, SysUtils,Printers,LCLType,{Forms,}Windows;//,dialogs;
 
 Type
+  THandleType = (htNone, htIC, htDC);
 
   { TWinPrinter }
 
   TWinPrinter = class(TPrinter)
   private
     //fDefaultPrinter : String;
-    fLastHandleType : Byte; //0=None 1=IC 2=DC
+    fLastHandleType : THandleType;
     fDC             : HDC;
     fPrinterHandle  : THandle;
     
     procedure SetIC;
     procedure SetDC;
     procedure ClearDC;
+    procedure FreeDC;
     procedure UpdateDevMode;
 
   protected
@@ -75,10 +77,12 @@ Type
     function GetCanRenderCopies : Boolean;override;
     function GetHandlePrinter : HDC;
     procedure SetHandlePrinter(aValue : HDC);
+    procedure RawModeChanging; override;
   public
     constructor Create; override;
     destructor Destroy; override;
     
+    function Write(const Buffer; Count:Integer; var Written: Integer): Boolean; override;
 
     //Warning not portable functions here
     procedure AdvancedProperties;

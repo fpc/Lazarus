@@ -190,6 +190,13 @@ type
     lpszDatatype: PChar;
     fwType      : DWORD;
   end;
+  
+  PDOC_INFO_1 = ^DOC_INFO_1;
+  DOC_INFO_1 = packed record
+    DocName     : PChar;
+    OutputFile  : PChar;
+    DataType    : PChar;
+  end;
 
   PPRINTER_INFO_1 = ^_PRINTER_INFO_1;
   _PRINTER_INFO_1 = packed Record
@@ -322,6 +329,13 @@ function StartPage(DC: HDC): Integer; stdcall; external 'gdi32.dll' name 'StartP
 function EndPage(DC: HDC): Integer; stdcall; external 'gdi32.dll' name 'EndPage';
 function AbortDoc(DC: HDC): Integer; stdcall; external 'gdi32.dll' name 'AbortDoc';
 function GlobalFree(HMem: HGlobal): HGlobal; stdcall; external 'kernel32.dll' name 'GlobalFree';
+
+function StartDocPrinter(hPrinter:THANDLE; Level:DWORD; DocInfo:PByte):DWORD; stdcall; external LibWinSpool name 'StartDocPrinterA';
+function StartPagePrinter(hPrinter:THANDLE):DWORD; stdcall; external LibWinSpool name 'StartPagePrinter';
+function EndDocPrinter(hprinter:THANDLE):BOOL; stdcall; external LibWinSpool name 'EndDocPrinter';
+function EndPagePrinter(hprinter:THANDLE):BOOL; stdcall; external LibWinSpool name 'EndPagePrinter';
+function AbortPrinter(hPrinter:THANDLE):BOOL; stdcall; external LibWinSpool name 'AbortPrinter';
+function WritePrinter(hPrinter:THANDLE; Buffer:Pointer; Count:DWord; Written:PDWORD):BOOL; stdcall; external LibWinSpool name 'WritePrinter';
 
 implementation
 

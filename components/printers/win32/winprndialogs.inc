@@ -1,6 +1,4 @@
 {%MainUnit ../printersdlgs.pp}
-Uses
- Windows,WinUtilPrn, InterfaceBase, Win32Int, LCLIntf,LCLType,WinVer;
 
 
 { TPageSetupDialog }
@@ -173,7 +171,10 @@ begin
     begin
       lStructSize:=SizeOf(lpp);
       hInstance:=LCLType.HInstance;
-      Flags := PD_RETURNDC;
+      if Printer.RawMode then
+        Flags := 0
+      else
+        Flags := PD_RETURNDC;
       if Collate then Flags := Flags or PD_COLLATE;
       case PrintRange of
        prPageNums : Flags := Flags or PD_PAGENUMS;
@@ -225,12 +226,13 @@ begin
 
           Result:=True;
           
-          if lpp.hDevMode<>0 then
+          // printer might have changed, check if new printer
+          // support extended device modes
+          PDev:=TPrinterDevice(Printer.Printers.Objects[Printer.PrinterIndex]);
+          if (lpp.hDevMode<>0) and (Pdev.DevMode<>nil) then
           begin
             DevMode:=PDeviceMode(GlobalLock(lpp.hDevMode));
             try
-              //Set the properties for the selected printer
-              PDev:=TPrinterDevice(Printer.Printers.Objects[Printer.PrinterIndex]);
               CopyMemory(PDev.DevMode,DevMode,PDev.DevModeSize);
               
               if Printer.PaperSize.SupportedPapers.IndexOfObject(TObject(ptrint(DevMode^.dmPaperSize))) <> -1
@@ -243,10 +245,13 @@ begin
               else
                 Copies := nCopies;
               Printer.Copies := Copies;
-              TWinPrinter(Printer).Handle := hDC;
+              
+              if not Printer.RawMode then
+                TWinPrinter(Printer).Handle := hDC;
+                
             finally
               GlobalUnlock(lpp.hDevMode);
-           end;
+            end;
           end;
           
           PrintRange := prAllPages;
