@@ -217,7 +217,7 @@ type
   end;
 
 var
-  HelpManager: THelpManager = nil;
+  HelpManager: THelpManager = nil;// set by the IDE
 
 //==============================================================================
 { Showing help (how it works):

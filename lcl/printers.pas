@@ -28,7 +28,7 @@ unit Printers;
 interface
 
 uses
-  Classes, SysUtils,Graphics;
+  Classes, SysUtils, LCLProc, Graphics;
 type
   TPrinter = Class;
   EPrinter = class(Exception);
@@ -660,6 +660,8 @@ end;
 //Initialize the Lst with all supported papers names
 procedure TPrinter.DoEnumPapers(Lst: TStrings);
 begin
+  //DebugLn(['TPrinter.DoEnumPapers ',dbgsName(Self)]);
+  
  //Override this methode
 end;
 
@@ -781,11 +783,13 @@ end;
 function TPaperSize.GetSupportedPapers: TStrings;
 begin
   if (fOwnedPrinter.Printers.Count>0) and
-     ((fSupportedPapers.Count=0) or (fLastPrinterIndex<>fOwnedPrinter.PrinterIndex)) then
+     ((fSupportedPapers.Count=0)
+       or (fLastPrinterIndex<>fOwnedPrinter.PrinterIndex)) then
   begin
     fOwnedPrinter.SelectCurrentPrinterOrDefault;
     
     fSupportedPapers.Clear;
+    //DebugLn(['TPaperSize.GetSupportedPapers ',dbgsName(fOwnedPrinter),' ',dbgsName(Printer),' ',fOwnedPrinter=Printer]);
     fOwnedPrinter.DoEnumPapers(fSupportedPapers);
     fLastPrinterIndex:=fOwnedPrinter.PrinterIndex;
   end;
@@ -817,7 +821,7 @@ begin
     begin
       Result := TmpPaperRect;
     end
-    else raise EPrinter.Create(Format('The paper "%s" as not definied rect ! ',[aName]));
+    else raise EPrinter.Create(Format('The paper "%s" has no defined rectangle ! ',[aName]));
   end
   else raise EPrinter.Create(Format('Paper "%s" not supported !',[aName]));
 end;

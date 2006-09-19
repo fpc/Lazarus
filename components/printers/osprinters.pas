@@ -35,21 +35,21 @@ unit OSPrinters;
 interface
 
 {$IFDEF UNIX}
-{$I ./unix/cupsprinters_h.inc}
+{$I cupsprinters_h.inc}
 {$ENDIF}
 
 {$IFDEF MSWindows}
-{$I ./win32/winprinters_h.inc}
+{$I winprinters_h.inc}
 {$ENDIF}
 
 implementation
 
 {$IFDEF UNIX}
-{$I ./unix/cupsprinters.inc}
+{$I cupsprinters.inc}
 {$ENDIF}
 
 {$IFDEF MSWindows}
-{$I ./win32/winprinters.inc}
+{$I winprinters.inc}
 {$ENDIF}
 
 end.

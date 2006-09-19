@@ -6,7 +6,7 @@
     <CompilerOptions>
       <Version Value="5"/>
       <SearchPaths>
-        <IncludeFiles Value="$(TargetOS)/"/>
+        <IncludeFiles Value="unix/;win32/"/>
         <OtherUnitFiles Value="unix/;win32/"/>
         <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>

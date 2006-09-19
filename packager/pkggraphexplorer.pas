@@ -199,7 +199,7 @@ begin
   if Dependency<>nil then begin
     // node is a not fullfilled dependency
     AllowExpansion:=false;
-  end else begin
+  end else if Pkg<>nil then begin
     // node is a package
     ViewNode:=Node.GetFirstChild;
     Dependency:=Pkg.FirstRequiredDependency;
@@ -239,6 +239,8 @@ begin
       ViewNode.Free;
       ViewNode:=NextViewNode;
     end;
+  end else begin
+    DebugLn(['TPkgGraphExplorerDlg.PkgTreeViewExpanding Node has no package ',Node.Text]);
   end;
 end;
 

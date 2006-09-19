@@ -161,10 +161,6 @@ type
     function CheckPackageGraphForCompilation(APackage: TLazPackage;
                                  FirstDependency: TPkgDependency;
                                  const Directory: string): TModalResult;
-    function MacroFunctionPkgPath(Data: Pointer): boolean;
-    function MacroFunctionPkgSrcPath(Data: Pointer): boolean;
-    function MacroFunctionPkgUnitPath(Data: Pointer): boolean;
-    function MacroFunctionPkgIncPath(Data: Pointer): boolean;
     function DoGetUnitRegisterInfo(const AFilename: string;
                           var TheUnitName: string; var HasRegisterProc: boolean;
                           IgnoreErrors: boolean): TModalResult;
@@ -1458,103 +1454,6 @@ begin
   Result:=mrOk;
 end;
 
-function TPkgManager.MacroFunctionPkgPath(Data: Pointer): boolean;
-var
-  FuncData: PReadFunctionData;
-  PkgID: TLazPackageID;
-  APackage: TLazPackage;
-begin
-  FuncData:=PReadFunctionData(Data);
-  PkgID:=TLazPackageID.Create;
-  Result:=false;
-  if PkgID.StringToID(FuncData^.Param) then begin
-    APackage:=PackageGraph.FindPackageWithID(PkgID);
-    if APackage<>nil then begin
-      FuncData^.Result:=APackage.Directory;
-      Result:=true;
-    end else begin
-      DebugLn('WARNING: TPkgManager.MacroFunctionPkgPath unknown package id: ',FuncData^.Param);
-    end;
-  end else begin
-    DebugLn('WARNING: TPkgManager.MacroFunctionPkgPath invalid package id: ',FuncData^.Param);
-  end;
-  PkgID.Free;
-end;
-
-function TPkgManager.MacroFunctionPkgSrcPath(Data: Pointer): boolean;
-var
-  FuncData: PReadFunctionData;
-  PkgID: TLazPackageID;
-  APackage: TLazPackage;
-begin
-  FuncData:=PReadFunctionData(Data);
-  PkgID:=TLazPackageID.Create;
-  Result:=false;
-  if PkgID.StringToID(FuncData^.Param) then begin
-    APackage:=PackageGraph.FindPackageWithID(PkgID);
-    if APackage<>nil then begin
-      FuncData^.Result:=APackage.SourceDirectories.CreateSearchPathFromAllFiles;
-      Result:=true;
-    end else begin
-      DebugLn('WARNING: TPkgManager.MacroFunctionPkgSrcPath unknown package id: ',FuncData^.Param);
-    end;
-    //if AnsiCompareText(APackage.IDAsString,'uni_avglvltree')=0 then begin
-    //debugln('TPkgManager.MacroFunctionPkgSrcPath PkgID=',FuncData^.Param,' ',dbgs(APackage<>nil),' FuncData^.Result="',FuncData^.Result,'"');
-    {if APackage<>nil then begin
-      with APackage.SourceDirectories.CreateFileList do begin
-        debugln(Text);
-        Free;
-      end;
-    end;}
-    //end;
-  end else begin
-    DebugLn('WARNING: TPkgManager.MacroFunctionPkgSrcPath invalid package id: ',FuncData^.Param);
-  end;
-  PkgID.Free;
-end;
-
-function TPkgManager.MacroFunctionPkgUnitPath(Data: Pointer): boolean;
-var
-  FuncData: PReadFunctionData;
-  PkgID: TLazPackageID;
-  APackage: TLazPackage;
-begin
-  FuncData:=PReadFunctionData(Data);
-  PkgID:=TLazPackageID.Create;
-  Result:=false;
-  if PkgID.StringToID(FuncData^.Param) then begin
-    APackage:=PackageGraph.FindPackageWithID(PkgID);
-    if APackage<>nil then begin
-      FuncData^.Result:=APackage.GetUnitPath(false);
-      Result:=true;
-    end else begin
-      DebugLn('WARNING: TPkgManager.MacroFunctionPkgUnitPath unknown package id: ',FuncData^.Param);
-    end;
-  end else begin
-    DebugLn('WARNING: TPkgManager.MacroFunctionPkgUnitPath invalid package id: ',FuncData^.Param);
-  end;
-  PkgID.Free;
-end;
-
-function TPkgManager.MacroFunctionPkgIncPath(Data: Pointer): boolean;
-var
-  FuncData: PReadFunctionData;
-  PkgID: TLazPackageID;
-  APackage: TLazPackage;
-begin
-  FuncData:=PReadFunctionData(Data);
-  PkgID:=TLazPackageID.Create;
-  Result:=false;
-  if PkgID.StringToID(FuncData^.Param) then begin
-    APackage:=PackageGraph.FindPackageWithID(PkgID);
-    if APackage<>nil then begin
-      FuncData^.Result:=APackage.GetIncludePath(false);
-      Result:=true;
-    end;
-  end;
-  PkgID.Free;
-end;
-
 function TPkgManager.DoGetUnitRegisterInfo(const AFilename: string;
   var TheUnitName: string; var HasRegisterProc: boolean; IgnoreErrors: boolean
   ): TModalResult;
@@ -1812,13 +1711,13 @@ begin
 
   // package macros
   CodeToolBoss.DefineTree.MacroFunctions.AddExtended(
-    'PKGPATH',nil,@MacroFunctionPkgPath);
+    'PKGDIR',nil,@PackageGraph.MacroFunctionCTPkgDir);
   CodeToolBoss.DefineTree.MacroFunctions.AddExtended(
-    'PKGSRCPATH',nil,@MacroFunctionPkgSrcPath);
+    'PKGSRCPATH',nil,@PackageGraph.MacroFunctionCTPkgSrcPath);
   CodeToolBoss.DefineTree.MacroFunctions.AddExtended(
-    'PKGUNITPATH',nil,@MacroFunctionPkgUnitPath);
+    'PKGUNITPATH',nil,@PackageGraph.MacroFunctionCTPkgUnitPath);
   CodeToolBoss.DefineTree.MacroFunctions.AddExtended(
-    'PKGINCPATH',nil,@MacroFunctionPkgIncPath);
+    'PKGINCPATH',nil,@PackageGraph.MacroFunctionCTPkgIncPath);
     
   LazPackageDescriptors:=TLazPackageDescriptors.Create;
   LazPackageDescriptors.AddDefaultPackageDescriptors;

@@ -817,9 +817,9 @@ type
 
     // methods for debugging, compiling and external tools
     function GetTestBuildDirectory: string; override;
-    procedure OnMacroSubstitution(TheMacro: TTransferMacro; var s: string;
-                                  const Data: PtrInt;
-                                  var Handled, Abort: boolean);
+    procedure OnMacroSubstitution(TheMacro: TTransferMacro;
+                               const MacroName: string; var s: string;
+                               const Data: PtrInt; var Handled, Abort: boolean);
     procedure GetIDEFileState(Sender: TObject; const AFilename: string;
       NeededFlags: TIDEFileStateFlags; var ResultFlags: TIDEFileStateFlags); override;
 
@@ -8952,25 +8952,27 @@ begin
   FDisplayState:= dsSource;
 end;
 
-procedure TMainIDE.OnMacroSubstitution(TheMacro: TTransferMacro; var s:string;
+procedure TMainIDE.OnMacroSubstitution(TheMacro: TTransferMacro;
+  const MacroName: string; var s:string;
   const Data: PtrInt; var Handled, Abort: boolean);
-var MacroName:string;
+var MacroLName:string;
 begin
   if TheMacro=nil then begin
-    DebugLn('WARNING: Macro not defined: "'+s+'".');
+    DebugLn('WARNING: Macro not defined: "'+MacroName+'".');
     s:='';
     //MessageDlg('Unknown Macro','Macro not defined: "'+s+'".',mtError,[mbAbort],0);
+    DumpStack;
     Handled:=true;
     exit;
   end;
-  MacroName:=lowercase(TheMacro.Name);
+  MacroLName:=lowercase(MacroName);
   Handled:=true;
-  if MacroName='save' then begin
+  if MacroLName='save' then begin
     if (SourceNoteBook<>nil) and (SourceNoteBook.NoteBook<>nil) then
       Abort:=(DoSaveEditorFile(SourceNoteBook.NoteBook.PageIndex,
               [sfCheckAmbiguousFiles])<>mrOk);
     s:='';
-  end else if MacroName='saveall' then begin
+  end else if MacroLName='saveall' then begin
     Abort:=(DoSaveAll([sfCheckAmbiguousFiles])<>mrOk);
     s:='';
   end else

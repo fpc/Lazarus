@@ -615,7 +615,8 @@ type
     procedure SetName(const AValue: string); override;
     procedure SetPackageEditor(const AValue: TBasePackageEditor);
     procedure SetPackageType(const AValue: TLazPackageType);
-    procedure OnMacroListSubstitution(TheMacro: TTransferMacro; var s: string;
+    procedure OnMacroListSubstitution(TheMacro: TTransferMacro;
+      const MacroName: string; var s: string;
       const Data: PtrInt; var Handled, Abort: boolean);
     procedure SetUserReadOnly(const AValue: boolean);
     procedure GetWritableOutputDirectory(var AnOutDir: string);
@@ -1980,7 +1981,8 @@ end;
 { TLazPackage }
 
 procedure TLazPackage.OnMacroListSubstitution(TheMacro: TTransferMacro;
-  var s: string; const Data: PtrInt; var Handled, Abort: boolean);
+  const MacroName: string; var s: string; const Data: PtrInt;
+  var Handled, Abort: boolean);
 begin
   if CompareText(s,'PkgOutDir')=0 then begin
     Handled:=true;
@@ -3296,11 +3298,14 @@ begin
   do
     inc(IdentEndPos);
   if IdentEndPos=1 then exit;
+  Name:=copy(s,1,IdentEndPos-1);
   StartPos:=IdentEndPos;
   while (StartPos<=length(s)) and (s[StartPos]=' ') do inc(StartPos);
-  if StartPos=IdentEndPos then exit;
-  if not Version.ReadString(copy(s,StartPos,length(s))) then exit;
-  Name:=copy(s,1,IdentEndPos-1);
+  if StartPos=IdentEndPos then begin
+    Version.Clear;
+  end else begin
+    if not Version.ReadString(copy(s,StartPos,length(s))) then exit;
+  end;
   Result:=true;
 end;
 

@@ -48,7 +48,8 @@ uses
   // FPC + LCL
   Classes, SysUtils, FileUtil, LCLProc, Forms, Controls, Dialogs,
   // codetools
-  AVL_Tree, Laz_XMLCfg, CodeCache, BasicCodeTools, CodeToolManager,
+  AVL_Tree, Laz_XMLCfg, DefineTemplates, CodeCache, BasicCodeTools,
+  CodeToolManager,
   // IDEIntf,
   SrcEditorIntf, IDEExternToolIntf, IDEDialogs, IDEMsgIntf, PackageIntf,
   // IDE
@@ -148,6 +149,20 @@ type
     procedure EndUpdate;
     function Updating: boolean;
     procedure RebuildDefineTemplates;
+    function MacroFunctionPkgDir(const s: string; const Data: PtrInt;
+                                 var Abort: boolean): string;
+    function MacroFunctionPkgSrcPath(const s: string; const Data: PtrInt;
+                                     var Abort: boolean): string;
+    function MacroFunctionPkgUnitPath(const s: string; const Data: PtrInt;
+                                      var Abort: boolean): string;
+    function MacroFunctionPkgIncPath(const s: string; const Data: PtrInt;
+                                     var Abort: boolean): string;
+    function MacroFunctionCTPkgDir(Data: Pointer): boolean;
+    function MacroFunctionCTPkgSrcPath(Data: Pointer): boolean;
+    function MacroFunctionCTPkgUnitPath(Data: Pointer): boolean;
+    function MacroFunctionCTPkgIncPath(Data: Pointer): boolean;
+    function GetPackageFromMacroParameter(const TheID: string;
+                                          out APackage: TLazPackage): boolean;
   public
     // searching
     function CheckIfPackageCanBeClosed(APackage: TLazPackage): boolean;
@@ -459,6 +474,19 @@ begin
   FTree:=TAVLTree.Create(@CompareLazPackageID);
   FItems:=TFPList.Create;
   FLazarusBasePackages:=TFPList.Create;
+  if GlobalMacroList<>nil then begin
+    GlobalMacroList.Add(TTransferMacro.Create('PKGDIR','',
+      'package directory. parameter is package id.',@MacroFunctionPkgDir,[]));
+    GlobalMacroList.Add(TTransferMacro.Create('PKGSRCPATH','',
+      'package source search path. parameter is package id.',
+      @MacroFunctionPkgSrcPath,[]));
+    GlobalMacroList.Add(TTransferMacro.Create('PKGUNITATH','',
+      'package unit search path. parameter is package id.',
+      @MacroFunctionPkgUnitPath,[]));
+    GlobalMacroList.Add(TTransferMacro.Create('PKGINCPATH','',
+      'package include files search path. parameter is package id.',
+      @MacroFunctionPkgIncPath,[]));
+  end;
 end;
 
 destructor TLazPackageGraph.Destroy;
@@ -536,6 +564,113 @@ var
 begin
   for i:=0 to Count-1 do
     Packages[i].DefineTemplates.AllChanged;
+end;
+
+function TLazPackageGraph.MacroFunctionPkgDir(const s: string;
+  const Data: PtrInt; var Abort: boolean): string;
+var
+  APackage: TLazPackage;
+begin
+  if GetPackageFromMacroParameter(s,APackage) then
+    Result:=APackage.Directory
+  else
+    Result:='';
+end;
+
+function TLazPackageGraph.MacroFunctionPkgSrcPath(const s: string;
+  const Data: PtrInt; var Abort: boolean): string;
+var
+  APackage: TLazPackage;
+begin
+  if GetPackageFromMacroParameter(s,APackage) then
+    Result:=APackage.SourceDirectories.CreateSearchPathFromAllFiles
+  else
+    Result:='';
+end;
+
+function TLazPackageGraph.MacroFunctionPkgUnitPath(const s: string;
+  const Data: PtrInt; var Abort: boolean): string;
+var
+  APackage: TLazPackage;
+begin
+  if GetPackageFromMacroParameter(s,APackage) then
+    Result:=APackage.GetUnitPath(false)
+  else
+    Result:='';
+end;
+
+function TLazPackageGraph.MacroFunctionPkgIncPath(const s: string;
+  const Data: PtrInt; var Abort: boolean): string;
+var
+  APackage: TLazPackage;
+begin
+  if GetPackageFromMacroParameter(s,APackage) then
+    Result:=APackage.GetIncludePath(false)
+  else
+    Result:='';
+end;
+
+function TLazPackageGraph.MacroFunctionCTPkgDir(Data: Pointer): boolean;
+var
+  FuncData: PReadFunctionData;
+  APackage: TLazPackage;
+begin
+  FuncData:=PReadFunctionData(Data);
+  Result:=GetPackageFromMacroParameter(FuncData^.Param,APackage);
+  if Result then
+    FuncData^.Result:=APackage.Directory;
+end;
+
+function TLazPackageGraph.MacroFunctionCTPkgSrcPath(Data: Pointer): boolean;
+var
+  FuncData: PReadFunctionData;
+  APackage: TLazPackage;
+begin
+  FuncData:=PReadFunctionData(Data);
+  Result:=GetPackageFromMacroParameter(FuncData^.Param,APackage);
+  if Result then
+    FuncData^.Result:=APackage.SourceDirectories.CreateSearchPathFromAllFiles;
+end;
+
+function TLazPackageGraph.MacroFunctionCTPkgUnitPath(Data: Pointer): boolean;
+var
+  FuncData: PReadFunctionData;
+  APackage: TLazPackage;
+begin
+  FuncData:=PReadFunctionData(Data);
+  Result:=GetPackageFromMacroParameter(FuncData^.Param,APackage);
+  if Result then
+    FuncData^.Result:=APackage.GetUnitPath(false);
+end;
+
+function TLazPackageGraph.MacroFunctionCTPkgIncPath(Data: Pointer): boolean;
+var
+  FuncData: PReadFunctionData;
+  APackage: TLazPackage;
+begin
+  FuncData:=PReadFunctionData(Data);
+  Result:=GetPackageFromMacroParameter(FuncData^.Param,APackage);
+  if Result then
+    FuncData^.Result:=APackage.GetIncludePath(false);
+end;
+
+function TLazPackageGraph.GetPackageFromMacroParameter(const TheID: string;
+  out APackage: TLazPackage): boolean;
+var
+  PkgID: TLazPackageID;
+begin
+  PkgID:=TLazPackageID.Create;
+  if PkgID.StringToID(TheID) then begin
+    APackage:=FindPackageWithID(PkgID);
+    if APackage=nil then begin
+      DebugLn('WARNING: TLazPackageGraph.GetPackageFromMacroParameter unknown package id "',TheID,'"');
+    end;
+  end else begin
+    APackage:=nil;
+    DebugLn('WARNING: TLazPackageGraph.GetPackageFromMacroParameter invalid package id "',TheID,'"');
+  end;
+  PkgID.Free;
+  Result:=APackage<>nil;
 end;
 
 function TLazPackageGraph.FindLowestPkgNodeByName(const PkgName: string

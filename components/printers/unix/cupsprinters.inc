@@ -236,8 +236,7 @@ begin
   end;
 end;
 
-//Initialize the options with the default options of selected
-//printer
+//Initialize the options with the default options of selected printer
 procedure TCUPSPrinter.SetOptionsOfPrinter;
 Var Opts : Pcups_option_t;
     Opt  : Pcups_option_t;
@@ -310,17 +309,22 @@ var
   Attribute : Pipp_attribute_t; //Current attribute
   i         : Integer;
 begin
+  //DebugLn(['TCUPSPrinter.GetEnumAttributeString START aName="',aName,'"']);
   if not assigned(Lst) then
     raise Exception.Create('Lst must be assigned');
-  if not CUPSLibInstalled then Exit;
+  if not CUPSLibInstalled then begin
+    DebugLn(['TCUPSPrinter.GetEnumAttributeString CUPSLibInstalled not installed']);
+    Exit;
+  end;
   
   Reponse:=GetCupsRequest;
-  if Assigned(Reponse) then
-  begin
+  if not Assigned(Reponse) then begin
+    DebugLn(['TCUPSPrinter.GetEnumAttributeString no Reponse']);
+  end else begin
     try
       Attribute:=ippFindAttribute(Reponse,aName, IPP_TAG_ZERO);
-      if Assigned(Attribute) then
-      begin
+      if Assigned(Attribute) then begin
+        //DebugLn(['TCUPSPrinter.GetEnumAttributeString Attribute^.num_values=',Attribute^.num_values]);
         for i:=0 to Attribute^.num_values-1 do
         begin
           if Attribute^.value_tag=IPP_TAG_INTEGER then
@@ -516,6 +520,7 @@ end;
 
 procedure TCUPSPrinter.DoEnumPapers(Lst: TStrings);
 begin
+  //DebugLn(['TCUPSPrinter.DoEnumPapers ',dbgsName(Self)]);
   inherited DoEnumPapers(Lst);
   
   GetEnumAttributeString('media-supported',Lst);

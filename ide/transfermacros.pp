@@ -51,11 +51,11 @@ uses Classes, SysUtils, LCLProc, FileUtil, LazarusIDEStrConsts, MacroIntf;
 type
   TTransferMacro = class;
 
-  TOnSubstitution = procedure(TheMacro: TTransferMacro; var s:string;
-    const Data: PtrInt; var Handled, Abort: boolean) of object;
+  TOnSubstitution = procedure(TheMacro: TTransferMacro; const MacroName: string;
+    var s:string; const Data: PtrInt; var Handled, Abort: boolean) of object;
 
-  TMacroFunction = function(const s:string; const Data: PtrInt;
-                            var Abort: boolean):string of object;
+  TMacroFunction = function(const s: string; const Data: PtrInt;
+                            var Abort: boolean): string of object;
   
   TTransferMacroFlag = (
     tmfInteractive
@@ -296,6 +296,7 @@ begin
       Handled:=false;
       Abort:=false;
       if MacroName<>'' then begin
+        if MacroName='PkgPath' then DebugLn(['TTransferMacroList.SubstituteStr MacroStr="',MacroStr,'"']);
         // Macro function -> substitute macro parameter first
         MacroParam:=copy(MacroStr,length(MacroName)+3,
                                   length(MacroStr)-length(MacroName)-3);
@@ -305,7 +306,7 @@ begin
         end;
         AMacro:=FindByName(MacroName);
         if Assigned(fOnSubstitution) then begin
-          fOnSubstitution(AMacro,MacroParam,Data,Handled,Abort);
+          fOnSubstitution(AMacro,MacroName,MacroParam,Data,Handled,Abort);
           if Handled then
             MacroStr:=MacroParam
           else if Abort then begin
@@ -327,7 +328,7 @@ begin
         MacroName:=copy(s,MacroStart+2,OldMacroLen-3);
         AMacro:=FindByName(MacroName);
         if Assigned(fOnSubstitution) then begin
-          fOnSubstitution(AMacro,MacroName,Data,Handled,Abort);
+          fOnSubstitution(AMacro,MacroName,MacroName,Data,Handled,Abort);
           if Handled then
             MacroStr:=MacroName
           else if Abort then begin

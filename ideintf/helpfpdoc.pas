@@ -39,8 +39,58 @@ type
                       var ErrMsg: string): TShowHelpResult; override;
   end;
   
+function RegisterFPDocHTMLHelpForPackage(const DBName, DBTitle, BaseURL,
+  PackageName: string; AdditionalDirectories: string = ''
+  ): TFPDocHTMLHelpDatabase;
 
 implementation
+
+function RegisterFPDocHTMLHelpForPackage(const DBName, DBTitle, BaseURL,
+  PackageName: string; AdditionalDirectories: string
+  ): TFPDocHTMLHelpDatabase;
+{ It registers help for all *.pas and *.pp files of the package source
+  directory (where the .lpk file is) and all sub directories.
+
+  DBName:      the database ID. The IDE will change it if there is already a DB
+               with this name.
+  DBTitle:     the localized title shown in IDE dialogs.
+  BaseURL:     all paths are relative to this URL.
+  PackageName: the name of the package.
+  AdditionalDirectories: additional source directories separated by semicolon.
+                         Paths must be relative to the package source directory.
+}
+var
+  FPDocNode: THelpNode;
+  p: LongInt;
+  Dir: String;
+begin
+  // create help database
+  Result:=TFPDocHTMLHelpDatabase(
+          HelpDatabases.CreateHelpDatabase(DBName,TFPDocHTMLHelpDatabase,true));
+  Result.DefaultBaseURL:=BaseURL;
+  // FPDoc nodes for units in the LCL
+  FPDocNode:=THelpNode.CreateURL(Result,DBTitle,'file://index.html');
+  // register TOC (table of contents)
+  Result.TOCNode:=THelpNode.Create(Result,FPDocNode);
+  // register fpdoc item
+  Result.RegisterItem(THelpDBISourceDirectory.Create(FPDocNode,
+                      '$PkgDir('+PackageName+')',
+                      '*.pp;*.pas', // this entry is for pascal files
+                      true // for this source directory and all sub directories.
+                      ));
+  // register additional source directories
+  while AdditionalDirectories<>'' do begin
+    p:=System.Pos(';',AdditionalDirectories);
+    if p<1 then p:=length(AdditionalDirectories);
+    Dir:=Trim(copy(AdditionalDirectories,1,p-1));
+    if Dir<>'' then begin
+      FPDocNode:=THelpNode.CreateURL(Result,DBTitle+' '+Dir,'file://index.html');
+      Result.RegisterItem(THelpDBISourceDirectory.Create(FPDocNode,
+                          '$PkgDir('+PackageName+')'+Dir,'*.pp;*.pas',false));
+    end;
+    System.Delete(AdditionalDirectories,1,p);
+  end;
+end;
 
 { TFPDocHTMLHelpDatabase }
 
