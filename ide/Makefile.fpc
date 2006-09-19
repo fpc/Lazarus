@@ -102,6 +102,8 @@ BIG_IDE_OPTIONS=-dBigIDE $(LAZARUS_LIBPATHS) \
   -Fu../components/sqldb/lib/$(CPU_TARGET)-$(OS_TARGET) \
   -Fu../components/sdf/lib/$(CPU_TARGET)-$(OS_TARGET) \
   -Fu../components/memds/lib/$(CPU_TARGET)-$(OS_TARGET)
+  
+LAZBUILD_OPT=$(LAZARUS_LIBPATHS)
 
 #
 # apptype gui
@@ -160,10 +162,10 @@ endif
 
 #-----------------------------------------------------------------------------
 lazbuilder:
-ifeq ($(LAZARUS_OPT),)
+ifeq ($(LAZBUILD_OPT),)
         $(MAKE) --assume-new=lazbuild.lpr lazbuild$(EXEEXT)
 else
-        $(MAKE) --assume-new=lazbuild.lpr lazbuild$(EXEEXT) OPT='$(LAZARUS_OPT) $(OPT)'
+        $(MAKE) --assume-new=lazbuild.lpr lazbuild$(EXEEXT) OPT='$(LAZBUILD_OPT) $(OPT)'
 endif
 
 #-----------------------------------------------------------------------------
