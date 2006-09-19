@@ -5,8 +5,7 @@ unit TestLpi;
 interface
 
 uses
-  Classes, SysUtils, fpcunit, testutils, testregistry, process,
-  FileUtil;
+  Classes, SysUtils, fpcunit, testregistry, process, FileUtil;
 
 type
 
@@ -110,6 +109,8 @@ begin
   try
     {$IFDEF win32}
     LazBuild.Options := [poNewConsole];
+    {$ELSE}
+    LazBuild.Options := [poNoConsole];
     {$ENDIF}
     LazBuild.ShowWindow := swoHIDE;
     LazBuild.CommandLine := LazBuildPath;
