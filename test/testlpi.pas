@@ -108,7 +108,9 @@ begin
   AssertTrue(LazBuildPath + ' does not exist', FileExists(LazBuildPath));
   LazBuild := TProcess.Create(nil);
   try
+    {$IFDEF win32}
     LazBuild.Options := [poNewConsole];
+    {$ENDIF}
     LazBuild.ShowWindow := swoHIDE;
     LazBuild.CommandLine := LazBuildPath;
     if Compiler<>'' then
