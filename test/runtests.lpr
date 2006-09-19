@@ -3,13 +3,14 @@ program runtests;
 {$mode objfpc}{$H+}
 
 uses
-  custapp, Classes, SysUtils, fpcunit, testregistry,
-  dom, testreport, xmlreporter, xmlwrite,
+  custapp, Classes, SysUtils, fpcunit, testregistry, testreport,
+  xmlreporter, xmlwrite,
   TestLpi;
 
 const
   ShortOpts = 'alh';
-  Longopts: array[1..5] of string = ('all', 'list', 'format:', 'suite:', 'help');
+  Longopts: array[1..6] of string =
+     ('all', 'list', 'format:', 'suite:', 'compiler:', 'help');
   Version = 'Version 0.1';
 
 type
@@ -97,16 +98,17 @@ var
       writeln('Usage: ');
       writeln('  --format=latex            output as latex source (only list implemented)');
       {$IFNDEF VER2_0}
-        writeln('  --format=plain            output as plain ASCII source');
+      writeln('  --format=plain            output as plain ASCII source');
       {$ENDIF}
       writeln('  --format=xml              output as XML source (default)');
       writeln;
       writeln('  -l or --list              show a list of registered tests');
       writeln('  -a or --all               run all tests');
       writeln('  --suite=MyTestSuiteName   run single test suite class');
+      writeln('  --compiler=<ppcxxx>       use ppcxxx to build test projects');
       writeln;
       writeln('The results can be redirected to an xml file,');
-      writeln('for example: ./testrunner --all > results.xml');
+      writeln('for example: ', ParamStr(0),' --all > results.xml');
     end;
 
     //get the format parameter
@@ -131,6 +133,9 @@ var
         else
           Write(GetSuiteAsXML(GetTestRegistry));
       end;
+
+    if HasOption('compiler') then
+      Compiler := GetOptionValue('compiler');
 
     //run the tests
     if HasOption('a', 'all') then

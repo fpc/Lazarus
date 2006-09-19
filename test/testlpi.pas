@@ -25,6 +25,9 @@ type
     procedure TestRun;
   end; 
 
+var
+  Compiler: string;
+
 implementation
 
 var
@@ -87,7 +90,6 @@ var
 begin
   Result := TTestSuite.Create('Examples');
   SearchMask := ExamplesDir + '*.lpi';
-  writeln(stdout, SearchMask+LineEnding);
   if FindFirst(SearchMask,faAnyFile,FileInfo)=0 then begin
     repeat
       if RightStr(FileInfo.Name,4)='.lpi' then
@@ -108,7 +110,10 @@ begin
   try
     LazBuild.Options := [poNewConsole];
     LazBuild.ShowWindow := swoHIDE;
-    LazBuild.CommandLine := LazBuildPath + ' ' + FPath;
+    LazBuild.CommandLine := LazBuildPath;
+    if Compiler<>'' then
+      LazBuild.CommandLine := LazBuild.CommandLine + ' --compiler='+Compiler;
+    LazBuild.CommandLine := LazBuild.CommandLine + ' ' + FPath;
     LazBuild.CurrentDirectory := ExtractFileDir(FPath);
     LazBuild.Execute;
     LazBuild.WaitOnExit;
