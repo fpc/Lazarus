@@ -1819,6 +1819,7 @@ begin
   RegisterStandardMessagesViewMenuItems;
   RegisterStandardCodeExplorerMenuItems;
   RegisterStandardCodeTemplatesMenuItems;
+  RegisterStandardDesignerMenuItems;
 end;
 
 procedure TMainIDE.SetupStandardProjectTypes;

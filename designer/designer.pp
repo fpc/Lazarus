@@ -38,9 +38,10 @@ interface
 uses
   Classes, SysUtils, Math, LCLProc, LCLType, LResources, LCLIntf, LMessages,
   Forms, Controls, GraphType, Graphics, Dialogs, ExtCtrls, Menus, ClipBrd,
+  PropEdits, ComponentEditors, MenuIntf,
   LazarusIDEStrConsts, EnvironmentOpts, IDECommands, ComponentReg,
   NonControlDesigner, AlignCompsDlg, SizeCompsDlg, ScaleCompsDlg, TabOrderDlg,
-  DesignerProcs, PropEdits, ComponentEditors, CustomFormEditor,
+  DesignerProcs, CustomFormEditor,
   ControlSelection, ChangeClassDialog, EditorOptions;
 
 type
@@ -77,19 +78,13 @@ type
 
   TDesigner = class(TComponentEditorDesigner)
   private
-    FAlignMenuItem: TMenuItem;
-    fChangeClassMenuItem: TMenuItem;
-    FCopyMenuItem: TMenuItem;
-    FCutMenuItem: TMenuItem;
+    DesignerPopupMenu: TPopupMenu;
     FDefaultFormBounds: TRect;
     FLastFormBounds: TRect;
     FDefaultFormBoundsValid: boolean;
-    FDeleteSelectionMenuItem: TMenuItem;
     FFlags: TDesignerFlags;
     FGridColor: TColor;
     FLookupRoot: TComponent;
-    FMirrorHorizontalMenuItem: TMenuItem;
-    FMirrorVerticalMenuItem: TMenuItem;
     FOnActivated: TNotifyEvent;
     FOnCloseQuery: TNotifyEvent;
     FOnPersistentDeleted: TOnPersistentDeleted;
@@ -105,27 +100,12 @@ type
     FOnShowOptions: TNotifyEvent;
     FOnUnselectComponentClass: TNotifyEvent;
     FOnViewLFM: TNotifyEvent;
-    FOrderSubMenu: TMenuItem;
-    FOrderMoveToFrontMenuItem: TMenuItem;
-    FOrderMoveToBackMenuItem: TMenuItem;
-    FOrderForwardOneMenuItem: TMenuItem;
-    FOrderBackOneMenuItem: TMenuItem;
-    FPasteMenuItem: TMenuItem;
-    FPopupMenu: TPopupMenu;
-    FScaleMenuItem: TMenuItem;
     FShiftState: TShiftState;
-    FShowOptionsMenuItem: TMenuItem;
-    FSizeMenuItem: TMenuItem;
-    FSnapToGridOptionMenuItem: TMenuItem;
-    FSnapToGuideLinesOptionMenuItem: TMenuItem;
-    FTabOrderMenuItem: TMenuItem;
     FTheFormEditor: TCustomFormEditor;
-    fViewLFMMenuItem: TMenuItem;
-    fSaveAsXMLMenuItem: TMenuItem;
 
     //hint stuff
-    FHintTimer : TTimer;
-    FHintWIndow : THintWindow;
+    FHintTimer: TTimer;
+    FHintWIndow: THintWindow;
 
     function GetGridColor: TColor;
     function GetGridSizeX: integer;
@@ -204,6 +184,7 @@ type
 
     // popup menu
     procedure BuildPopupMenu;
+    procedure DesignerPopupMenuPopup(Sender: TObject);
     procedure OnComponentEditorVerbMenuItemClick(Sender: TObject);
     procedure OnAlignPopupMenuClick(Sender: TObject);
     procedure OnMirrorHorizontalPopupMenuClick(Sender: TObject);
@@ -268,8 +249,8 @@ type
     function GetComponentEditorForSelection: TBaseComponentEditor;
     function GetShiftState: TShiftState; override;
 
-    procedure AddComponentEditorMenuItems(
-            AComponentEditor: TBaseComponentEditor; AParentMenuItem: TMenuItem);
+    procedure AddComponentEditorMenuItems(AComponentEditor: TBaseComponentEditor;
+                                          ClearOldOnes: boolean);
 
     function IsDesignMsg(Sender: TControl;
                                   var TheMessage: TLMessage): Boolean; override;
@@ -337,6 +318,37 @@ type
                                              write FDefaultFormBoundsValid;
   end;
 
+const
+  DesignerMenuRootName = 'Designer';
+var
+  DesignerMenuAlign: TIDEMenuCommand;
+  DesignerMenuMirrorHorizontal: TIDEMenuCommand;
+  DesignerMenuMirrorVertical: TIDEMenuCommand;
+  DesignerMenuScale: TIDEMenuCommand;
+  DesignerMenuSize: TIDEMenuCommand;
+  
+  DesignerMenuTabOrder: TIDEMenuCommand;
+    DesignerMenuOrderMoveToFront: TIDEMenuCommand;
+    DesignerMenuOrderMoveToBack: TIDEMenuCommand;
+    DesignerMenuOrderForwardOne: TIDEMenuCommand;
+    DesignerMenuOrderBackOne: TIDEMenuCommand;
+
+  DesignerMenuCut: TIDEMenuCommand;
+  DesignerMenuCopy: TIDEMenuCommand;
+  DesignerMenuPaste: TIDEMenuCommand;
+  DesignerMenuDeleteSelection: TIDEMenuCommand;
+
+  DesignerMenuChangeClass: TIDEMenuCommand;
+  DesignerMenuViewLFM: TIDEMenuCommand;
+  DesignerMenuSaveAsXML: TIDEMenuCommand;
+
+  DesignerMenuSnapToGridOption: TIDEMenuCommand;
+  DesignerMenuSnapToGuideLinesOption: TIDEMenuCommand;
+  DesignerMenuShowOptions: TIDEMenuCommand;
+
+
+procedure RegisterStandardDesignerMenuItems;
+
 
 implementation
 
@@ -347,6 +359,76 @@ const
   mk_shift   =   4;
   mk_control =   8;
   mk_mbutton = $10;
+
+procedure RegisterStandardDesignerMenuItems;
+begin
+  DesignerMenuRoot:=RegisterIDEMenuRoot(DesignerMenuRootName);
+
+  // register the dynamic section for the component editor
+  DesignerMenuSectionComponentEditor:=RegisterIDEMenuSection(DesignerMenuRoot,
+                                                    'Component editor section');
+  // register align section
+  DesignerMenuSectionAlign:=RegisterIDEMenuSection(DesignerMenuRoot,
+                                                               'Align section');
+    DesignerMenuAlign:=RegisterIDEMenuCommand(DesignerMenuSectionAlign,
+                                         'Align',fdmAlignWord);
+    DesignerMenuMirrorHorizontal:=RegisterIDEMenuCommand(DesignerMenuSectionAlign,
+                                       'Mirror horizontal',fdmMirrorHorizontal);
+    DesignerMenuMirrorVertical:=RegisterIDEMenuCommand(DesignerMenuSectionAlign,
+                                       'Mirror vertical',fdmMirrorVertical);
+    DesignerMenuScale:=RegisterIDEMenuCommand(DesignerMenuSectionAlign,
+                                       'Scale',fdmScaleWord);
+    DesignerMenuSize:=RegisterIDEMenuCommand(DesignerMenuSectionAlign,
+                                       'Size',fdmSizeWord);
+
+  // register tab and order section
+  DesignerMenuSectionOrder:=RegisterIDEMenuSection(DesignerMenuRoot,
+                                                               'Order section');
+    DesignerMenuTabOrder:=RegisterIDEMenuCommand(DesignerMenuSectionOrder,
+                                       'Tab order',fdmTabOrder);
+    DesignerMenuSectionZOrder:=RegisterIDESubMenu(DesignerMenuSectionOrder,
+                                                  'ZOrder section','');
+      DesignerMenuOrderMoveToFront:=RegisterIDEMenuCommand(DesignerMenuSectionZOrder,
+                                   'Move to z order front',fdmOrderMoveTofront);
+      DesignerMenuOrderMoveToBack:=RegisterIDEMenuCommand(DesignerMenuSectionZOrder,
+                                   'Move to z order back',fdmOrderMoveToBack);
+      DesignerMenuOrderForwardOne:=RegisterIDEMenuCommand(DesignerMenuSectionZOrder,
+                                 'Move z order forward one',fdmOrderForwardOne);
+      DesignerMenuOrderBackOne:=RegisterIDEMenuCommand(DesignerMenuSectionZOrder,
+                                  'Move z order backwards one',fdmOrderBackOne);
+
+  // register clipboard section
+  DesignerMenuSectionClipboard:=RegisterIDEMenuSection(DesignerMenuRoot,
+                                                           'Clipboard section');
+    DesignerMenuCut:=RegisterIDEMenuCommand(DesignerMenuSectionClipboard,
+                                            'Cut',lisMenuCut);
+    DesignerMenuCopy:=RegisterIDEMenuCommand(DesignerMenuSectionClipboard,
+                                            'Copy',lisMenuCopy);
+    DesignerMenuPaste:=RegisterIDEMenuCommand(DesignerMenuSectionClipboard,
+                                            'Paste',lisMenuPaste);
+    DesignerMenuDeleteSelection:=RegisterIDEMenuCommand(DesignerMenuSectionClipboard,
+                                         'Delete selection',fdmDeleteSelection);
+
+  // register miscellaneous section
+  DesignerMenuSectionMisc:=RegisterIDEMenuSection(DesignerMenuRoot,
+                                                       'Miscellaneous section');
+    DesignerMenuChangeClass:=RegisterIDEMenuCommand(DesignerMenuSectionMisc,
+                                                 'Change class',lisChangeClass);
+    DesignerMenuViewLFM:=RegisterIDEMenuCommand(DesignerMenuSectionMisc,
+                                                'View LFM',lisViewSourceLfm);
+    DesignerMenuSaveAsXML:=RegisterIDEMenuCommand(DesignerMenuSectionMisc,
+                                                'Save as XML',fdmSaveFormAsXML);
+
+  // register options section
+  DesignerMenuSectionOptions:=RegisterIDEMenuSection(DesignerMenuRoot,
+                                                             'Options section');
+    DesignerMenuSnapToGridOption:=RegisterIDEMenuCommand(DesignerMenuSectionOptions,
+                                            'Snap to grid',fdmSnapToGridOption);
+    DesignerMenuSnapToGuideLinesOption:=RegisterIDEMenuCommand(DesignerMenuSectionOptions,
+                               'Snap to guide lines',fdmSnapToGuideLinesOption);
+    DesignerMenuShowOptions:=RegisterIDEMenuCommand(DesignerMenuSectionOptions,
+                                                 'Show options',fdmShowOptions);
+end;
 
 constructor TDesigner.Create(TheDesignerForm: TCustomForm;
   AControlSelection: TControlSelection);
@@ -403,19 +485,17 @@ end;
 
 destructor TDesigner.Destroy;
 Begin
-  if FPopupMenu<>nil then
-    FPopupMenu.Free;
-
-  FHintWIndow.Free;
-  FHintTimer.Free;
-  DDC.Free;
-  DeletingPersistent.Free;
-  IgnoreDeletingPersistent.Free;
+  FreeAndNil(DesignerPopupMenu);
+  FreeAndNil(FHintWIndow);
+  FreeAndNil(FHintTimer);
+  FreeAndNil(DDC);
+  FreeAndNil(DeletingPersistent);
+  FreeAndNil(IgnoreDeletingPersistent);
   Inherited Destroy;
 end;
 
-Procedure TDesigner.NudgeControl(DiffX, DiffY : Integer);
-Begin
+procedure TDesigner.NudgeControl(DiffX, DiffY : Integer);
+begin
   {$IFDEF VerboseDesigner}
   DebugLn('[TDesigner.NudgeControl]');
   {$ENDIF}
@@ -424,8 +504,8 @@ Begin
   ControlSelection.MoveSelection(DiffX, DiffY);
 end;
 
-Procedure TDesigner.NudgeSize(DiffX, DiffY: Integer);
-Begin
+procedure TDesigner.NudgeSize(DiffX, DiffY: Integer);
+begin
   {$IFDEF VerboseDesigner}
   DebugLn('[TDesigner.NudgeSize]');
   {$ENDIF}
@@ -1518,7 +1598,7 @@ Begin
     PopupMenuComponentEditor:=GetComponentEditorForSelection;
     BuildPopupMenu;
     PopupPos := Form.ClientToScreen(MouseUpPos);
-    FPopupMenu.Popup(PopupPos.X,PopupPos.Y);
+    DesignerPopupMenu.Popup(PopupPos.X,PopupPos.Y);
   end;
 
   DisableRubberBand;
@@ -2052,10 +2132,18 @@ var
   AMenuItem: TMenuItem;
 begin
   if (PopupMenuComponentEditor=nil) or (Sender=nil) then exit;
-  if not (Sender is TMenuItem) then exit;
-  AMenuItem:=TMenuItem(Sender);
-  Verb:=AMenuItem.MenuIndex;
+  //DebugLn(['TDesigner.OnComponentEditorVerbMenuItemClick Sender=',dbgsName(Sender)]);
+  if Sender is TMenuItem then
+    AMenuItem:=TMenuItem(Sender)
+  else if Sender is TIDEMenuCommand then
+    AMenuItem:=TIDEMenuCommand(Sender).MenuItem
+  else
+    exit;
+  Verb:=PopupMenuComponentEditor.GetVerbCount-1;
   VerbCaption:=AMenuItem.Caption;
+  while (Verb>=0) and (VerbCaption<>PopupMenuComponentEditor.GetVerb(Verb)) do
+    dec(Verb);
+  if Verb<0 then exit;
   try
     PopupMenuComponentEditor.ExecuteVerb(Verb);
   except
@@ -2360,26 +2448,23 @@ begin
 end;
 
 procedure TDesigner.AddComponentEditorMenuItems(
-  AComponentEditor: TBaseComponentEditor; AParentMenuItem: TMenuItem);
+  AComponentEditor: TBaseComponentEditor; ClearOldOnes: boolean);
 var
   VerbCount, i: integer;
-  NewMenuItem: TMenuItem;
+  NewMenuCmd: TIDEMenuCommand;
 begin
-  if (AComponentEditor=nil) or (AParentMenuItem=nil) then exit;
+  if (AComponentEditor=nil) or (DesignerMenuSectionComponentEditor=nil) then
+    exit;
+  if ClearOldOnes then
+    DesignerMenuSectionComponentEditor.Clear;
   VerbCount:=AComponentEditor.GetVerbCount;
   for i:=0 to VerbCount-1 do begin
-    NewMenuItem:=TMenuItem.Create(AParentMenuItem);
-    NewMenuItem.Name:='ComponentEditorVerMenuItem'+IntToStr(i);
-    NewMenuItem.Caption:=AComponentEditor.GetVerb(i);
-    NewMenuItem.OnClick:=@OnComponentEditorVerbMenuItemClick;
-    AParentMenuItem.Add(NewMenuItem);
-    AComponentEditor.PrepareItem(i,NewMenuItem);
-  end;
-  if VerbCount>0 then begin
-    // Add seperator
-    NewMenuItem:=TMenuItem.Create(AParentMenuItem);
-    NewMenuItem.Caption:='-';
-    AParentMenuItem.Add(NewMenuItem);
+    NewMenuCmd:=RegisterIDEMenuCommand(DesignerMenuSectionComponentEditor,
+      'ComponentEditorVerMenuItem'+IntToStr(i),
+      AComponentEditor.GetVerb(i),
+      @OnComponentEditorVerbMenuItemClick);
+    if NewMenuCmd.MenuItem<>nil then
+      AComponentEditor.PrepareItem(i,NewMenuCmd.MenuItem);
   end;
 end;
 
@@ -2521,18 +2606,58 @@ begin
 end;
 
 procedure TDesigner.BuildPopupMenu;
-
-  procedure AddSeparator;
-  var
-    NewMenuItem: TMenuItem;
-  begin
-    NewMenuItem:=TMenuItem.Create(FPopupMenu);
-    with NewMenuItem do begin
-      Caption:='-';
-    end;
-    FPopupMenu.Items.Add(NewMenuItem);
+begin
+  DesignerPopupMenu:=TPopupMenu.Create(nil);
+  with DesignerPopupMenu do begin
+    Name:='DesignerPopupmenu';
+    OnPopup :=@DesignerPopupMenuPopup;
   end;
 
+  // assign the root TMenuItem to the registered menu root.
+  // This will automatically create all registered items
+  {$IFDEF VerboseMenuIntf}
+  DesignerPopupMenu.Items.WriteDebugReport('TSourceNotebook.BuildPopupMenu ');
+  DesignerMenuRoot.ConsistencyCheck;
+  {$ENDIF}
+  DesignerMenuRoot.MenuItem:=DesignerPopupMenu.Items;
+
+  DesignerMenuAlign.OnClick := @OnAlignPopupMenuClick;
+  DesignerMenuMirrorHorizontal.OnClick := @OnMirrorHorizontalPopupMenuClick;
+  DesignerMenuMirrorVertical.OnClick := @OnMirrorVerticalPopupMenuClick;
+  DesignerMenuScale.OnClick := @OnScalePopupMenuClick;
+  DesignerMenuSize.OnClick := @OnSizePopupMenuClick;
+
+  DesignerMenuTabOrder.OnClick:=@OnTabOrderMenuClick;
+    DesignerMenuOrderMoveToFront.OnClick := @OnOrderMoveToFrontMenuClick;
+    DesignerMenuOrderMoveToFront.MenuItem.ShortCut :=
+                     EditorOpts.KeyMap.CommandToShortCut(ecDesignerMoveToFront);
+    DesignerMenuOrderMoveToBack.OnClick := @OnOrderMoveToBackMenuClick;
+    DesignerMenuOrderMoveToBack.MenuItem.ShortCut :=
+                     EditorOpts.KeyMap.CommandToShortCut(ecDesignerMoveToBack);
+    DesignerMenuOrderForwardOne.OnClick := @OnOrderForwardOneMenuClick;
+    DesignerMenuOrderForwardOne.MenuItem.ShortCut :=
+                     EditorOpts.KeyMap.CommandToShortCut(ecDesignerForwardOne);
+    DesignerMenuOrderBackOne.OnClick := @OnOrderBackOneMenuClick;
+    DesignerMenuOrderBackOne.MenuItem.ShortCut :=
+                     EditorOpts.KeyMap.CommandToShortCut(ecDesignerBackOne);
+
+  DesignerMenuCut.OnClick:=@OnCutMenuClick;
+  DesignerMenuCopy.OnClick:=@OnCopyMenuClick;
+  DesignerMenuPaste.OnClick:=@OnPasteMenuClick;
+  DesignerMenuDeleteSelection.OnClick:=@OnDeleteSelectionMenuClick;
+
+  DesignerMenuChangeClass.OnClick:=@OnChangeClassMenuClick;
+  DesignerMenuViewLFM.OnClick:=@OnViewLFMMenuClick;
+  DesignerMenuSaveAsXML.OnClick:=@OnSaveAsXMLMenuClick;
+
+  DesignerMenuSnapToGridOption.OnClick:=@OnSnapToGridOptionMenuClick;
+  DesignerMenuSnapToGridOption.ShowAlwaysCheckable:=true;
+  DesignerMenuSnapToGuideLinesOption.OnClick:=@OnSnapToGuideLinesOptionMenuClick;
+  DesignerMenuSnapToGuideLinesOption.ShowAlwaysCheckable:=true;
+  DesignerMenuShowOptions.OnClick:=@OnShowOptionsMenuItemClick;
+end;
+
+procedure TDesigner.DesignerPopupMenuPopup(Sender: TObject);
 var
   ControlSelIsNotEmpty,
   LookupRootIsSelected,
@@ -2541,8 +2666,6 @@ var
   OneControlSelected: Boolean;
   SelectionVisible: Boolean;
 begin
-  if FPopupMenu<>nil then FPopupMenu.Free;
-
   ControlSelIsNotEmpty:=(ControlSelection.Count>0)
                         and (ControlSelection.SelectionForm=Form);
   LookupRootIsSelected:=ControlSelection.LookupRootSelected;
@@ -2552,199 +2675,31 @@ begin
                     and not LookupRootIsSelected;
   OneControlSelected := ControlSelIsNotEmpty and ControlSelection[0].IsTControl;
 
-  FPopupMenu:=TPopupMenu.Create(nil);
+  AddComponentEditorMenuItems(PopupMenuComponentEditor,true);
 
-  AddComponentEditorMenuItems(PopupMenuComponentEditor,FPopupMenu.Items);
+  DesignerMenuAlign.Enabled := CompsAreSelected;
+  DesignerMenuMirrorHorizontal.Enabled := CompsAreSelected;
+  DesignerMenuMirrorVertical.Enabled := CompsAreSelected;
+  DesignerMenuScale.Enabled := CompsAreSelected and not OnlyNonVisualsAreSelected;
+  DesignerMenuSize.Enabled := CompsAreSelected and not OnlyNonVisualsAreSelected;
 
-  // menuitem: align, mirror horizontal, mirror vertical, scale, size
-  FAlignMenuItem := TMenuItem.Create(FPopupMenu);
-  with FAlignMenuItem do begin
-    Caption := fdmAlignWord;
-    OnClick := @OnAlignPopupMenuClick;
-    Enabled := CompsAreSelected;
-  end;
-  FPopupMenu.Items.Add(FAlignMenuItem);
-
-  FMirrorHorizontalMenuItem := TMenuItem.Create(FPopupMenu);
-  with FMirrorHorizontalMenuItem do begin
-    Caption := fdmMirrorHorizontal;
-    OnClick := @OnMirrorHorizontalPopupMenuClick;
-    Enabled := CompsAreSelected;
-  end;
-  FPopupMenu.Items.Add(FMirrorHorizontalMenuItem);
-
-  FMirrorVerticalMenuItem := TMenuItem.Create(FPopupMenu);
-  with FMirrorVerticalMenuItem do begin
-    Caption := fdmMirrorVertical;
-    OnClick := @OnMirrorVerticalPopupMenuClick;
-    Enabled := CompsAreSelected;
-  end;
-  FPopupMenu.Items.Add(FMirrorVerticalMenuItem);
-
-  FScaleMenuItem := TMenuItem.Create(FPopupMenu);
-  with FScaleMenuItem do begin
-    Caption := fdmScaleWord;
-    OnClick := @OnScalePopupMenuClick;
-    Enabled := CompsAreSelected and not OnlyNonVisualsAreSelected;
-  end;
-  FPopupMenu.Items.Add(FScaleMenuItem);
-
-  FSizeMenuItem := TMenuItem.Create(FPopupMenu);
-  with FSizeMenuItem do begin
-    Caption := fdmSizeWord;
-    OnClick := @OnSizePopupMenuClick;
-    Enabled := CompsAreSelected and not OnlyNonVisualsAreSelected;
-  end;
-  FPopupMenu.Items.Add(FSizeMenuItem);
-
-  AddSeparator;
-
-  // menuitems: TabOrder, BringToFront, SendToBack
-  FTabOrderMenuItem := TMenuItem.Create(FPopupMenu);
-  with FTabOrderMenuItem do begin
-    Caption:= fdmTabOrder;
-    OnClick:=@OnTabOrderMenuClick;
-    Enabled:= (FLookupRoot is TWinControl)
+  DesignerMenuTabOrder.Enabled:= (FLookupRoot is TWinControl)
               and (TWinControl(FLookupRoot).ControlCount>0);
-  end;
-  FPopupMenu.Items.Add(FTabOrderMenuItem);
+  DesignerMenuSectionZOrder.Enabled := CompsAreSelected;
+    DesignerMenuOrderMoveToFront.Enabled := OneControlSelected;
+    DesignerMenuOrderMoveToBack.Enabled := OneControlSelected;
+    DesignerMenuOrderForwardOne.Enabled := OneControlSelected;
+    DesignerMenuOrderBackOne.Enabled := OneControlSelected;
+
+  DesignerMenuCut.Enabled:= CompsAreSelected;
+  DesignerMenuCopy.Enabled:= CompsAreSelected;
+  DesignerMenuPaste.Enabled:= CanPaste;
+  DesignerMenuDeleteSelection.Enabled:= CompsAreSelected;
   
-  // order submenu
-  FOrderSubMenu := TMenuItem.Create(FPopupMenu);
-  with FOrderSubMenu do begin
-    Caption := fdmOrder;
-    Enabled := CompsAreSelected;
-  end;
-  FPopupMenu.Items.Add(FOrderSubMenu);
+  DesignerMenuChangeClass.Enabled:= CompsAreSelected and (ControlSelection.Count=1);
 
-  FOrderMoveToFrontMenuItem := TMenuItem.Create(FPopupMenu);
-  with FOrderMoveToFrontMenuItem do begin
-    Caption := fdmOrderMoveTofront;
-    OnClick := @OnOrderMoveToFrontMenuClick;
-    Enabled := OneControlSelected;
-    ShortCut := EditorOpts.KeyMap.CommandToShortCut(ecDesignerMoveToFront);
-  end;
-  FOrderSubMenu.Add(FOrderMoveToFrontMenuItem);
-
-  FOrderMoveToBackMenuItem := TMenuItem.Create(FPopupMenu);
-  with FOrderMoveToBackMenuItem do begin
-    Caption := fdmOrderMoveToBack;
-    OnClick := @OnOrderMoveToBackMenuClick;
-    Enabled := OneControlSelected;
-    ShortCut := EditorOpts.KeyMap.CommandToShortCut(ecDesignerMoveToBack);
-  end;
-  FOrderSubMenu.Add(FOrderMoveToBackMenuItem);
-  
-  FOrderForwardOneMenuItem := TMenuItem.Create(FPopupMenu);
-  with FOrderForwardOneMenuItem do begin
-    Caption := fdmOrderForwardOne;
-    OnClick := @OnOrderForwardOneMenuClick;
-    Enabled := OneControlSelected;
-    ShortCut := EditorOpts.KeyMap.CommandToShortCut(ecDesignerForwardOne);
-    // MWE: maybe we can move more than one, but I don't want to think about
-    //      it now
-  end;
-  FOrderSubMenu.Add(FOrderForwardOneMenuItem);
-
-  FOrderBackOneMenuItem := TMenuItem.Create(FPopupMenu);
-  with FOrderBackOneMenuItem do begin
-    Caption := fdmOrderBackOne;
-    OnClick := @OnOrderBackOneMenuClick;
-    Enabled := OneControlSelected;
-    ShortCut := EditorOpts.KeyMap.CommandToShortCut(ecDesignerBackOne);
-    // MWE: maybe we can move more than one, but I don't want to think about
-    //      it now
-  end;
-  FOrderSubMenu.Add(FOrderBackOneMenuItem);
-
-  AddSeparator;
-
-  // menuitems: Cut/Copy/Paste/Delete
-  FCutMenuItem:= TMenuItem.Create(FPopupMenu);
-  with FCutMenuItem do begin
-    Caption:= lisMenuCut;
-    OnClick:=@OnCutMenuClick;
-    Enabled:= CompsAreSelected;
-  end;
-  FPopupMenu.Items.Add(FCutMenuItem);
-
-  FCopyMenuItem:= TMenuItem.Create(FPopupMenu);
-  with FCopyMenuItem do begin
-    Caption:= lisMenuCopy;
-    OnClick:=@OnCopyMenuClick;
-    Enabled:= CompsAreSelected;
-  end;
-  FPopupMenu.Items.Add(FCopyMenuItem);
-
-  FPasteMenuItem:= TMenuItem.Create(FPopupMenu);
-  with FPasteMenuItem do begin
-    Caption:= lisMenuPaste;
-    OnClick:=@OnPasteMenuClick;
-    Enabled:= CanPaste;
-  end;
-  FPopupMenu.Items.Add(FPasteMenuItem);
-
-  FDeleteSelectionMenuItem:=TMenuItem.Create(FPopupMenu);
-  with FDeleteSelectionMenuItem do begin
-    Caption:= fdmDeleteSelection;
-    OnClick:=@OnDeleteSelectionMenuClick;
-    Enabled:= CompsAreSelected;
-  end;
-  FPopupMenu.Items.Add(FDeleteSelectionMenuItem);
-
-  AddSeparator;
-
-  // extras
-  fChangeClassMenuItem:=TMenuItem.Create(FPopupMenu);
-  with fChangeClassMenuItem do begin
-    Caption:= lisChangeClass;
-    OnClick:=@OnChangeClassMenuClick;
-    Enabled:= CompsAreSelected and (ControlSelection.Count=1);
-  end;
-  FPopupMenu.Items.Add(fChangeClassMenuItem);
-
-  fViewLFMMenuItem:=TMenuItem.Create(FPopupMenu);
-  with fViewLFMMenuItem do begin
-    Caption:= lisViewSourceLfm;
-    OnClick:=@OnViewLFMMenuClick;
-  end;
-  FPopupMenu.Items.Add(fViewLFMMenuItem);
-
-  fSaveAsXMLMenuItem:=TMenuItem.Create(FPopupMenu);
-  with fSaveAsXMLMenuItem do begin
-    Caption:= fdmSaveFormAsXML;
-    OnClick:=@OnSaveAsXMLMenuClick;
-  end;
-  FPopupMenu.Items.Add(fSaveAsXMLMenuItem);
-
-  AddSeparator;
-  
-  // options
-
-  FSnapToGridOptionMenuItem:=TMenuItem.Create(FPopupMenu);
-  with FSnapToGridOptionMenuItem do begin
-    Caption:= fdmSnapToGridOption;
-    OnClick:=@OnSnapToGridOptionMenuClick;
-    Checked:=EnvironmentOptions.SnapToGrid;
-    ShowAlwaysCheckable:=true;
-  end;
-  FPopupMenu.Items.Add(FSnapToGridOptionMenuItem);
-
-  FSnapToGuideLinesOptionMenuItem:=TMenuItem.Create(FPopupMenu);
-  with FSnapToGuideLinesOptionMenuItem do begin
-    Caption:= fdmSnapToGuideLinesOption;
-    OnClick:=@OnSnapToGuideLinesOptionMenuClick;
-    Checked:=EnvironmentOptions.SnapToGuideLines;
-    ShowAlwaysCheckable:=true;
-  end;
-  FPopupMenu.Items.Add(FSnapToGuideLinesOptionMenuItem);
-
-  FShowOptionsMenuItem:=TMenuItem.Create(FPopupMenu);
-  with FShowOptionsMenuItem do begin
-    Caption:= fdmShowOptions;
-    OnClick:=@OnShowOptionsMenuItemClick;
-  end;
-  FPopupMenu.Items.Add(FShowOptionsMenuItem);
+  DesignerMenuSnapToGridOption.Checked:=EnvironmentOptions.SnapToGrid;
+  DesignerMenuSnapToGuideLinesOption.Checked:=EnvironmentOptions.SnapToGuideLines;
 end;
 
 procedure TDesigner.OnAlignPopupMenuClick(Sender: TObject);

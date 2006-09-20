@@ -398,6 +398,22 @@ var
   // Code templates popupmenu
   CodeTemplatesMenuRoot: TIDEMenuSection = nil;
 
+  // Designer: Popupmenu
+  DesignerMenuRoot: TIDEMenuSection = nil;
+    // Designer: Dynamic section for component editor
+    DesignerMenuSectionComponentEditor: TIDEMenuSection;
+    // Designer: align section
+    DesignerMenuSectionAlign: TIDEMenuSection;
+    // Designer: tab and order section
+    DesignerMenuSectionOrder: TIDEMenuSection;
+      DesignerMenuSectionZOrder: TIDEMenuSection;
+    // Designer: clipboard section
+    DesignerMenuSectionClipboard: TIDEMenuSection;
+    // Designer: miscellaneous section
+    DesignerMenuSectionMisc: TIDEMenuSection;
+    // Designer: options section
+    DesignerMenuSectionOptions: TIDEMenuSection;
+
 function RegisterIDEMenuRoot(const Name: string; MenuItem: TMenuItem = nil
                              ): TIDEMenuSection;
 function RegisterIDEMenuSection(Parent: TIDEMenuSection;
@@ -746,7 +762,8 @@ end;
 procedure TIDEMenuItem.WriteDebugReport(const Prefix: string;
   MenuItemDebugReport: boolean);
 begin
-  debugln(Prefix,'SectionIndex=',dbgs(SectionIndex),' Name="',DbgStr(Name),'" VisibleActive=',dbgs(VisibleActive));
+  debugln(Prefix,'SectionIndex=',dbgs(SectionIndex),' Name="',DbgStr(Name),'"',
+    ' VisibleActive=',dbgs(VisibleActive));
   if MenuItemDebugReport and (MenuItem<>nil) then
     MenuItem.WriteDebugReport(Prefix);
 end;
@@ -1208,16 +1225,19 @@ procedure TIDEMenuSection.Remove(AnItem: TIDEMenuItem);
 var
   OldVisibleActive: Boolean;
 begin
-  if imssClearing in FStates then exit;
-  OldVisibleActive:=AnItem.VisibleActive;
-  FItems.Delete(AnItem.SectionIndex);
-  UpdateChildsIndex(AnItem.SectionIndex);
+  if not (imssClearing in FStates) then begin
+    OldVisibleActive:=AnItem.VisibleActive;
+    FItems.Delete(AnItem.SectionIndex);
+    UpdateChildsIndex(AnItem.SectionIndex);
+  end;
   UpdateSize(-AnItem.Size);
   AnItem.FSection:=nil;
-  if OldVisibleActive then
-    ItemVisibleActiveChanged(AnItem);
-  // set the Index as last
-  AnItem.FSectionIndex:=0;
+  if not (imssClearing in FStates) then begin
+    if OldVisibleActive then
+      ItemVisibleActiveChanged(AnItem);
+    // set the Index as last
+    AnItem.FSectionIndex:=0;
+  end;
 end;
 
 procedure TIDEMenuSection.CreateMenuItem;
@@ -1314,7 +1334,8 @@ begin
   if FUpdateLock<=0 then
     RaiseGDBException('TIDEMenuSection.EndUpdate');
   dec(FUpdateLock);
-  UpdateMenuStructure;
+  if FUpdateLock=0 then
+    UpdateMenuStructure;
 end;
 
 procedure TIDEMenuSection.RemoveAllHandlersOfObject(AnObject: TObject);
@@ -1342,7 +1363,12 @@ procedure TIDEMenuSection.WriteDebugReport(const Prefix: string;
 var
   i: Integer;
 begin
-  debugln(Prefix,'SectionIndex=',dbgs(SectionIndex),' Name="',DbgStr(Name),'" VisibleActive=',dbgs(VisibleActive),' ChildsAsSubMenu='+dbgs(ChildsAsSubMenu),' ContainerIndex='+dbgs(GetContainerIndex(false)),' Size='+dbgs(Size));
+  debugln([Prefix,'SectionIndex=',SectionIndex,' Name="',DbgStr(Name),'"',
+    ' VisibleActive=',VisibleActive,
+    ' ChildsAsSubMenu=',ChildsAsSubMenu,
+    ' ContainerIndex=',GetContainerIndex(false),
+    ' NeedSep:Top=',NeedTopSeparator,',Bottom=',NeedBottomSeparator,
+    ' Size='+dbgs(Size)]);
   for i:=0 to Count-1 do Items[i].WriteDebugReport(Prefix+'  ',false);
   if MenuItemDebugReport and (MenuItem<>nil) then
     MenuItem.WriteDebugReport(Prefix);

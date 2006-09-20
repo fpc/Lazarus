@@ -3748,7 +3748,7 @@ begin
   SrcPopupMenu := TPopupMenu.Create(Self);
   with SrcPopupMenu do begin
     AutoPopup := True;
-    OnPopup :=@SrcPopUpMenuPopup;
+    OnPopup :=@SrcPopupMenuPopup;
   end;
   
   // assign the root TMenuItem to the registered menu root.
