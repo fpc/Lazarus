@@ -342,7 +342,7 @@ var
     AReplace:=ReplaceText;
     if sesoRegExpr in Flags then
       AReplace:=RE.Substitute(AReplace);
-    DebugLn(['DoReplaceLine Replace with "',AReplace,'"']);
+    //DebugLn(['DoReplaceLine Replace with "',AReplace,'"']);
       
     SrcEditPosValid:=false;
       

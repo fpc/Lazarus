@@ -7,6 +7,8 @@ object TextConvListEditor: TTextConvListEditor
   VertScrollBar.Page = 226
   ActiveControl = ToolsListBox
   Caption = 'TextConvListEditor'
+  ClientHeight = 227
+  ClientWidth = 519
   Constraints.MinHeight = 200
   Constraints.MinWidth = 400
   OnCreate = FormCreate
@@ -62,6 +64,8 @@ object TextConvListEditor: TTextConvListEditor
     ChildSizing.VerticalSpacing = 6
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 2
+    ClientHeight = 144
+    ClientWidth = 283
     TabOrder = 1
     object AddToolButton: TButton
       Left = 6

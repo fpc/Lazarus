@@ -737,7 +737,9 @@ procedure TH2PasDialog.UpdateConvertPage;
 begin
   ClearMessages;
   PreH2PasEdit.ListOfTools:=Project.PreH2PasTools;
+  PreH2PasEdit.UpdateAll;
   PostH2PasEdit.ListOfTools:=Project.PostH2PasTools;
+  PostH2PasEdit.UpdateAll;
   //DebugLn(['TH2PasDialog.UpdateConvertPage PreH2PasEdit.ListOfTools=',PreH2PasEdit.ListOfTools.COmponentCount]);
 end;
 

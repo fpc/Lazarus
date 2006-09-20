@@ -18,10 +18,10 @@ object H2PasDialog: TH2PasDialog
     AnchorSideBottom.Control = OpenSettingsButton
     Height = 465
     Width = 785
-    ActivePage = PostH2PasTabSheet
+    ActivePage = SettingsTabSheet
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
-    TabIndex = 3
+    TabIndex = 4
     TabOrder = 4
     object FilesTabSheet: TTabSheet
       Caption = 'FilesTabSheet'
@@ -261,8 +261,8 @@ object H2PasDialog: TH2PasDialog
         Width = 781
         Align = alClient
         Caption = 'PostH2PasGroupBox'
-        ClientHeight = 418
-        ClientWidth = 777
+        ClientHeight = 435
+        ClientWidth = 781
         TabOrder = 0
       end
     end
@@ -285,7 +285,7 @@ object H2PasDialog: TH2PasDialog
         Left = 6
         Height = 20
         Top = 42
-        Width = 216
+        Width = 219
         Caption = 'OpenLastProjectOnStartCheckBox'
         OnChange = OpenLastProjectOnStartCheckBoxChange
         TabOrder = 0

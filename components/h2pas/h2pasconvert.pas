@@ -1014,16 +1014,16 @@ end;
 
 procedure TH2PasProject.AddDefaultPreH2PasTools;
 begin
-  TRemoveCPlusPlusExternCTool.Create(FPreH2PasTools);
-  TRemoveEmptyCMacrosTool.Create(FPreH2PasTools);
-  TReplaceEdgedBracketPairWithStar.Create(FPreH2PasTools);
-  TReplaceMacro0PointerWithNULL.Create(FPreH2PasTools);
+  AddNewTextConverterTool(FPreH2PasTools,TRemoveCPlusPlusExternCTool);
+  AddNewTextConverterTool(FPreH2PasTools,TRemoveEmptyCMacrosTool);
+  AddNewTextConverterTool(FPreH2PasTools,TReplaceEdgedBracketPairWithStar);
+  AddNewTextConverterTool(FPreH2PasTools,TReplaceMacro0PointerWithNULL);
 end;
 
 procedure TH2PasProject.AddDefaultPostH2PasTools;
 begin
-  TReplaceUnitFilenameWithUnitName.Create(FPostH2PasTools);
-  TRemoveSystemTypes.Create(FPostH2PasTools);
+  AddNewTextConverterTool(FPostH2PasTools,TReplaceUnitFilenameWithUnitName);
+  AddNewTextConverterTool(FPostH2PasTools,TRemoveSystemTypes);
 end;
 
 { TH2PasConverter }

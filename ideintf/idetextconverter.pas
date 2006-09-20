@@ -184,7 +184,103 @@ procedure ClearTextConverterToolList(List: TComponent);
 procedure CopyTextConverterToolList(Src, Dest: TComponent;
                                     ClearDest: boolean = true);
   
+procedure MakeToolNameUnique(List: TComponent;
+                             NewTool: TCustomTextConverterTool);
+procedure MakeToolCaptionUnique(List: TComponent;
+                                NewTool: TCustomTextConverterTool);
+procedure MakeToolCaptionAndNameUnique(List: TComponent;
+                                       NewTool: TCustomTextConverterTool);
+function AddNewTextConverterTool(List: TComponent;
+             NewClass: TCustomTextConverterToolClass): TCustomTextConverterTool;
+                                       
+
 implementation
+
+
+procedure MakeToolNameUnique(List: TComponent;
+  NewTool: TCustomTextConverterTool);
+var
+  NewName: String;
+
+  procedure MakeValidIdentifier;
+  var
+    i: Integer;
+  begin
+    for i:=length(NewName) downto 1 do
+      if not (NewName[i] in ['0'..'9','_','a'..'z','A'..'Z']) then
+        System.Delete(NewName,i,1);
+    if (NewName<>'') and (NewName[1] in ['0'..'9']) then
+      NewName:='_'+NewName;
+  end;
+
+  function NameIsUnique: Boolean;
+  var
+    i: Integer;
+    CurTool: TCustomTextConverterTool;
+  begin
+    MakeValidIdentifier;
+    if NewName='' then exit(false);
+    for i:=0 to List.ComponentCount-1 do begin
+      CurTool:=TCustomTextConverterTool(List.Components[i]);
+      if CurTool=NewTool then continue;
+      if CompareText(CurTool.Name,NewName)=0 then exit(false);
+    end;
+    Result:=true;
+    NewTool.Name:=NewName;
+  end;
+
+begin
+  NewName:=NewTool.Name;
+  if NameIsUnique then exit;
+  NewName:=NewTool.FirstLineOfClassDescription;
+  if NewName='' then NewName:=NewTool.ClassName;
+  while not NameIsUnique do
+    NewName:=CreateNextIdentifier(NewName);
+end;
+
+procedure MakeToolCaptionUnique(List: TComponent;
+  NewTool: TCustomTextConverterTool);
+var
+  NewCaption: String;
+
+  function CaptionIsUnique: Boolean;
+  var
+    i: Integer;
+    CurTool: TCustomTextConverterTool;
+  begin
+    if NewCaption='' then exit(false);
+    for i:=0 to List.ComponentCount-1 do begin
+      CurTool:=TCustomTextConverterTool(List.Components[i]);
+      if CurTool=NewTool then continue;
+      if CompareText(CurTool.Caption,NewCaption)=0 then exit(false);
+    end;
+    Result:=true;
+    NewTool.Caption:=NewCaption;
+  end;
+
+begin
+  NewCaption:=NewTool.Caption;
+  if CaptionIsUnique then exit;
+  NewCaption:=NewTool.FirstLineOfClassDescription;
+  if NewCaption='' then NewCaption:=NewTool.ClassName;
+  while not CaptionIsUnique do
+    NewCaption:=CreateNextIdentifier(NewCaption);
+end;
+
+procedure MakeToolCaptionAndNameUnique(List: TComponent;
+  NewTool: TCustomTextConverterTool);
+begin
+  MakeToolNameUnique(List,NewTool);
+  MakeToolCaptionUnique(List,NewTool);
+end;
+
+function AddNewTextConverterTool(List: TComponent;
+  NewClass: TCustomTextConverterToolClass): TCustomTextConverterTool;
+begin
+  Result:=NewClass.Create(List);
+  MakeToolCaptionAndNameUnique(List,Result);
+  if Result.Caption='' then RaiseGDBException('');
+end;
 
 procedure ClearTextConverterToolList(List: TComponent);
 begin
