@@ -175,12 +175,16 @@ begin
       end;
       
     ctnProcedure:
-      if IdentItem.IsFunction then begin
-        AColor:=clTeal;
-        s:='function';
-      end else begin
-        AColor:=clNavy;
-        s:='procedure';
+      begin
+        if IdentItem.IsFunction then begin
+          AColor:=clTeal;
+          s:='function';
+        end else begin
+          AColor:=clNavy;
+          s:='procedure';
+        end;
+        if IdentItem.IsAbstractMethod then
+          AColor:=clRed;
       end;
       
     ctnProperty:

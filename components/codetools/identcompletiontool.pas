@@ -77,6 +77,8 @@ type
     iliBaseExprTypeValid,
     iliIsFunction,
     iliIsFunctionValid,
+    iliIsAbstractMethod,
+    iliIsAbstractMethodValid,
     iliParamListValid
     );
   TIdentListItemFlags = set of TIdentListItemFlag;
@@ -113,6 +115,7 @@ type
     procedure UpdateBaseContext;
     function HasChilds: boolean;
     function IsFunction: boolean;
+    function IsAbstractMethod: boolean;
     procedure Clear;
     function CompareParamList(CompareItem: TIdentifierListItem): integer;
   public
@@ -1633,6 +1636,17 @@ begin
     Include(Flags,iliIsFunctionValid);
   end;
   Result:=iliIsFunction in Flags;
+end;
+
+function TIdentifierListItem.IsAbstractMethod: boolean;
+begin
+  if not (iliIsAbstractMethodValid in Flags) then begin
+    if (Node<>nil)
+    and Tool.MoveCursorToProcSpecifier(Node,psABSTRACT) then
+      Include(Flags,iliIsAbstractMethod);
+    Include(Flags,iliIsAbstractMethodValid);
+  end;
+  Result:=iliIsAbstractMethod in Flags;
 end;
 
 procedure TIdentifierListItem.Clear;
