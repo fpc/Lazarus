@@ -47,10 +47,8 @@ begin
   // scroll content of FControl
   OldPosition:=FPosition;
   FPosition := Value;
-  if Kind = sbVertical then
-    ScrollControlBy(0, OldPosition - FPosition)
-  else
-    ScrollControlBy(OldPosition - FPosition, 0);
+  if FControl is TScrollingWinControl then
+    TScrollingWinControl(FControl).ScrollbarHandler(Kind, OldPosition);
 
   // check that the new position is also set on the scrollbar
   if HandleAllocated
@@ -169,12 +167,6 @@ begin
   ControlUpdateScrollBars;
 end;
 
-procedure TControlScrollBar.ScrollControlBy(DeltaX, DeltaY: integer);
-begin
-  if FControl is TScrollingWinControl then
-    TScrollingWinControl(FControl).ScrollBy(DeltaX, DeltaY);
-end;
-
 procedure TControlScrollBar.SetSmooth(const Value: Boolean);
 begin
   // only used by the ScrollHandler procedure
@@ -237,58 +229,19 @@ end;
 procedure TControlScrollBar.UpdateScrollBar;
 var
   ScrollInfo: TScrollInfo;
-  SBSize : Longint;
-  OtherScrollbar: TControlScrollBar;
-  CurMax: Integer;
 begin
+  //todo: probably needs to be moved somewhere else.
   FAutoRange := 0;
 
   if FControl is TScrollingWinControl then begin
     ScrollInfo.cbSize := SizeOf(ScrollInfo);
     ScrollInfo.fMask := SIF_ALL;
     ScrollInfo.nMin := 0;
+    ScrollInfo.nMax := FRange;
     ScrollInfo.nPos := FPosition;
     ScrollInfo.nTrackPos := FPosition;
-
-    With TScrollingWinControl(FControl) do begin
-      // page
-      if Self.Kind=sbVertical then
-        FPage := TScrollBarInc(Min(ClientHeight - 1,High(FPage)))
-      else
-        FPage := TScrollBarInc(Min(ClientWidth - 1,High(FPage)));
-      ScrollInfo.nPage := FPage;
-
-      // range
-      OtherScrollbar:=GetOtherScrollBar;
-      If OtherScrollbar.FVisible then
-        SBSize := OtherScrollbar.Size
-      else
-        SBSize := 0;
-      if Kind=sbVertical then begin
-        SBSize:=ClientHeight - SBSize;
-      end else begin
-        SBSize:=ClientWidth - SBSize;
-      end;
-      if (fRange>SBSize) and (SBSize>0) then   FAutoRange := (FRange - SBSize)
-                                        else   FAutoRange := 0;
-      ScrollInfo.nMax := FRange;
-
-      // visible
-      if Kind=sbVertical then
-        CurMax:=Height
-      else
-        CurMax:=Width;
-      If (Self.FVisible and not FAutoScroll)
-      or (FAutoScroll and (ScrollInfo.nMax > 0) and (ScrollInfo.nMax > CurMax))
-      then
-        Self.FVisible := True
-      else
-        Self.FVisible := False;
-
-      // transmit scollinfo to interface
-      if HandleAllocated then
-        SetScrollInfo(Handle, IntfBarKind[Kind], ScrollInfo, Self.FVisible);
-    end
+    if HandleAllocated then
+      SetScrollInfo(FControl.Handle, IntfBarKind[Kind], ScrollInfo, FVisible);
   end;
 
   SetPosition(ScrollInfo.nTrackPos);

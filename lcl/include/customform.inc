@@ -760,12 +760,12 @@ Procedure TCustomForm.PaintWindow(DC : Hdc);
 begin
   // FCanvas.Lock;
   try
-    FCanvas.Handle := DC;
+    Canvas.Handle := DC;
     //DebugLn('[TCustomForm.PaintWindow] ',ClassName,' DC=',DbgS(DC,8),'  ',DbgS(FCanvas.Handle,8));
     try
       if FDesigner <> nil then FDesigner.PaintGrid else Paint;
     finally
-      FCanvas.Handle := 0;
+      Canvas.Handle := 0;
     end;
   finally
     // FCanvas.Unlock;

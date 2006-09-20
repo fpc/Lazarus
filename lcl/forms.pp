@@ -104,7 +104,6 @@ type
     function VisibleIsStored: boolean; virtual;
     procedure AutoCalcRange; virtual;
     procedure ControlUpdateScrollBars; virtual;
-    procedure ScrollControlBy(DeltaX, DeltaY: integer); virtual;
     procedure ScrollHandler(var Message: TLMScroll);
     procedure SetIncrement(const AValue: TScrollBarInc); virtual;
     procedure SetPage(const AValue: TScrollBarInc); virtual;
@@ -113,7 +112,7 @@ type
     procedure SetSize(const AValue: integer); virtual;
     procedure SetSmooth(const Value: Boolean); virtual;
     procedure SetVisible(const Value: Boolean); virtual;
-    Procedure UpdateScrollBar; virtual;
+    procedure UpdateScrollBar; virtual;
   public
     constructor Create(AControl: TWinControl; AKind: TScrollBarKind);
     procedure Assign(Source: TPersistent); override;
@@ -136,38 +135,32 @@ type
 
   { TScrollingWinControl }
 
-  TScrollingWinControl = class(TWinControl)
+  TScrollingWinControl = class(TCustomControl)
   private
     FHorzScrollBar: TControlScrollBar;
     FVertScrollBar: TControlScrollBar;
     FAutoScroll: Boolean;
-    FOnPaint: TNotifyEvent;
-    FCanvas: TControlCanvas;
     FIsUpdating: Boolean;
     procedure SetAutoScroll(Value: Boolean);
     procedure SetHorzScrollBar(Value: TControlScrollBar);
     procedure SetVertScrollBar(Value: TControlScrollBar);
+    //todo: rename to IsScrollbarsStored
     Function StoreScrollBars : Boolean;
   protected
     procedure AlignControls(AControl: TControl; var ARect: TRect); override;
     procedure CreateWnd; override;
     function  GetClientScrollOffset: TPoint; override;
-    Procedure WMEraseBkgnd(var Message: TLMEraseBkgnd); message LM_ERASEBKGND;
-    procedure WMPaint(var message: TLMPaint); message LM_PAINT;
     procedure DoOnResize; override;
     procedure WMHScroll(var Message : TLMHScroll); message LM_HScroll;
     procedure WMVScroll(var Message : TLMVScroll); message LM_VScroll;
     procedure ScrollBy(DeltaX, DeltaY: Integer);
-    property OnPaint: TNotifyEvent read FOnPaint write FOnPaint;
+    procedure ComputeScrollbars; virtual;
+    procedure ScrollbarHandler(p_ScrollKind: TScrollBarKind; p_OldPosition: Integer); virtual;
   public
     Constructor Create(AOwner : TComponent); Override;
     Destructor Destroy; Override;
-    procedure Paint; dynamic;
-    procedure PaintWindow(dc : Hdc); override;
-    procedure UpdateScrollbars; virtual;
+    procedure UpdateScrollbars;
     function HasVisibleScrollbars: boolean; virtual;
-    procedure DestroyWnd; override;
-    property Canvas: TControlCanvas read FCanvas;
   published
     property AutoScroll: Boolean read FAutoScroll write SetAutoScroll;
     property HorzScrollBar: TControlScrollBar
