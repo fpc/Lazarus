@@ -172,8 +172,9 @@ if [ $BuildCrossWin32DEB = "yes" ]; then
   for Target in $Targets; do
     FPCLibDir=lib/fpc/$CompilerVersionStr/units # !!! no / at end
     
-    mkdir -p $FPCBuildDir/$FPCLibDir
-    cp -a $BuildRoot/binutils/cross/destination/$FPCLibDir/$Target $FPCBuildDir/$FPCLibDir/
+    DestDir=$FPCBuildDir/usr/$FPCLibDir
+    mkdir -p $DestDir
+    cp -a $BuildRoot/binutils/cross/destination/$FPCLibDir/$Target $DestDir
   done
 
   #------------------------------------------------------------------------------
