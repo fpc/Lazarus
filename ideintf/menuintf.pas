@@ -363,30 +363,19 @@ var
     // Source Editor: First dynamic section for often used context sensitive stuff
     //                The items are cleared automatically after each popup.
     SrcEditMenuSectionFirstDynamic: TIDEMenuSection;
-    // Source Editor: First static section (e.g. Find Declaration)
     SrcEditMenuSectionFirstStatic: TIDEMenuSection;
-      // Source Editor: Find sub menu section (e.g. Procedure Jump)
       SrcEditSubMenuFind: TIDEMenuSection;
-    // Source Editor: Clipboard section (e.g. cut, copy, paste)
     SrcEditMenuSectionClipboard: TIDEMenuSection;
     // Source Editor: File Specific dynamic section
     //                The items are cleared automatically after each popup.
     SrcEditMenuSectionFileDynamic: TIDEMenuSection;
-    // Source Editor: Marks section
     SrcEditMenuSectionMarks: TIDEMenuSection;
-    // Source Editor: Goto Bookmarks Submenu
     SrcEditSubMenuGotoBookmarks: TIDEMenuSection;
-    // Source Editor: Set Bookmarks Submenu
     SrcEditSubMenuSetBookmarks: TIDEMenuSection;
-    // Source Editor: Flags and options section
     SrcEditMenuSectionFlags: TIDEMenuSection;
-      // Source Editor: Highlighter section
       SrcEditMenuSectionHighlighter: TIDEMenuSection;
-    // Source Editor: Debug submenu
     SrcEditSubMenuDebug: TIDEMenuSection;
-    // Source Editor: Move Page section
     SrcEditMenuSectionMovePage: TIDEMenuSection;
-    // Source Editor: Refactor submenu
     SrcEditSubMenuRefactor: TIDEMenuSection;
 
   // Messages window popupmenu
@@ -404,16 +393,11 @@ var
     DesignerMenuSectionComponentEditor: TIDEMenuSection;
     // Designer: custom dynamic section
     DesignerMenuSectionCustomDynamic: TIDEMenuSection;
-    // Designer: align section
     DesignerMenuSectionAlign: TIDEMenuSection;
-    // Designer: tab and order section
     DesignerMenuSectionOrder: TIDEMenuSection;
       DesignerMenuSectionZOrder: TIDEMenuSection;
-    // Designer: clipboard section
     DesignerMenuSectionClipboard: TIDEMenuSection;
-    // Designer: miscellaneous section
     DesignerMenuSectionMisc: TIDEMenuSection;
-    // Designer: options section
     DesignerMenuSectionOptions: TIDEMenuSection;
 
 function RegisterIDEMenuRoot(const Name: string; MenuItem: TMenuItem = nil

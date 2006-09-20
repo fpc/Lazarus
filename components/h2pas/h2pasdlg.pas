@@ -65,6 +65,11 @@ type
     OutputDirLabel: TLabel;
     OutputDirBrowseButton: TButton;
 
+    // post h2pas
+    PostH2PasTabSheet: TTabSheet;
+    PostH2PasGroupBox: TGroupBox;
+    PostH2PasEdit: TTextConvListEditor;
+
     // settings
     SettingsTabSheet: TTabSheet;
     h2pasFilenameBrowseButton: TButton;
@@ -100,6 +105,7 @@ type
     procedure OutputDirBrowseButtonClick(Sender: TObject);
     procedure OutputDirEditEditingDone(Sender: TObject);
     procedure OutputExtEditEditingDone(Sender: TObject);
+    procedure PostH2PasEditModified(Sender: TObject);
     procedure PreH2PasEditModified(Sender: TObject);
     procedure SaveSettingsAsButtonClick(Sender: TObject);
     procedure SaveSettingsButtonClick(Sender: TObject);
@@ -187,6 +193,10 @@ begin
   // register text converter tools
   TextConverterToolClasses.RegisterClass(TRemoveCPlusPlusExternCTool);
   TextConverterToolClasses.RegisterClass(TRemoveEmptyCMacrosTool);
+  TextConverterToolClasses.RegisterClass(TReplaceEdgedBracketPairWithStar);
+  TextConverterToolClasses.RegisterClass(TReplaceMacro0PointerWithNULL);
+  TextConverterToolClasses.RegisterClass(TReplaceUnitFilenameWithUnitName);
+  TextConverterToolClasses.RegisterClass(TRemoveSystemTypes);
 end;
 
 { TH2PasDialog }
@@ -224,6 +234,8 @@ begin
     LibNameLabel.Caption:='-l Library name';
   PreH2PasTabSheet.Caption:='Before h2pas';
     PreH2PasGroupBox.Caption:='Conversions before running h2pas';
+  PostH2PasTabSheet.Caption:='After h2pas';
+    PostH2PasGroupBox.Caption:='Conversions after running h2pas';
   SettingsTabSheet.Caption:='Settings';
     H2PasFilenameLabel.Caption:='h2pas program path';
     OpenLastProjectOnStartCheckBox.Caption:='Open last settings on start';
@@ -243,6 +255,15 @@ begin
     Visible:=true;// Note: it's a form, and visible default is false
   end;
 
+  PostH2PasEdit:=TTextConvListEditor.Create(Self);
+  with PostH2PasEdit do begin
+    Name:='PostH2PasEdit';
+    Align:=alClient;
+    OnModified:=@PostH2PasEditModified;
+    Parent:=PostH2PasGroupBox;
+    Visible:=true;// Note: it's a form, and visible default is false
+  end;
+
   LazarusIDE.AddHandlerOnSavedAll(@OnIDESavedAll);
   CreateLazarusMenuItems;
 
@@ -256,8 +277,9 @@ begin
     OpenProject(Converter.CurrentProjectFilename,[]);
   if Project=nil then begin
     Converter.Project:=TH2PasProject.Create;
+    PreH2PasEdit.ListOfTools:=Project.PreH2PasTools;
+    PostH2PasEdit.ListOfTools:=Project.PostH2PasTools;
   end;
-  PreH2PasEdit.ListOfTools:=Project.PreH2PasTools;
 
   UpdateAll;
 end;
@@ -361,6 +383,7 @@ procedure TH2PasDialog.FormDestroy(Sender: TObject);
 begin
   FreeAndNil(fSrcEditSection);
   PreH2PasEdit.ListOfTools:=nil;
+  PostH2PasEdit.ListOfTools:=nil;
   FreeAndNil(FConverter);
 end;
 
@@ -436,6 +459,11 @@ end;
 procedure TH2PasDialog.OutputExtEditEditingDone(Sender: TObject);
 begin
   Project.OutputExt:=OutputExtEdit.Text;
+end;
+
+procedure TH2PasDialog.PostH2PasEditModified(Sender: TObject);
+begin
+  Project.Modified:=true;
 end;
 
 procedure TH2PasDialog.PreH2PasEditModified(Sender: TObject);
@@ -709,6 +737,7 @@ procedure TH2PasDialog.UpdateConvertPage;
 begin
   ClearMessages;
   PreH2PasEdit.ListOfTools:=Project.PreH2PasTools;
+  PostH2PasEdit.ListOfTools:=Project.PostH2PasTools;
   //DebugLn(['TH2PasDialog.UpdateConvertPage PreH2PasEdit.ListOfTools=',PreH2PasEdit.ListOfTools.COmponentCount]);
 end;
 

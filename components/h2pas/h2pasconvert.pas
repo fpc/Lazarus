@@ -28,7 +28,7 @@ uses
   // CodeTools
   BasicCodeTools,
   // IDEIntf
-  TextTools, IDEExternToolIntf, IDEDialogs, LazIDEIntf,
+  TextTools, IDEExternToolIntf, IDEDialogs, LazIDEIntf, SrcEditorIntf,
   IDEMsgIntf, IDETextConverter;
   
 type
@@ -44,6 +44,38 @@ type
   { TRemoveEmptyCMacrosTool }
 
   TRemoveEmptyCMacrosTool = class(TCustomTextConverterTool)
+  public
+    class function ClassDescription: string; override;
+    function Execute(aText: TIDETextConverter): TModalResult; override;
+  end;
+  
+  { TReplaceEdgedBracketPairWithStar }
+
+  TReplaceEdgedBracketPairWithStar = class(TCustomTextReplaceTool)
+  public
+    class function ClassDescription: string; override;
+    constructor Create(TheOwner: TComponent); override;
+  end;
+
+  { TReplace0PointerWithNULL }
+
+  TReplaceMacro0PointerWithNULL = class(TCustomTextConverterTool)
+  public
+    class function ClassDescription: string; override;
+    function Execute(aText: TIDETextConverter): TModalResult; override;
+  end;
+  
+  { TReplaceUnitFilenameWithUnitName }
+
+  TReplaceUnitFilenameWithUnitName = class(TCustomTextReplaceTool)
+  public
+    class function ClassDescription: string; override;
+    constructor Create(TheOwner: TComponent); override;
+  end;
+
+  { TRemoveSystemTypes }
+
+  TRemoveSystemTypes = class(TCustomTextConverterTool)
   public
     class function ClassDescription: string; override;
     function Execute(aText: TIDETextConverter): TModalResult; override;
@@ -102,6 +134,7 @@ type
     FPackAllRecords: boolean;
     FPalmOSSYSTrap: boolean;
     FPforPointers: boolean;
+    FPostH2PasTools: TComponent;
     FPreH2PasTools: TComponent;
     FStripComments: boolean;
     FStripCommentsAndInfo: boolean;
@@ -156,6 +189,7 @@ type
     function NormalizeFilename(const AFilename: string): string;
     function HasEnabledFiles: boolean;
     procedure AddDefaultPreH2PasTools;
+    procedure AddDefaultPostH2PasTools;
   public
     property CHeaderFileCount: integer read GetCHeaderFileCount;
     property CHeaderFiles[Index: integer]: TH2PasFile read GetCHeaderFiles;
@@ -165,6 +199,7 @@ type
     property IsVirtual: boolean read FIsVirtual;
     property Converter: TH2PasConverter read FConverter;
     property PreH2PasTools: TComponent read FPreH2PasTools;
+    property PostH2PasTools: TComponent read FPostH2PasTools;
 
     // h2pas options
     property ConstantsInsteadOfEnums: boolean read FConstantsInsteadOfEnums write SetConstantsInsteadOfEnums;
@@ -620,18 +655,39 @@ begin
     CHeaderFiles[CHeaderFileCount-1].Free;
   FPreH2PasTools.Free;
   FPreH2PasTools:=TComponent.Create(nil);
-  if AddDefaults then
+  FPostH2PasTools.Free;
+  FPostH2PasTools:=TComponent.Create(nil);
+  if AddDefaults then begin
     AddDefaultPreH2PasTools;
+    AddDefaultPostH2PasTools;
+  end;
   FModified:=false;
 end;
 
 procedure TH2PasProject.Assign(Source: TPersistent);
+
+  procedure CopyTools(SrcList: TComponent; var DestList: TComponent);
+  var
+    SrcComponent: TComponent;
+    NewComponent: TObject;
+    i: Integer;
+  begin
+    DestList.Free;
+    DestList:=TComponent.Create(nil);
+    for i:=0 to SrcList.ComponentCount-1 do begin
+      SrcComponent:=SrcList.Components[i];
+      if SrcComponent is TCustomTextConverterTool then begin
+        NewComponent:=
+               TComponentClass(SrcComponent.ClassType).Create(DestList);
+        TCustomTextConverterTool(NewComponent).Assign(SrcComponent);
+      end;
+    end;
+  end;
+
 var
   Src: TH2PasProject;
   i: Integer;
   NewCHeaderFile: TH2PasFile;
-  SrcComponent: TComponent;
-  NewComponent: TObject;
 begin
   if Source is TH2PasProject then begin
     Src:=TH2PasProject(Source);
@@ -661,16 +717,8 @@ begin
         NewCHeaderFile.Project:=Self;
         NewCHeaderFile.Assign(Src.CHeaderFiles[i]);
       end;
-      FPreH2PasTools.Free;
-      FPreH2PasTools:=TComponent.Create(nil);
-      for i:=0 to Src.FPreH2PasTools.ComponentCount-1 do begin
-        SrcComponent:=Src.FPreH2PasTools.Components[i];
-        if SrcComponent is TCustomTextConverterTool then begin
-          NewComponent:=
-                 TComponentClass(SrcComponent.ClassType).Create(FPreH2PasTools);
-          TCustomTextConverterTool(NewComponent).Assign(SrcComponent);
-        end;
-      end;
+      CopyTools(Src.FPreH2PasTools,FPreH2PasTools);
+      CopyTools(Src.FPostH2PasTools,FPostH2PasTools);
       Modified:=true;
     end;
   end else begin
@@ -705,16 +753,41 @@ begin
   for i:=0 to CHeaderFileCount-1 do
     if not CHeaderFiles[i].IsEqual(AProject.CHeaderFiles[i]) then
       exit(false);
-  if not CompareComponents(FPreH2PasTools,AProject.FPreH2PasTools) then
+  if (not CompareComponents(FPreH2PasTools,AProject.FPreH2PasTools))
+  or (not CompareComponents(FPostH2PasTools,AProject.FPostH2PasTools)) then
     exit(false);
 end;
 
 procedure TH2PasProject.Load(Config: TConfigStorage);
+  procedure LoadTools(const SubPath: string; List: TComponent);
+  var
+    NewComponent: TComponent;
+    NewCount: LongInt;
+    i: Integer;
+  begin
+    // load PreH2PasTools
+    Config.AppendBasePath(SubPath);
+    try
+      NewCount:=Config.GetValue('Count',0);
+      for i:=0 to NewCount-1 do begin
+        Config.AppendBasePath('Tool'+IntToStr(i+1));
+        try
+          NewComponent:=nil;
+          LoadComponentFromConfig(Config,'Value',NewComponent,
+                                  @TextConverterToolClasses.FindClass,List);
+        finally
+          Config.UndoAppendBasePath;
+        end;
+      end;
+    finally
+      Config.UndoAppendBasePath;
+    end;
+  end;
+
 var
   NewCount: LongInt;
   i: Integer;
   NewCHeaderFile: TH2PasFile;
-  NewComponent: TComponent;
 begin
   Clear(false);
   
@@ -756,28 +829,34 @@ begin
     Config.UndoAppendBasePath;
   end;
 
-  // load PreH2PasTools
-  Config.AppendBasePath('PreH2PasTools');
-  try
-    NewCount:=Config.GetValue('Count',0);
-    for i:=0 to NewCount-1 do begin
-      Config.AppendBasePath('Tool'+IntToStr(i+1));
-      try
-        NewComponent:=nil;
-        LoadComponentFromConfig(Config,'Value',NewComponent,
-                            @TextConverterToolClasses.FindClass,FPreH2PasTools);
-      finally
-        Config.UndoAppendBasePath;
-      end;
-    end;
-  finally
-    Config.UndoAppendBasePath;
-  end;
+  LoadTools('PreH2PasTools',FPreH2PasTools);
+  LoadTools('PostH2PasTools',FPostH2PasTools);
 
   FModified:=false;
 end;
 
 procedure TH2PasProject.Save(Config: TConfigStorage);
+
+  procedure SaveTools(const SubPath: string; List: TComponent);
+  var
+    i: Integer;
+  begin
+    Config.AppendBasePath(SubPath);
+    try
+      Config.SetDeleteValue('Count',List.ComponentCount,0);
+      for i:=0 to List.ComponentCount-1 do begin
+        Config.AppendBasePath('Tool'+IntToStr(i+1));
+        try
+          SaveComponentToConfig(Config,'Value',List.Components[i]);
+        finally
+          Config.UndoAppendBasePath;
+        end;
+      end;
+    finally
+      Config.UndoAppendBasePath;
+    end;
+  end;
+
 var
   i: Integer;
 begin
@@ -817,21 +896,8 @@ begin
     Config.UndoAppendBasePath;
   end;
   
-  Config.AppendBasePath('PreH2PasTools');
-  try
-    Config.SetDeleteValue('Count',FPreH2PasTools.ComponentCount,0);
-    for i:=0 to FPreH2PasTools.ComponentCount-1 do begin
-      Config.AppendBasePath('Tool'+IntToStr(i+1));
-      try
-        SaveComponentToConfig(Config,'Value',FPreH2PasTools.Components[i]);
-      finally
-        Config.UndoAppendBasePath;
-      end;
-    end;
-  finally
-    Config.UndoAppendBasePath;
-  end;
-
+  SaveTools('PreH2PasTools',FPreH2PasTools);
+  SaveTools('PostH2PasTools',FPostH2PasTools);
   FModified:=false;
 end;
 
@@ -950,6 +1016,14 @@ procedure TH2PasProject.AddDefaultPreH2PasTools;
 begin
   TRemoveCPlusPlusExternCTool.Create(FPreH2PasTools);
   TRemoveEmptyCMacrosTool.Create(FPreH2PasTools);
+  TReplaceEdgedBracketPairWithStar.Create(FPreH2PasTools);
+  TReplaceMacro0PointerWithNULL.Create(FPreH2PasTools);
+end;
+
+procedure TH2PasProject.AddDefaultPostH2PasTools;
+begin
+  TReplaceUnitFilenameWithUnitName.Create(FPostH2PasTools);
+  TRemoveSystemTypes.Create(FPostH2PasTools);
 end;
 
 { TH2PasConverter }
@@ -1221,10 +1295,10 @@ begin
 
     TextConverter.Filename:=TempCHeaderFilename;
     FLastUsedFilename:=TextConverter.Filename;
-    TextConverter.LoadFromFile(InputFilename);
     DebugLn(['TH2PasConverter.ConvertFile TempCHeaderFilename="',TempCHeaderFilename,'" CurrentType=',ord(TextConverter.CurrentType),' FileSize=',FileSize(TempCHeaderFilename)]);
 
     // run converters for .h file to make it compatible for h2pas
+    TextConverter.LoadFromFile(InputFilename);
     Result:=TextConverter.Execute(Project.PreH2PasTools);
     if Result<>mrOk then begin
       DebugLn(['TH2PasConverter.ConvertFile Failed running Project.PreH2PasTools on ',TempCHeaderFilename]);
@@ -1236,9 +1310,9 @@ begin
     try
       Tool.Title:='h2pas';
       Tool.H2PasFile:=AFile;
-    DebugLn(['TH2PasConverter.ConvertFile AAA TempCHeaderFilename="',TempCHeaderFilename,'" CurrentType=',ord(TextConverter.CurrentType),' FileSize=',FileSize(TempCHeaderFilename)]);
+      //DebugLn(['TH2PasConverter.ConvertFile AAA TempCHeaderFilename="',TempCHeaderFilename,'" CurrentType=',ord(TextConverter.CurrentType),' FileSize=',FileSize(TempCHeaderFilename)]);
       Tool.TargetFilename:=TextConverter.Filename;
-    DebugLn(['TH2PasConverter.ConvertFile BBB TempCHeaderFilename="',TempCHeaderFilename,'" CurrentType=',ord(TextConverter.CurrentType),' FileSize=',FileSize(TempCHeaderFilename)]);
+      //DebugLn(['TH2PasConverter.ConvertFile BBB TempCHeaderFilename="',TempCHeaderFilename,'" CurrentType=',ord(TextConverter.CurrentType),' FileSize=',FileSize(TempCHeaderFilename)]);
       Tool.Filename:=GetH2PasFilename;
       Tool.CmdLineParams:=AFile.GetH2PasParameters(Tool.TargetFilename);
       Tool.ScanOutput:=true;
@@ -1253,12 +1327,22 @@ begin
       Tool.Free;
     end;
 
-    // TODO: beautify unit
-
+    // run beautification tools for new pascal code
+    TextConverter.InitWithFilename(OutputFilename);
+    DebugLn(['TH2PasConverter.ConvertFile OutputFilename: ',copy(TextConverter.Source,1,300)]);
+    Result:=TextConverter.Execute(Project.PostH2PasTools);
+    if Result<>mrOk then begin
+      DebugLn(['TH2PasConverter.ConvertFile Failed running Project.PostH2PasTools on ',TempCHeaderFilename]);
+      exit;
+    end;
+    TextConverter.Filename:=OutputFilename;// save
   finally
     TextConverter.Free;
-    if (LazarusIDE<>nil) then
+    if (LazarusIDE<>nil) then begin
+      // reload changed files, so that IDE does not report changed files
       LazarusIDE.DoRevertEditorFile(TempCHeaderFilename);
+      LazarusIDE.DoRevertEditorFile(OutputFilename);
+    end;
   end;
 
   Result:=mrOk;
@@ -1354,7 +1438,7 @@ var
     TempStr: String;
     Identifier: PChar;
   begin
-    DebugLn(['AddEmptyMacro MacroName="',MacroName,'"']);
+    //DebugLn(['AddEmptyMacro MacroName="',MacroName,'"']);
     if EmptyMacros=nil then
       EmptyMacros:=TAvgLvlTree.Create(TListSortCompare(@CompareIdentifiers));
     Identifier:=@MacroName[1];
@@ -1371,7 +1455,7 @@ var
     Identifier: PChar;
     Node: TAvgLvlTreeNode;
   begin
-    DebugLn(['DeleteEmptyMacro MacroName="',MacroName,'"']);
+    //DebugLn(['DeleteEmptyMacro MacroName="',MacroName,'"']);
     if EmptyMacros=nil then exit;
     Identifier:=@MacroName[1];
     Node:=EmptyMacros.Find(Identifier);
@@ -1454,6 +1538,105 @@ begin
     FreeMacros;
   end;
   Result:=mrOk;
+end;
+
+{ TReplaceMacro0PointerWithNULL }
+
+function TReplaceMacro0PointerWithNULL.ClassDescription: string;
+begin
+  Result:='Replace macro values 0 pointer like (char *)0 with NULL';
+end;
+
+function TReplaceMacro0PointerWithNULL.Execute(aText: TIDETextConverter
+  ): TModalResult;
+var
+  Lines: TStrings;
+  i: Integer;
+  Line: string;
+  MacroStart, MacroLen: integer;
+begin
+  Result:=mrCancel;
+  if aText=nil then exit;
+  Lines:=aText.Strings;
+  i:=0;
+  while i<=Lines.Count-1 do begin
+    Line:=Lines[i];
+    if REMatches(Line,'^#define\s+([a-zA-Z0-9_]+)\s+(\(.*\*\)0)\s*($|//|/\*)')
+    then begin
+      REVarPos(2,MacroStart,MacroLen);
+      Line:=copy(Line,1,MacroStart-1)+'NULL'
+        +copy(Line,MacroStart+MacroLen,length(Line));
+      Lines[i]:=Line;
+    end;
+    inc(i);
+  end;
+  Result:=mrOk;
+end;
+
+{ TReplaceEdgedBracketPairWithStar }
+
+function TReplaceEdgedBracketPairWithStar.ClassDescription: string;
+begin
+  Result:='Replace [] with *';
+end;
+
+constructor TReplaceEdgedBracketPairWithStar.Create(TheOwner: TComponent);
+begin
+  inherited Create(TheOwner);
+  SearchFor:='[]';
+  ReplaceWith:='*';
+end;
+
+{ TReplaceUnitFilenameWithUnitName }
+
+function TReplaceUnitFilenameWithUnitName.ClassDescription: string;
+begin
+  Result:='Replace "unit filename;" with "unit name;"';
+end;
+
+constructor TReplaceUnitFilenameWithUnitName.Create(TheOwner: TComponent);
+begin
+  inherited Create(TheOwner);
+  SearchFor:='^(unit\s).*(/|\\)([a-z_0-9]+;)';
+  ReplaceWith:='$1$3';
+  Options:=Options+[trtRegExpr];
+end;
+
+{ TRemoveSystemTypes }
+
+function TRemoveSystemTypes.ClassDescription: string;
+begin
+  Result:='Remove type redefinitons like PLongint';
+end;
+
+function TRemoveSystemTypes.Execute(aText: TIDETextConverter): TModalResult;
+var
+  Source: String;
+  Flags: TSrcEditSearchOptions;
+  Prompt: Boolean;
+  SearchFor: string;
+begin
+  Result:=mrCancel;
+  if aText=nil then exit;
+  Source:=aText.Source;
+  Flags:=[sesoReplace,sesoReplaceAll,sesoRegExpr];
+  Prompt:=false;
+  SearchFor:='^\s*('
+     +'PLongint\s*=\s*\^Longint'
+    +'|PSmallInt\s*=\s*\^SmallInt'
+    +'|PByte\s*=\s*\^Byte'
+    +'|PWord\s*=\s*\^Word'
+    +'|PDWord\s*=\s*\^DWord'
+    +'|PDouble\s*=\s*\^Double'
+    +'|PChar\s*=\s*\^Char'
+    +');\s*$';
+  Result:=IDESearchInText('',Source,SearchFor,'',Flags,Prompt,nil);
+  if Result<>mrOk then exit;
+  SearchFor:='\btype\s+type\b';
+  Flags:=Flags+[sesoMultiLine];
+  Result:=IDESearchInText('',Source,SearchFor,'type',Flags,Prompt,nil);
+  if Result<>mrOk then exit;
+  aText.Source:=Source;
 end;
 
 end.

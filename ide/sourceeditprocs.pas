@@ -418,12 +418,14 @@ begin
     SynREEngine:=TRegExpr.Create;
 end;
 
-function SynREMatches(const TheText, RegExpr, ModifierStr: string): boolean;
+function SynREMatches(const TheText, RegExpr, ModifierStr: string;
+  StartPos: integer): boolean;
 begin
   InitSynREEngine;
   SynREEngine.ModifierStr:=ModifierStr;
   SynREEngine.Expression:=RegExpr;
-  Result:=SynREEngine.Exec(TheText);
+  SynREEngine.InputString:=TheText;
+  Result:=SynREEngine.ExecPos(StartPos);
 end;
 
 function SynREVar(Index: Integer): string;

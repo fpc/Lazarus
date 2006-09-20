@@ -5830,6 +5830,8 @@ begin
   // close file in project
   Project1.CloseEditorIndex(ActiveUnitInfo.EditorIndex);
   ActiveUnitInfo.Loaded:=false;
+  if ActiveUnitInfo<>Project1.MainUnitInfo then
+    ActiveUnitInfo.Source:=nil;
   i:=Project1.IndexOf(ActiveUnitInfo);
   if (i<>Project1.MainUnitID) and (ActiveUnitInfo.IsVirtual) then begin
     Project1.RemoveUnit(i);
@@ -6552,11 +6554,12 @@ function TMainIDE.DoRevertEditorFile(const Filename: string): TModalResult;
 var
   AnUnitInfo: TUnitInfo;
 begin
-  Result:=mrOk;
+  Result:=mrCancel;
   if (Project1<>nil) then begin
     AnUnitInfo:=Project1.UnitInfoWithFilename(Filename,[]);
-    if AnUnitInfo.EditorIndex>=0 then
-      Result:=DoOpenEditorFile(Filename,AnUnitInfo.EditorIndex,[ofRevert]);
+    if (AnUnitInfo<>nil) and (AnUnitInfo.EditorIndex>=0) then
+      Result:=DoOpenEditorFile(AnUnitInfo.Filename,AnUnitInfo.EditorIndex,
+                               [ofRevert]);
   end;
 end;
 

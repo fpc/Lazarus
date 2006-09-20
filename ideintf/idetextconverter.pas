@@ -573,7 +573,7 @@ var
   Flags: TSrcEditSearchOptions;
   Prompt: Boolean;
 begin
-  DebugLn(['TCustomTextReplaceTool.Execute ',dbgsName(Self),' aText=',dbgsName(aText),' SearchFor="',dbgstr(SearchFor),'"']);
+  //DebugLn(['TCustomTextReplaceTool.Execute ',dbgsName(Self),' aText=',dbgsName(aText),' SearchFor="',dbgstr(SearchFor),'"']);
   Result:=mrCancel;
   if aText=nil then exit;
   if SearchFor='' then exit(mrOk);
@@ -587,7 +587,7 @@ begin
   Result:=IDESearchInText('',Source,SearchFor,ReplaceWith,Flags,Prompt,nil);
   if Result=mrOk then
     aText.Source:=Source;
-  DebugLn(['TCustomTextReplaceTool.Execute END Result=',Result=mrOk]);
+  //DebugLn(['TCustomTextReplaceTool.Execute END Result=',Result=mrOk]);
 end;
 
 procedure TCustomTextReplaceTool.Assign(Source: TPersistent);

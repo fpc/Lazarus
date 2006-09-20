@@ -2977,7 +2977,8 @@ begin
   AnUnitList:=nil;
   AnUnitInfo:=fFirst[uilAutoRevertLocked];
   while (AnUnitInfo<>nil) do begin
-    if AnUnitInfo.ChangedOnDisk(false) then begin
+    if (AnUnitInfo.Source<>nil)
+    and AnUnitInfo.ChangedOnDisk(false) then begin
       if AnUnitList=nil then
         AnUnitList:=TFPList.Create;
       AnUnitList.Add(AnUnitInfo);

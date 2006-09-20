@@ -6,6 +6,8 @@ object H2PasDialog: TH2PasDialog
   HorzScrollBar.Page = 784
   VertScrollBar.Page = 500
   Caption = 'H2PasDialog'
+  ClientHeight = 501
+  ClientWidth = 785
   KeyPreview = True
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
@@ -16,13 +18,15 @@ object H2PasDialog: TH2PasDialog
     AnchorSideBottom.Control = OpenSettingsButton
     Height = 465
     Width = 785
-    ActivePage = SettingsTabSheet
+    ActivePage = PostH2PasTabSheet
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
     TabIndex = 3
     TabOrder = 4
     object FilesTabSheet: TTabSheet
       Caption = 'FilesTabSheet'
+      ClientHeight = 435
+      ClientWidth = 781
       object CHeaderFilesCheckListBox: TCheckListBox
         Height = 435
         Width = 255
@@ -103,6 +107,8 @@ object H2PasDialog: TH2PasDialog
         Width = 521
         Anchors = [akTop, akLeft, akRight, akBottom]
         Caption = 'FileInfoGroupBox'
+        ClientHeight = 230
+        ClientWidth = 517
         TabOrder = 5
         object FileInfoLabel: TLabel
           Left = 8
@@ -117,16 +123,22 @@ object H2PasDialog: TH2PasDialog
     end
     object PreH2PasTabSheet: TTabSheet
       Caption = 'PreH2PasTabSheet'
+      ClientHeight = 435
+      ClientWidth = 781
       object PreH2PasGroupBox: TGroupBox
         Height = 435
         Width = 781
         Align = alClient
         Caption = 'PreH2PasGroupBox'
+        ClientHeight = 435
+        ClientWidth = 781
         TabOrder = 0
       end
     end
     object h2pasOptionsTabSheet: TTabSheet
       Caption = 'h2pasOptionsTabSheet'
+      ClientHeight = 435
+      ClientWidth = 781
       object LibNameLabel: TLabel
         AnchorSideTop.Control = LibnameEdit
         AnchorSideTop.Side = asrCenter
@@ -240,8 +252,24 @@ object H2PasDialog: TH2PasDialog
         TabOrder = 4
       end
     end
+    object PostH2PasTabSheet: TTabSheet
+      Caption = 'PostH2PasTabSheet'
+      ClientHeight = 435
+      ClientWidth = 781
+      object PostH2PasGroupBox: TGroupBox
+        Height = 435
+        Width = 781
+        Align = alClient
+        Caption = 'PostH2PasGroupBox'
+        ClientHeight = 418
+        ClientWidth = 777
+        TabOrder = 0
+      end
+    end
     object SettingsTabSheet: TTabSheet
       Caption = 'SettingsTabSheet'
+      ClientHeight = 435
+      ClientWidth = 781
       object H2PasFilenameLabel: TLabel
         AnchorSideTop.Control = H2PasFilenameEdit
         AnchorSideTop.Side = asrCenter

@@ -522,7 +522,8 @@ begin
       // Setup the regular expression search engine
       RE:=TRegExpr.Create;
       RE.ModifierI:=(sesoReplace in Flags) and (not (sesoMatchCase in Flags));
-      RE.ModifierM:= sesoMultiLine in Flags;
+      RE.ModifierM:=true;
+      RE.ModifierS:=sesoMultiLine in Flags;
       if (sesoReplace in Flags) then begin
         Src:=OriginalFile.Source;
         if sesoWholeWord in Flags then

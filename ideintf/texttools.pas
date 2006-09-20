@@ -69,7 +69,7 @@ var
   REException: ExceptClass; // initialized by the IDE
   
 function REMatches(const TheText, RegExpr: string;
-                   const ModifierStr: string = ''): boolean;
+                const ModifierStr: string = ''; StartPos: integer = 1): boolean;
 function REVar(Index: Integer): string; // 1 is the first
 procedure REVarPos(Index: Integer; out MatchStart, MatchLength: integer);
 function REVarCount: Integer;
@@ -92,8 +92,8 @@ function GetPathElement(const Path: string; StartPos: integer;
 // Internal stuff.
 
 type
-  TREMatchesFunction = function(const TheText, RegExpr, ModifierStr: string
-                                ): boolean;
+  TREMatchesFunction = function(const TheText, RegExpr, ModifierStr: string;
+                                StartPos: integer): boolean;
   TREVarFunction = function(Index: Integer): string;
   TREVarPosProcedure = procedure(Index: Integer;
                                  out MatchStart, MatchLength: integer);
@@ -114,9 +114,9 @@ var
 implementation
 
 function REMatches(const TheText, RegExpr: string;
-  const ModifierStr: string): boolean;
+  const ModifierStr: string; StartPos: integer): boolean;
 begin
-  Result:=REMatchesFunction(TheText,RegExpr,ModifierStr);
+  Result:=REMatchesFunction(TheText,RegExpr,ModifierStr,StartPos);
 end;
 
 function REVar(Index: Integer): string;
