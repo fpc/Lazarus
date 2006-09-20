@@ -181,22 +181,27 @@ begin
   testResult := TTestResult.Create;
   try
     testResult.AddListener(self);
+    {$IFNDEF UseOldXML}
+    w := TXMLResultsWriter.Create;
+    TestResult.AddListener(w);
+    {$ENDIF}
     MemoLog('Running ' + TestTree.Selected.Text);
     FStartCrono := Now;
     testSuite.Run(testResult);
     FStopCrono := Now;
-    MemoLog('Number of executed tests: ' + IntToStr(testResult.RunTests) + '  Time elapsed: ' +
-    FormatDateTime('hh:nn:ss.zzz', FStopCrono - FStartCrono));
+    // In the next fpc (post 2.0.4) we can pull the time from the TestResult
+    MemoLog('Number of executed tests: ' + IntToStr(testResult.RunTests)
+        + '  Time elapsed: '
+        + FormatDateTime('hh:nn:ss.zzz', FStopCrono - FStartCrono));
     
     {$IFNDEF UseOldXML}
-      w := TXMLResultsWriter.Create;
       w.WriteResult(testResult);
       m := TMemoryStream.Create;
       WriteXMLFile(w.Document, m);
       m.Position := 0;
       XMLSynEdit.Lines.LoadFromStream(m);
     {$ELSE}
-      XMLSynEdit.lines.text:= '<TestResults>' + system.sLineBreak +
+      XMLSynEdit.lines.text :=  '<TestResults>' + system.sLineBreak +
       TestResultAsXML(testResult) + system.sLineBreak + '</TestResults>';
     {$ENDIF}
 
