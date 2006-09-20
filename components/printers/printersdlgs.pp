@@ -74,13 +74,13 @@ procedure Register;
 implementation
 
 {$IFDEF UNIX}
-uses Controls, udlgSelectPrinter,udlgpropertiesprinter, FileUtil;
-{$I ./unix/cupsprndialogs.inc}
+uses Controls, udlgSelectPrinter, udlgPropertiesPrinter, FileUtil;
+{$I cupsprndialogs.inc}
 {$ENDIF}
 
 {$IFDEF MSWindows}
-uses Windows, WinUtilPrn, InterfaceBase, Win32Int, LCLIntf,LCLType,WinVer;
-{$I win32/winprndialogs.inc}
+uses Windows, WinUtilPrn, InterfaceBase, Win32Int, LCLIntf, LCLType, WinVer;
+{$I winprndialogs.inc}
 {$ENDIF}
 
 constructor TPageSetupDialog.Create(TheOwner: TComponent);

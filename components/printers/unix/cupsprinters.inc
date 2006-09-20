@@ -328,10 +328,12 @@ begin
         for i:=0 to Attribute^.num_values-1 do
         begin
           if Attribute^.value_tag=IPP_TAG_INTEGER then
-             Lst.add(IntToStr(Pipp_value_t(@Attribute^.values)[i].aInteger))
+            Lst.add(IntToStr(Pipp_value_t(@Attribute^.values)[i].aInteger))
           else
-             Lst.add(Pipp_value_t(@Attribute^.values)[i]._string.text);
+            Lst.add(Pipp_value_t(@Attribute^.values)[i]._string.text);
         end;
+      end else begin
+        DebugLn(['TCUPSPrinter.GetEnumAttributeString Attribute not found: ',aName]);
       end;
     finally
       ippDelete(Reponse);
@@ -374,7 +376,10 @@ begin
     try
       Attribute:=ippFindAttribute(Reponse,aName, IPP_TAG_ZERO);
       if Assigned(Attribute) then
-        Result:=Attribute^.values[0]._string.text;
+        Result:=Attribute^.values[0]._string.text
+      else begin
+        DebugLn(['TCUPSPrinter.GetAttributeString failed: aName="',aName,'"']);
+      end;
     finally
       ippDelete(Reponse);
     end;

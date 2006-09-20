@@ -822,6 +822,10 @@ begin
       Result := TmpPaperRect;
     end
     else raise EPrinter.Create(Format('The paper "%s" has no defined rectangle ! ',[aName]));
+  {end else if (AName='') and (SupportedPapers.Count=0) then begin
+    DebugLn(['WARNING: TPaperSize.PaperRectOfName: printer has no paper rect. Using 1000,1000']);
+    Result.PhysicalRect:=Rect(0,0,1000,1000);
+    Result.WorkRect:=Result.PhysicalRect;}
   end
   else raise EPrinter.Create(Format('Paper "%s" not supported !',[aName]));
 end;

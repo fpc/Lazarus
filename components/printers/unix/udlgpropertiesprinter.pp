@@ -86,7 +86,8 @@ type
     
     procedure RefreshInfos;
 
-    procedure InitCombo(aCombo: TCombobox; aKeyWord,aDefault : string; OptList: TStrings);
+    procedure InitCombo(aCombo: TCombobox; aKeyWord,aDefault : string;
+                        OptList: TStrings);
     
     function number_up_supported: string;
   public
@@ -297,11 +298,11 @@ begin
   if gbDuplex.Enabled then
   begin
     if rbDuplexNone.Checked then
-     THackCUPSPrinter(Printer).cupsAddOption('Duplex','None');
+      THackCUPSPrinter(Printer).cupsAddOption('Duplex','None');
     if rbDuplexLong.Checked then
-     THackCUPSPrinter(Printer).cupsAddOption('Duplex','DuplexNoTumble');
+      THackCUPSPrinter(Printer).cupsAddOption('Duplex','DuplexNoTumble');
     if rbDuplexShort.Checked then
-     THackCUPSPrinter(Printer).cupsAddOption('Duplex','DuplexTumble');
+      THackCUPSPrinter(Printer).cupsAddOption('Duplex','DuplexTumble');
   end;
   
   //Orientation

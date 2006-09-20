@@ -8,7 +8,7 @@ begin
   try
     Result:=(Dlg.ShowModal=mrOk);
     if Result then
-        Dlg.InitProperties;
+      Dlg.InitProperties;
   finally
     Dlg.Free;
   end;
