@@ -1189,7 +1189,6 @@ End;
 procedure TSourceEditor.FindNextWordOccurrence(DirectionForward: boolean);
 var
   StartX, EndX: Integer;
-  Word: String;
   Flags: TSynSearchOptions;
   LogCaret: TPoint;
 begin

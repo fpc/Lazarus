@@ -74,7 +74,7 @@ procedure Register;
 implementation
 
 {$IFDEF UNIX}
-uses Controls, udlgSelectPrinter,udlgpropertiesprinter, FileUtil, StrUtils;
+uses Controls, udlgSelectPrinter,udlgpropertiesprinter, FileUtil;
 {$I ./unix/cupsprndialogs.inc}
 {$ENDIF}
 

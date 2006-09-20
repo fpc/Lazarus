@@ -51,7 +51,6 @@ end;
 function TPrintDialog.Execute: Boolean;
 Var
   Dlg : TdlgSelectPrinter;
-  s   : String;
   i   : Integer;
 begin
   Dlg:=TdlgSelectPrinter.Create(nil);

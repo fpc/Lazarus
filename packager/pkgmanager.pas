@@ -1225,6 +1225,7 @@ var
   CodeBuffer: TCodeBuffer;
   MainSrcFile: String;
   CustomOptions: String;
+  IncPath: String;
 begin
   Result:=mrCancel;
   PathDelimNeedsReplace:=PathDelim<>'/';
@@ -1232,6 +1233,8 @@ begin
   SrcFilename:=APackage.GetSrcFilename;
   MainUnitName:=lowercase(ExtractFileNameOnly((SrcFilename)));
   UnitPath:=APackage.CompilerOptions.GetUnitPath(true,
+                                                 coptParsedPlatformIndependent);
+  IncPath:=APackage.CompilerOptions.GetIncludePath(true,
                                                  coptParsedPlatformIndependent);
   UnitOutputPath:=APackage.CompilerOptions.GetUnitOutPath(true,
                                                  coptParsedPlatformIndependent);
@@ -1245,6 +1248,7 @@ begin
 
   //DebugLn('TPkgManager.DoWriteMakefile ',APackage.Name,' makefile UnitPath="',UnitPath,'"');
   UnitPath:=ConvertLazarusToMakefileSearchPath(UnitPath);
+  IncPath:=ConvertLazarusToMakefileSearchPath(IncPath);
   // remove path delimiter at the end, or else it will fail on windows
   UnitOutputPath:=ConvertLazarusToMakefileDirectory(
                                                 ChompPathDelim(UnitOutputPath));
@@ -1262,7 +1266,10 @@ begin
   s:=s+''+e;
   s:=s+'[compiler]'+e;
   s:=s+'unittargetdir='+UnitOutputPath+e;
-  s:=s+'unitdir='+UnitPath+e;
+  if UnitPath<>'' then
+    s:=s+'unitdir='+UnitPath+e;
+  if IncPath<>'' then
+    s:=s+'includedir='+IncPath+e;
   s:=s+'options='+CustomOptions+e; // ToDo do the other options
   s:=s+''+e;
   s:=s+'[target]'+e;

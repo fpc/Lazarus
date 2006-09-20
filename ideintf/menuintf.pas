@@ -273,7 +273,7 @@ var
   IDEMenuRoots: TIDEMenuRoots = nil;// created by the IDE
 
   // IDE MainMenu
-  mnuMain: TIDEMenuSection;
+  mnuMain: TIDEMenuSection = nil;
 
     // file menu
     mnuFile: TIDEMenuSection;
@@ -359,44 +359,44 @@ var
       itmInfoHelps: TIDEMenuSection;
 
   // Source Editor: Popupmenu
-  SourceEditorMenuRoot: TIDEMenuSection;
-  // Source Editor: First dynamic section for often used context sensitive stuff
-  //                The items are cleared automatically after each popup.
-  SrcEditMenuSectionFirstDynamic: TIDEMenuSection;
-  // Source Editor: First static section (e.g. Find Declaration)
-  SrcEditMenuSectionFirstStatic: TIDEMenuSection;
-    // Source Editor: Find sub menu section (e.g. Procedure Jump)
-    SrcEditSubMenuFind: TIDEMenuSection;
-  // Source Editor: Clipboard section (e.g. cut, copy, paste)
-  SrcEditMenuSectionClipboard: TIDEMenuSection;
-  // Source Editor: File Specific dynamic section
-  //                The items are cleared automatically after each popup.
-  SrcEditMenuSectionFileDynamic: TIDEMenuSection;
-  // Source Editor: Marks section
-  SrcEditMenuSectionMarks: TIDEMenuSection;
-  // Source Editor: Goto Bookmarks Submenu
-  SrcEditSubMenuGotoBookmarks: TIDEMenuSection;
-  // Source Editor: Set Bookmarks Submenu
-  SrcEditSubMenuSetBookmarks: TIDEMenuSection;
-  // Source Editor: Flags and options section
-  SrcEditMenuSectionFlags: TIDEMenuSection;
-    // Source Editor: Highlighter section
-    SrcEditMenuSectionHighlighter: TIDEMenuSection;
-  // Source Editor: Debug submenu
-  SrcEditSubMenuDebug: TIDEMenuSection;
-  // Source Editor: Move Page section
-  SrcEditMenuSectionMovePage: TIDEMenuSection;
-  // Source Editor: Refactor submenu
-  SrcEditSubMenuRefactor: TIDEMenuSection;
+  SourceEditorMenuRoot: TIDEMenuSection = nil;
+    // Source Editor: First dynamic section for often used context sensitive stuff
+    //                The items are cleared automatically after each popup.
+    SrcEditMenuSectionFirstDynamic: TIDEMenuSection;
+    // Source Editor: First static section (e.g. Find Declaration)
+    SrcEditMenuSectionFirstStatic: TIDEMenuSection;
+      // Source Editor: Find sub menu section (e.g. Procedure Jump)
+      SrcEditSubMenuFind: TIDEMenuSection;
+    // Source Editor: Clipboard section (e.g. cut, copy, paste)
+    SrcEditMenuSectionClipboard: TIDEMenuSection;
+    // Source Editor: File Specific dynamic section
+    //                The items are cleared automatically after each popup.
+    SrcEditMenuSectionFileDynamic: TIDEMenuSection;
+    // Source Editor: Marks section
+    SrcEditMenuSectionMarks: TIDEMenuSection;
+    // Source Editor: Goto Bookmarks Submenu
+    SrcEditSubMenuGotoBookmarks: TIDEMenuSection;
+    // Source Editor: Set Bookmarks Submenu
+    SrcEditSubMenuSetBookmarks: TIDEMenuSection;
+    // Source Editor: Flags and options section
+    SrcEditMenuSectionFlags: TIDEMenuSection;
+      // Source Editor: Highlighter section
+      SrcEditMenuSectionHighlighter: TIDEMenuSection;
+    // Source Editor: Debug submenu
+    SrcEditSubMenuDebug: TIDEMenuSection;
+    // Source Editor: Move Page section
+    SrcEditMenuSectionMovePage: TIDEMenuSection;
+    // Source Editor: Refactor submenu
+    SrcEditSubMenuRefactor: TIDEMenuSection;
 
   // Messages window popupmenu
-  MessagesMenuRoot: TIDEMenuSection;
+  MessagesMenuRoot: TIDEMenuSection = nil;
 
   // CodeExplorer window popupmenu
-  CodeExplorerMenuRoot: TIDEMenuSection;
+  CodeExplorerMenuRoot: TIDEMenuSection = nil;
 
-  // Messages window popupmenu
-  CodeTemplatesMenuRoot: TIDEMenuSection;
+  // Code templates popupmenu
+  CodeTemplatesMenuRoot: TIDEMenuSection = nil;
 
 function RegisterIDEMenuRoot(const Name: string; MenuItem: TMenuItem = nil
                              ): TIDEMenuSection;
