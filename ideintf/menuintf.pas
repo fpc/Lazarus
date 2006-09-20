@@ -402,6 +402,8 @@ var
   DesignerMenuRoot: TIDEMenuSection = nil;
     // Designer: Dynamic section for component editor
     DesignerMenuSectionComponentEditor: TIDEMenuSection;
+    // Designer: custom dynamic section
+    DesignerMenuSectionCustomDynamic: TIDEMenuSection;
     // Designer: align section
     DesignerMenuSectionAlign: TIDEMenuSection;
     // Designer: tab and order section
@@ -615,6 +617,7 @@ begin
     MenuItem.Hint:=Hint;
     MenuItem.ImageIndex:=ImageIndex;
     MenuItem.Visible:=Visible;
+    MenuItem.Enabled:=Enabled;
     MenuItem.OnClick:=@MenuItemClick;
   end;
 end;

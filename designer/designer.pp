@@ -367,6 +367,11 @@ begin
   // register the dynamic section for the component editor
   DesignerMenuSectionComponentEditor:=RegisterIDEMenuSection(DesignerMenuRoot,
                                                     'Component editor section');
+
+  // register the custom dynamic section
+  DesignerMenuSectionCustomDynamic:=RegisterIDEMenuSection(DesignerMenuRoot,
+                                                      'Custom dynamic section');
+
   // register align section
   DesignerMenuSectionAlign:=RegisterIDEMenuSection(DesignerMenuRoot,
                                                                'Align section');
