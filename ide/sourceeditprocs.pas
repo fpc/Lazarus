@@ -100,7 +100,7 @@ var
 
   procedure SetFontColor(NewColor: TColor);
   
-    procedure IncreaseDiff(var Value: integer; BaseValue: integer);
+    {procedure IncreaseDiff(var Value: integer; BaseValue: integer);
     begin
       if Value<BaseValue then begin
         dec(Value,$80);
@@ -113,7 +113,7 @@ var
         else
           Value:=0;
       end;
-    end;
+    end;}
   
   var
     FGRed: Integer;
@@ -131,10 +131,11 @@ var
     BlueDiff:=Abs(FGBlue-BGBlue);
     if RedDiff*RedDiff + GreenDiff*GreenDiff + BlueDiff*BlueDiff<70000 then
     begin
-      IncreaseDiff(FGRed,BGRed);
+      NewColor:=InvertColor(NewColor);
+      {IncreaseDiff(FGRed,BGRed);
       IncreaseDiff(FGGreen,BGGreen);
       IncreaseDiff(FGBlue,BGBlue);
-      NewColor:=(FGBlue shl 16) or (FGGreen shl 8) or FGRed;
+      NewColor:=(FGRed shl 16) or (FGGreen shl 8) or FGBlue;}
     end;
     ACanvas.Font.Color:=NewColor;
   end;
