@@ -1,3 +1,30 @@
+{ $Id$ }
+{
+ *****************************************************************************
+ *                              LCLMessageGlue.pas                           *
+ *                              ------------------                           *
+ *                                                                           *
+ *                                                                           *
+ *****************************************************************************
+
+ *****************************************************************************
+ *                                                                           *
+ *  This file is part of the Lazarus Component Library (LCL)                 *
+ *                                                                           *
+ *  See the file COPYING.modifiedLGPL, included in this distribution,        *
+ *  for details about the copyright.                                         *
+ *                                                                           *
+ *  This program is distributed in the hope that it will be useful,          *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of           *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                     *
+ *                                                                           *
+ *****************************************************************************
+
+  A Unit to make the passing of messages to the LCL from the different
+  widgetsets easier. Your mileage will vary if you try to use these procs
+  from within your program.
+
+}
 unit LCLMessageGlue;
 
 {$MODE objfpc}{$H+}
@@ -20,13 +47,13 @@ function LCLSendMouseUpMsg(const Target: TControl; XPos, YPos: SmallInt; Button:
 function LCLSendCaptureChangedMsg(const Target: TControl): PtrInt;
 function LCLSendSelectionChangedMsg(const Target: TControl): PtrInt;
 function LCLSendDestroyMsg(const Target: TControl): PtrInt;
-function LCLSendChangedMgs(const Target: TControl; ItemIndex: WPARAM = 0): PtrInt;
+function LCLSendChangedMsg(const Target: TControl; ItemIndex: WPARAM = 0): PtrInt;
 function LCLSendClickedMsg(const Target: TControl): PtrInt;
 function LCLSendPressedMsg(const Target: TControl): PtrInt;
 function LCLSendReleasedMsg(const Target: TControl): PtrInt;
-function LCLMoveCursorMsg(const Target: TControl): PtrInt;
-function LCLMouseEnterMsg(const Target: TControl): PtrInt;
-function LCLMouseLeaveMsg(const Target: TControl): PtrInt;
+function LCLSendMoveCursorMsg(const Target: TControl): PtrInt;
+function LCLSendMouseEnterMsg(const Target: TControl): PtrInt;
+function LCLSendMouseLeaveMsg(const Target: TControl): PtrInt;
 function LCLSendInsertTextMsg(const Target: TControl): PtrInt;
 function LCLSendDeleteTextMsg(const Target: TControl): PtrInt;
 function LCLSendSetEditableMsg(const Target: TControl): PtrInt;
@@ -421,7 +448,7 @@ end;
 
 {******************************************************************************
  *                                                                            *
- *  LCLSendChangedMgs                                                         *
+ *  LCLSendChangedMsg                                                         *
  *                                                                            *
  *  Returns     : 0 to accept the message, non-zero to reject the message     *
  *                                                                            *
@@ -432,7 +459,7 @@ end;
  *                changed.                                                    *
  *                                                                            *
  ******************************************************************************}
-function LCLSendChangedMgs(const Target: TControl; ItemIndex: WPARAM = 0): PtrInt;
+function LCLSendChangedMsg(const Target: TControl; ItemIndex: WPARAM = 0): PtrInt;
 var
   Mess: TLMessage;
 begin
@@ -496,7 +523,7 @@ end;
 
 {******************************************************************************
  *                                                                            *
- *  LCLMoveCursorMsg                                                          *
+ *  LCLSendMoveCursorMsg                                                      *
  *                                                                            *
  *  Returns     : 0 to accept the message, non-zero to reject the message     *
  *                                                                            *
@@ -504,17 +531,17 @@ end;
  *                                                                            *
  *  Target      : The Control that will recieve the message LM_MOVECURSOR     *
  *                                                                            *
- *  Not used by the LCL                                                           *
+ *  Not used by the LCL                                                       *
  *                                                                            *
  ******************************************************************************}
-function LCLMoveCursorMsg(const Target: TControl): PtrInt;
+function LCLSendMoveCursorMsg(const Target: TControl): PtrInt;
 begin
   Result := SendSimpleMessage(Target, LM_MOVECURSOR);
 end;
 
 {******************************************************************************
  *                                                                            *
- *  LCLMouseEnterMsg                                                          *
+ *  LCLSendMouseEnterMsg                                                      *
  *                                                                            *
  *  Returns     : 0 to accept the message, non-zero to reject the message     *
  *                                                                            *
@@ -523,14 +550,14 @@ end;
  *  Target      : The Control that will recieve the message CM_MOUSEENTER     *
  *                                                                            *
  ******************************************************************************}
-function LCLMouseEnterMsg(const Target: TControl): PtrInt;
+function LCLSendMouseEnterMsg(const Target: TControl): PtrInt;
 begin
   Result := SendSimpleMessage(Target, CM_MOUSEENTER);
 end;
 
 {******************************************************************************
  *                                                                            *
- *  LCLMouseLeaveMsg                                                          *
+ *  LCLSendMouseLeaveMsg                                                      *
  *                                                                            *
  *  Returns     : 0 to accept the message, non-zero to reject the message     *
  *                                                                            *
@@ -540,7 +567,7 @@ end;
  *                                                                            *
  *                                                                            *
  ******************************************************************************}
-function LCLMouseLeaveMsg(const Target: TControl): PtrInt;
+function LCLSendMouseLeaveMsg(const Target: TControl): PtrInt;
 begin
   Result := SendSimpleMessage(Target, CM_MOUSELEAVE);
 end;
@@ -573,7 +600,7 @@ end;
  *                                                                            *
  *  Target      : The Control that will recieve the message LM_DELETETEXT     *
  *                                                                            *
- *  Not used by the LCL                                                           *
+ *  Not used by the LCL                                                       *
  *                                                                            *
  ******************************************************************************}
 function LCLSendDeleteTextMsg(const Target: TControl): PtrInt;
@@ -609,7 +636,7 @@ end;
  *                                                                            *
  *  Target      : The Control that will recieve the message LM_MOVEWORD       *
  *                                                                            *
- *  Not used by the LCL                                                           *
+ *  Not used by the LCL                                                       *
  *                                                                            *
  ******************************************************************************}
 function LCLSendMoveWordMsg(const Target: TControl): PtrInt;
@@ -645,7 +672,7 @@ end;
  *                                                                            *
  *  Target      : The Control that will recieve the message LM_MOVETOROW      *
  *                                                                            *
- *  Not used by the LCL                                                           *
+ *  Not used by the LCL                                                       *
  *                                                                            *
  ******************************************************************************}
 function LCLSendMoveToRowMsg(const Target: TControl): PtrInt;
@@ -663,7 +690,7 @@ end;
  *                                                                            *
  *  Target      : The Control that will recieve the message LM_MOVETOCOLUMN   *
  *                                                                            *
- *  Not used by the LCL                                                           *
+ *  Not used by the LCL                                                       *
  *                                                                            *
  ******************************************************************************}
 function LCLSendMoveToColumnMsg(const Target: TControl): PtrInt;
@@ -699,7 +726,7 @@ end;
  *                                                                            *
  *  Target      : The Control that will recieve the message LM_KILLWORD       *
  *                                                                            *
- *  Not used by the LCL                                                           *
+ *  Not used by the LCL                                                       *
  *                                                                            *
  ******************************************************************************}
 function LCLSendKillWordMsg(const Target: TControl): PtrInt;
@@ -1136,7 +1163,7 @@ end;
 
 {******************************************************************************
  *                                                                            *
- * LSLSendInternalPaintMsg                                                    *
+ * LCLSendInternalPaintMsg                                                    *
  *                                                                            *
  * Returns       : 0 to accept the message, non-zero to reject the message    *
  *                                                                            *
