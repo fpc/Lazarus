@@ -137,9 +137,9 @@ procedure TCUPSPrinter.CreatePapers;
   end;
 begin
   SetLength(fPapers, 3);
-  add(0, 'Letter',    Rect(0, 0, 612,  792 ), Rect(18,  9,   594, 796 ));
-  add(1, 'A4',        Rect(0, 0, 595,  892 ), Rect(9,   9,   585, 806 ));
-  add(2, 'Legal',     Rect(0, 0, 612,  1008), Rect(18,  9,   584, 972 ));
+  add(0, 'Letter',    Rect(0, 0, 612,  792 ), Rect(0,   0,   612, 792 ));
+  add(1, 'A4',        Rect(0, 0, 595,  892 ), Rect(0,   0,   595, 892 ));
+  add(2, 'Legal',     Rect(0, 0, 612,  1008), Rect(0,   0,   612, 1008));
 end;
 
 function TCUPSPrinter.IndexOfPaper(aPaperName: string): integer;
@@ -888,23 +888,23 @@ begin
 
         if Orientation in [poPortrait, poReversePortrait] then begin
         
-          fCachePaperRect.PhysicalRect.Right:=Trunc(P^.Width);
-          fCachePaperRect.PhysicalRect.Bottom:=Trunc(P^.Length);
+          fCachePaperRect.PhysicalRect.Right:=Longint(Trunc(P^.Width));
+          fCachePaperRect.PhysicalRect.Bottom:=Longint(Trunc(P^.Length));
 
-          fCachePaperRect.WorkRect.Left:=Trunc(P^.Left);
-          fCachePaperRect.WorkRect.Right:=Trunc(P^.Right);
-          fCachePaperRect.WorkRect.Top:=Trunc(P^.Length-P^.Top);
-          fCachePaperRect.WorkRect.Bottom:=Trunc(P^.Length-P^.Bottom);
+          fCachePaperRect.WorkRect.Left:=LongInt(Trunc(P^.Left));
+          fCachePaperRect.WorkRect.Right:=Longint(Trunc(P^.Right));
+          fCachePaperRect.WorkRect.Top:=LongInt(Trunc(P^.Length-P^.Top));
+          fCachePaperRect.WorkRect.Bottom:=LongInt(Trunc(P^.Length-P^.Bottom));
           
         end else begin
 
-          FCachePaperRect.PhysicalRect.Right:=Trunc(P^.Length);
-          FCachePaperRect.PhysicalRect.Bottom:=Trunc(P^.Width);
+          FCachePaperRect.PhysicalRect.Right:=Longint(Trunc(P^.Length));
+          FCachePaperRect.PhysicalRect.Bottom:=Longint(Trunc(P^.Width));
           
-          FCachePaperRect.WorkRect.Left:=Trunc(P^.Length-P^.Top);
-          FCachePaperRect.WorkRect.Right:=Trunc(P^.Length-P^.Bottom);
-          FCachePaperRect.WorkRect.Top:=Trunc(P^.Width-P^.Right);
-          FCachePaperRect.WorkRect.Bottom:=Trunc(p^.width - P^.left);
+          FCachePaperRect.WorkRect.Left:=Longint(Trunc(P^.Length-P^.Top));
+          FCachePaperRect.WorkRect.Right:=longint(Trunc(P^.Length-P^.Bottom));
+          FCachePaperRect.WorkRect.Top:=Longint(Trunc(P^.Width-P^.Right));
+          FCachePaperRect.WorkRect.Bottom:=Longint(Trunc(p^.width - P^.left));
           
         end;
 
