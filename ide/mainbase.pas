@@ -323,7 +323,7 @@ begin
     CreateMenuSeparatorSection(mnuFile,itmFileOpenSave,'itmFileOpenSave');
     ParentMI:=itmFileOpenSave;
 
-    CreateMenuItem(ParentMI, itmFileOpen, 'itmFileOpen', lisOpen, 'menu_open');
+    CreateMenuItem(ParentMI, itmFileOpen, 'itmFileOpen', lisMenuOpen, 'menu_open');
     CreateMenuItem(ParentMI,itmFileRevert,'itmFileRevert',lisMenuRevert,'menu_undo');
     CreateMenuSubSection(ParentMI,itmFileRecentOpen,'itmFileRecentOpen',lisMenuOpenRecent);
     CreateMenuItem(ParentMI,itmFileSave,'itmFileSave',lisMenuSave,'menu_save');
@@ -738,7 +738,7 @@ begin
     ParentMI:=itmInfoHelps;
 
     CreateMenuItem(ParentMI,itmHelpAboutLazarus,'itmHelpAboutLazarus',
-                   lisMenuAboutLazarus);
+                   lisAboutLazarus);
   end;
 end;
 

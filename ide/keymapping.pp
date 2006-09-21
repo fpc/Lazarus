@@ -1246,16 +1246,16 @@ begin
     ecGotoEditor0            : Result:= Format(srkmecGotoEditor,[cmd-ecGotoEditor1]);
 
     // file menu
-    ecNew                    : Result:= srkmecNew;
-    ecNewUnit                : Result:= srkmecNewUnit;
-    ecNewForm                : Result:= srkmecNewForm;
+    ecNew                    : Result:= lisMenuNewOther;
+    ecNewUnit                : Result:= lisMenuNewUnit;
+    ecNewForm                : Result:= lisMenuNewForm;
     ecOpen                   : Result:= lisMenuOpen;
     ecRevert                 : Result:= lisMenuRevert;
     ecSave                   : Result:= lisMenuSave;
-    ecSaveAs                 : Result:= srkmecSaveAs;
-    ecSaveAll                : Result:= srkmecSaveAll;
-    ecClose                  : Result:= lismenuclose;
-    ecCloseAll               : Result:= srkmecCloseAll;
+    ecSaveAs                 : Result:= lisMenuSaveAs;
+    ecSaveAll                : Result:= lisMenuSaveAll;
+    ecClose                  : Result:= lisMenuClose;
+    ecCloseAll               : Result:= lisMenuCloseAll;
     ecCleanDirectory         : Result:= lisMenuCleanDirectory;
     ecRestart                : Result:= lisMenuRestart;
     ecQuit                   : Result:= lisMenuQuit;
@@ -1415,7 +1415,7 @@ begin
     ecRescanFPCSrcDir        : Result:= lisMenuRescanFPCSourceDirectory;
 
     // help menu
-    ecAboutLazarus           : Result:= lisMenuAboutLazarus;
+    ecAboutLazarus           : Result:= lisAboutLazarus;
     ecOnlineHelp             : Result:= lisMenuOnlineHelp;
     ecConfigureHelp          : Result:= lisMenuConfigureHelp;
     ecContextHelp            : Result:= lisMenuContextHelp;

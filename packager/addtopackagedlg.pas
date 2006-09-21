@@ -743,15 +743,15 @@ begin
   SaveDialog:=TSaveDialog.Create(nil);
   try
     InputHistories.ApplyFileDialogSettings(SaveDialog);
-    SaveDialog.InitialDir:=
+    SaveDialog.InitialDir :=
       LazPackage.GetFileDialogInitialDir(SaveDialog.InitialDir);
-    SaveDialog.Title:=srkmecSaveAs;
-    SaveDialog.Options:=SaveDialog.Options+[ofPathMustExist];
+    SaveDialog.Title := lisMenuSaveAs;
+    SaveDialog.Options := SaveDialog.Options+[ofPathMustExist];
     if SaveDialog.Execute then begin
-      AFilename:=CleanAndExpandFilename(SaveDialog.Filename);
+      AFilename := CleanAndExpandFilename(SaveDialog.Filename);
       if FilenameIsPascalUnit(AFilename) then begin
         LazPackage.ShortenFilename(AFilename,true);
-        ComponentUnitFileEdit.Text:=AFilename;
+        ComponentUnitFileEdit.Text := AFilename;
       end else begin
         MessageDlg(lisA2PInvalidFile,
          lisA2PAPascalUnitMustHaveTheExtensionPPOrPas,

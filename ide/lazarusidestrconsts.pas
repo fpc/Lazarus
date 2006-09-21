@@ -143,9 +143,8 @@ resourcestring
   lisMenuNewUnit = 'New Unit';
   lisMenuNewForm = 'New Form';
   lisMenuNewOther = 'New ...';
-  lisMenuOpen = 'Open';
+  lisMenuOpen = 'Open ...';
   lisMenuRevert = 'Revert';
-  lisOpen = 'Open ...';
   lisPkgEditPublishPackage = 'Publish Package';
   lisMenuOpenRecent = 'Open Recent ...';
   lisMenuSave = 'Save';
@@ -320,7 +319,6 @@ resourcestring
   lisMenuCodeToolsOptions = 'CodeTools Options ...';
   lisMenuCodeToolsDefinesEditor = 'CodeTools defines editor ...';
   
-  lisMenuAboutLazarus = 'About Lazarus ...';
   lisMenuOnlineHelp = 'Online Help';
   lisMenuConfigureHelp = 'Configure Help ...';
   lisMenuContextHelp = 'Context sensitive Help';
@@ -673,11 +671,9 @@ resourcestring
   lisCopyError = 'Copy Error';
 
   // hints
-  lisHintNewUnit = 'New Unit';
   lisHintOpen = 'Open';
   lisHintSave = 'Save';
   lisHintSaveAll = 'Save all';
-  lisHintNewForm = 'New Form';
   lisHintToggleFormUnit = 'Toggle Form/Unit';
   lisHintViewUnits = 'View Units';
   lisHintViewForms = 'View Forms';
@@ -1474,14 +1470,6 @@ resourcestring
   srkmecMoveEditorRight       = 'Move editor right';
   srkmecGotoEditor            = 'Go to editor %d';
 
-  // file menu
-  srkmecNew                   = 'New';
-  srkmecNewUnit               = 'New unit';
-  srkmecNewForm               = 'New form';
-  srkmecSaveAs                = 'Save as';
-  srkmecSaveAll               = 'Save all';
-  srkmecCloseAll              = 'Close all';
-
   // edit menu
   srkmecSelectionTabs2Spaces  = 'Convert tabs to spaces in selection';
   srkmecInsertCharacter       = 'Insert from Charactermap';
@@ -1677,6 +1665,7 @@ resourcestring
   rsLanguageJapanese    = 'Japanese';
   rsLanguageChinese     = 'Chinese';
   rsLanguageIndonesian  = 'Indonesian';
+  rsLanguageAfrikaans   = 'Afrikaans';
 
   // Unit dependencies
   dlgUnitDepCaption     = 'Unit dependencies';
@@ -3150,5 +3139,17 @@ resourcestring
 
   // version info tab
   VersionInfoTitle = 'Version Info';
+  
+  // Procedure List dialog
+  lisPListObjects               = '&Objects';
+  lisPListJumpToSelection       = 'Jump To Selection';
+  lisPListFilterAny             = 'Filter by matching any part of method';
+  lisPListFilterStart           = 'Filter by matching with start of method';
+  lisPListChangeFont            = 'Change Font';
+  lisPListCopyMethodToClipboard = 'Copy method name to the clipboard';
+  lisPListType                  = 'Type';
+  lisPListAll                   = '<All>';
+  lisPListNone                  = '<None>';
+
 implementation
 end.

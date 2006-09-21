@@ -115,27 +115,17 @@ uses
   ,LazIDEIntf
   ,IDECommands
   ,Clipbrd
+  ,LazarusIDEStrConsts
   ;
 
 
 const
-  cProcedureList = 'ProcedureList';
   cAbout =
     'Procedure List (Lazarus addon)' + #10#10 +
     'Author: Graeme Geldenhuys  (graemeg@gmail.com)' + #10 +
     'Inspired by: GExperts  (www.gexperts.org)';
 
 
-resourcestring
-  SProcedureListCaption = 'Procedure List...';
-  SAllString            = '<All>';
-  SNoneString           = '<None>';
-  SUnknown              = 'Unknown';
-  SImplementationNotFound = 'Implementation section not found (parser error?)';
-  SObjects              = '&Objects';
-  SSearch               = '&Search';
-  
-  
 { This is where it all starts. Gets called from Lazarus. }
 procedure ExecuteProcedureList(Sender: TObject);
 var
@@ -263,9 +253,20 @@ procedure TProcedureListForm.SetupGUI;
 begin
   self.KeyPreview     := True;
   self.Position       := poDesktopCenter;
-  
-  lblObjects.Caption  := SObjects;
-  lblSearch.Caption   := SSearch;
+
+  // assign resource strings to Captions and Hints
+  self.Caption          := srkmecProcedureList;
+  lblObjects.Caption    := lisPListObjects;
+  lblSearch.Caption     := lisMenuSearch;
+  tbAbout.Hint          := lisMenuTemplateAbout;
+  tbJumpTo.Hint         := lisPListJumpToSelection;
+  tbFilterAny.Hint      := lisPListFilterAny;
+  tbFilterStart.Hint    := lisPListFilterStart;
+  tbChangeFont.Hint     := lisPListChangeFont;
+  tbCopy.Hint           := lisPListCopyMethodToClipboard;
+  LV.Column[1].Caption  := lisProcedure;
+  LV.Column[2].Caption  := lisPListType;
+  LV.Column[3].Caption  := lisToDoLLine;
 
   LV.Column[0].Width  := 20;
   LV.Column[1].Width  := 300;
@@ -384,8 +385,8 @@ var
   lNodeText: string;
 begin
   cbObjects.Items.Clear;
-  cbObjects.Items.Add(SAllString);
-  cbObjects.Items.Add(SNoneString);
+  cbObjects.Items.Add(lisPListAll);
+  cbObjects.Items.Add(lisPListNone);
   try
     { get active source editor }
     lSrcEditor := SourceEditorWindow.ActiveEditor;
@@ -439,7 +440,7 @@ var
   lCaret: TCodeXYPosition;
   FSearchAll: boolean;
 begin
-  FSearchAll := cbObjects.Text = SAllString;
+  FSearchAll := cbObjects.Text = lisPListAll;
   lNodeText := pCodeTool.ExtractProcHead(pNode,
       [phpWithoutClassKeyword, phpWithoutParamList, phpWithoutBrackets,
        phpWithoutSemicolon, phpWithoutClassName]);
@@ -492,7 +493,7 @@ var
   begin
     { lets filter by class selection. }
     lClass := pCodeTool.ExtractClassNameOfProcNode(pNode);
-    if cbObjects.Text = SNoneString then
+    if cbObjects.Text = lisPListNone then
       Result := lClass = ''
     else
       Result := lClass = cbObjects.Text;
