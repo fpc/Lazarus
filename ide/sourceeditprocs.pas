@@ -99,16 +99,43 @@ var
   TokenStart: Integer;
 
   procedure SetFontColor(NewColor: TColor);
+  
+    procedure IncreaseDiff(var Value: integer; BaseValue: integer);
+    begin
+      if Value<BaseValue then begin
+        dec(Value,$80);
+      end else begin
+        inc(Value,$80);
+      end;
+      if (Value<0) or (Value>$ff) then begin
+        if BaseValue<$80 then
+          Value:=$ff
+        else
+          Value:=0;
+      end;
+    end;
+  
   var
     FGRed: Integer;
     FGGreen: Integer;
     FGBlue: Integer;
+    RedDiff: integer;
+    GreenDiff: integer;
+    BlueDiff: integer;
   begin
     FGRed:=(NewColor shr 16) and $ff;
     FGGreen:=(NewColor shr 8) and $ff;
     FGBlue:=NewColor and $ff;
-    if Abs(FGRed-BGRed)+Abs(FGGreen-BGGreen)+Abs(FGBlue-BGBlue)<$180 then
-      NewColor:=InvertColor(NewColor);
+    RedDiff:=Abs(FGRed-BGRed);
+    GreenDiff:=Abs(FGGreen-BGGreen);
+    BlueDiff:=Abs(FGBlue-BGBlue);
+    if RedDiff*RedDiff + GreenDiff*GreenDiff + BlueDiff*BlueDiff<70000 then
+    begin
+      IncreaseDiff(FGRed,BGRed);
+      IncreaseDiff(FGGreen,BGGreen);
+      IncreaseDiff(FGBlue,BGBlue);
+      NewColor:=(FGBlue shl 16) or (FGGreen shl 8) or FGRed;
+    end;
     ACanvas.Font.Color:=NewColor;
   end;
   
@@ -164,7 +191,7 @@ begin
 
     ctnTypeDefinition, ctnEnumerationType:
       begin
-        AColor:=clDkGray;
+        AColor:=clLime;
         s:='type';
       end;
 

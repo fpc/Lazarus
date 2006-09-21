@@ -33,7 +33,7 @@ interface
 
 
 uses
-  SysUtils, Types, Classes, Contnrs, FPCAdds,
+  SysUtils, Math, Types, Classes, Contnrs, FPCAdds,
   FPImage, FPReadPNG, FPWritePNG, FPReadBMP, FPWriteBMP, FPReadPNM, FPWritePNM,
   IntfGraphics, FPCanvas,
   AvgLvlTree,
@@ -1651,9 +1651,18 @@ begin
 
   if Abs($80 - R) + Abs($80 - G) + Abs($80 - B) < $140 then
   begin
-    Inc(R, $a0);
-    Inc(G, $a0);
-    Inc(B, $a0);
+    if R<$80 then
+      R:=Min($ff,R+$a0)
+    else
+      R:=Max(0,R-$a0);
+    if G<$80 then
+      G:=Min($ff,G+$a0)
+    else
+      G:=Max(0,G-$a0);
+    if B<$80 then
+      B:=Min($ff,B+$a0)
+    else
+      B:=Max(0,B-$a0);
   end
   else
   begin
