@@ -407,7 +407,8 @@ end;
 
 procedure TH2PasDialog.LibnameEditEditingDone(Sender: TObject);
 begin
-  Project.Libname:=LibnameEdit.Text;
+  if Project<>nil then
+    Project.Libname:=LibnameEdit.Text;
 end;
 
 procedure TH2PasDialog.NewSettingsButtonClick(Sender: TObject);

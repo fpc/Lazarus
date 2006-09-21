@@ -1270,7 +1270,7 @@ msgstr "Explorador de Código"
 
 #: lazarusidestrconsts:lismenueditcodetemplates
 msgid "Code Templates ..."
-msgstr " ..."
+msgstr "Plantillas de Código ..."
 
 #: lazarusidestrconsts:dlgcodetoolstab
 msgid "Code Tools"
@@ -1594,11 +1594,11 @@ msgstr "Convertir archivo DFM a LFM ..."
 
 #: lazarusidestrconsts:lismenuconvertdelphipackage
 msgid "Convert Delphi package to Lazarus package ..."
-msgstr " ..."
+msgstr "Convertir paquete de Delphi a paquete de Lazarus ..."
 
 #: lazarusidestrconsts:lismenuconvertdelphiproject
 msgid "Convert Delphi project to Lazarus project ..."
-msgstr " ..."
+msgstr "Convertir proyecto de Delphi a proyecto de Lazarus ..."
 
 #: lazarusidestrconsts:lismenuconvertdelphiunit
 msgid "Convert Delphi unit to Lazarus unit ..."
@@ -5518,7 +5518,7 @@ msgstr ""
 
 #: lazarusidestrconsts:srkmecprocedurelist
 msgid "Procedure List ..."
-msgstr " ..."
+msgstr "Lista de Procedimientos ..."
 
 #: lazarusidestrconsts:dlgforwardprocsinsertpolicy
 msgid "Procedure insert policy"
