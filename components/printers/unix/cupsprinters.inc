@@ -44,6 +44,8 @@ end;
 
 destructor TCUPSPrinter.destroy;
 begin
+  SetLength(FPapers, 0);
+
   if assigned(fRawModeStream) then
     fRawModeStream.Free;
 
@@ -119,6 +121,76 @@ begin
     fcupsHttp:=httpConnect(cupsServer(),ippPort());
     if not Assigned(fcupsHttp) then
        raise Exception.Create('Unable to contact server!');
+  end;
+end;
+
+// adds a list of known papers
+procedure TCUPSPrinter.CreatePapers;
+  procedure add(AnIndex:Integer; aname:string; aPhysRect,aWrkRect:TRect);
+  begin
+    with fPapers[AnIndex] do begin
+      PaperName := aName;
+      PhysicalRect := aPhysRect;
+      WorkRect := aWrkRect;
+      WinCode:= 0;
+    end;
+  end;
+begin
+  SetLength(fPapers, 3);
+  add(0, 'Letter',    Rect(0, 0, 612,  792 ), Rect(18,  9,   594, 796 ));
+  add(1, 'A4',        Rect(0, 0, 595,  892 ), Rect(9,   9,   585, 806 ));
+  add(2, 'Legal',     Rect(0, 0, 612,  1008), Rect(18,  9,   584, 972 ));
+end;
+
+function TCUPSPrinter.IndexOfPaper(aPaperName: string): integer;
+var
+  i: Integer;
+begin
+  result := -1;
+  for i:=0 to Length(fPapers)-1 do
+    if CompareText(fPapers[i].PaperName, aPapername)=0 then begin
+      result := i;
+      break;
+    end;
+end;
+
+function TCUPSPrinter.InternalGetDefPaperName: string;
+begin
+  if Length(Fpapers)=0 then
+    CreatePapers;
+  result := fPapers[0].PaperName;
+end;
+
+function TCUPSPrinter.InternalGetCurPaperName: string;
+begin
+  if Length(fPapers)=0 then
+    CreatePapers;
+  result := fPapers[fCurrentPaper].PaperName;
+end;
+
+procedure TCUPSPrinter.InternalGetPaperRect(aPaperName:string;
+  var PaperRect:TPaperRect);
+var
+  i: LongInt;
+begin
+  if Length(fPapers)=0 then
+    CreatePapers;
+  i := IndexOfPaper(aPaperName);
+  if i<0 then
+    i := FCurrentPaper;
+    
+  with fPapers[i] do
+  if orientation in [poPortrait, poReversePortrait] then begin
+    PaperRect.PhysicalRect := PhysicalRect;
+    PaperRect.WorkRect     := WorkRect;
+  end else begin
+    PaperRect.PhysicalRect.Right  := PhysicalRect.Bottom;
+    PaperRect.Physicalrect.Bottom := PhysicalRect.Right;
+    
+    PaperRect.WorkRect.Left   := WorkRect.Top;
+    PaperRect.WorkRect.Top    := PhysicalRect.Right-WorkRect.Right;
+    PaperRect.WorkRect.Right  := WorkRect.Bottom;
+    PaperRect.WorkRect.Bottom := PhysicalRect.Right-Workrect.Left;
   end;
 end;
 
@@ -524,11 +596,24 @@ begin
 end;
 
 procedure TCUPSPrinter.DoEnumPapers(Lst: TStrings);
+var
+  i: Integer;
 begin
   //DebugLn(['TCUPSPrinter.DoEnumPapers ',dbgsName(Self)]);
   inherited DoEnumPapers(Lst);
   
   GetEnumAttributeString('media-supported',Lst);
+  
+  fCupsPapersCount := lst.Count;
+  if FCupsPapersCount=0 then begin
+    // printer doesn't support attribute media-supported, return
+    // our printer list
+    if Length(FPapers)=0 then
+      CreatePapers;
+    for i:=0 to Length(fPapers)-1 do
+      lst.Add(fPapers[i].PaperName);
+    fCurrentPaper := 0;
+  end;
 end;
 
 function TCUPSPrinter.DoSetPrinter(aName: string): Integer;
@@ -681,7 +766,10 @@ function TCUPSPrinter.DoGetDefaultPaperName: string;
 begin
   if not (cpsDefaultPaperNameValid in FStates) then begin
     fCachedGetDefaultPaperName:=inherited DoGetDefaultPaperName;
-    fCachedGetDefaultPaperName:=
+    if FCupsPapersCount=0 then
+      FCachedGetDefaultPaperName:=InternalGetDefPaperName
+    else
+      fCachedGetDefaultPaperName:=
                  GetAttributeString('media-default',fCachedGetDefaultPaperName);
     {$IFDEF UseCache}
     Include(FStates,cpsDefaultPaperNameValid);
@@ -693,7 +781,10 @@ end;
 function TCUPSPrinter.DoGetPaperName: string;
 begin
   if not (cpsPaperNameValid in FStates) then begin
-    fCachedPaperName:=cupsGetOption('PageSize');
+    if FCupsPapersCount=0 then
+      fcachedPaperName:=InternalGetCurPaperName
+    else
+      fCachedPaperName:=cupsGetOption('PageSize');
     {$IFDEF UseCache}
     Include(FStates,cpsPaperNameValid);
     {$ENDIF}
@@ -702,13 +793,21 @@ begin
 end;
 
 procedure TCUPSPrinter.DoSetPaperName(aName: string);
+var
+  i: Integer;
 begin
   {$IFDEF UseCache}
   if aName=DoGetPaperName then exit;
   Exclude(FStates,cpsPaperNameValid);
   {$ENDIF}
   inherited DoSetPaperName(aName);
-  cupsAddOption('PageSize',aName)
+  
+  if FCupsPapersCount=0 then begin
+    i := IndexOfPaper(aName);
+    if i>=0 then
+      fCurrentPaper := i;
+  end else
+    cupsAddOption('PageSize',aName)
 end;
 
 //Initialise aPaperRc with the aName paper rect
@@ -718,7 +817,8 @@ end;
 function TCUPSPrinter.DoGetPaperRect(aName: string;
   var aPaperRc: TPaperRect): Integer;
   
-var P : Pppd_size_t;
+var
+  P : Pppd_size_t;
 begin
   if (not (cpsPaperRectValid in FStates))
   or (fCachePaperRectName<>aName) then begin
@@ -729,9 +829,9 @@ begin
     Include(FStates,cpsPaperRectValid);
     {$ENDIF}
 
+    P:=nil;
     if CUPSLibInstalled and Assigned(fcupsPPD) then
     begin
-      P:=nil;
       P:=ppdPageSize(fcupsPPD,PChar(aName));
       if Assigned(P) then
       begin
@@ -811,6 +911,13 @@ begin
         //debugln('TCUPSPrinter.DoGetPaperRect PhysicalRect=',dbgs(fCachePaperRect.PhysicalRect),' WorkRect=',dbgs(fCachePaperRect.WorkRect));
       end;
     end;
+    
+    if P=nil then begin
+      // FCachePaperRect couldn't be determined, use our internal list
+      InternalGetPaperRect(aName, FCachePaperRect);
+      fCachePaperRectResult:=1
+    end;
+    
   end;
   Result:=fCachePaperRectResult;
   aPaperRc:=fCachePaperRect;
