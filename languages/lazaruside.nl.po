@@ -197,6 +197,10 @@ msgstr "&Ga naar bladwijzer"
 msgid "&Help"
 msgstr "&Help"
 
+#: lazarusidestrconsts:lisplistobjects
+msgid "&Objects"
+msgstr ""
+
 #: lazarusidestrconsts:lisok
 msgid "&Ok"
 msgstr ""
@@ -261,9 +265,17 @@ msgstr "(geen subdirectory)"
 msgid "(unknown macro: %s)"
 msgstr "(onbekende macro: %s)"
 
+#: lazarusidestrconsts:lisplistall
+msgid "<All>"
+msgstr ""
+
 #: lazarusidestrconsts:lislazdocnotagcaption
 msgid "<NONE>"
 msgstr "<GEEN>"
+
+#: lazarusidestrconsts:lisplistnone
+msgid "<None>"
+msgstr ""
 
 #: lazarusidestrconsts:lisa2pchooseanexistingfile
 msgid "<choose an existing file>"
@@ -324,10 +336,6 @@ msgstr "Informatie"
 #: lazarusidestrconsts:lisaboutlazarus
 msgid "About Lazarus"
 msgstr "Informatie over Lazarus"
-
-#: lazarusidestrconsts:lismenuaboutlazarus
-msgid "About Lazarus ..."
-msgstr "Informatie over Lazarus ..."
 
 #: lazarusidestrconsts:srvk_accept
 msgid "Accept"
@@ -480,6 +488,10 @@ msgstr "Additioneel zoekpad"
 #: lazarusidestrconsts:dlgadjusttopline
 msgid "Adjust top line due to comment in front"
 msgstr "Bewerk bovenste lijn"
+
+#: lazarusidestrconsts:rslanguageafrikaans
+msgid "Afrikaans"
+msgstr ""
 
 #: lazarusidestrconsts:fdmalignword
 msgid "Align"
@@ -1045,6 +1057,10 @@ msgstr "Wijzig"
 msgid "Change Class"
 msgstr "Wijzig Class"
 
+#: lazarusidestrconsts:lisplistchangefont
+msgid "Change Font"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuinsertchangelogentry
 msgid "ChangeLog entry"
 msgstr "ChangeLog bericht"
@@ -1248,10 +1264,6 @@ msgstr "Klik op een van de bovenstaande items om het verschil te zien"
 #: lazarusidestrconsts:lismenuclose
 msgid "Close"
 msgstr "Sluiten"
-
-#: lazarusidestrconsts:srkmeccloseall
-msgid "Close all"
-msgstr "Sluit Alles"
 
 #: lazarusidestrconsts:lismenucloseall
 msgid "Close all editor files"
@@ -1639,6 +1651,10 @@ msgstr "Kopieer bestandsnaam"
 
 #: lazarusidestrconsts:lisldcopyfrominherited
 msgid "Copy from inherited"
+msgstr ""
+
+#: lazarusidestrconsts:lisplistcopymethodtoclipboard
+msgid "Copy method name to the clipboard"
 msgstr ""
 
 #: lazarusidestrconsts:lisdsgcopycomponents
@@ -2784,6 +2800,14 @@ msgstr "Bestandsnaam:  %s"
 #: lazarusidestrconsts:dlgenvfiles
 msgid "Files"
 msgstr "Bestanden"
+
+#: lazarusidestrconsts:lisplistfilterany
+msgid "Filter by matching any part of method"
+msgstr ""
+
+#: lazarusidestrconsts:lisplistfilterstart
+msgid "Filter by matching with start of method"
+msgstr ""
 
 #: lazarusidestrconsts:srvk_final
 msgid "Final"
@@ -3949,6 +3973,10 @@ msgstr "Item hoogte"
 msgid "Japanese"
 msgstr "Japans"
 
+#: lazarusidestrconsts:lisplistjumptoselection
+msgid "Jump To Selection"
+msgstr ""
+
 #: lazarusidestrconsts:lismenujumpback
 msgid "Jump back"
 msgstr "Spring terug"
@@ -4725,7 +4753,7 @@ msgstr "Naamgeving"
 msgid "Never, only manually"
 msgstr "Nooit, alleen handmatig"
 
-#: lazarusidestrconsts:srkmecnew
+#: lazarusidestrconsts:lismenutemplatenew
 msgid "New"
 msgstr "Nieuw"
 
@@ -4776,14 +4804,6 @@ msgstr "Nieuwe Unit"
 #: lazarusidestrconsts:lisa2pnewclassname
 msgid "New class name:"
 msgstr "Nieuwe Class naam:"
-
-#: lazarusidestrconsts:srkmecnewform
-msgid "New form"
-msgstr "Nieuwe Form"
-
-#: lazarusidestrconsts:srkmecnewunit
-msgid "New unit"
-msgstr "Nieuwe unit"
 
 #: lazarusidestrconsts:lispkgeditnewunitnotinunitpath
 msgid "New unit not in unitpath"
@@ -4985,7 +5005,7 @@ msgstr "Alleen de selectie"
 msgid "Only text files"
 msgstr "Alleen tekst bestanden"
 
-#: lazarusidestrconsts:lismenuopen
+#: lazarusidestrconsts:lishintopen
 msgid "Open"
 msgstr "Openen"
 
@@ -4993,7 +5013,7 @@ msgstr "Openen"
 msgid "Open %s"
 msgstr "Open %s"
 
-#: lazarusidestrconsts:lisopen
+#: lazarusidestrconsts:lismenuopen
 msgid "Open ..."
 msgstr "Openen ..."
 
@@ -6220,10 +6240,6 @@ msgstr "Opslaan en dialoog sluiten"
 #: lazarusidestrconsts:lissaveandrebuildide
 msgid "Save and rebuild IDE"
 msgstr "Opslaan and IDE opnieuw bouwen"
-
-#: lazarusidestrconsts:srkmecsaveas
-msgid "Save as"
-msgstr "Opslaan Als"
 
 #: lazarusidestrconsts:lissavechangestoproject
 msgid "Save changes to project %s?"

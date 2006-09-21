@@ -196,6 +196,10 @@ msgstr "ブックマークへ飛ぶ(&G)"
 msgid "&Help"
 msgstr "ヘルプ(&H)"
 
+#: lazarusidestrconsts:lisplistobjects
+msgid "&Objects"
+msgstr ""
+
 #: lazarusidestrconsts:lisok
 msgid "&Ok"
 msgstr ""
@@ -260,8 +264,16 @@ msgstr "(サブディレクトリ無し)"
 msgid "(unknown macro: %s)"
 msgstr "(不明マクロ: %S)"
 
+#: lazarusidestrconsts:lisplistall
+msgid "<All>"
+msgstr ""
+
 #: lazarusidestrconsts:lislazdocnotagcaption
 msgid "<NONE>"
+msgstr ""
+
+#: lazarusidestrconsts:lisplistnone
+msgid "<None>"
 msgstr ""
 
 #: lazarusidestrconsts:lisa2pchooseanexistingfile
@@ -323,10 +335,6 @@ msgstr "関して"
 #: lazarusidestrconsts:lisaboutlazarus
 msgid "About Lazarus"
 msgstr "Lazarusについて"
-
-#: lazarusidestrconsts:lismenuaboutlazarus
-msgid "About Lazarus ..."
-msgstr "Lazarusについて ..."
 
 #: lazarusidestrconsts:srvk_accept
 msgid "Accept"
@@ -478,6 +486,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgadjusttopline
 msgid "Adjust top line due to comment in front"
+msgstr ""
+
+#: lazarusidestrconsts:rslanguageafrikaans
+msgid "Afrikaans"
 msgstr ""
 
 #: lazarusidestrconsts:fdmalignword
@@ -1044,6 +1056,10 @@ msgstr "変更"
 msgid "Change Class"
 msgstr "クラス変更"
 
+#: lazarusidestrconsts:lisplistchangefont
+msgid "Change Font"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuinsertchangelogentry
 msgid "ChangeLog entry"
 msgstr "変更ログエントリー"
@@ -1247,10 +1263,6 @@ msgstr ""
 #: lazarusidestrconsts:lismenuclose
 msgid "Close"
 msgstr "閉じる"
-
-#: lazarusidestrconsts:srkmeccloseall
-msgid "Close all"
-msgstr "全クローズ"
 
 #: lazarusidestrconsts:lismenucloseall
 msgid "Close all editor files"
@@ -1638,6 +1650,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisldcopyfrominherited
 msgid "Copy from inherited"
+msgstr ""
+
+#: lazarusidestrconsts:lisplistcopymethodtoclipboard
+msgid "Copy method name to the clipboard"
 msgstr ""
 
 #: lazarusidestrconsts:lisdsgcopycomponents
@@ -2783,6 +2799,14 @@ msgstr "ファイル名: %s"
 #: lazarusidestrconsts:dlgenvfiles
 msgid "Files"
 msgstr "ファイル"
+
+#: lazarusidestrconsts:lisplistfilterany
+msgid "Filter by matching any part of method"
+msgstr ""
+
+#: lazarusidestrconsts:lisplistfilterstart
+msgid "Filter by matching with start of method"
+msgstr ""
 
 #: lazarusidestrconsts:srvk_final
 msgid "Final"
@@ -3948,6 +3972,10 @@ msgstr "項目高さ"
 msgid "Japanese"
 msgstr ""
 
+#: lazarusidestrconsts:lisplistjumptoselection
+msgid "Jump To Selection"
+msgstr ""
+
 #: lazarusidestrconsts:lismenujumpback
 msgid "Jump back"
 msgstr "後方へ飛ぶ"
@@ -4724,7 +4752,7 @@ msgstr "ネーミング"
 msgid "Never, only manually"
 msgstr ""
 
-#: lazarusidestrconsts:srkmecnew
+#: lazarusidestrconsts:lismenutemplatenew
 msgid "New"
 msgstr ""
 
@@ -4775,14 +4803,6 @@ msgstr "新規ユニット"
 #: lazarusidestrconsts:lisa2pnewclassname
 msgid "New class name:"
 msgstr "新規クラス名:"
-
-#: lazarusidestrconsts:srkmecnewform
-msgid "New form"
-msgstr ""
-
-#: lazarusidestrconsts:srkmecnewunit
-msgid "New unit"
-msgstr ""
 
 #: lazarusidestrconsts:lispkgeditnewunitnotinunitpath
 msgid "New unit not in unitpath"
@@ -4984,7 +5004,7 @@ msgstr ""
 msgid "Only text files"
 msgstr ""
 
-#: lazarusidestrconsts:lismenuopen
+#: lazarusidestrconsts:lishintopen
 msgid "Open"
 msgstr "開く"
 
@@ -4992,7 +5012,7 @@ msgstr "開く"
 msgid "Open %s"
 msgstr "%s を開く"
 
-#: lazarusidestrconsts:lisopen
+#: lazarusidestrconsts:lismenuopen
 msgid "Open ..."
 msgstr "開く ..."
 
@@ -6218,10 +6238,6 @@ msgstr ""
 
 #: lazarusidestrconsts:lissaveandrebuildide
 msgid "Save and rebuild IDE"
-msgstr ""
-
-#: lazarusidestrconsts:srkmecsaveas
-msgid "Save as"
 msgstr ""
 
 #: lazarusidestrconsts:lissavechangestoproject

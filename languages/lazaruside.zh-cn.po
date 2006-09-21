@@ -200,6 +200,10 @@ msgstr "跳到书签(&G) "
 msgid "&Help"
 msgstr "帮助(&H)"
 
+#: lazarusidestrconsts:lisplistobjects
+msgid "&Objects"
+msgstr ""
+
 #: lazarusidestrconsts:lisok
 msgid "&Ok"
 msgstr "确定(&O)"
@@ -264,9 +268,17 @@ msgstr "(没有子目录)"
 msgid "(unknown macro: %s)"
 msgstr "(未知的宏: %s)"
 
+#: lazarusidestrconsts:lisplistall
+msgid "<All>"
+msgstr ""
+
 #: lazarusidestrconsts:lislazdocnotagcaption
 msgid "<NONE>"
 msgstr "<无>"
+
+#: lazarusidestrconsts:lisplistnone
+msgid "<None>"
+msgstr ""
 
 #: lazarusidestrconsts:lisa2pchooseanexistingfile
 msgid "<choose an existing file>"
@@ -327,10 +339,6 @@ msgstr "关于"
 #: lazarusidestrconsts:lisaboutlazarus
 msgid "About Lazarus"
 msgstr "关于 Lazarus"
-
-#: lazarusidestrconsts:lismenuaboutlazarus
-msgid "About Lazarus ..."
-msgstr "关于 Lazarus ..."
 
 #: lazarusidestrconsts:srvk_accept
 msgid "Accept"
@@ -483,6 +491,10 @@ msgstr "附加的搜索路径"
 #: lazarusidestrconsts:dlgadjusttopline
 msgid "Adjust top line due to comment in front"
 msgstr "调整行高适应前面的注释"
+
+#: lazarusidestrconsts:rslanguageafrikaans
+msgid "Afrikaans"
+msgstr ""
 
 #: lazarusidestrconsts:fdmalignword
 msgid "Align"
@@ -1048,6 +1060,10 @@ msgstr "更改"
 msgid "Change Class"
 msgstr "更改类"
 
+#: lazarusidestrconsts:lisplistchangefont
+msgid "Change Font"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuinsertchangelogentry
 msgid "ChangeLog entry"
 msgstr "ChangeLog 条目"
@@ -1251,10 +1267,6 @@ msgstr "点击标签查看不同之处"
 #: lazarusidestrconsts:lismenuclose
 msgid "Close"
 msgstr "关闭"
-
-#: lazarusidestrconsts:srkmeccloseall
-msgid "Close all"
-msgstr "关闭所有"
 
 #: lazarusidestrconsts:lismenucloseall
 msgid "Close all editor files"
@@ -1643,6 +1655,10 @@ msgstr "复制文件名"
 #: lazarusidestrconsts:lisldcopyfrominherited
 msgid "Copy from inherited"
 msgstr "从继承复制"
+
+#: lazarusidestrconsts:lisplistcopymethodtoclipboard
+msgid "Copy method name to the clipboard"
+msgstr ""
 
 #: lazarusidestrconsts:lisdsgcopycomponents
 msgid "Copy selected components to clipboard"
@@ -2787,6 +2803,14 @@ msgstr "文件名: %s"
 #: lazarusidestrconsts:dlgenvfiles
 msgid "Files"
 msgstr "文件"
+
+#: lazarusidestrconsts:lisplistfilterany
+msgid "Filter by matching any part of method"
+msgstr ""
+
+#: lazarusidestrconsts:lisplistfilterstart
+msgid "Filter by matching with start of method"
+msgstr ""
 
 #: lazarusidestrconsts:srvk_final
 msgid "Final"
@@ -3952,6 +3976,10 @@ msgstr "标签高度"
 msgid "Japanese"
 msgstr "日语"
 
+#: lazarusidestrconsts:lisplistjumptoselection
+msgid "Jump To Selection"
+msgstr ""
+
 #: lazarusidestrconsts:lismenujumpback
 msgid "Jump back"
 msgstr "跳转到后一个"
@@ -4728,7 +4756,7 @@ msgstr "命名"
 msgid "Never, only manually"
 msgstr "从不,手动"
 
-#: lazarusidestrconsts:srkmecnew
+#: lazarusidestrconsts:lismenutemplatenew
 msgid "New"
 msgstr "新建"
 
@@ -4779,14 +4807,6 @@ msgstr "新建单元"
 #: lazarusidestrconsts:lisa2pnewclassname
 msgid "New class name:"
 msgstr "新建类:"
-
-#: lazarusidestrconsts:srkmecnewform
-msgid "New form"
-msgstr "新建窗体"
-
-#: lazarusidestrconsts:srkmecnewunit
-msgid "New unit"
-msgstr "新建单元"
 
 #: lazarusidestrconsts:lispkgeditnewunitnotinunitpath
 msgid "New unit not in unitpath"
@@ -4988,7 +5008,7 @@ msgstr "只在所选"
 msgid "Only text files"
 msgstr "只有文本文件"
 
-#: lazarusidestrconsts:lismenuopen
+#: lazarusidestrconsts:lishintopen
 msgid "Open"
 msgstr "打开"
 
@@ -4996,7 +5016,7 @@ msgstr "打开"
 msgid "Open %s"
 msgstr "打开 %s"
 
-#: lazarusidestrconsts:lisopen
+#: lazarusidestrconsts:lismenuopen
 msgid "Open ..."
 msgstr "打开 ..."
 
@@ -6223,10 +6243,6 @@ msgstr "保存并退出对话"
 #: lazarusidestrconsts:lissaveandrebuildide
 msgid "Save and rebuild IDE"
 msgstr "保存并重重新编译 IDE"
-
-#: lazarusidestrconsts:srkmecsaveas
-msgid "Save as"
-msgstr "另存为"
 
 #: lazarusidestrconsts:lissavechangestoproject
 msgid "Save changes to project %s?"

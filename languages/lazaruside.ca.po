@@ -186,6 +186,10 @@ msgstr "&Vés al marcador"
 msgid "&Help"
 msgstr "A&juda"
 
+#: lazarusidestrconsts:lisplistobjects
+msgid "&Objects"
+msgstr ""
+
 #: lazarusidestrconsts:lisok
 msgid "&Ok"
 msgstr ""
@@ -250,8 +254,16 @@ msgstr ""
 msgid "(unknown macro: %s)"
 msgstr "(macroinstrucció desconeguda: %s)"
 
+#: lazarusidestrconsts:lisplistall
+msgid "<All>"
+msgstr ""
+
 #: lazarusidestrconsts:lislazdocnotagcaption
 msgid "<NONE>"
+msgstr ""
+
+#: lazarusidestrconsts:lisplistnone
+msgid "<None>"
 msgstr ""
 
 #: lazarusidestrconsts:lisa2pchooseanexistingfile
@@ -313,10 +325,6 @@ msgstr "Quant a"
 #: lazarusidestrconsts:lisaboutlazarus
 msgid "About Lazarus"
 msgstr "Quant al Lazarus"
-
-#: lazarusidestrconsts:lismenuaboutlazarus
-msgid "About Lazarus ..."
-msgstr "Quant al Lazarus ..."
 
 #: lazarusidestrconsts:srvk_accept
 msgid "Accept"
@@ -469,6 +477,10 @@ msgstr ""
 #: lazarusidestrconsts:dlgadjusttopline
 msgid "Adjust top line due to comment in front"
 msgstr "Ajusta la línia de sobre a causa del comentari de davant"
+
+#: lazarusidestrconsts:rslanguageafrikaans
+msgid "Afrikaans"
+msgstr ""
 
 #: lazarusidestrconsts:fdmalignword
 msgid "Align"
@@ -1034,6 +1046,10 @@ msgstr "Canvia"
 msgid "Change Class"
 msgstr "Canvia la Classe"
 
+#: lazarusidestrconsts:lisplistchangefont
+msgid "Change Font"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuinsertchangelogentry
 msgid "ChangeLog entry"
 msgstr "Entrada de registre de canvis"
@@ -1237,10 +1253,6 @@ msgstr "Feu un clic en els elements d'amunt per veure'n les diferencies"
 #: lazarusidestrconsts:lismenuclose
 msgid "Close"
 msgstr "Tanca"
-
-#: lazarusidestrconsts:srkmeccloseall
-msgid "Close all"
-msgstr "Tanca-ho tot"
 
 #: lazarusidestrconsts:lismenucloseall
 msgid "Close all editor files"
@@ -1628,6 +1640,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisldcopyfrominherited
 msgid "Copy from inherited"
+msgstr ""
+
+#: lazarusidestrconsts:lisplistcopymethodtoclipboard
+msgid "Copy method name to the clipboard"
 msgstr ""
 
 #: lazarusidestrconsts:lisdsgcopycomponents
@@ -2773,6 +2789,14 @@ msgstr "Nom del fitxer: %s"
 #: lazarusidestrconsts:dlgenvfiles
 msgid "Files"
 msgstr "Fitxers"
+
+#: lazarusidestrconsts:lisplistfilterany
+msgid "Filter by matching any part of method"
+msgstr ""
+
+#: lazarusidestrconsts:lisplistfilterstart
+msgid "Filter by matching with start of method"
+msgstr ""
 
 #: lazarusidestrconsts:srvk_final
 msgid "Final"
@@ -3938,6 +3962,10 @@ msgstr "Alçada de l'element"
 msgid "Japanese"
 msgstr ""
 
+#: lazarusidestrconsts:lisplistjumptoselection
+msgid "Jump To Selection"
+msgstr ""
+
 #: lazarusidestrconsts:lismenujumpback
 msgid "Jump back"
 msgstr "Salta enrera"
@@ -4714,7 +4742,7 @@ msgstr "Anomenat"
 msgid "Never, only manually"
 msgstr ""
 
-#: lazarusidestrconsts:srkmecnew
+#: lazarusidestrconsts:lismenutemplatenew
 msgid "New"
 msgstr "Nou"
 
@@ -4765,14 +4793,6 @@ msgstr "Nova unitat"
 #: lazarusidestrconsts:lisa2pnewclassname
 msgid "New class name:"
 msgstr "Nou nom de classe:"
-
-#: lazarusidestrconsts:srkmecnewform
-msgid "New form"
-msgstr "Nova forma"
-
-#: lazarusidestrconsts:srkmecnewunit
-msgid "New unit"
-msgstr "Nova unitat"
 
 #: lazarusidestrconsts:lispkgeditnewunitnotinunitpath
 msgid "New unit not in unitpath"
@@ -4974,7 +4994,7 @@ msgstr "Selecció única"
 msgid "Only text files"
 msgstr "Només fitxers de text"
 
-#: lazarusidestrconsts:lismenuopen
+#: lazarusidestrconsts:lishintopen
 msgid "Open"
 msgstr "Obre"
 
@@ -4982,7 +5002,7 @@ msgstr "Obre"
 msgid "Open %s"
 msgstr ""
 
-#: lazarusidestrconsts:lisopen
+#: lazarusidestrconsts:lismenuopen
 msgid "Open ..."
 msgstr "Obre ..."
 
@@ -6209,10 +6229,6 @@ msgstr "Diàleg desa i surt"
 #: lazarusidestrconsts:lissaveandrebuildide
 msgid "Save and rebuild IDE"
 msgstr "Desa i remunta l'IDE"
-
-#: lazarusidestrconsts:srkmecsaveas
-msgid "Save as"
-msgstr "Anomena i desa"
 
 #: lazarusidestrconsts:lissavechangestoproject
 msgid "Save changes to project %s?"

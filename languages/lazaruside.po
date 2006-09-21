@@ -279,15 +279,11 @@ msgid "New ..."
 msgstr ""
 
 #: lazarusidestrconsts:lismenuopen
-msgid "Open"
+msgid "Open ..."
 msgstr ""
 
 #: lazarusidestrconsts:lismenurevert
 msgid "Revert"
-msgstr ""
-
-#: lazarusidestrconsts:lisopen
-msgid "Open ..."
 msgstr ""
 
 #: lazarusidestrconsts:lispkgeditpublishpackage
@@ -936,10 +932,6 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenucodetoolsdefineseditor
 msgid "CodeTools defines editor ..."
-msgstr ""
-
-#: lazarusidestrconsts:lismenuaboutlazarus
-msgid "About Lazarus ..."
 msgstr ""
 
 #: lazarusidestrconsts:lismenuonlinehelp
@@ -1918,10 +1910,6 @@ msgstr ""
 msgid "Copy Error"
 msgstr ""
 
-#: lazarusidestrconsts:lishintnewunit
-msgid "New Unit"
-msgstr ""
-
 #: lazarusidestrconsts:lishintopen
 msgid "Open"
 msgstr ""
@@ -1932,10 +1920,6 @@ msgstr ""
 
 #: lazarusidestrconsts:lishintsaveall
 msgid "Save all"
-msgstr ""
-
-#: lazarusidestrconsts:lishintnewform
-msgid "New Form"
 msgstr ""
 
 #: lazarusidestrconsts:lishinttoggleformunit
@@ -4642,30 +4626,6 @@ msgstr ""
 msgid "Go to editor %d"
 msgstr ""
 
-#: lazarusidestrconsts:srkmecnew
-msgid "New"
-msgstr ""
-
-#: lazarusidestrconsts:srkmecnewunit
-msgid "New unit"
-msgstr ""
-
-#: lazarusidestrconsts:srkmecnewform
-msgid "New form"
-msgstr ""
-
-#: lazarusidestrconsts:srkmecsaveas
-msgid "Save as"
-msgstr ""
-
-#: lazarusidestrconsts:srkmecsaveall
-msgid "Save all"
-msgstr ""
-
-#: lazarusidestrconsts:srkmeccloseall
-msgid "Close all"
-msgstr ""
-
 #: lazarusidestrconsts:srkmecselectiontabs2spaces
 msgid "Convert tabs to spaces in selection"
 msgstr ""
@@ -5340,6 +5300,10 @@ msgstr ""
 
 #: lazarusidestrconsts:rslanguageindonesian
 msgid "Indonesian"
+msgstr ""
+
+#: lazarusidestrconsts:rslanguageafrikaans
+msgid "Afrikaans"
 msgstr ""
 
 #: lazarusidestrconsts:dlgunitdepcaption
@@ -9524,5 +9488,41 @@ msgstr ""
 
 #: lazarusidestrconsts:versioninfotitle
 msgid "Version Info"
+msgstr ""
+
+#: lazarusidestrconsts:lisplistobjects
+msgid "&Objects"
+msgstr ""
+
+#: lazarusidestrconsts:lisplistjumptoselection
+msgid "Jump To Selection"
+msgstr ""
+
+#: lazarusidestrconsts:lisplistfilterany
+msgid "Filter by matching any part of method"
+msgstr ""
+
+#: lazarusidestrconsts:lisplistfilterstart
+msgid "Filter by matching with start of method"
+msgstr ""
+
+#: lazarusidestrconsts:lisplistchangefont
+msgid "Change Font"
+msgstr ""
+
+#: lazarusidestrconsts:lisplistcopymethodtoclipboard
+msgid "Copy method name to the clipboard"
+msgstr ""
+
+#: lazarusidestrconsts:lisplisttype
+msgid "Type"
+msgstr ""
+
+#: lazarusidestrconsts:lisplistall
+msgid "<All>"
+msgstr ""
+
+#: lazarusidestrconsts:lisplistnone
+msgid "<None>"
 msgstr ""
 

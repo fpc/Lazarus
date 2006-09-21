@@ -8965,7 +8965,7 @@ begin
     DebugLn('WARNING: Macro not defined: "'+MacroName+'".');
     s:='';
     //MessageDlg('Unknown Macro','Macro not defined: "'+s+'".',mtError,[mbAbort],0);
-    DumpStack;
+    //DumpStack;
     Handled:=true;
     exit;
   end;

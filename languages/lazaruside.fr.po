@@ -198,6 +198,10 @@ msgstr "&Aller au signet"
 msgid "&Help"
 msgstr "&Aide"
 
+#: lazarusidestrconsts:lisplistobjects
+msgid "&Objects"
+msgstr ""
+
 #: lazarusidestrconsts:lisok
 msgid "&Ok"
 msgstr ""
@@ -262,9 +266,17 @@ msgstr "(pas de sous-dossier)"
 msgid "(unknown macro: %s)"
 msgstr "(macro inconnue: %s)"
 
+#: lazarusidestrconsts:lisplistall
+msgid "<All>"
+msgstr ""
+
 #: lazarusidestrconsts:lislazdocnotagcaption
 msgid "<NONE>"
 msgstr "<NONE>"
+
+#: lazarusidestrconsts:lisplistnone
+msgid "<None>"
+msgstr ""
 
 #: lazarusidestrconsts:lisa2pchooseanexistingfile
 msgid "<choose an existing file>"
@@ -325,10 +337,6 @@ msgstr "A propos"
 #: lazarusidestrconsts:lisaboutlazarus
 msgid "About Lazarus"
 msgstr "A propos de Lazarus"
-
-#: lazarusidestrconsts:lismenuaboutlazarus
-msgid "About Lazarus ..."
-msgstr "A propos de Lazarus ..."
 
 #: lazarusidestrconsts:srvk_accept
 msgid "Accept"
@@ -481,6 +489,10 @@ msgstr "Chemin de recherche additionnel"
 #: lazarusidestrconsts:dlgadjusttopline
 msgid "Adjust top line due to comment in front"
 msgstr "Ajuster la ligne supérieure au commentaire qui précède"
+
+#: lazarusidestrconsts:rslanguageafrikaans
+msgid "Afrikaans"
+msgstr ""
 
 #: lazarusidestrconsts:fdmalignword
 msgid "Align"
@@ -1046,6 +1058,10 @@ msgstr "Changer"
 msgid "Change Class"
 msgstr "Modifier la classe"
 
+#: lazarusidestrconsts:lisplistchangefont
+msgid "Change Font"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuinsertchangelogentry
 msgid "ChangeLog entry"
 msgstr "Entrée ChangeLog"
@@ -1249,10 +1265,6 @@ msgstr "Cliquez sur un des éléments ci-dessous pour voir les différences"
 #: lazarusidestrconsts:lismenuclose
 msgid "Close"
 msgstr "Fermer"
-
-#: lazarusidestrconsts:srkmeccloseall
-msgid "Close all"
-msgstr "Fermer tout"
 
 #: lazarusidestrconsts:lismenucloseall
 msgid "Close all editor files"
@@ -1640,6 +1652,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisldcopyfrominherited
 msgid "Copy from inherited"
+msgstr ""
+
+#: lazarusidestrconsts:lisplistcopymethodtoclipboard
+msgid "Copy method name to the clipboard"
 msgstr ""
 
 #: lazarusidestrconsts:lisdsgcopycomponents
@@ -2785,6 +2801,14 @@ msgstr "Nom de fichier : %s"
 #: lazarusidestrconsts:dlgenvfiles
 msgid "Files"
 msgstr "Fichiers"
+
+#: lazarusidestrconsts:lisplistfilterany
+msgid "Filter by matching any part of method"
+msgstr ""
+
+#: lazarusidestrconsts:lisplistfilterstart
+msgid "Filter by matching with start of method"
+msgstr ""
 
 #: lazarusidestrconsts:srvk_final
 msgid "Final"
@@ -3950,6 +3974,10 @@ msgstr "Hauteur d'élément"
 msgid "Japanese"
 msgstr "Japonais"
 
+#: lazarusidestrconsts:lisplistjumptoselection
+msgid "Jump To Selection"
+msgstr ""
+
 #: lazarusidestrconsts:lismenujumpback
 msgid "Jump back"
 msgstr "En arrière"
@@ -4726,7 +4754,7 @@ msgstr "Appellation"
 msgid "Never, only manually"
 msgstr "jamais, seulement manuel"
 
-#: lazarusidestrconsts:srkmecnew
+#: lazarusidestrconsts:lismenutemplatenew
 msgid "New"
 msgstr "Nouveau"
 
@@ -4777,14 +4805,6 @@ msgstr "Nouvelle unité"
 #: lazarusidestrconsts:lisa2pnewclassname
 msgid "New class name:"
 msgstr "Nouveau nom de class:"
-
-#: lazarusidestrconsts:srkmecnewform
-msgid "New form"
-msgstr "Nouvelle fiche"
-
-#: lazarusidestrconsts:srkmecnewunit
-msgid "New unit"
-msgstr "Nouvelle unité"
 
 #: lazarusidestrconsts:lispkgeditnewunitnotinunitpath
 msgid "New unit not in unitpath"
@@ -4986,7 +5006,7 @@ msgstr "Sélection seulement"
 msgid "Only text files"
 msgstr "Seulement les fichiers texte"
 
-#: lazarusidestrconsts:lismenuopen
+#: lazarusidestrconsts:lishintopen
 msgid "Open"
 msgstr "Ouvrir"
 
@@ -4994,7 +5014,7 @@ msgstr "Ouvrir"
 msgid "Open %s"
 msgstr "ouvrir %s"
 
-#: lazarusidestrconsts:lisopen
+#: lazarusidestrconsts:lismenuopen
 msgid "Open ..."
 msgstr "Ouvrir ..."
 
@@ -6221,10 +6241,6 @@ msgstr "Enregistrer et quitter la dialogue"
 #: lazarusidestrconsts:lissaveandrebuildide
 msgid "Save and rebuild IDE"
 msgstr "Enregistrer et reconstruire l'IDE"
-
-#: lazarusidestrconsts:srkmecsaveas
-msgid "Save as"
-msgstr "Enregistrer sous"
 
 #: lazarusidestrconsts:lissavechangestoproject
 msgid "Save changes to project %s?"

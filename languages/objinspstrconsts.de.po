@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2006-09-17 12:21+0100\n"
+"PO-Revision-Date: 2006-09-21 20:23+0100\n"
 "Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -143,7 +143,7 @@ msgstr "Neuen Eintrag zufügen"
 
 #: objinspstrconsts:nbcesaddpage
 msgid "Add page"
-msgstr "Seite zufügen"
+msgstr "Seite hinzufügen"
 
 #: objinspstrconsts:tccesaddtab
 msgid "Add tab"
@@ -275,7 +275,7 @@ msgstr "Kopieren"
 
 #: objinspstrconsts:oiscopycomponents
 msgid "Copy components"
-msgstr ""
+msgstr "Komponenten kopieren"
 
 #: objinspstrconsts:oiscreateanewpascalunit
 msgid "Create a new pascal unit."
@@ -323,7 +323,7 @@ msgstr "Ausschneiden"
 
 #: objinspstrconsts:oiscutcomponents
 msgid "Cut components"
-msgstr ""
+msgstr "Komponenten ausschneiden"
 
 #: objinspstrconsts:cactionlisteditordatabasecategory
 msgid "Database"
@@ -343,7 +343,7 @@ msgstr "Action löschen"
 
 #: objinspstrconsts:oisdeletecomponents
 msgid "Delete components"
-msgstr ""
+msgstr "Komponenten löschen"
 
 #: objinspstrconsts:oisdeleteitem
 msgid "Delete item %s%s%s?"
@@ -351,7 +351,7 @@ msgstr "Eintrags %s%s%s löschen?"
 
 #: objinspstrconsts:nbcesdeletepage
 msgid "Delete page"
-msgstr "Seite lsöchen"
+msgstr "Seite löschen"
 
 #: objinspstrconsts:tccesdeletetab
 msgid "Delete tab"
@@ -667,7 +667,7 @@ msgstr "Einfügen"
 
 #: objinspstrconsts:oispastecomponents
 msgid "Paste components"
-msgstr ""
+msgstr "Komponenten einfügen"
 
 #: objinspstrconsts:oispepicture
 msgid "Picture"

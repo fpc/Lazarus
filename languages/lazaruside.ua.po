@@ -186,6 +186,10 @@ msgstr "&Перехід на закладку"
 msgid "&Help"
 msgstr "&Довідка"
 
+#: lazarusidestrconsts:lisplistobjects
+msgid "&Objects"
+msgstr ""
+
 #: lazarusidestrconsts:lisok
 msgid "&Ok"
 msgstr ""
@@ -250,9 +254,17 @@ msgstr ""
 msgid "(unknown macro: %s)"
 msgstr "(невідомий макрос: %s)"
 
+#: lazarusidestrconsts:lisplistall
+msgid "<All>"
+msgstr ""
+
 #: lazarusidestrconsts:lislazdocnotagcaption
 msgid "<NONE>"
 msgstr "<НІЧОГО>"
+
+#: lazarusidestrconsts:lisplistnone
+msgid "<None>"
+msgstr ""
 
 #: lazarusidestrconsts:lisa2pchooseanexistingfile
 msgid "<choose an existing file>"
@@ -313,10 +325,6 @@ msgstr "Про"
 #: lazarusidestrconsts:lisaboutlazarus
 msgid "About Lazarus"
 msgstr "Про проект Lazarus"
-
-#: lazarusidestrconsts:lismenuaboutlazarus
-msgid "About Lazarus ..."
-msgstr "Про проект Lazarus ..."
 
 #: lazarusidestrconsts:srvk_accept
 msgid "Accept"
@@ -469,6 +477,10 @@ msgstr ""
 #: lazarusidestrconsts:dlgadjusttopline
 msgid "Adjust top line due to comment in front"
 msgstr "Вирівняти верхній рядок за рахунок коментаря попереду"
+
+#: lazarusidestrconsts:rslanguageafrikaans
+msgid "Afrikaans"
+msgstr ""
 
 #: lazarusidestrconsts:fdmalignword
 msgid "Align"
@@ -1034,6 +1046,10 @@ msgstr "Змінити"
 msgid "Change Class"
 msgstr "Змінити клас"
 
+#: lazarusidestrconsts:lisplistchangefont
+msgid "Change Font"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuinsertchangelogentry
 msgid "ChangeLog entry"
 msgstr "Елемент ChangeLog"
@@ -1237,10 +1253,6 @@ msgstr "Виберіть один з елементів вище, щоб поб�
 #: lazarusidestrconsts:lismenuclose
 msgid "Close"
 msgstr "Закрити"
-
-#: lazarusidestrconsts:srkmeccloseall
-msgid "Close all"
-msgstr "Закрити всі"
 
 #: lazarusidestrconsts:lismenucloseall
 msgid "Close all editor files"
@@ -1628,6 +1640,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisldcopyfrominherited
 msgid "Copy from inherited"
+msgstr ""
+
+#: lazarusidestrconsts:lisplistcopymethodtoclipboard
+msgid "Copy method name to the clipboard"
 msgstr ""
 
 #: lazarusidestrconsts:lisdsgcopycomponents
@@ -2773,6 +2789,14 @@ msgstr "Назва файлу: %s"
 #: lazarusidestrconsts:dlgenvfiles
 msgid "Files"
 msgstr "Файли"
+
+#: lazarusidestrconsts:lisplistfilterany
+msgid "Filter by matching any part of method"
+msgstr ""
+
+#: lazarusidestrconsts:lisplistfilterstart
+msgid "Filter by matching with start of method"
+msgstr ""
 
 #: lazarusidestrconsts:srvk_final
 msgid "Final"
@@ -3938,6 +3962,10 @@ msgstr "Висота елемента"
 msgid "Japanese"
 msgstr ""
 
+#: lazarusidestrconsts:lisplistjumptoselection
+msgid "Jump To Selection"
+msgstr ""
+
 #: lazarusidestrconsts:lismenujumpback
 msgid "Jump back"
 msgstr "Перейти назад"
@@ -4714,7 +4742,7 @@ msgstr "Присвоєння назви"
 msgid "Never, only manually"
 msgstr "Ніколи, тільки вручну"
 
-#: lazarusidestrconsts:srkmecnew
+#: lazarusidestrconsts:lismenutemplatenew
 msgid "New"
 msgstr "Новий"
 
@@ -4765,14 +4793,6 @@ msgstr "Новий модуль"
 #: lazarusidestrconsts:lisa2pnewclassname
 msgid "New class name:"
 msgstr "Нова назва класу"
-
-#: lazarusidestrconsts:srkmecnewform
-msgid "New form"
-msgstr "Нова форма"
-
-#: lazarusidestrconsts:srkmecnewunit
-msgid "New unit"
-msgstr "Новий модуль"
 
 #: lazarusidestrconsts:lispkgeditnewunitnotinunitpath
 msgid "New unit not in unitpath"
@@ -4974,7 +4994,7 @@ msgstr "Тільки вибране"
 msgid "Only text files"
 msgstr "Тільки текстові файли"
 
-#: lazarusidestrconsts:lismenuopen
+#: lazarusidestrconsts:lishintopen
 msgid "Open"
 msgstr "Відкрити"
 
@@ -4982,7 +5002,7 @@ msgstr "Відкрити"
 msgid "Open %s"
 msgstr "Відкрити %s"
 
-#: lazarusidestrconsts:lisopen
+#: lazarusidestrconsts:lismenuopen
 msgid "Open ..."
 msgstr "Відкрити ..."
 
@@ -6209,10 +6229,6 @@ msgstr "Зберегти і вийти з діалогу"
 #: lazarusidestrconsts:lissaveandrebuildide
 msgid "Save and rebuild IDE"
 msgstr "Зберегти і перебудувати IDE"
-
-#: lazarusidestrconsts:srkmecsaveas
-msgid "Save as"
-msgstr "Зберегти як"
 
 #: lazarusidestrconsts:lissavechangestoproject
 msgid "Save changes to project %s?"

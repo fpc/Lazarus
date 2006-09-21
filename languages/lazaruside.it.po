@@ -198,6 +198,10 @@ msgstr "Vai al segnalibro"
 msgid "&Help"
 msgstr "&Aiuto"
 
+#: lazarusidestrconsts:lisplistobjects
+msgid "&Objects"
+msgstr ""
+
 #: lazarusidestrconsts:lisok
 msgid "&Ok"
 msgstr ""
@@ -262,9 +266,17 @@ msgstr "(nessuna subdirectory)"
 msgid "(unknown macro: %s)"
 msgstr "(macro sconosciuta: %s)"
 
+#: lazarusidestrconsts:lisplistall
+msgid "<All>"
+msgstr ""
+
 #: lazarusidestrconsts:lislazdocnotagcaption
 msgid "<NONE>"
 msgstr "<NESSUNO>"
+
+#: lazarusidestrconsts:lisplistnone
+msgid "<None>"
+msgstr ""
 
 #: lazarusidestrconsts:lisa2pchooseanexistingfile
 msgid "<choose an existing file>"
@@ -325,10 +337,6 @@ msgstr "Informazioni"
 #: lazarusidestrconsts:lisaboutlazarus
 msgid "About Lazarus"
 msgstr "Informazioni su Lazarus"
-
-#: lazarusidestrconsts:lismenuaboutlazarus
-msgid "About Lazarus ..."
-msgstr "Informazioni su Lazarus ..."
 
 #: lazarusidestrconsts:srvk_accept
 msgid "Accept"
@@ -481,6 +489,10 @@ msgstr ""
 #: lazarusidestrconsts:dlgadjusttopline
 msgid "Adjust top line due to comment in front"
 msgstr "Aggiusta linea in testa a causa del commento nel frontespizio"
+
+#: lazarusidestrconsts:rslanguageafrikaans
+msgid "Afrikaans"
+msgstr ""
 
 #: lazarusidestrconsts:fdmalignword
 msgid "Align"
@@ -1046,6 +1058,10 @@ msgstr "Cambia"
 msgid "Change Class"
 msgstr "Cambia classe"
 
+#: lazarusidestrconsts:lisplistchangefont
+msgid "Change Font"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuinsertchangelogentry
 msgid "ChangeLog entry"
 msgstr "Voce Changelog"
@@ -1249,10 +1265,6 @@ msgstr "Fai clic su di una delle voci sopra per vedere il risultato di un diff"
 #: lazarusidestrconsts:lismenuclose
 msgid "Close"
 msgstr "Chiudi"
-
-#: lazarusidestrconsts:srkmeccloseall
-msgid "Close all"
-msgstr "Chiudi tutto"
 
 #: lazarusidestrconsts:lismenucloseall
 msgid "Close all editor files"
@@ -1640,6 +1652,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisldcopyfrominherited
 msgid "Copy from inherited"
+msgstr ""
+
+#: lazarusidestrconsts:lisplistcopymethodtoclipboard
+msgid "Copy method name to the clipboard"
 msgstr ""
 
 #: lazarusidestrconsts:lisdsgcopycomponents
@@ -2785,6 +2801,14 @@ msgstr "Nome file:  %s"
 #: lazarusidestrconsts:dlgenvfiles
 msgid "Files"
 msgstr "File"
+
+#: lazarusidestrconsts:lisplistfilterany
+msgid "Filter by matching any part of method"
+msgstr ""
+
+#: lazarusidestrconsts:lisplistfilterstart
+msgid "Filter by matching with start of method"
+msgstr ""
 
 #: lazarusidestrconsts:srvk_final
 msgid "Final"
@@ -3950,6 +3974,10 @@ msgstr "Altezza dell'oggetto"
 msgid "Japanese"
 msgstr "Giapponese"
 
+#: lazarusidestrconsts:lisplistjumptoselection
+msgid "Jump To Selection"
+msgstr ""
+
 #: lazarusidestrconsts:lismenujumpback
 msgid "Jump back"
 msgstr "Salta indietro"
@@ -4726,7 +4754,7 @@ msgstr "Naming"
 msgid "Never, only manually"
 msgstr "Mai, solo manualmente"
 
-#: lazarusidestrconsts:srkmecnew
+#: lazarusidestrconsts:lismenutemplatenew
 msgid "New"
 msgstr "Nuovo"
 
@@ -4777,14 +4805,6 @@ msgstr "Nuova unit"
 #: lazarusidestrconsts:lisa2pnewclassname
 msgid "New class name:"
 msgstr "Nome nuova classe:"
-
-#: lazarusidestrconsts:srkmecnewform
-msgid "New form"
-msgstr "Nuova form"
-
-#: lazarusidestrconsts:srkmecnewunit
-msgid "New unit"
-msgstr "Nuova unit"
 
 #: lazarusidestrconsts:lispkgeditnewunitnotinunitpath
 msgid "New unit not in unitpath"
@@ -4986,7 +5006,7 @@ msgstr "Solo selezione"
 msgid "Only text files"
 msgstr "Solo file di testo"
 
-#: lazarusidestrconsts:lismenuopen
+#: lazarusidestrconsts:lishintopen
 msgid "Open"
 msgstr "Apri"
 
@@ -4994,7 +5014,7 @@ msgstr "Apri"
 msgid "Open %s"
 msgstr "Apri %s"
 
-#: lazarusidestrconsts:lisopen
+#: lazarusidestrconsts:lismenuopen
 msgid "Open ..."
 msgstr "Apri ..."
 
@@ -6221,10 +6241,6 @@ msgstr "Salva e esci dalla finestra"
 #: lazarusidestrconsts:lissaveandrebuildide
 msgid "Save and rebuild IDE"
 msgstr "Salva e fai un rebuild dell'IDE"
-
-#: lazarusidestrconsts:srkmecsaveas
-msgid "Save as"
-msgstr "Salva come"
 
 #: lazarusidestrconsts:lissavechangestoproject
 msgid "Save changes to project %s?"

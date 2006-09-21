@@ -200,6 +200,10 @@ msgstr "Per&gi ke penujuk"
 msgid "&Help"
 msgstr "&Panduan"
 
+#: lazarusidestrconsts:lisplistobjects
+msgid "&Objects"
+msgstr ""
+
 #: lazarusidestrconsts:lisok
 msgid "&Ok"
 msgstr ""
@@ -264,9 +268,17 @@ msgstr "(tidak ada sub direktori)"
 msgid "(unknown macro: %s)"
 msgstr "(makro tidak dikenal: %s)"
 
+#: lazarusidestrconsts:lisplistall
+msgid "<All>"
+msgstr ""
+
 #: lazarusidestrconsts:lislazdocnotagcaption
 msgid "<NONE>"
 msgstr "<TIDAK ADA>"
+
+#: lazarusidestrconsts:lisplistnone
+msgid "<None>"
+msgstr ""
 
 #: lazarusidestrconsts:lisa2pchooseanexistingfile
 msgid "<choose an existing file>"
@@ -327,10 +339,6 @@ msgstr "Tentang"
 #: lazarusidestrconsts:lisaboutlazarus
 msgid "About Lazarus"
 msgstr "Tentang Lazarus"
-
-#: lazarusidestrconsts:lismenuaboutlazarus
-msgid "About Lazarus ..."
-msgstr "Tentang Lazarus ..."
 
 #: lazarusidestrconsts:srvk_accept
 msgid "Accept"
@@ -483,6 +491,10 @@ msgstr "Tambahan path pencarian"
 #: lazarusidestrconsts:dlgadjusttopline
 msgid "Adjust top line due to comment in front"
 msgstr "Sesuaikan baris atas karena komentar di depan"
+
+#: lazarusidestrconsts:rslanguageafrikaans
+msgid "Afrikaans"
+msgstr ""
 
 #: lazarusidestrconsts:fdmalignword
 msgid "Align"
@@ -1048,6 +1060,10 @@ msgstr "Ubah"
 msgid "Change Class"
 msgstr "Ubah Class"
 
+#: lazarusidestrconsts:lisplistchangefont
+msgid "Change Font"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuinsertchangelogentry
 msgid "ChangeLog entry"
 msgstr "Entri ChangeLog"
@@ -1251,10 +1267,6 @@ msgstr "Klik pada salah satu item diatas untuk melihat perbedaan"
 #: lazarusidestrconsts:lismenuclose
 msgid "Close"
 msgstr "Tutup"
-
-#: lazarusidestrconsts:srkmeccloseall
-msgid "Close all"
-msgstr "Tutup semua"
 
 #: lazarusidestrconsts:lismenucloseall
 msgid "Close all editor files"
@@ -1642,6 +1654,10 @@ msgstr "Copy nama file"
 
 #: lazarusidestrconsts:lisldcopyfrominherited
 msgid "Copy from inherited"
+msgstr ""
+
+#: lazarusidestrconsts:lisplistcopymethodtoclipboard
+msgid "Copy method name to the clipboard"
 msgstr ""
 
 #: lazarusidestrconsts:lisdsgcopycomponents
@@ -2787,6 +2803,14 @@ msgstr "Nama file: %s"
 #: lazarusidestrconsts:dlgenvfiles
 msgid "Files"
 msgstr "File"
+
+#: lazarusidestrconsts:lisplistfilterany
+msgid "Filter by matching any part of method"
+msgstr ""
+
+#: lazarusidestrconsts:lisplistfilterstart
+msgid "Filter by matching with start of method"
+msgstr ""
 
 #: lazarusidestrconsts:srvk_final
 msgid "Final"
@@ -3952,6 +3976,10 @@ msgstr "Tinggi item"
 msgid "Japanese"
 msgstr "Jepang"
 
+#: lazarusidestrconsts:lisplistjumptoselection
+msgid "Jump To Selection"
+msgstr ""
+
 #: lazarusidestrconsts:lismenujumpback
 msgid "Jump back"
 msgstr "Lompat kembali"
@@ -4728,7 +4756,7 @@ msgstr "Penamaan"
 msgid "Never, only manually"
 msgstr "Tidak pernah, hanya secara manual"
 
-#: lazarusidestrconsts:srkmecnew
+#: lazarusidestrconsts:lismenutemplatenew
 msgid "New"
 msgstr "Baru"
 
@@ -4779,14 +4807,6 @@ msgstr "Unit Baru"
 #: lazarusidestrconsts:lisa2pnewclassname
 msgid "New class name:"
 msgstr "Nama class baru:"
-
-#: lazarusidestrconsts:srkmecnewform
-msgid "New form"
-msgstr "Form baru"
-
-#: lazarusidestrconsts:srkmecnewunit
-msgid "New unit"
-msgstr "Unit baru"
 
 #: lazarusidestrconsts:lispkgeditnewunitnotinunitpath
 msgid "New unit not in unitpath"
@@ -4988,7 +5008,7 @@ msgstr "Hanya pilihan"
 msgid "Only text files"
 msgstr "Hanya file teks"
 
-#: lazarusidestrconsts:lismenuopen
+#: lazarusidestrconsts:lishintopen
 msgid "Open"
 msgstr "Buka"
 
@@ -4996,7 +5016,7 @@ msgstr "Buka"
 msgid "Open %s"
 msgstr "Buka %s"
 
-#: lazarusidestrconsts:lisopen
+#: lazarusidestrconsts:lismenuopen
 msgid "Open ..."
 msgstr "Buka ..."
 
@@ -6223,10 +6243,6 @@ msgstr "Dialog Simpan dan keluar"
 #: lazarusidestrconsts:lissaveandrebuildide
 msgid "Save and rebuild IDE"
 msgstr "Simpan dan bangun ulang IDE"
-
-#: lazarusidestrconsts:srkmecsaveas
-msgid "Save as"
-msgstr "Simpan sebagai"
 
 #: lazarusidestrconsts:lissavechangestoproject
 msgid "Save changes to project %s?"

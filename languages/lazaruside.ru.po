@@ -197,6 +197,10 @@ msgstr "&Переход по закладке"
 msgid "&Help"
 msgstr "&Справка"
 
+#: lazarusidestrconsts:lisplistobjects
+msgid "&Objects"
+msgstr ""
+
 #: lazarusidestrconsts:lisok
 msgid "&Ok"
 msgstr ""
@@ -261,9 +265,17 @@ msgstr "(нет подкаталога)"
 msgid "(unknown macro: %s)"
 msgstr "(неизвестный макрос: %s)"
 
+#: lazarusidestrconsts:lisplistall
+msgid "<All>"
+msgstr ""
+
 #: lazarusidestrconsts:lislazdocnotagcaption
 msgid "<NONE>"
 msgstr "<НЕТ>"
+
+#: lazarusidestrconsts:lisplistnone
+msgid "<None>"
+msgstr ""
 
 #: lazarusidestrconsts:lisa2pchooseanexistingfile
 msgid "<choose an existing file>"
@@ -324,10 +336,6 @@ msgstr "О проекте"
 #: lazarusidestrconsts:lisaboutlazarus
 msgid "About Lazarus"
 msgstr "О проекте Lazarus"
-
-#: lazarusidestrconsts:lismenuaboutlazarus
-msgid "About Lazarus ..."
-msgstr "О проекте Lazarus ..."
 
 #: lazarusidestrconsts:srvk_accept
 msgid "Accept"
@@ -480,6 +488,10 @@ msgstr "Дополнительный путь поиска"
 #: lazarusidestrconsts:dlgadjusttopline
 msgid "Adjust top line due to comment in front"
 msgstr "Выровнять верхнюю строку по комментарию"
+
+#: lazarusidestrconsts:rslanguageafrikaans
+msgid "Afrikaans"
+msgstr ""
 
 #: lazarusidestrconsts:fdmalignword
 msgid "Align"
@@ -1045,6 +1057,10 @@ msgstr "Изменить"
 msgid "Change Class"
 msgstr "Изменить класс"
 
+#: lazarusidestrconsts:lisplistchangefont
+msgid "Change Font"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuinsertchangelogentry
 msgid "ChangeLog entry"
 msgstr "Элемент ChangeLog"
@@ -1248,10 +1264,6 @@ msgstr "Выберите один из элементов выше, чтобы �
 #: lazarusidestrconsts:lismenuclose
 msgid "Close"
 msgstr "Закрыть"
-
-#: lazarusidestrconsts:srkmeccloseall
-msgid "Close all"
-msgstr "Закрыть все"
 
 #: lazarusidestrconsts:lismenucloseall
 msgid "Close all editor files"
@@ -1639,6 +1651,10 @@ msgstr "Копировать имя файла"
 
 #: lazarusidestrconsts:lisldcopyfrominherited
 msgid "Copy from inherited"
+msgstr ""
+
+#: lazarusidestrconsts:lisplistcopymethodtoclipboard
+msgid "Copy method name to the clipboard"
 msgstr ""
 
 #: lazarusidestrconsts:lisdsgcopycomponents
@@ -2784,6 +2800,14 @@ msgstr "Имя файла: %s"
 #: lazarusidestrconsts:dlgenvfiles
 msgid "Files"
 msgstr "Файлы"
+
+#: lazarusidestrconsts:lisplistfilterany
+msgid "Filter by matching any part of method"
+msgstr ""
+
+#: lazarusidestrconsts:lisplistfilterstart
+msgid "Filter by matching with start of method"
+msgstr ""
 
 #: lazarusidestrconsts:srvk_final
 msgid "Final"
@@ -3949,6 +3973,10 @@ msgstr "Высота элемента"
 msgid "Japanese"
 msgstr "Японский"
 
+#: lazarusidestrconsts:lisplistjumptoselection
+msgid "Jump To Selection"
+msgstr ""
+
 #: lazarusidestrconsts:lismenujumpback
 msgid "Jump back"
 msgstr "Переход назад"
@@ -4725,7 +4753,7 @@ msgstr "Названия"
 msgid "Never, only manually"
 msgstr "Никогда, только вручную"
 
-#: lazarusidestrconsts:srkmecnew
+#: lazarusidestrconsts:lismenutemplatenew
 msgid "New"
 msgstr "Создать"
 
@@ -4776,14 +4804,6 @@ msgstr "Создать модуль"
 #: lazarusidestrconsts:lisa2pnewclassname
 msgid "New class name:"
 msgstr "Новое имя класса:"
-
-#: lazarusidestrconsts:srkmecnewform
-msgid "New form"
-msgstr "Создать форму"
-
-#: lazarusidestrconsts:srkmecnewunit
-msgid "New unit"
-msgstr "Создать модуль"
 
 #: lazarusidestrconsts:lispkgeditnewunitnotinunitpath
 msgid "New unit not in unitpath"
@@ -4985,7 +5005,7 @@ msgstr "Только выбранное"
 msgid "Only text files"
 msgstr "Только текстовые файлы"
 
-#: lazarusidestrconsts:lismenuopen
+#: lazarusidestrconsts:lishintopen
 msgid "Open"
 msgstr "Открыть"
 
@@ -4993,7 +5013,7 @@ msgstr "Открыть"
 msgid "Open %s"
 msgstr "Открыть %s"
 
-#: lazarusidestrconsts:lisopen
+#: lazarusidestrconsts:lismenuopen
 msgid "Open ..."
 msgstr "Открыть ..."
 
@@ -6220,10 +6240,6 @@ msgstr "Сохранить и выйти из диалога"
 #: lazarusidestrconsts:lissaveandrebuildide
 msgid "Save and rebuild IDE"
 msgstr "Сохранить и перезапустить IDE"
-
-#: lazarusidestrconsts:srkmecsaveas
-msgid "Save as"
-msgstr "Сохранить как"
 
 #: lazarusidestrconsts:lissavechangestoproject
 msgid "Save changes to project %s?"

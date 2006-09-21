@@ -186,6 +186,10 @@ msgstr "&Siirry kirjaimerkkiin"
 msgid "&Help"
 msgstr "&Ohje"
 
+#: lazarusidestrconsts:lisplistobjects
+msgid "&Objects"
+msgstr ""
+
 #: lazarusidestrconsts:lisok
 msgid "&Ok"
 msgstr ""
@@ -250,8 +254,16 @@ msgstr "(ei alikansiota)"
 msgid "(unknown macro: %s)"
 msgstr ""
 
+#: lazarusidestrconsts:lisplistall
+msgid "<All>"
+msgstr ""
+
 #: lazarusidestrconsts:lislazdocnotagcaption
 msgid "<NONE>"
+msgstr ""
+
+#: lazarusidestrconsts:lisplistnone
+msgid "<None>"
 msgstr ""
 
 #: lazarusidestrconsts:lisa2pchooseanexistingfile
@@ -313,10 +325,6 @@ msgstr "Tietoja"
 #: lazarusidestrconsts:lisaboutlazarus
 msgid "About Lazarus"
 msgstr "Tietoja Lazarus:sta"
-
-#: lazarusidestrconsts:lismenuaboutlazarus
-msgid "About Lazarus ..."
-msgstr "Tietoja Lazarus:sta ..."
 
 #: lazarusidestrconsts:srvk_accept
 msgid "Accept"
@@ -468,6 +476,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgadjusttopline
 msgid "Adjust top line due to comment in front"
+msgstr ""
+
+#: lazarusidestrconsts:rslanguageafrikaans
+msgid "Afrikaans"
 msgstr ""
 
 #: lazarusidestrconsts:fdmalignword
@@ -1034,6 +1046,10 @@ msgstr ""
 msgid "Change Class"
 msgstr ""
 
+#: lazarusidestrconsts:lisplistchangefont
+msgid "Change Font"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuinsertchangelogentry
 msgid "ChangeLog entry"
 msgstr ""
@@ -1237,10 +1253,6 @@ msgstr "Klikkaa jotain ylläolevaa kohtaa nähdäksesi muuttuneet kohdat"
 #: lazarusidestrconsts:lismenuclose
 msgid "Close"
 msgstr "Sulje"
-
-#: lazarusidestrconsts:srkmeccloseall
-msgid "Close all"
-msgstr ""
 
 #: lazarusidestrconsts:lismenucloseall
 msgid "Close all editor files"
@@ -1628,6 +1640,10 @@ msgstr "Kopio tiedoston nimi leikepöydälle"
 
 #: lazarusidestrconsts:lisldcopyfrominherited
 msgid "Copy from inherited"
+msgstr ""
+
+#: lazarusidestrconsts:lisplistcopymethodtoclipboard
+msgid "Copy method name to the clipboard"
 msgstr ""
 
 #: lazarusidestrconsts:lisdsgcopycomponents
@@ -2773,6 +2789,14 @@ msgstr ""
 #: lazarusidestrconsts:dlgenvfiles
 msgid "Files"
 msgstr "Tiedostot"
+
+#: lazarusidestrconsts:lisplistfilterany
+msgid "Filter by matching any part of method"
+msgstr ""
+
+#: lazarusidestrconsts:lisplistfilterstart
+msgid "Filter by matching with start of method"
+msgstr ""
 
 #: lazarusidestrconsts:srvk_final
 msgid "Final"
@@ -3938,6 +3962,10 @@ msgstr "Rivin korkeus"
 msgid "Japanese"
 msgstr "japani"
 
+#: lazarusidestrconsts:lisplistjumptoselection
+msgid "Jump To Selection"
+msgstr ""
+
 #: lazarusidestrconsts:lismenujumpback
 msgid "Jump back"
 msgstr "Hyppää takaisin"
@@ -4714,7 +4742,7 @@ msgstr "Nimeäminen"
 msgid "Never, only manually"
 msgstr ""
 
-#: lazarusidestrconsts:srkmecnew
+#: lazarusidestrconsts:lismenutemplatenew
 msgid "New"
 msgstr "Uusi"
 
@@ -4764,14 +4792,6 @@ msgstr "Uusi käännösyksikkö (Unit)"
 
 #: lazarusidestrconsts:lisa2pnewclassname
 msgid "New class name:"
-msgstr ""
-
-#: lazarusidestrconsts:srkmecnewform
-msgid "New form"
-msgstr ""
-
-#: lazarusidestrconsts:srkmecnewunit
-msgid "New unit"
 msgstr ""
 
 #: lazarusidestrconsts:lispkgeditnewunitnotinunitpath
@@ -4974,7 +4994,7 @@ msgstr "Ainoastaan valittu osa"
 msgid "Only text files"
 msgstr ""
 
-#: lazarusidestrconsts:lismenuopen
+#: lazarusidestrconsts:lishintopen
 msgid "Open"
 msgstr "Avaa"
 
@@ -4982,7 +5002,7 @@ msgstr "Avaa"
 msgid "Open %s"
 msgstr "Avaa %s"
 
-#: lazarusidestrconsts:lisopen
+#: lazarusidestrconsts:lismenuopen
 msgid "Open ..."
 msgstr "Avaa ..."
 
@@ -6208,10 +6228,6 @@ msgstr ""
 
 #: lazarusidestrconsts:lissaveandrebuildide
 msgid "Save and rebuild IDE"
-msgstr ""
-
-#: lazarusidestrconsts:srkmecsaveas
-msgid "Save as"
 msgstr ""
 
 #: lazarusidestrconsts:lissavechangestoproject
