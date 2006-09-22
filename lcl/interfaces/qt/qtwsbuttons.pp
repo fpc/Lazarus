@@ -146,15 +146,15 @@ end;
 class procedure TQtWSButton.SetSlots(const QtButton: TQtPushButton);
 var
   Method: TMethod;
+  Hook : QObject_hookH;
 begin
-  // Inherited Callbacks
-//  TQtWSWinControl.SetSlots(QtButton);
+  // Various Events
 
-  // OnClick Event
-  
-  QAbstractButton_clicked2_Event(Method) := QtButton.SlotClicked;
+  Hook := QObject_hook_create(QtButton.Widget);
 
-  QAbstractButton_hook_hook_clicked2(QAbstractButton_hook_create(QtButton.Widget), Method);
+  TEventFilterMethod(Method) := QtButton.EventFilter;
+
+  QObject_hook_hook_events(Hook, Method);
 end;
 
 {------------------------------------------------------------------------------

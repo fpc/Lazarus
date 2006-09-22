@@ -107,6 +107,7 @@ type
 
   TQtWSCustomListBox = class(TWSCustomListBox)
   private
+    class procedure SetSlots(const QtListWidget: TQtListWidget);
   protected
   public
     class function  CreateHandle(const AWinControl: TWinControl;
@@ -307,6 +308,31 @@ uses LMessages;
 { TQtWSCustomListBox }
 
 {------------------------------------------------------------------------------
+  Method: TQtWSCustomListBox.SetSlots
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+class procedure TQtWSCustomListBox.SetSlots(const QtListWidget: TQtListWidget);
+var
+  Method: TMethod;
+  Hook : QListWidget_hookH;
+begin
+  // Various Events
+
+  Hook := QListWidget_hook_create(QtListWidget.Widget);
+
+  TEventFilterMethod(Method) := QtListWidget.EventFilter;
+
+  QObject_hook_hook_events(Hook, Method);
+
+  // OnSelectionChange event
+  
+  QListWidget_currentItemChanged_Event(Method) := QtListWidget.SlotSelectionChange;
+
+  QListWidget_hook_hook_currentItemChanged(Hook, Method);
+end;
+
+{------------------------------------------------------------------------------
   Method: TQtWSCustomListBox.CreateHandle
   Params:  None
   Returns: Nothing
@@ -316,6 +342,9 @@ var
   QtListWidget: TQtListWidget;
 begin
   QtListWidget := TQtListWidGet.Create(AWinControl, AParams);
+  
+  SetSlots(QtListWidget);
+  
   Result := THandle(QtListWidget);
 end;
 

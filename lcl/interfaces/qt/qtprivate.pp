@@ -52,6 +52,7 @@ type
     procedure SlotFocus(FocusIn: Boolean); cdecl;
     procedure SlotKey(Event: QEventH); cdecl;
     procedure SlotMouse(Event: QEventH); cdecl;
+    procedure SlotMouseMove(Event: QEventH); cdecl;
     procedure SlotPaint(Event: QEventH); cdecl;
     procedure SlotResize; cdecl;
   public
@@ -286,11 +287,15 @@ type
   end;
 
   
+  { TQtListWidget }
+
   TQtListWidget = class(TQtListView)
   private
   public
     constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); override;
     destructor Destroy; override;
+  public
+    procedure SlotSelectionChange(current: QListWidgetItemH; previous: QListWidgetItemH); cdecl;
   public
     function currentRow: Integer;
     procedure setCurrentRow(row: Integer);
@@ -366,7 +371,7 @@ begin
    QEventMouseButtonPress: SlotMouse(Event);
    QEventMouseButtonRelease: SlotMouse(Event);
    QEventMouseButtonDblClick: SlotMouse(Event);
-   QEventMouseMove: SlotMouse(Event);
+   QEventMouseMove: SlotMouseMove(Event);
    QEventResize: SlotResize;
 
    QEventPaint: SlotPaint(Event);
@@ -489,8 +494,36 @@ end;
   Returns: Nothing
  ------------------------------------------------------------------------------}
 procedure TQtWidget.SlotMouse(Event: QEventH); cdecl;
+var
+  Msg: TLMMouse;
 begin
+  FillChar(Msg, SizeOf(Msg), #0);
+  
+  case QEvent_type(Event) of
+   QEventMouseButtonPress: Msg.Msg := LM_CLICKED;
+   QEventMouseButtonRelease: Msg.Msg := LM_RELEASED;
+   QEventMouseButtonDblClick: Msg.Msg := LM_CLICKED;
+  else
+   Msg.Msg := LM_CLICKED;
+  end;
 
+  try
+    LCLObject.WindowProc(TLMessage(Msg));
+  except
+     Application.HandleException(nil);
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtWidget.SlotMouseMove
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+procedure TQtWidget.SlotMouseMove(Event: QEventH); cdecl;
+var
+  Msg: TLMMouseMove;
+begin
+  FillChar(Msg, SizeOf(Msg), #0);
 end;
 
 {------------------------------------------------------------------------------
@@ -1382,7 +1415,6 @@ begin
   QMainWindow_setCentralWidget(Window, Widget);
 
   // Accepts keyboard and mouse events
-  QWidget_setFocusPolicy(Window, QtStrongFocus);
   QWidget_setFocusPolicy(Widget, QtStrongFocus);}
 end;
 
@@ -2185,6 +2217,27 @@ begin
   QListWidget_destroy(QListWidgetH(Widget));
 
   inherited Destroy;
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtListWidget.SlotSelectionChange
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+procedure TQtListWidget.SlotSelectionChange(current: QListWidgetItemH;
+  previous: QListWidgetItemH); cdecl;
+var
+  Msg: TLMessage;
+begin
+  FillChar(Msg, SizeOf(Msg), #0);
+
+  Msg.Msg := LM_SELCHANGE;
+
+  try
+    LCLObject.WindowProc(TLMessage(Msg));
+  except
+    Application.HandleException(nil);
+  end;
 end;
 
 {------------------------------------------------------------------------------
