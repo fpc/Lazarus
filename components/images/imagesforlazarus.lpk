@@ -6,7 +6,7 @@
     <CompilerOptions>
       <Version Value="5"/>
       <SearchPaths>
-        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)/"/>
+        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
       <CodeGeneration>
         <Generate Value="Faster"/>
@@ -25,7 +25,7 @@
 "/>
     <License Value="LGPL"/>
     <Version Major="1" Release="1"/>
-    <Files Count="7">
+    <Files Count="8">
       <Item1>
         <Filename Value="lazpng.pas"/>
         <UnitName Value="LazPNG"/>
@@ -36,12 +36,10 @@
       </Item2>
       <Item3>
         <Filename Value="lazpnm.pas"/>
-        <HasRegisterProc Value="True"/>
         <UnitName Value="LazPNM"/>
       </Item3>
       <Item4>
         <Filename Value="lazjpg.pas"/>
-        <HasRegisterProc Value="True"/>
         <UnitName Value="LazJPG"/>
       </Item4>
       <Item5>
@@ -50,13 +48,16 @@
       </Item5>
       <Item6>
         <Filename Value="laztga.pas"/>
-        <HasRegisterProc Value="True"/>
         <UnitName Value="LazTGA"/>
       </Item6>
       <Item7>
         <Filename Value="lazxpm.pas"/>
         <UnitName Value="LazXPM"/>
       </Item7>
+      <Item8>
+        <Filename Value="registerimg4laz.pas"/>
+        <UnitName Value="RegisterImg4Laz"/>
+      </Item8>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="1">

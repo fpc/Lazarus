@@ -1,16 +1,20 @@
-WARNING  WARNING  WARNING  WARNING  WARNING
 
-This package is broken. Read further.
+The lazarus TJPEGImage is in lazjpeg.pas
 
-The pasjpeg code in the current fpc sources have a bug.
-If you want jpeg, then you must use an older fpc and the jpeg from lazarus-ccr
-on sourceforge. Not this package.
-However, if you only need interlaced JPEG, you can use this package.
+It uses the pasjpeg and fpimage libs provided by FreePascal. See there for in
+more detailed jpeg handling.
 
-The Targa loder is not fully functional.
 
--------------------------------------------------------------------------------
+JPEG (pronounced "jay-peg") is a standardized familly of algorithms for
+compression of continous tone still images. Most JPEG processes are lossy,
+the output image is not exactly identical to the input image. However, on
+typical photographic images, very good compression levels can be obtained
+with no visible change, and remarkably high compression levels are possible
+if you can tolerate a low-quality image. The Independent JPEG Group (IJG) has
+created a free, portable C library for JPEG compression and decompression of
+JPEG images which has been ported to FreePascal.
 
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 We used a simple naming schema to help non expert working with this package.
 The support type name and the support unit name are :
 
@@ -23,7 +27,7 @@ The lazarus TBMPImage is in lazbmp.pas
 The lazarus TTGAImage is in laztga.pas
 The lazarus TXPMImage is in lazxpm.pas
 
-This package uses the fpimage libs provided by FreePascal in the FCL/Image. See there for in
-more detailed jpeg handling.
+This package uses the fpimage libs provided by FreePascal in the FCL/Image.
+See there for in more detailed jpeg handling.
 
 Please report bugs to "Mazen NEIFER" <mazen@freepascal.org>

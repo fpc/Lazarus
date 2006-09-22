@@ -7,15 +7,13 @@ unit ImagesForLazarus;
 interface
 
 uses
-  LazPNG, LazPNM, LazJPG, LazBMP, LazTGA, LazXPM, LazarusPackageIntf; 
+  LazPNG, LazPNM, LazJPG, LazBMP, LazTGA, LazXPM, RegisterImg4Laz, 
+    LazarusPackageIntf; 
 
 implementation
 
 procedure Register; 
 begin
-  RegisterUnit('LazPNM', @LazPNM.Register); 
-  RegisterUnit('LazJPG', @LazJPG.Register); 
-  RegisterUnit('LazTGA', @LazTGA.Register); 
 end; 
 
 initialization
