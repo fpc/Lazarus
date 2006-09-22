@@ -96,6 +96,14 @@ type
 
 
   { TPkgVersion }
+  
+  TPkgVersionValid = (
+    pvtNone,
+    pvtMajor,
+    pvtMinor,
+    pvtRelease,
+    pvtBuild
+    );
 
   TPkgVersion = class
   public
@@ -103,17 +111,20 @@ type
     Minor: integer;
     Release: integer;
     Build: integer;
+    Valid: TPkgVersionValid;
     OnChange: TNotifyEvent;
     procedure Clear;
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string;
       FileVersion: integer);
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     function Compare(Version2: TPkgVersion): integer;
+    function CompareMask(ExactVersion: TPkgVersion): integer;
     procedure Assign(Source: TPkgVersion);
     function AsString: string;
     function AsWord: string;
     function ReadString(const s: string): boolean;
-    procedure SetValues(NewMajor, NewMinor, NewRelease, NewBuild: integer);
+    procedure SetValues(NewMajor, NewMinor, NewRelease, NewBuild: integer;
+                        NewValid: TPkgVersionValid = pvtBuild);
     function VersionBound(v: integer): integer;
   end;
   
@@ -421,6 +432,7 @@ type
     destructor Destroy; override;
     function StringToID(const s: string): boolean;
     function Compare(PackageID2: TLazPackageID): integer;
+    function CompareMask(ExactPackageID: TLazPackageID): integer;
     procedure AssignID(Source: TLazPackageID); virtual;
   public
     property Name: string read FName write SetName;
@@ -824,6 +836,7 @@ var
 
 function CompareLazPackageID(Data1, Data2: Pointer): integer;
 function CompareNameWithPackageID(Key, Data: Pointer): integer;
+function ComparePkgIDMaskWithPackageID(Key, Data: Pointer): integer;
 function CompareLazPackageIDNames(Data1, Data2: Pointer): integer;
 function CompareNameWithPkgDependency(Key, Data: Pointer): integer;
 function ComparePkgDependencyNames(Data1, Data2: Pointer): integer;
@@ -1073,6 +1086,16 @@ begin
     Result:=-1;
 end;
 
+function ComparePkgIDMaskWithPackageID(Key, Data: Pointer): integer;
+var
+  Pkg1: TLazPackageID;
+  Pkg2: TLazPackageID;
+begin
+  Pkg1:=TLazPackageID(Key);
+  Pkg2:=TLazPackageID(Data);
+  Result:=Pkg1.CompareMask(Pkg2);
+end;
+
 function CompareLazPackageIDNames(Data1, Data2: Pointer): integer;
 var
   Pkg1: TLazPackageID;
@@ -1080,7 +1103,7 @@ var
 begin
   Pkg1:=TLazPackageID(Data1);
   Pkg2:=TLazPackageID(Data2);
-  Result:=AnsiCompareText(Pkg1.Name,Pkg2.Name);
+  Result:=CompareText(Pkg1.Name,Pkg2.Name);
 end;
 
 function CompareNameWithPkgDependency(Key, Data: Pointer): integer;
@@ -1857,7 +1880,7 @@ end;
 
 procedure TPkgVersion.Clear;
 begin
-  SetValues(0,0,0,0);
+  SetValues(0,0,0,0,pvtBuild);
 end;
 
 procedure TPkgVersion.LoadFromXMLConfig(XMLConfig: TXMLConfig;
@@ -1873,7 +1896,7 @@ begin
   NewMinor:=VersionBound(XMLConfig.GetValue(Path+'Minor',0));
   NewRelease:=VersionBound(XMLConfig.GetValue(Path+'Release',0));
   NewBuild:=VersionBound(XMLConfig.GetValue(Path+'Build',0));
-  SetValues(NewMajor,NewMinor,NewRelease,NewBuild);
+  SetValues(NewMajor,NewMinor,NewRelease,NewBuild,pvtBuild);
 end;
 
 procedure TPkgVersion.SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string
@@ -1896,9 +1919,24 @@ begin
   Result:=Build-Version2.Build;
 end;
 
+function TPkgVersion.CompareMask(ExactVersion: TPkgVersion): integer;
+begin
+  if Valid=pvtNone then exit(0);
+  Result:=Major-ExactVersion.Major;
+  if Result<>0 then exit;
+  if Valid=pvtMajor then exit;
+  Result:=Minor-ExactVersion.Minor;
+  if Result<>0 then exit;
+  if Valid=pvtMinor then exit;
+  Result:=Release-ExactVersion.Release;
+  if Result<>0 then exit;
+  if Valid=pvtRelease then exit;
+  Result:=Build-ExactVersion.Build;
+end;
+
 procedure TPkgVersion.Assign(Source: TPkgVersion);
 begin
-  SetValues(Source.Major,Source.Minor,Source.Release,Source.Build);
+  SetValues(Source.Major,Source.Minor,Source.Release,Source.Build,Source.Valid);
 end;
 
 function TPkgVersion.AsString: string;
@@ -1925,9 +1963,11 @@ var
   i: integer;
   CurPos: Integer;
   StartPos: Integer;
+  NewValid: TPkgVersionValid;
 begin
   Result:=false;
   CurPos:=1;
+  NewValid:=pvtNone;
   for i:=1 to 4 do begin
     ints[i]:=0;
     if CurPos<length(s) then begin
@@ -1944,27 +1984,29 @@ begin
         inc(CurPos);
       end;
       if (StartPos=CurPos) then exit;
+      NewValid:=succ(NewValid);
     end;
   end;
   if CurPos<=length(s) then exit;
-  SetValues(ints[1],ints[2],ints[3],ints[4]);
+  SetValues(ints[1],ints[2],ints[3],ints[4],NewValid);
 
   Result:=true;
 end;
 
 procedure TPkgVersion.SetValues(NewMajor, NewMinor, NewRelease,
-  NewBuild: integer);
+  NewBuild: integer; NewValid: TPkgVersionValid);
 begin
   NewMajor:=VersionBound(NewMajor);
   NewMinor:=VersionBound(NewMinor);
   NewRelease:=VersionBound(NewRelease);
   NewBuild:=VersionBound(NewBuild);
   if (NewMajor=Major) and (NewMinor=Minor) and (NewRelease=Release)
-  and (NewBuild=Build) then exit;
+  and (NewBuild=Build) and (NewValid=Valid) then exit;
   Major:=NewMajor;
   Minor:=NewMinor;
   Release:=NewRelease;
   Build:=NewBuild;
+  Valid:=NewValid;
   if Assigned(OnChange) then OnChange(Self);
 end;
 
@@ -3303,6 +3345,7 @@ begin
   while (StartPos<=length(s)) and (s[StartPos]=' ') do inc(StartPos);
   if StartPos=IdentEndPos then begin
     Version.Clear;
+    Version.Valid:=pvtNone;
   end else begin
     if not Version.ReadString(copy(s,StartPos,length(s))) then exit;
   end;
@@ -3311,9 +3354,16 @@ end;
 
 function TLazPackageID.Compare(PackageID2: TLazPackageID): integer;
 begin
-  Result:=AnsiCompareText(Name,PackageID2.Name);
+  Result:=CompareText(Name,PackageID2.Name);
   if Result<>0 then exit;
   Result:=Version.Compare(PackageID2.Version);
+end;
+
+function TLazPackageID.CompareMask(ExactPackageID: TLazPackageID): integer;
+begin
+  Result:=CompareText(Name,ExactPackageID.Name);
+  if Result<>0 then exit;
+  Result:=Version.CompareMask(ExactPackageID.Version);
 end;
 
 procedure TLazPackageID.AssignID(Source: TLazPackageID);

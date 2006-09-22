@@ -81,7 +81,7 @@ begin
   // register additional source directories
   while AdditionalDirectories<>'' do begin
     p:=System.Pos(';',AdditionalDirectories);
-    if p<1 then p:=length(AdditionalDirectories);
+    if p<1 then p:=length(AdditionalDirectories)+1;
     Dir:=Trim(copy(AdditionalDirectories,1,p-1));
     if Dir<>'' then begin
       FPDocNode:=THelpNode.CreateURL(Result,DBTitle+' '+Dir,'file://index.html');

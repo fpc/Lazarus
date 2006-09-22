@@ -994,12 +994,12 @@ begin
       //debugln('THelpDatabase.GetNodesForPascalContexts A ID="',ID,'" PascalContext.Count=',dbgs(PascalContext.Count));
       if (PascalContext.Count>0)
       and (PascalContext.List[0].Descriptor=pihcFilename) then begin
+        Filename:=PascalContext.List[0].Context;
         // search file item
         for i:=0 to FSearchItems.Count-1 do begin
           SearchItem:=THelpDBItem(FSearchItems[i]);
           if not (SearchItem is THelpDBISourceFile) then continue;
           FileItem:=THelpDBISourceFile(SearchItem);
-          Filename:=PascalContext.List[0].Context;
           //debugln('THelpDatabase.GetNodesForPascalContexts B FileItem.ClassName=',FileItem.ClassName,' Filename=',Filename,' FileItem.GetFullFilename="',FileItem.GetFullFilename,'"');
           if (FileItem.FileMatches(Filename)) then begin
             CreateNodeQueryListAndAdd(FileItem.Node,PascalContext,ListOfNodes,true);
@@ -2267,6 +2267,10 @@ begin
   //debugln('THelpDBISourceDirectory.FileMatches AFilename="',AFilename,'" FFilename="',FFilename,'"');
   if (FFilename='') or (AFilename='') then exit;
   TheDirectory:=GetFullFilename;
+  if TheDirectory='' then begin
+    DebugLn(['WARNING: THelpDBISourceDirectory.FileMatches ',DbgSName(Self),' Filename="',Filename,'" -> ""']);
+    exit;
+  end;
   //debugln('THelpDBISourceDirectory.FileMatches TheDirectory="',TheDirectory,'" WithSubDirectories=',dbgs(WithSubDirectories));
   if WithSubDirectories then begin
     if not FileIsInPath(AFilename,TheDirectory) then exit;

@@ -206,6 +206,7 @@ type
     function FindPackageWithFilename(const TheFilename: string;
                                      ResolveLinks: boolean): TLazPackage;
     function FindPackageWithID(PkgID: TLazPackageID): TLazPackage;
+    function FindPackageWithIDMask(PkgIDMask: TLazPackageID): TLazPackage;
     function FindUnit(StartPackage: TLazPackage; const TheUnitName: string;
                       WithRequiredPackages, IgnoreDeleted: boolean): TPkgFile;
     function FindUnitInAllPackages(const TheUnitName: string;
@@ -661,9 +662,9 @@ var
 begin
   PkgID:=TLazPackageID.Create;
   if PkgID.StringToID(TheID) then begin
-    APackage:=FindPackageWithID(PkgID);
+    APackage:=FindPackageWithIDMask(PkgID);
     if APackage=nil then begin
-      DebugLn('WARNING: TLazPackageGraph.GetPackageFromMacroParameter unknown package id "',TheID,'"');
+      DebugLn('WARNING: TLazPackageGraph.GetPackageFromMacroParameter unknown package id "',TheID,'" PkgID.IDAsString="',PkgID.IDAsString,'"');
     end;
   end else begin
     APackage:=nil;
@@ -769,6 +770,18 @@ var
   ANode: TAVLTreeNode;
 begin
   ANode:=FTree.Find(PkgID);
+  if ANode<>nil then
+    Result:=TLazPackage(ANode.Data)
+  else
+    Result:=nil;
+end;
+
+function TLazPackageGraph.FindPackageWithIDMask(PkgIDMask: TLazPackageID
+  ): TLazPackage;
+var
+  ANode: TAVLTreeNode;
+begin
+  ANode:=FTree.FindKey(PkgIDMask,@ComparePkgIDMaskWithPackageID);
   if ANode<>nil then
     Result:=TLazPackage(ANode.Data)
   else
