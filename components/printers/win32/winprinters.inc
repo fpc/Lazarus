@@ -466,7 +466,9 @@ begin
           DC_PAPERS,@ArPapers,nil);
     if PaperC<=0 then
       raise EPrinter.CreateFmt('DoEnumPapers<DC_PAPERS> error : %d, (%s)',
-          [GetLastError,SysErrorMessage(GetLastError)]);
+          [GetLastError,SysErrorMessage(GetLastError)])
+    else if PaperC>Lst.Count then
+      PaperC := Lst.Count;
       
     for i:=0 to PaperC-1 do
       Lst.Objects[i]:=TObject(ptrint(ArPapers[i]));
