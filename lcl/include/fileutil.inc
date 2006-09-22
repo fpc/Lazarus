@@ -199,6 +199,7 @@ function TrimFilename(const AFilename: string): string;
 
 var SrcPos, DestPos, l, DirStart: integer;
   c: char;
+  MacroPos: LongInt;
 begin
   Result:=AFilename;
   if FilenameIsTrimmed(Result) then exit;
@@ -245,15 +246,16 @@ begin
         and (SrcPos+1=l) or (AFilename[SrcPos+2]=PathDelim) then
         begin
           // special dir ..
-          //  1. ..      -> copy
+          //  1. ..      -> keep
           //  2. /..     -> skip .., keep /
-          //  3. C:..    -> copy
+          //  3. C:..    -> keep
           //  4. C:\..   -> skip .., keep C:\
           //  5. \\..    -> skip .., keep \\
-          //  6. xxx../..   -> copy
-          //  7. xxxdir/..  -> trim dir and skip ..
+          //  6. xxx../..   -> keep
+          //  7. xxxdir$Macro/..  -> keep
+          //  8. xxxdir/..  -> trim dir and skip ..
           if DestPos=1 then begin
-            //  1. ..      -> copy
+            //  1. ..      -> keep
           end else if (DestPos=2) and (Result[1]=PathDelim) then begin
             //  2. /..     -> skip .., keep /
             inc(SrcPos,2);
@@ -261,7 +263,7 @@ begin
           {$IFDEF WINDOWS}
           end else if (DestPos=3) and (Result[2]=':')
           and (Result[1] in ['a'..'z','A'..'Z']) then begin
-            //  3. C:..    -> copy
+            //  3. C:..    -> keep
           end else if (DestPos=4) and (Result[2]=':') and (Result[3]=PathDelim)
           and (Result[1] in ['a'..'z','A'..'Z']) then begin
             //  4. C:\..   -> skip .., keep C:\
@@ -277,15 +279,26 @@ begin
             if (DestPos>3)
             and (Result[DestPos-2]='.') and (Result[DestPos-3]='.')
             and ((DestPos=4) or (Result[DestPos-4]=PathDelim)) then begin
-              //  6. ../..   -> copy
+              //  6. ../..   -> keep
             end else begin
               //  7. xxxdir/..  -> trim dir and skip ..
               DirStart:=DestPos-2;
               while (DirStart>1) and (Result[DirStart-1]<>PathDelim) do
                 dec(DirStart);
-              DestPos:=DirStart;
-              inc(SrcPos,2);
-              continue;
+              MacroPos:=DirStart;
+              while MacroPos<DestPos do begin
+                if (Result[MacroPos]='$')
+                and (Result[MacroPos+1] in ['(','a'..'z','A'..'Z']) then begin
+                  // 8. directory contains a macro -> keep
+                  break;
+                end;
+                inc(MacroPos);
+              end;
+              if MacroPos=DestPos then begin
+                DestPos:=DirStart;
+                inc(SrcPos,2);
+                continue;
+              end;
             end;
           end;
         end;

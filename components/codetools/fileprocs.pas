@@ -713,6 +713,7 @@ function TrimFilename(const AFilename: string): string;
 // and special dirs . and ..
 var SrcPos, DestPos, l, DirStart: integer;
   c: char;
+  MacroPos: LongInt;
 begin
   Result:=AFilename;
   if FilenameIsTrimmed(Result) then exit;
@@ -766,6 +767,7 @@ begin
           //  5. \\..    -> skip .., keep \\
           //  6. xxx../..   -> copy
           //  7. xxxdir/..  -> trim dir and skip ..
+          //  8. xxxdir/..  -> trim dir and skip ..
           if DestPos=1 then begin
             //  1. ..      -> copy
           end else if (DestPos=2) and (Result[1]=PathDelim) then begin
@@ -797,9 +799,20 @@ begin
               DirStart:=DestPos-2;
               while (DirStart>1) and (Result[DirStart-1]<>PathDelim) do
                 dec(DirStart);
-              DestPos:=DirStart;
-              inc(SrcPos,2);
-              continue;
+              MacroPos:=DirStart;
+              while MacroPos<DestPos do begin
+                if (Result[MacroPos]='$')
+                and (Result[MacroPos+1] in ['(','a'..'z','A'..'Z']) then begin
+                  // 8. directory contains a macro -> keep
+                  break;
+                end;
+                inc(MacroPos);
+              end;
+              if MacroPos=DestPos then begin
+                DestPos:=DirStart;
+                inc(SrcPos,2);
+                continue;
+              end;
             end;
           end;
         end;

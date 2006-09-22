@@ -63,6 +63,7 @@ var
   FPDocNode: THelpNode;
   p: LongInt;
   Dir: String;
+  NewDirHelp: THelpDBISourceDirectory;
 begin
   // create help database
   Result:=TFPDocHTMLHelpDatabase(
@@ -85,8 +86,10 @@ begin
     Dir:=Trim(copy(AdditionalDirectories,1,p-1));
     if Dir<>'' then begin
       FPDocNode:=THelpNode.CreateURL(Result,DBTitle+' '+Dir,'file://index.html');
-      Result.RegisterItem(THelpDBISourceDirectory.Create(FPDocNode,
-                          '$PkgDir('+PackageName+')'+Dir,'*.pp;*.pas',false));
+      NewDirHelp:=THelpDBISourceDirectory.Create(FPDocNode,
+                             '$PkgDir('+PackageName+')'+Dir,'*.pp;*.pas',false);
+      Result.RegisterItem(NewDirHelp);
+      //DebugLn(['RegisterFPDocHTMLHelpForPackage NewDirHelp.Filename="',NewDirHelp.Filename,'"']);
     end;
     System.Delete(AdditionalDirectories,1,p);
   end;
