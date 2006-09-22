@@ -186,6 +186,7 @@ components/images/lazpnm.pas svneol=native#text/pascal
 components/images/laztga.pas svneol=native#text/pascal
 components/images/lazxpm.pas svneol=native#text/pascal
 components/images/readme.txt svneol=native#text/plain
+components/images/registerimg4laz.pas svneol=native#text/plain
 components/interbase/README.txt svneol=native#text/plain
 components/interbase/interbaselaz.lpk svneol=native#text/pascal
 components/interbase/interbaselaz.pas svneol=native#text/pascal
