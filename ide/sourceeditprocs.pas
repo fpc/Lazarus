@@ -37,7 +37,7 @@ uses
   Classes, SysUtils, LCLProc, LCLType, GraphType, Graphics, Controls,
   SynEdit, SynRegExpr, SynCompletion,
   BasicCodeTools, CodeTree, CodeCache, CodeToolManager, PascalParserTool,
-  FileProcs, IdentCompletionTool,
+  KeywordFuncLists, FileProcs, IdentCompletionTool,
   LazIDEIntf, TextTools, IDETextConverter,
   DialogProcs, MainIntf, EditorOptions, CodeToolsOptions;
 
@@ -59,7 +59,11 @@ type
   TCompletionType = (
     ctNone, ctWordCompletion, ctTemplateCompletion, ctIdentCompletion);
   TIdentComplValue = (
-    icvIdentifier, icvProcWithParams, icvIndexedProp);
+    icvIdentifier,
+    icvProcWithParams,
+    icvIndexedProp,
+    icvCompleteProcDeclaration
+    );
 
 // completion form and functions
 function PaintCompletionItem(const AKey: string; ACanvas: TCanvas;
@@ -369,6 +373,7 @@ var
   IdentItem: TIdentifierListItem;
   IdentList: TIdentifierList;
   CursorAtEnd: boolean;
+  ProcModifierPos: LongInt;
 begin
   Result:='';
   CursorToLeft:=0;
@@ -387,10 +392,15 @@ begin
 
   Result:=GetIdentifier(IdentItem.Identifier);
 
+  //DebugLn(['GetIdentCompletionValue ',NodeDescriptionAsString(IdentItem.GetDesc)]);
   case IdentItem.GetDesc of
 
     ctnProcedure:
-      if IdentItem.IsProcNodeWithParams then
+      if (ilcfCanProcDeclaration in IdentList.ContextFlags)
+      and (IdentItem.Node<>nil) then begin
+        //DebugLn(['GetIdentCompletionValue icvCompleteProcDeclaration']);
+        ValueType:=icvCompleteProcDeclaration;
+      end else if IdentItem.IsProcNodeWithParams then
         ValueType:=icvProcWithParams;
 
     ctnProperty:
@@ -399,10 +409,10 @@ begin
 
   end;
 
-  // add brackets for parameter lists
   case ValueType of
   
     icvProcWithParams:
+      // add brackets for parameter lists
       if (not IdentList.StartUpAtomBehindIs('('))
       and (not IdentList.StartUpAtomInFrontIs('@')) then begin
         Result:=Result+'()';
@@ -411,10 +421,31 @@ begin
       end;
 
     icvIndexedProp:
+      // add brackets for parameter lists
       if (not IdentList.StartUpAtomBehindIs('[')) then begin
         Result:=Result+'[]';
         inc(CursorToLeft);
         CursorAtEnd:=false;
+      end;
+      
+    icvCompleteProcDeclaration:
+      // create complete procedure declaration
+      if (not IdentList.StartUpAtomBehindIs('('))
+      and (IdentItem.Node<>nil) then begin
+        Result:=IdentItem.Tool.ExtractProcHead(IdentItem.Node,
+          [phpWithStart,phpWithVarModifiers,phpWithParameterNames,
+           phpWithDefaultValues,phpWithResultType,phpWithCallingSpecs,
+           phpCommentsToSpace,phpWithProcModifiers]);
+        // replace virtual with override
+        ProcModifierPos:=System.Pos('VIRTUAL;',UpperCaseStr(Result));
+        if ProcModifierPos>0 then
+          Result:=copy(Result,1,ProcModifierPos-1)+'override;'
+                  +copy(Result,ProcModifierPos+8,length(Result));
+        // remove abstact
+        ProcModifierPos:=System.Pos('ABSTRACT;',UpperCaseStr(Result));
+        if ProcModifierPos>0 then
+          Result:=copy(Result,1,ProcModifierPos-1)
+                  +copy(Result,ProcModifierPos+9,length(Result));
       end;
   end;
 

@@ -453,6 +453,11 @@ begin
 
   // copy memorystream to Result string
   Result:=GetExtraction;
+  
+  // add semicolon
+  if (not (phpWithoutSemicolon in Attr))
+  and (Result<>'') and (Result[length(Result)]<>';') then
+    Result:=Result+';';
 end;
 
 function TPascalReaderTool.ExtractClassName(ClassNode: TCodeTreeNode;

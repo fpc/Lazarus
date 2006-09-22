@@ -104,7 +104,8 @@ type
     vatRoundBracketClose,// )
     vatEdgedBracketOpen, // [
     vatEdgedBracketClose,// ]
-    vatAddrOp            // @
+    vatAddrOp,           // @
+    vatKeyword           // other keywords
     );
     
 const
@@ -122,7 +123,8 @@ const
      'Bracket)',
      'Bracket[',
      'Bracket]',
-     'AddrOperator@ '
+     'AddrOperator@ ',
+     'Keyword'
      );
      
 type
@@ -4829,6 +4831,10 @@ begin
       Result:=CurAtom.StartPos;
       exit;
     end;
+    if CurAtomType in [vatAS,vatKeyword] then begin
+      Result:=NextAtom.StartPos;
+      exit;
+    end;
     if (not (CurAtomType in [vatIdentifier,vatPreDefIdentifier,vatPoint,vatUp,
       vatEdgedBracketClose,vatRoundBracketClose]))
     or ((CurAtomType in [vatIdentifier,vatPreDefIdentifier,vatNone])
@@ -6481,12 +6487,22 @@ function TFindDeclarationTool.GetCurrentAtomType: TVariableAtomType;
 begin
   if (CurPos.StartPos=CurPos.EndPos) then
     Result:=vatSpace
-  else if WordIsPredefinedIdentifier.DoItUpperCase(UpperSrc,CurPos.StartPos,
-    CurPos.EndPos-CurPos.StartPos)
-  then
-    Result:=vatPreDefIdentifier
-  else if AtomIsIdentifier(false) then
-    Result:=vatIdentifier
+  else if (CurPos.StartPos>SrcLen) then
+    Result:=vatNone
+  else if IsIdentStartChar[UpperSrc[CurPos.StartPos]] then begin
+    if WordIsPredefinedIdentifier.DoItUpperCase(UpperSrc,CurPos.StartPos,
+      CurPos.EndPos-CurPos.StartPos) then
+      Result:=vatPreDefIdentifier
+    else if UpAtomIs('INHERITED') then
+      Result:=vatINHERITED
+    else if UpAtomIs('AS') then
+      Result:=vatAS
+    else if WordIsKeyWord.DoItUpperCase(UpperSrc,CurPos.StartPos,
+             CurPos.EndPos-CurPos.StartPos) then
+      Result:=vatKeyWord
+    else
+      Result:=vatIdentifier;
+  end
   else if (CurPos.StartPos>=1) and (CurPos.StartPos<=SrcLen)
   and (CurPos.StartPos=CurPos.EndPos-1) then begin
     case Src[CurPos.StartPos] of
@@ -6500,10 +6516,6 @@ begin
     else Result:=vatNone;
     end;
   end
-  else if UpAtomIs('INHERITED') then
-    Result:=vatINHERITED
-  else if UpAtomIs('AS') then
-    Result:=vatAS
   else
     Result:=vatNone;
 end;

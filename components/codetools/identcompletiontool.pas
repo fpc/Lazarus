@@ -126,10 +126,11 @@ type
   TIdentifierListFlags = set of TIdentifierListFlag;
   
   TIdentifierListContextFlag = (
-    ilcfStartInStatement, // context starts in statements. e.g. between begin..end
-    ilcfStartIsLValue,    // position is start of one statement. e.g. 'A:='
-    ilcfNeedsEndSemicolon,// after context a semicolon is needed. e.g. 'A end'
-    ilcfIsExpression      // is expression part of statement. e.g. 'if expr'
+    ilcfStartInStatement,  // context starts in statements. e.g. between begin..end
+    ilcfStartIsLValue,     // position is start of one statement. e.g. 'A:='
+    ilcfNeedsEndSemicolon, // after context a semicolon is needed. e.g. 'A end'
+    ilcfIsExpression,      // is expression part of statement. e.g. 'if expr'
+    ilcfCanProcDeclaration // context allows to declarae a procedure/method
     );
   TIdentifierListContextFlags = set of TIdentifierListContextFlag;
   
@@ -1190,6 +1191,7 @@ begin
     GatherContext.Node:=GatherContext.Node.Parent;
 
   StartInSubContext:=false;
+  //DebugLn(['TIdentCompletionTool.FindCollectionContext ContextExprStartPos=',ContextExprStartPos,' "',dbgstr(copy(Src,ContextExprStartPos,20)),'" IdentStartPos="',dbgstr(copy(Src,IdentStartPos,20)),'"']);
   if ContextExprStartPos<IdentStartPos then begin
     MoveCursorToCleanPos(IdentStartPos);
     Params.ContextNode:=CursorNode;
@@ -1198,6 +1200,7 @@ begin
                    fdfSearchInParentNodes,fdfSearchInAncestors];
     ExprType:=FindExpressionTypeOfVariable(ContextExprStartPos,IdentStartPos,
                                            Params);
+    //DebugLn(['TIdentCompletionTool.FindCollectionContext ',ExprTypeToString(ExprType)]);
     if (ExprType.Desc=xtContext) then begin
       GatherContext:=ExprType.Context;
       StartInSubContext:=true;
@@ -1250,6 +1253,21 @@ var
   ContextExprStartPos: Integer;
   StartInSubContext: Boolean;
   StartPosOfVariable: LongInt;
+  
+  procedure CheckProcedureDeclarationContext;
+  var
+    Node: TCodeTreeNode;
+  begin
+    Node:=GatherContext.Node;
+    if Node.Desc in (AllClassSections+AllSourceTypes
+                     +[ctnInterface,ctnImplementation])
+    then begin
+      //DebugLn(['TIdentCompletionTool.CheckProcedureDeclarationContext ilcfCanProcDeclaration']);
+      CurrentIdentifierList.ContextFlags:=
+        CurrentIdentifierList.ContextFlags+[ilcfCanProcDeclaration];
+    end;
+  end;
+  
 begin
   Result:=false;
 
@@ -1277,7 +1295,7 @@ begin
       FindContextClassAndAncestors(CursorPos,ClassAndAncestors);
 
       FindCollectionContext(Params,IdentStartPos,CursorNode,
-        GatherContext,ContextExprStartPos,StartInSubContext);
+                           GatherContext,ContextExprStartPos,StartInSubContext);
 
       // search and gather identifiers in context
       if (GatherContext.Tool<>nil) and (GatherContext.Node<>nil) then begin
@@ -1310,6 +1328,9 @@ begin
 
       // check for incomplete context
       
+      // check for procedure/method declaration context
+      CheckProcedureDeclarationContext;
+
       // context bracket level
       CurrentIdentifierList.StartBracketLvl:=
         GetBracketLvl(Src,CursorNode.StartPos,IdentStartPos,
