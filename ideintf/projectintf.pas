@@ -53,6 +53,16 @@ type
     cetLibrary
     );
 
+  TCompileReason = (
+    crCompile,  // normal build current project/package
+    crBuild,    // build all
+    crRun       // quick build before run
+    );
+  TCompileReasons = set of TCompileReason;
+const
+  crAll = [crCompile, crBuild, crRun];
+
+type
   { TLazCompilerOptions }
 
   TLazCompilerOptions = class(TPersistent)

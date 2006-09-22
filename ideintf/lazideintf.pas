@@ -169,6 +169,8 @@ type
                                Flags: TOpenFlags): TModalResult; virtual; abstract;
     function DoPublishProject(Flags: TSaveFlags;
                               ShowDialog: boolean): TModalResult; virtual; abstract;
+    function DoBuildProject(const AReason: TCompileReason;
+                            Flags: TProjectBuildFlags): TModalResult; virtual; abstract;
 
     // configs
     function GetPrimaryConfigPath: String; virtual; abstract;

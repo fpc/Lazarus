@@ -379,7 +379,7 @@ object H2PasDialog: TH2PasDialog
   object ConvertButton: TButton
     AnchorSideLeft.Control = SaveSettingsButton
     AnchorSideLeft.Side = asrBottom
-    AnchorSideTop.Control = SaveSettingsButton
+    AnchorSideTop.Control = OpenSettingsButton
     Left = 271
     Height = 26
     Top = 470
@@ -407,5 +407,20 @@ object H2PasDialog: TH2PasDialog
     Caption = 'CloseButton'
     OnClick = CloseButtonClick
     TabOrder = 3
+  end
+  object ConvertAndBuildButton: TButton
+    AnchorSideLeft.Control = ConvertButton
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = OpenSettingsButton
+    Left = 370
+    Height = 26
+    Top = 470
+    Width = 144
+    AutoSize = True
+    BorderSpacing.Left = 6
+    BorderSpacing.InnerBorder = 4
+    Caption = 'ConvertAndBuildButton'
+    OnClick = ConvertAndBuildButtonClick
+    TabOrder = 5
   end
 end

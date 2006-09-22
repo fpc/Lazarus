@@ -133,7 +133,7 @@ LazarusResources.Add('TH2PasDialog','FORMDATA',[
   +'acing.InnerBorder'#2#4#7'Caption'#6#18'SaveSettingsButton'#7'OnClick'#7#23
   +'SaveSettingsButtonClick'#8'TabOrder'#2#2#0#0#7'TButton'#13'ConvertButton'#22
   +'AnchorSideLeft.Control'#7#18'SaveSettingsButton'#19'AnchorSideLeft.Side'#7#9
-  +'asrBottom'#21'AnchorSideTop.Control'#7#18'SaveSettingsButton'#4'Left'#3#15#1
+  +'asrBottom'#21'AnchorSideTop.Control'#7#18'OpenSettingsButton'#4'Left'#3#15#1
   +#6'Height'#2#26#3'Top'#3#214#1#5'Width'#2']'#8'AutoSize'#9#18'BorderSpacing.'
   +'Left'#2#15#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6#13'ConvertButton'
   +#7'OnClick'#7#18'ConvertButtonClick'#8'TabOrder'#2#0#0#0#7'TButton'#11'Close'
@@ -142,5 +142,11 @@ LazarusResources.Add('TH2PasDialog','FORMDATA',[
   +#7#9'asrBottom'#4'Left'#3#187#2#6'Height'#2#26#3'Top'#3#214#1#5'Width'#2'Q'#7
   +'Anchors'#11#7'akRight'#8'akBottom'#0#8'AutoSize'#9#20'BorderSpacing.Around'
   +#2#5#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6#11'CloseButton'#7'OnClic'
-  +'k'#7#16'CloseButtonClick'#8'TabOrder'#2#3#0#0#0
+  +'k'#7#16'CloseButtonClick'#8'TabOrder'#2#3#0#0#7'TButton'#21'ConvertAndBuild'
+  +'Button'#22'AnchorSideLeft.Control'#7#13'ConvertButton'#19'AnchorSideLeft.Si'
+  +'de'#7#9'asrBottom'#21'AnchorSideTop.Control'#7#18'OpenSettingsButton'#4'Lef'
+  +'t'#3'r'#1#6'Height'#2#26#3'Top'#3#214#1#5'Width'#3#144#0#8'AutoSize'#9#18'B'
+  +'orderSpacing.Left'#2#6#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6#21'Co'
+  +'nvertAndBuildButton'#7'OnClick'#7#26'ConvertAndBuildButtonClick'#8'TabOrder'
+  +#2#5#0#0#0
 ]);

@@ -674,7 +674,7 @@ type
                                          const CompilerFilename, CompilerParams,
                                          SrcFilename: string): TModalResult;
     function DoBuildProject(const AReason: TCompileReason;
-                            Flags: TProjectBuildFlags): TModalResult;
+                            Flags: TProjectBuildFlags): TModalResult; override;
     function DoAbortBuild: TModalResult;
     procedure DoQuickCompile;
     function DoInitProjectRun: TModalResult; override;

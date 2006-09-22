@@ -28,7 +28,7 @@ uses
   SynEdit, SynHighlighterCPP,
   FileProcs,
   IDEMsgIntf, MenuIntf, IDECommands, BaseIDEIntf, IDEDialogs, LazIDEIntf,
-  CodeToolManager, SrcEditorIntf, IDETextConverter,
+  ProjectIntf, CodeToolManager, SrcEditorIntf, IDETextConverter,
   H2PasStrConsts, H2PasConvert, IDETextConvListEdit;
 
 type
@@ -36,6 +36,7 @@ type
   { TH2PasDialog }
 
   TH2PasDialog = class(TForm)
+    ConvertAndBuildButton: TButton;
     FileInfoGroupBox: TGroupBox;
     FileInfoLabel: TLabel;
     MainPageControl: TPageControl;
@@ -91,6 +92,7 @@ type
       );
     procedure CloseButtonClick(Sender: TObject);
     procedure ConstantsInsteadOfEnumsCheckBoxChange(Sender: TObject);
+    procedure ConvertAndBuildButtonClick(Sender: TObject);
     procedure ConvertButtonClick(Sender: TObject);
     procedure DeleteCHeaderFilesButtonClick(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
@@ -243,7 +245,8 @@ begin
     NewSettingsButton.Caption:='New/Clear settings';
   OpenSettingsButton.Caption:='&Open Settings';
   SaveSettingsButton.Caption:='&Save Settings';
-  ConvertButton.Caption:='Run converter and h2pas';
+  ConvertButton.Caption:='Run h2pas';
+  ConvertAndBuildButton.Caption:='Run h2pas and compile';
   CloseButton.Caption:='&Close';
   
   PreH2PasEdit:=TTextConvListEditor.Create(Self);
@@ -311,6 +314,12 @@ end;
 procedure TH2PasDialog.ConstantsInsteadOfEnumsCheckBoxChange(Sender: TObject);
 begin
 
+end;
+
+procedure TH2PasDialog.ConvertAndBuildButtonClick(Sender: TObject);
+begin
+  if Convert=mrOk then
+    LazarusIDE.DoBuildProject(crCompile,[]);
 end;
 
 procedure TH2PasDialog.ConvertButtonClick(Sender: TObject);
