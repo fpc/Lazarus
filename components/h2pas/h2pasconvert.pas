@@ -81,6 +81,22 @@ type
     function Execute(aText: TIDETextConverter): TModalResult; override;
   end;
 
+  { TRemoveRedefinedPointerTypes }
+
+  TRemoveRedefinedPointerTypes = class(TCustomTextConverterTool)
+  public
+    class function ClassDescription: string; override;
+    function Execute(aText: TIDETextConverter): TModalResult; override;
+  end;
+
+  { TRemoveEmptyTypeVarConstSections }
+
+  TRemoveEmptyTypeVarConstSections = class(TCustomTextConverterTool)
+  public
+    class function ClassDescription: string; override;
+    function Execute(aText: TIDETextConverter): TModalResult; override;
+  end;
+
   TH2PasProject = class;
   TH2PasConverter = class;
 
@@ -1024,6 +1040,8 @@ procedure TH2PasProject.AddDefaultPostH2PasTools;
 begin
   AddNewTextConverterTool(FPostH2PasTools,TReplaceUnitFilenameWithUnitName);
   AddNewTextConverterTool(FPostH2PasTools,TRemoveSystemTypes);
+  AddNewTextConverterTool(FPostH2PasTools,TRemoveRedefinedPointerTypes);
+  AddNewTextConverterTool(FPostH2PasTools,TRemoveEmptyTypeVarConstSections);
 end;
 
 { TH2PasConverter }
@@ -1632,14 +1650,116 @@ begin
     +');\s*$';
   Result:=IDESearchInText('',Source,SearchFor,'',Flags,Prompt,nil);
   if Result<>mrOk then exit;
-  SearchFor:='\btype\s+type\b';
-  Flags:=Flags+[sesoMultiLine];
-  Result:=IDESearchInText('',Source,SearchFor,'type',Flags,Prompt,nil);
-  if Result<>mrOk then exit;
   aText.Source:=Source;
 end;
 
+{ TRemoveRedefinedPointerTypes }
+
+function TRemoveRedefinedPointerTypes.ClassDescription: string;
+begin
+  Result:='Remove redefined pointer types';
+end;
+
+function TRemoveRedefinedPointerTypes.Execute(aText: TIDETextConverter
+  ): TModalResult;
+{ search for
+    Pname  = ^name;
+  if PName has a redefinition, delete the first one
+}
+var
+  Lines: TStrings;
+  i: Integer;
+  Line: string;
+  PointerName: String;
+  TypeName: String;
+  j: Integer;
+  Pattern: String;
+begin
+  Result:=mrCancel;
+  if aText=nil then exit;
+  Lines:=aText.Strings;
+  i:=0;
+  while i<=Lines.Count-1 do begin
+    Line:=Lines[i];
+    if REMatches(Line,'^\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*=\s*\^\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*;\s*($|//|/\*)') then begin
+      PointerName:=REVar(1);
+      TypeName:=REVar(2);
+      Pattern:='^\s*'+PointerName+'\s*=\s*\^\s*'+TypeName+'\s*;';
+      j:=i+1;
+      while (j<Lines.Count-1) and (not REMatches(Line,Pattern)) do
+        dec(j);
+      if j<Lines.Count then begin
+        Lines.Delete(i);
+        dec(i);
+      end;
+    end;
+    inc(i);
+  end;
+  Result:=mrOk;
+end;
+
+{ TRemoveEmptyTypeVarConstSections }
+
+function TRemoveEmptyTypeVarConstSections.ClassDescription: string;
+begin
+  Result:='Remove empty type/var/const sections';
+end;
+
+function TRemoveEmptyTypeVarConstSections.Execute(aText: TIDETextConverter
+  ): TModalResult;
+var
+  Src: String;
+  p: Integer;
+  AtomStart: Integer;
+  CurAtom, NextAtom: PChar;
+  KeyWordStart: LongInt;
+  KeyWordEnd: LongInt;
+  DeleteSection: Boolean;
+  Modified: Boolean;
+begin
+  Result:=mrCancel;
+  Src:=aText.Source;
+  p:=1;
+  repeat
+    ReadRawNextPascalAtom(Src,p,AtomStart);
+    if p>length(Src) then break;
+    CurAtom:=@Src[AtomStart];
+    if (CompareIdentifiers(CurAtom,'type')=0)
+    or (CompareIdentifiers(CurAtom,'var')=0)
+    or (CompareIdentifiers(CurAtom,'const')=0)
+    or (CompareIdentifiers(CurAtom,'threadvar')=0)
+    or (CompareIdentifiers(CurAtom,'resourcestring')=0)
+    then begin
+      // start of a section found
+      // read next atoms to check if they are identifier plus definition operator
+      //   'name =' or 'name:' or 'name,'
+      KeyWordStart:=AtomStart;
+      KeyWordEnd:=p;
+      ReadRawNextPascalAtom(Src,p,AtomStart);
+      if p<length(Src) then begin
+        NextAtom:=@Src[AtomStart];
+        DeleteSection:=true;
+        if GetIdentLen(NextAtom)>0 then begin
+          ReadRawNextPascalAtom(Src,p,AtomStart);
+          if (p<=length(Src)) and (p-AtomStart=1)
+          and (Src[AtomStart] in ['=',':',',']) then
+            DeleteSection:=false;
+        end;
+        if DeleteSection then begin
+          // this section is empty -> delete it
+          Src:=copy(Src,1,KeyWordStart-1)+copy(Src,KeyWordEnd,length(Src));
+          Modified:=true;
+          // adjust position
+          p:=KeyWordStart;
+        end;
+      end;
+    end;
+  until false;
+  if Modified then
+    aText.Source:=Src;
+
+  Result:=mrOk;
+end;
+
 end.
-
-
 

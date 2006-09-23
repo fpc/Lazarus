@@ -199,6 +199,8 @@ begin
   TextConverterToolClasses.RegisterClass(TReplaceMacro0PointerWithNULL);
   TextConverterToolClasses.RegisterClass(TReplaceUnitFilenameWithUnitName);
   TextConverterToolClasses.RegisterClass(TRemoveSystemTypes);
+  TextConverterToolClasses.RegisterClass(TRemoveRedefinedPointerTypes);
+  TextConverterToolClasses.RegisterClass(TRemoveEmptyTypeVarConstSections);
 end;
 
 { TH2PasDialog }

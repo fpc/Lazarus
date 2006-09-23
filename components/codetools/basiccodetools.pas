@@ -1410,7 +1410,8 @@ begin
   repeat
     ReadRawNextPascalAtom(Source,Position,AtomStart);
     Result:=copy(Source,AtomStart,Position-AtomStart);
-    if (copy(Result,1,2)='{$') or (copy(Result,1,3)='(*$') then begin
+    if (length(Result)>=2)
+    and (Result[1] in ['{','(']) and (Result[2]='*') then begin
       if copy(Result,1,2)='{$' then begin
         DirStart:=3;
         DirEnd:=length(Result);
@@ -1423,12 +1424,11 @@ begin
       DirectiveName:=lowercase(copy(Result,DirStart,EndPos-DirStart));
       if (length(DirectiveName)=1) and (Result[DirEnd] in ['+','-']) then begin
         // switch
-
+        break;
       end else if (DirectiveName='i') or (DirectiveName='include') then begin
         // include directive
         break;
       end;
-      // ToDo: compiler directives
     end else
       break;
   until false;
