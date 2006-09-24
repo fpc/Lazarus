@@ -590,9 +590,15 @@ type
     Msg: cardinal;
     Button: Word;         // 1=left, 2=right, 3=middle
     WheelDelta: SmallInt; // -1 for up, 1 for down
+{$ifdef cpu64}
+    Unused1 : Longint;
+{$endif cpu64}
     X: Smallint;          // under gtk this is longint
     Y: Smallint;          // ditto
-    Result: Longint;      // to fit std message size
+{$ifdef cpu64}
+    Unused2 : Longint;
+{$endif cpu64}
+    Result: LRESULT;      // to fit std message size
     UserData: pointer;    // used under gtk
     State: TShiftState;   // in win is the equivalent of button
   end;
