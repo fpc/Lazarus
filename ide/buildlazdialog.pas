@@ -428,8 +428,10 @@ var
   MakeIDECfgFilename: String;
   NewTargetFilename: String;
   NewTargetDirectory: String;
+  NewUnitDirectory: String;
   DefaultTargetOS: string;
   DefaultTargetCPU: string;
+  TargetDirectoryIsWritable: Boolean;
 begin
   Result:=mrOk;
   CurItem:=Options.Items[ItemIndex];
@@ -473,6 +475,7 @@ begin
     // Otherwise: Don't touch the target filename.
 
     NewTargetFilename:='';
+    NewUnitDirectory:='';
     NewTargetDirectory:='';
     if (Options.TargetDirectory<>'') then begin
       // Case 1. the user has set a target directory
@@ -501,6 +504,7 @@ begin
         // create directory <primary config dir>/bin/<TargetCPU>-<TargetOS>
         NewTargetDirectory:=AppendPathDelim(GetPrimaryConfigPath)+'bin'
                             +PathDelim+Options.TargetCPU+'-'+Options.TargetOS;
+        Macros.SubstituteStr(NewUnitDirectory);
         debugln('CreateBuildLazarusOptions Options.TargetOS=',Options.TargetOS,' Options.TargetCPU=',Options.TargetCPU,' DefaultOS=',DefaultTargetOS,' DefaultCPU=',DefaultTargetCPU);
         Result:=ForceDirectoryInteractive(NewTargetDirectory,[]);
         if Result<>mrOk then exit;
@@ -519,6 +523,8 @@ begin
             // Case 3. the lazarus directory is not writable
             // create directory <primary config dir>/bin/
             NewTargetDirectory:=AppendPathDelim(GetPrimaryConfigPath)+'bin';
+            NewUnitDirectory:=AppendPathDelim(GetPrimaryConfigPath)+'units'
+                            +PathDelim+Options.TargetCPU+'-'+Options.TargetOS;
             debugln('CreateBuildLazarusOptions LazDir readonly NewTargetDirectory=',NewTargetDirectory);
             Result:=ForceDirectoryInteractive(NewTargetDirectory,[]);
             if Result<>mrOk then exit;
@@ -542,12 +548,15 @@ begin
       end;
     end;
 
-    if NewTargetDirectory<>'' then begin
+    if NewUnitDirectory<>'' then
       // FPC interpretes '\ ' as an escape for a space in a path,
       // so make sure the directory doesn't end with the path delimeter.
       AppendExtraOption('-FU'+ChompPathDelim(NewTargetDirectory));
+
+    if NewTargetDirectory<>'' then
+      // FPC interpretes '\ ' as an escape for a space in a path,
+      // so make sure the directory doesn't end with the path delimeter.
       AppendExtraOption('-FE'+ChompPathDelim(NewTargetDirectory));
-    end;
 
     if NewTargetFilename<>'' then begin
       // FPC automatically changes the last extension (append or replace)
