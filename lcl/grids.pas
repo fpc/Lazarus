@@ -202,14 +202,12 @@ type
   TPickListCellEditor = class(TCustomComboBox)
   private
     FGrid: TCustomGrid;
-    FMouseSelecting: boolean;
   protected
     procedure WndProc(var TheMessage : TLMessage); override;
     procedure KeyDown(var Key : Word; Shift : TShiftState); override;
-    procedure MouseDown(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); override;
-    procedure Change; override;
     procedure DropDown; override;
     procedure CloseUp; override;
+    procedure Select; override;
     procedure msg_GetValue(var Msg: TGridMessage); message GM_GETVALUE;
     procedure msg_SetGrid(var Msg: TGridMessage); message GM_SETGRID;
     procedure msg_SetValue(var Msg: TGridMessage); message GM_SETVALUE;
@@ -6061,7 +6059,6 @@ begin
   FPicklistEditor := TPickListCellEditor.Create(nil);
   FPickListEditor.Name := 'PickListEditor';
   FPickListEditor.Visible := False;
-  FPickListEditor.OnSelect := @PickListItemSelected;
 
   FFastEditing := True;
   TabStop := True;
@@ -8181,13 +8178,6 @@ begin
   {$Endif}
 end;
 
-procedure TPickListCellEditor.MouseDown(Button: TMouseButton;
-  Shift: TShiftState; X, Y: Integer);
-begin
-  inherited MouseDown(Button, Shift, X, Y);
-  FMouseSelecting:=True;
-end;
-
 procedure TPickListCellEditor.EditingDone;
 begin
   {$ifdef dbgGrid}DebugLn('TPickListCellEditor.EditingDone INIT');{$ENDIF}
@@ -8195,27 +8185,6 @@ begin
   if FGrid<>nil then
     FGrid.EditingDone;
   {$ifdef dbgGrid}DebugLn('TPickListCellEditor.EditingDone DONE');{$ENDIF}
-end;
-
-procedure TPickListCellEditor.Change;
-begin
-  inherited Changed;
-  if FGrid<>nil then begin
-    {$ifdef dbgGrid}
-    DebugLn('TPickListCellEditor.Change: Text=', Text);
-    {$endif}
-    if FMouseSelecting then begin
-      // usually editor.change doesn't mean the editor is really
-      // modified (for example when selecting using the keyboard
-      // but when selecting with the mouse, editor.change is the
-      // only way I found to detect that the user actually changed
-      // something
-      FMouseSelecting := False;
-      if FGrid.EditorIsReadOnly then
-        exit
-    end;
-    FGrid.SetEditText(FGrid.Col, FGrid.Row, Text);
-  end;
 end;
 
 procedure TPickListCellEditor.DropDown;
@@ -8230,6 +8199,17 @@ begin
   {$ifDef dbgGrid} DebugLn('TPickListCellEditor.CloseUp INIT'); {$Endif}
   inherited CloseUp;
   {$ifDef dbgGrid} DebugLn('TPickListCellEditor.CloseUp DONE'); {$Endif}
+end;
+
+procedure TPickListCellEditor.Select;
+begin
+  if FGrid<>nil then begin
+    if FGrid.EditorIsReadOnly then
+      exit;
+    FGrid.SetEditText(FGrid.Col, FGrid.Row, Text);
+    FGrid.PickListItemSelected(Self);
+  end;
+  inherited Select;
 end;
 
 procedure TPickListCellEditor.msg_GetValue(var Msg: TGridMessage);
