@@ -196,6 +196,7 @@ begin
     Caption := GetCaptionOfKind(fKind);
     ModalResult := BitBtnModalResults[FKind];
     Default := FKind in [bkOk,bkYes];
+    Cancel := FKind = bkCancel;
   end;
 end;
 
