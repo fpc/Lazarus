@@ -239,7 +239,7 @@ begin
       if not FormEditingHook.GetDefaultComponentPosition(TypeClass,ParentCI,X,Y)
       then exit;
       //debugln('TComponentPalette.ComponentBtnDblClick ',dbgsName(Sender),' ',dbgs(X),',',dbgs(Y));
-      CompIntf:=FormEditingHook.CreateComponent(ParentCI,TypeClass,X,Y,0,0);
+      CompIntf:=FormEditingHook.CreateComponent(ParentCI,TypeClass,'',X,Y,0,0);
       if CompIntf<>nil then begin
         GlobalDesignHook.PersistentAdded(CompIntf.Component,true);
       end;

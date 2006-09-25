@@ -198,9 +198,10 @@ each control that's dropped onto the form
     Function GetDefaultComponentPosition(TypeClass: TComponentClass;
                                          ParentCI: TIComponentInterface;
                                          var X,Y: integer): boolean; override;
-    Function CreateComponent(ParentCI : TIComponentInterface;
+    function CreateComponent(ParentCI: TIComponentInterface;
                              TypeClass: TComponentClass;
-                             X,Y,W,H : Integer): TIComponentInterface; override;
+                             const AUnitName: shortstring;
+                             X,Y,W,H: Integer): TIComponentInterface; override;
     Function CreateComponentFromStream(BinStream: TStream;
                        AncestorType: TComponentClass;
                        const NewUnitName: ShortString;
@@ -210,7 +211,7 @@ each control that's dropped onto the form
                        ParentControl: TWinControl): TIComponentInterface; override;
     Procedure SetComponentNameAndClass(CI: TIComponentInterface;
       const NewName, NewClassName: shortstring);
-      
+
     // define properties
     procedure FindDefineProperty(const APersistentClassName,
                                  AncestorClassName, Identifier: string;
@@ -1210,7 +1211,8 @@ begin
 end;
 
 Function TCustomFormEditor.CreateComponent(ParentCI: TIComponentInterface;
-  TypeClass: TComponentClass;  X,Y,W,H: Integer): TIComponentInterface;
+  TypeClass: TComponentClass; const AUnitName: shortstring; X,Y,W,H: Integer
+  ): TIComponentInterface;
 Var
   Temp: TComponentInterface;
   NewJITIndex: Integer;
@@ -1223,6 +1225,7 @@ Var
   AParent: TWinControl;
   NewComponentName: String;
   DesignForm: TCustomForm;
+  NewUnitName: String;
 Begin
   Result:=nil;
   Temp:=nil;
@@ -1281,10 +1284,14 @@ Begin
     end else begin
       // create a toplevel component
       // -> a form or a datamodule or a custom component
+      if AUnitName='' then
+        NewUnitName:=DefaultJITUnitName
+      else
+        NewUnitName:=AUnitName;
       JITList:=GetJITListOfType(TypeClass);
       if JITList=nil then
         RaiseException('TCustomFormEditor.CreateComponent '+TypeClass.ClassName);
-      NewJITIndex := JITList.AddNewJITComponent(DefaultJITUnitName,TypeClass);
+      NewJITIndex := JITList.AddNewJITComponent(NewUnitName,TypeClass);
       if NewJITIndex >= 0 then
         // create component interface
         Temp := TComponentInterface.Create(JITList[NewJITIndex])

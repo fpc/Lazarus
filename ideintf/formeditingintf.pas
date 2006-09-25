@@ -102,6 +102,7 @@ type
                                          var X,Y: integer): boolean; virtual; abstract;
     function CreateComponent(ParentCI: TIComponentInterface;
                              TypeClass: TComponentClass;
+                             const AUnitName: shortstring;
                              X,Y,W,H: Integer): TIComponentInterface; virtual; abstract;
     function CreateComponentFromStream(BinStream: TStream;
                              AncestorType: TComponentClass;

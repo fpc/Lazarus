@@ -3770,7 +3770,7 @@ begin
   // create jit component
   CInterface := TComponentInterface(
     FormEditor1.CreateComponent(nil,TComponentClass(AncestorType),
-      new_x, new_y, 400,300));
+      NewUnitInfo.CreateUnitName, new_x, new_y, 400,300));
   FormEditor1.SetComponentNameAndClass(CInterface,
     NewUnitInfo.ComponentName,'T'+NewUnitInfo.ComponentName);
   NewComponent:=CInterface.Component;

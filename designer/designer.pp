@@ -1452,8 +1452,8 @@ var
 
     // create component and component interface
     NewCI := TComponentInterface(TheFormEditor.CreateComponent(
-       ParentCI,SelectedCompClass.ComponentClass
-      ,NewLeft,NewTop,NewWidth,NewHeight));
+       ParentCI,SelectedCompClass.ComponentClass,'',
+       NewLeft,NewTop,NewWidth,NewHeight));
     if NewCI=nil then exit;
     NewComponent:=NewCI.Component;
 
