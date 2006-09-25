@@ -3963,7 +3963,6 @@ begin
         Result:=mrOk;
       end;
     end else begin
-
       if EnvironmentOptions.CharcaseFileAction = ccfaAutoRename then
         NewFileName:=ExtractFilePath(NewFilename)+lowercase(FileWithoutPath);
     end;
@@ -4437,11 +4436,14 @@ begin
     CodeToolBoss.SaveBufferAs(ResourceCode,NewResFilename,ResourceCode);
     if ResourceCode<>nil then
       AnUnitInfo.ResourceFileName:=ResourceCode.Filename;
+    if (AnUnitInfo.Component<>nil) then
+      FormEditor1.RenameJITComponentUnitname(AnUnitInfo.Component,NewUnitName);
 
     {$IFDEF IDE_DEBUG}
     writeln('TMainIDE.DoRenameUnit C ',ResourceCode<>nil);
     writeln('   NewResFilePath="',NewResFilePath,'" NewResFilename="',NewResFilename,'"');
     if ResourceCode<>nil then writeln('*** ResourceFileName ',ResourceCode.Filename);
+    if AnUnitInfo.Component<>nil then writeln('*** AnUnitInfo.Component ',dbgsName(AnUnitInfo.Component),' ClassUnitname=',GetClassUnitName(AnUnitInfo.Component.ClassType));
     {$ENDIF}
   end else begin
     NewResFilename:='';

@@ -102,6 +102,8 @@ type
       var OldCode: Pointer); // Note: RemoveMethod does not free code memory
     procedure DoRenameMethod(JITClass: TClass; OldName, NewName: ShortString);
     procedure DoRenameClass(JITClass: TClass; const NewName: ShortString);
+    procedure DoRenameUnitNameOfClass(JITClass: TClass;
+                                      const NewUnitName: ShortString);
     // TReader events
     procedure ReaderFindMethod(Reader: TReader; const FindMethodName: Ansistring;
       var Address: Pointer; var Error: Boolean);
@@ -155,6 +157,8 @@ type
                            const OldName, NewName: ShortString);
     procedure RenameComponentClass(JITComponent: TComponent;
                                    const NewName: ShortString);
+    procedure RenameComponentUnitname(JITComponent: TComponent;
+                                      const NewUnitName: ShortString);
     // child components
     function AddJITChildComponentFromStream(JITOwnerComponent: TComponent;
       BinStream: TStream; ComponentClass: TComponentClass;
@@ -202,6 +206,11 @@ function ClassAsString(AClass: TClass): string;
 function ClassMethodTableAsString(AClass: TClass): string;
 function ClassTypeInfoAsString(AClass: TClass): string;
 function ClassFieldTableAsString(AClass: TClass): string;
+
+function CalculateTypeDataSize(PropInfoCount: integer): integer;
+function CalculateTypeInfoSize(const AClassName: shortstring;
+                               PropInfoCount: integer): integer;
+function GetTypeDataPropCountAddr(TypeData: PTypeData): PWord;
 
 const
   DefaultJITUnitName = 'VirtualUnitForJITClasses';
@@ -490,6 +499,37 @@ begin
     {$endif FPC_REQUIRES_PROPER_ALIGNMENT}
   end;
   Result := Result+'}';
+end;
+
+function CalculateTypeDataSize(PropInfoCount: integer): integer;
+begin
+  Result := SizeOf(TTypeData) + 2; // TTypeData + one word for new prop count
+  // Actually the size depends on the UnitName. But SizeOf(TTypeData) already
+  // uses the maximum size of the shortstring.
+  {$ifdef FPC_REQUIRES_PROPER_ALIGNMENT}
+  if Result and (SizeOf(Pointer) - 1) <> 0 then
+    Inc(Result, SizeOf(Pointer)); // a few bytes too much, but at least enough
+  {$endif}
+  inc(Result,PropInfoCount*SizeOf(TPropInfo));
+end;
+
+function GetTypeDataPropCountAddr(TypeData: PTypeData): PWord;
+begin
+  Result:=PWord(@(TypeData^.UnitName)+Length(TypeData^.UnitName)+1);
+  {$ifdef FPC_REQUIRES_PROPER_ALIGNMENT}
+  Result := Align(Result, SizeOf(Pointer));
+  {$endif}
+end;
+
+function CalculateTypeInfoSize(const AClassName: shortstring;
+  PropInfoCount: integer): integer;
+begin
+  Result := SizeOf(TTypeKind) + 1 + length(AClassName)
+           + CalculateTypeDataSize(PropInfoCount);
+  {$warnings off}
+  if SizeOf(TTypeKind)<>1 then
+    raise Exception.Create('CalculateTypeInfoSize SizeOf(TTypeInfo^.Kind)<>1');
+  {$warnings on}
 end;
 
 //------------------------------------------------------------------------------
@@ -830,6 +870,22 @@ begin
   DoRenameClass(JITComponent.ClassType,NewName);
 end;
 
+procedure TJITComponentList.RenameComponentUnitname(JITComponent: TComponent;
+  const NewUnitName: ShortString);
+begin
+  {$IFDEF VerboseJITForms}
+  writeln('TJITComponentList.RenameComponentUnitname ',JITComponent.Name,':',JITComponent.Name,' New=',NewUnitName);
+  {$ENDIF}
+  if JITComponent=nil then
+    raise Exception.Create('TJITComponentList.RenameComponentUnitname JITComponent=nil');
+  if IndexOf(JITComponent)<0 then
+    raise Exception.Create('TJITComponentList.RenameComponentUnitname JITComponent.ClassName='+
+      JITComponent.ClassName);
+  if (NewUnitName='') or (not IsValidIdent(NewUnitName)) then
+    raise Exception.Create('TJITComponentList.RenameComponentUnitname invalid name: "'+NewUnitName+'"');
+  DoRenameUnitNameOfClass(JITComponent.ClassType,NewUnitName);
+end;
+
 function TJITComponentList.AddJITChildComponentFromStream(
   JITOwnerComponent: TComponent; BinStream: TStream;
   ComponentClass: TComponentClass; ParentControl: TWinControl): TComponent;
@@ -941,7 +997,6 @@ var
   NewTypeInfo: PTypeInfo;
   NewTypeData: PTypeData;
   TypeInfoSize: Integer;
-  TypeDataSize: Integer;
   AddedPropCount: PWord;
   vmtSize: Integer;
   vmtTailSize: Integer;
@@ -988,16 +1043,7 @@ begin
   NewFieldTable^.ClassTable:=NewClassTable;
 
   // set vmtTypeInfo
-  TypeDataSize := SizeOf(TTypeData) + 2; // TTypeData + one word for new prop count
-  {$ifdef FPC_REQUIRES_PROPER_ALIGNMENT}
-  if TypeDataSize and (SizeOf(Pointer) - 1) <> 0
-  then Inc(TypeDataSize, SizeOf(Pointer)); // a few bytes to much, but atleast enough 
-  {$endif}
-  TypeInfoSize := SizeOf(TTypeKind) + 1 + length(NewClassName) + TypeDataSize;
-  {$warnings off}
-  if SizeOf(TTypeKind)<>1 then
-    raise Exception.Create('CreateNewClass SizeOf(TTypeInfo^.Kind)<>1');
-  {$warnings on}
+  TypeInfoSize := CalculateTypeInfoSize(NewClassName,0);
   GetMem(NewTypeInfo,TypeInfoSize);
   FillChar(NewTypeInfo^,TypeInfoSize,0);
   Pointer(Pointer(NewVMT+vmtTypeInfo)^):=NewTypeInfo;
@@ -1015,10 +1061,7 @@ begin
   NewTypeData^.ParentInfo:=ParentClass.ClassInfo;
   NewTypeData^.PropCount:=GetTypeData(NewTypeData^.ParentInfo)^.PropCount;
   NewTypeData^.UnitName:=NewUnitName;
-  AddedPropCount:=PWord(@(NewTypeData^.UnitName)+Length(NewTypeData^.UnitName)+1);
-  {$ifdef FPC_REQUIRES_PROPER_ALIGNMENT}
-  AddedPropCount := Align(AddedPropCount, SizeOf(Pointer));
-  {$endif}
+  AddedPropCount:=GetTypeDataPropCountAddr(NewTypeData);
   AddedPropCount^:=0;
 
   // copy the standard methods
@@ -1192,6 +1235,25 @@ begin
     +''' NewName='''+NewName+''' ');
   {$ENDIF}
   PShortString((Pointer(JITClass)+vmtClassName)^)^:=NewName;
+end;
+
+procedure TJITComponentList.DoRenameUnitNameOfClass(JITClass: TClass;
+  const NewUnitName: ShortString);
+var
+  TypeInfo: PTypeInfo;
+  TypeData: PTypeData;
+  OldPropCount: Word;
+begin
+  TypeInfo:=PTypeInfo(JITClass.ClassInfo);
+  if TypeInfo=nil then
+    RaiseException('TJITComponentList.DoRenameUnitNameOfClass');
+  TypeData:=GetTypeData(TypeInfo);
+  //DebugLn(['TJITComponentList.DoRenameUnitNameOfClass Old=',TypeData^.UnitName,' New=',NewUnitName]);
+  OldPropCount:=GetTypeDataPropCountAddr(TypeData)^;
+  if OldPropCount<>0 then
+    RaiseGDBException('TJITComponentList.DoRenameUnitNameOfClass TODO: move properties and realloc mem');
+  TypeData^.UnitName:=NewUnitName;
+  GetTypeDataPropCountAddr(TypeData)^:=OldPropCount;
 end;
 
 //------------------------------------------------------------------------------
