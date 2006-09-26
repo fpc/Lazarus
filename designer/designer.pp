@@ -160,7 +160,7 @@ type
     procedure MarkPersistentForDeletion(APersistent: TPersistent);
     function PersistentIsMarkedForDeletion(APersistent: TPersistent): boolean;
     function GetSelectedComponentClass: TRegisteredComponent;
-    procedure NudgeControl(DiffX, DiffY: Integer);
+    procedure NudgePosition(DiffX, DiffY: Integer);
     procedure NudgeSize(DiffX, DiffY: Integer);
     procedure SelectParentOfSelection;
     function DoCopySelectionToClipboard: boolean;
@@ -499,14 +499,15 @@ Begin
   Inherited Destroy;
 end;
 
-procedure TDesigner.NudgeControl(DiffX, DiffY : Integer);
+procedure TDesigner.NudgePosition(DiffX, DiffY : Integer);
 begin
   {$IFDEF VerboseDesigner}
-  DebugLn('[TDesigner.NudgeControl]');
+  DebugLn('[TDesigner.NudgePosition]');
   {$ENDIF}
   if (ControlSelection.SelectionForm<>Form)
   or ControlSelection.LookupRootSelected then exit;
   ControlSelection.MoveSelection(DiffX, DiffY);
+  Modified;
 end;
 
 procedure TDesigner.NudgeSize(DiffX, DiffY: Integer);
@@ -517,6 +518,7 @@ begin
   if (ControlSelection.SelectionForm<>Form)
   or ControlSelection.LookupRootSelected then exit;
   ControlSelection.SizeSelection(DiffX, DiffY);
+  Modified;
 end;
 
 procedure TDesigner.SelectParentOfSelection;
@@ -1772,25 +1774,25 @@ Begin
 
     VK_UP:
       if (ssCtrl in Shift) then
-        NudgeControl(0,-1)
+        NudgePosition(0,-1)
       else if (ssShift in Shift) then
         NudgeSize(0,-1);
 
     VK_DOWN:
       if (ssCtrl in Shift) then
-        NudgeControl(0,1)
+        NudgePosition(0,1)
       else if (ssShift in Shift) then
         NudgeSize(0,1);
 
     VK_RIGHT:
       if (ssCtrl in Shift) then
-        NudgeControl(1,0)
+        NudgePosition(1,0)
       else if (ssShift in Shift) then
         NudgeSize(1,0);
 
     VK_LEFT:
       if (ssCtrl in Shift) then
-        NudgeControl(-1,0)
+        NudgePosition(-1,0)
       else if (ssShift in Shift) then
         NudgeSize(-1,0);
 
