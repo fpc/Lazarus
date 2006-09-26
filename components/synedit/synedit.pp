@@ -2798,13 +2798,61 @@ var
   tmp: TSynEditCodeFoldType;
 
   procedure DrawMark(iMark: integer);
+  {$IFDEF SYN_LAZARUS}
+  var
+    iLine: integer;
+    itop : Longint;
+    CurMark: TSynEditMark;
+  begin
+    iTop := 0;
+    CurMark:=Marks[iMark];
+    if (CurMark.Line>LastLine) or (CurMark.Line<FirstLine)
+    or (CurMark.Line<1) or (CurMark.Line>Lines.Count) then
+      exit;
+    if TSynEditStringList(fLines).Folded[CurMark.Line-1] then
+      exit;
+    iLine := RowToScreenRow(CurMark.Line);
+
+    if Assigned(fBookMarkOpt.BookmarkImages) and not CurMark.InternalImage
+    then begin
+      if (CurMark.ImageIndex <= fBookMarkOpt.BookmarkImages.Count) then begin
+        if CurMark.IsBookmark = BookMarkOptions.DrawBookmarksFirst then
+          aGutterOffs^[iLine] := 0
+        else if aGutterOffs^[iLine] = 0 then
+          aGutterOffs^[iLine] := fBookMarkOpt.XOffset;
+        if Gutter.ShowCodeFolding then
+          inc(aGutterOffs^[iLine],Gutter.CodeFoldingWidth);
+        if fTextHeight > fBookMarkOpt.BookmarkImages.Height then
+          iTop := (fTextHeight - fBookMarkOpt.BookmarkImages.Height) div 2;
+        with fBookMarkOpt do
+          BookmarkImages.Draw(Canvas, LeftMargin + aGutterOffs^[iLine],
+                           iTop + iLine * fTextHeight, CurMark.ImageIndex,true);
+
+        Inc(aGutterOffs^[iLine], fBookMarkOpt.XOffset);
+      end;
+    end else
+    begin
+      if CurMark.ImageIndex in [0..9] then begin
+        if not Assigned(fInternalImage) then begin
+          fInternalImage := TSynInternalImage.Create('SynEditInternalImages',10);
+        end;
+        if (aGutterOffs^[iLine]=0) and Gutter.ShowCodeFolding then
+          aGutterOffs^[iLine]:=Gutter.CodeFoldingWidth;
+        fInternalImage.DrawMark(Canvas, CurMark.ImageIndex,
+            fBookMarkOpt.LeftMargin + aGutterOffs^[iLine], iLine * fTextHeight,
+            fTextHeight);
+        Inc(aGutterOffs^[iLine], fBookMarkOpt.XOffset);
+      end;
+    end;
+  end;
+  {$ELSE below: not SYN_LAZARUS}
   var
     iLine: integer;
     itop : Longint;
   begin
     iTop := 0;
-    if Assigned(fBookMarkOpt.BookmarkImages) and not Marks[i].InternalImage then
-    begin
+    if Assigned(fBookMarkOpt.BookmarkImages) and not Marks[i].InternalImage
+    then begin
       if Marks[iMark].ImageIndex <= fBookMarkOpt.BookmarkImages.Count then begin
         iLine := Marks[iMark].Line - TopLine;
 //        if Marks[iMark].IsBookmark then
@@ -2828,12 +2876,12 @@ var
           fInternalImage := TSynInternalImage.Create('SynEditInternalImages',
             10);
         end;
-        if not TSynEditStringList(fLines).Folded[iLine] then
-          fInternalImage.DrawMark(Canvas, Marks[iMark].ImageIndex, fBookMarkOpt.LeftMargin + aGutterOffs^[iLine], iLine * fTextHeight, fTextHeight);
+        fInternalImage.DrawMark(Canvas, Marks[iMark].ImageIndex, fBookMarkOpt.LeftMargin + aGutterOffs^[iLine], iLine * fTextHeight, fTextHeight);
         Inc(aGutterOffs^[iLine], fBookMarkOpt.XOffset);
       end;
     end;
   end;
+  {$ENDIF}
 
   procedure DrawNodeBox(rcCodeFold: TRect; Collapsed: boolean);
   const cNodeOffset = 3;
@@ -2930,9 +2978,9 @@ begin
         // next line rect
         rcLine.Top := rcLine.Bottom;
         // erase the background and draw the line number string in one go
-        s := fGutter.FormatLineNumber(iLine);
         {$IFDEF SYN_LAZARUS}
         if not TSynEditStringList(fLines).Folded[iLine] then begin
+          s := fGutter.FormatLineNumber(iLine);
           Inc(rcLine.Bottom, fTextHeight);
           if fGutter.ShowCodeFolding then
             fTextDrawer.ExtTextOut(fGutter.LeftOffset + fGutter.CodeFoldingWidth,
@@ -2942,6 +2990,7 @@ begin
                        rcLine.Top, ETO_OPAQUE,rcLine,PChar(S),Length(S));
         end;
         {$ELSE}
+        s := fGutter.FormatLineNumber(iLine);
         Inc(rcLine.Bottom, fTextHeight);
         Windows.ExtTextOut(DC, fGutter.LeftOffset, rcLine.Top, ETO_OPAQUE,
           @rcLine, PChar(s), Length(s), nil);
