@@ -1960,15 +1960,28 @@ end;
 
 procedure TControl.ForeignAnchorSideChanged(TheAnchorSide: TAnchorSide;
   Operation: TAnchorSideChangeOperation);
+var
+  Side: TAnchorKind;
+  AControl: TControl;
 begin
+  AControl:=TheAnchorSide.Owner;
   //debugln('TControl.ForeignAnchorSideChanged A ',DbgSName(TheAnchorSide.Owner),' Operation=',dbgs(ord(Operation)),' Anchor=',dbgs(ord(TheAnchorSide.Kind)));
   if TheAnchorSide.Control=Self then begin
     if fAnchoredControls=nil then
       fAnchoredControls:=TFPList.Create;
-    if fAnchoredControls.IndexOf(TheAnchorSide.Owner)<0 then
-      fAnchoredControls.Add(TheAnchorSide.Owner);
+    if fAnchoredControls.IndexOf(AControl)<0 then
+      fAnchoredControls.Add(AControl);
   end else if fAnchoredControls<>nil then begin
-    fAnchoredControls.Remove(TheAnchorSide.Owner);
+    if TheAnchorSide.Owner<>nil then begin
+      for Side:=Low(TAnchorKind) to High(TAnchorKind) do begin
+        if (AControl.FAnchorSides[Side]<>nil)
+        and (AControl.FAnchorSides[Side].Control=Self) then begin
+          // still anchored
+          exit;
+        end;
+      end;
+    end;
+    fAnchoredControls.Remove(AControl);
   end;
 end;
 
