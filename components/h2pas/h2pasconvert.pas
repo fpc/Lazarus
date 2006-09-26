@@ -1409,7 +1409,7 @@ end;
 
 { TRemoveCPlusPlusExternCTool }
 
-function TRemoveCPlusPlusExternCTool.ClassDescription: string;
+class function TRemoveCPlusPlusExternCTool.ClassDescription: string;
 begin
   Result:='Remove C++ ''extern "C"'' lines';
 end;
@@ -1441,7 +1441,7 @@ end;
 
 { TRemoveEmptyCMacrosTool }
 
-function TRemoveEmptyCMacrosTool.ClassDescription: string;
+class function TRemoveEmptyCMacrosTool.ClassDescription: string;
 begin
   Result:='Remove empty C macros';
 end;
@@ -1560,7 +1560,7 @@ end;
 
 { TReplaceMacro0PointerWithNULL }
 
-function TReplaceMacro0PointerWithNULL.ClassDescription: string;
+class function TReplaceMacro0PointerWithNULL.ClassDescription: string;
 begin
   Result:='Replace macro values 0 pointer like (char *)0 with NULL';
 end;
@@ -1593,7 +1593,7 @@ end;
 
 { TReplaceEdgedBracketPairWithStar }
 
-function TReplaceEdgedBracketPairWithStar.ClassDescription: string;
+class function TReplaceEdgedBracketPairWithStar.ClassDescription: string;
 begin
   Result:='Replace [] with *';
 end;
@@ -1607,7 +1607,7 @@ end;
 
 { TReplaceUnitFilenameWithUnitName }
 
-function TReplaceUnitFilenameWithUnitName.ClassDescription: string;
+class function TReplaceUnitFilenameWithUnitName.ClassDescription: string;
 begin
   Result:='Replace "unit filename;" with "unit name;"';
 end;
@@ -1622,7 +1622,7 @@ end;
 
 { TRemoveSystemTypes }
 
-function TRemoveSystemTypes.ClassDescription: string;
+class function TRemoveSystemTypes.ClassDescription: string;
 begin
   Result:='Remove type redefinitons like PLongint';
 end;
@@ -1655,7 +1655,7 @@ end;
 
 { TRemoveRedefinedPointerTypes }
 
-function TRemoveRedefinedPointerTypes.ClassDescription: string;
+class function TRemoveRedefinedPointerTypes.ClassDescription: string;
 begin
   Result:='Remove redefined pointer types';
 end;
@@ -1700,7 +1700,7 @@ end;
 
 { TRemoveEmptyTypeVarConstSections }
 
-function TRemoveEmptyTypeVarConstSections.ClassDescription: string;
+class function TRemoveEmptyTypeVarConstSections.ClassDescription: string;
 begin
   Result:='Remove empty type/var/const sections';
 end;
