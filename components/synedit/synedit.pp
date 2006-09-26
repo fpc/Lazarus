@@ -5961,7 +5961,8 @@ function TCustomSynEdit.ScanFrom(Index: integer
       FoldStart:=i;
       while (FoldStart>0) and SLines.Folded[FoldStart] do
         dec(FoldStart);
-      FoldLevel:=SLines.FoldMinLevel[FoldStart];
+      FoldLevel:=SLines.FoldEndLevel[FoldStart];
+      //DebugLn(['CheckFolded First FoldStart=',FoldStart,' FoldLevel=',FoldLevel,' Line="',Lines[FoldStart],'"']);
     end else begin
       FoldStart:=-1;
       FoldLevel:=0;
@@ -5981,6 +5982,7 @@ function TCustomSynEdit.ScanFrom(Index: integer
             // => unfolded block must continue
             SLines.Folded[i]:=false;
             FoldLevel:=0;
+            //DebugLn(['CheckFolded Change A Folded of line ',i,' to FoldStart=',FoldStart,' FoldLevel=',FoldLevel,' Line="',Lines[i],'" SLines.Folded[i]=',SLines.Folded[i]]);
           end;
         end;
       end else begin
@@ -5992,12 +5994,14 @@ function TCustomSynEdit.ScanFrom(Index: integer
             FoldStart:=i;
             FoldLevel:=SLines.FoldMinLevel[FoldStart];
             SLines.Folded[i]:=false;
+            //DebugLn(['CheckFolded Change B Folded of line ',i,' to FoldStart=',FoldStart,' FoldLevel=',FoldLevel,' Line="',Lines[i],'" SLines.Folded[i]=',SLines.Folded[i]]);
           end;
         end else begin
           // this line was not folded
           if (i>0) and (SLines.FoldEndLevel[i-1]>=FoldLevel) then begin
             // current folded block must be continued
             SLines.Folded[i]:=true;
+            //DebugLn(['CheckFolded Change C Folded of line ',i,' to FoldStart=',FoldStart,' FoldLevel=',FoldLevel,' Line="',Lines[i],'" SLines.Folded[i]=',SLines.Folded[i]]);
           end;
         end;
       end;
