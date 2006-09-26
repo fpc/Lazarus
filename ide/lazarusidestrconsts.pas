@@ -946,7 +946,7 @@ resourcestring
   dlgDoubleClickLine = 'Double click line';
   dlgFindTextatCursor = 'Find text at cursor';
   dlgUseSyntaxHighlight = 'Use syntax highlight';
-  dlgUseCodeFolding = 'Code folding (experimental)';
+  dlgUseCodeFolding = 'Code folding';
   dlgCopyWordAtCursorOnCopyNone = 'Copy word on copy none';
   dlgHomeKeyJumpsToNearestStart = 'Home key jumps to nearest start';
   dlgBlockIndent = 'Block indent';

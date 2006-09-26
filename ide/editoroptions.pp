@@ -1311,7 +1311,7 @@ begin
       'EditorOptions/General/Editor/UseSyntaxHighlight', True);
     FUseCodeFolding :=
       XMLConfig.GetValue(
-      'EditorOptions/General/Editor/UseCodeFolding', False);
+      'EditorOptions/General/Editor/UseCodeFolding', True);
     fBlockIndent :=
       XMLConfig.GetValue('EditorOptions/General/Editor/BlockIndent', 2);
     fUndoLimit :=
@@ -1437,7 +1437,7 @@ begin
     XMLConfig.SetDeleteValue('EditorOptions/General/Editor/UseSyntaxHighlight'
       , fUseSyntaxHighlight, True);
     XMLConfig.SetDeleteValue('EditorOptions/General/Editor/UseCodeFolding'
-      , FUseCodeFolding, False);
+      , FUseCodeFolding, True);
     XMLConfig.SetDeleteValue('EditorOptions/General/Editor/BlockIndent'
       , fBlockIndent, 2);
     XMLConfig.SetDeleteValue('EditorOptions/General/Editor/UndoLimit'

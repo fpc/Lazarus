@@ -431,7 +431,6 @@ var
   NewUnitDirectory: String;
   DefaultTargetOS: string;
   DefaultTargetCPU: string;
-  TargetDirectoryIsWritable: Boolean;
 begin
   Result:=mrOk;
   CurItem:=Options.Items[ItemIndex];
