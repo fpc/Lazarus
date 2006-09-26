@@ -2985,8 +2985,8 @@ begin
         if not TSynEditStringList(fLines).Folded[iLine] then begin
           s := fGutter.FormatLineNumber(iLine);
           Inc(rcLine.Bottom, fTextHeight);
-          fTextDrawer.ExtTextOut(fGutter.LeftOffset + CodeFoldOffset,
-                       rcLine.Top, ETO_OPAQUE,rcLine,PChar(S),Length(S));
+          fTextDrawer.ExtTextOut(CodeFoldOffset+fGutter.LeftOffset,
+                         rcLine.Top, ETO_OPAQUE,rcLine,PChar(S),Length(S));
         end;
         {$ELSE}
         s := fGutter.FormatLineNumber(iLine);

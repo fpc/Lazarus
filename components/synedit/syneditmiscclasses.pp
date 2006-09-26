@@ -353,7 +353,8 @@ begin
   else
     Result := fWidth;
 
-  if fShowCodeFolding then Result := Result + CodeFoldingWidth;
+  if fShowCodeFolding then
+    Result := Result + CodeFoldingWidth;
 end;
 
 procedure TSynGutter.SetAutoSize(const Value: boolean);
