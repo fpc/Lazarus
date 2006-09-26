@@ -2796,6 +2796,7 @@ var
   dc: HDC;
   rcCodeFold: TRect;
   tmp: TSynEditCodeFoldType;
+  CodeFoldOffset: Integer;
 
   procedure DrawMark(iMark: integer);
   {$IFDEF SYN_LAZARUS}
@@ -2817,18 +2818,16 @@ var
     then begin
       if (CurMark.ImageIndex <= fBookMarkOpt.BookmarkImages.Count) then begin
         if CurMark.IsBookmark = BookMarkOptions.DrawBookmarksFirst then
-          aGutterOffs^[iLine] := 0
+          aGutterOffs^[iLine] := CodeFoldOffset
         else if aGutterOffs^[iLine] = 0 then
-          aGutterOffs^[iLine] := fBookMarkOpt.XOffset;
-        if Gutter.ShowCodeFolding then
-          inc(aGutterOffs^[iLine],Gutter.CodeFoldingWidth);
+          aGutterOffs^[iLine] := fBookMarkOpt.BookmarkImages.Width + CodeFoldOffset;
         if fTextHeight > fBookMarkOpt.BookmarkImages.Height then
           iTop := (fTextHeight - fBookMarkOpt.BookmarkImages.Height) div 2;
         with fBookMarkOpt do
           BookmarkImages.Draw(Canvas, LeftMargin + aGutterOffs^[iLine],
                            iTop + iLine * fTextHeight, CurMark.ImageIndex,true);
 
-        Inc(aGutterOffs^[iLine], fBookMarkOpt.XOffset);
+        Inc(aGutterOffs^[iLine], fBookMarkOpt.BookmarkImages.Width);
       end;
     end else
     begin
@@ -2841,7 +2840,7 @@ var
         fInternalImage.DrawMark(Canvas, CurMark.ImageIndex,
             fBookMarkOpt.LeftMargin + aGutterOffs^[iLine], iLine * fTextHeight,
             fTextHeight);
-        Inc(aGutterOffs^[iLine], fBookMarkOpt.XOffset);
+        Inc(aGutterOffs^[iLine], fBookMarkOpt.BookmarkImages.Width);
       end;
     end;
   end;
@@ -2959,6 +2958,10 @@ begin
   dc := Canvas.Handle;
   {$IFDEF SYN_LAZARUS}
   LCLIntf.SetBkColor(dc,Canvas.Brush.Color);
+  if Gutter.ShowCodeFolding then
+    CodeFoldOffset:=Gutter.CodeFoldingWidth
+  else
+    CodeFoldOffset:=0;
   {$ENDIF}
   if fGutter.ShowLineNumbers then begin
     fTextDrawer.BeginDrawing(dc);
@@ -2982,11 +2985,7 @@ begin
         if not TSynEditStringList(fLines).Folded[iLine] then begin
           s := fGutter.FormatLineNumber(iLine);
           Inc(rcLine.Bottom, fTextHeight);
-          if fGutter.ShowCodeFolding then
-            fTextDrawer.ExtTextOut(fGutter.LeftOffset + fGutter.CodeFoldingWidth,
-                       rcLine.Top, ETO_OPAQUE,rcLine,PChar(S),Length(S))
-          else
-            fTextDrawer.ExtTextOut(fGutter.LeftOffset,
+          fTextDrawer.ExtTextOut(fGutter.LeftOffset + CodeFoldOffset,
                        rcLine.Top, ETO_OPAQUE,rcLine,PChar(S),Length(S));
         end;
         {$ELSE}
