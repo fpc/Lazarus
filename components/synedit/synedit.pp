@@ -2929,16 +2929,20 @@ begin
       for iLine := FirstLine to LastLine do begin
         // next line rect
         rcLine.Top := rcLine.Bottom;
-        Inc(rcLine.Bottom, fTextHeight);
         // erase the background and draw the line number string in one go
         s := fGutter.FormatLineNumber(iLine);
         {$IFDEF SYN_LAZARUS}
-        if not TSynEditStringList(fLines).Folded[iLine] then
+        if not TSynEditStringList(fLines).Folded[iLine] then begin
+          Inc(rcLine.Bottom, fTextHeight);
           if fGutter.ShowCodeFolding then
-            fTextDrawer.ExtTextOut(fGutter.LeftOffset + fGutter.CodeFoldingWidth, rcLine.Top, ETO_OPAQUE,rcLine,PChar(S),Length(S))
+            fTextDrawer.ExtTextOut(fGutter.LeftOffset + fGutter.CodeFoldingWidth,
+                       rcLine.Top, ETO_OPAQUE,rcLine,PChar(S),Length(S))
           else
-            fTextDrawer.ExtTextOut(fGutter.LeftOffset, rcLine.Top, ETO_OPAQUE,rcLine,PChar(S),Length(S));
+            fTextDrawer.ExtTextOut(fGutter.LeftOffset,
+                       rcLine.Top, ETO_OPAQUE,rcLine,PChar(S),Length(S));
+        end;
         {$ELSE}
+        Inc(rcLine.Bottom, fTextHeight);
         Windows.ExtTextOut(DC, fGutter.LeftOffset, rcLine.Top, ETO_OPAQUE,
           @rcLine, PChar(s), Length(s), nil);
         {$ENDIF}
