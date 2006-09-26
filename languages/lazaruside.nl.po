@@ -1290,8 +1290,8 @@ msgid "Code Tools"
 msgstr "Codehulpmiddelen"
 
 #: lazarusidestrconsts:dlgusecodefolding
-msgid "Code folding (experimental)"
-msgstr "Code inklappen (experimenteel)"
+msgid "Code folding"
+msgstr ""
 
 #: lazarusidestrconsts:dlgedcodeparams
 msgid "Code parameters"

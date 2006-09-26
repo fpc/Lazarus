@@ -1291,7 +1291,7 @@ msgid "Code Tools"
 msgstr "Audit de code"
 
 #: lazarusidestrconsts:dlgusecodefolding
-msgid "Code folding (experimental)"
+msgid "Code folding"
 msgstr ""
 
 #: lazarusidestrconsts:dlgedcodeparams

@@ -1293,8 +1293,8 @@ msgid "Code Tools"
 msgstr "Piranti Kode"
 
 #: lazarusidestrconsts:dlgusecodefolding
-msgid "Code folding (experimental)"
-msgstr "Pelipatan kode (eksperimental)"
+msgid "Code folding"
+msgstr ""
 
 #: lazarusidestrconsts:dlgedcodeparams
 msgid "Code parameters"
