@@ -1488,6 +1488,7 @@ end;
 procedure TCustomSynEdit.DecPaintLock;
 var
   LastLineChanged: LongInt;
+  StartY: Integer;
 begin
   if (fPaintLock=1) and HandleAllocated then begin
     {$IFDEF SYN_LAZARUS}
@@ -1499,9 +1500,16 @@ begin
         LastLineChanged:=fHighlighterNeedsUpdateEndLine;
         if Assigned(fHighlighter) then begin
           // rescan all lines in range
-          fHighlighter.SetRange(
-            TSynEditStringList(Lines).Ranges[fHighlighterNeedsUpdateStartLine-1]);
-          LastLineChanged:=ScanFrom(fHighlighterNeedsUpdateStartLine-1,
+          // Note: The highlighter range of the line can be invalid as well,
+          //       so start scan one line earlier
+          StartY:=fHighlighterNeedsUpdateStartLine-2;
+          if StartY<=0 then begin
+            StartY:=0;
+            fHighlighter.ReSetRange;
+          end else begin
+            fHighlighter.SetRange(TSynEditStringList(Lines).Ranges[StartY]);
+          end;
+          LastLineChanged:=ScanFrom(StartY,
                                     fHighlighterNeedsUpdateEndLine-1);
           //DebugLn('TCustomSynEdit.DecPaintLock ',dbgs(fHighlighterNeedsUpdateStartLine),'-',dbgs(fHighlighterNeedsUpdateEndLine),' LastLineChanged=',dbgs(LastLineChanged));
         end;
@@ -2755,6 +2763,7 @@ begin
       //debugln('expanding node: ',dbgs(iLine));
       FoldType:=cfExpanded;
     end;
+    DebugLn(['TCustomSynEdit.CodeFoldAction iLine=',iLine]);
     TSynEditStringList(fLines).FoldType[iLine] := FoldType;
     UpdateFolded(iLine);
 
@@ -5886,35 +5895,22 @@ end;
 function TCustomSynEdit.ScanFrom(Index: integer
   {$IFDEF SYN_LAZARUS}; AtLeastTilIndex: integer{$ENDIF}): integer;
 {$IFDEF SYN_LAZARUS}
-var
-  CodeFoldMinLevel: LongInt;
-  CodeFoldEndLevel: LongInt;
-  CodeFoldType: TSynEditCodeFoldType;
-  LastCodeFoldEndLevel: LongInt;
-{$ENDIF}
-begin
-  //debugln('TCustomSynEdit.ScanFrom A Index=',dbgs(Index));
-  Result := Index;
-  if Index >= Lines.Count - 1 then Exit;
-  fHighlighter.SetLine(Lines[Result], Result);
-  inc(Result);
-  fHighlighter.NextToEol;
-  while (fHighlighter.GetRange <> TSynEditStringList(Lines).Ranges[Result])
-  {$IFDEF SYN_LAZARUS}
-  or (Result<=AtLeastTilIndex)
-  {$ENDIF}
-  do begin
-    //debugln('TSynCustomHighlighter.ScanFrom WHILE ',dbgs(fHighlighter.CurrentCodeFoldBlockLevel),' ',Lines[Result]);
-    TSynEditStringList(Lines).Ranges[Result{$IFNDEF SYN_LAZARUS}-1{$ENDIF}] :=
-                                                          fHighlighter.GetRange;
-    {$IFDEF SYN_LAZARUS}
+// Index and AtLeastTilIndex are 0 based
+
+  procedure SetCodeFoldAttributes;
+  var
+    CodeFoldMinLevel: LongInt;
+    CodeFoldEndLevel: LongInt;
+    CodeFoldType: TSynEditCodeFoldType;
+    LastCodeFoldEndLevel: LongInt;
+  begin
     CodeFoldMinLevel:=fHighlighter.MinimumCodeFoldBlockLevel;
     CodeFoldEndLevel:=fHighlighter.CurrentCodeFoldBlockLevel;
     CodeFoldType:=cfNone;
     if CodeFoldEndLevel>CodeFoldMinLevel then begin
       // block started (and not closed in the same line)
       CodeFoldType:=cfExpanded;
-      //debugln('TCustomSynEdit.ScanFrom A Index=',dbgs(Index),' MinLevel=',dbgs(CodeFoldMinLevel),' EndLevel=',dbgs(CodeFoldEndLevel),' CodeFoldType=',dbgs(ord(CodeFoldType)),' ',Lines[Result-1]);
+      //debugln(['TCustomSynEdit.ScanFrom Block started Y=',Result,' MinLevel=',CodeFoldMinLevel,' EndLevel=',CodeFoldEndLevel,' CodeFoldType=',ord(CodeFoldType),' Line="',Lines[Result-1],'"']);
     end else if (Result>1) then begin
       LastCodeFoldEndLevel:=TSynEditStringList(Lines).FoldEndLevel[Result-2];
       if LastCodeFoldEndLevel>CodeFoldMinLevel then begin
@@ -5925,21 +5921,49 @@ begin
         CodeFoldType:=cfContinue;
       end;
     end;
+    //DebugLn(['TCustomSynEdit.ScanFrom CodeFoldType=',SynEditCodeFoldTypeNames[CodeFoldType],' FoldMinLevel=',CodeFoldMinLevel,' FoldEndLevel=',CodeFoldEndLevel,' Folded=',false]);
     TSynEditStringList(Lines).Folded[Result-1] := false;
     TSynEditStringList(Lines).FoldMinLevel[Result-1] := CodeFoldMinLevel;
     TSynEditStringList(Lines).FoldEndLevel[Result-1] := CodeFoldEndLevel;
     TSynEditStringList(Lines).FoldType[Result-1] := CodeFoldType;
+  end;
+{$ENDIF}
+
+begin
+  Result := Index;
+  if Index >= Lines.Count - 1 then Exit;
+  //debugln('TCustomSynEdit.ScanFrom A Index=',dbgs(Index),' Line="',Lines[Index],'"');
+  fHighlighter.SetLine(Lines[Result], Result);
+  inc(Result);
+  fHighlighter.NextToEol;
+  while (fHighlighter.GetRange <> TSynEditStringList(Lines).Ranges[Result])
+  {$IFDEF SYN_LAZARUS}
+  or (Result<=AtLeastTilIndex)
+  {$ENDIF}
+  do begin
+    //debugln(['TSynCustomHighlighter.ScanFrom WHILE Y=',Result,' Level=',fHighlighter.CurrentCodeFoldBlockLevel,' ScannedLine="',Lines[Result-1],'"']);
+    TSynEditStringList(Lines).Ranges[Result{$IFNDEF SYN_LAZARUS}-1{$ENDIF}] :=
+                                                          fHighlighter.GetRange;
+    {$IFDEF SYN_LAZARUS}
+    SetCodeFoldAttributes;
     //if (Result and $fff)=0 then
     //  debugln('TCustomSynEdit.ScanFrom A Line=', dbgs(Result),' Index=',dbgs(Index),' MinLevel=',dbgs(CodeFoldMinLevel),' EndLevel=',dbgs(CodeFoldEndLevel),' CodeFoldType=',dbgs(ord(CodeFoldType)),' ',dbgs(length(Lines[Result-1])));
     {$ENDIF}
     fHighlighter.SetLine(Lines[Result], Result);
-    //debugln('TSynCustomHighlighter.ScanFrom SetLine ',dbgs(fHighlighter.CurrentCodeFoldBlockLevel),' ',Lines[Result]);
+    //debugln(['TSynCustomHighlighter.ScanFrom SetLine Y=',Result,' Level=',fHighlighter.CurrentCodeFoldBlockLevel,' Line="',Lines[Result],'"']);
     fHighlighter.NextToEol;
-    //debugln('TSynCustomHighlighter.ScanFrom NextEOL ',dbgs(fHighlighter.CurrentCodeFoldBlockLevel));
+    //debugln(['TSynCustomHighlighter.ScanFrom NextEOL Y=',Result,' Level=',fHighlighter.CurrentCodeFoldBlockLevel]);
     inc(Result);
     if Result = Lines.Count then
       break;
   end;
+  {$IFDEF SYN_LAZARUS}
+  if (Result>Index+1) and (Result<=Lines.Count) then begin
+    // at least one line changed
+    //  => update code fold attributes of last scanned line
+    SetCodeFoldAttributes;
+  end;
+  {$ENDIF}
   Dec(Result);
 end;
 
@@ -6004,9 +6028,11 @@ begin
     if (Index > 0) then begin
 {begin}                                                                         //mh 2000-10-10
 //      fHighlighter.SetRange(Lines.Objects[Index - 1]);
+      //DebugLn(['TCustomSynEdit.ListDeleted A Index=',Index]);
       fHighlighter.SetRange(TSynEditStringList(Lines).Ranges[Index - 1]);
       ScanFrom(Index - 1);
     end else begin
+      //DebugLn(['TCustomSynEdit.ListDeleted B Index=',Index]);
       fHighlighter.ResetRange;
 //      Lines.Objects[0] := fHighlighter.GetRange;
       TSynEditStringList(Lines).Ranges[0] := fHighlighter.GetRange;
@@ -6024,9 +6050,12 @@ begin
     if (Index > 0) then begin
 {begin}                                                                         //mh 2000-10-10
 //      fHighlighter.SetRange(Lines.Objects[Index - 1]);
+      // the line and the range of the line
+      //DebugLn(['TCustomSynEdit.ListInserted A Index=',Index]);
       fHighlighter.SetRange(TSynEditStringList(Lines).Ranges[Index - 1]);
       ScanFrom(Index - 1);
     end else begin
+      //DebugLn(['TCustomSynEdit.ListInserted B Index=',Index]);
       fHighlighter.ReSetRange;
 //      Lines.Objects[0] := fHighlighter.GetRange;
       TSynEditStringList(Lines).Ranges[0] := fHighlighter.GetRange;
@@ -6040,6 +6069,7 @@ end;
 
 procedure TCustomSynEdit.ListPutted(Index: Integer);
 begin
+  //DebugLn(['TCustomSynEdit.ListPutted Index=',Index,' PaintLock=',PaintLock]);
   {$IFDEF SYN_LAZARUS}
   if PaintLock>0 then begin
     if (fHighlighterNeedsUpdateStartLine<1)

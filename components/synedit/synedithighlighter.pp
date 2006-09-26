@@ -248,7 +248,8 @@ type
     procedure Next; virtual; abstract;
     procedure NextToEol;
     procedure SetLine({$IFDEF FPC}const {$ENDIF}NewValue: String;
-                      LineNumber:Integer); virtual; {$IFNDEF SYN_LAZARUS}abstract;{$ENDIF}
+                      LineNumber:Integer // 0 based
+                      ); virtual; {$IFNDEF SYN_LAZARUS}abstract;{$ENDIF}
     procedure SetRange(Value: Pointer); virtual;
     procedure ResetRange; virtual;
     function UseUserSettings(settingIndex: integer): boolean; virtual;

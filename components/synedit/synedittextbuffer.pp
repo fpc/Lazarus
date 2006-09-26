@@ -86,6 +86,14 @@ type
   end;
 
 const
+  SynEditCodeFoldTypeNames: array[TSynEditCodeFoldType] of string = (
+    'cfNone',
+    'cfCollapsed',
+    'cfExpanded',
+    'cfContinue',
+    'cfEnd'
+    );
+
   SynEditStringRecSize = SizeOf(TSynEditStringRec);
   MaxSynEditStrings = MaxInt div SynEditStringRecSize;
 
