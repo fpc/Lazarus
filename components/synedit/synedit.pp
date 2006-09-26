@@ -703,6 +703,7 @@ type
     {$IFDEF SYN_LAZARUS}
     //code fold
     procedure CodeFoldAction(iLine: integer);
+    function FindNextUnfoldedLine(iLine: integer; Down: boolean): Integer;
     {$ENDIF}
 
     procedure AddKey(Command: TSynEditorCommand; Key1: word; SS1: TShiftState;
@@ -2694,6 +2695,7 @@ begin
   end;
 end;
 
+{$IFDEF SYN_LAZARUS}
 procedure TCustomSynEdit.CodeFoldAction(iLine: integer);
 // iLine is 1 based as parameter
 // and 0 based in the procedure below
@@ -2703,23 +2705,25 @@ procedure TCustomSynEdit.CodeFoldAction(iLine: integer);
     FoldType: TSynEditCodeFoldType;
     Level: LongInt;
     CurFoldType: TSynEditCodeFoldType;
+    SLines: TSynEditStringList;
   begin
-    FoldType:=TSynEditStringList(fLines).FoldType[iLine];
-    Level:=TSynEditStringList(fLines).FoldEndLevel[iLine];
+    SLines:=TSynEditStringList(fLines);
+    FoldType:=SLines.FoldType[iLine];
+    Level:=SLines.FoldEndLevel[iLine];
     if FoldType=cfCollapsed then begin
       // fold all lines including sub blocks
       inc(iLine);
       while (iLine<Lines.Count)
-      and (TSynEditStringList(fLines).FoldMinLevel[iLine]>=Level) do begin
+      and (SLines.FoldMinLevel[iLine]>=Level) do begin
         //debugln('UpdateFolded Fold ',dbgs(iLine),' ',Lines[iLine]);
-        TSynEditStringList(fLines).Folded[iLine]:=true;
+        SLines.Folded[iLine]:=true;
         inc(iLine);
       end;
       // fold last line of block
       if (iLine<Lines.Count)
-      and (TSynEditStringList(fLines).FoldType[iLine]=cfEnd) then begin
+      and (SLines.FoldType[iLine]=cfEnd) then begin
         //debugln('UpdateFolded Fold END ',dbgs(iLine),' ',Lines[iLine]);
-        TSynEditStringList(fLines).Folded[iLine]:=true;
+        SLines.Folded[iLine]:=true;
         inc(iLine);
       end;
     end else if FoldType=cfExpanded then begin
@@ -2727,10 +2731,10 @@ procedure TCustomSynEdit.CodeFoldAction(iLine: integer);
       // sub blocks, that are collapsed, remain collapsed
       inc(iLine);
       while (iLine<Lines.Count)
-      and (TSynEditStringList(fLines).FoldMinLevel[iLine]>=Level) do begin
+      and (SLines.FoldMinLevel[iLine]>=Level) do begin
         //debugln('UpdateFolded Expand ',dbgs(iLine),' ',Lines[iLine]);
-        TSynEditStringList(fLines).Folded[iLine]:=false;
-        CurFoldType:=TSynEditStringList(fLines).FoldType[iLine];
+        SLines.Folded[iLine]:=false;
+        CurFoldType:=SLines.FoldType[iLine];
         if CurFoldType in [cfExpanded,cfCollapsed] then
           UpdateFolded(iLine)
         else
@@ -2738,9 +2742,9 @@ procedure TCustomSynEdit.CodeFoldAction(iLine: integer);
       end;
       // expand last line of block
       if (iLine<Lines.Count)
-      and (TSynEditStringList(fLines).FoldType[iLine]=cfEnd) then begin
+      and (SLines.FoldType[iLine]=cfEnd) then begin
         //debugln('UpdateFolded Expand END ',dbgs(iLine),' ',Lines[iLine]);
-        TSynEditStringList(fLines).Folded[iLine]:=false;
+        SLines.Folded[iLine]:=false;
         inc(iLine);
       end;
     end;
@@ -2749,8 +2753,8 @@ procedure TCustomSynEdit.CodeFoldAction(iLine: integer);
 var
   FoldType: TSynEditCodeFoldType;
 begin
+  if (iLine<=0) or (iLine>Lines.Count) then exit;
   dec(iLine);
-  if (iLine<0) or (iLine>=Lines.Count) then exit;
   FoldType:=TSynEditStringList(fLines).FoldType[iLine];
   //debugln('TCustomSynEdit.CodeFoldAction A ',dbgs(iLine),' ',dbgs(ord(FoldType)));
   if FoldType in [cfExpanded,cfCollapsed] then begin
@@ -2763,13 +2767,24 @@ begin
       //debugln('expanding node: ',dbgs(iLine));
       FoldType:=cfExpanded;
     end;
-    DebugLn(['TCustomSynEdit.CodeFoldAction iLine=',iLine]);
+    //DebugLn(['TCustomSynEdit.CodeFoldAction iLine=',iLine]);
     TSynEditStringList(fLines).FoldType[iLine] := FoldType;
     UpdateFolded(iLine);
 
     Invalidate;
   end;
 end;
+
+function TCustomSynEdit.FindNextUnfoldedLine(iLine: integer; Down: boolean
+  ): Integer;
+// iLine is 1 based
+begin
+  Result:=iLine;
+  while (Result>0) and (Result<=Lines.Count)
+  and (TSynEditStringList(fLines).Folded[Result-1]) do
+    if Down then inc(Result) else dec(Result);
+end;
+{$ENDIF}
 
 procedure TCustomSynEdit.PaintGutter(AClip: TRect; FirstLine, LastLine: integer);
 var
@@ -5922,10 +5937,72 @@ function TCustomSynEdit.ScanFrom(Index: integer
       end;
     end;
     //DebugLn(['TCustomSynEdit.ScanFrom CodeFoldType=',SynEditCodeFoldTypeNames[CodeFoldType],' FoldMinLevel=',CodeFoldMinLevel,' FoldEndLevel=',CodeFoldEndLevel,' Folded=',false]);
-    TSynEditStringList(Lines).Folded[Result-1] := false;
     TSynEditStringList(Lines).FoldMinLevel[Result-1] := CodeFoldMinLevel;
     TSynEditStringList(Lines).FoldEndLevel[Result-1] := CodeFoldEndLevel;
     TSynEditStringList(Lines).FoldType[Result-1] := CodeFoldType;
+  end;
+  
+  procedure CheckFolded(FromIndex, ToIndex: integer);
+  { Checks/Updates the Folded attributes of every scanned line
+  
+  }
+  var
+    i: LongInt;
+    FoldStart: LongInt;
+    FoldLevel: LongInt;
+    SLines: TSynEditStringList;
+  begin
+    i:=FromIndex;
+    if i<0 then i:=0;
+    if i>ToIndex then exit;
+    SLines:=TSynEditStringList(Lines);
+    // find start and level of folded block at start of scan range
+    if SLines.Folded[i] then begin
+      FoldStart:=i;
+      while (FoldStart>0) and SLines.Folded[FoldStart] do
+        dec(FoldStart);
+      FoldLevel:=SLines.FoldMinLevel[FoldStart];
+    end else begin
+      FoldStart:=-1;
+      FoldLevel:=0;
+    end;
+    // check and fix 'folded' attributes of scanned range
+    while i<=ToIndex do begin
+      if FoldLevel<=0 then begin
+        // last line is not folded
+        if not SLines.Folded[i] then begin
+          // this line was not folded
+          // no change needed
+        end else begin
+          // this line was folded
+          if (i>0) and (SLines.FoldMinLevel[i-1]>=SLines.FoldEndLevel[i-1]) then
+          begin
+            // last line did not contain a block start
+            // => unfolded block must continue
+            SLines.Folded[i]:=false;
+            FoldLevel:=0;
+          end;
+        end;
+      end else begin
+        // last line is folded
+        if SLines.Folded[i] then begin
+          // this line was folded
+          if (i>0) and (SLines.FoldEndLevel[i-1]<FoldLevel) then begin
+            // last fold block ended with last line
+            FoldStart:=i;
+            FoldLevel:=SLines.FoldMinLevel[FoldStart];
+            SLines.Folded[i]:=false;
+          end;
+        end else begin
+          // this line was not folded
+          if (i>0) and (SLines.FoldEndLevel[i-1]>=FoldLevel) then begin
+            // current folded block must be continued
+            SLines.Folded[i]:=true;
+          end;
+        end;
+      end;
+      inc(i);
+    end;
   end;
 {$ENDIF}
 
@@ -5963,6 +6040,7 @@ begin
     //  => update code fold attributes of last scanned line
     SetCodeFoldAttributes;
   end;
+  CheckFolded(Index,Result);
   {$ENDIF}
   Dec(Result);
 end;
@@ -9463,16 +9541,28 @@ end;
 
 procedure TCustomSynEdit.MoveCaretVert(DY: integer; SelectionCommand: boolean);
 {$IFDEF SYN_LAZARUS}
+// moves Caret vertical DY unfolded lines
 var
   NewCaret: TPoint;
   LogCaret: TPoint;
   OldCaret: TPoint;
   SaveLastCaretX: LongInt;
+  i: Integer;
 begin
   OldCaret:=CaretXY;
   NewCaret:=OldCaret;
   with NewCaret do begin
-    Inc(Y, DY);
+    if DY>=0 then begin
+      for i:=1 to DY do begin
+        Inc(Y);
+        Y:=FindNextUnfoldedLine(Y,true);
+      end;
+    end else begin
+      for i:=1 to -DY do begin
+        dec(Y);
+        Y:=FindNextUnfoldedLine(Y,false);
+      end;
+    end;
     if DY >= 0 then begin
       if (Y > Lines.Count) or (CaretY > Y) then
         Y := Lines.Count;
