@@ -1526,7 +1526,7 @@ end;
 
 constructor TDataModule.Create(TheOwner: TComponent);
 begin
-  //GlobalNameSpace.BeginWrite;
+  GlobalNameSpace.BeginWrite;
   try
     CreateNew(TheOwner,0);
     if (ClassType <> TDataModule) and not (csDesigning in ComponentState) then
@@ -1537,7 +1537,7 @@ begin
       if OldCreateOrder then DoCreate;
     end;
   finally
-    //GlobalNameSpace.EndWrite;
+    GlobalNameSpace.EndWrite;
   end;
 end;
 

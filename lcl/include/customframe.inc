@@ -87,7 +87,7 @@ constructor TCustomFrame.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   ControlStyle:=[csAcceptsControls,csCaptureMouse,csClickEvents,csSetCaption,
-                 csDoubleClicks];
+                 csDoubleClicks, csParentBackground];
   if (ClassType<>TFrame) and not (csDesignInstance in ComponentState) then begin
     if not InitInheritedComponent(Self,TFrame) then
       raise EResNotFound.CreateFmt(rsResourceNotFound, [ClassName]);

@@ -89,6 +89,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomForm.BeforeDestruction;
 begin
+  GlobalNameSpace.BeginWrite;
   Destroying;
   Screen.FSaveFocusedList.Remove(Self);
   RemoveFixupReferences(Self, '');
@@ -110,7 +111,7 @@ var
   HandlerType: TFormHandlerType;
 begin
   //DebugLn('[TCustomForm.Destroy] A ',Name,':',ClassName);
-  if not (csDestroying in ComponentState) then ;//GlobalNameSpace.BeginWrite;
+  if not (csDestroying in ComponentState) then GlobalNameSpace.BeginWrite;
   try
     FreeThenNil(FMenu);
     FreeThenNil(FIcon);
@@ -122,7 +123,7 @@ begin
     inherited Destroy;
     //DebugLn('[TCustomForm.Destroy] END ',Name,':',ClassName);
   finally
-    //GlobalNameSpace.EndWrite;
+    GlobalNameSpace.EndWrite;
   end;
 end;
 
@@ -1277,29 +1278,34 @@ begin
   //DebugLn('[TCustomForm.Create] A Class=',Classname);
   FShowInTaskbar := stDefault;
 
-  BeginFormUpdate;
+  GlobalNameSpace.BeginWrite;
   try
-    CreateNew(AOwner, 1);
-    //DebugLn('[TCustomForm.Create] B Class=',Classname);
-    if (ClassType <> TForm) and not (csDesigning in ComponentState) then
-    begin
-      Include(FFormState, fsCreating);
-      try
-        //DebugLn('[TCustomForm.Create] C Class=',Classname);
-        if not InitResourceComponent(Self, TForm) then begin
-          //DebugLn('[TCustomForm.Create] Resource '''+ClassName+''' not found');
-          //DebugLn('This is for information purposes only.   This is not critical at this time.');
-          // MG:  Ignoring is best at the moment. (Delphi raises an exception.)
+    BeginFormUpdate;
+    try
+      CreateNew(AOwner, 1);
+      //DebugLn('[TCustomForm.Create] B Class=',Classname);
+      if (ClassType <> TForm) and not (csDesigning in ComponentState) then
+      begin
+        Include(FFormState, fsCreating);
+        try
+          //DebugLn('[TCustomForm.Create] C Class=',Classname);
+          if not InitResourceComponent(Self, TForm) then begin
+            //DebugLn('[TCustomForm.Create] Resource '''+ClassName+''' not found');
+            //DebugLn('This is for information purposes only.   This is not critical at this time.');
+            // MG:  Ignoring is best at the moment. (Delphi raises an exception.)
+          end;
+          //DebugLn('[TCustomForm.Create] D Class=',Classname);
+          DoCreate;
+          //DebugLn('[TCustomForm.Create] E Class=',Classname);
+        finally
+          Exclude(FFormState, fsCreating);
         end;
-        //DebugLn('[TCustomForm.Create] D Class=',Classname);
-        DoCreate;
-        //DebugLn('[TCustomForm.Create] E Class=',Classname);
-      finally
-        Exclude(FFormState, fsCreating);
       end;
+    finally
+      EndFormUpdate;
     end;
   finally
-    EndFormUpdate;
+    GlobalNameSpace.EndWrite;
   end;
   //DebugLn('[TCustomForm.Create] END Class=',Classname);
 end;
@@ -1308,7 +1314,7 @@ end;
   constructor TCustomForm.CreateNew(AOwner: TComponent; Num : Integer);
 ------------------------------------------------------------------------------}
 constructor TCustomForm.CreateNew(AOwner: TComponent; Num : Integer);
-Begin
+begin
   Include(FFormState,fsFirstShow);
   //DebugLn('[TCustomForm.CreateNew] Class=',Classname);
   BeginFormUpdate;
