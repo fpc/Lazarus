@@ -222,7 +222,7 @@ end;
 
 procedure Register;
 begin
-  RegisterComponents('Common Controls',[TTrayIcon]);
+  RegisterComponents('Additional',[TTrayIcon]);
 end;
 
 initialization
