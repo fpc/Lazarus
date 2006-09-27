@@ -1270,8 +1270,8 @@ end;
 procedure TMainIDE.MainIDEFormClose(Sender: TObject;
   var CloseAction: TCloseAction);
 begin
-  CloseIDEWindows;
   SaveEnvironment;
+  CloseIDEWindows;
   SaveIncludeLinks;
   InputHistories.Save;
   PkgBoss.SaveSettings;
@@ -3802,7 +3802,7 @@ begin
     // first try to find the resource file (.lrs) via the unit source
     LinkIndex:=-1;
     ResourceCode:=CodeToolBoss.FindNextResourceFile(
-      AnUnitInfo.Source,LinkIndex);
+                                                   AnUnitInfo.Source,LinkIndex);
     // if unit source has errors, then show the error and try the last resource
     // file (.lrs)
     if (ResourceCode=nil) and (CodeToolBoss.ErrorMessage<>'') then begin
@@ -4772,15 +4772,16 @@ begin
 
   // find the ancestor type in the source
   NewAncestorName:='';
-  AncestorType:=TForm;
+  AncestorType:=nil;
   if not CodeToolBoss.FindFormAncestor(AnUnitInfo.Source,NewClassName,
                                        NewAncestorName,true)
   then begin
     DebugLn('TMainIDE.DoLoadLFM Filename="',AnUnitInfo.Filename,'" NewClassName=',NewClassName,'. Unable to find ancestor class: ',CodeToolBoss.ErrorMessage);
   end;
-  AncestorType:=nil;
   if NewAncestorName<>'' then begin
-    if CompareText(NewAncestorName,'TDataModule')=0 then begin
+    if CompareText(NewAncestorName,'TForm')=0 then begin
+      AncestorType:=TForm;
+    end else if CompareText(NewAncestorName,'TDataModule')=0 then begin
       // use our TDataModule
       // (some fpc versions have non designable TDataModule)
       AncestorType:=TDataModule;
@@ -4794,7 +4795,7 @@ begin
     end;
   end;
 
-  if (AncestorType=nil) and (CompareText(LFMType,'inherited')=0) then begin
+  if (AncestorType=nil) then begin
     // try loading the ancestor first
     if DoLoadAncestorComponent(AnUnitInfo,NewAncestorName,AncestorType,Flags)
       =mrAbort
