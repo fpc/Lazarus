@@ -264,7 +264,7 @@ msgstr "Kopioi"
 
 #: objinspstrconsts:oiscopycomponents
 msgid "Copy components"
-msgstr ""
+msgstr "Kopio komponentti leikepöydälle"
 
 #: objinspstrconsts:oiscreateanewpascalunit
 msgid "Create a new pascal unit."
@@ -312,7 +312,7 @@ msgstr "Leikkaa"
 
 #: objinspstrconsts:oiscutcomponents
 msgid "Cut components"
-msgstr ""
+msgstr "Siirrä komponentti leikepöydälle"
 
 #: objinspstrconsts:cactionlisteditordatabasecategory
 msgid "Database"
@@ -332,7 +332,7 @@ msgstr ""
 
 #: objinspstrconsts:oisdeletecomponents
 msgid "Delete components"
-msgstr ""
+msgstr "Poista komponentti"
 
 #: objinspstrconsts:oisdeleteitem
 msgid "Delete item %s%s%s?"
@@ -656,7 +656,7 @@ msgstr "Liitä"
 
 #: objinspstrconsts:oispastecomponents
 msgid "Paste components"
-msgstr ""
+msgstr "Lisää leikepöydän komponentti"
 
 #: objinspstrconsts:oispepicture
 msgid "Picture"

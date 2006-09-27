@@ -480,7 +480,7 @@ msgstr ""
 
 #: lazarusidestrconsts:rslanguageafrikaans
 msgid "Afrikaans"
-msgstr ""
+msgstr "afrikaans"
 
 #: lazarusidestrconsts:fdmalignword
 msgid "Align"
@@ -1040,7 +1040,7 @@ msgstr "Keskilinjat"
 
 #: lazarusidestrconsts:liscodetemplchange
 msgid "Change"
-msgstr ""
+msgstr "Muuta"
 
 #: lazarusidestrconsts:lischangeclass
 msgid "Change Class"
@@ -1280,7 +1280,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgusecodefolding
 msgid "Code folding"
-msgstr ""
+msgstr "Koodin laskostus"
 
 #: lazarusidestrconsts:dlgedcodeparams
 msgid "Code parameters"
@@ -1292,7 +1292,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgedcodetempl
 msgid "Code templates"
-msgstr ""
+msgstr "Koodilyhenteet"
 
 #: lazarusidestrconsts:lisceocodeexplorer
 msgid "CodeExplorer Options"
@@ -1400,7 +1400,7 @@ msgstr "Laita lohko kommentiksi (//)"
 
 #: lazarusidestrconsts:liscodetemplcomment
 msgid "Comment:"
-msgstr ""
+msgstr "Kommentti:"
 
 #: lazarusidestrconsts:dlgcocompilation
 msgid "Compilation"
@@ -2280,7 +2280,7 @@ msgstr ""
 
 #: lazarusidestrconsts:liscodetempleditcodetemplate
 msgid "Edit code template"
-msgstr ""
+msgstr "Muokkaa koodilyhenteitä"
 
 #: lazarusidestrconsts:lismenueditcontexthelp
 msgid "Edit context sensitive Help"
@@ -6200,7 +6200,7 @@ msgstr "Tallenna Projekti"
 
 #: lazarusidestrconsts:lissaveprojectlpi
 msgid "Save Project %s (*.lpi)"
-msgstr ""
+msgstr "Tallenna  %s projekti (*.lpi)"
 
 #: lazarusidestrconsts:lismenusaveprojectas
 msgid "Save Project As ..."
@@ -6360,7 +6360,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgscrollpastendfile
 msgid "Scroll past end of file"
-msgstr ""
+msgstr "Näytä tiedoston lopussa tyhjää tilaa ('Scrollaa' lopun yli)"
 
 #: lazarusidestrconsts:dlgscrollpastendline
 msgid "Scroll past end of line"
@@ -7188,7 +7188,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisctdtemplates
 msgid "Templates"
-msgstr ""
+msgstr "Lyhenteet"
 
 #: lazarusidestrconsts:liscomptest
 msgid "Test"
