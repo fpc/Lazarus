@@ -309,6 +309,12 @@ resourcestring
   rscdAlignment = 'Alignment';
   rscdLeft = 'Left';
 
+  // image list editor
+  s_SuggestSplitImage = 'Do you want to split the image?';
+  s_AddAsSingle = 'Add as single';
+  s_SplitImage = 'Split image';
+
+
 implementation
 
 end.

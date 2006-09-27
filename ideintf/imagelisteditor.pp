@@ -34,8 +34,8 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, LResources, ComCtrls,
-  StdCtrls, Buttons, ExtCtrls, Menus, PropEdits, ComponentEditors, LCLProc,
-  ColorBox, ExtDlgs, ObjInspStrConsts;
+  StdCtrls, Buttons, ExtCtrls, Menus, LCLProc, ColorBox, ExtDlgs,
+  IDEDialogs, PropEdits, ComponentEditors, ObjInspStrConsts;
 
 type
   TGlyphAdjustment = (gaNone, gaStretch, gaCrop, gaCenter);
@@ -110,7 +110,9 @@ type
     function GetVerbCount: Integer; override;
   end;
 
+
 implementation
+
 
 function EditImageList(AImageList: TImageList): Boolean;
 var
@@ -154,6 +156,15 @@ begin
     Result.Transparent := True;
     Result.TransparentMode := tmAuto;
   end;
+end;
+
+function CreateGlyphSplit(Src: TBitmap; Width, Height: Integer; SrcSplitIndex: Integer): TBitmap;
+begin
+  Result := TBitmap.Create;
+  Result.Width := Width;
+  Result.Height := Height;
+  Result.Canvas.CopyRect( Rect(0, 0, Width, Height),
+    Src.Canvas, Bounds(SrcSplitIndex * Width, 0, Width, Height) );
 end;
 
 { TImageListEditorDlg }
@@ -469,6 +480,9 @@ var
   Picture: TPicture;
   P: PGlyphInfo;
   Node: TTreeNode;
+  v_PartCount: Integer;
+  c_Part: Integer;
+  v_CompositeBmp: TBitmap;
 begin
   SaveDialog.InitialDir := ExtractFileDir(FileName);
   Bmp := nil;
@@ -487,18 +501,40 @@ begin
   begin
     if not Bmp.Empty then
     begin
-      Glyph := CreateGlyph(Bmp, ImageList.Width, ImageList.Height, gaNone);
-      I := ImageList.AddDirect(Glyph, nil);
-      
-      New(P);
-      P^.Bitmap := Bmp;
-      P^.Adjustment := gaNone;
-      P^.TransparentColor := clFuchsia;
-      
-      Node := TreeView.Items.AddObject(nil, IntToStr(I), P);
-      Node.ImageIndex := I;
-      Node.SelectedIndex := I;
-      TreeView.Selected := Node;
+      if (Bmp.Height = ImageList.Height)
+        and (Bmp.Width mod ImageList.Width = 0)
+        and (IDEQuestionDialog(Caption +' - '+ btnAdd.Caption,
+                            s_SuggestSplitImage, mtConfirmation,
+                            [s_AddAsSingle, mrNo, s_SplitImage, mrYes]) = mrYes)
+      then begin
+        v_PartCount := Bmp.Width div ImageList.Width;
+        v_CompositeBmp := Bmp;
+        Bmp := nil;
+      end
+      else begin
+        v_PartCount := 1;
+        v_CompositeBmp := nil;
+      end;
+
+      for c_Part := 0 to v_PartCount -1 do
+      begin
+        if Assigned(v_CompositeBmp) then
+          Bmp := CreateGlyphSplit(v_CompositeBmp, ImageList.Width, ImageList.Height, c_Part);
+
+        Glyph := CreateGlyph(Bmp, ImageList.Width, ImageList.Height, gaNone);
+        I := ImageList.AddDirect(Glyph, nil);
+
+        New(P);
+        P^.Bitmap := Bmp;
+        P^.Adjustment := gaNone;
+        P^.TransparentColor := clFuchsia;
+
+        Node := TreeView.Items.AddObject(nil, IntToStr(I), P);
+        Node.ImageIndex := I;
+        Node.SelectedIndex := I;
+        TreeView.Selected := Node;
+      end;
+      v_CompositeBmp.Free;
     end
     else Bmp.Free;
   end;
