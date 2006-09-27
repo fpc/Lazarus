@@ -1265,7 +1265,7 @@ procedure Register;
 begin
   RegisterComponents('Standard',[TLabel,TEdit,TMemo,TToggleBox,TCheckBox,
        TRadioButton,TListBox,TComboBox,TScrollBar,TGroupBox]);
-  RegisterComponents('Hidden',[TStaticText]);
+  RegisterComponents('Additional',[TStaticText]);
 end;
 
 
