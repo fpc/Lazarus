@@ -2982,7 +2982,7 @@ begin
         rcLine.Top := rcLine.Bottom;
         // erase the background and draw the line number string in one go
         {$IFDEF SYN_LAZARUS}
-        if not TSynEditStringList(fLines).Folded[iLine] then begin
+        if not TSynEditStringList(fLines).Folded[iLine-1] then begin
           s := fGutter.FormatLineNumber(iLine);
           Inc(rcLine.Bottom, fTextHeight);
           fTextDrawer.ExtTextOut(CodeFoldOffset+fGutter.LeftOffset,
