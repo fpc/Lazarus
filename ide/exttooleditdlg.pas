@@ -711,9 +711,8 @@ begin
     Src:=TExternalToolOptions(Source);
     fKey:=Src.fKey;
     fShift:=Src.fShift;
-  end else begin
-    inherited Assign(Source);
   end;
+  inherited Assign(Source);
 end;
 
 procedure TExternalToolOptions.Clear;

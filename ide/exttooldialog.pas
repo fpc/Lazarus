@@ -136,9 +136,9 @@ type
     constructor Create(AnOwner: TComponent); override;
     destructor Destroy; override;
     property ExtToolList: TExternalToolList 
-           read fExtToolList write SetExtToolList;
+                                         read fExtToolList write SetExtToolList;
     property TransferMacros: TTransferMacroList
-           read fTransferMacros write SetTransferMacros;
+                                   read fTransferMacros write SetTransferMacros;
   end;
   
 function ShowExtToolDialog(ExtToolList: TExternalToolList;
@@ -540,6 +540,11 @@ end;
 function TExternalToolDialog.ToolDescription(Index: integer): string;
 begin
   Result:=fExtToolList[Index].ShortDescription;
+  if Result='' then
+    Result:=fExtToolList[Index].Title;
+  if Result='' then
+    Result:=ExtractFilename(fExtToolList[Index].Filename);
+  //DebugLn(['TExternalToolDialog.ToolDescription Index=',Index,' Result=',Result,' Cmd="',fExtToolList[Index].Filename,' ',fExtToolList[Index].CmdLineParams,'"']);
 end;
 
 procedure TExternalToolDialog.Load;
