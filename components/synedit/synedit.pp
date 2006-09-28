@@ -704,6 +704,7 @@ type
     //code fold
     procedure CodeFoldAction(iLine: integer);
     function FindNextUnfoldedLine(iLine: integer; Down: boolean): Integer;
+    procedure UnfoldAll;
     {$ENDIF}
 
     procedure AddKey(Command: TSynEditorCommand; Key1: word; SS1: TShiftState;
@@ -2784,6 +2785,18 @@ begin
   and (TSynEditStringList(fLines).Folded[Result-1]) do
     if Down then inc(Result) else dec(Result);
 end;
+
+procedure TCustomSynEdit.UnfoldAll;
+var
+  SLines: TSynEditStringList;
+  i: Integer;
+begin
+  SLines:=TSynEditStringList(Lines);
+  for i:=0 to SLines.Count-1 do
+    SLines.Folded[i]:=false;
+  Invalidate;
+end;
+
 {$ENDIF}
 
 procedure TCustomSynEdit.PaintGutter(AClip: TRect; FirstLine, LastLine: integer);

@@ -2329,7 +2329,11 @@ begin
   ASynEdit.Gutter.Visible := fVisibleGutter;
   ASynEdit.Gutter.ShowLineNumbers := fShowLineNumbers;
   //ASynEdit.Gutter.AutoSize:= fShowLineNumbers;
-  ASynEdit.Gutter.ShowCodeFolding := FUseCodeFolding;
+  if ASynEdit.Gutter.ShowCodeFolding<>FUseCodeFolding then begin
+    ASynEdit.Gutter.ShowCodeFolding := FUseCodeFolding;
+    if not FUseCodeFolding then
+      ASynEdit.UnfoldAll;
+  end;
   ASynEdit.Gutter.Color := fGutterColor;
   ASynEdit.Gutter.Width := fGutterWidth;
   ASynEdit.Gutter.LeftOffset := 2*11; // bookmark + breakpoint
