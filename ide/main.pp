@@ -552,13 +552,12 @@ type
         AncestorType: TPersistentClass; ResourceCode: TCodeBuffer): TModalResult;
 
     // methods for 'save unit'
-    function DoLoadResourceFile(AnUnitInfo: TUnitInfo;
-        var LFMCode, ResourceCode: TCodeBuffer;
-        IgnoreSourceErrors: boolean): TModalResult;
     function DoShowSaveFileAsDialog(AnUnitInfo: TUnitInfo;
         var ResourceCode: TCodeBuffer): TModalResult;
     function DoSaveFileResources(AnUnitInfo: TUnitInfo;
         ResourceCode, LFMCode: TCodeBuffer; Flags: TSaveFlags): TModalResult;
+    function DoSaveFileResourceToBinStream(AnUnitInfo: TUnitInfo;
+        var BinCompStream: TExtMemoryStream): TModalResult;
     function DoRemoveDanglingEvents(AnUnitInfo: TUnitInfo;
         OkOnCodeErrors: boolean): TModalResult;
     function DoRenameUnit(AnUnitInfo: TUnitInfo;
@@ -573,6 +572,9 @@ type
     procedure DoRestoreBookMarks(AnUnitInfo: TUnitInfo; ASrcEdit:TSourceEditor);
     function DoOpenFileInSourceEditor(AnUnitInfo: TUnitInfo;
         PageIndex: integer; Flags: TOpenFlags): TModalResult;
+    function DoLoadResourceFile(AnUnitInfo: TUnitInfo;
+        var LFMCode, ResourceCode: TCodeBuffer;
+        IgnoreSourceErrors: boolean): TModalResult;
     function DoLoadLFM(AnUnitInfo: TUnitInfo; Flags: TOpenFlags): TModalResult;
     function DoLoadLFM(AnUnitInfo: TUnitInfo; LFMBuf: TCodeBuffer;
                        Flags: TOpenFlags; CloseDsgnForm: boolean): TModalResult;
@@ -852,16 +854,19 @@ const
   CodeToolsIncludeLinkFile = 'includelinks.xml';
 
 var
-  ShowSplashScreen: boolean;
+  ShowSplashScreen: boolean = false;
 
 implementation
 
 uses
   Math;
 
+const
+  LRSStreamChunkSize = 4096; // allocating mem in 4k chunks helps many mem managers
+
 var
-  SkipAutoLoadingLastProject: boolean;
-  StartedByStartLazarus: boolean;
+  SkipAutoLoadingLastProject: boolean = false;
+  StartedByStartLazarus: boolean = false;
 
 //==============================================================================
 
@@ -4021,8 +4026,6 @@ end;
 
 function TMainIDE.DoSaveFileResources(AnUnitInfo: TUnitInfo;
   ResourceCode, LFMCode: TCodeBuffer; Flags: TSaveFlags): TModalResult;
-const
-  BufSize = 4096; // allocating mem in 4k chunks helps many mem managers
 var
   ComponentSavingOk: boolean;
   MemStream, BinCompStream, TxtCompStream: TExtMemoryStream;
@@ -4062,7 +4065,8 @@ begin
     // stream component to binary stream
     BinCompStream:=TExtMemoryStream.Create;
     if AnUnitInfo.ComponentLastBinStreamSize>0 then
-      BinCompStream.Capacity:=AnUnitInfo.ComponentLastBinStreamSize+BufSize;
+      BinCompStream.Capacity:=
+                       AnUnitInfo.ComponentLastBinStreamSize+LRSStreamChunkSize;
     Writer:=nil;
     DestroyDriver:=false;
     try
@@ -4081,11 +4085,11 @@ begin
           {$ENDIF}
           Writer.WriteDescendent(AnUnitInfo.Component,nil);
           if DestroyDriver then Writer.Driver.Free;
-          Writer.Free;
-          Writer:=nil;
+          FreeAndNil(Writer);
           AnUnitInfo.ComponentLastBinStreamSize:=BinCompStream.Size;
         except
           on E: Exception do begin
+            DumpExceptionBackTrace;
             ACaption:=lisStreamingError;
             AText:=Format(lisUnableToStreamT, [AnUnitInfo.ComponentName,
                           AnUnitInfo.ComponentName])+#13
@@ -4115,7 +4119,7 @@ begin
           // changed too
           MemStream:=TExtMemoryStream.Create;
           if AnUnitInfo.ComponentLastLRSStreamSize>0 then
-            MemStream.Capacity:=AnUnitInfo.ComponentLastLRSStreamSize+BufSize;
+            MemStream.Capacity:=AnUnitInfo.ComponentLastLRSStreamSize+LRSStreamChunkSize;
           try
             BinCompStream.Position:=0;
             BinaryToLazarusResourceCode(BinCompStream,MemStream
@@ -4195,7 +4199,7 @@ begin
                 TxtCompStream:=TExtMemoryStream.Create;
                 if AnUnitInfo.ComponentLastLFMStreamSize>0 then
                   TxtCompStream.Capacity:=AnUnitInfo.ComponentLastLFMStreamSize
-                                          +BufSize;
+                                          +LRSStreamChunkSize;
                 try
                   BinCompStream.Position:=0;
                   LRSObjectBinaryToText(BinCompStream,TxtCompStream);
@@ -4285,6 +4289,56 @@ begin
   {$IFDEF IDE_DEBUG}
   writeln('TMainIDE.SaveFileResources G ',LFMCode<>nil);
   {$ENDIF}
+end;
+
+function TMainIDE.DoSaveFileResourceToBinStream(AnUnitInfo: TUnitInfo;
+  var BinCompStream: TExtMemoryStream): TModalResult;
+var
+  Writer: TWriter;
+  DestroyDriver: Boolean;
+begin
+  // save designer form properties to the component
+  FormEditor1.SaveHiddenDesignerFormProperties(AnUnitInfo.Component);
+
+  // stream component to binary stream
+  if BinCompStream=nil then
+    BinCompStream:=TExtMemoryStream.Create;
+  if AnUnitInfo.ComponentLastBinStreamSize>0 then
+    BinCompStream.Capacity:=Max(BinCompStream.Capacity,BinCompStream.Position+
+                      AnUnitInfo.ComponentLastBinStreamSize+LRSStreamChunkSize);
+  Writer:=nil;
+  DestroyDriver:=false;
+  try
+    Result:=mrOk;
+    try
+      BinCompStream.Position:=0;
+      Writer:=CreateLRSWriter(BinCompStream,DestroyDriver);
+      Writer.WriteDescendent(AnUnitInfo.Component,nil);
+      if DestroyDriver then Writer.Driver.Free;
+      FreeAndNil(Writer);
+      AnUnitInfo.ComponentLastBinStreamSize:=BinCompStream.Size;
+    except
+      on E: Exception do begin
+        DumpExceptionBackTrace;
+        Result:=MessageDlg(lisStreamingError,
+            Format(lisUnableToStreamT, [AnUnitInfo.ComponentName,
+                              AnUnitInfo.ComponentName])+#13
+                              +E.Message,
+            mtError,[mbAbort, mbRetry, mbIgnore], 0);
+        if Result=mrAbort then exit;
+        if Result=mrIgnore then Result:=mrOk;
+      end;
+    end;
+  finally
+    try
+      if DestroyDriver and (Writer<>nil) then Writer.Driver.Free;
+      Writer.Free;
+    except
+      on E: Exception do begin
+        debugln('TMainIDE.DoSaveFileResourceToBinStream Error cleaning up: ',E.Message);
+      end;
+    end;
+  end;
 end;
 
 function TMainIDE.DoRemoveDanglingEvents(AnUnitInfo: TUnitInfo;
@@ -4725,15 +4779,13 @@ const
   BufSize = 4096; // allocating mem in 4k chunks helps many mem managers
 var
   ComponentLoadingOk: boolean;
-  TxtLFMStream, BinLFMStream: TExtMemoryStream;
-  CInterface: TComponentInterface;
+  TxtLFMStream, BinStream, AncestorBinStream: TExtMemoryStream;
   NewComponent: TComponent;
   AncestorType: TComponentClass;
   DesignerForm: TCustomForm;
   NewClassName: String;
   LFMType: String;
-  NewAncestorName: String;
-  APersistentClass: TPersistentClass;
+  AncestorClassName: String;
   ACaption, AText: String;
   NewUnitName: String;
   AncestorUnitInfo: TUnitInfo;
@@ -4775,46 +4827,51 @@ begin
     exit;
   end;
 
-  // find the ancestor type in the source
-  NewAncestorName:='';
-  AncestorType:=nil;
-  if not CodeToolBoss.FindFormAncestor(AnUnitInfo.Source,NewClassName,
-                                       NewAncestorName,true)
-  then begin
-    DebugLn('TMainIDE.DoLoadLFM Filename="',AnUnitInfo.Filename,'" NewClassName=',NewClassName,'. Unable to find ancestor class: ',CodeToolBoss.ErrorMessage);
-  end;
-  if NewAncestorName<>'' then begin
-    if CompareText(NewAncestorName,'TForm')=0 then begin
-      AncestorType:=TForm;
-    end else if CompareText(NewAncestorName,'TDataModule')=0 then begin
-      // use our TDataModule
-      // (some fpc versions have non designable TDataModule)
-      AncestorType:=TDataModule;
-    end else begin
-      APersistentClass:=Classes.GetClass(NewAncestorName);
-      if (APersistentClass<>nil)
-      and (APersistentClass.InheritsFrom(TComponent)) then begin
-        // ancestor type is a registered component class
-        AncestorType:=TComponentClass(APersistentClass);
-      end;
-    end;
-  end;
-
-  if (AncestorType=nil) then begin
-    // try loading the ancestor first
-    AncestorUnitInfo:=nil;
-    Result:=DoLoadHiddenResourceComponent(AnUnitInfo,NewAncestorName,Flags,
-                                          AncestorType,AncestorUnitInfo);
-    if Result<>mrOk then exit;
-  end;
-
-  // use TForm as default ancestor
-  if AncestorType=nil then
-    AncestorType:=TForm;
-  //DebugLn('TMainIDE.DoLoadLFM Filename="',AnUnitInfo.Filename,'" AncestorClassName=',NewAncestorName,' AncestorType=',AncestorType.ClassName);
-
-  BinLFMStream:=TExtMemoryStream.Create;
+  BinStream:=nil;
+  AncestorBinStream:=nil;
   try
+    // find the ancestor type in the source
+    AncestorClassName:='';
+    AncestorType:=nil;
+    AncestorUnitInfo:=nil;
+    if not CodeToolBoss.FindFormAncestor(AnUnitInfo.Source,NewClassName,
+                                         AncestorClassName,true)
+    then begin
+      DebugLn('TMainIDE.DoLoadLFM Filename="',AnUnitInfo.Filename,'" NewClassName=',NewClassName,'. Unable to find ancestor class: ',CodeToolBoss.ErrorMessage);
+    end;
+    if AncestorClassName<>'' then begin
+      if CompareText(AncestorClassName,'TForm')=0 then begin
+        AncestorType:=TForm;
+      end else if CompareText(AncestorClassName,'TDataModule')=0 then begin
+        // use our TDataModule
+        // (some fpc versions have non designable TDataModule)
+        AncestorType:=TDataModule;
+      end else if CompareText(AncestorClassName,'TCustomForm')=0 then begin
+        MessageDlg('Error','The resource class "'+NewClassName+'" descends from'
+          +' "'+AncestorClassName+'". Probably this is a typo for TForm.',
+          mtError,[mbCancel],0);
+        Result:=mrCancel;
+      end;
+    end else begin
+      AncestorType:=TForm;
+    end;
+
+    // try loading the ancestor first (unit, lfm and component instance)
+    if (AncestorType=nil) then begin
+      Result:=DoLoadHiddenResourceComponent(AnUnitInfo,AncestorClassName,Flags,
+                                            AncestorType,AncestorUnitInfo);
+      if Result<>mrOk then exit;
+      Result:=DoSaveFileResourceToBinStream(AncestorUnitInfo,AncestorBinStream);
+      if Result<>mrOk then exit;
+      AncestorBinStream.Position:=0;
+    end;
+
+    // use TForm as default ancestor
+    if AncestorType=nil then
+      AncestorType:=TForm;
+    //DebugLn('TMainIDE.DoLoadLFM Filename="',AnUnitInfo.Filename,'" AncestorClassName=',AncestorClassName,' AncestorType=',AncestorType.ClassName);
+
+    BinStream:=TExtMemoryStream.Create;
     TxtLFMStream:=TExtMemoryStream.Create;
     try
       LFMBuf.SaveToStream(TxtLFMStream);
@@ -4824,10 +4881,10 @@ begin
       // convert text to binary format
       try
         if AnUnitInfo.ComponentLastBinStreamSize>0 then
-          BinLFMStream.Capacity:=AnUnitInfo.ComponentLastBinStreamSize+BufSize;
-        LRSObjectTextToBinary(TxtLFMStream,BinLFMStream);
-        AnUnitInfo.ComponentLastBinStreamSize:=BinLFMStream.Size;
-        BinLFMStream.Position:=0;
+          BinStream.Capacity:=AnUnitInfo.ComponentLastBinStreamSize+BufSize;
+        LRSObjectTextToBinary(TxtLFMStream,BinStream);
+        AnUnitInfo.ComponentLastBinStreamSize:=BinStream.Size;
+        BinStream.Position:=0;
         Result:=mrOk;
       except
         on E: Exception do begin
@@ -4852,14 +4909,12 @@ begin
       NewUnitName:=AnUnitInfo.UnitName;
       if NewUnitName='' then
         NewUnitName:=ExtractFileNameOnly(AnUnitInfo.Filename);
-      CInterface := TComponentInterface(
-                      FormEditor1.CreateComponentFromStream(BinLFMStream,
-                            AncestorType,copy(NewUnitName,1,255),true));
-      if CInterface=nil then begin
+      NewComponent:=FormEditor1.CreateRawComponentFromStream(BinStream,
+                   AncestorType,AncestorBinStream,copy(NewUnitName,1,255),true);
+      AnUnitInfo.Component:=NewComponent;
+      if NewComponent=nil then begin
         // error streaming component -> examine lfm file
         DebugLn('ERROR: streaming failed lfm="',LFMBuf.Filename,'"');
-        NewComponent:=nil;
-        AnUnitInfo.Component:=NewComponent;
         // open lfm file in editor
         Result:=DoOpenEditorFile(LFMBuf.Filename,AnUnitInfo.EditorIndex+1,
           Flags+[ofOnlyIfExists,ofQuiet,ofRegularFile]);
@@ -4867,38 +4922,36 @@ begin
         Result:=DoCheckLFMInEditor;
         if Result=mrOk then Result:=mrCancel;
         exit;
-      end else begin
-        NewComponent:=CInterface.Component;
-        DebugLn('SUCCESS: streaming lfm="',LFMBuf.Filename,'"');
-        AnUnitInfo.Component:=NewComponent;
-        AnUnitInfo.ComponentName:=NewComponent.Name;
-        AnUnitInfo.ComponentResourceName:=AnUnitInfo.ComponentName;
-        if not (ofLoadHiddenResource in Flags) then begin
-          CreateDesignerForComponent(NewComponent);
-          DesignerForm:=FormEditor1.GetDesignerForm(AnUnitInfo.Component);
-        end else begin
-          DesignerForm:=nil;
-        end;
+      end;
+      FormEditor1.CreateComponentInterface(NewComponent,true);
+      DebugLn('SUCCESS: streaming lfm="',LFMBuf.Filename,'"');
+      AnUnitInfo.ComponentName:=NewComponent.Name;
+      AnUnitInfo.ComponentResourceName:=AnUnitInfo.ComponentName;
+      DesignerForm:=nil;
+      if not (ofLoadHiddenResource in Flags) then begin
+        CreateDesignerForComponent(NewComponent);
+        DesignerForm:=FormEditor1.GetDesignerForm(AnUnitInfo.Component);
+      end;
 
-        // select the new form (object inspector, formeditor, control selection)
-        if ([ofProjectLoading,ofLoadHiddenResource]*Flags=[]) then begin
-          FDisplayState:= dsForm;
-          GlobalDesignHook.LookupRoot := NewComponent;
-          TheControlSelection.AssignPersistent(NewComponent);
-        end;
+      // select the new form (object inspector, formeditor, control selection)
+      if ([ofProjectLoading,ofLoadHiddenResource]*Flags=[]) then begin
+        FDisplayState:= dsForm;
+        GlobalDesignHook.LookupRoot := NewComponent;
+        TheControlSelection.AssignPersistent(NewComponent);
+      end;
 
-        // show new form
-        if DesignerForm<>nil then begin
-          LCLIntf.ShowWindow(DesignerForm.Handle,SW_SHOWNORMAL);
-          FLastFormActivated:=DesignerForm;
-        end;
+      // show new form
+      if DesignerForm<>nil then begin
+        LCLIntf.ShowWindow(DesignerForm.Handle,SW_SHOWNORMAL);
+        FLastFormActivated:=DesignerForm;
       end;
     end;
     {$IFDEF IDE_DEBUG}
     debugln('[TMainIDE.DoLoadLFM] LFM end');
     {$ENDIF}
   finally
-    BinLFMStream.Free;
+    BinStream.Free;
+    AncestorBinStream.Free;
   end;
   Result:=mrOk;
 end;
@@ -4984,6 +5037,24 @@ function TMainIDE.DoLoadHiddenResourceComponent(AnUnitInfo: TUnitInfo;
     end;
   end;
   
+  function TryRegisteredClasses(out TheModalResult: TModalResult): boolean;
+  var
+    APersistentClass: TPersistentClass;
+  begin
+    Result:=false;
+    APersistentClass:=Classes.GetClass(AComponentClassName);
+    if APersistentClass=nil then exit;
+    if not APersistentClass.InheritsFrom(TComponent) then exit;
+    AComponentClass:=TComponentClass(APersistentClass);
+    if AComponentClass.InheritsFrom(TForm)
+    or AComponentClass.InheritsFrom(TDataModule) then begin
+      // at the moment the designer only supports descendants
+      // of TForm and TDataModule
+      TheModalResult:=mrOk;
+      Result:=true;
+    end;
+  end;
+
 var
   UsedUnitFilenames: TStrings;
   i: Integer;
@@ -5029,7 +5100,13 @@ begin
       UsedUnitFilenames.Free;
     end;
 
-    Result:=mrCancel;
+    // finally try registered classes
+    if TryRegisteredClasses(Result) then exit;
+    
+    Result:=QuestionDlg('Error','Unable to find the lfm file for component class '
+      +'"'+AComponentClassName+'".',
+      mtError,[mrCancel,'Cancel loading this component',
+               mrAbort,'Abort whole loading'],0);
   finally
     AnUnitInfo.LoadingComponent:=false;
   end;
@@ -5054,22 +5131,25 @@ begin
   LookupRoot:=AnUnitInfo.Component;
   if LookupRoot=nil then exit;
   AForm:=FormEditor1.GetDesignerForm(LookupRoot);
-  if AForm=nil then
-    RaiseException('TMainIDE.CloseDesignerForm '+AnUnitInfo.Filename);
-  if (AForm=nil) then exit;
-  if FLastFormActivated=AForm then
-    FLastFormActivated:=nil;
-  //debugln('TMainIDE.CloseDesignerForm A ',AnUnitInfo.Filename,' ',dbgsName(LookupRoot));
+  OldDesigner:=nil;
+  if AForm<>nil then
+    OldDesigner:=TDesigner(AForm.Designer);
+  if (OldDesigner=nil) then begin
+    DebugLn(['TMainIDE.CloseDesignerForm TODO: free hidden component without designer: ',AnUnitInfo.Filename,' ',DbgSName(AnUnitInfo.Component)]);
+  end else begin
+    if (AForm=nil) then exit;
+    if FLastFormActivated=AForm then
+      FLastFormActivated:=nil;
+    //debugln('TMainIDE.CloseDesignerForm A ',AnUnitInfo.Filename,' ',dbgsName(LookupRoot));
 
-  // unselect components
-  for i:=LookupRoot.ComponentCount-1 downto 0 do
-    TheControlSelection.Remove(LookupRoot.Components[i]);
-  TheControlSelection.Remove(LookupRoot);
-  // free designer and design form
-  OldDesigner:=TDesigner(AForm.Designer);
-  OldDesigner.DeleteFormAndFree;
+    // unselect components
+    for i:=LookupRoot.ComponentCount-1 downto 0 do
+      TheControlSelection.Remove(LookupRoot.Components[i]);
+    TheControlSelection.Remove(LookupRoot);
+    // free designer and design form
+    OldDesigner.DeleteFormAndFree;
+  end;
   AnUnitInfo.Component:=nil;
-
   Result:=mrOk;
 end;
 
@@ -11974,7 +12054,7 @@ begin
     //writeln('TMainIDE.OnPropHookPersistentAdded B ',AComponent.Name,':',AComponent.ClassName);
     // create component interface
     if FormEditor1.FindComponent(AComponent)=nil then
-      FormEditor1.CreateComponentInterface(AComponent);
+      FormEditor1.CreateComponentInterface(AComponent,false);
     // set component into design mode
     SetDesigning(AComponent,true);
     //writeln('TMainIDE.OnPropHookPersistentAdded C ',AComponent.Name,':',AComponent.ClassName);

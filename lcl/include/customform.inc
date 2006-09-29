@@ -1691,6 +1691,8 @@ end;
 procedure TCustomForm.CreateWnd;
 begin
   //DebugLn('TCustomForm.CreateWnd START ',ClassName);
+  if CompareText(ClassName,'TGrandMaForm')=0 then
+    RaiseGDBException('');
   FFormState:=FFormState-[fsBorderStyleChanged,fsFormStyleChanged];
   inherited CreateWnd;
 
@@ -1778,8 +1780,9 @@ procedure TCustomForm.UpdateShowing;
 var
   X, Y : integer;
 begin
+  if csLoading in ComponentState then exit;
   {$IFDEF CHECK_POSITION}
-  DebugLn('[TCustomForm.UpdateShowing] A  Class=',Name,':',Classname,' Pos=',DbgS(Left),',',DbgS(Top),' Visible=',DbgS(Visible));
+  DebugLn('[TCustomForm.UpdateShowing] A  ',DbgSName(Self),' Pos=',DbgS(Left),',',DbgS(Top),' Visible=',DbgS(Visible));
   {$ENDIF}
   { If the the form is about to show, calculate its metrics }
   if Visible then begin

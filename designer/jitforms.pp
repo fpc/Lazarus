@@ -130,7 +130,8 @@ type
     procedure InitReading(BinStream: TStream; var Reader: TReader;
                           DestroyDriver: Boolean); virtual;
     function DoCreateJITComponent(const NewComponentName, NewClassName,
-                         NewUnitName: shortstring; ParentClass: TClass):integer;
+                         NewUnitName: shortstring; ParentClass: TClass;
+                         Visible: boolean):integer;
     procedure DoFinishReading; virtual;
   public
     constructor Create;
@@ -139,9 +140,10 @@ type
     function Count: integer;
     function AddNewJITComponent(const NewUnitName: shortstring;
                                 ParentClass: TClass): integer;
-    function AddJITComponentFromStream(BinStream: TStream; ParentClass: TClass;
-                                       const NewUnitName: ShortString;
-                                       Interactive, Visible: Boolean):integer;
+    function AddJITComponentFromStream(BinStream: TStream;
+                                ParentClass: TClass; ParentBinStream: TStream;
+                                const NewUnitName: ShortString;
+                                Interactive, Visible: Boolean):integer;
     procedure DestroyJITComponent(JITComponent: TComponent);
     procedure DestroyJITComponent(Index: integer);
     function IndexOf(JITComponent: TComponent): integer;
@@ -646,19 +648,48 @@ begin
     ' NewUnitName=',NewUnitName,' ParentClass=',ParentClass.ClassName);
   {$ENDIF}
   Result:=DoCreateJITComponent(NewComponentName,NewClassName,NewUnitName,
-                               ParentClass);
+                               ParentClass,true);
 end;
 
 function TJITComponentList.AddJITComponentFromStream(BinStream: TStream;
-  ParentClass: TClass; const NewUnitName: ShortString;
-  Interactive, Visible: Boolean):integer;
+  ParentClass: TClass; ParentBinStream: TStream;
+  const NewUnitName: ShortString;
+  Interactive, Visible: Boolean): integer;
 //  returns new index
 // -1 = invalid stream
+
+  procedure ReadStream(AStream: TStream);
+  var
+    Reader:TReader;
+    DestroyDriver: Boolean;
+  begin
+    {$IFDEF VerboseJITForms}
+    debugln('[TJITComponentList.AddJITComponentFromStream] InitReading ...');
+    {$ENDIF}
+
+    DestroyDriver:=false;
+    InitReading(AStream,Reader,DestroyDriver);
+    {$IFDEF VerboseJITForms}
+    debugln('[TJITComponentList.AddJITComponentFromStream] Read ...');
+    {$ENDIF}
+    try
+      Reader.ReadRootComponent(FCurReadJITComponent);
+      {$IFDEF VerboseJITForms}
+      debugln('[TJITComponentList.AddJITComponentFromStream] Finish Reading ...');
+      {$ENDIF}
+      DoFinishReading;
+    finally
+      UnregisterFindGlobalComponentProc(@MyFindGlobalComponent);
+      Application.FindGlobalComponentEnabled:=true;
+      if DestroyDriver then Reader.Driver.Free;
+      Reader.Free;
+    end;
+  end;
+
 var
-  Reader:TReader;
   NewClassName: shortstring;
   NewName: string;
-  DestroyDriver, IsInherited: Boolean;
+  IsInherited: Boolean;
 begin
   Result:=-1;
   NewClassName:=GetClassNameFromLRSStream(BinStream, IsInherited);
@@ -667,40 +698,22 @@ begin
     MessageDlg('No classname in stream found.',mtError,[mbOK],0);
     exit;
   end;
+
   {$IFDEF VerboseJITForms}
-  writeln('[TJITComponentList.AddJITComponentFromStream] Create ...');
+  debugln('[TJITComponentList.AddJITComponentFromStream] Create ...');
   {$ENDIF}
   try
-    Result:=DoCreateJITComponent('',NewClassName,NewUnitName,ParentClass);
+    Result:=DoCreateJITComponent('',NewClassName,NewUnitName,ParentClass,Visible);
     if Result<0 then exit;
+    if ParentBinStream<>nil then
+      ReadStream(ParentBinStream);
+    ReadStream(BinStream);
 
-    {$IFDEF VerboseJITForms}
-    writeln('[TJITComponentList.AddJITComponentFromStream] InitReading ...');
-    {$ENDIF}
-
-    DestroyDriver:=false;
-    InitReading(BinStream,Reader,DestroyDriver);
-    {$IFDEF VerboseJITForms}
-    writeln('[TJITComponentList.AddJITComponentFromStream] Read ...');
-    {$ENDIF}
-    try
-      Reader.ReadRootComponent(FCurReadJITComponent);
-      if FCurReadJITComponent.Name='' then begin
-        NewName:=FCurReadJITComponent.ClassName;
-        if NewName[1] in ['T','t'] then
-          System.Delete(NewName,1,1);
-        FCurReadJITComponent.Name:=NewName;
-      end;
-
-      {$IFDEF VerboseJITForms}
-      writeln('[TJITComponentList.AddJITComponentFromStream] Finish Reading ...');
-      {$ENDIF}
-      DoFinishReading;
-    finally
-      UnregisterFindGlobalComponentProc(@MyFindGlobalComponent);
-      Application.FindGlobalComponentEnabled:=true;
-      if DestroyDriver then Reader.Driver.Free;
-      Reader.Free;
+    if FCurReadJITComponent.Name='' then begin
+      NewName:=FCurReadJITComponent.ClassName;
+      if NewName[1] in ['T','t'] then
+        System.Delete(NewName,1,1);
+      FCurReadJITComponent.Name:=NewName;
     end;
   except
     on E: Exception do begin
@@ -714,6 +727,7 @@ begin
       end;
     end;
   end;
+  FCurReadJITComponent:=nil;
 end;
 
 function TJITComponentList.OnFindGlobalComponent(
@@ -734,12 +748,12 @@ begin
   Application.FindGlobalComponentEnabled:=false;
 
   {$IFDEF VerboseJITForms}
-  writeln('[TJITComponentList.InitReading] A');
+  debugln('[TJITComponentList.InitReading] A');
   {$ENDIF}
   // connect TReader events
   Reader.OnError:=@ReaderError;
-  Reader.OnFindMethod:=@ReaderFindMethod;
   Reader.OnPropertyNotFound:=@ReaderPropertyNotFound;
+  Reader.OnFindMethod:=@ReaderFindMethod;
   Reader.OnSetMethodProperty:=@ReaderSetMethodProperty;
   Reader.OnSetName:=@ReaderSetName;
   Reader.OnReferenceName:=@ReaderReferenceName;
@@ -748,7 +762,7 @@ begin
   Reader.OnFindComponentClass:=@ReaderFindComponentClass;
 
   {$IFDEF VerboseJITForms}
-  writeln('[TJITComponentList.InitReading] B');
+  debugln('[TJITComponentList.InitReading] B');
   {$ENDIF}
 
   FCurReadChildClass:=nil;
@@ -758,7 +772,7 @@ end;
 
 function TJITComponentList.DoCreateJITComponent(
   const NewComponentName, NewClassName, NewUnitName: shortstring;
-  ParentClass: TClass):integer;
+  ParentClass: TClass; Visible: boolean):integer;
 var
   Instance:TComponent;
   ok: boolean;
@@ -777,6 +791,9 @@ begin
     try
       // set into design mode
       SetComponentDesignMode(Instance,true);
+      if (not Visible) and (Instance is TControl) then
+        TControl(Instance).ControlStyle:=
+                            TControl(Instance).ControlStyle+[csNoDesignVisible];
       // finish 'create' component
       Instance.Create(nil);
       if NewComponentName<>'' then
@@ -823,7 +840,7 @@ procedure TJITComponentList.RemoveMethod(JITComponent:TComponent;
 var OldCode:Pointer;
 begin
   {$IFDEF VerboseJITForms}
-  writeln('TJITComponentList.RemoveMethod ',JITComponent.Name,':',JITComponent.Name,' Method=',AName);
+  debugln('TJITComponentList.RemoveMethod ',JITComponent.Name,':',JITComponent.Name,' Method=',AName);
   {$ENDIF}
   if JITComponent=nil then
     raise Exception.Create('TJITComponentList.RemoveMethod JITComponent=nil');
@@ -841,7 +858,7 @@ procedure TJITComponentList.RenameMethod(JITComponent:TComponent;
   const OldName,NewName:ShortString);
 begin
   {$IFDEF VerboseJITForms}
-  writeln('TJITComponentList.RenameMethod ',JITComponent.Name,':',JITComponent.Name,' Old=',OldName,' NewName=',NewName);
+  debugln('TJITComponentList.RenameMethod ',JITComponent.Name,':',JITComponent.Name,' Old=',OldName,' NewName=',NewName);
   {$ENDIF}
   if JITComponent=nil then
     raise Exception.Create('TJITComponentList.RenameMethod JITComponent=nil');
@@ -857,7 +874,7 @@ procedure TJITComponentList.RenameComponentClass(JITComponent:TComponent;
   const NewName:ShortString);
 begin
   {$IFDEF VerboseJITForms}
-  writeln('TJITComponentList.RenameComponentClass ',JITComponent.Name,':',JITComponent.Name,' New=',NewName);
+  debugln('TJITComponentList.RenameComponentClass ',JITComponent.Name,':',JITComponent.Name,' New=',NewName);
   {$ENDIF}
   if JITComponent=nil then
     raise Exception.Create('TJITComponentList.RenameComponentClass JITComponent=nil');
@@ -873,7 +890,7 @@ procedure TJITComponentList.RenameComponentUnitname(JITComponent: TComponent;
   const NewUnitName: ShortString);
 begin
   {$IFDEF VerboseJITForms}
-  writeln('TJITComponentList.RenameComponentUnitname ',JITComponent.Name,':',JITComponent.Name,' New=',NewUnitName);
+  debugln('TJITComponentList.RenameComponentUnitname ',JITComponent.Name,':',JITComponent.Name,' New=',NewUnitName);
   {$ENDIF}
   if JITComponent=nil then
     raise Exception.Create('TJITComponentList.RenameComponentUnitname JITComponent=nil');
@@ -898,13 +915,13 @@ begin
   if IndexOf(JITOwnerComponent)<0 then
     RaiseException('TJITComponentList.AddJITChildComponentFromStream');
   {$IFDEF VerboseJITForms}
-  writeln('[TJITComponentList.AddJITChildComponentFromStream] A');
+  debugln('[TJITComponentList.AddJITChildComponentFromStream] A');
   {$ENDIF}
   try
     DestroyDriver:=false;
     InitReading(BinStream,Reader,DestroyDriver);
     {$IFDEF VerboseJITForms}
-    writeln('[TJITComponentList.AddJITChildComponentFromStream] B');
+    debugln('[TJITComponentList.AddJITChildComponentFromStream] B');
     {$ENDIF}
     try
       FCurReadJITComponent:=JITOwnerComponent;
@@ -912,7 +929,7 @@ begin
 
       FFlags:=FFlags+[jclAutoRenameComponents];
       {$IFDEF VerboseJITForms}
-      writeln('[TJITComponentList.AddJITChildComponentFromStream] C1 ',ComponentClass.ClassName);
+      debugln('[TJITComponentList.AddJITChildComponentFromStream] C1 ',ComponentClass.ClassName);
       {$ENDIF}
       Reader.Root := FCurReadJITComponent;
       Reader.Owner := FCurReadJITComponent;
@@ -928,7 +945,7 @@ begin
       DebugLn('[TJITComponentList.AddJITChildComponentFromStream] C6 ');
 
       {$IFDEF VerboseJITForms}
-      writeln('[TJITComponentList.AddJITChildComponentFromStream] D');
+      debugln('[TJITComponentList.AddJITChildComponentFromStream] D');
       {$ENDIF}
       DoFinishReading;
     finally
@@ -953,7 +970,7 @@ var CodeTemplate,NewCode:Pointer;
   OldCode: Pointer;
 begin
   {$IFDEF VerboseJITForms}
-  writeln('TJITComponentList.CreateNewMethod ',JITComponent.Name,':',JITComponent.Name,' Method=',AName);
+  debugln('TJITComponentList.CreateNewMethod ',JITComponent.Name,':',JITComponent.Name,' Method=',AName);
   {$ENDIF}
   if JITComponent=nil then
     raise Exception.Create('TJITComponentList.CreateNewMethod JITComponent=nil');
@@ -1131,7 +1148,7 @@ procedure TJITComponentList.DoAddNewMethod(JITClass:TClass;
 var OldMethodTable, NewMethodTable: PMethodNameTable;
   NewMethodTableSize:integer;
 begin
-  //writeln('[TJITComponentList.AddNewMethod] '''+JITClass.ClassName+'.'+AName+'''');
+  //debugln('[TJITComponentList.AddNewMethod] '''+JITClass.ClassName+'.'+AName+'''');
   OldMethodTable:=PMethodNameTable((Pointer(JITClass)+vmtMethodTable)^);
   if Assigned(OldMethodTable) then begin
     NewMethodTableSize:=SizeOf(DWord)+
@@ -1149,7 +1166,7 @@ begin
   end;
   {$R-}
   //for a:=0 to NewMethodTable^.Count-2 do
-  //  writeln(a,'=',NewMethodTable^.Entries[a].Name^,' $'
+  //  debugln(a,'=',NewMethodTable^.Entries[a].Name^,' $'
   //    ,DbgS(PtrInt(NewMethodTable^.Entries[a].Name),8));
   with NewMethodTable^.Entries[NewMethodTable^.Count-1] do begin
     GetMem(Name,256);
@@ -1157,7 +1174,7 @@ begin
     Addr:=ACode;
   end;
   //for a:=0 to NewMethodTable^.Count-1 do
-  //  writeln(a,'=',NewMethodTable^.Entries[a].Name^,' $'
+  //  debugln(a,'=',NewMethodTable^.Entries[a].Name^,' $'
   //    ,DbgS(PtrInt(NewMethodTable^.Entries[a].Name),8));
   {$IFDEF RangeCheckOn}{$R+}{$ENDIF}
   PMethodNameTable((Pointer(JITClass)+vmtMethodTable)^):=NewMethodTable;
@@ -1173,7 +1190,7 @@ var OldMethodTable, NewMethodTable: PMethodNameTable;
   a:cardinal;
 begin
   {$IFDEF VerboseJITForms}
-  writeln('[TJITComponentList.DoRemoveMethod] '''+JITClass.ClassName+'.'+AName+'''');
+  debugln('[TJITComponentList.DoRemoveMethod] '''+JITClass.ClassName+'.'+AName+'''');
   {$ENDIF}
   AName:=uppercase(AName);
   OldMethodTable:=PMethodNameTable((Pointer(JITClass)+vmtMethodTable)^);
@@ -1213,7 +1230,7 @@ var MethodTable: PMethodNameTable;
   a:integer;
 begin
   {$IFDEF VerboseJITForms}
-  writeln('[TJITComponentList.DoRenameMethod] ClassName='''+JITClass.ClassName+''''
+  debugln('[TJITComponentList.DoRenameMethod] ClassName='''+JITClass.ClassName+''''
     +' OldName='''+OldName+''' NewName='''+OldName+'''');
   {$ENDIF}
   OldName:=uppercase(OldName);
@@ -1230,7 +1247,7 @@ procedure TJITComponentList.DoRenameClass(JITClass:TClass;
   const NewName:ShortString);
 begin
   {$IFDEF VerboseJITForms}
-  writeln('[TJITComponentList.DoRenameClass] OldName='''+JITClass.ClassName
+  debugln('[TJITComponentList.DoRenameClass] OldName='''+JITClass.ClassName
     +''' NewName='''+NewName+''' ');
   {$ENDIF}
   PShortString((Pointer(JITClass)+vmtClassName)^)^:=NewName;
@@ -1271,7 +1288,7 @@ procedure TJITComponentList.ReaderFindMethod(Reader: TReader;
 var NewMethod: TMethod;
 begin
   {$IFDEF IDE_DEBUG}
-  writeln('[TJITComponentList.ReaderFindMethod] A "'+FindMethodName+'" Address=',DbgS(Address));
+  debugln('[TJITComponentList.ReaderFindMethod] A "'+FindMethodName+'" Address=',DbgS(Address));
   {$ENDIF}
   if Address=nil then begin
     // there is no method in the ancestor class with this name
@@ -1295,31 +1312,32 @@ procedure TJITComponentList.ReaderSetMethodProperty(Reader: TReader;
   Instance: TPersistent; PropInfo: PPropInfo; const TheMethodName: string;
   var Handled: boolean);
 begin
-  //writeln('TJITComponentList.ReaderSetMethodProperty ',PropInfo^.Name,':=',TheMethodName);
+  //debugln('TJITComponentList.ReaderSetMethodProperty ',PropInfo^.Name,':=',TheMethodName);
 end;
 
 procedure TJITComponentList.ReaderSetName(Reader: TReader;
   Component: TComponent; var NewName: Ansistring);
 begin
-//  writeln('[TJITComponentList.ReaderSetName] OldName="'+Component.Name+'" NewName="'+NewName+'"');
+//  debugln('[TJITComponentList.ReaderSetName] OldName="'+Component.Name+'" NewName="'+NewName+'"');
   if jclAutoRenameComponents in FFlags then begin
     while FCurReadJITComponent.FindComponent(NewName)<>nil do
       NewName:=CreateNextIdentifier(NewName);
   end;
 end;
 
-procedure TJITComponentList.ReaderReferenceName(Reader: TReader; var RefName: Ansistring);
+procedure TJITComponentList.ReaderReferenceName(Reader: TReader;
+  var RefName: Ansistring);
 begin
-//  writeln('[TJITComponentList.ReaderReferenceName] Name='''+RefName+'''');
+//  debugln('[TJITComponentList.ReaderReferenceName] Name='''+RefName+'''');
 end;
 
 procedure TJITComponentList.ReaderAncestorNotFound(Reader: TReader;
   const ComponentName: Ansistring;  ComponentClass: TPersistentClass;
   var Component: TComponent);
 begin
-// ToDo: this is for custom form templates
-//  writeln('[TJITComponentList.ReaderAncestorNotFound] ComponentName='''+ComponentName
-//    +''' Component='''+Component.Name+'''');
+  // ToDo: this is for custom form templates
+  debugln('[TJITComponentList.ReaderAncestorNotFound] ComponentName='''+ComponentName
+    +''' Component='''+Component.Name+'''');
 end;
 
 procedure TJITComponentList.ReaderError(Reader: TReader;
@@ -1367,7 +1385,7 @@ begin
   if ComponentClass=nil then begin
     RegComp:=IDEComponentPalette.FindComponent(FindClassName);
     if RegComp<>nil then begin
-      //writeln('[TJITComponentList.ReaderFindComponentClass] '''+FindClassName
+      //debugln('[TJITComponentList.ReaderFindComponentClass] '''+FindClassName
       //   +''' is registered');
       ComponentClass:=RegComp.ComponentClass;
     end else begin
@@ -1384,7 +1402,7 @@ procedure TJITComponentList.ReaderCreateComponent(Reader: TReader;
 begin
   fCurReadChild:=Component;
   fCurReadChildClass:=ComponentClass;
-//  writeln('[TJITComponentList.ReaderCreateComponent] Class='''+ComponentClass.ClassName+'''');
+//  debugln('[TJITComponentList.ReaderCreateComponent] Class='''+ComponentClass.ClassName+'''');
 end;
 
 procedure TJITComponentList.ReaderReadComponent(Component: TComponent);

@@ -2611,11 +2611,11 @@ begin
   if HandleAllocated then UpdateWindow(Handle);
 end;
 
-{------------------------------------------------------------------------------}
-{  TWinControl Focused                                                         }
-{------------------------------------------------------------------------------}
-Function TWinControl.Focused: Boolean;
-Begin
+{------------------------------------------------------------------------------
+  TWinControl Focused
+------------------------------------------------------------------------------}
+function TWinControl.Focused: Boolean;
+begin
   Result := CanTab and (HandleAllocated and (FindOwnerControl(GetFocus)=Self));
 end;
 
@@ -4251,13 +4251,13 @@ begin
     UpdateShowing;
 end;
 
-{------------------------------------------------------------------------------}
-{  TWinControl InsertControl                                                   }
-{------------------------------------------------------------------------------}
-Procedure TWinControl.InsertControl(AControl: TControl);
-Begin
+{------------------------------------------------------------------------------
+  TWinControl InsertControl
+------------------------------------------------------------------------------}
+procedure TWinControl.InsertControl(AControl: TControl);
+begin
   InsertControl(AControl,ControlCount);
-End;
+end;
 
 procedure TWinControl.InsertControl(AControl: TControl; Index: integer);
 begin
@@ -4273,7 +4273,7 @@ begin
     if AControl is TWinControl then
     begin
       AControl.Perform(CM_PARENTCTL3DCHANGED, 0, 0);
-      UpdateControlState;
+      TWinControl(AControl).UpdateControlState;
     end else
       if HandleAllocated then AControl.Invalidate;
     //DebugLn('TWinControl.InsertControl ',Name,':',ClassName);

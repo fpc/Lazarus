@@ -578,6 +578,7 @@ type
     function ProjectUnitWithUnitname(const AnUnitName: string): TUnitInfo;
     function UnitWithEditorIndex(Index:integer): TUnitInfo;
     function UnitWithComponent(AComponent: TComponent): TUnitInfo;
+    function UnitComponentInheritingFrom(AClass: TComponentClass): TUnitInfo;
     function UnitInfoWithFilename(const AFilename: string): TUnitInfo;
     function UnitInfoWithFilename(const AFilename: string;
                     SearchFlags: TProjectFileSearchFlags): TUnitInfo;
@@ -617,7 +618,7 @@ type
     procedure SetBookmark(AnUnitInfo: TUnitInfo; X,Y,ID: integer);
     procedure MergeBookmarks(AnUnitInfo: TUnitInfo);
     
-    // dependencies
+    // package dependencies
     function FindDependencyByName(const PackageName: string): TPkgDependency;
     function RequiredDepByIndex(Index: integer): TPkgDependency;
     function RemovedDepByIndex(Index: integer): TPkgDependency;
@@ -3369,6 +3370,14 @@ Function TProject.UnitWithComponent(AComponent: TComponent) : TUnitInfo;
 begin
   Result:=fFirst[uilWithComponent];
   while (Result<>nil) and (Result.Component<>AComponent) do
+    Result:=Result.fNext[uilWithComponent];
+end;
+
+function TProject.UnitComponentInheritingFrom(AClass: TComponentClass
+  ): TUnitInfo;
+begin
+  Result:=fFirst[uilWithComponent];
+  while (Result<>nil) and (Result.Component.InheritsFrom(AClass)) do
     Result:=Result.fNext[uilWithComponent];
 end;
 

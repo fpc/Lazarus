@@ -105,10 +105,10 @@ type
                              const AUnitName: shortstring;
                              X,Y,W,H: Integer): TIComponentInterface; virtual; abstract;
     function CreateComponentFromStream(BinStream: TStream;
-                             AncestorType: TComponentClass;
-                             const NewUnitName: ShortString;
-                             Interactive: boolean;
-                             Visible: boolean = true): TIComponentInterface; virtual; abstract;
+                      AncestorType: TComponentClass; AncestorBinStream: TStream;
+                      const NewUnitName: ShortString;
+                      Interactive: boolean;
+                      Visible: boolean = true): TIComponentInterface; virtual; abstract;
     function CreateChildComponentFromStream(BinStream: TStream;
                                      ComponentClass: TComponentClass;
                                      Root: TComponent;

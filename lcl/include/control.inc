@@ -3517,7 +3517,8 @@ begin
   // no csOpaque: delphi compatible, win32 themes notebook depend on it
   // csOpaque means entire client area will be drawn 
   // (most controls are semi-transparent)
-  FControlStyle := [csCaptureMouse, csClickEvents, csSetCaption, csDoubleClicks];
+  FControlStyle := FControlStyle
+                 +[csCaptureMouse, csClickEvents, csSetCaption, csDoubleClicks];
   FConstraints:= TSizeConstraints.Create(Self);
   FBorderSpacing:=TControlBorderSpacing.Create(Self);
   for Side:=Low(FAnchorSides) to High(FAnchorSides) do
