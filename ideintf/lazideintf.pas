@@ -40,6 +40,7 @@ type
     ofMultiOpen,     // set during loading multiple files
     ofDoNotLoadResource,// do not open form, datamodule, ... (overriding default)
     ofDoLoadResource,// do open form, datamodule, ... (overriding default)
+    ofLoadHiddenResource,// load component hidden
     ofAddToProject   // add file to project (if exists)
     );
   TOpenFlags = set of TOpenFlag;

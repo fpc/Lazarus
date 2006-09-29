@@ -141,7 +141,7 @@ type
                                 ParentClass: TClass): integer;
     function AddJITComponentFromStream(BinStream: TStream; ParentClass: TClass;
                                        const NewUnitName: ShortString;
-                                       Interactive: Boolean):integer;
+                                       Interactive, Visible: Boolean):integer;
     procedure DestroyJITComponent(JITComponent: TComponent);
     procedure DestroyJITComponent(Index: integer);
     function IndexOf(JITComponent: TComponent): integer;
@@ -650,8 +650,8 @@ begin
 end;
 
 function TJITComponentList.AddJITComponentFromStream(BinStream: TStream;
-  ParentClass: TClass; const NewUnitName: ShortString; Interactive: Boolean
-  ):integer;
+  ParentClass: TClass; const NewUnitName: ShortString;
+  Interactive, Visible: Boolean):integer;
 //  returns new index
 // -1 = invalid stream
 var
@@ -663,7 +663,6 @@ begin
   Result:=-1;
   NewClassName:=GetClassNameFromLRSStream(BinStream, IsInherited);
   if IsInherited then ;
-  { TODO: If IsInherited, read ancestor form stream }
   if NewClassName='' then begin
     MessageDlg('No classname in stream found.',mtError,[mbOK],0);
     exit;

@@ -202,6 +202,7 @@ const
      'ofMultiOpen',
      'ofDoNotLoadResource',
      'ofDoLoadResource',
+     'ofLoadHiddenResource',
      'ofAddToProject'
     );
 

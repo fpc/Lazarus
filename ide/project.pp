@@ -109,6 +109,7 @@ type
     FIgnoreFileDateOnDiskValid: boolean;
     FIgnoreFileDateOnDisk: longint;
     fLoaded: Boolean;  // loaded in the source editor
+    FLoadingComponent: boolean;
     fModified: boolean;
     fNext, fPrev: array[TUnitInfoList] of TUnitInfo;
     fOnFileBackup: TOnFileBackup;
@@ -226,6 +227,7 @@ type
     property FileReadOnly: Boolean read fFileReadOnly write SetFileReadOnly;
     property HasResources: boolean read GetHasResources write fHasResources;
     property Loaded: Boolean read fLoaded write SetLoaded;
+    property LoadingComponent: boolean read FLoadingComponent write FLoadingComponent;
     property Modified: boolean read fModified write fModified;// not Session data
     property SessionModified: boolean read FSessionModified write SetSessionModified;
     property OnFileBackup: TOnFileBackup read fOnFileBackup write fOnFileBackup;

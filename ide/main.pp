@@ -576,10 +576,10 @@ type
     function DoLoadLFM(AnUnitInfo: TUnitInfo; Flags: TOpenFlags): TModalResult;
     function DoLoadLFM(AnUnitInfo: TUnitInfo; LFMBuf: TCodeBuffer;
                        Flags: TOpenFlags; CloseDsgnForm: boolean): TModalResult;
-    function DoLoadAncestorComponent(AnUnitInfo: TUnitInfo;
-                               const AncestorName: string;
-                               var AncestorClass: TComponentClass;
-                               Flags: TOpenFlags): TModalResult;
+    function DoLoadHiddenResourceComponent(AnUnitInfo: TUnitInfo;
+                           const AComponentClassName: string; Flags: TOpenFlags;
+                           var AComponentClass: TComponentClass;
+                           var ComponentUnitInfo: TUnitInfo): TModalResult;
 
     // methods for 'close unit'
     function CloseDesignerForm(AnUnitInfo: TUnitInfo): TModalResult;
@@ -4736,6 +4736,7 @@ var
   APersistentClass: TPersistentClass;
   ACaption, AText: String;
   NewUnitName: String;
+  AncestorUnitInfo: TUnitInfo;
 begin
   debugln('TMainIDE.DoLoadLFM A ',AnUnitInfo.Filename,' IsPartOfProject=',dbgs(AnUnitInfo.IsPartOfProject),' ');
 
@@ -4748,7 +4749,11 @@ begin
 
   // close old designer form
   if CloseDsgnForm then
-    CloseDesignerForm(AnUnitInfo);
+    CloseDesignerForm(AnUnitInfo)
+  else if AnUnitInfo.Component<>nil then begin
+    DebugLn(['TMainIDE.DoLoadLFM INCONSISTENCY CloseDsgnForm=',CloseDsgnForm,' Filename=',AnUnitInfo.Filename,' Component=',dbgsName(AnUnitInfo.Component)]);
+    exit(mrAbort);
+  end;
 
   //debugln('TMainIDE.DoLoadLFM LFM file loaded, parsing "',LFMBuf.Filename,'" ...');
 
@@ -4763,7 +4768,7 @@ begin
 
   // find the classname of the LFM, and check for inherited form
   ReadLFMHeader(LFMBuf.Source,NewClassName,LFMType);
-  if NewClassName='' then begin
+  if (NewClassName='') or (LFMType='') then begin
     Result:=MessageDlg(lisLFMFileCorrupt,
       Format(lisUnableToFindAValidClassnameIn, ['"', LFMBuf.Filename, '"']),
       mtError,[mbIgnore,mbCancel,mbAbort],0);
@@ -4797,12 +4802,13 @@ begin
 
   if (AncestorType=nil) then begin
     // try loading the ancestor first
-    if DoLoadAncestorComponent(AnUnitInfo,NewAncestorName,AncestorType,Flags)
-      =mrAbort
-    then
-      exit(mrAbort);
+    AncestorUnitInfo:=nil;
+    Result:=DoLoadHiddenResourceComponent(AnUnitInfo,NewAncestorName,Flags,
+                                          AncestorType,AncestorUnitInfo);
+    if Result<>mrOk then exit;
   end;
 
+  // use TForm as default ancestor
   if AncestorType=nil then
     AncestorType:=TForm;
   //DebugLn('TMainIDE.DoLoadLFM Filename="',AnUnitInfo.Filename,'" AncestorClassName=',NewAncestorName,' AncestorType=',AncestorType.ClassName);
@@ -4839,7 +4845,8 @@ begin
       TxtLFMStream.Free;
     end;
     if ComponentLoadingOk then begin
-      if not (ofProjectLoading in Flags) then FormEditor1.ClearSelection;
+      if ([ofProjectLoading,ofLoadHiddenResource]*Flags=[]) then
+        FormEditor1.ClearSelection;
 
       // create JIT component
       NewUnitName:=AnUnitInfo.UnitName;
@@ -4864,24 +4871,27 @@ begin
         NewComponent:=CInterface.Component;
         DebugLn('SUCCESS: streaming lfm="',LFMBuf.Filename,'"');
         AnUnitInfo.Component:=NewComponent;
-        CreateDesignerForComponent(NewComponent);
         AnUnitInfo.ComponentName:=NewComponent.Name;
         AnUnitInfo.ComponentResourceName:=AnUnitInfo.ComponentName;
-        DesignerForm:=FormEditor1.GetDesignerForm(AnUnitInfo.Component);
-
-        if not (ofProjectLoading in Flags) then begin
-          FDisplayState:= dsForm;
+        if not (ofLoadHiddenResource in Flags) then begin
+          CreateDesignerForComponent(NewComponent);
+          DesignerForm:=FormEditor1.GetDesignerForm(AnUnitInfo.Component);
+        end else begin
+          DesignerForm:=nil;
         end;
 
         // select the new form (object inspector, formeditor, control selection)
-        if not (ofProjectLoading in Flags) then begin
+        if ([ofProjectLoading,ofLoadHiddenResource]*Flags=[]) then begin
+          FDisplayState:= dsForm;
           GlobalDesignHook.LookupRoot := NewComponent;
           TheControlSelection.AssignPersistent(NewComponent);
         end;
-        //DesignerForm.HandleNeeded;
-        LCLIntf.ShowWindow(DesignerForm.Handle,SW_SHOWNORMAL);
 
-        FLastFormActivated:=DesignerForm;
+        // show new form
+        if DesignerForm<>nil then begin
+          LCLIntf.ShowWindow(DesignerForm.Handle,SW_SHOWNORMAL);
+          FLastFormActivated:=DesignerForm;
+        end;
       end;
     end;
     {$IFDEF IDE_DEBUG}
@@ -4893,79 +4903,136 @@ begin
   Result:=mrOk;
 end;
 
-function TMainIDE.DoLoadAncestorComponent(AnUnitInfo: TUnitInfo;
-  const AncestorName: string; var AncestorClass: TComponentClass;
-  Flags: TOpenFlags): TModalResult;
+function TMainIDE.DoLoadHiddenResourceComponent(AnUnitInfo: TUnitInfo;
+  const AComponentClassName: string; Flags: TOpenFlags;
+  var AComponentClass: TComponentClass; var ComponentUnitInfo: TUnitInfo
+  ): TModalResult;
+  
+  function TryUnit(const UnitFilename: string; out TheModalResult: TModalResult
+    ): boolean;
+  // returns true if the unit contains the component class and sets
+  // TheModalResult to the result of the loading
+  var
+    LFMFilename: String;
+    LFMCode: TCodeBuffer;
+    LFMClassName: string;
+    LFMType: string;
+    CurUnitInfo: TUnitInfo;
+    UnitCode: TCodeBuffer;
+  begin
+    Result:=false;
+    TheModalResult:=mrCancel;
+    
+    CurUnitInfo:=Project1.UnitInfoWithFilename(UnitFilename);
+    if (CurUnitInfo<>nil) and (CurUnitInfo.Component<>nil) then
+    begin
+      if CompareText(CurUnitInfo.Component.ClassName,AComponentClassName)=0
+      then begin
+        // component found
+        ComponentUnitInfo:=CurUnitInfo;
+        AComponentClass:=TComponentClass(ComponentUnitInfo.Component.ClassType);
+        Result:=true;
+      end else begin
+        // this unit does not have this component
+        exit;
+      end;
+    end;
+    
+    LFMFilename:=ChangeFileExt(UnitFilename,'.lfm');
+    if not FileExists(LFMFilename) then exit;
+    
+    // load the lfm file
+    TheModalResult:=LoadCodeBuffer(LFMCode,LFMFilename,[lbfCheckIfText]);
+    if TheModalResult<>mrOk then begin
+      debugln('TMainIDE.DoLoadHiddenResourceComponent Failed loading ',LFMFilename);
+      exit;
+    end;
+    // read the LFM classname
+    ReadLFMHeader(LFMCode.Source,LFMClassName,LFMType);
+    if LFMType='' then ;
+    if CompareText(LFMClassName,AComponentClassName)<>0 then exit;
+
+    // component LFM found
+    Result:=true;
+
+    debugln('TMainIDE.DoLoadHiddenResourceComponent ',AnUnitInfo.Filename,' Loading ancestor unit ',UnitFilename);
+    // load unit source
+    TheModalResult:=LoadCodeBuffer(UnitCode,UnitFilename,[lbfCheckIfText]);
+    if TheModalResult<>mrOk then begin
+      debugln('TMainIDE.DoLoadHiddenResourceComponent Failed loading ',UnitFilename);
+      exit;
+    end;
+    
+    // create unit info
+    if CurUnitInfo=nil then begin
+      CurUnitInfo:=TUnitInfo.Create(UnitCode);
+      CurUnitInfo.ReadUnitNameFromSource(true);
+      Project1.AddFile(CurUnitInfo,false);
+    end;
+    
+    // load resource hidden
+    TheModalResult:=DoLoadLFM(CurUnitInfo,LFMCode,
+                              Flags+[ofLoadHiddenResource],false);
+    if (TheModalResult=mrOk) then begin
+      ComponentUnitInfo:=CurUnitInfo;
+      AComponentClass:=TComponentClass(ComponentUnitInfo.Component.ClassType);
+      debugln('TMainIDE.DoLoadHiddenResourceComponent Wanted=',AComponentClassName,' Class=',AComponentClass.ClassName);
+      TheModalResult:=mrOk;
+    end else begin
+      debugln('TMainIDE.DoLoadHiddenResourceComponent Failed to load component ',AComponentClassName);
+      TheModalResult:=mrCancel;
+    end;
+  end;
+  
 var
   UsedUnitFilenames: TStrings;
   i: Integer;
-  LFMFilename: String;
-  LFMCode: TCodeBuffer;
-  LFMClassName: string;
-  LFMType: string;
-  UnitFilename: string;
-  AncestorUnitInfo: TUnitInfo;
 begin
   Result:=mrCancel;
 
-  // search ancestor lfm
-  debugln('TMainIDE.DoLoadAncestorComponent ',AnUnitInfo.Filename,' AncestorName=',AncestorName);
-
-  // search used units filenames
-  UsedUnitFilenames:=nil;
-  try
-    if not CodeToolBoss.FindUsedUnitFiles(AnUnitInfo.Source,UsedUnitFilenames)
-    then begin
-      DoJumpToCodeToolBossError;
-      Result:=mrCancel;
-      exit;
-    end;
-
-    // search for every used unit the .lfm file
-    if (UsedUnitFilenames<>nil) then begin
-      for i:=UsedUnitFilenames.Count-1 downto 0 do begin
-        UnitFilename:=UsedUnitFilenames[i];
-        LFMFilename:=ChangeFileExt(UnitFilename,'.lfm');
-        if FileExists(LFMFilename) then begin
-          // load the lfm file
-          Result:=LoadCodeBuffer(LFMCode,LFMFilename,[lbfCheckIfText]);
-          if Result<>mrOk then begin
-            debugln('TMainIDE.DoLoadAncestorComponent Failed loading ',LFMFilename);
-            exit;
-          end;
-          // read the LFM classname
-          ReadLFMHeader(LFMCode.Source,LFMClassName,LFMType);
-          if LFMType='' then ;
-          if CompareText(LFMClassName,AncestorName)=0 then begin
-            // ancestor LFM found
-
-            debugln('TMainIDE.DoLoadAncestorComponent ',AnUnitInfo.Filename,' Loading ancestor unit ',UnitFilename);
-            // TODO: open ancestor hidden
-            // WORKAROUND: just open it
-            // beware: don't close it or you will get strange errors
-            Result:=DoOpenEditorFile(UnitFilename,AnUnitInfo.EditorIndex+1,
-                                     Flags+[ofDoLoadResource,ofRegularFile]);
-            if (Result=mrOk) then begin
-              AncestorUnitInfo:=Project1.UnitInfoWithFilename(UnitFilename);
-              if (AncestorUnitInfo.Component<>nil) then begin
-                AncestorClass:=
-                          TComponentClass(AncestorUnitInfo.Component.ClassType);
-                debugln('TMainIDE.DoLoadAncestorComponent AncestorClass=',AncestorClass.ClassName);
-                Result:=mrOk;
-              end else
-                debugln('TMainIDE.DoLoadAncestorComponent Failed to load ancestor component');
-            end;
-            exit;
-          end;
-        end;
-      end;
-    end;
-
-  finally
-    UsedUnitFilenames.Free;
+  // check for circles
+  if AnUnitInfo.LoadingComponent then begin
+    Result:=QuestionDlg('Error','Unable to load the component class '
+      +'"'+AComponentClassName+'", because it depends on itself.',
+      mtError,[mrCancel,'Cancel loading this component',
+               mrAbort,'Abort whole loading'],0);
+    exit;
   end;
 
-  Result:=mrCancel;
+  AnUnitInfo.LoadingComponent:=true;
+  try
+    // search component lfm
+    debugln('TMainIDE.DoLoadHiddenResourceComponent ',AnUnitInfo.Filename,' AComponentName=',AComponentClassName,' AComponentClass=',dbgsName(AComponentClass));
+
+    // first search the resource of ComponentUnitInfo
+    if ComponentUnitInfo<>nil then begin
+      if TryUnit(ComponentUnitInfo.Filename,Result) then exit;
+    end;
+
+    // then search in used units
+    UsedUnitFilenames:=nil;
+    try
+      if not CodeToolBoss.FindUsedUnitFiles(AnUnitInfo.Source,UsedUnitFilenames)
+      then begin
+        DoJumpToCodeToolBossError;
+        Result:=mrCancel;
+        exit;
+      end;
+
+      // search for every used unit the .lfm file
+      if (UsedUnitFilenames<>nil) then begin
+        for i:=UsedUnitFilenames.Count-1 downto 0 do begin
+          if TryUnit(UsedUnitFilenames[i],Result) then exit;
+        end;
+      end;
+    finally
+      UsedUnitFilenames.Free;
+    end;
+
+    Result:=mrCancel;
+  finally
+    AnUnitInfo.LoadingComponent:=false;
+  end;
 end;
 
 {-------------------------------------------------------------------------------

@@ -8,6 +8,38 @@ uses Classes, StdCtrls, Controls, Graphics, SysUtils, qt4;
 
 type
 
+  { TQtComboStrings }
+
+  TQtComboStrings = class(TStrings)
+  private
+    FComboChanged: Boolean; // StringList and QtComboBox out of sync
+    FStringList: TStringList; // Holds the items to show
+    FQtComboBox: QComboBoxH;  // Qt Widget
+    FOwner: TWinControl;      // Lazarus Control Owning ListStrings
+    FUpdating: Boolean;       // We're changing Qt Widget
+    procedure InternalUpdate;
+    procedure ExternalUpdate(var Astr: TStringList; Clear: Boolean = True);
+    procedure IsChanged; // OnChange triggered by program action
+  protected
+    function GetTextStr: string; override;
+    function GetCount: integer; override;
+    function Get(Index : Integer) : string; override;
+    //procedure SetSorted(Val : boolean); virtual;
+  public
+    constructor Create(ComboBoxH : QComboBoxH; TheOwner: TWinControl);
+    destructor Destroy; override;
+    procedure Assign(Source : TPersistent); override;
+    procedure Clear; override;
+    procedure Delete(Index : integer); override;
+    procedure Insert(Index : integer; const S: string); override;
+    procedure SetText(TheText: PChar); override;
+    //procedure Sort; virtual;
+  public
+    //property Sorted: boolean read FSorted write SetSorted;
+    property Owner: TWinControl read FOwner;
+  end;
+
+
   { TQtListStrings }
 
   TQtListStrings = class(TStrings)
@@ -565,6 +597,130 @@ end;
 function TQtImage.numBytes: Integer;
 begin
   Result := QImage_numBytes(Handle);
+end;
+
+{ TQtComboStrings }
+
+procedure TQtComboStrings.InternalUpdate;
+begin
+
+end;
+
+procedure TQtComboStrings.ExternalUpdate(var Astr: TStringList; Clear: Boolean
+  );
+var
+  i: Integer;
+  data: QVariantH;
+begin
+
+  data := QVariant_create(10); //Creates dummy data
+
+  FUpdating := True;
+  if Clear then
+    QComboBox_clear(FQtComboBox);
+  for i := 0 to AStr.Count -1 do
+    QComboBox_additem(FQtComboBox, @WideString(Astr[i]), data);
+  FUpdating := False;
+  IsChanged;
+  FUpdating := False;
+
+  QVariant_destroy(data); // Clean up
+end;
+
+procedure TQtComboStrings.IsChanged;
+begin
+
+end;
+
+function TQtComboStrings.GetTextStr: string;
+begin
+  Result:=inherited GetTextStr;
+end;
+
+function TQtComboStrings.GetCount: integer;
+begin
+  if FComboChanged then InternalUpdate;
+  Result := FStringList.Count;
+end;
+
+function TQtComboStrings.Get(Index: Integer): string;
+begin
+  if FComboChanged then InternalUpdate;
+  if Index < FStringList.Count then
+     Result := FStringList.Strings[Index]
+  else Result := '';
+end;
+
+constructor TQtComboStrings.Create(ComboBoxH: QComboBoxH; TheOwner: TWinControl
+  );
+var
+  Method: TMethod;
+  Hook : QComboBox_hookH;
+//  Astr: WideString;
+  i: Integer;
+begin
+  inherited Create;
+
+  {$ifdef VerboseQt}
+    if (ComboBoxH = nil) then WriteLn('TQtComboStrings.Create Unspecified ComboBoxH widget');
+    if (TheOwner = nil) then WriteLn('TQtComboStrings.Create Unspecified owner');
+  {$endif}
+
+  FStringList := TStringList.Create;
+  FQtComboBox := ComboBoxH;
+  FStringList.Text := TCustomComboBox(TheOwner).Items.Text;
+  FOwner:=TheOwner;
+end;
+
+destructor TQtComboStrings.Destroy;
+begin
+  inherited Destroy;
+end;
+
+procedure TQtComboStrings.Assign(Source: TPersistent);
+begin
+  inherited Assign(Source);
+end;
+
+procedure TQtComboStrings.Clear;
+begin
+  FUpdating := True;
+  FStringList.Clear;
+  QComboBox_clear(FQtComboBox);
+  FComboChanged := False;
+  FUpdating := False;
+  IsChanged;
+end;
+
+procedure TQtComboStrings.Delete(Index: integer);
+begin
+  if FComboChanged then InternalUpdate;
+
+  if Index < FStringList.Count then
+  begin
+    FStringList.Delete(Index);
+    ExternalUpdate(FStringList,True);
+    FComboChanged := False;
+  end;
+end;
+
+procedure TQtComboStrings.Insert(Index: integer; const S: string);
+begin
+  if FComboChanged then InternalUpdate;
+
+  if Index < 0 then Index := 0;
+
+  if Index <= FStringList.Count then
+  begin
+    FStringList.Insert(Index,S);
+    ExternalUpdate(FStringList,True);
+    FComboChanged := False;
+  end;
+end;
+
+procedure TQtComboStrings.SetText(TheText: PChar);
+begin
+  inherited SetText(TheText);
 end;
 
 end.

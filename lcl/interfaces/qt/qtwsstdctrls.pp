@@ -1071,10 +1071,11 @@ end;
   Returns: The state of the control
  ------------------------------------------------------------------------------}
 class function TQtWSCustomComboBox.GetItems(const ACustomComboBox: TCustomComboBox): TStrings;
+var
+  ComboBoxH: QComboBoxH;
 begin
-  Result := TStringList.Create;
-  
-  Result.Text := ACustomComboBox.Items.Text;
+  ComboBoxH := QComboBoxH((TQtWidget(ACustomComboBox.Handle).Widget));
+  Result := TQtComboStrings.Create(ComboBoxH, ACustomComboBox);
 end;
 
 initialization

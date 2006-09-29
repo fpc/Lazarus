@@ -193,25 +193,26 @@ each control that's dropped onto the form
     function CreateUniqueComponentName(AComponent: TComponent): string;
     function CreateUniqueComponentName(const AClassName: string;
                                        OwnerComponent: TComponent): string;
-    Function CreateComponentInterface(AComponent: TComponent): TIComponentInterface;
+    function CreateComponentInterface(AComponent: TComponent): TIComponentInterface;
     procedure CreateChildComponentInterfaces(AComponent: TComponent);
-    Function GetDefaultComponentParent(TypeClass: TComponentClass
+    function GetDefaultComponentParent(TypeClass: TComponentClass
                                        ): TIComponentInterface; override;
-    Function GetDefaultComponentPosition(TypeClass: TComponentClass;
+    function GetDefaultComponentPosition(TypeClass: TComponentClass;
                                          ParentCI: TIComponentInterface;
                                          var X,Y: integer): boolean; override;
     function CreateComponent(ParentCI: TIComponentInterface;
                              TypeClass: TComponentClass;
                              const AUnitName: shortstring;
                              X,Y,W,H: Integer): TIComponentInterface; override;
-    Function CreateComponentFromStream(BinStream: TStream;
+    function CreateComponentFromStream(BinStream: TStream;
                        AncestorType: TComponentClass;
                        const NewUnitName: ShortString;
-                       Interactive: boolean): TIComponentInterface; override;
-    Function CreateChildComponentFromStream(BinStream: TStream;
+                       Interactive: boolean;
+                       Visible: boolean = true): TIComponentInterface; override;
+    function CreateChildComponentFromStream(BinStream: TStream;
                        ComponentClass: TComponentClass; Root: TComponent;
                        ParentControl: TWinControl): TIComponentInterface; override;
-    Procedure SetComponentNameAndClass(CI: TIComponentInterface;
+    procedure SetComponentNameAndClass(CI: TIComponentInterface;
       const NewName, NewClassName: shortstring);
 
     // define properties
@@ -1427,7 +1428,8 @@ end;
 
 Function TCustomFormEditor.CreateComponentFromStream(
   BinStream: TStream; AncestorType: TComponentClass;
-  const NewUnitName: ShortString; Interactive: boolean): TIComponentInterface;
+  const NewUnitName: ShortString; Interactive: boolean;
+  Visible: boolean): TIComponentInterface;
 var
   NewJITIndex: integer;
   NewComponent: TComponent;
@@ -1439,14 +1441,14 @@ begin
     RaiseException('TCustomFormEditor.CreateComponentFromStream ClassName='+
                    AncestorType.ClassName);
   NewJITIndex := JITList.AddJITComponentFromStream(BinStream,AncestorType,
-                                                   NewUnitName,Interactive);
+                                               NewUnitName,Interactive,Visible);
   if NewJITIndex < 0 then begin
     Result:=nil;
     exit;
   end;
   NewComponent:=JITList[NewJITIndex];
   
-  // create a component interface for the form
+  // create a component interface
   Result:=CreateComponentInterface(NewComponent);
 
   CreateChildComponentInterfaces(NewComponent);
