@@ -1816,6 +1816,7 @@ images/formatitalic.bmp -text
 images/formatunderline.bmp -text
 images/icon-naming-spec.xml svneol=native#text/plain
 images/ide_icon48x48.png -text svneol=unset#image/png
+images/includefile.ico -text svneol=unset#image/x-icon
 images/insertcodetag.xpm svneol=native#text/plain
 images/insertremark.xpm svneol=native#text/plain
 images/insertvartag.xpm svneol=native#text/plain
