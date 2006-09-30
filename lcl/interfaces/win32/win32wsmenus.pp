@@ -395,11 +395,10 @@ procedure DrawMenuItemIcon(const aMenuItem: TMenuItem; const aHDC: HDC; const aR
 var hdcMem: HDC;
     hbmpOld: HBITMAP;
 begin
-  hdcMem := CreateCompatibleDC(aHDC);
+  hdcMem := aMenuItem.Bitmap.Canvas.Handle;
   hbmpOld := SelectObject(hdcMem, aMenuItem.Bitmap.Handle);
   TWin32WidgetSet(WidgetSet).MaskBlt(aHDC, aRect.left + LeftIconPosition, aRect.top + TopPosition(aRect.bottom - aRect.top, aMenuItem.Bitmap.Height), aMenuItem.Bitmap.Width, aMenuItem.Bitmap.Height, hdcMem, 0, 0, aMenuItem.Bitmap.MaskHandle, 0, 0);
   SelectObject(hdcMem, hbmpOld);
-  DeleteDC(hdcMem);
 end;
 
 procedure DrawMenuItem(const aMenuItem: TMenuItem; const aHDC: HDC; const aRect: Windows.RECT; const aSelected: boolean);
