@@ -72,7 +72,7 @@ Root: HKLM; SubKey: SOFTWARE\Classes\LazarusPackage\shell\open; ValueType: strin
 Root: HKLM; SubKey: SOFTWARE\Classes\LazarusPackage\shell\open\command; ValueType: string; ValueData: "{app}\lazarus.exe  ""%1"""; Flags: uninsdeletevalue; Check: IsHKLMWriteable
 Root: HKLM; SubKey: SOFTWARE\Classes\.lpr; ValueType: string; ValueData: LazarusProject; Flags: uninsdeletekeyifempty uninsdeletevalue; Check: IsHKLMWriteable
 Root: HKLM; SubKey: SOFTWARE\Classes\LazarusProjectSource; ValueType: string; ValueName: ; ValueData: Lazarus Project; Flags: uninsdeletekey; Check: IsHKLMWriteable
-Root: HKLM; SubKey: SOFTWARE\Classes\LazarusProjectSource\DefaultIcon; ValueType: string; ValueData: {app}\images\LazarusProject.ico; Flags: uninsdeletevalue; Check: IsHKLMWriteable
+Root: HKLM; SubKey: SOFTWARE\Classes\LazarusProjectSource\DefaultIcon; ValueType: string; ValueData: {app}\images\lprfile.ico; Flags: uninsdeletevalue; Check: IsHKLMWriteable
 Root: HKLM; SubKey: SOFTWARE\Classes\LazarusProjectSource\shell\open; ValueType: string; ValueName: ; ValueData: {code:GetPoString|installerstrconsts:wisopenproject}; Flags: uninsdeletevalue; Check: IsHKLMWriteable
 Root: HKLM; SubKey: SOFTWARE\Classes\LazarusProjectSource\shell\open\command; ValueType: string; ValueData: "{app}\lazarus.exe  ""%1"""; Flags: uninsdeletevalue; Check: IsHKLMWriteable
 Root: HKLM; SubKey: SOFTWARE\Classes\.lfm; ValueType: string; ValueData: LazarusForm; Flags: uninsdeletekeyifempty uninsdeletevalue; Check: IsHKLMWriteable
@@ -88,7 +88,7 @@ Root: HKLM; SubKey: SOFTWARE\Classes\LazarusUnit\shell\open; ValueType: string; 
 Root: HKLM; SubKey: SOFTWARE\Classes\LazarusUnit\shell\open\command; ValueType: string; ValueData: "{app}\lazarus.exe  ""%1"""; Flags: uninsdeletevalue; Check: IsHKLMWriteable
 Root: HKLM; SubKey: SOFTWARE\Classes\.inc; ValueType: string; ValueData: LazarusInclude; Flags: uninsdeletekeyifempty uninsdeletevalue; Check: IsHKLMWriteable
 Root: HKLM; SubKey: SOFTWARE\Classes\LazarusInclude; ValueType: string; ValueName: ; ValueData: Object Pascal Include; Flags: uninsdeletekey; Check: IsHKLMWriteable
-Root: HKLM; SubKey: SOFTWARE\Classes\LazarusInclude\DefaultIcon; ValueType: string; ValueName: ; ValueData: {app}\images\LazarusSource.ico; Flags: uninsdeletevalue; Check: IsHKLMWriteable
+Root: HKLM; SubKey: SOFTWARE\Classes\LazarusInclude\DefaultIcon; ValueType: string; ValueData: {app}\images\includefile.ico; Flags: uninsdeletevalue; Check: IsHKLMWriteable
 Root: HKLM; SubKey: SOFTWARE\Classes\LazarusInclude\shell\open; ValueType: string; ValueName: ; ValueData: {code:GetPoString|installerstrconsts:wiseditsource}; Flags: uninsdeletevalue; Check: IsHKLMWriteable
 Root: HKLM; SubKey: SOFTWARE\Classes\LazarusInclude\shell\open\command; ValueType: string; ValueData: "{app}\lazarus.exe  ""%1"""; Flags: uninsdeletevalue; Check: IsHKLMWriteable
 
@@ -104,7 +104,7 @@ Root: HKCU; SubKey: SOFTWARE\Classes\LazarusPackage\shell\open; ValueType: strin
 Root: HKCU; SubKey: SOFTWARE\Classes\LazarusPackage\shell\open\command; ValueType: string; ValueData: "{app}\lazarus.exe  ""%1"""; Flags: uninsdeletevalue; Check: IsHKLMNotWriteable
 Root: HKCU; SubKey: SOFTWARE\Classes\.lpr; ValueType: string; ValueData: LazarusProject; Flags: uninsdeletekeyifempty uninsdeletevalue; Check: IsHKLMNotWriteable
 Root: HKCU; SubKey: SOFTWARE\Classes\LazarusProjectSource; ValueType: string; ValueName: ; ValueData: Lazarus Project; Flags: uninsdeletekey; Check: IsHKLMNotWriteable
-Root: HKCU; SubKey: SOFTWARE\Classes\LazarusProjectSource\DefaultIcon; ValueType: string; ValueData: {app}\images\LazarusProject.ico; Flags: uninsdeletevalue; Check: IsHKLMNotWriteable
+Root: HKCU; SubKey: SOFTWARE\Classes\LazarusProjectSource\DefaultIcon; ValueType: string; ValueData: {app}\images\lprfile.ico; Flags: uninsdeletevalue; Check: IsHKLMNotWriteable
 Root: HKCU; SubKey: SOFTWARE\Classes\LazarusProjectSource\shell\open; ValueType: string; ValueName: ; ValueData: {code:GetPoString|installerstrconsts:wisopenproject}; Flags: uninsdeletevalue; Check: IsHKLMNotWriteable
 Root: HKCU; SubKey: SOFTWARE\Classes\LazarusProjectSource\shell\open\command; ValueType: string; ValueData: "{app}\lazarus.exe  ""%1"""; Flags: uninsdeletevalue; Check: IsHKLMNotWriteable
 Root: HKCU; SubKey: SOFTWARE\Classes\.lfm; ValueType: string; ValueData: LazarusForm; Flags: uninsdeletekeyifempty uninsdeletevalue; Check: IsHKLMNotWriteable
@@ -120,7 +120,7 @@ Root: HKCU; SubKey: SOFTWARE\Classes\LazarusUnit\shell\open; ValueType: string; 
 Root: HKCU; SubKey: SOFTWARE\Classes\LazarusUnit\shell\open\command; ValueType: string; ValueData: "{app}\lazarus.exe  ""%1"""; Flags: uninsdeletevalue; Check: IsHKLMNotWriteable
 Root: HKCU; SubKey: SOFTWARE\Classes\.inc; ValueType: string; ValueData: LazarusInclude; Flags: uninsdeletekeyifempty uninsdeletevalue; Check: IsHKLMNotWriteable
 Root: HKCU; SubKey: SOFTWARE\Classes\LazarusInclude; ValueType: string; ValueName: ; ValueData: Object Pascal Include; Flags: uninsdeletekey; Check: IsHKLMNotWriteable
-Root: HKCU; SubKey: SOFTWARE\Classes\LazarusInclude\DefaultIcon; ValueType: string; ValueName: ; ValueData: {app}\images\LazarusSource.ico; Flags: uninsdeletevalue; Check: IsHKLMNotWriteable
+Root: HKCU; SubKey: SOFTWARE\Classes\LazarusInclude\DefaultIcon; ValueType: string; ValueData: {app}\images\includefile.ico; Flags: uninsdeletevalue; Check: IsHKLMNotWriteable
 Root: HKCU; SubKey: SOFTWARE\Classes\LazarusInclude\shell\open; ValueType: string; ValueName: ; ValueData: {code:GetPoString|installerstrconsts:wiseditsource}; Flags: uninsdeletevalue; Check: IsHKLMNotWriteable
 Root: HKCU; SubKey: SOFTWARE\Classes\LazarusInclude\shell\open\command; ValueType: string; ValueData: "{app}\lazarus.exe  ""%1"""; Flags: uninsdeletevalue; Check: IsHKLMNotWriteable
 
