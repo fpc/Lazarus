@@ -578,7 +578,9 @@ type
     function ProjectUnitWithUnitname(const AnUnitName: string): TUnitInfo;
     function UnitWithEditorIndex(Index:integer): TUnitInfo;
     function UnitWithComponent(AComponent: TComponent): TUnitInfo;
-    function UnitComponentInheritingFrom(AClass: TComponentClass): TUnitInfo;
+    function UnitComponentInheritingFrom(AClass: TComponentClass;
+                                         Ignore: TUnitInfo): TUnitInfo;
+    function UnitUsingComponentUnit(ComponentUnit: TUnitInfo): TUnitInfo;
     function UnitInfoWithFilename(const AFilename: string): TUnitInfo;
     function UnitInfoWithFilename(const AFilename: string;
                     SearchFlags: TProjectFileSearchFlags): TUnitInfo;
@@ -3373,12 +3375,22 @@ begin
     Result:=Result.fNext[uilWithComponent];
 end;
 
-function TProject.UnitComponentInheritingFrom(AClass: TComponentClass
-  ): TUnitInfo;
+function TProject.UnitComponentInheritingFrom(AClass: TComponentClass;
+  Ignore: TUnitInfo): TUnitInfo;
 begin
   Result:=fFirst[uilWithComponent];
-  while (Result<>nil) and (Result.Component.InheritsFrom(AClass)) do
+  while (Result<>nil) do begin
+    if (Result<>Ignore) and Result.Component.InheritsFrom(AClass) then exit;
     Result:=Result.fNext[uilWithComponent];
+  end;
+end;
+
+function TProject.UnitUsingComponentUnit(ComponentUnit: TUnitInfo): TUnitInfo;
+begin
+  Result:=nil;
+  if ComponentUnit.Component=nil then exit;
+  Result:=UnitComponentInheritingFrom(
+              TComponentClass(ComponentUnit.Component.ClassType),ComponentUnit);
 end;
 
 function TProject.UnitInfoWithFilename(const AFilename: string): TUnitInfo;

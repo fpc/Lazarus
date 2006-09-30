@@ -217,7 +217,7 @@ type
 
     constructor Create(TheDesignerForm: TCustomForm;
        AControlSelection: TControlSelection);
-    procedure DeleteFormAndFree;
+    procedure FreeDesigner(FreeComponent: boolean);
     destructor Destroy; override;
 
     procedure Modified; override;
@@ -466,7 +466,7 @@ begin
   IgnoreDeletingPersistent:=TList.Create;
 end;
 
-procedure TDesigner.DeleteFormAndFree;
+procedure TDesigner.FreeDesigner(FreeComponent: boolean);
 var
   i: Integer;
 begin
@@ -478,12 +478,14 @@ begin
     TheControlSelection.Remove(LookupRoot);
     if GlobalDesignHook.LookupRoot=FLookupRoot then
       GlobalDesignHook.LookupRoot:=nil;
-    // tell hooks about deleting
-    for i:=FLookupRoot.ComponentCount-1 downto 0 do
-      GlobalDesignHook.PersistentDeleting(FLookupRoot.Components[i]);
-    GlobalDesignHook.PersistentDeleting(FLookupRoot);
+    if FreeComponent then begin
+      // tell hooks about deleting
+      for i:=FLookupRoot.ComponentCount-1 downto 0 do
+        GlobalDesignHook.PersistentDeleting(FLookupRoot.Components[i]);
+      GlobalDesignHook.PersistentDeleting(FLookupRoot);
+    end;
     // delete
-    TheFormEditor.DeleteComponent(FLookupRoot,true);
+    TheFormEditor.DeleteComponent(FLookupRoot,FreeComponent);
   end;
   Free;
 end;

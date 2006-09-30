@@ -287,6 +287,9 @@ function CompareComponentAndInterface(Key, Data: Pointer): integer;
 function CompareDefPropCacheItems(Item1, Item2: TDefinePropertiesCacheItem): integer;
 function ComparePersClassNameAndDefPropCacheItem(Key: Pointer;
                                      Item: TDefinePropertiesCacheItem): integer;
+
+function TryFreeComponent(var AComponent: TComponent): boolean;
+
 procedure RegisterStandardClasses;
 
 
@@ -328,6 +331,35 @@ end;
 procedure RegisterStandardClasses;
 begin
   RegisterClasses([TStringList]);
+end;
+
+function TryFreeComponent(var AComponent: TComponent): boolean;
+var
+  OldName, OldClassName: string;
+Begin
+  Result:=false;
+  {$IFNDEF NoCompCatch}
+  try
+  {$ENDIF}
+    OldName:=AComponent.Name;
+    OldClassName:=AComponent.ClassName;
+    AComponent.Free;
+    Result := True;
+  {$IFNDEF NoCompCatch}
+  except
+    on E: Exception do begin
+      DebugLn('TComponentInterface.Delete ERROR:',
+        ' "'+OldName+':'+OldClassName+'" ',E.Message);
+      DumpExceptionBackTrace;
+      MessageDlg('Error',
+        'An exception occured during deletion of'#13
+        +'"'+OldName+':'+OldClassName+'"'#13
+        +E.Message,
+        mtError,[mbOk],0);
+    end;
+  end;
+  {$ENDIF}
+  AComponent:=nil;
 end;
 
 { TComponentInterface }
@@ -708,8 +740,8 @@ Begin
   Result := False;
 end;
 
-Function TComponentInterface.Focus : Boolean;
-Begin
+function TComponentInterface.Focus : Boolean;
+begin
   Result := False;
   if (FComponent is TWinControl) and (TWinControl(FComponent).CanFocus) then
   Begin
@@ -718,39 +750,16 @@ Begin
   end;
 end;
 
-Function TComponentInterface.Delete: Boolean;
-var
-  OldName, OldClassName: string;
-Begin
+function TComponentInterface.Delete: Boolean;
+begin
   {$IFDEF VerboseFormEditor}
   writeln('TComponentInterface.Delete A ',Component.Name,':',Component.ClassName);
   {$ENDIF}
-  {$IFNDEF NoCompCatch}
-  try
-  {$ENDIF}
-    OldName:=Component.Name;
-    OldClassName:=Component.ClassName;
-    Component.Free;
-  {$IFNDEF NoCompCatch}
-  except
-    on E: Exception do begin
-      DebugLn('TComponentInterface.Delete ERROR:',
-        ' "'+OldName+':'+OldClassName+'" ',E.Message);
-      DumpExceptionBackTrace;
-      MessageDlg('Error',
-        'An exception occured during deletion of'#13
-        +'"'+OldName+':'+OldClassName+'"'#13
-        +E.Message,
-        mtError,[mbOk],0);
-    end;
-  end;
-  {$ENDIF}
-  FComponent:=nil;
+  Result:=TryFreeComponent(component);
   {$IFDEF VerboseFormEditor}
   writeln('TComponentInterface.Delete B ');
   {$ENDIF}
   Free;
-  Result := True;
 end;
 
 function TComponentInterface.GetComponentEditor: TBaseComponentEditor;
@@ -820,56 +829,55 @@ end;
 Procedure TCustomFormEditor.DeleteComponent(AComponent: TComponent;
   FreeComponent: boolean);
 var
-  Temp : TComponentInterface;
+  CompIntf : TComponentInterface;
   i: integer;
   AForm: TCustomForm;
 Begin
-  Temp := TComponentInterface(FindComponent(AComponent));
-  if Temp <> nil then
-  begin
-    FComponentInterfaces.Remove(Temp);
+  CompIntf := TComponentInterface(FindComponent(AComponent));
+  if CompIntf <> nil then
+    FComponentInterfaces.Remove(CompIntf);
 
-    DebugLn('TCustomFormEditor.DeleteControl ',
-            AComponent.ClassName,' ',BoolToStr(IsJITComponent(AComponent)));
-    if IsJITComponent(AComponent) then begin
-      // value is a top level component
-      if FreeComponent then begin
+  DebugLn(['TCustomFormEditor.DeleteControl ',DbgSName(AComponent),' IsJITComponent=',IsJITComponent(AComponent)]);
+  if IsJITComponent(AComponent) then begin
+    // value is a top level component
+    i:=AComponent.ComponentCount-1;
+    while i>=0 do begin
+      DeleteComponent(AComponent.Components[i],FreeComponent);
+      dec(i);
+      if i>AComponent.ComponentCount-1 then
         i:=AComponent.ComponentCount-1;
-        while i>=0 do begin
-          DeleteComponent(AComponent.Components[i],true);
-          dec(i);
-          if i>AComponent.ComponentCount-1 then
-            i:=AComponent.ComponentCount-1;
-        end;
-        if PropertyEditorHook.LookupRoot=AComponent then
-          PropertyEditorHook.LookupRoot:=nil;
-        if JITFormList.IsJITForm(AComponent) then
-          // free a form component
-          JITFormList.DestroyJITComponent(AComponent)
-        else if JITNonFormList.IsJITNonForm(AComponent) then begin
-          // free a non form component and its designer form
-          AForm:=GetDesignerForm(AComponent);
-          if not (AForm is TNonControlDesignerForm) then
-            RaiseException('TCustomFormEditor.DeleteControl  Where is the TNonControlDesignerForm? '+AComponent.ClassName);
-          FNonControlForms.Remove(AForm);
-          TNonControlDesignerForm(AForm).LookupRoot:=nil;
-          AForm.Free;
-          JITNonFormList.DestroyJITComponent(AComponent);
-        end else
-          RaiseException('TCustomFormEditor.DeleteControl '+AComponent.ClassName);
-      end;
-      Temp.Free;
-    end
-    else begin
-      // value is a normal child component
-      if FreeComponent then
-        Temp.Delete
-      else
-        Temp.Free;
     end;
-  end else begin
+    if PropertyEditorHook.LookupRoot=AComponent then
+      PropertyEditorHook.LookupRoot:=nil;
+    if JITFormList.IsJITForm(AComponent) then begin
+      // free/unbind a form component
+      if FreeComponent then
+        JITFormList.DestroyJITComponent(AComponent);
+    end else if JITNonFormList.IsJITNonForm(AComponent) then begin
+      // free/unbind a non form component and its designer form
+      AForm:=GetDesignerForm(AComponent);
+      if (AForm<>nil) and (not (AForm is TNonControlDesignerForm)) then
+        RaiseException('TCustomFormEditor.DeleteControl  Where is the TNonControlDesignerForm? '+AComponent.ClassName);
+      if AForm<>nil then begin
+        FNonControlForms.Remove(AForm);
+        TNonControlDesignerForm(AForm).LookupRoot:=nil;
+        TryFreeComponent(AForm);
+      end;
+      if FreeComponent then
+        JITNonFormList.DestroyJITComponent(AComponent);
+    end else
+      RaiseException('TCustomFormEditor.DeleteControl '+AComponent.ClassName);
+    CompIntf.Free;
+  end
+  else if CompIntf<>nil then begin
+    // value is a normal child component
     if FreeComponent then
-      AComponent.Free;
+      CompIntf.Delete
+    else
+      CompIntf.Free;
+  end else if FreeComponent then begin
+    DebugLn(['WARNING: TCustomFormEditor.DeleteComponent freeing orphaned component ',DbgSName(AComponent)]);
+    TryFreeComponent(AComponent);
   end;
 end;
 

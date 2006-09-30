@@ -584,7 +584,9 @@ type
                            var ComponentUnitInfo: TUnitInfo): TModalResult;
 
     // methods for 'close unit'
-    function CloseDesignerForm(AnUnitInfo: TUnitInfo): TModalResult;
+    function CloseUnitComponent(AnUnitInfo: TUnitInfo): TModalResult;
+    function UnitComponentIsUsed(AnUnitInfo: TUnitInfo;
+                                 CheckHasDesigner: boolean): boolean;
 
     // methods for creating a project
     function CreateProjectObject(ProjectDesc,
@@ -4754,7 +4756,7 @@ var
   LFMFilename: string;
   LFMBuf: TCodeBuffer;
 begin
-  CloseDesignerForm(AnUnitInfo);
+  CloseUnitComponent(AnUnitInfo);
 
   // Note: think about virtual and normal .lfm files.
   LFMFilename:=ChangeFileExt(AnUnitInfo.Filename,'.lfm');
@@ -4801,7 +4803,7 @@ begin
 
   // close old designer form
   if CloseDsgnForm then
-    CloseDesignerForm(AnUnitInfo)
+    CloseUnitComponent(AnUnitInfo)
   else if AnUnitInfo.Component<>nil then begin
     DebugLn(['TMainIDE.DoLoadLFM INCONSISTENCY CloseDsgnForm=',CloseDsgnForm,' Filename=',AnUnitInfo.Filename,' Component=',dbgsName(AnUnitInfo.Component)]);
     exit(mrAbort);
@@ -5113,17 +5115,31 @@ begin
 end;
 
 {-------------------------------------------------------------------------------
-  function TMainIDE.CloseDesignerForm
+  function TMainIDE.CloseUnitComponent
 
   Params: AnUnitInfo: TUnitInfo
   Result: TModalResult;
 
   Free the designer form of a unit.
 -------------------------------------------------------------------------------}
-function TMainIDE.CloseDesignerForm(AnUnitInfo: TUnitInfo): TModalResult;
+function TMainIDE.CloseUnitComponent(AnUnitInfo: TUnitInfo): TModalResult;
+
+  procedure FreeUnusedComponents;
+  var
+    CompUnitInfo: TUnitInfo;
+  begin
+    CompUnitInfo:=Project1.FirstUnitWithComponent;
+    while CompUnitInfo<>nil do begin
+      if not UnitComponentIsUsed(CompUnitInfo,true) then begin
+        CloseUnitComponent(CompUnitInfo);
+        exit;
+      end;
+      CompUnitInfo:=CompUnitInfo.NextUnitWithComponent;
+    end;
+  end;
+
 var
   AForm: TCustomForm;
-  i: integer;
   OldDesigner: TDesigner;
   LookupRoot: TComponent;
 begin
@@ -5134,23 +5150,55 @@ begin
   OldDesigner:=nil;
   if AForm<>nil then
     OldDesigner:=TDesigner(AForm.Designer);
+  if FLastFormActivated=AForm then
+    FLastFormActivated:=nil;
   if (OldDesigner=nil) then begin
-    DebugLn(['TMainIDE.CloseDesignerForm TODO: free hidden component without designer: ',AnUnitInfo.Filename,' ',DbgSName(AnUnitInfo.Component)]);
+    // hidden component
+    DebugLn(['TMainIDE.CloseUnitComponent freeing hidden component without designer: ',AnUnitInfo.Filename,' ',DbgSName(AnUnitInfo.Component)]);
+    if UnitComponentIsUsed(AnUnitInfo,false) then begin
+      // hidden component is still used => keep it
+    end else begin
+      // hidden component is not used => free it
+      FormEditor1.DeleteComponent(LookupRoot,true);
+      AnUnitInfo.Component:=nil;
+      FreeUnusedComponents;
+    end;
   end else begin
-    if (AForm=nil) then exit;
-    if FLastFormActivated=AForm then
-      FLastFormActivated:=nil;
-    //debugln('TMainIDE.CloseDesignerForm A ',AnUnitInfo.Filename,' ',dbgsName(LookupRoot));
-
-    // unselect components
-    for i:=LookupRoot.ComponentCount-1 downto 0 do
-      TheControlSelection.Remove(LookupRoot.Components[i]);
-    TheControlSelection.Remove(LookupRoot);
-    // free designer and design form
-    OldDesigner.DeleteFormAndFree;
+    // component with designer
+    if UnitComponentIsUsed(AnUnitInfo,false) then begin
+      // free designer, keep component hidden
+      DebugLn(['TMainIDE.CloseUnitComponent hiding component and freeing designer: ',AnUnitInfo.Filename,' ',DbgSName(AnUnitInfo.Component)]);
+      LCLIntf.ShowWindow(AForm.Handle,SW_HIDE);
+      OldDesigner.FreeDesigner(false);
+    end else begin
+      // free designer and design form
+      DebugLn(['TMainIDE.CloseUnitComponent freeing component and designer: ',AnUnitInfo.Filename,' ',DbgSName(AnUnitInfo.Component)]);
+      OldDesigner.FreeDesigner(true);
+      AnUnitInfo.Component:=nil;
+      FreeUnusedComponents;
+    end;
   end;
-  AnUnitInfo.Component:=nil;
+
   Result:=mrOk;
+end;
+
+function TMainIDE.UnitComponentIsUsed(AnUnitInfo: TUnitInfo;
+  CheckHasDesigner: boolean): boolean;
+var
+  LookupRoot: TComponent;
+  AForm: TCustomForm;
+begin
+  Result:=false;
+  LookupRoot:=AnUnitInfo.Component;
+  if LookupRoot=nil then exit;
+  // check if a designer is open
+  if CheckHasDesigner then begin
+    AForm:=FormEditor1.GetDesignerForm(LookupRoot);
+    if AForm<>nil then exit(true);
+  end;
+  // check if another component uses this component
+  if Project1.UnitUsingComponentUnit(AnUnitInfo)<>nil then
+    exit(true);
 end;
 
 function TMainIDE.CreateProjectObject(ProjectDesc,
@@ -5657,7 +5705,7 @@ begin
     // the file is not really new
     NewUnitInfo:=AProject.Units[OldUnitIndex];
     // close form
-    CloseDesignerForm(NewUnitInfo);
+    CloseUnitComponent(NewUnitInfo);
     // assign source
     NewUnitInfo.Source:=NewBuffer;
   end else
@@ -5970,7 +6018,7 @@ begin
   end;
 
   // close form
-  CloseDesignerForm(ActiveUnitInfo);
+  CloseUnitComponent(ActiveUnitInfo);
 
   // close source editor
   SourceNoteBook.CloseFile(PageIndex);
@@ -6042,7 +6090,7 @@ var
       // this is no pascal source and there is a designer form
       // This can be the case, when the file is renamed and reverted
       // -> close form
-      CloseDesignerForm(NewUnitInfo);
+      CloseUnitComponent(NewUnitInfo);
     end;
     Result:=mrOk;
   end;
@@ -9010,7 +9058,7 @@ begin
   while AnUnitInfo<>nil do begin
     NextUnitInfo:=AnUnitInfo.NextUnitWithComponent;
     if not AnUnitInfo.NeedsSaveToDisk then
-      CloseDesignerForm(AnUnitInfo);
+      CloseUnitComponent(AnUnitInfo);
     AnUnitInfo:=NextUnitInfo;
   end;
 end;
@@ -11251,7 +11299,7 @@ begin
       Exit;
     end;
   end;
-  CloseDesignerForm(AnUnitInfo);
+  CloseUnitComponent(AnUnitInfo);
 end;
 
 procedure TMainIDE.OnDesignerRenameComponent(ADesigner: TDesigner;
