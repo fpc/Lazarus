@@ -1830,6 +1830,7 @@ images/lazarus_about_logo.xpm -text svneol=native#image/x-xpixmap
 images/lazaruspackage.ico -text svneol=unset#image/x-icon
 images/leftarrow.ico -text svneol=unset#image/x-icon
 images/leftarrow.xpm -text svneol=native#image/x-xpixmap
+images/lprfile.ico -text svneol=unset#image/x-icon
 images/mainicon.ico -text svneol=unset#image/x-icon
 images/mainicon.lrs svneol=native#text/pascal
 images/mainicon.xpm -text svneol=native#image/x-xpixmap
