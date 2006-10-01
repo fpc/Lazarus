@@ -3220,6 +3220,7 @@ procedure TCustomGrid.CreateWnd;
 begin
   //DebugLn('TCustomGrid.CreateWnd ',DbgSName(Self));
   inherited CreateWnd;
+  CheckPosition;
   VisualChange;
 end;
 
@@ -5981,7 +5982,6 @@ end;
 procedure TCustomGrid.Loaded;
 begin
   inherited Loaded;
-  CheckPosition;
   VisualChange;
 end;
 
