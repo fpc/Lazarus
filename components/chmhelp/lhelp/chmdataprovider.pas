@@ -133,6 +133,7 @@ begin
   //DebugLn('Getting Image ',(Url));
 
   FileExt := ExtractFileExt(URL);
+  if FileExt[1] = '.' then Delete(FileExt,1,1);
   ImageClass := GetFPImageReaderForFileExtension(FileExt);
 
   if ImageClass <> nil then begin

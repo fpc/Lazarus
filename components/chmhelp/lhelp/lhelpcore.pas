@@ -22,191 +22,119 @@ unit lhelpcore;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ChmReader,
-  Buttons, LCLProc, StdCtrls, IpHtml, ChmDataProvider, ComCtrls, ExtCtrls,
-  Menus, SimpleIPC;
+  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs,
+  Buttons, LCLProc, StdCtrls, IpHtml, ComCtrls, ExtCtrls,
+  Menus, SimpleIPC, BaseContentProvider, FileContentProvider, ChmContentProvider
+  {$IFNDEF NO_LNET}, HTTPContentProvider{$ENDIF};
 
 type
 
-  { THelpForm }
 
+
+  { TContentTab }
+
+  TContentTab = class(TTabSheet)
+  private
+    fContentProvider: TBaseContentProvider;
+  public
+    constructor Create(AOwner: TComponent); override;
+    property ContentProvider: TBaseContentProvider read fContentProvider write fContentProvider;
+  end;
+
+  { THelpForm }
+  
   THelpForm = class(TForm)
-    SearchMenuNextItem: TMenuItem;
-    SearchHideBttn: TButton;
-    FindPrevBttn: TButton;
-    FindNextBttn: TButton;
-    SearchEdit: TEdit;
-    IpHtmlPanel1: TIpHtmlPanel;
-    Label2: TLabel;
-    SearchLabel: TLabel;
-    ListBox1: TListBox;
-    SearchPanel: TPanel;
-    RightPanel: TPanel;
-    SearchMenuFindInPageItem: TMenuItem;
-    SearchMenuItem: TMenuItem;
-    SearchBttn: TButton;
-    ComboBox1: TComboBox;
-    ContentsTree: TTreeView;
     FileMenuCloseItem: TMenuItem;
     FileMenuExitItem: TMenuItem;
     FileMenuItem: TMenuItem;
     FileMenuOpenItem: TMenuItem;
     FileSeperater: TMenuItem;
-    ImageList1: TImageList;
-    IndexView: TListView;
-    Label1: TLabel;
     MainMenu1: TMainMenu;
-    MenuItem1: TMenuItem;
-    ConentsPanel: TPanel;
-    PopupForward: TMenuItem;
-    PopupBack: TMenuItem;
-    PopupHome: TMenuItem;
-    PopupCopy: TMenuItem;
+    FileMenuOpenURLItem: TMenuItem;
+    PageControl: TPageControl;
     Panel1: TPanel;
     ForwardBttn: TSpeedButton;
     BackBttn: TSpeedButton;
     HomeBttn: TSpeedButton;
     OpenDialog1: TOpenDialog;
-    IndexTab: TTabSheet;
-    PopupMenu1: TPopupMenu;
-    SearchTab: TTabSheet;
-    TabsControl: TPageControl;
-    Splitter1: TSplitter;
-    TabPanel: TPanel;
-    StatusBar1: TStatusBar;
-    ContentsTab: TTabSheet;
     ViewMenuContents: TMenuItem;
     ViewMenuItem: TMenuItem;
     procedure BackToolBtnClick(Sender: TObject);
-    procedure ContentsTreeSelectionChanged(Sender: TObject);
     procedure FileMenuCloseItemClick(Sender: TObject);
     procedure FileMenuExitItemClick(Sender: TObject);
     procedure FileMenuOpenItemClick(Sender: TObject);
-    procedure FindNextBttnClick(Sender: TObject);
-    procedure FindPrevBttnClick(Sender: TObject);
+    procedure FileMenuOpenURLItemClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure ForwardToolBtnClick(Sender: TObject);
     procedure HomeToolBtnClick(Sender: TObject);
-    procedure ImageList1Change(Sender: TObject);
-    procedure IndexViewSelectItem(Sender: TObject; Item: TListItem;
-      Selected: Boolean);
-    procedure IpHtmlPanel1DocumentOpen(Sender: TObject);
-    procedure IpHtmlPanel1HotChange(Sender: TObject);
-    procedure IpHtmlPanel1HotClick(Sender: TObject);
-    procedure PopupCopyClick(Sender: TObject);
-    procedure SearchEditChange(Sender: TObject);
-    procedure SearchEditKeyDown(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
-    procedure SearchHideBttnClick(Sender: TObject);
-    procedure SearchMenuFindInPageItemClick(Sender: TObject);
-    procedure ViewMenuContentsClick(Sender: TObject);
-    procedure FillTOCTimer(Sender: TObject);
+    procedure PageControlChange(Sender: TObject);
+    procedure PageControlEnter(Sender: TObject);
+
   private
     { private declarations }
-    fIsUsingHistory: Boolean;
-    fStopTimer: Boolean;
-    fFillingToc: Boolean;
-    fChms: TChmFileList;
-    fHistory: TStringList;
-    fHistoryIndex: Integer;
+
+
     fServerName: String;
     fServer: TSimpleIPCServer;
     fServerTimer: TTimer;
     fContext: LongInt; // used once when we are started on the command line with --context
     procedure ServerMessage(Sender: TObject);
-    procedure AddHistory(URL: String);
-    procedure DoOpenChm(AFile: String);
-    procedure DoCloseChm;
-    procedure DoLoadContext(Context: THelpContext);
-    procedure DoLoadUrl(Url: String; AChm: TChmReader = nil);
-    procedure DoError(Error: Integer);
-    procedure NewChmOpened(ChmFileList: TChmFileList; Index: Integer);
     procedure ReadCommandLineOptions;
     procedure StartServer(ServerName: String);
     procedure StopServer;
+    procedure OpenURL(const AURL: String; AContext: THelpContext=-1);
+    function ActivePage: TContentTab;
+    procedure RefreshState;
+    procedure ShowError(AError: String);
   public
     { public declarations }
   end;
   
-  TTocTimer = class(TIdleTimer)
-  private
-    fChm: TChmReader;
-  end;
 
 var
   HelpForm: THelpForm;
 const INVALID_FILE_TYPE = 1;
 
 implementation
-uses ChmSpecialParser, LHelpControl;
+uses LHelpControl;
 
 { THelpForm }
 
 
 procedure THelpForm.BackToolBtnClick(Sender: TObject);
 begin
-  if fHistoryIndex > 0 then begin
-    Dec(fHistoryIndex);
-    fIsUsingHistory:=True;
-    IpHtmlPanel1.OpenURL(fHistory.Strings[fHistoryIndex]);
-  end;
+  if Assigned(ActivePage) then ActivePage.ContentProvider.GoBack;
 end;
 
-procedure THelpForm.ContentsTreeSelectionChanged(Sender: TObject);
-var
-ATreeNode: TContentTreeNode;
-ARootNode: TTreeNode;
-fChm: TChmReader = nil;
-
-begin
-  if (ContentsTree.Selected = nil) or not(ContentsTree.Selected is TContentTreeNode) then Exit;
-  ATreeNode := TContentTreeNode(ContentsTree.Selected);
-
-  //find the chm associated with this branch
-  ARootNode := ATreeNode.Parent;
-  while ARootNode.Parent <> nil do
-    ARootNode := ARootNode.Parent;
-
-  fChm := TChmReader(ARootNode.Data);
-  if ATreeNode.Url <> '' then begin
-    DoLoadUrl(ATreeNode.Url, fChm);
-  end;
-end;
 
 procedure THelpForm.FileMenuCloseItemClick(Sender: TObject);
 begin
-  DoCloseChm;// checks if it is open first
+  //DoCloseChm;// checks if it is open first
+  if Assigned(ActivePage) then ActivePage.Free;
 end;
 
 procedure THelpForm.FileMenuExitItemClick(Sender: TObject);
 begin
-  DoCloseChm;
+  //DoCloseChm;
   Close;
 end;
 
 procedure THelpForm.FileMenuOpenItemClick(Sender: TObject);
 begin
-  if OpenDialog1.Execute then DoOpenChm(OpenDialog1.FileName);
+  if OpenDialog1.Execute then OpenURL('file://'+OpenDialog1.FileName);
 end;
 
-procedure THelpForm.FindNextBttnClick(Sender: TObject);
+procedure THelpForm.FileMenuOpenURLItemClick(Sender: TObject);
+var
+  fRes: String;
 begin
-{ if IpHtmlPanel1.SearchKey = '' then begin
-   SearchMenuFindInPageItemClick(Sender);
-   Exit;
- end;
- IpHtmlPanel1.FindNext;}
-end;
-
-procedure THelpForm.FindPrevBttnClick(Sender: TObject);
-begin
-
+  if InputQuery('Enter a URL', 'Please Enter a URL', fRes) then OpenURL(fRes);
 end;
 
 procedure THelpForm.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 begin
-  DoCloseChm;
+  //DoCloseChm;
   FileMenuCloseItemClick(Sender);
   Stopserver;
   
@@ -215,8 +143,6 @@ end;
 procedure THelpForm.FormCreate(Sender: TObject);
 begin
   fContext := -1;
-  fHistory := TStringList.Create;
-  IpHtmlPanel1.DataProvider := TIpChmDataProvider.Create(fChms);
   ReadCommandLineOptions;
   if fServerName <> '' then begin
     StartServer(fServerName);
@@ -225,127 +151,25 @@ end;
 
 procedure THelpForm.ForwardToolBtnClick(Sender: TObject);
 begin
-  if fHistoryIndex < fHistory.Count-1 then begin
-    Inc(fHistoryIndex);
-    fIsUsingHistory:=True;
-    IpHtmlPanel1.OpenURL(fHistory.Strings[fHistoryIndex]);
-  end;
+  if Assigned(ActivePage) then ActivePage.ContentProvider.GoForward;
 end;
 
 procedure THelpForm.HomeToolBtnClick(Sender: TObject);
 begin
-  if (fChms <> nil) and (fChms.Chm[0].DefaultPage <> '') then begin
-    DoLoadUrl(fChms.Chm[0].DefaultPage);
-  end;
+  if Assigned(ActivePage) then ActivePage.ContentProvider.GoHome;
 end;
 
-procedure THelpForm.ImageList1Change(Sender: TObject);
+procedure THelpForm.PageControlChange(Sender: TObject);
 begin
-
+  RefreshState;
 end;
 
-procedure THelpForm.IndexViewSelectItem(Sender: TObject; Item: TListItem;
-  Selected: Boolean);
-var
-RealItem: TIndexItem;
+procedure THelpForm.PageControlEnter(Sender: TObject);
 begin
-  if not Selected then Exit;
-  RealItem := TIndexItem(Item);
-  if RealItem.Url <> '' then begin
-    DoLoadUrl(RealItem.Url);
-  end;
+  RefreshState;
 end;
 
-procedure THelpForm.IpHtmlPanel1DocumentOpen(Sender: TObject);
-begin
- // StatusBar1.Panels.Items[1] := IpHtmlPanel1.DataProvider.;
- if fIsUsingHistory = False then
-   AddHistory(TIpChmDataProvider(IpHtmlPanel1.DataProvider).CurrentPage)
- else fIsUsingHistory := False;
-end;
 
-procedure THelpForm.IpHtmlPanel1HotChange(Sender: TObject);
-begin
-  StatusBar1.Panels.Items[0].Text := IpHtmlPanel1.HotURL;
-end;
-
-procedure THelpForm.IpHtmlPanel1HotClick(Sender: TObject);
-begin
-
-end;
-
-procedure THelpForm.PopupCopyClick(Sender: TObject);
-begin
-  IpHtmlPanel1.CopyToClipboard;
-end;
-
-procedure THelpForm.SearchEditChange(Sender: TObject);
-begin
-  //IpHtmlPanel1.SearchKey := SearchEdit.Text;
-end;
-
-procedure THelpForm.SearchEditKeyDown(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
-begin
-  if Key = 13 then begin
-    Key := 0;
-    FindNextBttn.Click;
-  end;
-end;
-
-procedure THelpForm.SearchHideBttnClick(Sender: TObject);
-begin
-  SearchPanel.Visible := False;
-  SetFocus;
-end;
-
-procedure THelpForm.SearchMenuFindInPageItemClick(Sender: TObject);
-begin
-  SearchPanel.Visible := True;
-  SearchEdit.SetFocus;
-  SearchEdit.SelectAll;
-end;
-
-procedure THelpForm.ViewMenuContentsClick(Sender: TObject);
-begin
-  TMenuItem(Sender).Checked := not TMenuItem(Sender).Checked;
-  Splitter1.Visible := TMenuItem(Sender).Checked;
-  TabPanel.Visible := Splitter1.Visible;
-
-end;
-
-procedure THelpForm.FillTOCTimer(Sender: TObject);
-var
- Stream: TMemoryStream;
- fChm: TChmReader;
- ParentNode: TTreeNode;
-begin
-  if fFillingToc = True then begin
-    TTimer(Sender).Interval := 40;
-    exit;
-  end;
-  fFillingToc := True;
-  fStopTimer := False;
-  ContentsTree.Visible := False;
-  fChm := TTocTimer(Sender).fChm;
-  TTocTimer(Sender).Free;
-  if fChm <> nil then begin
-    Stream := TMemoryStream(fchm.GetObject(fChm.TOCFile));
-    if Stream <> nil then begin
-      Stream.position := 0;
-      ParentNode := ContentsTree.Items.AddChildObject(nil, fChm.Title, fChm);
-      with TContentsFiller.Create(ContentsTree, Stream, @fStopTimer) do begin
-        DoFill(ParentNode);
-        Free;
-      end;
-    end;
-    Stream.Free;
-  end;
-  if ParentNode.Index = 0 then ParentNode.Expanded := True;
-  ContentsTree.Visible := True;
-  fFillingToc := False;
-  fStopTimer := False;
-end;
 
 procedure THelpForm.ServerMessage(Sender: TObject);
 var
@@ -360,151 +184,28 @@ begin
     Stream.Read(FileReq, SizeOf(FileReq));
     case FileReq.RequestType of
       rtFile    : begin
-                    DoOpenChm(FileReq.FileName);
+
+                    OpenURL('file://'+FileReq.FileName);
                   end;
       rtUrl     : begin
                     Stream.Position := 0;
                     Stream.Read(UrlReq, SizeOf(UrlReq));
-                    DoOpenChm(UrlReq.FileRequest.FileName);
-                    DoLoadUrl(UrlReq.Url);
+                    if UrlReq.FileRequest.FileName <> '' then
+                      OpenUrl('file://'+UrlReq.FileRequest.FileName+'://'+UrlReq.Url)
+                    else
+                      OpenURL(UrlReq.Url);
                   end;
       rtContext : begin
                     Stream.Position := 0;
                     Stream.Read(ConReq, SizeOf(ConReq));
-                    DoOpenChm(ConReq.FileRequest.FileName);
-                    DoLoadContext(ConReq.HelpContext);
+                    OpenURL('file://'+FileReq.FileName, ConReq.HelpContext);
                   end;
     end;
     Self.BringToFront;
   end;
 end;
 
-procedure THelpForm.AddHistory(URL: String);
-begin
-  if fHistoryIndex < fHistory.Count then begin
-    while fHistory.Count-1 > fHistoryIndex do
-      fHistory.Delete(fHistory.Count-1);
-  end;
-  fHistory.Add(URL);
-  Inc(fHistoryIndex);
-end;
 
-procedure THelpForm.DoOpenChm(AFile: String);
-var
-Stream: TStream;
-Timer: TTimer;
-begin
-  if (fChms <> nil) and fChms.IsAnOpenFile(AFile) then Exit;
-  DoCloseChm;
-  if not FileExists(AFile) or DirectoryExists(AFile) then
-  begin
-    Exit;
-  end;
-  try
-    fChms := TChmFileList.Create(AFile);
-    if Not(fChms.Chm[0].IsValidFile) then begin
-      FreeAndNil(fChms);
-      DoError(INVALID_FILE_TYPE);
-      Exit;
-    end;
-    TIpChmDataProvider(IpHtmlPanel1.DataProvider).Chm := fChms;
-  except
-    FreeAndNil(fChms);
-    DoError(INVALID_FILE_TYPE);
-    Exit;
-  end;
-  if fChms = nil then Exit;
-  fChms.OnOpenNewFile := @NewChmOpened;
-  fHistoryIndex := -1;
-  fHistory.Clear;
-
-  // Code Here has been moved to the OpenFile handler
-
-  FileMenuCloseItem.Enabled := True;
-  if fChms.Chm[0].Title <> '' then Caption := 'LHelp - '+fChms.Chm[0].Title;
-end;
-
-procedure THelpForm.DoCloseChm;
-begin
-  fStopTimer := True;
-  if fChms<>nil then begin
-    FreeAndNil(fChms);
-    FileMenuCloseItem.Enabled := False;
-    fContext := -1;
-  end;
-  Caption := 'LHelp';
-  IndexView.Clear;
-  ContentsTree.Items.Clear;
-  IpHtmlPanel1.SetHtml(nil);
-  TIpChmDataProvider(IpHtmlPanel1.DataProvider).CurrentPath := '/';
-  TIpChmDataProvider(IpHtmlPanel1.DataProvider).Chm := nil;
-end;
-
-procedure THelpForm.DoLoadContext(Context: THelpContext);
-var
- Str: String;
-begin
-  if fChms = nil then exit;
-  Str := fChms.Chm[0].GetContextUrl(Context);
-  if Str <> '' then DoLoadUrl(Str);
-end;
-
-procedure THelpForm.DoLoadUrl(Url: String; AChm: TChmReader = nil);
-begin
-  if (fChms = nil) and (AChm = nil) then exit;
-  if fChms.ObjectExists(Url, AChm) = 0 then Exit;
-  fIsUsingHistory := True;
-  IpHtmlPanel1.OpenURL(Url);
-  TIpChmDataProvider(IpHtmlPanel1.DataProvider).CurrentPath := ExtractFileDir(URL)+'/';
-  AddHistory(Url);
-
-end;
-
-procedure THelpForm.DoError(Error: Integer);
-begin
-  //what to do with these errors?
-  //INVALID_FILE_TYPE;
-end;
-
-procedure THelpForm.NewChmOpened(ChmFileList: TChmFileList; Index: Integer);
-var
-TImer: TTocTimer;
-Stream: TMemoryStream;
-begin
-  if Index = 0 then begin
-    ContentsTree.Items.Clear;
-    if fContext > -1 then begin
-      DoLoadContext(fContext);
-      fContext := -1;
-    end
-    else if ChmFileList.Chm[Index].DefaultPage <> '' then begin
-      DoLoadUrl(ChmFileList.Chm[Index].DefaultPage);
-    end;
-  end;
-  if ChmFileList.Chm[Index].Title = '' then
-    ChmFileList.Chm[Index].Title := ExtractFileName(ChmFileList.FileName[Index]);
-  // Fill the table of contents. This actually works very well
-  Timer := TTocTimer.Create(Self);
-  if ChmFileList.ObjectExists(ChmFileList.Chm[Index].TOCFile) > 25000 then
-    Timer.Interval := 500
-  else
-    Timer.Interval := 5;
-  Timer.OnTimer := @FillTOCTimer;
-  Timer.fChm := ChmFileList.Chm[Index];
-  Timer.Enabled := True;
-  ContentsTree.Visible := False;
-
-  Stream := fchms.GetObject(ChmFileList.Chm[Index].IndexFile);
-  if Stream <> nil then begin
-    Stream.position := 0;
-    with TIndexFiller.Create(IndexView, Stream) do begin;
-      DoFill;
-      Free;
-    end;
-    Stream.Free;
-  end;
-
-end;
 
 procedure THelpForm.ReadCommandLineOptions;
 var
@@ -527,10 +228,14 @@ begin
           IsHandled[X+1] := True;
     end;
   end;
-  // Loop through a second time for the filename
+  // Loop through a second time for the url
   for X := 1 to ParamCount do
     if not IsHandled[X] then begin
-      DoOpenChm(ParamStr(X));
+      //DoOpenChm(ParamStr(X));
+      if Pos('://', ParamStr(X)) = 0 then
+        OpenURL('file://'+ParamStr(X), fContext)
+      else
+        OpenURL(ParamStr(X), fContext);
       Break;
     end;
   //we reset the context because at this point the file has been loaded and the
@@ -560,6 +265,92 @@ begin
    if fServer.Active then fServer.Active := False;
    FreeAndNil(fServer);
    
+end;
+
+procedure THelpForm.OpenURL(const AURL: String; AContext: THelpContext);
+  function GetURLPrefix: String;
+  var
+    fPos: Integer;
+  begin
+    fPos := Pos('://', AURL);
+    Result := Copy(AURL, 1, fPos+2);
+  end;
+var
+ fURLPrefix: String;
+ fContentProvider: TBaseContentProviderClass;
+ fRealContentProvider: TBaseContentProviderClass;
+ fNewPage: TContentTab;
+ I: Integer;
+begin
+ fURLPrefix := GetURLPrefix;
+ fContentProvider := GetContentProvider(fURLPrefix);
+ 
+ if fContentProvider = nil then begin
+   ShowError('Cannot handle this type of content. "' + fURLPrefix + '"');
+   Exit;
+ end;
+ fRealContentProvider := fContentProvider.GetProperContentProvider(AURL);
+ 
+ if fRealContentProvider = nil then begin
+   ShowError('Cannot handle this type of subcontent. "' + fURLPrefix + '"');
+   Exit;
+ end;
+
+ 
+ for I := 0 to PageControl.PageCount-1 do begin
+   if fRealContentProvider.ClassName = TContentTab(PageControl.Pages[I]).ContentProvider.ClassName then begin
+     if TContentTab(PageControl.Pages[I]).ContentProvider.LoadURL(AURL, AContext) then
+       PageControl.ActivePage := PageControl.Pages[I];
+     Exit;
+   end;
+ end;
+ 
+ //no page was found already to handle this content so create one
+ fNewPage := TContentTab.Create(PageControl);
+ fNewPage.ContentProvider := fRealContentProvider.Create(fNewPage);
+ fNewPage.Parent := PageControl;
+ 
+ if fNewPage.ContentProvider.LoadURL(AURL, AContext) then
+   PageControl.ActivePage := fNewPage;
+ RefreshState;
+end;
+
+function THelpForm.ActivePage: TContentTab;
+begin
+  Result := TContentTab(PageControl.ActivePage);
+end;
+
+procedure THelpForm.RefreshState;
+begin
+  if ActivePage = nil then begin
+    BackBttn.Enabled := False;
+    ForwardBttn.Enabled := False;
+    HomeBttn.Enabled := False;
+    FileMenuCloseItem.Enabled := False;
+    exit;
+  end;
+  // else
+  FileMenuCloseItem.Enabled := True;
+  
+  HomeBttn.Enabled := True;
+  BackBttn.Enabled := True;// ActivePage.ContentProvider.CanGoBack;
+  ForwardBttn.Enabled := True; //ActivePage.ContentProvider.CanGoForward;
+  //WriteLn('BackBttn.Enabled    = ',BackBttn.Enabled);
+  //WriteLn('ForwardBttn.Enabled = ',ForwardBttn.Enabled);
+  //HomeBttn.Enabled := False;
+  FileMenuCloseItem.Enabled := True;
+end;
+
+procedure THelpForm.ShowError(AError: String);
+begin
+  ShowMessage(AError);
+end;
+
+{ TContentTab }
+
+constructor TContentTab.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
 end;
 
 initialization

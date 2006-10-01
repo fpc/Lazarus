@@ -1,5 +1,10 @@
 object HelpForm: THelpForm
-  ActiveControl = ContentsTree
+  Left = 342
+  Height = 535
+  Top = 208
+  Width = 758
+  HorzScrollBar.Page = 757
+  VertScrollBar.Page = 508
   Caption = 'LHelp'
   ClientHeight = 509
   ClientWidth = 758
@@ -64,178 +69,22 @@ object HelpForm: THelpForm
   Menu = MainMenu1
   OnClose = FormClose
   OnCreate = FormCreate
-  PixelsPerInch = 90
   Position = poScreenCenter
   ShowInTaskBar = stAlways
-  HorzScrollBar.Page = 757
-  VertScrollBar.Page = 508
-  Left = 342
-  Height = 535
-  Top = 208
-  Width = 758
-  object StatusBar1: TStatusBar
-    Panels = <    
-      item
-        Width = 450
-      end    
-      item
-        Width = 150
-      end>
-    SimplePanel = False
-    Height = 20
-    Top = 489
-    Width = 758
-  end
-  object TabPanel: TPanel
-    Align = alLeft
-    ClientHeight = 457
-    ClientWidth = 216
-    FullRepaint = False
-    TabOrder = 0
-    Height = 457
-    Top = 32
-    Width = 216
-    object TabsControl: TPageControl
-      ActivePage = ContentsTab
-      Align = alClient
-      TabIndex = 0
-      TabOrder = 0
-      Left = 1
-      Height = 455
-      Top = 1
-      Width = 214
-      object ContentsTab: TTabSheet
-        Caption = 'Contents'
-        ClientHeight = 425
-        ClientWidth = 210
-        Left = 2
-        Height = 425
-        Top = 28
-        Width = 210
-        object ConentsPanel: TPanel
-          Align = alClient
-          BevelOuter = bvNone
-          Caption = 'Table of Contents Loading. Please Wait...'
-          ClientHeight = 425
-          ClientWidth = 210
-          TabOrder = 0
-          Height = 425
-          Width = 210
-          object ContentsTree: TTreeView
-            Align = alClient
-            BorderStyle = bsNone
-            BorderWidth = 1
-            DefaultItemHeight = 14
-            HotTrack = True
-            TabOrder = 0
-            OnSelectionChanged = ContentsTreeSelectionChanged
-            Options = [tvoAutoItemHeight, tvoHideSelection, tvoHotTrack, tvoKeepCollapsedNodes, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
-            Height = 425
-            Width = 210
-          end
-        end
-      end
-      object IndexTab: TTabSheet
-        Caption = 'Index'
-        ClientHeight = 425
-        ClientWidth = 210
-        Left = 2
-        Height = 425
-        Top = 28
-        Width = 210
-        object IndexView: TListView
-          Align = alClient
-          Columns = <          
-            item
-              Caption = 'Index'
-              Width = 171
-            end>
-          ShowColumnHeaders = False
-          ViewStyle = vsReport
-          OnSelectItem = IndexViewSelectItem
-          Height = 425
-          Width = 210
-        end
-      end
-      object SearchTab: TTabSheet
-        Caption = 'Search'
-        ClientHeight = 425
-        ClientWidth = 210
-        Enabled = False
-        Left = 2
-        Height = 425
-        Top = 28
-        Width = 210
-        object Label1: TLabel
-          AutoSize = False
-          Caption = 'Keyword:'
-          Color = clNone
-          ParentColor = False
-          Left = 5
-          Height = 18
-          Top = 11
-          Width = 141
-        end
-        object Label2: TLabel
-          AutoSize = False
-          Caption = 'Search Results:'
-          Color = clNone
-          ParentColor = False
-          Left = 5
-          Height = 24
-          Top = 91
-          Width = 168
-        end
-        object ComboBox1: TComboBox
-          Anchors = [akTop, akLeft, akRight]
-          MaxLength = 0
-          TabOrder = 0
-          Left = 5
-          Height = 25
-          Top = 30
-          Width = 200
-        end
-        object SearchBttn: TButton
-          Anchors = [akTop, akRight]
-          
-          Caption = 'Search'
-          TabOrder = 1
-          Left = 99
-          Height = 25
-          Top = 59
-          Width = 106
-        end
-        object ListBox1: TListBox
-          Anchors = [akTop, akLeft, akRight, akBottom]
-          TabOrder = 2
-          TopIndex = -1
-          Left = 5
-          Height = 304
-          Top = 115
-          Width = 200
-        end
-      end
-    end
-  end
-  object Splitter1: TSplitter
-    Beveled = True
-    Height = 457
-    Width = 5
-    Cursor = crHSplit
-    Left = 216
-    Height = 457
-    Top = 32
-    Width = 5
-  end
   object Panel1: TPanel
+    Height = 32
+    Width = 758
     Align = alTop
     ClientHeight = 32
     ClientWidth = 758
-    TabOrder = 1
-    Height = 32
-    Width = 758
+    TabOrder = 0
     object ForwardBttn: TSpeedButton
+      Left = 65
+      Height = 30
+      Top = 1
+      Width = 32
       Align = alLeft
+      Color = clBtnFace
       Glyph.Data = {
         B40300002F2A2058504D202A2F0A7374617469632063686172202A666F727761
         72645B5D203D207B0A2F2A20636F6C756D6E7320726F777320636F6C6F727320
@@ -270,13 +119,14 @@ object HelpForm: THelpForm
       }
       NumGlyphs = 0
       OnClick = ForwardToolBtnClick
-      Left = 65
+    end
+    object BackBttn: TSpeedButton
+      Left = 33
       Height = 30
       Top = 1
       Width = 32
-    end
-    object BackBttn: TSpeedButton
       Align = alLeft
+      Color = clBtnFace
       Glyph.Data = {
         B10300002F2A2058504D202A2F0A7374617469632063686172202A6261636B5B
         5D203D207B0A2F2A20636F6C756D6E7320726F777320636F6C6F727320636861
@@ -311,13 +161,14 @@ object HelpForm: THelpForm
       }
       NumGlyphs = 0
       OnClick = BackToolBtnClick
-      Left = 33
+    end
+    object HomeBttn: TSpeedButton
+      Left = 1
       Height = 30
       Top = 1
       Width = 32
-    end
-    object HomeBttn: TSpeedButton
       Align = alLeft
+      Color = clBtnFace
       Glyph.Data = {
         700A00002F2A2058504D202A2F0A7374617469632063686172202A6772617068
         69635B5D203D207B0A2232342032342038362032222C0A222E2E2063204E6F6E
@@ -406,114 +257,30 @@ object HelpForm: THelpForm
       }
       NumGlyphs = 0
       OnClick = HomeToolBtnClick
-      Left = 1
-      Height = 30
-      Top = 1
-      Width = 32
     end
   end
-  object RightPanel: TPanel
-    Align = alClient
-    BevelOuter = bvNone
-    ClientHeight = 457
-    ClientWidth = 537
-    TabOrder = 2
-    Left = 221
-    Height = 457
+  object PageControl: TPageControl
+    Height = 477
     Top = 32
-    Width = 537
-    object IpHtmlPanel1: TIpHtmlPanel
-      Align = alClient
-      BorderStyle = bsSingle
-      FixedTypeface = 'times'
-      DefaultTypeFace = 'default'
-      PopupMenu = PopupMenu1
-      PrintSettings.MarginLeft = 0.5
-      PrintSettings.MarginTop = 0.5
-      PrintSettings.MarginRight = 0.5
-      PrintSettings.MarginBottom = 0.5
-      ShowHints = False
-      OnDocumentOpen = IpHtmlPanel1DocumentOpen
-      OnHotChange = IpHtmlPanel1HotChange
-      OnHotClick = IpHtmlPanel1HotClick
-      Height = 431
-      Width = 537
-    end
-    object SearchPanel: TPanel
-      Align = alBottom
-      BevelOuter = bvNone
-      ClientHeight = 26
-      ClientWidth = 537
-      Enabled = False
-      TabOrder = 0
-      Visible = False
-      Height = 26
-      Top = 431
-      Width = 537
-      object SearchLabel: TLabel
-        Align = alLeft
-        Alignment = taCenter
-        AutoSize = False
-        BorderSpacing.Around = 5
-        Caption = 'Find in page'
-        Color = clNone
-        ParentColor = False
-        Left = 5
-        Height = 16
-        Top = 5
-        Width = 97
-      end
-      object SearchEdit: TEdit
-        Align = alLeft
-        OnChange = SearchEditChange
-        OnKeyDown = SearchEditKeyDown
-        TabOrder = 0
-        Left = 107
-        Height = 26
-        Width = 136
-      end
-      object FindNextBttn: TButton
-        Align = alLeft
-        AutoSize = True
-        
-        Caption = '&Next'
-        OnClick = FindNextBttnClick
-        TabOrder = 1
-        Left = 243
-        Height = 26
-        Width = 35
-      end
-      object FindPrevBttn: TButton
-        Align = alLeft
-        AutoSize = True
-        
-        Caption = 'P&rev'
-        OnClick = FindPrevBttnClick
-        TabOrder = 2
-        Left = 278
-        Height = 26
-        Width = 36
-      end
-      object SearchHideBttn: TButton
-        Align = alRight
-        AutoSize = True
-        
-        Caption = '&Hide'
-        OnClick = SearchHideBttnClick
-        TabOrder = 3
-        Left = 501
-        Height = 26
-        Width = 36
-      end
-    end
+    Width = 758
+    Align = alClient
+    TabOrder = 1
+    TabPosition = tpBottom
+    OnChange = PageControlChange
+    OnEnter = PageControlEnter
+    OnPageChanged = PageControlChange
   end
   object MainMenu1: TMainMenu
-    top = 120
+    top = 124
     object FileMenuItem: TMenuItem
       Caption = '&File'
       object FileMenuOpenItem: TMenuItem
         Caption = '&Open'
         OnClick = FileMenuOpenItemClick
+      end
+      object FileMenuOpenURLItem: TMenuItem
+        Caption = 'OpenURL'
+        OnClick = FileMenuOpenURLItemClick
       end
       object FileMenuCloseItem: TMenuItem
         Caption = '&Close'
@@ -527,28 +294,12 @@ object HelpForm: THelpForm
         OnClick = FileMenuExitItemClick
       end
     end
-    object SearchMenuItem: TMenuItem
-      Caption = 'Search'
-      object SearchMenuFindInPageItem: TMenuItem
-        Caption = 'Find in page'
-        Enabled = False
-        ShortCut = 16454
-        OnClick = SearchMenuFindInPageItemClick
-      end
-      object SearchMenuNextItem: TMenuItem
-        Caption = 'Find Next'
-        Enabled = False
-        ShortCut = 114
-        OnClick = FindNextBttnClick
-      end
-    end
     object ViewMenuItem: TMenuItem
       Caption = '&View'
       object ViewMenuContents: TMenuItem
         Caption = 'Contents Panel'
         Checked = True
         ShowAlwaysCheckable = True
-        OnClick = ViewMenuContentsClick
       end
     end
   end
@@ -556,31 +307,6 @@ object HelpForm: THelpForm
     Title = 'Open existing file'
     Filter = 'HelpFiles(*.chm)|*.chm|All FIles(*.*)|*'
     FilterIndex = 0
-    Title = 'Open existing file'
-    left = 66
-    top = 137
-  end
-  object PopupMenu1: TPopupMenu
-    left = 72
-    top = 224
-    object PopupHome: TMenuItem
-      Caption = 'Home'
-      OnClick = HomeToolBtnClick
-    end
-    object PopupBack: TMenuItem
-      Caption = 'Back'
-      OnClick = BackToolBtnClick
-    end
-    object PopupForward: TMenuItem
-      Caption = 'Forward'
-      OnClick = ForwardToolBtnClick
-    end
-    object MenuItem1: TMenuItem
-      Caption = '-'
-    end
-    object PopupCopy: TMenuItem
-      Caption = 'Copy'
-      OnClick = PopupCopyClick
-    end
+    top = 156
   end
 end

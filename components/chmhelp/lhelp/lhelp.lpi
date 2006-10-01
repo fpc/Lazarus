@@ -9,9 +9,27 @@
       <IconPath Value="./"/>
       <TargetFileExt Value=""/>
     </General>
+    <VersionInfo>
+      <UseVersionInfo Value="False"/>
+      <AutoIncrementBuild Value="False"/>
+      <CurrentVersionNr Value="0"/>
+      <CurrentMajorRevNr Value="0"/>
+      <CurrentMinorRevNr Value="0"/>
+      <CurrentBuildNr Value="0"/>
+      <ProjectVersion Value="1.0.0.0"/>
+      <Language Value="0409"/>
+      <CharSet Value="04E4"/>
+      <Comments Value=""/>
+      <CompanyName Value=""/>
+      <FileDescription Value=""/>
+      <InternalName Value=""/>
+      <LegalCopyright Value=""/>
+      <LegalTrademarks Value=""/>
+      <OriginalFilename Value=""/>
+      <ProductName Value=""/>
+    </VersionInfo>
     <PublishOptions>
       <Version Value="2"/>
-      <IgnoreBinaries Value="False"/>
       <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
       <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
     </PublishOptions>
@@ -22,22 +40,25 @@
         <Display Value="192.168.0.250:0"/>
       </local>
     </RunParams>
-    <RequiredPackages Count="4">
+    <RequiredPackages Count="5">
       <Item1>
         <PackageName Value="TurboPowerIPro"/>
         <MinVersion Major="1" Valid="True"/>
       </Item1>
       <Item2>
-        <PackageName Value="lhelpcontrolpkg"/>
+        <PackageName Value="lnetpackage"/>
       </Item2>
       <Item3>
-        <PackageName Value="LCL"/>
+        <PackageName Value="lhelpcontrolpkg"/>
       </Item3>
       <Item4>
-        <PackageName Value="chmpkg"/>
+        <PackageName Value="LCL"/>
       </Item4>
+      <Item5>
+        <PackageName Value="chmpkg"/>
+      </Item5>
     </RequiredPackages>
-    <Units Count="5">
+    <Units Count="9">
       <Unit0>
         <Filename Value="lhelp.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -68,11 +89,32 @@
         <ResourceFilename Value="lhelpcore.lrs"/>
         <UnitName Value="lhelpcore"/>
       </Unit4>
+      <Unit5>
+        <Filename Value="lnethttpdataprovider.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="LNetHTTPDataProvider"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="basecontentprovider.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="BaseContentProvider"/>
+      </Unit6>
+      <Unit7>
+        <Filename Value="chmcontentprovider.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="chmcontentprovider"/>
+      </Unit7>
+      <Unit8>
+        <Filename Value="httpcontentprovider.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="HTTPContentProvider"/>
+      </Unit8>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>
     <SearchPaths>
+      <Libraries Value="/emul/linux/x86/lib/;/emul/linux/x86/usr/lib32/"/>
       <SrcPath Value="$(LazarusDir)/lcl/;$(LazarusDir)/lcl/interfaces/$(LCLWidgetType)/"/>
     </SearchPaths>
     <CodeGeneration>
@@ -82,6 +124,9 @@
       </Optimizations>
     </CodeGeneration>
     <Linking>
+      <Debugging>
+        <GenerateDebugInfo Value="True"/>
+      </Debugging>
       <Options>
         <Win32>
           <GraphicApplication Value="True"/>
@@ -89,6 +134,8 @@
       </Options>
     </Linking>
     <Other>
+      <CustomOptions Value="
+"/>
       <CompilerPath Value="$(CompPath)"/>
     </Other>
   </CompilerOptions>

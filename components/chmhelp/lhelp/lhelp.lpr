@@ -24,6 +24,7 @@ uses
   Forms
   { add your units here }, TurboPowerIPro, chmpopup, lhelpcontrolpkg,
   chmpkg, lhelpcore;
+
 var
  X: Integer;
 begin
