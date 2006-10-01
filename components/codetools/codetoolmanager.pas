@@ -33,7 +33,7 @@ interface
 
 {$I codetools.inc}
 
-{ $DEFINE CTDEBUG}
+{.$DEFINE CTDEBUG}
 { $DEFINE DoNotHandleFindDeclException}
 
 uses
@@ -2293,7 +2293,7 @@ var
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
-  DebugLn('TCodeToolManager.FixIncludeFilenames A ',Code.Filename,' Recursive=',Recursive);
+  DebugLn('TCodeToolManager.FixIncludeFilenames A ',Code.Filename,' Recursive=', DbgS(Recursive));
   {$ENDIF}
   MissingIncludeFilesCodeXYPos:=nil;
   if not InitCurCodeTool(Code) then exit;
@@ -3081,7 +3081,7 @@ function TCodeToolManager.FindUnitCaseInsensitive(Code: TCodeBuffer;
 begin
   Result:='';
   {$IFDEF CTDEBUG}
-  DebugLn('TCodeToolManager.FindUnitCaseInsensitive A ',Code.Filename,' TheUnitName="',TheUnitName,'"');
+  DebugLn('TCodeToolManager.FindUnitCaseInsensitive A ',Code.Filename,' AnUnitName="',AnUnitName,'"',' AnUnitInFilename="',AnUnitInFilename,'"');
   {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
   try
@@ -3096,7 +3096,7 @@ function TCodeToolManager.FindUnitSource(Code: TCodeBuffer; const AnUnitName,
 begin
   Result:=nil;
   {$IFDEF CTDEBUG}
-  DebugLn('TCodeToolManager.FindUnit A ',Code.Filename,' TheUnitName="',TheUnitName,'"');
+  DebugLn('TCodeToolManager.FindUnit A ',Code.Filename,' AnUnitName="',AnUnitName,'" AnUnitInFilename="',AnUnitInFilename,'"');
   {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
   try
