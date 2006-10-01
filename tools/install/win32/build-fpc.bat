@@ -1,7 +1,7 @@
 SET OLDCURDIR=%CD%
 SET OLDCURDRIVE=%CD:~,2%
 
-SET SOURCE_DIR=%FPCSVNDIR%
+SET SOURCE_DIR=%FPCSVNDIR%\fpcsrc
 
 %SOURCE_DIR:~,2%
 cd %SOURCE_DIR%
@@ -19,7 +19,7 @@ set COMPILER=%SOURCE_DIR%\compiler\ppc386.exe
 FOR /F %%L IN ('%COMPILER% -iV') DO SET FPCVERSION=%%L
 SET INSTALL_BASE=%BUILDDIR%\fpc\%FPCVERSION%
 SET INSTALL_BINDIR=%INSTALL_BASE%\bin\i386-win32
-%MAKEEXE% compiler_install rtl_install fcl_install packages_install utils_install INSTALL_PREFIX=%INSTALL_BASE% PP=%COMPILER% FPCMAKE=%FPCSVNDIR%\utils\fpcm\fpcmake.exe >> %LOGFILE%
+%MAKEEXE% compiler_install rtl_install fcl_install packages_install utils_install INSTALL_PREFIX=%INSTALL_BASE% PP=%COMPILER% FPCMAKE=%SOURCE_DIR%\utils\fpcm\fpcmake.exe >> %LOGFILE%
 
 SET COMPILER=%INSTALL_BINDIR%\ppc386.exe
 %MAKEEXE% clean PP=%COMPILER% >> %LOGFILE%
