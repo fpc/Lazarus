@@ -235,6 +235,7 @@ var
   i, Count, LineStart : longint;
   OutputLine, Buf : String;
   TheAsyncProcess: TAsyncProcess;
+  LastProcessMessages: TDateTime;
 begin
   Result:=true;
   Clear;
@@ -264,8 +265,13 @@ begin
       TheAsyncProcess:=nil;
 
     fProcess.Execute;
+    LastProcessMessages:=Now;
     repeat
-      if Application<>nil then Application.ProcessMessages;
+      if (Application<>nil) and (abs(LastProcessMessages-Now)>((1/86400)/3))
+      then begin
+        LastProcessMessages:=Now;
+        Application.ProcessMessages;
+      end;
       if StopExecute then begin
         fProcess.Terminate(0);
         Aborted:=true;
