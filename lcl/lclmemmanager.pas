@@ -33,7 +33,7 @@ unit LCLMemManager;
 interface
 
 uses
-  Classes, SysUtils;
+  Classes;
 
 type
   PLCLMemManagerItem = ^TLCLMemManagerItem;
