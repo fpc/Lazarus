@@ -106,13 +106,13 @@ msgstr "Su"
 msgid "(All)"
 msgstr "(tutto)"
 
-#: objinspstrconsts:cactionlisteditorunknowncategory
-msgid "(Unknown)"
-msgstr "(sconosciuto)"
-
 #: objinspstrconsts:oisnone
 msgid "(none)"
 msgstr "(nessuno)"
+
+#: objinspstrconsts:cactionlisteditorunknowncategory
+msgid "(Unknown)"
+msgstr "(sconosciuto)"
 
 #: objinspstrconsts:ois0lines0chars
 msgid "0 lines, 0 chars"
@@ -164,7 +164,7 @@ msgstr "Aggiustamento"
 
 #: objinspstrconsts:rscdalignment
 msgid "Alignment"
-msgstr ""
+msgstr "Allineamento"
 
 #: objinspstrconsts:oisall
 msgid "All"
@@ -184,7 +184,7 @@ msgstr "Array"
 
 #: objinspstrconsts:rscdautosize
 msgid "Auto Size"
-msgstr ""
+msgstr "Dimensione automatica"
 
 #: objinspstrconsts:oisstdactionlisteditorclass
 msgid "Available Action Classes:"
@@ -204,7 +204,7 @@ msgstr "Annulla"
 
 #: objinspstrconsts:rscdcaption
 msgid "Caption"
-msgstr ""
+msgstr "Didascalia"
 
 #: objinspstrconsts:sccslvedtlabelcaption
 msgid "Caption:"
@@ -256,7 +256,7 @@ msgstr "Seleziona colore"
 
 #: objinspstrconsts:rscdcolumneditor
 msgid "Column Editor"
-msgstr ""
+msgstr "Editor di colonna"
 
 #: objinspstrconsts:oiscomponentnameisnotavalididentifier
 msgid "Component name %s%s%s is not a valid identifier"
@@ -276,7 +276,7 @@ msgstr "Copia"
 
 #: objinspstrconsts:oiscopycomponents
 msgid "Copy components"
-msgstr ""
+msgstr "Copia i componenti"
 
 #: objinspstrconsts:oiscreateanewpascalunit
 msgid "Create a new pascal unit."
@@ -324,7 +324,7 @@ msgstr "Taglia"
 
 #: objinspstrconsts:oiscutcomponents
 msgid "Cut components"
-msgstr ""
+msgstr "aglia i componenti"
 
 #: objinspstrconsts:cactionlisteditordatabasecategory
 msgid "Database"
@@ -344,7 +344,7 @@ msgstr "Cancella azione"
 
 #: objinspstrconsts:oisdeletecomponents
 msgid "Delete components"
-msgstr ""
+msgstr "Cancella i componenti"
 
 #: objinspstrconsts:oisdeleteitem
 msgid "Delete item %s%s%s?"
@@ -382,6 +382,10 @@ msgstr "&Uscita"
 msgid "Edit"
 msgstr "Modifica"
 
+#: objinspstrconsts:oiseditactionlist
+msgid "Edit action list..."
+msgstr "Modifica elenco azioni..."
+
 #: objinspstrconsts:sccslvedt
 msgid "Edit ListView Items..."
 msgstr "Modifica le voci della ListView"
@@ -393,10 +397,6 @@ msgstr "Modifica la StringGrid"
 #: objinspstrconsts:sccstredt
 msgid "Edit TreeView Items..."
 msgstr "Modifica gli elementi del TreeView"
-
-#: objinspstrconsts:oiseditactionlist
-msgid "Edit action list..."
-msgstr "Modifica elenco azioni..."
 
 #: objinspstrconsts:oicoleditediting
 msgid "Editing"
@@ -500,7 +500,7 @@ msgstr "Interfaccia"
 
 #: objinspstrconsts:rscdinvalidnumericvalue
 msgid "Invalid numeric Value"
-msgstr ""
+msgstr "Valore numerico non valido"
 
 #: objinspstrconsts:oisinvalidpropertyvalue
 msgid "Invalid property value"
@@ -520,7 +520,7 @@ msgstr "Voci"
 
 #: objinspstrconsts:oisfinddeclaration
 msgid "Jump to declaration"
-msgstr ""
+msgstr "Salta alla dichiarazione"
 
 #: objinspstrconsts:oistdactdatasetlasthint
 msgid "Last"
@@ -528,7 +528,7 @@ msgstr "Ultimo"
 
 #: objinspstrconsts:rscdleft
 msgid "Left"
-msgstr ""
+msgstr "Sinistra"
 
 #: objinspstrconsts:sccslvedtcaption
 msgid "ListView Items Editor"
@@ -562,21 +562,13 @@ msgstr "Metodo"
 msgid "Modify the Item"
 msgstr "Modifica la voce"
 
+#: objinspstrconsts:rscdmovedown
+msgid "Move down"
+msgstr "Sposta sotto"
+
 #: objinspstrconsts:sccsiledtmovedown
 msgid "Move Down"
 msgstr "Sposta in basso"
-
-#: objinspstrconsts:sccssgedtmoverowscols
-msgid "Move Rows/Cols"
-msgstr ""
-
-#: objinspstrconsts:sccsiledtmoveup
-msgid "Move Up"
-msgstr "Sposta in alto"
-
-#: objinspstrconsts:rscdmovedown
-msgid "Move down"
-msgstr ""
 
 #: objinspstrconsts:nbcesmovepageleft
 msgid "Move page left"
@@ -585,6 +577,10 @@ msgstr "Sposta la pagina a sinistra"
 #: objinspstrconsts:nbcesmovepageright
 msgid "Move page right"
 msgstr "Sposta la pagina a destra"
+
+#: objinspstrconsts:sccssgedtmoverowscols
+msgid "Move Rows/Cols"
+msgstr "Sposta Righe/Colonne"
 
 #: objinspstrconsts:tccesmovetableft
 msgid "Move tab left"
@@ -596,7 +592,11 @@ msgstr ""
 
 #: objinspstrconsts:rscdmoveup
 msgid "Move up"
-msgstr ""
+msgstr "Sposta sopra"
+
+#: objinspstrconsts:sccsiledtmoveup
+msgid "Move Up"
+msgstr "Sposta in alto"
 
 #: objinspstrconsts:cactionlisteditornewaction
 msgid "New Action"
@@ -622,10 +622,6 @@ msgstr "Successiva"
 msgid "None"
 msgstr "Nessuno"
 
-#: objinspstrconsts:rscdok
-msgid "OK"
-msgstr ""
-
 #: objinspstrconsts:oisobject
 msgid "Object"
 msgstr "Oggetto"
@@ -638,13 +634,17 @@ msgstr "Ispettore oggetti"
 msgid "Ok"
 msgstr "Ok"
 
+#: objinspstrconsts:rscdok
+msgid "OK"
+msgstr ""
+
 #: objinspstrconsts:sccstredtopendialog
 msgid "Open"
 msgstr "Apri"
 
 #: objinspstrconsts:oispeopenimagefile
 msgid "Open image file"
-msgstr ""
+msgstr "Apri il file immagine"
 
 #: objinspstrconsts:oisopenmaskfile
 msgid "Open masks file (*.dem)"
@@ -668,11 +668,11 @@ msgstr "Incolla"
 
 #: objinspstrconsts:oispastecomponents
 msgid "Paste components"
-msgstr ""
+msgstr "Incolla i componenti"
 
 #: objinspstrconsts:oispepicture
 msgid "Picture"
-msgstr ""
+msgstr "Disegno"
 
 #: objinspstrconsts:clbdisable
 msgid "Popup to disable/enable items"
@@ -708,7 +708,7 @@ msgstr "Rimuovi dai Preferiti"
 
 #: objinspstrconsts:rscdright
 msgid "Right"
-msgstr ""
+msgstr "Destra"
 
 #: objinspstrconsts:oissamplemasks
 msgid "Sample Masks:"
@@ -730,13 +730,13 @@ msgstr "Salva come"
 msgid "Save Image"
 msgstr "Salva Immagine"
 
+#: objinspstrconsts:oispesaveimageas
+msgid "Save image as"
+msgstr "Salva immagine come"
+
 #: objinspstrconsts:oissaveliteralcharacters
 msgid "Save Literal Characters"
 msgstr "Salva Caratteri Letterali"
-
-#: objinspstrconsts:oispesaveimageas
-msgid "Save image as"
-msgstr ""
 
 #: objinspstrconsts:oissavepicture
 msgid "Save picture"
@@ -758,13 +758,13 @@ msgstr "Seleziona &colore..."
 msgid "Select &Font..."
 msgstr "Seleziona &font..."
 
-#: objinspstrconsts:oistdacteditselectallshorthint
-msgid "Select All"
-msgstr "Seleziona tutto"
-
 #: objinspstrconsts:oisselectafile
 msgid "Select a file"
 msgstr "Seleziona un file"
+
+#: objinspstrconsts:oistdacteditselectallshorthint
+msgid "Select All"
+msgstr "Seleziona tutto"
 
 #: objinspstrconsts:sccsiledtgrprcaption
 msgid "Selected Image"
@@ -830,13 +830,13 @@ msgstr "Editor StringGrid"
 msgid "Strings Editor Dialog"
 msgstr "Finestra di dialogo editor delle stringhe"
 
-#: objinspstrconsts:oistestinput
-msgid "Test Input"
-msgstr "Prova Input"
-
 #: objinspstrconsts:oistestdialog
 msgid "Test dialog..."
 msgstr "Prova finestra di dialogo..."
+
+#: objinspstrconsts:oistestinput
+msgid "Test Input"
+msgstr "Prova Input"
 
 #: objinspstrconsts:sccstredtlabeltext
 msgid "Text:"
@@ -880,11 +880,11 @@ msgstr "Variante"
 
 #: objinspstrconsts:rscdvisible
 msgid "Visible"
-msgstr ""
+msgstr "Visibile"
 
 #: objinspstrconsts:rscdwidth
 msgid "Width"
-msgstr ""
+msgstr "Larghezza"
 
 #: objinspstrconsts:oisword
 msgid "Word"

@@ -51,6 +51,8 @@ procedure TLpiTest.RunScript;
 var
   ScriptProcess : TProcess;
 begin
+  AssertTrue('ScriptEngine "' + ScriptEngine + '" does not exist.',
+    FileExists(ScriptEngine));
   ScriptProcess := TProcess.Create(nil);
   try
     ScriptProcess.CommandLine := ScriptEngine + ' ' + GetScriptFileName(FPath);
