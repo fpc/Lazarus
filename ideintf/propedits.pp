@@ -1052,6 +1052,7 @@ type
     function IndexOf(APersistent: TPersistent): integer;
     procedure Clear;
     function IsEqual(SourceSelectionList: TPersistentSelectionList): boolean;
+    procedure SortLike(SortedList: TPersistentSelectionList);
     property Count:integer read GetCount;
     property Capacity:integer read GetCapacity write SetCapacity;
     function Add(APersistent: TPersistent): integer;
@@ -1059,6 +1060,7 @@ type
     procedure Delete(Index: Integer);
     procedure Assign(SourceSelectionList: TPersistentSelectionList);
     property Items[AIndex: integer]: TPersistent read GetItems write SetItems; default;
+    procedure WriteDebugReport;
   end;
 
   TBackupComponentList = class
@@ -4929,10 +4931,16 @@ begin
     FPersistentList.Count:=SourceSelectionList.Count;
     for a:=0 to SourceSelectionList.Count-1 do
       FPersistentList[a] := SourceSelectionList[a];
-
-    // Even faster would have been:
-    // Move(SourceSelectionList.FPersistentList.List^, FPersistentList.List^, FPersistentList.Count * SizeOf(Pointer));
   end;
+end;
+
+procedure TPersistentSelectionList.WriteDebugReport;
+var
+  i: Integer;
+begin
+  DebugLn(['TPersistentSelectionList.WriteDebugReport Count=',Count]);
+  for i:=0 to Count-1 do
+    DebugLn(['  ',i,' ',dbgsName(Items[i])]);
 end;
 
 function TPersistentSelectionList.IsEqual(
@@ -4947,10 +4955,29 @@ begin
   if FPersistentList.Count<>SourceSelectionList.Count then exit;
   for a:=0 to FPersistentList.Count-1 do
     if Items[a]<>SourceSelectionList[a] then exit;
-
-  // Even faster would have been:
-  // Result := CompareDWord(SourceSelectionList.FPersistentList.List^, FPersistentList.List^, FPersistentList.Count);
   Result:=true;
+end;
+
+procedure TPersistentSelectionList.SortLike(SortedList: TPersistentSelectionList
+  );
+// sort this list
+var
+  NewIndex: Integer;
+  j: Integer;
+  OldIndex: LongInt;
+begin
+  NewIndex:=0;
+  j:=0;
+  while (j<SortedList.Count) do begin
+    OldIndex:=IndexOf(SortedList[j]);
+    if OldIndex>=0 then begin
+      // the j-th element of SortedList exists here
+      if OldIndex<>NewIndex then
+        FPersistentList.Move(OldIndex,NewIndex);
+      inc(NewIndex);
+    end;
+    inc(j);
+  end;
 end;
 
 

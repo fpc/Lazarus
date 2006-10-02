@@ -2016,9 +2016,9 @@ procedure TControlSelection.MoveSelection(dx, dy: integer);
 begin
   if (Count=0) or (IsResizing) then exit;
   if (dx=0) and (dy=0) then exit;
-  DebugLn('[TControlSelection.MoveSelection] A  %d,%d',[dx,dy]);
+  //DebugLn('[TControlSelection.MoveSelection] A  %d,%d',[dx,dy]);
   BeginResizing;
-  DebugLn('[TControlSelection.MoveSelection] B  %d',[FResizeLockCount]);
+  //DebugLn('[TControlSelection.MoveSelection] B  %d',[FResizeLockCount]);
   inc(FLeft,dx);
   inc(FTop,dy);
   EndResizing(true);

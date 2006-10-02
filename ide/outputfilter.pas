@@ -265,7 +265,7 @@ begin
       TheAsyncProcess:=nil;
 
     fProcess.Execute;
-    LastProcessMessages:=Now;
+    LastProcessMessages:=Now-1;// force one at start
     repeat
       if (Application<>nil) and (abs(LastProcessMessages-Now)>((1/86400)/3))
       then begin

@@ -93,13 +93,12 @@ begin
     if (FComponentList.LookupRoot=nil) then
       exit;
     FComponentList.Clear;
-  end else begin
-    if FComponentList.IsEqual(PropertyEditorHook.LookupRoot,NewSelection) then
-    begin
-      // nodes ok, but maybe node values need update
-      UpdateComponentNodesValues;
-      exit;
-    end;
+  end
+  else if FComponentList.IsEqual(PropertyEditorHook.LookupRoot,NewSelection)
+  then begin
+    // nodes ok, but maybe node values need update
+    UpdateComponentNodesValues;
+    exit;
   end;
   FComponentList.LookupRoot:=PropertyEditorHook.LookupRoot;
   FComponentList.Selection.Assign(NewSelection);
@@ -128,6 +127,7 @@ begin
           NewSelection.Add(AComponent);
         ANode:=ANode.GetNextMultiSelected;
       end;
+      NewSelection.SortLike(FComponentList.Selection);
     end;
     if NewSelection.IsEqual(FComponentList.Selection) then exit;
     FComponentList.Selection.Assign(NewSelection);
