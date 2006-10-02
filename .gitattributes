@@ -2728,7 +2728,6 @@ tools/install/smart_strip.sh svneol=native#text/plain
 tools/install/win32/build-fpc.bat svneol=native#text/x-msdos-program
 tools/install/win32/build-lazarus.bat svneol=native#text/x-msdos-program
 tools/install/win32/create_installer.bat svneol=native#text/x-msdos-program
-tools/install/win32/create_snapshot_installer.bat svneol=native#text/x-msdos-program
 tools/install/win32/editoroptions.xml svneol=native#text/xml
 tools/install/win32/environmentoptions.xml svneol=native#text/xml
 tools/install/win32/installerstrconsts.pas svneol=native#text/plain

@@ -65,7 +65,7 @@ gmkdir -p %INSTALL_BASE%\source
 :: exit if no compiler has been made
 if not exist %INSTALL_BINDIR%\ppc386.exe goto END
 
-%CP% %FPCSVNDIR%\install\binw32\*.* %INSTALL_BINDIR% >> %LOGFILE%
+%SVN% export %FPCSVNDIR%\install\binw32\*.* %INSTALL_BINDIR% >> %LOGFILE%
 del %INSTALL_BINDIR%\gdb.exe
 %INSTALL_BINDIR%\fpcmkcfg.exe -d "basepath=%INSTALL_BASE%" -o %INSTALL_BINDIR%\fpc.cfg
 
