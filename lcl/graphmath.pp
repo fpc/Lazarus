@@ -385,7 +385,7 @@ begin
   B := Extended(Height) / 2;
   A := Extended(Width) / 2;
 
-  If A <> B then begin
+  If (A <> B) and (A <> 0) and (B <> 0) then begin
     If A > B then begin
       ScaleX := Extended(Width) / Height;
       ScaleY := 1;
@@ -770,8 +770,9 @@ begin
   a := (Rect.Right - Rect.Left) div 2;
   b := (Rect.Bottom - Rect.Top) div 2;
   R := Sqr(a)*Sqr(b);
-  R := Sqrt(R / ((Sqr(b)*Sqr(Cos(DegToRad(EccentricAngle/16)))) +
-    (Sqr(a)*Sqr(Sin(DegToRad(EccentricAngle/16))))));
+  if R <> 0 then
+    R := Sqrt(R / ((Sqr(b)*Sqr(Cos(DegToRad(EccentricAngle/16)))) +
+      (Sqr(a)*Sqr(Sin(DegToRad(EccentricAngle/16))))));
   Result := TruncToInt(R);
 end;
 

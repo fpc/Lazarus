@@ -1166,80 +1166,69 @@ begin
 end;
 
 function TWidgetSet.RoundRect(DC : hDC; X1, Y1, X2, Y2: Integer; RX,RY : Integer) : Boolean;
-
-  Procedure Switch(Var F,T : Integer);
-  var
-    Tmp : Integer;
-  begin
-    Tmp := F;
-    F := T;
-    T := Tmp
-  end;
-
 var
-  pt : TPoint;
-  Pen : hPen;
-  Brush : hBrush;
+  T: Integer;
+  Points: PPoint;
+  Count: Integer;
+
+  procedure AddArcPoints(Left, Top, Right, Bottom, Angle1, Angle2: Integer);
+  var
+    P: PPoint;
+    C: Integer;
+    I: Integer;
+  begin
+    P := nil;
+    try
+      PolyBezierArcPoints(Left, Top, Right - Left, Bottom - Top, Angle1, Angle2,
+        0, P, C);
+
+      ReallocMem(Points, (Count + C) * SizeOf(TPoint));
+      for I := 0 to Pred(C) do
+        Points[Count + Pred(C) - I] := P[I];
+        
+      Inc(Count, C);
+    finally
+      FreeMem(P);
+    end;
+  end;
+  
 begin
   Result := False;
 
-  If X2 < X1 then
-    Switch(X2,X1);
+  if X2 < X1 then
+  begin
+    T := X1;
+    X1 := X2;
+    X2 := T;
+  end;
 
-  If Y2 < Y1 then
-    Switch(Y2,Y1);
+  if Y2 < Y1 then
+  begin
+    T := Y1;
+    Y1 := Y2;
+    Y2 := T;
+  end;
 
-  If ((X2 - X1) < 0) or ((Y2 - Y1) < 0) then
-    exit;
+  if (X2 - X1 < 0) or (Y2 - Y1 < 0) then Exit;
 
-  If not ((RX <= 0) or (RY <= 0)) then begin
-    If ((X2 - X1) <= RX) or ((X2 - X1) div 2 < RX) then
-      RX := (X2 - X1) div 2;
-
-    If ((Y2 - Y1) <= RY) or ((Y2 - Y1) div 2 < RY) then
-      RY := (Y2 - Y1) div 2;
-
-    Pen := SelectObject(DC, GetStockObject(NULL_PEN));
+  if not ((RX <= 0) or (RY <= 0)) then
+  begin
+    if X2 - X1 < RX then RX := X2 - X1;
+    if Y2 - Y1 < RY then RY := Y2 - Y1;
 
     //debugln('TWidgetSet.RoundRect ',dbgs(Rect(X1,Y1,X2,Y2)),' ',dbgs(Point(RX,RY)));
-    RadialPieWithAngles(DC, X1, Y1, X1 + RX, Y1 + RY, 90*16,90*16);
-    RadialPieWithAngles(DC, X2 - RX, Y1, X2, Y1 + RY, 0, 90*16);
-    RadialPieWithAngles(DC, X1, Y2 - RY, X1 + RX, Y2, 180*16,90*16);
-    RadialPieWithAngles(DC, X2 - RX, Y2 - RY, X2, Y2, 270*16,90*16);
+    Points := nil;
+    Count := 0;
+    try
+      AddArcPoints(X1, Y1, X1 + RX, Y1 + RY,  90 * 16, 90 * 16);
+      AddArcPoints(X2 - RX, Y1, X2, Y1 + RY,   0 * 16, 90 * 16);
+      AddArcPoints(X2 - RX, Y2 - RY, X2, Y2, 270 * 16, 90 * 16);
+      AddArcPoints(X1, Y2 - RY, X1 + RX, Y2, 180 * 16, 90 * 16);
 
-    Rectangle(DC, X1 + (RX div 2) - 1, Y1, X2 - (RX div 2) + 1, Y2 + 1);
-    Rectangle(DC, X1, Y1 + (RY div 2) - 1, X2 + 1, Y2 - (RY div 2) + 1);
-
-    SelectObject(DC, Pen);
-
-    Brush := SelectObject(DC, GetStockObject(NULL_BRUSH));
-
-    Arc(DC, X1, Y1, X1 + RX, Y1 + RY, 90*16,90*16);
-    Arc(DC, X2 - RX, Y1, X2, Y1 + RY, 0, 90*16);
-    Arc(DC, X1, Y2 - RY, X1 + RX, Y2, 180*16,90*16);
-    Arc(DC, X2 - RX, Y2 - RY, X2, Y2, 270*16,90*16);
-
-    RY := RY div 2;
-    RX := RX div 2;
-
-    MoveToEx(DC, X1 + RX, Y1, @pt);
-    LineTo(DC, X2 - RX,Y1);
-
-    MoveToEx(DC, X1 + RX, Y1, nil);
-    LineTo(DC, X2 - RX, Y1);
-
-    MoveToEx(DC, X1, Y1 + RY - 1,nil);
-    LineTo(DC, X1, Y2 - RY);
-
-    MoveToEx(DC, X1 + RX, Y2, nil);
-    LineTo(DC, X2 - RX, Y2);
-
-    MoveToEx(DC, X2, Y1 + RY, nil);
-    LineTo(DC, X2, Y2 - RY);
-
-    MoveToEx(DC, pt.X, pt.Y, nil);
-
-    SelectObject(DC, Brush);
+      Polygon(DC, Points, Count, False);
+    finally
+      FreeMem(Points);
+    end;
   end
   else
     Rectangle(DC, X1, Y1, X2, Y2);
