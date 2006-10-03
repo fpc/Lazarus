@@ -140,6 +140,10 @@ msgstr "Tambah"
 msgid "Add Images"
 msgstr "Tambah Gambar"
 
+#: objinspstrconsts:s_addassingle
+msgid "Add as single"
+msgstr ""
+
 #: objinspstrconsts:clbadd
 msgid "Add new Item"
 msgstr "Tambah Item baru"
@@ -367,6 +371,10 @@ msgstr "Hapus Item %d \"%s\"?"
 #: objinspstrconsts:cactionlisteditordialogcategory
 msgid "Dialog"
 msgstr "Dialog"
+
+#: objinspstrconsts:s_suggestsplitimage
+msgid "Do you want to split the image?"
+msgstr ""
 
 #: objinspstrconsts:clbdown
 msgid "Do&wn"
@@ -803,6 +811,10 @@ msgstr "Tampilkan halaman..."
 #: objinspstrconsts:oissort
 msgid "Sort"
 msgstr "Urut"
+
+#: objinspstrconsts:s_splitimage
+msgid "Split image"
+msgstr ""
 
 #: objinspstrconsts:oisstdactionlisteditor
 msgid "Standard Action Classes"

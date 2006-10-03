@@ -140,6 +140,10 @@ msgstr "添加"
 msgid "Add Images"
 msgstr "添加图像"
 
+#: objinspstrconsts:s_addassingle
+msgid "Add as single"
+msgstr ""
+
 #: objinspstrconsts:clbadd
 msgid "Add new Item"
 msgstr "添加新的标签"
@@ -367,6 +371,10 @@ msgstr "删除项目 %d \"%s\"?"
 #: objinspstrconsts:cactionlisteditordialogcategory
 msgid "Dialog"
 msgstr "对话框"
+
+#: objinspstrconsts:s_suggestsplitimage
+msgid "Do you want to split the image?"
+msgstr ""
 
 #: objinspstrconsts:clbdown
 msgid "Do&wn"
@@ -803,6 +811,10 @@ msgstr "显示页面..."
 #: objinspstrconsts:oissort
 msgid "Sort"
 msgstr "排序"
+
+#: objinspstrconsts:s_splitimage
+msgid "Split image"
+msgstr ""
 
 #: objinspstrconsts:oisstdactionlisteditor
 msgid "Standard Action Classes"

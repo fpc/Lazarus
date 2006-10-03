@@ -188,7 +188,7 @@ msgstr "&Ohje"
 
 #: lazarusidestrconsts:lisplistobjects
 msgid "&Objects"
-msgstr ""
+msgstr "Luokka"
 
 #: lazarusidestrconsts:lisok
 msgid "&Ok"
@@ -256,7 +256,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisplistall
 msgid "<All>"
-msgstr ""
+msgstr "<Kaikki>"
 
 #: lazarusidestrconsts:lislazdocnotagcaption
 msgid "<NONE>"
@@ -264,7 +264,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisplistnone
 msgid "<None>"
-msgstr ""
+msgstr "<Ei mikään>"
 
 #: lazarusidestrconsts:lisa2pchooseanexistingfile
 msgid "<choose an existing file>"
@@ -380,7 +380,7 @@ msgstr ""
 
 #: lazarusidestrconsts:liscodetempladdcodetemplate
 msgid "Add code template"
-msgstr ""
+msgstr "Lisää koodilyhenne"
 
 #: lazarusidestrconsts:lismenuaddtoproject
 msgid "Add editor file to Project"
@@ -1132,7 +1132,7 @@ msgstr "Valitse toisenlainen nimi"
 
 #: lazarusidestrconsts:dlgchscodetempl
 msgid "Choose code template file (*.dci)"
-msgstr ""
+msgstr "Valitse koodilyhennetiedosto (*.dci)"
 
 #: lazarusidestrconsts:lischoosecompilerpath
 msgid "Choose compiler filename (%s)"
@@ -1272,7 +1272,7 @@ msgstr "Koodiselain"
 
 #: lazarusidestrconsts:lismenueditcodetemplates
 msgid "Code Templates ..."
-msgstr ""
+msgstr "Koodilyhenteet ..."
 
 #: lazarusidestrconsts:dlgcodetoolstab
 msgid "Code Tools"
@@ -1644,7 +1644,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisplistcopymethodtoclipboard
 msgid "Copy method name to the clipboard"
-msgstr ""
+msgstr "Kopio aliohjelman (/funktion/metodin...) nimi leikepöydälle"
 
 #: lazarusidestrconsts:lisdsgcopycomponents
 msgid "Copy selected components to clipboard"
@@ -2024,7 +2024,7 @@ msgstr "Poista valittu"
 
 #: lazarusidestrconsts:dlgdeltemplate
 msgid "Delete template "
-msgstr ""
+msgstr "Poistetaanko koodilyhenne "
 
 #: lazarusidestrconsts:srkmecdeletebol
 msgid "Delete to beginning of line"
@@ -3964,7 +3964,7 @@ msgstr "japani"
 
 #: lazarusidestrconsts:lisplistjumptoselection
 msgid "Jump To Selection"
-msgstr ""
+msgstr "Mene valittuun aliohjelmaan,funktioon..."
 
 #: lazarusidestrconsts:lismenujumpback
 msgid "Jump back"
@@ -5776,7 +5776,7 @@ msgstr "Uudelleen"
 
 #: lazarusidestrconsts:lisfepaintdesigneritemsonidle
 msgid "Reduce designer painting"
-msgstr ""
+msgstr "Vähennä näytön päivittämistä"
 
 #: lazarusidestrconsts:uemrefactor
 msgid "Refactoring"
@@ -6160,7 +6160,7 @@ msgstr "Tallenna"
 
 #: lazarusidestrconsts:lissavespace
 msgid "Save "
-msgstr ""
+msgstr "Tallenna "
 
 #: lazarusidestrconsts:lismenusaveall
 msgid "Save All"

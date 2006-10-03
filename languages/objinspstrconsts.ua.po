@@ -126,6 +126,10 @@ msgstr "Додати"
 msgid "Add Images"
 msgstr ""
 
+#: objinspstrconsts:s_addassingle
+msgid "Add as single"
+msgstr ""
+
 #: objinspstrconsts:clbadd
 msgid "Add new Item"
 msgstr "Додати новий пункт"
@@ -353,6 +357,10 @@ msgstr "Видалити елемент %d \"%s\"?"
 #: objinspstrconsts:cactionlisteditordialogcategory
 msgid "Dialog"
 msgstr "Діалог"
+
+#: objinspstrconsts:s_suggestsplitimage
+msgid "Do you want to split the image?"
+msgstr ""
 
 #: objinspstrconsts:clbdown
 msgid "Do&wn"
@@ -789,6 +797,10 @@ msgstr "Показати 'сторінку'..."
 #: objinspstrconsts:oissort
 msgid "Sort"
 msgstr "Впорядкування"
+
+#: objinspstrconsts:s_splitimage
+msgid "Split image"
+msgstr ""
 
 #: objinspstrconsts:oisstdactionlisteditor
 msgid "Standard Action Classes"

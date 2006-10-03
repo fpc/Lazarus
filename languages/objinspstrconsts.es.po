@@ -136,6 +136,10 @@ msgstr "Añadir"
 msgid "Add Images"
 msgstr ""
 
+#: objinspstrconsts:s_addassingle
+msgid "Add as single"
+msgstr ""
+
 #: objinspstrconsts:clbadd
 msgid "Add new Item"
 msgstr "Añadir nuevo elemento"
@@ -362,6 +366,10 @@ msgstr "¿Borrar el elemento %d \"%s\"?"
 
 #: objinspstrconsts:cactionlisteditordialogcategory
 msgid "Dialog"
+msgstr ""
+
+#: objinspstrconsts:s_suggestsplitimage
+msgid "Do you want to split the image?"
 msgstr ""
 
 #: objinspstrconsts:clbdown
@@ -799,6 +807,10 @@ msgstr "Mostrar página ..."
 #: objinspstrconsts:oissort
 msgid "Sort"
 msgstr "Ordenar"
+
+#: objinspstrconsts:s_splitimage
+msgid "Split image"
+msgstr ""
 
 #: objinspstrconsts:oisstdactionlisteditor
 msgid "Standard Action Classes"

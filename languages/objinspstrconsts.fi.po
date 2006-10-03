@@ -126,6 +126,10 @@ msgstr "Lisää"
 msgid "Add Images"
 msgstr ""
 
+#: objinspstrconsts:s_addassingle
+msgid "Add as single"
+msgstr ""
+
 #: objinspstrconsts:clbadd
 msgid "Add new Item"
 msgstr "Lisää uusi kohta"
@@ -352,6 +356,10 @@ msgstr "Poistetaanko Item %d \"%s\"?"
 
 #: objinspstrconsts:cactionlisteditordialogcategory
 msgid "Dialog"
+msgstr ""
+
+#: objinspstrconsts:s_suggestsplitimage
+msgid "Do you want to split the image?"
 msgstr ""
 
 #: objinspstrconsts:clbdown
@@ -789,6 +797,10 @@ msgstr "Näytä välilehti ..."
 #: objinspstrconsts:oissort
 msgid "Sort"
 msgstr "Lajittele"
+
+#: objinspstrconsts:s_splitimage
+msgid "Split image"
+msgstr ""
 
 #: objinspstrconsts:oisstdactionlisteditor
 msgid "Standard Action Classes"

@@ -106,13 +106,13 @@ msgstr "Su"
 msgid "(All)"
 msgstr "(tutto)"
 
-#: objinspstrconsts:oisnone
-msgid "(none)"
-msgstr "(nessuno)"
-
 #: objinspstrconsts:cactionlisteditorunknowncategory
 msgid "(Unknown)"
 msgstr "(sconosciuto)"
+
+#: objinspstrconsts:oisnone
+msgid "(none)"
+msgstr "(nessuno)"
 
 #: objinspstrconsts:ois0lines0chars
 msgid "0 lines, 0 chars"
@@ -137,6 +137,10 @@ msgstr "Aggiungi"
 #: objinspstrconsts:sccsiledtopendialog
 msgid "Add Images"
 msgstr "Aggiungi Immagini"
+
+#: objinspstrconsts:s_addassingle
+msgid "Add as single"
+msgstr ""
 
 #: objinspstrconsts:clbadd
 msgid "Add new Item"
@@ -366,6 +370,10 @@ msgstr "Cancella la voce %d \"%s\"?"
 msgid "Dialog"
 msgstr "Finestra di dialogo"
 
+#: objinspstrconsts:s_suggestsplitimage
+msgid "Do you want to split the image?"
+msgstr ""
+
 #: objinspstrconsts:clbdown
 msgid "Do&wn"
 msgstr "&Giù"
@@ -382,10 +390,6 @@ msgstr "&Uscita"
 msgid "Edit"
 msgstr "Modifica"
 
-#: objinspstrconsts:oiseditactionlist
-msgid "Edit action list..."
-msgstr "Modifica elenco azioni..."
-
 #: objinspstrconsts:sccslvedt
 msgid "Edit ListView Items..."
 msgstr "Modifica le voci della ListView"
@@ -397,6 +401,10 @@ msgstr "Modifica la StringGrid"
 #: objinspstrconsts:sccstredt
 msgid "Edit TreeView Items..."
 msgstr "Modifica gli elementi del TreeView"
+
+#: objinspstrconsts:oiseditactionlist
+msgid "Edit action list..."
+msgstr "Modifica elenco azioni..."
 
 #: objinspstrconsts:oicoleditediting
 msgid "Editing"
@@ -562,13 +570,21 @@ msgstr "Metodo"
 msgid "Modify the Item"
 msgstr "Modifica la voce"
 
-#: objinspstrconsts:rscdmovedown
-msgid "Move down"
-msgstr "Sposta sotto"
-
 #: objinspstrconsts:sccsiledtmovedown
 msgid "Move Down"
 msgstr "Sposta in basso"
+
+#: objinspstrconsts:sccssgedtmoverowscols
+msgid "Move Rows/Cols"
+msgstr "Sposta Righe/Colonne"
+
+#: objinspstrconsts:sccsiledtmoveup
+msgid "Move Up"
+msgstr "Sposta in alto"
+
+#: objinspstrconsts:rscdmovedown
+msgid "Move down"
+msgstr "Sposta sotto"
 
 #: objinspstrconsts:nbcesmovepageleft
 msgid "Move page left"
@@ -577,10 +593,6 @@ msgstr "Sposta la pagina a sinistra"
 #: objinspstrconsts:nbcesmovepageright
 msgid "Move page right"
 msgstr "Sposta la pagina a destra"
-
-#: objinspstrconsts:sccssgedtmoverowscols
-msgid "Move Rows/Cols"
-msgstr "Sposta Righe/Colonne"
 
 #: objinspstrconsts:tccesmovetableft
 msgid "Move tab left"
@@ -593,10 +605,6 @@ msgstr ""
 #: objinspstrconsts:rscdmoveup
 msgid "Move up"
 msgstr "Sposta sopra"
-
-#: objinspstrconsts:sccsiledtmoveup
-msgid "Move Up"
-msgstr "Sposta in alto"
 
 #: objinspstrconsts:cactionlisteditornewaction
 msgid "New Action"
@@ -622,6 +630,10 @@ msgstr "Successiva"
 msgid "None"
 msgstr "Nessuno"
 
+#: objinspstrconsts:rscdok
+msgid "OK"
+msgstr ""
+
 #: objinspstrconsts:oisobject
 msgid "Object"
 msgstr "Oggetto"
@@ -633,10 +645,6 @@ msgstr "Ispettore oggetti"
 #: objinspstrconsts:oisok2
 msgid "Ok"
 msgstr "Ok"
-
-#: objinspstrconsts:rscdok
-msgid "OK"
-msgstr ""
 
 #: objinspstrconsts:sccstredtopendialog
 msgid "Open"
@@ -730,13 +738,13 @@ msgstr "Salva come"
 msgid "Save Image"
 msgstr "Salva Immagine"
 
-#: objinspstrconsts:oispesaveimageas
-msgid "Save image as"
-msgstr "Salva immagine come"
-
 #: objinspstrconsts:oissaveliteralcharacters
 msgid "Save Literal Characters"
 msgstr "Salva Caratteri Letterali"
+
+#: objinspstrconsts:oispesaveimageas
+msgid "Save image as"
+msgstr "Salva immagine come"
 
 #: objinspstrconsts:oissavepicture
 msgid "Save picture"
@@ -758,13 +766,13 @@ msgstr "Seleziona &colore..."
 msgid "Select &Font..."
 msgstr "Seleziona &font..."
 
-#: objinspstrconsts:oisselectafile
-msgid "Select a file"
-msgstr "Seleziona un file"
-
 #: objinspstrconsts:oistdacteditselectallshorthint
 msgid "Select All"
 msgstr "Seleziona tutto"
+
+#: objinspstrconsts:oisselectafile
+msgid "Select a file"
+msgstr "Seleziona un file"
 
 #: objinspstrconsts:sccsiledtgrprcaption
 msgid "Selected Image"
@@ -802,6 +810,10 @@ msgstr "Mostra pagina ..."
 msgid "Sort"
 msgstr "Ordina"
 
+#: objinspstrconsts:s_splitimage
+msgid "Split image"
+msgstr ""
+
 #: objinspstrconsts:oisstdactionlisteditor
 msgid "Standard Action Classes"
 msgstr "Classi di azioni standard"
@@ -830,13 +842,13 @@ msgstr "Editor StringGrid"
 msgid "Strings Editor Dialog"
 msgstr "Finestra di dialogo editor delle stringhe"
 
-#: objinspstrconsts:oistestdialog
-msgid "Test dialog..."
-msgstr "Prova finestra di dialogo..."
-
 #: objinspstrconsts:oistestinput
 msgid "Test Input"
 msgstr "Prova Input"
+
+#: objinspstrconsts:oistestdialog
+msgid "Test dialog..."
+msgstr "Prova finestra di dialogo..."
 
 #: objinspstrconsts:sccstredtlabeltext
 msgid "Text:"

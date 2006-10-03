@@ -998,3 +998,15 @@ msgstr ""
 msgid "Left"
 msgstr ""
 
+#: objinspstrconsts:s_suggestsplitimage
+msgid "Do you want to split the image?"
+msgstr ""
+
+#: objinspstrconsts:s_addassingle
+msgid "Add as single"
+msgstr ""
+
+#: objinspstrconsts:s_splitimage
+msgid "Split image"
+msgstr ""
+
