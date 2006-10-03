@@ -183,7 +183,7 @@ end;
 
 function LCLIntfCellRenderer_New: PGtkCellRenderer;
 begin
-  Result := g_object_new(LCLIntfCellRenderer_GetType, nil);
+  Result := g_object_new(LCLIntfCellRenderer_GetType, nil,[]);
 end;
 
 end.
