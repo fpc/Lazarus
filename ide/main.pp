@@ -4862,10 +4862,16 @@ begin
     if (AncestorType=nil) then begin
       Result:=DoLoadHiddenResourceComponent(AnUnitInfo,AncestorClassName,Flags,
                                             AncestorType,AncestorUnitInfo);
-      if Result<>mrOk then exit;
-      Result:=DoSaveFileResourceToBinStream(AncestorUnitInfo,AncestorBinStream);
-      if Result<>mrOk then exit;
-      AncestorBinStream.Position:=0;
+      if Result=mrAbort then exit;
+      if Result=mrOk then begin
+        Result:=DoSaveFileResourceToBinStream(AncestorUnitInfo,AncestorBinStream);
+        if Result<>mrOk then exit;
+        AncestorBinStream.Position:=0;
+      end else begin
+        // the ancestor class was not found -> use TForm as default
+        AncestorType:=TForm;
+        AncestorUnitInfo:=nil;
+      end;
     end;
 
     // use TForm as default ancestor
@@ -5108,7 +5114,8 @@ begin
     Result:=QuestionDlg('Error','Unable to find the lfm file for component class '
       +'"'+AComponentClassName+'".',
       mtError,[mrCancel,'Cancel loading this component',
-               mrAbort,'Abort whole loading'],0);
+               mrAbort,'Abort whole loading',
+               mrIgnore,'Ignore, use TForm as ancestor'],0);
   finally
     AnUnitInfo.LoadingComponent:=false;
   end;
