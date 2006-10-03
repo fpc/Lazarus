@@ -232,6 +232,7 @@ begin
       Add('-v  '+'Replace pointer parameters by  var');
       Add('-w  '+'Handle special win32 macros');
       Add('-x  '+'Handle SYS__TRAP of the PalmOS header files');
+      Add('-C  '+'Use types in ctypes unit');
     end;
     OutputExtLabel.Caption:='Output extension of new file';
     OutputDirLabel.Caption:='Output directory';
@@ -550,6 +551,7 @@ begin
     'v': Project.VarParams:=NewValue;
     'w': Project.Win32Header:=NewValue;
     'x': Project.PalmOSSYSTrap:=NewValue;
+    'C': Project.UseCTypes:=NewValue;
     else
       raise Exception.Create('TH2PasDialog.h2pasOptionsCheckGroupItemClick: Unknown option '+OptionStr);
     end;
@@ -739,6 +741,7 @@ begin
   Check('-v',Project.VarParams);
   Check('-w',Project.Win32Header);
   Check('-x',Project.PalmOSSYSTrap);
+  Check('-C',Project.UseCTypes);
   
   LibnameEdit.Text:=Project.Libname;
   OutputExtEdit.Text:=Project.OutputExt;

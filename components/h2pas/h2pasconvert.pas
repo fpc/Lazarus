@@ -161,6 +161,7 @@ type
     FUseProcVarsForImport: boolean;
     FVarParams: boolean;
     FWin32Header: boolean;
+    FUseCTypes : boolean;
     function GetCHeaderFileCount: integer;
     function GetCHeaderFiles(Index: integer): TH2PasFile;
     procedure InternalAddCHeaderFile(AFile: TH2PasFile);
@@ -186,6 +187,7 @@ type
     procedure SetUseProcVarsForImport(const AValue: boolean);
     procedure SetVarParams(const AValue: boolean);
     procedure SetWin32Header(const AValue: boolean);
+    procedure SetUseCTypes(const AValue: boolean);
   public
     constructor Create;
     destructor Destroy; override;
@@ -235,6 +237,7 @@ type
     property UseProcVarsForImport: boolean read FUseProcVarsForImport write SetUseProcVarsForImport;
     property VarParams: boolean read FVarParams write SetVarParams;
     property Win32Header: boolean read FWin32Header write SetWin32Header;
+    property UseCTypes: boolean read FUseCTypes write SetUseCTypes;
     property OutputDirectory: string read FOutputDirectory write SetOutputDirectory;
   end;
   
@@ -452,6 +455,7 @@ begin
   if Project.UseProcVarsForImport then Add('-P');
   if Project.VarParams then Add('-v');
   if Project.Win32Header then Add('-w');
+  if Project.UseCTypes then Add('-C');
   if Project.Libname<>'' then Add('-l '+Project.Libname);
   Add('-o '+GetOutputFilename);
   if InputFilename<>'' then
@@ -631,6 +635,13 @@ begin
   Modified:=true;
 end;
 
+procedure TH2PasProject.SetUseCTypes(const AValue: boolean);
+begin
+  if FUseCTypes=AValue then exit;
+  FUseCTypes:=AValue;
+  Modified:=true;
+end;
+
 constructor TH2PasProject.Create;
 begin
   FCHeaderFiles:=TFPList.Create;
@@ -666,6 +677,7 @@ begin
   FUseProcVarsForImport:=false;
   FVarParams:=false;
   FWin32Header:=true;
+  FUseCTypes:=false;
   FOutputDirectory:='';
   while CHeaderFileCount>0 do
     CHeaderFiles[CHeaderFileCount-1].Free;
@@ -726,6 +738,7 @@ begin
       FUseProcVarsForImport:=Src.FUseProcVarsForImport;
       FVarParams:=Src.FVarParams;
       FWin32Header:=Src.FWin32Header;
+      FUseCTypes:=Src.FUseCTypes;
       FOutputDirectory:=Src.FOutputDirectory;
       Clear(false);
       for i:=0 to Src.CHeaderFileCount-1 do begin
@@ -764,6 +777,7 @@ begin
       and (FUseProcVarsForImport=AProject.FUseProcVarsForImport)
       and (FVarParams=AProject.FVarParams)
       and (FWin32Header=AProject.FWin32Header)
+      and (FUseCTypes=AProject.FUseCTypes)
       and (FOutputDirectory=AProject.FOutputDirectory);
   if not Result then exit;
   for i:=0 to CHeaderFileCount-1 do
@@ -825,6 +839,7 @@ begin
   FUseProcVarsForImport:=Config.GetValue('UseProcVarsForImport/Value',false);
   FVarParams:=Config.GetValue('VarParams/Value',false);
   FWin32Header:=Config.GetValue('Win32Header/Value',true);
+  FUseCTypes:=Config.GetValue('UseCTypes/Value',false);
   FOutputDirectory:=NormalizeFilename(Config.GetValue('OutputDirectory/Value',''));
 
   // load CHeaderFiles
@@ -894,6 +909,7 @@ begin
   Config.SetDeleteValue('UseProcVarsForImport/Value',FUseProcVarsForImport,false);
   Config.SetDeleteValue('VarParams/Value',FVarParams,false);
   Config.SetDeleteValue('Win32Header/Value',FWin32Header,true);
+  Config.SetDeleteValue('UseCTypes/Value',FUseCTypes,false);
   Config.SetDeleteValue('OutputDirectory/Value',ShortenFilename(FOutputDirectory),'');
 
   // save CHeaderFiles
