@@ -849,6 +849,9 @@ begin
   Dlg:=TCheckListBoxEditorDlg.Create(nil);
   with Dlg do begin
     Caption:=clbCheckListBoxEditor;
+    BtnOK.Caption:=oisOk;
+    BtnCancel.Caption:=oisCancel;
+    BtnHelp.Caption:=cActionListEditorHelpCategory;
     BtnAdd.Caption:=oiscAdd;
     BtnDelete.Caption:=oiscDelete;
     BtnUp.Caption:=clbUp;
