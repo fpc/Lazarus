@@ -804,6 +804,7 @@ begin
    Result := mrCancel;
    VersionInfoCodeBuf:=CodeToolBoss.LoadFile(AFilename,false,false);
    if VersionInfoCodeBuf=nil then exit;
+   SetFileNames(AFilename);
    if not CodeToolBoss.FindResourceDirective(VersionInfoCodeBuf,1,1,
                                VersionInfoCodeBuf,NewX,NewY,
                                NewTopLine,ExtractFileName(resFilename)) then
