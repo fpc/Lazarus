@@ -176,7 +176,7 @@ end;
 { TWinCEWSScrollingWinControl }
 
 function ScrollWindowPtr(hWnd:HWND; dx:longint; dy:longint; prcScroll:lpRECT; prcClip:lpRECT;hrgnUpdate:HRGN;
-prcUpdate:LPRECT; flags:UINT):longint; external UserDLLCore name 'ScrollWindowEx';
+prcUpdate:LPRECT; flags:UINT):longint; external KernelDll name 'ScrollWindowEx';
 
 class procedure TWinCEWSScrollingWinControl.ScrollBy(const AWinControl: TScrollingWinControl;
   const DeltaX, DeltaY: integer);
