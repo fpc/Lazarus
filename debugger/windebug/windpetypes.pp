@@ -56,7 +56,7 @@ const
 {$endif}
 
 {$packrecords 2}
-
+{$IFNDEF windows}
 type
   _IMAGE_DOS_HEADER = record     // DOS .EXE header
     e_magic:    WORD;            // Magic number
@@ -82,6 +82,7 @@ type
   IMAGE_DOS_HEADER = _IMAGE_DOS_HEADER;
   TImageDosHeader = _IMAGE_DOS_HEADER;
   PImageDosHeader = ^TImageDosHeader;
+{$ENDIF}
 
 type
   _IMAGE_OS2_HEADER = record // OS/2 .EXE header

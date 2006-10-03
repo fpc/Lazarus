@@ -57,16 +57,22 @@ type
   TDbgImageLoader = class(TObject)
   private
     FFileName: String;
+    FImage64Bit: Boolean;
+    FImageBase: QWord;
     FSections: TStringList;
     function GetSection(const AName: String): PDbgImageSection;
   protected
     procedure Add(const AName: String; ARawData: Pointer; ASize: QWord; AVirtualAdress: QWord);
+    procedure SetImageBase(ABase: QWord);
+    procedure SetImage64Bit(AValue: Boolean);
     procedure LoadSections; virtual; abstract;
     procedure UnloadSections; virtual; abstract;
   public
     constructor Create(const AFileName: String); virtual;
     destructor Destroy; override;
     property FileName: String read FFileName;
+    property ImageBase: QWord read FImageBase;
+    Property Image64Bit: Boolean read FImage64Bit;
     property Section[const AName: String]: PDbgImageSection read GetSection;
   end;
   
@@ -147,13 +153,24 @@ begin
   else Result := PDbgImageSection(FSections.Objects[idx]);
 end;
 
+procedure TDbgImageLoader.SetImage64Bit(AValue: Boolean);
+begin
+  FImage64Bit := AValue;
+end;
+
+procedure TDbgImageLoader.SetImageBase(ABase: QWord);
+begin
+  FImageBase := ABase;
+end;
+
 { TDbgPEImageLoader }
 
 procedure TDbgPEImageLoader.LoadSections;
 var
   ModulePtr: Pointer;
-  Is64: Boolean;
   NtHeaders: PImageNtHeaders;
+  NtHeaders32: PImageNtHeaders32 absolute NtHeaders;
+  NtHeaders64: PImageNtHeaders64 absolute NtHeaders;
   SectionHeader: PImageSectionHeader;
   n, idx: Integer;
   p: Pointer;
@@ -167,7 +184,11 @@ begin
     Exit;
   end;
 
-  Is64 := NtHeaders^.OptionalHeader.Magic = IMAGE_NT_OPTIONAL_HDR64_MAGIC;
+  SetImage64Bit(NtHeaders^.OptionalHeader.Magic = IMAGE_NT_OPTIONAL_HDR64_MAGIC);
+
+  if Image64Bit
+  then SetImageBase(NtHeaders64^.OptionalHeader.ImageBase)
+  else SetImageBase(NtHeaders32^.OptionalHeader.ImageBase);
 
   for n := 0 to NtHeaders^.FileHeader.NumberOfSections - 1 do
   begin

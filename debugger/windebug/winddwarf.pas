@@ -39,9 +39,10 @@ unit WinDDwarf;
 interface
 
 uses
-  Classes, SysUtils, WinDDwarfConst, Maps, Math, WinDLoader;
+  Classes, Types, SysUtils, WinDDwarfConst, Maps, Math, WinDLoader;
   
 type
+  // compilation unit header
   {$PACKRECORDS 1}
   PDwarfCUHeader32 = ^TDwarfCUHeader32;
   TDwarfCUHeader32 = record
@@ -50,13 +51,7 @@ type
     AbbrevOffset: LongWord;
     AddressSize: Byte;
   end;
-  {$PACKRECORDS C}
 
-const
-  DWARF_CUHEADER64_SIGNATURE = $FFFFFFFF;
-
-type
-  {$PACKRECORDS 1}
   PDwarfCUHeader64 = ^TDwarfCUHeader64;
   TDwarfCUHeader64 = record
     Signature: LongWord;
@@ -65,37 +60,139 @@ type
     AbbrevOffset: QWord;
     AddressSize: Byte;
   end;
+  
+  // Line number program header
+  PDwarfLNPInfoHeader = ^TDwarfLNPInfoHeader;
+  TDwarfLNPInfoHeader = record
+    MinimumInstructionLength: Byte;
+    DefaultIsStmt: Byte;
+    LineBase: ShortInt;
+    LineRange: Byte;
+    OpcodeBase: Byte;
+    StandardOpcodeLengths: record end; {array[1..OpcodeBase-1] of Byte}
+    {IncludeDirectories: asciiz, asciiz..z}
+    {FileNames: asciiz, asciiz..z}
+  end;
+
+  PDwarfLNPHeader32 = ^TDwarfLNPHeader32;
+  TDwarfLNPHeader32 = record
+    UnitLength: LongWord;
+    Version: Word;
+    HeaderLength: LongWord;
+    Info: TDwarfLNPInfoHeader;
+  end;
+
+  PDwarfLNPHeader64 = ^TDwarfLNPHeader64;
+  TDwarfLNPHeader64 = record
+    Signature: LongWord;
+    UnitLength: QWord;
+    Version: Word;
+    HeaderLength: QWord;
+    Info: TDwarfLNPInfoHeader;
+  end;
+  
   {$PACKRECORDS C}
   
+const
+  DWARF_HEADER64_SIGNATURE = $FFFFFFFF;
+
+type
+  TPointerDynArray = array of Pointer;
+
   TDbgDwarf = class;
+
+  TDwarfAbbrev = record
+    tag: Cardinal;
+    index: Integer;
+    count: Integer;
+    Children: Boolean;
+  end;
+  
+  PDwarfScopeInfo = ^TDwarfScopeInfo;
+  TDwarfScopeInfo = record
+    Parent: PDwarfScopeInfo;
+    Prev: PDwarfScopeInfo;
+    Next: PDwarfScopeInfo;
+    Child: PDwarfScopeInfo;
+    Entry: Pointer;
+  end;
+
+  TDwarfAddressInfo = record
+    Scope: PDwarfScopeInfo;
+    StartPC: QWord;
+    EndPC: QWord;
+    LineInfo: Pointer;
+    Name: PChar;
+  end;
+
+
+  TDwarfEntryLocationFlag = (elfAttribList, elfFirstChild, elfNextSibling);
+  TDwarfEntryLocationFlags = set of TDwarfEntryLocationFlag;
 
   { TDwarfCompilationUnit }
 
+  TDwarfCompilationUnitClass = class of TDwarfCompilationUnit;
   TDwarfCompilationUnit = class
   private
     FOwner: TDbgDwarf;
+    FVerbose: Boolean;
   
     // --- Header ---
-    FLength: QWord;
+    FLength: QWord;  // length of info
     FVersion: Word;
     FAbbrevOffset: QWord;
-    FAddressSize: Byte;
+    FAddressSize: Byte;  // the adress size of the target in bytes
+    FIsDwarf64: Boolean; // Set if the dwarf info in this unit is 64bit
     // ------
     
     FInfoData: Pointer;
+    FStatementList: Pointer;
+    FFileName: String;
+    FIdentifierCase: Integer;
 
     FMap: TMap;
-    FAbbrev: array of record
+    FDefinitions: array of record
       Attribute: Cardinal;
       Form: Cardinal;
     end;
-    function MakeAddress(AData: Pointer): QWord;
+    FAbbrevIndex: Integer;
+    FLastAbbrev: Cardinal;
+    FLastAbbrevPtr: Pointer;
+    
+    FAddressMap: TMap;
+    FMinPC: QWord;  // the min and max PC value found in this unit.
+    FMaxPC: QWord;  //
+    FScope: TDwarfScopeInfo;
+    
+    procedure BuildAddessMap(AScope: PDwarfScopeInfo);
+    function  MakeAddress(AData: Pointer): QWord;
+    procedure LoadAbbrevs(ANeeded: Cardinal);
   protected
+    function LocateEntry(ATag: Cardinal; AStart: PDwarfScopeInfo; ABuildList: Boolean; out AEntry: PDwarfScopeInfo; out AList: TPointerDynArray): Boolean;
+    function LocateAttribute(AEntry: Pointer; AAttribute: Cardinal; const AList: TPointerDynArray; out AAttribPtr: Pointer; out AForm: Cardinal): Boolean;
+
+    function ReadValue(AAttribute: Pointer; AForm: Cardinal; out AValue: Integer): Boolean;
+    function ReadValue(AAttribute: Pointer; AForm: Cardinal; out AValue: Int64): Boolean;
+    function ReadValue(AAttribute: Pointer; AForm: Cardinal; out AValue: Cardinal): Boolean;
+    function ReadValue(AAttribute: Pointer; AForm: Cardinal; out AValue: QWord): Boolean;
+    function ReadValue(AAttribute: Pointer; AForm: Cardinal; out AValue: String): Boolean;
+    function ReadValue(AAttribute: Pointer; AForm: Cardinal; out AValue: PChar): Boolean;
+    function ReadValue(AAttribute: Pointer; AForm: Cardinal; out AValue: TByteDynArray): Boolean;
   public
-    constructor Create(AOwner: TDbgDwarf; ADataOffset: QWord; ALength: QWord; AVersion: Word; AAbbrevOffset: QWord; AAddressSize: Byte);
+    constructor Create(AOwner: TDbgDwarf; ADataOffset: QWord; ALength: QWord; AVersion: Word; AAbbrevOffset: QWord; AAddressSize: Byte; AIsDwarf64: Boolean); virtual;
     destructor Destroy; override;
-    procedure LoadAbbrevs;
+    function GetDefinition(AAbbrev: Cardinal; out ADefinition: TDwarfAbbrev): Boolean;
+    property FileName: String read FFileName;
   end;
+  
+  { TDwarfVerboseCompilationUnit }
+
+  TDwarfVerboseCompilationUnit = class(TDwarfCompilationUnit)
+  private
+  public
+    constructor Create(AOwner: TDbgDwarf; ADataOffset: QWord; ALength: QWord; AVersion: Word; AAbbrevOffset: QWord; AAddressSize: Byte; AIsDwarf64: Boolean); override;
+  end;
+
 
   { TDwarfAbbrevDecoder }
 
@@ -112,8 +209,22 @@ type
     procedure Decode;
   end;
   
+  { TDwarfStatementDecoder }
+
+  TDwarfStatementDecoder = class(TObject)
+  private
+    FCU: TDwarfCompilationUnit;
+    procedure InternalDecode(AData: Pointer; AMaxData: Pointer; const AIndent: String = '');
+  protected
+  public
+    constructor Create(ACompilationUnit: TDwarfCompilationUnit);
+    procedure Decode;
+  end;
+
+  
 type
-  TDwarfSection = (dsAbbrev, dsARanges, dsFrame,  dsInfo, dsLine, dsLoc, dsMacinfo, dsPubNames, dsPubTypes, dsRanges, dsStr);
+  TImageSection = (dsAbbrev, dsARanges, dsFrame,  dsInfo, dsLine, dsLoc, dsMacinfo, dsPubNames, dsPubTypes, dsRanges, dsStr);
+  TDwarfSection = dsAbbrev..dsStr;
 
 const
   DWARF_SECTION_NAME: array[TDwarfSection] of String = (
@@ -139,14 +250,25 @@ type
     FSections: array[TDwarfSection] of TDwarfSectionInfo;
     function GetCompilationUnit(AIndex: Integer): TDwarfCompilationUnit;
   protected
+    function GetCompilationUnitClass: TDwarfCompilationUnitClass; virtual;
   public
     constructor Create(ALoader: TDbgImageLoader);
     destructor Destroy; override;
     function LoadCompilationUnits: Integer;
+    function PointerFromRVA(ARVA: QWord): Pointer;
+    function PointerFromVA(ASection: TImageSection; AVA: QWord): Pointer;
     property CompilationUnits[AIndex: Integer]: TDwarfCompilationUnit read GetCompilationUnit;
   end;
 
-  
+  { TDbgVerboseDwarf }
+
+  TDbgVerboseDwarf = class(TDbgDwarf)
+  private
+  protected
+    function GetCompilationUnitClass: TDwarfCompilationUnitClass; override;
+  public
+  end;
+
 
 function DwarfTagToString(AValue: Integer): String;
 function DwarfAttributeToString(AValue: Integer): String;
@@ -156,15 +278,6 @@ function ULEB128toOrdinal(var p: PByte): QWord;
 function SLEB128toOrdinal(var p: PByte): Int64;
 
 implementation
-
-type
-  TAbbrevEntry = record
-    tag: Cardinal;
-    index: Integer;
-    count: Integer;
-    Children: Boolean;
-  end;
-
 
 function ULEB128toOrdinal(var p: PByte): QWord;
 var
@@ -516,6 +629,7 @@ var
 begin
   inherited Create;
   FCompilationUnits := TList.Create;
+  FImageBase := ALoader.ImageBase;
   for Section := Low(Section) to High(Section) do
   begin
     p := ALoader.Section[DWARF_SECTION_NAME[Section]];
@@ -542,36 +656,45 @@ begin
   Result := TDwarfCompilationUnit(FCompilationUnits[Aindex]);
 end;
 
+function TDbgDwarf.GetCompilationUnitClass: TDwarfCompilationUnitClass;
+begin
+  Result := TDwarfCompilationUnit;
+end;
+
 function TDbgDwarf.LoadCompilationUnits: Integer;
 var
   p: Pointer;
   CU32: PDwarfCUHeader32 absolute p;
   CU64: PDwarfCUHeader64 absolute p;
   CU: TDwarfCompilationUnit;
+  CUClass: TDwarfCompilationUnitClass;
 begin
+  CUClass := GetCompilationUnitClass;
   p := FSections[dsInfo].RawData;
   while p <> nil do
   begin
-    if CU64^.Signature = DWARF_CUHEADER64_SIGNATURE
+    if CU64^.Signature = DWARF_HEADER64_SIGNATURE
     then begin
-      CU := TDwarfCompilationUnit.Create(
+      CU := CUClass.Create(
               Self,
               PtrUInt(CU64 + 1) - PtrUInt(FSections[dsInfo].RawData),
               CU64^.Length - SizeOf(CU64^) + SizeOf(CU64^.Signature) + SizeOf(CU64^.Length),
               CU64^.Version,
               CU64^.AbbrevOffset,
-              CU64^.AddressSize);
+              CU64^.AddressSize,
+              True);
       p := @CU64^.Version + CU64^.Length;
     end
     else begin
       if CU32^.Length = 0 then Break;
-      CU := TDwarfCompilationUnit.Create(
+      CU := CUClass.Create(
               Self,
               PtrUInt(CU32 + 1) - PtrUInt(FSections[dsInfo].RawData),
               CU32^.Length - SizeOf(CU32^) + SizeOf(CU32^.Length),
               CU32^.Version,
               CU32^.AbbrevOffset,
-              CU32^.AddressSize);
+              CU32^.AddressSize,
+              False);
       p := @CU32^.Version + CU32^.Length;
     end;
     FCompilationUnits.Add(CU);
@@ -579,9 +702,71 @@ begin
   Result := FCompilationUnits.Count;
 end;
 
+function TDbgDwarf.PointerFromRVA(ARVA: QWord): Pointer;
+begin
+  Result := Pointer(PtrUInt(FImageBase + ARVA));
+end;
+
+function TDbgDwarf.PointerFromVA(ASection: TImageSection; AVA: QWord): Pointer;
+begin
+  Result := FSections[ASection].RawData + AVA - FImageBase - FSections[ASection].VirtualAdress;
+end;
+
+{ TDbgVerboseDwarf }
+
+function TDbgVerboseDwarf.GetCompilationUnitClass: TDwarfCompilationUnitClass;
+begin
+  Result:= TDwarfVerboseCompilationUnit;
+end;
+
 { TDwarfCompilationUnit }
 
-constructor TDwarfCompilationUnit.Create(AOwner: TDbgDwarf; ADataOffset: QWord; ALength: QWord; AVersion: Word; AAbbrevOffset: QWord; AAddressSize: Byte);
+procedure TDwarfCompilationUnit.BuildAddessMap(AScope: PDwarfScopeInfo);
+var
+  AttribList: TPointerDynArray;
+  Attrib: Pointer;
+  Form: Cardinal;
+  Info: TDwarfAddressInfo;
+  Scope: PDwarfScopeInfo;
+begin
+  if AScope = nil then Exit;
+
+  if not LocateEntry(DW_TAG_subprogram, AScope, True, Scope, AttribList)
+  then Exit;
+  
+  Info.Scope := Scope;
+  if LocateAttribute(Scope^.Entry, DW_AT_low_pc, AttribList, Attrib, Form)
+  then begin
+    ReadValue(Attrib, Form, Info.StartPC);
+
+    if LocateAttribute(Scope^.Entry, DW_AT_name, AttribList, Attrib, Form)
+    then ReadValue(Attrib, Form, Info.Name)
+    else Info.Name := 'undefined';
+
+    if LocateAttribute(Scope^.Entry, DW_AT_high_pc, AttribList, Attrib, Form)
+    then ReadValue(Attrib, Form, Info.EndPC)
+    else Info.EndPC := Info.StartPC;
+    
+    Info.LineInfo := nil; // filled in when the first time needed
+    if Info.StartPC <> 0
+    then begin
+      if FAddressMap.HasId(Info.StartPC)
+      then WriteLN('WARNING duplicate start adress: ', IntToHex(Info.StartPC, FAddressSize * 2))
+      else FAddressMap.Add(Info.StartPC, Info);
+    end;
+  end;
+  
+  BuildAddessMap(Scope^.Child);
+  BuildAddessMap(Scope^.Next);
+end;
+
+constructor TDwarfCompilationUnit.Create(AOwner: TDbgDwarf; ADataOffset: QWord; ALength: QWord; AVersion: Word; AAbbrevOffset: QWord; AAddressSize: Byte; AIsDwarf64: Boolean);
+var
+  AttribList: TPointerDynArray;
+  Attrib: Pointer;
+  Form: Cardinal;
+  StatementList: QWord;
+  Scope: PDwarfScopeInfo;
 begin
   inherited Create;
   FOwner := AOwner;
@@ -590,79 +775,390 @@ begin
   FVersion := AVersion;
   FAbbrevOffset := AAbbrevOffset;
   FAddressSize := AAddressSize;
+  FIsDwarf64 := AIsDwarf64;
+
+  FMap := TMap.Create(itu4, SizeOf(TDwarfAbbrev));
+  SetLength(FDefinitions, 256);
+  // initialize last abbrev with start
+//  FLastAbbrevPtr := FOwner.PointerFromVA(dsAbbrev, FAbbrevOffset);
+  FLastAbbrevPtr := FOwner.FSections[dsAbbrev].RawData + FAbbrevOffset;
+
+  // use internally 64 bit target pointer
+  FAddressMap := TMap.Create(itu8, SizeOf(TDwarfAddressInfo));
+
+  FScope.Entry := FInfoData;
+  // retrieve some info about this unit
+  if not LocateEntry(DW_TAG_compile_unit, @FScope, True, Scope, AttribList)
+  then begin
+    WriteLN('WARNING compilation unit has no compile_unit tag');
+    Exit;
+  end;
+
+  if LocateAttribute(Scope^.Entry, DW_AT_name, AttribList, Attrib, Form)
+  then ReadValue(Attrib, Form, FFileName);
+  
+  if not LocateAttribute(Scope^.Entry, DW_AT_identifier_case, AttribList, Attrib, Form)
+  and not ReadValue(Attrib, Form, FIdentifierCase)
+  then FIdentifierCase := DW_ID_case_sensitive;
+
+  if LocateAttribute(Scope^.Entry, DW_AT_stmt_list, AttribList, Attrib, Form)
+  and ReadValue(Attrib, Form, StatementList)
+  then FStatementList := FOwner.PointerFromVA(dsLine, StatementList);
+  
+
+  BuildAddessMap(Scope^.Child);
 end;
 
 destructor TDwarfCompilationUnit.Destroy;
+  procedure DisposeScope;
+  var
+    Scope, OldScope: PDwarfScopeInfo;
+  begin
+    // clear the parent to FScope
+    Scope := FScope.Child;
+    while Scope <> nil do
+    begin
+      Scope^.Parent := nil;
+      Scope := Scope^.Next;
+    end;
+    // dispose
+    Scope := FScope.Child;
+    while Scope <> nil do
+    begin
+      while Scope^.Child <> nil do Scope := Scope^.Child;
+      OldScope := Scope;
+      if Scope^.Next = nil
+      then begin
+        Scope := Scope^.Parent;
+        Scope^.Child := nil;
+      end
+      else Scope := Scope^.Next;
+      Dispose(OldScope);
+    end;
+  end;
 begin
+  DisposeScope;
   FreeAndNil(FMap);
   inherited Destroy;
 end;
 
-procedure TDwarfCompilationUnit.LoadAbbrevs;
+function TDwarfCompilationUnit.GetDefinition(AAbbrev: Cardinal; out ADefinition: TDwarfAbbrev): Boolean;
+begin
+  LoadAbbrevs(AAbbrev);
+  Result := FMap.GetData(AAbbrev, ADefinition);
+end;
+
+procedure TDwarfCompilationUnit.LoadAbbrevs(ANeeded: Cardinal);
   procedure MakeRoom(AMinSize: Integer);
   var
     len: Integer;
   begin
-    len := Length(FAbbrev);
+    len := Length(FDefinitions);
     if len > AMinSize then Exit;
     if len > $4000
     then Inc(len, $4000)
     else len := len * 2;
-    SetLength(FAbbrev, len);
+    SetLength(FDefinitions, len);
   end;
 var
   MaxData: Pointer;
-  pb: PByte;
-  pw: PWord absolute pb;
-  Entry: TAbbrevEntry;
+  pb: PByte absolute FLastAbbrevPtr;
+  pw: PWord absolute FLastAbbrevPtr;
+  Def: TDwarfAbbrev;
   abbrev, attrib, form: Cardinal;
-  n, idx: Integer;
+  n: Integer;
 begin
-  FreeAndNil(FMap);
-  FMap := TMap.Create(itu4, SizeOf(TAbbrevEntry));
-  SetLength(FAbbrev, 256);
+  if ANeeded <= FLastAbbrev then Exit;
 
-  pb := FOwner.FSections[dsAbbrev].RawData + FAbbrevOffset - FOwner.FImageBase;
-  MaxData := pb + FLength;
-  idx := 0;
-  while ((pb < MaxData) or (FLength = 0)) and (pb^ <> 0) do
+  abbrev := 0;
+  // we don't know the number of abbrevs for this unit,
+  // but we cannot go beyond the section limit, so use that as safetylimit
+  // in case of corrupt data
+  MaxData := FOwner.FSections[dsAbbrev].RawData + FOwner.FSections[dsAbbrev].Size;
+  while (pb < MaxData) and (pb^ <> 0) and (abbrev < ANeeded) do
   begin
     abbrev := ULEB128toOrdinal(pb);
-    Entry.tag := ULEB128toOrdinal(pb);
+    Def.tag := ULEB128toOrdinal(pb);
 
     if FMap.HasId(abbrev)
     then begin
       WriteLN('Duplicate abbrev=', abbrev, ' found. Ignoring....');
       while pw^ <> 0 do Inc(pw);
       Inc(pw);
+      abbrev := 0;
       Continue;
     end;
 
-    WriteLN('  abbrev:  ', abbrev);
-    WriteLN('  tag:     ', Entry.tag, '=', DwarfTagToString(Entry.tag));
-    WriteLN('  children:', pb^, '=', DwarfChildrenToString(pb^));
-    Entry.Children := pb^ = DW_CHILDREN_yes;
+    if FVerbose
+    then begin
+      WriteLN('  abbrev:  ', abbrev);
+      WriteLN('  tag:     ', Def.tag, '=', DwarfTagToString(Def.tag));
+      WriteLN('  children:', pb^, '=', DwarfChildrenToString(pb^));
+    end;
+    Def.Children := pb^ = DW_CHILDREN_yes;
     Inc(pb);
 
     n := 0;
-    Entry.Index := idx;
+    Def.Index := FAbbrevIndex;
     while pw^ <> 0 do
     begin
       attrib := ULEB128toOrdinal(pb);
       form := ULEB128toOrdinal(pb);
 
-      MakeRoom(idx + 1);
-      FAbbrev[idx].Attribute := attrib;
-      FAbbrev[idx].Form := form;
-      Inc(idx);
+      MakeRoom(FAbbrevIndex + 1);
+      FDefinitions[FAbbrevIndex].Attribute := attrib;
+      FDefinitions[FAbbrevIndex].Form := form;
+      Inc(FAbbrevIndex);
 
-      WriteLN('   [', n:4, '] attrib: ', attrib, '=', DwarfAttributeToString(attrib), ', form: ', form, '=', DwarfAttributeFormToString(form));
+      if FVerbose
+      then WriteLN('   [', n:4, '] attrib: ', attrib, '=', DwarfAttributeToString(attrib), ', form: ', form, '=', DwarfAttributeFormToString(form));
       Inc(n);
     end;
-    Entry.Count := n;
-    FMap.Add(abbrev, Entry);
+    Def.Count := n;
+    FMap.Add(abbrev, Def);
 
     Inc(pw);
+  end;
+  if abbrev <> 0
+  then FLastAbbrev := abbrev;
+end;
+
+function TDwarfCompilationUnit.LocateAttribute(AEntry: Pointer; AAttribute: Cardinal; const AList: TPointerDynArray; out AAttribPtr: Pointer; out AForm: Cardinal): Boolean;
+var
+  Abbrev: Cardinal;
+  Def: TDwarfAbbrev;
+  n: Integer;
+begin
+  Abbrev := ULEB128toOrdinal(AEntry);
+  if not GetDefinition(Abbrev, Def)
+  then begin
+    //???
+    WriteLN('Error: Abbrev not found: ', Abbrev);
+    Result := False;
+    Exit;
+  end;
+  
+  for n := Def.Index to Def.Index + Def.Count - 1 do
+  begin
+    if FDefinitions[n].Attribute = AAttribute
+    then begin
+      Result := True;
+      AAttribPtr := AList[n - Def.Index];
+      AForm := FDefinitions[n].Form;
+      Exit;
+    end;
+  end;
+  Result := False;
+end;
+
+//----------------------------------------
+// Params
+//   ATag: a tag to search for
+//   AStart: a startpoint in the data
+//   AList: an array where pointers to all attribs are stored
+//   AFirstChild: if requested, the first child of this entry
+//   ANextSibling: if requested, the next sibling of this entry
+//----------------------------------------
+function TDwarfCompilationUnit.LocateEntry(ATag: Cardinal; AStart: PDwarfScopeInfo; ABuildList: Boolean; out AEntry: PDwarfScopeInfo; out AList: TPointerDynArray): Boolean;
+  procedure SkipLEB(var p: Pointer);
+  begin
+    while (PByte(p)^ and $80) <> 0 do Inc(p);
+    Inc(p);
+  end;
+  procedure SkipStr(var p: Pointer);
+  begin
+    while PByte(p)^ <> 0 do Inc(p);
+    Inc(p);
+  end;
+
+var
+  Abbrev, Form: Cardinal;
+  Def: TDwarfAbbrev;
+  idx: Integer;
+  Level: Integer;
+  MaxData: Pointer;
+  P: Pointer;
+  UValue: QWord;
+  Scope, OldScope: PDwarfScopeInfo;
+  BuildList: Boolean; // set once if we need to fill the list
+begin
+  Result := False;
+  BuildList := False;
+  Level := 0;
+  MaxData := FInfoData + FLength;
+  Scope := AStart;
+  while (p <= MaxData) and (Level >= 0) do
+  begin
+    p := Scope^.Entry;
+    Abbrev := ULEB128toOrdinal(p);
+    if Abbrev = 0
+    then begin
+      Dec(Level);
+
+      // empty temp entry -> remove
+      if Scope^.Prev = nil
+      then Scope^.Parent^.Child := Scope^.Next
+      else Scope^.Prev^.Next := Scope^.Next;
+      
+      OldScope := Scope;
+      Scope := Scope^.Parent;
+      Dispose(OldScope);
+
+      if Level = 0 then Exit;
+      if Scope^.Next <> nil then Continue;
+
+      New(Scope^.Next);
+      Scope^.Next^.Prev := Scope;
+      Scope^.Next^.Parent := Scope^.Parent;
+      Scope := Scope^.Next;
+      Scope^.Child := nil;
+      Scope^.Next := nil;
+      Scope^.Entry := p;
+      Continue;
+    end;
+    
+    if not GetDefinition(Abbrev, Def)
+    then begin
+      WriteLN('Error: Abbrev not found: ', Abbrev);
+      Break;
+    end;
+
+    if not Result
+    then begin
+      Result := (Def.Tag = ATag) and (Level = 0);
+      if Result
+      then begin
+        AEntry := Scope;
+        if ABuildList
+        then begin
+          SetLength(AList, Def.Count);
+          BuildList := True;
+        end
+        else begin
+          AList := nil;
+          if (Scope^.Next <> nil)
+          then Exit;
+        end;
+      end;
+    end;
+
+    if not BuildList and (Scope^.Next <> nil)
+    then begin
+      Scope := Scope^.Next;
+      Continue;
+    end;
+    
+    for idx := Def.Index to Def.Index + Def.Count - 1 do
+    begin
+      if BuildList
+      then AList[idx - Def.Index] := p;
+
+      Form := FDefinitions[idx].Form;
+      while Form = DW_FORM_indirect do Form := ULEB128toOrdinal(p);
+
+      case Form of
+        DW_FORM_addr     : begin
+          Inc(p, FAddressSize);
+        end;
+        DW_FORM_block    : begin
+          UValue := ULEB128toOrdinal(p);
+          Inc(p, UValue);
+        end;
+        DW_FORM_block1   : begin
+          Inc(p, PByte(p)^ + 1);
+        end;
+        DW_FORM_block2   : begin
+          Inc(p, PWord(p)^ + 2);
+        end;
+        DW_FORM_block4   : begin
+          Inc(p, PLongWord(p)^ + 4);
+        end;
+        DW_FORM_data1    : begin
+          Inc(p, 1);
+        end;
+        DW_FORM_data2    : begin
+          Inc(p, 2);
+        end;
+        DW_FORM_data4    : begin
+          Inc(p, 4);
+        end;
+        DW_FORM_data8    : begin
+          Inc(p, 8);
+        end;
+        DW_FORM_sdata    : begin
+          SkipLEB(p);
+        end;
+        DW_FORM_udata    : begin
+          SkipLEB(p);
+        end;
+        DW_FORM_flag     : begin
+          Inc(p, 1);
+        end;
+        DW_FORM_ref1     : begin
+          Inc(p, 1);
+        end;
+        DW_FORM_ref2     : begin
+          Inc(p, 2);
+        end;
+        DW_FORM_ref4     : begin
+          Inc(p, 4);
+        end;
+        DW_FORM_ref8     : begin
+          Inc(p, 8);
+        end;
+        DW_FORM_ref_udata: begin
+          SkipLEB(p);
+        end;
+        DW_FORM_ref_addr : begin
+          Inc(p, FAddressSize);
+        end;
+        DW_FORM_string   : begin
+          SkipStr(p);
+        end;
+        DW_FORM_strp     : begin
+          Inc(p, FAddressSize);
+        end;
+        DW_FORM_indirect : begin
+        end;
+      else
+        WriteLN('Error: Unknown Form: ', Form);
+        Break;
+      end;
+    end;
+    BuildList := False;
+
+    if Def.Children
+    then begin
+      Inc(Level);
+      if Scope^.Child = nil
+      then begin
+        New(Scope^.Child);
+        with Scope^.Child^ do
+        begin
+          Parent := Scope;
+          Prev := nil;
+          Next := nil;
+          Child := nil;
+          Entry := p;
+        end;
+      end;
+      Scope := Scope^.Child;
+    end
+    else begin
+      if Scope^.Next = nil
+      then begin
+        New(Scope^.Next);
+        with Scope^.Next^ do
+        begin
+          Parent := Scope^.Parent;
+          Prev := Scope;
+          Next := nil;
+          Child := nil;
+          Entry := p;
+        end;
+      end;
+      Scope := Scope^.Next;
+    end;
   end;
 end;
 
@@ -673,6 +1169,229 @@ begin
   else Result := PQWord(AData)^;
 end;
 
+function TDwarfCompilationUnit.ReadValue(AAttribute: Pointer; AForm: Cardinal; out AValue: Cardinal): Boolean;
+begin
+  Result := True;
+  case AForm of
+    DW_FORM_addr,
+    DW_FORM_ref_addr : begin
+      AValue := MakeAddress(AAttribute);
+    end;
+    DW_FORM_flag,
+    DW_FORM_ref1,
+    DW_FORM_data1    : begin
+      AValue := PByte(AAttribute)^;
+    end;
+    DW_FORM_ref2,
+    DW_FORM_data2    : begin
+      AValue := PWord(AAttribute)^;
+    end;
+    DW_FORM_ref4,
+    DW_FORM_data4    : begin
+      AValue := PLongWord(AAttribute)^;
+    end;
+    DW_FORM_ref8,
+    DW_FORM_data8    : begin
+      AValue := PQWord(AAttribute)^;
+    end;
+    DW_FORM_sdata    : begin
+      AValue := SLEB128toOrdinal(AAttribute);
+    end;
+    DW_FORM_ref_udata,
+    DW_FORM_udata    : begin
+      AValue := ULEB128toOrdinal(AAttribute);
+    end;
+  else
+    Result := False;
+  end;
+end;
+
+function TDwarfCompilationUnit.ReadValue(AAttribute: Pointer; AForm: Cardinal; out AValue: Int64): Boolean;
+begin
+  Result := True;
+  case AForm of
+    DW_FORM_addr,
+    DW_FORM_ref_addr : begin
+      AValue := MakeAddress(AAttribute);
+    end;
+    DW_FORM_flag,
+    DW_FORM_ref1,
+    DW_FORM_data1    : begin
+      AValue := PShortInt(AAttribute)^;
+    end;
+    DW_FORM_ref2,
+    DW_FORM_data2    : begin
+      AValue := PSmallInt(AAttribute)^;
+    end;
+    DW_FORM_ref4,
+    DW_FORM_data4    : begin
+      AValue := PLongInt(AAttribute)^;
+    end;
+    DW_FORM_ref8,
+    DW_FORM_data8    : begin
+      AValue := PInt64(AAttribute)^;
+    end;
+    DW_FORM_sdata    : begin
+      AValue := SLEB128toOrdinal(AAttribute);
+    end;
+    DW_FORM_ref_udata,
+    DW_FORM_udata    : begin
+      AValue := ULEB128toOrdinal(AAttribute);
+    end;
+  else
+    Result := False;
+  end;
+end;
+
+function TDwarfCompilationUnit.ReadValue(AAttribute: Pointer; AForm: Cardinal; out AValue: Integer): Boolean;
+begin
+  Result := True;
+  case AForm of
+    DW_FORM_addr,
+    DW_FORM_ref_addr : begin
+      AValue := MakeAddress(AAttribute);
+    end;
+    DW_FORM_flag,
+    DW_FORM_ref1,
+    DW_FORM_data1    : begin
+      AValue := PShortInt(AAttribute)^;
+    end;
+    DW_FORM_ref2,
+    DW_FORM_data2    : begin
+      AValue := PSmallInt(AAttribute)^;
+    end;
+    DW_FORM_ref4,
+    DW_FORM_data4    : begin
+      AValue := PLongInt(AAttribute)^;
+    end;
+    DW_FORM_ref8,
+    DW_FORM_data8    : begin
+      AValue := PInt64(AAttribute)^;
+    end;
+    DW_FORM_sdata    : begin
+      AValue := SLEB128toOrdinal(AAttribute);
+    end;
+    DW_FORM_ref_udata,
+    DW_FORM_udata    : begin
+      AValue := ULEB128toOrdinal(AAttribute);
+    end;
+  else
+    Result := False;
+  end;
+end;
+
+function TDwarfCompilationUnit.ReadValue(AAttribute: Pointer; AForm: Cardinal; out AValue: PChar): Boolean;
+begin
+  Result := True;
+  case AForm of
+    DW_FORM_string: begin
+      AValue := PChar(AAttribute);
+    end;
+    DW_FORM_strp:   begin
+      AValue := 'TODO';
+    end;
+  else
+    Result := False;
+  end;
+end;
+
+function TDwarfCompilationUnit.ReadValue(AAttribute: Pointer; AForm: Cardinal; out AValue: QWord): Boolean;
+begin
+  Result := True;
+  case AForm of
+    DW_FORM_addr,
+    DW_FORM_ref_addr : begin
+      AValue := MakeAddress(AAttribute);
+    end;
+    DW_FORM_flag,
+    DW_FORM_ref1,
+    DW_FORM_data1    : begin
+      AValue := PByte(AAttribute)^;
+    end;
+    DW_FORM_ref2,
+    DW_FORM_data2    : begin
+      AValue := PWord(AAttribute)^;
+    end;
+    DW_FORM_ref4,
+    DW_FORM_data4    : begin
+      AValue := PLongWord(AAttribute)^;
+    end;
+    DW_FORM_ref8,
+    DW_FORM_data8    : begin
+      AValue := PQWord(AAttribute)^;
+    end;
+    DW_FORM_sdata    : begin
+      AValue := SLEB128toOrdinal(AAttribute);
+    end;
+    DW_FORM_ref_udata,
+    DW_FORM_udata    : begin
+      AValue := ULEB128toOrdinal(AAttribute);
+    end;
+  else
+    Result := False;
+  end;
+end;
+
+function TDwarfCompilationUnit.ReadValue(AAttribute: Pointer; AForm: Cardinal; out AValue: String): Boolean;
+begin
+  Result := True;
+  case AForm of
+    DW_FORM_string: begin
+      AValue := PChar(AAttribute);
+    end;
+    DW_FORM_strp:   begin
+      AValue := 'TODO';
+    end;
+  else
+    Result := False;
+  end;
+end;
+
+function TDwarfCompilationUnit.ReadValue(AAttribute: Pointer; AForm: Cardinal; out AValue: TByteDynArray): Boolean;
+var
+  Size: Cardinal;
+begin
+  Result := True;
+  case AForm of
+    DW_FORM_block    : begin
+      Size := ULEB128toOrdinal(AAttribute);
+    end;
+    DW_FORM_block1   : begin
+      Size := PByte(AAttribute)^;
+      Inc(AAttribute, 1);
+    end;
+    DW_FORM_block2   : begin
+      Size := PWord(AAttribute)^;
+      Inc(AAttribute, 2);
+    end;
+    DW_FORM_block4   : begin
+      Size := PLongWord(AAttribute)^;
+      Inc(AAttribute, 4);
+    end;
+  else
+    Result := False;
+    Size := 0;
+  end;
+  SetLength(AValue, Size);
+  Move(AAttribute^, AValue[0], Size);
+end;
+
+{ TDwarfVerboseCompilationUnit }
+
+constructor TDwarfVerboseCompilationUnit.Create(AOwner: TDbgDwarf; ADataOffset: QWord; ALength: QWord; AVersion: Word; AAbbrevOffset: QWord; AAddressSize: Byte; AIsDwarf64: Boolean);
+begin
+  FVerbose := True;
+  
+  WriteLN('-- compilation unit --');
+  WriteLN(' data offset: ', ADataOffset);
+  WriteLN(' length: ', ALength);
+  WriteLN(' version: ', AVersion);
+  WriteLN(' abbrev offset: ', AAbbrevOffset);
+  WriteLN(' address size: ', AAddressSize);
+  WriteLn(' 64bit: ', AIsDwarf64);
+  WriteLN('----------------------');
+  inherited;
+end;
 
 { TDwarfAbbrevDecoder }
 
@@ -683,8 +1402,32 @@ begin
 end;
 
 procedure TDwarfAbbrevDecoder.Decode;
+var
+  Iter: TMapIterator;
+  Info: TDwarfAddressInfo;
+  Scope: PDwarfScopeInfo;
 begin
+  // force all abbrevs to be loaded
+  FCU.LoadAbbrevs(High(Cardinal));
   InternalDecode(FCU.FInfoData, FCU.FInfoData + FCU.FLength);
+
+  WriteLN('addresses: ');
+  Iter := TMapIterator.Create(FCU.FAddressMap);
+  while not Iter.EOM do
+  begin
+    Iter.GetData(Info);
+    Write('  ');
+    Scope := Info.Scope^.Parent;
+    while Scope <> nil do
+    begin
+      Write('.');
+      Scope := Scope^.Parent;
+    end;
+    WriteLN(Info.Name, ': $', IntToHex(Info.StartPC, FCU.FAddressSize * 2), '..$', IntToHex(Info.EndPC, FCU.FAddressSize * 2));
+    Iter.Next;
+  end;
+  Iter.Free;
+
 end;
 
 procedure TDwarfAbbrevDecoder.DecodeLocation(AData: PByte; ASize: QWord; const AIndent: String);
@@ -950,8 +1693,6 @@ procedure TDwarfAbbrevDecoder.InternalDecode(AData: Pointer; AMaxData: Pointer; 
     end;
   end;
   procedure DumpStr(var p: PChar);
-  var
-    n: integer;
   begin
     while p^ <> #0 do
     begin
@@ -968,9 +1709,9 @@ procedure TDwarfAbbrevDecoder.InternalDecode(AData: Pointer; AMaxData: Pointer; 
 var
   Attribute: Cardinal;
   Abbrev, Form: Cardinal;
-  Entry: TAbbrevEntry;
+  Def: TDwarfAbbrev;
   idx: Integer;
-  Value, V: QWord;
+  Value: QWord;
   ValueSize: QWord;
   ValuePtr, p: Pointer;
   Indent: String;
@@ -980,7 +1721,6 @@ begin
   Level := 0;
   while (AData <= AMaxData) and (Level >= 0) do
   begin
-//    WriteLn('[$', InttoHex(PtrUInt(AData), 8), ']');
     Abbrev := ULEB128toOrdinal(AData);
     if Abbrev = 0
     then begin
@@ -991,27 +1731,27 @@ begin
       Continue;
     end;
     Write(Indent, 'abbrev: ', Abbrev);
-    if not FCU.FMap.GetData(abbrev, Entry)
+    if not FCU.GetDefinition(abbrev, Def)
     then begin
       WriteLN;
       WriteLN('Error: Abbrev not found: ', Abbrev);
       Exit;
     end;
-    Write(', tag: ', Entry.tag, '=', DwarfTagToString(Entry.tag));
-    if Entry.Children
+    Write(', tag: ', Def.tag, '=', DwarfTagToString(Def.tag));
+    if Def.Children
     then begin
       WriteLN(', has children');
       Inc(Level);
     end
     else WriteLn;
 
-    for idx := Entry.Index to Entry.Index + Entry.Count - 1 do
+    for idx := Def.Index to Def.Index + Def.Count - 1 do
     begin
-      Form := FCU.FAbbrev[idx].Form;
-      Attribute := FCU.FAbbrev[idx].Attribute;
+      Form := FCU.FDefinitions[idx].Form;
+      Attribute := FCU.FDefinitions[idx].Attribute;
       Write(Indent, ' attrib: ', Attribute, '=', DwarfAttributeToString(Attribute));
       Write(', form: ', Form, '=', DwarfAttributeFormToString(Form));
-
+      
       ValueSize := 0;
       ValuePtr := nil;
       Value := 0;
@@ -1185,7 +1925,7 @@ begin
         DW_AT_type: begin
           WriteLn('-->');
           try
-            p := FCU.FOwner.FSections[dsInfo].RawData + Value - FCU.FOwner.FImageBase;
+            p := FCU.FOwner.FSections[dsInfo].RawData + Value - FCU.FOwner.FImageBase - FCU.FOwner.FSections[dsInfo].VirtualAdress;
             InternalDecode(p, p, Indent + '  ');
           except
             on E: Exception do WriteLN(AIndent, '  ', E.Message);
@@ -1196,7 +1936,7 @@ begin
       end;
     end;
 
-    if Entry.Children
+    if Def.Children
     then begin
       WriteLn(Indent, ' /--');
       Indent := Indent + ' |';
@@ -1212,6 +1952,295 @@ begin
   else Result := '$'+IntToHex(PQWord(AData)^, 16);
 end;
 
+{ TDwarfStatementDecoder }
+
+constructor TDwarfStatementDecoder.Create(ACompilationUnit: TDwarfCompilationUnit);
+begin
+  inherited Create;
+  FCU := ACompilationUnit;
+end;
+
+procedure TDwarfStatementDecoder.Decode;
+begin
+  InternalDecode(FCU.FStatementList, FCU.FOwner.FSections[dsInfo].RawData + FCU.FOwner.FSections[dsInfo].Size);
+end;
+
+procedure TDwarfStatementDecoder.InternalDecode(AData: Pointer; AMaxData: Pointer; const AIndent: String);
+var
+  Info: PDwarfLNPInfoHeader;
+
+  Address: QWord;
+  Line: Int64;
+  FileNr: Cardinal;
+  Column: Cardinal;
+  IsStmt: Boolean;
+  BasicBlock: Boolean;
+  PrologueEnd: Boolean;
+  EpilogueBegin: Boolean;
+  Isa: QWord;
+
+  procedure AddRow(ALast: Boolean = False);
+  begin
+    Write('> ');
+    Write('Address=$', IntToHex(Address, FCU.FAddressSize * 2));
+    Write(', Line=',Line);
+    Write(', FileNr=',FileNr);
+    Write(', Column=',Column);
+    Write(', IsStmt=',IsStmt);
+    Write(', BasicBlock=',BasicBlock);
+    Write(', PrologueEnd=',PrologueEnd);
+    Write(', EpilogueBegin=',EpilogueBegin);
+    Write(', Isa=',Isa);
+    WriteLn;
+    if ALast
+    then WriteLn('> ---------');
+  end;
+  
+  procedure DoAdjust(AOpcode: Byte);
+  begin
+    Dec(AOpcode, Info^.OpcodeBase);
+    if Info^.LineRange = 0
+    then begin
+      Inc(Address, AOpcode * Info^.MinimumInstructionLength);
+    end
+    else begin
+      Inc(Address, (AOpcode div Info^.LineRange) * Info^.MinimumInstructionLength);
+      Inc(Line, Info^.LineBase + (AOpcode mod Info^.LineRange));
+    end;
+  end;
+  
+  procedure DoReset;
+  begin
+    Address := 0;
+    Line := 1;
+    FileNr := 1;
+    Column := 0;
+    IsStmt := Info^.DefaultIsStmt <> 0;
+    BasicBlock := False;
+    PrologueEnd := False;
+    EpilogueBegin := False;
+    Isa := 0;
+  end;
+
+
+var
+  LNP32: PDwarfLNPHeader32 absolute AData;
+  LNP64: PDwarfLNPHeader64 absolute AData;
+  UnitLength: QWord;
+  Version: Word;
+  HeaderLength: QWord;
+  n: integer;
+  ptr: Pointer;
+  p: Pointer;
+  pb: PByte absolute p;
+  pc: PChar absolute p;
+  DataEnd: Pointer;
+  DataStart: Pointer;
+  UValue: QWord;
+  SValue: Int64;
+begin
+  WriteLn('FileName: ', FCU.FFileName);
+
+  if LNP64^.Signature = DWARF_HEADER64_SIGNATURE
+  then begin
+    UnitLength := LNP64^.UnitLength;
+    DataEnd := @LNP64^.Version + UnitLength;
+    Version := LNP64^.Version;
+    HeaderLength := LNP64^.HeaderLength;
+    Info := @LNP64^.Info;
+  end
+  else begin
+    UnitLength := LNP32^.UnitLength;
+    DataEnd := @LNP32^.Version + UnitLength;
+    Version := LNP32^.Version;
+    HeaderLength := LNP32^.HeaderLength;
+    Info := @LNP32^.Info;
+  end;
+  DataStart := PByte(Info) + HeaderLength;
+
+  WriteLN('UnitLength: ', UnitLength);
+  WriteLN('Version: ', Version);
+  WriteLN('HeaderLength: ', HeaderLength);
+
+  WriteLN('MinimumInstructionLength: ', Info^.MinimumInstructionLength);
+  WriteLN('DefaultIsStmt: ', Info^.DefaultIsStmt);
+  WriteLN('LineBase: ', Info^.LineBase);
+  WriteLN('LineRange: ', Info^.LineRange);
+  WriteLN('OpcodeBase: ', Info^.OpcodeBase);
+  p := @Info^.StandardOpcodeLengths;
+  WriteLN('StandardOpcodeLengths:');
+  for n := 1 to Info^.OpcodeBase - 1 do
+  begin
+    WriteLN('  [', n, '] ', pb^);
+    Inc(pb);
+  end;
+
+  WriteLN('IncludeDirectories:');
+  while pc^ <> #0 do
+  begin
+    Write('  ');
+    repeat
+      Write(pc^);
+      Inc(pc);
+    until pc^ = #0;
+    WriteLN;
+    Inc(pc);
+  end;
+  Inc(pc);
+  WriteLN('FileNames:');
+  while pc^ <> #0 do
+  begin
+    Write('  ');
+    repeat
+      Write(pc^);
+      Inc(pc);
+    until pc^ = #0;
+    Inc(pc);
+    Write(', diridx=', ULEB128toOrdinal(p));
+    Write(', last modified=', ULEB128toOrdinal(p));
+    Write(', length=', ULEB128toOrdinal(p));
+    WriteLN;
+  end;
+  
+  WriteLN('Program:');
+
+  p := DataStart;
+  DoReset;
+  
+  while p < DataEnd do
+  begin
+    Write('  ');
+    if (pb^ > 0) and (pb^ < Info^.OpcodeBase)
+    then begin
+      // Standard opcode
+      case pb^ of
+        DW_LNS_copy: begin
+          Inc(p);
+          WriteLn('DW_LNS_copy');
+          AddRow;
+          BasicBlock := False;
+          PrologueEnd := False;
+          EpilogueBegin := False;
+        end;
+        DW_LNS_advance_pc: begin
+          Inc(p);
+          UValue := ULEB128toOrdinal(p);
+          Inc(Address, UValue);
+          WriteLn('DW_LNS_advance_pc ', UValue);
+        end;
+        DW_LNS_advance_line: begin
+          Inc(p);
+          SValue := SLEB128toOrdinal(p);
+          Inc(Line, SValue);
+          WriteLn('DW_LNS_advance_line ', SValue);
+        end;
+        DW_LNS_set_file: begin
+          Inc(p);
+          UValue := ULEB128toOrdinal(p);
+          WriteLn('DW_LNS_set_file ', UVAlue);
+          FileNr := UValue;
+        end;
+        DW_LNS_set_column: begin
+          Inc(p);
+          UValue := ULEB128toOrdinal(p);
+          WriteLn('DW_LNS_set_column ', UValue);
+          Column := UValue;
+        end;
+        DW_LNS_negate_stmt: begin
+          Inc(p);
+          WriteLn('DW_LNS_negate_stmt');
+          IsStmt := not IsStmt;
+        end;
+        DW_LNS_set_basic_block: begin
+          Inc(p);
+          WriteLn('DW_LNS_set_basic_block');
+          BasicBlock := True;
+        end;
+        DW_LNS_const_add_pc: begin
+          Inc(p);
+          WriteLn('DW_LNS_const_add_pc');
+          DoAdjust(255);
+        end;
+        DW_LNS_fixed_advance_pc: begin
+          Inc(p);
+          Inc(Address, PWord(p)^);
+          WriteLN('DW_LNS_fixed_advance_pc ', PWord(p)^);
+          Inc(p, 2);
+        end;
+        DW_LNS_set_prologue_end: begin
+          Inc(p);
+          WriteLn('DW_LNS_set_prologue_end');
+          PrologueEnd := True;
+        end;
+        DW_LNS_set_epilogue_begin: begin
+          Inc(p);
+          WriteLn('DW_LNS_set_epilogue_begin');
+          EpilogueBegin := True;
+        end;
+        DW_LNS_set_isa: begin
+          Inc(p);
+          UValue := ULEB128toOrdinal(p);
+          Isa := UValue;
+          WriteLn('DW_LNS_set_isa ', UValue);
+        end;
+      else
+        Write('unknown opcode: ', pb^);
+        Inc(p, PByte(@Info^.StandardOpcodeLengths)[pb^-1]);
+      end;
+      Continue;
+    end;
+
+    if pb^ = 0
+    then begin
+      // Extended opcode
+      Inc(p);
+      UValue := ULEB128toOrdinal(p); // instruction length
+      
+      case pb^ of
+        DW_LNE_end_sequence: begin
+          WriteLN('DW_LNE_end_sequence');
+          AddRow(True);
+          DoReset;
+          //Inc(p, UValue);
+          //Break;
+        end;
+        DW_LNE_set_address: begin
+          if LNP64^.Signature = DWARF_HEADER64_SIGNATURE
+          then Address := PQWord(pb+1)^
+          else Address := PLongWord(pb+1)^;
+          WriteLN('DW_LNE_set_address $', IntToHex(Address, FCU.FAddressSize * 2));
+        end;
+        DW_LNE_define_file: begin
+          ptr := p;
+          Inc(ptr);
+          Write('DW_LNE_define_file name=');
+          repeat
+            Write(PChar(ptr)^);
+            Inc(ptr);
+          until PChar(ptr)^ = #0;
+          Inc(ptr);
+          Write(', diridx=', ULEB128toOrdinal(ptr));
+          Write(', last modified=', ULEB128toOrdinal(ptr));
+          Write(', length=', ULEB128toOrdinal(ptr));
+          WriteLN;
+        end;
+      else
+        Write('unknown extended opcode: ', pb^);
+      end;
+      Inc(p, UValue);
+    end
+    else begin
+      WriteLn('Special opcode: ', pb^);
+      // Special opcode
+      DoAdjust(pb^);
+      AddRow;
+      BasicBlock := False;
+      PrologueEnd := False;
+      EpilogueBegin := False;
+      Inc(p);
+    end;
+  end;
+end;
 
 end.
 

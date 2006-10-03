@@ -1,5 +1,6 @@
 unit AsmTestUnit;
 
+
 {$mode objfpc}{$H+}
 
 interface
