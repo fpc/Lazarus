@@ -7,6 +7,8 @@ object SearchResultsView: TSearchResultsView
   VertScrollBar.Page = 228
   ActiveControl = btnSearchAgain
   Caption = 'SearchResultsView'
+  ClientHeight = 229
+  ClientWidth = 799
   OnCreate = Form1Create
   OnDestroy = SearchResultsViewDestroy
   OnKeyDown = ListBoxKeyDown
@@ -45,6 +47,8 @@ object SearchResultsView: TSearchResultsView
     Align = alRight
     AutoSize = True
     Caption = 'Search or Filter Phrases In List'
+    ClientHeight = 21
+    ClientWidth = 558
     TabOrder = 2
     object edSearchInList: TEdit
       Height = 21
@@ -90,5 +94,23 @@ object SearchResultsView: TSearchResultsView
       OnClick = bnFilterClick
       TabOrder = 3
     end
+  end
+  object ClosePageButton: TButton
+    AnchorSideLeft.Control = btnSearchAgain
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = btnSearchAgain
+    AnchorSideBottom.Control = btnSearchAgain
+    AnchorSideBottom.Side = asrBottom
+    Left = 103
+    Height = 26
+    Top = 6
+    Width = 110
+    Anchors = [akTop, akLeft, akBottom]
+    AutoSize = True
+    BorderSpacing.Left = 6
+    BorderSpacing.InnerBorder = 4
+    Caption = 'ClosePageButton'
+    OnClick = ClosePageButtonClick
+    TabOrder = 3
   end
 end

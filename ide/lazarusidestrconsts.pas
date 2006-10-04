@@ -241,6 +241,7 @@ resourcestring
   lisSaveAllMessagesToFile = 'Save all messages to file';
   lisMenuViewSearchResults = 'Search Results';
   lisSearchAgain = 'Search again';
+  lisSRClosePage = 'Close page';
   lisMenuViewAnchorEditor = 'View Anchor Editor';
   lisMenuViewComponentPalette = 'View Component Palette';
   lisMenuViewIDESpeedButtons = 'View IDE speed buttons';

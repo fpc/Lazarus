@@ -4,33 +4,41 @@ LazarusResources.Add('TSearchResultsView','FORMDATA',[
   'TPF0'#18'TSearchResultsView'#17'SearchResultsView'#4'Left'#3#236#0#6'Height'
   +#3#229#0#3'Top'#3#227#1#5'Width'#3#31#3#18'HorzScrollBar.Page'#3#30#3#18'Ver'
   +'tScrollBar.Page'#3#228#0#13'ActiveControl'#7#14'btnSearchAgain'#7'Caption'#6
-  +#17'SearchResultsView'#8'OnCreate'#7#11'Form1Create'#9'OnDestroy'#7#24'Searc'
-  +'hResultsViewDestroy'#9'OnKeyDown'#7#14'ListBoxKeyDown'#8'Position'#7#14'poS'
-  +'creenCenter'#0#9'TNotebook'#15'ResultsNoteBook'#21'AnchorSideTop.Control'#7
-  +#14'btnSearchAgain'#18'AnchorSideTop.Side'#7#9'asrBottom'#6'Height'#3#191#0#3
-  +'Top'#2'&'#5'Width'#3#31#3#5'Align'#7#8'alBottom'#7'Anchors'#11#5'akTop'#6'a'
-  +'kLeft'#0#17'OnCloseTabClicked'#7#30'ResultsNoteBookClosetabclicked'#13'OnPa'
-  +'geChanged'#7#26'ResultsNoteBookPageChanged'#7'Options'#11#19'nboShowCloseBu'
-  +'ttons'#12'nboMultiLine'#0#0#0#7'TButton'#14'btnSearchAgain'#22'AnchorSideLe'
-  +'ft.Control'#7#5'Owner'#21'AnchorSideTop.Control'#7#5'Owner'#4'Left'#2#6#6'H'
-  +'eight'#2#26#3'Top'#2#6#5'Width'#2'['#8'AutoSize'#9#20'BorderSpacing.Around'
-  +#2#6#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6#12'Search Again'#7'OnCli'
-  +'ck'#7#19'btnSearchAgainClick'#9'OnKeyDown'#7#14'ListBoxKeyDown'#8'TabOrder'
-  +#2#1#0#0#9'TGroupBox'#20'gbSearchPhraseInList'#4'Left'#3#237#0#6'Height'#2'&'
-  +#5'Width'#3'2'#2#5'Align'#7#7'alRight'#8'AutoSize'#9#7'Caption'#6' Search or'
-  +' Filter Phrases In List'#8'TabOrder'#2#2#0#5'TEdit'#14'edSearchInList'#6'He'
-  +'ight'#2#21#4'Hint'#6'sEnter one or more phrases that you want'#10'to Search'
-  +' or Filter in the list,'#10'seperated by space ( '' '' ), or comma ( , )'#5
-  +'Width'#3'2'#1#5'Align'#7#8'alClient'#8'OnChange'#7#20'edSearchInListChange'
-  +#9'OnKeyDown'#7#21'edSearchInListKeyDown'#14'ParentShowHint'#8#8'ShowHint'#9
-  +#8'TabOrder'#2#0#0#0#7'TButton'#15'bnForwardSearch'#4'Left'#3'\'#1#6'Height'
-  +#2#21#5'Width'#2'h'#5'Align'#7#7'alRight'#8'AutoSize'#9#25'BorderSpacing.Inn'
-  +'erBorder'#2#4#7'Caption'#6#14'Forward Search'#7'OnClick'#7#20'bnForwardSear'
-  +'chClick'#8'TabOrder'#2#1#0#0#7'TButton'#14'bnResetResults'#4'Left'#3#196#1#6
-  +'Height'#2#21#5'Width'#2'j'#5'Align'#7#7'alRight'#8'AutoSize'#9#25'BorderSpa'
-  +'cing.InnerBorder'#2#4#7'Caption'#6#17'Reset Result List'#7'OnClick'#7#19'bn'
-  +'ResetResultsClick'#8'TabOrder'#2#2#0#0#7'TButton'#8'bnFilter'#4'Left'#3'2'#1
-  +#6'Height'#2#21#5'Width'#2'*'#5'Align'#7#7'alRight'#8'AutoSize'#9#25'BorderS'
-  +'pacing.InnerBorder'#2#4#7'Caption'#6#6'Filter'#7'OnClick'#7#13'bnFilterClic'
-  +'k'#8'TabOrder'#2#3#0#0#0#0
+  +#17'SearchResultsView'#12'ClientHeight'#3#229#0#11'ClientWidth'#3#31#3#8'OnC'
+  +'reate'#7#11'Form1Create'#9'OnDestroy'#7#24'SearchResultsViewDestroy'#9'OnKe'
+  +'yDown'#7#14'ListBoxKeyDown'#8'Position'#7#14'poScreenCenter'#0#9'TNotebook'
+  +#15'ResultsNoteBook'#21'AnchorSideTop.Control'#7#14'btnSearchAgain'#18'Ancho'
+  +'rSideTop.Side'#7#9'asrBottom'#6'Height'#3#191#0#3'Top'#2'&'#5'Width'#3#31#3
+  +#5'Align'#7#8'alBottom'#7'Anchors'#11#5'akTop'#6'akLeft'#0#17'OnCloseTabClic'
+  +'ked'#7#30'ResultsNoteBookClosetabclicked'#13'OnPageChanged'#7#26'ResultsNot'
+  +'eBookPageChanged'#7'Options'#11#19'nboShowCloseButtons'#12'nboMultiLine'#0#0
+  +#0#7'TButton'#14'btnSearchAgain'#22'AnchorSideLeft.Control'#7#5'Owner'#21'An'
+  +'chorSideTop.Control'#7#5'Owner'#4'Left'#2#6#6'Height'#2#26#3'Top'#2#6#5'Wid'
+  +'th'#2'['#8'AutoSize'#9#20'BorderSpacing.Around'#2#6#25'BorderSpacing.InnerB'
+  +'order'#2#4#7'Caption'#6#12'Search Again'#7'OnClick'#7#19'btnSearchAgainClic'
+  +'k'#9'OnKeyDown'#7#14'ListBoxKeyDown'#8'TabOrder'#2#1#0#0#9'TGroupBox'#20'gb'
+  +'SearchPhraseInList'#4'Left'#3#237#0#6'Height'#2'&'#5'Width'#3'2'#2#5'Align'
+  +#7#7'alRight'#8'AutoSize'#9#7'Caption'#6' Search or Filter Phrases In List'
+  +#12'ClientHeight'#2#21#11'ClientWidth'#3'.'#2#8'TabOrder'#2#2#0#5'TEdit'#14
+  +'edSearchInList'#6'Height'#2#21#4'Hint'#6'sEnter one or more phrases that yo'
+  +'u want'#10'to Search or Filter in the list,'#10'seperated by space ( '' '' '
+  +'), or comma ( , )'#5'Width'#3'2'#1#5'Align'#7#8'alClient'#8'OnChange'#7#20
+  +'edSearchInListChange'#9'OnKeyDown'#7#21'edSearchInListKeyDown'#14'ParentSho'
+  +'wHint'#8#8'ShowHint'#9#8'TabOrder'#2#0#0#0#7'TButton'#15'bnForwardSearch'#4
+  +'Left'#3'\'#1#6'Height'#2#21#5'Width'#2'h'#5'Align'#7#7'alRight'#8'AutoSize'
+  +#9#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6#14'Forward Search'#7'OnCli'
+  +'ck'#7#20'bnForwardSearchClick'#8'TabOrder'#2#1#0#0#7'TButton'#14'bnResetRes'
+  +'ults'#4'Left'#3#196#1#6'Height'#2#21#5'Width'#2'j'#5'Align'#7#7'alRight'#8
+  +'AutoSize'#9#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6#17'Reset Result '
+  +'List'#7'OnClick'#7#19'bnResetResultsClick'#8'TabOrder'#2#2#0#0#7'TButton'#8
+  +'bnFilter'#4'Left'#3'2'#1#6'Height'#2#21#5'Width'#2'*'#5'Align'#7#7'alRight'
+  +#8'AutoSize'#9#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6#6'Filter'#7'On'
+  +'Click'#7#13'bnFilterClick'#8'TabOrder'#2#3#0#0#0#7'TButton'#15'ClosePageBut'
+  +'ton'#22'AnchorSideLeft.Control'#7#14'btnSearchAgain'#19'AnchorSideLeft.Side'
+  +#7#9'asrBottom'#21'AnchorSideTop.Control'#7#14'btnSearchAgain'#24'AnchorSide'
+  +'Bottom.Control'#7#14'btnSearchAgain'#21'AnchorSideBottom.Side'#7#9'asrBotto'
+  +'m'#4'Left'#2'g'#6'Height'#2#26#3'Top'#2#6#5'Width'#2'n'#7'Anchors'#11#5'akT'
+  +'op'#6'akLeft'#8'akBottom'#0#8'AutoSize'#9#18'BorderSpacing.Left'#2#6#25'Bor'
+  +'derSpacing.InnerBorder'#2#4#7'Caption'#6#15'ClosePageButton'#7'OnClick'#7#20
+  +'ClosePageButtonClick'#8'TabOrder'#2#3#0#0#0
 ]);

@@ -123,12 +123,14 @@ type
 
   TSearchResultsView = class(TForm)
     btnSearchAgain: TButton;
+    ClosePageButton: TButton;
     ResultsNoteBook: TNotebook;
     gbSearchPhraseInList: TGroupBox;
     edSearchInList: TEdit;
     bnForwardSearch: TButton;
     bnResetResults: TButton;
     bnFilter: TButton;
+    procedure ClosePageButtonClick(Sender: TObject);
     procedure Form1Create(Sender: TObject);
     procedure ListBoxKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure ResultsNoteBookClosetabclicked(Sender: TObject);
@@ -180,6 +182,7 @@ type
     procedure BeginUpdate(APageIndex: integer);
     procedure EndUpdate(APageIndex: integer);
     procedure Parse_Search_Phrases(var slPhrases: TStrings);
+    procedure ClosePage(PageIndex: integer);
     property ListBoxFont: TFont read fListBoxFont write fListBoxFont;
     property OnSelectionChanged: TNotifyEvent read fOnSelectionChanged
                                               write fOnSelectionChanged;
@@ -222,6 +225,7 @@ begin
 
   Caption:=lisMenuViewSearchResults;
   btnSearchAgain.Caption:=lisSearchAgain;
+  ClosePageButton.Caption:=lisSRClosePage;
 
   Name := NonModalIDEWindowNames[nmiwSearchResultsViewName];
   ALayout:=EnvironmentOptions.IDEWindowLayoutList.
@@ -236,6 +240,11 @@ begin
   ShowHint:= True;
   fMouseOverIndex:= -1;
 end;//Create
+
+procedure TSearchResultsView.ClosePageButtonClick(Sender: TObject);
+begin
+  ClosePage(ResultsNoteBook.PageIndex);
+end;
 
 {Keeps track of the Index of the Item the mouse is over, Sets ShowHint to true
 if the Item length is longer than the Listbox client width.}
@@ -549,6 +558,14 @@ begin
   end;//End for-loop i
 end;
 
+procedure TSearchResultsView.ClosePage(PageIndex: integer);
+begin
+  if (PageIndex<0) or (PageIndex>=ResultsNoteBook.Pages.Count) then exit;
+  ResultsNoteBook.Pages.Delete(PageIndex);
+  if ResultsNoteBook.Pages.Count = 0 then
+    Hide;
+end;
+
 {Brings the results tab named APageName to front.
  If APageName does not exist, does nothing}
 procedure TSearchResultsView.BringResultsToFront(const APageName: string);
@@ -604,13 +621,11 @@ procedure TSearchResultsView.ResultsNoteBookCloseTabclicked(Sender: TObject);
 begin
   if (Sender is TPage) then
   begin
-    with sender as TPage do
+    with Sender as TPage do
     begin
-      ResultsNoteBook.Pages.Delete(PageIndex);
+      ClosePage(PageIndex);
     end;//with
   end;//if
-  if ResultsNoteBook.Pages.Count = 0 then
-    Self.Hide;
 end;//ResultsNoteBookClosetabclicked
 
 procedure TSearchResultsView.btnSearchAgainClick(Sender: TObject);
