@@ -575,16 +575,21 @@ type
     function DoLoadResourceFile(AnUnitInfo: TUnitInfo;
         var LFMCode, ResourceCode: TCodeBuffer;
         IgnoreSourceErrors: boolean): TModalResult;
-    function DoLoadLFM(AnUnitInfo: TUnitInfo; Flags: TOpenFlags): TModalResult;
+    function DoLoadLFM(AnUnitInfo: TUnitInfo; OpenFlags: TOpenFlags;
+                       CloseFlags: TCloseFlags): TModalResult;
     function DoLoadLFM(AnUnitInfo: TUnitInfo; LFMBuf: TCodeBuffer;
-                       Flags: TOpenFlags; CloseDsgnForm: boolean): TModalResult;
-    function DoLoadHiddenResourceComponent(AnUnitInfo: TUnitInfo;
+                       OpenFlags: TOpenFlags;
+                       CloseFlags: TCloseFlags): TModalResult;
+    function DoLoadComponentDependencyHidden(AnUnitInfo: TUnitInfo;
                            const AComponentClassName: string; Flags: TOpenFlags;
                            var AComponentClass: TComponentClass;
                            var ComponentUnitInfo: TUnitInfo): TModalResult;
 
     // methods for 'close unit'
-    function CloseUnitComponent(AnUnitInfo: TUnitInfo): TModalResult;
+    function CloseUnitComponent(AnUnitInfo: TUnitInfo; Flags: TCloseFlags
+                                ): TModalResult;
+    function CloseDependingUnitComponents(AnUnitInfo: TUnitInfo;
+                                          Flags: TCloseFlags): TModalResult;
     function UnitComponentIsUsed(AnUnitInfo: TUnitInfo;
                                  CheckHasDesigner: boolean): boolean;
 
@@ -4750,13 +4755,14 @@ begin
 end;
 
 function TMainIDE.DoLoadLFM(AnUnitInfo: TUnitInfo;
-  Flags: TOpenFlags): TModalResult;
+  OpenFlags: TOpenFlags; CloseFlags: TCloseFlags): TModalResult;
 // if there is a .lfm file, open the resource
 var
   LFMFilename: string;
   LFMBuf: TCodeBuffer;
 begin
-  CloseUnitComponent(AnUnitInfo);
+  Result:=CloseUnitComponent(AnUnitInfo,CloseFlags);
+  if Result<>mrOk then exit;
 
   // Note: think about virtual and normal .lfm files.
   LFMFilename:=ChangeFileExt(AnUnitInfo.Filename,'.lfm');
@@ -4772,11 +4778,12 @@ begin
   Result:=LoadIDECodeBuffer(LFMBuf,LFMFilename,[lbfUpdateFromDisk]);
   if Result<>mrOk then exit;
 
-  Result:=DoLoadLFM(AnUnitInfo,LFMBuf,Flags,false);
+  Result:=DoLoadLFM(AnUnitInfo,LFMBuf,OpenFlags,CloseFlags);
 end;
 
 function TMainIDE.DoLoadLFM(AnUnitInfo: TUnitInfo; LFMBuf: TCodeBuffer;
-  Flags: TOpenFlags; CloseDsgnForm: boolean): TModalResult;
+  OpenFlags: TOpenFlags; CloseFlags: TCloseFlags
+  ): TModalResult;
 const
   BufSize = 4096; // allocating mem in 4k chunks helps many mem managers
 var
@@ -4802,12 +4809,8 @@ begin
   end;
 
   // close old designer form
-  if CloseDsgnForm then
-    CloseUnitComponent(AnUnitInfo)
-  else if AnUnitInfo.Component<>nil then begin
-    DebugLn(['TMainIDE.DoLoadLFM INCONSISTENCY CloseDsgnForm=',CloseDsgnForm,' Filename=',AnUnitInfo.Filename,' Component=',dbgsName(AnUnitInfo.Component)]);
-    exit(mrAbort);
-  end;
+  Result:=CloseUnitComponent(AnUnitInfo,CloseFlags);
+  if Result<>mrOk then exit;
 
   //debugln('TMainIDE.DoLoadLFM LFM file loaded, parsing "',LFMBuf.Filename,'" ...');
 
@@ -4860,7 +4863,7 @@ begin
 
     // try loading the ancestor first (unit, lfm and component instance)
     if (AncestorType=nil) then begin
-      Result:=DoLoadHiddenResourceComponent(AnUnitInfo,AncestorClassName,Flags,
+      Result:=DoLoadComponentDependencyHidden(AnUnitInfo,AncestorClassName,OpenFlags,
                                             AncestorType,AncestorUnitInfo);
       if Result=mrAbort then exit;
       if Result=mrOk then begin
@@ -4910,7 +4913,7 @@ begin
       TxtLFMStream.Free;
     end;
     if ComponentLoadingOk then begin
-      if ([ofProjectLoading,ofLoadHiddenResource]*Flags=[]) then
+      if ([ofProjectLoading,ofLoadHiddenResource]*OpenFlags=[]) then
         FormEditor1.ClearSelection;
 
       // create JIT component
@@ -4925,7 +4928,7 @@ begin
         DebugLn('ERROR: streaming failed lfm="',LFMBuf.Filename,'"');
         // open lfm file in editor
         Result:=DoOpenEditorFile(LFMBuf.Filename,AnUnitInfo.EditorIndex+1,
-          Flags+[ofOnlyIfExists,ofQuiet,ofRegularFile]);
+          OpenFlags+[ofOnlyIfExists,ofQuiet,ofRegularFile]);
         if Result<>mrOk then exit;
         Result:=DoCheckLFMInEditor;
         if Result=mrOk then Result:=mrCancel;
@@ -4936,13 +4939,13 @@ begin
       AnUnitInfo.ComponentName:=NewComponent.Name;
       AnUnitInfo.ComponentResourceName:=AnUnitInfo.ComponentName;
       DesignerForm:=nil;
-      if not (ofLoadHiddenResource in Flags) then begin
+      if not (ofLoadHiddenResource in OpenFlags) then begin
         CreateDesignerForComponent(NewComponent);
         DesignerForm:=FormEditor1.GetDesignerForm(AnUnitInfo.Component);
       end;
 
       // select the new form (object inspector, formeditor, control selection)
-      if ([ofProjectLoading,ofLoadHiddenResource]*Flags=[]) then begin
+      if ([ofProjectLoading,ofLoadHiddenResource]*OpenFlags=[]) then begin
         FDisplayState:= dsForm;
         GlobalDesignHook.LookupRoot := NewComponent;
         TheControlSelection.AssignPersistent(NewComponent);
@@ -4964,7 +4967,7 @@ begin
   Result:=mrOk;
 end;
 
-function TMainIDE.DoLoadHiddenResourceComponent(AnUnitInfo: TUnitInfo;
+function TMainIDE.DoLoadComponentDependencyHidden(AnUnitInfo: TUnitInfo;
   const AComponentClassName: string; Flags: TOpenFlags;
   var AComponentClass: TComponentClass; var ComponentUnitInfo: TUnitInfo
   ): TModalResult;
@@ -5033,7 +5036,7 @@ function TMainIDE.DoLoadHiddenResourceComponent(AnUnitInfo: TUnitInfo;
     
     // load resource hidden
     TheModalResult:=DoLoadLFM(CurUnitInfo,LFMCode,
-                              Flags+[ofLoadHiddenResource],false);
+                              Flags+[ofLoadHiddenResource],[]);
     if (TheModalResult=mrOk) then begin
       ComponentUnitInfo:=CurUnitInfo;
       AComponentClass:=TComponentClass(ComponentUnitInfo.Component.ClassType);
@@ -5129,7 +5132,8 @@ end;
 
   Free the designer form of a unit.
 -------------------------------------------------------------------------------}
-function TMainIDE.CloseUnitComponent(AnUnitInfo: TUnitInfo): TModalResult;
+function TMainIDE.CloseUnitComponent(AnUnitInfo: TUnitInfo; Flags: TCloseFlags
+  ): TModalResult;
 
   procedure FreeUnusedComponents;
   var
@@ -5138,7 +5142,7 @@ function TMainIDE.CloseUnitComponent(AnUnitInfo: TUnitInfo): TModalResult;
     CompUnitInfo:=Project1.FirstUnitWithComponent;
     while CompUnitInfo<>nil do begin
       if not UnitComponentIsUsed(CompUnitInfo,true) then begin
-        CloseUnitComponent(CompUnitInfo);
+        CloseUnitComponent(CompUnitInfo,Flags);
         exit;
       end;
       CompUnitInfo:=CompUnitInfo.NextUnitWithComponent;
@@ -5150,9 +5154,21 @@ var
   OldDesigner: TDesigner;
   LookupRoot: TComponent;
 begin
-  Result:=mrOk;
   LookupRoot:=AnUnitInfo.Component;
-  if LookupRoot=nil then exit;
+  if LookupRoot=nil then exit(mrOk);
+
+  // save
+  if (cfSaveFirst in Flags) and (AnUnitInfo.EditorIndex>=0) then begin
+    Result:=DoSaveEditorFile(AnUnitInfo.EditorIndex,[sfCheckAmbiguousFiles]);
+    if Result<>mrOk then exit;
+  end;
+
+  // close dependencies
+  if cfCloseDependencies in Flags then begin
+    Result:=CloseDependingUnitComponents(AnUnitInfo,Flags);
+    if Result<>mrOk then exit;
+  end;
+
   AForm:=FormEditor1.GetDesignerForm(LookupRoot);
   OldDesigner:=nil;
   if AForm<>nil then
@@ -5187,6 +5203,34 @@ begin
   end;
 
   Result:=mrOk;
+end;
+
+function TMainIDE.CloseDependingUnitComponents(AnUnitInfo: TUnitInfo;
+  Flags: TCloseFlags): TModalResult;
+var
+  DependingUnitInfo: TUnitInfo;
+  UserAsked: Boolean;
+  DependenciesFlags: TCloseFlags;
+begin
+  Result:=mrCancel;
+  UserAsked:=false;
+  repeat
+    DependingUnitInfo:=Project1.UnitUsingComponentUnit(AnUnitInfo);
+    if DependingUnitInfo=nil then exit(mrOk);
+    if (not UserAsked) and (not (cfQuiet in Flags)) then begin
+      Result:=IDEQuestionDialog('Close component?',
+        'Close component '+dbgsName(DependingUnitInfo.Component)+'?',
+        mtConfirmation,[mrYes,mrAbort]);
+      if Result<>mrYes then exit;
+      UserAsked:=true;
+    end;
+    // close recursively
+    DependenciesFlags:=Flags+[cfCloseDependencies];
+    if cfSaveDependencies in Flags then
+      Include(DependenciesFlags,cfSaveFirst);
+    Result:=CloseUnitComponent(DependingUnitInfo,DependenciesFlags);
+    if Result<>mrOk then exit;
+  until false;
 end;
 
 function TMainIDE.UnitComponentIsUsed(AnUnitInfo: TUnitInfo;
@@ -5712,7 +5756,9 @@ begin
     // the file is not really new
     NewUnitInfo:=AProject.Units[OldUnitIndex];
     // close form
-    CloseUnitComponent(NewUnitInfo);
+    Result:=CloseUnitComponent(NewUnitInfo,
+                               [cfCloseDependencies,cfSaveDependencies]);
+    if Result<>mrOk then exit;
     // assign source
     NewUnitInfo.Source:=NewBuffer;
   end else
@@ -5777,7 +5823,7 @@ begin
         LFMCode:=CodeToolBoss.CreateFile(LFMFilename);
         LFMCode.Source:=LFMSourceText;
         //debugln('TMainIDE.DoNewEditorFile A ',LFMFilename);
-        Result:=DoLoadLFM(NewUnitInfo,LFMCode,[],false);
+        Result:=DoLoadLFM(NewUnitInfo,LFMCode,[],[]);
       end else begin
         // create a default form/datamodule
         Result:=CreateNewForm(NewUnitInfo,AncestorType,nil);
@@ -5981,11 +6027,11 @@ begin
 end;
 
 function TMainIDE.DoCloseEditorFile(PageIndex:integer;
-  Flags: TCloseFlags):TModalResult;
+  Flags: TCloseFlags): TModalResult;
 var ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
-  ACaption,AText: string;
-  i:integer;
+  ACaption, AText: string;
+  i: integer;
 begin
   debugln('TMainIDE.DoCloseEditorFile A PageIndex=',IntToStr(PageIndex));
   Result:=mrCancel;
@@ -6024,8 +6070,8 @@ begin
     Result:=mrOk;
   end;
 
-  // close form
-  CloseUnitComponent(ActiveUnitInfo);
+  // close form soft (keep it if used by another component)
+  CloseUnitComponent(ActiveUnitInfo,[]);
 
   // close source editor
   SourceNoteBook.CloseFile(PageIndex);
@@ -6090,16 +6136,19 @@ var
       then begin
         // -> try to (re)load the lfm file
         //debugln('TMainIDE.DoOpenEditorFile Loading LFM for ',NewUnitInfo.Filename);
-        Result:=DoLoadLFM(NewUnitInfo,Flags);
+        Result:=DoLoadLFM(NewUnitInfo,Flags,
+                          [cfCloseDependencies,cfSaveDependencies]);
         if Result<>mrOk then exit;
+      end else begin
+        Result:=mrOk;
       end;
     end else if NewUnitInfo.Component<>nil then begin
       // this is no pascal source and there is a designer form
       // This can be the case, when the file is renamed and reverted
       // -> close form
-      CloseUnitComponent(NewUnitInfo);
+      Result:=CloseUnitComponent(NewUnitInfo,
+                                 [cfCloseDependencies,cfSaveDependencies]);
     end;
-    Result:=mrOk;
   end;
 
 
@@ -9065,7 +9114,7 @@ begin
   while AnUnitInfo<>nil do begin
     NextUnitInfo:=AnUnitInfo.NextUnitWithComponent;
     if not AnUnitInfo.NeedsSaveToDisk then
-      CloseUnitComponent(AnUnitInfo);
+      CloseUnitComponent(AnUnitInfo,[]);
     AnUnitInfo:=NextUnitInfo;
   end;
 end;
@@ -11306,7 +11355,7 @@ begin
       Exit;
     end;
   end;
-  CloseUnitComponent(AnUnitInfo);
+  CloseUnitComponent(AnUnitInfo,[]);
 end;
 
 procedure TMainIDE.OnDesignerRenameComponent(ADesigner: TDesigner;
@@ -11893,7 +11942,7 @@ begin
   Result:=nil;
   if (AnUnitInfo.Component=nil) and LoadForm
   and FilenameIsPascalSource(AnUnitInfo.Filename) then begin
-    DoLoadLFM(AnUnitInfo,[]);
+    DoLoadLFM(AnUnitInfo,[],[]);
   end;
   if AnUnitInfo.Component<>nil then
     Result:=FormEditor1.GetDesignerForm(AnUnitInfo.Component);

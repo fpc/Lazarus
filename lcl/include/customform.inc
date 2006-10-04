@@ -1691,8 +1691,6 @@ end;
 procedure TCustomForm.CreateWnd;
 begin
   //DebugLn('TCustomForm.CreateWnd START ',ClassName);
-  if CompareText(ClassName,'TGrandMaForm')=0 then
-    RaiseGDBException('');
   FFormState:=FFormState-[fsBorderStyleChanged,fsFormStyleChanged];
   inherited CreateWnd;
 

@@ -74,7 +74,9 @@ type
   TCloseFlag = (
     cfSaveFirst, // check if modified and save
     cfQuiet,
-    cfProjectClosing
+    cfProjectClosing,
+    cfCloseDependencies,
+    cfSaveDependencies // set cfSaveFirst to closing the dependencies
     );
   TCloseFlags = set of TCloseFlag;
 
