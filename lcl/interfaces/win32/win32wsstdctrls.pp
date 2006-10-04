@@ -359,7 +359,7 @@ begin
       // the bug is hidden. Use 'ParentPanel' property of groupbox window
       // to determine reference to this parent panel
       // do not use 'ParentPanel' property for other controls!
-      Buddy := CreateWindowEx(0, @ClsName, nil, WS_CHILD or WS_CLIPCHILDREN or
+      Buddy := CreateWindowEx(0, @ClsName[0], nil, WS_CHILD or WS_CLIPCHILDREN or
         WS_CLIPSIBLINGS or (Flags and WS_VISIBLE),
         Left, Top, Width, Height, Parent, 0, HInstance, nil);
       Left := 0;

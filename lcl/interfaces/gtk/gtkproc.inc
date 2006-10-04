@@ -1021,7 +1021,7 @@ begin
     XEvent.data.l[0] := Ord(AValue);// 0=Remove 1=Add 2=Toggle
     XEvent.data.l[1] := _NET_WM_STATE_ATOMS[I];
 
-    XSendEvent(XDisplay, XRootWindow, False, SubstructureNotifyMask, @XEvent);
+    XSendEvent(XDisplay, XRootWindow, False, SubstructureNotifyMask, PXEvent(@XEvent));
   end;
    {$ENDIF}
 end;
@@ -7375,7 +7375,7 @@ Function GetSysGCValues(Color: TColorRef;
     Result:=Widget;
     if Result=nil then exit;
     if Result^.window=nil then exit;
-    gdk_window_get_user_data(Result^.window,@WindowOwnerWidget);
+    gdk_window_get_user_data(Result^.window,PGPointer(@WindowOwnerWidget));
     Result:=WindowOwnerWidget;
     if Result=nil then exit;
   end;

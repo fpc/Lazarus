@@ -154,7 +154,7 @@ begin
 {$IFdef MSWindows}
 var
   PipeHandle: Integer;
-  TotalBytesAvailable: integer;
+  TotalBytesAvailable: dword;
   R: LongBool;
   n: integer;
 begin

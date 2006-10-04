@@ -581,9 +581,9 @@ begin
       aLabel := Ampersands2Underscore(PLabel);
       Try
         gtk_label_set_text(
-                    pGtkLabel(gtk_bin_get_child(@PGTKToggleButton(p)^.Button)),
+                    pGtkLabel(gtk_bin_get_child(PGtkBin(@PGTKToggleButton(p)^.Button))),
                     aLabel);
-        gtk_label_parse_uline(pGtkLabel(gtk_bin_get_child(@PGTKToggleButton(p)^.Button)),
+        gtk_label_parse_uline(pGtkLabel(gtk_bin_get_child(PGtkBin(@PGTKToggleButton(p)^.Button))),
           aLabel);
       Finally
         StrDispose(aLabel);

@@ -143,8 +143,8 @@ begin
   l:=length(s);
   SetLength(Result,l);
   if l>0 then begin
-    pDest:=@Result[1];
-    pSrc:=@s[1];
+    pDest:=PWord(@Result[1]);
+    pSrc:=PWord(@s[1]);
     l2:=(l shr 1)-1;
     for i:=0 to l2 do
       pDest[i]:=UpWords[pSrc[i]];

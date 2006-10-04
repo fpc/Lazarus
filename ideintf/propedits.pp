@@ -1478,7 +1478,7 @@ begin
     // read all property infos of current class
     TypeData:=GetTypeData(TypeInfo);
     // skip unitname
-    PropInfo:=(@TypeData^.UnitName+Length(TypeData^.UnitName)+1);
+    PropInfo:=PPropInfo(@TypeData^.UnitName+Length(TypeData^.UnitName)+1);
     // read property count
     CurCount:=PWord(PropInfo)^;
     inc(PtrInt(PropInfo),SizeOf(Word));
@@ -1610,7 +1610,7 @@ begin
     PropData:=AlignToPtr(Pointer(@TypeData^.UnitName)+Length(TypeData^.UnitName)+1);
     // read property count
     CurCount:=PropData^.PropCount;
-    PropInfo:=@PropData^.PropList;
+    PropInfo:=PPropInfo(@PropData^.PropList);
 
     {writeln('TPropInfoList.Create D ',CurCount,' TypeData^.ClassType=',DbgS(TypeData^.ClassType));
     writeln('TPropInfoList.Create E ClassName="',TypeData^.ClassType.ClassName,'"',

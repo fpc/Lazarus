@@ -128,7 +128,7 @@ begin
 
   // Fetch old column values
   oldlvc.lvc.Mask := LVCF_FMT or LVCF_IMAGE or LVCF_TEXT or LVCF_WIDTH;
-  oldlvc.lvc.pszText := @oldbuf;
+  oldlvc.lvc.pszText := @oldbuf[0];
   oldlvc.lvc.cchTextMax := SizeOF(oldbuf);
   ListView_GetColumn(ALV.Handle, AOldIndex, oldlvc.lvc);
 
@@ -141,7 +141,7 @@ begin
     else Dec(idx);
     // and data
     lvc.lvc.Mask := LVCF_FMT or LVCF_IMAGE or LVCF_TEXT or LVCF_WIDTH;
-    lvc.lvc.pszText := @buf;
+    lvc.lvc.pszText := @buf[0];
     lvc.lvc.cchTextMax := SizeOF(buf);
     ListView_GetColumn(ALV.Handle, idx, lvc.lvc);
     // set data
@@ -557,7 +557,7 @@ var
   dwStyle: PtrInt;
   rc: TRect;
   hdLayout: THDLAYOUT;
-  wpos: TWINDOWPOS;
+  wpos: Windows.TWINDOWPOS;
 begin
   dwStyle := GetWindowLong(AHandle, GWL_STYLE);
 

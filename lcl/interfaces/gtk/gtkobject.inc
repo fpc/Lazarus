@@ -707,7 +707,7 @@ begin
     begin
       if (List^.Data <> nil)
       then begin
-        gdk_window_get_user_data(PGDKWindow(List^.Data), @Window);
+        gdk_window_get_user_data(PGDKWindow(List^.Data), Pgpointer(@Window));
         if GtkWidgetIsA(PGtkWidget(Window), GTK_TYPE_WINDOW)
         and gtk_widget_visible(PGtkWidget(Window))
         then begin
@@ -2535,7 +2535,7 @@ begin
 
   If (GDKWindow <> nil) then begin
     {$IFDEF Gtk1}
-    if GDKWindow<>@gdk_root_window then begin
+    if GDKWindow<>PGdkWindow(@gdk_root_window) then begin
       GDK_Window_Get_Size(GDKWindow,@Width,@Height);
       Visual:=gdk_window_get_visual(GDKWindow);
     end else begin
@@ -5030,7 +5030,7 @@ begin
       {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
       Drag_Icon := gdk_pixmap_colormap_create_from_xpm_d (nil,
                            gtk_widget_get_colormap (Result), Drag_Mask,
-                           nil, @IMGDrag_Icon);
+                           nil, @IMGDrag_Icon[0]);
       {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
     end;
   end else begin
@@ -5604,7 +5604,7 @@ begin
       else
         P:= gtk_radio_button_new_with_label(nil, AccelText);
       AccelKey:=gtk_label_parse_uline(
-                                   pGtkLabel(gtk_bin_get_child(@PGTKToggleButton(P)^.Button)),
+                                   pGtkLabel(gtk_bin_get_child(PGtkBin(@PGTKToggleButton(P)^.Button))),
                                    AccelText);
       Accelerate(TComponent(Sender),PGtkWidget(P),AccelKey,0,'clicked');
       StrDispose(AccelText);

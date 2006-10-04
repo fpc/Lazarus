@@ -55,7 +55,7 @@ begin
   NM.hdr.code := LVN_COLUMNCLICK;
   NM.iItem := -1;
   NM.iSubItem := AColumn;
-  msg.NMHdr := @NM;
+  msg.NMHdr := @NM.hdr;
   Result := DeliverMessage(AData, msg) = 0;
 end;
 

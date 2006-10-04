@@ -447,7 +447,7 @@ begin
   Result:=Result+' UnitName="'+TypeData^.UnitName+'"';
 
   // skip unitname
-  PropInfo:=(@TypeData^.UnitName+Length(TypeData^.UnitName)+1);
+  PropInfo:=PPropInfo(@TypeData^.UnitName+Length(TypeData^.UnitName)+1);
   // read property count
   CurCount:=PWord(PropInfo)^;
   Result:=Result+' CurPropCnt='+IntToStr(CurCount);
@@ -488,14 +488,14 @@ begin
     end;
   end;
   Result:=Result+'}';
-  FieldInfo := @FieldTable^.Fields;
+  FieldInfo := @FieldTable^.Fields[0];
   Result := Result + ' Fields={';
   for i := 0 to FieldTable^.FieldCount-1 do begin
     if i > 0 then Result:=Result+',';
     Result := Result + IntToStr(i) 
       + ':Name="' + FieldInfo^.Name + '"'
       + ':Offset=' +IntToStr(FieldInfo^.FieldOffset);
-    FieldInfo := @FieldInfo^.Name + 1 + Length(FieldInfo^.Name);
+    FieldInfo := PFieldInfo(@FieldInfo^.Name + 1 + Length(FieldInfo^.Name));
     {$ifndef FPC_REQUIRES_PROPER_ALIGNMENT}
     FieldInfo := Align(FieldInfo, SizeOf(Pointer));
     {$endif FPC_REQUIRES_PROPER_ALIGNMENT}

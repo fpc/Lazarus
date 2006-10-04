@@ -297,7 +297,7 @@ begin
   // customization of Params
   with Params do
   begin
-    pClassName := @ClsName;
+    pClassName := @ClsName[0];
     Flags := Flags and not WS_VISIBLE;
     SubClassWndProc := nil;
   end;
@@ -580,7 +580,7 @@ begin
   // customization of Params
   with Params do
   begin
-    pClassName := @ClsName;
+    pClassName := @ClsName[0];
     SubClassWndProc := nil;
   end;
   // create window

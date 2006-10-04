@@ -67,7 +67,7 @@ end;
 
 class function  TGtkWSCustomCalendar.GetDateTime(const ACalendar: TCustomCalendar): TDateTime;
 var
-  Year, Month, Day: word;  //used for csCalendar
+  Year, Month, Day: guint;  //used for csCalendar
 begin
   gtk_calendar_get_date(GetGtkCalendar(ACalendar), @Year, @Month, @Day);
   //For some reason, the month is zero based.

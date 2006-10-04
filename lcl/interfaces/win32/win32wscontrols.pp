@@ -280,7 +280,7 @@ begin
   // customization of Params
   with Params do
   begin
-    pClassName := @ClsName;
+    pClassName := @ClsName[0];
     WindowTitle := StrCaption;
     SubClassWndProc := nil;
   end;

@@ -2171,7 +2171,8 @@ end;
 procedure TTreeNodes.ReadData(Stream: TStream);
 var
   I, NewCount, MagicNumber: Integer;
-  NodeInfo: TDelphiNodeInfo;
+  NodeInfo: TTreeNodeInfo;
+  DelphiNodeInfo: TDelphiNodeInfo;
   StreamVersion: word;
 begin
   Clear;
@@ -2188,14 +2189,14 @@ begin
     // delphi stream
     NewCount:=MagicNumber;
     for I := 0 to NewCount - 1 do
-      Add(nil, '').ReadDelphiData(Stream, @NodeInfo);
+      Add(nil, '').ReadDelphiData(Stream, @DelphiNodeInfo);
   end;
 end;
 
 procedure TTreeNodes.WriteData(Stream: TStream);
 var
   ANode: TTreeNode;
-  NodeInfo: TDelphiNodeInfo;
+  NodeInfo: TTreeNodeInfo;
   MagicNumber: integer;
 begin
   // -7 for lcl stream

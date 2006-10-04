@@ -194,7 +194,7 @@ begin
   Move(TrimmedXPM[1],Result[LineCount+1],DestPos);
 
   // calculate the array of PChar
-  LineStart:=@Result[LineCount+1];
+  LineStart:=PChar(@Result[LineCount+1]);
   for CurLine:=0 to LineCount-1 do begin
     LineLen:=StrLen(LineStart)+1;
     Result[CurLine]:=LineStart;

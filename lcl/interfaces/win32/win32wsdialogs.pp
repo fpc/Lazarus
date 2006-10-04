@@ -178,7 +178,7 @@ begin
     LStructSize := sizeof(TChooseColor);
     HWndOwner := GetOwnerHandle(ACommonDialog);
     RGBResult := ColorToRGB(TColorDialog(ACommonDialog).Color);
-    LPCustColors := @CustomColors;
+    LPCustColors := @CustomColors[1];
     Flags := CC_FULLOPEN or CC_RGBINIT;
   end;
   UserResult := ChooseColor(@CC);
@@ -490,7 +490,7 @@ begin
     begin
       LStructSize := sizeof(TChooseFont);
       HWndOwner := GetOwnerHandle(ACommonDialog);
-      LPLogFont := @LF;
+      LPLogFont := Windows.LPLOGFONT(@LF);
       Flags := GetFlagsFromOptions(Options);
       Flags := Flags or CF_INITTOLOGFONTSTRUCT or CF_BOTH;
       RGBColors := Font.Color;

@@ -1037,22 +1037,22 @@ begin
             case lbHatch of
               HS_BDIAGONAL:
                 GObject^.GDIBrushPixmap := gdk_bitmap_create_from_data(
-                   nil, @HATCH_BDIAGONAL, 8, 8);
+                   nil, pgchar(@HATCH_BDIAGONAL[0]), 8, 8);
               HS_CROSS:
                 GObject^.GDIBrushPixmap := gdk_bitmap_create_from_data(
-                   nil, @HATCH_CROSS, 8, 8);
+                   nil, pgchar(@HATCH_CROSS[0]), 8, 8);
               HS_DIAGCROSS:
                 GObject^.GDIBrushPixmap := gdk_bitmap_create_from_data(
-                   nil, @HATCH_DIAGCROSS, 8, 8);
+                   nil, pgchar(@HATCH_DIAGCROSS[0]), 8, 8);
               HS_FDIAGONAL:
                 GObject^.GDIBrushPixmap := gdk_bitmap_create_from_data(
-                   nil, @HATCH_FDIAGONAL, 8, 8);
+                   nil, pgchar(@HATCH_FDIAGONAL[0]), 8, 8);
               HS_HORIZONTAL:
                 GObject^.GDIBrushPixmap := gdk_bitmap_create_from_data(
-                   nil, @HATCH_HORIZONTAL, 8, 8);
+                   nil, pgchar(@HATCH_HORIZONTAL[0]), 8, 8);
               HS_VERTICAL:
                 GObject^.GDIBrushPixmap := gdk_bitmap_create_from_data(
-                   nil, @HATCH_VERTICAL, 8, 8);
+                   nil, pgchar(@HATCH_VERTICAL[0]), 8, 8);
               else
                 RaiseGDBException('invalid lbHatch');
             end;
@@ -2991,7 +2991,7 @@ var
       Points[1].cY := Points[0].cY;
 
       {Draw prefix line}
-      Polyline(DC, @Points[0], 2);
+      Polyline(DC, PPoint(@Points[0]), 2);
     end;
   end;
 
@@ -4184,7 +4184,7 @@ begin
   begin
     if (List^.Data <> nil)
     then begin
-      gdk_window_get_user_data(PGDKWindow(List^.Data), @Window);
+      gdk_window_get_user_data(PGDKWindow(List^.Data), Pgpointer(@Window));
       if gtk_is_window(Window)
       then begin
         Widget := Window^.focus_widget;
@@ -4710,7 +4710,7 @@ function TGtkWidgetSet.GetCursorPos(var lpPoint: TPoint ): Boolean;
 {$IFDEF unix}
 var
   dpy: PDisplay;
-  root, child: pointer;
+  root, child: twindow;
   winx, winy: Integer;
   xmask: Cardinal;
 
@@ -4721,7 +4721,7 @@ begin
   {$ENDIF}
   try
     dpy := gdk_display;
-    XQueryPointer(dpy, RootWindow(dpy, DefaultScreen(dpy)), @root,@child,
+    XQueryPointer(dpy, RootWindow(dpy, DefaultScreen(dpy)), @root, @child,
                                       @lpPoint.X,@lpPoint.Y,@winx,@winy,@xmask);
     Result := True;
   finally
@@ -4984,7 +4984,7 @@ begin
   begin
     if (List^.Data <> nil)
     then begin
-      gdk_window_get_user_data(PGDKWindow(List^.Data), @Window);
+      gdk_window_get_user_data(PGDKWindow(List^.Data), Pgpointer(@Window));
       
       if gtk_is_window(Window)
       then begin
@@ -9552,13 +9552,13 @@ begin
             Points[0].cY := Y + 2 + DCTextMetric.TextMetric.tmHeight -
                             DCTextMetric.TextMetric.tmDescent;
             Points[1].cY := Points[0].cY;
-            Polyline(DC, @Points[0], 2);
+            Polyline(DC, PPoint(@Points[0]), 2);
           end;
 
           If StrikeOut then begin
             Points[0].cY := Y + 2 + (TxtPt.Y - Y) div 2;
             Points[1].cY := Points[0].cY;
-            Polyline(DC, @Points[0], 2);
+            Polyline(DC, PPoint(@Points[0]), 2);
           end;
 
           DeleteObject(SelectObject(DC, TempPen));

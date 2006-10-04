@@ -1028,7 +1028,7 @@ begin
   if Window = PDisableWindowsInfo(Data)^.NewModalWindow then exit;
 
   // Don't disable any ComboBox listboxes
-  if (GetClassName(Window, @Buffer, sizeof(Buffer))<sizeof(Buffer))
+  if (GetClassName(Window, @Buffer[0], sizeof(Buffer))<sizeof(Buffer))
     and (StrIComp(Buffer, 'ComboLBox')=0) then exit;
 
   if not IsWindowVisible(Window) or not IsWindowEnabled(Window) then exit;

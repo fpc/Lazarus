@@ -982,7 +982,7 @@ class procedure TGtkWSCustomMemo.AppendText(const ACustomMemo: TCustomMemo;
   const AText: string);
 var
   Widget: PGtkWidget;
-  CurMemoLen: cardinal;
+  CurMemoLen: gint;
 begin
   if Length(AText) = 0 then
     exit;

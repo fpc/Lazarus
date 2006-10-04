@@ -147,7 +147,7 @@ begin
   begin
     //TODO: Make control respond to user scroll request
     FlagsEx := FlagsEx or WS_EX_CLIENTEDGE;
-    pClassName := @ClsName;
+    pClassName := @ClsName[0];
     Flags := Flags or WS_HSCROLL or WS_VSCROLL;
     SubClassWndProc := nil;
   end;
@@ -215,7 +215,7 @@ begin
   begin
     lForm := TCustomForm(AWinControl);
     CalcFormWindowFlags(lForm, Flags, FlagsEx);
-    pClassName := @ClsName;
+    pClassName := @ClsName[0];
     WindowTitle := StrCaption;
     Left := LongInt(CW_USEDEFAULT);
     Top := LongInt(CW_USEDEFAULT);
@@ -322,7 +322,7 @@ begin
   // customization of Params
   with Params do
   begin
-    pClassName := @ClsName;
+    pClassName := @ClsName[0];
     WindowTitle := StrCaption;
     Flags := dword(WS_POPUP);
     FlagsEx := FlagsEx or WS_EX_TOOLWINDOW;

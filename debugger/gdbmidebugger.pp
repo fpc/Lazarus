@@ -1356,7 +1356,7 @@ procedure TGDBMIDebugger.InterruptTarget;
       if hThread = 0
       then begin
         E := GetLastError;
-        FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM or FORMAT_MESSAGE_ALLOCATE_BUFFER, nil, E, 0, @Emsg, 0, nil);
+        FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM or FORMAT_MESSAGE_ALLOCATE_BUFFER, nil, E, 0, PChar(@Emsg), 0, nil);
         DebugLN('Error creating remote thread: ' + String(EMsg));
         // Yuck !
         // mixing handles and pointers, but it is how MS documented it

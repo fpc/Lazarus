@@ -69,7 +69,7 @@ begin
   NM.hdr.code := LVN_COLUMNCLICK;
   NM.iItem := -1;
   NM.iSubItem := AColumn;
-  msg.NMHdr := @NM;
+  msg.NMHdr := @NM.hdr;
   Result := DeliverMessage(AInfo^.LCLObject, msg) = 0;
 end;
 
@@ -89,7 +89,7 @@ begin
   NM.hdr.hwndfrom := PtrInt(AList);
   NM.hdr.code := LVN_DELETEITEM;
   NM.iItem := AnOldIdx;
-  msg.NMHdr := @NM;
+  msg.NMHdr := @NM.hdr;
   r := DeliverMessage(AInfo^.LCLObject, msg) = 0;
 
   NM.hdr.code := LVN_INSERTITEM;
@@ -114,7 +114,7 @@ begin
   NM.iSubItem := AColumn;
   NM.uNewState := LVIS_SELECTED;
   NM.uChanged := LVIF_STATE;
-  msg.NMHdr := @NM;
+  msg.NMHdr := @NM.hdr;
   Result := DeliverMessage(AInfo^.LCLObject, msg) = 0;
 end;
 
@@ -132,7 +132,7 @@ begin
   NM.iSubItem := AColumn;
   NM.uOldState := LVIS_SELECTED;
   NM.uChanged := LVIF_STATE;
-  msg.NMHdr := @NM;
+  msg.NMHdr := @NM.hdr;
   Result := DeliverMessage(AInfo^.LCLObject, msg) = 0;
 end;
 
@@ -152,7 +152,7 @@ begin
   NM.iSubItem := 0;
   NM.uNewState := LVIS_FOCUSED;
   NM.uChanged := LVIF_STATE;
-  msg.NMHdr := @NM;
+  msg.NMHdr := @NM.hdr;
   Result := DeliverMessage(AInfo^.LCLObject, msg) = 0;
 end;
 
@@ -178,7 +178,7 @@ begin
     NM.iSubItem := -1;
     NM.uNewState := LVIS_SELECTED;
     NM.uChanged := LVIF_STATE;
-    msg.NMHdr := @NM;
+    msg.NMHdr := @NM.hdr;
     Result := DeliverMessage(AInfo^.LCLObject, msg) = 0;
   end;
 end;
@@ -205,7 +205,7 @@ begin
     NM.iSubItem := -1;
     NM.uOldState := LVIS_SELECTED;
     NM.uChanged := LVIF_STATE;
-    msg.NMHdr := @NM;
+    msg.NMHdr := @NM.hdr;
     Result := DeliverMessage(AInfo^.LCLObject, msg) = 0;
   end;
 end;
@@ -625,7 +625,7 @@ var
   Mask: PGdkBitmap;
   Spacing: guint8;
   Text: PChar;
-  Dummy1, Dummy2: Pointer;
+  Dummy1, Dummy2: PGdkBitmap;
   CellType: TGtkCellType;
 begin
   if not WSCheckHandleAllocated(ALV, 'ItemSetImage')
@@ -768,7 +768,7 @@ var
   Pixmap: PGdkPixmap;
   Mask: PGdkBitmap;
   Spacing: guint8;
-  Dummy: Pointer;
+  Dummy: pgchar;
   CellType: TGtkCellType;
 begin
   if not WSCheckHandleAllocated(ALV, 'ItemSetText')

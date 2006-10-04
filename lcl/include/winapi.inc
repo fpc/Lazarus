@@ -948,7 +948,7 @@ begin
     lfClipPrecision := ClipPrecision;
     lfQuality := Quality;
     lfPitchAndFamily := PitchAndFamily;
-    StrLCopy(@lfFaceName, FaceName, SizeOf(lfFaceName)-1);
+    StrLCopy(@lfFaceName[0], FaceName, SizeOf(lfFaceName)-1);
   end;
 
   Result := CreateFontIndirect(LogFont);

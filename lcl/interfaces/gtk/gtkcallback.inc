@@ -36,7 +36,7 @@ begin
   else
     PaintMsg:=TLMPaint(TheMessage);
   Result := DeliverMessage(Target,PaintMsg) = 0;
-  FinalizePaintMessage(@PaintMsg);
+  FinalizePaintMessage(PLMessage(@PaintMsg));
 end;
 
 {-------------------------------------------------------------------------------
@@ -3049,7 +3049,7 @@ begin
               BufLength:=0;
               gdk_string_to_compound_text(P,
                 @SelectionData^.{$ifdef GTK2}_Type{$ELSE}theType{$ENDIF},
-                @SelectionData^.Format,@Buffer,@BufLength);
+                @SelectionData^.Format,pguchar(@Buffer),@BufLength);
               StrDispose(P);
               gtk_selection_data_set(SelectionData,SelectionData^.Target,
                 SelectionData^.Format,Buffer,BufLength);

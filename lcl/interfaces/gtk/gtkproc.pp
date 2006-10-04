@@ -1146,7 +1146,7 @@ begin
   XEvent.format := 32;
   XEvent.data.l[0] := Desktop;
 
-  XSendEvent(XDisplay, XRootWindow, False, SubstructureNotifyMask, @XEvent);
+  XSendEvent(XDisplay, XRootWindow, False, SubstructureNotifyMask, PXEvent(@XEvent));
 end;
 
 
@@ -1180,7 +1180,7 @@ begin
   XEvent.data.l[1] := CurrentTime;
   XEvent.data.l[2] := 0; // Applications current active window
 
-  XSendEvent(XDisplay, aXRootWindow, False, SubstructureNotifyMask, @XEvent);
+  XSendEvent(XDisplay, aXRootWindow, False, SubstructureNotifyMask, PXEvent(@XEvent));
 end;
 
 procedure GDK_WINDOW_MAXIMIZE(Window: PGdkWindowPrivate);
@@ -1216,7 +1216,7 @@ begin
   XEvent.data.l[1] := _NET_WM_STATE_MAXIMIZED_HORZ;
   XEvent.data.l[2] := _NET_WM_STATE_MAXIMIZED_VERT;
 
-  XSendEvent(XDisplay, aXRootWindow, False, SubstructureNotifyMask, @XEvent);
+  XSendEvent(XDisplay, aXRootWindow, False, SubstructureNotifyMask, PXEvent(@XEvent));
 end;
 
 
@@ -1236,7 +1236,7 @@ var
   format: gint;
   nitems: gulong;
   bytes_after: gulong;
-  windowstates: Pgint;
+  windowstates: Pcuchar;
   X: Integer;
 
 begin

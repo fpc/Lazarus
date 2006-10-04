@@ -1160,7 +1160,7 @@ begin
   GetMem(CS, CSize);
   FillChar(CS^, sizeof(TCSArr), 0);
   StrPCopy(CS^.Str, S);
-  CS^.Arr[0] := @CS^.Str;
+  CS^.Arr[0] := @CS^.Str[0];
   for K := 1 to 15 do begin
     CS^.Arr[K] := StrScan(CS^.Arr[K-1], #9);
     if Assigned(CS^.Arr[K])
