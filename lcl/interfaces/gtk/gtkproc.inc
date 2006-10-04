@@ -981,7 +981,6 @@ begin
 end;
 
 procedure SetWindowFullScreen(AForm: TCustomForm; const AValue: Boolean);
-{$IFDEF HasGtkX}
 var
   XDisplay: PDisplay;
   XScreen: PScreen;
@@ -995,6 +994,12 @@ var
   _NET_WM_STATE_ATOMS: array [0..2] of Integer;
   I: Integer;
 begin
+  {$IFDEF GTK2}
+   If AValue then
+   GTK_Window_FullScreen(PGTKWindow(AForm.Handle)) else
+   GTK_Window_UnFullScreen(PGTKWindow(AForm.Handle));
+  {$ENDIF}
+  {$IFDEF GTK1}
   XDisplay := gdk_display;
   XScreen := XDefaultScreenOfDisplay(xdisplay);
   XRootWindow := XRootWindowOfScreen(xscreen);
@@ -1018,12 +1023,8 @@ begin
 
     XSendEvent(XDisplay, XRootWindow, False, SubstructureNotifyMask, @XEvent);
   end;
+   {$ENDIF}
 end;
-{$ELSE}
-begin
-  RaiseGDBException('not implemented');
-end;
-{$ENDIF}
 
 procedure GrabKeyBoardToForm(AForm: TCustomForm);
 begin
