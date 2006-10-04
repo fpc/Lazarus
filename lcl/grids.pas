@@ -864,8 +864,8 @@ type
     property TitleStyle: TTitleStyle read FTitleStyle write SetTitleStyle;
     property TopRow: Integer read GetTopRow write SetTopRow;
     property UseXORFeatures: boolean read FUseXORFeatures write SetUseXorFeatures;
-    property VisibleColCount: Integer read GetVisibleColCount;
-    property VisibleRowCount: Integer read GetVisibleRowCount;
+    property VisibleColCount: Integer read GetVisibleColCount stored false;
+    property VisibleRowCount: Integer read GetVisibleRowCount stored false;
 
     property OnBeforeSelection: TOnSelectEvent read FOnBeforeSelection write FOnBeforeSelection;
     property OnCompareCells: TOnCompareCells read FOnCompareCells write FOnCompareCells;
