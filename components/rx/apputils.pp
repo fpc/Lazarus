@@ -360,17 +360,7 @@ type
   {$ENDIF}
 
   THackComponent = class(TComponent)
-  public
-    class procedure SetOtherDesigning(AComponent: TComponent; Value: Boolean);
   end;
-
-{ THackComponent }
-
-class procedure THackComponent.SetOtherDesigning(AComponent: TComponent;
-  Value: Boolean);
-begin
-  AComponent.SetDesigning(Value);
-end;
 
 procedure ReadFormPlacement(Form: TForm; IniFile: TCustomIniFile;
   const Section: string; LoadState, LoadPosition: Boolean);
@@ -404,11 +394,11 @@ begin
           if (Position in [poScreenCenter , poDesktopCenter ]) and
             not (csDesigning in ComponentState) then
             begin
-            THackComponent.SetOtherDesigning(Form,True);
+            THackComponent(Form).SetDesigning(True);
             try
               Position := poDesigned;
             finally
-              THackComponent.SetOtherDesigning(Form,False);
+              THackComponent(Form).SetDesigning(False);
             end;
             end;
           end;
