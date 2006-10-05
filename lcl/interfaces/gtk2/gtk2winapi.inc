@@ -400,7 +400,7 @@ function TGtk2WidgetSet.GetCursorPos(var lpPoint: TPoint ): Boolean;
 {$IfnDef GTK2_2} //we need a GTK2_2 FLAG somehow
   {$IfNDef Win32}
   var
-    root, child: pointer;
+    root, child: TWindow;
     winx, winy: Integer;
     xmask: Cardinal;
     TopList, List: PGList;

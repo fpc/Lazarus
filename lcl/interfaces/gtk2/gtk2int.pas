@@ -35,7 +35,7 @@ uses
   Types, Classes, SysUtils,
   {$IfNDef GTK2_2}
     {$IfNDef Win32}
-     XLib, //X, XUtil,
+     XLib, X, //XUtil,
     {$EndIf}
   {$EndIf}
 

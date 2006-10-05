@@ -47,7 +47,7 @@ begin
   NM.iSubItem := 0;
   NM.uNewState := LVIS_FOCUSED;
   NM.uChanged := LVIF_STATE;
-  msg.NMHdr := @NM;
+  msg.NMHdr := @NM.hdr;
   DeliverMessage(WidgetInfo^.LCLObject, msg);
 end;
 
@@ -65,7 +65,7 @@ begin
   NM.hdr.hwndfrom := PtrInt(WidgetInfo^.CoreWidget);
   NM.hdr.code := LVN_DELETEITEM;
   NM.iItem := StrToInt(gtk_tree_path_to_string(path));
-  msg.NMHdr := @NM;
+  msg.NMHdr := @NM.hdr;
   DeliverMessage(WidgetInfo^.LCLObject, msg);
   
   ALV := TLVHack(WidgetInfo^.LCLObject);
@@ -89,7 +89,7 @@ begin
   NM.hdr.hwndfrom := PtrInt(WidgetInfo^.CoreWidget);
   NM.hdr.code := LVN_INSERTITEM;
   NM.iItem := StrToInt(gtk_tree_path_to_string(path));
-  msg.NMHdr := @NM;
+  msg.NMHdr := @NM.hdr;
   DeliverMessage(WidgetInfo^.LCLObject, msg);
 end;
 
@@ -126,7 +126,7 @@ begin
   NM.hdr.code := LVN_COLUMNCLICK;
   NM.iItem := -1;
   NM.iSubItem := AColumn.Index;
-  msg.NMHdr := @NM;
+  msg.NMHdr := @NM.hdr;
   DeliverMessage(WidgetInfo^.LCLObject, msg);
 
 end;
@@ -160,7 +160,7 @@ begin
     else
       NM.uNewState := LVIS_SELECTED;
     NM.uChanged := LVIF_STATE;
-    msg.NMHdr := @NM;
+    msg.NMHdr := @NM.hdr;
 
     DeliverMessage(WidgetInfo^.LCLObject, msg);
 
@@ -193,7 +193,7 @@ begin
   NM.iSubItem := 0;//AColumn;
   NM.uNewState := LVIS_SELECTED;
   NM.uChanged := LVIF_STATE;
-  msg.NMHdr := @NM;
+  msg.NMHdr := @NM.hdr;
   {Result := }DeliverMessage(WidgetInfo^.LCLObject, msg){ = 0};
   
   if not Result then Exit;
@@ -1041,7 +1041,7 @@ class function TGtk2WSCustomListView.GetSelection(const ALV: TCustomListView
   ): Integer;
 var
   Widgets: PTVWidgets;
-  Iter: PGtkTreeIter;
+  Iter: TGtkTreeIter;
   Path: PGtkTreePath;
 begin
   Result := -1;

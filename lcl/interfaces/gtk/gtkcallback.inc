@@ -88,7 +88,7 @@ begin
   {$IFDEF DirectPaintMsg}
   PaintMsg:= GtkPaintMessageToPaintMessage(Msg,true);
   Result := DeliverMessage(Target,PaintMsg) = 0;
-  FinalizePaintMessage(@PaintMsg);
+  FinalizePaintMessage(PLMessage(@PaintMsg));
   {$ELSE}
   Result:=DeliverPostMessage(Target,Msg);
   {$ENDIF}
@@ -3049,7 +3049,7 @@ begin
               BufLength:=0;
               gdk_string_to_compound_text(P,
                 @SelectionData^.{$ifdef GTK2}_Type{$ELSE}theType{$ENDIF},
-                @SelectionData^.Format,pguchar(@Buffer),@BufLength);
+                @SelectionData^.Format,ppguchar(@Buffer),@BufLength);
               StrDispose(P);
               gtk_selection_data_set(SelectionData,SelectionData^.Target,
                 SelectionData^.Format,Buffer,BufLength);
