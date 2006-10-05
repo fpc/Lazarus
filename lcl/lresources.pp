@@ -3152,7 +3152,7 @@ begin
     {$ENDIF}
   {$ELSE}
     {$IFDEF FPC_BIG_ENDIAN}
-      WriteLRSEndianBigDoubleAsEndianLittleExtended(s,@e)
+      WriteLRSEndianBigDoubleAsEndianLittleExtended(s,pbyte(@e))
     {$ELSE}
       debugln('WARNING: WriteLRSExtended not implemented yet for little endian cpu without 80 bits extended');
     {$ENDIF}
