@@ -220,6 +220,7 @@ type
     procedure DoSetCharExtra(Value: Integer); virtual;
     {$IFDEF SYN_LAZARUS}
     function GetUseUTF8: boolean;
+    function GetMonoSpace: boolean;
     {$ENDIF}
     property StockDC: HDC read FDC;
     property DrawingCount: Integer read FDrawingCount;
@@ -253,6 +254,7 @@ type
     property CharExtra: Integer read FCharExtra write SetCharExtra;
     {$IFDEF SYN_LAZARUS}
     property UseUTF8: boolean read GetUseUTF8;
+    property MonoSpace: boolean read GetMonoSpace;
     {$ENDIF}
   end;
 
@@ -951,6 +953,13 @@ begin
   Result:=FFontStock.BaseFont.CanUTF8;
   //debugln('TheTextDrawer.GetUseUTF8 ',FFontStock.BaseFont.Name,' ',dbgs(FFontStock.BaseFont.CanUTF8),' ',dbgs(FFontStock.BaseFont.HandleAllocated));
 end;
+
+function TheTextDrawer.GetMonoSpace: boolean;
+begin
+  FFontStock.BaseFont.Handle;
+  Result:=FFontStock.BaseFont.IsMonoSpace;
+  //debugln('TheTextDrawer.GetMonoSpace ',FFontStock.BaseFont.Name,' ',dbgs(FFontStock.BaseFont.IsMonoSpace),' ',dbgs(FFontStock.BaseFont.HandleAllocated));
+end;
 {$ENDIF}
 
 procedure TheTextDrawer.ReleaseETODist;
@@ -1146,14 +1155,24 @@ procedure TheTextDrawer.ExtTextOut(X, Y: Integer; fuOptions: UINT;
     FETOSizeInChar := TmpLen;
   end;
 
+var
+  NeedDistArray: Boolean;
+  DistArray: PInteger;
 begin
+  {$IFDEF SYN_LAZARUS}
+  NeedDistArray:=not MonoSpace;
+  //DebugLn(['TheTextDrawer.ExtTextOut NeedDistArray=',NeedDistArray]);
+  if NeedDistArray then begin
+    if (FETOSizeInChar < Length) then
+     InitETODist(GetCharWidth);
+    DistArray:=PInteger(FETODist);
+  end else begin
+    DistArray:=nil;
+  end;
+  LCLIntf.ExtUTF8Out(FDC, X, Y, fuOptions, @ARect, Text, Length, DistArray);
+  {$ELSE}
   if FETOSizeInChar < Length then
     InitETODist(GetCharWidth);
-  {$IFDEF SYN_LAZARUS}
-  // TODO: disable distance Array (FETODist), when using monospace fonts
-  LCLIntf.ExtUTF8Out(FDC, X, Y, fuOptions, @ARect, Text,
-    Length, {$ifdef USE_UTF8BIDI_LCL}nil{$else}PInteger(FETODist){$endif});
-  {$ELSE}
   Windows.ExtTextOut(FDC, X, Y, fuOptions, @ARect, Text,
     Length, PInteger(FETODist));
   {$ENDIF}

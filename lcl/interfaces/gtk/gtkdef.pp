@@ -159,6 +159,7 @@ type
     rBearing: LongInt;
     TextMetric: TTextMetric;
     IsDoubleByteChar: boolean;
+    IsMonoSpace: boolean;
   end;
 
   TDeviceContextsFlag = (

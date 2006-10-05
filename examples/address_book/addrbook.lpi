@@ -1,43 +1,19 @@
 <?xml version="1.0"?>
 <CONFIG>
   <ProjectOptions>
-    <Version Value="3"/>
+    <PathDelim Value="/"/>
+    <Version Value="5"/>
     <General>
-      <ProjectType Value="Application"/>
       <Flags>
         <SaveClosedFiles Value="False"/>
         <SaveOnlyProjectUnits Value="True"/>
       </Flags>
       <MainUnit Value="0"/>
-      <ActiveEditorIndexAtStart Value="0"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=""/>
       <Title Value="addrbook"/>
+      <ActiveEditorIndexAtStart Value="0"/>
     </General>
-    <Units Count="2">
-      <Unit0>
-        <CursorPos X="20" Y="21"/>
-        <EditorIndex Value="1"/>
-        <Filename Value="addrbook.lpr"/>
-        <IsPartOfProject Value="True"/>
-        <Loaded Value="True"/>
-        <TopLine Value="1"/>
-        <UnitName Value="addrbook"/>
-        <UsageCount Value="32"/>
-      </Unit0>
-      <Unit1>
-        <CursorPos X="20" Y="22"/>
-        <EditorIndex Value="0"/>
-        <Filename Value="frmmain.pas"/>
-        <ComponentName Value="MainForm"/>
-        <IsPartOfProject Value="True"/>
-        <Loaded Value="True"/>
-        <ResourceFilename Value="frmmain.lrs"/>
-        <TopLine Value="1"/>
-        <UnitName Value="frmmain"/>
-        <UsageCount Value="32"/>
-      </Unit1>
-    </Units>
     <PublishOptions>
       <Version Value="2"/>
       <IgnoreBinaries Value="False"/>
@@ -56,9 +32,31 @@
         <MinVersion Major="1" Valid="True"/>
       </Item1>
     </RequiredPackages>
+    <Units Count="2">
+      <Unit0>
+        <Filename Value="addrbook.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="addrbook"/>
+        <CursorPos X="1" Y="30"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="32"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="frmmain.pas"/>
+        <ComponentName Value="MainForm"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceFilename Value="frmmain.lrs"/>
+        <UnitName Value="frmmain"/>
+        <CursorPos X="14" Y="33"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="0"/>
+        <UsageCount Value="32"/>
+        <Loaded Value="True"/>
+      </Unit1>
+    </Units>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="2"/>
+    <Version Value="5"/>
     <SearchPaths>
       <SrcPath Value="$(LazarusDir)/lcl/;$(LazarusDir)/lcl/interfaces/$(LCLWidgetType)/"/>
     </SearchPaths>

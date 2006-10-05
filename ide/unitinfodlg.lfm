@@ -8,6 +8,8 @@ object UnitInfoDialog: TUnitInfoDialog
   ActiveControl = OkButton
   BorderStyle = bsSizeToolWin
   Caption = 'UnitInfoDialog'
+  ClientHeight = 283
+  ClientWidth = 500
   OnCreate = FormCreate
   Position = poScreenCenter
   object OkButton: TBitBtn
@@ -37,6 +39,8 @@ object UnitInfoDialog: TUnitInfoDialog
     PageIndex = 0
     object GeneralPage: TPage
       Caption = 'GeneralPage'
+      ClientWidth = 484
+      ClientHeight = 196
       object ULines: TLabel
         Left = 12
         Height = 13
@@ -214,6 +218,8 @@ object UnitInfoDialog: TUnitInfoDialog
     end
     object UnitPathsPage: TPage
       Caption = 'UnitPathsPage'
+      ClientWidth = 484
+      ClientHeight = 196
       object UnitPathMemo: TMemo
         Left = 6
         Height = 184
@@ -228,6 +234,8 @@ object UnitInfoDialog: TUnitInfoDialog
     end
     object IncludePathsPage: TPage
       Caption = 'IncludePathsPage'
+      ClientWidth = 484
+      ClientHeight = 196
       object IncludePathMemo: TMemo
         Left = 6
         Height = 184
@@ -242,6 +250,8 @@ object UnitInfoDialog: TUnitInfoDialog
     end
     object CompleteUnitPathsPage: TPage
       Caption = 'CompleteUnitPathsPage'
+      ClientWidth = 484
+      ClientHeight = 196
       object SrcPathMemo: TMemo
         Left = 6
         Height = 184

@@ -150,8 +150,9 @@ begin
   ULines.Caption:=lisUIDLines;
   UPath.Caption:=lisToFPCPath;
   UIncludedBy.Caption:=lisUIDIncludedBy;
-  ClearIncludedBy.Caption    := 'Clear included by reference';
+  ClearIncludedBy.Caption:=lisUIClearIncludedByReference;
   CodeToolsDefsButton.Caption:=lisUIShowCodeToolsValues;
+  GotoIncludeDirectiveButton.Caption:=lisMenuGotoIncludeDirective;
 end;
 
 procedure TUnitInfoDialog.GotoIncludeDirectiveButtonClick(Sender: TObject);

@@ -6647,10 +6647,12 @@ begin
         DCTextMetric.lBearing:=CachedFont.lBearing;
         DCTextMetric.rBearing:=CachedFont.rBearing;
         DCTextMetric.IsDoubleByteChar:=CachedFont.IsDoubleByteChar;
+        DCTextMetric.IsMonoSpace:=CachedFont.IsMonoSpace;
         DCTextMetric.TextMetric:=CachedFont.TextMetric;
       end
       else with DCTextMetric do begin
         IsDoubleByteChar:=FontIsDoubleByteCharsFont(UseFont);
+        IsMonoSpace:=FontIsMonoSpaceFont(UseFont);
         {$IFDEF Gtk1}
         AvgTxtLen:=length(TestString[false]);
         if IsDoubleByteChar then begin
@@ -6751,6 +6753,7 @@ begin
           CachedFont.lBearing:=lBearing;
           CachedFont.rBearing:=rBearing;
           CachedFont.IsDoubleByteChar:=IsDoubleByteChar;
+          CachedFont.IsMonoSpace:=IsMonoSpace;
           CachedFont.TextMetric:=TextMetric;
           CachedFont.MetricsValid:=true;
         end;

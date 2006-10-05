@@ -147,6 +147,11 @@ begin
   Result := WidgetSet.FontCanUTF8(Font);
 end;
 
+function FontIsMonoSpace(Font: HFont): boolean;
+begin
+  Result := WidgetSet.FontIsMonoSpace(Font);
+end;
+
 function Frame(DC: HDC; const ARect: TRect): Integer;
 begin
   Result := WidgetSet.Frame(DC, ARect);

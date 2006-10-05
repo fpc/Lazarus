@@ -3151,6 +3151,7 @@ resourcestring
   lisPListType                  = 'Type';
   lisPListAll                   = '<All>';
   lisPListNone                  = '<None>';
+  lisUIClearIncludedByReference = 'Clear included by reference';
 
 implementation
 end.

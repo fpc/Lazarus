@@ -781,10 +781,12 @@ Function StyleForegroundColor(Color: TColorRef; DefaultColor: PGDKColor): PGDKCo
 procedure UpdateWidgetStyleOfControl(AWinControl: TWinControl);
 
 // fonts
-function FontIsDoubleByteCharsFont(TheFont: PGdkFont): boolean;
 function LoadDefaultFont: TGtkIntfFont;
+function FontIsDoubleByteCharsFont(TheFont: PGdkFont): boolean;
+function FontIsMonoSpaceFont(TheFont: PGdkFont): boolean;
 {$Ifdef GTK2}
 function FontIsDoubleByteCharsFont(TheFont: PPangoFontDescription): boolean;
+function FontIsMonoSpaceFont(TheFont: PPangoFontDescription): boolean;
 function LoadDefaultFontDesc: PPangoFontDescription;
 procedure GetTextExtentIgnoringAmpersands(FontDesc: PPangoFontDescription; Str: PChar;
   LineLength: Longint; lbearing, rbearing, width, ascent, descent: Pgint);

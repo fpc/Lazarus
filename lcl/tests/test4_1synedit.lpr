@@ -62,7 +62,11 @@ begin
     Name:='SynEdit1';
     Align:=alClient;
     Highlighter:=SynPasSyn1;
+    {$IFDEF LCLGtk}
+    Font.Name:='-adobe-courier-medium-r-normal-*-*-140-*-*-*-*-iso10646-1';
+    {$ELSE}
     Font.Name:='Monospace';
+    {$ENDIF}
     Font.Size:=10;
     Parent:=Self;
   end;

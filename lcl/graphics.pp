@@ -446,6 +446,7 @@ type
   private
     FCanUTF8: boolean;
     FHandle: HFont;
+    FIsMonoSpace: boolean;
     FPitch: TFontPitch;
     FStyle: TFontStylesBase;
     FCharSet: TFontCharSet;
@@ -501,6 +502,7 @@ type
     property Handle: HFONT read GetHandle write SetHandle;
     property PixelsPerInch: Integer read FPixelsPerInch write FPixelsPerInch;
     property CanUTF8: boolean read FCanUTF8;
+    property IsMonoSpace: boolean read FIsMonoSpace;
   published
     property CharSet: TFontCharSet read GetCharSet write SetCharSet default DEFAULT_CHARSET;
     property Color: TColor read FColor write SetColor default clWindowText;

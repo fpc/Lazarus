@@ -3038,8 +3038,8 @@ begin
 
           // if the format was wrapped, transform it back
           if (FormatID=gdk_atom_intern('text/plain',GdkTrue)) then begin
-            if (SelectionData^.Target=gdk_atom_intern('COMPOUND_TEXT',GdkTrue)) then
-            begin
+            if (SelectionData^.Target=gdk_atom_intern('COMPOUND_TEXT',GdkTrue))
+            then begin
               // transform text/plain to COMPOUND_TEXT
               BufLength:=integer(MemStream.Size);
               P:=StrAlloc(BufLength+1);

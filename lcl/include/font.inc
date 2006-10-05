@@ -1043,6 +1043,7 @@ begin
     end;
     FFontHandleCached:=true;
     FCanUTF8:=FontCanUTF8(FHandle);
+    FIsMonoSpace:=FontIsMonoSpace(FHandle);
   end;
   
   Result := FHandle;

@@ -19,13 +19,11 @@
  ***************************************************************************
 }
 program addrbook;
-{$librarypath /opt/gnome/lib}
+
 {$mode objfpc}{$H+}
 
 uses
-  Interfaces,
-  frmmain,
-  Forms;
+  Interfaces, frmmain, Forms;
 
 begin
   Application.Initialize;

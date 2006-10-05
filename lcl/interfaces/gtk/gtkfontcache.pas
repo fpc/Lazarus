@@ -42,6 +42,7 @@ type
     rBearing: LongInt;
     TextMetric: TTextMetric;
     IsDoubleByteChar: boolean;
+    IsMonoSpace: boolean;
     procedure WarnReferenceHigh; override;
   end;
   

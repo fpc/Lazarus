@@ -981,6 +981,7 @@ begin
 end;
 
 procedure SetWindowFullScreen(AForm: TCustomForm; const AValue: Boolean);
+{$IFDEF GTK1}
 var
   XDisplay: PDisplay;
   XScreen: PScreen;
@@ -993,6 +994,7 @@ var
   //_NET_WM_STATE_FULLSCREEN: Integer;
   _NET_WM_STATE_ATOMS: array [0..2] of Integer;
   I: Integer;
+{$ENDIF}
 begin
   {$IFDEF GTK2}
    If AValue then
@@ -8264,7 +8266,7 @@ end;
 
 {------------------------------------------------------------------------------
   function FontIsDoubleByteCharsFont(TheFont: PGdkFont): boolean;
-  
+
   This is only a heuristic
  ------------------------------------------------------------------------------}
 function FontIsDoubleByteCharsFont(TheFont: PGdkFont): boolean;
@@ -8276,6 +8278,30 @@ begin
   Result:=(SingleCharLen=0) and (DoubleCharLen>0);
 end;
 
+{------------------------------------------------------------------------------
+  function FontIsMonoSpaceFont(TheFont: PGdkFont): boolean;
+
+  This is only a heuristic
+ ------------------------------------------------------------------------------}
+function FontIsMonoSpaceFont(TheFont: PGdkFont): boolean;
+var
+  SingleCharLen: LongInt;
+  MWidth: LongInt;
+  IWidth: LongInt;
+begin
+  SingleCharLen:=gdk_text_width(TheFont, 'A', 1);
+  if SingleCharLen=0 then begin
+    // assume a double byte character font
+    MWidth:=gdk_text_width(TheFont, '#0m', 2);
+    IWidth:=gdk_text_width(TheFont, '#0i', 2);
+  end else begin
+    // assume a single byte character font
+    MWidth:=gdk_text_width(TheFont, 'm', 1);
+    IWidth:=gdk_text_width(TheFont, 'i', 1);
+  end;
+  Result:=MWidth=IWidth;
+end;
+
 {$Ifdef GTK2}
 function FontIsDoubleByteCharsFont(TheFont: PPangoFontDescription): boolean;
 var
@@ -8283,6 +8309,15 @@ var
 begin
   Font:=gdk_font_from_description(TheFont);
   Result:=FontIsDoubleByteCharsFont(Font);
+  gdk_font_unref(Font);
+end;
+
+function FontIsMonoSpaceFont(TheFont: PPangoFontDescription): boolean;
+var
+  Font: PGdkFont;
+begin
+  Font:=gdk_font_from_description(TheFont);
+  Result:=FontIsMonoSpaceFont(Font);
   gdk_font_unref(Font);
 end;
 {$ENDIF Gtk2}
