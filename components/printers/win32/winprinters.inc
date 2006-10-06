@@ -46,7 +46,7 @@ function TWinPrinter.Write(const Buffer; Count: Integer;
   var Written: Integer): Boolean;
 begin
   CheckRawMode(True);
-  result := WritePrinter(FPrinterHandle, @Buffer, Count, @Written);
+  result := WritePrinter(FPrinterHandle, @Buffer, Count, pdword(@Written));
 end;
 
 function TWinPrinter.GetHandlePrinter : HDC;
@@ -236,7 +236,7 @@ begin
     Doc1.OutputFile := nil;
     Doc1.DataType   := 'RAW';
     
-    if StartDocPrinter(FPrinterHandle, 1, @Doc1)=0 then begin
+    if StartDocPrinter(FPrinterHandle, 1, PByte(@Doc1))=0 then begin
       ClosePrinter(FPrinterHandle);
       FPrinterHandle:=0;
     end else
@@ -462,8 +462,8 @@ begin
 
     //Retreive the code of papers
     FillChar(ArPapers,SizeOf(ArPapers),0);
-    PaperC:=DeviceCapabilities(PChar(Pdev.Name),PCHar(PDev.Port),
-          DC_PAPERS,@ArPapers,nil);
+    PaperC:=DeviceCapabilities(PChar(Pdev.Name),PChar(PDev.Port),
+          DC_PAPERS,PChar(@ArPapers[0]),nil);
     if PaperC<=0 then
       raise EPrinter.CreateFmt('DoEnumPapers<DC_PAPERS> error : %d, (%s)',
           [GetLastError,SysErrorMessage(GetLastError)])
@@ -560,7 +560,7 @@ begin
       //Retreive the Width and Height of aName paper
       FillChar(ArSizes,SizeOf(ArSizes),0);
       NSize:=DeviceCapabilities(PChar(Pdev.Name),PChar(PDev.Port),
-            DC_PAPERSIZE,@ArSizes,nil);
+            DC_PAPERSIZE,PChar(@ArSizes[0]),nil);
       i:=PaperSize.SupportedPapers.IndexOf(aName);
       if (i>=0) and (i<NSize) and (NSize<>0) then
       begin
