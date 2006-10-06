@@ -39,7 +39,7 @@ uses
   MemCheck,
 {$ENDIF}
   // LCL+FCL
-  Classes, SysUtils, TypInfo, Math,
+  Classes, SysUtils, TypInfo, Math, LCLIntf, LCLType,
   AVL_Tree,
   LCLProc, Graphics, Controls, Forms, Menus, Dialogs,
   // components
@@ -832,12 +832,13 @@ var
   CompIntf : TComponentInterface;
   i: integer;
   AForm: TCustomForm;
+  AWinControl: TWinControl;
 Begin
   CompIntf := TComponentInterface(FindComponent(AComponent));
   if CompIntf <> nil then
     FComponentInterfaces.Remove(CompIntf);
 
-  DebugLn(['TCustomFormEditor.DeleteControl ',DbgSName(AComponent),' IsJITComponent=',IsJITComponent(AComponent)]);
+  DebugLn(['TCustomFormEditor.DeleteComponent ',DbgSName(AComponent),' IsJITComponent=',IsJITComponent(AComponent),' FreeComponent=',FreeComponent]);
   if IsJITComponent(AComponent) then begin
     // value is a top level component
     i:=AComponent.ComponentCount-1;
@@ -857,7 +858,7 @@ Begin
       // free/unbind a non form component and its designer form
       AForm:=GetDesignerForm(AComponent);
       if (AForm<>nil) and (not (AForm is TNonControlDesignerForm)) then
-        RaiseException('TCustomFormEditor.DeleteControl  Where is the TNonControlDesignerForm? '+AComponent.ClassName);
+        RaiseException('TCustomFormEditor.DeleteComponent  Where is the TNonControlDesignerForm? '+AComponent.ClassName);
       if AForm<>nil then begin
         FNonControlForms.Remove(AForm);
         TNonControlDesignerForm(AForm).LookupRoot:=nil;
@@ -866,7 +867,7 @@ Begin
       if FreeComponent then
         JITNonFormList.DestroyJITComponent(AComponent);
     end else
-      RaiseException('TCustomFormEditor.DeleteControl '+AComponent.ClassName);
+      RaiseException('TCustomFormEditor.DeleteComponent '+AComponent.ClassName);
     CompIntf.Free;
   end
   else if CompIntf<>nil then begin
@@ -876,8 +877,18 @@ Begin
     else
       CompIntf.Free;
   end else if FreeComponent then begin
-    DebugLn(['WARNING: TCustomFormEditor.DeleteComponent freeing orphaned component ',DbgSName(AComponent)]);
+    if (AComponent.Owner=nil) then
+      DebugLn(['WARNING: TCustomFormEditor.DeleteComponent freeing orphaned component ',DbgSName(AComponent)]);
     TryFreeComponent(AComponent);
+  end;
+  // if not free, then free the handle to hide it
+  if (not FreeComponent) and (AComponent is TWinControl) then begin
+    AWinControl:=TWinControl(AComponent);
+    if AWinControl.HandleAllocated and (AWinControl.Parent=nil) then begin
+      AWinControl.ControlStyle:=AWinControl.ControlStyle+[csNoDesignVisible];
+      LCLIntf.ShowWindow(AWinControl.Handle,SW_HIDE);
+      DebugLn(['TCustomFormEditor.DeleteComponent Hiding: ',dbgsName(AWinControl)]);
+    end;
   end;
 end;
 
@@ -1074,6 +1085,7 @@ var
   OwnerComponent: TComponent;
 begin
   Result:=nil;
+  if AComponent=nil then exit;
   OwnerComponent:=AComponent;
   while OwnerComponent.Owner<>nil do
     OwnerComponent:=OwnerComponent.Owner;

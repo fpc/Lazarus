@@ -485,6 +485,8 @@ begin
       GlobalDesignHook.PersistentDeleting(FLookupRoot);
     end;
     // delete
+    if Form<>nil then
+      Form.Designer:=nil;
     TheFormEditor.DeleteComponent(FLookupRoot,FreeComponent);
   end;
   Free;

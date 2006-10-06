@@ -9346,6 +9346,8 @@ begin
   GtkWindow:=PGtkWindow(hWnd);
   if GtkWindow=nil then
     RaiseGDBException('TGtkWidgetSet.ShowWindow  hWnd is nil');
+  if not GtkWidgetIsA(PGtkWidget(GtkWindow),GTK_TYPE_WINDOW) then
+    RaiseGDBException('TGtkWidgetSet.ShowWindow  hWnd is not a gtkwindow');
 
   {$IFDEF Gtk2}
   //debugln('TGtkWidgetSet.ShowWindow A ',GetWidgetDebugReport(PGtkWidget(GtkWindow)),' nCmdShow=',dbgs(nCmdShow),' SW_MINIMIZE=',dbgs(SW_MINIMIZE=nCmdShow));
@@ -9357,6 +9359,9 @@ begin
       gtk_window_deiconify(GtkWindow);
       gtk_window_unmaximize(GtkWindow);
     end;
+
+  SW_HIDE:
+    gdk_window_hide(PgtkWidget(GtkWindow)^.Window);
 
   SW_MINIMIZE:
     gtk_window_iconify(GtkWindow);
@@ -9377,6 +9382,11 @@ begin
       {$IFDEF DebugGDKTraps}EndGDKErrorTrap;{$ENDIF}
     end;
 
+  SW_HIDE:
+    begin
+      gdk_window_hide(PgtkWidget(GtkWindow)^.Window);
+    end;
+
   SW_MINIMIZE:
     begin
       GDK_WINDOW_MINIMIZE(PGdkWindowPrivate(PgtkWidget(GtkWindow)^.Window));
@@ -9385,7 +9395,6 @@ begin
     begin
       GDK_WINDOW_MAXIMIZE(PGdkWindowPrivate(PgtkWidget(GtkWindow)^.Window));
     end;
-
 
   end;
 

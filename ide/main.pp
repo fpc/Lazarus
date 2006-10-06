@@ -729,8 +729,8 @@ type
           var ActiveSourceEditor: TSourceEditor; var ActiveUnitInfo: TUnitInfo); override;
     function GetDesignerWithProjectFile(AFile: TLazProjectFile;
                              LoadForm: boolean): TIDesigner; override;
-    function GetFormOfSource(AnUnitInfo: TUnitInfo;
-                             LoadForm: boolean): TCustomForm;
+    function GetDesignerFormOfSource(AnUnitInfo: TUnitInfo;
+                                     LoadForm: boolean): TCustomForm;
     function GetProjectFileWithRootComponent(AComponent: TComponent): TLazProjectFile; override;
     function GetProjectFileWithDesigner(ADesigner: TIDesigner): TLazProjectFile; override;
     procedure GetObjectInspectorUnit(
@@ -4805,8 +4805,9 @@ begin
   if Result<>mrOk then exit;
 
   // check installed packages
-  if (AnUnitInfo.Component=nil) and AnUnitInfo.IsPartOfProject then begin
-    // opening a single form of the project -> check installed packages
+  if (AnUnitInfo.Component=nil) and AnUnitInfo.IsPartOfProject
+  and (not (ofProjectLoading in OpenFlags)) then begin
+    // opening a form of the project -> check installed packages
     Result:=PkgBoss.CheckProjectHasInstalledPackages(Project1);
     if not (Result in [mrOk,mrIgnore]) then exit;
   end;
@@ -4863,11 +4864,12 @@ begin
 
       // try loading the ancestor first (unit, lfm and component instance)
       if (AncestorType=nil) then begin
-        Result:=DoLoadComponentDependencyHidden(AnUnitInfo,AncestorClassName,OpenFlags,
-                                              AncestorType,AncestorUnitInfo);
+        Result:=DoLoadComponentDependencyHidden(AnUnitInfo,AncestorClassName,
+                                       OpenFlags,AncestorType,AncestorUnitInfo);
         if Result=mrAbort then exit;
         if Result=mrOk then begin
-          Result:=DoSaveFileResourceToBinStream(AncestorUnitInfo,AncestorBinStream);
+          Result:=DoSaveFileResourceToBinStream(AncestorUnitInfo,
+                                                AncestorBinStream);
           if Result<>mrOk then exit;
           AncestorBinStream.Position:=0;
         end else begin
@@ -4938,9 +4940,10 @@ begin
     end;
   end else begin
     // keep old instance, just add a designer
-    NewComponent:=AnUnitInfo.Component;
+    DebugLn(['TMainIDE.DoLoadLFM Creating designer for hidden component of ',AnUnitInfo.Filename]);
   end;
 
+  NewComponent:=AnUnitInfo.Component;
   // create the designer
   if ([ofProjectLoading,ofLoadHiddenResource]*OpenFlags=[]) then
     FormEditor1.ClearSelection;
@@ -4951,7 +4954,7 @@ begin
   DesignerForm:=nil;
   if not (ofLoadHiddenResource in OpenFlags) then begin
     CreateDesignerForComponent(NewComponent);
-    DesignerForm:=FormEditor1.GetDesignerForm(AnUnitInfo.Component);
+    DesignerForm:=FormEditor1.GetDesignerForm(NewComponent);
   end;
 
   // select the new form (object inspector, formeditor, control selection)
@@ -4963,6 +4966,10 @@ begin
 
   // show new form
   if DesignerForm<>nil then begin
+    DesignerForm.ControlStyle:=DesignerForm.ControlStyle-[csNoDesignVisible];
+    if NewComponent is TControl then
+      TControl(NewComponent).ControlStyle:=
+                        TControl(NewComponent).ControlStyle-[csNoDesignVisible];
     LCLIntf.ShowWindow(DesignerForm.Handle,SW_SHOWNORMAL);
     FLastFormActivated:=DesignerForm;
   end;
@@ -5147,6 +5154,7 @@ function TMainIDE.CloseUnitComponent(AnUnitInfo: TUnitInfo; Flags: TCloseFlags
   begin
     CompUnitInfo:=Project1.FirstUnitWithComponent;
     while CompUnitInfo<>nil do begin
+      DebugLn(['FreeUnusedComponents ',CompUnitInfo.Filename,' ',dbgsName(CompUnitInfo.Component),' UnitComponentIsUsed=',UnitComponentIsUsed(CompUnitInfo,true)]);
       if not UnitComponentIsUsed(CompUnitInfo,true) then begin
         CloseUnitComponent(CompUnitInfo,Flags);
         exit;
@@ -5162,6 +5170,7 @@ var
 begin
   LookupRoot:=AnUnitInfo.Component;
   if LookupRoot=nil then exit(mrOk);
+  DebugLn(['TMainIDE.CloseUnitComponent ',AnUnitInfo.Filename,' ',dbgsName(LookupRoot)]);
 
   // save
   if (cfSaveFirst in Flags) and (AnUnitInfo.EditorIndex>=0) then begin
@@ -5197,7 +5206,6 @@ begin
     if UnitComponentIsUsed(AnUnitInfo,false) then begin
       // free designer, keep component hidden
       DebugLn(['TMainIDE.CloseUnitComponent hiding component and freeing designer: ',AnUnitInfo.Filename,' ',DbgSName(AnUnitInfo.Component)]);
-      LCLIntf.ShowWindow(AForm.Handle,SW_HIDE);
       OldDesigner.FreeDesigner(false);
     end else begin
       // free designer and design form
@@ -5251,7 +5259,7 @@ begin
   // check if a designer is open
   if CheckHasDesigner then begin
     AForm:=FormEditor1.GetDesignerForm(LookupRoot);
-    if AForm<>nil then exit(true);
+    if (AForm<>nil) and (AForm.Designer<>nil) then exit(true);
   end;
   // check if another component uses this component
   if Project1.UnitUsingComponentUnit(AnUnitInfo)<>nil then
@@ -6473,7 +6481,7 @@ Begin
             if Result=mrAbort then exit;
           end;
           if OnlyForms and (AnUnitInfo.ComponentName<>'') then begin
-            AForm:=GetFormOfSource(AnUnitInfo,true);
+            AForm:=GetDesignerFormOfSource(AnUnitInfo,true);
             if AForm<>nil then
               ShowDesignerForm(AForm);
           end;
@@ -8754,7 +8762,7 @@ var
   AForm: TCustomForm;
 begin
   AnUnitInfo:=AFile as TUnitInfo;
-  AForm:=GetFormOfSource(AnUnitInfo,LoadForm);
+  AForm:=GetDesignerFormOfSource(AnUnitInfo,LoadForm);
   if AForm<>nil then
     Result:=AForm.Designer;
 end;
@@ -9189,7 +9197,7 @@ begin
   GetCurrentUnit(ActiveSourceEditor,ActiveUnitInfo);
   if (ActiveUnitInfo = nil) then exit;
   // load the form, if not already done
-  AForm:=GetFormOfSource(ActiveUnitInfo,true);
+  AForm:=GetDesignerFormOfSource(ActiveUnitInfo,true);
   if AForm=nil then exit;
   FDisplayState:= dsForm;
   FLastFormActivated:=AForm;
@@ -11943,16 +11951,21 @@ begin
   end;
 end;
 
-function TMainIDE.GetFormOfSource(AnUnitInfo: TUnitInfo; LoadForm: boolean
+function TMainIDE.GetDesignerFormOfSource(AnUnitInfo: TUnitInfo; LoadForm: boolean
   ): TCustomForm;
 begin
   Result:=nil;
-  if (AnUnitInfo.Component=nil) and LoadForm
-  and FilenameIsPascalSource(AnUnitInfo.Filename) then begin
-    DoLoadLFM(AnUnitInfo,[],[]);
-  end;
   if AnUnitInfo.Component<>nil then
     Result:=FormEditor1.GetDesignerForm(AnUnitInfo.Component);
+  if ((Result=nil) or (Result.Designer=nil)) and LoadForm
+  and FilenameIsPascalSource(AnUnitInfo.Filename) then begin
+    DebugLn(['TMainIDE.GetFormOfSource ',AnUnitInfo.Filename,' ',dbgsName(AnUnitInfo.Component)]);
+    DoLoadLFM(AnUnitInfo,[],[]);
+  end;
+  if (Result=nil) and (AnUnitInfo.Component<>nil) then
+    Result:=FormEditor1.GetDesignerForm(AnUnitInfo.Component);
+  if (Result<>nil) and (Result.Designer=nil) then
+    Result:=nil;
 end;
 
 function TMainIDE.GetProjectFileWithRootComponent(AComponent: TComponent
