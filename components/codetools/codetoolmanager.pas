@@ -540,7 +540,8 @@ type
           VarType: shortstring; ErrorOnClassNotFound: boolean): boolean;
     function FindDanglingComponentEvents(Code: TCodeBuffer;
           const AClassName: string;
-          RootComponent: TComponent; ExceptionOnClassNotFound: boolean;
+          RootComponent: TComponent; ExceptionOnClassNotFound,
+          SearchInAncestors: boolean;
           out ListOfPInstancePropInfo: TFPList): boolean;
 
     // functions for events in the object inspector
@@ -3571,7 +3572,8 @@ end;
 
 function TCodeToolManager.FindDanglingComponentEvents(Code: TCodeBuffer;
   const AClassName: string; RootComponent: TComponent;
-  ExceptionOnClassNotFound: boolean; out ListOfPInstancePropInfo: TFPList
+  ExceptionOnClassNotFound, SearchInAncestors: boolean;
+  out ListOfPInstancePropInfo: TFPList
   ): boolean;
 begin
   Result:=false;
@@ -3582,7 +3584,8 @@ begin
   if not InitCurCodeTool(Code) then exit;
   try
     Result:=FCurCodeTool.FindDanglingComponentEvents(AClassName,RootComponent,
-                              ExceptionOnClassNotFound,ListOfPInstancePropInfo);
+                              ExceptionOnClassNotFound,SearchInAncestors,
+                              ListOfPInstancePropInfo);
   except
     on e: Exception do Result:=HandleException(e);
   end;

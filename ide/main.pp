@@ -554,9 +554,9 @@ type
     // methods for 'save unit'
     function DoShowSaveFileAsDialog(AnUnitInfo: TUnitInfo;
         var ResourceCode: TCodeBuffer): TModalResult;
-    function DoSaveFileResources(AnUnitInfo: TUnitInfo;
+    function DoSaveUnitComponent(AnUnitInfo: TUnitInfo;
         ResourceCode, LFMCode: TCodeBuffer; Flags: TSaveFlags): TModalResult;
-    function DoSaveFileResourceToBinStream(AnUnitInfo: TUnitInfo;
+    function DoSaveUnitComponentToBinStream(AnUnitInfo: TUnitInfo;
         var BinCompStream: TExtMemoryStream): TModalResult;
     function DoRemoveDanglingEvents(AnUnitInfo: TUnitInfo;
         OkOnCodeErrors: boolean): TModalResult;
@@ -592,6 +592,7 @@ type
                                           Flags: TCloseFlags): TModalResult;
     function UnitComponentIsUsed(AnUnitInfo: TUnitInfo;
                                  CheckHasDesigner: boolean): boolean;
+    function GetAncestorUnit(AnUnitInfo: TUnitInfo): TUnitInfo;
 
     // methods for creating a project
     function CreateProjectObject(ProjectDesc,
@@ -4027,7 +4028,7 @@ begin
 end;
 {$ENDIF}
 
-function TMainIDE.DoSaveFileResources(AnUnitInfo: TUnitInfo;
+function TMainIDE.DoSaveUnitComponent(AnUnitInfo: TUnitInfo;
   ResourceCode, LFMCode: TCodeBuffer; Flags: TSaveFlags): TModalResult;
 var
   ComponentSavingOk: boolean;
@@ -4038,6 +4039,8 @@ var
   CompResourceCode, LFMFilename, TestFilename, ResTestFilename: string;
   UnitSaveFilename: String;
   ADesigner: TDesigner;
+  AncestorUnit: TUnitInfo;
+  AncestorInstance: TComponent;
   {$IFDEF TRANSLATESTRING}Grubber:TLRTGrubber;{$ENDIF}
 begin
   Result:=mrCancel;
@@ -4086,7 +4089,13 @@ begin
           Grubber:=TLRTGrubber.Create;
           Writer.OnWriteStringProperty:=@Grubber.Grub;
           {$ENDIF}
-          Writer.WriteDescendent(AnUnitInfo.Component,nil);
+          AncestorUnit:=GetAncestorUnit(AnUnitInfo);
+          if AncestorUnit<>nil then
+            AncestorInstance:=AncestorUnit.Component
+          else
+            AncestorInstance:=nil;
+          DebugLn(['TMainIDE.DoSaveUnitComponent AncestorInstance=',dbgsName(AncestorInstance)]);
+          Writer.WriteDescendent(AnUnitInfo.Component,AncestorInstance);
           if DestroyDriver then Writer.Driver.Free;
           FreeAndNil(Writer);
           AnUnitInfo.ComponentLastBinStreamSize:=BinCompStream.Size;
@@ -4294,7 +4303,7 @@ begin
   {$ENDIF}
 end;
 
-function TMainIDE.DoSaveFileResourceToBinStream(AnUnitInfo: TUnitInfo;
+function TMainIDE.DoSaveUnitComponentToBinStream(AnUnitInfo: TUnitInfo;
   var BinCompStream: TExtMemoryStream): TModalResult;
 var
   Writer: TWriter;
@@ -4868,7 +4877,7 @@ begin
                                        OpenFlags,AncestorType,AncestorUnitInfo);
         if Result=mrAbort then exit;
         if Result=mrOk then begin
-          Result:=DoSaveFileResourceToBinStream(AncestorUnitInfo,
+          Result:=DoSaveUnitComponentToBinStream(AncestorUnitInfo,
                                                 AncestorBinStream);
           if Result<>mrOk then exit;
           AncestorBinStream.Position:=0;
@@ -4923,6 +4932,8 @@ begin
       NewComponent:=FormEditor1.CreateRawComponentFromStream(BinStream,
                    AncestorType,AncestorBinStream,copy(NewUnitName,1,255),true);
       AnUnitInfo.Component:=NewComponent;
+      if (AncestorUnitInfo<>nil) then
+        AnUnitInfo.AddRequiresComponentDependency(AncestorUnitInfo);
       if NewComponent=nil then begin
         // error streaming component -> examine lfm file
         DebugLn('ERROR: streaming failed lfm="',LFMBuf.Filename,'"');
@@ -5264,6 +5275,14 @@ begin
   // check if another component uses this component
   if Project1.UnitUsingComponentUnit(AnUnitInfo)<>nil then
     exit(true);
+end;
+
+function TMainIDE.GetAncestorUnit(AnUnitInfo: TUnitInfo): TUnitInfo;
+begin
+  if (AnUnitInfo=nil) or (AnUnitInfo.Component=nil) then
+    Result:=nil
+  else
+    Result:=AnUnitInfo.FindAncestorUnit;
 end;
 
 function TMainIDE.CreateProjectObject(ProjectDesc,
@@ -6019,7 +6038,7 @@ begin
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoSaveEditorFile B');{$ENDIF}
   // save resource file and lfm file
   if (ResourceCode<>nil) or (ActiveUnitInfo.Component<>nil) then begin
-    Result:=DoSaveFileResources(ActiveUnitInfo,ResourceCode,LFMCode,Flags);
+    Result:=DoSaveUnitComponent(ActiveUnitInfo,ResourceCode,LFMCode,Flags);
     if Result in [mrIgnore, mrOk] then
       Result:=mrCancel
     else

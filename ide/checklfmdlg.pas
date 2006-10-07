@@ -246,7 +246,7 @@ begin
     // find all dangling events
     //debugln('RemoveDanglingEvents A ',PascalBuffer.Filename,' ',DbgSName(RootComponent));
     if not CodeToolBoss.FindDanglingComponentEvents(PascalBuffer,
-      RootComponent.ClassName,RootComponent,false,ListOfPInstancePropInfo)
+      RootComponent.ClassName,RootComponent,false,true,ListOfPInstancePropInfo)
     then begin
       //debugln('RemoveDanglingEvents Errors in code');
       if OkOnCodeErrors then

@@ -881,7 +881,7 @@ Begin
       DebugLn(['WARNING: TCustomFormEditor.DeleteComponent freeing orphaned component ',DbgSName(AComponent)]);
     TryFreeComponent(AComponent);
   end;
-  // if not free, then free the handle to hide it
+  // if not free, then hide it
   if (not FreeComponent) and (AComponent is TWinControl) then begin
     AWinControl:=TWinControl(AComponent);
     if AWinControl.HandleAllocated and (AWinControl.Parent=nil) then begin

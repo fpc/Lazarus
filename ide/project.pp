@@ -79,6 +79,37 @@ type
     uilLoaded,
     uilAutoRevertLocked
     );
+    
+  TUnitCompDependencyList = (
+    ucdlRequires,
+    ucdlUsedBy
+    );
+    
+  { TUnitComponentDependency }
+
+  TUnitComponentDependency = class
+  private
+    FRequiresUnit: TUnitInfo;
+    FUsedByUnit: TUnitInfo;
+    procedure SetRequiresUnit(const AValue: TUnitInfo);
+    procedure SetUsedByUnit(const AValue: TUnitInfo);
+  public
+    NextDependency, PrevDependency:
+                     array[TUnitCompDependencyList] of TUnitComponentDependency;
+    constructor Create;
+    destructor Destroy; override;
+    procedure Clear;
+    function NextUsedByDependency: TUnitComponentDependency;
+    function PrevUsedByDependency: TUnitComponentDependency;
+    function NextRequiresDependency: TUnitComponentDependency;
+    function PrevRequiresDependency: TUnitComponentDependency;
+    procedure AddToList(var FirstDependency: TUnitComponentDependency;
+                        ListType: TUnitCompDependencyList);
+    procedure RemoveFromList(var FirstDependency: TUnitComponentDependency;
+                             ListType: TUnitCompDependencyList);
+    property RequiresUnit: TUnitInfo read FRequiresUnit write SetRequiresUnit;
+    property UsedByUnit: TUnitInfo read FUsedByUnit write SetUsedByUnit;
+  end;
 
   //---------------------------------------------------------------------------
 
@@ -105,6 +136,8 @@ type
     fEditorIndex: integer;
     fFileName: string;
     fFileReadOnly: Boolean;
+    FFirstRequiredComponent: TUnitComponentDependency;
+    FFirstUsedByComponent: TUnitComponentDependency;
     fHasResources: boolean; // source has resource file
     FIgnoreFileDateOnDiskValid: boolean;
     FIgnoreFileDateOnDisk: longint;
@@ -175,6 +208,7 @@ type
     function WriteUnitSourceToFile(const AFileName: string): TModalResult;
     procedure Clear;
     procedure ClearModifieds;
+    procedure ClearComponentDependencies;
     procedure CreateStartCode(Descriptor: TProjectFileDescriptor;
                               const NewUnitName: string);
     procedure DecreaseAutoRevertLock;
@@ -193,6 +227,11 @@ type
 
     procedure SetSourceText(const SourceText: string); override;
     function GetSourceText: string; override;
+
+    // component dependencies
+    procedure AddRequiresComponentDependency(RequiredUnit: TUnitInfo);
+    procedure RemoveRequiresComponentDependency(RequiredUnit: TUnitInfo);
+    function FindAncestorUnit: TUnitInfo;
   public
     { Properties }
     // Unit lists
@@ -225,6 +264,10 @@ type
                                read fCustomHighlighter write fCustomHighlighter;
     property EditorIndex: integer read fEditorIndex write SetEditorIndex;
     property FileReadOnly: Boolean read fFileReadOnly write SetFileReadOnly;
+    property FirstRequiredComponent: TUnitComponentDependency
+                                                   read FFirstRequiredComponent;
+    property FirstUsedByComponent: TUnitComponentDependency
+                                                     read FFirstUsedByComponent;
     property HasResources: boolean read GetHasResources write fHasResources;
     property Loaded: Boolean read fLoaded write SetLoaded;
     property LoadingComponent: boolean read FLoadingComponent write FLoadingComponent;
@@ -755,6 +798,7 @@ end;
  ------------------------------------------------------------------------------}
 destructor TUnitInfo.Destroy;
 begin
+  Component:=nil;
   Source:=nil;
   FreeAndNil(FBookmarks);
   Project:=nil;
@@ -919,12 +963,19 @@ begin
   fUserReadOnly := false;
   if fSource<>nil then fSource.Clear;
   Loaded := false;
+  ClearComponentDependencies;
 end;
 
 procedure TUnitInfo.ClearModifieds;
 begin
   Modified:=false;
   SessionModified:=false;
+end;
+
+procedure TUnitInfo.ClearComponentDependencies;
+begin
+  while FFirstRequiredComponent<>nil do FFirstRequiredComponent.Free;
+  while FFirstUsedByComponent<>nil do FFirstUsedByComponent.Free;
 end;
 
 
@@ -1229,6 +1280,38 @@ begin
   Result:=Source.Source;
 end;
 
+procedure TUnitInfo.AddRequiresComponentDependency(RequiredUnit: TUnitInfo);
+var
+  ADependency: TUnitComponentDependency;
+begin
+  if RequiredUnit=nil then RaiseGDBException('inconsistency');
+  ADependency:=TUnitComponentDependency.Create;
+  ADependency.RequiresUnit:=RequiredUnit;
+  ADependency.UsedByUnit:=Self;
+end;
+
+procedure TUnitInfo.RemoveRequiresComponentDependency(RequiredUnit: TUnitInfo);
+begin
+  RequiredUnit.Free;
+end;
+
+function TUnitInfo.FindAncestorUnit: TUnitInfo;
+var
+  Dependency: TUnitComponentDependency;
+begin
+  if Component<>nil then begin
+    Dependency:=FirstRequiredComponent;
+    while Dependency<>nil do begin
+      Result:=Dependency.RequiresUnit;
+      if (Result.Component<>nil)
+      and (Component.ClassParent=Result.Component.ClassType) then
+        exit;
+      Dependency:=Dependency.NextRequiresDependency;
+    end;
+  end;
+  Result:=nil;
+end;
+
 function TUnitInfo.ReadOnly: boolean;
 begin
   Result:=UserReadOnly or FileReadOnly;
@@ -1367,6 +1450,7 @@ begin
   if fComponent=AValue then exit;
   fComponent:=AValue;
   UpdateList(uilWithComponent,fComponent<>nil);
+  if fComponent=nil then ClearComponentDependencies;
 end;
 
 procedure TUnitInfo.SetIsPartOfProject(const AValue: boolean);
@@ -4502,6 +4586,93 @@ function TProjectLibraryDescriptor.CreateStartFiles(AProject: TLazProject
 begin
   Result:=LazarusIDE.DoOpenEditorFile(AProject.MainFile.Filename,-1,
                                       [ofProjectLoading,ofRegularFile]);
+end;
+
+{ TUnitComponentDependency }
+
+procedure TUnitComponentDependency.SetRequiresUnit(const AValue: TUnitInfo);
+begin
+  if FRequiresUnit=AValue then exit;
+  if FRequiresUnit<>nil then
+    RemoveFromList(FRequiresUnit.FFirstUsedByComponent,ucdlUsedBy);
+  FRequiresUnit:=AValue;
+  if FRequiresUnit<>nil then
+    AddToList(FRequiresUnit.FFirstUsedByComponent,ucdlUsedBy);
+end;
+
+procedure TUnitComponentDependency.SetUsedByUnit(const AValue: TUnitInfo);
+begin
+  if FUsedByUnit=AValue then exit;
+  if FUsedByUnit<>nil then
+    RemoveFromList(FUsedByUnit.FFirstRequiredComponent,ucdlRequires);
+  FUsedByUnit:=AValue;
+  if FUsedByUnit<>nil then
+    AddToList(FUsedByUnit.FFirstRequiredComponent,ucdlRequires);
+end;
+
+constructor TUnitComponentDependency.Create;
+begin
+  Clear;
+end;
+
+destructor TUnitComponentDependency.Destroy;
+begin
+  RequiresUnit:=nil;
+  UsedByUnit:=nil;
+  inherited Destroy;
+end;
+
+procedure TUnitComponentDependency.Clear;
+begin
+
+end;
+
+function TUnitComponentDependency.NextUsedByDependency
+  : TUnitComponentDependency;
+begin
+  Result:=NextDependency[ucdlUsedBy];
+end;
+
+function TUnitComponentDependency.PrevUsedByDependency
+  : TUnitComponentDependency;
+begin
+  Result:=PrevDependency[ucdlUsedBy];
+end;
+
+function TUnitComponentDependency.NextRequiresDependency
+  : TUnitComponentDependency;
+begin
+  Result:=NextDependency[ucdlRequires];
+end;
+
+function TUnitComponentDependency.PrevRequiresDependency
+  : TUnitComponentDependency;
+begin
+  Result:=PrevDependency[ucdlRequires];
+end;
+
+procedure TUnitComponentDependency.AddToList(
+  var FirstDependency: TUnitComponentDependency;
+  ListType: TUnitCompDependencyList);
+begin
+  NextDependency[ListType]:=FirstDependency;
+  FirstDependency:=Self;
+  PrevDependency[ListType]:=nil;
+  if NextDependency[ListType]<>nil then
+    NextDependency[ListType].PrevDependency[ListType]:=Self;
+end;
+
+procedure TUnitComponentDependency.RemoveFromList(
+  var FirstDependency: TUnitComponentDependency;
+  ListType: TUnitCompDependencyList);
+begin
+  if FirstDependency=Self then FirstDependency:=NextDependency[ListType];
+  if NextDependency[ListType]<>nil then
+    NextDependency[ListType].PrevDependency[ListType]:=PrevDependency[ListType];
+  if PrevDependency[ListType]<>nil then
+    PrevDependency[ListType].NextDependency[ListType]:=NextDependency[ListType];
+  NextDependency[ListType]:=nil;
+  PrevDependency[ListType]:=nil;
 end;
 
 end.
