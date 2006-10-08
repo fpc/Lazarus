@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
-"PO-Revision-Date: 2006-06-03 21:15+0300\n"
+"PO-Revision-Date: 2006-10-05 03:47+0300\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
@@ -27,11 +27,11 @@ msgstr "&Отмена"
 
 #: objinspstrconsts:oistdacthelpcontentsheadline
 msgid "&Contents"
-msgstr ""
+msgstr "&Содержимое"
 
 #: objinspstrconsts:oistdacteditcopyheadline
 msgid "&Copy"
-msgstr ""
+msgstr "&Копировать"
 
 #: objinspstrconsts:oiscdelete
 msgid "&Delete"
@@ -39,23 +39,23 @@ msgstr "&Удалить"
 
 #: objinspstrconsts:oistdactdataseteditheadline
 msgid "&Edit"
-msgstr ""
+msgstr "&Редактировать"
 
 #: objinspstrconsts:oistdactdatasetfirstheadline
 msgid "&First"
-msgstr ""
+msgstr "&Первый"
 
 #: objinspstrconsts:oistdacthelphelphelpheadline
 msgid "&Help on Help"
-msgstr ""
+msgstr "&Помощь по помощи"
 
 #: objinspstrconsts:oistdactdatasetinsertheadline
 msgid "&Insert"
-msgstr ""
+msgstr "&Вставить"
 
 #: objinspstrconsts:oistdactdatasetlastheadline
 msgid "&Last"
-msgstr ""
+msgstr "По&следний"
 
 #: objinspstrconsts:oisload
 msgid "&Load"
@@ -63,27 +63,27 @@ msgstr "&Загрузить"
 
 #: objinspstrconsts:oistdactdatasetnextheadline
 msgid "&Next"
-msgstr ""
+msgstr "&Следующий"
 
 #: objinspstrconsts:oisok
 msgid "&OK"
-msgstr ""
+msgstr "&ОК"
 
 #: objinspstrconsts:oistdactfileopenheadline
 msgid "&Open..."
-msgstr ""
+msgstr "&Открыть..."
 
 #: objinspstrconsts:oistdacteditpasteheadline
 msgid "&Paste"
-msgstr ""
+msgstr "&Вставить"
 
 #: objinspstrconsts:oistdactdatasetpriorheadline
 msgid "&Prior"
-msgstr ""
+msgstr "&Предыдущий"
 
 #: objinspstrconsts:oistdactdatasetrefreshheadline
 msgid "&Refresh"
-msgstr ""
+msgstr "&Обновить"
 
 #: objinspstrconsts:oissave
 msgid "&Save"
@@ -91,27 +91,27 @@ msgstr "&Сохранить"
 
 #: objinspstrconsts:oistdacthelptopicsearchheadline
 msgid "&Topic Search"
-msgstr ""
+msgstr "&Поиск темы"
 
 #: objinspstrconsts:oistdacteditundoheadline
 msgid "&Undo"
-msgstr ""
+msgstr "&Отменить"
 
 #: objinspstrconsts:clbup
 msgid "&Up"
-msgstr ""
+msgstr "&Вверх"
 
 #: objinspstrconsts:cactionlisteditorallcategory
 msgid "(All)"
 msgstr "(Все)"
 
-#: objinspstrconsts:cactionlisteditorunknowncategory
-msgid "(Unknown)"
-msgstr "(Неизвестно)"
-
 #: objinspstrconsts:oisnone
 msgid "(none)"
 msgstr "(нет)"
+
+#: objinspstrconsts:cactionlisteditorunknowncategory
+msgid "(Unknown)"
+msgstr "(Неизвестно)"
 
 #: objinspstrconsts:ois0lines0chars
 msgid "0 lines, 0 chars"
@@ -133,13 +133,13 @@ msgstr "Редактор списка действий"
 msgid "Add"
 msgstr "Добавить"
 
+#: objinspstrconsts:s_addassingle
+msgid "Add as single"
+msgstr "Добавить как одно"
+
 #: objinspstrconsts:sccsiledtopendialog
 msgid "Add Images"
 msgstr "Добавить изображения"
-
-#: objinspstrconsts:s_addassingle
-msgid "Add as single"
-msgstr ""
 
 #: objinspstrconsts:clbadd
 msgid "Add new Item"
@@ -167,7 +167,7 @@ msgstr "Выравнивание"
 
 #: objinspstrconsts:rscdalignment
 msgid "Alignment"
-msgstr ""
+msgstr "Выравнивание"
 
 #: objinspstrconsts:oisall
 msgid "All"
@@ -183,11 +183,11 @@ msgstr "Применить"
 
 #: objinspstrconsts:oisarray
 msgid "Array"
-msgstr "Массив"
+msgstr "Array"
 
 #: objinspstrconsts:rscdautosize
 msgid "Auto Size"
-msgstr ""
+msgstr "Авторазмер"
 
 #: objinspstrconsts:oisstdactionlisteditorclass
 msgid "Available Action Classes:"
@@ -207,7 +207,7 @@ msgstr "Отменить"
 
 #: objinspstrconsts:rscdcaption
 msgid "Caption"
-msgstr ""
+msgstr "Заголовок"
 
 #: objinspstrconsts:sccslvedtlabelcaption
 msgid "Caption:"
@@ -219,7 +219,7 @@ msgstr "Категория"
 
 #: objinspstrconsts:sccsiledtcenter
 msgid "Center"
-msgstr ""
+msgstr "По центру"
 
 #: objinspstrconsts:oischar
 msgid "Char"
@@ -259,7 +259,7 @@ msgstr "Выбор цвета"
 
 #: objinspstrconsts:rscdcolumneditor
 msgid "Column Editor"
-msgstr ""
+msgstr "Редактор столбцов"
 
 #: objinspstrconsts:oiscomponentnameisnotavalididentifier
 msgid "Component name %s%s%s is not a valid identifier"
@@ -279,7 +279,7 @@ msgstr "Копировать"
 
 #: objinspstrconsts:oiscopycomponents
 msgid "Copy components"
-msgstr ""
+msgstr "Копировать компоненты"
 
 #: objinspstrconsts:oiscreateanewpascalunit
 msgid "Create a new pascal unit."
@@ -291,7 +291,7 @@ msgstr "Создать событие по умолчанию"
 
 #: objinspstrconsts:sccsiledtcrop
 msgid "Crop"
-msgstr ""
+msgstr "Обрезать"
 
 #: objinspstrconsts:oistdacteditselectallshortcut
 msgid "Ctrl+A"
@@ -319,7 +319,7 @@ msgstr "Ctrl+Z"
 
 #: objinspstrconsts:oistdacteditcutheadline
 msgid "Cu&t"
-msgstr ""
+msgstr "Выре&зать"
 
 #: objinspstrconsts:oistdacteditcutshorthint
 msgid "Cut"
@@ -327,7 +327,7 @@ msgstr "Вырезать"
 
 #: objinspstrconsts:oiscutcomponents
 msgid "Cut components"
-msgstr ""
+msgstr "Вырезать компоненты"
 
 #: objinspstrconsts:cactionlisteditordatabasecategory
 msgid "Database"
@@ -335,7 +335,7 @@ msgstr "База данных"
 
 #: objinspstrconsts:oistdacteditdeleteshortcut
 msgid "Del"
-msgstr ""
+msgstr "Del"
 
 #: objinspstrconsts:oisdelete
 msgid "Delete"
@@ -347,7 +347,7 @@ msgstr "Удалить Действие"
 
 #: objinspstrconsts:oisdeletecomponents
 msgid "Delete components"
-msgstr ""
+msgstr "Удалить компоненты"
 
 #: objinspstrconsts:oisdeleteitem
 msgid "Delete item %s%s%s?"
@@ -371,11 +371,11 @@ msgstr "Диалог"
 
 #: objinspstrconsts:s_suggestsplitimage
 msgid "Do you want to split the image?"
-msgstr ""
+msgstr "Вы хотите разбить изображение?"
 
 #: objinspstrconsts:clbdown
 msgid "Do&wn"
-msgstr ""
+msgstr "В&низ"
 
 #: objinspstrconsts:oicoleditdown
 msgid "Down"
@@ -383,11 +383,15 @@ msgstr "Вниз"
 
 #: objinspstrconsts:oistdactfileexitheadline
 msgid "E&xit"
-msgstr ""
+msgstr "В&ыход"
 
 #: objinspstrconsts:cactionlisteditoreditcategory
 msgid "Edit"
 msgstr "Редактировать"
+
+#: objinspstrconsts:oiseditactionlist
+msgid "Edit action list..."
+msgstr "Правка списка действий..."
 
 #: objinspstrconsts:sccslvedt
 msgid "Edit ListView Items..."
@@ -400,10 +404,6 @@ msgstr "Редактировать StringGrid..."
 #: objinspstrconsts:sccstredt
 msgid "Edit TreeView Items..."
 msgstr "Редактировать Элементы TreeView..."
-
-#: objinspstrconsts:oiseditactionlist
-msgid "Edit action list..."
-msgstr "Правка списка действий..."
 
 #: objinspstrconsts:oicoleditediting
 msgid "Editing"
@@ -467,7 +467,7 @@ msgstr "Помощь к помощи"
 
 #: objinspstrconsts:sccstredtlabelimageindex
 msgid "Image Index:"
-msgstr ""
+msgstr "Индекс изображения:"
 
 #: objinspstrconsts:sccsiledtcaption
 msgid "ImageList Editor"
@@ -507,7 +507,7 @@ msgstr "Interface"
 
 #: objinspstrconsts:rscdinvalidnumericvalue
 msgid "Invalid numeric Value"
-msgstr ""
+msgstr "Неверное численное значение"
 
 #: objinspstrconsts:oisinvalidpropertyvalue
 msgid "Invalid property value"
@@ -535,7 +535,7 @@ msgstr "Последний"
 
 #: objinspstrconsts:rscdleft
 msgid "Left"
-msgstr ""
+msgstr "По левому краю"
 
 #: objinspstrconsts:sccslvedtcaption
 msgid "ListView Items Editor"
@@ -569,21 +569,13 @@ msgstr "Метод"
 msgid "Modify the Item"
 msgstr "Изменить Элемент"
 
+#: objinspstrconsts:rscdmovedown
+msgid "Move down"
+msgstr "Переместить вниз"
+
 #: objinspstrconsts:sccsiledtmovedown
 msgid "Move Down"
 msgstr "Переместить вниз"
-
-#: objinspstrconsts:sccssgedtmoverowscols
-msgid "Move Rows/Cols"
-msgstr ""
-
-#: objinspstrconsts:sccsiledtmoveup
-msgid "Move Up"
-msgstr "Переместить вверх"
-
-#: objinspstrconsts:rscdmovedown
-msgid "Move down"
-msgstr ""
 
 #: objinspstrconsts:nbcesmovepageleft
 msgid "Move page left"
@@ -592,6 +584,10 @@ msgstr "Переместить страницу налево"
 #: objinspstrconsts:nbcesmovepageright
 msgid "Move page right"
 msgstr "Переместить страницу направо"
+
+#: objinspstrconsts:sccssgedtmoverowscols
+msgid "Move Rows/Cols"
+msgstr "Переместить Строки/Столбцы"
 
 #: objinspstrconsts:tccesmovetableft
 msgid "Move tab left"
@@ -603,7 +599,11 @@ msgstr "Переместить вкладку направо"
 
 #: objinspstrconsts:rscdmoveup
 msgid "Move up"
-msgstr ""
+msgstr "Переместить вверх"
+
+#: objinspstrconsts:sccsiledtmoveup
+msgid "Move Up"
+msgstr "Переместить вверх"
 
 #: objinspstrconsts:cactionlisteditornewaction
 msgid "New Action"
@@ -629,13 +629,9 @@ msgstr "Следующий"
 msgid "None"
 msgstr "Нет"
 
-#: objinspstrconsts:rscdok
-msgid "OK"
-msgstr ""
-
 #: objinspstrconsts:oisobject
 msgid "Object"
-msgstr ""
+msgstr "Object"
 
 #: objinspstrconsts:oisobjectinspector
 msgid "Object Inspector"
@@ -645,13 +641,17 @@ msgstr "Инспектор объектов"
 msgid "Ok"
 msgstr "Ok"
 
+#: objinspstrconsts:rscdok
+msgid "OK"
+msgstr "OK"
+
 #: objinspstrconsts:sccstredtopendialog
 msgid "Open"
 msgstr "Открыть"
 
 #: objinspstrconsts:oispeopenimagefile
 msgid "Open image file"
-msgstr ""
+msgstr "Открыть файл изображения"
 
 #: objinspstrconsts:oisopenmaskfile
 msgid "Open masks file (*.dem)"
@@ -663,11 +663,11 @@ msgstr "Настройки"
 
 #: objinspstrconsts:oistdactdatasetpostheadline
 msgid "P&ost"
-msgstr ""
+msgstr "О&тправить"
 
 #: objinspstrconsts:cactionlisteditorpaneldescrriptions
 msgid "Panel Descriptions"
-msgstr ""
+msgstr "Названия панелей"
 
 #: objinspstrconsts:oistdacteditpasteshorthint
 msgid "Paste"
@@ -675,11 +675,11 @@ msgstr "Вставить"
 
 #: objinspstrconsts:oispastecomponents
 msgid "Paste components"
-msgstr ""
+msgstr "Вставить компоненты"
 
 #: objinspstrconsts:oispepicture
 msgid "Picture"
-msgstr ""
+msgstr "Картинка"
 
 #: objinspstrconsts:clbdisable
 msgid "Popup to disable/enable items"
@@ -715,7 +715,7 @@ msgstr "Удалить из Избранного"
 
 #: objinspstrconsts:rscdright
 msgid "Right"
-msgstr ""
+msgstr "По правому краю"
 
 #: objinspstrconsts:oissamplemasks
 msgid "Sample Masks:"
@@ -727,7 +727,7 @@ msgstr "Сохранить"
 
 #: objinspstrconsts:oistdactfilesaveasheadline
 msgid "Save &As..."
-msgstr ""
+msgstr "Сохранить &как..."
 
 #: objinspstrconsts:oistdactfilesaveashint
 msgid "Save As"
@@ -737,13 +737,13 @@ msgstr "Сохранить как..."
 msgid "Save Image"
 msgstr "Сохранить изображение"
 
-#: objinspstrconsts:oissaveliteralcharacters
-msgid "Save Literal Characters"
-msgstr ""
-
 #: objinspstrconsts:oispesaveimageas
 msgid "Save image as"
-msgstr ""
+msgstr "Сохранить изображение как"
+
+#: objinspstrconsts:oissaveliteralcharacters
+msgid "Save Literal Characters"
+msgstr "Сохранить литерал"
 
 #: objinspstrconsts:oissavepicture
 msgid "Save picture"
@@ -755,23 +755,23 @@ msgstr "Сохранить..."
 
 #: objinspstrconsts:oistdacteditselectallheadline
 msgid "Select &All"
-msgstr ""
+msgstr "Вы&брать все..."
 
 #: objinspstrconsts:oistdactcolorselect1headline
 msgid "Select &Color..."
-msgstr ""
+msgstr "Выбрать &цвет..."
 
 #: objinspstrconsts:oistdactfonteditheadline
 msgid "Select &Font..."
-msgstr ""
-
-#: objinspstrconsts:oistdacteditselectallshorthint
-msgid "Select All"
-msgstr "Выделить всё"
+msgstr "Выбрать &шрифт..."
 
 #: objinspstrconsts:oisselectafile
 msgid "Select a file"
 msgstr "Выберите файл"
+
+#: objinspstrconsts:oistdacteditselectallshorthint
+msgid "Select All"
+msgstr "Выделить все"
 
 #: objinspstrconsts:sccsiledtgrprcaption
 msgid "Selected Image"
@@ -783,7 +783,7 @@ msgstr "Выбранный индекс:"
 
 #: objinspstrconsts:oisset
 msgid "Set"
-msgstr ""
+msgstr "Set"
 
 #: objinspstrconsts:oissettodefaultvalue
 msgid "Set to default value"
@@ -811,7 +811,7 @@ msgstr "Сортировка"
 
 #: objinspstrconsts:s_splitimage
 msgid "Split image"
-msgstr ""
+msgstr "Разбить изображение"
 
 #: objinspstrconsts:oisstdactionlisteditor
 msgid "Standard Action Classes"
@@ -819,7 +819,7 @@ msgstr "Классы Стандартных Действий"
 
 #: objinspstrconsts:sccstredtlabelstateindex
 msgid "State Index:"
-msgstr ""
+msgstr "Индекс состояния:"
 
 #: objinspstrconsts:sccsiledtstretch
 msgid "Stretch"
@@ -831,7 +831,7 @@ msgstr "String"
 
 #: objinspstrconsts:sccssgedtgrp
 msgid "String Grid"
-msgstr ""
+msgstr "String Grid"
 
 #: objinspstrconsts:sccssgedtcaption
 msgid "StringGrid Editor"
@@ -841,13 +841,13 @@ msgstr "Редактор StringGrid"
 msgid "Strings Editor Dialog"
 msgstr "Диалог ввода строк"
 
+#: objinspstrconsts:oistestdialog
+msgid "Test dialog..."
+msgstr "Диалог тестирования..."
+
 #: objinspstrconsts:oistestinput
 msgid "Test Input"
 msgstr "Тестовый ввод"
-
-#: objinspstrconsts:oistestdialog
-msgid "Test dialog..."
-msgstr ""
 
 #: objinspstrconsts:sccstredtlabeltext
 msgid "Text:"
@@ -891,11 +891,11 @@ msgstr "Variant"
 
 #: objinspstrconsts:rscdvisible
 msgid "Visible"
-msgstr ""
+msgstr "Видимость"
 
 #: objinspstrconsts:rscdwidth
 msgid "Width"
-msgstr ""
+msgstr "Ширина"
 
 #: objinspstrconsts:oisword
 msgid "Word"

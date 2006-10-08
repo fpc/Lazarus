@@ -10,25 +10,6 @@
       <TargetFileExt Value=".exe"/>
       <Title Value="Run Lazarus tests"/>
     </General>
-    <VersionInfo>
-      <UseVersionInfo Value="False"/>
-      <AutoIncrementBuild Value="False"/>
-      <CurrentVersionNr Value="0"/>
-      <CurrentMajorRevNr Value="0"/>
-      <CurrentMinorRevNr Value="0"/>
-      <CurrentBuildNr Value="0"/>
-      <ProjectVersion Value="1,0,0,0"/>
-      <Language Value="0409"/>
-      <CharSet Value="04E4"/>
-      <Comments Value=""/>
-      <CompanyName Value=""/>
-      <FileDescription Value=""/>
-      <InternalName Value=""/>
-      <LegalCopyright Value=""/>
-      <LegalTrademarks Value=""/>
-      <OriginalFilename Value=""/>
-      <ProductName Value=""/>
-    </VersionInfo>
     <PublishOptions>
       <Version Value="2"/>
       <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
