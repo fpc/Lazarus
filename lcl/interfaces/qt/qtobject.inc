@@ -130,14 +130,12 @@ begin
 
 end;
 
-function TQtWidgetSet.DCGetPixel(CanvasHandle: HDC; X, Y: integer
-  ): TGraphicsColor;
+function TQtWidgetSet.DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor;
 begin
   Result:=clNone;
 end;
 
-procedure TQtWidgetSet.DCSetPixel(CanvasHandle: HDC; X, Y: integer;
-  AColor: TGraphicsColor);
+procedure TQtWidgetSet.DCSetPixel(CanvasHandle: HDC; X, Y: integer; AColor: TGraphicsColor);
 begin
 
 end;
@@ -162,7 +160,7 @@ end;
   Params:   sender - object for which to create visual representation
   Returns:  nothing
 
-  Deprecated
+  Deprecated, never call this function
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.CreateComponent(Sender : TObject): THandle;
 begin

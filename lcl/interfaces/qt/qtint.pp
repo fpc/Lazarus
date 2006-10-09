@@ -25,7 +25,7 @@
  
 unit qtint;
  
-{$mode objfpc} 
+{$mode objfpc}{$H+}
 
 interface
 
@@ -59,6 +59,7 @@ type
   public
     constructor Create;
     destructor Destroy; override;
+
     function  DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor; override;
     procedure DCSetPixel(CanvasHandle: HDC; X, Y: integer; AColor: TGraphicsColor); override;
     procedure DCRedraw(CanvasHandle: HDC); override;
@@ -115,7 +116,7 @@ uses
 // QtWSCalendar,
 // QtWSCheckLst,
 // QtWSCListBox,
-// QtWSComCtrls,
+ QtWSComCtrls,
  QtWSControls,
 // QtWSDbCtrls,
 // QtWSDBGrids,
@@ -129,7 +130,7 @@ uses
 // QtWSGrids,
 // QtWSImgList,
 // QtWSMaskEdit,
-// QtWSMenus,
+ QtWSMenus,
 // QtWSPairSplitter,
  QtWSSpin,
  QtWSStdCtrls,

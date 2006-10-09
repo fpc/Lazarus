@@ -40,7 +40,6 @@ type
 
   TQtWSButton = class(TWSButton)
   private
-    class procedure SetSlots(const QtButton: TQtPushButton);
   protected
   public
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
@@ -57,7 +56,6 @@ type
 
   TQtWSBitBtn = class(TWSBitBtn)
   private
-    class procedure SetSlots(const QtButton: TQtPushButton);
   protected
   public
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
@@ -96,10 +94,20 @@ class function TQtWSButton.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
   QtPushButton: TQtPushButton;
+  Method: TMethod;
+  Hook : QObject_hookH;
 begin
   QtPushButton := TQtPushButton.Create(AWinControl, AParams);
 
-  SetSlots(QtPushButton);
+  // Various Events
+
+  Hook := QObject_hook_create(QtPushButton.Widget);
+
+  TEventFilterMethod(Method) := QtPushButton.EventFilter;
+
+  QObject_hook_hook_events(Hook, Method);
+  
+  // Initializes properties
 
   if AWinControl.Visible then QtPushButton.Show;
 
@@ -137,27 +145,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Function: TQtWSButton.SetSlots
-  Params:  None
-  Returns: Nothing
-  
-  Initializes the events
- ------------------------------------------------------------------------------}
-class procedure TQtWSButton.SetSlots(const QtButton: TQtPushButton);
-var
-  Method: TMethod;
-  Hook : QObject_hookH;
-begin
-  // Various Events
-
-  Hook := QObject_hook_create(QtButton.Widget);
-
-  TEventFilterMethod(Method) := QtButton.EventFilter;
-
-  QObject_hook_hook_events(Hook, Method);
-end;
-
-{------------------------------------------------------------------------------
   Function: TQtWSButton.SetText
   Params:  None
   Returns: Nothing
@@ -174,27 +161,6 @@ end;
 { TQtWSBitBtn }
 
 {------------------------------------------------------------------------------
-  Function: TQtWSBitBtn.SetSlots
-  Params:  None
-  Returns: Nothing
-
-  Initializes the events
- ------------------------------------------------------------------------------}
-class procedure TQtWSBitBtn.SetSlots(const QtButton: TQtPushButton);
-var
-  Method: TMethod;
-begin
-  // Inherited Callbacks
-//  TQtWSWinControl.SetSlots(QtButton);
-
-  // OnClick Event
-
-  QAbstractButton_clicked2_Event(Method) := QtButton.SlotClicked;
-
-  QAbstractButton_hook_hook_clicked2(QAbstractButton_hook_create(QtButton.Widget), Method);
-end;
-
-{------------------------------------------------------------------------------
   Function: TQtWSBitBtn.CreateHandle
   Params:  None
   Returns: Nothing
@@ -205,10 +171,20 @@ class function TQtWSBitBtn.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
   QtPushButton: TQtPushButton;
+  Method: TMethod;
+  Hook : QObject_hookH;
 begin
   QtPushButton := TQtPushButton.Create(AWinControl, AParams);
 
-  SetSlots(QtPushButton);
+  // Various Events
+
+  Hook := QObject_hook_create(QtPushButton.Widget);
+
+  TEventFilterMethod(Method) := QtPushButton.EventFilter;
+
+  QObject_hook_hook_events(Hook, Method);
+
+  // Initializes properties
 
   if AWinControl.Visible then QtPushButton.Show;
 

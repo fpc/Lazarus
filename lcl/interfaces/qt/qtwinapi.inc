@@ -226,21 +226,33 @@ end;
   Creates a font GDIObject.
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.CreateFontIndirect(const LogFont: TLogFont): HFONT;
+begin
+  Result := CreateFontIndirectEx(LogFont, '');
+end;
+
+{------------------------------------------------------------------------------
+  Function: CreateFontIndirectEx
+  Params:  const LogFont: TLogFont
+  Returns: HFONT
+
+  Creates a font GDIObject.
+ ------------------------------------------------------------------------------}
+function TQtWidgetSet.CreateFontIndirectEx(const LogFont: TLogFont; const LongFontName: string): HFONT;
 var
   QtFont: TQtFont;
   FamilyName: string;
 begin
   {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI CreateFontIndirect]');
+    WriteLn('[WinAPI CreateFontIndirectEx] FontName: ' + LongFontName);
   {$endif}
 
   Result := 0;
-  
+
   QtFont := TQtFont.Create(True);
   try
     if LogFont.lfHeight > 0 then QtFont.setPointSize(LogFont.lfHeight)
     else if LogFont.lfHeight < 0 then QtFont.setPointSize(-1 * LogFont.lfHeight);
-    
+
     // Some values at available on Qt documentation at a table
     // Others are guesses. The best would be to test different values for those
     // See: http://doc.trolltech.com/4.1/qfont.html#Weight-enum
@@ -266,8 +278,9 @@ begin
 
     if (CompareText(FamilyName, 'default') <> 0) then
     begin
-      QtFont.setRawName(FamilyName);
+      QtFont.setFamily(FamilyName);
     end;
+
   finally
     Result := HFONT(QtFont);
   end;
@@ -1420,7 +1433,7 @@ begin
     
     Result := HGDIOBJ(TQtDeviceContext(DC).font);
     
-//    TQtDeviceContext(DC).setFont(TQtFont(aObject));
+    TQtDeviceContext(DC).setFont(TQtFont(aObject));
   end
   else if aObject is TQtBrush then
   begin

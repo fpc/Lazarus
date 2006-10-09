@@ -107,7 +107,6 @@ type
 
   TQtWSCustomListBox = class(TWSCustomListBox)
   private
-    class procedure SetSlots(const QtListWidget: TQtListWidget);
   protected
   public
     class function  CreateHandle(const AWinControl: TWinControl;
@@ -260,7 +259,6 @@ type
 
   TQtWSRadioButton = class(TWSRadioButton)
   private
-    class procedure SetSlots(const QtRadioButton: TQtRadioButton);
   protected
   public
     class function  RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState; override;
@@ -308,15 +306,18 @@ uses LMessages;
 { TQtWSCustomListBox }
 
 {------------------------------------------------------------------------------
-  Method: TQtWSCustomListBox.SetSlots
+  Method: TQtWSCustomListBox.CreateHandle
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
-class procedure TQtWSCustomListBox.SetSlots(const QtListWidget: TQtListWidget);
+class function TQtWSCustomListBox.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND;
 var
+  QtListWidget: TQtListWidget;
   Method: TMethod;
   Hook : QListWidget_hookH;
 begin
+  QtListWidget := TQtListWidGet.Create(AWinControl, AParams);
+  
   // Various Events
 
   Hook := QListWidget_hook_create(QtListWidget.Widget);
@@ -326,25 +327,11 @@ begin
   QObject_hook_hook_events(Hook, Method);
 
   // OnSelectionChange event
-  
+
   QListWidget_currentItemChanged_Event(Method) := QtListWidget.SlotSelectionChange;
 
   QListWidget_hook_hook_currentItemChanged(Hook, Method);
-end;
 
-{------------------------------------------------------------------------------
-  Method: TQtWSCustomListBox.CreateHandle
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-class function TQtWSCustomListBox.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND;
-var
-  QtListWidget: TQtListWidget;
-begin
-  QtListWidget := TQtListWidGet.Create(AWinControl, AParams);
-  
-  SetSlots(QtListWidget);
-  
   Result := THandle(QtListWidget);
 end;
 
@@ -835,27 +822,6 @@ end;
 { TQtWSRadioButton }
 
 {------------------------------------------------------------------------------
-  Method: TQtWSRadioButton.SetSlots
-  Params:  None
-  Returns: Nothing
-
-  Initializes the events
- ------------------------------------------------------------------------------}
-class procedure TQtWSRadioButton.SetSlots(const QtRadioButton: TQtRadioButton);
-var
-  Method: TMethod;
-  Hook : QObject_hookH;
-begin
-  // Various Events
-
-  Hook := QObject_hook_create(QtRadioButton.Widget);
-
-  TEventFilterMethod(Method) := QtRadioButton.EventFilter;
-
-  QObject_hook_hook_events(Hook, Method);
-end;
-
-{------------------------------------------------------------------------------
   Method: TQtWSRadioButton.RetrieveState
   Params:  None
   Returns: The state of the control
@@ -935,11 +901,19 @@ class function TQtWSRadioButton.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
   QtRadioButton: TQtRadioButton;
+{  Method: TMethod;
+  Hook : QObject_hookH;}
 begin
   QtRadioButton := TQtRadioButton.Create(AWinControl, AParams);
 
-//  SetSlots(QtRadioButton);
+  // Various Events
 
+{  Hook := QObject_hook_create(QtRadioButton.Widget);
+
+  TEventFilterMethod(Method) := QtRadioButton.EventFilter;
+
+  QObject_hook_hook_events(Hook, Method);}
+  
   if AWinControl.Visible then QtRadioButton.Show;
 
   QWidget_setFocusPolicy(QtRadioButton.Widget, QtStrongFocus);

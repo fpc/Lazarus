@@ -31,9 +31,27 @@ uses
   // Free Pascal
   Classes, SysUtils, Types,
   // LCL
-  LMessages, Forms, Controls, LCLType, LCLProc, ExtCtrls, StdCtrls;
+  LMessages, Forms, Controls, LCLType, LCLProc, ExtCtrls, StdCtrls, Menus;
 
 type
+  { TQtAction }
+
+  TQtAction = class(TObject)
+  private
+  public
+    Handle: QActionH;
+    MenuItem: TMenuItem;
+  public
+    constructor Create(const AHandle: QActionH);
+    destructor Destroy; override;
+  public
+    procedure SlotTriggered(checked: Boolean = False); cdecl;
+  public
+    procedure setChecked(p1: Boolean);
+    procedure setEnabled(p1: Boolean);
+    procedure setVisible(p1: Boolean);
+  end;
+
   { TQtWidget }
 
   TQtWidget = class(TObject)
@@ -55,6 +73,7 @@ type
     procedure SlotMouseMove(Event: QEventH); cdecl;
     procedure SlotPaint(Event: QEventH); cdecl;
     procedure SlotResize; cdecl;
+    procedure SlotContextMenu; cdecl;
   public
     procedure SetColor(const Value: PQColor);
     procedure Update;
@@ -62,6 +81,8 @@ type
     procedure setWindowTitle(Str: PWideString);
     procedure WindowTitle(Str: PWideString);
     procedure Show;
+    procedure setEnabled(p1: Boolean);
+    procedure setVisible(visible: Boolean);
   end;
   
   { TQtAbstractButton }
@@ -99,7 +120,7 @@ type
 
   { TQtFont }
 
-  TQtFont = class(QBrushH)
+  TQtFont = class(TObject)
   private
   public
     Widget: QFontH;
@@ -118,6 +139,7 @@ type
     procedure setUnderline(p1: Boolean);
     procedure setStrikeOut(p1: Boolean);
     procedure setRawName(p1: string);
+    procedure setFamily(p1: string);
   end;
 
   { TQtDeviceContext }
@@ -147,10 +169,13 @@ type
 
   { TQtMainWindow }
 
+  TQtMenuBar = class;
+
   TQtMainWindow = class(TQtWidget)
   private
   public
-    Splitter : QSplitterH;
+    Splitter: QSplitterH;
+    MenuBar: TQtMenuBar;
   public
     Canvas: TQtDeviceContext;
   public
@@ -286,7 +311,6 @@ type
   public
   end;
 
-  
   { TQtListWidget }
 
   TQtListWidget = class(TQtListView)
@@ -301,7 +325,95 @@ type
     procedure setCurrentRow(row: Integer);
   end;  
   
+  { TQtMenu }
+
+  TQtMenu = class(TQtWidget)
+  private
+  public
+    constructor Create(const AParent: QWidgetH); overload;
+    constructor Create(const AHandle: QMenuH); overload;
+    destructor Destroy; override;
+  public
+    procedure PopUp(pos: PPoint; at: QActionH = nil);
+    function addAction(text: PWideString): TQtAction;
+    function addMenu(title: PWideString): TQtMenu;
+    function addSeparator: TQtAction;
+  end;
+
+  { TQtMenuBar }
+
+  TQtMenuBar = class(TQtWidget)
+  private
+  public
+    constructor Create(const AParent: QWidgetH); overload;
+    destructor Destroy; override;
+  public
+    function addAction(text: PWideString): TQtAction;
+    function addMenu(title: PWideString): TQtMenu;
+    function addSeparator: TQtAction;
+  end;
+
+  { TQtProgressBar }
+
+  TQtProgressBar = class(TQtWidget)
+  private
+  public
+    constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); override;
+    destructor Destroy; override;
+  public
+    procedure setRange(minimum: Integer; maximum: Integer);
+    procedure setTextVisible(visible: Boolean);
+    procedure setAlignment(alignment: QtAlignment);
+    procedure setTextDirection(textDirection: QProgressBarDirection);
+    procedure setValue(value: Integer);
+    procedure setOrientation(p1: QtOrientation);
+    procedure setInvertedAppearance(invert: Boolean);
+  end;
+
+  { TQtStatusBar }
+
+  TQtStatusBar = class(TQtWidget)
+  private
+  public
+    constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); override;
+    destructor Destroy; override;
+  public
+    procedure showMessage(text: PWideString; timeout: Integer = 0);
+  end;
+
 implementation
+
+{ TQtAction }
+
+constructor TQtAction.Create(const AHandle: QActionH);
+begin
+  Handle := AHandle;
+end;
+
+destructor TQtAction.Destroy;
+begin
+  inherited Destroy;
+end;
+
+procedure TQtAction.SlotTriggered(checked: Boolean); cdecl;
+begin
+  if Assigned(MenuItem) and Assigned(MenuItem.OnClick) then MenuItem.OnClick(Self);
+end;
+
+procedure TQtAction.setChecked(p1: Boolean);
+begin
+  QAction_setChecked(Handle, p1);
+end;
+
+procedure TQtAction.setEnabled(p1: Boolean);
+begin
+  QAction_setEnabled(Handle, p1);
+end;
+
+procedure TQtAction.setVisible(p1: Boolean);
+begin
+  QAction_setVisible(Handle, p1);
+end;
 
 { TQtWidget }
 
@@ -375,6 +487,7 @@ begin
    QEventResize: SlotResize;
 
    QEventPaint: SlotPaint(Event);
+   QEventContextMenu: SlotContextMenu;
   end;
 
 {  GtkWidgetSet.SetCallback(LM_WINDOWPOSCHANGED, AGTKObject, AComponent);
@@ -595,6 +708,12 @@ begin
   end;
 end;
 
+procedure TQtWidget.SlotContextMenu; cdecl;
+begin
+  if Assigned(LCLObject.PopupMenu) then
+   LCLObject.PopupMenu.PopUp(Mouse.CursorPos.X, Mouse.CursorPos.Y);
+end;
+
 {------------------------------------------------------------------------------
   Function: TQtWidget.SetColor
   Params:  QColorH
@@ -653,6 +772,16 @@ end;
 procedure TQtWidget.Show;
 begin
   QWidget_show(Widget);
+end;
+
+procedure TQtWidget.setEnabled(p1: Boolean);
+begin
+  QWidget_setEnabled(Widget, p1);
+end;
+
+procedure TQtWidget.setVisible(visible: Boolean);
+begin
+  QWidget_setVisible(Widget, visible);
 end;
 
 {------------------------------------------------------------------------------
@@ -1179,6 +1308,15 @@ begin
   QFont_setRawName(Widget, @Str);
 end;
 
+procedure TQtFont.setFamily(p1: string);
+var
+  Str: WideString;
+begin
+  Str := WideString(p1);
+
+  QFont_setFamily(Widget, @Str);
+end;
+
 { TQtDeviceContext }
 
 {------------------------------------------------------------------------------
@@ -1313,7 +1451,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TQtDeviceContext.setFont(f: TQtFont);
 begin
-//  if (f.Widget <> nil) and (Widget <> nil) then QPainter_setFont(Widget, f.Widget);
+  if (f.Widget <> nil) and (Widget <> nil) then QPainter_setFont(Widget, QFontH(f.Widget));
 end;
 
 {------------------------------------------------------------------------------
@@ -1402,6 +1540,9 @@ begin
   // Form initial position
   QWidget_setGeometry(Widget, AWinControl.Left, AWinControl.Top,
    AWinControl.Width, AWinControl.Height);
+
+  // Main menu bar
+  MenuBar := TQtMenuBar.Create(Widget);
 
 {  // Painting helper device
   Widget := QWidget_create;
@@ -2258,6 +2399,199 @@ end;
 procedure TQtListWidget.setCurrentRow(row: Integer);
 begin
   QListWidget_setCurrentRow(QListWidgetH(Widget), row);
+end;
+
+{ TQtMenu }
+
+constructor TQtMenu.Create(const AParent: QWidgetH);
+begin
+  Widget := QMenu_Create(AParent);
+end;
+
+constructor TQtMenu.Create(const AHandle: QMenuH);
+begin
+  Widget := AHandle;
+end;
+
+destructor TQtMenu.Destroy;
+begin
+  inherited Destroy;
+end;
+
+procedure TQtMenu.PopUp(pos: PPoint; at: QActionH);
+begin
+  QMenu_Popup(QMenuH(Widget), pos, at);
+end;
+
+function TQtMenu.addAction(text: PWideString): TQtAction;
+begin
+  Result := TQtAction.Create(QMenu_addAction(QMenuH(Widget), text));
+end;
+
+function TQtMenu.addMenu(title: PWideString): TQtMenu;
+begin
+  Result := TQtMenu.Create(QMenu_addMenu(QMenuH(Widget), title));
+end;
+
+function TQtMenu.addSeparator: TQtAction;
+begin
+  Result := TQtAction.Create(QMenu_addSeparator(QMenuH(Widget)));
+end;
+
+{ TQtMenuBar }
+
+constructor TQtMenuBar.Create(const AParent: QWidgetH);
+begin
+  Widget := QMenuBar_create(AParent);
+end;
+
+destructor TQtMenuBar.Destroy;
+begin
+  inherited Destroy;
+end;
+
+function TQtMenuBar.addAction(text: PWideString): TQtAction;
+begin
+  Result := TQtAction.Create(QMenuBar_addAction(QMenuBarH(Widget), text));
+end;
+
+function TQtMenuBar.addMenu(title: PWideString): TQtMenu;
+begin
+  Result := TQtMenu.Create(QMenuBar_addMenu(QMenuBarH(Widget), title));
+end;
+
+function TQtMenuBar.addSeparator: TQtAction;
+begin
+  Result := TQtAction.Create(QMenuBar_addSeparator(QMenuBarH(Widget)));
+end;
+
+{ TQtProgressBar }
+
+{------------------------------------------------------------------------------
+  Function: TQtProgressBar.Create
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+constructor TQtProgressBar.Create(const AWinControl: TWinControl; const AParams: TCreateParams);
+var
+  Parent: QWidgetH;
+  Text: WideString;
+begin
+  // Initializes the properties
+  LCLObject := AWinControl;
+
+  // Creates the widget
+  {$ifdef VerboseQt}
+    WriteLn('TQProgressBar.Create');
+  {$endif}
+  Parent := TQtWidget(AWinControl.Parent.Handle).Widget;
+  Widget := QProgressBar_create(Parent);
+
+  // Sets it´ s initial properties
+  QWidget_setGeometry(Widget, AWinControl.Left, AWinControl.Top,
+   AWinControl.Width, AWinControl.Height);
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtProgressBar.Destroy
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+destructor TQtProgressBar.Destroy;
+begin
+  {$ifdef VerboseQt}
+    WriteLn('TQtProgressBar.Destroy');
+  {$endif}
+
+  QProgressBar_destroy(QProgressBarH(Widget));
+
+  inherited Destroy;
+end;
+
+procedure TQtProgressBar.setRange(minimum: Integer; maximum: Integer);
+begin
+  QProgressBar_setRange(QProgressBarH(Widget), minimum, maximum);
+end;
+
+procedure TQtProgressBar.setTextVisible(visible: Boolean);
+begin
+  QProgressBar_setTextVisible(QProgressBarH(Widget), visible);
+end;
+
+procedure TQtProgressBar.setAlignment(alignment: QtAlignment);
+begin
+  QProgressBar_setAlignment(QProgressBarH(Widget), alignment);
+end;
+
+procedure TQtProgressBar.setTextDirection(textDirection: QProgressBarDirection);
+begin
+  QProgressBar_setTextDirection(QProgressBarH(Widget), textDirection);
+end;
+
+procedure TQtProgressBar.setValue(value: Integer);
+begin
+  QProgressBar_setValue(QProgressBarH(Widget), value);
+end;
+
+procedure TQtProgressBar.setOrientation(p1: QtOrientation);
+begin
+  QProgressBar_setOrientation(QProgressBarH(Widget), p1);
+end;
+
+procedure TQtProgressBar.setInvertedAppearance(invert: Boolean);
+begin
+  QProgressBar_setInvertedAppearance(QProgressBarH(Widget), invert);
+end;
+
+{ TQtStatusBar }
+
+{------------------------------------------------------------------------------
+  Function: TQtStatusBar.Create
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+constructor TQtStatusBar.Create(const AWinControl: TWinControl; const AParams: TCreateParams);
+var
+  Parent: QWidgetH;
+  Text: WideString;
+begin
+  // Initializes the properties
+  LCLObject := AWinControl;
+
+  // Creates the widget
+  {$ifdef VerboseQt}
+    WriteLn('TQtStatusBar.Create');
+  {$endif}
+  Parent := TQtWidget(AWinControl.Parent.Handle).Widget;
+  Widget := QStatusBar_create(Parent);
+
+  Text := WideString(AWinControl.Caption);
+  showMessage(@Text);
+
+  // Sets it´ s initial properties
+  QWidget_setGeometry(Widget, AWinControl.Left, AWinControl.Top,
+   AWinControl.Width, AWinControl.Height);
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtStatusBar.Destroy
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+destructor TQtStatusBar.Destroy;
+begin
+  {$ifdef VerboseQt}
+    WriteLn('TQtStatusBar.Destroy');
+  {$endif}
+
+  QStatusBar_destroy(QStatusBarH(Widget));
+
+  inherited Destroy;
+end;
+
+procedure TQtStatusBar.showMessage(text: PWideString; timeout: Integer);
+begin
+  QStatusBar_showMessage(QStatusBarH(Widget), text, timeout);
 end;
 
 end.

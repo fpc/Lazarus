@@ -58,8 +58,6 @@ type
   private
   protected
   public
-    class procedure SetSlots(const QtWidget: TQtWidget);
-  public
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
@@ -113,27 +111,6 @@ type
 implementation
 
 {------------------------------------------------------------------------------
-  Function: TQtWSButton.SetSlots
-  Params:  None
-  Returns: Nothing
-  
-  Initializes the basic events for all controls with handles
- ------------------------------------------------------------------------------}
-class procedure TQtWSWinControl.SetSlots(const QtWidget: TQtWidget);
-var
-  Method: TMethod;
-  Hook : QObject_hookH;
-begin
-  // Various Events
-
-  Hook := QObject_hook_create(QtWidget.Widget);
-
-  TEventFilterMethod(Method) := QtWidget.EventFilter;
-
-  QObject_hook_hook_events(Hook, Method);
-end;
-
-{------------------------------------------------------------------------------
   Method: TQtWSWinControl.CreateHandle
   Params:  None
   Returns: Nothing
@@ -142,10 +119,18 @@ class function TQtWSWinControl.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
   QtWidget: TQtWidget;
+  Method: TMethod;
+  Hook : QObject_hookH;
 begin
   QtWidget := TQtWidget.Create(AWinControl, AParams);
 
-  SetSlots(QtWidget);
+  // Various Events
+
+  Hook := QObject_hook_create(QtWidget.Widget);
+
+  TEventFilterMethod(Method) := QtWidget.EventFilter;
+
+  QObject_hook_hook_events(Hook, Method);
 
   Result := THandle(QtWidget);
 end;

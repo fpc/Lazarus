@@ -1,3 +1,24 @@
+{
+ *****************************************************************************
+ *                              QtObjects.pas                                *
+ *                              --------------                               *
+ *                                                                           *
+ *                                                                           *
+ *****************************************************************************
+
+ *****************************************************************************
+ *                                                                           *
+ *  This file is part of the Lazarus Component Library (LCL)                 *
+ *                                                                           *
+ *  See the file COPYING.modifiedLGPL, included in this distribution,        *
+ *  for details about the copyright.                                         *
+ *                                                                           *
+ *  This program is distributed in the hope that it will be useful,          *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of           *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                     *
+ *                                                                           *
+ *****************************************************************************
+}
 unit qtobjects;
 
 {$mode delphi}{$H+}
@@ -176,9 +197,6 @@ end;
  ------------------------------------------------------------------------------}
 constructor TQtListStrings.Create(ListWidgetH: QListWidgetH; TheOwner: TWinControl);
 var
-  Method: TMethod;
-  Hook : QListWidget_hookH;
-//  Astr: WideString;
   i: Integer;
 begin
   inherited Create;
@@ -651,12 +669,8 @@ begin
   else Result := '';
 end;
 
-constructor TQtComboStrings.Create(ComboBoxH: QComboBoxH; TheOwner: TWinControl
-  );
+constructor TQtComboStrings.Create(ComboBoxH: QComboBoxH; TheOwner: TWinControl);
 var
-  Method: TMethod;
-  Hook : QComboBox_hookH;
-//  Astr: WideString;
   i: Integer;
 begin
   inherited Create;
