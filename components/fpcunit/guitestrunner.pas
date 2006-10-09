@@ -18,6 +18,7 @@
   
   Modified:
     Graeme Geldenhuys <graemeg@gmail.com>
+    Darius Blaszijk <dhkblaszyk@zeelandnet.nl>
 }
 
 unit GuiTestRunner;
@@ -68,28 +69,30 @@ type
     miRunTest: TMenuItem;
     miShowfailureMsg: TMenuItem;
     pbBar: TPaintBox;
-    pbBar1: TPaintBox;
     PopupMenu3: TPopupMenu;
     RunAction: TAction;
     ActionList1: TActionList;
     ActionList2: TActionList;
     BtnRun: TBitBtn;
     BtnClose: TBitBtn;
-    ImageList1: TImageList;
-    ImageList2: TImageList;
+    TestTreeImageList: TImageList;
+    ResultsXMLImageList: TImageList;
     MenuItem1: TMenuItem;
     MenuItem2: TMenuItem;
     MenuItem3: TMenuItem;
     PopupMenu1: TPopupMenu;
     PopupMenu2: TPopupMenu;
-    SpeedButton1: TSpeedButton;
-    SpeedButton2: TSpeedButton;
+    SaveDialog: TSaveDialog;
     Splitter1: TSplitter;
     TestTree: TTreeView;
     SynXMLSyn1: TSynXMLSyn;
     PageControl1: TPageControl;
     Panel1: TPanel;
     Panel2: TPanel;
+    XMLToolBar: TToolBar;
+    CopyXMLToolButton: TToolButton;
+    CutXMLToolButton: TToolButton;
+    SaveAsToolButton: TToolButton;
     tsTestTree: TTabSheet;
     tsResultsXML: TTabSheet;
     XMLSynEdit: TSynEdit;
@@ -104,6 +107,7 @@ type
     procedure GUITestRunnerCreate(Sender: TObject);
     procedure GUITestRunnerShow(Sender: TObject);
     procedure MenuItem3Click(Sender: TObject);
+    procedure SaveAsToolButtonClick(Sender: TObject);
     procedure TestTreeMouseDown(Sender: TOBject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure TestTreeSelectionChanged(Sender: TObject);
@@ -256,6 +260,12 @@ end;
 procedure TGUITestRunner.MenuItem3Click(Sender: TObject);
 begin
   Clipboard.AsText := Memo1.Lines.Text;
+end;
+
+procedure TGUITestRunner.SaveAsToolButtonClick(Sender: TObject);
+begin
+  if SaveDialog.Execute then
+    XMLSynEdit.Lines.SaveToFile(SaveDialog.FileName);
 end;
 
 procedure TGUITestRunner.TestTreeMouseDown(Sender: TOBject;
@@ -576,7 +586,6 @@ begin
   Node := FindNode(ATest);
   PaintNodeNonFailed(Node);
   pbbar.Refresh;
-  pbbar1.Refresh;
   Application.ProcessMessages;
   TestTree.EndUpdate;
 end;
@@ -637,7 +646,6 @@ begin
     {$ENDIF}
 
     pbBar.Invalidate;
-    pbBar1.Invalidate;
    finally
     {$IFNDEF UseOldXML}
       m.free;
