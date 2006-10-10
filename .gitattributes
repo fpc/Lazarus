@@ -2398,6 +2398,7 @@ lcl/interfaces/qt/qtlclintfh.inc svneol=native#text/pascal
 lcl/interfaces/qt/qtobject.inc svneol=native#text/pascal
 lcl/interfaces/qt/qtobjects.pas svneol=native#text/plain
 lcl/interfaces/qt/qtprivate.pp svneol=native#text/plain
+lcl/interfaces/qt/qtwidgets.pas svneol=native#text/plain
 lcl/interfaces/qt/qtwinapi.inc svneol=native#text/pascal
 lcl/interfaces/qt/qtwinapih.inc svneol=native#text/pascal
 lcl/interfaces/qt/qtwsactnlist.pp svneol=native#text/pascal
