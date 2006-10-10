@@ -140,7 +140,6 @@ end;
 procedure TCustomPage.DestroyHandle;
 begin
   inherited DestroyHandle;
-  Exclude(FFlags,pfAdded);
 end;
 
 {------------------------------------------------------------------------------
