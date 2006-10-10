@@ -28,7 +28,7 @@ interface
 
 uses
   // Bindings
-  qt4, qtprivate,
+  qt4, qtwidgets,
   // LCL
   Spin, SysUtils, Controls, LCLType, Forms,
   // Widgetset

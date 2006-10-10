@@ -34,7 +34,9 @@ interface
 {$endif}
  
 uses 
-  qt4, // Must be the first unit to avoid type redefinition problems on Windows
+  // Bindings - qt4 must come first to avoid type redefinition problems on Windows
+  qt4,
+  // LCL
   Types, InterfaceBase, SysUtils, LCLProc, LCLType, LMessages, Classes,
   Controls, ExtCtrls, Forms, Dialogs, StdCtrls, Comctrls, LCLIntf,
   GraphType, Math;
@@ -120,7 +122,7 @@ uses
  QtWSControls,
 // QtWSDbCtrls,
 // QtWSDBGrids,
-// QtWSDialogs,
+ QtWSDialogs,
 // QtWSDirSel,
 // QtWSEditBtn,
  QtWSExtCtrls,
@@ -137,7 +139,8 @@ uses
 // QtWSToolwin,
 ////////////////////////////////////////////////////
   Graphics, buttons, Menus,
-  qtprivate, qtobjects;
+  // Bindings
+  qtprivate, qtwidgets, qtobjects;
 
 
 const

@@ -27,15 +27,11 @@ unit QtWSStdCtrls;
 interface
 
 uses
-////////////////////////////////////////////////////
-// I M P O R T A N T                                
-////////////////////////////////////////////////////
-// To get as little as posible circles,
-// uncomment only when needed for registration
-////////////////////////////////////////////////////
-  Classes, StdCtrls, Controls, Graphics, Forms, SysUtils,
-  InterfaceBase, qt4, qtprivate, qtobjects,
-////////////////////////////////////////////////////
+  // Bindings
+  qt4, qtprivate, qtwidgets,
+  // LCL
+  Classes, StdCtrls, Controls, Graphics, Forms, SysUtils, InterfaceBase,
+  // Widgetset
   WSStdCtrls, WSLCLClasses, LCLType;
 
 type

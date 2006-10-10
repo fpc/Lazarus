@@ -41,7 +41,7 @@
 function TQtWidgetSet.BeginPaint(Handle: hWnd; Var PS : TPaintStruct): hdc;
 begin
   {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI BeginPaint] Handle=', dbgs(Handle));
+    WriteLn('Trace:> [WinAPI BeginPaint] Handle=', dbgs(Handle));
   {$endif}
 
 {  if IsDoubleBuffered then
@@ -53,6 +53,10 @@ begin
   if Handle <> 0 then TQtMainWindow(Handle).Canvas := TQtDeviceContext(PS.hdc);
 
   Result := PS.hdc;
+
+  {$ifdef VerboseQtWinAPI}
+    WriteLn('Trace:< [WinAPI BeginPaint] Result=', dbgs(Result));
+  {$endif}
 end;
 
 {------------------------------------------------------------------------------
@@ -101,7 +105,9 @@ function TQtWidgetSet.CreateBitmapFromRawImage(const RawImage: TRawImage;
   var Bitmap, MaskBitmap: HBitmap; AlwaysCreateMask: boolean): boolean;
 begin
   {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI CreateBitmapFromRawImage]');
+    WriteLn('Trace:> [WinAPI CreateBitmapFromRawImage]',
+     ' Width:', dbgs(RawImage.Description.Width),
+     ' Height:', dbgs(RawImage.Description.Height));
   {$endif}
 
   Result := False;
@@ -109,9 +115,13 @@ begin
   MaskBitmap := 0;
 
   Bitmap := HBitmap(TQtImage.Create(RawImage.Data, RawImage.Description.Width,
-   RawImage.Description.Height, QImageFormat_ARGB32));
+   RawImage.Description.Height, QImageFormat_RGB32, RawImage.DataSize));
 
   Result := True;
+
+  {$ifdef VerboseQtWinAPI}
+    WriteLn('Trace:< [WinAPI CreateBitmapFromRawImage] Bitmap:', dbgs(Integer(Bitmap)));
+  {$endif}
 end;
 
 {------------------------------------------------------------------------------
@@ -313,6 +323,7 @@ var
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('Trace:> [WinAPI DeleteObject] GDIObject: ', IntToStr(GDIObject));
+    ObjType := 'Unidentifyed';
   {$endif}
 
   Result := False;
@@ -339,6 +350,9 @@ begin
 
   aObject := TObject(GDIObject);
 
+  {------------------------------------------------------------------------------
+    Font
+   ------------------------------------------------------------------------------}
   if aObject is TQtFont then
   begin
     {$ifdef VerboseQtWinAPI}
@@ -346,12 +360,24 @@ begin
     {$endif}
     
   end
+  {------------------------------------------------------------------------------
+    Brush
+   ------------------------------------------------------------------------------}
   else if aObject is TQtBrush then
   begin
     {$ifdef VerboseQtWinAPI}
       ObjType := 'Brush';
     {$endif}
 
+  end
+  {------------------------------------------------------------------------------
+    Image
+   ------------------------------------------------------------------------------}
+  else if aObject is TQtImage then
+  begin
+    {$ifdef VerboseQtWinAPI}
+      ObjType := 'Image';
+    {$endif}
   end;
 
   // Find out if we want to release internal GDI object
@@ -481,17 +507,32 @@ end;
   Params:  none
   Returns: The handle of the window with focus
 
-  The GetFocus function retrieves the handle of the window that has the focus.
+  Describes the inner format utilized by Qt + the specific information for this image
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.GetBitmapRawImageDescription(Bitmap: HBITMAP;
   Desc: PRawImageDescription): Boolean;
+var
+  BitmapInfo: TDIBSECTION;
 begin
   {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI GetBitmapRawImageDescription]');
+    WriteLn('[WinAPI GetBitmapRawImageDescription] Bitmap=', dbgs(Bitmap));
   {$endif}
+
   Result := true;
 
   FillStandardDescription(Desc^);
+
+  GetObject(Bitmap, SizeOf(BitmapInfo), @BitmapInfo);
+
+  Desc^.Width := BitmapInfo.dsBm.bmWidth;
+  Desc^.Height := BitmapInfo.dsBm.bmHeight;
+
+//  Desc^.BitOrder := riboReversedBits;
+//  Desc^.ByteOrder := riboLSBFirst;
+//  Desc^.LineOrder := riloTopToBottom;
+//  Desc^.ColorCount := 0;                // entries in color palette. Ignore when no palette.
+//  Desc^.BitsPerPixel := BitmapInfo.bmBitsPixel;    // bits per pixel. can be greater than Depth.
+//  Desc^.LineEnd := rileDWordBoundary;
 end;
 
 {------------------------------------------------------------------------------
@@ -578,26 +619,30 @@ end;
 function TQtWidgetSet.GetDC(hWnd: HWND): HDC;
 begin
   {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI GetDC] hWnd: ', IntToStr(hWnd));
+    WriteLn('Trace:> [WinAPI GetDC] hWnd: ', IntToStr(hWnd));
   {$endif}
 
   Result := HDC(TQtDeviceContext.Create(0));
   
 //  if hWnd <> 0 then TQtCustomForm(hWnd).Canvas := TQtDeviceContext(Result);
+
+  {$ifdef VerboseQtWinAPI}
+    WriteLn('Trace:< [WinAPI GetDC] Result: ', dbgs(Result));
+  {$endif}
 end;
 
 
 {------------------------------------------------------------------------------
   Method:  TQtWidgetSet.GetDeviceRawImageDescription
   Params:  none
-  Returns: The handle of the window with focus
+  Returns: True if successful
 
-  The GetFocus function retrieves the handle of the window that has the focus.
+  Describes the standard format utilized by Qt
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.GetDeviceRawImageDescription(DC: HDC; Desc: PRawImageDescription): boolean;
 begin
   {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI GetDeviceRawImageDescription]');
+    WriteLn('[WinAPI GetDeviceRawImageDescription] DC: ' + IntToStr(DC));
   {$endif}
   Result := true;
 
@@ -605,11 +650,153 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method:  TQtWidgetSet.GetObject
+  Params:  none
+  Returns: The size written to the buffer
+
+  Necessary for TBitmap support
+ ------------------------------------------------------------------------------}
+function TQtWidgetSet.GetObject(GDIObj: HGDIOBJ; BufSize: Integer; Buf: Pointer): Integer;
+var
+  aObject: TObject;
+  Width, Height: Longint;
+  BitmapSection : TDIBSECTION;
+  {$ifdef VerboseQtWinAPI}
+    ObjType: string;
+  {$endif}
+begin
+  {$ifdef VerboseQtWinAPI}
+    WriteLn('Trace:> [WinAPI GetObject] GDIObj: ' + IntToStr(GDIObj));
+    ObjType := '';
+  {$endif}
+  
+  Result := 0;
+  
+  if not IsValidGDIObject(GDIObj) then
+  begin
+    {$ifdef VerboseQtWinAPI}
+      WriteLn('Trace:< [WinAPI GetObject] Invalid GDI Object');
+    {$endif}
+
+    Exit;
+  end;
+
+  aObject := TObject(GDIObj);
+
+  {------------------------------------------------------------------------------
+    Font
+   ------------------------------------------------------------------------------}
+  if aObject is TQtFont then
+  begin
+    {$ifdef VerboseQtWinAPI}
+      ObjType := 'Font';
+    {$endif}
+
+  end
+  {------------------------------------------------------------------------------
+    Brush
+   ------------------------------------------------------------------------------}
+  else if aObject is TQtBrush then
+  begin
+    {$ifdef VerboseQtWinAPI}
+      ObjType := 'Brush';
+    {$endif}
+  end
+  {------------------------------------------------------------------------------
+    Image
+   ------------------------------------------------------------------------------}
+  else if aObject is TQtImage then
+  begin
+    {$ifdef VerboseQtWinAPI}
+      ObjType := 'Image';
+    {$endif}
+
+    if Buf = nil then Result := SizeOf(TDIBSECTION)
+    else
+    begin
+      Width := 200;
+      Height := 200;
+    
+      FillChar(BitmapSection, SizeOf(TDIBSECTION), 0);
+
+      {dsBM - BITMAP}
+      BitmapSection.dsBm.bmType := $4D42;
+      BitmapSection.dsBm.bmWidth := Width;
+      BitmapSection.dsBm.bmHeight := Height;
+      BitmapSection.dsBm.bmWidthBytes := 0;
+      BitmapSection.dsBm.bmPlanes := 1;//Does Bitmap Format support more?
+      BitmapSection.dsBm.bmBitsPixel := 1;
+      BitmapSection.dsBm.bmBits := nil;
+
+      {dsBmih - BITMAPINFOHEADER}
+      BitmapSection.dsBmih.biSize := 40;
+      BitmapSection.dsBmih.biWidth := Width;
+      BitmapSection.dsBmih.biHeight := Height;
+      BitmapSection.dsBmih.biPlanes := BitmapSection.dsBm.bmPlanes;
+      BitmapSection.dsBmih.biBitCount := 1;
+
+      BitmapSection.dsBmih.biCompression := 0;
+      BitmapSection.dsBmih.biSizeImage := 0;
+
+      BitmapSection.dsBmih.biXPelsPerMeter := 0;
+      BitmapSection.dsBmih.biYPelsPerMeter := 0;
+
+      BitmapSection.dsBmih.biClrUsed   := 0;
+      BitmapSection.dsBmih.biClrImportant := 0;
+
+{             case GDIBitmapType of
+                gbBitmap:
+                  If GDIBitmapObject <> nil then begin
+                    GDK_WINDOW_GET_SIZE(GDIBitmapObject, @biWidth, @biHeight);
+                    NumColors := 2;
+                    biBitCount := 1;
+                  end;
+                gbPixmap:
+                  If GDIPixmapObject <> nil then begin
+                     biBitCount := word(gdk_drawable_get_depth(GDIPixmapObject));
+                     gdk_drawable_get_size(GDIPixmapObject,@biWidth, @biHeight);
+                  end;
+              end;}
+
+      BitmapSection.dsBmih.biBitCount := 32;
+
+//              biSizeImage := (((biBitCount*biWidth+31) shr 5) shl 2)*biHeight;
+
+//      BitmapSection.dsBmih.biXPelsPerMeter := ;
+
+//      BitmapSection.dsBmih.biYPelsPerMeter := ;
+
+//        BitmapSection.dsBm.bmHeight :=      bmWidth := biWidth;
+//              bmHeight := biHeight;
+//              bmBitsPixel := biBitCount;
+
+      {dsBitfields: array[0..2] of DWORD;
+       dshSection: THandle;
+       dsOffset: DWORD;}
+
+      if BufSize >= SizeOf(BitmapSection) then
+      begin
+        PDIBSECTION(Buf)^ := BitmapSection;
+        Result := SizeOf(TDIBSECTION);
+      end
+      else if BufSize > 0 then
+      begin
+        Move(BitmapSection, Buf^, BufSize);
+        Result := BufSize;
+      end;
+    end;
+  end;
+
+  {$ifdef VerboseQtWinAPI}
+    WriteLn('Trace:< [WinAPI GetObject] Result=', dbgs(Result), ' ObjectType=', ObjType);
+  {$endif}
+end;
+
+{------------------------------------------------------------------------------
   Method:  TQtWidgetSet.GetRawImageFromDevice
   Params:  none
-  Returns: The handle of the window with focus
+  Returns: True if successful
 
-  The GetFocus function retrieves the handle of the window that has the focus.
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.GetRawImageFromDevice(SrcDC: HDC; const SrcRect: TRect;
   var NewRawImage: TRawImage): boolean;
@@ -622,41 +809,20 @@ begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI GetRawImageFromDevice]');
   {$endif}
+
   Result:=false;
+
   FillChar(NewRawImage, SizeOf(NewRawImage), 0);
 
   // make bitmap compatible to src device
   SrcWidth := SrcRect.Right - SrcRect.Left;
   SrcHeight := SrcRect.Bottom - SrcRect.Top;
-{  hMemBitmap := Windows.CreateCompatibleBitmap(SrcDC, SrcWidth, SrcHeight);
-  Result := hMemBitmap <> 0;
-  if not Result then exit;}
-
-  // make memory device context compatible to device, to select bitmap in for copying
-{  hMemDC := Windows.CreateCompatibleDC(SrcDC);
-  Result := hMemDC <> 0;
-  hOldObject := Windows.SelectObject(hMemDC, hMemBitmap);}
-
-  // copy srcdc -> membitmap
-{  Result := Result and Windows.BitBlt(hMemDC, 0, 0, SrcWidth, SrcHeight,
-        SrcDC, SrcRect.Left, SrcRect.Top, SRCCOPY);
-
-  // done copying, deselect bitmap from dc
-  Windows.SelectObject(hMemDC, hOldObject);
-
-  // copy membitmap -> rawimage
-  Result := Result and GetRawImageFromBitmap(hMemBitmap, 0,
-    Rect(0, 0, SrcWidth, SrcHeight), NewRawImage);
-
-  // free temporary stuff
-  Windows.DeleteDC(hMemDC);
-  Windows.DeleteObject(hMemBitmap);}
 end;
 
 {------------------------------------------------------------------------------
   Method:  TQtWidgetSet.GetRawImageFromBitmap
   Params:  none
-  Returns: The handle of the window with focus
+  Returns: True if successful
 
   Creates a raw image from a bitmap
  ------------------------------------------------------------------------------}
@@ -1375,7 +1541,7 @@ end;
 function TQtWidgetSet.ReleaseDC(hWnd: HWND; DC: HDC): Integer;
 begin
   {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI ReleaseDC]');
+    WriteLn('[WinAPI ReleaseDC] hWnd: ', dbgs(hWnd), ' DC: ', dbgs(DC));
   {$endif}
 
   Result := 0;
@@ -1449,7 +1615,9 @@ begin
       ObjType := 'Image';
     {$endif}
 
-//    Result := HGDIOBJ(TQtDeviceContext(DC).brush);
+    Result := HGDIOBJ(TQtDeviceContext(DC).vImage);
+
+    TQtDeviceContext(DC).vImage := TQtImage(aObject).Handle;
   end;
 
   {$ifdef VerboseQtWinAPI}
@@ -1592,10 +1760,26 @@ end;
 function TQtWidgetSet.StretchMaskBlt(DestDC: HDC; X, Y, Width, Height: Integer;
   SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; Mask: HBITMAP;
   XMask, YMask: Integer; Rop: DWORD): Boolean;
+var
+  SrcRect, DstRect: TRect;
+  Image: QImageH;
 begin
+  DstRect := Bounds(X, Y, Width, Height);
+
+  SrcRect := Bounds(XSrc, YSrc, SrcWidth, SrcHeight);
+  
+  Image := TQtDeviceContext(SrcDC).vImage;
+
   {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI StretchMaskBlt] DestDC:', IntToStr(DestDC), ' SrcDC:', IntToStr(SrcDC));
+    WriteLn('[WinAPI StretchMaskBlt] DestDC:', dbgs(DestDC), ' SrcDC:', dbgs(SrcDC),
+     ' Image:', dbgs(Integer(Image)),
+     ' X:', dbgs(X), ' Y:', dbgs(Y),
+     ' W:', dbgs(Width), ' H:', dbgs(Height),
+     ' XSrc:', dbgs(XSrc), ' YSrc:', dbgs(YSrc),
+     ' WSrc:', dbgs(SrcWidth), ' HSrc:', dbgs(SrcHeight));
   {$endif}
+
+  TQtDeviceContext(DestDC).drawImage(@DstRect, Image, @SrcRect);
 
   Result := True;
 end;

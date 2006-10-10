@@ -28,7 +28,7 @@ interface
 
 uses
   // Libs
-  qt4, qtprivate,
+  qt4, qtwidgets,
   // LCL
   SysUtils, Controls, LCLType, Forms, InterfaceBase, Buttons, LMessages,
   // Widgetset

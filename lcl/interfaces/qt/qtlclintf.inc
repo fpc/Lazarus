@@ -36,7 +36,7 @@ begin
 
   Desc.Format := ricfRGBA;
   Desc.HasPalette := False;
-  Desc.Depth := 32;
+//  Desc.Depth := 32;
   // Width and Height not relevant
   Desc.PaletteColorCount := 0;
   Desc.BitOrder := riboReversedBits;
@@ -45,10 +45,20 @@ begin
   Desc.ColorCount := Desc.PaletteColorCount;
   Desc.BitsPerPixel := 32;
   Desc.LineEnd := rileDWordBoundary;
-//  FillRawImageDescriptionColors(Desc);
-  Desc.AlphaPrec := 1;
+
+  // 0-8-8-8 mode, high byte is not used
+  Desc.RedPrec := 8;
+  Desc.GreenPrec := 8;
+  Desc.BluePrec := 8;
+  Desc.RedShift := 16;
+  Desc.GreenShift := 8;
+  Desc.BlueShift := 0;
+  Desc.Depth := 24;
+
+  Desc.AlphaPrec := 0;
   Desc.AlphaSeparate := False;
-  // CreateBitmap winapi call wants word-aligned data
+  // Qt wants dword-aligned data
+  Desc.AlphaLineEnd := rileDWordBoundary;
   Desc.AlphaShift := 0;
 end;
 

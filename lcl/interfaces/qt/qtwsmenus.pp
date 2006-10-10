@@ -27,14 +27,11 @@ unit QtWSMenus;
 interface
 
 uses
-////////////////////////////////////////////////////
-// I M P O R T A N T                                
-////////////////////////////////////////////////////
-// To get as little as posible circles,
-// uncomment only when needed for registration
-////////////////////////////////////////////////////
-  SysUtils, Classes, Menus, Forms, LCLType, qt4, qtprivate,
-////////////////////////////////////////////////////
+  // Bindings
+  qt4, qtwidgets, qtobjects,
+  // LCL
+  SysUtils, Classes, Menus, Forms, LCLType,
+  // Widgetset
   WSMenus, WSLCLClasses;
 
 type

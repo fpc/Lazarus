@@ -25,113 +25,43 @@ unit qtobjects;
 
 interface
 
-uses Classes, StdCtrls, Controls, Graphics, SysUtils, qt4;
+uses
+  // Bindings
+  qt4,
+  // Free Pascal
+  Classes, SysUtils, Types,
+  // LCL
+  Forms, Controls, LCLType, LCLProc, Menus;
 
 type
+  { TQtAction }
 
-  { TQtComboStrings }
-
-  TQtComboStrings = class(TStrings)
+  TQtAction = class(TObject)
   private
-    FComboChanged: Boolean; // StringList and QtComboBox out of sync
-    FStringList: TStringList; // Holds the items to show
-    FQtComboBox: QComboBoxH;  // Qt Widget
-    FOwner: TWinControl;      // Lazarus Control Owning ListStrings
-    FUpdating: Boolean;       // We're changing Qt Widget
-    procedure InternalUpdate;
-    procedure ExternalUpdate(var Astr: TStringList; Clear: Boolean = True);
-    procedure IsChanged; // OnChange triggered by program action
-  protected
-    function GetTextStr: string; override;
-    function GetCount: integer; override;
-    function Get(Index : Integer) : string; override;
-    //procedure SetSorted(Val : boolean); virtual;
   public
-    constructor Create(ComboBoxH : QComboBoxH; TheOwner: TWinControl);
+    Handle: QActionH;
+    MenuItem: TMenuItem;
+  public
+    constructor Create(const AHandle: QActionH);
     destructor Destroy; override;
-    procedure Assign(Source : TPersistent); override;
-    procedure Clear; override;
-    procedure Delete(Index : integer); override;
-    procedure Insert(Index : integer; const S: string); override;
-    procedure SetText(TheText: PChar); override;
-    //procedure Sort; virtual;
   public
-    //property Sorted: boolean read FSorted write SetSorted;
-    property Owner: TWinControl read FOwner;
-  end;
-
-
-  { TQtListStrings }
-
-  TQtListStrings = class(TStrings)
-  private
-    FListChanged: Boolean; // StringList and QtListWidget out of sync
-    FStringList: TStringList; // Holds the items to show
-    FQtListWidget: QListWidgetH;  // Qt Widget
-    FOwner: TWinControl;      // Lazarus Control Owning ListStrings
-    FUpdating: Boolean;       // We're changing Qt Widget
-    procedure InternalUpdate;
-    procedure ExternalUpdate(var Astr: TStringList; Clear: Boolean = True);
-    procedure IsChanged; // OnChange triggered by program action
-  protected
-    function GetTextStr: string; override;
-    function GetCount: integer; override;
-    function Get(Index : Integer) : string; override;
-    //procedure SetSorted(Val : boolean); virtual;
+    procedure SlotTriggered(checked: Boolean = False); cdecl;
   public
-    constructor Create(ListWidgetH : QListWidgetH; TheOwner: TWinControl);
-    destructor Destroy; override;
-    procedure Assign(Source : TPersistent); override;
-    procedure Clear; override;
-    procedure Delete(Index : integer); override;
-    procedure Insert(Index : integer; const S: string); override;
-    procedure SetText(TheText: PChar); override;
-    //procedure Sort; virtual;
-  public
-    //property Sorted: boolean read FSorted write SetSorted;
-    property Owner: TWinControl read FOwner;
-  end;
-
-  { TQtMemoStrings }
-
-  TQtMemoStrings = class(TStrings)
-  private
-    FTextChanged: Boolean; // StringList and QtTextEdit out of sync
-    FStringList: TStringList; // Holds the lines to show
-    FQtTextEdit: QTextEditH;  // Qt Widget
-    FOwner: TWinControl;      // Lazarus Control Owning MemoStrings
-    FUpdating: Boolean;       // We're changing Qt Widget
-    procedure InternalUpdate;
-    procedure ExternalUpdate(var Astr: WideString; Clear: Boolean = True);
-    procedure IsChanged; // OnChange triggered by program action
-  protected
-    function GetTextStr: string; override;
-    function GetCount: integer; override;
-    function Get(Index : Integer) : string; override;
-    //procedure SetSorted(Val : boolean); virtual;
-  public
-    constructor Create(TextEdit : QTextEditH; TheOwner: TWinControl);
-    destructor Destroy; override;
-    procedure Assign(Source : TPersistent); override;
-    procedure Clear; override;
-    procedure Delete(Index : integer); override;
-    procedure Insert(Index : integer; const S: string); override;
-    procedure SetText(TheText: PChar); override;
-    //procedure Sort; virtual;
-  public
-    //property Sorted: boolean read FSorted write SetSorted;
-    property Owner: TWinControl read FOwner;
-    function TextChangedHandler(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
+    procedure setChecked(p1: Boolean);
+    procedure setEnabled(p1: Boolean);
+    procedure setVisible(p1: Boolean);
   end;
 
   { TQtImage }
 
   TQtImage = class(TObject)
-  private
+  public
     Handle: QImageH;
+    Data: PByte;
+    DataSize: Cardinal;
   public
     constructor Create(vHandle: QImageH); overload;
-    constructor Create(data: PByte; width: Integer; height: Integer; format: QImageFormat); overload;
+    constructor Create(Adata: PByte; width: Integer; height: Integer; format: QImageFormat; size: PtrInt); overload;
     destructor Destroy; override;
   public
     function height: Integer;
@@ -139,417 +69,105 @@ type
     function numBytes: Integer;
   end;
 
-Implementation
+  { TQtFont }
 
-uses qtprivate, LMessages;
+  TQtFont = class(TObject)
+  private
+  public
+    Widget: QFontH;
+  public
+    constructor Create(CreateHandle: Boolean); virtual;
+    destructor Destroy; override;
+  public
+    function pointSize: Integer;
+    procedure setPointSize(p1: Integer);
+    function pixelSize: Integer;
+    procedure setPixelSize(p1: Integer);
+    function weight: Integer;
+    procedure setWeight(p1: Integer);
+    procedure setBold(p1: Boolean);
+    procedure setItalic(b: Boolean);
+    procedure setUnderline(p1: Boolean);
+    procedure setStrikeOut(p1: Boolean);
+    procedure setRawName(p1: string);
+    procedure setFamily(p1: string);
+  end;
 
-{ TQtListStrings }
+  { TQtBrush }
 
-procedure TQtListStrings.InternalUpdate;
+  TQtBrush = class(TObject)
+  private
+  public
+    Widget: QBrushH;
+  public
+    constructor Create(CreateHandle: Boolean); virtual;
+    destructor Destroy; override;
+    procedure setStyle(style: QtBrushStyle);
+  end;
+
+  { TQtDeviceContext }
+
+  TQtDeviceContext = class(TObject)
+  private
+  public
+    Widget: QPainterH;
+    Parent: QWidgetH;
+    Origin: TPoint;
+    vBrush: TQtBrush;
+    vFont: TQtFont;
+    vImage: QImageH;
+  public
+    constructor Create(WidgetHandle: HWND); virtual;
+    destructor Destroy; override;
+  public
+    procedure drawRect(x1: Integer; y1: Integer; w: Integer; h: Integer);
+    procedure drawText(x: Integer; y: Integer; s: PWideString);
+    procedure drawLine(x1: Integer; y1: Integer; x2: Integer; y2: Integer);
+    procedure drawEllipse(x: Integer; y: Integer; w: Integer; h: Integer);
+    procedure setBrushOrigin(x, y: Integer);
+    procedure brushOrigin(retval: PPoint);
+    function font: TQtFont;
+    procedure setFont(f: TQtFont);
+    function brush: TQtBrush;
+    procedure setBrush(brush: TQtBrush);
+    procedure drawImage(targetRect: PRect; image: QImageH; sourceRect: PRect; flags: QtImageConversionFlags = QtAutoColor);
+  end;
+
+implementation
+
+uses qtwidgets;
+
+{ TQtAction }
+
+constructor TQtAction.Create(const AHandle: QActionH);
 begin
-
+  Handle := AHandle;
 end;
 
-procedure TQtListStrings.ExternalUpdate(var Astr: TStringList; Clear: Boolean);
-var
-  i: Integer;
-begin
-  FUpdating := True;
-  if Clear then
-    QListWidget_clear(FQtListWidget);
-  for i := 0 to AStr.Count -1 do
-    QListWidget_additem(FQtListWidget, @WideString(Astr[i]));
-  FUpdating := False;
-  IsChanged;
-  FUpdating := False;
-end;
-
-procedure TQtListStrings.IsChanged;
-begin
-
-end;
-
-function TQtListStrings.GetTextStr: string;
-begin
-  Result := inherited GetTextStr;
-end;
-
-function TQtListStrings.GetCount: integer;
-begin
-  if FListChanged then InternalUpdate;
-  Result := FStringList.Count;
-end;
-
-function TQtListStrings.Get(Index: Integer): string;
-begin
-  if FListChanged then InternalUpdate;
-  if Index < FStringList.Count then
-     Result := FStringList.Strings[Index]
-  else Result := '';
-end;
-
-{------------------------------------------------------------------------------
-  Method: TQtListStrings.Create
-  Params:  Qt Widget Handle and Lazarus WinControl Parent Object
-  Returns: Nothing
-
-  Contructor for the class.
- ------------------------------------------------------------------------------}
-constructor TQtListStrings.Create(ListWidgetH: QListWidgetH; TheOwner: TWinControl);
-var
-  i: Integer;
-begin
-  inherited Create;
-
-  {$ifdef VerboseQt}
-    if (ListWidgetH = nil) then WriteLn('TQtMemoStrings.Create Unspecified ListWidgetH widget');
-    if (TheOwner = nil) then WriteLn('TQtMemoStrings.Create Unspecified owner');
-  {$endif}
-
-  FStringList := TStringList.Create;
-  FQtListWidget := ListWidgetH;
-  FStringList.Text := TCustomListBox(TheOwner).Items.Text;
-  FOwner:=TheOwner;
-end;
-
-destructor TQtListStrings.Destroy;
+destructor TQtAction.Destroy;
 begin
   inherited Destroy;
 end;
 
-procedure TQtListStrings.Assign(Source: TPersistent);
+procedure TQtAction.SlotTriggered(checked: Boolean); cdecl;
 begin
-  inherited Assign(Source);
+  if Assigned(MenuItem) and Assigned(MenuItem.OnClick) then MenuItem.OnClick(Self);
 end;
 
-procedure TQtListStrings.Clear;
+procedure TQtAction.setChecked(p1: Boolean);
 begin
-  FUpdating := True;
-  FStringList.Clear;
-  QListWidget_clear(FQtListWidget);
-  FListChanged := False;
-  FUpdating := False;
-  IsChanged;
+  QAction_setChecked(Handle, p1);
 end;
 
-procedure TQtListStrings.Delete(Index: integer);
-{var
-  Astr: WideString;}
+procedure TQtAction.setEnabled(p1: Boolean);
 begin
-  if FListChanged then InternalUpdate;
-  
-  if Index < FStringList.Count then
-  begin
-    FStringList.Delete(Index);
-//    Astr := FStringList.Text;
-    ExternalUpdate(FStringList,True);
-    FListChanged := False;
-  end;
-  
-(*  FStringList.Delete(Index);
-  QListWidget_takeitem(FQtListWidget, Index); *)
+  QAction_setEnabled(Handle, p1);
 end;
 
-procedure TQtListStrings.Insert(Index: integer; const S: string);
-{var
-  Astr: WideString;}
+procedure TQtAction.setVisible(p1: Boolean);
 begin
-  if FListChanged then InternalUpdate;
-  
-  if Index < 0 then Index := 0;
-  
-  if Index <= FStringList.Count then
-  begin
-    FStringList.Insert(Index,S);
-//    Astr := FStringList.Text;
-    ExternalUpdate(FStringList,True);
-    FListChanged := False;
-  end;
+  QAction_setVisible(Handle, p1);
 end;
-
-procedure TQtListStrings.SetText(TheText: PChar);
-begin
-  inherited SetText(TheText);
-end;
-
-{ TQtMemoStrings }
-
-{------------------------------------------------------------------------------
-  Private Method: TQtMemoStrings.InternalUpdate
-  Params:  None
-  Returns: Nothing
-
-  Updates internal StringList from Qt Widget
- ------------------------------------------------------------------------------}
-Procedure TQtMemoStrings.InternalUpdate;
-var
-  Astr: WideString;
-begin
-  QTextEdit_toPlainText(FQtTextEdit,@Astr); // get the memo content
-  FStringList.Text := Astr;
-  FTextChanged := False;
-end;
-
-{------------------------------------------------------------------------------
-  Private Method: TQtMemoStrings.ExternalUpdate
-  Params:  Astr: Text for Qt Widget; Clear: if we must clear first
-  Returns: Nothing
-
-  Updates Qt Widget from text - If DelphiOnChange, generates OnChange Event
- ------------------------------------------------------------------------------}
-procedure TQtMemoStrings.ExternalUpdate(var Astr: WideString; Clear: Boolean = True);
-{var
-  Mess: TLMessage;}
-begin
-  FUpdating := True;
-  if Clear then
-    QTextEdit_clear(FQtTextEdit);
-  QTextEdit_append(FQtTextEdit,@Astr);
-  FUpdating := False;
-  {FillChar(Mess, SizeOf(Mess), #0);
-  (FOwner as TCustomMemo).Modified := False;
-  FOwner.Dispatch(TLMessage(Mess));}
-  IsChanged;
-  FUpdating := False;
-end;
-
-{------------------------------------------------------------------------------
-  Private Method: TQtMemoStrings.IsChanged
-  Params:  None
-  Returns: Nothing
-
-  Triggers the OnChange Event, with modified set to false
- ------------------------------------------------------------------------------}
-procedure TQtMemoStrings.IsChanged;
-begin
-  if Assigned((FOwner as TCustomMemo).OnChange) then
-  begin
-    (FOwner as TCustomMemo).Modified := False;
-    (FOwner as TCustomMemo).OnChange(self);
-  end;
-end;
-
-{------------------------------------------------------------------------------
-  Method: TQtMemoStrings.GetTextStr
-  Params:  None
-  Returns: a string
-
-  Return the whole StringList content as a single string
- ------------------------------------------------------------------------------}
-function TQtMemoStrings.GetTextStr: string;
-begin
-  if FTextChanged then InternalUpdate;
-  Result := FStringList.Text;
-end;
-
-{------------------------------------------------------------------------------
-  Method: TQtMemoStrings.GetCount
-  Params:  None
-  Returns: an integer
-
-  Return the current number of strings
- ------------------------------------------------------------------------------}
-function TQtMemoStrings.GetCount: integer;
-begin
-  if FTextChanged then InternalUpdate;
-  Result := FStringList.Count;
-end;
-
-{------------------------------------------------------------------------------
-  Method: TQtMemoStrings.GetCount
-  Params:  String Index
-  Returns: a string
-
-  Return the string[Index], or an empty string of out of bounds.
- ------------------------------------------------------------------------------}
-function TQtMemoStrings.Get(Index: Integer): string;
-begin
-  if FTextChanged then InternalUpdate;
-  if Index < FStringList.Count then
-     Result := FStringList.Strings[Index]
-  else Result := '';
-end;
-
-
-{------------------------------------------------------------------------------
-  Method: TQtMemoStrings.Create
-  Params:  Qt Widget Handle and Lazarus WinControl Parent Object
-  Returns: Nothing
-
-  Contructor for the class.
- ------------------------------------------------------------------------------}
-constructor TQtMemoStrings.Create(TextEdit: QTextEditH; TheOwner: TWinControl);
-var
-  Method: TMethod;
-  Hook : QTextEdit_hookH;
-  Astr: WideString;
-begin
-  inherited Create;
-
-  {$ifdef VerboseQt}
-    if (TextEdit = nil) then WriteLn('TQtMemoStrings.Create Unspecified TextEdit widget');
-    if (TheOwner = nil) then WriteLn('TQtMemoStrings.Create Unspecified owner');
-  {$endif}
-
-  FStringList := TStringList.Create;
-  FQtTextEdit := TextEdit;
-  QTextEdit_toPlainText(TextEdit,@Astr); // get the memo content
-  FStringList.Text := Astr;
-  FOwner:=TheOwner;
-  
-  // Callback Event
-  {Method := MemoChanged;}
-  TEventFilterMethod(Method) := TextChangedHandler;
-  Hook := QTextEdit_hook_create(FQtTextEdit);
-  QTextEdit_hook_hook_textChanged(Hook, Method);
-end;
-
-{------------------------------------------------------------------------------
-  Method: TQtMemoStrings.Destroy
-  Params:  None
-  Returns: Nothing
-
-  Destructor for the class.
- ------------------------------------------------------------------------------}
-destructor TQtMemoStrings.Destroy;
-begin
-  // don't destroy the widgets
-  inherited Destroy;
-end;
-
-{------------------------------------------------------------------------------
-  Method: TQtMemoStrings.TextChangedHandler
-  Params:  None
-  Returns: Nothing
-
-  Signal handler for the TextChanged Signal.
- ------------------------------------------------------------------------------}
-function TQtMemoStrings.TextChangedHandler(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
-var
-  Mess: TLMessage;
-  // just for debugging
-  SenderView: QObjectH;
-  EventView: QEventH;
-begin
-  if not FUpdating then begin
-    SenderView := Sender;
-    EventView := Event;
-    FTextChanged := True;
-    FillChar(Mess, SizeOf(Mess), #0);
-    Mess.Msg := CM_TEXTCHANGED;
-    //(FOwner as TCustomMemo).Modified := True;
-    FOwner.Dispatch(TLMessage(Mess));
-    end;
-  Result := True;
-end;
-
-{------------------------------------------------------------------------------
-  Method: TQtMemoStrings.Assign
-  Params:  None
-  Returns: Nothing
-
-  Assigns from a TStrings.
- ------------------------------------------------------------------------------}
-procedure TQtMemoStrings.Assign(Source: TPersistent);
-var
-  Astr: WideString;
-begin
-  if (Source=Self) or (Source=nil) then exit;
-  if Source is TStrings then begin
-    FStringList.Clear;
-    FStringList.Text := TStrings(Source).Text;
-    Astr := FStringList.Text;
-    ExternalUpdate(Astr,True);
-    FTextChanged := False;
-    exit;
-  end;
-  Inherited Assign(Source);
-end;
-
-{------------------------------------------------------------------------------
-  Method: TQtMemoStrings.Clear
-  Params:  None
-  Returns: Nothing
-
-  Clears all.
- ------------------------------------------------------------------------------}
-procedure TQtMemoStrings.Clear;
-var
-  Mess: TLMessage;
-begin
-  FUpdating := True;
-  FStringList.Clear;
-  QTextEdit_clear(FQtTextEdit);
-  FTextChanged := False;
-  FUpdating := False;
-  {FillChar(Mess, SizeOf(Mess), #0);
-  FillChar(Mess, SizeOf(Mess), #0);
-  Mess.Msg := CM_TEXTCHANGED;
-  (FOwner as TCustomMemo).Modified := False;
-  FOwner.Dispatch(TLMessage(Mess));}
-  IsChanged;
-end;
-
-{------------------------------------------------------------------------------
-  Method: TQtMemoStrings.Delete
-  Params:  Index
-  Returns: Nothing
-
-  Deletes line at Index.
- ------------------------------------------------------------------------------}
-procedure TQtMemoStrings.Delete(Index: integer);
-var
-  Astr: WideString;
-begin
-  if FTextChanged then InternalUpdate;
-  if Index < FStringList.Count then begin
-    FStringList.Delete(Index);
-    Astr := FStringList.Text;
-    ExternalUpdate(AStr,True);
-    FTextChanged := False;
-    end;
-end;
-
-{------------------------------------------------------------------------------
-  Method: TQtMemoStrings.Insert
-  Params:  Index, string
-  Returns: Nothing
-
-  Inserts line at Index.
- ------------------------------------------------------------------------------}
-procedure TQtMemoStrings.Insert(Index: integer; const S: string);
-var
-  Astr: WideString;
-begin
-  if FTextChanged then InternalUpdate;
-  if Index < 0 then Index := 0;
-  if Index <= FStringList.Count then begin
-    FStringList.Insert(Index,S);
-    Astr := FStringList.Text;
-    ExternalUpdate(Astr,True);
-    FTextChanged := False;
-    end;
-end;
-
-{------------------------------------------------------------------------------
-  Method: TQtMemoStrings.SetText
-  Params:  A null terminated string
-  Returns: Nothing
-
-  Fills the memo with the string
- ------------------------------------------------------------------------------}
-procedure TQtMemoStrings.SetText(TheText: PChar);
-Var
-  str: String;
-  Astr: WideString;
-begin
-  str := StrPas(TheText);
-  FStringList.Text := str;
-  AStr := Str;
-  ExternalUpdate(Astr,True);
-  FTextChanged := False;
-end;
-
 
 { TQtImage }
 
@@ -561,6 +179,8 @@ end;
 constructor TQtImage.Create(vHandle: QImageH);
 begin
   Handle := vHandle;
+  
+  DataSize := 0;
 end;
 
 {------------------------------------------------------------------------------
@@ -568,9 +188,21 @@ end;
 
   Contructor for the class.
  ------------------------------------------------------------------------------}
-constructor TQtImage.Create(data: PByte; width: Integer; height: Integer; format: QImageFormat);
+constructor TQtImage.Create(Adata: PByte; width: Integer; height: Integer; format: QImageFormat; size: PtrInt);
 begin
-  Handle := QImage_create(data, width, height, format);
+  DataSize := size;
+
+  GetMem(Data, DataSize);
+  
+//  FillChar(Data^, DataSize, #0);
+
+  Move(Adata^, Data^, DataSize);
+
+  Handle := QImage_create(Data, width, height, format);
+
+  {$ifdef VerboseQt}
+    WriteLn('TQtImage.Create Size:', dbgs(size), ' Result:', dbgs(Handle));
+  {$endif}
 end;
 
 {------------------------------------------------------------------------------
@@ -582,8 +214,14 @@ end;
  ------------------------------------------------------------------------------}
 destructor TQtImage.Destroy;
 begin
+  {$ifdef VerboseQt}
+    WriteLn('TQtImage.Destroy Handle:', dbgs(Handle), ' DataSize', dbgs(DataSize));
+  {$endif}
+
   if Handle <> nil then QImage_destroy(Handle);
   
+  if DataSize > 0 then FreeMem(Data, DataSize);
+
   inherited Destroy;
 end;
 
@@ -617,124 +255,322 @@ begin
   Result := QImage_numBytes(Handle);
 end;
 
-{ TQtComboStrings }
+{ TQtFont }
 
-procedure TQtComboStrings.InternalUpdate;
+{------------------------------------------------------------------------------
+  Function: TQtFont.Create
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+constructor TQtFont.Create(CreateHandle: Boolean);
 begin
-
-end;
-
-procedure TQtComboStrings.ExternalUpdate(var Astr: TStringList; Clear: Boolean
-  );
-var
-  i: Integer;
-  data: QVariantH;
-begin
-
-  data := QVariant_create(10); //Creates dummy data
-
-  FUpdating := True;
-  if Clear then
-    QComboBox_clear(FQtComboBox);
-  for i := 0 to AStr.Count -1 do
-    QComboBox_additem(FQtComboBox, @WideString(Astr[i]), data);
-  FUpdating := False;
-  IsChanged;
-  FUpdating := False;
-
-  QVariant_destroy(data); // Clean up
-end;
-
-procedure TQtComboStrings.IsChanged;
-begin
-
-end;
-
-function TQtComboStrings.GetTextStr: string;
-begin
-  Result:=inherited GetTextStr;
-end;
-
-function TQtComboStrings.GetCount: integer;
-begin
-  if FComboChanged then InternalUpdate;
-  Result := FStringList.Count;
-end;
-
-function TQtComboStrings.Get(Index: Integer): string;
-begin
-  if FComboChanged then InternalUpdate;
-  if Index < FStringList.Count then
-     Result := FStringList.Strings[Index]
-  else Result := '';
-end;
-
-constructor TQtComboStrings.Create(ComboBoxH: QComboBoxH; TheOwner: TWinControl);
-var
-  i: Integer;
-begin
-  inherited Create;
-
   {$ifdef VerboseQt}
-    if (ComboBoxH = nil) then WriteLn('TQtComboStrings.Create Unspecified ComboBoxH widget');
-    if (TheOwner = nil) then WriteLn('TQtComboStrings.Create Unspecified owner');
+    WriteLn('TQtFont.Create CreateHandle: ', dbgs(CreateHandle));
   {$endif}
 
-  FStringList := TStringList.Create;
-  FQtComboBox := ComboBoxH;
-  FStringList.Text := TCustomComboBox(TheOwner).Items.Text;
-  FOwner:=TheOwner;
+  if CreateHandle then Widget := QFont_create;
 end;
 
-destructor TQtComboStrings.Destroy;
+{------------------------------------------------------------------------------
+  Function: TQtFont.Destroy
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+destructor TQtFont.Destroy;
 begin
+  {$ifdef VerboseQt}
+    WriteLn('TQtFont.Destroy');
+  {$endif}
+
+  if Widget <> nil then QFont_destroy(Widget);
+
   inherited Destroy;
 end;
 
-procedure TQtComboStrings.Assign(Source: TPersistent);
+function TQtFont.pointSize: Integer;
 begin
-  inherited Assign(Source);
+  Result := QFont_pointSize(Widget);
 end;
 
-procedure TQtComboStrings.Clear;
+procedure TQtFont.setPointSize(p1: Integer);
 begin
-  FUpdating := True;
-  FStringList.Clear;
-  QComboBox_clear(FQtComboBox);
-  FComboChanged := False;
-  FUpdating := False;
-  IsChanged;
+  QFont_setPointSize(Widget, p1);
 end;
 
-procedure TQtComboStrings.Delete(Index: integer);
+function TQtFont.pixelSize: Integer;
 begin
-  if FComboChanged then InternalUpdate;
+  Result := QFont_pixelSize(Widget);
+end;
 
-  if Index < FStringList.Count then
+procedure TQtFont.setPixelSize(p1: Integer);
+begin
+  QFont_setPixelSize(Widget, p1);
+end;
+
+function TQtFont.weight: Integer;
+begin
+  Result := QFont_weight(Widget);
+end;
+
+procedure TQtFont.setWeight(p1: Integer);
+begin
+  QFont_setWeight(Widget, p1);
+end;
+
+procedure TQtFont.setBold(p1: Boolean);
+begin
+  QFont_setBold(Widget, p1);
+end;
+
+procedure TQtFont.setItalic(b: Boolean);
+begin
+  QFont_setItalic(Widget, b);
+end;
+
+procedure TQtFont.setUnderline(p1: Boolean);
+begin
+  QFont_setUnderline(Widget, p1);
+end;
+
+procedure TQtFont.setStrikeOut(p1: Boolean);
+begin
+  QFont_setStrikeOut(Widget, p1);
+end;
+
+procedure TQtFont.setRawName(p1: string);
+var
+  Str: WideString;
+begin
+  Str := WideString(p1);
+
+  QFont_setRawName(Widget, @Str);
+end;
+
+procedure TQtFont.setFamily(p1: string);
+var
+  Str: WideString;
+begin
+  Str := WideString(p1);
+
+  QFont_setFamily(Widget, @Str);
+end;
+
+{ TQtBrush }
+
+{------------------------------------------------------------------------------
+  Function: TQtBrush.Create
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+constructor TQtBrush.Create(CreateHandle: Boolean);
+begin
+  // Creates the widget
+  {$ifdef VerboseQt}
+    WriteLn('TQtBrush.Create CreateHandle: ', dbgs(CreateHandle));
+  {$endif}
+
+  if CreateHandle then Widget := QBrush_create;
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtBrush.Destroy
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+destructor TQtBrush.Destroy;
+begin
+  {$ifdef VerboseQt}
+    WriteLn('TQtBrush.Destroy');
+  {$endif}
+
+  QBrush_destroy(Widget);
+
+  inherited Destroy;
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtBrush.setStyle
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+procedure TQtBrush.setStyle(style: QtBrushStyle);
+begin
+  QBrush_setStyle(Widget, style);
+end;
+
+{ TQtDeviceContext }
+
+{------------------------------------------------------------------------------
+  Function: TQtDeviceContext.Create
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+constructor TQtDeviceContext.Create(WidgetHandle: HWND);
+begin
+  {$ifdef VerboseQt}
+    WriteLn('TQtDeviceContext.Create ( WidgetHandle: ' + IntToStr(WidgetHandle) + ' )');
+  {$endif}
+
+  if WidgetHandle = 0 then
   begin
-    FStringList.Delete(Index);
-    ExternalUpdate(FStringList,True);
-    FComboChanged := False;
-  end;
-end;
-
-procedure TQtComboStrings.Insert(Index: integer; const S: string);
-begin
-  if FComboChanged then InternalUpdate;
-
-  if Index < 0 then Index := 0;
-
-  if Index <= FStringList.Count then
+    Parent := nil;
+    Widget := QPainter_create
+  end
+  else
   begin
-    FStringList.Insert(Index,S);
-    ExternalUpdate(FStringList,True);
-    FComboChanged := False;
+    Parent := TQtMainWindow(WidgetHandle).Widget;
+    Widget := QPainter_create(QWidget_to_QPaintDevice(Parent));
   end;
+
+  vBrush := TQtBrush.Create(False);
+  vFont := TQtFont.Create(False);
 end;
 
-procedure TQtComboStrings.SetText(TheText: PChar);
+{------------------------------------------------------------------------------
+  Function: TQtDeviceContext.Destroy
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+destructor TQtDeviceContext.Destroy;
 begin
-  inherited SetText(TheText);
+  {$ifdef VerboseQt}
+    WriteLn('TQtDeviceContext.Destroy');
+  {$endif}
+
+  vBrush.Widget := nil;
+  vBrush.Free;
+  vFont.Widget := nil;
+  vFont.Free;
+  
+//  if vImage <> nil then NilAndFree(vImage);
+
+  QPainter_destroy(Widget);
+
+  inherited Destroy;
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtDeviceContext.drawRect
+  Params:  None
+  Returns: Nothing
+
+  Draws a rectangle. Helper function of winapi.Rectangle
+ ------------------------------------------------------------------------------}
+procedure TQtDeviceContext.drawRect(x1: Integer; y1: Integer; w: Integer; h: Integer);
+begin
+  QPainter_drawRect(Widget, x1, y1, w, h);
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtDeviceContext.drawText
+  Params:  None
+  Returns: Nothing
+
+  Draws a Text. Helper function of winapi.TextOut
+ ------------------------------------------------------------------------------}
+procedure TQtDeviceContext.drawText(x: Integer; y: Integer; s: PWideString);
+begin
+  QPainter_drawText(Widget, Origin.X + x, Origin.Y + y, s);
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtDeviceContext.drawLine
+  Params:  None
+  Returns: Nothing
+
+  Draws a Text. Helper function for winapi.LineTo
+ ------------------------------------------------------------------------------}
+procedure TQtDeviceContext.drawLine(x1: Integer; y1: Integer; x2: Integer; y2: Integer);
+begin
+  QPainter_drawLine(Widget, x1, y1, x2, y2);
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtDeviceContext.drawEllipse
+  Params:  None
+  Returns: Nothing
+
+  Draws a ellipse. Helper function for winapi.Ellipse
+ ------------------------------------------------------------------------------}
+procedure TQtDeviceContext.drawEllipse(x: Integer; y: Integer; w: Integer; h: Integer);
+begin
+  QPainter_drawEllipse(Widget, x, y, w, h);
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtDeviceContext.setBrushOrigin
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+procedure TQtDeviceContext.setBrushOrigin(x, y: Integer);
+begin
+  QPainter_setBrushOrigin(Widget, x, y);
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtDeviceContext.brushOrigin
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+procedure TQtDeviceContext.brushOrigin(retval: PPoint);
+begin
+  QPainter_brushOrigin(Widget, retval);
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtDeviceContext.font
+  Params:  None
+  Returns: The current font object of the DC
+ ------------------------------------------------------------------------------}
+function TQtDeviceContext.font: TQtFont;
+begin
+  vFont.Widget := QPainter_font(Widget);
+
+  Result := vFont;
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtDeviceContext.setFont
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+procedure TQtDeviceContext.setFont(f: TQtFont);
+begin
+  if (f.Widget <> nil) and (Widget <> nil) and (Parent <> nil) then
+   QPainter_setFont(Widget, QFontH(f.Widget));
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtDeviceContext.brush
+  Params:  None
+  Returns: The current brush object of the DC
+ ------------------------------------------------------------------------------}
+function TQtDeviceContext.brush: TQtBrush;
+begin
+  vBrush.Widget := QPainter_brush(Widget);
+
+  Result := vBrush;
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtDeviceContext.setBrush
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+procedure TQtDeviceContext.setBrush(brush: TQtBrush);
+begin
+  if (brush.Widget <> nil) and (Widget <> nil) then QPainter_setBrush(Widget, brush.Widget);
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtDeviceContext.drawImage
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+procedure TQtDeviceContext.drawImage(targetRect: PRect;
+  image: QImageH; sourceRect: PRect; flags: QtImageConversionFlags = QtAutoColor);
+begin
+  QPainter_drawImage(Widget, targetRect, image, sourceRect, flags);
 end;
 
 end.

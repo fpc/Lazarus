@@ -28,7 +28,7 @@ interface
 
 uses
   // Bindings
-  qt4, qtprivate,
+  qt4, qtwidgets,
   // LCL
   SysUtils, Controls, LCLType, Forms,
   // Widgetset
@@ -81,13 +81,14 @@ type
     class function GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
     class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
 
-{    class procedure SetFormBorderStyle(const AForm: TCustomForm;
-                             const AFormBorderStyle: TFormBorderStyle); override;
+    class procedure CloseModal(const ACustomForm: TCustomForm); override;
+    class procedure SetFormBorderStyle(const AForm: TCustomForm;
+     const AFormBorderStyle: TFormBorderStyle); override;
     class procedure SetIcon(const AForm: TCustomForm; const AIcon: HICON); override;
     class procedure SetShowInTaskbar(const AForm: TCustomForm; const AValue: TShowInTaskbar); override;
     class procedure ShowModal(const ACustomForm: TCustomForm); override;
     class procedure SetBorderIcons(const AForm: TCustomForm;
-                                   const ABorderIcons: TBorderIcons); override;}
+     const ABorderIcons: TBorderIcons); override;
   end;
 
   { TQtWSForm }
@@ -219,6 +220,56 @@ begin
   Str := WideString(AText);
 
   TQtWidget(AWinControl.Handle).SetWindowTitle(@Str);
+end;
+
+class procedure TQtWSCustomForm.CloseModal(const ACustomForm: TCustomForm);
+begin
+  inherited CloseModal(ACustomForm);
+end;
+
+class procedure TQtWSCustomForm.SetFormBorderStyle(const AForm: TCustomForm;
+  const AFormBorderStyle: TFormBorderStyle);
+begin
+  inherited SetFormBorderStyle(AForm, AFormBorderStyle);
+end;
+
+class procedure TQtWSCustomForm.SetIcon(const AForm: TCustomForm; const AIcon: HICON);
+begin
+  inherited SetIcon(AForm, AIcon);
+end;
+
+class procedure TQtWSCustomForm.SetShowInTaskbar(const AForm: TCustomForm;
+  const AValue: TShowInTaskbar);
+begin
+  inherited SetShowInTaskbar(AForm, AValue);
+end;
+
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomForm.ShowModal
+  Params:
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+class procedure TQtWSCustomForm.ShowModal(const ACustomForm: TCustomForm);
+var
+  QtDialog: TQtDialog;
+begin
+  QtDialog := TQtDialog.Create;
+  try
+    TQtWidget(ACustomForm.Handle).setParent(QtDialog.Widget);
+
+    if QtDialog.exec = Integer(QDialogRejected) then ACustomForm.ModalResult := mrCancel
+    else ACustomForm.ModalResult := mrOk;
+    
+    TQtWidget(ACustomForm.Handle).setParent(nil);
+  finally
+    QtDialog.Free;
+  end;
+end;
+
+class procedure TQtWSCustomForm.SetBorderIcons(const AForm: TCustomForm;
+  const ABorderIcons: TBorderIcons);
+begin
+  inherited SetBorderIcons(AForm, ABorderIcons);
 end;
 
 initialization
