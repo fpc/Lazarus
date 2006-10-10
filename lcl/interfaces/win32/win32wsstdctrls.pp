@@ -309,11 +309,24 @@ begin
 end;
 
 class procedure TWin32WSScrollBar.SetParams(const AScrollBar: TCustomScrollBar);
+var
+  ScrollInfo: TScrollInfo;
+  AMax: Integer;
 begin
   with AScrollBar do
   begin
-    SendMessage(Handle, SBM_SETRANGE, Min, Max);
-    SendMessage(Handle, SBM_SETPOS, Position, LPARAM(true));
+    AMax := Max + PageSize - 1;
+    if AMax < Min then AMax := Min;
+    if AMax < Max then AMax := Max;
+  
+    ScrollInfo.cbSize := SizeOf(TScrollInfo);
+    ScrollInfo.fMask := SIF_POS or SIF_Range or SIF_PAGE;
+    ScrollInfo.nMin := Min;
+    ScrollInfo.nMax := AMax;
+    ScrollInfo.nPage := PageSize;
+    ScrollInfo.nPos := Position;
+    
+    SendMessage(Handle, SBM_SETSCROLLINFO, WParam(True), LParam(@ScrollInfo));
     case Kind of
       sbHorizontal:
         SetWindowLong(Handle, GWL_STYLE, GetWindowLong(Handle, GWL_STYLE) or SBS_HORZ);

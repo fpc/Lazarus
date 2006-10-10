@@ -59,10 +59,11 @@ var
 begin
   inherited CreateWnd;
   if not HandleAllocated then RaiseGDBException('TCustomScrollBar.CreateWnd HandleAllocated=false');
-  SetScrollRange(Handle, SB_CTL, FMin, FMax, False);
   ScrollInfo.cbSize := SizeOf(ScrollInfo);
+  ScrollInfo.nMin := FMin;
+  ScrollInfo.nMax := FMax + FPageSize;
   ScrollInfo.nPage := FPageSize;
-  ScrollInfo.fMask := SIF_PAGE;
+  ScrollInfo.fMask := SIF_PAGE or SIF_Range;
   SetScrollInfo(Handle, SB_CTL, ScrollInfo, False);
   if NotRightToLeft then
     SetScrollPos(Handle, SB_CTL, FPosition, True)
@@ -101,18 +102,28 @@ begin
   end;
 end;
 
-procedure TCustomScrollBar.SetParams(APosition, AMin, AMax: Integer);
+procedure TCustomScrollBar.SetParams(APosition, AMin, AMax, APageSize: Integer);
+var
+  ScrollInfo: TScrollInfo;
 begin
   if AMax < AMin then
     raise EInvalidOperation.Create(rsScrollBarOutOfRange);
   if APosition < AMin then APosition := AMin;
   if APosition > AMax then APosition := AMax;
-  if (FMin <> AMin) or (FMax <> AMax) then
+  if APageSize < 0 then APageSize := 0;
+  if (FMin <> AMin) or (FMax <> AMax) or (APageSize <> FPageSize) then
   begin
     FMin := AMin;
     FMax := AMax;
+    FPageSize := APageSize;
     if HandleAllocated then
-      SetScrollRange(Handle, SB_CTL, AMin, AMax, FPosition = APosition);
+    begin
+      ScrollInfo.fMask := SIF_PAGE or SIF_Range;
+      ScrollInfo.nMin := AMin;
+      ScrollInfo.nMax := AMax + APageSize;
+      ScrollInfo.nPage := APageSize;
+      SetScrollInfo(Handle, SB_CTL, ScrollInfo, FPosition = APosition);
+    end;
   end;
   if FPosition <> APosition then
   begin
@@ -125,37 +136,29 @@ begin
     Change;
   end;
 
+
   if HandleAllocated then
     TWSScrollBarClass(WidgetSetClass).SetParams(Self);
 end;
 
 procedure TCustomScrollBar.SetPosition(Value: Integer);
 begin
-  SetParams(Value, FMin, FMax);
+  SetParams(Value, FMin, FMax, FPageSize);
 end;
 
 procedure TCustomScrollBar.SetPageSize(Value: Integer);
-var
-  ScrollInfo: TScrollInfo;
 begin
-  if (FPageSize = Value) or (FPageSize > FMax) then exit;
-  FPageSize := Value;
-  if HandleAllocated then begin
-    ScrollInfo.cbSize := SizeOf(ScrollInfo);
-    ScrollInfo.nPage := Value;
-    ScrollInfo.fMask := SIF_PAGE;
-    SetScrollInfo(Handle, SB_CTL, ScrollInfo, True);
-  end;
+  SetParams(FPosition, FMin, FMax, Value);
 end;
 
 procedure TCustomScrollBar.SetMin(Value: Integer);
 begin
-  SetParams(FPosition, Value, FMax);
+  SetParams(FPosition, Value, FMax, FPageSize);
 end;
 
 procedure TCustomScrollBar.SetMax(Value: Integer);
 begin
-  SetParams(FPosition, FMin, Value);
+  SetParams(FPosition, FMin, Value, FPageSize);
 end;
 
 procedure TCustomScrollBar.Change;

@@ -90,7 +90,7 @@ type
     procedure Scroll(ScrollCode: TScrollCode; var ScrollPos: Integer); dynamic;
   public
     constructor Create(AOwner: TComponent); override;
-    procedure SetParams(APosition, AMin, AMax: Integer);
+    procedure SetParams(APosition, AMin, AMax, APageSize: Integer);
   public
     property Kind: TScrollBarKind read FKind write SetKind default sbHorizontal;
     property LargeChange: TScrollBarInc read FLargeChange write FLargeChange default 1;

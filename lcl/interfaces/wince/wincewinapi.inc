@@ -2220,6 +2220,8 @@ Begin
   //With ScrollInfo Do
    // Assert(False, Format('Trace:> [TWinCEWidgetSet.SetScrollInfo] Mask:0x%x, Min:%d, Max:%d, Page:%d, Pos:%d', [FMask, NMin, NMax, NPage, NPos]));
   ScrollInfo.cbSize:=sizeof(ScrollInfo);
+  if (ScrollInfo.fMask and SIF_Range > 0) then
+    ScrollInfo.nMax := Max(ScrollInfo.nMin, ScrollInfo.nMax - 1);
   Result := Windows.SetScrollInfo(Handle, SBStyle, @ScrollInfo, BRedraw);
   With ScrollInfo Do
     Assert(False, Format('Trace:> [TWinCEWidgetSet.SetScrollInfo] --> %d', [Result]));
