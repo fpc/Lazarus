@@ -214,9 +214,9 @@ begin
 
   Style:=GetStyle(lgsButton);
   if Horizontal then begin
-    Detail:='hpaned';
-  end else begin
     Detail:='vpaned';
+  end else begin
+    Detail:='hpaned';
   end;
 
   DCOrigin:=GetDCOffset(TDeviceContext(DC));

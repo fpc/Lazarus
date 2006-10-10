@@ -478,9 +478,9 @@ begin
 
   Style:=GetStyle(lgsButton);
   if ASplitter.ResizeAnchor in [akTop,akBottom] then begin
-    Detail:='hpaned';
-  end else begin
     Detail:='vpaned';
+  end else begin
+    Detail:='hpaned';
   end;
 
   DCOrigin:=GetDCOffset(DevContext);
