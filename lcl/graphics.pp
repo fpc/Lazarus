@@ -241,6 +241,10 @@ const
   clNone    = TColor($1FFFFFFF);
   clDefault = TColor($20000000);
 
+  clMoneyGreen = TColor($C0DCC0);
+  clSkyBlue    = TColor($F0CAA6);
+  clMedGray    = TColor($A4A0A0);
+
   //System colors
   clScrollBar               = TColor(SYS_COLOR_BASE or COLOR_SCROLLBAR);
   clBackground              = TColor(SYS_COLOR_BASE or COLOR_BACKGROUND);
@@ -1446,7 +1450,7 @@ type
 { Color mapping routines }
 
 const
-  Colors: array[0..109] of TIdentMapEntry = (
+  Colors: array[0..112] of TIdentMapEntry = (
     // The following colors match the predefined Delphi Colors
     (Value: clBlack; Name: 'clBlack'),
     (Value: clMaroon; Name: 'clMaroon'),
@@ -1571,7 +1575,10 @@ const
     (Value: clActiveBackground; Name: 'clActiveBackground'),
     (Value: clActiveShadow; Name: 'clActiveShadow'),
     (Value: clActiveHighlight; Name: 'clActiveHighlight'),
-    (Value: clActiveHighlightedText; Name: 'clActiveHighlightedText')
+    (Value: clActiveHighlightedText; Name: 'clActiveHighlightedText'),
+    (Value: clMoneyGreen; Name: 'clMoneyGreen'),
+    (Value: clSkyBlue; Name: 'clSkyBlue'),
+    (Value: clMedGray; Name: 'clMedGray')
     );
 
 function IdentEntry(Entry: Longint; var MapEntry: TIdentMapEntry): boolean;
