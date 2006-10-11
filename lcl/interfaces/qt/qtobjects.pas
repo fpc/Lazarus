@@ -93,6 +93,19 @@ type
     procedure setFamily(p1: string);
   end;
 
+  { TQtFontMetrics }
+
+  TQtFontMetrics = class(TObject)
+  private
+  public
+    Widget: QFontMetricsH;
+  public
+    constructor Create(Parent: QFontH); virtual;
+    destructor Destroy; override;
+  public
+    function height: Integer;
+  end;
+
   { TQtBrush }
 
   TQtBrush = class(TObject)
@@ -132,7 +145,7 @@ type
     procedure setBrush(brush: TQtBrush);
     procedure drawImage(targetRect: PRect; image: QImageH; sourceRect: PRect; flags: QtImageConversionFlags = QtAutoColor);
   end;
-
+  
 implementation
 
 uses qtwidgets;
@@ -355,6 +368,25 @@ begin
   QFont_setFamily(Widget, @Str);
 end;
 
+{ TQtFontMetrics }
+
+constructor TQtFontMetrics.Create(Parent: QFontH);
+begin
+  Widget := QFontMetrics_create(Parent);
+end;
+
+destructor TQtFontMetrics.Destroy;
+begin
+  QFontMetrics_destroy(Widget);
+
+  inherited Destroy;
+end;
+
+function TQtFontMetrics.height: Integer;
+begin
+  Result := QFontMetrics_height(Widget);
+end;
+
 { TQtBrush }
 
 {------------------------------------------------------------------------------
@@ -467,10 +499,32 @@ end;
   Returns: Nothing
 
   Draws a Text. Helper function of winapi.TextOut
+  
+  Qt does not draw the text starting at Y position and downwards, like LCL.
+
+  Instead, Y becomes the baseline for the text and it´s drawn upwards.
+  
+  To get a correct behavior we need to sum the text´s height to the Y coordinate.
  ------------------------------------------------------------------------------}
 procedure TQtDeviceContext.drawText(x: Integer; y: Integer; s: PWideString);
+var
+  QtFontMetrics: TQtFontMetrics;
 begin
-  QPainter_drawText(Widget, Origin.X + x, Origin.Y + y, s);
+  {$ifdef VerboseQt}
+    WriteLn('TQtDeviceContext.drawText TargetX: ', dbgs(Origin.X + X),
+     ' TargetY: ', dbgs(Origin.Y + Y));
+  {$endif}
+
+  QtFontMetrics := TQtFontMetrics.Create(Font.Widget);
+  try
+    QPainter_drawText(Widget, Origin.X + x, Origin.Y + y + QtFontMetrics.height, s);
+
+    {$ifdef VerboseQt}
+      WriteLn(' Font metrics height: ', dbgs(QtFontMetrics.height));
+    {$endif}
+  finally
+    QtFontMetrics.Free;
+  end;
 end;
 
 {------------------------------------------------------------------------------

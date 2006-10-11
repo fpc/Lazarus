@@ -467,7 +467,10 @@ begin
   if IsValidDC(PS.HDC) then
    if (TObject(PS.HDC) is TQtDeviceContext) then
    begin
-     WriteLn('Freeing resources');
+    {$ifdef VerboseQtWinAPI}
+       WriteLn('Freeing resources');
+    {$endif}
+    
      TQtDeviceContext(PS.HDC).Free;
    end;
 end;
@@ -659,7 +662,7 @@ end;
 function TQtWidgetSet.GetObject(GDIObj: HGDIOBJ; BufSize: Integer; Buf: Pointer): Integer;
 var
   aObject: TObject;
-  Width, Height: Longint;
+  NumColors, Width, Height: Longint;
   BitmapSection : TDIBSECTION;
   {$ifdef VerboseQtWinAPI}
     ObjType: string;
@@ -802,21 +805,50 @@ function TQtWidgetSet.GetRawImageFromDevice(SrcDC: HDC; const SrcRect: TRect;
   var NewRawImage: TRawImage): boolean;
 var
   SrcWidth, SrcHeight: Integer;
-{  hMemDC: HDC;
-  hMemBitmap: HBITMAP;
-  hOldObject: HGDIOBJ;}
+  WinID: Cardinal;
+  desktop: QDesktopWidgetH;
+  ScreenSize: TSize;
+  PScreenSize: PSize;
+  Pixmap: QPixmapH;
+  Image: QImageH;
 begin
   {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI GetRawImageFromDevice]');
+    WriteLn('Trace:> [WinAPI GetRawImageFromDevice] SrcDC: ', dbgs(SrcDC),
+     ' SrcWidth: ', dbgs(SrcRect.Right - SrcRect.Left),
+     ' SrcHeight: ', dbgs(SrcRect.Bottom - SrcRect.Top));
   {$endif}
 
-  Result:=false;
+  Result := True;
 
-  FillChar(NewRawImage, SizeOf(NewRawImage), 0);
+  FillStandardDescription(NewRawImage.Description);
 
   // make bitmap compatible to src device
   SrcWidth := SrcRect.Right - SrcRect.Left;
   SrcHeight := SrcRect.Bottom - SrcRect.Top;
+
+  // If the source DC is zero, we are suppose to take a screenshot from the desktop
+  if SrcDC = 0 then
+  begin
+    PScreenSize := @ScreenSize;
+
+    desktop := QApplication_desktop;
+
+    QWidget_size(QDesktopWidget_screen(desktop), PScreenSize);
+
+    WinID := QWidget_winId(QDesktopWidget_screen(desktop));
+
+    Pixmap := QPixmap_create(PScreenSize);
+
+    QPixmap_grabWindow(Pixmap, WinID);
+    
+{    QPixmap_toImage(Pixmap, Image);
+    
+    NewRawImage.Data := QImage_bits(Image);
+
+    NewRawImage.DataSize := QImage_numBytes(Image);}
+
+    QPixmap_destroy(Pixmap);
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -1493,7 +1525,7 @@ end;
 function TQtWidgetSet.MoveToEx(DC: HDC; X, Y: Integer; OldPoint: PPoint): Boolean;
 begin
   {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI MoveToEx]');
+    WriteLn('[WinAPI MoveToEx] DC:', dbgs(DC), ' X:', dbgs(X), ' Y:', dbgs(Y));
   {$endif}
 
   Result := False;
@@ -1656,7 +1688,7 @@ end;
 function TQtWidgetSet.SetWindowOrgEx(DC : HDC; NewX, NewY : Integer; OldPoint: PPoint) : Boolean;
 begin
   {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI SetWindowOrgEx] NewX: ', dbgs(NewX), ' NewY: ', dbgs(NewY));
+    WriteLn('[WinAPI SetWindowOrgEx] DC: ', dbgs(DC), ' NewX: ', dbgs(NewX), ' NewY: ', dbgs(NewY));
   {$endif}
 
   Result := False;

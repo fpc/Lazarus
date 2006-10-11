@@ -185,6 +185,8 @@ end;
   Contructor for the class.
  ------------------------------------------------------------------------------}
 constructor TQtListStrings.Create(ListWidgetH: QListWidgetH; TheOwner: TWinControl);
+var
+  i: Integer;
 begin
   inherited Create;
 
@@ -589,6 +591,8 @@ begin
 end;
 
 constructor TQtComboStrings.Create(ComboBoxH: QComboBoxH; TheOwner: TWinControl);
+var
+  i: Integer;
 begin
   inherited Create;
 

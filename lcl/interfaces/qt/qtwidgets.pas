@@ -68,6 +68,8 @@ type
     function windowModality: QtWindowModality;
     procedure setWindowModality(windowModality: QtWindowModality);
     procedure setParent(parent: QWidgetH);
+    procedure setWindowFlags(_type: QtWindowFlags);
+    function windowFlags: QtWindowFlags;
   end;
 
   { TQtAbstractButton }
@@ -212,6 +214,9 @@ type
     destructor Destroy; override;
     function currentIndex: Integer;
     procedure setCurrentIndex(index: Integer);
+  public
+    procedure SlotChange(p1: PWideString); cdecl;
+    procedure SlotSelect(index: Integer); cdecl;
   end;
 
   { TQtSpinBox }
@@ -700,6 +705,16 @@ end;
 procedure TQtWidget.setParent(parent: QWidgetH);
 begin
   QWidget_setParent(Widget, parent);
+end;
+
+procedure TQtWidget.setWindowFlags(_type: QtWindowFlags);
+begin
+  QWidget_setWindowFlags(Widget, _type);
+end;
+
+function TQtWidget.windowFlags: QtWindowFlags;
+begin
+  Result := QWidget_windowFlags(Widget);
 end;
 
 {------------------------------------------------------------------------------
@@ -1883,6 +1898,36 @@ begin
   QComboBox_setCurrentIndex(QComboBoxH(Widget), index);
 end;
 
+procedure TQtComboBox.SlotChange(p1: PWideString); cdecl;
+var
+  Msg: TLMessage;
+begin
+  FillChar(Msg, SizeOf(Msg), #0);
+
+  Msg.Msg := LM_CHANGED;
+
+  try
+    LCLObject.WindowProc(TLMessage(Msg));
+  except
+    Application.HandleException(nil);
+  end;
+end;
+
+procedure TQtComboBox.SlotSelect(index: Integer); cdecl;
+var
+  Msg: TLMessage;
+begin
+  FillChar(Msg, SizeOf(Msg), #0);
+
+  Msg.Msg := LM_SELCHANGE;
+
+  try
+    LCLObject.WindowProc(TLMessage(Msg));
+  except
+    Application.HandleException(nil);
+  end;
+end;
+
 { TQtSpinBox }
 
 {------------------------------------------------------------------------------
@@ -1930,7 +1975,7 @@ end;
   Function: TQtListWidget.Create
   Params:  None
   Returns: Nothing
- ------------------------------------------------------------------------------}//Luis Digital
+ ------------------------------------------------------------------------------}
 constructor TQtListWidget.Create(const AWinControl: TWinControl;
   const AParams: TCreateParams);
 var

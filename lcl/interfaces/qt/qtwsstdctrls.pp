@@ -987,16 +987,34 @@ class function TQtWSCustomComboBox.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
   QtComboBox: TQtComboBox;
+  Method: TMethod;
+  Hook : QObject_hookH;
 begin
   QtComboBox := TQtComboBox.Create(AWinControl, AParams);
 
-//  SetSlots(QtButtonGroup);
+  // Various Events
 
-//  QWidget_show(QtGroupBox.Widget);
+  Hook := QObject_hook_create(QtComboBox.Widget);
+
+  TEventFilterMethod(Method) := QtComboBox.EventFilter;
+
+  QObject_hook_hook_events(Hook, Method);
+
+  // OnChange event
+
+  QComboBox_editTextChanged_Event(Method) := QtComboBox.SlotChange;
+
+  QComboBox_hook_hook_editTextChanged(
+   QComboBox_hook_create(QtComboBox.Widget), Method);
+
+  // OnSelect event
+
+  QComboBox_currentIndexChanged_Event(Method) := QtComboBox.SlotSelect;
+
+  QComboBox_hook_hook_currentIndexChanged(
+   QComboBox_hook_create(QtComboBox.Widget), Method);
 
   Result := THandle(QtComboBox);
-
-//  Str := WideString(AWinControl.Caption);
 end;
 
 {------------------------------------------------------------------------------
