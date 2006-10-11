@@ -39,7 +39,7 @@ unit WinDDwarf;
 interface
 
 uses
-  Classes, Types, SysUtils, WinDDwarfConst, Maps, Math, WinDLoader;
+  Classes, Types, SysUtils, WinDebugger, WinDDwarfConst, Maps, Math, WinDLoader;
   
 type
   // compilation unit header
@@ -136,6 +136,7 @@ type
   private
     FOwner: TDbgDwarf;
     FVerbose: Boolean;
+    FValid: Boolean; // set if the compilationunit has compile unit tag.
   
     // --- Header ---
     FLength: QWord;  // length of info
@@ -183,6 +184,7 @@ type
     destructor Destroy; override;
     function GetDefinition(AAbbrev: Cardinal; out ADefinition: TDwarfAbbrev): Boolean;
     property FileName: String read FFileName;
+    property Valid: Boolean read FValid;
   end;
   
   { TDwarfVerboseCompilationUnit }
@@ -223,8 +225,15 @@ type
 
   
 type
-  TImageSection = (dsAbbrev, dsARanges, dsFrame,  dsInfo, dsLine, dsLoc, dsMacinfo, dsPubNames, dsPubTypes, dsRanges, dsStr);
-  TDwarfSection = dsAbbrev..dsStr;
+  TDwarfSection = (dsAbbrev, dsARanges, dsFrame,  dsInfo, dsLine, dsLoc, dsMacinfo, dsPubNames, dsPubTypes, dsRanges, dsStr);
+
+  TDwarfSectionInfo = record
+    Section: TDwarfSection;
+    VirtualAdress: QWord;
+    Size: QWord; // the virtual size
+    RawData: Pointer;
+  end;
+  PDwarfSectionInfo = ^TDwarfSectionInfo;
 
 const
   DWARF_SECTION_NAME: array[TDwarfSection] of String = (
@@ -233,17 +242,10 @@ const
     '.debug_pubtypes', '.debug_ranges', '.debug_str'
   );
   
-type
-  TDwarfSectionInfo = record
-    Section: TDwarfSection;
-    VirtualAdress: QWord;
-    Size: QWord; // the virtual size
-    RawData: Pointer;
-  end;
-
   { TDbgDwarf }
 
-  TDbgDwarf = class
+type
+  TDbgDwarf = class(TDbgInfo)
   private
     FCompilationUnits: TList;
     FImageBase: QWord;
@@ -252,11 +254,11 @@ type
   protected
     function GetCompilationUnitClass: TDwarfCompilationUnitClass; virtual;
   public
-    constructor Create(ALoader: TDbgImageLoader);
+    constructor Create(ALoader: TDbgImageLoader); override;
     destructor Destroy; override;
     function LoadCompilationUnits: Integer;
     function PointerFromRVA(ARVA: QWord): Pointer;
-    function PointerFromVA(ASection: TImageSection; AVA: QWord): Pointer;
+    function PointerFromVA(ASection: TDwarfSection; AVA: QWord): Pointer;
     property CompilationUnits[AIndex: Integer]: TDwarfCompilationUnit read GetCompilationUnit;
   end;
 
@@ -627,7 +629,7 @@ var
   Section: TDwarfSection;
   p: PDbgImageSection;
 begin
-  inherited Create;
+  inherited Create(ALoader);
   FCompilationUnits := TList.Create;
   FImageBase := ALoader.ImageBase;
   for Section := Low(Section) to High(Section) do
@@ -683,7 +685,7 @@ begin
               CU64^.AbbrevOffset,
               CU64^.AddressSize,
               True);
-      p := @CU64^.Version + CU64^.Length;
+      p := Pointer(@CU64^.Version) + CU64^.Length;
     end
     else begin
       if CU32^.Length = 0 then Break;
@@ -695,9 +697,10 @@ begin
               CU32^.AbbrevOffset,
               CU32^.AddressSize,
               False);
-      p := @CU32^.Version + CU32^.Length;
+      p := Pointer(@CU32^.Version) + CU32^.Length;
     end;
     FCompilationUnits.Add(CU);
+    if CU.Valid then SetHasInfo;
   end;
   Result := FCompilationUnits.Count;
 end;
@@ -707,7 +710,7 @@ begin
   Result := Pointer(PtrUInt(FImageBase + ARVA));
 end;
 
-function TDbgDwarf.PointerFromVA(ASection: TImageSection; AVA: QWord): Pointer;
+function TDbgDwarf.PointerFromVA(ASection: TDwarfSection; AVA: QWord): Pointer;
 begin
   Result := FSections[ASection].RawData + AVA - FImageBase - FSections[ASection].VirtualAdress;
 end;
@@ -731,29 +734,32 @@ var
 begin
   if AScope = nil then Exit;
 
-  if not LocateEntry(DW_TAG_subprogram, AScope, True, Scope, AttribList)
-  then Exit;
-  
-  Info.Scope := Scope;
-  if LocateAttribute(Scope^.Entry, DW_AT_low_pc, AttribList, Attrib, Form)
+  if LocateEntry(DW_TAG_subprogram, AScope, True, Scope, AttribList)
   then begin
-    ReadValue(Attrib, Form, Info.StartPC);
-
-    if LocateAttribute(Scope^.Entry, DW_AT_name, AttribList, Attrib, Form)
-    then ReadValue(Attrib, Form, Info.Name)
-    else Info.Name := 'undefined';
-
-    if LocateAttribute(Scope^.Entry, DW_AT_high_pc, AttribList, Attrib, Form)
-    then ReadValue(Attrib, Form, Info.EndPC)
-    else Info.EndPC := Info.StartPC;
-    
-    Info.LineInfo := nil; // filled in when the first time needed
-    if Info.StartPC <> 0
+    Info.Scope := Scope;
+    if LocateAttribute(Scope^.Entry, DW_AT_low_pc, AttribList, Attrib, Form)
     then begin
-      if FAddressMap.HasId(Info.StartPC)
-      then WriteLN('WARNING duplicate start adress: ', IntToHex(Info.StartPC, FAddressSize * 2))
-      else FAddressMap.Add(Info.StartPC, Info);
+      ReadValue(Attrib, Form, Info.StartPC);
+
+      if LocateAttribute(Scope^.Entry, DW_AT_name, AttribList, Attrib, Form)
+      then ReadValue(Attrib, Form, Info.Name)
+      else Info.Name := 'undefined';
+
+      if LocateAttribute(Scope^.Entry, DW_AT_high_pc, AttribList, Attrib, Form)
+      then ReadValue(Attrib, Form, Info.EndPC)
+      else Info.EndPC := Info.StartPC;
+
+      Info.LineInfo := nil; // filled in when the first time needed
+      if Info.StartPC <> 0
+      then begin
+        if FAddressMap.HasId(Info.StartPC)
+        then WriteLN('WARNING duplicate start adress: ', IntToHex(Info.StartPC, FAddressSize * 2))
+        else FAddressMap.Add(Info.StartPC, Info);
+      end;
     end;
+  end
+  else begin
+    Scope := AScope;
   end;
   
   BuildAddessMap(Scope^.Child);
@@ -765,7 +771,7 @@ var
   AttribList: TPointerDynArray;
   Attrib: Pointer;
   Form: Cardinal;
-  StatementList: QWord;
+  StatementList, Ofs: QWord;
   Scope: PDwarfScopeInfo;
 begin
   inherited Create;
@@ -774,6 +780,17 @@ begin
   FLength := ALength;
   FVersion := AVersion;
   FAbbrevOffset := AAbbrevOffset;
+  // check for address as offset
+  if FAbbrevOffset > FOwner.FSections[dsAbbrev].Size
+  then begin
+    Ofs := FAbbrevOffset - FOwner.FImageBase - FOwner.FSections[dsAbbrev].VirtualAdress;
+    if (Ofs >= 0) and (Ofs < FOwner.FSections[dsAbbrev].Size)
+    then begin
+      WriteLN('WARNING: Got Abbrev ofset as address, adjusting..');
+      FAbbrevOffset := Ofs;
+    end;
+  end;
+
   FAddressSize := AAddressSize;
   FIsDwarf64 := AIsDwarf64;
 
@@ -793,6 +810,7 @@ begin
     WriteLN('WARNING compilation unit has no compile_unit tag');
     Exit;
   end;
+  FValid := True;
 
   if LocateAttribute(Scope^.Entry, DW_AT_name, AttribList, Attrib, Form)
   then ReadValue(Attrib, Form, FFileName);
@@ -830,6 +848,7 @@ destructor TDwarfCompilationUnit.Destroy;
       if Scope^.Next = nil
       then begin
         Scope := Scope^.Parent;
+        if Scope = nil then Break;
         Scope^.Child := nil;
       end
       else Scope := Scope^.Next;
@@ -2044,14 +2063,14 @@ begin
   if LNP64^.Signature = DWARF_HEADER64_SIGNATURE
   then begin
     UnitLength := LNP64^.UnitLength;
-    DataEnd := @LNP64^.Version + UnitLength;
+    DataEnd := Pointer(@LNP64^.Version) + UnitLength;
     Version := LNP64^.Version;
     HeaderLength := LNP64^.HeaderLength;
     Info := @LNP64^.Info;
   end
   else begin
     UnitLength := LNP32^.UnitLength;
-    DataEnd := @LNP32^.Version + UnitLength;
+    DataEnd := Pointer(@LNP32^.Version) + UnitLength;
     Version := LNP32^.Version;
     HeaderLength := LNP32^.HeaderLength;
     Info := @LNP32^.Info;

@@ -185,7 +185,6 @@ var
 begin
   WriteLN('Base adress: ', FormatAddress(AEvent.LoadDll.lpBaseOfDll));
 
-
   if GetProcess(AEvent.dwProcessId, Proc)
   and Proc.GetLib(AEvent.LoadDll.hFile, Lib)
   then begin
@@ -330,6 +329,35 @@ procedure DebugLoop;
     {$endif}
     WriteLN(' ', CodeBytes, '    ', Code);
   end;
+  
+  procedure ShowCode;
+  var
+    a: TDbgPtr;
+    sym, symproc: TDbgSymbol;
+  begin
+    WriteLN('===');
+    {$ifdef cpui386}
+      a := GCurrentContext^.EIP;
+    {$else}
+      a := GCurrentContext^.RIP;
+    {$endif}
+    sym := GCurrentProcess.FindSymbol(a);
+    if sym = nil
+    then begin
+      WriteLn('  [', FormatAddress(a), '] ???');
+      Exit;
+    end;
+    
+    symproc := sym;
+    while not (symproc.kind in [skProcedure, skFunction]) do
+      symproc := symproc.Parent;
+
+    if symproc = nil
+    then WriteLn('???')
+    else WriteLn(symproc.FileName, ':', symproc.Line, ' ', symproc.Name);
+
+    WriteLn('  [', FormatAddress(a), '] ', sym.FileName, ':', sym.Line, ' ', sym.Name);
+  end;
 
 begin
   repeat
@@ -415,7 +443,10 @@ begin
   until (GState in [dsStop, dsPause, dsQuit]);
 
   if GState = dsPause
-  then ShowDisas
+  then begin
+    ShowDisas;
+    ShowCode;
+  end;
 end;
 
 end.

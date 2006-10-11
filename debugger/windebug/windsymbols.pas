@@ -198,7 +198,7 @@ begin
     Sections.Sorted := True;
     for n := 0 to NtHeaders^.FileHeader.NumberOfSections - 1 do
     begin
-      SectionHeader := @NTHeaders^.OptionalHeader + NTHeaders^.FileHeader.SizeOfOptionalHeader + SizeOf(SectionHeader^) * n;
+      SectionHeader := Pointer(@NTHeaders^.OptionalHeader) + NTHeaders^.FileHeader.SizeOfOptionalHeader + SizeOf(SectionHeader^) * n;
       // make a null terminated name
       Move(SectionHeader^.Name, SectionName, IMAGE_SIZEOF_SHORT_NAME);
       SectionName[IMAGE_SIZEOF_SHORT_NAME] := #0;

@@ -74,7 +74,7 @@ var
   R: Boolean;
   n: Integer;
   Is64: Boolean;
-  SectionName: array[0..IMAGE_SIZEOF_SHORT_NAME] of Char;
+  SectionName: array[0..255] of Char;
 begin
   if not ReadProcessMemory(AProcessHandle, Pointer(AAdress), @DosHeader, SizeOf(DosHeader), BytesRead)
   then begin
@@ -260,9 +260,28 @@ begin
     end;
     with SectionHeader do
     begin
-      Move(Name, SectionName, IMAGE_SIZEOF_SHORT_NAME);
-      SectionName[IMAGE_SIZEOF_SHORT_NAME] := #0;
-      WriteLN('  Name:                 ',SectionName);
+      Write('  Name:                 ');
+      if (Name[0] = Ord('/')) and (Name[1] in [Ord('0')..Ord('9')])
+      then begin
+        // long name
+
+        if ReadProcessMemory(
+          AProcessHandle,
+          Pointer(PtrUInt(AAdress + NTHeaders.FileHeader.PointerToSymbolTable + NTHeaders.FileHeader.NumberOfSymbols * IMAGE_SIZEOF_SYMBOL + StrToIntDef(PChar(@Name[1]), 0))),
+          @SectionName,
+          SizeOf(SectionName),
+          BytesRead
+        )
+        then WriteLn(SectionName)
+        else WriteLn('Unable to retrieve sectionname @', PChar(@Name[1]));
+      end
+      else begin
+        // short name
+        Move(Name, SectionName, IMAGE_SIZEOF_SHORT_NAME);
+        SectionName[IMAGE_SIZEOF_SHORT_NAME] := #0; // make it #0 terminated
+        WriteLn(SectionName);
+      end;
+
       WriteLN('  Misc.PhysicalAddress: ',FormatAddress(Misc.PhysicalAddress));
       WriteLN('  Misc.VirtualSize:     ',Misc.VirtualSize);
       WriteLN('  VirtualAddress:       ',FormatAddress(VirtualAddress));

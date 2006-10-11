@@ -36,14 +36,14 @@ unit FPWDCommand;
 interface
 
 uses
-  SysUtils, Classes, Windows, WinDebugger, WinDExtra, LCLProc;
+  SysUtils, Classes, Windows, WinDExtra, LCLProc;
 
 procedure HandleCommand(ACommand: String);
 
 implementation
 
 uses
-  FPWDGlobal, FPWDLoop, FPWDPEImage, FPWDType;
+  FPWDGlobal, FPWDLoop, FPWDPEImage;
 
 type
   TMWDCommandHandler = procedure(AParams: String);
@@ -170,7 +170,7 @@ begin
   ZeroMemory(@ProcessInformation, SizeOf(ProcessInformation));
   if not CreateProcess(nil, PChar(GFileName), nil, nil, True, DETACHED_PROCESS or DEBUG_PROCESS or CREATE_NEW_PROCESS_GROUP, nil, nil, StartUpInfo, ProcessInformation)
   then begin
-    WriteLN('Create process failed');
+    WriteLN('Create process failed: ', GetLastErrorText);
     Exit;
   end;
 

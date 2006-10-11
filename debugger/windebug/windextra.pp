@@ -127,7 +127,7 @@ begin
          nil,
          AErrorCode,
          LANG_NEUTRAL,
-         @Temp,
+         Pointer(@Temp), // the fuction needs either a PChar or a PPChar, depending on FORMAT_MESSAGE_ALLOCATE_BUFFER
          0,
          nil);
   if R = 0

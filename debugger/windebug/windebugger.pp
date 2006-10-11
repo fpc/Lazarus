@@ -36,7 +36,7 @@ unit WinDebugger;
 interface
 
 uses
-  Windows, Classes, Maps, WindExtra;
+  Windows, Classes, Maps, WinDExtra, WinDLoader;
 
 type
   TDbgProcess = class;
@@ -136,6 +136,20 @@ type
     property Children[AIndex: Integer]: TDbgSymbol read GetChild;
   end;
 
+
+  TDbgInfo = class(TObject)
+  private
+    FHasInfo: Boolean;
+  protected
+    procedure SetHasInfo;
+  public
+    constructor Create(ALoader: TDbgImageLoader); virtual;
+    function FindSymbol(const AName: String): TDbgSymbol; virtual;
+    function FindSymbol(AAdress: TDbgPtr): TDbgSymbol; virtual;
+    property HasInfo: Boolean read FHasInfo;
+  end;
+
+
   TDbgBreakpoint = class;
   TDbgBreakpointEvent = procedure(const ASender: TDbgBreakpoint; const AContext: TContext) of object;
   TDbgBreakpoint = class(TObject)
@@ -162,8 +176,10 @@ type
     FModuleHandle: THandle;
     FBaseAddr: TDbgPtr;
     FBreakList: TList;
-    FSymbols: TDbgSymbol;
-    procedure BuildSymbols;
+    FDbgInfo: TDbgInfo;
+    FLoader: TDbgImageLoader;
+
+    procedure LoadInfo;
     procedure CheckName;
     procedure SetName(const AValue: String);
   public
@@ -181,6 +197,8 @@ type
     property Name: String read FName;
   end;
 
+  { TDbgProcess }
+
   TDbgProcess = class(TDbgInstance)
   private
     FProcessID: Integer;
@@ -190,6 +208,8 @@ type
     FThreadMap: TMap; // map ThreadID -> ThreadObject
     FLibMap: TMap;    // map LibAddr -> LibObject
     FBreakMap: TMap;  // map BreakAddr -> BreakObject
+    
+    FSymInstances: TList;  // list of dbgInstances with debug info
 
     FMainThread: TDbgThread;
 
@@ -207,6 +227,8 @@ type
     function  AddBreak(const ALocation: TDbgPtr): TDbgBreakpoint;
     function  AddLib(const AInfo: TLoadDLLDebugInfo): TDbgLibrary;
     procedure AddThread(const AID: Integer; const AInfo: TCreateThreadDebugInfo);
+    function  FindSymbol(const AName: String): TDbgSymbol;
+    function  FindSymbol(AAdress: TDbgPtr): TDbgSymbol;
     function  GetLib(const AHandle: THandle; out ALib: TDbgLibrary): Boolean;
     function  GetThread(const AID: Integer; out AThread: TDbgThread): Boolean;
     procedure Interrupt;
@@ -232,7 +254,7 @@ type
 implementation
 
 uses
-  SysUtils, WinDSymbols;
+  SysUtils, WinDSymbols, WinDDwarf;
 
 procedure LogLastError;
 begin
@@ -241,16 +263,10 @@ end;
 
 { TDbgInstance }
 
-procedure TDbgInstance.BuildSymbols;
-begin
-  FSymbols := TDbgSymbol.Create(FName, skInstance, FBaseAddr);
-  AddSymbols(FSymbols, FModuleHandle);
-end;
-                      
 procedure TDbgInstance.CheckName;
 begin
   if FName = ''
-  then FName := Format('@%p', [FBaseAddr]);
+  then FName := Format('@%p', [Pointer(PtrUInt(FBaseAddr))]);
 end;
 
 constructor TDbgInstance.Create(const AProcess: TDbgProcess; const ADefaultName: String; const AModuleHandle: THandle; const ABaseAddr, ANameAddr: TDbgPtr; const AUnicode: Boolean);
@@ -297,7 +313,8 @@ begin
   then W := ADefaultName;
 
   SetName(W);
-  BuildSymbols;
+  
+  LoadInfo;
 end;
 
 destructor TDbgInstance.Destroy;
@@ -311,8 +328,16 @@ begin
   FBreakList.Clear;
 
   FreeAndNil(FBreakList);
-  FreeAndNil(FSymbols);
+  FreeAndNil(FDbgInfo);
+  FreeAndNil(FLoader);
   inherited;
+end;
+
+procedure TDbgInstance.LoadInfo;
+begin
+  FLoader := TDbgWinPEImageLoader.Create(FModuleHandle);
+  FDbgInfo := TDbgDwarf.Create(FLoader);
+  TDbgDwarf(FDbgInfo).LoadCompilationUnits;
 end;
 
 procedure TDbgInstance.SetName(const AValue: String);
@@ -340,6 +365,8 @@ function TDbgProcess.AddLib(const AInfo: TLoadDLLDebugInfo): TDbgLibrary;
 begin
   Result := TDbgLibrary.Create(Self, HexValue(AInfo.lpBaseOfDll, SizeOf(Pointer), [hvfIncludeHexchar]), AInfo);
   FLibMap.Add(TDbgPtr(AInfo.lpBaseOfDll), Result);
+  if Result.FDbgInfo.HasInfo
+  then FSymInstances.Add(Result);
 end;
 
 procedure TDbgProcess.AddThread(const AID: Integer; const AInfo: TCreateThreadDebugInfo);
@@ -383,10 +410,15 @@ begin
   FBreakMap := TMap.Create(MAP_ID_SIZE, SizeOf(TDbgBreakpoint));
   FSingleStepBreak := nil;
 
+  FSymInstances := TList.Create;
+
   inherited Create(Self, ADefaultName, AInfo.hFile, TDbgPtr(AInfo.lpBaseOfImage), TDbgPtr(AInfo.lpImageName), AInfo.fUnicode <> 0);
 
-  FMainThread := TDbgThread.Create(Self, AThreadID, FInfo.hThread, FInfo.lpThreadLocalBase, FInfo.lpStartAddress);
+  FMainThread := TDbgThread.Create(Self, AThreadID, AInfo.hThread, AInfo.lpThreadLocalBase, AInfo.lpStartAddress);
   FThreadMap.Add(AThreadID, FMainThread);
+  
+  if FDbgInfo.HasInfo
+  then FSymInstances.Add(Self);
 end;
 
 destructor TDbgProcess.Destroy;
@@ -396,7 +428,27 @@ begin
   FreeAndNil(FBreakMap);
   FreeAndNil(FThreadMap);
   FreeAndNil(FLibMap);
+  FreeAndNil(FSymInstances);
   inherited;
+end;
+
+function TDbgProcess.FindSymbol(const AName: String): TDbgSymbol;
+begin
+  Result := FDbgInfo.FindSymbol(AName);
+end;
+
+function TDbgProcess.FindSymbol(AAdress: TDbgPtr): TDbgSymbol;
+var
+  n: Integer;
+  Inst: TDbgInstance;
+begin
+  for n := 0 to FSymInstances.Count - 1 do
+  begin
+    Inst := TDbgInstance(FSymInstances[n]);
+    Result := Inst.FDbgInfo.FindSymbol(AAdress);
+    if Result <> nil then Exit;
+  end;
+  Result := nil;
 end;
 
 function TDbgProcess.GetLib(const AHandle: THandle; out ALib: TDbgLibrary): Boolean;
@@ -602,9 +654,15 @@ begin
 end;
 
 procedure TDbgProcess.RemoveLib(const AInfo: TUnloadDLLDebugInfo);
+var
+  Lib: TDbgLibrary;
 begin
   if FLibMap = nil then Exit;
+  if not FLibMap.GetData(TDbgPtr(AInfo.lpBaseOfDll), Lib) then Exit;
+  if Lib.FDbgInfo.HasInfo
+  then FSymInstances.Remove(Lib);
   FLibMap.Delete(TDbgPtr(AInfo.lpBaseOfDll));
+  // TODO: Free lib ???
 end;
 
 procedure TDbgProcess.RemoveThread(const AID: DWord);
@@ -678,6 +736,29 @@ begin
   end;
 
   FSingleStepping := True;
+end;
+
+
+{ TDbgInfo }
+
+constructor TDbgInfo.Create(ALoader: TDbgImageLoader);
+begin
+  inherited Create;
+end;
+
+function TDbgInfo.FindSymbol(const AName: String): TDbgSymbol;
+begin
+  Result := nil;
+end;
+
+function TDbgInfo.FindSymbol(AAdress: TDbgPtr): TDbgSymbol;
+begin
+  Result := nil;
+end;
+
+procedure TDbgInfo.SetHasInfo;
+begin
+  FHasInfo := True;
 end;
 
 

@@ -56,7 +56,6 @@ type
 
   TDbgImageLoader = class(TObject)
   private
-    FFileName: String;
     FImage64Bit: Boolean;
     FImageBase: QWord;
     FSections: TStringList;
@@ -68,9 +67,8 @@ type
     procedure LoadSections; virtual; abstract;
     procedure UnloadSections; virtual; abstract;
   public
-    constructor Create(const AFileName: String); virtual;
+    constructor Create;
     destructor Destroy; override;
-    property FileName: String read FFileName;
     property ImageBase: QWord read FImageBase;
     Property Image64Bit: Boolean read FImage64Bit;
     property Section[const AName: String]: PDbgImageSection read GetSection;
@@ -97,10 +95,11 @@ type
     FModulePtr: Pointer;
     procedure DoCleanup;
   protected
-    constructor Create(const AFileName: String); override;
     function  LoadData(out AModuleBase: Pointer; out AHeaders: PImageNtHeaders): Boolean; override;
     procedure UnloadData; override;
   public
+    constructor Create(const AFileName: String);
+    constructor Create(AFileHandle: THandle);
   end;
 
 implementation
@@ -120,10 +119,9 @@ begin
   FSections.Objects[idx] := TObject(p);
 end;
 
-constructor TDbgImageLoader.Create(const AFileName: String);
+constructor TDbgImageLoader.Create;
 begin
   inherited Create;
-  FFileName := AFileName;
   FSections := TStringList.Create;
   FSections.Sorted := True;
   FSections.Duplicates := dupError;
@@ -192,7 +190,7 @@ begin
 
   for n := 0 to NtHeaders^.FileHeader.NumberOfSections - 1 do
   begin
-    SectionHeader := @NtHeaders^.OptionalHeader + NtHeaders^.FileHeader.SizeOfOptionalHeader + SizeOf(SectionHeader^) * n;
+    SectionHeader := Pointer(@NtHeaders^.OptionalHeader) + NtHeaders^.FileHeader.SizeOfOptionalHeader + SizeOf(SectionHeader^) * n;
     // make a null terminated name
     Move(SectionHeader^.Name, SectionName, IMAGE_SIZEOF_SHORT_NAME);
     SectionName[IMAGE_SIZEOF_SHORT_NAME] := #0;
@@ -218,10 +216,22 @@ end;
 
 constructor TDbgWinPEImageLoader.Create(const AFileName: String);
 begin
-  FFileHandle := INVALID_HANDLE_VALUE;
-  FMapHandle := 0;
-  FModulePtr := nil;
-  inherited Create(AFileName);
+  FFileHandle := CreateFile(PChar(AFileName), GENERIC_READ, FILE_SHARE_READ, nil, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+  if FFileHandle = INVALID_HANDLE_VALUE
+  then begin
+    WriteLN('Cannot open file: ', AFileName);
+  end;
+  inherited Create;
+end;
+
+constructor TDbgWinPEImageLoader.Create(AFileHandle: THandle);
+begin
+  FFileHandle := AFileHandle;
+  if FFileHandle = INVALID_HANDLE_VALUE
+  then begin
+    WriteLN('Invalid file handle');
+  end;
+  inherited Create;
 end;
 
 procedure TDbgWinPEImageLoader.DoCleanup;
@@ -243,12 +253,6 @@ var
   DosHeader: PImageDosHeader;
 begin
   Result := False;
-  FFileHandle := CreateFile(PChar(FileName), GENERIC_READ, FILE_SHARE_READ, nil, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
-  if FFileHandle = INVALID_HANDLE_VALUE
-  then begin
-    WriteLN('Cannot open file: ', FileName);
-    Exit;
-  end;
 
   try
     FMapHandle := CreateFileMapping(FFileHandle, nil, PAGE_READONLY{ or SEC_IMAGE}, 0, 0, nil);
