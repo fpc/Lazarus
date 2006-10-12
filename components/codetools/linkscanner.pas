@@ -33,6 +33,7 @@
 unit LinkScanner;
 
 {$ifdef FPC} {$mode objfpc} {$endif}{$H+}
+{$ifdef UseInline}{$inline on}{$endif}
 
 {$I codetools.inc}
 

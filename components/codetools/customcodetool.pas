@@ -30,6 +30,7 @@
 unit CustomCodeTool;
 
 {$ifdef FPC}{$mode objfpc}{$endif}{$H+}
+{$inline on}
 
 interface
 

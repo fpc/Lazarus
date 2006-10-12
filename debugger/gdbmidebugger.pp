@@ -2541,7 +2541,8 @@ begin
   Result := inherited CheckCount;
   if not Result then Exit;
 
-  TGDBMIDebugger(Debugger).ExecuteCommand('-stack-info-depth', [], R);
+  TGDBMIDebugger(Debugger).ExecuteCommand('-stack-info-depth',
+                                          [cfIgnoreError], R);
   List := CreateMIValueList(R);
   SetCount(StrToIntDef(List.Values['depth'], 0));
   FreeAndNil(List);

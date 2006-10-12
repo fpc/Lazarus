@@ -27,6 +27,7 @@
 unit CarbonUtils;
 
 {$mode objfpc}{$H+}
+{$inline on}
 
 interface
 
