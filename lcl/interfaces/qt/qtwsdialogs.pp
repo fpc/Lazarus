@@ -28,7 +28,7 @@ interface
 
 uses
   // Libs
-  qt4, qtobjects,
+  qt4, qtobjects, qtwidgets,
   // LCL
   SysUtils, Classes, Dialogs, Controls,
   // Widgetset
@@ -108,11 +108,25 @@ implementation
 
 { TQtWSCommonDialog }
 
+{------------------------------------------------------------------------------
+  Function: TQtWSCommonDialog.CreateHandle
+  Params:  None
+  Returns: Nothing
+
+  Dummy handle creator. On Qt we don´t need a Handle for common dialogs
+ ------------------------------------------------------------------------------}
 class function TQtWSCommonDialog.CreateHandle(const ACommonDialog: TCommonDialog): integer;
 begin
   Result := 1000;
 end;
 
+{------------------------------------------------------------------------------
+  Function: TQtWSCommonDialog.ShowModal
+  Params:  None
+  Returns: Nothing
+
+  Shows a common dialog
+ ------------------------------------------------------------------------------}
 class procedure TQtWSCommonDialog.ShowModal(const ACommonDialog: TCommonDialog);
 var
   Caption, Dir, Filter, selectedFilter, ReturnText: WideString;
@@ -129,7 +143,7 @@ begin
     Initialization of the dialog´s options
    ------------------------------------------------------------------------------}
 
-  Parent := QWidgetH(TWinControl(ACommonDialog.Owner).Handle);
+  Parent := TQtWidget(TWinControl(ACommonDialog.Owner).Handle).Widget;
 
   ReturnText := '';
   
@@ -203,7 +217,17 @@ begin
   {------------------------------------------------------------------------------
     Code to call the dialog
    ------------------------------------------------------------------------------}
-  if ACommonDialog is TOpenDialog then
+  if ACommonDialog is TSaveDialog then
+  begin
+    if ofOverwritePrompt in TSaveDialog(ACommonDialog).Options then
+     options := options or QFileDialogDontConfirmOverwrite;
+
+    QFileDialog_getSaveFileName(@ReturnText, Parent, @Caption, @Dir, @Filter, @selectedFilter, options);
+
+    if ReturnText = '' then ACommonDialog.UserChoice := mrCancel
+    else ACommonDialog.UserChoice := mrOK;
+  end
+  else if ACommonDialog is TOpenDialog then
   begin
     if ofAllowMultiSelect in TOpenDialog(ACommonDialog).Options then
      QFileDialog_getOpenFileNames(ReturnList, Parent, @Caption, @Dir, @Filter, @selectedFilter, options)
@@ -211,16 +235,6 @@ begin
      QFileDialog_getOpenFileName(@ReturnText, Parent, @Caption, @Dir, @Filter, @selectedFilter, options);
 
     FileDialog.FileName := UTF8Encode(ReturnText);
-
-    if ReturnText = '' then ACommonDialog.UserChoice := mrCancel
-    else ACommonDialog.UserChoice := mrOK;
-  end
-  else if ACommonDialog is TSaveDialog then
-  begin
-    if ofOverwritePrompt in TSaveDialog(ACommonDialog).Options then
-     options := options or QFileDialogDontConfirmOverwrite;
-    
-    QFileDialog_getSaveFileName(@ReturnText, Parent, @Caption, @Dir, @Filter, @selectedFilter, options);
 
     if ReturnText = '' then ACommonDialog.UserChoice := mrCancel
     else ACommonDialog.UserChoice := mrOK;
@@ -246,6 +260,13 @@ begin
   end;
 end;
 
+{------------------------------------------------------------------------------
+  Function: TQtWSCommonDialog.DestroyHandle
+  Params:  None
+  Returns: Nothing
+
+  Dummy handle destructor. On Qt we don´t need a Handle for common dialogs
+ ------------------------------------------------------------------------------}
 class procedure TQtWSCommonDialog.DestroyHandle(const ACommonDialog: TCommonDialog);
 begin
 
