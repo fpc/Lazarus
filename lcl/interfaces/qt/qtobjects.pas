@@ -57,11 +57,9 @@ type
   TQtImage = class(TObject)
   public
     Handle: QImageH;
-    Data: PByte;
-    DataSize: Cardinal;
   public
     constructor Create(vHandle: QImageH); overload;
-    constructor Create(Adata: PByte; width: Integer; height: Integer; format: QImageFormat; size: PtrInt); overload;
+    constructor Create(Adata: PByte; width: Integer; height: Integer; format: QImageFormat); overload;
     destructor Destroy; override;
   public
     function height: Integer;
@@ -192,8 +190,6 @@ end;
 constructor TQtImage.Create(vHandle: QImageH);
 begin
   Handle := vHandle;
-  
-  DataSize := 0;
 end;
 
 {------------------------------------------------------------------------------
@@ -201,20 +197,12 @@ end;
 
   Contructor for the class.
  ------------------------------------------------------------------------------}
-constructor TQtImage.Create(Adata: PByte; width: Integer; height: Integer; format: QImageFormat; size: PtrInt);
+constructor TQtImage.Create(Adata: PByte; width: Integer; height: Integer; format: QImageFormat);
 begin
-  DataSize := size;
-
-  GetMem(Data, DataSize);
-  
-//  FillChar(Data^, DataSize, #0);
-
-  Move(Adata^, Data^, DataSize);
-
-  Handle := QImage_create(Data, width, height, format);
+  Handle := QImage_create(AData, width, height, format);
 
   {$ifdef VerboseQt}
-    WriteLn('TQtImage.Create Size:', dbgs(size), ' Result:', dbgs(Handle));
+    WriteLn('TQtImage.Create Result:', dbgs(Handle));
   {$endif}
 end;
 
@@ -228,12 +216,10 @@ end;
 destructor TQtImage.Destroy;
 begin
   {$ifdef VerboseQt}
-    WriteLn('TQtImage.Destroy Handle:', dbgs(Handle), ' DataSize', dbgs(DataSize));
+    WriteLn('TQtImage.Destroy Handle:', dbgs(Handle));
   {$endif}
 
   if Handle <> nil then QImage_destroy(Handle);
-  
-  if DataSize > 0 then FreeMem(Data, DataSize);
 
   inherited Destroy;
 end;
@@ -474,7 +460,7 @@ begin
   vFont.Widget := nil;
   vFont.Free;
   
-//  if vImage <> nil then NilAndFree(vImage);
+  if vImage <> nil then QImage_destroy(vImage);
 
   QPainter_destroy(Widget);
 
@@ -623,8 +609,16 @@ end;
  ------------------------------------------------------------------------------}
 procedure TQtDeviceContext.drawImage(targetRect: PRect;
   image: QImageH; sourceRect: PRect; flags: QtImageConversionFlags = QtAutoColor);
+var
+  LocalRect: TRect;
 begin
-  QPainter_drawImage(Widget, targetRect, image, sourceRect, flags);
+  LocalRect := targetRect^;
+  
+  LocalRect.Left := LocalRect.Left + Origin.X;
+
+  LocalRect.Top := LocalRect.Top + Origin.Y;
+
+  QPainter_drawImage(Widget, PRect(@LocalRect), image, sourceRect, flags);
 end;
 
 end.

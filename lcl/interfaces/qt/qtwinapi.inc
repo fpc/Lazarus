@@ -107,7 +107,8 @@ begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('Trace:> [WinAPI CreateBitmapFromRawImage]',
      ' Width:', dbgs(RawImage.Description.Width),
-     ' Height:', dbgs(RawImage.Description.Height));
+     ' Height:', dbgs(RawImage.Description.Height),
+     ' DataSize: ', dbgs(RawImage.DataSize));
   {$endif}
 
   Result := False;
@@ -115,7 +116,7 @@ begin
   MaskBitmap := 0;
 
   Bitmap := HBitmap(TQtImage.Create(RawImage.Data, RawImage.Description.Width,
-   RawImage.Description.Height, QImageFormat_RGB32, RawImage.DataSize));
+   RawImage.Description.Height, QImageFormat_RGB32));
 
   Result := True;
 
@@ -717,8 +718,8 @@ begin
     if Buf = nil then Result := SizeOf(TDIBSECTION)
     else
     begin
-      Width := 200;
-      Height := 200;
+      Width := TQtImage(aObject).width;
+      Height := TQtImage(aObject).height;
     
       FillChar(BitmapSection, SizeOf(TDIBSECTION), 0);
 

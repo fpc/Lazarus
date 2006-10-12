@@ -374,9 +374,9 @@ function TQtWidget.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl
 begin
   Result := False;
 
-  {$ifdef VerboseQt}
+  {.$ifdef VerboseQt}
 //  WriteLn(Integer(QEvent_type(Event)));
-  {$endif}
+  {.$endif}
 
   QEvent_ignore(Event);
 
@@ -422,6 +422,10 @@ procedure TQtWidget.SlotShow(vShow: Boolean); cdecl;
 var
   Msg: TLMShowWindow;
 begin
+  {$ifdef VerboseQt}
+    WriteLn('TQtWidget.SlotShow vShow: ', dbgs(vShow));
+  {$endif}
+
   FillChar(Msg, SizeOf(Msg), #0);
 
   Msg.Msg := LM_SHOWWINDOW;
@@ -442,8 +446,14 @@ end;
   Currently commented because it was raising exception on software exit
  ------------------------------------------------------------------------------}
 procedure TQtWidget.SlotDestroy; cdecl;
+var
+  Msg: TLMessage;
 begin
-{  FillChar(Msg, SizeOf(Msg), #0);
+  {$ifdef VerboseQt}
+    WriteLn('TQtWidget.SlotDestroy');
+  {$endif}
+
+  FillChar(Msg, SizeOf(Msg), #0);
 
   Msg.Msg := LM_DESTROY;
 
@@ -451,7 +461,7 @@ begin
     LCLObject.WindowProc(TLMessage(Msg));
   except
     Application.HandleException(nil);
-  end;}
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -463,6 +473,10 @@ procedure TQtWidget.SlotFocus(FocusIn: Boolean); cdecl;
 var
   Msg: TLMessage;
 begin
+  {$ifdef VerboseQt}
+    WriteLn('TQtWidget.SlotFocus');
+  {$endif}
+
   FillChar(Msg, SizeOf(Msg), #0);
 
   if FocusIn then Msg.Msg := LM_SETFOCUS
@@ -518,11 +532,15 @@ procedure TQtWidget.SlotMouse(Event: QEventH); cdecl;
 var
   Msg: TLMMouse;
 begin
+  {$ifdef VerboseQt}
+    WriteLn('TQtWidget.SlotMouse');
+  {$endif}
+
   FillChar(Msg, SizeOf(Msg), #0);
 
   case QEvent_type(Event) of
-   QEventMouseButtonPress: Msg.Msg := LM_CLICKED;
-   QEventMouseButtonRelease: Msg.Msg := LM_RELEASED;
+   QEventMouseButtonPress: Exit; //Msg.Msg := LM_CLICKED;
+   QEventMouseButtonRelease: Msg.Msg := LM_CLICKED;
    QEventMouseButtonDblClick: Msg.Msg := LM_CLICKED;
   else
    Msg.Msg := LM_CLICKED;

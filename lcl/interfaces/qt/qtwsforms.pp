@@ -72,7 +72,8 @@ type
 
   TQtWSCustomForm = class(TWSCustomForm)
   private
-    class procedure SetSlots(const QtMainWindow: TQtMainWindow);
+    class procedure SetQtWindowBorderStyle(const AHandle: TQtMainWindow; const AFormBorderStyle: TFormBorderStyle);
+    class procedure SetQtBorderIcons(const AHandle: TQtMainWindow; const ABorderIcons: TBorderIcons);
   protected
   public
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND; override;
@@ -82,13 +83,11 @@ type
     class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
 
     class procedure CloseModal(const ACustomForm: TCustomForm); override;
-    class procedure SetFormBorderStyle(const AForm: TCustomForm;
-     const AFormBorderStyle: TFormBorderStyle); override;
+    class procedure SetFormBorderStyle(const AForm: TCustomForm; const AFormBorderStyle: TFormBorderStyle); override;
     class procedure SetIcon(const AForm: TCustomForm; const AIcon: HICON); override;
     class procedure SetShowInTaskbar(const AForm: TCustomForm; const AValue: TShowInTaskbar); override;
     class procedure ShowModal(const ACustomForm: TCustomForm); override;
-    class procedure SetBorderIcons(const AForm: TCustomForm;
-     const ABorderIcons: TBorderIcons); override;
+    class procedure SetBorderIcons(const AForm: TCustomForm; const ABorderIcons: TBorderIcons); override;
   end;
 
   { TQtWSForm }
@@ -128,29 +127,6 @@ implementation
 
 uses QtWSControls;
 
-{ TQtWSCustomForm }
-
-{------------------------------------------------------------------------------
-  Method: TQtWSCustomForm.SetSlots
-  Params:  None
-  Returns: Nothing
-
-  Initializes the events
- ------------------------------------------------------------------------------}
-class procedure TQtWSCustomForm.SetSlots(const QtMainWindow: TQtMainWindow);
-var
-  Method: TMethod;
-  Hook : QObject_hookH;
-begin
-  // Various Events
-
-  Hook := QObject_hook_create(QtMainWindow.Widget); // PaintBox
-  
-  TEventFilterMethod(Method) := QtMainWindow.EventFilter;
-  
-  QObject_hook_hook_events(Hook, Method);
-end;
-
 {------------------------------------------------------------------------------
   Method: TQtWSCustomForm.CreateHandle
   Params:  None
@@ -162,16 +138,33 @@ class function TQtWSCustomForm.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
   QtMainWindow: TQtMainWindow;
-var
   Str: WideString;
+  Method: TMethod;
+  Hook : QObject_hookH;
 begin
+  // Creates the window
+
   QtMainWindow := TQtMainWindow.Create(AWinControl, AParams);
+
+  // Set´s initial properties
 
   Str := WideString(AWinControl.Caption);
 
   QtMainWindow.SetWindowTitle(@Str);
 
-  SetSlots(QtMainWindow);
+  SetQtWindowBorderStyle(QtMainWindow,  TCustomForm(AWinControl).BorderStyle);
+
+  SetQtBorderIcons(QtMainWindow, TCustomForm(AWinControl).BorderIcons);
+
+  // Sets Various Events
+
+  Hook := QObject_hook_create(QtMainWindow.Widget);
+
+  TEventFilterMethod(Method) := QtMainWindow.EventFilter;
+
+  QObject_hook_hook_events(Hook, Method);
+
+  // Return the handle
 
   Result := THandle(QtMainWindow);
 end;
@@ -222,24 +215,43 @@ begin
   TQtWidget(AWinControl.Handle).SetWindowTitle(@Str);
 end;
 
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomForm.CloseModal
+  Params:
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
 class procedure TQtWSCustomForm.CloseModal(const ACustomForm: TCustomForm);
 begin
   inherited CloseModal(ACustomForm);
 end;
 
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomForm.SetFormBorderStyle
+  Params:
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
 class procedure TQtWSCustomForm.SetFormBorderStyle(const AForm: TCustomForm;
   const AFormBorderStyle: TFormBorderStyle);
 begin
-  inherited SetFormBorderStyle(AForm, AFormBorderStyle);
+  SetQtWindowBorderStyle(TQtMainWindow(AForm.Handle), AFormBorderStyle);
 end;
 
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomForm.SetIcon
+  Params:
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
 class procedure TQtWSCustomForm.SetIcon(const AForm: TCustomForm; const AIcon: HICON);
 begin
   inherited SetIcon(AForm, AIcon);
 end;
 
-class procedure TQtWSCustomForm.SetShowInTaskbar(const AForm: TCustomForm;
-  const AValue: TShowInTaskbar);
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomForm.SetShowInTaskbar
+  Params:
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+class procedure TQtWSCustomForm.SetShowInTaskbar(const AForm: TCustomForm; const AValue: TShowInTaskbar);
 begin
   inherited SetShowInTaskbar(AForm, AValue);
 end;
@@ -248,6 +260,10 @@ end;
   Method: TQtWSCustomForm.ShowModal
   Params:
   Returns: Nothing
+  
+  What we do here is put the entere window inside a QDialog component, because QDialog
+ is the only Qt component with a exec method that won´t return until the dialog is closed,
+ and that behavior makes implementing ShowModal much easier.
  ------------------------------------------------------------------------------}
 class procedure TQtWSCustomForm.ShowModal(const ACustomForm: TCustomForm);
 var
@@ -266,10 +282,116 @@ begin
   end;
 end;
 
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomForm.SetBorderIcons
+  Params:
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
 class procedure TQtWSCustomForm.SetBorderIcons(const AForm: TCustomForm;
   const ABorderIcons: TBorderIcons);
 begin
-  inherited SetBorderIcons(AForm, ABorderIcons);
+  SetQtBorderIcons(TQtMainWindow(AForm.Handle), ABorderIcons);
+end;
+
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomForm.SetQtWindowBorderStyle
+  Params:  None
+  Returns: Nothing
+
+  We need this method because LCL doesn´t automatically calls SetWindowBorder
+ after the window is created, so we need to do it on CreateHandle procedure,
+ but CreateHandle cannot call other methods from TQtWSCustomForm because the
+ Handle isn´t created yet before it is finished.
+ ------------------------------------------------------------------------------}
+class procedure TQtWSCustomForm.SetQtWindowBorderStyle(const AHandle: TQtMainWindow;
+  const AFormBorderStyle: TFormBorderStyle);
+var
+  Flags: QtWindowFlags;
+  QtOnlyDialog: Integer;
+begin
+  Flags := AHandle.windowFlags;
+
+  {$ifdef VerboseQt}
+    WriteLn('Trace:> [TQtWSCustomForm.SetFormBorderStyle] Flags: ', IntToHex(Flags, 8));
+  {$endif}
+
+  QtOnlyDialog := QtDialog and not QtWindow;
+
+  case AFormBorderStyle of
+   bsNone:
+   begin
+     Flags := Flags or QtFramelessWindowHint;
+     Flags := Flags and not QtOnlyDialog;
+   end;
+   bsSingle:
+   begin
+     Flags := Flags or QtFramelessWindowHint;
+     Flags := Flags and not QtOnlyDialog;
+   end;
+   bsSizeable:
+   begin
+     Flags := Flags and not QtFramelessWindowHint;
+     Flags := Flags and not QtOnlyDialog;
+   end;
+   bsDialog:
+   begin
+     Flags := Flags and not QtFramelessWindowHint;
+     Flags := Flags or QtOnlyDialog;
+   end;
+   bsToolWindow:
+   begin
+     Flags := Flags or QtFramelessWindowHint;
+     Flags := Flags or QtOnlyDialog;
+   end;
+   bsSizeToolWin:
+   begin
+     Flags := Flags and not QtFramelessWindowHint;
+     Flags := Flags or QtOnlyDialog;
+   end;
+  end;
+
+  {$ifdef VerboseQt}
+    WriteLn('Trace:< [TQtWSCustomForm.SetFormBorderStyle] Flags: ', IntToHex(Flags, 8));
+  {$endif}
+
+  AHandle.setWindowFlags(Flags);
+end;
+
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomForm.SetQtBorderIcons
+  Params:  None
+  Returns: Nothing
+
+  Same comment as SetQtWindowBorderStyle above
+ ------------------------------------------------------------------------------}
+class procedure TQtWSCustomForm.SetQtBorderIcons(const AHandle: TQtMainWindow;
+  const ABorderIcons: TBorderIcons);
+var
+  Flags: QtWindowFlags;
+begin
+  AHandle.windowFlags;
+
+  {$ifdef VerboseQt}
+    WriteLn('Trace:> [TQtWSCustomForm.SetBorderIcons] Flags: ', IntToHex(Flags, 8));
+  {$endif}
+
+  if biSystemMenu in ABorderIcons then Flags := Flags or QtWindowSystemMenuHint
+  else Flags := Flags and not QtWindowSystemMenuHint;
+
+  if biMinimize in ABorderIcons then Flags := Flags or QtWindowMinimizeButtonHint
+  else Flags := Flags and not QtWindowMinimizeButtonHint;
+
+  if biMaximize in ABorderIcons then Flags := Flags or QtWindowMaximizeButtonHint
+  else Flags := Flags and not QtWindowMaximizeButtonHint;
+
+  if biHelp in ABorderIcons then Flags := Flags or QtWindowContextHelpButtonHint
+  else Flags := Flags and not QtWindowContextHelpButtonHint;
+
+  {$ifdef VerboseQt}
+    WriteLn('Trace:< [TQtWSCustomForm.SetBorderIcons] Flags: ', IntToHex(Flags, 8));
+  {$endif}
+
+  AHandle.setWindowFlags(Flags);
 end;
 
 initialization
