@@ -142,12 +142,16 @@ end;
 procedure TQtListStrings.ExternalUpdate(var Astr: TStringList; Clear: Boolean);
 var
   i: Integer;
+  TmpStr: WideString;
 begin
   FUpdating := True;
   if Clear then
     QListWidget_clear(FQtListWidget);
   for i := 0 to AStr.Count -1 do
-    QListWidget_additem(FQtListWidget, @WideString(Astr[i]));
+  begin
+    TmpStr := UTF8Decode(Astr[i]);
+    QListWidget_additem(FQtListWidget, @TmpStr);
+  end;
   FUpdating := False;
   IsChanged;
   FUpdating := False;
@@ -550,6 +554,7 @@ procedure TQtComboStrings.ExternalUpdate(var Astr: TStringList; Clear: Boolean);
 var
   i: Integer;
   data: QVariantH;
+  TmpStr: WideString;
 begin
 
   data := QVariant_create(10); //Creates dummy data
@@ -558,7 +563,10 @@ begin
   if Clear then
     QComboBox_clear(FQtComboBox);
   for i := 0 to AStr.Count -1 do
-    QComboBox_additem(FQtComboBox, @WideString(Astr[i]), data);
+  begin
+    TmpStr := UTF8Decode(Astr[i]);
+    QComboBox_additem(FQtComboBox, @TmpStr, data);
+  end;
   FUpdating := False;
   IsChanged;
   FUpdating := False;

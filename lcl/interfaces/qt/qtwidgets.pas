@@ -508,7 +508,7 @@ begin
   else Msg.Msg := LM_KEYDOWN;
 
   {------------------------------------------------------------------------------
-   Translates a Qt4 Key to a LCL VK_ key
+   Translates a Qt4 Key to a LCL VK_* key
    ------------------------------------------------------------------------------}
   Msg.CharCode := QtKeyToLCLKey(QKeyEvent_key(QKeyEventH(Event)));
 
@@ -531,19 +531,34 @@ end;
 procedure TQtWidget.SlotMouse(Event: QEventH); cdecl;
 var
   Msg: TLMMouse;
+  MousePos: TPoint;
 begin
   {$ifdef VerboseQt}
     WriteLn('TQtWidget.SlotMouse');
   {$endif}
 
   FillChar(Msg, SizeOf(Msg), #0);
+  
+  QCursor_pos(@MousePos);
+
+  Msg.XPos := SmallInt(MousePos.X);
+  Msg.YPos := SmallInt(MousePos.Y);
 
   case QEvent_type(Event) of
-   QEventMouseButtonPress: Exit; //Msg.Msg := LM_CLICKED;
-   QEventMouseButtonRelease: Msg.Msg := LM_CLICKED;
+   QEventMouseButtonPress: Msg.Msg := LM_PRESSED;
+   QEventMouseButtonRelease:
+   begin
+     Msg.Msg := LM_CLICKED;
+
+    try
+      LCLObject.WindowProc(TLMessage(Msg));
+    except
+       Application.HandleException(nil);
+    end;
+
+     Msg.Msg := LM_RELEASED;
+   end;
    QEventMouseButtonDblClick: Msg.Msg := LM_CLICKED;
-  else
-   Msg.Msg := LM_CLICKED;
   end;
 
   try
@@ -561,8 +576,22 @@ end;
 procedure TQtWidget.SlotMouseMove(Event: QEventH); cdecl;
 var
   Msg: TLMMouseMove;
+  MousePos: TPoint;
 begin
   FillChar(Msg, SizeOf(Msg), #0);
+
+  QCursor_pos(@MousePos);
+
+  Msg.XPos := SmallInt(MousePos.X);
+  Msg.YPos := SmallInt(MousePos.Y);
+
+  Msg.Msg := LM_MOUSEMOVE;
+
+  try
+    LCLObject.WindowProc(TLMessage(Msg));
+  except
+    Application.HandleException(nil);
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -1110,7 +1139,7 @@ begin
     WriteLn('TQtPushButton.Create');
   {$endif}
 
-  Str := WideString(AWinControl.Caption);
+  Str := UTF8Decode(AWinControl.Caption);
   Parent := TQtWidget(AWinControl.Parent.Handle).Widget;
   Widget := QPushButton_create(@Str, Parent);
 
@@ -1305,7 +1334,7 @@ begin
   QWidget_setGeometry(Widget, AWinControl.Left, AWinControl.Top,
    AWinControl.Width, AWinControl.Height);
 
-  Str := WideString(AWinControl.Caption);
+  Str := UTF8Decode(AWinControl.Caption);
   SetText(@Str);
 end;
 
@@ -1436,7 +1465,7 @@ begin
      AWinControl.Width, AWinControl.Height);
   end;
 
-  Str := WideString(AWinControl.Caption);
+  Str := UTF8Decode(AWinControl.Caption);
   SetText(@Str);
 end;
 
@@ -1524,7 +1553,7 @@ begin
      AWinControl.Width, AWinControl.Height);
   end;
 
-  Str := WideString(AWinControl.Caption);
+  Str := UTF8Decode(AWinControl.Caption);
   SetText(@Str);
 end;
 
@@ -1704,7 +1733,7 @@ begin
     WriteLn('TQtLineEdit.Create');
   {$endif}
   Parent := TQtWidget(AWinControl.Parent.Handle).Widget;
-  Str := WideString((AWinControl as TCustomEdit).Text);
+  Str := UTF8Decode((AWinControl as TCustomEdit).Text);
   Widget := QLineEdit_create(@Str, Parent);
 
   // Sets it´ s initial properties
@@ -1868,7 +1897,7 @@ begin
   // Add the items to the combo box
   for i := 0 to (AWinControl as TCustomComboBox).Items.Count - 1 do
   begin
-    Str := WideString((AWinControl as TCustomComboBox).Items.Strings[i]);
+    Str := UTF8Decode((AWinControl as TCustomComboBox).Items.Strings[i]);
     QComboBox_addItem(QComboBoxH(Widget), @Str, data);
   end;
 
@@ -2014,7 +2043,7 @@ begin
   // Sets the initial items
   for I := 0 to TCustomListBox(AWinControl).Items.Count - 1 do
   begin
-    Text := WideString(TCustomListBox(AWinControl).Items.Strings[i]);
+    Text := UTF8Decode(TCustomListBox(AWinControl).Items.Strings[i]);
     QListWidget_addItem(QListWidgetH(Widget), @Text);
   end;
 
@@ -2244,7 +2273,7 @@ begin
   Parent := TQtWidget(AWinControl.Parent.Handle).Widget;
   Widget := QStatusBar_create(Parent);
 
-  Text := WideString(AWinControl.Caption);
+  Text := UTF8Decode(AWinControl.Caption);
   showMessage(@Text);
 
   // Sets it´ s initial properties

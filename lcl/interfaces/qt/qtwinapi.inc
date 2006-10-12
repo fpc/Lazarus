@@ -426,7 +426,7 @@ begin
     Exit;
   end;
 
-  WideStr := WideString(Str);
+  WideStr := UTF8Decode(Str);
 
   TQtDeviceContext(DC).drawText(Rect.Left, Rect.Top, @WideStr);
 
@@ -496,7 +496,7 @@ begin
 
   if not IsValidDC(DC) then Exit;
 
-  WideStr := WideString(Str);
+  WideStr := UTF8Decode(Str);
 
 //  if TQtDeviceContext(DC).isDrawing then TQtDeviceContext(DC).drawText(X, Y, @WideStr)
 //  else TQtDeviceContext(DC).AddObject(dcTextOut, @WideStr, X, Y);
@@ -1839,7 +1839,7 @@ begin
 
   if not IsValidDC(DC) then Exit;
 
-  WideStr := WideString(Str);
+  WideStr := UTF8Decode(Str);
 
 //  if TQtDeviceContext(DC).isDrawing then TQtDeviceContext(DC).drawText(X, Y, @WideStr)
 //  else TQtDeviceContext(DC).AddObject(dcTextOut, @WideStr, X, Y);

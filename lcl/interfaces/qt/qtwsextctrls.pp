@@ -340,7 +340,7 @@ class procedure TQtWSCustomNotebook.AddPage(const ANotebook: TCustomNotebook;
 var
   Str: WideString;
 begin
-  Str := WideString(AChild.Caption);
+  Str := UTF8Decode(AChild.Caption);
 
   TQtTabWidget(ANotebook.Handle).insertTab(AIndex, TQtWidget(AChild.Handle).Widget, @Str);
 end;

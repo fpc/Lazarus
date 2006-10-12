@@ -148,7 +148,7 @@ begin
 
   // Set´s initial properties
 
-  Str := WideString(AWinControl.Caption);
+  Str := UTF8Decode(AWinControl.Caption);
 
   QtMainWindow.SetWindowTitle(@Str);
 
@@ -194,7 +194,7 @@ var
 begin
   TQtWidget(AWinControl.Handle).WindowTitle(@Str);
 
-  AText := String(Str);
+  AText := UTF8Encode(Str);
 
   Result := True;
 end;
@@ -210,7 +210,7 @@ class procedure TQtWSCustomForm.SetText(const AWinControl: TWinControl; const AT
 var
   Str: WideString;
 begin
-  Str := WideString(AText);
+  Str := UTF8Decode(AText);
 
   TQtWidget(AWinControl.Handle).SetWindowTitle(@Str);
 end;

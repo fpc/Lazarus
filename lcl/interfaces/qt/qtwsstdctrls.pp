@@ -496,7 +496,7 @@ var
 begin
   if Length(AText) = 0 then
     exit;
-  Astr := WideString(AText);
+  Astr := UTF8Decode(AText);
   //QTextEdit_append(QTextEditH(ACustomMemo.Handle),@Astr);
   QTextEdit_append(QTextEditH(TQtWidget(ACustomMemo.Handle).Widget),@Astr);
 
@@ -544,7 +544,7 @@ var
 begin
   QTextEdit_toPlainText(QTextEditH(TQtWidget(AWinControl.Handle).Widget), @Str);
 
-  AText := String(Str);
+  AText := UTF8Encode(Str);
 
   Result := True;
 end;
@@ -558,7 +558,7 @@ class procedure TQtWSCustomMemo.SetText(const AWinControl: TWinControl; const AT
 var
   AString: WideString;
 begin
-  AString := WideString(AText);
+  AString := UTF8Decode(AText);
 
   QTextEdit_append(QTextEditH(TQtWidget(AWinControl.Handle).Widget), @AString);
 end;
@@ -614,7 +614,7 @@ var
 begin
   QLineEdit_text(QLineEditH(TQtWidget(AWinControl.Handle).Widget), @Str);
 
-  AText := String(Str);
+  AText := UTF8Encode(Str);
 
   Result := True;
 end;
@@ -628,7 +628,7 @@ class procedure TQtWSCustomEdit.SetText(const AWinControl: TWinControl; const AT
 var
   AString: WideString;
 begin
-  AString := WideString(AText);
+  AString := UTF8Decode(AText);
 
   QLineEdit_setText(QLineEditH(TQtWidget(AWinControl.Handle).Widget), @AString);
 end;
@@ -687,7 +687,7 @@ var
 begin
   TQtStaticText(AWinControl.Handle).Text(@Str);
 
-  AText := string(Str);
+  AText := UTF8Encode(Str);
 
   Result := True;
 end;
@@ -701,7 +701,7 @@ class procedure TQtWSCustomStaticText.SetText(const AWinControl: TWinControl; co
 var
   Str: WideString;
 begin
-  Str := WideString(AText);
+  Str := UTF8Decode(AText);
 
   TQtStaticText(AWinControl.Handle).SetText(@Str);
 end;
@@ -760,7 +760,7 @@ var
 begin
   TQtAbstractButton(AWinControl.Handle).Text(@Str);
 
-  AText := string(Str);
+  AText := UTF8Encode(Str);
 
   Result := True;
 end;
@@ -774,7 +774,7 @@ class procedure TQtWSCustomCheckBox.SetText(const AWinControl: TWinControl; cons
 var
   Str: WideString;
 begin
-  Str := WideString(AText);
+  Str := UTF8Decode(AText);
 
   TQtAbstractButton(AWinControl.Handle).SetText(@Str);
 end;
@@ -865,7 +865,7 @@ var
 begin
   TQtAbstractButton(AWinControl.Handle).Text(@Str);
 
-  AText := string(Str);
+  AText := UTF8Encode(Str);
 
   Result := True;
 end;
@@ -881,7 +881,7 @@ class procedure TQtWSRadioButton.SetText(const AWinControl: TWinControl; const A
 var
   Str: WideString;
 begin
-  Str := WideString(AText);
+  Str := UTF8Decode(AText);
 
   TQtAbstractButton(AWinControl.Handle).SetText(@Str);
 end;
@@ -956,7 +956,7 @@ begin
 
   Result := THandle(QtGroupBox);
   
-  Str := WideString(AWinControl.Caption);
+  Str := UTF8Decode(AWinControl.Caption);
   QGroupBox_setTitle(QGroupBoxH(QtGroupBox.Widget), @Str);
 end;
 

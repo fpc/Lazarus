@@ -340,7 +340,7 @@ procedure TQtFont.setRawName(p1: string);
 var
   Str: WideString;
 begin
-  Str := WideString(p1);
+  Str := UTF8Decode(p1);
 
   QFont_setRawName(Widget, @Str);
 end;
@@ -349,7 +349,7 @@ procedure TQtFont.setFamily(p1: string);
 var
   Str: WideString;
 begin
-  Str := WideString(p1);
+  Str := UTF8Decode(p1);
 
   QFont_setFamily(Widget, @Str);
 end;

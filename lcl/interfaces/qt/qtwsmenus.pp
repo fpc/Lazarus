@@ -140,7 +140,7 @@ begin
     { Count indicates the number of subitems this item has }
     else if AMenuItem.Count > 0 then
     begin
-      Text := WideString(AMenuItem.Caption);
+      Text := UTF8Decode(AMenuItem.Caption);
 
       Menu := MenuBar.addMenu(@Text);
 
@@ -150,7 +150,7 @@ begin
     begin
       ActionHandle := True;
 
-      Text := WideString(AMenuItem.Caption);
+      Text := UTF8Decode(AMenuItem.Caption);
 
       Action := MenuBar.addAction(@Text);
       
@@ -178,7 +178,7 @@ begin
     { Count indicates the number of subitems this item has }
     else if AMenuItem.Count > 0 then
     begin
-      Text := WideString(AMenuItem.Caption);
+      Text := UTF8Decode(AMenuItem.Caption);
 
       Menu := ParentMenu.addMenu(@Text);
 
@@ -188,7 +188,7 @@ begin
     begin
       ActionHandle := True;
     
-      Text := WideString(AMenuItem.Caption);
+      Text := UTF8Decode(AMenuItem.Caption);
 
       Action := ParentMenu.addAction(@Text);
 

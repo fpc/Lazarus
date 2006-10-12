@@ -139,7 +139,7 @@ var
 begin
   TQtAbstractButton(AWinControl.Handle).Text(@Str);
 
-  AText := string(Str);
+  AText := UTF8Encode(Str);
   
   Result := True;
 end;
@@ -153,7 +153,7 @@ class procedure TQtWSButton.SetText(const AWinControl: TWinControl; const AText:
 var
   Str: WideString;
 begin
-  Str := WideString(AText);
+  Str := UTF8Decode(AText);
 
   TQtAbstractButton(AWinControl.Handle).SetText(@Str);
 end;
@@ -217,7 +217,7 @@ var
 begin
   TQtAbstractButton(AWinControl.Handle).Text(@Str);
 
-  AText := string(Str);
+  AText := UTF8Encode(Str);
 
   Result := True;
 end;
@@ -232,7 +232,7 @@ class procedure TQtWSBitBtn.SetText(const AWinControl: TWinControl;
 var
   Str: WideString;
 begin
-  Str := WideString(AText);
+  Str := UTF8Decode(AText);
 
   TQtAbstractButton(AWinControl.Handle).SetText(@Str);
 end;

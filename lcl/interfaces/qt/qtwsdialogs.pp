@@ -133,15 +133,15 @@ begin
 
   ReturnText := '';
   
-  Caption := WideString(ACommonDialog.Title);
+  Caption := UTF8Decode(ACommonDialog.Title);
 
   if ACommonDialog is TFileDialog then
   begin
     FileDialog := TFileDialog(ACommonDialog);
 
-    Dir := WideString(FileDialog.InitialDir);
+    Dir := UTF8Decode(FileDialog.InitialDir);
 
-    Filter := WideString(FileDialog.Filter);
+    Filter := UTF8Decode(FileDialog.Filter);
 
     {------------------------------------------------------------------------------
       This is a parser that converts LCL filter strings to Qt filter strings
@@ -210,7 +210,7 @@ begin
     else
      QFileDialog_getOpenFileName(@ReturnText, Parent, @Caption, @Dir, @Filter, @selectedFilter, options);
 
-    FileDialog.FileName := string(ReturnText);
+    FileDialog.FileName := UTF8Encode(ReturnText);
 
     if ReturnText = '' then ACommonDialog.UserChoice := mrCancel
     else ACommonDialog.UserChoice := mrOK;
