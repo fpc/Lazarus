@@ -230,13 +230,26 @@ class function TQtWSCustomPanel.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
   QtFrame: TQtFrame;
+  Method: TMethod;
+  Hook : QObject_hookH;
 begin
   QtFrame := TQtFrame.Create(AWinControl, AParams);
 
-//  SetSlots(QtButtonGroup);
+  // Various Events
+
+  Hook := QObject_hook_create(QtFrame.Widget);
+
+  TEventFilterMethod(Method) := @QtFrame.EventFilter;
+
+  QObject_hook_hook_events(Hook, Method);
+
+  // Set´s initial properties
 
   QtFrame.setFrameShape(QFrameWinPanel);
+  
   QtFrame.setFrameShadow(QFrameRaised);
+  
+  // Return the Handle
 
   Result := THandle(QtFrame);
 end;
@@ -268,12 +281,30 @@ class function TQtWSCustomPage.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
   QtWidget: TQtWidget;
+  Method: TMethod;
+  Hook : QObject_hookH;
 begin
-  QtWidget := TQtWidget.Create(AWinControl, AParams);
+  {$ifdef VerboseQt}
+    WriteLn('Trace:> [TQtWSCustomPage.CreateHandle]');
+  {$endif}
 
-//  SetSlots(QtButtonGroup);
+  QtWidget := TQtWidget.CreatePage(AWinControl, AParams);
+
+  // Various Events
+
+  Hook := QObject_hook_create(QtWidget.Widget);
+
+  TEventFilterMethod(Method) := @QtWidget.EventFilter;
+
+  QObject_hook_hook_events(Hook, Method);
+
+  // Returns the Handle
 
   Result := THandle(QtWidget);
+
+  {$ifdef VerboseQt}
+    WriteLn('Trace:< [TQtWSCustomPage.CreateHandle] Result: ', IntToStr(Result));
+  {$endif}
 end;
 
 {------------------------------------------------------------------------------
@@ -308,10 +339,24 @@ end;
 class function TQtWSCustomNotebook.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND;
 var
   QtTabWidget: TQtTabWidget;
+  Method: TMethod;
+  Hook : QObject_hookH;
 begin
+  {$ifdef VerboseQt}
+    WriteLn('TQtWSCustomNotebook.CreateHandle');
+  {$endif}
+
   QtTabWidget := TQtTabWidget.Create(AWinControl, AParams);
 
-//  SetSlots(QtButtonGroup);
+  // Various Events
+
+  Hook := QObject_hook_create(QtTabWidget.Widget);
+
+  TEventFilterMethod(Method) := @QtTabWidget.EventFilter;
+
+  QObject_hook_hook_events(Hook, Method);
+
+  // Returns the Handle
 
   Result := THandle(QtTabWidget);
 end;
@@ -340,6 +385,10 @@ class procedure TQtWSCustomNotebook.AddPage(const ANotebook: TCustomNotebook;
 var
   Str: WideString;
 begin
+  {$ifdef VerboseQt}
+    WriteLn('TQtWSCustomNotebook.AddPage');
+  {$endif}
+
   Str := UTF8Decode(AChild.Caption);
 
   TQtTabWidget(ANotebook.Handle).insertTab(AIndex, TQtWidget(AChild.Handle).Widget, @Str);

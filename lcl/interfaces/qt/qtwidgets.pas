@@ -44,6 +44,7 @@ type
     LCLObject: TWinControl;
   public
     constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); virtual;
+    constructor CreatePage(const AWinControl: TWinControl; const AParams: TCreateParams);
     destructor Destroy; override;
   public
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; virtual;
@@ -202,6 +203,7 @@ type
   public
     constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); override;
     destructor Destroy; override;
+  public
     function insertTab(index: Integer; page: QWidgetH; p2: PWideString): Integer;
   end;
 
@@ -338,11 +340,29 @@ begin
   LCLObject := AWinControl;
 
   // Creates the widget
-  {$ifdef VerboseQt}
-    WriteLn('Calling QWidget_create');
-  {$endif}
   Parent := TQtWidget(AWinControl.Parent.Handle).Widget;
   Widget := QWidget_create(Parent);
+
+  // Sets it´ s initial properties
+  QWidget_setGeometry(Widget, AWinControl.Left, AWinControl.Top,
+   AWinControl.Width, AWinControl.Height);
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtWidget.CreatePage
+  Params:  None
+  Returns: Nothing
+  
+  Special constructor for notebook pages.
+  Pages should be created without a parent for Qt
+ ------------------------------------------------------------------------------}
+constructor TQtWidget.CreatePage(const AWinControl: TWinControl; const AParams: TCreateParams);
+begin
+  // Initializes the properties
+  LCLObject := AWinControl;
+
+  // Creates the widget
+  Widget := QWidget_create;
 
   // Sets it´ s initial properties
   QWidget_setGeometry(Widget, AWinControl.Left, AWinControl.Top,
@@ -599,7 +619,7 @@ end;
   Params:  None
   Returns: Nothing
 
-  Sends a LM_PAINT message to the LCL. This is for custom painted controls only
+  Sends a LM_PAINT message to the LCL. This is for windowed controls only
  ------------------------------------------------------------------------------}
 procedure TQtWidget.SlotPaint(Event: QEventH); cdecl;
 var
@@ -609,7 +629,7 @@ begin
     WriteLn('TQtWidget.SlotPaint');
   {$endif}
 
-  if (LCLObject is TCustomControl) or (LCLObject is TCustomForm) then
+  if (LCLObject is TWinControl) then
   begin
     FillChar(Msg, SizeOf(Msg), #0);
 
