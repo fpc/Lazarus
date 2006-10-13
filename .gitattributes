@@ -877,6 +877,7 @@ docs/xml/lcl/lcl.xml svneol=LF#text/plain eol=lf
 docs/xml/lcl/lclclasses.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/lclintf.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/lclmemmanager.xml svneol=LF#text/xml eol=lf
+docs/xml/lcl/lclmessageglue.xml svneol=native#text/plain
 docs/xml/lcl/lclproc.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/lclrescache.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/lclstrconsts.xml svneol=LF#text/xml eol=lf

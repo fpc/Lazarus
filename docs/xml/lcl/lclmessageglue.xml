@@ -1,0 +1,1327 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<fpdoc-descriptions>
+<package name="lcl">
+
+<!--
+  ====================================================================
+    LCLMessageGlue
+  ====================================================================
+-->
+
+<module name="LCLMessageGlue">
+<short></short>
+<descr>
+</descr>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="Classes">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="Forms">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="LCLProc">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="Controls">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="LMessages">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="LCLType">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: default -->
+<element name="DeliverMessage">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="DeliverMessage.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DeliverMessage.Target">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DeliverMessage.AMessage">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="LCLSendActivateMsg">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="LCLSendActivateMsg.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendActivateMsg.Target">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendActivateMsg.Active">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendActivateMsg.Minimized">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendActivateMsg.ActiveWindow">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="LCLSendSetFocusMsg">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="LCLSendSetFocusMsg.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendSetFocusMsg.Target">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="LCLSendKillFocusMsg">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="LCLSendKillFocusMsg.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendKillFocusMsg.Target">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="LCLSendShowWindowMsg">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="LCLSendShowWindowMsg.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendShowWindowMsg.Target">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendShowWindowMsg.Show">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendShowWindowMsg.Status">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="LCLSendSizeMsg">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="LCLSendSizeMsg.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendSizeMsg.Target">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendSizeMsg.Width">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendSizeMsg.Height">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendSizeMsg.SizeType">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendSizeMsg.FromInterface">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="LCLSendMoveMsg">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="LCLSendMoveMsg.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendMoveMsg.Target">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendMoveMsg.XPos">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendMoveMsg.YPos">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendMoveMsg.MoveType">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendMoveMsg.FromInterface">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="LCLSendMouseMoveMsg">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="LCLSendMouseMoveMsg.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendMouseMoveMsg.Target">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendMouseMoveMsg.XPos">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendMouseMoveMsg.YPos">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendMouseMoveMsg.ShiftState">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="LCLSendMouseDownMsg">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="LCLSendMouseDownMsg.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendMouseDownMsg.Target">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendMouseDownMsg.XPos">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendMouseDownMsg.YPos">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendMouseDownMsg.Button">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendMouseDownMsg.ShiftState">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="LCLSendMouseUpMsg">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="LCLSendMouseUpMsg.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendMouseUpMsg.Target">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendMouseUpMsg.XPos">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendMouseUpMsg.YPos">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendMouseUpMsg.Button">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendMouseUpMsg.ShiftState">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="LCLSendCaptureChangedMsg">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="LCLSendCaptureChangedMsg.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendCaptureChangedMsg.Target">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="LCLSendSelectionChangedMsg">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="LCLSendSelectionChangedMsg.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendSelectionChangedMsg.Target">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="LCLSendDestroyMsg">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="LCLSendDestroyMsg.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendDestroyMsg.Target">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="LCLSendChangedMsg">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="LCLSendChangedMsg.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendChangedMsg.Target">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendChangedMsg.ItemIndex">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="LCLSendClickedMsg">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="LCLSendClickedMsg.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendClickedMsg.Target">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="LCLSendPressedMsg">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="LCLSendPressedMsg.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendPressedMsg.Target">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="LCLSendReleasedMsg">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="LCLSendReleasedMsg.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendReleasedMsg.Target">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="LCLSendMoveCursorMsg">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="LCLSendMoveCursorMsg.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendMoveCursorMsg.Target">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="LCLSendMouseEnterMsg">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="LCLSendMouseEnterMsg.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendMouseEnterMsg.Target">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="LCLSendMouseLeaveMsg">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="LCLSendMouseLeaveMsg.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendMouseLeaveMsg.Target">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="LCLSendInsertTextMsg">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="LCLSendInsertTextMsg.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendInsertTextMsg.Target">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="LCLSendDeleteTextMsg">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="LCLSendDeleteTextMsg.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendDeleteTextMsg.Target">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="LCLSendSetEditableMsg">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="LCLSendSetEditableMsg.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendSetEditableMsg.Target">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="LCLSendMoveWordMsg">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="LCLSendMoveWordMsg.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendMoveWordMsg.Target">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="LCLSendMovePageMsg">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="LCLSendMovePageMsg.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendMovePageMsg.Target">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="LCLSendMoveToRowMsg">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="LCLSendMoveToRowMsg.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendMoveToRowMsg.Target">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="LCLSendMoveToColumnMsg">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="LCLSendMoveToColumnMsg.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendMoveToColumnMsg.Target">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="LCLSendKillCharMsg">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="LCLSendKillCharMsg.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendKillCharMsg.Target">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="LCLSendKillWordMsg">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="LCLSendKillWordMsg.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendKillWordMsg.Target">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="LCLSendKillLineMsg">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="LCLSendKillLineMsg.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendKillLineMsg.Target">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="LCLSendCutToClipboardMsg">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="LCLSendCutToClipboardMsg.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendCutToClipboardMsg.Target">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="LCLSendCopyToClipboardMsg">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="LCLSendCopyToClipboardMsg.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendCopyToClipboardMsg.Target">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="LCLSendPasteFromClipboardMsg">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="LCLSendPasteFromClipboardMsg.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendPasteFromClipboardMsg.Target">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="LCLSendExposeEventMsg">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="LCLSendExposeEventMsg.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendExposeEventMsg.Target">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="LCLSendConfigureEventMsg">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="LCLSendConfigureEventMsg.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendConfigureEventMsg.Target">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="LCLSendPaintMsg">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="LCLSendPaintMsg.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendPaintMsg.Target">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendPaintMsg.DC">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendPaintMsg.PaintStruct">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="LCLSendKeyDownEvent">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="LCLSendKeyDownEvent.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendKeyDownEvent.Target">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendKeyDownEvent.CharCode">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendKeyDownEvent.KeyData">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendKeyDownEvent.BeforeEvent">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendKeyDownEvent.IsSysKey">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="LCLSendKeyUpEvent">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="LCLSendKeyUpEvent.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendKeyUpEvent.Target">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendKeyUpEvent.CharCode">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendKeyUpEvent.KeyData">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendKeyUpEvent.BeforeEvent">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendKeyUpEvent.IsSysKey">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="LCLSendTimerMsg">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="LCLSendTimerMsg.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendTimerMsg.Target">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendTimerMsg.TimerID">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendTimerMsg.TimerProc">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="LCLSendExitMsg">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="LCLSendExitMsg.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendExitMsg.Target">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="LCLSendCloseQueryMsg">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="LCLSendCloseQueryMsg.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendCloseQueryMsg.Target">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="LCLSendDragStartMsg">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="LCLSendDragStartMsg.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendDragStartMsg.Target">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="LCLSendDeactivateStartMsg">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="LCLSendDeactivateStartMsg.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendDeactivateStartMsg.Target">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="LCLSendMonthChangedMsg">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="LCLSendMonthChangedMsg.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendMonthChangedMsg.Target">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="LCLSendYearChangedMsg">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="LCLSendYearChangedMsg.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendYearChangedMsg.Target">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="LCLSendDayChangedMsg">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="LCLSendDayChangedMsg.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendDayChangedMsg.Target">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="LCLSendMouseMultiClickMsg">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="LCLSendMouseMultiClickMsg.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendMouseMultiClickMsg.Target">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendMouseMultiClickMsg.XPos">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendMouseMultiClickMsg.YPos">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendMouseMultiClickMsg.Button">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendMouseMultiClickMsg.ClickCount">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendMouseMultiClickMsg.ShiftState">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="LCLSendDrawListItemMsg">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="LCLSendDrawListItemMsg.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendDrawListItemMsg.Target">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendDrawListItemMsg.DrawListItemStruct">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="LCLSendInternalPaintMsg">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="LCLSendInternalPaintMsg.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendInternalPaintMsg.Target">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LCLSendInternalPaintMsg.DC">
+<short></short>
+</element>
+
+</module> <!-- LCLMessageGlue -->
+
+</package>
+</fpdoc-descriptions>
