@@ -130,6 +130,7 @@ end;
 class procedure TQtWSCommonDialog.ShowModal(const ACommonDialog: TCommonDialog);
 var
   Caption, Dir, Filter, selectedFilter, ReturnText: WideString;
+  TmpFilter: string;
   FileDialog: TFileDialog;
   options: QFileDialogOptions;
   Parent: QWidgetH;
@@ -146,6 +147,7 @@ begin
   Parent := TQtWidget(TWinControl(ACommonDialog.Owner).Handle).Widget;
 
   ReturnText := '';
+  TmpFilter := '';
   
   Caption := UTF8Decode(ACommonDialog.Title);
 
@@ -154,8 +156,6 @@ begin
     FileDialog := TFileDialog(ACommonDialog);
 
     Dir := UTF8Decode(FileDialog.InitialDir);
-
-    Filter := UTF8Decode(FileDialog.Filter);
 
     {------------------------------------------------------------------------------
       This is a parser that converts LCL filter strings to Qt filter strings
@@ -180,10 +180,10 @@ begin
         ParserState := ParserState + 1;
 
         if ParserState = 1 then
-         Filter := Filter + Copy(FileDialog.Filter, Position, i - Position) + ' '
+         TmpFilter := TmpFilter + Copy(FileDialog.Filter, Position, i - Position) + ' '
         else if ParserState = 2 then
         begin
-          Filter := Filter + '(' + Copy(FileDialog.Filter, Position, i - Position) + ')' + LineEnding;
+          TmpFilter := TmpFilter + '(' + Copy(FileDialog.Filter, Position, i - Position) + ')' + LineEnding;
           ParserState := 0;
         end;
 
@@ -191,7 +191,9 @@ begin
       end;
     end;
     
-    Filter := Filter + '(' + Copy(FileDialog.Filter, Position, i + 1 - Position) + ')';
+    TmpFilter := TmpFilter + '(' + Copy(FileDialog.Filter, Position, i + 1 - Position) + ')';
+
+    Filter := UTF8Decode(TmpFilter);
 
     {------------------------------------------------------------------------------
       Sets the selected filter
@@ -230,11 +232,17 @@ begin
   else if ACommonDialog is TOpenDialog then
   begin
     if ofAllowMultiSelect in TOpenDialog(ACommonDialog).Options then
-     QFileDialog_getOpenFileNames(ReturnList, Parent, @Caption, @Dir, @Filter, @selectedFilter, options)
+    begin
+      QFileDialog_getOpenFileNames(ReturnList, Parent, @Caption, @Dir, @Filter, @selectedFilter, options)
+      
+      // TODO: Convert ReturnList into a WideString and then into a utf-8 string and return that
+    end
     else
-     QFileDialog_getOpenFileName(@ReturnText, Parent, @Caption, @Dir, @Filter, @selectedFilter, options);
+    begin
+      QFileDialog_getOpenFileName(@ReturnText, Parent, @Caption, @Dir, @Filter, @selectedFilter, options);
 
-    FileDialog.FileName := UTF8Encode(ReturnText);
+      FileDialog.FileName := UTF8Encode(ReturnText);
+    end;
 
     if ReturnText = '' then ACommonDialog.UserChoice := mrCancel
     else ACommonDialog.UserChoice := mrOK;

@@ -360,6 +360,7 @@ begin
       ObjType := 'Font';
     {$endif}
     
+//    TQtFont(aObject).Free;
   end
   {------------------------------------------------------------------------------
     Brush
@@ -370,6 +371,7 @@ begin
       ObjType := 'Brush';
     {$endif}
 
+//    TQtBrush(aObject).Free;
   end
   {------------------------------------------------------------------------------
     Image
@@ -379,6 +381,8 @@ begin
     {$ifdef VerboseQtWinAPI}
       ObjType := 'Image';
     {$endif}
+
+//    TQtImage(aObject).Free;
   end;
 
   // Find out if we want to release internal GDI object
