@@ -143,7 +143,8 @@ var
   Hook : QObject_hookH;
 begin
   {$ifdef VerboseQt}
-    WriteLn('[TQtWSCustomForm.CreateHandle]');
+    WriteLn('[TQtWSCustomForm.CreateHandle] Height: ', IntToStr(AWinControl.Height),
+     ' Width: ', IntToStr(AWinControl.Width));
   {$endif}
 
   // Creates the window
@@ -275,12 +276,20 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TQtWSCustomForm.ShowModal(const ACustomForm: TCustomForm);
 var
-  dlgResult: Integer;
+  QtDialog: TQtDialog;
 begin
-  dlgResult := TQtMainWindow(ACustomForm.Handle).exec;
-  
-  if (dlgResult = Integer(QDialogRejected)) then ACustomForm.ModalResult := mrCancel
-  else if (ACustomForm.ModalResult = mrNone) then ACustomForm.ModalResult := mrOk;
+  QtDialog := TQtDialog.Create;
+  try
+    TQtWidget(ACustomForm.Handle).setParent(QtDialog.Widget);
+
+    QtDialog.exec;
+
+    if (ACustomForm.ModalResult = mrNone) then ACustomForm.ModalResult := mrCancel;
+
+    TQtWidget(ACustomForm.Handle).setParent(nil);
+  finally
+    QtDialog.Free;
+  end
 end;
 
 {------------------------------------------------------------------------------

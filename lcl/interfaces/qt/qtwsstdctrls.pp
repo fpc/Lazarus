@@ -649,7 +649,7 @@ begin
 
 //  SetSlots(QtStaticText);
 
-  if AWinControl.Visible then QtStaticText.Show;
+  // Returns the Handle
 
   Result := THandle(QtStaticText);
 end;
@@ -794,9 +794,9 @@ begin
 
 //  SetSlots(QtStaticText);
 
-  if AWinControl.Visible then QtCheckBox.Show;
-
   QWidget_setFocusPolicy(QtCheckBox.Widget, QtStrongFocus);
+  
+  // Returns the Handle
 
   Result := THandle(QtCheckBox);
 end;
@@ -910,9 +910,9 @@ begin
 
   QObject_hook_hook_events(Hook, Method);}
   
-  if AWinControl.Visible then QtRadioButton.Show;
-
   QWidget_setFocusPolicy(QtRadioButton.Widget, QtStrongFocus);
+  
+  // Returns the Handle
 
   Result := THandle(QtRadioButton);
 end;
@@ -952,12 +952,12 @@ begin
 // This needs further investigation
 //  SetSlots(QtButtonGroup);
 
-  if AWinControl.Visible then QtGroupBox.Show;
-
-  Result := THandle(QtGroupBox);
-  
   Str := UTF8Decode(AWinControl.Caption);
   QGroupBox_setTitle(QGroupBoxH(QtGroupBox.Widget), @Str);
+
+  // Returns the Handle
+
+  Result := THandle(QtGroupBox);
 end;
 
 {------------------------------------------------------------------------------

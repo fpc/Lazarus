@@ -112,7 +112,6 @@ type
   public
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     procedure SlotWindowStateChange; cdecl;
-    function exec: Integer;
   end;
 
   { TQtStaticText }
@@ -1263,7 +1262,7 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtMainWindow.Create Name: ', AWinControl.Name);
   {$endif}
-  Widget := QDialog_create(nil, QtWindow);
+  Widget := QWidget_create(nil, QtWindow);
 
   // Form initial position
   QWidget_setGeometry(Widget, AWinControl.Left, AWinControl.Top,
@@ -1287,7 +1286,7 @@ begin
     WriteLn('TQtMainWindow.Destroy');
   {$endif}
 
-  QDialog_destroy(QDialogH(Widget));
+  QWidget_destroy(QDialogH(Widget));
 
   inherited Destroy;
 end;
@@ -1345,16 +1344,6 @@ begin
   except
     Application.HandleException(nil);
   end;
-end;
-
-{------------------------------------------------------------------------------
-  Function: TQtMainWindow.exec
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-function TQtMainWindow.exec: Integer;
-begin
-  Result := QDialog_exec(QDialogH(Widget));
 end;
 
 { TQtStaticText }

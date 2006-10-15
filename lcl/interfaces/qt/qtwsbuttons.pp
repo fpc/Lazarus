@@ -107,9 +107,7 @@ begin
 
   QObject_hook_hook_events(Hook, Method);
   
-  // Initializes properties
-
-  if AWinControl.Visible then QtPushButton.Show;
+  // Returns the Handle
 
   Result := THandle(QtPushButton);
 end;
@@ -184,9 +182,7 @@ begin
 
   QObject_hook_hook_events(Hook, Method);
 
-  // Initializes properties
-
-  if AWinControl.Visible then QtPushButton.Show;
+  // Returns the Handle
 
   Result := THandle(QtPushButton);
 end;
@@ -210,8 +206,7 @@ end;
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
-class function TQtWSBitBtn.GetText(const AWinControl: TWinControl; var AText: String
-  ): Boolean;
+class function TQtWSBitBtn.GetText(const AWinControl: TWinControl; var AText: String): Boolean;
 var
   Str: WideString;
 begin
