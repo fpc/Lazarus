@@ -326,12 +326,12 @@ begin
 end;
 
 function TWinCEWidgetSet.CreateTimer(Interval: integer; TimerFunc: TFNTimerProc
-  ): integer;
+  ): THandle;
 begin
 
 end;
 
-function TWinCEWidgetSet.DestroyTimer(TimerHandle: Integer): boolean;
+function TWinCEWidgetSet.DestroyTimer(TimerHandle: THandle): boolean;
 begin
 
 end;

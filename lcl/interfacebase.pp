@@ -77,8 +77,8 @@ type
 
     // create and destroy
     function CreateComponent(Sender : TObject): THandle; virtual; abstract;
-    function CreateTimer(Interval: integer; TimerFunc: TFNTimerProc): integer; virtual; abstract;
-    function DestroyTimer(TimerHandle: integer): boolean; virtual; abstract;
+    function CreateTimer(Interval: integer; TimerFunc: TFNTimerProc): THandle; virtual; abstract;
+    function DestroyTimer(TimerHandle: THandle): boolean; virtual; abstract;
 
     {$DEFINE IF_BASE_MEMBER}
     {$I winapih.inc}

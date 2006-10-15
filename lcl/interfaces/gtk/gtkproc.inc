@@ -3424,6 +3424,7 @@ var
   FileSelWidget: PGtkFileSelection;
   LCLFilterMenu, LCLHistoryMenu: PGTKWidget;
 begin
+
   if (ADialog=nil) or (not ADialog.HandleAllocated) then exit;
   DlgWindow:=PGtkWidget(ADialog.Handle);
   {$IFDEF VerboseTransient}
@@ -3431,7 +3432,9 @@ begin
   {$ENDIF}
   gtk_window_set_transient_for(PGtkWindow(DlgWindow),nil);
   if ADialog is TOpenDialog then begin
-
+    {$IFDEF GTK2}
+    FileSelWidget:=GTK_FILE_CHOOSER(DlgWindow);
+    {$ELSE}
     FileSelWidget:=GTK_FILE_SELECTION(DlgWindow);
     FreeWidgetInfo(FileSelWidget^.selection_entry);
     FreeWidgetInfo(FileSelWidget^.dir_list);
@@ -3439,6 +3442,7 @@ begin
     LCLFilterMenu:=PGTKWidget(gtk_object_get_data(PGtkObject(FileSelWidget),
                                        'LCLFilterMenu'));
     if LCLFilterMenu<>nil then FreeWidgetInfo(LCLFilterMenu);
+    {$ENDIF}
     LCLHistoryMenu:=PGTKWidget(gtk_object_get_data(PGtkObject(FileSelWidget),
                                        'LCLHistoryMenu'));
     if LCLHistoryMenu<>nil then FreeWidgetInfo(LCLHistoryMenu);
@@ -3457,6 +3461,7 @@ begin
       gtk_object_set_data(PGtkObject(DlgWindow),'LCLHistoryList',nil);
     end;
 
+    {$IFDEF GTK1}
     // free filter
     FilterList:=TFPList(gtk_object_get_data(PGtkObject(DlgWindow),
                                             'LCLFilterList'));
@@ -3472,6 +3477,7 @@ begin
       FilterList.Free;
       gtk_object_set_data(PGtkObject(DlgWindow),'LCLFilterList',nil);
     end;
+    {$ENDIF}
 
     // free preview handle
     if ADialog is TPreviewFileDialog then begin
@@ -6663,6 +6669,7 @@ function RequestSelectionData(ClipboardWidget: PGtkWidget;
 var
   TimeID: cardinal;
   c: PClipboardEventData;
+  sanity: Integer = 0;
 begin
   {$IFDEF DEBUG_CLIPBOARD}
   DebugLn('[RequestSelectionData] FormatID=',dbgs(FormatID));
@@ -6671,8 +6678,7 @@ begin
   if (ClipboardWidget=nil) or (FormatID=0) 
   or (ClipboardTypeAtoms[ClipboardType]=0) then exit;
 
-  TimeID:=0; // = GDK_CURRENT_TIME, better use the current event^.time, but
-             // how to retrieve that value?
+  TimeID:= gdk_event_get_time(gtk_get_current_event);
              // IMPORTANT: To retrieve data from xterm or kde applications
              //            the time id must be 0 or event^.time
   repeat
@@ -6693,7 +6699,8 @@ begin
       break;
     ClipboardSelectionData.Remove(c);
     Dispose(c);
-  until false;
+    Inc(sanity);
+  until false or (sanity > 1000000);
   try
     if not WaitForClipboardAnswer(c) then exit;
     Result:=c^.Data;

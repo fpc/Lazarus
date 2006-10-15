@@ -325,8 +325,8 @@ type
 
     // create and destroy
     function CreateComponent(Sender : TObject): THandle; override;
-    function CreateTimer(Interval: integer; TimerFunc: TFNTimerProc) : integer; override;
-    function DestroyTimer(TimerHandle: integer) : boolean; override;
+    function CreateTimer(Interval: integer; TimerFunc: TFNTimerProc) : THandle; override;
+    function DestroyTimer(TimerHandle: THandle) : boolean; override;
     procedure DestroyLCLComponent(Sender: TObject);virtual;
 
     {$I gtkwinapih.inc}
@@ -338,6 +338,9 @@ type
 
 {$I gtklistslh.inc}
 {$I gtkfiledialogutilsh.inc}
+
+procedure CreateOpenDialogHistory(OpenDialog: TOpenDialog;
+  SelWidget: PGtkWidget);
 
 var
   GTKWidgetSet: TGTKWidgetSet;

@@ -1994,7 +1994,7 @@ End;
   Design: A callback to the TTimer class is implemented.
  ------------------------------------------------------------------------------}
 function TGtkWidgetSet.CreateTimer(Interval: integer;
-  TimerFunc: TFNTimerProc) : integer;
+  TimerFunc: TFNTimerProc) : THandle;
 var
   TimerInfo: PGtkITimerinfo;
 begin
@@ -2026,7 +2026,7 @@ end;
   WARNING: There seems to be a bug in gtk-1.2.x which breaks gtk_timeout_remove
            thus we can't dispose PGtkITimerinfo here (s.a. gtkTimerCB).
  ------------------------------------------------------------------------------}
-function TGtkWidgetSet.DestroyTimer(TimerHandle: integer) : boolean;
+function TGtkWidgetSet.DestroyTimer(TimerHandle: THandle) : boolean;
 var
   n : integer;
   TimerInfo : PGtkITimerinfo;
@@ -4466,8 +4466,12 @@ begin
     // create a HBox so that the history is left justified
     HBox:=gtk_hbox_new(false,0);
     gtk_object_set_data(PGtkObject(SelWidget), 'LCLHistoryHBox', HBox);
+    {$IFDEF GTK1}
     gtk_box_pack_start(GTK_BOX(GTK_FILE_SELECTION(SelWidget)^.main_vbox),
                        HBox,false,false,0);
+    {$ELSE}
+    gtk_file_chooser_set_extra_widget(PGtkDialog(SelWidget),HBox);
+    {$ENDIF}
 
     // create the label 'History:'
     s:=rsgtkHistory;
@@ -4481,7 +4485,7 @@ begin
       HistoryPullDownWidget);
     gtk_box_pack_start(GTK_BOX(HBox),HistoryPullDownWidget,false,false,5);
     gtk_widget_show(HistoryPullDownWidget);
-    gtk_widget_show(HBox);
+    gtk_widget_show_all(HBox);
 
     // create the menu (the content of the pull down)
     MenuWidget:=gtk_menu_new;

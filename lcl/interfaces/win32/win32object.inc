@@ -421,7 +421,7 @@ end;
   Design: A timer which calls TimerCallBackProc, is created.
     The TimerCallBackProc calls the TimerFunc.
  ------------------------------------------------------------------------------}
-function TWin32WidgetSet.CreateTimer(Interval: integer; TimerFunc: TFNTimerProc) : integer;
+function TWin32WidgetSet.CreateTimer(Interval: integer; TimerFunc: TFNTimerProc) : THandle;
 var
   TimerInfo: PWin32TimerInfo;
 begin
@@ -446,7 +446,7 @@ end;
   Params: TimerHandle
   Returns:
  ------------------------------------------------------------------------------}
-function TWin32WidgetSet.DestroyTimer(TimerHandle: Integer) : boolean;
+function TWin32WidgetSet.DestroyTimer(TimerHandle: THandle) : boolean;
 var
   n : integer;
   TimerInfo : PWin32Timerinfo;

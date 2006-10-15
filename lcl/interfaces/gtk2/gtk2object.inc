@@ -127,7 +127,6 @@ begin
     Result := False;
 end;
 
-{$IFDEF HasGTK2_6}
 procedure Gtk2FileChooserResponseCB(widget: PGtkFileChooser; arg1: gint; data: gpointer); cdecl;
 
   procedure AddFile(List: TStrings; const NewFile: string);
@@ -188,7 +187,6 @@ begin
   //?? StoreCommonDialogSetup(theDialog);
   theDialog.UserChoice := mrOK;
 end;
-{$ENDIF}
 
 Procedure gtk_clb_toggle(cellrenderertoggle : PGtkCellRendererToggle; arg1 : PGChar;
                          WinControl: TWinControl); cdecl;
@@ -842,13 +840,13 @@ end;
  ------------------------------------------------------------------------------}
 procedure TGtk2WidgetSet.InitializeOpenDialog(OpenDialog: TOpenDialog;
   SelWidget: PGtkWidget);
-{$IFDEF HasGTK2_6}
 var
   FileSelWidget: PGtkFileChooser;
   HelpButton: PGtkWidget;
-{$ENDIF}
+  FrameWidget: PGtkWidget;
+  HBox: PGtkWidget;
+  FileDetailLabel: PGtkWidget;
 begin
-{$IFDEF HasGTK2_6}
   FileSelWidget := GTK_FILE_CHOOSER(SelWidget);
 
   // Help button
@@ -864,17 +862,20 @@ begin
 
   // History List - a frame with an option menu
   CreateOpenDialogHistory(OpenDialog, SelWidget);
-
-//  // Filter - a frame with an option menu
+  
+  // Filter
   CreateOpenDialogFilter(OpenDialog,SelWidget);
 
+  (*
   // Details - a frame with a label
   if (ofViewDetail in OpenDialog.Options) then begin
 
     // create the frame around the information
     FrameWidget:=gtk_frame_new(PChar(rsFileInformation));
-    gtk_box_pack_start(GTK_BOX(FileSelWidget^.main_vbox),
-                       FrameWidget,false,false,0);
+    //gtk_box_pack_start(GTK_BOX(FileSelWidget^.main_vbox),
+    //                   FrameWidget,false,false,0);
+    gtk_box_pack_start(GTK_BOX(gtk_file_chooser_get_extra_widget(
+             PGtkFileChooser(SelWidget))), FrameWidget,false,false,0);
     gtk_widget_show(FrameWidget);
     // create a HBox, so that the information is left justified
     HBox:=gtk_hbox_new(false,0);
@@ -887,7 +888,7 @@ begin
     FileDetailLabel:=nil;
   gtk_object_set_data(PGtkObject(SelWidget), 'FileDetailLabel',
                       FileDetailLabel);
-
+  *)
   // preview
   if (OpenDialog is TPreviewFileDialog) then
     CreatePreviewDialogControl(TPreviewFileDialog(OpenDialog), SelWidget);
@@ -898,9 +899,6 @@ begin
 
   //if InitialFilter <> 'none' then
   //  PopulateFileAndDirectoryLists(FileSelWidget, InitialFilter);
-{$ELSE}
-  inherited InitializeOpenDialog(OpenDialog,SelWidget);
-{$ENDIF NONO}
 end;
 
 {------------------------------------------------------------------------------
@@ -913,13 +911,10 @@ end;
  ------------------------------------------------------------------------------}
 procedure TGtk2WidgetSet.InitializeFileDialog(FileDialog: TFileDialog;
   var SelWidget: PGtkWidget; Title: PChar);
-{$IFDEF HasGTK2_6}
 var
   Action: TGtkFileChooserAction; 
   Button1: String;
-{$ENDIF}
 begin
-{$IFDEF HasGTK2_6}
   Action := GTK_FILE_CHOOSER_ACTION_OPEN;
   Button1 := GTK_STOCK_OPEN;
 
@@ -944,22 +939,16 @@ begin
     InitializeOpenDialog(TOpenDialog(FileDialog), SelWidget);
 
   InitializeCommonDialog(TCommonDialog(FileDialog), SelWidget);
-{$ELSE}
-  inherited InitializeFileDialog(FileDialog,SelWidget,Title);
-{$ENDIF}
 end;
 
 function TGtk2WidgetSet.CreateOpenDialogFilter(OpenDialog: TOpenDialog;
   SelWidget: PGtkWidget): string;
-{$IFDEF HasGTK2_6}
 var
   FilterList: TFPList;
   i, j: integer;
   s: String;
   GtkFilter: PGtkFileFilter;
-{$ENDIF}
 begin
-{$IFDEF HasGTK2_6}
   ExtractFilterList(OpenDialog.Filter, FilterList, false);
   if FilterList.Count > 0 then begin
     j := 1;
@@ -982,21 +971,15 @@ begin
   gtk_object_set_data(PGtkObject(SelWidget), 'LCLFilterList', FilterList);
 
   Result := 'hm'; { Don't use '' as null return as this is used for *.* }
-{$ELSE}
-  Result:=inherited CreateOpenDialogFilter(OpenDialog,SelWidget);
-{$ENDIF}
 end;
 
 procedure TGtk2WidgetSet.CreatePreviewDialogControl(
   PreviewDialog: TPreviewFileDialog; SelWidget: PGtkWidget);
-{$IFDEF HasGTK2_6}
 var
   PreviewWidget: PGtkWidget;
   AControl: TPreviewFileControl;
   FileChooser: PGtkFileChooser;
-{$ENDIF}
 begin
-  {$IFDEF HasGTK2_6}
   AControl := PreviewDialog.PreviewFileControl;
   if AControl = nil then Exit;
 
@@ -1011,9 +994,6 @@ begin
   gtk_file_chooser_set_preview_widget(FileChooser, PreviewWidget);
 
   gtk_widget_show(PreviewWidget);
-  {$ELSE}
-  inherited CreatePreviewDialogControl(PreviewDialog,SelWidget);
-  {$ENDIF}
 end;
 
 {$IFDEF ASSERT_IS_ON}

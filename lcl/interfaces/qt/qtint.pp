@@ -70,9 +70,9 @@ type
     function  InitHintFont(HintFont: TObject): Boolean; override;
 
     // create and destroy
-    function CreateComponent(Sender : TObject): THandle; override; // deprecated
-    function CreateTimer(Interval: integer; TimerFunc: TFNTimerProc): integer; override;
-    function DestroyTimer(TimerHandle: integer): boolean; override;
+    function CreateComponent(Sender : TObject): LCLType.THandle; override; // deprecated
+    function CreateTimer(Interval: integer; TimerFunc: TFNTimerProc): LCLType.THandle; override;
+    function DestroyTimer(TimerHandle: LCLType.THandle): boolean; override;
 
     // device contexts
     function IsValidDC(const DC: HDC): Boolean; virtual;

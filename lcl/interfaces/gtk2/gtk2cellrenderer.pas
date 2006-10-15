@@ -69,6 +69,8 @@ var
   AreaRect: TRect;
   State: TBaseOwnerDrawState;
   Msg: TLMDrawListItem;
+  ItemPath: PGtkTreePath;
+  Column: PGtkTreeViewColumn;
 begin
   DebugLn(['LCLIntfCellRenderer_Render cell=',dbgs(cell),
     ' ',GetWidgetDebugReport(Widget),' ',
@@ -97,10 +99,13 @@ begin
       exit;
 
   // get itemindex and area
-  ItemIndex:=0; // ToDo
-  //Model:=PGtkTreeModel(gtk_tree_view_get_model(PGtkTreeView(Widget)));
-  //gtk_tree_model_get(Model);
-  
+  ItemIndex:=0;
+  if GTK_IS_TREE_VIEW(Widget) then begin
+    gtk_tree_view_get_path_at_pos(PGtkTreeView(Widget),cell_area^.x, cell_area^.y, ItemPath, column, nil, nil);
+    if ItemPath <> nil then
+      ItemIndex := StrToInt(gtk_tree_path_to_string(ItemPath));
+  end;
+
   AreaRect:=Bounds(background_area^.x,background_area^.y,
                    background_area^.Width,background_area^.Height);
 

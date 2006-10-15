@@ -378,12 +378,12 @@ begin
   Result:=0;
 end;
 
-function TCarbonWidgetSet.CreateTimer(Interval: integer; TimerFunc: TFNTimerProc): integer;
+function TCarbonWidgetSet.CreateTimer(Interval: integer; TimerFunc: TFNTimerProc): THandle;
 begin
   Result:=0;
 end;
 
-function TCarbonWidgetSet.DestroyTimer(TimerHandle: integer): boolean;
+function TCarbonWidgetSet.DestroyTimer(TimerHandle: THandle): boolean;
 begin
   Result:=false;
 end;

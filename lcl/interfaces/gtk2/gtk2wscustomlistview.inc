@@ -518,8 +518,8 @@ begin
     else
       ColSizing := GTK_TREE_VIEW_COLUMN_FIXED;
 
-    gtk_tree_view_column_set_sizing(GtkColumn, ColSizing);
     gtk_tree_view_column_set_resizable(GTK_TREE_VIEW_COLUMN (GtkColumn), True);
+    gtk_tree_view_column_set_sizing(GtkColumn, ColSizing);
   end;
 
 end;

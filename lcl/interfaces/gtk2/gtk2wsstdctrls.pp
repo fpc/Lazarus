@@ -456,7 +456,7 @@ begin
   end;
 
   WidgetInfo := GetWidgetInfo(p, False);
-  SetCallbacks(p, WidgetInfo);
+  SetCallbacks(TempWidget, WidgetInfo);
 end;
 
 class procedure TGtk2WSCustomListBox.SetCallbacks(

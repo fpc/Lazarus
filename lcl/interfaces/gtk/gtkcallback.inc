@@ -446,6 +446,9 @@ function gtkExposeEventAfter(Widget: PGtkWidget; Event : PGDKEventExpose;
   Data: gPointer): GBoolean; cdecl;
 var
   DesignOnlySignal: boolean;
+  {$IFDEF GTK2}
+  children: PGList;
+  {$ENDIF}
 begin
   Result := CallBackDefaultReturn;
   {$IFDEF EventTrace}
@@ -471,6 +474,21 @@ begin
   // the expose area is ok, but some gtk widgets repaints everything on expose
   // -> maximize the area
   DeliverGtkPaintMessage(Data,Widget,@Event^.Area,true);
+  {$IFDEF GTK2}
+  // Some widgets in gtk2 don't have their own exclusive "windows" so a synthetic event must be sent
+  if GTK_IS_FIXED(Widget) then begin
+    children := gtk_container_get_children(PGtkContainer(Widget));
+    while children <> nil do begin
+      if (children^.data <> nil) then begin
+        if GTK_WIDGET_NO_WINDOW(PGtkWidget(children^.data)) then
+          gtk_container_propagate_expose(PGtkContainer(Widget), PGtkWidget(children^.data), Event);
+        if children^.next = nil then break;
+        children := children^.next;
+      end;
+    end;
+    g_list_free(children);
+  end;
+  {$ENDIF}
 end;
 
 function gtkfrmactivateAfter(widget: PGtkWidget; Event : PgdkEventFocus;
@@ -2065,6 +2083,7 @@ begin
     if (AHistoryEntry<>nil) and (AHistoryEntry^.Filename<>nil) then begin
       // user has choosen a history file
       // -> select it in the filedialog
+      {$IFDEF GTK1}
       gtk_file_selection_complete(PGtkFileSelection(theDialog.Handle),
         AHistoryEntry^.Filename);
       // restore filter
@@ -2076,10 +2095,15 @@ begin
           CheckFilterActivated(ActiveFilterMenuItem);
         end;
       end;
+      {$ELSE}
+      gtk_file_chooser_set_current_folder(PGtkFileChooser(theDialog.Handle),AHistoryEntry^.Filename);
+      {$ENDIF}
       UpdateDetailView(TOpenDialog(theDialog));
     end;
+    {$IFDEF GTK1}
     // check if filter activated
     CheckFilterActivated(Widget);
+    {$ENDIF}
   end;
 end;
 

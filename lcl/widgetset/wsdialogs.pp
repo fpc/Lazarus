@@ -53,7 +53,7 @@ type
 
   TWSCommonDialogClass = class of TWSCommonDialog;
   TWSCommonDialog = class(TWSLCLComponent)
-    class function  CreateHandle(const ACommonDialog: TCommonDialog): integer; virtual;
+    class function  CreateHandle(const ACommonDialog: TCommonDialog): THandle; virtual;
     class procedure ShowModal(const ACommonDialog: TCommonDialog); virtual;
     class procedure DestroyHandle(const ACommonDialog: TCommonDialog); virtual;
   end;
@@ -96,7 +96,7 @@ type
 
 implementation
 
-class function  TWSCommonDialog.CreateHandle(const ACommonDialog: TCommonDialog): integer;
+class function  TWSCommonDialog.CreateHandle(const ACommonDialog: TCommonDialog): THandle;
 begin
   Result := 0;
 end;
