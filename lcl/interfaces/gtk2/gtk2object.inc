@@ -945,17 +945,24 @@ function TGtk2WidgetSet.CreateOpenDialogFilter(OpenDialog: TOpenDialog;
   SelWidget: PGtkWidget): string;
 var
   FilterList: TFPList;
-  i, j: integer;
+  i, j, k: integer;
   s: String;
   GtkFilter: PGtkFileFilter;
+  MaskList: TStringList;
 begin
   ExtractFilterList(OpenDialog.Filter, FilterList, false);
   if FilterList.Count > 0 then begin
     j := 1;
+    MaskList := TStringList.Create;
+    MaskList.Delimiter := ';';
     for i := 0 to FilterList.Count-1 do begin
       GtkFilter := gtk_file_filter_new();
 
-      gtk_file_filter_add_pattern(GtkFilter, PFileSelFilterEntry(FilterList[i])^.Mask);
+      MaskList.DelimitedText := PFileSelFilterEntry(FilterList[i])^.Mask;
+      
+      for k := 0 to MaskList.Count-1 do
+        gtk_file_filter_add_pattern(GtkFilter, PChar(MaskList.Strings[k]));
+
       gtk_file_filter_set_name(GtkFilter, PFileSelFilterEntry(FilterList[i])^.Description);
 
       gtk_file_chooser_add_filter(SelWidget, GtkFilter);
@@ -966,6 +973,7 @@ begin
       Inc(j);
       GtkFilter := nil;
     end;
+    MaskList.Free;
   end;
 
   gtk_object_set_data(PGtkObject(SelWidget), 'LCLFilterList', FilterList);
