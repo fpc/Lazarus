@@ -39,7 +39,7 @@ type
   private
   protected
   public
-    class function  CreateHandle(const ACommonDialog: TCommonDialog): integer; override;
+    class function  CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
     class procedure ShowModal(const ACommonDialog: TCommonDialog); override;
     class procedure DestroyHandle(const ACommonDialog: TCommonDialog); override;
   end;
@@ -161,7 +161,7 @@ begin
   GtkWindowShowModal(GtkWindow);
 end;
 
-class function  TGtkWSCommonDialog.CreateHandle(const ACommonDialog: TCommonDialog): integer;
+class function  TGtkWSCommonDialog.CreateHandle(const ACommonDialog: TCommonDialog): THandle;
 begin
   { TODO: cleanup }
   Result := TGtkWidgetSet(WidgetSet).CreateComponent(ACommonDialog);

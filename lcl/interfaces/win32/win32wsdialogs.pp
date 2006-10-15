@@ -45,7 +45,7 @@ type
   private
   protected
   public
-    class function  CreateHandle(const ACommonDialog: TCommonDialog): integer; override;
+    class function  CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
     class procedure DestroyHandle(const ACommonDialog: TCommonDialog); override;
   end;
 
@@ -63,7 +63,7 @@ type
   private
   protected
   public
-    class function  CreateHandle(const ACommonDialog: TCommonDialog): integer; override;
+    class function  CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
   end;
 
   { TWin32WSSaveDialog }
@@ -72,7 +72,7 @@ type
   private
   protected
   public
-    class function  CreateHandle(const ACommonDialog: TCommonDialog): integer; override;
+    class function  CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
   end;
 
   { TWin32WSSelectDirectoryDialog }
@@ -81,7 +81,7 @@ type
   private
   protected
   public
-    class function  CreateHandle(const ACommonDialog: TCommonDialog): integer; override;
+    class function  CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
   end;
 
   { TWin32WSColorDialog }
@@ -90,7 +90,7 @@ type
   private
   protected
   public
-    class function  CreateHandle(const ACommonDialog: TCommonDialog): integer; override;
+    class function  CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
   end;
 
   { TWin32WSColorButton }
@@ -107,7 +107,7 @@ type
   private
   protected
   public
-    class function  CreateHandle(const ACommonDialog: TCommonDialog): integer; override;
+    class function  CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
   end;
 
 
@@ -147,7 +147,7 @@ end;
 
 { TWin32WSColorDialog }
 
-class function TWin32WSColorDialog.CreateHandle(const ACommonDialog: TCommonDialog): integer;
+class function TWin32WSColorDialog.CreateHandle(const ACommonDialog: TCommonDialog): THandle;
 const
   { 16 basic RGB colors; names listed in comments for debugging }
   CustomColors: array[1..16] of dword = (
@@ -428,7 +428,7 @@ end;
 
 { TWin32WSSaveDialog }
 
-class function TWin32WSSaveDialog.CreateHandle(const ACommonDialog: TCommonDialog): integer;
+class function TWin32WSSaveDialog.CreateHandle(const ACommonDialog: TCommonDialog): THandle;
 begin
   ShowFileDialog(TOpenDialog(ACommonDialog), @GetSaveFileName);
   Result := 0;
@@ -436,7 +436,7 @@ end;
 
 { TWin32WSOpenDialog }
 
-class function TWin32WSOpenDialog.CreateHandle(const ACommonDialog: TCommonDialog): integer;
+class function TWin32WSOpenDialog.CreateHandle(const ACommonDialog: TCommonDialog): THandle;
 begin
   ShowFileDialog(TOpenDialog(ACommonDialog), @GetOpenFileName);
   Result := 0;
@@ -444,7 +444,7 @@ end;
 
 { TWin32WSFontDialog }
 
-class function TWin32WSFontDialog.CreateHandle(const ACommonDialog: TCommonDialog): integer;
+class function TWin32WSFontDialog.CreateHandle(const ACommonDialog: TCommonDialog): THandle;
 
   function GetFlagsFromOptions(Options : TFontDialogOptions): dword;
   begin
@@ -513,7 +513,7 @@ end;
 
 { TWin32WSCommonDialog }
 
-class function TWin32WSCommonDialog.CreateHandle(const ACommonDialog: TCommonDialog): integer;
+class function TWin32WSCommonDialog.CreateHandle(const ACommonDialog: TCommonDialog): THandle;
 begin
   DebugLn('TWin32WSCommonDialog.CreateHandle: unhandled dialog!');
   Result := 0;
@@ -551,7 +551,7 @@ begin
   Result := 0;
 end;
 
-class function TWin32WSSelectDirectoryDialog.CreateHandle(const ACommonDialog: TCommonDialog): integer;
+class function TWin32WSSelectDirectoryDialog.CreateHandle(const ACommonDialog: TCommonDialog): THandle;
 var
   bi : TBrowseInfo;
   Buffer : PChar;

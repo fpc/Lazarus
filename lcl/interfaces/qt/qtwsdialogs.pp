@@ -42,7 +42,7 @@ type
   private
   protected
   public
-    class function  CreateHandle(const ACommonDialog: TCommonDialog): integer; override;
+    class function  CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
     class procedure ShowModal(const ACommonDialog: TCommonDialog); override;
     class procedure DestroyHandle(const ACommonDialog: TCommonDialog); override;
   end;
@@ -115,7 +115,7 @@ implementation
 
   Dummy handle creator. On Qt we don´t need a Handle for common dialogs
  ------------------------------------------------------------------------------}
-class function TQtWSCommonDialog.CreateHandle(const ACommonDialog: TCommonDialog): integer;
+class function TQtWSCommonDialog.CreateHandle(const ACommonDialog: TCommonDialog): THandle;
 begin
   Result := 1000;
 end;

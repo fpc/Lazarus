@@ -918,12 +918,16 @@ begin
   Action := GTK_FILE_CHOOSER_ACTION_OPEN;
   Button1 := GTK_STOCK_OPEN;
 
-  if FileDialog is TSaveDialog then begin
+  if (FileDialog is TSaveDialog) or (FileDialog is TSavePictureDialog) then begin
     Action := GTK_FILE_CHOOSER_ACTION_SAVE;
-    Button1 := GTK_STOCK_CANCEL;
+    Button1 := GTK_STOCK_SAVE;
+  end
+  else if FileDialog is TSelectDirectoryDialog then begin
+    Action := GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER;
+    Button1 := GTK_STOCK_OPEN;
   end;
 
-  SelWidget := gtk_file_chooser_dialog_new(Title, nil, Action, 
+  SelWidget := gtk_file_chooser_dialog_new(Title, nil, Action,
     PChar(GTK_STOCK_CANCEL), [GTK_RESPONSE_CANCEL, PChar(Button1), GTK_RESPONSE_OK, nil]);
 
   g_signal_connect(SelWidget, 'response', gtk_signal_func(@Gtk2FileChooserResponseCB), FileDialog);
