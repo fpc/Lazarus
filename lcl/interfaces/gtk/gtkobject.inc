@@ -5660,6 +5660,9 @@ begin
   csToolButton:
     begin
       p := gtk_fixed_new();
+      {$IFDEF GTK2}
+      gtk_fixed_set_has_window(PGtkFixed(p), True);
+      {$ENDIF}
     end;
 
   csTrackBar:
