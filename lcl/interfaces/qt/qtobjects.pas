@@ -64,6 +64,7 @@ type
   public
     function height: Integer;
     function width: Integer;
+    function bits: PByte;
     function numBytes: Integer;
   end;
 
@@ -144,6 +145,20 @@ type
     procedure drawImage(targetRect: PRect; image: QImageH; sourceRect: PRect; flags: QtImageConversionFlags = QtAutoColor);
   end;
   
+  { TQtPixmap }
+
+  TQtPixmap = class(TObject)
+  private
+  public
+    Handle: QPixmapH;
+  public
+    constructor Create(p1: PSize); virtual;
+    destructor Destroy; override;
+  public
+    procedure grabWindow(p1: Cardinal; x: Integer = 0; y: Integer = 0; w: Integer = -1; h: Integer = -1);
+    procedure toImage(retval: QImageH);
+  end;
+
 implementation
 
 uses qtwidgets;
@@ -242,6 +257,16 @@ end;
 function TQtImage.width: Integer;
 begin
   Result := QImage_width(Handle);
+end;
+
+{------------------------------------------------------------------------------
+  Method: TQtImage.bits
+  Params:  None
+  Returns: The internal array of bits of the image
+ ------------------------------------------------------------------------------}
+function TQtImage.bits: PByte;
+begin
+  Result := QImage_bits(Handle);
 end;
 
 {------------------------------------------------------------------------------
@@ -619,6 +644,30 @@ begin
   LocalRect.Top := LocalRect.Top + Origin.Y;
 
   QPainter_drawImage(Widget, PRect(@LocalRect), image, sourceRect, flags);
+end;
+
+{ TQtPixmap }
+
+constructor TQtPixmap.Create(p1: PSize);
+begin
+  Handle := QPixmap_create(p1);
+end;
+
+destructor TQtPixmap.Destroy;
+begin
+  if handle <> nil then QPixmap_destroy(handle);
+
+  inherited Destroy;
+end;
+
+procedure TQtPixmap.grabWindow(p1: Cardinal; x: Integer; y: Integer; w: Integer; h: Integer);
+begin
+  QPixmap_grabWindow(Handle, p1, x, y, w, h);
+end;
+
+procedure TQtPixmap.toImage(retval: QImageH);
+begin
+  QPixmap_toImage(Handle, retval);
 end;
 
 end.

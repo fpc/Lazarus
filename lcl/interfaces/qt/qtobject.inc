@@ -117,7 +117,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TQtWidgetSet.AppTerminate;
 begin
-  QApplication_closeAllWindows;
+  QCoreApplication_quit;
 end;
 
 procedure TQtWidgetSet.AppMinimize;

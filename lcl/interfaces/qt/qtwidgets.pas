@@ -49,6 +49,7 @@ type
   public
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; virtual;
     procedure SlotShow(vShow: Boolean); cdecl;
+    procedure SlotClose; cdecl;
     procedure SlotDestroy; cdecl;
     procedure SlotFocus(FocusIn: Boolean); cdecl;
     procedure SlotKey(Event: QEventH); cdecl;
@@ -108,8 +109,10 @@ type
   public
     constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); override;
     destructor Destroy; override;
+  public
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     procedure SlotWindowStateChange; cdecl;
+    function exec: Integer;
   end;
 
   { TQtStaticText }
@@ -403,6 +406,7 @@ begin
   case QEvent_type(Event) of
    QEventShow: SlotShow(True);
    QEventHide: SlotShow(False);
+   QEventClose: SlotClose;
    QEventDestroy: SlotDestroy;
    QEventFocusIn: SlotFocus(True);
    QEventFocusOut: SlotFocus(False);
@@ -413,7 +417,6 @@ begin
    QEventMouseButtonDblClick: SlotMouse(Event);
    QEventMouseMove: SlotMouseMove(Event);
    QEventResize: SlotResize;
-
    QEventPaint: SlotPaint(Event);
    QEventContextMenu: SlotContextMenu;
   end;
@@ -443,7 +446,7 @@ var
   Msg: TLMShowWindow;
 begin
   {$ifdef VerboseQt}
-    WriteLn('TQtWidget.SlotShow vShow: ', dbgs(vShow));
+    WriteLn('TQtWidget.SlotShow Name', LCLObject.Name, ' vShow: ', dbgs(vShow));
   {$endif}
 
   FillChar(Msg, SizeOf(Msg), #0);
@@ -455,6 +458,33 @@ begin
     LCLObject.WindowProc(TLMessage(Msg));
   except
     Application.HandleException(nil);
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtWidget.Close
+  Params:  None
+  Returns: Nothing
+
+  Note: LCL uses LM_CLOSEQUERY to set the form visibility and if we don´t send this
+ message, you won´t be able to show a form twice.
+ ------------------------------------------------------------------------------}
+procedure TQtWidget.SlotClose; cdecl;
+var
+  Msg: TLMessage;
+begin
+  {$ifdef VerboseQt}
+    WriteLn('TQtWidget.SlotClose');
+  {$endif}
+
+  FillChar(Msg, SizeOf(Msg), #0);
+
+  Msg.Msg := LM_CLOSEQUERY;
+
+  try
+    LCLObject.WindowProc(TLMessage(Msg));
+  except
+   Application.HandleException(nil);
   end;
 end;
 
@@ -1156,7 +1186,7 @@ begin
 
   // Creates the widget
   {$ifdef VerboseQt}
-    WriteLn('TQtPushButton.Create');
+    WriteLn('TQtPushButton.Create Left:', dbgs(AWinControl.Left), ' Top:', dbgs(AWinControl.Top));
   {$endif}
 
   Str := UTF8Decode(AWinControl.Caption);
@@ -1231,9 +1261,9 @@ begin
 
   // Creates the widget
   {$ifdef VerboseQt}
-    WriteLn('TQtMainWindow.Create');
+    WriteLn('TQtMainWindow.Create Name: ', AWinControl.Name);
   {$endif}
-  Widget := QWidget_Create(nil, QtWindow);
+  Widget := QDialog_create(nil, QtWindow);
 
   // Form initial position
   QWidget_setGeometry(Widget, AWinControl.Left, AWinControl.Top,
@@ -1242,18 +1272,7 @@ begin
   // Main menu bar
   MenuBar := TQtMenuBar.Create(Widget);
 
-{  // Painting helper device
-  Widget := QWidget_create;
-
-  QWidget_setParent(Widget, Window);
-
-  QWidget_setGeometry(Widget, AWinControl.Left, AWinControl.Top,
-   AWinControl.Width, AWinControl.Height);
-
-  // Required to implement OnPaint event
-  QMainWindow_setCentralWidget(Window, Widget);
-
-  // Accepts keyboard and mouse events
+{ // Accepts keyboard and mouse events
   QWidget_setFocusPolicy(Widget, QtStrongFocus);}
 end;
 
@@ -1268,7 +1287,7 @@ begin
     WriteLn('TQtMainWindow.Destroy');
   {$endif}
 
-  QWidget_destroy(Widget);
+  QDialog_destroy(QDialogH(Widget));
 
   inherited Destroy;
 end;
@@ -1326,6 +1345,16 @@ begin
   except
     Application.HandleException(nil);
   end;
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtMainWindow.exec
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+function TQtMainWindow.exec: Integer;
+begin
+  Result := QDialog_exec(QDialogH(Widget));
 end;
 
 { TQtStaticText }

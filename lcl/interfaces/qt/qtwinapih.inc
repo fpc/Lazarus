@@ -50,6 +50,7 @@ function GetClientRect(handle : HWND; var ARect : TRect) : Boolean; override;
 Function GetClipRGN(DC: hDC; RGN: hRGN): Longint; override;
 function GetCursorPos(var lpPoint: TPoint ): Boolean; override;
 function GetDeviceRawImageDescription(DC: HDC; Desc: PRawImageDescription): boolean; override;
+function GetDeviceSize(DC: HDC; var P: TPoint): Boolean; Override;
 function GetDC(hWnd: HWND): HDC; override;
 function GetObject(GDIObj: HGDIOBJ; BufSize: Integer; Buf: Pointer): Integer; override;
 function GetRawImageFromDevice(SrcDC: HDC; const SrcRect: TRect; var NewRawImage: TRawImage): boolean; override;

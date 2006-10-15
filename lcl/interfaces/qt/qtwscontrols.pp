@@ -131,8 +131,14 @@ begin
   TEventFilterMethod(Method) := QtWidget.EventFilter;
 
   QObject_hook_hook_events(Hook, Method);
+  
+  // Finalization
 
   Result := THandle(QtWidget);
+
+  {$ifdef VerboseQt}
+    WriteLn('TQtWSWinControl.CreateHandle Result: ', IntToStr(Result));
+  {$endif}
 end;
 
 {------------------------------------------------------------------------------
