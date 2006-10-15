@@ -1578,6 +1578,9 @@ var
   i: Integer;
 begin
   Result:=0;
+  
+  if DesignerMenuItem = nil then exit;
+
   temp_parentmenudesignermenuitem:=DesignerMenuItem^.ParentMenu;
   temp_previousdesignermenuitem:=DesignerMenuItem^.PrevItem;
   temp_nextdesignermenuitem:=DesignerMenuItem^.NextItem;
