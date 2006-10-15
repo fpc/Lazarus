@@ -5299,7 +5299,11 @@ begin
     {$IFDEF Gtk1}
     exit;
     {$ELSE}
-    GDKWindow:=gdk_screen_get_root_window(gdk_screen_get_default);
+      {$IFDEF GtkHasX}
+      GDKWindow:=gdk_screen_get_root_window(gdk_screen_get_default);
+      {$ELSE}
+      exit;
+      {$ENDIF}
     {$ENDIF}
   end;
   Result:=GetRawImageFromGdkWindow(GDKWindow,nil,ARect,NewRawImage);
@@ -5751,13 +5755,17 @@ begin
       end;
     SM_CXMAXIMIZED:
       begin
+        {$IFDEF GtkHasX}
         if XGetWorkarea(ax,ay,aw,ah)>=0 then result:=aw
                                         else getSystemMetrics(SM_CXSCREEN);
+        {$ENDIF}
       end;
     SM_CYMAXIMIZED:
       begin
+        {$IFDEF GtkHasX}
          if XGetWorkarea(ax,ay,aw,ah)>=0 then result:=ah
                                         else getSystemMetrics(SM_CYSCREEN);
+        {$ENDIF}
       end;
     SM_CXMAXTRACK:
       begin

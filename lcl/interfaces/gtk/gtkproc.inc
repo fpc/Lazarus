@@ -8603,6 +8603,7 @@ end;
 {$ENDIF UseXinerama}
 {$ENDIF Gtk1}
 
+{$IFDEF HasGtkX}
 function  XGetWorkarea(var ax,ay,awidth,aheight:gint): gint;
 
 var
@@ -8633,6 +8634,7 @@ begin
     XFree (current_desktop);
   end;
 end;
+{$ENDIF}
 
 
 
