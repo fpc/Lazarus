@@ -1,3 +1,14 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2006-10-14 14:05+0100\n"
+"Last-Translator: J.Salvador Pérez <salvaperez@escomposlinux.org>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Transfer-Encoding: 8bit\n"
+
 #: lazarusidestrconsts:srkmcommand1
 msgid "    command1 \""
 msgstr "    ordre1 \""
@@ -36,7 +47,7 @@ msgstr "%s - (nou projecte)"
 
 #: lazarusidestrconsts:lislazarusversionstring
 msgid "%s beta"
-msgstr ""
+msgstr "%s beta"
 
 #: lazarusidestrconsts:lisuidbytes
 msgid "%s bytes"
@@ -140,7 +151,7 @@ msgstr "%sAquest paquet s'ha creat automàticament"
 
 #: lazarusidestrconsts:liswladd
 msgid "&Add"
-msgstr ""
+msgstr "&Afegeix"
 
 #: lazarusidestrconsts:uemaddbreakpoint
 msgid "&Add Breakpoint"
@@ -148,7 +159,7 @@ msgstr "&Afegeix punt de ruptura"
 
 #: lazarusidestrconsts:lisclose
 msgid "&Close"
-msgstr ""
+msgstr "Tan&ca"
 
 #: lazarusidestrconsts:uemclosepage
 msgid "&Close Page"
@@ -192,7 +203,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisok
 msgid "&Ok"
-msgstr ""
+msgstr "D'Ac&ord"
 
 #: lazarusidestrconsts:uemopenfileatcursor
 msgid "&Open file at cursor"
@@ -300,7 +311,7 @@ msgstr "Una eina vàlida necessita al menys, títol i nom de fitxer"
 
 #: lazarusidestrconsts:lispdabort
 msgid "Abort"
-msgstr ""
+msgstr "Avortar"
 
 #: lazarusidestrconsts:lismenuabortbuild
 msgid "Abort Build"
@@ -308,7 +319,7 @@ msgstr "Avorta el muntatge"
 
 #: lazarusidestrconsts:lisabortall
 msgid "Abort all"
-msgstr ""
+msgstr "Avortar tot"
 
 #: lazarusidestrconsts:lisabortallloading
 msgid "Abort all loading"
@@ -316,7 +327,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisabortloadingproject
 msgid "Abort loading project"
-msgstr ""
+msgstr "Avorta carrega del projecte"
 
 #: lazarusidestrconsts:lismenutemplateabout
 msgid "About"
@@ -416,7 +427,7 @@ msgstr "Afegeix un punt de salt a la història"
 
 #: lazarusidestrconsts:lislazdocaddlinkbutton
 msgid "Add link"
-msgstr ""
+msgstr "Afegeix enllaçament"
 
 #: lazarusidestrconsts:lispckoptsaddoptionstodependentpackagesandprojects
 msgid "Add options to dependent packages and projects"
@@ -424,7 +435,7 @@ msgstr "Afegeix les opcions en els paquets i projectes dependents"
 
 #: lazarusidestrconsts:lislazdocaddpathbutton
 msgid "Add path"
-msgstr ""
+msgstr "Afegeix trajectòria"
 
 #: lazarusidestrconsts:lispckoptsaddpathstodependentpackagesprojects
 msgid "Add paths to dependent packages/projects"
@@ -472,7 +483,7 @@ msgstr "Fitxers addicionals a cercar (p.e. /trajectòria/*.pas;/trajec2/*.pp)"
 
 #: lazarusidestrconsts:lisdebugoptionsfrmadditionalsearchpath
 msgid "Additional search path"
-msgstr ""
+msgstr "Trajectòria de cerca addicional"
 
 #: lazarusidestrconsts:dlgadjusttopline
 msgid "Adjust top line due to comment in front"
@@ -492,7 +503,7 @@ msgstr "Alineació"
 
 #: lazarusidestrconsts:lisallfiles
 msgid "All Files"
-msgstr ""
+msgstr "Tots els arxius"
 
 #: lazarusidestrconsts:lisallblockslooksok
 msgid "All blocks looks ok."
@@ -508,7 +519,7 @@ msgstr "Tots els paquets"
 
 #: lazarusidestrconsts:lisedtdefsallprojects
 msgid "All projects"
-msgstr ""
+msgstr "Tots els projectes"
 
 #: lazarusidestrconsts:dlglabelgoto
 msgid "Allow LABEL and GOTO"
@@ -4168,7 +4179,7 @@ msgstr "Editor Lazarus v%s"
 
 #: lazarusidestrconsts:lislazarusfile
 msgid "Lazarus File"
-msgstr ""
+msgstr "Arxiu Lazarus"
 
 #: lazarusidestrconsts:lislazarusprojectinfofile
 msgid "Lazarus Project Info file"
@@ -4200,7 +4211,7 @@ msgstr "No s'ha trobat el directori del Lazarus"
 
 #: lazarusidestrconsts:lislazarusform
 msgid "Lazarus form"
-msgstr ""
+msgstr "Forma Lazarus"
 
 #: lazarusidestrconsts:lislazaruslanguageid
 msgid "Lazarus language ID (e.g. en, de, br, fi)"
@@ -4216,7 +4227,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lislazarusproject
 msgid "Lazarus project"
-msgstr ""
+msgstr "Projecte Lazarus"
 
 #: lazarusidestrconsts:lislazarusprojectsource
 msgid "Lazarus project source"
@@ -4224,7 +4235,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lislazarusunit
 msgid "Lazarus unit"
-msgstr ""
+msgstr "Unitat Lazarus"
 
 #: lazarusidestrconsts:lisleaveemptyfo
 msgid "Leave empty for default .po file"
@@ -4336,7 +4347,7 @@ msgstr "Carrega els paràmetres de l'escriptori des del fitxer"
 
 #: lazarusidestrconsts:lisiecoloadfromfile
 msgid "Load from file"
-msgstr ""
+msgstr "Carrega des de l'arxiu"
 
 #: lazarusidestrconsts:dlgcoloadsave
 msgid "Load/Save"
@@ -4532,7 +4543,7 @@ msgstr "Modificat: %s"
 
 #: lazarusidestrconsts:lisdebugoptionsfrmmodule
 msgid "Module"
-msgstr ""
+msgstr "Mòdul"
 
 #: lazarusidestrconsts:lispckeditmore
 msgid "More ..."
@@ -4720,11 +4731,11 @@ msgstr "Nota: S'està carregant el fitxer de les opcions de les eines del codi an
 
 #: lazarusidestrconsts:liseonoteonlyabsolutepathsaresupportednow
 msgid "NOTE: only absolute paths are supported now"
-msgstr ""
+msgstr "Nota: Solament estàn supportades trajectòries absolutes"
 
 #: lazarusidestrconsts:lisdebugoptionsfrmname
 msgid "Name"
-msgstr ""
+msgstr "Nom"
 
 #: lazarusidestrconsts:lisnameofnewprocedure
 msgid "Name of new procedure"
@@ -4756,7 +4767,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisnewclass
 msgid "New Class"
-msgstr ""
+msgstr "Nova Classe"
 
 #: lazarusidestrconsts:lisa2pnewcomponent
 msgid "New Component"
@@ -4764,7 +4775,7 @@ msgstr "Nou component"
 
 #: lazarusidestrconsts:lisa2pnewfile
 msgid "New File"
-msgstr ""
+msgstr "Nou Arxiu"
 
 #: lazarusidestrconsts:lismenunewform
 msgid "New Form"
@@ -4936,7 +4947,7 @@ msgstr "Teclat numèric %d"
 
 #: lazarusidestrconsts:lisifdok
 msgid "OK"
-msgstr ""
+msgstr "D'Acord"
 
 #: lazarusidestrconsts:lisdebugoptionsfrmosexceptions
 msgid "OS Exceptions"
@@ -5000,7 +5011,7 @@ msgstr "Obre"
 
 #: lazarusidestrconsts:lisopenlfm
 msgid "Open %s"
-msgstr ""
+msgstr "Obre %s"
 
 #: lazarusidestrconsts:lismenuopen
 msgid "Open ..."
@@ -5012,7 +5023,7 @@ msgstr "Obre les diferències a l'editor"
 
 #: lazarusidestrconsts:liscpopenpackage
 msgid "Open Package %s"
-msgstr ""
+msgstr "Obre Paquet %s"
 
 #: lazarusidestrconsts:lisopenpackagefile
 msgid "Open Package File"
@@ -5052,11 +5063,11 @@ msgstr "Obre el projecte recent ..."
 
 #: lazarusidestrconsts:liscpopenunit
 msgid "Open Unit %s"
-msgstr ""
+msgstr "Obre Unitat %s"
 
 #: lazarusidestrconsts:lisopenasxmlfile
 msgid "Open as XML file"
-msgstr ""
+msgstr "Obre com arxiu XML"
 
 #: lazarusidestrconsts:lisopenfile
 msgid "Open file"
@@ -5092,7 +5103,7 @@ msgstr "Obre el paquet"
 
 #: lazarusidestrconsts:lismenuopenpackagefile
 msgid "Open package file (.lpk) ..."
-msgstr ""
+msgstr "Obre arxiu de paquet (.lpk)"
 
 #: lazarusidestrconsts:lismenuopenpackageofcurunit
 msgid "Open package of current unit"
@@ -5100,15 +5111,15 @@ msgstr "Obre el paquet de la unitat actual"
 
 #: lazarusidestrconsts:lisopenproject2
 msgid "Open project"
-msgstr ""
+msgstr "Obre projecte"
 
 #: lazarusidestrconsts:lisopenprojectagain
 msgid "Open project again"
-msgstr ""
+msgstr "Opre projecte de nou"
 
 #: lazarusidestrconsts:lisiecoopenrecent
 msgid "Open recent"
-msgstr ""
+msgstr "Obre recent"
 
 #: lazarusidestrconsts:lismenuopenrecentpkg
 msgid "Open recent package ..."
@@ -5120,11 +5131,11 @@ msgstr ""
 
 #: lazarusidestrconsts:lisopenthepackage
 msgid "Open the package %s?"
-msgstr ""
+msgstr "Obrir el paquet %s?"
 
 #: lazarusidestrconsts:lisopentheproject
 msgid "Open the project %s?"
-msgstr ""
+msgstr "Obrir el projecte %s?"
 
 #: lazarusidestrconsts:liscomppalopenunit
 msgid "Open unit"
@@ -5224,7 +5235,7 @@ msgstr "Voleu sobrescriure el fitxer?"
 
 #: lazarusidestrconsts:lispackage
 msgid "Package"
-msgstr ""
+msgstr "Paquet"
 
 #: lazarusidestrconsts:lispckeditpackage
 msgid "Package %s"
@@ -5396,7 +5407,7 @@ msgstr "Plantilles de la trajectòria"
 
 #: lazarusidestrconsts:listofpcpath
 msgid "Path:"
-msgstr "Trajectòria"
+msgstr "Trajectòria:"
 
 #: lazarusidestrconsts:dlgsearchpaths
 msgid "Paths"
@@ -6148,7 +6159,7 @@ msgstr "Rus"
 
 #: lazarusidestrconsts:lissvnrevision
 msgid "SVN Revision: "
-msgstr ""
+msgstr "Revisió SVN:"
 
 #: lazarusidestrconsts:dlgbckupsubdir
 msgid "Same name (in subdirectory)"
@@ -6264,11 +6275,11 @@ msgstr ""
 
 #: lazarusidestrconsts:fdmsaveformasxml
 msgid "Save form as xml"
-msgstr ""
+msgstr "Desa forma com xml"
 
 #: lazarusidestrconsts:lisposaveinlpifil
 msgid "Save in .lpi file"
-msgstr ""
+msgstr "Desa en arxiu .lpi"
 
 #: lazarusidestrconsts:lisposaveinlpsfileinprojectdirectory
 msgid "Save in .lps file in project directory"
@@ -6284,7 +6295,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismvsavemessagestofiletxt
 msgid "Save messages to file (*.txt)"
-msgstr ""
+msgstr "Desa missatges a arxiu (*.txt)"
 
 #: lazarusidestrconsts:lispckeditsavepackage
 msgid "Save package"
@@ -6304,7 +6315,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisiecosavetofile
 msgid "Save to file"
-msgstr ""
+msgstr "Desa a l'arxiu"
 
 #: lazarusidestrconsts:lisiecosavetorecent
 msgid "Save to recent"
@@ -8784,7 +8795,7 @@ msgstr "Ample"
 
 #: lazarusidestrconsts:lisdebugoptionsfrmwindow
 msgid "Window"
-msgstr ""
+msgstr "Finestra"
 
 #: lazarusidestrconsts:dlgwinpos
 msgid "Window Positions"
@@ -8836,7 +8847,7 @@ msgstr "Prefix d'escriure"
 
 #: lazarusidestrconsts:lisxmlfiles
 msgid "XML files"
-msgstr ""
+msgstr "Arxius XML"
 
 #: lazarusidestrconsts:lisyoucannotbuildlazaruswhiledebuggingorcompiling
 msgid "You can not build lazarus while debugging or compiling."
