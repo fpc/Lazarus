@@ -240,25 +240,27 @@ end;
 function TQtWSStatusBar.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND;
 var
   QtStatusBar: TQtStatusBar;
-{  Method: TMethod;
-  Hook : QObject_hookH;}
+  Method: TMethod;
+  Hook : QObject_hookH;
 begin
   QtStatusBar := TQtStatusBar.Create(AWinControl, AParams);
 
   // Various Events
 
-{  Hook := QObject_hook_create(QtWidget.Widget);
+  Hook := QObject_hook_create(QtStatusBar.Widget);
 
-  TEventFilterMethod(Method) := QtWidget.EventFilter;
+  TEventFilterMethod(Method) := QtStatusBar.EventFilter;
 
-  QObject_hook_hook_events(Hook, Method);}
+  QObject_hook_hook_events(Hook, Method);
+
+  // Return handle
 
   Result := THandle(QtStatusBar);
 end;
 
 procedure TQtWSStatusBar.DestroyHandle(const AWinControl: TWinControl);
 begin
-//  TQtWidget(AWinControl.Handle).Free;
+  TQtWidget(AWinControl.Handle).Free;
 
   AWinControl.Handle := 0;
 end;
@@ -269,8 +271,11 @@ begin
 end;
 
 procedure TQtWSStatusBar.SetPanelText(const AStatusBar: TStatusBar; PanelIndex: integer);
+var
+  Text: Widestring;
 begin
-//  TQtStatusBar(AStatusBar.Handle).showMessage(AStatusBar.);
+  Text := UTF8Decode(AStatusBar.SimpleText);
+  TQtStatusBar(AStatusBar.Handle).showMessage(@Text);
 end;
 
 procedure TQtWSStatusBar.Update(const AStatusBar: TStatusBar);

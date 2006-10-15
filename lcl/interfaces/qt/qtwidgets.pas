@@ -31,7 +31,7 @@ uses
   // Free Pascal
   Classes, SysUtils, Types,
   // LCL
-  LMessages, Forms, Controls, LCLType, LCLProc, ExtCtrls, StdCtrls, Menus;
+  LMessages, Forms, Controls, LCLType, LCLProc, ComCtrls, ExtCtrls, StdCtrls, Menus;
 
 type
   { TQtWidget }
@@ -2061,8 +2061,7 @@ end;
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
-constructor TQtListWidget.Create(const AWinControl: TWinControl;
-  const AParams: TCreateParams);
+constructor TQtListWidget.Create(const AWinControl: TWinControl; const AParams: TCreateParams);
 var
   Parent: QWidgetH;
   Text: WideString;
@@ -2081,8 +2080,11 @@ begin
   // Sets the initial items
   for I := 0 to TCustomListBox(AWinControl).Items.Count - 1 do
   begin
-    Text := UTF8Decode(TCustomListBox(AWinControl).Items.Strings[i]);
-    QListWidget_addItem(QListWidgetH(Widget), @Text);
+    if (AWinControl as TStatusBar).SimplePanel then
+    begin;
+      Text := UTF8Decode((AWinControl as TStatusBar).SimpleText);
+      showMessage(@Text);
+    end;
   end;
 
   // Sets it´ s initial properties

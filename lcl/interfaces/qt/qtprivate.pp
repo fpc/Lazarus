@@ -244,8 +244,6 @@ begin
 end;
 
 procedure TQtListStrings.Insert(Index: integer; const S: string);
-{var
-  Astr: WideString;}
 begin
   if FListChanged then InternalUpdate;
 
@@ -254,7 +252,6 @@ begin
   if Index <= FStringList.Count then
   begin
     FStringList.Insert(Index,S);
-//    Astr := FStringList.Text;
     ExternalUpdate(FStringList,True);
     FListChanged := False;
   end;
