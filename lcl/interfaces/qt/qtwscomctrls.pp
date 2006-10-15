@@ -249,7 +249,7 @@ begin
 
   Hook := QObject_hook_create(QtStatusBar.Widget);
 
-  TEventFilterMethod(Method) := QtStatusBar.EventFilter;
+  TEventFilterMethod(Method) := @QtStatusBar.EventFilter;
 
   QObject_hook_hook_events(Hook, Method);
 

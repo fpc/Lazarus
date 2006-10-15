@@ -50,8 +50,7 @@ end;
 
   Creates a new timer and sets the callback event.
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.CreateTimer(Interval: integer;
-  TimerFunc: TFNTimerProc): LCLType.THandle;
+function TQtWidgetSet.CreateTimer(Interval: integer; TimerFunc: TFNTimerProc): THandle;
 var
   QtTimer: TQtTimer;
 begin
@@ -67,7 +66,7 @@ end;
 
   Destroys a timer.
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.DestroyTimer(TimerHandle: LCLType.THandle): boolean;
+function TQtWidgetSet.DestroyTimer(TimerHandle: THandle): boolean;
 begin
   TQtTimer(TimerHandle).Free;
   
@@ -162,7 +161,7 @@ end;
 
   Deprecated, never call this function
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.CreateComponent(Sender : TObject): LCLType.THandle;
+function TQtWidgetSet.CreateComponent(Sender : TObject): THandle;
 begin
   Result := 0;
 end;

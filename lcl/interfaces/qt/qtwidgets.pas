@@ -2080,11 +2080,8 @@ begin
   // Sets the initial items
   for I := 0 to TCustomListBox(AWinControl).Items.Count - 1 do
   begin
-    if (AWinControl as TStatusBar).SimplePanel then
-    begin;
-      Text := UTF8Decode((AWinControl as TStatusBar).SimpleText);
-      showMessage(@Text);
-    end;
+    Text := UTF8Decode(TCustomListBox(AWinControl).Items.Strings[i]);
+    QListWidget_addItem(QListWidgetH(Widget), @Text);
   end;
 
   // Sets it´ s initial properties
@@ -2313,8 +2310,11 @@ begin
   Parent := TQtWidget(AWinControl.Parent.Handle).Widget;
   Widget := QStatusBar_create(Parent);
 
-  Text := UTF8Decode(AWinControl.Caption);
-  showMessage(@Text);
+  if (AWinControl as TStatusBar).SimplePanel then
+  begin;
+    Text := UTF8Decode((AWinControl as TStatusBar).SimpleText);
+    showMessage(@Text);
+  end;
 
   // Sets it´ s initial properties
   QWidget_setGeometry(Widget, AWinControl.Left, AWinControl.Top,
