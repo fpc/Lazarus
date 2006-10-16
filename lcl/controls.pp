@@ -1632,7 +1632,6 @@ type
     procedure MainWndProc(var Msg: TLMessage);
     procedure ParentFormHandleInitialized; override;
     procedure ChildHandlesCreated; virtual;// called after childs handles are created
-    procedure ReAlign; // realign all childs
     procedure RealSetText(const AValue: TCaption); override;
     procedure RemoveFocus(Removing: Boolean);
     procedure SendMoveSizeMessages(SizeChanged, PosChanged: boolean); override;
@@ -1707,6 +1706,7 @@ type
     function  GetChildsRect(Scrolled: boolean): TRect; override;
     procedure DisableAlign;
     procedure EnableAlign;
+    procedure ReAlign; // realign all childs
     procedure WriteLayoutDebugReport(const Prefix: string); override;
   public
     constructor Create(TheOwner: TComponent);override;
