@@ -2391,8 +2391,9 @@ lcl/interfaces/gtk2/interfaces.pas svneol=native#text/pascal
 lcl/interfaces/qt/README.txt svneol=native#text/plain
 lcl/interfaces/qt/interfaces.pp svneol=native#text/pascal
 lcl/interfaces/qt/qt4.pas svneol=native#text/plain
-lcl/interfaces/qt/qt4linux.pas svneol=native#text/plain
+lcl/interfaces/qt/qt4mac.pas -text
 lcl/interfaces/qt/qt4win.pas svneol=native#text/plain
+lcl/interfaces/qt/qt4x11.pas -text
 lcl/interfaces/qt/qtcallback.inc svneol=native#text/pascal
 lcl/interfaces/qt/qtint.pp svneol=native#text/pascal
 lcl/interfaces/qt/qtlclintf.inc svneol=native#text/pascal
