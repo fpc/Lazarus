@@ -29,7 +29,7 @@
         <PackageName Value="FCL"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="2">
+    <Units Count="3">
       <Unit0>
         <Filename Value="runtests.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -40,6 +40,11 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestLpi"/>
       </Unit1>
+      <Unit2>
+        <Filename Value="testrunner.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="testrunner"/>
+      </Unit2>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
