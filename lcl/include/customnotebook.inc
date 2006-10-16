@@ -519,7 +519,8 @@ begin
     if not (pfAdded in APage.FFlags) then exit;
     Exclude(APage.FFlags,pfAdded);
     TWSCustomNotebookClass(WidgetSetClass).RemovePage(Self, APage.PageIndex);
-    APage.DestroyHandle;
+    if APage.HandleAllocated then
+      APage.DestroyHandle;
   end;
 end;
 

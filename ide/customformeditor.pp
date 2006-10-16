@@ -162,6 +162,8 @@ each control that's dropped onto the form
     function FindJITList(AComponent: TComponent): TJITComponentList;
     function FindJITListByClassName(const AComponentClassName: string
                                     ): TJITComponentList;
+    function FindJITListByClass(AComponentClass: TComponentClass
+                                ): TJITComponentList;
     function GetDesignerForm(AComponent: TComponent): TCustomForm; override;
     function FindNonControlForm(LookupRoot: TComponent): TNonControlDesignerForm;
     function CreateNonControlForm(LookupRoot: TComponent): TNonControlDesignerForm;
@@ -177,7 +179,9 @@ each control that's dropped onto the form
     procedure SaveHiddenDesignerFormProperties(AComponent: TComponent);
     function FindJITComponentByClassName(const AComponentClassName: string
                                          ): TComponent;
-    
+    function FindJITComponentByClass(AComponentClass: TComponentClass
+                                     ): TComponent;
+
     // designers
     function DesignerCount: integer; override;
     function GetDesigner(Index: integer): TIDesigner; override;
@@ -218,6 +222,10 @@ each control that's dropped onto the form
                        ParentControl: TWinControl): TIComponentInterface; override;
     procedure SetComponentNameAndClass(CI: TIComponentInterface;
       const NewName, NewClassName: shortstring);
+      
+    // ancestors
+    function GetAncestorLookupRoot(AComponent: TComponent): TComponent; override;
+    function GetAncestorInstance(AComponent: TComponent): TComponent; override;
 
     // define properties
     procedure FindDefineProperty(const APersistentClassName,
@@ -1079,6 +1087,17 @@ begin
     Result:=nil;
 end;
 
+function TCustomFormEditor.FindJITListByClass(AComponentClass: TComponentClass
+  ): TJITComponentList;
+begin
+  if JITFormList.FindComponentByClass(AComponentClass)>=0 then
+    Result:=JITFormList
+  else if JITNonFormList.FindComponentByClass(AComponentClass)>=0 then
+    Result:=JITNonFormList
+  else
+    Result:=nil;
+end;
+
 function TCustomFormEditor.GetDesignerForm(AComponent: TComponent
   ): TCustomForm;
 var
@@ -1189,15 +1208,37 @@ end;
 function TCustomFormEditor.FindJITComponentByClassName(
   const AComponentClassName: string): TComponent;
 var
-  JITComponentList: TJITComponentList;
   i: LongInt;
 begin
   Result:=nil;
-  JITComponentList:=FindJITListByClassName(AComponentClassName);
-  if JITComponentList=nil then exit;
-  i:=JITComponentList.FindComponentByClassName(AComponentClassName);
-  if i<0 then exit;
-  Result:=JITComponentList[i];
+  i:=JITFormList.FindComponentByClassName(AComponentClassName);
+  if i>=0 then begin
+    Result:=JITFormList[i];
+    exit;
+  end;
+  i:=JITNonFormList.FindComponentByClassName(AComponentClassName);
+  if i>=0 then begin
+    Result:=JITNonFormList[i];
+    exit;
+  end;
+end;
+
+function TCustomFormEditor.FindJITComponentByClass(
+  AComponentClass: TComponentClass): TComponent;
+var
+  i: LongInt;
+begin
+  Result:=nil;
+  i:=JITFormList.FindComponentByClass(AComponentClass);
+  if i>=0 then begin
+    Result:=JITFormList[i];
+    exit;
+  end;
+  i:=JITNonFormList.FindComponentByClass(AComponentClass);
+  if i>=0 then begin
+    Result:=JITNonFormList[i];
+    exit;
+  end;
 end;
 
 function TCustomFormEditor.DesignerCount: integer;
@@ -1519,6 +1560,35 @@ begin
   JITList:=GetJITListOfType(TComponentClass(AComponent.ClassType));
   JITList.RenameComponentClass(AComponent,NewClassName);
   AComponent.Name:=NewName;
+end;
+
+function TCustomFormEditor.GetAncestorLookupRoot(AComponent: TComponent
+  ): TComponent;
+var
+  CurRoot: TComponent;
+  AncestorRoot: TComponent;
+begin
+  Result:=nil;
+  if AComponent=nil then exit;
+  CurRoot:=AComponent.Owner;
+  if CurRoot=nil then exit;
+  repeat
+    // search in next ancestor
+    AncestorRoot:=GetAncestorInstance(CurRoot);
+    if AncestorRoot=nil then exit;
+    if AncestorRoot.FindComponent(AComponent.Name)=nil then exit;
+    // a better ancestor was found
+    Result:=AncestorRoot;
+    CurRoot:=AncestorRoot;
+  until false;
+end;
+
+function TCustomFormEditor.GetAncestorInstance(AComponent: TComponent
+  ): TComponent;
+begin
+  Result:=nil;
+  if (AComponent=nil) or (AComponent.ClassType=TComponent) then exit;
+  Result:=FindJITComponentByClass(TComponentClass(AComponent.ClassParent));
 end;
 
 procedure TCustomFormEditor.FindDefineProperty(

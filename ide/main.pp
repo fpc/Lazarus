@@ -493,6 +493,8 @@ type
     {$ENDIF}
 
     FRebuildingCompilerGraphCodeToolsDefinesNeeded: boolean;
+    
+    FRenamingComponents: TFPList; // list of TComponents currently renaming
   protected
     procedure SetToolStatus(const AValue: TIDEToolStatus); override;
     function DoResetToolStatus(Interactive: boolean): boolean;
@@ -11400,6 +11402,8 @@ var
   i: integer;
   NewClassName: string;
   BossResult: boolean;
+  AncestorRoot: TComponent;
+  s: String;
 
   procedure ApplyBossResult(const ErrorMsg: string);
   var
@@ -11436,9 +11440,57 @@ var
     end;
 
   end;
+  
+  procedure RenameInheritedComponents(RenamedUnit: TUnitInfo;
+    Simulate: boolean);
+  var
+    UsedByDependency: TUnitComponentDependency;
+    DependingUnit: TUnitInfo;
+    InheritedComponent: TComponent;
+    DependingDesigner: TCustomForm;
+  begin
+    UsedByDependency:=ActiveUnitInfo.FirstUsedByComponent;
+    while UsedByDependency<>nil do begin
+      DependingUnit:=UsedByDependency.UsedByUnit;
+      if (DependingUnit.Component<>nil)
+      and (DependingUnit.Component.ClassParent=RenamedUnit.Component.ClassType)
+      then begin
+        // the root component inherits from the DependingUnit root component
+        InheritedComponent:=
+                         DependingUnit.Component.FindComponent(AComponent.Name);
+        if InheritedComponent<>nil then begin
+          // inherited component found
+          if FRenamingComponents=nil then
+            FRenamingComponents:=TFPList.Create;
+          FRenamingComponents.Add(InheritedComponent);
+          try
+            DebugLn(['RenameInheritedComponents ',dbgsName(InheritedComponent),' Owner=',dbgsName(InheritedComponent.Owner)]);
+            if Simulate then begin
+              InheritedComponent.ValidateRename(InheritedComponent,
+                                               InheritedComponent.Name,NewName);
+            end else begin
+              InheritedComponent.Name:=NewName;
+              DependingDesigner:=GetDesignerFormOfSource(DependingUnit,false);
+              if DependingDesigner<>nil then
+                DependingUnit.Modified:=true;
+            end;
+          finally
+            if FRenamingComponents<>nil then begin
+              FRenamingComponents.Remove(InheritedComponent);
+              if FRenamingComponents.Count=0 then
+                FreeThenNil(FRenamingComponents);
+            end;
+          end;
+        end;
+        // rename recursively
+        RenameInheritedComponents(DependingUnit,Simulate);
+      end;
+      UsedByDependency:=UsedByDependency.NextUsedByDependency;
+    end;
+  end;
 
 begin
-  DebugLn('TMainIDE.OnDesignerRenameComponent Old=',AComponent.Name,':',AComponent.ClassName,' New=',NewName);
+  DebugLn('TMainIDE.OnDesignerRenameComponent Old=',AComponent.Name,':',AComponent.ClassName,' New=',NewName,' Owner=',dbgsName(AComponent.Owner));
   if (not IsValidIdent(NewName)) or (NewName='') then
     raise Exception.Create(Format(lisComponentNameIsNotAValidIdentifier, ['"',
       Newname, '"']));
@@ -11446,11 +11498,30 @@ begin
     // this component was never added to the source. It is a new component.
     exit;
   end;
+
+  if (FRenamingComponents<>nil)
+  and (FRenamingComponents.IndexOf(AComponent)>=0) then begin
+    // already validated
+    exit;
+  end;
+
   BeginCodeTool(ADesigner,ActiveSrcEdit,ActiveUnitInfo,[ctfSwitchToFormSource]);
   ActiveUnitInfo:=Project1.UnitWithComponent(ADesigner.LookupRoot);
   if CodeToolBoss.IsKeyWord(ActiveUnitInfo.Source,NewName) then
     raise Exception.Create(Format(lisComponentNameIsKeyword, ['"', Newname, '"']
       ));
+
+  // check ancestor component
+  AncestorRoot:=FormEditor1.GetAncestorLookupRoot(AComponent);
+  if AncestorRoot<>nil then begin
+    s:='The component '+dbgsName(AComponent)
+       +' is inherited from '+dbgsName(AncestorRoot)+'.'#13
+       +'To rename an inherited component open the ancestor and rename it there.';
+    raise EComponentError.Create(s);
+  end;
+
+  // check inherited components
+  RenameInheritedComponents(ActiveUnitInfo,true);
 
   if AComponent=ADesigner.LookupRoot then begin
     // rename owner component (e.g. the form)
@@ -11489,6 +11560,9 @@ begin
   end else begin
     RaiseException('TMainIDE.OnDesignerRenameComponent internal error:'+AComponent.Name+':'+AComponent.ClassName);
   end;
+
+  // rename inherited components
+  RenameInheritedComponents(ActiveUnitInfo,false);
 end;
 
 procedure TMainIDE.OnDesignerViewLFM(Sender: TObject);

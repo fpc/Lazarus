@@ -148,7 +148,8 @@ type
     procedure DestroyJITComponent(Index: integer);
     function IndexOf(JITComponent: TComponent): integer;
     function Contains(JITComponent: TComponent): boolean;
-    function FindComponentByClassName(const AClassName: shortstring):integer;
+    function FindComponentByClassName(const AClassName: shortstring): integer;
+    function FindComponentByClass(AClass: TComponentClass): integer;
     function FindComponentByName(const AName: shortstring): integer;
     procedure GetUnusedNames(var ComponentName, ComponentClassName: shortstring);
     procedure AddNewMethod(JITComponent: TComponent; const AName: ShortString);
@@ -610,6 +611,14 @@ begin
   Result:=FJITComponents.Count-1;
   while (Result>=0)
   and (CompareText(Items[Result].ClassName,AClassName)<>0) do
+    dec(Result);
+end;
+
+function TJITComponentList.FindComponentByClass(AClass: TComponentClass
+  ): integer;
+begin
+  Result:=FJITComponents.Count-1;
+  while (Result>=0) and (Items[Result].ClassType<>AClass) do
     dec(Result);
 end;
 
@@ -1337,7 +1346,7 @@ procedure TJITComponentList.ReaderAncestorNotFound(Reader: TReader;
 begin
   // ToDo: this is for custom form templates
   debugln('[TJITComponentList.ReaderAncestorNotFound] ComponentName='''+ComponentName
-    +''' Component='''+Component.Name+'''');
+    +''' Component='''+dbgsName(Component)+'''');
 end;
 
 procedure TJITComponentList.ReaderError(Reader: TReader;

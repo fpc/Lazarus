@@ -115,6 +115,10 @@ type
                                      ParentControl: TWinControl
                                      ): TIComponentInterface; virtual; abstract;
 
+    // ancestors
+    function GetAncestorLookupRoot(AComponent: TComponent): TComponent; virtual; abstract;
+    function GetAncestorInstance(AComponent: TComponent): TComponent; virtual; abstract;
+
     // designers
     function DesignerCount: integer; virtual; abstract;
     property Designer[Index: integer]: TIDesigner read GetDesigner;

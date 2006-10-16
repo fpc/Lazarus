@@ -146,11 +146,11 @@ type
     function PaintControl(Sender: TControl; TheMessage: TLMPaint):boolean;
     function SizeControl(Sender: TControl; TheMessage: TLMSize):boolean;
     function MoveControl(Sender: TControl; TheMessage: TLMMove):boolean;
-    Procedure MouseDownOnControl(Sender: TControl; var TheMessage : TLMMouse);
-    Procedure MouseMoveOnControl(Sender: TControl; var TheMessage: TLMMouse);
-    Procedure MouseUpOnControl(Sender: TControl; var TheMessage:TLMMouse);
-    Procedure KeyDown(Sender: TControl; var TheMessage:TLMKEY);
-    Procedure KeyUp(Sender: TControl; var TheMessage:TLMKEY);
+    procedure MouseDownOnControl(Sender: TControl; var TheMessage : TLMMouse);
+    procedure MouseMoveOnControl(Sender: TControl; var TheMessage: TLMMouse);
+    procedure MouseUpOnControl(Sender: TControl; var TheMessage:TLMMouse);
+    procedure KeyDown(Sender: TControl; var TheMessage:TLMKEY);
+    procedure KeyUp(Sender: TControl; var TheMessage:TLMKEY);
     function  HandleSetCursor(var TheMessage: TLMessage): boolean;
 
     // procedures for working with components and persistents
@@ -1823,17 +1823,33 @@ function TDesigner.DoDeleteSelectedPersistents: boolean;
 var
   i: integer;
   APersistent: TPersistent;
+  AncestorRoot: TComponent;
 begin
   Result:=true;
   if (ControlSelection.Count=0) or (ControlSelection.SelectionForm<>Form) then
     exit;
   Result:=false;
+  // check if a component is the lookup root (can not be deleted)
   if (ControlSelection.LookupRootSelected) then begin
     if ControlSelection.Count>1 then
       MessageDlg(lisInvalidDelete,
        lisTheRootComponentCanNotBeDeleted, mtInformation,
-       [mbOk],0);
+       [mbCancel],0);
     exit;
+  end;
+  // check if a selected component is inherited (can not be deleted)
+  for i:=0 to ControlSelection.Count-1 do begin
+    if not ControlSelection[i].IsTComponent then continue;
+    AncestorRoot:=TheFormEditor.GetAncestorLookupRoot(
+                                    TComponent(ControlSelection[i].Persistent));
+    if AncestorRoot<>nil then begin
+      MessageDlg(lisInvalidDelete,
+       'The component '+dbgsName(ControlSelection[i].Persistent)
+       +' is inherited from '+dbgsName(AncestorRoot)+'.'#13
+       +'To delete an inherited component open the ancestor and delete it there.',
+       mtInformation, [mbCancel],0);
+      exit;
+    end;
   end;
   // mark selected components for deletion
   for i:=0 to ControlSelection.Count-1 do
@@ -1842,16 +1858,19 @@ begin
   SelectOnlyThisComponent(FLookupRoot);
   // delete marked components
   Include(FFlags,dfDeleting);
-  if DeletingPersistent.Count=0 then exit;
-  while DeletingPersistent.Count>0 do begin
-    APersistent:=TPersistent(DeletingPersistent[DeletingPersistent.Count-1]);
-    //writeln('TDesigner.DoDeleteSelectedComponents A ',AComponent.Name,':',AComponent.ClassName,' ',DbgS(AComponent));
-    RemovePersistentAndChilds(APersistent);
-    //writeln('TDesigner.DoDeleteSelectedComponents B ',DeletingPersistent.IndexOf(AComponent));
+  try
+    if DeletingPersistent.Count=0 then exit;
+    while DeletingPersistent.Count>0 do begin
+      APersistent:=TPersistent(DeletingPersistent[DeletingPersistent.Count-1]);
+      //writeln('TDesigner.DoDeleteSelectedComponents A ',AComponent.Name,':',AComponent.ClassName,' ',DbgS(AComponent));
+      RemovePersistentAndChilds(APersistent);
+      //writeln('TDesigner.DoDeleteSelectedComponents B ',DeletingPersistent.IndexOf(AComponent));
+    end;
+    IgnoreDeletingPersistent.Clear;
+  finally
+    Exclude(FFlags,dfDeleting);
+    Modified;
   end;
-  IgnoreDeletingPersistent.Clear;
-  Exclude(FFlags,dfDeleting);
-  Modified;
   Result:=true;
 end;
 
@@ -2086,42 +2105,18 @@ end;
 
 procedure TDesigner.ValidateRename(AComponent: TComponent;
   const CurName, NewName: string);
-  
-  {$IFDEF VER2_0_2}
-  procedure RaiseInvalidName(ConflictComponent: TComponent);
-  begin
-    raise EComponentError.Create(Format(
-      lisDesThereIsAlreadyAnotherComponentWithTheName, ['"',
-      ConflictComponent.Name, '"']));
-  end;
-
-var
-  i: Integer;
-  CurComponent: TComponent;
-  {$ENDIF}
 begin
   // check if component is initialized
   if (CurName='') or (NewName='')
   or ((AComponent<>nil) and (csDestroying in AComponent.ComponentState)) then
     exit;
 
-  {$IFDEF VER2_0_2}
-  // check, if there is already such a component
-  for i:=0 to FLookupRoot.ComponentCount-1 do begin
-    CurComponent:=FLookupRoot.Components[i];
-    //DebugLn('TDesigner.ValidateRename ',CurComponent.Name,' ',NewName);
-    if (CurComponent<>AComponent)
-    and (CompareText(CurComponent.Name,NewName)=0) then begin
-      RaiseInvalidName(CurComponent);
-    end;
-  end;
-  {$ENDIF}
-
   // check if component is the LookupRoot
   if AComponent=nil then AComponent:=FLookupRoot;
+
   // consistency check
   if CurName<>AComponent.Name then
-    DebugLn('WARNING: TDesigner.ValidateRename: OldComponentName="',CurName,'"');
+    DebugLn('WARNING: TDesigner.ValidateRename: OldComponentName="',CurName,'" <> AComponent=',dbgsName(AComponent));
   if Assigned(OnRenameComponent) then
     OnRenameComponent(Self,AComponent,NewName);
 end;

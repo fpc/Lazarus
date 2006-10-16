@@ -5651,7 +5651,6 @@ end;
 function TGtkWidgetSet.GetSystemMetrics(nIndex: Integer): Integer;
 var
   P : Pointer;
-  ax,ay,ah,aw : gint;
 begin
   Assert(False, Format('Trace:> [TGtkWidgetSet.GetSystemMetrics] %d', [nIndex]));
   case nIndex of
