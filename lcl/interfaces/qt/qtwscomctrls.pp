@@ -156,7 +156,7 @@ implementation
 
 { TQtWSProgressBar }
 
-function TQtWSProgressBar.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND;
+class function TQtWSProgressBar.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND;
 var
   QtProgressBar: TQtProgressBar;
 {  Method: TMethod;
@@ -175,14 +175,14 @@ begin
   Result := THandle(QtProgressBar);
 end;
 
-procedure TQtWSProgressBar.DestroyHandle(const AWinControl: TWinControl);
+class procedure TQtWSProgressBar.DestroyHandle(const AWinControl: TWinControl);
 begin
 //  TQtWidget(AWinControl.Handle).Free;
 
   AWinControl.Handle := 0;
 end;
 
-procedure TQtWSProgressBar.ApplyChanges(const AProgressBar: TCustomProgressBar);
+class procedure TQtWSProgressBar.ApplyChanges(const AProgressBar: TCustomProgressBar);
 var
   QtProgressBar: TQtProgressBar;
 begin
@@ -230,14 +230,14 @@ begin
   QtProgressBar.setRange(AProgressBar.Min, AProgressBar.Max);
 end;
 
-procedure TQtWSProgressBar.SetPosition(const AProgressBar: TCustomProgressBar; const NewPosition: integer);
+class procedure TQtWSProgressBar.SetPosition(const AProgressBar: TCustomProgressBar; const NewPosition: integer);
 begin
   TQtProgressBar(AProgressBar.Handle).setValue(NewPosition);
 end;
 
 { TQtWSStatusBar }
 
-function TQtWSStatusBar.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND;
+class function TQtWSStatusBar.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND;
 var
   QtStatusBar: TQtStatusBar;
   Method: TMethod;
@@ -258,19 +258,19 @@ begin
   Result := THandle(QtStatusBar);
 end;
 
-procedure TQtWSStatusBar.DestroyHandle(const AWinControl: TWinControl);
+class procedure TQtWSStatusBar.DestroyHandle(const AWinControl: TWinControl);
 begin
   TQtWidget(AWinControl.Handle).Free;
 
   AWinControl.Handle := 0;
 end;
 
-procedure TQtWSStatusBar.PanelUpdate(const AStatusBar: TStatusBar; PanelIndex: integer);
+class procedure TQtWSStatusBar.PanelUpdate(const AStatusBar: TStatusBar; PanelIndex: integer);
 begin
 
 end;
 
-procedure TQtWSStatusBar.SetPanelText(const AStatusBar: TStatusBar; PanelIndex: integer);
+class procedure TQtWSStatusBar.SetPanelText(const AStatusBar: TStatusBar; PanelIndex: integer);
 var
   Text: Widestring;
 begin
@@ -278,12 +278,12 @@ begin
   TQtStatusBar(AStatusBar.Handle).showMessage(@Text);
 end;
 
-procedure TQtWSStatusBar.Update(const AStatusBar: TStatusBar);
+class procedure TQtWSStatusBar.Update(const AStatusBar: TStatusBar);
 begin
 
 end;
 
-procedure TQtWSStatusBar.GetPreferredSize(const AWinControl: TWinControl;
+class procedure TQtWSStatusBar.GetPreferredSize(const AWinControl: TWinControl;
   var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);
 begin
 
