@@ -736,6 +736,7 @@ begin
       +'?',mtConfirmation,[mbOk,mbCancel],0)=mrOK
   then begin
     SynAutoComplete.DeleteCompletion(a);
+    LastTemplate := -1; // to prevent the saving of the deleted template
     FillCodeTemplateListBox;
     if idx < TemplateListBox.Items.Count then begin
       TemplateListBox.ItemIndex := idx;
