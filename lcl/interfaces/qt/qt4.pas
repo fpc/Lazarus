@@ -281,6 +281,7 @@ QVariantH = class(TObject) end;
 QVectorH = class(TObject) end;
   QPolygonH = class(QVectorH) end;
   QPolygonFH = class(QVectorH) end;
+QX11InfoH = class(TObject) end;
 
 
 QObject_hookH = class(TObject) end;
@@ -1350,7 +1351,7 @@ procedure QCoreApplication_installTranslator(messageFile: QTranslatorH); cdecl; 
 procedure QCoreApplication_removeTranslator(messageFile: QTranslatorH); cdecl; external QtShareName name QtNamePrefix + 'QCoreApplication_removeTranslator';
 procedure QCoreApplication_translate(retval: PWideString; context: PAnsiChar; key: PAnsiChar; comment: PAnsiChar = 0; encoding: QCoreApplicationEncoding = QCoreApplicationDefaultCodec); cdecl; external QtShareName name QtNamePrefix + 'QCoreApplication_translate';
 procedure QCoreApplication_flush(); cdecl; external QtShareName name QtNamePrefix + 'QCoreApplication_flush';
-function QCoreApplication_winEventFilter(handle: QCoreApplicationH; message: PMsg; _result: PInteger): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QCoreApplication_winEventFilter';
+procedure QCoreApplication_watchUnixSignal(signal: Integer; watch: Boolean); cdecl; external QtShareName name QtNamePrefix + 'QCoreApplication_watchUnixSignal';
 function QCoreApplication_setEventFilter(handle: QCoreApplicationH; filter: TCoreApplicationEventFilter): TCoreApplicationEventFilter; cdecl; external QtShareName name QtNamePrefix + 'QCoreApplication_setEventFilter';
 function QCoreApplication_filterEvent(handle: QCoreApplicationH; message: Pointer; _result: PInteger): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QCoreApplication_filterEvent';
 procedure QCoreApplication_quit(); cdecl; external QtShareName name QtNamePrefix + 'QCoreApplication_quit';
@@ -1667,6 +1668,8 @@ function QApplication_create(argc: PInteger; argv: PPAnsiChar): QApplicationH; o
 procedure QApplication_destroy(handle: QApplicationH); cdecl; external QtShareName name QtNamePrefix + 'QApplication_destroy'; 
 function QApplication_create(argc: PInteger; argv: PPAnsiChar; GUIenabled: Boolean): QApplicationH; overload; cdecl; external QtShareName name QtNamePrefix + 'QApplication_create2';
 function QApplication_create(argc: PInteger; argv: PPAnsiChar; p3: QApplicationType): QApplicationH; overload; cdecl; external QtShareName name QtNamePrefix + 'QApplication_create3';
+function QApplication_create(dpy: PDisplay; visual: QtHANDLE = 0; cmap: QtHANDLE = 0): QApplicationH; overload; cdecl; external QtShareName name QtNamePrefix + 'QApplication_create4';
+function QApplication_create(dpy: PDisplay; argc: PInteger; argv: PPAnsiChar; visual: QtHANDLE = 0; cmap: QtHANDLE = 0): QApplicationH; overload; cdecl; external QtShareName name QtNamePrefix + 'QApplication_create5';
 function QApplication_type(): QApplicationType; cdecl; external QtShareName name QtNamePrefix + 'QApplication_type';
 function QApplication_style(): QStyleH; cdecl; external QtShareName name QtNamePrefix + 'QApplication_style';
 procedure QApplication_setStyle(p1: QStyleH); overload; cdecl; external QtShareName name QtNamePrefix + 'QApplication_setStyle';
@@ -1723,8 +1726,9 @@ function QApplication_isRightToLeft(): Boolean; cdecl; external QtShareName name
 function QApplication_isLeftToRight(): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QApplication_isLeftToRight';
 function QApplication_isEffectEnabled(p1: QtUIEffect): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QApplication_isEffectEnabled';
 procedure QApplication_setEffectEnabled(p1: QtUIEffect; enable: Boolean = True); cdecl; external QtShareName name QtNamePrefix + 'QApplication_setEffectEnabled';
-procedure QApplication_winFocus(handle: QApplicationH; p1: QWidgetH; p2: Boolean); cdecl; external QtShareName name QtNamePrefix + 'QApplication_winFocus';
-procedure QApplication_winMouseButtonUp(); cdecl; external QtShareName name QtNamePrefix + 'QApplication_winMouseButtonUp';
+function QApplication_x11EventFilter(handle: QApplicationH; p1: PEvent): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QApplication_x11EventFilter';
+function QApplication_x11ClientMessage(handle: QApplicationH; p1: QWidgetH; p2: PEvent; passive_only: Boolean): Integer; cdecl; external QtShareName name QtNamePrefix + 'QApplication_x11ClientMessage';
+function QApplication_x11ProcessEvent(handle: QApplicationH; p1: PEvent): Integer; cdecl; external QtShareName name QtNamePrefix + 'QApplication_x11ProcessEvent';
 function QApplication_isSessionRestored(handle: QApplicationH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QApplication_isSessionRestored';
 procedure QApplication_sessionId(handle: QApplicationH; retval: PWideString); cdecl; external QtShareName name QtNamePrefix + 'QApplication_sessionId';
 procedure QApplication_sessionKey(handle: QApplicationH; retval: PWideString); cdecl; external QtShareName name QtNamePrefix + 'QApplication_sessionKey';
@@ -2075,8 +2079,9 @@ function QWidget_windowType(handle: QWidgetH): QtWindowType; cdecl; external QtS
 function QWidget_find(p1: Cardinal): QWidgetH; cdecl; external QtShareName name QtNamePrefix + 'QWidget_find';
 function QWidget_childAt(handle: QWidgetH; x: Integer; y: Integer): QWidgetH; overload; cdecl; external QtShareName name QtNamePrefix + 'QWidget_childAt';
 function QWidget_childAt(handle: QWidgetH; p: PPoint): QWidgetH; overload; cdecl; external QtShareName name QtNamePrefix + 'QWidget_childAt2';
-function QWidget_getDC(handle: QWidgetH): HDC; cdecl; external QtShareName name QtNamePrefix + 'QWidget_getDC';
-procedure QWidget_releaseDC(handle: QWidgetH; p1: HDC); cdecl; external QtShareName name QtNamePrefix + 'QWidget_releaseDC';
+function QWidget_x11Info(handle: QWidgetH): QX11InfoH; cdecl; external QtShareName name QtNamePrefix + 'QWidget_x11Info';
+function QWidget_x11PictureHandle(handle: QWidgetH): QtHANDLE; cdecl; external QtShareName name QtNamePrefix + 'QWidget_x11PictureHandle';
+function QWidget_handle(handle: QWidgetH): QtHANDLE; cdecl; external QtShareName name QtNamePrefix + 'QWidget_handle';
 procedure QWidget_setAttribute(handle: QWidgetH; p1: QtWidgetAttribute; _on: Boolean = True); cdecl; external QtShareName name QtNamePrefix + 'QWidget_setAttribute';
 function QWidget_testAttribute(handle: QWidgetH; p1: QtWidgetAttribute): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QWidget_testAttribute';
 function QWidget_paintEngine(handle: QWidgetH): QPaintEngineH; cdecl; external QtShareName name QtNamePrefix + 'QWidget_paintEngine';
@@ -2504,8 +2509,9 @@ procedure QCursor_hotSpot(handle: QCursorH; retval: PPoint); cdecl; external QtS
 procedure QCursor_pos(retval: PPoint); cdecl; external QtShareName name QtNamePrefix + 'QCursor_pos';
 procedure QCursor_setPos(x: Integer; y: Integer); overload; cdecl; external QtShareName name QtNamePrefix + 'QCursor_setPos';
 procedure QCursor_setPos(p: PPoint); overload; cdecl; external QtShareName name QtNamePrefix + 'QCursor_setPos2';
-function QCursor_handle(handle: QCursorH): HCURSOR; cdecl; external QtShareName name QtNamePrefix + 'QCursor_handle';
-function QCursor_create(cursor: HCURSOR): QCursorH; overload; cdecl; external QtShareName name QtNamePrefix + 'QCursor_create6';
+function QCursor_handle(handle: QCursorH): QtHANDLE; cdecl; external QtShareName name QtNamePrefix + 'QCursor_handle';
+function QCursor_create(cursor: QtHANDLE): QCursorH; overload; cdecl; external QtShareName name QtNamePrefix + 'QCursor_create6';
+function QCursor_x11Screen(): Integer; cdecl; external QtShareName name QtNamePrefix + 'QCursor_x11Screen';
 
 function QGridLayout_create(parent: QWidgetH): QGridLayoutH; overload; cdecl; external QtShareName name QtNamePrefix + 'QGridLayout_create';
 procedure QGridLayout_destroy(handle: QGridLayoutH); cdecl; external QtShareName name QtNamePrefix + 'QGridLayout_destroy'; 
@@ -3075,8 +3081,6 @@ procedure QPaintEngine_setSystemClip(handle: QPaintEngineH; baseClip: QRegionH);
 procedure QPaintEngine_systemClip(handle: QPaintEngineH; retval: QRegionH); cdecl; external QtShareName name QtNamePrefix + 'QPaintEngine_systemClip';
 procedure QPaintEngine_setSystemRect(handle: QPaintEngineH; rect: PRect); cdecl; external QtShareName name QtNamePrefix + 'QPaintEngine_setSystemRect';
 procedure QPaintEngine_systemRect(handle: QPaintEngineH; retval: PRect); cdecl; external QtShareName name QtNamePrefix + 'QPaintEngine_systemRect';
-function QPaintEngine_getDC(handle: QPaintEngineH): HDC; cdecl; external QtShareName name QtNamePrefix + 'QPaintEngine_getDC';
-procedure QPaintEngine_releaseDC(handle: QPaintEngineH; hdc: HDC); cdecl; external QtShareName name QtNamePrefix + 'QPaintEngine_releaseDC';
 procedure QPaintEngine_coordinateOffset(handle: QPaintEngineH; retval: PPoint); cdecl; external QtShareName name QtNamePrefix + 'QPaintEngine_coordinateOffset';
 function QPaintEngine_type(handle: QPaintEngineH): QPaintEngineType; cdecl; external QtShareName name QtNamePrefix + 'QPaintEngine_type';
 procedure QPaintEngine_fix_neg_rect(handle: QPaintEngineH; x: PInteger; y: PInteger; w: PInteger; h: PInteger); cdecl; external QtShareName name QtNamePrefix + 'QPaintEngine_fix_neg_rect';
@@ -3104,8 +3108,6 @@ type
 function QPaintDevice_devType(handle: QPaintDeviceH): Integer; cdecl; external QtShareName name QtNamePrefix + 'QPaintDevice_devType';
 function QPaintDevice_paintingActive(handle: QPaintDeviceH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QPaintDevice_paintingActive';
 function QPaintDevice_paintEngine(handle: QPaintDeviceH): QPaintEngineH; cdecl; external QtShareName name QtNamePrefix + 'QPaintDevice_paintEngine';
-function QPaintDevice_getDC(handle: QPaintDeviceH): HDC; cdecl; external QtShareName name QtNamePrefix + 'QPaintDevice_getDC';
-procedure QPaintDevice_releaseDC(handle: QPaintDeviceH; hdc: HDC); cdecl; external QtShareName name QtNamePrefix + 'QPaintDevice_releaseDC';
 function QPaintDevice_width(handle: QPaintDeviceH): Integer; cdecl; external QtShareName name QtNamePrefix + 'QPaintDevice_width';
 function QPaintDevice_height(handle: QPaintDeviceH): Integer; cdecl; external QtShareName name QtNamePrefix + 'QPaintDevice_height';
 function QPaintDevice_widthMM(handle: QPaintDeviceH): Integer; cdecl; external QtShareName name QtNamePrefix + 'QPaintDevice_widthMM';
@@ -3142,7 +3144,7 @@ procedure QRegion_subtract(handle: QRegionH; retval: QRegionH; r: QRegionH); cde
 procedure QRegion_eor(handle: QRegionH; retval: QRegionH; r: QRegionH); cdecl; external QtShareName name QtNamePrefix + 'QRegion_eor';
 procedure QRegion_boundingRect(handle: QRegionH; retval: PRect); cdecl; external QtShareName name QtNamePrefix + 'QRegion_boundingRect';
 procedure QRegion_setRects(handle: QRegionH; rect: PRect; num: Integer); cdecl; external QtShareName name QtNamePrefix + 'QRegion_setRects';
-function QRegion_handle(handle: QRegionH): HRGN; cdecl; external QtShareName name QtNamePrefix + 'QRegion_handle';
+function QRegion_handle(handle: QRegionH): Region; cdecl; external QtShareName name QtNamePrefix + 'QRegion_handle';
 
 
 type
@@ -3245,17 +3247,15 @@ function QPrinter_paperSource(handle: QPrinterH): QPrinterPaperSource; cdecl; ex
 procedure QPrinter_supportedResolutions(handle: QPrinterH; retval: PIntArray); cdecl; external QtShareName name QtNamePrefix + 'QPrinter_supportedResolutions';
 procedure QPrinter_setFontEmbeddingEnabled(handle: QPrinterH; enable: Boolean); cdecl; external QtShareName name QtNamePrefix + 'QPrinter_setFontEmbeddingEnabled';
 function QPrinter_fontEmbeddingEnabled(handle: QPrinterH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QPrinter_fontEmbeddingEnabled';
-procedure QPrinter_setWinPageSize(handle: QPrinterH; winPageSize: Integer); cdecl; external QtShareName name QtNamePrefix + 'QPrinter_setWinPageSize';
-function QPrinter_winPageSize(handle: QPrinterH): Integer; cdecl; external QtShareName name QtNamePrefix + 'QPrinter_winPageSize';
 procedure QPrinter_paperRect(handle: QPrinterH; retval: PRect); cdecl; external QtShareName name QtNamePrefix + 'QPrinter_paperRect';
 procedure QPrinter_pageRect(handle: QPrinterH; retval: PRect); cdecl; external QtShareName name QtNamePrefix + 'QPrinter_pageRect';
+procedure QPrinter_printerSelectionOption(handle: QPrinterH; retval: PWideString); cdecl; external QtShareName name QtNamePrefix + 'QPrinter_printerSelectionOption';
+procedure QPrinter_setPrinterSelectionOption(handle: QPrinterH; p1: PWideString); cdecl; external QtShareName name QtNamePrefix + 'QPrinter_setPrinterSelectionOption';
 function QPrinter_newPage(handle: QPrinterH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QPrinter_newPage';
 function QPrinter_abort(handle: QPrinterH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QPrinter_abort';
 function QPrinter_printerState(handle: QPrinterH): QPrinterPrinterState; cdecl; external QtShareName name QtNamePrefix + 'QPrinter_printerState';
 function QPrinter_paintEngine(handle: QPrinterH): QPaintEngineH; cdecl; external QtShareName name QtNamePrefix + 'QPrinter_paintEngine';
 function QPrinter_printEngine(handle: QPrinterH): QPrintEngineH; cdecl; external QtShareName name QtNamePrefix + 'QPrinter_printEngine';
-function QPrinter_getDC(handle: QPrinterH): HDC; cdecl; external QtShareName name QtNamePrefix + 'QPrinter_getDC';
-procedure QPrinter_releaseDC(handle: QPrinterH; hdc: HDC); cdecl; external QtShareName name QtNamePrefix + 'QPrinter_releaseDC';
 procedure QPrinter_setFromTo(handle: QPrinterH; fromPage: Integer; toPage: Integer); cdecl; external QtShareName name QtNamePrefix + 'QPrinter_setFromTo';
 function QPrinter_fromPage(handle: QPrinterH): Integer; cdecl; external QtShareName name QtNamePrefix + 'QPrinter_fromPage';
 function QPrinter_toPage(handle: QPrinterH): Integer; cdecl; external QtShareName name QtNamePrefix + 'QPrinter_toPage';
@@ -3354,7 +3354,7 @@ function QFont_rawMode(handle: QFontH): Boolean; cdecl; external QtShareName nam
 procedure QFont_setRawMode(handle: QFontH; p1: Boolean); cdecl; external QtShareName name QtNamePrefix + 'QFont_setRawMode';
 function QFont_exactMatch(handle: QFontH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QFont_exactMatch';
 function QFont_isCopyOf(handle: QFontH; p1: QFontH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QFont_isCopyOf';
-function QFont_handle(handle: QFontH): HFONT; cdecl; external QtShareName name QtNamePrefix + 'QFont_handle';
+function QFont_handle(handle: QFontH): QtHANDLE; cdecl; external QtShareName name QtNamePrefix + 'QFont_handle';
 procedure QFont_setRawName(handle: QFontH; p1: PWideString); cdecl; external QtShareName name QtNamePrefix + 'QFont_setRawName';
 procedure QFont_rawName(handle: QFontH; retval: PWideString); cdecl; external QtShareName name QtNamePrefix + 'QFont_rawName';
 procedure QFont_key(handle: QFontH; retval: PWideString); cdecl; external QtShareName name QtNamePrefix + 'QFont_key';
@@ -3598,11 +3598,6 @@ function QIcon_serialNumber(handle: QIconH): Integer; cdecl; external QtShareNam
 procedure QIcon_addPixmap(handle: QIconH; pixmap: QPixmapH; mode: QIconMode = QIconNormal; state: QIconState = QIconOff); cdecl; external QtShareName name QtNamePrefix + 'QIcon_addPixmap';
 procedure QIcon_addFile(handle: QIconH; fileName: PWideString; size: PSize = nil; mode: QIconMode = QIconNormal; state: QIconState = QIconOff); cdecl; external QtShareName name QtNamePrefix + 'QIcon_addFile';
 
-
-type
-  QPixmapHBitmapFormat = ( // QPixmap::HBitmapFormat (1)
-    QPixmapNoAlpha, QPixmapPremultipliedAlpha );
-
 function QPixmap_create(): QPixmapH; overload; cdecl; external QtShareName name QtNamePrefix + 'QPixmap_create';
 procedure QPixmap_destroy(handle: QPixmapH); cdecl; external QtShareName name QtNamePrefix + 'QPixmap_destroy'; 
 function QPixmap_create(w: Integer; h: Integer): QPixmapH; overload; cdecl; external QtShareName name QtNamePrefix + 'QPixmap_create2';
@@ -3645,14 +3640,17 @@ function QPixmap_loadFromData(handle: QPixmapH; buf: PByte; len: Cardinal; forma
 function QPixmap_loadFromData(handle: QPixmapH; data: QByteArrayH; format: PAnsiChar = 0; flags: QtImageConversionFlags = QtAutoColor): Boolean; overload; cdecl; external QtShareName name QtNamePrefix + 'QPixmap_loadFromData2';
 function QPixmap_save(handle: QPixmapH; fileName: PWideString; format: PAnsiChar; quality: Integer = -1): Boolean; overload; cdecl; external QtShareName name QtNamePrefix + 'QPixmap_save';
 function QPixmap_save(handle: QPixmapH; device: QIODeviceH; format: PAnsiChar; quality: Integer = -1): Boolean; overload; cdecl; external QtShareName name QtNamePrefix + 'QPixmap_save2';
-function QPixmap_toWinHBITMAP(handle: QPixmapH; format: QPixmapHBitmapFormat = QPixmapNoAlpha): HBITMAP; cdecl; external QtShareName name QtNamePrefix + 'QPixmap_toWinHBITMAP';
-procedure QPixmap_fromWinHBITMAP(retval: QPixmapH; hbitmap: HBITMAP; format: QPixmapHBitmapFormat = QPixmapNoAlpha); cdecl; external QtShareName name QtNamePrefix + 'QPixmap_fromWinHBITMAP';
 procedure QPixmap_copy(handle: QPixmapH; retval: QPixmapH; x: Integer; y: Integer; width: Integer; height: Integer); overload; cdecl; external QtShareName name QtNamePrefix + 'QPixmap_copy';
 procedure QPixmap_copy(handle: QPixmapH; retval: QPixmapH; rect: PRect = nil); overload; cdecl; external QtShareName name QtNamePrefix + 'QPixmap_copy2';
 function QPixmap_serialNumber(handle: QPixmapH): Integer; cdecl; external QtShareName name QtNamePrefix + 'QPixmap_serialNumber';
 function QPixmap_isDetached(handle: QPixmapH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QPixmap_isDetached';
 procedure QPixmap_detach(handle: QPixmapH); cdecl; external QtShareName name QtNamePrefix + 'QPixmap_detach';
 function QPixmap_isQBitmap(handle: QPixmapH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QPixmap_isQBitmap';
+function QPixmap_x11SetDefaultScreen(screen: Integer): Integer; cdecl; external QtShareName name QtNamePrefix + 'QPixmap_x11SetDefaultScreen';
+procedure QPixmap_x11SetScreen(handle: QPixmapH; screen: Integer); cdecl; external QtShareName name QtNamePrefix + 'QPixmap_x11SetScreen';
+function QPixmap_x11Info(handle: QPixmapH): QX11InfoH; cdecl; external QtShareName name QtNamePrefix + 'QPixmap_x11Info';
+function QPixmap_x11PictureHandle(handle: QPixmapH): QtHANDLE; cdecl; external QtShareName name QtNamePrefix + 'QPixmap_x11PictureHandle';
+function QPixmap_handle(handle: QPixmapH): QtHANDLE; cdecl; external QtShareName name QtNamePrefix + 'QPixmap_handle';
 function QPixmap_paintEngine(handle: QPixmapH): QPaintEngineH; cdecl; external QtShareName name QtNamePrefix + 'QPixmap_paintEngine';
 
 
