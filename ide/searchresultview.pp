@@ -541,6 +541,7 @@ begin
  //Parse Phrases
  sPhrases := edSearchInList.Text;
  iLength := Length(sPhrases);
+ sPhrase := '';
  for i:=1 to iLength do
   begin
    if ((sPhrases[i] = ' ') or (sPhrases[i] = ',') or (i = iLength)) then

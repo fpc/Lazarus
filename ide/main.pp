@@ -11466,8 +11466,13 @@ var
           try
             DebugLn(['RenameInheritedComponents ',dbgsName(InheritedComponent),' Owner=',dbgsName(InheritedComponent.Owner)]);
             if Simulate then begin
-              InheritedComponent.ValidateRename(InheritedComponent,
-                                               InheritedComponent.Name,NewName);
+              if (InheritedComponent.Owner<>nil)
+              and (InheritedComponent.Owner.FindComponent(NewName)<>nil) then
+              begin
+                raise EComponentError.Createfmt(
+                  lisDuplicateNameAComponentNamedAlreadyExistsInTheInhe, ['"',
+                  NewName, '"', dbgsName(InheritedComponent.Owner)]);
+              end;
             end else begin
               InheritedComponent.Name:=NewName;
               DependingDesigner:=GetDesignerFormOfSource(DependingUnit,false);

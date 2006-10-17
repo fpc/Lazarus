@@ -557,6 +557,8 @@ resourcestring
     +'ResourceString section in this or any of the used units.';
   lisComponentNameIsNotAValidIdentifier = 'Component name %s%s%s is not a '
     +'valid identifier';
+  lisDuplicateNameAComponentNamedAlreadyExistsInTheInhe = 'Duplicate name: A '
+    +'component named %s%s%s already exists in the inherited component %s';
   lisComponentNameIsKeyword = 'Component name %s%s%s is keyword';
   lisTheUnitItselfHasAlreadyTheNamePascalIdentifiersMus = 'The unit itself '
     +'has already the name %s%s%s. Pascal identifiers must be unique.';
