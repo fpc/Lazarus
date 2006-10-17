@@ -1,4 +1,4 @@
-{ $ID: $}
+{ $Id: $}
 { Copyright (C) 2006 Vincent Snijders
 
   This source is free software; you can redistribute it and/or modify it under
@@ -21,7 +21,7 @@ program runtests;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, TestLpi, testrunner;
+  Classes, TestLpi, consoletestrunner;
   
 type
 
