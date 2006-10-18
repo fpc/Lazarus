@@ -131,11 +131,13 @@ var MenuItemIndex: integer;
     HotKeyIndex: integer;
     i: integer;
 begin
+  Result := MakeLResult(0, 0);
   MenuItemIndex := -1;
   ItemInfo.cbSize := sizeOf(MENUITEMINFO);
   ItemInfo.fMask := MIIM_DATA;
-  GetMenuItemInfo(AMenuHandle, 0, true, @ItemInfo);
+  if not GetMenuItemInfo(AMenuHandle, 0, true, @ItemInfo) then Exit;
   FirstMenuItem := TMenuItem(ItemInfo.dwItemData);
+  if FirstMenuItem = nil then exit;
   i := 0;
   while (i < FirstMenuItem.Parent.Count) and (MenuItemIndex < 0) do
   begin
@@ -188,8 +190,10 @@ end;
 function StringLength(const aCaption: String; const aHDC: HDC; const aDecoration:TCaptionFlagsSet): integer;
 var oldFont: HFONT;
     newFont: HFONT;
-    TmpRect: Windows.RECT;
+    tmpRect: Windows.RECT;
 begin
+  tmpRect.right := 0;
+  tmpRect.left := 0;
   newFont := getMenuItemFont(aDecoration);
   oldFont := SelectObject(aHDC, newFont);
   DrawText(aHDC, pChar(aCaption), length(aCaption), @TmpRect, DT_CALCRECT);
@@ -202,8 +206,10 @@ end;
 function StringHeight(const aCaption: String; const aHDC: HDC; const aDecoration: TCaptionFlagsSet): integer;
 var oldFont: HFONT;
     newFont: HFONT;
-    TmpRect: Windows.RECT;
+    tmpRect: Windows.RECT;
 begin
+  tmpRect.bottom := 0;
+  tmpRect.top := 0;
   newFont := getMenuItemFont(aDecoration);
   oldFont := SelectObject(aHDC, newFont);
   DrawText(aHDC, pChar(aCaption), length(aCaption), @TmpRect, DT_CALCRECT);
