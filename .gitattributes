@@ -159,6 +159,7 @@ components/fpcunit/ide/fpcunitide.lpk svneol=native#text/pascal
 components/fpcunit/ide/fpcunitide.pas svneol=native#text/pascal
 components/fpcunit/ide/fpcunitlazideintf.pas svneol=native#text/pascal
 components/fpcunit/ide/fpcunitproject1.inc svneol=native#text/plain
+components/fpcunit/ide/fpcunitproject1.pas svneol=native#text/plain
 components/fpcunit/ide/lib/README.txt svneol=native#text/plain
 components/fpcunit/ide/testcaseopts.lfm svneol=native#text/plain
 components/fpcunit/ide/testcaseopts.lrs svneol=native#text/pascal

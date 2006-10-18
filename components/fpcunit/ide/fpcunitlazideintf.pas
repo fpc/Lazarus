@@ -345,6 +345,7 @@ begin
 
   // add FCL dependency
   AProject.AddPackageDependency('FCL');
+  AProject.AddPackageDependency('FPCUnitConsoleRunner');
 
   // compiler options
   AProject.LazCompilerOptions.UseLineInfoUnit:=true;
