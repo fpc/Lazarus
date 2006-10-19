@@ -95,7 +95,13 @@ uses strutils;
 
 { helper routines }
 
-const SpaceBetweenIcons = 5;
+const 
+  SpaceBetweenIcons = 5;
+
+  // define the size of the MENUITEMINFO structure used by older Windows
+  // versions (95, NT4) to keep the kompatibility with them
+  // Since W98 the size is 48 (hbmpItem was added)
+  W95_MENUITEMINFO_SIZE = 44;
 
 type
   TCaptionFlags = (cfBold, cfUnderline);
@@ -133,7 +139,7 @@ var MenuItemIndex: integer;
 begin
   Result := MakeLResult(0, 0);
   MenuItemIndex := -1;
-  ItemInfo.cbSize := sizeOf(MENUITEMINFO);
+  ItemInfo.cbSize := W95_MENUITEMINFO_SIZE;
   ItemInfo.fMask := MIIM_DATA;
   if not GetMenuItemInfo(AMenuHandle, 0, true, @ItemInfo) then Exit;
   FirstMenuItem := TMenuItem(ItemInfo.dwItemData);
@@ -439,7 +445,7 @@ function ChangeMenuFlag(const AMenuItem: TMenuItem; Flag: Integer; Value: boolea
 var
   MenuInfo: MENUITEMINFO;
 begin
-  MenuInfo.cbSize := sizeof(MenuInfo);
+  MenuInfo.cbSize := W95_MENUITEMINFO_SIZE;
   MenuInfo.fMask := MIIM_TYPE;
   MenuInfo.dwTypeData := nil;  // don't retrieve caption
   GetMenuItemInfo(AMenuItem.Parent.Handle, AMenuItem.Command, false, @MenuInfo);
@@ -460,7 +466,7 @@ var
 begin
   with MenuInfo do
   begin
-    cbsize:=sizeof(MENUITEMINFO);
+    cbsize := W95_MENUITEMINFO_SIZE;
     if ACaption <> '-' then
     begin
       fType := MFT_STRING;
@@ -473,7 +479,7 @@ begin
   SetMenuItemInfo(AMenuItem.Parent.Handle, AMenuItem.Command, false, @MenuInfo);
   with MenuInfo do
   begin
-    cbsize:=sizeof(MENUITEMINFO);
+    cbsize := W95_MENUITEMINFO_SIZE;
     fMask := MIIM_TYPE;
     fType := MFT_OWNERDRAW;
     dwTypeData:=LPSTR(ACaption);
@@ -497,7 +503,7 @@ begin
   begin
     ParentOfParent := AMenuItem.Parent.Parent.Handle;
     with MenuInfo do begin
-      cbSize:=sizeof(MENUITEMINFO);
+      cbSize := W95_MENUITEMINFO_SIZE;
       fMask:=MIIM_SUBMENU;
     end;
     GetMenuItemInfo(ParentOfParent, AMenuItem.Parent.Command,
@@ -511,7 +517,7 @@ begin
   end;
 
   with MenuInfo do begin
-    cbsize:=sizeof(MENUITEMINFO);
+    cbsize := W95_MENUITEMINFO_SIZE;
     if AMenuItem.Enabled then fState:=MFS_ENABLED else fstate:=MFS_GRAYED;
     if AMenuItem.Checked then fState:=fState or MFS_CHECKED;
     fMask:=MIIM_ID or MIIM_DATA or MIIM_STATE or MIIM_TYPE;
