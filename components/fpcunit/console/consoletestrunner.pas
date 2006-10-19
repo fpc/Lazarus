@@ -62,6 +62,8 @@ const
   { TProgressWriter }
 type
   TProgressWriter= class(TNoRefCountObject, ITestListener)
+  private
+    FSuccess: boolean;
   public
     destructor Destroy; override;
 
@@ -81,22 +83,25 @@ end;
 
 procedure TProgressWriter.AddFailure(ATest: TTest; AFailure: TTestFailure);
 begin
+  FSuccess := false;
   write('F');
 end;
 
 procedure TProgressWriter.AddError(ATest: TTest; AError: TTestFailure);
 begin
+  FSuccess := false;
   write('E');
 end;
 
 procedure TProgressWriter.StartTest(ATest: TTest);
 begin
-  // nothing to do
+  FSuccess := true; // assume success, until proven otherwise
 end;
 
 procedure TProgressWriter.EndTest(ATest: TTest);
 begin
-  write('.');
+  if FSuccess then
+    write('.');
 end;
 
 var
