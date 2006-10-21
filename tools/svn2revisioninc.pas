@@ -89,7 +89,36 @@ var
     end;
   end;
 
-  function GetRevisionFromEntries: boolean;
+  function GetRevisionFromEntriesTxt: boolean;
+  var
+    EntriesFileName: string;
+    EntriesText: Text;
+    line: string;
+  begin
+    Result:=false;
+    EntriesFileName:=AppendPathDelim(SourceDirectory)+'.svn'+PathDelim+'entries';
+    if FileExists(EntriesFileName) then begin
+       try
+         AssignFile(EntriesText, EntriesFileName);
+         Reset(EntriesText);
+         try
+         // skip three lines
+           Readln(EntriesText, line);
+           if line<>'<?xml version="1.0" encoding="utf-8"?>' then begin
+             Readln(EntriesText);
+             Readln(EntriesText);
+             Readln(EntriesText, RevisionStr);
+           end;
+         finally
+           CloseFile(EntriesText);
+         end;
+       except
+         // ignore error, default result is false
+       end;
+    end;
+  end;
+
+  function GetRevisionFromEntriesXml: boolean;
   var
     EntriesFileName: string;
     EntriesDoc: TXMLDocument;
@@ -100,24 +129,30 @@ var
     if FileExists(EntriesFileName) then begin
        try
          ReadXMLFile(EntriesDoc, EntriesFileName);
-         EntryNode := EntriesDoc.FirstChild.FirstChild;
-         while not Result and (EntryNode<>nil) do begin
-           if EntryNode.Attributes.GetNamedItem('name').NodeValue='' then begin
-             RevisionStr:=EntryNode.Attributes.GetNamedItem('revision').NodeValue;
-             Result:=true;
+         try
+           EntryNode := EntriesDoc.FirstChild.FirstChild;
+           while not Result and (EntryNode<>nil) do begin
+             if EntryNode.Attributes.GetNamedItem('name').NodeValue='' then begin
+               RevisionStr:=EntryNode.Attributes.GetNamedItem('revision').NodeValue;
+               Result:=true;
+             end;
+             EntryNode := EntryNode.NextSibling;
            end;
-           EntryNode := EntryNode.NextSibling;
+         finally
+           EntriesDoc.Free;
          end;
        except
          // ignore error, default result is false
        end;
     end;
   end;
+
 begin
   Result:=false;
   SvnDir:= AppendPathDelim(SourceDirectory)+'.svn';
   if DirectoryExists(SvnDir) then
-    Result := GetRevisionFromSvnVersion or GetRevisionFromEntries;
+    Result := GetRevisionFromSvnVersion or GetRevisionFromEntriesTxt
+      or GetRevisionFromEntriesXml;
 end;
 
 function IsValidRevisionInc: boolean;
