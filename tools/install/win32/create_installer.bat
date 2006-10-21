@@ -54,7 +54,16 @@ rmdir /s /q %BUILDDIR%
 %SVN% export %LAZSVNDIR% %BUILDDIR% >> %LOGFILE%
 ..\..\svn2revisioninc %LAZSVNDIR% %BUILDDIR%\ide\revision.inc
 
+%SVN% export %FPCSVNDIR%\install\binw32 %INSTALL_BINDIR% >> %LOGFILE%
+del %INSTALL_BINDIR%\gdb.exe
+
 call build-fpc.bat
+
+:: INSTALL_BINDIR is set by build-fpc.bat
+%SVN% export %FPCSVNDIR%\install\binw32 %BUILDDIR%\fpcbins >> %LOGFILE%
+mv %BUILDDIR%\fpcbins\*.* %INSTALL_BINDIR%
+%FPCBINDIR%\rm -rf %BUILDDIR%\fpcbins
+del %INSTALL_BINDIR%\gdb.exe
 
 :: copy fpc source
 gmkdir -p %INSTALL_BASE%\source
@@ -65,8 +74,6 @@ gmkdir -p %INSTALL_BASE%\source
 :: exit if no compiler has been made
 if not exist %INSTALL_BINDIR%\ppc386.exe goto END
 
-%SVN% export %FPCSVNDIR%\install\binw32\*.* %INSTALL_BINDIR% >> %LOGFILE%
-del %INSTALL_BINDIR%\gdb.exe
 %INSTALL_BINDIR%\fpcmkcfg.exe -d "basepath=%INSTALL_BASE%" -o %INSTALL_BINDIR%\fpc.cfg
 
 call build-lazarus.bat
