@@ -8603,7 +8603,7 @@ end;
 {$ENDIF UseXinerama}
 {$ENDIF Gtk1}
 
-{$IFDEF HasGtkX}
+{$IFDEF HasX}
 function  XGetWorkarea(var ax,ay,awidth,aheight:gint): gint;
 
 var

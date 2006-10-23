@@ -5299,7 +5299,7 @@ begin
     {$IFDEF Gtk1}
     exit;
     {$ELSE}
-      {$IFDEF GtkHasX}
+      {$IFDEF HasX}
       GDKWindow:=gdk_screen_get_root_window(gdk_screen_get_default);
       {$ELSE}
       exit;
@@ -5651,6 +5651,7 @@ end;
 function TGtkWidgetSet.GetSystemMetrics(nIndex: Integer): Integer;
 var
   P : Pointer;
+  ax,ay,ah,aw : gint;
 begin
   Assert(False, Format('Trace:> [TGtkWidgetSet.GetSystemMetrics] %d', [nIndex]));
   case nIndex of
@@ -5754,14 +5755,14 @@ begin
       end;
     SM_CXMAXIMIZED:
       begin
-        {$IFDEF GtkHasX}
+        {$IFDEF HasX}
         if XGetWorkarea(ax,ay,aw,ah)>=0 then result:=aw
                                         else getSystemMetrics(SM_CXSCREEN);
         {$ENDIF}
       end;
     SM_CYMAXIMIZED:
       begin
-        {$IFDEF GtkHasX}
+        {$IFDEF HasX}
          if XGetWorkarea(ax,ay,aw,ah)>=0 then result:=ah
                                         else getSystemMetrics(SM_CYSCREEN);
         {$ENDIF}

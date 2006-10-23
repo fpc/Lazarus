@@ -49,7 +49,7 @@ begin
                               TSQLTransaction,
                               TIBConnection,
 {$IFDEF HASODBCCONNECTION}
-                              TODBCConnection,	
+                              TODBCConnection,
 {$ENDIF}
 {$IFDEF HASMYSQL50CONNECTION}
                               TMySQL40Connection,

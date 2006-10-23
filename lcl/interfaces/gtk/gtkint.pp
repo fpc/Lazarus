@@ -64,6 +64,13 @@ interface
   {$EndIF}
 {$EndIF}
 
+{$IFDEF Unix}
+  {$DEFINE HasX}
+  {$IFDEF Gtk1}
+    {$DEFINE HasGtkX}
+  {$ENDIF}
+{$ENDIF}
+
 uses
   {$IFDEF WIN32}
   // use windows unit first,
