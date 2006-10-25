@@ -889,7 +889,7 @@ begin
 
     Pixmap := TQtPixmap.Create(PScreenSize);
     try
-      GetMem(NewRawImage.Mask, 1); // Creates a dummy mask
+      NewRawImage.Mask := GetMem(1); // Creates a dummy mask
 
       Pixmap.grabWindow(WinID);
     
@@ -899,7 +899,7 @@ begin
     
       NewRawImage.DataSize := QImage_numBytes(Image);
 
-      GetMem(NewRawImage.Data, QImage_numBytes(Image));
+      NewRawImage.Data := GetMem(QImage_numBytes(Image));
 
       Move(QImage_bits(Image)^, NewRawImage.Data^, QImage_numBytes(Image));
     finally
@@ -913,9 +913,9 @@ begin
   end
   else
   begin
-    GetMem(NewRawImage.Mask, 1); // Creates a dummy mask
+    NewRawImage.Mask := GetMem(1); // Creates a dummy mask
 
-    GetMem(NewRawImage.Data, 1); // Creates a dummy data
+    NewRawImage.Data := GetMem(1); // Creates a dummy data
 
     NewRawImage.Description.Width := SrcWidth;
     NewRawImage.Description.Height := SrcHeight;

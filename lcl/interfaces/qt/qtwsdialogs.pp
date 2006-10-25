@@ -117,7 +117,7 @@ implementation
  ------------------------------------------------------------------------------}
 class function TQtWSCommonDialog.CreateHandle(const ACommonDialog: TCommonDialog): THandle;
 begin
-  Result := 1000;
+  Result := 0;
 end;
 
 {------------------------------------------------------------------------------
@@ -143,8 +143,9 @@ begin
   {------------------------------------------------------------------------------
     Initialization of the dialog´s options
    ------------------------------------------------------------------------------}
-
-  Parent := TQtWidget(TWinControl(ACommonDialog.Owner).Handle).Widget;
+  if ACommonDialog.Owner is TWinControl then
+   Parent := TQtWidget(TWinControl(ACommonDialog.Owner).Handle).Widget
+  else Parent := nil;
 
   ReturnText := '';
   TmpFilter := '';
