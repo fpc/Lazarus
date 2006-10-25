@@ -1464,7 +1464,8 @@ begin
   if QEvent_type(Event) = QEventTimer then
   begin
     QEvent_accept(Event);
-    CallbackFunc;
+    
+    if Assigned(CallbackFunc) then CallbackFunc;
   end;
 end;
 

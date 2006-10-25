@@ -130,8 +130,23 @@ begin
 end;
 
 function TQtWidgetSet.DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor;
+{var
+  Color: QColorH;}
 begin
-  Result:=clNone;
+  Result := clNone;
+
+  if not IsValidDC(CanvasHandle) then Exit;
+  
+  if (TQtDeviceContext(CanvasHandle).vImage <> nil) then
+  begin
+    Result := TColor(QImage_pixel(TQtDeviceContext(CanvasHandle).vImage, X, Y));
+
+{    Color := QColor_create(QImage_pixel(TQtDeviceContext(CanvasHandle).vImage, X, Y));
+
+    Result := RGBToColor(QColor_red(Color), QColor_green(Color), QColor_blue(Color));
+
+    QColor_destroy(Color);}
+  end;
 end;
 
 procedure TQtWidgetSet.DCSetPixel(CanvasHandle: HDC; X, Y: integer; AColor: TGraphicsColor);
