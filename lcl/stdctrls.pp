@@ -60,6 +60,8 @@ type
   TScrollEvent = procedure(Sender: TObject; ScrollCode: TScrollCode;
                            var ScrollPos: Integer) of object;
 
+  { TCustomScrollBar }
+
   TCustomScrollBar = class(TWinControl)
   private
     FKind: TScrollBarKind;
@@ -91,6 +93,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     procedure SetParams(APosition, AMin, AMax, APageSize: Integer);
+    procedure SetParams(APosition, AMin, AMax: Integer);
   public
     property Kind: TScrollBarKind read FKind write SetKind default sbHorizontal;
     property LargeChange: TScrollBarInc read FLargeChange write FLargeChange default 1;

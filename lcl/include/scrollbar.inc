@@ -141,6 +141,11 @@ begin
     TWSScrollBarClass(WidgetSetClass).SetParams(Self);
 end;
 
+procedure TCustomScrollBar.SetParams(APosition, AMin, AMax: Integer);
+begin
+  SetParams(APosition, AMin, AMax, FPageSize);
+end;
+
 procedure TCustomScrollBar.SetPosition(Value: Integer);
 begin
   SetParams(Value, FMin, FMax, FPageSize);
