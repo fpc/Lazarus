@@ -130,7 +130,7 @@ end;
 class procedure TQtWSCommonDialog.ShowModal(const ACommonDialog: TCommonDialog);
 var
   Caption, Dir, Filter, selectedFilter, ReturnText: WideString;
-  TmpFilter: string;
+  TmpFilter, strExtensions: string;
   FileDialog: TFileDialog;
   options: QFileDialogOptions;
   Parent: QWidgetH;
@@ -161,14 +161,29 @@ begin
     {------------------------------------------------------------------------------
       This is a parser that converts LCL filter strings to Qt filter strings
       
+      The parses states are:
+      
+      0 - Initial state, is reading a string to be displayed on the filter
+      1 - Is reading the extensions to be filtered
+      2 - Reached the end of extensions text, now it will write
+      
       A LCL filter string looks like this:
 
-      Text files|*.txt *.pas|Binaries|*.exe
+      Text files (*.txt *.pas)|*.txt *.pas|Binaries (*.exe)|*.exe
       
-      And a Qt filter string looks like this:
+      And a Qt filter string looks like this
       
       Text files (*.txt *.pas)
       Binaries (*.exe)
+      
+      The following LCL filter simply cannot be represented under Qt, because Qt
+     always appends a string with the extensions on the combo box
+      
+      Text files|*.txt *.pas|Binaries|*.exe
+      
+      To solve this this algorithm will try to find (*.txt) or similar on the display text
+     and will remove it. This algorithm is far from perfect and may cause trouble on some
+     special cases, but should work 99% of the time.
      ------------------------------------------------------------------------------}
 
     ParserState := 0;
@@ -184,7 +199,12 @@ begin
          TmpFilter := TmpFilter + Copy(FileDialog.Filter, Position, i - Position) + ' '
         else if ParserState = 2 then
         begin
-          TmpFilter := TmpFilter + '(' + Copy(FileDialog.Filter, Position, i - Position) + ')' + LineEnding;
+          strExtensions := '(' + Copy(FileDialog.Filter, Position, i - Position) + ')';
+          
+          if Pos(strExtensions, TmpFilter) = 0 then TmpFilter := TmpFilter + LineEnding;
+          
+          TmpFilter := TmpFilter + LineEnding;
+          
           ParserState := 0;
         end;
 
@@ -192,7 +212,9 @@ begin
       end;
     end;
     
-    TmpFilter := TmpFilter + '(' + Copy(FileDialog.Filter, Position, i + 1 - Position) + ')';
+    strExtensions := '(' + Copy(FileDialog.Filter, Position, i + 1 - Position) + ')';
+
+    if Pos(strExtensions, TmpFilter) = 0 then TmpFilter := TmpFilter + strExtensions;
 
     Filter := UTF8Decode(TmpFilter);
 
