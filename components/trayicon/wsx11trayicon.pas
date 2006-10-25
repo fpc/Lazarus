@@ -48,32 +48,21 @@ type
       fDrawable: TWindow;
       fWindowID: TWindow;
       fVisual: PVisual;
-      fDepth: Integer;
+      fDepth, fWidth, fHeight: Integer;
       fRootWindow: TWindow;
       gc: Xlib.TGC;
-{      fIcon: TIcon;
-      fEmbedded: Boolean;
-      fMenu: TPopupMenu;
-      fMouseEnter: TNotifyEvent;
-      fMouseLeave: TNotifyEvent;
-      fMouseDown: TMouseEvent;
-      fMouseUp: TMouseEvent;
-      fMouseMove: TMouseMoveEvent;
-      fClick: TNotifyEvent;
-      fTrayParent: TWindow;
-      fWidth, fHeight: Integer;
-      fIconWidth,
-      fIconHeight: Integer;
+      fImage: xlib.PXImage;
+
       fTimer: TTimer;
-      Image: xlib.PXImage;
-      fMsgCount: Integer;
-      WindowHandle: Cardinal;}
+
       procedure SetEmbedded;
       procedure InitWM;
       procedure SetMinSize(AWidth, AHeight: Integer);
       function Send_Message(window: TWindow; msg: Integer;data1, data2,data3: Integer): boolean;
       function AttachIcon: TWindow;
       function GetCanvas: TCanvas;
+      procedure OnEventTimer(Sender: TObject);
+      procedure RePaint;
     protected
     public
       hIcon, hSmallIcon: Cardinal;
@@ -94,11 +83,19 @@ const
   
 implementation
 
+uses WSTrayIcon;
+
 // Temp ErrorHandler
-function TempX11ErrorHandler(Display:PDisplay; ErrorEv:PXErrorEvent):longint;cdecl;
+function TempX11ErrorHandler(Display:PDisplay; ErrorEv:PXErrorEvent): longint; cdecl;
 begin
   WriteLn('Error: ' + IntToStr(ErrorEv^.error_code));
-  Result:=0;
+  Result := 0;
+end;
+
+// Processes X11 events
+function ProcessEvent(display:PDisplay; event:PXEvent; p : TXPointer): TBool; cdecl;
+begin
+  Result := True;
 end;
 
 { TWidgetTrayIcon }
@@ -179,6 +176,16 @@ begin
   Result := false;//(untrap_errors() = 0);
 end;
 
+{*******************************************************************
+*  TWidgetTrayIcon.InitWM ()
+*
+*  DESCRIPTION:    Initializes the Window Manager hints
+*
+*  PARAMETERS:
+*
+*  RETURNS:        Nothing
+*
+*******************************************************************}
 procedure TWidgetTrayIcon.InitWM;
 var
   // set the class hint
@@ -230,17 +237,27 @@ begin
   XSetStandardProperties(fDisplay, fWindow, nil, nil, None, nil, 0, @size_hints);
 end;
 
+{*******************************************************************
+*  TWidgetTrayIcon.AttachIcon ()
+*
+*  DESCRIPTION:    Attachs a icon to the Tray
+*
+*  PARAMETERS:
+*
+*  RETURNS:        Nothing
+*
+*******************************************************************}
 function TWidgetTrayIcon.AttachIcon: TWindow;
 var
-buf: array [0..32] of char;
-selection_atom : TAtom;
-Manager_Window: TWindow;
-old_error: TXErrorHandler;
-data: array [0..3] of longint;
+  buf: array [0..32] of char;
+  selection_atom : TAtom;
+  Manager_Window: TWindow;
+  old_error: TXErrorHandler;
+  data: array [0..3] of longint;
 begin
   old_error := XSetErrorHandler(@TempX11ErrorHandler);
   initWM;
-  //SetMinSize(fIconWidth, fIconHeight);
+
   fScreenID := XScreenNumberOfScreen(fScreen);
   buf :=  PChar('_NET_SYSTEM_TRAY_S' + IntToStr(fScreenID));
 
@@ -262,12 +279,11 @@ begin
 
   if ( manager_window <> None ) then
     send_message(Manager_Window, SYSTEM_TRAY_REQUEST_DOCK, fWindowID, 0, 0);
-  SetMinSize(Icon.Width,Icon.Height);
+  SetMinSize(Icon.Width, Icon.Height);
   XChangeProperty(fDisplay, fWindowID, XInternAtom( fdisplay, '_NET_WM_ICON_GEOMETRY',False),
           TAtom(6), 32, PropModeReplace, @data, 4);
-//   XResizeWindow(fDisplay, fWindowID, 22, 22);
+//  XResizeWindow(fDisplay, fWindowID, 22, 22);
   XSetErrorHandler(old_error);
-  //fTimer.Enabled := True;
 end;
 
 {*******************************************************************
@@ -286,6 +302,187 @@ begin
 end;
 
 {*******************************************************************
+*  TWidgetTrayIcon.OnEventTimer ()
+*
+*  DESCRIPTION:    Processes X messages
+*
+*  PARAMETERS:     None
+*
+*  RETURNS:        Nothing
+*
+*******************************************************************}
+procedure TWidgetTrayIcon.OnEventTimer(Sender: TObject);
+var
+  ev: TXEvent;
+  sShift: TShiftState;
+  Btn: TMouseButton;
+  BtnPressEv: PXButtonPressedEvent;
+  BtnReleaseEv : PXButtonReleasedEvent;
+  MouseMotionEv: PXMotionEvent;
+  ResizeEv : PXResizeRequestEvent;
+  ClientEv: PXClientMessageEvent;
+begin
+  if (fDisplay = nil) then Exit;
+
+  while XCheckIfEvent(fDisplay, @ev, @ProcessEvent, nil) do
+  begin
+    sShift := [];
+    
+    case ev._type of
+      ButtonRelease:
+      begin
+        BtnReleaseEv := PXButtonReleasedEvent(@ev);
+        case BtnReleaseEv^.button of
+         1:
+         begin
+           if Assigned(OnClick) then OnClick(Self);
+           if Assigned(OnMouseUp) then
+            OnMouseUp(Self, mbLeft, [], Round(BtnReleaseEv^.X), Round(BtnReleaseEv^.Y));
+         end;
+
+         2: if Assigned(OnMouseUp) then
+             OnMouseUp(Self, mbMiddle, [], Round(BtnReleaseEv^.X), Round(BtnReleaseEv^.Y));
+
+         3:
+         begin
+           if Assigned(OnMouseUp) then
+            OnMouseUp(Self, mbRight, [], Round(BtnReleaseEv^.X), Round(BtnReleaseEv^.Y));
+           if Assigned(PopUpMenu) then
+            PopUpMenu.PopUp(Mouse.CursorPos.X, Mouse.CursorPos.Y);
+         end;
+        end;
+      end;
+      ButtonPress:
+      begin
+        BtnPressEv := PXButtonPressedEvent(@ev);
+        case BtnPressEv^.button of
+          1: if Assigned(OnMouseUp) then
+             OnMouseDown(Self, mbLeft, [], Round(BtnPressEv^.X), Round(BtnPressEv^.Y));
+
+          2: if Assigned(OnMouseUp) then
+             OnMouseDown(Self, mbMiddle, [], Round(BtnPressEv^.X), Round(BtnPressEv^.Y));
+
+          3:
+          begin
+            if Assigned(OnMouseUp) then
+             OnMouseDown(Self, mbRight, [], Round(BtnPressEv^.X), Round(BtnPressEv^.Y));
+            if Assigned(PopUpMenu) then
+             PopUpMenu.PopUp(BtnPressEv^.x_root, BtnPressEv^.y_root);
+          end;
+        end;
+      end;
+      Expose, GraphicsExpose, VisibilityNotify, VisibilityUnobscured, VisibilityPartiallyObscured:
+      begin
+        Repaint;
+      end;
+{      EnterNotify:
+      begin
+        if Assigned(MouseEnter) then MouseEnter(Self);
+      end;
+      LeaveNotify:
+      begin
+        if Assigned(MouseLeave) then MouseLeave(Self);
+      end;}
+      MotionNotify:
+      begin
+        MouseMotionEv := PXMotionEvent(@ev);
+        
+        if Button1Mask in [MouseMotionEv^.state] then sShift += [ssLeft];
+        if Button2Mask in [MouseMotionEv^.state] then sShift += [ssMiddle];
+        if Button3Mask in [MouseMotionEv^.state] then sShift += [ssRight];
+
+        if Assigned(OnMouseMove) then
+          OnMouseMove(Self, sShift, Round(MouseMotionEv^.X), Round(MouseMotionEv^.Y));
+      end;
+      ResizeRequest:
+      begin
+        ResizeEv := PXResizeRequestEvent(@ev);
+        fWidth := ResizeEv^.width;
+        fHeight := ResizeEv^.height;
+
+        if fImage <> nil then
+        begin
+          XClearWindow(fDisplay,fWindowID);
+          XFree(fImage);
+          fImage := nil;
+        end;
+        
+        if vVisible then Repaint;
+      end;
+      CLientMessage:
+      begin
+        ClientEv := PXClientMessageEvent(@Ev);
+      end;
+    else
+//      Writeln('Unprocessed X11 event for the tray icon: ', ev._type);
+    end;
+  end;
+end;
+
+{*******************************************************************
+*  TWidgetTrayIcon.RePaint ()
+*
+*  DESCRIPTION:    Paints the icon
+*
+*  PARAMETERS:     None
+*
+*  RETURNS:        Nothing
+*
+*******************************************************************}
+procedure TWidgetTrayIcon.RePaint;
+
+  function SwapColor(Color: TColor): TColor;
+  var
+    fcolor: Array [0..3] of byte;
+    tmp: byte;
+  begin
+    move(color, fcolor, sizeof(fcolor));
+    tmp := fcolor[0];
+    fcolor[0] := fcolor[2];
+    fcolor[2] := tmp;
+    result := TColor(fColor);
+  end;
+
+var
+  bitmap_pad: integer;
+  Pixel: TColor;
+  x,y: Integer;
+  fTop, fLeft: Integer;
+begin
+  if (fImage = nil) then
+  begin
+    if fDepth > 16 then bitmap_pad := 32
+    else if fDepth > 8 then bitmap_pad := 16
+    else bitmap_pad := 8;
+    fImage := XCreateImage(fDisplay, fVisual, fDepth, ZPixmap, 0, nil,
+                                    34, 34, bitmap_pad, 0);
+    fImage^.data := AllocMem(fImage^.bytes_per_line * fHeight * 4);
+    fleft := 0;
+    ftop := 0;
+    if fWidth > Icon.Width then fLeft := (fWidth - Icon.Width) div 2;
+    if fHeight > Icon.Height then fTop := (fHeight- Icon.Height) div 2;
+    for Y := 0 to fHeight do
+    begin
+      for X := 0 to fwidth do
+        begin
+         // Causes an error in gdk_colormap_get_visual
+         if (y-ftop > Icon.Height)
+         or (x-fleft > Icon.Width)
+         or (X < fLeft) or (X > fLeft + fWidth)
+         or (Y < fTop) or (Y > fTop + fHeight)
+         then
+           pixel := SwapColor(Icon.TransparentColor)
+         else
+            pixel := SwapColor(Icon.Canvas.Pixels[x-fLeft, y-fTop]);
+
+         XPutPixel(fImage, X,  Y, (pixel));
+       end;
+    end;
+  end;
+  XPutImage(fDisplay, fDrawable, gc, fImage, 0, 0, 0, 0, fWidth, fHeight);
+end;
+
+{*******************************************************************
 *  TWidgetTrayIcon.Hide ()
 *
 *  DESCRIPTION:    Hides the main tray icon of the program
@@ -300,6 +497,13 @@ begin
   Result := False;
 
   if not vVisible then Exit;
+
+  fTimer.OnTimer := nil;
+  fTimer.Enabled := False;
+  fTimer.Free;
+
+  XFree(fImage);
+  fImage := nil;
 
   if fWindowID <> 0 then XDestroyWindow(fDisplay, fWindowID);
   fWindowID := 0;
@@ -327,25 +531,27 @@ begin
   Result := False;
 
   if vVisible then Exit;
+  
+  { Timer to process messages }
 
-//  CreateForm(0);
+  fTimer := TTimer.Create(fOwner);
+  fTimer.Interval := 10;
+  fTimer.OnTimer := @OnEventTimer;
+  fTimer.Enabled := True;
+
+  { Painting code }
+
+  fWidth := 24;
+  fHeight := 24;
+  fImage := nil;
+
+  { Creates the tray window }
 
   SetEmbedded;
-
-{  GTK_WIDGET_SET_FLAGS(PGtkWidget(GtkForm.Handle),GTK_VISIBLE);
-  GTK_WIDGET_SET_FLAGS(PGtkWidget(GtkForm.Handle),GTK_MAPPED);
-
-  GtkForm.Width := 22; //needed for gnome
-  GtkForm.Height := 22;
-  SetMinSize(Icon.Width, Icon.Height);
-
-  GtkForm.OnMouseDown := Self.OnMouseDown;
-  GtkForm.OnMouseMove := Self.OnMouseMove;
-  GtkForm.OnMouseUp := Self.OnMouseUp;
-  GtkForm.OnClick := Self.OnClick;
-  GtkForm.OnPaint := PaintForm;
-  GtkForm.PopupMenu := Self.PopUpMenu;
-  GtkForm.Hint := Self.Hint;}
+  
+  { needed for gnome }
+  
+//  SetMinSize(22, 22);
 
   fEmbedded := True;
 

@@ -48,20 +48,28 @@ uses
 {$endif}
 {$ifdef UNIX}
 
-  {$ifdef LCLGtk}
-    wsgtktrayicon,
-  {$endif}
+  {$ifdef DARWIN}
+  
+    wscarbontrayicon,
+    
+  {$else}
 
-  {$ifdef LCLGnome}
-    wsgtktrayicon,
-  {$endif}
+    {$ifdef LCLGtk}
+      wsgtktrayicon,
+    {$endif}
 
-  {$ifdef LCLGtk2}
-    wsgtk2trayicon,
-  {$endif}
+    {$ifdef LCLGnome}
+      wsgtktrayicon,
+    {$endif}
 
-  {$ifdef LCLQt}
-    wsx11trayicon,
+    {$ifdef LCLGtk2}
+      wsgtk2trayicon,
+    {$endif}
+
+    {$ifdef LCLQt}
+      wsx11trayicon,
+    {$endif}
+  
   {$endif}
 
 {$endif}
@@ -79,21 +87,7 @@ type
     published
   end;
 
-var
-  vwsTrayIcon: TWidgetTrayIcon;
-  vwsTrayIconCreated: Boolean;
-
 implementation
-
-initialization
-
-  vwsTrayIconCreated := False;
-  vwsTrayIcon := TWidgetTrayIcon.Create;
-  vwsTrayIconCreated := True;
-
-finalization
-
-  vwsTrayIcon.Free;
 
 end.
 

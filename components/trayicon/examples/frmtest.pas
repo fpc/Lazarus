@@ -27,7 +27,7 @@ uses
 {$ifdef fpc}
   LResources,
 {$endif}
-  Forms, Controls, Graphics, Dialogs, Buttons, StdCtrls;
+  Forms, Controls, Graphics, Dialogs, Buttons, StdCtrls, Menus, TrayIcon;
 
 type
 
@@ -37,6 +37,10 @@ type
     Button1: TButton;
     Button2: TButton;
     Button3: TButton;
+    MenuItem1: TMenuItem;
+    MenuItem2: TMenuItem;
+    MenuItem3: TMenuItem;
+    PopupMenu: TPopupMenu;
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
@@ -58,11 +62,9 @@ var
 
 implementation
 
-uses
-{$ifdef MSWindows}
- Windows,
+{$ifdef Windows}
+uses Windows;
 {$endif}
- TrayIcon;
 
 { TForm1 }
 
@@ -98,7 +100,7 @@ const
   IDI_ICON1         = 101;
   IDI_ICON2         = 115;
 begin
-{$ifdef MSWindows}
+{$ifdef Windows}
   SystrayIcon.Icon.Handle := LoadIcon(hInstance, MAKEINTRESOURCE(IDI_ICON1));
 
 //  Loading from a file should also work
@@ -111,7 +113,10 @@ begin
   SystrayIcon.Hint := 'my tool tip';
 
   SystrayIcon.OnClick := HandleClick;
+  
 //  SystrayIcon.OnPaint := DoPaint;
+
+  SystrayIcon.PopUpMenu := PopupMenu;
 end;
 
 procedure TForm1.HandleClick(Sender: TObject);

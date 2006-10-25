@@ -199,7 +199,11 @@ end;
 *******************************************************************}
 function button_release_cb(widget: PGtkWidget; event: PGdkEventButton;
  user_data: gpointer): gboolean; cdecl;
+var
+  vwsTrayIcon: TWSTrayIcon;
 begin
+  vwsTrayIcon := TWSTrayIcon(user_data);
+
   Result := False;
   
   case event^.button of
@@ -211,15 +215,10 @@ begin
     end;
     
     2: if Assigned(vwsTrayIcon.OnMouseUp) then
-        vwsTrayIcon.OnMouseUp(vwsTrayIcon, mbRight, [], Round(event^.X), Round(event^.Y));
+        vwsTrayIcon.OnMouseUp(vwsTrayIcon, mbMiddle, [], Round(event^.X), Round(event^.Y));
 
-    3:
-    begin
-      if Assigned(vwsTrayIcon.OnMouseUp) then
-       vwsTrayIcon.OnMouseUp(vwsTrayIcon, mbRight, [], Round(event^.X), Round(event^.Y));
-      if Assigned(vwsTrayIcon.PopUpMenu) then
-       vwsTrayIcon.PopUpMenu.PopUp(Mouse.CursorPos.X, Mouse.CursorPos.Y);
-    end;
+    3: if Assigned(vwsTrayIcon.OnMouseUp) then
+        vwsTrayIcon.OnMouseUp(vwsTrayIcon, mbRight, [], Round(event^.X), Round(event^.Y));
   end;
 end;
 
@@ -235,7 +234,11 @@ end;
 *******************************************************************}
 function button_press_cb(widget: PGtkWidget; event: PGdkEventButton;
  user_data: gpointer): gboolean; cdecl;
+var
+  vwsTrayIcon: TWSTrayIcon;
 begin
+  vwsTrayIcon := TWSTrayIcon(user_data);
+
   Result := False;
 
   if (event^._type = GDK_2BUTTON_PRESS) and Assigned(vwsTrayIcon.OnDblClick) then
@@ -247,10 +250,15 @@ begin
           vwsTrayIcon.OnMouseDown(vwsTrayIcon, mbLeft, [], Round(event^.X), Round(event^.Y));
 
       2: if Assigned(vwsTrayIcon.OnMouseUp) then
-         vwsTrayIcon.OnMouseDown(vwsTrayIcon, mbRight, [], Round(event^.X), Round(event^.Y));
+         vwsTrayIcon.OnMouseDown(vwsTrayIcon, mbMiddle, [], Round(event^.X), Round(event^.Y));
 
-      3: if Assigned(vwsTrayIcon.OnMouseUp) then
-          vwsTrayIcon.OnMouseDown(vwsTrayIcon, mbRight, [], Round(event^.X), Round(event^.Y));
+      3:
+      begin
+        if Assigned(vwsTrayIcon.OnMouseUp) then
+         vwsTrayIcon.OnMouseDown(vwsTrayIcon, mbRight, [], Round(event^.X), Round(event^.Y));
+        if Assigned(vwsTrayIcon.PopUpMenu) then
+         vwsTrayIcon.PopUpMenu.PopUp(Mouse.CursorPos.X, Mouse.CursorPos.Y);
+      end;
     end;
   end;
 end;
@@ -266,7 +274,11 @@ end;
 *
 *******************************************************************}
 function popup_cb(widget: PGtkWidget; user_data: gpointer): Boolean; cdecl;
+var
+  vwsTrayIcon: TWSTrayIcon;
 begin
+  vwsTrayIcon := TWSTrayIcon(user_data);
+
   Result := True;
 
   if Assigned(vwsTrayIcon.PopUpMenu) then
@@ -284,7 +296,11 @@ end;
 *
 *******************************************************************}
 function motion_cb(widget: PGtkWidget; event: PGdkEventMotion; user_data: gpointer): Boolean; cdecl;
+var
+  vwsTrayIcon: TWSTrayIcon;
 begin
+  vwsTrayIcon := TWSTrayIcon(user_data);
+
   Result := False;
 
   if Assigned(vwsTrayIcon.OnMouseMove) then
@@ -330,15 +346,15 @@ begin
   
   gtk_widget_add_events(GtkForm, GDK_ALL_EVENTS_MASK);
 
-  g_signal_connect(GtkForm, 'realize', TGCallback(@realize_cb), nil);
+  g_signal_connect(GtkForm, 'realize', TGCallback(@realize_cb), Self);
 
-  g_signal_connect(GtkForm, 'popup-menu', TGCallback(@popup_cb), nil);
+  g_signal_connect(GtkForm, 'popup-menu', TGCallback(@popup_cb), Self);
 
-  g_signal_connect(GtkForm, 'motion-notify-event', TGCallback(@motion_cb), nil);
+  g_signal_connect(GtkForm, 'motion-notify-event', TGCallback(@motion_cb), Self);
 
-  g_signal_connect(GtkForm, 'button-press-event', TGCallback(@button_press_cb), nil);
+  g_signal_connect(GtkForm, 'button-press-event', TGCallback(@button_press_cb), Self);
 
-  g_signal_connect(GtkForm, 'button-release-event', TGCallback(@button_release_cb), nil);
+  g_signal_connect(GtkForm, 'button-release-event', TGCallback(@button_release_cb), Self);
 
   {*******************************************************************
   *  Draws the icon

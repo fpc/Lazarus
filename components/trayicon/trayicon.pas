@@ -48,6 +48,7 @@ type
     vOnPaint, vOnClick, vOnDblClick: TNotifyEvent;
     vOnMouseDown, vOnMouseUp: TMouseEvent;
     vOnMouseMove: TMouseMoveEvent;
+    vwsTrayIcon: TWSTrayIcon;
     function GetCanvas: TCanvas;
     procedure SetVisible(Value: Boolean);
   protected
@@ -102,6 +103,8 @@ begin
   vIcon := TIcon.Create;
   
   vShowIcon := True;
+
+  vWSTrayIcon := TWSTrayIcon.Create;
 end;
 
 {*******************************************************************
@@ -117,6 +120,8 @@ end;
 destructor TTrayIcon.Destroy;
 begin
   vIcon.Free;
+
+  vwsTrayIcon.Free;
 
   inherited Destroy;
 end;
@@ -222,7 +227,7 @@ end;
 
 procedure Register;
 begin
-  RegisterComponents('Additional',[TTrayIcon]);
+  RegisterComponents('Additional', [TTrayIcon]);
 end;
 
 initialization
