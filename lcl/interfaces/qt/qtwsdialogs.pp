@@ -30,7 +30,7 @@ uses
   // Libs
   qt4, qtobjects, qtwidgets,
   // LCL
-  SysUtils, Classes, Dialogs, Controls,
+  SysUtils, Classes, Dialogs, Controls, Forms,
   // Widgetset
   WSDialogs, WSLCLClasses;
 
@@ -145,10 +145,13 @@ begin
    ------------------------------------------------------------------------------}
   if ACommonDialog.Owner is TWinControl then
    Parent := TQtWidget(TWinControl(ACommonDialog.Owner).Handle).Widget
+  else if Assigned(Application.MainForm) then
+   Parent := TQtWidget(Application.MainForm.Handle).Widget
   else Parent := nil;
 
   ReturnText := '';
   TmpFilter := '';
+  selectedFilter := '';
   
   Caption := UTF8Decode(ACommonDialog.Title);
 
@@ -188,7 +191,7 @@ begin
 
     ParserState := 0;
     Position := 1;
-      
+
     for i := 1 to Length(FileDialog.Filter) do
     begin
       if Copy(FileDialog.Filter, i, 1) = '|' then
@@ -196,14 +199,14 @@ begin
         ParserState := ParserState + 1;
 
         if ParserState = 1 then
-         TmpFilter := TmpFilter + Copy(FileDialog.Filter, Position, i - Position) + ' '
+         TmpFilter := TmpFilter + Copy(FileDialog.Filter, Position, i - Position)
         else if ParserState = 2 then
         begin
           strExtensions := '(' + Copy(FileDialog.Filter, Position, i - Position) + ')';
           
-          if Pos(strExtensions, TmpFilter) = 0 then TmpFilter := TmpFilter + LineEnding;
+          if Pos(strExtensions, TmpFilter) = 0 then TmpFilter := TmpFilter + ' ' + strExtensions;
           
-          TmpFilter := TmpFilter + LineEnding;
+          TmpFilter := TmpFilter + ';;';
           
           ParserState := 0;
         end;
@@ -214,23 +217,13 @@ begin
     
     strExtensions := '(' + Copy(FileDialog.Filter, Position, i + 1 - Position) + ')';
 
-    if Pos(strExtensions, TmpFilter) = 0 then TmpFilter := TmpFilter + strExtensions;
+    if Pos(strExtensions, TmpFilter) = 0 then TmpFilter := TmpFilter + ' ' + strExtensions;
+
+    {$ifdef VerboseQt}
+      WriteLn('[TQtWSCommonDialog.ShowModal] Parsed Filter: ', TmpFilter);
+    {$endif}
 
     Filter := UTF8Decode(TmpFilter);
-
-    {------------------------------------------------------------------------------
-      Sets the selected filter
-     ------------------------------------------------------------------------------}
-
-    Strings := TStringList.Create;
-    try
-      Strings.Text := Filter;
-      
-      if FileDialog.FilterIndex < Strings.Count then
-       selectedFilter := Strings.Strings[FileDialog.FilterIndex];
-    finally
-      Strings.Free;
-    end;
 
     {------------------------------------------------------------------------------
       Qt doesn´t have most of the dialog options available on LCL
