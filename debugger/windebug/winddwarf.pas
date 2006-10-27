@@ -39,7 +39,8 @@ unit WinDDwarf;
 interface
 
 uses
-  Classes, Types, SysUtils, WinDebugger, WinDDwarfConst, Maps, Math, WinDLoader;
+  Classes, Types, SysUtils, WinDebugger, WinDDwarfConst, Maps, Math,
+  WinDLoader, WindExtra, contnrs;
   
 type
   // compilation unit header
@@ -108,26 +109,91 @@ type
     Children: Boolean;
   end;
   
-  PDwarfScopeInfo = ^TDwarfScopeInfo;
-  TDwarfScopeInfo = record
-    Parent: PDwarfScopeInfo;
-    Prev: PDwarfScopeInfo;
-    Next: PDwarfScopeInfo;
-    Child: PDwarfScopeInfo;
-    Entry: Pointer;
+  { TDwarfScopeInfo }
+
+  TDwarfScopeInfo = class(Tobject)
+  private
+    FParent: TDwarfScopeInfo;
+    FPrev: TDwarfScopeInfo;
+    FNext: TDwarfScopeInfo;
+    FChild: TDwarfScopeInfo;
+    FChildValid: Boolean; // set is the child is parsed
+    FEntry: Pointer;
+    procedure SetChild(const AValue: TDwarfScopeInfo);
+    procedure SetNext(const AValue: TDwarfScopeInfo);
+  protected
+  public
+    constructor Create(AEntry: Pointer);
+    destructor Destroy; override;
+    property Parent: TDwarfScopeInfo read FParent;
+    property Prev: TDwarfScopeInfo read FPrev;
+    property Next: TDwarfScopeInfo read FNext write SetNext;
+    property Child: TDwarfScopeInfo read FChild write SetChild;
+    property ChildValid: Boolean read FChildValid;
+    property Entry: Pointer read FEntry;
   end;
 
+  TDwarfCompilationUnit = class;
+
+  { TDwarfLineInfoStateMachine }
+
+  TDwarfLineInfoStateMachine = class(TObject)
+  private
+    FOwner: TDwarfCompilationUnit;
+    FLineInfoPtr: Pointer;
+    FMaxPtr: Pointer;
+    FEnded: Boolean;
+
+    FAddress: QWord;
+    FFileName: String;
+    FLine: Cardinal;
+    FColumn: Cardinal;
+    FIsStmt: Boolean;
+    FBasicBlock: Boolean;
+    FEndSequence: Boolean;
+    FPrologueEnd: Boolean;
+    FEpilogueBegin: Boolean;
+    FIsa: QWord;
+    
+    procedure SetFileName(AIndex: Cardinal);
+  protected
+  public
+    constructor Create(AOwner: TDwarfCompilationUnit; ALineInfoPtr, AMaxPtr: Pointer);
+    function Clone: TDwarfLineInfoStateMachine;
+    function NextLine: Boolean;
+    procedure Reset;
+  
+    property Address: QWord read FAddress;
+    property FileName: String read FFileName;
+    property Line: Cardinal read FLine;
+    property Column: Cardinal read FColumn;
+    property IsStmt: Boolean read FIsStmt;
+    property BasicBlock: Boolean read FBasicBlock;
+    property EndSequence: Boolean read FEndSequence;
+    property PrologueEnd: Boolean read FPrologueEnd;
+    property EpilogueBegin: Boolean read FEpilogueBegin;
+    property Isa: QWord read FIsa;
+    
+    property Ended: Boolean read FEnded;
+  end;
+
+  PDwarfAddressInfo = ^TDwarfAddressInfo;
   TDwarfAddressInfo = record
-    Scope: PDwarfScopeInfo;
+    Scope: TDwarfScopeInfo;
     StartPC: QWord;
     EndPC: QWord;
-    LineInfo: Pointer;
+    StateMachine: TDwarfLineInfoStateMachine; // set if info found
     Name: PChar;
   end;
 
-
-  TDwarfEntryLocationFlag = (elfAttribList, elfFirstChild, elfNextSibling);
-  TDwarfEntryLocationFlags = set of TDwarfEntryLocationFlag;
+  TDwarfLocateEntryFlag = (
+    lefCreateAttribList,
+    lefContinuable,  // forces the located scope or the startscope to be contuniable
+                     // meaning that tree traversion can continue from a scope
+    lefSearchChild,
+    lefSearchSibling // search toplevel siblings
+  );
+  TDwarfLocateEntryFlags = set of TDwarfLocateEntryFlag;
 
   { TDwarfCompilationUnit }
 
@@ -147,7 +213,6 @@ type
     // ------
     
     FInfoData: Pointer;
-    FStatementList: Pointer;
     FFileName: String;
     FIdentifierCase: Integer;
 
@@ -159,17 +224,38 @@ type
     FAbbrevIndex: Integer;
     FLastAbbrev: Cardinal;
     FLastAbbrevPtr: Pointer;
+
+    FLineInfo: record
+      Header: Pointer;
+      DataStart: Pointer;
+      DataEnd: Pointer;
+
+      Valid: Boolean;
+      Addr64: Boolean;
+      MinimumInstructionLength: Byte;
+      DefaultIsStmt: Boolean;
+      LineBase: ShortInt;
+      LineRange: Byte;
+      StandardOpcodeLengths: array of Byte; //record end; {array[1..OpcodeBase-1] of Byte}
+      Directories: TStringList;
+      FileNames: TStringList;
+      // the line info is build incrementy when needed
+      StateMachine: TDwarfLineInfoStateMachine;
+      StateMachines: TFPObjectList; // list of state machines to be freed
+    end;
     
     FAddressMap: TMap;
+    FAddressMapBuild: Boolean;
     FMinPC: QWord;  // the min and max PC value found in this unit.
     FMaxPC: QWord;  //
     FScope: TDwarfScopeInfo;
     
-    procedure BuildAddessMap(AScope: PDwarfScopeInfo);
+    procedure BuildAddessMap(AScope: TDwarfScopeInfo);
+    procedure BuildLineInfo(AAddressInfo: PDwarfAddressInfo);
     function  MakeAddress(AData: Pointer): QWord;
     procedure LoadAbbrevs(ANeeded: Cardinal);
   protected
-    function LocateEntry(ATag: Cardinal; AStart: PDwarfScopeInfo; ABuildList: Boolean; out AEntry: PDwarfScopeInfo; out AList: TPointerDynArray): Boolean;
+    function LocateEntry(ATag: Cardinal; AStartScope: TDwarfScopeInfo; AFlags: TDwarfLocateEntryFlags; out AResultScope: TDwarfScopeInfo; out AList: TPointerDynArray): Boolean;
     function LocateAttribute(AEntry: Pointer; AAttribute: Cardinal; const AList: TPointerDynArray; out AAttribPtr: Pointer; out AForm: Cardinal): Boolean;
 
     function ReadValue(AAttribute: Pointer; AForm: Cardinal; out AValue: Integer): Boolean;
@@ -222,6 +308,31 @@ type
     constructor Create(ACompilationUnit: TDwarfCompilationUnit);
     procedure Decode;
   end;
+  
+  { TDbgDwarfProcSymbol }
+
+  TDbgDwarfProcSymbol = class(TDbgSymbol)
+  private
+    FCU: TDwarfCompilationUnit;
+    FAddress: TDbgPtr;
+    FAddressInfo: PDwarfAddressInfo;
+    FStateMachine: TDwarfLineInfoStateMachine;
+    function StateMachineValid: Boolean;
+  protected
+    function GetChild(AIndex: Integer): TDbgSymbol; override;
+    function GetColumn: Cardinal; override;
+    function GetCount: Integer; override;
+    function GetFile: String; override;
+//    function GetFlags: TDbgSymbolFlags; override;
+    function GetLine: Cardinal; override;
+    function GetParent: TDbgSymbol; override;
+//    function GetReference: TDbgSymbol; override;
+    function GetSize: Integer; override;
+  public
+    constructor Create(ACompilationUnit: TDwarfCompilationUnit; AInfo: PDwarfAddressInfo; AAddress: TDbgPtr);
+    destructor Destroy; override;
+  end;
+
 
   
 type
@@ -256,6 +367,7 @@ type
   public
     constructor Create(ALoader: TDbgImageLoader); override;
     destructor Destroy; override;
+    function FindSymbol(AAddress: TDbgPtr): TDbgSymbol; override;
     function LoadCompilationUnits: Integer;
     function PointerFromRVA(ARVA: QWord): Pointer;
     function PointerFromVA(ASection: TDwarfSection; AVA: QWord): Pointer;
@@ -622,6 +734,118 @@ begin
 end;
 
 
+{ TDbgDwarfSymbol }
+
+constructor TDbgDwarfProcSymbol.Create(ACompilationUnit: TDwarfCompilationUnit; AInfo: PDwarfAddressInfo; AAddress: TDbgPtr);
+begin
+  FAddress := AAddress;
+  FAddressInfo := AInfo;
+  
+  FCU := ACompilationUnit;
+
+  inherited Create(
+    String(FAddressInfo^.Name),
+    skProcedure, //todo: skFunction
+    FAddressInfo^.StartPC
+  );
+
+//BuildLineInfo(
+    
+//   AFile: String = ''; ALine: Integer = -1; AFlags: TDbgSymbolFlags = []; const AReference: TDbgSymbol = nil);
+
+
+end;
+
+destructor TDbgDwarfProcSymbol.Destroy;
+begin
+  FreeAndNil(FStateMachine);
+  inherited Destroy;
+end;
+
+function TDbgDwarfProcSymbol.GetChild(AIndex: Integer): TDbgSymbol;
+begin
+  Result:=inherited GetChild(AIndex);
+end;
+
+function TDbgDwarfProcSymbol.GetColumn: Cardinal;
+begin
+  if StateMachineValid
+  then Result := FStateMachine.Column
+  else Result := inherited GetColumn;
+end;
+
+function TDbgDwarfProcSymbol.GetCount: Integer;
+begin
+  Result:=inherited GetCount;
+end;
+
+function TDbgDwarfProcSymbol.GetFile: String;
+begin
+  if StateMachineValid
+  then Result := FStateMachine.FileName
+  else Result := inherited GetFile;
+end;
+
+function TDbgDwarfProcSymbol.GetLine: Cardinal;
+begin
+  if StateMachineValid
+  then Result := FStateMachine.Line
+  else Result := inherited GetLine;
+end;
+
+function TDbgDwarfProcSymbol.GetParent: TDbgSymbol;
+begin
+  Result:=inherited GetParent;
+end;
+
+function TDbgDwarfProcSymbol.GetSize: Integer;
+begin
+  Result := FAddressInfo^.EndPC - FAddressInfo^.StartPC;
+end;
+
+function TDbgDwarfProcSymbol.StateMachineValid: Boolean;
+var
+  SM1, SM2: TDwarfLineInfoStateMachine;
+begin
+  Result := FStateMachine <> nil;
+  if Result then Exit;
+
+  if FAddressInfo^.StateMachine = nil
+  then begin
+    FCU.BuildLineInfo(FAddressInfo);
+    if FAddressInfo^.StateMachine = nil then Exit;
+  end;
+
+  // we cannot restore a statemachine to its current state
+  // so we shouldn't modify FAddressInfo^.StateMachine
+  // so use clones to navigate
+  SM1 := FAddressInfo^.StateMachine.Clone;
+  if FAddress < SM1.Address
+  then begin
+    // The address we want to find is before the start of this symbol ??
+    SM1.Free;
+    Exit;
+  end;
+  SM2 := FAddressInfo^.StateMachine.Clone;
+
+  repeat
+    if (FAddress = SM1.Address)
+    or not SM2.NextLine
+    or (FAddress < SM2.Address)
+    then begin
+      // found
+      FStateMachine := SM1;
+      SM2.Free;
+      Result := True;
+      Exit;
+    end;
+  until not SM1.NextLine;
+  
+  //if all went well we shouldn't come here
+  SM1.Free;
+  SM2.Free;
+end;
+
 { TDbgDwarf }
 
 constructor TDbgDwarf.Create(ALoader: TDbgImageLoader);
@@ -651,6 +875,63 @@ begin
     TObject(FCompilationUnits[n]).Free;
   FreeAndNil(FCompilationUnits);
   inherited Destroy;
+end;
+
+function TDbgDwarf.FindSymbol(AAddress: TDbgPtr): TDbgSymbol;
+var
+  n: Integer;
+  CU: TDwarfCompilationUnit;
+  Iter: TMapIterator;
+  Info: PDwarfAddressInfo;
+  MinMaxSet: boolean;
+begin
+  Result := nil;
+  for n := 0 to FCompilationUnits.Count - 1 do
+  begin
+    CU := TDwarfCompilationUnit(FCompilationUnits[n]);
+    if not CU.Valid then Continue;
+    MinMaxSet := CU.FMinPC <> CU.FMaxPC;
+    if MinMaxSet and ((AAddress < CU.FMinPC) or (AAddress > CU.FMaxPC))
+    then Continue;
+    
+    CU.BuildAddessMap(CU.FScope);
+
+    Iter := TMapIterator.Create(CU.FAddressMap);
+    try
+      if Iter.EOM
+      then begin
+        if MinMaxSet
+        then Exit //  minmaxset and no procs defined ???
+        else Continue;
+      end;
+
+      if not Iter.Locate(AAddress)
+      then begin
+        if not Iter.BOM
+        then Iter.Previous;
+
+        if Iter.BOM
+        then begin
+          if MinMaxSet
+          then Exit //  minmaxset and no proc @ minpc ???
+          else Continue;
+        end;
+      end;
+      
+      // iter is at the closest defined adress before AAddress
+      Info := Iter.DataPtr;
+      if AAddress > Info^.EndPC
+      then begin
+        if MinMaxSet
+        then Exit //  minmaxset and no proc @ maxpc ???
+        else Continue;
+      end;
+      
+      Result := TDbgDwarfProcSymbol.Create(CU, Iter.DataPtr, AAddress);
+    finally
+      Iter.Free;
+    end;
+  end;
 end;
 
 function TDbgDwarf.GetCompilationUnit(AIndex: Integer): TDwarfCompilationUnit;
@@ -722,57 +1003,393 @@ begin
   Result:= TDwarfVerboseCompilationUnit;
 end;
 
+{ TDwarfScopeInfo }
+
+constructor TDwarfScopeInfo.Create(AEntry: Pointer);
+begin
+  inherited Create;
+  FEntry := AEntry;
+end;
+
+destructor TDwarfScopeInfo.Destroy;
+begin
+  if (FParent <> nil) and (FParent.FChild = Self)
+  then FParent.FChild := FNext;
+
+  if FPrev <> nil
+  then FPrev.FNext := FNext;
+  
+  if FNext <> nil
+  then FNext.FPrev := FPrev;
+  
+  inherited Destroy;
+end;
+
+procedure TDwarfScopeInfo.SetChild(const AValue: TDwarfScopeInfo);
+begin
+  FChild := AValue;
+  FChildValid := True;
+  if FChild = nil then Exit;
+  FChild.FParent := Self;
+end;
+
+procedure TDwarfScopeInfo.SetNext(const AValue: TDwarfScopeInfo);
+begin
+  FNext := AValue;
+  if FNext = nil then Exit;
+  FNext.FPrev := Self;
+  FNext.FParent := FParent;
+end;
+
+{ TDwarfLineInfoStateMachine }
+
+function TDwarfLineInfoStateMachine.Clone: TDwarfLineInfoStateMachine;
+begin
+  Result := TDwarfLineInfoStateMachine.Create(FOwner, FLineInfoPtr, FMaxPtr);
+  Result.FAddress := FAddress;
+  Result.FFileName := FFileName;
+  Result.FLine := FLine;
+  Result.FColumn := FColumn;
+  Result.FIsStmt := FIsStmt;
+  Result.FBasicBlock := FBasicBlock;
+  Result.FEndSequence := FEndSequence;
+  Result.FPrologueEnd := FPrologueEnd;
+  Result.FEpilogueBegin := FEpilogueBegin;
+  Result.FIsa := FIsa;
+  Result.FEnded := FEnded;
+end;
+
+constructor TDwarfLineInfoStateMachine.Create(AOwner: TDwarfCompilationUnit; ALineInfoPtr, AMaxPtr: Pointer);
+begin
+  inherited Create;
+  FOwner := AOwner;
+  FLineInfoPtr := ALineInfoPtr;
+  FMaxPtr := AMaxPtr;
+  Reset;
+end;
+
+function TDwarfLineInfoStateMachine.NextLine: Boolean;
+var
+  pb: PByte absolute FLineInfoPtr;
+  p: Pointer;
+  Opcode: Byte;
+  FileNr: Integer;
+  instrlen: Cardinal;
+  diridx: Cardinal;
+begin
+  Result := False;
+  if FEndSequence
+  then begin
+    Reset;
+  end
+  else begin
+    FBasicBlock := False;
+    FPrologueEnd := False;
+    FEpilogueBegin := False;
+  end;
+  
+  while pb <= FMaxPtr do
+  begin
+    Opcode := pb^;
+    Inc(pb);
+    if Opcode <= Length(FOwner.FLineInfo.StandardOpcodeLengths)
+    then begin
+      // Standard opcode
+      case Opcode of
+        DW_LNS_copy: begin
+          Result := True;
+          Exit;
+        end;
+        DW_LNS_advance_pc: begin
+          Inc(FAddress, ULEB128toOrdinal(pb));
+        end;
+        DW_LNS_advance_line: begin
+          Inc(FLine, SLEB128toOrdinal(pb));
+        end;
+        DW_LNS_set_file: begin
+          SetFileName(ULEB128toOrdinal(pb));
+        end;
+        DW_LNS_set_column: begin
+          FColumn := ULEB128toOrdinal(pb);
+        end;
+        DW_LNS_negate_stmt: begin
+          FIsStmt := not FIsStmt;
+        end;
+        DW_LNS_set_basic_block: begin
+          FBasicBlock := True;
+        end;
+        DW_LNS_const_add_pc: begin
+          Opcode := 255 - Length(FOwner.FLineInfo.StandardOpcodeLengths);
+          if FOwner.FLineInfo.LineRange = 0
+          then Inc(FAddress, Opcode * FOwner.FLineInfo.MinimumInstructionLength)
+          else Inc(FAddress, (Opcode div FOwner.FLineInfo.LineRange) * FOwner.FLineInfo.MinimumInstructionLength);
+        end;
+        DW_LNS_fixed_advance_pc: begin
+          Inc(FAddress, PWord(pb)^);
+          Inc(pb, 2);
+        end;
+        DW_LNS_set_prologue_end: begin
+          FPrologueEnd := True;
+        end;
+        DW_LNS_set_epilogue_begin: begin
+          FEpilogueBegin := True;
+        end;
+        DW_LNS_set_isa: begin
+          FIsa := ULEB128toOrdinal(pb);
+        end;
+        // Extended opcode
+        DW_LNS_extended_opcode: begin
+          instrlen := ULEB128toOrdinal(pb); // instruction length
+
+          case pb^ of
+            DW_LNE_end_sequence: begin
+              FEndSequence := True;
+              Result := True;
+              Exit;
+            end;
+            DW_LNE_set_address: begin
+              if FOwner.FLineInfo.Addr64
+              then FAddress := PQWord(pb+1)^
+              else FAddress := PLongWord(pb+1)^;
+            end;
+            DW_LNE_define_file: begin
+              // don't move pb, it's done at the end by instruction length
+              p := pb;
+              FFileName := String(PChar(p));
+              Inc(p, Length(FFileName) + 1);
+
+              //diridx
+              diridx := ULEB128toOrdinal(p);
+              if diridx < FOwner.FLineInfo.Directories.Count
+              then FFileName := FOwner.FLineInfo.Directories[diridx] + FFileName
+              else FFileName := Format('Unknown dir(%u)', [diridx]) + DirectorySeparator + FFileName;
+              //last modified
+              //ULEB128toOrdinal(p);
+              //length
+              //ULEB128toOrdinal(p));
+            end;
+          else
+            // unknown extendend opcode
+          end;
+          Inc(pb, instrlen);
+        end;
+      else
+        // unknown opcode
+        Inc(pb, FOwner.FLineInfo.StandardOpcodeLengths[Opcode])
+      end;
+      Continue;
+    end;
+
+    // Special opcode
+    Dec(Opcode, Length(FOwner.FLineInfo.StandardOpcodeLengths)+1);
+    if FOwner.FLineInfo.LineRange = 0
+    then begin
+      Inc(FAddress, Opcode * FOwner.FLineInfo.MinimumInstructionLength);
+    end
+    else begin
+      Inc(FAddress, (Opcode div FOwner.FLineInfo.LineRange) * FOwner.FLineInfo.MinimumInstructionLength);
+      Inc(FLine, FOwner.FLineInfo.LineBase + (Opcode mod FOwner.FLineInfo.LineRange));
+    end;
+    Result := True;
+    Exit;
+  end;
+  Result := False;
+  FEnded := True;
+end;
+
+procedure TDwarfLineInfoStateMachine.Reset;
+begin
+  FAddress := 0;
+  SetFileName(1);
+  FLine := 1;
+  FColumn := 0;
+  FIsStmt := FOwner.FLineInfo.DefaultIsStmt;
+  FBasicBlock := False;
+  FEndSequence := False;
+  FPrologueEnd := False;
+  FEpilogueBegin := False;
+  FIsa := 0;
+end;
+
+procedure TDwarfLineInfoStateMachine.SetFileName(AIndex: Cardinal);
+begin
+  if (Aindex > 0) and (AIndex <= FOwner.FLineInfo.FileNames.Count)
+  then FFileName := FOwner.FLineInfo.FileNames[AIndex - 1]
+  else FFileName := Format('Unknown fileindex(%u)', [AIndex]);
+end;
+
 { TDwarfCompilationUnit }
 
-procedure TDwarfCompilationUnit.BuildAddessMap(AScope: PDwarfScopeInfo);
+procedure TDwarfCompilationUnit.BuildAddessMap(AScope: TDwarfScopeInfo);
 var
   AttribList: TPointerDynArray;
   Attrib: Pointer;
   Form: Cardinal;
   Info: TDwarfAddressInfo;
-  Scope: PDwarfScopeInfo;
+  Scope: TDwarfScopeInfo;
 begin
-  if AScope = nil then Exit;
-
-  if LocateEntry(DW_TAG_subprogram, AScope, True, Scope, AttribList)
-  then begin
-    Info.Scope := Scope;
-    if LocateAttribute(Scope^.Entry, DW_AT_low_pc, AttribList, Attrib, Form)
+  if FAddressMapBuild then Exit;
+  while AScope <> nil do
+  begin
+    if LocateEntry(DW_TAG_subprogram, AScope, [lefCreateAttribList, lefContinuable, lefSearchChild], Scope, AttribList)
     then begin
-      ReadValue(Attrib, Form, Info.StartPC);
-
-      if LocateAttribute(Scope^.Entry, DW_AT_name, AttribList, Attrib, Form)
-      then ReadValue(Attrib, Form, Info.Name)
-      else Info.Name := 'undefined';
-
-      if LocateAttribute(Scope^.Entry, DW_AT_high_pc, AttribList, Attrib, Form)
-      then ReadValue(Attrib, Form, Info.EndPC)
-      else Info.EndPC := Info.StartPC;
-
-      Info.LineInfo := nil; // filled in when the first time needed
-      if Info.StartPC <> 0
+      Info.Scope := Scope;
+      if LocateAttribute(Scope.Entry, DW_AT_low_pc, AttribList, Attrib, Form)
       then begin
-        if FAddressMap.HasId(Info.StartPC)
-        then WriteLN('WARNING duplicate start adress: ', IntToHex(Info.StartPC, FAddressSize * 2))
-        else FAddressMap.Add(Info.StartPC, Info);
+        ReadValue(Attrib, Form, Info.StartPC);
+
+        if LocateAttribute(Scope.Entry, DW_AT_high_pc, AttribList, Attrib, Form)
+        then ReadValue(Attrib, Form, Info.EndPC)
+        else Info.EndPC := Info.StartPC;
+
+        if LocateAttribute(Scope.Entry, DW_AT_name, AttribList, Attrib, Form)
+        then ReadValue(Attrib, Form, Info.Name)
+        else Info.Name := 'undefined';
+
+        Info.StateMachine := nil;
+        if Info.StartPC <> 0
+        then begin
+          if FAddressMap.HasId(Info.StartPC)
+          then WriteLN('WARNING duplicate start adress: ', IntToHex(Info.StartPC, FAddressSize * 2))
+          else FAddressMap.Add(Info.StartPC, Info);
+        end;
       end;
+
+      // TAG found, try continue with the found scope
+      AScope := Scope.Child;
+      if AScope <> nil then Continue;
+    end
+    else begin
+      Scope := AScope;
     end;
-  end
-  else begin
-    Scope := AScope;
+
+    while (Scope.Next = nil) and (Scope.Parent <> nil) do Scope := Scope.Parent;
+    AScope := Scope.Next;
   end;
   
-  BuildAddessMap(Scope^.Child);
-  BuildAddessMap(Scope^.Next);
+  FAddressMapBuild := True;
+end;
+
+procedure TDwarfCompilationUnit.BuildLineInfo(AAddressInfo: PDwarfAddressInfo);
+var
+  Iter: TMapIterator;
+  Info: PDwarfAddressInfo;
+  SM: TDwarfLineInfoStateMachine absolute FLineInfo.StateMachine;
+begin
+  if AAddressInfo = nil then Exit;
+  if AAddressInfo^.StateMachine <> nil then Exit;
+  if SM.Ended then Exit;
+
+  Iter := TMapIterator.Create(FAddressMap);
+
+  while SM.NextLine do
+  begin
+    if Iter.Locate(SM.Address)
+    then begin
+      // set lineinfo
+      Info := Iter.DataPtr;
+      if Info^.StateMachine = nil
+      then begin
+        Info^.StateMachine := SM.Clone;
+        FLineInfo.StateMachines.Add(Info^.StateMachine);
+      end;
+      if Info = AAddressInfo
+      then Break;
+    end;
+  end;
+    
+  Iter.Free;
 end;
 
 constructor TDwarfCompilationUnit.Create(AOwner: TDbgDwarf; ADataOffset: QWord; ALength: QWord; AVersion: Word; AAbbrevOffset: QWord; AAddressSize: Byte; AIsDwarf64: Boolean);
+  procedure FillLineInfo(AData: Pointer);
+  var
+    LNP32: PDwarfLNPHeader32 absolute AData;
+    LNP64: PDwarfLNPHeader64 absolute AData;
+    Info: PDwarfLNPInfoHeader;
+
+    UnitLength: QWord;
+    Version: Word;
+    HeaderLength: QWord;
+    Name: PChar;
+    diridx: Cardinal;
+    S: String;
+    pb: PByte absolute Name;
+  begin
+    FLineInfo.Header := AData;
+    if LNP64^.Signature = DWARF_HEADER64_SIGNATURE
+    then begin
+      FLineInfo.Addr64 := True;
+      UnitLength := LNP64^.UnitLength;
+      FLineInfo.DataEnd := Pointer(@LNP64^.Version) + UnitLength;
+      Version := LNP64^.Version;
+      HeaderLength := LNP64^.HeaderLength;
+      Info := @LNP64^.Info;
+    end
+    else begin
+      FLineInfo.Addr64 := False;
+      UnitLength := LNP32^.UnitLength;
+      FLineInfo.DataEnd := Pointer(@LNP32^.Version) + UnitLength;
+      Version := LNP32^.Version;
+      HeaderLength := LNP32^.HeaderLength;
+      Info := @LNP32^.Info;
+    end;
+    FLineInfo.DataStart := PByte(Info) + HeaderLength;
+
+
+    FLineInfo.MinimumInstructionLength := Info^.MinimumInstructionLength;
+    FLineInfo.DefaultIsStmt := Info^.DefaultIsStmt <> 0;
+    FLineInfo.LineBase := Info^.LineBase;
+    FLineInfo.LineRange := Info^.LineRange;
+
+    // opcodelengths
+    SetLength(FLineInfo.StandardOpcodeLengths, Info^.OpcodeBase - 1);
+    Move(Info^.StandardOpcodeLengths, FLineInfo.StandardOpcodeLengths[0], Info^.OpcodeBase - 1);
+
+    // directories & filenames
+    FLineInfo.Directories := TStringList.Create;
+    FLineInfo.Directories.Add(''); // current dir
+    Name := @Info^.StandardOpcodeLengths;
+    Inc(Name, Info^.OpcodeBase-1);
+    // directories
+    while Name^ <> #0 do
+    begin
+      S := String(Name);
+      Inc(pb, Length(S)+1);
+      FLineInfo.Directories.Add(S + DirectorySeparator);
+    end;
+    Inc(Name);
+
+    // filenames
+    FLineInfo.FileNames := TStringList.Create;
+    while Name^ <> #0 do
+    begin
+      S := String(Name);
+      Inc(pb, Length(S)+1);
+      //diridx
+      diridx := ULEB128toOrdinal(pb);
+      if diridx < FLineInfo.Directories.Count
+      then S := FLineInfo.Directories[diridx] + S
+      else S := Format('Unknown dir(%u)', [diridx]) + DirectorySeparator + S;
+      FLineInfo.FileNames.Add(S);
+      //last modified
+      ULEB128toOrdinal(pb);
+      //length
+      ULEB128toOrdinal(pb);
+    end;
+
+    FLineInfo.StateMachine := TDwarfLineInfoStateMachine.Create(Self, FLineInfo.DataStart, FLineInfo.DataEnd);
+    FLineInfo.StateMachines := TFPObjectList.Create(True);
+
+    FLineInfo.Valid := True;
+  end;
+
 var
   AttribList: TPointerDynArray;
   Attrib: Pointer;
   Form: Cardinal;
-  StatementList, Ofs: QWord;
-  Scope: PDwarfScopeInfo;
+  StatementListOffs, Offs: QWord;
+  Scope: TDwarfScopeInfo;
 begin
   inherited Create;
   FOwner := AOwner;
@@ -783,11 +1400,11 @@ begin
   // check for address as offset
   if FAbbrevOffset > FOwner.FSections[dsAbbrev].Size
   then begin
-    Ofs := FAbbrevOffset - FOwner.FImageBase - FOwner.FSections[dsAbbrev].VirtualAdress;
-    if (Ofs >= 0) and (Ofs < FOwner.FSections[dsAbbrev].Size)
+    Offs := FAbbrevOffset - FOwner.FImageBase - FOwner.FSections[dsAbbrev].VirtualAdress;
+    if (Offs >= 0) and (Offs < FOwner.FSections[dsAbbrev].Size)
     then begin
-      WriteLN('WARNING: Got Abbrev ofset as address, adjusting..');
-      FAbbrevOffset := Ofs;
+      WriteLN('WARNING: Got Abbrev offset as address, adjusting..');
+      FAbbrevOffset := Offs;
     end;
   end;
 
@@ -803,61 +1420,80 @@ begin
   // use internally 64 bit target pointer
   FAddressMap := TMap.Create(itu8, SizeOf(TDwarfAddressInfo));
 
-  FScope.Entry := FInfoData;
+  FScope := TDwarfScopeInfo.Create(FInfoData);
   // retrieve some info about this unit
-  if not LocateEntry(DW_TAG_compile_unit, @FScope, True, Scope, AttribList)
+  if not LocateEntry(DW_TAG_compile_unit, FScope, [lefCreateAttribList, lefSearchChild], Scope, AttribList)
   then begin
     WriteLN('WARNING compilation unit has no compile_unit tag');
     Exit;
   end;
   FValid := True;
 
-  if LocateAttribute(Scope^.Entry, DW_AT_name, AttribList, Attrib, Form)
+  if LocateAttribute(Scope.Entry, DW_AT_name, AttribList, Attrib, Form)
   then ReadValue(Attrib, Form, FFileName);
   
-  if not LocateAttribute(Scope^.Entry, DW_AT_identifier_case, AttribList, Attrib, Form)
+  if not LocateAttribute(Scope.Entry, DW_AT_identifier_case, AttribList, Attrib, Form)
   and not ReadValue(Attrib, Form, FIdentifierCase)
   then FIdentifierCase := DW_ID_case_sensitive;
 
-  if LocateAttribute(Scope^.Entry, DW_AT_stmt_list, AttribList, Attrib, Form)
-  and ReadValue(Attrib, Form, StatementList)
-  then FStatementList := FOwner.PointerFromVA(dsLine, StatementList);
-  
+  if LocateAttribute(Scope.Entry, DW_AT_stmt_list, AttribList, Attrib, Form)
+  and ReadValue(Attrib, Form, StatementListOffs)
+  then begin
+    // check for address as offset
+    if StatementListOffs < FOwner.FSections[dsLine].Size
+    then begin
+      FillLineInfo(FOwner.FSections[dsLine].RawData + StatementListOffs);
+    end
+    else begin
+      Offs := StatementListOffs - FOwner.FImageBase - FOwner.FSections[dsLine].VirtualAdress;
+      if (Offs >= 0) and (Offs < FOwner.FSections[dsLine].Size)
+      then begin
+        WriteLN('WARNING: Got Lineinfo offset as address, adjusting..');
+        FillLineInfo(FOwner.FSections[dsLine].RawData + Offs);
+      end;
+    end;
+  end;
 
-  BuildAddessMap(Scope^.Child);
+  if LocateAttribute(Scope.Entry, DW_AT_low_pc, AttribList, Attrib, Form)
+  then ReadValue(Attrib, Form, FMinPC);
+
+  if LocateAttribute(Scope.Entry, DW_AT_high_pc, AttribList, Attrib, Form)
+  then ReadValue(Attrib, Form, FMaxPC);
+  
+  if FMinPC = 0 then FMinPC := FMaxPC;
+  if FMaxPC = 0 then FMAxPC := FMinPC;
+
+//  BuildAddessMap(Scope.Child);
 end;
 
 destructor TDwarfCompilationUnit.Destroy;
-  procedure DisposeScope;
+  procedure FreeScope;
   var
-    Scope, OldScope: PDwarfScopeInfo;
+    Scope, OldScope: TDwarfScopeInfo;
   begin
-    // clear the parent to FScope
-    Scope := FScope.Child;
+    // could have done recursively
+    Scope := FScope;
     while Scope <> nil do
     begin
-      Scope^.Parent := nil;
-      Scope := Scope^.Next;
-    end;
-    // dispose
-    Scope := FScope.Child;
-    while Scope <> nil do
-    begin
-      while Scope^.Child <> nil do Scope := Scope^.Child;
+      while Scope.Child <> nil do Scope := Scope.Child;
       OldScope := Scope;
-      if Scope^.Next = nil
-      then begin
-        Scope := Scope^.Parent;
-        if Scope = nil then Break;
-        Scope^.Child := nil;
-      end
-      else Scope := Scope^.Next;
-      Dispose(OldScope);
+      if Scope.Next = nil
+      then Scope := Scope.Parent
+      else Scope := Scope.Next;
+      OldScope.Free;
     end;
+    FScope := nil;
   end;
+
 begin
-  DisposeScope;
+  FreeScope;
   FreeAndNil(FMap);
+  FreeAndNil(FAddressMap);
+  FreeAndNil(FLineInfo.StateMachines);
+  FreeAndNil(FLineInfo.StateMachine);
+  FreeAndNil(FLineInfo.Directories);
+  FreeAndNil(FLineInfo.FileNames);
+
   inherited Destroy;
 end;
 
@@ -973,104 +1609,35 @@ end;
 //----------------------------------------
 // Params
 //   ATag: a tag to search for
-//   AStart: a startpoint in the data
+//   AStartScope: a startpoint in the data
+//   ABuildList: if set, build the attrib list
+//   ACurrentOnly: if set, process only current entry
+//   AResultScope: the located scope info
 //   AList: an array where pointers to all attribs are stored
-//   AFirstChild: if requested, the first child of this entry
-//   ANextSibling: if requested, the next sibling of this entry
 //----------------------------------------
-function TDwarfCompilationUnit.LocateEntry(ATag: Cardinal; AStart: PDwarfScopeInfo; ABuildList: Boolean; out AEntry: PDwarfScopeInfo; out AList: TPointerDynArray): Boolean;
+function TDwarfCompilationUnit.LocateEntry(ATag: Cardinal; AStartScope: TDwarfScopeInfo; AFlags: TDwarfLocateEntryFlags; out AResultScope: TDwarfScopeInfo; out AList: TPointerDynArray): Boolean;
   procedure SkipLEB(var p: Pointer);
   begin
     while (PByte(p)^ and $80) <> 0 do Inc(p);
     Inc(p);
   end;
+
   procedure SkipStr(var p: Pointer);
   begin
     while PByte(p)^ <> 0 do Inc(p);
     Inc(p);
   end;
-
-var
-  Abbrev, Form: Cardinal;
-  Def: TDwarfAbbrev;
-  idx: Integer;
-  Level: Integer;
-  MaxData: Pointer;
-  P: Pointer;
-  UValue: QWord;
-  Scope, OldScope: PDwarfScopeInfo;
-  BuildList: Boolean; // set once if we need to fill the list
-begin
-  Result := False;
-  BuildList := False;
-  Level := 0;
-  MaxData := FInfoData + FLength;
-  Scope := AStart;
-  while (p <= MaxData) and (Level >= 0) do
+  
+  procedure ParseAttribs(const ADef: TDwarfAbbrev; ABuildList: Boolean; var p: Pointer);
+  var
+    idx: Integer;
+    Form: Cardinal;
+    UValue: QWord;
   begin
-    p := Scope^.Entry;
-    Abbrev := ULEB128toOrdinal(p);
-    if Abbrev = 0
-    then begin
-      Dec(Level);
-
-      // empty temp entry -> remove
-      if Scope^.Prev = nil
-      then Scope^.Parent^.Child := Scope^.Next
-      else Scope^.Prev^.Next := Scope^.Next;
-      
-      OldScope := Scope;
-      Scope := Scope^.Parent;
-      Dispose(OldScope);
-
-      if Level = 0 then Exit;
-      if Scope^.Next <> nil then Continue;
-
-      New(Scope^.Next);
-      Scope^.Next^.Prev := Scope;
-      Scope^.Next^.Parent := Scope^.Parent;
-      Scope := Scope^.Next;
-      Scope^.Child := nil;
-      Scope^.Next := nil;
-      Scope^.Entry := p;
-      Continue;
-    end;
-    
-    if not GetDefinition(Abbrev, Def)
-    then begin
-      WriteLN('Error: Abbrev not found: ', Abbrev);
-      Break;
-    end;
-
-    if not Result
-    then begin
-      Result := (Def.Tag = ATag) and (Level = 0);
-      if Result
-      then begin
-        AEntry := Scope;
-        if ABuildList
-        then begin
-          SetLength(AList, Def.Count);
-          BuildList := True;
-        end
-        else begin
-          AList := nil;
-          if (Scope^.Next <> nil)
-          then Exit;
-        end;
-      end;
-    end;
-
-    if not BuildList and (Scope^.Next <> nil)
-    then begin
-      Scope := Scope^.Next;
-      Continue;
-    end;
-    
-    for idx := Def.Index to Def.Index + Def.Count - 1 do
+    for idx := ADef.Index to ADef.Index + ADef.Count - 1 do
     begin
-      if BuildList
-      then AList[idx - Def.Index] := p;
+      if ABuildList
+      then AList[idx - ADef.Index] := p;
 
       Form := FDefinitions[idx].Form;
       while Form = DW_FORM_indirect do Form := ULEB128toOrdinal(p);
@@ -1144,40 +1711,184 @@ begin
         Break;
       end;
     end;
-    BuildList := False;
-
-    if Def.Children
+  end;
+  
+  function CanExit(AResult: Boolean): Boolean;
+  begin
+    Result := True;
+    if AResult
     then begin
-      Inc(Level);
-      if Scope^.Child = nil
-      then begin
-        New(Scope^.Child);
-        with Scope^.Child^ do
-        begin
-          Parent := Scope;
-          Prev := nil;
-          Next := nil;
-          Child := nil;
-          Entry := p;
-        end;
-      end;
-      Scope := Scope^.Child;
+      if not (lefContinuable in AFlags) then Exit; // ready, so ok.
+      if AResultScope.Child <> nil then Exit; // we have a child so we are continuable
+      if AResultScope.Next <> nil then Exit; // we have a next so we are continuable
     end
     else begin
-      if Scope^.Next = nil
+      if AFlags * [lefSearchSibling, lefSearchChild] = []
       then begin
-        New(Scope^.Next);
-        with Scope^.Next^ do
-        begin
-          Parent := Scope^.Parent;
-          Prev := Scope;
-          Next := nil;
-          Child := nil;
-          Entry := p;
-        end;
+        if not (lefContinuable in AFlags) then Exit; // no furteher search, so ok.
+        if AStartScope.Child <> nil then Exit; // we have a child so we are continuable
+        if AStartScope.Next <> nil then Exit; // we have a next so we are continuable
       end;
-      Scope := Scope^.Next;
     end;
+    Result := False;
+  end;
+
+var
+  Abbrev: Cardinal;
+  Def: TDwarfAbbrev;
+  Level: Integer;
+  MaxData: Pointer;
+  p: Pointer;
+  Scope: TDwarfScopeInfo;
+  BuildList: Boolean; // set once if we need to fill the list
+  Searching: Boolean; // set as long as we need searching for a tag.
+                      // we cannot use result for this, since we might want a topnode search while we need to be continuable
+begin
+  Result := False;
+  if AStartScope = nil then Exit;
+  BuildList := False;
+  Searching := True;
+  Level := 0;
+  MaxData := FInfoData + FLength;
+  Scope := AStartScope;
+  p := Scope.Entry;
+  while (p <= MaxData) and (Level >= 0) do
+  begin
+    p := Scope.Entry;
+    Abbrev := ULEB128toOrdinal(p);
+    if Abbrev = 0
+    then begin
+      Dec(Level);
+      Scope := Scope.Parent;
+      if Scope = nil then Exit;
+
+      if Level < 0 then
+      begin
+        // p is now the entry of the next of the startparent
+        // let's see if we need to set it
+        if not (lefContinuable in AFlags) then Exit;
+        if AStartScope.Parent = nil then Exit;
+        if AStartScope.Parent.Next <> nil then Exit;
+        AStartScope.Parent.Next := TDwarfScopeInfo.Create(p);
+        Exit;
+      end;
+      
+      if Scope.Next = nil
+      then Scope.Next := TDwarfScopeInfo.Create(p);
+//      if Level = 0 then Exit;
+      if CanExit(Result) then Exit;
+      if (Level = 0) and not (lefSearchSibling in AFlags) then Exit;
+
+      Scope := Scope.Next;
+      Continue;
+    end;
+    
+    if not GetDefinition(Abbrev, Def)
+    then begin
+      WriteLN('Error: Abbrev not found: ', Abbrev);
+      Break;
+    end;
+
+    if Searching
+    then begin
+      Result := Def.Tag = ATag;
+      if Result
+      then begin
+        Searching := False;
+        AResultScope := Scope;
+        if lefCreateAttribList in AFlags
+        then begin
+          SetLength(AList, Def.Count);
+          BuildList := True;
+        end
+        else begin
+          AList := nil;
+          if not (lefContinuable in AFlags)
+          then Exit
+        end;
+      end
+      else begin
+        if CanExit(False) then Exit;
+        Searching := (lefSearchChild in AFlags)
+                  or ((level = 0) and (lefSearchSibling in AFlags));
+      end;
+    end;
+
+    if not BuildList
+    then begin
+      // check if we can shortcut the searches
+      if (Scope.Child <> nil)
+      and ((lefSearchChild in AFlags) or (Scope.Next = nil))
+      then begin
+        Inc(Level);
+        Scope := Scope.Child;
+        Continue;
+      end;
+
+      if Scope.Next <> nil
+      then begin
+        // scope.Childvalid is true, otherwise we cant have a next.
+        // So no need to check
+        if lefSearchSibling in AFlags
+        then begin
+          Scope := Scope.Next;
+          Continue;
+        end;
+        if Level = 0 then Exit;
+      end;
+      
+      // bummer, we need to parse our attribs, if we want them or not
+    end;
+    
+    ParseAttribs(Def, BuildList, p);
+    BuildList := False;
+
+    // if we have a result or don't want to search we're done here
+    if CanExit(Result) then Exit;
+
+    // check for shortcuts
+    if [lefContinuable, lefSearchChild] * AFlags <> []
+    then begin
+      if Scope.Child <> nil
+      then begin
+        Inc(Level);
+        Scope := Scope.Child;
+        Continue;
+      end;
+    end
+    else if lefSearchSibling in AFlags
+    then begin
+      if Scope.Next <> nil
+      then begin
+        Scope := Scope.Next;
+        Continue;
+      end;
+    end;
+
+    // Def.children can be set while no children are found
+    // we cannot have a next without a defined child
+    if Def.Children
+    then begin
+      if not Scope.ChildValid
+      then begin
+        if Scope.Child = nil
+        then Scope.Child := TDwarfScopeInfo.Create(p);
+        if CanExit(Result) then Exit;
+      end;
+      Inc(Level);
+      Scope := Scope.Child;
+      Continue;
+    end
+    else begin
+      Scope.Child := nil; // force childvalid to be set
+    end;
+    
+    if Scope.Next = nil
+    then Scope.Next := TDwarfScopeInfo.Create(p);
+    if CanExit(Result) then Exit;
+    if (Level = 0) and not (lefSearchSibling in AFlags) then Exit;
+
+    Scope := Scope.Next;
   end;
 end;
 
@@ -1424,7 +2135,7 @@ procedure TDwarfAbbrevDecoder.Decode;
 var
   Iter: TMapIterator;
   Info: TDwarfAddressInfo;
-  Scope: PDwarfScopeInfo;
+  Scope: TDwarfScopeInfo;
 begin
   // force all abbrevs to be loaded
   FCU.LoadAbbrevs(High(Cardinal));
@@ -1436,11 +2147,11 @@ begin
   begin
     Iter.GetData(Info);
     Write('  ');
-    Scope := Info.Scope^.Parent;
+    Scope := Info.Scope.Parent;
     while Scope <> nil do
     begin
       Write('.');
-      Scope := Scope^.Parent;
+      Scope := Scope.Parent;
     end;
     WriteLN(Info.Name, ': $', IntToHex(Info.StartPC, FCU.FAddressSize * 2), '..$', IntToHex(Info.EndPC, FCU.FAddressSize * 2));
     Iter.Next;
@@ -1981,7 +2692,12 @@ end;
 
 procedure TDwarfStatementDecoder.Decode;
 begin
-  InternalDecode(FCU.FStatementList, FCU.FOwner.FSections[dsInfo].RawData + FCU.FOwner.FSections[dsInfo].Size);
+  if FCU.FLineInfo.Header = nil
+  then begin
+    WriteLN('No lineinfo');
+    Exit;
+  end;
+  InternalDecode(FCU.FLineInfo.Header, FCU.FOwner.FSections[dsInfo].RawData + FCU.FOwner.FSections[dsInfo].Size);
 end;
 
 procedure TDwarfStatementDecoder.InternalDecode(AData: Pointer; AMaxData: Pointer; const AIndent: String);

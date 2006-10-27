@@ -37,7 +37,7 @@ unit FPWDLoop;
 interface
 
 uses
-  Windows, SysUtils, WinDebugger, WinDExtra, WinDisas;
+  Windows, Classes, SysUtils, WinDebugger, WinDExtra, WinDisas;
 
 procedure DebugLoop;
 
@@ -45,7 +45,7 @@ procedure DebugLoop;
 implementation
 
 uses
-  FPWDGlobal, FPWDPEImage, FPWDType;
+  FPWDGlobal, FPWDPEImage;
 
 var
   MDebugEvent: TDebugEvent;
@@ -187,9 +187,11 @@ begin
 
   if GetProcess(AEvent.dwProcessId, Proc)
   and Proc.GetLib(AEvent.LoadDll.hFile, Lib)
+  and (GImageInfo <> iiNone)
   then begin
     WriteLN('Name: ', Lib.Name);
-    DumpPEImage(Proc.Handle, Lib.BaseAddr);
+    if GImageInfo = iiDetail
+    then DumpPEImage(Proc.Handle, Lib.BaseAddr);
   end;
   if GBreakOnLibraryLoad
   then GState := dsPause;
@@ -314,7 +316,7 @@ procedure DebugLoop;
   
   procedure ShowDisas;
   var
-    a: PtrUInt;
+    a: TDbgPtr;
     Code, CodeBytes: String;
   begin
     WriteLN('===');
@@ -334,6 +336,8 @@ procedure DebugLoop;
   var
     a: TDbgPtr;
     sym, symproc: TDbgSymbol;
+    S: TStringList;
+    Name: String;
   begin
     WriteLN('===');
     {$ifdef cpui386}
@@ -352,11 +356,47 @@ procedure DebugLoop;
     while not (symproc.kind in [skProcedure, skFunction]) do
       symproc := symproc.Parent;
 
-    if symproc = nil
-    then WriteLn('???')
-    else WriteLn(symproc.FileName, ':', symproc.Line, ' ', symproc.Name);
+    if sym <> symproc
+    then begin
+      if symproc = nil
+      then WriteLn('???')
+      else begin
+        WriteLn(symproc.FileName, ' ', symproc.Line, ':', symproc.Column, ' ', symproc.Name);
+      end;
+      Write(' ');
+    end;
 
-    WriteLn('  [', FormatAddress(a), '] ', sym.FileName, ':', sym.Line, ' ', sym.Name);
+    WriteLn(sym.FileName, ' ', sym.Line, ':', sym.Column, ' ', sym.Name);
+    Write('  [', FormatAddress(a), '] ');
+
+    Name := sym.Filename;
+    if not FileExists(Name)
+    then begin
+      if ExtractFilePath(Name) = ''
+      then begin
+        Name := IncludeTrailingPathDelimiter(ExtractFilePath(GFileName)) + Name;
+        if not FileExists(Name)
+        then Name := '';
+      end
+      else Name := '';
+    end;
+    
+    if Name = ''
+    then begin
+      WriteLn(' File not found');
+      Exit;
+    end;
+
+    S := TStringList.Create;
+    try
+      S.LoadFromFile(Name);
+      if S.Count < sym.Line
+      then WriteLn('Line not found')
+      else WriteLn(S[sym.Line - 1]);
+    except
+      on E: Exception do WriteLn(E.Message);
+    end;
+    S.Free;
   end;
 
 begin

@@ -44,7 +44,7 @@ uses
   FPWDLoop,
   FPWDPEImage,
   FPWDType,
-  WinDebugger, WinDExtra, WinDPETypes, WinDSymbols, WinDDwarfConst, WinDDwarf;
+  WinDebugger, WinDExtra, WinDPETypes, WinDDwarfConst, WinDDwarf;
 
 function CtrlCHandler(CtrlType: Cardinal): BOOL; stdcall;
 begin

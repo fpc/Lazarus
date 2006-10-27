@@ -519,6 +519,7 @@ const
 
 
   { Line Number Standard Opcode Encodings }
+  DW_LNS_extended_opcode      = $00;
   
   DW_LNS_copy                 = $01;
   DW_LNS_advance_pc           = $02;

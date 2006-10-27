@@ -39,7 +39,7 @@ interface
 uses
   Windows, SysUtils, FPWDGLobal, WinDExtra, WinDPETypes;
 
-procedure DumpPEImage(const AProcessHandle: THandle; const AAdress: TDbgPtr);
+procedure DumpPEImage(const AProcessHandle: THandle; const AAddress: TDbgPtr);
 
 implementation
 
@@ -64,7 +64,7 @@ const
   );
 
 
-procedure DumpPEImage(const AProcessHandle: THandle; const AAdress: TDbgPtr);
+procedure DumpPEImage(const AProcessHandle: THandle; const AAddress: TDbgPtr);
 var
   DosHeader: TImageDosHeader;
   NtHeaders: TImageNtHeaders64; // read it as 64 bit, so there is enough room. The fields will be decoded manually
@@ -76,7 +76,7 @@ var
   Is64: Boolean;
   SectionName: array[0..255] of Char;
 begin
-  if not ReadProcessMemory(AProcessHandle, Pointer(AAdress), @DosHeader, SizeOf(DosHeader), BytesRead)
+  if not ReadProcessMemory(AProcessHandle, Pointer(PtrUInt(AAddress)), @DosHeader, SizeOf(DosHeader), BytesRead)
   then begin
     WriteLN('Unable to retrieve DOS header');
     Exit;
@@ -89,7 +89,7 @@ begin
     Exit;
   end;
 
-  if not ReadProcessMemory(AProcessHandle, Pointer(PChar(AAdress) + DosHeader.e_lfanew), @NTHeaders, SizeOf(NTHeaders), BytesRead)
+  if not ReadProcessMemory(AProcessHandle, Pointer(PtrUInt(AAddress + DosHeader.e_lfanew)), @NTHeaders, SizeOf(NTHeaders), BytesRead)
   then begin
     WriteLN('Unable to retrieve NT headers');
     Exit;
@@ -253,7 +253,7 @@ begin
   WriteLN('Sections: ');
   for n := 0 to NtHeaders.FileHeader.NumberOfSections  - 1 do
   begin
-    if not ReadProcessMemory(AProcessHandle, Pointer(PtrUInt(AAdress + DosHeader.e_lfanew + SizeOF(NTHeaders) - SizeOF(NTHeaders.OptionalHeader) + NTHeaders.FileHeader.SizeOfOptionalHeader + SizeOf(SectionHeader) * n)), @SectionHeader, SizeOf(SectionHeader), BytesRead)
+    if not ReadProcessMemory(AProcessHandle, Pointer(PtrUInt(AAddress + DosHeader.e_lfanew + SizeOF(NTHeaders) - SizeOF(NTHeaders.OptionalHeader) + NTHeaders.FileHeader.SizeOfOptionalHeader + SizeOf(SectionHeader) * n)), @SectionHeader, SizeOf(SectionHeader), BytesRead)
     then begin
       WriteLN('Unable to retrieve section: ', n);
       Continue;
@@ -267,7 +267,7 @@ begin
 
         if ReadProcessMemory(
           AProcessHandle,
-          Pointer(PtrUInt(AAdress + NTHeaders.FileHeader.PointerToSymbolTable + NTHeaders.FileHeader.NumberOfSymbols * IMAGE_SIZEOF_SYMBOL + StrToIntDef(PChar(@Name[1]), 0))),
+          Pointer(PtrUInt(AAddress + NTHeaders.FileHeader.PointerToSymbolTable + NTHeaders.FileHeader.NumberOfSymbols * IMAGE_SIZEOF_SYMBOL + StrToIntDef(PChar(@Name[1]), 0))),
           @SectionName,
           SizeOf(SectionName),
           BytesRead

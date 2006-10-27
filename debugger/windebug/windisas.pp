@@ -98,7 +98,7 @@ var
   p: Pointer;
 begin
   BytesRead := 0;
-  if not ReadProcessMemory(AProcess, Pointer(AAddress), @Code, SizeOf(Code), BytesRead) and (BytesRead = SizeOf(Code))
+  if not ReadProcessMemory(AProcess, Pointer(PtrUInt(AAddress)), @Code, SizeOf(Code), BytesRead) and (BytesRead = SizeOf(Code))
   then begin
     Log('Disassemble: Failed to read memory at %s, got %u bytes', [HexValue(AAddress, PTRSIZE[A64Bit], [hvfIncludeHexchar]), BytesRead]);
     ACode := '??';

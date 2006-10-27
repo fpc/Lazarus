@@ -482,12 +482,29 @@ begin
 end;
 
 procedure HandleSetBoll(AParams: String);
-var
+const
   MODE: array[Boolean] of String = ('off', 'on');
 begin
   if AParams = ''
   then WriteLN(' Break on library load: ', MODE[GBreakOnLibraryLoad])
   else GBreakOnLibraryLoad := (Length(Aparams) > 1) and (AParams[2] in ['n', 'N'])
+end;
+
+procedure HandleSetImageInfo(AParams: String);
+const
+  MODE: array[TMWDImageInfo] of String = ('none', 'name', 'detail');
+begin
+  if AParams = ''
+  then WriteLN(' Imageinfo: ', MODE[GImageInfo])
+  else begin
+    case StringCase(AParams, MODE, True, False) of
+      0: GImageInfo := iiNone;
+      1: GImageInfo := iiName;
+      2: GImageInfo := iiDetail;
+    else
+      WriteLN('Unknown type: "', AParams, '"')
+    end;
+  end;
 end;
 
 
@@ -600,6 +617,7 @@ begin
   MSetCommands.AddCommand(['help', 'h', '?'], @HandleSetHelp, 'set help [<param>]: Shows help for param or this help if none given');
   MSetCommands.AddCommand(['mode', 'm'], @HandleSetMode, 'set mode 32|64: Set the mode for retrieving process info');
   MSetCommands.AddCommand(['break_on_library_load', 'boll'], @HandleSetBOLL, 'set break_on_library_load on|off: Pause running when a library is loaded (default off)');
+  MSetCommands.AddCommand(['imageinfo', 'ii'], @HandleSetImageInfo, 'set imageinfo none|name|detail: When a library is loaded, show nothing, only its name or all details (default none)');
 end;
 
 procedure Finalize;

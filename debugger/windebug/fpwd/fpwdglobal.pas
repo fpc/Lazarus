@@ -41,6 +41,7 @@ uses
 type
   TMWDState = (dsStop, dsRun, dsPause, dsQuit, dsEvent);
   TMWDMode = (dm32, dm64);
+  TMWDImageInfo = (iiNone, iiName, iiDetail);
 
 var
   GState: TMWDState;
@@ -51,6 +52,7 @@ var
   GMode: TMWDMode = dm64;
   {$endif}
   GBreakOnLibraryLoad: Boolean = False;
+  GImageInfo: TMWDImageInfo = iiNone;
   
   GCurrentContext: PContext;
 
@@ -60,12 +62,12 @@ var
   GProcessMap: TMap;
   
 
-function GetProcess(const AID: Integer; var AProcess: TDbgProcess): Boolean;
+function GetProcess(const AID: Integer; out AProcess: TDbgProcess): Boolean;
 function FormatAddress(const AAddress): String;
 
 implementation
 
-function GetProcess(const AID: Integer; var AProcess: TDbgProcess): Boolean;
+function GetProcess(const AID: Integer; out AProcess: TDbgProcess): Boolean;
 begin
   Result := GProcessMap.GetData(AID, AProcess) and (AProcess <> nil);
 //  if not Result

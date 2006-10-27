@@ -41,7 +41,7 @@ uses
   Windows;
   
 type
-  TDbgPtr = PtrUInt;
+  TDbgPtr = QWord; // PtrUInt;
 
 type
   THexValueFormatFlag = (hvfSigned, hvfPrefixPositive, hvfIncludeHexchar);

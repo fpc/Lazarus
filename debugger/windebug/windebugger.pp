@@ -106,33 +106,33 @@ type
 
   TDbgSymbol = class(TObject)
   private
-    FList: TStringList;
     FName: String;
     FKind: TDbgSymbolKind;
     FAddress: TDbgPtr;
-    FParent: TDbgSymbol;
-    FSize: Integer;
-    FFile: String;
-    FLine: Integer;
-    FFlags: TDbgSymbolFlags;
-    FReference: TDbgSymbol;
-    function GetChild(AIndex: Integer): TDbgSymbol;
-    function GetCount: Integer;
   protected
+    function GetChild(AIndex: Integer): TDbgSymbol; virtual;
+    function GetColumn: Cardinal; virtual;
+    function GetCount: Integer; virtual;
+    function GetFile: String; virtual;
+    function GetFlags: TDbgSymbolFlags; virtual;
+    function GetLine: Cardinal; virtual;
+    function GetParent: TDbgSymbol; virtual;
+    function GetReference: TDbgSymbol; virtual;
+    function GetSize: Integer; virtual;
   public
-    procedure AddChild(const AChild: TDbgSymbol);
-    constructor Create(const AName: String; AKind: TDbgSymbolKind; AAddress: TDbgPtr; ASize: Integer = 0; const AFile: String = ''; ALine: Integer = -1; AFlags: TDbgSymbolFlags = []; const AReference: TDbgSymbol = nil);
+    constructor Create(const AName: String; AKind: TDbgSymbolKind; AAddress: TDbgPtr);
     destructor Destroy; override;
     property Count: Integer read GetCount;
     property Name: String read FName;
     property Kind: TDbgSymbolKind read FKind;
     property Address: TDbgPtr read FAddress;
-    property Size: Integer read FSize;
-    property FileName: String read FFile;
-    property Line: Integer read FLine;
-    property Flags: TDbgSymbolFlags read FFlags;
-    property Reference: TDbgSymbol read FReference;
-    property Parent: TDbgSymbol read FParent;
+    property Size: Integer read GetSize;
+    property FileName: String read GetFile;
+    property Line: Cardinal read GetLine;
+    property Column: Cardinal read GetColumn;
+    property Flags: TDbgSymbolFlags read GetFlags;
+    property Reference: TDbgSymbol read GetReference;
+    property Parent: TDbgSymbol read GetParent;
     property Children[AIndex: Integer]: TDbgSymbol read GetChild;
   end;
 
@@ -145,7 +145,7 @@ type
   public
     constructor Create(ALoader: TDbgImageLoader); virtual;
     function FindSymbol(const AName: String): TDbgSymbol; virtual;
-    function FindSymbol(AAdress: TDbgPtr): TDbgSymbol; virtual;
+    function FindSymbol(AAddress: TDbgPtr): TDbgSymbol; virtual;
     property HasInfo: Boolean read FHasInfo;
   end;
 
@@ -254,7 +254,7 @@ type
 implementation
 
 uses
-  SysUtils, WinDSymbols, WinDDwarf;
+  SysUtils, WinDDwarf;
 
 procedure LogLastError;
 begin
@@ -362,9 +362,12 @@ begin
 end;
 
 function TDbgProcess.AddLib(const AInfo: TLoadDLLDebugInfo): TDbgLibrary;
+var
+  ID: TDbgPtr;
 begin
   Result := TDbgLibrary.Create(Self, HexValue(AInfo.lpBaseOfDll, SizeOf(Pointer), [hvfIncludeHexchar]), AInfo);
-  FLibMap.Add(TDbgPtr(AInfo.lpBaseOfDll), Result);
+  ID := TDbgPtr(AInfo.lpBaseOfDll);
+  FLibMap.Add(ID, Result);
   if Result.FDbgInfo.HasInfo
   then FSymInstances.Add(Result);
 end;
@@ -395,11 +398,11 @@ end;
 
 constructor TDbgProcess.Create(const ADefaultName: String; const AProcessID, AThreadID: Integer; const AInfo: TCreateProcessDebugInfo);
 const
-  {$IFDEF CPU64}
+  {.$IFDEF CPU64}
   MAP_ID_SIZE = itu8;
-  {$ELSE}
-  MAP_ID_SIZE = itu4;
-  {$ENDIF}
+  {.$ELSE}
+//  MAP_ID_SIZE = itu4;
+  {.$ENDIF}
 begin
   FProcessID := AProcessID;
   FThreadID := AThreadID;
@@ -441,11 +444,13 @@ function TDbgProcess.FindSymbol(AAdress: TDbgPtr): TDbgSymbol;
 var
   n: Integer;
   Inst: TDbgInstance;
+  Offset: Int64;
 begin
   for n := 0 to FSymInstances.Count - 1 do
   begin
     Inst := TDbgInstance(FSymInstances[n]);
-    Result := Inst.FDbgInfo.FindSymbol(AAdress);
+    Offset := Inst.FLoader.ImageBase - Inst.BaseAddr;
+    Result := Inst.FDbgInfo.FindSymbol(AAdress + Offset);
     if Result <> nil then Exit;
   end;
   Result := nil;
@@ -484,9 +489,12 @@ end;
 
 function TDbgProcess.HandleDebugEvent(const ADebugEvent: TDebugEvent): Boolean;
   function DoBreak: Boolean;
+  var
+    ID: TDbgPtr;
   begin
     Result := False;
-    if not FBreakMap.GetData(TDbgPtr(ADebugEvent.Exception.ExceptionRecord.ExceptionAddress), FSingleStepBreak) then Exit;
+    ID := TDbgPtr(ADebugEvent.Exception.ExceptionRecord.ExceptionAddress);
+    if not FBreakMap.GetData(ID, FSingleStepBreak) then Exit;
     if FSingleStepBreak = nil then Exit;
 
     Result := True;
@@ -608,7 +616,7 @@ function TDbgProcess.ReadData(const AAdress: TDbgPtr; const ASize: Cardinal; out
 var
   BytesRead: Cardinal;
 begin
-  Result := ReadProcessMemory(Handle, Pointer(AAdress), @AData, ASize, BytesRead) and (BytesRead = ASize);
+  Result := ReadProcessMemory(Handle, Pointer(PtrUInt(AAdress)), @AData, ASize, BytesRead) and (BytesRead = ASize);
 
   if not Result then LogLastError;
 end;
@@ -624,7 +632,7 @@ var
   buf: array of Char;
 begin
   SetLength(buf, AMaxSize + 1);
-  Result := ReadProcessMemory(Handle, Pointer(AAdress), @Buf[0], AMaxSize, BytesRead);
+  Result := ReadProcessMemory(Handle, Pointer(PtrUInt(AAdress)), @Buf[0], AMaxSize, BytesRead);
   if not Result then Exit;
   if BytesRead < AMaxSize
   then Buf[BytesRead] := #0
@@ -638,7 +646,7 @@ var
   buf: array of WChar;
 begin
   SetLength(buf, AMaxSize + 1);
-  Result := ReadProcessMemory(Handle, Pointer(AAdress), @Buf[0], SizeOf(WChar) * AMaxSize, BytesRead);
+  Result := ReadProcessMemory(Handle, Pointer(PtrUInt(AAdress)), @Buf[0], SizeOf(WChar) * AMaxSize, BytesRead);
   if not Result then Exit;
   BytesRead := BytesRead div SizeOf(WChar);
   if BytesRead < AMaxSize
@@ -656,12 +664,14 @@ end;
 procedure TDbgProcess.RemoveLib(const AInfo: TUnloadDLLDebugInfo);
 var
   Lib: TDbgLibrary;
+  ID: TDbgPtr;
 begin
   if FLibMap = nil then Exit;
-  if not FLibMap.GetData(TDbgPtr(AInfo.lpBaseOfDll), Lib) then Exit;
+  ID := TDbgPtr(AInfo.lpBaseOfDll);
+  if not FLibMap.GetData(ID, Lib) then Exit;
   if Lib.FDbgInfo.HasInfo
   then FSymInstances.Remove(Lib);
-  FLibMap.Delete(TDbgPtr(AInfo.lpBaseOfDll));
+  FLibMap.Delete(ID);
   // TODO: Free lib ???
 end;
 
@@ -686,7 +696,7 @@ function TDbgProcess.WriteData(const AAdress: TDbgPtr; const ASize: Cardinal; co
 var
   BytesWritten: Cardinal;
 begin
-  Result := WriteProcessMemory(Handle, Pointer(AAdress), @AData, ASize, BytesWritten) and (BytesWritten = ASize);
+  Result := WriteProcessMemory(Handle, Pointer(PtrUInt(AAdress)), @AData, ASize, BytesWritten) and (BytesWritten = ASize);
 
   if not Result then LogLastError;
 end;
@@ -738,7 +748,6 @@ begin
   FSingleStepping := True;
 end;
 
-
 { TDbgInfo }
 
 constructor TDbgInfo.Create(ALoader: TDbgImageLoader);
@@ -751,7 +760,7 @@ begin
   Result := nil;
 end;
 
-function TDbgInfo.FindSymbol(AAdress: TDbgPtr): TDbgSymbol;
+function TDbgInfo.FindSymbol(AAddress: TDbgPtr): TDbgSymbol;
 begin
   Result := nil;
 end;
@@ -764,49 +773,63 @@ end;
 
 { TDbgSymbol }
 
-function TDbgSymbol.GetChild(AIndex: Integer): TDbgSymbol;
+constructor TDbgSymbol.Create(const AName: String; AKind: TDbgSymbolKind; AAddress: TDbgPtr);
 begin
-  Result := TDbgSymbol(FList.Objects[AIndex]);
-end;
-
-function TDbgSymbol.GetCount: Integer;
-begin
-  Result := FList.Count;
-end;
-
-procedure TDbgSymbol.AddChild(const AChild: TDbgSymbol);
-begin
-  FList.AddObject(AChild.Name, AChild);
-  AChild.FParent := Self;
-end;
-
-constructor TDbgSymbol.Create(const AName: String; AKind: TDbgSymbolKind; AAddress: TDbgPtr; ASize: Integer; const AFile: String; ALine: Integer; AFlags: TDbgSymbolFlags = []; const AReference: TDbgSymbol = nil);
-begin
-  FList := TStringList.Create;
-  FList.CaseSensitive := True;
-  FList.Duplicates := dupError;
-  FList.Sorted := True;
-
   FName := AName;
   FKind := AKind;
   FAddress := AAddress;
-  FSize := ASize;
-  FFile := AFile;
-  FLine := ALine;
-  FReference := AReference;
-  FFlags := AFlags;
 
   inherited Create;
 end;
 
 destructor TDbgSymbol.Destroy;
-var
-  n: Integer;
 begin
-  for n := 0 to FList.Count - 1 do
-    FList.Objects[n].Free;
-  FreeAndNil(FList);
   inherited Destroy;
+end;
+
+function TDbgSymbol.GetChild(AIndex: Integer): TDbgSymbol;
+begin
+  result := nil;
+end;
+
+function TDbgSymbol.GetColumn: Cardinal;
+begin
+  Result := 0;
+end;
+
+function TDbgSymbol.GetCount: Integer;
+begin
+  Result := 0;
+end;
+
+function TDbgSymbol.GetFile: String;
+begin
+  Result := '';
+end;
+
+function TDbgSymbol.GetFlags: TDbgSymbolFlags;
+begin
+  Result := [];
+end;
+
+function TDbgSymbol.GetLine: Cardinal;
+begin
+  Result := 0;
+end;
+
+function TDbgSymbol.GetParent: TDbgSymbol;
+begin
+  Result := nil;
+end;
+
+function TDbgSymbol.GetReference: TDbgSymbol;
+begin
+  Result := nil;
+end;
+
+function TDbgSymbol.GetSize: Integer;
+begin
+  Result := 0;
 end;
 
 { TDbgBreak }
@@ -874,7 +897,7 @@ begin
     Log('Unable to reset breakpoint at $%p', [FLocation]);
     Exit;
   end;
-  FlushInstructionCache(FProcess.FInfo.hProcess, Pointer(FLocation), 1);
+  FlushInstructionCache(FProcess.FInfo.hProcess, Pointer(PtrUInt(FLocation)), 1);
 end;
 
 procedure TDbgBreakpoint.SetBreak;
@@ -894,7 +917,7 @@ begin
     Log('Unable to set breakpoint at $%p', [FLocation]);
     Exit;
   end;
-  FlushInstructionCache(FProcess.FInfo.hProcess, Pointer(FLocation), 1);
+  FlushInstructionCache(FProcess.FInfo.hProcess, Pointer(PtrUInt(FLocation)), 1);
 end;
 
 end.
