@@ -461,12 +461,16 @@ var
   Widget: PGtkWidget;
   ClientWidget: Pointer;
   DCOrigin: TPoint;
-  Detail: PChar;
   Area: TGdkRectangle;
   Style: PGtkStyle;
   AWindow: PGdkWindow;
   DevContext: TDeviceContext;
   ARect: TRect;
+  {$IFDEF Gtk1}
+  Detail: PChar;
+  {$ELSE}
+  Orientation: TGtkOrientation;
+  {$ENDIF}
 begin
   if not ASplitter.HandleAllocated then exit;
   DevContext:=TDeviceContext(ASplitter.Canvas.Handle);
@@ -477,11 +481,6 @@ begin
   AWindow:=DevContext.Drawable;
 
   Style:=GetStyle(lgsButton);
-  if ASplitter.ResizeAnchor in [akTop,akBottom] then begin
-    Detail:='vpaned';
-  end else begin
-    Detail:='hpaned';
-  end;
 
   DCOrigin:=GetDCOffset(DevContext);
   Area.X:=DCOrigin.X;
@@ -498,11 +497,30 @@ begin
     Area.Height:=ARect.Bottom-ARect.Top;
   end;
 
+  {$IFDEF Gtk1}
+  if ASplitter.ResizeAnchor in [akTop,akBottom] then begin
+    Detail:='vpaned';
+  end else begin
+    Detail:='hpaned';
+  end;
   gtk_paint_box(Style, AWindow,
     GTK_WIDGET_STATE(Widget),
     GTK_SHADOW_NONE,
     @Area, Widget, Detail,
     Area.X,Area.Y,Area.Width,Area.Height);
+  {$ELSE}
+  if ASplitter.ResizeAnchor in [akTop,akBottom] then begin
+    Orientation:=GTK_ORIENTATION_VERTICAL;
+  end else begin
+    Orientation:=GTK_ORIENTATION_HORIZONTAL;
+  end;
+  gtk_paint_handle(Style,AWindow,
+    GTK_WIDGET_STATE(Widget),
+    GTK_SHADOW_NONE,
+    @Area, Widget, 'paned',
+    Area.X,Area.Y,Area.Width,Area.Height,
+    Orientation);
+  {$ENDIF}
 end;
 
 
