@@ -102,8 +102,12 @@ begin
   // get itemindex and area
   ItemIndex:=0;
   if GTK_IS_TREE_VIEW(Widget) then begin
-    gtk_tree_view_get_path_at_pos(PGtkTreeView(Widget),cell_area^.x, cell_area^.y, ItemPath, column, nil, nil);
-    if ItemPath <> nil then
+    //check the four possible corners of the cell
+    if gtk_tree_view_get_path_at_pos(PGtkTreeView(Widget),cell_area^.x, cell_area^.y, ItemPath, column, nil, nil)
+    or gtk_tree_view_get_path_at_pos(PGtkTreeView(Widget),cell_area^.x, cell_area^.y+cell_area^.height, ItemPath, column, nil, nil)
+    or gtk_tree_view_get_path_at_pos(PGtkTreeView(Widget),cell_area^.x+cell_area^.width, cell_area^.y, ItemPath, column, nil, nil)
+    or gtk_tree_view_get_path_at_pos(PGtkTreeView(Widget),cell_area^.x+cell_area^.width, cell_area^.y+cell_area^.height, ItemPath, column, nil, nil)
+    then
       ItemIndex := StrToInt(gtk_tree_path_to_string(ItemPath));
   end;
 
