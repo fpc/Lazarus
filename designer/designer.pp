@@ -1641,14 +1641,14 @@ begin
 
     // hide hint
     FHintTimer.Enabled :=
-          (TheMessage.keys or (MK_LButton and MK_RButton and MK_MButton) = 0);
+            (TheMessage.keys or (MK_LButton and MK_RButton and MK_MButton) = 0);
     if FHintWindow.Visible then
       FHintWindow.Visible := False;
   end;
 
   DesignSender:=GetDesignControl(Sender);
   //DebugLn('TDesigner.MouseMoveOnControl Sender=',dbgsName(Sender),' ',dbgsName(DesignSender));
-  SenderParentForm:= GetParentForm(DesignSender);
+  SenderParentForm:=GetParentForm(DesignSender);
   if (SenderParentForm = nil) or (SenderParentForm <> Form) then exit;
 
   OldMouseMovePos:= LastMouseMovePos;
@@ -2557,7 +2557,8 @@ function TDesigner.ComponentClassAtPos(const AClass: TComponentClass;
     begin
       Dec(i);
       Control := WinControl.Controls[i];
-      if IgnoreHidden and (csNoDesignVisible in Control.ControlStyle) then Continue;
+      if IgnoreHidden and (csNoDesignVisible in Control.ControlStyle) then
+        Continue;
       if csNoDesignSelectable in Control.ControlStyle then continue;
       Bounds := GetParentFormRelativeBounds(Control);
       if not PtInRect(Bounds, APos) then Continue;
@@ -2831,6 +2832,13 @@ begin
     AComponent := ComponentAtPos(ClientPos.X,ClientPos.Y,true,true);
     if not Assigned(AComponent) then
       AComponent := AWinControl;
+  end;
+  
+  // search the containing control owned by the lookuproot
+  while (AComponent<>FLookupRoot) and (AComponent.Owner<>FLookupRoot) do begin
+    if not (AComponent is TControl) then exit;
+    AComponent:=TControl(AComponent).Parent;
+    if AComponent=nil then exit;
   end;
 
   // create a nice hint:
