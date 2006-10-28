@@ -4,3 +4,4 @@ del *.bak
 del *.~pas
 del *.~dpr
 del *.dof
+del *.ppu

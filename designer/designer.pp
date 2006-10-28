@@ -1187,17 +1187,21 @@ end;
 function TDesigner.GetDesignControl(AControl: TControl): TControl;
 var
   OwnerControl: TControl;
+  AComponent: TComponent;
 begin
   Result:=AControl;
   if (Result=nil) or (Result=LookupRoot) or (Result.Owner=LookupRoot) then exit;
-  if (Result.Owner=nil) then exit(Result);
   if (Result.Owner is TControl) then begin
     OwnerControl:=TControl(Result.Owner);
     if csOwnedChildsSelectable in OwnerControl.ControlStyle then
       exit;
     Result:=GetDesignControl(OwnerControl);
   end else begin
-    Result:=nil;
+    AComponent:=GetDesignedComponent(AControl);
+    if AComponent is TControl then
+      Result:=TControl(AComponent)
+    else
+      Result:=nil;
   end;
 end;
 
@@ -1235,6 +1239,7 @@ begin
   SetCaptureControl(nil);
   DesignSender:=GetDesignControl(Sender);
   ParentForm:=GetParentForm(DesignSender);
+  //DebugLn(['TDesigner.MouseDownOnControl DesignSender=',dbgsName(DesignSender),' ParentForm=',dbgsName(ParentForm)]);
   if (ParentForm=nil) then exit;
   
   MouseDownPos:=GetFormRelativeMousePosition(Form);
@@ -1959,6 +1964,24 @@ Begin
     else
       Result:=false;
     end;
+  end else begin
+    if (TheMessage.Msg=LM_PAINT)
+    or (TheMessage.Msg=LM_INTERNALPAINT)
+    or (TheMessage.Msg=CN_KEYDOWN)
+    or (TheMessage.Msg=CN_KEYUP)
+    or (TheMessage.Msg=LM_LBUTTONDOWN)
+    or (TheMessage.Msg=LM_RBUTTONDOWN)
+    or (TheMessage.Msg=LM_LBUTTONDBLCLK)
+    or (TheMessage.Msg=LM_LBUTTONUP)
+    or (TheMessage.Msg=LM_RBUTTONUP)
+    or (TheMessage.Msg=LM_MOUSEMOVE)
+    or (TheMessage.Msg=LM_SIZE)
+    or (TheMessage.Msg=LM_MOVE)
+    or (TheMessage.Msg=LM_ACTIVATE)
+    or (TheMessage.Msg=LM_CLOSEQUERY)
+    or (TheMessage.Msg=LM_SETCURSOR)
+    then
+      DebugLn(['TDesigner.IsDesignMsg NOT DESIGNING? ',dbgsName(Sender),' TheMessage.Msg=',GetMessageName(TheMessage.Msg)]);
   end;
 end;
 
@@ -2833,13 +2856,8 @@ begin
     if not Assigned(AComponent) then
       AComponent := AWinControl;
   end;
-  
-  // search the containing control owned by the lookuproot
-  while (AComponent<>FLookupRoot) and (AComponent.Owner<>FLookupRoot) do begin
-    if not (AComponent is TControl) then exit;
-    AComponent:=TControl(AComponent).Parent;
-    if AComponent=nil then exit;
-  end;
+  AComponent:=GetDesignedComponent(AComponent);
+  if AComponent=nil then exit;
 
   // create a nice hint:
 

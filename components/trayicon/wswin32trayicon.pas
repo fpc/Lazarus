@@ -58,6 +58,9 @@ const
   szClassName = 'TTrayIconClass';
   szAppTitle = 'apptitle';
 
+var
+  vwsTrayIcon: TWidgetTrayIcon;
+
 {*******************************************************************
 *  TrayWndProc ()
 *
@@ -79,13 +82,8 @@ function TrayWndProc(Handle: HWND; iMsg: UINT; WParam_: WPARAM; LParam_:LPARAM):
 var
   pt: TPoint;
 begin
-  {*******************************************************************
-  *  The separate check on vwsTrayIconCreated is necessary because
-  *  vwsTrayIcon.uID may not have being initialized yet
-  *******************************************************************}
-  if vwsTrayIconCreated then
-   if iMsg = WM_USER + vwsTrayIcon.uID then
-   begin
+  if iMsg = WM_USER + vwsTrayIcon.uID then
+  begin
      case LParam_ of
       WM_RBUTTONUP:
       begin
@@ -128,8 +126,8 @@ begin
 
      Result := 1;
      Exit;
-   end;
-
+  end;
+   
   Result := DefWindowProc(Handle, iMsg, WParam_, LParam_);
 end;
 
@@ -158,6 +156,8 @@ var
 begin
   inherited Create;
 
+  vwsTrayIcon := Self;
+
   ZeroMemory(@Window, SizeOf(TWndClassEx));
   Window.cbSize := SizeOf(TWndClassEx);
   Window.style := CS_OWNDC;
@@ -173,7 +173,7 @@ begin
 //  Window.hIconSm := hSmallIcon;
 
   Windows.RegisterClassEx(Window);
-
+  
   WindowHandle := CreateWindowEx(
         0,            //* Ensure that there will be no button in the bar */
         szClassName,        //* Name of the registered class */
