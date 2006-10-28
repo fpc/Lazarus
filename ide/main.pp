@@ -2470,7 +2470,10 @@ begin
     DoExtractProcFromSelection;
 
   ecToggleMessages:
-    DoShowMessagesView;
+    {$message warning TODO: toggle back to previously focused window?}
+    { DoShowMessageView does not bring messages view to top, source editor 
+      is more important there }
+    MessagesView.EnsureVisible;
 
   ecToggleCodeExpl:
     DoShowCodeExplorer;
