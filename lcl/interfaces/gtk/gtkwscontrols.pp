@@ -157,6 +157,8 @@ type
 
 
 procedure GtkWindowShowModal(GtkWindow: PGtkWindow);
+function GetWidgetHAdjustment(AWidget: PGTKWidget): PGTKAdjustment;
+function GetWidgetVAdjustment(AWidget: PGTKWidget): PGTKAdjustment;
 
 implementation
 
@@ -673,6 +675,30 @@ begin
   TGtkWidgetSet(WidgetSet).UpdateTransientWindows;
 end;
 
+function GetWidgetHAdjustment(AWidget: PGTKWidget): PGTKAdjustment;
+begin
+  if GtkWidgetIsA(AWidget,GTK_TYPE_SCROLLED_WINDOW) then
+    Result:=gtk_scrolled_window_get_hadjustment(PGTKScrolledWindow(AWidget))
+  {$IFDEF Gtk2}
+  else if GtkWidgetIsA(AWidget,GTK_TYPE_TREE_VIEW) then
+    Result:=gtk_tree_view_get_hadjustment(PGtkTreeView(AWidget))
+  {$ENDIF}
+  else
+    Result:=nil;
+end;
+
+function GetWidgetVAdjustment(AWidget: PGTKWidget): PGTKAdjustment;
+begin
+  if GtkWidgetIsA(AWidget,GTK_TYPE_SCROLLED_WINDOW) then
+    Result:=gtk_scrolled_window_get_vadjustment(PGTKScrolledWindow(AWidget))
+  {$IFDEF Gtk2}
+  else if GtkWidgetIsA(AWidget,GTK_TYPE_TREE_VIEW) then
+    Result:=gtk_tree_view_get_vadjustment(PGtkTreeView(AWidget))
+  {$ENDIF}
+  else
+    Result:=nil;
+end;
+
 
 { TGtkWSBaseScrollingWinControl }
 
@@ -842,15 +868,14 @@ class procedure TGtkWSBaseScrollingWinControl.SetCallbacks(
 begin
   TGtkWSWinControl.SetCallbacks(PGtkObject(AWidget),
                                 TComponent(AWidgetInfo^.LCLObject));
-
   SignalConnect(
-    PGtkWidget(gtk_scrolled_window_get_hadjustment(PGTKScrolledWindow(AWidget))),
+    PGtkWidget(GetWidgetHAdjustment(AWidget)),
     'value-changed',
     @GtkWSBaseScrollingWinControl_HValueChanged,
     AWidgetInfo
   );
   SignalConnect(
-    PGtkWidget(gtk_scrolled_window_get_vadjustment(PGTKScrolledWindow(AWidget))),
+    PGtkWidget(GetWidgetVAdjustment(AWidget)),
     'value-changed',
     @GtkWSBaseScrollingWinControl_VValueChanged,
     AWidgetInfo
