@@ -1,8 +1,8 @@
 { $Id$}
 {
  *****************************************************************************
- *                              Win32WSMenus.pp                              * 
- *                              ---------------                              * 
+ *                              Win32WSMenus.pp                              *
+ *                              ---------------                              *
  *                                                                           *
  *                                                                           *
  *****************************************************************************
@@ -28,7 +28,7 @@ interface
 
 uses
 ////////////////////////////////////////////////////
-// I M P O R T A N T                                
+// I M P O R T A N T
 ////////////////////////////////////////////////////
 // To get as little as posible circles,
 // uncomment only when needed for registration
@@ -82,7 +82,7 @@ type
     class procedure Popup(const APopupMenu: TPopupMenu; const X, Y: integer); override;
   end;
 
-  
+
   function MenuItemLength(const aMenuItem: TMenuItem; const aHDC: HDC): integer;
   function MenuItemHeight(const aMenuItem: TMenuItem; const aHDC: HDC): integer;
   procedure DrawMenuItem(const aMenuItem: TMenuItem; const aHDC: HDC; const aRect: Windows.RECT; const aSelected: boolean);
@@ -95,13 +95,16 @@ uses strutils;
 
 { helper routines }
 
-const 
+const
   SpaceBetweenIcons = 5;
 
   // define the size of the MENUITEMINFO structure used by older Windows
   // versions (95, NT4) to keep the kompatibility with them
   // Since W98 the size is 48 (hbmpItem was added)
   W95_MENUITEMINFO_SIZE = 44;
+
+var
+  menuiteminfosize : DWORD = 0;
 
 type
   TCaptionFlags = (cfBold, cfUnderline);
@@ -139,7 +142,7 @@ var MenuItemIndex: integer;
 begin
   Result := MakeLResult(0, 0);
   MenuItemIndex := -1;
-  ItemInfo.cbSize := W95_MENUITEMINFO_SIZE;
+  ItemInfo.cbSize := menuiteminfosize;
   ItemInfo.fMask := MIIM_DATA;
   if not GetMenuItemInfo(AMenuHandle, 0, true, @ItemInfo) then Exit;
   FirstMenuItem := TMenuItem(ItemInfo.dwItemData);
@@ -149,7 +152,7 @@ begin
   begin
     SiblingMenuItem := FirstMenuItem.Parent.Items[i];
     HotKeyIndex := SearchMenuItemHotKeyIndex('&', SiblingMenuItem.Caption);
-    if (HotKeyIndex > 0) and 
+    if (HotKeyIndex > 0) and
       (Upcase(ACharCode) = Upcase(SiblingMenuItem.Caption[HotKeyIndex])) then
         MenuItemIndex := i;
     inc(i);
@@ -177,13 +180,13 @@ begin
     else
       lf.lfWeight:= lf.lfWeight + 100;
   end;
-  Result := CreateFont(lf.lfHeight, lf.lfWidth, 
-    lf.lfEscapement, lf.lfOrientation, lf.lfWeight, 
-    lf.lfItalic, lf.lfUnderline, lf.lfStrikeOut, lf.lfCharSet, 
-    lf.lfOutPrecision, lf.lfClipPrecision, lf.lfQuality, 
+  Result := CreateFont(lf.lfHeight, lf.lfWidth,
+    lf.lfEscapement, lf.lfOrientation, lf.lfWeight,
+    lf.lfItalic, lf.lfUnderline, lf.lfStrikeOut, lf.lfCharSet,
+    lf.lfOutPrecision, lf.lfClipPrecision, lf.lfQuality,
     lf.lfPitchAndFamily, lf.lfFaceName);
 end;
-  
+
 (* Get the menu item caption including shortcut *)
 function CompleteMenuItemCaption(const aMenuItem: TMenuItem): string;
 begin
@@ -191,7 +194,7 @@ begin
   if aMenuItem.shortCut <> scNone then
     Result := Result  + ShortCutToText(aMenuItem.shortCut);
 end;
-  
+
 (* Get the maximum length of the given string in pixels *)
 function StringLength(const aCaption: String; const aHDC: HDC; const aDecoration:TCaptionFlagsSet): integer;
 var oldFont: HFONT;
@@ -207,7 +210,7 @@ begin
   DeleteObject(newFont);
   Result := TmpRect.right - TmpRect.left;
 end;
-  
+
 (* Get the maximum height of the given string in pixels *)
 function StringHeight(const aCaption: String; const aHDC: HDC; const aDecoration: TCaptionFlagsSet): integer;
 var oldFont: HFONT;
@@ -223,7 +226,7 @@ begin
   DeleteObject(newFont);
   Result := TmpRect.bottom - TmpRect.top;
 end;
-  
+
 function LeftIconPosition: integer;
 begin
   Result := GetSystemMetrics(SM_CXMENUCHECK);
@@ -397,7 +400,7 @@ begin
   TmpLength := aRect.right - aRect.left;
   TmpHeight := aRect.bottom - aRect.top;
   DrawText(aHDC, pChar(shortCutText), length(shortCutText), @aRect, DT_CALCRECT);
-  OffsetRect(aRect, TmpLength - (aRect.right - aRect.left) - GetSystemMetrics(SM_CXMENUCHECK), topPosition(TmpHeight, aRect.bottom - aRect.top)); 
+  OffsetRect(aRect, TmpLength - (aRect.right - aRect.left) - GetSystemMetrics(SM_CXMENUCHECK), topPosition(TmpHeight, aRect.bottom - aRect.top));
   DrawText(aHDC, pChar(shortCutText), length(shortCutText), @aRect, 0);
   SelectObject(aHDC, oldFont);
   DeleteObject(newFont);
@@ -436,7 +439,7 @@ begin
   lMenu := AMenuItem.GetParentMenu;
   if (lMenu<>nil) and (lMenu.Parent<>nil)
   and (lMenu.Parent is TCustomForm)
-  and TCustomForm(lMenu.Parent).HandleAllocated 
+  and TCustomForm(lMenu.Parent).HandleAllocated
   and not (csDestroying in lMenu.Parent.ComponentState) then
     AddToChangedMenus(TCustomForm(lMenu.Parent).Handle);
 end;
@@ -445,7 +448,7 @@ function ChangeMenuFlag(const AMenuItem: TMenuItem; Flag: Integer; Value: boolea
 var
   MenuInfo: MENUITEMINFO;
 begin
-  MenuInfo.cbSize := W95_MENUITEMINFO_SIZE;
+  MenuInfo.cbSize := menuiteminfosize;
   MenuInfo.fMask := MIIM_TYPE;
   MenuInfo.dwTypeData := nil;  // don't retrieve caption
   GetMenuItemInfo(AMenuItem.Parent.Handle, AMenuItem.Command, false, @MenuInfo);
@@ -461,12 +464,12 @@ end;
 { TWin32WSMenuItem }
 
 procedure UpdateCaption(const AMenuItem: TMenuItem; ACaption: String);
-var 
+var
   MenuInfo: MENUITEMINFO;
 begin
   with MenuInfo do
   begin
-    cbsize := W95_MENUITEMINFO_SIZE;
+    cbsize := menuiteminfosize;
     if ACaption <> '-' then
     begin
       fType := MFT_STRING;
@@ -479,7 +482,7 @@ begin
   SetMenuItemInfo(AMenuItem.Parent.Handle, AMenuItem.Command, false, @MenuInfo);
   with MenuInfo do
   begin
-    cbsize := W95_MENUITEMINFO_SIZE;
+    cbsize := menuiteminfosize;
     fMask := MIIM_TYPE;
     fType := MFT_OWNERDRAW;
     dwTypeData:=LPSTR(ACaption);
@@ -490,7 +493,7 @@ begin
 end;
 
 class procedure TWin32WSMenuItem.AttachMenu(const AMenuItem: TMenuItem);
-var 
+var
   MenuInfo: MENUITEMINFO;
   ParentMenuHandle: HMenu;
   ParentOfParent: HMenu;
@@ -503,7 +506,7 @@ begin
   begin
     ParentOfParent := AMenuItem.Parent.Parent.Handle;
     with MenuInfo do begin
-      cbSize := W95_MENUITEMINFO_SIZE;
+      cbSize := menuiteminfosize;
       fMask:=MIIM_SUBMENU;
     end;
     GetMenuItemInfo(ParentOfParent, AMenuItem.Parent.Command,
@@ -517,13 +520,13 @@ begin
   end;
 
   with MenuInfo do begin
-    cbsize := W95_MENUITEMINFO_SIZE;
+    cbsize := menuiteminfosize;
     if AMenuItem.Enabled then fState:=MFS_ENABLED else fstate:=MFS_GRAYED;
     if AMenuItem.Checked then fState:=fState or MFS_CHECKED;
     fMask:=MIIM_ID or MIIM_DATA or MIIM_STATE or MIIM_TYPE;
     wID:=AMenuItem.Command; {value may only be 16 bit wide!}
     dwItemData:=PtrInt(AMenuItem);
-    if (AMenuItem.Count > 0) then 
+    if (AMenuItem.Count > 0) then
     begin
       fMask := fMask or MIIM_SUBMENU;
       hSubMenu := AMenuItem.Handle;
@@ -563,7 +566,7 @@ class procedure TWin32WSMenuItem.SetCaption(const AMenuItem: TMenuItem; const AC
 begin
   UpdateCaption(AMenuItem, aCaption);
 end;
-  
+
 class procedure TWin32WSMenuItem.SetShortCut(const AMenuItem: TMenuItem;
   const OldShortCut, NewShortCut: TShortCut);
 begin
@@ -612,8 +615,12 @@ begin
   TrackPopupMenuEx(MenuHandle, TPM_LEFTALIGN or TPM_LEFTBUTTON or TPM_RIGHTBUTTON,
     X, Y, AppHandle, Nil);
 end;
-  
+
 initialization
+  if (Win32MajorVersion=4) and (Win32MinorVersion=0) then
+    menuiteminfosize:=W95_MENUITEMINFO_SIZE
+  else
+    menuiteminfosize:=sizeof(TMenuItemInfo);
 
 ////////////////////////////////////////////////////
 // I M P O R T A N T
