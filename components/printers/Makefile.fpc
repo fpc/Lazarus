@@ -25,7 +25,11 @@ ifndef LCL_PLATFORM
 ifeq ($(OS_TARGET),win32)
 LCL_PLATFORM=win32
 else
+ifeq ($(OS_TARGET),win64)
+LCL_PLATFORM=win32
+else
 LCL_PLATFORM=gtk
+endif
 endif
 endif
 export LCL_PLATFORM
