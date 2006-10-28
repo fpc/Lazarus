@@ -3417,12 +3417,15 @@ procedure DestroyCommonDialogAddOns(ADialog: TCommonDialog);
 var
   DlgWindow: PGtkWidget;
   HistoryList: TFPList; // list of TFileSelHistoryListEntry
-  FilterList: TFPList; // list of TFileSelFilterListEntry
   AHistoryEntry: PFileSelHistoryEntry;
-  AFilterEntry: PFileSelFilterEntry;
   i: integer;
   FileSelWidget: PGtkFileSelection;
-  LCLFilterMenu, LCLHistoryMenu: PGTKWidget;
+  LCLHistoryMenu: PGTKWidget;
+  {$IFDEF Gtk}
+  AFilterEntry: PFileSelFilterEntry;
+  FilterList: TFPList; // list of TFileSelFilterListEntry
+  LCLFilterMenu: PGTKWidget;
+  {$ENDIF}
 begin
 
   if (ADialog=nil) or (not ADialog.HandleAllocated) then exit;

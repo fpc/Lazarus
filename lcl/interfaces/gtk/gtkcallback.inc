@@ -967,6 +967,7 @@ var
   DesignOnlySignal: boolean;
 begin
   Result := CallBackDefaultReturn;
+  MousePositionValid:=false;
 
   {$IFDEF VerboseMouseBugfix}
   DesignOnlySignal:=GetDesignOnlySignalFlag(Widget,dstMouseMotion);
@@ -1003,6 +1004,7 @@ function GTKMotionNotifyAfter(widget:PGTKWidget; event: PGDKEventMotion;
   data: gPointer): GBoolean; cdecl;
 begin
   Result := CallBackDefaultReturn;
+  MousePositionValid:=false;
 
   {$IFDEF VerboseMouseBugfix}
   DebugLn('[GTKMotionNotifyAfter] ',
@@ -1220,6 +1222,8 @@ var
 
 begin
   if (Widget=nil) then ;
+  MousePositionValid:=false;
+
   EventXY:=Point(TruncToInt(Event^.X),TruncToInt(Event^.Y));
   ShiftState := GTKEventState2ShiftState(Event^.State);
   MappedXY:=TranslateGdkPointToClientArea(Event^.Window,EventXY,
@@ -1292,6 +1296,7 @@ end;
 -------------------------------------------------------------------------------}
 function gtkMouseBtnPress(widget: PGtkWidget; event: pgdkEventButton;
   data: gPointer) : GBoolean; cdecl;
+  
   procedure CheckListSelection;
   var
     List: PGlist;
@@ -1336,6 +1341,7 @@ var
   MappedXY: TPoint;
 begin
   Result := CallBackDefaultReturn;
+  MousePositionValid:=false;
 
   {$IFDEF VerboseMouseBugfix}
   DebugLn('');
@@ -1404,6 +1410,7 @@ function gtkMouseBtnPressAfter(widget: PGtkWidget; event : pgdkEventButton;
   data: gPointer) : GBoolean; cdecl;
 begin
   Result := CallBackDefaultReturn;
+  MousePositionValid:=false;
 
   {$IFDEF VerboseMouseBugfix}
   debugln('[gtkMouseBtnPressAfter] ',
@@ -1523,6 +1530,7 @@ var
   DesignOnlySignal: boolean;
 begin
   Result := CallBackDefaultReturn;
+  MousePositionValid:=false;
 
   {$IFDEF VerboseMouseBugfix}
   DesignOnlySignal:=GetDesignOnlySignalFlag(Widget,dstMouseRelease);
@@ -1570,6 +1578,7 @@ function gtkMouseBtnReleaseAfter(widget: PGtkWidget; event : pgdkEventButton;
   data: gPointer) : GBoolean; cdecl;
 begin
   Result := CallBackDefaultReturn;
+  MousePositionValid:=false;
 
   {$IFDEF VerboseMouseBugfix}
   DebugLn('[gtkMouseBtnReleaseAfter] ',DbgSName(TObject(Data)),' ',
@@ -2071,7 +2080,9 @@ var
 
 var
   AHistoryEntry: PFileSelHistoryEntry;
+  {$IFDEF Gtk1}
   FilterMenu, ActiveFilterMenuItem: PGtkWidget;
+  {$ENDIF}
 begin
   Result:=false;
   if (Data=nil) then ;

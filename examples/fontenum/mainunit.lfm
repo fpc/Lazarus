@@ -1,174 +1,186 @@
 object frmMain: TfrmMain
+  Left = 563
+  Height = 440
+  Top = 356
+  Width = 714
+  HorzScrollBar.Page = 713
+  VertScrollBar.Page = 439
+  ActiveControl = lbFamily
   Caption = 'frmMain'
   ClientHeight = 440
   ClientWidth = 714
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnShow = FormShow
-  PixelsPerInch = 75
   ShowHint = True
-  HorzScrollBar.Page = 713
-  VertScrollBar.Page = 439
-  Left = 33
-  Height = 440
-  Top = 28
-  Width = 714
   object Label3: TLabel
+    Left = 548
+    Height = 17
+    Top = 257
+    Width = 36
     Caption = 'Filtro'
     Color = clNone
-    Left = 548
-    Height = 12
-    Top = 257
-    Width = 28
+    ParentColor = False
   end
   object Label4: TLabel
+    Left = 216
+    Height = 17
+    Top = 16
+    Width = 94
     Caption = 'Face font list'
     Color = clNone
-    Left = 216
-    Height = 12
-    Top = 16
-    Width = 72
+    ParentColor = False
   end
   object Label5: TLabel
+    Left = 424
+    Height = 17
+    Top = 11
+    Width = 45
     Caption = 'Styles'
     Color = clNone
-    Left = 424
-    Height = 12
-    Top = 11
-    Width = 34
+    ParentColor = False
   end
   object Sizes: TLabel
+    Left = 648
+    Height = 17
+    Top = 11
+    Width = 40
     Caption = 'Sizes'
     Color = clNone
-    Left = 648
-    Height = 12
-    Top = 11
-    Width = 30
+    ParentColor = False
   end
   object lblCharset: TLabel
+    Left = 424
+    Height = 17
+    Top = 176
+    Width = 73
     Caption = 'lblCharset'
     Color = clNone
-    Left = 424
-    Height = 12
-    Top = 176
-    Width = 43
+    ParentColor = False
   end
   object Label6: TLabel
+    Left = 11
+    Height = 17
+    Top = 16
+    Width = 36
     Caption = 'Filter'
     Color = clNone
-    Left = 11
-    Height = 12
-    Top = 16
-    Width = 28
+    ParentColor = False
   end
   object lbFamily: TListBox
-    OnClick = lbFamilyClick
-    TabOrder = 0
-    TopIndex = -1
     Left = 216
     Height = 272
     Top = 32
     Width = 200
+    OnClick = lbFamilyClick
+    TabOrder = 0
+    TopIndex = -1
   end
   object cbCharset: TComboBox
-    MaxLength = 0
-    TabOrder = 1
-    Text = 'ANSI_CHARSET'
     Left = 8
     Height = 21
     Top = 37
     Width = 194
+    AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+    MaxLength = 0
+    TabOrder = 1
+    Text = 'ANSI_CHARSET'
   end
   object Button2: TButton
-    
-    Caption = 'apply filter'
-    OnClick = Button2Click
-    TabOrder = 2
     Left = 8
     Height = 25
     Top = 96
     Width = 75
+    BorderSpacing.InnerBorder = 4
+    Caption = 'apply filter'
+    OnClick = Button2Click
+    TabOrder = 2
   end
   object lbStyles: TListBox
-    OnClick = lbStylesClick
-    TabOrder = 3
-    TopIndex = -1
     Left = 424
     Height = 128
     Top = 32
     Width = 208
+    OnClick = lbStylesClick
+    TabOrder = 3
+    TopIndex = -1
   end
   object lbSizes: TListBox
-    OnClick = lbSizesClick
-    TabOrder = 4
-    TopIndex = -1
     Left = 640
     Height = 272
     Top = 32
     Width = 56
+    OnClick = lbSizesClick
+    TabOrder = 4
+    TopIndex = -1
   end
   object lbCharset: TListBox
-    OnClick = lbCharsetClick
-    TabOrder = 5
-    TopIndex = -1
     Left = 424
     Height = 112
     Top = 192
     Width = 208
+    OnClick = lbCharsetClick
+    TabOrder = 5
+    TopIndex = -1
   end
   object cbPitch: TComboBox
+    Left = 8
+    Height = 21
+    Top = 61
+    Width = 194
+    AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+    ItemIndex = 0
     Items.Strings = (
       'DEFAULT_PITCH'
       'FIXED_PITCH'
       'VARIABLE_PITCH'
       'MONO_FONT'
     )
-    ItemIndex = 0
     MaxLength = 0
     TabOrder = 6
     Text = 'DEFAULT_PITCH'
-    Left = 8
-    Height = 21
-    Top = 61
-    Width = 194
   end
   object BtnFontDlg: TButton
-    
-    Caption = 'Font Dlg'
-    OnClick = BtnFontDlgClick
-    TabOrder = 7
     Left = 56
     Height = 40
     Top = 368
     Width = 152
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Font Dlg'
+    OnClick = BtnFontDlgClick
+    TabOrder = 7
   end
   object chkStrike: TCheckBox
+    Left = 591
+    Height = 24
+    Top = 312
+    Width = 88
     Caption = 'Strikeout'
     TabOrder = 8
-    Left = 591
-    Height = 21
-    Top = 312
-    Width = 73
   end
   object chkUnderLine: TCheckBox
+    Left = 592
+    Height = 24
+    Top = 336
+    Width = 98
     Caption = 'UnderLine'
     TabOrder = 9
-    Left = 592
-    Height = 21
-    Top = 336
-    Width = 82
   end
   object Button1: TButton
-    
-    Caption = 'Reset Sample Text'
-    OnClick = Button1Click
-    TabOrder = 10
     Left = 56
     Height = 41
     Top = 312
     Width = 153
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Reset Sample Text'
+    OnClick = Button1Click
+    TabOrder = 10
   end
   object grid: TStringGrid
+    Left = 216
+    Height = 120
+    Top = 312
+    Width = 368
     AutoFillColumns = True
     ColCount = 1
     DefaultRowHeight = 17
@@ -179,15 +191,10 @@ object frmMain: TfrmMain
     Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goEditing, goSmoothScroll]
     RowCount = 5
     ScrollBars = ssAutoBoth
-    VisibleColCount = 1
-    VisibleRowCount = 5
-    Left = 216
-    Height = 120
-    Top = 312
-    Width = 368
+    TabOrder = 11
+    TabStop = True
   end
   object FontDialog1: TFontDialog
-    Title = 'Select a font'
     Title = 'Select a font'
     left = 312
     top = 384

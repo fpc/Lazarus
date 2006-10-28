@@ -1491,6 +1491,8 @@ type
     function GetTabOrder: TTabOrder;
     function GetVisibleDockClientCount: Integer;
     procedure SetChildSizing(const AValue: TControlChildSizing);
+    procedure SetClientHeight(const AValue: Integer);
+    procedure SetClientWidth(const AValue: Integer);
     procedure SetDockSite(const NewDockSite: Boolean);
     procedure SetHandle(NewHandle: HWND);
     procedure SetBorderWidth(Value: TBorderWidth);
@@ -1654,8 +1656,6 @@ type
     property Brush: TBrush read GetBrush;
     property CachedClientHeight: integer read FClientHeight;
     property CachedClientWidth: integer read FClientWidth;
-    property ClientWidth: Integer read GetClientWidth write SetClientWidth stored True;
-    property ClientHeight: Integer read GetClientHeight write SetClientHeight stored True;
     property ChildSizing: TControlChildSizing read FChildSizing write SetChildSizing;
     property ControlCount: Integer read GetControlCount;
     property Controls[Index: Integer]: TControl read GetControl;
@@ -1693,11 +1693,13 @@ type
     procedure EndUpdateBounds;
     procedure LockRealizeBounds;
     procedure UnlockRealizeBounds;
-    Function ControlAtPos(const Pos: TPoint; AllowDisabled: Boolean): TControl;
-    Function ControlAtPos(const Pos: TPoint;
-      AllowDisabled, AllowWinControls: Boolean): TControl;
-    Function ControlAtPos(const Pos: TPoint;
-      AllowDisabled, AllowWinControls, OnlyClientAreas: Boolean): TControl; virtual;
+    function ControlAtPos(const Pos: TPoint; AllowDisabled: Boolean): TControl;
+    function ControlAtPos(const Pos: TPoint;
+                          AllowDisabled, AllowWinControls: Boolean): TControl;
+    function ControlAtPos(const Pos: TPoint;
+                          AllowDisabled, AllowWinControls, OnlyClientAreas: Boolean): TControl;
+    function ControlAtPos(const Pos: TPoint;
+                          AllowDisabled, AllowWinControls, OnlyClientAreas, Recursive: Boolean): TControl; virtual;
     function  ContainsControl(Control: TControl): Boolean;
     procedure DoAdjustClientRectChange;
     procedure InvalidateClientRectCache(WithChildControls: boolean);
@@ -2402,7 +2404,8 @@ begin
   then begin
     Result := WinControl;
     Control := WinControl.ControlAtPos(WinControl.ScreenToClient(Position),
-                                       AllowDisabled,true);
+                                       AllowDisabled,true,false,true);
+    //debugln(['FindControlAtPosition ',dbgs(Position),' ',DbgSName(WinControl),' ',dbgs(WinControl.ScreenToClient(Position)),' ',DbgSName(Control)]);
     if Control <> nil then Result := Control;
   end;
 end;

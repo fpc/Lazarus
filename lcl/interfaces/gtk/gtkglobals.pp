@@ -56,6 +56,9 @@ var
   MouseCaptureWidget: PGtkWidget;
   MouseCaptureType: TMouseCaptureType;
   MouseCaptureIndex: cardinal;
+  MousePositionValid: boolean = false;
+  MousePosition: TPoint;
+  MousePositionTime: TDateTime;
 
 const
   DblClickTime = 250;// 250 miliseconds or less between clicks is a double click

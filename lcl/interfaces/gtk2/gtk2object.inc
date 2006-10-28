@@ -843,9 +843,9 @@ procedure TGtk2WidgetSet.InitializeOpenDialog(OpenDialog: TOpenDialog;
 var
   FileSelWidget: PGtkFileChooser;
   HelpButton: PGtkWidget;
-  FrameWidget: PGtkWidget;
-  HBox: PGtkWidget;
-  FileDetailLabel: PGtkWidget;
+  //FrameWidget: PGtkWidget;
+  //HBox: PGtkWidget;
+  //FileDetailLabel: PGtkWidget;
 begin
   FileSelWidget := GTK_FILE_CHOOSER(SelWidget);
 
@@ -866,7 +866,7 @@ begin
   // Filter
   CreateOpenDialogFilter(OpenDialog,SelWidget);
 
-  (*
+  (*  TODO
   // Details - a frame with a label
   if (ofViewDetail in OpenDialog.Options) then begin
 
@@ -950,7 +950,6 @@ function TGtk2WidgetSet.CreateOpenDialogFilter(OpenDialog: TOpenDialog;
 var
   FilterList: TFPList;
   i, j, k: integer;
-  s: String;
   GtkFilter: PGtkFileFilter;
   MaskList: TStringList;
 begin

@@ -3171,10 +3171,16 @@ begin
   Result := ControlAtPos(Pos,AllowDisabled,AllowWinControls,true);
 end;
 
+function TWinControl.ControlAtPos(const Pos: TPoint; AllowDisabled,
+  AllowWinControls, OnlyClientAreas: Boolean): TControl;
+begin
+  Result := ControlAtPos(Pos,AllowDisabled,AllowWinControls,true,false);
+end;
+
 {------------------------------------------------------------------------------
   TWinControl ControlAtPos
   Params: const Pos : TPoint
-          AllowDisabled, AllowWinControls: Boolean
+          AllowDisabled, AllowWinControls, OnlyClientAreas, Recursive: Boolean
   Results: TControl
 
   Searches a child (not grand child) control, which contains Pos.
@@ -3182,9 +3188,10 @@ end;
   If AllowDisabled is true it will also search in disabled controls.
   If AllowWinControls is true it will also search in the child wincontrols.
   If OnlyClientAreas is true then only the client areas are compared.
+  If Recursive is true then continue in the child controls.
 ------------------------------------------------------------------------------}
 function TWinControl.ControlAtPos(const Pos: TPoint; AllowDisabled,
-  AllowWinControls, OnlyClientAreas: Boolean): TControl;
+  AllowWinControls, OnlyClientAreas, Recursive: Boolean): TControl;
 var
   I: Integer;
   P: TPoint;
@@ -3230,12 +3237,14 @@ var
              )
             );
       {$IFDEF VerboseMouseBugfix}
-      DebugLn('GetControlAtPos ',Name,':',ClassName,
+      //if Result then
+      DebugLn(['GetControlAtPos ',Name,':',ClassName,
       ' Pos=',Pos.X,',',Pos.Y,
       ' P=',P.X,',',P.Y,
+      ' ControlPos=',dbgs(ControlPos),
       ' ClientBounds=',ClientBounds.Left,',',ClientBounds.Top,',',ClientBounds.Right,',',ClientBounds.Bottom,
       ' OnlyCl=',OnlyClientAreas,
-      ' Result=',Result);
+      ' Result=',Result]);
       {$ENDIF}
       if Result then
         LControl := AControl;
@@ -3244,10 +3253,17 @@ var
 
 var
   ScrolledOffset: TPoint;
+  OldClientOrigin: TPoint;
+  NewClientOrigin: TPoint;
+  NewPos: TPoint;
 begin
+  //debugln(['TWinControl.ControlAtPos START ',DbgSName(Self),' P=',dbgs(Pos)]);
+
   // check if Pos in visible client area
   ClientBounds:=GetClientRect;
   if not PtInRect(ClientBounds,Pos) then begin
+    //debugln(['TWinControl.ControlAtPos OUT OF CLIENTBOUNDS ',DbgSName(Self),' P=',dbgs(Pos),' ClientBounds=',dbgs(ClientBounds)]);
+    //DumpStack;
     Result:=nil;
     exit;
   end;
@@ -3268,6 +3284,22 @@ begin
       if GetControlAtPos(TControl(FControls[I])) then
         Break;
   Result := LControl;
+  
+  // check recursive sub childs
+  if Recursive and (Result is TWinControl)
+  and (TWinControl(Result).ControlCount>0) then begin
+    OldClientOrigin:=ClientOrigin;
+    NewClientOrigin:=TWinControl(Result).ClientOrigin;
+    NewPos:=Pos;
+    NewPos.X:=NewPos.X-NewClientOrigin.X+OldClientOrigin.X;
+    NewPos.Y:=NewPos.Y-NewClientOrigin.Y+OldClientOrigin.Y;
+    LControl:=TWinControl(Result).ControlAtPos(NewPos,
+                           AllowDisabled,AllowWinControls,OnlyClientAreas,true);
+    //debugln(['TWinControl.RECURSED ControlAtPos Result=',DbgSName(Result),' LControl=',DbgSName(LControl),' ',dbgs(NewPos),' AllowDisabled=',AllowDisabled,' OnlyClientAreas=',OnlyClientAreas]);
+    if LControl<>nil then
+      Result:=LControl;
+  end;
+  //debugln(['TWinControl.ControlAtPos END ',DbgSName(Self),' P=',dbgs(Pos),' Result=',DbgSName(Result)]);
 end;
 
 {-------------------------------------------------------------------------------
@@ -4373,9 +4405,9 @@ begin
   Result:=FBrush;
 end;
 
-{------------------------------------------------------------------------------}
-{  TWinControl GetControl                                                      }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  TWinControl GetControl
+------------------------------------------------------------------------------}
 function TWinControl.GetControl(const Index: Integer): TControl;
 var
   N: Integer;
@@ -4390,9 +4422,9 @@ begin
     Result := TControl(FWinControls[Index - N]);
 end;
 
-{------------------------------------------------------------------------------}
-{  TWinControl GetControlCount                                                 }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  TWinControl GetControlCount
+------------------------------------------------------------------------------}
 function TWinControl.GetControlCount: Integer;
 begin
   Result := 0;
@@ -5580,6 +5612,16 @@ procedure TWinControl.SetChildSizing(const AValue: TControlChildSizing);
 begin
   if (FChildSizing=AValue) then exit;
   FChildSizing.Assign(AValue);
+end;
+
+procedure TWinControl.SetClientHeight(const AValue: Integer);
+begin
+
+end;
+
+procedure TWinControl.SetClientWidth(const AValue: Integer);
+begin
+
 end;
 
 {------------------------------------------------------------------------------

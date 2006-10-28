@@ -30,7 +30,7 @@
   How was the example created:
       Put a THTMLHelpDatabase on a form.
       Set AutoRegister to true.
-      Set KeywordPrefix to 'HTML/'
+      Set KeywordPrefix to 'HTML/'                                an
       Set BaseURL to 'file://html/'
 
       Put a THTMLBrowserHelpViewer on the form.
@@ -65,6 +65,7 @@ type
     Edit2: TEdit;
     HTMLBrowserHelpViewer1: THTMLBrowserHelpViewer;
     HTMLHelpDatabase1: THTMLHelpDatabase;
+    procedure FormCreate(Sender: TObject);
     procedure HelpButtonClick(Sender: TObject);
   private
     { private declarations }
@@ -83,6 +84,11 @@ procedure TForm1.HelpButtonClick(Sender: TObject);
 begin
   // This demonstrates how to show a help item manually:
   ShowHelpOrErrorForKeyword('','HTML/index.html');
+end;
+
+procedure TForm1.FormCreate(Sender: TObject);
+begin
+  HTMLHelpDatabase1.BaseURL:='/usr';
 end;
 
 initialization

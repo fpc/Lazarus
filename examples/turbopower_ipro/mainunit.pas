@@ -3,7 +3,7 @@ unit MainUnit;
 {$mode objfpc}{$H+}
 
 {.$define UsePreview}
-{.$define UseJPEG}
+{$define UseJPEG}
 
 interface
 

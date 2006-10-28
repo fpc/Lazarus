@@ -94,6 +94,9 @@ fi
 # build fpc_crosswin32 deb
 if [ $BuildCrossWin32DEB = "yes" ]; then
 
+  # check if bison is there
+  fakeroot -v
+
   #----------------------------------------------------------------------------
   # retrieve the version information
   #----------------------------------------------------------------------------

@@ -562,8 +562,7 @@ type
         var BinCompStream: TExtMemoryStream): TModalResult;
     function DoRemoveDanglingEvents(AnUnitInfo: TUnitInfo;
         OkOnCodeErrors: boolean): TModalResult;
-    function DoRenameUnit(AnUnitInfo: TUnitInfo;
-        NewFilename, NewUnitName: string;
+    function DoRenameUnit(AnUnitInfo: TUnitInfo; NewFilename, NewUnitName: string;
         var ResourceCode: TCodeBuffer): TModalresult;
 
     // methods for 'open unit' and 'open main unit'
@@ -3857,8 +3856,10 @@ var
   SrcEdit: TSourceEditor;
   FileWithoutPath: String;
   PkgDefaultDirectory: String;
+  OldUnitName: String;
 begin
   SrcEdit:=GetSourceEditorForUnitInfo(AnUnitInfo);
+  //debugln('TMainIDE.DoShowSaveFileAsDialog ',AnUnitInfo.Filename);
 
   // try to keep the old filename and extension
   SaveAsFileExt:=ExtractFileExt(AnUnitInfo.FileName);
@@ -3870,8 +3871,9 @@ begin
       SaveAsFileExt:=EditorOpts.HighlighterList.GetDefaultFilextension(
                          SrcEdit.SyntaxHighlighterType);
   end;
-  AnUnitInfo.ReadUnitNameFromSource(true);
-  SaveAsFilename:=AnUnitInfo.UnitName;
+  OldUnitName:=AnUnitInfo.ParseUnitNameFromSource(false);
+  //debugln('TMainIDE.DoShowSaveFileAsDialog sourceunitname=',OldUnitName);
+  SaveAsFilename:=OldUnitName;
   if SaveAsFilename='' then
     SaveAsFilename:=ExtractFileNameOnly(AnUnitInfo.Filename);
   if SaveAsFilename='' then
@@ -4410,6 +4412,7 @@ begin
   SrcEdit:=GetSourceEditorForUnitInfo(AnUnitInfo);
   if NewUnitName='' then
     NewUnitName:=AnUnitInfo.UnitName;
+  //debugln('TMainIDE.DoRenameUnit ',AnUnitInfo.Filename,' NewUnitName=',NewUnitName,' OldUnitName=',AnUnitInfo.UnitName);
 
   // check new resource file
   if AnUnitInfo.ComponentName='' then begin

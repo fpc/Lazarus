@@ -407,15 +407,13 @@ begin
   BuildTree(false);
   SectionNode:=Tree.Root;
   while (SectionNode<>nil) and (SectionNode.Desc in [ctnProgram, ctnUnit,
-    ctnPackage,ctnLibrary,ctnInterface,ctnImplementation]) do begin
-    if SectionNode.Desc in [ctnProgram, ctnInterface, ctnImplementation] then
-    begin
-      UsesNode:=SectionNode.FirstChild;
-      if (UsesNode<>nil) and (UsesNode.Desc=ctnUsesSection)
-      and FindUnitInUsesSection(UsesNode,UpperUnitName,NamePos,InPos) then begin
-        Result:=true;
-        exit;
-      end;
+    ctnPackage,ctnLibrary,ctnInterface,ctnImplementation])
+  do begin
+    UsesNode:=SectionNode.FirstChild;
+    if (UsesNode<>nil) and (UsesNode.Desc=ctnUsesSection)
+    and FindUnitInUsesSection(UsesNode,UpperUnitName,NamePos,InPos) then begin
+      Result:=true;
+      exit;
     end;
     SectionNode:=SectionNode.NextBrother;
   end;
@@ -430,7 +428,10 @@ begin
   Result:=false;
   if (OldUpperUnitName='') or (length(OldUpperUnitName)>255) or (NewUnitName='')
   or (length(NewUnitName)>255) then exit;
-  if not FindUnitInAllUsesSections(OldUpperUnitName,UnitPos,InPos) then exit;
+  if not FindUnitInAllUsesSections(OldUpperUnitName,UnitPos,InPos) then begin
+    //debugln('TStandardCodeTool.RenameUsedUnit not found: ',OldUpperUnitName,' ');
+    exit;
+  end;
   SourceChangeCache.MainScanner:=Scanner;
   if InPos.StartPos>0 then
     UnitPos.EndPos:=InPos.EndPos;

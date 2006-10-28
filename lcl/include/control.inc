@@ -492,22 +492,6 @@ begin
   end;
 end;
 
-{------------------------------------------------------------------------------}
-{       TControl.GetClientHeight                                               }
-{------------------------------------------------------------------------------}
-function TControl.GetClientHeight: Integer;
-begin
-  Result := ClientRect.Bottom;
-end;
-
-{------------------------------------------------------------------------------}
-{       TControl.GetClientWidth                                                }
-{------------------------------------------------------------------------------}
-function TControl.GetClientWidth: Integer;
-begin
-  Result := ClientRect.Right;
-end;
-
 {------------------------------------------------------------------------------
   procedure TControl.CalculateDockSizes;
 
@@ -1228,6 +1212,16 @@ Begin
   Result.Top := FTop;
   Result.Right := FLeft+FWidth;
   Result.Bottom := FTop+FHeight;
+end;
+
+function TControl.GetClientHeight: Integer;
+begin
+  Result:=ClientRect.Bottom;
+end;
+
+function TControl.GetClientWidth: Integer;
+begin
+  Result:=ClientRect.Right;
 end;
 
 {------------------------------------------------------------------------------}
@@ -2919,14 +2913,13 @@ Begin
 end;
 
 
-{------------------------------------------------------------------------------}
-{  TControl WMMouseMove
-}
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  TControl WMMouseMove
+------------------------------------------------------------------------------}
 Procedure TControl.WMMouseMove(Var Message: TLMMouseMove);
 Begin
   {$IFDEF VerboseMouseBugfix}
-  DebugLn('[TControl.WMMouseMove] ',Name,':',ClassName,' ',Message.XPos,',',Message.YPos);
+  DebugLn(['[TControl.WMMouseMove] ',Name,':',ClassName,' ',Message.XPos,',',Message.YPos]);
   {$ENDIF}
   DoBeforeMouseMessage;
   if not (csNoStdEvents in ControlStyle)

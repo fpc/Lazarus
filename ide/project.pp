@@ -216,6 +216,7 @@ type
     procedure IncreaseAutoRevertLock;
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string;
                                 Merge: boolean);
+    function ParseUnitNameFromSource(TryCache: boolean): string;
     procedure ReadUnitNameFromSource(TryCache: boolean);
     function CreateUnitName: string;
     procedure ImproveUnitNameCache(const NewUnitName: string);
@@ -898,25 +899,9 @@ procedure TUnitInfo.ReadUnitNameFromSource(TryCache: boolean);
 var
   NewUnitName: String;
 begin
-  NewUnitName:='';
-  if TryCache then
-    NewUnitName:=CodeToolBoss.GetCachedSourceName(Source);
-  if NewUnitName='' then
-    NewUnitName:=CodeToolBoss.GetSourceName(fSource,false);
-  if NewUnitName='' then begin
-    // unable to parse the source
-    if FilenameIsPascalSource(Filename) then begin
-      // use default: the filename
-      NewUnitName:=ExtractFileNameOnly(Filename);
-      if CompareText(NewUnitName,fUnitName)=0 then begin
-        // the last stored unitname has the better case
-        exit;
-      end;
-    end;
-  end;
-  if NewUnitName<>'' then begin
+  NewUnitName:=ParseUnitNameFromSource(TryCache);
+  if NewUnitName<>'' then
     fUnitName:=NewUnitName;
-  end;
 end;
 
 function TUnitInfo.CreateUnitName: string;
@@ -1079,13 +1064,37 @@ begin
   FBookmarks.LoadFromXMLConfig(XMLConfig,Path+'Bookmarks/');
 end;
 
+function TUnitInfo.ParseUnitNameFromSource(TryCache: boolean): string;
+begin
+  Result:='';
+  if TryCache then
+    Result:=CodeToolBoss.GetCachedSourceName(Source);
+  if Result='' then
+    Result:=CodeToolBoss.GetSourceName(fSource,false);
+  if Result='' then begin
+    // unable to parse the source
+    if FilenameIsPascalSource(Filename) then begin
+      // use default: the filename
+      Result:=ExtractFileNameOnly(Filename);
+      if CompareText(Result,fUnitName)=0 then begin
+        // the last stored unitname has the better case
+        Result:=fUnitName;
+      end;
+    end;
+  end;
+end;
+
 procedure TUnitInfo.SetUnitName(const NewUnitName:string);
 var Allowed:boolean;
+  OldUnitName: String;
 begin
   if (fUnitName<>NewUnitName) and (NewUnitName<>'') then begin
     Allowed:=true;
+    OldUnitName:=fUnitName;
+    if OldUnitName='' then
+      OldUnitName:=ExtractFileNameOnly(Filename);
     if Assigned(FOnUnitNameChange) then
-      FOnUnitNameChange(Self,fUnitName,NewUnitName,false,Allowed);
+      FOnUnitNameChange(Self,OldUnitName,NewUnitName,false,Allowed);
     // (ignore Allowed)
     if (fSource<>nil) then begin
       CodeToolBoss.RenameSource(fSource,NewUnitName);
@@ -3366,7 +3375,7 @@ begin
       for i:=0 to UnitCount-1 do begin
         if (Units[i].IsPartOfProject)
         and (Units[i]<>AnUnitInfo) and (Units[i].UnitName<>'')
-        and (lowercase(Units[i].UnitName)=lowercase(NewUnitName)) then begin
+        and (CompareText(Units[i].UnitName,NewUnitName)=0) then begin
           Allowed:=false;
           exit;
         end;

@@ -1,22 +1,24 @@
+{ Das ist eine automatisch erzeugte Lazarus-Ressourcendatei }
+
 LazarusResources.Add('TMainForm','FORMDATA',[
-  'TPF0'#9'TMainForm'#8'MainForm'#13'ActiveControl'#7#19'OpenHTMLFileButton1'#7
-  +'Caption'#6'0Example for turbopower internet pro HTML control'#12'ClientHeig'
-  +'ht'#3'G'#1#11'ClientWidth'#3'9'#2#8'OnCreate'#7#14'MainFormCreate'#13'Pixel'
-  +'sPerInch'#2'`'#18'HorzScrollBar.Page'#3'8'#2#18'VertScrollBar.Page'#3'F'#1#4
-  +'Left'#2'i'#6'Height'#3'G'#1#3'Top'#2'm'#5'Width'#3'9'#2#0#12'TIpHtmlPanel'
-  +#12'IpHtmlPanel1'#5'Align'#7#8'alClient'#13'FixedTypeface'#6#11'Courier New'
-  +#15'DefaultTypeFace'#6#7'default'#24'PrintSettings.MarginLeft'#5#0#0#0#0#0#0
-  +#0#128#254'?'#23'PrintSettings.MarginTop'#5#0#0#0#0#0#0#0#128#254'?'#25'Prin'
-  +'tSettings.MarginRight'#5#0#0#0#0#0#0#0#128#254'?'#26'PrintSettings.MarginBo'
-  +'ttom'#5#0#0#0#0#0#0#0#128#254'?'#10'OnHotClick'#7#20'IpHtmlPanel1HotClick'#6
-  +'Height'#3#29#1#3'Top'#2'*'#5'Width'#3'9'#2#0#0#6'TPanel'#6'Panel1'#5'Align'
-  +#7#5'alTop'#12'ClientHeight'#2'*'#11'ClientWidth'#3'9'#2#8'TabOrder'#2#0#6'H'
-  +'eight'#2'*'#5'Width'#3'9'#2#0#7'TButton'#19'OpenHTMLFileButton1'#7'Caption'
-  +#6#14'Open HTML File'#7'OnClick'#7#23'OpenHTMLFileButtonClick'#8'TabOrder'#2
-  +#0#4'Left'#2#16#6'Height'#2#26#3'Top'#2#8#5'Width'#3#152#0#0#0#7'TButton'#7
-  +'Button1'#7'Caption'#6#7'Preview'#7'OnClick'#7#12'Button1Click'#8'TabOrder'#2
-  +#1#4'Left'#3#183#0#6'Height'#2#25#3'Top'#2#8#5'Width'#2'K'#0#0#0#11'TOpenDia'
-  +'log'#11'OpenDialog1'#5'Title'#6#18'Open existing file'#6'Filter'#6#22'Web P'
-  +'ages|*.html;*.htm'#11'FilterIndex'#2#0#5'Title'#6#18'Open existing file'#4
-  +'left'#2#26#3'top'#2']'#0#0#0
+  'TPF0'#9'TMainForm'#8'MainForm'#4'Left'#3';'#1#6'Height'#3'G'#1#3'Top'#3#177#0
+  +#5'Width'#3'9'#2#18'HorzScrollBar.Page'#3'8'#2#18'VertScrollBar.Page'#3'F'#1
+  +#13'ActiveControl'#7#19'OpenHTMLFileButton1'#7'Caption'#6'0Example for turbo'
+  +'power internet pro HTML control'#12'ClientHeight'#3'G'#1#11'ClientWidth'#3
+  +'9'#2#8'OnCreate'#7#14'MainFormCreate'#0#12'TIpHtmlPanel'#12'IpHtmlPanel1'#6
+  +'Height'#3#29#1#3'Top'#2'*'#5'Width'#3'9'#2#5'Align'#7#8'alClient'#13'FixedT'
+  +'ypeface'#6#11'Courier New'#15'DefaultTypeFace'#6#7'default'#24'PrintSetting'
+  +'s.MarginLeft'#5#0#0#0#0#0#0#0#128#254'?'#23'PrintSettings.MarginTop'#5#0#0#0
+  +#0#0#0#0#128#254'?'#25'PrintSettings.MarginRight'#5#0#0#0#0#0#0#0#128#254'?'
+  +#26'PrintSettings.MarginBottom'#5#0#0#0#0#0#0#0#128#254'?'#10'OnHotClick'#7
+  +#20'IpHtmlPanel1HotClick'#0#0#6'TPanel'#6'Panel1'#6'Height'#2'*'#5'Width'#3
+  +'9'#2#5'Align'#7#5'alTop'#12'ClientHeight'#2'*'#11'ClientWidth'#3'9'#2#8'Tab'
+  +'Order'#2#0#0#7'TButton'#19'OpenHTMLFileButton1'#4'Left'#2#16#6'Height'#2#26
+  +#3'Top'#2#8#5'Width'#3#152#0#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6
+  +#14'Open HTML File'#7'OnClick'#7#23'OpenHTMLFileButtonClick'#8'TabOrder'#2#0
+  +#0#0#7'TButton'#7'Button1'#4'Left'#3#183#0#6'Height'#2#25#3'Top'#2#8#5'Width'
+  +#2'K'#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6#7'Preview'#7'OnClick'#7
+  +#12'Button1Click'#8'TabOrder'#2#1#0#0#0#11'TOpenDialog'#11'OpenDialog1'#5'Ti'
+  +'tle'#6#18'Open existing file'#6'Filter'#6#22'Web Pages|*.html;*.htm'#11'Fil'
+  +'terIndex'#2#0#4'left'#2#26#3'top'#2']'#0#0#0
 ]);

@@ -409,6 +409,7 @@ var
   P: TPoint;
 begin
   GetCursorPos(P);
+  //debugln(['TApplication.GetControlAtMouse p=',dbgs(p),' FLastMousePos=',dbgs(FLastMousePos)]);
   if FLastMouseControlValid and (P.X=FLastMousePos.x) and (P.Y=FLastMousePos.Y)
   then
     Result := FLastMouseControl
@@ -443,16 +444,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TApplication.UpdateMouseControl(NewMouseControl: TControl);
 begin
+  //debugln(['TApplication.UpdateMouseControl Old=',DbgSName(FMouseControl),' New=',DbgSName(NewMouseControl)]);
   if FMouseControl=NewMouseControl then exit;
-  {write('TApplication.UpdateMouseControl A ');
-  if FMouseControl<>nil then
-    write(' Old=',FMouseControl.Name,':',FMouseControl.ClassName)
-  else
-    write(' Old=nil');
-  if NewMouseControl<>nil then
-    DebugLn' New=',NewMouseControl.Name,':',NewMouseControl.ClassName)
-  else
-    DebugLn' New=nil');}
   if (FMouseControl<>nil) then begin
     //DebugLn' MOUSELEAVE=',FMouseControl.Name,':',FMouseControl.ClassName);
     FMouseControl.Perform(CM_MOUSELEAVE, 0, 0);
@@ -1404,6 +1397,7 @@ end;
 ------------------------------------------------------------------------------}
 procedure TApplication.DoBeforeMouseMessage(CurMouseControl: TControl);
 begin
+  //debugln(['TApplication.DoBeforeMouseMessage ',DbgSName(CurMouseControl)]);
   UpdateMouseControl(GetControlAtMouse);
 end;
 

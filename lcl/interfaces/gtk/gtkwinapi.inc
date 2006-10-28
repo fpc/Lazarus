@@ -4706,27 +4706,36 @@ end;
   Returns: True if succesful
 
  ------------------------------------------------------------------------------}
-function TGtkWidgetSet.GetCursorPos(var lpPoint: TPoint ): Boolean;
+function TGtkWidgetSet.GetCursorPos(var lpPoint: TPoint): Boolean;
 {$IFDEF unix}
 var
   dpy: PDisplay;
   root, child: twindow;
   winx, winy: Integer;
   xmask: Cardinal;
-
 begin
   Result := False;
-  {$IFDEF DebugGDKTraps}
-  BeginGDKErrorTrap;
-  {$ENDIF}
-  try
-    dpy := gdk_display;
-    XQueryPointer(dpy, RootWindow(dpy, DefaultScreen(dpy)), @root, @child,
-                                      @lpPoint.X,@lpPoint.Y,@winx,@winy,@xmask);
-    Result := True;
-  finally
-    {$IFDEF DebugGDKTraps}EndGDKErrorTrap;{$ENDIF}
+  if (not MousePositionValid) or (Abs(MousePositionTime-Now)>1/864000) then
+  begin
+    // querying the X cursor is expensive (especially on network connections)
+    // => use a lazy query
+    {$IFDEF DebugGDKTraps}
+    BeginGDKErrorTrap;
+    try
+    {$ENDIF}
+      dpy := gdk_display;
+      XQueryPointer(dpy, RootWindow(dpy, DefaultScreen(dpy)), @root, @child,
+                          @MousePosition.X,@MousePosition.Y,@winx,@winy,@xmask);
+      Result := True;
+    {$IFDEF DebugGDKTraps}
+    finally
+      EndGDKErrorTrap;
+    end;
+    {$ENDIF}
+    MousePositionTime:=Now;
+    MousePositionValid:=true;
   end;
+  lpPoint:=MousePosition;
 end;
 {$ELSE}
 begin

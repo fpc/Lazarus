@@ -47,7 +47,7 @@
         <IsPartOfProject Value="True"/>
         <ResourceFilename Value="frmmain.lrs"/>
         <UnitName Value="frmmain"/>
-        <CursorPos X="14" Y="33"/>
+        <CursorPos X="28" Y="21"/>
         <TopLine Value="1"/>
         <EditorIndex Value="0"/>
         <UsageCount Value="32"/>

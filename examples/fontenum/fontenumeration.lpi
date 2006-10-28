@@ -13,28 +13,6 @@
       <Title Value="project1"/>
       <ActiveEditorIndexAtStart Value="0"/>
     </General>
-    <Units Count="2">
-      <Unit0>
-        <CursorPos X="44" Y="15"/>
-        <Filename Value="fontenumeration.lpr"/>
-        <IsPartOfProject Value="True"/>
-        <TopLine Value="1"/>
-        <UnitName Value="fontenumeration"/>
-        <UsageCount Value="158"/>
-      </Unit0>
-      <Unit1>
-        <CursorPos X="55" Y="554"/>
-        <EditorIndex Value="0"/>
-        <Filename Value="mainunit.pas"/>
-        <ComponentName Value="frmMain"/>
-        <IsPartOfProject Value="True"/>
-        <Loaded Value="True"/>
-        <ResourceFilename Value="mainunit.lrs"/>
-        <TopLine Value="118"/>
-        <UnitName Value="mainunit"/>
-        <UsageCount Value="158"/>
-      </Unit1>
-    </Units>
     <PublishOptions>
       <Version Value="2"/>
       <DestinationDirectory Value="$(ProjPath)/published"/>
@@ -53,6 +31,28 @@
         <PackageName Value="LCL"/>
       </Item1>
     </RequiredPackages>
+    <Units Count="2">
+      <Unit0>
+        <Filename Value="fontenumeration.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="fontenumeration"/>
+        <CursorPos X="44" Y="15"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="158"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="mainunit.pas"/>
+        <ComponentName Value="frmMain"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceFilename Value="mainunit.lrs"/>
+        <UnitName Value="mainunit"/>
+        <CursorPos X="55" Y="554"/>
+        <TopLine Value="118"/>
+        <EditorIndex Value="0"/>
+        <UsageCount Value="158"/>
+        <Loaded Value="True"/>
+      </Unit1>
+    </Units>
     <JumpHistory Count="0" HistoryIndex="-1"/>
   </ProjectOptions>
   <CompilerOptions>

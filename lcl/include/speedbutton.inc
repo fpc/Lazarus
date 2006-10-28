@@ -648,6 +648,7 @@ begin
 
     if NewState <> FState
     then begin
+      //debugln(['TCustomSpeedButton.MouseMove ',DbgSName(Self),' fState=',ord(fstate),' NewState=',ord(NewState)]);
       FState := NewState;
       Invalidate;
     end;

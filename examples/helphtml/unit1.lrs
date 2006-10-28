@@ -1,17 +1,20 @@
+{ Das ist eine automatisch erzeugte Lazarus-Ressourcendatei }
+
 LazarusResources.Add('TForm1','FORMDATA',[
-  'TPF0'#6'TForm1'#5'Form1'#7'Caption'#6#5'Form1'#12'ClientHeight'#3','#1#11'Cl'
-  +'ientWidth'#3#144#1#13'PixelsPerInch'#2'p'#18'HorzScrollBar.Page'#3#143#1#18
-  +'VertScrollBar.Page'#3'+'#1#4'Left'#3'"'#1#6'Height'#3','#1#3'Top'#3#163#0#5
-  +'Width'#3#144#1#0#5'TEdit'#5'Edit1'#8'TabOrder'#2#0#4'Text'#6#25'Edit1 - Pre'
-  +'ss F1 for help'#4'Left'#2'<'#6'Height'#2#23#3'Top'#2'('#5'Width'#3#207#0#8
-  +'HelpType'#7#9'htKeyword'#11'HelpKeyword'#6#15'HTML/edit1.html'#0#0#5'TEdit'
-  +#5'Edit2'#8'TabOrder'#2#1#4'Text'#6#25'Edit2 - Press F1 for help'#4'Left'#2
-  +'<'#6'Height'#2#23#3'Top'#2'_'#5'Width'#3#207#0#8'HelpType'#7#9'htKeyword'#11
-  +'HelpKeyword'#6#15'HTML/edit2.html'#0#0#7'TButton'#10'HelpButton'#7'Caption'
-  +#6#4'Help'#7'OnClick'#7#15'HelpButtonClick'#8'TabOrder'#2#2#4'Left'#2'<'#6'H'
-  +'eight'#2#25#3'Top'#3#155#0#5'Width'#2'b'#0#0#17'THTMLHelpDatabase'#17'HTMLH'
-  +'elpDatabase1'#7'BaseURL'#6#12'file://html/'#12'AutoRegister'#9#13'KeywordPr'
-  +'efix'#6#5'HTML/'#4'left'#3#200#0#3'top'#2'n'#0#0#22'THTMLBrowserHelpViewer'
-  +#22'HTMLBrowserHelpViewer1'#13'BrowserParams'#6#2'%s'#12'AutoRegister'#9#4'l'
-  +'eft'#3#200#0#3'top'#3#175#0#0#0#0
+  'TPF0'#6'TForm1'#5'Form1'#4'Left'#3'"'#1#6'Height'#3','#1#3'Top'#3#163#0#5'Wi'
+  +'dth'#3#144#1#18'HorzScrollBar.Page'#3#143#1#18'VertScrollBar.Page'#3'+'#1#13
+  +'ActiveControl'#7#5'Edit1'#7'Caption'#6#5'Form1'#12'ClientHeight'#3','#1#11
+  +'ClientWidth'#3#144#1#8'OnCreate'#7#10'FormCreate'#0#5'TEdit'#5'Edit1'#4'Lef'
+  +'t'#2'<'#6'Height'#2#23#3'Top'#2'('#5'Width'#3#207#0#8'HelpType'#7#9'htKeywo'
+  +'rd'#11'HelpKeyword'#6#15'HTML/edit1.html'#8'TabOrder'#2#0#4'Text'#6#25'Edit'
+  +'1 - Press F1 for help'#0#0#5'TEdit'#5'Edit2'#4'Left'#2'<'#6'Height'#2#23#3
+  +'Top'#2'_'#5'Width'#3#207#0#8'HelpType'#7#9'htKeyword'#11'HelpKeyword'#6#15
+  +'HTML/edit2.html'#8'TabOrder'#2#1#4'Text'#6#25'Edit2 - Press F1 for help'#0#0
+  +#7'TButton'#10'HelpButton'#4'Left'#2'<'#6'Height'#2#25#3'Top'#3#155#0#5'Widt'
+  +'h'#2'b'#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6#4'Help'#7'OnClick'#7
+  +#15'HelpButtonClick'#8'TabOrder'#2#2#0#0#17'THTMLHelpDatabase'#17'HTMLHelpDa'
+  +'tabase1'#7'BaseURL'#6#12'file://html/'#12'AutoRegister'#9#13'KeywordPrefix'
+  +#6#5'HTML/'#4'left'#3#200#0#3'top'#2'n'#0#0#22'THTMLBrowserHelpViewer'#22'HT'
+  +'MLBrowserHelpViewer1'#13'BrowserParams'#6#2'%s'#12'AutoRegister'#9#4'left'#3
+  +#200#0#3'top'#3#175#0#0#0#0
 ]);
