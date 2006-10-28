@@ -947,15 +947,15 @@ type
     procedure Chord(x1, y1, x2, y2,
                     StartAngle16Deg, EndAngle16Deg: Integer); virtual;
     procedure Chord(x1, y1, x2, y2, SX, SY, EX, EY: Integer); virtual;
-    Procedure CopyRect(const Dest: TRect; SrcCanvas: TCanvas;
+    procedure CopyRect(const Dest: TRect; SrcCanvas: TCanvas;
                        const Source: TRect); virtual;
-    Procedure Draw(X,Y: Integer; SrcGraphic: TGraphic); virtual;
-    Procedure DrawFocusRect(const ARect: TRect); virtual;
+    procedure Draw(X,Y: Integer; SrcGraphic: TGraphic); virtual;
+    procedure DrawFocusRect(const ARect: TRect); virtual;
     procedure StretchDraw(const DestRect: TRect; SrcGraphic: TGraphic); virtual;
     procedure Ellipse(const ARect: TRect); // already in fpcanvas
     procedure Ellipse(x1, y1, x2, y2: Integer); virtual; // already in fpcanvas
-    Procedure FillRect(const ARect: TRect); virtual;
-    Procedure FillRect(X1,Y1,X2,Y2: Integer);
+    procedure FillRect(const ARect: TRect); virtual;
+    procedure FillRect(X1,Y1,X2,Y2: Integer);
     procedure FloodFill(X, Y: Integer; FillColor: TColor;
                         FillStyle: TFillStyle); virtual;
     procedure Frame3d(var ARect: TRect; const FrameWidth: integer;
@@ -964,9 +964,9 @@ type
     procedure Frame(X1,Y1,X2,Y2: Integer);     // border using pen
     procedure FrameRect(const ARect: TRect); virtual; // border using brush
     procedure FrameRect(X1,Y1,X2,Y2: Integer); // border using brush
-    Procedure Line(X1,Y1,X2,Y2: Integer); virtual; // short for MoveTo();LineTo(); // already in fpcanvas
-    Procedure LineTo(X1,Y1: Integer); virtual; // already in fpcanvas
-    Procedure MoveTo(X1,Y1: Integer); virtual; // already in fpcanvas
+    procedure Line(X1,Y1,X2,Y2: Integer); virtual; // short for MoveTo();LineTo(); // already in fpcanvas
+    procedure LineTo(X1,Y1: Integer); virtual; // already in fpcanvas
+    procedure MoveTo(X1,Y1: Integer); virtual; // already in fpcanvas
     procedure RadialPie(x1, y1, x2, y2,
                         StartAngle16Deg, EndAngle16Deg: Integer); virtual;
     procedure RadialPie(x1, y1, x2, y2, sx, sy, ex, ey: Integer); virtual;

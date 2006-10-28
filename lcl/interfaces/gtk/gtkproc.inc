@@ -1948,7 +1948,7 @@ end;
 
 function IsBackgroundColor(Color: TColor): boolean;
 begin
-  Result:=(Color=clForm) or (Color=clInfoBk);
+  Result:=(Color=clForm) or (Color=clInfoBk) or (Color=clBackground);
 end;
 
 function CompareGDIColor(const Color1, Color2: TGDIColor): boolean;
@@ -7427,29 +7427,48 @@ begin
   exit;
   {$EndIf}
   Case BaseColor of
-    {These are WM/X defined, but might be possible to get}
+    {These are WM/X defined, but might be possible to get
 
-    {COLOR_BACKGROUND
     COLOR_CAPTIONTEXT
     COLOR_INACTIVECAPTIONTEXT}
 
-    {These Are incompatible or WM defined}
+    {These Are incompatible or WM defined
     
-    {COLOR_ACTIVECAPTION
+    COLOR_ACTIVECAPTION
     COLOR_INACTIVECAPTION
     COLOR_GRADIENTACTIVECAPTION
     COLOR_GRADIENTINACTIVECAPTION
     COLOR_WINDOWFRAME
     COLOR_ACTIVEBORDER
     COLOR_INACTIVEBORDER}
+    
+    COLOR_BACKGROUND:
+      begin
+        Style := GetStyle(lgsDefault);
+        If Style = nil then
+          Style := GetStyle(lgsWindow);
+        If Style = nil then
+          exit;
+        Pixmap := Style^.bg_pixmap[GTK_STATE_NORMAL];
+        If Pixmap <> nil then begin
+          Result.Fill := GDK_Tiled;
+          Result.Tile := Pixmap;
+        end else begin
+          GC := Style^.bg_gc[GTK_STATE_NORMAL];
+          If GC = nil then begin
+            Result.Fill := GDK_Solid;
+            Result.foreground := Style^.bg[GTK_STATE_PRELIGHT];
+          end
+          else
+            GDK_GC_Get_Values(GC, @Result);
+        end;
+      end;
 
     COLOR_INFOBK :
       begin
         Style := GetStyle(lgsTooltip);
-
         If Style = nil then
           Style := GetStyle(lgsWindow);
-
         If Style = nil then
           exit;
 
@@ -7740,7 +7759,7 @@ begin
     RealizeGtkStyleColor(Style,Result);
 end;
 
-Procedure StyleFillRectangle(drawable : PGDKDrawable; GC : PGDKGC; Color : TColorRef; x, y, width, height : gint);
+procedure StyleFillRectangle(drawable : PGDKDrawable; GC : PGDKGC; Color : TColorRef; x, y, width, height : gint);
 var
   style : PGTKStyle;
   widget : PGTKWidget;
@@ -7773,6 +7792,14 @@ begin
         state := GTK_STATE_NORMAL;
         detail := 'list';
       end;   }
+
+    clBackground:
+      begin
+        Style := GetStyle(lgsWindow);
+        widget := GetStyleWidget(lgsWindow);
+        state := GTK_STATE_NORMAL;
+        detail := 'window';
+      end;
 
     clInfoBk :
       begin

@@ -764,21 +764,21 @@ procedure FreeClipboardTargetEntries(ClipboardType: TClipboardType);
 function GdkAtomToStr(const Atom: TGdkAtom): string;
 
 // forms
-Function CreateFormContents(AForm: TCustomForm; var FormWidget: Pointer): Pointer;
+function CreateFormContents(AForm: TCustomForm; var FormWidget: Pointer): Pointer;
 
 // styles
 function IndexOfStyle(aStyle: TLazGtkStyle): integer;
 function IndexOfStyleWithName(const WName: String): integer;
-Procedure ReleaseAllStyles;
-Procedure ReleaseStyle(aStyle: TLazGtkStyle);
-Procedure ReleaseStyleWithName(const WName: String);
+procedure ReleaseAllStyles;
+procedure ReleaseStyle(aStyle: TLazGtkStyle);
+procedure ReleaseStyleWithName(const WName: String);
 function GetStyle(aStyle: TLazGtkStyle): PGTKStyle;
 function GetStyleWithName(const WName: String): PGTKStyle;
-Function GetStyleWidget(aStyle: TLazGtkStyle): PGTKWidget;
-Function GetStyleWidgetWithName(const WName: String): PGTKWidget;
-Procedure StyleFillRectangle(drawable: PGDKDrawable; GC: PGDKGC;
+function GetStyleWidget(aStyle: TLazGtkStyle): PGTKWidget;
+function GetStyleWidgetWithName(const WName: String): PGTKWidget;
+procedure StyleFillRectangle(drawable: PGDKDrawable; GC: PGDKGC;
                              Color: TColorRef; x, y, width, height: gint);
-Function StyleForegroundColor(Color: TColorRef; DefaultColor: PGDKColor): PGDKColor;
+function StyleForegroundColor(Color: TColorRef; DefaultColor: PGDKColor): PGDKColor;
 procedure UpdateWidgetStyleOfControl(AWinControl: TWinControl);
 
 // fonts
@@ -793,11 +793,11 @@ procedure GetTextExtentIgnoringAmpersands(FontDesc: PPangoFontDescription; Str: 
   LineLength: Longint; lbearing, rbearing, width, ascent, descent: Pgint);
 {$ENDIF}
 {$IFDEF GTK1}
-Procedure GetTextExtentIgnoringAmpersands(FontDesc: PGDKFont; Str: PChar;
+procedure GetTextExtentIgnoringAmpersands(FontDesc: PGDKFont; Str: PChar;
   LineLength: Longint; lbearing, rbearing, width, ascent, descent: Pgint);
 {$EndIf}
 function GetDefaultFontName: string;
-Procedure FillScreenFonts(ScreenFonts: TStrings);
+procedure FillScreenFonts(ScreenFonts: TStrings);
 function GetTextHeight(DCTextMetric: TDevContextTextMetric): integer;
 {$IFDEF HasX}
 function  XGetWorkarea(var ax,ay,awidth,aheight:gint): gint;

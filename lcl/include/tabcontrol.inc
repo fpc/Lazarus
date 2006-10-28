@@ -536,7 +536,7 @@ var
   TS : TTextStyle;
 begin
   ARect := GetClientRect;
-  Canvas.Color:=clBackground;
+  Canvas.Brush.Color:=clBackground;
   Canvas.FillRect(ARect);
   ARect:=GetDisplayRect;
   InflateRect(ARect,BorderWidth,BorderWidth);
@@ -576,6 +576,7 @@ constructor TCustomTabControl.Create(TheOwner: TComponent);
 begin
   FTabControlCreating:=true;
   inherited Create(TheOwner);
+  ControlStyle:=ControlStyle+[csAcceptsControls];
   FStyle:=tsTabs;
   FTabPosition:=tpTop;
   FImageChangeLink := TChangeLink.Create;
