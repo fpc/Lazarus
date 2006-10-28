@@ -3421,7 +3421,7 @@ var
   i: integer;
   FileSelWidget: PGtkFileSelection;
   LCLHistoryMenu: PGTKWidget;
-  {$IFDEF Gtk}
+  {$IFDEF Gtk1}
   AFilterEntry: PFileSelFilterEntry;
   FilterList: TFPList; // list of TFileSelFilterListEntry
   LCLFilterMenu: PGTKWidget;
