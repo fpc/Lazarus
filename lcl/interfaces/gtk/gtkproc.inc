@@ -3801,6 +3801,14 @@ begin
   Result:=nil;
 end;
 
+function CreateFixedClientWidget: PGTKWidget;
+begin
+  Result := gtk_fixed_new();
+  {$IFDEF GTK2}
+  gtk_fixed_set_has_window(PGtkFixed(Result), True);
+  {$ENDIF}
+end;
+
 {------------------------------------------------------------------------------
   Procedure FixedMoveControl(Parent, Child : PGTKWIdget; Left, Top : Longint);
   
@@ -6967,7 +6975,7 @@ function GetStyleWithName(const WName: String) : PGTKStyle;
     Result:=gtk_notebook_new;
     NoteBookWidget := PGtkNoteBook(Result);
     //NoteBookPageWidget := gtk_hbox_new(false, 0);
-    NoteBookPageClientAreaWidget := gtk_fixed_new;
+    NoteBookPageClientAreaWidget := CreateFixedClientWidget;
     gtk_widget_show(NoteBookPageClientAreaWidget);
     //gtk_container_add(GTK_CONTAINER(NoteBookPageWidget),
     //                  NoteBookPageClientAreaWidget);
@@ -7049,7 +7057,7 @@ begin
         //gtk_widget_show(VBox);
         //gtk_container_add(PGtkContainer(StyleObject^.Widget), VBox);
         //gtk_object_set_data(PGtkObject(StyleObject^.Widget),'vbox',VBox);
-        WindowFixedWidget:=gtk_fixed_new;
+        WindowFixedWidget:=CreateFixedClientWidget;
         gtk_widget_show(WindowFixedWidget);
         gtk_container_add(PGtkContainer(StyleObject^.Widget), WindowFixedWidget);
         gtk_object_set_data(PGtkObject(StyleObject^.Widget),'fixedwidget',WindowFixedWidget);

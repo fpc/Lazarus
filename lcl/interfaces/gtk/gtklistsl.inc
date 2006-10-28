@@ -345,7 +345,7 @@ begin
   //' LI=',DbgS(LI),
   //' ');
   {$ifdef GTK2}
-  DebugLn(['TGtkListStringList.ConnectItemCallbacks ',DbgSName(Owner)]);
+  //DebugLn(['TGtkListStringList.ConnectItemCallbacks ',DbgSName(Owner)]);
   g_signal_connect_after(G_OBJECT(li), 'expose_event',
                          G_CALLBACK(@gtkListItemExposeEvent), li);
   {$else}

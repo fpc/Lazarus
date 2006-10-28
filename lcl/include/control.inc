@@ -2718,6 +2718,7 @@ end;
 procedure TControl.SetLeft(Value: Integer);
 begin
   {$IFDEF CHECK_POSITION}
+  if CheckPosition(Self) then
   DebugLn('[TControl.SetLeft] ',Name,':',ClassName,' ',DbgS(Value));
   {$ENDIF}
   if csLoading in ComponentState then begin
@@ -2734,6 +2735,7 @@ end;
 procedure TControl.SetTop(Value: Integer);
 begin
   {$IFDEF CHECK_POSITION}
+  if CheckPosition(Self) then
   DebugLn('[TControl.SetTop] ',Name,':',ClassName,' ',Dbgs(Value));
   {$ENDIF}
   if csLoading in ComponentState then begin
@@ -2764,6 +2766,7 @@ procedure TControl.SetWidth(Value: Integer);
 
 begin
   {$IFDEF CHECK_POSITION}
+  if CheckPosition(Self) then
   DebugLn('[TControl.SetWidth] ',Name,':',ClassName,' ',dbgs(Value));
   {$ENDIF}
   if csLoading in ComponentState then begin
@@ -2795,6 +2798,7 @@ procedure TControl.SetHeight(Value: Integer);
 
 begin
   {$IFDEF CHECK_POSITION}
+  if CheckPosition(Self) then
   DebugLn('[TControl.SetHeight] ',Name,':',ClassName,' ',dbgs(Value));
   {$ENDIF}
   if csLoading in ComponentState then begin

@@ -2304,8 +2304,7 @@ begin
     OIPropNameColorButton.ButtonColor:=
        ObjectInspectorOptions.PropertyNameColor;
 
-    OIDefaultItemHeightSpinEdit.Value:=
-       ObjectInspectorOptions.DefaultItemHeight;
+    OIDefaultItemHeightSpinEdit.Value:=ObjectInspectorOptions.DefaultItemHeight;
     OIShowHintCheckBox.Checked := ObjectInspectorOptions.ShowHints;
        
     // window minimizing and hiding
@@ -2456,7 +2455,7 @@ begin
        OIPropNameColorButton.ButtonColor;
 
     ObjectInspectorOptions.DefaultItemHeight:=
-      RoundToInt(OIDefaultItemHeightSpinEdit.Value);
+       RoundToInt(OIDefaultItemHeightSpinEdit.Value);
     ObjectInspectorOptions.ShowHints := OIShowHintCheckBox.Checked;
 
     // window minimizing

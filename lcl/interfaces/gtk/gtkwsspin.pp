@@ -32,7 +32,7 @@ uses
   {$ELSE}
   glib, gdk, gtk,
   {$ENDIF}
-  Spin, GtkProc, GtkWSStdCtrls, WSSpin, WSLCLClasses, LCLType;
+  LCLProc, Spin, GtkProc, GtkWSStdCtrls, WSSpin, WSLCLClasses, LCLType;
 
 type
 
@@ -126,6 +126,7 @@ var
   wHandle: HWND;
   SpinWidget: PGtkSpinButton;
 begin
+  //DebugLn(['TGtkWSCustomFloatSpinEdit.UpdateControl ',dbgsName(ACustomFloatSpinEdit)]);
   wHandle := ACustomFloatSpinEdit.Handle;
   SpinWidget:=GTK_SPIN_BUTTON(Pointer(wHandle));
   AnAdjustment:=gtk_spin_button_get_adjustment(SpinWidget);

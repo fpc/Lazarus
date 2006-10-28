@@ -5204,7 +5204,7 @@ var
   WinWidgetInfo: PWinWidgetInfo;
 begin
   Result := gtk_hbox_new(false, 0);
-  TempWidget := gtk_fixed_new();
+  TempWidget := CreateFixedClientWidget;
   gtk_container_add(GTK_CONTAINER(Result), TempWidget);
   gtk_widget_show(TempWidget);
   if NotOnParentsClientArea then begin
@@ -5235,7 +5235,7 @@ begin
   gtk_toolbar_insert_widget(PGTKToolbar(Result),ClientWidget,nil,nil,0);
   {$ELSE}
   Result := gtk_hbox_new(false,0);
-  ClientWidget := gtk_fixed_new();
+  ClientWidget := CreateFixedClientWidget;
   gtk_container_add(GTK_CONTAINER(Result), ClientWidget);
   {$ENDIF}
   gtk_widget_show(ClientWidget);
@@ -5391,7 +5391,7 @@ begin
   csGroupBox:
     begin
       P := gtk_frame_new (StrTemp);
-      TempWidget := gtk_fixed_new();
+      TempWidget := CreateFixedClientWidget;
       gtk_container_add(GTK_CONTAINER(p), TempWidget);
       gtk_widget_show(TempWidget);
       SetFixedWidget(p, TempWidget);
@@ -5405,7 +5405,7 @@ begin
        gtk_window_set_policy (GTK_WINDOW (p), 0, 0, 0);
 
        // Create the form client area
-       TempWidget := gtk_fixed_new();
+       TempWidget := CreateFixedClientWidget;
        gtk_container_add(p, TempWidget);
        gtk_widget_show(TempWidget);
        SetFixedWidget(p, TempWidget);
@@ -5563,7 +5563,7 @@ begin
       // create a fixed widget in a horizontal box
       // a fixed on a fixed has no z-order
       p := gtk_hbox_new(false,0);
-      TempWidget := gtk_fixed_new();
+      TempWidget := CreateFixedClientWidget;
       gtk_container_add(GTK_CONTAINER(P), TempWidget);
       gtk_widget_show(TempWidget);
       SetFixedWidget(p, TempWidget);
@@ -5659,10 +5659,7 @@ begin
 
   csToolButton:
     begin
-      p := gtk_fixed_new();
-      {$IFDEF GTK2}
-      gtk_fixed_set_has_window(PGtkFixed(p), True);
-      {$ENDIF}
+      p := CreateFixedClientWidget;
     end;
 
   csTrackBar:
@@ -5967,7 +5964,7 @@ begin
     // the notebook has no pages
     // -> add a dummy page
     DummyWidget := gtk_hbox_new(false, 0);
-    AWidget := gtk_fixed_new;
+    AWidget := CreateFixedClientWidget;
     gtk_widget_show(AWidget);
     //gtk_box_pack_start_defaults(GTK_BOX(DummyWidget),AWidget);
     gtk_container_add(GTK_CONTAINER(DummyWidget), AWidget);

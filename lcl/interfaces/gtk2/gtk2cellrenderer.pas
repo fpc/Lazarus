@@ -72,11 +72,12 @@ var
   ItemPath: PGtkTreePath;
   Column: PGtkTreeViewColumn;
 begin
-  DebugLn(['LCLIntfCellRenderer_Render cell=',dbgs(cell),
+  {DebugLn(['LCLIntfCellRenderer_Render cell=',dbgs(cell),
     ' ',GetWidgetDebugReport(Widget),' ',
     ' background_area=',dbgGRect(background_area),
     ' cell_area=',dbgGRect(cell_area),
-    ' expose_area=',dbgGRect(expose_area)]);
+    ' expose_area=',dbgGRect(expose_area)]);}
+    
   // draw default
   CellClass:=PLCLIntfCellRendererClass(gtk_object_get_class(cell));
   CellClass^.DefaultGtkRender(cell,Window,Widget,background_area,cell_area,
@@ -138,7 +139,7 @@ begin
     Dispose(Msg.DrawListItemStruct);
   end;
 
-  DebugLn(['LCLIntfCellRenderer_Render END ',DbgSName(LCLObject)]);
+  //DebugLn(['LCLIntfCellRenderer_Render END ',DbgSName(LCLObject)]);
 end;
 
 procedure LCLIntfCellRenderer_ClassInit(aClass: Pointer); cdecl;
@@ -147,7 +148,7 @@ var
   LCLClass: PLCLIntfCellRendererClass;
   RendererClass: PGtkCellRendererClass;
 begin
-  DebugLn(['LCLIntfCellRenderer_ClassInit ']);
+  //DebugLn(['LCLIntfCellRenderer_ClassInit ']);
   LCLClass:=PLCLIntfCellRendererClass(aClass);
   RendererClass:=GTK_CELL_RENDERER_CLASS(aClass);
   LCLClass^.DefaultGtkRender:=RendererClass^.render;
@@ -159,7 +160,7 @@ procedure LCLIntfCellRenderer_Init(Instance:PGTypeInstance;
 // Instance: PLCLIntfCellRenderer;
 // theClass: PLCLIntfCellRendererClass
 begin
-  DebugLn(['LCLIntfCellRenderer_Init ']);
+  //DebugLn(['LCLIntfCellRenderer_Init ']);
 end;
 
 function LCLIntfCellRenderer_GetType: TGtkType;
