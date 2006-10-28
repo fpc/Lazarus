@@ -1288,7 +1288,11 @@ begin
   s:=s+'ifeq ($(OS_TARGET),win32)'+e;
   s:=s+'LCL_PLATFORM=win32'+e;
   s:=s+'else'+e;
+  s:=s+'ifeq ($(OS_TARGET),win64)'+e;
+  s:=s+'LCL_PLATFORM=win32'+e;
+  s:=s+'else'+e;
   s:=s+'LCL_PLATFORM=gtk'+e;
+  s:=s+'endif'+e;
   s:=s+'endif'+e;
   s:=s+'endif'+e;
   s:=s+'export LCL_PLATFORM'+e;
