@@ -379,7 +379,7 @@ class procedure TQtWSCustomForm.SetQtBorderIcons(const AHandle: TQtMainWindow;
 var
   Flags: QtWindowFlags;
 begin
-  AHandle.windowFlags;
+  Flags := AHandle.windowFlags;
 
   {$ifdef VerboseQt}
     WriteLn('Trace:> [TQtWSCustomForm.SetBorderIcons] Flags: ', IntToHex(Flags, 8));
