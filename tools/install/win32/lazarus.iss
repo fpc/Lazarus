@@ -3,6 +3,7 @@ EnableISX=true
 [Defines]
 #define AppVersion GetEnv('LazVersion')
 #define FPCVersion GetEnv('FPCVersion')
+#define FPCTargetOS GetEnv('FPCTargetOS')
 #define AppName "Lazarus"
 #define SetupDate GetEnv('DateStamp')
 #define BuildDir GetEnv('BuildDir')
@@ -17,7 +18,7 @@ AppUpdatesURL=http://www.lazarus.freepascal.org/
 LicenseFile={#BuildDir}\COPYING.GPL
 DefaultDirName={code:GetDefDir|c:\lazarus}
 DefaultGroupName={#AppName}
-OutputBaseFilename={#AppName}-{#AppVersion}-fpc-{#FPCVersion}-{#SetupDate}-win32
+OutputBaseFilename={#AppName}-{#AppVersion}-fpc-{#FPCVersion}-{#SetupDate}-{#FPCTargetOS}
 InternalCompressLevel=ultra
 SolidCompression=true
 VersionInfoVersion={#AppVersion}

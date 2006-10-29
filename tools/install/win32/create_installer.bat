@@ -5,7 +5,7 @@ if [%3]==[] goto USAGE
 
 :: These settings are dependent on the configuration of the build machine
 :: Path to the Inno Setup Compiler
-SET ISCC="C:\Program Files\Inno Setup 5\iscc.exe"
+if [%ISCC%]==[] SET ISCC="C:\Program Files\Inno Setup 5\iscc.exe"
 
 :: Path to the directory containing the mingw gdb debugger installation
 :: it should have the debugger with the name gdb.exe in its bin subdirectory
@@ -16,7 +16,7 @@ SET GDBDIR=c:\lazarus\source\mingw
 SET BUILDDIR=c:\temp\lazbuild
 
 :: Path to the svn executable
-SET SVN="c:\program files\subversion\bin\svn.exe"
+if [%SVN%]==[] SET SVN="c:\program files\subversion\bin\svn.exe"
 
 :: Path to the directory containing translated version of the GPL license
 SET LICENSEDIR=c:\lazarus\source\license
@@ -69,7 +69,7 @@ gmkdir -p %INSTALL_BASE%\source
 %SVN% export %FPCSVNDIR%\fpcsrc\packages %INSTALL_BASE%\source\packages >> %LOGFILE%
 
 :: exit if no compiler has been made
-if not exist %INSTALL_BINDIR%\ppc386.exe goto END
+if not exist %INSTALL_BINDIR%\fpc.exe goto END
 
 %INSTALL_BINDIR%\fpcmkcfg.exe -d "basepath=%INSTALL_BASE%" -o %INSTALL_BINDIR%\fpc.cfg
 
@@ -89,7 +89,7 @@ if not exist %BUILDDIR%\startlazarus.exe goto END
 %ISCC% lazarus.iss >> installer.log
 
 :: do not delete build dir, if installer failed.
-if not exist output\lazarus-%LAZVERSION%-fpc-%FPCVERSION%-%DATESTAMP%-win32.exe goto END
+if not exist output\lazarus-%LAZVERSION%-fpc-%FPCVERSION%-%DATESTAMP%-%FPCTARGETOS%.exe goto END
 
 :: delete build dir
 ::rd /s /q %BUILDDIR% > NUL
