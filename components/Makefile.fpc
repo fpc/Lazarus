@@ -34,7 +34,9 @@ bigidecomponents: all
         $(MAKE) -C sdf
 ifneq ($(OS_TARGET),darwin)
         $(MAKE) -C tdbf
+ifneq ($(OS_TARGET),win64)
         $(MAKE) -C sqldb
+endif
 endif
 
 cleanlaz: clean
