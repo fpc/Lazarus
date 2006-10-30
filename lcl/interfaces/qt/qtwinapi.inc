@@ -100,22 +100,32 @@ end;
   Returns:
 
   This functions is for TBitmap support
+  
+  The memory allocation code was added because it is necessary for
+ TBitmap.LoadFromDevice support. For other operations it isn´t needed
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.CreateBitmapFromRawImage(const RawImage: TRawImage;
   var Bitmap, MaskBitmap: HBitmap; AlwaysCreateMask: boolean): boolean;
+var
+  NewData: PByte;
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('Trace:> [WinAPI CreateBitmapFromRawImage]',
      ' Width:', dbgs(RawImage.Description.Width),
      ' Height:', dbgs(RawImage.Description.Height),
-     ' DataSize: ', dbgs(RawImage.DataSize));
+     ' DataSize: ', dbgs(RawImage.DataSize),
+     ' CreateMask: ', dbgs(AlwaysCreateMask));
   {$endif}
 
   Result := False;
   Bitmap := 0;
   MaskBitmap := 0;
 
-  Bitmap := HBitmap(TQtImage.Create(RawImage.Data, RawImage.Description.Width,
+  NewData := GetMem(RawImage.DataSize);
+
+  Move(RawImage.Data^, NewData^, RawImage.DataSize);
+
+  Bitmap := HBitmap(TQtImage.Create(NewData, RawImage.Description.Width,
    RawImage.Description.Height, QImageFormat_RGB32));
 
   Result := True;
