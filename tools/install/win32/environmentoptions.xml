@@ -4,7 +4,7 @@
     <Version Value="102"/>
     <LazarusDirectory Value="%LazDir%">
     </LazarusDirectory>
-    <CompilerFilename Value="%FpcBinDir%\ppc386.exe">
+    <CompilerFilename Value="%FpcBinDir%\fpc.exe">
     </CompilerFilename>
     <FPCSourceDirectory Value="%FpcSrcDir%">
     </FPCSourceDirectory>
