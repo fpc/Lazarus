@@ -1,0 +1,57 @@
+object Form1: TForm1
+  Left = 289
+  Height = 240
+  Top = 100
+  Width = 242
+  HorzScrollBar.Page = 241
+  VertScrollBar.Page = 239
+  Caption = 'RawMode Print Test'
+  ClientHeight = 240
+  ClientWidth = 242
+  Constraints.MaxHeight = 240
+  Constraints.MinHeight = 240
+  OnCreate = FormCreate
+  object Label1: TLabel
+    Left = 15
+    Height = 14
+    Top = 5
+    Width = 61
+    Caption = 'Printers List:'
+    Color = clNone
+    ParentColor = False
+  end
+  object Label2: TLabel
+    Left = 11
+    Height = 14
+    Top = 150
+    Width = 71
+    Caption = 'String to print:'
+    Color = clNone
+    ParentColor = False
+  end
+  object ListBox1: TListBox
+    Left = 11
+    Height = 115
+    Top = 25
+    Width = 220
+    TabOrder = 0
+  end
+  object Button1: TButton
+    Left = 11
+    Height = 25
+    Top = 205
+    Width = 75
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Print'
+    OnClick = Button1Click
+    TabOrder = 1
+  end
+  object Edit1: TEdit
+    Left = 11
+    Height = 23
+    Top = 170
+    Width = 219
+    Anchors = [akTop, akLeft, akRight]
+    TabOrder = 2
+  end
+end
