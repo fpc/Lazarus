@@ -34,13 +34,17 @@ SET RELEASE_PPC=%3
 :: no change needed after this.
 
 :: Some internal variables
-SET FPCBINDIR=%FPCSVNDIR%\install\binw32
+FOR /F %%L IN ('%RELEASE_PPC% -iTO') DO SET FPCTARGETOS=%%L
+FOR /F %%L IN ('%RELEASE_PPC% -iTP') DO SET FPCTARGETCPU=%%L
+SET FPCFULLTARGET=%FPCTARGETCPU%-%FPCTARGETOS%
+
+SET FPCBINDIR=%FPCSVNDIR%\install\binw%FPCTARGETOS:~-2%
 SET MAKEEXE=%FPCBINDIR%\make.exe
 SET LOGFILE=%CD%\installer.log
-SET DATESTAMP=%date:~-4,4%%date:~-7,2%%date:~-10,2%
+FOR /F %%L IN ('%FPCBINDIR%\gdate.exe +%%Y%%m%%d') DO SET DATESTAMP=%%L
 SET BUILDDRIVE=%BUILDDIR:~,2%
 SET CP=%FPCBINDIR%\cp.exe
-FOR /F "delims='" %%F IN (%LAZSVNDIR%\ide\version.inc) DO (set LAZVERSION=%%F)
+FOR /F "delims='" %%F IN (%LAZSVNDIR%\ide\version.inc) DO set LAZVERSION=%%F
 
 ECHO Starting at: > %LOGFILE%
 %FPCBINDIR%\gdate >> %LOGFILE%
