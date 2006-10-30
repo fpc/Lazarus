@@ -94,6 +94,7 @@ type
     procedure IteratorRemove(AIterator: TBaseMapIterator);
   protected
     function InternalGetData(AItem: PMapItem; out AData): Boolean;
+    function InternalGetDataPtr(AItem: PMapItem): Pointer;
     function InternalGetId(AItem: PMapItem; out AID): Boolean;
     function InternalSetData(AItem: PMapItem; const AData): Boolean;
   public
@@ -142,6 +143,7 @@ type
   public
     function HasId(const AID): Boolean;
     function GetData(const AId; out AData): Boolean;
+    function GetDataPtr(const AId): Pointer;
     function SetData(const AId, AData): Boolean;
   end;
   
@@ -151,6 +153,7 @@ type
   private
   protected
   public
+    function  DataPtr: Pointer;
     procedure GetData(out AData);
     procedure GetID(out AID);
     function  Locate(const AId): Boolean;
@@ -349,6 +352,18 @@ begin
   p := @AItem^.ID;
   Inc(p, ID_LENGTH[FIdType]);
   Move(p^, AData, FDataSize);
+end;
+
+function TBaseMap.InternalGetDataPtr(AItem: PMapItem): Pointer;
+begin
+  if AItem = nil
+  then begin
+    Result := nil;
+    Exit;
+  end;
+  
+  Result := @AItem^.ID;
+  Inc(Result, ID_LENGTH[FIdType]);
 end;
 
 function TBaseMap.InternalGetId(AItem: PMapItem; out AID): Boolean;
@@ -607,6 +622,11 @@ begin
   Result := InternalGetData(FindItem(AId), AData);
 end;
 
+function TMap.GetDataPtr(const AId): Pointer;
+begin
+  Result := InternalGetDataPtr(FindItem(AId));
+end;
+
 function TMap.HasId(const AID): Boolean;
 begin
   Result := FindNode(AId) <> nil;
@@ -618,6 +638,12 @@ begin
 end;
 
 { TMapIterator }
+
+function TMapIterator.DataPtr: Pointer;
+begin
+  Validate;
+  FMap.InternalGetDataPtr(FCurrent);
+end;
 
 procedure TMapIterator.GetData(out AData);
 begin
