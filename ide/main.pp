@@ -2470,9 +2470,7 @@ begin
     DoExtractProcFromSelection;
 
   ecToggleMessages:
-    {$message warning TODO: toggle back to previously focused window?}
-    { DoShowMessageView does not bring messages view to top, source editor 
-      is more important there }
+    // user used shortcut/menu item to show the window, so focusing is ok.
     MessagesView.EnsureVisible;
 
   ecToggleCodeExpl:
@@ -4101,7 +4099,7 @@ begin
             AncestorInstance:=AncestorUnit.Component
           else
             AncestorInstance:=nil;
-          DebugLn(['TMainIDE.DoSaveUnitComponent AncestorInstance=',dbgsName(AncestorInstance)]);
+          //DebugLn(['TMainIDE.DoSaveUnitComponent AncestorInstance=',dbgsName(AncestorInstance)]);
           Writer.WriteDescendent(AnUnitInfo.Component,AncestorInstance);
           if DestroyDriver then Writer.Driver.Free;
           FreeAndNil(Writer);

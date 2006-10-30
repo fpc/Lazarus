@@ -2154,7 +2154,7 @@ Processor specific options:
   if UnitOutputDirectory<>'' then begin
     CurOutputDir:=ParsedOpts.GetParsedValue(pcosOutputDir);
     if not (cclAbsolutePaths in Flags) then
-      CurOutputDir:=CreateRelativePath(CurOutputDir,BaseDirectory);
+      CurOutputDir:=CreateRelativePath(CurOutputDir,BaseDirectory,true);
   end else
     CurOutputDir:='';
   if CurOutputDir<>'' then
@@ -2826,7 +2826,7 @@ begin
   else if Option in ParsedCompilerDirectories then begin
     // make directory absolute
     s:=TrimFilename(s);
-    if (s='') or (not FilenameIsAbsolute(s))
+    if ((s='') or (not FilenameIsAbsolute(s)))
     and (Option<>pcosBaseDir) then begin
       if PlatformIndependent then
         BaseDirectory:=GetParsedPIValue(pcosBaseDir)

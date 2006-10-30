@@ -80,7 +80,8 @@ function FilenameIsTrimmed(StartPos: PChar; NameLen: integer): boolean;
 function TrimFilename(const AFilename: string): string;
 function CleanAndExpandFilename(const Filename: string): string;
 function CleanAndExpandDirectory(const Filename: string): string;
-function CreateRelativePath(const Filename, BaseDirectory: string): string;
+function CreateRelativePath(const Filename, BaseDirectory: string;
+                            UsePointDirectory: boolean = false): string;
 function FileIsInPath(const Filename, Path: string): boolean;
 function AppendPathDelim(const Path: string): string;
 function ChompPathDelim(const Path: string): string;
@@ -693,7 +694,7 @@ begin
       // check for double path delimiter
       if (StartPos[i]=PathDelim) then exit;
 
-      if StartPos[i]='.' then begin
+      if (StartPos[i]='.') and (i>0) then begin
         inc(i);
         // check /./ or /. at end
         if (StartPos[i]=PathDelim) or (i=NameLen) then exit;
@@ -858,7 +859,8 @@ begin
   Result:=AppendPathDelim(CleanAndExpandFilename(Filename));
 end;
 
-function CreateRelativePath(const Filename, BaseDirectory: string): string;
+function CreateRelativePath(const Filename, BaseDirectory: string;
+  UsePointDirectory: boolean): string;
 var
   FileNameLength: Integer;
   BaseDirLen: Integer;
@@ -874,7 +876,7 @@ begin
   if (BaseDirectory='') or (Filename='') then exit;
   // check for different windows file drives
   if (CompareText(ExtractFileDrive(Filename),
-                     ExtractFileDrive(BaseDirectory))<>0)
+                  ExtractFileDrive(BaseDirectory))<>0)
   then
     exit;
 
@@ -934,6 +936,10 @@ begin
   end;
   if FileNameRestLen>0 then
     Move(Filename[SamePos+1],Result[ResultPos],FileNameRestLen);
+
+  // use '.' for an Filename=BaseDirectory
+  if (Result='') and (Filename<>'') and UsePointDirectory then
+    Result:='.';
 end;
 
 {------------------------------------------------------------------------------

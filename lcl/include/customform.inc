@@ -1185,10 +1185,9 @@ Begin
     if (AWinControl<>nil) then begin
       if (AWinControl=Self)
       or (GetParentForm(AWinControl)<>Self)
-      or ((not (csLoading in ComponentState))
-          and (not AWinControl.CanFocus))
+      or ((not (csLoading in ComponentState)) and (not AWinControl.CanFocus))
       then begin
-        DebugLn('TCustomForm.SetActiveControl ',DbgSName(Self),' AWinControl=',DbgSName(AWinControl),' GetParentForm(AWinControl)=',DbgSName(GetParentForm(AWinControl)),' csLoading=',dbgs(csLoading in ComponentState),' AWinControl.CanFocus=',dbgs((AWinControl<>nil) and AWinControl.CanFocus));
+        DebugLn('TCustomForm.SetActiveControl ',DbgSName(Self),' AWinControl=',DbgSName(AWinControl),' GetParentForm(AWinControl)=',DbgSName(GetParentForm(AWinControl)),' csLoading=',dbgs(csLoading in ComponentState),' AWinControl.CanFocus=',dbgs((AWinControl<>nil) and AWinControl.CanFocus),' IsControlVisible=',dbgs((AWinControl<>nil) and AWinControl.IsControlVisible),' Enabled=',dbgs((AWinControl<>nil) and AWinControl.Enabled),' GetParentForm(AWinControl)=',DbgSName(GetParentForm(AWinControl)));
         {$IFDEF VerboseFocus}
         RaiseGDBException(SCannotFocus);
         {$ELSE}

@@ -1335,7 +1335,8 @@ begin
   Include(FStates,pgsChangingItemIndex);
   if (FItemIndex>=0) and (FItemIndex<FRows.Count) then
     Rows[FItemIndex].Editor.Deactivate;
-  SetCaptureControl(nil);
+  if CanFocus then
+    SetCaptureControl(nil);
   
   FItemIndex:=NewIndex;
   if FCurrentEdit<>nil then begin
@@ -1353,8 +1354,9 @@ begin
     NewRow:=Rows[NewIndex];
 
     ScrollToItem(NewIndex);
-    
-    NewRow.Editor.Activate;
+
+    if CanFocus then
+      NewRow.Editor.Activate;
     if paDialog in NewRow.Editor.GetAttributes then begin
       FCurrentButton:=ValueButton;
       FCurrentButton.Visible:=true;
@@ -1392,7 +1394,8 @@ begin
       FCurrentEdit.Visible:=true;
       if (FDragging=false) and (FCurrentEdit.Showing)
       and FCurrentEdit.Enabled
-      and (not NewRow.IsReadOnly) then begin
+      and (not NewRow.IsReadOnly)
+      and CanFocus then begin
         if (Column=oipgcValue) then
           FCurrentEdit.SetFocus
         else

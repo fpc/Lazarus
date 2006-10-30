@@ -87,7 +87,8 @@ function FilenameIsMatching(const Mask, Filename: string;
 function ConvertSpecialFileChars(const Filename: string): string;
 function FilenameIsPascalSource(const Filename: string): boolean;
 function FilenameIsFormText(const Filename: string): boolean;
-function CreateRelativePath(const Filename, BaseDirectory: string): string;
+function CreateRelativePath(const Filename, BaseDirectory: string;
+                            UsePointDirectory: boolean = false): string;
 function SwitchPathDelims(const Filename: string; Switch: boolean): string;
 function ChompEndNumber(const s: string): string;
 
@@ -640,9 +641,10 @@ begin
   end;
 end;
 
-function CreateRelativePath(const Filename, BaseDirectory: string): string;
+function CreateRelativePath(const Filename, BaseDirectory: string;
+  UsePointDirectory: boolean): string;
 begin
-  Result:=FileProcs.CreateRelativePath(Filename,BaseDirectory);
+  Result:=FileProcs.CreateRelativePath(Filename,BaseDirectory,UsePointDirectory);
 end;
 
 function CreateRelativeSearchPath(const SearchPath, BaseDirectory: string
