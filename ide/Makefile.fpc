@@ -73,7 +73,7 @@ endif
 #
 # user config
 ifndef LAZARUS_CONFIG_DIR
-ifeq ($(OS_TARGET),win32)
+ifneq ($(findstring $(OS_TARGET),win32 win64),)
 LAZARUS_CONFIG_DIR=..
 else
 LAZARUS_CONFIG_DIR=$(HOME)/.lazarus
@@ -107,7 +107,8 @@ LAZBUILD_OPT=$(LAZARUS_LIBPATHS)
 
 #
 # apptype gui
-ifeq ($(OS_TARGET),win32)
+ifneq ($(findstring $(OS_TARGET),win32 win64),)
+LCL_PLATFORM=win32
 LAZARUS_OPT+= -WG
 BIG_IDE_OPTIONS+= -WG
 endif
