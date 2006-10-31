@@ -139,6 +139,7 @@ type
     procedure InsertNewClassParts(PartType: TNewClassPart);
     function InsertAllNewClassParts: boolean;
     function InsertClassHeaderComment: boolean;
+    function InsertMissingClassSemicolons: boolean;
     function InsertAllNewUnitsToMainUsesSection: boolean;
     function CreateMissingProcBodies: boolean;
     function NodeExtIsVariable(ANodeExt: TCodeTreeNodeExtension): boolean;
@@ -1893,6 +1894,9 @@ begin
   Result:=InsertClassHeaderComment;
   if not Result then exit;
 
+  Result:=InsertMissingClassSemicolons;
+  if not Result then exit;
+
   if FirstInsert=nil then begin
     Result:=true;
     exit;
@@ -1963,6 +1967,41 @@ begin
   Code:=GetIndentStr(Indent)+'{ '+Code+' }';
   ASourceChangeCache.Replace(gtEmptyLine,gtEmptyLine,
                              InsertPos,InsertPos,Code);
+end;
+
+function TCodeCompletionCodeTool.InsertMissingClassSemicolons: boolean;
+var
+  ANode: TCodeTreeNode;
+  ProcCode: String;
+begin
+  Result:=false;
+  ANode:=FCompletingStartNode;
+  while (ANode<>nil) do begin
+    if ANode.Desc=ctnProcedure then begin
+      ProcCode:=ExtractProcHead(ANode,[phpWithStart,
+                  phpWithoutClassKeyword,
+                  phpWithVarModifiers,phpWithParameterNames,phpWithResultType,
+                  phpWithCallingSpecs,phpDoNotAddSemicolon]);
+      if ProcCode[length(ProcCode)]<>';' then begin
+        // add missing semicolon
+        UndoReadNextAtom;
+        if not ASourceChangeCache.Replace(gtNone,gtNone,
+          CurPos.EndPos,CurPos.EndPos,';') then
+            RaiseException('InsertMissingClassSemicolons: unable to insert semicolon');
+      end;
+    end;
+    // next node
+    if ANode.NextBrother<>nil then begin
+      ANode:=ANode.NextBrother;
+    end else begin
+      ANode:=ANode.Parent.NextBrother;
+      while (ANode<>nil) and (ANode.Desc in (AllCodeSections+AllClassSections))
+      and (ANode.FirstChild=nil) do
+        ANode:=ANode.NextBrother;
+      if ANode<>nil then ANode:=ANode.FirstChild;
+    end;
+  end;
+  Result:=true;
 end;
 
 function TCodeCompletionCodeTool.InsertAllNewUnitsToMainUsesSection: boolean;
