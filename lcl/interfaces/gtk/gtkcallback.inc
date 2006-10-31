@@ -1030,6 +1030,13 @@ var
   SizeMsg: TLMSize;
   GtkWidth: LongInt;
   GtkHeight: LongInt;
+  {$IFDEF HasX}
+  NetAtom: TGdkAtom;
+  AtomType: TGdkAtom;
+  AIndex, ADesktop: pguint;
+  AFormat: gint;
+  ALength: gint;
+  {$ENDIF}
 begin
   Result := CallBackDefaultReturn;
 
@@ -1046,14 +1053,34 @@ begin
         GtkHeight:=Widget^.Allocation.Height;
         if GtkHeight<0 then GtkHeight:=0;
         debugln('GTKWindowStateEventCB ',DbgSName(TObject(Data)),' ',dbgs(state^.new_window_state),' ',WidgetFlagsToString(Widget));
-        if (GDK_WINDOW_STATE_ICONIFIED and state^.new_window_state)>0 then
-          // the window is iconified, or the user switched to another desktop
-          // TODO: find out which one happened.
-          // The LCL interprets SIZEICONIC as minimizing by the user
-          // and thus minimizes the whole application.
-          SizeMsg.SizeType:=SIZENORMAL //SIZEICONIC
+        if ((GDK_WINDOW_STATE_ICONIFIED and state^.new_window_state)>0) then begin
+          {$IFDEF HasX}
+          NetAtom := gdk_atom_intern('_NET_WM_DESKTOP', True);
+          if NetAtom > 0 then begin
+            if gdk_property_get(Widget^.window, NetAtom, XA_CARDINAL,0, 4, 0, @AtomType, @AFormat, @ALength, @AIndex)
+            then begin
+
+              NetAtom := gdk_atom_intern('_NET_CURRENT_DESKTOP', True);
+              if gdk_property_get(gdk_get_default_root_window, NetAtom, XA_CARDINAL,0, 4, 0, @AtomType, @AFormat, @ALength, @ADesktop)
+              then if ADesktop^ <> AIndex^ then begin
+                g_free(ADesktop);
+                g_free(AIndex);
+                exit;
+              end
+              else begin
+                g_free(ADesktop);
+                g_free(AIndex);
+              end;
+            end;
+          end;
+          {$ENDIF}
+          SizeMsg.SizeType:=SIZEICONIC;
+        end
         else if (GDK_WINDOW_STATE_MAXIMIZED and state^.new_window_state)>0 then
-          SizeMsg.SizeType:=SIZEFULLSCREEN
+        begin
+          if (state^.changed_mask and GDK_WINDOW_STATE_MAXIMIZED)=0 then Exit;
+          SizeMsg.SizeType:=SIZEFULLSCREEN;
+        end
         else
           SizeMsg.SizeType:=SIZENORMAL;
         with SizeMsg do

@@ -1174,6 +1174,16 @@ procedure TGtkWidgetSet.SendCachedGtkMessages;
         else
           SizeType := SIZENORMAL or Size_SourceIsInterface;
         {$ELSE}
+        if LCLControl is TCustomForm then begin
+          // if the LCL gets an event without a State it resets it to SIZENORMAL
+          // so we send it the state it already is
+          case TCustomForm(LCLControl).WindowState of
+            wsNormal: SizeType := SIZENORMAL or Size_SourceIsInterface;
+            wsMinimized: SizeType := SIZEICONIC or Size_SourceIsInterface;
+            wsMaximized: SizeType := SIZEFULLSCREEN or Size_SourceIsInterface;
+          end;
+        end
+        else
         SizeType := Size_SourceIsInterface;
         {$ENDIF}
         Width := SmallInt(GtkWidth);
