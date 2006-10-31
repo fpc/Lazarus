@@ -210,7 +210,7 @@ begin
   Dest.FileStartPos := Src.FileStartPos;
   Dest.FileEndPos := Src.FileEndPos;
   Dest.TheText := Src.TheText;
-  Dest.ShownFilename := Dest.Filename;
+  Dest.ShownFilename := Src.ShownFilename;
   Result := True;
 end;
   
