@@ -201,6 +201,9 @@ type
     function Func112: TtkTokenKind;  // "requires"
     {$endif}
     function Func117: TtkTokenKind;
+    {$ifdef SYN_LAZARUS}
+    function Func122: TtkTokenKind;
+    {$endif}
     function Func126: TtkTokenKind;
     function Func128: TtkTokenKind;
     function Func129: TtkTokenKind;
@@ -437,6 +440,9 @@ begin
   fIdentFuncTable[112] := @Func112; // "requires"
   {$endif}
   fIdentFuncTable[117] := @Func117;
+  {$ifdef SYN_LAZARUS}
+  fIdentFuncTable[122] := @Func122;
+  {$ENDIF}
   fIdentFuncTable[126] := @Func126;
   {$ifdef SYN_LAZARUS}
   fIdentFuncTable[128] := @Func128;
@@ -547,7 +553,7 @@ begin
   end else begin
     fStringLen := 0;
   end;
-  //if CompareText(copy(fLine,fToIdent,fStringLen),'package')=0 then debugln('TSynPasSyn.KeyHash '+copy(fLine,fToIdent,fStringLen)+'='+dbgs(Result));
+  //if CompareText(copy(fLine,fToIdent,fStringLen),'otherwise')=0 then debugln('TSynPasSyn.KeyHash '+copy(fLine,fToIdent,fStringLen)+'='+dbgs(Result));
 end; { KeyHash }
 {$ELSE}
 function TSynPasSyn.KeyHash(ToHash: PChar): Integer;
@@ -1023,6 +1029,13 @@ function TSynPasSyn.Func117: TtkTokenKind;
 begin
   if KeyComp('Exports') then Result := tkKey else Result := tkIdentifier;
 end;
+
+{$ifdef SYN_LAZARUS}
+function TSynPasSyn.Func122: TtkTokenKind;
+begin
+  if KeyComp('Otherwise') then Result := tkKey else Result := tkIdentifier;
+end;
+{$endif}
 
 function TSynPasSyn.Func126: TtkTokenKind;
 begin
