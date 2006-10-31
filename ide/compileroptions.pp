@@ -330,21 +330,27 @@ type
     function GetDefaultMainSourceFileName: string; virtual;
     function NeedsLinkerOpts: boolean;
     function GetUnitPath(RelativeToBaseDir: boolean;
-                         Parsed: TCompilerOptionsParseType = coptParsed): string;
+                         Parsed: TCompilerOptionsParseType = coptParsed;
+                         WithProjDir: boolean = false): string;
     function GetIncludePath(RelativeToBaseDir: boolean;
-                            Parsed: TCompilerOptionsParseType = coptParsed): string;
+                            Parsed: TCompilerOptionsParseType = coptParsed;
+                            WithProjDir: boolean = false): string;
     function GetSrcPath(RelativeToBaseDir: boolean;
-                        Parsed: TCompilerOptionsParseType = coptParsed): string;
+                        Parsed: TCompilerOptionsParseType = coptParsed;
+                        WithProjDir: boolean = false): string;
     function GetLibraryPath(RelativeToBaseDir: boolean;
-                            Parsed: TCompilerOptionsParseType = coptParsed): string;
+                            Parsed: TCompilerOptionsParseType = coptParsed;
+                            WithProjDir: boolean = false): string;
     function GetUnitOutPath(RelativeToBaseDir: boolean;
                             Parsed: TCompilerOptionsParseType = coptParsed): string;
     function GetObjectPath(RelativeToBaseDir: boolean;
-                           Parsed: TCompilerOptionsParseType = coptParsed): string;
+                           Parsed: TCompilerOptionsParseType = coptParsed;
+                           WithProjDir: boolean = false): string;
     function GetPath(Option: TParsedCompilerOptString;
                      InheritedOption: TInheritedCompilerOption;
                      RelativeToBaseDir: boolean;
-                     Parsed: TCompilerOptionsParseType): string;
+                     Parsed: TCompilerOptionsParseType;
+                     WithProjDir: boolean): string;
     function GetParsedPath(Option: TParsedCompilerOptString;
                            InheritedOption: TInheritedCompilerOption;
                            RelativeToBaseDir: boolean): string;
@@ -355,7 +361,7 @@ type
                              InheritedOption: TInheritedCompilerOption;
                              RelativeToBaseDir: boolean): string;
     function ShortenPath(const SearchPath: string;
-                               MakeAlwaysRelative: boolean): string;
+                         MakeAlwaysRelative: boolean): string;
     function GetCustomOptions(Parsed: TCompilerOptionsParseType = coptParsed): string;
     function GetEffectiveLCLWidgetType: string;
   public
@@ -1450,27 +1456,29 @@ begin
 end;
 
 function TBaseCompilerOptions.GetUnitPath(RelativeToBaseDir: boolean;
-  Parsed: TCompilerOptionsParseType = coptParsed): string;
+  Parsed: TCompilerOptionsParseType; WithProjDir: boolean): string;
 begin
-  Result:=GetPath(pcosUnitPath,icoUnitPath,RelativeToBaseDir,Parsed);
+  Result:=GetPath(pcosUnitPath,icoUnitPath,RelativeToBaseDir,Parsed,WithProjDir);
 end;
 
 function TBaseCompilerOptions.GetIncludePath(RelativeToBaseDir: boolean;
-  Parsed: TCompilerOptionsParseType): string;
+  Parsed: TCompilerOptionsParseType; WithProjDir: boolean): string;
 begin
-  Result:=GetPath(pcosIncludePath,icoIncludePath,RelativeToBaseDir,Parsed);
+  Result:=GetPath(pcosIncludePath,icoIncludePath,RelativeToBaseDir,Parsed,
+                  WithProjDir);
 end;
 
 function TBaseCompilerOptions.GetSrcPath(RelativeToBaseDir: boolean;
-  Parsed: TCompilerOptionsParseType): string;
+  Parsed: TCompilerOptionsParseType; WithProjDir: boolean): string;
 begin
-  Result:=GetPath(pcosSrcPath,icoSrcPath,RelativeToBaseDir,Parsed);
+  Result:=GetPath(pcosSrcPath,icoSrcPath,RelativeToBaseDir,Parsed,WithProjDir);
 end;
 
 function TBaseCompilerOptions.GetLibraryPath(RelativeToBaseDir: boolean;
-  Parsed: TCompilerOptionsParseType): string;
+  Parsed: TCompilerOptionsParseType; WithProjDir: boolean): string;
 begin
-  Result:=GetPath(pcosLibraryPath,icoLibraryPath,RelativeToBaseDir,Parsed);
+  Result:=GetPath(pcosLibraryPath,icoLibraryPath,RelativeToBaseDir,Parsed,
+                  WithProjDir);
 end;
 
 function TBaseCompilerOptions.GetUnitOutPath(RelativeToBaseDir: boolean;
@@ -1487,14 +1495,17 @@ begin
 end;
 
 function TBaseCompilerOptions.GetObjectPath(RelativeToBaseDir: boolean;
-  Parsed: TCompilerOptionsParseType): string;
+  Parsed: TCompilerOptionsParseType; WithProjDir: boolean): string;
 begin
-  Result:=GetPath(pcosObjectPath,icoObjectPath,RelativeToBaseDir,Parsed);
+  Result:=GetPath(pcosObjectPath,icoObjectPath,RelativeToBaseDir,Parsed,
+                  WithProjDir);
 end;
 
 function TBaseCompilerOptions.GetPath(Option: TParsedCompilerOptString;
   InheritedOption: TInheritedCompilerOption; RelativeToBaseDir: boolean;
-  Parsed: TCompilerOptionsParseType): string;
+  Parsed: TCompilerOptionsParseType; WithProjDir: boolean): string;
+var
+  AddPath: String;
 begin
   case Parsed of
   coptUnparsed:
@@ -1505,6 +1516,14 @@ begin
     Result:=GetParsedPIPath(Option,InheritedOption,RelativeToBaseDir);
   else
     RaiseGDBException('');
+  end;
+  if WithProjDir then begin
+    if RelativeToBaseDir then
+      AddPath:='.'
+    else
+      AddPath:=BaseDirectory;
+    if AddPath<>'' then
+      Result:=MergeSearchPaths(Result,AddPath);
   end;
 end;
 

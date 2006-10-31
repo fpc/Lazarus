@@ -1109,7 +1109,8 @@ begin
   FuncData:=PReadFunctionData(Data);
   Result:=false;
   if Project1<>nil then begin
-    FuncData^.Result:=Project1.CompilerOptions.GetIncludePath(false);
+    FuncData^.Result:=
+                 Project1.CompilerOptions.GetIncludePath(false,coptParsed,true);
     Result:=true;
   end;
 end;
