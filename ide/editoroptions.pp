@@ -50,7 +50,7 @@ uses
   IDECommands, IDEWindowIntf, SrcEditorIntf,
   // IDE
   LazarusIDEStrConsts, IDEOptionDefs, IDEProcs, InputHistory, KeyMapping,
-  KeymapSchemeDlg, LazConf;
+  KeymapSchemeDlg, LazConf, Spin;
 
 type
   TPreviewEditor = TSynEdit;
@@ -183,7 +183,6 @@ type
     fCtrlMouseLinks: Boolean;
     fUndoAfterSave: Boolean;
     fUseSyntaxHighlight: Boolean;
-    FUseCodeFolding: Boolean;
     FCopyWordAtCursorOnCopyNone: Boolean;
     FShowGutterHints: Boolean;
     fBlockIndent: Integer;
@@ -218,6 +217,10 @@ type
     fAutoDelayInMSec: Integer;
     fCodeTemplateFileName: String;
     fCTemplIndentToTokenStart: Boolean;
+    
+    // Code Folding
+    FUseCodeFolding: Boolean;
+    FCFDividerDrawLevel: Integer;
   public
     constructor Create;
     destructor Destroy; override;
@@ -270,8 +273,6 @@ type
       read fFindTextAtCursor write fFindTextAtCursor default True;
     property UseSyntaxHighlight: Boolean
       read fUseSyntaxHighlight write fUseSyntaxHighlight default True;
-    property UseCodeFolding: Boolean
-      read FUseCodeFolding write FUseCodeFolding default True;
     property CopyWordAtCursorOnCopyNone: Boolean
       read FCopyWordAtCursorOnCopyNone write FCopyWordAtCursorOnCopyNone;
     property ShowGutterHints: Boolean read FShowGutterHints
@@ -327,6 +328,12 @@ type
       read fCodeTemplateFileName write fCodeTemplateFileName;
     property CodeTemplateIndentToTokenStart: Boolean
       read fCTemplIndentToTokenStart write fCTemplIndentToTokenStart;
+
+    // Code Folding
+    property UseCodeFolding: Boolean
+        read FUseCodeFolding write FUseCodeFolding default True;
+    property CFDividerDrawLevel: Integer
+        read FCFDividerDrawLevel write FCFDividerDrawLevel default 3;
   end;
 
   { Editor Options form }
@@ -349,6 +356,7 @@ type
     CodetoolsPage: TPage;
     BlockIndentComboBox: TComboBox;
     BlockIndentLabel: TLabel;
+    CodeFolding: TPage;
     UndoLimitComboBox: TComboBox;
     UndoLimitLabel: TLabel;
     TabWidthsComboBox: TComboBox;
@@ -416,6 +424,12 @@ type
     AutoDelayTrackBar: TTrackBar;
     AutoDelayMinLabel: TLabel;
     AutoDelayMaxLabel: TLabel;
+    
+    // Code Folding
+    Bevel1: TBevel;
+    chkCodeFoldingEnabled: TCheckBox;
+    lblDividerDrawLevel: TLabel;
+    edDividerDrawLevel: TSpinEdit;
 
     // buttons at bottom
     OkButton: TButton;
@@ -451,6 +465,9 @@ type
     procedure SetAllAttributesToDefaultButtonClick(Sender: TObject);
 
     // code tools
+
+    // Code Folding
+    procedure chkCodeFoldingEnabledChange(Sender: TObject);
 
     // buttons at bottom
     procedure OkButtonClick(Sender: TObject);
@@ -506,6 +523,9 @@ type
 
     // code tools
     procedure SetupCodeToolsPage(Page: Integer);
+    
+    // Code Folding
+    procedure SetupCodeFoldingPage(Page: integer);
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -1244,6 +1264,9 @@ begin
           fCodeTemplateFileName, '"');
       end;
   end;
+  
+  // Code Folding
+  FCFDividerDrawLevel := 3;
 end;
 
 destructor TEditorOptions.Destroy;
@@ -1309,9 +1332,6 @@ begin
     fUseSyntaxHighlight :=
       XMLConfig.GetValue(
       'EditorOptions/General/Editor/UseSyntaxHighlight', True);
-    FUseCodeFolding :=
-      XMLConfig.GetValue(
-      'EditorOptions/General/Editor/UseCodeFolding', True);
     fBlockIndent :=
       XMLConfig.GetValue('EditorOptions/General/Editor/BlockIndent', 2);
     fUndoLimit :=
@@ -1379,6 +1399,12 @@ begin
       XMLConfig.GetValue(
       'EditorOptions/CodeTools/CodeTemplateIndentToTokenStart/Value', False);
 
+    // Code Folding
+    FUseCodeFolding :=
+      XMLConfig.GetValue(
+      'EditorOptions/CodeFolding/UseCodeFolding', True);
+    FCFDividerDrawLevel :=
+      XMLConfig.GetValue('EditorOptions/CodeFolding/DividerDrawLevel', 3);
   except
     on E: Exception do
       DebugLn('[TEditorOptions.Load] ERROR: ', e.Message);
@@ -1436,8 +1462,6 @@ begin
       , fFindTextAtCursor, True);
     XMLConfig.SetDeleteValue('EditorOptions/General/Editor/UseSyntaxHighlight'
       , fUseSyntaxHighlight, True);
-    XMLConfig.SetDeleteValue('EditorOptions/General/Editor/UseCodeFolding'
-      , FUseCodeFolding, True);
     XMLConfig.SetDeleteValue('EditorOptions/General/Editor/BlockIndent'
       , fBlockIndent, 2);
     XMLConfig.SetDeleteValue('EditorOptions/General/Editor/UndoLimit'
@@ -1500,6 +1524,11 @@ begin
       'EditorOptions/CodeTools/CodeTemplateIndentToTokenStart/Value'
       , fCTemplIndentToTokenStart, False);
 
+    // Code Folding
+    XMLConfig.SetDeleteValue('EditorOptions/CodeFolding/UseCodeFolding',
+        FUseCodeFolding, True);
+    XMLConfig.SetDeleteValue('EditorOptions/CodeFolding/DividerDrawLevel',
+        FCFDividerDrawLevel, 3);
 
     InvalidateFileStateCache;
     XMLConfig.Flush;
@@ -2347,6 +2376,9 @@ begin
   ASynEdit.ExtraLineSpacing := fExtraLineSpacing;
   ASynEdit.MaxUndo := fUndoLimit;
   GetSynEditSelectedColor(ASynEdit);
+  
+  // Code Folding
+  ASynEdit.CFDividerDrawLevel := FCFDividerDrawLevel;
 
   KeyMap.AssignTo(ASynEdit.KeyStrokes, TSourceEditorWindowInterface);
 end;
@@ -2455,6 +2487,7 @@ begin
   SetupKeyMappingsPage(2);
   SetupColorPage(3);
   SetupCodeToolsPage(4);
+  SetupCodeFoldingPage(5);
   SetupButtonBar;
 
   UpdatingColor := False;
@@ -2685,6 +2718,12 @@ begin
         InvalidatePreviews;
       end;
   end;
+end;
+
+procedure TEditorOptionsForm.chkCodeFoldingEnabledChange(Sender: TObject);
+begin
+  lblDividerDrawLevel.Enabled := chkCodeFoldingEnabled.Checked;
+  edDividerDrawLevel.Enabled  := chkCodeFoldingEnabled.Checked;
 end;
 
 procedure TEditorOptionsForm.EditorFontComboBoxEditingDone(Sender: TObject);
@@ -3536,7 +3575,6 @@ begin
     Items.Add(dlgShowGutterHints);
     Items.Add(dlgShowScrollHint);
     Items.Add(dlgUseSyntaxHighlight);
-    Items.Add(dlgUseCodeFolding);
     // drag&drop
     Items.Add(dlgDragDropEd);
     Items.Add(dlgDropFiles);
@@ -3607,7 +3645,6 @@ begin
                           eoDoubleClickSelectsLine in EditorOpts.SynEditOptions;
     Checked[Items.IndexOf(dlgFindTextatCursor)] := EditorOpts.FindTextAtCursor;
     Checked[Items.IndexOf(dlgUseSyntaxHighlight)] := EditorOpts.UseSyntaxHighlight;
-    Checked[Items.IndexOf(dlgUseCodeFolding)] := EditorOpts.UseCodeFolding;
     Checked[Items.IndexOf(dlgCopyWordAtCursorOnCopyNone)] :=
                                           EditorOpts.CopyWordAtCursorOnCopyNone;
     Checked[Items.IndexOf(dlgHomeKeyJumpsToNearestStart)] :=
@@ -3814,6 +3851,16 @@ begin
   AutoDelayMaxLabel.Caption := '4.0 ' + dlgTimeSecondUnit;
 end;
 
+procedure TEditorOptionsForm.SetupCodeFoldingPage(Page: integer);
+begin
+  MainNoteBook.Page[Page].Caption := dlgUseCodeFolding;
+  chkCodeFoldingEnabled.Caption   := dlgUseCodeFolding;
+  lblDividerDrawLevel.Caption     := dlgCFDividerDrawLevel + ':';
+  
+  chkCodeFoldingEnabled.Checked   := EditorOpts.UseCodeFolding;
+  edDividerDrawLevel.Value        := EditorOpts.CFDividerDrawLevel;
+end;
+
 procedure TEditorOptionsForm.SetupButtonBar;
 begin
   CancelButton.Caption := dlgCancel;
@@ -3856,8 +3903,6 @@ begin
     CheckGroupItemChecked(EditorOptionsGroupBox,dlgFindTextatCursor);
   EditorOpts.UseSyntaxHighlight :=
     CheckGroupItemChecked(EditorOptionsGroupBox,dlgUseSyntaxHighlight);
-  EditorOpts.UseCodeFolding :=
-    CheckGroupItemChecked(EditorOptionsGroupBox,dlgUseCodeFolding);
   EditorOpts.CtrlMouseLinks :=
     CheckGroupItemChecked(EditorOptionsGroupBox,dlgMouseLinks);
   i := StrToIntDef(UndoLimitComboBox.Text, 32767);
@@ -3893,8 +3938,11 @@ begin
   EditorOpts.AutoToolTipSymbTools := AutoToolTipSymbToolsCheckBox.Checked;
   EditorOpts.AutoDelayInMSec    := AutoDelayTrackBar.Position;
 
+  // Code Folding
+  EditorOpts.UseCodeFolding       := chkCodeFoldingEnabled.Checked;
+  EditorOpts.CFDividerDrawLevel   := edDividerDrawLevel.Value;
+  
   EditorOpts.Save;
-
   ModalResult := mrOk;
 end;
 

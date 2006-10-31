@@ -318,6 +318,10 @@ begin
     OpenDialog.Title:=lisOpenFile;
     OpenDialog.Options:=OpenDialog.Options
                           +[ofFileMustExist,ofPathMustExist,ofAllowMultiSelect];
+    OpenDialog.Filter:=dlgAllFiles+' ('+GetAllFilesMask+')|'+GetAllFilesMask
+                 +'|'+lisLazarusUnit+' (*.pas;*.pp)|*.pas;*.pp'
+                 +'|'+lisLazarusInclude+' (*.inc)|*.inc'
+                 +'|'+lisLazarusForm+' (*.lfm)|*.lfm';
     if OpenDialog.Execute then begin
       for i:=0 to OpenDialog.Files.Count-1 do begin
         AFilename:=CleanAndExpandFilename(OpenDialog.Files[i]);

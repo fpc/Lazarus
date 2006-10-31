@@ -370,6 +370,7 @@ type
     fBracketHighlightAntiPos: TPoint;
     fCtrlMouseActive: boolean;
     fLineIndenter: TSynCustomLineIndenter;
+    FCFDividerDrawLevel: Integer;
     {$ENDIF}
     fLastCaretX: integer;  // physical position (screen)                        //mh 2000-10-19
     fCaretY: Integer;
@@ -484,6 +485,7 @@ type
     function AdjustBytePosToCharacterStart(Line: integer; BytePos: integer): integer;
     function AdjustPhysPosToCharacterStart(Line: integer; PhysPos: integer): integer;
     function GetLogicalCaretXY: TPoint;
+    procedure SetCFDividerDrawLevel(const AValue: Integer);
     procedure SetLineIndenter(const AValue: TSynCustomLineIndenter);
     procedure SetLogicalCaretXY(const NewLogCaretXY: TPoint);
     {$ENDIF}
@@ -893,6 +895,8 @@ type
       read FSelectionMode write SetSelectionMode default smNormal;
     {$IFDEF SYN_LAZARUS}
     property TabChar: char read FTabChar write SetTabChar;
+    property CFDividerDrawLevel: Integer
+        read FCFDividerDrawLevel write SetCFDividerDrawLevel;
     {$ENDIF}
     property TabWidth: integer read fTabWidth write SetTabWidth default 8;
     property WantTabs: boolean read fWantTabs write SetWantTabs default FALSE;
@@ -932,6 +936,7 @@ type
     property Color;
     {$IFDEF SYN_LAZARUS}
     property Cursor default crIBeam;
+    property CFDividerDrawLevel;
     {$ENDIF}
     property Ctl3D;
     property Enabled;
@@ -1688,6 +1693,13 @@ end;
 function TCustomSynEdit.GetLogicalCaretXY: TPoint;
 begin
   Result:=PhysicalToLogicalPos(CaretXY);
+end;
+
+procedure TCustomSynEdit.SetCFDividerDrawLevel(const AValue: Integer);
+begin
+  if FCFDividerDrawLevel = AValue then
+    Exit; //==>
+  FCFDividerDrawLevel := AValue;
 end;
 
 procedure TCustomSynEdit.SetLineIndenter(const AValue: TSynCustomLineIndenter);
@@ -3350,7 +3362,8 @@ var
       LCLIntf.LineTo(dc, nRightEdge, rcToken.Bottom + 1);
       // codefold draw splitter line
       if Gutter.ShowCodeFolding and (CurLine>=0)
-      and (TSynEditStringList(Lines).FoldType[CurLine-1] in [cfEnd]) then
+      and (TSynEditStringList(Lines).FoldType[CurLine-1] in [cfEnd])
+      and (TSynEditStringList(Lines).FoldEndLevel[CurLine-1] < CFDividerDrawLevel) then
       begin
         ypos := rcToken.Bottom - 1;
         LCLIntf.MoveToEx(dc, nRightEdge, ypos, nil);
@@ -3480,7 +3493,8 @@ var
 
         // codefold draw splitter line
         if Gutter.ShowCodeFolding and (CurLine>=0)
-        and (TSynEditStringList(Lines).FoldType[CurLine-1] in [cfEnd]) then
+        and (TSynEditStringList(Lines).FoldType[CurLine-1] in [cfEnd])
+        and (TSynEditStringList(Lines).FoldEndLevel[CurLine-1] < CFDividerDrawLevel) then
         begin
           ypos := rcToken.Bottom - 1;
           LCLIntf.MoveToEx(dc, nRightEdge, ypos, nil);
@@ -4102,7 +4116,9 @@ begin
 
       //codefold draw splitter line
       if Gutter.ShowCodeFolding and (LastLine<Lines.Count)
-      and (TSynEditStringList(Lines).FoldType[LastLine-1] in [cfEnd]) then begin
+      and (TSynEditStringList(Lines).FoldType[LastLine-1] in [cfEnd])
+      and (TSynEditStringList(Lines).FoldEndLevel[LastLine-1] < CFDividerDrawLevel) then
+      begin
         ypos := rcToken.Bottom - 1;
         LCLIntf.MoveToEx(dc, nRightEdge, ypos, nil);
         LCLIntf.LineTo(dc, fGutterWidth, ypos);

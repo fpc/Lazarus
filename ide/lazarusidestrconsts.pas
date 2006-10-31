@@ -918,6 +918,7 @@ resourcestring
   dlgChsCodeTempl = 'Choose code template file (*.dci)';
   dlgAllFiles = 'All files';
   lisLazarusUnit = 'Lazarus unit';
+  lisLazarusInclude = 'Lazarus include file';
   lisLazarusProject = 'Lazarus project';
   lisLazarusForm = 'Lazarus form';
   lisLazarusPackage = 'Lazarus package';
@@ -998,6 +999,7 @@ resourcestring
   dlgIndentCodeTo = 'Indent code to';
   dlgCodeToolsTab = 'Code Tools';
   lisAutomaticFeatures = 'Automatic features';
+  dlgCFDividerDrawLevel = 'Divider Draw Level';
   
   // CodeTools dialog
   dlgCodeToolsOpts = 'CodeTools Options';
