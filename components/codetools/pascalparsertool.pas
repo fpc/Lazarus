@@ -70,6 +70,7 @@ type
                            //    with this option you get 'Do ;')
     phpWithoutBrackets,    // skip start- and end-bracket of parameter list
     phpWithoutSemicolon,   // skip semicolon at end
+    phpDoNotAddSemicolon,  // do not add missing semicolon at end
     // search attributes:
     phpIgnoreForwards,     // skip forward procs
     phpIgnoreProcsWithBody,// skip procs with begin..end
@@ -257,6 +258,7 @@ const
       'phpCommentsToSpace',
       'phpWithoutBrackets',
       'phpWithoutSemicolon',
+      'phpDoNotAddSemicolon',
       // search attributes:
       'phpIgnoreForwards',
       'phpIgnoreProcsWithBody',

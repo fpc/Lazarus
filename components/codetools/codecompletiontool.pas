@@ -30,6 +30,7 @@
       - add missing method bodies
           - add useful statements
       - add missing forward proc bodies
+      - add missing semicolons at end of procedures
       - complete event assignments
       - complete local variables
       - complete local variables as parameter
@@ -2692,9 +2693,17 @@ var CleanCursorPos, Indent, insertPos: integer;
         ProcCode:=ExtractProcHead(CurProcNode,[phpWithStart,
                     phpWithoutClassKeyword,
                     phpWithVarModifiers,phpWithParameterNames,phpWithResultType,
-                    phpWithCallingSpecs]);
+                    phpWithCallingSpecs,phpDoNotAddSemicolon]);
         if ProcCode='' then
           RaiseException('CompleteForwardProcs: unable to parse forward proc node');
+        if ProcCode[length(ProcCode)]<>';' then begin
+          // add missing semicolon
+          ProcCode:=ProcCode+';';
+          UndoReadNextAtom;
+          if not SourceChangeCache.Replace(gtNone,gtNone,
+            CurPos.EndPos,CurPos.EndPos,';') then
+              RaiseException('CompleteForwardProcs: unable to insert semicolon');
+        end;
         ProcCode:=SourceChangeCache.BeautifyCodeOptions.BeautifyProc(ProcCode,
                                                                    Indent,true);
         if not SourceChangeCache.Replace(gtEmptyLine,gtEmptyLine,
@@ -3106,7 +3115,6 @@ begin
     CompleteMethod;
     exit;
   end;
-
 
   {$IFDEF CTDEBUG}
   DebugLn('TCodeCompletionCodeTool.CompleteCode  nothing to complete ... ');

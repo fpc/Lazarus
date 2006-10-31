@@ -455,7 +455,7 @@ begin
   Result:=GetExtraction;
   
   // add semicolon
-  if (not (phpWithoutSemicolon in Attr))
+  if ([phpWithoutSemicolon,phpDoNotAddSemicolon]*Attr=[])
   and (Result<>'') and (Result[length(Result)]<>';') then
     Result:=Result+';';
 end;

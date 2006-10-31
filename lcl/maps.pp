@@ -642,7 +642,7 @@ end;
 function TMapIterator.DataPtr: Pointer;
 begin
   Validate;
-  FMap.InternalGetDataPtr(FCurrent);
+  Result:=FMap.InternalGetDataPtr(FCurrent);
 end;
 
 procedure TMapIterator.GetData(out AData);
