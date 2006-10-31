@@ -183,7 +183,7 @@ end;
 { TGtkWSCustomForm }
 
 {$IFDEF GTK1}
-function GtkWSFormMapEvent(Widget: PGtkWidget; WidgetInfo: PWidgetInfo): gboolean; cdecl;
+function GtkWSFormMapEvent(Widget: PGtkWidget; Event: PGdkEvent; WidgetInfo: PWidgetInfo): gboolean; cdecl;
 var
   Message: TLMSize;
   AForm: TCustomForm;
@@ -214,7 +214,7 @@ begin
   DeliverMessage(WidgetInfo^.LCLObject, Message);
 end;
 
-function GtkWSFormUnMapEvent(Widget: PGtkWidget; WidgetInfo: PWidgetInfo): gboolean; cdecl;
+function GtkWSFormUnMapEvent(Widget: PGtkWidget; Event: PGdkEvent; WidgetInfo: PWidgetInfo): gboolean; cdecl;
 var
   Message: TLMSize;
   AForm: TCustomForm;
@@ -222,6 +222,10 @@ begin
   Result := True;
   FillChar(Message, 0, SizeOf(Message));
   AForm := TCustomForm(WidgetInfo^.LCLObject);
+  
+  // ignore the unmap signals when we switch desktops
+  // as this results in irritating behavior when we return to the desktop
+  if GDK_GET_CURRENT_DESKTOP <> GDK_WINDOW_GET_DESKTOP(PGdkWindowPrivate(Widget^.Window)) then Exit;
 
   Message.Msg := LM_SIZE;
   Message.SizeType := SIZEICONIC or Size_SourceIsInterface;
@@ -237,8 +241,8 @@ class procedure TGtkWSCustomForm.SetCallbacks(const AWinControl: TWinControl;
   const AWidgetInfo: PWidgetInfo);
 begin
   {$IFDEF GTK1}
-  gtk_signal_connect(PGtkObject(AWidgetInfo^.CoreWidget),'map', TGtkSignalFunc(@GtkWSFormMapEvent), AWidgetInfo);
-  gtk_signal_connect(PGtkObject(AWidgetInfo^.CoreWidget),'unmap', TGtkSignalFunc(@GtkWSFormUnMapEvent), AWidgetInfo);
+  gtk_signal_connect(PGtkObject(AWidgetInfo^.CoreWidget),'map-event', TGtkSignalFunc(@GtkWSFormMapEvent), AWidgetInfo);
+  gtk_signal_connect(PGtkObject(AWidgetInfo^.CoreWidget),'unmap-event', TGtkSignalFunc(@GtkWSFormUnMapEvent), AWidgetInfo);
   {$ENDIF}
 end;
 
