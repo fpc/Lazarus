@@ -66,7 +66,7 @@ type
 
   { TCustomActionList }
 
-  TActionEvent = procedure (Action: TBasicAction; var Handled: Boolean) of object;
+  TActionEvent = procedure (AAction: TBasicAction; var Handled: Boolean) of object;
   TActionListState = (asNormal, asSuspended, asSuspendedEnabled);
 
   TCustomActionList = class(TLCLComponent)
