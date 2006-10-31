@@ -1242,6 +1242,10 @@ msgstr "Очистити"
 msgid "Clear dependency filename"
 msgstr ""
 
+#: lazarusidestrconsts:lisuiclearincludedbyreference
+msgid "Clear included by reference"
+msgstr ""
+
 #: lazarusidestrconsts:lisdebugoptionsfrmclearlogonrun
 msgid "Clear log on run"
 msgstr ""
@@ -1257,6 +1261,10 @@ msgstr "Закрити"
 #: lazarusidestrconsts:lismenucloseall
 msgid "Close all editor files"
 msgstr "Закрити всі файли редактора"
+
+#: lazarusidestrconsts:lissrclosepage
+msgid "Close page"
+msgstr ""
 
 #: lazarusidestrconsts:dlgcodegeneration
 msgid "Code"
@@ -2178,6 +2186,10 @@ msgstr "Вивести номери рядків в помилках часу в
 msgid "Distinguish big and small letters e.g. A and a"
 msgstr "Розрізняти регістр букв, наприклад, А і а"
 
+#: lazarusidestrconsts:dlgcfdividerdrawlevel
+msgid "Divider Draw Level"
+msgstr ""
+
 #: lazarusidestrconsts:lisdonotclosetheide
 msgid "Do not close the IDE"
 msgstr ""
@@ -2245,6 +2257,10 @@ msgstr "Редагування типу Drag Drop"
 #: lazarusidestrconsts:dlgdropfiles
 msgid "Drop files"
 msgstr "Кинути файли"
+
+#: lazarusidestrconsts:lisduplicatenameacomponentnamedalreadyexistsintheinhe
+msgid "Duplicate name: A component named %s%s%s already exists in the inherited component %s"
+msgstr ""
 
 #: lazarusidestrconsts:rslanguagedutch
 msgid "Dutch"
@@ -4201,6 +4217,10 @@ msgstr "Не знайдена тека Lazarus"
 #: lazarusidestrconsts:lislazarusform
 msgid "Lazarus form"
 msgstr "Форма Lazarus"
+
+#: lazarusidestrconsts:lislazarusinclude
+msgid "Lazarus include file"
+msgstr ""
 
 #: lazarusidestrconsts:lislazaruslanguageid
 msgid "Lazarus language ID (e.g. en, de, br, fi)"

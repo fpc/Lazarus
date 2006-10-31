@@ -1256,6 +1256,10 @@ msgstr "Leeren"
 msgid "Clear dependency filename"
 msgstr "Namen der Abhängigkeit löschen"
 
+#: lazarusidestrconsts:lisuiclearincludedbyreference
+msgid "Clear included by reference"
+msgstr ""
+
 #: lazarusidestrconsts:lisdebugoptionsfrmclearlogonrun
 msgid "Clear log on run"
 msgstr "Log beim Start löschen"
@@ -1271,6 +1275,10 @@ msgstr "Schließen"
 #: lazarusidestrconsts:lismenucloseall
 msgid "Close all editor files"
 msgstr "Alle Editorfenster schließen"
+
+#: lazarusidestrconsts:lissrclosepage
+msgid "Close page"
+msgstr ""
 
 #: lazarusidestrconsts:dlgcodegeneration
 msgid "Code"
@@ -2192,6 +2200,10 @@ msgstr "Zeilennummern in Laufzeitfehler-Backtraces anzeigen"
 msgid "Distinguish big and small letters e.g. A and a"
 msgstr "Groß- und Kleinschreibung unterscheiden"
 
+#: lazarusidestrconsts:dlgcfdividerdrawlevel
+msgid "Divider Draw Level"
+msgstr ""
+
 #: lazarusidestrconsts:lisdonotclosetheide
 msgid "Do not close the IDE"
 msgstr "IDE nicht schließen"
@@ -2259,6 +2271,10 @@ msgstr "Editieren mit Drag&&Drop"
 #: lazarusidestrconsts:dlgdropfiles
 msgid "Drop files"
 msgstr "Dateien ablegen"
+
+#: lazarusidestrconsts:lisduplicatenameacomponentnamedalreadyexistsintheinhe
+msgid "Duplicate name: A component named %s%s%s already exists in the inherited component %s"
+msgstr ""
 
 #: lazarusidestrconsts:rslanguagedutch
 msgid "Dutch"
@@ -4215,6 +4231,10 @@ msgstr "Lazarus-Verzeichnis nicht gefunden"
 #: lazarusidestrconsts:lislazarusform
 msgid "Lazarus form"
 msgstr "Lazarus-Form"
+
+#: lazarusidestrconsts:lislazarusinclude
+msgid "Lazarus include file"
+msgstr ""
 
 #: lazarusidestrconsts:lislazaruslanguageid
 msgid "Lazarus language ID (e.g. en, de, br, fi)"

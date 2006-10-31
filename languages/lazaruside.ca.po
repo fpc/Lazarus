@@ -1253,6 +1253,10 @@ msgstr "Neteja"
 msgid "Clear dependency filename"
 msgstr ""
 
+#: lazarusidestrconsts:lisuiclearincludedbyreference
+msgid "Clear included by reference"
+msgstr ""
+
 #: lazarusidestrconsts:lisdebugoptionsfrmclearlogonrun
 msgid "Clear log on run"
 msgstr ""
@@ -1268,6 +1272,10 @@ msgstr "Tanca"
 #: lazarusidestrconsts:lismenucloseall
 msgid "Close all editor files"
 msgstr "Tanca tots els fitxers de l'editor"
+
+#: lazarusidestrconsts:lissrclosepage
+msgid "Close page"
+msgstr ""
 
 #: lazarusidestrconsts:dlgcodegeneration
 msgid "Code"
@@ -2189,6 +2197,10 @@ msgstr "Mostra els números de línia en errors en temps d'execució en seguiments 
 msgid "Distinguish big and small letters e.g. A and a"
 msgstr "Distingeix entre lletres grans i petites p.ex. A i a"
 
+#: lazarusidestrconsts:dlgcfdividerdrawlevel
+msgid "Divider Draw Level"
+msgstr ""
+
 #: lazarusidestrconsts:lisdonotclosetheide
 msgid "Do not close the IDE"
 msgstr ""
@@ -2256,6 +2268,10 @@ msgstr "Edició arrossegar i deixar anar"
 #: lazarusidestrconsts:dlgdropfiles
 msgid "Drop files"
 msgstr "Deixa anar els fitxers"
+
+#: lazarusidestrconsts:lisduplicatenameacomponentnamedalreadyexistsintheinhe
+msgid "Duplicate name: A component named %s%s%s already exists in the inherited component %s"
+msgstr ""
 
 #: lazarusidestrconsts:rslanguagedutch
 msgid "Dutch"
@@ -4212,6 +4228,10 @@ msgstr "No s'ha trobat el directori del Lazarus"
 #: lazarusidestrconsts:lislazarusform
 msgid "Lazarus form"
 msgstr "Forma Lazarus"
+
+#: lazarusidestrconsts:lislazarusinclude
+msgid "Lazarus include file"
+msgstr ""
 
 #: lazarusidestrconsts:lislazaruslanguageid
 msgid "Lazarus language ID (e.g. en, de, br, fi)"

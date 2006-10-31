@@ -1254,6 +1254,10 @@ msgstr "Suppr"
 msgid "Clear dependency filename"
 msgstr ""
 
+#: lazarusidestrconsts:lisuiclearincludedbyreference
+msgid "Clear included by reference"
+msgstr ""
+
 #: lazarusidestrconsts:lisdebugoptionsfrmclearlogonrun
 msgid "Clear log on run"
 msgstr ""
@@ -1269,6 +1273,10 @@ msgstr "Fermer"
 #: lazarusidestrconsts:lismenucloseall
 msgid "Close all editor files"
 msgstr "Fermer tous les fichiers"
+
+#: lazarusidestrconsts:lissrclosepage
+msgid "Close page"
+msgstr ""
 
 #: lazarusidestrconsts:dlgcodegeneration
 msgid "Code"
@@ -2190,6 +2198,10 @@ msgstr "Afficher les numéros de ligne dans les traçages d'erreurs d'exécution
 msgid "Distinguish big and small letters e.g. A and a"
 msgstr "Différencier majuscules et minuscules (i.e. A et a)"
 
+#: lazarusidestrconsts:dlgcfdividerdrawlevel
+msgid "Divider Draw Level"
+msgstr ""
+
 #: lazarusidestrconsts:lisdonotclosetheide
 msgid "Do not close the IDE"
 msgstr "Ne pas fermer l'IDE"
@@ -2257,6 +2269,10 @@ msgstr "Edition par glisser-déplacer"
 #: lazarusidestrconsts:dlgdropfiles
 msgid "Drop files"
 msgstr "Abandonner les fichiers"
+
+#: lazarusidestrconsts:lisduplicatenameacomponentnamedalreadyexistsintheinhe
+msgid "Duplicate name: A component named %s%s%s already exists in the inherited component %s"
+msgstr ""
 
 #: lazarusidestrconsts:rslanguagedutch
 msgid "Dutch"
@@ -4213,6 +4229,10 @@ msgstr "Répertoire de Lazarus introuvable"
 #: lazarusidestrconsts:lislazarusform
 msgid "Lazarus form"
 msgstr "fiche Lazarus"
+
+#: lazarusidestrconsts:lislazarusinclude
+msgid "Lazarus include file"
+msgstr ""
 
 #: lazarusidestrconsts:lislazaruslanguageid
 msgid "Lazarus language ID (e.g. en, de, br, fi)"

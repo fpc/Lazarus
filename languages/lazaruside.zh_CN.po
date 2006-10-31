@@ -1256,6 +1256,10 @@ msgstr "清除"
 msgid "Clear dependency filename"
 msgstr "清除依赖关系的文件名"
 
+#: lazarusidestrconsts:lisuiclearincludedbyreference
+msgid "Clear included by reference"
+msgstr ""
+
 #: lazarusidestrconsts:lisdebugoptionsfrmclearlogonrun
 msgid "Clear log on run"
 msgstr "运行时清除日志"
@@ -1271,6 +1275,10 @@ msgstr "关闭"
 #: lazarusidestrconsts:lismenucloseall
 msgid "Close all editor files"
 msgstr "关闭所有编辑器中的文件"
+
+#: lazarusidestrconsts:lissrclosepage
+msgid "Close page"
+msgstr ""
 
 #: lazarusidestrconsts:dlgcodegeneration
 msgid "Code"
@@ -2192,6 +2200,10 @@ msgstr "当出现运行错误时显示行号"
 msgid "Distinguish big and small letters e.g. A and a"
 msgstr "区分大小写,例如: A 和 a"
 
+#: lazarusidestrconsts:dlgcfdividerdrawlevel
+msgid "Divider Draw Level"
+msgstr ""
+
 #: lazarusidestrconsts:lisdonotclosetheide
 msgid "Do not close the IDE"
 msgstr "不关闭IDE"
@@ -2259,6 +2271,10 @@ msgstr "拖放文件编辑"
 #: lazarusidestrconsts:dlgdropfiles
 msgid "Drop files"
 msgstr "丢失文件"
+
+#: lazarusidestrconsts:lisduplicatenameacomponentnamedalreadyexistsintheinhe
+msgid "Duplicate name: A component named %s%s%s already exists in the inherited component %s"
+msgstr ""
 
 #: lazarusidestrconsts:rslanguagedutch
 msgid "Dutch"
@@ -4215,6 +4231,10 @@ msgstr "Lazarus 目录未找到"
 #: lazarusidestrconsts:lislazarusform
 msgid "Lazarus form"
 msgstr "Lazarus 窗体"
+
+#: lazarusidestrconsts:lislazarusinclude
+msgid "Lazarus include file"
+msgstr ""
 
 #: lazarusidestrconsts:lislazaruslanguageid
 msgid "Lazarus language ID (e.g. en, de, br, fi)"

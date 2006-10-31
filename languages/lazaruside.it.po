@@ -1254,6 +1254,10 @@ msgstr "Clear"
 msgid "Clear dependency filename"
 msgstr ""
 
+#: lazarusidestrconsts:lisuiclearincludedbyreference
+msgid "Clear included by reference"
+msgstr ""
+
 #: lazarusidestrconsts:lisdebugoptionsfrmclearlogonrun
 msgid "Clear log on run"
 msgstr ""
@@ -1269,6 +1273,10 @@ msgstr "Chiudi"
 #: lazarusidestrconsts:lismenucloseall
 msgid "Close all editor files"
 msgstr "Chiudi tutti i file dell'editor"
+
+#: lazarusidestrconsts:lissrclosepage
+msgid "Close page"
+msgstr ""
 
 #: lazarusidestrconsts:dlgcodegeneration
 msgid "Code"
@@ -2190,6 +2198,10 @@ msgstr "Mostra i numeri di linea nelle backtrace degli errori di esecuzione"
 msgid "Distinguish big and small letters e.g. A and a"
 msgstr "Distingui tra lettere maiuscole e minuscole per es. tra A e a"
 
+#: lazarusidestrconsts:dlgcfdividerdrawlevel
+msgid "Divider Draw Level"
+msgstr ""
+
 #: lazarusidestrconsts:lisdonotclosetheide
 msgid "Do not close the IDE"
 msgstr "Non chiudere l'IDE"
@@ -2257,6 +2269,10 @@ msgstr "Modifica a \"trascina e rilascia\""
 #: lazarusidestrconsts:dlgdropfiles
 msgid "Drop files"
 msgstr "Rilascia file"
+
+#: lazarusidestrconsts:lisduplicatenameacomponentnamedalreadyexistsintheinhe
+msgid "Duplicate name: A component named %s%s%s already exists in the inherited component %s"
+msgstr ""
 
 #: lazarusidestrconsts:rslanguagedutch
 msgid "Dutch"
@@ -4213,6 +4229,10 @@ msgstr "Cartella Lazarus non trovata"
 #: lazarusidestrconsts:lislazarusform
 msgid "Lazarus form"
 msgstr "form di Lazarus"
+
+#: lazarusidestrconsts:lislazarusinclude
+msgid "Lazarus include file"
+msgstr ""
 
 #: lazarusidestrconsts:lislazaruslanguageid
 msgid "Lazarus language ID (e.g. en, de, br, fi)"

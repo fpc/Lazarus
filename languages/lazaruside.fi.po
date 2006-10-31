@@ -1242,6 +1242,10 @@ msgstr "Tyhjennä"
 msgid "Clear dependency filename"
 msgstr ""
 
+#: lazarusidestrconsts:lisuiclearincludedbyreference
+msgid "Clear included by reference"
+msgstr ""
+
 #: lazarusidestrconsts:lisdebugoptionsfrmclearlogonrun
 msgid "Clear log on run"
 msgstr ""
@@ -1257,6 +1261,10 @@ msgstr "Sulje"
 #: lazarusidestrconsts:lismenucloseall
 msgid "Close all editor files"
 msgstr "Sulje kaikki editorin tiedostot"
+
+#: lazarusidestrconsts:lissrclosepage
+msgid "Close page"
+msgstr ""
 
 #: lazarusidestrconsts:dlgcodegeneration
 msgid "Code"
@@ -1436,7 +1444,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenucompileroptions
 msgid "Compiler Options ..."
-msgstr ""
+msgstr "Kääntäjän optiot ..."
 
 #: lazarusidestrconsts:lispckeditcompileroptionsforpackage
 msgid "Compiler Options for Package %s"
@@ -1444,7 +1452,7 @@ msgstr ""
 
 #: lazarusidestrconsts:liscompileroptionsforproject
 msgid "Compiler Options for Project: %s"
-msgstr ""
+msgstr "Kääntäjän optiot projektissa: %s"
 
 #: lazarusidestrconsts:liscompilererror
 msgid "Compiler error"
@@ -2178,6 +2186,10 @@ msgstr ""
 msgid "Distinguish big and small letters e.g. A and a"
 msgstr "Erottelee pienet ja isot kirjaimet (esim. A ja a )"
 
+#: lazarusidestrconsts:dlgcfdividerdrawlevel
+msgid "Divider Draw Level"
+msgstr ""
+
 #: lazarusidestrconsts:lisdonotclosetheide
 msgid "Do not close the IDE"
 msgstr "Ei sittenkään suljeta Lazarusta"
@@ -2244,6 +2256,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgdropfiles
 msgid "Drop files"
+msgstr ""
+
+#: lazarusidestrconsts:lisduplicatenameacomponentnamedalreadyexistsintheinhe
+msgid "Duplicate name: A component named %s%s%s already exists in the inherited component %s"
 msgstr ""
 
 #: lazarusidestrconsts:rslanguagedutch
@@ -3840,7 +3856,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lispkgmanginvalidfileextension
 msgid "Invalid file extension"
-msgstr ""
+msgstr "Vääränlainen tiedoston tarkennin"
 
 #: lazarusidestrconsts:lisa2pinvalidfilename
 msgid "Invalid filename"
@@ -4012,7 +4028,7 @@ msgstr "Säilytä kaikki tekstitiedostot"
 
 #: lazarusidestrconsts:dlgkeepcaretx
 msgid "Keep caret X position"
-msgstr ""
+msgstr "Yritä pysyä samalla kohtaa eri riveillä (x-paikka)"
 
 #: lazarusidestrconsts:dlgcokeepvarsreg
 msgid "Keep certain variables in registers"
@@ -4200,6 +4216,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lislazarusform
 msgid "Lazarus form"
+msgstr ""
+
+#: lazarusidestrconsts:lislazarusinclude
+msgid "Lazarus include file"
 msgstr ""
 
 #: lazarusidestrconsts:lislazaruslanguageid
@@ -5116,7 +5136,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisopenthefileasnormalsource
 msgid "Open the file as normal source"
-msgstr ""
+msgstr "Avaa tiedosto normaalina lähdekoodina"
 
 #: lazarusidestrconsts:lisopenthepackage
 msgid "Open the package %s?"
@@ -5552,7 +5572,7 @@ msgstr "Tunnistettiin ohjelmaksi"
 
 #: lazarusidestrconsts:lisprogramsourcemusthaveapascalextensionlikepaspporlp
 msgid "Program source must have a pascal extension like .pas, .pp or .lpr"
-msgstr "Ohjelman lähkekoodin tiedosto tarkennin pitää olla .pas, .pp tai .lpr"
+msgstr "Ohjelman lähdekoodin tiedosto tarkennin pitää olla .pas, .pp tai .lpr"
 
 #: lazarusidestrconsts:lisprogramafreepascalprogramtheprogramfileisautomatic
 msgid "Program%sA freepascal program. The program file is automatically maintained by lazarus."
@@ -7436,7 +7456,7 @@ msgstr ""
 
 #: lazarusidestrconsts:listhefileseemstobetheprogramfileofanexistinglazarusp
 msgid "The file %s seems to be the program file of an existing lazarus Project."
-msgstr ""
+msgstr "Tiedosto %s vaikuttaa siltä että se on ohjelmatiedosto Lazaruksella tehdyssä projektissa."
 
 #: lazarusidestrconsts:listhefile
 msgid "The file %s%s%s"
@@ -8572,7 +8592,7 @@ msgstr "Versio"
 
 #: lazarusidestrconsts:versioninfotitle
 msgid "Version Info"
-msgstr ""
+msgstr "Versiotiedot"
 
 #: lazarusidestrconsts:lisvertical
 msgid "Vertical"

@@ -1253,6 +1253,10 @@ msgstr "Maak schoon"
 msgid "Clear dependency filename"
 msgstr "Maak schoon afhankelijkheid bestandsnaam "
 
+#: lazarusidestrconsts:lisuiclearincludedbyreference
+msgid "Clear included by reference"
+msgstr ""
+
 #: lazarusidestrconsts:lisdebugoptionsfrmclearlogonrun
 msgid "Clear log on run"
 msgstr "Maak schoon log on run"
@@ -1268,6 +1272,10 @@ msgstr "Sluiten"
 #: lazarusidestrconsts:lismenucloseall
 msgid "Close all editor files"
 msgstr "Sluit alle editorbestanden"
+
+#: lazarusidestrconsts:lissrclosepage
+msgid "Close page"
+msgstr ""
 
 #: lazarusidestrconsts:dlgcodegeneration
 msgid "Code"
@@ -2189,6 +2197,10 @@ msgstr "Toon regelnummers in Run-time Error Backtraces"
 msgid "Distinguish big and small letters e.g. A and a"
 msgstr "Maak onderscheid tussen hoofd- en kleine letters. Bijv. A en a"
 
+#: lazarusidestrconsts:dlgcfdividerdrawlevel
+msgid "Divider Draw Level"
+msgstr ""
+
 #: lazarusidestrconsts:lisdonotclosetheide
 msgid "Do not close the IDE"
 msgstr "IDE niet sluiten"
@@ -2256,6 +2268,10 @@ msgstr "Sleep-en-plaats bewerking"
 #: lazarusidestrconsts:dlgdropfiles
 msgid "Drop files"
 msgstr "Sleep bestanden"
+
+#: lazarusidestrconsts:lisduplicatenameacomponentnamedalreadyexistsintheinhe
+msgid "Duplicate name: A component named %s%s%s already exists in the inherited component %s"
+msgstr ""
 
 #: lazarusidestrconsts:rslanguagedutch
 msgid "Dutch"
@@ -4213,6 +4229,10 @@ msgstr "Lazarus directory niet gevonden"
 msgid "Lazarus form"
 msgstr "Lazarus form"
 
+#: lazarusidestrconsts:lislazarusinclude
+msgid "Lazarus include file"
+msgstr ""
+
 #: lazarusidestrconsts:lislazaruslanguageid
 msgid "Lazarus language ID (e.g. en, de, br, fi)"
 msgstr "Lazarus taal ID (en, de, fi, etc.)"
@@ -5878,8 +5898,8 @@ msgid "Remove file %s from project?"
 msgstr "Verwijder bestand %s van het project?"
 
 #: lazarusidestrconsts:lispckeditremovefilefrompackage
-msgid "Remove file %s%s%s%sfrom pakket %s%s%s?"
-msgstr "Verwijderen bestand %s%s%s%s"
+msgid "Remove file %s%s%s%sfrom package %s%s%s?"
+msgstr ""
 
 #: lazarusidestrconsts:lispckeditremovefile2
 msgid "Remove file?"
@@ -9160,5 +9180,4 @@ msgstr "gebruik LineInfo-unit"
 #: lazarusidestrconsts:lisuidyes
 msgid "yes"
 msgstr "Ja"
-
 

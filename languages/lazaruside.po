@@ -650,6 +650,10 @@ msgstr ""
 msgid "Search again"
 msgstr ""
 
+#: lazarusidestrconsts:lissrclosepage
+msgid "Close page"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuviewanchoreditor
 msgid "View Anchor Editor"
 msgstr ""
@@ -1600,6 +1604,10 @@ msgstr ""
 
 #: lazarusidestrconsts:liscomponentnameisnotavalididentifier
 msgid "Component name %s%s%s is not a valid identifier"
+msgstr ""
+
+#: lazarusidestrconsts:lisduplicatenameacomponentnamedalreadyexistsintheinhe
+msgid "Duplicate name: A component named %s%s%s already exists in the inherited component %s"
 msgstr ""
 
 #: lazarusidestrconsts:liscomponentnameiskeyword
@@ -2622,6 +2630,10 @@ msgstr ""
 msgid "Lazarus unit"
 msgstr ""
 
+#: lazarusidestrconsts:lislazarusinclude
+msgid "Lazarus include file"
+msgstr ""
+
 #: lazarusidestrconsts:lislazarusproject
 msgid "Lazarus project"
 msgstr ""
@@ -2940,6 +2952,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisautomaticfeatures
 msgid "Automatic features"
+msgstr ""
+
+#: lazarusidestrconsts:dlgcfdividerdrawlevel
+msgid "Divider Draw Level"
 msgstr ""
 
 #: lazarusidestrconsts:dlgcodetoolsopts
@@ -9524,5 +9540,9 @@ msgstr ""
 
 #: lazarusidestrconsts:lisplistnone
 msgid "<None>"
+msgstr ""
+
+#: lazarusidestrconsts:lisuiclearincludedbyreference
+msgid "Clear included by reference"
 msgstr ""
 
