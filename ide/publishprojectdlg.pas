@@ -255,20 +255,20 @@ end;
 procedure TPublishProjectDialog.SaveHistoryLists;
 begin
   // destination directories
-  SeTComboBox(DestDirComboBox,DestDirComboBox.Text,20);
+  SetComboBox(DestDirComboBox,DestDirComboBox.Text,20);
   InputHistories.HistoryLists.GetList(hlPublishProjectDestDirs,true).Assign(
     DestDirComboBox.Items);
     
   // command after
-  SeTComboBox(CommandAfterCombobox,CommandAfterCombobox.Text,20);
+  SetComboBox(CommandAfterCombobox,CommandAfterCombobox.Text,20);
   InputHistories.HistoryLists.GetList(hlPublishProjectCommandsAfter,true).Assign(
     CommandAfterCombobox.Items);
 
   // file filter
-  SeTComboBox(IncludeFilterCombobox,IncludeFilterCombobox.Text,20);
+  SetComboBox(IncludeFilterCombobox,IncludeFilterCombobox.Text,20);
   InputHistories.HistoryLists.GetList(hlPublishProjectIncludeFileFilter,true).Assign(
     IncludeFilterCombobox.Items);
-  SeTComboBox(ExcludeFilterCombobox,ExcludeFilterCombobox.Text,20);
+  SetComboBox(ExcludeFilterCombobox,ExcludeFilterCombobox.Text,20);
   InputHistories.HistoryLists.GetList(hlPublishProjectExcludeFileFilter,true).Assign(
     ExcludeFilterCombobox.Items);
 end;

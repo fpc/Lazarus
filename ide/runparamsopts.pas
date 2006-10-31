@@ -47,8 +47,8 @@ uses
   {$IFDEF IDE_MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, Controls, Forms, Buttons, StdCtrls, ComCtrls, Dialogs,
-  ExtCtrls, LResources, Laz_XMLCfg,
+  Classes, SysUtils, LCLProc, Controls, Forms, Buttons, StdCtrls, ComCtrls,
+  Dialogs, ExtCtrls, LResources, Laz_XMLCfg,
   BaseIDEIntf,
   IDEProcs, SysVarUserOverrideDlg, InputHistory, LazarusIDEStrConsts, FileUtil;
 
@@ -111,6 +111,7 @@ type
   { TRunParamsOptsDlg }
 
   TRunParamsOptsDlg = class(TForm)
+    CmdLineParametersComboBox: TComboBox;
     UseDisplayCheckBox: TCheckBox;
     DisplayEdit: TEdit;
     DisplayGroupBox: TGroupBox;
@@ -119,12 +120,11 @@ type
     UserOverridesEditButton: TButton;
     UserOverridesDeleteButton: TButton;
     WorkingDirectoryBtn: TButton;
-    WorkingDirectoryEdit: TEdit;
+    WorkingDirectoryComboBox: TComboBox;
     WorkingDirectoryGroupBox: TGroupBox;
     UseLaunchingApplicationCheckBox: TCheckBox;
     IncludeSystemVariablesCheckBox: TCheckBox;
     UseLaunchingApplicationComboBox: TComboBox;
-    CmdLineParametersEdit: TEdit;
     HostApplicationEdit: TEdit;
     UseLaunchingApplicationGroupBox: TGroupBox;
     CmdLineParametersGroupBox: TGroupBox;
@@ -362,30 +362,37 @@ begin
 end;
 
 procedure TRunParamsOptsDlg.SetupLocalPage;
+var
+  List: THistoryList;
 begin
   HostApplicationGroupBox.Caption   := dlgHostApplication;
   HostApplicationBrowseBtn.Caption  := '...';
   CmdLineParametersGroupBox.Caption := dlgCommandLineParams;
-  CmdLineParametersEdit.Clear;
   UseLaunchingApplicationGroupBox.Caption := lisUseLaunchingApplicationGroupBox;
   UseLaunchingApplicationCheckBox.Caption := dlgUseLaunchingApp;
-
-  with UseLaunchingApplicationComboBox.Items do
-  begin
-    BeginUpdate;
-    Add(DefaultLauncherApplication);
-      {$IFNdef MSWindows}
-    Add('/usr/bin/gnome-terminal -t ''Lazarus Run Output'''
-      + ' -e ''$(LazarusDir)/tools/runwait.sh $(TargetCmdLine)''');
-      {$ENDIF}
-    EndUpdate;
-  end;
 
   WorkingDirectoryGroupBox.Caption := dlgROWorkingDirectory;
   WorkingDirectoryBtn.Caption := '...';
   DisplayGroupBox.Caption := dlgRunODisplay;
   UseDisplayCheckBox.Caption := dlgRunOUsedisplay;
   DisplayEdit.Parent := DisplayGroupBox;
+
+  // history list: WorkingDirectoryComboBox
+  List:=InputHistories.HistoryLists.GetList(hlWorkingDirectory,true);
+  WorkingDirectoryComboBox.Items.Assign(List);
+
+  // history list: UseLaunchingApplicationComboBox
+  List:=InputHistories.HistoryLists.GetList(hlLaunchingApplication,true);
+  List.AppendEntry(DefaultLauncherApplication);
+  {$IFNdef MSWindows}
+  List.AppendEntry('/usr/bin/gnome-terminal -t ''Lazarus Run Output'''
+           + ' -e ''$(LazarusDir)/tools/runwait.sh $(TargetCmdLine)''');
+  {$ENDIF}
+  UseLaunchingApplicationComboBox.Items.Assign(List);
+
+  // history list: CmdLineParametersComboBox
+  List:=InputHistories.HistoryLists.GetList(hlCmdLineParameters,true);
+  CmdLineParametersComboBox.Items.Assign(List);
 end;
 
 procedure TRunParamsOptsDlg.SetupEnvironmentPage;
@@ -465,10 +472,10 @@ var
   NewDirectory: String;
 begin
   NewDirectory:=InputHistories.SelectDirectory('Working directory',true,
-                                    ExtractFilePath(WorkingDirectoryEdit.Text),
-                                    ExtractFilename(WorkingDirectoryEdit.Text));
+                                 ExtractFilePath(WorkingDirectoryComboBox.Text),
+                                 ExtractFilename(WorkingDirectoryComboBox.Text));
   if NewDirectory<>'' then
-    WorkingDirectoryEdit.Text:=NewDirectory;
+    WorkingDirectoryComboBox.Text:=NewDirectory;
 end;
 
 procedure TRunParamsOptsDlg.UserOverridesAddButtonClick(Sender: TObject);
@@ -531,16 +538,32 @@ begin
 end;
 
 procedure TRunParamsOptsDlg.SaveToOptions;
+
+  procedure SaveComboHistory(AComboBox: TComboBox; const History: string);
+  begin
+    AComboBox.AddHistoryItem(AComboBox.Text,20,true,false);
+    InputHistories.HistoryLists.GetList(History,true).Assign(AComboBox.Items);
+  end;
+
 begin
   // local
   fOptions.HostApplicationFilename := Trim(HostApplicationEdit.Text);
-  fOptions.CmdLineParams := Trim(CmdLineParametersEdit.Text);
+  fOptions.CmdLineParams := Trim(CmdLineParametersComboBox.Text);
   fOptions.UseLaunchingApplication := UseLaunchingApplicationCheckBox.Checked;
   fOptions.LaunchingApplicationPathPlusParams :=
-    Trim(UseLaunchingApplicationComboBox.Text);
-  fOptions.WorkingDirectory := Trim(WorkingDirectoryEdit.Text);
+                                     Trim(UseLaunchingApplicationComboBox.Text);
+  fOptions.WorkingDirectory := Trim(WorkingDirectoryComboBox.Text);
   fOptions.UseDisplay := UseDisplayCheckBox.Checked;
   fOptions.Display    := Trim(DisplayEdit.Text);
+  
+  // history list: WorkingDirectoryComboBox
+  SaveComboHistory(WorkingDirectoryComboBox,hlWorkingDirectory);
+
+  // history list: UseLaunchingApplicationComboBox
+  SaveComboHistory(UseLaunchingApplicationComboBox,hlLaunchingApplication);
+
+  // history list: CmdLineParametersComboBox
+  SaveComboHistory(CmdLineParametersComboBox,hlCmdLineParameters);
 
   // environment
   SaveUserOverrides;
@@ -580,11 +603,11 @@ begin
 
   // local
   HostApplicationEdit.Text   := fOptions.HostApplicationFilename;
-  CmdLineParametersEdit.Text := fOptions.CmdLineParams;
+  CmdLineParametersComboBox.Text := fOptions.CmdLineParams;
   UseLaunchingApplicationCheckBox.Checked := fOptions.UseLaunchingApplication;
   SetComboBoxText(UseLaunchingApplicationComboBox,
-    fOptions.LaunchingApplicationPathPlusParams);
-  WorkingDirectoryEdit.Text := fOptions.WorkingDirectory;
+                  fOptions.LaunchingApplicationPathPlusParams);
+  WorkingDirectoryComboBox.Text := fOptions.WorkingDirectory;
   UseDisplayCheckBox.Checked := fOptions.UseDisplay;
   DisplayEdit.Text := fOptions.Display;
 
