@@ -6427,7 +6427,7 @@ end;
 procedure TStringCellEditor.KeyDown(var Key: Word; Shift: TShiftState);
   function AllSelected: boolean;
   begin
-    result := (SelLength>0) and (SelLength=Length(Text));
+    result := (SelLength>0) and (SelLength=UTF8Length(Text));
   end;
   function AtStart: Boolean;
   begin
@@ -6435,7 +6435,7 @@ procedure TStringCellEditor.KeyDown(var Key: Word; Shift: TShiftState);
   end;
   function AtEnd: Boolean;
   begin
-    result := ((SelStart+1)>Length(Text)) or AllSelected;
+    result := ((SelStart+1)>UTF8Length(Text)) or AllSelected;
   end;
   procedure doEditorKeyDown;
   begin
@@ -6464,7 +6464,8 @@ var
 begin
   {$IfDef dbgGrid}
   DebugLn('TStringCellEditor.KeyDown INI: Key=', Dbgs(Key),
-    ' SelStart=',Dbgs(SelStart),' SelLenght=',dbgs(SelLength));
+    ' SelStart=',Dbgs(SelStart),' SelLenght=',dbgs(SelLength),
+    ' Len(text)=',dbgs(Length(Text)),' Utf8Len(Text)=',dbgs(UTF8Length(Text)));
   {$Endif}
   inherited KeyDown(Key,Shift);
   case Key of
