@@ -1,6 +1,17 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2006-10-25 18:36+0100\n"
+"Last-Translator: J.Salvador Pérez <salvaperez@escomposlinux.org>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Transfer-Encoding: 8bit\n"
+
 #: objinspstrconsts:oisdlinesdchars
 msgid "%d lines, %d chars"
-msgstr ""
+msgstr "%d línies, %d caràcters"
 
 #: objinspstrconsts:oisitemsselected
 msgid "%u items selected"
@@ -88,7 +99,7 @@ msgstr "De&sfés"
 
 #: objinspstrconsts:clbup
 msgid "&Up"
-msgstr ""
+msgstr "Dalt"
 
 #: objinspstrconsts:cactionlisteditorallcategory
 msgid "(All)"
@@ -100,15 +111,15 @@ msgstr "(Desconegut)"
 
 #: objinspstrconsts:oisnone
 msgid "(none)"
-msgstr ""
+msgstr "(cap)"
 
 #: objinspstrconsts:ois0lines0chars
 msgid "0 lines, 0 chars"
-msgstr ""
+msgstr "0 línies, 0 caràcters"
 
 #: objinspstrconsts:ois1linedchars
 msgid "1 line, %d chars"
-msgstr ""
+msgstr "1 línia, %d caràcters"
 
 #: objinspstrconsts:oisaction
 msgid "Action"
@@ -120,11 +131,11 @@ msgstr "Editor de la llista d'accions"
 
 #: objinspstrconsts:oicoleditadd
 msgid "Add"
-msgstr ""
+msgstr "Afegeix"
 
 #: objinspstrconsts:sccsiledtopendialog
 msgid "Add Images"
-msgstr ""
+msgstr "Afegeix imatges"
 
 #: objinspstrconsts:s_addassingle
 msgid "Add as single"
@@ -132,11 +143,11 @@ msgstr ""
 
 #: objinspstrconsts:clbadd
 msgid "Add new Item"
-msgstr ""
+msgstr "Afegeix nou element"
 
 #: objinspstrconsts:nbcesaddpage
 msgid "Add page"
-msgstr ""
+msgstr "Afegeix pàgina"
 
 #: objinspstrconsts:tccesaddtab
 msgid "Add tab"
@@ -144,15 +155,15 @@ msgstr ""
 
 #: objinspstrconsts:oisaddtofavorites
 msgid "Add to Favorites"
-msgstr ""
+msgstr "Afegeix a Favorits"
 
 #: objinspstrconsts:sccsiledtadd
 msgid "Add..."
-msgstr ""
+msgstr "Afegeix..."
 
 #: objinspstrconsts:sccsiledtadjustment
 msgid "Adjustment"
-msgstr ""
+msgstr "Ajustament"
 
 #: objinspstrconsts:rscdalignment
 msgid "Alignment"
@@ -164,11 +175,11 @@ msgstr "Tot"
 
 #: objinspstrconsts:oisallfiles
 msgid "All files"
-msgstr ""
+msgstr "Tots els arxius"
 
 #: objinspstrconsts:sccstredtapply
 msgid "Apply"
-msgstr ""
+msgstr "Aplicar"
 
 #: objinspstrconsts:oisarray
 msgid "Array"
@@ -208,7 +219,7 @@ msgstr "Categoria"
 
 #: objinspstrconsts:sccsiledtcenter
 msgid "Center"
-msgstr ""
+msgstr "Centrar"
 
 #: objinspstrconsts:oischar
 msgid "Char"
@@ -232,7 +243,7 @@ msgstr "Classe"
 
 #: objinspstrconsts:sccssgedtclean
 msgid "Clean"
-msgstr ""
+msgstr "Netejar"
 
 #: objinspstrconsts:sccsiledtclear
 msgid "Clear"
@@ -248,15 +259,15 @@ msgstr "Selecciona el color"
 
 #: objinspstrconsts:rscdcolumneditor
 msgid "Column Editor"
-msgstr ""
+msgstr "Editor de Columnes"
 
 #: objinspstrconsts:oiscomponentnameisnotavalididentifier
 msgid "Component name %s%s%s is not a valid identifier"
-msgstr ""
+msgstr "El nom del component %s%s%s no es un identificador vàlid"
 
 #: objinspstrconsts:oiscomponents
 msgid "Components"
-msgstr ""
+msgstr "Components"
 
 #: objinspstrconsts:oisconfirmdelete
 msgid "Confirm delete"
@@ -268,11 +279,11 @@ msgstr "Copia"
 
 #: objinspstrconsts:oiscopycomponents
 msgid "Copy components"
-msgstr ""
+msgstr "Copiar components"
 
 #: objinspstrconsts:oiscreateanewpascalunit
 msgid "Create a new pascal unit."
-msgstr ""
+msgstr "Crear una nova unitat pascal."
 
 #: objinspstrconsts:oiscreatedefaultevent
 msgid "Create default event"
@@ -280,7 +291,7 @@ msgstr "Crea l'esdeveniment predeterminat"
 
 #: objinspstrconsts:sccsiledtcrop
 msgid "Crop"
-msgstr ""
+msgstr "Retallar"
 
 #: objinspstrconsts:oistdacteditselectallshortcut
 msgid "Ctrl+A"
@@ -316,7 +327,7 @@ msgstr "Talla"
 
 #: objinspstrconsts:oiscutcomponents
 msgid "Cut components"
-msgstr ""
+msgstr "Retallar components"
 
 #: objinspstrconsts:cactionlisteditordatabasecategory
 msgid "Database"
@@ -336,7 +347,7 @@ msgstr "Elimina l'acció"
 
 #: objinspstrconsts:oisdeletecomponents
 msgid "Delete components"
-msgstr ""
+msgstr "Eliminar components"
 
 #: objinspstrconsts:oisdeleteitem
 msgid "Delete item %s%s%s?"
@@ -344,7 +355,7 @@ msgstr "Voleu eliminar l'element %s%s%s?"
 
 #: objinspstrconsts:nbcesdeletepage
 msgid "Delete page"
-msgstr ""
+msgstr "Eliminar pàgina"
 
 #: objinspstrconsts:tccesdeletetab
 msgid "Delete tab"
@@ -352,7 +363,7 @@ msgstr ""
 
 #: objinspstrconsts:clbdelete
 msgid "Delete the Item %d \"%s\"?"
-msgstr ""
+msgstr "Eliminar l'element %d \"%s\"?"
 
 #: objinspstrconsts:cactionlisteditordialogcategory
 msgid "Dialog"
@@ -364,11 +375,11 @@ msgstr ""
 
 #: objinspstrconsts:clbdown
 msgid "Do&wn"
-msgstr ""
+msgstr "Baix"
 
 #: objinspstrconsts:oicoleditdown
 msgid "Down"
-msgstr ""
+msgstr "Baix"
 
 #: objinspstrconsts:oistdactfileexitheadline
 msgid "E&xit"
@@ -424,7 +435,7 @@ msgstr "Surt"
 
 #: objinspstrconsts:oisfavorites
 msgid "Favorites"
-msgstr ""
+msgstr "Favorits"
 
 #: objinspstrconsts:cactionlisteditorfilecategory
 msgid "File"
@@ -456,19 +467,19 @@ msgstr "Ajuda de l'ajuda"
 
 #: objinspstrconsts:sccstredtlabelimageindex
 msgid "Image Index:"
-msgstr ""
+msgstr "Index de l'Imatge:"
 
 #: objinspstrconsts:sccsiledtcaption
 msgid "ImageList Editor"
-msgstr ""
+msgstr "Editor de llista d'imatges"
 
 #: objinspstrconsts:sccsiledtgrplcaption
 msgid "Images"
-msgstr ""
+msgstr "Imatges"
 
 #: objinspstrconsts:oisinputmask
 msgid "Input Mask:"
-msgstr ""
+msgstr "Màscara d'entrada:"
 
 #: objinspstrconsts:oistdactdatasetinserthint
 msgid "Insert"
@@ -476,7 +487,7 @@ msgstr "Insereix"
 
 #: objinspstrconsts:nbcesinsertpage
 msgid "Insert page"
-msgstr ""
+msgstr "Inserir pàgina"
 
 #: objinspstrconsts:tccesinserttab
 msgid "Insert tab"
@@ -496,27 +507,27 @@ msgstr "Interface"
 
 #: objinspstrconsts:rscdinvalidnumericvalue
 msgid "Invalid numeric Value"
-msgstr ""
+msgstr "Valor numèric invàlid"
 
 #: objinspstrconsts:oisinvalidpropertyvalue
 msgid "Invalid property value"
-msgstr ""
+msgstr "Valor invàlid per la propietat"
 
 #: objinspstrconsts:sccstredtitem
 msgid "Item"
-msgstr ""
+msgstr "Element"
 
 #: objinspstrconsts:sccstredtgrprcaption
 msgid "Item Properties"
-msgstr ""
+msgstr "Propietats de l'Element"
 
 #: objinspstrconsts:sccstredtgrplcaption
 msgid "Items"
-msgstr ""
+msgstr "Elements"
 
 #: objinspstrconsts:oisfinddeclaration
 msgid "Jump to declaration"
-msgstr ""
+msgstr "Ves a la declaració"
 
 #: objinspstrconsts:oistdactdatasetlasthint
 msgid "Last"
@@ -524,7 +535,7 @@ msgstr "Últim"
 
 #: objinspstrconsts:rscdleft
 msgid "Left"
-msgstr ""
+msgstr "Esquerra"
 
 #: objinspstrconsts:sccslvedtcaption
 msgid "ListView Items Editor"
@@ -532,7 +543,7 @@ msgstr ""
 
 #: objinspstrconsts:sccstredtload
 msgid "Load"
-msgstr ""
+msgstr "Carrega"
 
 #: objinspstrconsts:oisloadimagedialog
 msgid "Load Image Dialog"
@@ -544,7 +555,7 @@ msgstr ""
 
 #: objinspstrconsts:sccssgedtload
 msgid "Load..."
-msgstr ""
+msgstr "Carrega..."
 
 #: objinspstrconsts:oismasks
 msgid "Masks..."
@@ -556,11 +567,11 @@ msgstr "Mètode"
 
 #: objinspstrconsts:clbmodify
 msgid "Modify the Item"
-msgstr ""
+msgstr "Modifica l'Element"
 
 #: objinspstrconsts:sccsiledtmovedown
 msgid "Move Down"
-msgstr "Mou avall"
+msgstr "Mou baix"
 
 #: objinspstrconsts:sccssgedtmoverowscols
 msgid "Move Rows/Cols"
@@ -568,19 +579,19 @@ msgstr ""
 
 #: objinspstrconsts:sccsiledtmoveup
 msgid "Move Up"
-msgstr "Mou amunt"
+msgstr "Mou dalt"
 
 #: objinspstrconsts:rscdmovedown
 msgid "Move down"
-msgstr ""
+msgstr "Mou baix"
 
 #: objinspstrconsts:nbcesmovepageleft
 msgid "Move page left"
-msgstr ""
+msgstr "Mou a la pàgina esquerra"
 
 #: objinspstrconsts:nbcesmovepageright
 msgid "Move page right"
-msgstr ""
+msgstr "Mou a la pàgina dreta"
 
 #: objinspstrconsts:tccesmovetableft
 msgid "Move tab left"
@@ -592,7 +603,7 @@ msgstr ""
 
 #: objinspstrconsts:rscdmoveup
 msgid "Move up"
-msgstr ""
+msgstr "Mou dalt"
 
 #: objinspstrconsts:cactionlisteditornewaction
 msgid "New Action"
@@ -600,7 +611,7 @@ msgstr "Nova acció"
 
 #: objinspstrconsts:sccstredtnewitem
 msgid "New Item"
-msgstr ""
+msgstr "Nou Element"
 
 #: objinspstrconsts:cactionlisteditornewstdaction
 msgid "New Standard Action"
@@ -616,11 +627,11 @@ msgstr "Següent"
 
 #: objinspstrconsts:sccsiledtnone
 msgid "None"
-msgstr ""
+msgstr "Cap"
 
 #: objinspstrconsts:rscdok
 msgid "OK"
-msgstr ""
+msgstr "D'Acord"
 
 #: objinspstrconsts:oisobject
 msgid "Object"
@@ -632,7 +643,7 @@ msgstr "Inspector dels objectes"
 
 #: objinspstrconsts:oisok2
 msgid "Ok"
-msgstr ""
+msgstr "D'Acord"
 
 #: objinspstrconsts:sccstredtopendialog
 msgid "Open"
@@ -640,7 +651,7 @@ msgstr "Obre"
 
 #: objinspstrconsts:oispeopenimagefile
 msgid "Open image file"
-msgstr ""
+msgstr "Obrir arxiu d'imatge"
 
 #: objinspstrconsts:oisopenmaskfile
 msgid "Open masks file (*.dem)"
@@ -648,7 +659,7 @@ msgstr ""
 
 #: objinspstrconsts:oisoptions
 msgid "Options"
-msgstr ""
+msgstr "Opcions"
 
 #: objinspstrconsts:oistdactdatasetpostheadline
 msgid "P&ost"
@@ -664,7 +675,7 @@ msgstr "Enganxa"
 
 #: objinspstrconsts:oispastecomponents
 msgid "Paste components"
-msgstr ""
+msgstr "Enganxar components"
 
 #: objinspstrconsts:oispepicture
 msgid "Picture"
@@ -688,7 +699,7 @@ msgstr "Propietats"
 
 #: objinspstrconsts:oispropertiesof
 msgid "Properties of %s"
-msgstr ""
+msgstr "Propietats de %s"
 
 #: objinspstrconsts:oisrecord
 msgid "Record"
@@ -700,11 +711,11 @@ msgstr "Refresca"
 
 #: objinspstrconsts:oisremovefromfavorites
 msgid "Remove from Favorites"
-msgstr ""
+msgstr "Elimina de Favorits"
 
 #: objinspstrconsts:rscdright
 msgid "Right"
-msgstr ""
+msgstr "Dreta"
 
 #: objinspstrconsts:oissamplemasks
 msgid "Sample Masks:"
@@ -712,7 +723,7 @@ msgstr ""
 
 #: objinspstrconsts:sccstredtsave
 msgid "Save"
-msgstr ""
+msgstr "Desar"
 
 #: objinspstrconsts:oistdactfilesaveasheadline
 msgid "Save &As..."
@@ -724,7 +735,7 @@ msgstr "Anomena i desa"
 
 #: objinspstrconsts:sccsiledtsavedialog
 msgid "Save Image"
-msgstr ""
+msgstr "Desa Imatge"
 
 #: objinspstrconsts:oissaveliteralcharacters
 msgid "Save Literal Characters"
@@ -732,7 +743,7 @@ msgstr ""
 
 #: objinspstrconsts:oispesaveimageas
 msgid "Save image as"
-msgstr ""
+msgstr "Desa imatge com"
 
 #: objinspstrconsts:oissavepicture
 msgid "Save picture"
@@ -740,7 +751,7 @@ msgstr ""
 
 #: objinspstrconsts:sccsiledtsave
 msgid "Save..."
-msgstr ""
+msgstr "Desar..."
 
 #: objinspstrconsts:oistdacteditselectallheadline
 msgid "Select &All"
@@ -764,11 +775,11 @@ msgstr "Selecciona un fitxer"
 
 #: objinspstrconsts:sccsiledtgrprcaption
 msgid "Selected Image"
-msgstr ""
+msgstr "Imatge Sel·leccionada"
 
 #: objinspstrconsts:sccstredtlabelselindex
 msgid "Selected Index:"
-msgstr ""
+msgstr "Index sel·leccionat:"
 
 #: objinspstrconsts:oisset
 msgid "Set"
@@ -784,7 +795,7 @@ msgstr "Fica a predeterminat: %s"
 
 #: objinspstrconsts:oisshowcomponenttree
 msgid "Show Component Tree"
-msgstr ""
+msgstr "Mostra arbre de components"
 
 #: objinspstrconsts:oisshowhints
 msgid "Show Hints"
@@ -792,7 +803,7 @@ msgstr ""
 
 #: objinspstrconsts:nbcesshowpage
 msgid "Show page ..."
-msgstr ""
+msgstr "Mostra pàgina ..."
 
 #: objinspstrconsts:oissort
 msgid "Sort"
@@ -812,7 +823,7 @@ msgstr ""
 
 #: objinspstrconsts:sccsiledtstretch
 msgid "Stretch"
-msgstr ""
+msgstr "Estirar"
 
 #: objinspstrconsts:oisstring
 msgid "String"
@@ -840,7 +851,7 @@ msgstr ""
 
 #: objinspstrconsts:sccstredtlabeltext
 msgid "Text:"
-msgstr ""
+msgstr "Texte:"
 
 #: objinspstrconsts:cactionlisteditorpaneltoolbar
 msgid "Toolbar"
@@ -852,7 +863,7 @@ msgstr "Cerca el contingut"
 
 #: objinspstrconsts:sccsiledtransparentcolor
 msgid "Transparent Color:"
-msgstr ""
+msgstr "Color Transparent:"
 
 #: objinspstrconsts:sccstredtcaption
 msgid "TreeView Items Editor"
@@ -868,7 +879,7 @@ msgstr "Desconegut"
 
 #: objinspstrconsts:oicoleditup
 msgid "Up"
-msgstr ""
+msgstr "Dalt"
 
 #: objinspstrconsts:oisvalue
 msgid "Value:"
@@ -880,11 +891,11 @@ msgstr "Variant"
 
 #: objinspstrconsts:rscdvisible
 msgid "Visible"
-msgstr ""
+msgstr "Visible"
 
 #: objinspstrconsts:rscdwidth
 msgid "Width"
-msgstr ""
+msgstr "Amplaria"
 
 #: objinspstrconsts:oisword
 msgid "Word"
