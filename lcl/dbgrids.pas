@@ -333,7 +333,6 @@ type
     procedure SetSelectedIndex(const AValue: Integer);
     procedure SetThumbTracking(const AValue: boolean);
     procedure UpdateBufferCount;
-    procedure UpdateData;
 
     // Temporal
     function GetColumnCount: Integer;
@@ -413,7 +412,8 @@ type
     procedure SetEditText(ACol, ARow: Longint; const Value: string); override;
     function  ScrollBarAutomatic(Which: TScrollStyle): boolean; override;
     function  SelectCell(aCol, aRow: Integer): boolean; override;
-    procedure UpdateActive;
+    procedure UpdateActive; virtual;
+    procedure UpdateData; virtual;
     function  UpdateGridCounts: Integer;
     procedure UpdateVertScrollbar(const aVisible: boolean; const aRange,aPage: Integer); override;
     procedure VisualChange; override;

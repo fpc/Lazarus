@@ -682,6 +682,7 @@ type
     procedure ColumnsChanged(aColumn: TGridColumn);
     procedure ColWidthsChanged; dynamic;
     function  CreateColumns: TGridColumns; virtual;
+    procedure CheckNewCachedSizes(var AGCache:TGridDataCache); virtual;
     procedure CreateWnd; override;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure DblClick; override;
@@ -2171,6 +2172,7 @@ var
     TH:=FGCache.GridHeight;
     FGCache.ClientWidth:= Width - GetBorderWidth;
     FGCache.ClientHeight := Height - GetBorderWidth;
+
     HsbRange:=Width - Dv;
     VsbRange:=Height - Dh;
 
@@ -2227,6 +2229,7 @@ begin
     InternalAutoFillColumns;
   CalcNewCachedSizes;
   CalcScrollbarsVisibility;
+  CheckNewCachedSizes(FGCache);
 
   FGCache.ScrollWidth:=FGCache.ClientWidth-FGCache.FixedWidth;
   FGCache.ScrollHeight:=FGCache.ClientHeight-FGCache.FixedHeight;
@@ -3450,6 +3453,11 @@ end;
 function TCustomGrid.CreateColumns: TGridColumns;
 begin
   result := TGridColumns.Create(Self, TGridColumn);
+end;
+
+procedure TCustomGrid.CheckNewCachedSizes(var AGCache:TGridDataCache);
+begin
+
 end;
 
 procedure TCustomGrid.SetAutoFillColumns(const AValue: boolean);
