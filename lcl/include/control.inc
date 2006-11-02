@@ -373,7 +373,7 @@ begin
       if UpdatePosSizeChanged then exit;
       //if csDesigning in ComponentState then
       //  DebugLn('TControl.ChangeBounds ',Name,':',ClassName,' ',Left,',',Top,',',Width,',',Height);
-      
+
       // autosize this control and its brothers
       RequestAlign;
       if UpdatePosSizeChanged then exit;
@@ -1355,6 +1355,11 @@ begin
   if Sender = Action then ActionChange(Sender, False);
 end;
 
+function TControl.CaptureMouseButtonsIsStored: boolean;
+begin
+  Result := FCaptureMouseButtons <> [mbLeft];
+end;
+
 function TControl.GetAnchorSide(Kind: TAnchorKind): TAnchorSide;
 begin
   Result:=FAnchorSides[Kind];
@@ -1612,7 +1617,8 @@ end;
 procedure TControl.WMLButtonDown(var Message: TLMLButtonDown);
 begin
   DoBeforeMouseMessage;
-  if csCaptureMouse in ControlStyle then begin
+  if (csCaptureMouse in ControlStyle) and (mbLeft in CaptureMouseButtons) then
+  begin
     {$IFDEF VerboseMouseCapture}
     DebugLn('TControl.WMLButtonDown ',Name,':',ClassName);
     {$ENDIF}
@@ -1633,6 +1639,13 @@ end;
 procedure TControl.WMRButtonDown(var Message: TLMRButtonDown);
 begin
   DoBeforeMouseMessage;
+  if (csCaptureMouse in ControlStyle) and (mbRight in CaptureMouseButtons) then
+  begin
+    {$IFDEF VerboseMouseCapture}
+    DebugLn('TControl.WMRButtonDown ',Name,':',ClassName);
+    {$ENDIF}
+    MouseCapture := True;
+  end;
   DoMouseDown(Message, mbRight, []);
 end;
 
@@ -1646,6 +1659,13 @@ end;
 procedure TControl.WMMButtonDown(var Message: TLMMButtonDown);
 begin
   DoBeforeMouseMessage;
+  if (csCaptureMouse in ControlStyle) and (mbMiddle in CaptureMouseButtons) then
+  begin
+    {$IFDEF VerboseMouseCapture}
+    DebugLn('TControl.WMMButtonDown ',Name,':',ClassName);
+    {$ENDIF}
+    MouseCapture := True;
+  end;
   DoMouseDown(Message, mbMiddle, []);
 end;
 
@@ -1660,7 +1680,8 @@ procedure TControl.WMLButtonDblClk(var Message: TLMLButtonDblClk);
 begin
   DoBeforeMouseMessage;
   //TODO: SendCancelMode(self);
-  if csCaptureMouse in ControlStyle then begin
+  if (csCaptureMouse in ControlStyle) and (mbLeft in CaptureMouseButtons) then
+  begin
     {$IFDEF VerboseMouseCapture}
     DebugLn('TControl.WMLButtonDblClk ',Name,':',ClassName);
     {$ENDIF}
@@ -1682,6 +1703,13 @@ end;
 procedure TControl.WMRButtonDblClk(var Message: TLMRButtonDblClk);
 begin
   DoBeforeMouseMessage;
+  if (csCaptureMouse in ControlStyle) and (mbRight in CaptureMouseButtons) then
+  begin
+    {$IFDEF VerboseMouseCapture}
+    DebugLn('TControl.WMRButtonDblClk ',Name,':',ClassName);
+    {$ENDIF}
+    MouseCapture := True;
+  end;
   DoMouseDown(Message, mbRight ,[ssDouble]);
 end;
 
@@ -1695,6 +1723,13 @@ end;
 procedure TControl.WMMButtonDblClk(var Message: TLMMButtonDblClk);
 begin
   DoBeforeMouseMessage;
+  if (csCaptureMouse in ControlStyle) and (mbMiddle in CaptureMouseButtons) then
+  begin
+    {$IFDEF VerboseMouseCapture}
+    DebugLn('TControl.WMMButtonDblClk ',Name,':',ClassName);
+    {$ENDIF}
+    MouseCapture := True;
+  end;
   DoMouseDown(Message, mbMiddle ,[ssDouble]);
 end;
 
@@ -1709,7 +1744,8 @@ procedure TControl.WMLButtonTripleClk(var Message: TLMLButtonTripleClk);
 begin
   DoBeforeMouseMessage;
   //TODO: SendCancelMode(self);
-  if csCaptureMouse in ControlStyle then begin
+  if (csCaptureMouse in ControlStyle) and (mbLeft in CaptureMouseButtons) then
+  begin
     {$IFDEF VerboseMouseCapture}
     DebugLn('TControl.WMLButtonTripleClk ',Name,':',ClassName);
     {$ENDIF}
@@ -1729,6 +1765,13 @@ end;
 procedure TControl.WMRButtonTripleClk(var Message: TLMRButtonTripleClk);
 begin
   DoBeforeMouseMessage;
+  if (csCaptureMouse in ControlStyle) and (mbRight in CaptureMouseButtons) then
+  begin
+    {$IFDEF VerboseMouseCapture}
+    DebugLn('TControl.WMRButtonTripleClk ',Name,':',ClassName);
+    {$ENDIF}
+    MouseCapture := True;
+  end;
   DoMouseDown(Message, mbRight ,[ssTriple]);
 end;
 
@@ -1742,6 +1785,13 @@ end;
 procedure TControl.WMMButtonTripleClk(var Message: TLMMButtonTripleClk);
 begin
   DoBeforeMouseMessage;
+  if (csCaptureMouse in ControlStyle) and (mbMiddle in CaptureMouseButtons) then
+  begin
+    {$IFDEF VerboseMouseCapture}
+    DebugLn('TControl.WMMButtonTripleClk ',Name,':',ClassName);
+    {$ENDIF}
+    MouseCapture := True;
+  end;
   DoMouseDown(Message, mbMiddle ,[ssTriple]);
 end;
 
@@ -1756,7 +1806,8 @@ procedure TControl.WMLButtonQuadClk(var Message: TLMLButtonQuadClk);
 begin
   DoBeforeMouseMessage;
   //TODO: SendCancelMode(self);
-  if csCaptureMouse in ControlStyle then begin
+  if (csCaptureMouse in ControlStyle) and (mbLeft in CaptureMouseButtons) then
+  begin
     {$IFDEF VerboseMouseCapture}
     DebugLn('TControl.WMLButtonQuadClk ',Name,':',ClassName);
     {$ENDIF}
@@ -1776,6 +1827,13 @@ end;
 procedure TControl.WMRButtonQuadClk(var Message: TLMRButtonQuadClk);
 begin
   DoBeforeMouseMessage;
+  if (csCaptureMouse in ControlStyle) and (mbRight in CaptureMouseButtons) then
+  begin
+    {$IFDEF VerboseMouseCapture}
+    DebugLn('TControl.WMRButtonQuadClk ',Name,':',ClassName);
+    {$ENDIF}
+    MouseCapture := True;
+  end;
   DoMouseDown(Message, mbRight ,[ssQuad]);
 end;
 
@@ -1789,6 +1847,13 @@ end;
 procedure TControl.WMMButtonQuadClk(var Message: TLMMButtonQuadClk);
 begin
   DoBeforeMouseMessage;
+  if (csCaptureMouse in ControlStyle) and (mbMiddle in CaptureMouseButtons) then
+  begin
+    {$IFDEF VerboseMouseCapture}
+    DebugLn('TControl.WMMButtonQuadClk ',Name,':',ClassName);
+    {$ENDIF}
+    MouseCapture := True;
+  end;
   DoMouseDown(Message, mbMiddle ,[ssQuad]);
 end;
 
@@ -1803,7 +1868,8 @@ procedure TControl.WMLButtonUp(var Message: TLMLButtonUp);
 begin
   DoBeforeMouseMessage;
   //DebugLn('TControl.WMLButtonUp A ',Name,':',ClassName,' csCaptureMouse=',DbgS(csCaptureMouse in ControlStyle),' csClicked=',DbgS(csClicked in ControlState));
-  if csCaptureMouse in ControlStyle then begin
+  if (csCaptureMouse in ControlStyle) and (mbLeft in CaptureMouseButtons) then
+  begin
     {$IFDEF VerboseMouseCapture}
     DebugLn('TControl.WMLButtonUp ',Name,':',ClassName);
     {$ENDIF}
@@ -1834,6 +1900,14 @@ end;
 procedure TControl.WMRButtonUp(var Message: TLMRButtonUp);
 begin
   DoBeforeMouseMessage;
+  if (csCaptureMouse in ControlStyle) and (mbRight in CaptureMouseButtons) then
+  begin
+    {$IFDEF VerboseMouseCapture}
+    DebugLn('TControl.WMRButtonUp ',Name,':',ClassName);
+    {$ENDIF}
+    MouseCapture := False;
+  end;
+  
   DoMouseUp(Message, mbRight);
   if Message.Result = 0 then 
     if CheckMenuPopup(Message.pos) then
@@ -1850,6 +1924,14 @@ end;
 procedure TControl.WMMButtonUp(var Message: TLMMButtonUp);
 begin
   DoBeforeMouseMessage;
+  if (csCaptureMouse in ControlStyle) and (mbMiddle in CaptureMouseButtons) then
+  begin
+    {$IFDEF VerboseMouseCapture}
+    DebugLn('TControl.WMMButtonUp ',Name,':',ClassName);
+    {$ENDIF}
+    MouseCapture := False;
+  end;
+  
   DoMouseUp(Message, mbMiddle);
 end;
 
@@ -3523,6 +3605,7 @@ begin
 
   FAnchors := [akLeft,akTop];
   FAlign := alNone;
+  FCaptureMouseButtons := [mbLeft];
   FColor := clWindow;
   FVisible := true;
   FParentShowHint := True;

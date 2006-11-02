@@ -176,6 +176,8 @@ const
   crLow         = TCursor(-30);
 
 type
+  TCaptureMouseButtons = set of TMouseButton;
+
   TWndMethod = procedure(var TheMessage: TLMessage) of Object;
 
   TControlStyleType = (
@@ -779,6 +781,7 @@ type
     FBorderSpacing: TControlBorderSpacing;
     FBoundsRectForNewParent: TRect;
     FCaption: TCaption;
+    FCaptureMouseButtons: TCaptureMouseButtons;
     FColor: TColor;
     FConstraints: TSizeConstraints;
     FControlFlags: TControlFlags;
@@ -851,6 +854,7 @@ type
     FVisible: Boolean;
     FWidth: Integer;
     FWindowProc: TWndMethod;
+    function CaptureMouseButtonsIsStored: boolean;
     procedure DoActionChange(Sender: TObject);
     function GetAnchorSide(Kind: TAnchorKind): TAnchorSide;
     function GetAnchorSideIndex(Index: integer): TAnchorSide;
@@ -1216,6 +1220,8 @@ type
     property BoundsRect: TRect read GetBoundsRect write SetBoundsRect;
     property BoundsRectForNewParent: TRect read FBoundsRectForNewParent write SetBoundsRectForNewParent;
     property Caption: TCaption read GetText write SetText stored IsCaptionStored;
+    property CaptureMouseButtons: TCaptureMouseButtons read FCaptureMouseButtons
+      write FCaptureMouseButtons stored CaptureMouseButtonsIsStored default [mbLeft];
     property ClientHeight: Integer read GetClientHeight write SetClientHeight stored False;
     property ClientOrigin: TPoint read GetClientOrigin;
     property ClientRect: TRect read GetClientRect;
