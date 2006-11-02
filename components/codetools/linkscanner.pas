@@ -50,7 +50,7 @@ uses
   MemCheck,
   {$ENDIF}
   Classes, SysUtils, CodeToolsStrConsts, CodeToolMemManager, FileProcs,
-  ExprEval, SourceLog, KeywordFuncLists, BasicCodeTools;
+  AVL_Tree, ExprEval, SourceLog, KeywordFuncLists, BasicCodeTools;
 
 const
   PascalCompilerDefine = ExternalMacroStart+'Compiler';
@@ -305,7 +305,7 @@ type
 
     // links
     property Links[Index: integer]: TSourceLink read GetLinks write SetLinks;
-    function LinkCount: integer;
+    property LinkCount: integer read FLinkCount;
     function LinkIndexAtCleanPos(ACleanPos: integer): integer;
     function LinkIndexAtCursorPos(ACursorPos: integer; ACode: Pointer): integer;
     function LinkSize(Index: integer): integer;
@@ -314,6 +314,7 @@ type
     function FindParentLink(LinkIndex: integer): integer;
     function LinkIndexNearCursorPos(ACursorPos: integer; ACode: Pointer;
                                     var CursorInLink: boolean): integer;
+    function CreateTreeOfSourceCodes: TAVLTree;
 
     // source mapping (Cleaned <-> Original)
     function CleanedSrc: string;
@@ -760,6 +761,19 @@ begin
   Result:=BestLinkIndex;
 end;
 
+function TLinkScanner.CreateTreeOfSourceCodes: TAVLTree;
+var
+  CurCode: Pointer;
+  i: Integer;
+begin
+  Result:=TAVLTree.Create(@ComparePointers);
+  for i:=0 to LinkCount-1 do begin
+    CurCode:=FLinks[i].Code;
+    if Result.Find(CurCode)=nil then
+      Result.Add(CurCode);
+  end;
+end;
+
 function TLinkScanner.LinkIndexAtCleanPos(ACleanPos: integer): integer;
 
   procedure ConsistencyError1;
@@ -871,11 +885,6 @@ procedure TLinkScanner.IncreaseChangeStep;
 begin
   if FChangeStep=$7fffffff then FChangeStep:=-$7fffffff
   else inc(FChangeStep);
-end;
-
-function TLinkScanner.LinkCount: integer;
-begin
-  Result:=FLinkCount;
 end;
 
 function TLinkScanner.ReturnFromIncludeFileAndIsEnd: boolean;

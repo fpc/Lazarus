@@ -5043,10 +5043,10 @@ Begin
   CheckFont;
 end;
 
-Procedure TSourceNotebook.CloseFile(PageIndex:integer);
+procedure TSourceNotebook.CloseFile(PageIndex:integer);
 var
   TempEditor: TSourceEditor;
-Begin
+begin
   {$IFDEF IDE_DEBUG}
   writeln('TSourceNotebook.CloseFile A  PageIndex=',PageIndex);
   {$ENDIF}
@@ -5066,6 +5066,10 @@ Begin
     Notebook.Pages.Delete(PageIndex);
     //writeln('TSourceNotebook.CloseFile C  PageIndex=',PageIndex,' Notebook.PageCount=',Notebook.PageCount);
     UpdateStatusBar;
+    // set focus to new editor
+    TempEditor:=FindSourceEditorWithPageIndex(Notebook.PageIndex);
+    if TempEditor<>nil then
+      ActiveControl:=TempEditor.EditorComponent;
   end else
   begin
     //writeln('TSourceNotebook.CloseFile D  PageIndex=',PageIndex);

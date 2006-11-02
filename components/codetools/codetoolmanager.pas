@@ -356,6 +356,8 @@ type
           var ListOfPCodeXYPosition: TFPList): boolean;
     function RenameIdentifier(TreeOfPCodeXYPosition: TAVLTree;
           const OldIdentifier, NewIdentifier: string): boolean;
+    function ReplaceWord(Code: TCodeBuffer; const OldWord, NewWord: string
+          ): boolean;
 
     // resourcestring sections
     function GatherResourceStringSections(
@@ -1943,6 +1945,24 @@ begin
   {$IFDEF CTDEBUG}
   DebugLn('TCodeToolManager.RenameIdentifier END ');
   {$ENDIF}
+end;
+
+function TCodeToolManager.ReplaceWord(Code: TCodeBuffer; const OldWord,
+  NewWord: string): boolean;
+var
+  CursorPos, SectionPos, NearestPos: TCodeXYPosition;
+begin
+  Result:=false;
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.ReplaceWord A ',Code.Filename,' OldWord="',OldWord,'" NewWord="',NewWord,'"');
+  {$ENDIF}
+  if not InitCurCodeTool(Code) then exit;
+  try
+    Result:=FCurCodeTool.ReplaceWord(OldWord, NewWord,
+                       SourceChangeCache);
+  except
+    on e: Exception do HandleException(e);
+  end;
 end;
 
 function TCodeToolManager.GatherResourceStringSections(Code: TCodeBuffer;

@@ -194,7 +194,7 @@ type
   public
     BeautifyCodeOptions: TBeautifyCodeOptions;
     procedure BeginUpdate;
-    procedure EndUpdate;
+    function EndUpdate: boolean;
     property MainScanner: TLinkScanner read FMainScanner write SetMainScanner;
     property MainScannerNeeded: boolean read FMainScannerNeeded;
     function Replace(FrontGap, AfterGap: TGapTyp; FromPos, ToPos: integer;
@@ -861,12 +861,13 @@ begin
   inc(FUpdateLock);
 end;
 
-procedure TSourceChangeCache.EndUpdate;
+function TSourceChangeCache.EndUpdate: boolean;
 begin
+  Result:=true;
   if FUpdateLock<=0 then exit;
   dec(FUpdateLock);
   if FUpdateLock<=0 then
-    Apply;
+    Result:=Apply;
 end;
     
 procedure TSourceChangeCache.SetMainScanner(NewScanner: TLinkScanner);

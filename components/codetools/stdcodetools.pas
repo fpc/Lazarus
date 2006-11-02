@@ -222,10 +222,12 @@ type
           var MissingIncludeFilesCodeXYPos: TFPList): boolean;
 
     // search & replace
-    function ReplaceIdentifiers(IdentList: TStrings;
+    function ReplaceWords(IdentList: TStrings;
           SourceChangeCache: TSourceChangeCache): boolean;
     function FindNearestIdentifierNode(const CursorPos: TCodeXYPosition;
           IdentTree: TAVLTree): TAVLTreeNode;
+    function ReplaceWord(const OldWord, NewWord: string;
+          SourceChangeCache: TSourceChangeCache): boolean;
 
     // expressions
     function GetStringConstBounds(const CursorPos: TCodeXYPosition;
@@ -2436,7 +2438,7 @@ begin
       IdentList.Add(OldFormClassName);
       IdentList.Add(NewFormClassName);
     end;
-    Result:=ReplaceIdentifiers(IdentList,SourceChangeCache);
+    Result:=ReplaceWords(IdentList,SourceChangeCache);
   finally
     IdentList.Free;
   end;
@@ -2469,17 +2471,17 @@ begin
 end;
 
 {-------------------------------------------------------------------------------
-  function TStandardCodeTool.ReplaceIdentifiers(IdentList: TStrings;
+  function TStandardCodeTool.ReplaceWords(IdentList: TStrings;
     SourceChangeCache: TSourceChangeCache): boolean;
     
-  Search in all used sources (not the cleaned source) for identifiers.
+  Search in all used sources (not only the cleaned source) for identifiers.
   It will find all identifiers, except identifiers in compiler directives.
   This includes identifiers in string constants and comments.
 -------------------------------------------------------------------------------}
-function TStandardCodeTool.ReplaceIdentifiers(IdentList: TStrings;
+function TStandardCodeTool.ReplaceWords(IdentList: TStrings;
   SourceChangeCache: TSourceChangeCache): boolean;
   
-  procedure ReplaceIdentifiersInSource(ACode: TCodeBuffer);
+  procedure ReplaceWordsInSource(ACode: TCodeBuffer);
   var
     StartPos, EndPos, MaxPos, IdentStart, IdentEnd: integer;
     CurSource: string;
@@ -2489,7 +2491,7 @@ function TStandardCodeTool.ReplaceIdentifiers(IdentList: TStrings;
     MaxPos:=length(CurSource);
     StartPos:=1;
     // go through all source parts between compiler directives
-    DebugLn('TStandardCodeTool.ReplaceIdentifiers ',ACode.Filename);
+    DebugLn('TStandardCodeTool.ReplaceWords ',ACode.Filename);
     repeat
       EndPos:=FindNextCompilerDirective(CurSource,StartPos,
                                         Scanner.NestedComments);
@@ -2507,7 +2509,7 @@ function TStandardCodeTool.ReplaceIdentifiers(IdentList: TStrings;
             begin
               // identifier found -> replace
               IdentEnd:=IdentStart+length(IdentList[i]);
-              //DebugLn('TStandardCodeTool.ReplaceIdentifiers replacing: ',
+              //DebugLn('TStandardCodeTool.ReplaceWords replacing: ',
               //' "',copy(CurSource,IdentStart,IdentEnd-IdentStart),'" -> "',IdentList[i+1],'" at ',IdentStart
               //);
               SourceChangeCache.ReplaceEx(gtNone,gtNone,1,1,
@@ -2548,7 +2550,7 @@ begin
   try
     Scanner.FindCodeInRange(1,SrcLen,SourceList);
     for i:=0 to SourceList.Count-1 do begin
-      ReplaceIdentifiersInSource(TCodeBuffer(SourceList[i]));
+      ReplaceWordsInSource(TCodeBuffer(SourceList[i]));
     end;
   finally
     SourceList.Free;
@@ -2586,6 +2588,25 @@ begin
       end;
     end;
   until CurPos.EndPos>SrcLen;
+end;
+
+function TStandardCodeTool.ReplaceWord(const OldWord, NewWord: string;
+  SourceChangeCache: TSourceChangeCache): boolean;
+var
+  IdentList: TStringList;
+begin
+  Result:=false;
+  if OldWord='' then exit;
+  if OldWord=NewWord then exit(true);
+  if (SourceChangeCache=nil) then exit;
+  IdentList:=TStringList.Create;
+  try
+    IdentList.Add(OldWord);
+    IdentList.Add(NewWord);
+    Result:=ReplaceWords(IdentList,SourceChangeCache);
+  finally
+    IdentList.Free;
+  end;
 end;
 
 function TStandardCodeTool.GetStringConstBounds(
@@ -3991,8 +4012,10 @@ function TStandardCodeTool.RenamePublishedVariable(const UpperClassName,
   SourceChangeCache: TSourceChangeCache): boolean;
 var
   TypeNode, VarNode: TCodeTreeNode;
+  ApplyNeeded: Boolean;
 begin
   Result:=false;
+  BuildTree(false);
   VarNode:=FindPublishedVariable(UpperClassName,UpperOldVarName,
                                  ExceptionOnClassNotFound);
   if VarNode<>nil then begin
@@ -4001,24 +4024,20 @@ begin
     TypeNode:=FindTypeNodeOfDefinition(VarNode);
     MoveCursorToNodeStart(TypeNode);
     ReadNextAtom;
-    if UpAtomIs(UpperCaseStr(VarType)) then begin
-      // rename the identifier
-      MoveCursorToNodeStart(VarNode);
-      ReadNextAtom;
-      SourceChangeCache.MainScanner:=Scanner;
+    SourceChangeCache.MainScanner:=Scanner;
+    ApplyNeeded:=false;
+    if (not AtomIs(VarType)) then begin
+      // change the type
+      ApplyNeeded:=true;
       if not SourceChangeCache.Replace(gtNone,gtNone,
         CurPos.StartPos,CurPos.EndPos,NewVarName)
       then begin
-        RaiseException('Unable to replace name');
+        RaiseException('Unable to replace type');
       end;
-    end else begin
-      // auto correct type
-
-      // ToDo: auto correct
-      RaiseExceptionFmt(ctsStrExpectedButAtomFound,[VarType,GetAtom]);
-      
     end;
-    Result:=SourceChangeCache.Apply;
+    // rename variable in source
+    if not ReplaceWord(UpperOldVarName,NewVarName,SourceChangeCache) then exit;
+    Result:=(not ApplyNeeded) or SourceChangeCache.Apply;
   end else begin
     // old variable not found -> add it
     Result:=AddPublishedVariable(UpperClassName,NewVarName,VarType,
