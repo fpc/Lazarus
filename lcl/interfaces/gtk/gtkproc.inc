@@ -2316,6 +2316,36 @@ var
       end;}
     end;
   end;
+  
+  procedure EmulateKeysEatenByGtk;
+  begin
+    // some widgets eats keys, but do not do anything useful for the LCL
+    // emulate the keys
+    if not BeforeEvent then exit;
+
+    //DebugLn(['EmulateKeysEatenByGtk ',GetWidgetDebugReport(TargetWidget),' gdk_event_get_type(Event)=',gdk_event_get_type(Event),' GDK_KEY_PRESS=',GDK_KEY_PRESS,' VKey.VKey=',VKey.VKey]);
+    {$IFDEF Gtk2}
+    // the gtk2 gtkentry handles the return key and emits an activate signal
+    // The LCL does not use that and needs the return key event
+    // => emulate it
+    if GtkWidgetIsA(TargetWidget,gtk_type_entry)
+    and (gdk_event_get_type(Event)=GDK_KEY_PRESS)
+    and (VKey.VKey=13) then begin
+      //DebugLn(['EmulateKeysEatenByGtk ']);
+      FillChar(Msg,SizeOf(Msg),0);
+      Msg.CharCode := VKey.VKey;
+      if SysKey then
+        Msg.msg := LM_SYSKEYDOWN
+      else
+        Msg.msg := LM_KEYDOWN;
+      Msg.KeyData := CommonKeyData or (Flags shl 16) or $0001 {TODO:  repeatcount};
+
+      // send the (Sys)KeyDown message directly to the LCL
+      NotifyApplicationUserInput(Msg.Msg);
+      Result := DeliverMessage(TargetData, Msg) = 0;
+    end;
+    {$ENDIF}
+  end;
 
 begin
   Result := CallBackDefaultReturn;
@@ -2566,6 +2596,8 @@ begin
 
     end;
   end;
+  
+  EmulateKeysEatenByGtk;
   
   {$IFDEF Gtk1}
   Result:=true;
