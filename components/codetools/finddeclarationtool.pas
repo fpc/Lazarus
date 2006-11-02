@@ -2553,7 +2553,7 @@ begin
         ctnRecordCase:
           begin
             if FindIdentifierInRecordCase(ContextNode,Params)
-            and CheckResult(true,false) then
+            and CheckResult(true,true) then
               exit;
             // search in variants
             MoveContextNodeToChilds;
@@ -4577,18 +4577,24 @@ end;
 
 function TFindDeclarationTool.FindIdentifierInRecordCase(
   RecordCaseNode: TCodeTreeNode; Params: TFindDeclarationParams): boolean;
+var
+  IdentPos: LongInt;
 begin
   Result:=false;
   MoveCursorToNodeStart(RecordCaseNode);
+  ReadNextAtom;// case
+  ReadNextAtom;// identifier
+  IdentPos:=CurPos.StartPos;
   ReadNextAtom;
-  ReadNextAtom;
-  if (fdfCollect in Params.Flags)
-  or CompareSrcIdentifiers(CurPos.StartPos,Params.Identifier) then begin
+  if AtomIsChar(':')
+  and ((fdfCollect in Params.Flags)
+       or CompareSrcIdentifiers(IdentPos,Params.Identifier))
+  then begin
     // identifier found
     {$IFDEF ShowTriedContexts}
-    DebugLn('[TFindDeclarationTool.FindIdentifierInRecordCase]  found="',GetIdentifier(Params.Identifier),'"');
+    DebugLn('[TFindDeclarationTool.FindIdentifierInRecordCase]  found="',GetIdentifier(Params.Identifier),'" Src=',GetIdentifier(@Src[IdentPos]));
     {$ENDIF}
-    Params.SetResult(Self,RecordCaseNode,CurPos.StartPos);
+    Params.SetResult(Self,RecordCaseNode,IdentPos);
     Result:=true;
   end else begin
     // proceed the search normally ...

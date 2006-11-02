@@ -821,6 +821,9 @@ begin
       end;
     end;
     
+  ctnRecordCase:
+    Ident:=@FoundContext.Tool.Src[Params.NewCleanPos];
+
   end;
   if Ident=nil then exit;
 

@@ -188,7 +188,7 @@ begin
     // var, procedure, property, function, type, const
     case IdentItem.GetDesc of
 
-    ctnVarDefinition:
+    ctnVarDefinition, ctnRecordCase:
       begin
         AColor:=clMaroon;
         s:='var';
@@ -303,6 +303,11 @@ begin
                                           IdentItem.Node.EndPos,[]);
           end;
           s:=copy(s,1,50);
+        end;
+
+      ctnRecordCase:
+        begin
+          s:=' : '+IdentItem.Tool.ExtractRecordCaseType(IdentItem.Node);
         end;
 
       end;
