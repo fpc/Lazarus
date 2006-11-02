@@ -220,6 +220,7 @@ type
     property AutoCheck;
     property Caption;
     property Checked;
+    property DisableIfNoHandler;
     property Enabled;
     property GroupIndex;
     property HelpContext;
