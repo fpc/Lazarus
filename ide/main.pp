@@ -11408,6 +11408,8 @@ var
   BossResult: boolean;
   AncestorRoot: TComponent;
   s: String;
+  OldName: String;
+  OldClassName: String;
 
   procedure ApplyBossResult(const ErrorMsg: string);
   var
@@ -11460,6 +11462,15 @@ var
       and (DependingUnit.Component.ClassParent=RenamedUnit.Component.ClassType)
       then begin
         // the root component inherits from the DependingUnit root component
+        if DependingUnit.Component.ClassParent=AComponent.ClassType then begin
+          if OldClassName<>AComponent.ClassName then begin
+            // replace references to classname, ignoring errors
+            CodeToolBoss.ReplaceWord(DependingUnit.Source,
+                                             OldClassName,AComponent.ClassName);
+          end;
+        end;
+        
+        // rename inherited component
         InheritedComponent:=
                          DependingUnit.Component.FindComponent(AComponent.Name);
         if InheritedComponent<>nil then begin
@@ -11470,6 +11481,7 @@ var
           try
             DebugLn(['RenameInheritedComponents ',dbgsName(InheritedComponent),' Owner=',dbgsName(InheritedComponent.Owner)]);
             if Simulate then begin
+              // only check if rename is possible
               if (InheritedComponent.Owner<>nil)
               and (InheritedComponent.Owner.FindComponent(NewName)<>nil) then
               begin
@@ -11478,10 +11490,13 @@ var
                   NewName, '"', dbgsName(InheritedComponent.Owner)]);
               end;
             end else begin
+              // rename component and references in code
               InheritedComponent.Name:=NewName;
               DependingDesigner:=GetDesignerFormOfSource(DependingUnit,false);
               if DependingDesigner<>nil then
                 DependingUnit.Modified:=true;
+              // replace references, ignoring errors
+              CodeToolBoss.ReplaceWord(DependingUnit.Source,OldName,NewName);
             end;
           finally
             if FRenamingComponents<>nil then begin
@@ -11529,6 +11544,10 @@ begin
     raise EComponentError.Create(s);
   end;
 
+
+  OldName:=AComponent.Name;
+  OldClassName:=AComponent.ClassName;
+  
   // check inherited components
   RenameInheritedComponents(ActiveUnitInfo,true);
 

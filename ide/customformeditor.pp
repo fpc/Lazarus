@@ -168,7 +168,7 @@ each control that's dropped onto the form
     function FindNonControlForm(LookupRoot: TComponent): TNonControlDesignerForm;
     function CreateNonControlForm(LookupRoot: TComponent): TNonControlDesignerForm;
     procedure RenameJITComponent(AComponent: TComponent;
-                                 const NewName: shortstring);
+                                 const NewClassName: shortstring);
     procedure RenameJITComponentUnitname(AComponent: TComponent;
                                          const NewUnitName: shortstring);
     procedure UpdateDesignerFormName(AComponent: TComponent);
@@ -1141,14 +1141,14 @@ begin
 end;
 
 procedure TCustomFormEditor.RenameJITComponent(AComponent: TComponent;
-  const NewName: shortstring);
+  const NewClassName: shortstring);
 var
   JITComponentList: TJITComponentList;
 begin
   JITComponentList:=FindJITList(AComponent);
   if JITComponentList=nil then
     RaiseException('TCustomFormEditor.RenameJITComponent');
-  JITComponentList.RenameComponentClass(AComponent,NewName);
+  JITComponentList.RenameComponentClass(AComponent,NewClassName);
 end;
 
 procedure TCustomFormEditor.RenameJITComponentUnitname(AComponent: TComponent;
