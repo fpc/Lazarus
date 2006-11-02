@@ -964,7 +964,8 @@ procedure TMessagesView.DoSelectionChange;
 var
   NewSelectedIndex: LongInt;
 begin
-  if (MessageListBox.Items.Count > 0) and (MessageListBox.SelCount > 0) then begin
+  if (MessageListBox.Items.Count > 0) and (MessageListBox.SelCount > 0) then
+  begin
     NewSelectedIndex:=GetSelectedLineIndex;
     if NewSelectedIndex<>FLastSelectedIndex then begin
       FLastSelectedIndex:=NewSelectedIndex;

@@ -9579,19 +9579,21 @@ begin
     exit;
   end;
   Result:='';
-  if not Project1.IsVirtual then begin
-    // ToDo: use the CodeTools way to find the pascal source
-    ProjectDir:=Project1.ProjectDirectory;
-    SearchPath:=CodeToolBoss.DefineTree.GetUnitPathForDirectory(ProjectDir)
-              +';'+CodeToolBoss.DefineTree.GetSrcPathForDirectory(ProjectDir);
-    Result:=SearchFileInPath(AFilename,ProjectDir,SearchPath,';',[]);
-    if Result<>'' then exit;
-  end;
   // search in virtual (unsaved) files
   AnUnitInfo:=Project1.UnitInfoWithFilename(AFilename,
                                    [pfsfOnlyProjectFiles,pfsfOnlyVirtualFiles]);
-  if AnUnitInfo<>nil then
+  if AnUnitInfo<>nil then begin
     Result:=AnUnitInfo.Filename;
+    exit;
+  end;
+  // search in search path
+  if not Project1.IsVirtual then begin
+    // ToDo: use the CodeTools way to find the pascal source
+    ProjectDir:=Project1.ProjectDirectory;
+    SearchPath:=CodeToolBoss.GetCompleteSrcPathForDirectory(ProjectDir);
+    Result:=SearchFileInPath(AFilename,ProjectDir,SearchPath,';',[]);
+    if Result<>'' then exit;
+  end;
 end;
 
 {------------------------------------------------------------------------------
