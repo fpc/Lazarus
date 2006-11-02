@@ -264,8 +264,9 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomSpeedButton.RealSetText(const Value: TCaption);
 begin
-  if Caption=Value then exit;
+  if Caption = Value then Exit;
   inherited RealSetText(Value);
+  
   Invalidate;
 end;
 
@@ -413,7 +414,7 @@ var
   PaintRect: TRect;
   GlyphWidth, GlyphHeight: Integer;
   Offset, OffsetCap: TPoint;
-  ClientSize, TotalSize, TextSize: TSize;
+  ClientSize, TotalSize, TextSize, GlyphSize: TSize;
   //BrushStyle : TBrushStyle;
   M, S : integer;
   TXTStyle : TTextStyle;
@@ -469,39 +470,25 @@ begin
     Canvas.FillRect(PaintRect);
   end;
 
-  GlyphWidth:= TButtonGlyph(FGlyph).Glyph.Width;
+  GlyphSize := GetGlyphSize(PaintRect);
+  GlyphWidth := GlyphSize.CX;
   if TButtonGlyph(FGlyph).NumGlyphs > 1 then
     GlyphWidth:=GlyphWidth div NumGlyphs;
-  GlyphHeight:=TButtonGlyph(FGlyph).Glyph.Height;
+  GlyphHeight := GlyphSize.CY;
 
   ClientSize.cx:= PaintRect.Right - PaintRect.Left;
   ClientSize.cy:= PaintRect.Bottom - PaintRect.Top;
 
-  if Caption <> '' then begin
-    TMP := Caption;
-    TXTStyle := Canvas.TextStyle;
-    TXTStyle.Opaque := False;
-    TXTStyle.Clipping := True;
-    TXTStyle.ShowPrefix := ShowAccelChar;
-    TXTStyle.Alignment := taLeftJustify;
-    TXTStyle.Layout := tlTop;
-    TXTStyle.SystemFont := Canvas.Font.IsDefault;//Match System Default Style
-    SIndex := DeleteAmpersands(TMP);
-    fRect:=PaintRect;
-    Flags:=DT_CalcRect;
-    if not TXTStyle.SingleLine then inc(Flags,DT_WordBreak);
+  TextSize := GetTextSize(PaintRect);
 
-    DrawText(canvas.Handle,pChar(TMP),Length(TMP),fRect,flags);
-    TextSize.cy:=fRect.bottom-fRect.top;
-    TextSize.cx:=fRect.right-fRect.left;
+  if Caption <> '' then
+  begin
+    TMP := Caption;
+    SIndex := DeleteAmpersands(TMP);
     If SIndex > 0 then
       If SIndex <= Length(TMP) then begin
         FShortcut := Ord(TMP[SIndex]);
       end;
-  end
-  else begin
-    TextSize.cx:= 0;
-    TextSize.cy:= 0;
   end;
 
   if (GlyphWidth = 0) or (GlyphHeight = 0)
@@ -569,8 +556,16 @@ begin
     end;
   end;
 
-  FGlyph.Draw(Canvas, PaintRect, Offset, FState, Transparent, 0);
-  if Caption <> '' then begin
+  DrawGlyph(Canvas, PaintRect, Offset, FState, Transparent, 0);
+  if Caption <> '' then
+  begin
+    TXTStyle := Canvas.TextStyle;
+    TXTStyle.Opaque := False;
+    TXTStyle.Clipping := True;
+    TXTStyle.ShowPrefix := ShowAccelChar;
+    TXTStyle.Alignment := taLeftJustify;
+    TXTStyle.Layout := tlTop;
+    TXTStyle.SystemFont := Canvas.Font.IsDefault;//Match System Default Style
 
     With PaintRect, OffsetCap do begin
       Left := Left + X;
@@ -749,6 +744,52 @@ begin
   inherited Loaded;
   UpdateExclusive;
   if FDownBuffered then SetDown(FDownBuffered);
+end;
+
+function TCustomSpeedButton.GetGlyphSize(PaintRect: TRect): TSize;
+begin
+  Result.CX := TButtonGlyph(FGlyph).Glyph.Width;
+  Result.CY := TButtonGlyph(FGlyph).Glyph.Height;
+end;
+
+function TCustomSpeedButton.GetTextSize(PaintRect: TRect): TSize;
+var
+  TMP: String;
+  TXTStyle: TTextStyle;
+  Flags: Cardinal;
+begin
+  if Caption <> '' then
+  begin
+    TMP := Caption;
+    TXTStyle := Canvas.TextStyle;
+    TXTStyle.Opaque := False;
+    TXTStyle.Clipping := True;
+    TXTStyle.ShowPrefix := ShowAccelChar;
+    TXTStyle.Alignment := taLeftJustify;
+    TXTStyle.Layout := tlTop;
+    TXTStyle.SystemFont := Canvas.Font.IsDefault;//Match System Default Style
+    DeleteAmpersands(TMP);
+
+    Flags := DT_CalcRect;
+    if not TXTStyle.SingleLine then Inc(Flags, DT_WordBreak);
+
+    DrawText(Canvas.Handle, PChar(TMP), Length(TMP), PaintRect, Flags);
+    Result.CY := PaintRect.Bottom - PaintRect.Top;
+    Result.CX := PaintRect.Right - PaintRect.Left;
+  end
+  else
+  begin
+    Result.CX:= 0;
+    Result.CX:= 0;
+  end;
+end;
+
+function TCustomSpeedButton.DrawGlyph(ACanvas: TCanvas; const AClient: TRect;
+  const AOffset: TPoint; AState: TButtonState; ATransparent: Boolean;
+  BiDiFlags: Longint): TRect;
+begin
+  if Assigned(FGlyph) then
+    Result := FGlyph.Draw(ACanvas, AClient, AOffset, AState, ATransparent, BiDiFlags);
 end;
 
 {------------------------------------------------------------------------------

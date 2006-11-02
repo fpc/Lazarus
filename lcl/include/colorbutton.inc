@@ -23,8 +23,10 @@
 constructor TColorButton.Create(AnOwner: TComponent);
 begin
   Inherited Create(AnOwner);
-  FBorderWidth:=2;
-  SetInitialBounds(1,1,75,25);
+  FButtonColorSize := 16;
+  FBorderWidth := 2;
+  FButtonColorAutoSize := True;
+  SetInitialBounds(1, 1, 75, 25);
 end;
 
 destructor TColorButton.Destroy;
@@ -32,56 +34,106 @@ Begin
   inherited Destroy;
 end;
 
-procedure TColorButton.Paint;
-var
-  ARect: TRect;
+procedure TColorButton.SetButtonColor(const AValue: TColor);
 begin
-  ARect:=Bounds(0, 0, Width, Height);
-  with Canvas do begin
-    Frame3d(ARect,FBorderWidth,bvRaised);
-    //debugln('TColorButton.Paint A ',dbgs(ARect));
-    InflateRect(ARect,-FBorderWidth-2,-FBorderWidth-2);
-    //debugln('TColorButton.Paint B ',dbgs(ARect));
-    Brush.Color:=clBlack;
-    FillRect(ARect);
-    InflateRect(ARect,-1,-1);
-    Brush.Color:=ButtonColor;
-    FillRect(ARect);
-  end;
-  inherited Paint;
-end;
-
-procedure TColorButton.SetButtonColor(Value:TColor);
-begin
-  if Value=FButtonColor then exit;
-  FButtonColor:=Value;
+  if AValue = FButtonColor then Exit;
+  FButtonColor := AValue;
   if Assigned(FOnColorChanged) and (not (csLoading in ComponentState)) then
     FOnColorChanged(Self);
+    
+  Invalidate;
+end;
+
+procedure TColorButton.SetBorderWidth(const AValue: Integer);
+begin
+  if FBorderWidth = AValue then Exit;
+  FBorderWidth := AValue;
+  
+  if FButtonColorAutoSize then Invalidate;
+end;
+
+function TColorButton.IsButtonColorAutoSizeStored: boolean;
+begin
+  Result := FButtonColorAutoSize = False;
+end;
+
+procedure TColorButton.SetButtonColorAutoSize(const AValue: Boolean);
+begin
+  if FButtonColorAutoSize = AValue then Exit;
+  FButtonColorAutoSize := AValue;
+  
   Invalidate;
 end;
 
 procedure TColorButton.ShowColorDialog;
-var NewColor: TColor;
+var
+  NewColor: TColor;
+  FreeDialog: Boolean;
 begin
-  if FColorDialog<>nil then exit;
-  if not Enabled then exit;
-  NewColor:=ButtonColor;
-  FColorDialog:=TColorDialog.Create(Application);
+  if not Enabled then Exit;
+  
+  FreeDialog := FColorDialog = nil;
+  if FColorDialog = nil then FColorDialog := TColorDialog.Create(Application);
   try
-    FColorDialog.Color:=ButtonColor;
+    NewColor := ButtonColor;
+    FColorDialog.Color := ButtonColor;
     if FColorDialog.Execute then
-      NewColor:=FColorDialog.Color;
+      NewColor := FColorDialog.Color;
   finally
-    FColorDialog.Free;
-    FColorDialog:=nil;
+    if FreeDialog then FreeAndNil(FColorDialog);
   end;
-  ButtonColor:=NewColor;
+  ButtonColor := NewColor;
 end;
 
-procedure TColorButton.SetBorderWidth(const AValue: integer);
+function TColorButton.GetGlyphSize(PaintRect: TRect): TSize;
+var
+  T: TSize;
+  S: Integer;
 begin
-  if FBorderWidth=AValue then exit;
-  FBorderWidth:=AValue;
+  if ButtonColorAutoSize then
+  begin
+    T := GetTextSize(PaintRect);
+    if Caption = '' then S := 0
+    else S := Spacing;
+    
+    if Layout in [blGlyphLeft, blGlyphRight] then
+    begin
+      Result.CX := PaintRect.Right - PaintRect.Left - 2 * BorderWidth - S - T.CX;
+      Result.CY := PaintRect.Bottom - PaintRect.Top - 2 * BorderWidth;
+    end
+    else
+    begin
+      Result.CX := PaintRect.Right - PaintRect.Left - 2 * BorderWidth;
+      Result.CY := PaintRect.Bottom - PaintRect.Top - 2 * BorderWidth - S - T.CY;
+    end;
+  end
+  else
+  begin
+    Result.CX := ButtonColorSize;
+    Result.CY := ButtonColorSize;
+  end;
+end;
+
+function TColorButton.DrawGlyph(ACanvas: TCanvas; const AClient: TRect;
+  const AOffset: TPoint; AState: TButtonState; ATransparent: Boolean;
+  BiDiFlags: Longint): TRect;
+var
+  Size: TSize;
+begin
+  Canvas.Pen.Color := clBlack;
+  Canvas.Brush.Color := ButtonColor;
+  Size := GetGlyphSize(AClient);
+  
+  Result:=Bounds(AClient.Left + AOffset.X, AClient.Top + AOffset.Y,
+    Size.CX - 1, Size.CY - 1);
+  Canvas.Rectangle(Result);
+end;
+
+procedure TColorButton.SetButtonColorSize(const AValue: Integer);
+begin
+  if FButtonColorSize = AValue then Exit;
+  FButtonColorSize := AValue;
+  
   Invalidate;
 end;
 
@@ -90,5 +142,6 @@ begin
   inherited Click;
   ShowColorDialog;
 end;
+
 
 // included by buttons.pp

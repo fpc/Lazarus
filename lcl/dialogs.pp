@@ -225,40 +225,68 @@ type
 
   { TColorButton }
 
-  TColorButton = class(TGraphicControl)
+  TColorButton = class(TCustomSpeedButton)
   private
-    FBorderWidth: integer;
+    FBorderWidth: Integer;
+    FButtonColorAutoSize: Boolean;
+    FButtonColorSize: Integer;
     FButtonColor: TColor;
     FColorDialog: TColorDialog;
     FOnColorChanged: TNotifyEvent;
-    procedure SetBorderWidth(const AValue: integer);
+    function IsButtonColorAutoSizeStored: boolean;
+    procedure SetBorderWidth(const AValue: Integer);
+    procedure SetButtonColor(const AValue: TColor);
+    procedure SetButtonColorAutoSize(const AValue: Boolean);
+    procedure SetButtonColorSize(const AValue: Integer);
   protected
     procedure Click; override;
-    procedure Paint; override;
-    procedure SetButtonColor(Value: TColor);
     procedure ShowColorDialog; virtual;
+    function GetGlyphSize(PaintRect: TRect): TSize; override;
+    function DrawGlyph(ACanvas: TCanvas; const AClient: TRect; const AOffset: TPoint;
+      AState: TButtonState; ATransparent: Boolean; BiDiFlags: Longint): TRect; override;
   public
     constructor Create(AnOwner: TComponent); override;
     destructor Destroy; Override;
   published
+    property Action;
     property Align;
     property Anchors;
+    property AllowAllUp;
     property BorderSpacing;
-    property BorderWidth: integer read FBorderWidth write SetBorderWidth;
-    property ButtonColor:TColor read FButtonColor write SetButtonColor;
+    property BorderWidth: Integer read FBorderWidth write SetBorderWidth;
+    property ButtonColorAutoSize: Boolean read FButtonColorAutoSize
+                                          write SetButtonColorAutoSize
+                                          stored IsButtonColorAutoSizeStored;
+    property ButtonColorSize: Integer read FButtonColorSize write SetButtonColorSize;
+    property ButtonColor: TColor read FButtonColor write SetButtonColor;
+    property ColorDialog: TColorDialog read FColorDialog write FColorDialog;
+    property Constraints;
+    property Caption;
+    property Color;
+    property Down;
+    property Enabled;
+    property Flat;
+    property Font;
     property Hint;
-    property OnChangeBounds;
+    property Layout;
+    property Margin;
+    property Spacing;
+    property Transparent;
+    property Visible;
+    property OnClick;
     property OnColorChanged: TNotifyEvent read FOnColorChanged
                                           write FOnColorChanged;
+    property OnDblClick;
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
     property OnPaint;
     property OnResize;
+    property OnChangeBounds;
+    property ShowHint;
+    property ParentFont;
     property ParentShowHint;
     property PopupMenu;
-    property ShowHint;
-    property Visible;
   end;
 
 

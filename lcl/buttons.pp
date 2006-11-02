@@ -287,7 +287,7 @@ type
     FLayout: TButtonLayout;
     FMargin: integer;
     FMouseInControl: Boolean;
-    FShortcut: Longint;
+    FShortcut: TShortCut;
     FShowAccelChar: boolean;
     FSpacing: integer;
     FTransparent: Boolean;
@@ -326,6 +326,11 @@ type
     procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); override;
     function GetActionLinkClass: TControlActionLinkClass; override;
     procedure Loaded; override;
+  protected
+    function GetGlyphSize(PaintRect: TRect): TSize; virtual;
+    function GetTextSize(PaintRect: TRect): TSize; virtual;
+    function DrawGlyph(ACanvas: TCanvas; const AClient: TRect; const AOffset: TPoint;
+      AState: TButtonState; ATransparent: Boolean; BiDiFlags: Longint): TRect; virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
