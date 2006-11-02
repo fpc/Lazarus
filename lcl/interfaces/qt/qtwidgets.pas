@@ -64,6 +64,7 @@ type
     procedure Repaint;
     procedure setWindowTitle(Str: PWideString);
     procedure WindowTitle(Str: PWideString);
+    procedure Hide;
     procedure Show;
     procedure setEnabled(p1: Boolean);
     procedure setVisible(visible: Boolean);
@@ -771,6 +772,11 @@ end;
 procedure TQtWidget.WindowTitle(Str: PWideString);
 begin
   QWidget_WindowTitle(Widget, Str);
+end;
+
+procedure TQtWidget.Hide;
+begin
+  QWidget_hide(Widget);
 end;
 
 procedure TQtWidget.Show;

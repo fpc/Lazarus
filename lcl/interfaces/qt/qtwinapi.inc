@@ -423,6 +423,7 @@ function TQtWidgetSet.DrawText(DC: HDC; Str: PChar; Count: Integer;
   var Rect: TRect; Flags: Cardinal): Integer;
 var
   WideStr: WideString;
+  QtFontMetrics: TQtFontMetrics;
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI DrawText] DC: ', dbgs(DC), ' Str: ', string(Str),
@@ -434,13 +435,20 @@ begin
 
   if not IsValidDC(DC) then Exit;
 
+  WideStr := UTF8Decode(Str);
+
   if (Flags and DT_CALCRECT) = DT_CALCRECT then
   begin
-    Result := 30;
+    QtFontMetrics := TQtFontMetrics.Create(TQtDeviceContext(DC).font.Widget);
+    try
+      Result := QtFontMetrics.width(@WideStr);
+      if Result < 30 then Result := 30;
+    finally
+      QtFontMetrics.Free;
+    end;
+
     Exit;
   end;
-
-  WideStr := UTF8Decode(Str);
 
   TQtDeviceContext(DC).drawText(Rect.Left, Rect.Top, @WideStr);
 
@@ -1404,6 +1412,9 @@ end;
   Returns: Nothing
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer; var Size: TSize): Boolean;
+var
+  QtFontMetrics: TQtFontMetrics;
+  WideStr: WideString;
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI GetTextExtentPoint]');
@@ -1413,7 +1424,14 @@ begin
 
   if not IsValidDC(DC) then Exit;
 
-  // code here
+  QtFontMetrics := TQtFontMetrics.Create(TQtDeviceContext(DC).font.Widget);
+  try
+    WideStr := Utf8Decode(Str);
+    Size.cx := QtFontMetrics.width(@WideStr);
+    Size.cy := QtFontMetrics.height;
+  finally
+    QtFontMetrics.Free;
+  end;
 
   Result := True;
 end;

@@ -278,7 +278,7 @@ class procedure TQtWSCustomForm.ShowModal(const ACustomForm: TCustomForm);
 var
   QtDialog: TQtDialog;
 begin
-  QtDialog := TQtDialog.Create;
+{  QtDialog := TQtDialog.Create;
   try
     TQtWidget(ACustomForm.Handle).setParent(QtDialog.Widget);
 
@@ -289,7 +289,13 @@ begin
     TQtWidget(ACustomForm.Handle).setParent(nil);
   finally
     QtDialog.Free;
-  end
+  end}
+  
+  TQtWidget(ACustomForm.Handle).setWindowModality(QtApplicationModal);
+  
+  TQtWidget(ACustomForm.Handle).Hide;
+
+  TQtWidget(ACustomForm.Handle).Show;
 end;
 
 {------------------------------------------------------------------------------

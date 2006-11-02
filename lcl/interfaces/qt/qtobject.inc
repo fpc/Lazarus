@@ -97,14 +97,30 @@ begin
   QApplication_Exec;
 end;
 
+{------------------------------------------------------------------------------
+  Method: TQtWidgetSet.AppWaitMessage
+  Params:  None
+  Returns: Nothing
+
+  Waits until a message arrives, processes that and returns control out of the function
+  
+  Utilized on Modal dialogs
+ ------------------------------------------------------------------------------}
 procedure TQtWidgetSet.AppWaitMessage;
 begin
-
+  QCoreApplication_processEvents(QEventLoopWaitForMoreEvents);
 end;
 
+{------------------------------------------------------------------------------
+  Method: TQtWidgetSet.AppWaitMessage
+  Params:  None
+  Returns: Nothing
+
+  Processes all messages on the quoue
+ ------------------------------------------------------------------------------}
 procedure TQtWidgetSet.AppProcessMessages;
 begin
-
+  QCoreApplication_processEvents();
 end;
 
 {------------------------------------------------------------------------------

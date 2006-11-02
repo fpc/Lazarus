@@ -31,7 +31,7 @@ uses
   // Free Pascal
   Classes, SysUtils, Types,
   // LCL
-  Forms, Controls, LCLType, LCLProc, Menus;
+  Menus, LCLProc;
 
 type
   { TQtAction }
@@ -103,6 +103,7 @@ type
     destructor Destroy; override;
   public
     function height: Integer;
+    function width(p1: PWideString): Integer;
   end;
 
   { TQtBrush }
@@ -129,7 +130,7 @@ type
     vFont: TQtFont;
     vImage: QImageH;
   public
-    constructor Create(WidgetHandle: HWND); virtual;
+    constructor Create(WidgetHandle: THandle); virtual;
     destructor Destroy; override;
   public
     procedure drawRect(x1: Integer; y1: Integer; w: Integer; h: Integer);
@@ -217,7 +218,7 @@ begin
   Handle := QImage_create(AData, width, height, format);
 
   {$ifdef VerboseQt}
-    WriteLn('TQtImage.Create Result:', dbgs(Handle));
+    WriteLn('TQtImage.Create Result:', Integer(Handle));
   {$endif}
 end;
 
@@ -398,6 +399,11 @@ begin
   Result := QFontMetrics_height(Widget);
 end;
 
+function TQtFontMetrics.width(p1: PWideString): Integer;
+begin
+  Result := QFontMetrics_width(Widget, p1);
+end;
+
 { TQtBrush }
 
 {------------------------------------------------------------------------------
@@ -448,7 +454,7 @@ end;
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
-constructor TQtDeviceContext.Create(WidgetHandle: HWND);
+constructor TQtDeviceContext.Create(WidgetHandle: THandle);
 begin
   {$ifdef VerboseQt}
     WriteLn('TQtDeviceContext.Create ( WidgetHandle: ' + IntToStr(WidgetHandle) + ' )');
@@ -522,8 +528,7 @@ var
   QtFontMetrics: TQtFontMetrics;
 begin
   {$ifdef VerboseQt}
-    WriteLn('TQtDeviceContext.drawText TargetX: ', dbgs(Origin.X + X),
-     ' TargetY: ', dbgs(Origin.Y + Y));
+    WriteLn('TQtDeviceContext.drawText TargetX: ', (Origin.X + X), ' TargetY: ', (Origin.Y + Y));
   {$endif}
 
   QtFontMetrics := TQtFontMetrics.Create(Font.Widget);
@@ -531,7 +536,7 @@ begin
     QPainter_drawText(Widget, Origin.X + x, Origin.Y + y + QtFontMetrics.height, s);
 
     {$ifdef VerboseQt}
-      WriteLn(' Font metrics height: ', dbgs(QtFontMetrics.height));
+      WriteLn(' Font metrics height: ', QtFontMetrics.height);
     {$endif}
   finally
     QtFontMetrics.Free;
