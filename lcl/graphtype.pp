@@ -821,32 +821,37 @@ var
   Prec: Integer;
   HighValue: word;
   Bits: word;
-  CurShift: Integer;
+  CurShift, DShift: Integer;
 begin
-  for Prec:=0 to 15 do begin
-    For HighValue:=0 to 7 do begin
+  for Prec := 0 to 15 do
+  begin
+    for HighValue := 0 to 7 do
+    begin
       // Value represents the three highest bits
       // For example:
       //   Prec=5 and the read value is %10110
       //   => Value=%101
-      if Prec=0 then begin
-        MissingBits[Prec,HighValue]:=0;
-        continue;
-      end;
       // copy the value till all missing bits are set
       // For example:
       //   Prec=5, HighValue=%110
       // => MissingBits[5,6]:=%0000011011011011
-      Bits:=HighValue;
-      if Prec<3 then
-        // for Precision 1 and 2 the high bits are less
-        Bits:=Bits shr (3-Prec);
-      MissingBits[Prec,HighValue]:=0;
-      CurShift:=16-Prec;
-      while CurShift>0 do begin
-        MissingBits[Prec,HighValue]:=
-          MissingBits[Prec,HighValue] or (Bits shl CurShift);
-        dec(CurShift,Prec);
+      MissingBits[Prec, HighValue] := 0;
+      if Prec = 0 then Continue;
+      if Prec >= 3 then DShift := 3
+      else DShift := Prec;
+      
+      Bits := HighValue;
+      
+      CurShift := 16 - Prec;
+      while CurShift > 0 do
+      begin
+        if CurShift >= DShift then
+          MissingBits[Prec, HighValue] :=
+            MissingBits[Prec, HighValue] or (Bits shl (CurShift - DShift))
+        else
+          MissingBits[Prec, HighValue] :=
+            MissingBits[Prec, HighValue] or (Bits shr (DShift - CurShift));
+        Dec(CurShift, DShift);
       end;
     end;
   end;

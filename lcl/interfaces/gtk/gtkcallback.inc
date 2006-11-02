@@ -301,6 +301,7 @@ var
   Mess: TLMActivate;
 begin
   Result:= True;
+  DebugLn(['gtkactivateCB ',DbgSName(TControl(Data))]);
   {$IFDEF EventTrace}
   EventTrace('activate', data);
   {$ENDIF}
