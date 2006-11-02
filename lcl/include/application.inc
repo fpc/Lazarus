@@ -1259,6 +1259,7 @@ begin
     DoTabKey(AControl, Key, Shift);
   end else
     FLastKeyDownSender:=nil;
+  //DebugLn(['TApplication.ControlKeyDown Sender=',DbgSName(Sender),' Key=',Key,' Shift=',dbgs(Shift)]);
   FLastKeyDownKey:=Key;
   FLastKeyDownShift:=Shift;
 end;
@@ -1461,6 +1462,7 @@ var
   lDefaultControl: TControl;
 begin
   if (Shift = []) and (Key = VK_RETURN) then begin
+    //DebugLn(['TApplication.DoReturnKey ',DbgSName(AControl)]);
     Form := GetParentForm(AControl);
     if Form<>nil then begin
       if anoReturnForDefaultControl in Navigation then

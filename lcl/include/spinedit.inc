@@ -20,10 +20,11 @@
 procedure TCustomFloatSpinEdit.UpdateControl;
 begin
   if MaxValue<MinValue then FMaxValue:=MinValue;
-  if FValue<FMinValue then FValue:=fMinValue;
-  if FValue>FMaxValue then FValue:=fMaxValue;
+  if (FMinValue<>0) and (FValue<FMinValue) then FValue:=fMinValue;
+  if (FMaxValue<>0) and (FValue>FMaxValue) then FValue:=fMaxValue;
   if (not HandleAllocated) then exit;
-  if ([csLoading,csDestroying]*ComponentState<>[]) then begin
+  if ([csLoading,csDestroying]*ComponentState<>[]) then
+  begin
     FUpdatePending := true;
     exit;
   end;

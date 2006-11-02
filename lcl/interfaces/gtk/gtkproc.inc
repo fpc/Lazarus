@@ -2324,11 +2324,11 @@ begin
   HandledByLCL:=KeyEventWasHandledByLCL(Event,BeforeEvent);
 
   {$IFDEF VerboseKeyboard}
-  DebugLn('[HandleGTKKeyUpDown] ',TControl(Data).Name,':',TControl(Data).ClassName,
+  DebugLn('[HandleGTKKeyUpDown] ',DbgSName(TControl(Data)),
     ' ',dbgs(Event^.{$IFDEF GTK1}theType{$ELSE}_Type{$ENDIF}),' Widget=',GetWidgetClassName(Widget),
     ' Before=',dbgs(BeforeEvent),' HandledByLCL=',dbgs(HandledByLCL));
   {$ENDIF}
-
+  
   // handle every key event only once
   if HandledByLCL then exit;
 

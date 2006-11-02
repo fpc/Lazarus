@@ -313,6 +313,18 @@ begin
           ErrorPos:=CurPos;
           exit;
         end;
+      end else if (CompAtom('DECLARED')) then begin
+        // read DECLARED(identifier)
+        if (Result<>'') or (not ReadNextAtom) or (CompAtom('(')=false)
+        or (not ReadNextAtom) then begin
+          ErrorPos:=CurPos;
+          exit;
+        end;
+        Result:='0';// this can only be answered by a real compiler
+        if (not ReadNextAtom) then begin
+          ErrorPos:=CurPos;
+          exit;
+        end;
       end else begin
         // Identifier
         if (Result<>'') then begin
@@ -368,6 +380,15 @@ begin
               end else ErrorPos:=AtomStart;
             end else ErrorPos:=AtomStart;
           end;
+          exit;
+        end;
+      '!':
+        begin
+          Result:=EvalAtPos();
+          if ErrorPos>=0 then exit;
+          if (Result='0') then Result:='1'
+          else if (Result='') then ErrorPos:=CurPos
+          else Result:='0';
           exit;
         end;
       else
