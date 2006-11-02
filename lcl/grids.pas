@@ -218,34 +218,34 @@ type
 
 
   TOnDrawCell =
-    procedure(Sender: TObject; Col, Row: Integer; aRect: TRect;
+    procedure(Sender: TObject; aCol, aRow: Integer; aRect: TRect;
               aState:TGridDrawState) of object;
 
   TOnSelectCellEvent =
-    procedure(Sender: TObject; Col, Row: Integer;
+    procedure(Sender: TObject; aCol, aRow: Integer;
               var CanSelect: Boolean) of object;
 
   TOnSelectEvent =
-    procedure(Sender: TObject; Col,Row: Integer) of object;
+    procedure(Sender: TObject; aCol, aRow: Integer) of object;
 
   TGridOperationEvent =
     procedure (Sender: TObject; IsColumn:Boolean;
-               sIndex,tIndex: Integer) of object;
+               sIndex, tIndex: Integer) of object;
 
   THdrEvent =
-    procedure(Sender: TObject; IsColumn: Boolean; index: Integer) of object;
+    procedure(Sender: TObject; IsColumn: Boolean; Index: Integer) of object;
 
   TOnCompareCells =
-    procedure (Sender: TObject; Acol,ARow,Bcol,BRow: Integer;
+    procedure (Sender: TObject; ACol, ARow, BCol,BRow: Integer;
                var Result: integer) of object;
 
   TSelectEditorEvent =
-    procedure(Sender: TObject; Col,Row: Integer;
+    procedure(Sender: TObject; aCol, aRow: Integer;
               var Editor: TWinControl) of object;
 
   TOnPrepareCanvasEvent =
-    procedure(sender: TObject; Col,Row: Integer;
-              aState:TGridDrawState) of object;
+    procedure(sender: TObject; aCol, aRow: Integer;
+              aState: TGridDrawState) of object;
 
   { TVirtualGrid }
 

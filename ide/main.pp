@@ -11593,6 +11593,9 @@ begin
 
   // rename inherited components
   RenameInheritedComponents(ActiveUnitInfo,false);
+  
+  // rename methods
+  //RenameMethods;
 end;
 
 procedure TMainIDE.OnDesignerViewLFM(Sender: TObject);
