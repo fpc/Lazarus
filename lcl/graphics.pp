@@ -1246,6 +1246,8 @@ type
   { TPortableNetworkGraphic }
 
   TPortableNetworkGraphic = class(TFPImageBitmap)
+  protected
+    procedure InitFPImageWriter(ImgWriter: TFPCustomImageWriter); override;
   public
     class function GetFileExtensions: string; override;
     class function GetDefaultFPReader: TFPCustomImageReaderClass; override;

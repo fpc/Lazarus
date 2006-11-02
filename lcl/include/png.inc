@@ -20,6 +20,19 @@
 
 { TPortableNetworkGraphic }
 
+procedure TPortableNetworkGraphic.InitFPImageWriter(
+  ImgWriter: TFPCustomImageWriter);
+begin
+  inherited InitFPImageWriter(ImgWriter);
+  if ImgWriter is TFPWriterPNG then
+  begin
+    (ImgWriter as TFPWriterPNG).UseAlpha := True;
+    (ImgWriter as TFPWriterPNG).Indexed := PaletteAllocated or
+      (PixelFormat in [pf1bit, pf4bit, pf8bit]);
+    (ImgWriter as TFPWriterPNG).WordSized := False;
+  end;
+end;
+
 class function TPortableNetworkGraphic.GetFileExtensions: string;
 begin
   Result:='png';
