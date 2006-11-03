@@ -549,6 +549,8 @@ type
     procedure SetValue(const NewValue: ansistring); override;
     function GetFormMethodName: shortstring; virtual;
     function GetTrimmedEventName: shortstring;
+    class function GetDefaultMethodName(Root, Component: TComponent;
+        const RootClassName, ComponentName, PropName: shortstring): shortstring;
   end;
   
 { TPersistentPropertyEditor
@@ -3745,6 +3747,7 @@ begin
 end;
 
 function TMethodPropertyEditor.GetFormMethodName: shortstring;
+// returns the default name for a new method
 var I: Integer;
   Root: TPersistent;
 begin
@@ -3781,6 +3784,43 @@ begin
   and (Result[1] in ['O','o']) and (Result[2] in ['N','n'])
   then
     System.Delete(Result,1,2);
+end;
+
+class function TMethodPropertyEditor.GetDefaultMethodName(Root,
+  Component: TComponent; const RootClassName, ComponentName,
+  PropName: shortstring): shortstring;
+// returns the default name for a new method
+var I: Integer;
+  Postfix: String;
+begin
+  Result:='';
+  if Root=nil then exit;
+  if Component = Root then begin
+    if Root is TCustomForm then
+      Result:='Form'
+    else if Root is TDataModule then
+      Result:='DataModule'
+    else begin;
+      Result := RootClassName;
+      if (Result <> '') and (Result[1] = 'T') then
+        System.Delete(Result, 1, 1);
+    end;
+  end else begin
+    Result := ComponentName;
+    for I := Length(Result) downto 1 do
+      if Result[I] in ['.','[',']'] then
+        System.Delete(Result, I, 1);
+  end;
+  if Result = '' then begin
+    {raise EPropertyError.CreateRes(@SCannotCreateName);}
+    exit;
+  end;
+  Postfix := PropName;
+  if (Length(Postfix) >= 2)
+  and (Postfix[1] in ['O','o']) and (Postfix[2] in ['N','n'])
+  then
+    System.Delete(Postfix,1,2);
+  Result:=Result+Postfix;
 end;
 
 function TMethodPropertyEditor.GetValue: ansistring;

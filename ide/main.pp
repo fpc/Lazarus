@@ -11405,7 +11405,6 @@ procedure TMainIDE.OnDesignerRenameComponent(ADesigner: TDesigner;
 var
   ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
-  i: integer;
   NewClassName: string;
   BossResult: boolean;
   AncestorRoot: TComponent;
@@ -11427,6 +11426,8 @@ var
   end;
 
   procedure CheckInterfaceName(const AName: string);
+  var
+    i: LongInt;
   begin
     if CompareText(ActiveUnitInfo.UnitName,AName)=0 then
       raise Exception.Create(Format(
@@ -11514,6 +11515,43 @@ var
       UsedByDependency:=UsedByDependency.NextUsedByDependency;
     end;
   end;
+  
+  procedure RenameMethods;
+  var
+    PropList: PPropList;
+    PropCount: LongInt;
+    i: Integer;
+    PropInfo: PPropInfo;
+    DefaultName: Shortstring;
+    CurMethod: TMethod;
+    Root: TComponent;
+    CurMethodName: Shortstring;
+    RootClassName: ShortString;
+    NewMethodName: String;
+  begin
+    PropCount:=GetPropList(AComponent,PropList);
+    if PropCount=0 then exit;
+    try
+      Root:=ActiveUnitInfo.Component;
+      RootClassName:=Root.ClassName;
+      if Root=AComponent then RootClassName:=OldClassName;
+      for i:=0 to PropCount-1 do begin
+        PropInfo:=PropList^[i];
+        if PropInfo^.PropType^.Kind<>tkMethod then continue;
+        CurMethod:=GetMethodProp(AComponent,PropInfo);
+        CurMethodName:=Root.MethodName(CurMethod.Code);
+        DefaultName:=TMethodPropertyEditor.GetDefaultMethodName(
+                          Root,AComponent,RootClassName,OldName,PropInfo^.Name);
+        if DefaultName=CurMethodName then begin
+          NewMethodName:=TMethodPropertyEditor.GetDefaultMethodName(
+                          Root,AComponent,Root.ClassName,NewName,PropInfo^.Name);
+          DebugLn(['RenameMethods OldMethodName="',DefaultName,'" NewMethodName="',NewMethodName,'"']);
+        end;
+      end;
+    finally
+      FreeMem(PropList);
+    end;
+  end;
 
 begin
   DebugLn('TMainIDE.OnDesignerRenameComponent Old=',AComponent.Name,':',AComponent.ClassName,' New=',NewName,' Owner=',dbgsName(AComponent.Owner));
@@ -11595,7 +11633,7 @@ begin
   RenameInheritedComponents(ActiveUnitInfo,false);
   
   // rename methods
-  //RenameMethods;
+  RenameMethods;
 end;
 
 procedure TMainIDE.OnDesignerViewLFM(Sender: TObject);
