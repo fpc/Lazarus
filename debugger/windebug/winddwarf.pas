@@ -244,14 +244,17 @@ type
       StateMachines: TFPObjectList; // list of state machines to be freed
     end;
     
+    FLineNumberMap: TStringList;
+
     FAddressMap: TMap;
     FAddressMapBuild: Boolean;
+    
     FMinPC: QWord;  // the min and max PC value found in this unit.
     FMaxPC: QWord;  //
     FScope: TDwarfScopeInfo;
     
-    procedure BuildAddessMap(AScope: TDwarfScopeInfo);
-    procedure BuildLineInfo(AAddressInfo: PDwarfAddressInfo);
+    procedure BuildAddressMap;
+    procedure BuildLineInfo(AAddressInfo: PDwarfAddressInfo; ADoAll: Boolean);
     function  MakeAddress(AData: Pointer): QWord;
     procedure LoadAbbrevs(ANeeded: Cardinal);
   protected
@@ -269,6 +272,7 @@ type
     constructor Create(AOwner: TDbgDwarf; ADataOffset: QWord; ALength: QWord; AVersion: Word; AAbbrevOffset: QWord; AAddressSize: Byte; AIsDwarf64: Boolean); virtual;
     destructor Destroy; override;
     function GetDefinition(AAbbrev: Cardinal; out ADefinition: TDwarfAbbrev): Boolean;
+    function GetLineAddress(const AFileName: String; ALine: Cardinal): TDbgPtr;
     property FileName: String read FFileName;
     property Valid: Boolean read FValid;
   end;
@@ -368,6 +372,7 @@ type
     constructor Create(ALoader: TDbgImageLoader); override;
     destructor Destroy; override;
     function FindSymbol(AAddress: TDbgPtr): TDbgSymbol; override;
+    function GetLineAddress(const AFileName: String; ALine: Cardinal): TDbgPtr; override;
     function LoadCompilationUnits: Integer;
     function PointerFromRVA(ARVA: QWord): Pointer;
     function PointerFromVA(ASection: TDwarfSection; AVA: QWord): Pointer;
@@ -812,7 +817,7 @@ begin
 
   if FAddressInfo^.StateMachine = nil
   then begin
-    FCU.BuildLineInfo(FAddressInfo);
+    FCU.BuildLineInfo(FAddressInfo, False);
     if FAddressInfo^.StateMachine = nil then Exit;
   end;
 
@@ -894,7 +899,7 @@ begin
     if MinMaxSet and ((AAddress < CU.FMinPC) or (AAddress > CU.FMaxPC))
     then Continue;
     
-    CU.BuildAddessMap(CU.FScope);
+    CU.BuildAddressMap;
 
     Iter := TMapIterator.Create(CU.FAddressMap);
     try
@@ -942,6 +947,20 @@ end;
 function TDbgDwarf.GetCompilationUnitClass: TDwarfCompilationUnitClass;
 begin
   Result := TDwarfCompilationUnit;
+end;
+
+function TDbgDwarf.GetLineAddress(const AFileName: String; ALine: Cardinal): TDbgPtr;
+var
+  n: Integer;
+  CU: TDwarfCompilationUnit;
+begin
+  for n := 0 to FCompilationUnits.Count - 1 do
+  begin
+    CU := TDwarfCompilationUnit(FCompilationUnits[n]);
+    Result := CU.GetLineAddress(AFileName, ALine);
+    if Result <> 0 then Exit;
+  end;
+  Result := 0;
 end;
 
 function TDbgDwarf.LoadCompilationUnits: Integer;
@@ -1073,7 +1092,6 @@ var
   pb: PByte absolute FLineInfoPtr;
   p: Pointer;
   Opcode: Byte;
-  FileNr: Integer;
   instrlen: Cardinal;
   diridx: Cardinal;
 begin
@@ -1220,29 +1238,79 @@ end;
 
 { TDwarfCompilationUnit }
 
-procedure TDwarfCompilationUnit.BuildAddessMap(AScope: TDwarfScopeInfo);
+procedure TDwarfCompilationUnit.BuildLineInfo(AAddressInfo: PDwarfAddressInfo; ADoAll: Boolean);
+var
+  Iter: TMapIterator;
+  Info: PDwarfAddressInfo;
+  SM: TDwarfLineInfoStateMachine absolute FLineInfo.StateMachine;
+  idx: Integer;
+  LineMap: TMap;
+begin
+  if not ADoAll
+  then begin
+    if AAddressInfo = nil then Exit;
+    if AAddressInfo^.StateMachine <> nil then Exit;
+  end;
+  if SM.Ended then Exit;
+
+  Iter := TMapIterator.Create(FAddressMap);
+
+  while SM.NextLine do
+  begin
+    idx := FLineNumberMap.IndexOf(SM.FileName);
+    if idx = -1
+    then begin
+      LineMap := TMap.Create(itu4, SizeOf(SM.Address));
+      FLineNumberMap.AddObject(SM.FileName, LineMap);
+    end
+    else begin
+      LineMap := TMap(FLineNumberMap.Objects[idx]);
+    end;
+    if not LineMap.HasId(SM.Line)
+    then LineMap.Add(SM.Line, SM.Address);
+  
+    if Iter.Locate(SM.Address)
+    then begin
+      // set lineinfo
+      Info := Iter.DataPtr;
+      if Info^.StateMachine = nil
+      then begin
+        Info^.StateMachine := SM.Clone;
+        FLineInfo.StateMachines.Add(Info^.StateMachine);
+      end;
+      if not ADoAll and (Info = AAddressInfo)
+      then Break;
+    end;
+  end;
+    
+  Iter.Free;
+end;
+
+procedure TDwarfCompilationUnit.BuildAddressMap;
 var
   AttribList: TPointerDynArray;
   Attrib: Pointer;
   Form: Cardinal;
   Info: TDwarfAddressInfo;
-  Scope: TDwarfScopeInfo;
+  Scope, ResultScope: TDwarfScopeInfo;
 begin
   if FAddressMapBuild then Exit;
-  while AScope <> nil do
+
+  Scope := FScope;
+  while Scope <> nil do
   begin
-    if LocateEntry(DW_TAG_subprogram, AScope, [lefCreateAttribList, lefContinuable, lefSearchChild], Scope, AttribList)
+    if LocateEntry(DW_TAG_subprogram, Scope, [lefCreateAttribList, lefContinuable, lefSearchChild], ResultScope, AttribList)
     then begin
-      Info.Scope := Scope;
-      if LocateAttribute(Scope.Entry, DW_AT_low_pc, AttribList, Attrib, Form)
+      Info.Scope := ResultScope;
+      if LocateAttribute(ResultScope.Entry, DW_AT_low_pc, AttribList, Attrib, Form)
       then begin
         ReadValue(Attrib, Form, Info.StartPC);
 
-        if LocateAttribute(Scope.Entry, DW_AT_high_pc, AttribList, Attrib, Form)
+        if LocateAttribute(ResultScope.Entry, DW_AT_high_pc, AttribList, Attrib, Form)
         then ReadValue(Attrib, Form, Info.EndPC)
         else Info.EndPC := Info.StartPC;
 
-        if LocateAttribute(Scope.Entry, DW_AT_name, AttribList, Attrib, Form)
+        if LocateAttribute(ResultScope.Entry, DW_AT_name, AttribList, Attrib, Form)
         then ReadValue(Attrib, Form, Info.Name)
         else Info.Name := 'undefined';
 
@@ -1256,49 +1324,16 @@ begin
       end;
 
       // TAG found, try continue with the found scope
-      AScope := Scope.Child;
-      if AScope <> nil then Continue;
-    end
-    else begin
-      Scope := AScope;
+      Scope := ResultScope.Child;
+      if Scope <> nil then Continue;
+      Scope := ResultScope;
     end;
 
     while (Scope.Next = nil) and (Scope.Parent <> nil) do Scope := Scope.Parent;
-    AScope := Scope.Next;
+    Scope := Scope.Next;
   end;
-  
+
   FAddressMapBuild := True;
-end;
-
-procedure TDwarfCompilationUnit.BuildLineInfo(AAddressInfo: PDwarfAddressInfo);
-var
-  Iter: TMapIterator;
-  Info: PDwarfAddressInfo;
-  SM: TDwarfLineInfoStateMachine absolute FLineInfo.StateMachine;
-begin
-  if AAddressInfo = nil then Exit;
-  if AAddressInfo^.StateMachine <> nil then Exit;
-  if SM.Ended then Exit;
-
-  Iter := TMapIterator.Create(FAddressMap);
-
-  while SM.NextLine do
-  begin
-    if Iter.Locate(SM.Address)
-    then begin
-      // set lineinfo
-      Info := Iter.DataPtr;
-      if Info^.StateMachine = nil
-      then begin
-        Info^.StateMachine := SM.Clone;
-        FLineInfo.StateMachines.Add(Info^.StateMachine);
-      end;
-      if Info = AAddressInfo
-      then Break;
-    end;
-  end;
-    
-  Iter.Free;
 end;
 
 constructor TDwarfCompilationUnit.Create(AOwner: TDbgDwarf; ADataOffset: QWord; ALength: QWord; AVersion: Word; AAbbrevOffset: QWord; AAddressSize: Byte; AIsDwarf64: Boolean);
@@ -1419,6 +1454,10 @@ begin
 
   // use internally 64 bit target pointer
   FAddressMap := TMap.Create(itu8, SizeOf(TDwarfAddressInfo));
+  FLineNumberMap := TStringList.Create;
+  FLineNumberMap.Sorted := True;
+  FLineNumberMap.Duplicates := dupError;
+  
 
   FScope := TDwarfScopeInfo.Create(FInfoData);
   // retrieve some info about this unit
@@ -1435,7 +1474,7 @@ begin
   if not LocateAttribute(Scope.Entry, DW_AT_identifier_case, AttribList, Attrib, Form)
   and not ReadValue(Attrib, Form, FIdentifierCase)
   then FIdentifierCase := DW_ID_case_sensitive;
-
+  
   if LocateAttribute(Scope.Entry, DW_AT_stmt_list, AttribList, Attrib, Form)
   and ReadValue(Attrib, Form, StatementListOffs)
   then begin
@@ -1462,8 +1501,6 @@ begin
   
   if FMinPC = 0 then FMinPC := FMaxPC;
   if FMaxPC = 0 then FMAxPC := FMinPC;
-
-//  BuildAddessMap(Scope.Child);
 end;
 
 destructor TDwarfCompilationUnit.Destroy;
@@ -1484,11 +1521,21 @@ destructor TDwarfCompilationUnit.Destroy;
     end;
     FScope := nil;
   end;
+  
+  procedure FreeLineNumberMap;
+  var
+    n: Integer;
+  begin
+    for n := 0 to FLineNumberMap.Count - 1 do
+      FLineNumberMap.Objects[n].Free;
+    FreeAndNil(FLineNumberMap);
+  end;
 
 begin
   FreeScope;
   FreeAndNil(FMap);
   FreeAndNil(FAddressMap);
+  FreeLineNumberMap;
   FreeAndNil(FLineInfo.StateMachines);
   FreeAndNil(FLineInfo.StateMachine);
   FreeAndNil(FLineInfo.Directories);
@@ -1501,6 +1548,43 @@ function TDwarfCompilationUnit.GetDefinition(AAbbrev: Cardinal; out ADefinition:
 begin
   LoadAbbrevs(AAbbrev);
   Result := FMap.GetData(AAbbrev, ADefinition);
+end;
+
+function TDwarfCompilationUnit.GetLineAddress(const AFileName: String; ALine: Cardinal): TDbgPtr;
+  function FindIndex: Integer;
+  var
+    Name: String;
+  begin
+    // try fullname first
+    Result := FLineNumberMap.IndexOf(AFileName);
+    if Result <> -1 then Exit;
+    
+    Name := ExtractFileName(AFileName);
+    Result := FLineNumberMap.IndexOf(Name);
+    if Result <> -1 then Exit;
+
+    Name := UpperCase(Name);
+    for Result := 0 to FLineNumberMap.Count - 1 do
+    begin
+      if Name = UpperCase(ExtractFileName(FLineNumberMap[Result]))
+      then Exit;
+    end;
+    Result := -1
+  end;
+var
+  idx: Integer;
+  Map: TMap;
+begin
+  Result := 0;
+  if not Valid then Exit;
+
+  // make sure all filenames are there
+  BuildLineInfo(nil, True);
+  idx := FindIndex;
+  if idx = -1 then Exit;
+  
+  Map := TMap(FLineNumberMap.Objects[idx]);
+  Map.GetData(ALine, Result);
 end;
 
 procedure TDwarfCompilationUnit.LoadAbbrevs(ANeeded: Cardinal);

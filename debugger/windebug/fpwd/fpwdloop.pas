@@ -45,7 +45,7 @@ procedure DebugLoop;
 implementation
 
 uses
-  FPWDGlobal, FPWDPEImage;
+  FPWDGlobal, FPWDPEImage, FPWDType;
 
 var
   MDebugEvent: TDebugEvent;
@@ -90,11 +90,14 @@ var
   Info1: QWORD;
   Info1Str: String;
   P: PByte;
+  ExInfo32: TExceptionDebugInfo32 absolute AEvent.Exception;
+  ExInfo64: TExceptionDebugInfo64 absolute AEvent.Exception;
 begin
   if AEvent.Exception.dwFirstChance = 0
   then Write('Exception: ')
   else Write('First chance exception: ');
 
+  // in both 32 and 64 case is the exceptioncode the first, so no difference
   case AEvent.Exception.ExceptionRecord.ExceptionCode of
     EXCEPTION_ACCESS_VIOLATION         : Write('ACCESS_VIOLATION');
     EXCEPTION_ARRAY_BOUNDS_EXCEEDED    : Write('ARRAY_BOUNDS_EXCEEDED');
@@ -112,33 +115,90 @@ begin
     EXCEPTION_INT_DIVIDE_BY_ZERO       : Write('INT_DIVIDE_BY_ZERO');
     EXCEPTION_INT_OVERFLOW             : Write('INT_OVERFLOW');
     EXCEPTION_INVALID_DISPOSITION      : Write('INVALID_DISPOSITION');
+    EXCEPTION_INVALID_HANDLE           : Write('EXCEPTION_INVALID_HANDLE');
     EXCEPTION_NONCONTINUABLE_EXCEPTION : Write('NONCONTINUABLE_EXCEPTION');
+    EXCEPTION_POSSIBLE_DEADLOCK        : Write('EXCEPTION_POSSIBLE_DEADLOCK');
     EXCEPTION_PRIV_INSTRUCTION         : Write('PRIV_INSTRUCTION');
     EXCEPTION_SINGLE_STEP              : Write('SINGLE_STEP');
     EXCEPTION_STACK_OVERFLOW           : Write('STACK_OVERFLOW');
+    
+    // add some status - don't know if we can get them here
+    DBG_EXCEPTION_NOT_HANDLED          : Write('DBG_EXCEPTION_NOT_HANDLED');
+    STATUS_GUARD_PAGE_VIOLATION        : Write('STATUS_GUARD_PAGE_VIOLATION');
+    STATUS_NO_MEMORY                   : Write('STATUS_NO_MEMORY');
+    STATUS_CONTROL_C_EXIT              : Write('STATUS_CONTROL_C_EXIT');
+    STATUS_FLOAT_MULTIPLE_FAULTS       : Write('STATUS_FLOAT_MULTIPLE_FAULTS');
+    STATUS_FLOAT_MULTIPLE_TRAPS        : Write('STATUS_FLOAT_MULTIPLE_TRAPS');
+    STATUS_REG_NAT_CONSUMPTION         : Write('STATUS_REG_NAT_CONSUMPTION');
+    STATUS_SXS_EARLY_DEACTIVATION      : Write('STATUS_SXS_EARLY_DEACTIVATION');
+    STATUS_SXS_INVALID_DEACTIVATION    : Write('STATUS_SXS_INVALID_DEACTIVATION');
   else
-    Write(' Unknown code: ', AEvent.Exception.ExceptionRecord.ExceptionCode);
+    Write(' Unknown code: $', IntToHex(ExInfo32.ExceptionRecord.ExceptionCode, 8));
+    Write(' [');
+    case ExInfo32.ExceptionRecord.ExceptionCode and $C0000000 of
+      STATUS_SEVERITY_SUCCESS       : Write('SEVERITY_ERROR');
+      STATUS_SEVERITY_INFORMATIONAL : Write('SEVERITY_ERROR');
+      STATUS_SEVERITY_WARNING       : Write('SEVERITY_WARNING');
+      STATUS_SEVERITY_ERROR         : Write('SEVERITY_ERROR');
+    end;
+    if ExInfo32.ExceptionRecord.ExceptionCode and $20000000 <> 0
+    then Write (' Customer');
+    if ExInfo32.ExceptionRecord.ExceptionCode and $10000000 <> 0
+    then Write (' Reserved');
+    case (ExInfo32.ExceptionRecord.ExceptionCode and $0FFF0000) shr 16 of
+      FACILITY_DEBUGGER            : Write('FACILITY_DEBUGGER');
+      FACILITY_RPC_RUNTIME         : Write('FACILITY_RPC_RUNTIME');
+      FACILITY_RPC_STUBS           : Write('FACILITY_RPC_STUBS');
+      FACILITY_IO_ERROR_CODE       : Write('FACILITY_IO_ERROR_CODE');
+      FACILITY_TERMINAL_SERVER     : Write('FACILITY_TERMINAL_SERVER');
+      FACILITY_USB_ERROR_CODE      : Write('FACILITY_USB_ERROR_CODE');
+      FACILITY_HID_ERROR_CODE      : Write('FACILITY_HID_ERROR_CODE');
+      FACILITY_FIREWIRE_ERROR_CODE : Write('FACILITY_FIREWIRE_ERROR_CODE');
+      FACILITY_CLUSTER_ERROR_CODE  : Write('FACILITY_CLUSTER_ERROR_CODE');
+      FACILITY_ACPI_ERROR_CODE     : Write('FACILITY_ACPI_ERROR_CODE');
+      FACILITY_SXS_ERROR_CODE      : Write('FACILITY_SXS_ERROR_CODE');
+    else
+      Write(' Facility: $', IntToHex((ExInfo32.ExceptionRecord.ExceptionCode and $0FFF0000) shr 16, 3));
+    end;
+    Write(' Code: $', IntToHex((ExInfo32.ExceptionRecord.ExceptionCode and $0000FFFF), 4));
+
   end;
-  Info0 := PtrUInt(AEvent.Exception.ExceptionRecord.ExceptionAddress);
+  if GMode = dm32
+  then Info0 := PtrUInt(ExInfo32.ExceptionRecord.ExceptionAddress)
+  else Info0 := PtrUInt(ExInfo64.ExceptionRecord.ExceptionAddress);
   Write(' at: ', FormatAddress(Info0));
   Write(' Flags:', Format('%x', [AEvent.Exception.ExceptionRecord.ExceptionFlags]), ' [');
+
   if AEvent.Exception.ExceptionRecord.ExceptionFlags = 0
   then Write('Continuable')
   else Write('Not continuable');
   Write(']');
-  Write(' ParamCount:', AEvent.Exception.ExceptionRecord.NumberParameters);
+  if GMode = dm32
+  then Write(' ParamCount:', ExInfo32.ExceptionRecord.NumberParameters)
+  else Write(' ParamCount:', ExInfo64.ExceptionRecord.NumberParameters);
 
   case AEvent.Exception.ExceptionRecord.ExceptionCode of
     EXCEPTION_ACCESS_VIOLATION: begin
-      Info0 := AEvent.Exception.ExceptionRecord.ExceptionInformation[0];
-      Info1Str := FormatAddress(AEvent.Exception.ExceptionRecord.ExceptionInformation[1]);
+      if GMode = dm32
+      then begin
+        Info0 := ExInfo32.ExceptionRecord.ExceptionInformation[0];
+        Info1 := ExInfo32.ExceptionRecord.ExceptionInformation[1];
+      end
+      else begin
+        Info0 := ExInfo64.ExceptionRecord.ExceptionInformation[0];
+        Info1 := ExInfo64.ExceptionRecord.ExceptionInformation[1];
+      end;
+      Info1Str := FormatAddress(Info1);
 
       case Info0 of
-        0: begin
+        EXCEPTION_READ_FAULT: begin
           Write(' Read of address: ', Info1Str);
         end;
-        1: begin
+        EXCEPTION_WRITE_FAULT: begin
           Write(' Write of address: ', Info1Str);
+        end;
+        EXCEPTION_EXECUTE_FAULT: begin
+          Write(' Execute of address: ', Info1Str);
         end;
       end;
     end;
@@ -146,16 +206,18 @@ begin
   WriteLN;
 
   Write(' Info: ');
-  with AEvent.Exception.ExceptionRecord do
-    for n := Low(ExceptionInformation) to high(ExceptionInformation) do
-    begin
-      Write(IntToHex(ExceptionInformation[n], SizeOf(Pointer) * 2), ' ');
-      if n and (PARAMCOLS - 1) = (PARAMCOLS - 1)
-      then begin
-        WriteLN;
-        Write('       ');
-      end;
+  for n := 0 to EXCEPTION_MAXIMUM_PARAMETERS - 1 do
+  begin
+    if GMode = dm32
+    then Info0 := ExInfo32.ExceptionRecord.ExceptionInformation[n]
+    else Info0 := ExInfo64.ExceptionRecord.ExceptionInformation[n];
+    Write(IntToHex(Info0, DBGPTRSIZE[GMode] * 2), ' ');
+    if n and (PARAMCOLS - 1) = (PARAMCOLS - 1)
+    then begin
+      WriteLN;
+      Write('       ');
     end;
+  end;
   WriteLn;
   GState := dsPause;
 end;

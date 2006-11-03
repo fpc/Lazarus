@@ -36,7 +36,7 @@ unit FPWDCommand;
 interface
 
 uses
-  SysUtils, Classes, Windows, WinDExtra, LCLProc;
+  SysUtils, Classes, Windows, WinDExtra, WinDebugger, LCLProc;
 
 procedure HandleCommand(ACommand: String);
 
@@ -181,8 +181,83 @@ begin
 end;
 
 procedure HandleBreak(AParams: String);
+var
+  S, P: String;
+  Remove: Boolean;
+  Address: TDbgPtr;
+  e: Integer;
+  Line: Cardinal;
+  bp: TDbgBreakpoint;
 begin
-  WriteLN('not implemented: break');
+  S := AParams;
+  P := GetPart([], [' ', #9], S);
+  Remove := P = '-d';
+  if not Remove
+  then S := P;
+  
+  if S = ''
+  then begin
+    // current addr
+    P := '';
+    {$ifdef cpui386}
+    Address := GCurrentContext^.Eip;
+    {$else}
+    Address := GCurrentContext^.Rip;
+    {$endif}
+  end
+  else begin
+    P := GetPart([], [':'], S);
+  end;
+  
+  if S = ''
+  then begin
+    if P <> ''
+    then begin
+      // address given
+      Val(P, Address, e);
+      if e <> 0
+      then begin
+        WriteLN('Illegal address: ', P);
+        Exit;
+      end;
+    end;
+    if Remove
+    then begin
+      if GCurrentProcess.RemoveBreak(Address)
+      then WriteLn('breakpoint removed')
+      else WriteLn('remove breakpoint failed');
+    end
+    else begin
+      if GCurrentProcess.AddBreak(Address) <> nil
+      then WriteLn('breakpoint added')
+      else WriteLn('add breakpoint failed');
+    end;
+  end
+  else begin
+    S := GetPart([':'], [], S);
+    Val(S, Line, e);
+    if e <> 0
+    then begin
+      WriteLN('Illegal line: ', S);
+      Exit;
+    end;
+    if Remove
+    then begin
+      if TDbgInstance(GCurrentProcess).RemoveBreak(P, Line)
+      then WriteLn('breakpoint removed')
+      else WriteLn('remove breakpoint failed');
+      Exit;
+    end;
+
+    bp := TDbgInstance(GCurrentProcess).AddBreak(P, Line);
+    if bp = nil
+    then begin
+      WriteLn('add breakpoint failed');
+      Exit;
+    end;
+    
+    WriteLn('breakpoint added at: ', FormatAddress(bp.Location));
+  end;
 end;
 
 procedure HandleContinue(AParams: String);
@@ -235,7 +310,7 @@ procedure HandleMemory(AParams: String);
 var
   P: array[1..3] of String;
   Size, Count: Integer;
-  Adress: QWord;
+  Address: QWord;
   e, idx: Integer;
   buf: array[0..256*16 - 1] of Byte;
   BytesRead: Cardinal;
@@ -255,9 +330,9 @@ begin
   Size := 4;
   
   {$ifdef cpui386}
-  Adress := GCurrentContext^.Eip;
+  Address := GCurrentContext^.Eip;
   {$else}
-  Adress := GCurrentContext^.Rip;
+  Address := GCurrentContext^.Rip;
   {$endif}
 
   if P[idx] <> ''
@@ -279,7 +354,7 @@ begin
 
       end
       else begin
-        Val(P[idx], Adress, e);
+        Val(P[idx], Address, e);
         if e <> 0
         then begin
           WriteLN('Location "',P[idx],'": Symbol resolving not implemented');
@@ -303,9 +378,9 @@ begin
 
 
   BytesRead := Count * Size;
-  if not GMainProcess.ReadData(Adress, BytesRead, buf)
+  if not GMainProcess.ReadData(Address, BytesRead, buf)
   then begin
-    WriteLN('Could not read memory at: ', FormatAddress(Adress));
+    WriteLN('Could not read memory at: ', FormatAddress(Address));
     Exit;
   end;
 
@@ -313,7 +388,7 @@ begin
   while BytesRead >= size do
   begin
     if e and ((32 div Size) - 1) = 0
-    then Write('[', FormatAddress(Adress), '] ');
+    then Write('[', FormatAddress(Address), '] ');
 
     for idx := Size - 1 downto 0 do Write(IntToHex(buf[e * size + idx], 2));
 
@@ -322,7 +397,7 @@ begin
     then WriteLn
     else Write(' ');
     Dec(BytesRead, Size);
-    Inc(Adress, Size);
+    Inc(Address, Size);
   end;
   if e <> 32 div Size
   then WriteLn;
@@ -596,7 +671,7 @@ begin
   MCommands.AddCommand(['show', 's'], @HandleShow, 'show <info>: Enter show help for more info');
   MCommands.AddCommand(['set'], @HandleSet,  'set param: Enter set help for more info');
   MCommands.AddCommand(['run', 'r'], @HandleRun,  'run: Starts the loaded debuggee');
-  MCommands.AddCommand(['break', 'b'], @HandleBreak,  'break [-d] <adress>: Set a breakpoint at <adress>. -d removes');
+  MCommands.AddCommand(['break', 'b'], @HandleBreak,  'break [-d] <adress>|<filename:line>: Set a breakpoint at <adress> or <filename:line>. -d removes');
   MCommands.AddCommand(['continue', 'cont', 'c'], @HandleContinue,  'continue: Continues execution');
   MCommands.AddCommand(['kill', 'k'], @HandleKill,  'kill: Stops execution of the debuggee');
   MCommands.AddCommand(['next', 'n'], @HandleNext,  'next: Steps one instruction');

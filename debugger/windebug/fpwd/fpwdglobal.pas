@@ -42,6 +42,9 @@ type
   TMWDState = (dsStop, dsRun, dsPause, dsQuit, dsEvent);
   TMWDMode = (dm32, dm64);
   TMWDImageInfo = (iiNone, iiName, iiDetail);
+  
+const
+  DBGPTRSIZE: array[TMWDMode] of Integer = (4, 8);
 
 var
   GState: TMWDState;
@@ -75,10 +78,8 @@ begin
 end;
 
 function FormatAddress(const AAddress): String;
-const
-  SIZE: array[TMWDMode] of Integer = (4, 8);
 begin
-  Result := HexValue(AAddress, SIZE[GMode], [hvfIncludeHexchar]);
+  Result := HexValue(AAddress, DBGPTRSIZE[GMode], [hvfIncludeHexchar]);
 end;
 
 

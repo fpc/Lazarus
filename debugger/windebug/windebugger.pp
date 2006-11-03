@@ -137,6 +137,8 @@ type
   end;
 
 
+  { TDbgInfo }
+
   TDbgInfo = class(TObject)
   private
     FHasInfo: Boolean;
@@ -147,6 +149,7 @@ type
     function FindSymbol(const AName: String): TDbgSymbol; virtual;
     function FindSymbol(AAddress: TDbgPtr): TDbgSymbol; virtual;
     property HasInfo: Boolean read FHasInfo;
+    function GetLineAddress(const AFileName: String; ALine: Cardinal): TDbgPtr; virtual;
   end;
 
 
@@ -164,6 +167,7 @@ type
     constructor Create(const AProcess: TDbgProcess; const ALocation: TDbgPtr);
     destructor Destroy; override;
     function Hit(const AThreadID: Integer): Boolean;
+    property Location: TDbgPtr read FLocation;
   end;
 
 
@@ -185,6 +189,12 @@ type
   public
     constructor Create(const AProcess: TDbgProcess; const ADefaultName: String; const AModuleHandle: THandle; const ABaseAddr, ANameAddr: TDbgPtr; const AUnicode: Boolean);
     destructor Destroy; override;
+
+    function AddBreak(const AFileName: String; ALine: Cardinal): TDbgBreakpoint;
+    function AddrOffset: Int64;  // gives the offset between  the loaded addresses and the compiled addresses
+    function FindSymbol(AAdress: TDbgPtr): TDbgSymbol;
+    function RemoveBreak(const AFileName: String; ALine: Cardinal): Boolean;
+
     property Process: TDbgProcess read FProcess;
     property ModuleHandle: THandle read FModuleHandle;
     property BaseAddr: TDbgPtr read FBaseAddr;
@@ -234,7 +244,7 @@ type
     procedure Interrupt;
     procedure ContinueDebugEvent(const AThread: TDbgThread; const ADebugEvent: TDebugEvent);
     function  HandleDebugEvent(const ADebugEvent: TDebugEvent): Boolean;
-    function  RemoveBreak(const ALocation: TDbgPtr): TDbgBreakpoint;
+    function  RemoveBreak(const ALocation: TDbgPtr): Boolean;
     procedure RemoveLib(const AInfo: TUnloadDLLDebugInfo);
     procedure RemoveThread(const AID: DWord);
 
@@ -262,6 +272,22 @@ begin
 end;
 
 { TDbgInstance }
+
+function TDbgInstance.AddBreak(const AFileName: String; ALine: Cardinal): TDbgBreakpoint;
+var
+  addr: TDbgPtr;
+begin
+  Result := nil;
+  if not FDbgInfo.HasInfo then Exit;
+  addr := FDbgInfo.GetLineAddress(AFileName, ALine);
+  if addr = 0 then Exit;
+  Result := FProcess.AddBreak(addr - AddrOffset);
+end;
+
+function TDbgInstance.AddrOffset: Int64;
+begin
+  Result := FLoader.ImageBase - BaseAddr;
+end;
 
 procedure TDbgInstance.CheckName;
 begin
@@ -333,11 +359,27 @@ begin
   inherited;
 end;
 
+function TDbgInstance.FindSymbol(AAdress: TDbgPtr): TDbgSymbol;
+begin
+  Result := FDbgInfo.FindSymbol(AAdress + AddrOffset);
+end;
+
 procedure TDbgInstance.LoadInfo;
 begin
   FLoader := TDbgWinPEImageLoader.Create(FModuleHandle);
   FDbgInfo := TDbgDwarf.Create(FLoader);
   TDbgDwarf(FDbgInfo).LoadCompilationUnits;
+end;
+
+function TDbgInstance.RemoveBreak(const AFileName: String; ALine: Cardinal): Boolean;
+var
+  addr: TDbgPtr;
+begin
+  Result := False;
+  if not FDbgInfo.HasInfo then Exit;
+  addr := FDbgInfo.GetLineAddress(AFileName, ALine);
+  if addr = 0 then Exit;
+  Result := FProcess.RemoveBreak(addr - AddrOffset);
 end;
 
 procedure TDbgInstance.SetName(const AValue: String);
@@ -444,13 +486,11 @@ function TDbgProcess.FindSymbol(AAdress: TDbgPtr): TDbgSymbol;
 var
   n: Integer;
   Inst: TDbgInstance;
-  Offset: Int64;
 begin
   for n := 0 to FSymInstances.Count - 1 do
   begin
     Inst := TDbgInstance(FSymInstances[n]);
-    Offset := Inst.FLoader.ImageBase - Inst.BaseAddr;
-    Result := Inst.FDbgInfo.FindSymbol(AAdress + Offset);
+    Result := Inst.FindSymbol(AAdress);
     if Result <> nil then Exit;
   end;
   Result := nil;
@@ -655,10 +695,11 @@ begin
   AData := PWChar(@Buf[0]);
 end;
 
-function TDbgProcess.RemoveBreak(const ALocation: TDbgPtr): TDbgBreakpoint;
+function TDbgProcess.RemoveBreak(const ALocation: TDbgPtr): Boolean;
 begin
-  if FBreakMap = nil then Exit;
-  FBreakMap.Delete(ALocation);
+  if FBreakMap = nil
+  then Result := False
+  else Result := FBreakMap.Delete(ALocation);
 end;
 
 procedure TDbgProcess.RemoveLib(const AInfo: TUnloadDLLDebugInfo);
@@ -763,6 +804,11 @@ end;
 function TDbgInfo.FindSymbol(AAddress: TDbgPtr): TDbgSymbol;
 begin
   Result := nil;
+end;
+
+function TDbgInfo.GetLineAddress(const AFileName: String; ALine: Cardinal): TDbgPtr;
+begin
+  Result := 0;
 end;
 
 procedure TDbgInfo.SetHasInfo;

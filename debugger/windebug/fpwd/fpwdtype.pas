@@ -31,12 +31,37 @@ unit FPWDType;
 {$mode objfpc}{$H+}
 {$ALIGN ON}
 
-// Additional 64bit types
+// Additional bit types, not all in RTL
 
 interface
 
 uses
   Windows;
+
+const
+  FACILITY_DEBUGGER                                  = $001;
+  FACILITY_RPC_RUNTIME                               = $002;
+  FACILITY_RPC_STUBS                                 = $003;
+  FACILITY_IO_ERROR_CODE                             = $004;
+  FACILITY_TERMINAL_SERVER                           = $00A;
+  FACILITY_USB_ERROR_CODE                            = $010;
+  FACILITY_HID_ERROR_CODE                            = $011;
+  FACILITY_FIREWIRE_ERROR_CODE                       = $012;
+  FACILITY_CLUSTER_ERROR_CODE                        = $013;
+  FACILITY_ACPI_ERROR_CODE                           = $014;
+  FACILITY_SXS_ERROR_CODE                            = $015;
+
+  STATUS_SEVERITY_SUCCESS                            = $0;
+  STATUS_SEVERITY_INFORMATIONAL                      = $1;
+  STATUS_SEVERITY_WARNING                            = $2;
+  STATUS_SEVERITY_ERROR                              = $3;
+
+  STATUS_FLOAT_MULTIPLE_FAULTS = $C00002B4;
+  STATUS_FLOAT_MULTIPLE_TRAPS = $C00002B5;
+  STATUS_REG_NAT_CONSUMPTION = $C00002C9;
+  STATUS_SXS_EARLY_DEACTIVATION = $C015000F;
+  STATUS_SXS_INVALID_DEACTIVATION = $C0150010;
+
 
 //type
 //  DWORD64 = QWORD;
@@ -44,6 +69,8 @@ uses
 //  LONGLONG = int64;
   //QWORD = type cardinal;
 
+{.$if declared(THREAD_SUSPEND_RESUME)}
+{.$else}
 const
   THREAD_TERMINATE               = $0001;
   THREAD_SUSPEND_RESUME          = $0002;
@@ -56,22 +83,66 @@ const
   THREAD_DIRECT_IMPERSONATION    = $0200;
 
   THREAD_ALL_ACCESS              = STANDARD_RIGHTS_REQUIRED or SYNCHRONIZE or $3FF;
+{.$endif}
 
+{$if declared(EXCEPTION_READ_FAULT)}
+{$else}
+const
+  EXCEPTION_READ_FAULT    = 0; // Access violation was caused by a read
+  EXCEPTION_WRITE_FAULT   = 1; // Access violation was caused by a write
+  EXCEPTION_EXECUTE_FAULT = 8; // Access violation was caused by an instruction fetch
+{$endif}
 
+{$if declared(TExceptionRecord32)}
+{$else}
 type
-  PExceptionRecord64 = QWORD;
-//  PExceptionRecord64 = ^_EXCEPTION_RECORD64;
-  _EXCEPTION_RECORD64 = record
+  TExceptionRecord32 = record
+    ExceptionCode : DWORD;
+    ExceptionFlags : DWORD;
+    ExceptionRecord : DWORD;
+    ExceptionAddress : DWORD;
+    NumberParameters : DWORD;
+    ExceptionInformation : array[0..(EXCEPTION_MAXIMUM_PARAMETERS)-1] of DWORD;
+  end;
+  PExceptionRecord32 = ^TExceptionRecord32;
+{$endif}
+
+{$if declared(TExceptionDebugInfo32)}
+{$else}
+type
+  TExceptionDebugInfo32 = record
+    ExceptionRecord : TExceptionRecord32;
+    dwFirstChance : DWORD;
+  end;
+  PExceptionDebugInfo32 = ^TExceptionDebugInfo32;
+{$endif}
+
+{$if declared(TExceptionRecord64)}
+{$else}
+type
+  TExceptionRecord64 = record
     ExceptionCode: DWORD;
     ExceptionFlags: DWORD;
-    ExceptionRecord: PExceptionRecord64;
-    ExceptionAddress: QWORD;
+    ExceptionRecord: DWORD64;
+    ExceptionAddress: DWORD64;
     NumberParameters: DWORD;
     __unusedAlignment: DWORD;
-    ExceptionInformation: array[0..EXCEPTION_MAXIMUM_PARAMETERS - 1] of QWORD;
+    ExceptionInformation: array[0..EXCEPTION_MAXIMUM_PARAMETERS - 1] of DWORD64;
   end;
-  TExceptionRecord64 = _EXCEPTION_RECORD64;
-  EXCEPTION_RECORD64 = _EXCEPTION_RECORD64;
+  PExceptionRecord64 = ^TExceptionRecord64;
+{$endif}
+
+{$if declared(TExceptionDebugInfo64)}
+{$else}
+type
+  TExceptionDebugInfo64 = record
+    ExceptionRecord : TExceptionRecord64;
+    dwFirstChance : DWORD;
+  end;
+  PExceptionDebugInfo64 = ^TExceptionDebugInfo64;
+{$endif}
+
+
 
 (*
   PContext64 = QWORD;
