@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2006-10-27 20:55+0100\n"
-"Last-Translator: J.Salvador Pҩrez <salvaperez@escomposlinux.org>\n"
+"PO-Revision-Date: 2006-11-03 18:08+0100\n"
+"Last-Translator: J.Salvador Pérez <salvaperez@escomposlinux.org>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -19,32 +19,33 @@ msgstr " tamany "
 
 #: lclstrconsts:rswarningunreleasedtimerinfos
 msgid " WARNING: There are %d TimerInfo structures left, I'll free them"
-msgstr " Avҭs: s'han perdut %d estructures TimerInfo, les allibero"
+msgstr " Avís: s'han perdut %d estructures TimerInfo, les allibero"
 
 #: lclstrconsts:rswarningunreleasedmessagesinqueue
 msgid " WARNING: There are %d messages left in the queue! I'll free them"
-msgstr " Avҭs: Hi ha %d missatges perduts a la cua!, els allibero"
+msgstr " Avís: Hi ha %d missatges perduts a la cua!, els allibero"
 
 #: lclstrconsts:rswarningunreleaseddcsdump
 msgid " WARNING: There are %d unreleased DCs, a detailed dump follows:"
-msgstr " Avҭs: hi ha %d DCs no llenҧats, tot seguit es mostra informaciҳ detallada:"
+msgstr " Avís: hi ha %d DCs no llençats, tot seguit es mostra informació detallada:"
 
 #: lclstrconsts:rswarningunreleasedgdiobjectsdump
 msgid " WARNING: There are %d unreleased GDIObjects, a detailed dump follows:"
-msgstr " Avҭs: Hi ha %d GDIObjects no llenҧats, tot seguit es mostra informaciҳ detallada:"
+msgstr " Avís: Hi ha %d GDIObjects no llençats, tot seguit es mostra informació detallada:"
 
 #: lclstrconsts:rswarningunremovedpaintmessages
 msgid " WARNING: There are %s unremoved LM_PAINT/LM_GtkPAINT message links left."
-msgstr "Avҭs: S'han deixat %s enllaҧos a missatge LM_PAINT/LM_GtkPAINT, sense eliminar"
+msgstr "Avís: S'han deixat %s enllaços a missatge LM_PAINT/LM_GtkPAINT, sense eliminar"
 
 #: lclstrconsts:rsindexoutofbounds
 msgid "%s Index %d out of bounds 0-%d"
-msgstr "%s ҍndex %d fora de lҭmits 0-%d"
+msgstr "%s índex %d fora de límits 0-%d"
 
 #: lclstrconsts:rsisalreadyassociatedwith
 msgid "%s is already associated with %s"
-msgstr "%s ja estҠ associat amb %s"
+msgstr "%s ja está associat amb %s"
 
 #: lclstrconsts:rspressoktoignoreandriskdatacorruptionpresscanceltok
 msgid "%s%sPress Ok to ignore and risk data corruption.%sPress Cancel to kill the program."
-msgstr "%s%s%sPolsa Ok per ignorar i arriscarse a corromper les dades.%sPolsa Cancel
+msgstr "%s%s%sPolsa Ok per ignorar i arriscarse a corromper les dades.%sPolsa Cance"
+
