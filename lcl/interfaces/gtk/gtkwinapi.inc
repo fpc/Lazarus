@@ -9070,6 +9070,8 @@ begin
     begin
       Result := CurrentTextColor.ColorRef;
       SetGDIColorRef(CurrentTextColor,Color);
+      if Result<>Color then
+        SelectedColors := dcscCustom; // force SelectGDKTextProps to ensure text color
     end;
   end;
   Assert(False, Format('trace:< [TGtkWidgetSet.SetTextColor] DC: 0x%x Color: %8x --> %8x', [Integer(DC), Color, Result]));

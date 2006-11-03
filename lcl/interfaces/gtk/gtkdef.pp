@@ -43,7 +43,7 @@ uses
 {$ifdef TraceGdiCalls}
 const
   MaxTraces    = 5;
-  MaxCallBacks = 7;
+  MaxCallBacks = 11;
 type
   TCallBacksArray = array[0..MaxCallBacks] of Pointer;
   PCallBacksArray = ^TCallBacksArray;

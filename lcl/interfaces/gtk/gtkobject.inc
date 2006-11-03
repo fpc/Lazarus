@@ -311,7 +311,7 @@ var
   i: integer;
 begin
   for i:=0 to MaxCallBacks do begin
-    GetLineInfo(longWord(BackTrace[i]), Func, source, line);
+    LineInfo.GetLineInfo(longWord(BackTrace[i]), Func, source, line);
     DebugLn('$', Hexstr(LongInt(BackTrace[i]),8),'  ', Func, ',  line ',
       dbgs(line),' of ',Source);
   end;
