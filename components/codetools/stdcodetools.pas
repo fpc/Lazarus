@@ -2491,7 +2491,7 @@ function TStandardCodeTool.ReplaceWords(IdentList: TStrings;
     MaxPos:=length(CurSource);
     StartPos:=1;
     // go through all source parts between compiler directives
-    DebugLn('TStandardCodeTool.ReplaceWords ',ACode.Filename);
+    //DebugLn('TStandardCodeTool.ReplaceWords ',ACode.Filename);
     repeat
       EndPos:=FindNextCompilerDirective(CurSource,StartPos,
                                         Scanner.NestedComments);

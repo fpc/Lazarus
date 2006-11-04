@@ -495,6 +495,7 @@ type
     FRebuildingCompilerGraphCodeToolsDefinesNeeded: boolean;
     
     FRenamingComponents: TFPList; // list of TComponents currently renaming
+    procedure RenameInheritedMethods(AnUnitInfo: TUnitInfo; List: TStrings);
   protected
     procedure SetToolStatus(const AValue: TIDEToolStatus); override;
     function DoResetToolStatus(Interactive: boolean): boolean;
@@ -4884,7 +4885,7 @@ begin
         if Result=mrAbort then exit;
         if Result=mrOk then begin
           Result:=DoSaveUnitComponentToBinStream(AncestorUnitInfo,
-                                                AncestorBinStream);
+                                                 AncestorBinStream);
           if Result<>mrOk then exit;
           AncestorBinStream.Position:=0;
         end else begin
@@ -5020,16 +5021,19 @@ function TMainIDE.DoLoadComponentDependencyHidden(AnUnitInfo: TUnitInfo;
     CurUnitInfo:=Project1.UnitInfoWithFilename(UnitFilename);
     if (CurUnitInfo<>nil) and (CurUnitInfo.Component<>nil) then
     begin
+      // unit with loaded component found -> check if it is the right one
+      //DebugLn(['TMainIDE.DoLoadComponentDependencyHidden unit with a component found CurUnitInfo=',CurUnitInfo.Filename,' ',dbgsName(CurUnitInfo.Component)]);
       if CompareText(CurUnitInfo.Component.ClassName,AComponentClassName)=0
       then begin
-        // component found
+        // component found (it was already loaded)
         ComponentUnitInfo:=CurUnitInfo;
         AComponentClass:=TComponentClass(ComponentUnitInfo.Component.ClassType);
         Result:=true;
+        TheModalResult:=mrOk;
       end else begin
         // this unit does not have this component
-        exit;
       end;
+      exit;
     end;
     
     LFMFilename:=ChangeFileExt(UnitFilename,'.lfm');
@@ -5038,7 +5042,7 @@ function TMainIDE.DoLoadComponentDependencyHidden(AnUnitInfo: TUnitInfo;
     // load the lfm file
     TheModalResult:=LoadCodeBuffer(LFMCode,LFMFilename,[lbfCheckIfText]);
     if TheModalResult<>mrOk then begin
-      debugln('TMainIDE.DoLoadHiddenResourceComponent Failed loading ',LFMFilename);
+      debugln('TMainIDE.DoLoadComponentDependencyHidden Failed loading ',LFMFilename);
       exit;
     end;
     // read the LFM classname
@@ -5049,11 +5053,11 @@ function TMainIDE.DoLoadComponentDependencyHidden(AnUnitInfo: TUnitInfo;
     // component LFM found
     Result:=true;
 
-    debugln('TMainIDE.DoLoadHiddenResourceComponent ',AnUnitInfo.Filename,' Loading ancestor unit ',UnitFilename);
+    debugln('TMainIDE.DoLoadComponentDependencyHidden ',AnUnitInfo.Filename,' Loading ancestor unit ',UnitFilename);
     // load unit source
     TheModalResult:=LoadCodeBuffer(UnitCode,UnitFilename,[lbfCheckIfText]);
     if TheModalResult<>mrOk then begin
-      debugln('TMainIDE.DoLoadHiddenResourceComponent Failed loading ',UnitFilename);
+      debugln('TMainIDE.DoLoadComponentDependencyHidden Failed loading ',UnitFilename);
       exit;
     end;
     
@@ -5070,10 +5074,10 @@ function TMainIDE.DoLoadComponentDependencyHidden(AnUnitInfo: TUnitInfo;
     if (TheModalResult=mrOk) then begin
       ComponentUnitInfo:=CurUnitInfo;
       AComponentClass:=TComponentClass(ComponentUnitInfo.Component.ClassType);
-      debugln('TMainIDE.DoLoadHiddenResourceComponent Wanted=',AComponentClassName,' Class=',AComponentClass.ClassName);
+      debugln('TMainIDE.DoLoadComponentDependencyHidden Wanted=',AComponentClassName,' Class=',AComponentClass.ClassName);
       TheModalResult:=mrOk;
     end else begin
-      debugln('TMainIDE.DoLoadHiddenResourceComponent Failed to load component ',AComponentClassName);
+      debugln('TMainIDE.DoLoadComponentDependencyHidden Failed to load component ',AComponentClassName);
       TheModalResult:=mrCancel;
     end;
   end;
@@ -5114,7 +5118,7 @@ begin
   AnUnitInfo.LoadingComponent:=true;
   try
     // search component lfm
-    debugln('TMainIDE.DoLoadHiddenResourceComponent ',AnUnitInfo.Filename,' AComponentName=',AComponentClassName,' AComponentClass=',dbgsName(AComponentClass));
+    debugln('TMainIDE.DoLoadComponentDependencyHidden ',AnUnitInfo.Filename,' AComponentName=',AComponentClassName,' AComponentClass=',dbgsName(AComponentClass));
 
     // first search the resource of ComponentUnitInfo
     if ComponentUnitInfo<>nil then begin
@@ -11042,7 +11046,9 @@ var
   SelectedEndPos: TPoint;
   CursorCode: TCodeBuffer;
   CursorXY: TPoint;
+  OldChange: Boolean;
 begin
+  OldChange:=FOpenEditorsOnCodeToolChange;
   FOpenEditorsOnCodeToolChange:=true;
   try
     Result:=mrCancel;
@@ -11153,7 +11159,7 @@ begin
 
     Result:=mrOk;
   finally
-    FOpenEditorsOnCodeToolChange:=false;
+    FOpenEditorsOnCodeToolChange:=OldChange;
   end;
 end;
 
@@ -11197,7 +11203,9 @@ var
   ActiveUnitInfo: TUnitInfo;
   NewSource: TCodeBuffer;
   NewX, NewY, NewTopLine: integer;
+  OldChange: Boolean;
 begin
+  OldChange:=FOpenEditorsOnCodeToolChange;
   FOpenEditorsOnCodeToolChange:=true;
   try
     if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
@@ -11222,7 +11230,7 @@ begin
       DoJumpToCodeToolBossError;
     end;
   finally
-    FOpenEditorsOnCodeToolChange:=false;
+    FOpenEditorsOnCodeToolChange:=OldChange;
   end;
 end;
 
@@ -11235,6 +11243,7 @@ var
   NewSource: TCodeBuffer;
   NewX, NewY, NewTopLine: integer;
   CTResult: boolean;
+  OldChange: Boolean;
 begin
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
   {$IFDEF IDE_DEBUG}
@@ -11244,6 +11253,7 @@ begin
   BlockBegin:=ActiveSrcEdit.EditorComponent.BlockBegin;
   BlockEnd:=ActiveSrcEdit.EditorComponent.BlockEnd;
 
+  OldChange:=FOpenEditorsOnCodeToolChange;
   FOpenEditorsOnCodeToolChange:=true;
   try
     CTResult:=ShowExtractProcDialog(ActiveUnitInfo.Source,BlockBegin,BlockEnd,
@@ -11256,7 +11266,7 @@ begin
         NewSource,NewX,NewY,NewTopLine,true);
     end;
   finally
-    FOpenEditorsOnCodeToolChange:=false;
+    FOpenEditorsOnCodeToolChange:=OldChange;
   end;
 end;
 
@@ -11411,6 +11421,7 @@ var
   s: String;
   OldName: String;
   OldClassName: String;
+  OldOpenEditorsOnCodeToolChange: Boolean;
 
   procedure ApplyBossResult(const ErrorMsg: string);
   var
@@ -11528,9 +11539,12 @@ var
     CurMethodName: Shortstring;
     RootClassName: ShortString;
     NewMethodName: String;
+    CTResult: Boolean;
+    RenamedMethods: TStringList;
   begin
     PropCount:=GetPropList(AComponent,PropList);
     if PropCount=0 then exit;
+    RenamedMethods:=nil;
     try
       Root:=ActiveUnitInfo.Component;
       RootClassName:=Root.ClassName;
@@ -11542,14 +11556,39 @@ var
         CurMethodName:=Root.MethodName(CurMethod.Code);
         DefaultName:=TMethodPropertyEditor.GetDefaultMethodName(
                           Root,AComponent,RootClassName,OldName,PropInfo^.Name);
-        if DefaultName=CurMethodName then begin
-          NewMethodName:=TMethodPropertyEditor.GetDefaultMethodName(
-                          Root,AComponent,Root.ClassName,NewName,PropInfo^.Name);
-          DebugLn(['RenameMethods OldMethodName="',DefaultName,'" NewMethodName="',NewMethodName,'"']);
+        if (DefaultName<>CurMethodName) then continue;
+        // this method has the default name (component name + method type name)
+        NewMethodName:=TMethodPropertyEditor.GetDefaultMethodName(
+                       Root,AComponent,Root.ClassName,NewName,PropInfo^.Name);
+        if (CurMethodName=NewMethodName) then continue;
+        // auto rename it
+        DebugLn(['RenameMethods OldMethodName="',DefaultName,'" NewMethodName="',NewMethodName,'"']);
+
+        // rename/create published method in source
+        CTResult:=CodeToolBoss.RenamePublishedMethod(ActiveUnitInfo.Source,
+              ActiveUnitInfo.Component.ClassName,CurMethodName,NewMethodName);
+        if CTResult then begin
+          // renamed in source, now rename in JIT class
+          FormEditor1.RenameJITMethod(ActiveUnitInfo.Component,
+                                      CurMethodName,NewMethodName);
+          // add to the list of renamed methods
+          if RenamedMethods=nil then
+            RenamedMethods:=TStringList.Create;
+          RenamedMethods.Add(CurMethodName);
+          RenamedMethods.Add(NewMethodName);
+        end else begin
+          // unable to rename method in source
+          // this is just a nice to have feature -> ignore the error
+          DebugLn(['TMainIDE.OnDesignerRenameComponent.RenameMethods failed OldMethodName="',CurMethodName,'" NewMethodName="',NewMethodName,'" Error=',CodeToolBoss.ErrorMessage]);
         end;
       end;
+      ApplyCodeToolChanges;
     finally
       FreeMem(PropList);
+      if RenamedMethods<>nil then begin
+        RenameInheritedMethods(ActiveUnitInfo,RenamedMethods);
+        RenamedMethods.Free;
+      end;
     end;
   end;
 
@@ -11575,65 +11614,72 @@ begin
     raise Exception.Create(Format(lisComponentNameIsKeyword, ['"', Newname, '"']
       ));
 
-  // check ancestor component
-  AncestorRoot:=FormEditor1.GetAncestorLookupRoot(AComponent);
-  if AncestorRoot<>nil then begin
-    s:='The component '+dbgsName(AComponent)
-       +' is inherited from '+dbgsName(AncestorRoot)+'.'#13
-       +'To rename an inherited component open the ancestor and rename it there.';
-    raise EComponentError.Create(s);
-  end;
+  OldOpenEditorsOnCodeToolChange:=FOpenEditorsOnCodeToolChange;
+  FOpenEditorsOnCodeToolChange:=true;
+  try
 
-
-  OldName:=AComponent.Name;
-  OldClassName:=AComponent.ClassName;
-  
-  // check inherited components
-  RenameInheritedComponents(ActiveUnitInfo,true);
-
-  if AComponent=ADesigner.LookupRoot then begin
-    // rename owner component (e.g. the form)
-
-    CheckInterfaceName(NewName);
-    NewClassName:='T'+NewName;
-    CheckInterfaceName(NewClassName);
-
-    // rename form component in source
-    BossResult:=CodeToolBoss.RenameForm(ActiveUnitInfo.Source,
-      AComponent.Name,AComponent.ClassName,
-      NewName,NewClassName);
-    ApplyBossResult(Format(lisUnableToRenameFormInSource, [#13]));
-    ActiveUnitInfo.ComponentName:=NewName;
-
-    // rename form component class
-    FormEditor1.RenameJITComponent(AComponent,NewClassName);
-
-    // change createform statement
-    if ActiveUnitInfo.IsPartOfProject and (Project1.MainUnitID>=0)
-    then begin
-      BossResult:=CodeToolBoss.ChangeCreateFormStatement(
-        Project1.MainUnitInfo.Source,
-        AComponent.ClassName,AComponent.Name,
-        NewClassName,NewName,true);
-      Project1.MainUnitInfo.Modified:=true;
-      ApplyBossResult(lisUnableToUpdateCreateFormStatementInProjectSource);
+    // check ancestor component
+    AncestorRoot:=FormEditor1.GetAncestorLookupRoot(AComponent);
+    if AncestorRoot<>nil then begin
+      s:='The component '+dbgsName(AComponent)
+         +' is inherited from '+dbgsName(AncestorRoot)+'.'#13
+         +'To rename an inherited component open the ancestor and rename it there.';
+      raise EComponentError.Create(s);
     end;
-  end else if ADesigner.LookupRoot<>nil then begin
-    // rename published variable in form source
-    BossResult:=CodeToolBoss.RenamePublishedVariable(ActiveUnitInfo.Source,
-      ADesigner.LookupRoot.ClassName,
-      AComponent.Name,NewName,AComponent.ClassName,true);
-    ApplyBossResult(Format(lisUnableToRenameVariableInSource, [#13])
-      );
-  end else begin
-    RaiseException('TMainIDE.OnDesignerRenameComponent internal error:'+AComponent.Name+':'+AComponent.ClassName);
-  end;
 
-  // rename inherited components
-  RenameInheritedComponents(ActiveUnitInfo,false);
-  
-  // rename methods
-  RenameMethods;
+
+    OldName:=AComponent.Name;
+    OldClassName:=AComponent.ClassName;
+
+    // check inherited components
+    RenameInheritedComponents(ActiveUnitInfo,true);
+
+    if AComponent=ADesigner.LookupRoot then begin
+      // rename owner component (e.g. the form)
+
+      CheckInterfaceName(NewName);
+      NewClassName:='T'+NewName;
+      CheckInterfaceName(NewClassName);
+
+      // rename form component in source
+      BossResult:=CodeToolBoss.RenameForm(ActiveUnitInfo.Source,
+        AComponent.Name,AComponent.ClassName,
+        NewName,NewClassName);
+      ApplyBossResult(Format(lisUnableToRenameFormInSource, [#13]));
+      ActiveUnitInfo.ComponentName:=NewName;
+
+      // rename form component class
+      FormEditor1.RenameJITComponent(AComponent,NewClassName);
+
+      // change createform statement
+      if ActiveUnitInfo.IsPartOfProject and (Project1.MainUnitID>=0)
+      then begin
+        BossResult:=CodeToolBoss.ChangeCreateFormStatement(
+          Project1.MainUnitInfo.Source,
+          AComponent.ClassName,AComponent.Name,
+          NewClassName,NewName,true);
+        Project1.MainUnitInfo.Modified:=true;
+        ApplyBossResult(lisUnableToUpdateCreateFormStatementInProjectSource);
+      end;
+    end else if ADesigner.LookupRoot<>nil then begin
+      // rename published variable in form source
+      BossResult:=CodeToolBoss.RenamePublishedVariable(ActiveUnitInfo.Source,
+        ADesigner.LookupRoot.ClassName,
+        AComponent.Name,NewName,AComponent.ClassName,true);
+      ApplyBossResult(Format(lisUnableToRenameVariableInSource, [#13])
+        );
+    end else begin
+      RaiseException('TMainIDE.OnDesignerRenameComponent internal error:'+AComponent.Name+':'+AComponent.ClassName);
+    end;
+
+    // rename inherited components
+    RenameInheritedComponents(ActiveUnitInfo,false);
+
+    // rename methods
+    RenameMethods;
+  finally
+    FOpenEditorsOnCodeToolChange:=OldOpenEditorsOnCodeToolChange;
+  end;
 end;
 
 procedure TMainIDE.OnDesignerViewLFM(Sender: TObject);
@@ -12085,6 +12131,44 @@ begin
     DoJumpToCompilerMessage(-1,true);
 end;
 
+procedure TMainIDE.RenameInheritedMethods(AnUnitInfo: TUnitInfo; List: TStrings
+  );
+var
+  UsedByDependency: TUnitComponentDependency;
+  DependingUnit: TUnitInfo;
+  OldName: string;
+  NewName: string;
+  i: Integer;
+begin
+  if List=nil then exit;
+  UsedByDependency:=AnUnitInfo.FirstUsedByComponent;
+  while UsedByDependency<>nil do begin
+    DependingUnit:=UsedByDependency.UsedByUnit;
+    if (DependingUnit.Component<>nil)
+    and (DependingUnit.Component.ClassParent=AnUnitInfo.Component.ClassType)
+    then begin
+      // the root component inherits from the DependingUnit root component
+      i:=0;
+      while i<List.Count-1 do begin
+        OldName:=List[i];
+        NewName:=List[i+1];
+        // replace references, ignoring errors
+        if CodeToolBoss.ReplaceWord(DependingUnit.Source,OldName,NewName) then
+        begin
+          // renamed in source, now rename in JIT class
+          FormEditor1.RenameJITMethod(DependingUnit.Component,
+                                      OldName,NewName);
+        end;
+        inc(i,2);
+      end;
+      ApplyCodeToolChanges;
+      // rename recursively
+      RenameInheritedMethods(DependingUnit,List);
+    end;
+    UsedByDependency:=UsedByDependency.NextUsedByDependency;
+  end;
+end;
+
 procedure TMainIDE.DoSwitchToFormSrc(var ActiveSourceEditor: TSourceEditor;
   var ActiveUnitInfo: TUnitInfo);
 begin
@@ -12189,6 +12273,7 @@ function TMainIDE.OnPropHookCreateMethod(const AMethodName: ShortString;
 var ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
   r: boolean;
+  OldChange: Boolean;
 begin
   Result.Code:=nil;
   Result.Data:=nil;
@@ -12198,6 +12283,7 @@ begin
   writeln('');
   writeln('[TMainIDE.OnPropHookCreateMethod] ************ ',AMethodName);
   {$ENDIF}
+  OldChange:=FOpenEditorsOnCodeToolChange;
   FOpenEditorsOnCodeToolChange:=true;
   try
     // create published method
@@ -12217,7 +12303,7 @@ begin
       raise Exception.Create(lisUnableToCreateNewMethodPlzFixTheErrorShownIn);
     end;
   finally
-    FOpenEditorsOnCodeToolChange:=false;
+    FOpenEditorsOnCodeToolChange:=OldChange;
   end;
 end;
 
@@ -12253,6 +12339,8 @@ var ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
   BossResult: boolean;
   ErrorMsg: String;
+  OldChange: Boolean;
+  RenamedMethods: TStringList;
 begin
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[ctfSwitchToFormSource])
   then exit;
@@ -12260,9 +12348,10 @@ begin
   writeln('');
   writeln('[TMainIDE.OnPropHookRenameMethod] ************');
   {$ENDIF}
+  OldChange:=FOpenEditorsOnCodeToolChange;
   FOpenEditorsOnCodeToolChange:=true;
   try
-    // create published method
+    // rename/create published method
     BossResult:=CodeToolBoss.RenamePublishedMethod(ActiveUnitInfo.Source,
                             ActiveUnitInfo.Component.ClassName,CurName,NewName);
     {$IFDEF IDE_DEBUG}
@@ -12272,6 +12361,14 @@ begin
     ApplyCodeToolChanges;
     if BossResult then begin
       FormEditor1.RenameJITMethod(ActiveUnitInfo.Component,CurName,NewName);
+      RenamedMethods:=TStringList.Create;
+      try
+        RenamedMethods.Add(CurName);
+        RenamedMethods.Add(NewName);
+        RenameInheritedMethods(ActiveUnitInfo,RenamedMethods);
+      finally
+        RenamedMethods.Free;
+      end;
     end else begin
       ErrorMsg:=CodeToolBoss.ErrorMessage;
       DoJumpToCodeToolBossError;
@@ -12280,7 +12377,7 @@ begin
         +#13#13+lisError+ErrorMsg);
     end;
   finally
-    FOpenEditorsOnCodeToolChange:=false;
+    FOpenEditorsOnCodeToolChange:=OldChange;
   end;
 end;
 
