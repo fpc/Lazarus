@@ -189,6 +189,12 @@ var
   Line: Cardinal;
   bp: TDbgBreakpoint;
 begin
+  if GCurrentProcess = nil
+  then begin
+    WriteLN('No Process');
+    Exit;
+  end;
+
   S := AParams;
   P := GetPart([], [' ', #9], S);
   Remove := P = '-d';

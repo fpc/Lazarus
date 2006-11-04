@@ -71,6 +71,7 @@ var
 begin
   Write('FPWDebugger on ', {$I %FPCTARGETOS%}, ' for ', {$I %FPCTARGETCPU%});
   WriteLn(' (', {$I %DATE%}, ' ', {$I %TIME%}, ' FPC: ', {$I %FPCVERSION%}, ')' );
+  WriteLn('Copyright (c) 2006 by Marc Weustink');
   WriteLN('starting....');
   
   if ParamCount > 0

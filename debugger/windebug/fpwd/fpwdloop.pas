@@ -429,7 +429,7 @@ procedure DebugLoop;
     end;
 
     WriteLn(sym.FileName, ' ', sym.Line, ':', sym.Column, ' ', sym.Name);
-    Write('  [', FormatAddress(a), '] ');
+    Write('  [', FormatAddress(sym.Address), '+', a-sym.Address, '] ');
 
     Name := sym.Filename;
     if not FileExists(Name)

@@ -223,10 +223,10 @@ type
 
     FMainThread: TDbgThread;
 
-    FSingleStepBreak: TDbgBreakpoint;  // set if we are executing the code at the break
-                                       // if the singlestep is done, set the break
-    FSingleStepSet: Boolean;           // set if we set the singlestep to correct the BP
-
+    FCurrentBreakpoint: TDbgBreakpoint;  // set if we are executing the code at the break
+                                         // if the singlestep is done, set the break again
+    FReEnableBreakStep: Boolean;         // Set when we are reenabling a breakpoint
+                                         // We need a single step, so the IP is after the break to set
 
     procedure SetName(const AValue: String);
     procedure ThreadDestroyed(const AThread: TDbgThread);
@@ -429,9 +429,10 @@ begin
       case ADebugEvent.Exception.ExceptionRecord.ExceptionCode of
         EXCEPTION_BREAKPOINT: begin
           if AThread = nil then Exit;
-          if FSingleStepBreak = nil then Exit;
+          if FCurrentBreakpoint = nil then Exit;
           if AThread.SingleStepping then Exit;
           AThread.SingleStep;
+          FReEnableBreakStep := True;
         end;
       end;
     end;
@@ -453,7 +454,7 @@ begin
   FThreadMap := TMap.Create(itu4, SizeOf(TDbgThread));
   FLibMap := TMap.Create(MAP_ID_SIZE, SizeOf(TDbgLibrary));
   FBreakMap := TMap.Create(MAP_ID_SIZE, SizeOf(TDbgBreakpoint));
-  FSingleStepBreak := nil;
+  FCurrentBreakpoint := nil;
 
   FSymInstances := TList.Create;
 
@@ -527,19 +528,26 @@ begin
   else Log('Unknown thread ID %u for process %u', [AID, FProcessID]);
 end;
 
+{ ------------------------------------------------------------------
+  HandleDebugEvent
+  
+  Result: True if the event was triggered internally
+          The callee should continue the process
+  ------------------------------------------------------------------ }
 function TDbgProcess.HandleDebugEvent(const ADebugEvent: TDebugEvent): Boolean;
+
   function DoBreak: Boolean;
   var
     ID: TDbgPtr;
   begin
     Result := False;
     ID := TDbgPtr(ADebugEvent.Exception.ExceptionRecord.ExceptionAddress);
-    if not FBreakMap.GetData(ID, FSingleStepBreak) then Exit;
-    if FSingleStepBreak = nil then Exit;
+    if not FBreakMap.GetData(ID, FCurrentBreakpoint) then Exit;
+    if FCurrentBreakpoint = nil then Exit;
 
     Result := True;
-    if not FSingleStepBreak.Hit(ADebugEvent.dwThreadId)
-    then FSingleStepBreak := nil; // no need for a singlestep if we continue
+    if not FCurrentBreakpoint.Hit(ADebugEvent.dwThreadId)
+    then FCurrentBreakpoint := nil; // no need for a singlestep if we continue
   end;
 
   function DoSingleStep: Boolean;
@@ -578,13 +586,13 @@ function TDbgProcess.HandleDebugEvent(const ADebugEvent: TDebugEvent): Boolean;
       Log('Thread %u: Unable to get context', [ADebugEvent.dwThreadId]);
     end;
 
-    // check if we are single stepping
-    if FSingleStepBreak = nil then Exit;
+    // check if we are single stepping ourself
+    if FCurrentBreakpoint = nil then Exit;
 
-    FSingleStepBreak.SetBreak;
-    FSingleStepBreak := nil;
-    Result := FSingleStepSet;
-    FSingleStepSet := False;
+    FCurrentBreakpoint.SetBreak;
+    FCurrentBreakpoint := nil;
+    Result := FReEnableBreakStep;
+    FReEnableBreakStep := False;
   end;
   
 begin
@@ -592,7 +600,7 @@ begin
   case ADebugEvent.dwDebugEventCode of
     EXCEPTION_DEBUG_EVENT: begin
       case ADebugEvent.Exception.ExceptionRecord.ExceptionCode of
-        EXCEPTION_BREAKPOINT:  Result := DoBreak;
+        EXCEPTION_BREAKPOINT:  {Result :=} DoBreak; // we never set a break ourself, let the callee pause!
         EXCEPTION_SINGLE_STEP: Result := DoSingleStep;
       end;
     end;
@@ -620,6 +628,12 @@ var
   Context: PContext;
   r: DWORD;
 begin
+  // Interrupting is implemented by suspending the thread and set DB0 to the
+  // (to be) executed EIP. When the thread is resumed, it will generate a break
+  // Single stepping doesn't work in all cases.
+  
+  // A context needs to be aligned to 16 bytes. Unfortunately, the compiler has
+  // no directive for this, so align it somewhere in our "reserved" memory
   Context := AlignPtr(@_UC, $10);
   r := SuspendThread(FInfo.hThread);
   try
@@ -637,10 +651,6 @@ begin
     Context^.Dr0 := Context^.Rip;
     {$endif}
     Context^.Dr7 := (Context^.Dr7 and $FFF0FFFF) or $1;
-
-//      Context.EFlags := Context.EFlags or $100;
-
-
 
     if not SetThreadContext(FInfo.hThread, Context^)
     then begin
@@ -778,7 +788,7 @@ begin
   end;
 
   Context^.ContextFlags := CONTEXT_CONTROL;
-  Context^.EFlags := Context^.EFlags or $100;
+  Context^.EFlags := Context^.EFlags or FLAG_TRACE_BIT;
 
   if not SetThreadContext(FHandle, Context^)
   then begin
