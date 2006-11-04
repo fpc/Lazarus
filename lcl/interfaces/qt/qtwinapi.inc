@@ -308,15 +308,62 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Function:  CreatePenIndirect
+  Params:  none
+  Returns: HPEN
+ ------------------------------------------------------------------------------}
+
+function TQtWidgetSet.CreatePenIndirect(const LogPen: TLogPen): HPEN;
+var
+  QtPen: TQtPen;
+  color: TQColor;
+begin
+//  Assert(False, 'trace:[TQtWidgetSet.CreatePenIndirect]');
+//   writeln('CreatePenIndirect->');
+  Result := 0;	
+  QtPen := TQtPen.Create(True);
+  
+  with LogPen do
+  begin
+     case lopnStyle of
+	PS_SOLID: QtPen.setStyle(QtSolidLine);	
+	PS_DASH: QtPen.setStyle(QtDashLine);	
+        PS_DOT: QtPen.setStyle(QtDotLine);
+        PS_DASHDOT:QtPen.setStyle(QtDashDotLine);  
+        PS_DASHDOTDOT:QtPen.setStyle(QtDashDotDotLine);
+        PS_USERSTYLE: QtPen.setStyle(QtCustomDashLine); 
+        PS_NULL:QtPen.setStyle(QtNoPen);	 
+        else
+	QtPen.setStyle(QtSolidLine);	
+     end;		
+
+     QtPen.setWidth(lopnWidth.X);
+     {TODO: FIX Color issues }
+     color.Alpha := TColorToFPColor(lopnColor).Alpha;
+     color.r     := TColorToFPColor(lopnColor).Red;
+     color.g     := TColorToFPColor(lopnColor).Green;
+     color.b     := TColorToFPColor(lopnColor).Blue;
+
+     QtPen.setColor(Color);
+
+  end;
+
+  Result := HPEN(QtPen);
+end;
+
+{------------------------------------------------------------------------------
   Function: CreateRectRgn
   Params:  none
-  Returns: Nothing
+  Returns: HRGN
 
 
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.CreateRectRgn(X1,Y1,X2,Y2 : Integer): HRGN;
+var
+    QtRegion: TQtRegion;
 begin
-  Result := 0;
+  QtRegion := TQtRegion.Create(True, X1,Y1,X2,Y2);
+  Result := HRGN(QtRegion); 
 end;
 
 {------------------------------------------------------------------------------

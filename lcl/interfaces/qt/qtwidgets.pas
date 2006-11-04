@@ -73,6 +73,8 @@ type
     procedure setParent(parent: QWidgetH);
     procedure setWindowFlags(_type: QtWindowFlags);
     function windowFlags: QtWindowFlags;
+    procedure setWidth(p1: Integer);
+    procedure setHeight(p1: Integer);
   end;
 
   { TQtAbstractButton }
@@ -179,6 +181,46 @@ type
     procedure setFrameStyle(p1: Integer);
     procedure setFrameShape(p1: QFrameShape);
     procedure setFrameShadow(p1: QFrameShadow);
+  end;
+
+  { TQtAbstractSlider , inherited by TQtScrollBar, TQtTrackBar}
+
+  TQtAbstractSlider = class(TQtWidget)
+  private
+  public
+    constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); override;
+    destructor Destroy; override;
+
+    procedure setInvertedAppereance(p1: Boolean); virtual;
+    procedure setInvertedControls(p1: Boolean); virtual;
+
+    procedure setMaximum(p1: Integer); virtual;
+    procedure setMinimum(p1: Integer); virtual;
+
+    procedure setOrientation(p1: QtOrientation); virtual;
+    procedure setPageStep(p1: Integer); virtual;
+    procedure setRange(minimum: Integer; maximum: Integer); virtual;
+    procedure setSingleStep(p1: Integer); virtual;
+    procedure setSliderDown(p1: Boolean); virtual;
+    procedure setSliderPosition(p1: Integer); virtual;
+    procedure setTracking(p1: Boolean); virtual;
+    procedure setValue(p1: Integer); virtual; 
+  end;
+
+ { TQtScrollBar }
+  TQtScrollBar = class(TQtAbstractSlider)
+  private
+  public
+     constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); override;
+  end;	
+
+{ TQtTrackBar }
+  TQtTrackBar = class(TQtAbstractSlider)
+  private
+  public
+     constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); override;
+     procedure SetTickPosition(Value: QSliderTickPosition);
+     procedure SetTickInterval(Value: Integer);
   end;
 
   { TQtLineEdit }
@@ -817,6 +859,24 @@ end;
 function TQtWidget.windowFlags: QtWindowFlags;
 begin
   Result := QWidget_windowFlags(Widget);
+end;
+
+procedure TQtWidget.setWidth(p1: Integer);
+var
+   R: TRect;
+begin
+  QWidget_geometry(Widget, @R);
+  R.Right := p1;
+  QWidget_setGeometry(Widget,@R);
+end;
+
+procedure TQtWidget.setHeight(p1: Integer);
+var
+   R: TRect;
+begin
+  QWidget_geometry(Widget, @R);
+  R.Bottom := p1;
+  QWidget_setGeometry(Widget, @R);
 end;
 
 {------------------------------------------------------------------------------
@@ -1756,6 +1816,243 @@ procedure TQtFrame.setFrameShadow(p1: QFrameShadow);
 begin
   QFrame_setFrameShadow(QFrameH(Widget), p1);
 end;
+
+{ TQtAbstractSlider }
+{------------------------------------------------------------------------------
+  Function: TQtAbstractSlider.Create
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+constructor TQtAbstractSlider.Create(const AWinControl: TWinControl;
+  const AParams: TCreateParams);
+var
+  Parent: QWidgetH;
+begin
+  // Initializes the properties
+  LCLObject := AWinControl;
+
+  // Creates the widget
+  {$ifdef VerboseQt}
+    WriteLn('TQtAbstractSlider.Create');
+  {$endif}
+  Parent := TQtWidget(AWinControl.Parent.Handle).Widget;
+  Widget := QAbstractSlider_create(Parent);
+
+  // Sets it´ s initial properties
+  QWidget_setGeometry(Widget, AWinControl.Left, AWinControl.Top,
+   AWinControl.Width, AWinControl.Height);
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtAbstractSlider.Destroy
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+destructor TQtAbstractSlider.Destroy;
+begin
+  {$ifdef VerboseQt}
+    WriteLn('TQtAbstractSlider.Destroy');
+  {$endif}
+  QAbstractSlider_destroy(QAbstractSliderH(Widget));
+  inherited Destroy;
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtAbstractSlider.setInvertedAppereance
+  Params:  p1: Boolean
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+procedure TQtAbstractSlider.setInvertedAppereance(p1: Boolean);
+begin
+  QAbstractSlider_setInvertedAppearance(QAbstractSliderH(Widget), p1);
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtAbstractSlider.setInvertedControls
+  Params:  p1: Boolean
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+procedure TQtAbstractSlider.setInvertedControls(p1: Boolean);
+begin
+  QAbstractSlider_setInvertedControls(QAbstractSliderH(Widget), p1);
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtAbstractSlider.setMaximum
+  Params:  p1: Integer
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+procedure TQtAbstractSlider.setMaximum(p1: Integer);
+begin
+  QAbstractSlider_setMaximum(QAbstractSliderH(Widget), p1);
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtAbstractSlider.setMinimum
+  Params:  p1: Integer
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+procedure TQtAbstractSlider.setMinimum(p1: Integer);
+begin
+  QAbstractSlider_setMinimum(QAbstractSliderH(Widget), p1);
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtAbstractSlider.setOrientation
+  Params:  p1: QtOrientation (QtHorizontal or QtVertical)
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+procedure TQtAbstractSlider.setOrientation(p1: QtOrientation);
+begin
+  QAbstractSlider_setOrientation(QAbstractSliderH(Widget), p1);
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtAbstractSlider.setPageStep
+  Params:  p1: Integer
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+procedure TQtAbstractSlider.setPageStep(p1: Integer);
+begin
+  QAbstractSlider_setPageStep(QAbstractSliderH(Widget), p1);
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtAbstractSlider.setRange
+  Params:  minimum,maximum: Integer
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+procedure TQtAbstractSlider.setRange(minimum: Integer; maximum: Integer);
+begin
+  QAbstractSlider_setRange(QAbstractSliderH(Widget), minimum, maximum);
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtAbstractSlider.setSingleStep
+  Params:  p1: Integer
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+procedure TQtAbstractSlider.setSingleStep(p1: Integer);
+begin
+  QAbstractSlider_setSingleStep(QAbstractSliderH(Widget), p1);
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtAbstractSlider.setSliderDown
+  Params:  p1: Boolean
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+procedure TQtAbstractSlider.setSliderDown(p1: Boolean);
+begin
+  QAbstractSlider_setSliderDown(QAbstractSliderH(Widget), p1);
+end;
+
+
+{------------------------------------------------------------------------------
+  Function: TQtAbstractSlider.setSliderPosition
+  Params:  p1: Integer
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+procedure TQtAbstractSlider.setSliderPosition(p1: Integer);
+begin
+  QAbstractSlider_setSliderPosition(QAbstractSliderH(Widget), p1);
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtAbstractSlider.setTracking
+  Params:  p1: Boolean
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+procedure TQtAbstractSlider.setTracking(p1: Boolean);
+begin
+  QAbstractSlider_setTracking(QAbstractSliderH(Widget), p1);
+end;
+
+{-----------------------------------------------------------------------------
+  Function: TQtAbstractSlider.setValue
+  Params:  p1: Integer
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+procedure TQtAbstractSlider.setValue(p1: Integer);
+begin
+  QAbstractSlider_setValue(QAbstractSliderH(Widget), p1);
+end;
+
+{ TQtScrollBar }
+
+{------------------------------------------------------------------------------
+  Function: TQtScrollBar.Create
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+constructor TQtScrollBar.Create(const AWinControl: TWinControl;
+  const AParams: TCreateParams);
+var
+  Parent: QWidgetH;
+begin
+  // Initializes the properties
+  LCLObject := AWinControl;
+
+  // Creates the widget
+  {$ifdef VerboseQt}
+    WriteLn('TQtScrollBar.Create');
+  {$endif}
+  Parent := TQtWidget(AWinControl.Parent.Handle).Widget;
+  Widget := QScrollBar_create(Parent);
+
+  // Sets it´ s initial properties
+  QWidget_setGeometry(Widget, AWinControl.Left, AWinControl.Top,
+   AWinControl.Width, AWinControl.Height);
+end;
+
+
+{ TQtTrackBar }
+
+{------------------------------------------------------------------------------
+  Function: TQtTrackBar.Create
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------ }
+constructor TQtTrackBar.Create(const AWinControl: TWinControl;
+  const AParams: TCreateParams);
+var
+  Parent: QWidgetH;
+begin
+  // Initializes the properties
+  LCLObject := AWinControl;
+
+  // Creates the widget
+  {$ifdef VerboseQt}
+    WriteLn('TQtTrackBar.Create');
+  {$endif}
+  Parent := TQtWidget(AWinControl.Parent.Handle).Widget;
+  Widget := QSlider_create(Parent);
+
+  // Sets it´ s initial properties
+  QWidget_setGeometry(Widget, AWinControl.Left, AWinControl.Top,
+   AWinControl.Width, AWinControl.Height);
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtTrackBar.setTickPosition
+  Params:  Value: QSliderTickPosition
+  Returns: Nothing
+ ------------------------------------------------------------------------------ }
+procedure TQtTrackBar.setTickPosition(Value: QSliderTickPosition);
+begin
+  QSlider_setTickPosition(QSliderH(Widget), Value);
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtTrackBar.setTickInterval
+  Params:  Value: Integer
+  Returns: Nothing
+ ------------------------------------------------------------------------------ }
+procedure TQtTrackBar.SetTickInterval(Value: Integer);
+begin
+  QSlider_setTickInterval(QSliderH(Widget), Value);
+end;
+
 
 { TQtLineEdit }
 

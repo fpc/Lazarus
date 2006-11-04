@@ -118,6 +118,37 @@ type
     procedure setStyle(style: QtBrushStyle);
   end;
 
+{ TQtPen }
+
+  TQtPen = class(TObject)
+  private
+  public
+    Widget: QPenH;
+  public
+    constructor Create(CreateHandle: Boolean); virtual;
+    destructor Destroy; override;
+    function Width: Integer;
+    function Style: QtPenStyle;
+    procedure setStyle(style: QtPenStyle);
+    procedure setBrush(brush: QBrushH);
+    procedure setWidth(p1: Integer);
+    procedure setColor(p1: TQColor);
+  end;
+
+
+{ TQtRegion }
+
+  TQtRegion = class(TObject)
+  private
+  public
+    Widget: QRegionH;
+  public
+    constructor Create(CreateHandle: Boolean); virtual; overload;
+    constructor Create(CreateHandle: Boolean; X1,Y1,X2,Y2: Integer); virtual; overload;
+    destructor Destroy; override;
+  end;
+
+
   { TQtDeviceContext }
 
   TQtDeviceContext = class(TObject)
@@ -129,10 +160,13 @@ type
     vBrush: TQtBrush;
     vFont: TQtFont;
     vImage: QImageH;
+    vPen: TQtPen;
+    vRegion: TQtRegion;
   public
     constructor Create(WidgetHandle: THandle); virtual;
     destructor Destroy; override;
   public
+    procedure drawPoint(x1: Integer; y1: Integer);
     procedure drawRect(x1: Integer; y1: Integer; w: Integer; h: Integer);
     procedure drawText(x: Integer; y: Integer; s: PWideString);
     procedure drawLine(x1: Integer; y1: Integer; x2: Integer; y2: Integer);
@@ -143,6 +177,10 @@ type
     procedure setFont(f: TQtFont);
     function brush: TQtBrush;
     procedure setBrush(brush: TQtBrush);
+    function  pen: TQtPen;
+    procedure setPen(pen: TQtPen);
+    function region: TQtRegion;
+    procedure setRegion(region: TQtRegion); 
     procedure drawImage(targetRect: PRect; image: QImageH; sourceRect: PRect; flags: QtImageConversionFlags = QtAutoColor);
   end;
   
@@ -447,6 +485,158 @@ begin
   QBrush_setStyle(Widget, style);
 end;
 
+{ TQtPen }
+
+{------------------------------------------------------------------------------
+  Function: TQtPen.Create
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+constructor TQtPen.Create(CreateHandle: Boolean);
+var
+   MyColor: TQColor;
+begin
+
+  {$ifdef VerboseQt}
+    WriteLn('TQtPen.Create CreateHandle: ', dbgs(CreateHandle));
+  {$endif}
+  
+  if CreateHandle then Widget := QPen_create;
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtPen.Destroy
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+destructor TQtPen.Destroy;
+begin
+  {$ifdef VerboseQt}
+    WriteLn('TQtPen.Destroy');
+  {$endif}
+
+  QPen_destroy(Widget);
+
+  inherited Destroy;
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtPen.setBrush
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+
+procedure TQtPen.setBrush(brush: QBrushH);
+begin
+  QPen_setBrush(Widget, brush);
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtPen.setStyle
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+procedure TQtPen.setStyle(style: QtPenStyle);
+begin
+  QPen_setStyle(Widget, style);
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtPen.setWidth
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+procedure TQtPen.setWidth(p1: Integer);
+begin
+  QPen_setWidth(Widget, p1);
+end;
+
+
+{------------------------------------------------------------------------------
+  Function: TQtPen.Style
+  Params:  None
+  Returns: QPenStyle
+ ------------------------------------------------------------------------------}
+function TQtPen.Style: QtPenStyle;
+begin
+  Result := QPen_Style(Widget);
+end;
+
+
+{------------------------------------------------------------------------------
+  Function: TQtPen.Width
+  Params:  None
+  Returns: integer , width of current pen
+
+ ------------------------------------------------------------------------------}
+function TQtPen.Width: Integer;
+begin
+  Result := QPen_Width(Widget);
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtPen.setColor
+  Params:  p1: TQColor
+  Returns: Nothing
+  Setting pen color. 
+ ------------------------------------------------------------------------------}
+procedure TQtPen.setColor(p1: TQColor);
+var
+  p2: TQColor;
+begin
+  QColor_fromRGB(@p2,p1.r,p1.g,p1.b,p1.Alpha);
+  QPen_setColor(Widget, @p2);
+end;
+
+
+{ TQtRegion }
+
+{------------------------------------------------------------------------------
+  Function: TQtRegion.Create
+  Params:  CreateHandle: Boolean
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+constructor TQtRegion.Create(CreateHandle: Boolean);
+begin
+  // Creates the widget
+  {$ifdef VerboseQt}
+    WriteLn('TQtRegion.Create CreateHandle: ', dbgs(CreateHandle));
+  {$endif}
+
+  if CreateHandle then Widget := QRegion_create;
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtRegion.Create (CreateRectRgn)
+  Params:  CreateHandle: Boolean; X1,Y1,X2,Y2:Integer
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+constructor TQtRegion.Create(CreateHandle: Boolean; X1,Y1,X2,Y2:Integer);
+begin
+  // Creates the widget
+  {$ifdef VerboseQt}
+    WriteLn('TQtRegion.Create CreateHandle: ', dbgs(CreateHandle));
+  {$endif}
+
+  if CreateHandle then Widget := QRegion_create(X1,Y1,X2,Y2);
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtRegion.Destroy
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+destructor TQtRegion.Destroy;
+begin
+  {$ifdef VerboseQt}
+    WriteLn('TQtRegion.Destroy');
+  {$endif}
+
+  QRegion_destroy(Widget);
+  inherited Destroy;
+end;
+
+
 { TQtDeviceContext }
 
 {------------------------------------------------------------------------------
@@ -473,6 +663,8 @@ begin
 
   vBrush := TQtBrush.Create(False);
   vFont := TQtFont.Create(False);
+  vPen  := TQtPen.Create(False);
+  vRegion := TQtRegion.Create(False);
 end;
 
 {------------------------------------------------------------------------------
@@ -490,6 +682,10 @@ begin
   vBrush.Free;
   vFont.Widget := nil;
   vFont.Free;
+  vPen.Widget := nil;
+  vPen.Free;
+  vRegion.Widget := nil;
+  vRegion.Free;
   
   if vImage <> nil then QImage_destroy(vImage);
 
@@ -568,6 +764,18 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Function: TQtDeviceContext.drawPoint
+  Params:  x1,y1 : Integer
+  Returns: Nothing
+
+  Draws a point. Helper function of winapi. DrawFocusRect
+ ------------------------------------------------------------------------------}
+procedure TQtDeviceContext.drawPoint(x1: Integer; y1: Integer);
+begin
+    QPainter_drawPoint(Widget, x1, y1);
+end;
+
+{------------------------------------------------------------------------------
   Function: TQtDeviceContext.setBrushOrigin
   Params:  None
   Returns: Nothing
@@ -630,6 +838,48 @@ end;
 procedure TQtDeviceContext.setBrush(brush: TQtBrush);
 begin
   if (brush.Widget <> nil) and (Widget <> nil) then QPainter_setBrush(Widget, brush.Widget);
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtDeviceContext.pen
+  Params:  None
+  Returns: The current pen object of the DC
+ ------------------------------------------------------------------------------}
+function TQtDeviceContext.pen: TQtPen;
+begin
+  vPen.Widget := QPainter_pen(Widget);
+  Result := vPen;
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtDeviceContext.setPen
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+procedure TQtDeviceContext.setPen(pen: TQtPen);
+begin
+  if (pen.Widget <> nil) and (Widget <> nil) then QPainter_setPen(Widget, pen.Widget);
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtDeviceContext.region
+  Params:  None
+  Returns: The current clip region
+ ------------------------------------------------------------------------------}
+function TQtDeviceContext.region: TQtRegion;
+begin
+  QPainter_clipRegion(Widget,  vRegion.Widget);
+  Result := vRegion;
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtDeviceContext.setRegion
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+procedure TQtDeviceContext.setRegion(region: TQtRegion);
+begin
+  if (region.Widget <> nil) and (Widget <> nil) then QPainter_setClipRegion(Widget, Region.Widget);
 end;
 
 {------------------------------------------------------------------------------

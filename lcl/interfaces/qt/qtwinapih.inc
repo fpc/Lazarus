@@ -35,6 +35,7 @@ function CreateBrushIndirect(const LogBrush: TLogBrush): HBRUSH; override;
 function CreateCompatibleDC(DC: HDC): HDC; override;
 function CreateFontIndirect(const LogFont: TLogFont): HFONT; override;
 function CreateFontIndirectEx(const LogFont: TLogFont; const LongFontName: string): HFONT; override;
+function CreatePenIndirect(const LogPen: TLogPen): HBRUSH; override;
 function CreateRectRgn(X1, Y1, X2, Y2: Integer): HRGN; override;
 
 function DeleteObject(GDIObject: HGDIOBJ): Boolean; override;

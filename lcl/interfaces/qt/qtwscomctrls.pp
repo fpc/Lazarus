@@ -133,6 +133,10 @@ type
   private
   protected
   public
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND; override;
+    class procedure DestroyHandle(const AWinControl: TWinControl); override;
+    class procedure ApplyChanges(const ATrackBar: TCustomTrackBar); override;
+    class procedure SetPosition(const ATrackBar: TCustomTrackBar; const NewPosition: integer); override;
   end;
 
   { TQtWSCustomTreeView }
@@ -153,6 +157,86 @@ type
 
 
 implementation
+
+{ TQtWSTrackBar }
+
+class function TQtWSTrackBar.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND;
+var
+  QtTrackBar: TQtTrackBar;
+{  Method: TMethod;
+  Hook : QObject_hookH;}
+begin
+  QtTrackBar := TQtTrackBar.Create(AWinControl, AParams);
+
+  with AParams do
+  begin
+    if TCustomTrackBar(AWinControl).Orientation = trVertical then
+    begin
+        QtTrackBar.setInvertedAppereance(True);
+        QtTrackBar.setInvertedControls(True);
+    end else
+    begin
+        QtTrackBar.setInvertedAppereance(False);
+        QtTrackBar.setInvertedControls(False);
+    end;
+  end;
+
+{  Hook := QObject_hook_create(QtWidget.Widget);
+
+  TEventFilterMethod(Method) := QtWidget.EventFilter;
+
+  QObject_hook_hook_events(Hook, Method);}
+
+  Result := THandle(QtTrackBar);
+end;
+
+class procedure TQtWSTrackBar.DestroyHandle(const AWinControl: TWinControl);
+begin
+  AWinControl.Handle := 0;
+end;
+
+class procedure TQtWSTrackBar.ApplyChanges(const ATrackBar: TCustomTrackBar);
+var
+  QtTrackBar: TQtTrackBar;
+begin
+  QtTrackBar := TQtTrackBar(ATrackBar.Handle);
+
+  QtTrackBar.setRange(ATrackBar.Min, ATrackBar.Max);
+
+    case ATrackBar.TickMarks of
+       tmBoth:QtTrackBar.SetTickPosition(QSliderTicksBothSides);
+       tmTopLeft:QtTrackBar.SetTickPosition(QSliderTicksAbove);
+       tmBottomRight:QtTrackBar.SetTickPosition(QSliderTicksBelow);
+    end;
+
+    QtTrackBar.setPageStep(ATrackBar.PageSize);
+    QtTrackBar.setTickInterval(ATrackBar.Frequency);
+    QtTrackBar.setSliderPosition(ATrackBar.Position);
+
+  case ATrackBar.Orientation of
+    trVertical:
+    begin
+      QtTrackBar.setOrientation(QtVertical);
+      QtTrackBar.setInvertedAppereance(True);
+      QtTrackBar.setInvertedControls(True);
+    end;
+  else 
+  begin
+    QtTrackBar.setOrientation(QtHorizontal);
+    QtTrackBar.setInvertedAppereance(False);
+    QtTrackBar.setInvertedControls(False);
+  end;
+  end;
+
+end;
+
+class procedure TQtWSTrackBar.SetPosition(const ATrackBar: TCustomTrackBar; const NewPosition: integer);
+var
+  QtTrackBar: TQtTrackBar;
+begin
+  QtTrackBar := TQtTrackBar(ATrackBar.Handle);
+  QtTrackBar.setValue(NewPosition);
+end;
 
 { TQtWSProgressBar }
 
@@ -309,7 +393,7 @@ initialization
 //  RegisterWSComponent(TCustomToolBar, TQtWSToolBar);
 //  RegisterWSComponent(TCustomToolButton, TQtWSToolButton);
 //  RegisterWSComponent(TCustomToolBar, TQtWSToolBar);
-//  RegisterWSComponent(TCustomTrackBar, TQtWSTrackBar);
+  RegisterWSComponent(TCustomTrackBar, TQtWSTrackBar);
 //  RegisterWSComponent(TCustomTreeView, TQtWSCustomTreeView);
 //  RegisterWSComponent(TCustomTreeView, TQtWSTreeView);
 ////////////////////////////////////////////////////

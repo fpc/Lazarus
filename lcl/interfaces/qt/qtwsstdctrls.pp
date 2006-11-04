@@ -42,6 +42,10 @@ type
   private
   protected
   public
+    class function  CreateHandle(const AWinControl: TWinControl;
+      const AParams: TCreateParams): TLCLIntfHandle; override;
+    class procedure DestroyHandle(const AWinControl: TWinControl); override;
+    class procedure SetParams(const AScrollBar: TCustomScrollBar); override;
   end;
 
   { TQtWSCustomGroupBox }
@@ -298,6 +302,96 @@ type
 implementation
 
 uses LMessages;
+
+{ TQtWSScrollBar }
+
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomScrollBar.CreateHandle
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+class function TQtWSScrollBar.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND;
+var
+  QtScrollBar: TQtScrollBar;
+  Method: TMethod;
+  Hook : QScrollBar_hookH;
+begin
+  QtScrollBar := TQtScrollBar.Create(AWinControl, AParams);
+
+  case TScrollBar(AWinControl).Kind of
+    sbHorizontal:
+    begin
+      QtScrollBar.SetOrientation(QtHorizontal);
+      QtScrollBar.setInvertedAppereance(False);
+      QTScrollBar.setInvertedControls(False);
+    end;
+    sbVertical:
+    begin
+      QtScrollBar.SetOrientation(QtVertical);
+      QtScrollBar.setInvertedAppereance(False);
+      QTScrollBar.setInvertedControls(False);
+    end;
+  end;
+
+  QtScrollbar.setWidth(TScrollBar(AWinControl).Width);
+  QtScrollbar.setHeight(TScrollBar(AWinControl).Height);
+  QtScrollbar.setValue(TScrollBar(AWinControl).Position);
+  QtScrollBar.setPageStep(TScrollBar(AWinControl).PageSize);
+
+  // Various Events
+//  Hook := QScrollBar_hook_create(QtScrollBar.Widget);
+  // TEventFilterMethod(Method) := QtScrollBar.EventFilter;
+  
+  Result := THandle(QtScrollbar);
+end;
+
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomScrollBar.DestroyHandle
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+class procedure TQtWSScrollBar.DestroyHandle(const AWinControl: TWinControl);
+begin
+  TQtScrollBar(AWinControl.Handle).Free;
+end;
+
+
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomScrollBar.SetParams
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+class procedure TQtWSScrollBar.SetParams(const AScrollBar: TCustomScrollBar);
+var
+  QtScrollBar: TQtScrollBar;
+begin
+  QtScrollBar := TQtScrollBar(AScrollBar.Handle);	
+// TODO: Check HeightForWidth() set here or we have lazarus bug ?
+// AScrollBar.Width;
+
+  QtScrollBar.setValue(AScrollBar.Position);
+  QtScrollBar.setPageStep(AScrollBar.PageSize);
+  QtScrollBar.setRange(AScrollBar.Min, AScrollBar.Max);
+     
+  QtScrollbar.setWidth(AscrollBar.Width);
+  QtScrollbar.setHeight(AscrollBar.Height);
+
+  case AScrollBar.Kind of
+    sbHorizontal:
+    begin
+      QTScrollBar.SetOrientation(QtHorizontal);
+      QTScrollBar.setInvertedAppereance(False);
+      QTScrollBar.setInvertedControls(False);
+    end;
+    sbVertical:
+    begin
+      QTScrollBar.SetOrientation(QtVertical);
+      QTScrollBar.setInvertedAppereance(False);
+      QTScrollBar.setInvertedControls(False);
+    end;
+  end;
+end;
+
 
 { TQtWSCustomListBox }
 
@@ -1074,7 +1168,7 @@ initialization
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
-//  RegisterWSComponent(TScrollBar, TQtWSScrollBar);
+  RegisterWSComponent(TScrollBar, TQtWSScrollBar);
   RegisterWSComponent(TCustomGroupBox, TQtWSCustomGroupBox);
 //  RegisterWSComponent(TGroupBox, TQtWSGroupBox);
   RegisterWSComponent(TCustomComboBox, TQtWSCustomComboBox);
