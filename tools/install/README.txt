@@ -94,7 +94,7 @@ Creating the lazarus rpm:
 
 Creating other system specific rpms:
 
-  rpm --rebuild lazarus-0.9.16.src.rpm
+  rpm --rebuild lazarus-0.9.20.src.rpm
 
 
 --------------------------------------------------------------------------------
