@@ -356,8 +356,8 @@ type
           var ListOfPCodeXYPosition: TFPList): boolean;
     function RenameIdentifier(TreeOfPCodeXYPosition: TAVLTree;
           const OldIdentifier, NewIdentifier: string): boolean;
-    function ReplaceWord(Code: TCodeBuffer; const OldWord, NewWord: string
-          ): boolean;
+    function ReplaceWord(Code: TCodeBuffer; const OldWord, NewWord: string;
+          ChangeStrings: boolean): boolean;
 
     // resourcestring sections
     function GatherResourceStringSections(
@@ -1951,7 +1951,7 @@ begin
 end;
 
 function TCodeToolManager.ReplaceWord(Code: TCodeBuffer; const OldWord,
-  NewWord: string): boolean;
+  NewWord: string; ChangeStrings: boolean): boolean;
 var
   CursorPos, SectionPos, NearestPos: TCodeXYPosition;
 begin
@@ -1961,7 +1961,7 @@ begin
   {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
   try
-    Result:=FCurCodeTool.ReplaceWord(OldWord, NewWord,
+    Result:=FCurCodeTool.ReplaceWord(OldWord, NewWord, ChangeStrings,
                        SourceChangeCache);
   except
     on e: Exception do HandleException(e);

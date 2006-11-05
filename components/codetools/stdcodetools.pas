@@ -222,11 +222,11 @@ type
           var MissingIncludeFilesCodeXYPos: TFPList): boolean;
 
     // search & replace
-    function ReplaceWords(IdentList: TStrings;
+    function ReplaceWords(IdentList: TStrings; ChangeStrings: boolean;
           SourceChangeCache: TSourceChangeCache): boolean;
     function FindNearestIdentifierNode(const CursorPos: TCodeXYPosition;
           IdentTree: TAVLTree): TAVLTreeNode;
-    function ReplaceWord(const OldWord, NewWord: string;
+    function ReplaceWord(const OldWord, NewWord: string; ChangeStrings: boolean;
           SourceChangeCache: TSourceChangeCache): boolean;
 
     // expressions
@@ -2438,7 +2438,7 @@ begin
       IdentList.Add(OldFormClassName);
       IdentList.Add(NewFormClassName);
     end;
-    Result:=ReplaceWords(IdentList,SourceChangeCache);
+    Result:=ReplaceWords(IdentList,false,SourceChangeCache);
   finally
     IdentList.Free;
   end;
@@ -2472,14 +2472,16 @@ end;
 
 {-------------------------------------------------------------------------------
   function TStandardCodeTool.ReplaceWords(IdentList: TStrings;
-    SourceChangeCache: TSourceChangeCache): boolean;
+    ChangeStrings: boolean; SourceChangeCache: TSourceChangeCache): boolean;
     
   Search in all used sources (not only the cleaned source) for identifiers.
   It will find all identifiers, except identifiers in compiler directives.
   This includes identifiers in string constants and comments.
+  
+  ChangeStrings = true, means to replace in string constants too
 -------------------------------------------------------------------------------}
 function TStandardCodeTool.ReplaceWords(IdentList: TStrings;
-  SourceChangeCache: TSourceChangeCache): boolean;
+  ChangeStrings: boolean; SourceChangeCache: TSourceChangeCache): boolean;
   
   procedure ReplaceWordsInSource(ACode: TCodeBuffer);
   var
@@ -2498,7 +2500,10 @@ function TStandardCodeTool.ReplaceWords(IdentList: TStrings;
       if EndPos>MaxPos then EndPos:=MaxPos+1;
       // search all identifiers
       repeat
-        IdentStart:=FindNextIdentifier(CurSource,StartPos,EndPos-1);
+        if ChangeStrings then
+          IdentStart:=FindNextIdentifier(CurSource,StartPos,EndPos-1)
+        else
+          IdentStart:=FindNextIdentifierSkipStrings(CurSource,StartPos,EndPos-1);
         if IdentStart<EndPos then begin
           i:=0;
           while i<IdentList.Count do begin
@@ -2591,7 +2596,7 @@ begin
 end;
 
 function TStandardCodeTool.ReplaceWord(const OldWord, NewWord: string;
-  SourceChangeCache: TSourceChangeCache): boolean;
+  ChangeStrings: boolean; SourceChangeCache: TSourceChangeCache): boolean;
 var
   IdentList: TStringList;
 begin
@@ -2603,7 +2608,7 @@ begin
   try
     IdentList.Add(OldWord);
     IdentList.Add(NewWord);
-    Result:=ReplaceWords(IdentList,SourceChangeCache);
+    Result:=ReplaceWords(IdentList,ChangeStrings,SourceChangeCache);
   finally
     IdentList.Free;
   end;
@@ -4036,7 +4041,8 @@ begin
       end;
     end;
     // rename variable in source
-    if not ReplaceWord(UpperOldVarName,NewVarName,SourceChangeCache) then exit;
+    if not ReplaceWord(UpperOldVarName,NewVarName,false,SourceChangeCache) then
+      exit;
     Result:=(not ApplyNeeded) or SourceChangeCache.Apply;
   end else begin
     // old variable not found -> add it

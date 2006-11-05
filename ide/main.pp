@@ -11480,7 +11480,7 @@ var
           if OldClassName<>AComponent.ClassName then begin
             // replace references to classname, ignoring errors
             CodeToolBoss.ReplaceWord(DependingUnit.Source,
-                                             OldClassName,AComponent.ClassName);
+                                     OldClassName,AComponent.ClassName,false);
           end;
         end;
         
@@ -11510,7 +11510,8 @@ var
               if DependingDesigner<>nil then
                 DependingUnit.Modified:=true;
               // replace references, ignoring errors
-              CodeToolBoss.ReplaceWord(DependingUnit.Source,OldName,NewName);
+              CodeToolBoss.ReplaceWord(DependingUnit.Source,OldName,NewName,
+                                       false);
             end;
           finally
             if FRenamingComponents<>nil then begin
@@ -12153,8 +12154,8 @@ begin
         OldName:=List[i];
         NewName:=List[i+1];
         // replace references, ignoring errors
-        if CodeToolBoss.ReplaceWord(DependingUnit.Source,OldName,NewName) then
-        begin
+        if CodeToolBoss.ReplaceWord(DependingUnit.Source,OldName,NewName,false)
+        then begin
           // renamed in source, now rename in JIT class
           FormEditor1.RenameJITMethod(DependingUnit.Component,
                                       OldName,NewName);

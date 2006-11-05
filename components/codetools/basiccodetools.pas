@@ -77,6 +77,8 @@ function GetIdentLen(Identifier: PChar): integer;
 function GetIdentifier(Identifier: PChar): string;
 function FindNextIdentifier(const Source: string; StartPos, MaxPos: integer
     ): integer;
+function FindNextIdentifierSkipStrings(const Source: string;
+    StartPos, MaxPos: integer): integer;
 
 // line/code ends
 function LineEndCount(const Txt: string): integer;
@@ -2587,6 +2589,25 @@ begin
   Result:=StartPos;
   while (Result<=MaxPos) and (not IsIDStartChar[Source[Result]]) do
     inc(Result);
+end;
+
+function FindNextIdentifierSkipStrings(const Source: string; StartPos,
+  MaxPos: integer): integer;
+var
+  c: Char;
+begin
+  Result:=StartPos;
+  while (Result<=MaxPos) do begin
+    c:=Source[Result];
+    if IsIDStartChar[c] then exit;
+    if c='''' then begin
+      // skip string constant
+      inc(Result);
+      while (Result<=MaxPos) and (not (Source[Result] in ['''',#10,#13])) do
+        inc(Result);
+    end;
+    inc(Result);
+  end;
 end;
 
 function GetBlockMinIndent(const Source: string;
