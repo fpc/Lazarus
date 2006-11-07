@@ -1,47 +1,57 @@
 object AboutForm: TAboutForm
-  ActiveControl = AboutMemo
-  Caption = 'About Lazarus'
-  ClientHeight = 270
-  ClientWidth = 608
-  OnCreate = AboutFormCreate
-  PixelsPerInch = 96
-  Position = poScreenCenter
-  HorzScrollBar.Page = 607
-  VertScrollBar.Page = 269
   Left = 351
   Height = 270
   Top = 389
   Width = 608
+  HorzScrollBar.Page = 607
+  VertScrollBar.Page = 269
+  ActiveControl = AboutMemo
+  Caption = 'About Lazarus'
+  OnCreate = AboutFormCreate
+  Position = poScreenCenter
   object VersionLabel: TLabel
+    Left = 14
+    Height = 13
+    Top = 6
+    Width = 58
     Alignment = taCenter
     Caption = 'Version #:'
     Color = clNone
     ParentColor = False
-    Left = 14
-    Height = 14
-    Top = 6
-    Width = 51
   end
   object BuildDateLabel: TLabel
+    Left = 14
+    Height = 13
+    Top = 23
+    Width = 30
     Alignment = taCenter
     Caption = 'Date:'
     Color = clNone
     ParentColor = False
-    Left = 14
-    Height = 14
-    Top = 23
-    Width = 28
   end
   object RevisionLabel: TLabel
+    Left = 14
+    Height = 13
+    Top = 40
+    Width = 80
     Caption = 'RevisionLabel'
     Color = clNone
     ParentColor = False
+  end
+  object PlatformLabel: TLabel
     Left = 14
-    Height = 14
-    Top = 40
-    Width = 66
+    Height = 13
+    Top = 61
+    Width = 76
+    Caption = 'PlatformLabel'
+    Color = clNone
+    ParentColor = False
   end
   object CloseButton: TBitBtn
+    Left = 70
+    Height = 34
+    Top = 225
+    Width = 73
     AutoSize = True
     Cancel = True
     Caption = 'Close'
@@ -74,46 +84,34 @@ object AboutForm: TAboutForm
     ModalResult = 1
     NumGlyphs = 0
     TabOrder = 1
-    Left = 70
-    Height = 44
-    Top = 225
-    Width = 81
   end
   object Notebook1: TNotebook
-    Anchors = [akTop, akLeft, akRight, akBottom]
-    PageIndex = 0
     Left = 215
     Height = 261
     Top = 6
     Width = 389
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    PageIndex = 0
     object AboutPage: TPage
       Caption = 'About'
-      ClientWidth = 381
-      ClientHeight = 235
-      Height = 235
-      Width = 381
       object AboutMemo: TMemo
+        Height = 231
+        Width = 385
         Align = alClient
         ReadOnly = True
         ScrollBars = ssAutoBoth
         TabOrder = 0
-        Height = 235
-        Width = 381
       end
     end
     object ContributorsPage: TPage
       Caption = 'Contributors'
-      ClientWidth = 381
-      ClientHeight = 235
-      Height = 235
-      Width = 381
       object ContributorsMemo: TMemo
+        Height = 231
+        Width = 385
         Align = alClient
         ReadOnly = True
         ScrollBars = ssAutoBoth
         TabOrder = 0
-        Height = 235
-        Width = 381
       end
     end
   end

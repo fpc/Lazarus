@@ -37,6 +37,7 @@ type
     CloseButton: TBitBtn;
     BuildDateLabel: TLABEL;
     AboutMemo: TMEMO;
+    PlatformLabel: TLabel;
     VersionLabel: TLABEL;
     ContributorsMemo:TMemo;
     RevisionLabel: TLabel;
@@ -122,8 +123,11 @@ begin
   Caption:=lisAboutLazarus;
   VersionLabel.Caption := lisVersion+' #: '+ GetLazarusVersionString;
   RevisionLabel.Caption := lisSVNRevision+LazarusRevisionStr;
-
   BuildDateLabel.Caption := lisDate+': '+GetLocalizedBuildDate;
+  PlatformLabel.Caption:=GetDefaultTargetCPU+'-'+GetDefaultTargetOS
+                         +'-'+GetDefaultLCLWidgetType;
+
+
   AboutPage.Caption:=lisMenuTemplateAbout;
   ContributorsPage.Caption:=lisContributors;
   Constraints.MinWidth:= 600;
@@ -156,7 +160,8 @@ procedure TAboutForm.Paint;
 begin
   inherited Paint;
   if FPixmap <>nil
-  then Canvas.Copyrect(Bounds(12, 70, Width, Height)
+  then Canvas.Copyrect(
+    Bounds(12, PlatformLabel.Top+PlatformLabel.Height+6, Width, Height)
     ,FPixmap.Canvas, Rect(0,0, Width, Height));
 end;
 
