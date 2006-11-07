@@ -373,6 +373,7 @@ Type
     property OnMouseuP;
     property OnResize;
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
+    property TabOrder;
     property Values: TStrings read FValues write SetValues;
     property Visible;
   end;

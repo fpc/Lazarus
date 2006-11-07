@@ -35,16 +35,36 @@ uses
 type
 
   TPosLabel=(plLeft, plCenter, plRight);
-
-  { TCustomBarChart }
+  TCustomBarChart = class;
+  { TBar }
 
   TBar = class(TCollectionItem)
   private
+    FColor: TColor;
     FSName: String;
     FValue: integer;
-    FColor: TColor;
-  public
+    procedure SetColor(const AValue: TColor);
+    procedure SetSName(const AValue: String);
+    procedure SetValue(const AValue: integer);
+    procedure UpdateBarChart;
+  protected
+    function GetDisplayName: string; override;
+  published
+    property SName: String read FSName write SetSName;
+    property Value: integer read FValue write SetValue;
+    property Color: TColor read FColor write SetColor;
   end;
+
+  { TBarChartItems }
+
+  TBarChartItems = class(TCollection)
+  private
+    FBarChart : TCustomBarChart;
+  public
+    constructor Create(BarChart: TCustomBarChart);
+  end;
+  
+  { TCustomBarChart }
 
   TCustomBarChart = class(TPanel)
   private
@@ -52,7 +72,11 @@ type
     FBars: TCollection;
     FDepth: byte;
     FLabelPosition:TPosLabel;
+    function GetBars: TCollection;
     function NormalizeScaleUnits(OldScale: Integer): Integer;
+    procedure SetBars(const AValue: TCollection);
+    procedure SetDepth(const AValue: byte);
+    procedure SetLabelPosition(const AValue: TPosLabel);
   protected
     procedure Paint; override;
   public
@@ -64,9 +88,11 @@ type
     function BarCount: Integer;
     procedure BeginUpdate;
     procedure EndUpdate;
+    procedure UpdateBarChart;
   published
-    property Depth: byte read FDepth write FDepth;
-    property LabelPosition: TPosLabel read FLabelPosition write FLabelPosition;
+    property Bars: TCollection read GetBars write SetBars;
+    property Depth: byte read FDepth write SetDepth;
+    property LabelPosition: TPosLabel read FLabelPosition write SetLabelPosition;
   end;
   
   
@@ -128,7 +154,7 @@ end;
 constructor TCustomBarChart.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FBars:=TCollection.Create(TBar);
+  FBars:=TBarChartItems.Create(Self);
   FDepth:=5;
   FLabelPosition:=plLeft;
   SetInitialBounds(0,0,150,120);
@@ -181,6 +207,30 @@ begin
     until Result<10;
     Result:=T;
     end;
+end;
+
+function TCustomBarChart.GetBars: TCollection;
+begin
+  Result:=FBars;
+end;
+
+procedure TCustomBarChart.SetBars(const AValue: TCollection);
+begin
+  FBars.Assign(AValue);
+end;
+
+procedure TCustomBarChart.SetDepth(const AValue: byte);
+begin
+  if FDepth=AValue then exit;
+  FDepth:=AValue;
+  UpdateBarChart;
+end;
+
+procedure TCustomBarChart.SetLabelPosition(const AValue: TPosLabel);
+begin
+  if FLabelPosition=AValue then exit;
+  FLabelPosition:=AValue;
+  UpdateBarChart;
 end;
 
 procedure TCustomBarChart.Paint;
@@ -335,10 +385,56 @@ begin
     Invalidate;
 end;
 
+procedure TCustomBarChart.UpdateBarChart;
+begin
+  if FUpdateCount = 0 then
+    Invalidate;
+end;
+
 function TCustomBarChart.BarCount: Integer;
 begin
   Result:=FBars.Count;
 end;
 
+{ TBar }
+
+procedure TBar.SetColor(const AValue: TColor);
+begin
+  if FColor=AValue then exit;
+  FColor:=AValue;
+  UpdateBarChart;
+end;
+
+procedure TBar.SetSName(const AValue: String);
+begin
+  if FSName=AValue then exit;
+  FSName:=AValue;
+  UpdateBarChart;
+end;
+
+procedure TBar.SetValue(const AValue: integer);
+begin
+  if FValue=AValue then exit;
+  FValue:=AValue;
+  UpdateBarChart;
+end;
+
+procedure TBar.UpdateBarChart;
+begin
+  (Collection as TBarChartItems).FBarChart.UpdateBarChart;
+end;
+
+function TBar.GetDisplayName: string;
+begin
+  Result:=FSName;
+end;
+
+{ TBarChartItems }
+
+constructor TBarChartItems.Create(BarChart: TCustomBarChart);
+begin
+  inherited Create(TBar);
+  FBarChart:=BarChart;
+end;
 
 end.

@@ -144,8 +144,7 @@ type
     procedure SetAutoScroll(Value: Boolean);
     procedure SetHorzScrollBar(Value: TControlScrollBar);
     procedure SetVertScrollBar(Value: TControlScrollBar);
-    //todo: rename to IsScrollbarsStored
-    Function StoreScrollBars : Boolean;
+    function StoreScrollBars : Boolean;
   protected
     procedure AlignControls(AControl: TControl; var ARect: TRect); override;
     procedure CreateWnd; override;
