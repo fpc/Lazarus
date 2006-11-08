@@ -1,4 +1,4 @@
-{  $Id: lclstrconsts.pas 7594 2005-08-30 09:39:30Z mattias $  }
+{  $Id$  }
 {
  ***************************************************************************
  *                                                                         *
@@ -195,7 +195,7 @@ begin
   end;
   RevisionIncFileName:=ParamStr(2);
   RevisionIncDirName:=ExtractFilePath(RevisionIncFileName);
-  if not DirectoryExists(SourceDirectory) then begin
+  if not DirectoryExists(RevisionIncDirName) then begin
     writeln('Error: Target Directory "', RevisionIncDirName, '" doesn''t exist.');
     exit;
   end;
