@@ -108,6 +108,7 @@ var
              Readln(EntriesText);
              Readln(EntriesText);
              Readln(EntriesText, RevisionStr);
+             Result := true;
            end;
          finally
            CloseFile(EntriesText);
