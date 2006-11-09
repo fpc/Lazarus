@@ -3,7 +3,6 @@
 set -e
 set -x
 
-FREEZE=/usr/bin/freeze
 HDIUTIL=/usr/bin/hdiutil
 UPDATELIST=~/tmp/updatelist
 
@@ -24,6 +23,14 @@ fi
 
 if [ ! -e "$SVN" ]; then
   echo "Cannot find a svn executable"
+fi
+
+FREEZE=/usr/local/bin/freeze
+if [ ! -e "$FREEZE" ]; then
+  FREEZE=/usr/bin/freeze
+fi
+if [ ! -e "$FREEZE" ]; then
+  echo "Cannot find freeze"
 fi
 
 LAZSOURCEDIR=~/src/lazsource

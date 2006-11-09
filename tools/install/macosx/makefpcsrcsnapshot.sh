@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 set -e
+set -x
 
-FREEZE=/usr/bin/freeze
 HDIUTIL=/usr/bin/hdiutil
 UPDATELIST=~/tmp/updatelist
 
@@ -25,9 +25,17 @@ if [ ! -e "$SVN" ]; then
   echo "Cannot find a svn executable"
 fi
 
+FREEZE=/usr/local/bin/freeze
+if [ ! -e "$FREEZE" ]; then
+  FREEZE=/usr/bin/freeze
+fi
+if [ ! -e "$FREEZE" ]; then
+  echo "Cannot find freeze"
+fi
+
 TEMPLATEDIR=`dirname $0`
 
-FPCSVNDIR=~/src/fpc/build
+FPCSVNDIR=~/src/fpcbuild/2.0.4
 FPCSOURCEDIR=$FPCSVNDIR/fpcsrc
 COMPILER=~/fpc/bin/$PPCARCH
 INSTALLDIR=~/tmp/fpcsrc

@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 set -e
+set -x
 
 PPC_RELEASE=$1
 
@@ -9,11 +10,23 @@ if [ ! -e "$PPC_RELEASE" ]; then
   echo "Using default PPC_RELEASE: $PPC_RELEASE"
 fi
 
-FREEZE=/usr/bin/freeze
+FPCSVNDIR=$2
+if [ ! -d "$FPCSVNDIR" ]; then
+  FPCSVNDIR=~/src/fpcbuild/2.0.4
+  echo "Using default FPCSVNDIR: $FPCSVNDIR"
+fi
+
+FREEZE=/usr/local/bin/freeze
+if [ ! -e "$FREEZE" ]; then
+  FREEZE=/usr/bin/freeze
+fi
+if [ ! -e "$FREEZE" ]; then
+  echo "Cannot find freeze"
+fi
+
 HDIUTIL=/usr/bin/hdiutil
 UPDATELIST=~/tmp/updatelist
 TEMPLATEDIR=`dirname $0`
-FPCSVNDIR=~/src/fpc/build
 FPCSOURCEDIR=$FPCSVNDIR/fpcsrc
 BUILDDIR=~/tmp/build
 FPCBUILDDIR=$BUILDDIR/fpc
