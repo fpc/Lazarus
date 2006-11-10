@@ -188,12 +188,12 @@ function ParamsValid: boolean;
 begin
   Result := false;
   if ParamCount<>2 then exit;
-  SourceDirectory:=ParamStr(1);
+  SourceDirectory:=ExpandFileName(ParamStr(1));
   if not DirectoryExists(SourceDirectory) then begin
     writeln('Error: Source directory "', SourceDirectory, '" doesn''t exist.');
     exit;
   end;
-  RevisionIncFileName:=ParamStr(2);
+  RevisionIncFileName:=ExpandFileName(ParamStr(2));
   RevisionIncDirName:=ExtractFilePath(RevisionIncFileName);
   if not DirectoryExists(RevisionIncDirName) then begin
     writeln('Error: Target Directory "', RevisionIncDirName, '" doesn''t exist.');
