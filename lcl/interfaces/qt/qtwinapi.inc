@@ -465,6 +465,13 @@ end;
   Params:  DC, Str, Count, Rect, Flags
   Returns: If the string was drawn, or CalcRect run
 
+  if DT_CALCRECT is one of the Flags passed to this function, then:
+
+  * DrawText should not draw the text, but determine the size that would be required to write it.
+  * If there are multiple lines of text, this function will keep Rect.Width fixed and
+    expand Rect.Height to fit the text.
+  * If there is one line of text, Rect is reduced or expanded to fit it.
+  * The result will the height of the text.
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.DrawText(DC: HDC; Str: PChar; Count: Integer;
   var Rect: TRect; Flags: Cardinal): Integer;
@@ -484,22 +491,23 @@ begin
 
   WideStr := UTF8Decode(Str);
 
-  if (Flags and DT_CALCRECT) = DT_CALCRECT then
-  begin
-    QtFontMetrics := TQtFontMetrics.Create(TQtDeviceContext(DC).font.Widget);
-    try
-      Result := QtFontMetrics.width(@WideStr);
-      if Result < 30 then Result := 30;
-    finally
-      QtFontMetrics.Free;
+  QtFontMetrics := TQtFontMetrics.Create(TQtDeviceContext(DC).font.Widget);
+  try
+    Result := QtFontMetrics.height;
+    
+    if (Flags and DT_CALCRECT) = DT_CALCRECT then
+    begin
+      Rect.Right := Rect.Left + QtFontMetrics.width(@WideStr);
+      Rect.Bottom := Rect.Top + QtFontMetrics.height;
     end;
-
-    Exit;
+    
+  finally
+    QtFontMetrics.Free;
   end;
 
-  TQtDeviceContext(DC).drawText(Rect.Left, Rect.Top, @WideStr);
+  if (Flags and DT_CALCRECT) = DT_CALCRECT then Exit;
 
-//  if Rect.Right = 40 then raise Exception.create('Error');
+  TQtDeviceContext(DC).drawText(Rect.Left, Rect.Top, @WideStr);
 end;
 
 {------------------------------------------------------------------------------

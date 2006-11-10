@@ -231,7 +231,7 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TQtWSCustomForm.CloseModal(const ACustomForm: TCustomForm);
 begin
-  inherited CloseModal(ACustomForm);
+
 end;
 
 {------------------------------------------------------------------------------
@@ -269,33 +269,31 @@ end;
   Method: TQtWSCustomForm.ShowModal
   Params:
   Returns: Nothing
-  
-  What we do here is put the entere window inside a QDialog component, because QDialog
- is the only Qt component with a exec method that won´t return until the dialog is closed,
- and that behavior makes implementing ShowModal much easier.
  ------------------------------------------------------------------------------}
 class procedure TQtWSCustomForm.ShowModal(const ACustomForm: TCustomForm);
-var
-  QtDialog: TQtDialog;
 begin
-{  QtDialog := TQtDialog.Create;
-  try
-    TQtWidget(ACustomForm.Handle).setParent(QtDialog.Widget);
+  {$ifdef VerboseQt}
+    WriteLn('Trace:> [TQtWSCustomForm.ShowModal]');
+  {$endif}
 
-    QtDialog.exec;
-
-    if (ACustomForm.ModalResult = mrNone) then ACustomForm.ModalResult := mrCancel;
-
-    TQtWidget(ACustomForm.Handle).setParent(nil);
-  finally
-    QtDialog.Free;
-  end}
+  TQtWidget(ACustomForm.Handle).Hide;
   
   TQtWidget(ACustomForm.Handle).setWindowModality(QtApplicationModal);
-  
-  TQtWidget(ACustomForm.Handle).Hide;
 
   TQtWidget(ACustomForm.Handle).Show;
+  
+  { This sleep is required, otherwise sometime the modal window will not show,
+   effectively freezing the application }
+
+  Application.ProcessMessages;
+  
+  Sleep(10);
+
+  Application.ProcessMessages;
+
+  {$ifdef VerboseQt}
+    WriteLn('Trace:< [TQtWSCustomForm.ShowModal]');
+  {$endif}
 end;
 
 {------------------------------------------------------------------------------
