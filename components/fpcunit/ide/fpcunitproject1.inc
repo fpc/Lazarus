@@ -16,13 +16,13 @@ NewSource :=
   + '  end;' + #13
   + #13
   + 'var' + #13
-  + '  App: TMyTestRunner;' + #13
+  + '  Application: TMyTestRunner;' + #13
   + #13
   + 'begin' + #13
-  + '  App := TMyTestRunner.Create(nil);' + #13
-  + '  App.Initialize;' + #13
-  + '  App.Title := ''FPCUnit Console test runner'';' + #13
-  + '  App.Run;' + #13
-  + '  App.Free;' + #13
+  + '  Application := TMyTestRunner.Create(nil);' + #13
+  + '  Application.Initialize;' + #13
+  + '  Application.Title := ''FPCUnit Console test runner'';' + #13
+  + '  Application.Run;' + #13
+  + '  Application.Free;' + #13
   + 'end.' + #13
 ;

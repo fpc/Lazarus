@@ -25,7 +25,7 @@ interface
 
 uses
   custapp, Classes, SysUtils, fpcunit, testregistry, testreport, testutils,
-  xmlreporter, xmlwrite;
+  dom, xmlreporter, xmlwrite;
 
 const
   Version = '0.2';
@@ -39,25 +39,31 @@ type
   private
      FShowProgress: boolean;
      FFileName: string;
+     FStyleSheet: string;
+     FLongOpts: TStrings;
   protected
     property FileName: string read FFileName write FFileName;
+    property LongOpts: TStrings read FLongOpts write FLongOpts;
     property ShowProgress: boolean read FShowProgress write FShowProgress;
+    property StyleSheet: string read FStyleSheet write FStyleSheet;
     procedure DoRun; override;
     procedure doTestRun(aTest: TTest); virtual;
     function GetShortOpts: string; virtual;
-    function GetLongOpts: TStrings; virtual;
+    procedure AppendLongOpts; virtual;
     procedure WriteCustomHelp; virtual;
     procedure ParseOptions; virtual;
   public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
   end;
 
 implementation
 
 const
   ShortOpts = 'alhp';
-  LongOpts: array[1..7] of string =
+  DefaultLongOpts: array[1..8] of string =
      ('all', 'list', 'progress', 'help',
-      'suite:', 'format:', 'file:');
+      'suite:', 'format:', 'file:', 'stylesheet:');
 
   { TProgressWriter }
 type
@@ -115,14 +121,27 @@ var
   procedure doXMLTestRun(aTest: TTest);
   var
     XMLResultsWriter: TXMLResultsWriter;
+    
+    procedure ExtendDocument(Doc: TXMLDocument);
+    var
+      n: TDOMElement;
+    begin
+      if StyleSheet<>'' then begin
+        Doc.StylesheetType := 'text/xsl';
+        Doc.StylesheetHRef := StyleSheet;
+      end;
+      n := Doc.CreateElement('Title');
+      n.AppendChild(Doc.CreateTextNode(Title));
+      Doc.FirstChild.AppendChild(n);
+    end;
+    
   begin
     try
       XMLResultsWriter := TXMLResultsWriter.Create;
       testResult.AddListener(XMLResultsWriter);
       aTest.Run(testResult);
       XMLResultsWriter.WriteResult(testResult);
-      XMLResultsWriter.Document.StylesheetType := 'text/xsl';
-      XMLResultsWriter.Document.StylesheetHRef := 'results.xsl';
+      ExtendDocument(XMLResultsWriter.Document);
       if FileName<>'' then
         WriteXMLFile(XMLResultsWriter.Document, FileName)
       else
@@ -133,6 +152,7 @@ var
     end;
   end;
 
+  {$IFNDEF VER2_0}
   procedure doPlainTestRun(aTest: TTest);
   var
     PlainResultsWriter: TPlainResultsWriter;
@@ -148,6 +168,7 @@ var
       testResult.Free;
     end;
   end;
+  {$ENDIF}
 
 begin
   testResult := TTestResult.Create;
@@ -175,13 +196,12 @@ begin
   Result := ShortOpts;
 end;
 
-function TTestRunner.GetLongOpts: TStrings;
+procedure TTestRunner.AppendLongOpts;
 var
   i: Integer;
 begin
-  Result := TStringList.Create;
-  for i := low(LongOpts) to high(LongOpts) do
-    Result.Add(LongOpts[i]);
+  for i := low(DefaultLongOpts) to high(DefaultLongOpts) do
+    LongOpts.Add(DefaultLongOpts[i]);
 end;
 
 procedure TTestRunner.WriteCustomHelp;
@@ -198,8 +218,11 @@ begin
     writeln;
     writeln('Usage: ');
     writeln('  --format=latex            output as latex source (only list implemented)');
+    {$IFNDEF VER2_0}
     writeln('  --format=plain            output as plain ASCII source');
+    {$ENDIF}
     writeln('  --format=xml              output as XML source (default)');
+    writeln('  --stylesheet=<reference>   add stylesheet reference');
     writeln('  --file=<filename>         output results to file');
     writeln;
     writeln('  -l or --list              show a list of registered tests');
@@ -226,6 +249,21 @@ begin
 
   if HasOption('file') then
     FileName := GetOptionValue('file');
+  if HasOption('stylesheet') then
+    StyleSheet := GetOptionValue('stylesheet');
+end;
+
+constructor TTestRunner.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FLongOpts := TStringList.Create;
+  AppendLongOpts;
+end;
+
+destructor TTestRunner.Destroy;
+begin
+  FLongOpts.Free;
+  inherited Destroy;
 end;
 
 procedure TTestRunner.DoRun;
@@ -233,7 +271,7 @@ var
   I: integer;
   S: string;
 begin
-  S := CheckOptions(GetShortOpts, GetLongOpts);
+  S := CheckOptions(GetShortOpts, LongOpts);
   if (S <> '') then
     Writeln(S);
 
@@ -243,7 +281,9 @@ begin
   if HasOption('l', 'list') then
     case FormatParam of
       fLatex: Write(GetSuiteAsLatex(GetTestRegistry));
+      {$IFNDEF VER2_0}
       fPlain: Write(GetSuiteAsPlain(GetTestRegistry));
+      {$ENDIF}
       else
         Write(GetSuiteAsXML(GetTestRegistry));
     end;

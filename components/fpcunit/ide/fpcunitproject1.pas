@@ -15,12 +15,12 @@ type
   end;
 
 var
-  App: TMyTestRunner;
+  Application: TMyTestRunner;
 
 begin
-  App := TMyTestRunner.Create(nil);
-  App.Initialize;
-  App.Title := 'FPCUnit Console test runner';
-  App.Run;
-  App.Free;
+  Application := TMyTestRunner.Create(nil);
+  Application.Initialize;
+  Application.Title := 'FPCUnit Console test runner';
+  Application.Run;
+  Application.Free;
 end.

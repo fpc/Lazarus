@@ -29,17 +29,16 @@ type
 
   TLazTestRunner = class(TTestRunner)
   protected
-    function GetLongOpts: TStrings; override;
+    procedure AppendLongOpts; override;
     procedure ParseOptions; override;
     procedure WriteCustomHelp; override;
   end;
 
 { TLazTestRunner }
 
-function TLazTestRunner.GetLongOpts: TStrings;
+procedure TLazTestRunner.AppendLongOpts;
 begin
-  Result:=inherited GetLongOpts;
-  Result.Add('compiler:');
+  LongOpts.Add('compiler:');
 end;
 
 procedure TLazTestRunner.ParseOptions;

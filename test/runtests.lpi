@@ -23,16 +23,16 @@
     </RunParams>
     <RequiredPackages Count="3">
       <Item1>
-        <PackageName Value="fpcunitconsolerunner"/>
+        <PackageName Value="LCL"/>
       </Item1>
       <Item2>
-        <PackageName Value="LCL"/>
+        <PackageName Value="fpcunitconsolerunner"/>
       </Item2>
       <Item3>
         <PackageName Value="FCL"/>
       </Item3>
     </RequiredPackages>
-    <Units Count="2">
+    <Units Count="3">
       <Unit0>
         <Filename Value="runtests.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -43,6 +43,11 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestLpi"/>
       </Unit1>
+      <Unit2>
+        <Filename Value="..\components\fpcunit\console\fpcunitproject1.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="FPCUnitProject1"/>
+      </Unit2>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
