@@ -165,8 +165,8 @@ begin
     Lines := TStringList.Create;
     Lines.LoadFromFile(RevisionIncFileName);
     if (Lines.Count=2) and
-      (Lines[1]=RevisionIncComment) and
-      (copy(Lines[2], 1, length(ConstStart))=ConstStart) then
+      (Lines[0]=RevisionIncComment) and
+      (copy(Lines[1], 1, length(ConstStart))=ConstStart) then
       Result:=true;
   end;
 end;
