@@ -34,7 +34,7 @@ uses
 type
   { TCustomEditButton }
 
-  TCustomEditButton = class(TEdit)
+  TCustomEditButton = class(TCustomEdit)
   private
     FButton: TSpeedButton;
     FButtonNeedsFocus: Boolean;
@@ -295,7 +295,7 @@ type
 
   { TDateEdit }
 
-  TDateEdit = class(TEditButton)
+  TDateEdit = class(TCustomEditButton)
   private
     FDialogTitle: TCaption;
     FDisplaySettings: TDisplaySettings;
@@ -314,14 +314,54 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure DateFormatChanged; virtual;
+    property Date: TDateTime Read FDate Write SetDate;
+    property Button;
   published
     property DialogTitle:TCaption Read FDialogTitle Write FDialogTitle Stored IsStoreTitle;
     Property CalendarDisplaySettings : TDisplaySettings Read FDisplaySettings Write FDisplaySettings;
     Property OnAcceptDate : TAcceptDateEvent Read FOnAcceptDAte Write FOnAcceptDate;
     property OKCaption:TCaption Read FOKCaption Write FOKCaption;
     property CancelCaption:TCaption Read FCancelCaption Write FCancelCaption;
-    property Date: TDateTime Read FDate Write SetDate;
     property ReadOnly default true;
+
+    Property ButtonOnlyWhenFocused;
+    Property ButtonWidth;
+    property Action;
+    property Align;
+    property Anchors;
+    property AutoSize;
+    property BorderSpacing;
+    property Color;
+    property Constraints;
+    property CharCase;
+    property Glyph;
+    property NumGlyphs;
+    property DragMode;
+    property EchoMode;
+    property Enabled;
+    property Font;
+    property MaxLength;
+    property OnChange;
+    property OnChangeBounds;
+    property OnClick;
+    property OnEditingDone;
+    property OnEnter;
+    property OnExit;
+    Property OnKeyDown;
+    property OnKeyPress;
+    Property OnKeyUp;
+    Property OnMouseDown;
+    Property OnMouseMove;
+    property OnMouseUp;
+    property OnResize;
+    property ParentFont;
+    property ParentShowHint;
+    property PasswordChar;
+    property PopupMenu;
+    property ShowHint;
+    property TabStop;
+    property TabOrder;
+    property Visible;
   end;
 
   
@@ -828,15 +868,13 @@ var
   ABitmap: TBitmap;
 begin
   inherited Create(AOwner);
-  FDate:=Now;
-  Date:=trunc(FDate);
-  Text:=DateToStr(Date);
+//  FDate:=Now;
+  Date:=trunc(Now);
+//  Text:=DateToStr(Date);
   FDisplaySettings:=[dsShowHeadings, dsShowDayNames];
   DialogTitle:=rsPickDate;
   OKCaption:='OK';
   CancelCaption:='Cancel';
-  ReadOnly:=true;
-  Color:=clBtnFace;
   ABitmap:=CreateDateGlyph;
   Button.Glyph:=ABitmap;
   ABitmap.Free;
@@ -892,7 +930,6 @@ end;
 
 procedure TDateEdit.SetDate(const Value:TDateTime);
 begin
-  if FDate=Value then exit;
   FDate:=Value;
   Text:=DateToStr(FDate);
 end;
@@ -913,7 +950,8 @@ begin
     if B then
       Text:=DateToStr(FDate);
   except
-    raise Exception.Create('Errore in calendar dialog di dateedit');
+    on E:Exception do
+      MessageDlg(E.Message, mtError, [mbOK], 0);
   end;
 end;
 
