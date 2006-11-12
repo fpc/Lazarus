@@ -228,6 +228,7 @@ Var
   CancelEndSession : Boolean;//use by WM_QUERYENDSESSION
   
   NMHdr: PNMHdr absolute LParam; // used by WM_NOTIFY
+  TmpSize: TSize; // used by WM_MEASUREITEM
 
   function ShowHideTabPage(NotebookHandle: HWnd; Showing: boolean): integer;
   var
@@ -1749,8 +1750,9 @@ begin
         if menuItem is TMenuItem then
         begin
           menuHDC := GetDC(Window);
-          PMeasureItemStruct(LParam)^.itemWidth := MenuItemLength(TMenuItem(menuItem), menuHDC);
-          PMeasureItemStruct(LParam)^.itemHeight := MenuItemHeight(TMenuItem(menuItem), menuHDC);
+          TmpSize := MenuItemSize(TMenuItem(menuItem), menuHDC);
+          PMeasureItemStruct(LParam)^.itemWidth := TmpSize.cx;
+          PMeasureItemStruct(LParam)^.itemHeight := TmpSize.cy;
           ReleaseDC(Window, menuHDC);
           Winprocess := False;
         end else

@@ -82,9 +82,7 @@ type
     class procedure Popup(const APopupMenu: TPopupMenu; const X, Y: integer); override;
   end;
 
-
-  function MenuItemLength(const aMenuItem: TMenuItem; const aHDC: HDC): integer;
-  function MenuItemHeight(const aMenuItem: TMenuItem; const aHDC: HDC): integer;
+  function MenuItemSize(aMenuItem: TMenuItem; aHDC: HDC): TSize;  
   procedure DrawMenuItem(const aMenuItem: TMenuItem; const aHDC: HDC; const aRect: Windows.RECT; const aSelected: boolean);
   function FindMenuItemAccelerator(const ACharCode: char; const AMenuHandle: HMENU): integer;
 
@@ -163,8 +161,9 @@ end;
 
 
 function GetMenuItemFont(const aFlags: TCaptionFlagsSet): HFONT;
-var lf: LOGFONT;
-    ncm: NONCLIENTMETRICS;
+var 
+  lf: LOGFONT;
+  ncm: NONCLIENTMETRICS;
 begin
   ncm.cbSize:= sizeof(ncm);
   if SystemParametersInfo(SPI_GETNONCLIENTMETRICS, sizeof(ncm), @ncm, 0) then
@@ -180,11 +179,7 @@ begin
     else
       lf.lfWeight:= lf.lfWeight + 100;
   end;
-  Result := CreateFont(lf.lfHeight, lf.lfWidth,
-    lf.lfEscapement, lf.lfOrientation, lf.lfWeight,
-    lf.lfItalic, lf.lfUnderline, lf.lfStrikeOut, lf.lfCharSet,
-    lf.lfOutPrecision, lf.lfClipPrecision, lf.lfQuality,
-    lf.lfPitchAndFamily, lf.lfFaceName);
+  Result := CreateFontIndirect(@lf);
 end;
 
 (* Get the menu item caption including shortcut *)
@@ -196,7 +191,7 @@ begin
 end;
 
 (* Get the maximum length of the given string in pixels *)
-function StringLength(const aCaption: String; const aHDC: HDC; const aDecoration:TCaptionFlagsSet): integer;
+function StringSize(const aCaption: String; const aHDC: HDC; const aDecoration:TCaptionFlagsSet): TSize;
 var oldFont: HFONT;
     newFont: HFONT;
     tmpRect: Windows.RECT;
@@ -208,25 +203,10 @@ begin
   DrawText(aHDC, pChar(aCaption), length(aCaption), @TmpRect, DT_CALCRECT);
   SelectObject(aHDC, oldFont);
   DeleteObject(newFont);
-  Result := TmpRect.right - TmpRect.left;
+  Result.cx := TmpRect.right - TmpRect.left;
+  Result.cy := TmpRect.Bottom - TmpRect.Top;
 end;
-
-(* Get the maximum height of the given string in pixels *)
-function StringHeight(const aCaption: String; const aHDC: HDC; const aDecoration: TCaptionFlagsSet): integer;
-var oldFont: HFONT;
-    newFont: HFONT;
-    tmpRect: Windows.RECT;
-begin
-  tmpRect.bottom := 0;
-  tmpRect.top := 0;
-  newFont := getMenuItemFont(aDecoration);
-  oldFont := SelectObject(aHDC, newFont);
-  DrawText(aHDC, pChar(aCaption), length(aCaption), @TmpRect, DT_CALCRECT);
-  SelectObject(aHDC, oldFont);
-  DeleteObject(newFont);
-  Result := TmpRect.bottom - TmpRect.top;
-end;
-
+  
 function LeftIconPosition: integer;
 begin
   Result := GetSystemMetrics(SM_CXMENUCHECK);
@@ -250,32 +230,33 @@ begin
   Result := Result + LeftIconPosition;
 end;
 
-function MenuItemLength(const aMenuItem: TMenuItem; const aHDC: HDC): integer;
-var decoration: TCaptionFlagsSet;
+function MenuItemSize(aMenuItem: TMenuItem; aHDC: HDC): TSize;
+var
+  decoration: TCaptionFlagsSet;
+  minimumHeight: Integer;
 begin
-  if aMenuItem.Default then decoration := [cfBold]
-  else decoration := [];
-  if aMenuItem.IsInMenuBar then Result := StringLength(CompleteMenuItemCaption(aMenuItem), aHDC, decoration)
-  else Result := MenuIconWidth(aMenuItem) + spaceBetweenIcons + StringLength(CompleteMenuItemCaption(aMenuItem), aHDC, decoration) + spaceBetweenIcons;
+  if aMenuItem.Default then
+    decoration := [cfBold]
+  else
+    decoration := [];
+  Result := StringSize(CompleteMenuItemCaption(aMenuItem), aHDC, decoration);
+  if not aMenuItem.IsInMenuBar then
+    Inc(Result.cx, MenuIconWidth(aMenuItem) + (2 * spaceBetweenIcons));
   if aMenuItem.ShortCut <> scNone then
-    Result := Result + spaceBetweenIcons;
-end;
-
-function MenuItemHeight(const AMenuItem: TMenuItem; const aHDC: HDC): integer;
-var decoration: TCaptionFlagsSet;
-    minimumHeight: integer;
-begin
+    Inc(Result.cx, spaceBetweenIcons);
+	
   minimumHeight := GetSystemMetrics(SM_CYMENU);
-  if not aMenuItem.IsInMenuBar then minimumHeight := minimumHeight - 2;
-  if aMenuItem.IsLine then Result := 10 // it is a separator
-  else begin
-    if aMenuItem.Default then decoration := [cfBold]
-    else decoration := [];
-    Result := StringHeight(aMenuItem.Caption, aHDC, decoration);
-    if aMenuItem.hasIcon and (aMenuItem.bitmap.height > Result) then
-      Result := aMenuItem.bitmap.height;
-    Result := Result + 2;
-    if Result < minimumHeight then Result := minimumHeight;
+  if not aMenuItem.IsInMenuBar then
+    Dec(minimumHeight, 2);
+  if aMenuItem.IsLine then
+    Result.cy := 10 // it is a separator
+  else
+  begin
+    if aMenuItem.hasIcon and (aMenuItem.bitmap.height > Result.cy) then
+      Result.cy := aMenuItem.bitmap.height;
+    Inc(Result.cy, 2);
+    if Result.cy < minimumHeight then
+      Result.cy := minimumHeight;
   end;
 end;
 
@@ -351,7 +332,7 @@ begin
   DeleteDC(hdcMem);
 end;
 
-procedure DrawMenuItemCaption(const aMenuItem: TMenuItem; const aHDC: HDC; aRect: Windows.RECT; const aSelected: boolean);
+procedure DrawMenuItemText(const aMenuItem: TMenuItem; const aHDC: HDC; aRect: Windows.RECT; const aSelected: boolean);
 var crText: COLORREF;
     crBkgnd: COLORREF;
     TmpLength: integer;
@@ -359,6 +340,8 @@ var crText: COLORREF;
     oldFont: HFONT;
     newFont: HFONT;
     decoration: TCaptionFlagsSet;
+	shortCutText: string;
+	WorkRect: Windows.RECT;
 begin
   crText := TextColorMenu(aSelected, aMenuItem.Enabled);
   crBkgnd := BackgroundColorMenu(aSelected, aMenuItem.IsInMenuBar);
@@ -371,37 +354,16 @@ begin
   ExtTextOut(aHDC, 0, 0, ETO_OPAQUE, @aRect, PChar(''), 0, nil);
   TmpLength := aRect.right - aRect.left;
   TmpHeight := aRect.bottom - aRect.top;
-  DrawText(aHDC, pChar(aMenuItem.Caption), length(aMenuItem.Caption), @aRect, DT_CALCRECT);
-  OffsetRect(aRect, leftCaptionPosition(TmpLength, aRect.right - aRect.left, aMenuItem), topPosition(TmpHeight, aRect.bottom - aRect.top));
+  DrawText(aHDC, pChar(aMenuItem.Caption), length(aMenuItem.Caption), @WorkRect, DT_CALCRECT);
+  Inc(aRect.Left, leftCaptionPosition(TmpLength, WorkRect.Right - WorkRect.Left, aMenuItem));
+  Inc(aRect.Top, topPosition(TmpHeight, WorkRect.Bottom - WorkRect.Top));
   DrawText(aHDC, pChar(aMenuItem.Caption), length(aMenuItem.Caption), @aRect, 0);
-  SelectObject(aHDC, oldFont);
-  DeleteObject(newFont);
-end;
-
-procedure DrawMenuItemShortCut(const aMenuItem: TMenuItem; const aHDC: HDC; aRect: Windows.RECT; const aSelected: boolean);
-var crText: COLORREF;
-    crBkgnd: COLORREF;
-    shortCutText: String;
-    TmpLength: integer;
-    TmpHeight: integer;
-    oldFont: HFONT;
-    newFont: HFONT;
-    decoration: TCaptionFlagsSet;
-begin
-  shortCutText := ShortCutToText(aMenuItem.ShortCut);
-  crText := TextColorMenu(aSelected, aMenuItem.Enabled);
-  crBkgnd := BackgroundColorMenu(aSelected, aMenuItem.IsInMenuBar);
-  SetTextColor(aHDC, crText);
-  SetBkColor(aHDC, crBkgnd);
-  if aMenuItem.Default then decoration := [cfBold]
-  else decoration := [];
-  newFont := getMenuItemFont(decoration);
-  oldFont := SelectObject(aHDC, newFont);
-  TmpLength := aRect.right - aRect.left;
-  TmpHeight := aRect.bottom - aRect.top;
-  DrawText(aHDC, pChar(shortCutText), length(shortCutText), @aRect, DT_CALCRECT);
-  OffsetRect(aRect, TmpLength - (aRect.right - aRect.left) - GetSystemMetrics(SM_CXMENUCHECK), topPosition(TmpHeight, aRect.bottom - aRect.top));
-  DrawText(aHDC, pChar(shortCutText), length(shortCutText), @aRect, 0);
+  if aMenuItem.ShortCut <> scNone then
+  begin
+    shortCutText := ShortCutToText(aMenuItem.ShortCut);
+    Dec(aRect.Right, GetSystemMetrics(SM_CXMENUCHECK));	
+	DrawText(aHDC, pChar(shortCutText), Length(shortCutText), @aRect, DT_RIGHT);
+  end;
   SelectObject(aHDC, oldFont);
   DeleteObject(newFont);
 end;
@@ -421,9 +383,7 @@ begin
   if aMenuItem.IsLine then
     DrawSeparator(aHDC, aRect)
   else begin
-    DrawMenuItemCaption(aMenuItem, aHDC, aRect, aSelected);
-    if aMenuItem.ShortCut <> scNone then
-      DrawMenuItemShortCut(aMenuItem, aHDC, aRect, aSelected);
+    DrawMenuItemText(aMenuItem, aHDC, aRect, aSelected);
     if aMenuItem.Checked then
       DrawMenuItemCheckMark(aMenuItem, aHDC, aRect, aSelected);
     if aMenuItem.hasIcon then
