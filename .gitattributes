@@ -297,7 +297,6 @@ components/printers/design/printers4lazidetest/main.pas svneol=native#text/plain
 components/printers/design/printers4lazidetest/readme.txt svneol=native#text/plain
 components/printers/design/printers4lazidetest/testapp.lpi svneol=native#text/plain
 components/printers/design/printers4lazidetest/testapp.lpr svneol=native#text/plain
-components/printers/design/printers4lazidetest/testapp.lps svneol=native#text/plain
 components/printers/design/sourceprinter.pas svneol=native#text/plain
 components/printers/lib/README.txt svneol=native#text/plain
 components/printers/osprinters.pas svneol=native#text/pascal
