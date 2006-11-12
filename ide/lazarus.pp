@@ -60,17 +60,19 @@ uses
   {$I staticpackages.inc}
   {$ENDIF}
   {$IFDEF BigIDE}
-  RunTimeTypeInfoControls, Printer4Lazarus, CGILaz, CGILazIDE, MemDSLaz, SDFLaz,
-  TurboPowerIPro, JPEGForLazarus, FPCUnitTestRunner, FPCUnitIDE, ProjTemplates,
-  {$IFDEF windows}
-  DBFLaz,
-  {$IFDEF win32}
-  SQLDBLaz,
-  {$ENDIF}
-  {$ENDIF}
-  {$IFDEF Linux}
-  SQLDBLaz, DBFLaz,
-  {$ENDIF}
+    RunTimeTypeInfoControls, Printer4Lazarus, Printers4LazIDE,
+    CGILaz, CGILazIDE,
+    MemDSLaz, SDFLaz, TurboPowerIPro, JPEGForLazarus,
+    FPCUnitTestRunner, FPCUnitIDE, ProjTemplates,
+    {$IFDEF windows}
+      DBFLaz,
+      {$IFDEF win32}
+        SQLDBLaz,
+      {$ENDIF}
+    {$ENDIF}
+    {$IFDEF Linux}
+      SQLDBLaz, DBFLaz,
+    {$ENDIF}
   {$ENDIF}
   MainBase;
 

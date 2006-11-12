@@ -91,6 +91,7 @@ LAZARUS_OPT=$(LAZARUS_LIBPATHS)
 BIG_IDE_OPTIONS=-dBigIDE $(LAZARUS_LIBPATHS) \
   -Fu../components/rtticontrols/lib/$(CPU_TARGET)-$(OS_TARGET) \
   -Fu../components/printers/lib/$(CPU_TARGET)-$(OS_TARGET) \
+  -Fu../components/printers/design/lib/$(CPU_TARGET)-$(OS_TARGET) \
   -Fu../components/cgi/ide/lib/$(CPU_TARGET)-$(OS_TARGET) \
   -Fu../components/cgi/lib/$(CPU_TARGET)-$(OS_TARGET) \
   -Fu../components/tdbf/lib/$(CPU_TARGET)-$(OS_TARGET) \
@@ -102,7 +103,7 @@ BIG_IDE_OPTIONS=-dBigIDE $(LAZARUS_LIBPATHS) \
   -Fu../components/sqldb/lib/$(CPU_TARGET)-$(OS_TARGET) \
   -Fu../components/sdf/lib/$(CPU_TARGET)-$(OS_TARGET) \
   -Fu../components/memds/lib/$(CPU_TARGET)-$(OS_TARGET)
-  
+
 LAZBUILD_OPT=$(LAZARUS_LIBPATHS)
 
 #

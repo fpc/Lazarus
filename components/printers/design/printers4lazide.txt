@@ -1,0 +1,18 @@
+This package will add a print menu item in the Lazarus main menu (File) and
+in the popup menu of the source editor.
+
+There are always some todo's. The ones that came to mind are:
+
+- syntax highlighting
+- filename in the header
+- pagenumbering
+- preferences/settings in the IDE
+- print selection
+- print range
+- line wrapping
+- option setting from IDE
+
+
+Either supply a patch to the lazarus developers or pretty please ask me....
+
+Darius Blaszijk (dhkblaszyk@zeelandnet.nl)
