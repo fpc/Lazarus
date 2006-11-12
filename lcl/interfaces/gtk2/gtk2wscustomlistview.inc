@@ -724,6 +724,8 @@ var
   Widgets: PTVWidgets;
   Iter: TGtkTreeIter;
   BitImage: TBitmap;
+  GPixBuf: PGDKPixBuf;
+
 begin
   if not WSCheckHandleAllocated(ALV, 'ItemSetImage')
   then Exit;
@@ -737,12 +739,14 @@ begin
       and (AItem.ImageIndex > -1)
       then
       begin
-        BitImage := TBitmap.Create;
-        TLVHack(ALV).SmallImages.GetBitmap(AItem.ImageIndex,BitImage);
+          BitImage := TBitmap.Create;
+          TLVHack(ALV).SmallImages.GetBitmap(AItem.ImageIndex,BitImage);
+          GPixBuf:=gdk_pixbuf_get_from_drawable(nil, PGdkDrawable(PGdkPixmap(PGDIObject(BitImage.handle)^.GDIBitmapObject)), nil,0,0,0,0,-1,-1) ;
+        end else begin
+           gpixbuf:=nil;
+          end;
 
-        gtk_list_store_set(TreeModel, @Iter,
-              [0 ,PGdkPixmap(PGDIObject(BitImage.handle)^.GDIBitmapObject), -1]);
-      end;
+       gtk_list_store_set(TreeModel, @Iter, [0 ,gpixbuf, -1]);
     end;
   end;
 end;
