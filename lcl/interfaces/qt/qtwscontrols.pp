@@ -213,7 +213,7 @@ end;
 
   Returns: Nothing
 
-  Shows or hides a widget.
+  Shows or hides a wi/dget.
  ------------------------------------------------------------------------------}
 class procedure TQtWSWinControl.ShowHide(const AWinControl: TWinControl);
 begin
@@ -244,8 +244,9 @@ end;
   Sets the color of the widget.
  ------------------------------------------------------------------------------}
 class procedure TQtWSWinControl.SetColor(const AWinControl: TWinControl);
-var QColor : TQColor;
-    Color  : TColor;
+var
+  QColor: TQColor;
+  Color: TColor;
 begin
   if AWinControl = nil then exit;
 

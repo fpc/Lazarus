@@ -1223,15 +1223,15 @@ begin
       begin
         Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYFULLSCREEN     ');
       end;
+    { Size of the array bitmap on the horizontal scrollbar
+      Currently hardcoded, but more research should be made to check if Qt gives this info }
     SM_CXHSCROLL:
       begin
-{        P:=GetStyleWidget(lgsVerticalScrollbar);
-        Result := GTK_Widget(P)^.requisition.Width;}
+        Result := 15;
       end;
     SM_CYHSCROLL:
       begin
-{        P:=GetStyleWidget(lgsHorizontalScrollbar);
-        Result := GTK_Widget(P)^.requisition.Height;}
+        Result := 15;
       end;
     SM_CXHTHUMB:
       begin
@@ -1357,15 +1357,15 @@ begin
       begin
         Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYSMSIZE         ');
       end;
+    { Size of the array bitmap on the vertical scrollbar
+      Currently hardcoded, but more research should be made to check if Qt gives this info }
     SM_CXVSCROLL:
       begin
-{        P:=GetStyleWidget(lgsVerticalScrollbar);
-        Result := GTK_Widget(P)^.requisition.Width;}
+        Result := 15;
       end;
     SM_CYVSCROLL:
       begin
-{        P:=GetStyleWidget(lgsHorizontalScrollbar);
-        Result := GTK_Widget(P)^.requisition.Height;}
+        Result := 15;
       end;
     SM_CYCAPTION:
       begin
@@ -1441,7 +1441,7 @@ end;
 
 {------------------------------------------------------------------------------
   Function: GetTextColor
-  Params:  DC
+  Params:  DC     - A device context
   Returns: TColorRef
 
   Gets the Font Color currently assigned to the Device Context
@@ -1493,10 +1493,14 @@ end;
 
 {------------------------------------------------------------------------------
   Function: GetTextMetrics
-  Params:  none
-  Returns: Nothing
+  Params:  DC     - A device context with a font selected
+           TM     - The structure to receive the font information
+  Returns: If successfull
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.GetTextMetrics(DC: HDC; var TM: TTextMetric): Boolean;
+var
+  QtFontMetrics: TQtFontMetrics;
+  FontFamily: WideString;
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI GetTextMetrics]');
@@ -1506,6 +1510,38 @@ begin
 
   if Result then
   begin
+    QtFontMetrics := TQtFontMetrics.Create(TQtDeviceContext(DC).font.Widget);
+    try
+      TM.tmHeight := QtFontMetrics.height;
+      TM.tmAscent := QtFontMetrics.ascent;
+      TM.tmDescent := QtFontMetrics.descent;
+      TM.tmInternalLeading := QtFontMetrics.leading;
+      TM.tmExternalLeading := 0;
+      TM.tmAveCharWidth := QtFontMetrics.charWidth('x', 0);
+      TM.tmMaxCharWidth := QtFontMetrics.maxWidth;
+      TM.tmWeight := TQtDeviceContext(DC).font.weight;
+      TM.tmOverhang := 0;
+      TM.tmDigitizedAspectX := 0;
+      TM.tmDigitizedAspectY := 0;
+      TM.tmFirstChar := 'a';
+      TM.tmLastChar := 'z';
+      TM.tmDefaultChar := 'x';
+      TM.tmBreakChar := '?';
+      TM.tmItalic := 0;
+      TM.tmUnderlined := 0;
+      TM.tmStruckOut := 0;
+      
+      TQtDeviceContext(DC).font.family(@FontFamily);
+      
+      { Defaults to a TrueType font }
+      if TQtDeviceContext(DC).font.fixedPitch then
+        TM.tmPitchAndFamily := TRUETYPE_FONTTYPE
+      else TM.tmPitchAndFamily := FIXED_PITCH or TRUETYPE_FONTTYPE;
+
+      TM.tmCharSet := EASTEUROPE_CHARSET;
+    finally
+      QtFontMetrics.Free;
+    end;
   end;
 end;
 

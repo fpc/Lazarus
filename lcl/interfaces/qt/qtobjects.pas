@@ -90,6 +90,8 @@ type
     procedure setStrikeOut(p1: Boolean);
     procedure setRawName(p1: string);
     procedure setFamily(p1: string);
+    procedure family(retval: PWideString);
+    function fixedPitch: Boolean;
   end;
 
   { TQtFontMetrics }
@@ -104,6 +106,11 @@ type
   public
     function height: Integer;
     function width(p1: PWideString): Integer;
+    function ascent: Integer;
+    function descent: Integer;
+    function leading: Integer;
+    function maxWidth: Integer;
+    function charWidth(str: WideString; pos: Integer): Integer;
   end;
 
   { TQtBrush }
@@ -118,7 +125,7 @@ type
     procedure setStyle(style: QtBrushStyle);
   end;
 
-{ TQtPen }
+  { TQtPen }
 
   TQtPen = class(TObject)
   private
@@ -136,7 +143,7 @@ type
   end;
 
 
-{ TQtRegion }
+  { TQtRegion }
 
   TQtRegion = class(TObject)
   private
@@ -418,6 +425,16 @@ begin
   QFont_setFamily(Widget, @Str);
 end;
 
+procedure TQtFont.family(retval: PWideString);
+begin
+  QFont_family(Widget, retval);
+end;
+
+function TQtFont.fixedPitch: Boolean;
+begin
+  Result := QFont_fixedPitch(Widget);
+end;
+
 { TQtFontMetrics }
 
 constructor TQtFontMetrics.Create(Parent: QFontH);
@@ -440,6 +457,31 @@ end;
 function TQtFontMetrics.width(p1: PWideString): Integer;
 begin
   Result := QFontMetrics_width(Widget, p1);
+end;
+
+function TQtFontMetrics.ascent: Integer;
+begin
+  Result := QFontMetrics_ascent(Widget);
+end;
+
+function TQtFontMetrics.descent: Integer;
+begin
+  Result := QFontMetrics_descent(Widget);
+end;
+
+function TQtFontMetrics.leading: Integer;
+begin
+  Result := QFontMetrics_leading(Widget);
+end;
+
+function TQtFontMetrics.maxWidth: Integer;
+begin
+  Result := QFontMetrics_maxWidth(Widget);
+end;
+
+function TQtFontMetrics.charWidth(str: WideString; pos: Integer): Integer;
+begin
+  Result := QFontMetrics_charWidth(Widget, @str, pos);
 end;
 
 { TQtBrush }
@@ -598,11 +640,11 @@ end;
  ------------------------------------------------------------------------------}
 constructor TQtRegion.Create(CreateHandle: Boolean);
 begin
-  // Creates the widget
   {$ifdef VerboseQt}
     WriteLn('TQtRegion.Create CreateHandle: ', dbgs(CreateHandle));
   {$endif}
 
+  // Creates the widget
   if CreateHandle then Widget := QRegion_create;
 end;
 
@@ -613,11 +655,11 @@ end;
  ------------------------------------------------------------------------------}
 constructor TQtRegion.Create(CreateHandle: Boolean; X1,Y1,X2,Y2:Integer);
 begin
-  // Creates the widget
   {$ifdef VerboseQt}
     WriteLn('TQtRegion.Create CreateHandle: ', dbgs(CreateHandle));
   {$endif}
 
+  // Creates the widget
   if CreateHandle then Widget := QRegion_create(X1,Y1,X2,Y2);
 end;
 
@@ -633,6 +675,7 @@ begin
   {$endif}
 
   QRegion_destroy(Widget);
+
   inherited Destroy;
 end;
 
