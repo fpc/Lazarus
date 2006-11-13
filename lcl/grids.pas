@@ -176,6 +176,7 @@ type
   TStringCellEditor=class(TCustomMaskEdit)
   private
     FGrid: TCustomGrid;
+    FCol,FRow:Integer;
   protected
     procedure WndProc(var TheMessage : TLMessage); override;
     procedure Change; override;
@@ -192,9 +193,13 @@ type
   TButtonCellEditor = class(TButton)
   private
     FGrid: TCustomGrid;
+    FCol,FRow: Integer;
   protected
     procedure msg_SetGrid(var Msg: TGridMessage); message GM_SETGRID;
     procedure msg_SetPos(var Msg: TGridMessage); message GM_SETPOS;
+  public
+    property Col: Integer read FCol;
+    property Row: Integer read FRow;
   end;
 
   { TPickListCellEditor }
@@ -202,6 +207,7 @@ type
   TPickListCellEditor = class(TCustomComboBox)
   private
     FGrid: TCustomGrid;
+    FCol,FRow: Integer;
   protected
     procedure WndProc(var TheMessage : TLMessage); override;
     procedure KeyDown(var Key : Word; Shift : TShiftState); override;
@@ -722,6 +728,7 @@ type
     function  EditorLocked: boolean;
     procedure EditorSelectAll;
     procedure EditorShow(const SelAll: boolean); virtual;
+    procedure EditorShowInCell(const aCol,aRow:Integer); virtual;
     procedure EditorWidthChanged(aCol,aWidth: Integer); virtual;
     function  FixedGrid: boolean;
     procedure FontChanged(Sender: TObject); override;
@@ -2849,9 +2856,28 @@ begin
 end;
 
 procedure TCustomGrid.EditButtonClicked(Sender: TObject);
+var
+  OldCol,OldRow: Integer;
 begin
-  if Assigned(OnEditButtonClick) then
-    OnEditButtonClick(Self);
+  if Assigned(OnEditButtonClick) then begin
+    if Sender=FButtonEditor then begin
+      OldCol:=FCol;
+      OldRow:=FRow;
+      try
+        FCol:=FButtonEditor.Col;
+        FRow:=FButtonEditor.Row;
+        OnEditButtonClick(Self);
+      finally
+        if (FCol=FButtonEditor.Col) and (FRow=FButtonEditor.Row) then
+        begin
+          // didn't change FRow or FCol, restore old index.
+          FCol:=OldCol;
+          FRow:=OldRow;
+        end;
+      end;
+    end else
+      OnEditButtonClick(Self);
+  end;
 end;
 
 procedure TCustomGrid.DrawEdges;
@@ -5181,6 +5207,28 @@ begin
   end;
 end;
 
+procedure TCustomGrid.EditorShowInCell(const aCol, aRow: Integer);
+var
+  OldCol,OldRow: Integer;
+begin
+  OldCol:=FCol;
+  OldRow:=FRow;
+  try
+    EditorGetValue;
+    FCol:=aCol;
+    FRow:=aRow;
+    SelectEditor;
+    EditorShow(True);
+  finally
+    if (FCol=aCol)and(FRow=aRow) then
+    begin
+      // Current col,row didn't change, restore old ones
+      FCol:=OldCol;
+      FRow:=OldRow;
+    end;
+  end;
+end;
+
 procedure TCustomGrid.EditorWidthChanged(aCol, aWidth: Integer);
 begin
   EditorPos;
@@ -5246,10 +5294,9 @@ begin
     Msg.grid:=Self;
     Msg.Col:=FCol;
     Msg.Row:=FRow;
-    Msg.Value:=GetEditText(Fcol, FRow); //Cells[FCol,FRow];
+    Msg.Value:=GetEditText(FCol, FRow);
     FEditor.Dispatch(Msg);
-    SetEditText(FCol, FRow, msg.Value);
-    //Cells[FCol,FRow]:=msg.Value;
+    SetEditText(Msg.Col, Msg.Row, Msg.Value);
   end;
 end;
 
@@ -5496,13 +5543,10 @@ end;
 procedure TCustomGrid.EditorSetMode(const AValue: Boolean);
 begin
   {$ifdef dbgGrid}DebugLn('Grid.EditorSetMode=',dbgs(Avalue),' INIT');{$endif}
-  if not AValue then begin
-    EditorHide;
-    //SetFocus;
-  end else
-  begin
+  if not AValue then
+    EditorHide
+  else
     EditorShow(false);
-  end;
   {$ifdef dbgGrid}DebugLn('Grid.EditorSetMode FIN');{$endif}
 end;
 
@@ -6412,7 +6456,7 @@ begin
   {$IfDef DbgGrid} DebugLn('TStringCellEditor.Change INIT text=',Text);{$ENDIF}
   inherited Change;
   if FGrid<>nil then begin
-    FGrid.SetEditText(FGrid.Col, FGrid.Row, Text);
+    FGrid.SetEditText(FCol, FRow, Text);
   end;
   {$IfDef DbgGrid} DebugLn('TStringCellEditor.Change FIN');{$ENDIF}
 end;
@@ -6500,18 +6544,24 @@ end;
 
 procedure TStringCellEditor.msg_SetMask(var Msg: TGridMessage);
 begin
+  FCol:=Msg.Col;
+  FRow:=Msg.Row;
   EditMask:=msg.Value;
 end;
 
 
 procedure TStringCellEditor.msg_SetValue(var Msg: TGridMessage);
 begin
+  FCol:=Msg.Col;
+  FRow:=Msg.Row;
   Text:=Msg.Value;
   SelStart := Length(Text);
 end;
 
 procedure TStringCellEditor.msg_GetValue(var Msg: TGridMessage);
 begin
+  Msg.Col:=FCol;
+  Msg.Row:=FRow;
   Msg.Value:=Text;
 end;
 
@@ -8074,6 +8124,8 @@ end;
 
 procedure TButtonCellEditor.msg_SetPos(var Msg: TGridMessage);
 begin
+  FCol:=Msg.Col;
+  FRow:=Msg.Row;
   with Msg.CellRect do begin
     if Right-Left>25 then Left:=Right-25;
     SetBounds(Left, Top, Right-Left, Bottom-Top);
@@ -8215,7 +8267,7 @@ begin
   if FGrid<>nil then begin
     if FGrid.EditorIsReadOnly then
       exit;
-    FGrid.SetEditText(FGrid.Col, FGrid.Row, Text);
+    FGrid.SetEditText(FCol, FRow, Text);
     FGrid.PickListItemSelected(Self);
   end;
   inherited Select;
@@ -8223,6 +8275,8 @@ end;
 
 procedure TPickListCellEditor.msg_GetValue(var Msg: TGridMessage);
 begin
+  Msg.Col := FCol;
+  Msg.Row := FRow;
   Msg.Value:=Text;
 end;
 
@@ -8235,7 +8289,9 @@ end;
 
 procedure TPickListCellEditor.msg_SetValue(var Msg: TGridMessage);
 begin
-  Text:=Msg.Value;
+  FCol := Msg.Col;
+  FRow := Msg.Row;
+  Text := Msg.Value;
   SelStart := Length(Text);
 end;
 
