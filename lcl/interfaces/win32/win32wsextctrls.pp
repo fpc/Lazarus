@@ -595,10 +595,12 @@ end;
 class procedure TWin32WSCustomSplitter.DrawSplitter(const ASplitter: TCustomSplitter
   );
 begin
-  // TODO: beveled
+
+  if ASplitter.Beveled then begin  
   LCLIntf.DrawSplitter(ASplitter.Canvas.Handle,
                        Rect(0,0,ASplitter.Width,ASplitter.Height),
                        ASplitter.ResizeAnchor in [akTop,akBottom]);
+  end;
 end;
 
 initialization
