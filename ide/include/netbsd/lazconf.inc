@@ -32,11 +32,6 @@
 uses
   baseunix, unix;
 
-function GetDefaultTargetOS: string;
-begin
-  Result:='netbsd';
-end;
-
 procedure GetDefaultLCLLibPaths(List: TStrings);
 begin
 end;

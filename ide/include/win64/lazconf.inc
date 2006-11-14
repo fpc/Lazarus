@@ -36,11 +36,6 @@ var
   PrimaryConfigPath,
   SecondaryConfigPath: string;
 
-function GetDefaultTargetOS: string;
-begin
-  Result:='win64';
-end;
-
 procedure GetDefaultLCLLibPaths(List: TStrings);
 begin
 end;

@@ -1406,8 +1406,9 @@ begin
       Add('OpenBSD');
       Add('Solaris');
       Add('Win32');
+      Add('Win64');
       Add('WinCE');
-      //Add('go32v2'); 
+      //Add('go32v2');
       //Add('os2'); 
       //Add('beos'); 
       //Add('qnx'); 

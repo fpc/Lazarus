@@ -215,30 +215,14 @@ begin
     Result:='';
 end;
 
+function GetDefaultTargetOS: string;
+begin
+  Result:={$I %FPCTARGETOS%};
+end;
+
 function GetDefaultTargetCPU: string;
 begin
-  Result:='undefined';
-  {$IFDEF CPUPowerPC}
-  Result:='powerpc';
-  {$ENDIF}
-  {$IFDEF CPUM68k}
-  Result:='m68k';
-  {$ENDIF}
-  {$IFDEF CPUi386}
-  Result:='i386';
-  {$ENDIF}
-  {$IFDEF CPUSparc}
-  Result:='sparc';
-  {$ENDIF}
-  {$IFDEF CPUALPHA}
-  Result:='alpha';
-  {$ENDIF}
-  {$IFDEF CPUX86_64}
-  Result:='x86_64';
-  {$ENDIF}
-  {$IFDEF CPUARM}
-  Result:='arm';
-  {$ENDIF}
+  Result:={$I %FPCTARGETCPU%};
 end;
 
 function GetDefaultCompilerFilename: string;
@@ -246,11 +230,7 @@ begin
   Result:='fpc';
   
   {$IFDEF CPUi386}
-    {$IFdef MSWindows}
-    Result:='ppc386.exe';
-    {$ELSE}
-    Result:='ppc386';
-    {$ENDIF}
+  Result:='ppc386'+GetExeExt;
   {$ENDIF}
   {$IFDEF CPUPowerPC}
   Result:='ppcppc';
@@ -265,7 +245,7 @@ begin
   Result:='ppcaxp';
   {$ENDIF}
   {$IFDEF CPUX86_64}
-  Result:='ppcx64';
+  Result:='ppcx64'+GetExeExt;
   {$ENDIF}
   {$IFDEF CPUARM}
   Result:='ppcarm';

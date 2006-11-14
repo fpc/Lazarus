@@ -31,11 +31,6 @@
 uses
   Unix, BaseUnix;
 
-function GetDefaultTargetOS: string;
-begin
-  Result:='linux';
-end;
-
 procedure IfDirectoryExistsAdd(const Directory: string; List: TStrings);
 begin
   if DirPathExists(Directory) then List.Add(Directory);

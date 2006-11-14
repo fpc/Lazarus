@@ -32,11 +32,6 @@
 uses
   BaseUnix, Unix;
 
-function GetDefaultTargetOS: string;
-begin
-  Result:='freebsd';
-end;
-
 procedure GetDefaultLCLLibPaths(List: TStrings);
 begin
 end;

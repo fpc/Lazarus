@@ -36,11 +36,6 @@ var
   PrimaryConfigPath,
   SecondaryConfigPath: string;
 
-function GetDefaultTargetOS: string;
-begin
-  Result:='win32';
-end;
-
 procedure GetDefaultLCLLibPaths(List: TStrings);
 begin
 end;
@@ -88,9 +83,10 @@ end;
 function FindDefaultCompilerPath: string;
 begin
   Result:=SearchFileInPath(GetDefaultCompilerFilename,
-                           AppendPathDelim(ProgramDirectory)+'pp\bin\i386-win32',
-                           SysUtils.GetEnvironmentVariable('PATH'),';',
-                           []);
+            format('%sfpc\%s\bin\%s',
+              [AppendPathDelim(ProgramDirectory), {$I %FPCVERSION%}, {$I %FPCTARGET%}]),
+            SysUtils.GetEnvironmentVariable('PATH'),';',
+            []);
   if Result<>'' then exit;
   Result:='c:\pp\bin\i386-win32\ppc386.exe';
   if not FileExists(Result) then Result:='';

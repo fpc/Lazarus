@@ -31,11 +31,6 @@
 uses
   BaseUnix, Unix;
 
-function GetDefaultTargetOS: string;
-begin
-  Result:='solaris';
-end;
-
 procedure IfDirectoryExistsAdd(const Directory: string; List: TStrings);
 begin
   if DirPathExists(Directory) then List.Add(Directory);
