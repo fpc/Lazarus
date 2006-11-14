@@ -74,6 +74,7 @@ type
   private
   public
     Widget: QFontH;
+    Angle: Integer;
   public
     constructor Create(CreateHandle: Boolean); virtual;
     destructor Destroy; override;
@@ -189,6 +190,10 @@ type
     function region: TQtRegion;
     procedure setRegion(region: TQtRegion); 
     procedure drawImage(targetRect: PRect; image: QImageH; sourceRect: PRect; flags: QtImageConversionFlags = QtAutoColor);
+    procedure rotate(a: Double);
+    procedure save;
+    procedure restore;
+    procedure translate(dx: Double; dy: Double);
   end;
   
   { TQtPixmap }
@@ -767,15 +772,23 @@ var
   QtFontMetrics: TQtFontMetrics;
 begin
   {$ifdef VerboseQt}
-    WriteLn('TQtDeviceContext.drawText TargetX: ', (Origin.X + X), ' TargetY: ', (Origin.Y + Y));
+    Write('TQtDeviceContext.drawText TargetX: ', (Origin.X + X), ' TargetY: ', (Origin.Y + Y));
   {$endif}
 
   QtFontMetrics := TQtFontMetrics.Create(Font.Widget);
   try
-    QPainter_drawText(Widget, Origin.X + x, Origin.Y + y + QtFontMetrics.height, s);
+    Save;
 
+    translate(Origin.X + x, Origin.Y + y + QtFontMetrics.height);
+
+    Rotate(-0.1 * vFont.Angle);
+
+    QPainter_drawText(Widget, 0, 0, s);
+
+    Restore;
+    
     {$ifdef VerboseQt}
-      WriteLn(' Font metrics height: ', QtFontMetrics.height);
+      WriteLn(' Font metrics height: ', QtFontMetrics.height, ' Angle: ', Round(0.1 * vFont.Angle));
     {$endif}
   finally
     QtFontMetrics.Free;
@@ -858,7 +871,11 @@ end;
 procedure TQtDeviceContext.setFont(f: TQtFont);
 begin
   if (f.Widget <> nil) and (Widget <> nil) and (Parent <> nil) then
-   QPainter_setFont(Widget, QFontH(f.Widget));
+  begin
+    QPainter_setFont(Widget, QFontH(f.Widget));
+    
+    vFont.Angle := f.Angle;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -942,6 +959,54 @@ begin
   LocalRect.Top := LocalRect.Top + Origin.Y;
 
   QPainter_drawImage(Widget, PRect(@LocalRect), image, sourceRect, flags);
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtDeviceContext.rotate
+  Params:  None
+  Returns: Nothing
+  
+  Rotates the coordinate system
+ ------------------------------------------------------------------------------}
+procedure TQtDeviceContext.rotate(a: Double);
+begin
+  QPainter_rotate(Widget, a);
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtDeviceContext.save
+  Params:  None
+  Returns: Nothing
+  
+  Saves the state of the canvas
+ ------------------------------------------------------------------------------}
+procedure TQtDeviceContext.save;
+begin
+  QPainter_save(Widget);
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtDeviceContext.restore
+  Params:  None
+  Returns: Nothing
+  
+  Restores the state of the canvas
+ ------------------------------------------------------------------------------}
+procedure TQtDeviceContext.restore;
+begin
+  QPainter_restore(Widget);
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtDeviceContext.translate
+  Params:  None
+  Returns: Nothing
+  
+  Tranlates the coordinate system
+ ------------------------------------------------------------------------------}
+procedure TQtDeviceContext.translate(dx: Double; dy: Double);
+begin
+  QPainter_translate(Widget, dx, dy);
 end;
 
 { TQtPixmap }

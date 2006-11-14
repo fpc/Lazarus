@@ -289,7 +289,9 @@ begin
       FW_HEAVY      : QtFont.setWeight(87);
     end;
 
-//    LogFont.lfOrientation: Longint;
+    QtFont.Angle := LogFont.lfEscapement;
+
+    //LogFont.lfOrientation;
 
     QtFont.setItalic(LogFont.lfItalic = High(Byte));
     QtFont.setUnderline(LogFont.lfUnderline = High(Byte));
