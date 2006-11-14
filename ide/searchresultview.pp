@@ -635,18 +635,22 @@ var
   SearchObj: TLazSearch;
 begin
   CurrentLB:= GetListBox(ResultsNoteBook.PageIndex);
-  if not Assigned(CurrentLB) then exit;
-  SearchObj:= CurrentLB.SearchObject;
-  if Assigned(FindInFilesDialog) then
-  begin
-    with FindInFilesDialog do
+  if not Assigned(CurrentLB) then begin
+    MainIDEInterface.FindInFilesPerDialog(Project1);
+  end
+  else begin
+    SearchObj:= CurrentLB.SearchObject;
+    if Assigned(FindInFilesDialog) then
     begin
-      DirectoryComboBox.Text:= SearchObj.SearchDirectory;
-      Options:= SearchObj.SearchOptions;
-      FileMaskComboBox.Text:= SearchObj.SearchMask;
-    end;//with
-    MainIDEInterface.FindInFiles(Project1, SearchObj.SearchString);
-  end;//if
+      with FindInFilesDialog do
+      begin
+        DirectoryComboBox.Text:= SearchObj.SearchDirectory;
+        Options:= SearchObj.SearchOptions;
+        FileMaskComboBox.Text:= SearchObj.SearchMask;
+      end;//with
+      MainIDEInterface.FindInFiles(Project1, SearchObj.SearchString);
+    end;//if
+  end;
 end;
 
 {Searched the notebook control for a page with APageName name, returns true if
