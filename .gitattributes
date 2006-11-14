@@ -2282,7 +2282,6 @@ lcl/interfaces/carbon/carbonwspairsplitter.pp svneol=native#text/pascal
 lcl/interfaces/carbon/carbonwsspin.pp svneol=native#text/pascal
 lcl/interfaces/carbon/carbonwsstdctrls.pp svneol=native#text/pascal
 lcl/interfaces/carbon/carbonwstoolwin.pp svneol=native#text/pascal
-lcl/interfaces/carbon/fpcmacosall.pas svneol=native#text/plain
 lcl/interfaces/carbon/interfaces.pas svneol=native#text/pascal
 lcl/interfaces/fpgui/Makefile.fpc svneol=native#text/plain
 lcl/interfaces/fpgui/fpguiint.pp svneol=native#text/pascal
