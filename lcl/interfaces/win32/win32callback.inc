@@ -81,8 +81,12 @@ begin
     MessageStackDepth[depthLen] := '#';
 {$endif}
   PrevWndProc := GetWindowInfo(Window)^.DefWndProc;
-  if PrevWndProc = nil then
-    Result := Windows.DefWindowProc(Window, Msg, WParam, LParam)
+  if PrevWndProc = nil 
+  then begin
+    if UnicodeEnabledOS 
+    then Result := Windows.DefWindowProcW(Window, Msg, WParam, LParam)
+    else Result := Windows.DefWindowProc(Window, Msg, WParam, LParam)
+  end    
   else begin
     // combobox child edit weirdness: combobox handling WM_SIZE will compare text
     // to list of strings, and if appears in there, will set the text, and select it
@@ -2127,8 +2131,10 @@ begin
       // free our own data associated with window
       DisposeWindowInfo(Window);
     end;
-  else
-    Result := Windows.DefWindowProc(Window, Msg, WParam, LParam);
+  else 
+    if UnicodeEnabledOS 
+    then Result := Windows.DefWindowProcW(Window, Msg, WParam, LParam)
+    else Result := Windows.DefWindowProc(Window, Msg, WParam, LParam);
   end;
 end;
 

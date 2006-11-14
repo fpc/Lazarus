@@ -107,6 +107,11 @@ procedure RedrawMenus;
 function MeasureText(const AWinControl: TWinControl; Text: string; var Width, Height: integer): boolean;
 function GetControlText(AHandle: HWND): string;
 
+// String functions
+
+function Utf8PCharToPWideChar(param: PChar): PWideChar;
+function Utf8ToPWideChar(param: string): PWideChar;
+
 type
   PDisableWindowsInfo = ^TDisableWindowsInfo;
   TDisableWindowsInfo = record
@@ -118,6 +123,7 @@ var
   DefaultWindowInfo: TWindowInfo;
   WindowInfoAtom: ATOM;
   ChangedMenus: TList; // list of HWNDs which menus needs to be redrawn
+  UnicodeEnabledOS: Boolean = False;
 
 implementation
 
@@ -1130,6 +1136,34 @@ begin
   GetWindowText(AHandle, PChar(Result), TextLen + 1);
 end;
 
+function Utf8PCharToPWideChar(param: PChar): PWideChar;
+begin
+  Result := PWideChar(Utf8Decode(string(param)));
+end;
+
+function Utf8ToPWideChar(param: string): PWideChar;
+begin
+  Result := PWideChar(Utf8Decode(param));
+end;
+
+procedure DoInitialization;
+var
+  WinVersion: TOSVersionInfo;
+begin
+  FillChar(DefaultWindowInfo, sizeof(DefaultWindowInfo), 0);
+  DefaultWindowInfo.DrawItemIndex := -1;
+  WindowInfoAtom := Windows.GlobalAddAtom('WindowInfo');
+  ChangedMenus := TList.Create;
+
+ {$ifdef WindowsUnicodeSupport}
+
+  WinVersion.dwOSVersionInfoSize := SizeOf(TOSVersionInfo);
+  GetVersionEx(WinVersion);
+
+  UnicodeEnabledOS := (WinVersion.dwPlatformID = VER_PLATFORM_WIN32_NT);
+
+ {$endif}
+end;
 
 {$IFDEF ASSERT_IS_ON}
   {$UNDEF ASSERT_IS_ON}
@@ -1137,11 +1171,8 @@ end;
 {$ENDIF}
 
 initialization
-
-  FillChar(DefaultWindowInfo, sizeof(DefaultWindowInfo), 0);
-  DefaultWindowInfo.DrawItemIndex := -1;
-  WindowInfoAtom := Windows.GlobalAddAtom('WindowInfo');
-  ChangedMenus := TList.Create;
+  
+  DoInitialization;
 
 finalization
 

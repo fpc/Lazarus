@@ -200,8 +200,20 @@ begin
       end else begin
         MenuHandle := HMENU(nil);
       end;
-      Window := CreateWindowEx(FlagsEx, pClassName, WindowTitle, Flags,
+
+      {$ifdef WindowsUnicodeSupport}
+      if UnicodeEnabledOS then
+        Window := CreateWindowExW(FlagsEx, Utf8PCharToPWideChar(pClassName),
+          Utf8PCharToPWideChar(WindowTitle), Flags,
+          Left, Top, Width, Height, Parent, MenuHandle, HInstance, Nil)
+      else
+        Window := CreateWindowEx(FlagsEx, pClassName, PChar(Utf8ToAnsi(WindowTitle)), Flags,
           Left, Top, Width, Height, Parent, MenuHandle, HInstance, Nil);
+      {$else}
+        Window := CreateWindowEx(FlagsEx, pClassName, WindowTitle, Flags,
+          Left, Top, Width, Height, Parent, MenuHandle, HInstance, Nil);
+      {$endif}
+
       if Window = 0 then
       begin
         raise exception.create('failed to create win32 control, error: '+IntToStr(GetLastError()));
@@ -415,7 +427,13 @@ class procedure TWin32WSWinControl.SetText(const AWinControl: TWinControl; const
 Begin
   if not WSCheckHandleAllocated(AWincontrol, 'SetText')
   then Exit;
+{$ifdef WindowsUnicodeSupport}
+  if UnicodeEnabledOS 
+  then Windows.SetWindowTextW(AWinControl.Handle, Utf8ToPWideChar(AText))
+  else Windows.SetWindowText(AWinControl.Handle, PChar(Utf8ToAnsi(AText)));
+{$else}
   Windows.SetWindowText(AWinControl.Handle, PChar(AText));
+{$endif}
 End;
 
 class procedure TWin32WSWinControl.ConstraintsChange(const AWinControl: TWinControl);

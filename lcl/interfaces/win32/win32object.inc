@@ -409,7 +409,13 @@ End;
 
 procedure TWin32WidgetSet.AppSetTitle(const ATitle: string);
 begin
+  {$ifdef WindowsUnicodeSupport}
+  if UnicodeEnabledOS 
+  then Windows.SetWindowTextW(FAppHandle, Utf8ToPWideChar(ATitle))
+  else Windows.SetWindowText(FAppHandle, PChar(Utf8ToAnsi(ATitle)));
+  {$else}
   Windows.SetWindowText(FAppHandle, PChar(ATitle));
+  {$endif}
 end;
 
 {------------------------------------------------------------------------------
@@ -499,24 +505,46 @@ end;
 Function TWin32WidgetSet.WinRegister: Boolean;
 Var
   WindowClass: WndClass;
+  WindowClassW: WndClassW;
 Begin
   Assert(False, 'Trace:WinRegister - Start');
-  With WindowClass Do
-  Begin
-    Style := CS_DBLCLKS{CS_HRedraw or CS_VRedraw};
-    LPFnWndProc := @WindowProc;
-    CbClsExtra := 0;
-    CbWndExtra := 0;
-    hInstance := System.HInstance;
-    hIcon := Windows.LoadIcon(MainInstance, 'MAINICON');
-    if hIcon = 0 then
-      hIcon := Windows.LoadIcon(0, IDI_APPLICATION);
-    hCursor := LoadCursor(0, IDC_ARROW);
-    hbrBackground := 0; {GetSysColorBrush(Color_BtnFace);}
-    LPSzMenuName := Nil;
-    LPSzClassName := @ClsName;
-  End;
-  Result := Windows.RegisterClass(@WindowClass) <> 0;
+  if UnicodeEnabledOS 
+  then begin
+    with WindowClassW do
+    begin
+      Style := CS_DBLCLKS{CS_HRedraw or CS_VRedraw};
+      LPFnWndProc := @WindowProc;
+      CbClsExtra := 0;
+      CbWndExtra := 0;
+      hInstance := System.HInstance;
+      hIcon := Windows.LoadIcon(MainInstance, 'MAINICON');
+      if hIcon = 0 then
+       hIcon := Windows.LoadIcon(0, IDI_APPLICATION);
+      hCursor := LoadCursor(0, IDC_ARROW);
+      hbrBackground := 0; {GetSysColorBrush(Color_BtnFace);}
+      LPSzMenuName := Nil;
+      LPSzClassName := Utf8PCharToPWideChar(@ClsName);
+    end;
+    Result := Windows.RegisterClassW(@WindowClassW) <> 0;
+  end
+  else begin
+    with WindowClass do
+    begin
+      Style := CS_DBLCLKS{CS_HRedraw or CS_VRedraw};
+      LPFnWndProc := @WindowProc;
+      CbClsExtra := 0;
+      CbWndExtra := 0;
+      hInstance := System.HInstance;
+      hIcon := Windows.LoadIcon(MainInstance, 'MAINICON');
+      if hIcon = 0 then
+       hIcon := Windows.LoadIcon(0, IDI_APPLICATION);
+      hCursor := LoadCursor(0, IDC_ARROW);
+      hbrBackground := 0; {GetSysColorBrush(Color_BtnFace);}
+      LPSzMenuName := Nil;
+      LPSzClassName := @ClsName; 
+    end;
+    Result := Windows.RegisterClass(@WindowClass) <> 0;
+  end;
   Assert(False, 'Trace:WinRegister - Exit');
 End;
 
