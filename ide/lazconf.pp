@@ -217,12 +217,12 @@ end;
 
 function GetDefaultTargetOS: string;
 begin
-  Result:={$I %FPCTARGETOS%};
+  Result:=lowerCase({$I %FPCTARGETOS%});
 end;
 
 function GetDefaultTargetCPU: string;
 begin
-  Result:={$I %FPCTARGETCPU%};
+  Result:=lowerCase({$I %FPCTARGETCPU%});
 end;
 
 function GetDefaultCompilerFilename: string;

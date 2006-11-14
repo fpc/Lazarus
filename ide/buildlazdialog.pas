@@ -492,8 +492,8 @@ begin
       // no user defined target directory
       // => find it automatically
 
-      DefaultTargetOS:={$I %FPCTARGETOS%};
-      DefaultTargetCPU:={$I %FPCTARGETCPU%};
+      DefaultTargetOS:=GetDefaultTargetOS;
+      DefaultTargetCPU:=GetDefaultTargetCPU;
       if ((Options.TargetOS<>'')
           and (CompareText(Options.TargetOS,DefaultTargetOS)<>0))
       or ((Options.TargetCPU<>'')
