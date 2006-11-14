@@ -31,7 +31,7 @@ uses
   // Free Pascal
   Classes, SysUtils, Types,
   // LCL
-  LMessages, Forms, Controls, LCLType, LCLProc, ComCtrls, ExtCtrls, StdCtrls, Menus;
+  LMessages, Buttons, Forms, Controls, LCLType, LCLProc, ComCtrls, ExtCtrls, StdCtrls, Menus;
 
 type
   { TQtWidget }
@@ -75,6 +75,7 @@ type
     function windowFlags: QtWindowFlags;
     procedure setWidth(p1: Integer);
     procedure setHeight(p1: Integer);
+    procedure setTabOrder(p1, p2: TQtWidget);
   end;
 
   { TQtAbstractButton }
@@ -112,6 +113,7 @@ type
   public
     constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); override;
     destructor Destroy; override;
+    procedure setTabOrders;
   public
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     procedure SlotWindowStateChange; cdecl;
@@ -370,6 +372,15 @@ type
 
 implementation
 
+{ Helper functions }
+
+function SortListByTabOrder(Item1: Pointer; Item2: Pointer): Integer;
+begin
+  if TWinControl(Item1).TabOrder = TWinControl(Item2).TabOrder then Result := 0
+  else if TWinControl(Item1).TabOrder < TWinControl(Item2).TabOrder then Result := -1
+  else if TWinControl(Item1).TabOrder > TWinControl(Item2).TabOrder then Result := 1;
+end;
+
 { TQtWidget }
 
 {------------------------------------------------------------------------------
@@ -443,7 +454,7 @@ begin
 //  WriteLn(Integer(QEvent_type(Event)));
   {.$endif}
 
-  QEvent_ignore(Event);
+  QEvent_accept(Event);
 
   case QEvent_type(Event) of
    QEventShow: SlotShow(True);
@@ -461,6 +472,8 @@ begin
    QEventResize: SlotResize;
    QEventPaint: SlotPaint(Event);
    QEventContextMenu: SlotContextMenu;
+  else
+   QEvent_ignore(Event);
   end;
 
 {  GtkWidgetSet.SetCallback(LM_WINDOWPOSCHANGED, AGTKObject, AComponent);
@@ -640,13 +653,19 @@ begin
    QEventMouseButtonPress: Msg.Msg := LM_PRESSED;
    QEventMouseButtonRelease:
    begin
-     Msg.Msg := LM_CLICKED;
+     { Clicking on buttons operates differently, because QEventMouseButtonRelease
+       is sent if you click a control, drag the mouse out of it and release, but
+       buttons should not be clicked on this case. }
+     if not (LCLObject is TCustomButton) then
+     begin
+       Msg.Msg := LM_CLICKED;
 
-    try
-      LCLObject.WindowProc(TLMessage(Msg));
-    except
-       Application.HandleException(nil);
-    end;
+       try
+         LCLObject.WindowProc(TLMessage(Msg));
+       except
+         Application.HandleException(nil);
+       end;
+     end;
 
      Msg.Msg := LM_RELEASED;
    end;
@@ -877,6 +896,11 @@ begin
   QWidget_geometry(Widget, @R);
   R.Bottom := p1;
   QWidget_setGeometry(Widget, @R);
+end;
+
+procedure TQtWidget.setTabOrder(p1, p2: TQtWidget);
+begin
+  QWidget_setTabOrder(p1.Widget, p2.Widget);
 end;
 
 {------------------------------------------------------------------------------
@@ -1336,9 +1360,6 @@ begin
 
   // Main menu bar
   MenuBar := TQtMenuBar.Create(Widget);
-
-{ // Accepts keyboard and mouse events
-  QWidget_setFocusPolicy(Widget, QtStrongFocus);}
 end;
 
 {------------------------------------------------------------------------------
@@ -1355,6 +1376,59 @@ begin
   QWidget_destroy(QDialogH(Widget));
 
   inherited Destroy;
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtMainWindow.setTabOrders
+  Params:  None
+  Returns: Nothing
+  
+  Sets the tab order of all controls on a form.
+ ------------------------------------------------------------------------------}
+procedure TQtMainWindow.setTabOrders;
+var
+  i: Integer;
+  Form: TForm;
+  List: TList;
+begin
+  List := TList.Create;
+  
+  Form := TForm(LCLObject);
+
+  { Creates a list with childs of the form that are available to receive Tab focus }
+  for i := 0 to Form.ComponentCount - 1 do
+  begin
+    if Form.Components[i] is TWinControl then
+     if TWinControl(Form.Components[i]).TabStop then
+      List.Add(Form.Components[i]);
+  end;
+
+  List.Sort(SortListByTabOrder);
+
+  for i := 0 to List.Count - 2 do
+  begin
+    setTabOrder(TQtWidget(TWinControl(List.Items[i]).Handle),
+     TQtWidget(TWinControl(List.Items[i + 1]).Handle));
+
+    {$ifdef VerboseQt}
+      WriteLn('Setting Tab Order first: ', TWinControl(List.Items[i]).Name, ' second: ',
+       TWinControl(List.Items[i + 1]).Name);
+    {$endif}
+  end;
+  
+  { The last element points to the first }
+  if List.Count > 0 then
+  begin
+    setTabOrder(TQtWidget(TWinControl(List.Items[List.Count - 1]).Handle),
+     TQtWidget(TWinControl(List.Items[0]).Handle));
+     
+    {$ifdef VerboseQt}
+      WriteLn('Setting Tab Order first: ', TWinControl(List.Items[List.Count - 1]).Name, ' second: ',
+       TWinControl(List.Items[0]).Name);
+    {$endif}
+  end;
+  
+  List.Free;
 end;
 
 {------------------------------------------------------------------------------

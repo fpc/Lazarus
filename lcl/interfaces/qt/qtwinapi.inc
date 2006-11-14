@@ -1535,7 +1535,10 @@ begin
       
       TQtDeviceContext(DC).font.family(@FontFamily);
       
-      { Defaults to a TrueType font }
+      { Defaults to a TrueType font.
+        Note that the meaning of the FIXED_PITCH constant is the opposite of
+        the name implies, according to MSDN docs. Just a small inconsistency
+        on Windows API that we have to mimic. }
       if TQtDeviceContext(DC).font.fixedPitch then
         TM.tmPitchAndFamily := TRUETYPE_FONTTYPE
       else TM.tmPitchAndFamily := FIXED_PITCH or TRUETYPE_FONTTYPE;

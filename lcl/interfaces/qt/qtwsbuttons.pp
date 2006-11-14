@@ -107,6 +107,16 @@ begin
 
   QObject_hook_hook_events(Hook, Method);
   
+  // OnClick Event
+
+  QAbstractButton_clicked2_Event(Method) := QtPushButton.SlotClicked;
+
+  QAbstractButton_hook_hook_clicked2(QAbstractButton_hook_create(QtPushButton.Widget), Method);
+
+  // Focus
+
+  QWidget_setFocusPolicy(QtPushButton.Widget, QtStrongFocus);
+
   // Returns the Handle
 
   Result := THandle(QtPushButton);
@@ -181,6 +191,16 @@ begin
   TEventFilterMethod(Method) := QtPushButton.EventFilter;
 
   QObject_hook_hook_events(Hook, Method);
+
+  // OnClick Event
+
+  QAbstractButton_clicked2_Event(Method) := QtPushButton.SlotClicked;
+
+  QAbstractButton_hook_hook_clicked2(QAbstractButton_hook_create(QtPushButton.Widget), Method);
+
+  // Focus
+
+  QWidget_setFocusPolicy(QtPushButton.Widget, QtStrongFocus);
 
   // Returns the Handle
 

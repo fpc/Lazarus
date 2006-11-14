@@ -886,7 +886,7 @@ var
 begin
   QtCheckBox := TQtCheckBox.Create(AWinControl, AParams);
 
-//  SetSlots(QtStaticText);
+  // Focus
 
   QWidget_setFocusPolicy(QtCheckBox.Widget, QtStrongFocus);
   
@@ -1003,6 +1003,8 @@ begin
   TEventFilterMethod(Method) := QtRadioButton.EventFilter;
 
   QObject_hook_hook_events(Hook, Method);}
+  
+  // Focus
   
   QWidget_setFocusPolicy(QtRadioButton.Widget, QtStrongFocus);
   

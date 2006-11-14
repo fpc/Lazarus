@@ -213,24 +213,32 @@ end;
 
   Returns: Nothing
 
-  Shows or hides a wi/dget.
+  Shows or hides a widget.
  ------------------------------------------------------------------------------}
 class procedure TQtWSWinControl.ShowHide(const AWinControl: TWinControl);
 begin
+  {$ifdef VerboseQt}
+    WriteLn('Trace:> [TQtWSWinControl.ShowHide]');
+  {$endif}
+
   if AWinControl = nil then exit;
 
   if not AWinControl.HandleAllocated then exit;
+
+  { if the widget is a form, this is a place to set the Tab order }
+  if (AWinControl is TForm) and AWinControl.HandleObjectShouldBeVisible then
+   TQtMainWindow(AWinControl.Handle).SetTabOrders;
 
   if AWinControl.HandleObjectShouldBeVisible then
    QWidget_setVisible(TQtWidget(AWinControl.Handle).Widget, True)
   else QWidget_setVisible(TQtWidget(AWinControl.Handle).Widget, False);
   
   {$ifdef VerboseQt}
-    Write('TQtWSWinControl.ShowHide ');
+    Write('Trace:< [TQtWSWinControl.ShowHide] ');
 
     if AWinControl is TForm then Write('Is TForm, ');
 
-    if AWinControl.Visible then WriteLn('Visible: True')
+    if AWinControl.HandleObjectShouldBeVisible then WriteLn('Visible: True')
     else WriteLn('Visible: False');
   {$endif}
 end;
