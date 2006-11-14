@@ -169,5 +169,89 @@ begin
   end;
 end;
 
+class procedure TGtk2WSCustomMemo.SetSelStart(const ACustomEdit: TCustomEdit;
+  NewStart: integer);
+var
+  TextView: PGtkTextView;
+  TextBuffer: PGtkTextBuffer;
+  TextIter: TGtkTextIter;
+begin
+  if not ACustomEdit.HandleAllocated then exit;
+  TextView := PGtkTextView(GetWidgetInfo(Pointer(ACustomEdit.Handle), False)^.CoreWidget);  if not ACustomEdit.HandleAllocated then exit;
+  TextBuffer := gtk_text_view_get_buffer(TextView);
+  gtk_text_buffer_get_iter_at_offset(TextBuffer, @TextIter, NewStart);
+  gtk_text_buffer_place_cursor(TextBuffer, @TextIter);
+end;
+
+class procedure TGtk2WSCustomMemo.SetSelLength(const ACustomEdit: TCustomEdit;
+  NewLength: integer);
+var
+  TextView: PGtkTextView;
+  TextBuffer: PGtkTextBuffer;
+  StartIter, EndIter: TGtkTextIter;
+  SelStart: Integer;
+begin
+  if not ACustomEdit.HandleAllocated then exit;
+  TextView := PGtkTextView(GetWidgetInfo(Pointer(ACustomEdit.Handle), False)^.CoreWidget);  if not ACustomEdit.HandleAllocated then exit;
+  TextBuffer := gtk_text_view_get_buffer(TextView);
+  SelStart := GetSelStart(ACustomEdit);
+
+  gtk_text_buffer_get_iter_at_offset(TextBuffer, @StartIter, SelStart);
+  gtk_text_buffer_get_iter_at_offset(TextBuffer, @StartIter, SelStart+NewLength);
+
+  // missing in the bindings!
+  //gtk_text_buffer_select_range(TextBuffer, @StartIter, @EndIter);
+  
+  // remove this line when gtk_text_buffer_select_range is available
+  gtk_text_buffer_move_mark(TextBuffer, gtk_text_buffer_get_insert(TextBuffer), @StartIter);
+end;
+
+class function TGtk2WSCustomMemo.GetSelStart(const ACustomEdit: TCustomEdit
+  ): integer;
+var
+  TextView: PGtkTextView;
+  TextBuffer: PGtkTextBuffer;
+  TextMark: PGtkTextMark;
+  TextIter: TGtkTextIter;
+  StartIter, EndIter: TGtkTextIter;
+  StartPos, EndPos: Integer;
+begin
+  Result := 0;
+  if not ACustomEdit.HandleAllocated then exit;
+  
+  TextView := PGtkTextView(GetWidgetInfo(Pointer(ACustomEdit.Handle), False)^.CoreWidget);  if not ACustomEdit.HandleAllocated then exit;
+  TextBuffer := gtk_text_view_get_buffer(TextView);
+  TextMark := gtk_text_buffer_get_insert(TextBuffer);
+  gtk_text_buffer_get_iter_at_mark(TextBuffer, @TextIter, TextMark);
+  
+  Result := gtk_text_iter_get_offset(@TextIter);
+  if GetSelLength(ACustomEdit) = 0 then Exit;
+  
+  if not gtk_text_buffer_get_selection_bounds(TextBuffer, @StartIter, @EndIter) then Exit;
+  
+  StartPos := gtk_text_iter_get_offset(@StartIter);
+  EndPos := gtk_text_iter_get_offset(@EndIter);
+  
+  Result := Min(StartPos, EndPos);
+end;
+
+class function TGtk2WSCustomMemo.GetSelLength(const ACustomEdit: TCustomEdit
+  ): integer;
+var
+  TextView: PGtkTextView;
+  TextBuffer: PGtkTextBuffer;
+  StartIter, EndIter: TGtkTextIter;
+  TmpStr: String;
+begin
+  Result := 0;
+  if not ACustomEdit.HandleAllocated then exit;
+
+  TextView := PGtkTextView(GetWidgetInfo(Pointer(ACustomEdit.Handle), False)^.CoreWidget);  if not ACustomEdit.HandleAllocated then exit;
+  TextBuffer := gtk_text_view_get_buffer(TextView);
+  if not gtk_text_buffer_get_selection_bounds(TextBuffer, @StartIter, @EndIter) then Exit;
+
+  Result := Abs(gtk_text_iter_get_offset(@EndIter) - gtk_text_iter_get_offset(@StartIter));
+end;
+
 
 

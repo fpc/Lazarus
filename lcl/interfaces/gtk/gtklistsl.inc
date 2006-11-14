@@ -80,7 +80,13 @@ begin
 
   // get itemindex and area
   ItemIndex:=g_list_index(GtkList^.children,Data);
+  {$IFDEF GTK1}
   AreaRect:=Bounds(Area^.x,Area^.y,Area^.Width,Area^.Height);
+  {$ELSE}
+  with Widget^.allocation do begin
+    AreaRect:=Bounds(x,y,width,height);
+  end;
+  {$ENDIF}
   
   // collect state flags
   State:=[odPainted];
