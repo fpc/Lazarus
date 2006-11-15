@@ -117,7 +117,7 @@ begin
   FButtonType := ButtonType;
 
   Parent := FUpDown;
-  ControlStyle := ControlStyle + [csNoFocus];
+  ControlStyle := ControlStyle + [csNoFocus, csNoDesignSelectable];
   OnMouseDown := @ButtonMouseDown;
   OnMouseUp := @ButtonMouseUp;
   OnDblClick := @DoubleClick;
