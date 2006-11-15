@@ -1,14 +1,12 @@
 object GUITestRunner: TGUITestRunner
-  Left = 505
+  Left = 652
   Height = 613
-  Top = 117
+  Top = 255
   Width = 575
   HorzScrollBar.Page = 574
   VertScrollBar.Page = 612
   ActiveControl = BtnRun
   Caption = 'FPCUnit - run unit tests'
-  ClientHeight = 613
-  ClientWidth = 575
   Constraints.MinHeight = 200
   Constraints.MinWidth = 250
   Icon.Data = {
@@ -39,8 +37,6 @@ object GUITestRunner: TGUITestRunner
     AutoSize = True
     BevelInner = bvRaised
     BevelOuter = bvNone
-    ClientHeight = 88
-    ClientWidth = 575
     Constraints.MinHeight = 50
     Constraints.MinWidth = 450
     FullRepaint = False
@@ -265,6 +261,7 @@ object GUITestRunner: TGUITestRunner
       AutoSize = True
       BorderSpacing.Around = 6
       Constraints.MaxHeight = 38
+      Constraints.MaxWidth = 390
       Glyph.Data = {
         5A0500002F2A2058504D202A2F0A7374617469632063686172202A6772617068
         69635B5D203D207B0A2232322032322035302031222C0A222E2063204E6F6E65
@@ -320,8 +317,6 @@ object GUITestRunner: TGUITestRunner
     Width = 575
     Align = alClient
     Caption = 'Panel2'
-    ClientHeight = 525
-    ClientWidth = 575
     FullRepaint = False
     TabOrder = 1
     TabStop = True
@@ -337,8 +332,6 @@ object GUITestRunner: TGUITestRunner
       TabOrder = 0
       object tsTestTree: TTabSheet
         Caption = 'Testcase tree'
-        ClientHeight = 497
-        ClientWidth = 565
         object Splitter1: TSplitter
           Cursor = crVSplit
           Height = 5
@@ -382,16 +375,14 @@ object GUITestRunner: TGUITestRunner
       end
       object tsResultsXML: TTabSheet
         Caption = 'Results XML'
-        ClientHeight = 497
-        ClientWidth = 565
         object XMLSynEdit: TSynEdit
           AnchorSideTop.Side = asrBottom
           AnchorSideRight.Side = asrBottom
           AnchorSideBottom.Side = asrBottom
           Left = 6
-          Height = 451
+          Height = 447
           Top = 40
-          Width = 553
+          Width = 557
           Align = alClient
           BorderSpacing.Around = 6
           Font.CharSet = ANSI_CHARSET
@@ -734,7 +725,7 @@ object GUITestRunner: TGUITestRunner
         end
         object XMLToolBar: TToolBar
           Height = 34
-          Width = 565
+          Width = 569
           ButtonHeight = 30
           ButtonWidth = 30
           Caption = 'ToolBar'
@@ -1712,11 +1703,13 @@ object GUITestRunner: TGUITestRunner
     top = 48
     object actCopy: TAction
       Category = 'edit'
+      DisableIfNoHandler = True
       Hint = 'Copy results to clipboard'
       OnExecute = actCopyExecute
     end
     object actCut: TAction
       Category = 'edit'
+      DisableIfNoHandler = True
       ImageIndex = 1
       OnExecute = actCutExecute
     end
@@ -2076,6 +2069,7 @@ object GUITestRunner: TGUITestRunner
     object RunAction: TAction
       Category = 'Run'
       Caption = '  &Run'
+      DisableIfNoHandler = True
       Hint = 'Run all checked test(s)'
       ImageIndex = 3
       OnExecute = RunExecute
@@ -2083,6 +2077,7 @@ object GUITestRunner: TGUITestRunner
     end
     object ActCloseForm: TAction
       Caption = 'Quit'
+      DisableIfNoHandler = True
       Hint = 'Quit Testing'
       OnExecute = ActCloseFormExecute
       ShortCut = 16451
@@ -2090,6 +2085,7 @@ object GUITestRunner: TGUITestRunner
     object actCopyErrorMsg: TAction
       Category = 'Edit'
       Caption = 'actCopyErrorMsg'
+      DisableIfNoHandler = True
       ImageIndex = 0
       OnExecute = ActCopyErrorMsgExecute
       OnUpdate = actCopyErrorMsgUpdate
@@ -2097,28 +2093,33 @@ object GUITestRunner: TGUITestRunner
     object ActCheckCurrentSuite: TAction
       Category = 'Selection'
       Caption = 'Check the Current Suite'
+      DisableIfNoHandler = True
       OnExecute = ActCheckCurrentSuiteExecute
       OnUpdate = ActRunHighLightedTestUpdate
     end
     object ActUncheckCurrentSuite: TAction
       Category = 'Selection'
       Caption = 'Uncheck the Current Suite'
+      DisableIfNoHandler = True
       OnExecute = ActUncheckCurrentSuiteExecute
       OnUpdate = ActRunHighLightedTestUpdate
     end
     object ActCheckAll: TAction
       Category = 'Selection'
       Caption = 'Check All Tests'
+      DisableIfNoHandler = True
       OnExecute = ActCheckAllExecute
     end
     object ActUncheckAll: TAction
       Category = 'Selection'
       Caption = 'Uncheck all tests'
+      DisableIfNoHandler = True
       OnExecute = ActUncheckAllExecute
     end
     object ActRunHighlightedTest: TAction
       Category = 'Run'
       Caption = 'Run highlighted test'
+      DisableIfNoHandler = True
       ImageIndex = 4
       OnExecute = ActRunHighlightedTestExecute
       OnUpdate = ActRunHighLightedTestUpdate
