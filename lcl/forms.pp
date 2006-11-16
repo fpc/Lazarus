@@ -862,12 +862,15 @@ type
     Data: PtrInt;
     NextItem: PAsyncCallQueueItem;
   end;
+  
+  TApplicationType = (atDefault,atDesktop,atHandheld,atPDA,atSmartphone);
 
   { TApplication }
 
   TApplication = class(TCustomApplication)
   private
     FApplicationHandlers: array[TApplicationHandlerType] of TMethodList;
+    FApplicationType: TApplicationType;
     FCaptureExceptions: boolean;
     FFindGlobalComponentEnabled: boolean;
     FFlags: TApplicationFlags;
@@ -1061,6 +1064,7 @@ type
     property ShowHint: Boolean read FShowHint write SetShowHint;
     property ShowMainForm: Boolean read FShowMainForm write FShowMainForm default true;
     property Title: String read GetTitle write SetTitle;
+    property ApplicationType : TApplicationType read FApplicationType write FApplicationType;
   end;
 
 
