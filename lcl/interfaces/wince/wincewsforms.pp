@@ -206,9 +206,9 @@ begin
   if GetDesigningBorderStyle(AForm) in [bsNone, bsSingle, bsSizeable] then
   begin
     if biMinimize in BorderIcons then
-      Result := Result or WS_MINIMIZEBOX;
+      Result := Result or WS_MINIMIZE;
     if biMaximize in BorderIcons then
-      Result := Result or WS_MAXIMIZEBOX;
+      Result := Result or WS_MAXIMIZE;
   end;
 end;
 

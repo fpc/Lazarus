@@ -135,13 +135,13 @@ End;
 procedure TWinCEWidgetSet.DCSetPixel(CanvasHandle: HDC; X, Y: integer;
   AColor: TGraphicsColor);
 begin
-
+  Windows.SetPixel(CanvasHandle, X, Y, AColor);
 end;
 
 function TWinCEWidgetSet.DCGetPixel(CanvasHandle: HDC; X, Y: integer
   ): TGraphicsColor;
 begin
-  Result:=clNone;
+  Result := Windows.GetPixel(CanvasHandle, X, Y);
 end;
 
 procedure TWinCEWidgetSet.DCRedraw(CanvasHandle: HDC);
@@ -298,6 +298,7 @@ end;
 procedure TWinCEWidgetSet.AppTerminate;
 begin
   AppTerminated := True;
+  PostQuitMessage(0);
 end;
 
 function TWinCEWidgetSet.InitHintFont(HintFont: TObject): Boolean;

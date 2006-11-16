@@ -5,7 +5,8 @@ unit winceproc;
 interface
 
 uses
-  Windows, Classes, LMessages, LCLType, LCLProc, Controls, Forms, Menus,WinCEWinAPIEmu;
+  Windows, Classes, LMessages, LCLType, LCLProc, Controls, Forms, Menus,
+  WinCEWinAPIEmu;
   
   Type
   TEventType = (etNotify, etKey, etKeyPress, etMouseWheel, etMouseUpDown);
@@ -283,27 +284,48 @@ end;
 
 function BorderStyleToWin32Flags(Style: TFormBorderStyle): DWORD;
 begin
-  Result := WS_CLIPCHILDREN or WS_CLIPSIBLINGS;
-  case Style of
-  bsSizeable, bsSizeToolWin:
-    Result := Result or (WS_OVERLAPPED or WS_THICKFRAME or WS_CAPTION);
-  bsSingle, bsToolWindow:
-    Result := Result or (WS_OVERLAPPED or WS_BORDER or WS_CAPTION);
-  bsDialog:
-    Result := Result or (WS_POPUP or WS_BORDER or WS_CAPTION);
-  bsNone:
-    Result := Result or WS_POPUP;
+  case Application.ApplicationType of
+  atDesktop,atHandheld:
+    begin
+      Result := WS_CLIPCHILDREN or WS_CLIPSIBLINGS;
+      case Style of
+      bsSizeable, bsSizeToolWin:
+        Result := Result or (WS_OVERLAPPED or WS_THICKFRAME or WS_CAPTION);
+      bsSingle, bsToolWindow:
+        Result := Result or (WS_OVERLAPPED or WS_BORDER or WS_CAPTION);
+      bsDialog:
+        Result := Result or (WS_POPUP or WS_BORDER or WS_CAPTION);
+      bsNone:
+        Result := Result or WS_POPUP;
+      end;
+    end;
+  atPDA,atSmartphone,atDefault:
+    begin
+      Result := WS_VISIBLE;
+    end;
   end;
 end;
 
 function BorderStyleToWin32FlagsEx(Style: TFormBorderStyle): DWORD;
 begin
   Result := 0;
-  case Style of
-  bsDialog:
-    Result := WS_EX_DLGMODALFRAME or WS_EX_WINDOWEDGE;
-  bsToolWindow, bsSizeToolWin:
-    Result := WS_EX_TOOLWINDOW;
+  case Application.ApplicationType of
+  atDesktop,atHandheld:
+    begin
+      case Style of
+      bsDialog:
+        Result := WS_EX_DLGMODALFRAME or WS_EX_WINDOWEDGE;
+      bsToolWindow, bsSizeToolWin:
+        Result := WS_EX_TOOLWINDOW;
+      end;
+    end;
+  atPDA,atSmartphone,atDefault:
+    begin
+      case Style of
+      bsDialog:
+        Result := WS_EX_CAPTIONOKBTN;
+      end;
+    end;
   end;
 end;
 
