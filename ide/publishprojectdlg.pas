@@ -75,13 +75,8 @@ type
     SaveSettingsButton: TButton;
     procedure BrowseDestDirBitBtnCLICK(Sender: TObject);
     procedure DestDirGroupBoxRESIZE(Sender: TObject);
-    procedure ExcludeFilterGroupboxRESIZE(Sender: TObject);
-    procedure FilesGroupboxRESIZE(Sender: TObject);
     procedure FormCreate(Sender: TObject);
-    procedure IncludeFilterGroupboxRESIZE(Sender: TObject);
     procedure OkButtonCLICK(Sender: TObject);
-    procedure ProjectInfoGroupboxResize(Sender: TObject);
-    procedure PublishProjectDialogResize(Sender: TObject);
     procedure SaveSettingsButtonClick(Sender: TObject);
   private
     FOptions: TPublishModuleOptions;
@@ -147,14 +142,6 @@ begin
   SelectDirDialog.Free;
 end;
 
-procedure TPublishProjectDialog.ExcludeFilterGroupboxRESIZE(Sender: TObject);
-begin
-end;
-
-procedure TPublishProjectDialog.FilesGroupboxRESIZE(Sender: TObject);
-begin
-end;
-
 procedure TPublishProjectDialog.FormCreate(Sender: TObject);
 begin
   DestDirGroupBox.Caption:=lisDestinationDirectory;
@@ -185,22 +172,10 @@ begin
   CancelButton.Caption:=dlgCancel;
 end;
 
-procedure TPublishProjectDialog.IncludeFilterGroupboxRESIZE(Sender: TObject);
-begin
-end;
-
 procedure TPublishProjectDialog.OkButtonCLICK(Sender: TObject);
 begin
   if not CheckFilter then exit;
   if Options<>nil then SaveToOptions(Options);
-end;
-
-procedure TPublishProjectDialog.ProjectInfoGroupboxResize(Sender: TObject);
-begin
-end;
-
-procedure TPublishProjectDialog.PublishProjectDialogResize(Sender: TObject);
-begin
 end;
 
 procedure TPublishProjectDialog.SaveSettingsButtonClick(Sender: TObject);
