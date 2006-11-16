@@ -1,293 +1,278 @@
 object PublishProjectDialog: TPublishProjectDialog
+  Left = 330
+  Height = 505
+  Top = 158
+  Width = 484
+  HorzScrollBar.Page = 483
+  VertScrollBar.Page = 504
   ActiveControl = DestDirComboBox
   BorderIcons = [biSystemMenu]
   Caption = 'Publish Project'
-  ClientHeight = 505
-  ClientWidth = 484
   OnCreate = FormCreate
   OnResize = PublishProjectDialogRESIZE
-  PixelsPerInch = 112
   Position = poScreenCenter
-  HorzScrollBar.Page = 483
-  VertScrollBar.Page = 504
-  Left = 307
-  Height = 505
-  Top = 165
-  Width = 484
   object DestDirGroupBox: TGroupBox
-    Align = alTop
-    BorderSpacing.Around = 6
-    Caption = 'Destination directory'
-    ClientHeight = 94
-    ClientWidth = 468
-    ParentCtl3D = False
-    TabOrder = 0
-    OnResize = DestDirGroupBoxRESIZE
     Left = 6
     Height = 111
     Top = 6
     Width = 472
+    Align = alTop
+    BorderSpacing.Around = 6
+    Caption = 'Destination directory'
+    ParentCtl3D = False
+    TabOrder = 0
+    OnResize = DestDirGroupBoxRESIZE
     object CommandAfterLabel: TLabel
+      Left = 6
+      Height = 17
+      Top = 33
+      Width = 450
       Anchors = [akTop, akLeft, akRight]
       Caption = 'Command after:'
       Color = clNone
       ParentColor = False
-      Left = 6
-      Height = 13
-      Top = 33
-      Width = 450
     end
     object DestDirComboBox: TComboBox
+      Left = 6
+      Height = 21
+      Top = 1
+      Width = 414
       Anchors = [akTop, akLeft, akRight]
       AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
       MaxLength = 0
       ParentCtl3D = False
       TabOrder = 0
       Text = 'DestDirComboBox'
-      Left = 6
-      Height = 21
-      Top = 1
-      Width = 414
     end
     object BrowseDestDirBitBtn: TBitBtn
+      AnchorSideBottom.Control = DestDirComboBox
+      AnchorSideBottom.Side = asrBottom
+      Left = 429
+      Height = 21
+      Top = 1
+      Width = 29
       Anchors = [akTop, akRight, akBottom]
       AutoSize = True
-      
       Caption = '...'
       NumGlyphs = 0
       OnClick = BrowseDestDirBitBtnCLICK
       TabOrder = 1
-      AnchorSideBottom.Control = DestDirComboBox
-      AnchorSideBottom.Side = asrBottom
-      Left = 436
-      Height = 21
-      Top = 1
-      Width = 22
     end
     object CommandAfterCombobox: TComboBox
+      Left = 6
+      Height = 21
+      Top = 58
+      Width = 452
       Anchors = [akTop, akLeft, akRight]
       AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
       MaxLength = 0
       ParentCtl3D = False
       TabOrder = 2
       Text = 'CommandAfterCombobox'
-      Left = 6
-      Height = 21
-      Top = 58
-      Width = 452
     end
   end
   object FilesGroupbox: TGroupBox
+    Left = 6
+    Height = 57
+    Top = 123
+    Width = 472
     Align = alTop
     AutoSize = True
     BorderSpacing.Around = 6
     Caption = 'Files'
-    ClientHeight = 36
-    ClientWidth = 468
     ParentCtl3D = False
     TabOrder = 1
     OnResize = FilesGroupboxRESIZE
-    Left = 6
-    Height = 53
-    Top = 123
-    Width = 472
     object IgnoreBinariesCheckbox: TCheckBox
+      Left = 6
+      Height = 24
+      Top = 6
+      Width = 456
       Align = alTop
       AllowGrayed = True
       BorderSpacing.Around = 6
       Caption = 'Ignore binaries'
       TabOrder = 0
-      Left = 6
-      Height = 24
-      Top = 6
-      Width = 456
     end
   end
   object ProjectInfoGroupbox: TGroupBox
+    Left = 6
+    Height = 87
+    Top = 374
+    Width = 472
     Align = alTop
     AutoSize = True
     BorderSpacing.Around = 6
     Caption = 'Project Information'
-    ClientHeight = 66
-    ClientWidth = 468
     ParentCtl3D = False
-    TabOrder = 2
+    TabOrder = 4
     OnResize = ProjectInfoGroupboxRESIZE
-    Left = 6
-    Height = 83
-    Top = 370
-    Width = 472
     object SaveClosedEditorFilesInfoCheckbox: TCheckBox
+      Left = 6
+      Height = 24
+      Top = 6
+      Width = 456
       Align = alTop
       AllowGrayed = True
       BorderSpacing.Around = 6
       Caption = 'Save editor info of closed files'
       TabOrder = 0
-      Left = 6
-      Height = 24
-      Top = 6
-      Width = 456
     end
     object SaveEditorInfoOfNonProjectFilesCheckbox: TCheckBox
+      Left = 6
+      Height = 24
+      Top = 36
+      Width = 456
       Align = alTop
       AllowGrayed = True
       BorderSpacing.Around = 6
       Caption = 'Save editor info of non project files'
       TabOrder = 1
-      Left = 6
-      Height = 24
-      Top = 36
-      Width = 456
     end
   end
   object SaveSettingsButton: TButton
-    Anchors = [akTop, akRight, akBottom]
-    AutoSize = True
-    BorderSpacing.Right = 6
-    
-    Caption = 'Save settings'
-    OnClick = SaveSettingsButtonCLICK
-    TabOrder = 3
+    AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = CancelButton
     AnchorSideRight.Control = CancelButton
-    AnchorSideBottom.Control = CancelButton
+    AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 257
-    Height = 28
-    Top = 471
-    Width = 85
+    Left = 6
+    Height = 30
+    Top = 469
+    Width = 112
+    Anchors = [akLeft, akBottom]
+    AutoSize = True
+    BorderSpacing.Around = 6
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Save settings'
+    OnClick = SaveSettingsButtonCLICK
+    TabOrder = 5
   end
   object IncludeFilterGroupbox: TGroupBox
+    Left = 6
+    Height = 88
+    Top = 186
+    Width = 472
     Align = alTop
     BorderSpacing.Around = 6
     Caption = 'Include Filter'
-    ClientHeight = 71
-    ClientWidth = 468
     ParentCtl3D = False
-    TabOrder = 4
+    TabOrder = 2
     TabStop = True
     OnResize = IncludeFilterGroupboxRESIZE
-    Left = 6
-    Height = 88
-    Top = 182
-    Width = 472
     object UseIncludeFilterCheckbox: TCheckBox
-      AllowGrayed = True
-      Caption = 'Use Include Filter'
-      TabOrder = 0
       Left = 6
       Height = 24
       Top = 1
-      Width = 125
+      Width = 149
+      AllowGrayed = True
+      Caption = 'Use Include Filter'
+      TabOrder = 0
     end
     object IncFilterSimpleSyntaxCheckbox: TCheckBox
+      Left = 199
+      Height = 24
+      Top = 1
+      Width = 128
       AllowGrayed = True
       Caption = 'Simple Syntax'
       ParentShowHint = False
       ShowHint = True
       TabOrder = 1
-      Left = 199
-      Height = 24
-      Top = 1
-      Width = 106
     end
     object IncludeFilterCombobox: TComboBox
+      Left = 6
+      Height = 21
+      Top = 33
+      Width = 452
       Anchors = [akTop, akLeft, akRight]
       AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
       MaxLength = 0
       ParentCtl3D = False
       TabOrder = 2
       Text = 'IncludeFilterCombobox'
-      Left = 6
-      Height = 21
-      Top = 33
-      Width = 452
     end
   end
   object ExcludeFilterGroupbox: TGroupBox
+    Left = 6
+    Height = 88
+    Top = 280
+    Width = 472
     Align = alTop
     BorderSpacing.Around = 6
     Caption = 'Exclude Filter'
-    ClientHeight = 71
-    ClientWidth = 468
     ParentCtl3D = False
-    TabOrder = 5
+    TabOrder = 3
     TabStop = True
     OnResize = ExcludeFilterGroupboxRESIZE
-    Left = 6
-    Height = 88
-    Top = 276
-    Width = 472
     object UseExcludeFilterCheckbox: TCheckBox
-      AllowGrayed = True
-      Caption = 'Use Exclude Filter'
-      TabOrder = 0
       Left = 6
       Height = 24
       Top = 1
-      Width = 129
+      Width = 155
+      AllowGrayed = True
+      Caption = 'Use Exclude Filter'
+      TabOrder = 0
     end
     object ExcFilterSimpleSyntaxCheckbox: TCheckBox
+      Left = 199
+      Height = 24
+      Top = 1
+      Width = 128
       AllowGrayed = True
       Caption = 'Simple Syntax'
       ParentShowHint = False
       ShowHint = True
       TabOrder = 1
-      Left = 199
-      Height = 24
-      Top = 1
-      Width = 106
     end
     object ExcludeFilterCombobox: TComboBox
+      Left = 6
+      Height = 21
+      Top = 33
+      Width = 454
       Anchors = [akTop, akLeft, akRight]
       AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
       MaxLength = 0
       ParentCtl3D = False
       TabOrder = 2
       Text = 'ExcludeFilterCombobox'
-      Left = 6
-      Height = 21
-      Top = 33
-      Width = 454
     end
   end
   object OkButton: TBitBtn
+    AnchorSideRight.Control = CancelButton
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 324
+    Height = 32
+    Top = 467
+    Width = 61
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6
-    
     Caption = '&OK'
     Default = True
     Kind = bkOK
     ModalResult = 1
     NumGlyphs = 0
     TabOrder = 6
+  end
+  object CancelButton: TBitBtn
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 427
-    Height = 28
-    Top = 471
-    Width = 51
-  end
-  object CancelButton: TBitBtn
+    Left = 391
+    Height = 30
+    Top = 469
+    Width = 87
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6
-    
     Cancel = True
     Caption = 'Cancel'
     Kind = bkCancel
     ModalResult = 2
     NumGlyphs = 0
     TabOrder = 7
-    AnchorSideRight.Control = OkButton
-    AnchorSideBottom.Control = Owner
-    AnchorSideBottom.Side = asrBottom
-    Left = 348
-    Height = 28
-    Top = 471
-    Width = 73
   end
 end
