@@ -911,6 +911,7 @@ type
     FOnShowHint: TShowHintEvent;
     FOnUserInput: TOnUserInputEvent;
     FAsyncCallQueue: PAsyncCallQueueItem;
+    FAsyncCallQueueLast: PAsyncCallQueueItem;
     FShowHint: Boolean;
     FShowMainForm: Boolean;
     FLastMousePos: TPoint;

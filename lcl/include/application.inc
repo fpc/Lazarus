@@ -788,6 +788,7 @@ begin
     lItem^.Method(lItem^.Data);
     Dispose(lItem);
   end;
+  FAsyncCallQueueLast := nil;
 end;
 
 procedure TApplication.DoBeforeFinalization;
@@ -1561,8 +1562,12 @@ begin
   New(lItem);
   lItem^.Method := AMethod;
   lItem^.Data := Data;
-  lItem^.NextItem := FAsyncCallQueue;
-  FAsyncCallQueue := lItem;
+  lItem^.NextItem := nil;
+  if FAsyncCallQueue = nil then
+    FAsyncCallQueue := lItem
+  else
+    FAsyncCallQueueLast^.NextItem := lItem;
+  FAsyncCallQueueLast := lItem;
 end;
 
 procedure TApplication.FreeComponent(Data: PtrInt);
