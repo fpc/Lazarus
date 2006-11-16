@@ -38,10 +38,14 @@
 function TGtk2WidgetSet.BeginPaint(Handle: hWnd; Var PS : TPaintStruct) : hdc;
 var
   paintrect : TGDKRectangle;
+  Control: TWinControl;
 begin
   result := Inherited BeginPaint(Handle, PS);
+  
+  if Handle <> 0 then Control := TWinControl(GetLCLObject(Pointer(Handle)))
+  else Control := nil;
 
-  If (Handle <> 0) and (not GTK_WIDGET_DOUBLE_BUFFERED((PGTKWidget(Handle)))) then
+  If (Control <> nil) and (not GTK_WIDGET_DOUBLE_BUFFERED((PGTKWidget(Handle)))) and (Control.DoubleBuffered) then
   begin
     paintrect.x := PS.rcPaint.Left;
     paintrect.y := PS.rcPaint.Top;
@@ -233,8 +237,14 @@ end;
  ------------------------------------------------------------------------------}
  
 Function TGtk2WidgetSet.EndPaint(Handle : hwnd; var PS : TPaintStruct): Integer;
+var
+  Control: TWinControl;
 begin
-  If (Handle <> 0) and (not GTK_WIDGET_DOUBLE_BUFFERED((PGTKWidget(Handle)))) then
+
+  if Handle <> 0 then Control := TWinControl(GetLCLObject(Pointer(Handle)))
+  else Control := nil;
+
+  If (Control <> nil) and (not GTK_WIDGET_DOUBLE_BUFFERED((PGTKWidget(Handle)))) and (Control.DoubleBuffered) then
   begin
     if PS.HDC <> 0 then begin
       gdk_window_thaw_updates(TDeviceContext(PS.HDC).Drawable);
