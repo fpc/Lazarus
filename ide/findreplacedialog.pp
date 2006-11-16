@@ -328,11 +328,9 @@ begin
   if ssoReplace in NewOptions then begin
     Caption:=lisMenuReplace;
     OkButton.Caption:=lisMenuReplace;
-    CancelButton.AnchorSideRight.Control := ReplaceAllButton
   end else begin
-    Caption:=lisMenuFind ;
-    OkButton.Caption:=lisMenuFind ;
-    CancelButton.AnchorSideRight.Control := OKButton;
+    Caption:=lisMenuFind;
+    OkButton.Caption:=lisMenuFind;
   end;
   //DebugLn(['TLazFindReplaceDialog.SetOptions END ssoSelectedOnly=',ssoSelectedOnly in NewOptions,' SelectedRadioButton.Checked=',SelectedRadioButton.Checked]);
 end;

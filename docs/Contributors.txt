@@ -13,6 +13,7 @@ Bob Wingard
 Boguslaw Brandys
 Boris Arko
 Christian Iversen
+Christian Ulrich
 Christopher Kirkpatrick
 Cliff Baeseman
 Colin Western
@@ -29,6 +30,7 @@ Florian Koeberle
 Francisco Manuel
 Giuliano Colla
 GongYu
+Graeme Geldenhuys 
 Hans-Joachim Ott
 Hwang Weng Sun
 Ido Kanner
