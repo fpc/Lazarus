@@ -263,6 +263,7 @@ begin
     Wordbreak  := True;
     SystemFont := True;
     Opaque     := False;
+    ShowPrefix := True;
   end;
 
   // calculate the width & height we need to display the Message
@@ -472,6 +473,7 @@ begin
     Wordbreak  := True;
     SystemFont := True;
     Opaque     := False;
+    ShowPrefix := True;
   end;
 
   // calculate the width & height we need to display the Message
