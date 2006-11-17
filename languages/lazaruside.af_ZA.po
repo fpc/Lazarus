@@ -2573,7 +2573,7 @@ msgid "Executing command after"
 msgstr ""
 
 #: lazarusidestrconsts:lisexecutingcommandbefore
-msgid "Executing command befor"
+msgid "Executing command before"
 msgstr ""
 
 #: lazarusidestrconsts:lisexecutionpaused

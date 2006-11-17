@@ -2559,7 +2559,7 @@ msgid "Executing command after"
 msgstr "Виконати команду після"
 
 #: lazarusidestrconsts:lisexecutingcommandbefore
-msgid "Executing command befor"
+msgid "Executing command before"
 msgstr "Виконати команду до"
 
 #: lazarusidestrconsts:lisexecutionpaused

@@ -2570,7 +2570,7 @@ msgid "Executing command after"
 msgstr "Voer het commando uit Na"
 
 #: lazarusidestrconsts:lisexecutingcommandbefore
-msgid "Executing command befor"
+msgid "Executing command before"
 msgstr "Voer het commando uit Voor"
 
 #: lazarusidestrconsts:lisexecutionpaused
