@@ -3663,7 +3663,7 @@ begin
   If CollectionForm=nil then
     CollectionForm := TCollectionPropertyEditorForm.Create(Application);
   CollectionForm.SetCollection(TheCollection,GetComponent(0),GetName);
-  CollectionForm.Show;
+  CollectionForm.EnsureVisible;
 end;
 
 { TClassPropertyEditor }
