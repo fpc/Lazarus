@@ -46,7 +46,7 @@ interface
 {$endif}
 
 uses
-  SysUtils, Classes, FileUtil;
+  SysUtils, Classes, FileUtil, InterfaceBase;
 
 type
   TLCLPlatform = (
@@ -141,6 +141,11 @@ begin
     Result:=SearchFileInPath(Executable,'',
                              SysUtils.GetEnvironmentVariable('PATH'),':',
                              [sffDontSearchInBasePath]);
+end;
+
+function GetDefaultLCLWidgetType: string;
+begin
+  Result:=WidgetSet.WidgetSetName;
 end;
 
 function GetDefaultLCLLibPaths(const Prefix, Postfix, Separator: string): string;

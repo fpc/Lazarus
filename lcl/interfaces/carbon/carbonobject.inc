@@ -350,6 +350,11 @@ begin
 
 end;
 
+function TCarbonWidgetSet.WidgetSetName: string;
+begin
+  Result:='carbon';
+end;
+
 function TCarbonWidgetSet.DCGetPixel(CanvasHandle: HDC; X, Y: integer
   ): TGraphicsColor;
 begin

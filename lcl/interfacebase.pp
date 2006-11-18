@@ -67,6 +67,8 @@ type
     procedure AppMinimize; virtual; abstract;
     procedure AppBringToFront; virtual; abstract;
     procedure AppSetTitle(const ATitle: string); virtual;
+    
+    function  WidgetSetName: string; virtual;
 
     function  DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor; virtual; abstract;
     procedure DCSetPixel(CanvasHandle: HDC; X, Y: integer; AColor: TGraphicsColor); virtual; abstract;

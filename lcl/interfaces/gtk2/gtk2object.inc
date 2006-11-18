@@ -1007,6 +1007,11 @@ begin
   gtk_widget_show(PreviewWidget);
 end;
 
+function TGtk2WidgetSet.WidgetSetName: string;
+begin
+  Result:='gtk2';
+end;
+
 {$IFDEF ASSERT_IS_ON}
   {$UNDEF ASSERT_IS_ON}
   {$C-}

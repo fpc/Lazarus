@@ -34,10 +34,12 @@ interface
 {$endif}
  
 uses 
+  // FCL
+  Classes, Types, SysUtils, Math,
   // LCL
-  Types, InterfaceBase, SysUtils, LCLProc, LCLType, LMessages, Classes,
+  InterfaceBase, LCLProc, LCLType, LMessages,
   Controls, ExtCtrls, Forms, Dialogs, StdCtrls, Comctrls, LCLIntf,
-  GraphType, Math;
+  GraphType;
 
 type
 
@@ -55,6 +57,7 @@ type
     procedure AppMinimize; override;
     procedure AppBringToFront; override;
 //    procedure AppSetTitle(const ATitle: string); override;
+    function  WidgetSetName: string; override;
   public
     constructor Create;
     destructor Destroy; override;

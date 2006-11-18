@@ -74,7 +74,8 @@ type
       SelWidget: PGtkWidget); override;
     procedure CreatePreviewDialogControl(
       PreviewDialog: TPreviewFileDialog; SelWidget: PGtkWidget); override;
-  public    
+  public
+    function WidgetSetName: string; override;
     {$I gtk2winapih.inc}
     {$I gtk2lclintfh.inc}
   end;

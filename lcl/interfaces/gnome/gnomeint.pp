@@ -44,6 +44,9 @@ uses
   libgnome, libart, libgnomeui;
 
 type
+
+  { TGnomeWidgetSet }
+
   TGnomeWidgetSet = class(TGtkWidgetSet)
   private
     procedure PassCmdLineOptions; override;
@@ -55,6 +58,7 @@ type
 
     function CreateComponent(Sender: TObject): THandle; override;
   public
+    function  WidgetSetName: string; override;
     {$I gnomewinapih.inc}
   end;
 
@@ -287,6 +291,11 @@ begin
     FinishComponentCreate(Sender, P, SetupProps);
     
   Result:=THandle(P);
+end;
+
+function TGnomeWidgetSet.WidgetSetName: string;
+begin
+  Result:='gnome';
 end;
 
 {$I gnomewinapi.inc}

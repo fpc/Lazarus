@@ -145,6 +145,11 @@ begin
 
 end;
 
+function TQtWidgetSet.WidgetSetName: string;
+begin
+  Result:='qt';
+end;
+
 function TQtWidgetSet.DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor;
 {var
   Color: QColorH;}

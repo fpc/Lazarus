@@ -150,11 +150,6 @@ begin
   List.Add('c:\windows\temp\');
 end;
 
-function GetDefaultLCLWidgetType: string;
-begin
-  Result:='win32';
-end;
-
 procedure GetDefaultBrowser(var Browser, Params: string);
 begin
   Browser:= SearchFileInPath('rundll32.exe','',

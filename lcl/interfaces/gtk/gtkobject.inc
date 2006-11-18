@@ -1968,6 +1968,11 @@ begin
 
 end;
 
+function TGTKWidgetSet.WidgetSetName: string;
+begin
+  Result:='gtk';
+end;
+
 {------------------------------------------------------------------------------
   Method: TGtkWidgetSet.RecreateWnd
   Params:  Sender: TObject - the lcl wincontrol, that is to recreated

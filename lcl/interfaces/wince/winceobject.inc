@@ -301,6 +301,11 @@ begin
   PostQuitMessage(0);
 end;
 
+function TWinCEWidgetSet.WidgetSetName: string;
+begin
+  Result:='wince';
+end;
+
 function TWinCEWidgetSet.InitHintFont(HintFont: TObject): Boolean;
 begin
 

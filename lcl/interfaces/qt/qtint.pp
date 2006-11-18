@@ -36,10 +36,11 @@ interface
 uses 
   // Bindings - qt4 must come first to avoid type redefinition problems on Windows
   qt4,
+  // FPC
+  Classes, SysUtils, Math, Types,
   // LCL
-  Types, InterfaceBase, SysUtils, LCLProc, LCLType, LMessages, Classes,
-  Controls, ExtCtrls, Forms, Dialogs, StdCtrls, Comctrls, LCLIntf,
-  GraphType, Math;
+  InterfaceBase, LCLProc, LCLType, LMessages, Controls, ExtCtrls, Forms,
+  Dialogs, StdCtrls, Comctrls, LCLIntf, GraphType;
 
 type
 
@@ -58,6 +59,7 @@ type
     procedure AppMinimize; override;
     procedure AppBringToFront; override;
 //    procedure AppSetTitle(const ATitle: string); override;
+    function  WidgetSetName: string; override;
   public
     constructor Create;
     destructor Destroy; override;

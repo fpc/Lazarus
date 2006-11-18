@@ -176,6 +176,7 @@ type
     procedure AppProcessMessages; override;
     procedure AppWaitMessage; override;
     Procedure AppTerminate; Override;
+    function  WidgetSetName: string; override;
     Function  InitHintFont(HintFont: TObject): Boolean; override;
     Procedure AttachMenuToWindow(AMenuObject: TComponent); override;
     procedure AppRun(const ALoop: TApplicationMainLoop); override;

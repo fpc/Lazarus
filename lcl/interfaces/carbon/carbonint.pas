@@ -70,6 +70,7 @@ type
     procedure AppTerminate; override;
     procedure AppMinimize; override;
     procedure AppBringToFront; override;
+    function  WidgetSetName: string; override;
     
     function  DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor; override;
     procedure DCSetPixel(CanvasHandle: HDC; X, Y: integer; AColor: TGraphicsColor); override;

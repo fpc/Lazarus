@@ -178,11 +178,6 @@ begin
   List.Add('/var/tmp/');
 end;
 
-function GetDefaultLCLWidgetType: string;
-begin
-  Result:='gtk';
-end;
-
 procedure GetDefaultBrowser(var Browser, Params: string);
 
   function Find(const ShortFilename: string; var Filename: string): boolean;

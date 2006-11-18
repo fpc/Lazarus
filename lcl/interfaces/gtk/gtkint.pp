@@ -310,6 +310,7 @@ type
     procedure AppMinimize; override;
     procedure AppBringToFront; override;
     procedure AppSetTitle(const ATitle: string); override;
+    function  WidgetSetName: string; override;
   public
     constructor Create;
     destructor Destroy; override;

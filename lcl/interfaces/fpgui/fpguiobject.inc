@@ -145,6 +145,11 @@ begin
 
 end;
 
+function TFpGuiWidgetSet.WidgetSetName: string;
+begin
+  Result:='fpgui';
+end;
+
 function TFpGuiWidgetSet.DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor;
 begin
   Result:=clNone;

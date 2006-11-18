@@ -418,6 +418,11 @@ begin
   {$endif}
 end;
 
+function TWin32WidgetSet.WidgetSetName: string;
+begin
+  Result:='win32';
+end;
+
 {------------------------------------------------------------------------------
   Function: CreateTimer
   Params: Interval:
