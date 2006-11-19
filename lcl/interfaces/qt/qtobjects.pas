@@ -31,7 +31,7 @@ uses
   // Free Pascal
   Classes, SysUtils, Types,
   // LCL
-  Menus, LCLProc;
+  LCLType, Menus, LCLProc;
 
 type
   { TQtAction }
@@ -268,7 +268,7 @@ begin
   Handle := QImage_create(AData, width, height, format);
 
   {$ifdef VerboseQt}
-    WriteLn('TQtImage.Create Result:', Integer(Handle));
+    WriteLn('TQtImage.Create Result:', PtrInt(Handle));
   {$endif}
 end;
 

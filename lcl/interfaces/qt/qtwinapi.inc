@@ -2003,7 +2003,7 @@ begin
 
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI StretchMaskBlt] DestDC:', dbgs(DestDC), ' SrcDC:', dbgs(SrcDC),
-     ' Image:', dbgs(Integer(Image)),
+     ' Image:', dbgs(PtrInt(Image)),
      ' X:', dbgs(X), ' Y:', dbgs(Y),
      ' W:', dbgs(Width), ' H:', dbgs(Height),
      ' XSrc:', dbgs(XSrc), ' YSrc:', dbgs(YSrc),
