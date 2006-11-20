@@ -1438,9 +1438,7 @@ begin
       fErrorLine:=FCurCodeTool.ErrorPosition.Y;
     end;
   end;
-  if fErrorLine=10 then
-    RaiseCatchableException('');
-  
+
   // adjust error topline
   AdjustErrorTopLine;
   // write error

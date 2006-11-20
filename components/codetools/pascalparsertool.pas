@@ -2799,7 +2799,7 @@ function TPascalParserTool.KeyWordFuncExports: boolean;
   end;
 
 begin
-  if not (CurSection in [ctnLibrary]) then
+  if not (CurSection in [ctnLibrary,ctnProgram]) then
     RaiseExportsOnlyAllowedInLibraries;
   CreateChildNode;
   CurNode.Desc:=ctnExportsSection;
