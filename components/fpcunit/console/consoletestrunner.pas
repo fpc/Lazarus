@@ -78,6 +78,8 @@ type
     procedure AddError(ATest: TTest; AError: TTestFailure);
     procedure StartTest(ATest: TTest);
     procedure EndTest(ATest: TTest);
+    procedure StartTestSuite(ATestSuite: TTestSuite);
+    procedure EndTestSuite(ATestSuite: TTestSuite);
   end;
 
 destructor TProgressWriter.Destroy;
@@ -108,6 +110,16 @@ procedure TProgressWriter.EndTest(ATest: TTest);
 begin
   if FSuccess then
     write('.');
+end;
+
+procedure TProgressWriter.StartTestSuite(ATestSuite: TTestSuite);
+begin
+  // do nothing
+end;
+
+procedure TProgressWriter.EndTestSuite(ATestSuite: TTestSuite);
+begin
+  // do nothing
 end;
 
 var

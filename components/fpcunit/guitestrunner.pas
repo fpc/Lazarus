@@ -137,6 +137,8 @@ type
     procedure StartTest(ATest: TTest);
     procedure EndTest(ATest: TTest);
     procedure RunTest(ATest: TTest);
+    procedure StartTestSuite(ATestSuite: TTestSuite);
+    procedure EndTestSuite(ATestSuite: TTestSuite);
   end;
 
 var
@@ -653,6 +655,16 @@ begin
     {$ENDIF}
     testResult.Free;
   end;
+end;
+
+procedure TGUITestRunner.StartTestSuite(ATestSuite: TTestSuite);
+begin
+  // do nothing
+end;
+
+procedure TGUITestRunner.EndTestSuite(ATestSuite: TTestSuite);
+begin
+  // do nothing
 end;
 
 initialization
