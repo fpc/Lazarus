@@ -476,6 +476,7 @@ type
     fLastSourceDirStamp: integer;
     fLastSourceDirsIDAsString: string;
     FLastCustomOptions: string;
+    fLastUnitPath: string;
     FLazPackage: TLazPackage;
     FMain: TDefineTemplate;
     FOutputDir: TDefineTemplate;
@@ -3811,20 +3812,29 @@ var
   SrcDirDefTempl: TDefineTemplate;
   IDHasChanged: Boolean;
   SrcDirMarkDefTempl: TDefineTemplate;
+  CurUnitPath: String;
 begin
   if (not LazPackage.NeedsDefineTemplates) or (not Active) then exit;
 
   // quick check if something has changed
   IDHasChanged:=fLastSourceDirsIDAsString<>LazPackage.IDAsString;
+  CurUnitPath:=LazPackage.CompilerOptions.ParsedOpts.GetParsedValue(pcosUnitPath);
+  CurUnitPath:=CreateAbsoluteSearchPath(CurUnitPath,
+                                      LazPackage.CompilerOptions.BaseDirectory);
+
   if (fLastSourceDirectories<>nil)
   and (fLastSourceDirStamp=LazPackage.SourceDirectories.TimeStamp)
-  and (not IDHasChanged) then
+  and (not IDHasChanged)
+  and (CurUnitPath=fLastUnitPath) then
     exit;
   fLastSourceDirStamp:=LazPackage.SourceDirectories.TimeStamp;
   fLastSourceDirsIDAsString:=LazPackage.IDAsString;
+  fLastUnitPath:=CurUnitPath;
 
   NewSourceDirs:=LazPackage.SourceDirectories.CreateFileList;
   try
+    MergeSearchPaths(NewSourceDirs,CurUnitPath);
+
     // real check if something has changed
     if (fLastSourceDirectories<>nil)
     and (NewSourceDirs.Count=fLastSourceDirectories.Count)

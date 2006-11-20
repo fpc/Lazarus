@@ -119,6 +119,7 @@ function FindFPCTool(const Executable, CompilerFilename: string): string;
 // search paths
 function TrimSearchPath(const SearchPath, BaseDirectory: string): string;
 function MergeSearchPaths(const OldSearchPath, AddSearchPath: string): string;
+procedure MergeSearchPaths(SearchPath: TStrings; const AddSearchPath: string);
 function RemoveSearchPaths(const SearchPath, RemoveSearchPath: string): string;
 function RemoveNonExistingPaths(const SearchPath, BaseDirectory: string): string;
 function CreateAbsoluteSearchPath(const SearchPath, BaseDirectory: string): string;
@@ -134,6 +135,8 @@ function GetNextUsedDirectoryInSearchPath(const SearchPath,
                           FilterDir: string; var NextStartPos: integer): string;
 function SearchDirectoryInSearchPath(const SearchPath, Directory: string;
                                      DirStartPos: integer = 1): integer;
+function SearchDirectoryInSearchPath(SearchPath: TStrings;
+                    const Directory: string; DirStartPos: integer = 0): integer;
 
 // XMLConfig
 procedure LoadRecentList(XMLConfig: TXMLConfig; List: TStrings;
@@ -405,6 +408,30 @@ begin
   end;
 end;
 
+procedure MergeSearchPaths(SearchPath: TStrings; const AddSearchPath: string);
+var
+  l: Integer;
+  EndPos: Integer;
+  StartPos: Integer;
+begin
+  l:=length(AddSearchPath);
+  EndPos:=1;
+  while EndPos<=l do begin
+    StartPos:=EndPos;
+    while (AddSearchPath[StartPos]=';') do begin
+      inc(StartPos);
+      if StartPos>l then exit;
+    end;
+    EndPos:=StartPos;
+    while (EndPos<=l) and (AddSearchPath[EndPos]<>';') do inc(EndPos);
+    if SearchDirectoryInSearchPath(SearchPath,AddSearchPath,StartPos)<1 then
+    begin
+      // new path found -> add
+      SearchPath.Add(copy(AddSearchPath,StartPos,EndPos-StartPos));
+    end;
+  end;
+end;
+
 function RemoveSearchPaths(const SearchPath, RemoveSearchPath: string): string;
 var
   OldPathLen: Integer;
@@ -638,6 +665,46 @@ begin
       end;
     end;
     StartPos:=EndPos;
+  end;
+end;
+
+function SearchDirectoryInSearchPath(SearchPath: TStrings;
+  const Directory: string; DirStartPos: integer): integer;
+var
+  DirLen: Integer;
+  DirEndPos: Integer;
+  CurDirLen: Integer;
+  CurPath: string;
+begin
+  Result:=-1;
+  DirLen:=length(Directory);
+  if (SearchPath.Count=0)
+  or (Directory='') or (DirStartPos>DirLen) or (Directory[DirStartPos]=';') then
+    exit;
+  DirEndPos:=DirStartPos;
+  while (DirEndPos<=DirLen) and (Directory[DirEndPos]<>';') do inc(DirEndPos);
+  // ignore PathDelim at end
+  if (DirEndPos>DirStartPos) and (Directory[DirEndPos-1]=PathDelim) then begin
+    while (DirEndPos>DirStartPos) and (Directory[DirEndPos-1]=PathDelim) do
+      dec(DirEndPos);
+    // check if it is the root path '/'
+    if DirEndPos=DirStartPos then DirEndPos:=DirStartPos+1;
+  end;
+  CurDirLen:=DirEndPos-DirStartPos;
+  
+  // search in all search paths
+  Result:=SearchPath.Count-1;
+  while Result>=0 do begin
+    CurPath:=SearchPath[Result];
+    if (CurPath<>'') and
+      (FileUtil.CompareFilenames(@CurPath[1],CurDirLen,
+                        @Directory[DirStartPos],CurDirLen,
+                        false)=0)
+    then begin
+      // directory found
+      exit;
+    end;
+    dec(Result);
   end;
 end;
 

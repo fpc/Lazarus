@@ -1254,7 +1254,8 @@ begin
     GetCompilerOptions;
     Caption:=Format(lisPckEditCompilerOptionsForPackage,[LazPackage.IDAsString]);
     ReadOnly:=LazPackage.ReadOnly;
-    ShowModal;
+    if ShowModal=mrOk then
+      LazPackage.DefineTemplates.AllChanged;
     Free;
   end;
   UpdateButtons;

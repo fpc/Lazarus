@@ -379,6 +379,7 @@ type
     fLastSourceDirsIDAsString: string;
     fLastSourceDirStamp: integer;
     FLastCustomOptions: string;
+    fLastUnitPath: string;
     procedure SetActive(const AValue: boolean);
     procedure UpdateMain;
     procedure UpdateSrcDirIfDef;
@@ -4130,23 +4131,32 @@ var
   SrcDirDefTempl: TDefineTemplate;
   IDHasChanged: Boolean;
   SrcDirMarkDefTempl: TDefineTemplate;
+  CurUnitPath: String;
 begin
   //DebugLn('TProjectDefineTemplates.UpdateDefinesForSourceDirectories ',Project.IDAsString,' Active=',dbgs(Active),' TimeStamp=',dbgs(fLastSourceDirStamp),' Project.TimeStamp=',dbgs(Project.SourceDirectories.TimeStamp));
   if (not Project.NeedsDefineTemplates) or (not Active) then exit;
 
   // quick check if something has changed
   IDHasChanged:=fLastSourceDirsIDAsString<>Project.IDAsString;
+  CurUnitPath:=Project.CompilerOptions.ParsedOpts.GetParsedValue(pcosUnitPath);
+  CurUnitPath:=CreateAbsoluteSearchPath(CurUnitPath,
+                                        Project.CompilerOptions.BaseDirectory);
+
   //DebugLn('TProjectDefineTemplates.UpdateDefinesForSourceDirectories A');
   if (fLastSourceDirectories<>nil)
   and (fLastSourceDirStamp=Project.SourceDirectories.TimeStamp)
-  and (not IDHasChanged) then
+  and (not IDHasChanged)
+  and (CurUnitPath=fLastUnitPath) then
     exit;
   fLastSourceDirStamp:=Project.SourceDirectories.TimeStamp;
   fLastSourceDirsIDAsString:=Project.IDAsString;
+  fLastUnitPath:=CurUnitPath;
 
   NewSourceDirs:=Project.SourceDirectories.CreateFileList;
   //DebugLn('TProjectDefineTemplates.UpdateDefinesForSourceDirectories B "',NewSourceDirs.Text,'"');
   try
+    MergeSearchPaths(NewSourceDirs,CurUnitPath);
+    
     // real check if something has changed
     if (fLastSourceDirectories<>nil)
     and (NewSourceDirs.Count=fLastSourceDirectories.Count)

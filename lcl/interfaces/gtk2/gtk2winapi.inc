@@ -45,8 +45,10 @@ begin
   if Handle <> 0 then Control := TWinControl(GetLCLObject(Pointer(Handle)))
   else Control := nil;
 
-  If (Control <> nil) and (not GTK_WIDGET_DOUBLE_BUFFERED((PGTKWidget(Handle)))) and (Control.DoubleBuffered) then
-  begin
+  If (Control <> nil) and (not GTK_WIDGET_DOUBLE_BUFFERED((PGTKWidget(Handle))))
+  and (Control.DoubleBuffered)
+  then begin
+    //DebugLn(['TGtk2WidgetSet.BeginPaint ',DbgSName(Control)]);
     paintrect.x := PS.rcPaint.Left;
     paintrect.y := PS.rcPaint.Top;
     paintrect.width := PS.rcPaint.Right- PS.rcPaint.Left;
@@ -54,7 +56,8 @@ begin
     if (paintrect.width <= 0) or (paintrect.height <=0) then begin
       paintrect.x := 0;
       paintrect.y := 0;
-      gdk_drawable_get_size(TDeviceContext(Result).Drawable, @paintrect.width, @paintrect.height);
+      gdk_drawable_get_size(TDeviceContext(Result).Drawable,
+                            @paintrect.width, @paintrect.height);
     end;
     gdk_window_freeze_updates(TDeviceContext(Result).Drawable);
     gdk_window_begin_paint_rect (TDeviceContext(Result).Drawable, @paintrect);
