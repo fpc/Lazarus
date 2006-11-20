@@ -145,7 +145,16 @@ end;
 
 function GetDefaultLCLWidgetType: string;
 begin
-  Result:=WidgetSet.WidgetSetName;
+  if WidgetSet<>nil then
+    Result:=WidgetSet.WidgetSetName
+  else begin
+    {$IFDEF MSWindows}{$DEFINE WidgetSetDefined}
+    Result:='win32';
+    {$ENDIF}
+    {$IFNDEF WidgetSetDefined}
+    Result:='gtk';
+    {$ENDIF}
+  end;
 end;
 
 function GetDefaultLCLLibPaths(const Prefix, Postfix, Separator: string): string;

@@ -3021,9 +3021,14 @@ var
   ChildCreated: boolean;
   ClassAtomPos: TAtomPosition;
   Level: integer;
+  ContextDesc: Word;
 begin
-  if not (CurNode.Desc in [ctnTypeDefinition,ctnGenericType]) then
+  ContextDesc:=CurNode.Desc;
+  if not (ContextDesc in [ctnTypeDefinition,ctnGenericType,
+    ctnVarDefinition,ctnConstDefinition])
+  then begin
     SaveRaiseExceptionFmt(ctsAnonymDefinitionsAreNotAllowed,['class']);
+  end;
   if (LastUpAtomIs(0,'PACKED')) then begin
     ClassAtomPos:=LastAtoms.GetValueAt(0);
   end else begin
@@ -3051,6 +3056,9 @@ begin
     ReadNextAtom;
     if CurPos.Flag<>cafSemicolon then
       RaiseCharExpectedButAtomFound(';');
+  end else if not (ContextDesc in [ctnTypeDefinition,ctnGenericType]) then begin
+    MoveCursorToNodeStart(CurNode);
+    SaveRaiseExceptionFmt(ctsAnonymDefinitionsAreNotAllowed,['class']);
   end else if (CurPos.Flag=cafRoundBracketOpen) then begin
     // read inheritage brackets
     ReadTilBracketClose(true);
