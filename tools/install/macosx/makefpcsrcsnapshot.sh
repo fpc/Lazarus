@@ -6,6 +6,12 @@ set -x
 HDIUTIL=/usr/bin/hdiutil
 UPDATELIST=~/tmp/updatelist
 
+FPCSVNDIR=$1
+if [ ! -d "$FPCSVNDIR" ]; then
+  FPCSVNDIR=~/src/fpcbuild/2.0.4
+  echo "Using default FPCSVNDIR: $FPCSVNDIR"
+fi
+
 PPCARCH=ppcppc
 ARCH=`uname -p`
 if [ "$ARCH" = "i386" ]; then
@@ -35,7 +41,6 @@ fi
 
 TEMPLATEDIR=`dirname $0`
 
-FPCSVNDIR=~/src/fpcbuild/2.0.4
 FPCSOURCEDIR=$FPCSVNDIR/fpcsrc
 COMPILER=~/fpc/bin/$PPCARCH
 INSTALLDIR=~/tmp/fpcsrc
