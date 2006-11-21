@@ -207,6 +207,7 @@ begin
   fCompStyle := csPanel;
   ControlStyle := ControlStyle  - [csDoubleClicks] +
                   [csClickEvents, csOpaque, csReplicatable, csNoFocus];
+  FOrientation := udVertical;
   MinBtn := TUpDownButton.CreateWithParams(Self, btPrev);
   MaxBtn := TUpDownButton.CreateWithParams(Self, btNext);
   SetInitialBounds(0,0,17,31);
@@ -216,7 +217,6 @@ begin
   FMax := 100;
   FIncrement := 1;
   FAlignButton := udRight;
-  FOrientation := udVertical;
   FThousands := True;
 end;
 
