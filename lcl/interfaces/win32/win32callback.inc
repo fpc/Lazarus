@@ -257,13 +257,21 @@ Var
   end;
 
   function GetMenuItemObject: TObject;
-  var MenuInfo: MENUITEMINFO;
-      MainMenuHandle: HMENU;
-      PopupMenu: TPopupMenu;
+  var 
+    MenuInfo: MENUITEMINFO;
+    MainMenuHandle: HMENU;
+    PopupMenu: TPopupMenu;
+    MenuItemInfoSize: DWORD;
+  const
+    W95_MENUITEMINFO_SIZE = 44;
   begin
-    Result:=nil;
-    MenuInfo.cbSize:=sizeof(MENUITEMINFO);
-    MenuInfo.fMask:=MIIM_DATA;
+    if (Win32MajorVersion = 4) and (Win32MinorVersion = 0) then
+      MenuItemInfoSize := W95_MENUITEMINFO_SIZE
+    else
+      MenuItemInfoSize := sizeof(MENUITEMINFO);
+    Result := nil;
+    MenuInfo.cbSize := MenuItemInfoSize;
+    MenuInfo.fMask := MIIM_DATA;
     {first we have to decide if the command is from a popup menu or from the window main menu}
     //if the 'PopupMenu' property exists, there is a big probability that the command is from a popup menu
     PopupMenu := WindowInfo^.PopupMenu;
