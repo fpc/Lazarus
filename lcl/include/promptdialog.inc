@@ -480,7 +480,7 @@ begin
   If MessageTxt = '' then
     MessageTxt := '   ';
   TextBox := Rect(0,0, Screen.Width div 2,Screen.Height - 100);
-  Flags:=DT_CalcRect or DT_NoPrefix or DT_WordBreak;
+  Flags:=DT_CalcRect or DT_INTERNAL or DT_NoPrefix or DT_WordBreak;
   DrawText(Canvas.GetUpdatedHandle([csHandleValid,csFontValid]),
            PChar(MessageTxt),Length(MessageTxt),TextBox,Flags);
 
