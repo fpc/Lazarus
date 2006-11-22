@@ -1509,18 +1509,16 @@ begin
         if GetWindowInfo(TargetWindow)^.isComboEdit then
         begin
           TargetWindow := Windows.GetParent(TargetWindow);
-        // Don't send the message to the overlay window, to avoid recursion
-        if (TargetWindow <> Window) and (TargetWindow<>WindowInfo^.Overlay) then
-        begin
-          Result := SendMessage(TargetWindow, WM_MOUSEWHEEL, WParam, LParam);
-          exit;
+          if (TargetWindow <> Window) then
+          begin
+            Result := SendMessage(TargetWindow, WM_MOUSEWHEEL, WParam, LParam);
+            exit;
+          end;
         end;
-        end;
-        
-        
+
         // the mousewheel message is for us
         // windows handles combobox's mousewheel messages
-        if lWinControl.FCompStyle <> csComboBox then
+        if (lWinControl=nil) or (lWinControl.FCompStyle <> csComboBox) then
         begin
           Msg := LM_MOUSEWHEEL;
           Button := LOWORD(WParam);
