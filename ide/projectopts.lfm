@@ -1,41 +1,36 @@
 object ProjectOptionsDialog: TProjectOptionsDialog
-  Caption = 'ProjectOptionsDialog'
-  ClientHeight = 378
-  ClientWidth = 457
-  OnClose = ProjectOptionsClose
-  OnResize = ProjectOptionsResize
-  PixelsPerInch = 96
-  Position = poScreenCenter
+  Left = 327
+  Height = 378
+  Top = 80
+  Width = 457
   HorzScrollBar.Page = 456
   VertScrollBar.Page = 377
-  Left = 234
-  Height = 378
-  Top = 296
-  Width = 457
+  ActiveControl = BuildEdit
+  Caption = 'ProjectOptionsDialog'
+  OnClose = ProjectOptionsClose
+  Position = poScreenCenter
   object Notebook: TNotebook
+    Height = 341
+    Width = 457
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
     PageIndex = 5
-    Height = 341
-    Width = 457
     object ApplicationPage: TPage
       Caption = 'ApplicationPage'
-      ClientWidth = 449
-      ClientHeight = 315
-      Height = 315
-      Width = 449
       object AppSettingsGroupBox: TGroupBox
-        Align = alTop
-        BorderSpacing.Around = 6
-        Caption = 'AppSettingsGroupBox'
-        ClientHeight = 55
-        ClientWidth = 433
-        TabOrder = 0
         Left = 6
         Height = 73
         Top = 6
         Width = 437
+        Align = alTop
+        BorderSpacing.Around = 6
+        Caption = 'AppSettingsGroupBox'
+        TabOrder = 0
         object TitleLabel: TLabel
+          Left = 6
+          Height = 14
+          Top = 6
+          Width = 421
           Align = alTop
           BorderSpacing.Left = 6
           BorderSpacing.Top = 6
@@ -43,35 +38,33 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           Caption = 'TitleLabel'
           Color = clNone
           ParentColor = False
-          Left = 6
-          Height = 14
-          Top = 6
-          Width = 421
         end
         object TitleEdit: TEdit
+          Left = 6
+          Height = 23
+          Top = 20
+          Width = 421
           Align = alTop
           BorderSpacing.Left = 6
           BorderSpacing.Right = 6
           TabOrder = 0
           Text = 'TitleEdit'
-          Left = 6
-          Height = 23
-          Top = 20
-          Width = 421
         end
       end
       object OutputSettingsGroupBox: TGroupBox
-        Align = alTop
-        BorderSpacing.Around = 6
-        Caption = 'OutputSettingsGroupBox'
-        ClientHeight = 55
-        ClientWidth = 433
-        TabOrder = 1
         Left = 6
         Height = 73
         Top = 85
         Width = 437
+        Align = alTop
+        BorderSpacing.Around = 6
+        Caption = 'OutputSettingsGroupBox'
+        TabOrder = 1
         object TargetFileLabel: TLabel
+          Left = 6
+          Height = 14
+          Top = 6
+          Width = 421
           Align = alTop
           BorderSpacing.Left = 6
           BorderSpacing.Top = 6
@@ -79,324 +72,305 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           Caption = 'TargetFileLabel'
           Color = clNone
           ParentColor = False
-          Left = 6
-          Height = 14
-          Top = 6
-          Width = 421
         end
         object TargetFileEdit: TEdit
+          Left = 6
+          Height = 23
+          Top = 20
+          Width = 421
           Align = alTop
           BorderSpacing.Left = 6
           BorderSpacing.Right = 6
           TabOrder = 0
           Text = 'TargetFileEdit'
-          Left = 6
-          Height = 23
-          Top = 20
-          Width = 421
         end
       end
     end
     object FormsPage: TPage
       Caption = 'FormsPage'
-      ClientWidth = 449
-      ClientHeight = 315
       OnResize = FormsPageResize
-      Height = 315
-      Width = 449
       object FormsAutoCreatedLabel: TLabel
-        Caption = 'FormsAutoCreatedLabel'
-        Color = clNone
-        ParentColor = False
         Left = 36
         Height = 14
         Top = 10
         Width = 117
-      end
-      object FormsAvailFormsLabel: TLabel
-        Caption = 'FormsAvailFormsLabel'
+        Caption = 'FormsAutoCreatedLabel'
         Color = clNone
         ParentColor = False
+      end
+      object FormsAvailFormsLabel: TLabel
         AnchorSideLeft.Control = FormsAvailFormsListBox
         Left = 240
         Height = 14
         Top = 10
         Width = 107
+        Caption = 'FormsAvailFormsLabel'
+        Color = clNone
+        ParentColor = False
       end
       object FormsAutoCreatedListBox: TListBox
-        Anchors = [akTop, akLeft, akBottom]
-        BorderSpacing.Around = 6
-        MultiSelect = True
-        TabOrder = 0
-        TopIndex = -1
         AnchorSideLeft.Control = FormsMoveAutoCreatedFormUpBtn
         AnchorSideLeft.Side = asrBottom
         AnchorSideBottom.Control = FormsAutoCreateNewFormsCheckBox
         Left = 36
-        Height = 254
+        Height = 258
         Top = 32
         Width = 168
-      end
-      object FormsAvailFormsListBox: TListBox
-        Anchors = [akTop, akLeft, akRight, akBottom]
+        Anchors = [akTop, akLeft, akBottom]
         BorderSpacing.Around = 6
         MultiSelect = True
-        TabOrder = 1
-        TopIndex = -1
+        TabOrder = 0
+      end
+      object FormsAvailFormsListBox: TListBox
         AnchorSideLeft.Control = FormsAddToAutoCreatedFormsBtn
         AnchorSideLeft.Side = asrBottom
         AnchorSideBottom.Control = FormsAutoCreateNewFormsCheckBox
         Left = 240
-        Height = 254
+        Height = 258
         Top = 32
         Width = 199
+        Anchors = [akTop, akLeft, akRight, akBottom]
+        BorderSpacing.Around = 6
+        MultiSelect = True
+        TabOrder = 1
       end
       object FormsMoveAutoCreatedFormUpBtn: TArrow
-        ArrowType = atUp
-        OnClick = FormsMoveAutoCreatedFormUpBtnClick
         Left = 6
         Height = 24
         Top = 32
         Width = 24
+        ArrowType = atUp
+        OnClick = FormsMoveAutoCreatedFormUpBtnClick
       end
       object FormsMoveAutoCreatedFormsDownBtn: TArrow
-        ArrowType = atDown
-        OnClick = FormsMoveAutoCreatedFormDownBtnClick
         Left = 6
         Height = 24
         Top = 60
         Width = 24
+        ArrowType = atDown
+        OnClick = FormsMoveAutoCreatedFormDownBtnClick
       end
       object FormsRemoveFromAutoCreatedFormsBtn: TArrow
-        ArrowType = atRight
-        BorderSpacing.Around = 6
-        OnClick = FormsRemoveFromAutoCreatedFormsBtnClick
         AnchorSideLeft.Control = FormsAutoCreatedListBox
         AnchorSideLeft.Side = asrBottom
         Left = 210
         Height = 24
         Top = 32
         Width = 24
+        ArrowType = atRight
+        BorderSpacing.Around = 6
+        OnClick = FormsRemoveFromAutoCreatedFormsBtnClick
       end
       object FormsAddToAutoCreatedFormsBtn: TArrow
-        OnClick = FormsAddToAutoCreatedFormsBtnClick
         AnchorSideLeft.Control = FormsRemoveFromAutoCreatedFormsBtn
         Left = 210
         Height = 24
         Top = 60
         Width = 24
+        OnClick = FormsAddToAutoCreatedFormsBtnClick
       end
       object FormsAutoCreateNewFormsCheckBox: TCheckBox
+        Left = 6
+        Height = 13
+        Top = 296
+        Width = 437
         Align = alBottom
         BorderSpacing.Around = 6
         Caption = 'FormsAutoCreateNewFormsCheckBox'
         TabOrder = 2
-        Left = 6
-        Height = 13
-        Top = 292
-        Width = 441
       end
     end
     object MiscPage: TPage
       Caption = 'MiscPage'
-      ClientWidth = 449
-      ClientHeight = 315
-      Height = 315
-      Width = 449
       object MainUnitHasUsesSectionForAllUnitsCheckBox: TCheckBox
-        Align = alTop
-        BorderSpacing.Left = 6
-        BorderSpacing.Top = 2
-        BorderSpacing.Right = 6
-        Caption = 'MainUnitHasUsesSectionForAllUnitsCheckBox'
-        TabOrder = 0
         AnchorSideTop.Control = MainUnitIsPascalSourceCheckBox
         AnchorSideTop.Side = asrBottom
         Left = 6
         Height = 13
         Top = 25
         Width = 441
-      end
-      object MainUnitHasCreateFormStatementsCheckBox: TCheckBox
         Align = alTop
         BorderSpacing.Left = 6
         BorderSpacing.Top = 2
         BorderSpacing.Right = 6
-        Caption = 'MainUnitHasCreateFormStatementsCheckBox'
-        TabOrder = 1
+        Caption = 'MainUnitHasUsesSectionForAllUnitsCheckBox'
+        TabOrder = 0
+      end
+      object MainUnitHasCreateFormStatementsCheckBox: TCheckBox
         AnchorSideTop.Control = MainUnitHasUsesSectionForAllUnitsCheckBox
         AnchorSideTop.Side = asrBottom
         Left = 6
         Height = 13
         Top = 40
         Width = 441
+        Align = alTop
+        BorderSpacing.Left = 6
+        BorderSpacing.Top = 2
+        BorderSpacing.Right = 6
+        Caption = 'MainUnitHasCreateFormStatementsCheckBox'
+        TabOrder = 1
       end
       object MainUnitIsPascalSourceCheckBox: TCheckBox
+        Left = 6
+        Height = 13
+        Top = 10
+        Width = 441
         Align = alTop
         BorderSpacing.Left = 6
         BorderSpacing.Top = 10
         BorderSpacing.Right = 6
         Caption = 'MainUnitIsPascalSourceCheckBox'
         TabOrder = 2
-        Left = 6
-        Height = 13
-        Top = 10
-        Width = 441
       end
       object MainUnitHasTitleStatementCheckBox: TCheckBox
-        Align = alTop
-        BorderSpacing.Left = 6
-        BorderSpacing.Top = 2
-        BorderSpacing.Right = 6
-        Caption = 'MainUnitHasTitleStatementCheckBox'
-        TabOrder = 5
         AnchorSideTop.Control = MainUnitHasCreateFormStatementsCheckBox
         AnchorSideTop.Side = asrBottom
         Left = 6
         Height = 13
         Top = 55
         Width = 441
-      end
-      object RunnableCheckBox: TCheckBox
         Align = alTop
         BorderSpacing.Left = 6
-        BorderSpacing.Top = 10
+        BorderSpacing.Top = 2
         BorderSpacing.Right = 6
-        Caption = 'RunnableCheckBox'
-        TabOrder = 3
+        Caption = 'MainUnitHasTitleStatementCheckBox'
+        TabOrder = 5
+      end
+      object RunnableCheckBox: TCheckBox
         AnchorSideTop.Control = MainUnitHasTitleStatementCheckBox
         AnchorSideTop.Side = asrBottom
         Left = 6
         Height = 13
         Top = 78
         Width = 441
+        Align = alTop
+        BorderSpacing.Left = 6
+        BorderSpacing.Top = 10
+        BorderSpacing.Right = 6
+        Caption = 'RunnableCheckBox'
+        TabOrder = 3
       end
       object AlwaysBuildCheckBox: TCheckBox
-        Anchors = [akTop, akLeft, akRight]
-        BorderSpacing.Left = 6
-        BorderSpacing.Top = 2
-        BorderSpacing.Right = 6
-        Caption = 'AlwaysBuildCheckBox'
-        TabOrder = 4
         AnchorSideTop.Control = RunnableCheckBox
         AnchorSideTop.Side = asrBottom
         Left = 6
         Height = 13
         Top = 93
         Width = 441
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Left = 6
+        BorderSpacing.Top = 2
+        BorderSpacing.Right = 6
+        Caption = 'AlwaysBuildCheckBox'
+        TabOrder = 4
       end
     end
     object LazDocPage: TPage
       Caption = 'LazDocPage'
-      ClientWidth = 449
-      ClientHeight = 315
-      Height = 315
-      Width = 449
       object Label2: TLabel
+        Height = 14
+        Top = 222
+        Width = 449
         Align = alTop
         Caption = 'NOTE: only absolute paths are supported now'
         Color = clNone
         ParentColor = False
-        Height = 14
-        Top = 222
-        Width = 453
       end
       object LazDocPathsGroupBox: TGroupBox
-        Align = alTop
-        BorderSpacing.Around = 6
-        Caption = 'LazDocPathsGroupBox'
-        ClientHeight = 210
-        ClientWidth = 441
-        TabOrder = 0
         Left = 6
         Height = 210
         Top = 6
-        Width = 441
+        Width = 437
+        Align = alTop
+        BorderSpacing.Around = 6
+        Caption = 'LazDocPathsGroupBox'
+        TabOrder = 0
         object LazDocListBox: TListBox
-          Align = alTop
-          BorderSpacing.Around = 6
-          TabOrder = 0
-          TopIndex = -1
           Left = 6
           Height = 108
           Top = 6
-          Width = 429
+          Width = 421
+          Align = alTop
+          BorderSpacing.Around = 6
+          TabOrder = 0
         end
         object LazDocAddPathButton: TButton
+          Left = 6
+          Height = 25
+          Top = 122
+          Width = 75
           BorderSpacing.InnerBorder = 4
           Caption = 'LazDocAddPathButton'
           OnClick = LazDocAddPathButtonClick
           TabOrder = 1
-          Left = 6
-          Height = 25
-          Top = 122
-          Width = 75
         end
         object LazDocDeletePathButton: TButton
-          BorderSpacing.InnerBorder = 4
-          Caption = 'LazDocDeletePathButton'
-          OnClick = LazDocDeletePathButtonClick
-          TabOrder = 2
           Left = 90
           Height = 25
           Top = 122
           Width = 75
+          BorderSpacing.InnerBorder = 4
+          Caption = 'LazDocDeletePathButton'
+          OnClick = LazDocDeletePathButtonClick
+          TabOrder = 2
         end
         object LazDocPathEdit: TEdit
-          Anchors = [akTop, akLeft, akRight]
-          TabOrder = 3
-          Text = 'LazDocPathEdit'
           Left = 6
           Height = 23
           Top = 154
-          Width = 381
+          Width = 369
+          Anchors = [akTop, akLeft, akRight]
+          TabOrder = 3
+          Text = 'LazDocPathEdit'
         end
         object LazDocBrowseButton: TButton
+          Left = 380
+          Height = 23
+          Top = 154
+          Width = 23
           Anchors = [akTop, akRight]
           BorderSpacing.InnerBorder = 4
           Caption = '...'
           OnClick = LazDocBrowseButtonClick
           TabOrder = 4
-          Left = 392
-          Height = 23
-          Top = 154
-          Width = 23
         end
       end
     end
     object SavePage: TPage
       Caption = 'SavePage'
-      ClientWidth = 449
-      ClientHeight = 315
-      Height = 315
-      Width = 449
       object SaveClosedUnitInfoCheckBox: TCheckBox
+        Left = 6
+        Height = 13
+        Top = 6
+        Width = 437
         Align = alTop
         BorderSpacing.Left = 6
         BorderSpacing.Top = 6
         BorderSpacing.Right = 6
         Caption = 'SaveClosedUnitInfoCheckBox'
         TabOrder = 0
-        Left = 6
-        Height = 13
-        Top = 6
-        Width = 441
       end
       object SaveOnlyProjectUnitInfoCheckBox: TCheckBox
+        AnchorSideTop.Control = SaveClosedUnitInfoCheckBox
+        AnchorSideTop.Side = asrBottom
+        Left = 6
+        Height = 13
+        Top = 21
+        Width = 437
         Align = alTop
         BorderSpacing.Left = 6
         BorderSpacing.Top = 2
         BorderSpacing.Right = 6
         Caption = 'SaveOnlyProjectUnitInfoCheckBox'
         TabOrder = 1
-        AnchorSideTop.Control = SaveClosedUnitInfoCheckBox
-        AnchorSideTop.Side = asrBottom
-        Left = 6
-        Height = 13
-        Top = 21
-        Width = 441
       end
       object SaveSessionLocationRadioGroup: TRadioGroup
+        AnchorSideTop.Control = SaveOnlyProjectUnitInfoCheckBox
+        AnchorSideTop.Side = asrBottom
+        Left = 7
+        Height = 117
+        Top = 45
+        Width = 413
         AutoFill = True
         BorderSpacing.Top = 5
         BorderSpacing.Around = 6
@@ -410,266 +384,279 @@ object ProjectOptionsDialog: TProjectOptionsDialog
         ChildSizing.Layout = cclLeftToRightThenTopToBottom
         ChildSizing.ControlsPerLine = 1
         TabOrder = 2
-        AnchorSideTop.Control = SaveOnlyProjectUnitInfoCheckBox
-        AnchorSideTop.Side = asrBottom
-        Left = 7
-        Height = 117
-        Top = 45
-        Width = 413
       end
     end
     object VersionInfoPage: TPage
       Caption = 'VersionInfoPage'
-      ClientWidth = 449
-      ClientHeight = 315
-      Height = 315
-      Width = 449
       object VersionInfoGroupBox: TGroupBox
-        Anchors = [akTop, akLeft, akRight]
-        Caption = 'Version Numbering'
-        ClientHeight = 55
-        ClientWidth = 437
-        TabOrder = 0
+        AnchorSideLeft.Control = LanguageSettingsGroupBox
+        AnchorSideTop.Control = UseVersionInfoCheckBox
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = LanguageSettingsGroupBox
+        AnchorSideRight.Side = asrBottom
         Left = 6
         Height = 73
-        Top = 32
-        Width = 441
+        Top = 25
+        Width = 437
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Top = 6
+        Caption = 'Version Numbering'
+        TabOrder = 0
         object VersionLabel: TLabel
-          Caption = 'Version:'
-          Color = clNone
-          ParentColor = False
+          Left = 6
           Height = 14
           Top = 2
           Width = 40
+          Caption = 'Version:'
+          Color = clNone
+          ParentColor = False
         end
         object MajorRevisionLabel: TLabel
+          AnchorSideLeft.Control = VersionSpinEdit
+          AnchorSideLeft.Side = asrBottom
+          Left = 94
+          Height = 14
+          Top = 4
+          Width = 75
           BorderSpacing.Left = 10
           Caption = 'Major Revision:'
           Color = clNone
           ParentColor = False
-          AnchorSideLeft.Control = VersionSpinEdit
-          AnchorSideLeft.Side = asrBottom
-          Left = 88
-          Height = 14
-          Top = 4
-          Width = 75
         end
         object MinorRevisionLabel: TLabel
+          AnchorSideLeft.Control = MajorRevisionSpinEdit
+          AnchorSideLeft.Side = asrBottom
+          Left = 217
+          Height = 14
+          Top = 5
+          Width = 74
           BorderSpacing.Left = 10
           Caption = 'Minor Revision:'
           Color = clNone
           ParentColor = False
-          AnchorSideLeft.Control = MajorRevisionSpinEdit
-          AnchorSideLeft.Side = asrBottom
-          Left = 211
-          Height = 14
-          Top = 5
-          Width = 74
         end
         object BuildLabel: TLabel
+          AnchorSideLeft.Control = MinorRevisionSpinEdit
+          AnchorSideLeft.Side = asrBottom
+          Left = 335
+          Height = 14
+          Top = 5
+          Width = 27
           BorderSpacing.Left = 6
           Caption = 'Build:'
           Color = clNone
           ParentColor = False
-          AnchorSideLeft.Control = MinorRevisionSpinEdit
-          AnchorSideLeft.Side = asrBottom
-          Left = 329
-          Height = 14
-          Top = 5
-          Width = 27
         end
         object BuildEdit: TEdit
+          AnchorSideLeft.Control = BuildLabel
+          AnchorSideLeft.Side = asrBottom
+          Left = 368
+          Height = 20
+          Top = 2
+          Width = 32
           BorderSpacing.Left = 6
           TabOrder = 0
           Text = '0'
-          AnchorSideLeft.Control = BuildLabel
-          AnchorSideLeft.Side = asrBottom
-          Left = 362
-          Height = 20
-          Top = 2
-          Width = 32
         end
         object VersionSpinEdit: TSpinEdit
-          BorderSpacing.Left = 6
-          TabOrder = 1
           AnchorSideLeft.Control = VersionLabel
           AnchorSideLeft.Side = asrBottom
-          Left = 46
+          Left = 52
           Height = 20
           Top = 1
           Width = 32
+          BorderSpacing.Left = 6
+          TabOrder = 1
         end
         object MajorRevisionSpinEdit: TSpinEdit
-          BorderSpacing.Left = 6
-          TabOrder = 2
           AnchorSideLeft.Control = MajorRevisionLabel
           AnchorSideLeft.Side = asrBottom
-          Left = 169
+          Left = 175
           Height = 20
           Width = 32
+          BorderSpacing.Left = 6
+          TabOrder = 2
         end
         object MinorRevisionSpinEdit: TSpinEdit
-          BorderSpacing.Left = 6
-          TabOrder = 3
           AnchorSideLeft.Control = MinorRevisionLabel
           AnchorSideLeft.Side = asrBottom
-          Left = 291
+          Left = 297
           Height = 20
           Top = 2
           Width = 32
+          BorderSpacing.Left = 6
+          TabOrder = 3
         end
         object AutomaticallyIncreaseBuildCheckBox: TCheckBox
-          Caption = 'Automatically increase Build'
-          Enabled = False
-          TabOrder = 4
+          Left = 6
           Height = 13
           Top = 28
           Width = 151
+          Caption = 'Automatically increase Build'
+          Enabled = False
+          TabOrder = 4
         end
       end
       object UseVersionInfoCheckBox: TCheckBox
-        Caption = 'Include Version Info in executable'
-        OnChange = UseVersionInfoCheckBoxChange
-        TabOrder = 1
         Left = 12
         Height = 13
         Top = 6
         Width = 180
+        Caption = 'Include Version Info in executable'
+        OnChange = UseVersionInfoCheckBoxChange
+        TabOrder = 1
       end
       object LanguageSettingsGroupBox: TGroupBox
-        Anchors = [akTop, akLeft, akRight]
-        Caption = 'Language Options'
-        ClientHeight = 63
-        ClientWidth = 437
-        TabOrder = 2
+        AnchorSideLeft.Control = OtherInfoGroupBox
+        AnchorSideTop.Control = VersionInfoGroupBox
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = OtherInfoGroupBox
+        AnchorSideRight.Side = asrBottom
         Left = 6
         Height = 81
-        Top = 112
-        Width = 441
+        Top = 104
+        Width = 437
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Top = 6
+        Caption = 'Language Options'
+        TabOrder = 2
         object LanguageSelectionLabel: TLabel
-          Caption = 'Language Selection:'
-          Color = clNone
-          ParentColor = False
-          Left = 12
+          Left = 6
           Height = 14
           Top = 6
           Width = 98
-        end
-        object CharacterSetLabel: TLabel
-          Caption = 'Character Set:'
+          Caption = 'Language Selection:'
           Color = clNone
           ParentColor = False
+        end
+        object CharacterSetLabel: TLabel
           Left = 268
           Height = 14
           Top = 6
           Width = 72
+          Caption = 'Character Set:'
+          Color = clNone
+          ParentColor = False
         end
         object LanguageSelectionComboBox: TComboBox
+          AnchorSideTop.Control = LanguageSelectionLabel
+          AnchorSideTop.Side = asrBottom
+          Left = 6
+          Height = 21
+          Top = 22
+          Width = 248
           AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
           BorderSpacing.Top = 2
           MaxLength = 0
           TabOrder = 0
           Text = 'U.S. English'
-          AnchorSideTop.Control = LanguageSelectionLabel
-          AnchorSideTop.Side = asrBottom
-          Left = 12
-          Height = 21
-          Top = 22
-          Width = 248
         end
         object CharacterSetComboBox: TComboBox
-          AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
-          MaxLength = 0
-          TabOrder = 1
-          Text = 'Multilingual'
           AnchorSideTop.Control = LanguageSelectionComboBox
           Left = 268
           Height = 21
           Top = 22
-          Width = 128
+          Width = 120
+          Anchors = [akTop, akLeft, akRight]
+          AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+          MaxLength = 0
+          TabOrder = 1
+          Text = 'Multilingual'
         end
       end
       object OtherInfoGroupBox: TGroupBox
-        Anchors = [akTop, akLeft, akRight]
-        Caption = 'Other Info'
-        ClientHeight = 87
-        ClientWidth = 437
-        TabOrder = 3
+        AnchorSideTop.Control = LanguageSettingsGroupBox
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Side = asrBottom
         Left = 6
-        Height = 105
-        Top = 197
-        Width = 441
+        Height = 118
+        Top = 191
+        Width = 437
+        Align = alBottom
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Around = 6
+        Caption = 'Other Info'
+        TabOrder = 3
         object DescriptionLabel: TLabel
-          Caption = 'Description:'
-          Color = clNone
-          ParentColor = False
           AnchorSideTop.Control = DescriptionEdit
           AnchorSideTop.Side = asrCenter
-          Left = 5
+          Left = 6
           Height = 14
           Top = 2
           Width = 58
-        end
-        object CopyrightLabel: TLabel
-          Caption = 'Copyright:'
+          Caption = 'Description:'
           Color = clNone
           ParentColor = False
+        end
+        object CopyrightLabel: TLabel
           AnchorSideTop.Control = CopyrightEdit
           AnchorSideTop.Side = asrCenter
-          Left = 5
+          Left = 6
           Height = 14
           Top = 29
           Width = 52
+          Caption = 'Copyright:'
+          Color = clNone
+          ParentColor = False
         end
         object DescriptionEdit: TEdit
-          Anchors = [akTop, akLeft, akRight]
-          BorderSpacing.Left = 6
-          BorderSpacing.Right = 6
-          TabOrder = 0
           AnchorSideLeft.Control = DescriptionLabel
           AnchorSideLeft.Side = asrBottom
           AnchorSideRight.Control = OtherInfoGroupBox
           AnchorSideRight.Side = asrBottom
-          Left = 69
+          Left = 70
           Height = 21
           Top = -1
-          Width = 362
-        end
-        object CopyrightEdit: TEdit
+          Width = 357
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Left = 6
-          BorderSpacing.Top = 6
           BorderSpacing.Right = 6
-          TabOrder = 1
+          TabOrder = 0
+        end
+        object CopyrightEdit: TEdit
           AnchorSideLeft.Control = CopyrightLabel
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = DescriptionEdit
           AnchorSideTop.Side = asrBottom
           AnchorSideRight.Control = OtherInfoGroupBox
           AnchorSideRight.Side = asrBottom
-          Left = 63
+          Left = 64
           Height = 21
           Top = 26
-          Width = 368
+          Width = 363
+          Anchors = [akTop, akLeft, akRight]
+          BorderSpacing.Left = 6
+          BorderSpacing.Top = 6
+          BorderSpacing.Right = 6
+          TabOrder = 1
         end
         object AdditionalInfoButton: TButton
+          AnchorSideTop.Control = CopyrightEdit
+          AnchorSideTop.Side = asrBottom
+          AnchorSideRight.Control = OtherInfoGroupBox
+          AnchorSideRight.Side = asrBottom
+          AnchorSideBottom.Control = OtherInfoGroupBox
+          AnchorSideBottom.Side = asrBottom
+          Left = 332
+          Height = 25
+          Top = 69
+          Width = 95
+          Anchors = [akRight, akBottom]
           AutoSize = True
           BorderSpacing.Around = 6
           BorderSpacing.InnerBorder = 4
           Caption = 'Additional Info'
           OnClick = AdditionalInfoButtonClick
           TabOrder = 2
-          AnchorSideTop.Control = CopyrightEdit
-          AnchorSideTop.Side = asrBottom
-          Left = 315
-          Height = 33
-          Top = 53
-          Width = 95
         end
       end
     end
   end
   object CancelButton: TButton
+    Left = 371
+    Height = 25
+    Top = 347
+    Width = 75
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.InnerBorder = 4
@@ -678,12 +665,13 @@ object ProjectOptionsDialog: TProjectOptionsDialog
     Constraints.MinWidth = 75
     ModalResult = 2
     TabOrder = 1
-    Left = 371
-    Height = 33
-    Top = 339
-    Width = 75
   end
   object OKButton: TButton
+    AnchorSideRight.Control = CancelButton
+    Left = 280
+    Height = 25
+    Top = 347
+    Width = 75
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Right = 10
@@ -694,16 +682,10 @@ object ProjectOptionsDialog: TProjectOptionsDialog
     Default = True
     ModalResult = 1
     TabOrder = 2
-    AnchorSideRight.Control = CancelButton
-    Left = 280
-    Height = 33
-    Top = 339
-    Width = 75
   end
   object SelectDirectoryDialog: TSelectDirectoryDialog
     Title = 'Select Directory'
     FilterIndex = 0
-    Title = 'Select Directory'
     left = 344
     top = 8
   end
