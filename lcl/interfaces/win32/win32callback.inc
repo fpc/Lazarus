@@ -1501,9 +1501,13 @@ begin
         if TargetWindow = HWND(nil) then
           exit;
 
+
+
+
         // check if the window is an edit control of a combobox, if so,
         // redirect it to the combobox, not the edit control
         if GetWindowInfo(TargetWindow)^.isComboEdit then
+        begin
           TargetWindow := Windows.GetParent(TargetWindow);
         // Don't send the message to the overlay window, to avoid recursion
         if (TargetWindow <> Window) and (TargetWindow<>WindowInfo^.Overlay) then
@@ -1511,7 +1515,9 @@ begin
           Result := SendMessage(TargetWindow, WM_MOUSEWHEEL, WParam, LParam);
           exit;
         end;
-
+        end;
+        
+        
         // the mousewheel message is for us
         // windows handles combobox's mousewheel messages
         if lWinControl.FCompStyle <> csComboBox then
@@ -1951,6 +1957,12 @@ begin
     LM_ERASEBKGND, LM_SETCURSOR, LM_RBUTTONUP:
     begin
       if PLMsg^.Result = 0 then
+        WinProcess := true;
+    end;
+    
+    LM_MOUSEWHEEL:
+    begin
+      if PLMsg^.Result <> 0 then
         WinProcess := true;
     end;
 

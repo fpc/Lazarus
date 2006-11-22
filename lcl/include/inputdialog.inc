@@ -16,14 +16,11 @@
 
 Function ShowInputDialog(const InputCaption, InputPrompt : String;
   MaskInput : Boolean; var Value : String) : Boolean;
-Const
-  AVGBuffer : PChar = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890()|_ ';
 var
   Form : TForm;
   Prompt : TLabel;
   Edit : TEdit;
-  ButtonTop, ButtonWidth, ButtonHeight : Integer;
-  Avg : TPoint;
+  MinEditWidth: integer;
 begin
   Result := False;
   Form := TForm.CreateNew(nil, 0);
@@ -32,29 +29,22 @@ begin
     Caption := InputCaption;
     Prompt := TLabel.Create(Form);
     With Prompt do begin
-      Parent := Form;
       Caption := InputPrompt;
+      Top := 8;
+      Left := 8;
       Visible := True;
+      AutoSize := True;
+      Parent := Form;
     end;
-    SelectObject(Canvas.Handle, GetStockObject(DEFAULT_GUI_FONT));
-    GetTextExtentPoint(Canvas.Handle,AVGBuffer,StrLen(AVGBuffer),TSize(AVG));
-    AVG.X := AVG.X div 52;
     Position := poScreenCenter;
-    Prompt.Left := (7*AVG.X) div 4;
-    Prompt.Top := (8*AVG.Y) div 8;
-    Prompt.Width := AVG.X * Length(InputPrompt) + 1;
-    ClientWidth := (172*AVG.X) div 4;
-    ClientHeight := (58*AVG.Y) div 8;
-    ButtonTop := (39*AVG.Y) div 8;
-    ButtonWidth := (50*AVG.X) div 4;
-    ButtonHeight := 2*AVG.Y;
     Edit := TEdit.Create(Form);
     With Edit do begin
       Parent := Form;
       Left := Prompt.Left;
-      Top := (19*AVG.Y) div 8;
-      Width := (160*AVG.X) div 4;
-      Height := (7*AVG.Y) div 4;
+      AnchorToNeighbour(akTop,8,Prompt);
+      AnchorParallel(akRight,0,Prompt);
+      MinEditWidth := max(160, Screen.Width div 4);
+      Constraints.MinWidth := MinEditWidth;
       Text := Value;
       TabStop := True;
       Visible := True;
@@ -70,30 +60,36 @@ begin
       TabOrder := 0;
     end;
     With TBitBtn.Create(Form) do begin
-      Parent := Form;
       Kind := bkOk;
       Default := True;
       ModalResult := mrOk;
-      Left := (37*AVG.X) div 4;
-      Top := ButtonTop;
-      Height := ButtonHeight;
-      Width := ButtonWidth;
+      Left := MinEditWidth div 4;
+      AnchorToNeighbour(akTop,8,Edit);
+      AutoSize := True;
       TabStop := True;
       Visible := True;
       TabOrder := 1;
+      Parent := Form;
     end;
     With TBitBtn.Create(Form) do begin
-      Parent := Form;
       Kind := bkCancel;
       Cancel := True;
-      Left := (92*AVG.X) div 4;
-      Top := ButtonTop;
-      Height := ButtonHeight;
-      Width := ButtonWidth;
+      AnchorToNeighbour(akTop,8,Edit);
+      AnchorSide[akRight].Control := Edit;
+      AnchorSide[akRight].Side := asrRight;
+      BorderSpacing.Right := MinEditWidth div 4;
+      Anchors := [akTop, akRight];
+      
+      AutoSize := True;
       TabStop := True;
       Visible := True;
       TabOrder := 2;
+      Parent := Form;
     end;
+    
+    ChildSizing.TopBottomSpacing := 8;
+    ChildSizing.LeftRightSpacing := 8;
+    AutoSize := true;
 
     // upon show, the edit control will be focused for editing, because it's
     // the first in the tab order

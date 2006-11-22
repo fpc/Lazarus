@@ -504,7 +504,11 @@ begin
       end;
     end;
     Inc(PreferredWidth, 20);
-    Inc(PreferredHeight, 12);
+    Inc(PreferredHeight, 4);
+    if WithThemeSpace then begin
+      Inc(PreferredWidth, 6);
+      Inc(PreferredHeight, 6);
+    end;
   end;
 end;
 
