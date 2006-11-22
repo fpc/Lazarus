@@ -1960,12 +1960,6 @@ begin
         WinProcess := true;
     end;
     
-    LM_MOUSEWHEEL:
-    begin
-      if PLMsg^.Result <> 0 then
-        WinProcess := true;
-    end;
-
     CN_CHAR, CN_SYSCHAR:
     begin
       // if key not yet processed, let windows process it
