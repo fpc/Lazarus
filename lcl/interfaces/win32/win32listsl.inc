@@ -125,36 +125,24 @@ Begin
   RecreateWnd(FSender);
 End;
 
+
 {------------------------------------------------------------------------------
-  Method: TWin32ListStringList.Assign
+  Method: TWin32ListStringList.AddStrings
   Params:
   Returns:
 
  ------------------------------------------------------------------------------}
-Procedure TWin32ListStringList.Assign(Source: TPersistent);
-Var
-  S: TStrings;
+procedure TWin32ListStringList.AddStrings(TheStrings: TStrings);
+var
   Counter: Integer;
-  AnIndex: Integer;
-Begin
-  { Do not call inherited Assign as it does things we do not want to happen }
-  If Source Is TStrings Then
+  AnIndex: LongInt;
+begin
+  For Counter := 0 To TheStrings.Count - 1 Do
   Begin
-    S:= TStrings(Source);
-    QuoteChar:=S.QuoteChar;
-    Delimiter:=S.Delimiter;
-    NameValueSeparator:=S.NameValueSeparator;
-    Windows.SendMessage(FWin32List, FFlagResetContent, 0, 0);
-    For Counter := 0 To (TStrings(Source).Count - 1) Do
-    Begin
-      AnIndex := Windows.SendMessage(FWin32List, FFlagAddString, 0, LPARAM(PChar(S[Counter]))); //Insert
-      PutObject(AnIndex, S.Objects[Counter]);
-    end;
-  End
-  Else
-    inherited Assign(Source);
-End;
-
+    AnIndex := Windows.SendMessage(FWin32List, FFlagAddString, 0, LPARAM(PChar(TheStrings[Counter]))); //Insert
+    PutObject(AnIndex, TheStrings.Objects[Counter]);
+  end;
+end;
 
 {------------------------------------------------------------------------------
   Method: TWin32ListStringList.Add

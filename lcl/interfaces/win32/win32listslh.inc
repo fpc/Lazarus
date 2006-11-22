@@ -61,7 +61,7 @@ Type
     Procedure SetSorted(Val: Boolean); Virtual;
   Public
     Constructor Create(List : HWND; TheOwner: TWinControl);
-    Procedure Assign(Source: TPersistent); Override;
+    procedure AddStrings(TheStrings: TStrings); override;
     Procedure Clear; Override;
     Procedure Delete(Index: Integer); Override;
     Procedure Insert(Index: Integer; Const S: String); Override;
