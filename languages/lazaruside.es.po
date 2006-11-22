@@ -5122,7 +5122,7 @@ msgstr "Abrir paquete"
 
 #: lazarusidestrconsts:lismenuopenpackagefile
 msgid "Open package file (.lpk) ..."
-msgstr ""
+msgstr "Abrir archivo de paquete (.lpk) ..."
 
 #: lazarusidestrconsts:lismenuopenpackageofcurunit
 msgid "Open package of current unit"
@@ -5734,7 +5734,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuquickcompile
 msgid "Quick compile"
-msgstr ""
+msgstr "Compilado rápido"
 
 #: lazarusidestrconsts:lismenuquicksyntaxcheck
 msgid "Quick syntax check"
