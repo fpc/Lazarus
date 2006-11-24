@@ -56,6 +56,7 @@ type
     OpenUnitMenuItem: TMenuItem;
     FindComponentMenuItem: TMenuItem;
     procedure ActivePageChanged(Sender: TObject);
+    procedure OnPageResize(Sender: TObject);
     procedure OpenPackageClicked(Sender: TObject);
     procedure OpenUnitClicked(Sender: TObject);
     procedure FindComponentClicked(Sender: TObject);
@@ -91,9 +92,10 @@ type
     function GetSelectButtonIcon: TBitmap;
     procedure ClearButtons; override;
     function SelectButton(Button: TComponent): boolean;
+    procedure ReAlignButtons(Page: TPage);
     procedure UpdateNoteBookButtons;
     procedure OnGetNonVisualCompIcon(Sender: TObject;
-        AComponent: TComponent; var Icon: TBitmap);
+                                     AComponent: TComponent; var Icon: TBitmap);
     function FindComponent(const CompClassName: string
                            ): TRegisteredComponent; override;
     procedure RegisterCustomIDEComponents(
@@ -137,6 +139,12 @@ begin
   and (FSelected.Page.PageComponent=FNoteBook.ActivePageComponent)
   then exit;
   Selected:=nil;
+end;
+
+procedure TComponentPalette.OnPageResize(Sender: TObject);
+begin
+  if Sender is TPage then
+    ReAlignButtons(TPage(Sender));
 end;
 
 procedure TComponentPalette.OpenPackageClicked(Sender: TObject);
@@ -429,6 +437,32 @@ begin
   Result:=(Selected=NewComponent);
 end;
 
+procedure TComponentPalette.ReAlignButtons(Page: TPage);
+var
+  j: integer;
+  buttonx: integer;
+  CurButton: TSpeedButton;
+  Rows: Integer;
+begin
+  Rows:=Page.ClientHeight div ComponentPaletteBtnHeight;
+  // patch by JernejL 12.11.2006
+  // Ok, this is nice.. this is called when Tnotebook or its pages resize, it will
+  // automaticly set optimal row count and re-position controls to use height optimally
+
+  if Rows = 0 then Rows:= 1; // avoid division by zero
+
+  ButtonX:= ((ComponentPaletteBtnWidth*3) div 2) + 2;
+
+  for j:= 1 to Page.ControlCount-1 do begin
+    CurButton:=TSpeedbutton(Page.Controls[j]);
+    if not (CurButton is TSpeedButton) then continue;
+    CurButton.SetBounds(
+      ButtonX + ((j-1) div Rows) * ComponentPaletteBtnWidth,
+      ((j-1) mod Rows) * ComponentPaletteBtnHeight,
+      CurButton.Width,CurButton.Height)
+  end;
+end;
+
 procedure TComponentPalette.UpdateNoteBookButtons;
 var
   i: Integer;
@@ -437,7 +471,6 @@ var
   CurNoteBookPage: TPage;
   CurComponent: TPkgComponent;
   CurBtn: TSpeedButton;
-  ButtonX: Integer;
   CurPageIndex: Integer;
   j: Integer;
   OldActivePage: String;
@@ -488,7 +521,8 @@ begin
       if not CurPage.Visible then continue;
       CurNoteBookPage:=TPage(CurPage.PageComponent);
       if not (CurNoteBookPage is TPage) then RaiseException('CurNoteBookPage');
-      ButtonX:=0;
+      CurNoteBookPage.OnResize:=@OnPageResize;
+
       // create selection button
       if CurPage.SelectButton=nil then begin
         CurBtn:=TSpeedButton.Create(nil);
@@ -501,11 +535,11 @@ begin
           GroupIndex:= 1;
           Down := True;
           Hint := lisSelectionTool;
-          SetBounds(ButtonX,0,ComponentPaletteBtnWidth,ComponentPaletteBtnHeight);
+          SetBounds(0,0,ComponentPaletteBtnWidth,ComponentPaletteBtnHeight);
           Parent:=CurNoteBookPage;
         end;
       end;
-      inc(ButtonX,((ComponentPaletteBtnWidth*3) div 2)+2);
+
       // create component buttons
       for j:=0 to CurPage.Count-1 do begin
         CurComponent:=TPkgComponent(CurPage[j]);
@@ -517,7 +551,8 @@ begin
             with CurBtn do begin
               Name:='PaletteBtnPage'+IntToStr(i)+'_'+IntToStr(j)
                     +'_'+CurComponent.ComponentClass.ClassName;
-              SetBounds(ButtonX,0,ComponentPaletteBtnWidth,ComponentPaletteBtnHeight);
+              // Left and Top will be set in ReAlignButtons.
+              SetBounds(Left,Top,ComponentPaletteBtnWidth,ComponentPaletteBtnHeight);
               Glyph := CurComponent.Icon;
               GroupIndex := 1;
               Flat := true;
@@ -534,8 +569,9 @@ begin
           CurComponent.Button.Free;
           CurComponent.Button:=nil;
         end;
-        inc(ButtonX,ComponentPaletteBtnWidth+2);
       end;
+      
+      ReAlignButtons(CurNoteBookPage);
     end;
     // restore active page
     if (OldActivePage<>'') and (FNoteBook.Pages.IndexOf(OldActivePage)>=0) then
