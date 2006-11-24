@@ -589,6 +589,8 @@ begin
                              EnvironmentOptions.LanguageID);
     ExternalTools.OnNeedsOutputFilter:=@OnExtToolNeedsOutputFilter;
     ExternalTools.OnFreeOutputFilter:=@OnExtToolFreeOutputFilter;
+    if CompilerOverride<>'' then
+      CompilerFilename:=CompilerOverride;
   end;
 end;
 
