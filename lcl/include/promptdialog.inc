@@ -691,6 +691,7 @@ begin
         NewButton:=TBitBtn.Create(Self);
         with NewButton do begin
           AutoSize:=false;
+          Anchors:=[akLeft, akBottom];
           ModalResult:=curBtnValue;
           Layout:=blGlyphLeft;
           Kind:=NewKind;
