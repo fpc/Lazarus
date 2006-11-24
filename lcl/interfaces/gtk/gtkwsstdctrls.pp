@@ -121,6 +121,7 @@ type
     class procedure SetSorted(const ACustomListBox: TCustomListBox; AList: TStrings; ASorted: boolean); override;
     class procedure SetTopIndex(const ACustomListBox: TCustomListBox; const NewTopIndex: integer); override;
     class procedure SetColor(const AWinControl: TWinControl); override;
+    class procedure SetFont(const AWinControl: TWinControl; const AFont : tFont); override;
   end;
 
   { TGtkWSListBox }
@@ -630,6 +631,34 @@ begin
     [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED,
      GTK_STYLE_BASE]);
 end;
+
+class procedure TGtkWSCustomListBox.SetFont(const AWinControl: TWinControl;
+  const AFont : TFont);
+var
+  Widget: PGtkWidget;
+  GList: PGList;
+  ChildWidget: PGTKLabel;
+begin
+  if not AWinControl.HandleAllocated then exit;
+  if AFont.IsDefault then exit;
+  //DebugLn('TGtkWSCustomListBox.SetFont ');
+
+              { Get the selections }
+        Widget:=GetWidgetInfo(Pointer(AWinControl.Handle),True)^.CoreWidget;
+        GList:=  PGtkList(Widget)^.children;
+        while Assigned(GList) do
+            begin
+
+         //  DebugLn('TGtkWSCustomListBox.SetFont for item ',PGTKLabel(PGtkBin(GList^.data)^.child)^.thelabel);
+          ChildWidget := PGTKLabel(PGtkBin(GList^.data)^.child);
+
+            GtkWidgetSet.SetWidgetColor(PGtkWidget(ChildWidget), AWinControl.font.color, clNone,
+            [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED]);
+            GtkWidgetSet.SetWidgetFont(PGtkWidget(ChildWidget), AFont);
+            GList := GList^.Next;
+            end;
+end;
+
 
 { TGtkWSCustomComboBox }
 

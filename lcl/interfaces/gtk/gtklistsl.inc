@@ -714,6 +714,7 @@ begin
   else
     NewText:=#0;
   gtk_label_set_text(ALabel, NewText);
+  //set default font
   
   // repair sorting
   if Sorted and (SortedIndex<>Index) then begin
@@ -879,7 +880,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TGtkListStringList.Insert(Index : integer; const S : string);
 var
-  li, cb, box: PGtkWidget;
+  li, cb, box,aLabel: PGtkWidget;
   item_requisition: TGtkRequisition;
   OldCount: LongInt;
   
@@ -912,10 +913,23 @@ begin
       gtk_container_add(PGTKContainer(li), box);
       cb := gtk_check_button_new;
       gtk_box_pack_start(PGTKBox(box), cb, False, False, 0);
-      gtk_box_pack_start(PGTKBox(box), gtk_label_new(PChar(S)), False, False, 0);
+
+      aLabel:=gtk_label_new(PChar(S));
+      if not TListBox(Owner).Font.IsDefault then begin
+        GtkWidgetSet.SetWidgetColor(aLabel, TListBox(Owner).Font.Color, clNone,
+              [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED]);
+        GtkWidgetSet.SetWidgetFont(aLabel, TListBox(Owner).Font);
+      end;
+      gtk_box_pack_start(PGTKBox(box), aLabel, False, False, 0);
     end
     else begin
       li:=gtk_list_item_new_with_label(PChar(S));
+      aLabel:=PGtkBin(li)^.child;
+      if not TListBox(Owner).Font.IsDefault then begin
+        GtkWidgetSet.SetWidgetColor(aLabel, TListBox(Owner).Font.Color, clNone,
+            [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED]);
+        GtkWidgetSet.SetWidgetFont(aLabel, TListBox(Owner).Font);
+      end;
     end;
     {$IFDEF DebugLCLComponents}
     DebugGtkWidgets.MarkCreated(li,dbgsName(Owner)+' Index='+dbgs(Index)+' Count='+dbgs(Count));
