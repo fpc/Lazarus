@@ -46,19 +46,43 @@ program Svn2RevisionInc;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, SysUtils, Process, FileUtil, Dom, XmlRead;
-  
+  Classes, CustApp, SysUtils, Process, FileUtil, Dom, XmlRead, GetOpts;
+
+type
+
+  { TSvn2RevisionApplication }
+
+  TSvn2RevisionApplication = class(TCustomApplication)
+  private
+    SourceDirectory,
+    RevisionIncFileName: string;
+    RevisionIncDirName: string;
+    RevisionStr: string;
+    ConstName: string;
+    Verbose: boolean;
+
+    function FindRevision: boolean;
+    function IsValidRevisionInc: boolean;
+    procedure WriteRevisionInc;
+    function ParamsValid: boolean;
+    procedure ShowHelp;
+    function CanCreateRevisionInc: boolean;
+    function ConstStart: string;
+    procedure Show(msg: string);
+  public
+    constructor Create(TheOwner: TComponent); override;
+    destructor Destroy; override;
+
+    procedure Run;
+  end;
+
 var
-  SourceDirectory,
-  RevisionIncFileName: string;
-  RevisionIncDirName: string;
-  RevisionStr: string = 'Unknown';
-  
+  Application: TSvn2RevisionApplication = nil;
+
 const
   RevisionIncComment = '// Created by Svn2RevisionInc';
-  ConstStart = 'const RevisionStr = ''';
-  
-function FindRevision: boolean;
+
+function TSvn2RevisionApplication.FindRevision: boolean;
 var
   SvnDir: string;
   function GetRevisionFromSvnVersion : boolean;
@@ -71,15 +95,23 @@ var
     SvnVersionProcess := TProcess.Create(nil);
     try
       with SvnVersionProcess do begin
-        CommandLine := 'svnversion -n "'+SourceDirectory+'"';
+        CommandLine := 'svnversion -n "' + SourceDirectory + '"';
         Options := [poUsePipes, poWaitOnExit];
         try
           Execute;
           SetLength(Buffer, 80);
           n:=OutPut.Read(Buffer[1], 80);
           RevisionStr := Copy(Buffer, 1, n);
+          
+          SetLength(Buffer, 1024);
+          n:=Stderr.Read(Buffer[1], 1024);
+
           Result:=true;
-          writeln('Retrieved revision with svnversion.');
+          Show('Retrieved revision with svnversion.');
+          Show('');
+          Show('svnversion output:');
+          Show(Copy(Buffer, 1, n));
+          Show('');
         except
         // ignore error, default result is false
         end;
@@ -156,7 +188,19 @@ begin
       or GetRevisionFromEntriesXml;
 end;
 
-function IsValidRevisionInc: boolean;
+constructor TSvn2RevisionApplication.Create(TheOwner: TComponent);
+begin
+  inherited Create(TheOwner);
+  
+  RevisionStr := 'Unknown';
+end;
+
+destructor TSvn2RevisionApplication.Destroy;
+begin
+  inherited Destroy;
+end;
+
+function TSvn2RevisionApplication.IsValidRevisionInc: boolean;
 var
   Lines: TStringList;
 begin
@@ -171,7 +215,7 @@ begin
   end;
 end;
 
-procedure WriteRevisionInc;
+procedure TSvn2RevisionApplication.WriteRevisionInc;
 var
   RevisionIncText: Text;
 begin
@@ -184,25 +228,75 @@ begin
     [RevisionIncFileName, RevisionStr]));
 end;
 
-function ParamsValid: boolean;
+procedure TSvn2RevisionApplication.ShowHelp;
 begin
-  Result := false;
-  if ParamCount<>2 then exit;
-  SourceDirectory:=ExpandFileName(ParamStr(1));
-  if not DirectoryExists(SourceDirectory) then begin
+  writeln(ParamStr(0), ' [Options]');
+  writeln;
+  writeln('Options:');
+  writeln(' -D<path>      Directory to get SVN version from (default current dir)');
+  writeln(' -O<file>      Output file (default revision.inc)');
+  writeln(' -C<name>      Name of constant (default RevisionStr)');
+  writeln(' -v            Be more verbose');
+  writeln(' -h            This help screen');
+  halt(1);
+end;
+
+function TSvn2RevisionApplication.ParamsValid: boolean;
+var
+  ch: char;
+begin
+  Result := False;
+
+  //reset
+  SourceDirectory:=ExtractFilePath(ParamStr(0));
+  Verbose := False;
+  RevisionIncFileName := ExpandFileName('revision.inc');
+  ConstName := 'RevisionStr';
+
+  //parse options
+  repeat
+    ch:=Getopt('D:O:C:vh?');
+    Case ch of
+      'D' : SourceDirectory := OptArg;
+      'O' : RevisionIncFileName := ExpandFileName(OptArg);
+      'C' : ConstName := OptArg;
+      'v' : Verbose := True;
+      'h' : ShowHelp;
+      '?' : ShowHelp;
+
+      EndOfOptions : break;
+    end;
+  until False;
+
+  //show options
+  Show('SourceDirectory:     ' + SourceDirectory);
+  Show('RevisionIncFileName: ' + RevisionIncFileName);
+  Show('ConstName:           ' + ConstName);
+  Show('');
+
+  //checks
+  if not DirectoryExists(SourceDirectory) then
+  begin
     writeln('Error: Source directory "', SourceDirectory, '" doesn''t exist.');
     exit;
   end;
-  RevisionIncFileName:=ExpandFileName(ParamStr(2));
+  
   RevisionIncDirName:=ExtractFilePath(RevisionIncFileName);
   if not DirectoryExists(RevisionIncDirName) then begin
     writeln('Error: Target Directory "', RevisionIncDirName, '" doesn''t exist.');
     exit;
   end;
-  Result := true;
+  
+  if ConstName[1] in ['0'..'9'] then
+  begin
+    writeln('Error: Invalid constant name ', ConstName, '.');
+    exit;
+  end;
+  
+  Result := True;
 end;
 
-function CanCreateRevisionInc: boolean;
+function TSvn2RevisionApplication.CanCreateRevisionInc: boolean;
 begin
   if (FileExists(RevisionIncFileName)) then
     Result:= FileIsWritable(RevisionIncFileName)
@@ -210,13 +304,30 @@ begin
     Result := DirectoryIsWritable(RevisionIncDirName);
 end;
 
+function TSvn2RevisionApplication.ConstStart: string;
 begin
-  if not ParamsValid then begin
-    writeln('Usage: ',ExtractFileName(ParamStr(0)),' sourcedir revision.inc');
-    halt(1);
-  end;
+  Result := Format('const %s = ''', [ConstName]);
+end;
+
+procedure TSvn2RevisionApplication.Show(msg: string);
+begin
+  if Verbose then
+    Writeln(msg);
+end;
+
+procedure TSvn2RevisionApplication.Run;
+begin
+  if not ParamsValid then
+    ShowHelp;
+
   if not CanCreateRevisionInc then exit;
+  
   if FindRevision or not IsValidRevisionInc then
     WriteRevisionInc;
-end.
+end;
 
+begin
+  Application := TSvn2RevisionApplication.Create(nil);
+  Application.Run;
+  Application.Free;
+end.

@@ -128,7 +128,7 @@ ifneq ($(USESVN2REVISIONINC),0)
 ifeq ($(wildcard ../tools/svn2revisioninc$(SRCEXEEXT)),)
         $(MAKE) -C ../tools svn2revisioninc$(SRCEXEEXT) OS_TARGET=$(OS_SOURCE) OPT=''
 endif
-	../tools/svn2revisioninc$(SRCEXEEXT) .. revision.inc
+	../tools/svn2revisioninc$(SRCEXEEXT) -D.. -Orevision.inc
 endif
 ifeq ($(OS_TARGET), win32)
         $(MAKE) lazarus.res

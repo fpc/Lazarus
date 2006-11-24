@@ -65,7 +65,7 @@ svn export $LazSrcDir $TmpDir
 if [ ! -e ../svn2revisioninc ]; then
   make -C ../.. tools OPT="-n @$FPCCfg"
 fi
-../svn2revisioninc $LazSrcDir $TmpDir/ide/revision.inc
+../svn2revisioninc -D$LazSrcDir -O$TmpDir/ide/revision.inc
 
 # create a source tar.gz
 cd $TmpDir/..
