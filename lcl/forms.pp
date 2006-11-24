@@ -1162,7 +1162,7 @@ type
   end;
 
 
-  { TFormPropertyStorage }
+  { TFormPropertyStorage - abstract base class }
 
   TFormPropertyStorage = class(TControlPropertyStorage)
   private

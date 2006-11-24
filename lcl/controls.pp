@@ -1808,7 +1808,7 @@ type
   end;
 
 
-  { TControlPropertyStorage }
+  { TControlPropertyStorage - abstract base class }
 
   TControlPropertyStorage = class(TCustomPropertyStorage)
   protected

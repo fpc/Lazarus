@@ -2299,20 +2299,21 @@ end;
 
 function TLinkScanner.IncludeDirective: boolean;
 // {$i filename} or {$include filename}
+// filename can be 'filename with spaces'
 var IncFilename: string;
 begin
   inc(SrcPos);
   if (Src[SrcPos]<>'%') then begin
     IncFilename:=Trim(copy(Src,SrcPos,CommentInnerEndPos-SrcPos));
+    if (IncFilename<>'') and (IncFilename[1]='''')
+    and (IncFilename[length(IncFilename)]='''') then
+      IncFilename:=copy(IncFilename,2,length(IncFilename)-2);
     if PascalCompiler<>pcDelphi then begin
       // default is fpc behaviour (default extension is .pp)
       if ExtractFileExt(IncFilename)='' then
         IncFilename:=IncFilename+'.pp';
     end else begin
       // delphi understands quoted include files and default extension is .pas
-      if (copy(IncFilename,1,1)='''')
-      and (copy(IncFilename,length(IncFilename),1)='''') then
-        IncFilename:=copy(IncFilename,2,length(IncFilename)-2);
       if ExtractFileExt(IncFilename)='' then
         IncFilename:=IncFilename+'.pas';
     end;
