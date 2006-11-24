@@ -1185,12 +1185,16 @@ begin
 end;
 
 function TDesigner.GetDesignControl(AControl: TControl): TControl;
+// checks if AControl is designable.
+// if not check Owner.
+// AControl can be a TNonControlDesignerForm
 var
   OwnerControl: TControl;
   AComponent: TComponent;
 begin
   Result:=AControl;
   if (Result=nil) or (Result=LookupRoot) or (Result.Owner=LookupRoot) then exit;
+  if Result=Form then exit;
   if (Result.Owner is TControl) then begin
     OwnerControl:=TControl(Result.Owner);
     if csOwnedChildsSelectable in OwnerControl.ControlStyle then
