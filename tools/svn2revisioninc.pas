@@ -229,44 +229,74 @@ begin
 end;
 
 procedure TSvn2RevisionApplication.ShowHelp;
+  function ExtractFileBaseName(FileName: string): string;
+  begin
+    Result := ChangeFileExt(ExtractFileName(FileName), '');
+  end;
 begin
-  writeln(ParamStr(0), ' [Options]');
+  writeln;
+  writeln(ParamStr(0));
+  writeln;
+  writeln(ExtractFileBaseName(ParamStr(0)), ' <repository path> <output file> [Options]');
+  writeln('or');
+  writeln(ExtractFileBaseName(ParamStr(0)), ' [Options] <repository path> <output file>');
+  writeln('or');
+  writeln(ExtractFileBaseName(ParamStr(0)), ' <repository path> [Options] <output file>');
   writeln;
   writeln('Options:');
-  writeln(' -D<path>      Directory to get SVN version from (default current dir)');
-  writeln(' -O<file>      Output file (default revision.inc)');
-  writeln(' -C<name>      Name of constant (default RevisionStr)');
-  writeln(' -v            Be more verbose');
-  writeln(' -h            This help screen');
+  writeln(' --o                  Output file');
+  writeln(' --c=<name>           Name of constant (default RevisionStr)');
+  writeln(' --v                  Be more verbose');
+  writeln(' --h                  This help screen');
+  writeln;
+  writeln('Note: <repository path> default current directory');
+  writeln('      <output file> default revision.inc');
+  writeln('      --o overrides <output file>');
+  writeln;
+  writeln('      1st switchless parameter = <repository path>');
+  writeln('      2nd switchless parameter = <output file>');
   halt(1);
 end;
 
 function TSvn2RevisionApplication.ParamsValid: boolean;
 var
-  ch: char;
+  i: integer;
+  index: integer;
 begin
   Result := False;
 
   //reset
-  SourceDirectory:=ExtractFilePath(ParamStr(0));
   Verbose := False;
-  RevisionIncFileName := ExpandFileName('revision.inc');
   ConstName := 'RevisionStr';
+  SourceDirectory:=ChompPathDelim(ExtractFilePath(ParamStr(0)));
+  RevisionIncFileName := ExpandFileName('revision.inc');
 
-  //parse options
-  repeat
-    ch:=Getopt('D:O:C:vh?');
-    Case ch of
-      'D' : SourceDirectory := OptArg;
-      'O' : RevisionIncFileName := ExpandFileName(OptArg);
-      'C' : ConstName := OptArg;
-      'v' : Verbose := True;
-      'h' : ShowHelp;
-      '?' : ShowHelp;
-
-      EndOfOptions : break;
+  //find switchless parameters
+  index := 1;
+  for i := 1 to ParamCount do
+  begin
+    if Copy(ParamStr(i),1,1) <> '-' then
+    begin
+      case index of
+        1: SourceDirectory:=ChompPathDelim(ParamStr(i));
+        2: RevisionIncFileName := ExpandFileName(ParamStr(i));
+      end;
+      Inc(index);
     end;
-  until False;
+  end;
+  
+  //parse options
+  if HasOption('h', 'help') or HasOption('?') then
+    ShowHelp;
+  
+  if HasOption('v') then
+    Verbose := True;
+    
+  if HasOption('c') then
+    ConstName := GetOptionValue('c');
+
+  if HasOption('o') then
+    RevisionIncFileName := GetOptionValue('o');
 
   //show options
   Show('SourceDirectory:     ' + SourceDirectory);
@@ -281,7 +311,7 @@ begin
     exit;
   end;
   
-  RevisionIncDirName:=ExtractFilePath(RevisionIncFileName);
+  RevisionIncDirName:=ExtractFilePath(ExpandFileName(RevisionIncFileName));
   if not DirectoryExists(RevisionIncDirName) then begin
     writeln('Error: Target Directory "', RevisionIncDirName, '" doesn''t exist.');
     exit;
