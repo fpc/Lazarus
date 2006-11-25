@@ -56,7 +56,7 @@ SET PATH=%FPCBINDIR%
 :: copy lazarus dir
 rmdir /s /q %BUILDDIR%
 %SVN% export %LAZSVNDIR% %BUILDDIR% >> %LOGFILE%
-..\..\svn2revisioninc -D%LAZSVNDIR% -O%BUILDDIR%\ide\revision.inc
+..\..\svn2revisioninc %LAZSVNDIR% %BUILDDIR%\ide\revision.inc
 
 call build-fpc.bat
 

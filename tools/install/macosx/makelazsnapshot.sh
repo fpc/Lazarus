@@ -68,7 +68,7 @@ $SVN export $LAZSOURCEDIR $LAZBUILDDIR
 if [ ! -e tools/svn2revisioninc ]; then
   make tools PP=$COMPILER
 fi
-tools/svn2revisioninc -D$LAZSOURCEDIR -O$LAZBUILDDIR/ide/revision.inc
+tools/svn2revisioninc $LAZSOURCEDIR $LAZBUILDDIR/ide/revision.inc
 
 cd $LAZBUILDDIR
 
