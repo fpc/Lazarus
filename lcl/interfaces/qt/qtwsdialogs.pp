@@ -29,8 +29,8 @@ interface
 uses
   // Libs
   qt4, qtobjects, qtwidgets,
-  // LCL
-  SysUtils, Classes, Dialogs, Controls, Forms,
+  // RTL + LCL
+  SysUtils, Classes, LCLType, Dialogs, Controls, Forms,
   // Widgetset
   WSDialogs, WSLCLClasses;
 

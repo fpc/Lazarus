@@ -44,7 +44,7 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-  Dialogs,
+  LCLType, Dialogs,
 ////////////////////////////////////////////////////
   WSLCLClasses, WSControls;
 
