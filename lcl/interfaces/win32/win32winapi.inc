@@ -3187,6 +3187,8 @@ Var
   SaveObj: HGDIOBJ;
   PrevTextColor, PrevBkColor: COLORREF;
 Begin
+  Windows.SetStretchBltMode(DestDC, STRETCH_HALFTONE);
+  Windows.SetBrushOrgEx(DestDC, 0, 0, nil);
   if Mask = 0 then
   begin
     if (Width = SrcWidth) and (Height = SrcHeight) then
