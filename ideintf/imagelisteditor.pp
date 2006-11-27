@@ -505,7 +505,7 @@ begin
         and (Bmp.Width mod ImageList.Width = 0)
         and (IDEQuestionDialog(Caption +' - '+ btnAdd.Caption,
                             s_SuggestSplitImage, mtConfirmation,
-                            [s_AddAsSingle, mrNo, s_SplitImage, mrYes]) = mrYes)
+                            [mrYes, s_AddAsSingle, mrYes, s_SplitImage]) = mrYes)
       then begin
         v_PartCount := Bmp.Width div ImageList.Width;
         v_CompositeBmp := Bmp;
