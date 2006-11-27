@@ -370,9 +370,11 @@ begin
   LanguageSelectionComboBox.Items.Assign(MSLanguages);
   LanguageSelectionComboBox.ItemIndex :=
                             MSHexLanguages.IndexOf(Project.VersionInfo.HexLang);
+  LanguageSelectionComboBox.Sorted := True;
   CharacterSetComboBox.Items.Assign(MSCharacterSets);
   CharacterSetComboBox.ItemIndex :=
                      MSHexCharacterSets.IndexOf(Project.VersionInfo.HexCharSet);
+  CharacterSetComboBox.Sorted := True;
   DescriptionEdit.Text := Project.VersionInfo.DescriptionString;
   CopyrightEdit.Text := Project.VersionInfo.CopyrightString;
 end;
