@@ -320,7 +320,7 @@ begin
         pState^.PreTreeTable.Len[x] := byte(y);
     end;
     if make_decode_table(LZX_PRETREE_MAXSYMBOLS, LZX_PRETREE_TABLEBITS,
-                      @pState^.PreTreeTable.Len,@pState^.PreTreeTable.Table) >0 then
+                      @pState^.PreTreeTable.Len[0],@pState^.PreTreeTable.Table[0]) >0 then
     begin
        Result := DECR_ILLEGALDATA;
        bits.Free;
@@ -330,7 +330,7 @@ begin
 
     x := first;
     while x < last do begin
-        if READ_HUFFSYM(@pState^.PreTreeTable.Table, @pstate^.PreTreeTable.Len, bits, inpos, i, j,
+        if READ_HUFFSYM(@pState^.PreTreeTable.Table[0], @pstate^.PreTreeTable.Len[0], bits, inpos, i, j,
                      LZX_PRETREE_TABLEBITS, LZX_PRETREE_MAXSYMBOLS, z) <> 0 then
         begin
            Result := DECR_ILLEGALDATA;
@@ -358,7 +358,7 @@ begin
         else if (z = 19) then begin
             y := bits.read(1, inpos);
             Inc(y, 4);
-            if READ_HUFFSYM(@pState^.PreTreeTable.Table, @pstate^.PreTreeTable.Len, bits, inpos, i, j,
+            if READ_HUFFSYM(@pState^.PreTreeTable.Table[0], @pstate^.PreTreeTable.Len[0], bits, inpos, i, j,
                          LZX_PRETREE_TABLEBITS, LZX_PRETREE_MAXSYMBOLS, z) <> 0 then
             begin
               Result := DECR_ILLEGALDATA;
@@ -532,7 +532,7 @@ var
         pState^.AlignedTAble.Len[i] := Word(j);
       end;
       if make_decode_table(LZX_ALIGNED_MAXSYMBOLS, LZX_ALIGNED_TABLEBITS,
-        @pState^.AlignedTAble.Len,@pState^.AlignedTAble.Table) >0 then
+        @pState^.AlignedTAble.Len[0],@pState^.AlignedTAble.Table[0]) >0 then
       begin
          Result := DECR_ILLEGALDATA;
          Exit;
@@ -542,15 +542,15 @@ var
     procedure HandleBlockTypeVerbatim;
     begin
       if (
-      READ_LENGTHS(@pState^.MainTreeTable.Len, 0, 256) = DECR_ILLEGALDATA)
+      READ_LENGTHS(@pState^.MainTreeTable.Len[0], 0, 256) = DECR_ILLEGALDATA)
       or (
-      READ_LENGTHS(@pState^.MainTreeTable.Len, 256, pState^.main_elements) = DECR_ILLEGALDATA)
+      READ_LENGTHS(@pState^.MainTreeTable.Len[0], 256, pState^.main_elements) = DECR_ILLEGALDATA)
       then begin
         Result := DECR_ILLEGALDATA;
         Exit;
       end;
       if make_decode_table(LZX_MAINTREE_MAXSYMBOLS, LZX_MAINTREE_TABLEBITS,
-        @pState^.MainTreeTable.Len, @pState^.MainTreeTable.Table) >0 then
+        @pState^.MainTreeTable.Len[0], @pState^.MainTreeTable.Table[0]) >0 then
       begin
          Result := DECR_ILLEGALDATA;
          Exit;
@@ -559,12 +559,12 @@ var
       if pState^.MainTreeTable.Len[$E8] <> 0 then
         pState^.intel_started := 1;
 
-      if READ_LENGTHS(@pState^.LengthTable.Len, 0, LZX_NUM_SECONDARY_LENGTHS) = DECR_ILLEGALDATA then begin
+      if READ_LENGTHS(@pState^.LengthTable.Len[0], 0, LZX_NUM_SECONDARY_LENGTHS) = DECR_ILLEGALDATA then begin
         Result := DECR_ILLEGALDATA;
         Exit;
       end;
       if make_decode_table(LZX_LENGTH_MAXSYMBOLS, LZX_LENGTH_TABLEBITS,
-        @pState^.LengthTable.Len,@pState^.LengthTable.Table) >0 then
+        @pState^.LengthTable.Len[0],@pState^.LengthTable.Table[0]) >0 then
       begin
          Result := DECR_ILLEGALDATA;
          Exit;
@@ -680,7 +680,7 @@ begin
                 LZX_BLOCKTYPE_VERBATIM:
                 begin
                     while (this_run > 0) do begin
-                        if READ_HUFFSYM(@pState^.MainTreeTable.Table, @pState^.MainTreeTable.Len,
+                        if READ_HUFFSYM(@pState^.MainTreeTable.Table[0], @pState^.MainTreeTable.Len[0],
                               bits, inpos, i, j, LZX_MAINTREE_TABLEBITS, LZX_MAINTREE_MAXSYMBOLS,
                               main_element) <> 0 then
                         begin
@@ -701,7 +701,7 @@ begin
 
                             match_length := main_element and LZX_NUM_PRIMARY_LENGTHS;
                             if (match_length = LZX_NUM_PRIMARY_LENGTHS) then begin
-                                if READ_HUFFSYM(@pState^.LengthTable.Table, @pState^.LengthTable.Len,
+                                if READ_HUFFSYM(@pState^.LengthTable.Table[0], @pState^.LengthTable.Len[0],
                                     bits, inpos, i, j, LZX_LENGTH_TABLEBITS, LZX_LENGTH_MAXSYMBOLS,
                                     length_footer) <> 0 then
                                 begin
@@ -776,7 +776,7 @@ begin
                 LZX_BLOCKTYPE_ALIGNED:
                 begin
                     while (this_run > 0) do begin
-                        if READ_HUFFSYM(@pState^.MainTreeTable.Table, @pState^.MainTreeTable.Len, bits,
+                        if READ_HUFFSYM(@pState^.MainTreeTable.Table[0], @pState^.MainTreeTable.Len[0], bits,
                              inpos, i, j, LZX_MAINTREE_TABLEBITS, LZX_MAINTREE_MAXSYMBOLS, main_element) <> 0 then
                         begin
                           Result := DECR_ILLEGALDATA;
@@ -796,7 +796,7 @@ begin
 
                             match_length := main_element and LZX_NUM_PRIMARY_LENGTHS;
                             if (match_length = LZX_NUM_PRIMARY_LENGTHS) then begin
-                                if READ_HUFFSYM(@pState^.LengthTable.Table, @pState^.LengthTable.Len,
+                                if READ_HUFFSYM(@pState^.LengthTable.Table[0], @pState^.LengthTable.Len[0],
                                      bits, inpos, i, j, LZX_LENGTH_TABLEBITS,
                                      LZX_LENGTH_MAXSYMBOLS, length_footer) <> 0 then
                                 begin
@@ -819,7 +819,7 @@ begin
                                     Dec(extra, 3);
                                     verbatim_bits := bits.read(extra, inpos);
                                     Inc(match_offset, (verbatim_bits shl 3));
-                                    if READ_HUFFSYM(@pState^.AlignedTAble.Table, @pState^.AlignedTAble.Len,
+                                    if READ_HUFFSYM(@pState^.AlignedTAble.Table[0], @pState^.AlignedTAble.Len[0],
                                         bits, inpos, i, j, LZX_ALIGNED_TABLEBITS, LZX_ALIGNED_MAXSYMBOLS,
                                         aligned_bits) <> 0 then
                                     begin
@@ -831,7 +831,7 @@ begin
                                 end
                                 else if (extra = 3) then begin
                                     //* aligned bits only */
-                                    if READ_HUFFSYM(@pState^.AlignedTAble.Table, @pState^.AlignedTAble.Len,
+                                    if READ_HUFFSYM(@pState^.AlignedTAble.Table[0], @pState^.AlignedTAble.Len[0],
                                           bits, inpos, i, j, LZX_ALIGNED_TABLEBITS, LZX_ALIGNED_MAXSYMBOLS,
                                           aligned_bits) <> 0 then
                                     begin
