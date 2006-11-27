@@ -47,7 +47,6 @@ type
   { TProjectOptionsDialog }
 
   TProjectOptionsDialog = class(TForm)
-    Label2: TLabel;
 
     Notebook: TNotebook;
     ApplicationPage:    TPage;
