@@ -6255,6 +6255,7 @@ begin
         Result:=DoOpenProjectFile(AFilename,[ofAddToRecent]);
         exit;
       end;
+      include(Flags, ofRegularFile);
     end;
     // check if file is a lazarus package (.lpk)
     if (CompareFileExt(AFilename,'.lpk',false)=0) then begin
