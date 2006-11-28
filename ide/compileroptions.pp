@@ -331,21 +331,21 @@ type
     function NeedsLinkerOpts: boolean;
     function GetUnitPath(RelativeToBaseDir: boolean;
                          Parsed: TCompilerOptionsParseType = coptParsed;
-                         WithProjDir: boolean = false): string;
+                         WithProjDir: boolean = true): string;
     function GetIncludePath(RelativeToBaseDir: boolean;
                             Parsed: TCompilerOptionsParseType = coptParsed;
-                            WithProjDir: boolean = false): string;
+                            WithProjDir: boolean = true): string;
     function GetSrcPath(RelativeToBaseDir: boolean;
                         Parsed: TCompilerOptionsParseType = coptParsed;
-                        WithProjDir: boolean = false): string;
+                        WithProjDir: boolean = true): string;
     function GetLibraryPath(RelativeToBaseDir: boolean;
                             Parsed: TCompilerOptionsParseType = coptParsed;
-                            WithProjDir: boolean = false): string;
+                            WithProjDir: boolean = true): string;
     function GetUnitOutPath(RelativeToBaseDir: boolean;
                             Parsed: TCompilerOptionsParseType = coptParsed): string;
     function GetObjectPath(RelativeToBaseDir: boolean;
                            Parsed: TCompilerOptionsParseType = coptParsed;
-                           WithProjDir: boolean = false): string;
+                           WithProjDir: boolean = true): string;
     function GetPath(Option: TParsedCompilerOptString;
                      InheritedOption: TInheritedCompilerOption;
                      RelativeToBaseDir: boolean;
@@ -2143,19 +2143,22 @@ Processor specific options:
   { ------------- Search Paths ---------------- }
   
   // include path
-  CurIncludePath:=GetIncludePath(not (cclAbsolutePaths in Flags));
+  CurIncludePath:=GetIncludePath(not (cclAbsolutePaths in Flags),
+                                 coptParsed,false);
   if (CurIncludePath <> '') then
     switches := switches + ' ' + ConvertSearchPathToCmdLine('-Fi', CurIncludePath);
 
   // library path
   if (not (ccloNoLinkerOpts in Flags)) then begin
-    CurLibraryPath:=GetLibraryPath(not (cclAbsolutePaths in Flags));
+    CurLibraryPath:=GetLibraryPath(not (cclAbsolutePaths in Flags),
+                                   coptParsed,false);
     if (CurLibraryPath <> '') then
       switches := switches + ' ' + ConvertSearchPathToCmdLine('-Fl', CurLibraryPath);
   end;
 
   // object path
-  CurObjectPath:=GetObjectPath(not (cclAbsolutePaths in Flags));
+  CurObjectPath:=GetObjectPath(not (cclAbsolutePaths in Flags),
+                               coptParsed,false);
   if (CurObjectPath <> '') then
     switches := switches + ' ' + ConvertSearchPathToCmdLine('-Fo', CurObjectPath);
 
