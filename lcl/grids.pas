@@ -4064,16 +4064,16 @@ procedure TCustomGrid.doOPMoveColRow(IsColumn: Boolean; FromIndex, ToIndex: Inte
 begin
   CheckIndex(IsColumn, FromIndex);
   CheckIndex(IsColumn, ToIndex);
-  if IsColumn and Columns.Enabled then
-    ColRowMoved(True, FromIndex, ToIndex)
-  else begin
-    if IsColumn then
-      FCols.Move(FromIndex, ToIndex)
-    else
-      FRows.Move(FromIndex, ToIndex);
-    ColRowMoved(IsColumn, FromIndex, ToIndex);
+
+  if IsColumn then
+    FCols.Move(FromIndex, ToIndex)
+  else
+    FRows.Move(FromIndex, ToIndex);
+
+  ColRowMoved(IsColumn, FromIndex, ToIndex);
+  
+  if not IsColumn or not Columns.Enabled then
     VisualChange;
-  end;
 end;
 
 procedure TCustomGrid.DoOPDeleteColRow(IsColumn: Boolean; index: Integer);
@@ -6655,10 +6655,13 @@ end;
 
 procedure TCustomDrawGrid.ColRowMoved(IsColumn: Boolean; FromIndex, ToIndex: Integer);
 begin
-  if IsColumn and Columns.Enabled then
-    inherited ColRowMoved(IsColumn, FromIndex, ToIndex)
-  else
-    FGrid.MoveColRow(IsColumn, FromIndex, ToIndex);
+  inherited ColRowMoved(IsColumn, FromIndex, ToIndex);
+  
+  // now move content, if Columns.Enabled and IsColumn then
+  // first row header has been already moved, what is in
+  // cells[0,0]-cells[colCount-1,0] doesn't matter because
+  // columns should take precedence.
+  FGrid.MoveColRow(IsColumn, FromIndex, ToIndex);
 
   if Assigned(OnColRowMoved) then
     OnColRowMoved(Self, IsColumn, FromIndex, toIndex);
