@@ -39,6 +39,7 @@ type
     procedure CalendarKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState
       );
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
+    procedure FormCreate(Sender: TObject);
     procedure FormDeactivate(Sender: TObject);
   private
     { private declarations }
@@ -46,6 +47,8 @@ type
     FOnReturnDate: TReturnDateEvent;
     procedure Initialize(const PopupOrigin: TPoint; ADate: TDateTime);
     procedure ReturnDate;
+  protected
+    procedure Paint;override;
   public
     { public declarations }
   end;
@@ -65,7 +68,11 @@ begin
   PopupForm.FOnReturnDate := OnReturnDate;
   //TODO: Change to PopupForm.Show when gtk supports non modal forms on top of
   //modal forms.
+  {$IFDEF MSWindows}
+  PopupForm.Show;
+  {$ELSE}
   PopupForm.ShowModal;
+  {$ENDIF}
 end;
 
 { TCalendarPopupForm }
@@ -75,6 +82,15 @@ procedure TCalendarPopupForm.FormClose(Sender: TObject;
 begin
   FClosed := true;
   CloseAction := caFree;
+end;
+
+procedure TCalendarPopupForm.FormCreate(Sender: TObject);
+begin
+  AutoSize:=false;
+  Calendar.Top:=1;
+  Calendar.Left:=1;
+  Width:=Calendar.Width + 2;
+  Height:=Calendar.Height + 2;
 end;
 
 procedure TCalendarPopupForm.CalendarDblClick(Sender: TObject);
@@ -120,6 +136,14 @@ begin
   if assigned(FOnReturnDate) then
     FOnReturnDate(Self, Calendar.DateTime);
   Close;
+end;
+
+procedure TCalendarPopupForm.Paint;
+begin
+  inherited Paint;
+  Canvas.Pen.Color:=clWindowText;
+  Canvas.Pen.Style := psSolid;
+  Canvas.Rectangle(0, 0, Width-1, Height-1)
 end;
 
 initialization

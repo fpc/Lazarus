@@ -1,26 +1,25 @@
 object CalendarPopupForm: TCalendarPopupForm
+  Left = 635
+  Height = 153
+  Top = 259
+  Width = 155
+  HorzScrollBar.Page = 154
+  VertScrollBar.Page = 152
   ActiveControl = Calendar
   AutoSize = True
   BorderIcons = [biMinimize, biMaximize]
   BorderStyle = bsNone
   Caption = 'CalendarPopupForm'
   OnClose = FormClose
+  OnCreate = FormCreate
   OnDeactivate = FormDeactivate
-  PixelsPerInch = 112
-  HorzScrollBar.Page = 161
-  VertScrollBar.Page = 152
-  Left = 635
-  Height = 153
-  Top = 259
-  Width = 162
   object Calendar: TCalendar
-    Date = '16-4-06'
+    Height = 153
+    Width = 155
     DateTime = 38823
     DisplaySettings = [dsShowHeadings, dsShowDayNames]
     OnDblClick = CalendarDblClick
     OnKeyDown = CalendarKeyDown
     Tabstop = True
-    Height = 153
-    Width = 162
   end
 end
