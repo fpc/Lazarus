@@ -850,6 +850,7 @@ type
     property OnResize;
     property ParentFont;
     property ShowAccelChar;
+    property TabOrder;
     property Visible;
   end;
 
