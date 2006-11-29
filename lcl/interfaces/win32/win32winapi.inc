@@ -1314,6 +1314,19 @@ Begin
   Assert(False, Format('trace:< [TWin32WidgetSet.FillRect] DC: 0x%x; Rect: ((%d,%d)(%d,%d)); Brush: %x', [Integer(DC), R.left, R.top, R.right, R.bottom, brush]));
 End;
 
+function TWin32WidgetSet.FloodFill(DC: HDC; X, Y: Integer;
+  Color: TGraphicsColor; FillStyle: TGraphicsFillStyle; Brush: HBRUSH): Boolean;
+const
+  FillType : array[TGraphicsFillStyle] of UINT =
+    (FLOODFILLSURFACE, FLOODFILLBORDER);
+var
+  OldBrush: HGDIOBJ;
+begin
+  OldBrush := Windows.SelectObject(DC, Brush);
+  Result := Boolean(Windows.ExtFloodFill(DC, X, Y, Color, FillType[FillStyle]));
+  Windows.SelectObject(DC, OldBrush);
+end;
+
 {------------------------------------------------------------------------------
   Method: Frame3D
   Params: DC         - handle to device context

@@ -79,6 +79,7 @@ function ExtTextOut(DC: HDC; X, Y: Integer; Options: LongInt; Rect: PRect; Str: 
 function ExtSelectClipRGN(dc: hdc; rgn : hrgn; Mode : Longint) : Integer; override;
 
 function FillRect(DC: HDC; Const Rect: TRect; Brush: HBRUSH): Boolean; Override;
+function FloodFill(DC: HDC; X, Y: Integer; Color: TGraphicsColor; FillStyle: TGraphicsFillStyle;   Brush: HBRUSH): Boolean; override;
 { Draws a 3D border in GTK native style. }
 function Frame3D(DC: HDC; var Rect: TRect; Const FrameWidth: Integer; Const Style: TBevelCut): Boolean; Override;
 function FrameRect(DC: HDC; const ARect: TRect; hBr: HBRUSH) : integer; override;
