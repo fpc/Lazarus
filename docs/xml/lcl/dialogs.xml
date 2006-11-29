@@ -1464,7 +1464,13 @@ The MessageDlgPos function does not enable you to choose the caption of the dial
       <!-- function Visibility: default -->
       <element name="QuestionDlg">
         <short>Show a question to the user and get a response</short>
-        <descr>QuestionDlg has the same functionality as MessageDlg except for the parameter Buttons which is of a different type. You can define your own captions and return values of this function.</descr>
+        <descr>QuestionDlg has the same functionality as MessageDlg except for the parameter Buttons which is of a different type. You can define your own captions and return values of this function.&lt;br/&gt;
+Buttons is a list of TModalResult and strings. For each TModalResult a button is
+ created. To set a custom caption, add a string after a button.
+
+The default TModalResults defined in controls.pp (mrNone..mrLast) don't need
+ 
+ caption. The default captions will be used.  </descr>
       </element>
       <!-- function result Visibility: default -->
       <element name="QuestionDlg.Result">

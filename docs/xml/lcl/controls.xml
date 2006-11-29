@@ -6971,9 +6971,9 @@
       <!-- property Visibility: public -->
       <element name="TControl.Align">
         <short>Used to align the control in one of four directions.</short>
-        <descr></descr>
-        <seealso></seealso>
-        <errors></errors>
+        <descr/>
+        <seealso/>
+        <errors/>
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.Anchors">

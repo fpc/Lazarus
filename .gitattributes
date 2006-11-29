@@ -1703,6 +1703,7 @@ images/components/tcolorbutton.xpm -text svneol=native#image/x-xpixmap
 images/components/tcolorcombobox.xpm svneol=native#text/plain
 images/components/tcolordialog.ico -text svneol=unset#image/x-icon
 images/components/tcolordialog.xpm -text svneol=native#image/x-xpixmap
+images/components/tcolorlistbox.xpm -text svneol=native#image/x-xpixmap
 images/components/tcombobox.ico -text svneol=unset#image/x-icon
 images/components/tcombobox.xpm -text svneol=native#image/x-xpixmap
 images/components/tcomboedit.xpm -text svneol=native#image/x-xpixmap

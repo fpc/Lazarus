@@ -1,5 +1,6 @@
 {
   TColorBox is component that displays colors in a combobox
+  TColorListBox is component that displays colors in a listbox
 
   Copyright (C) 2005 Darius Blaszijk
 
@@ -47,6 +48,10 @@ type
   published
     property Align;
     property Anchors;
+    property ArrowKeysTraverseList;
+    property AutoComplete;
+    property AutoCompleteText;
+    property AutoDropDown;
     property BorderSpacing;
     property Color;
     property Ctl3D;
@@ -56,7 +61,9 @@ type
     property Enabled;
     property Font;
     property ItemHeight;
+    property ItemIndex;
     property Items;
+    property ItemWidth;
     property MaxLength;
     property Palette: TColorPalette read FPalette write SetPalette;
     property ParentColor;
@@ -64,6 +71,7 @@ type
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
+    property ReadOnly;
     property ShowHint;
     property Sorted;
     property TabOrder;
@@ -71,12 +79,15 @@ type
     property Text;
     property Visible;
     property OnChange;
+    property OnChangeBounds;
     property OnClick;
+    property OnCloseUp;
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
     property OnDrawItem;
     property OnDropDown;
+    property OnEditingDone;
     property OnEndDrag;
     property OnEnter;
     property OnExit;
@@ -84,7 +95,72 @@ type
     property OnKeyPress;
     property OnKeyUp;
     property OnMeasureItem;
+    property OnMouseDown;
+    property OnMouseMove;
+    property OnMouseUp;
     property OnStartDrag;
+    property OnSelect;
+  end;
+
+  TColorListBox = class(TCustomListBox)
+  private
+    FPalette: TColorPalette;
+    function GetSelection: TColor;
+    procedure SetSelection(Value: TColor);
+    procedure SetPalette(Value: TColorPalette);
+  protected
+    procedure SetStyle(Value: TListBoxStyle); override;
+    procedure DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState); override;
+  public
+    constructor Create(AOwner: TComponent); override;
+    procedure SetColorList;
+    property Selection: TColor read GetSelection write SetSelection;
+  published
+    property Align;
+    property Anchors;
+    property BorderSpacing;
+    property BorderStyle;
+    property ClickOnSelChange;
+    property Color;
+    property Constraints;
+    property Enabled;
+    property ExtendedSelect;
+    property Font;
+    property IntegralHeight;
+    property ItemHeight;
+    property Items;
+    property MultiSelect;
+    property Palette: TColorPalette read FPalette write SetPalette;
+    property ParentColor;
+    property ParentFont;
+    property ParentShowHint;
+    property PopupMenu;
+    property ShowHint;
+    property Sorted;
+    property TabOrder;
+    property TabStop;
+    property TopIndex;
+    property Visible;
+    property OnChangeBounds;
+    property OnClick;
+    property OnDblClick;
+    property OnDrawItem;
+    property OnEnter;
+    property OnExit;
+    property OnKeyDown;
+    property OnKeyPress;
+    property OnKeyUp;
+    property OnMouseDown;
+    property OnMouseEnter;
+    property OnMouseLeave;
+    property OnMouseMove;
+    property OnMouseUp;
+    property OnMouseWheel;
+    property OnMouseWheelDown;
+    property OnMouseWheelUp;
+    property OnResize;
+    property OnSelectionChange;
+    property OnShowHint;    
   end;
 
 procedure Register;
@@ -102,7 +178,7 @@ const
 {------------------------------------------------------------------------------}
 procedure Register;
 begin
-  RegisterComponents('Additional', [TColorBox]);
+  RegisterComponents('Additional', [TColorBox, TColorListBox]);
 end;
 {------------------------------------------------------------------------------
   Method:   TColorBox.Create
@@ -246,6 +322,176 @@ end;
 
  ------------------------------------------------------------------------------}
 procedure TColorBox.SetColorList;
+var
+  c: Longint;
+  s: ANSIString;
+  m: TIdentMapEntry;
+begin
+  with Items do
+  begin
+    Clear;
+
+    //add palettes as desired
+    case Palette of
+      cpFull : begin
+                 c := 0;
+                 while IdentEntry(c, m) do
+                 begin
+                   Add(m.Name);
+                   Inc(c);
+                 end;
+               end;
+      else
+      begin
+        for c := 0 to High(ColorDefault) do
+          if ColorToIdent(ColorDefault[c], s) then Add(s);
+      end;
+    end;
+  end;
+end;
+{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  Method:   TColorListBox.Create
+  Params:   AOwner
+  Returns:  Nothing
+
+  Use Create to create an instance of TColorListBox and initialize all properties
+  and variables.
+
+ ------------------------------------------------------------------------------}
+constructor TColorListBox.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+
+  FPalette := cpDefault;
+
+  SetColorList;
+
+  Style := lbOwnerDrawFixed;
+end;
+{------------------------------------------------------------------------------
+  Method:   TColorListBox.GetSelection
+  Params:   None
+  Returns:  TColor
+
+  Use GetSelection to convert the item selected into a system color.
+
+ ------------------------------------------------------------------------------}
+function TColorListBox.GetSelection: TColor;
+begin
+  Result := 0;
+  if ItemIndex >= 0 then
+    if not IdentToColor(Items[ItemIndex], LongInt(Result)) then
+      Result := 0;
+end;
+{------------------------------------------------------------------------------
+  Method:   TColorListBox.SetSelection
+  Params:   Value
+  Returns:  Nothing
+
+  Use SetSelection to set the item in the ColorListBox when appointed a color
+  from code.
+
+ ------------------------------------------------------------------------------}
+procedure TColorListBox.SetSelection(Value: TColor);
+var
+  c: integer;
+  i: Longint;
+begin
+  ItemIndex := -1;
+
+  for c := 0 to Pred(Items.Count) do
+    if IdentToColor(Items[c], i) then
+      if i = Value then
+        ItemIndex := c;
+end;
+{------------------------------------------------------------------------------
+  Method:   TColorListBox.SetPalette
+  Params:   Value
+  Returns:  Nothing
+
+  Use SetPalette to determine wether to reset the colorlist in the ColorListBox
+  based on the type of palette.
+
+ ------------------------------------------------------------------------------}
+procedure TColorListBox.SetPalette(Value: TColorPalette);
+begin
+  if Value <> FPalette then
+  begin
+    FPalette := Value;
+    SetColorList;
+  end;
+end;
+{------------------------------------------------------------------------------
+  Method:   TColorListBox.SetStyle
+  Params:   Value
+  Returns:  Nothing
+
+  Use SetStyle to prevent the style to be changed to anything else than
+  lbOwnerDrawFixed.
+
+ ------------------------------------------------------------------------------}
+procedure TColorListBox.SetStyle(Value: TListBoxStyle);
+begin
+  inherited SetStyle(lbOwnerDrawFixed);
+end;
+{------------------------------------------------------------------------------
+  Method:   TColorListBox.DrawItem
+  Params:   Index, Rect, State
+  Returns:  Nothing
+
+  Use DrawItem to customdraw an item in the ColorListBox. A color preview is drawn
+  and the item rectangle is made smaller and given to the inherited method to
+  draw the corresponding text. The Brush color and Pen color where changed and
+  reset to their original values.
+
+ ------------------------------------------------------------------------------}
+procedure TColorListBox.DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState);
+var
+  r: TRect;
+  ItemColor: TColor;
+  BrushColor: TColor;
+  PenColor: TColor;
+begin
+  if Index<0 then
+    exit;
+  r.top := Rect.top + 3;
+  r.bottom := Rect.bottom - 3;
+  r.left := Rect.left + 3;
+  r.right := r.left + 14;
+  Exclude(State,odPainted);
+  with Canvas do begin
+    FillRect(Rect);
+
+    BrushColor := Brush.Color;
+    PenColor := Pen.Color;
+
+    if IdentToColor(Items[Index], LongInt(ItemColor)) then
+      Brush.Color := ItemColor;
+      
+    Pen.Color := clBlack;
+
+    Rectangle(r);
+
+    Brush.Color := BrushColor;
+    Pen.Color := PenColor;
+  end;
+  r := Rect;
+  r.left := r.left + 20;
+  
+  //DebugLn('TColorListBox.DrawItem ',dbgs(Index),' ',dbgs(r),' ',dbgs(odPainted in State),' ',dbgs(Assigned(OndrawItem)));
+  inherited DrawItem(Index, r, State);
+end;
+{------------------------------------------------------------------------------
+  Method:   TColorListBox.SetColorList
+  Params:   None
+  Returns:  Nothing
+
+  Use SetColorList to fill the itemlist in the ColorListBox with the right color
+  entries. Based on the value of the Palette property.
+
+ ------------------------------------------------------------------------------}
+procedure TColorListBox.SetColorList;
 var
   c: Longint;
   s: ANSIString;

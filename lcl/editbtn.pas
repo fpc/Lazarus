@@ -1,6 +1,6 @@
 {
  /***************************************************************************
-                               edirbtn.pas
+                               editbtn.pas
                                -----------
                 Component Library Extended dialogs Controls
 
