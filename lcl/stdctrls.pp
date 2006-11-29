@@ -851,6 +851,7 @@ type
     property ParentFont;
     property ShowAccelChar;
     property TabOrder;
+    property TabStop;
     property Visible;
   end;
 
