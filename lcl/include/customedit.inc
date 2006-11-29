@@ -300,7 +300,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomEdit.SetReadOnly(Value : Boolean);
 begin
-  if FreadOnly <> Value then begin
+  if FReadOnly <> Value then begin
     FReadOnly := Value;
     if HandleAllocated then
       TWSCustomEditClass(WidgetSetClass).SetReadOnly(Self, Value);

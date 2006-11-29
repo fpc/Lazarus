@@ -880,10 +880,18 @@ end;
 procedure TCustomComboBox.SetReadOnly(const AValue: Boolean);
 begin
   if FReadOnly=AValue then exit;
-  if FStyle in [csSimple, csDropDown, csDropDownList] then exit;
+  if FStyle=csSimple then exit;
   FReadOnly:=AValue;
-  if HandleAllocated then
-    TWSCustomComboBoxClass(WidgetSetClass).SetReadOnly(Self, AValue);
+  case FStyle of
+    csDropDown, csDropDownList: begin
+      if FReadOnly
+        then Style := csDropDownList
+        else Style := csDropDown;
+    end;
+    csOwnerDrawFixed, csOwnerDrawVariable:
+      if HandleAllocated then
+        TWSCustomComboBoxClass(WidgetSetClass).SetReadOnly(Self, AValue);
+  end;
 end;
 
 {------------------------------------------------------------------------------
