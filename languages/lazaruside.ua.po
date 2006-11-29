@@ -1463,7 +1463,7 @@ msgid "Compiler filename"
 msgstr "Назва файлу компілятора"
 
 #: lazarusidestrconsts:dlgfpcpath
-msgid "Compiler path (%s)"
+msgid "Compiler path (e.g. %s)"
 msgstr "Шлях до компілятора (%s)"
 
 #: lazarusidestrconsts:lismenucompletecode

@@ -1473,7 +1473,7 @@ msgid "Compiler filename"
 msgstr "コンパイラファイル名"
 
 #: lazarusidestrconsts:dlgfpcpath
-msgid "Compiler path (%s)"
+msgid "Compiler path (e.g. %s)"
 msgstr "コンパイラパス(%s)"
 
 #: lazarusidestrconsts:lismenucompletecode

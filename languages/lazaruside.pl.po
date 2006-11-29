@@ -1476,7 +1476,7 @@ msgid "Compiler filename"
 msgstr "Nazwa pliku kompilatora"
 
 #: lazarusidestrconsts:dlgfpcpath
-msgid "Compiler path (%s)"
+msgid "Compiler path (e.g. %s)"
 msgstr "Ścieżka kompilatora (%s)"
 
 #: lazarusidestrconsts:lismenucompletecode

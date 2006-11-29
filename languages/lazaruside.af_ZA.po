@@ -1477,7 +1477,7 @@ msgid "Compiler filename"
 msgstr "Vertaler lêer"
 
 #: lazarusidestrconsts:dlgfpcpath
-msgid "Compiler path (%s)"
+msgid "Compiler path (e.g. %s)"
 msgstr "Vertaler pad (%s)"
 
 #: lazarusidestrconsts:lismenucompletecode

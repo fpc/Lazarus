@@ -1473,7 +1473,7 @@ msgid "Compiler filename"
 msgstr "Nombre de archivo del compilador"
 
 #: lazarusidestrconsts:dlgfpcpath
-msgid "Compiler path (%s)"
+msgid "Compiler path (e.g. %s)"
 msgstr "Ruta de compilador (%s)"
 
 #: lazarusidestrconsts:lismenucompletecode

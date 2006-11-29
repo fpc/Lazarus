@@ -1474,7 +1474,7 @@ msgid "Compiler filename"
 msgstr "Compilerbestandsnaam"
 
 #: lazarusidestrconsts:dlgfpcpath
-msgid "Compiler path (%s)"
+msgid "Compiler path (e.g. %s)"
 msgstr "Compilerpad (%s)"
 
 #: lazarusidestrconsts:lismenucompletecode

@@ -821,7 +821,7 @@ resourcestring
   dlgMaxRecentProjs = 'Max recent project files';
   dlgQOpenLastPrj = 'Open last project at start';
   dlgLazarusDir = 'Lazarus directory (default for all projects)';
-  dlgFpcPath = 'Compiler path (%s)';
+  dlgFpcPath = 'Compiler path (e.g. %s)';
   dlgFpcSrcPath = 'FPC source directory';
   dlgMakePath = 'Make path';
   dlgDebugType = 'Debugger type and path';

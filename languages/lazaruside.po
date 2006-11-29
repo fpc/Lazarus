@@ -2291,7 +2291,7 @@ msgid "Lazarus directory (default for all projects)"
 msgstr ""
 
 #: lazarusidestrconsts:dlgfpcpath
-msgid "Compiler path (%s)"
+msgid "Compiler path (e.g. %s)"
 msgstr ""
 
 #: lazarusidestrconsts:dlgfpcsrcpath
