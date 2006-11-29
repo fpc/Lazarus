@@ -234,9 +234,17 @@ end;
 { TPicturePropertyEditor }
 
 procedure TPicturePropertyEditor.Edit;
+
+  procedure AddPackage(Picture: TPicture);
+  begin
+    if Picture.Graphic=nil then exit;
+    //DebugLn(['AddPackage ',dbgsname(Picture.Graphic)]);
+    GlobalDesignHook.AddDependency(Picture.Graphic.ClassType,'');
+  end;
+
 var
   TheDialog: TGraphicPropertyEditorForm;
-  Picture : TPicture;
+  Picture: TPicture;
 begin
   Picture := TPicture(GetObjectValue(TPicture));
   TheDialog := TGraphicPropertyEditorForm.Create(nil);
@@ -253,8 +261,10 @@ begin
     if (TheDialog.ShowModal = mrOK) then begin
       If TheDialog.Preview.Picture.Graphic <> nil then begin
         If TheDialog.FileName <> '' then
-          If FileExists(TheDialog.FileName) then
+          If FileExists(TheDialog.FileName) then begin
             Picture.LoadFromFile(TheDialog.FileName);
+            AddPackage(Picture);
+          end;
       end
       else
         Picture.Graphic := nil;

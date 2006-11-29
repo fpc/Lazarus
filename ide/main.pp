@@ -393,6 +393,8 @@ type
                                         Select: boolean);
     procedure OnPropHookPersistentDeleting(APersistent: TPersistent);
     procedure OnPropHookDeletePersistent(var APersistent: TPersistent);
+    procedure OnPropHookAddDependency(const AClass: TClass;
+                                      const AnUnitName: shortstring);
 
     // designer events
     procedure OnDesignerGetSelectedComponentClass(Sender: TObject;
@@ -1503,6 +1505,7 @@ begin
   GlobalDesignHook.AddHandlerPersistentAdded(@OnPropHookPersistentAdded);
   GlobalDesignHook.AddHandlerPersistentDeleting(@OnPropHookPersistentDeleting);
   GlobalDesignHook.AddHandlerDeletePersistent(@OnPropHookDeletePersistent);
+  GlobalDesignHook.AddHandlerAddDependency(@OnPropHookAddDependency);
 
   ObjectInspector1.PropertyEditorHook:=GlobalDesignHook;
   EnvironmentOptions.IDEWindowLayoutList.Apply(ObjectInspector1,
@@ -12497,6 +12500,38 @@ begin
     APersistent.Free;
   end;
   APersistent:=nil;
+end;
+
+procedure TMainIDE.OnPropHookAddDependency(const AClass: TClass;
+  const AnUnitName: shortstring);
+var
+  RequiredUnitName: String;
+  AnUnitInfo: TUnitInfo;
+begin
+  // check input
+  if AClass<>nil then begin
+    RequiredUnitName:=GetClassUnitName(AClass);
+    if (AnUnitName<>'')
+    and (SysUtils.CompareText(AnUnitName,RequiredUnitName)<>0) then
+      raise Exception.Create(
+        'TMainIDE.OnPropHookAddDependency unitname and class do not fit:'
+        +'unitname='+AnUnitName
+        +' class='+dbgs(AClass)+' class.unitname='+RequiredUnitName);
+  end else begin
+    RequiredUnitName:=AnUnitName;
+  end;
+  if RequiredUnitName='' then
+    raise Exception.Create('TMainIDE.OnPropHookAddDependency no unitname');
+
+  // find current designer and unit
+  if not (GlobalDesignHook.LookupRoot is TComponent) then exit;
+  AnUnitInfo:=Project1.UnitWithComponent(TComponent(GlobalDesignHook.LookupRoot));
+  if AnUnitInfo=nil then begin
+    DebugLn(['TMainIDE.OnPropHookAddDependency LookupRoot not found']);
+    exit;
+  end;
+
+  PkgBoss.AddDependencyToUnitOwners(AnUnitInfo.Filename,RequiredUnitName);
 end;
 
 procedure TMainIDE.mnuEditCopyClicked(Sender: TObject);

@@ -229,6 +229,8 @@ function CheckAddingUnitFilename(LazPackage: TLazPackage;
   var AFilename: string): boolean;
 function CheckAddingDependency(LazPackage: TLazPackage;
   NewDependency: TPkgDependency): boolean;
+function CheckAddingPkgDependency(LazPackage: TLazPackage;
+  RequiredPkg: TLazPackage): boolean;
 
 
 implementation
@@ -421,6 +423,20 @@ begin
   end;
   
   Result:=true;
+end;
+
+function CheckAddingPkgDependency(LazPackage: TLazPackage;
+  RequiredPkg: TLazPackage): boolean;
+var
+  NewDependency: TPkgDependency;
+begin
+  NewDependency:=TPkgDependency.Create;
+  try
+    NewDependency.PackageName:=RequiredPkg.Name;
+    Result:=CheckAddingDependency(LazPackage,NewDependency);
+  finally
+    NewDependency.Free;
+  end;
 end;
 
 

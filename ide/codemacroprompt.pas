@@ -207,7 +207,7 @@ const
   begin
     Result:=false;
     Macro:=IDECodeMacros.FindByName(MacroName);
-    debugln('SubstituteMacro A ',MacroName,' ',dbgs(Macro<>nil),' ',MacroParameter);
+    //debugln('SubstituteMacro A ',MacroName,' ',dbgs(Macro<>nil),' ',MacroParameter);
     if Macro<>nil then begin
       // macro found
       

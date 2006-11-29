@@ -1424,7 +1424,8 @@ end;
 
 procedure Register;
 begin
-  RegisterClasses([TBitmap,TPixmap,TPortableNetworkGraphic,TPortableAnyMapGraphic,TPicture,
+  RegisterClasses([TBitmap,TPixmap,TPortableNetworkGraphic,
+                   TPortableAnyMapGraphic,TPicture,
                    TFont,TPen,TBrush,TRegion]);
 end;
 

@@ -51,7 +51,7 @@ uses
   AVL_Tree, Laz_XMLCfg,
   // IDE Interface
   IDEExternToolIntf, NewItemIntf, ProjectIntf, PackageIntf, MenuIntf,
-  IDEMsgIntf, MacroIntf, LazIDEIntf,
+  PropEdits, IDEMsgIntf, MacroIntf, LazIDEIntf,
   // IDE
   LazConf, LazarusIDEStrConsts, IDEProcs, ObjectLists, DialogProcs, IDECommands,
   EnvironmentOpts, MiscOptions, InputHistory, ProjectDefs, Project,
@@ -205,11 +205,17 @@ type
     procedure ExtendOwnerListWithUsedByOwners(OwnerList: TFPList); override;
     function GetSourceFilesOfOwners(OwnerList: TFPList): TStrings; override;
     function GetPackageOfCurrentSourceEditor: TPkgFile;
+    function AddDependencyToOwners(OwnerList: TFPList; APackage: TLazPackage;
+                   OnlyTestIfPossible: boolean = false): TModalResult; override;
     function DoOpenPkgFile(PkgFile: TPkgFile): TModalResult;
     function FindVirtualUnitSource(PkgFile: TPkgFile): string;
     function SearchFile(const AFilename: string;
                         SearchFlags: TSearchIDEFileFlags;
                         InObject: TObject): TPkgFile; override;
+    function SearchUnitInDesigntimePackages(const AnUnitName: string;
+                        InObject: TObject): TPkgFile; override;
+    function AddDependencyToUnitOwners(const OwnedFilename,
+                              RequiredUnitname: string): TModalResult; override;
 
     // package graph
     function AddPackageToGraph(APackage: TLazPackage; Replace: boolean): TModalResult;
@@ -1654,7 +1660,7 @@ begin
   // add unit to project main source file
   if (pfMainUnitHasUsesSectionForAllUnits in AProject.Flags)
   and (AProject.MainUnitInfo<>nil) then begin
-    debugln('TPkgManager.AddUnitToProjectMainUsesSection B ',AnUnitName);
+    //debugln('TPkgManager.AddUnitToProjectMainUsesSection B ',AnUnitName);
     if (AnUnitName<>'') then begin
       MainIDEInterface.SaveSourceEditorChangesToCodeCache(-1);
       if CodeToolBoss.AddUnitToMainUsesSection(
@@ -2856,6 +2862,42 @@ begin
     SrcEdit:=nil;
 end;
 
+function TPkgManager.AddDependencyToOwners(OwnerList: TFPList;
+  APackage: TLazPackage; OnlyTestIfPossible: boolean): TModalResult;
+var
+  i: Integer;
+  Item: TObject;
+  NewDependency: TPkgDependency;
+begin
+  if not OnlyTestIfPossible then begin
+    Result:=AddDependencyToOwners(OwnerList,APackage,true);
+    if Result<>mrOk then exit;
+  end;
+
+  Result:=mrCancel;
+  for i:=0 to OwnerList.Count-1 do begin
+    Item:=TObject(OwnerList[i]);
+    if Item=APackage then continue;
+    if Item is TProject then begin
+      Result:=AddProjectDependency(TProject(Item),APackage,OnlyTestIfPossible);
+      if Result<>mrOk then exit;
+    end else if Item is TLazPackage then begin
+      NewDependency:=TPkgDependency.Create;
+      try
+        NewDependency.PackageName:=APackage.Name;
+        if not CheckAddingDependency(TLazPackage(Item),NewDependency) then
+          exit;
+        if not OnlyTestIfPossible then begin
+          PackageGraph.AddDependencyToPackage(TLazPackage(Item),NewDependency);
+        end;
+      finally
+        NewDependency.Free;
+      end;
+    end;
+  end;
+  Result:=mrOk;
+end;
+
 function TPkgManager.DoOpenPkgFile(PkgFile: TPkgFile): TModalResult;
 var
   Filename: String;
@@ -2907,6 +2949,59 @@ begin
     end;
   end;
   Result:=nil;
+end;
+
+function TPkgManager.SearchUnitInDesigntimePackages(const AnUnitName: string;
+  InObject: TObject): TPkgFile;
+var
+  i: Integer;
+  APackage: TLazPackage;
+begin
+  if InObject is TLazPackage then begin
+    APackage:=TLazPackage(InObject);
+    Result:=APackage.FindUnit(AnUnitName);
+    if Result<>nil then exit;
+  end;
+  for i:=0 to PackageGraph.Count-1 do begin
+    APackage:=PackageGraph[i];
+    if APackage.Installed=pitNope then continue;
+    Result:=APackage.FindUnit(AnUnitName);
+    if Result<>nil then exit;
+  end;
+  Result:=nil;
+end;
+
+function TPkgManager.AddDependencyToUnitOwners(const OwnedFilename,
+  RequiredUnitname: string): TModalResult;
+var
+  OwnersList: TFPList;
+  RequiredPkgFile: TPkgFile;
+  RequiredPkg: TLazPackage;
+begin
+  Result:=mrCancel;
+  //DebugLn(['TPkgManager.AddDependencyToUnitOwners RequiredUnitname=',RequiredUnitname,' OwnedFilename=',OwnedFilename]);
+
+  // find needed package
+  RequiredPkgFile:=SearchUnitInDesigntimePackages(RequiredUnitName,nil);
+  if RequiredPkgFile=nil then begin
+    DebugLn(['TPkgManager.AddDependencyToUnitOwners unit not in designtime package: ',RequiredUnitName]);
+    exit;
+  end;
+  RequiredPkg:=RequiredPkgFile.LazPackage;
+
+  // find owners of unit (package or project)
+  OwnersList:=GetOwnersOfUnit(OwnedFilename);
+  try
+    if (OwnersList=nil) or (OwnersList.Count=0) then begin
+      DebugLn(['TPkgManager.AddDependencyToUnitOwners Owner not found of unit ',OwnedFilename]);
+      exit;
+    end;
+    // add package dependency
+    //DebugLn(['TPkgManager.AddDependencyToUnitOwners ',dbgsName(TObject(OwnersList[0])),' ',RequiredPkg.IDAsString]);
+    Result:=AddDependencyToOwners(OwnersList,RequiredPkg,false);
+  finally
+    OwnersList.Free;
+  end;
 end;
 
 function TPkgManager.DoAddActiveUnitToAPackage: TModalResult;

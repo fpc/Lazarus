@@ -1129,6 +1129,8 @@ type
                                              ) of object;
   TPropHookSetSelection = procedure(const ASelection: TPersistentSelectionList
                                              ) of object;
+  TPropHookAddDependency = procedure(const AClass: TClass;
+                                     const AnUnitName: shortstring) of object;
   // persistent objects
   TPropHookGetObject = function(const Name:ShortString):TPersistent of object;
   TPropHookGetObjectName = function(Instance:TPersistent):ShortString of object;
@@ -1157,6 +1159,7 @@ type
     htGetComponentNames,
     htGetRootClassName,
     htComponentRenamed,
+    // persistent selection
     htBeforeAddPersistent,
     htPersistentAdded,
     htPersistentDeleting,
@@ -1170,7 +1173,9 @@ type
     // modifing
     htModified,
     htRevert,
-    htRefreshPropertyValues
+    htRefreshPropertyValues,
+    // dependencies
+    htAddDependency
     );
 
   { TPropertyEditorHook }
@@ -1201,16 +1206,16 @@ type
     procedure GetMethods(TypeData:PTypeData; Proc:TGetStringProc);
     function MethodExists(const Name:ShortString; TypeData: PTypeData;
       var MethodIsCompatible,MethodIsPublished,IdentIsMethod: boolean):boolean;
-    procedure RenameMethod(const CurName, NewName:ShortString);
-    procedure ShowMethod(const Name:ShortString);
-    function MethodFromAncestor(const Method:TMethod):boolean;
+    procedure RenameMethod(const CurName, NewName: ShortString);
+    procedure ShowMethod(const Name: ShortString);
+    function MethodFromAncestor(const Method: TMethod):boolean;
     procedure ChainCall(const AMethodName, InstanceName,
-                        InstanceMethod:ShortString;  TypeData: PTypeData);
+                        InstanceMethod: ShortString;  TypeData: PTypeData);
     // components
     function GetComponent(const Name: ShortString):TComponent;
-    function GetComponentName(AComponent: TComponent):ShortString;
+    function GetComponentName(AComponent: TComponent): ShortString;
     procedure GetComponentNames(TypeData:PTypeData; const Proc:TGetStringProc);
-    function GetRootClassName:ShortString;
+    function GetRootClassName: ShortString;
     function BeforeAddPersistent(Sender: TObject;
                                  APersistentClass: TPersistentClass;
                                  Parent: TPersistent): boolean;
@@ -1223,13 +1228,16 @@ type
     procedure Unselect(const APersistent: TPersistent);
     procedure SelectOnlyThis(const APersistent: TPersistent);
     // persistent objects
-    function GetObject(const Name: ShortString):TPersistent;
-    function GetObjectName(Instance: TPersistent):ShortString;
-    procedure GetObjectNames(TypeData: PTypeData; const Proc:TGetStringProc);
+    function GetObject(const Name: ShortString): TPersistent;
+    function GetObjectName(Instance: TPersistent): ShortString;
+    procedure GetObjectNames(TypeData: PTypeData; const Proc: TGetStringProc);
     // modifing
     procedure Modified(Sender: TObject);
-    procedure Revert(Instance:TPersistent; PropInfo:PPropInfo);
+    procedure Revert(Instance: TPersistent; PropInfo: PPropInfo);
     procedure RefreshPropertyValues;
+    // dependencies
+    procedure AddDependency(const AClass: TClass;
+                            const AnUnitname: shortstring);
   public
     // Handlers
     procedure RemoveAllHandlersForObject(const HandlerObject: TObject);
@@ -1332,6 +1340,10 @@ type
                  const OnRefreshPropertyValues: TPropHookRefreshPropertyValues);
     procedure RemoveHandlerRefreshPropertyValues(
                  const OnRefreshPropertyValues: TPropHookRefreshPropertyValues);
+    procedure AddHandlerAddDependency(
+                                 const OnAddDependency: TPropHookAddDependency);
+    procedure RemoveHandlerAddDependency(
+                                 const OnAddDependency: TPropHookAddDependency);
   end;
 
 function GetLookupRootForComponent(APersistent: TPersistent): TPersistent;
@@ -5359,7 +5371,17 @@ begin
   end;
 end;
 
-function TPropertyEditorHook.GetObject(const Name:Shortstring):TPersistent;
+procedure TPropertyEditorHook.AddDependency(const AClass: TClass;
+  const AnUnitname: shortstring);
+var
+  i: Integer;
+begin
+  i:=GetHandlerCount(htAddDependency);
+  while GetNextHandlerIndex(htAddDependency,i) do
+    TPropHookAddDependency(FHandlers[htAddDependency][i])(AClass,AnUnitName);
+end;
+
+function TPropertyEditorHook.GetObject(const Name: Shortstring): TPersistent;
 var
   i: Integer;
 begin
@@ -5369,7 +5391,7 @@ begin
     Result:=TPropHookGetObject(FHandlers[htGetObject][i])(Name);
 end;
 
-function TPropertyEditorHook.GetObjectName(Instance:TPersistent):Shortstring;
+function TPropertyEditorHook.GetObjectName(Instance: TPersistent): Shortstring;
 var
   i: Integer;
 begin
@@ -5385,8 +5407,8 @@ begin
       Result:=TCollectionItem(Instance).DisplayName;
 end;
 
-procedure TPropertyEditorHook.GetObjectNames(TypeData:PTypeData;
-  const Proc:TGetStringProc);
+procedure TPropertyEditorHook.GetObjectNames(TypeData: PTypeData;
+  const Proc: TGetStringProc);
 var
   i: Integer;
 begin
@@ -5747,6 +5769,18 @@ procedure TPropertyEditorHook.RemoveHandlerRefreshPropertyValues(
   const OnRefreshPropertyValues: TPropHookRefreshPropertyValues);
 begin
   RemoveHandler(htRefreshPropertyValues,TMethod(OnRefreshPropertyValues));
+end;
+
+procedure TPropertyEditorHook.AddHandlerAddDependency(
+  const OnAddDependency: TPropHookAddDependency);
+begin
+  AddHandler(htAddDependency,TMethod(OnAddDependency));
+end;
+
+procedure TPropertyEditorHook.RemoveHandlerAddDependency(
+  const OnAddDependency: TPropHookAddDependency);
+begin
+  RemoveHandler(htAddDependency,TMethod(OnAddDependency));
 end;
 
 procedure TPropertyEditorHook.SetLookupRoot(APersistent: TPersistent);

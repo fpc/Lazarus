@@ -345,7 +345,6 @@ begin
   Result:=CodeMacroProcedureHead(
                           'WithoutParamList,WithoutBrackets,WithoutSemicolon',
                           InteractiveValue,SrcEdit,Value,ErrorMsg);
-  debugln('CodeMacroProcedureName ',Value);
 end;
 
 function CodeMacroDate(const Parameter: string; InteractiveValue: TPersistent;
