@@ -28,9 +28,6 @@ TCustomGrid, TDrawGrid and TStringGrid for Lazarus
 Copyright (C) 2002  Jesus Reyes Aguilar.
 email: jesusrmx@yahoo.com.mx
 
-Cur version: 0.8.5
-The log was moved to end of file, search for: The_Log
-
 }
 
 {$define UseClipRect}
@@ -130,7 +127,7 @@ type
 
   TTitleStyle = (tsLazarus, tsStandard, tsNative);
   
-  TGridFlagsOption = (gfEditorUpdateLock, gfNeedsSelectActive);
+  TGridFlagsOption = (gfEditorUpdateLock, gfNeedsSelectActive, gfEditorTab, gfRevEditorTab);
   TGridFlags = set of TGridFlagsOption;
 
 const
@@ -917,6 +914,7 @@ type
     function  MouseToLogcell(Mouse: TPoint): TPoint;
     function  MouseToGridZone(X,Y: Integer): TGridZone;
     procedure SaveToFile(FileName: string);
+    procedure SetFocus; override;
   end;
 
   TGetEditEvent = procedure (Sender: TObject; ACol, ARow: Integer; var Value: string) of object;
@@ -2185,11 +2183,13 @@ var
 
     HsbVisible := (FScrollBars in [ssHorizontal, ssBoth]) or
       (ScrollBarAutomatic(ssHorizontal) and (FGCache.GridWidth > FGCache.ClientWidth));
+      
     VsbVisible := (FScrollBars in [ssVertical, ssBoth]) or
       (ScrollBarAutomatic(ssVertical) and (FGCache.GridHeight > FGCache.ClientHeight));
 
     if ScrollBarAutomatic(ssHorizontal) then
       HsbVisible := not AutoFillColumns and (HsbVisible or (VsbVisible and (TW>HsbRange)));
+      
     if ScrollBarAutomatic(ssVertical) then
       VsbVisible := VsbVisible or (HsbVisible and (TH>VsbRange));
 
@@ -2203,27 +2203,24 @@ var
   begin
     with FGCache do begin
       // Horizontal scrollbar
-      if ScrollBarAutomatic(ssHorizontal) then begin
-        if HSbVisible then begin
-          HsbRange:=GridWidth + 2 - GetBorderWidth;
-          if not (goSmoothScroll in Options) then begin
-            TW:= PtrInt(AccumWidth[MaxTopLeft.X])-(HsbRange-ClientWidth);
-            HsbRange:=HsbRange + TW - FixedWidth + 1;
-          end;
+      if HsbVisible then begin
+        HsbRange:=GridWidth + 2 - GetBorderWidth;
+        if not (goSmoothScroll in Options) then begin
+          TW:= PtrInt(AccumWidth[MaxTopLeft.X])-(HsbRange-ClientWidth);
+          HsbRange:=HsbRange + TW - FixedWidth + 1;
         end;
       end else
-      if FScrollBars in [ssHorizontal, ssBoth] then HsbRange:=0;
+        HsbRange:=0;
+        
       // Vertical scrollbar
-      if ScrollBarAutomatic(ssVertical)  then begin
-        if VSbVisible then begin
-          VSbRange:= GridHeight + 2 - GetBorderWidth;
-          if not (goSmoothScroll in Options) then begin
-            TH:= PtrInt(accumHeight[MaxTopLeft.Y])-(VsbRange-ClientHeight);
-            VsbRange:=VsbRange + TH -FixedHeight + 1;
-          end;
+      if VsbVisible then begin
+        VSbRange:= GridHeight + 2 - GetBorderWidth;
+        if not (goSmoothScroll in Options) then begin
+          TH:= PtrInt(accumHeight[MaxTopLeft.Y])-(VsbRange-ClientHeight);
+          VsbRange:=VsbRange + TH -FixedHeight + 1;
         end;
       end else
-      if FScrollBars in [ssVertical, ssBoth] then VsbRange:= 0;
+        VsbRange:= 0;
     end;
   end;
 begin
@@ -3212,8 +3209,12 @@ begin
   DbgOut('*** grid.WMSetFocus, FocusedWnd=', dbgs(Message.FocusedWnd),'[',dbgs(pointer(Message.FocusedWnd)),'] ');
   if EditorMode and (Message.FocusedWnd = FEditor.Handle) then
     DebugLn('Editor')
-  else
-    DebugLn('ExternalWindow');
+  else begin
+    if Message.FocusedWnd=Self.Handle then
+      DebugLn('Same Grid!')
+    else
+      DebugLn('ExternalWindow');
+  end;
   {$endif}
   inherited WMSetFocus(Message);
 end;
@@ -3287,18 +3288,18 @@ begin
   // the scrollbars see: WMHScroll and WVHScroll
   if (FUpdateScrollBarsCount=0) and not FixedGrid then begin
     if Which in [ssHorizontal, ssBoth] then begin
-      if ScrollBarAutomatic(ssHorizontal) then begin
-          with FGCache do
-            ScrollBarPosition(SB_HORZ,
-              PtrInt(AccumWidth[FTopLeft.x])-TLColOff-FixedWidth );
+      if FScrollBars in [ssHorizontal,ssBoth,ssAutoHorizontal,ssAutoBoth] then begin
+        with FGCache do
+          ScrollBarPosition(SB_HORZ,
+            PtrInt(AccumWidth[FTopLeft.x])-TLColOff-FixedWidth );
       end;
     end;
 
     if Which in [ssVertical, ssBoth] then begin
-      if ScrollBarAutomatic(ssVertical) then begin
-          with FGCache do
-            ScrollBarPosition(SB_VERT,
-              PtrInt(AccumHeight[FTopLeft.y])-TLRowOff-FixedHeight);
+      if FScrollBars in [ssVertical,ssBoth,ssAutoVertical,ssAutoBoth] then begin
+        with FGCache do
+          ScrollBarPosition(SB_VERT,
+            PtrInt(AccumHeight[FTopLeft.y])-TLRowOff-FixedHeight);
       end;
     end;
   end; {if FUpd...}
@@ -4509,6 +4510,7 @@ end;
 
 procedure TCustomGrid.doExit;
 begin
+  {$IfDef dbgGrid}DebugLn('DoExit - INIT');{$Endif}
   if FEditorShowing then begin
     {$IfDef dbgGrid}DebugLn('DoExit - EditorShowing');{$Endif}
   end else begin
@@ -4522,10 +4524,12 @@ begin
     end;
   end;
   inherited DoExit;
+  {$IfDef dbgGrid}DebugLn('DoExit - FIN');{$Endif}
 end;
 
 procedure TCustomGrid.DoEnter;
 begin
+  {$IfDef dbgGrid}DebugLn('DoEnter - INIT');{$Endif}
   inherited DoEnter;
   if EditorLocked then begin
     {$IfDef dbgGrid}DebugLn('DoEnter - EditorLocked');{$Endif}
@@ -4544,6 +4548,7 @@ begin
     end else
       InvalidateFocused;
   end;
+  {$IfDef dbgGrid}DebugLn('DoEnter - FIN');{$Endif}
 end;
 
 function TCustomGrid.DoMouseWheelDown(Shift: TShiftState; MousePos: TPoint
@@ -4612,6 +4617,15 @@ begin
             MoveSel(True, DeltaCol, DeltaRow);
           end;
           Key:=0;
+        end else
+        if FEditorKey then begin
+          {$IFDEF dbggrid}
+          DebugLn('Got TAB, shift=',dbgs(sh));
+          {$endif}
+          if sh then
+            include(GridFlags, gfRevEditorTab)
+          else
+            include(GridFlags, gfEditorTab);
         end;
       end;
     VK_LEFT:
@@ -6145,6 +6159,44 @@ begin
     Cfg.Flush;
     FreeThenNil(Cfg);
   end;
+end;
+
+type
+  TWinCtrlAccess=class(TWinControl);
+
+procedure TCustomGrid.SetFocus;
+var
+  NextControl: TWinControl;
+  ParentForm: TCustomForm;
+  ForwardTab: boolean;
+begin
+  {$IFDEF dbgGrid}
+  DebugLn('TCustomGrid.SetFocus INIT.');
+  {$ENDIF}
+  if (Editor<>nil) and Editor.Focused and
+    ([gfEditorTab,gfRevEditorTab]*GridFlags<>[]) then begin
+    // Editor was doing TAB. Focus next control instead
+    ForwardTab:= gfEditorTab in GridFlags;
+    GridFlags:=GridFlags-[gfEditorTab,gfRevEditorTab];
+    ParentForm:=GetParentForm(Self);
+    if ParentForm<>nil then begin
+      NextControl:=TWinCtrlAccess(Pointer(ParentForm)).FindNextControl(Self,
+                                                      ForwardTab, true, false);
+      if NextControl<>nil then begin
+        {$IFDEF dbgGrid}
+        DebugLn('   Was tabbing, will focus: ',dbgsname(NextControl));
+        {$ENDIF}
+        if (NextControl<>Self) and (NextControl<>Editor) then begin
+          NextControl.SetFocus;
+          exit;
+        end;
+      end;
+    end;
+  end;
+  inherited SetFocus;
+  {$IFDEF dbgGrid}
+  DebugLn('TCustomGrid.SetFocus FIN');
+  {$ENDIF}
 end;
 
 procedure TCustomGrid.LoadFromFile(FileName: string);
@@ -8299,226 +8351,4 @@ begin
 end;
 
 end.
-
-{  The_Log
-VERSION: 0.8.6:
-----------------
-Date: 20-Dic-2003
-- Added GetEditText, GetEditMask, SetEditText and events OnGetEditText, OnGetEditMask, OnSetEditText
-- Added ColWidths and RowHeights lfm storing
-- Changed Default CellEditor from TCustomEdit to TCustomMaskEdit
-- Added Test StringGridEditor (enabled with -dWithGridEditor)
-
-VERSION: 0.8.5:
-----------------
-Date: 15-Sept-2003
-- TCustomGrid is derived from TCustomControl instead of TScrollingWinControl
-  means that:
-  * No more transparent grid at design time
-  * No more HorzScrolLBar and VertScrollbar in Object inspector
-  * HorzScrollbar and VertScrollbar doesn't exists anymore
-  * Scrollbar is handled with setscrollinfo or through the new ScrollbarXXXX
-     protected methods.
-- TCustomDrawGrid attribute support was removed and added to a new TCustomStringGrid derivated
-  component.
-- Removed CanSelect, OnCanSelect, TOnCanSelectEvent now it uses SelectCell
-  OnSelectCell and TOnSelectCell.
-- Implemented Auto edit mode (Typing something will show editor)
-- Implemented EditorMode
-
-
-VERSION: 0.8.4:
----------------
-Date: 21-JAN-2003
-- Moved log to the end of file
-- Editor should be set in OnSelectEditor or SelectEditor in descendants.
-- Added SkipUnselectable, this allow the seleccion [using UP,DOWN,LEFT,TOP,
-  TABS (if goTabs)] select the next selectable cell.
-- Fixed goAlwaysShowEditor
-- Fixed bug (gtk-CRITICAL) when destroying the grid and the editor is visible
-- Fixed bug selecting a partial visible cell while the grid is scrolled
-- missing: tabb from the grid, and Shift-Tab in goTabs mode.
-
-
-
-VERSION: 0.8.3
----------------
-CHANGES   - Better Editor Support
-            Renamed Editor functions
-            Editors uses .Dispatch instead of .Perform
-            Introduced EditorOptions:
-            EO_AUTOSIZE  = Let the grid automatically resize the editor
-            EO_HOOKKEYS  = Let the grid process known keydows first
-            EO_HOOKEXIT  = Let the grid handle the focus
-            EO_SELECTALL = Editor wants to receive SelectAll msg on Key RETURN
-            EO_WANTCHAR  = Editor wants to Preview Keys on the grid (soon)
-            EO_GETSETVAL = Editor wants to receive GetValue,SetValue msgs (soon)
-            This Options should be set in GM_SETGRID message (msg.Options:= ..)
-
-          - Deleted Scr1 Conditional
-
-FIXES     Painting and Crashes at desing time
-
-TODOS     Better editor Support
-          TCustomgrid Inherited from TCustomControl to get rid of
-            - published VertScrollBar
-            - published HorzScrollBar
-            - published AutoScroll
-            - translucid look at design time?
-          Detect ReadOnly grid in editors
-          Detect changes in the grid.
-          Column Resizing at design time
-          ...
-
-
-VERSION: 0.8.2
----------------
-CHANGES		Demo Program
-
-			Too many internal changes to be listed, scrollbars are now
-			proportional to client/grid sizes (with goSmoothScroll option
-			and almost proptional without it), removed OnEditor, etc.
-
-ADDED		goSmoothScroll. (default) allows scroll the grid by pixel basis
-            goThumbTracking. The grid acts always as if this is set, the
-			  value is ignored due to current implementation, however if
-			  the user set it explicitly then, when the user is scrolling,
-			  the focused cell will be following the scroll position.
-			goTabs.
-			goAlwaysShowEditor. Still need some working
-
-NEW			AutoAdvance. Choose where the next cell position should go
-              if a RETURN or TABS(if enabled) is pressed
-
-			  aaRight. Selected cell will go to the right
-			  aaDown.  Selected cell will go to down
-
-BUGS		goEditing:
-			  - pressing RETURN doesn't edit the current cell
-			  - pressing other keys doesn't start editing (need F2)
-			goTabs:
-			  - Shift-TAB doesn't work
-			goAlwaysShowEditor:
-			  - Still working :)
-			...
-
-
-VERSION: 0.8.1
----------------
-DATE: 28-DEC-2002
-
-CHANGES -- Continued migrating properties from TCustomGrid to TCustomDrawGrid
-	   (onCellAttr, DefaultCellAttr, FixedColor, etc.)
-
-FIXES   -- FGrid in TCustomDrawGrid was not destroyed
-        -- goEditing now works. I mean, you can now stop showing the
-	   editor at F2 (although editor needs more work)
-           Default cell editor
-	-- DefaultEditor parent is now TCustomStringGrid
-	-- Some fpc 1.1 issues (Mattias)
-
-
-VERSION: 0.8.0
----------------
-DATE: 20-DEC-2002
-
-CHANGES Many internal changes (width,height removed from pcellsprop,
-        fgrid removed from tcustomgrid, colRowToClientCellRect now
-        uses col,row instead of point(col,row), cleaned DynamicArray,
-        drawcells splitted in DrawFixedCells, DrawInteriorCells, DrawFocused
-        so TCustomStringGrid can implement ordered cell drawin and TCustomGrid
-        draw cells is simpler, etc).
-
-ADDED   ExchangeColRow(IsColumn: Boolean; index, WithIndex: Integer);
-        DeleteColRow(IsColumn:Boolea; index:Integer);
-        MoveColRow(IsColumn: Boolean; FromIndex, ToIndex: Integer);
-        SortColRow(IsColumn: Boolean; index: Integer);
-        SortColRow(IsColumn: Boolean; index,FromIndex,ToIndex: Integer);
-        property OnColRowMoved: TgridOperationEvent
-        property OnColRowDeleted: TgridOperationEvents
-        property OnColRowExchanged: TgridOperationEvents
-
-ADDED   TcustomGrid derivatives can now replace sort algorithm overriding
-        Sort method and using exchangeColRow as needed.
-
-
-VERSION:  0.7.3
------------------
-DATE: 10-DIC-2002
-
-ADDED goDblClickAutoSize to grid Options, Doubleclicking col's right edge
-      automatically adjust column width (in TCustomStringGrid).
-      Implemented AutoAdjustColumn() and AutoAdjustColumns.
-
-FIXED col, row increment after grid.clear don't show the grid ( if
-      fixed rows-cols = 0 )
-
-ADDED version info to saved grid files.
-
-ADDED NEW DEMO: mysql_query. A program that connects to MySQL and shows query
-      results in a grid which you can save and load.
-
-
-VERSION:  0.7.2
------------------
-DATE: 5-DIC-2002
-FIXED a bug that prevents col, and row sizing. MouseDown uses only Left clicks
-
-VERSION:  0.7.1
------------------
-DATE: 3-DIC-2002
-ADDED LoadFromFile and SaveToFile to XML file.
-  SaveOptions   (soDesign,soPosition,soAttributes,soContent);
-  soDesign:     Save & Load ColCount,RowCount,FixedCols,FixedRows,
-                ColWidths, RowHeights and Options (TCustomGrid)
-  soPosition:   Save & Load Scroll Position, Row, Col and Selection (TCustomGrid)
-  soAttributes: Save & Load Colors, Text Alignment & Layout, etc. (TCustomDrawGrid)
-  soContent:    Save & Load Text (TCustomStringGrid)
-
-ADDED TCustomgrid.Clear.
-                Wipe completly the grid.
-ADDED goRelaxedRowSelect option
-                You can see focused cell and navigate freely if goRowSelect is
-                set.
-FIXED Crash on reducing Rowcount
-
-
-VERSION:  0.7.0
------------------
-RELEASE DATE: 30-NOV-2002
-
-This unit version provides TCustomGrid, TCustomDrawGrid and TCustomStringGrid for lazarus
-from the component user perpective there should be to much differences.
-This release has only basic editing support.
-
-Old Features:
-  Almost all that T*Grid can do.
-
-New Features :
-
-  OnHeaderClick:
-              Detect clicks on Row(Column) Headers, it uses a property: DragDx
-              as a threshold in order to detect Col(Row) moving or clicking.
-
-  OnCellAttr: In this Event You can easily customize the grid.
-  OnDrawCell: Draw your specific cells here and then call .DefaultDrawCell
-              to let the grid draw other cells.
-  SortColumn,
-  SortRow:    Sorting capabilities are built! you need only write one
-              OnCompareCells handler to do your custom sorting needs.
-
-  Exposed: DeleteColumn, DeleteRow, MoveColumn, MoveRow.
-
-  RowAttr[],RowColor[],RowFontColor[],RowAlign[]
-  ColAttr[],ColColor[],ColFontColor[],ColAlign[]
-  CellAttr[],CellColor[],CellFontColor[],CellAlign[]
-
-  GridLineStyle, FocusColor, etc.
-
-Bugs:
-
-  + Editor: it has a unneeded feature "auto cell filling" :)
-
-  others.
-}
 
