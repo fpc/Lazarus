@@ -264,6 +264,8 @@ type
                                 var Abort: boolean): string;
     function MacroFuncLazarusDir(const s:string; const Data: PtrInt;
                                  var Abort: boolean): string;
+    function MacroFuncExeExt(const s:string; const Data: PtrInt;
+                                 var Abort: boolean): string;
     function MacroFuncLanguageID(const s:string; const Data: PtrInt;
                                  var Abort: boolean): string;
     function MacroFuncLanguageName(const s:string; const Data: PtrInt;
@@ -1511,6 +1513,8 @@ begin
                  lisFreePascalSourceDirectory,@MacroFuncFPCSrcDir,[]));
   AMacroList.Add(TTransferMacro.Create('LazarusDir','',
                  lisLazarusDirectory,@MacroFuncLazarusDir,[]));
+  AMacroList.Add(TTransferMacro.Create('ExeExt','',
+                 lisLazarusDirectory,@MacroFuncExeExt,[]));
   AMacroList.Add(TTransferMacro.Create('LanguageID','',
                  lisLazarusLanguageID,@MacroFuncLanguageID,[]));
   AMacroList.Add(TTransferMacro.Create('LanguageName','',
@@ -1537,6 +1541,12 @@ function TEnvironmentOptions.MacroFuncLazarusDir(const s: string;
   const Data: PtrInt; var Abort: boolean): string;
 begin
   Result:=LazarusDirectory;
+end;
+
+function TEnvironmentOptions.MacroFuncExeExt(const s: string;
+  const Data: PtrInt; var Abort: boolean): string;
+begin
+  Result:=GetExecutableExt;
 end;
 
 function TEnvironmentOptions.MacroFuncLanguageID(const s: string;

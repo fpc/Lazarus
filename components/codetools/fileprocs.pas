@@ -874,11 +874,14 @@ var
 begin
   Result:=Filename;
   if (BaseDirectory='') or (Filename='') then exit;
+
+  {$IFDEF MSWindows}
   // check for different windows file drives
   if (CompareText(ExtractFileDrive(Filename),
                   ExtractFileDrive(BaseDirectory))<>0)
   then
     exit;
+  {$ENDIF}
 
   FileNameLength:=length(Filename);
   BaseDirLen:=length(BaseDirectory);
@@ -919,10 +922,12 @@ begin
   UpDirCount:=0;
   BaseDirPos:=SamePos+1;
   while (BaseDirPos<=BaseDirLen) do begin
-    if BaseDirectory[BaseDirPos]=PathDelim then inc(UpDirCount);
+    if (BaseDirectory[BaseDirPos]=PathDelim) then
+      inc(UpDirCount);
     inc(BaseDirPos);
   end;
-  if BaseDirectory[BaseDirLen]<>PathDelim then inc(UpDirCount);
+  if (SamePos<BaseDirLen) and (BaseDirectory[BaseDirLen]<>PathDelim) then
+    inc(UpDirCount);
 
   // create relative filename
   FileNameRestLen:=FileNameLength-SamePos;
@@ -938,7 +943,7 @@ begin
     Move(Filename[SamePos+1],Result[ResultPos],FileNameRestLen);
 
   // use '.' for an Filename=BaseDirectory
-  if (Result='') and (Filename<>'') and UsePointDirectory then
+  if UsePointDirectory and (Result='') and (Filename<>'') then
     Result:='.';
 end;
 
