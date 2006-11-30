@@ -103,6 +103,11 @@ type
   TUserCheckBoxBitmapEvent =
     procedure(Sender: TObject; const CheckedState: TDbGridCheckboxState;
               ABitmap: TBitmap) of object;
+              
+  TDbGridSelEditorEvent =
+    procedure(Sender: TObject; Column: TColumn;
+              var Editor: TWinControl) of object;
+
 
 type
 
@@ -284,6 +289,7 @@ type
     FOnFieldEditMask: TGetDbEditMaskEvent;
     FOnTitleClick: TDBGridClickEvent;
     FOnUserCheckboxBitmap: TUserCheckboxBitmapEvent;
+    FOnSelectEditor: TDbGridSelEditorEvent;
     FOptions: TDBGridOptions;
     FReadOnly: Boolean;
     FColEnterPending: Boolean;
@@ -301,7 +307,6 @@ type
     FDefaultColWidths: boolean;
     FGridStatus: TDBGridStatus;
     FOldControlStyle: TControlStyle;
-    FIsEditingCheckBox: Boolean;  // For checkbox column editing emulation (by SSY)
     FCheckedBitmap, FUnCheckedBitmap, FGrayedBitmap: TBitmap;
     FNeedUpdateWidths: boolean;
     FSelectedRows: TBookmarkList;
@@ -435,6 +440,7 @@ type
     property OnColumnSized: TNotifyEvent read FOnColumnSized write FOnColumnSized;
     property OnDrawColumnCell: TDrawColumnCellEvent read FOnDrawColumnCell write FOnDrawColumnCell;
     property OnFieldEditMask: TGetDbEditMaskEvent read FOnFieldEditMask write FOnFieldEditMask;
+    property OnSelectEditor: TDbGridSelEditorEvent read FOnSelectEditor write FOnSelectEditor;
     property OnTitleClick: TDBGridClickEvent read FOnTitleClick write FOnTitleClick;
     property OnUserCheckboxBitmap: TUserCheckboxBitmapEvent read FOnUserCheckboxBitmap write FOnUserCheckboxBitmap;
   public
@@ -527,6 +533,7 @@ type
     property OnMouseMove;
     property OnMouseUp;
     property OnPrepareCanvas;
+    property OnSelectEditor;
     //property OnStartDock;
     //property OnStartDrag;
     property OnTitleClick;
@@ -2074,10 +2081,17 @@ begin
 end;
 
 procedure TCustomDBGrid.SelectEditor;
+var
+  aEditor: TWinControl;
 begin
-  if FDatalink.Active then
-    inherited SelectEditor
-  else
+  if FDatalink.Active then begin
+    inherited SelectEditor;
+    if Assigned(OnSelectEditor) then begin
+      aEditor:=Editor;
+      OnSelectEditor(Self, SelectedColumn, aEditor);
+      Editor:=aEditor;
+    end;
+  end else
     Editor := nil;
 end;
 
@@ -2141,12 +2155,13 @@ end;
 
 procedure TCustomDBGrid.CellClick(const aCol, aRow: Integer);
 begin
-  if (aCol>=FixedCols)and(aRow>=FixedRows) then begin
-    if ColumnEditorStyle(ACol, SelectedField) = cbsCheckboxColumn then
-      if FIsEditingCheckBox then
-  			SwapCheckBox
-      else
-      	FIsEditingCheckBox := True;
+  if (aCol>=FixedCols)and(aRow>=FixedRows) then
+  begin
+    if ColumnEditorStyle(ACol, SelectedField) = cbsCheckboxColumn then begin
+      // react only if overriden editor is hidden
+      if (Editor=nil) or not EditorMode then
+  	    SwapCheckBox
+    end;
   end;
   if Assigned(OnCellClick) then
     OnCellClick(TColumn(ColumnFromGridColumn(aCol)));
@@ -2304,7 +2319,6 @@ procedure TCustomDBGrid.MoveSelection;
 begin
   if FSelectionLock then
     exit;
-  FIsEditingCheckBox := False;
   {$ifdef dbgDBGrid}DebugLn('DBGrid.MoveSelection INIT');{$Endif}
   inherited MoveSelection;
   if FColEnterPending and Assigned(OnColEnter) then begin
@@ -2387,6 +2401,12 @@ var
   ChkBitmap: TBitmap;
   XPos,YPos: Integer;
 begin
+  if (aCol=Col) and FDrawingActiveRecord then begin
+    // show checkbox only if overriden editor is hidden
+    if EditorMode then
+      exit;
+  end;
+
   // by SSY
 	if (F<>nil) then
   	if F.DataType=ftBoolean then
