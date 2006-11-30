@@ -181,6 +181,7 @@ Type
     { Initialize the API }
     procedure AppInit(var ScreenInfo: TScreenInfo); override;
     procedure AppMinimize; override;
+    procedure AppRestore; override;
     procedure AppBringToFront; override;
     procedure AppProcessMessages; override;
     procedure AppWaitMessage; override;

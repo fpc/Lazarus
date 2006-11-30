@@ -244,6 +244,19 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method: TApplication.Restore
+  Params: None
+  Returns: Nothing
+
+  Restore minimized application.
+ ------------------------------------------------------------------------------}
+procedure TApplication.Restore;
+begin
+  //debugln('TApplication.Restore');
+  WidgetSet.AppRestore;
+end;
+
+{------------------------------------------------------------------------------
   TApplication ProcesssMessages  "Enter the messageloop and process until empty"
 ------------------------------------------------------------------------------}
 procedure TApplication.ProcessMessages;
@@ -1393,6 +1406,24 @@ procedure TApplication.IntfQueryEndSession(var Cancel : Boolean);
 begin
   if Assigned(FOnQueryEndSession) then FOnQueryEndSession(Cancel);
 end;
+
+{------------------------------------------------------------------------------
+  procedure TApplication.IntfAppMinimize;
+------------------------------------------------------------------------------}
+procedure TApplication.IntfAppMinimize;
+begin
+  if Assigned(FOnMinimize) then FOnMinimize(Self);
+end;
+
+{------------------------------------------------------------------------------
+  procedure TApplication.IntfAppRestore;
+------------------------------------------------------------------------------}
+procedure TApplication.IntfAppRestore;
+begin
+  if Assigned(FOnRestore) then FOnRestore(Self);
+end;
+
+
 
 {------------------------------------------------------------------------------
   procedure TApplication.DoBeforeMouseMessage(CurMouseControl: TControl);

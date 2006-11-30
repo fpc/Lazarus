@@ -65,6 +65,7 @@ type
     procedure AppProcessMessages; virtual; abstract;
     procedure AppTerminate; virtual; abstract;
     procedure AppMinimize; virtual; abstract;
+    procedure AppRestore; virtual; abstract;
     procedure AppBringToFront; virtual; abstract;
     procedure AppSetTitle(const ATitle: string); virtual;
     

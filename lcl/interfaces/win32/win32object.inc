@@ -217,6 +217,19 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method: TWin32WidgetSet.AppRestore
+  Params:  None
+  Returns: Nothing
+
+  Restore minimized whole application from taskbar
+ ------------------------------------------------------------------------------}
+procedure TWin32WidgetSet.AppRestore;
+begin
+  Windows.SendMessage(FAppHandle, WM_SYSCOMMAND, SC_RESTORE, 0);
+end;
+
+
+{------------------------------------------------------------------------------
   Method: TWin32WidgetSet.AppBringToFront
   Params:  None
   Returns: Nothing

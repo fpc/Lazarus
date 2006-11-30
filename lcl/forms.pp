@@ -907,6 +907,8 @@ type
     FOnIdleEnd: TNotifyEvent;
     FOnEndSession : TNotifyEvent;
     FOnQueryEndSession : TQueryEndSessionEvent;
+    FOnMinimize: TNotifyEvent;
+    FOnRestore: TNotifyEvent;
     FOnShortcut: TShortcutEvent;
     FOnShowHint: TShowHintEvent;
     FOnUserInput: TOnUserInputEvent;
@@ -991,6 +993,7 @@ type
     procedure Initialize; override;
     function MessageBox(Text, Caption: PChar; Flags: Longint): Integer;
     procedure Minimize;
+    procedure Restore;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     Procedure ProcessMessages;
     Procedure Idle(Wait: Boolean);
@@ -1027,6 +1030,8 @@ type
     function  IsShortcut(var Message: TLMKey): boolean;
     procedure IntfQueryEndSession(var Cancel : Boolean);
     procedure IntfEndSession;
+    procedure IntfAppMinimize;
+    procedure IntfAppRestore;
   public
     procedure DoEscapeKey(AControl: TWinControl; var Key: Word;
                           Shift: TShiftState);
@@ -1056,6 +1061,8 @@ type
     property OnIdleEnd: TNotifyEvent read FOnIdleEnd write FOnIdleEnd;
     property OnEndSession: TNotifyEvent read FOnEndSession write FOnEndSession;
     property OnQueryEndSession: TQueryEndSessionEvent read FOnQueryEndSession write FOnQueryEndSession;
+    property OnMinimize: TNotifyEvent read FOnMinimize write FOnMinimize;
+    property OnRestore: TNotifyEvent read FOnRestore write FOnRestore;
     property OnHelp: THelpEvent read FOnHelp write FOnHelp;
     property OnHint: TNotifyEvent read FOnHint write FOnHint;
     property OnShortcut: TShortcutEvent read FOnShortcut write FOnShortcut;
@@ -1094,6 +1101,8 @@ type
     FOnUserInput: TOnUserInputEvent;
     FOnEndSession : TNotifyEvent;
     FOnQueryEndSession : TQueryEndSessionEvent;
+    FOnMinimize : TNotifyEvent;
+    FOnRestore : TNotifyEvent;
     procedure SetShowMainForm(const AValue: Boolean);
   protected
     Procedure SetCaptureExceptions(Const AValue : boolean);
@@ -1112,6 +1121,8 @@ type
     Procedure SetOnIdleEnd(Const AValue : TNotifyEvent);
     Procedure SetOnEndSession(Const AValue : TNotifyEvent);
     Procedure SetOnQueryEndSession(Const AValue : TQueryEndSessionEvent);
+    Procedure SetOnMinimize(Const AValue : TNotifyEvent);
+    Procedure SetOnRestore(Const AValue : TNotifyEvent);
     Procedure SetOnHelp(Const AValue : THelpEvent);
     Procedure SetOnHint(Const AValue : TNotifyEvent);
     Procedure SetOnShowHint(Const AValue : TShowHintEvent);
@@ -1137,6 +1148,8 @@ type
     property OnIdleEnd: TNotifyEvent read FOnIdleEnd write SetOnIdleEnd;
     property OnEndSession : TNotifyEvent read FOnEndSession write SetOnEndSession;
     property OnQueryEndSession : TQueryEndSessionEvent read FOnQueryEndSession write SetOnQueryEndSession;
+    property OnMinimize : TNotifyEvent read FOnMinimize write SetOnMinimize;
+    property OnRestore : TNotifyEvent read FOnRestore write SetOnRestore;
     property OnHelp: THelpEvent read FOnHelp write SetOnHelp;
     property OnHint: TNotifyEvent read FOnHint write SetOnHint;
     property OnShowHint: TShowHintEvent read FOnShowHint write SetOnShowHint;

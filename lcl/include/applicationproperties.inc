@@ -147,6 +147,22 @@ begin
     Application.OnQueryEndSession := AValue;
 end;
 
+procedure TApplicationProperties.SetOnMinimize(const AValue: TNotifyEvent);
+begin
+  FOnMinimize := AValue;
+
+  If not (csDesigning in ComponentState) then
+    Application.OnMinimize := AValue;
+end;
+
+procedure TApplicationProperties.SetOnRestore(const AValue: TNotifyEvent);
+begin
+  FOnRestore := AValue;
+
+  If not (csDesigning in ComponentState) then
+    Application.OnRestore := AValue;
+end;
+
 
 Procedure TApplicationProperties.SetOnHelp(Const AValue : THelpEvent);
 begin
