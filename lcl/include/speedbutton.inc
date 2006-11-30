@@ -410,15 +410,12 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomSpeedButton.Paint;
 var
-  fRect,
   PaintRect: TRect;
   GlyphWidth, GlyphHeight: Integer;
   Offset, OffsetCap: TPoint;
   ClientSize, TotalSize, TextSize, GlyphSize: TSize;
-  //BrushStyle : TBrushStyle;
   M, S : integer;
   TXTStyle : TTextStyle;
-  Flags,
   SIndex : Longint;
   TMP : String;
   xBevel :  tBevelCut;
@@ -428,20 +425,8 @@ begin
 
   PaintRect:=ClientRect;
 
-  {if Transparent and not (csDesigning in ComponentState) then
-    BrushStyle:= bsClear
-  else
-    BrushStyle:= bsSolid;}
-
   FLastDrawFlags:=GetDrawFlags;
   //DebugLn('TCustomSpeedButton.Paint ',Name,':',ClassName,' Parent.Name=',Parent.Name);
-
-  {if (FLastDrawFlags and DFCS_FLAT) = 0 then begin
-    if (FLastDrawFlags and DFCS_PUSHED) <>0 then xBevel := bvLowered
-                                            else xBevel := bvRaised;
-    Canvas.Frame3d(PaintRect, 1, xBevel);
-    InflateRect(PaintRect, -1, -1);
-  end;}
 
   // do not draw anything if flat and mouse not in control (simplified)
   if Transparent then begin
@@ -459,12 +444,12 @@ begin
     end;
   end;
 
-  //writeln('TCustomSpeedButton.Paint ',Name,':',ClassName,' Parent.Name=',Parent.Name,
+  //debugln(['TCustomSpeedButton.Paint ',Name,':',ClassName,' Parent.Name=',Parent.Name,
   //  ' DFCS_BUTTONPUSH=',FLastDrawFlags and DFCS_BUTTONPUSH,
   //  ' DFCS_PUSHED=',FLastDrawFlags and DFCS_PUSHED,
   //  ' DFCS_INACTIVE=',FLastDrawFlags and DFCS_INACTIVE,
   //  ' DFCS_FLAT=',FLastDrawFlags and DFCS_FLAT,
-  //  '');
+  //  '']);
   if (not Transparent) and Enabled and (Color<>clBtnFace) then begin
     Canvas.Brush.Color := Color;
     Canvas.FillRect(PaintRect);

@@ -586,6 +586,7 @@ type
     FLastCompilerFileDate: integer;
     FLastCompilerFilename: string;
     FLastCompilerParams: string;
+    FLazDocPaths: string;
     FLicense: string;
     FMacros: TTransferMacroList;
     FMissing: boolean;
@@ -621,6 +622,7 @@ type
     procedure SetFlags(const AValue: TLazPackageFlags);
     procedure SetIconFile(const AValue: string);
     procedure SetInstalled(const AValue: TPackageInstallType);
+    procedure SetLazDocPaths(const AValue: string);
     procedure SetLicense(const AValue: string);
     procedure SetOutputStateFile(const AValue: string);
     procedure SetRegistered(const AValue: boolean);
@@ -765,6 +767,7 @@ type
                                           write FLastCompilerFilename;
     property LastCompilerParams: string read FLastCompilerParams
                                         write FLastCompilerParams;
+    property LazDocPaths: string read FLazDocPaths write SetLazDocPaths;
     property License: string read FLicense write SetLicense;
     property Macros: TTransferMacroList read FMacros;
     property Missing: boolean read FMissing write FMissing;
@@ -2215,6 +2218,15 @@ begin
   FInstalled:=AValue;
 end;
 
+procedure TLazPackage.SetLazDocPaths(const AValue: string);
+var
+  NewValue: String;
+begin
+  NewValue:=TrimSearchPath(AValue,'');
+  if FLazDocPaths=NewValue then exit;
+  FLazDocPaths:=NewValue;
+end;
+
 procedure TLazPackage.SetLicense(const AValue: string);
 begin
   if FLicense=AValue then exit;
@@ -2483,6 +2495,8 @@ begin
   OutputStateFile:=SwitchPathDelims(
                             XMLConfig.GetValue(Path+'OutputStateFile/Value',''),
                             PathDelimChanged);
+  fLazDocPaths:=SwitchPathDelims(XMLConfig.GetValue(Path+'LazDoc/Paths',''),
+                            PathDelimChanged);
   LoadFiles(Path+'Files/',FFiles);
   UpdateSourceDirectories;
   LoadFlags(Path);
@@ -2539,6 +2553,7 @@ begin
   XMLConfig.SetDeleteValue(Path+'IconFile/Value',FIconFile,'');
   XMLConfig.SetDeleteValue(Path+'Name/Value',FName,'');
   XMLConfig.SetDeleteValue(Path+'OutputStateFile/Value',OutputStateFile,'');
+  XMLConfig.SetDeleteValue(Path+'LazDoc/Paths',FLazDocPaths,'');
   XMLConfig.SetDeleteValue(Path+'Type/Value',LazPackageTypeIdents[FPackageType],
                            LazPackageTypeIdents[lptRunTime]);
   SavePkgDependencyList(XMLConfig,Path+'RequiredPkgs/',

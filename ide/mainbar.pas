@@ -310,6 +310,8 @@ type
         itmHelpConfigureHelp: TIDEMenuCommand;
       //itmInfoHelps: TIDEMenuSection;
         itmHelpAboutLazarus: TIDEMenuCommand;
+      //itmHelpTools: TIDEMenuSection;
+        itmHelpCreateLazDoc: TIDEMenuCommand;
 
     // component palette
     ComponentNotebook : TNotebook;

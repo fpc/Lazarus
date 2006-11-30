@@ -44,6 +44,7 @@ uses
   CodeAtom, CodeCache, CodeToolManager,
   Laz_DOM, Laz_XMLRead, Laz_XMLWrite,
   IDEHelpIntf, LazHelpIntf,
+  IDEOptionDefs, EnvironmentOpts,
   IDEProcs, LazarusIDEStrConsts, LazDocSelectInherited, LazDoc;
 
 type
@@ -185,8 +186,10 @@ implementation
 
 procedure DoShowLazDoc;
 begin
-  if LazDocForm = Nil then
+  if LazDocForm = Nil then begin
     Application.CreateForm(TLazDocForm, LazDocForm);
+    EnvironmentOptions.IDEWindowLayoutList.ItemByEnum(nmiwLazDocName).Apply;
+  end;
 
   LazDocForm.Show;
 end;

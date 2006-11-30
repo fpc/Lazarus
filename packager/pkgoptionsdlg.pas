@@ -44,6 +44,9 @@ uses
   CompilerOptions;
 
 type
+
+  { TPackageOptionsDialog }
+
   TPackageOptionsDialog = class(TForm)
     Notebook: TNotebook;
     // Description page
@@ -88,6 +91,9 @@ type
     IDEPage: TPage;
     PkgTypeRadioGroup: TRadioGroup;
     UpdateRadioGroup: TRadioGroup;
+    LazDocGroupBox: TGroupBox;
+    LazDocPathEdit: TEdit;
+    LazDocPathButton: TPathEditorButton;
     // buttons
     OkButton: TButton;
     CancelButton: TButton;
@@ -184,6 +190,9 @@ begin
   end else
   if AButton=LibraryPathButton then begin
     Templates:='';
+  end else
+  if AButton=LazDocPathButton then begin
+    Templates:='docs';
   end;
   AButton.CurrentPathEditor.Path:=OldPath;
   AButton.CurrentPathEditor.Templates:=SetDirSeparators(Templates);
@@ -314,12 +323,7 @@ begin
   h:=90;
   with PkgTypeRadioGroup do begin
     SetBounds(x,y,w,h);
-    inc(y,h+10);
   end;
-
-  h:=90;
-  with UpdateRadioGroup do
-    SetBounds(x,y,w,h);
 end;
 
 procedure TPackageOptionsDialog.OkButtonClick(Sender: TObject);
@@ -401,6 +405,7 @@ begin
     LinkerOptions:=LinkerOptionsMemo.Text;
     CustomOptions:=CustomOptionsMemo.Text;
   end;
+  LazPackage.LazDocPaths:=LazDocPathEdit.Text;
   
   ModalResult:=mrOk;
 end;
@@ -653,7 +658,6 @@ begin
   PkgTypeRadioGroup:=TRadioGroup.Create(Self);
   with PkgTypeRadioGroup do begin
     Name:='UsageRadioGroup';
-    Parent:=IDEPage;
     Caption:=lisPckOptsPackageType;
     with Items do begin
       BeginUpdate;
@@ -664,12 +668,12 @@ begin
     end;
     ItemIndex:=2;
     OnClick:=@PkgTypeRadioGroupClick;
+    Parent:=IDEPage;
   end;
 
   UpdateRadioGroup:=TRadioGroup.Create(Self);
   with UpdateRadioGroup do begin
     Name:='UpdateRadioGroup';
-    Parent:=IDEPage;
     Caption:=lisPckOptsUpdateRebuild;
     with Items do begin
       BeginUpdate;
@@ -679,7 +683,42 @@ begin
       EndUpdate;
     end;
     ItemIndex:=0;
+    Parent:=IDEPage;
+    Height:=90;
+    AnchorToCompanion(akTop,6,PkgTypeRadioGroup);
   end;
+
+  // lazdoc
+  LazDocGroupBox:=TGroupBox.Create(Self);
+  with LazDocGroupBox do begin
+    Name:='LazDocGroupBox';
+    Caption:='LazDoc - Lazarus documentation';
+    AnchorToCompanion(akTop,6,UpdateRadioGroup);
+    AutoSize:=true;
+    Parent:=IDEPage;
+  end;
+
+  LazDocPathEdit:=TEdit.Create(Self);
+  with LazDocPathEdit do begin
+    Name:='LazDocPathEdit';
+    SetBounds(6,0,Width,Height);
+    Parent:=LazDocGroupBox;
+  end;
+
+  LazDocPathButton:=TPathEditorButton.Create(Self);
+  with LazDocPathButton do begin
+    Name:='LazDocPathButton';
+    Caption:='...';
+    AutoSize:=true;
+    Anchors:=[akTop,akRight,akBottom];
+    AnchorParallel(akRight,6,LazDocGroupBox);
+    Top:=0;
+    AnchorParallel(akBottom,0,LazDocPathEdit);
+    OnClick:=@PathEditBtnClick;
+    OnExecuted:=@PathEditBtnExecuted;
+    Parent:=LazDocGroupBox;
+  end;
+  LazDocPathEdit.AnchorToNeighbour(akRight,0,LazDocPathButton);
 end;
 
 procedure TPackageOptionsDialog.SetupUsagePage(PageIndex: integer);
@@ -859,6 +898,8 @@ begin
     LinkerOptionsMemo.Text:=LinkerOptions;
     CustomOptionsMemo.Text:=CustomOptions;
   end;
+  
+  LazDocPathEdit.Text:=LazPackage.LazDocPaths;
 end;
 
 procedure TPackageOptionsDialog.ReadPkgTypeFromPackage;
@@ -881,6 +922,8 @@ begin
     Result:=ObjectPathEdit
   else if AButton=LibraryPathButton then
     Result:=LibraryPathEdit
+  else if AButton=LazDocPathButton then
+    Result:=LazDocPathEdit
   else
     Result:=nil;
 end;

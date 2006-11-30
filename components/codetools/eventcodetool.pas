@@ -400,6 +400,7 @@ begin
       end;
       Params.SetIdentifier(Self,@TypeName[1],nil);
       Params.Flags:=[fdfExceptionOnNotFound,fdfSearchInParentNodes];
+      DebugLn(['TEventsCodeTool.FindMethodTypeInfo TypeName=',TypeName,' MainFilename=',MainFilename]);
       FindIdentifierInContext(Params);
       // find proc node
       if Params.NewNode.Desc<>ctnTypeDefinition then begin

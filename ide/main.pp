@@ -664,6 +664,7 @@ type
     procedure DoViewUnitDependencies;
     procedure DoViewUnitInfo;
     procedure DoShowCodeExplorer;
+    procedure DoShowLazDoc;
     function CreateNewUniqueFilename(const Prefix, Ext: string;
        NewOwner: TObject; Flags: TSearchIDEFileFlags; TryWithoutNumber: boolean
        ): string; override;
@@ -1747,6 +1748,8 @@ begin
       DoShowProjectInspector;
     nmiwCodeExplorerName:
       DoShowCodeExplorer;
+    nmiwLazDocName:
+      DoShowLazDoc;
     nmiwAnchorEditor:
       DoViewAnchorEditor;
     nmiwMessagesViewName:
@@ -2480,6 +2483,9 @@ begin
 
   ecToggleCodeExpl:
     DoShowCodeExplorer;
+
+  ecToggleLazDoc:
+    DoShowLazDoc;
 
   ecViewUnits:
     DoViewUnitsAndForms(false);
@@ -3317,7 +3323,7 @@ end;
 
 procedure TMainIDE.mnuViewLazDocClicked(Sender: TObject);
 begin
-  SourceNotebook.ShowLazDoc;
+  DoShowLazDoc;
 end;
 
 procedure TMainIDE.mnuToolConvertDFMtoLFMClicked(Sender: TObject);
@@ -6608,6 +6614,11 @@ begin
   EnvironmentOptions.IDEWindowLayoutList.ItemByEnum(nmiwCodeExplorerName).Apply;
   CodeExplorerView.ShowOnTop;
   CodeExplorerView.Refresh;
+end;
+
+procedure TMainIDE.DoShowLazDoc;
+begin
+  SourceNotebook.ShowLazDoc;
 end;
 
 function TMainIDE.CreateNewUniqueFilename(const Prefix, Ext: string;

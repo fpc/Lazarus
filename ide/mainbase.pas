@@ -739,6 +739,12 @@ begin
 
     CreateMenuItem(ParentMI,itmHelpAboutLazarus,'itmHelpAboutLazarus',
                    lisAboutLazarus);
+
+    CreateMenuSeparatorSection(mnuHelp,itmHelpTools,'itmHelpTools');
+    ParentMI:=itmHelpTools;
+
+    CreateMenuItem(ParentMI,itmHelpCreateLazDoc,'itmHelpCreateLazDoc',
+                   lisMenuCreateLazDocFiles);
   end;
 end;
 

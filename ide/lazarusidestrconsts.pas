@@ -324,6 +324,7 @@ resourcestring
   lisMenuConfigureHelp = 'Configure Help ...';
   lisMenuContextHelp = 'Context sensitive Help';
   lisMenuEditContextHelp = 'Edit context sensitive Help';
+  lisMenuCreateLazDocFiles = 'Create LazDoc files';
 
   lisDsgCopyComponents = 'Copy selected components to clipboard';
   lisDsgCutComponents = 'Cut selected components to clipboard';
@@ -1513,6 +1514,7 @@ resourcestring
   srkmecToggleObjectInsp          = 'View Object Inspector';
   srkmecToggleSourceEditor        = 'View Source Editor';
   srkmecToggleCodeExpl            = 'View Code Explorer';
+  srkmecToggleLazDoc              = 'View Documentation Editor';
   srkmecToggleMessages            = 'View messages';
   srkmecToggleSearchResults       = 'View Search Results';
   srkmecToggleWatches             = 'View watches';

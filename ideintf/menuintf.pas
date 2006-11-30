@@ -357,6 +357,7 @@ var
     mnuHelp: TIDEMenuSection;
       itmOnlineHelps: TIDEMenuSection;
       itmInfoHelps: TIDEMenuSection;
+      itmHelpTools: TIDEMenuSection;
 
   // Source Editor: Popupmenu
   SourceEditorMenuRoot: TIDEMenuSection = nil;

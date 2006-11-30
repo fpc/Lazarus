@@ -161,20 +161,21 @@ const
   ecToggleObjectInsp        = ecFirstLazarus + 302;
   ecToggleSourceEditor      = ecFirstLazarus + 303;
   ecToggleCodeExpl          = ecFirstLazarus + 304;
-  ecToggleMessages          = ecFirstLazarus + 305;
-  ecToggleWatches           = ecFirstLazarus + 306;
-  ecToggleBreakPoints       = ecFirstLazarus + 307;
-  ecToggleDebuggerOut       = ecFirstLazarus + 308;
-  ecViewUnits               = ecFirstLazarus + 309;
-  ecViewForms               = ecFirstLazarus + 310;
-  ecViewUnitDependencies    = ecFirstLazarus + 311;
-  ecViewUnitInfo            = ecFirstLazarus + 312;
-  ecToggleLocals            = ecFirstLazarus + 313;
-  ecToggleCallStack         = ecFirstLazarus + 314;
-  ecToggleSearchResults     = ecFirstLazarus + 315;
-  ecViewAnchorEditor        = ecFirstLazarus + 316;
-  ecToggleCompPalette       = ecFirstLazarus + 317;
-  ecToggleIDESpeedBtns      = ecFirstLazarus + 318;
+  ecToggleLazDoc            = ecFirstLazarus + 305;
+  ecToggleMessages          = ecFirstLazarus + 306;
+  ecToggleWatches           = ecFirstLazarus + 307;
+  ecToggleBreakPoints       = ecFirstLazarus + 308;
+  ecToggleDebuggerOut       = ecFirstLazarus + 309;
+  ecViewUnits               = ecFirstLazarus + 310;
+  ecViewForms               = ecFirstLazarus + 311;
+  ecViewUnitDependencies    = ecFirstLazarus + 312;
+  ecViewUnitInfo            = ecFirstLazarus + 313;
+  ecToggleLocals            = ecFirstLazarus + 314;
+  ecToggleCallStack         = ecFirstLazarus + 315;
+  ecToggleSearchResults     = ecFirstLazarus + 316;
+  ecViewAnchorEditor        = ecFirstLazarus + 317;
+  ecToggleCompPalette       = ecFirstLazarus + 318;
+  ecToggleIDESpeedBtns      = ecFirstLazarus + 319;
 
   // sourcenotebook commands
   ecNextEditor              = ecFirstLazarus + 330;
@@ -264,6 +265,7 @@ const
   ecConfigureHelp           = ecFirstLazarus + 902;
   ecContextHelp             = ecFirstLazarus + 903;
   ecEditContextHelp         = ecFirstLazarus + 904;
+  ecCreateLazDoc            = ecFirstLazarus + 905;
 
   // designer
   ecDesignerCopy            = ecFirstLazarus + 1000;
