@@ -343,7 +343,7 @@ var i: Integer;
 begin
  CurrentLB := GetListBox(ResultsNoteBook.PageIndex);
  try
-  if CurrentLB.Filtered then
+  if assigned(CurrentLB) and CurrentLB.Filtered then
    begin
     if (CurrentLB.Items.Count > 0) then
      begin
