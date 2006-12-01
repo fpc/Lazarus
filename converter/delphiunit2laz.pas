@@ -583,8 +583,10 @@ begin
   if not FileExists(DOFFilename) then exit(mrOk);
   if AProjPkg is TProject then begin
     AProject:=TProject(AProjPkg);
+    APackage:=nil;
     CompOpts:=AProject.CompilerOptions;
   end else if AProjPkg is TLazPackage then begin
+    AProject:=nil;
     APackage:=TLazPackage(AProjPkg);
     CompOpts:=APackage.CompilerOptions;
   end else
