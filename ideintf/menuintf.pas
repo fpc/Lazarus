@@ -352,6 +352,7 @@ var
 
     // windows menu
     mnuWindows: TIDEMenuSection;
+      itmDesignerWindows: TIDEMenuSection;
 
     // help menu
     mnuHelp: TIDEMenuSection;

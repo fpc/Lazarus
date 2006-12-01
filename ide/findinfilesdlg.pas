@@ -150,7 +150,7 @@ begin
   UpdateReplaceCheck;
   DirectoryOptionsGroupBox.Enabled:=WhereRadioGroup.ItemIndex=2;
 
-  IDEDialogLayoutList.ApplyLayout(Self,420,460);
+  IDEDialogLayoutList.ApplyLayout(Self);
 end;
 
 procedure TLazFindInFilesDialog.ReplaceCheckBoxChange(Sender: TObject);
