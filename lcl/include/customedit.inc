@@ -275,6 +275,8 @@ procedure TCustomEdit.SetPasswordChar(const AValue: Char);
 begin
   if FPasswordChar=AValue then exit;
   FPasswordChar:=AValue;
+  if FPasswordChar=#0 then
+    EchoMode:=emNormal;
   if HandleAllocated then
     TWSCustomEditClass(WidgetSetClass).SetPasswordChar(Self, AValue);
 end;

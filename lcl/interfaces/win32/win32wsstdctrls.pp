@@ -858,7 +858,10 @@ begin
 end;
 
 class procedure TWin32WSCustomEdit.SetEchoMode(const ACustomEdit: TCustomEdit; NewMode: TEchoMode);
+const
+  PassWordChar : array[TEchoMode] of char = (#0, ' ','*');
 begin
+  ACustomEdit.PasswordChar := PassWordChar[NewMode];
 end;
 
 class procedure TWin32WSCustomEdit.SetMaxLength(const ACustomEdit: TCustomEdit; NewLength: integer);
