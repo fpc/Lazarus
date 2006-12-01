@@ -181,6 +181,7 @@ type
                               ExceptionOnError: boolean): boolean; virtual;
     procedure GetDescriptionFromDevice(DC: HDC); virtual;
     procedure GetDescriptionFromBitmap(Bitmap: HBitmap); virtual;
+    procedure Set_BPP24_B8G8R8_A1_BIO_TTB(NewWidth, NewHeight: integer);
     procedure Set_BPP32_B8G8R8_A1_BIO_TTB(NewWidth, NewHeight: integer);
     procedure LoadFromDevice(DC: HDC); virtual;
     procedure LoadFromBitmap(Bitmap, MaskBitmap: HBitmap; AWidth: integer = -1; AHeight: integer = -1); virtual;
@@ -1785,14 +1786,55 @@ begin
   DataDescription:=NewDataDescription;
 end;
 
+procedure TLazIntfImage.Set_BPP24_B8G8R8_A1_BIO_TTB(NewWidth, NewHeight: integer
+  );
+{ pf24bit:
+
+ Format=ricfRGBA HasPalette=false Depth=24 PaletteColorCount=0
+ BitOrder=riboBitsInOrder ByteOrder=DefaultByteOrder
+ LineOrder=riloTopToBottom
+ BitsPerPixel=24 LineEnd=rileDWordBoundary
+ RedPrec=8 RedShift=16 GreenPrec=8 GreenShift=8 BluePrec=8 BlueShift=0
+ AlphaSeparate=false }
+var
+  ADesc: TRawImageDescription;
+begin
+  // setup an artificial ScanLineImage with format RGB 24 bit, 24bit depth format
+  FillChar(ADesc,SizeOf(ADesc),0);
+  with ADesc do begin
+    Format:=ricfRGBA;
+    Depth:=24; // used bits per pixel
+    Width:=0;
+    Height:=0;
+    BitOrder:=riboBitsInOrder;
+    ByteOrder:=DefaultByteOrder;
+    LineOrder:=riloTopToBottom;
+    BitsPerPixel:=24; // bits per pixel. can be greater than Depth.
+    LineEnd:=rileDWordBoundary;
+    RedPrec:=8; // red precision. bits for red
+    RedShift:=16;
+    GreenPrec:=8;
+    GreenShift:=8; // bitshift. Direction: from least to most signifikant
+    BluePrec:=8;
+    BlueShift:=0;
+    AlphaPrec:=0;
+    AlphaSeparate:=false;
+  end;
+
+  DataDescription:=ADesc;
+  SetSize(NewWidth,NewHeight);
+end;
+
 procedure TLazIntfImage.Set_BPP32_B8G8R8_A1_BIO_TTB(NewWidth, NewHeight: integer
   );
-// Format=ricfRGBA HasPalette=false Depth=24 PaletteColorCount=0
-// BitOrder=riboBitsInOrder ByteOrder=DefaultByteOrder
-// LineOrder=riloTopToBottom
-// BitsPerPixel=32 LineEnd=rileDWordBoundary
-// RedPrec=8 RedShift=16 GreenPrec=8 GreenShift=8 BluePrec=8 BlueShift=0
-// AlphaSeparate=false
+{ pf32bit:
+
+ Format=ricfRGBA HasPalette=false Depth=24 PaletteColorCount=0
+ BitOrder=riboBitsInOrder ByteOrder=DefaultByteOrder
+ LineOrder=riloTopToBottom
+ BitsPerPixel=32 LineEnd=rileDWordBoundary
+ RedPrec=8 RedShift=16 GreenPrec=8 GreenShift=8 BluePrec=8 BlueShift=0
+ AlphaSeparate=false }
 var
   ADesc: TRawImageDescription;
 begin
