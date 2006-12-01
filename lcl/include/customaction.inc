@@ -75,7 +75,7 @@ begin
   end;
 end;
 
-procedure TCustomAction.SetCaption(const Value: string);
+procedure TCustomAction.SetCaption(const Value: TTranslateString);
 var
   I: Integer;
   Link: TActionLink;
@@ -218,7 +218,7 @@ begin
   end;
 end;
 
-procedure TCustomAction.SetHint(const Value: string);
+procedure TCustomAction.SetHint(const Value: TTranslateString);
 var
   I: Integer;
   Link: TActionLink;

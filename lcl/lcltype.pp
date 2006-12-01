@@ -68,12 +68,7 @@ type
 {$ENDIF USE_UTF8BIDI_LCL}
   UINT = LongWord;
 
-  {PLongInt = ^LongInt;
-  PInteger = ^Integer;
-  PSmallInt = ^SmallInt;
-  PDouble = ^Double;
-  PAnsiChar = ^AnsiChar;
-  PWideChar = ^WideChar;}
+  TTranslateString = type String;
 
   TCriticalSection = PtrInt;
   PCriticalSection = ^TCriticalSection;

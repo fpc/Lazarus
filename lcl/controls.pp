@@ -115,7 +115,6 @@ const
   asrRight = asrBottom;
 
 type
-  TTranslateString = type String;
   TCaption = TTranslateString;
   TCursor = -32768..32767;
 

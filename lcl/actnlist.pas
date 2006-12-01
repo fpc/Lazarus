@@ -142,7 +142,7 @@ type
   TCustomAction = class(TContainedAction)
   private
     FDisableIfNoHandler: Boolean;
-    FCaption: string;
+    FCaption: TTranslateString;
     FChecking: Boolean;
     FChecked: Boolean;
     FEnabled: Boolean;
@@ -150,7 +150,7 @@ type
     FHelpType: THelpType;
     FHelpContext: THelpContext;
     FHelpKeyword: string;
-    FHint: string;
+    FHint: TTranslateString;
     FImageIndex: TImageIndex;
     FShortCut: TShortCut;
     FVisible: Boolean;
@@ -159,14 +159,14 @@ type
     FSavedEnabledState: Boolean;
     FAutoCheck: Boolean;
     procedure SetAutoCheck(Value: Boolean);
-    procedure SetCaption(const Value: string);
+    procedure SetCaption(const Value: TTranslateString);
     procedure SetChecked(Value: Boolean);
     procedure SetEnabled(Value: Boolean);
     procedure SetGroupIndex(const Value: Integer);
     procedure SetHelpContext(Value: THelpContext); virtual;
     procedure SetHelpKeyword(const Value: string); virtual;
     procedure SetHelpType(Value: THelpType);
-    procedure SetHint(const Value: string);
+    procedure SetHint(const Value: TTranslateString);
     procedure SetImageIndex(Value: TImageIndex);
     procedure SetShortCut(Value: TShortCut);
     procedure SetVisible(Value: Boolean);
@@ -189,7 +189,7 @@ type
   public
     property AutoCheck: Boolean
                               read FAutoCheck write  SetAutoCheck default False;
-    property Caption: string read FCaption write SetCaption;
+    property Caption: TTranslateString read FCaption write SetCaption;
     property Checked: Boolean read FChecked write SetChecked default False;
     property DisableIfNoHandler: Boolean read FDisableIfNoHandler
                                         write FDisableIfNoHandler default False;
@@ -200,7 +200,7 @@ type
     property HelpKeyword: string read FHelpKeyword write SetHelpKeyword;
     property HelpType: THelpType
                              read FHelpType write SetHelpType default htContext;
-    property Hint: string read FHint write SetHint;
+    property Hint: TTranslateString read FHint write SetHint;
     property ImageIndex: TImageIndex
                                 read FImageIndex write SetImageIndex default -1;
     property ShortCut: TShortCut read FShortCut write SetShortCut default 0;
