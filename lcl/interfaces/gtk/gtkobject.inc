@@ -1948,6 +1948,11 @@ begin
   end;
 end;
 
+procedure TGTKWidgetSet.AppRestore;
+begin
+  DebugLn(['TGTKWidgetSet.AppRestore TODO']);
+end;
+
 {------------------------------------------------------------------------------
   Method: TGtkWidgetSet.AppBringToFront
   Params:  None
