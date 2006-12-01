@@ -181,6 +181,7 @@ type
                               ExceptionOnError: boolean): boolean; virtual;
     procedure GetDescriptionFromDevice(DC: HDC); virtual;
     procedure GetDescriptionFromBitmap(Bitmap: HBitmap); virtual;
+    procedure Set_BPP32_B8G8R8_A1_BIO_TTB(NewWidth, NewHeight: integer);
     procedure LoadFromDevice(DC: HDC); virtual;
     procedure LoadFromBitmap(Bitmap, MaskBitmap: HBitmap; AWidth: integer = -1; AHeight: integer = -1); virtual;
     procedure CreateBitmap(var Bitmap, MaskBitmap: HBitmap;
@@ -188,8 +189,10 @@ type
     procedure SetRawImage(const RawImage: TRawImage); virtual;
     procedure GetRawImage(out RawImage: TRawImage); virtual;
     procedure FillPixels(const Color: TFPColor); virtual;
+    procedure CopyPixels(Src: TFPCustomImage); virtual;
     procedure GetXYDataPostion(x, y: integer; var Position: TRawImagePosition);
     procedure GetXYMaskPostion(x, y: integer; var Position: TRawImagePosition);
+    function GetDataLineStart(y: integer): Pointer;// similar to Delphi TBitmap.ScanLine. Only works with byte aligned lines.
     procedure CreateAllData; virtual;
     procedure CreatePixelData; virtual;
     procedure CreateMaskData; virtual;
@@ -1667,6 +1670,13 @@ begin
   inc(Position.Byte,BitOffset shr 3);
 end;
 
+function TLazIntfImage.GetDataLineStart(y: integer): Pointer;
+begin
+  if FDataDescription.LineOrder=riloBottomToTop then
+    y:=Height-y;
+  Result:=FPixelData+FLineStarts[y].Byte;
+end;
+
 procedure TLazIntfImage.LoadFromDevice(DC: HDC);
 var
   ARect: TRect;
@@ -1681,7 +1691,7 @@ begin
 end;
 
 procedure TLazIntfImage.LoadFromBitmap(Bitmap, MaskBitmap: HBitmap;
-  AWidth, AHeight: integer);
+  AWidth: integer; AHeight: integer);
 var
   ARect: TRect;
   ARawImage: TRawImage;
@@ -1775,6 +1785,43 @@ begin
   DataDescription:=NewDataDescription;
 end;
 
+procedure TLazIntfImage.Set_BPP32_B8G8R8_A1_BIO_TTB(NewWidth, NewHeight: integer
+  );
+// Format=ricfRGBA HasPalette=false Depth=24 PaletteColorCount=0
+// BitOrder=riboBitsInOrder ByteOrder=DefaultByteOrder
+// LineOrder=riloTopToBottom
+// BitsPerPixel=32 LineEnd=rileDWordBoundary
+// RedPrec=8 RedShift=16 GreenPrec=8 GreenShift=8 BluePrec=8 BlueShift=0
+// AlphaSeparate=false
+var
+  ADesc: TRawImageDescription;
+begin
+  // setup an artificial ScanLineImage with format RGB 24 bit, 32bit depth format
+  FillChar(ADesc,SizeOf(ADesc),0);
+  with ADesc do begin
+    Format:=ricfRGBA;
+    Depth:=24; // used bits per pixel
+    Width:=0;
+    Height:=0;
+    BitOrder:=riboBitsInOrder;
+    ByteOrder:=DefaultByteOrder;
+    LineOrder:=riloTopToBottom;
+    BitsPerPixel:=32; // bits per pixel. can be greater than Depth.
+    LineEnd:=rileDWordBoundary;
+    RedPrec:=8; // red precision. bits for red
+    RedShift:=16;
+    GreenPrec:=8;
+    GreenShift:=8; // bitshift. Direction: from least to most signifikant
+    BluePrec:=8;
+    BlueShift:=0;
+    AlphaPrec:=0;
+    AlphaSeparate:=false;
+  end;
+
+  DataDescription:=ADesc;
+  SetSize(NewWidth,NewHeight);
+end;
+
 procedure TLazIntfImage.FillPixels(const Color: TFPColor);
 var
   ColorChar: char;
@@ -1821,6 +1868,34 @@ begin
   end;
 
   // ToDo: mask
+end;
+
+procedure TLazIntfImage.CopyPixels(Src: TFPCustomImage);
+var
+  y: Integer;
+  x: Integer;
+  SrcImg: TLazIntfImage;
+begin
+  if (Src.Width<>Width) or (Src.Height<>Height) then
+    SetSize(Src.Width,Src.Height);
+  if Src is TLazIntfImage then begin
+    SrcImg:=TLazIntfImage(Src);
+    if CompareMem(@FDataDescription,@SrcImg.FDataDescription,
+      SizeOf(FDataDescription))
+    then begin
+      // same description -> copy
+      if FPixelData<>nil then
+        System.Move(SrcImg.FPixelData^,FPixelData^,FPixelDataSize);
+      if FMaskData<>nil then
+        System.Move(SrcImg.FMaskData^,FMaskData^,FMaskDataSize);
+      exit;
+    end;
+  end;
+    
+  // copy pixels
+  for y:=0 to Height-1 do
+    for x:=0 to Width-1 do
+      Colors[x,y]:=Src.Colors[x,y];
 end;
 
 { TLazReaderXPM }

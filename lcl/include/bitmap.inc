@@ -488,6 +488,15 @@ Begin
   LoadFromFile(Filename);
 end;
 
+procedure TBitmap.LoadFromIntfImage(IntfImage: TLazIntfImage);
+var
+  ImgHandle, ImgMaskHandle: HBitmap;
+begin
+  IntfImage.CreateBitmap(ImgHandle,ImgMaskHandle,false);
+  Handle:=ImgHandle;
+  MaskHandle:=ImgMaskHandle;
+end;
+
 function TBitmap.GetMonochrome: Boolean;
 begin
   with FImage.FDIB.dsbm do

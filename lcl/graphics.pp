@@ -1171,7 +1171,8 @@ type
     procedure GetSupportedSourceMimeTypes(List: TStrings); override;
     function GetDefaultMimeType: string; override;
     class function GetFileExtensions: string; override;
-    Procedure LoadFromXPMFile(const Filename: String);
+    procedure LoadFromXPMFile(const Filename: String);
+    procedure LoadFromIntfImage(IntfImage: TLazIntfImage);
     procedure Mask(ATransparentColor: TColor);
     procedure SaveToStream(Stream: TStream); override;
     procedure ReadStream(Stream: TStream; UseSize: boolean; Size: Longint); virtual;
