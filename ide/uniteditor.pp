@@ -429,6 +429,7 @@ type
     procedure ProcedureJumpClicked(Sender: TObject);
     procedure FindNextWordOccurrenceClicked(Sender: TObject);
     procedure FindPrevWordOccurrenceClicked(Sender: TObject);
+    procedure FindInFilesClicked(Sender: TObject);
     procedure MoveEditorLeftClicked(Sender: TObject);
     procedure MoveEditorRightClicked(Sender: TObject);
     procedure NotebookPageChanged(Sender: TObject);
@@ -790,6 +791,7 @@ var
     SrcEditMenuProcedureJump: TIDEMenuCommand;
     SrcEditMenuFindNextWordOccurrence: TIDEMenuCommand;
     SrcEditMenuFindPrevWordOccurrence: TIDEMenuCommand;
+    SrcEditMenuFindinFiles: TIDEMenuCommand;
   SrcEditMenuOpenFileAtCursor: TIDEMenuCommand;
   SrcEditMenuClosePage: TIDEMenuCommand;
   SrcEditMenuCut: TIDEMenuCommand;
@@ -867,7 +869,9 @@ begin
                       'Find next word occurrence',srkmecFindNextWordOccurrence);
       SrcEditMenuFindPrevWordOccurrence:=RegisterIDEMenuCommand(AParent,
                   'Find previous word occurrence',srkmecFindPrevWordOccurrence);
-    
+      SrcEditMenuFindInFiles:=RegisterIDEMenuCommand(AParent,
+                  'Find in files',srkmecFindInFiles);
+
     AParent:=SrcEditMenuSectionFirstStatic;
     SrcEditMenuOpenFileAtCursor:=RegisterIDEMenuCommand(AParent,
                                      'Open File At Cursor',uemOpenFileAtCursor);
@@ -3763,6 +3767,7 @@ begin
   SrcEditMenuProcedureJump.OnClick:=@ProcedureJumpClicked;
   SrcEditMenuFindNextWordOccurrence.OnClick:=@FindNextWordOccurrenceClicked;
   SrcEditMenuFindPrevWordOccurrence.OnClick:=@FindPrevWordOccurrenceClicked;
+  SrcEditMenuFindinFiles.OnClick:=@FindInFilesClicked;
   SrcEditMenuOpenFileAtCursor.OnClick:=@OpenAtCursorClicked;
 
   SrcEditMenuClosePage.OnClick:=@CloseClicked;
@@ -4694,6 +4699,15 @@ begin
   SrcEdit := GetActiveSE;
   if SrcEdit<>nil then
     SrcEdit.FindNextWordOccurrence(false);
+end;
+
+procedure TSourceNotebook.FindInFilesClicked(Sender: TObject);
+var
+  SrcEdit: TSourceEditor;
+begin
+  SrcEdit := GetActiveSE;
+  if SrcEdit<>nil then
+    SrcEdit.DoEditorExecuteCommand(ecFindInFiles);
 end;
 
 Procedure TSourceNotebook.CutClicked(Sender: TObject);
