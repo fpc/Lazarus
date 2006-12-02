@@ -1311,6 +1311,36 @@ Procedure TSourceEditor.ProcessCommand(Sender: TObject;
 // these are normal commands for synedit (lower than ecUserFirst),
 // define extra actions here
 // for non synedit keys (bigger than ecUserFirst) use ProcessUserCommand
+
+  function CheckStartIdentCompletion: boolean;
+  var
+    Line: String;
+    LogCaret: TPoint;
+    p: Integer;
+    InStringConstant: Boolean;
+  begin
+    Result:=false;
+    Line:=FEditor.LineText;
+    LogCaret:=FEditor.LogicalCaretXY;
+    //DebugLn(['CheckStartIdentCompletion Line="',Line,'" LogCaret=',dbgs(LogCaret)]);
+
+    // check if range operator '..'
+    if (Line<>'') and (LogCaret.X-1<=length(Line)) and (LogCaret.X>1)
+    and (Line[LogCaret.X-1]='.') then
+      exit; // this is a double point ..
+
+    // check if in a string constant
+    p:=1;
+    InStringConstant:=false;
+    while (p<=LogCaret.X) and (p<=length(Line)) do begin
+      if Line[p]='''' then
+        InStringConstant:=not InStringConstant;
+      inc(p);
+    end;
+    if InStringConstant then exit;
+    Result:=true;
+  end;
+  
 begin
   //DebugLn('TSourceEditor.ProcessCommand Command=',dbgs(Command));
 
@@ -1380,10 +1410,10 @@ begin
       //debugln('TSourceEditor.ProcessCommand AChar="',AChar,'" AutoIdentifierCompletion=',dbgs(EditorOpts.AutoIdentifierCompletion),' Interval=',dbgs(IdentCompletionTimer.Interval), Dbgs(FEditor.CaretXY));
       if (AChar='.') and EditorOpts.AutoIdentifierCompletion then begin
         // store caret position to detect caret changes
-        IdentCompletionCaretXY:= FEditor.CaretXY;
+        IdentCompletionCaretXY:=FEditor.CaretXY;
         // add one for the .
         inc(IdentCompletionCaretXY.x);
-        IdentCompletionTimer.AutoEnabled:=true;
+        IdentCompletionTimer.AutoEnabled:=CheckStartIdentCompletion;
       end;
     end;
 
@@ -3045,7 +3075,9 @@ begin
   TempEditor:=GetActiveSE;
   if (TempEditor<>nil) and
      (ComparePoints(TempEditor.EditorComponent.CaretXY,IdentCompletionCaretXY)=0)
-     then TempEditor.StartIdentCompletion(false);
+  then begin
+    TempEditor.StartIdentCompletion(false);
+  end;
 end;
 
 procedure TSourceNotebook.OnCodeTemplateTokenNotFound(Sender: TObject;
