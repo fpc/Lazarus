@@ -1,0 +1,1025 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2006-12-02 06:51+0100\n"
+"Last-Translator: helix84 <helix84@centrum.sk>\n"
+"Language-Team: Slovak <sk-i18n@lists.linux.sk>\n" 
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: objinspstrconsts:oisobjectinspector
+msgid "Object Inspector"
+msgstr "Inšpektor objektov"
+
+#: objinspstrconsts:oisall
+msgid "All"
+msgstr "Všetky"
+
+#: objinspstrconsts:oiserror
+msgid "Error"
+msgstr "Chyba"
+
+#: objinspstrconsts:oisitemsselected
+msgid "%u items selected"
+msgstr "vybraných %u položiek"
+
+#: objinspstrconsts:oiscadd
+msgid "&Add"
+msgstr "&Pridať"
+
+#: objinspstrconsts:oiscdelete
+msgid "&Delete"
+msgstr "&Zmazať"
+
+#: objinspstrconsts:oisconfirmdelete
+msgid "Confirm delete"
+msgstr "Podtvrdiť zmazanie"
+
+#: objinspstrconsts:oisdeleteitem
+msgid "Delete item %s%s%s?"
+msgstr "Zmazať položku %s%s%s?"
+
+#: objinspstrconsts:oisunknown
+msgid "Unknown"
+msgstr "Neznámy"
+
+#: objinspstrconsts:oisobject
+msgid "Object"
+msgstr "Objekt"
+
+#: objinspstrconsts:oisclass
+msgid "Class"
+msgstr "Trieda"
+
+#: objinspstrconsts:oisword
+msgid "Word"
+msgstr "Slovo"
+
+#: objinspstrconsts:oisstring
+msgid "String"
+msgstr "Reťazec"
+
+#: objinspstrconsts:oisfloat
+msgid "Float"
+msgstr "Float"
+
+#: objinspstrconsts:oisset
+msgid "Set"
+msgstr "Množina"
+
+#: objinspstrconsts:oismethod
+msgid "Method"
+msgstr "Metóda"
+
+#: objinspstrconsts:oisvariant
+msgid "Variant"
+msgstr "Variant"
+
+#: objinspstrconsts:oisarray
+msgid "Array"
+msgstr "Pole"
+
+#: objinspstrconsts:oisrecord
+msgid "Record"
+msgstr "Záznam"
+
+#: objinspstrconsts:oisinterface
+msgid "Interface"
+msgstr "Rozhranie"
+
+#: objinspstrconsts:oisproperties
+msgid "Properties"
+msgstr "Vlastnosti"
+
+#: objinspstrconsts:oisevents
+msgid "Events"
+msgstr "Udalosti"
+
+#: objinspstrconsts:oisfavorites
+msgid "Favorites"
+msgstr "Obľúbené"
+
+#: objinspstrconsts:oissettodefault
+msgid "Set to default: %s"
+msgstr "Nastaviť na predvolené: %s"
+
+#: objinspstrconsts:oissettodefaultvalue
+msgid "Set to default value"
+msgstr "Nastaviť na predvolenú hodnotu"
+
+#: objinspstrconsts:oisaddtofavorites
+msgid "Add to Favorites"
+msgstr "Pridať k Obľúbeným"
+
+#: objinspstrconsts:oisremovefromfavorites
+msgid "Remove from Favorites"
+msgstr "Odstrániť z Obľúbených"
+
+#: objinspstrconsts:oisundo
+msgid "Undo"
+msgstr "Vrátiť"
+
+#: objinspstrconsts:oisfinddeclaration
+msgid "Jump to declaration"
+msgstr "Skočiť na deklaráciu"
+
+#: objinspstrconsts:oiscutcomponents
+msgid "Cut components"
+msgstr "Vystrihnúť komponenty"
+
+#: objinspstrconsts:oiscopycomponents
+msgid "Copy components"
+msgstr "Kopírovať komponenty"
+
+#: objinspstrconsts:oispastecomponents
+msgid "Paste components"
+msgstr "Prilepiť komponenty"
+
+#: objinspstrconsts:oisdeletecomponents
+msgid "Delete components"
+msgstr "Zmazať komponenty"
+
+#: objinspstrconsts:oisdelete
+msgid "Delete"
+msgstr "Zmazať"
+
+#: objinspstrconsts:rscdmoveup
+msgid "Move up"
+msgstr "Presunúť vyššie"
+
+#: objinspstrconsts:rscdmovedown
+msgid "Move down"
+msgstr "Presunúť nižšie"
+
+#: objinspstrconsts:rscdok
+msgid "OK"
+msgstr "OK"
+
+#: objinspstrconsts:oisshowhints
+msgid "Show Hints"
+msgstr "Zobariť rady"
+
+#: objinspstrconsts:oisshowcomponenttree
+msgid "Show Component Tree"
+msgstr "Zobraziť Strom komponentov"
+
+#: objinspstrconsts:oisoptions
+msgid "Options"
+msgstr "Možnosti"
+
+#: objinspstrconsts:oisvalue
+msgid "Value:"
+msgstr "Hodnota:"
+
+#: objinspstrconsts:oisinteger
+msgid "Integer"
+msgstr "Integer"
+
+#: objinspstrconsts:oisint64
+msgid "Int64"
+msgstr "Int64"
+
+#: objinspstrconsts:oisboolean
+msgid "Boolean"
+msgstr "Boolean"
+
+#: objinspstrconsts:oisenumeration
+msgid "Enumeration"
+msgstr "Vymenovaný typ"
+
+#: objinspstrconsts:oischar
+msgid "Char"
+msgstr "Znak"
+
+#: objinspstrconsts:sccstredtcaption
+msgid "TreeView Items Editor"
+msgstr "Editor položiek TreeView"
+
+#: objinspstrconsts:sccstredt
+msgid "Edit TreeView Items..."
+msgstr "Editovať položky TreeView..."
+
+#: objinspstrconsts:sccstredtgrplcaption
+msgid "Items"
+msgstr "Položky"
+
+#: objinspstrconsts:sccstredtgrprcaption
+msgid "Item Properties"
+msgstr "Vlastnosti položiek"
+
+#: objinspstrconsts:sccstredtnewitem
+msgid "New Item"
+msgstr "Nová položka"
+
+#: objinspstrconsts:sccstredtnewsubitem
+msgid "New SubItem"
+msgstr "Nová podpoložka"
+
+#: objinspstrconsts:sccstredtdelete
+msgid "Delete"
+msgstr "Zmazať"
+
+#: objinspstrconsts:sccstredtapply
+msgid "Apply"
+msgstr "Použiť"
+
+#: objinspstrconsts:sccstredtload
+msgid "Load"
+msgstr "Načítať"
+
+#: objinspstrconsts:sccstredtsave
+msgid "Save"
+msgstr "Uložiť"
+
+#: objinspstrconsts:sccstredtlabeltext
+msgid "Text:"
+msgstr "Text:"
+
+#: objinspstrconsts:sccstredtlabelimageindex
+msgid "Image Index:"
+msgstr "Index obrázka:"
+
+#: objinspstrconsts:sccstredtlabelselindex
+msgid "Selected Index:"
+msgstr "Index výberu:"
+
+#: objinspstrconsts:sccstredtlabelstateindex
+msgid "State Index:"
+msgstr "Index stavu:"
+
+#: objinspstrconsts:sccstredtitem
+msgid "Item"
+msgstr "Položka"
+
+#: objinspstrconsts:sccstredtopendialog
+msgid "Open"
+msgstr "Otvoriť"
+
+#: objinspstrconsts:sccstredtsavedialog
+msgid "Save"
+msgstr "Uložiť"
+
+#: objinspstrconsts:sccslvedtcaption
+msgid "ListView Items Editor"
+msgstr "Editor položiek ListView"
+
+#: objinspstrconsts:sccslvedt
+msgid "Edit ListView Items..."
+msgstr "Editvať položky ListView..."
+
+#: objinspstrconsts:sccslvedtgrplcaption
+msgid "Items"
+msgstr "Položky"
+
+#: objinspstrconsts:sccslvedtgrprcaption
+msgid "Item Properties"
+msgstr "Vlastnosti položiek"
+
+#: objinspstrconsts:sccslvedtnewitem
+msgid "New Item"
+msgstr "Nová položka"
+
+#: objinspstrconsts:sccslvedtnewsubitem
+msgid "New SubItem"
+msgstr "Nová podpoložka"
+
+#: objinspstrconsts:sccslvedtapply
+msgid "Apply"
+msgstr "Použiť"
+
+#: objinspstrconsts:sccslvedtdelete
+msgid "Delete"
+msgstr "Zmazať"
+
+#: objinspstrconsts:sccslvedtlabelcaption
+msgid "Caption:"
+msgstr "Nadpis:"
+
+#: objinspstrconsts:sccslvedtlabelimageindex
+msgid "Image Index:"
+msgstr "Index obrázka:"
+
+#: objinspstrconsts:sccslvedtlabelstateindex
+msgid "State Index:"
+msgstr "Index stavu:"
+
+#: objinspstrconsts:sccslvedtitem
+msgid "Item"
+msgstr "Položka"
+
+#: objinspstrconsts:sccsiledtcaption
+msgid "ImageList Editor"
+msgstr "Editor ImageList"
+
+#: objinspstrconsts:sccsiledtgrplcaption
+msgid "Images"
+msgstr "Obrázky"
+
+#: objinspstrconsts:sccsiledtgrprcaption
+msgid "Selected Image"
+msgstr "Vybraný obrázok"
+
+#: objinspstrconsts:sccsiledtadd
+msgid "Add..."
+msgstr "Pridať..."
+
+#: objinspstrconsts:sccsiledtdelete
+msgid "Delete"
+msgstr "Zmazať"
+
+#: objinspstrconsts:sccsiledtapply
+msgid "Apply"
+msgstr "Použiť"
+
+#: objinspstrconsts:sccsiledtclear
+msgid "Clear"
+msgstr "Zmazať"
+
+#: objinspstrconsts:sccsiledtmoveup
+msgid "Move Up"
+msgstr "Presunúť vyššie"
+
+#: objinspstrconsts:sccsiledtmovedown
+msgid "Move Down"
+msgstr "Presunúť nižšie"
+
+#: objinspstrconsts:sccsiledtsave
+msgid "Save..."
+msgstr "Uložiť..."
+
+#: objinspstrconsts:sccsiledtransparentcolor
+msgid "Transparent Color:"
+msgstr "Transparentná farba:"
+
+#: objinspstrconsts:sccsiledtadjustment
+msgid "Adjustment"
+msgstr "Doladenie"
+
+#: objinspstrconsts:sccsiledtnone
+msgid "None"
+msgstr "Žiadny"
+
+#: objinspstrconsts:sccsiledtstretch
+msgid "Stretch"
+msgstr "Roztiahnuť"
+
+#: objinspstrconsts:sccsiledtcrop
+msgid "Crop"
+msgstr "Orezať"
+
+#: objinspstrconsts:sccsiledtcenter
+msgid "Center"
+msgstr "Vystredniť"
+
+#: objinspstrconsts:rscdright
+msgid "Right"
+msgstr "Vpravo"
+
+#: objinspstrconsts:rscdvisible
+msgid "Visible"
+msgstr "Viditeľný"
+
+#: objinspstrconsts:rscdautosize
+msgid "Auto Size"
+msgstr "Automatická veľkosť"
+
+#: objinspstrconsts:sccsiledtopendialog
+msgid "Add Images"
+msgstr "Pridať obrázky"
+
+#: objinspstrconsts:sccsiledtsavedialog
+msgid "Save Image"
+msgstr "Uložiť obrázky"
+
+#: objinspstrconsts:sccssgedt
+msgid "Edit StringGrid..."
+msgstr "Editovať StringGrid..."
+
+#: objinspstrconsts:sccssgedtcaption
+msgid "StringGrid Editor"
+msgstr "Editor StringGrid"
+
+#: objinspstrconsts:sccssgedtgrp
+msgid "String Grid"
+msgstr "Mriežka reťazcov"
+
+#: objinspstrconsts:sccssgedtapply
+msgid "Apply"
+msgstr "Použiť"
+
+#: objinspstrconsts:sccssgedtclean
+msgid "Clean"
+msgstr "Vyčistiť"
+
+#: objinspstrconsts:sccssgedtload
+msgid "Load..."
+msgstr "Načítať..."
+
+#: objinspstrconsts:sccssgedtsave
+msgid "Save..."
+msgstr "Uložiť..."
+
+#: objinspstrconsts:sccssgedtopendialog
+msgid "Open"
+msgstr "Otvoriť"
+
+#: objinspstrconsts:sccssgedtsavedialog
+msgid "Save"
+msgstr "Uložiť"
+
+#: objinspstrconsts:sccssgedtmoverowscols
+msgid "Move Rows/Cols"
+msgstr "Presunúť stĺpce/riadky"
+
+#: objinspstrconsts:nbcesaddpage
+msgid "Add page"
+msgstr "Pridať stránku"
+
+#: objinspstrconsts:nbcesinsertpage
+msgid "Insert page"
+msgstr "Vložiť stránku"
+
+#: objinspstrconsts:nbcesdeletepage
+msgid "Delete page"
+msgstr "Zmazať stránku"
+
+#: objinspstrconsts:nbcesmovepageleft
+msgid "Move page left"
+msgstr "Presunúť stránku vľavo"
+
+#: objinspstrconsts:nbcesmovepageright
+msgid "Move page right"
+msgstr "Presunúť stránku vpravo"
+
+#: objinspstrconsts:nbcesshowpage
+msgid "Show page ..."
+msgstr "Zobraziť stránku..."
+
+#: objinspstrconsts:oiscreatedefaultevent
+msgid "Create default event"
+msgstr "Vytvoriť predvolenú udalosť"
+
+#: objinspstrconsts:tccesaddtab
+msgid "Add tab"
+msgstr "Pridať záložku"
+
+#: objinspstrconsts:tccesinserttab
+msgid "Insert tab"
+msgstr "Vložiť záložku"
+
+#: objinspstrconsts:tccesdeletetab
+msgid "Delete tab"
+msgstr "Zmazať záložku"
+
+#: objinspstrconsts:tccesmovetableft
+msgid "Move tab left"
+msgstr "Presunúť záložku vľavo"
+
+#: objinspstrconsts:tccesmovetabright
+msgid "Move tab right"
+msgstr "Presunúť záložku vpravo"
+
+#: objinspstrconsts:clbchecklistboxeditor
+msgid "CheckListBox Editor"
+msgstr "Editor EcheckListBox"
+
+#: objinspstrconsts:clbup
+msgid "&Up"
+msgstr "&Hore"
+
+#: objinspstrconsts:clbdown
+msgid "Do&wn"
+msgstr "&Dolu"
+
+#: objinspstrconsts:clbmodify
+msgid "Modify the Item"
+msgstr "Modifikovať položku"
+
+#: objinspstrconsts:clbadd
+msgid "Add new Item"
+msgstr "Pridať novú položku"
+
+#: objinspstrconsts:clbdelete
+msgid "Delete the Item %d \"%s\"?"
+msgstr "Zmazať položku %d \"%s\"?"
+
+#: objinspstrconsts:clbcheckgroupeditor
+msgid "CheckGroup Editor"
+msgstr "Editor CheckGroup"
+
+#: objinspstrconsts:clbdisable
+msgid "Popup to disable/enable items"
+msgstr "Vyskakovacie menu pre vypnutie/zapnutie položiek"
+
+#: objinspstrconsts:oicoleditadd
+msgid "Add"
+msgstr "Pridať"
+
+#: objinspstrconsts:oicoleditdelete
+msgid "Delete"
+msgstr "Zmazať"
+
+#: objinspstrconsts:oicoleditup
+msgid "Up"
+msgstr "Vyššie"
+
+#: objinspstrconsts:oicoleditdown
+msgid "Down"
+msgstr "Nižšie"
+
+#: objinspstrconsts:oicoleditediting
+msgid "Editing"
+msgstr "Editácia"
+
+#: objinspstrconsts:cactionlisteditorunknowncategory
+msgid "(Unknown)"
+msgstr "(Neznámy)"
+
+#: objinspstrconsts:cactionlisteditorallcategory
+msgid "(All)"
+msgstr "(Všetky)"
+
+#: objinspstrconsts:cactionlisteditoreditcategory
+msgid "Edit"
+msgstr "Edit"
+
+#: objinspstrconsts:cactionlisteditorhelpcategory
+msgid "Help"
+msgstr "Pomoc"
+
+#: objinspstrconsts:oiscategory
+msgid "Category"
+msgstr "Kategória"
+
+#: objinspstrconsts:oisaction
+msgid "Action"
+msgstr "Čnnosť"
+
+#: objinspstrconsts:oismasks
+msgid "Masks..."
+msgstr "Masky..."
+
+#: objinspstrconsts:oissaveliteralcharacters
+msgid "Save Literal Characters"
+msgstr "Uložiť znak literál"
+
+#: objinspstrconsts:oisinputmask
+msgid "Input Mask:"
+msgstr "Vstupná maska:"
+
+#: objinspstrconsts:oissamplemasks
+msgid "Sample Masks:"
+msgstr "Vzorové masky:"
+
+#: objinspstrconsts:oischaractersforblanks
+msgid "Characters for Blanks"
+msgstr "Znaky pre medzery"
+
+#: objinspstrconsts:oistestinput
+msgid "Test Input"
+msgstr "Testvstupu"
+
+#: objinspstrconsts:oisopenmaskfile
+msgid "Open masks file (*.dem)"
+msgstr "Orvoriť súbor s maskami (*.dem)"
+
+#: objinspstrconsts:cactionlisteditordialogcategory
+msgid "Dialog"
+msgstr "Dialóg"
+
+#: objinspstrconsts:cactionlisteditorfilecategory
+msgid "File"
+msgstr "Súbor"
+
+#: objinspstrconsts:cactionlisteditordatabasecategory
+msgid "Database"
+msgstr "Databáza"
+
+#: objinspstrconsts:oiseditactionlist
+msgid "Edit action list..."
+msgstr "Editovať zoznam činností"
+
+#: objinspstrconsts:oisactionlisteditor
+msgid "Action List Editor"
+msgstr "Editor zoznamu činností"
+
+#: objinspstrconsts:cactionlisteditornewaction
+msgid "New Action"
+msgstr "Nová činnosť"
+
+#: objinspstrconsts:cactionlisteditornewstdaction
+msgid "New Standard Action"
+msgstr "Nová štandardná činnosť"
+
+#: objinspstrconsts:cactionlisteditormovedownaction
+msgid "Move Down"
+msgstr "Posunúť nižšie"
+
+#: objinspstrconsts:ilesadd
+msgid "Add"
+msgstr "Pridať"
+
+#: objinspstrconsts:cactionlisteditormoveupaction
+msgid "Move Up"
+msgstr "Posunúť vyššie"
+
+#: objinspstrconsts:cactionlisteditordeleteactionhint
+msgid "Delete Action"
+msgstr "Zmazať činnosť"
+
+#: objinspstrconsts:cactionlisteditordeleteaction
+msgid "Delete"
+msgstr "Zmazať"
+
+#: objinspstrconsts:cactionlisteditorpaneldescrriptions
+msgid "Panel Descriptions"
+msgstr "Popist panelov"
+
+#: objinspstrconsts:cactionlisteditorpaneltoolbar
+msgid "Toolbar"
+msgstr "Panel nástrojov"
+
+#: objinspstrconsts:oistdacteditcutheadline
+msgid "Cu&t"
+msgstr "Vys&trihnúť"
+
+#: objinspstrconsts:oistdacteditcopyheadline
+msgid "&Copy"
+msgstr "&Kopírovať"
+
+#: objinspstrconsts:oistdacteditpasteheadline
+msgid "&Paste"
+msgstr "&Prilepiť"
+
+#: objinspstrconsts:oistdacteditselectallheadline
+msgid "Select &All"
+msgstr "Vybrať &všetky"
+
+#: objinspstrconsts:oistdacteditundoheadline
+msgid "&Undo"
+msgstr "&Vrátiť"
+
+#: objinspstrconsts:oistdacteditdeleteheadline
+msgid "&Delete"
+msgstr "&Zmazať"
+
+#: objinspstrconsts:oistdacthelpcontentsheadline
+msgid "&Contents"
+msgstr "&Obsah"
+
+#: objinspstrconsts:oistdacthelptopicsearchheadline
+msgid "&Topic Search"
+msgstr "&Hľadanie témy"
+
+#: objinspstrconsts:oistdacthelphelphelpheadline
+msgid "&Help on Help"
+msgstr "&Ako funguje Pomocník"
+
+#: objinspstrconsts:oistdactfileopenheadline
+msgid "&Open..."
+msgstr "&Otvoriť..."
+
+#: objinspstrconsts:oistdactfilesaveasheadline
+msgid "Save &As..."
+msgstr "Uložiť &ako..."
+
+#: objinspstrconsts:oistdactfileexitheadline
+msgid "E&xit"
+msgstr "&Koniec"
+
+#: objinspstrconsts:oistdactcolorselect1headline
+msgid "Select &Color..."
+msgstr "V&ybrať farbu..."
+
+#: objinspstrconsts:oistdactfonteditheadline
+msgid "Select &Font..."
+msgstr "Vybrať &font..."
+
+#: objinspstrconsts:oistdactdatasetfirstheadline
+msgid "&First"
+msgstr "&Prvý"
+
+#: objinspstrconsts:oistdactdatasetpriorheadline
+msgid "&Prior"
+msgstr "&Predošlý"
+
+#: objinspstrconsts:oistdactdatasetnextheadline
+msgid "&Next"
+msgstr "Ď&alší"
+
+#: objinspstrconsts:oistdactdatasetlastheadline
+msgid "&Last"
+msgstr "P&osledný"
+
+#: objinspstrconsts:oistdactdatasetinsertheadline
+msgid "&Insert"
+msgstr "&Vložiť"
+
+#: objinspstrconsts:oistdactdatasetdeleteheadline
+msgid "&Delete"
+msgstr "&Zmazať"
+
+#: objinspstrconsts:oistdactdataseteditheadline
+msgid "&Edit"
+msgstr "&Upravovať"
+
+#: objinspstrconsts:oistdactdatasetpostheadline
+msgid "P&ost"
+msgstr "Po&slať"
+
+#: objinspstrconsts:oistdactdatasetcancelheadline
+msgid "&Cancel"
+msgstr "&Zrušiť"
+
+#: objinspstrconsts:oistdactdatasetrefreshheadline
+msgid "&Refresh"
+msgstr "&Obnoviť"
+
+#: objinspstrconsts:oistdacteditcutshortcut
+msgid "Ctrl+X"
+msgstr "Ctrl+X"
+
+#: objinspstrconsts:oistdacteditcopyshortcut
+msgid "Ctrl+C"
+msgstr "Ctrl+C"
+
+#: objinspstrconsts:oistdacteditpasteshortcut
+msgid "Ctrl+V"
+msgstr "Ctrl+V"
+
+#: objinspstrconsts:oistdacteditselectallshortcut
+msgid "Ctrl+A"
+msgstr "Ctrl+A"
+
+#: objinspstrconsts:oistdacteditundoshortcut
+msgid "Ctrl+Z"
+msgstr "Ctrl+Z"
+
+#: objinspstrconsts:oistdacteditdeleteshortcut
+msgid "Del"
+msgstr "Del"
+
+#: objinspstrconsts:oistdactfileopenshortcut
+msgid "Ctrl+O"
+msgstr "Ctrl+O"
+
+#: objinspstrconsts:oistdacteditcutshorthint
+msgid "Cut"
+msgstr "Vystrihnúť"
+
+#: objinspstrconsts:oistdacteditcopyshorthint
+msgid "Copy"
+msgstr "Kopírovať"
+
+#: objinspstrconsts:oistdacteditpasteshorthint
+msgid "Paste"
+msgstr "Prilepiť"
+
+#: objinspstrconsts:oistdacteditselectallshorthint
+msgid "Select All"
+msgstr "Vybrať všetky"
+
+#: objinspstrconsts:oistdacteditundoshorthint
+msgid "Undo"
+msgstr "Vrátiť"
+
+#: objinspstrconsts:oistdacteditdeleteshorthint
+msgid "Delete"
+msgstr "Zmazať"
+
+#: objinspstrconsts:oistdacthelpcontentshint
+msgid "Help Contents"
+msgstr "Obsah Pomocníka"
+
+#: objinspstrconsts:oistdacthelptopicsearchhint
+msgid "Topic Search"
+msgstr "Hľadanie témy"
+
+#: objinspstrconsts:oistdacthelphelphelphint
+msgid "Help on help"
+msgstr "Ako používať Pomocníka"
+
+#: objinspstrconsts:oistdactfileopenhint
+msgid "Open"
+msgstr "Otvoriť"
+
+#: objinspstrconsts:oistdactfilesaveashint
+msgid "Save As"
+msgstr "Uložiť ako"
+
+#: objinspstrconsts:oistdactfileexithint
+msgid "Exit"
+msgstr "Koniec"
+
+#: objinspstrconsts:oistdactcolorselecthint
+msgid "Color Select"
+msgstr "Výber farby"
+
+#: objinspstrconsts:oistdactfontedithint
+msgid "Font Select"
+msgstr "Výber fontu"
+
+#: objinspstrconsts:oistdactdatasetfirsthint
+msgid "First"
+msgstr "Prvý"
+
+#: objinspstrconsts:oistdactdatasetpriorhint
+msgid "Prior"
+msgstr "Predošlý"
+
+#: objinspstrconsts:oistdactdatasetnexthint
+msgid "Next"
+msgstr "Ďalší"
+
+#: objinspstrconsts:oistdactdatasetlasthint
+msgid "Last"
+msgstr "Posledný"
+
+#: objinspstrconsts:oistdactdatasetinserthint
+msgid "Insert"
+msgstr "Vložiť"
+
+#: objinspstrconsts:oistdactdatasetdeletehint
+msgid "Delete"
+msgstr "Zmazať"
+
+#: objinspstrconsts:oistdactdatasetedithint
+msgid "Edit"
+msgstr "Editovať"
+
+#: objinspstrconsts:oistdactdatasetposthint
+msgid "Post"
+msgstr "Poslať"
+
+#: objinspstrconsts:oistdactdatasetcancel1hint
+msgid "Cancel"
+msgstr "Zrušiť"
+
+#: objinspstrconsts:oiscomponents
+msgid "Components"
+msgstr "Komponenty"
+
+#: objinspstrconsts:oistdactdatasetrefreshhint
+msgid "Refresh"
+msgstr "Obnoviť"
+
+#: objinspstrconsts:oisstdactionlisteditor
+msgid "Standard Action Classes"
+msgstr "Štandardné akčné triedy:"
+
+#: objinspstrconsts:oisstdactionlisteditorclass
+msgid "Available Action Classes:"
+msgstr "Dostupné akčné triedy:"
+
+#: objinspstrconsts:oisselectafile
+msgid "Select a file"
+msgstr "Vybrať súbor"
+
+#: objinspstrconsts:oispropertiesof
+msgid "Properties of %s"
+msgstr "Vlastnosti %s"
+
+#: objinspstrconsts:oisallfiles
+msgid "All files"
+msgstr "Všetky súbory"
+
+#: objinspstrconsts:oistestdialog
+msgid "Test dialog..."
+msgstr "Testovať dialóg..."
+
+#: objinspstrconsts:oissort
+msgid "Sort"
+msgstr "Zoradiť"
+
+#: objinspstrconsts:oisdlinesdchars
+msgid "%d lines, %d chars"
+msgstr "%d riadkov, %d znakov"
+
+#: objinspstrconsts:ois1linedchars
+msgid "1 line, %d chars"
+msgstr "1 riadok, %d znakov"
+
+#: objinspstrconsts:oisstringseditordialog
+msgid "Strings Editor Dialog"
+msgstr "Dialóg Editor reťazcov"
+
+#: objinspstrconsts:ois0lines0chars
+msgid "0 lines, 0 chars"
+msgstr "0 riadkov, 0 znakov"
+
+#: objinspstrconsts:oisinvalidpropertyvalue
+msgid "Invalid property value"
+msgstr "Neplatná hodnota vlastnosti"
+
+#: objinspstrconsts:oisnone
+msgid "(none)"
+msgstr "(žiadna)"
+
+#: objinspstrconsts:oiscomponentnameisnotavalididentifier
+msgid "Component name %s%s%s is not a valid identifier"
+msgstr "Názov komponentu %s%s%s nie je platný identifikátor"
+
+#: objinspstrconsts:oisloadimagedialog
+msgid "Load Image Dialog"
+msgstr "Dialóg načítať obrázok"
+
+#: objinspstrconsts:oisok
+msgid "&OK"
+msgstr "&OK"
+
+#: objinspstrconsts:oispepicture
+msgid "Picture"
+msgstr "Obrázok"
+
+#: objinspstrconsts:oiscancel
+msgid "&Cancel"
+msgstr "&Zrušiť"
+
+#: objinspstrconsts:oisloadpicture
+msgid "Load picture"
+msgstr "Načítať obrázok"
+
+#: objinspstrconsts:oissavepicture
+msgid "Save picture"
+msgstr "Uložiť obrázok"
+
+#: objinspstrconsts:oisclearpicture
+msgid "Clear picture"
+msgstr "Vyčistiť obrázok"
+
+#: objinspstrconsts:oisload
+msgid "&Load"
+msgstr "&Načítať"
+
+#: objinspstrconsts:oissave
+msgid "&Save"
+msgstr "&Uložiť"
+
+#: objinspstrconsts:oisclear
+msgid "C&lear"
+msgstr "&Vyčistiť"
+
+#: objinspstrconsts:oispeopenimagefile
+msgid "Open image file"
+msgstr "Otvoriť súbor obrázka"
+
+#: objinspstrconsts:oispesaveimageas
+msgid "Save image as"
+msgstr "Uložiť obrázok ako"
+
+#: objinspstrconsts:oiserrorloadingimage
+msgid "Error loading image"
+msgstr "Chyba pri načítaní obrázka"
+
+#: objinspstrconsts:oiserrorloadingimage2
+msgid "Error loading image %s%s%s:%s%s"
+msgstr "Chyba pri načítaní obrázka %s%s%s:%s%s"
+
+#: objinspstrconsts:oisok2
+msgid "Ok"
+msgstr "Ok"
+
+#: objinspstrconsts:oiscreateanewpascalunit
+msgid "Create a new pascal unit."
+msgstr "Vytvoriť nový pascalovský unit"
+
+#: objinspstrconsts:rscdcolumneditor
+msgid "Column Editor"
+msgstr "Editor stĺpcov"
+
+#: objinspstrconsts:rscdcaption
+msgid "Caption"
+msgstr "Nadpis"
+
+#: objinspstrconsts:rscdinvalidnumericvalue
+msgid "Invalid numeric Value"
+msgstr "Neplatná číselná hodnota"
+
+#: objinspstrconsts:rscdwidth
+msgid "Width"
+msgstr "Šírka"
+
+#: objinspstrconsts:rscdalignment
+msgid "Alignment"
+msgstr "Zarovnanie"
+
+#: objinspstrconsts:rscdleft
+msgid "Left"
+msgstr "Vľavo"
+
+#: objinspstrconsts:s_suggestsplitimage
+msgid "Do you want to split the image?"
+msgstr "Chcete rozdeliť obrázok?"
+
+#: objinspstrconsts:s_addassingle
+msgid "Add as single"
+msgstr "Pridať jednotlivý"
+
+#: objinspstrconsts:s_splitimage
+msgid "Split image"
+msgstr "Rozdeliť obrázok"
+
+
+ 	  	 
