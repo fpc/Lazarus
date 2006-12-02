@@ -596,7 +596,6 @@ type
                                           Flags: TCloseFlags): TModalResult;
     function UnitComponentIsUsed(AnUnitInfo: TUnitInfo;
                                  CheckHasDesigner: boolean): boolean;
-    function GetAncestorUnit(AnUnitInfo: TUnitInfo): TUnitInfo;
 
     // methods for creating a project
     function CreateProjectObject(ProjectDesc,
@@ -748,6 +747,8 @@ type
     function GetSourceEditorForUnitInfo(AnUnitInfo: TUnitInfo): TSourceEditor; override;
     function CreateSrcEditPageName(const AnUnitName, AFilename: string;
       IgnorePageIndex: integer): string;
+    function GetAncestorUnit(AnUnitInfo: TUnitInfo): TUnitInfo;
+    function GetAncestorLookupRoot(AnUnitInfo: TUnitInfo): TComponent;
 
     // useful file methods
     function FindUnitFile(const AFilename: string): string; override;
@@ -5303,6 +5304,17 @@ begin
     Result:=nil
   else
     Result:=AnUnitInfo.FindAncestorUnit;
+end;
+
+function TMainIDE.GetAncestorLookupRoot(AnUnitInfo: TUnitInfo): TComponent;
+var
+  AncestorUnit: TUnitInfo;
+begin
+  AncestorUnit:=GetAncestorUnit(AnUnitInfo);
+  if AncestorUnit<>nil then
+    Result:=AncestorUnit.Component
+  else
+    Result:=nil;
 end;
 
 function TMainIDE.CreateProjectObject(ProjectDesc,
@@ -12436,6 +12448,7 @@ var
   AComponent: TComponent;
   ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
+  Ancestor: TComponent;
 begin
   DebugLn('TMainIDE.OnPropHookPersistentAdded A ',dbgsName(APersistent));
   ADesigner:=nil;
@@ -12480,7 +12493,9 @@ begin
     ActiveUnitInfo.Modified:=true;
 
     // add component definitions to form source
-    CodeToolBoss.CompleteComponent(ActiveUnitInfo.Source,ADesigner.LookupRoot);
+    Ancestor:=GetAncestorLookupRoot(ActiveUnitInfo);
+    CodeToolBoss.CompleteComponent(ActiveUnitInfo.Source,ADesigner.LookupRoot,
+                                   Ancestor);
   end;
 
   ObjectInspector1.FillPersistentComboBox;

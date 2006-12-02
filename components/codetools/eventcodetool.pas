@@ -61,7 +61,7 @@ type
     function CollectPublishedMethods(Params: TFindDeclarationParams;
       const FoundContext: TFindContext): TIdentifierFoundResult;
   public
-    function CompleteComponent(AComponent: TComponent;
+    function CompleteComponent(AComponent, AncestorComponent: TComponent;
         SourceChangeCache: TSourceChangeCache): boolean;
   
     function GetCompatiblePublishedMethods(const UpperClassName: string;
@@ -831,7 +831,8 @@ begin
   Result:=ifrProceedSearch;
 end;
 
-function TEventsCodeTool.CompleteComponent(AComponent: TComponent;
+function TEventsCodeTool.CompleteComponent(AComponent,
+  AncestorComponent: TComponent;
   SourceChangeCache: TSourceChangeCache): boolean;
 { - Adds all missing published variable declarations to the class definition
     in the source
@@ -861,6 +862,8 @@ begin
       DebugLn('[TEventsCodeTool.CompleteComponent]  CurComponent=',CurComponent.Name,':',CurComponent.ClassName);
       VarName:=CurComponent.Name;
       if VarName='' then continue;
+      if (AncestorComponent<>nil)
+      and (AncestorComponent.FindComponent(VarName)<>nil) then continue;
       UpperCurComponentName:=UpperCaseStr(VarName);
       VarType:=CurComponent.ClassName;
       // add missing published variable

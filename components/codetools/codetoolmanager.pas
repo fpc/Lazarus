@@ -527,8 +527,8 @@ type
       var AncestorClassName: string; DirtySearch: boolean): boolean;
 
     // form components
-    function CompleteComponent(Code: TCodeBuffer; AComponent: TComponent
-          ): boolean;
+    function CompleteComponent(Code: TCodeBuffer;
+          AComponent, AncestorComponent: TComponent): boolean;
     function PublishedVariableExists(Code: TCodeBuffer;
           const AClassName, AVarName: string;
           ErrorOnClassNotFound: boolean): boolean;
@@ -3511,15 +3511,16 @@ begin
 end;
 
 function TCodeToolManager.CompleteComponent(Code: TCodeBuffer;
-  AComponent: TComponent): boolean;
+  AComponent, AncestorComponent: TComponent): boolean;
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
-  DebugLn('TCodeToolManager.CompleteComponent A ',Code.Filename,' ',AComponent.Name,':',AComponent.ClassName);
+  DebugLn('TCodeToolManager.CompleteComponent A ',Code.Filename,' ',AComponent.Name,':',AComponent.ClassName,' ',dbgsName(AncestorComponent));
   {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
   try
-    Result:=FCurCodeTool.CompleteComponent(AComponent,SourceChangeCache);
+    Result:=FCurCodeTool.CompleteComponent(AComponent,AncestorComponent,
+                                           SourceChangeCache);
   except
     on e: Exception do Result:=HandleException(e);
   end;
