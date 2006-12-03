@@ -1433,6 +1433,7 @@ begin
       if (Windows.GetFocus <> Window) and
           ((lWinControl = nil) or (lWinControl.CanFocus)) then
         Windows.SetFocus(Window);
+
     End;
     WM_LBUTTONUP:
     Begin
@@ -1670,6 +1671,7 @@ begin
         XPos := GET_X_LPARAM(LParam);
         YPos := GET_Y_LPARAM(LParam);
         Keys := WParam;
+        Result := 0;
       End;
     End;
     WM_RBUTTONUP:
@@ -1686,6 +1688,31 @@ begin
         Result := 0;
       End;
     End;
+    WM_CONTEXTMENU:
+    begin
+      WinProcess := false;
+      NotifyUserInput := True;
+      PLMsg:=@LMMouse;
+      With LMMouse Do
+      Begin
+        Msg := LM_RBUTTONUP;
+        XPos := GET_X_LPARAM(LParam);
+        YPos := GET_Y_LPARAM(LParam);
+        Result := 0;
+      End;
+      if (LMMouse.XPos<>-1) and (LMMouse.YPos<>-1) then
+      begin
+        P := SmallPointToPoint(LMMouse.Pos);
+        Windows.ScreenToClient(Window, Windows.POINT(P));
+        LMMouse.Pos := PointToSmallPoint(P);
+      end
+      else
+      begin
+       LMMouse.XPos := 0;
+       LMMouse.YPos := 0; {TODO : Fix that in future because popup menu should
+                           appear near selected element of control}
+      end;
+    end;
     WM_SETCURSOR:
     begin
       HandleSetCursor;
@@ -2022,6 +2049,7 @@ begin
         if MouseDownFocusStatus = mfFocusSense then
           MouseDownFocusStatus := mfNone;
       end;
+      
 
       WM_NCDESTROY:
       begin
