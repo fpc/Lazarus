@@ -6027,11 +6027,11 @@ begin
   DummyClassForPropTypes:=TDummyClassForPropTypes.Create;
   RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('AnsiString'),
     nil,'Name',TComponentNamePropertyEditor);
-  RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('AnsiString'),
+  RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TTranslateString'),
     TCustomLabel, 'Caption', TStringMultilinePropertyEditor);
-  RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('AnsiString'),
+  RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TTranslateString'),
     TCustomStaticText, 'Caption', TStringMultilinePropertyEditor);
-  RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('AnsiString'),
+  RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TTranslateString'),
     TCustomCheckBox, 'Caption', TStringMultilinePropertyEditor);
   RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TTranslateString'),
     TControl, 'Hint', TStringMultilinePropertyEditor);
