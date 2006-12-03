@@ -59,7 +59,7 @@ type
     procedure SlotResize; cdecl;
     procedure SlotContextMenu; cdecl;
   public
-    procedure SetColor(const Value: PQColor);
+    procedure SetColor(const Value: PQColor); virtual;
     procedure Update;
     procedure Repaint;
     procedure setWindowTitle(Str: PWideString);
@@ -83,6 +83,7 @@ type
   TQtAbstractButton = class(TQtWidget)
   private
   public
+    procedure SetColor(const Value: PQColor); override;
     procedure SetText(text: PWideString);
     procedure Text(retval: PWideString);
     function isChecked: Boolean;
@@ -185,7 +186,7 @@ type
     procedure setFrameShadow(p1: QFrameShadow);
   end;
 
-  { TQtAbstractSlider , inherited by TQtScrollBar, TQtTrackBar}
+  { TQtAbstractSlider , inherited by TQtScrollBar, TQtTrackBar }
 
   TQtAbstractSlider = class(TQtWidget)
   private
@@ -209,14 +210,16 @@ type
     procedure setValue(p1: Integer); virtual; 
   end;
 
- { TQtScrollBar }
+  { TQtScrollBar }
+  
   TQtScrollBar = class(TQtAbstractSlider)
   private
   public
      constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); override;
   end;	
 
-{ TQtTrackBar }
+  { TQtTrackBar }
+  
   TQtTrackBar = class(TQtAbstractSlider)
   private
   public
@@ -232,6 +235,7 @@ type
   public
     constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); override;
     destructor Destroy; override;
+    procedure SetColor(const Value: PQColor); override;
   end;
 
   { TQtTextEdit }
@@ -241,6 +245,7 @@ type
   public
     constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); override;
     destructor Destroy; override;
+    procedure SetColor(const Value: PQColor); override;
   end;
 
   { TQtTabWidget }
@@ -261,6 +266,7 @@ type
   public
     constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); override;
     destructor Destroy; override;
+    procedure SetColor(const Value: PQColor); override;
     function currentIndex: Integer;
     procedure setCurrentIndex(index: Integer);
   public
@@ -785,7 +791,7 @@ end;
   Params:  QColorH
   Returns: Nothing
 
-  Schedules a paint event for processing when Qt returns to the main event loop
+  Changes the color of a widget
  ------------------------------------------------------------------------------}
 procedure TQtWidget.SetColor(const Value: PQColor);
 var
@@ -794,8 +800,6 @@ begin
   Palette:=QPalette_create(QWidget_palette(Widget));
   // Set the palette for all color groups (active, inactive, disabled)
   QPalette_setColor(Palette,QPaletteWindow,Value);
-  QPalette_setColor(Palette,QPaletteButton,Value);
-  QPalette_setColor(Palette,QPaletteBase,Value);
   // Set the Palette
   QWidget_setPalette(Widget,Palette);
   QPalette_destroy(Palette);
@@ -1217,6 +1221,25 @@ begin
 end;
 
 { TQtAbstractButton }
+
+{------------------------------------------------------------------------------
+  Function: TQtAbstractButton.SetColor
+  Params:  QColorH
+  Returns: Nothing
+
+  Changes the color of a widget
+ ------------------------------------------------------------------------------}
+procedure TQtAbstractButton.SetColor(const Value: PQColor);
+var
+  Palette: QPaletteH;
+begin
+  Palette:=QPalette_create(QWidget_palette(Widget));
+  // Set the palette for all color groups (active, inactive, disabled)
+  QPalette_setColor(Palette,QPaletteButton,Value);
+  // Set the Palette
+  QWidget_setPalette(Widget,Palette);
+  QPalette_destroy(Palette);
+end;
 
 {------------------------------------------------------------------------------
   Function: TQtAbstractButton.SetText
@@ -2131,7 +2154,7 @@ end;
 { TQtLineEdit }
 
 {------------------------------------------------------------------------------
-  Function: TQtLineEdit.Destroy
+  Function: TQtLineEdit.Create
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
@@ -2171,6 +2194,25 @@ begin
   QLineEdit_destroy(QLineEditH(Widget));
 
   inherited Destroy;
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtLineEdit.SetColor
+  Params:  QColorH
+  Returns: Nothing
+
+  Changes the color of a widget
+ ------------------------------------------------------------------------------}
+procedure TQtLineEdit.SetColor(const Value: PQColor);
+var
+  Palette: QPaletteH;
+begin
+  Palette:=QPalette_create(QWidget_palette(Widget));
+  // Set the palette for all color groups (active, inactive, disabled)
+  QPalette_setColor(Palette,QPaletteBase,Value);
+  // Set the Palette
+  QWidget_setPalette(Widget,Palette);
+  QPalette_destroy(Palette);
 end;
 
 { TQtTextEdit }
@@ -2223,6 +2265,25 @@ begin
   QTextEdit_destroy(QTextEditH(Widget));
 
   inherited Destroy;
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtTextEdit.SetColor
+  Params:  QColorH
+  Returns: Nothing
+
+  Changes the color of a widget
+ ------------------------------------------------------------------------------}
+procedure TQtTextEdit.SetColor(const Value: PQColor);
+var
+  Palette: QPaletteH;
+begin
+  Palette:=QPalette_create(QWidget_palette(Widget));
+  // Set the palette for all color groups (active, inactive, disabled)
+  QPalette_setColor(Palette,QPaletteBase,Value);
+  // Set the Palette
+  QWidget_setPalette(Widget,Palette);
+  QPalette_destroy(Palette);
 end;
 
 { TQtTabWidget }
@@ -2339,6 +2400,11 @@ begin
   QComboBox_destroy(QComboBoxH(Widget));
 
   inherited Destroy;
+end;
+
+procedure TQtComboBox.SetColor(const Value: PQColor);
+begin
+        inherited SetColor(Value);
 end;
 
 {------------------------------------------------------------------------------

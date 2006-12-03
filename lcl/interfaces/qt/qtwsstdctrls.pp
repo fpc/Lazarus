@@ -30,9 +30,9 @@ uses
   // Bindings
   qt4, qtprivate, qtwidgets,
   // LCL
-  Classes, StdCtrls, Controls, Graphics, Forms, SysUtils, InterfaceBase,
+  Classes, StdCtrls, Controls, Graphics, Forms, SysUtils, InterfaceBase, LCLType, LCLIntf,
   // Widgetset
-  WSStdCtrls, WSLCLClasses, LCLType;
+  WSStdCtrls, WSLCLClasses;
 
 type
 
@@ -161,6 +161,7 @@ type
 
     class procedure GetPreferredSize(const AWinControl: TWinControl;
                         var PreferredWidth, PreferredHeight: integer); override;}
+    class procedure SetColor(const AWinControl: TWinControl); override;
   end;
 
   { TQtWSCustomMemo }
@@ -681,6 +682,8 @@ class function TQtWSCustomEdit.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
   QtLineEdit: TQtLineEdit;
+  QColor: TQColor;
+  Color: TColor;
 begin
   QtLineEdit := TQtLineEdit.Create(AWinControl, AParams);
 
@@ -725,6 +728,35 @@ begin
   AString := UTF8Decode(AText);
 
   QLineEdit_setText(QLineEditH(TQtWidget(AWinControl.Handle).Widget), @AString);
+end;
+
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomEdit.SetColor
+  Params:  AWinControl     - the calling object
+
+  Returns: Nothing
+
+  Sets the color of the widget.
+ ------------------------------------------------------------------------------}
+class procedure TQtWSCustomEdit.SetColor(const AWinControl: TWinControl);
+var
+  QColor: TQColor;
+  Color: TColor;
+begin
+  if AWinControl = nil then exit;
+
+  if not AWinControl.HandleAllocated then exit;
+
+  if AWinControl.Color = CLR_INVALID then exit;
+
+  // Get the color numeric value (system colors are mapped to numeric colors depending on the widget style)
+  Color:=ColorToRGB(AWinControl.Color);
+
+  // Fill QColor
+  QColor_setRgb(@QColor,Red(Color),Green(Color),Blue(Color));
+
+  // Set color of the widget to QColor
+  TQtLineEdit(AWinControl.Handle).SetColor(@QColor);
 end;
 
 { TQtWSStaticText }
@@ -803,7 +835,7 @@ end;
 { TQtWSCustomCheckBox }
 
 {------------------------------------------------------------------------------
-  Method: TQtWSCustomEdit.RetrieveState
+  Method: TQtWSCustomCheckBox.RetrieveState
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
@@ -818,7 +850,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TQtWSCustomEdit.SetShortCut
+  Method: TQtWSCustomCheckBox.SetShortCut
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
@@ -829,7 +861,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TQtWSCustomEdit.SetState
+  Method: TQtWSCustomCheckBox.SetState
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
@@ -844,7 +876,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TQtWSCustomEdit.GetText
+  Method: TQtWSCustomCheckBox.GetText
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
@@ -860,7 +892,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TQtWSCustomEdit.SetText
+  Method: TQtWSCustomCheckBox.SetText
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
@@ -1085,6 +1117,8 @@ var
   QtComboBox: TQtComboBox;
   Method: TMethod;
   Hook : QObject_hookH;
+  QColor: TQColor;
+  Color: TColor;
 begin
   QtComboBox := TQtComboBox.Create(AWinControl, AParams);
 

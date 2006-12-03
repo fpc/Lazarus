@@ -30,7 +30,7 @@ uses
   // Libs
   qt4, qtwidgets,
   // LCL
-  SysUtils, Controls, LCLType, Forms, InterfaceBase, Buttons, LMessages,
+  SysUtils, Controls, LCLType, Forms, InterfaceBase, Buttons, LMessages, Graphics,
   // Widgetset
   WSButtons, WSLCLClasses;
 
@@ -50,6 +50,7 @@ type
     class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
 //    class procedure GetPreferredSize(const AWinControl: TWinControl;
 //                        var PreferredWidth, PreferredHeight: integer); override;
+    class procedure SetColor(const AWinControl: TWinControl); override;
   end;
 
   { TQtWSBitBtn }
@@ -66,6 +67,7 @@ type
     class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
 //    class procedure GetPreferredSize(const AWinControl: TWinControl;
 //                        var PreferredWidth, PreferredHeight: integer); override;
+    class procedure SetColor(const AWinControl: TWinControl); override;
   end;
 
   { TQtWSSpeedButton }
@@ -166,6 +168,35 @@ begin
   TQtAbstractButton(AWinControl.Handle).SetText(@Str);
 end;
 
+{------------------------------------------------------------------------------
+  Method: TQtWSButton.SetColor
+  Params:  AWinControl     - the calling object
+
+  Returns: Nothing
+
+  Sets the color of the widget.
+ ------------------------------------------------------------------------------}
+class procedure TQtWSButton.SetColor(const AWinControl: TWinControl);
+var
+  QColor: TQColor;
+  Color: TColor;
+begin
+  if AWinControl = nil then exit;
+
+  if not AWinControl.HandleAllocated then exit;
+
+  if AWinControl.Color = CLR_INVALID then exit;
+
+  // Get the color numeric value (system colors are mapped to numeric colors depending on the widget style)
+  Color:=ColorToRGB(AWinControl.Color);
+
+  // Fill QColor
+  QColor_setRgb(@QColor,Red(Color),Green(Color),Blue(Color));
+
+  // Set color of the widget to QColor
+  TQtAbstractButton(AWinControl.Handle).SetColor(@QColor);
+end;
+
 { TQtWSBitBtn }
 
 {------------------------------------------------------------------------------
@@ -250,6 +281,35 @@ begin
   Str := UTF8Decode(AText);
 
   TQtAbstractButton(AWinControl.Handle).SetText(@Str);
+end;
+
+{------------------------------------------------------------------------------
+  Method: TQtWSBitBtn.SetColor
+  Params:  AWinControl     - the calling object
+
+  Returns: Nothing
+
+  Sets the color of the widget.
+ ------------------------------------------------------------------------------}
+class procedure TQtWSBitBtn.SetColor(const AWinControl: TWinControl);
+var
+  QColor: TQColor;
+  Color: TColor;
+begin
+  if AWinControl = nil then exit;
+
+  if not AWinControl.HandleAllocated then exit;
+
+  if AWinControl.Color = CLR_INVALID then exit;
+
+  // Get the color numeric value (system colors are mapped to numeric colors depending on the widget style)
+  Color:=ColorToRGB(AWinControl.Color);
+
+  // Fill QColor
+  QColor_setRgb(@QColor,Red(Color),Green(Color),Blue(Color));
+
+  // Set color of the widget to QColor
+  TQtAbstractButton(AWinControl.Handle).SetColor(@QColor);
 end;
 
 initialization
