@@ -540,26 +540,32 @@ var
   SrcClassName: String;
 begin
   Result:=false;
-  ClassNode:=FindClassNodeInInterface(UpperClassName,true,false,true);
-  AFindContext:=FindPublishedMethodNodeInClass(ClassNode,UpperMethodName,true);
-  if AFindContext.Node=nil then begin
-    DebugLn(['TEventsCodeTool.JumpToPublishedMethodBody method not found: ',UpperClassName,'.',UpperMethodName]);
-    exit;
+  ActivateGlobalWriteLock;
+  try
+    BuildTree(false);
+    ClassNode:=FindClassNodeInInterface(UpperClassName,true,false,true);
+    AFindContext:=FindPublishedMethodNodeInClass(ClassNode,UpperMethodName,true);
+    if AFindContext.Node=nil then begin
+      DebugLn(['TEventsCodeTool.JumpToPublishedMethodBody method not found: ',UpperClassName,'.',UpperMethodName]);
+      exit;
+    end;
+    SrcTool:=TEventsCodeTool(AFindContext.Tool);
+    ClassNode:=AFindContext.Node.Parent.Parent;
+    if ClassNode.Desc<>ctnClass then begin
+      DebugLn(['TEventsCodeTool.JumpToPublishedMethodBody method found in non class',UpperClassName,'.',UpperMethodName,' in ',SrcTool.MainFilename,' Node=',ClassNode.DescAsString]);
+      exit;
+    end;
+    SrcClassName:=SrcTool.ExtractClassName(ClassNode,true);
+    ANode:=SrcTool.FindMethodNodeInImplementation(
+                                             SrcClassName,UpperMethodName,true);
+    if ANode=nil then begin
+      DebugLn(['TEventsCodeTool.JumpToPublishedMethodBody method not found ',SrcClassName,'.',UpperMethodName,' in ',SrcTool.MainFilename]);
+      exit;
+    end;
+    Result:=SrcTool.FindJumpPointInProcNode(ANode,NewPos,NewTopLine);
+  finally
+    DeactivateGlobalWriteLock;
   end;
-  SrcTool:=TEventsCodeTool(AFindContext.Tool);
-  ClassNode:=AFindContext.Node.Parent.Parent;
-  if ClassNode.Desc<>ctnClass then begin
-    DebugLn(['TEventsCodeTool.JumpToPublishedMethodBody method found in non class',UpperClassName,'.',UpperMethodName,' in ',SrcTool.MainFilename,' Node=',ClassNode.DescAsString]);
-    exit;
-  end;
-  SrcClassName:=SrcTool.ExtractClassName(ClassNode,true);
-  ANode:=SrcTool.FindMethodNodeInImplementation(
-                                           SrcClassName,UpperMethodName,true);
-  if ANode=nil then begin
-    DebugLn(['TEventsCodeTool.JumpToPublishedMethodBody method not found ',SrcClassName,'.',UpperMethodName,' in ',SrcTool.MainFilename]);
-    exit;
-  end;
-  Result:=SrcTool.FindJumpPointInProcNode(ANode,NewPos,NewTopLine);
 end;
 
 function TEventsCodeTool.RenamePublishedMethod(const UpperClassName,

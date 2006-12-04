@@ -3742,10 +3742,10 @@ begin
       raise EPropertyError.Create('Method name must be an identifier'{@SCannotCreateName});
       exit;
     end;
-    SetValue(FormMethodName);
+    SetValue(FormMethodName); // this will jump to the method
     PropertyHook.RefreshPropertyValues;
-  end;
-  PropertyHook.ShowMethod(FormMethodName);
+  end else
+    PropertyHook.ShowMethod(FormMethodName);
 end;
 
 function TMethodPropertyEditor.GetAttributes: TPropertyAttributes;
