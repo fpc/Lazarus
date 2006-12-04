@@ -4250,7 +4250,7 @@ end;
 procedure TProjectDefineTemplates.Clear;
 begin
   if FMain<>nil then begin
-    if CodeToolBoss<>nil then
+    if (CodeToolBoss<>nil) and (FMain<>nil) then
       CodeToolBoss.DefineTree.RemoveDefineTemplate(FMain);
     FMain:=nil;
     FSrcDirIfDef:=nil;
@@ -4258,6 +4258,12 @@ begin
     FOutPutSrcPath:=nil;
     FOutputDir:=nil;
     FFlags:=FFlags+[ptfFlagsChanged];
+    fLastOutputDirSrcPathIDAsString:='';
+    FLastCustomOptions:='';
+    if fLastSourceDirectories<>nil then
+      fLastSourceDirectories.Clear;
+    fLastSourceDirsIDAsString:='';
+    fLastUnitPath:='';
   end;
 end;
 

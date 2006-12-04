@@ -3636,14 +3636,18 @@ end;
 procedure TLazPackageDefineTemplates.Clear;
 begin
   if FMain<>nil then begin
-    fLastSourceDirectories.Clear;
-    CodeToolBoss.DefineTree.RemoveDefineTemplate(FMain);
+    if (CodeToolBoss<>nil) and (FMain<>nil) then
+      CodeToolBoss.DefineTree.RemoveDefineTemplate(FMain);
     FMain:=nil;
     FOutputDir:=nil;
     FOutPutSrcPath:=nil;
     FSrcDirectories:=nil;
     fLastOutputDirSrcPathIDAsString:='';
     FLastCustomOptions:='';
+    fLastUnitPath:='';
+    fLastSourceDirsIDAsString:='';
+    if fLastSourceDirectories<>nil then
+      fLastSourceDirectories.Clear;
     FFlags:=FFlags+[pdtIDChanged,pdtOutputDirChanged,pdtSourceDirsChanged,
                     pdtCustomDefinesChanged];
   end;
