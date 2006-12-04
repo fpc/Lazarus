@@ -553,7 +553,7 @@ begin
   end else begin
     fStringLen := 0;
   end;
-  //if CompareText(copy(fLine,fToIdent,fStringLen),'otherwise')=0 then debugln('TSynPasSyn.KeyHash '+copy(fLine,fToIdent,fStringLen)+'='+dbgs(Result));
+  //if CompareText(copy(fLine,fToIdent,fStringLen),'nostackframe')=0 then debugln('TSynPasSyn.KeyHash '+copy(fLine,fToIdent,fStringLen)+'='+dbgs(Result));
 end; { KeyHash }
 {$ELSE}
 function TSynPasSyn.KeyHash(ToHash: PChar): Integer;
@@ -1042,7 +1042,10 @@ begin
   if D4syntax and KeyComp('Implements') then
   begin
     if fRange = rsProperty then Result := tkKey else Result := tkIdentifier;
-  end else Result := tkIdentifier;
+  end else if KeyComp('NoStackFrame') then
+    Result := tkKey
+  else
+    Result := tkIdentifier;
 end;
 
 function TSynPasSyn.Func128: TtkTokenKind;
