@@ -52,7 +52,7 @@ type
   
   TEventsCodeTool = class(TExtractProcTool)
   private
-    GetCompatibleMethodsProc: TGetStringProc;
+    fGatheredCompatibleMethods: TAVLTree;
     SearchedExprList: TExprTypeList;
     SearchedCompatibilityList: TTypeCompatibilityList;
     function FindIdentifierNodeInClass(ClassNode: TCodeTreeNode;
@@ -241,55 +241,65 @@ function TEventsCodeTool.GetCompatiblePublishedMethods(
 var
   Params: TFindDeclarationParams;
   CompListSize: integer;
+  Node: TAVLTreeNode;
+  ProcName: String;
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
   DebugLn('[TEventsCodeTool.GetCompatiblePublishedMethods] C ',dbgs(ClassNode<>nil));
   {$ENDIF}
   if (ClassNode=nil) or (ClassNode.Desc<>ctnClass) or (TypeData=nil)
-  or (Proc=nil) then exit;
+  or (Proc=nil) or (fGatheredCompatibleMethods<>nil) then exit;
+  Params:=nil;
   ActivateGlobalWriteLock;
   try
     BuildSubTreeForClass(ClassNode);
+    fGatheredCompatibleMethods:=TAVLTree.Create(@CompareIdentifierPtrs);
+
     {$IFDEF CTDEBUG}
     DebugLn('[TEventsCodeTool.GetCompatiblePublishedMethods] D');
     {$ENDIF}
     // 1. convert the TypeData to an expression type list
     CheckDependsOnNodeCaches;
     Params:=TFindDeclarationParams.Create;
+    Params.ContextNode:=ClassNode.Parent;
+    SearchedExprList:=CreateExprListFromMethodTypeData(TypeData,Params);
+    // create compatibility list
+    CompListSize:=SizeOf(TTypeCompatibility)*SearchedExprList.Count;
+    if CompListSize>0 then begin
+      GetMem(SearchedCompatibilityList,CompListSize);
+    end else begin
+      SearchedCompatibilityList:=nil;
+    end;
     try
-      Params.ContextNode:=ClassNode.Parent;
-      SearchedExprList:=CreateExprListFromMethodTypeData(TypeData,Params);
-      // create compatibility list
-      CompListSize:=SizeOf(TTypeCompatibility)*SearchedExprList.Count;
-      if CompListSize>0 then begin
-        GetMem(SearchedCompatibilityList,CompListSize);
-      end else begin
-        SearchedCompatibilityList:=nil;
-      end;
-      try
-        // 2. search all compatible published procs
-        GetCompatibleMethodsProc:=Proc;
-        Params.ContextNode:=ClassNode;
-        Params.Flags:=[fdfCollect,fdfSearchInAncestors];
-        Params.SetIdentifier(Self,nil,@CollectPublishedMethods);
-        {$IFDEF CTDEBUG}
-        DebugLn('[TEventsCodeTool.GetCompatiblePublishedMethods] E Searching ...');
-        {$ENDIF}
-        FindIdentifierInContext(Params);
-      finally
-        SearchedExprList.Free;
-        SearchedExprList:=nil;
-        if SearchedCompatibilityList<>nil then
-          FreeMem(SearchedCompatibilityList);
-        SearchedCompatibilityList:=nil;
+      // 2. search all compatible published procs
+      Params.ContextNode:=ClassNode;
+      Params.Flags:=[fdfCollect,fdfSearchInAncestors];
+      Params.SetIdentifier(Self,nil,@CollectPublishedMethods);
+      {$IFDEF CTDEBUG}
+      DebugLn('[TEventsCodeTool.GetCompatiblePublishedMethods] E Searching ...');
+      {$ENDIF}
+      FindIdentifierInContext(Params);
+      
+      // collect all method names
+      Node:=fGatheredCompatibleMethods.FindLowest;
+      while Node<>nil do begin
+        ProcName:=GetIdentifier(Node.Data);
+        Proc(ProcName);
+        Node:=fGatheredCompatibleMethods.FindSuccessor(Node);
       end;
     finally
-      Params.Free;
+      SearchedExprList.Free;
+      SearchedExprList:=nil;
+      if SearchedCompatibilityList<>nil then
+        FreeMem(SearchedCompatibilityList);
+      SearchedCompatibilityList:=nil;
     end;
     Result:=true;
   finally
     DeactivateGlobalWriteLock;
+    Params.Free;
+    FreeAndNil(fGatheredCompatibleMethods);
   end;
 end;
 
@@ -823,6 +833,7 @@ function TEventsCodeTool.CollectPublishedMethods(
 var
   ParamCompatibility: TTypeCompatibility;
   FirstParameterNode: TCodeTreeNode;
+  ProcName: PChar;
 begin
   if (FoundContext.Node.Desc=ctnProcedure)
   and (FoundContext.Node.Parent<>nil)
@@ -850,8 +861,11 @@ begin
 
       // ToDo: ppu, ppw, dcu
 
-      GetCompatibleMethodsProc(
-        FoundContext.Tool.ExtractProcName(FoundContext.Node,[]));
+      ProcName:=FoundContext.Tool.GetProcNameIdentifier(FoundContext.Node);
+      if fGatheredCompatibleMethods.Find(ProcName)=nil then begin
+        // new method name -> add
+        fGatheredCompatibleMethods.Add(ProcName);
+      end;
     end;
   end;
   Result:=ifrProceedSearch;

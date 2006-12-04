@@ -266,6 +266,7 @@ type
     function CompareSrcIdentifiers(Identifier1, Identifier2: PChar): boolean;
     function CompareSrcIdentifiers(CleanStartPos: integer;
       AnIdentifier: PChar): boolean;
+    function CompareSrcIdentifiersMethod(Identifier1, Identifier2: Pointer): integer;
     function ExtractIdentifier(CleanStartPos: integer): string;
 
     procedure CreateChildNode;
@@ -2346,6 +2347,12 @@ begin
       exit;
   end;
   Result:=(CleanStartPos>SrcLen) or (not IsIdentChar[Src[CleanStartPos]]);
+end;
+
+function TCustomCodeTool.CompareSrcIdentifiersMethod(Identifier1,
+  Identifier2: Pointer): integer;
+begin
+  Result:=CompareIdentifiers(Identifier1,Identifier2);
 end;
 
 function TCustomCodeTool.ExtractIdentifier(CleanStartPos: integer): string;
