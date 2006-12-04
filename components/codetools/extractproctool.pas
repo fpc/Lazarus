@@ -515,7 +515,8 @@ var
       AVLNode: TAVLTreeNode;
     begin
       CurProcVar:=nil;
-      AVLNode:=VarTree.FindKey(VarNode, TListSortCompare(@CompareNodeWithExtractedProcVariable));
+      AVLNode:=VarTree.FindKey(VarNode,
+                       TListSortCompare(@CompareNodeWithExtractedProcVariable));
       if AVLNode=nil then begin
         Result:=false;
       end else begin
@@ -523,6 +524,27 @@ var
         Result:=(not CurProcVar.UsedInNonSelection)
                 and CurProcVar.UsedInSelection;
       end;
+    end;
+    
+    function VarSectionIsEmpty: boolean;
+    var
+      VarNode: TCodeTreeNode;
+      SectionNode: TCodeTreeNode;
+      CurProcVar: TExtractedProcVariable;
+    begin
+      Result:=false;
+      SectionNode:=ProcVar.Node;
+      if SectionNode.Desc=ctnVarDefinition then
+        SectionNode:=SectionNode.Parent;
+      if SectionNode.Desc<>ctnVarSection then exit;
+      VarNode:=SectionNode.FirstChild;
+      while VarNode<>nil do begin
+        CurProcVar:=nil;
+        if not VariableNodeShouldBeDeleted(VarNode,CurProcVar) then exit;
+        if not CurProcVar.RemovedFromOldProc then exit;
+        VarNode:=VarNode.NextBrother;
+      end;
+      Result:=true;
     end;
   
   var
@@ -611,8 +633,7 @@ var
         // all variables of the definition should be deleted
         // -> delete type declaration
         DeleteEndPos:=FindLineEndOrCodeAfterPosition(LastVarNode.EndPos);
-        if (FirstVarNode.PriorBrother=nil)
-        and (LastVarNode.NextBrother=nil) then begin
+        if VarSectionIsEmpty then begin
           // all variables of the 'var' section are deleted
           // -> delete var section
           DeleteStartPos:=FirstVarNode.Parent.StartPos;
