@@ -770,6 +770,7 @@ type
     property BorderSpacing;
     property Color;
     property Constraints;
+    property Enabled;
     property Font;
     property Lines;
     property MaxLength;
