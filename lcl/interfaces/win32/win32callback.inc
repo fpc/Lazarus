@@ -745,28 +745,17 @@ Var
                 Application.MainForm.HandleAllocated then
                   begin
                     //DebugLn('SC_MINIMIZE');
-                    //LMessage.Msg := LM_NULL;
                     Application.IntfAppMinimize();
-                    //LMessage.Result := 0;
                   end;
               end;
         end;
 
       SC_RESTORE:
         begin
-          if (Application <> nil) and (lWinControl<> nil) and
-          (Application.MainForm = lWinControl) then
-            Window := TWin32WidgetSet(WidgetSet).AppHandle;
-            if Window = TWin32WidgetSet(WidgetSet).AppHandle then
-              begin
-                if (Application <> nil) and (Application.MainForm <> nil) and
-                Application.MainForm.HandleAllocated then
-                  begin
+          if Window = TWin32WidgetSet(WidgetSet).AppHandle then
+           begin
                     //DebugLn('SC_RESTORE');
-                    //LMessage.Msg := LM_NULL;
                     Application.IntfAppRestore();
-                    //LMessage.Result := 0;
-                  end;
               end;
         end;
     end;
