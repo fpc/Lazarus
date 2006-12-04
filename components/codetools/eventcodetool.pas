@@ -100,7 +100,8 @@ type
     function CreateExprListFromMethodTypeData(TypeData: PTypeData;
         Params: TFindDeclarationParams): TExprTypeList;
     function FindPublishedMethodNodeInClass(ClassNode: TCodeTreeNode;
-        const UpperMethodName: string): TFindContext;
+        const UpperMethodName: string;
+        ExceptionOnNotFound: boolean): TFindContext;
     function FindMethodNodeInImplementation(const UpperClassName,
         UpperMethodName: string; BuildTreeBefore: boolean): TCodeTreeNode;
     function FindMethodTypeInfo(ATypeInfo: PTypeInfo;
@@ -293,32 +294,35 @@ begin
 end;
 
 function TEventsCodeTool.FindPublishedMethodNodeInClass(
-  ClassNode: TCodeTreeNode; const UpperMethodName: string): TFindContext;
+  ClassNode: TCodeTreeNode; const UpperMethodName: string;
+  ExceptionOnNotFound: boolean): TFindContext;
 var
   Params: TFindDeclarationParams;
 begin
   Result:=CleanFindContext;
   if (ClassNode=nil) or (ClassNode.Desc<>ctnClass) or (UpperMethodName='')
-  or (Scanner=nil) then exit;
+  or (Scanner=nil) then begin
+    DebugLn(['TEventsCodeTool.FindPublishedMethodNodeInClass invalid parameters']);
+    exit;
+  end;
   ActivateGlobalWriteLock;
+  Params:=nil;
   try
     CheckDependsOnNodeCaches;
     Params:=TFindDeclarationParams.Create;
-    try
-      Params.ContextNode:=ClassNode;
-      Params.SetIdentifier(Self,@UpperMethodName[1],nil);
-      Params.Flags:=[fdfSearchInAncestors];
-      if FindIdentifierInContext(Params)
-      and (Params.NewNode.Desc=ctnProcedure)
-      and (Params.NewNode.Parent<>nil)
-      and (Params.NewNode.Parent.Desc=ctnClassPublished) then begin
-        Result:=CreateFindContext(Params);
-      end;
-    finally
-      Params.Free;
+    Params.ContextNode:=ClassNode;
+    Params.SetIdentifier(Self,@UpperMethodName[1],nil);
+    Params.Flags:=[fdfSearchInAncestors];
+    if ExceptionOnNotFound then Include(Params.Flags,fdfExceptionOnNotFound);
+    if FindIdentifierInContext(Params)
+    and (Params.NewNode.Desc=ctnProcedure)
+    and (Params.NewNode.Parent<>nil)
+    and (Params.NewNode.Parent.Desc=ctnClassPublished) then begin
+      Result:=CreateFindContext(Params);
     end;
   finally
     DeactivateGlobalWriteLock;
+    Params.Free;
   end;
 end;
 
@@ -520,9 +524,32 @@ function TEventsCodeTool.JumpToPublishedMethodBody(const UpperClassName,
   var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
 var
   ANode: TCodeTreeNode;
+  ClassNode: TCodeTreeNode;
+  AFindContext: TFindContext;
+  SrcTool: TEventsCodeTool;
+  SrcClassName: String;
 begin
-  ANode:=FindMethodNodeInImplementation(UpperClassName,UpperMethodName,true);
-  Result:=FindJumpPointInProcNode(ANode,NewPos,NewTopLine);
+  Result:=false;
+  ClassNode:=FindClassNodeInInterface(UpperClassName,true,false,true);
+  AFindContext:=FindPublishedMethodNodeInClass(ClassNode,UpperMethodName,true);
+  if AFindContext.Node=nil then begin
+    DebugLn(['TEventsCodeTool.JumpToPublishedMethodBody method not found: ',UpperClassName,'.',UpperMethodName]);
+    exit;
+  end;
+  SrcTool:=TEventsCodeTool(AFindContext.Tool);
+  ClassNode:=AFindContext.Node.Parent.Parent;
+  if ClassNode.Desc<>ctnClass then begin
+    DebugLn(['TEventsCodeTool.JumpToPublishedMethodBody method found in non class',UpperClassName,'.',UpperMethodName,' in ',SrcTool.MainFilename,' Node=',ClassNode.DescAsString]);
+    exit;
+  end;
+  SrcClassName:=SrcTool.ExtractClassName(ClassNode,true);
+  ANode:=SrcTool.FindMethodNodeInImplementation(
+                                           SrcClassName,UpperMethodName,true);
+  if ANode=nil then begin
+    DebugLn(['TEventsCodeTool.JumpToPublishedMethodBody method not found ',SrcClassName,'.',UpperMethodName,' in ',SrcTool.MainFilename]);
+    exit;
+  end;
+  Result:=SrcTool.FindJumpPointInProcNode(ANode,NewPos,NewTopLine);
 end;
 
 function TEventsCodeTool.RenamePublishedMethod(const UpperClassName,
