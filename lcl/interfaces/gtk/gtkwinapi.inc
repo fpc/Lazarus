@@ -8959,7 +8959,7 @@ begin
   if (ScrollInfo.fMask and SIF_PAGE) <> 0
   then begin
     Adjustment^.Page_Size := ScrollInfo.nPage;
-    Adjustment^.Page_Increment := ScrollInfo.nPage;
+    Adjustment^.Page_Increment := (ScrollInfo.nPage div 6)+1;
   end;
 
   {DebugLn('');
