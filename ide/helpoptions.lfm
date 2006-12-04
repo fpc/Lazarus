@@ -1,92 +1,84 @@
 object HelpOptionsDialog: THelpOptionsDialog
-  ActiveControl = ViewersListBox
-  BorderIcons = [biSystemMenu]
-  Caption = 'HelpOptionsDialog'
-  ClientHeight = 300
-  ClientWidth = 500
-  OnClose = HelpOptionsDialogClose
-  OnCreate = HelpOptionsDialogCreate
-  PixelsPerInch = 112
-  Position = poScreenCenter
-  HorzScrollBar.Page = 499
-  VertScrollBar.Page = 299
   AnchorSideBottom.Side = asrBottom
   Left = 312
   Height = 300
   Top = 358
   Width = 500
+  HorzScrollBar.Page = 499
+  VertScrollBar.Page = 299
+  ActiveControl = FPCDocHTMLEdit
+  BorderIcons = [biSystemMenu]
+  Caption = 'HelpOptionsDialog'
+  OnClose = HelpOptionsDialogClose
+  OnCreate = HelpOptionsDialogCreate
+  Position = poScreenCenter
   object MainNotebook: TNotebook
+    AnchorSideBottom.Control = OkButton
+    Left = 6
+    Height = 257
+    Top = 6
+    Width = 488
     Align = alTop
     Anchors = [akTop, akLeft, akBottom]
     BorderSpacing.Around = 6
     PageIndex = 0
-    AnchorSideBottom.Control = OkButton
-    Left = 6
-    Height = 254
-    Top = 6
-    Width = 488
     object GeneralPage: TPage
       Caption = 'GeneralPage'
-      ClientWidth = 484
-      ClientHeight = 224
-      Left = 2
-      Height = 224
-      Top = 28
-      Width = 484
       object FPCDocHTMLLabel: TLabel
-        Caption = 'FPCDocHTMLLabel'
-        Color = clNone
-        ParentColor = False
         AnchorSideTop.Control = FPCDocHTMLBrowseButton
         AnchorSideTop.Side = asrCenter
         Left = 14
-        Height = 13
-        Top = 16
-        Width = 114
+        Height = 17
+        Top = 14
+        Width = 146
+        Caption = 'FPCDocHTMLLabel'
+        Color = clNone
+        ParentColor = False
       end
       object FPCDocHTMLEdit: TEdit
+        AnchorSideLeft.Control = FPCDocHTMLLabel
+        AnchorSideLeft.Side = asrBottom
+        Left = 166
+        Height = 23
+        Top = 10
+        Width = 276
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Left = 6
         TabOrder = 0
         Text = 'FPCDocHTMLEdit'
-        AnchorSideLeft.Control = FPCDocHTMLLabel
-        AnchorSideLeft.Side = asrBottom
-        Left = 134
-        Height = 23
-        Top = 10
-        Width = 308
       end
       object FPCDocHTMLBrowseButton: TButton
-        Anchors = [akTop, akRight]
-        
-        Caption = '...'
-        OnClick = FPCDocHTMLBrowseButtonClick
-        TabOrder = 1
         Left = 447
         Height = 25
         Top = 10
         Width = 30
+        Anchors = [akTop, akRight]
+        BorderSpacing.InnerBorder = 4
+        Caption = '...'
+        OnClick = FPCDocHTMLBrowseButtonClick
+        TabOrder = 1
       end
     end
     object ViewersPage: TPage
       Caption = 'ViewersPage'
-      ClientWidth = 484
-      ClientHeight = 224
-      Left = 2
-      Height = 224
-      Top = 28
-      Width = 484
       object ViewersLabel: TLabel
+        AnchorSideTop.Control = ViewerPropsGroupBox
+        Left = 6
+        Height = 17
+        Top = 6
+        Width = 97
         Caption = 'ViewersLabel'
         Color = clNone
         ParentColor = False
-        AnchorSideTop.Control = ViewerPropsGroupBox
-        Left = 6
-        Height = 14
-        Top = 6
-        Width = 63
       end
       object ViewersListBox: TListBox
+        AnchorSideLeft.Control = ViewersPage
+        AnchorSideTop.Control = ViewersLabel
+        AnchorSideTop.Side = asrBottom
+        Left = 6
+        Height = 190
+        Top = 29
+        Width = 152
         Anchors = [akTop, akLeft, akBottom]
         BorderSpacing.Left = 6
         BorderSpacing.Top = 6
@@ -94,49 +86,41 @@ object HelpOptionsDialog: THelpOptionsDialog
         OnSelectionChange = ViewersListBoxSelectionChange
         TabOrder = 0
         TopIndex = -1
-        AnchorSideLeft.Control = ViewersPage
-        AnchorSideTop.Control = ViewersLabel
-        AnchorSideTop.Side = asrBottom
-        Left = 6
-        Height = 194
-        Top = 26
-        Width = 152
       end
       object ViewerPropsGroupBox: TGroupBox
+        AnchorSideLeft.Control = ViewersListBox
+        AnchorSideLeft.Side = asrBottom
+        Left = 164
+        Height = 211
+        Top = 6
+        Width = 314
         Align = alRight
         Anchors = [akTop, akLeft, akRight, akBottom]
         BorderSpacing.Around = 6
         Caption = 'ViewerPropsGroupBox'
-        ClientHeight = 212
-        ClientWidth = 314
         TabOrder = 1
-        AnchorSideLeft.Control = ViewersListBox
-        AnchorSideLeft.Side = asrBottom
-        Left = 164
-        Height = 212
-        Top = 6
-        Width = 314
       end
     end
     object DataBasePage: TPage
       Caption = 'DataBasePage'
-      ClientWidth = 484
-      ClientHeight = 224
-      Left = 2
-      Height = 224
-      Top = 28
-      Width = 484
       object DatabasesLabel: TLabel
+        AnchorSideTop.Control = DataBasesPropsGroupBox
+        Left = 6
+        Height = 17
+        Top = 6
+        Width = 118
         Caption = 'DatabasesLabel'
         Color = clNone
         ParentColor = False
-        AnchorSideTop.Control = DataBasesPropsGroupBox
-        Left = 6
-        Height = 14
-        Top = 6
-        Width = 77
       end
       object DatabasesListBox: TListBox
+        AnchorSideLeft.Control = DataBasePage
+        AnchorSideTop.Control = DatabasesLabel
+        AnchorSideTop.Side = asrBottom
+        Left = 6
+        Height = 188
+        Top = 29
+        Width = 152
         Anchors = [akTop, akLeft, akBottom]
         BorderSpacing.Left = 6
         BorderSpacing.Top = 6
@@ -144,69 +128,62 @@ object HelpOptionsDialog: THelpOptionsDialog
         OnSelectionChange = DatabasesListBoxSelectionChange
         TabOrder = 0
         TopIndex = -1
-        AnchorSideLeft.Control = DataBasePage
-        AnchorSideTop.Control = DatabasesLabel
-        AnchorSideTop.Side = asrBottom
-        Left = 6
-        Height = 192
-        Top = 26
-        Width = 152
       end
       object DataBasesPropsGroupBox: TGroupBox
+        AnchorSideLeft.Control = DatabasesListBox
+        AnchorSideLeft.Side = asrBottom
+        Left = 164
+        Height = 211
+        Top = 6
+        Width = 314
         Align = alRight
         Anchors = [akTop, akLeft, akRight, akBottom]
         BorderSpacing.Around = 6
         Caption = 'DataBasesPropsGroupBox'
-        ClientHeight = 212
-        ClientWidth = 314
         TabOrder = 1
-        AnchorSideLeft.Control = DatabasesListBox
-        AnchorSideLeft.Side = asrBottom
-        Left = 164
-        Height = 212
-        Top = 6
-        Width = 314
       end
     end
   end
   object OkButton: TBitBtn
+    AnchorSideRight.Control = CancelButton
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 326
+    Height = 25
+    Top = 269
+    Width = 75
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6
-    
     Caption = '&OK'
+    Constraints.MaxHeight = 25
+    Constraints.MinWidth = 75
     Default = True
     Kind = bkOK
     ModalResult = 1
     NumGlyphs = 0
     OnClick = OkButtonClick
     TabOrder = 1
+  end
+  object CancelButton: TBitBtn
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 443
-    Height = 28
-    Top = 266
-    Width = 51
-  end
-  object CancelButton: TBitBtn
+    Left = 407
+    Height = 25
+    Top = 269
+    Width = 87
     Anchors = [akRight, akBottom]
     AutoSize = True
-    BorderSpacing.Right = 6
-    
+    BorderSpacing.Around = 6
     Cancel = True
     Caption = 'Cancel'
+    Constraints.MaxHeight = 25
+    Constraints.MinWidth = 75
     Kind = bkCancel
     ModalResult = 2
     NumGlyphs = 0
     TabOrder = 2
-    AnchorSideRight.Control = OkButton
-    AnchorSideBottom.Control = OkButton
-    AnchorSideBottom.Side = asrBottom
-    Left = 364
-    Height = 28
-    Top = 266
-    Width = 73
   end
 end

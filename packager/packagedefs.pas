@@ -3636,7 +3636,7 @@ end;
 procedure TLazPackageDefineTemplates.Clear;
 begin
   if FMain<>nil then begin
-    if (CodeToolBoss<>nil) and (FMain<>nil) then
+    if (CodeToolBoss<>nil) then
       CodeToolBoss.DefineTree.RemoveDefineTemplate(FMain);
     FMain:=nil;
     FOutputDir:=nil;

@@ -1,7 +1,7 @@
 object HelpSelectorDialog: THelpSelectorDialog
   Left = 328
   Height = 300
-  Top = 617
+  Top = 574
   Width = 500
   HorzScrollBar.Page = 499
   VertScrollBar.Page = 299
@@ -10,12 +10,17 @@ object HelpSelectorDialog: THelpSelectorDialog
   OnClose = HelpSelectorDialogClose
   Position = poScreenCenter
   object OKButton: TBitBtn
-    Left = 419
-    Height = 30
-    Top = 264
+    AnchorSideRight.Control = CancelButton
+    Left = 326
+    Height = 25
+    Top = 268
     Width = 75
     Anchors = [akRight, akBottom]
+    AutoSize = True
+    BorderSpacing.Right = 6
     Caption = '&OK'
+    Constraints.MaxHeight = 25
+    Constraints.MinWidth = 75
     Default = True
     Kind = bkOK
     ModalResult = 1
@@ -23,14 +28,18 @@ object HelpSelectorDialog: THelpSelectorDialog
     TabOrder = 0
   end
   object CancelButton: TBitBtn
-    AnchorSideRight.Control = OKButton
-    Left = 336
-    Height = 30
-    Top = 264
-    Width = 77
-    Anchors = [akTop, akLeft, akRight, akBottom]
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 407
+    Height = 25
+    Top = 268
+    Width = 87
+    Anchors = [akTop, akRight, akBottom]
+    AutoSize = True
     BorderSpacing.Right = 6
     Caption = 'Cancel'
+    Constraints.MaxHeight = 25
+    Constraints.MinWidth = 75
     Kind = bkCancel
     ModalResult = 2
     NumGlyphs = 0
@@ -39,7 +48,7 @@ object HelpSelectorDialog: THelpSelectorDialog
   object NodesGroupBox: TGroupBox
     AnchorSideBottom.Control = CancelButton
     Left = 6
-    Height = 252
+    Height = 256
     Top = 6
     Width = 488
     Align = alTop
@@ -49,13 +58,14 @@ object HelpSelectorDialog: THelpSelectorDialog
     TabOrder = 2
     object NodesListBox: TListBox
       Left = 6
-      Height = 222
+      Height = 223
       Top = 6
       Width = 472
       Align = alClient
       BorderSpacing.Around = 6
       OnDblClick = NodesListBoxDblClick
       TabOrder = 0
+      TopIndex = -1
     end
   end
 end

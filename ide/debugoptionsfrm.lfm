@@ -14,7 +14,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
   object nbDebugOptions: TNotebook
     AnchorSideBottom.Control = cmdOK
     Left = 6
-    Height = 397
+    Height = 400
     Top = 6
     Width = 470
     Align = alTop
@@ -37,7 +37,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           Left = 6
           Height = 21
           Top = 8
-          Width = 433
+          Width = 425
           Anchors = [akTop, akLeft, akRight]
           AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
           MaxLength = 0
@@ -49,7 +49,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           Left = 6
           Height = 21
           Top = 40
-          Width = 408
+          Width = 400
           Anchors = [akTop, akLeft, akRight]
           AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
           MaxLength = 0
@@ -57,7 +57,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           TabOrder = 1
         end
         object cmdOpenDebuggerPath: TButton
-          Left = 416
+          Left = 408
           Height = 25
           Top = 37
           Width = 23
@@ -82,12 +82,12 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           Left = 6
           Height = 25
           Top = 5
-          Width = 406
+          Width = 398
           Anchors = [akTop, akLeft, akRight]
           TabOrder = 0
         end
         object cmdOpenAdditionalPath: TButton
-          Left = 416
+          Left = 408
           Height = 24
           Top = 5
           Width = 23
@@ -100,7 +100,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
       end
       object gbDebuggerSpecific: TGroupBox
         Left = 6
-        Height = 135
+        Height = 134
         Top = 226
         Width = 454
         Align = alClient
@@ -110,7 +110,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
         TabOrder = 2
         object pnlDebugSpecific: TPanel
           Left = 6
-          Height = 106
+          Height = 101
           Top = 6
           Width = 438
           Align = alClient
@@ -158,7 +158,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           Left = 4
           Height = 24
           Top = 5
-          Width = 118
+          Width = 139
           AllowGrayed = True
           Caption = 'Clear log on run'
           TabOrder = 0
@@ -167,7 +167,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           Left = 4
           Height = 24
           Top = 29
-          Width = 121
+          Width = 146
           AllowGrayed = True
           Caption = 'Limit linecount to'
           TabOrder = 1
@@ -183,7 +183,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
       end
       object gbMessages: TGroupBox
         Left = 6
-        Height = 217
+        Height = 216
         Top = 144
         Width = 454
         Align = alClient
@@ -196,7 +196,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           Left = 4
           Height = 24
           Top = 5
-          Width = 86
+          Width = 101
           AllowGrayed = True
           Caption = 'Breakpoint'
           TabOrder = 0
@@ -205,7 +205,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           Left = 4
           Height = 24
           Top = 29
-          Width = 72
+          Width = 82
           AllowGrayed = True
           Caption = 'Process'
           TabOrder = 1
@@ -214,7 +214,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           Left = 4
           Height = 24
           Top = 53
-          Width = 66
+          Width = 75
           AllowGrayed = True
           Caption = 'Thread'
           TabOrder = 2
@@ -223,7 +223,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           Left = 4
           Height = 24
           Top = 77
-          Width = 69
+          Width = 76
           AllowGrayed = True
           Caption = 'Module'
           TabOrder = 3
@@ -232,7 +232,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           Left = 4
           Height = 24
           Top = 101
-          Width = 64
+          Width = 74
           AllowGrayed = True
           Caption = 'Output'
           TabOrder = 4
@@ -241,7 +241,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           Left = 4
           Height = 24
           Top = 125
-          Width = 71
+          Width = 81
           AllowGrayed = True
           Caption = 'Window'
           TabOrder = 5
@@ -250,7 +250,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           Left = 4
           Height = 24
           Top = 149
-          Width = 75
+          Width = 87
           AllowGrayed = True
           Caption = 'Interface'
           TabOrder = 6
@@ -261,7 +261,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
       Caption = 'Page3'
       object bgIgnoreExceptions: TGroupBox
         Left = 6
-        Height = 325
+        Height = 324
         Top = 6
         Width = 454
         Align = alClient
@@ -274,15 +274,17 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           AnchorSideRight.Side = asrBottom
           AnchorSideBottom.Control = bgIgnoreExceptions
           AnchorSideBottom.Side = asrBottom
-          Left = 393
-          Height = 26
-          Top = 293
-          Width = 55
+          Left = 369
+          Height = 25
+          Top = 272
+          Width = 75
           Anchors = [akRight, akBottom]
           AutoSize = True
           BorderSpacing.Around = 6
           BorderSpacing.InnerBorder = 4
           Caption = 'Remove'
+          Constraints.MaxHeight = 25
+          Constraints.MinWidth = 75
           Enabled = False
           OnClick = cmdExceptionRemoveCLICK
           TabOrder = 0
@@ -291,15 +293,17 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           AnchorSideRight.Control = cmdExceptionRemove
           AnchorSideBottom.Control = bgIgnoreExceptions
           AnchorSideBottom.Side = asrBottom
-          Left = 354
-          Height = 26
-          Top = 293
-          Width = 33
+          Left = 288
+          Height = 25
+          Top = 272
+          Width = 75
           Anchors = [akRight, akBottom]
           AutoSize = True
           BorderSpacing.Around = 6
           BorderSpacing.InnerBorder = 4
           Caption = 'Add'
+          Constraints.MaxHeight = 25
+          Constraints.MinWidth = 75
           OnClick = cmdExceptionAddCLICK
           TabOrder = 1
         end
@@ -307,9 +311,9 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           AnchorSideRight.Side = asrBottom
           AnchorSideBottom.Control = cmdExceptionAdd
           Left = 6
-          Height = 281
+          Height = 260
           Top = 6
-          Width = 442
+          Width = 438
           Align = alTop
           Anchors = [akTop, akLeft, akRight, akBottom]
           BorderSpacing.Around = 6
@@ -321,7 +325,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
       object chkBreakOnException: TCheckBox
         Left = 6
         Height = 24
-        Top = 337
+        Top = 336
         Width = 454
         Align = alBottom
         AllowGrayed = True
@@ -335,7 +339,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
       Caption = 'Page4'
       object gbSignals: TGroupBox
         Left = 6
-        Height = 355
+        Height = 354
         Top = 6
         Width = 454
         Align = alClient
@@ -348,15 +352,17 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           AnchorSideRight.Side = asrBottom
           AnchorSideBottom.Control = gbSignals
           AnchorSideBottom.Side = asrBottom
-          Left = 385
-          Height = 26
-          Top = 306
-          Width = 59
+          Left = 369
+          Height = 25
+          Top = 302
+          Width = 75
           Anchors = [akRight, akBottom]
           AutoSize = True
           BorderSpacing.Around = 6
           BorderSpacing.InnerBorder = 4
           Caption = 'Remove'
+          Constraints.MaxHeight = 25
+          Constraints.MinWidth = 75
           Enabled = False
           TabOrder = 0
         end
@@ -364,21 +370,23 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           AnchorSideRight.Control = cmdSignalRemove
           AnchorSideBottom.Control = gbSignals
           AnchorSideBottom.Side = asrBottom
-          Left = 342
-          Height = 26
-          Top = 306
-          Width = 37
+          Left = 288
+          Height = 25
+          Top = 302
+          Width = 75
           Anchors = [akRight, akBottom]
           AutoSize = True
           BorderSpacing.Around = 6
           BorderSpacing.InnerBorder = 4
           Caption = 'Add'
+          Constraints.MaxHeight = 25
+          Constraints.MinWidth = 75
           TabOrder = 1
         end
         object lvSignals: TListView
           AnchorSideBottom.Control = cmdSignalAdd
           Left = 6
-          Height = 294
+          Height = 290
           Top = 6
           Width = 438
           Align = alTop
@@ -408,19 +416,19 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
     end
   end
   object cmdOK: TBitBtn
-    AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
+    AnchorSideRight.Control = cmdCancel
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 421
-    Height = 28
-    Top = 409
-    Width = 55
+    Left = 308
+    Height = 25
+    Top = 412
+    Width = 75
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6
     Caption = '&OK'
-    Constraints.MaxHeight = 29
+    Constraints.MaxHeight = 25
+    Constraints.MinWidth = 75
     Kind = bkOK
     ModalResult = 1
     NumGlyphs = 0
@@ -428,19 +436,21 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
     TabOrder = 1
   end
   object cmdCancel: TBitBtn
-    AnchorSideRight.Control = cmdOK
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 338
-    Height = 28
-    Top = 409
-    Width = 77
+    Left = 389
+    Height = 25
+    Top = 412
+    Width = 87
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6
     Cancel = True
     Caption = 'Cancel'
-    Constraints.MaxHeight = 29
+    Constraints.MaxHeight = 25
+    Constraints.MinWidth = 75
     Kind = bkCancel
     ModalResult = 2
     NumGlyphs = 0
