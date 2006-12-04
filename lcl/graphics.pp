@@ -965,6 +965,8 @@ type
     procedure FrameRect(const ARect: TRect); virtual; // border using brush
     procedure FrameRect(X1,Y1,X2,Y2: Integer); // border using brush
     procedure Line(X1,Y1,X2,Y2: Integer); virtual; // short for MoveTo();LineTo(); // already in fpcanvas
+    procedure Line(const p1,p2: TPoint);
+    procedure Line(const Points: TRect);
     procedure LineTo(X1,Y1: Integer); virtual; // already in fpcanvas
     procedure MoveTo(X1,Y1: Integer); virtual; // already in fpcanvas
     procedure RadialPie(x1, y1, x2, y2,

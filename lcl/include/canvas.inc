@@ -1123,6 +1123,17 @@ begin
   LineTo(X2, Y2);
 end;
 
+procedure TCanvas.Line(const p1, p2: TPoint);
+begin
+  Line(p1.x,p1.y,p2.x,p2.y);
+end;
+
+procedure TCanvas.Line(const Points: TRect);
+begin
+  with Points do
+    Line(Left,Top,Right,Bottom);
+end;
+
 
 {------------------------------------------------------------------------------
   Function: TCanvas.GetColor
