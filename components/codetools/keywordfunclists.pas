@@ -801,7 +801,7 @@ begin
     Add('PRIVATE',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('PROCEDURE',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('PROGRAM',{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('PROPERTY',{$ifdef FPC}@{$endif}AllwaysTrue);
+    //Add('PROPERTY',{$ifdef FPC}@{$endif}AllwaysTrue); not in macpas mode
     Add('PROTECTED',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('PUBLIC',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('PUBLISHED',{$ifdef FPC}@{$endif}AllwaysTrue);

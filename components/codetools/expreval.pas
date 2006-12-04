@@ -247,6 +247,7 @@ var r: string;   // current result
   c,o1,o2: char;
   OldPos: integer;
   AtomCount: Integer;
+  HasBracket: Boolean;
 begin
   Result:='';
   AtomCount:=0;
@@ -298,9 +299,13 @@ begin
         else Result:='0';
         exit;
       end else if (CompAtom('DEFINED')) then begin
-        // read DEFINED(identifier)
-        if (Result<>'') or (not ReadNextAtom) or (CompAtom('(')=false)
-        or (not ReadNextAtom) then begin
+        // read DEFINED(identifier) or defined identifier
+        if (Result<>'') or (not ReadNextAtom) then begin
+          ErrorPos:=CurPos;
+          exit;
+        end;
+        HasBracket:=CompAtom('(');
+        if HasBracket and (not ReadNextAtom) then begin
           ErrorPos:=CurPos;
           exit;
         end;
@@ -309,9 +314,11 @@ begin
           Result:='1'
         else
           Result:='0';
-        if (not ReadNextAtom) then begin
-          ErrorPos:=CurPos;
-          exit;
+        if HasBracket then begin
+          if (not ReadNextAtom) or (not CompAtom(')')) then begin
+            ErrorPos:=CurPos;
+            exit;
+          end;
         end;
       end else if (CompAtom('DECLARED')) then begin
         // read DECLARED(identifier)
@@ -324,6 +331,28 @@ begin
         if (not ReadNextAtom) then begin
           ErrorPos:=CurPos;
           exit;
+        end;
+      end else if (CompAtom('UNDEFINED')) then begin
+        // read UNDEFINED(identifier) or undefined identifier
+        if (Result<>'') or (not ReadNextAtom) then begin
+          ErrorPos:=CurPos;
+          exit;
+        end;
+        HasBracket:=CompAtom('(');
+        if HasBracket and (not ReadNextAtom) then begin
+          ErrorPos:=CurPos;
+          exit;
+        end;
+        Result:=Variables[copy(Expr,AtomStart,AtomEnd-AtomStart)];
+        if Result<>'' then
+          Result:='0'
+        else
+          Result:='1';
+        if HasBracket then begin
+          if (not ReadNextAtom) or (not CompAtom(')')) then begin
+            ErrorPos:=CurPos;
+            exit;
+          end;
         end;
       end else begin
         // Identifier

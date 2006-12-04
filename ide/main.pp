@@ -12328,6 +12328,7 @@ begin
       Result:=FormEditor1.CreateNewJITMethod(ActiveUnitInfo.Component,
                                              AMethodName);
     end else begin
+      DebugLn(['TMainIDE.OnPropHookCreateMethod failed adding method to source']);
       DoJumpToCodeToolBossError;
       raise Exception.Create(lisUnableToCreateNewMethodPlzFixTheErrorShownIn);
     end;
@@ -12357,6 +12358,7 @@ begin
     DoJumpToCodePos(ActiveSrcEdit, ActiveUnitInfo,
       NewSource, NewX, NewY, NewTopLine, true);
   end else begin
+    DebugLn(['TMainIDE.OnPropHookShowMethod failed finding the method in code']);
     DoJumpToCodeToolBossError;
     raise Exception.Create(lisUnableToShowMethodPlzFixTheErrorShownInTheMessage
       );

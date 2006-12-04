@@ -243,17 +243,23 @@ type
     FPascalCompiler: TPascalCompiler;
     procedure SetCompilerMode(const AValue: TCompilerMode);
     procedure SkipTillEndifElse;
+    procedure SkipTillEndCifElse;
     function SkipIfDirective: boolean;
     function IfdefDirective: boolean;
+    function IfCDirective: boolean;
     function IfndefDirective: boolean;
     function IfDirective: boolean;
     function IfOptDirective: boolean;
     function EndifDirective: boolean;
+    function EndCDirective: boolean;
     function ElseDirective: boolean;
+    function ElseCDirective: boolean;
     function ElseIfDirective: boolean;
+    function ElIfCDirective: boolean;
     function IfEndDirective: boolean;
     function DefineDirective: boolean;
     function UndefDirective: boolean;
+    function SetCDirective: boolean;
     function IncludeDirective: boolean;
     function IncludeFile(const AFilename: string): boolean;
     function IncludePathDirective: boolean;
@@ -2009,15 +2015,20 @@ begin
       end;
     end;
     Add('IFDEF',{$ifdef FPC}@{$endif}IfdefDirective);
+    Add('IFC',{$ifdef FPC}@{$endif}IfCDirective);
     Add('IFNDEF',{$ifdef FPC}@{$endif}IfndefDirective);
     Add('IF',{$ifdef FPC}@{$endif}IfDirective);
     Add('IFOPT',{$ifdef FPC}@{$endif}IfOptDirective);
     Add('ENDIF',{$ifdef FPC}@{$endif}EndIfDirective);
+    Add('ENDC',{$ifdef FPC}@{$endif}EndCDirective);
     Add('ELSE',{$ifdef FPC}@{$endif}ElseDirective);
+    Add('ELSEC',{$ifdef FPC}@{$endif}ElseCDirective);
     Add('ELSEIF',{$ifdef FPC}@{$endif}ElseIfDirective);
+    Add('ELIFC',{$ifdef FPC}@{$endif}ElIfCDirective);
     Add('IFEND',{$ifdef FPC}@{$endif}IfEndDirective);
     Add('DEFINE',{$ifdef FPC}@{$endif}DefineDirective);
     Add('UNDEF',{$ifdef FPC}@{$endif}UndefDirective);
+    Add('SETC',{$ifdef FPC}@{$endif}SetCDirective);
     Add('INCLUDE',{$ifdef FPC}@{$endif}IncludeDirective);
     Add('INCLUDEPATH',{$ifdef FPC}@{$endif}IncludePathDirective);
     Add('MODE',{$ifdef FPC}@{$endif}ModeDirective);
@@ -2029,9 +2040,13 @@ begin
     Add('IFNDEF',{$ifdef FPC}@{$endif}SkipIfDirective);
     Add('IF',{$ifdef FPC}@{$endif}SkipIfDirective);
     Add('IFOPT',{$ifdef FPC}@{$endif}SkipIfDirective);
+    Add('IFC',{$ifdef FPC}@{$endif}SkipIfDirective);
     Add('ENDIF',{$ifdef FPC}@{$endif}EndIfDirective);
+    Add('ENDC',{$ifdef FPC}@{$endif}EndCDirective);
     Add('ELSE',{$ifdef FPC}@{$endif}ElseDirective);
+    Add('ELSEC',{$ifdef FPC}@{$endif}ElseCDirective);
     Add('ELSEIF',{$ifdef FPC}@{$endif}ElseIfDirective);
+    Add('ELIFC',{$ifdef FPC}@{$endif}ElIfCDirective);
     Add('IFEND',{$ifdef FPC}@{$endif}IfEndDirective);
   end;
 end;
@@ -2147,6 +2162,22 @@ begin
   Result:=true;
 end;
 
+function TLinkScanner.IfCDirective: boolean;
+// {$ifc expression} or indirectly called by {$elifc expression}
+var Expr, ResultStr: string;
+begin
+  inc(IfLevel);
+  inc(SrcPos);
+  Expr:=UpperCaseStr(copy(Src,SrcPos,CommentInnerEndPos-SrcPos));
+  ResultStr:=Values.Eval(Expr);
+  Result:=true;
+  if Values.ErrorPosition>=0 then begin
+    inc(SrcPos,Values.ErrorPosition);
+    RaiseException(ctsErrorInDirectiveExpression)
+  end else if ResultStr='0' then
+    SkipTillEndifElse
+end;
+
 procedure TLinkScanner.SkipSpace;
 begin
   while (SrcPos<=SrcLen) and (IsSpaceChar[Src[SrcPos]]) do inc(SrcPos);
@@ -2213,6 +2244,24 @@ begin
   Result:=true;
 end;
 
+function TLinkScanner.EndCDirective: boolean;
+// {$endc comment}
+
+  procedure RaiseAWithoutB;
+  begin
+    RaiseExceptionFmt(ctsAwithoutB,['$ENDC','$IFC'])
+  end;
+
+begin
+  dec(IfLevel);
+  if IfLevel<0 then
+    RaiseAWithoutB
+  else if IfLevel<FSkipIfLevel then begin
+    FSkippingTillEndif:=false;
+  end;
+  Result:=true;
+end;
+
 function TLinkScanner.ElseDirective: boolean;
 // {$else comment}
 
@@ -2226,6 +2275,24 @@ begin
     RaiseAWithoutB;
   if not FSkippingTillEndif then
     SkipTillEndifElse
+  else if IfLevel=FSkipIfLevel then
+    FSkippingTillEndif:=false;
+  Result:=true;
+end;
+
+function TLinkScanner.ElseCDirective: boolean;
+// {$elsec comment}
+
+  procedure RaiseAWithoutB;
+  begin
+    RaiseExceptionFmt(ctsAwithoutB,['$ELSEC','$IFC']);
+  end;
+
+begin
+  if IfLevel=0 then
+    RaiseAWithoutB;
+  if not FSkippingTillEndif then
+    SkipTillEndCifElse
   else if IfLevel=FSkipIfLevel then
     FSkippingTillEndif:=false;
   Result:=true;
@@ -2249,6 +2316,24 @@ begin
     Result:=IfDirective;
 end;
 
+function TLinkScanner.ElIfCDirective: boolean;
+// {$elifc expression}
+
+  procedure RaiseAWithoutB;
+  begin
+    RaiseExceptionFmt(ctsAwithoutB,['$ELIFC','$IFC']);
+  end;
+
+begin
+  if IfLevel=0 then
+    RaiseAWithoutB;
+  if not FSkippingTillEndif then begin
+    SkipTillEndifElse;
+    Result:=true;
+  end else if IfLevel=FSkipIfLevel then
+    Result:=IfCDirective;
+end;
+
 function TLinkScanner.IfEndDirective: boolean;
 // {$IfEnd comment}
 
@@ -2269,16 +2354,23 @@ end;
 
 function TLinkScanner.DefineDirective: boolean;
 // {$define name} or {$define name:=value}
-var VariableName: string;
+var VariableName, NewValue: string;
 begin
   SkipSpace;
   VariableName:=ReadUpperIdentifier;
   if (VariableName<>'') then begin
-    if FMacrosOn and (SrcPos<SrcLen) and (Src[SrcPos]=':') and (Src[SrcPos]='=')
+    SkipSpace;
+    if FMacrosOn and (SrcPos<SrcLen)
+    and (Src[SrcPos]=':') and (Src[SrcPos+1]='=')
     then begin
       inc(SrcPos,2);
-      Values.Variables[VariableName]:=
-        copy(Src,SrcPos,CommentInnerEndPos-SrcPos);
+      SkipSpace;
+      NewValue:=copy(Src,SrcPos,CommentInnerEndPos-SrcPos);
+      if CompareIdentifiers(PChar(NewValue),'false')=0 then
+        NewValue:='0'
+      else if CompareIdentifiers(PChar(NewValue),'true')=0 then
+        NewValue:='1';
+      Values.Variables[VariableName]:=NewValue;
     end else begin
       Values.Variables[VariableName]:='1';
     end;
@@ -2294,6 +2386,32 @@ begin
   VariableName:=ReadUpperIdentifier;
   if (VariableName<>'') then
     Values.Undefine(VariableName);
+  Result:=true;
+end;
+
+function TLinkScanner.SetCDirective: boolean;
+// {$setc name} or {$setc name:=value}
+var VariableName, NewValue: string;
+begin
+  SkipSpace;
+  VariableName:=ReadUpperIdentifier;
+  if (VariableName<>'') then begin
+    SkipSpace;
+    if FMacrosOn and (SrcPos<SrcLen)
+    and (Src[SrcPos]=':') and (Src[SrcPos+1]='=')
+    then begin
+      inc(SrcPos,2);
+      SkipSpace;
+      NewValue:=copy(Src,SrcPos,CommentInnerEndPos-SrcPos);
+      if CompareIdentifiers(PChar(NewValue),'false')=0 then
+        NewValue:='0'
+      else if CompareIdentifiers(PChar(NewValue),'true')=0 then
+        NewValue:='1';
+      Values.Variables[VariableName]:=NewValue;
+    end else begin
+      Values.Variables[VariableName]:='1';
+    end;
+  end;
   Result:=true;
 end;
 
@@ -2528,9 +2646,10 @@ begin
   Expr:=UpperCaseStr(copy(Src,SrcPos,CommentInnerEndPos-SrcPos));
   ResultStr:=Values.Eval(Expr);
   Result:=true;
-  if Values.ErrorPosition>=0 then
+  if Values.ErrorPosition>=0 then begin
+    inc(SrcPos,Values.ErrorPosition);
     RaiseException(ctsErrorInDirectiveExpression)
-  else if ResultStr='0' then
+  end else if ResultStr='0' then
     SkipTillEndifElse
 end;
 
@@ -2687,6 +2806,65 @@ begin
   FDirectiveFuncList:=FSkipDirectiveFuncList;
   try
     // parse till $else, $elseif or $endif without adding the code to FCleanedSrc
+    FSkippingTillEndif:=true;
+    FSkipIfLevel:=IfLevel;
+    if (SrcPos<=SrcLen) then begin
+      while true do begin
+        c1:=Src[SrcPos];
+        if IsCommentStartChar[c1] then begin
+          case c1 of
+            '{': begin
+                   SkipComment;
+                   if not FSkippingTillEndif then break;
+                 end;
+            '/': if (Src[SrcPos+1]='/') then begin
+                   SkipDelphiComment;
+                   if not FSkippingTillEndif then break;
+                 end else
+                   inc(SrcPos);
+            '(': if (Src[SrcPos+1]='*') then begin
+                   SkipOldTPComment;
+                   if not FSkippingTillEndif then break;
+                 end else
+                   inc(SrcPos);
+          end;
+        end else if c1='''' then begin
+          // skip string constant
+          inc(SrcPos);
+          while (SrcPos<=SrcLen) and (Src[SrcPos]<>'''') do inc(SrcPos);
+          inc(SrcPos);
+        end else begin
+          inc(SrcPos);
+          if (SrcPos>SrcLen) and not ReturnFromIncludeFile then
+            break;
+        end;
+      end;
+    end;
+    LastCleanSrcPos:=CommentStartPos-1;
+    AddLink(CleanedLen+1,CommentStartPos,Code);
+    {$IFDEF ShowUpdateCleanedSrc}
+    DebugLn('TLinkScanner.SkipTillEndifElse B Continuing after: ',
+      '"',StringToPascalConst(copy(Src,LastCleanSrcPos+1,20)),'"');
+    {$ENDIF}
+  finally
+    FDirectiveFuncList:=OldDirectiveFuncList;
+    FSkippingTillEndif:=false;
+  end;
+end;
+
+procedure TLinkScanner.SkipTillEndCifElse;
+var OldDirectiveFuncList: TKeyWordFunctionList;
+  c1: Char;
+begin
+  SrcPos:=CommentEndPos;
+  {$IFDEF ShowUpdateCleanedSrc}
+  DebugLn('TLinkScanner.SkipTillEndCifElse A UpdatePos=',DbgS(SrcPos-1));
+  {$ENDIF}
+  UpdateCleanedSource(SrcPos-1);
+  OldDirectiveFuncList:=FDirectiveFuncList;
+  FDirectiveFuncList:=FSkipDirectiveFuncList;
+  try
+    // parse till $elsec, $elifc or $endc without adding the code to FCleanedSrc
     FSkippingTillEndif:=true;
     FSkipIfLevel:=IfLevel;
     if (SrcPos<=SrcLen) then begin

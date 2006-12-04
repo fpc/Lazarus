@@ -609,7 +609,6 @@ var AClassNode: TCodeTreeNode;
 begin
   Result:=false;
   BuildTree(false);
-  if not EndOfSourceFound then exit;
   AClassNode:=FindClassNodeInInterface(UpperClassName,true,false,true);
   Result:=CreateMethod(AClassNode,AMethodName,ATypeInfo,ATypeUnitName,
                        SourceChangeCache,UseTypeInfoForParameters,Section);
