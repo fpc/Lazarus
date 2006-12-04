@@ -3274,7 +3274,7 @@ var
 begin
   inherited KeyDown(Key, Shift);
 
-  if tvoAllowMultiSelect in FOptions then 
+  if (tvoAllowMultiSelect in FOptions) and (ssShift in Shift) then
     lNode := FTreeNodes.FFirstMultiSelected
   else
     lNode := Selected;
