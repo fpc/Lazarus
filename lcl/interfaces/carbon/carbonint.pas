@@ -43,7 +43,7 @@ uses
 
   // LCL
   Controls, Forms, Dialogs, LCLStrConsts, LMessages, LCLProc, LCLIntf, LCLType,
-  GraphType, GraphMath, Graphics, Menus;
+  GraphType, GraphMath, Graphics, Menus, Maps;
 
 
 type
@@ -54,7 +54,8 @@ type
   private
     // Set when the QuitEventHandler terminates
     FTerminating: Boolean;
-    fMainEventQueue: EventQueueRef;
+    FMainEventQueue: EventQueueRef;
+    FTimerMap: TMap; // the map contains all installed timers
   protected
     procedure PassCmdLineOptions; override;
     procedure SendCheckSynchronizeMessage;

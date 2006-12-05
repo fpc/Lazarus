@@ -278,15 +278,31 @@ begin
   ReceiveNextEvent(0, nil, kEventDurationForever, False, Event);
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonWidgetSet.Create
+  Params:  None
+  Returns: Nothing
+
+  Constructor for the class
+ ------------------------------------------------------------------------------}
 constructor TCarbonWidgetSet.Create;
 begin
   CarbonWidgetSet:=Self;
   inherited Create;
   FTerminating := False;
+  FTimerMap := TMap.Create(its4, SizeOf(TFNTimerProc));
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonWidgetSet.Destroy
+  Params:  None
+  Returns: Nothing
+
+  Destructor for the class
+ ------------------------------------------------------------------------------}
 destructor TCarbonWidgetSet.Destroy;
 begin
+  FreeAndNil(FTimerMap);
   inherited Destroy;
   CarbonWidgetSet:=nil;
 end;
@@ -383,12 +399,59 @@ begin
   Result:=0;
 end;
 
-function TCarbonWidgetSet.CreateTimer(Interval: integer; TimerFunc: TFNTimerProc): THandle;
+{------------------------------------------------------------------------------
+  Method:  TimerCallback
+  Params:  inTimer    - timer reference
+           inUserData - user data passed when installing timer
+  Returns: Nothing
+
+  Calls the timer function associated with specified timer
+ ------------------------------------------------------------------------------}
+procedure TimerCallback(inTimer: EventLoopTimerRef; inUserData: UnivPtr);
+var
+  TimerFunc: TFNTimerProc;
 begin
-  Result:=0;
+  if CarbonWidgetSet = nil then Exit;
+  if CarbonWidgetSet.FTimerMap.GetData(inTimer, TimerFunc)
+  then TimerFunc;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonWidgetSet.CreateTimer
+  Params:  Interval  - new timer interval
+           TimerFunc - new timer callback
+  Returns: A Timer id
+
+  Creates new timer with specified interval and callback function
+ ------------------------------------------------------------------------------}
+function TCarbonWidgetSet.CreateTimer(Interval: integer; TimerFunc: TFNTimerProc): THandle;
+var
+  Timer: EventLoopTimerRef;
+begin
+  Result:=0;
+  Result := 0;
+  if (Interval > 0) and (TimerFunc <> nil) then
+  begin
+    if InstallEventLoopTimer(GetMainEventLoop,
+      Interval / 1000, Interval / 1000, // converts msec -> sec
+      EventLoopTimerUPP(@TimerCallback), nil, Timer) = noErr then
+    begin
+      FTimerMap.Add(Timer, TimerFunc);
+      Result := THandle(Timer);
+    end;
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWidgetSet.Destroy
+  Params:  TimerHandle - Timer id to destroy
+  Returns: If the function succeeds
+
+  Destroys specified timer
+ ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.DestroyTimer(TimerHandle: THandle): boolean;
 begin
-  Result:=false;
+  Result := FTimerMap.Delete(TimerHandle);
+  if Result // valid timer
+  then RemoveEventLoopTimer(EventLoopTimerRef(TimerHandle));
 end;

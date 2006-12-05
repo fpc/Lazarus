@@ -80,6 +80,7 @@ type
   public
     Info: PWidgetInfo;
   end;
+  
 
 implementation
 
