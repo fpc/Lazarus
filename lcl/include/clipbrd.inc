@@ -455,22 +455,27 @@ begin
 end;
 
 function TClipboard.GetAsText: string;
-var MemStream: TMemoryStream;
+var
+  MemStream: TMemoryStream;
+  ASize: int64;
 begin
   //DebugLn('[TClipboard.GetAsText] A ',ClipboardTypeName[ClipboardType]);
   Result:='';
   MemStream:=TMemoryStream.Create;
   try
     if GetFormat(PredefinedClipboardFormat(pcfText),MemStream) then begin
+      ASize:=MemStream.Size;
+      if (ASize>0) and (pchar(MemStream.Memory)[ASize-1]=#0) then
+        Dec(ASize);
       MemStream.Position:=0;
-      SetLength(Result,MemStream.Size);
-      if length(Result)>0 then
-        MemStream.Read(Result[1],length(Result));
+      SetLength(Result,ASize);
+      if ASize>0 then
+        MemStream.Read(Result[1],ASize);
     end;
   finally
     MemStream.Free;
   end;
-  //DebugLn('[TClipboard.GetAsText] END ',ClipboardTypeName[ClipboardType],' "',Result,'"');
+  //DebugLn('[TClipboard.GetAsText] END ',ClipboardTypeName[ClipboardType],' "',dbgstr(Result),'"');
 end;
 
 procedure TClipboard.SupportedFormats(List: TStrings);
