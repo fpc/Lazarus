@@ -4678,7 +4678,7 @@ begin
       end;
     VK_RETURN:
       begin
-        if not FEditorKey then begin
+        if not FEditorKey and (goEditing in FOptions) then begin
           EditorShow(True);
           Key := 0;
         end;
@@ -4686,7 +4686,7 @@ begin
     VK_BACK:
       begin
         // Workaround: LM_CHAR doesnt trigger with BACKSPACE
-        if not FEditorKey then begin
+        if not FEditorKey and (goEditing in FOptions) then begin
           EditorShowChar(^H);
           key:=0;
         end;
@@ -4694,21 +4694,21 @@ begin
     VK_C:
       if not FEditorKey then begin
         if ssCtrl in Shift then begin
-          Key := 0;
+//          Key := 0;
           doCopyToClipboard;
         end;
       end;
     VK_V:
       if not FEditorKey then begin
         if ssCtrl in Shift then begin
-          Key := 0;
+//          Key := 0;
           doPasteFromClipboard;
         end;
       end;
     VK_X:
       if not FEditorKey then begin
         if ssCtrl in Shift then begin
-          Key := 0;
+//          Key := 0;
           doCutToClipboard;
         end;
       end;
@@ -8351,4 +8351,3 @@ begin
 end;
 
 end.
-
