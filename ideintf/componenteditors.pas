@@ -218,7 +218,10 @@ type
     procedure ExecuteVerb(Index: Integer); override;
     property BestEditEvent: string read FBestEditEvent write FBestEditEvent;
   end;
-  
+           
+  // to be "compatible" with delphi i've added the next line.
+  // we're not 100% the same, but it might help some ppl.
+  TDefaultEditor = TDefaultComponentEditor;
   
 { TNotebookComponentEditor
   The default component editor for TCustomNotebook. }
