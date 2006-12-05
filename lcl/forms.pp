@@ -488,7 +488,7 @@ type
     procedure RemoveHandlerClose(OnCloseHandler: TCloseEvent);
     procedure AddHandlerCreate(OnCreateHandler: TNotifyEvent; AsLast: Boolean=true);
     procedure RemoveHandlerCreate(OnCreateHandler: TNotifyEvent);
-    function  IsShortcut(var Message: TLMKey): boolean;
+    function  IsShortcut(var Message: TLMKey): boolean; virtual;
     procedure IntfHelp(AComponent: TComponent);
   public
     // drag and dock
