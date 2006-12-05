@@ -4238,6 +4238,7 @@ begin
 
     // MWE:
     // TODO: Check: Why is there widgetinfo on subwidgets ???
+    FreeWidgetInfo(PGtkCombo(Widget)^.List);
     FreeWidgetInfo(PGtkCombo(Widget)^.Entry);
     FreeWidgetInfo(PGtkCombo(Widget)^.Button);
   end;
