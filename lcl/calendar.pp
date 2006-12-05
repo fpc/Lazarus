@@ -191,6 +191,9 @@ begin
     FDateAsString := AValue;
     FDate := NewDate;
   except
+    // TODO: remove test for csLoading after fpc 2.0.4 has been released
+    // The Date property is not supposed to be stored, but earlier fpc version
+    // did this anyway.
     if not (csLoading in ComponentState) then
       raise EInvalidDate.CreateFmt(rsInvalidDate, [AValue])
     else

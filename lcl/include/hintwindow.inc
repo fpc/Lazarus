@@ -90,6 +90,12 @@ begin
 end;
 
 procedure THintWindow.ActivateHint(ARect: TRect; const AHint: String);
+begin
+  ActivateHintData(ARect, AHint, nil);
+end;
+
+procedure THintWindow.ActivateHintData(ARect: TRect; const AHint: String;
+  AData: pointer);
 var
   InvalidateNeeded: Boolean;
 begin

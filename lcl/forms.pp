@@ -655,6 +655,8 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure ActivateHint(ARect: TRect; const AHint: String); virtual;
+    procedure ActivateHintData(ARect: TRect; const AHint: String;
+                               AData: pointer); virtual;
     function CalcHintRect(MaxWidth: Integer; const AHint: String;
                           AData: Pointer): TRect; virtual;
     procedure ReleaseHandle;
