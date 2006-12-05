@@ -424,7 +424,7 @@ procedure TWin32WidgetSet.AppSetTitle(const ATitle: string);
 begin
   {$ifdef WindowsUnicodeSupport}
   if UnicodeEnabledOS 
-  then Windows.SetWindowTextW(FAppHandle, Utf8ToPWideChar(ATitle))
+  then Windows.SetWindowTextW(FAppHandle, PWideChar(Utf8Decode(ATitle)))
   else Windows.SetWindowText(FAppHandle, PChar(Utf8ToAnsi(ATitle)));
   {$else}
   Windows.SetWindowText(FAppHandle, PChar(ATitle));
@@ -541,7 +541,7 @@ Begin
       hCursor := LoadCursor(0, IDC_ARROW);
       hbrBackground := 0; {GetSysColorBrush(Color_BtnFace);}
       LPSzMenuName := Nil;
-      LPSzClassName := Utf8PCharToPWideChar(@ClsName);
+      LPSzClassName := PWideChar(WideString(ClsName));
     end;
     Result := Windows.RegisterClassW(@WindowClassW) <> 0;
   end

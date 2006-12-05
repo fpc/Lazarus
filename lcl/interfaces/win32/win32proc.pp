@@ -107,11 +107,6 @@ procedure RedrawMenus;
 function MeasureText(const AWinControl: TWinControl; Text: string; var Width, Height: integer): boolean;
 function GetControlText(AHandle: HWND): string;
 
-// String functions
-
-function Utf8PCharToPWideChar(param: PChar): PWideChar;
-function Utf8ToPWideChar(param: string): PWideChar;
-
 type
   PDisableWindowsInfo = ^TDisableWindowsInfo;
   TDisableWindowsInfo = record
@@ -1130,20 +1125,35 @@ end;
 function GetControlText(AHandle: HWND): string;
 var
   TextLen: dword;
+{$ifdef WindowsUnicodeSupport}
+  AnsiBuffer: string;
+  WideBuffer: WideString;
+{$endif}  
 begin
+{$ifdef WindowsUnicodeSupport}
+  if UnicodeEnabledOS then
+  begin
+    TextLen := Windows.GetWindowTextLengthW(AHandle);
+    SetLength(WideBuffer, TextLen);
+    TextLen := Windows.GetWindowTextW(AHandle, @WideBuffer[1], TextLen + 1);
+    SetLength(WideBuffer, TextLen);
+    Result := Utf8Encode(WideBuffer);
+  end
+  else
+  begin
+    TextLen := Windows.GetWindowTextLength(AHandle);
+    SetLength(AnsiBuffer, TextLen);
+    TextLen := Windows.GetWindowText(AHandle, @AnsiBuffer[1], TextLen + 1);
+    SetLength(AnsiBuffer, TextLen);
+    Result := AnsiToUtf8(AnsiBuffer);
+  end;
+
+ {$else}
   TextLen := GetWindowTextLength(AHandle);
   SetLength(Result, TextLen);
   GetWindowText(AHandle, PChar(Result), TextLen + 1);
-end;
 
-function Utf8PCharToPWideChar(param: PChar): PWideChar;
-begin
-  Result := PWideChar(Utf8Decode(string(param)));
-end;
-
-function Utf8ToPWideChar(param: string): PWideChar;
-begin
-  Result := PWideChar(Utf8Decode(param));
+ {$endif}
 end;
 
 procedure DoInitialization;

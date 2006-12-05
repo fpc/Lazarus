@@ -203,8 +203,8 @@ begin
 
       {$ifdef WindowsUnicodeSupport}
       if UnicodeEnabledOS then
-        Window := CreateWindowExW(FlagsEx, Utf8PCharToPWideChar(pClassName),
-          Utf8PCharToPWideChar(WindowTitle), Flags,
+        Window := CreateWindowExW(FlagsEx, PWideChar(WideString(pClassName)),
+          PWideChar(Utf8Decode(WindowTitle)), Flags,
           Left, Top, Width, Height, Parent, MenuHandle, HInstance, Nil)
       else
         Window := CreateWindowEx(FlagsEx, pClassName, PChar(Utf8ToAnsi(WindowTitle)), Flags,
@@ -429,7 +429,7 @@ Begin
   then Exit;
 {$ifdef WindowsUnicodeSupport}
   if UnicodeEnabledOS 
-  then Windows.SetWindowTextW(AWinControl.Handle, Utf8ToPWideChar(AText))
+  then Windows.SetWindowTextW(AWinControl.Handle, PWideChar(Utf8Decode(AText)))
   else Windows.SetWindowText(AWinControl.Handle, PChar(Utf8ToAnsi(AText)));
 {$else}
   Windows.SetWindowText(AWinControl.Handle, PChar(AText));

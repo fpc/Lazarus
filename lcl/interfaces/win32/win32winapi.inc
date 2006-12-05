@@ -1114,10 +1114,36 @@ End;
 
  ------------------------------------------------------------------------------}
 function TWin32WidgetSet.DrawText(DC: HDC; Str: PChar; Count: Integer; var Rect: TRect; Flags: Cardinal): Integer;
+var
+  s: String;
+  w: WideString;
 begin
   Assert(False, Format('trace:> [TWin32WidgetSet.DrawText] DC:0x%x, Str:''%s'', Count: %d, Rect = %d,%d,%d,%d, Flags:%d',
     [DC, Str, Count, Rect.Left, Rect.Top, Rect.Right, Rect.Bottom, Flags]));
+
+ {$ifdef WindowsUnicodeSupport}
+  // use temp buffer, if count is set, there might be no null terminator
+  if count = -1
+  then s := str
+  else begin
+    SetLength(s, count);
+    move(str^, s[1], count);  
+  end;
+  // the length of utf8 vs Wide/Ansi the strings differ, so recalc.
+  if UnicodeEnabledOS 
+  then begin
+    // TODO: use the real number of chars (and not the lenght)
+    W := Utf8Decode(S);
+    Result := Windows.DrawTextW(DC, PWideChar(W), Length(W), @Rect, Flags);
+  end
+  else begin
+    S := Utf8ToAnsi(S);
+    Result := Windows.DrawText(DC, PChar(S), Length(S), @Rect, Flags);
+  end;
+ {$else}
   Result := Windows.DrawText(DC, Str, Count, @Rect, Flags);
+ {$endif}
+ 
   Assert(False, Format('trace:> [TWin32WidgetSet.DrawText] DC:0x%x, Str:''%s'', Count: %d, Rect = %d,%d,%d,%d, Flags:%d',
     [DC, Str, Count, Rect.Left, Rect.Top, Rect.Right, Rect.Bottom, Flags]));
 end;
@@ -1251,10 +1277,36 @@ end;
 
   Draws a character string by using the currently selected font.
  ------------------------------------------------------------------------------}
-Function TWin32WidgetSet.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
-Begin
+function TWin32WidgetSet.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
+var
+  s: String;
+  w: WideString;
+begin
   Assert(False, Format('trace:> [TWin32WidgetSet.ExtTextOut] DC:0x%x, X:%d, Y:%d, Options:%d, Str:''%s'', Count: %d', [DC, X, Y, Options, Str, Count]));
-  Result := Boolean(Windows.ExtTextOut(DC, X, Y, Options, LPRECT(Rect), Str, Count, Dx));
+
+{$ifdef WindowsUnicodeSupport}
+  // use temp buffer, if count is set, there might be no null terminator
+  if count = -1
+  then s := str
+  else begin
+    SetLength(s, count);
+    move(str^, s[1], count);  
+  end;
+  // the length of utf8 vs Wide/Ansi the strings differ, so recalc.
+  if UnicodeEnabledOS 
+  then begin
+    // TODO: use the real number of chars (and not the lenght)
+    W := Utf8Decode(S);
+    Result := Windows.ExtTextOutW(DC, X, Y, Options, LPRECT(Rect), PWideChar(W), Length(W), Dx);
+  end                                        
+  else begin
+    S := Utf8ToAnsi(S);
+    Result := Windows.ExtTextOut(DC, X, Y, Options, LPRECT(Rect), PChar(S), Length(S), Dx);
+  end;
+ {$else}
+  Result := Windows.ExtTextOut(DC, X, Y, Options, LPRECT(Rect), Str, Count, Dx);
+ {$endif}
+
   Assert(False, Format('trace:< [TWin32WidgetSet.ExtTextOut] DC:0x%x, X:%d, Y:%d, Options:%d, Str:''%s'', Count: %d', [DC, X, Y, Options, Str, Count]));
 End;
 
@@ -2056,9 +2108,33 @@ End;
   Computes the width and height of the specified string of text.
  ------------------------------------------------------------------------------}
 Function TWin32WidgetSet.GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer; Var Size: TSize): Boolean;
+var
+  s: String;
+  w: WideString;
 Begin
   Assert(False, 'Trace:[TWin32WidgetSet.GetTextExtentPoint] - Start');
-  Result := Boolean(Windows.GetTextExtentPoint32(DC, Str, Count, @Size));
+{$ifdef WindowsUnicodeSupport}
+  // use temp buffer, if count is set, there might be no null terminator
+  if count = -1
+  then s := str
+  else begin
+    SetLength(s, count);
+    move(str^, s[1], count);  
+  end;
+  // the length of utf8 vs Wide/Ansi the strings differ, so recalc.
+  if UnicodeEnabledOS 
+  then begin
+    // TODO: use the real number of chars (and not the lenght)
+    w := Utf8Decode(S);
+    Result := Windows.GetTextExtentPoint32W(DC, PWideChar(W), Length(W), @Size);
+  end
+  else begin
+    S := Utf8ToAnsi(S);
+    Result := Windows.GetTextExtentPoint32(DC, PChar(S), Length(S), @Size);
+  end;  
+{$else}
+    Result := Windows.GetTextExtentPoint32(DC, Str, Count, @Size);
+{$endif}
   Assert(False, 'Trace:[TWin32WidgetSet.GetTextExtentPoint] - Exit');
 End;
 
