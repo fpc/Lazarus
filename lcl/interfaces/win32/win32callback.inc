@@ -736,27 +736,40 @@ Var
         
       SC_MINIMIZE:
         begin
-          if (Application <> nil) and (lWinControl<> nil) and
-          (Application.MainForm = lWinControl) then
+          if (Application <> nil) and (lWinControl <> nil)
+              and (Application.MainForm = lWinControl) then
             Window := TWin32WidgetSet(WidgetSet).AppHandle;
-            if Window = TWin32WidgetSet(WidgetSet).AppHandle then
-              begin
-                if (Application <> nil) and (Application.MainForm <> nil) and
-                Application.MainForm.HandleAllocated then
-                  begin
-                    //DebugLn('SC_MINIMIZE');
-                    Application.IntfAppMinimize();
-                  end;
-              end;
+          if Window = TWin32WidgetSet(WidgetSet).AppHandle then
+          begin
+            if (Application <> nil) and (Application.MainForm <> nil) and
+            Application.MainForm.HandleAllocated then
+            begin
+              //DebugLn('SC_MINIMIZE');
+              Application.IntfAppMinimize;
+              Windows.SetWindowPos(Window, HWND_TOP,
+                Application.MainForm.Left, Application.MainForm.Top,
+                Application.MainForm.Width, 0, SWP_NOACTIVATE);
+{$ifdef NO_TRIM_MEMORY}
+              {Do not trim working set of application in memory
+              according to: http://support.microsoft.com/kb/293215.
+              Useful for real-time I/O applications}
+              Windows.ShowWindow(Window, SW_SHOWMINIMIZED);
+              exit;
+{$endif}
+            end;
+          end;
         end;
 
       SC_RESTORE:
         begin
-          if Window = TWin32WidgetSet(WidgetSet).AppHandle then
-           begin
-                    //DebugLn('SC_RESTORE');
-                    Application.IntfAppRestore();
-              end;
+          if (Window = TWin32WidgetSet(WidgetSet).AppHandle)
+              and (Application <> nil) then
+          begin
+            //DebugLn('SC_RESTORE');
+            Application.IntfAppRestore;
+            if Application.MainForm.WindowState = wsMaximized then
+              Windows.ShowWindow(Application.MainForm.Handle, SW_MAXIMIZE);
+          end;
         end;
     end;
   end;
@@ -981,6 +994,7 @@ begin
           Windows.SetWindowPos(TWin32WidgetSet(WidgetSet).AppHandle, HWND_TOP,
             0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE);
         end;
+        
         // activate/deactivate main window
         if (Application <> nil) and (Application.MainForm <> nil) and
             Application.MainForm.HandleAllocated then
