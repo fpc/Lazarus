@@ -1304,6 +1304,7 @@ begin
     DoReturnKey(AControl, Key, Shift);
     DoEscapeKey(AControl, Key, Shift);
   end;
+  FLastKeyDownKey := VK_UNKNOWN;
 end;
 
 procedure TApplication.AddOnIdleHandler(Handler: TNotifyEvent;
