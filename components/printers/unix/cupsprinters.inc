@@ -1,7 +1,6 @@
 {**************************************************************
 Implementation for cupsprinter
 ***************************************************************}
-
 uses udlgSelectPrinter,udlgpropertiesprinter, FileUtil;
 
 //Return always 72 because, PostScript it's 72 only
@@ -527,12 +526,22 @@ end;
 //If not aborted, send PostScript file to printer.
 //After, delete this file.
 procedure TCUPSPrinter.DoEndDoc(aAborded: Boolean);
+{$ifdef LogPrintOutFile}
+var
+  s:string;
+{$endif}
 begin
   inherited DoEndDoc(aAborded);
   dec(FBeginDocCount);
   Exclude(FStates,cpsPaperRectValid);
 
-  //exit;
+  {$IFDEF LogPrintOutFile}
+  s := TPostscriptPrinterCanvas(Canvas).OutPutFileName;
+  if FileExists(s) then begin
+    CopyFile(s, 'printout'+ExtractFileExt(s));
+  end;
+  {$ENDIF}
+
   if RawMode then begin
 
     if not aAborded and assigned(fRawModeStream) then begin
