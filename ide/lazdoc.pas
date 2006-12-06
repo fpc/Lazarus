@@ -180,46 +180,65 @@ var
   SrcDir: String;
   FPDocName: String;
   SearchPath: String;
-
+  
+  procedure AddSearchPath(Paths: string; const BaseDir: string);
+  begin
+    if Paths='' then exit;
+    if not IDEMacros.CreateAbsoluteSearchPath(Paths,BaseDir) then exit;
+    if Paths='' then exit;
+    SearchPath:=SearchPath+';'+Paths;
+  end;
+  
   procedure CheckIfInProject(AProject: TLazProject);
   var
     ProjectDirs: String;
+    BaseDir: String;
+    Add: Boolean;
   begin
     if AProject=nil then exit;
+    if AProject.LazDocPaths='' then exit;
+    BaseDir:=ExtractFilePath(AProject.ProjectInfoFile);
+    if BaseDir='' then exit;
+
+    Add:=false;
+    // search in project files
     if (AProject.FindFile(SrcFilename,[pfsfOnlyProjectFiles])<>nil) then begin
-      SearchPath:=SearchPath+';'+AProject.LazDocPaths;
-      exit;
+      Add:=true;
     end;
-    // search in project directories
-    if not FilenameIsAbsolute(SrcFilename) then exit;
-    ProjectDirs:=AProject.LazCompilerOptions.OtherUnitFiles;
-    if FindPathInSearchPath(PChar(SrcDir),length(SrcDir),
-       PChar(ProjectDirs),length(ProjectDirs))<>nil
-    then
-      SearchPath:=SearchPath+';'+AProject.LazDocPaths;
+    if (not Add) and FilenameIsAbsolute(SrcFilename) then begin
+      // search in project directories
+      ProjectDirs:=AProject.LazCompilerOptions.OtherUnitFiles+';.';
+      if not IDEMacros.CreateAbsoluteSearchPath(ProjectDirs,BaseDir) then exit;
+      if FindPathInSearchPath(PChar(SrcDir),length(SrcDir),
+        PChar(ProjectDirs),length(ProjectDirs))<>nil
+      then
+        Add:=true;
+    end;
+    if Add then
+      AddSearchPath(AProject.LazDocPaths,BaseDir);
   end;
   
   procedure CheckIfInAPackage;
   var
     PkgList: TFPList;
     i: Integer;
-    Dirs: String;
     APackage: TLazPackage;
+    BaseDir: String;
   begin
     if not FilenameIsAbsolute(SrcFilename) then exit;
+    
+    // get all packages owning the file
     PkgList:=PackageEditingInterface.GetOwnersOfUnit(SrcFilename);
     if PkgList=nil then exit;
     try
       for i:=0 to PkgList.Count-1 do begin
         if TObject(PkgList[i]) is TLazPackage then begin
           APackage:=TLazPackage(PkgList[i]);
-          Dirs:=APackage.CompilerOptions.OtherUnitFiles;
-          if FindPathInSearchPath(PChar(SrcDir),length(SrcDir),
-             PChar(Dirs),length(Dirs))<>nil
-          then begin
-            // TODO: add lazdoc paths to package
-            //SearchPath:=SearchPath+';'+APackage.LazDocPaths;
-          end;
+          if APackage.LazDocPaths='' then continue;
+          BaseDir:=APackage.Directory;
+          if BaseDir='' then continue;
+          // add lazdoc paths of package
+          AddSearchPath(APackage.LazDocPaths,BaseDir);
         end;
       end;
     finally
@@ -233,8 +252,9 @@ var
   begin
     if not FilenameIsAbsolute(SrcFilename) then exit;
     LazDir:=AppendPathDelim(EnvironmentOptions.LazarusDirectory);
+    // check LCL
     if FileIsInPath(SrcFilename,LazDir+'lcl') then begin
-      SearchPath:=SearchPath+';'+LazDir+SetDirSeparators('docs/xml/lcl');
+      AddSearchPath(SetDirSeparators('docs/xml/lcl'),LazDir);
     end;
   end;
 
@@ -262,9 +282,7 @@ begin
   CheckIfInAPackage;
   CheckIfInLazarus;
   // finally add default paths
-  SearchPath:=SearchPath+';'+EnvironmentOptions.LazDocPaths;
-  // substitute macros
-  IDEMacros.SubstituteMacros(SearchPath);
+  AddSearchPath(EnvironmentOptions.LazDocPaths,'');
 
   FPDocName:=lowercase(ExtractFileNameOnly(SrcFilename))+'.xml';
   DebugLn(['TLazDocManager.GetFPDocFilenameForSource Search ',FPDocName,' in "',SearchPath,'"']);

@@ -1507,7 +1507,6 @@ begin
   GlobalDesignHook.AddHandlerPersistentAdded(@OnPropHookPersistentAdded);
   GlobalDesignHook.AddHandlerPersistentDeleting(@OnPropHookPersistentDeleting);
   GlobalDesignHook.AddHandlerDeletePersistent(@OnPropHookDeletePersistent);
-  GlobalDesignHook.AddHandlerAddDependency(@OnPropHookAddDependency);
 
   ObjectInspector1.PropertyEditorHook:=GlobalDesignHook;
   EnvironmentOptions.IDEWindowLayoutList.Apply(ObjectInspector1,

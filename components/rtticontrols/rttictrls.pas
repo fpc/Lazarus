@@ -2938,8 +2938,8 @@ begin
     tkInt64:
       begin
         TypeData:=GetTypeData(FLink.Editor.GetPropType);
-        MinValue:=TypeData^.MinInt64Value;
-        MaxValue:=TypeData^.MaxInt64Value;
+        MinValue:=single(TypeData^.MinInt64Value);
+        MaxValue:=single(TypeData^.MaxInt64Value);
         Increment:=1;
         DecimalPlaces:=0;
       end;
@@ -2947,8 +2947,8 @@ begin
     tkQWord:
       begin
         TypeData:=GetTypeData(FLink.Editor.GetPropType);
-        MinValue:=TypeData^.MinQWordValue;
-        MaxValue:=TypeData^.MaxQWordValue;
+        MinValue:=single(TypeData^.MinQWordValue);
+        MaxValue:=single(TypeData^.MaxQWordValue);
         Increment:=1;
         DecimalPlaces:=0;
       end;
@@ -3066,8 +3066,8 @@ begin
     tkInt64:
       begin
         TypeData:=GetTypeData(FLink.Editor.GetPropType);
-        MinValue:=TypeData^.MinInt64Value;
-        MaxValue:=TypeData^.MaxInt64Value;
+        MinValue:=integer(TypeData^.MinInt64Value);
+        MaxValue:=integer(TypeData^.MaxInt64Value);
         Increment:=1;
         DecimalPlaces:=0;
       end;
@@ -3075,8 +3075,8 @@ begin
     tkQWord:
       begin
         TypeData:=GetTypeData(FLink.Editor.GetPropType);
-        MinValue:=TypeData^.MinQWordValue;
-        MaxValue:=TypeData^.MaxQWordValue;
+        MinValue:=integer(TypeData^.MinQWordValue);
+        MaxValue:=integer(TypeData^.MaxQWordValue);
         Increment:=1;
         DecimalPlaces:=0;
       end;

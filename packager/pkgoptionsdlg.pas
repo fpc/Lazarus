@@ -203,12 +203,31 @@ var
   AButton: TPathEditorButton;
   NewPath: String;
   AnEdit: TEdit;
+  OldPath: String;
+  //CurDir: string;
+  //StartPos: Integer;
 begin
   if not (Sender is TPathEditorButton) then exit;
   AButton:=TPathEditorButton(Sender);
   if AButton.CurrentPathEditor.ModalResult<>mrOk then exit;
   NewPath:=AButton.CurrentPathEditor.Path;
   AnEdit:=GetEditForPathButton(AButton);
+  OldPath:=AnEdit.Text;
+  if OldPath<>NewPath then begin
+    // check NewPath
+    {StartPos:=1;
+    repeat
+      CurDir:=GetNextDirectoryInSearchPath(NewPath,StartPos);
+      if CurDir<>'' then begin
+        IDEMacros.SubstituteMacros(SearchPath);
+        CurDir:=LazPackage.LongenFilename(CurDir);
+        if not FileExists(CurDir) then begin
+          // TODO:
+          
+        end;
+      end;
+    until StartPos>length(NewPath);}
+  end;
   AnEdit.Text:=NewPath;
 end;
 
