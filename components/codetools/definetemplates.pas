@@ -3917,7 +3917,7 @@ begin
 
       ExtraSrcPath:='../..;../../widgetset';
       if CurOS<>'win32' then
-        ExtraSrcPath:=ExtraSrcPath+';../../../nonwin32';
+        ExtraSrcPath:=ExtraSrcPath+';../../nonwin32';
       LCLUnitsCPUOSDir.AddChild(TDefineTemplate.Create('CompiledSrcPath',
          ctsSrcPathForCompiledUnits,CompiledSrcPathMacroName,
          d(ExtraSrcPath),da_Define));
