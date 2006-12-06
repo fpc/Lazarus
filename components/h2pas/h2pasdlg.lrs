@@ -3,58 +3,69 @@
 LazarusResources.Add('TH2PasDialog','FORMDATA',[
   'TPF0'#12'TH2PasDialog'#11'H2PasDialog'#4'Left'#3#245#0#6'Height'#3#245#1#3'T'
   +'op'#3#205#0#5'Width'#3#17#3#18'HorzScrollBar.Page'#3#16#3#18'VertScrollBar.'
-  +'Page'#3#244#1#7'Caption'#6#11'H2PasDialog'#12'ClientHeight'#3#245#1#11'Clie'
-  +'ntWidth'#3#17#3#10'KeyPreview'#9#12'OnCloseQuery'#7#14'FormCloseQuery'#8'On'
-  +'Create'#7#10'FormCreate'#9'OnDestroy'#7#11'FormDestroy'#9'OnKeyDown'#7#11'F'
-  +'ormKeyDown'#8'Position'#7#15'poDesktopCenter'#0#12'TPageControl'#15'MainPag'
-  +'eControl'#24'AnchorSideBottom.Control'#7#18'OpenSettingsButton'#6'Height'#3
-  +#209#1#5'Width'#3#17#3#10'ActivePage'#7#16'SettingsTabSheet'#5'Align'#7#5'al'
-  +'Top'#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#8'akBottom'#0#8'TabIndex'#2
-  +#4#8'TabOrder'#2#4#0#9'TTabSheet'#13'FilesTabSheet'#7'Caption'#6#13'FilesTab'
-  +'Sheet'#12'ClientHeight'#3#179#1#11'ClientWidth'#3#13#3#0#13'TCheckListBox'
-  +#24'CHeaderFilesCheckListBox'#6'Height'#3#179#1#5'Width'#3#255#0#5'Align'#7#6
-  +'alLeft'#7'OnClick'#7#29'CHeaderFilesCheckListBoxClick'#11'OnItemClick'#7'!C'
-  +'HeaderFilesCheckListBoxItemClick'#8'TabOrder'#2#0#8'TopIndex'#2#255#0#0#7'T'
-  +'Button'#21'AddCHeaderFilesButton'#22'AnchorSideLeft.Control'#7#21'CHeaderFi'
-  +'lesSplitter1'#19'AnchorSideLeft.Side'#7#9'asrBottom'#4'Left'#3#10#1#6'Heigh'
-  +'t'#2#25#3'Top'#2#12#5'Width'#3#185#0#18'BorderSpacing.Left'#2#6#25'BorderSp'
-  +'acing.InnerBorder'#2#4#7'Caption'#6#21'AddCHeaderFilesButton'#7'OnClick'#7
-  +#26'AddCHeaderFilesButtonClick'#8'TabOrder'#2#1#0#0#7'TButton'#24'DeleteCHea'
-  +'derFilesButton'#22'AnchorSideLeft.Control'#7#21'CHeaderFilesSplitter1'#19'A'
-  +'nchorSideLeft.Side'#7#9'asrBottom'#4'Left'#3#10#1#6'Height'#2#25#3'Top'#2'3'
-  +#5'Width'#3#185#0#18'BorderSpacing.Left'#2#6#25'BorderSpacing.InnerBorder'#2
-  +#4#7'Caption'#6#24'DeleteCHeaderFilesButton'#7'OnClick'#7#29'DeleteCHeaderFi'
-  +'lesButtonClick'#8'TabOrder'#2#2#0#0#7'TButton'#27'SelectAllCHeaderFilesButt'
-  +'on'#22'AnchorSideLeft.Control'#7#21'CHeaderFilesSplitter1'#19'AnchorSideLef'
-  +'t.Side'#7#9'asrBottom'#4'Left'#3#10#1#6'Height'#2#25#3'Top'#2'a'#5'Width'#3
-  +#185#0#18'BorderSpacing.Left'#2#6#25'BorderSpacing.InnerBorder'#2#4#7'Captio'
-  +'n'#6#27'SelectAllCHeaderFilesButton'#7'OnClick'#7' SelectAllCHeaderFilesBut'
-  +'tonClick'#8'TabOrder'#2#3#0#0#7'TButton'#29'UnselectAllCHeaderFilesButton'
-  +#22'AnchorSideLeft.Control'#7#21'CHeaderFilesSplitter1'#19'AnchorSideLeft.Si'
-  +'de'#7#9'asrBottom'#4'Left'#3#10#1#6'Height'#2#25#3'Top'#3#137#0#5'Width'#3
-  +#185#0#18'BorderSpacing.Left'#2#6#25'BorderSpacing.InnerBorder'#2#4#7'Captio'
-  +'n'#6#29'UnselectAllCHeaderFilesButton'#7'OnClick'#7'"UnselectAllCHeaderFile'
-  +'sButtonClick'#8'TabOrder'#2#4#0#0#9'TSplitter'#21'CHeaderFilesSplitter1'#4
-  +'Left'#3#255#0#6'Height'#3#179#1#5'Width'#2#5#7'Beveled'#9#0#0#9'TGroupBox'
-  +#16'FileInfoGroupBox'#22'AnchorSideLeft.Control'#7#21'CHeaderFilesSplitter1'
-  +#19'AnchorSideLeft.Side'#7#9'asrBottom'#23'AnchorSideRight.Control'#7#13'Fil'
-  +'esTabSheet'#20'AnchorSideRight.Side'#7#9'asrBottom'#24'AnchorSideBottom.Con'
-  +'trol'#7#13'FilesTabSheet'#21'AnchorSideBottom.Side'#7#9'asrBottom'#4'Left'#3
-  +#4#1#6'Height'#3#247#0#3'Top'#3#188#0#5'Width'#3#9#2#7'Anchors'#11#5'akTop'#6
-  +'akLeft'#7'akRight'#8'akBottom'#0#7'Caption'#6#16'FileInfoGroupBox'#12'Clien'
-  +'tHeight'#3#230#0#11'ClientWidth'#3#5#2#8'TabOrder'#2#5#0#6'TLabel'#13'FileI'
-  +'nfoLabel'#4'Left'#2#8#6'Height'#2#13#3'Top'#2#1#5'Width'#2'I'#7'Caption'#6
-  +#13'FileInfoLabel'#5'Color'#7#6'clNone'#11'ParentColor'#8#0#0#0#0#9'TTabShee'
-  +'t'#16'PreH2PasTabSheet'#7'Caption'#6#16'PreH2PasTabSheet'#12'ClientHeight'#3
-  +#179#1#11'ClientWidth'#3#13#3#0#9'TGroupBox'#16'PreH2PasGroupBox'#6'Height'#3
-  +#179#1#5'Width'#3#13#3#5'Align'#7#8'alClient'#7'Caption'#6#16'PreH2PasGroupB'
-  +'ox'#12'ClientHeight'#3#179#1#11'ClientWidth'#3#13#3#8'TabOrder'#2#0#0#0#0#9
-  +'TTabSheet'#20'h2pasOptionsTabSheet'#7'Caption'#6#20'h2pasOptionsTabSheet'#12
-  +'ClientHeight'#3#179#1#11'ClientWidth'#3#13#3#0#6'TLabel'#12'LibNameLabel'#21
+  +'Page'#3#244#1#13'ActiveControl'#7#13'ConvertButton'#7'Caption'#6#11'H2PasDi'
+  +'alog'#10'KeyPreview'#9#12'OnCloseQuery'#7#14'FormCloseQuery'#8'OnCreate'#7
+  +#10'FormCreate'#9'OnDestroy'#7#11'FormDestroy'#9'OnKeyDown'#7#11'FormKeyDown'
+  +#8'Position'#7#15'poDesktopCenter'#0#12'TPageControl'#15'MainPageControl'#24
+  +'AnchorSideBottom.Control'#7#18'OpenSettingsButton'#6'Height'#3#205#1#5'Widt'
+  +'h'#3#17#3#10'ActivePage'#7#13'FilesTabSheet'#5'Align'#7#5'alTop'#7'Anchors'
+  +#11#5'akTop'#6'akLeft'#7'akRight'#8'akBottom'#0#8'TabIndex'#2#0#8'TabOrder'#2
+  +#4#0#9'TTabSheet'#13'FilesTabSheet'#7'Caption'#6#13'FilesTabSheet'#0#13'TChe'
+  +'ckListBox'#24'CHeaderFilesCheckListBox'#6'Height'#3#171#1#5'Width'#3#255#0#5
+  +'Align'#7#6'alLeft'#7'OnClick'#7#29'CHeaderFilesCheckListBoxClick'#11'OnItem'
+  +'Click'#7'!CHeaderFilesCheckListBoxItemClick'#8'TabOrder'#2#0#8'TopIndex'#2
+  +#255#0#0#7'TButton'#21'AddCHeaderFilesButton'#22'AnchorSideLeft.Control'#7#21
+  +'CHeaderFilesSplitter1'#19'AnchorSideLeft.Side'#7#9'asrBottom'#4'Left'#3#10#1
+  +#6'Height'#2#25#3'Top'#2#12#5'Width'#3#185#0#18'BorderSpacing.Left'#2#6#25'B'
+  +'orderSpacing.InnerBorder'#2#4#7'Caption'#6#21'AddCHeaderFilesButton'#7'OnCl'
+  +'ick'#7#26'AddCHeaderFilesButtonClick'#8'TabOrder'#2#1#0#0#7'TButton'#24'Del'
+  +'eteCHeaderFilesButton'#22'AnchorSideLeft.Control'#7#21'CHeaderFilesSplitter'
+  +'1'#19'AnchorSideLeft.Side'#7#9'asrBottom'#4'Left'#3#10#1#6'Height'#2#25#3'T'
+  +'op'#2'('#5'Width'#3#185#0#18'BorderSpacing.Left'#2#6#25'BorderSpacing.Inner'
+  +'Border'#2#4#7'Caption'#6#24'DeleteCHeaderFilesButton'#7'OnClick'#7#29'Delet'
+  +'eCHeaderFilesButtonClick'#8'TabOrder'#2#2#0#0#7'TButton'#27'SelectAllCHeade'
+  +'rFilesButton'#22'AnchorSideLeft.Control'#7#21'CHeaderFilesSplitter1'#19'Anc'
+  +'horSideLeft.Side'#7#9'asrBottom'#4'Left'#3#10#1#6'Height'#2#25#3'Top'#2'H'#5
+  +'Width'#3#185#0#18'BorderSpacing.Left'#2#6#25'BorderSpacing.InnerBorder'#2#4
+  +#7'Caption'#6#27'SelectAllCHeaderFilesButton'#7'OnClick'#7' SelectAllCHeader'
+  +'FilesButtonClick'#8'TabOrder'#2#3#0#0#7'TButton'#29'UnselectAllCHeaderFiles'
+  +'Button'#22'AnchorSideLeft.Control'#7#21'CHeaderFilesSplitter1'#19'AnchorSid'
+  +'eLeft.Side'#7#9'asrBottom'#4'Left'#3#10#1#6'Height'#2#25#3'Top'#2'h'#5'Widt'
+  +'h'#3#185#0#18'BorderSpacing.Left'#2#6#25'BorderSpacing.InnerBorder'#2#4#7'C'
+  +'aption'#6#29'UnselectAllCHeaderFilesButton'#7'OnClick'#7'"UnselectAllCHeade'
+  +'rFilesButtonClick'#8'TabOrder'#2#4#0#0#9'TSplitter'#21'CHeaderFilesSplitter'
+  +'1'#4'Left'#3#255#0#6'Height'#3#171#1#5'Width'#2#5#7'Beveled'#9#0#0#9'TGroup'
+  +'Box'#16'FileInfoGroupBox'#22'AnchorSideLeft.Control'#7#21'CHeaderFilesSplit'
+  +'ter1'#19'AnchorSideLeft.Side'#7#9'asrBottom'#23'AnchorSideRight.Control'#7
+  +#13'FilesTabSheet'#20'AnchorSideRight.Side'#7#9'asrBottom'#24'AnchorSideBott'
+  +'om.Control'#7#13'FilesTabSheet'#21'AnchorSideBottom.Side'#7#9'asrBottom'#4
+  +'Left'#3#4#1#6'Height'#3#219#0#3'Top'#3#208#0#5'Width'#3#9#2#7'Anchors'#11#5
+  +'akTop'#6'akLeft'#7'akRight'#8'akBottom'#0#7'Caption'#6#16'FileInfoGroupBox'
+  +#8'TabOrder'#2#5#0#6'TLabel'#13'FileInfoLabel'#4'Left'#2#8#6'Height'#2#17#3
+  +'Top'#2#1#5'Width'#2'\'#7'Caption'#6#13'FileInfoLabel'#5'Color'#7#6'clNone'
+  +#11'ParentColor'#8#0#0#0#7'TButton'#16'MoveFileUpButton'#22'AnchorSideLeft.C'
+  +'ontrol'#7#21'AddCHeaderFilesButton'#21'AnchorSideTop.Control'#7#29'Unselect'
+  +'AllCHeaderFilesButton'#18'AnchorSideTop.Side'#7#9'asrBottom'#23'AnchorSideR'
+  +'ight.Control'#7#21'AddCHeaderFilesButton'#20'AnchorSideRight.Side'#7#9'asrB'
+  +'ottom'#4'Left'#3#10#1#6'Height'#2#25#3'Top'#3#135#0#5'Width'#3#185#0#7'Anch'
+  +'ors'#11#5'akTop'#6'akLeft'#7'akRight'#0#17'BorderSpacing.Top'#2#6#25'Border'
+  +'Spacing.InnerBorder'#2#4#7'Caption'#6#16'MoveFileUpButton'#7'OnClick'#7#21
+  +'MoveFileUpButtonClick'#8'TabOrder'#2#6#0#0#7'TButton'#18'MoveFileDownButton'
+  +#22'AnchorSideLeft.Control'#7#21'AddCHeaderFilesButton'#21'AnchorSideTop.Con'
+  +'trol'#7#16'MoveFileUpButton'#18'AnchorSideTop.Side'#7#9'asrBottom'#23'Ancho'
+  +'rSideRight.Control'#7#21'AddCHeaderFilesButton'#20'AnchorSideRight.Side'#7#9
+  +'asrBottom'#4'Left'#3#10#1#6'Height'#2#25#3'Top'#3#166#0#5'Width'#3#185#0#7
+  +'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#0#17'BorderSpacing.Top'#2#6#25'Bo'
+  +'rderSpacing.InnerBorder'#2#4#7'Caption'#6#18'MoveFileDownButton'#7'OnClick'
+  +#7#23'MoveFileDownButtonClick'#8'TabOrder'#2#7#0#0#0#9'TTabSheet'#16'PreH2Pa'
+  +'sTabSheet'#7'Caption'#6#16'PreH2PasTabSheet'#0#9'TGroupBox'#16'PreH2PasGrou'
+  +'pBox'#6'Height'#3#171#1#5'Width'#3#13#3#5'Align'#7#8'alClient'#7'Caption'#6
+  +#16'PreH2PasGroupBox'#8'TabOrder'#2#0#0#0#0#9'TTabSheet'#20'h2pasOptionsTabS'
+  +'heet'#7'Caption'#6#20'h2pasOptionsTabSheet'#0#6'TLabel'#12'LibNameLabel'#21
   +'AnchorSideTop.Control'#7#11'LibnameEdit'#18'AnchorSideTop.Side'#7#9'asrCent'
   +'er'#4'Left'#2#6#6'Height'#2#13#3'Top'#3#25#1#5'Width'#2'Q'#17'BorderSpacing'
   +'.Top'#2#10#7'Caption'#6#12'LibNameLabel'#5'Color'#7#6'clNone'#11'ParentColo'
-  +'r'#8#0#0#6'TLabel'#14'OutputExtLabel'#21'AnchorSideTop.Control'#7#13'Output'
+  ,'r'#8#0#0#6'TLabel'#14'OutputExtLabel'#21'AnchorSideTop.Control'#7#13'Output'
   +'ExtEdit'#18'AnchorSideTop.Side'#7#9'asrCenter'#4'Left'#2#6#6'Height'#2#13#3
   +'Top'#3'9'#1#5'Width'#2'V'#7'Caption'#6#14'OutputExtLabel'#5'Color'#7#6'clNo'
   +'ne'#11'ParentColor'#8#0#0#6'TLabel'#14'OutputDirLabel'#21'AnchorSideTop.Con'
@@ -65,7 +76,7 @@ LazarusResources.Add('TH2PasDialog','FORMDATA',[
   +#18'AnchorSideTop.Side'#7#9'asrBottom'#4'Left'#2']'#6'Height'#2#23#3'Top'#3
   +#20#1#5'Width'#2'q'#18'BorderSpacing.Left'#2#6#17'BorderSpacing.Top'#2#6#13
   +'OnEditingDone'#7#22'LibnameEditEditingDone'#8'TabOrder'#2#0#4'Text'#6#11'Li'
-  ,'bnameEdit'#0#0#5'TEdit'#13'OutputExtEdit'#22'AnchorSideLeft.Control'#7#14'O'
+  +'bnameEdit'#0#0#5'TEdit'#13'OutputExtEdit'#22'AnchorSideLeft.Control'#7#14'O'
   +'utputExtLabel'#19'AnchorSideLeft.Side'#7#9'asrBottom'#18'AnchorSideTop.Side'
   +#7#9'asrBottom'#4'Left'#2'b'#6'Height'#2#23#3'Top'#3'4'#1#5'Width'#2'P'#18'B'
   +'orderSpacing.Left'#2#6#17'BorderSpacing.Top'#2#6#13'OnEditingDone'#7#24'Out'
@@ -91,62 +102,60 @@ LazarusResources.Add('TH2PasDialog','FORMDATA',[
   +'Layout'#7#29'cclLeftToRightThenTopToBottom'#27'ChildSizing.ControlsPerLine'
   +#2#2#7'Columns'#2#2#11'OnItemClick'#7#31'h2pasOptionsCheckGroupItemClick'#8
   +'TabOrder'#2#4#0#0#0#9'TTabSheet'#17'PostH2PasTabSheet'#7'Caption'#6#17'Post'
-  +'H2PasTabSheet'#12'ClientHeight'#3#179#1#11'ClientWidth'#3#13#3#0#9'TGroupBo'
-  +'x'#17'PostH2PasGroupBox'#6'Height'#3#179#1#5'Width'#3#13#3#5'Align'#7#8'alC'
-  +'lient'#7'Caption'#6#17'PostH2PasGroupBox'#12'ClientHeight'#3#179#1#11'Clien'
-  +'tWidth'#3#13#3#8'TabOrder'#2#0#0#0#0#9'TTabSheet'#16'SettingsTabSheet'#7'Ca'
-  +'ption'#6#16'SettingsTabSheet'#12'ClientHeight'#3#179#1#11'ClientWidth'#3#13
-  +#3#0#6'TLabel'#18'H2PasFilenameLabel'#21'AnchorSideTop.Control'#7#17'H2PasFi'
-  +'lenameEdit'#18'AnchorSideTop.Side'#7#9'asrCenter'#4'Left'#2#6#6'Height'#2#13
-  +#3'Top'#2#9#5'Width'#2'x'#7'Caption'#6#18'H2PasFilenameLabel'#5'Color'#7#6'c'
-  +'lNone'#11'ParentColor'#8#0#0#9'TCheckBox'#30'OpenLastProjectOnStartCheckBox'
-  +#4'Left'#2#6#6'Height'#2#20#3'Top'#2'*'#5'Width'#3#219#0#7'Caption'#6#30'Ope'
-  +'nLastProjectOnStartCheckBox'#8'OnChange'#7'$OpenLastProjectOnStartCheckBoxC'
-  +'hange'#8'TabOrder'#2#0#0#0#7'TButton'#20'SaveSettingsAsButton'#4'Left'#2#6#6
-  +'Height'#2#26#3'Top'#2'R'#5'Width'#3#137#0#8'AutoSize'#9#25'BorderSpacing.In'
-  +'nerBorder'#2#4#7'Caption'#6#20'SaveSettingsAsButton'#7'OnClick'#7#25'SaveSe'
-  +'ttingsAsButtonClick'#8'TabOrder'#2#1#0#0#5'TEdit'#17'H2PasFilenameEdit'#22
-  +'AnchorSideLeft.Control'#7#18'H2PasFilenameLabel'#19'AnchorSideLeft.Side'#7#9
-  +'asrBottom'#4'Left'#3#132#0#6'Height'#2#23#3'Top'#2#4#5'Width'#3'`'#1#18'Bor'
-  +'derSpacing.Left'#2#6#17'BorderSpacing.Top'#2#6#13'OnEditingDone'#7#28'H2Pas'
-  +'FilenameEditEditingDone'#8'TabOrder'#2#2#4'Text'#6#17'H2PasFilenameEdit'#0#0
-  +#7'TButton'#25'h2pasFilenameBrowseButton'#22'AnchorSideLeft.Control'#7#17'H2'
-  +'PasFilenameEdit'#19'AnchorSideLeft.Side'#7#9'asrBottom'#21'AnchorSideTop.Co'
-  +'ntrol'#7#17'H2PasFilenameEdit'#24'AnchorSideBottom.Control'#7#17'H2PasFilen'
-  +'ameEdit'#21'AnchorSideBottom.Side'#7#9'asrBottom'#4'Left'#3#228#1#6'Height'
-  +#2#23#3'Top'#2#4#5'Width'#2'#'#7'Anchors'#11#5'akTop'#6'akLeft'#8'akBottom'#0
-  +#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6#3'...'#7'OnClick'#7#30'h2pas'
-  +'FilenameBrowseButtonClick'#8'TabOrder'#2#3#0#0#7'TButton'#17'NewSettingsBut'
-  +'ton'#4'Left'#2#6#6'Height'#2#26#3'Top'#2'|'#5'Width'#2'v'#8'AutoSize'#9#25
-  +'BorderSpacing.InnerBorder'#2#4#7'Caption'#6#17'NewSettingsButton'#7'OnClick'
-  +#7#22'NewSettingsButtonClick'#8'TabOrder'#2#4#0#0#0#0#7'TButton'#18'OpenSett'
-  +'ingsButton'#22'AnchorSideLeft.Control'#7#5'Owner'#24'AnchorSideBottom.Contr'
-  +'ol'#7#5'Owner'#21'AnchorSideBottom.Side'#7#9'asrBottom'#4'Left'#2#5#6'Heigh'
-  +'t'#2#26#3'Top'#3#214#1#5'Width'#2'|'#7'Anchors'#11#6'akLeft'#8'akBottom'#0#8
-  +'AutoSize'#9#20'BorderSpacing.Around'#2#5#25'BorderSpacing.InnerBorder'#2#4#7
-  +'Caption'#6#18'OpenSettingsButton'#7'OnClick'#7#23'OpenSettingsButtonClick'#8
-  +'TabOrder'#2#1#0#0#7'TButton'#18'SaveSettingsButton'#22'AnchorSideLeft.Contr'
-  +'ol'#7#18'OpenSettingsButton'#19'AnchorSideLeft.Side'#7#9'asrBottom'#24'Anch'
-  +'orSideBottom.Control'#7#5'Owner'#21'AnchorSideBottom.Side'#7#9'asrBottom'#4
-  +'Left'#3#134#0#6'Height'#2#26#3'Top'#3#214#1#5'Width'#2'z'#7'Anchors'#11#6'a'
-  ,'kLeft'#8'akBottom'#0#8'AutoSize'#9#20'BorderSpacing.Around'#2#5#25'BorderSp'
-  +'acing.InnerBorder'#2#4#7'Caption'#6#18'SaveSettingsButton'#7'OnClick'#7#23
-  +'SaveSettingsButtonClick'#8'TabOrder'#2#2#0#0#7'TButton'#13'ConvertButton'#22
-  +'AnchorSideLeft.Control'#7#18'SaveSettingsButton'#19'AnchorSideLeft.Side'#7#9
-  +'asrBottom'#21'AnchorSideTop.Control'#7#18'OpenSettingsButton'#4'Left'#3#15#1
-  +#6'Height'#2#26#3'Top'#3#214#1#5'Width'#2']'#8'AutoSize'#9#18'BorderSpacing.'
-  +'Left'#2#15#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6#13'ConvertButton'
-  +#7'OnClick'#7#18'ConvertButtonClick'#8'TabOrder'#2#0#0#0#7'TButton'#11'Close'
-  +'Button'#23'AnchorSideRight.Control'#7#5'Owner'#20'AnchorSideRight.Side'#7#9
-  +'asrBottom'#24'AnchorSideBottom.Control'#7#5'Owner'#21'AnchorSideBottom.Side'
-  +#7#9'asrBottom'#4'Left'#3#187#2#6'Height'#2#26#3'Top'#3#214#1#5'Width'#2'Q'#7
-  +'Anchors'#11#7'akRight'#8'akBottom'#0#8'AutoSize'#9#20'BorderSpacing.Around'
-  +#2#5#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6#11'CloseButton'#7'OnClic'
-  +'k'#7#16'CloseButtonClick'#8'TabOrder'#2#3#0#0#7'TButton'#21'ConvertAndBuild'
-  +'Button'#22'AnchorSideLeft.Control'#7#13'ConvertButton'#19'AnchorSideLeft.Si'
-  +'de'#7#9'asrBottom'#21'AnchorSideTop.Control'#7#18'OpenSettingsButton'#4'Lef'
-  +'t'#3'r'#1#6'Height'#2#26#3'Top'#3#214#1#5'Width'#3#144#0#8'AutoSize'#9#18'B'
-  +'orderSpacing.Left'#2#6#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6#21'Co'
-  +'nvertAndBuildButton'#7'OnClick'#7#26'ConvertAndBuildButtonClick'#8'TabOrder'
-  +#2#5#0#0#0
+  +'H2PasTabSheet'#0#9'TGroupBox'#17'PostH2PasGroupBox'#6'Height'#3#171#1#5'Wid'
+  +'th'#3#13#3#5'Align'#7#8'alClient'#7'Caption'#6#17'PostH2PasGroupBox'#8'TabO'
+  +'rder'#2#0#0#0#0#9'TTabSheet'#16'SettingsTabSheet'#7'Caption'#6#16'SettingsT'
+  +'abSheet'#0#6'TLabel'#18'H2PasFilenameLabel'#21'AnchorSideTop.Control'#7#17
+  +'H2PasFilenameEdit'#18'AnchorSideTop.Side'#7#9'asrCenter'#4'Left'#2#6#6'Heig'
+  +'ht'#2#17#3'Top'#2#7#5'Width'#3#155#0#7'Caption'#6#18'H2PasFilenameLabel'#5
+  +'Color'#7#6'clNone'#11'ParentColor'#8#0#0#9'TCheckBox'#30'OpenLastProjectOnS'
+  +'tartCheckBox'#4'Left'#2#6#6'Height'#2#24#3'Top'#2'*'#5'Width'#3#21#1#7'Capt'
+  +'ion'#6#30'OpenLastProjectOnStartCheckBox'#8'OnChange'#7'$OpenLastProjectOnS'
+  +'tartCheckBoxChange'#8'TabOrder'#2#0#0#0#7'TButton'#20'SaveSettingsAsButton'
+  +#4'Left'#2#6#6'Height'#2#30#3'Top'#2'R'#5'Width'#3#177#0#8'AutoSize'#9#25'Bo'
+  +'rderSpacing.InnerBorder'#2#4#7'Caption'#6#20'SaveSettingsAsButton'#7'OnClic'
+  +'k'#7#25'SaveSettingsAsButtonClick'#8'TabOrder'#2#1#0#0#5'TEdit'#17'H2PasFil'
+  +'enameEdit'#22'AnchorSideLeft.Control'#7#18'H2PasFilenameLabel'#19'AnchorSid'
+  +'eLeft.Side'#7#9'asrBottom'#4'Left'#3#167#0#6'Height'#2#23#3'Top'#2#4#5'Widt'
+  +'h'#3'`'#1#18'BorderSpacing.Left'#2#6#17'BorderSpacing.Top'#2#6#13'OnEditing'
+  +'Done'#7#28'H2PasFilenameEditEditingDone'#8'TabOrder'#2#2#4'Text'#6#17'H2Pas'
+  +'FilenameEdit'#0#0#7'TButton'#25'h2pasFilenameBrowseButton'#22'AnchorSideLef'
+  +'t.Control'#7#17'H2PasFilenameEdit'#19'AnchorSideLeft.Side'#7#9'asrBottom'#21
+  +'AnchorSideTop.Control'#7#17'H2PasFilenameEdit'#24'AnchorSideBottom.Control'
+  +#7#17'H2PasFilenameEdit'#21'AnchorSideBottom.Side'#7#9'asrBottom'#4'Left'#3#7
+  +#2#6'Height'#2#23#3'Top'#2#4#5'Width'#2'#'#7'Anchors'#11#5'akTop'#6'akLeft'#8
+  +'akBottom'#0#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6#3'...'#7'OnClick'
+  +#7#30'h2pasFilenameBrowseButtonClick'#8'TabOrder'#2#3#0#0#7'TButton'#17'NewS'
+  +'ettingsButton'#4'Left'#2#6#6'Height'#2#30#3'Top'#2'|'#5'Width'#3#154#0#8'Au'
+  +'toSize'#9#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6#17'NewSettingsButt'
+  +'on'#7'OnClick'#7#22'NewSettingsButtonClick'#8'TabOrder'#2#4#0#0#0#0#7'TButt'
+  ,'on'#18'OpenSettingsButton'#22'AnchorSideLeft.Control'#7#5'Owner'#24'AnchorS'
+  +'ideBottom.Control'#7#5'Owner'#21'AnchorSideBottom.Side'#7#9'asrBottom'#4'Le'
+  +'ft'#2#5#6'Height'#2#30#3'Top'#3#210#1#5'Width'#3#161#0#7'Anchors'#11#6'akLe'
+  +'ft'#8'akBottom'#0#8'AutoSize'#9#20'BorderSpacing.Around'#2#5#25'BorderSpaci'
+  +'ng.InnerBorder'#2#4#7'Caption'#6#18'OpenSettingsButton'#7'OnClick'#7#23'Ope'
+  +'nSettingsButtonClick'#8'TabOrder'#2#1#0#0#7'TButton'#18'SaveSettingsButton'
+  +#22'AnchorSideLeft.Control'#7#18'OpenSettingsButton'#19'AnchorSideLeft.Side'
+  +#7#9'asrBottom'#24'AnchorSideBottom.Control'#7#5'Owner'#21'AnchorSideBottom.'
+  +'Side'#7#9'asrBottom'#4'Left'#3#171#0#6'Height'#2#30#3'Top'#3#210#1#5'Width'
+  +#3#158#0#7'Anchors'#11#6'akLeft'#8'akBottom'#0#8'AutoSize'#9#20'BorderSpacin'
+  +'g.Around'#2#5#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6#18'SaveSetting'
+  +'sButton'#7'OnClick'#7#23'SaveSettingsButtonClick'#8'TabOrder'#2#2#0#0#7'TBu'
+  +'tton'#13'ConvertButton'#22'AnchorSideLeft.Control'#7#18'SaveSettingsButton'
+  +#19'AnchorSideLeft.Side'#7#9'asrBottom'#21'AnchorSideTop.Control'#7#18'OpenS'
+  +'ettingsButton'#4'Left'#3'X'#1#6'Height'#2#30#3'Top'#3#210#1#5'Width'#2'w'#8
+  +'AutoSize'#9#18'BorderSpacing.Left'#2#15#25'BorderSpacing.InnerBorder'#2#4#7
+  +'Caption'#6#13'ConvertButton'#7'OnClick'#7#18'ConvertButtonClick'#8'TabOrder'
+  +#2#0#0#0#7'TButton'#11'CloseButton'#23'AnchorSideRight.Control'#7#5'Owner'#20
+  +'AnchorSideRight.Side'#7#9'asrBottom'#24'AnchorSideBottom.Control'#7#5'Owner'
+  +#21'AnchorSideBottom.Side'#7#9'asrBottom'#4'Left'#3#165#2#6'Height'#2#30#3'T'
+  +'op'#3#210#1#5'Width'#2'g'#7'Anchors'#11#7'akRight'#8'akBottom'#0#8'AutoSize'
+  +#9#20'BorderSpacing.Around'#2#5#25'BorderSpacing.InnerBorder'#2#4#7'Caption'
+  +#6#11'CloseButton'#7'OnClick'#7#16'CloseButtonClick'#8'TabOrder'#2#3#0#0#7'T'
+  +'Button'#21'ConvertAndBuildButton'#22'AnchorSideLeft.Control'#7#13'ConvertBu'
+  +'tton'#19'AnchorSideLeft.Side'#7#9'asrBottom'#21'AnchorSideTop.Control'#7#18
+  +'OpenSettingsButton'#4'Left'#3#213#1#6'Height'#2#30#3'Top'#3#210#1#5'Width'#3
+  +#183#0#8'AutoSize'#9#18'BorderSpacing.Left'#2#6#25'BorderSpacing.InnerBorder'
+  +#2#4#7'Caption'#6#21'ConvertAndBuildButton'#7'OnClick'#7#26'ConvertAndBuildB'
+  +'uttonClick'#8'TabOrder'#2#5#0#0#0
 ]);

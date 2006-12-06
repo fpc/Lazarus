@@ -33,7 +33,7 @@ uses
   
 type
 
-  { TRemoveCPlusPlusExternCTool }
+  { TRemoveCPlusPlusExternCTool - Remove C++ 'extern "C"' lines }
 
   TRemoveCPlusPlusExternCTool = class(TCustomTextConverterTool)
   public
@@ -41,7 +41,7 @@ type
     function Execute(aText: TIDETextConverter): TModalResult; override;
   end;
 
-  { TRemoveEmptyCMacrosTool }
+  { TRemoveEmptyCMacrosTool - Remove empty C macros}
 
   TRemoveEmptyCMacrosTool = class(TCustomTextConverterTool)
   public
@@ -49,7 +49,7 @@ type
     function Execute(aText: TIDETextConverter): TModalResult; override;
   end;
   
-  { TReplaceEdgedBracketPairWithStar }
+  { TReplaceEdgedBracketPairWithStar - Replace [] with * }
 
   TReplaceEdgedBracketPairWithStar = class(TCustomTextReplaceTool)
   public
@@ -57,7 +57,8 @@ type
     constructor Create(TheOwner: TComponent); override;
   end;
 
-  { TReplace0PointerWithNULL }
+  { TReplace0PointerWithNULL -
+    Replace macro values 0 pointer like (char *)0 with NULL }
 
   TReplaceMacro0PointerWithNULL = class(TCustomTextConverterTool)
   public
@@ -65,7 +66,8 @@ type
     function Execute(aText: TIDETextConverter): TModalResult; override;
   end;
   
-  { TReplaceUnitFilenameWithUnitName }
+  { TReplaceUnitFilenameWithUnitName -
+    Replace "unit filename;" with "unit name;" }
 
   TReplaceUnitFilenameWithUnitName = class(TCustomTextReplaceTool)
   public
@@ -73,7 +75,8 @@ type
     constructor Create(TheOwner: TComponent); override;
   end;
 
-  { TRemoveSystemTypes }
+  { TRemoveSystemTypes -
+    Remove type redefinitons like PLongint }
 
   TRemoveSystemTypes = class(TCustomTextConverterTool)
   public
@@ -81,7 +84,7 @@ type
     function Execute(aText: TIDETextConverter): TModalResult; override;
   end;
 
-  { TRemoveRedefinedPointerTypes }
+  { TRemoveRedefinedPointerTypes - Remove redefined pointer types }
 
   TRemoveRedefinedPointerTypes = class(TCustomTextConverterTool)
   public
@@ -89,9 +92,25 @@ type
     function Execute(aText: TIDETextConverter): TModalResult; override;
   end;
 
-  { TRemoveEmptyTypeVarConstSections }
+  { TRemoveEmptyTypeVarConstSections - Remove empty type/var/const sections }
 
   TRemoveEmptyTypeVarConstSections = class(TCustomTextConverterTool)
+  public
+    class function ClassDescription: string; override;
+    function Execute(aText: TIDETextConverter): TModalResult; override;
+  end;
+
+  { TReplaceImplicitParameterTypes -
+    Search implicit types in parameters and add types for them
+    For example:
+        procedure ProcName(a: array[0..2] of char);
+      is replaced with
+        procedure ProcName(a: Tarray_0to2_of_char);
+      and a new type is added
+        Tarray_0to2_of_char = array[0..2] of char;
+       }
+
+  TReplaceImplicitParameterTypes = class(TCustomTextConverterTool)
   public
     class function ClassDescription: string; override;
     function Execute(aText: TIDETextConverter): TModalResult; override;
@@ -202,6 +221,7 @@ type
     procedure DeleteFiles(List: TStrings);
     function CHeaderFileWithFilename(const AFilename: string): TH2PasFile;
     function CHeaderFileIndexWithFilename(const AFilename: string): integer;
+    procedure CHeaderFileMove(OldIndex, NewIndex: integer);
     function ShortenFilename(const AFilename: string): string;
     function LongenFilename(const AFilename: string): string;
     function NormalizeFilename(const AFilename: string): string;
@@ -1014,6 +1034,11 @@ begin
     dec(Result);
 end;
 
+procedure TH2PasProject.CHeaderFileMove(OldIndex, NewIndex: integer);
+begin
+  FCHeaderFiles.Move(OldIndex,NewIndex);
+end;
+
 function TH2PasProject.ShortenFilename(const AFilename: string): string;
 begin
   if IsVirtual then
@@ -1058,6 +1083,7 @@ begin
   AddNewTextConverterTool(FPostH2PasTools,TRemoveSystemTypes);
   AddNewTextConverterTool(FPostH2PasTools,TRemoveRedefinedPointerTypes);
   AddNewTextConverterTool(FPostH2PasTools,TRemoveEmptyTypeVarConstSections);
+  AddNewTextConverterTool(FPostH2PasTools,TReplaceImplicitParameterTypes);
 end;
 
 { TH2PasConverter }
@@ -1370,6 +1396,10 @@ begin
       exit;
     end;
     TextConverter.Filename:=OutputFilename;// save
+    
+    // clean up
+    if FileExists(TempCHeaderFilename) then
+      DeleteFile(TempCHeaderFilename);
   finally
     TextConverter.Free;
     if (LazarusIDE<>nil) then begin
@@ -1773,6 +1803,95 @@ begin
   until false;
   if Modified then
     aText.Source:=Src;
+
+  Result:=mrOk;
+end;
+
+{ TReplaceImplicitParameterTypes }
+
+function TReplaceImplicitParameterTypes.ClassDescription: string;
+begin
+  Result:='Replace implicit parameter types'#13
+    +'For example:'#13
+    +'    procedure ProcName(a: array[0..2] of char)'#13
+    +'  is replaced with'#13
+    +'    procedure ProcName(a: Tarray_0to2_of_char)'#13
+    +'  and a new type is added'#13
+    +'    Tarray_0to2_of_char = array[0..2] of char';
+end;
+
+function TReplaceImplicitParameterTypes.Execute(aText: TIDETextConverter
+  ): TModalResult;
+var
+  Src: String;
+  
+  function FindNextImplicitType(var Position: integer;
+    out TypeStart, TypeEnd: integer): boolean;
+  var
+    AtomStart: LongInt;
+    CurAtom: string;
+  begin
+    Result:=false;
+    AtomStart:=Position;
+    repeat
+      CurAtom:=ReadNextPascalAtom(Src,Position,AtomStart);
+      if CurAtom='' then break;
+      if CurAtom=':' then begin
+        // var, const, out declaration
+        CurAtom:=ReadNextPascalAtom(Src,Position,AtomStart);
+        if CurAtom='' then break;
+        TypeStart:=AtomStart;
+        if CompareIdentifiers(PChar(CurAtom),'array')=0 then begin
+          // :array
+          CurAtom:=ReadNextPascalAtom(Src,Position,AtomStart);
+          if CurAtom='' then break;
+          if CurAtom='[' then begin
+            // :array[
+            if not ReadTilPascalBracketClose(Src,Position) then break;
+            // :array[..]
+            repeat
+              CurAtom:=ReadNextPascalAtom(Src,Position,AtomStart);
+              if CurAtom='' then break;
+              if (length(CurAtom)=1) and (CurAtom[1] in ['(','[']) then begin
+                // skip brackets
+                if not ReadTilPascalBracketClose(Src,Position) then break;
+              end else if (length(CurAtom)=1) and (CurAtom[1] in [';',')',']'])
+              then begin
+                // type end found
+                TypeEnd:=AtomStart;
+                Result:=true;
+                exit;
+              end;
+            until false;
+          end;
+        end;
+      end;
+    until CurAtom='';
+  end;
+
+  function SearchImplicitParameterTypes(var ModalResult: TModalResult): boolean;
+  var
+    Position: Integer;
+    StartPos, EndPos: integer;
+    TypeStr: String;
+  begin
+    Result:=false;
+    ModalResult:=mrCancel;
+    Position:=1;
+    while FindNextImplicitType(Position,StartPos,EndPos) do begin
+      TypeStr:=copy(Src,StartPos,EndPos-StartPos);
+      DebugLn(['SearchImplicitParameterTypes ',Position,' TypeStr="',TypeStr,'"']);
+      
+    end;
+    ModalResult:=mrOk;
+    Result:=true;
+  end;
+
+begin
+  Src:=aText.Source;
+  if Src='' then exit(mrOk);
+  
+  if not SearchImplicitParameterTypes(Result) then exit;
 
   Result:=mrOk;
 end;

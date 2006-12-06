@@ -2680,6 +2680,8 @@ function TPascalParserTool.KeyWordFuncConst: boolean;
 
     interface
       const a:b=3;
+      ;
+      c =4;
 
     implementation
 
@@ -2695,7 +2697,9 @@ begin
   // read all constants  Name = <Const>; or Name : type = <Const>;
   repeat
     ReadNextAtom;  // name
-    if AtomIsIdentifier(false) then begin
+    if CurPos.Flag=cafSemicolon then begin
+      // ignore empty semicolons
+    end else if AtomIsIdentifier(false) then begin
       CreateChildNode;
       CurNode.Desc:=ctnConstDefinition;
       ReadNextAtom;

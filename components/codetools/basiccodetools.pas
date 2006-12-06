@@ -269,7 +269,8 @@ function ReadNextPascalAtom(const Source: string;
    var Position, AtomStart: integer): string;
 procedure ReadRawNextPascalAtom(const Source: string;
    var Position: integer; out AtomStart: integer);
-
+function ReadTilPascalBracketClose(const Source: string;
+   var Position: integer): boolean;
 
 //-----------------------------------------------------------------------------
 
@@ -1581,6 +1582,47 @@ begin
           or ((c1='*') and (c2='*'))
           then inc(Position);
         end;
+      end;
+    end;
+  end;
+end;
+
+function ReadTilPascalBracketClose(const Source: string; var Position: integer
+  ): boolean;
+// Input: Position points right after the opening bracket
+// Output: Position points right after the closing bracket
+var
+  CloseBracket: Char;
+  AtomStart: LongInt;
+  Len: Integer;
+begin
+  Result:=false;
+  Len:=length(Source);
+  if Position>Len+1 then
+    exit;  // no bracket open found
+  case Source[Position-1] of
+  '{': CloseBracket:='}';
+  '(': CloseBracket:=')';
+  '[': CloseBracket:=']';
+  else
+    exit; // no bracket open found
+  end;
+  AtomStart:=Position;
+  while Position<=Len do begin
+    ReadRawNextPascalAtom(Source,Position,AtomStart);
+    if Position>Len then
+      exit; // CloseBracket not found
+    case Source[Position] of
+    '{','(','[':
+      if not ReadTilPascalBracketClose(Source,Position) then exit;
+    '}',')',']':
+      if Source[Position]=CloseBracket then begin
+        // CloseBracket found
+        inc(Position);
+        Result:=true;
+        exit;
+      end else begin
+        exit; // a bracket is closed, that was never opened
       end;
     end;
   end;

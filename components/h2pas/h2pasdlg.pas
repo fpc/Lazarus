@@ -36,6 +36,8 @@ type
   { TH2PasDialog }
 
   TH2PasDialog = class(TForm)
+    MoveFileDownButton: TButton;
+    MoveFileUpButton: TButton;
     ConvertAndBuildButton: TButton;
     FileInfoGroupBox: TGroupBox;
     FileInfoLabel: TLabel;
@@ -101,6 +103,8 @@ type
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure H2PasFilenameEditEditingDone(Sender: TObject);
     procedure LibnameEditEditingDone(Sender: TObject);
+    procedure MoveFileDownButtonClick(Sender: TObject);
+    procedure MoveFileUpButtonClick(Sender: TObject);
     procedure NewSettingsButtonClick(Sender: TObject);
     procedure OpenLastProjectOnStartCheckBoxChange(Sender: TObject);
     procedure OpenSettingsButtonClick(Sender: TObject);
@@ -131,6 +135,7 @@ type
     procedure ClearMessages;
     procedure CreateLazarusMenuItems;
     function GetCurrentCHeaderFile: TH2PasFile;
+    procedure MoveCurrentFile(Offset: integer);
 
     // project settings
     procedure UpdateFilesPage;
@@ -201,6 +206,7 @@ begin
   TextConverterToolClasses.RegisterClass(TRemoveSystemTypes);
   TextConverterToolClasses.RegisterClass(TRemoveRedefinedPointerTypes);
   TextConverterToolClasses.RegisterClass(TRemoveEmptyTypeVarConstSections);
+  TextConverterToolClasses.RegisterClass(TReplaceImplicitParameterTypes);
 end;
 
 { TH2PasDialog }
@@ -213,6 +219,8 @@ begin
     DeleteCHeaderFilesButton.Caption:='Delete selected .h files';
     SelectAllCHeaderFilesButton.Caption:='Enable all .h files';
     UnselectAllCHeaderFilesButton.Caption:='Disable all .h files';
+    MoveFileDownButton.Caption:='Move file down';
+    MoveFileUpButton.Caption:='Move file up';
     FileInfoGroupBox.Caption:='File information';
   h2pasOptionsTabSheet.Caption:='h2pas Options';
     h2pasOptionsCheckGroup.Caption:='Options';
@@ -423,6 +431,16 @@ begin
     Project.Libname:=LibnameEdit.Text;
 end;
 
+procedure TH2PasDialog.MoveFileDownButtonClick(Sender: TObject);
+begin
+  MoveCurrentFile(1);
+end;
+
+procedure TH2PasDialog.MoveFileUpButtonClick(Sender: TObject);
+begin
+  MoveCurrentFile(-1);
+end;
+
 procedure TH2PasDialog.NewSettingsButtonClick(Sender: TObject);
 begin
   Project.Filename:='';
@@ -631,12 +649,17 @@ procedure TH2PasDialog.UpdateFileInfo;
 var
   AFile: TH2PasFile;
   s: String;
+  Filename: String;
+  OutputFilename: String;
 begin
   AFile:=GetCurrentCHeaderFile;
   if AFile<>nil then begin
-    s:='File: '+AFile.Filename;
-    if not FileExistsCached(AFile.Filename) then
+    Filename:=AFile.Filename;
+    s:='File: '+Filename;
+    if not FileExistsCached(Filename) then
       s:=s+#13+'ERROR: file not found';
+    OutputFilename:=AFile.GetOutputFilename;
+    s:=s+#13+'Output: '+OutputFilename;
     FileInfoLabel.Caption:=s;
   end else begin
     FileInfoLabel.Caption:='No file selected.';
@@ -672,6 +695,36 @@ begin
   if Index<0 then exit;
   AFilename:=Project.LongenFilename(CHeaderFilesCheckListBox.Items[Index]);
   Result:=Project.CHeaderFileWithFilename(AFilename);
+end;
+
+procedure TH2PasDialog.MoveCurrentFile(Offset: integer);
+var
+  Index: LongInt;
+  AFilename: String;
+  NewIndex: Integer;
+begin
+  if Offset=0 then begin
+    DebugLn(['TH2PasDialog.MoveCurrentFile Offset=0']);
+    exit;
+  end;
+  Index:=CHeaderFilesCheckListBox.ItemIndex;
+  if (Index<0) then begin
+    DebugLn(['TH2PasDialog.MoveCurrentFile CHeaderFilesCheckListBox.ItemIndex<0']);
+    exit;
+  end;
+  AFilename:=Project.LongenFilename(CHeaderFilesCheckListBox.Items[Index]);
+  Index:=Project.CHeaderFileIndexWithFilename(AFilename);
+  if Index<0 then begin
+    DebugLn(['TH2PasDialog.MoveCurrentFile not found: Filename=',AFilename]);
+    exit;
+  end;
+  NewIndex:=Index+Offset;
+  if (NewIndex<0) or (NewIndex>=Project.CHeaderFileCount) then begin
+    DebugLn(['TH2PasDialog.MoveCurrentFile out of bounds: NewIndex=',NewIndex]);
+    exit;
+  end;
+  Project.CHeaderFileMove(Index,NewIndex);
+  CHeaderFilesCheckListBox.Items.Move(Index,NewIndex);
 end;
 
 procedure TH2PasDialog.UpdateFilesPage;
