@@ -45,6 +45,9 @@ uses
   FPImage, IntfGraphics, Printers, LCLType, LCLIntf;
   
 Type
+
+  { TPostscriptPrinterCanvas }
+
   TPostscriptPrinterCanvas = Class(TPrinterCanvas)
   private
     fHeader        : TStringList; //Header document
@@ -87,6 +90,7 @@ Type
     procedure SetBrushFillPattern(SetBorder,SetFill : Boolean); overload;
     
     procedure GetRGBImage(SrcGraph: TGraphic; Lst : TStringList);
+    function  PPCFormat (const Fmt : string; const Args : array of const) : string;
   protected
     procedure CreateHandle; override;
     
@@ -581,7 +585,7 @@ begin
     R:=Red(RGBColor)/255;
     G:=Green(RGBColor)/255;
     B:=Blue(RGBColor)/255;
-    Write(Format('%.3f %.3f %.3f setrgbcolor',[R,G,B])+' % '+ColorToString(aColor));
+    Write(PPCFormat('%.3f %.3f %.3f setrgbcolor',[R,G,B])+' % '+ColorToString(aColor));
     fcPenColor:=aColor;
   end;
 end;
@@ -617,7 +621,7 @@ begin
     R:=Red(RGBColor)/255;
     G:=Green(RGBColor)/255;
     B:=Blue(RGBColor)/255;
-    Write(Format('%.3f %.3f %.3f setrgbcolor',[R,G,B])+' % '+ColorToString(Brush.Color));
+    Write(PPCFormat('%.3f %.3f %.3f setrgbcolor',[R,G,B])+' % '+ColorToString(Brush.Color));
     fcPenColor:=Brush.Color;
   end;
 end;
@@ -641,7 +645,7 @@ begin
       G:=Green(RGBColor)/255;
       B:=Blue(RGBColor)/255;
 
-      Write(Format('%.3f %.3f %.3f setrgbcolor',[R,G,B])+' % '+ColorToString(Font.Color));
+      Write(PPCFormat('%.3f %.3f %.3f setrgbcolor',[R,G,B])+' % '+ColorToString(Font.Color));
       fcPenColor:=Font.Color;
     end;
 
@@ -790,6 +794,17 @@ begin
       SrcIntfImg.Free;
     end;
   end;
+end;
+
+function TPostscriptPrinterCanvas.PPCFormat(const Fmt: string;
+  const Args: array of const): string;
+var
+  OldDecimalSeparator: char;
+begin
+  OldDecimalSeparator := DecimalSeparator;
+  DecimalSeparator := '.';
+  result := Format(Fmt, Args);
+  DecimalSeparator := OldDecimalSeparator;
 end;
 
 procedure TPostscriptPrinterCanvas.CreateHandle;
@@ -1542,18 +1557,18 @@ begin
   xScale:=Abs((x2-x1)/2.0);
   yScale:=Abs((y2-y1)/2.0);
 
-  Code:=Format('matrix currentmatrix %.3f %.3f translate %.3f %.3f scale 0 0 1 %d %d %s setmatrix',
+  Code:=PPCFormat('matrix currentmatrix %.3f %.3f translate %.3f %.3f scale 0 0 1 %d %d %s setmatrix',
       [cX,cY,xScale,yScale,StAng,Ang,'arc']);
       
   ClearBuffer;
-  WriteB(Format('%.3f %.3f moveto',[cX,cY])); //move to center of circle
+  WriteB(PPCFormat('%.3f %.3f moveto',[cX,cY])); //move to center of circle
   WriteB(Code);
   SetBrushFillPattern(False,True);
 
   //move current point to start of arc, note negative
   //angle because y increases down
   ClearBuffer;
-  WriteB(Format('%.3f %.3f moveto',[cX+(rX*Cos(StAng*-1)),cY+(rY*Sin(StAng*-1))]));
+  WriteB(PPCFormat('%.3f %.3f moveto',[cX+(rX*Cos(StAng*-1)),cY+(rY*Sin(StAng*-1))]));
   WriteB(Code);
   SetBrushFillPattern(True,False);
 
@@ -1591,7 +1606,7 @@ begin
   xScale:=Abs(rx);
   yScale:=Abs(ry);
 
-  Code:=Format('matrix currentmatrix %.3f %.3f translate %.3f %.3f scale 0 0 1 %.3f %.3f %s setmatrix',
+  Code:=PPCFormat('matrix currentmatrix %.3f %.3f translate %.3f %.3f scale 0 0 1 %.3f %.3f %s setmatrix',
       [cX,cY,xScale,yScale,Angle1/16,Angle2/16,ang]);
 
 
@@ -1603,7 +1618,7 @@ begin
 
     //move current point to start of arc, note negative
     //angle because y increases down
-    write(Format('%.3f %.3f moveto',[cX+(rX*Cos((Angle1/16)*-1)),cY+(rY*Sin((Angle1/16)*-1))]));
+    write(PPCFormat('%.3f %.3f moveto',[cX+(rX*Cos((Angle1/16)*-1)),cY+(rY*Sin((Angle1/16)*-1))]));
     Write(Code);
     write('stroke');
   end;
@@ -1642,25 +1657,25 @@ begin
   xScale:=Abs(rx);
   yScale:=Abs(ry);
 
-  Code:=Format('matrix currentmatrix %.3f %.3f translate %.3f %.3f scale 0 0 1 %.3f %.3f %s setmatrix',
+  Code:=PPCFormat('matrix currentmatrix %.3f %.3f translate %.3f %.3f scale 0 0 1 %.3f %.3f %s setmatrix',
       [cX,cY,xScale,yScale,Angle1/16,Angle2/16,ang]);
 
   //move current point to start of arc, note negative
   //angle because y increases down
   ClearBuffer;
-  writeB(Format('%.3f %.3f moveto',[cX+(rX*Cos((Angle1/16)*-1)),cY+(rY*Sin((Angle1/16)*-1))]));
+  writeB(PPCFormat('%.3f %.3f moveto',[cX+(rX*Cos((Angle1/16)*-1)),cY+(rY*Sin((Angle1/16)*-1))]));
   WriteB(Code);
   writeB(Format('%d %d lineto',[Left,Top]));
-  writeB(Format('%.3f %.3f lineto',[cX+(rX*Cos((Angle1/16)*-1)),cY+(rY*Sin((Angle1/16)*-1))]));
+  writeB(PPCFormat('%.3f %.3f lineto',[cX+(rX*Cos((Angle1/16)*-1)),cY+(rY*Sin((Angle1/16)*-1))]));
   SetBrushFillPattern(False,True);
 
   //move current point to start of arc, note negative
   //angle because y increases down
   ClearBuffer;
-  writeB(Format('%.3f %.3f moveto',[cX+(rX*Cos((Angle1/16)*-1)),cY+(rY*Sin((Angle1/16)*-1))]));
+  writeB(PPCFormat('%.3f %.3f moveto',[cX+(rX*Cos((Angle1/16)*-1)),cY+(rY*Sin((Angle1/16)*-1))]));
   WriteB(Code);
   writeB(Format('%d %d lineto',[Left,Top]));
-  writeB(Format('%.3f %.3f lineto',[cX+(rX*Cos((Angle1/16)*-1)),cY+(rY*Sin((Angle1/16)*-1))]));
+  writeB(PPCFormat('%.3f %.3f lineto',[cX+(rX*Cos((Angle1/16)*-1)),cY+(rY*Sin((Angle1/16)*-1))]));
   SetBrushFillPattern(True,False);
 
   MoveToLastPos;
@@ -1685,7 +1700,7 @@ begin
       PenUnder:=1.0;
     PosUnder:=(Abs(Round(Font.Size/3))*-1)+2;
 
-    write(Format('%.3f %d underline_on',[PenUnder,PosUnder]));
+    write(PPCFormat('%.3f %d underline_on',[PenUnder,PosUnder]));
     write(Format('(%s) %d %d TEXT',[MapedString(Text),X,Y]));
     write('underline_off');
   end
@@ -1819,14 +1834,14 @@ begin
   xScale:=Abs(rx);
   yScale:=Abs(ry);
 
-  Code:=Format('matrix currentmatrix %.3f %.3f translate %.3f %.3f scale 0 0 1 %.3f %.3f %s setmatrix',
+  Code:=PPCFormat('matrix currentmatrix %.3f %.3f translate %.3f %.3f scale 0 0 1 %.3f %.3f %s setmatrix',
       [cX,cY,xScale,yScale,Angle1/16,Angle2/16,ang]);
 
   //move current point to start of arc, note negative
   //angle because y increases down.ClosePath for draw chord
   ClearBuffer;
   writeB('newpath');
-  writeB(Format('%.3f %.3f moveto',[cX+(rX*Cos((Angle1/16)*-1)),cY+(rY*Sin((Angle1/16)*-1))]));
+  writeB(PPCFormat('%.3f %.3f moveto',[cX+(rX*Cos((Angle1/16)*-1)),cY+(rY*Sin((Angle1/16)*-1))]));
   WriteB(Code);
   writeB('closepath');
   SetBrushFillPattern(True,True);
