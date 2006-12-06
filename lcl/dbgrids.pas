@@ -3351,6 +3351,8 @@ begin
   inherited Create;
   FGrid := AGrid;
   FList := TStringList.Create;
+  FList.CaseSensitive:=True;
+  FList.Sorted:=True;
 end;
 
 destructor TBookmarkList.Destroy;
