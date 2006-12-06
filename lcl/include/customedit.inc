@@ -274,9 +274,14 @@ end;
 procedure TCustomEdit.SetPasswordChar(const AValue: Char);
 begin
   if FPasswordChar=AValue then exit;
+
   FPasswordChar:=AValue;
-  if FPasswordChar=#0 then
-    EchoMode:=emNormal;
+  case FPasswordChar of
+    #0: EchoMode := emNormal;
+    ' ': EchoMode := emNone;
+  else
+    EchoMode:=emPassword;
+  end;
   if HandleAllocated then
     TWSCustomEditClass(WidgetSetClass).SetPasswordChar(Self, AValue);
 end;
@@ -288,11 +293,20 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomEdit.SetEchoMode(Val : TEchoMode);
 begin
-  if (Val <> FEchoMode) then begin
-    FEchoMode:= Val;
-    if HandleAllocated then
-      TWSCustomEditClass(WidgetSetClass).SetEchoMode(Self, Val);
+  if FEchoMode=Val then exit;
+  
+  FEchoMode:= Val;
+  case FEchoMode of
+    emNormal :
+      PasswordChar := #0;
+    emPassWord :
+      if (PasswordChar=#0) or (PasswordChar=' ')
+        then PasswordChar := '*';
+    emNone :
+      PasswordChar := ' ';
   end;
+  if HandleAllocated then
+    TWSCustomEditClass(WidgetSetClass).SetEchoMode(Self, Val);
 end;
 
 {------------------------------------------------------------------------------
