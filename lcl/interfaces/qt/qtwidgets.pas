@@ -608,30 +608,68 @@ end;
 procedure TQtWidget.SlotKey(Event: QEventH); cdecl;
 var
   Msg: TLMKey;
+  KeyboardModifiers: QtKeyboardModifiers;
+  AltModifier: Boolean;
+  Text: WideString;
+  UTF8Char: TUTF8Char;
+  RepeatCount: Integer;
 begin
   {$ifdef VerboseQt}
-    WriteLn('TQtWidget.SlotKey');
+    Write('TQtWidget.SlotKey');
   {$endif}
 
   FillChar(Msg, SizeOf(Msg), #0);
-
-  if QEvent_type(Event) = QEventKeyRelease then Msg.Msg := LM_KEYUP
-  else Msg.Msg := LM_KEYDOWN;
 
   {------------------------------------------------------------------------------
    Translates a Qt4 Key to a LCL VK_* key
    ------------------------------------------------------------------------------}
   Msg.CharCode := QtKeyToLCLKey(QKeyEvent_key(QKeyEventH(Event)));
+  
+  {------------------------------------------------------------------------------
+   Detects special keys (shift, alt, control, etc)
+   ------------------------------------------------------------------------------}
+  KeyboardModifiers := QKeyEvent_modifiers(QKeyEventH(Event));
+
+  AltModifier := (QtAltModifier and KeyboardModifiers) <> $0;
+
+  {------------------------------------------------------------------------------
+   Loads the UTF-8 character associated with the keypress, if any
+   ------------------------------------------------------------------------------}
+  QKeyEvent_text(QKeyEventH(Event), @Text);
+
+  {------------------------------------------------------------------------------
+   Sends the adequate key messages
+   ------------------------------------------------------------------------------}
+  if AltModifier then
+  begin
+    if QEvent_type(Event) = QEventKeyRelease then Msg.Msg := CN_SYSKEYUP
+    else if QEvent_type(Event) = QEventKeyPress then Msg.Msg := CN_SYSKEYDOWN;
+  end
+  else
+  begin
+    if QEvent_type(Event) = QEventKeyRelease then Msg.Msg := CN_KEYUP
+    else if QEvent_type(Event) = QEventKeyPress then Msg.Msg := CN_KEYDOWN;
+  end;
+
+  {$ifdef VerboseQt}
+    WriteLn(' message: ', Msg.Msg);
+  {$endif}
 
   try
     LCLObject.WindowProc(TLMessage(Msg));
   except
     Application.HandleException(nil);
   end;
+  
+  { Also sends a utf-8 key event for key down }
 
-//LM_KEYDOWN
-//LM_KEYUP
-// LM_CHAR
+  if (QEvent_type(Event) = QEventKeyPress) and (Length(Text) <> 0) then
+  begin
+    RepeatCount := 0;
+    UTF8Char := TUTF8Char(Text);
+
+    LCLObject.IntfUTF8KeyPress(UTF8Char, RepeatCount, False);
+  end;
 end;
 
 {------------------------------------------------------------------------------
