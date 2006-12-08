@@ -2127,9 +2127,9 @@ begin
     if (FIgnoreCodeBufferLock<=0) and (not FCodeBuffer.IsEqual(FEditor.Lines))
     then begin
       {$IFDEF IDE_DEBUG}
-      writeln('');
-      writeln('WARNING: TSourceEditor.SetCodeBuffer - loosing marks');
-      writeln('');
+      debugln('');
+      debugln('WARNING: TSourceEditor.SetCodeBuffer - loosing marks: ',Filename);
+      debugln('');
       {$ENDIF}
       FEditor.BeginUpdate;
       FCodeBuffer.AssignTo(FEditor.Lines,true);

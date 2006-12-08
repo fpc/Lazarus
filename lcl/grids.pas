@@ -4480,6 +4480,7 @@ end;
 
 procedure TCustomGrid.DoEditorShow;
 begin
+  DebugLn(['TCustomGrid.DoEditorShow ']);
   {$ifdef dbgGrid}DebugLn('grid.DoEditorShow INIT');{$endif}
   ScrollToCell(FCol,FRow);
   Editor.Parent := nil;
@@ -5465,6 +5466,7 @@ begin
     OnSelectEditor(Self, fCol, FRow, aEditor);
   if aEditor<>Editor then
     Editor:=aEditor;
+  DebugLn(['TCustomGrid.SelectEditor ',DbgSName(Editor)]);
 end;
 
 function TCustomGrid.EditorAlwaysShown: Boolean;

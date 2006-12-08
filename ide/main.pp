@@ -2218,7 +2218,8 @@ end;
 
 procedure TMainIDE.mnuRevertClicked(Sender: TObject);
 begin
-  if SourceNoteBook.Notebook=nil then exit;
+  if (SourceNoteBook.Notebook=nil)
+  or (SourceNoteBook.Notebook.PageIndex<0) then exit;
   DoOpenEditorFile('',SourceNoteBook.Notebook.PageIndex,[ofRevert]);
 end;
 
@@ -5708,7 +5709,7 @@ begin
       ExtensionToLazSyntaxHighlighter(ExtractFileExt(AFilename));
 
   NewSrcEditorCreated:=false;
-  //DebugLn(['TMainIDE.DoOpenFileInSourceEditor Revert=',ofRevert in Flags,' ',AnUnitInfo.Filename]);
+  //DebugLn(['TMainIDE.DoOpenFileInSourceEditor Revert=',ofRevert in Flags,' ',AnUnitInfo.Filename,' PageIndex=',PageIndex]);
   if (not (ofRevert in Flags)) or (PageIndex<0) then begin
     // create a new source editor
 
@@ -5736,7 +5737,10 @@ begin
     NewErrorLine:=NewSrcEdit.ErrorLine;
     NewExecutionLine:=NewSrcEdit.ExecutionLine;
     NewSrcEdit.EditorComponent.BeginUpdate;
-    NewSrcEdit.CodeBuffer:=AnUnitInfo.Source;
+    if NewSrcEdit.CodeBuffer=AnUnitInfo.Source then begin
+      AnUnitInfo.Source.AssignTo(NewSrcEdit.EditorComponent.Lines,true);
+    end else
+      NewSrcEdit.CodeBuffer:=AnUnitInfo.Source;
     AnUnitInfo.ClearModifieds;
     //DebugLn(['TMainIDE.DoOpenFileInSourceEditor NewCaretXY=',dbgs(NewCaretXY),' NewTopLine=',NewTopLine]);
   end;
@@ -6231,6 +6235,10 @@ begin
     AFilename:=ExpandFilename(AFilename);
   end;
 
+  // revert: use source editor filename
+  if (ofRevert in Flags) and (PageIndex>=0) then
+    AFilename:=SourceNotebook.FindSourceEditorWithPageIndex(PageIndex).FileName;
+
   // normalize filename
   AFilename:=TrimFilename(AFilename);
   DiskFilename:=FindDiskFilename(AFilename);
@@ -6238,7 +6246,7 @@ begin
     debugln('WARNING: TMainIDE.DoOpenEditorFile Opening "',DiskFilename,'" instead "',AFilename,'"');
     AFilename:=DiskFilename;
   end;
-
+  
   FilenameNoPath:=ExtractFilename(AFilename);
 
   // check to not open directories
@@ -6407,6 +6415,7 @@ begin
   writeln('[TMainIDE.DoOpenEditorFile] C');
   {$ENDIF}
 
+  // open resource component (designer, form, datamodule, ...)
   Result:=OpenResource;
   if Result<>mrOk then begin
     DebugLn(['TMainIDE.DoOpenEditorFile failed OpenResource: ',AFilename]);
