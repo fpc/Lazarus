@@ -92,6 +92,9 @@ Const
   TCS_VERTICAL = $0080;
   TCS_MULTILINE = $0200;
   
+  { Open File Dialog}
+  OFN_ENABLESIZING = $800000;
+  
   { BrowseForFolder dialog}
   BIF_RETURNONLYFSDIRS = 1;
 
@@ -240,6 +243,38 @@ Function Split(Const Str: String; SplitStr: String; Count: Integer; Const CaseSe
 function GET_X_LPARAM(lp : Windows.LParam) : longint;
 function GET_Y_LPARAM(lp : Windows.LParam) : longint;
 {$endif VER2_0}
+
+// the declaration in the windows unit doesn't have the FlagsEx field
+type
+     OPENFILENAME = record
+          lStructSize : DWORD;
+          hwndOwner : HWND;
+          hInstance : HINST;
+          lpstrFilter : LPCTSTR;
+          lpstrCustomFilter : LPTSTR;
+          nMaxCustFilter : DWORD;
+          nFilterIndex : DWORD;
+          lpstrFile : LPTSTR;
+          nMaxFile : DWORD;
+          lpstrFileTitle : LPTSTR;
+          nMaxFileTitle : DWORD;
+          lpstrInitialDir : LPCTSTR;
+          lpstrTitle : LPCTSTR;
+          Flags : DWORD;
+          nFileOffset : WORD;
+          nFileExtension : WORD;
+          lpstrDefExt : LPCTSTR;
+          lCustData : LPARAM;
+          lpfnHook : LPOFNHOOKPROC;
+          lpTemplateName : LPCTSTR;
+          pvReserved: pointer;
+          dwReserved: DWORD;
+          FlagsEx: DWORD;
+       end;
+     LPOPENFILENAME = ^OPENFILENAME;
+     TOPENFILENAME = OPENFILENAME;
+     POPENFILENAME = ^OPENFILENAME;
+
 
 Implementation
 

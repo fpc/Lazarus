@@ -33,9 +33,9 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-  Dialogs, Controls, Graphics, SysUtils, Classes,
+  LCLProc, LCLType, Dialogs, Controls, Graphics, SysUtils, Classes,
 ////////////////////////////////////////////////////
-  WSDialogs, WSLCLClasses, Windows, WinExt, LCLProc, LCLType, Win32Int, InterfaceBase;
+  WSDialogs, WSLCLClasses, Windows, WinExt, Win32Int, InterfaceBase;
 
 type
 
@@ -221,13 +221,13 @@ end;
 }
 
 type
-  TWinFileDialogFunc = function(OpenFile: LPOPENFILENAME): WINBOOL; stdcall;
+  TWinFileDialogFunc = function(OpenFile: Windows.LPOPENFILENAME): WINBOOL; stdcall;
 
 function OpenFileDialogCallBack(hwnd : Handle; uMsg : UINT; wParam: WPARAM;
   lParam: LPARAM) : UINT; stdcall;
 var
   OpenFileNotify: LPOFNOTIFY;
-  OpenFileName: POPENFILENAME;
+  OpenFileName: Windows.POPENFILENAME;
   NeededSize: SizeInt;
   FileNames: pstring;
 begin
@@ -276,6 +276,7 @@ var
     if ofHideReadOnly in Options then Result := Result or OFN_HIDEREADONLY;
     if ofNoChangeDir in Options then Result := Result or OFN_NOCHANGEDIR;
     if ofNoDereferenceLinks in Options then Result := Result or OFN_NODEREFERENCELINKS;
+    if ofEnableSizing in Options then Result := Result or OFN_ENABLESIZING;
     if ofNoLongNames in Options then  Result := Result or OFN_NOLONGNAMES;
     if ofNoNetworkButton in Options then Result := Result or OFN_NONETWORKBUTTON;
     if ofNoReadOnlyReturn in  Options then Result := Result or OFN_NOREADONLYRETURN;
