@@ -2641,6 +2641,8 @@ end;
 
 procedure TDesigner.BuildPopupMenu;
 begin
+  if DesignerPopupMenu<>nil then exit;
+  
   DesignerPopupMenu:=TPopupMenu.Create(nil);
   with DesignerPopupMenu do begin
     Name:='DesignerPopupmenu';
