@@ -32,16 +32,28 @@ begin
       AutoCalcRange;
 
     if Value > FAutoRange then begin
+      {$IFDEF VerboseScrollingWinControl}
+      if Kind=sbHorizontal then
+        DebugLn(['TControlScrollBar.SetPosition FAutoRange Value=',Value,' > AutoRange=',FAutoRange]);
+      {$ENDIF}
       SetPosition(FAutoRange);
       exit;
     end;
   end;
 
   if Value>Range then begin
+    {$IFDEF VerboseScrollingWinControl}
+    if Kind=sbHorizontal then
+      DebugLn(['TControlScrollBar.SetPosition Range Value=',Value,' > Range=',Range]);
+    {$ENDIF}
     SetPosition(Range);
     exit;
   end;
 
+  {$IFDEF VerboseScrollingWinControl}
+  if Kind=sbHorizontal then
+    DebugLn(['TControlScrollBar.SetPosition Value=',Value,' FPosition=',FPosition]);
+  {$ENDIF}
   if Value=FPosition then exit;
 
   // scroll content of FControl
@@ -52,8 +64,14 @@ begin
 
   // check that the new position is also set on the scrollbar
   if HandleAllocated
-  and (GetScrollPos(ControlHandle, IntfBarKind[Kind]) <> FPosition) then
+  and (GetScrollPos(ControlHandle, IntfBarKind[Kind]) <> FPosition) then begin
+    InvalidateScollInfo;
+    {$IFDEF VerboseScrollingWinControl}
+    if Kind=sbHorizontal then
+      DebugLn(['TControlScrollBar.SetPosition FPosition=',FPosition]);
+    {$ENDIF}
     SetScrollPos(ControlHandle, IntfBarKind[Kind], FPosition, Visible);
+  end;
 end;
 
 function TControlScrollBar.SmoothIsStored: boolean;
@@ -72,6 +90,7 @@ begin
   if HandleAllocated and (not (FControl is TScrollingWinControl)) then begin
     ScrollInfo.fMask:=SIF_PAGE;
     GetScrollInfo(ControlHandle,IntfBarKind[Kind],ScrollInfo);
+    InvalidateScollInfo;
     FPage:=ScrollInfo.nPage;
   end;
   Result:=FPage;
@@ -83,6 +102,7 @@ begin
   if HandleAllocated and (not (FControl is TScrollingWinControl)) then begin
     ScrollInfo.fMask:=SIF_POS;
     GetScrollInfo(ControlHandle,IntfBarKind[Kind],ScrollInfo);
+    InvalidateScollInfo;
     FPosition:=ScrollInfo.nPos;
   end;
   Result:=FPosition;
@@ -94,6 +114,7 @@ begin
   if HandleAllocated and (not (FControl is TScrollingWinControl)) then begin
     ScrollInfo.fMask:=SIF_Range+SIF_Page;
     GetScrollInfo(ControlHandle,IntfBarKind[Kind],ScrollInfo);
+    InvalidateScollInfo;
     FRange:=ScrollInfo.nMax-ScrollInfo.nMin-integer(ScrollInfo.nPage);
   end;
   Result:=FRange;
@@ -107,6 +128,7 @@ end;
 function TControlScrollBar.GetVisible: Boolean;
 begin
   if HandleAllocated and (not (FControl is TScrollingWinControl)) then begin
+    InvalidateScollInfo;
     FVisible:=GetScrollbarVisible(Controlhandle,IntfBarKind[Kind]);
   end;
   Result:=FVisible;
@@ -138,9 +160,10 @@ begin
     KindID:=SM_CXHSCROLL
   else
     KindID:=SM_CXVSCROLL;
-  if HandleAllocated then
-    Result:=LCLIntf.GetScrollBarSize(ControlHandle,KindID)
-  else
+  if HandleAllocated then begin
+    Result:=LCLIntf.GetScrollBarSize(ControlHandle,KindID);
+    InvalidateScollInfo;
+  end else
     Result:=GetSystemMetrics(KindID);
 end;
 
@@ -152,6 +175,10 @@ begin
   end;
   if FRange=Value then exit;
   FRange := Value;
+  {$IFDEF VerboseScrollingWinControl}
+  if Kind=sbHorizontal then
+    DebugLn(['TControlScrollBar.SetRange ',Self,' fRange=',FRange]);
+  {$ENDIF}
   ControlUpdateScrollBars;
 end;
 
@@ -179,14 +206,12 @@ procedure TControlScrollBar.AutoCalcRange;
   var
     I : Integer;
     TmpRange : Longint;
-    IncludeControl : Boolean;
   begin
     TmpRange := 0;
     For I := 0 to FControl.ControlCount - 1 do
       With FControl.Controls[I] do
-        if Visible then begin
-          IncludeControl := (Align = alTop) or (Align = alNone);
-          If IncludeControl then
+        if IsControlVisible then begin
+          If (Align = alTop) or (Align = alNone) then
             TmpRange := Max(TmpRange, Top + Height);
         end;
     Range := TmpRange;
@@ -204,13 +229,10 @@ procedure TControlScrollBar.AutoCalcRange;
       c := FControl.Controls[I];
       if not C.IsControlVisible then Continue;
       if (c.Align <> alLeft) and (c.Align <> alNone) then Continue;
-      
-      // the left of a control is negative when it is scrolled to the left,
-      // so add FPosition
-      // MWE: temporary disabled until WM_MOVE messages are send for all gtklayout childs
-      TmpRange := Max(TmpRange, {FPosition +} c.Left + c.Width);
-      {if c.Left < 0
-      then DebugLn('Child.Left = %d, Control.Left = %d', [c.Left, FControl.Left]);}
+      {$IFDEF VerboseScrollingWinControl}
+      DebugLn(['AutoCalcHRange ',DbgSName(c),' Left=',c.Left]);
+      {$ENDIF}
+      TmpRange := Max(TmpRange, c.Left + c.Width);
     end;
     Range := TmpRange;
   end;
@@ -223,35 +245,48 @@ begin
     else
       AutoCalcHRange;
   end;
-  ControlUpdateScrollBars;
 end;
 
 procedure TControlScrollBar.UpdateScrollBar;
 var
   ScrollInfo: TScrollInfo;
 begin
-  //todo: probably needs to be moved somewhere else.
-  FAutoRange := 0;
-
-  if FControl is TScrollingWinControl then begin
+  if HandleAllocated
+  and (FControl is TScrollingWinControl) then begin
+    FillChar(ScrollInfo,SizeOf(ScrollInfo),0);
     ScrollInfo.cbSize := SizeOf(ScrollInfo);
     ScrollInfo.fMask := SIF_ALL;
     ScrollInfo.nMin := 0;
     ScrollInfo.nMax := FRange;
     ScrollInfo.nPos := FPosition;
+    ScrollInfo.nPage := FPage;
     ScrollInfo.nTrackPos := FPosition;
-    if HandleAllocated then
+    if (not FOldScrollInfoValid)
+    or (not CompareMem(@ScrollInfo,@FOldScrollInfo,SizeOf(TScrollInfo))) then
+    begin
+      FOldScrollInfo:=ScrollInfo;
+      FOldScrollInfoValid:=true;
       SetScrollInfo(FControl.Handle, IntfBarKind[Kind], ScrollInfo, FVisible);
+    end;
+    {$IFDEF VerboseScrollingWinControl}
+    if Kind=sbHorizontal then
+      DebugLn(['TControlScrollBar.UpdateScrollBar ',DbgSName(FControl),' ',DbgSName(Self),' FVisible=',FVisible,' Range=',FRange,' FPosition=',FPosition,' FPage=',FPage,' FAutoRange=',FAutoRange]);
+    {$ENDIF}
   end;
 
-  SetPosition(ScrollInfo.nTrackPos);
+  SetPosition(FPosition);
 
   if FControl is TScrollingWinControl then begin
-    // I am not positive that this is right, but it apeared to be when I
+    // I am not positive that this is right, but it appeared to be when I
     // compared results to Delphi 4
     if FSmooth then
       FIncrement := FPage div 10;
   end;
+end;
+
+procedure TControlScrollBar.InvalidateScollInfo;
+begin
+  FOldScrollInfoValid:=false;
 end;
 
 function TControlScrollBar.ControlAutoScroll: boolean;
@@ -288,21 +323,26 @@ begin
   else
     Exit;
   end;
+  {$IFDEF VerboseScrollingWinControl}
+  DebugLn(['TControlScrollBar.ScrollHandler Message.ScrollCode=',Message.ScrollCode,' FPosition=',FPosition,' NewPos=',NewPos,' Range=',Range]);
+  {$ENDIF}
   if NewPos < 0 then NewPos := 0;
   if NewPos > Range then NewPos := Range;
+  InvalidateScollInfo;
   SetPosition(NewPos);
 end;
 
 procedure TControlScrollBar.ControlUpdateScrollBars;
 begin
-  if csLoading in FControl.ComponentState then exit;
+  if ([csLoading,csDestroying]*FControl.ComponentState<>[]) then exit;
+  if not HandleAllocated then exit;
   if FControl is TScrollingWinControl then
     TScrollingWinControl(FControl).UpdateScrollBars;
 end;
 
 function TControlScrollBar.HandleAllocated: boolean;
 begin
-  Result:=(FControl<>nil) and (FControl.HandleAllocated)
+  Result:=(FControl<>nil) and (FControl.HandleAllocated);
 end;
 
 function TControlScrollBar.ControlHandle: HWnd;

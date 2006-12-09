@@ -1157,8 +1157,10 @@ begin
 end;
 
 procedure DoInitialization;
+{$ifdef WindowsUnicodeSupport}
 var
   WinVersion: TOSVersionInfo;
+{$endif}
 begin
   FillChar(DefaultWindowInfo, sizeof(DefaultWindowInfo), 0);
   DefaultWindowInfo.DrawItemIndex := -1;

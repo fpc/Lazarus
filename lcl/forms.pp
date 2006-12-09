@@ -88,6 +88,8 @@ type
     FRange: Integer;
     FSmooth : Boolean;
     FVisible: Boolean;
+    FOldScrollInfo: TScrollInfo;
+    FOldScrollInfoValid: Boolean;
   protected
     FControl: TWinControl;
     function ControlAutoScroll: boolean; virtual;
@@ -113,6 +115,7 @@ type
     procedure SetSmooth(const Value: Boolean); virtual;
     procedure SetVisible(const Value: Boolean); virtual;
     procedure UpdateScrollBar; virtual;
+    procedure InvalidateScollInfo;
   public
     constructor Create(AControl: TWinControl; AKind: TScrollBarKind);
     procedure Assign(Source: TPersistent); override;
@@ -153,19 +156,21 @@ type
     procedure WMHScroll(var Message : TLMHScroll); message LM_HScroll;
     procedure WMVScroll(var Message : TLMVScroll); message LM_VScroll;
     procedure ScrollBy(DeltaX, DeltaY: Integer);
-    procedure ComputeScrollbars; virtual;
-    procedure ScrollbarHandler(p_ScrollKind: TScrollBarKind; p_OldPosition: Integer); virtual;
+    function ComputeScrollbars: Boolean; virtual;
+    procedure ScrollbarHandler(ScrollKind: TScrollBarKind;
+                               OldPosition: Integer); virtual;
+    procedure Loaded; override;
   public
-    Constructor Create(AOwner : TComponent); Override;
-    Destructor Destroy; Override;
+    constructor Create(TheOwner : TComponent); override;
+    destructor Destroy; override;
     procedure UpdateScrollbars;
     function HasVisibleScrollbars: boolean; virtual;
   published
     property AutoScroll: Boolean read FAutoScroll write SetAutoScroll;
     property HorzScrollBar: TControlScrollBar
-      read FHorzScrollBar write SetHorzScrollBar stored StoreScrollBars;
+              read FHorzScrollBar write SetHorzScrollBar stored StoreScrollBars;
     property VertScrollBar: TControlScrollBar
-      read FVertScrollBar write SetVertScrollBar stored StoreScrollBars;
+              read FVertScrollBar write SetVertScrollBar stored StoreScrollBars;
   end;
 
 

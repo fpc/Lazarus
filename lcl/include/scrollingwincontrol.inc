@@ -17,15 +17,13 @@
 
 procedure TScrollingWinControl.SetAutoScroll(Value: Boolean);
 begin
-  if FAutoScroll <> Value then
-  begin
-    FAutoScroll := Value;
-    if Value then begin
-      HorzScrollBar.AutoCalcRange;
-      VertScrollBar.AutoCalcRange;
-    end;
-    UpdateScrollBars;
+  if FAutoScroll = Value then exit;
+  FAutoScroll := Value;
+  if Value then begin
+    HorzScrollBar.AutoCalcRange;
+    VertScrollBar.AutoCalcRange;
   end;
+  UpdateScrollBars;
 end;
 
 procedure TScrollingWinControl.CreateWnd;
@@ -49,11 +47,11 @@ procedure TScrollingWinControl.AlignControls(AControl: TControl;
   var ARect: TRect);
 begin
   if (HorzScrollBar=nil) or (VertScrollBar=nil) then exit;
+  inherited AlignControls(AControl, ARect);
   HorzScrollBar.AutoCalcRange;
   VertScrollBar.AutoCalcRange;
-  If not AutoScroll then
+  if not AutoScroll then
     UpdateScrollBars;
-  inherited AlignControls(AControl, ARect);
 end;
 
 procedure TScrollingWinControl.DoOnResize;
@@ -74,16 +72,20 @@ begin
   FVertScrollbar.Assign(Value);
 end;
 
-procedure TScrollingWinControl.ComputeScrollbars;
+function TScrollingWinControl.ComputeScrollbars: Boolean;
+// true if something changed
+// update Page, AutoRange, Visible
 
   procedure UpdateRange(p_Bar: TControlScrollBar);
   var
     SBSize: Longint;
     OtherScrollbar: TControlScrollBar;
+    OldAutoRange: LongInt;
   begin
+    OldAutoRange:=p_Bar.FAutoRange;
     p_Bar.FAutoRange := 0;
     OtherScrollbar := p_Bar.GetOtherScrollBar;
-    If OtherScrollbar.FVisible then
+    if OtherScrollbar.FVisible then
       SBSize := OtherScrollbar.Size
     else
       SBSize := 0;
@@ -95,43 +97,66 @@ procedure TScrollingWinControl.ComputeScrollbars;
       p_Bar.FAutoRange := (p_Bar.FRange - SBSize)
     else
       p_Bar.FAutoRange := 0;
+    {$IFDEF VerboseScrollingWinControl}
+    if p_Bar.Kind = sbHorizontal then
+      DebugLn(['UpdateRange p_Bar.fRange=',p_Bar.fRange,' SBSize=',SBSize,' ClientWidth=',ClientWidth,' FAutoRange=',p_Bar.FAutoRange]);
+    {$ENDIF}
+    if OldAutoRange<>p_Bar.FAutoRange then
+      Result:=true;
   end;
   
   procedure UpdateVisible(p_Bar: TControlScrollBar);
   var
     CurMax: Integer;
+    OldVisible: Boolean;
   begin
+    OldVisible:=p_Bar.FVisible;
     if p_Bar.Kind = sbVertical then
       CurMax := Height
     else
       CurMax := Width;
-    If (p_Bar.FVisible and not FAutoScroll)
+    if (p_Bar.FVisible and not FAutoScroll)
       or (FAutoScroll and (p_Bar.FRange > 0) and (p_Bar.FRange > CurMax))
     then
       p_Bar.FVisible := True
     else
       p_Bar.FVisible := False;
+    if OldVisible<>p_Bar.FVisible then
+      Result:=true;
   end;
   
+var
+  NewPage: Integer;
 begin
-  //todo: why doesn't it simply use ClientWidth/Height?
+  Result:=false;
   // page
-  HorzScrollbar.FPage := Min(ClientWidth -1, High(HorzScrollbar.FPage));
-  VertScrollbar.FPage := Min(ClientHeight -1, High(VertScrollbar.FPage));
+  NewPage:=Max(1,Min(ClientWidth -1, High(HorzScrollbar.FPage)));
+  if NewPage<>HorzScrollbar.FPage then begin
+    HorzScrollbar.FPage := NewPage;
+    Result:=true;
+  end;
+  NewPage := Max(1,Min(ClientHeight -1, High(VertScrollbar.FPage)));
+  if NewPage<>VertScrollbar.FPage then begin
+    VertScrollbar.FPage := NewPage;
+    Result:=true;
+  end;
   // range
-  UpdateRange(VertScrollbar);
+  UpdateRange(HorzScrollbar);
   UpdateRange(VertScrollbar);
   // visible
   UpdateVisible(HorzScrollbar);
   UpdateVisible(VertScrollbar);
 end;
 
-Procedure TScrollingWinControl.UpdateScrollbars;
+procedure TScrollingWinControl.UpdateScrollbars;
 begin
-  If FIsUpdating then exit;
+  if ([csLoading,csDestroying]*ComponentState<>[]) then exit;
+  if not HandleAllocated then exit;
+  
+  if FIsUpdating then exit;
   FIsUpdating := True;
   try
-    ComputeScrollbars;
+    ComputeScrollbars; // page, autorange, visible
     FVertScrollbar.UpdateScrollbar;
     FHorzScrollbar.UpdateScrollbar;
   finally
@@ -154,32 +179,38 @@ procedure TScrollingWinControl.ScrollBy(DeltaX, DeltaY: Integer);
 begin
   if HandleAllocated then begin
     TWSScrollingWinControlClass(WidgetSetClass).ScrollBy(Self, DeltaX, DeltaY);
-    //todo: shouldn't call Invalidate. Instead, the TWidgetSet should call it if it needs to.
     Invalidate;
   end;
 end;
 
-procedure TScrollingWinControl.ScrollbarHandler(p_ScrollKind: TScrollBarKind; p_OldPosition: Integer);
+procedure TScrollingWinControl.ScrollbarHandler(ScrollKind: TScrollBarKind;
+  OldPosition: Integer);
 begin
-  if p_ScrollKind = sbVertical then
-    ScrollBy(0, FVertScrollBar.Position - p_OldPosition)
+  if ScrollKind = sbVertical then
+    ScrollBy(0, FVertScrollBar.Position - OldPosition)
   else
-    ScrollBy(FHorzScrollBar.Position - p_OldPosition, 0);
+    ScrollBy(FHorzScrollBar.Position - OldPosition, 0);
 end;
 
-Procedure TScrollingWinControl.WMVScroll(var Message : TLMVScroll);
+procedure TScrollingWinControl.Loaded;
+begin
+  inherited Loaded;
+  UpdateScrollbars;
+end;
+
+procedure TScrollingWinControl.WMVScroll(var Message : TLMVScroll);
 begin
   VertScrollbar.ScrollHandler(Message);
 end;
 
-Procedure TScrollingWinControl.WMHScroll(var Message : TLMHScroll);
+procedure TScrollingWinControl.WMHScroll(var Message : TLMHScroll);
 begin
   HorzScrollbar.ScrollHandler(Message);
 end;
 
-Constructor TScrollingWinControl.Create(AOwner : TComponent);
+constructor TScrollingWinControl.Create(TheOwner : TComponent);
 begin
-  Inherited Create(AOwner);
+  Inherited Create(TheOwner);
 
   FVertScrollbar := TControlScrollBar.Create(Self, sbVertical);
   FHorzScrollbar := TControlScrollBar.Create(Self, sbHorizontal);
@@ -189,7 +220,7 @@ begin
   SetInitialBounds(0,0, 150, 150);
 end;
 
-Destructor TScrollingWinControl.Destroy;
+destructor TScrollingWinControl.Destroy;
 begin
   FreeThenNil(FHorzScrollBar);
   FreeThenNil(FVertScrollBar);

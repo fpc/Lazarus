@@ -1114,9 +1114,11 @@ End;
 
  ------------------------------------------------------------------------------}
 function TWin32WidgetSet.DrawText(DC: HDC; Str: PChar; Count: Integer; var Rect: TRect; Flags: Cardinal): Integer;
+{$ifdef WindowsUnicodeSupport}
 var
   s: String;
   w: WideString;
+{$endif}
 begin
   Assert(False, Format('trace:> [TWin32WidgetSet.DrawText] DC:0x%x, Str:''%s'', Count: %d, Rect = %d,%d,%d,%d, Flags:%d',
     [DC, Str, Count, Rect.Left, Rect.Top, Rect.Right, Rect.Bottom, Flags]));
@@ -1278,9 +1280,11 @@ end;
   Draws a character string by using the currently selected font.
  ------------------------------------------------------------------------------}
 function TWin32WidgetSet.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
+{$ifdef WindowsUnicodeSupport}
 var
   s: String;
   w: WideString;
+{$ENDIF}
 begin
   Assert(False, Format('trace:> [TWin32WidgetSet.ExtTextOut] DC:0x%x, X:%d, Y:%d, Options:%d, Str:''%s'', Count: %d', [DC, X, Y, Options, Str, Count]));
 
@@ -2108,9 +2112,11 @@ End;
   Computes the width and height of the specified string of text.
  ------------------------------------------------------------------------------}
 Function TWin32WidgetSet.GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer; Var Size: TSize): Boolean;
+{$ifdef WindowsUnicodeSupport}
 var
   s: String;
   w: WideString;
+{$ENDIF}
 Begin
   Assert(False, 'Trace:[TWin32WidgetSet.GetTextExtentPoint] - Start');
 {$ifdef WindowsUnicodeSupport}
