@@ -1799,8 +1799,7 @@ begin
   Desc^.AlphaBitsPerPixel := 1; // bits per alpha mask pixel.
   Desc^.AlphaBitOrder := riboReversedBits;
   Desc^.AlphaByteOrder := riboLSBFirst;
-  // CreateBitmap winapi call wants word-aligned data
-  Desc^.AlphaLineEnd := rileWordBoundary;
+  Desc^.AlphaLineEnd := rileDWordBoundary;
   Desc^.AlphaShift := 0;
 end;
 
@@ -1919,8 +1918,8 @@ begin
 
   hScreenDC := Windows.GetDC(0);
   MaskBitmap := 0;
-  Bitmap := Windows.CreateDIBitmap(hScreenDC, Windows.TBitmapInfoHeader(BitmapInfo.bmiHeader), CBM_INIT, RawImage.Data,
-    Windows.TBitmapInfo(BitmapInfo), DIB_RGB_COLORS);
+  Bitmap := Windows.CreateDIBitmap(hScreenDC, Windows.TBitmapInfoHeader(BitmapInfo.bmiHeader), 
+    CBM_INIT, RawImage.Data, Windows.TBitmapInfo(BitmapInfo), DIB_RGB_COLORS);
   Result := Bitmap <> 0;
   if Result then
   begin
@@ -1929,8 +1928,15 @@ begin
       if RawImage.Description.AlphaSeparate then
       begin
         MaskBitmap := Windows.CreateBitmap(RawImage.Description.Width,
-                              RawImage.Description.Height, 1, 1, RawImage.Mask);
-        Result := Result and (MaskBitmap <> 0);
+                              RawImage.Description.Height, 1, 1, nil);
+        Result := MaskBitmap <> 0;
+        if Result then
+        begin
+          BitmapInfo.bmiHeader.biBitCount := 1;
+          Result := Windows.SetDIBits(0, MaskBitmap, 0, RawImage.Description.Height, 
+            RawImage.Mask, Windows.TBitmapInfo(BitmapInfo), DIB_RGB_COLORS) 
+              = LongInt(RawImage.Description.Height);
+        end;
       end;
     end;
   end;
