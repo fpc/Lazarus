@@ -1933,9 +1933,12 @@ procedure LRSObjectBinaryToText(Input, Output: TStream);
 
       procedure ProcessBinary;
       var
-        ToDo, DoNow, i: LongInt;
+        ToDo, DoNow, StartPos, i: LongInt;
         lbuf: array[0..31] of Byte;
         s: String;
+        p: pchar;
+      const
+        HexDigits: array[0..$F] of char = '0123456789ABCDEF';
       begin
         ToDo := ReadLRSCardinal(Input);
         OutLn('{');
@@ -1944,9 +1947,16 @@ procedure LRSObjectBinaryToText(Input, Output: TStream);
           if DoNow > 32 then DoNow := 32;
           Dec(ToDo, DoNow);
           s := Indent + '  ';
+          StartPos := length(s);
           Input.Read(lbuf, DoNow);
-          for i := 0 to DoNow - 1 do
-            s := s + IntToHex(lbuf[i], 2);
+          setlength(s, StartPos+DoNow*2);
+          p := @s[StartPos];
+          for i := 0 to DoNow - 1 do begin
+            inc(p);
+            p^ := HexDigits[(lbuf[i] shr 4) and $F];
+            inc(p);
+            p^ := HexDigits[lbuf[i] and $F];
+          end;
           OutLn(s);
         end;
         OutStr(indent);

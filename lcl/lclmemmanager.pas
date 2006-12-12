@@ -27,7 +27,7 @@ unit LCLMemManager;
 interface
 
 uses
-  Classes;
+  Classes, Math;
 
 type
   PLCLMemManagerItem = ^TLCLMemManagerItem;
@@ -92,6 +92,8 @@ type
   { TExtMemoryStream }
   
   TExtMemoryStream = class(TMemoryStream)
+  protected
+    function Realloc(var NewCapacity: Longint): Pointer; override;
   public
     property Capacity: Longint read FCapacity write SetCapacity;
   end;
@@ -265,6 +267,16 @@ begin
       end;
     end;
   end;
+end;
+
+{ TExtMemoryStream }
+
+function TExtMemoryStream.Realloc(var NewCapacity: LongInt): Pointer;
+begin
+  // if we are growing, grow at least a quarter
+  if (NewCapacity>Capacity) then
+    NewCapacity := Max(NewCapacity, Capacity + Capacity div 4);
+  Result:=inherited Realloc(NewCapacity);
 end;
 
 end.
