@@ -1809,7 +1809,7 @@ end;
 
 { TReplaceImplicitParameterTypes }
 
-function TReplaceImplicitParameterTypes.ClassDescription: string;
+class function TReplaceImplicitParameterTypes.ClassDescription: string;
 begin
   Result:='Replace implicit parameter types'#13
     +'For example:'#13
