@@ -1748,7 +1748,6 @@ end;
 procedure TCustomDBGrid.KeyDown(var Key: Word; Shift: TShiftState);
 var
   DeltaCol,DeltaRow: Integer;
-  WasCancelled: boolean;
 
   procedure DoOnKeyDown;
   begin
@@ -1801,24 +1800,26 @@ var
     if InsertCancelable then
     begin
       if IsEOF then
-        //exit
-      else
+        result:=true
+      else begin
         doCancel;
-      result := true;
+        result := false;
+      end;
     end else begin
+      result:=false;
       doMoveBySmall(1);
-      if GridCanModify and FDataLink.EOF then
+      if GridCanModify and FDataLink.EOF then begin
         doAppend;
-      result := false;
+      end;
     end;
   end;
   function DoVKUP: boolean;
   begin
-    Result := InsertCancelable and IsEOF;
-    if Result then
+    if InsertCancelable and IsEOF then
       doCancel
     else
       doMoveBySmall(-1);
+    result := FDatalink.DataSet.BOF;
   end;
 begin
   {$IfDef dbgGrid}DebugLn('DBGrid.KeyDown INIT Key= ',IntToStr(Key));{$Endif}
@@ -1832,15 +1833,16 @@ begin
 
             GetDeltaMoveNext(ssShift in Shift, DeltaCol, DeltaRow);
 
-            if DeltaRow > 0 then
-              WasCancelled := doVkDown
-            else
-            if DeltaRow < 0 then
-              WasCancelled := doVKUp
-            else
-              WasCancelled := false;
+            if DeltaRow > 0 then begin
+              if doVKDown then
+                //DeltaCol:=0; // tochk: strict? already in EOF, don't change column
+            end else
+            if DeltaRow < 0 then begin
+              if doVKUP then
+                //DeltaCol:=0; // tochk: strict? already in BOF, don't change column
+            end;
 
-            if not WasCancelled and (DeltaCol<>0) then
+            if (DeltaCol<>0) then
               Col := Col + DeltaCol;
 
             Key := 0;

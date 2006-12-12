@@ -118,7 +118,8 @@ type
   TGridZone = (gzNormal, gzFixedCols, gzFixedRows, gzFixedCells, gzInvalid);
 
   TUpdateOption = (uoNone, uoQuick, uoFull);
-  TAutoAdvance = (aaNone,aaDown,aaRight,aaLeft, aaRightDown, aaLeftDown);
+  TAutoAdvance = (aaNone,aaDown,aaRight,aaLeft, aaRightDown, aaLeftDown,
+    aaRightUp, aaLeftUp);
 
   TItemType = (itNormal,itCell,itColumn,itRow,itFixed,itFixedColumn,itFixedRow,itSelected);
 
@@ -5682,17 +5683,31 @@ end;
 function TCustomGrid.GetDeltaMoveNext(const Inverse: boolean;
   var ACol, ARow: Integer): boolean;
 var
-  aa: TAutoAdvance;
+
   DeltaCol,DeltaRow: Integer;
   
   function CalcNextStep: boolean;
   var
+    aa: TAutoAdvance;
     cCol,cRow: Integer;
   begin
 
     DeltaCol := 0;
     DeltaRow := 0;
-    
+
+    // invert direction if necessary
+    //
+    aa := FAutoAdvance;
+    if Inverse then
+      case FAutoAdvance of
+        aaRight:      aa := aaLeft;
+        aaLeft:       aa := aaRight;
+        aaRightDown:  aa := aaLeftUp;
+        aaLeftDown:   aa := aaRightUp;
+        aaRightUP:    aa := aaLeftDown;
+        aaLeftUP:     aa := aaRightDown;
+      end;
+
     case aa of
       aaRight:
         DeltaCol := 1;
@@ -5710,7 +5725,23 @@ var
           DeltaCol := FixedCols-ACol;
           DeltaRow := 1;
         end;
-
+        
+      aaRightUP:
+        if ACol<ColCount-1 then
+          DeltaCol := 1
+        else begin
+          DeltaCol := FixedCols-ACol;
+          DeltaRow := -1;
+        end;
+        
+      aaLeftUP:
+        if ACol>FixedCols then
+          DeltaCol := -1
+        else begin
+          DeltaCol := ColCount-1-ACol;
+          DeltaRow := -1;
+        end;
+        
       aaLeftDown:
         if ACol>FixedCols then
           DeltaCol := -1
@@ -5738,20 +5769,6 @@ begin
   if FAutoAdvance=aaNone then
     exit; // quick case, no auto movement allowed
   
-  // invert direction if necessary
-  //
-  // TODO: inverse of aaRightDown is aaLeftUP
-  //       inverse of aaLeftDown is aaRightUP
-  //       move this to CalcNextStep
-  aa := FAutoAdvance;
-  if Inverse then
-    case FAutoAdvance of
-      aaRight:      aa := aaLeft;
-      aaLeft:       aa := aaRight;
-      aaRightDown:  aa := aaLeftDown;
-      aaLeftDown:   aa := aaRightDown;
-    end;
-
   // browse the grid in autoadvance order
   while CalcNextStep do begin
     ACol := ACol + DeltaCol;
@@ -5767,9 +5784,9 @@ begin
     ACol := ACol - FCol;
     ARow := ARow - FRow;
   end else begin
-    // no available next cell, return current
-    ACol := FCol;
-    ARow := FRow;
+    // no available next cell, return delta anyway
+    ACol := DeltaCol;
+    ARow := DeltaRow;
   end;
 end;
 
