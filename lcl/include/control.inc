@@ -1876,7 +1876,6 @@ begin
     MouseCapture := False;
   end;
 
-  DoMouseUp(Message, mbLeft);
   if csClicked in ControlState then
   begin
     Exclude(FControlState, csClicked);
@@ -1887,6 +1886,8 @@ begin
       Click;
     end;
   end;
+
+  DoMouseUp(Message, mbLeft);
   //DebugLn('TControl.WMLButtonUp END');
 end;
 
