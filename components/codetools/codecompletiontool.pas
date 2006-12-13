@@ -2134,7 +2134,7 @@ begin
     ProcNode:=ANodeExt.Node;
     if (ProcNode<>nil) and (ANodeExt.ExtTxt3='')
     and (ProcNodeHasSpecifier(ProcNode,psOVERRIDE)) then begin
-      ProcCode:=ExtractProcHead(ProcNode,[phpWithStart,phpWithoutClassKeyword,
+      ProcCode:=ExtractProcHead(ProcNode,[phpWithStart,
                       phpAddClassname,phpWithVarModifiers,phpWithParameterNames,
                       phpWithResultType,phpWithCallingSpecs]);
       ProcCall:='inherited '+ExtractProcHead(ProcNode,[phpWithoutClassName,
@@ -2287,6 +2287,7 @@ var
       if (ANode<>nil) and (ANode.Desc=ctnProcedure)
       and ProcNodeHasSpecifier(ANode,psABSTRACT) then begin
         ClassProcs.Delete(AnAVLNode);
+        ANodeExt.Free;
       end;
       AnAVLNode:=NextAVLNode;
     end;

@@ -4780,10 +4780,11 @@ var
   NewWidth, NewHeight: integer;
 begin
   {$IFDEF VerboseSizeMsg}
-  DebugLn('TWinControl.WMMove A ',Name,':',ClassName,' Message=',dbgs(Message.XPos),',',dbgs(Message.YPos),
-    ' BoundsRealized='+dbgs(FBoundsRealized.Left)+','+dbgs(FBoundsRealized.Top),
-      ','+dbgs(FBoundsRealized.Right-FBoundsRealized.Left),
-      'x'+dbgs(FBoundsRealized.Bottom-FBoundsRealized.Top));
+  DebugLn(['TWinControl.WMMove A ',DbgSName(Self),' Message=',Message.XPos,',',Message.YPos,
+    ' BoundsRealized=',FBoundsRealized.Left,',',FBoundsRealized.Top,
+    ' SourceIsInterface=',Message.MoveType=Move_SourceIsInterface,
+    ',',FBoundsRealized.Right-FBoundsRealized.Left,
+    'x',FBoundsRealized.Bottom-FBoundsRealized.Top]);
   {$ENDIF}
   NewWidth:=Width;
   NewHeight:=Height;
