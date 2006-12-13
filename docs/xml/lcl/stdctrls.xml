@@ -1027,9 +1027,7 @@ radio buttons will be mutually exclusive within the group.</descr>
       <!-- property Visibility: published -->
       <element name="TGroupBox.OnUnDock">
         <short/>
-        <descr>
-          <short>property AutoCompleteText: TComboBoxAutoCompleteText</short>
-        </descr>
+        <descr/>
         <seealso/>
       </element>
       <!-- enumeration type Visibility: default -->
