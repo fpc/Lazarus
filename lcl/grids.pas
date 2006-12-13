@@ -3224,13 +3224,16 @@ procedure TCustomGrid.WMChar(var message: TLMChar);
 var
   Ch: Char;
 begin
-  inherited;
   Ch:=Char(message.CharCode);
   {$Ifdef GridTraceMsg}
   DebugLn(ClassName,'.WMchar CharCode= ', IntToStr(message.CharCode));
   {$Endif}
-  if (goEditing in Options) and (Ch in [^H, #32..#255]) then
+  if (goEditing in Options) and (Ch in [^H, #32..#255]) then begin
     EditorShowChar(Ch);
+    message.CharCode := 0;
+    message.Result := 1;
+  end else
+    inherited;
 end;
 
 
