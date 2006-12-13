@@ -959,7 +959,7 @@ type
     property SortType: TSortType read FSortType write SetSortType;
     property SortColumn: Integer read FSortColumn write SetSortColumn;
     property StateImages: TCustomImageList index Ord(lvilState) read GetImageList write SetImageList;
-    property ViewStyle: TViewStyle read FViewStyle write SetViewStyle;
+    property ViewStyle: TViewStyle read FViewStyle write SetViewStyle default vsList;
     property OnChange: TLVChangeEvent read FOnChange write FOnChange;
     property OnColumnClick: TLVColumnClickEvent read FOnColumnClick write FOnColumnClick;
     property OnCompare: TLVCompareEvent read FOnCompare write FOnCompare;
