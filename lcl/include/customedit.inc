@@ -55,6 +55,8 @@ begin
   SetInitialBounds(0,0,80,23);
   FEchoMode := emNormal;
   BorderStyle := bsSingle;
+  FAutoSelect := False;
+  FAutoSelected := False;
 end;
 
 {------------------------------------------------------------------------------
@@ -348,7 +350,15 @@ end;
 procedure TCustomEdit.KeyUp(var Key: Word; Shift: TShiftState);
 begin
   inherited KeyUp(Key, Shift);
-  if Key=VK_RETURN then EditingDone;
+  if Key=VK_RETURN then
+   begin
+    EditingDone;
+    if FAutoSelect then
+     begin
+      SelectAll;
+      if (SelText = Text) then FAutoSelected := True;
+     end;//End if FAutoSelect
+   end;//End if Key=VK_RETURN
 end;
 
 procedure TCustomEdit.WMChar(var Message: TLMChar);
@@ -361,6 +371,20 @@ begin
     Message.Result := 1
   else
     inherited WMChar(Message);
+end;
+
+procedure TCustomEdit.MouseUp(Button: TMouseButton; Shift:TShiftState; X, Y: Integer);
+begin
+ inherited MouseUp(Button, Shift, X, Y);
+ //AutoSelect when left mouse is clicked for the 1st time after having focus
+ if (Button = mbLeft) then
+  begin
+   if (FAutoSelect and not FAutoSelected) then
+    begin
+     SelectAll;
+     if (SelText = Text) then FAutoSelected := True;
+    end;//End if (FAutoSelect and not FAutoSelected)
+  end;//End if (Button = mbLeft)
 end;
 
 {------------------------------------------------------------------------------
@@ -394,6 +418,23 @@ End;
 Procedure TCustomEdit.Change;
 Begin
   if Assigned(FOnChange) then FOnChange(Self);
+end;
+
+procedure TCustomEdit.DoEnter;
+begin
+ //AutoSelect when DoEnter is fired by keyboard
+ if (FAutoSelect and not (csLButtonDown in ControlState)) then
+  begin
+   SelectAll;
+   if (SelText = Text) then FAutoSelected := True;
+  end;//End if FAutoSelect
+ inherited DoEnter;
+end;
+
+procedure TCustomEdit.DoExit;
+begin
+ FAutoSelected := False;
+ inherited DoExit;
 end;
 
 procedure TCustomEdit.InitializeWnd;

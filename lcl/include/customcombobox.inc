@@ -101,6 +101,24 @@ begin
   end;
 end;
 
+procedure TCustomComboBox.DoEnter;
+begin
+ inherited DoEnter;
+ //AutoSelect when DoEnter is fired by keyboard
+ if (Style = csDropDownList) then Exit;//Non editable style
+ if (FAutoSelect and not (csLButtonDown in ControlState)) then
+  begin
+   SelectAll;
+   if (SelText = Text) then FAutoSelected := True;
+  end;//End if (((Style = csDropDown) or.........
+end;
+
+procedure TCustomComboBox.DoExit;
+begin
+ FAutoSelected := False;
+ inherited DoExit;
+end;
+
 {------------------------------------------------------------------------------
   Method: TCustomComboBox.SetSorted
   Params: val - true means "sort" the combo
@@ -204,6 +222,11 @@ begin
   if not ReadOnly then
     EditingDone;
   if Assigned(FOnCloseUp) then FOnCloseUp(Self);
+  if FAutoSelect then
+   begin
+    SelectAll;
+    if (SelText = Text) then FAutoSelected := True;
+   end;//End if FAutoSelect
 end;
 
 {------------------------------------------------------------------------------
@@ -376,6 +399,18 @@ begin
     inherited WMChar(Message);
 end;
 
+procedure TCustomComboBox.SetCharCase(eccCharCase: TEditCharCase);
+begin
+ if (FCharCase <> eccCharCase) then
+  begin
+   FCharCase := eccCharCase;
+   case FCharCase of
+    ecUpperCase: Text := UpperCase(Text);
+    ecLowerCase: Text := Lowercase(Text);
+    end;//End case
+  end;//End if (FCharCase <> eccCharCase)
+end;
+
 procedure TCustomComboBox.KeyDown(var Key: Word; Shift: TShiftState);
 var
   skip : Boolean;
@@ -427,39 +462,69 @@ begin
  inherited KeyUp(Key, Shift);
  if ((cbactEnabled in FAutoCompleteText) and (Style <> csDropDownList)) then
   begin
-   //Only happens with alpha-numeric keys and return key and csDropDown Style
-   if not (IsEditableTextKey(Key) or (Key = VK_RETURN) or (ssShift in Shift)) then Exit;
-   if (Key = VK_RETURN) then
-    SelectAll else
+   //Only happens with alpha-numeric keys and return key and editable Style
+   if (IsEditableTextKey(Key) or (Key = VK_RETURN) or (ssShift in Shift)) then
     begin
-     iSelStart := SelStart;//Capture original cursor position
-     //End of line completion
-     if ((iSelStart < Length(Text)) and (cbactEndOfLineComplete in FAutoCompleteText)) then Exit;
-     sPrefixText := LeftStr(Text, iSelStart);
-     sCompleteText := GetCompleteText(Text, iSelStart,
-                                      (cbactSearchCaseSensitive in FAutoCompleteText),
-                                      (cbactSearchAscending in FAutoCompleteText), Items);
-     if not (sCompleteText = Text) then
+     if (Key = VK_RETURN) then
+      SelectAll else
       begin
-       sResultText := sCompleteText;
-       if ((cbactEndOfLineComplete in FAutoCompleteText) and
-           (cbactRetainPrefixCase in FAutoCompleteText)) then
-        begin//Retain Prefix Character cases
-         Delete(sResultText, 1, iSelStart);
-         Insert(sPrefixText, sResultText, 1);
-        end;//End if ((cbactEndOfLineComplete in FAutoCompleteText) and....
-       Text := sResultText;
-       SelStart := iSelStart;
-       SelLength := Length(Text);
-      end;//End if not (sCompleteText = Text)
-    end;//End if (Key = VK_RETURN)
+       iSelStart := SelStart;//Capture original cursor position
+       //End of line completion
+       if ((iSelStart < Length(Text)) and (cbactEndOfLineComplete in FAutoCompleteText)) then Exit;
+       sPrefixText := LeftStr(Text, iSelStart);
+       sCompleteText := GetCompleteText(Text, iSelStart,
+                                        (cbactSearchCaseSensitive in FAutoCompleteText),
+                                        (cbactSearchAscending in FAutoCompleteText), Items);
+       if not (sCompleteText = Text) then
+        begin
+         sResultText := sCompleteText;
+         if ((cbactEndOfLineComplete in FAutoCompleteText) and
+             (cbactRetainPrefixCase in FAutoCompleteText)) then
+          begin//Retain Prefix Character cases
+           Delete(sResultText, 1, iSelStart);
+           Insert(sPrefixText, sResultText, 1);
+          end;//End if ((cbactEndOfLineComplete in FAutoCompleteText) and....
+         Text := sResultText;
+         SelStart := iSelStart;
+         SelLength := Length(Text);
+        end;//End if not (sCompleteText = Text)
+      end;//End if (Key = VK_RETURN)
+    end;//End if (IsEditableTextKey(Key) or (Key = VK_RETURN) or (ssShift in Shift))
   end;//End if ((cbactEnabled in FAutoCompleteText) and (Style = csDropDown))
+ //SelectAll when hitting return key for AutoSelect feature
+ if (Key = VK_RETURN) then
+  begin
+   if FAutoSelect then
+    begin
+     SelectAll;
+     if (SelText = Text) then FAutoSelected := True;
+    end;//End if FAutoSelect
+  end;//End if (Key = VK_RETURN)
+end;
+
+procedure TCustomComboBox.KeyPress(var Key: char);
+begin
+ //Convert character cases if FCharCase is not ecNormalCase
+ case FCharCase of
+  ecLowerCase: Key := lowerCase(Key);
+  ecUpperCase: Key := upCase(Key);
+  end;//End case
+ inherited KeyPress(Key);
 end;
 
 procedure TCustomComboBox.MouseUp(Button: TMouseButton; Shift:TShiftState;
   X, Y: Integer);
 begin
-  inherited MouseUp(Button, Shift, X, Y);
+ inherited MouseUp(Button, Shift, X, Y);
+ //AutoSelect when left mouse is clicked for the 1st time after having focus
+ if (Button = mbLeft) then
+  begin
+   if (FAutoSelect and not FAutoSelected) then
+    begin
+     SelectAll;
+     if (SelText = Text) then FAutoSelected := True;
+    end;//End if (FAutoSelect and not FAutoSelected)
+  end;//End if (Button = mbLeft)
   //if (Style = csDropDownList) then
   // DroppedDown := not DroppedDown;
 end;
@@ -627,6 +692,9 @@ begin
   TabStop := true;
   ParentColor := false;
   FAutoCompleteText := [cbactEndOfLineComplete, cbactSearchAscending];
+  FAutoSelect := False;
+  FAutoSelected := False;
+  FCharCase := ecNormal;
 end;
 
 {------------------------------------------------------------------------------

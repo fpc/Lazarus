@@ -1027,8 +1027,46 @@ radio buttons will be mutually exclusive within the group.</descr>
       <!-- property Visibility: published -->
       <element name="TGroupBox.OnUnDock">
         <short/>
-        <descr/>
+        <descr>
+          <short>property AutoCompleteText: TComboBoxAutoCompleteText</short>
+        </descr>
         <seealso/>
+      </element>
+      <!-- enumeration type Visibility: default -->
+      <element name="TComboBoxAutoCompleteTextOption">
+        <short>TComboBoxAutoCompleteTextOption defines the behavior of the AutoComplete feature in a combobox control.</short>
+        <descr>TComboBoxAutoCompleteTextOption = (cbactEnabled, cbactEndOfLineComplete, cbactRetainPrefixCase,
+                                                        cbactSearchCaseSensitive, cbactSearchAscending);
+
+Defines the behavior of the AutoComplete feature.
+&lt;ul&gt;&lt;li&gt;cbactEnabled: Enable Auto-Completion feature.&lt;/li&gt;&lt;li&gt;cbactEndOfLineComplete: Perform Auto-Complete only when cursor is at the end of the string.&lt;/li&gt;&lt;li&gt;cbactRetainPrefixCase: Retains the case of characters user has typed. (This option has no effect if cbactEndOfLineComplete is False)&lt;/li&gt;&lt;li&gt;cbactSearchCaseSensitive: Search completion string with case sensitivity.&lt;/li&gt;&lt;li&gt;cbactSearchAscending: Search completion string in accending order. (False will search in descending order)&lt;/li&gt;&lt;/ul&gt;</descr>
+        <seealso/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TComboBoxAutoCompleteTextOption.cbactEnabled">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TComboBoxAutoCompleteTextOption.cbactEndOfLineComplete">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TComboBoxAutoCompleteTextOption.cbactRetainPrefixCase">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TComboBoxAutoCompleteTextOption.cbactSearchCaseSensitive">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TComboBoxAutoCompleteTextOption.cbactSearchAscending">
+        <short/>
+      </element>
+      <!-- set type Visibility: default -->
+      <element name="TComboBoxAutoCompleteText">
+        <short>TComboBoxAutoCompleteText = set of TComboBoxAutoCompleteTextOption;</short>
+        <descr/>
+        <seealso>&lt;link id="TComboBoxAutoCompleteTextOption"/&gt;</seealso>
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TComboBoxStyle">
@@ -1105,6 +1143,43 @@ radio buttons will be mutually exclusive within the group.</descr>
       <element name="TCustomComboBox">
         <short>Custom Combo Box</short>
         <descr>Custom Combination Box: the base class from which Combo Box is derived.</descr>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCustomComboBox.FCharCase">
+        <short>FCharCase: TEditCharCase</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCustomComboBox.FAutoCompleteText">
+        <short>FAutoCompleteText: TComboBoxAutoCompleteText</short>
+        <descr>Private variable of property AutoCompleteText.
+
+Options for behavior of the Auto-Complete feature.
+</descr>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCustomComboBox.FAutoSelect">
+        <short>FAutoSelect: Boolean</short>
+        <descr>Private variable for property AutoSelect.
+
+When True, the edit control will select all its text when:
+&lt;ul&gt;&lt;li&gt;It recieves focus&lt;/li&gt;&lt;li&gt;The Enter key is pressed.&lt;/li&gt;&lt;li&gt;A new item is selected.&lt;/li&gt;&lt;/ul&gt;</descr>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCustomComboBox.FAutoSelected">
+        <short>FAutoSelected: Boolean</short>
+        <descr>Private variable for property AutoSelected.
+
+True indicate that the edit or combobox control has just performed
+an AutoSelect opertation so that subsequent mouse-clicks and keystrokes
+proceeds normally without selecting the text.
+
+False is set when the edit or combobox control looses focus.
+</descr>
+        <seealso/>
       </element>
       <!-- variable Visibility: private -->
       <element name="TCustomComboBox.FAutoDropDown">
@@ -1187,7 +1262,11 @@ radio buttons will be mutually exclusive within the group.</descr>
       <!-- variable Visibility: private -->
       <element name="TCustomComboBox.FOnMeasureItem">
         <short/>
-        <descr/>
+        <descr>
+          <short>Combo Box</short>
+          <descr>Combo box. A simple combination of text box for free text entry, and a drop-down list allowing one of several options to be chosen.
+</descr>
+        </descr>
         <seealso/>
       </element>
       <!-- variable Visibility: private -->
@@ -1782,6 +1861,12 @@ radio buttons will be mutually exclusive within the group.</descr>
         <errors/>
         <seealso/>
       </element>
+      <element name="TCustomComboBox.CharCase">
+        <short>property CharCase: TEditCharCase</short>
+        <descr>Indicates how text is displayed in a text editing control in the following ways:
+&lt;ul&gt;&lt;li&gt;Normal case letters&lt;/li&gt;&lt;li&gt;Upper case letters&lt;/li&gt;&lt;li&gt;Lower case letters&lt;/li&gt;&lt;/ul&gt;</descr>
+        <seealso/>
+      </element>
       <!-- property Visibility: public -->
       <element name="TCustomComboBox.DroppedDown">
         <short/>
@@ -1811,9 +1896,40 @@ radio buttons will be mutually exclusive within the group.</descr>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
+      <element name="TCustomComboBox.AutoComplete">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TCustomComboBox.AutoCompleteText">
+        <short>property AutoCompleteText: TComboBoxAutoCompleteText</short>
+        <descr>Options for behavior of the Auto-Complete feature.
+</descr>
+        <seealso>&lt;link id="TComboBoxAutoCompleteTextOption"/&gt;</seealso>
+      </element>
+      <!-- property Visibility: public -->
       <element name="TCustomComboBox.AutoDropDown">
         <short/>
         <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TCustomComboBox.AutoSelect">
+        <short>property AutoSelect: Boolean</short>
+        <descr>When True, the edit control will select all its text when:
+&lt;ul&gt;&lt;li&gt;It recieves focus&lt;/li&gt;&lt;li&gt;The Enter key is pressed.&lt;/li&gt;&lt;li&gt;A new item is selected.&lt;/li&gt;&lt;/ul&gt;</descr>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TCustomComboBox.AutoSelected">
+        <short>property AutoSelected: Boolean</short>
+        <descr>True indicate that the edit or combobox control has just performed
+an AutoSelect operation so that subsequent mouse-clicks and keystrokes
+proceeds normally without selecting the text.
+
+False is set when the edit or combobox control looses focus.
+</descr>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
@@ -1906,15 +2022,45 @@ radio buttons will be mutually exclusive within the group.</descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
+      <element name="TComboBox.AutoComplete">
+        <short>property AutoComplete: Boolean</short>
+        <descr>True: Turns on auto-complete feature.
+False: Turns off auto-complete feature.</descr>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TComboBox.AutoCompleteText">
+        <short>property AutoCompleteText: TComboBoxAutoCompleteText</short>
+        <descr>Options for behavior of the Auto-Complete feature.
+</descr>
+        <seealso>&lt;link id="TComboBoxAutoCompleteTextOption"/&gt;
+&lt;link id="TComboBoxAutoCompleteText"/&gt;
+</seealso>
+      </element>
+      <!-- property Visibility: published -->
       <element name="TComboBox.AutoDropDown">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
+      <element name="TComboBox.AutoSelect">
+        <short>property AutoSelected: Boolean</short>
+        <descr>When True, the edit control will select all its text when:
+&lt;ul&gt;&lt;li&gt;It recieves focus&lt;/li&gt;&lt;li&gt;The Enter key is pressed.&lt;/li&gt;&lt;li&gt;A new item is selected.&lt;/li&gt;&lt;/ul&gt;</descr>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
       <element name="TComboBox.BorderSpacing">
         <short/>
         <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TComboBox.CharCase">
+        <short>property CharCase: TEditCharCase</short>
+        <descr>Indicates how text is displayed in a text editing control in the following ways:
+&lt;ul&gt;&lt;li&gt;Normal case letters&lt;/li&gt;&lt;li&gt;Upper case letters&lt;/li&gt;&lt;li&gt;Lower case letters&lt;/li&gt;&lt;/ul&gt;</descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
@@ -2095,7 +2241,11 @@ radio buttons will be mutually exclusive within the group.</descr>
       <element name="TComboBox.Style">
         <short/>
         <descr/>
-        <seealso/>
+        <seealso>
+          <descr>Options for behavior of the Auto-Complete feature.
+</descr>
+          <seealso>&lt;link id="TComboBoxAutoCompleteTextOption"/&gt;&lt;link id="TComboBoxAutoCompleteText"/&gt;</seealso>
+        </seealso>
       </element>
       <!-- property Visibility: published -->
       <element name="TComboBox.TabOrder">
@@ -3259,25 +3409,25 @@ radio buttons will be mutually exclusive within the group.</descr>
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TEditCharCase">
-        <short/>
+        <short>Determines the case of text displayed in the edit box or combobox.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TEditCharCase.ecNormal">
-        <short/>
+        <short>Character case according to what the user types.</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TEditCharCase.ecUppercase">
-        <short/>
+        <short>Converts every character that the user types into upper case characters.</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TEditCharCase.ecLowerCase">
-        <short/>
+        <short>Converts every character that the user types into lower case characters.</short>
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TEchoMode">
-        <short/>
+        <short>TEchoMode: Determines how strings in the edit box is displayed.</short>
         <descr/>
         <seealso/>
       </element>
@@ -3298,11 +3448,34 @@ radio buttons will be mutually exclusive within the group.</descr>
         <short>Custom Edit</short>
         <descr>Custom Edit: the base type from which Edit Box is derived.</descr>
       </element>
+      <element name="TCustomEdit.FAutoSelect">
+        <short>FAutoSelect: Boolean</short>
+        <descr>Private variable for property AutoSelect.
+
+When True, the edit control will select all its text when:
+&lt;ul&gt;&lt;li&gt;It recieves focus&lt;/li&gt;&lt;li&gt;The Enter key is pressed.&lt;/li&gt;&lt;li&gt;A new item is selected.&lt;/li&gt;&lt;/ul&gt;</descr>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCustomEdit.FAutoSelected">
+        <short>FAutoSelected: Boolean</short>
+        <descr>Private variable for property AutoSelected.
+
+True indicate that the edit or combobox control has just performed
+an AutoSelect opertation so that subsequent mouse-clicks and keystrokes
+proceeds normally without selecting the text.
+
+False is set when the edit or combobox control looses focus.</descr>
+        <seealso/>
+      </element>
       <!-- variable Visibility: private -->
       <element name="TCustomEdit.FCharCase">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>FCharCase: TEditCharCase</short>
+        <descr>Private variable for property CharCase.
+
+Indicates how text is displayed in a text editing control in the following ways:
+&lt;ul&gt;&lt;li&gt;Normal case letters&lt;/li&gt;&lt;li&gt;Upper case letters&lt;/li&gt;&lt;li&gt;Lower case letters&lt;/li&gt;&lt;/ul&gt;</descr>
+        <seealso>&lt;link id="TEditCharCase"/&gt;&lt;link id="TEditCharCase.ecNormal"/&gt;&lt;link id="TEditCharCase.ecUppercase"/&gt;&lt;link id="TEditCharCase.ecLowerCase"/&gt;</seealso>
       </element>
       <!-- variable Visibility: private -->
       <element name="TCustomEdit.FEchoMode">
@@ -3583,6 +3756,25 @@ radio buttons will be mutually exclusive within the group.</descr>
       <element name="TCustomEdit.KeyUp.Shift">
         <short/>
       </element>
+      <!-- property Visibility: protected -->
+      <element name="TCustomEdit.AutoSelect">
+        <short>property AutoSelect: Boolean</short>
+        <descr>When True, the edit control will select all its text when it
+recieves focus or when the Enter key is pressed.
+</descr>
+        <seealso/>
+      </element>
+      <!-- property Visibility: protected -->
+      <element name="TCustomEdit.AutoSelected">
+        <short>property AutoSelected: Boolean</short>
+        <descr>True indicate that the edit or combobox control has just performed
+an AutoSelect operation so that subsequent mouse-clicks and keystrokes
+proceeds normally without selecting the text.
+
+False is set when the edit or combobox control looses focus.
+</descr>
+        <seealso/>
+      </element>
       <!-- constructor Visibility: public -->
       <element name="TCustomEdit.Create">
         <short/>
@@ -3631,8 +3823,9 @@ radio buttons will be mutually exclusive within the group.</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomEdit.CharCase">
-        <short/>
-        <descr/>
+        <short>property CharCase: TEditCharCase</short>
+        <descr>Indicates how text is displayed in a text editing control in the following ways:
+&lt;ul&gt;&lt;li&gt;Normal case letters&lt;/li&gt;&lt;li&gt;Upper case letters&lt;/li&gt;&lt;li&gt;Lower case letters&lt;/li&gt;&lt;/ul&gt;</descr>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
@@ -3984,6 +4177,12 @@ radio buttons will be mutually exclusive within the group.</descr>
         <descr>Edit Box: for entry or display of a single line of text.
 <br/>Inherits most of its properties from TCustomEdit</descr>
       </element>
+      <!-- property Visibility: public -->
+      <element name="TEdit.AutoSelected">
+        <short>property AutoSelected: Boolean</short>
+        <descr/>
+        <seealso/>
+      </element>
       <!-- property Visibility: published -->
       <element name="TEdit.Action">
         <short>Action</short>
@@ -4002,6 +4201,12 @@ radio buttons will be mutually exclusive within the group.</descr>
       <!-- property Visibility: published -->
       <element name="TEdit.AutoSize">
         <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TEdit.AutoSelect">
+        <short>property AutoSelect: Boolean</short>
         <descr/>
         <seealso/>
       </element>
@@ -5686,8 +5891,15 @@ User-defined Procedure</descr>
       </element>
       <!-- variable Visibility: private -->
       <element name="TCustomStaticText.FAlignment">
-        <short/>
-        <descr/>
+        <short>FAutoSelected: Boolean</short>
+        <descr>Private variable for property AutoSelected.
+
+True indicate that the edit or combobox control has just performed
+an AutoSelect operation so that subsequent mouse-clicks and keystrokes
+proceeds normally without selecting the text.
+
+False is set when the edit or combobox control looses focus.
+</descr>
         <seealso/>
       </element>
       <!-- variable Visibility: private -->

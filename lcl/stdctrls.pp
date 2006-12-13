@@ -36,6 +36,11 @@ uses
 
 type
 
+  { TCustomEdit Options}
+
+  TEditCharCase = (ecNormal, ecUppercase, ecLowerCase);
+  TEchoMode = (emNormal, emNone, emPassword);
+
   { TScrollBar }
 
   TScrollStyle = (ssNone, ssHorizontal, ssVertical, ssBoth,
@@ -238,7 +243,10 @@ type
 
   TCustomComboBox = class(TWinControl)
   private
+    FCharCase: TEditCharCase;
     FAutoCompleteText: TComboBoxAutoCompleteText;
+    FAutoSelect: Boolean;
+    FAutoSelected: Boolean;
     FAutoDropDown: Boolean;
     FCanvas: TCanvas;
     FDropDownCount: Integer;
@@ -275,9 +283,12 @@ type
     procedure UpdateSorted;
     procedure SetArrowKeysTraverseList(Value: Boolean);
     procedure WMChar(var Message: TLMChar); message LM_CHAR;
+    procedure SetCharCase(eccCharCase: TEditCharCase);
   protected
     procedure InitializeWnd; override;
     procedure DestroyWnd; override;
+    procedure DoEnter; override;
+    procedure DoExit; override;
     procedure DrawItem(Index: Integer; ARect: TRect;
                        State: TOwnerDrawState); virtual;
     procedure LMChanged(var Msg); message LM_CHANGED;
@@ -308,6 +319,7 @@ type
     procedure RealSetText(const AValue: TCaption); override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyUp(var Key: Word; Shift: TShiftState); override;
+    procedure KeyPress(var Key: char); override;
     procedure MouseUp(Button: TMouseButton; Shift:TShiftState; X, Y: Integer); override;
     function SelectItem(const AnItem: String): Boolean;
 
@@ -333,6 +345,7 @@ type
                    MaxHistoryCount: integer; SetAsText, CaseSensitive: boolean);
     procedure Clear; virtual;
     procedure ClearSelection; //override;
+    property CharCase: TEditCharCase read FCharCase write SetCharCase;
     property DroppedDown: Boolean read GetDroppedDown write SetDroppedDown;
     procedure MeasureItem(Index: Integer; var TheHeight: Integer); virtual;
     procedure SelectAll;
@@ -341,6 +354,8 @@ type
                            read FAutoCompleteText write FAutoCompleteText;
     property AutoDropDown: Boolean
                            read FAutoDropDown write FAutoDropDown default False;
+    property AutoSelect: Boolean read FAutoSelect write FAutoSelect default False;
+    property AutoSelected: Boolean read FAutoSelected write FAutoSelected;
     property ArrowKeysTraverseList: Boolean read FArrowKeysTraverseList
                                     write SetArrowKeysTraverseList default True;
     property Canvas: TCanvas read FCanvas;
@@ -367,7 +382,9 @@ type
     property AutoComplete;
     property AutoCompleteText;
     property AutoDropDown;
+    property AutoSelect;
     property BorderSpacing;
+    property CharCase;
     property Ctl3D;
     property DropDownCount;
     property Enabled;
@@ -548,6 +565,8 @@ type
     property ClickOnSelChange;
     property Color;
     property Constraints;
+    property DragCursor;
+    property DragMode;
     property ExtendedSelect;
     property Enabled;
     property Font;
@@ -590,13 +609,10 @@ type
 
   { TCustomEdit }
 
-  TEditCharCase = (ecNormal, ecUppercase, ecLowerCase);
-  TEchoMode = (emNormal, emNone, emPassword);
-
-  { TCustomEdit }
-
   TCustomEdit = class(TWinControl)
   private
+    FAutoSelect: Boolean;
+    FAutoSelected: Boolean;
     FCharCase: TEditCharCase;
     FEchoMode: TEchoMode;
     FMaxLength: Integer;
@@ -618,6 +634,8 @@ type
     procedure CreateWnd; override;
     procedure TextChanged; override;
     procedure Change; dynamic;
+    procedure DoEnter; override;
+    procedure DoExit; override;
     function GetSelLength: integer; virtual;
     function GetSelStart: integer; virtual;
     function GetSelText: string; virtual;
@@ -630,6 +648,9 @@ type
     function ChildClassAllowed(ChildClass: TClass): boolean; override;
     procedure KeyUp(var Key: Word; Shift: TShiftState); override;
     procedure WMChar(var Message: TLMChar); message LM_CHAR;
+    procedure MouseUp(Button: TMouseButton; Shift:TShiftState; X, Y: Integer); override;
+    property AutoSelect: Boolean read FAutoSelect write FAutoSelect default False;
+    property AutoSelected: Boolean read FAutoSelected write FAutoSelected;
   public
     constructor Create(AOwner: TComponent); override;
     procedure Clear;
@@ -721,11 +742,14 @@ type
   { TEdit }
 
   TEdit = class(TCustomEdit)
+  public
+    property AutoSelected;
   published
     property Action;
     property Align;
     property Anchors;
     property AutoSize;
+    property AutoSelect;
     property BorderSpacing;
     property Color;
     property Constraints;
