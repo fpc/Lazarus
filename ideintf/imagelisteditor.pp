@@ -502,6 +502,7 @@ begin
     if not Bmp.Empty then
     begin
       if (Bmp.Height = ImageList.Height)
+        and (Bmp.Width > ImageList.Width)
         and (Bmp.Width mod ImageList.Width = 0)
         and (IDEQuestionDialog(Caption +' - '+ btnAdd.Caption,
                             s_SuggestSplitImage, mtConfirmation,
