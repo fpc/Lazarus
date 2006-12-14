@@ -47,11 +47,15 @@ Begin
   SysVarCount:=GetEnvironmentVariableCount;
   for i:=0 to SysVarCount-1 do begin
     Variable:=GetEnvironmentString(i+1);
-    e:=1;
-    while (e<=length(Variable)) and (Variable[e]<>'=') do inc(e);
-    Value:=copy(Variable,e+1,length(Variable)-e);
-    Variable:=LeftStr(Variable,e-1);
-    Result.Values[Variable]:=Value;
+    // On windows some (hidden) envirionment variables can be returned by
+    // GetEnvironmentString. These kind of variables start with a =
+    if (length(Variable)>0) and (Variable[1]<>'=') then begin
+      e:=1;
+      while (e<=length(Variable)) and (Variable[e]<>'=') do inc(e);
+      Value:=copy(Variable,e+1,length(Variable)-e);
+      Variable:=LeftStr(Variable,e-1);
+      Result.Values[Variable]:=Value;
+    end;
   end;
 end;
 
