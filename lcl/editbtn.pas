@@ -126,6 +126,7 @@ type
     property ShowHint;
     property TabOrder;
     property TabStop;
+    property Text;
     property Visible;
   end;
 
