@@ -1,7 +1,7 @@
 [Desktop Entry]
 Name=Lazarus
 Comment=Lazarus IDE
-Exec=/usr/share/lazarus/startlazarus %f
+Exec=/usr/bin/startlazarus %f
 Terminal=false
 Type=Application
 Icon=lazarus.png
