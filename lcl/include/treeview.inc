@@ -1683,11 +1683,9 @@ end;
 
 procedure TTreeNodes.Delete(Node: TTreeNode);
 begin
-  //Calling Owner.Delete is done in by TTreeNode.Destroy
-  //if Owner<>nil then
-  ////if (Node.ItemId = nil) then
-  //  Owner.Delete(Node);
   Node.Delete;
+  if (FUpdateCount=0) and (Owner<>nil) then
+    Owner.Invalidate;
 end;
 
 procedure TTreeNodes.Clear;
