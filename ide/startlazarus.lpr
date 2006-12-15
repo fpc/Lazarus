@@ -44,7 +44,8 @@ var
   
 begin
   Application.Initialize;
-  ALazarusManager := TLazarusManager.Create;
+  ALazarusManager := TLazarusManager.Create(nil);
+  ALazarusManager.Initialize;
   ALazarusManager.Run;
   FreeAndNil(ALazarusManager);
 end.

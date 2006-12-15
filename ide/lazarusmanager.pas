@@ -118,21 +118,13 @@ type
     procedure LazarusProcessStart(Sender: TObject);
     procedure WaitForLazarus;
   public
-    constructor Create; reintroduce;
     destructor Destroy; override;
+    procedure Initialize;
     procedure Run;
     procedure ShowSplash;
   end;
 
 implementation
-
-constructor TLazarusManager.Create;
-begin
-  inherited Create(nil);
-  SplashForm := nil;
-  ShowSplash;
-  ParseCommandLine;
-end;
 
 destructor TLazarusManager.Destroy;
 begin
@@ -258,6 +250,13 @@ procedure TLazarusManager.WaitForLazarus;
 begin
   if FLazarusPID<>0 then
     WaitForPID(FLazarusPID);
+end;
+
+procedure TLazarusManager.Initialize;
+begin
+  SplashForm := nil;
+  ShowSplash;
+  ParseCommandLine;
 end;
 
 procedure TLazarusManager.Run;
