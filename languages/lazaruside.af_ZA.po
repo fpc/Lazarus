@@ -1732,6 +1732,10 @@ msgstr ""
 msgid "Create FPC Macros and paths for a fpc project directory"
 msgstr ""
 
+#: lazarusidestrconsts:lismenucreatelazdocfiles
+msgid "Create LazDoc files"
+msgstr ""
+
 #: lazarusidestrconsts:lispckeditcreatemakefile
 msgid "Create Makefile"
 msgstr ""
@@ -8630,6 +8634,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuviewcomponentpalette
 msgid "View Component Palette"
+msgstr ""
+
+#: lazarusidestrconsts:srkmectogglelazdoc
+msgid "View Documentation Editor"
 msgstr ""
 
 #: lazarusidestrconsts:lishintviewforms

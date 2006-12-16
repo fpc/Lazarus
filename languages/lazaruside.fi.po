@@ -404,7 +404,7 @@ msgstr "Lisää tiedostoja"
 
 #: lazarusidestrconsts:lisa2paddfilestopackage
 msgid "Add files to package"
-msgstr ""
+msgstr "Lisää nämä tiedostot tähän projektiin tai pakettiin"
 
 #: lazarusidestrconsts:srkmecaddjumppoint
 msgid "Add jump point"
@@ -848,7 +848,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lispatheditbrowse
 msgid "Browse"
-msgstr ""
+msgstr "Selaa"
 
 #: lazarusidestrconsts:lisbrowseforcompiler
 msgid "Browse for Compiler (%s)"
@@ -1718,6 +1718,10 @@ msgstr ""
 msgid "Create FPC Macros and paths for a fpc project directory"
 msgstr ""
 
+#: lazarusidestrconsts:lismenucreatelazdocfiles
+msgid "Create LazDoc files"
+msgstr ""
+
 #: lazarusidestrconsts:lispckeditcreatemakefile
 msgid "Create Makefile"
 msgstr ""
@@ -2460,11 +2464,11 @@ msgstr ""
 
 #: lazarusidestrconsts:liserrormovingcomponent
 msgid "Error moving component"
-msgstr ""
+msgstr "Virhe siirrettäessä komponenttia"
 
 #: lazarusidestrconsts:liserrormovingcomponent2
 msgid "Error moving component %s:%s"
-msgstr ""
+msgstr "Virhe siirrettäessä %s:%s komponenttia"
 
 #: lazarusidestrconsts:liserrorparsinglfmcomponentstream
 msgid "Error parsing lfm component stream."
@@ -2892,7 +2896,7 @@ msgstr ""
 
 #: lazarusidestrconsts:srkmecfindnextwordoccurrence
 msgid "Find next word occurrence"
-msgstr ""
+msgstr "Etsi sanan seuraava esiintymiskohta"
 
 #: lazarusidestrconsts:lisfrifindorrenameidentifier
 msgid "Find or Rename Identifier"
@@ -2912,7 +2916,7 @@ msgstr ""
 
 #: lazarusidestrconsts:srkmecfindprevwordoccurrence
 msgid "Find previous word occurrence"
-msgstr ""
+msgstr "Etsi sanan edellinen esiintymiskohta"
 
 #: lazarusidestrconsts:srkmecfindproceduredefinition
 msgid "Find procedure definiton"
@@ -4040,7 +4044,7 @@ msgstr "Säilytettävien tiedostojen tiedostopäätteet"
 
 #: lazarusidestrconsts:liskeepname
 msgid "Keep name"
-msgstr ""
+msgstr "Hyväksy nimi tälläisenään"
 
 #: lazarusidestrconsts:dlgforwardprocskeeporder
 msgid "Keep order of procedures"
@@ -4048,7 +4052,7 @@ msgstr ""
 
 #: lazarusidestrconsts:liskeepthemandcontinue
 msgid "Keep them and continue"
-msgstr ""
+msgstr "Pidä ne ja jatka"
 
 #: lazarusidestrconsts:lisedtexttoolkey
 msgid "Key"
@@ -4528,7 +4532,7 @@ msgstr "Muut"
 
 #: lazarusidestrconsts:lismissingevents
 msgid "Missing Events"
-msgstr ""
+msgstr "Puuttuvia tapahtumia"
 
 #: lazarusidestrconsts:lismissingpackages
 msgid "Missing Packages"
@@ -5520,7 +5524,7 @@ msgstr ""
 
 #: lazarusidestrconsts:srvk_print
 msgid "Print"
-msgstr ""
+msgstr "Tulosta"
 
 #: lazarusidestrconsts:listodolistprintlist
 msgid "Print todo items"
@@ -5920,7 +5924,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisremovethem
 msgid "Remove them"
-msgstr ""
+msgstr "Poista ne"
 
 #: lazarusidestrconsts:lispckeditremovedfilestheseentriesarenotsavedtothelpkfile
 msgid "Removed Files (these entries are not saved to the lpk file)"
@@ -5976,7 +5980,7 @@ msgstr "Uusi nimi on"
 
 #: lazarusidestrconsts:lisrenametolowercase
 msgid "Rename to lowercase"
-msgstr ""
+msgstr "Vaihda nimi pienillä kirjaimilla kirjoitetuksi"
 
 #: lazarusidestrconsts:lismenureplace
 msgid "Replace"
@@ -7088,7 +7092,7 @@ msgstr "Onnistui"
 
 #: lazarusidestrconsts:lisa2pswitchpaths
 msgid "Switch Paths"
-msgstr ""
+msgstr "Vaihda tiedostopolkua"
 
 #: lazarusidestrconsts:srkmectoggleformunit
 msgid "Switch between form and unit"
@@ -7536,7 +7540,7 @@ msgstr ""
 
 #: lazarusidestrconsts:listhefollowingmethodsusedbyarenotinthesourceremoveth
 msgid "The following methods used by %s are not in the source%s%s%s%s%s%sRemove the dangling references?"
-msgstr ""
+msgstr "Seuraavaa metodia %s on käytetty mutta sitä ei löydy lähdekoodista%s%s%s%s%s%sPoistetaanko 'roikkuva' viittaus?"
 
 #: lazarusidestrconsts:lispkgmangthefollowingpackagefailedtoload
 msgid "The following package failed to load:"
@@ -7860,7 +7864,7 @@ msgstr ""
 
 #: lazarusidestrconsts:listhislookslikeapascalfileitisrecommendedtouselowerc
 msgid "This looks like a pascal file.%sIt is recommended to use lower case filenames, to avoid various problems on some filesystems and different compilers.%sRename it to lowercase?"
-msgstr ""
+msgstr "Tämä vaikuttaa pascal-tiedostolta.%sOn suositeltavaa käyttää pieniä kirjaimia tiedoston nimessä jotta vältytään ongelmilta joissakin tiedostojärjestelmissä.%Vaihdetaanko tiedoston nimi pienillä kirjaimilla kirjoitetuksi?"
 
 #: lazarusidestrconsts:lispkgsysthispackageisinstalledbutthelpkfilewasnotfound
 msgid "This package is installed, but the lpk file was not found. All its components are deactivated. Please fix this."
@@ -8056,7 +8060,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisunabletocreatefile2
 msgid "Unable to create file %s%s%s"
-msgstr ""
+msgstr "Tiedostoa %s%s%s ei pystytä luomaan"
 
 #: lazarusidestrconsts:lisunabletocreatefilename
 msgid "Unable to create file %s%s%s."
@@ -8617,6 +8621,10 @@ msgstr "Näytä koodiselain"
 #: lazarusidestrconsts:lismenuviewcomponentpalette
 msgid "View Component Palette"
 msgstr "Näytä tai poista komponenttipaletti näkyvistä"
+
+#: lazarusidestrconsts:srkmectogglelazdoc
+msgid "View Documentation Editor"
+msgstr ""
 
 #: lazarusidestrconsts:lishintviewforms
 msgid "View Forms"

@@ -1732,6 +1732,10 @@ msgstr "Definitionen für Free-Pascal-Verzeichnis erzeugen"
 msgid "Create FPC Macros and paths for a fpc project directory"
 msgstr "Erzeugen von FPC-Makros und Pfaden für ein FPC-Projektverzeichnis"
 
+#: lazarusidestrconsts:lismenucreatelazdocfiles
+msgid "Create LazDoc files"
+msgstr ""
+
 #: lazarusidestrconsts:lispckeditcreatemakefile
 msgid "Create Makefile"
 msgstr "Makedatei erzeugen"
@@ -8631,6 +8635,10 @@ msgstr "CodeExplorer anzeigen"
 #: lazarusidestrconsts:lismenuviewcomponentpalette
 msgid "View Component Palette"
 msgstr "Komponentenpalette anzeigen"
+
+#: lazarusidestrconsts:srkmectogglelazdoc
+msgid "View Documentation Editor"
+msgstr ""
 
 #: lazarusidestrconsts:lishintviewforms
 msgid "View Forms"

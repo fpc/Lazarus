@@ -1729,6 +1729,10 @@ msgstr "Crea les definicions pel directori del Lazarus"
 msgid "Create FPC Macros and paths for a fpc project directory"
 msgstr "Crea les macroinstruccions FPC i les trajectòries per un directori de projecte FPC"
 
+#: lazarusidestrconsts:lismenucreatelazdocfiles
+msgid "Create LazDoc files"
+msgstr ""
+
 #: lazarusidestrconsts:lispckeditcreatemakefile
 msgid "Create Makefile"
 msgstr "Crea Makefile"
@@ -8628,6 +8632,10 @@ msgstr "Mostra l'explorador del codi"
 #: lazarusidestrconsts:lismenuviewcomponentpalette
 msgid "View Component Palette"
 msgstr "Vore Paleta de Components"
+
+#: lazarusidestrconsts:srkmectogglelazdoc
+msgid "View Documentation Editor"
+msgstr ""
 
 #: lazarusidestrconsts:lishintviewforms
 msgid "View Forms"

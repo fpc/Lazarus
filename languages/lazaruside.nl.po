@@ -1729,6 +1729,10 @@ msgstr "Maak definities voor Lazarusfolder"
 msgid "Create FPC Macros and paths for a fpc project directory"
 msgstr "Maak FPC-macro's en paden voor een fpc-projectfolder"
 
+#: lazarusidestrconsts:lismenucreatelazdocfiles
+msgid "Create LazDoc files"
+msgstr ""
+
 #: lazarusidestrconsts:lispckeditcreatemakefile
 msgid "Create Makefile"
 msgstr "Maak MakeFile"
@@ -8628,6 +8632,10 @@ msgstr "Toon Code Verkenner"
 #: lazarusidestrconsts:lismenuviewcomponentpalette
 msgid "View Component Palette"
 msgstr "Toon component palette"
+
+#: lazarusidestrconsts:srkmectogglelazdoc
+msgid "View Documentation Editor"
+msgstr ""
 
 #: lazarusidestrconsts:lishintviewforms
 msgid "View Forms"

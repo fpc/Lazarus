@@ -5475,7 +5475,6 @@ begin
     OnSelectEditor(Self, fCol, FRow, aEditor);
   if aEditor<>Editor then
     Editor:=aEditor;
-  DebugLn(['TCustomGrid.SelectEditor ',DbgSName(Editor)]);
 end;
 
 function TCustomGrid.EditorAlwaysShown: Boolean;

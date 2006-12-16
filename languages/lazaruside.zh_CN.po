@@ -1732,6 +1732,10 @@ msgstr "为 Lazarus 的目录创建说明"
 msgid "Create FPC Macros and paths for a fpc project directory"
 msgstr "创建 FPC 宏和 fpc 工程的目录"
 
+#: lazarusidestrconsts:lismenucreatelazdocfiles
+msgid "Create LazDoc files"
+msgstr ""
+
 #: lazarusidestrconsts:lispckeditcreatemakefile
 msgid "Create Makefile"
 msgstr "创建 makefile"
@@ -8631,6 +8635,10 @@ msgstr "查看代码浏览器"
 #: lazarusidestrconsts:lismenuviewcomponentpalette
 msgid "View Component Palette"
 msgstr "显示组件面板"
+
+#: lazarusidestrconsts:srkmectogglelazdoc
+msgid "View Documentation Editor"
+msgstr ""
 
 #: lazarusidestrconsts:lishintviewforms
 msgid "View Forms"

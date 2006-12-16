@@ -1718,6 +1718,10 @@ msgstr "Створити означення для теки Lazarus"
 msgid "Create FPC Macros and paths for a fpc project directory"
 msgstr "Створити макроси FPC і шляхи до тек проекту FPC"
 
+#: lazarusidestrconsts:lismenucreatelazdocfiles
+msgid "Create LazDoc files"
+msgstr ""
+
 #: lazarusidestrconsts:lispckeditcreatemakefile
 msgid "Create Makefile"
 msgstr "Створити Makefile"
@@ -8616,6 +8620,10 @@ msgstr "Показати оглядач коду"
 
 #: lazarusidestrconsts:lismenuviewcomponentpalette
 msgid "View Component Palette"
+msgstr ""
+
+#: lazarusidestrconsts:srkmectogglelazdoc
+msgid "View Documentation Editor"
 msgstr ""
 
 #: lazarusidestrconsts:lishintviewforms

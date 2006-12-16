@@ -954,6 +954,10 @@ msgstr ""
 msgid "Edit context sensitive Help"
 msgstr ""
 
+#: lazarusidestrconsts:lismenucreatelazdocfiles
+msgid "Create LazDoc files"
+msgstr ""
+
 #: lazarusidestrconsts:lisdsgcopycomponents
 msgid "Copy selected components to clipboard"
 msgstr ""
@@ -4772,6 +4776,10 @@ msgstr ""
 
 #: lazarusidestrconsts:srkmectogglecodeexpl
 msgid "View Code Explorer"
+msgstr ""
+
+#: lazarusidestrconsts:srkmectogglelazdoc
+msgid "View Documentation Editor"
 msgstr ""
 
 #: lazarusidestrconsts:srkmectogglemessages
