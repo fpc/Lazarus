@@ -199,7 +199,7 @@ begin
   else begin
     PkgName:=AnsiString(Key);
     Link:=TPackageLink(Data);
-    Result:=AnsiCompareText(PkgName,Link.Name);
+    Result:=CompareText(PkgName,Link.Name);
   end;
 end;
 
@@ -272,22 +272,10 @@ end;
 function TPackageLinks.FindLeftMostNode(LinkTree: TAVLTree;
   const PkgName: string): TAVLTreeNode;
 // find left most link with PkgName
-var
-  PriorNode: TAVLTreeNode;
 begin
   Result:=nil;
   if PkgName='' then exit;
-  Result:=LinkTree.FindKey(PChar(PkgName),@ComparePkgNameAndLink);
-  if Result=nil then exit;
-  // find left most
-  while Result<>nil do begin
-    PriorNode:=LinkTree.FindPrecessor(Result);
-    if (PriorNode=nil)
-    or (AnsiCompareText(TPackageLink(PriorNode.Data).Name,PkgName)<>0)
-    then
-      break;
-    Result:=PriorNode;
-  end;
+  Result:=LinkTree.FindLeftMostKey(PChar(PkgName),@ComparePkgNameAndLink);
 end;
 
 constructor TPackageLinks.Create;
@@ -659,7 +647,10 @@ var
   CurNode: TAVLTreeNode;
 begin
   Result:=nil;
-  if (Dependency=nil) or (not Dependency.MakeSense) then exit;
+  if (Dependency=nil) or (not Dependency.MakeSense) then begin
+    DebugLn(['TPackageLinks.FindLinkWithDependencyInTree Dependency makes no sense']);
+    exit;
+  end;
   CurNode:=FindLeftMostNode(LinkTree,Dependency.PackageName);
   while CurNode<>nil do begin
     Link:=TPackageLink(CurNode.Data);
@@ -725,12 +716,12 @@ begin
   if Result=nil then
     Result:=FindLinkWithDependencyInTree(FGlobalLinks,Dependency);
   //if Result=nil then begin
-  //  debugln('TPackageLinks.FindLinkWithDependency A ',Dependency.AsString);
-  //  WriteLinkTree(FGlobalLinks);
+    //debugln('TPackageLinks.FindLinkWithDependency A ',Dependency.AsString);
+    // WriteLinkTree(FGlobalLinks);
   //end;
   // finally try the history lists of the Dependency Owner (Project/Package)
   if (Result=nil) and (Dependency.Owner<>nil)
-  and assigned(DependencyOwnerGetPkgFilename)
+  and Assigned(DependencyOwnerGetPkgFilename)
   and DependencyOwnerGetPkgFilename(Self,Dependency) then
     Result:=FindLinkWithDependencyInTree(FUserLinksSortID,Dependency);
 end;
@@ -746,7 +737,6 @@ end;
 procedure TPackageLinks.IteratePackages(MustExist: boolean;
   Event: TIteratePackagesEvent);
 begin
-  //debugln('TPackageLinks.IteratePackages');
   IteratePackagesInTree(MustExist,FUserLinksSortID,Event);
   IteratePackagesInTree(MustExist,FGlobalLinks,Event);
 end;

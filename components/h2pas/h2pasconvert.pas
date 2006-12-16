@@ -26,7 +26,7 @@ uses
   Classes, SysUtils, LCLProc, LResources, LazConfigStorage, XMLPropStorage,
   Forms, Controls, Dialogs, FileUtil, FileProcs, AvgLvlTree,
   // CodeTools
-  BasicCodeTools,
+  KeywordFuncLists, BasicCodeTools,
   // IDEIntf
   TextTools, IDEExternToolIntf, IDEDialogs, LazIDEIntf, SrcEditorIntf,
   IDEMsgIntf, IDETextConverter;
@@ -100,7 +100,7 @@ type
     function Execute(aText: TIDETextConverter): TModalResult; override;
   end;
 
-  { TReplaceImplicitParameterTypes -
+  { TReplaceImplicitTypes -
     Search implicit types in parameters and add types for them
     For example:
         procedure ProcName(a: array[0..2] of char);
@@ -110,10 +110,11 @@ type
         Tarray_0to2_of_char = array[0..2] of char;
        }
 
-  TReplaceImplicitParameterTypes = class(TCustomTextConverterTool)
+  TReplaceImplicitTypes = class(TCustomTextConverterTool)
   public
     class function ClassDescription: string; override;
     function Execute(aText: TIDETextConverter): TModalResult; override;
+    function CodeToIdentifier(const Code: string): string;
   end;
 
   TH2PasProject = class;
@@ -1083,7 +1084,7 @@ begin
   AddNewTextConverterTool(FPostH2PasTools,TRemoveSystemTypes);
   AddNewTextConverterTool(FPostH2PasTools,TRemoveRedefinedPointerTypes);
   AddNewTextConverterTool(FPostH2PasTools,TRemoveEmptyTypeVarConstSections);
-  AddNewTextConverterTool(FPostH2PasTools,TReplaceImplicitParameterTypes);
+  AddNewTextConverterTool(FPostH2PasTools,TReplaceImplicitTypes);
 end;
 
 { TH2PasConverter }
@@ -1807,11 +1808,33 @@ begin
   Result:=mrOk;
 end;
 
+type
+  TImplicitType = class
+  public
+    Name: string;
+    Code: string;
+    MinPosition: integer;
+    MaxPosition: integer;
+  end;
+
+function CompareImplicitTypeNames(Type1, Type2: Pointer): integer;
+begin
+  Result:=CompareIdentifiers(PChar(TImplicitType(Type1).Name),
+                             PChar(TImplicitType(Type2).Name));
+end;
+
+function CompareImplicitTypeStringAndName(ASCIIZ,
+  ImplicitType: Pointer): integer;
+begin
+  Result:=CompareIdentifiers(PChar(ASCIIZ),
+                             PChar(TImplicitType(ImplicitType).Name));
+end;
+
 { TReplaceImplicitParameterTypes }
 
-class function TReplaceImplicitParameterTypes.ClassDescription: string;
+class function TReplaceImplicitTypes.ClassDescription: string;
 begin
-  Result:='Replace implicit parameter types'#13
+  Result:='Replace implicit types'#13
     +'For example:'#13
     +'    procedure ProcName(a: array[0..2] of char)'#13
     +'  is replaced with'#13
@@ -1820,11 +1843,13 @@ begin
     +'    Tarray_0to2_of_char = array[0..2] of char';
 end;
 
-function TReplaceImplicitParameterTypes.Execute(aText: TIDETextConverter
+function TReplaceImplicitTypes.Execute(aText: TIDETextConverter
   ): TModalResult;
 var
   Src: String;
-  
+  ImplicitTypes: TAvgLvlTree;// tree of TImplicitType
+  ExplicitTypes: TAvgLvlTree;// tree of TImplicitType
+
   function FindNextImplicitType(var Position: integer;
     out TypeStart, TypeEnd: integer): boolean;
   var
@@ -1873,28 +1898,124 @@ var
   var
     Position: Integer;
     StartPos, EndPos: integer;
-    TypeStr: String;
+    TypeCode: String;
+    TypeName: String;
+    NewType: TImplicitType;
   begin
     Result:=false;
     ModalResult:=mrCancel;
     Position:=1;
     while FindNextImplicitType(Position,StartPos,EndPos) do begin
-      TypeStr:=copy(Src,StartPos,EndPos-StartPos);
-      DebugLn(['SearchImplicitParameterTypes ',Position,' TypeStr="',TypeStr,'"']);
+      TypeCode:=copy(Src,StartPos,EndPos-StartPos);
+      DebugLn(['SearchImplicitParameterTypes ',StartPos,' TypeCode="',TypeCode,'"']);
+      TypeName:=CodeToIdentifier(TypeCode);
+      if TypeName='' then continue;
+      if (ImplicitTypes<>nil)
+      and (ImplicitTypes.FindKey(Pointer(TypeName),
+                         @CompareImplicitTypeStringAndName)<>nil)
+      then begin
+        // type exists already
+        continue;
+      end;
+      // add new type
+      DebugLn(['SearchImplicitParameterTypes Adding new type ',StartPos,' TypeName=',TypeName,' TypeCode="',TypeCode,'"']);
+      NewType:=TImplicitType.Create;
+      NewType.Name:=TypeName;
+      NewType.Code:=TypeCode;
+      NewType.MaxPosition:=StartPos;
+      ImplicitTypes.Add(NewType);
+    end;
+    ModalResult:=mrOk;
+    Result:=true;
+  end;
+  
+  function FindExplicitTypes(var ModalResult: TModalResult): boolean;
+  begin
+    Result:=false;
+    ModalResult:=mrCancel;
+    
+    
+    ModalResult:=mrOk;
+    Result:=true;
+  end;
+
+  function AdjustMinPositions(var ModalResult: TModalResult): boolean;
+  var
+    Node: TAvgLvlTreeNode;
+  begin
+    Result:=false;
+    ModalResult:=mrCancel;
+    if (ImplicitTypes<>nil) then begin
+      // find all explicit types
+      if not FindExplicitTypes(ModalResult) then exit;
+    
+      Node:=ImplicitTypes.FindLowest;
+      while Node<>nil do begin
       
+        Node:=ImplicitTypes.FindSuccessor(Node);
+      end;
     end;
     ModalResult:=mrOk;
     Result:=true;
   end;
 
 begin
+  {$IFNDEF EnableReplaceImplicitTypes}
+  exit(mrOk);
+  {$ENDIF}
+
   Src:=aText.Source;
   if Src='' then exit(mrOk);
   
-  if not SearchImplicitParameterTypes(Result) then exit;
-
+  ImplicitTypes:=nil;
+  ExplicitTypes:=nil;
+  try
+    if not SearchImplicitParameterTypes(Result) then exit;
+    if not AdjustMinPositions(Result) then exit;
+  finally
+    ImplicitTypes.FreeAndClear;
+    ImplicitTypes.Free;
+    ExplicitTypes.FreeAndClear;
+    ExplicitTypes.Free;
+  end;
   Result:=mrOk;
 end;
 
-end.
+function TReplaceImplicitTypes.CodeToIdentifier(const Code: string): string;
+// for example:
+//   array[0..3] of integer  -> TArray0to3OfInteger
+var
+  Position: Integer;
+  AtomStart: LongInt;
+  CurAtom: String;
+  i: Integer;
+begin
+  Result:='T';
+  Position:=1;
+  AtomStart:=Position;
+  repeat
+    CurAtom:=ReadNextPascalAtom(Code,Position,AtomStart);
+    if CurAtom='' then exit;
+    if CurAtom='..' then
+      // range
+      Result:=Result+'to'
+    else if IsIdentStartChar[CurAtom[1]] then
+      // word
+      Result:=Result+upCase(CurAtom[1])+copy(CurAtom,2,length(CurAtom))
+    else begin
+      // otherwise: add word and number characters
+      for i:=1 to length(CurAtom) do begin
+        case CurAtom[i] of
+        '0'..'9','_','a'..'z','A'..'Z': Result:=Result+CurAtom[i];
+        '.': Result:=Result+'.';
+        end;
+      end;
+    end;
+    if length(Result)>200 then begin
+      Result:=copy(Result,1,200);
+      exit;
+    end;
+  until false;
+end;
 
+end.

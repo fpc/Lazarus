@@ -466,11 +466,6 @@ const
 var
   CompilerModeVars: array[TCompilerMode] of shortstring;
 
-  IsSpaceChar, IsLineEndChar, IsWordChar, IsIdentStartChar, IsIdentChar,
-  IsNumberChar, IsCommentStartChar, IsCommentEndChar, IsHexNumberChar,
-  IsEqualOperatorStartChar, IsAfterFloatPointChar:
-    array[char] of boolean;
-    
   PSourceLinkMemManager: TPSourceLinkMemManager;
   PSourceChangeStepMemManager: TPSourceChangeStepMemManager;
 
@@ -3345,22 +3340,9 @@ end;
 
 //------------------------------------------------------------------------------
 procedure InternalInit;
-var c: char;
+var
   CompMode: TCompilerMode;
 begin
-  for c:=Low(char) to high(char) do begin
-    IsLineEndChar[c]:=c in [#10,#13];
-    IsSpaceChar[c]:=c in [#0..#32];
-    IsIdentStartChar[c]:=c in ['a'..'z','A'..'Z','_'];
-    IsIdentChar[c]:=c in ['a'..'z','A'..'Z','_','0'..'9'];
-    IsNumberChar[c]:=c in ['0'..'9'];
-    IsCommentStartChar[c]:=c in ['/','{','('];
-    IsCommentEndChar[c]:=c in ['}',')',#13,#10];
-    IsHexNumberChar[c]:=c in ['0'..'9','a'..'f','A'..'F'];
-    IsEqualOperatorStartChar[c]:=c in [':','+','-','/','*','<','>'];
-    IsWordChar[c]:=c in ['a'..'z','A'..'Z'];
-    IsAfterFloatPointChar[c]:=c in ['0'..'9','e','E'];
-  end;
   for CompMode:=Low(TCompilerMode) to High(TCompilerMode) do
     CompilerModeVars[CompMode]:='FPC_'+CompilerModeNames[CompMode];
   PSourceLinkMemManager:=TPSourceLinkMemManager.Create;

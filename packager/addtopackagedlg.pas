@@ -1818,8 +1818,10 @@ end;
 
 procedure TAddToPackageDlg.OnIteratePackages(APackageID: TLazPackageID);
 begin
-  if (APackageID<>LazPackage) and (fPackages.Find(APackageID)=nil) then
+  if (APackageID<>LazPackage) and (fPackages.Find(APackageID)=nil) then begin
+    //DebugLn(['TAddToPackageDlg.OnIteratePackages ',APackageID.IDAsString,' ',DbgSName(APackageID)]);
     fPackages.Add(APackageID);
+  end;
 end;
 
 procedure TAddToPackageDlg.AutoCompleteNewComponent;

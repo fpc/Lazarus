@@ -206,7 +206,7 @@ begin
   TextConverterToolClasses.RegisterClass(TRemoveSystemTypes);
   TextConverterToolClasses.RegisterClass(TRemoveRedefinedPointerTypes);
   TextConverterToolClasses.RegisterClass(TRemoveEmptyTypeVarConstSections);
-  TextConverterToolClasses.RegisterClass(TReplaceImplicitParameterTypes);
+  TextConverterToolClasses.RegisterClass(TReplaceImplicitTypes);
 end;
 
 { TH2PasDialog }

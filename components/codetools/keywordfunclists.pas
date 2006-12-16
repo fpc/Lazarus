@@ -125,6 +125,20 @@ var
   UnexpectedKeyWordInAsmBlock: TKeyWordFunctionList;
   UpChars: array[char] of char;
 
+  IsSpaceChar,
+  IsLineEndChar,
+  IsWordChar,
+  IsNonWordChar,      // [#0..#127]-IsIdentChar
+  IsIdentStartChar,
+  IsIdentChar,
+  IsNumberChar,
+  IsCommentStartChar,
+  IsCommentEndChar,
+  IsHexNumberChar,
+  IsEqualOperatorStartChar,
+  IsAfterFloatPointChar:
+    array[char] of boolean;
+
 function UpperCaseStr(const s: string): string;
 function IsUpperCaseStr(const s: string): boolean;
 
@@ -133,7 +147,6 @@ implementation
 
 var
   CharToHash: array[char] of integer;
-  IsIdentChar: array[char] of boolean;
   UpWords: array[word] of word;
 
 function UpperCaseStr(const s: string): string;
@@ -631,7 +644,18 @@ begin
     else CharToHash[c]:=0;
     end;
     UpChars[c]:=upcase(c);
-    IsIdentChar[c]:=(c in ['a'..'z','A'..'Z','0'..'9','_']);
+    IsLineEndChar[c]:=c in [#10,#13];
+    IsSpaceChar[c]:=c in [#0..#32];
+    IsIdentStartChar[c]:=c in ['a'..'z','A'..'Z','_'];
+    IsIdentChar[c]:=c in ['a'..'z','A'..'Z','_','0'..'9'];
+    IsNumberChar[c]:=c in ['0'..'9'];
+    IsCommentStartChar[c]:=c in ['/','{','('];
+    IsCommentEndChar[c]:=c in ['}',')',#13,#10];
+    IsHexNumberChar[c]:=c in ['0'..'9','a'..'f','A'..'F'];
+    IsEqualOperatorStartChar[c]:=c in [':','+','-','/','*','<','>'];
+    IsWordChar[c]:=c in ['a'..'z','A'..'Z'];
+    IsNonWordChar[c]:=(c in [#0..#127]) and (not IsIdentChar[c]);
+    IsAfterFloatPointChar[c]:=c in ['0'..'9','e','E'];
   end;
   for w:=Low(word) to High(word) do
     UpWords[w]:=ord(UpChars[chr(w and $ff)])+(ord(UpChars[chr(w shr 8)]) shl 8);

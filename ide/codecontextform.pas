@@ -39,7 +39,7 @@ uses
   Classes, SysUtils, Types, LCLProc, LResources, Forms, Controls, Graphics,
   Dialogs, LCLType, LCLIntf,
   SynEdit, SynEditKeyCmds,
-  BasicCodeTools, LinkScanner, CodeCache, FindDeclarationTool,
+  BasicCodeTools, KeywordFuncLists, LinkScanner, CodeCache, FindDeclarationTool,
   IdentCompletionTool, CodeTree, CodeAtom, PascalParserTool, CodeToolManager,
   SrcEditorIntf,
   IDEProcs;

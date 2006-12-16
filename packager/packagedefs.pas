@@ -882,7 +882,7 @@ function IndexOfDependencyInList(First: TPkgDependency;
 
 function FindLowestPkgDependencyWithName(const PkgName: string): TPkgDependency;
 function FindLowestPkgDependencyNodeWithName(const PkgName: string): TAVLTreeNode;
-function FindNextPkgDependecyNodeWithSameName(Node: TAVLTreeNode): TAVLTreeNode;
+function FindNextPkgDependencyNodeWithSameName(Node: TAVLTreeNode): TAVLTreeNode;
 
 function GetDependencyOwnerAsString(Dependency: TPkgDependency): string;
 function GetDependencyOwnerDirectory(Dependency: TPkgDependency): string;
@@ -896,7 +896,7 @@ implementation
 function PkgFileTypeIdentToType(const s: string): TPkgFileType;
 begin
   for Result:=Low(TPkgFileType) to High(TPkgFileType) do
-    if AnsiCompareText(s,PkgFileTypeIdents[Result])=0 then exit;
+    if CompareText(s,PkgFileTypeIdents[Result])=0 then exit;
   Result:=pftUnit;
 end;
 
@@ -925,7 +925,7 @@ end;
 function NameToAutoUpdatePolicy(const s: string): TPackageUpdatePolicy;
 begin
   for Result:=Low(TPackageUpdatePolicy) to High(TPackageUpdatePolicy) do
-    if AnsiCompareText(AutoUpdateNames[Result],s)=0 then exit;
+    if CompareText(AutoUpdateNames[Result],s)=0 then exit;
   Result:=pupAsNeeded;
 end;
 
@@ -1085,7 +1085,7 @@ begin
   if Key<>nil then begin
     Name:=AnsiString(Key);
     Pkg:=TLazPackageID(Data);
-    Result:=AnsiCompareText(Name,Pkg.Name);
+    Result:=CompareText(Name,Pkg.Name);
   end else
     Result:=-1;
 end;
@@ -1117,7 +1117,7 @@ var
 begin
   PkgName:=String(Key);
   Dependency:=TPkgDependency(Data);
-  Result:=AnsiCompareText(PkgName,Dependency.PackageName);
+  Result:=CompareText(PkgName,Dependency.PackageName);
 end;
 
 function ComparePkgDependencyNames(Data1, Data2: Pointer): integer;
@@ -1127,7 +1127,7 @@ var
 begin
   Dependency1:=TPkgDependency(Data1);
   Dependency2:=TPkgDependency(Data2);
-  Result:=AnsiCompareText(Dependency1.PackageName,Dependency2.PackageName);
+  Result:=CompareText(Dependency1.PackageName,Dependency2.PackageName);
 end;
 
 function CompareUnitsTree(UnitTree1, UnitTree2: TPkgUnitsTree): integer;
@@ -1202,7 +1202,7 @@ function FindDependencyByNameInList(First: TPkgDependency;
 begin
   Result:=First;
   while Result<>nil do begin
-    if AnsiCompareText(Result.PackageName,Name)=0 then exit;
+    if CompareText(Result.PackageName,Name)=0 then exit;
     Result:=Result.NextDependency[ListType];
   end;
 end;
@@ -1230,32 +1230,22 @@ end;
 
 function FindLowestPkgDependencyNodeWithName(const PkgName: string
   ): TAVLTreeNode;
-var
-  PrecNode: TAVLTreeNode;
 begin
   Result:=nil;
   if PackageDependencies=nil then exit;
-  Result:=
-    PackageDependencies.FindKey(PChar(PkgName),@CompareNameWithPkgDependency);
-  if Result=nil then exit;
-  while true do begin
-    PrecNode:=PackageDependencies.FindPrecessor(Result);
-    if (PrecNode=nil)
-    or (AnsiCompareText(PkgName,TPkgDependency(PrecNode.Data).PackageName)<>0)
-    then
-      break;
-    Result:=PrecNode;
-  end;
+  Result:=PackageDependencies.FindLeftMostKey(PChar(PkgName),
+                                              @CompareNameWithPkgDependency);
 end;
 
-function FindNextPkgDependecyNodeWithSameName(Node: TAVLTreeNode): TAVLTreeNode;
+function FindNextPkgDependencyNodeWithSameName(
+  Node: TAVLTreeNode): TAVLTreeNode;
 begin
   Result:=nil;
   if (Node=nil) or (PackageDependencies=nil) then exit;
   Result:=PackageDependencies.FindSuccessor(Node);
   if (Result<>nil)
-  and (AnsiCompareText(TPkgDependency(Node.Data).PackageName,
-                     TPkgDependency(Result.Data).PackageName)<>0)
+  and (CompareText(TPkgDependency(Node.Data).PackageName,
+                   TPkgDependency(Result.Data).PackageName)<>0)
   then
     Result:=nil;
 end;
@@ -1401,7 +1391,7 @@ var
 begin
   if FilenameIsPascalUnit(FFilename) then begin
     NewUnitName:=ExtractFileNameOnly(FFilename);
-    if AnsiCompareText(NewUnitName,FUnitName)<>0 then
+    if CompareText(NewUnitName,FUnitName)<>0 then
       FUnitName:=NewUnitName;
   end else
     FUnitName:='';
@@ -1728,12 +1718,12 @@ end;
 function TPkgDependency.IsCompatible(const PkgName: string;
   const Version: TPkgVersion): boolean;
 begin
-  Result:=(AnsiCompareText(PkgName,PackageName)=0) and IsCompatible(Version);
+  Result:=(CompareText(PkgName,PackageName)=0) and IsCompatible(Version);
 end;
 
 function TPkgDependency.Compare(Dependency2: TPkgDependency): integer;
 begin
-  Result:=AnsiCompareText(PackageName,Dependency2.PackageName);
+  Result:=CompareText(PackageName,Dependency2.PackageName);
   if Result<>0 then exit;
   Result:=MinVersion.Compare(Dependency2.MinVersion);
   if Result<>0 then exit;
@@ -2741,14 +2731,14 @@ begin
     for i:=0 to Cnt-1 do begin
       Result:=Files[i];
       if IgnorePkgFile=Result then continue;
-      if AnsiCompareText(Result.UnitName,TheUnitName)=0 then exit;
+      if CompareText(Result.UnitName,TheUnitName)=0 then exit;
     end;
     if not IgnoreRemoved then begin
       Cnt:=RemovedFilesCount;
       for i:=0 to Cnt-1 do begin
         Result:=RemovedFiles[i];
         if IgnorePkgFile=Result then continue;
-        if AnsiCompareText(Result.UnitName,TheUnitName)=0 then exit;
+        if CompareText(Result.UnitName,TheUnitName)=0 then exit;
       end;
     end;
   end;
@@ -3192,7 +3182,7 @@ var
     if siffCaseSensitive in SearchFlags then
       Result:=SearchedFilename=TheFilename
     else
-      Result:=AnsiCompareText(SearchedFilename,TheFilename)=0;
+      Result:=CompareText(SearchedFilename,TheFilename)=0;
   end;
 
 begin
@@ -4044,7 +4034,7 @@ begin
   Result:=Root;
   while (Result<>nil) do begin
     PkgFile:=TPkgFile(Result.Data);
-    Comp:=AnsiCompareText(UnitName,PkgFile.UnitName);
+    Comp:=CompareText(UnitName,PkgFile.UnitName);
     if Comp=0 then exit;
     if Comp<0 then begin
       Result:=Result.Left
@@ -4068,7 +4058,7 @@ end;
 
 function ComparePkgFilesUnitname(PkgFile1, PkgFile2: Pointer): integer;
 begin
-  Result := AnsiCompareText(
+  Result := CompareText(
               TPkgFile(PkgFile1).UnitName,
               TPkgFile(PkgFile2).UnitName);
 end;

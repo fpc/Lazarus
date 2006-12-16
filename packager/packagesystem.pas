@@ -401,7 +401,7 @@ begin
       Dependency.LoadPackageResult:=lprUndefined;
       OpenDependency(Dependency);
     end;
-    ANode:=FindNextPkgDependecyNodeWithSameName(ANode);
+    ANode:=FindNextPkgDependencyNodeWithSameName(ANode);
   end;
   EndUpdate;
 end;
@@ -3472,8 +3472,9 @@ begin
     or ((fpfSearchInAutoInstallPckgs in Flags) and (CurPkg.AutoInstall<>pitNope))
     // check packages with opened editor
     or ((fpfSearchInPckgsWithEditor in Flags) and (CurPkg.Editor<>nil))
-    then
+    then begin
       Event(CurPkg);
+    end;
   end;
   // iterate in package links
   if (fpfSearchInPkgLinks in Flags) then begin

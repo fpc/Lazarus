@@ -280,7 +280,7 @@ begin
   Unbind;
   if Owner<>nil then begin
     if Owner.Owner<>nil then
-      Owner.Owner.Delete(self);
+      Owner.Owner.Delete(Self);
     dec(Owner.FCount);
   end;
   Data := nil;

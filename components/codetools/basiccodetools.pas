@@ -123,6 +123,7 @@ function CompareTextIgnoringSpace(const Txt1, Txt2: string;
     CaseSensitive: boolean): integer;
 function CompareTextIgnoringSpace(Txt1: PChar; Len1: integer;
     Txt2: PChar; Len2: integer; CaseSensitive: boolean): integer;
+function CompareAnsiStringIgnoringSpaceIgnoreCase(Txt1, Txt2: pointer): integer;
 function CompareSubStrings(const Find, Txt: string;
     FindStartPos, TxtStartPos, Len: integer; CaseSensitive: boolean): integer;
 function CompareIdentifiers(Identifier1, Identifier2: PChar): integer;
@@ -281,15 +282,6 @@ const
 
 implementation
 
-var
-  IsIDChar,          // ['a'..'z','A'..'Z','0'..'9','_']
-  IsIDStartChar,     // ['a'..'z','A'..'Z','_']
-  IsSpaceChar,       // [#0..#32];
-  IsNumberChar,      // ['0'..'9']
-  IsHexNumberChar,   // ['0'..'9','A'..'Z','a'..'z']
-  IsNonWordChar      // [#0..#127]-IsIDChar
-     : array[char] of boolean;
-
 function Min(i1, i2: integer): integer; inline;
 begin
   if i1<=i2 then Result:=i1 else Result:=i2;
@@ -345,7 +337,7 @@ begin
       DirEnd:=length(Directive)-1;
     end;
     EndPos:=DirStart;
-    while (EndPos<DirEnd) and (IsIDChar[Directive[EndPos]]) do
+    while (EndPos<DirEnd) and (IsIdentChar[Directive[EndPos]]) do
       inc(EndPos);
     DirectiveName:=lowercase(copy(Directive,DirStart,EndPos-DirStart));
     Parameters:=copy(Directive,EndPos+1,DirEnd-EndPos-1);
@@ -1382,10 +1374,10 @@ begin
   IdentEnd:=Position;
   if (Position<1) or (Position>length(Source)) then exit;
   while (IdentStart>1)
-  and (IsIdChar[Source[IdentStart-1]]) do
+  and (IsIdentChar[Source[IdentStart-1]]) do
     dec(IdentStart);
   while (IdentEnd<=length(Source))
-  and (IsIdChar[Source[IdentEnd]]) do
+  and (IsIdentChar[Source[IdentEnd]]) do
     inc(IdentEnd);
 end;
 
@@ -1395,7 +1387,7 @@ begin
   Result:=Position;
   if (Result<1) or (Result>length(Source)) then exit;
   while (Result>1)
-  and (IsIdChar[Source[Result-1]]) do
+  and (IsIdentChar[Source[Result-1]]) do
     dec(Result);
 end;
 
@@ -1403,7 +1395,7 @@ function GetIdentLen(Identifier: PChar): integer;
 begin
   Result:=0;
   if Identifier=nil then exit;
-  while (IsIDChar[Identifier[Result]]) do inc(Result);
+  while (IsIdentChar[Identifier[Result]]) do inc(Result);
 end;
 
 function ReadNextPascalAtom(const Source:string;
@@ -1424,7 +1416,7 @@ begin
         DirEnd:=length(Result)-1;
       end;
       EndPos:=DirStart;
-      while (EndPos<DirEnd) and (IsIDChar[Result[EndPos]]) do inc(EndPos);
+      while (EndPos<DirEnd) and (IsIdentChar[Result[EndPos]]) do inc(EndPos);
       DirectiveName:=lowercase(copy(Result,DirStart,EndPos-DirStart));
       if (length(DirectiveName)=1) and (Result[DirEnd] in ['+','-']) then begin
         // switch
@@ -1494,10 +1486,10 @@ begin
   AtomStart:=Position;
   if Position<=Len then begin
     c1:=Source[Position];
-    if IsIDStartChar[c1] then begin
+    if IsIdentStartChar[c1] then begin
       // identifier
       inc(Position);
-      while (Position<=Len) and (IsIDChar[Source[Position]]) do
+      while (Position<=Len) and (IsIdentChar[Source[Position]]) do
         inc(Position);
     end else begin
       case c1 of
@@ -2217,9 +2209,9 @@ begin
       inc(P2);
     end else begin
       // different chars found
-      if InIdentifier and (IsIDChar[Txt1[P1]] xor IsIDChar[Txt2[P2]]) then begin
+      if InIdentifier and (IsIdentChar[Txt1[P1]] xor IsIdentChar[Txt2[P2]]) then begin
         // one identifier is longer than the other
-        if IsIDChar[Txt1[P1]] then
+        if IsIdentChar[Txt1[P1]] then
           // identifier in Txt1 is longer than in Txt2
           Result:=-1
         else
@@ -2252,7 +2244,7 @@ begin
         exit;
       end;
     end;
-    InIdentifier:=IsIDChar[Txt1[P1]];
+    InIdentifier:=IsIdentChar[Txt1[P1]];
   end;
   // one text was totally read -> check the rest of the other one
   // skip spaces
@@ -2272,6 +2264,14 @@ begin
     // there is some text at the end of P1
     Result:=-1
   end;
+end;
+
+function CompareAnsiStringIgnoringSpaceIgnoreCase(Txt1, Txt2: pointer
+  ): integer;
+// Txt1, Txt2 are type casted AnsiString
+begin
+  Result:=CompareTextIgnoringSpace(Txt1,length(AnsiString(Txt1)),
+                                   Txt2,length(AnsiString(Txt2)),false);
 end;
 
 function CompareSubStrings(const Find, Txt: string;
@@ -2313,7 +2313,7 @@ begin
         // skip directive name
         FilenameStartPos:=Result+Offset;
         while (FilenameStartPos<=CommentEndPos)
-        and (IsIDChar[ASource[FilenameStartPos]]) do
+        and (IsIdentChar[ASource[FilenameStartPos]]) do
           inc(FilenameStartPos);
         // skip space after name
         while (FilenameStartPos<=CommentEndPos)
@@ -2508,7 +2508,7 @@ begin
   if (Identifier1<>nil) then begin
     if (Identifier2<>nil) then begin
       while (UpChars[Identifier1[0]]=UpChars[Identifier2[0]]) do begin
-        if (IsIDChar[Identifier1[0]]) then begin
+        if (IsIdentChar[Identifier1[0]]) then begin
           inc(Identifier1);
           inc(Identifier2);
         end else begin
@@ -2516,8 +2516,8 @@ begin
           exit;
         end;
       end;
-      if (IsIDChar[Identifier1[0]]) then begin
-        if (IsIDChar[Identifier2[0]]) then begin
+      if (IsIdentChar[Identifier1[0]]) then begin
+        if (IsIdentChar[Identifier2[0]]) then begin
           if UpChars[Identifier1[0]]>UpChars[Identifier2[0]] then
             Result:=-1 // for example  'aab' 'aaa'
           else
@@ -2526,7 +2526,7 @@ begin
           Result:=-1; // for example  'aaa' 'aa;'
         end;
       end else begin
-        if (IsIDChar[Identifier2[0]]) then
+        if (IsIdentChar[Identifier2[0]]) then
           Result:=1 // for example  'aa;' 'aaa'
         else
           Result:=0; // for example  'aa;' 'aa,'
@@ -2554,7 +2554,7 @@ begin
   if (Identifier1<>nil) then begin
     if (Identifier2<>nil) then begin
       while (Identifier1[0]=Identifier2[0]) do begin
-        if (IsIDChar[Identifier1[0]]) then begin
+        if (IsIdentChar[Identifier1[0]]) then begin
           inc(Identifier1);
           inc(Identifier2);
         end else begin
@@ -2562,8 +2562,8 @@ begin
           exit;
         end;
       end;
-      if (IsIDChar[Identifier1[0]]) then begin
-        if (IsIDChar[Identifier2[0]]) then begin
+      if (IsIdentChar[Identifier1[0]]) then begin
+        if (IsIdentChar[Identifier2[0]]) then begin
           if Identifier1[0]>Identifier2[0] then
             Result:=-1 // for example  'aab' 'aaa'
           else
@@ -2572,7 +2572,7 @@ begin
           Result:=-1; // for example  'aaa' 'aa;'
         end;
       end else begin
-        if (IsIDChar[Identifier2[0]]) then
+        if (IsIdentChar[Identifier2[0]]) then
           Result:=1 // for example  'aa;' 'aaa'
         else
           Result:=0; // for example  'aa;' 'aa,'
@@ -2597,7 +2597,7 @@ begin
         inc(PrefixIdent);
         inc(Identifier);
       end;
-      Result:=not IsIDChar[PrefixIdent^];
+      Result:=not IsIdentChar[PrefixIdent^];
     end else begin
       Result:=false;
     end;
@@ -2618,7 +2618,7 @@ var len: integer;
 begin
   if Identifier<>nil then begin
     len:=0;
-    while (IsIdChar[Identifier[len]]) do inc(len);
+    while (IsIdentChar[Identifier[len]]) do inc(len);
     SetLength(Result,len);
     if len>0 then
       Move(Identifier[0],Result[1],len);
@@ -2630,7 +2630,7 @@ function FindNextIdentifier(const Source: string; StartPos, MaxPos: integer
   ): integer;
 begin
   Result:=StartPos;
-  while (Result<=MaxPos) and (not IsIDStartChar[Source[Result]]) do
+  while (Result<=MaxPos) and (not IsIdentStartChar[Source[Result]]) do
     inc(Result);
 end;
 
@@ -2642,7 +2642,7 @@ begin
   Result:=StartPos;
   while (Result<=MaxPos) do begin
     c:=Source[Result];
-    if IsIDStartChar[c] then exit;
+    if IsIdentStartChar[c] then exit;
     if c='''' then begin
       // skip string constant
       inc(Result);
@@ -2843,7 +2843,7 @@ begin
       if (CodePos>1) and (SpaceEndPos<=CodeLen) then begin
         c1:=ACode[CodePos-1];
         c2:=ACode[SpaceEndPos];
-        if (IsIdChar[c1] and IsIdChar[c2])
+        if (IsIdentChar[c1] and IsIdentChar[c2])
         // test for double char operators :=, +=, -=, /=, *=, <>, <=, >=, **, ><
         or ((c2='=') and  (c1 in [':','+','-','/','*','>','<']))
         or ((c1='<') and (c2='>'))
@@ -3724,23 +3724,6 @@ end;
 
 
 //=============================================================================
-
-procedure BasicCodeToolInit;
-var c: char;
-begin
-  for c:=#0 to #255 do begin
-    IsIDChar[c]:=(c in ['a'..'z','A'..'Z','0'..'9','_']);
-    IsIDStartChar[c]:=(c in ['a'..'z','A'..'Z','_']);
-    IsSpaceChar[c]:=c in [#0..#32];
-    IsNumberChar[c]:=c in ['0'..'9'];
-    IsHexNumberChar[c]:=c in ['0'..'9','A'..'Z','a'..'z'];
-    IsNonWordChar[c]:=(c in [#0..#127]) and (not IsIDChar[c]);
-  end;
-end;
-
-initialization
-  BasicCodeToolInit;
-
 
 end.
 
