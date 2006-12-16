@@ -72,8 +72,8 @@ begin
       caNone: ModalResult := 0;
       caFree: Release;
     end;
-    if CloseAction <> caNone then
-      TWSCustomFormClass(WidgetSetClass).CloseModal(Self);
+    { do not call widgetset CloseModal here, but in ShowModal to
+      guarantee execution of it }
   except
     ModalResult := 0;
     Application.HandleException(Self);
@@ -1908,6 +1908,8 @@ begin
         ActiveWindow := 0;
     finally
       Hide;
+      { guarantee execution of widgetset CloseModal }
+      TWSCustomFormClass(WidgetSetClass).CloseModal(Self);
       // free handles to save resources and to reduce overhead in the interfaces
       // for bookkeeping changing between Show and ShowModal.
       // (e.g.: the gtk interface creates some specials on ShowModal, so the
