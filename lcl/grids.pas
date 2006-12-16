@@ -3692,9 +3692,14 @@ end;
 
 procedure TCustomGrid.SetSelection(const AValue: TGridRect);
 begin
-  if goRangeSelect in Options then begin
-    fRange:=NormalizarRect(aValue);
-    Invalidate;
+  if goRangeSelect in Options then
+  with AValue do begin
+    if (Left<0)and(Top<0)and(Right<0)and(Bottom<0) then
+      CancelSelection
+    else begin
+      fRange:=NormalizarRect(aValue);
+      Invalidate;
+    end;
   end;
 end;
 
