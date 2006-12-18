@@ -564,6 +564,7 @@ type
     property BorderSpacing;
     property Center;
     property Constraints;
+    property Enabled;
     property OnChangeBounds;
     property OnClick;
     property OnDblClick;
@@ -574,9 +575,11 @@ type
     property OnMouseUp;
     property OnPaint;
     property OnResize;
+    property ParentShowHint;
     property Picture;
     property PopupMenu;
     property Proportional;
+    property ShowHint;
     property Stretch;
     property Transparent;
     property Visible;
