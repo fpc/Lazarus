@@ -23,9 +23,19 @@ unit WSCommonTrayIcon;
   {$PACKRECORDS C}
 {$endif}
 
+{*******************************************************************
+*  Compatibility code for Delphi for Windows.
+*******************************************************************}
+{$ifndef FPC}
+  {$define Windows}
+{$endif}
+
 interface
 
 uses
+  {$IFDEF Windows}
+    Windows,
+  {$ENDIF}
   Graphics, Classes, SysUtils, Controls, Menus;
 
 type

@@ -1,12 +1,14 @@
 <?xml version="1.0"?>
 <CONFIG>
   <Package Version="2">
+    <PathDelim Value="\"/>
     <Name Value="TrayIconLaz"/>
     <CompilerOptions>
       <Version Value="5"/>
+      <PathDelim Value="\"/>
       <SearchPaths>
-        <OtherUnitFiles Value="$(LazarusDir)/components/opengl/gtk2x11/"/>
-        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)/$(LCLWidgetType)"/>
+        <OtherUnitFiles Value="$(LazarusDir)\components\opengl\gtk2x11\"/>
+        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)\$(LCLWidgetType)"/>
       </SearchPaths>
       <CodeGeneration>
         <Generate Value="Faster"/>
@@ -16,11 +18,11 @@
       </Other>
     </CompilerOptions>
     <Version Minor="2"/>
-    <Files Count="6">
+    <Files Count="7">
       <Item1>
         <Filename Value="wswin32trayicon.pas"/>
         <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="wswin32trayicon"/>
+        <UnitName Value="WSWin32TrayIcon"/>
       </Item1>
       <Item2>
         <Filename Value="trayicon.pas"/>
@@ -30,7 +32,7 @@
       <Item3>
         <Filename Value="wsgtk2trayicon.pas"/>
         <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="wsgtk2trayicon"/>
+        <UnitName Value="WSGtk2TrayIcon"/>
       </Item3>
       <Item4>
         <Filename Value="wsgtktrayicon.pas"/>
@@ -46,6 +48,10 @@
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="wsx11trayicon"/>
       </Item6>
+      <Item7>
+        <Filename Value="wscommontrayicon.pas"/>
+        <UnitName Value="WSCommonTrayIcon"/>
+      </Item7>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="2">
@@ -58,10 +64,11 @@
       </Item2>
     </RequiredPkgs>
     <UsageOptions>
-      <UnitPath Value="$(PkgOutDir)/"/>
+      <UnitPath Value="$(PkgOutDir)\"/>
     </UsageOptions>
     <PublishOptions>
       <Version Value="2"/>
+      <DestinationDirectory Value="$(TestDir)\publishedpackage\"/>
       <IgnoreBinaries Value="False"/>
     </PublishOptions>
   </Package>

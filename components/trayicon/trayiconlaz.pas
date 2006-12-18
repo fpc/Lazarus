@@ -7,7 +7,7 @@ unit TrayIconLaz;
 interface
 
 uses
-  TrayIcon, wstrayicon, LazarusPackageIntf; 
+  TrayIcon, wstrayicon, WSCommonTrayIcon, LazarusPackageIntf; 
 
 implementation
 

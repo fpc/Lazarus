@@ -30,20 +30,22 @@ interface
 *  Compatibility code for Delphi for Windows.
 *******************************************************************}
 {$ifndef FPC}
-  {$define MSWindows}
+  {$define Windows}
 {$endif}
-
 
 uses
 
-{$ifdef Win32}
+{$ifdef Windows}
 
-  wswin32trayicon,
+  {$ifdef WinCE}
 
-{$endif}
-{$ifdef WinCE}
+    wswincetrayicon,
 
-  wswincetrayicon,
+  {$else}
+
+    wswin32trayicon,
+
+  {$endif}
 
 {$endif}
 {$ifdef UNIX}

@@ -31,8 +31,12 @@ unit TrayIcon;
 interface
 
 uses
-  Classes, SysUtils, WSTrayIcon, Menus, Graphics, Forms, Controls,
-  LResources, Dialogs;
+{$ifdef fpc}
+  LResources,
+{$else}
+  Windows,
+{$endif}
+  Classes, SysUtils, WSTrayIcon, Menus, Graphics, Forms, Controls, Dialogs;
 
 type
 
@@ -60,6 +64,7 @@ type
     function Hide: Boolean;
     function Show: Boolean;
     procedure UpdateWS;
+    function GetPosition: TPoint;
     property Canvas: TCanvas read GetCanvas;
   published
     { Published declarations }
@@ -208,6 +213,23 @@ begin
   
   // Allows the widgetset to update itself internally
   vwsTrayIcon.InternalUpdate;
+end;
+
+{*******************************************************************
+*  TTrayIcon.GetPosition ()
+*
+*  DESCRIPTION:    Returns the position of the tray icon on the display.
+*                  This function is utilized to show message boxes near
+*                  the icon
+*
+*  PARAMETERS:     None
+*
+*  RETURNS:        Nothing
+*
+*******************************************************************}
+function TTrayIcon.GetPosition: TPoint;
+begin
+  Result := vwsTrayIcon.GetPosition;
 end;
 
 {*******************************************************************
