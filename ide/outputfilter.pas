@@ -1170,18 +1170,38 @@ procedure TOutputFilter.WriteOutput(Flush: boolean);
 var
   CurTime: Double;
   s: String;
+  i: LongInt;
+  NewLen: Integer;
+  LineEnd: string = LineEnding;
+  CurLine: String;
 const
   HalfASecond =0.5/(24*60*60); // 0.5 divided by the number of seconds per day
 begin
   CurTime:=Now;
   if ((CurTime-fLastOutputTime)>HalfASecond)
   or Flush or (FBufferingOutputLock<=0) then begin
-    s:='';
-    while FLasTOutputLineParts<fOutput.Count-1 do begin
-      inc(FLasTOutputLineParts);
-      s:=s+fOutput[FLasTOutputLineParts].Msg+LineEnding;
+    if FLastOutputLineParts<fOutput.Count-1 then begin
+      i:=FLastOutputLineParts;
+      NewLen:=0;
+      while i<fOutput.Count-1 do begin
+        inc(i);
+        inc(NewLen,length(fOutput[i].Msg));
+        inc(NewLen,length(LineEnd));
+      end;
+      SetLength(s,NewLen);
+      i:=1;
+      while FLastOutputLineParts<fOutput.Count-1 do begin
+        inc(FLastOutputLineParts);
+        CurLine:=fOutput[FLastOutputLineParts].Msg;
+        if CurLine<>'' then begin
+          System.Move(CurLine[1],s[i],length(CurLine));
+          inc(i,length(CurLine));
+        end;
+        System.Move(LineEnd[1],s[i],length(LineEnd));
+        inc(i,length(LineEnd));
+      end;
+      DbgOut(s);
     end;
-    if s<>'' then DbgOut(s);
     fLastOutputTime:=CurTime;
   end;
 end;
