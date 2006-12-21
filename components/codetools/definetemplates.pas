@@ -3183,9 +3183,9 @@ var
                   if (UnitName='libc')
                   and (System.Pos(AppendPathDelim(FPCSrcDir)+'packages'+PathDelim,ADirPath)>0)
                   then begin
+                    // <FPCSrcDir>/rtl/netwlibc/libc.pp
+                    // <FPCSrcDir>/packages/base/libc/libc.pp
                     Priority:=2;
-                    DebugLn(['BrowseDirectory OldFilename=',OldUnitLink.Filename,' Old.UsedMacroCount=',OldUnitLink.UsedMacroCount,' Old.MacroCount=',OldUnitLink.MacroCount,' Old.Priority=',OldUnitLink.Priority,
-                      ' New=',AFilename,' New.MacroCount=',MacroCount,' New.UsedMacroCount=',UsedMacroCount,' New.Priority=',Priority]);
                   end;
                   if (UsedMacroCount>OldUnitLink.UsedMacroCount)
                   or ((UsedMacroCount=OldUnitLink.UsedMacroCount)

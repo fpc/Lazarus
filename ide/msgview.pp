@@ -279,8 +279,9 @@ begin
   FLastSelectedIndex := -1;
 
   Caption := lisMenuViewMessages;
-  MessageListBox.Style       := lbOwnerDrawFixed;
-  MessageListBox.OnDrawItem  := @MessageViewDrawItem;
+  MessageListBox.Style := lbOwnerDrawFixed;
+  MessageListBox.OnDrawItem := @MessageViewDrawItem;
+  MessageListBox.ClickOnSelChange := false;
 
   // assign the root TMenuItem to the registered menu root.
   // This will automatically create all registered items
@@ -397,6 +398,7 @@ begin
     FVisibleItems.Add(NewMsg);
     FLastLineIsProgress  := ProgressLine;
     MessageListBox.TopIndex := MessageListBox.Items.Count - 1;
+    //DebugLn(['TMessagesView.Add ',MessageListBox.TopIndex]);
   end;
   //ConsistencyCheck;
 end;
@@ -525,8 +527,10 @@ end;
 
 procedure TMessagesView.ShowTopMessage;
 begin
-  if MessageListBox.Items.Count > 0 then
+  if MessageListBox.Items.Count > 0 then begin
     MessageListBox.TopIndex := 0;
+    //DebugLn(['TMessagesView.ShowTopMessage ']);
+  end;
 end;
 
 function TMessagesView.MsgCount: integer;

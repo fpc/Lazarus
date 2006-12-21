@@ -568,7 +568,6 @@ var
   ListItemWidget: PGtkWidget;
   i: Integer;
 begin
-  DebugLn(['TGtkWSCustomListBox.SetTopIndex ',DbgSName(ACustomListBox),' NewTopIndex=',NewTopIndex,' ',GetWidgetDebugReport(PGtkWidget(ACustomListBox.Handle))]);
   AWidget:=PGtkWidget(ACustomListBox.Handle);
   ListWidget:=PGtkList(GetWidgetInfo(AWidget, True)^.CoreWidget);
   ScrolledWindow:=PGtkScrolledWindow(AWidget);
@@ -597,6 +596,7 @@ var
   GListItem: PGList;
   ListItemWidget: PGtkWidget;
   i: Integer;
+  requisition: TGtkRequisition;
 begin
   //if CompareText(ACustomListBox.Name,'LBProperties')=0 then
   //  debugln('TGtkWSCustomListBox.SetTopIndex ',DbgSName(ACustomListBox));
@@ -609,13 +609,16 @@ begin
   while GListItem<>nil do begin
     ListItemWidget:=PGtkWidget(GListItem^.data);
     if i>=NewTopIndex then break;
-    inc(AdjValue,ListItemWidget^.Allocation.Height);
+    gtk_widget_size_request(ListItemWidget,@requisition);
+    inc(AdjValue,requisition.height);
+    //DebugLn(['TGtkWSCustomListBox.SetTopIndex ',i,' AdjValue=',AdjValue,' Flags=',WidgetFlagsToString(ListItemWidget)]);
     inc(i);
     GListItem:=GListItem^.next;
   end;
   VertAdj:=gtk_scrolled_window_get_vadjustment(ScrolledWindow);
-  MaxAdjValue:=RoundToInt(VertAdj^.upper-VertAdj^.page_size);
+  MaxAdjValue:=RoundToInt(VertAdj^.upper);
   if AdjValue>MaxAdjValue then AdjValue:=MaxAdjValue;
+  //DebugLn(['TGtkWSCustomListBox.SetTopIndex AdjValue=',AdjValue,' VertAdj^.upper=',VertAdj^.upper,' VertAdj^.page_size=',VertAdj^.page_size]);
   gtk_adjustment_set_value(VertAdj,AdjValue);
 end;
 {$EndIf}

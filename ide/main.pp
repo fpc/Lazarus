@@ -9354,6 +9354,7 @@ var MaxMessages: integer;
   NewFilename: String;
 begin
   Result:=false;
+  
   MaxMessages:=MessagesView.VisibleItemCount;
   if Index>=MaxMessages then exit;
   if (Index<0) then begin
