@@ -799,6 +799,7 @@ type
     property Lines;
     property MaxLength;
     property OnChange;
+    property OnEditingDone;
     property OnEnter;
     property OnExit;
     property OnKeyDown;

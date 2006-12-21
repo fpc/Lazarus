@@ -488,7 +488,8 @@ type
   public
     UnitName: string;
     Filename: string;
-    DefaultMacroCount: integer;
+    MacroCount: integer;
+    UsedMacroCount: integer;
     Priority: integer;
   end;
 
@@ -2964,8 +2965,10 @@ var
     end;
     
     function BuildMacroFilename(const AFilename: string;
-      var DefaultMacroCount: integer): string;
+      var MacroCount, UsedMacroCount: integer): string;
     // replace Operating System and Processor Type with macros
+    // MacroCount = number of macros are in the filename
+    // UsedMacroCount = number of macros fitting to the current settings
     var DirStart, DirEnd, i: integer;
       DirName: string;
       
@@ -2974,8 +2977,11 @@ var
       begin
         Result:=false;
         if CompareText(MacroValue,DirName)=0 then begin
-          if CompareText(DirName,DefaultMacroValue)=0 then
-            inc(DefaultMacroCount);
+          // this is a macro
+          if CompareText(DirName,DefaultMacroValue)=0 then begin
+            // the current settings would replace the macro to fit this filename
+            inc(UsedMacroCount);
+          end;
           BuildMacroFilename:=copy(BuildMacroFilename,1,DirStart-1)+MacroName+
             copy(BuildMacroFilename,DirEnd,length(BuildMacroFilename)-DirEnd+1);
           inc(DirEnd,length(MacroName)-length(DirName));
@@ -2985,7 +2991,7 @@ var
       end;
       
     begin
-      DefaultMacroCount:=0;
+      MacroCount:=0;
       Result:=copy(AFilename,length(FPCSrcDir)+1,
                    length(AFilename)-length(FPCSrcDir));
       DirStart:=1;
@@ -3045,7 +3051,7 @@ var
       FileInfo: TSearchRec;
       NewUnitLink, OldUnitLink: TDefTemplUnitNameLink;
       i: integer;
-      DefaultMacroCount: integer;
+      MacroCount, UsedMacroCount: integer;
       Priority: Integer;
     begin
       {$IFDEF VerboseFPCSrcScan}
@@ -3082,14 +3088,17 @@ var
               UnitName:=copy(UnitName,1,length(UnitName)-length(Ext));
               if UnitName<>'' then begin
                 OldUnitLink:=FindUnitLink(UnitName);
-                DefaultMacroCount:=0;
-                MacroFileName:=BuildMacroFileName(AFilename,DefaultMacroCount);
+                MacroCount:=0;
+                UsedMacroCount:=0;
+                MacroFileName:=
+                        BuildMacroFileName(AFilename,MacroCount,UsedMacroCount);
                 if OldUnitLink=nil then begin
                   // first unit with this name
                   NewUnitLink:=TDefTemplUnitNameLink.Create;
                   NewUnitLink.UnitName:=UnitName;
                   NewUnitLink.FileName:=MacroFileName;
-                  NewUnitLink.DefaultMacroCount:=DefaultMacroCount;
+                  NewUnitLink.MacroCount:=MacroCount;
+                  NewUnitLink.UsedMacroCount:=UsedMacroCount;
                   NewUnitLink.Priority:=Priority;
                   UnitTree.Add(NewUnitLink);
                 end else begin
@@ -3097,6 +3106,14 @@ var
 
                     the decision which filename is the right one is based on a
                     simple heuristic:
+                    - a filename with macros is preferred above one without
+                      This skips the templates.
+                    - A macro fitting better with the current settings
+                      is preferred. For example:
+                      If the current OS is linux then on fpc 1.0.x:
+                        $(#FPCSrcDir)/fcl/classes/$(#TargetOS)/classes.pp
+                    - A unit in the rtl is preferred above one in the fcl
+
                      FPC stores a unit many times, if there is different version
                      for each Operating System or Processor Type. And sometimes
                      units are stored in a combined OS (e.g. 'unix').
@@ -3157,23 +3174,28 @@ var
                         $(#FPCSrcDir)/fcl/$(#TargetOS)/classes.pp
                         $(#FPCSrcDir)/fcl/classes/$(#TargetOS)/classes.pp
                         
-                       Rulez:
-                        - A unit in the rtl is preferred above one in the fcl
-                        - a filename with macros is preferred above one without
-                          This skips the templates.
-                        - A macro fitting better with the current settings
-                          is preferred. For example:
-                          If the current OS is linux then on fpc 1.0.x:
-                            $(#FPCSrcDir)/fcl/classes/$(#TargetOS)/classes.pp
+                   Example: libc.pp
+                     <FPCSrcDir>/rtl/netwlibc/libc.pp
+                     <FPCSrcDir>/packages/base/libc/libc.pp
+                     There are no macros and no templates. This is a special case.
+                     
                   }
-                  if (Priority>OldUnitLink.Priority)
-                  or ((Priority=OldUnitLink.Priority)
-                      and ((FileNameMacroCount(OldUnitLink.Filename)=0)
-                           or (OldUnitLink.DefaultMacroCount<DefaultMacroCount)))
+                  if (UnitName='libc')
+                  and (System.Pos(AppendPathDelim(FPCSrcDir)+'packages'+PathDelim,ADirPath)>0)
+                  then begin
+                    Priority:=2;
+                    DebugLn(['BrowseDirectory OldFilename=',OldUnitLink.Filename,' Old.UsedMacroCount=',OldUnitLink.UsedMacroCount,' Old.MacroCount=',OldUnitLink.MacroCount,' Old.Priority=',OldUnitLink.Priority,
+                      ' New=',AFilename,' New.MacroCount=',MacroCount,' New.UsedMacroCount=',UsedMacroCount,' New.Priority=',Priority]);
+                  end;
+                  if (UsedMacroCount>OldUnitLink.UsedMacroCount)
+                  or ((UsedMacroCount=OldUnitLink.UsedMacroCount)
+                    and ((Priority>OldUnitLink.Priority)
+                      or ((Priority=OldUnitLink.Priority)
+                          and (OldUnitLink.MacroCount<MacroCount))))
                   then begin
                     // take the new macro filename
                     OldUnitLink.Filename:=MacroFileName;
-                    OldUnitLink.DefaultMacroCount:=DefaultMacroCount;
+                    OldUnitLink.MacroCount:=MacroCount;
                     OldUnitLink.Priority:=Priority;
                   end;
                 end;
