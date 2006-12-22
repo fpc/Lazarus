@@ -1395,7 +1395,7 @@ var
   begin
     Result:=GetDefaultFontName;
     if IsFontNameXLogicalFontDesc(Result) then
-      Result := ExtractXLFDItem(LongFontName,2);
+      Result := ExtractXLFDItem(Result,2);
     if Result='' then Result:='*';
   end;
 

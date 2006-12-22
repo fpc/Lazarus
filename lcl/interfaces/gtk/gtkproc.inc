@@ -7368,6 +7368,8 @@ var
   Style: PGtkStyle;
   {$IFDEF GTK2}
   PangoFontDesc: PPangoFontDescription;
+  {$ELSE}
+  p: pchar;
   {$ENDIF}
 begin
   Result:='';
@@ -7378,10 +7380,21 @@ begin
   If Style <> nil then begin
     {$IFDEF GTK1}
       {$IFNDEF NoStyle}
-      If (Style^.RC_Style <> nil) then begin
-        if (Style^.RC_Style^.font_name <> nil) then
-          Result := Style^.RC_Style^.font_name;
-      end;
+      if (Style^.RC_Style <> nil) then
+        with style^.RC_Style^ do begin
+          if (font_name <> nil) then
+            Result := font_name;
+          if (Result='') and (fontset_name<>nil) then
+          begin
+            // fontset_name it's usually a comma separated list of font names
+            // try to get the first one.
+            p:=strscan(fontset_name, ',');
+            if p=nil then
+              result:=fontset_name
+            else
+              result:=copy(fontset_name,1, p-fontset_name);
+          end;
+        end;
       {$ENDIF}
     {$ENDIF}
     {$IFDEF GTK2}
@@ -7393,6 +7406,9 @@ begin
     end;
     {$ENDIF}
   end;
+  {$IFDEF VerboseFonts}
+  DebugLn('GetDefaultFontName: DefaultFont=',result);
+  {$ENDIF}
 end;
 
 procedure RealizeGDKColor(ColorMap: PGdkColormap; Color: PGDKColor);
