@@ -628,6 +628,12 @@ begin
   Result := Windows.CombineRgn(Dest, Src1, Src2, fnCombineMode);
 end;
 
+function TWin32WidgetSet.ComboBoxDropDown(Handle: HWND;
+  DropDown: boolean): boolean;
+begin
+  Result:=boolean(Windows.SendMessage(Handle, CB_SHOWDROPDOWN, WPARAM(DropDown), 0));
+end;
+
 {------------------------------------------------------------------------------
   Method:  CreateBitmap
   Params:  Width      - bitmap width, in pixels
