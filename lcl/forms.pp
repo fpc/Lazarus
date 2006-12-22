@@ -582,6 +582,7 @@ type
     property KeyPreview;
     property Menu;
     property OnActivate;
+    property OnClick;
     property OnClose;
     property OnCloseQuery;
     property OnChangeBounds;
