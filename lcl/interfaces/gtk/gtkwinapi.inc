@@ -1296,6 +1296,7 @@ var
   CachedFont: TGtkFontCacheDescriptor;
   CharsetRec: PCharSetEncodingRec;
   Weightlist: TStringlist;
+  CalcPixelSize: boolean;
 
 
   function LoadFontXLFD(aXLFD: string): boolean;
@@ -1430,6 +1431,26 @@ var
     Result:=(c>5) and (c<>14);
     if Result then
       debugln('WARNING: Fontnamt "',ALongFontName,'" seems to be a XLFD fontname, but has 14<>',dbgs(c),' minus signs');
+  end;
+  
+  function GetPixelSize(Offset: Integer): string;
+  begin
+    with LogFont do begin
+      result := IntToStr(Abs(lfHeight)+Offset);
+      {$IFNDEF OLD_ROTATION}
+      if lfOrientation <> 0 then begin
+        SinCos(lfOrientation/1800.*Pi, sn, cs);
+        cs := cs*(Abs(lfHeight)+Offset);
+        sn := sn*(Abs(lfHeight)+Offset);
+        PixelSize := Format('[%.3f %.3f %.3f %.3f]', [cs, sn, -sn, cs]);
+        repeat
+          n := Pos('-', PixelSize);
+          if n > 0 then
+            PixelSize[n] := '~';
+        until n <= 0;
+      end;
+    end;
+    {$ENDIF}
   end;
   
 begin
@@ -1594,24 +1615,11 @@ begin
       end;
       {$ENDIF}
 
-      if (PixelSize='*') and (PointSize='*') then begin
+      CalcPixelSize:= (PixelSize='*') and (PointSize='*');
+      if CalcPixelSize then begin
         // TODO: make more accurate (implement the meaning of
         //       positive and negative height values.
-        PixelSize := IntToStr(Abs(lfHeight));
-        {$IFNDEF OLD_ROTATION}
-        if lfOrientation <> 0 then begin
-          SinCos(lfOrientation/1800.*Pi, sn, cs);
-          cs := cs*Abs(lfHeight);
-          sn := sn*Abs(lfHeight);
-          PixelSize := Format('[%.3f %.3f %.3f %.3f]', [cs, sn, -sn, cs]);
-          repeat
-            n := Pos('-', PixelSize);
-            if n > 0 then
-              PixelSize[n] := '~';
-          until n <= 0;
-        end;
-        {$ENDIF}
-
+        PixelSize := GetPixelSize(0);
         // Since we use pixelsize, it isn't allowed to give a value here
         PointSize := '*';
 
@@ -1654,6 +1662,28 @@ begin
       try
         if LoadFontEx then
           exit;
+          
+        // not found yet, before doing a generic fall over
+        // try to do a more specific guess.
+        if CalcPixelSize then begin
+
+          // try one pixel smaller
+          {$IFDEF VerboseFonts}
+          debugln('TGtkWidgetSet.CreateFontIndirectEx, LoadFontEx: try one pixel smaller');
+          {$ENDIF}
+          PixelSize:=GetPixelSize(-1);
+          if LoadFontEx then
+            exit;
+            
+          // try one pixel bigger
+          {$IFDEF VerboseFonts}
+          debugln('TGtkWidgetSet.CreateFontIndirectEx, LoadFontEx: try one pixel bigger');
+          {$ENDIF}
+          PixelSize:=GetPixelSize(1); // try
+           if LoadFontEx then
+            exit;
+            
+        end;
       finally
         WeightList.Free;
       end;
@@ -1682,6 +1712,7 @@ begin
     // Use the default
     ResolutionX := '*';
     ResolutionY := '*';
+
     if LoadFont then exit;
 
     // try one height bigger
