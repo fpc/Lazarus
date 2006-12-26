@@ -2837,6 +2837,7 @@ begin
     DeliverMessage(Data, Msg);
   end;
 end;
+
 {------------------------------------------------------------------------------
   Function: GTKKeySnooper
   Params:  Widget: The widget for which this event is fired
@@ -2889,7 +2890,7 @@ const
     (VK_LWIN, VK_RWIN, 0)
   );
 var
-  VKey: TVKeyRecord;
+  VKey: PVKeyRecord;
   Pressed: Boolean;
   n: Integer;
 begin
@@ -2905,9 +2906,8 @@ begin
     Exit;
   end;
 
-  VKey := KeySymToVKey(Event^.keyval);
-
-  if VKey.VKey = $FF
+  VKey := MKeySymToVKMap.GetDataPtr(Event^.keyval);
+  if VKey = nil
   then begin
     if Pressed
     then DebugLn(Format('[WARNING] Key pressed without VKey: K=0x%x S="%s"', [
@@ -2920,9 +2920,9 @@ begin
   if FuncData=nil then exit;
   KeyStateList := TObject(FuncData) as TFPList;
 
-  UpdateList(Vkey.VKey, Pressed);
-  if IsToggleKey(Vkey.VKey)
-  then UpdateToggleList(Vkey.VKey);
+  UpdateList(Vkey^.VKey, Pressed);
+  if IsToggleKey(Vkey^.VKey)
+  then UpdateToggleList(Vkey^.VKey);
 
   // Add special left and right codes
   case Event^.KeyVal of
@@ -2938,9 +2938,9 @@ begin
   for n := 0 to High(STATE_MAP) do
   begin
     // Skip our current key, since the state is updated after the event
-    if VKey.Vkey = VK_MAP[n][0] then Continue;
-    if VKey.Vkey = VK_MAP[n][1] then Continue;
-    if VKey.Vkey = VK_MAP[n][2] then Continue;
+    if VKey^.Vkey = VK_MAP[n][0] then Continue;
+    if VKey^.Vkey = VK_MAP[n][1] then Continue;
+    if VKey^.Vkey = VK_MAP[n][2] then Continue;
 
     UpdateList(VK_MAP[n][0], (STATE_MAP[n] and Event^.State) <> 0);
     UpdateList(VK_MAP[n][1], (STATE_MAP[n] and Event^.State) <> 0);
@@ -2950,7 +2950,7 @@ begin
   // if the VKey has multiple VK_codes then SHIFT distinguishes between them
   // In that case SHIFT is not pressed
   // On the next event the shift flag will be restored based on modifiers
-  if Pressed and ((VKey.Flags and VKEY_FLAG_MULTI_VK) <> 0)
+  if Pressed and ((VKey^.Flags and VKEY_FLAG_MULTI_VK) <> 0)
   then begin
     UpdateList(VK_SHIFT, False);
     UpdateList(VK_LSHIFT, False);

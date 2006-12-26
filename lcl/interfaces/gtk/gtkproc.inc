@@ -2101,75 +2101,6 @@ begin
   end;
 end;
 
-{------------------------------------------------------------------------------
-  Procedure: KeySymToVKeyArray
-  Params:    AKeySym: The keysym the array is requested for
-             ACreate: True if the array should be created if it does not exist
-  Returns:   PVKeyArray: The VKey array for the LSByte of KeySym
-
-  Retrieves or constructs a VKeyArray for VK lookup on KeySyms.
- ------------------------------------------------------------------------------}
-function KeySymToVKeyArray(const AKeySym: Cardinal; const ACreate: Boolean): PVKeyArray1;
-var
-  K: Byte;
-  P2: PVKeyArray2;
-  P3: PVKeyArray3;
-begin
-  Result := nil;
-
-  K := Byte(AKeySym shr 24);
-  P3 := MKeySymToVK[K];
-  if P3 = nil
-  then begin
-    if not ACreate then Exit;
-    New(P3);
-    FillChar(P3^, SizeOf(P3^), 0);
-    MKeySymToVK[K] := P3;
-  end;
-
-  K := Byte(AKeySym shr 16);
-  P2 := P3^[K];
-  if P2 = nil
-  then begin
-    if not ACreate then Exit;
-    New(P2);
-    FillChar(P2^, SizeOf(P2^), 0);
-    P3^[K] := P2;
-  end;
-
-  K := Byte(AKeySym shr 8);
-  Result := P2^[K];
-  if Result = nil
-  then begin
-    if not ACreate then Exit;
-    New(Result);
-    FillChar(Result^, SizeOf(Result^), 0);
-    P2^[K] := Result;
-  end;
-end;
-
-{------------------------------------------------------------------------------
-  Procedure: KeySymToVKey
-  Params:    AKeySym: The keysym the array is requested for
-  Returns:   The VKey for the KeySym
-
-  Retrieves a VKey for a KeySyms.
- ------------------------------------------------------------------------------}
-function KeySymToVKey(const AKeySym: Cardinal): TVKeyRecord;
-var
-  P: PVKeyArray1;
-begin
-  P := KeySymToVKeyArray(AKeySym, False);
-  if P = nil
-  then begin
-    Result.VKey := $FF;
-    Result.Flags := $FF;
-  end
-  else begin
-    Result := P^[AKeySym and $FF];
-  end;
-end;
-
 function HandleGTKKeyUpDown(Widget: PGtkWidget; Event: PGdkEventKey;
   Data: gPointer; BeforeEvent: boolean) : GBoolean;
 {off $DEFINE VerboseKeyboard}
@@ -2181,7 +2112,7 @@ var
   Character: TUTF8Char;
   SysKey: Boolean;
 
-  VKey: TVKeyRecord;
+  VKey: PVKeyRecord;
   CommonKeyData: Integer;
   Flags: Integer;
   FocusedWidget: PGtkWidget;
@@ -2252,45 +2183,53 @@ var
     
     if GtkWidgetIsA(Widget,gtk_entry_get_type) then begin
       // the gtk_entry handles the following keys
-      if (event^.keyval=GDK_Key_Return)
-      or (event^.keyval=GDK_Key_Escape)
-      or (event^.keyval=GDK_Key_Tab) then
-        exit;
-      if (event^.length > 0)
-      or (event^.keyval=GDK_Key_BackSpace)
-      or (event^.keyval=GDK_Key_Clear)
-      or (event^.keyval=GDK_Key_Insert)
-      or (event^.keyval=GDK_Key_Delete)
-      or (event^.keyval=GDK_Key_Home)
-      or (event^.keyval=GDK_Key_End)
-      or (event^.keyval=GDK_Key_Left)
-      or (event^.keyval=GDK_Key_Right)
-      or ((event^.keyval >= $20) and (event^.keyval <= $FF))
-      then
-        Result:=true;
+      case event^.keyval of
+        GDK_Key_Return,
+        GDK_Key_Escape,
+        GDK_Key_Tab: Exit;
+      end;
+      
+      Result := event^.length > 0;
+      if Result then Exit;
+      
+      case event^.keyval of
+        GDK_Key_BackSpace,
+        GDK_Key_Clear,
+        GDK_Key_Insert,
+        GDK_Key_Delete,
+        GDK_Key_Home,
+        GDK_Key_End,
+        GDK_Key_Left,
+        GDK_Key_Right,
+        $20..$FF: Result := True;
+      end;
       exit;
     end;
     
     if GtkWidgetIsA(Widget,gtk_text_get_type) then begin
       // the gtk_text handles the following keys
-      if (event^.keyval=GDK_Key_Escape) then
-        exit;
-      if (event^.length > 0)
-      or (event^.keyval=GDK_Key_Return)
-      or (event^.keyval=GDK_Key_Tab)
-      or (event^.keyval=GDK_Key_BackSpace)
-      or (event^.keyval=GDK_Key_Clear)
-      or (event^.keyval=GDK_Key_Insert)
-      or (event^.keyval=GDK_Key_Delete)
-      or (event^.keyval=GDK_Key_Home)
-      or (event^.keyval=GDK_Key_End)
-      or (event^.keyval=GDK_Key_Left)
-      or (event^.keyval=GDK_Key_Right)
-      or (event^.keyval=GDK_Key_Up)
-      or (event^.keyval=GDK_Key_Down)
-      or ((event^.keyval >= $20) and (event^.keyval <= $FF))
-      then
-        Result:=true;
+      case event^.keyval of
+        GDK_Key_Escape: Exit;
+      end;
+
+      Result := event^.length > 0;
+      if Result then Exit;
+      
+      case event^.keyval of
+        GDK_Key_Return,
+        GDK_Key_Tab,
+        GDK_Key_BackSpace,
+        GDK_Key_Clear,
+        GDK_Key_Insert,
+        GDK_Key_Delete,
+        GDK_Key_Home,
+        GDK_Key_End,
+        GDK_Key_Left,
+        GDK_Key_Right,
+        GDK_Key_Up,
+        GDK_Key_Down,
+        $20..$FF: Result := True;
+      end;
       exit;
     end;
   end;
@@ -2399,14 +2338,19 @@ begin
   gdk_event_key_get_string(Event, EventString);
   FillChar(Msg,SizeOf(Msg),0);
 
-  VKey := KeySymToVKey(Event^.keyval);
+  VKey := MKeySymToVKMap.GetDataPtr(Event^.keyval);
+  if VKey = nil
+  then begin
+    DebugLn(Format('[WARNING] Key event without VKey: K=0x%x S="%s"', [Event^.KeyVal, EventString]));
+    Exit;
+  end;
 
   Flags := 0;
-  if (VKey.Flags and VKEY_FLAG_EXT) <> 0
+  if (VKey^.Flags and VKEY_FLAG_EXT) <> 0
   then Flags := KF_EXTENDED;
 
   SysKey := False;
-  if (VKey.Flags and VKEY_FLAG_ALT) = 0
+  if (VKey^.Flags and VKEY_FLAG_ALT) = 0
   then begin
     // VKey is without ALT so Alt is syskey
     SysKey := (Event^.State and GDK_MOD1_MASK) <> 0;
@@ -2419,16 +2363,16 @@ begin
 
   if SysKey
   then Flags := Flags or KF_ALTDOWN;
-  CommonKeyData := MVKeyInfo[VKey.VKey].KeyCode shl 16; // ScanCode
+  CommonKeyData := MVKeyInfo[VKey^.VKey].KeyCode shl 16; // ScanCode
 
   case gdk_event_get_type(Event) of
   GDK_KEY_RELEASE:
     begin
       {$IFDEF VerboseKeyboard}
-      DebugLn('[HandleGTKKeyUpDown] GDK_KEY_RELEASE VKey=',dbgs(VKey.VKey));
+      DebugLn('[HandleGTKKeyUpDown] GDK_KEY_RELEASE VKey=',dbgs(VKey^.VKey));
       {$ENDIF}
 
-      Msg.CharCode := VKey.VKey;
+      Msg.CharCode := VKey^.VKey;
       if BeforeEvent then begin
         if SysKey then
           Msg.msg := CN_SYSKEYUP
@@ -2450,7 +2394,7 @@ begin
       NotifyApplicationUserInput(Msg.Msg);
       Result := DeliverMessage(TargetData, Msg) = 0;
 
-      if Msg.CharCode <> VKey.VKey
+      if Msg.CharCode <> VKey^.VKey
       then begin
         // key was handled by LCL
         StopKeyEvent('key_release_event');
@@ -2460,10 +2404,10 @@ begin
   GDK_KEY_PRESS:
     begin
       {$IFDEF VerboseKeyboard}
-      DebugLn('[HandleGTKKeyUpDown] GDK_KEY_PRESS VKey=',dbgs(VKey.VKey),' SysKey=',dbgs(SysKey));
+      DebugLn('[HandleGTKKeyUpDown] GDK_KEY_PRESS VKey=',dbgs(VKey^.VKey),' SysKey=',dbgs(SysKey));
       {$ENDIF}
 
-      Msg.CharCode := VKey.VKey;
+      Msg.CharCode := VKey^.VKey;
 
       if BeforeEvent then begin
         if SysKey then
@@ -2493,7 +2437,7 @@ begin
         //debugln('[HandleGTKKeyUpDown] GDK_KEY_PRESS After KeyDown message CharCode=',dbgs(Msg.CharCode));
       end;
 
-      if Msg.CharCode <> Vkey.Vkey
+      if Msg.CharCode <> Vkey^.Vkey
       then begin
         // key was changed by LCL
         StopKeyEvent('key_press_event');
@@ -3142,9 +3086,9 @@ var
   n, m: Integer;
   LoKey, HiKey: Integer;
   KeySym: array[0..3] of TKeySym;
-  VKey, FreeVK, Flags, idx: Byte;
+  VKey, FreeVK, Flags: Byte;
+  VKeyRec: TVKeyRecord;
   HasMultiVK, DoMultiVK, Extended, HasKey, ComputeVK, WarningShown: Boolean;
-  K: PVKeyArray1;
   KeySymChars: array[0..16] of Char;
   KeySymCharLen: Integer;
   XKeyEvent: TXKeyEvent;
@@ -3216,12 +3160,9 @@ begin
         MVKeyInfo[VKey].KeySym[m] := KeySym[m];
       end;
 
-      K := KeySymToVKeyArray(KeySym[m], True);
-      idx := KeySym[m] and $FF;
-
       // some X servers define separate keycodes for "dead-key" chars.
       // So we might have already a VK assigned
-      if K^[idx].VKey <> 0
+      if MKeySymToVKMap.GetData(KeySym[m], VKeyRec)
       then begin
         // VK assigned
         // if the current VK is computed then return it to the pool
@@ -3231,12 +3172,15 @@ begin
         if ComputeVK
         then begin
           FreeVK := VKey;
-          VKey := K^[idx].VKey;
-          Flags := K^[idx].Flags;
+          VKey := VKeyRec.VKey;
+          Flags := VKeyRec.Flags;
         end;
+      end
+      else begin
+        VKeyRec.VKey := VKey;
+        VKeyRec.Flags := Flags;
+        MKeySymToVKMap.Add(KeySym[m], VKeyRec);
       end;
-      K^[idx].VKey := VKey;
-      K^[idx].Flags := Flags;
 
       // Retrieve the chars for this KeySym
       XKeyEvent.KeyCode := n;
@@ -3318,31 +3262,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure DoneKeyboardTables;
 var
-  n1, n2, n3: Byte;
-  K1: PVKeyArray1;
-  K2: PVKeyArray2;
-  K3: PVKeyArray3;
   i: Integer;
 begin
-  for n3 := 0 to 255 do
-  begin
-    K3 := MKeySymToVK[n3];
-    if K3 = nil then Continue;
-    for n2 := 0 to 255 do
-    begin
-      K2 := K3^[n2];
-      if K2 = nil then Continue;
-      for n1 := 0 to 255 do
-      begin
-        K1 := K2^[n1];
-        if K1 = nil then Continue;
-        Dispose(K1);
-      end;
-      Dispose(K2);
-    end;
-    Dispose(K3);
-  end;
-  
   if LCLHandledKeyEvents<>nil then begin
     for i:=0 to LCLHandledKeyEvents.Count-1 do
       TObject(LCLHandledKeyEvents[i]).Free;

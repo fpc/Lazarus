@@ -55,7 +55,7 @@ uses
   {$ELSE}
     glib, gdk, gtk, {$Ifndef NoGdkPixbufLib}gdkpixbuf,{$EndIf}
   {$ENDIF}
-  LMessages, LCLProc, LCLStrConsts, LCLIntf, LCLType, DynHashArray,
+  LMessages, LCLProc, LCLStrConsts, LCLIntf, LCLType, DynHashArray, Maps,
   GraphType, GraphMath, Graphics, GTKWinApiWindow, LResources, Controls, Forms,
   Buttons, Menus, StdCtrls, ComCtrls, CommCtrl, ExtCtrls, Dialogs, ExtDlgs,
   FileUtil, ImgList, GtkFontCache, GTKGlobals, gtkDef;
@@ -949,26 +949,18 @@ const
 
 
 type
-  TVKeyRecord = packed record
+  PVKeyRecord = ^TVKeyRecord;
+  TVKeyRecord = record
     VKey: Byte;
     Flags: Byte; // indicates if Alt | Ctrl | Shift is needed
                  // extended state
   end;
   
-  PVKeyArray1 = ^TVKeyArray1;
-  TVKeyArray1 = array[Byte] of TVKeyRecord;
- 
-  PVKeyArray2 = ^TVKeyArray2;
-  TVKeyArray2 = array[Byte] of PVkeyArray1;
-
-  PVKeyArray3 = ^TVKeyArray3;
-  TVKeyArray3 = array[Byte] of PVkeyArray2;
-
 var
   MCharToVK: array[Char] of TVKeyRecord;
   MKeyCodeToVK: array[Byte] of Byte;
   MVKeyInfo: array[Byte] of TVKeyInfo;
-  MKeySymToVK: array[Byte] of PVKeyArray3;
+  MKeySymToVKMap: TMap;
   
 type
   // TLCLHandledKeyEvent is used to remember, if an gdk key event was already
@@ -1048,10 +1040,11 @@ procedure InitGTKProc;
 var
   lgs: TLazGtkStyle;
 begin
+  MKeySymToVKMap := TMap.Create(itu4, SizeOf(TVKeyRecord));
+
 
   FillChar(MCharToVK, SizeOf(MCharToVK), $FF);
   FillChar(MKeyCodeToVK, SizeOf(MKeyCodeToVK), $FF);
-  FillChar(MKeySymToVK, SizeOf(MKeySymToVK), 0);
   FillChar(MVKeyInfo, SizeOf(MVKeyInfo), 0);
 
 
@@ -1067,6 +1060,7 @@ end;
 procedure DoneGTKProc;
 begin
   DoneKeyboardTables;
+  FreeAndNil(MKeySymToVKMap);
 end;
 
 {$IFDEF GTK1}
