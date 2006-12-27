@@ -2269,10 +2269,10 @@ var
     // => emulate it
     if GtkWidgetIsA(TargetWidget,gtk_type_entry)
     and (gdk_event_get_type(Event)=GDK_KEY_PRESS)
-    and (VKey.VKey=13) then begin
+    and (VKey^.VKey=13) then begin
       //DebugLn(['EmulateKeysEatenByGtk ']);
       FillChar(Msg,SizeOf(Msg),0);
-      Msg.CharCode := VKey.VKey;
+      Msg.CharCode := VKey^.VKey;
       if SysKey then
         Msg.msg := LM_SYSKEYDOWN
       else
