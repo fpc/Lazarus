@@ -3088,6 +3088,7 @@ var
   KeySym: array[0..3] of TKeySym;
   VKey, FreeVK, Flags: Byte;
   VKeyRec: TVKeyRecord;
+  VKeyRecPtr: PVKeyRecord;
   HasMultiVK, DoMultiVK, Extended, HasKey, ComputeVK: Boolean;
   KeySymChars: array[0..16] of Char;
   KeySymCharLen: Integer;
@@ -3192,7 +3193,16 @@ begin
       if (KeySymCharLen > SizeOf(TVKeyUTF8Char))
       then DebugLn('[WARNING] InitKeyboardTables - Keysymstring for keycode=%u longer than %u bytes: %s', [n, SizeOf(TVKeyUTF8Char), KeySymChars]);
 
-      MSymCharToVKMap.Add(KeySymChars, VKeyRec);
+      VKeyRecPtr := MSymCharToVKMap.GetDataPtr(KeySymChars);
+      if VKeyRecPtr = nil
+      then begin
+        MSymCharToVKMap.Add(KeySymChars, VKeyRec);
+      end
+      else begin
+        if (VKeyRecPtr^.VKey <> VKey)
+        or (VKeyRecPtr^.Flags <> Flags)
+        then DebugLn('InitKeyboardTables - Duplicate Keysymstring="%s" for keycode=%u. Existing: vkey=%u, flags=%u New: vkey=%u, flags=%u', [KeySymChars, n, VKeyRecPtr^.VKey, VKeyRecPtr^.Flags, VKey, Flags]);
+      end;
 
       if VKey <> $FF
       then Move(KeySymChars[0], MVKeyInfo[VKey].KeyChar[m], SizeOf(TVKeyUTF8Char));
