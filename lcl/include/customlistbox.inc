@@ -365,6 +365,9 @@ end;
 
 procedure TCustomListBox.DrawItem(Index: Integer; ARect: TRect;
   State: TOwnerDrawState);
+var
+  OldBrushStyle: TBrushStyle;
+  OldTextLayout: TTextLayout;
 begin
   //DebugLn('TCustomListBox.DrawItem ',DbgSName(Self));
   if Assigned(FOnDrawItem) then
@@ -373,7 +376,13 @@ begin
   begin
     FCanvas.FillRect(ARect);
     if (Index>=0) and (Index < Items.Count) then begin
-      // TODO
+      OldBrushStyle := FCanvas.Brush.Style;
+      OldTextLayout := FCanvas.TextStyle.Layout;
+      FCanvas.Brush.Style := bsClear;
+      FCanvas.TextStyle.Layout := tlCenter;
+      FCanvas.TextRect(ARect, ARect.Left+2, ARect.Top, Items[Index]);
+      FCanvas.Brush.Style := OldBrushStyle;
+      FCanvas.TextStyle.Layout:=OldTextLayout;
     end;
   end;
 end;
