@@ -299,13 +299,13 @@ type
     procedure SetShowAccelChar(Value: boolean);
     procedure SetTransparent(const Value: boolean);
     procedure CMButtonPressed(var Message: TLMessage); message CM_BUTTONPRESSED;
-    procedure MouseEnter; override;
-    procedure MouseLeave; override;
     procedure CMEnabledChanged(var Message: TLMessage); message CM_ENABLEDCHANGED;
   protected
     FState: TButtonState;
     function GetNumGlyphs: Integer;
     procedure GlyphChanged(Sender: TObject);
+    procedure MouseEnter; override;
+    procedure MouseLeave; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
