@@ -9636,8 +9636,12 @@ end;
 
  ------------------------------------------------------------------------------}
 function TGtkWidgetSet.VkKeyScan(AChar: Char): Short;
+var
+  UTF8Char: TVKeyUTF8Char;
 begin
-  Result := CharToVkAndFlags(AChar);
+  FillByte(UTF8Char, SizeOf(UTF8Char), 0);
+  UTF8Char[0] := AChar;
+  Result := CharToVkAndFlags(UTF8Char);
 end;
 
 {------------------------------------------------------------------------------

@@ -500,15 +500,16 @@ function GetRGBAsKey(p: pointer): pointer;
 
 // Keyboard functions
 type
+  TVKeyUTF8Char = array[0..7] of Char;
   TVKeyInfo = record
     KeyCode: Byte;
     KeySym: array[0..3] of Integer;
-    KeyChar: array[0..3] of Char;
+    KeyChar: array[0..3] of TVKeyUTF8Char;
   end;
 
 procedure InitKeyboardTables;
 procedure DoneKeyboardTables;
-function CharToVKandFlags(const AChar: Char): Word;
+function CharToVKandFlags(const AUTF8Char: TVKeyUTF8Char): Word;
 function GetVKeyInfo(const AVKey: Byte): TVKeyInfo;
 function IsToggleKey(const AVKey: Byte): Boolean;
 function GTKEventState2ShiftState(KeyState: Word): TShiftState;
@@ -957,10 +958,10 @@ type
   end;
   
 var
-  MCharToVK: array[Char] of TVKeyRecord;
   MKeyCodeToVK: array[Byte] of Byte;
   MVKeyInfo: array[Byte] of TVKeyInfo;
-  MKeySymToVKMap: TMap;
+  MKeySymToVKMap: TMap;  // keysym ->TVKeyRecord
+  MSymCharToVKMap: TMap; //char->TVKeyRecord
   
 type
   // TLCLHandledKeyEvent is used to remember, if an gdk key event was already
@@ -1041,9 +1042,10 @@ var
   lgs: TLazGtkStyle;
 begin
   MKeySymToVKMap := TMap.Create(itu4, SizeOf(TVKeyRecord));
+  // UTF8 is max 4 bytes, acombined makes it 8
+  MSymCharToVKMap := TMap.Create(itu8, SizeOf(TVKeyRecord));
 
 
-  FillChar(MCharToVK, SizeOf(MCharToVK), $FF);
   FillChar(MKeyCodeToVK, SizeOf(MKeyCodeToVK), $FF);
   FillChar(MVKeyInfo, SizeOf(MVKeyInfo), 0);
 
@@ -1061,6 +1063,7 @@ procedure DoneGTKProc;
 begin
   DoneKeyboardTables;
   FreeAndNil(MKeySymToVKMap);
+  FreeAndNil(MSymCharToVKMap);
 end;
 
 {$IFDEF GTK1}

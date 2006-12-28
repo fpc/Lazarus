@@ -3185,37 +3185,18 @@ begin
       // Retrieve the chars for this KeySym
       XKeyEvent.KeyCode := n;
       XKeyEvent.State := XEVENTSTATE[m];
-      KeySymCharLen := XLookupString(@XKeyEvent, KeySymChars, SizeOf(KeySymChars) - 1, nil, nil);
+      FillByte(KeySymChars, SizeOf(KeySymChars), 0);
+      KeySymCharLen := XLookupString(@XKeyEvent, KeySymChars, SizeOf(KeySymChars), nil, nil);
       if (KeySymCharLen > 0) and (KeySymChars[KeySymCharLen - 1] = #0)
-      then Dec(KeySymCharLen)
-      else KeySymChars[KeySymCharLen] := #0;
+      then Dec(KeySymCharLen);
       if (KeySymCharLen <= 0) then Continue;
+      if (KeySymCharLen > SizeOf(TVKeyUTF8Char))
+      then DebugLn('[WARNING] InitKeyboardTables - Keysymstring for keycode=%u longer than %u bytes: %s', [n, SizeOf(TVKeyUTF8Char), KeySymChars]);
 
-      // Warn if the KeySymChar is longer than 1.
-      if KeySymCharLen > 1
-      then begin
-        if not WarningShown
-        then begin
-          WarningShown := True;
-          DebugLn('[WARNING] *******************************************************');
-          DebugLn('[WARNING] **                                                   **');
-          DebugLn('[WARNING] ** Multibyte character encodings (like UTF8) are not **');
-          DebugLn('[WARNING] ** supported at the moment.                          **');
-          DebugLn('[WARNING] ** For full keyboard event support, make sure that   **');
-          DebugLn('[WARNING] ** the LANG environment var has no UTF8              **');
-          DebugLn('[WARNING] **                                                   **');
-          DebugLn('[WARNING] *******************************************************');
-        end;
-        Continue;
-      end;
-
-      // If we are here length(KeySymChars) = 1
-
-      MCharToVK[KeySymChars[0]].VKey := VKey;
-      MCharToVK[KeySymChars[0]].Flags := Flags;
+      MSymCharToVKMap.Add(KeySymChars, VKeyRec);
 
       if VKey <> $FF
-      then MVKeyInfo[VKey].KeyChar[m] := KeySymChars[0];
+      then Move(KeySymChars[0], MVKeyInfo[VKey].KeyChar[m], SizeOf(TVKeyUTF8Char));
     end;
     MKeyCodeToVK[n] := VKey;
     if VKey <> $FF
@@ -3237,7 +3218,7 @@ begin
     VKey := MapVirtualKey(n, 3);
     MKeyCodeToVK[n] := VKey;
     if VKey <> $FF
-      then MVKeyInfo[VKey].KeyCode := Byte(n);
+    then MVKeyInfo[VKey].KeyCode := Byte(n);
     //WARNING: the other fields of MVKeyInfo are not set.
     //At this moment it is not clear, what they should be.
     //This is code is to be removed when the keyboard handling is updated for
@@ -3285,10 +3266,13 @@ end;
              HiByte: The A|C|S conbination the get this key
 
  ------------------------------------------------------------------------------}
-function CharToVKandFlags(const AChar: Char): Word;
+function CharToVKandFlags(const AUTF8Char: TVKeyUTF8Char): Word;
+var
+  VKeyRec: TVKeyRecord;
 begin
-  Result := MCharToVK[AChar].VKey
-         or (MCharToVK[AChar].Flags and VKEY_FLAG_KEY_MASK) shl 8;
+  if MSymCharToVKMap.GetData(AUTF8Char, VKeyRec)
+  then Result := VKeyRec.VKey or (VKeyRec.Flags and VKEY_FLAG_KEY_MASK) shl 8
+  else Result := 0;
 end;
 
 {------------------------------------------------------------------------------
