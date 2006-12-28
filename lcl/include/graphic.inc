@@ -60,6 +60,15 @@ begin
     FOnProgress(Sender, Stage, PercentDone, RedrawNow, R, Msg, DoContinue);
 end;
 
+procedure TGraphic.Progress(Sender: TObject; Stage: TProgressStage;
+  PercentDone: Byte; RedrawNow: Boolean; const R: TRect; const Msg: string);
+var
+  DoContinue: Boolean;
+begin
+  DoContinue:=true;
+  Progress(Sender,Stage,PercentDone,RedrawNow,R,Msg,DoContinue);
+end;
+
 function TGraphic.Equals(Graphic: TGraphic): Boolean;
 var
   SelfImage, GraphicsImage: TMemoryStream;

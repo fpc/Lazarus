@@ -3088,7 +3088,7 @@ var
   KeySym: array[0..3] of TKeySym;
   VKey, FreeVK, Flags: Byte;
   VKeyRec: TVKeyRecord;
-  HasMultiVK, DoMultiVK, Extended, HasKey, ComputeVK, WarningShown: Boolean;
+  HasMultiVK, DoMultiVK, Extended, HasKey, ComputeVK: Boolean;
   KeySymChars: array[0..16] of Char;
   KeySymCharLen: Integer;
   XKeyEvent: TXKeyEvent;
@@ -3107,7 +3107,6 @@ begin
 
   Assert((LoKey >= 0) and (HiKey <= 255)); // perdef
   FreeVK := $92; // first OEM specific VK
-  WarningShown := False;
   FillChar(KeySym,SizeOf(KeySym),0);
   for n := LoKey to HiKey do
   begin

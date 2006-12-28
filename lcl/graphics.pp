@@ -690,6 +690,9 @@ type
     procedure Progress(Sender: TObject; Stage: TProgressStage;
       PercentDone: Byte;  RedrawNow: Boolean; const R: TRect;
       const Msg: string; var DoContinue: boolean); dynamic;
+    procedure Progress(Sender: TObject; Stage: TProgressStage;
+      PercentDone: Byte;  RedrawNow: Boolean; const R: TRect;
+      const Msg: string); dynamic;
     procedure ReadData(Stream: TStream); virtual;
     procedure SetHeight(Value: Integer); virtual; abstract;
     procedure SetPalette(Value: HPALETTE); virtual;
