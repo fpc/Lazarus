@@ -2597,8 +2597,7 @@ procedure InitKeyboardTables;
       end;
 
       GDK_KEY_Tab,
-      GDK_KEY_ISO_Left_Tab,
-      GDK_KEY_KP_Tab:       AVKey := VK_TAB;
+      GDK_KEY_ISO_Left_Tab: AVKey := VK_TAB;
       GDK_KEY_RETURN:       AVKey := VK_RETURN;
 //    GDK_KEY_LINEFEED;     AVKey := $0A;
 
@@ -2721,9 +2720,15 @@ procedure InitKeyboardTables;
       end;
       GDK_KEY_KP_F1..GDK_KEY_KP_F4:
       begin
-        // I guess it is extended to differentiate between normal Fn
+        // not on "normal" keyboard so defined extended to differentiate between normal Fn
         AExtended := True;
         AVKey := VK_F1 + AKeySym - GDK_KEY_KP_F1;
+      end;
+      GDK_KEY_KP_TAB:
+      begin
+        // not on "normal" keyboard so defined extended to differentiate between normal TAB
+        AExtended := True;
+        AVKey := VK_TAB;
       end;
       GDK_KEY_KP_Multiply:
       begin
@@ -3169,9 +3174,10 @@ begin
         // else use the new VK. If the assigned VK was computed, bad luck.
         // Some day we might this do smarter, but since those extra keys
         // are at the end, we probably wont hit the situation.
-        if ComputeVK
+        if ComputeVK and not DoMultiVK
         then begin
           FreeVK := VKey;
+          ComputeVK := False;
           VKey := VKeyRec.VKey;
           Flags := VKeyRec.Flags;
         end;
@@ -3193,15 +3199,24 @@ begin
       if (KeySymCharLen > SizeOf(TVKeyUTF8Char))
       then DebugLn('[WARNING] InitKeyboardTables - Keysymstring for keycode=%u longer than %u bytes: %s', [n, SizeOf(TVKeyUTF8Char), KeySymChars]);
 
-      VKeyRecPtr := MSymCharToVKMap.GetDataPtr(KeySymChars);
-      if VKeyRecPtr = nil
-      then begin
-        MSymCharToVKMap.Add(KeySymChars, VKeyRec);
-      end
-      else begin
-        if (VKeyRecPtr^.VKey <> VKey)
-        or (VKeyRecPtr^.Flags <> Flags)
-        then DebugLn('InitKeyboardTables - Duplicate Keysymstring="%s" for keycode=%u. Existing: vkey=%u, flags=%u New: vkey=%u, flags=%u', [KeySymChars, n, VKeyRecPtr^.VKey, VKeyRecPtr^.Flags, VKey, Flags]);
+
+      // Add vkey to char lookups, keypad and functional keys are ignored
+      case VKey of
+        VK_TAB, VK_RETURN, VK_SPACE,
+        VK_0..VK_Z,
+        $5E,
+        $B8..$E4,
+        $E8..$F5: begin
+          VKeyRecPtr := MSymCharToVKMap.GetDataPtr(KeySymChars);
+          if VKeyRecPtr = nil
+          then begin
+            MSymCharToVKMap.Add(KeySymChars, VKeyRec);
+          end
+          else begin
+            if (VKeyRecPtr^.VKey <> VKey)
+            then DebugLn('InitKeyboardTables - Duplicate Keysymstring="%s" for keycode=%u ignored. Existing: vkey=%u, flags=0x%2.2x New: vkey=%u, flags=0x%2.2x', [KeySymChars, n, VKeyRecPtr^.VKey, VKeyRecPtr^.Flags, VKey, Flags])
+          end;
+        end;
       end;
 
       if VKey <> $FF
