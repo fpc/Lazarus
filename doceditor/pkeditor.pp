@@ -97,8 +97,6 @@ Type
     Procedure ElementChange(Sender: TObject; Node: TTreeNode);
     Procedure ElementChanging(Sender: TObject; Node: TTreeNode;
                               Var AllowChange : Boolean);
-    // Till the above two get fixed, this one is used instead:
-    Procedure TreeClick(Sender: TObject);
     Procedure MenuRenameClick(Sender : TObject);
     Procedure MenuDeleteClick(Sender : TObject);
     Procedure MenuCollapseAllClick(Sender: TObject);
@@ -194,7 +192,12 @@ begin
      If (N.Data=Pointer(E)) then
        Result:=N
      else
+     begin
+       //recurse
+       if N.HasChildren then
+         Result:=SubNodeWithElement(N, E);
        N:=N.GetNextSibling;
+     end;
    end;
 end;
 
@@ -289,8 +292,6 @@ begin
     Images:=FImageList;
     OnChange:=@ModuleChange;
     OnChanging:=@ModuleChanging;
-    // Till the above two get fixed, use this
-    OnClick:=@TreeClick;
     end;
   FSplitter:=TSplitter.Create(Self);
   With FSplitter do
@@ -320,8 +321,6 @@ begin
     Images:=FImageList;
     OnChange:=@ElementChange;
     OnChanging:=@ElementChanging;
-    // Till the above two get fixed, use this:
-    OnClick:=@TreeClick;
     end;
   PEMenu:=TPopupMenu.Create(Self);
   FERenameMenu:=NewMenuItem(SMenuRename,@MenuRenameClick);
@@ -386,15 +385,6 @@ begin
   AllowChange:=True;
 end;
 
-// This one must disappear as soon as OnChange/OnChanging work !!
-procedure TPackageEditor.TreeClick(Sender: TObject);
-begin
-  If Sender=FModuleTree then
-    ModuleChange(Sender,FModuleTree.Selected)
-  else
-    ElementChange(Sender,FElementTree.Selected);
-end;
-
 Procedure TPackageEditor.SelectElement(Sender : TDomElement);
 
 begin
@@ -413,7 +403,6 @@ Var
 
 begin
   if Sender=nil then ;
-  if Node=nil then ;
   If (Node<>Nil) then
     begin
     O:=TDomElement(Node.Data);
@@ -1112,13 +1101,17 @@ begin
 end;
 
 Procedure TPackageEditor.SetCurrentElement(E : TDomElement);
-
+var
+  SelNode:TTreeNode;
 begin
   If (E<>FCurrentElement) and (E <> nil) then
     begin
     Inherited;
     CurrentModule:=E.ParentNode as TDomElement;
-    SetCurrentElementNode(FindElementNode(E,Nil));
+    SelNode:=FElementTree.Selected;
+    //avoid selecting an already selected node (occurs in OnChange event)
+    if (SelNode = nil) or (SelNode.Data <> Pointer(E)) then
+      SetCurrentElementNode(FindElementNode(E,Nil));
     end;
 end;
 
