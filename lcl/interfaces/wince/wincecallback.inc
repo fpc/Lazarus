@@ -149,7 +149,7 @@ Function
   WindowProc
 {$endif}
   (Window: HWnd; Msg: UInt; WParam: Windows.WParam;
-    LParam: Windows.LParam): LResult; stdcall;
+    LParam: Windows.LParam): LResult; cdecl;
 Var
   LMessage: TLMessage;
   menuItem: TObject;
@@ -2013,7 +2013,7 @@ end;
   applications
  ------------------------------------------------------------------------------}
 function ComboBoxWindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
-    LParam: Windows.LParam): LResult; stdcall;
+    LParam: Windows.LParam): LResult; cdecl;
 begin
   // darn MS: if combobox has edit control, and combobox receives focus, it
   // passes it on to the edit, so it will send a WM_KILLFOCUS; inhibit
