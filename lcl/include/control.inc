@@ -656,6 +656,11 @@ begin
                   and (not (csNoDesignVisible in ControlStyle))));
 end;
 
+function TControl.FormIsUpdating: boolean;
+begin
+  Result:=(Parent<>nil) and Parent.FormIsUpdating;
+end;
+
 {------------------------------------------------------------------------------
        TControl.LMCaptureChanged
 ------------------------------------------------------------------------------}
@@ -823,6 +828,7 @@ end;
 ------------------------------------------------------------------------------}
 procedure TControl.DoOnResize;
 begin
+  Exclude(FControlFlags,cfOnResizeNeeded);
   if Assigned(FOnResize) then FOnResize(Self);
   DoCallNotifyHandler(chtOnResize);
 end;
@@ -834,6 +840,7 @@ end;
 ------------------------------------------------------------------------------}
 procedure TControl.DoOnChangeBounds;
 begin
+  Exclude(FControlFlags,cfOnChangeBoundsNeeded);
   if Assigned(FOnChangeBounds) then FOnChangeBounds(Self);
   DoCallNotifyHandler(chtOnChangeBounds);
 end;
@@ -848,6 +855,10 @@ begin
   CurClientSize:=Point(ClientWidth,ClientHeight);
   if (not CompareRect(@FLastDoChangeBounds,@CurBounds))
   or (ComparePoints(CurClientSize,FLastDoChangeClientSize)<>0) then begin
+    if FormIsUpdating then begin
+      Include(FControlFlags,cfOnChangeBoundsNeeded);
+      exit;
+    end;
     FLastDoChangeBounds:=CurBounds;
     FLastDoChangeClientSize:=CurClientSize;
     DoOnChangeBounds;
@@ -2515,15 +2526,20 @@ end;
 procedure TControl.Resize;
 begin
   if ([csLoading,csDestroying]*ComponentState<>[]) then exit;
+
   if (FLastResizeWidth<>Width) or (FLastResizeHeight<>Height)
   or (FLastResizeClientWidth<>ClientWidth)
   or (FLastResizeClientHeight<>ClientHeight) then begin
+    if FormIsUpdating then begin
+      Include(FControlFlags,cfOnResizeNeeded);
+      exit;
+    end;
     //if AnsiCompareText('NOTEBOOK',Name)=0 then
-    {DebugLn('[TControl.Resize] ',Name,':',ClassName,
+    {DebugLn(['[TControl.Resize] ',Name,':',ClassName,
     ' Last=',FLastResizeWidth,',',FLastResizeHeight,
     ' LastClient=',FLastResizeClientWidth,',',FLastResizeClientHeight,
     ' New=',Width,',',Height,
-    ' NewClient=',ClientWidth,',',ClientHeight);}
+    ' NewClient=',ClientWidth,',',ClientHeight]);}
     FLastResizeWidth:=Width;
     FLastResizeHeight:=Height;
     FLastResizeClientWidth:=ClientWidth;
@@ -2610,6 +2626,16 @@ begin
       OnExecute := Self.OnClick;
     end
   else inherited AssignTo(Dest);
+end;
+
+procedure TControl.FormEndUpdated;
+// called when control is on a form and EndFormUpdate reached 0
+// it is called recursively
+begin
+  if cfOnResizeNeeded in FControlFlags then
+    Resize;
+  if cfOnChangeBoundsNeeded in FControlFlags then
+    CheckOnChangeBounds;
 end;
 
 {------------------------------------------------------------------------------

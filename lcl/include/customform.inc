@@ -694,6 +694,7 @@ procedure TCustomForm.EndFormUpdate;
 begin
   dec(FFormUpdateCount);
   if FFormUpdateCount=0 then begin
+    FormEndUpdated;
     Visible:=(fsVisible in FFormState);
   end;
 end;
@@ -720,9 +721,9 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  function TCustomForm.FormUpdating: boolean;
+  function TCustomForm.FormIsUpdating: boolean;
  ------------------------------------------------------------------------------}
-function TCustomForm.FormUpdating: boolean;
+function TCustomForm.FormIsUpdating: boolean;
 begin
   Result:=FFormUpdateCount>0;
 end;

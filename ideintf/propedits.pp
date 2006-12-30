@@ -561,9 +561,9 @@ type
 
   TPersistentPropertyEditor = class(TPropertyEditor)
   protected
-    function FilterFunc(const ATestEditor: TPropertyEditor{IProperty}): Boolean;
+    function FilterFunc(const ATestEditor: TPropertyEditor): Boolean;
     function GetPersistentReference: TPersistent; virtual;
-    function GetSelections: TPersistentSelectionList{IDesignerSelections}; virtual;
+    function GetSelections: TPersistentSelectionList; virtual;
   public
     function AllEqual: Boolean; override;
     procedure Edit; override;

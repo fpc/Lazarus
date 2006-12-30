@@ -423,7 +423,6 @@ type
   protected
     FFormBorderStyle: TFormBorderStyle;
     FActionLists: TList;
-    function FormUpdating: boolean;
     procedure Activate; dynamic;
     procedure ActiveChanged; dynamic;
     procedure BeginFormUpdate;
@@ -448,6 +447,7 @@ type
     procedure UpdateWindowState;
     procedure VisibleChanging; override;
     procedure WndProc(var TheMessage : TLMessage); override;
+    function FormIsUpdating: boolean; override;
     function VisibleIsStored: boolean;
     function ColorIsStored: boolean; override;
     procedure DoSendBoundsToInterface; override;

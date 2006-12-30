@@ -739,7 +739,9 @@ type
     cfClientHeightLoaded,
     cfLastAlignedBoundsValid,
     cfBoundsRectForNewParentValid,
-    cfPreferredSizeValid
+    cfPreferredSizeValid,
+    cfOnResizeNeeded,
+    cfOnChangeBoundsNeeded
     );
   TControlFlags = set of TControlFlag;
 
@@ -1025,6 +1027,7 @@ type
     procedure Loaded; override;
     procedure DefineProperties(Filer: TFiler); override;
     procedure AssignTo(Dest: TPersistent); override;
+    procedure FormEndUpdated; virtual;
     procedure InvalidateControl(CtrlIsVisible, CtrlIsOpaque: Boolean);
     procedure InvalidateControl(CtrlIsVisible, CtrlIsOpaque, IgnoreWinControls: Boolean);
     procedure FontChanged(Sender: TObject); virtual;
@@ -1164,6 +1167,7 @@ type
     function GetTopParent: TControl;
     function IsVisible: Boolean; virtual;
     function IsControlVisible: Boolean; virtual;
+    function FormIsUpdating: boolean; virtual;
     procedure Hide;
     procedure Refresh;
     procedure Repaint; virtual;
@@ -1636,6 +1640,7 @@ type
     procedure FontChanged(Sender: TObject); override;
     procedure InitializeWnd; virtual; // gets called after the Handle is created and before the child handles are created
     procedure Loaded; override;
+    procedure FormEndUpdated; override;
     procedure MainWndProc(var Msg: TLMessage);
     procedure ParentFormHandleInitialized; override;
     procedure ChildHandlesCreated; virtual;// called after childs handles are created

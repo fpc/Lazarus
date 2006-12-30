@@ -5405,6 +5405,15 @@ begin
     ReAlign;
 end;
 
+procedure TWinControl.FormEndUpdated;
+var
+  i: Integer;
+begin
+  inherited FormEndUpdated;
+  for i:=0 to ControlCount-1 do
+    Controls[i].FormEndUpdated;
+end;
+
 {------------------------------------------------------------------------------
   Method:  TWinControl.DestroyWnd
   Params:  None
