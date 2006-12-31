@@ -2104,6 +2104,21 @@ end;
 function HandleGTKKeyUpDown(Widget: PGtkWidget; Event: PGdkEventKey;
   Data: gPointer; BeforeEvent: boolean) : GBoolean;
 {off $DEFINE VerboseKeyboard}
+const
+  KEYUP_MAP: array[Boolean {syskey}, Boolean {before}] of Cardinal = (
+    (LM_KEYUP, CN_KEYUP),
+    (LM_SYSKEYUP, CN_SYSKEYUP)
+  );
+
+  KEYDOWN_MAP: array[Boolean {syskey}, Boolean {before}] of Cardinal = (
+    (LM_KEYDOWN, CN_KEYDOWN),
+    (LM_SYSKEYDOWN, CN_SYSKEYDOWN)
+  );
+  
+  CHAR_MAP: array[Boolean {syskey}, Boolean {before}] of Cardinal = (
+    (LM_CHAR, CN_CHAR),
+    (LM_SYSCHAR, CN_SYSCHAR)
+  );
 var
   Msg: TLMKey;
   EventStopped: Boolean;
@@ -2234,6 +2249,8 @@ var
     end;
   end;
   
+(*
+  //no functional code, is it still used ?
   function KeyActivatedAccelerator: boolean;
   //var
   //  AComponent: TComponent;
@@ -2255,6 +2272,7 @@ var
       end;}
     end;
   end;
+*)
   
   procedure EmulateKeysEatenByGtk;
   begin
@@ -2285,7 +2303,7 @@ var
     end;
     {$ENDIF}
   end;
-
+  
 begin
   Result := CallBackDefaultReturn;
 
@@ -2338,206 +2356,179 @@ begin
   gdk_event_key_get_string(Event, EventString);
   FillChar(Msg,SizeOf(Msg),0);
 
+  Flags := 0;
+  SysKey := False;
+
   VKey := MKeySymToVKMap.GetDataPtr(Event^.keyval);
   if VKey = nil
   then begin
-    DebugLn(Format('[WARNING] Key event without VKey: K=0x%x S="%s"', [Event^.KeyVal, EventString]));
-    Exit;
-  end;
-
-  Flags := 0;
-  if (VKey^.Flags and VKEY_FLAG_EXT) <> 0
-  then Flags := KF_EXTENDED;
-
-  SysKey := False;
-  if (VKey^.Flags and VKEY_FLAG_ALT) = 0
-  then begin
-    // VKey is without ALT so Alt is syskey
-    SysKey := (Event^.State and GDK_MOD1_MASK) <> 0;
+    // no VKey defined, maybe composed char ?
+    CommonKeyData := 0;
   end
   else begin
-    // VKey is with ALT so SHIFT Alt is syskey
-    SysKey := (Event^.State and (GDK_MOD1_MASK or GDK_SHIFT_MASK))
-               = (GDK_MOD1_MASK or GDK_SHIFT_MASK);
-  end;
+    if (VKey^.Flags and VKEY_FLAG_EXT) <> 0
+    then Flags := KF_EXTENDED;
 
-  if SysKey
-  then Flags := Flags or KF_ALTDOWN;
-  CommonKeyData := MVKeyInfo[VKey^.VKey].KeyCode shl 16; // ScanCode
+    if (VKey^.Flags and VKEY_FLAG_ALT) = 0
+    then begin
+      // VKey is without ALT so Alt is syskey
+      SysKey := (Event^.State and GDK_MOD1_MASK) <> 0;
+    end
+    else begin
+      // VKey is with ALT so SHIFT Alt is syskey
+      SysKey := (Event^.State and (GDK_MOD1_MASK or GDK_SHIFT_MASK))
+                 = (GDK_MOD1_MASK or GDK_SHIFT_MASK);
+    end;
+    if SysKey
+    then Flags := Flags or KF_ALTDOWN;
 
-  case gdk_event_get_type(Event) of
-  GDK_KEY_RELEASE:
-    begin
-      {$IFDEF VerboseKeyboard}
-      DebugLn('[HandleGTKKeyUpDown] GDK_KEY_RELEASE VKey=',dbgs(VKey^.VKey));
-      {$ENDIF}
+    CommonKeyData := MVKeyInfo[VKey^.VKey].KeyCode shl 16; // ScanCode
+    
+    case gdk_event_get_type(Event) of
+      GDK_KEY_RELEASE: begin
+        {$IFDEF VerboseKeyboard}
+        DebugLn('[HandleGTKKeyUpDown] GDK_KEY_RELEASE VKey=',dbgs(VKey^.VKey));
+        {$ENDIF}
 
-      Msg.CharCode := VKey^.VKey;
-      if BeforeEvent then begin
-        if SysKey then
-          Msg.msg := CN_SYSKEYUP
-        else
-          Msg.msg := CN_KEYUP;
-      end else begin
-        if SysKey then
-          Msg.msg := LM_SYSKEYUP
-        else
-          Msg.msg := LM_KEYUP;
+        Msg.CharCode := VKey^.VKey;
+        Msg.Msg := KEYUP_MAP[SysKey, BeforeEvent];
+        Flags := Flags or KF_UP or KF_REPEAT;
+        Msg.KeyData := CommonKeyData or (Flags shl 16) or $0001 {always};
+
+        // send the message directly to the LCL
+        Msg.Result:=0;
+        NotifyApplicationUserInput(Msg.Msg);
+        Result := DeliverMessage(TargetData, Msg) = 0;
+
+        if Msg.CharCode <> VKey^.VKey
+        then begin
+          // key was handled by LCL
+          StopKeyEvent('key_release_event');
+        end;
       end;
 
-      Flags := Flags or KF_UP or KF_REPEAT;
+    GDK_KEY_PRESS:
+      begin
+        {$IFDEF VerboseKeyboard}
+        DebugLn('[HandleGTKKeyUpDown] GDK_KEY_PRESS VKey=',dbgs(VKey.VKey),' SysKey=',dbgs(SysKey));
+        {$ENDIF}
 
-      Msg.KeyData := CommonKeyData or (Flags shl 16) or $0001 {always};
+        Msg.CharCode := VKey^.VKey;
+        Msg.Msg := KEYDOWN_MAP[SysKey, BeforeEvent];
 
-      // send the message directly to the LCL
-      Msg.Result:=0;
-      NotifyApplicationUserInput(Msg.Msg);
-      Result := DeliverMessage(TargetData, Msg) = 0;
+        // todo  repeat
+        // Flags := Flags or KF_REPEAT;
 
-      if Msg.CharCode <> VKey^.VKey
+        Msg.KeyData := CommonKeyData or (Flags shl 16) or $0001 {TODO:  repeatcount};
+
+        if not KeyAlreadyHandledByGtk
+        then begin
+          // send the (Sys)KeyDown message directly to the LCL
+          NotifyApplicationUserInput(Msg.Msg);
+          Result := DeliverMessage(TargetData, Msg) = 0;
+        end;
+
+        if Msg.CharCode <> Vkey^.Vkey
+        then begin
+          // key was changed by LCL
+          StopKeyEvent('key_press_event');
+        end;
+
+        // KeyActivatedAccelerator always returns false, so is thsi still used
+        (*
+        if (not EventStopped) and BeforeEvent
+        then begin
+          if KeyActivatedAccelerator then exit;
+        end;
+        *)
+      end;
+    end;
+  end;
+
+
+  // send keypresses
+  if not EventStopped and (gdk_event_get_type(Event) = GDK_KEY_PRESS)
+  then begin
+
+    // send the UTF8 keypress
+    // try to get the UTF8 representation of the key
+    {$IFDEF GTK1}
+    Character:='';
+    if (Event^.length > 0) and (Event^.length <= 8) //max composed UTF8 char has lenght 8
+    then begin
+      SetLength(Character,Event^.length);
+      System.Move(Event^.thestring^,Character[1],length(Character));
+    end;
+    {$ELSE GTK2}
+    Character := UnicodeToUTF8(gdk_keyval_to_unicode(Event^.KeyVal));
+    {$ENDIF GTK2}
+
+    {$IFDEF VerboseKeyboard}
+    debugln('[HandleGTKKeyUpDown] GDK_KEY_PRESS UTF8="',DbgStr(Character),'"');
+    {$ENDIF}
+
+    if Character <> ''
+    then begin
+      LCLObject := GetNearestLCLObject(TargetWidget);
+      if LCLObject is TWinControl
       then begin
-        // key was handled by LCL
-        StopKeyEvent('key_release_event');
+        Result := TWinControl(LCLObject).IntfUTF8KeyPress(Character,1,SysKey);
+        if Result or (Character = '')
+        then StopKeyEvent('key_press_event');
       end;
     end;
 
-  GDK_KEY_PRESS:
-    begin
-      {$IFDEF VerboseKeyboard}
-      DebugLn('[HandleGTKKeyUpDown] GDK_KEY_PRESS VKey=',dbgs(VKey^.VKey),' SysKey=',dbgs(SysKey));
+    //  send a normal KeyPress Event for Delphi compatibility
+    if not EventStopped and CanSendChar
+    then begin
+      {$IFDEF EventTrace}
+      EventTrace('char', data);
       {$ENDIF}
 
-      Msg.CharCode := VKey^.VKey;
-
-      if BeforeEvent then begin
-        if SysKey then
-          Msg.msg := CN_SYSKEYDOWN
-        else
-          Msg.msg := CN_KEYDOWN;
-      end else begin
-        if SysKey then
-          Msg.msg := LM_SYSKEYDOWN
-        else begin
-          Msg.msg := LM_KEYDOWN;
-          // some widgets handle keys, but do not eat it.
-          // To avoid, that the LCL also reacts stop here
-          //if KeyAlreadyHandledByGtk then exit;
-        end;
-      end;
-
-      // todo  repeat
-      // Flags := Flags or KF_REPEAT;
-
-      Msg.KeyData := CommonKeyData or (Flags shl 16) or $0001 {TODO:  repeatcount};
-
-      if not KeyAlreadyHandledByGtk then begin
-        // send the (Sys)KeyDown message directly to the LCL
-        NotifyApplicationUserInput(Msg.Msg);
-        Result := DeliverMessage(TargetData, Msg) = 0;
-        //debugln('[HandleGTKKeyUpDown] GDK_KEY_PRESS After KeyDown message CharCode=',dbgs(Msg.CharCode));
-      end;
-
-      if Msg.CharCode <> Vkey^.Vkey
+      KeyPressesChar := #0;
+      if Event^.Length = 1
       then begin
-        // key was changed by LCL
-        StopKeyEvent('key_press_event');
-      end;
-      
-      if (not EventStopped) and BeforeEvent then begin
-        if KeyActivatedAccelerator then exit;
-      end;
-
-      if (not EventStopped) {and (not BeforeEvent)} then begin
-        // send the UTF8 keypress
-        // try to get the UTF8 representation of the key
-        {$IFDEF GTK1}
-        Character:='';
-        if (Event^.length>0) and (Event^.length<7) then begin
-          SetLength(Character,Event^.length);
-          System.Move(Event^.thestring^,Character[1],length(Character));
-        end;
-        {$ELSE GTK2}
-        Character := UnicodeToUTF8(gdk_keyval_to_unicode(Event^.KeyVal));
-        {$ENDIF GTK2}
-        {$IFDEF VerboseKeyboard}
-        debugln('[HandleGTKKeyUpDown] GDK_KEY_PRESS UTF8="',DbgStr(Character),'"');
-        {$ENDIF}
-        if Character<>'' then begin
-          LCLObject:=GetNearestLCLObject(TargetWidget);
-          if LCLObject is TWinControl then begin
-            //debugln('[HandleGTKKeyUpDown] GDK_KEY_PRESS before IntfUTF8KeyPress UTF8="',DbgStr(Character),'"');
-            Result:=TWinControl(LCLObject).IntfUTF8KeyPress(Character,1,SysKey);
-            //debugln('[HandleGTKKeyUpDown] GDK_KEY_PRESS after IntfUTF8KeyPress UTF8="',DbgStr(Character),'"');
-            if Result or (Character='') then
-              StopKeyEvent('key_press_event');
-          end;
-        end;
-      end;
-
-
-      if (not EventStopped) {and (not BeforeEvent)} and CanSendChar
-      then begin
-       {$IFDEF EventTrace}
-        EventTrace('char', data);
-        {$ENDIF}
-
-        KeyPressesChar:=#0;
-        if Event^.Length = 1 then begin
-          // ASCII key was pressed
-          KeyPressesChar := EventString^;
-        end else if Event^.KeyVal<128 then begin
+        // ASCII key was pressed
+        KeyPressesChar := EventString^;
+      end
+      else
+        if Event^.KeyVal < 128
+        then begin
           // non ASCII key was pressed
-          //{$IFDEF GTK2}
-          //Msg.CharCode := gdk_keyval_to_unicode(Event^.KeyVal);
-          //{$ELSE}
+          // MWE: imo this is impossible since when eventlenght > 1 it contains
+          //      a UTF char and that case keyval is never < 128
           KeyPressesChar := chr(byte(Event^.KeyVal));
-          //{$ENDIF}
         end;
-        //debugln('GDK_KEY_PRESS ',dbgs(ord(KeyPressesChar)),' BeforeEvent=',dbgs(BeforeEvent),' ',DbgSName(TObject(TargetData)),' SysKey=',dbgs(SysKey));
 
-        if KeyPressesChar<>#0 then begin
-          // ASCII key: send a normal KeyPress Event for Delphi compatibility
-          FillChar(Msg,SizeOf(Msg),0);
+      if KeyPressesChar <> #0
+      then begin
+        FillChar(Msg,SizeOf(Msg),0);
 
-          Msg.KeyData := CommonKeyData;
+        Msg.KeyData := CommonKeyData;
+        Msg.msg := CHAR_MAP[SysKey, BeforeEvent];
 
-          if BeforeEvent then begin
-            if SysKey then
-              Msg.msg := CN_SYSCHAR
-            else
-              Msg.msg := CN_CHAR
-          end else begin
-            if SysKey then
-              Msg.msg := LM_SYSCHAR
-            else
-              Msg.msg := LM_CHAR;
-          end;
+        // send the (Sys)Char message directly (not queued) to the LCL
+        Msg.Result:=0;
+        Msg.CharCode := Ord(KeyPressesChar);
+        Result := DeliverMessage(TargetData, Msg) = 0;
 
-          // send the (Sys)Char message directly (not queued) to the LCL
-          Msg.Result:=0;
-          Msg.CharCode:=ord(KeyPressesChar);
-          //debugln('GDK_KEY_PRESS ',DbgSName(TObject(TargetData)),' ',dbgs(Msg.msg));
-          Result := DeliverMessage(TargetData, Msg) = 0;
-
-          if (ord(KeyPressesChar)<>Msg.CharCode)
+        if Ord(KeyPressesChar) <> Msg.CharCode
+        then begin
+          // key was changed by lcl
+          if (Msg.CharCode=0) or (Msg.CharCode>=128)
           then begin
-            // key was changed by lcl
-            //DebugLn('HandleGTKKeyUpDown A ',Msg.CharCode,' BeforeEvent=',BeforeEvent);
-            if (Msg.CharCode=0) or (Msg.CharCode>=128) then
-              // key set to invalid => just stop
-              StopKeyEvent('key_press_event')
-            else begin
-              // try to change the key
-              EventString^:=chr(Msg.CharCode);
-              EventString[1]:=#0;
-              Event^.KeyVal:=Msg.CharCode;
-              gdk_event_key_set_string(Event,EventString);
-            end;
+            // key set to invalid => just stop
+            StopKeyEvent('key_press_event');
+          end
+          else begin
+            // try to change the key
+            EventString^:=chr(Msg.CharCode);
+            EventString[1]:=#0;
+            Event^.KeyVal:=Msg.CharCode;
+            gdk_event_key_set_string(Event,EventString);
           end;
         end;
-        
       end;
-
     end;
   end;
   
@@ -2548,7 +2539,6 @@ begin
   {$ELSE}
   Result:=EventStopped;
   {$ENDIF}
-  //DebugLn('[HandleGTKKeyUpDown] ',DbgSName(TObject(Data)),' Result=',dbgs(Result),' EventStopped=',dbgs(EventStopped));
 end;
 
 {------------------------------------------------------------------------------
@@ -2575,8 +2565,8 @@ procedure InitKeyboardTables;
       32..255: begin
         ByteKey:=Byte(AKeySym);
         case Chr(ByteKey) of // Normal ASCII chars
-          // only unshifted is needed for first match
-          // 'A'..'Z',
+          //only unshifted values are checked
+          //'A'..'Z',
           '0'..'9',
           ' ':      AVKey := ByteKey;
           'a'..'z': AVKey := ByteKey - Ord('a') + Ord('A');
@@ -3090,7 +3080,11 @@ var
   ByteKey: Byte;
   n, m: Integer;
   LoKey, HiKey: Integer;
-  KeySym: array[0..3] of TKeySym;
+  KeySymStart, KeySymNext: PKeySym;
+  KeySymCount: Integer;
+  KeySyms: array of TKeySym;
+  UpKeySym, LoKeySym: TKeySym;
+
   VKey, FreeVK, Flags: Byte;
   VKeyRec: TVKeyRecord;
   VKeyRecPtr: PVKeyRecord;
@@ -3110,36 +3104,54 @@ begin
 
   // Retrieve the KeyCode bounds
   XDisplayKeyCodes(Display, @LoKey, @HiKey);
-
   Assert((LoKey >= 0) and (HiKey <= 255)); // perdef
+  
+  KeySymCount := 0;
+  KeySymStart := XGetKeyboardMapping(display, LoKey, HiKey - LoKey + 1, @KeySymCount);
+  KeySymNext := KeySymStart;
+  
+  if (KeySymCount = 0) or (KeySymStart = nil)
+  then begin
+    DebugLn('[WARNING] failed to retrieve keyboardmapping');
+    if KeySymStart <> nil
+    then XFree(KeySymStart);
+    Exit;
+  end;
+  if KeySymCount > Length(MVKeyInfo[0].KeySym)
+  then DebugLn('[WARNING] keysymcount=%u larger than expected=%u', [KeySymCount, Length(MVKeyInfo[0].KeySym)]);
+  SetLength(KeySyms, KeySymCount);
+
   FreeVK := $92; // first OEM specific VK
-  FillChar(KeySym,SizeOf(KeySym),0);
   for n := LoKey to HiKey do
   begin
-    VKey := $FF;
+    VKey := VK_UNDEFINED;
     HasKey := False;
-    for m := 0 to 3 do
+    Move(KeySymNext^, KeySyms[0], SizeOf(KeySyms[0]) * KeySymCount);
+    Inc(KeySymNext, KeySymCount);
+    
+    for m := 0 to KeySymCount - 1 do
     begin
-      ByteKey:=Byte(n);
-      
-      // don't allow a keysym for shifted navigation keys
-      // somehow the default keymap on OSX combines U/ D= L+ R*
-      // As a simple hack I think we can ignore keysyms for shifted
-      // navigation keys
-      if ((m and 1) = 1) and IgnoreShifted(KeySym[m - 1])
-      then KeySym[m] := 0
-      else KeySym[m] := XKeyCodeToKeysym(Display, ByteKey, m);
-      
-      if (VKey = $FF) and (KeySym[m] <> 0)
+      if KeySyms[m] = 0 then Continue;
+      // only uppercase chars are in the map, so we have to add the lowercase ourselves
+      // when a group consists of one char(next =0)
+      if (m and 1 = 0) and (KeySyms[m+1] = 0)
       then begin
-        HasKey := True;
-        FindVKeyInfo(KeySym[m], VKey, Extended, HasMultiVK);
+        XConvertCase(KeySyms[m], @LoKeySym, @UpKeySym);
+        if LoKeySym <> UpKeySym
+        then begin
+          KeySyms[m] := LoKeySym;
+          KeySyms[m+1] := UpKeySym;
+        end;
       end;
+    
+      HasKey := True;
+      FindVKeyInfo(KeySyms[m], VKey, Extended, HasMultiVK);
+      if VKey <> VK_UNDEFINED then Break
     end;
     // Continue if there is no keysym found
     if not HasKey then Continue;
     
-    ComputeVK := VKey = $FF;
+    ComputeVK := VKey = VK_UNDEFINED;
     if ComputeVK
     then begin
       VKey := FreeVK;
@@ -3150,24 +3162,27 @@ begin
     // In that case we have to FIndKeyInfo for every keysym
     DoMultiVK := HasMultiVK;
     
-    for m := 0 to 3 do
+    for m := 0 to KeySymCount - 1 do
     begin
-      if KeySym[m] = 0 then Continue;
-      if (m > 1) and (KeySym[m] = KeySym[m - 2]) then Continue;
+      if KeySyms[m] = 0 then Continue;
+      if (m >= 2) and (KeySyms[m] = KeySyms[m - 2]) then Continue;
 
       if DoMultiVK
-      then FindVKeyInfo(KeySym[m], VKey, Extended, HasMultiVK);
+      then FindVKeyInfo(KeySyms[m], VKey, Extended, HasMultiVK);
 
-      if VKey = $FF
-      then Flags := $FF
+      if VKey = VK_UNDEFINED
+      then begin
+        Flags := $FF;
+      end
       else begin
         Flags := KEYFLAGS[m] or EXTFLAG[Extended] or MULTIFLAG[DoMultiVK];
-        MVKeyInfo[VKey].KeySym[m] := KeySym[m];
+        if m <= High(MVKeyInfo[VKey].KeySym)
+        then MVKeyInfo[VKey].KeySym[m] := KeySyms[m];
       end;
 
       // some X servers define separate keycodes for "dead-key" chars.
       // So we might have already a VK assigned
-      if MKeySymToVKMap.GetData(KeySym[m], VKeyRec)
+      if MKeySymToVKMap.GetData(KeySyms[m], VKeyRec)
       then begin
         // VK assigned
         // if the current VK is computed then return it to the pool
@@ -3185,8 +3200,11 @@ begin
       else begin
         VKeyRec.VKey := VKey;
         VKeyRec.Flags := Flags;
-        MKeySymToVKMap.Add(KeySym[m], VKeyRec);
+        MKeySymToVKMap.Add(KeySyms[m], VKeyRec);
       end;
+
+      // TODO: proper eventstat, based on correct modifiers (as defined in the modmap)
+      if m > High(XEVENTSTATE) then Continue;
 
       // Retrieve the chars for this KeySym
       XKeyEvent.KeyCode := n;
@@ -3219,13 +3237,16 @@ begin
         end;
       end;
 
-      if VKey <> $FF
+      if  (VKey <> VK_UNDEFINED)
+      and (m <= High(MVKeyInfo[VKey].KeyChar))
       then Move(KeySymChars[0], MVKeyInfo[VKey].KeyChar[m], SizeOf(TVKeyUTF8Char));
     end;
     MKeyCodeToVK[n] := VKey;
-    if VKey <> $FF
+    if VKey <> VK_UNDEFINED
     then MVKeyInfo[VKey].KeyCode := Byte(n);
   end;
+
+  XFree(KeySymStart);
 end;
 {$ENDIF}
 

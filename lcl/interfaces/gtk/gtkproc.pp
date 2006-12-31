@@ -503,7 +503,7 @@ type
   TVKeyUTF8Char = array[0..7] of Char;
   TVKeyInfo = record
     KeyCode: Byte;
-    KeySym: array[0..3] of Integer;
+    KeySym: array[0..7] of Integer;
     KeyChar: array[0..3] of TVKeyUTF8Char;
   end;
 

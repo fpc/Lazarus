@@ -562,6 +562,7 @@ const
   VK_OEM_CLEAR  = $FE;
 
   VK_HIGHESTVALUE = $FE;
+  VK_UNDEFINED  = $FF; // defined by LCL
 
 //==============================================
 //
