@@ -479,6 +479,10 @@ procedure SplitLazarusCPUOSWidgetCombo(const Combination: string;
 function CreateDefinesInDirectories(const SourcePaths, FlagName: string
                                     ): TDefineTemplate;
 
+procedure ReadMakefileFPC(const Filename: string; List: TStrings);
+procedure ParseMakefileFPC(const Filename, SrcOS: string;
+                           var Dirs, SubDirs: string);
+
 
 implementation
 
@@ -494,6 +498,140 @@ type
   end;
 
 // some useful functions
+
+procedure ReadMakefileFPC(const Filename: string; List: TStrings);
+var
+  MakefileFPC: TStringList;
+  i: Integer;
+  Line: string;
+  p: LongInt;
+  NameValue: String;
+begin
+  MakefileFPC:=TStringList.Create;
+  MakefileFPC.LoadFromFile(Filename);
+  i:=0;
+  while i<MakefileFPC.Count do begin
+    Line:=MakefileFPC[i];
+    if Line='' then begin
+    end else if (Line[1]='[') then begin
+      // start of section
+      p:=System.Pos(']',Line);
+      if p<1 then p:=length(Line);
+      List.Add(Line);
+    end else if (Line[1] in ['a'..'z','A'..'Z','0'..'9','_']) then begin
+      // start of name=value pair
+      NameValue:=Line;
+      repeat
+        p:=length(NameValue);
+        while (p>=1) and (NameValue[p] in [' ',#9]) do dec(p);
+        //List.Add('AAA1 NameValue="'+NameValue+'" p='+IntToStr(p)+' "'+NameValue[p]+'"');
+        if (p>=1) and (NameValue[p]='\')
+        and ((p=1) or (NameValue[p-1]<>'\')) then begin
+          // append next line
+          NameValue:=copy(NameValue,1,p-1);
+          //List.Add('AAA2 NameValue="'+NameValue+'"');
+          inc(i);
+          if i>=MakefileFPC.Count then break;
+          NameValue:=NameValue+MakefileFPC[i];
+          //List.Add('AAA3 NameValue="'+NameValue+'"');
+        end else break;
+      until false;
+      List.Add(NameValue);
+    end;
+    inc(i);
+  end;
+  MakefileFPC.Free;
+end;
+
+procedure ParseMakefileFPC(const Filename, SrcOS: string;
+  var Dirs, SubDirs: string);
+
+  function MakeSearchPath(const s: string): string;
+  var
+    SrcPos: Integer;
+    DestPos: Integer;
+  begin
+    // check how much space is needed
+    SrcPos:=1;
+    DestPos:=0;
+    while (SrcPos<=length(s)) do begin
+      if s[SrcPos] in [#0..#31] then begin
+        // space is a delimiter
+        inc(SrcPos);
+        // skip multiple spaces
+        while (SrcPos<=length(s)) and (s[SrcPos] in [#0..#31]) do inc(SrcPos);
+        if (DestPos>0) and (SrcPos<=length(s)) then begin
+          inc(DestPos);// add semicolon
+        end;
+      end else begin
+        inc(DestPos);
+        inc(SrcPos);
+      end;
+    end;
+
+    // allocate space
+    SetLength(Result,DestPos);
+
+    // create semicolon delimited search path
+    SrcPos:=1;
+    DestPos:=0;
+    while (SrcPos<=length(s)) do begin
+      if s[SrcPos] in [#0..#32] then begin
+        // space is a delimiter
+        inc(SrcPos);
+        // skip multiple spaces
+        while (SrcPos<=length(s)) and (s[SrcPos] in [#0..#32]) do inc(SrcPos);
+        if (DestPos>0) and (SrcPos<=length(s)) then begin
+          inc(DestPos);// add semicolon
+          Result[DestPos]:=';';
+        end;
+      end else begin
+        inc(DestPos);
+        Result[DestPos]:=s[SrcPos];
+        inc(SrcPos);
+      end;
+    end;
+  end;
+
+var
+  Params: TStringList;
+  i: Integer;
+  Line: string;
+  p: LongInt;
+  Name: String;
+  SubDirsName: String;
+begin
+  SubDirs:='';
+  Dirs:='';
+  Params:=TStringList.Create;
+  try
+    ReadMakefileFPC(Filename,Params);
+
+    SubDirsName:='';
+    if SrcOS<>'' then
+      SubDirsName:='dirs_'+SrcOS;
+
+    for i:=0 to Params.Count-1 do begin
+      Line:=Params[i];
+      if Line='' then continue;
+      if (Line[1] in ['a'..'z','A'..'Z','0'..'9','_']) then begin
+        p:=System.Pos('=',Line);
+        if p<1 then continue;
+        Name:=copy(Line,1,p-1);
+        if Name=SubDirsName then begin
+          SubDirs:=MakeSearchPath(copy(Line,p+1,length(Line)));
+        end else if Name='dirs' then begin
+          Dirs:=MakeSearchPath(copy(Line,p+1,length(Line)));
+        end;
+      end;
+    end;
+  except
+    on e: Exception do begin
+      debugln('ParseMakefileFPC Filename=',Filename,' E.Message=',E.Message);
+    end;
+  end;
+  Params.Free;
+end;
 
 function DefineActionNameToAction(const s: string): TDefineAction;
 begin
@@ -3039,7 +3177,7 @@ var
       Result:=FPCSrcDir+Result;
     end;
     
-    procedure BrowseDirectory(ADirPath: string);
+    procedure BrowseDirectory(ADirPath: string; Priority: integer);
     const
       IgnoreDirs: array[1..16] of shortstring =(
           '.', '..', 'CVS', '.svn', 'examples', 'example', 'tests', 'fake',
@@ -3052,18 +3190,33 @@ var
       NewUnitLink, OldUnitLink: TDefTemplUnitNameLink;
       i: integer;
       MacroCount, UsedMacroCount: integer;
-      Priority: Integer;
+      MakeFileFPC: String;
+      SubDirs, GlobalSubDirs, TargetSubDirs: String;
+      SubPriority: Integer;
     begin
       {$IFDEF VerboseFPCSrcScan}
       DebugLn('Browse ',ADirPath);
       {$ENDIF}
       if ADirPath='' then exit;
-      if not (ADirPath[length(ADirPath)]=PathDelim) then
-        ADirPath:=ADirPath+PathDelim;
+      ADirPath:=AppendPathDelim(ADirPath);
+      
+      // read Makefile.fpc to get some hints
+      MakeFileFPC:=ADirPath+'Makefile.fpc';
+      SubDirs:='';
+      if FileExists(MakeFileFPC) then begin
+        ParseMakefileFPC(MakeFileFPC,DefaultTargetOS,GlobalSubDirs,TargetSubDirs);
+        SubDirs:=GlobalSubDirs;
+        if TargetSubDirs<>'' then begin
+          if SubDirs<>'' then
+            SubDirs:=SubDirs+';';
+          SubDirs:=SubDirs+TargetSubDirs;
+        end;
+        //debugln('BrowseDirectory ADirPath="',ADirPath,'" SubDirs="',SubDirs,'" SrcOS="',DefaultTargetOS,'"');
+      end;
+
       // set directory priority
-      Priority:=0;
       if System.Pos(AppendPathDelim(FPCSrcDir)+'rtl'+PathDelim,ADirPath)>0 then
-        Priority:=1;
+        inc(Priority);
       // search sources .pp,.pas
       if FindFirst(ADirPath+FileMask,faAnyFile,FileInfo)=0 then begin
         repeat
@@ -3078,8 +3231,22 @@ var
           if i>=Low(IgnoreDirs) then continue;
           AFilename:=ADirPath+AFilename;
           if (FileInfo.Attr and faDirectory)>0 then begin
+            // directory -> recursively
             // ToDo: prevent cycling in links
-            BrowseDirectory(AFilename);
+            SubPriority:=0;
+            if CompareFilenames(AFilename,AppendPathDelim(FPCSrcDir)+'rtl')=0
+            then begin
+              // units in 'rtl' have higher priority than other directories
+              inc(SubPriority);
+            end;
+            if (SubDirs<>'')
+            and (FindPathInSearchPath(@FileInfo.Name[1],length(FileInfo.Name),
+              PChar(SubDirs),length(SubDirs))<>nil)
+            then begin
+              // units in directories compiled by the Makefile have higher prio
+              inc(SubPriority);
+            end;
+            BrowseDirectory(AFilename,SubPriority);
           end else begin
             Ext:=UpperCaseStr(ExtractFileExt(AFilename));
             if (Ext='.PP') or (Ext='.PAS') or (Ext='.P') then begin
@@ -3185,7 +3352,7 @@ var
                   then begin
                     // <FPCSrcDir>/rtl/netwlibc/libc.pp
                     // <FPCSrcDir>/packages/base/libc/libc.pp
-                    Priority:=2;
+                    inc(Priority,2);
                   end;
                   if (UsedMacroCount>OldUnitLink.UsedMacroCount)
                   or ((UsedMacroCount=OldUnitLink.UsedMacroCount)
@@ -3212,7 +3379,7 @@ var
       UnitTree:=TAVLTree.Create(@CompareUnitLinkNodes)
     else
       UnitTree.FreeAndClear;
-    BrowseDirectory(FPCSrcDir);
+    BrowseDirectory(FPCSrcDir,0);
   end;
   
 

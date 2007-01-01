@@ -27,7 +27,7 @@ unit SimpleUnit1;
 interface
 
 uses
-  Classes, SysUtils; 
+  Classes, SysUtils, zlib;
   
 type
   TMyClass = class(TObject)

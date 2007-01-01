@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <CONFIG>
   <ProjectOptions>
-    <PathDelim Value="/"/>
+    <PathDelim Value="\"/>
     <Version Value="5"/>
     <General>
       <SessionStorage Value="InProjectDir"/>
@@ -17,7 +17,7 @@
     <RunParams>
       <local>
         <FormatVersion Value="1"/>
-        <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
+        <LaunchingApplication PathPlusParams="\usr\X11R6\bin\xterm -T 'Lazarus Run Output' -e $(LazarusDir)\tools\runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
     <RequiredPackages Count="1">
@@ -32,7 +32,7 @@
         <UnitName Value="finddeclaration"/>
       </Unit0>
       <Unit1>
-        <Filename Value="scanexamples/simpleunit1.pas"/>
+        <Filename Value="scanexamples\simpleunit1.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="SimpleUnit1"/>
       </Unit1>
@@ -40,8 +40,9 @@
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>
+    <PathDelim Value="\"/>
     <SearchPaths>
-      <OtherUnitFiles Value="scanexamples/"/>
+      <OtherUnitFiles Value="scanexamples\"/>
     </SearchPaths>
     <CodeGeneration>
       <Generate Value="Faster"/>

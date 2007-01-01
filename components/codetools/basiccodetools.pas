@@ -132,6 +132,7 @@ function CompareIdentifierPtrs(Identifier1, Identifier2: Pointer): integer;
 function ComparePrefixIdent(PrefixIdent, Identifier: PChar): boolean;
 function TextBeginsWith(Txt: PChar; TxtLen: integer; StartTxt: PChar;
     StartTxtLen: integer; CaseSensitive: boolean): boolean;
+function StrBeginsWith(const s, Prefix: string): boolean;
 
 // space and special chars
 function TrimCodeSpace(const ACode: string): string;
@@ -2611,6 +2612,25 @@ function TextBeginsWith(Txt: PChar; TxtLen: integer; StartTxt: PChar;
 begin
   if TxtLen<StartTxtLen then exit;
   Result:=CompareText(Txt,StartTxtLen,StartTxt,StartTxtLen,CaseSensitive)=0;
+end;
+
+function StrBeginsWith(const s, Prefix: string): boolean;
+var
+  p1: PChar;
+  p2: PChar;
+  i: Integer;
+begin
+  Result:=false;
+  if length(s)<length(Prefix) then exit;
+  if (s='') then exit(true);
+  p1:=PChar(s);
+  p2:=PChar(Prefix);
+  for i:=1 to length(Prefix) do begin
+    if p1^<>p2^ then exit;
+    inc(p1);
+    inc(p2);
+  end;
+  Result:=true;
 end;
 
 function GetIdentifier(Identifier: PChar): string;

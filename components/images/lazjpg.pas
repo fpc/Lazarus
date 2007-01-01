@@ -45,7 +45,7 @@ type
     class function GetDefaultFPWriter: TFPCustomImageWriterClass; override;
   public
     property CompressionQuality: TJPGQualityRange read FQuality write FQuality;
-    property ProgressiveEncoding: boolean read FProgressiveEncoding;
+    property ProgressiveEncoding: boolean read FProgressiveEncoding write FProgressiveEncoding;
     property Performance: TJPGPerformance read FPerformance write FPerformance;
   end;
 

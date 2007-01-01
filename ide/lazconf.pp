@@ -309,8 +309,8 @@ begin
   if DirPathExists(ADirectory) then begin
     Dir:=AppendPathDelim(ADirectory);
     Result:=DirPathExists(Dir+'lcl')
-        and DirPathExists(Dir+'lcl'+PathDelim+'units')
         and DirPathExists(Dir+'components')
+        and DirPathExists(Dir+'ide')
         and DirPathExists(Dir+'ideintf')
         and DirPathExists(Dir+'designer')
         and DirPathExists(Dir+'debugger');

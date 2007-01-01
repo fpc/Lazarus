@@ -48,13 +48,13 @@ begin
     Options.LoadFromFile(ConfigFilename);
 
   // setup your paths
-  Options.FPCPath:='/usr/bin/ppc386';
-  Options.FPCSrcDir:=ExpandFileName('~/freepascal/fpc');
-  Options.LazarusSrcDir:=ExpandFileName('~/pascal/lazarus');
+  Options.FPCPath:='C:\lazarus\fpc\2.0.4\bin\i386-win32\ppc386.exe'; //'/usr/bin/ppc386';
+  Options.FPCSrcDir:='C:\lazarus\fpc\2.0.4\source'; // ExpandFileName('~/freepascal/fpc');
+  Options.LazarusSrcDir:='C:\lazarus\'; // ExpandFileName('~/pascal/lazarus');
   
   // optional: ProjectDir and TestPascalFile exists only to easily test some
   // things.
-  Options.ProjectDir:=GetCurrentDir+'/scanexamples/';
+  Options.ProjectDir:=SetDirSeparators(GetCurrentDir+'/scanexamples/');
   Options.TestPascalFile:=Options.ProjectDir+'simpleunit1.pas';
 
   // init the codetools
@@ -73,7 +73,7 @@ begin
     raise Exception.Create('loading failed '+Options.TestPascalFile);
 
   // Step 2: find declaration
-  if CodeToolBoss.FindDeclaration(Code,22,33,NewCode,NewX,NewY,NewTopLine) then
+  if CodeToolBoss.FindDeclaration(Code,22,30,NewCode,NewX,NewY,NewTopLine) then
   begin
     writeln('Declaration found: ',NewCode.Filename,' Line=',NewY,' Column=',NewX);
   end else begin
