@@ -103,6 +103,8 @@ type
   private
     FCommandQueue: TStringList;
 
+    FMainAddr: TDbgPtr;
+    FBreakAtMain: TDBGBreakPoint;
     FBreakErrorBreakID: Integer;
     FRunErrorBreakID: Integer;
     FExceptionBreakID: Integer;
@@ -139,6 +141,7 @@ type
     function  FindBreakpoint(const ABreakpoint: Integer): TDBGBreakPoint;
     function  GetClassName(const AClass: TDBGPtr): String; overload;
     function  GetClassName(const AExpression: String; const AValues: array of const): String; overload;
+    function  GetFrame(const AIndex: Integer): String;
     function  GetInstanceClassName(const AInstance: TDBGPtr): String; overload;
     function  GetInstanceClassName(const AExpression: String; const AValues: array of const): String; overload;
     function  GetText(const ALocation: TDBGPtr): String; overload;
@@ -152,6 +155,8 @@ type
     function  ProcessResult(var AResult: TGDBMIExecResult): Boolean;
     function  ProcessRunning(var AStoppedParams: String): Boolean;
     function  ProcessStopped(const AParams: String; const AIgnoreSigIntState: Boolean): Boolean;
+    procedure ProcessFrame(const AFrame: String = '');
+
     // All ExecuteCommand functions are wrappers for the real (full) implementation
     // ExecuteCommandFull is never called directly
     function  ExecuteCommand(const ACommand: String; const AFlags: TGDBMICmdFlags): Boolean; overload;
@@ -1121,6 +1126,24 @@ begin
   if e=0 then ;
 end;
 
+function TGDBMIDebugger.GetFrame(const AIndex: Integer): String;
+var
+  R: TGDBMIExecResult;
+  S: String;
+  List: TStringList;
+begin
+  Result := '';
+  if ExecuteCommand('-stack-list-frames %d %d', [AIndex, AIndex], [cfIgnoreError], R)
+  then begin
+    List := CreateMIValueList(R);
+    S := List.Values['stack'];
+    List.Free;
+    List := CreateMIValueList(S);
+    Result := List.Values['frame'];
+    List.Free;
+  end;
+end;
+
 function TGDBMIDebugger.GetIntValue(const AExpression: String; const AValues: array of const): Integer;
 var
   e: Integer;
@@ -1454,6 +1477,32 @@ begin
     mtInformation, [mbOK], 0);
 end;
 
+procedure TGDBMIDebugger.ProcessFrame(const AFrame: String);
+var
+  S: String;
+  e: Integer;
+  Frame: TStringList;
+  Location: TDBGLocationRec;
+begin
+  // Do we have a frame ?
+  if AFrame = ''
+  then S := GetFrame(0)
+  else S := AFrame;
+
+  Frame := CreateMIValueList(S);
+
+  Location.Address := 0;
+  Val(Frame.Values['addr'], Location.Address, e);
+  if e=0 then ;
+  Location.FuncName := Frame.Values['func'];
+  Location.SrcFile := Frame.Values['file'];
+  Location.SrcLine := StrToIntDef(Frame.Values['line'], -1);
+
+  Frame.Free;
+
+  DoCurrent(Location);
+end;
+
 function TGDBMIDebugger.ProcessResult(var AResult: TGDBMIExecResult): Boolean;
   
   function DoResultRecord(Line: String): Boolean;
@@ -1658,50 +1707,6 @@ begin
 end;
 
 function TGDBMIDebugger.ProcessStopped(const AParams: String; const AIgnoreSigIntState: Boolean): Boolean;
-  function GetFrame(const AIndex: Integer): String;
-  var
-    R: TGDBMIExecResult;
-    S: String;
-    List: TStringList;
-  begin
-    Result := '';
-    if ExecuteCommand('-stack-list-frames %d %d', [AIndex, AIndex], [cfIgnoreError], R)
-    then begin
-      List := CreateMIValueList(R);
-      S := List.Values['stack'];
-      List.Free;
-      List := CreateMIValueList(S);
-      Result := List.Values['frame'];
-      List.Free;
-    end;
-  end;
-
-  procedure ProcessFrame(const AFrame: String);
-  var
-    S: String;
-    e: Integer;
-    Frame: TStringList;
-    Location: TDBGLocationRec;
-  begin
-    // Do we have a frame ?
-    if AFrame = ''
-    then S := GetFrame(0)
-    else S := AFrame;
-
-    Frame := CreateMIValueList(S);
-
-    Location.Address := 0;
-    Val(Frame.Values['addr'], Location.Address, e);
-    if e=0 then ;
-    Location.FuncName := Frame.Values['func'];
-    Location.SrcFile := Frame.Values['file'];
-    Location.SrcLine := StrToIntDef(Frame.Values['line'], -1);
-
-    Frame.Free;
-
-    DoCurrent(Location);
-  end;
-  
   function GetLocation: TDBGLocationRec;
   var
     R: TGDBMIExecResult;
@@ -2078,12 +2083,43 @@ function TGDBMIDebugger.StartDebugging(const AContinueCommand: String): Boolean;
 
   end;
   
+  function SetTempMainBreak: Boolean;
+  var
+    R: TGDBMIExecResult;
+    S: String;
+    ResultList, BkptList: TStringList;
+  begin
+    // Try to retrieve the address of main. Setting a break on main is past initialization
+    if ExecuteCommand('info address main', [cfNoMICommand, cfIgnoreError], R)
+    and (R.State <> dsError)
+    then begin
+      S := GetPart('at address ', '.', R.Values);
+      if S <> ''
+      then begin
+        FMainAddr := StrToIntDef(S, 0);
+        ExecuteCommand('-break-insert -t *' + S,  [cfIgnoreError], R);
+        Result := R.State <> dsError;
+        if Result then Exit;
+      end;
+    end;
+
+    ExecuteCommand('-break-insert -t main',  [cfIgnoreError], R);
+    Result := R.State <> dsError;
+    if not Result then Exit;
+
+    ResultList := CreateMIValueList(R);
+    BkptList := CreateMIValueList(ResultList.Values['bkpt']);
+    FMainAddr := StrToIntDef(BkptList.Values['addr'], 0);
+    BkptList.Free;
+    ResultList.Free;
+  end;
+  
 var
   R: TGDBMIExecResult;
   S, FileType, EntryPoint: String;
   List: TStringList;
   TargetPIDPart: String;
-  TempInstalled: Boolean;
+  TempInstalled, CanContinue: Boolean;
 begin
   if not (State in [dsStop])
   then begin
@@ -2107,8 +2143,7 @@ begin
   then begin
     // Make sure we are talking pascal
     ExecuteCommand('-gdb-set language pascal', []);
-    ExecuteCommand('-break-insert -t main', [],  [cfIgnoreError], R);
-    TempInstalled := R.State <> dsError;
+    TempInstalled := SetTempMainBreak;
   end
   else begin
     DebugLn('TGDBMIDebugger.StartDebugging Note: Target has no symbols');
@@ -2153,11 +2188,12 @@ begin
 
   SetTargetInfo(FileType);
   
-  if not TempInstalled and (Length(EntryPoint) > 0)
+  if not TempInstalled and (EntryPoint <> '')
   then begin
     // We could not set our initial break to get info and allow stepping
     // Try it with the program entry point
-    ExecuteCommand('-break-insert -t *%d', [StrToIntDef(EntryPoint, 0)], [cfIgnoreError], R);
+    FMainAddr := StrToIntDef(EntryPoint, 0);
+    ExecuteCommand('-break-insert -t *' + EntryPoint, [cfIgnoreError], R);
     TempInstalled := R.State <> dsError;
   end;
   
@@ -2195,11 +2231,21 @@ begin
   if R.State = dsNone
   then begin
     SetState(dsInit);
-    if AContinueCommand <> ''
+    if FBreakAtMain <> nil
+    then begin
+      CanContinue := False;
+      TGDBMIBreakPoint(FBreakAtMain).Hit(CanContinue);
+    end
+    else CanContinue := True;
+
+    if CanContinue and (AContinueCommand <> '')
     then Result := ExecuteCommand(AContinueCommand, [])
     else SetState(dsPause);
   end
   else SetState(R.State);
+  
+  if State = dsPause
+  then ProcessFrame;
 
   Result := True;
 end;
@@ -2286,6 +2332,16 @@ begin
     else SetValid(vsInvalid);
     UpdateExpression;
     UpdateEnable;
+    
+    if (FBreakID <> 0)
+    and Enabled
+    and (TGDBMIDebugger(Debugger).FBreakAtMain = nil)
+    then begin
+      // Check if this BP is at the same location as the temp break
+      if StrToIntDef(BkptList.Values['addr'], 0) = TGDBMIDebugger(Debugger).FMainAddr
+      then TGDBMIDebugger(Debugger).FBreakAtMain := Self;
+    end;
+
     ResultList.Free;
     BkptList.Free;
   finally
