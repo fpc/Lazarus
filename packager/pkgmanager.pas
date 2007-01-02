@@ -3209,7 +3209,7 @@ begin
     Format(lisPkgMangThePackageWasMarkedForInstallationCurrentlyLazarus, [
       '"', APackage.IDAsString, '"', #13, #13, #13]),
     mtConfirmation,[mbYes,mbNo]);
-  if Result=mrNo then begin
+  if Result<>mrOk then begin
     Result:=mrOk;
     exit;
   end;
