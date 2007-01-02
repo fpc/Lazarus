@@ -126,11 +126,6 @@ begin
   inherited Paint;
 end;
 
-function TCustomPanel.CanTab: Boolean;
-begin
-  Result:=false;
-end;
-
 procedure TCustomPanel.AdjustClientRect(var Rect: TRect);
 var
   BevelSize: Integer;

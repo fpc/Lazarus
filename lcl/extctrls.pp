@@ -945,7 +945,6 @@ type
     procedure RealSetText(const Value: TCaption); override;
     procedure Paint; override;
     procedure UpdateParentColorChange;
-    Function CanTab: Boolean; override;
   public
     constructor Create(TheOwner: TComponent); override;
     property Align default alNone;
