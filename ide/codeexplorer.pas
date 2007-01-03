@@ -564,7 +564,10 @@ var
   CodeBuffer: TCodeBuffer;
   ACodeTool: TCodeTool;
 begin
-  CurItem:=CodeTreeview.Selected;
+  if tvoAllowMultiselect in CodeTreeview.Options then
+    CurItem:=CodeTreeView.GetFirstMultiSelected
+  else
+    CurItem:=CodeTreeview.Selected;
   if CurItem=nil then exit;
   CurNode:=TViewNodeData(CurItem.Data);
   if CurNode.StartPos<1 then exit;
