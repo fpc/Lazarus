@@ -1073,7 +1073,6 @@ begin
   MainIDEBar.OnDestroy:=@OnMainBarDestroy;
   {$IFNDEF IDEDocking}
   MainIDEBar.Constraints.MaxHeight:=110;
-  MainIDEBar.Constraints.MinHeight:=71;
   {$ENDIF}
   MainIDEBar.Name := NonModalIDEWindowNames[nmiwMainIDEName];
   EnvironmentOptions.IDEWindowLayoutList.Apply(MainIDEBar,MainIDEBar.Name);
