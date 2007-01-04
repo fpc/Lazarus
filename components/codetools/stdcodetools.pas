@@ -2364,6 +2364,7 @@ begin
   Result:=false;
   // search old Application.Title:= statement
   OldExists:=FindApplicationTitleStatement(StartPos,StringConstStartPos,EndPos);
+  if StringConstStartPos=0 then ;
   if OldExists then begin
     // replace old statement
     Indent:=0;
@@ -2407,6 +2408,7 @@ begin
     Result:=true;
     exit;
   end;
+  if StringConstStartPos=0 then ;
   // -> delete whole line
   FromPos:=FindLineEndOrCodeInFrontOfPosition(StartPos);
   ToPos:=FindFirstLineEndAfterInCode(EndPos);

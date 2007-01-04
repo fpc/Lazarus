@@ -1950,8 +1950,6 @@ end;
 
 function TCodeToolManager.ReplaceWord(Code: TCodeBuffer; const OldWord,
   NewWord: string; ChangeStrings: boolean): boolean;
-var
-  CursorPos, SectionPos, NearestPos: TCodeXYPosition;
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
@@ -3431,6 +3429,7 @@ begin
   try
     Result:=FCurCodeTool.FindApplicationTitleStatement(StartPos,
                                                     StringConstStartPos,EndPos);
+    if StartPos=0 then ;
     Result:=FCurCodeTool.GetApplicationTitleStatement(StringConstStartPos,
                                                       EndPos,Title);
   except

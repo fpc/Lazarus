@@ -39,9 +39,11 @@ var
   SortTextFunc: TSortTextFunc;
 
   { Regular expressions
-
+  
     This is a simple interface to regular expressions. The syntax is similar
     to Perl regular expressions. An illegal pattern will raise an Exception.
+    
+    Important: These functions are not thread safe!
 
     REMatches - function to test a regular expression.
     REVar - function to read the bracket values, found in the last call

@@ -115,7 +115,7 @@ each control that's dropped onto the form
                                     // component
     FSelection: TPersistentSelectionList;
     FObj_Inspector: TObjectInspector;
-    FDefineProperties: TAVLTree;
+    FDefineProperties: TAVLTree;// tree of TDefinePropertiesCacheItem
     FStandardDefinePropertiesRegistered: Boolean;
     function GetPropertyEditorHook: TPropertyEditorHook;
     function FindDefinePropertyNode(const APersistentClassName: string

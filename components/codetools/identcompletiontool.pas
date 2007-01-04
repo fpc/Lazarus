@@ -1280,6 +1280,7 @@ begin
     InitCollectIdentifiers(CursorPos,IdentifierList);
     ParseSourceTillCollectionStart(CursorPos,CleanCursorPos,CursorNode,
                                    IdentStartPos,IdentEndPos);
+    if CleanCursorPos=0 then ;
 
     // find context
     {$IFDEF CTDEBUG}
@@ -1299,6 +1300,7 @@ begin
 
       FindCollectionContext(Params,IdentStartPos,CursorNode,
                            GatherContext,ContextExprStartPos,StartInSubContext);
+      if ContextExprStartPos=0 then ;
 
       // search and gather identifiers in context
       if (GatherContext.Tool<>nil) and (GatherContext.Node<>nil) then begin
@@ -1432,6 +1434,7 @@ var
     if not CheckParameterSyntax(CursorNode, CleanCursorPos,
                                 VarNameAtom, ProcNameAtom, ParameterIndex)
     then begin
+      if VarNameAtom.StartPos=0 then ;
       DebugLn(['TIdentCompletionTool.FindCodeContext.CheckContextIsParameter not in a parameter list']);
       exit;
     end;
@@ -1456,6 +1459,7 @@ var
 
     FindCollectionContext(Params,ProcNameAtom.StartPos,CursorNode,
                           GatherContext,ContextExprStartPos,StartInSubContext);
+    if ContextExprStartPos=0 then ;
     //DebugLn(['CheckContextIsParameter StartInSubContext=',StartInSubContext,' ',GatherContext.Node.DescAsString,' "',copy(GatherContext.Tool.Src,GatherContext.Node.StartPos-20,25),'"']);
 
     // gather declarations of all parameter lists
@@ -1487,6 +1491,8 @@ begin
     InitCollectIdentifiers(CursorPos,IdentifierList);
     ParseSourceTillCollectionStart(CursorPos,CleanCursorPos,CursorNode,
                                    IdentStartPos,IdentEndPos);
+    if IdentStartPos=0 then ;
+    if IdentEndPos=0 then ;
 
     // find class and ancestors if existing (needed for protected identifiers)
     FindContextClassAndAncestors(CursorPos,ClassAndAncestors);

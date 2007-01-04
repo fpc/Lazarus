@@ -101,6 +101,8 @@ function FindFirstLineEndAfterInCode(const Source: string;
 function ChompLineEndsAtEnd(const s: string): string;
 function ChompOneLineEndAtEnd(const s: string): string;
 function TrimLineEnds(const s: string; TrimStart, TrimEnd: boolean): string;
+function SrcPosToLineCol(const s: string; Position: integer;
+  out Line, Col: integer): boolean;
 
 // brackets
 function GetBracketLvl(const Src: string; StartPos, EndPos: integer;
@@ -270,7 +272,7 @@ function SearchCodeInSource(const Source, Find: string; StartPos:integer;
 function ReadNextPascalAtom(const Source: string;
    var Position, AtomStart: integer): string;
 procedure ReadRawNextPascalAtom(const Source: string;
-   var Position: integer; out AtomStart: integer);
+   var Position: integer; var AtomStart: integer);
 function ReadTilPascalBracketClose(const Source: string;
    var Position: integer): boolean;
 
@@ -406,6 +408,7 @@ begin
   Result:=false;
   repeat
     UsesStart:=SearchCodeInSource(Source,'uses',1,UsesEnd,false);
+    if UsesEnd=0 then ;
     if UsesStart>0 then begin
       if IsUnitUsedInUsesSection(Source,UnitName,UsesStart) then begin
         Result:=true;
@@ -743,6 +746,7 @@ begin
   Position:=SearchCodeInSource(Source.Source,'application.run',1
     ,EndPosition,false);
   if Position<1 then exit;
+  if EndPosition=0 then ;
   Source.Insert(Position,
          'Application.CreateForm('+AClassName+','+AName+');'+LineEnding+'  ');
   Result:=true;
@@ -771,11 +775,12 @@ begin
   Position:=SearchCodeInSource(Source,
      'application.createform('+AClassName+','+AName+')',1,EndPosition,false);
   Result:=Position>0;
+  if EndPosition=0 then ;
 end;
 
 function ListAllCreateFormsInProgram(const Source:string):TStrings;
 // list format: <formname>:<formclassname>
-var Position,EndPosition:integer;
+var Position, EndPosition: integer;
   s:string;
 begin
   Result:=TStringList.Create;
@@ -1432,7 +1437,7 @@ begin
 end;
 
 procedure ReadRawNextPascalAtom(const Source: string;
-  var Position: integer; out AtomStart: integer);
+  var Position: integer; var AtomStart: integer);
 var Len:integer;
   c1,c2:char;
 begin
@@ -2016,6 +2021,45 @@ begin
     Result:=copy(s,StartPos,EndPos-StartPos)
   else
     Result:=s;
+end;
+
+function SrcPosToLineCol(const s: string; Position: integer;
+  out Line, Col: integer): boolean;
+var
+  p: LongInt;
+  l: Integer;
+begin
+  if (Position<1) then begin
+    Line:=1;
+    Col:=1;
+    Result:=false;
+    exit;
+  end;
+  l:=length(s);
+  if l>Position then l:=Position;
+  Line:=1;
+  Col:=1;
+  p:=1;
+  while (p<l) do begin
+    case s[p] of
+    #10,#13:
+      begin
+        inc(p);
+        if (p<=length(s)) and (s[p] in [#10,#13]) and (s[p-1]<>s[p]) then
+        begin
+          if p=Position then exit(true);
+          inc(p);
+        end;
+        // new line
+        inc(Line);
+        Col:=1;
+      end;
+    else
+      inc(p);
+      inc(Col);
+    end;
+  end;
+  if p=Position then Result:=true;
 end;
 
 function GetBracketLvl(const Src: string; StartPos, EndPos: integer;
@@ -2837,6 +2881,7 @@ var
   LengthOfLastLine: integer;
 begin
   Result:=LineEndCount(Txt,LengthOfLastLine);
+  if LengthOfLastLine=0 then ;
 end;
 
 function TrimCodeSpace(const ACode: string): string;
