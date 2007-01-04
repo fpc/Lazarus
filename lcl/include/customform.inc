@@ -1908,9 +1908,9 @@ begin
       if HandleAllocated and (GetActiveWindow <> Handle) then
         ActiveWindow := 0;
     finally
-      Hide;
       { guarantee execution of widgetset CloseModal }
       TWSCustomFormClass(WidgetSetClass).CloseModal(Self);
+      Hide;
       // free handles to save resources and to reduce overhead in the interfaces
       // for bookkeeping changing between Show and ShowModal.
       // (e.g.: the gtk interface creates some specials on ShowModal, so the
