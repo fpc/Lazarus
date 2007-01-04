@@ -18,9 +18,6 @@ SET BUILDDIR=c:\temp\lazbuild
 :: Path to the svn executable
 if [%SVN%]==[] SET SVN="c:\program files\subversion\bin\svn.exe"
 
-:: Path to the directory containing translated version of the GPL license
-SET LICENSEDIR=c:\lazarus\source\license
-
 :: Path to the fpc sources checked out of fpcbuild svn repository
 SET FPCSVNDIR=%1
 
