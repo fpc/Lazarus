@@ -3276,7 +3276,8 @@ end;
 
 procedure TMainIDE.mnuRunParametersClicked(Sender: TObject);
 begin
-  ShowRunParamsOptsDlg(Project1.RunParameterOptions);
+  if ShowRunParamsOptsDlg(Project1.RunParameterOptions)=mrOK then
+    Project1.Modified:=true;
 end;
 
 //------------------------------------------------------------------------------
