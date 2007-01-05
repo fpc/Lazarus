@@ -27,13 +27,22 @@ unit SimpleUnit1;
 interface
 
 uses
-  Classes, SysUtils, zlib;
+  Classes, SysUtils;
   
 type
   TMyClass = class(TObject)
   end;
 
 implementation
+
+procedure DoSomething;
+begin
+  with TmyClass(nil) do
+  if True then
+  begin
+    classname
+  end;
+end;
 
 end.
 

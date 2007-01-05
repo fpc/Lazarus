@@ -2312,26 +2312,31 @@ function TPascalParserTool.ReadTilStatementEnd(ExceptionOnError,
   CreateNodes: boolean): boolean;
 // after reading the current atom will be on the last atom of the statement
 begin
-  Result:=false;
-  if BlockStatementStartKeyWordFuncList.DoItUppercase(UpperSrc,CurPos.StartPos,
-        CurPos.EndPos-CurPos.StartPos) then
-  begin
-    if not ReadTilBlockEnd(false,CreateNodes) then exit;
-    ReadNextAtom;
-    if CurPos.Flag<>cafSemicolon then UndoReadNextAtom;
-  end else if UpAtomIs('WITH') then begin
-    if not ReadWithStatement(ExceptionOnError,CreateNodes) then exit;
-  end else begin
-    // read till semicolon or 'end'
-    while (CurPos.Flag<>cafSemicolon) do begin
+  Result:=true;
+  repeat
+    if BlockStatementStartKeyWordFuncList.DoItUppercase(UpperSrc,CurPos.StartPos,
+          CurPos.EndPos-CurPos.StartPos) then
+    begin
+      if not ReadTilBlockEnd(false,CreateNodes) then exit(false);
       ReadNextAtom;
-      if CurPos.Flag=cafEND then begin
-        UndoReadNextAtom;
-        break;
+      if CurPos.Flag<>cafSemicolon then UndoReadNextAtom;
+      exit;
+    end else if UpAtomIs('WITH') then begin
+      Result:=ReadWithStatement(ExceptionOnError,CreateNodes);
+      exit;
+    end else begin
+      case CurPos.Flag of
+      cafEND:
+        begin
+          UndoReadNextAtom;
+          exit;
+        end;
+      cafSemicolon, cafNone: exit;
+      else
+        ReadNextAtom;
       end;
     end;
-  end;
-  Result:=true;
+  until false;
 end;
 
 function TPascalParserTool.ReadWithStatement(ExceptionOnError,
