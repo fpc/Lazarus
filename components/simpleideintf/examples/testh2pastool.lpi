@@ -4,15 +4,13 @@
     <PathDelim Value="/"/>
     <Version Value="5"/>
     <General>
+      <SessionStorage Value="InProjectDir"/>
       <MainUnit Value="0"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=""/>
-      <ActiveEditorIndexAtStart Value="2"/>
     </General>
     <VersionInfo>
       <ProjectVersion Value=""/>
-      <Language Value=""/>
-      <CharSet Value=""/>
     </VersionInfo>
     <PublishOptions>
       <Version Value="2"/>
@@ -39,143 +37,13 @@
         <PackageName Value="CodeTools"/>
       </Item3>
     </RequiredPackages>
-    <Units Count="18">
+    <Units Count="1">
       <Unit0>
         <Filename Value="testh2pastool.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestH2pasTool"/>
-        <CursorPos X="23" Y="36"/>
-        <TopLine Value="21"/>
-        <EditorIndex Value="0"/>
-        <UsageCount Value="31"/>
-        <Loaded Value="True"/>
       </Unit0>
-      <Unit1>
-        <Filename Value="../h2pasconvert.pas"/>
-        <UnitName Value="H2PasConvert"/>
-        <CursorPos X="4" Y="31"/>
-        <TopLine Value="1"/>
-        <UsageCount Value="9"/>
-      </Unit1>
-      <Unit2>
-        <Filename Value="../../../../freepascal/fpc/rtl/inc/objpash.inc"/>
-        <CursorPos X="23" Y="121"/>
-        <TopLine Value="99"/>
-        <UsageCount Value="9"/>
-      </Unit2>
-      <Unit3>
-        <Filename Value="../../../ideintf/idetextconverter.pas"/>
-        <UnitName Value="IDETextConverter"/>
-        <CursorPos X="14" Y="176"/>
-        <TopLine Value="154"/>
-        <UsageCount Value="10"/>
-      </Unit3>
-      <Unit4>
-        <Filename Value="../../../ide/sourceeditprocs.pas"/>
-        <UnitName Value="SourceEditProcs"/>
-        <CursorPos X="1" Y="575"/>
-        <TopLine Value="561"/>
-        <UsageCount Value="10"/>
-      </Unit4>
-      <Unit5>
-        <Filename Value="../../../ideintf/texttools.pas"/>
-        <UnitName Value="TextTools"/>
-        <CursorPos X="19" Y="109"/>
-        <TopLine Value="75"/>
-        <UsageCount Value="10"/>
-      </Unit5>
-      <Unit6>
-        <Filename Value="../simpleide.pas"/>
-        <UnitName Value="SimpleIDE"/>
-        <CursorPos X="3" Y="138"/>
-        <TopLine Value="112"/>
-        <UsageCount Value="10"/>
-      </Unit6>
-      <Unit7>
-        <Filename Value="../README.txt"/>
-        <CursorPos X="1" Y="15"/>
-        <TopLine Value="1"/>
-        <UsageCount Value="10"/>
-        <SyntaxHighlighter Value="None"/>
-      </Unit7>
-      <Unit8>
-        <Filename Value="files/h2pastest.pas"/>
-        <UnitName Value="h2pastest"/>
-        <CursorPos X="10" Y="3"/>
-        <TopLine Value="1"/>
-        <EditorIndex Value="2"/>
-        <UsageCount Value="26"/>
-        <Loaded Value="True"/>
-      </Unit8>
-      <Unit9>
-        <Filename Value="../../codetools/fileprocs.pas"/>
-        <UnitName Value="FileProcs"/>
-        <CursorPos X="3" Y="355"/>
-        <TopLine Value="345"/>
-        <UsageCount Value="10"/>
-      </Unit9>
-      <Unit10>
-        <Filename Value="../../h2pas/h2pasconvert.pas"/>
-        <UnitName Value="H2PasConvert"/>
-        <CursorPos X="10" Y="2457"/>
-        <TopLine Value="2433"/>
-        <EditorIndex Value="1"/>
-        <UsageCount Value="15"/>
-        <Loaded Value="True"/>
-      </Unit10>
-      <Unit11>
-        <Filename Value="../../../../../../../gaertner/pascal/amat/ide/copycomponent/componentcopier.pas"/>
-        <UnitName Value="ComponentCopier"/>
-        <CursorPos X="1" Y="19"/>
-        <TopLine Value="19"/>
-        <UsageCount Value="13"/>
-      </Unit11>
-      <Unit12>
-        <Filename Value="../../codetools/basiccodetools.pas"/>
-        <UnitName Value="BasicCodeTools"/>
-        <CursorPos X="10" Y="95"/>
-        <TopLine Value="75"/>
-        <EditorIndex Value="3"/>
-        <UsageCount Value="13"/>
-        <Loaded Value="True"/>
-      </Unit12>
-      <Unit13>
-        <Filename Value="../../codetools/codetoolmanager.pas"/>
-        <UnitName Value="CodeToolManager"/>
-        <CursorPos X="1" Y="1953"/>
-        <TopLine Value="1932"/>
-        <UsageCount Value="10"/>
-      </Unit13>
-      <Unit14>
-        <Filename Value="../../codetools/stdcodetools.pas"/>
-        <UnitName Value="StdCodeTools"/>
-        <CursorPos X="34" Y="2367"/>
-        <TopLine Value="2336"/>
-        <UsageCount Value="10"/>
-      </Unit14>
-      <Unit15>
-        <Filename Value="../../codetools/identcompletiontool.pas"/>
-        <UnitName Value="IdentCompletionTool"/>
-        <CursorPos X="38" Y="1437"/>
-        <TopLine Value="1413"/>
-        <UsageCount Value="10"/>
-      </Unit15>
-      <Unit16>
-        <Filename Value="../../../packager/globallinks/simpleideintf-0.lpl"/>
-        <CursorPos X="12" Y="1"/>
-        <TopLine Value="1"/>
-        <UsageCount Value="10"/>
-        <SyntaxHighlighter Value="None"/>
-      </Unit16>
-      <Unit17>
-        <Filename Value="../../../lcl/avglvltree.pas"/>
-        <UnitName Value="AvgLvlTree"/>
-        <CursorPos X="23" Y="93"/>
-        <TopLine Value="65"/>
-        <UsageCount Value="10"/>
-      </Unit17>
     </Units>
-    <JumpHistory Count="0" HistoryIndex="-1"/>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>
