@@ -587,6 +587,7 @@ type
     property OnCloseQuery;
     property OnChangeBounds;
     property OnCreate;
+    property OnDblClick;
     property OnDeactivate;
     property OnDestroy;
     property OnDockDrop;

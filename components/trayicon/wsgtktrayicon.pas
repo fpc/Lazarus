@@ -267,6 +267,7 @@ begin
   GtkForm.OnMouseMove := Self.OnMouseMove;
   GtkForm.OnMouseUp := Self.OnMouseUp;
   GtkForm.OnClick := Self.OnClick;
+  GtkForm.OnDblClick := Self.OnDblClick;
   GtkForm.OnPaint := PaintForm;
   GtkForm.PopupMenu := Self.PopUpMenu;
   GtkForm.Hint := Self.Hint;
