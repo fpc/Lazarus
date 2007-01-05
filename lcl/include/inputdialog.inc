@@ -43,7 +43,7 @@ begin
       Left := Prompt.Left;
       AnchorToNeighbour(akTop,8,Prompt);
       AnchorParallel(akRight,0,Prompt);
-      MinEditWidth := max(160, Screen.Width div 4);
+      MinEditWidth := max(260, Screen.Width div 4);
       Constraints.MinWidth := MinEditWidth;
       Text := Value;
       TabStop := True;
@@ -63,7 +63,7 @@ begin
       Kind := bkOk;
       Default := True;
       ModalResult := mrOk;
-      Left := MinEditWidth div 4;
+      Left := MinEditWidth div 6;
       AnchorToNeighbour(akTop,8,Edit);
       AutoSize := True;
       TabStop := True;
@@ -77,7 +77,7 @@ begin
       AnchorToNeighbour(akTop,8,Edit);
       AnchorSide[akRight].Control := Edit;
       AnchorSide[akRight].Side := asrRight;
-      BorderSpacing.Right := MinEditWidth div 4;
+      BorderSpacing.Right := MinEditWidth div 6;
       Anchors := [akTop, akRight];
       
       AutoSize := True;
