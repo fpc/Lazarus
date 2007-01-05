@@ -1,131 +1,118 @@
 object ExternalToolDialog: TExternalToolDialog
-  ActiveControl = ListBox
-  BorderStyle = bsSizeToolWin
-  Caption = 'ExternalToolDialog'
-  ClientHeight = 400
-  ClientWidth = 400
-  PixelsPerInch = 112
-  Position = poScreenCenter
-  HorzScrollBar.Page = 399
-  VertScrollBar.Page = 399
   Left = 334
   Height = 400
   Top = 226
   Width = 400
+  HorzScrollBar.Page = 399
+  VertScrollBar.Page = 399
+  ActiveControl = ListBox
+  BorderStyle = bsSizeToolWin
+  Caption = 'ExternalToolDialog'
+  Position = poScreenCenter
   object ToolBar: TToolBar
+    Height = 48
+    Width = 400
     AutoSize = True
     ButtonHeight = 46
     ButtonWidth = 47
     Caption = 'ToolBar'
-    Height = 48
     Images = EnabledImageList
     ParentShowHint = False
     ShowCaptions = True
     ShowHint = True
     TabOrder = 0
-    Height = 48
-    Width = 400
     object MoveDownButton: TToolButton
+      Left = 299
+      Top = 2
       Caption = 'MoveDownButton'
       ImageIndex = 4
       OnClick = MoveDownButtonClick
-      Left = 211
-      Height = 46
-      Top = 2
-      Width = 47
     end
     object MoveUpButton: TToolButton
+      Left = 220
+      Top = 2
       Caption = 'MoveUpButton'
       ImageIndex = 3
       OnClick = MoveUpButtonClick
-      Left = 164
-      Height = 46
-      Top = 2
-      Width = 47
     end
     object EditButton: TToolButton
+      Left = 139
+      Top = 2
       Caption = 'EditButton'
       ImageIndex = 2
       OnClick = EditButtonClick
-      Left = 94
-      Height = 46
-      Top = 2
-      Width = 47
     end
     object RemoveButton: TToolButton
+      Left = 60
+      Top = 2
       Caption = 'RemoveButton'
       ImageIndex = 1
       OnClick = RemoveButtonClick
-      Left = 47
-      Height = 46
-      Top = 2
-      Width = 47
     end
     object AddButton: TToolButton
+      Left = 1
+      Top = 2
       Caption = 'AddButton'
       ImageIndex = 0
       OnClick = AddButtonClick
-      Height = 46
-      Top = 2
-      Width = 47
     end
     object tbSeparator: TToolButton
-      Caption = 'tbSeparator'
-      Style = tbsSeparator
-      Width = 23
-      Left = 141
-      Height = 46
+      Left = 197
       Top = 2
       Width = 23
+      Caption = 'tbSeparator'
+      Style = tbsSeparator
     end
   end
   object ListBox: TListBox
+    AnchorSideBottom.Control = OKButton
+    Height = 310
+    Top = 48
+    Width = 400
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Bottom = 6
     OnClick = ListboxClick
     TabOrder = 1
-    TopIndex = -1
-    AnchorSideBottom.Control = OKButton
-    Height = 310
-    Top = 48
-    Width = 400
   end
   object OKButton: TBitBtn
-    Anchors = [akRight, akBottom]
-    BorderSpacing.Bottom = 6
-    
-    Caption = '&OK'
-    Default = True
-    Kind = bkOK
-    ModalResult = 1
-    NumGlyphs = 0
-    TabOrder = 2
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 312
     Height = 30
     Top = 364
     Width = 75
+    Anchors = [akRight, akBottom]
+    AutoSize = True
+    BorderSpacing.Bottom = 6
+    Caption = '&OK'
+    Constraints.MinWidth = 75
+    Default = True
+    Kind = bkOK
+    ModalResult = 1
+    NumGlyphs = 0
+    TabOrder = 2
   end
   object CancelButton: TBitBtn
-    Anchors = [akRight, akBottom]
+    AnchorSideTop.Control = OKButton
+    AnchorSideRight.Control = OKButton
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 222
+    Height = 30
+    Top = 364
+    Width = 84
+    Anchors = [akTop, akRight, akBottom]
+    AutoSize = True
     BorderSpacing.Right = 6
     BorderSpacing.Bottom = 6
-    
     Cancel = True
     Caption = 'Cancel'
+    Constraints.MinWidth = 75
     Kind = bkCancel
     ModalResult = 2
     NumGlyphs = 0
     TabOrder = 3
-    AnchorSideRight.Control = OKButton
-    AnchorSideBottom.Control = Owner
-    AnchorSideBottom.Side = asrBottom
-    Left = 231
-    Height = 30
-    Top = 364
-    Width = 75
   end
   object EnabledImageList: TImageList
     left = 77
