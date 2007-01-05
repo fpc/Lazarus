@@ -108,13 +108,13 @@ msgstr "&Naik"
 msgid "(All)"
 msgstr "(Semua)"
 
-#: objinspstrconsts:cactionlisteditorunknowncategory
-msgid "(Unknown)"
-msgstr "(Tidak dikenal)"
-
 #: objinspstrconsts:oisnone
 msgid "(none)"
 msgstr "(tidak ada)"
+
+#: objinspstrconsts:cactionlisteditorunknowncategory
+msgid "(Unknown)"
+msgstr "(Tidak dikenal)"
 
 #: objinspstrconsts:ois0lines0chars
 msgid "0 lines, 0 chars"
@@ -136,13 +136,13 @@ msgstr "Editor Daftar Aksi"
 msgid "Add"
 msgstr "Tambah"
 
-#: objinspstrconsts:sccsiledtopendialog
-msgid "Add Images"
-msgstr "Tambah Gambar"
-
 #: objinspstrconsts:s_addassingle
 msgid "Add as single"
 msgstr ""
+
+#: objinspstrconsts:sccsiledtopendialog
+msgid "Add Images"
+msgstr "Tambah Gambar"
 
 #: objinspstrconsts:clbadd
 msgid "Add new Item"
@@ -392,6 +392,10 @@ msgstr "&Keluar"
 msgid "Edit"
 msgstr "Edit"
 
+#: objinspstrconsts:oiseditactionlist
+msgid "Edit action list..."
+msgstr "Edit daftar aksi..."
+
 #: objinspstrconsts:sccslvedt
 msgid "Edit ListView Items..."
 msgstr "Edit Item ListView..."
@@ -403,10 +407,6 @@ msgstr "Edit StringGrid..."
 #: objinspstrconsts:sccstredt
 msgid "Edit TreeView Items..."
 msgstr "Edit Item TreeView..."
-
-#: objinspstrconsts:oiseditactionlist
-msgid "Edit action list..."
-msgstr "Edit daftar aksi..."
 
 #: objinspstrconsts:oicoleditediting
 msgid "Editing"
@@ -572,21 +572,13 @@ msgstr "Metode"
 msgid "Modify the Item"
 msgstr "Ubah Item"
 
-#: objinspstrconsts:sccsiledtmovedown
-msgid "Move Down"
-msgstr "Turunkan"
-
-#: objinspstrconsts:sccssgedtmoverowscols
-msgid "Move Rows/Cols"
-msgstr ""
-
-#: objinspstrconsts:sccsiledtmoveup
-msgid "Move Up"
-msgstr "Naikan"
-
 #: objinspstrconsts:rscdmovedown
 msgid "Move down"
 msgstr ""
+
+#: objinspstrconsts:sccsiledtmovedown
+msgid "Move Down"
+msgstr "Turunkan"
 
 #: objinspstrconsts:nbcesmovepageleft
 msgid "Move page left"
@@ -595,6 +587,10 @@ msgstr "Pindahkan halaman kekiri"
 #: objinspstrconsts:nbcesmovepageright
 msgid "Move page right"
 msgstr "Pindahkan halaman kekanan"
+
+#: objinspstrconsts:sccssgedtmoverowscols
+msgid "Move Rows/Cols"
+msgstr ""
 
 #: objinspstrconsts:tccesmovetableft
 msgid "Move tab left"
@@ -607,6 +603,10 @@ msgstr ""
 #: objinspstrconsts:rscdmoveup
 msgid "Move up"
 msgstr ""
+
+#: objinspstrconsts:sccsiledtmoveup
+msgid "Move Up"
+msgstr "Naikan"
 
 #: objinspstrconsts:cactionlisteditornewaction
 msgid "New Action"
@@ -632,10 +632,6 @@ msgstr "Berikut"
 msgid "None"
 msgstr "Tidak ada"
 
-#: objinspstrconsts:rscdok
-msgid "OK"
-msgstr ""
-
 #: objinspstrconsts:oisobject
 msgid "Object"
 msgstr "Objek"
@@ -647,6 +643,10 @@ msgstr "Inspektor Objek"
 #: objinspstrconsts:oisok2
 msgid "Ok"
 msgstr "Ok"
+
+#: objinspstrconsts:rscdok
+msgid "OK"
+msgstr ""
 
 #: objinspstrconsts:sccstredtopendialog
 msgid "Open"
@@ -740,13 +740,13 @@ msgstr "Simpan Sebagai"
 msgid "Save Image"
 msgstr "Simpan Gambar"
 
-#: objinspstrconsts:oissaveliteralcharacters
-msgid "Save Literal Characters"
-msgstr "Simpan Karakter Literal"
-
 #: objinspstrconsts:oispesaveimageas
 msgid "Save image as"
 msgstr ""
+
+#: objinspstrconsts:oissaveliteralcharacters
+msgid "Save Literal Characters"
+msgstr "Simpan Karakter Literal"
 
 #: objinspstrconsts:oissavepicture
 msgid "Save picture"
@@ -768,13 +768,13 @@ msgstr "Pilih &Warna..."
 msgid "Select &Font..."
 msgstr "Pilih &Font..."
 
-#: objinspstrconsts:oistdacteditselectallshorthint
-msgid "Select All"
-msgstr "Pilih Semua"
-
 #: objinspstrconsts:oisselectafile
 msgid "Select a file"
 msgstr "Pilih sebuah file"
+
+#: objinspstrconsts:oistdacteditselectallshorthint
+msgid "Select All"
+msgstr "Pilih Semua"
 
 #: objinspstrconsts:sccsiledtgrprcaption
 msgid "Selected Image"
@@ -844,13 +844,13 @@ msgstr "StringGrid Editor"
 msgid "Strings Editor Dialog"
 msgstr "Dialog Editor String"
 
-#: objinspstrconsts:oistestinput
-msgid "Test Input"
-msgstr "Uji Input"
-
 #: objinspstrconsts:oistestdialog
 msgid "Test dialog..."
 msgstr "Uji dialog..."
+
+#: objinspstrconsts:oistestinput
+msgid "Test Input"
+msgstr "Uji Input"
 
 #: objinspstrconsts:sccstredtlabeltext
 msgid "Text:"

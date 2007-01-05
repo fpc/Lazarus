@@ -105,13 +105,13 @@ msgstr "&Hoch"
 msgid "(All)"
 msgstr "(Alle)"
 
-#: objinspstrconsts:cactionlisteditorunknowncategory
-msgid "(Unknown)"
-msgstr "(Unbekannt)"
-
 #: objinspstrconsts:oisnone
 msgid "(none)"
 msgstr "(keine)"
+
+#: objinspstrconsts:cactionlisteditorunknowncategory
+msgid "(Unknown)"
+msgstr "(Unbekannt)"
 
 #: objinspstrconsts:ois0lines0chars
 msgid "0 lines, 0 chars"
@@ -133,13 +133,13 @@ msgstr "Aktionslisteneditor"
 msgid "Add"
 msgstr "&Hinzufügen"
 
-#: objinspstrconsts:sccsiledtopendialog
-msgid "Add Images"
-msgstr "Bilder hinzufügen"
-
 #: objinspstrconsts:s_addassingle
 msgid "Add as single"
 msgstr ""
+
+#: objinspstrconsts:sccsiledtopendialog
+msgid "Add Images"
+msgstr "Bilder hinzufügen"
 
 #: objinspstrconsts:clbadd
 msgid "Add new Item"
@@ -389,6 +389,10 @@ msgstr "&Beenden"
 msgid "Edit"
 msgstr "Bearbeiten"
 
+#: objinspstrconsts:oiseditactionlist
+msgid "Edit action list..."
+msgstr "Aktionsliste bearbeiten"
+
 #: objinspstrconsts:sccslvedt
 msgid "Edit ListView Items..."
 msgstr "Listview-Einträge bearbeiten..."
@@ -400,10 +404,6 @@ msgstr "Stringgitter editieren..."
 #: objinspstrconsts:sccstredt
 msgid "Edit TreeView Items..."
 msgstr "Treeview-Einträge bearbeiten..."
-
-#: objinspstrconsts:oiseditactionlist
-msgid "Edit action list..."
-msgstr "Aktionsliste bearbeiten"
 
 #: objinspstrconsts:oicoleditediting
 msgid "Editing"
@@ -569,20 +569,12 @@ msgstr "Methode"
 msgid "Modify the Item"
 msgstr "Eintrag ändern"
 
-#: objinspstrconsts:sccsiledtmovedown
-msgid "Move Down"
-msgstr "Nach unten bewegen"
-
-#: objinspstrconsts:sccssgedtmoverowscols
-msgid "Move Rows/Cols"
-msgstr "Zeilen/Spalten verschieben"
-
-#: objinspstrconsts:sccsiledtmoveup
-msgid "Move Up"
-msgstr "Nach oben bewegen"
-
 #: objinspstrconsts:rscdmovedown
 msgid "Move down"
+msgstr "Nach unten bewegen"
+
+#: objinspstrconsts:sccsiledtmovedown
+msgid "Move Down"
 msgstr "Nach unten bewegen"
 
 #: objinspstrconsts:nbcesmovepageleft
@@ -592,6 +584,10 @@ msgstr "Seite nach links bewegen"
 #: objinspstrconsts:nbcesmovepageright
 msgid "Move page right"
 msgstr "Seite nach rechts bewegen"
+
+#: objinspstrconsts:sccssgedtmoverowscols
+msgid "Move Rows/Cols"
+msgstr "Zeilen/Spalten verschieben"
 
 #: objinspstrconsts:tccesmovetableft
 msgid "Move tab left"
@@ -603,6 +599,10 @@ msgstr "Tab nach rechts bewegen"
 
 #: objinspstrconsts:rscdmoveup
 msgid "Move up"
+msgstr "Nach oben bewegen"
+
+#: objinspstrconsts:sccsiledtmoveup
+msgid "Move Up"
 msgstr "Nach oben bewegen"
 
 #: objinspstrconsts:cactionlisteditornewaction
@@ -629,10 +629,6 @@ msgstr "Nächster"
 msgid "None"
 msgstr "Keiner"
 
-#: objinspstrconsts:rscdok
-msgid "OK"
-msgstr "Ok"
-
 #: objinspstrconsts:oisobject
 msgid "Object"
 msgstr "Objekt"
@@ -643,6 +639,10 @@ msgstr "Objektinspektor"
 
 #: objinspstrconsts:oisok2
 msgid "Ok"
+msgstr "Ok"
+
+#: objinspstrconsts:rscdok
+msgid "OK"
 msgstr "Ok"
 
 #: objinspstrconsts:sccstredtopendialog
@@ -737,13 +737,13 @@ msgstr "Sichern als"
 msgid "Save Image"
 msgstr "Grafik speichern"
 
-#: objinspstrconsts:oissaveliteralcharacters
-msgid "Save Literal Characters"
-msgstr "Buchstaben sichern"
-
 #: objinspstrconsts:oispesaveimageas
 msgid "Save image as"
 msgstr "Grafik speichern unter"
+
+#: objinspstrconsts:oissaveliteralcharacters
+msgid "Save Literal Characters"
+msgstr "Buchstaben sichern"
 
 #: objinspstrconsts:oissavepicture
 msgid "Save picture"
@@ -765,13 +765,13 @@ msgstr "Fa&rbauswahl"
 msgid "Select &Font..."
 msgstr "&Schriftauswahl"
 
-#: objinspstrconsts:oistdacteditselectallshorthint
-msgid "Select All"
-msgstr "Alles markieren"
-
 #: objinspstrconsts:oisselectafile
 msgid "Select a file"
 msgstr "Datei auswählen"
+
+#: objinspstrconsts:oistdacteditselectallshorthint
+msgid "Select All"
+msgstr "Alles markieren"
 
 #: objinspstrconsts:sccsiledtgrprcaption
 msgid "Selected Image"
@@ -841,13 +841,13 @@ msgstr "StringGrid Editor"
 msgid "Strings Editor Dialog"
 msgstr "Zeichenketteneditordialog"
 
-#: objinspstrconsts:oistestinput
-msgid "Test Input"
-msgstr "Testeingabe"
-
 #: objinspstrconsts:oistestdialog
 msgid "Test dialog..."
 msgstr "Prüfdialog..."
+
+#: objinspstrconsts:oistestinput
+msgid "Test Input"
+msgstr "Testeingabe"
 
 #: objinspstrconsts:sccstredtlabeltext
 msgid "Text:"

@@ -94,13 +94,13 @@ msgstr "Ylös"
 msgid "(All)"
 msgstr "(Kaikki)"
 
-#: objinspstrconsts:cactionlisteditorunknowncategory
-msgid "(Unknown)"
-msgstr ""
-
 #: objinspstrconsts:oisnone
 msgid "(none)"
 msgstr "(Ei mikään)"
+
+#: objinspstrconsts:cactionlisteditorunknowncategory
+msgid "(Unknown)"
+msgstr ""
 
 #: objinspstrconsts:ois0lines0chars
 msgid "0 lines, 0 chars"
@@ -122,12 +122,12 @@ msgstr "Toimintolistan muokkain"
 msgid "Add"
 msgstr "Lisää"
 
-#: objinspstrconsts:sccsiledtopendialog
-msgid "Add Images"
-msgstr ""
-
 #: objinspstrconsts:s_addassingle
 msgid "Add as single"
+msgstr ""
+
+#: objinspstrconsts:sccsiledtopendialog
+msgid "Add Images"
 msgstr ""
 
 #: objinspstrconsts:clbadd
@@ -378,6 +378,10 @@ msgstr ""
 msgid "Edit"
 msgstr "Muokkaa"
 
+#: objinspstrconsts:oiseditactionlist
+msgid "Edit action list..."
+msgstr "Muokkaa toimintolistaa"
+
 #: objinspstrconsts:sccslvedt
 msgid "Edit ListView Items..."
 msgstr ""
@@ -389,10 +393,6 @@ msgstr "Muokkaa StringGrid:ä..."
 #: objinspstrconsts:sccstredt
 msgid "Edit TreeView Items..."
 msgstr "Muokkaa TreeView:n valintoja"
-
-#: objinspstrconsts:oiseditactionlist
-msgid "Edit action list..."
-msgstr "Muokkaa toimintolistaa"
 
 #: objinspstrconsts:oicoleditediting
 msgid "Editing"
@@ -558,20 +558,12 @@ msgstr "Metodi"
 msgid "Modify the Item"
 msgstr "Muokkaa kohtaa"
 
-#: objinspstrconsts:sccsiledtmovedown
-msgid "Move Down"
-msgstr ""
-
-#: objinspstrconsts:sccssgedtmoverowscols
-msgid "Move Rows/Cols"
-msgstr ""
-
-#: objinspstrconsts:sccsiledtmoveup
-msgid "Move Up"
-msgstr ""
-
 #: objinspstrconsts:rscdmovedown
 msgid "Move down"
+msgstr ""
+
+#: objinspstrconsts:sccsiledtmovedown
+msgid "Move Down"
 msgstr ""
 
 #: objinspstrconsts:nbcesmovepageleft
@@ -581,6 +573,10 @@ msgstr "Siirrä Page-välilehteä vasemmalle"
 #: objinspstrconsts:nbcesmovepageright
 msgid "Move page right"
 msgstr "Siirrä Page-välilehteä oikealle"
+
+#: objinspstrconsts:sccssgedtmoverowscols
+msgid "Move Rows/Cols"
+msgstr ""
 
 #: objinspstrconsts:tccesmovetableft
 msgid "Move tab left"
@@ -592,6 +588,10 @@ msgstr "Siirrä Tab-välilehteä oikealle"
 
 #: objinspstrconsts:rscdmoveup
 msgid "Move up"
+msgstr ""
+
+#: objinspstrconsts:sccsiledtmoveup
+msgid "Move Up"
 msgstr ""
 
 #: objinspstrconsts:cactionlisteditornewaction
@@ -618,10 +618,6 @@ msgstr ""
 msgid "None"
 msgstr ""
 
-#: objinspstrconsts:rscdok
-msgid "OK"
-msgstr ""
-
 #: objinspstrconsts:oisobject
 msgid "Object"
 msgstr ""
@@ -632,6 +628,10 @@ msgstr "Komponenttimuokkain"
 
 #: objinspstrconsts:oisok2
 msgid "Ok"
+msgstr ""
+
+#: objinspstrconsts:rscdok
+msgid "OK"
 msgstr ""
 
 #: objinspstrconsts:sccstredtopendialog
@@ -726,13 +726,13 @@ msgstr ""
 msgid "Save Image"
 msgstr ""
 
-#: objinspstrconsts:oissaveliteralcharacters
-msgid "Save Literal Characters"
-msgstr ""
-
 #: objinspstrconsts:oispesaveimageas
 msgid "Save image as"
 msgstr "Tallenna kuva"
+
+#: objinspstrconsts:oissaveliteralcharacters
+msgid "Save Literal Characters"
+msgstr ""
 
 #: objinspstrconsts:oissavepicture
 msgid "Save picture"
@@ -754,13 +754,13 @@ msgstr ""
 msgid "Select &Font..."
 msgstr ""
 
-#: objinspstrconsts:oistdacteditselectallshorthint
-msgid "Select All"
-msgstr ""
-
 #: objinspstrconsts:oisselectafile
 msgid "Select a file"
 msgstr "Valitse tiedosto"
+
+#: objinspstrconsts:oistdacteditselectallshorthint
+msgid "Select All"
+msgstr ""
 
 #: objinspstrconsts:sccsiledtgrprcaption
 msgid "Selected Image"
@@ -830,13 +830,13 @@ msgstr "StringGrid muokkain"
 msgid "Strings Editor Dialog"
 msgstr "Merkkijonojen muokkain"
 
-#: objinspstrconsts:oistestinput
-msgid "Test Input"
-msgstr "Maskin testauspaikka"
-
 #: objinspstrconsts:oistestdialog
 msgid "Test dialog..."
 msgstr "Testaa dialogia ..."
+
+#: objinspstrconsts:oistestinput
+msgid "Test Input"
+msgstr "Maskin testauspaikka"
 
 #: objinspstrconsts:sccstredtlabeltext
 msgid "Text:"

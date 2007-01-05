@@ -17,10 +17,6 @@ msgstr "Определения компилятора %s"
 msgid "%s Directory"
 msgstr "Каталог %s"
 
-#: codetoolsstrconsts:ctsnamedproject
-msgid "%s Project"
-msgstr "Проект %s"
-
 #: codetoolsstrconsts:ctsstrexpectedbutatomfound
 msgid "%s expected, but %s found"
 msgstr "ожидается %s, найдено %s"
@@ -32,6 +28,10 @@ msgstr "%s содержит циклическую символическую с
 #: codetoolsstrconsts:ctsfileisnotexecutable
 msgid "%s is not executable"
 msgstr "%s - не исполняемый файл"
+
+#: codetoolsstrconsts:ctsnamedproject
+msgid "%s Project"
+msgstr "Проект %s"
 
 #: codetoolsstrconsts:ctsawithoutb
 msgid "%s without %s"
@@ -57,17 +57,85 @@ msgstr ". начинается в "
 msgid "; expected after \"%s\" property specifier, but %s found"
 msgstr "; ожидается после модификатора свойства \"%s\", но найдено %s"
 
+#: codetoolsstrconsts:ctswordnotfound
+msgid "\"%s\" not found"
+msgstr "\"%s\" не найдено"
+
+#: codetoolsstrconsts:ctsclassofdefinitionnotresolved
+msgid "\"class of\" definition not resolved: %s"
+msgstr "Не найдено ранее упомянутое \"class of\": %s"
+
+#: codetoolsstrconsts:ctsendforclassnotfound
+msgid "\"end\" for class/object not found"
+msgstr "не найдено \"end\" для класса/объекта"
+
+#: codetoolsstrconsts:ctsdircomponentdoesnotexistsorisdanglingsymlink
+msgid "a directory component in %s does not exist or is a dangling symlink"
+msgstr "компонент каталога в %s не существует, или он - повреждённая ссылка"
+
+#: codetoolsstrconsts:ctsdircomponentisnotdir
+msgid "a directory component in %s is not a directory"
+msgstr "компонент каталога в %s - не каталог"
+
+#: codetoolsstrconsts:ctsaddsdirtosourcepath
+msgid "adds %s to SrcPath"
+msgstr "добавляет %s в пути исходников"
+
+#: codetoolsstrconsts:ctsanlclproject
+msgid "an LCL project"
+msgstr "проект LCL"
+
+#: codetoolsstrconsts:ctsancestorisnotproperty
+msgid "ancestor of untyped property is not a property"
+msgstr "предок нетипизированного свойства не является свойством"
+
 #: codetoolsstrconsts:ctsanonymdefinitionsarenotallowed
 msgid "Anonymous %s definitions are not allowed"
 msgstr "Анонимные определения %s не разрешаются"
 
-#: codetoolsstrconsts:ctscpudirectory
-msgid "CPU directory"
-msgstr "Каталог CPU"
+#: codetoolsstrconsts:ctsbasetypeofnotfound
+msgid "base type of \"%s\" not found"
+msgstr "основной тип \"%s\" не найден"
+
+#: codetoolsstrconsts:ctsbinaryoperator
+msgid "binary operator"
+msgstr "бинарный оператор"
+
+#: codetoolsstrconsts:ctsbracketnotfound
+msgid "bracket %s not found"
+msgstr "скобка %s не найдена"
+
+#: codetoolsstrconsts:ctsbracketcloseexpectedbutatomfound
+msgid "bracket close expected, but %s found"
+msgstr "ожидается закрывающая скобка, найдено %s"
+
+#: codetoolsstrconsts:ctsbracketopenexpectedbutatomfound
+msgid "bracket open expected, but %s found"
+msgstr "ожидается открывающая скобка, найдено %s"
+
+#: codetoolsstrconsts:ctscircleindefinitions
+msgid "circle in definitions"
+msgstr "цикл в определениях"
 
 #: codetoolsstrconsts:ctsclasssnotfound
 msgid "Class %s not found"
 msgstr "Класс %s не найден"
+
+#: codetoolsstrconsts:ctsclassnotfound
+msgid "class %s%s%s not found"
+msgstr "класс %s%s%s не найден"
+
+#: codetoolsstrconsts:ctsclassidentifierexpected
+msgid "class identifier expected"
+msgstr "ожидается идентификатор класса"
+
+#: codetoolsstrconsts:ctsclassnodewithoutparentnode
+msgid "class node without parent node"
+msgstr "описание класса без предка"
+
+#: codetoolsstrconsts:ctsclasswithoutname
+msgid "class without name"
+msgstr "класс без имени"
 
 #: codetoolsstrconsts:ctscommandlineparameters
 msgid "Command line parameters"
@@ -89,9 +157,21 @@ msgstr "Компилятор"
 msgid "Components Directory"
 msgstr "Каталог компонентов"
 
+#: codetoolsstrconsts:ctsconstant
+msgid "constant"
+msgstr "константа"
+
 #: codetoolsstrconsts:ctsconverterdirectory
 msgid "Converter Directory"
 msgstr "Каталог конвертера"
+
+#: codetoolsstrconsts:ctscpudirectory
+msgid "CPU directory"
+msgstr "Каталог CPU"
+
+#: codetoolsstrconsts:ctscursorposoutsideofcode
+msgid "cursor pos outside of code"
+msgstr "позиция курсора вне кода"
 
 #: codetoolsstrconsts:ctscustomcomponentsdirectory
 msgid "Custom Components Directory"
@@ -100,6 +180,18 @@ msgstr "Каталог компонентов пользователя"
 #: codetoolsstrconsts:ctsdebuggerdirectory
 msgid "Debugger Directory"
 msgstr "Каталог отладчика"
+
+#: codetoolsstrconsts:ctsdefaultclassancestortobjectnotfound
+msgid "default class ancestor TObject not found"
+msgstr "класс-предок по умолчанию - TObject - не найден"
+
+#: codetoolsstrconsts:ctsdefaultinterfaceancestoriinterfacenotfound
+msgid "default interface ancestor IInterface not found"
+msgstr "интерфейс-предок по умолчанию - IInterface - не найден"
+
+#: codetoolsstrconsts:ctsdefaultparameterexpectedbutatomfound
+msgid "default parameter expected, but %s found"
+msgstr "ожидается параметр по умолчанию, найдено %s"
 
 #: codetoolsstrconsts:ctsdefaultppc386sourceoperatingsystem
 msgid "Default ppc386 source Operating System"
@@ -120,6 +212,14 @@ msgstr "Операционная система для исполняемого 
 #: codetoolsstrconsts:ctsdefaultppc386targetprocessor
 msgid "Default ppc386 target processor"
 msgstr "Процессор для исполняемого файла по умолчанию для ppc386"
+
+#: codetoolsstrconsts:ctsdefaultpropertynotfound
+msgid "default property not found"
+msgstr "свойство по умолчанию не найдено"
+
+#: codetoolsstrconsts:ctsdefaultspecifierredefined
+msgid "default specifier redefined"
+msgstr "переопределён модификатор default (по умолчанию)"
 
 #: codetoolsstrconsts:ctsdefine
 msgid "Define "
@@ -173,270 +273,6 @@ msgstr "Модули 'дизайнера'"
 msgid "Doc Editor Directory"
 msgstr "Каталог редактора документации"
 
-#: codetoolsstrconsts:ctsendofsourcenotfound
-msgid "End of source not found"
-msgstr "Не найдено конца исходника"
-
-#: codetoolsstrconsts:ctsforward
-msgid "Forward"
-msgstr "Вперёд"
-
-#: codetoolsstrconsts:ctsforwardclassdefinitionnotresolved
-msgid "Forward class definition not resolved: %s"
-msgstr "Не найдено описание ранее упомянутого класса: %s"
-
-#: codetoolsstrconsts:ctsfreepascalcompilerinitialmacros
-msgid "Free Pascal Compiler initial macros"
-msgstr "Макросы инициализации компилятора FreePascal"
-
-#: codetoolsstrconsts:ctsfreepascalcomponentlibrary
-msgid "Free Pascal Component Library"
-msgstr "Библиотека компонентов FreePascal"
-
-#: codetoolsstrconsts:ctsfreepascalsourcedir
-msgid "Free Pascal Source Directory"
-msgstr "Каталог исходников FreePascal"
-
-#: codetoolsstrconsts:ctsfreepascalsourcesplusdesc
-msgid "Free Pascal Sources, %s"
-msgstr "Исходники FreePascal, %s"
-
-#: codetoolsstrconsts:ctsidedirectory
-msgid "IDE Directory"
-msgstr "Каталог IDE"
-
-#: codetoolsstrconsts:ctsideintfdirectory
-msgid "IDEIntf Directory"
-msgstr "Каталог интерфейса IDE"
-
-#: codetoolsstrconsts:ctsidentifieralreadydefined
-msgid "Identifier %s already defined"
-msgstr "Идентификатор %s уже определён"
-
-#: codetoolsstrconsts:ctsiflclwidgettypeequalsgnome2
-msgid "If LCLWidgetType=gnome2 then"
-msgstr "Если LCLWidgetType=gnome2 то"
-
-#: codetoolsstrconsts:ctsiflclwidgettypeequalsgtk2
-msgid "If LCLWidgetType=gtk2 then"
-msgstr "Если LCLWidgetType=gtk2 то"
-
-#: codetoolsstrconsts:ctsiftargetosisnotsrcos
-msgid "If TargetOS<>SrcOS"
-msgstr "Если TargetOS<>SrcOS"
-
-#: codetoolsstrconsts:ctsiftargetosisnotsrcos2
-msgid "If TargetOS<>SrcOS2"
-msgstr "Если TargetOS<>SrcOS2"
-
-#: codetoolsstrconsts:ctsiftargetosisnotwin32
-msgid "If TargetOS<>win32 then"
-msgstr "Если TargetOS<>win32 то"
-
-#: codetoolsstrconsts:ctsincludecircledetected
-msgid "Include circle detected"
-msgstr "Обнаружено циклическое включение"
-
-#: codetoolsstrconsts:ctsinstalldirectory
-msgid "Install Directory"
-msgstr "Каталог установки"
-
-#: codetoolsstrconsts:ctsinstallerdirectories
-msgid "Installer directories"
-msgstr "Каталоги инсталлятора"
-
-#: codetoolsstrconsts:ctsjitformdirectory
-msgid "JITForm Directory"
-msgstr "Каталог JITForm"
-
-#: codetoolsstrconsts:ctslazarussources
-msgid "Lazarus Sources"
-msgstr "Исходники lazarus"
-
-#: codetoolsstrconsts:ctsnestedcommentson
-msgid "Nested Comments On"
-msgstr "Вкл. вложенные комментарии"
-
-#: codetoolsstrconsts:ctsnoscanneravailable
-msgid "No scanner available"
-msgstr "Нет доступных 'сканеров'"
-
-#: codetoolsstrconsts:ctsnoscannerfound
-msgid "No scanner found for \"%s\". If this is an include file, please open the main source first."
-msgstr "Не найдено 'сканера' для \"%s\". Если это - включаемый файл, откройте сначала главный исходник."
-
-#: codetoolsstrconsts:ctspackagedirectories
-msgid "Package directories"
-msgstr "Каталоги пакетов"
-
-#: codetoolsstrconsts:ctspackagerdirectory
-msgid "Packager Directory"
-msgstr "Каталог менеджера пакетов"
-
-#: codetoolsstrconsts:ctspackagerregistrationdirectory
-msgid "Packager Registration Directory"
-msgstr "Каталог регистрации менеджера пакетов"
-
-#: codetoolsstrconsts:ctspackagerunitsdirectory
-msgid "Packager Units Directory"
-msgstr "Каталог модулей менеджера пакетов"
-
-#: codetoolsstrconsts:ctspositionnotinsource
-msgid "Position not in source"
-msgstr "Позиция отсутствует в исходном коде"
-
-#: codetoolsstrconsts:ctsresetalldefines
-msgid "Reset all defines"
-msgstr "Сбросить все определения"
-
-#: codetoolsstrconsts:ctsruntimelibrary
-msgid "Runtime library"
-msgstr "Библиотека времени исполнения"
-
-#: codetoolsstrconsts:ctssourcefilenamesforstandardfpcunits
-msgid "Source filenames for the standard fpc units"
-msgstr "Имена файлов исходников для стандартных модулей fpc"
-
-#: codetoolsstrconsts:ctssrcpathinitialization
-msgid "SrcPath Initialization"
-msgstr "Инициализация путей исходников"
-
-#: codetoolsstrconsts:ctssyntaxerrorinexpr
-msgid "Syntax Error in expression \"%s\""
-msgstr "Ошибка синтаксиса в выражении \"%s\""
-
-#: codetoolsstrconsts:ctstcodetoolmanagerconsistencycheck
-msgid "TCodeToolManager.ConsistencyCheck=%d"
-msgstr "TCodeToolManager.ConsistencyCheck=%d"
-
-#: codetoolsstrconsts:ctstermnotsimple
-msgid "Term has no simple type"
-msgstr "Определение не имеет простого типа"
-
-#: codetoolsstrconsts:ctstoolsdirectory
-msgid "Tools Directory"
-msgstr "Каталог инструментов"
-
-#: codetoolsstrconsts:ctsunitpathinitialization
-msgid "UnitPath Initialization"
-msgstr "Инициализация путей модулей"
-
-#: codetoolsstrconsts:ctsunknownfunction
-msgid "Unknown function %s"
-msgstr "Неизвестная функция %s"
-
-#: codetoolsstrconsts:ctsunparsed
-msgid "Unparsed"
-msgstr "Не обработано"
-
-#: codetoolsstrconsts:ctsutilsdirectories
-msgid "Utils directories"
-msgstr "Каталоги утилит"
-
-#: codetoolsstrconsts:ctswidgetdirectory
-msgid "Widget Directory"
-msgstr "Каталог элементов управления"
-
-#: codetoolsstrconsts:ctswordnotfound
-msgid "\"%s\" not found"
-msgstr "\"%s\" не найдено"
-
-#: codetoolsstrconsts:ctsclassofdefinitionnotresolved
-msgid "\"class of\" definition not resolved: %s"
-msgstr "Не найдено ранее упомянутое \"class of\": %s"
-
-#: codetoolsstrconsts:ctsendforclassnotfound
-msgid "\"end\" for class/object not found"
-msgstr "не найдено \"end\" для класса/объекта"
-
-#: codetoolsstrconsts:ctsdircomponentdoesnotexistsorisdanglingsymlink
-msgid "a directory component in %s does not exist or is a dangling symlink"
-msgstr "компонент каталога в %s не существует, или он - повреждённая ссылка"
-
-#: codetoolsstrconsts:ctsdircomponentisnotdir
-msgid "a directory component in %s is not a directory"
-msgstr "компонент каталога в %s - не каталог"
-
-#: codetoolsstrconsts:ctsaddsdirtosourcepath
-msgid "adds %s to SrcPath"
-msgstr "добавляет %s в пути исходников"
-
-#: codetoolsstrconsts:ctsanlclproject
-msgid "an LCL project"
-msgstr "проект LCL"
-
-#: codetoolsstrconsts:ctsancestorisnotproperty
-msgid "ancestor of untyped property is not a property"
-msgstr "предок нетипизированного свойства не является свойством"
-
-#: codetoolsstrconsts:ctsbasetypeofnotfound
-msgid "base type of \"%s\" not found"
-msgstr "основной тип \"%s\" не найден"
-
-#: codetoolsstrconsts:ctsbinaryoperator
-msgid "binary operator"
-msgstr "бинарный оператор"
-
-#: codetoolsstrconsts:ctsbracketnotfound
-msgid "bracket %s not found"
-msgstr "скобка %s не найдена"
-
-#: codetoolsstrconsts:ctsbracketcloseexpectedbutatomfound
-msgid "bracket close expected, but %s found"
-msgstr "ожидается закрывающая скобка, найдено %s"
-
-#: codetoolsstrconsts:ctsbracketopenexpectedbutatomfound
-msgid "bracket open expected, but %s found"
-msgstr "ожидается открывающая скобка, найдено %s"
-
-#: codetoolsstrconsts:ctscircleindefinitions
-msgid "circle in definitions"
-msgstr "цикл в определениях"
-
-#: codetoolsstrconsts:ctsclassnotfound
-msgid "class %s%s%s not found"
-msgstr "класс %s%s%s не найден"
-
-#: codetoolsstrconsts:ctsclassidentifierexpected
-msgid "class identifier expected"
-msgstr "ожидается идентификатор класса"
-
-#: codetoolsstrconsts:ctsclassnodewithoutparentnode
-msgid "class node without parent node"
-msgstr "описание класса без предка"
-
-#: codetoolsstrconsts:ctsclasswithoutname
-msgid "class without name"
-msgstr "класс без имени"
-
-#: codetoolsstrconsts:ctsconstant
-msgid "constant"
-msgstr "константа"
-
-#: codetoolsstrconsts:ctscursorposoutsideofcode
-msgid "cursor pos outside of code"
-msgstr "позиция курсора вне кода"
-
-#: codetoolsstrconsts:ctsdefaultclassancestortobjectnotfound
-msgid "default class ancestor TObject not found"
-msgstr "класс-предок по умолчанию - TObject - не найден"
-
-#: codetoolsstrconsts:ctsdefaultinterfaceancestoriinterfacenotfound
-msgid "default interface ancestor IInterface not found"
-msgstr "интерфейс-предок по умолчанию - IInterface - не найден"
-
-#: codetoolsstrconsts:ctsdefaultparameterexpectedbutatomfound
-msgid "default parameter expected, but %s found"
-msgstr "ожидается параметр по умолчанию, найдено %s"
-
-#: codetoolsstrconsts:ctsdefaultpropertynotfound
-msgid "default property not found"
-msgstr "свойство по умолчанию не найдено"
-
-#: codetoolsstrconsts:ctsdefaultspecifierredefined
-msgid "default specifier redefined"
-msgstr "переопределён модификатор default (по умолчанию)"
-
 #: codetoolsstrconsts:ctsduplicateidentifier
 msgid "duplicate identifier: %s"
 msgstr "дублируется идентификатор: %s"
@@ -452,6 +288,10 @@ msgstr "включить FPDocSystem"
 #: codetoolsstrconsts:ctsendforrecordnotfound
 msgid "end for record not found"
 msgstr "конец записи не найден"
+
+#: codetoolsstrconsts:ctsendofsourcenotfound
+msgid "End of source not found"
+msgstr "Не найдено конца исходника"
 
 #: codetoolsstrconsts:ctserrorduringcreationofnewprocbodies
 msgid "error during creation of new proc bodies"
@@ -497,6 +337,30 @@ msgstr "файл \"%s\" не существует"
 msgid "file is read only"
 msgstr "файл только для чтения"
 
+#: codetoolsstrconsts:ctsforward
+msgid "Forward"
+msgstr "Вперёд"
+
+#: codetoolsstrconsts:ctsforwardclassdefinitionnotresolved
+msgid "Forward class definition not resolved: %s"
+msgstr "Не найдено описание ранее упомянутого класса: %s"
+
+#: codetoolsstrconsts:ctsfreepascalcompilerinitialmacros
+msgid "Free Pascal Compiler initial macros"
+msgstr "Макросы инициализации компилятора FreePascal"
+
+#: codetoolsstrconsts:ctsfreepascalcomponentlibrary
+msgid "Free Pascal Component Library"
+msgstr "Библиотека компонентов FreePascal"
+
+#: codetoolsstrconsts:ctsfreepascalsourcedir
+msgid "Free Pascal Source Directory"
+msgstr "Каталог исходников FreePascal"
+
+#: codetoolsstrconsts:ctsfreepascalsourcesplusdesc
+msgid "Free Pascal Sources, %s"
+msgstr "Исходники FreePascal, %s"
+
 #: codetoolsstrconsts:ctsgnomeintfdirectory
 msgid "gnome interface directory"
 msgstr "каталог интерфейса gnome"
@@ -505,9 +369,21 @@ msgstr "каталог интерфейса gnome"
 msgid "gtk2 interface directory"
 msgstr "каталог интерфейса gtk2"
 
+#: codetoolsstrconsts:ctsidedirectory
+msgid "IDE Directory"
+msgstr "Каталог IDE"
+
+#: codetoolsstrconsts:ctsideintfdirectory
+msgid "IDEIntf Directory"
+msgstr "Каталог интерфейса IDE"
+
 #: codetoolsstrconsts:ctsidentifier
 msgid "identifier"
 msgstr "идентификатор"
+
+#: codetoolsstrconsts:ctsidentifieralreadydefined
+msgid "Identifier %s already defined"
+msgstr "Идентификатор %s уже определён"
 
 #: codetoolsstrconsts:ctsidentexpectedbutatomfound
 msgid "identifier expected, but %s found"
@@ -521,6 +397,26 @@ msgstr "ожидается идентификатор, найдено ключе
 msgid "identifier not found: %s"
 msgstr "не найден идентификатор: %s"
 
+#: codetoolsstrconsts:ctsiflclwidgettypeequalsgnome2
+msgid "If LCLWidgetType=gnome2 then"
+msgstr "Если LCLWidgetType=gnome2 то"
+
+#: codetoolsstrconsts:ctsiflclwidgettypeequalsgtk2
+msgid "If LCLWidgetType=gtk2 then"
+msgstr "Если LCLWidgetType=gtk2 то"
+
+#: codetoolsstrconsts:ctsiftargetosisnotsrcos
+msgid "If TargetOS<>SrcOS"
+msgstr "Если TargetOS<>SrcOS"
+
+#: codetoolsstrconsts:ctsiftargetosisnotsrcos2
+msgid "If TargetOS<>SrcOS2"
+msgstr "Если TargetOS<>SrcOS2"
+
+#: codetoolsstrconsts:ctsiftargetosisnotwin32
+msgid "If TargetOS<>win32 then"
+msgstr "Если TargetOS<>win32 то"
+
 #: codetoolsstrconsts:ctsillegalcircleinusedunits
 msgid "illegal circle using unit: %s"
 msgstr "неверное циклическое использование модуля: %s"
@@ -532,6 +428,10 @@ msgstr "обнаружен некорректный указатель %s"
 #: codetoolsstrconsts:ctsimplementationnodenotfound
 msgid "implementation node not found"
 msgstr "слово implementation не найдено"
+
+#: codetoolsstrconsts:ctsincludecircledetected
+msgid "Include circle detected"
+msgstr "Обнаружено циклическое включение"
 
 #: codetoolsstrconsts:ctsincludedirectoriesplusdirs
 msgid "include directories: %s"
@@ -556,6 +456,14 @@ msgstr "модификатор индекса переопределено"
 #: codetoolsstrconsts:ctsinheritedkeywordonlyallowedinmethods
 msgid "inherited keyword only allowed in methods"
 msgstr "ключевое слово inherited (унаследовано) разрешено только в методах"
+
+#: codetoolsstrconsts:ctsinstalldirectory
+msgid "Install Directory"
+msgstr "Каталог установки"
+
+#: codetoolsstrconsts:ctsinstallerdirectories
+msgid "Installer directories"
+msgstr "Каталоги инсталлятора"
 
 #: codetoolsstrconsts:ctsinsufficientmemory
 msgid "insufficient memory"
@@ -601,6 +509,10 @@ msgstr "неправильное имя переменной %s%s%s"
 msgid "invalid variable type %s%s%s"
 msgstr "неправильный тип переменной %s%s%s"
 
+#: codetoolsstrconsts:ctsjitformdirectory
+msgid "JITForm Directory"
+msgstr "Каталог JITForm"
+
 #: codetoolsstrconsts:ctskeyword
 msgid "keyword"
 msgstr "ключевое слово"
@@ -616,6 +528,10 @@ msgstr "ключевое слово \"in\""
 #: codetoolsstrconsts:ctslazarusmaindirectory
 msgid "lazarus main directory"
 msgstr "главный каталог lazarus"
+
+#: codetoolsstrconsts:ctslazarussources
+msgid "Lazarus Sources"
+msgstr "Исходники lazarus"
 
 #: codetoolsstrconsts:ctsmethodname
 msgid "method name"
@@ -637,6 +553,10 @@ msgstr "отсутствует список перечисления"
 msgid "missing type identifier"
 msgstr "отсутствует идентификатор типа"
 
+#: codetoolsstrconsts:ctsnestedcommentson
+msgid "Nested Comments On"
+msgstr "Вкл. вложенные комментарии"
+
 #: codetoolsstrconsts:ctsnewprocbodynotfound
 msgid "new proc body not found"
 msgstr "тело новой процедуры не найдено"
@@ -653,6 +573,14 @@ msgstr "не найдено кода паскаля (первый элемент
 msgid "no pascal node found at cursor (i.e. in unparsed code)"
 msgstr "не найдено записей паскаля у курсора (т.е. необрабатываемый код)"
 
+#: codetoolsstrconsts:ctsnoscanneravailable
+msgid "No scanner available"
+msgstr "Нет доступных 'сканеров'"
+
+#: codetoolsstrconsts:ctsnoscannerfound
+msgid "No scanner found for \"%s\". If this is an include file, please open the main source first."
+msgstr "Не найдено 'сканера' для \"%s\". Если это - включаемый файл, откройте сначала главный исходник."
+
 #: codetoolsstrconsts:ctsnodefaultspecifierdefinedtwice
 msgid "nodefault specifier defined twice"
 msgstr "модификатор nodefault определён дважды"
@@ -660,6 +588,26 @@ msgstr "модификатор nodefault определён дважды"
 #: codetoolsstrconsts:ctsoldmethodnotfound
 msgid "old method not found: %s"
 msgstr "не найден старый метод: %s"
+
+#: codetoolsstrconsts:ctspackagedirectories
+msgid "Package directories"
+msgstr "Каталоги пакетов"
+
+#: codetoolsstrconsts:ctspackagerdirectory
+msgid "Packager Directory"
+msgstr "Каталог менеджера пакетов"
+
+#: codetoolsstrconsts:ctspackagerregistrationdirectory
+msgid "Packager Registration Directory"
+msgstr "Каталог регистрации менеджера пакетов"
+
+#: codetoolsstrconsts:ctspackagerunitsdirectory
+msgid "Packager Units Directory"
+msgstr "Каталог модулей менеджера пакетов"
+
+#: codetoolsstrconsts:ctspositionnotinsource
+msgid "Position not in source"
+msgstr "Позиция отсутствует в исходном коде"
 
 #: codetoolsstrconsts:ctsprocedureorfunction
 msgid "procedure or function"
@@ -681,6 +629,14 @@ msgstr "ожидается тип свойства, найдено %s"
 msgid "qualifier expected but %s found"
 msgstr "ожидалась ссылка, но найдено %s"
 
+#: codetoolsstrconsts:ctsresetalldefines
+msgid "Reset all defines"
+msgstr "Сбросить все определения"
+
+#: codetoolsstrconsts:ctsruntimelibrary
+msgid "Runtime library"
+msgstr "Библиотека времени исполнения"
+
 #: codetoolsstrconsts:ctssemicolonnotfound
 msgid "semicolon not found"
 msgstr "точка с запятой не найдена"
@@ -692,6 +648,10 @@ msgstr "устанавливает пути включений в %s"
 #: codetoolsstrconsts:ctssetssrcpathto
 msgid "sets SrcPath to %s"
 msgstr "устанавливает пути исходников в %s"
+
+#: codetoolsstrconsts:ctssourcefilenamesforstandardfpcunits
+msgid "Source filenames for the standard fpc units"
+msgstr "Имена файлов исходников для стандартных модулей fpc"
 
 #: codetoolsstrconsts:ctssourceisnotunit
 msgid "source is not unit"
@@ -705,9 +665,29 @@ msgstr "исходник не найден?: модуль %s"
 msgid "src path for compiled units"
 msgstr "путь исходников для собранных модулей"
 
+#: codetoolsstrconsts:ctssrcpathinitialization
+msgid "SrcPath Initialization"
+msgstr "Инициализация путей исходников"
+
 #: codetoolsstrconsts:ctsstringconstant
 msgid "string constant"
 msgstr "строковая константа"
+
+#: codetoolsstrconsts:ctssyntaxerrorinexpr
+msgid "Syntax Error in expression \"%s\""
+msgstr "Ошибка синтаксиса в выражении \"%s\""
+
+#: codetoolsstrconsts:ctstcodetoolmanagerconsistencycheck
+msgid "TCodeToolManager.ConsistencyCheck=%d"
+msgstr "TCodeToolManager.ConsistencyCheck=%d"
+
+#: codetoolsstrconsts:ctstermnotsimple
+msgid "Term has no simple type"
+msgstr "Определение не имеет простого типа"
+
+#: codetoolsstrconsts:ctstoolsdirectory
+msgid "Tools Directory"
+msgstr "Каталог инструментов"
 
 #: codetoolsstrconsts:ctstypeidentifier
 msgid "type identifier"
@@ -757,11 +737,31 @@ msgstr "обнаружен неожиданный оператор поддиа�
 msgid "unit not found: %s"
 msgstr "не найден модуль: %s"
 
+#: codetoolsstrconsts:ctsunitpathinitialization
+msgid "UnitPath Initialization"
+msgstr "Инициализация путей модулей"
+
+#: codetoolsstrconsts:ctsunknownfunction
+msgid "Unknown function %s"
+msgstr "Неизвестная функция %s"
+
 #: codetoolsstrconsts:ctsunknownsectionkeyword
 msgid "unknown section keyword %s found"
 msgstr "обнаружено неизвестное ключевое слово секции %s"
 
+#: codetoolsstrconsts:ctsunparsed
+msgid "Unparsed"
+msgstr "Не обработано"
+
 #: codetoolsstrconsts:ctsusedunitisnotapascalunit
 msgid "used unit is not a pascal unit"
 msgstr "используемый модуль - не паскалевский"
+
+#: codetoolsstrconsts:ctsutilsdirectories
+msgid "Utils directories"
+msgstr "Каталоги утилит"
+
+#: codetoolsstrconsts:ctswidgetdirectory
+msgid "Widget Directory"
+msgstr "Каталог элементов управления"
 

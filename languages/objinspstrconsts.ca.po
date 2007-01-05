@@ -105,13 +105,13 @@ msgstr "Dalt"
 msgid "(All)"
 msgstr "(Tot)"
 
-#: objinspstrconsts:cactionlisteditorunknowncategory
-msgid "(Unknown)"
-msgstr "(Desconegut)"
-
 #: objinspstrconsts:oisnone
 msgid "(none)"
 msgstr "(cap)"
+
+#: objinspstrconsts:cactionlisteditorunknowncategory
+msgid "(Unknown)"
+msgstr "(Desconegut)"
 
 #: objinspstrconsts:ois0lines0chars
 msgid "0 lines, 0 chars"
@@ -133,13 +133,13 @@ msgstr "Editor de la llista d'accions"
 msgid "Add"
 msgstr "Afegeix"
 
-#: objinspstrconsts:sccsiledtopendialog
-msgid "Add Images"
-msgstr "Afegeix imatges"
-
 #: objinspstrconsts:s_addassingle
 msgid "Add as single"
 msgstr ""
+
+#: objinspstrconsts:sccsiledtopendialog
+msgid "Add Images"
+msgstr "Afegeix imatges"
 
 #: objinspstrconsts:clbadd
 msgid "Add new Item"
@@ -389,6 +389,10 @@ msgstr "Su&rt"
 msgid "Edit"
 msgstr "Edita"
 
+#: objinspstrconsts:oiseditactionlist
+msgid "Edit action list..."
+msgstr "Edita la llista d'accions..."
+
 #: objinspstrconsts:sccslvedt
 msgid "Edit ListView Items..."
 msgstr ""
@@ -400,10 +404,6 @@ msgstr ""
 #: objinspstrconsts:sccstredt
 msgid "Edit TreeView Items..."
 msgstr ""
-
-#: objinspstrconsts:oiseditactionlist
-msgid "Edit action list..."
-msgstr "Edita la llista d'accions..."
 
 #: objinspstrconsts:oicoleditediting
 msgid "Editing"
@@ -569,20 +569,12 @@ msgstr "Mètode"
 msgid "Modify the Item"
 msgstr "Modifica l'Element"
 
-#: objinspstrconsts:sccsiledtmovedown
-msgid "Move Down"
-msgstr "Mou baix"
-
-#: objinspstrconsts:sccssgedtmoverowscols
-msgid "Move Rows/Cols"
-msgstr ""
-
-#: objinspstrconsts:sccsiledtmoveup
-msgid "Move Up"
-msgstr "Mou dalt"
-
 #: objinspstrconsts:rscdmovedown
 msgid "Move down"
+msgstr "Mou baix"
+
+#: objinspstrconsts:sccsiledtmovedown
+msgid "Move Down"
 msgstr "Mou baix"
 
 #: objinspstrconsts:nbcesmovepageleft
@@ -592,6 +584,10 @@ msgstr "Mou a la pàgina esquerra"
 #: objinspstrconsts:nbcesmovepageright
 msgid "Move page right"
 msgstr "Mou a la pàgina dreta"
+
+#: objinspstrconsts:sccssgedtmoverowscols
+msgid "Move Rows/Cols"
+msgstr ""
 
 #: objinspstrconsts:tccesmovetableft
 msgid "Move tab left"
@@ -603,6 +599,10 @@ msgstr ""
 
 #: objinspstrconsts:rscdmoveup
 msgid "Move up"
+msgstr "Mou dalt"
+
+#: objinspstrconsts:sccsiledtmoveup
+msgid "Move Up"
 msgstr "Mou dalt"
 
 #: objinspstrconsts:cactionlisteditornewaction
@@ -629,10 +629,6 @@ msgstr "Següent"
 msgid "None"
 msgstr "Cap"
 
-#: objinspstrconsts:rscdok
-msgid "OK"
-msgstr "D'Acord"
-
 #: objinspstrconsts:oisobject
 msgid "Object"
 msgstr "Objecte"
@@ -643,6 +639,10 @@ msgstr "Inspector dels objectes"
 
 #: objinspstrconsts:oisok2
 msgid "Ok"
+msgstr "D'Acord"
+
+#: objinspstrconsts:rscdok
+msgid "OK"
 msgstr "D'Acord"
 
 #: objinspstrconsts:sccstredtopendialog
@@ -737,13 +737,13 @@ msgstr "Anomena i desa"
 msgid "Save Image"
 msgstr "Desa Imatge"
 
-#: objinspstrconsts:oissaveliteralcharacters
-msgid "Save Literal Characters"
-msgstr ""
-
 #: objinspstrconsts:oispesaveimageas
 msgid "Save image as"
 msgstr "Desa imatge com"
+
+#: objinspstrconsts:oissaveliteralcharacters
+msgid "Save Literal Characters"
+msgstr ""
 
 #: objinspstrconsts:oissavepicture
 msgid "Save picture"
@@ -765,13 +765,13 @@ msgstr "Selecciona el &color"
 msgid "Select &Font..."
 msgstr "Selecciona la &font"
 
-#: objinspstrconsts:oistdacteditselectallshorthint
-msgid "Select All"
-msgstr "Selecciona-ho tot"
-
 #: objinspstrconsts:oisselectafile
 msgid "Select a file"
 msgstr "Selecciona un fitxer"
+
+#: objinspstrconsts:oistdacteditselectallshorthint
+msgid "Select All"
+msgstr "Selecciona-ho tot"
 
 #: objinspstrconsts:sccsiledtgrprcaption
 msgid "Selected Image"
@@ -841,12 +841,12 @@ msgstr "Editor de la cadena de la graella"
 msgid "Strings Editor Dialog"
 msgstr "Diàleg editor de les cadenes"
 
-#: objinspstrconsts:oistestinput
-msgid "Test Input"
-msgstr ""
-
 #: objinspstrconsts:oistestdialog
 msgid "Test dialog..."
+msgstr ""
+
+#: objinspstrconsts:oistestinput
+msgid "Test Input"
 msgstr ""
 
 #: objinspstrconsts:sccstredtlabeltext

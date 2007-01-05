@@ -119,6 +119,7 @@ const
   ecInsertCVSName           = ecFirstLazarus + 91;
   ecInsertCVSRevision       = ecFirstLazarus + 92;
   ecInsertCVSSource         = ecFirstLazarus + 93;
+  ecInsertModifiedLGPLNotice= ecFirstLazarus + 94;
 
   // source tools
   ecWordCompletion          = ecFirstLazarus + 100;

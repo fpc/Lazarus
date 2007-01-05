@@ -133,6 +133,7 @@ type
           //itmEditInsertGeneral: TIDEMenuSection;
             itmEditInsertGPLNotice: TIDEMenuCommand;
             itmEditInsertLGPLNotice: TIDEMenuCommand;
+            itmEditInsertModifiedLGPLNotice: TIDEMenuCommand;
             itmEditInsertUsername: TIDEMenuCommand;
             itmEditInsertDateTime: TIDEMenuCommand;
             itmEditInsertChangeLogEntry: TIDEMenuCommand;

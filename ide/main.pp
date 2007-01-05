@@ -203,6 +203,7 @@ type
     // edit->insert text->general
     procedure mnuEditInsertGPLNoticeClick(Sender: TObject);
     procedure mnuEditInsertLGPLNoticeClick(Sender: TObject);
+    procedure mnuEditInsertModifiedLGPLNoticeClick(Sender: TObject);
     procedure mnuEditInsertUsernameClick(Sender: TObject);
     procedure mnuEditInsertDateTimeClick(Sender: TObject);
     procedure mnuEditInsertChangeLogEntryClick(Sender: TObject);
@@ -1947,6 +1948,7 @@ begin
     // insert text->general
     itmEditInsertGPLNotice.OnClick:=@mnuEditInsertGPLNoticeClick;
     itmEditInsertLGPLNotice.OnClick:=@mnuEditInsertLGPLNoticeClick;
+    itmEditInsertModifiedLGPLNotice.OnClick:=@mnuEditInsertModifiedLGPLNoticeClick;
     itmEditInsertUsername.OnClick:=@mnuEditInsertUsernameClick;
     itmEditInsertDateTime.OnClick:=@mnuEditInsertDateTimeClick;
     itmEditInsertChangeLogEntry.OnClick:=@mnuEditInsertChangeLogEntryClick;
@@ -2951,6 +2953,7 @@ begin
       //itmEditInsertGeneral: TIDEMenuSection;
         itmEditInsertGPLNotice.Enabled:=Editable;
         itmEditInsertLGPLNotice.Enabled:=Editable;
+        itmEditInsertModifiedLGPLNotice.Enabled:=Editable;
         itmEditInsertUsername.Enabled:=Editable;
         itmEditInsertDateTime.Enabled:=Editable;
         itmEditInsertChangeLogEntry.Enabled:=Editable;
@@ -12684,6 +12687,11 @@ end;
 procedure TMainIDE.mnuEditInsertLGPLNoticeClick(Sender: TObject);
 begin
   DoSourceEditorCommand(ecInsertLGPLNotice);
+end;
+
+procedure TMainIDE.mnuEditInsertModifiedLGPLNoticeClick(Sender: TObject);
+begin
+  DoSourceEditorCommand(ecInsertModifiedLGPLNotice);
 end;
 
 procedure TMainIDE.mnuEditInsertUsernameClick(Sender: TObject);

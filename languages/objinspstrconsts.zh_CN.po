@@ -108,13 +108,13 @@ msgstr "上移(&U)"
 msgid "(All)"
 msgstr "(所有)"
 
-#: objinspstrconsts:cactionlisteditorunknowncategory
-msgid "(Unknown)"
-msgstr "(未知)"
-
 #: objinspstrconsts:oisnone
 msgid "(none)"
 msgstr "(没有)"
+
+#: objinspstrconsts:cactionlisteditorunknowncategory
+msgid "(Unknown)"
+msgstr "(未知)"
 
 #: objinspstrconsts:ois0lines0chars
 msgid "0 lines, 0 chars"
@@ -136,13 +136,13 @@ msgstr "动作列表编辑器"
 msgid "Add"
 msgstr "添加"
 
-#: objinspstrconsts:sccsiledtopendialog
-msgid "Add Images"
-msgstr "添加图像"
-
 #: objinspstrconsts:s_addassingle
 msgid "Add as single"
 msgstr ""
+
+#: objinspstrconsts:sccsiledtopendialog
+msgid "Add Images"
+msgstr "添加图像"
 
 #: objinspstrconsts:clbadd
 msgid "Add new Item"
@@ -392,6 +392,10 @@ msgstr "退出(&X)"
 msgid "Edit"
 msgstr "编辑"
 
+#: objinspstrconsts:oiseditactionlist
+msgid "Edit action list..."
+msgstr "编辑动作列表..."
+
 #: objinspstrconsts:sccslvedt
 msgid "Edit ListView Items..."
 msgstr "编辑 ListView 标签..."
@@ -403,10 +407,6 @@ msgstr "编辑 StringGrid..."
 #: objinspstrconsts:sccstredt
 msgid "Edit TreeView Items..."
 msgstr "编辑 TreeView 标签..."
-
-#: objinspstrconsts:oiseditactionlist
-msgid "Edit action list..."
-msgstr "编辑动作列表..."
 
 #: objinspstrconsts:oicoleditediting
 msgid "Editing"
@@ -572,20 +572,12 @@ msgstr "Method"
 msgid "Modify the Item"
 msgstr "更改项目"
 
-#: objinspstrconsts:sccsiledtmovedown
-msgid "Move Down"
-msgstr "下移"
-
-#: objinspstrconsts:sccssgedtmoverowscols
-msgid "Move Rows/Cols"
-msgstr "移动 行/列"
-
-#: objinspstrconsts:sccsiledtmoveup
-msgid "Move Up"
-msgstr "上移"
-
 #: objinspstrconsts:rscdmovedown
 msgid "Move down"
+msgstr "下移"
+
+#: objinspstrconsts:sccsiledtmovedown
+msgid "Move Down"
 msgstr "下移"
 
 #: objinspstrconsts:nbcesmovepageleft
@@ -595,6 +587,10 @@ msgstr "左移页面"
 #: objinspstrconsts:nbcesmovepageright
 msgid "Move page right"
 msgstr "右移页面"
+
+#: objinspstrconsts:sccssgedtmoverowscols
+msgid "Move Rows/Cols"
+msgstr "移动 行/列"
 
 #: objinspstrconsts:tccesmovetableft
 msgid "Move tab left"
@@ -606,6 +602,10 @@ msgstr "右移页面"
 
 #: objinspstrconsts:rscdmoveup
 msgid "Move up"
+msgstr "上移"
+
+#: objinspstrconsts:sccsiledtmoveup
+msgid "Move Up"
 msgstr "上移"
 
 #: objinspstrconsts:cactionlisteditornewaction
@@ -632,10 +632,6 @@ msgstr "下一个"
 msgid "None"
 msgstr "无"
 
-#: objinspstrconsts:rscdok
-msgid "OK"
-msgstr "确定"
-
 #: objinspstrconsts:oisobject
 msgid "Object"
 msgstr "对象"
@@ -646,6 +642,10 @@ msgstr "对象观察器"
 
 #: objinspstrconsts:oisok2
 msgid "Ok"
+msgstr "确定"
+
+#: objinspstrconsts:rscdok
+msgid "OK"
 msgstr "确定"
 
 #: objinspstrconsts:sccstredtopendialog
@@ -740,13 +740,13 @@ msgstr "另存为"
 msgid "Save Image"
 msgstr "保存图像"
 
-#: objinspstrconsts:oissaveliteralcharacters
-msgid "Save Literal Characters"
-msgstr "保存文字字符"
-
 #: objinspstrconsts:oispesaveimageas
 msgid "Save image as"
 msgstr ""
+
+#: objinspstrconsts:oissaveliteralcharacters
+msgid "Save Literal Characters"
+msgstr "保存文字字符"
 
 #: objinspstrconsts:oissavepicture
 msgid "Save picture"
@@ -768,13 +768,13 @@ msgstr "选择颜色(&C)"
 msgid "Select &Font..."
 msgstr "选择字体(&F)"
 
-#: objinspstrconsts:oistdacteditselectallshorthint
-msgid "Select All"
-msgstr "全选"
-
 #: objinspstrconsts:oisselectafile
 msgid "Select a file"
 msgstr "选择一个文件"
+
+#: objinspstrconsts:oistdacteditselectallshorthint
+msgid "Select All"
+msgstr "全选"
 
 #: objinspstrconsts:sccsiledtgrprcaption
 msgid "Selected Image"
@@ -844,13 +844,13 @@ msgstr "StringGrid 编辑器"
 msgid "Strings Editor Dialog"
 msgstr "Strings 编辑对话框"
 
-#: objinspstrconsts:oistestinput
-msgid "Test Input"
-msgstr "测试输入"
-
 #: objinspstrconsts:oistestdialog
 msgid "Test dialog..."
 msgstr "测试对话框..."
+
+#: objinspstrconsts:oistestinput
+msgid "Test Input"
+msgstr "测试输入"
 
 #: objinspstrconsts:sccstredtlabeltext
 msgid "Text:"

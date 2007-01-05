@@ -422,6 +422,7 @@ begin
         SubSubParentMI:=itmEditInsertGeneral;
         CreateMenuItem(SubSubParentMI,itmEditInsertGPLNotice,'itmEditInsertGPLNotice',lisMenuInsertGPLNotice);
         CreateMenuItem(SubSubParentMI,itmEditInsertLGPLNotice,'itmEditInsertLGPLNotice',lisMenuInsertLGPLNotice);
+        CreateMenuItem(SubSubParentMI,itmEditInsertModifiedLGPLNotice,'itmEditInsertModifiedLGPLNotice',lisMenuInsertModifiedLGPLNotice);
         CreateMenuItem(SubSubParentMI,itmEditInsertUsername,'itmEditInsertUsername',lisMenuInsertUsername);
         CreateMenuItem(SubSubParentMI,itmEditInsertDateTime,'itmEditInsertDateTime',lisMenuInsertDateTime);
         CreateMenuItem(SubSubParentMI,itmEditInsertChangeLogEntry,'itmEditInsertChangeLogEntry',lisMenuInsertChangeLogEntry);
@@ -808,6 +809,7 @@ begin
 
     itmEditInsertGPLNotice.Command:=GetCommand(ecInsertGPLNotice);
     itmEditInsertLGPLNotice.Command:=GetCommand(ecInsertLGPLNotice);
+    itmEditInsertModifiedLGPLNotice.Command:=GetCommand(ecInsertModifiedLGPLNotice);
     itmEditInsertUsername.Command:=GetCommand(ecInsertUserName);
     itmEditInsertDateTime.Command:=GetCommand(ecInsertDateTime);
     itmEditInsertChangeLogEntry.Command:=GetCommand(ecInsertChangeLogEntry);

@@ -257,8 +257,10 @@ type
     procedure SelectParagraph;
     function CommentText(const Txt: string; CommentType: TCommentType): string;
     procedure InsertCharacterFromMap;
+    procedure InsertLicenseNotice(const Notice: string; CommentType: TCommentType);
     procedure InsertGPLNotice(CommentType: TCommentType);
     procedure InsertLGPLNotice(CommentType: TCommentType);
+    procedure InsertModifiedLGPLNotice(CommentType: TCommentType);
     procedure InsertUsername;
     procedure InsertDateTime;
     procedure InsertChangeLogEntry;
@@ -1546,6 +1548,9 @@ Begin
   ecInsertLGPLNotice:
     InsertLGPLNotice(comtDefault);
 
+  ecInsertModifiedLGPLNotice:
+    InsertModifiedLGPLNotice(comtDefault);
+
   ecInsertUserName:
     InsertUsername;
 
@@ -1858,26 +1863,31 @@ begin
   ShowCharacterMap(@SourceNotebook.InsertCharacter);
 end;
 
-procedure TSourceEditor.InsertGPLNotice(CommentType: TCommentType);
+procedure TSourceEditor.InsertLicenseNotice(const Notice: string;
+  CommentType: TCommentType);
 var
   Txt: string;
 begin
   if ReadOnly then Exit;
   Txt:=CommentText(LCLProc.BreakString(
-           Format(lisGPLNotice,[#13#13,#13#13,#13#13]),
+           Format(Notice,[#13#13,#13#13,#13#13,#13#13,#13#13]),
            FEditor.RightEdge-2,0),CommentType);
   FEditor.SelText:=Txt;
 end;
 
-procedure TSourceEditor.InsertLGPLNotice(CommentType: TCommentType);
-var
-  Txt: string;
+procedure TSourceEditor.InsertGPLNotice(CommentType: TCommentType);
 begin
-  if ReadOnly then Exit;
-  Txt:=CommentText(LCLProc.BreakString(
-           Format(lisLGPLNotice,[#13#13,#13#13,#13#13]),
-           FEditor.RightEdge-2,0),CommentType);
-  FEditor.SelText:=Txt;
+  InsertLicenseNotice(lisGPLNotice, CommentType);
+end;
+
+procedure TSourceEditor.InsertLGPLNotice(CommentType: TCommentType);
+begin
+  InsertLicenseNotice(lisLGPLNotice, CommentType);
+end;
+
+procedure TSourceEditor.InsertModifiedLGPLNotice(CommentType: TCommentType);
+begin
+  InsertLicenseNotice(lisModifiedLGPLNotice, CommentType);
 end;
 
 procedure TSourceEditor.InsertUsername;

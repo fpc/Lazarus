@@ -196,6 +196,7 @@ resourcestring
 
   lisMenuInsertGPLNotice = 'GPL notice';
   lisMenuInsertLGPLNotice = 'LGPL notice';
+  lisMenuInsertModifiedLGPLNotice = 'Modified LGPL notice';
   lisMenuInsertUserName = 'Current username';
   lisMenuInsertDateTime = 'Current date and time';
   lisMenuInsertChangeLogEntry = 'ChangeLog entry';
@@ -687,7 +688,9 @@ resourcestring
   lisHintStepOver = 'Step Over';
   
   lisGPLNotice =
-    'Copyright (C) <year> <name of author> '
+    '<description>'
+   +'%s'
+   +'Copyright (C) <year> <name of author> <contact>'
    +'%s'
    +'This source is free software; you can redistribute it and/or modify '
    +'it under the terms of the GNU General Public License as published by '
@@ -705,7 +708,9 @@ resourcestring
    +'Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.';
 
   lisLGPLNotice =
-    'Copyright (C) <year> <name of author>'
+    '<description>'
+   +'%s'
+   +'Copyright (C) <year> <name of author> <contact>'
    +'%s'
    +'This library is free software; you can redistribute it and/or modify '
    +'it under the terms of the GNU Library General Public License as published '
@@ -721,6 +726,35 @@ resourcestring
    +'along with this library; if not, write to the Free Software '
    +'Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.';
 
+  lisModifiedLGPLNotice =
+    '<description>'
+   +'%s'
+   +'Copyright (C) <year> <name of author> <contact>'
+   +'%s'
+   +'This library is free software; you can redistribute it and/or modify '
+   +'it under the terms of the GNU Library General Public License as published '
+   +'by the Free Software Foundation; either version 2 of the License, or '
+   +'(at your option) any later version with the following modification:'
+   +'%s'
+   +'As a special exception, the copyright holders of this library give you '
+   +'permission to link this library with independent modules to produce an '
+   +'executable, regardless of the license terms of these independent modules,'
+   +'and to copy and distribute the resulting executable under terms of your '
+   +'choice, provided that you also meet, for each linked independent module, '
+   +'the terms and conditions of the license of that module. An independent '
+   +'module is a module which is not derived from or based on this library. If '
+   +'you modify this library, you may extend this exception to your version of '
+   +'the library, but you are not obligated to do so. If you do not wish to do '
+   +'so, delete this exception statement from your version.'
+   +'%s'
+   +'This program is distributed in the hope that it will be useful, '
+   +'but WITHOUT ANY WARRANTY; without even the implied warranty of '
+   +'MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the '
+   +'GNU Library General Public License for more details. '
+   +'%s'
+   +'You should have received a copy of the GNU Library General Public License '
+   +'along with this library; if not, write to the Free Software '
+   +'Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.';
 
   // Environment dialog
   dlgBakNoSubDirectory='(no subdirectory)';
@@ -1477,21 +1511,22 @@ resourcestring
   srkmecGotoEditor            = 'Go to editor %d';
 
   // edit menu
-  srkmecSelectionTabs2Spaces  = 'Convert tabs to spaces in selection';
-  srkmecInsertCharacter       = 'Insert from Charactermap';
-  srkmecInsertGPLNotice       = 'Insert GPL notice';
-  srkmecInsertLGPLNotice      = 'Insert LGPL notice';
-  srkmecInsertUserName        = 'Insert current username';
-  srkmecInsertDateTime        = 'Insert current date and time';
-  srkmecInsertChangeLogEntry  = 'Insert ChangeLog entry';
-  srkmecInsertCVSAuthor       = 'Insert CVS keyword Author';
-  srkmecInsertCVSDate         = 'Insert CVS keyword Date';
-  srkmecInsertCVSHeader       = 'Insert CVS keyword Header';
-  srkmecInsertCVSID           = 'Insert CVS keyword ID';
-  srkmecInsertCVSLog          = 'Insert CVS keyword Log';
-  srkmecInsertCVSName         = 'Insert CVS keyword Name';
-  srkmecInsertCVSRevision     = 'Insert CVS keyword Revision';
-  srkmecInsertCVSSource       = 'Insert CVS keyword Source';
+  srkmecSelectionTabs2Spaces     = 'Convert tabs to spaces in selection';
+  srkmecInsertCharacter          = 'Insert from Charactermap';
+  srkmecInsertGPLNotice          = 'Insert GPL notice';
+  srkmecInsertLGPLNotice         = 'Insert LGPL notice';
+  srkmecInsertModifiedLGPLNotice = 'Insert modified LGPL notice';
+  srkmecInsertUserName           = 'Insert current username';
+  srkmecInsertDateTime           = 'Insert current date and time';
+  srkmecInsertChangeLogEntry     = 'Insert ChangeLog entry';
+  srkmecInsertCVSAuthor          = 'Insert CVS keyword Author';
+  srkmecInsertCVSDate            = 'Insert CVS keyword Date';
+  srkmecInsertCVSHeader          = 'Insert CVS keyword Header';
+  srkmecInsertCVSID              = 'Insert CVS keyword ID';
+  srkmecInsertCVSLog             = 'Insert CVS keyword Log';
+  srkmecInsertCVSName            = 'Insert CVS keyword Name';
+  srkmecInsertCVSRevision        = 'Insert CVS keyword Revision';
+  srkmecInsertCVSSource          = 'Insert CVS keyword Source';
   
   // search menu
   srkmecFind                      = 'Find text';
