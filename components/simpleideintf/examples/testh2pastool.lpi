@@ -7,7 +7,7 @@
       <MainUnit Value="0"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=""/>
-      <ActiveEditorIndexAtStart Value="1"/>
+      <ActiveEditorIndexAtStart Value="2"/>
     </General>
     <VersionInfo>
       <ProjectVersion Value=""/>
@@ -28,24 +28,24 @@
     </RunParams>
     <RequiredPackages Count="3">
       <Item1>
-        <PackageName Value="CodeTools"/>
+        <PackageName Value="SimpleIDEIntf"/>
+        <MinVersion Valid="True"/>
       </Item1>
       <Item2>
-        <PackageName Value="SimpleIDEIntf"/>
+        <PackageName Value="H2PasWizard"/>
         <MinVersion Valid="True"/>
       </Item2>
       <Item3>
-        <PackageName Value="H2PasWizard"/>
-        <MinVersion Valid="True"/>
+        <PackageName Value="CodeTools"/>
       </Item3>
     </RequiredPackages>
-    <Units Count="16">
+    <Units Count="17">
       <Unit0>
         <Filename Value="testh2pastool.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestH2pasTool"/>
         <CursorPos X="23" Y="36"/>
-        <TopLine Value="28"/>
+        <TopLine Value="21"/>
         <EditorIndex Value="0"/>
         <UsageCount Value="27"/>
         <Loaded Value="True"/>
@@ -117,27 +117,25 @@
       <Unit10>
         <Filename Value="../../h2pas/h2pasconvert.pas"/>
         <UnitName Value="H2PasConvert"/>
-        <CursorPos X="11" Y="2241"/>
+        <CursorPos X="32" Y="2240"/>
         <TopLine Value="2213"/>
         <EditorIndex Value="1"/>
         <UsageCount Value="13"/>
         <Loaded Value="True"/>
       </Unit10>
       <Unit11>
-        <Filename Value="/home/gaertner/pascal/amat/ide/copycomponent/componentcopier.pas"/>
+        <Filename Value="../../../../../../../gaertner/pascal/amat/ide/copycomponent/componentcopier.pas"/>
         <UnitName Value="ComponentCopier"/>
         <CursorPos X="1" Y="19"/>
         <TopLine Value="19"/>
-        <EditorIndex Value="3"/>
         <UsageCount Value="13"/>
-        <Loaded Value="True"/>
       </Unit11>
       <Unit12>
         <Filename Value="../../codetools/basiccodetools.pas"/>
         <UnitName Value="BasicCodeTools"/>
         <CursorPos X="1" Y="2050"/>
         <TopLine Value="2026"/>
-        <EditorIndex Value="2"/>
+        <EditorIndex Value="3"/>
         <UsageCount Value="13"/>
         <Loaded Value="True"/>
       </Unit12>
@@ -162,113 +160,17 @@
         <TopLine Value="1413"/>
         <UsageCount Value="10"/>
       </Unit15>
+      <Unit16>
+        <Filename Value="../../../packager/globallinks/simpleideintf-0.lpl"/>
+        <CursorPos X="53" Y="1"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="2"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+        <SyntaxHighlighter Value="None"/>
+      </Unit16>
     </Units>
-    <JumpHistory Count="26" HistoryIndex="25">
-      <Position1>
-        <Filename Value="../../codetools/basiccodetools.pas"/>
-        <Caret Line="2041" Column="10" TopLine="2022"/>
-      </Position1>
-      <Position2>
-        <Filename Value="../../h2pas/h2pasconvert.pas"/>
-        <Caret Line="1946" Column="39" TopLine="1933"/>
-      </Position2>
-      <Position3>
-        <Filename Value="../../h2pas/h2pasconvert.pas"/>
-        <Caret Line="2211" Column="20" TopLine="2203"/>
-      </Position3>
-      <Position4>
-        <Filename Value="../../codetools/basiccodetools.pas"/>
-        <Caret Line="104" Column="10" TopLine="82"/>
-      </Position4>
-      <Position5>
-        <Filename Value="../../codetools/basiccodetools.pas"/>
-        <Caret Line="411" Column="24" TopLine="384"/>
-      </Position5>
-      <Position6>
-        <Filename Value="../../codetools/basiccodetools.pas"/>
-        <Caret Line="749" Column="26" TopLine="721"/>
-      </Position6>
-      <Position7>
-        <Filename Value="../../codetools/basiccodetools.pas"/>
-        <Caret Line="783" Column="27" TopLine="751"/>
-      </Position7>
-      <Position8>
-        <Filename Value="../../codetools/basiccodetools.pas"/>
-        <Caret Line="1610" Column="8" TopLine="1586"/>
-      </Position8>
-      <Position9>
-        <Filename Value="../../codetools/basiccodetools.pas"/>
-        <Caret Line="1440" Column="29" TopLine="1417"/>
-      </Position9>
-      <Position10>
-        <Filename Value="../../codetools/basiccodetools.pas"/>
-        <Caret Line="1439" Column="11" TopLine="1417"/>
-      </Position10>
-      <Position11>
-        <Filename Value="../../codetools/basiccodetools.pas"/>
-        <Caret Line="275" Column="30" TopLine="274"/>
-      </Position11>
-      <Position12>
-        <Filename Value="../../codetools/basiccodetools.pas"/>
-        <Caret Line="2032" Column="15" TopLine="2010"/>
-      </Position12>
-      <Position13>
-        <Filename Value="../../h2pas/h2pasconvert.pas"/>
-        <Caret Line="1948" Column="7" TopLine="1926"/>
-      </Position13>
-      <Position14>
-        <Filename Value="../../h2pas/h2pasconvert.pas"/>
-        <Caret Line="1772" Column="26" TopLine="1749"/>
-      </Position14>
-      <Position15>
-        <Filename Value="../../codetools/basiccodetools.pas"/>
-        <Caret Line="84" Column="10" TopLine="62"/>
-      </Position15>
-      <Position16>
-        <Filename Value="../../codetools/basiccodetools.pas"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
-      </Position16>
-      <Position17>
-        <Filename Value="../../h2pas/h2pasconvert.pas"/>
-        <Caret Line="2158" Column="27" TopLine="2156"/>
-      </Position17>
-      <Position18>
-        <Filename Value="../../h2pas/h2pasconvert.pas"/>
-        <Caret Line="2181" Column="26" TopLine="2156"/>
-      </Position18>
-      <Position19>
-        <Filename Value="../../h2pas/h2pasconvert.pas"/>
-        <Caret Line="2010" Column="33" TopLine="2001"/>
-      </Position19>
-      <Position20>
-        <Filename Value="../../h2pas/h2pasconvert.pas"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
-      </Position20>
-      <Position21>
-        <Filename Value="../../h2pas/h2pasconvert.pas"/>
-        <Caret Line="1963" Column="55" TopLine="1941"/>
-      </Position21>
-      <Position22>
-        <Filename Value="../../h2pas/h2pasconvert.pas"/>
-        <Caret Line="2124" Column="55" TopLine="2102"/>
-      </Position22>
-      <Position23>
-        <Filename Value="../../h2pas/h2pasconvert.pas"/>
-        <Caret Line="2212" Column="69" TopLine="2190"/>
-      </Position23>
-      <Position24>
-        <Filename Value="../../h2pas/h2pasconvert.pas"/>
-        <Caret Line="2224" Column="62" TopLine="2202"/>
-      </Position24>
-      <Position25>
-        <Filename Value="../../h2pas/h2pasconvert.pas"/>
-        <Caret Line="2252" Column="19" TopLine="2242"/>
-      </Position25>
-      <Position26>
-        <Filename Value="../../h2pas/h2pasconvert.pas"/>
-        <Caret Line="2253" Column="17" TopLine="2228"/>
-      </Position26>
-    </JumpHistory>
+    <JumpHistory Count="0" HistoryIndex="-1"/>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>
