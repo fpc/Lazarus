@@ -111,6 +111,32 @@ type
        }
 
   TReplaceImplicitTypes = class(TCustomTextConverterTool)
+  private
+    Src: String;
+    ImplicitTypes: TAvgLvlTree;// tree of TImplicitType
+    ExplicitTypes: TAvgLvlTree;// tree of TImplicitType
+    TypeStart: LongInt;
+    TypeEnd: integer; // 0 means invalid
+    ConstSectionStart: LongInt;
+    ConstSectionEnd: LongInt; // 0 means invalid
+    function FindNextImplicitType(var Position: integer;
+                                  out aTypeStart, aTypeEnd: integer): boolean;
+    function SearchImplicitParameterTypes(
+                                        var ModalResult: TModalResult): boolean;
+    function PosToStr(Position: integer): string;
+    procedure AdjustMinPositions(const Identifier: string);
+    function ReadWord(var Position: integer): boolean;
+    function ReadUntilAtom(var Position: integer;
+                 const StopAtom: string; SkipBrackets: boolean = true): boolean;
+    function ReadRecord(var Position: integer): boolean;
+    function ReadClass(var Position: integer): boolean;
+    function ReadTypeDefinition(var Position: integer): boolean;
+    function ReadConstSection(var Position: integer): boolean;
+    function FindExplicitTypesAndConstants(
+                                        var ModalResult: TModalResult): boolean;
+    function InsertNewTypes(var ModalResult: TModalResult): boolean;
+    function FindInsertPosition(MinPos: integer): integer;
+    function UseNewTypes(var ModalResult: TModalResult): boolean;
   public
     class function ClassDescription: string; override;
     function Execute(aText: TIDETextConverter): TModalResult; override;
@@ -1816,6 +1842,7 @@ type
     Code: string;
     MinPosition: integer;
     MaxPosition: integer;
+    MinPositionNeedsTypeSection: boolean;
   end;
 
 function CompareImplicitTypeNames(Type1, Type2: Pointer): integer;
@@ -1831,6 +1858,11 @@ begin
                              PChar(TImplicitType(ImplicitType).Name));
 end;
 
+function CompareImplicitTypeMinPositions(Type1, Type2: Pointer): integer;
+begin
+  Result:=TImplicitType(Type1).MinPosition-TImplicitType(Type2).MinPosition;
+end;
+
 { TReplaceImplicitParameterTypes }
 
 class function TReplaceImplicitTypes.ClassDescription: string;
@@ -1844,454 +1876,648 @@ begin
     +'    Tarray_0to2_of_char = array[0..2] of char';
 end;
 
-function TReplaceImplicitTypes.Execute(aText: TIDETextConverter
-  ): TModalResult;
+function TReplaceImplicitTypes.FindNextImplicitType(var Position: integer;
+  out aTypeStart, aTypeEnd: integer): boolean;
 var
-  Src: String;
-  ImplicitTypes: TAvgLvlTree;// tree of TImplicitType
-  ExplicitTypes: TAvgLvlTree;// tree of TImplicitType
-
-  function FindNextImplicitType(var Position: integer;
-    out TypeStart, TypeEnd: integer): boolean;
-  var
-    AtomStart: LongInt;
-    CurAtom: string;
-  begin
-    Result:=false;
-    AtomStart:=Position;
-    repeat
+  AtomStart: LongInt;
+  CurAtom: string;
+begin
+  Result:=false;
+  aTypeStart:=0;
+  aTypeEnd:=0;
+  AtomStart:=Position;
+  repeat
+    CurAtom:=ReadNextPascalAtom(Src,Position,AtomStart);
+    if CurAtom='' then break;
+    if CurAtom=':' then begin
+      // var, const, out declaration
       CurAtom:=ReadNextPascalAtom(Src,Position,AtomStart);
       if CurAtom='' then break;
-      if CurAtom=':' then begin
-        // var, const, out declaration
+      aTypeStart:=AtomStart;
+      if CompareIdentifiers(PChar(CurAtom),'array')=0 then begin
+        // :array
         CurAtom:=ReadNextPascalAtom(Src,Position,AtomStart);
         if CurAtom='' then break;
-        TypeStart:=AtomStart;
-        if CompareIdentifiers(PChar(CurAtom),'array')=0 then begin
-          // :array
-          CurAtom:=ReadNextPascalAtom(Src,Position,AtomStart);
-          if CurAtom='' then break;
-          if CurAtom='[' then begin
-            // :array[
-            if not ReadTilPascalBracketClose(Src,Position) then break;
-            // :array[..]
-            repeat
-              CurAtom:=ReadNextPascalAtom(Src,Position,AtomStart);
-              if CurAtom='' then break;
-              if (length(CurAtom)=1) and (CurAtom[1] in ['(','[']) then begin
-                // skip brackets
-                if not ReadTilPascalBracketClose(Src,Position) then break;
-              end else if (length(CurAtom)=1) and (CurAtom[1] in [';',')',']'])
-              then begin
-                // type end found
-                TypeEnd:=AtomStart;
-                Result:=true;
-                exit;
-              end;
-            until false;
-          end;
-        end;
-      end;
-    until CurAtom='';
-  end;
-
-  function SearchImplicitParameterTypes(var ModalResult: TModalResult): boolean;
-  var
-    Position: Integer;
-    StartPos, EndPos: integer;
-    TypeCode: String;
-    TypeName: String;
-    NewType: TImplicitType;
-  begin
-    Result:=false;
-    ModalResult:=mrCancel;
-    Position:=1;
-    while FindNextImplicitType(Position,StartPos,EndPos) do begin
-      TypeCode:=copy(Src,StartPos,EndPos-StartPos);
-      DebugLn(['SearchImplicitParameterTypes ',StartPos,' TypeCode="',TypeCode,'"']);
-      TypeName:=CodeToIdentifier(TypeCode);
-      if TypeName='' then continue;
-      if (ImplicitTypes<>nil)
-      and (ImplicitTypes.FindKey(Pointer(TypeName),
-                         @CompareImplicitTypeStringAndName)<>nil)
-      then begin
-        // type exists already
-        continue;
-      end;
-      // add new type
-      DebugLn(['SearchImplicitParameterTypes Adding new type ',StartPos,' TypeName=',TypeName,' TypeCode="',TypeCode,'"']);
-      NewType:=TImplicitType.Create;
-      NewType.Name:=TypeName;
-      NewType.Code:=TypeCode;
-      NewType.MaxPosition:=StartPos;
-      if ImplicitTypes=nil then
-        ImplicitTypes:=TAvgLvlTree.Create(@CompareImplicitTypeNames);
-      ImplicitTypes.Add(NewType);
-    end;
-    ModalResult:=mrOk;
-    Result:=true;
-  end;
-  
-  function FindExplicitTypesAndConstants(var ModalResult: TModalResult): boolean;
-  { every implicit type can contian references to explicit types and constants
-    For example: array[0..3] of bogus
-    If 'bogus' is defined in this source, then the new type must be defined
-    after 'bogus'.
-    => Search all explicit types
-  }
-  var
-    TypeStart: LongInt;
-    TypeEnd: integer; // 0 means invalid
-    
-    function PosToStr(Position: integer): string;
-    var
-      Line, Col: integer;
-    begin
-      SrcPosToLineCol(Src,Position,Line,Col);
-      Result:='(y='+IntToStr(Line)+',x='+IntToStr(Col)+')';
-    end;
-    
-    procedure AdjustMinPositions(const Identifier: string);
-    var
-      Node: TAvgLvlTreeNode;
-      Item: TImplicitType;
-      Position: Integer;
-      AtomStart: LongInt;
-      CurAtom: String;
-    begin
-      if TypeEnd<1 then exit;
-      //DebugLn(['AdjustMinPositions Identifier=',Identifier]);
-      
-      // search Identifier in all implicit type definitions
-      Node:=ImplicitTypes.FindLowest;
-      while Node<>nil do begin
-        Item:=TImplicitType(Node.Data);
-        if Item.MaxPosition>=TypeEnd then begin
-          // search Identifier in Item.Code
-          Position:=1;
-          AtomStart:=Position;
+        if CurAtom='[' then begin
+          // :array[
+          if not ReadTilPascalBracketClose(Src,Position) then break;
+          // :array[..]
           repeat
-            CurAtom:=ReadNextPascalAtom(Item.Code,Position,AtomStart);
+            CurAtom:=ReadNextPascalAtom(Src,Position,AtomStart);
             if CurAtom='' then break;
-            //DebugLn(['AdjustMinPositions ',Item.Name,' ',CurAtom]);
-            if CompareIdentifiers(PChar(Identifier),PChar(CurAtom))=0 then begin
-              // this implicit type depends on an explicit type defined
-              // prior in this source file
-              DebugLn(['AdjustMinPositions "',Item.Name,'=',Item.Code,'"',
-                ' depends on ',Identifier,
-                ' defined at ',PosToStr(TypeStart),'-',PosToStr(TypeEnd),
-                ' as "',copy(Src,TypeStart,30),'"']);
-              if Item.MinPosition<TypeEnd then
-                Item.MinPosition:=TypeEnd;
-              break;
+            if (length(CurAtom)=1) and (CurAtom[1] in ['(','[']) then begin
+              // skip brackets
+              if not ReadTilPascalBracketClose(Src,Position) then break;
+            end else if (length(CurAtom)=1) and (CurAtom[1] in [';',')',']'])
+            then begin
+              // type end found
+              aTypeEnd:=AtomStart;
+              Result:=true;
+              exit;
             end;
           until false;
         end;
-        Node:=ImplicitTypes.FindSuccessor(Node);
       end;
     end;
-  
-    function ReadTypeDefinition(var Position: integer): boolean; forward;
+  until CurAtom='';
+end;
 
-    function ReadWord(var Position: integer): boolean;
-    var
-      AtomStart: LongInt;
-      CurAtom: String;
-    begin
-      AtomStart:=Position;
-      CurAtom:=ReadNextPascalAtom(Src,Position,AtomStart);
-      if (CurAtom<>'') and IsIdentStartChar[CurAtom[1]] then
-        Result:=true
-      else begin
-        DebugLn(['ReadWord word not found at ',PosToStr(AtomStart)]);
-        Result:=false;
-      end;
+function TReplaceImplicitTypes.SearchImplicitParameterTypes(
+  var ModalResult: TModalResult): boolean;
+var
+  Position: Integer;
+  StartPos, EndPos: integer;
+  TypeCode: String;
+  TypeName: String;
+  NewType: TImplicitType;
+begin
+  Result:=false;
+  ModalResult:=mrCancel;
+  Position:=1;
+  while FindNextImplicitType(Position,StartPos,EndPos) do begin
+    TypeCode:=copy(Src,StartPos,EndPos-StartPos);
+    //DebugLn(['SearchImplicitParameterTypes ',StartPos,' TypeCode="',TypeCode,'"']);
+    TypeName:=CodeToIdentifier(TypeCode);
+    if TypeName='' then continue;
+    if (ImplicitTypes<>nil)
+    and (ImplicitTypes.FindKey(Pointer(TypeName),
+                       @CompareImplicitTypeStringAndName)<>nil)
+    then begin
+      // type exists already
+      continue;
     end;
+    // add new type
+    //DebugLn(['SearchImplicitParameterTypes Adding new type ',StartPos,' TypeName=',TypeName,' TypeCode="',TypeCode,'"']);
+    NewType:=TImplicitType.Create;
+    NewType.Name:=TypeName;
+    NewType.Code:=TypeCode;
+    NewType.MaxPosition:=StartPos;
+    if ImplicitTypes=nil then
+      ImplicitTypes:=TAvgLvlTree.Create(@CompareImplicitTypeNames);
+    ImplicitTypes.Add(NewType);
+  end;
+  ModalResult:=mrOk;
+  Result:=true;
+end;
 
-    function ReadUntilAtom(var Position: integer;
-      const StopAtom: string): boolean;
-    var
-      AtomStart: LongInt;
-      CurAtom: String;
-      StartPos: LongInt;
-    begin
-      StartPos:=Position;
+function TReplaceImplicitTypes.PosToStr(Position: integer): string;
+var
+  Line, Col: integer;
+begin
+  SrcPosToLineCol(Src,Position,Line,Col);
+  Result:='(y='+IntToStr(Line)+',x='+IntToStr(Col)+')';
+end;
+
+procedure TReplaceImplicitTypes.AdjustMinPositions(const Identifier: string);
+var
+  Node: TAvgLvlTreeNode;
+  Item: TImplicitType;
+  Position: Integer;
+  AtomStart: LongInt;
+  CurAtom: String;
+  MinPos: LongInt;
+begin
+  if TypeEnd>0 then
+    MinPos:=TypeEnd
+  else if ConstSectionEnd>0 then
+    MinPos:=ConstSectionEnd
+  else
+    exit;
+  //DebugLn(['AdjustMinPositions Identifier=',Identifier]);
+
+  // search Identifier in all implicit type definitions
+  Node:=ImplicitTypes.FindLowest;
+  while Node<>nil do begin
+    Item:=TImplicitType(Node.Data);
+    if Item.MaxPosition>=TypeEnd then begin
+      // search Identifier in Item.Code
+      Position:=1;
       AtomStart:=Position;
       repeat
-        CurAtom:=ReadNextPascalAtom(Src,Position,AtomStart);
-        if CurAtom='' then begin
-          DebugLn(['ReadUntilAtom atom not found: "',StopAtom,'" (starting at ',PosToStr(StartPos),')']);
-          exit(false);
+        CurAtom:=ReadNextPascalAtom(Item.Code,Position,AtomStart);
+        if CurAtom='' then break;
+        //DebugLn(['AdjustMinPositions ',Item.Name,' ',CurAtom]);
+        if CompareIdentifiers(PChar(Identifier),PChar(CurAtom))=0 then begin
+          // this implicit type depends on an explicit type defined
+          // prior in this source file
+          {DebugLn(['AdjustMinPositions "',Item.Name,'=',Item.Code,'"',
+            ' depends on ',Identifier,
+            ' defined at ',PosToStr(MinPos),
+            ' as "',copy(Src,MinPos,30),'"']);}
+          if Item.MinPosition<MinPos then begin
+            Item.MinPosition:=MinPos;
+            Item.MinPositionNeedsTypeSection:=TypeEnd<1;
+          end;
+          break;
         end;
-      until CurAtom=StopAtom;
-      Result:=true;
+      until false;
     end;
-    
-    function ReadRecord(var Position: integer): boolean;
-    var
-      AtomStart: LongInt;
-      CurAtom: String;
-    begin
-      Result:=false;
-      AtomStart:=Position;
-      repeat
-        CurAtom:=ReadNextPascalAtom(Src,Position,AtomStart);
-        if CurAtom='' then begin
-          DebugLn(['ReadRecord record end not found']);
+    Node:=ImplicitTypes.FindSuccessor(Node);
+  end;
+end;
+
+function TReplaceImplicitTypes.ReadWord(var Position: integer): boolean;
+var
+  AtomStart: LongInt;
+  CurAtom: String;
+begin
+  AtomStart:=Position;
+  CurAtom:=ReadNextPascalAtom(Src,Position,AtomStart);
+  if (CurAtom<>'') and IsIdentStartChar[CurAtom[1]] then
+    Result:=true
+  else begin
+    DebugLn(['ReadWord word not found at ',PosToStr(AtomStart)]);
+    Result:=false;
+  end;
+end;
+
+function TReplaceImplicitTypes.ReadUntilAtom(var Position: integer;
+  const StopAtom: string; SkipBrackets: boolean = true): boolean;
+var
+  AtomStart: LongInt;
+  CurAtom: String;
+  StartPos: LongInt;
+begin
+  Result:=false;
+  StartPos:=Position;
+  AtomStart:=Position;
+  repeat
+    CurAtom:=ReadNextPascalAtom(Src,Position,AtomStart);
+    if CurAtom='' then begin
+      DebugLn(['ReadUntilAtom atom not found: "',StopAtom,'" (starting at ',PosToStr(StartPos),')']);
+      exit;
+    end;
+    if SkipBrackets then begin
+      if CurAtom='(' then begin
+        // skip round bracket open
+        if not ReadUntilAtom(Position,')') then exit;
+      end else if CurAtom='[' then begin
+        // skip edged bracket open
+        if not ReadUntilAtom(Position,']') then exit;
+      end;
+    end;
+  until CurAtom=StopAtom;
+  Result:=true;
+end;
+
+function TReplaceImplicitTypes.ReadRecord(var Position: integer): boolean;
+var
+  AtomStart: LongInt;
+  CurAtom: String;
+begin
+  Result:=false;
+  AtomStart:=Position;
+  repeat
+    CurAtom:=ReadNextPascalAtom(Src,Position,AtomStart);
+    if CurAtom='' then begin
+      DebugLn(['ReadRecord record end not found']);
+      exit;
+    end else if CurAtom='(' then begin
+      // skip round bracket open
+      if not ReadUntilAtom(Position,')') then exit;
+    end else if CurAtom='[' then begin
+      // skip edged bracket open
+      if not ReadUntilAtom(Position,']') then exit;
+    end else if CompareIdentifiers(PChar(CurAtom),'CASE')=0 then begin
+      // read identifier
+      if not ReadWord(Position) then exit;
+      CurAtom:=ReadNextPascalAtom(Src,Position,AtomStart);
+      //DebugLn(['ReadRecord CASE colon or "of" CurAtom="',CurAtom,'"']);
+      if CurAtom=':' then begin
+        // read case type
+        if not ReadWord(Position) then begin
+          DebugLn(['ReadRecord missing case type at ',PosToStr(Position)]);
           exit;
-        end else if CurAtom='(' then begin
-          // skip round bracket open
-          if not ReadUntilAtom(Position,')') then exit;
-        end else if CurAtom='[' then begin
-          // skip edged bracket open
-          if not ReadUntilAtom(Position,']') then exit;
-        end else if CompareIdentifiers(PChar(CurAtom),'CASE')=0 then begin
-          // read identifier
-          if not ReadWord(Position) then exit;
-          CurAtom:=ReadNextPascalAtom(Src,Position,AtomStart);
-          //DebugLn(['ReadRecord CASE colon or "of" CurAtom="',CurAtom,'"']);
-          if CurAtom=':' then begin
-            // read case type
-            if not ReadWord(Position) then begin
-              DebugLn(['ReadRecord missing case type at ',PosToStr(Position)]);
-              exit;
-            end;
-            // read 'of'
-            CurAtom:=ReadNextPascalAtom(Src,Position,AtomStart);
-            if CurAtom='' then begin
-              DebugLn(['ReadRecord missing "of" at ',PosToStr(Position)]);
-              exit;
-            end;
-          end;
-          if CompareIdentifiers(PChar(CurAtom),'OF')<>0 then begin
-            DebugLn(['ReadRecord record case "of" not found at ',PosToStr(AtomStart)]);
-            exit;
-          end;
-        end else if CurAtom=':' then begin
-          // skip type
-          CurAtom:=ReadNextPascalAtom(Src,Position,AtomStart);
-          if CurAtom='(' then begin
-            // skip case brackets
-            if not ReadUntilAtom(Position,')') then exit;
-          end else begin
-            // read normal type
-            Position:=AtomStart;
-            if not ReadTypeDefinition(Position) then exit;
-          end;
         end;
-      until CompareIdentifiers(PChar(CurAtom),'END')=0;
-      Result:=true;
-    end;
-
-    function ReadClass(var Position: integer): boolean;
-    var
-      AtomStart: LongInt;
-      CurAtom: String;
-    begin
-      //DebugLn(['ReadClass at ',PosToStr(Position)]);
-      Result:=false;
-      AtomStart:=Position;
+        // read 'of'
+        CurAtom:=ReadNextPascalAtom(Src,Position,AtomStart);
+        if CurAtom='' then begin
+          DebugLn(['ReadRecord missing "of" at ',PosToStr(Position)]);
+          exit;
+        end;
+      end;
+      if CompareIdentifiers(PChar(CurAtom),'OF')<>0 then begin
+        DebugLn(['ReadRecord record case "of" not found at ',PosToStr(AtomStart)]);
+        exit;
+      end;
+    end else if CurAtom=':' then begin
+      // skip type
       CurAtom:=ReadNextPascalAtom(Src,Position,AtomStart);
-      //DebugLn(['ReadClass first atom "',CurAtom,'"']);
-      if CurAtom=';' then begin
-        // this is a forward class definition
-        //DebugLn(['ReadClass forward defined class found']);
+      if CurAtom='(' then begin
+        // skip case brackets
+        if not ReadUntilAtom(Position,')') then exit;
+      end else begin
+        // read normal type
+        Position:=AtomStart;
+        if not ReadTypeDefinition(Position) then exit;
+      end;
+    end;
+  until CompareIdentifiers(PChar(CurAtom),'END')=0;
+  Result:=true;
+end;
+
+function TReplaceImplicitTypes.ReadClass(var Position: integer): boolean;
+var
+  AtomStart: LongInt;
+  CurAtom: String;
+begin
+  //DebugLn(['ReadClass at ',PosToStr(Position)]);
+  Result:=false;
+  AtomStart:=Position;
+  CurAtom:=ReadNextPascalAtom(Src,Position,AtomStart);
+  //DebugLn(['ReadClass first atom "',CurAtom,'"']);
+  if CurAtom=';' then begin
+    // this is a forward class definition
+    //DebugLn(['ReadClass forward defined class found']);
+    Result:=true;
+    exit;
+  end;
+  repeat
+    CurAtom:=ReadNextPascalAtom(Src,Position,AtomStart);
+    //DebugLn(['ReadClass CurAtom="',CurAtom,'"']);
+    if CurAtom='' then begin
+      DebugLn(['ReadClass class end not found']);
+      exit;
+    end else if CurAtom='(' then begin
+      // skip round bracket open
+      if not ReadUntilAtom(Position,')') then exit;
+    end else if CurAtom='[' then begin
+      // skip edged bracket open
+      if not ReadUntilAtom(Position,']') then exit;
+    end else if CurAtom=':' then begin
+      // skip type
+      if not ReadTypeDefinition(Position) then exit;
+    end;
+  until CompareIdentifiers(PChar(CurAtom),'END')=0;
+  Result:=true;
+end;
+
+function TReplaceImplicitTypes.ReadTypeDefinition(
+  var Position: integer): boolean;
+// Position must be after the colon
+var
+  AtomStart: LongInt;
+  CurAtom: String;
+  Enum: String;
+begin
+  //DebugLn(['ReadTypeDefinition reading type definition at ',PosToStr(Position)]);
+  Result:=false;
+  AtomStart:=Position;
+  CurAtom:=ReadNextPascalAtom(Src,Position,AtomStart);
+  if CurAtom='(' then begin
+    // enumeration constants
+    //DebugLn(['ReadTypeDefinition enumeration found at ',PosToStr(AtomStart)]);
+    repeat
+      Enum:=ReadNextPascalAtom(Src,Position,AtomStart);
+      if (Enum='') then exit;// missing bracket close
+      if Enum=')' then exit(true);// type end found
+      if (not IsIdentStartChar[Enum[1]]) then exit;// enum missing
+      //DebugLn(['ReadTypeDefinition enum ',Enum,' found at ',PosToStr(AtomStart)]);
+      AdjustMinPositions(Enum);
+      CurAtom:=ReadNextPascalAtom(Src,Position,AtomStart);
+      if CurAtom=')' then exit(true);// type end found
+      if CurAtom<>',' then exit;// comma missing
+    until false;
+  end;
+  repeat
+    //DebugLn(['ReadTypeDefinition CurAtom="',CurAtom,'"']);
+    if CurAtom='' then begin
+      DebugLn(['ReadTypeDefinition type end not found']);
+      exit;
+    end;
+    if IsIdentStartChar[CurAtom[1]] then begin
+      if CompareIdentifiers(PChar(CurAtom),'RECORD')=0 then begin
+        // skip record
+        Result:=ReadRecord(Position);
+        exit;
+      end;
+      if (CompareIdentifiers(PChar(CurAtom),'CLASS')=0)
+      or (CompareIdentifiers(PChar(CurAtom),'OBJECT')=0)
+      or (CompareIdentifiers(PChar(CurAtom),'INTERFACE')=0)
+      or (CompareIdentifiers(PChar(CurAtom),'DISPINTERFACE')=0)
+      then begin
+        // skip record
+        Result:=ReadClass(Position);
+        exit;
+      end;
+    end else if CurAtom='(' then begin
+      // skip round bracket open
+      if not ReadUntilAtom(Position,')') then exit;
+    end else if CurAtom='[' then begin
+      // skip edged bracket open
+      if not ReadUntilAtom(Position,']') then exit;
+    end else if (length(CurAtom)=1) and (CurAtom[1] in [';',')',']']) then
+      break;
+    CurAtom:=ReadNextPascalAtom(Src,Position,AtomStart);
+  until false;
+  Result:=true;
+end;
+
+function TReplaceImplicitTypes.ReadConstSection(var Position: integer): boolean;
+// Position must be after the 'const' keyword
+var
+  AtomStart: LongInt;
+  CurAtom: String;
+  ConstStart: LongInt;
+begin
+  Result:=false;
+  AtomStart:=Position;
+  repeat
+    CurAtom:=ReadNextPascalAtom(Src,Position,AtomStart);
+    if CurAtom='' then begin
+      DebugLn(['ReadConstSection end not found']);
+      exit;
+    end;
+    if IsIdentStartChar[CurAtom[1]] then begin
+      // const identifier(s) or end of const section
+      //DebugLn(['ReadConstSection Const name ',CurAtom,' at ',PosToStr(AtomStart)]);
+      ConstStart:=AtomStart;
+      // for example: a,b,c: integer = 1; d=1, e:integer=0;
+      CurAtom:=ReadNextPascalAtom(Src,Position,AtomStart);
+      if (length(CurAtom)<>1) or (not (CurAtom[1] in [',','=',':'])) then
+      begin
+        // end of const section
+        Position:=ConstStart;
         Result:=true;
         exit;
       end;
+      Position:=ConstStart;
       repeat
         CurAtom:=ReadNextPascalAtom(Src,Position,AtomStart);
-        //DebugLn(['ReadClass CurAtom="',CurAtom,'"']);
-        if CurAtom='' then begin
-          DebugLn(['ReadClass class end not found']);
-          exit;
-        end else if CurAtom='(' then begin
-          // skip round bracket open
-          if not ReadUntilAtom(Position,')') then exit;
-        end else if CurAtom='[' then begin
-          // skip edged bracket open
-          if not ReadUntilAtom(Position,']') then exit;
-        end else if CurAtom=':' then begin
-          // skip type
-          if not ReadTypeDefinition(Position) then exit;
-        end;
-      until CompareIdentifiers(PChar(CurAtom),'END')=0;
-      Result:=true;
-    end;
-
-    function ReadTypeDefinition(var Position: integer): boolean;
-    var
-      AtomStart: LongInt;
-      CurAtom: String;
-      Enum: String;
-    begin
-      //DebugLn(['ReadTypeDefinition reading type definition at ',PosToStr(Position)]);
-      Result:=false;
-      AtomStart:=Position;
-      CurAtom:=ReadNextPascalAtom(Src,Position,AtomStart);
-      if CurAtom='(' then begin
-        // enumeration constants
-        //DebugLn(['ReadTypeDefinition enumeration found at ',PosToStr(AtomStart)]);
-        repeat
-          Enum:=ReadNextPascalAtom(Src,Position,AtomStart);
-          if (Enum='') then exit;// missing bracket close
-          if Enum=')' then exit(true);// type end found
-          if (not IsIdentStartChar[Enum[1]]) then exit;// enum missing
-          //DebugLn(['ReadTypeDefinition enum ',Enum,' found at ',PosToStr(AtomStart)]);
-          AdjustMinPositions(Enum);
-          CurAtom:=ReadNextPascalAtom(Src,Position,AtomStart);
-          if CurAtom=')' then exit(true);// type end found
-          if CurAtom<>',' then exit;// comma missing
-        until false;
-      end;
-      repeat
-        //DebugLn(['ReadTypeDefinition CurAtom="',CurAtom,'"']);
-        if CurAtom='' then begin
-          DebugLn(['ReadTypeDefinition type end not found']);
+        // read identifier
+        if (CurAtom<>'') and IsIdentStartChar[CurAtom[1]] then begin
+          // identifier
+          AdjustMinPositions(CurAtom);
+        end else begin
+          DebugLn(['ReadConstSection end of section missing']);
           exit;
         end;
-        if IsIdentStartChar[CurAtom[1]] then begin
-          if CompareIdentifiers(PChar(CurAtom),'RECORD')=0 then begin
-            // skip record
-            Result:=ReadRecord(Position);
-            exit;
-          end;
-          if (CompareIdentifiers(PChar(CurAtom),'CLASS')=0)
-          or (CompareIdentifiers(PChar(CurAtom),'OBJECT')=0)
-          or (CompareIdentifiers(PChar(CurAtom),'INTERFACE')=0)
-          or (CompareIdentifiers(PChar(CurAtom),'DISPINTERFACE')=0)
-          then begin
-            // skip record
-            Result:=ReadClass(Position);
-            exit;
-          end;
-        end else if CurAtom='(' then begin
-          // skip round bracket open
-          if not ReadUntilAtom(Position,')') then exit;
-        end else if CurAtom='[' then begin
-          // skip edged bracket open
-          if not ReadUntilAtom(Position,']') then exit;
-        end else if CurAtom=';' then
+        CurAtom:=ReadNextPascalAtom(Src,Position,AtomStart);
+        if (CurAtom='=') or (CurAtom=':') then begin
+          // skip type and expression
+          if not ReadUntilAtom(Position,';') then exit;
           break;
-        CurAtom:=ReadNextPascalAtom(Src,Position,AtomStart);
+        end else if CurAtom=',' then begin
+          // next const name
+        end else begin
+          DebugLn(['ReadConstSection end of section missing']);
+          exit;
+        end;
       until false;
-      Result:=true;
+    end else begin
+      // end of const section
+      break;
     end;
-  
-  var
-    Position: Integer;
-    AtomStart: LongInt;
-    CurAtom: String;
-    Identifier: String;
-    TypeDefStart: LongInt;
-  begin
-    Result:=false;
-    ModalResult:=mrCancel;
+  until false;
+  Result:=true;
+end;
 
+function TReplaceImplicitTypes.FindExplicitTypesAndConstants(
+  var ModalResult: TModalResult): boolean;
+{ every implicit type can contian references to explicit types and constants
+  For example: array[0..3] of bogus
+  If 'bogus' is defined in this source, then the new type must be defined
+  after 'bogus'.
+  => Search all explicit types
+}
+var
+  Position: Integer;
+  AtomStart: LongInt;
+  CurAtom: String;
+  Identifier: String;
+  TypeDefStart: LongInt;
+begin
+  Result:=false;
+  ModalResult:=mrCancel;
+
+  Position:=1;
+  AtomStart:=Position;
+  repeat
+    CurAtom:=ReadNextPascalAtom(Src,Position,AtomStart);
+    //DebugLn(['FindExplicitTypes CurAtom="',CurAtom,'"']);
+    if CurAtom='' then break;
+    if CompareIdentifiers(PChar(CurAtom),'type')=0 then begin
+      // type section found
+      //DebugLn(['FindExplicitTypes type section found at ',PosToStr(AtomStart)]);
+      repeat
+        Identifier:=ReadNextPascalAtom(Src,Position,AtomStart);
+        if (Identifier<>'') and (IsIdentStartChar[Identifier[1]]) then begin
+          // word found (can be an identifier or start of next section)
+          TypeStart:=AtomStart;
+          TypeEnd:=0;
+          CurAtom:=ReadNextPascalAtom(Src,Position,AtomStart);
+          if CurAtom<>'=' then begin
+            //DebugLn(['FindExplicitTypes type section ended at ',PosToStr(AtomStart)]);
+            break;
+          end;
+          // Identifier is a type => find end of type definition
+          //DebugLn(['FindExplicitTypes type definition found: ',Identifier,' at ',PosToStr(TypeStart)]);
+          TypeDefStart:=Position;
+          Result:=ReadTypeDefinition(Position);
+          if not Result then begin
+            DebugLn(['FindExplicitTypes FAILED reading type definition ',Identifier,' at ',PosToStr(TypeStart)]);
+            exit;
+          end;
+          TypeEnd:=Position;
+          // add the semicolon, if not already done
+          CurAtom:=ReadNextPascalAtom(Src,Position,AtomStart);
+          if CurAtom=';' then
+            TypeEnd:=Position;
+          // adjust implicit identifiers
+          AdjustMinPositions(Identifier);
+          // reread the type for the enums
+          Position:=TypeDefStart;
+          //DebugLn(['FindExplicitTypes Rereading type definition ',Identifier,' at ',PosToStr(TypeStart)]);
+          Result:=ReadTypeDefinition(Position);
+          if not Result then begin
+            DebugLn(['FindExplicitTypes FAILED Rereading type definition ',Identifier,' at ',PosToStr(TypeStart)]);
+            exit;
+          end;
+          // skip semicolon
+          Position:=TypeEnd;
+          TypeEnd:=0;
+        end;
+      until false;
+    end
+    else if CompareIdentifiers(PChar(CurAtom),'const')=0 then begin
+      ConstSectionStart:=Position;
+      ConstSectionEnd:=0;
+      // find end of const section
+      //DebugLn(['TReplaceImplicitTypes.FindExplicitTypesAndConstants finding end of const section ...']);
+      Result:=ReadConstSection(Position);
+      if not Result then begin
+        DebugLn(['FindExplicitTypes FAILED reading const section at ',PosToStr(ConstSectionStart)]);
+        exit;
+      end;
+      ConstSectionEnd:=Position;
+      // reread the section for the identifiers
+      Position:=ConstSectionStart;
+      //DebugLn(['TReplaceImplicitTypes.FindExplicitTypesAndConstants collecting const identifiers ...']);
+      Result:=ReadConstSection(Position);
+      if not Result then begin
+        DebugLn(['FindExplicitTypes FAILED reading const section at ',PosToStr(ConstSectionStart)]);
+        exit;
+      end;
+      ConstSectionEnd:=0;
+    end;
+  until false;
+
+  ModalResult:=mrOk;
+  Result:=true;
+end;
+
+function TReplaceImplicitTypes.InsertNewTypes(var ModalResult: TModalResult
+  ): boolean;
+
+  function CreateCode(Item: TImplicitType): string;
+  begin
+    Result:='  '+Item.Name+' = '+Item.Code+';';
+  end;
+
+var
+  Node: TAvgLvlTreeNode;
+  Item: TImplicitType;
+  InsertPos: integer;
+  NextItem: TImplicitType;
+  NextInsertPos: integer;
+  NewCode: String;
+begin
+  Result:=false;
+  ModalResult:=mrCancel;
+  if (ImplicitTypes<>nil) then begin
+    // re-sort the ImplicitTypes for MinPosition
+    ImplicitTypes.OnCompare:=@CompareImplicitTypeMinPositions;
+    try
+      // Insert every type
+      Node:=ImplicitTypes.FindHighest;
+      while Node<>nil do begin
+        Item:=TImplicitType(Node.Data);
+        NewCode:=CreateCode(Item);
+        if Item.MinPositionNeedsTypeSection or (Item.MinPosition=0) then
+          NewCode:='type'+LineEnding+NewCode;
+        InsertPos:=FindInsertPosition(Item.MinPosition);
+        // add all items at the same position
+        repeat
+          Node:=ImplicitTypes.FindPrecessor(Node);
+          if (Node=nil) then break;
+          NextItem:=TImplicitType(Node.Data);
+          NextInsertPos:=FindLineEndOrCodeAfterPosition(Src,NextItem.MinPosition,
+                                                        length(Src)+1,false);
+          if InsertPos>NextInsertPos then
+            break;
+          NewCode:=NewCode+LineEnding+CreateCode(NextItem);
+        until false;
+
+        // insert line ends
+        if (InsertPos>1) and (InsertPos<length(Src))
+        and (not (Src[InsertPos-1] in [#10,#13])) then
+          NewCode:=LineEnding+NewCode;
+        if (InsertPos<=length(Src)) and (not (Src[InsertPos] in [#10,#13])) then
+          NewCode:=NewCode+LineEnding;
+
+        // insert code
+        DebugLn(['TReplaceImplicitTypes.InsertNewTypes Insert at ',PosToStr(InsertPos),' NewCode="',NewCode,'"']);
+        Src:=copy(Src,1,InsertPos-1)+NewCode+copy(Src,InsertPos,length(Src));
+      end;
+    finally
+      // re-sort the ImplicitTypes for Names
+      ImplicitTypes.OnCompare:=@CompareImplicitTypeNames;
+    end;
+  end;
+  ModalResult:=mrOk;
+  Result:=true;
+end;
+
+function TReplaceImplicitTypes.FindInsertPosition(MinPos: integer): integer;
+var
+  Position: Integer;
+  AtomStart: LongInt;
+  CurAtom: String;
+begin
+  if MinPos>0 then begin
+    Result:=FindLineEndOrCodeAfterPosition(Src,MinPos,length(Src)+1,false);
+  end else begin
+    // find insert position for a first type section
+    Result:=1;
     Position:=1;
     AtomStart:=Position;
     repeat
       CurAtom:=ReadNextPascalAtom(Src,Position,AtomStart);
-      //DebugLn(['FindExplicitTypes CurAtom="',CurAtom,'"']);
       if CurAtom='' then break;
-      if CompareIdentifiers(PChar(CurAtom),'type')=0 then begin
-        // type section found
-        //DebugLn(['FindExplicitTypes type section found at ',PosToStr(AtomStart)]);
-        repeat
-          Identifier:=ReadNextPascalAtom(Src,Position,AtomStart);
-          if (Identifier<>'') and (IsIdentStartChar[Identifier[1]]) then begin
-            // word found (can be an identifier or start of next section)
-            TypeStart:=AtomStart;
-            CurAtom:=ReadNextPascalAtom(Src,Position,AtomStart);
-            if CurAtom<>'=' then begin
-              DebugLn(['FindExplicitTypes type section ended at ',PosToStr(AtomStart)]);
-              break;
-            end;
-            // Identifier is a type => find end of type definition
-            //DebugLn(['FindExplicitTypes type definition found: ',Identifier,' at ',PosToStr(TypeStart)]);
-            TypeEnd:=0;
-            TypeDefStart:=Position;
-            Result:=ReadTypeDefinition(Position);
-            if not Result then begin
-              DebugLn(['FindExplicitTypes FAILED reading type definition ',Identifier,' at ',PosToStr(TypeStart)]);
-              exit;
-            end;
-            TypeEnd:=Position;
-            // add the semicolon, if not already done
-            CurAtom:=ReadNextPascalAtom(Src,Position,AtomStart);
-            if CurAtom=';' then
-              TypeEnd:=Position;
-            // adjust implicit identifiers
-            AdjustMinPositions(Identifier);
-            // reread the type for the enums
-            Position:=TypeDefStart;
-            //DebugLn(['FindExplicitTypes Rereading type definition ',Identifier,' at ',PosToStr(TypeStart)]);
-            Result:=ReadTypeDefinition(Position);
-            if not Result then begin
-              DebugLn(['FindExplicitTypes FAILED Rereading type definition ',Identifier,' at ',PosToStr(TypeStart)]);
-              exit;
-            end;
-            // skip semicolon
-            Position:=TypeEnd;
-          end;
-        until false;
+      if (CompareIdentifiers(PChar(CurAtom),'UNIT')=0)
+      or (CompareIdentifiers(PChar(CurAtom),'PROGRAM')=0)
+      or (CompareIdentifiers(PChar(CurAtom),'LIBRARY')=0)
+      or (CompareIdentifiers(PChar(CurAtom),'PACKAGE')=0)
+      or (CompareIdentifiers(PChar(CurAtom),'USES')=0)
+      then begin
+        ReadUntilAtom(Position,';');
+        Result:=Position;
       end
-      else if CompareIdentifiers(PChar(CurAtom),'const')=0 then begin
-        { ToDo
-          repeat
-          Identifier:=ReadNextPascalAtom(Src,Position,AtomStart);
-          if (Identifier<>'') and (IsIdentStartChar[Identifier[1]]) then begin
-          end else if CurAtom=':' then begin
-
-          end else begin
-
-          end;
-        until false;}
-      end;
+      else if (CompareIdentifiers(PChar(CurAtom),'INTERFACE')=0)
+      or (CompareIdentifiers(PChar(CurAtom),'IMPLEMENTATION')=0)
+      then begin
+        Result:=Position;
+        break;
+      end else
+        break;
     until false;
-
-    ModalResult:=mrOk;
-    Result:=true;
   end;
+end;
 
-  function AdjustMinPositions(var ModalResult: TModalResult): boolean;
-  var
-    Node: TAvgLvlTreeNode;
-  begin
-    Result:=false;
-    ModalResult:=mrCancel;
-    if (ImplicitTypes<>nil) then begin
-      // find all explicit types
-      // ToDo: find constants, use constant section end as MinPosition
-      if not FindExplicitTypesAndConstants(ModalResult) then exit;
-
-      // now all min and max positions for the new types are known
-      // ToDo: resort the ImplicitTypes for MinPosition
-      // ToDo: Insert every type
-      
-      Node:=ImplicitTypes.FindLowest;
-      while Node<>nil do begin
-      
-        Node:=ImplicitTypes.FindSuccessor(Node);
+function TReplaceImplicitTypes.UseNewTypes(var ModalResult: TModalResult
+  ): boolean;
+var
+  Position: Integer;
+  StartPos: Integer;
+  EndPos: Integer;
+  TypeCode: String;
+  TypeName: String;
+  Node: TAvgLvlTreeNode;
+  Item: TImplicitType;
+begin
+  Result:=false;
+  ModalResult:=mrCancel;
+  if (ImplicitTypes<>nil) then begin
+    Position:=1;
+    StartPos:=1;
+    EndPos:=1;
+    while FindNextImplicitType(Position,StartPos,EndPos) do begin
+      TypeCode:=copy(Src,StartPos,EndPos-StartPos);
+      //DebugLn(['UseNewTypes ',StartPos,' TypeCode="',TypeCode,'"']);
+      TypeName:=CodeToIdentifier(TypeCode);
+      if TypeName='' then continue;
+      Node:=ImplicitTypes.FindKey(Pointer(TypeName),
+                         @CompareImplicitTypeStringAndName);
+      if Node<>nil then begin
+        // replace
+        Item:=TImplicitType(Node.Data);
+        Src:=copy(Src,1,StartPos-1)+Item.Name+copy(Src,EndPos,length(Src));
+        Position:=StartPos+length(Item.Name);
       end;
     end;
-    ModalResult:=mrOk;
-    Result:=true;
   end;
+  ModalResult:=mrOk;
+  Result:=true;
+end;
 
+function TReplaceImplicitTypes.Execute(aText: TIDETextConverter
+  ): TModalResult;
 begin
-  {$IFNDEF EnableReplaceImplicitTypes}
-  exit(mrOk);
-  {$ENDIF}
-
   Src:=aText.Source;
   if Src='' then exit(mrOk);
   
   ImplicitTypes:=nil;
   ExplicitTypes:=nil;
+  TypeEnd:=0;
+  ConstSectionEnd:=0;
   try
     if not SearchImplicitParameterTypes(Result) then exit;
-    if not AdjustMinPositions(Result) then exit;
+    if (ImplicitTypes<>nil) then begin
+      if not FindExplicitTypesAndConstants(Result) then exit;
+      if not InsertNewTypes(Result) then exit;
+      if not UseNewTypes(Result) then exit;
+      aText.Source:=Src;
+    end;
   finally
     if ImplicitTypes<>nil then begin
       ImplicitTypes.FreeAndClear;

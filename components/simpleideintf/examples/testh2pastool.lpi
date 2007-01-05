@@ -39,7 +39,7 @@
         <PackageName Value="CodeTools"/>
       </Item3>
     </RequiredPackages>
-    <Units Count="17">
+    <Units Count="18">
       <Unit0>
         <Filename Value="testh2pastool.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -47,7 +47,7 @@
         <CursorPos X="23" Y="36"/>
         <TopLine Value="21"/>
         <EditorIndex Value="0"/>
-        <UsageCount Value="27"/>
+        <UsageCount Value="31"/>
         <Loaded Value="True"/>
       </Unit0>
       <Unit1>
@@ -100,11 +100,11 @@
       </Unit7>
       <Unit8>
         <Filename Value="files/h2pastest.pas"/>
-        <UnitName Value="h2pasTest"/>
-        <CursorPos X="53" Y="23"/>
+        <UnitName Value="h2pastest"/>
+        <CursorPos X="10" Y="3"/>
         <TopLine Value="1"/>
-        <EditorIndex Value="4"/>
-        <UsageCount Value="24"/>
+        <EditorIndex Value="2"/>
+        <UsageCount Value="26"/>
         <Loaded Value="True"/>
       </Unit8>
       <Unit9>
@@ -117,10 +117,10 @@
       <Unit10>
         <Filename Value="../../h2pas/h2pasconvert.pas"/>
         <UnitName Value="H2PasConvert"/>
-        <CursorPos X="32" Y="2240"/>
-        <TopLine Value="2213"/>
+        <CursorPos X="10" Y="2457"/>
+        <TopLine Value="2433"/>
         <EditorIndex Value="1"/>
-        <UsageCount Value="13"/>
+        <UsageCount Value="15"/>
         <Loaded Value="True"/>
       </Unit10>
       <Unit11>
@@ -133,8 +133,8 @@
       <Unit12>
         <Filename Value="../../codetools/basiccodetools.pas"/>
         <UnitName Value="BasicCodeTools"/>
-        <CursorPos X="1" Y="2050"/>
-        <TopLine Value="2026"/>
+        <CursorPos X="10" Y="95"/>
+        <TopLine Value="75"/>
         <EditorIndex Value="3"/>
         <UsageCount Value="13"/>
         <Loaded Value="True"/>
@@ -162,13 +162,18 @@
       </Unit15>
       <Unit16>
         <Filename Value="../../../packager/globallinks/simpleideintf-0.lpl"/>
-        <CursorPos X="53" Y="1"/>
+        <CursorPos X="12" Y="1"/>
         <TopLine Value="1"/>
-        <EditorIndex Value="2"/>
         <UsageCount Value="10"/>
-        <Loaded Value="True"/>
         <SyntaxHighlighter Value="None"/>
       </Unit16>
+      <Unit17>
+        <Filename Value="../../../lcl/avglvltree.pas"/>
+        <UnitName Value="AvgLvlTree"/>
+        <CursorPos X="23" Y="93"/>
+        <TopLine Value="65"/>
+        <UsageCount Value="10"/>
+      </Unit17>
     </Units>
     <JumpHistory Count="0" HistoryIndex="-1"/>
   </ProjectOptions>

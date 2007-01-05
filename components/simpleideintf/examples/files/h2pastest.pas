@@ -1,3 +1,10 @@
+unit h2pastest;
+
+interface
+
+const
+  MinValue = 0;
+  MaxValue = 5;
 
 type
   TMyClass = class;
@@ -17,9 +24,10 @@ type
     false: (AsWord: word);
   end;
 
-// this procedure contains an explicit/anoymous type, which is not allowed
-// in FreePascal. The TReplaceImplicitTypes tool will replace it with a
-// named type
-procedure DoSomething(var a: array[0..3] of TMyClass);
+// these procedures contain explicit/anoymous types, which are not allowed
+// in FreePascal. The TReplaceImplicitTypes tool will replace them with
+// named types
+procedure DoSomething1(var a: array[0..3] of TMyClass);
 
+procedure DoSomething2(var a: array[MinValue..MaxValue] of char);
 
