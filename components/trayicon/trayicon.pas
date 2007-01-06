@@ -253,7 +253,7 @@ begin
 end;
 
 initialization
-
+  {$I trayicon.lrs}
   SystrayIcon := TTrayIcon.Create(nil);
 
 finalization

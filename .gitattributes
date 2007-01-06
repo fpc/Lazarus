@@ -570,7 +570,9 @@ components/trayicon/examples/icon.ico -text svneol=unset#image/ico
 components/trayicon/examples/magnifier.res -text
 components/trayicon/examples/wndtray.dpr svneol=native#text/plain
 components/trayicon/examples/wndtray.lpi svneol=native#text/plain
+components/trayicon/trayicon.lrs svneol=native#text/plain
 components/trayicon/trayicon.pas svneol=native#text/plain
+components/trayicon/trayicon.xpm svneol=native#text/plain
 components/trayicon/trayiconlaz.lpk svneol=native#text/plain
 components/trayicon/trayiconlaz.pas svneol=native#text/plain
 components/trayicon/wscommontrayicon.pas svneol=native#text/plain
