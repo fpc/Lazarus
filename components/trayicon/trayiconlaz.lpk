@@ -1,14 +1,12 @@
 <?xml version="1.0"?>
 <CONFIG>
   <Package Version="2">
-    <PathDelim Value="\"/>
     <Name Value="TrayIconLaz"/>
     <CompilerOptions>
       <Version Value="5"/>
-      <PathDelim Value="\"/>
       <SearchPaths>
-        <OtherUnitFiles Value="$(LazarusDir)\components\opengl\gtk2x11\"/>
-        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)\$(LCLWidgetType)"/>
+        <OtherUnitFiles Value="$(LazarusDir)/components/opengl/gtk2x11/"/>
+        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)/$(LCLWidgetType)"/>
       </SearchPaths>
       <CodeGeneration>
         <Generate Value="Faster"/>
@@ -18,7 +16,7 @@
       </Other>
     </CompilerOptions>
     <Version Minor="2"/>
-    <Files Count="7">
+    <Files Count="10">
       <Item1>
         <Filename Value="wswin32trayicon.pas"/>
         <AddToUsesPkgSection Value="False"/>
@@ -52,6 +50,18 @@
         <Filename Value="wscommontrayicon.pas"/>
         <UnitName Value="WSCommonTrayIcon"/>
       </Item7>
+      <Item8>
+        <Filename Value="README.txt"/>
+        <Type Value="Text"/>
+      </Item8>
+      <Item9>
+        <Filename Value="ttrayicon.xpm"/>
+        <Type Value="Text"/>
+      </Item9>
+      <Item10>
+        <Filename Value="trayicon.lrs"/>
+        <Type Value="LRS"/>
+      </Item10>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="2">
@@ -64,11 +74,10 @@
       </Item2>
     </RequiredPkgs>
     <UsageOptions>
-      <UnitPath Value="$(PkgOutDir)\"/>
+      <UnitPath Value="$(PkgOutDir)/"/>
     </UsageOptions>
     <PublishOptions>
       <Version Value="2"/>
-      <DestinationDirectory Value="$(TestDir)\publishedpackage\"/>
       <IgnoreBinaries Value="False"/>
     </PublishOptions>
   </Package>
