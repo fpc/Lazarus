@@ -4467,27 +4467,29 @@ begin
   Params.Load(OldInput);
 
   // save result in cache
-  if FInterfaceIdentifierCache=nil then
-    FInterfaceIdentifierCache:=TInterfaceIdentifierCache.Create(Self);
-  if Result and (Params.NewCodeTool=Self) then begin
-    // identifier exists in interface
-    if ([fdfDoNotCache,fdfCollect]*Params.Flags=[])
-    and ([fodDoNotCache]*Params.NewFlags=[]) then begin
-      if (Params.NewNode<>nil) and (Params.NewNode.Desc=ctnProcedure) then begin
-        //DebugLn('NOTE: TFindDeclarationTool.FindIdentifierInInterface Node is proc');
-        // ToDo: add param list to cache
-        // -> do not cache
-        Result:=false;
-      end else
-        FInterfaceIdentifierCache.Add(OldInput.Identifier,Params.NewNode,
-          Params.NewCleanPos);
+  if Params.Flags*[fdfCollect,fdfDoNotCache]=[] then begin
+    if FInterfaceIdentifierCache=nil then
+      FInterfaceIdentifierCache:=TInterfaceIdentifierCache.Create(Self);
+    if Result and (Params.NewCodeTool=Self) then begin
+      // identifier exists in interface
+      if ([fdfDoNotCache,fdfCollect]*Params.Flags=[])
+      and ([fodDoNotCache]*Params.NewFlags=[]) then begin
+        if (Params.NewNode<>nil) and (Params.NewNode.Desc=ctnProcedure) then begin
+          //DebugLn('NOTE: TFindDeclarationTool.FindIdentifierInInterface Node is proc');
+          // ToDo: add param list to cache
+          // -> do not cache
+          Result:=false;
+        end else
+          FInterfaceIdentifierCache.Add(OldInput.Identifier,Params.NewNode,
+            Params.NewCleanPos);
+      end else begin
+        // do not save proc identifiers or collection results
+      end;
     end else begin
-      // do not save proc identifiers or collection results
+      // identifier does not exist in this interface
+      FInterfaceIdentifierCache.Add(OldInput.Identifier,nil,-1);
+      Result:=false;
     end;
-  end else begin
-    // identifier does not exist in this interface
-    FInterfaceIdentifierCache.Add(OldInput.Identifier,nil,-1);
-    Result:=false;
   end;
 end;
 
