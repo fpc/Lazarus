@@ -3684,8 +3684,7 @@ begin
       else
         ExtractMemStream.Write(Src[LastAtomEndPos],
              CurPos.StartPos-LastAtomEndPos);
-    end else if (CurPos.StartPos>LastAtomEndPos)
-      and (ExtractMemStream.Position>0) then
+    end else if (ExtractMemStream.Position>0) then
     begin
       // some code was skipped
       // -> check if a space must be inserted

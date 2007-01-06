@@ -10530,6 +10530,12 @@ var
   NewUnitInfo: TUnitInfo;
 begin
   Result:=mrCancel;
+  if NewSource=nil then begin
+    DebugLn(['TMainIDE.DoJumpToCodePos ERROR: missing NewSource']);
+    DumpStack;
+    exit;
+  end;
+  
   if (ActiveSrcEdit=nil) or (ActiveUnitInfo=nil) then
     GetCurrentUnit(ActiveSrcEdit,ActiveUnitInfo);
   if AddJumpPoint then begin
@@ -10554,7 +10560,7 @@ begin
   if NewY<1 then NewY:=1;
   if NewTopLine<1 then
     NewTopLine:=Max(1,NewY-(NewSrcEdit.EditorComponent.LinesInWindow div 2));
-  //writeln('[TMainIDE.DoJumpToCodePos] ',NewX,',',NewY,',',NewTopLine);
+  //debugln(['[TMainIDE.DoJumpToCodePos] ',NewX,',',NewY,',',NewTopLine]);
   with NewSrcEdit.EditorComponent do begin
     MoveLogicalCaretIgnoreEOL(Point(NewX,NewY));
     BlockBegin:=LogicalCaretXY;

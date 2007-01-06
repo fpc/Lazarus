@@ -4466,29 +4466,25 @@ begin
   Result:=FindIdentifierInContext(Params);
   Params.Load(OldInput);
 
+  if (Params.NewCodeTool<>Self) then Result:=false;
+
   // save result in cache
   if Params.Flags*[fdfCollect,fdfDoNotCache]=[] then begin
     if FInterfaceIdentifierCache=nil then
       FInterfaceIdentifierCache:=TInterfaceIdentifierCache.Create(Self);
-    if Result and (Params.NewCodeTool=Self) then begin
+    if Result then begin
       // identifier exists in interface
-      if ([fdfDoNotCache,fdfCollect]*Params.Flags=[])
-      and ([fodDoNotCache]*Params.NewFlags=[]) then begin
-        if (Params.NewNode<>nil) and (Params.NewNode.Desc=ctnProcedure) then begin
-          //DebugLn('NOTE: TFindDeclarationTool.FindIdentifierInInterface Node is proc');
-          // ToDo: add param list to cache
-          // -> do not cache
-          Result:=false;
-        end else
-          FInterfaceIdentifierCache.Add(OldInput.Identifier,Params.NewNode,
-            Params.NewCleanPos);
+      if (Params.NewNode<>nil) and (Params.NewNode.Desc=ctnProcedure) then begin
+        //DebugLn('NOTE: TFindDeclarationTool.FindIdentifierInInterface Node is proc');
+        // ToDo: add param list to cache
+        // -> do not cache
       end else begin
-        // do not save proc identifiers or collection results
+        FInterfaceIdentifierCache.Add(OldInput.Identifier,Params.NewNode,
+          Params.NewCleanPos);
       end;
     end else begin
       // identifier does not exist in this interface
       FInterfaceIdentifierCache.Add(OldInput.Identifier,nil,-1);
-      Result:=false;
     end;
   end;
 end;
