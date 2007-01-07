@@ -94,13 +94,13 @@ msgstr "&Вверх"
 msgid "(All)"
 msgstr "(Все)"
 
-#: objinspstrconsts:oisnone
-msgid "(none)"
-msgstr "ніякий"
-
 #: objinspstrconsts:cactionlisteditorunknowncategory
 msgid "(Unknown)"
 msgstr "(Невідомий)"
+
+#: objinspstrconsts:oisnone
+msgid "(none)"
+msgstr "ніякий"
 
 #: objinspstrconsts:ois0lines0chars
 msgid "0 lines, 0 chars"
@@ -122,12 +122,12 @@ msgstr "Редактор списку дій"
 msgid "Add"
 msgstr "Додати"
 
-#: objinspstrconsts:s_addassingle
-msgid "Add as single"
-msgstr ""
-
 #: objinspstrconsts:sccsiledtopendialog
 msgid "Add Images"
+msgstr ""
+
+#: objinspstrconsts:s_addassingle
+msgid "Add as single"
 msgstr ""
 
 #: objinspstrconsts:clbadd
@@ -378,10 +378,6 @@ msgstr "&Вихід"
 msgid "Edit"
 msgstr "Редагувати"
 
-#: objinspstrconsts:oiseditactionlist
-msgid "Edit action list..."
-msgstr "Редагувати список дій..."
-
 #: objinspstrconsts:sccslvedt
 msgid "Edit ListView Items..."
 msgstr ""
@@ -393,6 +389,10 @@ msgstr ""
 #: objinspstrconsts:sccstredt
 msgid "Edit TreeView Items..."
 msgstr ""
+
+#: objinspstrconsts:oiseditactionlist
+msgid "Edit action list..."
+msgstr "Редагувати список дій..."
 
 #: objinspstrconsts:oicoleditediting
 msgid "Editing"
@@ -558,13 +558,21 @@ msgstr "Метод"
 msgid "Modify the Item"
 msgstr "Змінити пункт"
 
-#: objinspstrconsts:rscdmovedown
-msgid "Move down"
-msgstr ""
-
 #: objinspstrconsts:sccsiledtmovedown
 msgid "Move Down"
 msgstr "Пересунути Вниз"
+
+#: objinspstrconsts:sccssgedtmoverowscols
+msgid "Move Rows/Cols"
+msgstr ""
+
+#: objinspstrconsts:sccsiledtmoveup
+msgid "Move Up"
+msgstr "Пересунути Вверх"
+
+#: objinspstrconsts:rscdmovedown
+msgid "Move down"
+msgstr ""
 
 #: objinspstrconsts:nbcesmovepageleft
 msgid "Move page left"
@@ -573,10 +581,6 @@ msgstr "Пересунути сторінку вліво"
 #: objinspstrconsts:nbcesmovepageright
 msgid "Move page right"
 msgstr "Пересунути сторінку вправо"
-
-#: objinspstrconsts:sccssgedtmoverowscols
-msgid "Move Rows/Cols"
-msgstr ""
 
 #: objinspstrconsts:tccesmovetableft
 msgid "Move tab left"
@@ -589,10 +593,6 @@ msgstr ""
 #: objinspstrconsts:rscdmoveup
 msgid "Move up"
 msgstr ""
-
-#: objinspstrconsts:sccsiledtmoveup
-msgid "Move Up"
-msgstr "Пересунути Вверх"
 
 #: objinspstrconsts:cactionlisteditornewaction
 msgid "New Action"
@@ -618,6 +618,10 @@ msgstr "Наступний"
 msgid "None"
 msgstr ""
 
+#: objinspstrconsts:rscdok
+msgid "OK"
+msgstr ""
+
 #: objinspstrconsts:oisobject
 msgid "Object"
 msgstr "Об'єкт"
@@ -629,10 +633,6 @@ msgstr "Інспектор об'єктів"
 #: objinspstrconsts:oisok2
 msgid "Ok"
 msgstr "Гаразд"
-
-#: objinspstrconsts:rscdok
-msgid "OK"
-msgstr ""
 
 #: objinspstrconsts:sccstredtopendialog
 msgid "Open"
@@ -726,13 +726,13 @@ msgstr "Зберегти як"
 msgid "Save Image"
 msgstr ""
 
-#: objinspstrconsts:oispesaveimageas
-msgid "Save image as"
-msgstr ""
-
 #: objinspstrconsts:oissaveliteralcharacters
 msgid "Save Literal Characters"
 msgstr "Зберегти Літеральні Символи"
+
+#: objinspstrconsts:oispesaveimageas
+msgid "Save image as"
+msgstr ""
 
 #: objinspstrconsts:oissavepicture
 msgid "Save picture"
@@ -754,13 +754,13 @@ msgstr "&Обрати Колір"
 msgid "Select &Font..."
 msgstr "&Обрати Шрифт"
 
-#: objinspstrconsts:oisselectafile
-msgid "Select a file"
-msgstr "Обрати файл"
-
 #: objinspstrconsts:oistdacteditselectallshorthint
 msgid "Select All"
 msgstr "Обрати Все"
+
+#: objinspstrconsts:oisselectafile
+msgid "Select a file"
+msgstr "Обрати файл"
 
 #: objinspstrconsts:sccsiledtgrprcaption
 msgid "Selected Image"
@@ -830,13 +830,13 @@ msgstr "Редактор StringGrid"
 msgid "Strings Editor Dialog"
 msgstr "Редактор рядків"
 
-#: objinspstrconsts:oistestdialog
-msgid "Test dialog..."
-msgstr ""
-
 #: objinspstrconsts:oistestinput
 msgid "Test Input"
 msgstr "Тестове Введення"
+
+#: objinspstrconsts:oistestdialog
+msgid "Test dialog..."
+msgstr ""
 
 #: objinspstrconsts:sccstredtlabeltext
 msgid "Text:"

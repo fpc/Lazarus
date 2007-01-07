@@ -104,13 +104,13 @@ msgstr ""
 msgid "(All)"
 msgstr "(Todo)"
 
-#: objinspstrconsts:oisnone
-msgid "(none)"
-msgstr ""
-
 #: objinspstrconsts:cactionlisteditorunknowncategory
 msgid "(Unknown)"
 msgstr "(Desconocido)"
+
+#: objinspstrconsts:oisnone
+msgid "(none)"
+msgstr ""
 
 #: objinspstrconsts:ois0lines0chars
 msgid "0 lines, 0 chars"
@@ -132,12 +132,12 @@ msgstr "Editor de Lista de Acción"
 msgid "Add"
 msgstr "Añadir"
 
-#: objinspstrconsts:s_addassingle
-msgid "Add as single"
-msgstr ""
-
 #: objinspstrconsts:sccsiledtopendialog
 msgid "Add Images"
+msgstr ""
+
+#: objinspstrconsts:s_addassingle
+msgid "Add as single"
 msgstr ""
 
 #: objinspstrconsts:clbadd
@@ -388,10 +388,6 @@ msgstr ""
 msgid "Edit"
 msgstr ""
 
-#: objinspstrconsts:oiseditactionlist
-msgid "Edit action list..."
-msgstr "Editor de lista de acción..."
-
 #: objinspstrconsts:sccslvedt
 msgid "Edit ListView Items..."
 msgstr ""
@@ -403,6 +399,10 @@ msgstr ""
 #: objinspstrconsts:sccstredt
 msgid "Edit TreeView Items..."
 msgstr ""
+
+#: objinspstrconsts:oiseditactionlist
+msgid "Edit action list..."
+msgstr "Editor de lista de acción..."
 
 #: objinspstrconsts:oicoleditediting
 msgid "Editing"
@@ -568,13 +568,21 @@ msgstr ""
 msgid "Modify the Item"
 msgstr ""
 
-#: objinspstrconsts:rscdmovedown
-msgid "Move down"
-msgstr ""
-
 #: objinspstrconsts:sccsiledtmovedown
 msgid "Move Down"
 msgstr "Mover Abajo"
+
+#: objinspstrconsts:sccssgedtmoverowscols
+msgid "Move Rows/Cols"
+msgstr ""
+
+#: objinspstrconsts:sccsiledtmoveup
+msgid "Move Up"
+msgstr "Mover Arriba"
+
+#: objinspstrconsts:rscdmovedown
+msgid "Move down"
+msgstr ""
 
 #: objinspstrconsts:nbcesmovepageleft
 msgid "Move page left"
@@ -583,10 +591,6 @@ msgstr "Mover página a la izquierda"
 #: objinspstrconsts:nbcesmovepageright
 msgid "Move page right"
 msgstr "Mover página a la derecha"
-
-#: objinspstrconsts:sccssgedtmoverowscols
-msgid "Move Rows/Cols"
-msgstr ""
 
 #: objinspstrconsts:tccesmovetableft
 msgid "Move tab left"
@@ -599,10 +603,6 @@ msgstr ""
 #: objinspstrconsts:rscdmoveup
 msgid "Move up"
 msgstr ""
-
-#: objinspstrconsts:sccsiledtmoveup
-msgid "Move Up"
-msgstr "Mover Arriba"
 
 #: objinspstrconsts:cactionlisteditornewaction
 msgid "New Action"
@@ -628,6 +628,10 @@ msgstr ""
 msgid "None"
 msgstr ""
 
+#: objinspstrconsts:rscdok
+msgid "OK"
+msgstr ""
+
 #: objinspstrconsts:oisobject
 msgid "Object"
 msgstr ""
@@ -638,10 +642,6 @@ msgstr "Inspector de Objetos"
 
 #: objinspstrconsts:oisok2
 msgid "Ok"
-msgstr ""
-
-#: objinspstrconsts:rscdok
-msgid "OK"
 msgstr ""
 
 #: objinspstrconsts:sccstredtopendialog
@@ -736,12 +736,12 @@ msgstr "Guardar Como"
 msgid "Save Image"
 msgstr ""
 
-#: objinspstrconsts:oispesaveimageas
-msgid "Save image as"
-msgstr ""
-
 #: objinspstrconsts:oissaveliteralcharacters
 msgid "Save Literal Characters"
+msgstr ""
+
+#: objinspstrconsts:oispesaveimageas
+msgid "Save image as"
 msgstr ""
 
 #: objinspstrconsts:oissavepicture
@@ -764,13 +764,13 @@ msgstr ""
 msgid "Select &Font..."
 msgstr ""
 
-#: objinspstrconsts:oisselectafile
-msgid "Select a file"
-msgstr ""
-
 #: objinspstrconsts:oistdacteditselectallshorthint
 msgid "Select All"
 msgstr "Seleccionar Todo"
+
+#: objinspstrconsts:oisselectafile
+msgid "Select a file"
+msgstr ""
 
 #: objinspstrconsts:sccsiledtgrprcaption
 msgid "Selected Image"
@@ -840,12 +840,12 @@ msgstr "Editor de StringGrid"
 msgid "Strings Editor Dialog"
 msgstr "Diálogo Editor de Strings"
 
-#: objinspstrconsts:oistestdialog
-msgid "Test dialog..."
-msgstr ""
-
 #: objinspstrconsts:oistestinput
 msgid "Test Input"
+msgstr ""
+
+#: objinspstrconsts:oistestdialog
+msgid "Test dialog..."
 msgstr ""
 
 #: objinspstrconsts:sccstredtlabeltext

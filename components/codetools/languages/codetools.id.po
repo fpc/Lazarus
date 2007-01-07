@@ -20,6 +20,10 @@ msgstr "%s Defines Kompilator"
 msgid "%s Directory"
 msgstr " Direktori %s"
 
+#: codetoolsstrconsts:ctsnamedproject
+msgid "%s Project"
+msgstr "%s Proyek"
+
 #: codetoolsstrconsts:ctsstrexpectedbutatomfound
 msgid "%s expected, but %s found"
 msgstr "%s diharapkan, tapi %s ditemukan"
@@ -31,10 +35,6 @@ msgstr "%s mempunyai link simbolik berputar"
 #: codetoolsstrconsts:ctsfileisnotexecutable
 msgid "%s is not executable"
 msgstr "%s bukan eksekutabel"
-
-#: codetoolsstrconsts:ctsnamedproject
-msgid "%s Project"
-msgstr "%s Proyek"
 
 #: codetoolsstrconsts:ctsawithoutb
 msgid "%s without %s"
@@ -60,85 +60,17 @@ msgstr ". mulai di"
 msgid "; expected after \"%s\" property specifier, but %s found"
 msgstr "; diharapkan setelah \"%s\" pemisah properti, tetapi %s ditemukan"
 
-#: codetoolsstrconsts:ctswordnotfound
-msgid "\"%s\" not found"
-msgstr "\"%s\" tidak ditemukan"
-
-#: codetoolsstrconsts:ctsclassofdefinitionnotresolved
-msgid "\"class of\" definition not resolved: %s"
-msgstr "definisi \"class of\" tidak terpecahkan: %s"
-
-#: codetoolsstrconsts:ctsendforclassnotfound
-msgid "\"end\" for class/object not found"
-msgstr "\"end\" untuk class/object tidak ditemukan"
-
-#: codetoolsstrconsts:ctsdircomponentdoesnotexistsorisdanglingsymlink
-msgid "a directory component in %s does not exist or is a dangling symlink"
-msgstr "direktori komponen dalam %s tidak ada atau merupakan dangling symlink"
-
-#: codetoolsstrconsts:ctsdircomponentisnotdir
-msgid "a directory component in %s is not a directory"
-msgstr "direktori komponen dalam %s bukan sebuah direktori"
-
-#: codetoolsstrconsts:ctsaddsdirtosourcepath
-msgid "adds %s to SrcPath"
-msgstr "tambahkan %s ke SrcPath"
-
-#: codetoolsstrconsts:ctsanlclproject
-msgid "an LCL project"
-msgstr "sebuah proyek LCL"
-
-#: codetoolsstrconsts:ctsancestorisnotproperty
-msgid "ancestor of untyped property is not a property"
-msgstr "karuhun dari properti untyped bukan properti"
-
 #: codetoolsstrconsts:ctsanonymdefinitionsarenotallowed
 msgid "Anonymous %s definitions are not allowed"
 msgstr "Definisi anonim %s tidak dibolehkan"
 
-#: codetoolsstrconsts:ctsbasetypeofnotfound
-msgid "base type of \"%s\" not found"
-msgstr "dasar type dari \"%s\" tidak ditemukan"
-
-#: codetoolsstrconsts:ctsbinaryoperator
-msgid "binary operator"
-msgstr "operator biner"
-
-#: codetoolsstrconsts:ctsbracketnotfound
-msgid "bracket %s not found"
-msgstr "kurung %s tidak ditemukan"
-
-#: codetoolsstrconsts:ctsbracketcloseexpectedbutatomfound
-msgid "bracket close expected, but %s found"
-msgstr "kurung tutup diharapkan, tapi %s ditemukan"
-
-#: codetoolsstrconsts:ctsbracketopenexpectedbutatomfound
-msgid "bracket open expected, but %s found"
-msgstr "kurung buka diharapkan, tapi %s ditemukan"
-
-#: codetoolsstrconsts:ctscircleindefinitions
-msgid "circle in definitions"
-msgstr "lingkaran dalam definisi"
+#: codetoolsstrconsts:ctscpudirectory
+msgid "CPU directory"
+msgstr "Direktori CPU"
 
 #: codetoolsstrconsts:ctsclasssnotfound
 msgid "Class %s not found"
 msgstr "Kelas %s%s%s tidak ditemukan"
-
-#: codetoolsstrconsts:ctsclassnotfound
-msgid "class %s%s%s not found"
-msgstr "kelas %s%s%s tidak ditemukan"
-
-#: codetoolsstrconsts:ctsclassidentifierexpected
-msgid "class identifier expected"
-msgstr "pengenal class diharapkan"
-
-#: codetoolsstrconsts:ctsclassnodewithoutparentnode
-msgid "class node without parent node"
-msgstr "node class tanpa node parent"
-
-#: codetoolsstrconsts:ctsclasswithoutname
-msgid "class without name"
-msgstr "class tanpa nama"
 
 #: codetoolsstrconsts:ctscommandlineparameters
 msgid "Command line parameters"
@@ -160,21 +92,9 @@ msgstr "Kompilator"
 msgid "Components Directory"
 msgstr "Direktori Komponen"
 
-#: codetoolsstrconsts:ctsconstant
-msgid "constant"
-msgstr "konstan"
-
 #: codetoolsstrconsts:ctsconverterdirectory
 msgid "Converter Directory"
 msgstr "Direktori Konverter"
-
-#: codetoolsstrconsts:ctscpudirectory
-msgid "CPU directory"
-msgstr "Direktori CPU"
-
-#: codetoolsstrconsts:ctscursorposoutsideofcode
-msgid "cursor pos outside of code"
-msgstr "posisi kursor diluar kode"
 
 #: codetoolsstrconsts:ctscustomcomponentsdirectory
 msgid "Custom Components Directory"
@@ -183,18 +103,6 @@ msgstr "Direktori Komponen Kustom"
 #: codetoolsstrconsts:ctsdebuggerdirectory
 msgid "Debugger Directory"
 msgstr "Direktori Debugger"
-
-#: codetoolsstrconsts:ctsdefaultclassancestortobjectnotfound
-msgid "default class ancestor TObject not found"
-msgstr "karuhun class default TObject tidak ditemukan"
-
-#: codetoolsstrconsts:ctsdefaultinterfaceancestoriinterfacenotfound
-msgid "default interface ancestor IInterface not found"
-msgstr "karuhun interface default IInterface tidak ditemukan"
-
-#: codetoolsstrconsts:ctsdefaultparameterexpectedbutatomfound
-msgid "default parameter expected, but %s found"
-msgstr "parameter default diharapkan, tapi %s yang ditemukan"
 
 #: codetoolsstrconsts:ctsdefaultppc386sourceoperatingsystem
 msgid "Default ppc386 source Operating System"
@@ -215,14 +123,6 @@ msgstr "Target default Sistem Operasi ppc386"
 #: codetoolsstrconsts:ctsdefaultppc386targetprocessor
 msgid "Default ppc386 target processor"
 msgstr "Target prosesor default ppc386"
-
-#: codetoolsstrconsts:ctsdefaultpropertynotfound
-msgid "default property not found"
-msgstr "properti default tidak ditemukan"
-
-#: codetoolsstrconsts:ctsdefaultspecifierredefined
-msgid "default specifier redefined"
-msgstr "pemisah default didefinisikan ulang"
 
 #: codetoolsstrconsts:ctsdefine
 msgid "Define "
@@ -276,6 +176,270 @@ msgstr "Unit Desainer"
 msgid "Doc Editor Directory"
 msgstr "Direktori Editor Doc"
 
+#: codetoolsstrconsts:ctsendofsourcenotfound
+msgid "End of source not found"
+msgstr "Akhir dari sumber tidak ditemukan"
+
+#: codetoolsstrconsts:ctsforward
+msgid "Forward"
+msgstr "Maju"
+
+#: codetoolsstrconsts:ctsforwardclassdefinitionnotresolved
+msgid "Forward class definition not resolved: %s"
+msgstr "Definisi forward class tidak terpecahkan: %s"
+
+#: codetoolsstrconsts:ctsfreepascalcompilerinitialmacros
+msgid "Free Pascal Compiler initial macros"
+msgstr "Makro awal Kompilator Free Pascal"
+
+#: codetoolsstrconsts:ctsfreepascalcomponentlibrary
+msgid "Free Pascal Component Library"
+msgstr "Librari Komponen Free Pascal"
+
+#: codetoolsstrconsts:ctsfreepascalsourcedir
+msgid "Free Pascal Source Directory"
+msgstr "Direktori Sumber Free Pascal"
+
+#: codetoolsstrconsts:ctsfreepascalsourcesplusdesc
+msgid "Free Pascal Sources, %s"
+msgstr "Sumber Free Pascal, %s"
+
+#: codetoolsstrconsts:ctsidedirectory
+msgid "IDE Directory"
+msgstr "Direktori IDE"
+
+#: codetoolsstrconsts:ctsideintfdirectory
+msgid "IDEIntf Directory"
+msgstr "Direktori IDEIntf"
+
+#: codetoolsstrconsts:ctsidentifieralreadydefined
+msgid "Identifier %s already defined"
+msgstr "Pengenal %s sudah didefinisikan"
+
+#: codetoolsstrconsts:ctsiflclwidgettypeequalsgnome2
+msgid "If LCLWidgetType=gnome2 then"
+msgstr "Jika LCLWidgetType=gnome2 lalu"
+
+#: codetoolsstrconsts:ctsiflclwidgettypeequalsgtk2
+msgid "If LCLWidgetType=gtk2 then"
+msgstr "Jika LCLWidgetType=gtk2 lalu"
+
+#: codetoolsstrconsts:ctsiftargetosisnotsrcos
+msgid "If TargetOS<>SrcOS"
+msgstr "Jika TargetOS<>SrcOS"
+
+#: codetoolsstrconsts:ctsiftargetosisnotsrcos2
+msgid "If TargetOS<>SrcOS2"
+msgstr "Jika TargetOS<>SrcOS"
+
+#: codetoolsstrconsts:ctsiftargetosisnotwin32
+msgid "If TargetOS<>win32 then"
+msgstr "Jika TargetOS<>win32 lalu"
+
+#: codetoolsstrconsts:ctsincludecircledetected
+msgid "Include circle detected"
+msgstr "Lingkaran Include terdeteksi"
+
+#: codetoolsstrconsts:ctsinstalldirectory
+msgid "Install Directory"
+msgstr "Direktori Instalasi"
+
+#: codetoolsstrconsts:ctsinstallerdirectories
+msgid "Installer directories"
+msgstr "Direktori Instalator"
+
+#: codetoolsstrconsts:ctsjitformdirectory
+msgid "JITForm Directory"
+msgstr "Direktori JITForm"
+
+#: codetoolsstrconsts:ctslazarussources
+msgid "Lazarus Sources"
+msgstr "Sumber Lazarus"
+
+#: codetoolsstrconsts:ctsnestedcommentson
+msgid "Nested Comments On"
+msgstr "Komentar Berulang On"
+
+#: codetoolsstrconsts:ctsnoscanneravailable
+msgid "No scanner available"
+msgstr "Tidak ada pemindai yang tersedia"
+
+#: codetoolsstrconsts:ctsnoscannerfound
+msgid "No scanner found for \"%s\". If this is an include file, please open the main source first."
+msgstr "Tidak ada pemindai ditemukan untuk \"%s\". Jika ini adalah file include, silahkan buka sumber utama lebih dulu."
+
+#: codetoolsstrconsts:ctspackagedirectories
+msgid "Package directories"
+msgstr "Direktori Paket"
+
+#: codetoolsstrconsts:ctspackagerdirectory
+msgid "Packager Directory"
+msgstr "Direktori Packager"
+
+#: codetoolsstrconsts:ctspackagerregistrationdirectory
+msgid "Packager Registration Directory"
+msgstr "Direktori Registrasi Packager"
+
+#: codetoolsstrconsts:ctspackagerunitsdirectory
+msgid "Packager Units Directory"
+msgstr "Direktori Unit Packager"
+
+#: codetoolsstrconsts:ctspositionnotinsource
+msgid "Position not in source"
+msgstr "Posisi tidak dalam sumber"
+
+#: codetoolsstrconsts:ctsresetalldefines
+msgid "Reset all defines"
+msgstr "Reset semua define"
+
+#: codetoolsstrconsts:ctsruntimelibrary
+msgid "Runtime library"
+msgstr "Librari Runtime"
+
+#: codetoolsstrconsts:ctssourcefilenamesforstandardfpcunits
+msgid "Source filenames for the standard fpc units"
+msgstr "Nama file sumber untuk unit fpc standar"
+
+#: codetoolsstrconsts:ctssrcpathinitialization
+msgid "SrcPath Initialization"
+msgstr "Inisialisasi SrcPath"
+
+#: codetoolsstrconsts:ctssyntaxerrorinexpr
+msgid "Syntax Error in expression \"%s\""
+msgstr "Kesalahan sintaks dalam ekspresi \"%s\""
+
+#: codetoolsstrconsts:ctstcodetoolmanagerconsistencycheck
+msgid "TCodeToolManager.ConsistencyCheck=%d"
+msgstr ""
+
+#: codetoolsstrconsts:ctstermnotsimple
+msgid "Term has no simple type"
+msgstr "Term tidak mempunyai tipe sederhana"
+
+#: codetoolsstrconsts:ctstoolsdirectory
+msgid "Tools Directory"
+msgstr "Direktori Tools"
+
+#: codetoolsstrconsts:ctsunitpathinitialization
+msgid "UnitPath Initialization"
+msgstr "Inisialisasi UnitPath"
+
+#: codetoolsstrconsts:ctsunknownfunction
+msgid "Unknown function %s"
+msgstr "Fungsi tidak dikenal %s"
+
+#: codetoolsstrconsts:ctsunparsed
+msgid "Unparsed"
+msgstr "Tidak dipindai"
+
+#: codetoolsstrconsts:ctsutilsdirectories
+msgid "Utils directories"
+msgstr "Direktori Utils"
+
+#: codetoolsstrconsts:ctswidgetdirectory
+msgid "Widget Directory"
+msgstr "Direktori Widget"
+
+#: codetoolsstrconsts:ctswordnotfound
+msgid "\"%s\" not found"
+msgstr "\"%s\" tidak ditemukan"
+
+#: codetoolsstrconsts:ctsclassofdefinitionnotresolved
+msgid "\"class of\" definition not resolved: %s"
+msgstr "definisi \"class of\" tidak terpecahkan: %s"
+
+#: codetoolsstrconsts:ctsendforclassnotfound
+msgid "\"end\" for class/object not found"
+msgstr "\"end\" untuk class/object tidak ditemukan"
+
+#: codetoolsstrconsts:ctsdircomponentdoesnotexistsorisdanglingsymlink
+msgid "a directory component in %s does not exist or is a dangling symlink"
+msgstr "direktori komponen dalam %s tidak ada atau merupakan dangling symlink"
+
+#: codetoolsstrconsts:ctsdircomponentisnotdir
+msgid "a directory component in %s is not a directory"
+msgstr "direktori komponen dalam %s bukan sebuah direktori"
+
+#: codetoolsstrconsts:ctsaddsdirtosourcepath
+msgid "adds %s to SrcPath"
+msgstr "tambahkan %s ke SrcPath"
+
+#: codetoolsstrconsts:ctsanlclproject
+msgid "an LCL project"
+msgstr "sebuah proyek LCL"
+
+#: codetoolsstrconsts:ctsancestorisnotproperty
+msgid "ancestor of untyped property is not a property"
+msgstr "karuhun dari properti untyped bukan properti"
+
+#: codetoolsstrconsts:ctsbasetypeofnotfound
+msgid "base type of \"%s\" not found"
+msgstr "dasar type dari \"%s\" tidak ditemukan"
+
+#: codetoolsstrconsts:ctsbinaryoperator
+msgid "binary operator"
+msgstr "operator biner"
+
+#: codetoolsstrconsts:ctsbracketnotfound
+msgid "bracket %s not found"
+msgstr "kurung %s tidak ditemukan"
+
+#: codetoolsstrconsts:ctsbracketcloseexpectedbutatomfound
+msgid "bracket close expected, but %s found"
+msgstr "kurung tutup diharapkan, tapi %s ditemukan"
+
+#: codetoolsstrconsts:ctsbracketopenexpectedbutatomfound
+msgid "bracket open expected, but %s found"
+msgstr "kurung buka diharapkan, tapi %s ditemukan"
+
+#: codetoolsstrconsts:ctscircleindefinitions
+msgid "circle in definitions"
+msgstr "lingkaran dalam definisi"
+
+#: codetoolsstrconsts:ctsclassnotfound
+msgid "class %s%s%s not found"
+msgstr "kelas %s%s%s tidak ditemukan"
+
+#: codetoolsstrconsts:ctsclassidentifierexpected
+msgid "class identifier expected"
+msgstr "pengenal class diharapkan"
+
+#: codetoolsstrconsts:ctsclassnodewithoutparentnode
+msgid "class node without parent node"
+msgstr "node class tanpa node parent"
+
+#: codetoolsstrconsts:ctsclasswithoutname
+msgid "class without name"
+msgstr "class tanpa nama"
+
+#: codetoolsstrconsts:ctsconstant
+msgid "constant"
+msgstr "konstan"
+
+#: codetoolsstrconsts:ctscursorposoutsideofcode
+msgid "cursor pos outside of code"
+msgstr "posisi kursor diluar kode"
+
+#: codetoolsstrconsts:ctsdefaultclassancestortobjectnotfound
+msgid "default class ancestor TObject not found"
+msgstr "karuhun class default TObject tidak ditemukan"
+
+#: codetoolsstrconsts:ctsdefaultinterfaceancestoriinterfacenotfound
+msgid "default interface ancestor IInterface not found"
+msgstr "karuhun interface default IInterface tidak ditemukan"
+
+#: codetoolsstrconsts:ctsdefaultparameterexpectedbutatomfound
+msgid "default parameter expected, but %s found"
+msgstr "parameter default diharapkan, tapi %s yang ditemukan"
+
+#: codetoolsstrconsts:ctsdefaultpropertynotfound
+msgid "default property not found"
+msgstr "properti default tidak ditemukan"
+
+#: codetoolsstrconsts:ctsdefaultspecifierredefined
+msgid "default specifier redefined"
+msgstr "pemisah default didefinisikan ulang"
+
 #: codetoolsstrconsts:ctsduplicateidentifier
 msgid "duplicate identifier: %s"
 msgstr "duplikasi pengenal: %s"
@@ -291,10 +455,6 @@ msgstr "hidupkan FPDocSystem"
 #: codetoolsstrconsts:ctsendforrecordnotfound
 msgid "end for record not found"
 msgstr "akhir untuk record tidak ditemukan"
-
-#: codetoolsstrconsts:ctsendofsourcenotfound
-msgid "End of source not found"
-msgstr "Akhir dari sumber tidak ditemukan"
 
 #: codetoolsstrconsts:ctserrorduringcreationofnewprocbodies
 msgid "error during creation of new proc bodies"
@@ -340,30 +500,6 @@ msgstr "file \"%s\" tidak ada"
 msgid "file is read only"
 msgstr "file hanya baca"
 
-#: codetoolsstrconsts:ctsforward
-msgid "Forward"
-msgstr "Maju"
-
-#: codetoolsstrconsts:ctsforwardclassdefinitionnotresolved
-msgid "Forward class definition not resolved: %s"
-msgstr "Definisi forward class tidak terpecahkan: %s"
-
-#: codetoolsstrconsts:ctsfreepascalcompilerinitialmacros
-msgid "Free Pascal Compiler initial macros"
-msgstr "Makro awal Kompilator Free Pascal"
-
-#: codetoolsstrconsts:ctsfreepascalcomponentlibrary
-msgid "Free Pascal Component Library"
-msgstr "Librari Komponen Free Pascal"
-
-#: codetoolsstrconsts:ctsfreepascalsourcedir
-msgid "Free Pascal Source Directory"
-msgstr "Direktori Sumber Free Pascal"
-
-#: codetoolsstrconsts:ctsfreepascalsourcesplusdesc
-msgid "Free Pascal Sources, %s"
-msgstr "Sumber Free Pascal, %s"
-
 #: codetoolsstrconsts:ctsgnomeintfdirectory
 msgid "gnome interface directory"
 msgstr "Direktori interface gnome"
@@ -372,21 +508,9 @@ msgstr "Direktori interface gnome"
 msgid "gtk2 interface directory"
 msgstr "Direktori interface gtk2"
 
-#: codetoolsstrconsts:ctsidedirectory
-msgid "IDE Directory"
-msgstr "Direktori IDE"
-
-#: codetoolsstrconsts:ctsideintfdirectory
-msgid "IDEIntf Directory"
-msgstr "Direktori IDEIntf"
-
 #: codetoolsstrconsts:ctsidentifier
 msgid "identifier"
 msgstr "pengenal"
-
-#: codetoolsstrconsts:ctsidentifieralreadydefined
-msgid "Identifier %s already defined"
-msgstr "Pengenal %s sudah didefinisikan"
 
 #: codetoolsstrconsts:ctsidentexpectedbutatomfound
 msgid "identifier expected, but %s found"
@@ -400,26 +524,6 @@ msgstr "pengenal diharapkan, tapi keyword %s ditemukan"
 msgid "identifier not found: %s"
 msgstr "pengenal tidak ditemukan: %s"
 
-#: codetoolsstrconsts:ctsiflclwidgettypeequalsgnome2
-msgid "If LCLWidgetType=gnome2 then"
-msgstr "Jika LCLWidgetType=gnome2 lalu"
-
-#: codetoolsstrconsts:ctsiflclwidgettypeequalsgtk2
-msgid "If LCLWidgetType=gtk2 then"
-msgstr "Jika LCLWidgetType=gtk2 lalu"
-
-#: codetoolsstrconsts:ctsiftargetosisnotsrcos
-msgid "If TargetOS<>SrcOS"
-msgstr "Jika TargetOS<>SrcOS"
-
-#: codetoolsstrconsts:ctsiftargetosisnotsrcos2
-msgid "If TargetOS<>SrcOS2"
-msgstr "Jika TargetOS<>SrcOS"
-
-#: codetoolsstrconsts:ctsiftargetosisnotwin32
-msgid "If TargetOS<>win32 then"
-msgstr "Jika TargetOS<>win32 lalu"
-
 #: codetoolsstrconsts:ctsillegalcircleinusedunits
 msgid "illegal circle using unit: %s"
 msgstr "lingkaran tidak benar menggunakan unit: %s"
@@ -431,10 +535,6 @@ msgstr "pembatas %s yang ditemukan tidak benar"
 #: codetoolsstrconsts:ctsimplementationnodenotfound
 msgid "implementation node not found"
 msgstr "node implementation tidak ditemukan"
-
-#: codetoolsstrconsts:ctsincludecircledetected
-msgid "Include circle detected"
-msgstr "Lingkaran Include terdeteksi"
 
 #: codetoolsstrconsts:ctsincludedirectoriesplusdirs
 msgid "include directories: %s"
@@ -459,14 +559,6 @@ msgstr "pemisah indeks didefinisikan ulang"
 #: codetoolsstrconsts:ctsinheritedkeywordonlyallowedinmethods
 msgid "inherited keyword only allowed in methods"
 msgstr "keyword yang diturunkan hanya dibolehkan dalam method"
-
-#: codetoolsstrconsts:ctsinstalldirectory
-msgid "Install Directory"
-msgstr "Direktori Instalasi"
-
-#: codetoolsstrconsts:ctsinstallerdirectories
-msgid "Installer directories"
-msgstr "Direktori Instalator"
 
 #: codetoolsstrconsts:ctsinsufficientmemory
 msgid "insufficient memory"
@@ -512,10 +604,6 @@ msgstr "nama variabel tidak benar %s%s%s"
 msgid "invalid variable type %s%s%s"
 msgstr "tipe variabel tidak benar %s%s%s"
 
-#: codetoolsstrconsts:ctsjitformdirectory
-msgid "JITForm Directory"
-msgstr "Direktori JITForm"
-
 #: codetoolsstrconsts:ctskeyword
 msgid "keyword"
 msgstr "keyword"
@@ -531,10 +619,6 @@ msgstr "keyword \"in\""
 #: codetoolsstrconsts:ctslazarusmaindirectory
 msgid "lazarus main directory"
 msgstr "direktori utama lazarus"
-
-#: codetoolsstrconsts:ctslazarussources
-msgid "Lazarus Sources"
-msgstr "Sumber Lazarus"
 
 #: codetoolsstrconsts:ctsmethodname
 msgid "method name"
@@ -556,10 +640,6 @@ msgstr "daftar enum tidak ada"
 msgid "missing type identifier"
 msgstr "pengenal type tidak ada"
 
-#: codetoolsstrconsts:ctsnestedcommentson
-msgid "Nested Comments On"
-msgstr "Komentar Berulang On"
-
 #: codetoolsstrconsts:ctsnewprocbodynotfound
 msgid "new proc body not found"
 msgstr "badan proc baru tidak ditemukan"
@@ -576,14 +656,6 @@ msgstr "Tidak ada kode pascal ditemukan (token pertama adalah %s)"
 msgid "no pascal node found at cursor (i.e. in unparsed code)"
 msgstr "tidak ada kode pascal ditemukan pada kursor (contoh. dalam kode yang tidak dipindai)"
 
-#: codetoolsstrconsts:ctsnoscanneravailable
-msgid "No scanner available"
-msgstr "Tidak ada pemindai yang tersedia"
-
-#: codetoolsstrconsts:ctsnoscannerfound
-msgid "No scanner found for \"%s\". If this is an include file, please open the main source first."
-msgstr "Tidak ada pemindai ditemukan untuk \"%s\". Jika ini adalah file include, silahkan buka sumber utama lebih dulu."
-
 #: codetoolsstrconsts:ctsnodefaultspecifierdefinedtwice
 msgid "nodefault specifier defined twice"
 msgstr "pemisah non default didefinisikan dua kali"
@@ -591,26 +663,6 @@ msgstr "pemisah non default didefinisikan dua kali"
 #: codetoolsstrconsts:ctsoldmethodnotfound
 msgid "old method not found: %s"
 msgstr "metode lama tidak ditemukan: %s"
-
-#: codetoolsstrconsts:ctspackagedirectories
-msgid "Package directories"
-msgstr "Direktori Paket"
-
-#: codetoolsstrconsts:ctspackagerdirectory
-msgid "Packager Directory"
-msgstr "Direktori Packager"
-
-#: codetoolsstrconsts:ctspackagerregistrationdirectory
-msgid "Packager Registration Directory"
-msgstr "Direktori Registrasi Packager"
-
-#: codetoolsstrconsts:ctspackagerunitsdirectory
-msgid "Packager Units Directory"
-msgstr "Direktori Unit Packager"
-
-#: codetoolsstrconsts:ctspositionnotinsource
-msgid "Position not in source"
-msgstr "Posisi tidak dalam sumber"
 
 #: codetoolsstrconsts:ctsprocedureorfunction
 msgid "procedure or function"
@@ -632,14 +684,6 @@ msgstr "properti type diharapkan, tapi %s yang ditemukan"
 msgid "qualifier expected but %s found"
 msgstr "pembatas diharapkan tapi %s ditemukan"
 
-#: codetoolsstrconsts:ctsresetalldefines
-msgid "Reset all defines"
-msgstr "Reset semua define"
-
-#: codetoolsstrconsts:ctsruntimelibrary
-msgid "Runtime library"
-msgstr "Librari Runtime"
-
 #: codetoolsstrconsts:ctssemicolonnotfound
 msgid "semicolon not found"
 msgstr "titik koma tidak ditemukan"
@@ -651,10 +695,6 @@ msgstr "set IncPath ke %s"
 #: codetoolsstrconsts:ctssetssrcpathto
 msgid "sets SrcPath to %s"
 msgstr "set SrcPath ke %s"
-
-#: codetoolsstrconsts:ctssourcefilenamesforstandardfpcunits
-msgid "Source filenames for the standard fpc units"
-msgstr "Nama file sumber untuk unit fpc standar"
 
 #: codetoolsstrconsts:ctssourceisnotunit
 msgid "source is not unit"
@@ -668,29 +708,9 @@ msgstr "sumber tidak ditemukan: unit %s"
 msgid "src path for compiled units"
 msgstr "src path untuk unit yang dikompilasi"
 
-#: codetoolsstrconsts:ctssrcpathinitialization
-msgid "SrcPath Initialization"
-msgstr "Inisialisasi SrcPath"
-
 #: codetoolsstrconsts:ctsstringconstant
 msgid "string constant"
 msgstr "konstan string"
-
-#: codetoolsstrconsts:ctssyntaxerrorinexpr
-msgid "Syntax Error in expression \"%s\""
-msgstr "Kesalahan sintaks dalam ekspresi \"%s\""
-
-#: codetoolsstrconsts:ctstcodetoolmanagerconsistencycheck
-msgid "TCodeToolManager.ConsistencyCheck=%d"
-msgstr ""
-
-#: codetoolsstrconsts:ctstermnotsimple
-msgid "Term has no simple type"
-msgstr "Term tidak mempunyai tipe sederhana"
-
-#: codetoolsstrconsts:ctstoolsdirectory
-msgid "Tools Directory"
-msgstr "Direktori Tools"
 
 #: codetoolsstrconsts:ctstypeidentifier
 msgid "type identifier"
@@ -740,31 +760,11 @@ msgstr "operator sub jangkauan  '..' yang tidak diharapkan ditemukan"
 msgid "unit not found: %s"
 msgstr "unit tidak ditemukan: %s"
 
-#: codetoolsstrconsts:ctsunitpathinitialization
-msgid "UnitPath Initialization"
-msgstr "Inisialisasi UnitPath"
-
-#: codetoolsstrconsts:ctsunknownfunction
-msgid "Unknown function %s"
-msgstr "Fungsi tidak dikenal %s"
-
 #: codetoolsstrconsts:ctsunknownsectionkeyword
 msgid "unknown section keyword %s found"
 msgstr "bagian keyword %s yang ditemukan tidak dikenal"
 
-#: codetoolsstrconsts:ctsunparsed
-msgid "Unparsed"
-msgstr "Tidak dipindai"
-
 #: codetoolsstrconsts:ctsusedunitisnotapascalunit
 msgid "used unit is not a pascal unit"
 msgstr "unit yang digunakan bukan unit pascal"
-
-#: codetoolsstrconsts:ctsutilsdirectories
-msgid "Utils directories"
-msgstr "Direktori Utils"
-
-#: codetoolsstrconsts:ctswidgetdirectory
-msgid "Widget Directory"
-msgstr "Direktori Widget"
 

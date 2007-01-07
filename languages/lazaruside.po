@@ -2638,6 +2638,14 @@ msgstr ""
 msgid "All files"
 msgstr ""
 
+#: lazarusidestrconsts:lissavefileas
+msgid "Save file as"
+msgstr ""
+
+#: lazarusidestrconsts:lisopenexistingfile
+msgid "Open existing file"
+msgstr ""
+
 #: lazarusidestrconsts:lislazarusunit
 msgid "Lazarus unit"
 msgstr ""
@@ -6184,6 +6192,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisdiffdlgopendiffineditor
 msgid "Open Diff in editor"
+msgstr ""
+
+#: lazarusidestrconsts:lissave
+msgid "Save ..."
 msgstr ""
 
 #: lazarusidestrconsts:listodolistcaption

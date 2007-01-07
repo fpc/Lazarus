@@ -105,13 +105,13 @@ msgstr "&Hore"
 msgid "(All)"
 msgstr "(Všetky)"
 
-#: objinspstrconsts:oisnone
-msgid "(none)"
-msgstr "(žiadna)"
-
 #: objinspstrconsts:cactionlisteditorunknowncategory
 msgid "(Unknown)"
 msgstr "(Neznámy)"
+
+#: objinspstrconsts:oisnone
+msgid "(none)"
+msgstr "(žiadna)"
 
 #: objinspstrconsts:ois0lines0chars
 msgid "0 lines, 0 chars"
@@ -133,13 +133,13 @@ msgstr "Editor zoznamu činností"
 msgid "Add"
 msgstr "Pridať"
 
-#: objinspstrconsts:s_addassingle
-msgid "Add as single"
-msgstr "Pridať jednotlivý"
-
 #: objinspstrconsts:sccsiledtopendialog
 msgid "Add Images"
 msgstr "Pridať obrázky"
+
+#: objinspstrconsts:s_addassingle
+msgid "Add as single"
+msgstr "Pridať jednotlivý"
 
 #: objinspstrconsts:clbadd
 msgid "Add new Item"
@@ -389,10 +389,6 @@ msgstr "&Koniec"
 msgid "Edit"
 msgstr "Edit"
 
-#: objinspstrconsts:oiseditactionlist
-msgid "Edit action list..."
-msgstr "Editovať zoznam činností"
-
 #: objinspstrconsts:sccslvedt
 msgid "Edit ListView Items..."
 msgstr "Editvať položky ListView..."
@@ -404,6 +400,10 @@ msgstr "Editovať StringGrid..."
 #: objinspstrconsts:sccstredt
 msgid "Edit TreeView Items..."
 msgstr "Editovať položky TreeView..."
+
+#: objinspstrconsts:oiseditactionlist
+msgid "Edit action list..."
+msgstr "Editovať zoznam činností"
 
 #: objinspstrconsts:oicoleditediting
 msgid "Editing"
@@ -569,12 +569,20 @@ msgstr "Metóda"
 msgid "Modify the Item"
 msgstr "Modifikovať položku"
 
-#: objinspstrconsts:rscdmovedown
-msgid "Move down"
-msgstr "Presunúť nižšie"
-
 #: objinspstrconsts:sccsiledtmovedown
 msgid "Move Down"
+msgstr "Presunúť nižšie"
+
+#: objinspstrconsts:sccssgedtmoverowscols
+msgid "Move Rows/Cols"
+msgstr "Presunúť stĺpce/riadky"
+
+#: objinspstrconsts:sccsiledtmoveup
+msgid "Move Up"
+msgstr "Presunúť vyššie"
+
+#: objinspstrconsts:rscdmovedown
+msgid "Move down"
 msgstr "Presunúť nižšie"
 
 #: objinspstrconsts:nbcesmovepageleft
@@ -584,10 +592,6 @@ msgstr "Presunúť stránku vľavo"
 #: objinspstrconsts:nbcesmovepageright
 msgid "Move page right"
 msgstr "Presunúť stránku vpravo"
-
-#: objinspstrconsts:sccssgedtmoverowscols
-msgid "Move Rows/Cols"
-msgstr "Presunúť stĺpce/riadky"
 
 #: objinspstrconsts:tccesmovetableft
 msgid "Move tab left"
@@ -599,10 +603,6 @@ msgstr "Presunúť záložku vpravo"
 
 #: objinspstrconsts:rscdmoveup
 msgid "Move up"
-msgstr "Presunúť vyššie"
-
-#: objinspstrconsts:sccsiledtmoveup
-msgid "Move Up"
 msgstr "Presunúť vyššie"
 
 #: objinspstrconsts:cactionlisteditornewaction
@@ -629,6 +629,10 @@ msgstr "Ďalší"
 msgid "None"
 msgstr "Žiadny"
 
+#: objinspstrconsts:rscdok
+msgid "OK"
+msgstr "OK"
+
 #: objinspstrconsts:oisobject
 msgid "Object"
 msgstr "Objekt"
@@ -640,10 +644,6 @@ msgstr "Inšpektor objektov"
 #: objinspstrconsts:oisok2
 msgid "Ok"
 msgstr "Ok"
-
-#: objinspstrconsts:rscdok
-msgid "OK"
-msgstr "OK"
 
 #: objinspstrconsts:sccstredtopendialog
 msgid "Open"
@@ -737,13 +737,13 @@ msgstr "Uložiť ako"
 msgid "Save Image"
 msgstr "Uložiť obrázky"
 
-#: objinspstrconsts:oispesaveimageas
-msgid "Save image as"
-msgstr "Uložiť obrázok ako"
-
 #: objinspstrconsts:oissaveliteralcharacters
 msgid "Save Literal Characters"
 msgstr "Uložiť znak literál"
+
+#: objinspstrconsts:oispesaveimageas
+msgid "Save image as"
+msgstr "Uložiť obrázok ako"
 
 #: objinspstrconsts:oissavepicture
 msgid "Save picture"
@@ -765,13 +765,13 @@ msgstr "V&ybrať farbu..."
 msgid "Select &Font..."
 msgstr "Vybrať &font..."
 
-#: objinspstrconsts:oisselectafile
-msgid "Select a file"
-msgstr "Vybrať súbor"
-
 #: objinspstrconsts:oistdacteditselectallshorthint
 msgid "Select All"
 msgstr "Vybrať všetky"
+
+#: objinspstrconsts:oisselectafile
+msgid "Select a file"
+msgstr "Vybrať súbor"
 
 #: objinspstrconsts:sccsiledtgrprcaption
 msgid "Selected Image"
@@ -841,13 +841,13 @@ msgstr "Editor StringGrid"
 msgid "Strings Editor Dialog"
 msgstr "Dialóg Editor reťazcov"
 
-#: objinspstrconsts:oistestdialog
-msgid "Test dialog..."
-msgstr "Testovať dialóg..."
-
 #: objinspstrconsts:oistestinput
 msgid "Test Input"
 msgstr "Testvstupu"
+
+#: objinspstrconsts:oistestdialog
+msgid "Test dialog..."
+msgstr "Testovať dialóg..."
 
 #: objinspstrconsts:sccstredtlabeltext
 msgid "Text:"

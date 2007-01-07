@@ -2,13 +2,13 @@
 msgid "%d - %d"
 msgstr "%d - %d"
 
-#: syneditstrconst:syns_shortcutnone
-msgid "<none>"
-msgstr "<ніякі>"
-
 #: syneditstrconst:syns_filterasm68hc11
 msgid "68HC11 Assembler Files (*.hc11,*.asm,*.asc)|*.HC11;*.ASM;*.ASC"
 msgstr "Файли асемблера 68HC11 (*.hc11,*.asm,*.asc)|*.HC11;*.ASM;*.ASC"
+
+#: syneditstrconst:syns_shortcutnone
+msgid "<none>"
+msgstr "<ніякі>"
 
 #: syneditstrconst:syns_filterawk
 msgid "AWK Script (*.awk)|*.awk"
@@ -26,17 +26,9 @@ msgstr "Файли форм Borland (*.dfm;*.xfm)|*.dfm;*.xfm"
 msgid "C++ Files (*.c,*.cpp,*.h,*.hpp,*.hh)|*.c;*.cpp;*.h;*.hpp;*.hh"
 msgstr ""
 
-#: syneditstrconst:syns_filtercache
-msgid "Cache Files (*.mac,*.inc,*.int)|*.mac;*.inc;*.int"
-msgstr "Кеш-файли (*.mac,*.inc,*.int)|*.mac;*.inc;*.int"
-
 #: syneditstrconst:syns_filtercaclipper
 msgid "CA-Clipper Files (*.prg,*.ch,*.inc)|*.prg;*.ch;*.inc"
 msgstr "Файли CA-Clipper (*.prg,*.ch,*.inc)|*.prg;*.ch;*.inc"
-
-#: syneditstrconst:syns_filtercss
-msgid "Cascading Stylesheets (*.css)|*.css"
-msgstr "Каскадні таблиці стилів (*.css)|*.css"
 
 #: syneditstrconst:syns_filtercorbaidl
 msgid "CORBA IDL files (*.idl)|*.idl"
@@ -45,6 +37,14 @@ msgstr "Файли CORBA IDL (*.idl)|*.idl"
 #: syneditstrconst:syns_filtercpm
 msgid "CPM reports (*.rdf,*.rif,*.rmf,*.rxf)|*.rdf;*.rif;*.rmf;*.rxf"
 msgstr "Звіти CPM (*.rdf,*.rif,*.rmf,*.rxf)|*.rdf;*.rif;*.rmf;*.rxf"
+
+#: syneditstrconst:syns_filtercache
+msgid "Cache Files (*.mac,*.inc,*.int)|*.mac;*.inc;*.int"
+msgstr "Кеш-файли (*.mac,*.inc,*.int)|*.mac;*.inc;*.int"
+
+#: syneditstrconst:syns_filtercss
+msgid "Cascading Stylesheets (*.css)|*.css"
+msgstr "Каскадні таблиці стилів (*.css)|*.css"
 
 #: syneditstrconst:syns_filteradsp21xx
 msgid "DSP Files (*.dsp,*.inc)|*.DSP;*.INC"
@@ -58,10 +58,6 @@ msgstr "Файли фортрану (*.for)|*.for"
 msgid "Foxpro Files (*.prg)|*.prg"
 msgstr "Файли Foxpro (*.prg)|*.prg"
 
-#: syneditstrconst:syns_filtergalaxy
-msgid "Galaxy Files (*.gtv,*.galrep,*.txt)|*.gtv;*.galrep;*.txt"
-msgstr "Файли Galaxy (*.gtv,*.galrep,*.txt)|*.gtv;*.galrep;*.txt"
-
 #: syneditstrconst:syns_filtergembase
 msgid "GEMBASE Files (*.dml,*.gem)|*.DML;*.GEM"
 msgstr "Файли GEMBASE (*.dml,*.gem)|*.DML;*.GEM"
@@ -70,13 +66,17 @@ msgstr "Файли GEMBASE (*.dml,*.gem)|*.DML;*.GEM"
 msgid "GW-TEL Script Files (*.gws)|*.gws"
 msgstr "Скрипти GW-TEL (*.gws)|*.gws"
 
-#: syneditstrconst:syns_filterhp48
-msgid "HP48 Files (*.s,*.sou,*.a,*.hp)|*.s;*.sou;*.a;*.hp"
-msgstr "Файли HP48 (*.s,*.sou,*.a,*.hp)|*.s;*.sou;*.a;*.hp"
+#: syneditstrconst:syns_filtergalaxy
+msgid "Galaxy Files (*.gtv,*.galrep,*.txt)|*.gtv;*.galrep;*.txt"
+msgstr "Файли Galaxy (*.gtv,*.galrep,*.txt)|*.gtv;*.galrep;*.txt"
 
 #: syneditstrconst:syns_filterhp
 msgid "HP48 Files (*.s,*.sou,*.a,*.hp)|*.S;*.SOU;*.A;*.HP"
 msgstr "HP48 Файли (*.s,*.sou,*.a,*.hp)|*.S;*.SOU;*.A;*.HP"
+
+#: syneditstrconst:syns_filterhp48
+msgid "HP48 Files (*.s,*.sou,*.a,*.hp)|*.s;*.sou;*.a;*.hp"
+msgstr "Файли HP48 (*.s,*.sou,*.a,*.hp)|*.s;*.sou;*.a;*.hp"
 
 #: syneditstrconst:syns_exporterformathtml
 msgid "HTML"
@@ -110,6 +110,10 @@ msgstr "Скрипти KiXtart (*.kix)|*.kix"
 msgid "Lazarus Form Files (*.lfm)|*.lfm"
 msgstr "Файли форм Lazarus (*.lfm)|*.lfm"
 
+#: syneditstrconst:syns_filterbatch
+msgid "MS-DOS Batch Files (*.bat;*.cmd)|*.bat;*.cmd"
+msgstr "Пакетні файли MS-DOS (*.bat;*.cmd)|*.bat;*.cmd"
+
 #: syneditstrconst:syns_filtermodelica
 msgid "Modelica Files (*.mo)|*.mo"
 msgstr "Файли Modelica (*.mo)|*.mo"
@@ -118,13 +122,13 @@ msgstr "Файли Modelica (*.mo)|*.mo"
 msgid "Modula-3 Files (*.m3)|*.m3"
 msgstr "Файли Модула-3 (*.m3)|*.m3"
 
-#: syneditstrconst:syns_filterbatch
-msgid "MS-DOS Batch Files (*.bat;*.cmd)|*.bat;*.cmd"
-msgstr "Пакетні файли MS-DOS (*.bat;*.cmd)|*.bat;*.cmd"
-
 #: syneditstrconst:syns_filtersyngenmsgfiles
 msgid "Msg files (*.msg)|*.msg"
 msgstr "Файли Msg (*.msg)|*.msg"
+
+#: syneditstrconst:syns_filterphp
+msgid "PHP Files (*.php,*.php3,*.phtml,*.inc)|*.php;*.php3;*.phtml;*.inc"
+msgstr "Файли PHP (*.php,*.php3,*.phtml,*.inc)|*.php;*.php3;*.phtml;*.inc"
 
 #: syneditstrconst:syns_previewscrollinfofmt
 msgid "Page: %d"
@@ -138,10 +142,6 @@ msgstr "Файли паскалю (*.pas,*.dpr,*.dpk,*.inc)|*.pas;*.dpr;*.dpk;*.
 msgid "Perl Files (*.pl,*.pm,*.cgi)|*.pl;*.pm;*.cgi"
 msgstr "Файли Perl (*.pl,*.pm,*.cgi)|*.pl;*.pm;*.cgi"
 
-#: syneditstrconst:syns_filterphp
-msgid "PHP Files (*.php,*.php3,*.phtml,*.inc)|*.php;*.php3;*.phtml;*.inc"
-msgstr "Файли PHP (*.php,*.php3,*.phtml,*.inc)|*.php;*.php3;*.phtml;*.inc"
-
 #: syneditstrconst:syns_filterprogress
 msgid "Progress Files (*.w,*.p,*.i)|*.w;*.p;*.i"
 msgstr "Файли Progress (*.w,*.p,*.i)|*.w;*.p;*.i"
@@ -150,13 +150,17 @@ msgstr "Файли Progress (*.w,*.p,*.i)|*.w;*.p;*.i"
 msgid "Python Files (*.py)|*.py"
 msgstr "Файли Python (*.py)|*.py"
 
+#: syneditstrconst:syns_exporterformatrtf
+msgid "RTF"
+msgstr "RTF"
+
 #: syneditstrconst:syns_filterrtf
 msgid "Rich Text Format (*.rtf)|*.rtf"
 msgstr "Текст в форматі RTF (*.rtf)|*.rtf"
 
-#: syneditstrconst:syns_exporterformatrtf
-msgid "RTF"
-msgstr "RTF"
+#: syneditstrconst:syns_filtersql
+msgid "SQL Files (*.sql)|*.sql"
+msgstr "Файли SQL (*.sql)|*.sql"
 
 #: syneditstrconst:syns_filtersdd
 msgid "Semanta DD files (*.sdd)|*.sdd"
@@ -165,10 +169,6 @@ msgstr "Файли Semanta DD (*.sdd)|*.sdd"
 #: syneditstrconst:syns_eduplicateshortcut
 msgid "Shortcut already exists"
 msgstr "Комбінація вже існує"
-
-#: syneditstrconst:syns_filtersql
-msgid "SQL Files (*.sql)|*.sql"
-msgstr "Файли SQL (*.sql)|*.sql"
 
 #: syneditstrconst:syns_filtersml
 msgid "Standard ML Files (*.sml)|*.sml"
@@ -202,11 +202,11 @@ msgstr "Файли VBScript (*.vbs)|*.vbs"
 msgid "Visual Basic Files (*.bas)|*.bas"
 msgstr "Файли Visual Basic (*.bas)|*.bas"
 
-#: syneditstrconst:syns_filterx86asm
-msgid "x86 Assembly Files (*.asm)|*.ASM"
-msgstr "Файли асемблера x86 (*.asm)|*.ASM"
-
 #: syneditstrconst:syns_filterxml
 msgid "XML Document (*.xml,*.xsd,*.xsl,*.xslt,*.dtd)|*.xml;*.xsd;*.xsl;*.xslt;*.dtd"
 msgstr "Документи XML (*.xml,*.xsd,*.xsl,*.xslt,*.dtd)|*.xml;*.xsd;*.xsl;*.xslt;*.dtd"
+
+#: syneditstrconst:syns_filterx86asm
+msgid "x86 Assembly Files (*.asm)|*.ASM"
+msgstr "Файли асемблера x86 (*.asm)|*.ASM"
 
