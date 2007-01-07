@@ -1,72 +1,65 @@
 { This is an automatically generated lazarus resource file }
 
 LazarusResources.Add('TBuildFileDialog','FORMDATA',[
-  'TPF0'#16'TBuildFileDialog'#15'BuildFileDialog'#7'Caption'#6#15'BuildFileDial'
-  +'og'#12'ClientHeight'#3'X'#1#11'ClientWidth'#3#158#1#10'KeyPreview'#9#8'OnCr'
-  +'eate'#7#21'BuildFileDialogCREATE'#9'OnKeyDown'#7#22'BuildFileDialogKEYDOWN'
-  +#13'PixelsPerInch'#2'_'#8'Position'#7#14'poScreenCenter'#18'HorzScrollBar.Pa'
-  +'ge'#3#157#1#18'VertScrollBar.Page'#3'W'#1#4'Left'#3'P'#1#6'Height'#3'X'#1#3
-  +'Top'#3#221#0#5'Width'#3#158#1#0#7'TButton'#8'OkButton'#7'Anchors'#11#6'akLe'
-  +'ft'#8'akBottom'#0#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6#2'Ok'#7'On'
-  +'Click'#7#13'OkButtonCLICK'#8'TabOrder'#2#0#4'Left'#2'j'#6'Height'#2#25#3'To'
-  +'p'#3'6'#1#5'Width'#2'K'#0#0#7'TButton'#12'CancelButton'#7'Anchors'#11#6'akL'
-  +'eft'#8'akBottom'#0#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6#6'Cancel'
-  +#11'ModalResult'#2#2#8'TabOrder'#2#1#4'Left'#3#234#0#6'Height'#2#25#3'Top'#3
-  +'6'#1#5'Width'#2'K'#0#0#9'TNotebook'#9'Notebook1'#5'Align'#7#5'alTop'#7'Anch'
-  +'ors'#11#5'akTop'#6'akLeft'#7'akRight'#8'akBottom'#0#9'PageIndex'#2#1#6'Heig'
-  +'ht'#3'0'#1#5'Width'#3#158#1#0#5'TPage'#11'GeneralPage'#7'Caption'#6#7'Optio'
-  +'ns'#11'ClientWidth'#3#154#1#12'ClientHeight'#3#18#1#4'Left'#2#2#6'Height'#3
-  +#18#1#3'Top'#2#28#5'Width'#3#154#1#0#9'TGroupBox'#24'WhenFileIsActiveGroupbo'
-  +'x'#7'Caption'#6'-When this file is active in source editor ...'#12'ClientHe'
-  +'ight'#2'@'#11'ClientWidth'#3#141#1#11'ParentCtl3D'#8#8'TabOrder'#2#0#4'Left'
-  +#2#6#6'Height'#2'Q'#3'Top'#2#12#5'Width'#3#145#1#0#9'TCheckBox'#28'OverrideB'
-  +'uildProjectCheckbox'#7'Caption'#6'7On build project execute the Build File '
-  +'command instead'#8'TabOrder'#2#0#4'Left'#2#6#6'Height'#2#20#3'Top'#2#9#5'Wi'
-  +'dth'#3#128#1#0#0#9'TCheckBox'#26'OverrideRunProjectCheckbox'#7'Caption'#6'3'
-  +'On run project execute the Run File command instead'#8'TabOrder'#2#1#4'Left'
-  +#2#6#6'Height'#2#20#3'Top'#2'!'#5'Width'#3#128#1#0#0#0#0#5'TPage'#9'BuildPag'
-  +'e'#7'Caption'#6#5'Build'#11'ClientWidth'#3#154#1#12'ClientHeight'#3#18#1#4
-  +'Left'#2#2#6'Height'#3#18#1#3'Top'#2#28#5'Width'#3#154#1#0#9'TGroupBox'#20'B'
-  +'uildCommandGroupbox'#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#0#7'Captio'
-  +'n'#6#13'Build Command'#12'ClientHeight'#2'5'#11'ClientWidth'#3#146#1#11'Par'
-  +'entCtl3D'#8#8'TabOrder'#2#0#4'Left'#2#4#6'Height'#2'F'#3'Top'#2'4'#5'Width'
-  +#3#150#1#0#5'TMemo'#16'BuildCommandMemo'#5'Align'#7#8'alClient'#13'Lines.Str'
-  +'ings'#1#6#18'CompileCommandMemo'#0#8'TabOrder'#2#0#6'Height'#2'5'#5'Width'#3
-  +#146#1#0#0#0#9'TCheckBox'#26'BuildScanForFPCMsgCheckbox'#7'Anchors'#11#5'akT'
-  +'op'#6'akLeft'#7'akRight'#0#7'Caption'#6#21'Scan for FPC messages'#8'TabOrde'
-  +'r'#2#1#4'Left'#2#10#6'Height'#2#20#3'Top'#2'z'#5'Width'#3#136#1#0#0#9'TChec'
-  +'kBox'#27'BuildScanForMakeMsgCheckbox'#7'Anchors'#11#5'akTop'#6'akLeft'#7'ak'
-  +'Right'#0#7'Caption'#6#22'Scan for Make messages'#8'TabOrder'#2#2#4'Left'#2
-  +#10#6'Height'#2#20#3'Top'#3#146#0#5'Width'#3#136#1#0#0#9'TGroupBox'#23'Build'
-  +'WorkingDirGroupbox'#7'Caption'#6'-Working directory (Leave empty for file p'
-  +'ath)'#12'ClientHeight'#2#31#11'ClientWidth'#3#142#1#11'ParentCtl3D'#8#8'Tab'
-  +'Order'#2#3#4'Left'#2#4#6'Height'#2'0'#3'Top'#2#4#5'Width'#3#146#1#0#9'TComb'
-  +'oBox'#20'BuildWorkDirCombobox'#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#0
-  +#16'AutoCompleteText'#11#22'cbactEndOfLineComplete'#20'cbactSearchAscending'
-  +#0#9'MaxLength'#2#0#11'ParentCtl3D'#8#8'TabOrder'#2#0#4'Text'#6#20'BuildWork'
-  +'DirCombobox'#6'Height'#2#25#5'Width'#3'l'#1#0#0#7'TButton'#24'BuildBrowseWo'
-  +'rkDirButton'#7'Anchors'#11#5'akTop'#7'akRight'#0#25'BorderSpacing.InnerBord'
-  +'er'#2#4#7'Caption'#6#3'...'#7'OnClick'#7#29'BuildBrowseWorkDirButtonCLICK'#8
-  +'TabOrder'#2#1#4'Left'#3'l'#1#6'Height'#2#23#5'Width'#2#24#0#0#0#0#5'TPage'#7
-  +'RunPage'#7'Caption'#6#3'Run'#11'ClientWidth'#3#154#1#12'ClientHeight'#3#18#1
-  +#4'Left'#2#2#6'Height'#3#18#1#3'Top'#2#28#5'Width'#3#154#1#0#9'TCheckBox'#26
-  +'AlwaysCompileFirstCheckbox'#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#0#7
-  +'Caption'#6#23'Always Build before Run'#8'TabOrder'#2#0#4'Left'#2#10#6'Heigh'
-  +'t'#2#20#3'Top'#2#4#5'Width'#3#136#1#0#0#9'TGroupBox'#18'RunCommandGroupbox'
-  +#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#0#7'Caption'#6#11'Run Command'
-  +#12'ClientHeight'#2'5'#11'ClientWidth'#3#144#1#11'ParentCtl3D'#8#8'TabOrder'
-  +#2#1#4'Left'#2#4#6'Height'#2'F'#3'Top'#2'\'#5'Width'#3#148#1#0#5'TMemo'#14'R'
-  +'unCommandMemo'#5'Align'#7#8'alClient'#13'Lines.Strings'#1#6#18'CompileComma'
-  +'ndMemo'#0#8'TabOrder'#2#0#6'Height'#2'5'#5'Width'#3#144#1#0#0#0#9'TGroupBox'
-  +#18'RunWorkDirGroupbox'#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#0#7'Capt'
-  +'ion'#6'-Working Directory (Leave empty for file path)'#12'ClientHeight'#2' '
-  +#11'ClientWidth'#3#144#1#11'ParentCtl3D'#8#8'TabOrder'#2#2#4'Left'#2#4#6'Hei'
-  +'ght'#2'1'#3'Top'#2'$'#5'Width'#3#148#1#0#9'TComboBox'#18'RunWorkDirCombobox'
-  +#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#0#16'AutoCompleteText'#11#22'cb'
-  +'actEndOfLineComplete'#20'cbactSearchAscending'#0#9'MaxLength'#2#0#11'Parent'
-  +'Ctl3D'#8#8'TabOrder'#2#0#4'Text'#6#18'RunWorkDirCombobox'#6'Height'#2#21#5
-  ,'Width'#3'l'#1#0#0#7'TButton'#22'RunBrowseWorkDirButton'#7'Anchors'#11#5'akT'
-  +'op'#7'akRight'#0#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6#3'...'#7'On'
-  +'Click'#7#29'BuildBrowseWorkDirButtonCLICK'#8'TabOrder'#2#1#4'Left'#3'p'#1#6
-  +'Height'#2#23#5'Width'#2#27#8'HelpType'#7#9'htKeyword'#0#0#0#0#0#0
+  'TPF0'#16'TBuildFileDialog'#15'BuildFileDialog'#4'Left'#3'P'#1#6'Height'#3'X'
+  +#1#3'Top'#3#221#0#5'Width'#3#158#1#18'HorzScrollBar.Page'#3#157#1#18'VertScr'
+  +'ollBar.Page'#3'W'#1#13'ActiveControl'#7#8'OkButton'#7'Caption'#6#15'BuildFi'
+  +'leDialog'#10'KeyPreview'#9#8'OnCreate'#7#21'BuildFileDialogCREATE'#9'OnKeyD'
+  +'own'#7#22'BuildFileDialogKEYDOWN'#8'Position'#7#14'poScreenCenter'#0#7'TBut'
+  +'ton'#8'OkButton'#4'Left'#2'j'#6'Height'#2#25#3'Top'#3'6'#1#5'Width'#2'K'#7
+  +'Anchors'#11#6'akLeft'#8'akBottom'#0#25'BorderSpacing.InnerBorder'#2#4#7'Cap'
+  +'tion'#6#2'Ok'#7'OnClick'#7#13'OkButtonCLICK'#8'TabOrder'#2#0#0#0#7'TButton'
+  +#12'CancelButton'#4'Left'#3#234#0#6'Height'#2#25#3'Top'#3'6'#1#5'Width'#2'K'
+  +#7'Anchors'#11#6'akLeft'#8'akBottom'#0#25'BorderSpacing.InnerBorder'#2#4#7'C'
+  +'aption'#6#6'Cancel'#11'ModalResult'#2#2#8'TabOrder'#2#1#0#0#9'TNotebook'#9
+  +'Notebook1'#6'Height'#3'0'#1#5'Width'#3#158#1#5'Align'#7#5'alTop'#7'Anchors'
+  +#11#5'akTop'#6'akLeft'#7'akRight'#8'akBottom'#0#9'PageIndex'#2#2#0#5'TPage'
+  +#11'GeneralPage'#7'Caption'#6#7'Options'#0#9'TGroupBox'#24'WhenFileIsActiveG'
+  +'roupbox'#4'Left'#2#6#6'Height'#2'Q'#3'Top'#2#12#5'Width'#3#145#1#7'Caption'
+  +#6'-When this file is active in source editor ...'#11'ParentCtl3D'#8#8'TabOr'
+  +'der'#2#0#0#9'TCheckBox'#28'OverrideBuildProjectCheckbox'#4'Left'#2#6#6'Heig'
+  +'ht'#2#20#3'Top'#2#9#5'Width'#3'X'#1#7'Caption'#6'7On build project execute '
+  +'the Build File command instead'#8'TabOrder'#2#0#0#0#9'TCheckBox'#26'Overrid'
+  +'eRunProjectCheckbox'#4'Left'#2#6#6'Height'#2#20#3'Top'#2'!'#5'Width'#3'I'#1
+  +#7'Caption'#6'3On run project execute the Run File command instead'#8'TabOrd'
+  +'er'#2#1#0#0#0#0#5'TPage'#9'BuildPage'#7'Caption'#6#5'Build'#0#9'TGroupBox'
+  +#20'BuildCommandGroupbox'#4'Left'#2#4#6'Height'#2'F'#3'Top'#2'4'#5'Width'#3
+  +#150#1#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#0#7'Caption'#6#13'Build C'
+  +'ommand'#11'ParentCtl3D'#8#8'TabOrder'#2#0#0#5'TMemo'#16'BuildCommandMemo'#6
+  +'Height'#2'5'#5'Width'#3#146#1#5'Align'#7#8'alClient'#13'Lines.Strings'#1#6
+  +#18'CompileCommandMemo'#0#8'TabOrder'#2#0#0#0#0#9'TCheckBox'#26'BuildScanFor'
+  +'FPCMsgCheckbox'#4'Left'#2#10#6'Height'#2#20#3'Top'#2'z'#5'Width'#3#136#1#7
+  +'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#0#7'Caption'#6#21'Scan for FPC me'
+  +'ssages'#8'TabOrder'#2#1#0#0#9'TCheckBox'#27'BuildScanForMakeMsgCheckbox'#4
+  +'Left'#2#10#6'Height'#2#20#3'Top'#3#146#0#5'Width'#3#136#1#7'Anchors'#11#5'a'
+  +'kTop'#6'akLeft'#7'akRight'#0#7'Caption'#6#22'Scan for Make messages'#8'TabO'
+  +'rder'#2#2#0#0#9'TGroupBox'#23'BuildWorkingDirGroupbox'#4'Left'#2#4#6'Height'
+  +#2'0'#3'Top'#2#4#5'Width'#3#146#1#7'Caption'#6'-Working directory (Leave emp'
+  +'ty for file path)'#11'ParentCtl3D'#8#8'TabOrder'#2#3#0#9'TComboBox'#20'Buil'
+  +'dWorkDirCombobox'#6'Height'#2#25#5'Width'#3'l'#1#7'Anchors'#11#5'akTop'#6'a'
+  +'kLeft'#7'akRight'#0#16'AutoCompleteText'#11#22'cbactEndOfLineComplete'#20'c'
+  +'bactSearchAscending'#0#9'MaxLength'#2#0#11'ParentCtl3D'#8#8'TabOrder'#2#0#4
+  +'Text'#6#20'BuildWorkDirCombobox'#0#0#7'TButton'#24'BuildBrowseWorkDirButton'
+  +#4'Left'#3'l'#1#6'Height'#2#23#5'Width'#2#24#7'Anchors'#11#5'akTop'#7'akRigh'
+  +'t'#0#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6#3'...'#7'OnClick'#7#29
+  +'BuildBrowseWorkDirButtonCLICK'#8'TabOrder'#2#1#0#0#0#0#5'TPage'#7'RunPage'#7
+  +'Caption'#6#3'Run'#0#9'TCheckBox'#26'AlwaysCompileFirstCheckbox'#4'Left'#2#10
+  +#6'Height'#2#20#3'Top'#2#4#5'Width'#3#136#1#7'Anchors'#11#5'akTop'#6'akLeft'
+  +#7'akRight'#0#7'Caption'#6#23'Always Build before Run'#8'TabOrder'#2#0#0#0#9
+  +'TGroupBox'#18'RunCommandGroupbox'#4'Left'#2#4#6'Height'#2'F'#3'Top'#2'\'#5
+  +'Width'#3#148#1#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#0#7'Caption'#6#11
+  +'Run Command'#11'ParentCtl3D'#8#8'TabOrder'#2#1#0#5'TMemo'#14'RunCommandMemo'
+  +#6'Height'#2'5'#5'Width'#3#144#1#5'Align'#7#8'alClient'#13'Lines.Strings'#1#6
+  +#18'CompileCommandMemo'#0#8'TabOrder'#2#0#0#0#0#9'TGroupBox'#18'RunWorkDirGr'
+  +'oupbox'#4'Left'#2#4#6'Height'#2'1'#3'Top'#2'$'#5'Width'#3#148#1#7'Anchors'
+  +#11#5'akTop'#6'akLeft'#7'akRight'#0#7'Caption'#6'-Working Directory (Leave e'
+  +'mpty for file path)'#11'ParentCtl3D'#8#8'TabOrder'#2#2#0#9'TComboBox'#18'Ru'
+  +'nWorkDirCombobox'#6'Height'#2#21#5'Width'#3'l'#1#7'Anchors'#11#5'akTop'#6'a'
+  +'kLeft'#7'akRight'#0#16'AutoCompleteText'#11#22'cbactEndOfLineComplete'#20'c'
+  +'bactSearchAscending'#0#9'MaxLength'#2#0#11'ParentCtl3D'#8#8'TabOrder'#2#0#4
+  +'Text'#6#18'RunWorkDirCombobox'#0#0#7'TButton'#22'RunBrowseWorkDirButton'#4
+  +'Left'#3'p'#1#6'Height'#2#23#5'Width'#2#27#8'HelpType'#7#9'htKeyword'#7'Anch'
+  +'ors'#11#5'akTop'#7'akRight'#0#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6
+  +#3'...'#7'OnClick'#7#29'BuildBrowseWorkDirButtonCLICK'#8'TabOrder'#2#1#0#0#0
+  +#0#0#0
 ]);

@@ -268,10 +268,17 @@ resourcestring
   lisMenuProjectOptions = 'Project Options ...';
   
   lisMenuBuild = 'Build';
+  lisBFWorkingDirectoryLeaveEmptyForFilePath = 'Working directory (Leave '
+    +'empty for file path)';
+  lisBFBuildCommand = 'Build Command';
   lisMenuBuildAll = 'Build all';
   lisMenuQuickCompile = 'Quick compile';
   lisMenuAbortBuild = 'Abort Build';
   lisMenuProjectRun = 'Run';
+  lisBFAlwaysBuildBeforeRun = 'Always Build before Run';
+  lisBFWorkingDirectoryLeaveEmptyForFilePath2 = 'Working Directory (Leave '
+    +'empty for file path)';
+  lisBFRunCommand = 'Run Command';
   lisMenuPause = 'Pause';
   lisMenuStepInto = 'Step into';
   lisMenuStepOver = 'Step over';
@@ -1275,6 +1282,12 @@ resourcestring
   dlgTextToFing = '&Text to Find';
   dlgReplaceWith = '&Replace With';
   dlgFROpts = 'Options';
+  lisBFWhenThisFileIsActiveInSourceEditor = 'When this file is active in '
+    +'source editor ...';
+  lisBFOnBuildProjectExecuteTheBuildFileCommandInstead = 'On build project '
+    +'execute the Build File command instead';
+  lisBFOnRunProjectExecuteTheRunFileCommandInstead = 'On run project execute '
+    +'the Run File command instead';
   lisCEFilter = '(Filter)';
   dlgCaseSensitive = 'Case Sensitive';
   lisDistinguishBigAndSmallLettersEGAAndA = 'Distinguish big and small '
@@ -1715,6 +1728,7 @@ resourcestring
   dlgUnitDepCaption     = 'Unit dependencies';
   dlgUnitDepBrowse      = 'Open';
   dlgUnitDepRefresh     = 'Refresh';
+  lisToDoGoto = 'Goto';
   
   // Doc Editor
   lisDocumentationEditor = 'Documentation Editor';
@@ -2297,6 +2311,9 @@ resourcestring
   lisEdtExtToolAlt = 'Alt';
   lisEdtExtToolShift = 'Shift';
   lisEdtExtToolMacros = 'Macros';
+  lisWorkingDirectoryForBuilding = 'Working directory for building';
+  lisWorkingDirectoryForRun = 'Working directory for run';
+  lisConfigureBuild = 'Configure Build %s';
   lisEdtExtToolInsert = 'Insert';
   lisEdtExtToolTitleAndFilenameRequired = 'Title and Filename required';
   lisEdtExtToolAValidToolNeedsAtLeastATitleAndAFilename = 'A valid tool needs '
@@ -3195,7 +3212,7 @@ resourcestring
   lisPListType                  = 'Type';
   lisPListAll                   = '<All>';
   lisPListNone                  = '<None>';
-  lisUIClearIncludedByReference = 'Clear included by reference';
+  lisUIClearIncludedByReference = 'Clear include cache';
 
 implementation
 end.

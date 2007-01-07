@@ -1,25 +1,26 @@
 object frmTodo: TfrmTodo
-  ActiveControl = lvTodo
-  Caption = 'frmTodo'
-  ClientHeight = 300
-  ClientWidth = 500
-  KeyPreview = True
-  OnKeyDown = FormKeyDown
-  PixelsPerInch = 96
-  Position = poScreenCenter
-  HorzScrollBar.Page = 499
-  VertScrollBar.Page = 299
   Left = 313
   Height = 300
   Top = 610
   Width = 500
+  HorzScrollBar.Page = 499
+  VertScrollBar.Page = 299
+  ActiveControl = lvTodo
+  Caption = 'frmTodo'
+  KeyPreview = True
+  OnCreate = FormCreate
+  OnKeyDown = FormKeyDown
+  Position = poScreenCenter
   object StatusBar: TStatusBar
-    Panels = <>
-    Height = 23
-    Top = 277
+    Height = 20
+    Top = 280
     Width = 500
+    Panels = <>
   end
   object lvTodo: TListView
+    Height = 232
+    Top = 48
+    Width = 500
     Align = alClient
     Columns = <    
       item
@@ -40,60 +41,49 @@ object frmTodo: TfrmTodo
       end>
     RowSelect = True
     ScrollBars = ssAutoBoth
+    TabOrder = 0
     ViewStyle = vsReport
     OnDblClick = tbGotoClick
-    Height = 229
-    Top = 48
-    Width = 500
   end
   object ToolBar: TToolBar
+    Height = 48
+    Width = 500
     ButtonHeight = 46
     ButtonWidth = 47
     Caption = 'ToolBar'
     Flat = True
-    Height = 48
     Images = ImageList1
     ParentShowHint = False
     ShowCaptions = True
     ShowHint = True
     TabOrder = 1
-    Height = 48
-    Width = 500
     object tbOptions: TToolButton
+      Left = 145
+      Top = 2
       Caption = 'Options'
       ImageIndex = 3
       Visible = False
-      Left = 142
-      Height = 46
-      Top = 2
-      Width = 47
     end
     object tbPrint: TToolButton
+      Left = 98
+      Top = 2
       Caption = 'Print'
       ImageIndex = 2
       Visible = False
-      Left = 95
-      Height = 46
-      Top = 2
-      Width = 47
     end
     object tbRefresh: TToolButton
+      Left = 1
+      Top = 2
       Caption = 'Refresh'
       ImageIndex = 0
       OnClick = tbRefreshClick
-      Left = 1
-      Height = 46
-      Top = 2
-      Width = 47
     end
     object tbGoto: TToolButton
+      Left = 51
+      Top = 2
       Caption = 'Goto'
       ImageIndex = 1
       OnClick = tbGotoClick
-      Left = 48
-      Height = 46
-      Top = 2
-      Width = 47
     end
   end
   object ImageList1: TImageList

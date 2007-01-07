@@ -558,6 +558,10 @@ msgstr "Alt-tasto imposta la modalità colonna"
 msgid "Alternative key (or 2 keys combination)"
 msgstr ""
 
+#: lazarusidestrconsts:lisbfalwaysbuildbeforerun
+msgid "Always Build before Run"
+msgstr ""
+
 #: lazarusidestrconsts:lisprojoptsalwaysbuildevenifnothingchanged
 msgid "Always build (even if nothing changed)"
 msgstr "Esegui sempre il build (anche se non è cambiato nulla)"
@@ -885,6 +889,10 @@ msgstr "Esegui build"
 #: lazarusidestrconsts:lisbuildcodetools
 msgid "Build CodeTools"
 msgstr "Esegui build dei CodeTools"
+
+#: lazarusidestrconsts:lisbfbuildcommand
+msgid "Build Command"
+msgstr ""
 
 #: lazarusidestrconsts:lisbuildcomponent
 msgid "Build Component"
@@ -1267,7 +1275,7 @@ msgid "Clear dependency filename"
 msgstr ""
 
 #: lazarusidestrconsts:lisuiclearincludedbyreference
-msgid "Clear included by reference"
+msgid "Clear include cache"
 msgstr ""
 
 #: lazarusidestrconsts:lisdebugoptionsfrmclearlogonrun
@@ -1529,6 +1537,10 @@ msgstr "File di configurazione:"
 #: lazarusidestrconsts:lisconfigurebuildlazarus
 msgid "Configure %sBuild Lazarus%s"
 msgstr "Configura %sEsegui un build di Lazarus%s"
+
+#: lazarusidestrconsts:lisconfigurebuild
+msgid "Configure Build %s"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuconfigbuildfile
 msgid "Configure Build+Run File ..."
@@ -3141,6 +3153,10 @@ msgstr "Vai all'editor precedente"
 #: lazarusidestrconsts:srkmecgotoincludedirective
 msgid "Go to to include directive of current include file"
 msgstr "Vai alla direttiva include del file include corrente"
+
+#: lazarusidestrconsts:listodogoto
+msgid "Goto"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecgotoxy
 msgid "Goto XY"
@@ -5018,9 +5034,17 @@ msgstr "Vecchi antenati"
 msgid "Old Class"
 msgstr "Vecchia classe"
 
+#: lazarusidestrconsts:lisbfonbuildprojectexecutethebuildfilecommandinstead
+msgid "On build project execute the Build File command instead"
+msgstr ""
+
 #: lazarusidestrconsts:lisceoonidle
 msgid "On idle"
 msgstr "On idle"
+
+#: lazarusidestrconsts:lisbfonrunprojectexecutetherunfilecommandinstead
+msgid "On run project execute the Run File command instead"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuonlinehelp
 msgid "Online Help"
@@ -6165,6 +6189,10 @@ msgstr "Elastico"
 #: lazarusidestrconsts:lismenuprojectrun
 msgid "Run"
 msgstr "Esegui"
+
+#: lazarusidestrconsts:lisbfruncommand
+msgid "Run Command"
+msgstr ""
 
 #: lazarusidestrconsts:lismenurunfile
 msgid "Run File"
@@ -8830,6 +8858,10 @@ msgstr "Durante la creazione di nuove form, aggiungile alle form auto-create"
 msgid "When switching file in source editor"
 msgstr "Durante lo switch dei file nell'editor dei sorgenti"
 
+#: lazarusidestrconsts:lisbfwhenthisfileisactiveinsourceeditor
+msgid "When this file is active in source editor ..."
+msgstr ""
+
 #: lazarusidestrconsts:lisfindfilewhere
 msgid "Where"
 msgstr "Dove"
@@ -8874,6 +8906,10 @@ msgstr "Completamento parole"
 msgid "Words"
 msgstr "Parole"
 
+#: lazarusidestrconsts:lisbfworkingdirectoryleaveemptyforfilepath2
+msgid "Working Directory (Leave empty for file path)"
+msgstr ""
+
 #: lazarusidestrconsts:lisedtexttoolworkingdirectory
 msgid "Working Directory:"
 msgstr "Directory di lavoro:"
@@ -8881,6 +8917,18 @@ msgstr "Directory di lavoro:"
 #: lazarusidestrconsts:dlgroworkingdirectory
 msgid "Working directory"
 msgstr "Directory di lavoro"
+
+#: lazarusidestrconsts:lisbfworkingdirectoryleaveemptyforfilepath
+msgid "Working directory (Leave empty for file path)"
+msgstr ""
+
+#: lazarusidestrconsts:lisworkingdirectoryforbuilding
+msgid "Working directory for building"
+msgstr ""
+
+#: lazarusidestrconsts:lisworkingdirectoryforrun
+msgid "Working directory for run"
+msgstr ""
 
 #: lazarusidestrconsts:liswriteerror
 msgid "Write Error"

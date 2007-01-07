@@ -546,6 +546,10 @@ msgstr "Alt-клавіша встан. реж. колонки"
 msgid "Alternative key (or 2 keys combination)"
 msgstr ""
 
+#: lazarusidestrconsts:lisbfalwaysbuildbeforerun
+msgid "Always Build before Run"
+msgstr ""
+
 #: lazarusidestrconsts:lisprojoptsalwaysbuildevenifnothingchanged
 msgid "Always build (even if nothing changed)"
 msgstr ""
@@ -873,6 +877,10 @@ msgstr "Побудувати"
 #: lazarusidestrconsts:lisbuildcodetools
 msgid "Build CodeTools"
 msgstr "Побудувати CodeTools"
+
+#: lazarusidestrconsts:lisbfbuildcommand
+msgid "Build Command"
+msgstr ""
 
 #: lazarusidestrconsts:lisbuildcomponent
 msgid "Build Component"
@@ -1255,7 +1263,7 @@ msgid "Clear dependency filename"
 msgstr ""
 
 #: lazarusidestrconsts:lisuiclearincludedbyreference
-msgid "Clear included by reference"
+msgid "Clear include cache"
 msgstr ""
 
 #: lazarusidestrconsts:lisdebugoptionsfrmclearlogonrun
@@ -1517,6 +1525,10 @@ msgstr "Файли налаштувань:"
 #: lazarusidestrconsts:lisconfigurebuildlazarus
 msgid "Configure %sBuild Lazarus%s"
 msgstr "Налаштувати %sПобудувати Lazarus%s"
+
+#: lazarusidestrconsts:lisconfigurebuild
+msgid "Configure Build %s"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuconfigbuildfile
 msgid "Configure Build+Run File ..."
@@ -3129,6 +3141,10 @@ msgstr "Перейти до попереднього редактора"
 #: lazarusidestrconsts:srkmecgotoincludedirective
 msgid "Go to to include directive of current include file"
 msgstr "Перейти за директивою include поточного включеного файлу"
+
+#: lazarusidestrconsts:listodogoto
+msgid "Goto"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecgotoxy
 msgid "Goto XY"
@@ -5006,9 +5022,17 @@ msgstr "Старі предки"
 msgid "Old Class"
 msgstr "Старий клас"
 
+#: lazarusidestrconsts:lisbfonbuildprojectexecutethebuildfilecommandinstead
+msgid "On build project execute the Build File command instead"
+msgstr ""
+
 #: lazarusidestrconsts:lisceoonidle
 msgid "On idle"
 msgstr "В паузах"
+
+#: lazarusidestrconsts:lisbfonrunprojectexecutetherunfilecommandinstead
+msgid "On run project execute the Run File command instead"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuonlinehelp
 msgid "Online Help"
@@ -6153,6 +6177,10 @@ msgstr "Поле приміток"
 #: lazarusidestrconsts:lismenuprojectrun
 msgid "Run"
 msgstr "Запуск"
+
+#: lazarusidestrconsts:lisbfruncommand
+msgid "Run Command"
+msgstr ""
 
 #: lazarusidestrconsts:lismenurunfile
 msgid "Run File"
@@ -8818,6 +8846,10 @@ msgstr "При створенні нових форм додати їх до а�
 msgid "When switching file in source editor"
 msgstr "Коли перемикається файл в редакторі коду"
 
+#: lazarusidestrconsts:lisbfwhenthisfileisactiveinsourceeditor
+msgid "When this file is active in source editor ..."
+msgstr ""
+
 #: lazarusidestrconsts:lisfindfilewhere
 msgid "Where"
 msgstr "Де"
@@ -8862,6 +8894,10 @@ msgstr "Завершення слів"
 msgid "Words"
 msgstr "Слова"
 
+#: lazarusidestrconsts:lisbfworkingdirectoryleaveemptyforfilepath2
+msgid "Working Directory (Leave empty for file path)"
+msgstr ""
+
 #: lazarusidestrconsts:lisedtexttoolworkingdirectory
 msgid "Working Directory:"
 msgstr "Робоча тека:"
@@ -8869,6 +8905,18 @@ msgstr "Робоча тека:"
 #: lazarusidestrconsts:dlgroworkingdirectory
 msgid "Working directory"
 msgstr "Робоча тека"
+
+#: lazarusidestrconsts:lisbfworkingdirectoryleaveemptyforfilepath
+msgid "Working directory (Leave empty for file path)"
+msgstr ""
+
+#: lazarusidestrconsts:lisworkingdirectoryforbuilding
+msgid "Working directory for building"
+msgstr ""
+
+#: lazarusidestrconsts:lisworkingdirectoryforrun
+msgid "Working directory for run"
+msgstr ""
 
 #: lazarusidestrconsts:liswriteerror
 msgid "Write Error"

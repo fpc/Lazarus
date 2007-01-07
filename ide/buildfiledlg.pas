@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, LResources, LCLType, Forms, Controls, Graphics, Dialogs,
   Buttons, ExtCtrls, StdCtrls, BasicCodeTools, FileUtil, IDEProcs, InputHistory,
-  EnvironmentOpts, TransferMacros;
+  LazarusIDEStrConsts, EnvironmentOpts, TransferMacros;
 
 type
   TIDEDirective = (
@@ -90,7 +90,7 @@ type
     procedure BuildBrowseWorkDirButtonCLICK(Sender: TObject);
     procedure BuildFileDialogCREATE(Sender: TObject);
     procedure BuildFileDialogKEYDOWN(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
+                                     Shift: TShiftState);
     procedure BuildMacroSelectionBoxAddMacro(Sender: TObject);
     procedure OkButtonCLICK(Sender: TObject);
     procedure RunMacroSelectionBoxAddMacro(Sender: TObject);
@@ -510,7 +510,7 @@ begin
   BuildMacroSelectionBox:=TMacroSelectionBox.Create(Self);
   with BuildMacroSelectionBox do begin
     Name:='BuildMacroSelectionBox';
-    Caption:='Macros';
+    Caption:=lisEdtExtToolMacros;
     OnAddMacro:=@BuildMacroSelectionBoxAddMacro;
     AnchorToNeighbour(akTop,5,BuildScanForMakeMsgCheckbox);
     BorderSpacing.Around:=3;
@@ -521,13 +521,31 @@ begin
   RunMacroSelectionBox:=TMacroSelectionBox.Create(Self);
   with RunMacroSelectionBox do begin
     Name:='RunMacroSelectionBox';
-    Caption:='Macros';
+    Caption:=lisEdtExtToolMacros;
     OnAddMacro:=@RunMacroSelectionBoxAddMacro;
     AnchorToNeighbour(akTop,5,RunCommandGroupbox);
     BorderSpacing.Around:=3;
     Align:=alBottom;
     Parent:=RunPage;
   end;
+
+  GeneralPage.Caption:=dlgFROpts;
+  WhenFileIsActiveGroupbox.Caption:=lisBFWhenThisFileIsActiveInSourceEditor;
+  OverrideBuildProjectCheckbox.Caption:=
+    lisBFOnBuildProjectExecuteTheBuildFileCommandInstead;
+  OverrideRunProjectCheckbox.Caption:=
+    lisBFOnRunProjectExecuteTheRunFileCommandInstead;
+
+  BuildPage.Caption:=lisMenuBuild;
+  BuildWorkingDirGroupbox.Caption:=lisBFWorkingDirectoryLeaveEmptyForFilePath;
+  BuildCommandGroupbox.Caption:=lisBFBuildCommand;
+  BuildScanForFPCMsgCheckbox.Caption:=lisCOScanForFPCMessages;
+  BuildScanForMakeMsgCheckbox.Caption:=lisCOScanForMakeMessages;
+
+  RunPage.Caption:=lisMenuProjectRun;
+  AlwaysCompileFirstCheckbox.Caption:=lisBFAlwaysBuildBeforeRun;
+  RunWorkDirGroupbox.Caption:=lisBFWorkingDirectoryLeaveEmptyForFilePath2;
+  RunCommandGroupbox.Caption:=lisBFRunCommand;
 end;
 
 procedure TBuildFileDialog.BuildBrowseWorkDirButtonCLICK(Sender: TObject);
@@ -540,9 +558,9 @@ begin
   try
     InputHistories.ApplyFileDialogSettings(OpenDialog);
     if Sender=BuildBrowseWorkDirButton then
-      OpenDialog.Title:='Working directory for building'
+      OpenDialog.Title:=lisWorkingDirectoryForBuilding
     else if Sender=RunBrowseWorkDirButton then
-      OpenDialog.Title:='Working directory for run'
+      OpenDialog.Title:=lisWorkingDirectoryForRun
     else
       exit;
     OpenDialog.Filename:='';
@@ -605,7 +623,7 @@ end;
 
 procedure TBuildFileDialog.UpdateCaption;
 begin
-  Caption:='Configure Build '+Filename;
+  Caption:=Format(lisConfigureBuild, [Filename]);
 end;
 
 procedure TBuildFileDialog.ReadDirectiveList;
@@ -745,7 +763,7 @@ begin
   AddButton:=TButton.Create(Self);
   with AddButton do begin
     Name:='AddButton';
-    Caption:='Add';
+    Caption:=lisCodeTemplAdd;
     OnClick:=@AddButtonClick;
     Enabled:=false;
     AutoSize:=true;

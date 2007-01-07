@@ -560,6 +560,10 @@ msgstr "Mode kolom set Alt-Key"
 msgid "Alternative key (or 2 keys combination)"
 msgstr ""
 
+#: lazarusidestrconsts:lisbfalwaysbuildbeforerun
+msgid "Always Build before Run"
+msgstr ""
+
 #: lazarusidestrconsts:lisprojoptsalwaysbuildevenifnothingchanged
 msgid "Always build (even if nothing changed)"
 msgstr "Selalu membangun (meskipun jika tidak ada yang berubah)"
@@ -887,6 +891,10 @@ msgstr "Bangun"
 #: lazarusidestrconsts:lisbuildcodetools
 msgid "Build CodeTools"
 msgstr "Bangun CodeTools"
+
+#: lazarusidestrconsts:lisbfbuildcommand
+msgid "Build Command"
+msgstr ""
 
 #: lazarusidestrconsts:lisbuildcomponent
 msgid "Build Component"
@@ -1269,7 +1277,7 @@ msgid "Clear dependency filename"
 msgstr ""
 
 #: lazarusidestrconsts:lisuiclearincludedbyreference
-msgid "Clear included by reference"
+msgid "Clear include cache"
 msgstr ""
 
 #: lazarusidestrconsts:lisdebugoptionsfrmclearlogonrun
@@ -1531,6 +1539,10 @@ msgstr "File Konfig:"
 #: lazarusidestrconsts:lisconfigurebuildlazarus
 msgid "Configure %sBuild Lazarus%s"
 msgstr "Konfigurasi %sBuild Lazarus%s"
+
+#: lazarusidestrconsts:lisconfigurebuild
+msgid "Configure Build %s"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuconfigbuildfile
 msgid "Configure Build+Run File ..."
@@ -3143,6 +3155,10 @@ msgstr "Pergi ke editor sebelumnya"
 #: lazarusidestrconsts:srkmecgotoincludedirective
 msgid "Go to to include directive of current include file"
 msgstr "Pergi ke direktif include dari file include saat ini"
+
+#: lazarusidestrconsts:listodogoto
+msgid "Goto"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecgotoxy
 msgid "Goto XY"
@@ -5020,9 +5036,17 @@ msgstr "Karuhun Lama"
 msgid "Old Class"
 msgstr "Kelas Lama"
 
+#: lazarusidestrconsts:lisbfonbuildprojectexecutethebuildfilecommandinstead
+msgid "On build project execute the Build File command instead"
+msgstr ""
+
 #: lazarusidestrconsts:lisceoonidle
 msgid "On idle"
 msgstr "Saat menganggur"
+
+#: lazarusidestrconsts:lisbfonrunprojectexecutetherunfilecommandinstead
+msgid "On run project execute the Run File command instead"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuonlinehelp
 msgid "Online Help"
@@ -6167,6 +6191,10 @@ msgstr "Glang karet"
 #: lazarusidestrconsts:lismenuprojectrun
 msgid "Run"
 msgstr "Jalankan"
+
+#: lazarusidestrconsts:lisbfruncommand
+msgid "Run Command"
+msgstr ""
 
 #: lazarusidestrconsts:lismenurunfile
 msgid "Run File"
@@ -8832,6 +8860,10 @@ msgstr "ketika pembuatan form baru, tambahkan ke otomatis-buat form"
 msgid "When switching file in source editor"
 msgstr "Saat menukar file dalam editor sumber"
 
+#: lazarusidestrconsts:lisbfwhenthisfileisactiveinsourceeditor
+msgid "When this file is active in source editor ..."
+msgstr ""
+
 #: lazarusidestrconsts:lisfindfilewhere
 msgid "Where"
 msgstr "Dimana"
@@ -8876,6 +8908,10 @@ msgstr "Penyempurnaan kata"
 msgid "Words"
 msgstr "Kata"
 
+#: lazarusidestrconsts:lisbfworkingdirectoryleaveemptyforfilepath2
+msgid "Working Directory (Leave empty for file path)"
+msgstr ""
+
 #: lazarusidestrconsts:lisedtexttoolworkingdirectory
 msgid "Working Directory:"
 msgstr "Direktori Kerja:"
@@ -8883,6 +8919,18 @@ msgstr "Direktori Kerja:"
 #: lazarusidestrconsts:dlgroworkingdirectory
 msgid "Working directory"
 msgstr "Direktori Pekerjaan"
+
+#: lazarusidestrconsts:lisbfworkingdirectoryleaveemptyforfilepath
+msgid "Working directory (Leave empty for file path)"
+msgstr ""
+
+#: lazarusidestrconsts:lisworkingdirectoryforbuilding
+msgid "Working directory for building"
+msgstr ""
+
+#: lazarusidestrconsts:lisworkingdirectoryforrun
+msgid "Working directory for run"
+msgstr ""
 
 #: lazarusidestrconsts:liswriteerror
 msgid "Write Error"

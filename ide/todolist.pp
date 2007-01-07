@@ -78,6 +78,7 @@ type
     tbOptions: TToolButton;
     tbPrint: TToolButton;
     tbRefresh: TToolButton;
+    procedure FormCreate(Sender: TObject);
     procedure tbGotoClick(Sender: TObject);
     procedure tbRefreshClick(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift:TShiftState);
@@ -119,27 +120,6 @@ uses
 constructor TfrmTodo.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  fBuild:=False;
-  fScannedFile:=TStringList.Create;
-
-  Caption := lisTodoListCaption;
-
-  tbRefresh.Hint  := lisTodolistRefresh;
-  tbGoto.Hint  := listodoListGotoLine;
-  tbPrint.Hint   :=listodoListPrintList;
-  tbOptions.Hint  :=  lisToDoListOptions;
-
-  with lvTodo do
-  begin
-    Column[0].Caption := ' !';
-    Column[0].Width   := 25;
-    Column[1].Caption := lisToDoLDescription;
-    Column[1].Width   := 250;
-    Column[2].Caption := lisToDoLFile;
-    Column[2].Width := 150;
-    Column[3].Caption := lisToDoLLine;
-    Column[3].Width := 50;
-  end;
 end;
 
 destructor TfrmTodo.Destroy;
@@ -268,6 +248,36 @@ begin
       end;
     end;
     if Assigned(OnOpenFile) then OnOpenFile(Self,CurFilename,TheLine);
+  end;
+end;
+
+procedure TfrmTodo.FormCreate(Sender: TObject);
+begin
+  fBuild:=False;
+  fScannedFile:=TStringList.Create;
+
+  Caption := lisTodoListCaption;
+
+  tbRefresh.Hint  := lisTodolistRefresh;
+  tbGoto.Hint  := listodoListGotoLine;
+  tbPrint.Hint   :=listodoListPrintList;
+  tbOptions.Hint  :=  lisToDoListOptions;
+
+  tbOptions.Caption:=dlgFROpts;
+  tbPrint.Caption:=srVK_PRINT;
+  tbRefresh.Caption:=dlgUnitDepRefresh;
+  tbGoto.Caption:=lisToDoGoto;
+
+  with lvTodo do
+  begin
+    Column[0].Caption := ' !';
+    Column[0].Width   := 25;
+    Column[1].Caption := lisToDoLDescription;
+    Column[1].Width   := 250;
+    Column[2].Caption := lisToDoLFile;
+    Column[2].Width := 150;
+    Column[3].Caption := lisToDoLLine;
+    Column[3].Width := 50;
   end;
 end;
 

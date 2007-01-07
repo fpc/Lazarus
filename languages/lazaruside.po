@@ -750,6 +750,14 @@ msgstr ""
 msgid "Build"
 msgstr ""
 
+#: lazarusidestrconsts:lisbfworkingdirectoryleaveemptyforfilepath
+msgid "Working directory (Leave empty for file path)"
+msgstr ""
+
+#: lazarusidestrconsts:lisbfbuildcommand
+msgid "Build Command"
+msgstr ""
+
 #: lazarusidestrconsts:lismenubuildall
 msgid "Build all"
 msgstr ""
@@ -764,6 +772,18 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuprojectrun
 msgid "Run"
+msgstr ""
+
+#: lazarusidestrconsts:lisbfalwaysbuildbeforerun
+msgid "Always Build before Run"
+msgstr ""
+
+#: lazarusidestrconsts:lisbfworkingdirectoryleaveemptyforfilepath2
+msgid "Working Directory (Leave empty for file path)"
+msgstr ""
+
+#: lazarusidestrconsts:lisbfruncommand
+msgid "Run Command"
 msgstr ""
 
 #: lazarusidestrconsts:lismenupause
@@ -3838,6 +3858,18 @@ msgstr ""
 msgid "Options"
 msgstr ""
 
+#: lazarusidestrconsts:lisbfwhenthisfileisactiveinsourceeditor
+msgid "When this file is active in source editor ..."
+msgstr ""
+
+#: lazarusidestrconsts:lisbfonbuildprojectexecutethebuildfilecommandinstead
+msgid "On build project execute the Build File command instead"
+msgstr ""
+
+#: lazarusidestrconsts:lisbfonrunprojectexecutetherunfilecommandinstead
+msgid "On run project execute the Run File command instead"
+msgstr ""
+
 #: lazarusidestrconsts:liscefilter
 msgid "(Filter)"
 msgstr ""
@@ -5360,6 +5392,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgunitdeprefresh
 msgid "Refresh"
+msgstr ""
+
+#: lazarusidestrconsts:listodogoto
+msgid "Goto"
 msgstr ""
 
 #: lazarusidestrconsts:lisdocumentationeditor
@@ -7024,6 +7060,18 @@ msgstr ""
 
 #: lazarusidestrconsts:lisedtexttoolmacros
 msgid "Macros"
+msgstr ""
+
+#: lazarusidestrconsts:lisworkingdirectoryforbuilding
+msgid "Working directory for building"
+msgstr ""
+
+#: lazarusidestrconsts:lisworkingdirectoryforrun
+msgid "Working directory for run"
+msgstr ""
+
+#: lazarusidestrconsts:lisconfigurebuild
+msgid "Configure Build %s"
 msgstr ""
 
 #: lazarusidestrconsts:lisedtexttoolinsert
@@ -9575,6 +9623,6 @@ msgid "<None>"
 msgstr ""
 
 #: lazarusidestrconsts:lisuiclearincludedbyreference
-msgid "Clear included by reference"
+msgid "Clear include cache"
 msgstr ""
 
