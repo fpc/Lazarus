@@ -869,6 +869,7 @@ begin
     DebugLn('TApplication.HandleException: ',
       'there was another exception during showing the first exception');
     HaltingProgram:=true;
+    //DumpExceptionBackTrace;
     Halt;
   end;
   Include(FFlags,AppHandlingException);
@@ -1148,6 +1149,11 @@ begin
   if Assigned(OnIdleEnd) then OnIdleEnd(Self);
   NotifyIdleEndHandler;
   Include(FFlags,AppIdleEndSent);
+end;
+
+function TApplication.GetActive: boolean;
+begin
+  Result := AppActive in Flags;
 end;
 
 {------------------------------------------------------------------------------

@@ -929,6 +929,7 @@ type
     FLastMouseControl: TControl;
     FLastMouseControlValid: Boolean;
     procedure DoOnIdleEnd;
+    function GetActive: boolean;
     function GetCurrentHelpFile: string;
     function GetExename: String;
     function GetIconHandle: HICON;
@@ -1047,6 +1048,7 @@ type
     procedure DoReturnKey(AControl: TWinControl; var Key: Word;
                           Shift: TShiftState);
     procedure DoTabKey(AControl: TWinControl; var Key: Word;Shift: TShiftState);
+    property Active: boolean read GetActive;
     property CaptureExceptions: boolean read FCaptureExceptions
                                         write SetCaptureExceptions;
     property FindGlobalComponentEnabled: boolean read FFindGlobalComponentEnabled
