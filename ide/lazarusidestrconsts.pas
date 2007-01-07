@@ -952,6 +952,8 @@ resourcestring
   dlgDelTemplate = 'Delete template ';
   dlgChsCodeTempl = 'Choose code template file (*.dci)';
   dlgAllFiles = 'All files';
+  lisSaveFileAs = 'Save file as';
+  lisOpenExistingFile = 'Open existing file';
   lisLazarusUnit = 'Lazarus unit';
   lisLazarusInclude = 'Lazarus include file';
   lisLazarusProject = 'Lazarus project';
@@ -1999,6 +2001,7 @@ resourcestring
   lisDiffDlgIgnoreIfSpaceCharsWereAdd = 'Ignore amount of space chars';
   lisDiffDlgIgnoreSpaces = 'Ignore spaces (newline chars not included)';
   lisDiffDlgOpenDiffInEditor = 'Open Diff in editor';
+  lisSave = 'Save ...';
 
   // todolist
   lisTodoListCaption='ToDo List';

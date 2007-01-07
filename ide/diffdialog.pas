@@ -40,7 +40,7 @@ unit DiffDialog;
 interface
 
 uses
-  Classes, SysUtils, Math, Forms, Controls, Buttons, StdCtrls,
+  Classes, SysUtils, Math, Forms, Controls, Buttons, StdCtrls, FileUtil,
   LResources, LazarusIDEStrConsts, EditorOptions, IDEWindowIntf,
   InputHistory, DiffPatch, ExtCtrls, Dialogs, SynEdit;
 
@@ -105,6 +105,7 @@ type
     OptionsGroupBox: TCheckGroup;
 
     procedure FileOpenClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
     procedure OnChangeFlag(Sender: TObject);
     procedure SaveDiffButtonClick(Sender: TObject);
     procedure Text1ComboboxChange(Sender: TObject);
@@ -211,6 +212,11 @@ begin
   end;
 end;
 
+procedure TDiffDlg.FormCreate(Sender: TObject);
+begin
+
+end;
+
 procedure TDiffDlg.SaveDiffButtonClick(Sender: TObject);
 begin
   if dlgSave.Execute then
@@ -232,10 +238,12 @@ begin
   // text 1
   Text1GroupBox.Caption:=lisDiffDlgText1;
   Text1OnlySelectionCheckBox.Caption:=lisDiffDlgOnlySelection;
+  Text1FileOpenButton.Caption:='...';
 
   // text 2
   Text2GroupBox.Caption:=lisDiffDlgText2;
   Text2OnlySelectionCheckBox.Caption:=lisDiffDlgOnlySelection;
+  Text2FileOpenButton.Caption:='...';
 
   // options
   with OptionsGroupBox do
@@ -253,6 +261,18 @@ begin
   // buttons
   CloseButton.Caption:=lisMenuClose;
   OpenInEditorButton.Caption:=lisDiffDlgOpenDiffInEditor;
+  SaveDiffButton.Caption:=lisSave;
+  
+  // dialogs
+  dlgOpen.Title:=lisOpenExistingFile;
+  dlgOpen.Filter:=dlgAllFiles+' ('+GetAllFilesMask+')|'+GetAllFilesMask
+                 +'|'+lisLazarusUnit+' (*.pas;*.pp)|*.pas;*.pp'
+                 +'|'+lisLazarusProject+' (*.lpi)|*.lpi'
+                 +'|'+lisLazarusForm+' (*.lfm)|*.lfm'
+                 +'|'+lisLazarusPackage+' (*.lpk)|*.lpk'
+                 +'|'+lisLazarusProjectSource+' (*.lpr)|*.lpr';
+  dlgSave.Title:=lisSaveFileAs;
+  dlgSave.Filter:=dlgAllFiles+' ('+GetAllFilesMask+')|'+GetAllFilesMask;
 end;
 
 procedure TDiffDlg.UpdateDiff;
