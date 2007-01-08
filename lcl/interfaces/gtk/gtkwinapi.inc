@@ -1659,13 +1659,15 @@ begin
         WeightList.CommaText := 'normal,medium,regular,light,*';
       if WeightName<>'*' then
         WeightList.Insert(0, WeightName);
+
       try
         if LoadFontEx then
           exit;
           
         // not found yet, before doing a generic fall over
         // try to do a more specific guess.
-        if CalcPixelSize then begin
+        if CalcPixelSize then
+        repeat
 
           // try one pixel smaller
           {$IFDEF VerboseFonts}
@@ -1683,7 +1685,17 @@ begin
            if LoadFontEx then
             exit;
             
-        end;
+          // not found yet
+          // if font was slanted try with any within font face.
+          if Slant<>'*' then begin
+            Slant := '*';
+            continue;
+          end;
+          
+          break;
+          
+        until false;
+        
       finally
         WeightList.Free;
       end;
