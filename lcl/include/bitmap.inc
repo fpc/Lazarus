@@ -26,6 +26,8 @@ begin
     Result:=bnXPixmap
   else if TestStreamIsIcon(AStream) then
     Result := bnIcon
+  else if TestStreamIsCursor(AStream) then
+    Result := bnCursor
   else
     Result:=bnNone;
 end;
@@ -575,7 +577,7 @@ procedure TBitmap.ReadStream(Stream: TStream; UseSize: boolean; Size: Longint);
      ' Size=',dbgs(Size),' Stream.Position=',dbgs(Stream.Position),
      ' Stream.Size=',dbgs(Stream.Size));
     raise EInOutError.Create(
-      'TBitmap.ReadStream: Invalid size of bitmap stream (bmp,xpm,ico)');
+      'TBitmap.ReadStream: Invalid size of bitmap stream (bmp,xpm,ico,cur)');
   end;
 
 var
@@ -617,9 +619,10 @@ begin
     //debugln('TBitmap.ReadStream ',dbgs(ord(StreamType)),' UseSize=',dbgs(UseSize),' Size=',dbgs(Size),' Stream=',DbgSName(Stream));
     ReaderClass:=nil;
     case StreamType of
-    bnWinBitmap:  ReaderClass:=TLazReaderBMP;
-    bnXPixmap:    ReaderClass:=TLazReaderXPM;
-    bnIcon:       ReaderClass:=TLazReaderIcon;
+      bnWinBitmap:  ReaderClass:=TLazReaderBMP;
+      bnXPixmap:    ReaderClass:=TLazReaderXPM;
+      bnIcon:       ReaderClass:=TLazReaderIcon;
+      bnCursor:     ReaderClass:=TLazReaderCursor;
     else
       RaiseInvalidBitmapHeader;
     end;

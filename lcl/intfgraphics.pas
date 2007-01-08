@@ -390,6 +390,11 @@ type
     property Icon: TObject read FIcon write SetIcon;
   end;
 
+  TLazReaderCursor = class (TLazReaderIcon)
+  protected
+    function  InternalCheck(Stream: TStream) : boolean; override;
+  end;
+
 function ReadCompleteStreamToString(Str: TStream; StartSize: integer): string;
 procedure ReadCompleteStreamToStream(SrcStream, DestStream: TStream;
                                      StartSize: integer);
@@ -3601,7 +3606,7 @@ end;
 type
   TIconHeader = packed record
     idReserved: Word; {0}
-    idType: Word;     {1}
+    idType: Word;     {1 - Icon, 2 - Cursor}
     idCount: Word;    {number of icons in file}
   end;
   
@@ -3687,6 +3692,18 @@ begin
   Stream.Read(IconHeader,SizeOf(IconHeader));
   With IconHeader do
     Result := (idReserved=0) and (LEtoN(idType)=1);
+  FnIcons := LEtoN(IconHeader.idCount);
+end;
+
+{ TLazReaderCursor }
+function TLazReaderCursor.InternalCheck(Stream: TStream): boolean;
+var
+  IconHeader: TIconHeader;
+begin
+  FnStartPos := Stream.Position;
+  Stream.Read(IconHeader,SizeOf(IconHeader));
+  With IconHeader do
+    Result := (idReserved=0) and (LEtoN(idType)=2);
   FnIcons := LEtoN(IconHeader.idCount);
 end;
 

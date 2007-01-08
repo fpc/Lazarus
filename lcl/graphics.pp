@@ -1050,7 +1050,8 @@ type
     bnNone,  // not a TBitmap native type
     bnWinBitmap,
     bnXPixmap,
-    bnIcon
+    bnIcon,
+    bnCursor
     );
   TBitmapNativeTypes = set of TBitmapNativeType;
 
@@ -1293,7 +1294,11 @@ type
     procedure AddBitmap(Bitmap: TBitmap); { Note that Ownership passes to TIcon }
   end;
 
-
+  TCursorImage = class(TIcon)
+  public
+    class function GetFileExtensions: string; override;
+    function LazarusResourceTypeValid(const ResourceType: string): boolean; override;
+  end;
 
 function GraphicFilter(GraphicClass: TGraphicClass): string;
 function GraphicExtension(GraphicClass: TGraphicClass): string;
@@ -1362,6 +1367,7 @@ function TestStreamBitmapNativeType(const AStream: TStream): TBitmapNativeType;
 function TestStreamIsBMP(const AStream: TStream): boolean;
 function TestStreamIsXPM(const AStream: TStream): boolean;
 function TestStreamIsIcon(const AStream: TStream): boolean;
+function TestStreamIsCursor(const AStream: TStream): boolean;
 
 function XPMToPPChar(const XPM: string): PPChar;
 function LazResourceXPMToPPChar(const ResourceName: string): PPChar;
@@ -1864,6 +1870,7 @@ end;
 
 const
   IconSignature: array [0..3] of char = #0#0#1#0;
+  CursorSignature: array [0..3] of char = #0#0#2#0;
 
 function TestStreamIsIcon(const AStream: TStream): boolean;
 var
@@ -1874,6 +1881,18 @@ begin
   OldPosition:=AStream.Position;
   ReadSize:=AStream.Read(Signature, SizeOf(Signature));
   Result:=(ReadSize=SizeOf(Signature)) and CompareMem(@Signature,@IconSignature,4);
+  AStream.Position:=OldPosition;
+end;
+
+function TestStreamIsCursor(const AStream: TStream): boolean;
+var
+  Signature: array[0..3] of char;
+  ReadSize: Integer;
+  OldPosition: TStreamSeekType;
+begin
+  OldPosition:=AStream.Position;
+  ReadSize:=AStream.Read(Signature, SizeOf(Signature));
+  Result:=(ReadSize=SizeOf(Signature)) and CompareMem(@Signature,@CursorSignature,4);
   AStream.Position:=OldPosition;
 end;
 
@@ -1917,6 +1936,19 @@ begin
   if not Assigned(FBitmaps) then
     FBitmaps := TObjectList.create(True);
   FBitmaps.Add(Bitmap);
+end;
+
+{ TCursorImage }
+
+class function TCursorImage.GetFileExtensions: string;
+begin
+  Result := 'cur';
+end;
+
+function TCursorImage.LazarusResourceTypeValid(const ResourceType: string): boolean;
+begin
+  Result := inherited LazarusResourceTypeValid(ResourceType) or
+            (AnsiCompareText(ResourceType,'CUR')=0);
 end;
 
 procedure InterfaceFinal;
