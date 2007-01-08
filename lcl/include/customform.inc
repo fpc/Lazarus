@@ -1894,7 +1894,11 @@ begin
           which will wait for new messages. Under Win32 there is always a next
           message, so it works there. The LCL is OS independent, and so it uses
           a better way: }
-        WidgetSet.AppProcessMessages; // process all events
+        try
+          WidgetSet.AppProcessMessages; // process all events
+        except
+          on E: Exception do Application.HandleException(E);
+        end;
         if Application.Terminated then
           ModalResult := mrCancel;
         if ModalResult <> 0 then begin

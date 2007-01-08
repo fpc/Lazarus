@@ -869,7 +869,7 @@ begin
     DebugLn('TApplication.HandleException: ',
       'there was another exception during showing the first exception');
     HaltingProgram:=true;
-    //DumpExceptionBackTrace;
+    DumpExceptionBackTrace;
     Halt;
   end;
   Include(FFlags,AppHandlingException);
