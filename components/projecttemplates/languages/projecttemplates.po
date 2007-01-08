@@ -1,0 +1,12 @@
+#: projecttemplates:serrnosuchtemplate
+msgid "\"%s\": No such template."
+msgstr ""
+
+#: projecttemplates:serrcouldnotcreatedir
+msgid "Could not create directory \"%s\""
+msgstr ""
+
+#: projecttemplates:serrfailedtocopyfile
+msgid "Failed to copy file \"%s\" to \"%s\""
+msgstr ""
+

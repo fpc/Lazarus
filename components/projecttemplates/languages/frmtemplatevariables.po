@@ -1,0 +1,12 @@
+#: frmtemplatevariables:svariable
+msgid "Variable"
+msgstr ""
+
+#: frmtemplatevariables:svalue
+msgid "Value"
+msgstr ""
+
+#: frmtemplatevariables:sdescription
+msgid "Description"
+msgstr ""
+
