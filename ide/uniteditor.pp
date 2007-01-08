@@ -5496,13 +5496,20 @@ Procedure TSourceNotebook.ReloadEditorOptions;
 var
   I: integer;
   h: TLazSyntaxHighlighter;
+  ASrcEdit: TSourceEditor;
+  AnUnitInfo: TUnitInfo;
 Begin
   // this reloads the colors for the highlighter and other editor settings.
   for h:=Low(TLazSyntaxHighlighter) to High(TLazSyntaxHighlighter) do
     if Highlighters[h]<>nil then
       EditorOpts.GetHighlighterSettings(Highlighters[h]);
-  for I := 0 to FSourceEditorList.Count-1 do
-    TSourceEditor(FSourceEditorList.Items[i]).RefreshEditorSettings;
+  for i := 0 to EditorCount-1 do begin
+    ASrcEdit:=Editors[i];
+    AnUnitInfo:=Project1.UnitWithEditorIndex(i);
+    if AnUnitInfo<>nil then
+      ASrcEdit.SyntaxHighlighterType:=AnUnitInfo.SyntaxHighlighter;
+    ASrcEdit.RefreshEditorSettings;
+  end;
 
   // reload code templates
   with CodeTemplateModul do begin

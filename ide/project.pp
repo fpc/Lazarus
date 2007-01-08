@@ -52,7 +52,7 @@ uses
   LazarusIDEStrConsts, CompilerOptions, CodeToolManager, CodeCache,
   EditorOptions, IDEProcs, RunParamsOpts, ProjectIntf, ProjectDefs,
   FileReferenceList, EditDefineTree, DefineTemplates, PackageDefs, LazIDEIntf,
-  // for
+  // for .res files
   W32VersionInfo;
 
 type
@@ -694,6 +694,10 @@ type
     function LoadStateFile(IgnoreErrors: boolean): TModalResult;
     function SaveStateFile(const CompilerFilename, CompilerParams: string
                            ): TModalResult;
+                           
+    // source editor
+    procedure UpdateCustomHighlighter;
+    procedure UpdateSyntaxHighlighter;
   public
     property ActiveEditorIndexAtStart: integer read fActiveEditorIndexAtStart
                                                write fActiveEditorIndexAtStart;
@@ -3363,6 +3367,31 @@ begin
     end;
   end;
   Result:=mrOk;
+end;
+
+procedure TProject.UpdateCustomHighlighter;
+var
+  i: Integer;
+  AnUnitInfo: TUnitInfo;
+begin
+  for i:=0 to UnitCount-1 do begin
+    AnUnitInfo:=Units[i];
+    AnUnitInfo.CustomHighlighter:=AnUnitInfo.SyntaxHighlighter
+         <>ExtensionToLazSyntaxHighlighter(ExtractFileExt(AnUnitInfo.Filename));
+  end;
+end;
+
+procedure TProject.UpdateSyntaxHighlighter;
+var
+  AnUnitInfo: TUnitInfo;
+  i: Integer;
+begin
+  for i:=0 to UnitCount-1 do begin
+    AnUnitInfo:=Units[i];
+    if not AnUnitInfo.CustomHighlighter then
+      AnUnitInfo.SyntaxHighlighter:=
+        ExtensionToLazSyntaxHighlighter(ExtractFileExt(AnUnitInfo.Filename));
+  end;
 end;
 
 procedure TProject.OnUnitNameChange(AnUnitInfo: TUnitInfo;

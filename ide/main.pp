@@ -3666,7 +3666,9 @@ var EditorOptionsForm: TEditorOptionsForm;
 Begin
   EditorOptionsForm:=TEditorOptionsForm.Create(nil);
   try
+    Project1.UpdateCustomHighlighter;
     if EditorOptionsForm.ShowModal=mrOk then begin
+      Project1.UpdateSyntaxHighlighter;
       SourceNotebook.ReloadEditorOptions;
       ReloadMenuShortCuts;
     end;
