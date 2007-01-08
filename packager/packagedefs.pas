@@ -594,6 +594,7 @@ type
     FOutputStateFile: string;
     FPackageEditor: TBasePackageEditor;
     FPackageType: TLazPackageType;
+    FRSTOutputDirectory: string;
     fPublishOptions: TPublishPackageOptions;
     FRemovedFiles: TFPList; // TFPList of TPkgFile
     FRegistered: boolean;
@@ -625,15 +626,16 @@ type
     procedure SetLazDocPaths(const AValue: string);
     procedure SetLicense(const AValue: string);
     procedure SetOutputStateFile(const AValue: string);
+    procedure SetRSTOutputDirectory(const AValue: string);
     procedure SetRegistered(const AValue: boolean);
     procedure SetModified(const AValue: boolean);
     procedure SetName(const AValue: string); override;
     procedure SetPackageEditor(const AValue: TBasePackageEditor);
     procedure SetPackageType(const AValue: TLazPackageType);
+    procedure SetUserReadOnly(const AValue: boolean);
     procedure OnMacroListSubstitution(TheMacro: TTransferMacro;
       const MacroName: string; var s: string;
       const Data: PtrInt; var Handled, Abort: boolean);
-    procedure SetUserReadOnly(const AValue: boolean);
     procedure GetWritableOutputDirectory(var AnOutDir: string);
     procedure Clear;
     procedure UpdateSourceDirectories;
@@ -667,6 +669,7 @@ type
     function GetStateFilename: string;
     function GetSrcFilename: string;
     function GetCompilerFilename: string;
+    function GetRSTOutDirectory: string;
     function GetUnitPath(RelativeToBaseDir: boolean): string;
     function GetIncludePath(RelativeToBaseDir: boolean): string;
     function NeedsDefineTemplates: boolean;
@@ -775,6 +778,8 @@ type
     property OutputStateFile: string read FOutputStateFile write SetOutputStateFile;
     property PackageType: TLazPackageType read FPackageType
                                           write SetPackageType;
+    property RSTOutputDirectory: string read FRSTOutputDirectory
+                                        write SetRSTOutputDirectory;
     property PublishOptions: TPublishPackageOptions
                                      read fPublishOptions write fPublishOptions;
     property Registered: boolean read FRegistered write SetRegistered;
@@ -2215,6 +2220,7 @@ begin
   NewValue:=TrimSearchPath(AValue,'');
   if FLazDocPaths=NewValue then exit;
   FLazDocPaths:=NewValue;
+  Modified:=true;
 end;
 
 procedure TLazPackage.SetLicense(const AValue: string);
@@ -2231,6 +2237,16 @@ begin
   NewStateFile:=TrimFilename(AValue);
   if FOutputStateFile=NewStateFile then exit;
   FOutputStateFile:=NewStateFile;
+end;
+
+procedure TLazPackage.SetRSTOutputDirectory(const AValue: string);
+var
+  NewValue: String;
+begin
+  NewValue:=TrimFilename(AValue);
+  if FRSTOutputDirectory=NewValue then exit;
+  FRSTOutputDirectory:=NewValue;
+  Modified:=true;
 end;
 
 procedure TLazPackage.SetRegistered(const AValue: boolean);
@@ -2487,6 +2503,8 @@ begin
                             PathDelimChanged);
   fLazDocPaths:=SwitchPathDelims(XMLConfig.GetValue(Path+'LazDoc/Paths',''),
                             PathDelimChanged);
+  FRSTOutputDirectory:=SwitchPathDelims(XMLConfig.GetValue(Path+'RST/OutDir',''),
+                            PathDelimChanged);
   LoadFiles(Path+'Files/',FFiles);
   UpdateSourceDirectories;
   LoadFlags(Path);
@@ -2544,6 +2562,7 @@ begin
   XMLConfig.SetDeleteValue(Path+'Name/Value',FName,'');
   XMLConfig.SetDeleteValue(Path+'OutputStateFile/Value',OutputStateFile,'');
   XMLConfig.SetDeleteValue(Path+'LazDoc/Paths',FLazDocPaths,'');
+  XMLConfig.SetDeleteValue(Path+'RST/OutDir',FRSTOutputDirectory,'');
   XMLConfig.SetDeleteValue(Path+'Type/Value',LazPackageTypeIdents[FPackageType],
                            LazPackageTypeIdents[lptRunTime]);
   SavePkgDependencyList(XMLConfig,Path+'RequiredPkgs/',
@@ -3142,6 +3161,12 @@ end;
 function TLazPackage.GetCompilerFilename: string;
 begin
   Result:=CompilerOptions.ParsedOpts.GetParsedValue(pcosCompilerPath);
+end;
+
+function TLazPackage.GetRSTOutDirectory: string;
+begin
+  Result:=TrimFilename(SubstitutePkgMacro(fRSTOutputDirectory,false));
+  LongenFilename(Result);
 end;
 
 function TLazPackage.GetUnitPath(RelativeToBaseDir: boolean): string;

@@ -73,6 +73,9 @@ function GetLazarusLanguageLocalizedName(const ID: string): String;
 // collect all available translations
 procedure CollectTranslations(const LazarusDir: string);
 
+function ConvertRSTFiles(RSTDirectory, PODirectory: string): Boolean;
+function ConvertRSTFile(const RSTFilename, OutputFilename: string): Boolean;
+
 var
   LazarusTranslations: TLazarusTranslations;
 
@@ -160,6 +163,187 @@ begin
     until SysUtils.FindNext(FileInfo)<>0;
   end;
   SysUtils.FindClose(FileInfo);
+end;
+
+type
+  TConstItem = class
+  public
+    ModuleName, ConstName, Value: String;
+  end;
+
+function ReadRSTFile(const InFilename: string;
+  ListOfConstItems: TFPList): Boolean;
+var
+  f: Text;
+  s: String;
+  item: TConstItem;
+  DotPos, EqPos, i, j: Integer;
+  ModuleName: String;
+  ConstName: String;
+  Value: String;
+begin
+  Result:=false;
+  try
+    Assign(f, InFilename);
+    Reset(f);
+
+    while not eof(f) do begin
+      ReadLn(f, s);
+      If (Length(S)=0) or (S[1]='#') then
+        continue;
+
+      DotPos := Pos('.', s);
+      EqPos := Pos('=', s);
+      if DotPos > EqPos then // paranoia checking.
+        DotPos := 0;
+      ModuleName := Copy(s, 1, DotPos - 1);
+      ConstName := Copy(s, DotPos + 1, EqPos - DotPos - 1);
+
+      Value := '';
+      i := EqPos + 1;
+      while i <= Length(s) do begin
+        if s[i] = '''' then begin
+          Inc(i);
+          j := i;
+          while (i <= Length(s)) and (s[i] <> '''') do
+            Inc(i);
+          Value := Value + Copy(s, j, i - j);
+          Inc(i);
+        end else if s[i] = '#' then begin
+          Inc(i);
+          j := i;
+          while (i <= Length(s)) and (s[i] in ['0'..'9']) do
+            Inc(i);
+          Value := Value + Chr(StrToInt(Copy(s, j, i - j)));
+        end else if s[i] = '+' then begin
+          ReadLn(f, s);
+          i := 1;
+        end else
+          Inc(i);
+      end;
+      Item:=TConstItem.Create;
+      Item.ModuleName:=ModuleName;
+      Item.ConstName:=ConstName;
+      Item.Value:=Value;
+      ListOfConstItems.Add(Item);
+    end;
+
+    Close(f);
+    Result:=true;
+  except
+  end;
+end;
+
+function ConvertToGettextPO(ListOfConstItems: TFPList;
+  const OutFilename: string): Boolean;
+var
+  i, j: Integer;
+  f: Text;
+  item: TConstItem;
+  s: String;
+  c: Char;
+begin
+  Result:=false;
+  try
+    Assign(f, OutFilename);
+    Rewrite(f);
+
+    for i := 0 to ListOfConstItems.Count - 1 do begin
+      item := TConstItem(ListOfConstItems[i]);
+
+      // Convert string to C-style syntax
+      s := '';
+      for j := 1 to Length(item.Value) do begin
+        c := item.Value[j];
+        case c of
+          #9:  s := s + '\t';
+          #10: s := s + '\n';
+          #0..#8,#11..#31,#128..#255:
+            s := s + '\' +
+              Chr(Ord(c) shr 6 + 48) +
+              Chr((Ord(c) shr 3) and 7 + 48) +
+              Chr(Ord(c) and 7 + 48);
+          '\': s := s + '\\';
+          '"': s := s + '\"';
+        else s := s + c;
+        end;
+      end;
+
+      // Write msg entry
+      WriteLn(f, '#: ', item.ModuleName, ':', item.ConstName);
+      WriteLn(f, 'msgid "', s, '"');
+      WriteLn(f, 'msgstr ""');
+      WriteLn(f);
+    end;
+
+    Close(f);
+    Result:=true;
+  except
+  end;
+end;
+
+function ConvertRSTFile(const RSTFilename, OutputFilename: string): Boolean;
+var
+  ListOfConstItems: TFPList;
+  i: Integer;
+begin
+  Result:=false;
+  //DebugLn(['ConvertRSTFile RSTFilename=',RSTFilename,' OutputFilename=',OutputFilename]);
+  ListOfConstItems:=TFPList.Create;
+  try
+    // read .rst file
+    if not ReadRSTFile(RSTFilename,ListOfConstItems) then begin
+      DebugLn(['ConvertRSTFile reading failed: RSTFilename=',RSTFilename]);
+      exit;
+    end;
+    // write .po file
+    if not ConvertToGettextPO(ListOfConstItems,OutputFilename) then begin
+      DebugLn(['ConvertRSTFile writing failed: OutputFilename=',OutputFilename]);
+      exit;
+    end;
+  finally
+    if ListOfConstItems<>nil then begin
+      for i:=0 to ListOfConstItems.Count-1 do
+        TObject(ListOfConstItems[i]).Free;
+    end;
+    ListOfConstItems.Free;
+  end;
+  Result:=true;
+end;
+
+function ConvertRSTFiles(RSTDirectory, PODirectory: string): Boolean;
+var
+  FileInfo: TSearchRec;
+  RSTFilename: String;
+  OutputFilename: String;
+begin
+  Result:=true;
+  if (RSTDirectory='') then exit;// nothing to do
+  RSTDirectory:=AppendPathDelim(RSTDirectory);
+
+  // find all .rst files in package output directory
+  PODirectory:=AppendPathDelim(PODirectory);
+  //DebugLn(['ConvertPackageRSTFiles PODirectory=',PODirectory]);
+  if SysUtils.FindFirst(RSTDirectory+'*.rst',faAnyFile,FileInfo)=0
+  then begin
+    repeat
+      // check if special file
+      if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='') then
+        continue;
+      RSTFilename:=RSTDirectory+FileInfo.Name;
+      OutputFilename:=PODirectory+ChangeFileExt(FileInfo.Name,'.po');
+      //DebugLn(['ConvertPackageRSTFiles RSTFilename=',RSTFilename,' OutputFilename=',OutputFilename]);
+      if (not FileExists(OutputFilename))
+      or (FileAge(RSTFilename)>FileAge(OutputFilename)) then begin
+        if not ConvertRSTFile(RSTFilename,OutputFilename) then begin
+          DebugLn(['ConvertPackageRSTFiles FAILED: RSTFilename=',RSTFilename,' OutputFilename=',OutputFilename]);
+          exit(false);
+        end;
+      end;
+    until SysUtils.FindNext(FileInfo)<>0;
+  end;
+  SysUtils.FindClose(FileInfo);
+  Result:=true;
 end;
 
 {-------------------------------------------------------------------------------

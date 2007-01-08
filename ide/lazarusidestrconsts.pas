@@ -2809,6 +2809,7 @@ resourcestring
 
   // package options dialog
   lisPckOptsUsage = 'Usage';
+  lisPOChoosePoFileDirectory = 'Choose .po file directory';
   lisPckOptsIDEIntegration = 'IDE Integration';
   lisPckOptsDescriptionAbstract = 'Description/Abstract';
   lisPckOptsAuthor = 'Author:';

@@ -52,10 +52,11 @@ uses
   CodeToolManager,
   // IDEIntf,
   SrcEditorIntf, IDEExternToolIntf, IDEDialogs, IDEMsgIntf, PackageIntf,
+  LazarusPackageIntf,
   // IDE
   LazarusIDEStrConsts, IDEProcs, LazConf, TransferMacros, DialogProcs,
-  CompilerOptions, PackageLinks, PackageDefs, LazarusPackageIntf, ComponentReg,
-  RegisterFCL, RegisterLCL, RegisterSynEdit, RegisterIDEIntf;
+  IDETranslations, CompilerOptions, PackageLinks, PackageDefs,
+  ComponentReg, RegisterFCL, RegisterLCL, RegisterSynEdit, RegisterIDEIntf;
   
 type
   TFindPackageFlag = (
@@ -272,6 +273,7 @@ type
                                 Policies: TPackageUpdatePolicies): TModalResult;
     function CompilePackage(APackage: TLazPackage; Flags: TPkgCompileFlags;
                             Globals: TGlobalCompilerOptions = nil): TModalResult;
+    function ConvertPackageRSTFiles(APackage: TLazPackage): TModalResult;
   public
     // registration
     procedure RegisterUnitHandler(const TheUnitName: string;
@@ -2628,6 +2630,15 @@ begin
         end;
       end;
 
+      // update .po files
+      if (APackage.RSTOutputDirectory<>'') then begin
+        Result:=ConvertPackageRSTFiles(APackage);
+        if Result<>mrOk then begin
+          DebugLn('TLazPackageGraph.CompilePackage ConvertPackageRSTFiles failed: ',APackage.IDAsString);
+          exit;
+        end;
+      end;
+
       // run compilation tool 'After'
       if not (pcfDoNotCompilePackage in Flags) then begin
         Result:=APackage.CompilerOptions.ExecuteAfter.Execute(
@@ -2660,6 +2671,25 @@ begin
     PackageGraph.EndUpdate;
   end;
   Result:=mrOk;
+end;
+
+function TLazPackageGraph.ConvertPackageRSTFiles(APackage: TLazPackage
+  ): TModalResult;
+var
+  PkgOutputDirectory: String;
+  RSTOutputDirectory: String;
+begin
+  Result:=mrOK;
+  if (APackage.RSTOutputDirectory='') then exit;// nothing to do
+  RSTOutputDirectory:=AppendPathDelim(APackage.GetRSTOutDirectory);
+
+  // find all .rst files in package output directory
+  PkgOutputDirectory:=AppendPathDelim(APackage.GetOutputDirectory);
+  if not ConvertRSTFiles(PkgOutputDirectory,RSTOutputDirectory) then begin
+    DebugLn(['TLazPackageGraph.ConvertPackageRSTFiles FAILED: PkgOutputDirectory=',PkgOutputDirectory,' RSTOutputDirectory=',RSTOutputDirectory]);
+    exit(mrCancel);
+  end;
+  Result:=mrOK;
 end;
 
 function TLazPackageGraph.PreparePackageOutputDirectory(APackage: TLazPackage;

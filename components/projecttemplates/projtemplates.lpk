@@ -6,7 +6,7 @@
     <CompilerOptions>
       <Version Value="5"/>
       <SearchPaths>
-        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)/"/>
+        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
       <CodeGeneration>
         <Generate Value="Faster"/>
@@ -57,6 +57,7 @@
         <UnitName Value="frmtemplatesettings"/>
       </Item8>
     </Files>
+    <RST OutDir="languages/"/>
     <Type Value="DesignTime"/>
     <RequiredPkgs Count="2">
       <Item1>

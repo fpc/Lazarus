@@ -40,6 +40,7 @@ interface
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, Buttons, LResources,
   ExtCtrls, StdCtrls, Spin, Dialogs, PathEditorDlg, IDEProcs, IDEWindowIntf,
+  IDEDialogs, MacroIntf,
   LazarusIDEStrConsts, BrokenDependenciesDlg, PackageDefs, PackageSystem,
   CompilerOptions;
 
@@ -94,6 +95,9 @@ type
     LazDocGroupBox: TGroupBox;
     LazDocPathEdit: TEdit;
     LazDocPathButton: TPathEditorButton;
+    RSTOutputGroupBox: TGroupBox;
+    RSTOutputDirectoryEdit: TEdit;
+    RSTOutputDirectoryButton: TButton;
     // buttons
     OkButton: TButton;
     CancelButton: TButton;
@@ -101,7 +105,9 @@ type
     procedure AddPathsGroupBoxResize(Sender: TObject);
     procedure DescriptionPageResize(Sender: TObject);
     procedure IDEPageResize(Sender: TObject);
+    procedure LazDocPathButtonClick(Sender: TObject);
     procedure OkButtonClick(Sender: TObject);
+    procedure PODirectoryButtonClick(Sender: TObject);
     procedure PackageOptionsDialogClose(Sender: TObject;
       var CloseAction: TCloseAction);
     procedure PackageOptionsDialogResize(Sender: TObject);
@@ -204,8 +210,10 @@ var
   NewPath: String;
   AnEdit: TEdit;
   OldPath: String;
-  //CurDir: string;
-  //StartPos: Integer;
+  CurDir: string;
+  StartPos: Integer;
+  DlgResult: TModalResult;
+  OldStartPos: LongInt;
 begin
   if not (Sender is TPathEditorButton) then exit;
   AButton:=TPathEditorButton(Sender);
@@ -215,18 +223,34 @@ begin
   OldPath:=AnEdit.Text;
   if OldPath<>NewPath then begin
     // check NewPath
-    {StartPos:=1;
+    StartPos:=1;
     repeat
+      OldStartPos:=StartPos;
       CurDir:=GetNextDirectoryInSearchPath(NewPath,StartPos);
       if CurDir<>'' then begin
-        IDEMacros.SubstituteMacros(SearchPath);
-        CurDir:=LazPackage.LongenFilename(CurDir);
+        IDEMacros.SubstituteMacros(CurDir);
+        LazPackage.LongenFilename(CurDir);
         if not FileExists(CurDir) then begin
-          // TODO:
-          
+          DlgResult:=QuestionDlg('Directory not found',
+            'Directory "'+CurDir+'" not found.',
+            mtError,[mrIgnore,mrYes,'Remove from search path',mrCancel],0);
+          case DlgResult of
+          mrIgnore: ;
+          mrYes:
+            begin
+              // remove directory from search path
+              NewPath:=copy(NewPath,1,OldStartPos-1)
+                       +copy(NewPath,StartPos,length(NewPath));
+              StartPos:=OldStartPos;
+            end;
+          else
+            // undo
+            NewPath:=OldPath;
+            break;
+          end;
         end;
       end;
-    until StartPos>length(NewPath);}
+    until StartPos>length(NewPath);
   end;
   AnEdit.Text:=NewPath;
 end;
@@ -345,6 +369,11 @@ begin
   end;
 end;
 
+procedure TPackageOptionsDialog.LazDocPathButtonClick(Sender: TObject);
+begin
+
+end;
+
 procedure TPackageOptionsDialog.OkButtonClick(Sender: TObject);
 var
   NewPackageType: TLazPackageType;
@@ -425,8 +454,20 @@ begin
     CustomOptions:=CustomOptionsMemo.Text;
   end;
   LazPackage.LazDocPaths:=LazDocPathEdit.Text;
-  
+  LazPackage.RSTOutputDirectory:=RSTOutputDirectoryEdit.Text;
+
   ModalResult:=mrOk;
+end;
+
+procedure TPackageOptionsDialog.PODirectoryButtonClick(Sender: TObject);
+var
+  NewDirectory: string;
+begin
+  NewDirectory:=LazSelectDirectory(lisPOChoosePoFileDirectory,
+                                   LazPackage.Directory);
+  if NewDirectory='' then exit;
+  LazPackage.ShortenFilename(NewDirectory,true);
+  RSTOutputDirectoryEdit.Text:=NewDirectory;
 end;
 
 procedure TPackageOptionsDialog.PackageOptionsDialogClose(Sender: TObject;
@@ -738,6 +779,37 @@ begin
     Parent:=LazDocGroupBox;
   end;
   LazDocPathEdit.AnchorToNeighbour(akRight,0,LazDocPathButton);
+
+  // PO files
+  RSTOutputGroupBox:=TGroupBox.Create(Self);
+  with RSTOutputGroupBox do begin
+    Name:='POFilesGroupBox';
+    Caption:='Directory of .po files';
+    AnchorToCompanion(akTop,6,LazDocGroupBox);
+    AutoSize:=true;
+    Parent:=IDEPage;
+  end;
+
+  RSTOutputDirectoryEdit:=TEdit.Create(Self);
+  with RSTOutputDirectoryEdit do begin
+    Name:='POFilesPathEdit';
+    SetBounds(6,0,Width,Height);
+    Parent:=RSTOutputGroupBox;
+  end;
+
+  RSTOutputDirectoryButton:=TButton.Create(Self);
+  with RSTOutputDirectoryButton do begin
+    Name:='POFilesPathButton';
+    Caption:='...';
+    AutoSize:=true;
+    Anchors:=[akTop,akRight,akBottom];
+    AnchorParallel(akRight,6,RSTOutputGroupBox);
+    Top:=0;
+    AnchorParallel(akBottom,0,RSTOutputDirectoryEdit);
+    OnClick:=@PODirectoryButtonClick;
+    Parent:=RSTOutputGroupBox;
+  end;
+  RSTOutputDirectoryEdit.AnchorToNeighbour(akRight,0,RSTOutputDirectoryButton);
 end;
 
 procedure TPackageOptionsDialog.SetupUsagePage(PageIndex: integer);
@@ -919,6 +991,7 @@ begin
   end;
   
   LazDocPathEdit.Text:=LazPackage.LazDocPaths;
+  RSTOutputDirectoryEdit.Text:=LazPackage.RSTOutputDirectory;
 end;
 
 procedure TPackageOptionsDialog.ReadPkgTypeFromPackage;
