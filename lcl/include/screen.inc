@@ -495,16 +495,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TScreen.SetCursors(Index: Integer; const AValue: HCURSOR);
 begin
-  {if Index = crDefault then
-    if Handle = 0 then
-      FDefaultCursor := LoadCursor(0, IDC_ARROW)
-    else
-      FDefaultCursor := Handle
-  else if Index <> crNone then
-  begin
-    DeleteCursor(Index);
-    if Handle <> 0 then InsertCursor(Index, Handle);
-  end;}
+
 end;
 
 {------------------------------------------------------------------------------
