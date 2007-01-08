@@ -3213,13 +3213,13 @@ begin
     DeliverMessage(Data, Mess);
 end;
 
-function gtkListSelectChild(widget: PGtkWidget;child : PGtkWidget; data: gPointer
-  ): GBoolean; cdecl;
+function gtkListSelectChild(widget: PGtkWidget; child: PGtkWidget;
+  data: gPointer): GBoolean; cdecl;
 var
   Mess: TLMessage;
 begin
   Result := CallBackDefaultReturn;
-  if LockOnChange(PgtkObject(Widget),0) > 0 then Exit;
+  if LockOnChange(PgtkObject(TWinControl(Data).Handle),0) > 0 then Exit;
 
   {$IFDEF EventTrace}
   EventTrace('gtkListSelectChild', data);

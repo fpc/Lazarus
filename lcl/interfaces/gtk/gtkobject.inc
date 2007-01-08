@@ -4074,8 +4074,8 @@ begin
         ConnectSenderSignalAfter(PgtkObject(gCore),
           'selection_changed', @gtkListBoxSelectionChangedAfter);
       end else if ALCLObject is TCustomCombobox then
-         ConnectSenderSignal (PGtkObject(
-                   PGtkCombo(gObject)^.list), 'unselect_child', @gtkListSelectChild)
+         ConnectSenderSignal (PGtkObject(PGtkCombo(gObject)^.list),
+                              'unselect_child', @gtkListSelectChild)
        else
     end;
 

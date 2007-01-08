@@ -516,8 +516,8 @@ type
     function GetCurColorScheme(const LanguageName: String): String;
     procedure SetCurColorScheme(const LanguageName, ColorScheme: String);
     procedure SaveAllColorSchemes;
-    function GetCurFileExtension(const LanguageName: String): String;
-    procedure SetCurFileExtension(const LanguageName, FileExtensions: String);
+    function GetCurFileExtensions(const LanguageName: String): String;
+    procedure SetCurFileExtensions(const LanguageName, FileExtensions: String);
     procedure SaveAllFileExtensions;
     procedure SetColorElementsToDefaults(OnlySelected: Boolean);
 
@@ -2950,11 +2950,13 @@ begin
     else
     if Sender = FileExtensionsComboBox then
     begin
-      if Box.Text <> GetCurFileExtension(PreviewSyn.LanguageName) then
+      //DebugLn(['TEditorOptionsForm.ComboBoxOnExit Box.Text="',Box.Text,'" Old="',GetCurFileExtensions(PreviewSyn.LanguageName),'" PreviewSyn.LanguageName=',PreviewSyn.LanguageName]);
+      if Box.Text <> GetCurFileExtensions(PreviewSyn.LanguageName) then
       begin
-        SetCurFileExtension(PreviewSyn.LanguageName, Box.Text);
+        SetCurFileExtensions(PreviewSyn.LanguageName, Box.Text);
         SetComboBoxText(Box, Box.Text);
       end;
+      //DebugLn(['TEditorOptionsForm.ComboBoxOnExit Box.Text="',Box.Text,'" Now="',GetCurFileExtensions(PreviewSyn.LanguageName),'" PreviewSyn.LanguageName=',PreviewSyn.LanguageName]);
     end
     else
     if Sender = LanguageComboBox then
@@ -2977,7 +2979,7 @@ begin
           SetComboBoxText(ColorSchemeComboBox,
             GetCurColorScheme(PreviewSyn.LanguageName));
           SetComboBoxText(FileExtensionsComboBox,
-            GetCurFileExtension(PreviewSyn.LanguageName));
+            GetCurFileExtensions(PreviewSyn.LanguageName));
           for a := Low(PreviewEdits) to High(PreviewEdits) do
             if a <> 3 then
               PreviewEdits[a].Lines.Text :=
@@ -3368,7 +3370,7 @@ begin
       fColorSchemes.Values[fColorSchemes.Names[i]]);
 end;
 
-function TEditorOptionsForm.GetCurFileExtension(
+function TEditorOptionsForm.GetCurFileExtensions(
   const LanguageName: String): String;
 var
   i: Integer;
@@ -3385,12 +3387,13 @@ begin
   end;
 end;
 
-procedure TEditorOptionsForm.SetCurFileExtension(
+procedure TEditorOptionsForm.SetCurFileExtensions(
   const LanguageName, FileExtensions: String);
 begin
   if fFileExtensions = Nil then
     fFileExtensions := TStringList.Create;
   fFileExtensions.Values[LanguageName] := FileExtensions;
+  //DebugLn(['TEditorOptionsForm.SetCurFileExtensions ',LanguageName,'=',FileExtensions]);
 end;
 
 procedure TEditorOptionsForm.SaveAllFileExtensions;
@@ -3402,9 +3405,11 @@ begin
   for i := 0 to fFileExtensions.Count - 1 do
   begin
     j := EditorOpts.HighlighterList.FindByName(fFileExtensions.Names[i]);
-    if j >= 0 then
-      EditorOpts.HighlighterList[i].FileExtensions :=
-        fFileExtensions.Values[fFileExtensions.Names[i]];
+    if j >= 0 then begin
+      EditorOpts.HighlighterList[j].FileExtensions :=
+        fFileExtensions.ValueFromIndex[i];
+      //DebugLn(['TEditorOptionsForm.SaveAllFileExtensions ',fFileExtensions.Names[i],'=',fFileExtensions.ValueFromIndex[i],' -> ',EditorOpts.HighlighterList[j].FileExtensions]);
+    end;
   end;
 end;
 
@@ -3550,9 +3555,9 @@ var
   a: Integer;
 begin
   a := AComboBox.Items.IndexOf(AText);
-  if a >= 0 then
-    AComboBox.ItemIndex := a
-  else
+  if a >= 0 then begin
+    AComboBox.ItemIndex := a;
+  end else
   begin
     AComboBox.Items.Add(AText);
     AComboBox.ItemIndex := AComboBox.Items.IndexOf(AText);

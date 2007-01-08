@@ -161,7 +161,7 @@ begin
   // get itemindex and area
   ItemIndex:=g_list_index(GtkList^.children,Data);
   
-  if LockOnChange(PgtkObject(Widget),0) > 0 then Exit;
+  if LockOnChange(PgtkObject(LCLList.Owner.Handle),0) > 0 then Exit;
 
   if GtkWidgetIsA(Widget,gtk_toggle_button_get_type) then begin
     gtk_object_set_data(PgtkObject(Widget), 'Grayed', nil);
@@ -564,13 +564,19 @@ end;
 procedure TGtkListStringList.BeginUpdate;
 begin
   inc(FUpdateCount);
+  if (FUpdateCount=1) and (Owner<>nil) and (Owner.HandleAllocated) then
+    LockOnChange(PGtkObject(Owner.Handle),+1);
 end;
 
 procedure TGtkListStringList.EndUpdate;
 begin
   dec(FUpdateCount);
-  if (FUpdateCount=0) and (glsItemCacheNeedsUpdate in FStates) then
-    UpdateItemCache;
+  if (FUpdateCount=0) then begin
+    if (Owner<>nil) and (Owner.HandleAllocated) then
+      LockOnChange(PGtkObject(Owner.Handle),-1);
+    if (glsItemCacheNeedsUpdate in FStates) then
+      UpdateItemCache;
+  end;
 end;
 
 procedure TGtkListStringList.ConsistencyCheck;

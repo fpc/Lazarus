@@ -1120,7 +1120,7 @@ begin
   if not ComboBox.HandleAllocated then
     RaiseGDBException('');
   ComboWidget:=PGtkCombo(ComboBox.Handle);
-  ComboStrings:=ComboBox.items;
+  ComboStrings:=ComboBox.Items;
 //  TStrings(gtk_object_get_data(PGtkObject(ComboWidget),GtkListItemLCLListTag));
   CurText:=GetComboBoxText(ComboWidget);
   Result:=ComboStrings.IndexOf(CurText);
@@ -3077,7 +3077,6 @@ const
 
 var
   Display: Pointer;
-  ByteKey: Byte;
   n, m: Integer;
   LoKey, HiKey: Integer;
   KeySymStart, KeySymNext: PKeySym;

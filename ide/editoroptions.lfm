@@ -13,7 +13,7 @@ object EditorOptionsForm: TEditorOptionsForm
     Width = 481
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
-    PageIndex = 5
+    PageIndex = 3
     object GeneralPage: TPage
       Caption = 'GeneralPage'
       object BlockIndentLabel: TLabel
@@ -152,6 +152,8 @@ object EditorOptionsForm: TEditorOptionsForm
           Top = 32
           Width = 100
           BorderWidth = 2
+          ButtonColorSize = 16
+          Color = clBtnFace
           OnColorChanged = RightMarginColorButtonColorChanged
         end
         object GutterColorButton: TColorButton
@@ -160,6 +162,8 @@ object EditorOptionsForm: TEditorOptionsForm
           Top = 80
           Width = 100
           BorderWidth = 2
+          ButtonColorSize = 16
+          Color = clBtnFace
           OnColorChanged = ColorButtonColorChanged
         end
         object RightMarginColorLabel: TLabel
@@ -375,6 +379,8 @@ object EditorOptionsForm: TEditorOptionsForm
         Font.Name = 'courier'
         ParentColor = False
         TabOrder = 2
+        BookMarkOptions.OnChange = nil
+        Gutter.OnChange = nil
         Gutter.CodeFoldingWidth = 14
         Keystrokes = <        
           item
@@ -701,6 +707,7 @@ object EditorOptionsForm: TEditorOptionsForm
           'DisplayPreview'
         )
         ReadOnly = True
+        SelectedColor.OnChange = nil
         OnSpecialLineColors = OnSpecialLineColors
       end
     end
@@ -857,6 +864,8 @@ object EditorOptionsForm: TEditorOptionsForm
         ParentColor = False
         TabOrder = 3
         OnMouseDown = ColorPreviewMouseUp
+        BookMarkOptions.OnChange = nil
+        Gutter.OnChange = nil
         Gutter.CodeFoldingWidth = 14
         Keystrokes = <        
           item
@@ -1183,6 +1192,7 @@ object EditorOptionsForm: TEditorOptionsForm
           'ColorPreview'
         )
         ReadOnly = True
+        SelectedColor.OnChange = nil
         OnSpecialLineColors = OnSpecialLineColors
       end
       object ColorElementListBox: TListBox
@@ -1241,6 +1251,8 @@ object EditorOptionsForm: TEditorOptionsForm
           Width = 75
           BorderSpacing.Top = 2
           BorderWidth = 2
+          ButtonColorSize = 16
+          Color = clBtnFace
           OnColorChanged = ColorButtonColorChanged
         end
         object BackGroundColorButton: TColorButton
@@ -1252,6 +1264,8 @@ object EditorOptionsForm: TEditorOptionsForm
           Width = 75
           BorderSpacing.Top = 2
           BorderWidth = 2
+          ButtonColorSize = 16
+          Color = clBtnFace
           OnColorChanged = ColorButtonColorChanged
         end
         object BackGroundLabel: TLabel
@@ -1270,9 +1284,9 @@ object EditorOptionsForm: TEditorOptionsForm
           AnchorSideTop.Control = ForeGroundLabel
           AnchorSideTop.Side = asrBottom
           Left = 94
-          Height = 24
+          Height = 20
           Top = 15
-          Width = 156
+          Width = 152
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Top = 2
           Caption = 'ForeGroundUseDefaultCheckBox'
@@ -1283,9 +1297,9 @@ object EditorOptionsForm: TEditorOptionsForm
           AnchorSideTop.Control = BackGroundLabel
           AnchorSideTop.Side = asrBottom
           Left = 94
-          Height = 24
+          Height = 20
           Top = 54
-          Width = 156
+          Width = 152
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Right = 2
           Caption = 'BackGroundUseDefaultCheckBox'
@@ -1294,9 +1308,9 @@ object EditorOptionsForm: TEditorOptionsForm
         end
         object TextBoldCheckBox: TCheckBox
           Left = 6
-          Height = 24
-          Top = 106
-          Width = 251
+          Height = 20
+          Top = 101
+          Width = 247
           Align = alBottom
           BorderSpacing.Around = 6
           Caption = 'TextBoldCheckBox'
@@ -1305,9 +1319,9 @@ object EditorOptionsForm: TEditorOptionsForm
         end
         object TextItalicCheckBox: TCheckBox
           Left = 6
-          Height = 24
-          Top = 136
-          Width = 251
+          Height = 20
+          Top = 127
+          Width = 247
           Align = alBottom
           BorderSpacing.Around = 6
           Caption = 'TextItalicCheckBox'
@@ -1316,9 +1330,9 @@ object EditorOptionsForm: TEditorOptionsForm
         end
         object TextUnderlineCheckBox: TCheckBox
           Left = 6
-          Height = 24
-          Top = 166
-          Width = 251
+          Height = 20
+          Top = 153
+          Width = 247
           Align = alBottom
           BorderSpacing.Around = 6
           Caption = 'TextUnderlineCheckBox'

@@ -185,7 +185,7 @@ type
          mark: TSynEditMark);
     procedure OnEditorSpecialLineColor(Sender: TObject; Line: integer;
          var Special: boolean; var FG, BG: TColor);
-    Function RefreshEditorSettings: Boolean;
+    function RefreshEditorSettings: Boolean;
     procedure SetSyntaxHighlighterType(
                                  ASyntaxHighlighterType: TLazSyntaxHighlighter);
     procedure SetErrorLine(NewLine: integer);
@@ -2032,7 +2032,7 @@ procedure TSourceEditor.SetSyntaxHighlighterType(
   ASyntaxHighlighterType: TLazSyntaxHighlighter);
 begin
   if (ASyntaxHighlighterType=fSyntaxHighlighterType)
-  and ((FEditor.Highlighter=nil) xor EditorOpts.UseSyntaxHighlight) then exit;
+  and ((FEditor.Highlighter<>nil) = EditorOpts.UseSyntaxHighlight) then exit;
   if EditorOpts.UseSyntaxHighlight then begin
     if Highlighters[ASyntaxHighlighterType]=nil then begin
       Highlighters[ASyntaxHighlighterType]:=
@@ -2066,6 +2066,7 @@ end;
 Function TSourceEditor.RefreshEditorSettings: Boolean;
 Begin
   Result:=true;
+  EditorOpts.
   SetSyntaxHighlighterType(fSyntaxHighlighterType);
   EditorOpts.GetSynEditSettings(FEditor);
   SourceNotebook.UpdateActiveEditColors;

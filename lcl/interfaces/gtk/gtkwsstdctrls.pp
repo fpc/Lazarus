@@ -680,12 +680,14 @@ begin
   end;
 end;
 
-class function TGtkWSCustomComboBox.GetText(const AWinControl: TWinControl; var AText: String): Boolean;
+class function TGtkWSCustomComboBox.GetText(const AWinControl: TWinControl;
+  var AText: String): Boolean;
 begin
-//  DebugLn('TGtkWSCustomComboBox.Gettext ',DbgSName(ACustomComboBox),' ',GetWidgetDebugReport(PGtkWidget(ACustomComboBox.Handle)));
-
-  Atext:=GetComboBoxText(PGtkCombo(AWinControl.handle));
-  result:=true;
+  //DebugLn('TGtkWSCustomComboBox.GetText ',DbgSName(ACustomComboBox),' ',GetWidgetDebugReport(PGtkWidget(ACustomComboBox.Handle)));
+  AText:=GetComboBoxText(PGtkCombo(AWinControl.Handle));
+  //if AWinControl.Name='FileExtensionsComboBox' then
+  //  DebugLn('TGtkWSCustomComboBox.GetText ',DbgSName(AWinControl),' ',GetWidgetDebugReport(PGtkWidget(AWinControl.Handle)),' AText="',AText,'"');
+  Result:=true;
 end;
 
 class function TGtkWSCustomComboBox.GetItemIndex(
