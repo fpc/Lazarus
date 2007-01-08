@@ -3783,14 +3783,14 @@ var
   CaretType: integer;
   IgnorePos: TCodePosition;
 begin
-  //DebugLn(['TPascalParserTool.BuildTreeAndGetCleanPos ',MainFilename,' btSetIgnoreErrorPos=',btSetIgnoreErrorPos in BuildTreeFlags,' btKeepIgnoreErrorPos=',btKeepIgnoreErrorPos in BuildTreeFlags,' CursorPos=x=',CursorPos.X,',y=',CursorPos.Y]);
+  DebugLn(['TPascalParserTool.BuildTreeAndGetCleanPos ',MainFilename,' btSetIgnoreErrorPos=',btSetIgnoreErrorPos in BuildTreeFlags,' btKeepIgnoreErrorPos=',btKeepIgnoreErrorPos in BuildTreeFlags,' CursorPos=x=',CursorPos.X,',y=',CursorPos.Y]);
   if (btSetIgnoreErrorPos in BuildTreeFlags) then begin
     // ignore errors after cursor position
     if (CursorPos.Code<>nil) then begin
       IgnorePos.Code:=CursorPos.Code;
       IgnorePos.Code.LineColToPosition(CursorPos.Y,CursorPos.X,IgnorePos.P);
       if IgnorePos.P<1 then IgnorePos.Code:=nil;
-      //debugln('TPascalParserTool.BuildTreeAndGetCleanPos IgnorePos=',dbgsCP(IgnorePos));
+      debugln('TPascalParserTool.BuildTreeAndGetCleanPos IgnorePos=',dbgsCP(IgnorePos));
       IgnoreErrorAfter:=IgnorePos;
     end else
       ClearIgnoreErrorAfter;
