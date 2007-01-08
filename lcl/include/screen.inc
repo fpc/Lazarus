@@ -319,9 +319,6 @@ begin
     Dispose(P);
     P := Next;
   end;
-  {Hdl := LoadCursor(0, IDC_ARROW);
-  if Hdl <> FDefaultCursor then
-    DestroyCursor(FDefaultCursor);}
 end;
 
 {------------------------------------------------------------------------------

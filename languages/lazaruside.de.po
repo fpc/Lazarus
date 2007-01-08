@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-01-06 19:51+0100\n"
+"PO-Revision-Date: 2007-01-08 14:44+0100\n"
 "Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -562,7 +562,7 @@ msgstr "Alternative Taste (oder 2-Tastenkombination)"
 
 #: lazarusidestrconsts:lisbfalwaysbuildbeforerun
 msgid "Always Build before Run"
-msgstr ""
+msgstr "Vor dem Start immer neu erzeugen"
 
 #: lazarusidestrconsts:lisprojoptsalwaysbuildevenifnothingchanged
 msgid "Always build (even if nothing changed)"
@@ -894,7 +894,7 @@ msgstr "Codetools erstellen"
 
 #: lazarusidestrconsts:lisbfbuildcommand
 msgid "Build Command"
-msgstr ""
+msgstr "Build-Befehl"
 
 #: lazarusidestrconsts:lisbuildcomponent
 msgid "Build Component"
@@ -1278,7 +1278,7 @@ msgstr "Namen der Abhängigkeit löschen"
 
 #: lazarusidestrconsts:lisuiclearincludedbyreference
 msgid "Clear include cache"
-msgstr ""
+msgstr "Include-Cache löschen"
 
 #: lazarusidestrconsts:lisdebugoptionsfrmclearlogonrun
 msgid "Clear log on run"
@@ -1542,7 +1542,7 @@ msgstr "%sLazarus erstellen%s konfigurieren"
 
 #: lazarusidestrconsts:lisconfigurebuild
 msgid "Configure Build %s"
-msgstr ""
+msgstr "Build %s konfigurieren"
 
 #: lazarusidestrconsts:lismenuconfigbuildfile
 msgid "Configure Build+Run File ..."
@@ -3158,7 +3158,7 @@ msgstr "Zur Include-Anweisung der aktuellen Include-Datei springen"
 
 #: lazarusidestrconsts:listodogoto
 msgid "Goto"
-msgstr ""
+msgstr "Gehe zu"
 
 #: lazarusidestrconsts:srkmecgotoxy
 msgid "Goto XY"
@@ -3194,7 +3194,7 @@ msgstr "Taste fangen"
 
 #: lazarusidestrconsts:srkmgrabsecondkey
 msgid "Grab second key"
-msgstr "Zweiten Taste fangen"
+msgstr "Zweite Taste fangen"
 
 #: lazarusidestrconsts:dlggrabbercolor
 msgid "Grabber color"
@@ -4110,7 +4110,7 @@ msgstr "Tastaturbelegung"
 
 #: lazarusidestrconsts:dlgkeymappingerrors
 msgid "Key mapping errors"
-msgstr "Tastenbelegungsfehler"
+msgstr "Tastenzuweisungsfehler"
 
 #: lazarusidestrconsts:liskmkeymappingscheme
 msgid "Keymapping Scheme"
@@ -4350,7 +4350,7 @@ msgstr "Lizenz:"
 
 #: lazarusidestrconsts:lisaboutlazarusmsg
 msgid "License: GPL/LGPL%sLazarus are the class libraries for Free Pascal that emulate Delphi. Free Pascal is a (L)GPL'ed compiler that runs on Linux, Win32, OS/2, 68K and more. Free Pascal is designed to be able to understand and compile Delphi syntax, which is of course OOP.%sLazarus is the missing part of the puzzle that will allow you to develop Delphi like programs in all of the above platforms. The IDE will eventually become a RAD tool like Delphi.%sAs Lazarus is growing we need more developers."
-msgstr "Lizenz: GPL/LGPL%sLazarus are the class libraries for Free Pascal that emulate Delphi. Free Pascal is a (L)GPL'ed compiler that runs on Linux, Win32, OS/2, 68K and more. Free Pascal is designed to be able to understand and compile Delphi syntax, which is of course OOP.%sLazarus is the missing part of the puzzle that will allow you to develop Delphi like programs in all of the above platforms. The IDE will eventually become a RAD tool like Delphi.%sAs Lazarus is growing we need more developers."
+msgstr "Lizenz: GPL/LGPL%sLazarus ist der Name einer Sammlung von Klassenbibliotheken für Free Pascal die Delphi emulieren. Free Pascal ist ein Compiler unter (L)GPL, der unter Linux, Win32, FreeBSD, MacOS X und so weiter läuft. Free Pascal wurde entworfen, um die Delphi-Syntax, die natürlich objektorientiert ist, zu verstehen und zu kompilieren.%sLazarus ist das fehlende Teil des Puzzles, um Delphi-artige Programme auf den oben angeführten Plattformen entwickeln zu können. Die IDE wird vielleicht ein RAD-Tool wie Delphi werden%sDamit Lazarus weiter wächst, benötigen wir ständig neue Entwickler."
 
 #: lazarusidestrconsts:lisdebugoptionsfrmlimitlinecountto
 msgid "Limit linecount to"
@@ -4482,7 +4482,7 @@ msgstr "Ressourcenstring erzeugen"
 
 #: lazarusidestrconsts:lispckoptsmanualcompilationneverautomatically
 msgid "Manual compilation (never automatically)"
-msgstr "Manuelle Kompilation (nie automatisch)"
+msgstr "Manuelle Kompilierung (nie automatisch)"
 
 #: lazarusidestrconsts:dlgmargingutter
 msgid "Margin and gutter"
@@ -4546,11 +4546,11 @@ msgstr "Alles minimieren wenn Hauptfenster minimiert wird"
 
 #: lazarusidestrconsts:lisprojaddminimumversionoptional
 msgid "Minimum Version (optional):"
-msgstr "Minimale Version (optional):"
+msgstr "Kleinste Version (optional):"
 
 #: lazarusidestrconsts:lispckeditminimumversion
 msgid "Minimum Version:"
-msgstr "Kleinste Version"
+msgstr "Kleinste Version:"
 
 #: lazarusidestrconsts:lispckoptsminor
 msgid "Minor"
@@ -5038,7 +5038,7 @@ msgstr "Alte Klasse"
 
 #: lazarusidestrconsts:lisbfonbuildprojectexecutethebuildfilecommandinstead
 msgid "On build project execute the Build File command instead"
-msgstr ""
+msgstr "Beim Erstellen des Projekts statt dessen \"Datei erstellen\" aufrufen"
 
 #: lazarusidestrconsts:lisceoonidle
 msgid "On idle"
@@ -5046,7 +5046,7 @@ msgstr "Wenn nichts ansteht"
 
 #: lazarusidestrconsts:lisbfonrunprojectexecutetherunfilecommandinstead
 msgid "On run project execute the Run File command instead"
-msgstr ""
+msgstr "Beim Start des Projekts statt dessen \"Datei ausführen\" aufrufen"
 
 #: lazarusidestrconsts:lismenuonlinehelp
 msgid "Online Help"
@@ -5134,7 +5134,7 @@ msgstr "Als XML-Datei öffnen"
 
 #: lazarusidestrconsts:lisopenexistingfile
 msgid "Open existing file"
-msgstr ""
+msgstr "Vorhandene Datei öffnen"
 
 #: lazarusidestrconsts:lisopenfile
 msgid "Open file"
@@ -5470,7 +5470,7 @@ msgstr "Ausgewählte Komponenten aus der Zwischenablage einfügen"
 
 #: lazarusidestrconsts:lispatheditpathtemplates
 msgid "Path templates"
-msgstr "Pfad-Templates:"
+msgstr "Pfad-Templates"
 
 #: lazarusidestrconsts:listofpcpath
 msgid "Path:"
@@ -5482,7 +5482,7 @@ msgstr "Pfade"
 
 #: lazarusidestrconsts:lisuidpathsreadonly
 msgid "Paths (Read Only)"
-msgstr "Pfade (schreibgeschützt):"
+msgstr "Pfade (schreibgeschützt)"
 
 #: lazarusidestrconsts:lismenupause
 msgid "Pause"
@@ -5842,7 +5842,7 @@ msgstr "Zuletzt verwendete Dateien"
 
 #: lazarusidestrconsts:lispckeditrecompileallrequired
 msgid "Recompile all required"
-msgstr "Alles benötigte neu kompilieren"
+msgstr "Alles Benötigte neu kompilieren"
 
 #: lazarusidestrconsts:lispckeditrecompileclean
 msgid "Recompile clean"
@@ -5994,7 +5994,7 @@ msgstr "Benötigtes Package entfernt (diese Einträge werden nicht in die lpk-Da
 
 #: lazarusidestrconsts:lisfrirename
 msgid "Rename"
-msgstr "Umnennen"
+msgstr "Umbenennen"
 
 #: lazarusidestrconsts:lispkgmangrenamefilelowercase
 msgid "Rename File lowercase?"
@@ -6194,7 +6194,7 @@ msgstr "Start"
 
 #: lazarusidestrconsts:lisbfruncommand
 msgid "Run Command"
-msgstr ""
+msgstr "Befehl ausführen"
 
 #: lazarusidestrconsts:lismenurunfile
 msgid "Run File"
@@ -6246,7 +6246,7 @@ msgstr "Speichere "
 
 #: lazarusidestrconsts:lissave
 msgid "Save ..."
-msgstr ""
+msgstr "Speichern ..."
 
 #: lazarusidestrconsts:lismenusaveall
 msgid "Save All"
@@ -6346,7 +6346,7 @@ msgstr "Speichern der Datei %s%s%s%svor dem Schließen des Formulars %s%s%s?"
 
 #: lazarusidestrconsts:lissavefileas
 msgid "Save file as"
-msgstr ""
+msgstr "Datei speichern als"
 
 #: lazarusidestrconsts:lisa2psavefiledialog
 msgid "Save file dialog"
@@ -6590,7 +6590,7 @@ msgstr "Auswahl Seite hoch"
 
 #: lazarusidestrconsts:lismenueditorselecttemplate
 msgid "Select Template:"
-msgstr "Vorlange auswählen:"
+msgstr "Vorlage auswählen:"
 
 #: lazarusidestrconsts:srkmecselup
 msgid "Select Up"
@@ -6598,7 +6598,7 @@ msgstr "Auswahl nach oben"
 
 #: lazarusidestrconsts:srkmecselwordleft
 msgid "Select Word Left"
-msgstr "Wor links auswählen"
+msgstr "Wort links auswählen"
 
 #: lazarusidestrconsts:srkmecselwordright
 msgid "Select Word Right"
@@ -7230,7 +7230,7 @@ msgstr "Zielprozessor"
 
 #: lazarusidestrconsts:lislazbuildtargetcpu
 msgid "Target CPU:"
-msgstr "Ziel-Prozessor"
+msgstr "Zielprozessor:"
 
 #: lazarusidestrconsts:lislazbuildtargetdirectory
 msgid "Target Directory:"
@@ -8278,7 +8278,7 @@ msgstr "Kann Formular im Quelltext nicht umbenennen."
 
 #: lazarusidestrconsts:lisunabletorenamemethodplzfixtheerrorshowninthemessag
 msgid "Unable to rename method. Plz fix the error shown in the message window."
-msgstr "Konnte die Methode nicht umbennen. Bitte korrigieren Sie den im Meldungsfenster gezeigten Fehler."
+msgstr "Konnte die Methode nicht umbennen. Bitte korrigieren Sie den im Ausgabefenster gezeigten Fehler."
 
 #: lazarusidestrconsts:lisunabletorenamevariableinsource
 msgid "Unable to rename variable in source."
@@ -8862,7 +8862,7 @@ msgstr "Beim Umschalten von Dateien im Quelltexteditor"
 
 #: lazarusidestrconsts:lisbfwhenthisfileisactiveinsourceeditor
 msgid "When this file is active in source editor ..."
-msgstr ""
+msgstr "Wenn diese Datei im Quelltexteditor aktiv ist ..."
 
 #: lazarusidestrconsts:lisfindfilewhere
 msgid "Where"
@@ -8910,7 +8910,7 @@ msgstr "Worte"
 
 #: lazarusidestrconsts:lisbfworkingdirectoryleaveemptyforfilepath2
 msgid "Working Directory (Leave empty for file path)"
-msgstr ""
+msgstr "Arbeitsverzeichnis (keine Angabe heißt Dateipfad)"
 
 #: lazarusidestrconsts:lisedtexttoolworkingdirectory
 msgid "Working Directory:"
@@ -8922,15 +8922,15 @@ msgstr "Arbeitsverzeichnis"
 
 #: lazarusidestrconsts:lisbfworkingdirectoryleaveemptyforfilepath
 msgid "Working directory (Leave empty for file path)"
-msgstr ""
+msgstr "Arbeitsverzeichnis (keine Angabe heißt Dateipfad)"
 
 #: lazarusidestrconsts:lisworkingdirectoryforbuilding
 msgid "Working directory for building"
-msgstr ""
+msgstr "Arbeitsverzeichnis für den Build"
 
 #: lazarusidestrconsts:lisworkingdirectoryforrun
 msgid "Working directory for run"
-msgstr ""
+msgstr "Arbeitsverzeichnis für den Start"
 
 #: lazarusidestrconsts:liswriteerror
 msgid "Write Error"
