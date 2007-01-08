@@ -256,7 +256,8 @@ var
   i: Integer;
 begin
   i:=ItemIndex;
-  if i<0 then
+  // in a multiselect listbox, the itemindex can be 0 in an empty list
+  if (i<0) or (i>=Items.Count) then
     FFileName := ''
   else begin
     FFileName := FDirectory+DirectorySeparator+Items[i];

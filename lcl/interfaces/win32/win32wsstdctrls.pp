@@ -471,7 +471,12 @@ end;
 
 class function TWin32WSCustomListBox.GetItemIndex(const ACustomListBox: TCustomListBox): integer;
 begin
-  Result := SendMessage(ACustomListBox.Handle, LB_GETCURSEL, 0, 0);
+  if ACustomListBox.MultiSelect then
+    // Return focused item for multiselect listbox
+    Result := SendMessage(ACustomListBox.Handle, LB_GETCARETINDEX, 0, 0)
+  else
+    // LB_GETCURSEL is only for single select listbox
+    Result := SendMessage(ACustomListBox.Handle, LB_GETCURSEL, 0, 0);
   if Result = LB_ERR then
   begin
     Assert(false, 'Trace:[TWin32WSCustomListBox.GetItemIndex] could not retrieve itemindex, try selecting an item first');
