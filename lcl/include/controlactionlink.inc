@@ -115,23 +115,4 @@ begin
   if IsHelpLinked then FClient.HelpType := Value;
 end;
 
-{ TWinControlActionLink }
-
-procedure TWinControlActionLink.AssignClient(AClient: TObject);
-begin
-  inherited AssignClient(AClient);
-  FClient := AClient as TWinControl;
-end;
-
-function TWinControlActionLink.IsHelpContextLinked: Boolean;
-begin
-  // only for Delphi compatibility
-  Result := IsHelpLinked;
-end;
-
-procedure TWinControlActionLink.SetHelpContext(Value: THelpContext);
-begin
-  inherited SetHelpContext(Value);
-end;
-
 // included by controls.pp

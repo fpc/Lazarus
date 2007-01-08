@@ -591,21 +591,18 @@ end;
 ------------------------------------------------------------------------------}
 function TControl.IsHelpContextStored: boolean;
 begin
-  if ActionLink=nil then
-    Result := HelpContext<>0
-  else
-    Result := not ActionLink.IsHelpContextLinked;
+  Result := (ActionLink = nil) or not ActionLink.IsHelpLinked;
 end;
 
 {------------------------------------------------------------------------------
   function TControl.IsHelpKeyWordStored: boolean;
 ------------------------------------------------------------------------------}
+// Using IsHelpContextLinked() for controlling HelpKeyword
+// is not correct. Therefore, use IsHelpLinked which means that all 3 Help* properties
+// must be equal. Also, this function becomes exactly the same as one just above.
 function TControl.IsHelpKeyWordStored: boolean;
 begin
-  if ActionLink=nil then
-    Result := HelpKeyword<>''
-  else
-    Result := not ActionLink.IsHelpContextLinked;
+  Result := (ActionLink = nil) or not ActionLink.IsHelpLinked;
 end;
 
 function TControl.IsOnClickStored: Boolean;
@@ -1358,6 +1355,11 @@ begin
       Visible := NewAction.Visible;
     if not CheckDefaults or not Assigned(OnClick) then
       OnClick := NewAction.OnExecute;
+    if not CheckDefaults or (Self.HelpContext = 0) then
+      Self.HelpContext := HelpContext;
+    if not CheckDefaults or (Self.HelpKeyword = '') then
+      Self.HelpKeyword := HelpKeyword;
+    // HelpType is set implicitly when assigning HelpContext or HelpKeyword
   end;
 end;
 
@@ -2624,6 +2626,9 @@ begin
       Caption := Self.Caption;
       Visible := Self.Visible;
       OnExecute := Self.OnClick;
+      HelpContext := Self.HelpContext;
+      HelpKeyword := Self.HelpKeyword;
+      HelpType := Self.HelpType;
     end
   else inherited AssignTo(Dest);
 end;
@@ -2925,6 +2930,8 @@ end;
 procedure TControl.SetHelpContext(const AValue: THelpContext);
 begin
   if FHelpContext=AValue then exit;
+  if not (csLoading in ComponentState) then
+    FHelpType := htContext;
   FHelpContext:=AValue;
 end;
 
@@ -2934,6 +2941,8 @@ end;
 procedure TControl.SetHelpKeyword(const AValue: String);
 begin
   if FHelpKeyword=AValue then exit;
+  if not (csLoading in ComponentState) then
+    FHelpType := htKeyword;
   FHelpKeyword:=AValue;
 end;
 

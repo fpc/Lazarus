@@ -1422,13 +1422,10 @@ type
 
   { TWinControlActionLink }
 
-  TWinControlActionLink = class(TControlActionLink)
-  protected
-    procedure AssignClient(AClient: TObject); override;
-    function IsHelpContextLinked: Boolean; override;
-    procedure SetHelpContext(Value: THelpContext); override;
-  end;
-
+  // Since HelpContext and HelpKeyword are properties of TControl,
+  // this class is obsolete. In order not to break existing code,
+  // its declaration is aliased to TControlActionLink.
+  TWinControlActionLink = TControlActionLink;
   TWinControlActionLinkClass = class of TWinControlActionLink;
 
 
@@ -1518,9 +1515,6 @@ type
                                       var BoundsModified: Boolean);
   protected
     FWinControlFlags: TWinControlFlags;
-    procedure AssignTo(Dest: TPersistent); override;
-    procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); override;
-    function GetActionLinkClass: TControlActionLinkClass; override;
     procedure AdjustClientRect(var ARect: TRect); virtual;
     procedure AlignControls(AControl: TControl;
                             var RemainingClientRect: TRect); virtual;

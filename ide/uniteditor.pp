@@ -2066,7 +2066,6 @@ end;
 Function TSourceEditor.RefreshEditorSettings: Boolean;
 Begin
   Result:=true;
-  EditorOpts.
   SetSyntaxHighlighterType(fSyntaxHighlighterType);
   EditorOpts.GetSynEditSettings(FEditor);
   SourceNotebook.UpdateActiveEditColors;

@@ -3629,27 +3629,6 @@ Begin
   end;
 end;
 
-procedure TWinControl.AssignTo(Dest: TPersistent);
-begin
-  inherited AssignTo(Dest);
-  if Dest is TCustomAction then
-    TCustomAction(Dest).HelpContext:=HelpContext;
-end;
-
-procedure TWinControl.ActionChange(Sender: TObject; CheckDefaults: Boolean);
-begin
-  inherited ActionChange(Sender,CheckDefaults);
-  if Sender is TCustomAction then
-    with TCustomAction(Sender) do
-    if (not CheckDefaults) or (Self.HelpContext = 0) then
-      Self.HelpContext := HelpContext;
-end;
-
-function TWinControl.GetActionLinkClass: TControlActionLinkClass;
-begin
-  Result := TWinControlActionLink;
-end;
-
 {------------------------------------------------------------------------------
   TWinControl KeyDown
 ------------------------------------------------------------------------------}
