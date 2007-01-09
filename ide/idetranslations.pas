@@ -382,7 +382,7 @@ begin
     Dir+'languages/lazaruside'+Ext,Lang,FallbackLang);
   // objectinspector
   TranslateUnitResourceStrings('ObjInspStrConsts',
-    Dir+'languages/objinspstrconsts'+Ext,Lang,FallbackLang);
+    Dir+'ideintf/languages/objinspstrconsts'+Ext,Lang,FallbackLang);
   // CodeTools
   TranslateUnitResourceStrings('CodeToolsStrConsts',
     Dir+'components/codetools/languages/codetools'+Ext,Lang,FallbackLang);

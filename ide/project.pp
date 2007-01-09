@@ -50,7 +50,7 @@ uses
   Classes, SysUtils, FPCAdds, LCLProc, LCLIntf, LCLType, Forms, Controls,
   Dialogs, Laz_XMLCfg, LazConf, FileUtil,
   LazarusIDEStrConsts, CompilerOptions, CodeToolManager, CodeCache,
-  EditorOptions, IDEProcs, RunParamsOpts, ProjectIntf, ProjectDefs,
+  EditorOptions, IDEProcs, RunParamsOpts, ProjectIntf, ProjectDefs, MacroIntf,
   FileReferenceList, EditDefineTree, DefineTemplates, PackageDefs, LazIDEIntf,
   // for .res files
   W32VersionInfo;
@@ -698,6 +698,9 @@ type
     // source editor
     procedure UpdateCustomHighlighter;
     procedure UpdateSyntaxHighlighter;
+    
+    // i18n
+    function GetRSTOutDirectory: string;
   public
     property ActiveEditorIndexAtStart: integer read fActiveEditorIndexAtStart
                                                write fActiveEditorIndexAtStart;
@@ -1745,9 +1748,14 @@ begin
       xmlconfig.SetValue(Path+'General/TargetFileExt/Value',TargetFileExt);
       xmlconfig.SetDeleteValue(Path+'General/Title/Value', Title,'');
 
-      //lazdoc
-      xmlconfig.SetDeleteValue(Path+'LazDoc/Paths', LazDocPaths, '');
+      // lazdoc
+      xmlconfig.SetDeleteValue(Path+'LazDoc/Paths',
+        CreateRelativeSearchPath(LazDocPaths,ProjectDirectory), '');
       
+      // i18n
+      xmlconfig.SetDeleteValue(Path+'RST/OutDir',
+        CreateRelativePath(RSTOutputDirectory,ProjectDirectory), '');
+
       // VersionInfo
       xmlconfig.SetDeleteValue(Path+'VersionInfo/UseVersionInfo/Value', VersionInfo.UseVersionInfo,false);
       xmlconfig.SetDeleteValue(Path+'VersionInfo/AutoIncrementBuild/Value', VersionInfo.AutoIncrementBuild,false);
@@ -2104,14 +2112,21 @@ begin
       NewMainUnitID := xmlconfig.GetValue(Path+'General/MainUnit/Value', -1);
       AutoCreateForms := xmlconfig.GetValue(
          Path+'General/AutoCreateForms/Value', true);
-      IconPath := xmlconfig.GetValue(Path+'General/IconPath/Value', './');
+      IconPath := SwitchPathDelims(
+                        xmlconfig.GetValue(Path+'General/IconPath/Value', './'),
+                        fPathDelimChanged);
       TargetFileExt := xmlconfig.GetValue(
          Path+'General/TargetFileExt/Value', GetExecutableExt);
       Title := xmlconfig.GetValue(Path+'General/Title/Value', '');
 
       // Lazdoc
-      LazDocPaths := xmlconfig.GetValue(Path+'LazDoc/Paths', '');
-      
+      LazDocPaths := SwitchPathDelims(xmlconfig.GetValue(Path+'LazDoc/Paths', ''),
+                             fPathDelimChanged);
+
+      // i18n
+      RSTOutputDirectory := SwitchPathDelims(
+                   xmlconfig.GetValue(Path+'RST/OutDir', ''),fPathDelimChanged);
+
       {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject E reading comp sets');{$ENDIF}
       // Load the compiler options
       LoadCompilerOptions(XMLConfig,Path);
@@ -3392,6 +3407,14 @@ begin
       AnUnitInfo.SyntaxHighlighter:=
         ExtensionToLazSyntaxHighlighter(ExtractFileExt(AnUnitInfo.Filename));
   end;
+end;
+
+function TProject.GetRSTOutDirectory: string;
+begin
+  Result:=RSTOutputDirectory;
+  IDEMacros.SubstituteMacros(Result);
+  Result:=TrimFilename(Result);
+  LongenFilename(Result);
 end;
 
 procedure TProject.OnUnitNameChange(AnUnitInfo: TUnitInfo;

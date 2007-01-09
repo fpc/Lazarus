@@ -20,14 +20,14 @@ if [ ! -x tools/updatepofiles ]; then
 fi
 
 # IDE
-IDE_RST=`find . -name lazarusidestrconsts.rst | xargs ls -1t | head -1`;
+IDE_RST=`find units -name lazarusidestrconsts.rst | xargs ls -1t | head -1`;
 rstconv -i $IDE_RST -o languages/lazaruside.po
 ./tools/updatepofiles languages/lazaruside.po
 
 # IDEIntf
-ObjInsp_RST=`find . -name objinspstrconsts.rst | xargs ls -1t | head -1`;
-rstconv -i $ObjInsp_RST -o languages/objinspstrconsts.po
-tools/updatepofiles languages/objinspstrconsts.po
+ObjInsp_RST=`find ideintf/units -name objinspstrconsts.rst | xargs ls -1t | head -1`;
+rstconv -i $ObjInsp_RST -o ideintf/languages/objinspstrconsts.po
+tools/updatepofiles ideintf/languages/objinspstrconsts.po
 
 # CodeTools
 CodeTools_RST=`find components/codetools/units -name codetoolsstrconsts.rst | xargs ls -1t | head -1`;

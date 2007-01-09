@@ -38,7 +38,8 @@ interface
 uses
   Arrow, Buttons, StdCtrls, SysUtils, LCLProc, Classes, CodeToolManager,
   Controls, Dialogs, LCLIntf, LResources, ExtCtrls, Forms, Graphics, Spin,
-  IDEWindowIntf, ProjectIntf,
+  FileUtil,
+  IDEWindowIntf, ProjectIntf, IDEDialogs,
   IDEOptionDefs, LazarusIDEStrConsts, Project, IDEProcs, W32VersionInfo,
   VersionInfoAdditionalInfo;
 
@@ -47,12 +48,16 @@ type
   { TProjectOptionsDialog }
 
   TProjectOptionsDialog = class(TForm)
+    RSTOutDirButton: TButton;
+    RSTOutDirEdit: TEdit;
+    RSTGroupBox: TGroupBox;
 
     Notebook: TNotebook;
     ApplicationPage:    TPage;
     FormsPage:    TPage;
     MiscPage:    TPage;
     LazDocPage:    TPage;
+    i18nPage: TPage;
     SavePage: TPage;
     VersionInfoPage: TPage;
 
@@ -128,6 +133,7 @@ type
     CancelButton: TButton;
 
     procedure AdditionalInfoButtonClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
     procedure FormsPageResize(Sender: TObject);
     procedure LazDocAddPathButtonClick(Sender: TObject);
     procedure LazDocBrowseButtonClick(Sender: TObject);
@@ -138,6 +144,7 @@ type
     procedure FormsRemoveFromAutoCreatedFormsBtnClick(Sender: TObject);
     procedure FormsMoveAutoCreatedFormUpBtnClick(Sender: TObject);
     procedure FormsMoveAutoCreatedFormDownBtnClick(Sender: TObject);
+    procedure RSTOutDirButtonClick(Sender: TObject);
     procedure UseVersionInfoCheckBoxChange(Sender: TObject);
   private
     FProject: TProject;
@@ -148,6 +155,7 @@ type
     procedure SetupLazDocPage(PageIndex: Integer);
     procedure SetupSavePage(PageIndex: Integer);
     procedure SetupVersionInfoPage(PageIndex: Integer);
+    procedure SetupI18NPage(PageIndex: Integer);
     procedure EnableVersionInfo(UseVersionInfo: boolean);
     procedure FillAutoCreateFormsListbox;
     procedure FillAvailFormsListBox;
@@ -227,6 +235,7 @@ begin
   SetupLazDocPage(3);
   SetupSavePage(4);
   SetupVersionInfoPage(5);
+  SetupI18NPage(6);
 
   IDEDialogLayoutList.ApplyLayout(Self, 430, 375);
 end;
@@ -294,6 +303,11 @@ begin
   NoteBook.Page[PageIndex].Caption := VersionInfoTitle;
 end;
 
+procedure TProjectOptionsDialog.SetupI18NPage(PageIndex: Integer);
+begin
+  RSTGroupBox.Caption:='Directory of .po files';
+end;
+
 procedure TProjectOptionsDialog.EnableVersionInfo(UseVersionInfo: boolean);
 begin
   VersionInfoGroupBox.Enabled := UseVersionInfo;
@@ -322,6 +336,8 @@ begin
 end;
 
 procedure TProjectOptionsDialog.SetProject(AProject: TProject);
+var
+  AFilename: String;
 begin
   FProject := AProject;
   if AProject = Nil then
@@ -353,8 +369,13 @@ begin
   RunnableCheckBox.Checked := (pfRunnable in AProject.Flags);
   AlwaysBuildCheckBox.Checked := (pfAlwaysBuild in AProject.Flags);
 
-  //lazdoc
+  // lazdoc
   SplitString(Project.LazDocPaths,';',LazDocListBox.Items,true);
+  
+  // i18n
+  AFilename:=Project.RSTOutputDirectory;
+  Project.ShortenFilename(AFilename);
+  RSTOutDirEdit.Text:=AFilename;
   
   // VersionInfo
   VersionSpinEdit.Value := Project.VersionInfo.VersionNr;
@@ -382,6 +403,7 @@ procedure TProjectOptionsDialog.ProjectOptionsClose(Sender: TObject;
   var CloseAction: TCloseAction);
 var
   NewFlags: TProjectFlags;
+  AFilename: String;
 
   procedure SetProjectFlag(AFlag: TProjectFlag; AValue: Boolean);
   begin
@@ -428,8 +450,13 @@ begin
     SetAutoCreateForms;
     SetProjectTitle;
     
-    //lazdoc
+    // lazdoc
     Project.LazDocPaths:=StringListToText(LazDocListBox.Items,';',true);
+    
+    // i18n
+    AFilename:=TrimFilename(RSTOutDirEdit.Text);
+    Project.LongenFilename(AFilename);
+    Project.RSTOutputDirectory:=AFilename;
 
     // VersionInfo
     Project.VersionInfo.UseVersionInfo:=UseVersionInfoCheckBox.Checked;
@@ -474,6 +501,11 @@ begin
    ShowVersionInfoAdditionailInfoForm(Project.VersionInfo,InfoModified);
    if InfoModified then
       Project.Modified:=InfoModified;
+end;
+
+procedure TProjectOptionsDialog.FormCreate(Sender: TObject);
+begin
+
 end;
 
 procedure TProjectOptionsDialog.LazDocBrowseButtonClick(Sender: TObject);
@@ -699,6 +731,17 @@ begin
     Items.EndUpdate;
   end;
   SelectOnlyThisAutoCreateForm(i + 1);
+end;
+
+procedure TProjectOptionsDialog.RSTOutDirButtonClick(Sender: TObject);
+var
+  NewDirectory: string;
+begin
+  NewDirectory:=LazSelectDirectory(lisPOChoosePoFileDirectory,
+                                   Project.ProjectDirectory);
+  if NewDirectory='' then exit;
+  Project.ShortenFilename(NewDirectory);
+  RSTOutDirEdit.Text:=NewDirectory;
 end;
 
 procedure TProjectOptionsDialog.UseVersionInfoCheckBoxChange(Sender: TObject);

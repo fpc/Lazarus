@@ -690,6 +690,7 @@ type
                                          SrcFilename: string): TModalResult;
     function DoBuildProject(const AReason: TCompileReason;
                             Flags: TProjectBuildFlags): TModalResult; override;
+    function ConvertProjectRSTFiles(AProject: TProject): TModalResult;
     function DoAbortBuild: TModalResult;
     procedure DoQuickCompile;
     function DoInitProjectRun: TModalResult; override;
@@ -7926,6 +7927,10 @@ begin
         // compilation succeded -> write state file
         Result:=Project1.SaveStateFile(CompilerFilename,CompilerParams);
         if Result<>mrOk then exit;
+
+        // upate .po files
+        Result:=ConvertProjectRSTFiles(Project1);
+        if Result<>mrOk then exit;
       finally
         ToolStatus:=itNone;
       end;
@@ -7954,6 +7959,26 @@ begin
     MessagesView.EndBlock;
   end;
   Result:=mrOk;
+end;
+
+function TMainIDE.ConvertProjectRSTFiles(AProject: TProject): TModalResult;
+var
+  RSTOutputDirectory: String;
+  OutputDirectory: String;
+begin
+  Result:=mrOk;
+  if AProject.RSTOutputDirectory='' then exit;// nothing to do
+
+  // convert all .rst files in project output directory
+  RSTOutputDirectory:=AppendPathDelim(AProject.GetRSTOutDirectory);
+  OutputDirectory:=AppendPathDelim(AProject.GetOutputDirectory);
+  if not ConvertRSTFiles(OutputDirectory,RSTOutputDirectory) then begin
+    DebugLn(['TMainIDE.ConvertProjectRSTFiles FAILED: OutputDirectory=',OutputDirectory,' RSTOutputDirectory=',RSTOutputDirectory]);
+    exit(mrCancel);
+  end;
+  Result:=mrOK;
+
+  // TODO: copy .po files of packages
 end;
 
 function TMainIDE.DoAbortBuild: TModalResult;

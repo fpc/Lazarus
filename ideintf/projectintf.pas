@@ -520,10 +520,13 @@ type
     FLazCompilerOptions: TLazCompilerOptions;
     fModified: boolean;
     FProjectSessionFile: string;
+    FRSTOutputDirectory: string;
     FSessionModified: boolean;
     fTitle: String;
     FSessionStorage: TProjectSessionStorage;
     FLazDocPaths: string;
+    procedure SetLazDocPaths(const AValue: string);
+    procedure SetRSTOutputDirectory(const AValue: string);
   protected
     FFlags: TProjectFlags;
     procedure SetLazCompilerOptions(const AValue: TLazCompilerOptions);
@@ -576,7 +579,8 @@ type
                        write SetSessionModified;
                        // project session data (not units, data),
                        // units have their own SessionModified
-    property LazDocPaths: string read FLazDocPaths write FLazDocPaths;
+    property LazDocPaths: string read FLazDocPaths write SetLazDocPaths;
+    property RSTOutputDirectory: string read FRSTOutputDirectory write SetRSTOutputDirectory;
   end;
 
   TLazProjectClass = class of TLazProject;
@@ -1073,6 +1077,20 @@ begin
   if FProjectSessionFile=AValue then exit;
   FProjectSessionFile:=AValue;
   SessionModified:=true;
+end;
+
+procedure TLazProject.SetLazDocPaths(const AValue: string);
+begin
+  if FLazDocPaths=AValue then exit;
+  FLazDocPaths:=AValue;
+  Modified:=true;
+end;
+
+procedure TLazProject.SetRSTOutputDirectory(const AValue: string);
+begin
+  if FRSTOutputDirectory=AValue then exit;
+  FRSTOutputDirectory:=AValue;
+  Modified:=true;
 end;
 
 procedure TLazProject.SetLazCompilerOptions(const AValue: TLazCompilerOptions);

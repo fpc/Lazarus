@@ -107,7 +107,7 @@ type
     procedure IDEPageResize(Sender: TObject);
     procedure LazDocPathButtonClick(Sender: TObject);
     procedure OkButtonClick(Sender: TObject);
-    procedure PODirectoryButtonClick(Sender: TObject);
+    procedure RSTOutputDirectoryButtonClick(Sender: TObject);
     procedure PackageOptionsDialogClose(Sender: TObject;
       var CloseAction: TCloseAction);
     procedure PackageOptionsDialogResize(Sender: TObject);
@@ -459,7 +459,7 @@ begin
   ModalResult:=mrOk;
 end;
 
-procedure TPackageOptionsDialog.PODirectoryButtonClick(Sender: TObject);
+procedure TPackageOptionsDialog.RSTOutputDirectoryButtonClick(Sender: TObject);
 var
   NewDirectory: string;
 begin
@@ -806,7 +806,7 @@ begin
     AnchorParallel(akRight,6,RSTOutputGroupBox);
     Top:=0;
     AnchorParallel(akBottom,0,RSTOutputDirectoryEdit);
-    OnClick:=@PODirectoryButtonClick;
+    OnClick:=@RSTOutputDirectoryButtonClick;
     Parent:=RSTOutputGroupBox;
   end;
   RSTOutputDirectoryEdit.AnchorToNeighbour(akRight,0,RSTOutputDirectoryButton);

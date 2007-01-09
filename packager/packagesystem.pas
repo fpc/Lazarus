@@ -1148,6 +1148,7 @@ begin
     PackageType:=lptRunAndDesignTime;
     Installed:=pitStatic;
     CompilerOptions.UnitOutputDirectory:='$(LazarusDir)/lcl/units/$(TargetCPU)-$(TargetOS)/';
+    RSTOutputDirectory:='languages';
 
     // add requirements
     AddRequiredDependency(FCLPackage.CreateDependencyWithOwner(Result));
@@ -1224,6 +1225,7 @@ begin
     PackageType:=lptRunAndDesignTime;
     Installed:=pitStatic;
     CompilerOptions.UnitOutputDirectory:='';
+    RSTOutputDirectory:='languages';
 
     // add requirements
     AddRequiredDependency(LCLPackage.CreateDependencyWithOwner(Result));
@@ -1281,6 +1283,7 @@ begin
     PackageType:=lptRunAndDesignTime;
     Installed:=pitStatic;
     CompilerOptions.UnitOutputDirectory:='';
+    RSTOutputDirectory:='languages';
 
     // add requirements
     AddRequiredDependency(FCLPackage.CreateDependencyWithOwner(Result));
@@ -1355,6 +1358,7 @@ begin
     PackageType:=lptDesignTime;
     Installed:=pitStatic;
     CompilerOptions.UnitOutputDirectory:='';
+    RSTOutputDirectory:='languages';
 
     // add requirements
     AddRequiredDependency(LCLPackage.CreateDependencyWithOwner(Result));

@@ -5,16 +5,17 @@ object ProjectOptionsDialog: TProjectOptionsDialog
   Width = 457
   HorzScrollBar.Page = 456
   VertScrollBar.Page = 377
-  ActiveControl = BuildEdit
+  ActiveControl = RSTOutDirEdit
   Caption = 'ProjectOptionsDialog'
   OnClose = ProjectOptionsClose
+  OnCreate = FormCreate
   Position = poScreenCenter
   object Notebook: TNotebook
     Height = 341
     Width = 457
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
-    PageIndex = 3
+    PageIndex = 6
     object ApplicationPage: TPage
       Caption = 'ApplicationPage'
       object AppSettingsGroupBox: TGroupBox
@@ -188,8 +189,8 @@ object ProjectOptionsDialog: TProjectOptionsDialog
         AnchorSideTop.Control = MainUnitIsPascalSourceCheckBox
         AnchorSideTop.Side = asrBottom
         Left = 6
-        Height = 13
-        Top = 25
+        Height = 20
+        Top = 32
         Width = 441
         Align = alTop
         BorderSpacing.Left = 6
@@ -202,8 +203,8 @@ object ProjectOptionsDialog: TProjectOptionsDialog
         AnchorSideTop.Control = MainUnitHasUsesSectionForAllUnitsCheckBox
         AnchorSideTop.Side = asrBottom
         Left = 6
-        Height = 13
-        Top = 40
+        Height = 20
+        Top = 54
         Width = 441
         Align = alTop
         BorderSpacing.Left = 6
@@ -214,7 +215,7 @@ object ProjectOptionsDialog: TProjectOptionsDialog
       end
       object MainUnitIsPascalSourceCheckBox: TCheckBox
         Left = 6
-        Height = 13
+        Height = 20
         Top = 10
         Width = 441
         Align = alTop
@@ -228,8 +229,8 @@ object ProjectOptionsDialog: TProjectOptionsDialog
         AnchorSideTop.Control = MainUnitHasCreateFormStatementsCheckBox
         AnchorSideTop.Side = asrBottom
         Left = 6
-        Height = 13
-        Top = 55
+        Height = 20
+        Top = 76
         Width = 441
         Align = alTop
         BorderSpacing.Left = 6
@@ -242,8 +243,8 @@ object ProjectOptionsDialog: TProjectOptionsDialog
         AnchorSideTop.Control = MainUnitHasTitleStatementCheckBox
         AnchorSideTop.Side = asrBottom
         Left = 6
-        Height = 13
-        Top = 78
+        Height = 20
+        Top = 106
         Width = 441
         Align = alTop
         BorderSpacing.Left = 6
@@ -256,8 +257,8 @@ object ProjectOptionsDialog: TProjectOptionsDialog
         AnchorSideTop.Control = RunnableCheckBox
         AnchorSideTop.Side = asrBottom
         Left = 6
-        Height = 13
-        Top = 93
+        Height = 20
+        Top = 128
         Width = 441
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Left = 6
@@ -282,7 +283,7 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           Left = 6
           Height = 108
           Top = 6
-          Width = 425
+          Width = 429
           Align = alTop
           BorderSpacing.Around = 6
           TabOrder = 0
@@ -312,13 +313,13 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           Left = 6
           Height = 23
           Top = 154
-          Width = 369
+          Width = 365
           Anchors = [akTop, akLeft, akRight]
           TabOrder = 3
           Text = 'LazDocPathEdit'
         end
         object LazDocBrowseButton: TButton
-          Left = 380
+          Left = 376
           Height = 23
           Top = 154
           Width = 23
@@ -334,7 +335,7 @@ object ProjectOptionsDialog: TProjectOptionsDialog
       Caption = 'SavePage'
       object SaveClosedUnitInfoCheckBox: TCheckBox
         Left = 6
-        Height = 13
+        Height = 20
         Top = 6
         Width = 441
         Align = alTop
@@ -348,8 +349,8 @@ object ProjectOptionsDialog: TProjectOptionsDialog
         AnchorSideTop.Control = SaveClosedUnitInfoCheckBox
         AnchorSideTop.Side = asrBottom
         Left = 6
-        Height = 13
-        Top = 21
+        Height = 20
+        Top = 28
         Width = 441
         Align = alTop
         BorderSpacing.Left = 6
@@ -363,7 +364,7 @@ object ProjectOptionsDialog: TProjectOptionsDialog
         AnchorSideTop.Side = asrBottom
         Left = 7
         Height = 117
-        Top = 45
+        Top = 59
         Width = 413
         AutoFill = True
         BorderSpacing.Top = 5
@@ -550,7 +551,7 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           Left = 268
           Height = 21
           Top = 21
-          Width = 120
+          Width = 116
           Anchors = [akTop, akLeft, akRight]
           AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
           MaxLength = 0
@@ -601,7 +602,7 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           Left = 79
           Height = 21
           Top = -1
-          Width = 352
+          Width = 356
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Left = 6
           BorderSpacing.Right = 6
@@ -617,7 +618,7 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           Left = 70
           Height = 21
           Top = 26
-          Width = 361
+          Width = 365
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Left = 6
           BorderSpacing.Top = 6
@@ -631,9 +632,9 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           AnchorSideRight.Side = asrBottom
           AnchorSideBottom.Control = OtherInfoGroupBox
           AnchorSideBottom.Side = asrBottom
-          Left = 337
+          Left = 341
           Height = 26
-          Top = 58
+          Top = 75
           Width = 94
           Anchors = [akRight, akBottom]
           AutoSize = True
@@ -642,6 +643,51 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           Caption = 'Additional Info'
           OnClick = AdditionalInfoButtonClick
           TabOrder = 2
+        end
+      end
+    end
+    object i18nPage: TPage
+      Caption = 'i18n'
+      object RSTGroupBox: TGroupBox
+        AnchorSideLeft.Control = i18nPage
+        AnchorSideTop.Control = i18nPage
+        AnchorSideRight.Control = i18nPage
+        AnchorSideRight.Side = asrBottom
+        Left = 6
+        Height = 51
+        Top = 6
+        Width = 441
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Left = 6
+        BorderSpacing.Top = 6
+        BorderSpacing.Right = 6
+        Caption = 'RSTGroupBox'
+        TabOrder = 0
+        object RSTOutDirEdit: TEdit
+          AnchorSideLeft.Control = RSTGroupBox
+          AnchorSideTop.Control = RSTGroupBox
+          AnchorSideRight.Control = RSTOutDirButton
+          Height = 23
+          Width = 414
+          Anchors = [akTop, akLeft, akRight]
+          TabOrder = 0
+          Text = 'RSTOutDirEdit'
+        end
+        object RSTOutDirButton: TButton
+          AnchorSideTop.Control = RSTGroupBox
+          AnchorSideRight.Control = RSTGroupBox
+          AnchorSideRight.Side = asrBottom
+          AnchorSideBottom.Control = RSTOutDirEdit
+          AnchorSideBottom.Side = asrBottom
+          Left = 414
+          Height = 23
+          Width = 23
+          Anchors = [akTop, akRight, akBottom]
+          AutoSize = True
+          BorderSpacing.InnerBorder = 4
+          Caption = '...'
+          OnClick = RSTOutDirButtonClick
+          TabOrder = 1
         end
       end
     end
