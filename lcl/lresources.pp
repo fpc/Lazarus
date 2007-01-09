@@ -90,10 +90,11 @@ type
     FBufSize: Integer;
     FBufPos: Integer;
     FBufEnd: Integer;
-    procedure Read(var Buf; Count: LongInt);
     procedure SkipProperty;
     procedure SkipSetBody;
+  protected
     function ReadIntegerContent: integer;
+    procedure Read(var Buf; Count: LongInt); {$IFNDEF VER2_0}override;{$ENDIF}
   public
     constructor Create(AStream: TStream; BufSize: Integer); virtual;
     destructor Destroy; override;
@@ -138,7 +139,7 @@ type
     FSignatureWritten: Boolean;
   protected
     procedure FlushBuffer;
-    procedure Write(const Buffer; Count: Longint);
+    procedure Write(const Buffer; Count: Longint); {$IFNDEF VER2_0}override;{$ENDIF}
     procedure WriteValue(Value: TValueType);
     procedure WriteStr(const Value: String);
     procedure WriteIntegerContent(i: integer);

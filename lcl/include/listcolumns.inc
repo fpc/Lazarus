@@ -30,11 +30,17 @@ end;
 
 procedure TListColumns.BeginUpdate;
 begin
+  {$IFNDEF VER2_0}
+  inherited;
+  {$ENDIF}
   inc(FUpdateCount);
 end;
 
 procedure TListColumns.EndUpdate;
 begin
+  {$IFNDEF VER2_0}
+  inherited;
+  {$ENDIF}
   if FUpdateCount<=0 then
     RaiseGDBException('TListColumns.EndUpdate');
   dec(FUpdateCount);
