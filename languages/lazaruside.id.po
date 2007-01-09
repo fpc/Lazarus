@@ -152,6 +152,10 @@ msgstr "%sPaket ini diinstalasi, tetapi file lpk tidak ditemukan"
 msgid "%sThis package was automatically created"
 msgstr "%sPaket ini otomatis dibuat"
 
+#: lazarusidestrconsts:lisnone
+msgid "%snone"
+msgstr ""
+
 #: lazarusidestrconsts:liswladd
 msgid "&Add"
 msgstr ""
@@ -340,6 +344,10 @@ msgstr "Gugurkan semua"
 msgid "Abort all loading"
 msgstr "Batalkan semua pengambilan"
 
+#: lazarusidestrconsts:liskmabortbuilding
+msgid "Abort building"
+msgstr ""
+
 #: lazarusidestrconsts:lisabortloadingproject
 msgid "Abort loading project"
 msgstr "Batalkan pengambilan proyek"
@@ -396,9 +404,17 @@ msgstr "Tambah Unit"
 msgid "Add active unit to a package"
 msgstr "Tambah unit aktif ke paket"
 
+#: lazarusidestrconsts:liskmaddactiveunittoproject
+msgid "Add active unit to project"
+msgstr ""
+
 #: lazarusidestrconsts:lispckeditaddanitem
 msgid "Add an item"
 msgstr "Tambah item"
+
+#: lazarusidestrconsts:liskmaddbreakpoint
+msgid "Add break point"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuaddbreakpoint
 msgid "Add breakpoint"
@@ -475,6 +491,10 @@ msgstr "Tambah ke proyek"
 #: lazarusidestrconsts:lispkgmangaddunittousesclauseofpackagedisablethisonlyforunit
 msgid "Add unit to uses clause of package. Disable this only for units, that should not be compiled in all cases."
 msgstr "Tambah unit ke klausul uses dari paket. Matikan ini hanya untuk unit yang seharusnya tidak dikompilasi dalam semua kasus."
+
+#: lazarusidestrconsts:liskmaddwatch
+msgid "Add watch"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuaddwatch
 msgid "Add watch ..."
@@ -956,6 +976,10 @@ msgstr "Bangun SynEdit"
 msgid "Build all"
 msgstr "Bangun semua"
 
+#: lazarusidestrconsts:liskmbuildallfilesofprojectprogram
+msgid "Build all files of project/program"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecbuildlazarus
 msgid "Build lazarus"
 msgstr "Bangun Lazarus"
@@ -963,6 +987,10 @@ msgstr "Bangun Lazarus"
 #: lazarusidestrconsts:lisbuildnewproject
 msgid "Build new project"
 msgstr "Bangun proyek baru"
+
+#: lazarusidestrconsts:liskmbuildprojectprogram
+msgid "Build project/program"
+msgstr ""
 
 #: lazarusidestrconsts:dlgcmacro
 msgid "C Style Macros (global)"
@@ -1122,6 +1150,10 @@ msgstr "Periksa:"
 
 #: lazarusidestrconsts:rslanguagechinese
 msgid "Chinese"
+msgstr ""
+
+#: lazarusidestrconsts:lispochoosepofiledirectory
+msgid "Choose .po file directory"
 msgstr ""
 
 #: lazarusidestrconsts:lischoosedelphipackage
@@ -1292,6 +1324,10 @@ msgstr "Klik pada salah satu item diatas untuk melihat perbedaan"
 msgid "Close"
 msgstr "Tutup"
 
+#: lazarusidestrconsts:liskmcloseall
+msgid "Close All"
+msgstr ""
+
 #: lazarusidestrconsts:lismenucloseall
 msgid "Close all editor files"
 msgstr "Tutup semua file editor"
@@ -1368,9 +1404,17 @@ msgstr "Opsi CodeTools ..."
 msgid "CodeTools commands"
 msgstr "Perintah CodeTools"
 
+#: lazarusidestrconsts:liskmcodetoolsdefineseditor
+msgid "CodeTools defines editor"
+msgstr ""
+
 #: lazarusidestrconsts:lismenucodetoolsdefineseditor
 msgid "CodeTools defines editor ..."
 msgstr "Editor definisi CodeTools ..."
+
+#: lazarusidestrconsts:liskmcodetoolsoptions
+msgid "CodeTools options"
+msgstr ""
 
 #: lazarusidestrconsts:srkmeccodetoolsdefinesed
 msgid "Codetools defines editor"
@@ -1496,6 +1540,10 @@ msgstr "Kompilator salah"
 msgid "Compiler filename"
 msgstr "Nama file kompilator"
 
+#: lazarusidestrconsts:liskmcompileroptions
+msgid "Compiler options"
+msgstr ""
+
 #: lazarusidestrconsts:dlgfpcpath
 msgid "Compiler path (e.g. %s)"
 msgstr "Path kompilator (%s)"
@@ -1532,6 +1580,10 @@ msgstr ""
 msgid "Components menu commands"
 msgstr "Perintah menu Komponen"
 
+#: lazarusidestrconsts:liskmconfigbuildfile
+msgid "Config %sBuild File%s"
+msgstr ""
+
 #: lazarusidestrconsts:dlgconfigfiles
 msgid "Config Files:"
 msgstr "File Konfig:"
@@ -1548,12 +1600,20 @@ msgstr ""
 msgid "Configure Build+Run File ..."
 msgstr ""
 
+#: lazarusidestrconsts:liskmconfigurehelp
+msgid "Configure Help"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuconfigurehelp
 msgid "Configure Help ..."
 msgstr "Konfigurasi Panduan ..."
 
 #: lazarusidestrconsts:lismenuconfigurebuildlazarus
 msgid "Configure \"Build Lazarus\" ..."
+msgstr ""
+
+#: lazarusidestrconsts:liskmconfigurecustomcomponents
+msgid "Configure custom components"
 msgstr ""
 
 #: lazarusidestrconsts:lismenuconfigcustomcomps
@@ -1563,6 +1623,10 @@ msgstr "Konfigurasi komponen kustom ..."
 #: lazarusidestrconsts:lismenusettings
 msgid "Configure custom tools ..."
 msgstr "Konfigurasi piranti kustom ..."
+
+#: lazarusidestrconsts:liskmconfigureinstalledpackages
+msgid "Configure installed packages"
+msgstr ""
 
 #: lazarusidestrconsts:lismenueditinstallpkgs
 msgid "Configure installed packages ..."
@@ -1604,6 +1668,10 @@ msgstr "Isi"
 msgid "Context sensitive Help"
 msgstr "Panduan sensitif isi"
 
+#: lazarusidestrconsts:liskmcontextsensitivehelp
+msgid "Context sensitive help"
+msgstr ""
+
 #: lazarusidestrconsts:liscontinue
 msgid "Continue"
 msgstr "Lanjutkan"
@@ -1636,17 +1704,33 @@ msgstr "Konversi salah"
 msgid "Convert"
 msgstr "Konversi"
 
+#: lazarusidestrconsts:liskmconvertdfmfiletolfm
+msgid "Convert DFM file to LFM"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuconvertdfmtolfm
 msgid "Convert DFM file to LFM ..."
 msgstr "Konversi file DFM ke LFM ..."
+
+#: lazarusidestrconsts:liskmconvertdelphipackagetolazaruspackage
+msgid "Convert Delphi package to Lazarus package"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuconvertdelphipackage
 msgid "Convert Delphi package to Lazarus package ..."
 msgstr "Konversi paket Delphi ke paket Lazarus ..."
 
+#: lazarusidestrconsts:liskmconvertdelphiprojecttolazarusproject
+msgid "Convert Delphi project to Lazarus project"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuconvertdelphiproject
 msgid "Convert Delphi project to Lazarus project ..."
 msgstr "Konversi proyek Delphi ke proyek Lazarus ..."
+
+#: lazarusidestrconsts:liskmconvertdelphiunittolazarusunit
+msgid "Convert Delphi unit to Lazarus unit"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuconvertdelphiunit
 msgid "Convert Delphi unit to Lazarus unit ..."
@@ -1690,6 +1774,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisplistcopymethodtoclipboard
 msgid "Copy method name to the clipboard"
+msgstr ""
+
+#: lazarusidestrconsts:liskmcopyselectedcomponentstoclipboard
+msgid "Copy selected Components to clipboard"
 msgstr ""
 
 #: lazarusidestrconsts:lisdsgcopycomponents
@@ -1892,6 +1980,10 @@ msgstr "Piranti Kustom %d"
 msgid "Cut"
 msgstr "Cut"
 
+#: lazarusidestrconsts:liskmcutselectedcomponentstoclipboard
+msgid "Cut selected Components to clipboard"
+msgstr ""
+
 #: lazarusidestrconsts:lisdsgcutcomponents
 msgid "Cut selected components to clipboard"
 msgstr "Potong komponen yang dipilih ke clipboard"
@@ -2044,6 +2136,10 @@ msgstr "Penghapusan gagal"
 msgid "Delete file failed"
 msgstr "Penghapusan file gagal"
 
+#: lazarusidestrconsts:liskmdeletelastchar
+msgid "Delete last char"
+msgstr ""
+
 #: lazarusidestrconsts:lislazdocdeletelinkbutton
 msgid "Delete link"
 msgstr "Hapus link"
@@ -2175,6 +2271,10 @@ msgstr "Direktori tujuan %s%s%s tidak benar.%sSilahkan pilih path lengkap."
 #: lazarusidestrconsts:lismenudiff
 msgid "Diff"
 msgstr "Diff"
+
+#: lazarusidestrconsts:liskmdiffeditorfiles
+msgid "Diff editor files"
+msgstr ""
 
 #: lazarusidestrconsts:dlgdirection
 msgid "Direction"
@@ -2312,6 +2412,10 @@ msgstr "Li&ngkungan"
 msgid "Edit"
 msgstr "Edit"
 
+#: lazarusidestrconsts:liskmeditcodetemplates
+msgid "Edit Code Templates"
+msgstr ""
+
 #: lazarusidestrconsts:lispckediteditgeneraloptions
 msgid "Edit General Options"
 msgstr "Edit Opsi Umum"
@@ -2334,6 +2438,10 @@ msgstr "Edit template kode"
 
 #: lazarusidestrconsts:lismenueditcontexthelp
 msgid "Edit context sensitive Help"
+msgstr ""
+
+#: lazarusidestrconsts:liskmeditcontextsensitivehelp
+msgid "Edit context sensitive help"
 msgstr ""
 
 #: lazarusidestrconsts:srkmeditforcmd
@@ -2359,6 +2467,10 @@ msgstr "Font editor"
 #: lazarusidestrconsts:dlgeditorfontheight
 msgid "Editor font height"
 msgstr "Tinggi font editor"
+
+#: lazarusidestrconsts:liskmeditoroptions
+msgid "Editor options"
+msgstr ""
 
 #: lazarusidestrconsts:lismenueditoroptions
 msgid "Editor options ..."
@@ -2399,6 +2511,10 @@ msgstr "Sertakan"
 #: lazarusidestrconsts:uemencloseselection
 msgid "Enclose Selection"
 msgstr "Tutup Pemilihan"
+
+#: lazarusidestrconsts:liskmencloseselection
+msgid "Enclose selection"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuencloseselection
 msgid "Enclose selection ..."
@@ -2560,6 +2676,10 @@ msgstr "Salah"
 msgid "Escape"
 msgstr "Escape"
 
+#: lazarusidestrconsts:liskmevaluatemodify
+msgid "Evaluate/Modify"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuevaluate
 msgid "Evaluate/Modify ..."
 msgstr "Evaluasi/Ubah ..."
@@ -2643,6 +2763,10 @@ msgstr ""
 #: lazarusidestrconsts:lisextendunitpath
 msgid "Extend unit path?"
 msgstr "Lebarkan path unit?"
+
+#: lazarusidestrconsts:liskmexternaltoolssettings
+msgid "External Tools settings"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecexttool
 msgid "External tool %d"
@@ -2920,6 +3044,10 @@ msgstr "Cari referensi pengenal"
 msgid "Find in files"
 msgstr "Cari dalam file"
 
+#: lazarusidestrconsts:liskmfindincremental
+msgid "Find incremental"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecfindnext
 msgid "Find next"
 msgstr "Cari berikutnya"
@@ -3140,6 +3268,46 @@ msgstr "Pergi ke editor %d"
 msgid "Go to line number"
 msgstr "Pergi ke nomor baris"
 
+#: lazarusidestrconsts:liskmgotomarker0
+msgid "Go to marker 0"
+msgstr ""
+
+#: lazarusidestrconsts:liskmgotomarker1
+msgid "Go to marker 1"
+msgstr ""
+
+#: lazarusidestrconsts:liskmgotomarker2
+msgid "Go to marker 2"
+msgstr ""
+
+#: lazarusidestrconsts:liskmgotomarker3
+msgid "Go to marker 3"
+msgstr ""
+
+#: lazarusidestrconsts:liskmgotomarker4
+msgid "Go to marker 4"
+msgstr ""
+
+#: lazarusidestrconsts:liskmgotomarker5
+msgid "Go to marker 5"
+msgstr ""
+
+#: lazarusidestrconsts:liskmgotomarker6
+msgid "Go to marker 6"
+msgstr ""
+
+#: lazarusidestrconsts:liskmgotomarker7
+msgid "Go to marker 7"
+msgstr ""
+
+#: lazarusidestrconsts:liskmgotomarker8
+msgid "Go to marker 8"
+msgstr ""
+
+#: lazarusidestrconsts:liskmgotomarker9
+msgid "Go to marker 9"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecmatchbracket
 msgid "Go to matching bracket"
 msgstr "Pergi ke kurung yang sama"
@@ -3151,6 +3319,46 @@ msgstr "Pergi ke editor berikutnya"
 #: lazarusidestrconsts:srkmecpreveditor
 msgid "Go to prior editor"
 msgstr "Pergi ke editor sebelumnya"
+
+#: lazarusidestrconsts:liskmgotosourceeditor1
+msgid "Go to source editor 1"
+msgstr ""
+
+#: lazarusidestrconsts:liskmgotosourceeditor10
+msgid "Go to source editor 10"
+msgstr ""
+
+#: lazarusidestrconsts:liskmgotosourceeditor2
+msgid "Go to source editor 2"
+msgstr ""
+
+#: lazarusidestrconsts:liskmgotosourceeditor3
+msgid "Go to source editor 3"
+msgstr ""
+
+#: lazarusidestrconsts:liskmgotosourceeditor4
+msgid "Go to source editor 4"
+msgstr ""
+
+#: lazarusidestrconsts:liskmgotosourceeditor5
+msgid "Go to source editor 5"
+msgstr ""
+
+#: lazarusidestrconsts:liskmgotosourceeditor6
+msgid "Go to source editor 6"
+msgstr ""
+
+#: lazarusidestrconsts:liskmgotosourceeditor7
+msgid "Go to source editor 7"
+msgstr ""
+
+#: lazarusidestrconsts:liskmgotosourceeditor8
+msgid "Go to source editor 8"
+msgstr ""
+
+#: lazarusidestrconsts:liskmgotosourceeditor9
+msgid "Go to source editor 9"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecgotoincludedirective
 msgid "Go to to include directive of current include file"
@@ -3548,6 +3756,10 @@ msgstr "Diturunkan"
 msgid "Insert"
 msgstr "Insert"
 
+#: lazarusidestrconsts:liskminsertifdef
+msgid "Insert $IFDEF"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuconditionalselection
 msgid "Insert $IFDEF..."
 msgstr "Sisipkan $IFDEF..."
@@ -3708,6 +3920,10 @@ msgstr "Sisipkan tanggal dan waktu saat ini"
 msgid "Insert current username"
 msgstr "Sisipkan nama pemakai saat ini"
 
+#: lazarusidestrconsts:liskminsertdateandtime
+msgid "Insert date and time"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuinsertcharacter
 msgid "Insert from Character Map"
 msgstr "Sisipkan dari Peta Karakter"
@@ -3752,9 +3968,17 @@ msgstr "Sisipkan teks"
 msgid "Insert underline formatting tag"
 msgstr "Sisipkan tag format garis bawah"
 
+#: lazarusidestrconsts:liskminsertusername
+msgid "Insert username"
+msgstr ""
+
 #: lazarusidestrconsts:lislazdochintvartag
 msgid "Insert var formatting tag"
 msgstr "Sisipkan tag format var"
+
+#: lazarusidestrconsts:liskminspect
+msgid "Inspect"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuinspect
 msgid "Inspect ..."
@@ -4860,6 +5084,14 @@ msgstr "Unit Baru"
 msgid "New class name:"
 msgstr "Nama class baru:"
 
+#: lazarusidestrconsts:liskmnewproject
+msgid "New project"
+msgstr ""
+
+#: lazarusidestrconsts:liskmnewprojectfromfile
+msgid "New project from file"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgeditnewunitnotinunitpath
 msgid "New unit not in unitpath"
 msgstr "Unit baru tidak dalam unitpath"
@@ -5168,6 +5400,10 @@ msgstr ""
 msgid "Open package"
 msgstr "Buka paket"
 
+#: lazarusidestrconsts:liskmopenpackagefile
+msgid "Open package file"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuopenpackagefile
 msgid "Open package file (.lpk) ..."
 msgstr ""
@@ -5368,6 +5604,10 @@ msgstr "File paket tidak ditemukan"
 msgid "Package file not saved"
 msgstr ""
 
+#: lazarusidestrconsts:liskmpackagegraph
+msgid "Package graph"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgmangpackageisnodesigntimepackage
 msgid "Package is no designtime package"
 msgstr "Paket bukan paket waktu desain"
@@ -5460,6 +5700,10 @@ msgstr "Opsi Operan Ke Penggabung (Pemisah adalah spasi)"
 msgid "Paste"
 msgstr "Paste"
 
+#: lazarusidestrconsts:liskmpastecomponentsfromclipboard
+msgid "Paste Components from clipboard"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecpaste
 msgid "Paste clipboard to current position"
 msgstr "Paste clipboard ke posisi saat ini"
@@ -5491,6 +5735,10 @@ msgstr "Istirahat"
 #: lazarusidestrconsts:srvk_pause
 msgid "Pause key"
 msgstr "Kunci Pause"
+
+#: lazarusidestrconsts:liskmpauseprogram
+msgid "Pause program"
+msgstr ""
 
 #: lazarusidestrconsts:dlgpersistentcaret
 msgid "Persistent caret"
@@ -5772,6 +6020,10 @@ msgstr "Publikasikan Paket"
 msgid "Publish Project ..."
 msgstr "Publikasikan Proyek ..."
 
+#: lazarusidestrconsts:liskmpublishproject
+msgid "Publish project"
+msgstr ""
+
 #: lazarusidestrconsts:lispublishprojdir
 msgid "Publish project directory"
 msgstr "Direktori publikasi proyek"
@@ -5782,6 +6034,10 @@ msgstr "Metode Published"
 
 #: lazarusidestrconsts:lismenuquickcompile
 msgid "Quick compile"
+msgstr ""
+
+#: lazarusidestrconsts:liskmquickcompilenolinking
+msgid "Quick compile, no linking"
 msgstr ""
 
 #: lazarusidestrconsts:lismenuquicksyntaxcheck
@@ -5924,9 +6180,17 @@ msgstr "Hapus"
 msgid "Remove Dependency?"
 msgstr "Hapus Dependensi?"
 
+#: lazarusidestrconsts:liskmremoveactiveunitfromproject
+msgid "Remove active unit from project"
+msgstr ""
+
 #: lazarusidestrconsts:lisremoveallinvalidproperties
 msgid "Remove all invalid properties"
 msgstr "Hapus semua properti yang tidak benar"
+
+#: lazarusidestrconsts:liskmremovebreakpoint
+msgid "Remove break point"
+msgstr ""
 
 #: lazarusidestrconsts:lispckeditremovedependency
 msgid "Remove dependency"
@@ -6212,6 +6476,10 @@ msgstr "Perintah menu Jalankan"
 msgid "Run parameters"
 msgstr "Parameter Menjalankan"
 
+#: lazarusidestrconsts:liskmrunprogram
+msgid "Run program"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuruntocursor
 msgid "Run to cursor"
 msgstr "Jalanjan sampai kursor"
@@ -6384,6 +6652,14 @@ msgstr "Simpan paket"
 msgid "Save package?"
 msgstr "Simpan paket?"
 
+#: lazarusidestrconsts:liskmsaveproject
+msgid "Save project"
+msgstr ""
+
+#: lazarusidestrconsts:liskmsaveprojectas
+msgid "Save project as"
+msgstr ""
+
 #: lazarusidestrconsts:lisposavesessioninformationin
 msgid "Save session information in"
 msgstr "Simpan informasi sesi dalam"
@@ -6398,6 +6674,14 @@ msgstr ""
 
 #: lazarusidestrconsts:lisiecosavetorecent
 msgid "Save to recent"
+msgstr ""
+
+#: lazarusidestrconsts:liskmsaveall
+msgid "SaveAll"
+msgstr ""
+
+#: lazarusidestrconsts:liskmsaveas
+msgid "SaveAs"
 msgstr ""
 
 #: lazarusidestrconsts:fdmscaleword
@@ -6636,6 +6920,22 @@ msgstr "Pilih anak cucu"
 msgid "Select line"
 msgstr "Pilih baris"
 
+#: lazarusidestrconsts:liskmselectlineend
+msgid "Select line end"
+msgstr ""
+
+#: lazarusidestrconsts:liskmselectlinestart
+msgid "Select line start"
+msgstr ""
+
+#: lazarusidestrconsts:liskmselectpagebottom
+msgid "Select page bottom"
+msgstr ""
+
+#: lazarusidestrconsts:liskmselectpagetop
+msgid "Select page top"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuselectparagraph
 msgid "Select paragraph"
 msgstr "Pilih paragraf"
@@ -6659,6 +6959,14 @@ msgstr "Pilih untuk dikurung"
 #: lazarusidestrconsts:lismenuselectword
 msgid "Select word"
 msgstr "Pilih kata"
+
+#: lazarusidestrconsts:liskmselectwordleft
+msgid "Select word left"
+msgstr ""
+
+#: lazarusidestrconsts:liskmselectwordright
+msgid "Select word right"
+msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefsselectednode
 msgid "Selected Node:"
@@ -6711,6 +7019,50 @@ msgstr "Set semua elemen ke default"
 #: lazarusidestrconsts:dlgsetelementdefault
 msgid "Set element to default"
 msgstr "Set elemen ke default"
+
+#: lazarusidestrconsts:liskmsetfreebookmark
+msgid "Set free Bookmark"
+msgstr ""
+
+#: lazarusidestrconsts:liskmsetmarker0
+msgid "Set marker 0"
+msgstr ""
+
+#: lazarusidestrconsts:liskmsetmarker1
+msgid "Set marker 1"
+msgstr ""
+
+#: lazarusidestrconsts:liskmsetmarker2
+msgid "Set marker 2"
+msgstr ""
+
+#: lazarusidestrconsts:liskmsetmarker3
+msgid "Set marker 3"
+msgstr ""
+
+#: lazarusidestrconsts:liskmsetmarker4
+msgid "Set marker 4"
+msgstr ""
+
+#: lazarusidestrconsts:liskmsetmarker5
+msgid "Set marker 5"
+msgstr ""
+
+#: lazarusidestrconsts:liskmsetmarker6
+msgid "Set marker 6"
+msgstr ""
+
+#: lazarusidestrconsts:liskmsetmarker7
+msgid "Set marker 7"
+msgstr ""
+
+#: lazarusidestrconsts:liskmsetmarker8
+msgid "Set marker 8"
+msgstr ""
+
+#: lazarusidestrconsts:liskmsetmarker9
+msgid "Set marker 9"
+msgstr ""
 
 #: lazarusidestrconsts:dlgsetpropertyvariable
 msgid "Set property Variable"
@@ -7099,6 +7451,10 @@ msgstr "Hentikan debugging saat ini dan bangun ulang proyek?"
 #: lazarusidestrconsts:lisstopdebugging2
 msgid "Stop debugging?"
 msgstr "Hentikan debugging?"
+
+#: lazarusidestrconsts:liskmstopprogram
+msgid "Stop program"
+msgstr ""
 
 #: lazarusidestrconsts:lisstopthedebugging
 msgid "Stop the debugging?"
@@ -7972,9 +8328,65 @@ msgstr "Toggle Form/Unit"
 msgid "Toggle Mode"
 msgstr "Toggle Mode"
 
+#: lazarusidestrconsts:liskmtogglebetweenunitandform
+msgid "Toggle between Unit and Form"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuviewtoggleformunit
 msgid "Toggle form/unit view"
 msgstr "Toggle tampilan form/unit"
+
+#: lazarusidestrconsts:liskmtoggleviewbreakpoints
+msgid "Toggle view Breakpoints"
+msgstr ""
+
+#: lazarusidestrconsts:liskmtoggleviewcallstack
+msgid "Toggle view Call Stack"
+msgstr ""
+
+#: lazarusidestrconsts:liskmtoggleviewcodeexplorer
+msgid "Toggle view Code Explorer"
+msgstr ""
+
+#: lazarusidestrconsts:liskmtoggleviewdebuggeroutput
+msgid "Toggle view Debugger Output"
+msgstr ""
+
+#: lazarusidestrconsts:liskmtoggleviewdocumentationeditor
+msgid "Toggle view Documentation Editor"
+msgstr ""
+
+#: lazarusidestrconsts:liskmtoggleviewidespeedbuttons
+msgid "Toggle view IDE speed buttons"
+msgstr ""
+
+#: lazarusidestrconsts:liskmtoggleviewlocalvariables
+msgid "Toggle view Local Variables"
+msgstr ""
+
+#: lazarusidestrconsts:liskmtoggleviewmessages
+msgid "Toggle view Messages"
+msgstr ""
+
+#: lazarusidestrconsts:liskmtoggleviewobjectinspector
+msgid "Toggle view Object Inspector"
+msgstr ""
+
+#: lazarusidestrconsts:liskmtoggleviewsearchresults
+msgid "Toggle view Search Results"
+msgstr ""
+
+#: lazarusidestrconsts:liskmtoggleviewsourceeditor
+msgid "Toggle view Source Editor"
+msgstr ""
+
+#: lazarusidestrconsts:liskmtoggleviewwatches
+msgid "Toggle view Watches"
+msgstr ""
+
+#: lazarusidestrconsts:liskmtoggleviewcomponentpalette
+msgid "Toggle view component palette"
+msgstr ""
 
 #: lazarusidestrconsts:liscodetempltoken
 msgid "Token:"
@@ -8740,6 +9152,10 @@ msgstr "Lihat Daftar ToDo ..."
 msgid "View Unit Dependencies"
 msgstr "Lihat Ketergantungan Unit"
 
+#: lazarusidestrconsts:liskmviewunitinfo
+msgid "View Unit Info"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuviewunitinfo
 msgid "View Unit Information"
 msgstr "Lihat Informasi Unit"
@@ -8772,6 +9188,10 @@ msgstr "Lihat output debugger"
 msgid "View forms"
 msgstr "Lihat form"
 
+#: lazarusidestrconsts:liskmviewjumphistory
+msgid "View jump history"
+msgstr ""
+
 #: lazarusidestrconsts:srkmectogglelocals
 msgid "View local variables"
 msgstr "Lihat variabel lokal"
@@ -8784,9 +9204,21 @@ msgstr "Perintah menu Lihat"
 msgid "View messages"
 msgstr "Lihat pesan"
 
+#: lazarusidestrconsts:liskmviewprojecttodolist
+msgid "View project ToDo list"
+msgstr ""
+
 #: lazarusidestrconsts:dlgmainviewforms
 msgid "View project forms"
 msgstr "Lihat form proyek"
+
+#: lazarusidestrconsts:liskmviewprojectoptions
+msgid "View project options"
+msgstr ""
+
+#: lazarusidestrconsts:liskmviewprojectsource
+msgid "View project source"
+msgstr ""
 
 #: lazarusidestrconsts:dlgmainviewunits
 msgid "View project units"
@@ -9120,6 +9552,10 @@ msgstr "Tanpa otomatis penggantian nama"
 msgid "noname"
 msgstr "tanpa nama"
 
+#: lazarusidestrconsts:lisnone2
+msgid "none"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefsnoneselected
 msgid "none selected"
 msgstr "tidak ada yang dipilih"
@@ -9127,6 +9563,10 @@ msgstr "tidak ada yang dipilih"
 #: lazarusidestrconsts:lisobjectpath
 msgid "object path"
 msgstr "path objek"
+
+#: lazarusidestrconsts:lisor
+msgid "or"
+msgstr ""
 
 #: lazarusidestrconsts:lispckeditpackagenotsaved
 msgid "package %s not saved"

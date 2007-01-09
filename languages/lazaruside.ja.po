@@ -148,6 +148,10 @@ msgstr "%sこのパッケージはインストールされましたが、lpkフ�
 msgid "%sThis package was automatically created"
 msgstr "%sこのパッケージは自動的に作成されました"
 
+#: lazarusidestrconsts:lisnone
+msgid "%snone"
+msgstr ""
+
 #: lazarusidestrconsts:liswladd
 msgid "&Add"
 msgstr ""
@@ -336,6 +340,10 @@ msgstr "全て中止"
 msgid "Abort all loading"
 msgstr "すべてのロードを中止"
 
+#: lazarusidestrconsts:liskmabortbuilding
+msgid "Abort building"
+msgstr ""
+
 #: lazarusidestrconsts:lisabortloadingproject
 msgid "Abort loading project"
 msgstr "ロードプロジェクトについて"
@@ -392,9 +400,17 @@ msgstr "ユニット追加"
 msgid "Add active unit to a package"
 msgstr "アクティブなユニットをパッケージに追加"
 
+#: lazarusidestrconsts:liskmaddactiveunittoproject
+msgid "Add active unit to project"
+msgstr ""
+
 #: lazarusidestrconsts:lispckeditaddanitem
 msgid "Add an item"
 msgstr "アイテムを追加"
+
+#: lazarusidestrconsts:liskmaddbreakpoint
+msgid "Add break point"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuaddbreakpoint
 msgid "Add breakpoint"
@@ -470,6 +486,10 @@ msgstr "プロジェクトに追加"
 
 #: lazarusidestrconsts:lispkgmangaddunittousesclauseofpackagedisablethisonlyforunit
 msgid "Add unit to uses clause of package. Disable this only for units, that should not be compiled in all cases."
+msgstr ""
+
+#: lazarusidestrconsts:liskmaddwatch
+msgid "Add watch"
 msgstr ""
 
 #: lazarusidestrconsts:lismenuaddwatch
@@ -952,6 +972,10 @@ msgstr "SynEdit生成"
 msgid "Build all"
 msgstr "すべて生成"
 
+#: lazarusidestrconsts:liskmbuildallfilesofprojectprogram
+msgid "Build all files of project/program"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecbuildlazarus
 msgid "Build lazarus"
 msgstr "lazarus生成"
@@ -959,6 +983,10 @@ msgstr "lazarus生成"
 #: lazarusidestrconsts:lisbuildnewproject
 msgid "Build new project"
 msgstr "新規プロジェクト生成"
+
+#: lazarusidestrconsts:liskmbuildprojectprogram
+msgid "Build project/program"
+msgstr ""
 
 #: lazarusidestrconsts:dlgcmacro
 msgid "C Style Macros (global)"
@@ -1118,6 +1146,10 @@ msgstr "チェック:"
 
 #: lazarusidestrconsts:rslanguagechinese
 msgid "Chinese"
+msgstr ""
+
+#: lazarusidestrconsts:lispochoosepofiledirectory
+msgid "Choose .po file directory"
 msgstr ""
 
 #: lazarusidestrconsts:lischoosedelphipackage
@@ -1288,6 +1320,10 @@ msgstr ""
 msgid "Close"
 msgstr "閉じる"
 
+#: lazarusidestrconsts:liskmcloseall
+msgid "Close All"
+msgstr ""
+
 #: lazarusidestrconsts:lismenucloseall
 msgid "Close all editor files"
 msgstr "全ファイルを閉じる"
@@ -1364,9 +1400,17 @@ msgstr "コードツールスオプション ..."
 msgid "CodeTools commands"
 msgstr "コードツールスコマンド"
 
+#: lazarusidestrconsts:liskmcodetoolsdefineseditor
+msgid "CodeTools defines editor"
+msgstr ""
+
 #: lazarusidestrconsts:lismenucodetoolsdefineseditor
 msgid "CodeTools defines editor ..."
 msgstr "コードツールス定義エディター ..."
+
+#: lazarusidestrconsts:liskmcodetoolsoptions
+msgid "CodeTools options"
+msgstr ""
 
 #: lazarusidestrconsts:srkmeccodetoolsdefinesed
 msgid "Codetools defines editor"
@@ -1492,6 +1536,10 @@ msgstr "コンパイラエラー"
 msgid "Compiler filename"
 msgstr "コンパイラファイル名"
 
+#: lazarusidestrconsts:liskmcompileroptions
+msgid "Compiler options"
+msgstr ""
+
 #: lazarusidestrconsts:dlgfpcpath
 msgid "Compiler path (e.g. %s)"
 msgstr "コンパイラパス(%s)"
@@ -1528,6 +1576,10 @@ msgstr ""
 msgid "Components menu commands"
 msgstr "コンポーネントメニューコマンド"
 
+#: lazarusidestrconsts:liskmconfigbuildfile
+msgid "Config %sBuild File%s"
+msgstr ""
+
 #: lazarusidestrconsts:dlgconfigfiles
 msgid "Config Files:"
 msgstr "コンフィグファイル:"
@@ -1544,12 +1596,20 @@ msgstr ""
 msgid "Configure Build+Run File ..."
 msgstr ""
 
+#: lazarusidestrconsts:liskmconfigurehelp
+msgid "Configure Help"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuconfigurehelp
 msgid "Configure Help ..."
 msgstr "コンフィギュアヘルプ ..."
 
 #: lazarusidestrconsts:lismenuconfigurebuildlazarus
 msgid "Configure \"Build Lazarus\" ..."
+msgstr ""
+
+#: lazarusidestrconsts:liskmconfigurecustomcomponents
+msgid "Configure custom components"
 msgstr ""
 
 #: lazarusidestrconsts:lismenuconfigcustomcomps
@@ -1559,6 +1619,10 @@ msgstr "カスタムコンポーネント設定 ..."
 #: lazarusidestrconsts:lismenusettings
 msgid "Configure custom tools ..."
 msgstr "カスタムツール設定 ..."
+
+#: lazarusidestrconsts:liskmconfigureinstalledpackages
+msgid "Configure installed packages"
+msgstr ""
 
 #: lazarusidestrconsts:lismenueditinstallpkgs
 msgid "Configure installed packages ..."
@@ -1600,6 +1664,10 @@ msgstr ""
 msgid "Context sensitive Help"
 msgstr ""
 
+#: lazarusidestrconsts:liskmcontextsensitivehelp
+msgid "Context sensitive help"
+msgstr ""
+
 #: lazarusidestrconsts:liscontinue
 msgid "Continue"
 msgstr ""
@@ -1632,17 +1700,33 @@ msgstr ""
 msgid "Convert"
 msgstr ""
 
+#: lazarusidestrconsts:liskmconvertdfmfiletolfm
+msgid "Convert DFM file to LFM"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuconvertdfmtolfm
 msgid "Convert DFM file to LFM ..."
 msgstr "DFMファイルをLFMへ変換 ..."
+
+#: lazarusidestrconsts:liskmconvertdelphipackagetolazaruspackage
+msgid "Convert Delphi package to Lazarus package"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuconvertdelphipackage
 msgid "Convert Delphi package to Lazarus package ..."
 msgstr " ..."
 
+#: lazarusidestrconsts:liskmconvertdelphiprojecttolazarusproject
+msgid "Convert Delphi project to Lazarus project"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuconvertdelphiproject
 msgid "Convert Delphi project to Lazarus project ..."
 msgstr " ..."
+
+#: lazarusidestrconsts:liskmconvertdelphiunittolazarusunit
+msgid "Convert Delphi unit to Lazarus unit"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuconvertdelphiunit
 msgid "Convert Delphi unit to Lazarus unit ..."
@@ -1686,6 +1770,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisplistcopymethodtoclipboard
 msgid "Copy method name to the clipboard"
+msgstr ""
+
+#: lazarusidestrconsts:liskmcopyselectedcomponentstoclipboard
+msgid "Copy selected Components to clipboard"
 msgstr ""
 
 #: lazarusidestrconsts:lisdsgcopycomponents
@@ -1888,6 +1976,10 @@ msgstr ""
 msgid "Cut"
 msgstr "切り取り"
 
+#: lazarusidestrconsts:liskmcutselectedcomponentstoclipboard
+msgid "Cut selected Components to clipboard"
+msgstr ""
+
 #: lazarusidestrconsts:lisdsgcutcomponents
 msgid "Cut selected components to clipboard"
 msgstr ""
@@ -2040,6 +2132,10 @@ msgstr ""
 msgid "Delete file failed"
 msgstr ""
 
+#: lazarusidestrconsts:liskmdeletelastchar
+msgid "Delete last char"
+msgstr ""
+
 #: lazarusidestrconsts:lislazdocdeletelinkbutton
 msgid "Delete link"
 msgstr ""
@@ -2171,6 +2267,10 @@ msgstr ""
 #: lazarusidestrconsts:lismenudiff
 msgid "Diff"
 msgstr "差分"
+
+#: lazarusidestrconsts:liskmdiffeditorfiles
+msgid "Diff editor files"
+msgstr ""
 
 #: lazarusidestrconsts:dlgdirection
 msgid "Direction"
@@ -2308,6 +2408,10 @@ msgstr "環境(&N)"
 msgid "Edit"
 msgstr "編集"
 
+#: lazarusidestrconsts:liskmeditcodetemplates
+msgid "Edit Code Templates"
+msgstr ""
+
 #: lazarusidestrconsts:lispckediteditgeneraloptions
 msgid "Edit General Options"
 msgstr ""
@@ -2330,6 +2434,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenueditcontexthelp
 msgid "Edit context sensitive Help"
+msgstr ""
+
+#: lazarusidestrconsts:liskmeditcontextsensitivehelp
+msgid "Edit context sensitive help"
 msgstr ""
 
 #: lazarusidestrconsts:srkmeditforcmd
@@ -2355,6 +2463,10 @@ msgstr "エディタのフォント"
 #: lazarusidestrconsts:dlgeditorfontheight
 msgid "Editor font height"
 msgstr "エディタのフォント高さ"
+
+#: lazarusidestrconsts:liskmeditoroptions
+msgid "Editor options"
+msgstr ""
 
 #: lazarusidestrconsts:lismenueditoroptions
 msgid "Editor options ..."
@@ -2395,6 +2507,10 @@ msgstr "囲む"
 #: lazarusidestrconsts:uemencloseselection
 msgid "Enclose Selection"
 msgstr "選択部分を囲む"
+
+#: lazarusidestrconsts:liskmencloseselection
+msgid "Enclose selection"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuencloseselection
 msgid "Enclose selection ..."
@@ -2556,6 +2672,10 @@ msgstr "エラー"
 msgid "Escape"
 msgstr ""
 
+#: lazarusidestrconsts:liskmevaluatemodify
+msgid "Evaluate/Modify"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuevaluate
 msgid "Evaluate/Modify ..."
 msgstr "評価/変更 ..."
@@ -2638,6 +2758,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisextendunitpath
 msgid "Extend unit path?"
+msgstr ""
+
+#: lazarusidestrconsts:liskmexternaltoolssettings
+msgid "External Tools settings"
 msgstr ""
 
 #: lazarusidestrconsts:srkmecexttool
@@ -2916,6 +3040,10 @@ msgstr "識別子参照を検索"
 msgid "Find in files"
 msgstr "ファイルの中を検索"
 
+#: lazarusidestrconsts:liskmfindincremental
+msgid "Find incremental"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecfindnext
 msgid "Find next"
 msgstr "次を検索"
@@ -3136,6 +3264,46 @@ msgstr ""
 msgid "Go to line number"
 msgstr ""
 
+#: lazarusidestrconsts:liskmgotomarker0
+msgid "Go to marker 0"
+msgstr ""
+
+#: lazarusidestrconsts:liskmgotomarker1
+msgid "Go to marker 1"
+msgstr ""
+
+#: lazarusidestrconsts:liskmgotomarker2
+msgid "Go to marker 2"
+msgstr ""
+
+#: lazarusidestrconsts:liskmgotomarker3
+msgid "Go to marker 3"
+msgstr ""
+
+#: lazarusidestrconsts:liskmgotomarker4
+msgid "Go to marker 4"
+msgstr ""
+
+#: lazarusidestrconsts:liskmgotomarker5
+msgid "Go to marker 5"
+msgstr ""
+
+#: lazarusidestrconsts:liskmgotomarker6
+msgid "Go to marker 6"
+msgstr ""
+
+#: lazarusidestrconsts:liskmgotomarker7
+msgid "Go to marker 7"
+msgstr ""
+
+#: lazarusidestrconsts:liskmgotomarker8
+msgid "Go to marker 8"
+msgstr ""
+
+#: lazarusidestrconsts:liskmgotomarker9
+msgid "Go to marker 9"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecmatchbracket
 msgid "Go to matching bracket"
 msgstr ""
@@ -3146,6 +3314,46 @@ msgstr ""
 
 #: lazarusidestrconsts:srkmecpreveditor
 msgid "Go to prior editor"
+msgstr ""
+
+#: lazarusidestrconsts:liskmgotosourceeditor1
+msgid "Go to source editor 1"
+msgstr ""
+
+#: lazarusidestrconsts:liskmgotosourceeditor10
+msgid "Go to source editor 10"
+msgstr ""
+
+#: lazarusidestrconsts:liskmgotosourceeditor2
+msgid "Go to source editor 2"
+msgstr ""
+
+#: lazarusidestrconsts:liskmgotosourceeditor3
+msgid "Go to source editor 3"
+msgstr ""
+
+#: lazarusidestrconsts:liskmgotosourceeditor4
+msgid "Go to source editor 4"
+msgstr ""
+
+#: lazarusidestrconsts:liskmgotosourceeditor5
+msgid "Go to source editor 5"
+msgstr ""
+
+#: lazarusidestrconsts:liskmgotosourceeditor6
+msgid "Go to source editor 6"
+msgstr ""
+
+#: lazarusidestrconsts:liskmgotosourceeditor7
+msgid "Go to source editor 7"
+msgstr ""
+
+#: lazarusidestrconsts:liskmgotosourceeditor8
+msgid "Go to source editor 8"
+msgstr ""
+
+#: lazarusidestrconsts:liskmgotosourceeditor9
+msgid "Go to source editor 9"
 msgstr ""
 
 #: lazarusidestrconsts:srkmecgotoincludedirective
@@ -3544,6 +3752,10 @@ msgstr ""
 msgid "Insert"
 msgstr "挿入"
 
+#: lazarusidestrconsts:liskminsertifdef
+msgid "Insert $IFDEF"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuconditionalselection
 msgid "Insert $IFDEF..."
 msgstr "$IFDEFを挿入"
@@ -3704,6 +3916,10 @@ msgstr "現在の日付と時刻を挿入"
 msgid "Insert current username"
 msgstr "現在のユーザー名を挿入"
 
+#: lazarusidestrconsts:liskminsertdateandtime
+msgid "Insert date and time"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuinsertcharacter
 msgid "Insert from Character Map"
 msgstr "キャラクターマップから挿入"
@@ -3748,8 +3964,16 @@ msgstr "テキスト挿入"
 msgid "Insert underline formatting tag"
 msgstr ""
 
+#: lazarusidestrconsts:liskminsertusername
+msgid "Insert username"
+msgstr ""
+
 #: lazarusidestrconsts:lislazdochintvartag
 msgid "Insert var formatting tag"
+msgstr ""
+
+#: lazarusidestrconsts:liskminspect
+msgid "Inspect"
 msgstr ""
 
 #: lazarusidestrconsts:lismenuinspect
@@ -4856,6 +5080,14 @@ msgstr "新規ユニット"
 msgid "New class name:"
 msgstr "新規クラス名:"
 
+#: lazarusidestrconsts:liskmnewproject
+msgid "New project"
+msgstr ""
+
+#: lazarusidestrconsts:liskmnewprojectfromfile
+msgid "New project from file"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgeditnewunitnotinunitpath
 msgid "New unit not in unitpath"
 msgstr ""
@@ -5164,6 +5396,10 @@ msgstr ""
 msgid "Open package"
 msgstr "パッケージを開く"
 
+#: lazarusidestrconsts:liskmopenpackagefile
+msgid "Open package file"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuopenpackagefile
 msgid "Open package file (.lpk) ..."
 msgstr ""
@@ -5364,6 +5600,10 @@ msgstr "パッケージファイルがみつかりません"
 msgid "Package file not saved"
 msgstr ""
 
+#: lazarusidestrconsts:liskmpackagegraph
+msgid "Package graph"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgmangpackageisnodesigntimepackage
 msgid "Package is no designtime package"
 msgstr ""
@@ -5456,6 +5696,10 @@ msgstr ""
 msgid "Paste"
 msgstr "張り付け"
 
+#: lazarusidestrconsts:liskmpastecomponentsfromclipboard
+msgid "Paste Components from clipboard"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecpaste
 msgid "Paste clipboard to current position"
 msgstr ""
@@ -5487,6 +5731,10 @@ msgstr "一時停止"
 #: lazarusidestrconsts:srvk_pause
 msgid "Pause key"
 msgstr "一時停止キー"
+
+#: lazarusidestrconsts:liskmpauseprogram
+msgid "Pause program"
+msgstr ""
 
 #: lazarusidestrconsts:dlgpersistentcaret
 msgid "Persistent caret"
@@ -5768,6 +6016,10 @@ msgstr ""
 msgid "Publish Project ..."
 msgstr "パブリッシュ(publish)プロジェクト ..."
 
+#: lazarusidestrconsts:liskmpublishproject
+msgid "Publish project"
+msgstr ""
+
 #: lazarusidestrconsts:lispublishprojdir
 msgid "Publish project directory"
 msgstr "パブリッシュプロジェクトディレクトリ"
@@ -5778,6 +6030,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuquickcompile
 msgid "Quick compile"
+msgstr ""
+
+#: lazarusidestrconsts:liskmquickcompilenolinking
+msgid "Quick compile, no linking"
 msgstr ""
 
 #: lazarusidestrconsts:lismenuquicksyntaxcheck
@@ -5920,9 +6176,17 @@ msgstr "削除"
 msgid "Remove Dependency?"
 msgstr ""
 
+#: lazarusidestrconsts:liskmremoveactiveunitfromproject
+msgid "Remove active unit from project"
+msgstr ""
+
 #: lazarusidestrconsts:lisremoveallinvalidproperties
 msgid "Remove all invalid properties"
 msgstr "すべての無効なプロパティを削除"
+
+#: lazarusidestrconsts:liskmremovebreakpoint
+msgid "Remove break point"
+msgstr ""
 
 #: lazarusidestrconsts:lispckeditremovedependency
 msgid "Remove dependency"
@@ -6208,6 +6472,10 @@ msgstr "実行メニューコマンド"
 msgid "Run parameters"
 msgstr "実行パラメーター"
 
+#: lazarusidestrconsts:liskmrunprogram
+msgid "Run program"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuruntocursor
 msgid "Run to cursor"
 msgstr "カーソル位置まで実行"
@@ -6380,6 +6648,14 @@ msgstr ""
 msgid "Save package?"
 msgstr ""
 
+#: lazarusidestrconsts:liskmsaveproject
+msgid "Save project"
+msgstr ""
+
+#: lazarusidestrconsts:liskmsaveprojectas
+msgid "Save project as"
+msgstr ""
+
 #: lazarusidestrconsts:lisposavesessioninformationin
 msgid "Save session information in"
 msgstr ""
@@ -6394,6 +6670,14 @@ msgstr ""
 
 #: lazarusidestrconsts:lisiecosavetorecent
 msgid "Save to recent"
+msgstr ""
+
+#: lazarusidestrconsts:liskmsaveall
+msgid "SaveAll"
+msgstr ""
+
+#: lazarusidestrconsts:liskmsaveas
+msgid "SaveAs"
 msgstr ""
 
 #: lazarusidestrconsts:fdmscaleword
@@ -6632,6 +6916,22 @@ msgstr ""
 msgid "Select line"
 msgstr "行を選択"
 
+#: lazarusidestrconsts:liskmselectlineend
+msgid "Select line end"
+msgstr ""
+
+#: lazarusidestrconsts:liskmselectlinestart
+msgid "Select line start"
+msgstr ""
+
+#: lazarusidestrconsts:liskmselectpagebottom
+msgid "Select page bottom"
+msgstr ""
+
+#: lazarusidestrconsts:liskmselectpagetop
+msgid "Select page top"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuselectparagraph
 msgid "Select paragraph"
 msgstr "段落を選択"
@@ -6655,6 +6955,14 @@ msgstr "括弧を選択"
 #: lazarusidestrconsts:lismenuselectword
 msgid "Select word"
 msgstr "ワードを選択"
+
+#: lazarusidestrconsts:liskmselectwordleft
+msgid "Select word left"
+msgstr ""
+
+#: lazarusidestrconsts:liskmselectwordright
+msgid "Select word right"
+msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefsselectednode
 msgid "Selected Node:"
@@ -6707,6 +7015,50 @@ msgstr "すべての要素を初期値に設定"
 #: lazarusidestrconsts:dlgsetelementdefault
 msgid "Set element to default"
 msgstr "要素を初期値に設定"
+
+#: lazarusidestrconsts:liskmsetfreebookmark
+msgid "Set free Bookmark"
+msgstr ""
+
+#: lazarusidestrconsts:liskmsetmarker0
+msgid "Set marker 0"
+msgstr ""
+
+#: lazarusidestrconsts:liskmsetmarker1
+msgid "Set marker 1"
+msgstr ""
+
+#: lazarusidestrconsts:liskmsetmarker2
+msgid "Set marker 2"
+msgstr ""
+
+#: lazarusidestrconsts:liskmsetmarker3
+msgid "Set marker 3"
+msgstr ""
+
+#: lazarusidestrconsts:liskmsetmarker4
+msgid "Set marker 4"
+msgstr ""
+
+#: lazarusidestrconsts:liskmsetmarker5
+msgid "Set marker 5"
+msgstr ""
+
+#: lazarusidestrconsts:liskmsetmarker6
+msgid "Set marker 6"
+msgstr ""
+
+#: lazarusidestrconsts:liskmsetmarker7
+msgid "Set marker 7"
+msgstr ""
+
+#: lazarusidestrconsts:liskmsetmarker8
+msgid "Set marker 8"
+msgstr ""
+
+#: lazarusidestrconsts:liskmsetmarker9
+msgid "Set marker 9"
+msgstr ""
 
 #: lazarusidestrconsts:dlgsetpropertyvariable
 msgid "Set property Variable"
@@ -7095,6 +7447,10 @@ msgstr ""
 #: lazarusidestrconsts:lisstopdebugging2
 msgid "Stop debugging?"
 msgstr "デバッグを停止してよろしいですか?"
+
+#: lazarusidestrconsts:liskmstopprogram
+msgid "Stop program"
+msgstr ""
 
 #: lazarusidestrconsts:lisstopthedebugging
 msgid "Stop the debugging?"
@@ -7968,9 +8324,65 @@ msgstr "フォーム/ユニット切り替え"
 msgid "Toggle Mode"
 msgstr "切り替えモード"
 
+#: lazarusidestrconsts:liskmtogglebetweenunitandform
+msgid "Toggle between Unit and Form"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuviewtoggleformunit
 msgid "Toggle form/unit view"
 msgstr "フォーム/ユニット表示切り替え"
+
+#: lazarusidestrconsts:liskmtoggleviewbreakpoints
+msgid "Toggle view Breakpoints"
+msgstr ""
+
+#: lazarusidestrconsts:liskmtoggleviewcallstack
+msgid "Toggle view Call Stack"
+msgstr ""
+
+#: lazarusidestrconsts:liskmtoggleviewcodeexplorer
+msgid "Toggle view Code Explorer"
+msgstr ""
+
+#: lazarusidestrconsts:liskmtoggleviewdebuggeroutput
+msgid "Toggle view Debugger Output"
+msgstr ""
+
+#: lazarusidestrconsts:liskmtoggleviewdocumentationeditor
+msgid "Toggle view Documentation Editor"
+msgstr ""
+
+#: lazarusidestrconsts:liskmtoggleviewidespeedbuttons
+msgid "Toggle view IDE speed buttons"
+msgstr ""
+
+#: lazarusidestrconsts:liskmtoggleviewlocalvariables
+msgid "Toggle view Local Variables"
+msgstr ""
+
+#: lazarusidestrconsts:liskmtoggleviewmessages
+msgid "Toggle view Messages"
+msgstr ""
+
+#: lazarusidestrconsts:liskmtoggleviewobjectinspector
+msgid "Toggle view Object Inspector"
+msgstr ""
+
+#: lazarusidestrconsts:liskmtoggleviewsearchresults
+msgid "Toggle view Search Results"
+msgstr ""
+
+#: lazarusidestrconsts:liskmtoggleviewsourceeditor
+msgid "Toggle view Source Editor"
+msgstr ""
+
+#: lazarusidestrconsts:liskmtoggleviewwatches
+msgid "Toggle view Watches"
+msgstr ""
+
+#: lazarusidestrconsts:liskmtoggleviewcomponentpalette
+msgid "Toggle view component palette"
+msgstr ""
 
 #: lazarusidestrconsts:liscodetempltoken
 msgid "Token:"
@@ -8736,6 +9148,10 @@ msgstr "ToDoリストを表示 ..."
 msgid "View Unit Dependencies"
 msgstr "ユニットの依存性を表示"
 
+#: lazarusidestrconsts:liskmviewunitinfo
+msgid "View Unit Info"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuviewunitinfo
 msgid "View Unit Information"
 msgstr "ユニットの情報を表示"
@@ -8768,6 +9184,10 @@ msgstr "デバッガー出力を表示"
 msgid "View forms"
 msgstr "フォームを表示"
 
+#: lazarusidestrconsts:liskmviewjumphistory
+msgid "View jump history"
+msgstr ""
+
 #: lazarusidestrconsts:srkmectogglelocals
 msgid "View local variables"
 msgstr "ローカル変数を表示"
@@ -8780,9 +9200,21 @@ msgstr "表示メニューコマンド"
 msgid "View messages"
 msgstr "メッセージを表示"
 
+#: lazarusidestrconsts:liskmviewprojecttodolist
+msgid "View project ToDo list"
+msgstr ""
+
 #: lazarusidestrconsts:dlgmainviewforms
 msgid "View project forms"
 msgstr "プロジェクトフォームを表示"
+
+#: lazarusidestrconsts:liskmviewprojectoptions
+msgid "View project options"
+msgstr ""
+
+#: lazarusidestrconsts:liskmviewprojectsource
+msgid "View project source"
+msgstr ""
 
 #: lazarusidestrconsts:dlgmainviewunits
 msgid "View project units"
@@ -9116,12 +9548,20 @@ msgstr "自動的にリネームしない"
 msgid "noname"
 msgstr ""
 
+#: lazarusidestrconsts:lisnone2
+msgid "none"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefsnoneselected
 msgid "none selected"
 msgstr ""
 
 #: lazarusidestrconsts:lisobjectpath
 msgid "object path"
+msgstr ""
+
+#: lazarusidestrconsts:lisor
+msgid "or"
 msgstr ""
 
 #: lazarusidestrconsts:lispckeditpackagenotsaved

@@ -152,6 +152,10 @@ msgstr "%s包安装了, 但是 lpk 文件没有找到"
 msgid "%sThis package was automatically created"
 msgstr "%s包已经自动创建 "
 
+#: lazarusidestrconsts:lisnone
+msgid "%snone"
+msgstr ""
+
 #: lazarusidestrconsts:liswladd
 msgid "&Add"
 msgstr "添加(&A)"
@@ -340,6 +344,10 @@ msgstr "中断所有"
 msgid "Abort all loading"
 msgstr "中断所有加载中的"
 
+#: lazarusidestrconsts:liskmabortbuilding
+msgid "Abort building"
+msgstr ""
+
 #: lazarusidestrconsts:lisabortloadingproject
 msgid "Abort loading project"
 msgstr "中断所有加载中的工程"
@@ -396,9 +404,17 @@ msgstr "添加单元"
 msgid "Add active unit to a package"
 msgstr "将活动单元添加到包 "
 
+#: lazarusidestrconsts:liskmaddactiveunittoproject
+msgid "Add active unit to project"
+msgstr ""
+
 #: lazarusidestrconsts:lispckeditaddanitem
 msgid "Add an item"
 msgstr "添加一个项目"
+
+#: lazarusidestrconsts:liskmaddbreakpoint
+msgid "Add break point"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuaddbreakpoint
 msgid "Add breakpoint"
@@ -475,6 +491,10 @@ msgstr "添加到工程"
 #: lazarusidestrconsts:lispkgmangaddunittousesclauseofpackagedisablethisonlyforunit
 msgid "Add unit to uses clause of package. Disable this only for units, that should not be compiled in all cases."
 msgstr "添加语句到包的USES语句.这个只在单元中禁用, 不管什么情况都不会编译."
+
+#: lazarusidestrconsts:liskmaddwatch
+msgid "Add watch"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuaddwatch
 msgid "Add watch ..."
@@ -956,6 +976,10 @@ msgstr "构建 SynEdit"
 msgid "Build all"
 msgstr "构建所有"
 
+#: lazarusidestrconsts:liskmbuildallfilesofprojectprogram
+msgid "Build all files of project/program"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecbuildlazarus
 msgid "Build lazarus"
 msgstr "构建 Lazarus"
@@ -963,6 +987,10 @@ msgstr "构建 Lazarus"
 #: lazarusidestrconsts:lisbuildnewproject
 msgid "Build new project"
 msgstr "构建新的工程"
+
+#: lazarusidestrconsts:liskmbuildprojectprogram
+msgid "Build project/program"
+msgstr ""
 
 #: lazarusidestrconsts:dlgcmacro
 msgid "C Style Macros (global)"
@@ -1123,6 +1151,10 @@ msgstr "检查:"
 #: lazarusidestrconsts:rslanguagechinese
 msgid "Chinese"
 msgstr "简体中文"
+
+#: lazarusidestrconsts:lispochoosepofiledirectory
+msgid "Choose .po file directory"
+msgstr ""
 
 #: lazarusidestrconsts:lischoosedelphipackage
 msgid "Choose Delphi package (*.dpk)"
@@ -1292,6 +1324,10 @@ msgstr "点击标签查看不同之处"
 msgid "Close"
 msgstr "关闭"
 
+#: lazarusidestrconsts:liskmcloseall
+msgid "Close All"
+msgstr ""
+
 #: lazarusidestrconsts:lismenucloseall
 msgid "Close all editor files"
 msgstr "关闭所有编辑器中的文件"
@@ -1368,9 +1404,17 @@ msgstr "代码工具选项 ..."
 msgid "CodeTools commands"
 msgstr "代码工具命令行"
 
+#: lazarusidestrconsts:liskmcodetoolsdefineseditor
+msgid "CodeTools defines editor"
+msgstr ""
+
 #: lazarusidestrconsts:lismenucodetoolsdefineseditor
 msgid "CodeTools defines editor ..."
 msgstr "CodeTools 定义编辑器 ..."
+
+#: lazarusidestrconsts:liskmcodetoolsoptions
+msgid "CodeTools options"
+msgstr ""
 
 #: lazarusidestrconsts:srkmeccodetoolsdefinesed
 msgid "Codetools defines editor"
@@ -1496,6 +1540,10 @@ msgstr "编译器错误"
 msgid "Compiler filename"
 msgstr "编译器名称"
 
+#: lazarusidestrconsts:liskmcompileroptions
+msgid "Compiler options"
+msgstr ""
+
 #: lazarusidestrconsts:dlgfpcpath
 msgid "Compiler path (e.g. %s)"
 msgstr "编译器路径 (%s)"
@@ -1532,6 +1580,10 @@ msgstr "组件"
 msgid "Components menu commands"
 msgstr "组件菜单命令"
 
+#: lazarusidestrconsts:liskmconfigbuildfile
+msgid "Config %sBuild File%s"
+msgstr ""
+
 #: lazarusidestrconsts:dlgconfigfiles
 msgid "Config Files:"
 msgstr "配置文件:"
@@ -1548,6 +1600,10 @@ msgstr ""
 msgid "Configure Build+Run File ..."
 msgstr "配置 编译+运行 文件 ..."
 
+#: lazarusidestrconsts:liskmconfigurehelp
+msgid "Configure Help"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuconfigurehelp
 msgid "Configure Help ..."
 msgstr "配置帮助 ..."
@@ -1556,6 +1612,10 @@ msgstr "配置帮助 ..."
 msgid "Configure \"Build Lazarus\" ..."
 msgstr "配置 \"编译 Lazarus\" ..."
 
+#: lazarusidestrconsts:liskmconfigurecustomcomponents
+msgid "Configure custom components"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuconfigcustomcomps
 msgid "Configure custom components ..."
 msgstr "配置自定义组件 ..."
@@ -1563,6 +1623,10 @@ msgstr "配置自定义组件 ..."
 #: lazarusidestrconsts:lismenusettings
 msgid "Configure custom tools ..."
 msgstr "配置工具..."
+
+#: lazarusidestrconsts:liskmconfigureinstalledpackages
+msgid "Configure installed packages"
+msgstr ""
 
 #: lazarusidestrconsts:lismenueditinstallpkgs
 msgid "Configure installed packages ..."
@@ -1604,6 +1668,10 @@ msgstr "目录"
 msgid "Context sensitive Help"
 msgstr "上下文关联的帮助"
 
+#: lazarusidestrconsts:liskmcontextsensitivehelp
+msgid "Context sensitive help"
+msgstr ""
+
 #: lazarusidestrconsts:liscontinue
 msgid "Continue"
 msgstr "继续"
@@ -1636,17 +1704,33 @@ msgstr "转换错误"
 msgid "Convert"
 msgstr "转换"
 
+#: lazarusidestrconsts:liskmconvertdfmfiletolfm
+msgid "Convert DFM file to LFM"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuconvertdfmtolfm
 msgid "Convert DFM file to LFM ..."
 msgstr "转换 DFM 文件为 LFM 文件 ..."
+
+#: lazarusidestrconsts:liskmconvertdelphipackagetolazaruspackage
+msgid "Convert Delphi package to Lazarus package"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuconvertdelphipackage
 msgid "Convert Delphi package to Lazarus package ..."
 msgstr "转换 Delphi 包为 Lazarus 包 ..."
 
+#: lazarusidestrconsts:liskmconvertdelphiprojecttolazarusproject
+msgid "Convert Delphi project to Lazarus project"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuconvertdelphiproject
 msgid "Convert Delphi project to Lazarus project ..."
 msgstr "转换 Delphi 工程为 Lazarus 工程 ..."
+
+#: lazarusidestrconsts:liskmconvertdelphiunittolazarusunit
+msgid "Convert Delphi unit to Lazarus unit"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuconvertdelphiunit
 msgid "Convert Delphi unit to Lazarus unit ..."
@@ -1690,6 +1774,10 @@ msgstr "从继承复制"
 
 #: lazarusidestrconsts:lisplistcopymethodtoclipboard
 msgid "Copy method name to the clipboard"
+msgstr ""
+
+#: lazarusidestrconsts:liskmcopyselectedcomponentstoclipboard
+msgid "Copy selected Components to clipboard"
 msgstr ""
 
 #: lazarusidestrconsts:lisdsgcopycomponents
@@ -1892,6 +1980,10 @@ msgstr "自定义工具 %d"
 msgid "Cut"
 msgstr "剪切"
 
+#: lazarusidestrconsts:liskmcutselectedcomponentstoclipboard
+msgid "Cut selected Components to clipboard"
+msgstr ""
+
 #: lazarusidestrconsts:lisdsgcutcomponents
 msgid "Cut selected components to clipboard"
 msgstr "剪切选择的组件到剪切板"
@@ -2044,6 +2136,10 @@ msgstr "删除失败"
 msgid "Delete file failed"
 msgstr "删除文件失败"
 
+#: lazarusidestrconsts:liskmdeletelastchar
+msgid "Delete last char"
+msgstr ""
+
 #: lazarusidestrconsts:lislazdocdeletelinkbutton
 msgid "Delete link"
 msgstr "删除链接"
@@ -2175,6 +2271,10 @@ msgstr "目标目录 %s%s%s 无效.%s请选择一个完整路径."
 #: lazarusidestrconsts:lismenudiff
 msgid "Diff"
 msgstr "比较"
+
+#: lazarusidestrconsts:liskmdiffeditorfiles
+msgid "Diff editor files"
+msgstr ""
 
 #: lazarusidestrconsts:dlgdirection
 msgid "Direction"
@@ -2312,6 +2412,10 @@ msgstr "环境(&N)"
 msgid "Edit"
 msgstr "编辑"
 
+#: lazarusidestrconsts:liskmeditcodetemplates
+msgid "Edit Code Templates"
+msgstr ""
+
 #: lazarusidestrconsts:lispckediteditgeneraloptions
 msgid "Edit General Options"
 msgstr "编辑一般选项"
@@ -2336,6 +2440,10 @@ msgstr "编辑代码模板"
 msgid "Edit context sensitive Help"
 msgstr "编辑上下文帮助"
 
+#: lazarusidestrconsts:liskmeditcontextsensitivehelp
+msgid "Edit context sensitive help"
+msgstr ""
+
 #: lazarusidestrconsts:srkmeditforcmd
 msgid "Edit keys for command"
 msgstr "编辑命令的快捷键"
@@ -2359,6 +2467,10 @@ msgstr "编辑器字体"
 #: lazarusidestrconsts:dlgeditorfontheight
 msgid "Editor font height"
 msgstr "编辑器字体高度"
+
+#: lazarusidestrconsts:liskmeditoroptions
+msgid "Editor options"
+msgstr ""
 
 #: lazarusidestrconsts:lismenueditoroptions
 msgid "Editor options ..."
@@ -2399,6 +2511,10 @@ msgstr "封装"
 #: lazarusidestrconsts:uemencloseselection
 msgid "Enclose Selection"
 msgstr "封装所选"
+
+#: lazarusidestrconsts:liskmencloseselection
+msgid "Enclose selection"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuencloseselection
 msgid "Enclose selection ..."
@@ -2560,6 +2676,10 @@ msgstr "错误"
 msgid "Escape"
 msgstr "溢出"
 
+#: lazarusidestrconsts:liskmevaluatemodify
+msgid "Evaluate/Modify"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuevaluate
 msgid "Evaluate/Modify ..."
 msgstr "赋值/更改 ..."
@@ -2643,6 +2763,10 @@ msgstr "表达式"
 #: lazarusidestrconsts:lisextendunitpath
 msgid "Extend unit path?"
 msgstr "扩展单元路径?"
+
+#: lazarusidestrconsts:liskmexternaltoolssettings
+msgid "External Tools settings"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecexttool
 msgid "External tool %d"
@@ -2920,6 +3044,10 @@ msgstr "查找标识符参考"
 msgid "Find in files"
 msgstr "在文件中查找"
 
+#: lazarusidestrconsts:liskmfindincremental
+msgid "Find incremental"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecfindnext
 msgid "Find next"
 msgstr "查找下一个"
@@ -3140,6 +3268,46 @@ msgstr "转到编辑器 %d"
 msgid "Go to line number"
 msgstr "跳到行..."
 
+#: lazarusidestrconsts:liskmgotomarker0
+msgid "Go to marker 0"
+msgstr ""
+
+#: lazarusidestrconsts:liskmgotomarker1
+msgid "Go to marker 1"
+msgstr ""
+
+#: lazarusidestrconsts:liskmgotomarker2
+msgid "Go to marker 2"
+msgstr ""
+
+#: lazarusidestrconsts:liskmgotomarker3
+msgid "Go to marker 3"
+msgstr ""
+
+#: lazarusidestrconsts:liskmgotomarker4
+msgid "Go to marker 4"
+msgstr ""
+
+#: lazarusidestrconsts:liskmgotomarker5
+msgid "Go to marker 5"
+msgstr ""
+
+#: lazarusidestrconsts:liskmgotomarker6
+msgid "Go to marker 6"
+msgstr ""
+
+#: lazarusidestrconsts:liskmgotomarker7
+msgid "Go to marker 7"
+msgstr ""
+
+#: lazarusidestrconsts:liskmgotomarker8
+msgid "Go to marker 8"
+msgstr ""
+
+#: lazarusidestrconsts:liskmgotomarker9
+msgid "Go to marker 9"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecmatchbracket
 msgid "Go to matching bracket"
 msgstr "转到匹配的括号"
@@ -3151,6 +3319,46 @@ msgstr "下一个编辑窗口"
 #: lazarusidestrconsts:srkmecpreveditor
 msgid "Go to prior editor"
 msgstr "上一个编辑窗口"
+
+#: lazarusidestrconsts:liskmgotosourceeditor1
+msgid "Go to source editor 1"
+msgstr ""
+
+#: lazarusidestrconsts:liskmgotosourceeditor10
+msgid "Go to source editor 10"
+msgstr ""
+
+#: lazarusidestrconsts:liskmgotosourceeditor2
+msgid "Go to source editor 2"
+msgstr ""
+
+#: lazarusidestrconsts:liskmgotosourceeditor3
+msgid "Go to source editor 3"
+msgstr ""
+
+#: lazarusidestrconsts:liskmgotosourceeditor4
+msgid "Go to source editor 4"
+msgstr ""
+
+#: lazarusidestrconsts:liskmgotosourceeditor5
+msgid "Go to source editor 5"
+msgstr ""
+
+#: lazarusidestrconsts:liskmgotosourceeditor6
+msgid "Go to source editor 6"
+msgstr ""
+
+#: lazarusidestrconsts:liskmgotosourceeditor7
+msgid "Go to source editor 7"
+msgstr ""
+
+#: lazarusidestrconsts:liskmgotosourceeditor8
+msgid "Go to source editor 8"
+msgstr ""
+
+#: lazarusidestrconsts:liskmgotosourceeditor9
+msgid "Go to source editor 9"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecgotoincludedirective
 msgid "Go to to include directive of current include file"
@@ -3548,6 +3756,10 @@ msgstr "继承的"
 msgid "Insert"
 msgstr "插入"
 
+#: lazarusidestrconsts:liskminsertifdef
+msgid "Insert $IFDEF"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuconditionalselection
 msgid "Insert $IFDEF..."
 msgstr "插入 $IFDEF..."
@@ -3708,6 +3920,10 @@ msgstr "插入当前日期和时间"
 msgid "Insert current username"
 msgstr "插入当前用户名"
 
+#: lazarusidestrconsts:liskminsertdateandtime
+msgid "Insert date and time"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuinsertcharacter
 msgid "Insert from Character Map"
 msgstr "从字符表插入"
@@ -3752,9 +3968,17 @@ msgstr "插入文本"
 msgid "Insert underline formatting tag"
 msgstr "插入下划线标签"
 
+#: lazarusidestrconsts:liskminsertusername
+msgid "Insert username"
+msgstr ""
+
 #: lazarusidestrconsts:lislazdochintvartag
 msgid "Insert var formatting tag"
 msgstr "插入变量格式标签"
+
+#: lazarusidestrconsts:liskminspect
+msgid "Inspect"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuinspect
 msgid "Inspect ..."
@@ -4860,6 +5084,14 @@ msgstr "新建单元"
 msgid "New class name:"
 msgstr "新建类:"
 
+#: lazarusidestrconsts:liskmnewproject
+msgid "New project"
+msgstr ""
+
+#: lazarusidestrconsts:liskmnewprojectfromfile
+msgid "New project from file"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgeditnewunitnotinunitpath
 msgid "New unit not in unitpath"
 msgstr "新单元不在单元路径中 "
@@ -5168,6 +5400,10 @@ msgstr "打开并装载编译器选项"
 msgid "Open package"
 msgstr "打开包"
 
+#: lazarusidestrconsts:liskmopenpackagefile
+msgid "Open package file"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuopenpackagefile
 msgid "Open package file (.lpk) ..."
 msgstr "打开包文件"
@@ -5368,6 +5604,10 @@ msgstr "包文件未找到"
 msgid "Package file not saved"
 msgstr "包文件未保存"
 
+#: lazarusidestrconsts:liskmpackagegraph
+msgid "Package graph"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgmangpackageisnodesigntimepackage
 msgid "Package is no designtime package"
 msgstr "包不是一个设计时包"
@@ -5460,6 +5700,10 @@ msgstr "传送选项到连接器 (空格分开)"
 msgid "Paste"
 msgstr "粘贴"
 
+#: lazarusidestrconsts:liskmpastecomponentsfromclipboard
+msgid "Paste Components from clipboard"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecpaste
 msgid "Paste clipboard to current position"
 msgstr "粘贴剪切板到当前位置"
@@ -5491,6 +5735,10 @@ msgstr "暂停"
 #: lazarusidestrconsts:srvk_pause
 msgid "Pause key"
 msgstr "暂停键"
+
+#: lazarusidestrconsts:liskmpauseprogram
+msgid "Pause program"
+msgstr ""
 
 #: lazarusidestrconsts:dlgpersistentcaret
 msgid "Persistent caret"
@@ -5772,6 +6020,10 @@ msgstr "发布包"
 msgid "Publish Project ..."
 msgstr "发布工程 ..."
 
+#: lazarusidestrconsts:liskmpublishproject
+msgid "Publish project"
+msgstr ""
+
 #: lazarusidestrconsts:lispublishprojdir
 msgid "Publish project directory"
 msgstr "发布工程目录"
@@ -5783,6 +6035,10 @@ msgstr "Published Method"
 #: lazarusidestrconsts:lismenuquickcompile
 msgid "Quick compile"
 msgstr "快速编译"
+
+#: lazarusidestrconsts:liskmquickcompilenolinking
+msgid "Quick compile, no linking"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuquicksyntaxcheck
 msgid "Quick syntax check"
@@ -5924,9 +6180,17 @@ msgstr "移除"
 msgid "Remove Dependency?"
 msgstr "移除依赖关系?"
 
+#: lazarusidestrconsts:liskmremoveactiveunitfromproject
+msgid "Remove active unit from project"
+msgstr ""
+
 #: lazarusidestrconsts:lisremoveallinvalidproperties
 msgid "Remove all invalid properties"
 msgstr "移除所有错误的属性"
+
+#: lazarusidestrconsts:liskmremovebreakpoint
+msgid "Remove break point"
+msgstr ""
 
 #: lazarusidestrconsts:lispckeditremovedependency
 msgid "Remove dependency"
@@ -6212,6 +6476,10 @@ msgstr "运行菜单命令"
 msgid "Run parameters"
 msgstr "带参数运行"
 
+#: lazarusidestrconsts:liskmrunprogram
+msgid "Run program"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuruntocursor
 msgid "Run to cursor"
 msgstr "运行到光标处"
@@ -6384,6 +6652,14 @@ msgstr "保存包"
 msgid "Save package?"
 msgstr "保存包?"
 
+#: lazarusidestrconsts:liskmsaveproject
+msgid "Save project"
+msgstr ""
+
+#: lazarusidestrconsts:liskmsaveprojectas
+msgid "Save project as"
+msgstr ""
+
 #: lazarusidestrconsts:lisposavesessioninformationin
 msgid "Save session information in"
 msgstr "保存会话信息到"
@@ -6399,6 +6675,14 @@ msgstr "保存到文件"
 #: lazarusidestrconsts:lisiecosavetorecent
 msgid "Save to recent"
 msgstr "保存到最近的文件"
+
+#: lazarusidestrconsts:liskmsaveall
+msgid "SaveAll"
+msgstr ""
+
+#: lazarusidestrconsts:liskmsaveas
+msgid "SaveAs"
+msgstr ""
 
 #: lazarusidestrconsts:fdmscaleword
 msgid "Scale"
@@ -6636,6 +6920,22 @@ msgstr "选择主要的子女"
 msgid "Select line"
 msgstr "选择行"
 
+#: lazarusidestrconsts:liskmselectlineend
+msgid "Select line end"
+msgstr ""
+
+#: lazarusidestrconsts:liskmselectlinestart
+msgid "Select line start"
+msgstr ""
+
+#: lazarusidestrconsts:liskmselectpagebottom
+msgid "Select page bottom"
+msgstr ""
+
+#: lazarusidestrconsts:liskmselectpagetop
+msgid "Select page top"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuselectparagraph
 msgid "Select paragraph"
 msgstr "选择一段"
@@ -6659,6 +6959,14 @@ msgstr "选择到括号"
 #: lazarusidestrconsts:lismenuselectword
 msgid "Select word"
 msgstr "选择单词"
+
+#: lazarusidestrconsts:liskmselectwordleft
+msgid "Select word left"
+msgstr ""
+
+#: lazarusidestrconsts:liskmselectwordright
+msgid "Select word right"
+msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefsselectednode
 msgid "Selected Node:"
@@ -6711,6 +7019,50 @@ msgstr "设置所有的元素为默认"
 #: lazarusidestrconsts:dlgsetelementdefault
 msgid "Set element to default"
 msgstr "设置元素为默认"
+
+#: lazarusidestrconsts:liskmsetfreebookmark
+msgid "Set free Bookmark"
+msgstr ""
+
+#: lazarusidestrconsts:liskmsetmarker0
+msgid "Set marker 0"
+msgstr ""
+
+#: lazarusidestrconsts:liskmsetmarker1
+msgid "Set marker 1"
+msgstr ""
+
+#: lazarusidestrconsts:liskmsetmarker2
+msgid "Set marker 2"
+msgstr ""
+
+#: lazarusidestrconsts:liskmsetmarker3
+msgid "Set marker 3"
+msgstr ""
+
+#: lazarusidestrconsts:liskmsetmarker4
+msgid "Set marker 4"
+msgstr ""
+
+#: lazarusidestrconsts:liskmsetmarker5
+msgid "Set marker 5"
+msgstr ""
+
+#: lazarusidestrconsts:liskmsetmarker6
+msgid "Set marker 6"
+msgstr ""
+
+#: lazarusidestrconsts:liskmsetmarker7
+msgid "Set marker 7"
+msgstr ""
+
+#: lazarusidestrconsts:liskmsetmarker8
+msgid "Set marker 8"
+msgstr ""
+
+#: lazarusidestrconsts:liskmsetmarker9
+msgid "Set marker 9"
+msgstr ""
 
 #: lazarusidestrconsts:dlgsetpropertyvariable
 msgid "Set property Variable"
@@ -7099,6 +7451,10 @@ msgstr "停止调试程序并重新编译?"
 #: lazarusidestrconsts:lisstopdebugging2
 msgid "Stop debugging?"
 msgstr "停止调试?"
+
+#: lazarusidestrconsts:liskmstopprogram
+msgid "Stop program"
+msgstr ""
 
 #: lazarusidestrconsts:lisstopthedebugging
 msgid "Stop the debugging?"
@@ -7972,9 +8328,65 @@ msgstr "切换 窗体/单元"
 msgid "Toggle Mode"
 msgstr "切换模式"
 
+#: lazarusidestrconsts:liskmtogglebetweenunitandform
+msgid "Toggle between Unit and Form"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuviewtoggleformunit
 msgid "Toggle form/unit view"
 msgstr "切换 窗体/单元 视图"
+
+#: lazarusidestrconsts:liskmtoggleviewbreakpoints
+msgid "Toggle view Breakpoints"
+msgstr ""
+
+#: lazarusidestrconsts:liskmtoggleviewcallstack
+msgid "Toggle view Call Stack"
+msgstr ""
+
+#: lazarusidestrconsts:liskmtoggleviewcodeexplorer
+msgid "Toggle view Code Explorer"
+msgstr ""
+
+#: lazarusidestrconsts:liskmtoggleviewdebuggeroutput
+msgid "Toggle view Debugger Output"
+msgstr ""
+
+#: lazarusidestrconsts:liskmtoggleviewdocumentationeditor
+msgid "Toggle view Documentation Editor"
+msgstr ""
+
+#: lazarusidestrconsts:liskmtoggleviewidespeedbuttons
+msgid "Toggle view IDE speed buttons"
+msgstr ""
+
+#: lazarusidestrconsts:liskmtoggleviewlocalvariables
+msgid "Toggle view Local Variables"
+msgstr ""
+
+#: lazarusidestrconsts:liskmtoggleviewmessages
+msgid "Toggle view Messages"
+msgstr ""
+
+#: lazarusidestrconsts:liskmtoggleviewobjectinspector
+msgid "Toggle view Object Inspector"
+msgstr ""
+
+#: lazarusidestrconsts:liskmtoggleviewsearchresults
+msgid "Toggle view Search Results"
+msgstr ""
+
+#: lazarusidestrconsts:liskmtoggleviewsourceeditor
+msgid "Toggle view Source Editor"
+msgstr ""
+
+#: lazarusidestrconsts:liskmtoggleviewwatches
+msgid "Toggle view Watches"
+msgstr ""
+
+#: lazarusidestrconsts:liskmtoggleviewcomponentpalette
+msgid "Toggle view component palette"
+msgstr ""
 
 #: lazarusidestrconsts:liscodetempltoken
 msgid "Token:"
@@ -8740,6 +9152,10 @@ msgstr "查看 ToDo 列表 ..."
 msgid "View Unit Dependencies"
 msgstr "查看单元依赖关系"
 
+#: lazarusidestrconsts:liskmviewunitinfo
+msgid "View Unit Info"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuviewunitinfo
 msgid "View Unit Information"
 msgstr "查看单元信息"
@@ -8772,6 +9188,10 @@ msgstr "查看调试器输出"
 msgid "View forms"
 msgstr "查看窗体"
 
+#: lazarusidestrconsts:liskmviewjumphistory
+msgid "View jump history"
+msgstr ""
+
 #: lazarusidestrconsts:srkmectogglelocals
 msgid "View local variables"
 msgstr "查看局部变量"
@@ -8784,9 +9204,21 @@ msgstr "查看菜单命令"
 msgid "View messages"
 msgstr "查看信息"
 
+#: lazarusidestrconsts:liskmviewprojecttodolist
+msgid "View project ToDo list"
+msgstr ""
+
 #: lazarusidestrconsts:dlgmainviewforms
 msgid "View project forms"
 msgstr "查看工程窗口"
+
+#: lazarusidestrconsts:liskmviewprojectoptions
+msgid "View project options"
+msgstr ""
+
+#: lazarusidestrconsts:liskmviewprojectsource
+msgid "View project source"
+msgstr ""
 
 #: lazarusidestrconsts:dlgmainviewunits
 msgid "View project units"
@@ -9120,6 +9552,10 @@ msgstr "不要自动重命名"
 msgid "noname"
 msgstr "noname"
 
+#: lazarusidestrconsts:lisnone2
+msgid "none"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefsnoneselected
 msgid "none selected"
 msgstr "没有选择任何东西"
@@ -9127,6 +9563,10 @@ msgstr "没有选择任何东西"
 #: lazarusidestrconsts:lisobjectpath
 msgid "object path"
 msgstr "对象文件(obj)路径"
+
+#: lazarusidestrconsts:lisor
+msgid "or"
+msgstr ""
 
 #: lazarusidestrconsts:lispckeditpackagenotsaved
 msgid "package %s not saved"
