@@ -192,6 +192,7 @@ type
         var Caret:TCodeXYPosition): boolean; // true=ok, false=invalid CleanPos
     function CleanPosToCaretAndTopLine(CleanPos: integer;
         var Caret:TCodeXYPosition; var NewTopLine: integer): boolean; // true=ok, false=invalid CleanPos
+    function CleanPosToStr(CleanPos: integer): string;
     procedure GetCleanPosInfo(CodePosInFront, CleanPos: integer;
         ResolveComments: boolean; var SameArea: TAtomPosition);
     procedure GetLineInfo(ACleanPos: integer;
@@ -2100,6 +2101,16 @@ begin
   end;
 end;
 
+function TCustomCodeTool.CleanPosToStr(CleanPos: integer): string;
+var
+  CodePos: TCodeXYPosition;
+begin
+  if CleanPosToCaret(CleanPos,CodePos) then
+    Result:='y='+IntToStr(CodePos.Y)+',x='+IntToStr(CodePos.X)
+  else
+    Result:='y=?,x=?';
+end;
+
 procedure TCustomCodeTool.GetCleanPosInfo(CodePosInFront, CleanPos: integer;
   ResolveComments: boolean; var SameArea: TAtomPosition);
 var
@@ -2112,7 +2123,7 @@ begin
   MoveCursorToCleanPos(CodePosInFront);
   repeat
     ReadNextAtom;
-    //DebugLn('TCustomCodeTool.GetCleanPosInfo A Atom=',GetAtom,' CleanPos=',CleanPos,' CurPos.StartPos=',CurPos.StartPos);
+    //DebugLn(['TCustomCodeTool.GetCleanPosInfo A Atom=',GetAtom,' CleanPos=',CleanPos,' CurPos.StartPos=',CurPos.StartPos]);
     if (CleanPos>=CurPos.StartPos) and (CleanPos<CurPos.EndPos) then begin
       // clean pos on token
       SameArea:=CurPos;
@@ -2129,7 +2140,7 @@ begin
       end;
       SameArea.EndPos:=SameArea.StartPos;
       repeat
-        //DebugLn('TCustomCodeTool.GetCleanPosInfo B CleanPos=',CleanPos,' SameArea.StartPos=',SameArea.StartPos,' SameArea.EndPos=',SameArea.EndPos);
+        //DebugLn(['TCustomCodeTool.GetCleanPosInfo B CleanPos=',CleanPos,' SameArea.StartPos=',SameArea.StartPos,' SameArea.EndPos=',SameArea.EndPos]);
         while (SameArea.EndPos<=SrcLen)
         and (IsSpaceChar[Src[SameArea.EndPos]]) do
           inc(SameArea.EndPos);

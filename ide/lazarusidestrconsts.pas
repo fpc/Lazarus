@@ -186,6 +186,9 @@ resourcestring
   lisMenuInsertText = 'Insert text';
   lisMenuInsertCVSKeyword = 'CVS keyword';
   lisMenuInsertGeneral = 'General';
+  lisNone2 = 'none';
+  lisOr = 'or';
+  lisNone = '%snone';
   lisUnitPaths = 'Unit paths';
   lisIncludePaths = 'Include paths';
   lisSourcePaths = 'Source paths';

@@ -336,8 +336,6 @@ type
         read FCFDividerDrawLevel write FCFDividerDrawLevel default 3;
   end;
 
-  { Editor Options form }
-
   { TEditorOptionsForm }
 
   TEditorOptionsForm = class(TForm)
@@ -3486,7 +3484,7 @@ begin
       s := '';
     Result := Result + s;
     if (ShortcutA.Key1 = VK_UNKNOWN) and (ShortcutB.Key1 = VK_UNKNOWN) then
-      Result := Result + 'none'
+      Result := Result + lisNone2
     else
     if (ShortcutA.Key1 = VK_UNKNOWN) then
       Result := Result + KeyAndShiftStateToEditorKeyString(ShortcutB)
@@ -3495,7 +3493,7 @@ begin
       Result := Result + KeyAndShiftStateToEditorKeyString(ShortcutA)
     else
       Result := Result + KeyAndShiftStateToEditorKeyString(
-        ShortcutA) + '  or  ' +
+        ShortcutA) + '  '+lisOr+'  ' +
         KeyAndShiftStateToEditorKeyString(ShortcutB);
   end;
 end;

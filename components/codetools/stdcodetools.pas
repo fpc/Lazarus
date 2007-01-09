@@ -2672,11 +2672,11 @@ begin
   Result:=true;
   BuildTreeAndGetCleanPos(trAll,CursorPos,CleanCursorPos,[]);
   {$IFDEF VerboseGetStringConstBounds}
-  DebugLn('TStandardCodeTool.GetStringConstBounds A Start at ',dbgs(CleanCursorPos),' "',copy(Src,CleanCursorPos-5,5),'" | "',copy(Src,CleanCursorPos,5),'"');
+  DebugLn('TStandardCodeTool.GetStringConstBounds A Start at ',CleanPosToStr(CleanCursorPos),' "',copy(Src,CleanCursorPos-5,5),'" | "',copy(Src,CleanCursorPos,5),'"');
   {$ENDIF}
   GetCleanPosInfo(-1,CleanCursorPos,ResolveComments,SameArea);
   {$IFDEF VerboseGetStringConstBounds}
-  DebugLn('TStandardCodeTool.GetStringConstBounds B Same Area: ',dbgs(SameArea.StartPos),'-',dbgs(SameArea.EndPos),' "',copy(Src,SameArea.StartPos,SameArea.EndPos-SameArea.StartPos),'"');
+  DebugLn('TStandardCodeTool.GetStringConstBounds B Same Area: ',CleanPosToStr(SameArea.StartPos),'-',CleanPosToStr(SameArea.EndPos),' "',copy(Src,SameArea.StartPos,SameArea.EndPos-SameArea.StartPos),'"');
   {$ENDIF}
   if (SameArea.EndPos=SameArea.StartPos) or (SameArea.StartPos>SrcLen) then
     exit;

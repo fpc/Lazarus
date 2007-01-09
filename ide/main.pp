@@ -11107,7 +11107,10 @@ begin
     {$ENDIF}
     // calculate start and end of expression in source
     CursorCode:=ActiveUnitInfo.Source;
-    CursorXY:=ActiveSrcEdit.EditorComponent.LogicalCaretXY;
+    if ActiveSrcEdit.EditorComponent.SelAvail then
+      CursorXY:=ActiveSrcEdit.EditorComponent.BlockBegin
+    else
+      CursorXY:=ActiveSrcEdit.EditorComponent.LogicalCaretXY;
     if not CodeToolBoss.GetStringConstBounds(
       CursorCode,CursorXY.X,CursorXY.Y,
       StartCode,StartPos.X,StartPos.Y,
