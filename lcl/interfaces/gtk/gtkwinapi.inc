@@ -3309,6 +3309,7 @@ type
 var
   Xlfd: TXLFD;
   CharsetFilter: TStringList;
+  PitchFilter: TStringList;
   EnumLogFont: TEnumLogFontEx;
   Metric: TNewTextMetricEx;
 
@@ -3372,6 +3373,24 @@ var
         s := s + '*';
       CharsetFilter.Add(s);
     end;
+  end;
+  
+  procedure QueuePitchFilter(Pitch: byte);
+  begin
+  
+    if pitch and FIXED_PITCH = FIXED_PITCH then begin
+      PitchFilter.Add('m');
+      PitchFilter.Add('c'); // character cell it's also fixed pitch
+    end;
+
+    if pitch and VARIABLE_PITCH = VARIABLE_PITCH then
+      PitchFilter.Add('p');
+
+    if pitch and MONO_FONT = MONO_FONT then
+      PitchFilter.Add('m');
+      
+    if PitchFilter.Count=0 then
+      PitchFilter.Add('*');
   end;
 
   function XLFDToCharset: byte;
@@ -3572,7 +3591,7 @@ var
 var
   xFonts: PPChar;
   FontList: TStringList;
-  I,J,N: Integer;
+  I,J,K,N: Integer;
   Tmp,FandF: String;
 begin
   result := 0;
@@ -3593,43 +3612,49 @@ begin
   // foundry and family filter
   FandF := FoundryAndFamilyFilter(lpLogFont^.lfFaceName);
   
-  // charset
-  // pitchandfamily
-  // todo: ignored atm
-
   FontList := TStringlist.Create;
   CharSetFilter := TStringList.Create;
+  PitchFilter := TStringList.Create;
+  PitchFilter.Duplicates := dupIgnore;
   try
     QueueCharSetFilter(lpLogFont^.lfCharSet);
+    QueuePitchFilter(lpLogFont^.lfPitchAndFamily);
+    
     {$ifdef verboseEnumFonts}
     for j:=0 to CharSetFilter.Count-1 do begin
-      tmp := '-'+FAndF+'-*-*-*-*-*-*-*-*-*-*-'+CharSetFilter[j];
-      DebugLn('EnumFontFamiliesEx: will enumerate fonts matching: ', tmp);
+      // pitch filter is guaranteed to have at least one element
+      for k:=0 to PitchFilter.Count-1 do begin
+        tmp := '-'+FAndF+'-*-*-*-*-*-*-*-*-'+PitchFilter[k]+'-*-'+CharSetFilter[j];
+        DebugLn('EnumFontFamiliesEx: will enumerate fonts matching: ', tmp);
+      end;
     end;
     {$endif}
     for j:=0 to CharSetFilter.Count-1 do begin
-      tmp := '-'+FAndF+'-*-*-*-*-*-*-*-*-*-*-'+CharSetFilter[j];
-      {$ifdef UNIX}
-      XFonts := XListFonts(gdk_display, pchar(Tmp), 10000, @N);
-      {$else}
-      {$warning implement getting XFonts for this OS}
-      N:=0;
-      {$endif}
-      try
-        {$ifdef VerboseEnumFonts}
-        DebugLn('EnumFontFamiliesEx: found ',dbgs(N),' fonts matching: ', tmp);
-        {$endif}
-        for i:=0 to N-1 do
-          if XFonts[i]<>nil then
-            if ProcessXFont(i, XFonts[i], FontList) then
-              break;
-      finally
+      for k:=0 to PitchFilter.Count-1 do begin
+        tmp := '-'+FAndF+'-*-*-*-*-*-*-*-*-'+PitchFilter[k]+'-*-'+CharSetFilter[j];
         {$ifdef UNIX}
-        XFreeFontNames(XFonts);
+        XFonts := XListFonts(gdk_display, pchar(Tmp), 10000, @N);
+        {$else}
+        {$warning implement getting XFonts for this OS}
+        N:=0;
         {$endif}
+        try
+          {$ifdef VerboseEnumFonts}
+          DebugLn('EnumFontFamiliesEx: found ',dbgs(N),' fonts matching: ', tmp);
+          {$endif}
+          for i:=0 to N-1 do
+            if XFonts[i]<>nil then
+              if ProcessXFont(i, XFonts[i], FontList) then
+                break;
+        finally
+          {$ifdef UNIX}
+          XFreeFontNames(XFonts);
+          {$endif}
+        end;
       end;
     end;
   finally
+    PitchFilter.Free;
     Fontlist.Free;
     CharSetFilter.Free;
   end;

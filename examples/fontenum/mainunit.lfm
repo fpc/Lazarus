@@ -1,68 +1,66 @@
 object frmMain: TfrmMain
-  Left = 563
+  Left = 33
   Height = 440
-  Top = 356
+  Top = 116
   Width = 714
   HorzScrollBar.Page = 713
   VertScrollBar.Page = 439
   ActiveControl = lbFamily
   Caption = 'frmMain'
-  ClientHeight = 440
-  ClientWidth = 714
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnShow = FormShow
   ShowHint = True
   object Label3: TLabel
     Left = 548
-    Height = 17
+    Height = 13
     Top = 257
-    Width = 36
+    Width = 29
     Caption = 'Filtro'
     Color = clNone
     ParentColor = False
   end
   object Label4: TLabel
     Left = 216
-    Height = 17
+    Height = 13
     Top = 16
-    Width = 94
+    Width = 73
     Caption = 'Face font list'
     Color = clNone
     ParentColor = False
   end
   object Label5: TLabel
     Left = 424
-    Height = 17
+    Height = 13
     Top = 11
-    Width = 45
+    Width = 35
     Caption = 'Styles'
     Color = clNone
     ParentColor = False
   end
   object Sizes: TLabel
     Left = 648
-    Height = 17
+    Height = 13
     Top = 11
-    Width = 40
+    Width = 31
     Caption = 'Sizes'
     Color = clNone
     ParentColor = False
   end
   object lblCharset: TLabel
     Left = 424
-    Height = 17
+    Height = 13
     Top = 176
-    Width = 73
+    Width = 57
     Caption = 'lblCharset'
     Color = clNone
     ParentColor = False
   end
   object Label6: TLabel
     Left = 11
-    Height = 17
+    Height = 13
     Top = 16
-    Width = 36
+    Width = 29
     Caption = 'Filter'
     Color = clNone
     ParentColor = False
@@ -152,17 +150,17 @@ object frmMain: TfrmMain
   end
   object chkStrike: TCheckBox
     Left = 591
-    Height = 24
+    Height = 20
     Top = 312
-    Width = 88
+    Width = 72
     Caption = 'Strikeout'
     TabOrder = 8
   end
   object chkUnderLine: TCheckBox
     Left = 592
-    Height = 24
+    Height = 20
     Top = 336
-    Width = 98
+    Width = 81
     Caption = 'UnderLine'
     TabOrder = 9
   end

@@ -1,55 +1,54 @@
 { Das ist eine automatisch erzeugte Lazarus-Ressourcendatei }
 
 LazarusResources.Add('TfrmMain','FORMDATA',[
-  'TPF0'#8'TfrmMain'#7'frmMain'#4'Left'#3'3'#2#6'Height'#3#184#1#3'Top'#3'd'#1#5
-  +'Width'#3#202#2#18'HorzScrollBar.Page'#3#201#2#18'VertScrollBar.Page'#3#183#1
-  +#13'ActiveControl'#7#8'lbFamily'#7'Caption'#6#7'frmMain'#12'ClientHeight'#3
-  +#184#1#11'ClientWidth'#3#202#2#12'OnCloseQuery'#7#14'FormCloseQuery'#8'OnCre'
-  +'ate'#7#10'FormCreate'#6'OnShow'#7#8'FormShow'#8'ShowHint'#9#0#6'TLabel'#6'L'
-  +'abel3'#4'Left'#3'$'#2#6'Height'#2#17#3'Top'#3#1#1#5'Width'#2'$'#7'Caption'#6
-  +#6'Filtro'#5'Color'#7#6'clNone'#11'ParentColor'#8#0#0#6'TLabel'#6'Label4'#4
-  +'Left'#3#216#0#6'Height'#2#17#3'Top'#2#16#5'Width'#2'^'#7'Caption'#6#14'Face'
-  +' font list'#5'Color'#7#6'clNone'#11'ParentColor'#8#0#0#6'TLabel'#6'Label5'#4
-  +'Left'#3#168#1#6'Height'#2#17#3'Top'#2#11#5'Width'#2'-'#7'Caption'#6#6'Style'
-  +'s'#5'Color'#7#6'clNone'#11'ParentColor'#8#0#0#6'TLabel'#5'Sizes'#4'Left'#3
-  +#136#2#6'Height'#2#17#3'Top'#2#11#5'Width'#2'('#7'Caption'#6#5'Sizes'#5'Colo'
-  +'r'#7#6'clNone'#11'ParentColor'#8#0#0#6'TLabel'#10'lblCharset'#4'Left'#3#168
-  +#1#6'Height'#2#17#3'Top'#3#176#0#5'Width'#2'I'#7'Caption'#6#10'lblCharset'#5
-  +'Color'#7#6'clNone'#11'ParentColor'#8#0#0#6'TLabel'#6'Label6'#4'Left'#2#11#6
-  +'Height'#2#17#3'Top'#2#16#5'Width'#2'$'#7'Caption'#6#6'Filter'#5'Color'#7#6
-  +'clNone'#11'ParentColor'#8#0#0#8'TListBox'#8'lbFamily'#4'Left'#3#216#0#6'Hei'
-  +'ght'#3#16#1#3'Top'#2' '#5'Width'#3#200#0#7'OnClick'#7#13'lbFamilyClick'#8'T'
-  +'abOrder'#2#0#8'TopIndex'#2#255#0#0#9'TComboBox'#9'cbCharset'#4'Left'#2#8#6
-  +'Height'#2#21#3'Top'#2'%'#5'Width'#3#194#0#16'AutoCompleteText'#11#22'cbactE'
-  +'ndOfLineComplete'#20'cbactSearchAscending'#0#9'MaxLength'#2#0#8'TabOrder'#2
-  +#1#4'Text'#6#12'ANSI_CHARSET'#0#0#7'TButton'#7'Button2'#4'Left'#2#8#6'Height'
-  +#2#25#3'Top'#2'`'#5'Width'#2'K'#25'BorderSpacing.InnerBorder'#2#4#7'Caption'
-  +#6#12'apply filter'#7'OnClick'#7#12'Button2Click'#8'TabOrder'#2#2#0#0#8'TLis'
-  +'tBox'#8'lbStyles'#4'Left'#3#168#1#6'Height'#3#128#0#3'Top'#2' '#5'Width'#3
-  +#208#0#7'OnClick'#7#13'lbStylesClick'#8'TabOrder'#2#3#8'TopIndex'#2#255#0#0#8
-  +'TListBox'#7'lbSizes'#4'Left'#3#128#2#6'Height'#3#16#1#3'Top'#2' '#5'Width'#2
-  +'8'#7'OnClick'#7#12'lbSizesClick'#8'TabOrder'#2#4#8'TopIndex'#2#255#0#0#8'TL'
-  +'istBox'#9'lbCharset'#4'Left'#3#168#1#6'Height'#2'p'#3'Top'#3#192#0#5'Width'
-  +#3#208#0#7'OnClick'#7#14'lbCharsetClick'#8'TabOrder'#2#5#8'TopIndex'#2#255#0
-  +#0#9'TComboBox'#7'cbPitch'#4'Left'#2#8#6'Height'#2#21#3'Top'#2'='#5'Width'#3
-  +#194#0#16'AutoCompleteText'#11#22'cbactEndOfLineComplete'#20'cbactSearchAsce'
-  +'nding'#0#9'ItemIndex'#2#0#13'Items.Strings'#1#6#13'DEFAULT_PITCH'#6#11'FIXE'
-  +'D_PITCH'#6#14'VARIABLE_PITCH'#6#9'MONO_FONT'#0#9'MaxLength'#2#0#8'TabOrder'
-  +#2#6#4'Text'#6#13'DEFAULT_PITCH'#0#0#7'TButton'#10'BtnFontDlg'#4'Left'#2'8'#6
-  +'Height'#2'('#3'Top'#3'p'#1#5'Width'#3#152#0#25'BorderSpacing.InnerBorder'#2
-  +#4#7'Caption'#6#8'Font Dlg'#7'OnClick'#7#15'BtnFontDlgClick'#8'TabOrder'#2#7
-  +#0#0#9'TCheckBox'#9'chkStrike'#4'Left'#3'O'#2#6'Height'#2#24#3'Top'#3'8'#1#5
-  +'Width'#2'X'#7'Caption'#6#9'Strikeout'#8'TabOrder'#2#8#0#0#9'TCheckBox'#12'c'
-  +'hkUnderLine'#4'Left'#3'P'#2#6'Height'#2#24#3'Top'#3'P'#1#5'Width'#2'b'#7'Ca'
-  +'ption'#6#9'UnderLine'#8'TabOrder'#2#9#0#0#7'TButton'#7'Button1'#4'Left'#2'8'
-  +#6'Height'#2')'#3'Top'#3'8'#1#5'Width'#3#153#0#25'BorderSpacing.InnerBorder'
-  +#2#4#7'Caption'#6#17'Reset Sample Text'#7'OnClick'#7#12'Button1Click'#8'TabO'
-  +'rder'#2#10#0#0#11'TStringGrid'#4'grid'#4'Left'#3#216#0#6'Height'#2'x'#3'Top'
-  +#3'8'#1#5'Width'#3'p'#1#15'AutoFillColumns'#9#8'ColCount'#2#1#16'DefaultRowH'
-  +'eight'#2#17#10'FixedColor'#7#9'clBtnFace'#9'FixedCols'#2#0#9'FixedRows'#2#0
-  +#13'GridLineWidth'#2#0#7'Options'#11#15'goFixedVertLine'#15'goFixedHorzLine'
-  +#10'goVertLine'#10'goHorzLine'#13'goRangeSelect'#9'goEditing'#14'goSmoothScr'
-  +'oll'#0#8'RowCount'#2#5#10'ScrollBars'#7#10'ssAutoBoth'#8'TabOrder'#2#11#7'T'
-  +'abStop'#9#0#0#11'TFontDialog'#11'FontDialog1'#5'Title'#6#13'Select a font'#4
-  +'left'#3'8'#1#3'top'#3#128#1#0#0#0
+  'TPF0'#8'TfrmMain'#7'frmMain'#4'Left'#2'!'#6'Height'#3#184#1#3'Top'#2't'#5'Wi'
+  +'dth'#3#202#2#18'HorzScrollBar.Page'#3#201#2#18'VertScrollBar.Page'#3#183#1
+  +#13'ActiveControl'#7#8'lbFamily'#7'Caption'#6#7'frmMain'#12'OnCloseQuery'#7
+  +#14'FormCloseQuery'#8'OnCreate'#7#10'FormCreate'#6'OnShow'#7#8'FormShow'#8'S'
+  +'howHint'#9#0#6'TLabel'#6'Label3'#4'Left'#3'$'#2#6'Height'#2#13#3'Top'#3#1#1
+  +#5'Width'#2#29#7'Caption'#6#6'Filtro'#5'Color'#7#6'clNone'#11'ParentColor'#8
+  +#0#0#6'TLabel'#6'Label4'#4'Left'#3#216#0#6'Height'#2#13#3'Top'#2#16#5'Width'
+  +#2'I'#7'Caption'#6#14'Face font list'#5'Color'#7#6'clNone'#11'ParentColor'#8
+  +#0#0#6'TLabel'#6'Label5'#4'Left'#3#168#1#6'Height'#2#13#3'Top'#2#11#5'Width'
+  +#2'#'#7'Caption'#6#6'Styles'#5'Color'#7#6'clNone'#11'ParentColor'#8#0#0#6'TL'
+  +'abel'#5'Sizes'#4'Left'#3#136#2#6'Height'#2#13#3'Top'#2#11#5'Width'#2#31#7'C'
+  +'aption'#6#5'Sizes'#5'Color'#7#6'clNone'#11'ParentColor'#8#0#0#6'TLabel'#10
+  +'lblCharset'#4'Left'#3#168#1#6'Height'#2#13#3'Top'#3#176#0#5'Width'#2'9'#7'C'
+  +'aption'#6#10'lblCharset'#5'Color'#7#6'clNone'#11'ParentColor'#8#0#0#6'TLabe'
+  +'l'#6'Label6'#4'Left'#2#11#6'Height'#2#13#3'Top'#2#16#5'Width'#2#29#7'Captio'
+  +'n'#6#6'Filter'#5'Color'#7#6'clNone'#11'ParentColor'#8#0#0#8'TListBox'#8'lbF'
+  +'amily'#4'Left'#3#216#0#6'Height'#3#16#1#3'Top'#2' '#5'Width'#3#200#0#7'OnCl'
+  +'ick'#7#13'lbFamilyClick'#8'TabOrder'#2#0#8'TopIndex'#2#255#0#0#9'TComboBox'
+  +#9'cbCharset'#4'Left'#2#8#6'Height'#2#21#3'Top'#2'%'#5'Width'#3#194#0#16'Aut'
+  +'oCompleteText'#11#22'cbactEndOfLineComplete'#20'cbactSearchAscending'#0#9'M'
+  +'axLength'#2#0#8'TabOrder'#2#1#4'Text'#6#12'ANSI_CHARSET'#0#0#7'TButton'#7'B'
+  +'utton2'#4'Left'#2#8#6'Height'#2#25#3'Top'#2'`'#5'Width'#2'K'#25'BorderSpaci'
+  +'ng.InnerBorder'#2#4#7'Caption'#6#12'apply filter'#7'OnClick'#7#12'Button2Cl'
+  +'ick'#8'TabOrder'#2#2#0#0#8'TListBox'#8'lbStyles'#4'Left'#3#168#1#6'Height'#3
+  +#128#0#3'Top'#2' '#5'Width'#3#208#0#7'OnClick'#7#13'lbStylesClick'#8'TabOrde'
+  +'r'#2#3#8'TopIndex'#2#255#0#0#8'TListBox'#7'lbSizes'#4'Left'#3#128#2#6'Heigh'
+  +'t'#3#16#1#3'Top'#2' '#5'Width'#2'8'#7'OnClick'#7#12'lbSizesClick'#8'TabOrde'
+  +'r'#2#4#8'TopIndex'#2#255#0#0#8'TListBox'#9'lbCharset'#4'Left'#3#168#1#6'Hei'
+  +'ght'#2'p'#3'Top'#3#192#0#5'Width'#3#208#0#7'OnClick'#7#14'lbCharsetClick'#8
+  +'TabOrder'#2#5#8'TopIndex'#2#255#0#0#9'TComboBox'#7'cbPitch'#4'Left'#2#8#6'H'
+  +'eight'#2#21#3'Top'#2'='#5'Width'#3#194#0#16'AutoCompleteText'#11#22'cbactEn'
+  +'dOfLineComplete'#20'cbactSearchAscending'#0#9'ItemIndex'#2#0#13'Items.Strin'
+  +'gs'#1#6#13'DEFAULT_PITCH'#6#11'FIXED_PITCH'#6#14'VARIABLE_PITCH'#6#9'MONO_F'
+  +'ONT'#0#9'MaxLength'#2#0#8'TabOrder'#2#6#4'Text'#6#13'DEFAULT_PITCH'#0#0#7'T'
+  +'Button'#10'BtnFontDlg'#4'Left'#2'8'#6'Height'#2'('#3'Top'#3'p'#1#5'Width'#3
+  +#152#0#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6#8'Font Dlg'#7'OnClick'
+  +#7#15'BtnFontDlgClick'#8'TabOrder'#2#7#0#0#9'TCheckBox'#9'chkStrike'#4'Left'
+  +#3'O'#2#6'Height'#2#20#3'Top'#3'8'#1#5'Width'#2'H'#7'Caption'#6#9'Strikeout'
+  +#8'TabOrder'#2#8#0#0#9'TCheckBox'#12'chkUnderLine'#4'Left'#3'P'#2#6'Height'#2
+  +#20#3'Top'#3'P'#1#5'Width'#2'Q'#7'Caption'#6#9'UnderLine'#8'TabOrder'#2#9#0#0
+  +#7'TButton'#7'Button1'#4'Left'#2'8'#6'Height'#2')'#3'Top'#3'8'#1#5'Width'#3
+  +#153#0#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6#17'Reset Sample Text'#7
+  +'OnClick'#7#12'Button1Click'#8'TabOrder'#2#10#0#0#11'TStringGrid'#4'grid'#4
+  +'Left'#3#216#0#6'Height'#2'x'#3'Top'#3'8'#1#5'Width'#3'p'#1#15'AutoFillColum'
+  +'ns'#9#8'ColCount'#2#1#16'DefaultRowHeight'#2#17#10'FixedColor'#7#9'clBtnFac'
+  +'e'#9'FixedCols'#2#0#9'FixedRows'#2#0#13'GridLineWidth'#2#0#7'Options'#11#15
+  +'goFixedVertLine'#15'goFixedHorzLine'#10'goVertLine'#10'goHorzLine'#13'goRan'
+  +'geSelect'#9'goEditing'#14'goSmoothScroll'#0#8'RowCount'#2#5#10'ScrollBars'#7
+  +#10'ssAutoBoth'#8'TabOrder'#2#11#7'TabStop'#9#0#0#11'TFontDialog'#11'FontDia'
+  +'log1'#5'Title'#6#13'Select a font'#4'left'#3'8'#1#3'top'#3#128#1#0#0#0
 ]);

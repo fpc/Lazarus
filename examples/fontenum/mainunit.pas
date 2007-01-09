@@ -418,7 +418,14 @@ begin
   // but here, we have the list filtered by Charset
   lf.lfCharSet := GetCharSet;
   lf.lfFaceName := '';
-  lf.lfPitchAndFamily := 0;
+  case cbPitch.ItemIndex of
+    1: i:=FIXED_PITCH;
+    2: i:=VARIABLE_PITCH;
+    3: i:=MONO_FONT;
+    else
+      i:=DEFAULT_PITCH;
+  end;
+  lf.lfPitchAndFamily := i;
 
   {$ifdef debug}
   WriteLn('LoadFontList: for charset=',CharSetToString(lf.lfcharset));

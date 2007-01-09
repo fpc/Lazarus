@@ -6,6 +6,7 @@
     <General>
       <Flags>
         <SaveClosedFiles Value="False"/>
+        <SaveOnlyProjectUnits Value="True"/>
       </Flags>
       <MainUnit Value="0"/>
       <IconPath Value="./"/>
@@ -46,14 +47,13 @@
         <IsPartOfProject Value="True"/>
         <ResourceFilename Value="mainunit.lrs"/>
         <UnitName Value="mainunit"/>
-        <CursorPos X="55" Y="554"/>
-        <TopLine Value="118"/>
+        <CursorPos X="41" Y="447"/>
+        <TopLine Value="400"/>
         <EditorIndex Value="0"/>
         <UsageCount Value="158"/>
         <Loaded Value="True"/>
       </Unit1>
     </Units>
-    <JumpHistory Count="0" HistoryIndex="-1"/>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>
