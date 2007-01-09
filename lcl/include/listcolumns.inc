@@ -32,6 +32,8 @@ procedure TListColumns.BeginUpdate;
 begin
   {$IFNDEF VER2_0}
   inherited;
+  // if 2.0 is not supported anymore, maybe FUpdateCount can be removed and
+  // the Changed notification can be used.
   {$ENDIF}
   inc(FUpdateCount);
 end;

@@ -4267,7 +4267,8 @@ begin
       Include(fStates,tvsWaitForDragging);
     end;
   end else
-  if (ssDouble in Shift) and (Button = mbLeft) and (CursorNode<>nil) then
+  if not (tvoNoDoubleClickExpand in Options) and (ssDouble in Shift)
+     and (Button = mbLeft) and (CursorNode<>nil) then
     CursorNode.Expanded := not CursorNode.Expanded;
 end;
 

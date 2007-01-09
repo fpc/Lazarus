@@ -2025,7 +2025,8 @@ type
     tvoShowLines,
     tvoShowRoot,
     tvoShowSeparators,
-    tvoToolTips
+    tvoToolTips,
+    tvoNoDoubleClickExpand
     );
   TTreeViewOptions = set of TTreeViewOption;
 
