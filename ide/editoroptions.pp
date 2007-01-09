@@ -3492,9 +3492,9 @@ begin
     if (ShortcutB.Key1 = VK_UNKNOWN) then
       Result := Result + KeyAndShiftStateToEditorKeyString(ShortcutA)
     else
-      Result := Result + KeyAndShiftStateToEditorKeyString(
-        ShortcutA) + '  '+lisOr+'  ' +
-        KeyAndShiftStateToEditorKeyString(ShortcutB);
+      Result := Result + KeyAndShiftStateToEditorKeyString(ShortcutA)
+                       + '  '+lisOr+'  ' +
+                         KeyAndShiftStateToEditorKeyString(ShortcutB);
   end;
 end;
 

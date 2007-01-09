@@ -118,6 +118,9 @@ resourcestring
   lisMakeExe = 'Make Executable';
   lisProjectMacroProperties = 'Project macro properties';
   lisOpenProject2 = 'Open project';
+  lisKMSaveProject = 'Save project';
+  lisKMSaveProjectAs = 'Save project as';
+  lisKMPublishProject = 'Publish project';
   lisOpenTheFileAsNormalSource = 'Open the file as normal source';
   lisOpenAsXmlFile = 'Open as XML file';
   lisAnErrorOccuredAtLastStartupWhileLoadingLoadThisPro = 'An error occured '
@@ -148,11 +151,14 @@ resourcestring
   lisPkgEditPublishPackage = 'Publish Package';
   lisMenuOpenRecent = 'Open Recent ...';
   lisMenuSave = 'Save';
+  lisKMSaveAs = 'SaveAs';
+  lisKMSaveAll = 'SaveAll';
   lisDiscardChanges = 'Discard changes';
   lisDoNotCloseTheIDE = 'Do not close the IDE';
   lisMenuSaveAs = 'Save As ...';
   lisMenuSaveAll = 'Save All';
   lisMenuClose = 'Close';
+  lisKMCloseAll = 'Close All';
   lisCTDefDefineTemplates = 'Define templates';
   lisMenuCloseAll = 'Close all editor files';
   lisMenuCleanDirectory = 'Clean directory ...';
@@ -172,9 +178,16 @@ resourcestring
   lisMenuEncloseSelection = 'Enclose selection ...';
   lisMenuCommentSelection = 'Comment selection';
   lisMenuUncommentSelection = 'Uncomment selection';
+  lisKMInsertIFDEF = 'Insert $IFDEF';
   lisMenuConditionalSelection = 'Insert $IFDEF...';
   lisMenuSortSelection = 'Sort selection ...';
   lisMenuBeakLinesInSelection = 'Break Lines in selection';
+  lisKMSelectWordLeft = 'Select word left';
+  lisKMSelectWordRight = 'Select word right';
+  lisKMSelectLineStart = 'Select line start';
+  lisKMSelectLineEnd = 'Select line end';
+  lisKMSelectPageTop = 'Select page top';
+  lisKMSelectPageBottom = 'Select page bottom';
   lisMenuSelect = 'Select';
   lisMenuSelectAll = 'Select all';
   lisMenuSelectToBrace = 'Select to brace';
@@ -235,6 +248,7 @@ resourcestring
   lisMenuViewUnits = 'Units...';
   lisMenuViewForms = 'Forms...';
   lisMenuViewUnitDependencies = 'View Unit Dependencies';
+  lisKMViewUnitInfo = 'View Unit Info';
   lisMenuViewUnitInfo = 'View Unit Information';
   lisMenuViewToggleFormUnit = 'Toggle form/unit view';
   lisMenuViewMessages = 'Messages';
@@ -247,6 +261,7 @@ resourcestring
   lisSearchAgain = 'Search again';
   lisSRClosePage = 'Close page';
   lisMenuViewAnchorEditor = 'View Anchor Editor';
+  lisKMToggleViewComponentPalette = 'Toggle view component palette';
   lisMenuViewComponentPalette = 'View Component Palette';
   lisMenuViewIDESpeedButtons = 'View IDE speed buttons';
   lisMenuDebugWindows = 'Debug windows';
@@ -264,6 +279,10 @@ resourcestring
   lisMenuSaveProjectAs = 'Save Project As ...';
   lisMenuPublishProject = 'Publish Project ...';
   lisMenuProjectInspector = 'Project Inspector';
+  lisKMAddActiveUnitToProject = 'Add active unit to project';
+  lisKMRemoveActiveUnitFromProject = 'Remove active unit from project';
+  lisKMViewProjectSource = 'View project source';
+  lisKMViewProjectToDoList = 'View project ToDo list';
   lisMenuAddToProject = 'Add editor file to Project';
   lisMenuRemoveFromProject = 'Remove from Project ...';
   lisMenuViewSource = 'View Source';
@@ -286,13 +305,19 @@ resourcestring
   lisMenuStepInto = 'Step into';
   lisMenuStepOver = 'Step over';
   lisMenuRunToCursor = 'Run to cursor';
+  lisKMStopProgram = 'Stop program';
   lisMenuStop = 'Stop';
   lisContinue = 'Continue';
   lisMenuResetDebugger = 'Reset debugger';
+  lisKMCompilerOptions = 'Compiler options';
   lisMenuCompilerOptions = 'Compiler Options ...';
   lisMenuRunParameters = 'Run Parameters ...';
   lisMenuBuildFile = 'Build File';
   lisMenuRunFile = 'Run File';
+  lisKMConfigBuildFile = 'Config %sBuild File%s';
+  lisKMInspect = 'Inspect';
+  lisKMEvaluateModify = 'Evaluate/Modify';
+  lisKMAddWatch = 'Add watch';
   lisMenuConfigBuildFile = 'Configure Build+Run File ...';
   lisMenuInspect = 'Inspect ...';
   lisMenuEvaluate = 'Evaluate/Modify ...';
@@ -306,6 +331,9 @@ resourcestring
   lisMenuOpenPackageFile = 'Open package file (.lpk) ...';
   lisMenuOpenPackageOfCurUnit = 'Open package of current unit';
   lisMenuAddCurUnitToPkg = 'Add active unit to a package';
+  lisKMPackageGraph = 'Package graph';
+  lisKMConfigureInstalledPackages = 'Configure installed packages';
+  lisKMConfigureCustomComponents = 'Configure custom components';
   lisMenuPackageGraph = 'Package Graph ...';
   lisMenuEditInstallPkgs = 'Configure installed packages ...';
   lisMenuConfigCustomComps = 'Configure custom components ...';
@@ -332,6 +360,9 @@ resourcestring
   lisMenuCodeToolsDefinesEditor = 'CodeTools defines editor ...';
   
   lisMenuOnlineHelp = 'Online Help';
+  lisKMConfigureHelp = 'Configure Help';
+  lisKMContextSensitiveHelp = 'Context sensitive help';
+  lisKMEditContextSensitiveHelp = 'Edit context sensitive help';
   lisMenuConfigureHelp = 'Configure Help ...';
   lisMenuContextHelp = 'Context sensitive Help';
   lisMenuEditContextHelp = 'Edit context sensitive Help';
@@ -1517,23 +1548,58 @@ resourcestring
   srkmecSetFreeBookmark       = 'Set a free Bookmark';
   srkmecPrevBookmark          = 'Previous Bookmark';
   srkmecNextBookmark          = 'Next Bookmark';
+  lisKMGoToMarker0 = 'Go to marker 0';
+  lisKMGoToMarker1 = 'Go to marker 1';
+  lisKMGoToMarker2 = 'Go to marker 2';
+  lisKMGoToMarker3 = 'Go to marker 3';
+  lisKMGoToMarker4 = 'Go to marker 4';
+  lisKMGoToMarker5 = 'Go to marker 5';
+  lisKMGoToMarker6 = 'Go to marker 6';
+  lisKMGoToMarker7 = 'Go to marker 7';
+  lisKMGoToMarker8 = 'Go to marker 8';
+  lisKMGoToMarker9 = 'Go to marker 9';
+  lisKMSetMarker0 = 'Set marker 0';
+  lisKMSetMarker1 = 'Set marker 1';
+  lisKMSetMarker2 = 'Set marker 2';
+  lisKMSetMarker3 = 'Set marker 3';
+  lisKMSetMarker4 = 'Set marker 4';
+  lisKMSetMarker5 = 'Set marker 5';
+  lisKMSetMarker6 = 'Set marker 6';
+  lisKMSetMarker7 = 'Set marker 7';
+  lisKMSetMarker8 = 'Set marker 8';
+  lisKMSetMarker9 = 'Set marker 9';
   srkmecGotoMarker            = 'Go to Marker %d';
   srkmecSetMarker             = 'Set Marker %d';
 
   // sourcenotebook
   srkmecJumpToEditor          = 'Focus to source editor';
+  lisKMToggleBetweenUnitAndForm = 'Toggle between Unit and Form';
   srkmecNextEditor            = 'Go to next editor';
   srkmecPrevEditor            = 'Go to prior editor';
+  lisKMAddBreakPoint = 'Add break point';
+  lisKMRemoveBreakPoint = 'Remove break point';
   srkmecMoveEditorLeft        = 'Move editor left';
   srkmecMoveEditorRight       = 'Move editor right';
+  lisKMGoToSourceEditor1 = 'Go to source editor 1';
+  lisKMGoToSourceEditor2 = 'Go to source editor 2';
+  lisKMGoToSourceEditor3 = 'Go to source editor 3';
+  lisKMGoToSourceEditor4 = 'Go to source editor 4';
+  lisKMGoToSourceEditor5 = 'Go to source editor 5';
+  lisKMGoToSourceEditor6 = 'Go to source editor 6';
+  lisKMGoToSourceEditor7 = 'Go to source editor 7';
+  lisKMGoToSourceEditor8 = 'Go to source editor 8';
+  lisKMGoToSourceEditor9 = 'Go to source editor 9';
   srkmecGotoEditor            = 'Go to editor %d';
 
   // edit menu
   srkmecSelectionTabs2Spaces     = 'Convert tabs to spaces in selection';
+  lisKMEncloseSelection = 'Enclose selection';
   srkmecInsertCharacter          = 'Insert from Charactermap';
   srkmecInsertGPLNotice          = 'Insert GPL notice';
   srkmecInsertLGPLNotice         = 'Insert LGPL notice';
   srkmecInsertModifiedLGPLNotice = 'Insert modified LGPL notice';
+  lisKMInsertUsername = 'Insert username';
+  lisKMInsertDateAndTime = 'Insert date and time';
   srkmecInsertUserName           = 'Insert current username';
   srkmecInsertDateTime           = 'Insert current date and time';
   srkmecInsertChangeLogEntry     = 'Insert ChangeLog entry';
@@ -1552,12 +1618,14 @@ resourcestring
   srkmecFindPrevious              = 'Find previous';
   srkmecFindInFiles               = 'Find in files';
   srkmecReplace                   = 'Replace text';
+  lisKMFindIncremental = 'Find incremental';
   srkmecFindProcedureDefinition   = 'Find procedure definiton';
   srkmecFindProcedureMethod       = 'Find procedure method';
   srkmecGotoLineNumber            = 'Go to line number';
   srkmecFindNextWordOccurrence    = 'Find next word occurrence';
   srkmecFindPrevWordOccurrence    = 'Find previous word occurrence';
   srkmecAddJumpPoint              = 'Add jump point';
+  lisKMViewJumpHistory = 'View jump history';
   srkmecOpenFileAtCursor          = 'Open file at cursor';
   srkmecGotoIncludeDirective      = 'Go to to include directive of current include file';
   srkmecProcedureList             = 'Procedure List ...';
@@ -1625,10 +1693,19 @@ resourcestring
 
   // environment menu
   srkmecEnvironmentOptions        = 'General environment options';
+  lisKMEditorOptions = 'Editor options';
+  lisKMEditCodeTemplates = 'Edit Code Templates';
+  lisKMCodeToolsOptions = 'CodeTools options';
+  lisKMCodeToolsDefinesEditor = 'CodeTools defines editor';
   srkmecCodeToolsOptions          = 'Codetools options';
   srkmecCodeToolsDefinesEd        = 'Codetools defines editor';
   lisMenuRescanFPCSourceDirectory = 'Rescan FPC source directory';
   srkmecMakeResourceString        = 'Make resource string';
+  lisKMDiffEditorFiles = 'Diff editor files';
+  lisKMConvertDFMFileToLFM = 'Convert DFM file to LFM';
+  lisKMConvertDelphiUnitToLazarusUnit = 'Convert Delphi unit to Lazarus unit';
+  lisKMConvertDelphiProjectToLazarusProject = 'Convert Delphi project to '
+    +'Lazarus project';
   srkmecDiff                      = 'Diff';
   
   // help menu
@@ -1687,20 +1764,52 @@ resourcestring
   srkmCatCursorMoving   = 'Cursor moving commands';
   srkmCatSelection      = 'Text selection commands';
   srkmCatEditing        = 'Text editing commands';
+  lisKMDeleteLastChar = 'Delete last char';
   srkmCatCmdCmd         = 'Command commands';
   srkmCatSearchReplace  = 'Text search and replace commands';
   srkmCatMarker         = 'Text marker commands';
+  lisKMSetFreeBookmark = 'Set free Bookmark';
   srkmCatCodeTools      = 'CodeTools commands';
   srkmCatSrcNoteBook    = 'Source Notebook commands';
   srkmCatFileMenu       = 'File menu commands';
+  lisKMGoToSourceEditor10 = 'Go to source editor 10';
   srkmCatViewMenu       = 'View menu commands';
+  lisKMToggleViewObjectInspector = 'Toggle view Object Inspector';
+  lisKMToggleViewSourceEditor = 'Toggle view Source Editor';
+  lisKMToggleViewCodeExplorer = 'Toggle view Code Explorer';
+  lisKMToggleViewDocumentationEditor = 'Toggle view Documentation Editor';
+  lisKMToggleViewMessages = 'Toggle view Messages';
+  lisKMToggleViewSearchResults = 'Toggle view Search Results';
+  lisKMToggleViewWatches = 'Toggle view Watches';
+  lisKMToggleViewBreakpoints = 'Toggle view Breakpoints';
+  lisKMToggleViewLocalVariables = 'Toggle view Local Variables';
+  lisKMToggleViewCallStack = 'Toggle view Call Stack';
+  lisKMToggleViewDebuggerOutput = 'Toggle view Debugger Output';
   srkmCatProjectMenu    = 'Project menu commands';
+  lisKMNewProject = 'New project';
+  lisKMNewProjectFromFile = 'New project from file';
+  lisKMToggleViewIDESpeedButtons = 'Toggle view IDE speed buttons';
   srkmCatRunMenu        = 'Run menu commands';
+  lisKMBuildProjectProgram = 'Build project/program';
+  lisKMBuildAllFilesOfProjectProgram = 'Build all files of project/program';
+  lisKMQuickCompileNoLinking = 'Quick compile, no linking';
+  lisKMAbortBuilding = 'Abort building';
+  lisKMRunProgram = 'Run program';
+  lisKMPauseProgram = 'Pause program';
+  lisKMViewProjectOptions = 'View project options';
   srkmCatComponentsMenu = 'Components menu commands';
   srkmCatToolMenu       = 'Tools menu commands';
+  lisKMExternalToolsSettings = 'External Tools settings';
   srkmCatEnvMenu        = 'Environment menu commands';
+  lisKMConvertDelphiPackageToLazarusPackage = 'Convert Delphi package to '
+    +'Lazarus package';
   srkmCarHelpMenu       = 'Help menu commands';
   lisKeyCatDesigner     = 'Designer commands';
+  lisKMCopySelectedComponentsToClipboard = 'Copy selected Components to '
+    +'clipboard';
+  lisKMCutSelectedComponentsToClipboard =
+    'Cut selected Components to clipboard';
+  lisKMPasteComponentsFromClipboard = 'Paste Components from clipboard';
   lisKeyCatObjInspector = 'Object Inspector commands';
   lisKeyCatCustom       = 'Custom commands';
 
@@ -2219,6 +2328,7 @@ resourcestring
   
   // component palette
   lisCompPalOpenPackage = 'Open package';
+  lisKMOpenPackageFile = 'Open package file';
   lisCPOpenPackage = 'Open Package %s';
   lisCPOpenUnit = 'Open Unit %s';
   lisCompPalOpenUnit = 'Open unit';
@@ -2887,6 +2997,7 @@ resourcestring
   lisMenuTemplateDescriptionStandardFileMenu = 'Standard File Menu';
   lisMenuTemplateFile = 'File';
   lisMenuTemplateNew = 'New';
+  lisKMNewUnit = 'New Unit';
   lisMenuTemplateOpen = 'Open';
   lisMenuTemplateOpenRecent = 'Open Recent';
   lisMenuTemplateSave = 'Save';

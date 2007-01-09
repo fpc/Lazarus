@@ -397,7 +397,8 @@ type
     procedure Change;
   public
     function AsShortCut: TShortCut; virtual;
-    constructor Create(TheCategory: TIDECommandCategory; const TheName: String;
+    constructor Create(TheCategory: TIDECommandCategory; const TheName,
+              TheLocalizedName: String;
               TheCommand: word; const TheShortcutA, TheShortcutB: TIDEShortCut;
               const ExecuteMethod: TNotifyEvent;
               const ExecuteProc: TNotifyProcedure);
@@ -740,13 +741,14 @@ begin
 end;
 
 constructor TIDECommand.Create(TheCategory: TIDECommandCategory;
-  const TheName: String; TheCommand: word;
+  const TheName, TheLocalizedName: String; TheCommand: word;
   const TheShortcutA, TheShortcutB: TIDEShortCut;
   const ExecuteMethod: TNotifyEvent;
   const ExecuteProc: TNotifyProcedure);
 begin
   fCommand:=TheCommand;
   fName:=TheName;
+  FLocalizedName:=TheLocalizedName;
   fShortcutA:=TheShortcutA;
   fShortcutB:=TheShortcutB;
   DefaultShortcutA:=ShortcutA;

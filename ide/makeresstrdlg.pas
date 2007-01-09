@@ -87,6 +87,7 @@ type
     
     procedure CancelButtonClick(Sender: TObject);
     procedure CustomIdentifierCheckBoxClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
     procedure IdentLengthComboBoxChange(Sender: TObject);
     procedure IdentPrefixComboBoxChange(Sender: TObject);
     procedure IdentifierEditChange(Sender: TObject);
@@ -196,6 +197,11 @@ end;
 procedure TMakeResStrDialog.CustomIdentifierCheckBoxClick(Sender: TObject);
 begin
   UpdateIdentifier;
+end;
+
+procedure TMakeResStrDialog.FormCreate(Sender: TObject);
+begin
+  ActiveControl:=OkButton;
 end;
 
 procedure TMakeResStrDialog.IdentLengthComboBoxChange(Sender: TObject);
