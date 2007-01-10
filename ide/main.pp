@@ -3093,10 +3093,11 @@ var
 begin
   DoCloseProject;
   while Project1=nil do begin
-    DlgResult:=QuestionDlg('Project closed',
-      'The project is closed. There are now three possibilities:',
+    DlgResult:=QuestionDlg(lisProjectClosed,
+      Format(lisTheProjectIsClosedThereAreNowThreePossibilitiesHin, [#13]),
       mtInformation,
-      [mrNo,'Quit Lazarus',mrYes,'Create new project',mrOk,'Open project'],0);
+      [mrNo, lisQuitLazarus, mrYes, lisCreateNewProject, mrOk, lisOpenProject2
+        ], 0);
     case DlgResult of
     mrNo:
       if QuitIDE then exit;

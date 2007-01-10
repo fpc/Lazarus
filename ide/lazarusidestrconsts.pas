@@ -662,6 +662,12 @@ resourcestring
   lisOpenProjectFile = 'Open Project File';
   lisLazarusProjectInfoFile = 'Lazarus Project Info file';
   lisAllFiles = 'All Files';
+  lisProjectClosed = 'Project closed';
+  lisTheProjectIsClosedThereAreNowThreePossibilitiesHin = 'The project is '
+    +'closed. There are now three possibilities.%sHint: You do not need to '
+    +'close a project yourself, since this is done automatically.';
+  lisQuitLazarus = 'Quit Lazarus';
+  lisCreateNewProject = 'Create new project';
   lisOpenPackageFile = 'Open Package File';
   lisSaveSpace = 'Save ';
   lisSelectDFMFiles = 'Select Delphi form files (*.dfm)';
