@@ -2093,6 +2093,13 @@ resourcestring
   lisCodeTemplComment = 'Comment:';
   lisCodeTemplATokenAlreadyExists = ' A token %s%s%s already exists! ';
   lisCodeTemplError = 'Error';
+  lisUnableToFindTheUnitOfComponentClass = 'Unable to find the unit of '
+    +'component class %s%s%s.';
+  lisUnableToLoadTheComponentClassBecauseItDependsOnIts = 'Unable to load the '
+    +'component class %s%s%s, because it depends on itself.';
+  lisCancelLoadingThisComponent = 'Cancel loading this component';
+  lisAbortWholeLoading = 'Abort whole loading';
+  lisIgnoreUseTFormAsAncestor = 'Ignore, use TForm as ancestor';
   lisTheResourceClassDescendsFromProbablyThisIsATypoFor = 'The resource '
     +'class %s%s%s descends from %s%s%s. Probably this is a typo for TForm.';
 

@@ -4921,15 +4921,25 @@ begin
         Result:=DoLoadComponentDependencyHidden(AnUnitInfo,AncestorClassName,
                                        OpenFlags,AncestorType,AncestorUnitInfo);
         if Result=mrAbort then exit;
-        if Result=mrOk then begin
-          Result:=DoSaveUnitComponentToBinStream(AncestorUnitInfo,
-                                                 AncestorBinStream);
-          if Result<>mrOk then exit;
-          AncestorBinStream.Position:=0;
-        end else begin
-          // the ancestor class was not found -> use TForm as default
-          AncestorType:=TForm;
-          AncestorUnitInfo:=nil;
+        case  Result of
+        mrAbort: exit;
+        mrOk:
+          begin
+            Result:=DoSaveUnitComponentToBinStream(AncestorUnitInfo,
+                                                   AncestorBinStream);
+            if Result<>mrOk then exit;
+            AncestorBinStream.Position:=0;
+          end;
+        mrIgnore:
+          begin
+            // use TForm as default
+            AncestorType:=TForm;
+            AncestorUnitInfo:=nil;
+          end;
+        else
+          // cancel
+          Result:=mrCancel;
+          exit;
         end;
       end;
 
@@ -5041,8 +5051,68 @@ function TMainIDE.DoLoadComponentDependencyHidden(AnUnitInfo: TUnitInfo;
   var AComponentClass: TComponentClass; var ComponentUnitInfo: TUnitInfo
   ): TModalResult;
   
-  function TryUnit(const UnitFilename: string; out TheModalResult: TModalResult
-    ): boolean;
+  function FindClassInUnit(UnitCode: TCodeBuffer;
+    out TheModalResult: TModalResult;
+    var LFMCode: TCodeBuffer;
+    var ClassFound: boolean): boolean;
+  var
+    AncestorClassName: String;
+    UsedFilename: String;
+    UsingFilename: String;
+    LFMFilename: String;
+    AComponentName: String;
+  begin
+    Result:=false;
+    TheModalResult:=mrCancel;
+    LFMCode:=nil;
+    ClassFound:=false;
+    
+    AncestorClassName:='';
+    if not CodeToolBoss.FindFormAncestor(UnitCode,AComponentClassName,
+      AncestorClassName,true) then exit;
+    // this unit contains the class
+    ClassFound:=true;
+    LFMFilename:=ChangeFileExt(UnitCode.Filename,'.lfm');
+    if FileExists(LFMFilename) then begin
+      UsingFilename:=AnUnitInfo.Filename;
+      Project1.ShortenFilename(UsingFilename);
+      UsedFilename:=UnitCode.Filename;
+      Project1.ShortenFilename(UsedFilename);
+      TheModalResult:=QuestionDlg('Error',
+        'Class conflicts with .lfm file:'#13
+        +'The unit '+UsingFilename+#13
+        +'uses the the unit '+UsedFilename+#13
+        +'which contains the class '+AComponentClassName+','#13
+        +'but the .lfm file contains already another class.'#13
+        +'There can only be one design class per unit.'#13
+        +'Please move '+AComponentClassName+' to another unit.',
+        mtError,
+            [mrCancel, lisCancelLoadingThisComponent,
+             mrAbort, lisAbortWholeLoading,
+             mrIgnore, lisIgnoreUseTFormAsAncestor], 0);
+      exit;
+    end;
+    // there is no .lfm file
+
+    // create a dummy lfm file
+    LFMCode:=CodeToolBoss.CreateFile(LFMFilename);
+    if LFMCode=nil then begin
+      debugln('TMainIDE.DoLoadComponentDependencyHidden Failed creating dummy lfm ',LFMFilename);
+      exit;
+    end;
+    AComponentName:=AComponentClassName;
+    if AComponentName[1] in ['T','t'] then
+      AComponentName:=copy(AComponentName,2,length(AComponentName));
+    LFMCode.Source:=
+      'inherited '+AComponentName+': '+AComponentClassName+LineEnding
+      +'end';
+      
+    Result:=true;
+    TheModalResult:=mrOk;
+  end;
+
+  function TryUnit(const UnitFilename: string; out TheModalResult: TModalResult;
+    TryWithoutLFM: boolean): boolean;
   // returns true if the unit contains the component class and sets
   // TheModalResult to the result of the loading
   var
@@ -5074,29 +5144,38 @@ function TMainIDE.DoLoadComponentDependencyHidden(AnUnitInfo: TUnitInfo;
       exit;
     end;
     
-    LFMFilename:=ChangeFileExt(UnitFilename,'.lfm');
-    if not FileExists(LFMFilename) then exit;
-    
-    // load the lfm file
-    TheModalResult:=LoadCodeBuffer(LFMCode,LFMFilename,[lbfCheckIfText]);
-    if TheModalResult<>mrOk then begin
-      debugln('TMainIDE.DoLoadComponentDependencyHidden Failed loading ',LFMFilename);
-      exit;
+    if not TryWithoutLFM then begin
+      LFMFilename:=ChangeFileExt(UnitFilename,'.lfm');
+      if FileExists(LFMFilename) then begin
+        // load the lfm file
+        TheModalResult:=LoadCodeBuffer(LFMCode,LFMFilename,[lbfCheckIfText]);
+        if TheModalResult<>mrOk then begin
+          debugln('TMainIDE.DoLoadComponentDependencyHidden Failed loading ',LFMFilename);
+          exit;
+        end;
+        // read the LFM classname
+        ReadLFMHeader(LFMCode.Source,LFMClassName,LFMType);
+        if LFMType='' then ;
+        if CompareText(LFMClassName,AComponentClassName)<>0 then exit;
+        
+        // .lfm found
+        Result:=true;
+      end else if not TryWithoutLFM then begin
+        // unit has no .lfm
+        exit;
+      end;
     end;
-    // read the LFM classname
-    ReadLFMHeader(LFMCode.Source,LFMClassName,LFMType);
-    if LFMType='' then ;
-    if CompareText(LFMClassName,AComponentClassName)<>0 then exit;
 
-    // component LFM found
-    Result:=true;
-
-    debugln('TMainIDE.DoLoadComponentDependencyHidden ',AnUnitInfo.Filename,' Loading ancestor unit ',UnitFilename);
+    //debugln('TMainIDE.DoLoadComponentDependencyHidden ',AnUnitInfo.Filename,' Loading ancestor unit ',UnitFilename);
     // load unit source
     TheModalResult:=LoadCodeBuffer(UnitCode,UnitFilename,[lbfCheckIfText]);
     if TheModalResult<>mrOk then begin
       debugln('TMainIDE.DoLoadComponentDependencyHidden Failed loading ',UnitFilename);
       exit;
+    end;
+    
+    if TryWithoutLFM then begin
+      if not FindClassInUnit(UnitCode,TheModalResult,LFMCode,Result) then exit;
     end;
     
     // create unit info
@@ -5116,7 +5195,8 @@ function TMainIDE.DoLoadComponentDependencyHidden(AnUnitInfo: TUnitInfo;
       TheModalResult:=mrOk;
     end else begin
       debugln('TMainIDE.DoLoadComponentDependencyHidden Failed to load component ',AComponentClassName);
-      TheModalResult:=mrCancel;
+      if TheModalResult<>mrAbort then
+        TheModalResult:=mrCancel;
     end;
   end;
   
@@ -5146,10 +5226,11 @@ begin
 
   // check for circles
   if AnUnitInfo.LoadingComponent then begin
-    Result:=QuestionDlg('Error','Unable to load the component class '
-      +'"'+AComponentClassName+'", because it depends on itself.',
-      mtError,[mrCancel,'Cancel loading this component',
-               mrAbort,'Abort whole loading'],0);
+    Result:=QuestionDlg(lisCodeTemplError, Format(
+      lisUnableToLoadTheComponentClassBecauseItDependsOnIts, ['"',
+      AComponentClassName, '"']),
+      mtError, [mrCancel, lisCancelLoadingThisComponent,
+               mrAbort, lisAbortWholeLoading], 0);
     exit;
   end;
 
@@ -5160,7 +5241,7 @@ begin
 
     // first search the resource of ComponentUnitInfo
     if ComponentUnitInfo<>nil then begin
-      if TryUnit(ComponentUnitInfo.Filename,Result) then exit;
+      if TryUnit(ComponentUnitInfo.Filename,Result,false) then exit;
     end;
 
     // then search in used units
@@ -5173,10 +5254,14 @@ begin
         exit;
       end;
 
-      // search for every used unit the .lfm file
       if (UsedUnitFilenames<>nil) then begin
+        // search for every used unit the .lfm file
         for i:=UsedUnitFilenames.Count-1 downto 0 do begin
-          if TryUnit(UsedUnitFilenames[i],Result) then exit;
+          if TryUnit(UsedUnitFilenames[i],Result,false) then exit;
+        end;
+        // search in every used unit the class
+        for i:=UsedUnitFilenames.Count-1 downto 0 do begin
+          if TryUnit(UsedUnitFilenames[i],Result,true) then exit;
         end;
       end;
     finally
@@ -5186,11 +5271,11 @@ begin
     // finally try registered classes
     if TryRegisteredClasses(Result) then exit;
     
-    Result:=QuestionDlg('Error','Unable to find the lfm file for component class '
-      +'"'+AComponentClassName+'".',
-      mtError,[mrCancel,'Cancel loading this component',
-               mrAbort,'Abort whole loading',
-               mrIgnore,'Ignore, use TForm as ancestor'],0);
+    Result:=QuestionDlg(lisCodeTemplError, Format(
+      lisUnableToFindTheUnitOfComponentClass, ['"', AComponentClassName, '"']),
+      mtError, [mrCancel, lisCancelLoadingThisComponent,
+               mrAbort, lisAbortWholeLoading,
+               mrIgnore, lisIgnoreUseTFormAsAncestor], 0);
   finally
     AnUnitInfo.LoadingComponent:=false;
   end;
