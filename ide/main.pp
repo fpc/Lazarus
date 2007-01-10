@@ -5050,7 +5050,12 @@ function TMainIDE.DoLoadComponentDependencyHidden(AnUnitInfo: TUnitInfo;
   const AComponentClassName: string; Flags: TOpenFlags;
   var AComponentClass: TComponentClass; var ComponentUnitInfo: TUnitInfo
   ): TModalResult;
-  
+var
+  CTErrorMsg: string;
+  CTErrorCode: TCodeBuffer;
+  CTErrorLine: LongInt;
+  CTErrorCol: LongInt;
+
   function FindClassInUnit(UnitCode: TCodeBuffer;
     out TheModalResult: TModalResult;
     var LFMCode: TCodeBuffer;
@@ -5069,7 +5074,17 @@ function TMainIDE.DoLoadComponentDependencyHidden(AnUnitInfo: TUnitInfo;
     
     AncestorClassName:='';
     if not CodeToolBoss.FindFormAncestor(UnitCode,AComponentClassName,
-      AncestorClassName,true) then exit;
+      AncestorClassName,true) then
+    begin
+      if CodeToolBoss.ErrorMessage<>'' then begin
+        CTErrorMsg:=CodeToolBoss.ErrorMessage;
+        CTErrorCode:=CodeToolBoss.ErrorCode;
+        CTErrorLine:=CodeToolBoss.ErrorLine;
+        CTErrorCol:=CodeToolBoss.ErrorColumn;
+      end;
+      exit;
+    end;
+
     // this unit contains the class
     ClassFound:=true;
     LFMFilename:=ChangeFileExt(UnitCode.Filename,'.lfm');
@@ -5087,9 +5102,9 @@ function TMainIDE.DoLoadComponentDependencyHidden(AnUnitInfo: TUnitInfo;
         +'There can only be one design class per unit.'#13
         +'Please move '+AComponentClassName+' to another unit.',
         mtError,
-            [mrCancel, lisCancelLoadingThisComponent,
-             mrAbort, lisAbortWholeLoading,
-             mrIgnore, lisIgnoreUseTFormAsAncestor], 0);
+          [mrCancel, lisCancelLoadingThisComponent,
+           mrAbort, lisAbortWholeLoading,
+           mrIgnore, lisIgnoreUseTFormAsAncestor], 0);
       exit;
     end;
     // there is no .lfm file
@@ -5223,6 +5238,10 @@ var
   i: Integer;
 begin
   Result:=mrCancel;
+  CTErrorMsg:='';
+  CTErrorCode:=nil;
+  CTErrorLine:=0;
+  CTErrorCol:=0;
 
   // check for circles
   if AnUnitInfo.LoadingComponent then begin
@@ -5262,6 +5281,17 @@ begin
         // search in every used unit the class
         for i:=UsedUnitFilenames.Count-1 downto 0 do begin
           if TryUnit(UsedUnitFilenames[i],Result,true) then exit;
+        end;
+        if CTErrorMsg<>'' then begin
+          // class not found and there was a parser error
+          // maybe that's the reason, why the class was not found
+          // show the user
+          if ([ofProjectLoading,ofQuiet]*Flags=[]) then begin
+            CodeToolBoss.SetError(CTErrorCode,CTErrorLine,CTErrorCol,CTErrorMsg);
+            DoJumpToCodeToolBossError;
+            Result:=mrAbort;
+            exit;
+          end;
         end;
       end;
     finally
