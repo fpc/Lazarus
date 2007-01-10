@@ -77,8 +77,8 @@ function ConvertRSTFiles(RSTDirectory, PODirectory: string): Boolean;
 function ConvertRSTFile(const RSTFilename, OutputFilename: string): Boolean;
 
 var
-  LazarusTranslations: TLazarusTranslations;
-
+  LazarusTranslations: TLazarusTranslations = nil;
+  SystemLanguageID1, SystemLanguageID2: string;
 
 implementation
 
@@ -367,25 +367,26 @@ begin
   //debugln('TranslateResourceStrings A CustomLang=',CustomLang);
   if LazarusTranslations=nil then CollectTranslations(BaseDirectory);
   if CustomLang='' then begin
-    GetLanguageIDs(Lang,FallbackLang);
+    Lang:=SystemLanguageID1;
+    FallbackLang:=SystemLanguageID2;
   end else begin
     Lang:=CustomLang;
     FallbackLang:='';
   end;
   //debugln('TranslateResourceStrings A Lang=',Lang,' FallbackLang=',FallbackLang);
   Dir:=AppendPathDelim(BaseDirectory);
-  // LCL
-  TranslateUnitResourceStrings('LclStrConsts',
-    Dir+'lcl/languages/lcl'+Ext,Lang,FallbackLang);
-  // IDE without objectinspector
+  // IDE
   TranslateUnitResourceStrings('LazarusIDEStrConsts',
     Dir+'languages/lazaruside'+Ext,Lang,FallbackLang);
-  // objectinspector
+  // LCL
+  TranslateUnitResourceStrings('LclStrConsts',
+    Dir+'lcl/languages/lclstrconsts'+Ext,Lang,FallbackLang);
+  // IDEIntf
   TranslateUnitResourceStrings('ObjInspStrConsts',
     Dir+'ideintf/languages/objinspstrconsts'+Ext,Lang,FallbackLang);
   // CodeTools
   TranslateUnitResourceStrings('CodeToolsStrConsts',
-    Dir+'components/codetools/languages/codetools'+Ext,Lang,FallbackLang);
+    Dir+'components/codetools/languages/codetoolsstrconsts'+Ext,Lang,FallbackLang);
   // SynEdit
   TranslateUnitResourceStrings('SynEditStrConst',
     Dir+'components/synedit/languages/synedit'+Ext,Lang,FallbackLang);
@@ -393,7 +394,6 @@ begin
   TranslateUnitResourceStrings('SynMacroRecorder',
     Dir+'components/synedit/languages/synmacrorecorder'+Ext,Lang,FallbackLang);
 end;
-
 
 { TLazarusTranslations }
 
@@ -440,7 +440,8 @@ end;
 
 initialization
   LazarusTranslations:=nil;
-  
+  GetLanguageIDs(SystemLanguageID1,SystemLanguageID2);
+
 finalization
   LazarusTranslations.Free;
   LazarusTranslations:=nil;

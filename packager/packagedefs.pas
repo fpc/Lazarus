@@ -48,7 +48,8 @@ uses
   Classes, SysUtils, LCLProc, LResources, Graphics,
   AVL_Tree, Laz_XMLCfg,
   DefineTemplates, CodeToolManager, EditDefineTree, CompilerOptions, Forms,
-  FileUtil, PropEdits, LazIDEIntf,
+  FileUtil,
+  PropEdits, LazIDEIntf, MacroIntf,
   LazarusIDEStrConsts, IDEProcs, ComponentReg,
   TransferMacros, FileReferenceList, PublishModule;
 
@@ -601,6 +602,7 @@ type
     FSourceDirectories: TFileReferenceList;
     FStateFileDate: longint;
     FTopologicalLevel: integer;
+    FTranslated: string;
     FUpdateLock: integer;
     FUsageOptions: TPkgAdditionalCompilerOptions;
     FUserReadOnly: boolean;
@@ -788,6 +790,7 @@ type
     property SourceDirectories: TFileReferenceList read FSourceDirectories;
     property StateFileDate: longint read FStateFileDate write FStateFileDate;
     property TopologicalLevel: integer read FTopologicalLevel write FTopologicalLevel;
+    property Translated: string read FTranslated write FTranslated;
     property UsageOptions: TPkgAdditionalCompilerOptions read FUsageOptions;
     property UserReadOnly: boolean read FUserReadOnly write SetUserReadOnly;
   end;
@@ -2148,6 +2151,8 @@ procedure TLazPackage.SetAutoInstall(const AValue: TPackageInstallType);
 begin
   if FAutoInstall=AValue then exit;
   FAutoInstall:=AValue;
+  if AutoCreated and (FAutoInstall<>pitStatic) then
+    DumpStack;
 end;
 
 procedure TLazPackage.SetAutoUpdate(const AValue: TPackageUpdatePolicy);
@@ -3167,6 +3172,8 @@ function TLazPackage.GetRSTOutDirectory: string;
 begin
   Result:=TrimFilename(SubstitutePkgMacro(fRSTOutputDirectory,false));
   LongenFilename(Result);
+  IDEMacros.SubstituteMacros(Result);
+  Result:=TrimFilename(Result);
 end;
 
 function TLazPackage.GetUnitPath(RelativeToBaseDir: boolean): string;

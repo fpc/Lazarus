@@ -89,6 +89,7 @@ type
   TPkgWriteMakeFile = function(APackage: TLazPackage): TModalResult of object;
   TPkgUninstall = function(APackage: TLazPackage;
                            Flags: TPkgUninstallFlags): TModalResult of object;
+  TPkgTranslate = procedure(APackage: TLazPackage) of object;
   TDependencyModifiedEvent = procedure(ADependency: TPkgDependency) of object;
   TEndUpdateEvent = procedure(Sender: TObject; GraphChanged: boolean) of object;
   TFindFPCUnitEvent = procedure(const UnitName, Directory: string;
@@ -116,6 +117,7 @@ type
     FOnDeletePackage: TPkgDeleteEvent;
     FOnDependencyModified: TDependencyModifiedEvent;
     FOnEndUpdate: TEndUpdateEvent;
+    FOnTranslatePackage: TPkgTranslate;
     FOnUninstallPackage: TPkgUninstall;
     FOnWriteMakeFile: TPkgWriteMakeFile;
     FRegistrationFile: TPkgFile;
@@ -326,6 +328,8 @@ type
                      read FOnDeleteAmbiguousFiles write FOnDeleteAmbiguousFiles;
     property OnWriteMakeFile: TPkgWriteMakeFile read FOnWriteMakeFile
                                                 write FOnWriteMakeFile;
+    property OnTranslatePackage: TPkgTranslate read FOnTranslatePackage
+                                                   write FOnTranslatePackage;
     property OnUninstallPackage: TPkgUninstall read FOnUninstallPackage
                                                write FOnUninstallPackage;
     property Packages[Index: integer]: TLazPackage read GetPackages; default; // see Count for the number
@@ -1097,6 +1101,7 @@ begin
     PackageType:=lptRunAndDesignTime;
     Installed:=pitStatic;
     CompilerOptions.UnitOutputDirectory:='';
+    Translated:=SystemLanguageID1;
     
     // add lazarus registration unit path
     UsageOptions.UnitPath:=SetDirSeparators(
@@ -1149,6 +1154,7 @@ begin
     Installed:=pitStatic;
     CompilerOptions.UnitOutputDirectory:='$(LazarusDir)/lcl/units/$(TargetCPU)-$(TargetOS)/';
     RSTOutputDirectory:='languages';
+    Translated:=SystemLanguageID1;
 
     // add requirements
     AddRequiredDependency(FCLPackage.CreateDependencyWithOwner(Result));
@@ -1185,6 +1191,7 @@ begin
     AddFile('colorbox.pas','ColorBox',pftUnit,[pffHasRegisterProc],cpBase);
     AddFile('buttonpanel.pas','ButtonPanel',pftUnit,[pffHasRegisterProc],cpBase);
     AddFile('lresources.pp','LResources',pftUnit,[pffHasRegisterProc],cpBase);
+    AddFile('lclstrconsts.pas','LCLStrConsts',pftUnit,[],cpBase);
     // increase priority by one, so that the LCL components are inserted to the
     // left in the palette
     for i:=0 to FileCount-1 do
@@ -1226,6 +1233,7 @@ begin
     Installed:=pitStatic;
     CompilerOptions.UnitOutputDirectory:='';
     RSTOutputDirectory:='languages';
+    Translated:=SystemLanguageID1;
 
     // add requirements
     AddRequiredDependency(LCLPackage.CreateDependencyWithOwner(Result));
@@ -1284,6 +1292,7 @@ begin
     Installed:=pitStatic;
     CompilerOptions.UnitOutputDirectory:='';
     RSTOutputDirectory:='languages';
+    Translated:=SystemLanguageID1;
 
     // add requirements
     AddRequiredDependency(FCLPackage.CreateDependencyWithOwner(Result));
@@ -1359,6 +1368,7 @@ begin
     Installed:=pitStatic;
     CompilerOptions.UnitOutputDirectory:='';
     RSTOutputDirectory:='languages';
+    Translated:=SystemLanguageID1;
 
     // add requirements
     AddRequiredDependency(LCLPackage.CreateDependencyWithOwner(Result));
@@ -1421,6 +1431,7 @@ begin
     PackageType:=lptDesignTime;
     Installed:=pitStatic;
     CompilerOptions.UnitOutputDirectory:='';
+    Translated:=SystemLanguageID1;
 
     // add unit paths
     UsageOptions.UnitPath:=SetDirSeparators('$(LazarusDir)/components/custom');
@@ -3183,6 +3194,7 @@ begin
   // register IDE built-in packages (Note: codetools do not need)
   RegisterStaticPackage(FCLPackage,@RegisterFCL.Register);
   RegisterStaticPackage(LCLPackage,@RegisterLCL.Register);
+  if Assigned(OnTranslatePackage) then OnTranslatePackage(CodeToolsPackage);
   RegisterStaticPackage(SynEditPackage,@RegisterSynEdit.Register);
   RegisterStaticPackage(IDEIntfPackage,@RegisterIDEIntf.Register);
 
@@ -3205,7 +3217,10 @@ procedure TLazPackageGraph.RegisterStaticPackage(APackage: TLazPackage;
   RegisterProc: TRegisterProc);
 begin
   if AbortRegistration then exit;
+  //DebugLn(['TLazPackageGraph.RegisterStaticPackage ',APackage.IDAsString]);
   RegistrationPackage:=APackage;
+  if Assigned(OnTranslatePackage) then
+    OnTranslatePackage(APackage);
   CallRegisterProc(RegisterProc);
   APackage.Registered:=true;
   RegistrationPackage:=nil;

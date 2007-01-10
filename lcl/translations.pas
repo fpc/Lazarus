@@ -84,6 +84,8 @@ var
 // translate resource strings for one unit
 procedure TranslateUnitResourceStrings(const ResUnitName, BaseFilename,
   Lang, FallbackLang: string);
+function TranslateUnitResourceStrings(const ResUnitName, AFilename: string
+  ): boolean;
 function UTF8ToSystemCharSet(const s: string): string;
   {$ifndef MultiLocale} inline;{$endif}
 procedure InitTranslation;
@@ -147,7 +149,7 @@ begin
 end;
 {$endif ver2_0}
 
-function DoTranslateUnitResourceStrings(const ResUnitName, AFilename: string
+function TranslateUnitResourceStrings(const ResUnitName, AFilename: string
   ): boolean;
 var
 {$ifdef ver2_0}
@@ -159,7 +161,7 @@ var
 begin
   Result:=false;
   InitTranslation;
-  //debugln('DoTranslateUnitResourceStrings) ResUnitName="',ResUnitName,'" AFilename="',AFilename,'"');
+  //debugln('TranslateUnitResourceStrings) ResUnitName="',ResUnitName,'" AFilename="',AFilename,'"');
   if (ResUnitName='') or (AFilename='') or (not FileExists(AFilename)) then
     exit;
   try
@@ -176,7 +178,7 @@ begin
         s:=GetResourceStringName(TableID,0);
         if CompareText(ResUnitName+'.',LeftStr(s,length(ResUnitName)+1))<>0
         then continue;
-
+        
         // translate all resource strings of the unit
         for StringID := 0 to TableCount - 1 do begin
           DefValue:=GetResourceStringDefaultValue(TableID,StringID);
@@ -212,9 +214,9 @@ begin
 
   //debugln('TranslateUnitResourceStrings BaseFilename="',BaseFilename,'"');
   if (FallbackLang<>'') then
-    DoTranslateUnitResourceStrings(ResUnitName,Format(BaseFilename,[FallbackLang]));
+    TranslateUnitResourceStrings(ResUnitName,Format(BaseFilename,[FallbackLang]));
   if (Lang<>'') then
-    DoTranslateUnitResourceStrings(ResUnitName,Format(BaseFilename,[Lang]));
+    TranslateUnitResourceStrings(ResUnitName,Format(BaseFilename,[Lang]));
 end;
 
 { TPOFile }

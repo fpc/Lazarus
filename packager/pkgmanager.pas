@@ -46,6 +46,7 @@ uses
   {$ENDIF}
   // FCL, LCL
   Classes, SysUtils, LCLProc, Forms, Controls, FileUtil, Dialogs, Menus,
+  StringHashList, Translations, GetText,
   // codetools
   CodeToolManager, CodeCache, BasicCodeTools, DefineTemplates,
   AVL_Tree, Laz_XMLCfg,
@@ -57,7 +58,7 @@ uses
   EnvironmentOpts, MiscOptions, InputHistory, ProjectDefs, Project,
   ComponentReg, UComponentManMain, PackageEditor, AddToPackageDlg, PackageDefs,
   PackageLinks, PackageSystem, OpenInstalledPkgDlg, PkgGraphExplorer,
-  BrokenDependenciesDlg, CompilerOptions, ExtToolEditDlg,
+  BrokenDependenciesDlg, CompilerOptions, ExtToolEditDlg, IDETranslations,
   TransferMacros, MsgView, BuildLazDialog, NewDialog, IDEDialogs,
   ProjectInspector, ComponentPalette, UnitEditor, AddFileToAPackageDlg,
   LazarusPackageIntf, PublishProjectDlg, InstallPkgSetDlg,
@@ -188,6 +189,7 @@ type
     procedure UpdateVisibleComponentPalette; override;
     procedure ProcessCommand(Command: word; var Handled: boolean); override;
     procedure OnSourceEditorPopupMenu(const AddMenuItemProc: TAddMenuItemProc); override;
+    procedure TranslateResourceStrings; override;
 
     // files
     function GetDefaultSaveDirectoryForFile(const Filename: string): string; override;
@@ -273,6 +275,7 @@ type
     function DoInstallPackage(APackage: TLazPackage): TModalResult;
     function DoUninstallPackage(APackage: TLazPackage;
                                 Flags: TPkgUninstallFlags): TModalResult;
+    procedure DoTranslatePackage(APackage: TLazPackage);
     function DoOpenPackageSource(APackage: TLazPackage): TModalResult;
     function DoCompileAutoInstallPackages(Flags: TPkgCompileFlags
                                           ): TModalResult; override;
@@ -444,12 +447,12 @@ begin
     PackageGraph.BeginUpdate(true);
     try
       // get all required packages
-      debugln('TPkgManager.MainIDEitmPkgEditInstallPkgsClick GetAllRequiredPackages for ',DependencyListAsString(NewFirstAutoInstallDependency,pdlRequires));
+      //debugln('TPkgManager.MainIDEitmPkgEditInstallPkgsClick GetAllRequiredPackages for ',DependencyListAsString(NewFirstAutoInstallDependency,pdlRequires));
       if LoadDependencyList(NewFirstAutoInstallDependency)<>mrOk then exit;
       PackageGraph.GetAllRequiredPackages(NewFirstAutoInstallDependency,PkgList);
       
       // mark packages for installation
-      debugln('TPkgManager.MainIDEitmPkgEditInstallPkgsClick mark packages for installation');
+      //debugln('TPkgManager.MainIDEitmPkgEditInstallPkgsClick mark packages for installation');
       for i:=0 to PkgList.Count-1 do begin
         RequiredPackage:=TLazPackage(PkgList[i]);
         if RequiredPackage.AutoInstall=pitNope then begin
@@ -458,16 +461,17 @@ begin
       end;
 
       // mark packages for uninstall
-      debugln('TPkgManager.MainIDEitmPkgEditInstallPkgsClick mark packages for uninstall');
+      //debugln('TPkgManager.MainIDEitmPkgEditInstallPkgsClick mark packages for uninstall');
       CurDependency:=FirstAutoInstallDependency;
       while CurDependency<>nil do begin
-        if CurDependency.RequiredPackage<>nil then
+        if (CurDependency.RequiredPackage<>nil)
+        and (not CurDependency.RequiredPackage.AutoCreated) then
           CurDependency.RequiredPackage.AutoInstall:=pitNope;
         CurDependency:=CurDependency.NextRequiresDependency;
       end;
 
       // replace install list
-      debugln('TPkgManager.MainIDEitmPkgEditInstallPkgsClick replace install list');
+      //debugln('TPkgManager.MainIDEitmPkgEditInstallPkgsClick replace install list');
       FreeDependencyList(FirstAutoInstallDependency,pdlRequires);
       FirstAutoInstallDependency:=NewFirstAutoInstallDependency;
       NewFirstAutoInstallDependency:=nil;
@@ -476,7 +480,7 @@ begin
     end;
 
     // save package list
-    debugln('TPkgManager.MainIDEitmPkgEditInstallPkgsClick save package list');
+    //debugln('TPkgManager.MainIDEitmPkgEditInstallPkgsClick save package list');
     SortAutoInstallDependencies;
     SaveAutoInstallDependencies(true);
 
@@ -1704,6 +1708,7 @@ begin
   PackageGraph.OnDeleteAmbiguousFiles:=@BuildBoss.DeleteAmbiguousFiles;
   PackageGraph.OnWriteMakeFile:=@DoWriteMakefile;
   PackageGraph.OnUninstallPackage:=@DoUninstallPackage;
+  PackageGraph.OnTranslatePackage:=@DoTranslatePackage;
 
   // package editors
   PackageEditors:=TPackageEditors.Create;
@@ -1894,6 +1899,117 @@ begin
   if PkgFile<>nil then
     AddMenuItemProc('Open package '+PkgFile.LazPackage.Name,true,
                     @OnOpenPackageForCurrentSrcEditFile);
+end;
+
+procedure TPkgManager.TranslateResourceStrings;
+var
+  PkgList: TFPList;
+  i: Integer;
+begin
+  PkgList:=nil;
+  OnGetAllRequiredPackages(FirstAutoInstallDependency,PkgList);
+  if PkgList=nil then exit;
+  for i:=0 to PkgList.Count-1 do
+    if TObject(PkgList[i]) is TLazPackage then
+      DoTranslatePackage(TLazPackage(PkgList[i]));
+  PkgList.Free;
+end;
+
+procedure TPkgManager.DoTranslatePackage(APackage: TLazPackage);
+var
+  TranslatedUnits: TStringHashList;
+  
+  function UnitTranslated(const AnUnitName: string): boolean;
+  begin
+    Result:=(TranslatedUnits<>nil) and (TranslatedUnits.Find(AnUnitName)>=0);
+  end;
+  
+  procedure TranslateUnit(const AFilename, AnUnitName: string);
+  begin
+    //DebugLn(['TranslateUnit AFilename="',AFilename,'" AnUnitName="',AnUnitName,'"']);
+    if TranslatedUnits=nil then
+      TranslatedUnits:=TStringHashList.Create(false);
+    TranslatedUnits.Add(AnUnitName);
+    TranslateUnitResourceStrings(AnUnitName,AFilename);
+  end;
+
+  function GetPOFilenameParts(const Filename: string;
+    var UnitName, Language: string): boolean;
+  var
+    UnitNameEnd: Integer;
+    LangEnd: Integer;
+  begin
+    Result:=false;
+    UnitNameEnd:=1;
+    while (UnitNameEnd<=length(Filename)) and (Filename[UnitNameEnd]<>'.') do
+      inc(UnitNameEnd);
+    if (UnitNameEnd=1) then exit;
+    LangEnd:=UnitNameEnd+1;
+    while (LangEnd<=length(Filename)) and (Filename[LangEnd]<>'.') do
+      inc(LangEnd);
+    if LangEnd<>length(Filename)-2 then exit;
+    UnitName:=copy(Filename,1,UnitNameEnd-1);
+    Language:=copy(Filename,UnitNameEnd+1,LangEnd-UnitNameEnd-1);
+    Result:=IsValidIdent(UnitName) and (Language<>'');
+    //DebugLn(['GetPOFilenameParts UnitName=',UnitName,' Language=',Language,' Result=',Result]);
+  end;
+  
+  procedure TranslateWithFileMask(APackage: TLazPackage;
+    const Directory, Language: string);
+  var
+    FileInfo: TSearchRec;
+    CurUnitName: string;
+    CurLang: string;
+    FileMask: String;
+  begin
+    if Language='' then exit;
+    FileMask:=Directory+'*.'+Language+'.po';
+    //DebugLn(['TranslateWithFileMask APackage=',APackage.IDAsString,' FileMask="',FileMask,'"']);
+    if SysUtils.FindFirst(FileMask,faAnyFile,FileInfo)=0
+    then begin
+      repeat
+        // check if special file
+        if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='') then
+          continue;
+        if GetPOFilenameParts(FileInfo.Name,CurUnitName,CurLang)
+        and (CurLang=Language)
+        and (APackage.FindUnit(CurUnitName)<>nil)
+        and not UnitTranslated(CurUnitName) then begin
+          TranslateUnit(Directory+FileInfo.Name,CurUnitName);
+        end;
+      until SysUtils.FindNext(FileInfo)<>0;
+    end;
+    SysUtils.FindClose(FileInfo);
+  end;
+
+var
+  Directory: String;
+  Lang: String;
+  FallbackLang: String;
+  Language: String;
+begin
+  if (APackage.RSTOutputDirectory='') then exit;
+  Directory:=AppendPathDelim(APackage.GetRSTOutDirectory);
+
+  Language:=EnvironmentOptions.LanguageID;
+  if Language='' then begin
+    Lang:=SystemLanguageID1;
+    FallbackLang:=SystemLanguageID2;
+  end else begin
+    Lang:=Language;
+    FallbackLang:='';
+  end;
+  
+  if APackage.Translated=Lang then exit;
+  APackage.Translated:=Lang;
+  
+  TranslatedUnits:=nil;
+  try
+    TranslateWithFileMask(APackage,Directory,Lang);
+    TranslateWithFileMask(APackage,Directory,FallbackLang);
+  finally
+    TranslatedUnits.Free;
+  end;
 end;
 
 function TPkgManager.AddPackageToGraph(APackage: TLazPackage;

@@ -49,8 +49,8 @@ rstconv -i $SynMacroRec_RST \
 
 # LCL
 LCL_RST=`find lcl/units -name lclstrconsts.rst | xargs ls -1t | head -1`;
-rstconv -i $LCL_RST -o lcl/languages/lcl.po
-./tools/updatepofiles lcl/languages/lcl.po
+rstconv -i $LCL_RST -o lcl/languages/lclstrconsts.po
+./tools/updatepofiles lcl/languages/lclstrconsts.po
 
 # end.
 

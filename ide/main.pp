@@ -3631,9 +3631,11 @@ Begin
       UpdateDefaultPascalFileExtensions;
 
       //DebugLn(['TMainIDE.DoShowEnvGeneralOptions OldLanguage=',OldLanguage,' EnvironmentOptions.LanguageID=',EnvironmentOptions.LanguageID]);
-      if OldLanguage<>EnvironmentOptions.LanguageID then
+      if OldLanguage<>EnvironmentOptions.LanguageID then begin
         TranslateResourceStrings(EnvironmentOptions.LazarusDirectory,
                                  EnvironmentOptions.LanguageID);
+        PkgBoss.TranslateResourceStrings;
+      end;
 
       // set global variables
       UpdateEnglishErrorMsgFilename;
