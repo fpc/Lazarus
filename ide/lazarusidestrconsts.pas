@@ -2093,6 +2093,10 @@ resourcestring
   lisCodeTemplComment = 'Comment:';
   lisCodeTemplATokenAlreadyExists = ' A token %s%s%s already exists! ';
   lisCodeTemplError = 'Error';
+  lisClassConflictsWithLfmFileTheUnitUsesTheTheUnitWhic = 'Class conflicts '
+    +'with .lfm file:%sThe unit %s%suses the the unit %s%swhich contains the '
+    +'class %s,%sbut the .lfm file contains already another class.%sThere can '
+    +'only be one design class per unit.%sPlease move %s to another unit.';
   lisUnableToFindTheUnitOfComponentClass = 'Unable to find the unit of '
     +'component class %s%s%s.';
   lisUnableToLoadTheComponentClassBecauseItDependsOnIts = 'Unable to load the '

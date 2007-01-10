@@ -5093,14 +5093,10 @@ var
       Project1.ShortenFilename(UsingFilename);
       UsedFilename:=UnitCode.Filename;
       Project1.ShortenFilename(UsedFilename);
-      TheModalResult:=QuestionDlg('Error',
-        'Class conflicts with .lfm file:'#13
-        +'The unit '+UsingFilename+#13
-        +'uses the the unit '+UsedFilename+#13
-        +'which contains the class '+AComponentClassName+','#13
-        +'but the .lfm file contains already another class.'#13
-        +'There can only be one design class per unit.'#13
-        +'Please move '+AComponentClassName+' to another unit.',
+      TheModalResult:=QuestionDlg(lisCodeTemplError,
+        Format(lisClassConflictsWithLfmFileTheUnitUsesTheTheUnitWhic, [#13,
+          UsingFilename, #13, UsedFilename, #13, AComponentClassName, #13, #13,
+          #13, AComponentClassName]),
         mtError,
           [mrCancel, lisCancelLoadingThisComponent,
            mrAbort, lisAbortWholeLoading,
