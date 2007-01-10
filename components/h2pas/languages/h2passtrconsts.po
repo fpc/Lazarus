@@ -1,0 +1,20 @@
+#: h2passtrconsts:bla
+msgid ""
+msgstr ""
+
+#: h2passtrconsts:h2pcheaderfileconverter
+msgid "C header file converter"
+msgstr ""
+
+#: h2passtrconsts:h2ph2pas
+msgid "H2Pas"
+msgstr ""
+
+#: h2passtrconsts:h2pcreateunitsfromcheaderfiles
+msgid "Create units from C header files"
+msgstr ""
+
+#: h2passtrconsts:h2ph2pastool
+msgid "H2PasTool"
+msgstr ""
+

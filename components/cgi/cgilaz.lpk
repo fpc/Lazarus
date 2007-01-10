@@ -6,7 +6,7 @@
     <CompilerOptions>
       <Version Value="5"/>
       <SearchPaths>
-        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)/"/>
+        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
       <CodeGeneration>
         <Generate Value="Faster"/>
@@ -16,8 +16,10 @@
         <CreateMakefileOnBuild Value="True"/>
       </Other>
     </CompilerOptions>
-    <Description Value="cgi applications with data modules"/>
-    <License Value="LGPL"/>
+    <Description Value="cgi applications with data modules
+"/>
+    <License Value="LGPL
+"/>
     <Version Minor="1" Release="1"/>
     <Files Count="1">
       <Item1>
@@ -25,6 +27,7 @@
         <UnitName Value="cgiModules"/>
       </Item1>
     </Files>
+    <RST OutDir="languages/"/>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="1">
       <Item1>

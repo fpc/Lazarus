@@ -1,0 +1,12 @@
+#: pfidesource:sdescrpfselection
+msgid "Pretty-Format Selection"
+msgstr ""
+
+#: pfidesource:sdescrpffile
+msgid "Pretty-Format File"
+msgstr ""
+
+#: pfidesource:sdescrformatting
+msgid "Formatting commands"
+msgstr ""
+

@@ -6,7 +6,7 @@
     <CompilerOptions>
       <Version Value="5"/>
       <SearchPaths>
-        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)/"/>
+        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
       <CodeGeneration>
         <Generate Value="Faster"/>
@@ -16,8 +16,10 @@
         <CreateMakefileOnBuild Value="True"/>
       </Other>
     </CompilerOptions>
-    <Description Value="DBase (DBF) package for Lazarus"/>
-    <License Value="LGPL"/>
+    <Description Value="DBase (DBF) package for Lazarus
+"/>
+    <License Value="LGPL
+"/>
     <Version Minor="1" Release="1"/>
     <Files Count="3">
       <Item1>
@@ -35,13 +37,14 @@
         <UnitName Value="Dbf"/>
       </Item3>
     </Files>
+    <RST OutDir="languages/"/>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="2">
       <Item1>
-        <PackageName Value="IDEIntf"/>
+        <PackageName Value="LCL"/>
       </Item1>
       <Item2>
-        <PackageName Value="LCL"/>
+        <PackageName Value="IDEIntf"/>
       </Item2>
     </RequiredPkgs>
     <UsageOptions>

@@ -7,14 +7,14 @@ unit SynUni;
 interface
 
 uses
-  synunidesigner, synunihighlighter, synunireg, LazarusPackageIntf; 
+  SynUniDesigner, SynUniHighlighter, SynUniReg, LazarusPackageIntf; 
 
 implementation
 
 procedure Register; 
 begin
-  RegisterUnit('synunihighlighter', @synunihighlighter.Register); 
-  RegisterUnit('synunireg', @synunireg.Register); 
+  RegisterUnit('SynUniHighlighter', @SynUniHighlighter.Register); 
+  RegisterUnit('SynUniReg', @SynUniReg.Register); 
 end; 
 
 initialization

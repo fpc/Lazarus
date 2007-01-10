@@ -6,7 +6,7 @@
     <CompilerOptions>
       <Version Value="5"/>
       <SearchPaths>
-        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)/"/>
+        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
       <CodeGeneration>
         <Generate Value="Faster"/>
@@ -16,8 +16,10 @@
         <CreateMakefileOnBuild Value="True"/>
       </Other>
     </CompilerOptions>
-    <Description Value="Memory (TMemDataset) dataset package for Lazarus"/>
-    <License Value="LGPL"/>
+    <Description Value="Memory (TMemDataset) dataset package for Lazarus
+"/>
+    <License Value="LGPL
+"/>
     <Version Major="1" Minor="2" Release="1"/>
     <Files Count="5">
       <Item1>
@@ -43,6 +45,7 @@
         <Type Value="LRS"/>
       </Item5>
     </Files>
+    <RST OutDir="languages/"/>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="2">
       <Item1>

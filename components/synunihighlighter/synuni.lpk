@@ -7,7 +7,7 @@
       <Version Value="5"/>
       <SearchPaths>
         <IncludeFiles Value="$(LazarusDir)/components/synedit/"/>
-        <UnitOutputDirectory Value="lib/"/>
+        <UnitOutputDirectory Value="lib"/>
       </SearchPaths>
       <CodeGeneration>
         <Checks>
@@ -27,7 +27,8 @@ Source homepage is:
    http://www.delphist.com/UniHighlighter.html
 "/>
     <License Value="Mozilla Public License Version 1.1
-see http://www.mozilla.org/MPL/"/>
+see http://www.mozilla.org/MPL/
+"/>
     <Version Major="1"/>
     <Files Count="3">
       <Item1>
@@ -45,16 +46,17 @@ see http://www.mozilla.org/MPL/"/>
         <UnitName Value="SynUniReg"/>
       </Item3>
     </Files>
+    <RST OutDir="languages/"/>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="4">
       <Item1>
-        <PackageName Value="IDEIntf"/>
+        <PackageName Value="SynEdit"/>
       </Item1>
       <Item2>
-        <PackageName Value="SynEdit"/>
+        <PackageName Value="LCL"/>
       </Item2>
       <Item3>
-        <PackageName Value="LCL"/>
+        <PackageName Value="IDEIntf"/>
       </Item3>
       <Item4>
         <PackageName Value="FCL"/>

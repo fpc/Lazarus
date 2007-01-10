@@ -1,0 +1,16 @@
+#: frmselectdataset:serrcomponentnotfound
+msgid "Error: Component \"%s\" not found"
+msgstr ""
+
+#: frmselectdataset:smenucreatedataset
+msgid "Create dataset"
+msgstr ""
+
+#: frmselectdataset:smenucopydataset
+msgid "Copy data from Dataset"
+msgstr ""
+
+#: frmselectdataset:serrselectdataset
+msgid "Please select a dataset first"
+msgstr ""
+

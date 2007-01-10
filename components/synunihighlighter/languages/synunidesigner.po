@@ -1,0 +1,4 @@
+#: synunidesigner:sunifiledescription
+msgid "UniHighlighter Syntax"
+msgstr ""
+
