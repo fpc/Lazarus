@@ -2042,7 +2042,9 @@ begin
   if Visible and HandleAllocated then
     if (FirstLine = -1) and (LastLine = -1) then begin
       rcInval := ClientRect;
+      {$IFNDEF SYN_LAZARUS}
       rcInval.Left := fGutterWidth;
+      {$ENDIF}
       if sfLinesChanging in fStateFlags then
         UnionRect(fInvalidateRect, fInvalidateRect, rcInval)
       else
@@ -2060,12 +2062,14 @@ begin
                       );
       { any line visible? }
       if (LastLine >= FirstLine) then begin
-        rcInval := Rect(fGutterWidth,
-          fTextHeight * {$IFDEF SYN_LAZARUS}RowToScreenRow(FirstLine)
-                        {$ELSE}(FirstLine - TopLine){$ENDIF},
-          ClientWidth{$IFDEF SYN_LAZARUS}-ScrollBarWidth{$ENDIF},
-          fTextHeight * {$IFDEF SYN_LAZARUS}(RowToScreenRow(LastLine)+1)
-                        {$ELSE}(LastLine - TopLine + 1){$ENDIF});
+        {$IFDEF SYN_LAZARUS}
+        rcInval := Rect(0,fTextHeight * RowToScreenRow(FirstLine),
+          ClientWidth-ScrollBarWidth,
+          fTextHeight * (RowToScreenRow(LastLine)+1));
+        {$ELSE}
+        rcInval := Rect(fGutterWidth,fTextHeight * (FirstLine - TopLine),
+          ClientWidth, fTextHeight * (LastLine - TopLine + 1));
+        {$ENDIF}
         if sfLinesChanging in fStateFlags then
           UnionRect(fInvalidateRect, fInvalidateRect, rcInval)
         else
@@ -2393,7 +2397,7 @@ begin
     and (Y >= 0)
     and (Y < ClientHeight{$IFDEF SYN_LAZARUS}-ScrollBarWidth{$ENDIF})
   then begin
-    if Cursor <> crHandPoint then
+    if (Cursor <> crHandPoint) or (not (ssCtrl in Shift)) then
       Cursor := crIBeam;
   end
   else

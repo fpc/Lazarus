@@ -698,6 +698,10 @@ begin
       Result := tkKey;
       fRange := rsAsm;
       fAsmStart := True;
+      {$IFDEF SYN_LAZARUS}
+      StartPascalCodeFoldBlock(cfbtBeginEnd);
+      //debugln('TSynPasSyn.Func37 BEGIN ',dbgs(ord(TopPascalCodeFoldBlockType)),' LineNumber=',dbgs(fLineNumber),' ',dbgs(MinimumCodeFoldBlockLevel),' ',dbgs(CurrentCodeFoldBlockLevel));
+      {$ENDIF}
     end else Result := tkIdentifier;
 end;
 
