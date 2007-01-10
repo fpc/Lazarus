@@ -206,6 +206,7 @@ type
       //itmProjectOpenSection: TIDEMenuSection;
         itmProjectOpen: TIDEMenuCommand;
         //itmProjectRecentOpen: TIDEMenuSection;
+        itmProjectClose: TIDEMenuCommand;
       //itmProjectSaveSection: TIDEMenuSection;
         itmProjectSave: TIDEMenuCommand;
         itmProjectSaveAs: TIDEMenuCommand;

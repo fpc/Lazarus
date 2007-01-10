@@ -225,15 +225,16 @@ const
   ecNewProject              = ecFirstLazarus + 500;
   ecNewProjectFromFile      = ecFirstLazarus + 501;
   ecOpenProject             = ecFirstLazarus + 502;
-  ecSaveProject             = ecFirstLazarus + 503;
-  ecSaveProjectAs           = ecFirstLazarus + 504;
-  ecPublishProject          = ecFirstLazarus + 505;
-  ecProjectInspector        = ecFirstLazarus + 506;
-  ecAddCurUnitToProj        = ecFirstLazarus + 507;
-  ecRemoveFromProj          = ecFirstLazarus + 508;
-  ecViewProjectSource       = ecFirstLazarus + 509;
-  ecViewProjectTodos        = ecFirstLazarus + 510;
-  ecProjectOptions          = ecFirstLazarus + 511;
+  ecCloseProject            = ecFirstLazarus + 503;
+  ecSaveProject             = ecFirstLazarus + 504;
+  ecSaveProjectAs           = ecFirstLazarus + 505;
+  ecPublishProject          = ecFirstLazarus + 506;
+  ecProjectInspector        = ecFirstLazarus + 507;
+  ecAddCurUnitToProj        = ecFirstLazarus + 508;
+  ecRemoveFromProj          = ecFirstLazarus + 509;
+  ecViewProjectSource       = ecFirstLazarus + 510;
+  ecViewProjectTodos        = ecFirstLazarus + 511;
+  ecProjectOptions          = ecFirstLazarus + 512;
 
   // components menu
   ecOpenPackage             = ecFirstLazarus + 600;

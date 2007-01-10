@@ -119,6 +119,7 @@ resourcestring
   lisProjectMacroProperties = 'Project macro properties';
   lisOpenProject2 = 'Open project';
   lisKMSaveProject = 'Save project';
+  lisKMCloseProject = 'Close project';
   lisKMSaveProjectAs = 'Save project as';
   lisKMPublishProject = 'Publish project';
   lisOpenTheFileAsNormalSource = 'Open the file as normal source';
@@ -274,6 +275,7 @@ resourcestring
   lisMenuNewProject = 'New Project ...';
   lisMenuNewProjectFromFile = 'New Project from file ...';
   lisMenuOpenProject = 'Open Project ...';
+  lisMenuCloseProject = 'Close Project';
   lisMenuOpenRecentProject = 'Open Recent Project ...';
   lisMenuSaveProject = 'Save Project';
   lisMenuSaveProjectAs = 'Save Project As ...';

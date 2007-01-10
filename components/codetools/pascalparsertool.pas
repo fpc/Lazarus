@@ -3790,7 +3790,7 @@ begin
       IgnorePos.Code:=CursorPos.Code;
       IgnorePos.Code.LineColToPosition(CursorPos.Y,CursorPos.X,IgnorePos.P);
       if IgnorePos.P<1 then IgnorePos.Code:=nil;
-      debugln('TPascalParserTool.BuildTreeAndGetCleanPos IgnorePos=',dbgsCP(IgnorePos));
+      //debugln('TPascalParserTool.BuildTreeAndGetCleanPos IgnorePos=',dbgsCP(IgnorePos));
       IgnoreErrorAfter:=IgnorePos;
     end else
       ClearIgnoreErrorAfter;

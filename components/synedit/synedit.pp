@@ -1521,6 +1521,7 @@ begin
           //DebugLn('TCustomSynEdit.DecPaintLock ',dbgs(fHighlighterNeedsUpdateStartLine),'-',dbgs(fHighlighterNeedsUpdateEndLine),' LastLineChanged=',dbgs(LastLineChanged));
         end;
         InvalidateLines(fHighlighterNeedsUpdateStartLine,LastLineChanged+1);
+        InvalidateGutterLines(fHighlighterNeedsUpdateStartLine,LastLineChanged+1);
       end;
       fHighlighterNeedsUpdateStartLine:=0;
       fHighlighterNeedsUpdateEndLine:=0;
@@ -2042,9 +2043,7 @@ begin
   if Visible and HandleAllocated then
     if (FirstLine = -1) and (LastLine = -1) then begin
       rcInval := ClientRect;
-      {$IFNDEF SYN_LAZARUS}
       rcInval.Left := fGutterWidth;
-      {$ENDIF}
       if sfLinesChanging in fStateFlags then
         UnionRect(fInvalidateRect, fInvalidateRect, rcInval)
       else
@@ -2063,7 +2062,7 @@ begin
       { any line visible? }
       if (LastLine >= FirstLine) then begin
         {$IFDEF SYN_LAZARUS}
-        rcInval := Rect(0,fTextHeight * RowToScreenRow(FirstLine),
+        rcInval := Rect(fGutterWidth, fTextHeight * RowToScreenRow(FirstLine),
           ClientWidth-ScrollBarWidth,
           fTextHeight * (RowToScreenRow(LastLine)+1));
         {$ELSE}
@@ -6235,6 +6234,10 @@ begin
 end;
 
 procedure TCustomSynEdit.ListPutted(Index: Integer);
+{$IFDEF SYN_LAZARUS}
+var
+  EndIndex: Integer;
+{$ENDIF}
 begin
   //DebugLn(['TCustomSynEdit.ListPutted Index=',Index,' PaintLock=',PaintLock]);
   {$IFDEF SYN_LAZARUS}
@@ -6247,13 +6250,21 @@ begin
       fHighlighterNeedsUpdateEndLine:=Index+1;
     exit;
   end;
-  {$ENDIF}
+  if Assigned(fHighlighter) then begin
+    fHighlighter.SetRange(TSynEditStringList(Lines).Ranges[Index]);             //mh 2000-10-10
+    EndIndex:=ScanFrom(Index) + 1;
+    InvalidateLines(Index + 1, EndIndex);
+    InvalidateGutterLines(Index + 1, EndIndex);
+  end else
+    InvalidateLines(Index + 1, Index + 1);
+  {$ELSE}
   if Assigned(fHighlighter) then begin
 //    fHighlighter.SetRange(Lines.Objects[Index]);
     fHighlighter.SetRange(TSynEditStringList(Lines).Ranges[Index]);             //mh 2000-10-10
     InvalidateLines(Index + 1, ScanFrom(Index) + 1);
   end else
     InvalidateLines(Index + 1, Index + 1);
+  {$ENDIF}
 end;
 
 procedure TCustomSynEdit.ListScanRanges(Sender: TObject);

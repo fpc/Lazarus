@@ -240,6 +240,7 @@ type
     procedure mnuNewProjectClicked(Sender: TObject);
     procedure mnuNewProjectFromFileClicked(Sender: TObject);
     procedure mnuOpenProjectClicked(Sender: TObject);
+    procedure mnuCloseProjectClicked(Sender: TObject);
     procedure mnuSaveProjectClicked(Sender: TObject);
     procedure mnuSaveProjectAsClicked(Sender: TObject);
     procedure mnuPublishProjectClicked(Sender: TObject);
@@ -702,6 +703,7 @@ type
     function DoShowToDoList: TModalResult;
     function DoTestCompilerSettings(
                             TheCompilerOptions: TCompilerOptions): TModalResult;
+    function QuitIDE: boolean;
 
     // edit menu
     procedure DoCommand(EditorCommand: integer); override;
@@ -1996,6 +1998,7 @@ begin
     itmProjectNewFromFile.OnClick := @mnuNewProjectFromFileClicked;
     itmProjectOpen.OnClick := @mnuOpenProjectClicked;
     SetRecentProjectFilesMenu;
+    itmProjectClose.OnClick := @mnuCloseProjectClicked;
     itmProjectSave.OnClick := @mnuSaveProjectClicked;
     itmProjectSaveAs.OnClick := @mnuSaveProjectAsClicked;
     itmProjectPublish.OnClick := @mnuPublishProjectClicked;
@@ -2888,17 +2891,8 @@ begin
 end;
 
 procedure TMainIDE.mnuQuitClicked(Sender: TObject);
-var CanClose: boolean;
 begin
-  CanClose:=true;
-  MainIDEBar.OnCloseQuery(Sender, CanClose);
-  {$IFDEF IDE_DEBUG}
-  writeln('TMainIDE.mnuQuitClicked 1');
-  {$ENDIF}
-  if CanClose then MainIDEBar.Close;
-  {$IFDEF IDE_DEBUG}
-  writeln('TMainIDE.mnuQuitClicked 2');
-  {$ENDIF}
+  QuitIDE;
 end;
 
 procedure TMainIDE.mnuEditClicked(Sender: TObject);
@@ -3062,7 +3056,20 @@ var
   OpenDialog:TOpenDialog;
   AFileName: string;
 begin
-  if Sender=MainIDEBar.itmProjectOpen then begin
+  if (Sender is TIDEMenuItem)
+  and (TIDEMenuItem(Sender).Section=itmProjectRecentOpen) then begin
+    AFileName:=ExpandFilename(TIDEMenuItem(Sender).Caption);
+    if DoOpenProjectFile(AFilename,[ofAddToRecent])=mrOk then begin
+      AddRecentProjectFileToEnvironment(AFilename);
+    end else begin
+      // open failed
+      if not FileExists(AFilename) then begin
+        EnvironmentOptions.RemoveFromRecentProjectFiles(AFilename);
+      end else
+        AddRecentProjectFileToEnvironment(AFilename);
+    end;
+  end
+  else begin
     OpenDialog:=TOpenDialog.Create(nil);
     try
       InputHistories.ApplyFileDialogSettings(OpenDialog);
@@ -3077,16 +3084,26 @@ begin
     finally
       OpenDialog.Free;
     end;
-  end else if Sender is TIDEMenuItem then begin
-    AFileName:=ExpandFilename(TIDEMenuItem(Sender).Caption);
-    if DoOpenProjectFile(AFilename,[ofAddToRecent])=mrOk then begin
-      AddRecentProjectFileToEnvironment(AFilename);
-    end else begin
-      // open failed
-      if not FileExists(AFilename) then begin
-        EnvironmentOptions.RemoveFromRecentProjectFiles(AFilename);
-      end else
-        AddRecentProjectFileToEnvironment(AFilename);
+  end;
+end;
+
+procedure TMainIDE.mnuCloseProjectClicked(Sender: TObject);
+var
+  DlgResult: TModalResult;
+begin
+  DoCloseProject;
+  while Project1=nil do begin
+    DlgResult:=QuestionDlg('Project closed',
+      'The project is closed. There are now three possibilities:',
+      mtInformation,
+      [mrNo,'Quit Lazarus',mrYes,'Create new project',mrOk,'Open project'],0);
+    case DlgResult of
+    mrNo:
+      if QuitIDE then exit;
+    mrYes:
+      mnuNewProjectClicked(Sender);
+    mrOk:
+      mnuOpenProjectClicked(Sender);
     end;
   end;
 end;
@@ -7810,6 +7827,19 @@ begin
   finally
     FreeThenNil(CheckCompilerOptsDlg);
   end;
+end;
+
+function TMainIDE.QuitIDE: boolean;
+begin
+  Result:=true;
+  MainIDEBar.OnCloseQuery(Self, Result);
+  {$IFDEF IDE_DEBUG}
+  writeln('TMainIDE.QuitIDE 1');
+  {$ENDIF}
+  if Result then MainIDEBar.Close;
+  {$IFDEF IDE_DEBUG}
+  writeln('TMainIDE.QuitIDE 2');
+  {$ENDIF}
 end;
 
 function TMainIDE.DoBuildProject(const AReason: TCompileReason;

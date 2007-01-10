@@ -542,6 +542,7 @@ begin
 
     CreateMenuItem(ParentMI,itmProjectOpen,'itmProjectOpen',lisMenuOpenProject,'menu_openproject');
     CreateMenuSubSection(ParentMI,itmProjectRecentOpen,'itmProjectRecentOpen',lisMenuOpenRecentProject);
+    CreateMenuItem(ParentMI,itmProjectClose,'itmProjectClose',lisMenuCloseProject);
 
     CreateMenuSeparatorSection(mnuProject,itmProjectSaveSection,'itmProjectSaveSection');
     ParentMI:=itmProjectSaveSection;
@@ -860,6 +861,7 @@ begin
     itmProjectNew.Command:=GetCommand(ecNewProject);
     itmProjectNewFromFile.Command:=GetCommand(ecNewProjectFromFile);
     itmProjectOpen.Command:=GetCommand(ecOpenProject);
+    itmProjectClose.Command:=GetCommand(ecCloseProject);
     itmProjectSave.Command:=GetCommand(ecSaveProject);
     itmProjectSaveAs.Command:=GetCommand(ecSaveProjectAs);
     itmProjectPublish.Command:=GetCommand(ecPublishProject);

@@ -477,6 +477,7 @@ begin
   ecNewProject: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecNewProjectFromFile: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecOpenProject: SetResult(VK_F11,[ssCtrl],VK_UNKNOWN,[]);
+  ecCloseProject: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecSaveProject: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecSaveProjectAs: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecPublishProject: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -794,6 +795,7 @@ begin
   ecNewProject: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecNewProjectFromFile: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecOpenProject: SetResult(VK_F11,[ssCtrl],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecCloseProject: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecSaveProject: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecSaveProjectAs: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecPublishProject: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -1368,6 +1370,7 @@ begin
     ecNewProject              : Result:= lisMenuNewProject;
     ecNewProjectFromFile      : Result:= lisMenuNewProjectFromFile;
     ecOpenProject             : Result:= lisMenuOpenProject;
+    ecCloseProject            : Result:= lisMenuCloseProject;
     ecSaveProject             : Result:= lisMenuSaveProject;
     ecSaveProjectAs           : Result:= lisMenuSaveProjectAs;
     ecPublishProject          : Result:= lisMenuPublishProject;
@@ -2355,6 +2358,7 @@ begin
   AddDefault(C, 'New project from file', lisKMNewProjectFromFile,
     ecNewProjectFromFile);
   AddDefault(C, 'Open project', lisOpenProject2, ecOpenProject);
+  AddDefault(C, 'Close project', lisKMCloseProject, ecCloseProject);
   AddDefault(C, 'Save project', lisKMSaveProject, ecSaveProject);
   AddDefault(C, 'Save project as', lisKMSaveProjectAs, ecSaveProjectAs);
   AddDefault(C, 'Publish project', lisKMPublishProject, ecPublishProject);
