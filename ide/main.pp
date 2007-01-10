@@ -4906,8 +4906,9 @@ begin
           // (some fpc versions have non designable TDataModule)
           AncestorType:=TDataModule;
         end else if CompareText(AncestorClassName,'TCustomForm')=0 then begin
-          MessageDlg('Error','The resource class "'+NewClassName+'" descends from'
-            +' "'+AncestorClassName+'". Probably this is a typo for TForm.',
+          MessageDlg(lisCodeTemplError, Format(
+            lisTheResourceClassDescendsFromProbablyThisIsATypoFor, ['"',
+            NewClassName, '"', '"', AncestorClassName, '"']),
             mtError,[mbCancel],0);
           Result:=mrCancel;
         end;
@@ -6238,7 +6239,7 @@ var
       end;
     end else if NewUnitInfo.Component<>nil then begin
       // this is no pascal source and there is a designer form
-      // This can be the case, when the file is renamed and reverted
+      // This can be the case, when the file is renamed and/or reverted
       // -> close form
       Result:=CloseUnitComponent(NewUnitInfo,
                                  [cfCloseDependencies,cfSaveDependencies]);

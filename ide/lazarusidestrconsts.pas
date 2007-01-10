@@ -2093,6 +2093,8 @@ resourcestring
   lisCodeTemplComment = 'Comment:';
   lisCodeTemplATokenAlreadyExists = ' A token %s%s%s already exists! ';
   lisCodeTemplError = 'Error';
+  lisTheResourceClassDescendsFromProbablyThisIsATypoFor = 'The resource '
+    +'class %s%s%s descends from %s%s%s. Probably this is a typo for TForm.';
 
   // make resource string dialog
   lisMakeResourceString = 'Make ResourceString';
