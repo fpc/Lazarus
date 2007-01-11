@@ -31,7 +31,7 @@ unit IDETranslations;
 interface
 
 uses
-  Classes, SysUtils, GetText, LCLProc, Translations, FileUtil,
+  Classes, SysUtils, GetText, LCLProc, Translations, FileUtil, avl_tree,
   LazarusIDEStrConsts;
   { IDE Language (Human, not computer) }
 
@@ -170,53 +170,78 @@ type
   public
     ModuleName, ConstName, Value: String;
   end;
+  
+function CompareConstItems(Data1, Data2: Pointer): integer;
+begin
+  Result:=CompareText(TConstItem(Data1).ConstName,TConstItem(Data2).ConstName);
+end;
 
 function ReadRSTFile(const InFilename: string;
-  ListOfConstItems: TFPList): Boolean;
+  TreeOfConstItems: TAVLTree): Boolean;
 var
-  f: Text;
-  s: String;
+  s: string;
+  NextLineStartPos: integer;
+
+  procedure ReadLine(var Line: string);
+  var
+    p: LongInt;
+  begin
+    p:=NextLineStartPos;
+    while (p<=length(s)) and (not (s[p] in [#10,#13])) do inc(p);
+    Line:=copy(s,NextLineStartPos,p-NextLineStartPos);
+    inc(p);
+    if (p<=length(s)) and (s[p] in [#10,#13]) and (s[p]<>s[p-1]) then inc(p);
+    NextLineStartPos:=p;
+  end;
+
+var
+  Line: String;
   item: TConstItem;
   DotPos, EqPos, i, j: Integer;
   ModuleName: String;
   ConstName: String;
   Value: String;
+  fs: TFileStream;
 begin
   Result:=false;
   try
-    Assign(f, InFilename);
-    Reset(f);
+    fs:=TFileStream.Create(InFilename,fmOpenRead);
+    SetLength(s,fs.Size);
+    if s='' then exit;
+    fs.Read(s[1],length(s));
+    fs.Free;
+    NextLineStartPos:=1;
 
-    while not eof(f) do begin
-      ReadLn(f, s);
-      If (Length(S)=0) or (S[1]='#') then
+    while NextLineStartPos<=length(s) do begin
+      ReadLine(Line);
+      If (Length(Line)=0) or (Line[1]='#') then
         continue;
 
-      DotPos := Pos('.', s);
-      EqPos := Pos('=', s);
+      DotPos := Pos('.', Line);
+      EqPos := Pos('=', Line);
       if DotPos > EqPos then // paranoia checking.
         DotPos := 0;
-      ModuleName := Copy(s, 1, DotPos - 1);
-      ConstName := Copy(s, DotPos + 1, EqPos - DotPos - 1);
+      ModuleName := Copy(Line, 1, DotPos - 1);
+      ConstName := Copy(Line, DotPos + 1, EqPos - DotPos - 1);
 
       Value := '';
       i := EqPos + 1;
-      while i <= Length(s) do begin
-        if s[i] = '''' then begin
+      while i <= Length(Line) do begin
+        if Line[i] = '''' then begin
           Inc(i);
           j := i;
-          while (i <= Length(s)) and (s[i] <> '''') do
+          while (i <= Length(Line)) and (Line[i] <> '''') do
             Inc(i);
-          Value := Value + Copy(s, j, i - j);
+          Value := Value + Copy(Line, j, i - j);
           Inc(i);
-        end else if s[i] = '#' then begin
+        end else if Line[i] = '#' then begin
           Inc(i);
           j := i;
-          while (i <= Length(s)) and (s[i] in ['0'..'9']) do
+          while (i <= Length(Line)) and (Line[i] in ['0'..'9']) do
             Inc(i);
-          Value := Value + Chr(StrToInt(Copy(s, j, i - j)));
-        end else if s[i] = '+' then begin
-          ReadLn(f, s);
+          Value := Value + Chr(StrToInt(Copy(Line, j, i - j)));
+        end else if Line[i] = '+' then begin
+          ReadLine(Line);
           i := 1;
         end else
           Inc(i);
@@ -225,31 +250,39 @@ begin
       Item.ModuleName:=ModuleName;
       Item.ConstName:=ConstName;
       Item.Value:=Value;
-      ListOfConstItems.Add(Item);
+      TreeOfConstItems.Add(Item);
     end;
 
-    Close(f);
     Result:=true;
   except
   end;
 end;
 
-function ConvertToGettextPO(ListOfConstItems: TFPList;
+function ConvertToGettextPO(TreeOfConstItems: TAVLTree;
   const OutFilename: string): Boolean;
 var
-  i, j: Integer;
-  f: Text;
+  j: Integer;
   item: TConstItem;
   s: String;
   c: Char;
+  Node: TAVLTreeNode;
+  ms: TMemoryStream;
+  e: string;
+  
+  procedure WriteStr(const s: string);
+  begin
+    if s<>'' then ms.Write(s[1],length(s));
+  end;
+  
 begin
   Result:=false;
   try
-    Assign(f, OutFilename);
-    Rewrite(f);
+    e:=LineEnding;
+    ms:=TMemoryStream.Create;
 
-    for i := 0 to ListOfConstItems.Count - 1 do begin
-      item := TConstItem(ListOfConstItems[i]);
+    Node:=TreeOfConstItems.FindLowest;
+    while Node<>nil do begin
+      item := TConstItem(Node.Data);
 
       // Convert string to C-style syntax
       s := '';
@@ -270,13 +303,24 @@ begin
       end;
 
       // Write msg entry
-      WriteLn(f, '#: ', item.ModuleName, ':', item.ConstName);
-      WriteLn(f, 'msgid "', s, '"');
-      WriteLn(f, 'msgstr ""');
-      WriteLn(f);
+      WriteStr('#: ');
+      WriteStr(item.ModuleName);
+      WriteStr(':');
+      WriteStr(item.ConstName);
+      WriteStr(e);
+      WriteStr('msgid "');
+      WriteStr(s);
+      WriteStr('"');
+      WriteStr(e);
+      WriteStr('msgstr ""');
+      WriteStr(e);
+      WriteStr(e);
+
+      Node:=TreeOfConstItems.FindSuccessor(Node);
     end;
 
-    Close(f);
+    ms.Position:=0;
+    ms.SaveToFile(OutFilename);
     Result:=true;
   except
   end;
@@ -284,29 +328,27 @@ end;
 
 function ConvertRSTFile(const RSTFilename, OutputFilename: string): Boolean;
 var
-  ListOfConstItems: TFPList;
-  i: Integer;
+  TreeOfConstItems: TAVLTree;
 begin
   Result:=false;
   //DebugLn(['ConvertRSTFile RSTFilename=',RSTFilename,' OutputFilename=',OutputFilename]);
-  ListOfConstItems:=TFPList.Create;
+  TreeOfConstItems:=TAVLTree.Create(@CompareConstItems);
   try
     // read .rst file
-    if not ReadRSTFile(RSTFilename,ListOfConstItems) then begin
+    if not ReadRSTFile(RSTFilename,TreeOfConstItems) then begin
       DebugLn(['ConvertRSTFile reading failed: RSTFilename=',RSTFilename]);
       exit;
     end;
     // write .po file
-    if not ConvertToGettextPO(ListOfConstItems,OutputFilename) then begin
+    if not ConvertToGettextPO(TreeOfConstItems,OutputFilename) then begin
       DebugLn(['ConvertRSTFile writing failed: OutputFilename=',OutputFilename]);
       exit;
     end;
   finally
-    if ListOfConstItems<>nil then begin
-      for i:=0 to ListOfConstItems.Count-1 do
-        TObject(ListOfConstItems[i]).Free;
+    if TreeOfConstItems<>nil then begin
+      TreeOfConstItems.FreeAndClear;
+      TreeOfConstItems.Free;
     end;
-    ListOfConstItems.Free;
   end;
   Result:=true;
 end;
