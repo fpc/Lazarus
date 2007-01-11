@@ -1,53 +1,55 @@
 object ProjectVariablesForm: TProjectVariablesForm
-  Caption = 'New project from template'
-  ClientHeight = 328
-  ClientWidth = 499
-  OnShow = ProjectVariablesFormShow
-  PixelsPerInch = 90
-  Position = poDesktopCenter
+  Left = 268
+  Height = 328
+  Top = 219
+  Width = 499
   HorzScrollBar.Page = 498
   VertScrollBar.Page = 327
-  Left = 431
-  Height = 328
-  Top = 501
-  Width = 499
+  ActiveControl = BOK
+  Caption = 'New project from template'
+  OnShow = ProjectVariablesFormShow
+  Position = poDesktopCenter
   object Label1: TLabel
+    Left = 8
+    Height = 23
+    Top = 16
+    Width = 131
     Alignment = taRightJustify
     AutoSize = False
     Caption = '&Name for new project:'
     Color = clNone
     Layout = tlCenter
-    Left = 8
-    Height = 23
-    Top = 16
-    Width = 131
+    ParentColor = False
   end
   object Label2: TLabel
+    Left = 8
+    Height = 22
+    Top = 48
+    Width = 131
     Alignment = taRightJustify
     AutoSize = False
     Caption = 'Create in &directory:'
     Color = clNone
     Layout = tlCenter
-    Left = 8
-    Height = 22
-    Top = 48
-    Width = 131
+    ParentColor = False
   end
   object PDescription: TPanel
-    Anchors = [akTop, akLeft, akRight]
-    BevelInner = bvRaised
-    BevelOuter = bvLowered
-    Caption = 'This project contains some additional variables. Please provide values for these variables'
-    ClientHeight = 58
-    ClientWidth = 485
-    FullRepaint = False
-    TabOrder = 0
     Left = 8
     Height = 58
     Top = 80
     Width = 485
+    Anchors = [akTop, akLeft, akRight]
+    BevelInner = bvRaised
+    BevelOuter = bvLowered
+    Caption = 'This project contains some additional variables. Please provide values for these variables'
+    FullRepaint = False
+    TabOrder = 0
   end
   object SGVariables: TStringGrid
+    Left = 10
+    Height = 140
+    Top = 144
+    Width = 483
     Anchors = [akTop, akLeft, akRight, akBottom]
     AutoFillColumns = True
     ColCount = 3
@@ -57,54 +59,51 @@ object ProjectVariablesForm: TProjectVariablesForm
     Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goEditing, goAlwaysShowEditor, goDblClickAutoSize, goSmoothScroll]
     RowCount = 5
     ScrollBars = ssAutoBoth
-    VisibleColCount = 2
-    VisibleRowCount = 4
-    Left = 10
-    Height = 140
-    Top = 144
-    Width = 483
+    TabOrder = 5
+    TabStop = True
   end
   object BOK: TButton
+    Left = 411
+    Height = 25
+    Top = 292
+    Width = 75
     Anchors = [akRight, akBottom]
+    BorderSpacing.InnerBorder = 4
     Caption = '&OK'
     Default = True
     ModalResult = 1
     OnClick = BOKClick
     TabOrder = 1
-    Left = 411
-    Height = 25
-    Top = 292
-    Width = 75
   end
   object BCancel: TButton
-    Anchors = [akRight, akBottom]
-    Cancel = True
-    Caption = '&Cancel'
-    ModalResult = 2
-    TabOrder = 2
     Left = 323
     Height = 25
     Top = 292
     Width = 75
+    Anchors = [akRight, akBottom]
+    BorderSpacing.InnerBorder = 4
+    Cancel = True
+    Caption = '&Cancel'
+    ModalResult = 2
+    TabOrder = 2
   end
   object EProjectName: TEdit
-    Anchors = [akTop, akLeft, akRight]
-    TabOrder = 3
     Left = 152
     Height = 23
     Top = 16
     Width = 237
+    Anchors = [akTop, akLeft, akRight]
+    TabOrder = 3
   end
   object DEProject: TDirectoryEdit
-    ButtonWidth = 23
-    NumGlyphs = 1
-    Anchors = [akTop, akLeft, akRight]
-    TabOrder = 4
-    Anchors = [akTop, akLeft, akRight]
-    TabOrder = 4
     Left = 152
     Height = 23
     Top = 48
     Width = 317
+    ButtonWidth = 23
+    NumGlyphs = 1
+    Anchors = [akTop, akLeft, akRight]
+    ParentColor = False
+    TabOrder = 4
   end
 end

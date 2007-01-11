@@ -1,58 +1,57 @@
 object CharacterMapDialog: TCharacterMapDialog
-  ActiveControl = CloseButton
-  Caption = 'CharacterMapDialog'
-  ClientHeight = 397
-  ClientWidth = 360
-  FormStyle = fsStayOnTop
-  KeyPreview = True
-  OnCreate = FormCreate
-  OnShow = FormShow
-  PixelsPerInch = 96
-  HorzScrollBar.Page = 359
-  VertScrollBar.Page = 396
   Left = 528
   Height = 397
   Top = 142
   Width = 360
+  HorzScrollBar.Page = 359
+  VertScrollBar.Page = 396
+  ActiveControl = CloseButton
+  Caption = 'CharacterMapDialog'
+  FormStyle = fsStayOnTop
+  KeyPreview = True
+  OnCreate = FormCreate
+  OnShow = FormShow
   object CloseButton: TButton
+    Left = 142
+    Height = 25
+    Top = 368
+    Width = 75
     Anchors = [akBottom]
     BorderSpacing.Around = 6
-    
+    BorderSpacing.InnerBorder = 4
     Cancel = True
     Caption = 'Close'
     Default = True
     ModalResult = 1
     OnClick = CloseButtonClick
     TabOrder = 0
-    Left = 142
-    Height = 25
-    Top = 368
-    Width = 75
   end
   object CharactersGroupbox: TGroupBox
-    Anchors = [akTop, akLeft, akRight, akBottom]
-    BorderSpacing.Around = 6
-    Caption = 'Characters'
-    ClientHeight = 334
-    ClientWidth = 341
-    ParentCtl3D = False
-    TabOrder = 1
     Left = 8
     Height = 352
     Top = 8
     Width = 345
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Around = 6
+    Caption = 'Characters'
+    ParentCtl3D = False
+    TabOrder = 1
     object CharInfoLabel: TLabel
+      Left = 6
+      Height = 13
+      Top = 316
+      Width = 329
       Align = alBottom
       BorderSpacing.Around = 6
       Caption = 'CharInfoLabel'
       Color = clNone
       ParentColor = False
-      Left = 6
-      Height = 14
-      Top = 314
-      Width = 329
     end
     object StringGrid1: TStringGrid
+      Left = 6
+      Height = 305
+      Top = 6
+      Width = 329
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Around = 6
       ColCount = 17
@@ -62,14 +61,10 @@ object CharacterMapDialog: TCharacterMapDialog
       Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goSmoothScroll]
       RowCount = 15
       ScrollBars = ssAutoBoth
-      VisibleColCount = 16
-      VisibleRowCount = 14
+      TabOrder = 0
+      TabStop = True
       OnMouseDown = StringGrid1MouseDown
       OnMouseMove = StringGrid1MouseMove
-      Left = 6
-      Height = 304
-      Top = 6
-      Width = 329
     end
   end
 end

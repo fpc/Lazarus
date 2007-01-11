@@ -1,36 +1,38 @@
+{ This is an automatically generated lazarus resource file }
+
 LazarusResources.Add('TProjectVariablesForm','FORMDATA',[
-  'TPF0'#21'TProjectVariablesForm'#20'ProjectVariablesForm'#7'Caption'#6#25'New'
-  +' project from template'#12'ClientHeight'#3'H'#1#11'ClientWidth'#3#243#1#6'O'
-  +'nShow'#7#24'ProjectVariablesFormShow'#13'PixelsPerInch'#2'Z'#8'Position'#7
-  +#15'poDesktopCenter'#18'HorzScrollBar.Page'#3#242#1#18'VertScrollBar.Page'#3
-  +'G'#1#4'Left'#3#175#1#6'Height'#3'H'#1#3'Top'#3#245#1#5'Width'#3#243#1#0#6'T'
-  +'Label'#6'Label1'#9'Alignment'#7#14'taRightJustify'#8'AutoSize'#8#7'Caption'
-  +#6#22'&Name for new project:'#5'Color'#7#6'clNone'#6'Layout'#7#8'tlCenter'#4
-  +'Left'#2#8#6'Height'#2#23#3'Top'#2#16#5'Width'#3#131#0#0#0#6'TLabel'#6'Label'
-  +'2'#9'Alignment'#7#14'taRightJustify'#8'AutoSize'#8#7'Caption'#6#21'Create i'
-  +'n &directory:'#5'Color'#7#6'clNone'#6'Layout'#7#8'tlCenter'#4'Left'#2#8#6'H'
-  +'eight'#2#22#3'Top'#2'0'#5'Width'#3#131#0#0#0#6'TPanel'#12'PDescription'#7'A'
-  +'nchors'#11#5'akTop'#6'akLeft'#7'akRight'#0#10'BevelInner'#7#8'bvRaised'#10
-  +'BevelOuter'#7#9'bvLowered'#7'Caption'#6'ZThis project contains some additio'
-  +'nal variables. Please provide values for these variables'#12'ClientHeight'#2
-  +':'#11'ClientWidth'#3#229#1#11'FullRepaint'#8#8'TabOrder'#2#0#4'Left'#2#8#6
-  +'Height'#2':'#3'Top'#2'P'#5'Width'#3#229#1#0#0#11'TStringGrid'#11'SGVariable'
-  +'s'#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#8'akBottom'#0#15'AutoFillCol'
-  +'umns'#9#8'ColCount'#2#3#15'DefaultColWidth'#2'x'#10'FixedColor'#7#9'clBtnFa'
-  +'ce'#13'GridLineWidth'#2#0#7'Options'#11#15'goFixedVertLine'#15'goFixedHorzL'
-  +'ine'#10'goVertLine'#10'goHorzLine'#13'goRangeSelect'#11'goColSizing'#9'goEd'
-  +'iting'#18'goAlwaysShowEditor'#18'goDblClickAutoSize'#14'goSmoothScroll'#0#8
-  +'RowCount'#2#5#10'ScrollBars'#7#10'ssAutoBoth'#15'VisibleColCount'#2#2#15'Vi'
-  +'sibleRowCount'#2#4#4'Left'#2#10#6'Height'#3#140#0#3'Top'#3#144#0#5'Width'#3
-  +#227#1#0#0#7'TButton'#3'BOK'#7'Anchors'#11#7'akRight'#8'akBottom'#0#7'Captio'
-  +'n'#6#3'&OK'#7'Default'#9#11'ModalResult'#2#1#7'OnClick'#7#8'BOKClick'#8'Tab'
-  +'Order'#2#1#4'Left'#3#155#1#6'Height'#2#25#3'Top'#3'$'#1#5'Width'#2'K'#0#0#7
-  +'TButton'#7'BCancel'#7'Anchors'#11#7'akRight'#8'akBottom'#0#6'Cancel'#9#7'Ca'
-  +'ption'#6#7'&Cancel'#11'ModalResult'#2#2#8'TabOrder'#2#2#4'Left'#3'C'#1#6'He'
-  +'ight'#2#25#3'Top'#3'$'#1#5'Width'#2'K'#0#0#5'TEdit'#12'EProjectName'#7'Anch'
-  +'ors'#11#5'akTop'#6'akLeft'#7'akRight'#0#8'TabOrder'#2#3#4'Left'#3#152#0#6'H'
-  +'eight'#2#23#3'Top'#2#16#5'Width'#3#237#0#0#0#14'TDirectoryEdit'#9'DEProject'
-  +#11'ButtonWidth'#2#23#9'NumGlyphs'#2#1#7'Anchors'#11#5'akTop'#6'akLeft'#7'ak'
-  +'Right'#0#8'TabOrder'#2#4#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#0#8'Ta'
-  +'bOrder'#2#4#4'Left'#3#152#0#6'Height'#2#23#3'Top'#2'0'#5'Width'#3'='#1#0#0#0
+  'TPF0'#21'TProjectVariablesForm'#20'ProjectVariablesForm'#4'Left'#3#12#1#6'He'
+  +'ight'#3'H'#1#3'Top'#3#219#0#5'Width'#3#243#1#18'HorzScrollBar.Page'#3#242#1
+  +#18'VertScrollBar.Page'#3'G'#1#13'ActiveControl'#7#3'BOK'#7'Caption'#6#25'Ne'
+  +'w project from template'#6'OnShow'#7#24'ProjectVariablesFormShow'#8'Positio'
+  +'n'#7#15'poDesktopCenter'#0#6'TLabel'#6'Label1'#4'Left'#2#8#6'Height'#2#23#3
+  +'Top'#2#16#5'Width'#3#131#0#9'Alignment'#7#14'taRightJustify'#8'AutoSize'#8#7
+  +'Caption'#6#22'&Name for new project:'#5'Color'#7#6'clNone'#6'Layout'#7#8'tl'
+  +'Center'#11'ParentColor'#8#0#0#6'TLabel'#6'Label2'#4'Left'#2#8#6'Height'#2#22
+  +#3'Top'#2'0'#5'Width'#3#131#0#9'Alignment'#7#14'taRightJustify'#8'AutoSize'#8
+  +#7'Caption'#6#21'Create in &directory:'#5'Color'#7#6'clNone'#6'Layout'#7#8't'
+  +'lCenter'#11'ParentColor'#8#0#0#6'TPanel'#12'PDescription'#4'Left'#2#8#6'Hei'
+  +'ght'#2':'#3'Top'#2'P'#5'Width'#3#229#1#7'Anchors'#11#5'akTop'#6'akLeft'#7'a'
+  +'kRight'#0#10'BevelInner'#7#8'bvRaised'#10'BevelOuter'#7#9'bvLowered'#7'Capt'
+  +'ion'#6'ZThis project contains some additional variables. Please provide val'
+  +'ues for these variables'#11'FullRepaint'#8#8'TabOrder'#2#0#0#0#11'TStringGr'
+  +'id'#11'SGVariables'#4'Left'#2#10#6'Height'#3#140#0#3'Top'#3#144#0#5'Width'#3
+  +#227#1#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#8'akBottom'#0#15'AutoFill'
+  +'Columns'#9#8'ColCount'#2#3#15'DefaultColWidth'#2'x'#10'FixedColor'#7#9'clBt'
+  +'nFace'#13'GridLineWidth'#2#0#7'Options'#11#15'goFixedVertLine'#15'goFixedHo'
+  +'rzLine'#10'goVertLine'#10'goHorzLine'#13'goRangeSelect'#11'goColSizing'#9'g'
+  +'oEditing'#18'goAlwaysShowEditor'#18'goDblClickAutoSize'#14'goSmoothScroll'#0
+  +#8'RowCount'#2#5#10'ScrollBars'#7#10'ssAutoBoth'#8'TabOrder'#2#5#7'TabStop'#9
+  +#0#0#7'TButton'#3'BOK'#4'Left'#3#155#1#6'Height'#2#25#3'Top'#3'$'#1#5'Width'
+  +#2'K'#7'Anchors'#11#7'akRight'#8'akBottom'#0#25'BorderSpacing.InnerBorder'#2
+  +#4#7'Caption'#6#3'&OK'#7'Default'#9#11'ModalResult'#2#1#7'OnClick'#7#8'BOKCl'
+  +'ick'#8'TabOrder'#2#1#0#0#7'TButton'#7'BCancel'#4'Left'#3'C'#1#6'Height'#2#25
+  +#3'Top'#3'$'#1#5'Width'#2'K'#7'Anchors'#11#7'akRight'#8'akBottom'#0#25'Borde'
+  +'rSpacing.InnerBorder'#2#4#6'Cancel'#9#7'Caption'#6#7'&Cancel'#11'ModalResul'
+  +'t'#2#2#8'TabOrder'#2#2#0#0#5'TEdit'#12'EProjectName'#4'Left'#3#152#0#6'Heig'
+  +'ht'#2#23#3'Top'#2#16#5'Width'#3#237#0#7'Anchors'#11#5'akTop'#6'akLeft'#7'ak'
+  +'Right'#0#8'TabOrder'#2#3#0#0#14'TDirectoryEdit'#9'DEProject'#4'Left'#3#152#0
+  +#6'Height'#2#23#3'Top'#2'0'#5'Width'#3'='#1#11'ButtonWidth'#2#23#9'NumGlyphs'
+  +#2#1#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#0#11'ParentColor'#8#8'TabOr'
+  +'der'#2#4#0#0#0
 ]);

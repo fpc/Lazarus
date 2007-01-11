@@ -1,47 +1,48 @@
 object Form1: TForm1
-  ActiveControl = Button2
-  Caption = 'Form1'
-  ClientHeight = 507
-  ClientWidth = 339
-  OnCreate = FormCreate
-  PixelsPerInch = 96
-  Position = poDesktopCenter
-  HorzScrollBar.Page = 338
-  VertScrollBar.Page = 506
   Left = 190
   Height = 507
   Top = 45
   Width = 339
+  HorzScrollBar.Page = 338
+  VertScrollBar.Page = 506
+  ActiveControl = Button2
+  Caption = 'Form1'
+  OnCreate = FormCreate
+  Position = poDesktopCenter
   object Label1: TLabel
+    Left = 16
+    Height = 13
+    Top = 8
+    Width = 269
     Caption = 'This sample show how to use the printer dialogs'
     Color = clNone
     ParentColor = False
-    Left = 16
-    Height = 14
-    Top = 8
-    Width = 230
   end
   object Button2: TButton
-    BorderSpacing.InnerBorder = 4
-    Caption = 'Execute TPrinterSetupDialog'
-    OnClick = Button2Click
-    TabOrder = 0
     Left = 8
     Height = 27
     Top = 51
     Width = 320
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Execute TPrinterSetupDialog'
+    OnClick = Button2Click
+    TabOrder = 0
   end
   object Button1: TButton
-    BorderSpacing.InnerBorder = 4
-    Caption = 'Execute TPrintDialog'
-    OnClick = Button1Click
-    TabOrder = 1
     Left = 8
     Height = 27
     Top = 78
     Width = 320
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Execute TPrintDialog'
+    OnClick = Button1Click
+    TabOrder = 1
   end
   object SGrid: TStringGrid
+    Left = 8
+    Height = 304
+    Top = 192
+    Width = 320
     AutoFillColumns = True
     BorderStyle = bsNone
     ColCount = 2
@@ -62,62 +63,56 @@ object Form1: TForm1
     ScrollBars = ssAutoBoth
     TabOrder = 7
     TabStop = True
-    VisibleColCount = 1
-    VisibleRowCount = 14
-    Left = 8
-    Height = 304
-    Top = 192
-    Width = 320
   end
   object Button3: TButton
-    BorderSpacing.InnerBorder = 4
-    Caption = 'Get default printer info'
-    OnClick = Button3Click
-    TabOrder = 2
     Left = 8
     Height = 27
     Top = 105
     Width = 320
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Get default printer info'
+    OnClick = Button3Click
+    TabOrder = 2
   end
   object Button4: TButton
-    BorderSpacing.InnerBorder = 4
-    Caption = 'Print test'
-    OnClick = Button4Click
-    TabOrder = 3
     Left = 256
     Height = 27
     Top = 155
     Width = 69
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Print test'
+    OnClick = Button4Click
+    TabOrder = 3
   end
   object Button5: TButton
-    BorderSpacing.InnerBorder = 4
-    Caption = 'Update printer state info'
-    OnClick = Button5Click
-    TabOrder = 4
     Left = 8
     Height = 25
     Top = 132
     Width = 224
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Update printer state info'
+    OnClick = Button5Click
+    TabOrder = 4
   end
   object Button6: TButton
-    BorderSpacing.InnerBorder = 4
-    Caption = 'Show printer properties'
-    OnClick = Button6Click
-    TabOrder = 5
     Left = 8
     Height = 25
     Top = 157
     Width = 224
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Show printer properties'
+    OnClick = Button6Click
+    TabOrder = 5
   end
   object Button7: TButton
-    BorderSpacing.InnerBorder = 4
-    Caption = 'Execute TPageSetupDialog'
-    OnClick = Button7Click
-    TabOrder = 6
     Left = 8
     Height = 27
     Top = 24
     Width = 320
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Execute TPageSetupDialog'
+    OnClick = Button7Click
+    TabOrder = 6
   end
   object PSD: TPrinterSetupDialog
     Title = 'Testing dialog title'
@@ -125,6 +120,7 @@ object Form1: TForm1
     top = 240
   end
   object PD: TPrintDialog
+    Title = 'Testing title'
     Collate = True
     Copies = 1
     FromPage = 2
@@ -133,7 +129,6 @@ object Form1: TForm1
     Options = [poPrintToFile, poPageNums, poSelection, poWarning, poHelp]
     PrintToFile = True
     ToPage = 3
-    Title = 'Testing title'
     left = 176
     top = 272
   end
