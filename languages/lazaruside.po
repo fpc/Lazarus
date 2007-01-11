@@ -198,6 +198,10 @@ msgstr ""
 msgid "Save project"
 msgstr ""
 
+#: lazarusidestrconsts:liskmcloseproject
+msgid "Close project"
+msgstr ""
+
 #: lazarusidestrconsts:liskmsaveprojectas
 msgid "Save project as"
 msgstr ""
@@ -776,6 +780,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuopenproject
 msgid "Open Project ..."
+msgstr ""
+
+#: lazarusidestrconsts:lismenucloseproject
+msgid "Close Project"
 msgstr ""
 
 #: lazarusidestrconsts:lismenuopenrecentproject
@@ -1940,6 +1948,22 @@ msgstr ""
 
 #: lazarusidestrconsts:lisallfiles
 msgid "All Files"
+msgstr ""
+
+#: lazarusidestrconsts:lisprojectclosed
+msgid "Project closed"
+msgstr ""
+
+#: lazarusidestrconsts:listheprojectisclosedtherearenowthreepossibilitieshin
+msgid "The project is closed. There are now three possibilities.%sHint: You do not need to close a project yourself, since this is done automatically."
+msgstr ""
+
+#: lazarusidestrconsts:lisquitlazarus
+msgid "Quit Lazarus"
+msgstr ""
+
+#: lazarusidestrconsts:liscreatenewproject
+msgid "Create new project"
 msgstr ""
 
 #: lazarusidestrconsts:lisopenpackagefile
@@ -6532,6 +6556,34 @@ msgstr ""
 
 #: lazarusidestrconsts:liscodetemplerror
 msgid "Error"
+msgstr ""
+
+#: lazarusidestrconsts:lisclassconflictswithlfmfiletheunitusesthetheunitwhic
+msgid "Class conflicts with .lfm file:%sThe unit %s%suses the the unit %s%swhich contains the class %s,%sbut the .lfm file contains already another class.%sThere can only be one design class per unit.%sPlease move %s to another unit."
+msgstr ""
+
+#: lazarusidestrconsts:lisunabletofindtheunitofcomponentclass
+msgid "Unable to find the unit of component class %s%s%s."
+msgstr ""
+
+#: lazarusidestrconsts:lisunabletoloadthecomponentclassbecauseitdependsonits
+msgid "Unable to load the component class %s%s%s, because it depends on itself."
+msgstr ""
+
+#: lazarusidestrconsts:liscancelloadingthiscomponent
+msgid "Cancel loading this component"
+msgstr ""
+
+#: lazarusidestrconsts:lisabortwholeloading
+msgid "Abort whole loading"
+msgstr ""
+
+#: lazarusidestrconsts:lisignoreusetformasancestor
+msgid "Ignore, use TForm as ancestor"
+msgstr ""
+
+#: lazarusidestrconsts:listheresourceclassdescendsfromprobablythisisatypofor
+msgid "The resource class %s%s%s descends from %s%s%s. Probably this is a typo for TForm."
 msgstr ""
 
 #: lazarusidestrconsts:lismakeresourcestring

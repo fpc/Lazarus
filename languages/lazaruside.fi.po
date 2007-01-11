@@ -338,6 +338,10 @@ msgstr ""
 msgid "Abort loading project"
 msgstr "Keskeytä projektin lataaminen"
 
+#: lazarusidestrconsts:lisabortwholeloading
+msgid "Abort whole loading"
+msgstr ""
+
 #: lazarusidestrconsts:lismenutemplateabout
 msgid "About"
 msgstr "Tietoja"
@@ -1026,6 +1030,10 @@ msgstr ""
 msgid "Cancel"
 msgstr "Peru"
 
+#: lazarusidestrconsts:liscancelloadingthiscomponent
+msgid "Cancel loading this component"
+msgstr ""
+
 #: lazarusidestrconsts:liscancelloadingunit
 msgid "Cancel loading unit"
 msgstr ""
@@ -1168,7 +1176,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lischooselazarussourcedirectory
 msgid "Choose Lazarus Directory"
-msgstr ""
+msgstr "Valitse Lazarus:n kansio"
 
 #: lazarusidestrconsts:lisedoptschoosescheme
 msgid "Choose Scheme"
@@ -1188,7 +1196,7 @@ msgstr "Valitse koodilyhennetiedosto (*.dci)"
 
 #: lazarusidestrconsts:lischoosecompilerpath
 msgid "Choose compiler filename (%s)"
-msgstr ""
+msgstr "Valitse kääntäjän tiedostonimi (%s)"
 
 #: lazarusidestrconsts:lischoosedebuggerpath
 msgid "Choose debugger filename"
@@ -1200,7 +1208,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lischoosemakepath
 msgid "Choose make path"
-msgstr ""
+msgstr "Valitse make-työkalun hakupolku"
 
 #: lazarusidestrconsts:lischooseoneoftheseitemstocreateanewfile
 msgid "Choose one of these items to create a new File"
@@ -1224,7 +1232,7 @@ msgstr "Lisää, alla olevasta listasta valittu, rakenne. Valitun lohkon ympäri
 
 #: lazarusidestrconsts:lischoosetestbuilddir
 msgid "Choose the directory for tests"
-msgstr ""
+msgstr "Valitse kansio testiprojekteihin"
 
 #: lazarusidestrconsts:lispkgmangcircleinpackagedependencies
 msgid "Circle in package dependencies"
@@ -1240,6 +1248,10 @@ msgstr "Luokkaa (Class) %s%s%s ei löydy."
 
 #: lazarusidestrconsts:lisa2pclassnamealreadyexists
 msgid "Class Name already exists"
+msgstr ""
+
+#: lazarusidestrconsts:lisclassconflictswithlfmfiletheunitusesthetheunitwhic
+msgid "Class conflicts with .lfm file:%sThe unit %s%suses the the unit %s%swhich contains the class %s,%sbut the .lfm file contains already another class.%sThere can only be one design class per unit.%sPlease move %s to another unit."
 msgstr ""
 
 #: lazarusidestrconsts:lisclassnotfound
@@ -1314,12 +1326,20 @@ msgstr "Sulje"
 msgid "Close All"
 msgstr ""
 
+#: lazarusidestrconsts:lismenucloseproject
+msgid "Close Project"
+msgstr ""
+
 #: lazarusidestrconsts:lismenucloseall
 msgid "Close all editor files"
 msgstr "Sulje kaikki editorin tiedostot"
 
 #: lazarusidestrconsts:lissrclosepage
 msgid "Close page"
+msgstr ""
+
+#: lazarusidestrconsts:liskmcloseproject
+msgid "Close project"
 msgstr ""
 
 #: lazarusidestrconsts:dlgcodegeneration
@@ -1452,7 +1472,7 @@ msgstr ""
 
 #: lazarusidestrconsts:srkmcatcmdcmd
 msgid "Command commands"
-msgstr ""
+msgstr "Komentojen komennot"
 
 #: lazarusidestrconsts:dlgcommandlineparams
 msgid "Command line parameters (without application name)"
@@ -1564,7 +1584,7 @@ msgstr "Komponentit"
 
 #: lazarusidestrconsts:srkmcatcomponentsmenu
 msgid "Components menu commands"
-msgstr ""
+msgstr "Komponentitvalikon komennot"
 
 #: lazarusidestrconsts:liskmconfigbuildfile
 msgid "Config %sBuild File%s"
@@ -1890,6 +1910,10 @@ msgstr ""
 msgid "Create new file"
 msgstr ""
 
+#: lazarusidestrconsts:liscreatenewproject
+msgid "Create new project"
+msgstr ""
+
 #: lazarusidestrconsts:dlgruberbandcreationcolor
 msgid "Creation"
 msgstr "Luonti"
@@ -1924,7 +1948,7 @@ msgstr ""
 
 #: lazarusidestrconsts:srkmcatcursormoving
 msgid "Cursor moving commands"
-msgstr ""
+msgstr "Kursorin siirtokomennot"
 
 #: lazarusidestrconsts:liscursorrowincurrenteditor
 msgid "Cursor row in current editor"
@@ -2536,7 +2560,7 @@ msgstr "Käyttöympäristö"
 
 #: lazarusidestrconsts:srkmcatenvmenu
 msgid "Environment menu commands"
-msgstr ""
+msgstr "Käyttöliittymä valikon komennot"
 
 #: lazarusidestrconsts:lismenugeneraloptions
 msgid "Environment options ..."
@@ -2880,7 +2904,7 @@ msgstr "Tiedoston tallentaminen ei onnistunut"
 
 #: lazarusidestrconsts:uefilerocap
 msgid "File is readonly"
-msgstr ""
+msgstr "Tiedosto on vain luettavissa"
 
 #: lazarusidestrconsts:lisa2pfileisused
 msgid "File is used"
@@ -2892,7 +2916,7 @@ msgstr "Tiedostojen suodatus/maskaus (*;*.*;*.bak?)"
 
 #: lazarusidestrconsts:srkmcatfilemenu
 msgid "File menu commands"
-msgstr ""
+msgstr "Tiedostovalikon komennot"
 
 #: lazarusidestrconsts:lisa2pfilename
 msgid "File name:"
@@ -3496,7 +3520,7 @@ msgstr ""
 
 #: lazarusidestrconsts:srkmcarhelpmenu
 msgid "Help menu commands"
-msgstr ""
+msgstr "Ohjevalikon komennot"
 
 #: lazarusidestrconsts:lishelpselectordialog
 msgid "Help selector"
@@ -3516,7 +3540,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgedhintcommand
 msgid "Hint: click on the command you want to edit"
-msgstr ""
+msgstr "Vihje: Klikkaa komentoa jota haluat muuttaa"
 
 #: lazarusidestrconsts:liscompilerhintyoucansetthecompilerpath
 msgid "Hint: you can set the compiler path in Environment->Environment options->Files->Compiler Path"
@@ -3660,6 +3684,10 @@ msgstr "Jätä huomiotta välilyönnit rivin alussa"
 
 #: lazarusidestrconsts:lisdebugoptionsfrmignoretheseexceptions
 msgid "Ignore these exceptions"
+msgstr ""
+
+#: lazarusidestrconsts:lisignoreusetformasancestor
+msgid "Ignore, use TForm as ancestor"
 msgstr ""
 
 #: lazarusidestrconsts:srkmecimestr
@@ -4028,7 +4056,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisinvalidcompilerfilename
 msgid "Invalid Compiler Filename"
-msgstr ""
+msgstr "Virheellinen kääntäjän tiedostonimi"
 
 #: lazarusidestrconsts:lispublprojinvalidexcludefilter
 msgid "Invalid Exclude filter"
@@ -5938,6 +5966,10 @@ msgstr ""
 msgid "Project changed"
 msgstr "Projekti on muuttunut"
 
+#: lazarusidestrconsts:lisprojectclosed
+msgid "Project closed"
+msgstr ""
+
 #: lazarusidestrconsts:lisprojectdirectory
 msgid "Project directory"
 msgstr ""
@@ -5964,7 +5996,7 @@ msgstr ""
 
 #: lazarusidestrconsts:srkmcatprojectmenu
 msgid "Project menu commands"
-msgstr ""
+msgstr "Projektivalikon komennot"
 
 #: lazarusidestrconsts:lispkgmangproject
 msgid "Project: %s"
@@ -6033,6 +6065,10 @@ msgstr "Nopea syntaksin tarkistus"
 #: lazarusidestrconsts:lismenuquit
 msgid "Quit"
 msgstr "Lopeta"
+
+#: lazarusidestrconsts:lisquitlazarus
+msgid "Quit Lazarus"
+msgstr ""
 
 #: lazarusidestrconsts:dlgcorange
 msgid "Range"
@@ -6456,7 +6492,7 @@ msgstr "Suoritusaikaiset parametrit..."
 
 #: lazarusidestrconsts:srkmcatrunmenu
 msgid "Run menu commands"
-msgstr ""
+msgstr "Suoritavalikon komennot"
 
 #: lazarusidestrconsts:dlgrunparameters
 msgid "Run parameters"
@@ -7644,19 +7680,19 @@ msgstr "Kirjaimien määritteet"
 
 #: lazarusidestrconsts:srkmcatediting
 msgid "Text editing commands"
-msgstr ""
+msgstr "Tekstin muokkauskomennot"
 
 #: lazarusidestrconsts:srkmcatmarker
 msgid "Text marker commands"
-msgstr ""
+msgstr "Tekstin merkkauskomennot"
 
 #: lazarusidestrconsts:srkmcatsearchreplace
 msgid "Text search and replace commands"
-msgstr ""
+msgstr "Tekstin etsintä- ja korvauskomennot"
 
 #: lazarusidestrconsts:srkmcatselection
 msgid "Text selection commands"
-msgstr ""
+msgstr "Tekstin valintakomennot"
 
 #: lazarusidestrconsts:lisfindfiletexttofind
 msgid "Text to find:"
@@ -7696,7 +7732,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisenvoptdlginvalidfpcsrcdir
 msgid "The FPC source directory \"%s\" does not look correct. Normally it contains directories like rtl, fcl, packages, compiler, ... ."
-msgstr ""
+msgstr "Kansio \"%s\" ei vaikuta FreePascalin lähdekoodin kansiolta! Senhän pitäisi sisältää sellaisia kansioita kuten  rtl, fcl, packages, compiler jne."
 
 #: lazarusidestrconsts:liscodetoolsdefsthefreepascalsvnsourcedir
 msgid "The Free Pascal SVN source directory."
@@ -7792,7 +7828,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisenvoptdlginvalidcompilerfilenamemsg
 msgid "The compiler file \"%s\" is not an executable."
-msgstr ""
+msgstr "Kääntäjän tiedosto \"%s\" ei ole ajettavissa."
 
 #: lazarusidestrconsts:lispkgmangthecompilerfileforpackageisnotavalidexecutable
 msgid "The compiler file for package %s is not a valid executable:%s%s"
@@ -7872,7 +7908,7 @@ msgstr "Tiedosto %s vaikuttaa siltä että se on ohjelmatiedosto Lazaruksella te
 
 #: lazarusidestrconsts:listhefile
 msgid "The file %s%s%s"
-msgstr ""
+msgstr "Tiedosto %s%s%s"
 
 #: lazarusidestrconsts:lisa2pthefileisalreadyinthepackage
 msgid "The file %s%s%s is already in the package."
@@ -7928,7 +7964,7 @@ msgstr "Tiedostoa %s%s%s%sei löytynyt.%sOhita-näppäimen nainallus jatkaa proj
 
 #: lazarusidestrconsts:uefilerotext1
 msgid "The file \""
-msgstr ""
+msgstr "Tiedosto \""
 
 #: lazarusidestrconsts:lispkgmangthefilenameispartofthecurrentproject
 msgid "The file name %s%s%s is part of the current project.%sProjects and Packages should not share files."
@@ -7972,7 +8008,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisenvoptdlginvalidlazarusdir
 msgid "The lazarus directory \"%s\" does not look correct. Normally it contains directories like lcl, debugger, designer, components, ... ."
-msgstr ""
+msgstr "Kansio \"%s\" ei vaikuta Lazarus:n kansiolta! Senhän pitäisi sisältää mm seuraavia kansioita kuten lcl, debugger, designer, components jne."
 
 #: lazarusidestrconsts:lisenvoptdlginvalidmakefilenamemsg
 msgid "The make file \"%s\" is not an executable."
@@ -8082,6 +8118,10 @@ msgstr ""
 msgid "The project info file %s%s%s%sis equal to the project main source file!"
 msgstr "Projektn info tiedosto %s%s%s%son/olisi saman niminen kuin projektin pääohjelman lähdekoodi tiedosto!"
 
+#: lazarusidestrconsts:listheprojectisclosedtherearenowthreepossibilitieshin
+msgid "The project is closed. There are now three possibilities.%sHint: You do not need to close a project yourself, since this is done automatically."
+msgstr ""
+
 #: lazarusidestrconsts:listheprojectmustbesavedbeforebuildingifyousetthetest
 msgid "The project must be saved before building%sIf you set the Test Directory in the environment options,%syou can create new projects and build them at once.%sSave project?"
 msgstr ""
@@ -8089,6 +8129,10 @@ msgstr ""
 #: lazarusidestrconsts:lispkgmangtheprojectrequiresthepackagebutitwasnotfound
 msgid "The project requires the package %s%s%s.%sBut it was not found. See Project -> Project Inspector."
 msgstr "Sovellus tarvitsee komponenttipaketin %s%s%s.%sMutta sitä ei löydy (tai ei ole asennettu). Katso projektivalikon kohtaa -> Projektinhallinta."
+
+#: lazarusidestrconsts:listheresourceclassdescendsfromprobablythisisatypofor
+msgid "The resource class %s%s%s descends from %s%s%s. Probably this is a typo for TForm."
+msgstr ""
 
 #: lazarusidestrconsts:lismakeresstrchooseanothername
 msgid "The resourcestring %s%s%s already exists.%sPlease choose another name.%sUse Ignore to add it anyway."
@@ -8384,7 +8428,7 @@ msgstr ""
 
 #: lazarusidestrconsts:srkmcattoolmenu
 msgid "Tools menu commands"
-msgstr ""
+msgstr "Työkalutvalikon komennot"
 
 #: lazarusidestrconsts:dlgtooltipeval
 msgid "Tooltip expression evaluation"
@@ -8594,6 +8638,10 @@ msgstr ""
 msgid "Unable to find method. Plz fix the error shown in the message window."
 msgstr "Metodia ei löydetty. Ole hyvä ja korjaa kääntäjän viestin mukainen virhe."
 
+#: lazarusidestrconsts:lisunabletofindtheunitofcomponentclass
+msgid "Unable to find the unit of component class %s%s%s."
+msgstr ""
+
 #: lazarusidestrconsts:lisunabletogathereditorchanges
 msgid "Unable to gather editor changes."
 msgstr ""
@@ -8616,6 +8664,10 @@ msgstr "Resurssitiedoston lukeminen ei onnistunut.%sResurssitiedosto pitää oll
 
 #: lazarusidestrconsts:lispkgmangunabletoloadpackage
 msgid "Unable to load package"
+msgstr ""
+
+#: lazarusidestrconsts:lisunabletoloadthecomponentclassbecauseitdependsonits
+msgid "Unable to load the component class %s%s%s, because it depends on itself."
 msgstr ""
 
 #: lazarusidestrconsts:lispkgmangunabletoopenthepackage
@@ -9380,7 +9432,7 @@ msgstr ""
 
 #: lazarusidestrconsts:uefilerotext2
 msgid "\" is not writable."
-msgstr ""
+msgstr "\" ei voida tallentaa."
 
 #: lazarusidestrconsts:srkmecabortbuild
 msgid "abort build"

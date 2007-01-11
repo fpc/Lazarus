@@ -352,6 +352,10 @@ msgstr ""
 msgid "Abort loading project"
 msgstr "中断所有加载中的工程"
 
+#: lazarusidestrconsts:lisabortwholeloading
+msgid "Abort whole loading"
+msgstr ""
+
 #: lazarusidestrconsts:lismenutemplateabout
 msgid "About"
 msgstr "关于"
@@ -1040,6 +1044,10 @@ msgstr "只能更改 TComponents 的类."
 msgid "Cancel"
 msgstr "取消"
 
+#: lazarusidestrconsts:liscancelloadingthiscomponent
+msgid "Cancel loading this component"
+msgstr ""
+
 #: lazarusidestrconsts:liscancelloadingunit
 msgid "Cancel loading unit"
 msgstr "取消载入单元"
@@ -1256,6 +1264,10 @@ msgstr "未找到类 %s%s%s."
 msgid "Class Name already exists"
 msgstr "类名已经存在"
 
+#: lazarusidestrconsts:lisclassconflictswithlfmfiletheunitusesthetheunitwhic
+msgid "Class conflicts with .lfm file:%sThe unit %s%suses the the unit %s%swhich contains the class %s,%sbut the .lfm file contains already another class.%sThere can only be one design class per unit.%sPlease move %s to another unit."
+msgstr ""
+
 #: lazarusidestrconsts:lisclassnotfound
 msgid "Class not found"
 msgstr "未找到类"
@@ -1328,12 +1340,20 @@ msgstr "关闭"
 msgid "Close All"
 msgstr ""
 
+#: lazarusidestrconsts:lismenucloseproject
+msgid "Close Project"
+msgstr ""
+
 #: lazarusidestrconsts:lismenucloseall
 msgid "Close all editor files"
 msgstr "关闭所有编辑器中的文件"
 
 #: lazarusidestrconsts:lissrclosepage
 msgid "Close page"
+msgstr ""
+
+#: lazarusidestrconsts:liskmcloseproject
+msgid "Close project"
 msgstr ""
 
 #: lazarusidestrconsts:dlgcodegeneration
@@ -1903,6 +1923,10 @@ msgstr "请先创建一个工程!"
 #: lazarusidestrconsts:lisa2pcreatenewfile
 msgid "Create new file"
 msgstr "创建新的文件"
+
+#: lazarusidestrconsts:liscreatenewproject
+msgid "Create new project"
+msgstr ""
 
 #: lazarusidestrconsts:dlgruberbandcreationcolor
 msgid "Creation"
@@ -3675,6 +3699,10 @@ msgstr "忽略行首的空格"
 #: lazarusidestrconsts:lisdebugoptionsfrmignoretheseexceptions
 msgid "Ignore these exceptions"
 msgstr "忽略这些例外"
+
+#: lazarusidestrconsts:lisignoreusetformasancestor
+msgid "Ignore, use TForm as ancestor"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecimestr
 msgid "Ime Str"
@@ -5952,6 +5980,10 @@ msgstr "工程单元路径"
 msgid "Project changed"
 msgstr "工程已经更改"
 
+#: lazarusidestrconsts:lisprojectclosed
+msgid "Project closed"
+msgstr ""
+
 #: lazarusidestrconsts:lisprojectdirectory
 msgid "Project directory"
 msgstr "工程目录"
@@ -6047,6 +6079,10 @@ msgstr "快速语法检查"
 #: lazarusidestrconsts:lismenuquit
 msgid "Quit"
 msgstr "退出"
+
+#: lazarusidestrconsts:lisquitlazarus
+msgid "Quit Lazarus"
+msgstr ""
 
 #: lazarusidestrconsts:dlgcorange
 msgid "Range"
@@ -8096,6 +8132,10 @@ msgstr "工程对此包有依赖关系 %s%s%s."
 msgid "The project info file %s%s%s%sis equal to the project main source file!"
 msgstr "工程信息文件 %s%s%s%s和工程主文件是等价的!"
 
+#: lazarusidestrconsts:listheprojectisclosedtherearenowthreepossibilitieshin
+msgid "The project is closed. There are now three possibilities.%sHint: You do not need to close a project yourself, since this is done automatically."
+msgstr ""
+
 #: lazarusidestrconsts:listheprojectmustbesavedbeforebuildingifyousetthetest
 msgid "The project must be saved before building%sIf you set the Test Directory in the environment options,%syou can create new projects and build them at once.%sSave project?"
 msgstr "在编译工程之前必须保存%s如果你在环境选项中设置了测试目录,%s你可以创建一个新的工程然后马上编译.%s保存工程?"
@@ -8103,6 +8143,10 @@ msgstr "在编译工程之前必须保存%s如果你在环境选项中设置了�
 #: lazarusidestrconsts:lispkgmangtheprojectrequiresthepackagebutitwasnotfound
 msgid "The project requires the package %s%s%s.%sBut it was not found. See Project -> Project Inspector."
 msgstr "工程需要包 %s%s%s.%s但是未找到包. 查看 工程 -> 工程浏览器."
+
+#: lazarusidestrconsts:listheresourceclassdescendsfromprobablythisisatypofor
+msgid "The resource class %s%s%s descends from %s%s%s. Probably this is a typo for TForm."
+msgstr ""
 
 #: lazarusidestrconsts:lismakeresstrchooseanothername
 msgid "The resourcestring %s%s%s already exists.%sPlease choose another name.%sUse Ignore to add it anyway."
@@ -8608,6 +8652,10 @@ msgstr "无法找到文件 %s%s%s.%s请检查搜索目录%s工程->编译选项.
 msgid "Unable to find method. Plz fix the error shown in the message window."
 msgstr "无法找到 method. 请先修复消息窗口中显示的错误."
 
+#: lazarusidestrconsts:lisunabletofindtheunitofcomponentclass
+msgid "Unable to find the unit of component class %s%s%s."
+msgstr ""
+
 #: lazarusidestrconsts:lisunabletogathereditorchanges
 msgid "Unable to gather editor changes."
 msgstr "无法收集编辑器更改."
@@ -8631,6 +8679,10 @@ msgstr "无法载入老的资源文件文件.%s资源文件首先包含在%s初�
 #: lazarusidestrconsts:lispkgmangunabletoloadpackage
 msgid "Unable to load package"
 msgstr "无法载入包"
+
+#: lazarusidestrconsts:lisunabletoloadthecomponentclassbecauseitdependsonits
+msgid "Unable to load the component class %s%s%s, because it depends on itself."
+msgstr ""
 
 #: lazarusidestrconsts:lispkgmangunabletoopenthepackage
 msgid "Unable to open the package %s%s%s.%sThis package was marked for installation."

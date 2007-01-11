@@ -299,6 +299,7 @@ components/printers/Makefile.fpc svneol=native#text/plain
 components/printers/design/Makefile svneol=native#text/plain
 components/printers/design/Makefile.fpc svneol=native#text/plain
 components/printers/design/ideprinting.pas svneol=native#text/plain
+components/printers/design/languages/ideprinting.fi.po svneol=native#text/plain
 components/printers/design/languages/ideprinting.po svneol=native#text/plain
 components/printers/design/printers4lazide.lpk svneol=native#text/plain
 components/printers/design/printers4lazide.pas svneol=native#text/plain

@@ -348,6 +348,10 @@ msgstr ""
 msgid "Abort loading project"
 msgstr "ロードプロジェクトについて"
 
+#: lazarusidestrconsts:lisabortwholeloading
+msgid "Abort whole loading"
+msgstr ""
+
 #: lazarusidestrconsts:lismenutemplateabout
 msgid "About"
 msgstr "関して"
@@ -1036,6 +1040,10 @@ msgstr ""
 msgid "Cancel"
 msgstr "取消"
 
+#: lazarusidestrconsts:liscancelloadingthiscomponent
+msgid "Cancel loading this component"
+msgstr ""
+
 #: lazarusidestrconsts:liscancelloadingunit
 msgid "Cancel loading unit"
 msgstr "ユニット展開中止"
@@ -1252,6 +1260,10 @@ msgstr "クラス %s%s%s がありません"
 msgid "Class Name already exists"
 msgstr "クラス名はすでにあります"
 
+#: lazarusidestrconsts:lisclassconflictswithlfmfiletheunitusesthetheunitwhic
+msgid "Class conflicts with .lfm file:%sThe unit %s%suses the the unit %s%swhich contains the class %s,%sbut the .lfm file contains already another class.%sThere can only be one design class per unit.%sPlease move %s to another unit."
+msgstr ""
+
 #: lazarusidestrconsts:lisclassnotfound
 msgid "Class not found"
 msgstr "クラスがみつかりません"
@@ -1324,12 +1336,20 @@ msgstr "閉じる"
 msgid "Close All"
 msgstr ""
 
+#: lazarusidestrconsts:lismenucloseproject
+msgid "Close Project"
+msgstr ""
+
 #: lazarusidestrconsts:lismenucloseall
 msgid "Close all editor files"
 msgstr "全ファイルを閉じる"
 
 #: lazarusidestrconsts:lissrclosepage
 msgid "Close page"
+msgstr ""
+
+#: lazarusidestrconsts:liskmcloseproject
+msgid "Close project"
 msgstr ""
 
 #: lazarusidestrconsts:dlgcodegeneration
@@ -1898,6 +1918,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisa2pcreatenewfile
 msgid "Create new file"
+msgstr ""
+
+#: lazarusidestrconsts:liscreatenewproject
+msgid "Create new project"
 msgstr ""
 
 #: lazarusidestrconsts:dlgruberbandcreationcolor
@@ -3670,6 +3694,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisdebugoptionsfrmignoretheseexceptions
 msgid "Ignore these exceptions"
+msgstr ""
+
+#: lazarusidestrconsts:lisignoreusetformasancestor
+msgid "Ignore, use TForm as ancestor"
 msgstr ""
 
 #: lazarusidestrconsts:srkmecimestr
@@ -5948,6 +5976,10 @@ msgstr ""
 msgid "Project changed"
 msgstr ""
 
+#: lazarusidestrconsts:lisprojectclosed
+msgid "Project closed"
+msgstr ""
+
 #: lazarusidestrconsts:lisprojectdirectory
 msgid "Project directory"
 msgstr ""
@@ -6043,6 +6075,10 @@ msgstr "構文を素早くチェック"
 #: lazarusidestrconsts:lismenuquit
 msgid "Quit"
 msgstr "終了"
+
+#: lazarusidestrconsts:lisquitlazarus
+msgid "Quit Lazarus"
+msgstr ""
 
 #: lazarusidestrconsts:dlgcorange
 msgid "Range"
@@ -8092,6 +8128,10 @@ msgstr ""
 msgid "The project info file %s%s%s%sis equal to the project main source file!"
 msgstr ""
 
+#: lazarusidestrconsts:listheprojectisclosedtherearenowthreepossibilitieshin
+msgid "The project is closed. There are now three possibilities.%sHint: You do not need to close a project yourself, since this is done automatically."
+msgstr ""
+
 #: lazarusidestrconsts:listheprojectmustbesavedbeforebuildingifyousetthetest
 msgid "The project must be saved before building%sIf you set the Test Directory in the environment options,%syou can create new projects and build them at once.%sSave project?"
 msgstr ""
@@ -8099,6 +8139,10 @@ msgstr ""
 #: lazarusidestrconsts:lispkgmangtheprojectrequiresthepackagebutitwasnotfound
 msgid "The project requires the package %s%s%s.%sBut it was not found. See Project -> Project Inspector."
 msgstr "プロジェクト → プロジェクトインスペクター"
+
+#: lazarusidestrconsts:listheresourceclassdescendsfromprobablythisisatypofor
+msgid "The resource class %s%s%s descends from %s%s%s. Probably this is a typo for TForm."
+msgstr ""
 
 #: lazarusidestrconsts:lismakeresstrchooseanothername
 msgid "The resourcestring %s%s%s already exists.%sPlease choose another name.%sUse Ignore to add it anyway."
@@ -8604,6 +8648,10 @@ msgstr ""
 msgid "Unable to find method. Plz fix the error shown in the message window."
 msgstr ""
 
+#: lazarusidestrconsts:lisunabletofindtheunitofcomponentclass
+msgid "Unable to find the unit of component class %s%s%s."
+msgstr ""
+
 #: lazarusidestrconsts:lisunabletogathereditorchanges
 msgid "Unable to gather editor changes."
 msgstr ""
@@ -8626,6 +8674,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lispkgmangunabletoloadpackage
 msgid "Unable to load package"
+msgstr ""
+
+#: lazarusidestrconsts:lisunabletoloadthecomponentclassbecauseitdependsonits
+msgid "Unable to load the component class %s%s%s, because it depends on itself."
 msgstr ""
 
 #: lazarusidestrconsts:lispkgmangunabletoopenthepackage

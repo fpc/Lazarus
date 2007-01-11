@@ -349,6 +349,10 @@ msgstr ""
 msgid "Abort loading project"
 msgstr "Het laden van het project afbreken"
 
+#: lazarusidestrconsts:lisabortwholeloading
+msgid "Abort whole loading"
+msgstr ""
+
 #: lazarusidestrconsts:lismenutemplateabout
 msgid "About"
 msgstr "Informatie"
@@ -1037,6 +1041,10 @@ msgstr "Alleen the class van TComponents kan gewijzigd worden."
 msgid "Cancel"
 msgstr "Annuleren"
 
+#: lazarusidestrconsts:liscancelloadingthiscomponent
+msgid "Cancel loading this component"
+msgstr ""
+
 #: lazarusidestrconsts:liscancelloadingunit
 msgid "Cancel loading unit"
 msgstr "Laden van de unit annuleren"
@@ -1253,6 +1261,10 @@ msgstr "Klasse %s%s%s niet gevonden."
 msgid "Class Name already exists"
 msgstr "Klassenaam bestaat reeds"
 
+#: lazarusidestrconsts:lisclassconflictswithlfmfiletheunitusesthetheunitwhic
+msgid "Class conflicts with .lfm file:%sThe unit %s%suses the the unit %s%swhich contains the class %s,%sbut the .lfm file contains already another class.%sThere can only be one design class per unit.%sPlease move %s to another unit."
+msgstr ""
+
 #: lazarusidestrconsts:lisclassnotfound
 msgid "Class not found"
 msgstr "Klasse niet gevonden"
@@ -1325,12 +1337,20 @@ msgstr "Sluiten"
 msgid "Close All"
 msgstr ""
 
+#: lazarusidestrconsts:lismenucloseproject
+msgid "Close Project"
+msgstr ""
+
 #: lazarusidestrconsts:lismenucloseall
 msgid "Close all editor files"
 msgstr "Sluit alle editorbestanden"
 
 #: lazarusidestrconsts:lissrclosepage
 msgid "Close page"
+msgstr ""
+
+#: lazarusidestrconsts:liskmcloseproject
+msgid "Close project"
 msgstr ""
 
 #: lazarusidestrconsts:dlgcodegeneration
@@ -1900,6 +1920,10 @@ msgstr "Maak eerst een project!"
 #: lazarusidestrconsts:lisa2pcreatenewfile
 msgid "Create new file"
 msgstr "Maak een nieuw bestand"
+
+#: lazarusidestrconsts:liscreatenewproject
+msgid "Create new project"
+msgstr ""
 
 #: lazarusidestrconsts:dlgruberbandcreationcolor
 msgid "Creation"
@@ -3672,6 +3696,10 @@ msgstr "Negeer spaties aan begin van regel"
 #: lazarusidestrconsts:lisdebugoptionsfrmignoretheseexceptions
 msgid "Ignore these exceptions"
 msgstr "Negeer deze exceptions"
+
+#: lazarusidestrconsts:lisignoreusetformasancestor
+msgid "Ignore, use TForm as ancestor"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecimestr
 msgid "Ime Str"
@@ -5949,6 +5977,10 @@ msgstr "Project Unit pad"
 msgid "Project changed"
 msgstr "Project is gewijzigd"
 
+#: lazarusidestrconsts:lisprojectclosed
+msgid "Project closed"
+msgstr ""
+
 #: lazarusidestrconsts:lisprojectdirectory
 msgid "Project directory"
 msgstr "Project directory"
@@ -6044,6 +6076,10 @@ msgstr "Snellere Syntaxcheck"
 #: lazarusidestrconsts:lismenuquit
 msgid "Quit"
 msgstr "Afsluiten"
+
+#: lazarusidestrconsts:lisquitlazarus
+msgid "Quit Lazarus"
+msgstr ""
 
 #: lazarusidestrconsts:dlgcorange
 msgid "Range"
@@ -8093,6 +8129,10 @@ msgstr "Het project is al afhankelijk van het pakket %s%s%s."
 msgid "The project info file %s%s%s%sis equal to the project main source file!"
 msgstr "Het project info bestand %s%s%s%s"
 
+#: lazarusidestrconsts:listheprojectisclosedtherearenowthreepossibilitieshin
+msgid "The project is closed. There are now three possibilities.%sHint: You do not need to close a project yourself, since this is done automatically."
+msgstr ""
+
 #: lazarusidestrconsts:listheprojectmustbesavedbeforebuildingifyousetthetest
 msgid "The project must be saved before building%sIf you set the Test Directory in the environment options,%syou can create new projects and build them at once.%sSave project?"
 msgstr "Het project moet worden opgeslagen voor het bouwen%sAls je de Test Directory invuld bij de Omgeving Opties,%skun je nieuwe projecten maken en deze gelijk bouwen.%sPorject opslaan?"
@@ -8100,6 +8140,10 @@ msgstr "Het project moet worden opgeslagen voor het bouwen%sAls je de Test Direc
 #: lazarusidestrconsts:lispkgmangtheprojectrequiresthepackagebutitwasnotfound
 msgid "The project requires the package %s%s%s.%sBut it was not found. See Project -> Project Inspector."
 msgstr "Het project heeft het pakket %s%s%s nodig.%sDit is niet gevonden. Zie Project -> Project Inspecteur"
+
+#: lazarusidestrconsts:listheresourceclassdescendsfromprobablythisisatypofor
+msgid "The resource class %s%s%s descends from %s%s%s. Probably this is a typo for TForm."
+msgstr ""
 
 #: lazarusidestrconsts:lismakeresstrchooseanothername
 msgid "The resourcestring %s%s%s already exists.%sPlease choose another name.%sUse Ignore to add it anyway."
@@ -8605,6 +8649,10 @@ msgstr "Kan het bestand %s%s%s niet vinden.%sControleer het zoekpad in%sProject-
 msgid "Unable to find method. Plz fix the error shown in the message window."
 msgstr "Kan de methode niet vinden. Herstel de fout getoond in het mededelingen scherm."
 
+#: lazarusidestrconsts:lisunabletofindtheunitofcomponentclass
+msgid "Unable to find the unit of component class %s%s%s."
+msgstr ""
+
 #: lazarusidestrconsts:lisunabletogathereditorchanges
 msgid "Unable to gather editor changes."
 msgstr "Kan de bewerker-wijzigingen niet verzamelen."
@@ -8628,6 +8676,10 @@ msgstr "Kan het oude resource bestand niet laden.%sHet resource bestand is de ee
 #: lazarusidestrconsts:lispkgmangunabletoloadpackage
 msgid "Unable to load package"
 msgstr "Kan het package niet laden"
+
+#: lazarusidestrconsts:lisunabletoloadthecomponentclassbecauseitdependsonits
+msgid "Unable to load the component class %s%s%s, because it depends on itself."
+msgstr ""
 
 #: lazarusidestrconsts:lispkgmangunabletoopenthepackage
 msgid "Unable to open the package %s%s%s.%sThis package was marked for installation."

@@ -349,6 +349,10 @@ msgstr ""
 msgid "Abort loading project"
 msgstr "Avorta carrega del projecte"
 
+#: lazarusidestrconsts:lisabortwholeloading
+msgid "Abort whole loading"
+msgstr ""
+
 #: lazarusidestrconsts:lismenutemplateabout
 msgid "About"
 msgstr "Quant a"
@@ -1037,6 +1041,10 @@ msgstr ""
 msgid "Cancel"
 msgstr "Cancel·la"
 
+#: lazarusidestrconsts:liscancelloadingthiscomponent
+msgid "Cancel loading this component"
+msgstr ""
+
 #: lazarusidestrconsts:liscancelloadingunit
 msgid "Cancel loading unit"
 msgstr "Cancel·lar carrega de l'unitat"
@@ -1253,6 +1261,10 @@ msgstr "No s'ha trobat la Classe %s%s%S"
 msgid "Class Name already exists"
 msgstr "Ja existeix el nom de la classe"
 
+#: lazarusidestrconsts:lisclassconflictswithlfmfiletheunitusesthetheunitwhic
+msgid "Class conflicts with .lfm file:%sThe unit %s%suses the the unit %s%swhich contains the class %s,%sbut the .lfm file contains already another class.%sThere can only be one design class per unit.%sPlease move %s to another unit."
+msgstr ""
+
 #: lazarusidestrconsts:lisclassnotfound
 msgid "Class not found"
 msgstr "No s'ha trobat la classe"
@@ -1325,6 +1337,10 @@ msgstr "Tanca"
 msgid "Close All"
 msgstr ""
 
+#: lazarusidestrconsts:lismenucloseproject
+msgid "Close Project"
+msgstr ""
+
 #: lazarusidestrconsts:lismenucloseall
 msgid "Close all editor files"
 msgstr "Tanca tots els fitxers de l'editor"
@@ -1332,6 +1348,10 @@ msgstr "Tanca tots els fitxers de l'editor"
 #: lazarusidestrconsts:lissrclosepage
 msgid "Close page"
 msgstr "Tanca pàgina"
+
+#: lazarusidestrconsts:liskmcloseproject
+msgid "Close project"
+msgstr ""
 
 #: lazarusidestrconsts:dlgcodegeneration
 msgid "Code"
@@ -1900,6 +1920,10 @@ msgstr "Creeu primer un projecte!"
 #: lazarusidestrconsts:lisa2pcreatenewfile
 msgid "Create new file"
 msgstr "Crea nou arxiu"
+
+#: lazarusidestrconsts:liscreatenewproject
+msgid "Create new project"
+msgstr ""
 
 #: lazarusidestrconsts:dlgruberbandcreationcolor
 msgid "Creation"
@@ -3672,6 +3696,10 @@ msgstr "Ignora els espais al començament de la línia"
 #: lazarusidestrconsts:lisdebugoptionsfrmignoretheseexceptions
 msgid "Ignore these exceptions"
 msgstr "Ignora aquestes excepcions"
+
+#: lazarusidestrconsts:lisignoreusetformasancestor
+msgid "Ignore, use TForm as ancestor"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecimestr
 msgid "Ime Str"
@@ -5949,6 +5977,10 @@ msgstr "Trajectòria de les unitats del projecte"
 msgid "Project changed"
 msgstr "El projecte ha canviat"
 
+#: lazarusidestrconsts:lisprojectclosed
+msgid "Project closed"
+msgstr ""
+
 #: lazarusidestrconsts:lisprojectdirectory
 msgid "Project directory"
 msgstr "Directori del projecte"
@@ -6044,6 +6076,10 @@ msgstr "Comprova la sintaxi ràpidament"
 #: lazarusidestrconsts:lismenuquit
 msgid "Quit"
 msgstr "Surt"
+
+#: lazarusidestrconsts:lisquitlazarus
+msgid "Quit Lazarus"
+msgstr ""
 
 #: lazarusidestrconsts:dlgcorange
 msgid "Range"
@@ -8093,6 +8129,10 @@ msgstr "El projecte ja té una dependència pel paquet %s%s%s."
 msgid "The project info file %s%s%s%sis equal to the project main source file!"
 msgstr "El fitxer d'informació del projecte %s%s%s%sés igual al fitxer principal del codi font del projecte!"
 
+#: lazarusidestrconsts:listheprojectisclosedtherearenowthreepossibilitieshin
+msgid "The project is closed. There are now three possibilities.%sHint: You do not need to close a project yourself, since this is done automatically."
+msgstr ""
+
 #: lazarusidestrconsts:listheprojectmustbesavedbeforebuildingifyousetthetest
 msgid "The project must be saved before building%sIf you set the Test Directory in the environment options,%syou can create new projects and build them at once.%sSave project?"
 msgstr "S'ha de desar el projecte abans de muntar de nou%sSi fiqueu el directori de les proves en les opcions de l'entorn,%spodeu crear projectes nous i muntar-los al mateix temps.%sVoleu desar el projecte?"
@@ -8100,6 +8140,10 @@ msgstr "S'ha de desar el projecte abans de muntar de nou%sSi fiqueu el directori
 #: lazarusidestrconsts:lispkgmangtheprojectrequiresthepackagebutitwasnotfound
 msgid "The project requires the package %s%s%s.%sBut it was not found. See Project -> Project Inspector."
 msgstr "El projecte requereix el paquet %s%s%s.%sPerò no s'ha trobat. Mireu Projecte -> Inspector del Projecte."
+
+#: lazarusidestrconsts:listheresourceclassdescendsfromprobablythisisatypofor
+msgid "The resource class %s%s%s descends from %s%s%s. Probably this is a typo for TForm."
+msgstr ""
 
 #: lazarusidestrconsts:lismakeresstrchooseanothername
 msgid "The resourcestring %s%s%s already exists.%sPlease choose another name.%sUse Ignore to add it anyway."
@@ -8605,6 +8649,10 @@ msgstr "No es pot trobar el fitxer %s%s%s.%sComproveu la trajectòria a%sProject
 msgid "Unable to find method. Plz fix the error shown in the message window."
 msgstr "No es pot trobar el mètode. Si us plau, comproveu l'error mostrat a la finestra de missatges."
 
+#: lazarusidestrconsts:lisunabletofindtheunitofcomponentclass
+msgid "Unable to find the unit of component class %s%s%s."
+msgstr ""
+
 #: lazarusidestrconsts:lisunabletogathereditorchanges
 msgid "Unable to gather editor changes."
 msgstr ""
@@ -8628,6 +8676,10 @@ msgstr "No es pot carregar fitxer del recurs antic.%sEl fitxer del recurs és el
 #: lazarusidestrconsts:lispkgmangunabletoloadpackage
 msgid "Unable to load package"
 msgstr "No es pot carregar el paquet"
+
+#: lazarusidestrconsts:lisunabletoloadthecomponentclassbecauseitdependsonits
+msgid "Unable to load the component class %s%s%s, because it depends on itself."
+msgstr ""
 
 #: lazarusidestrconsts:lispkgmangunabletoopenthepackage
 msgid "Unable to open the package %s%s%s.%sThis package was marked for installation."

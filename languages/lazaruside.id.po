@@ -352,6 +352,10 @@ msgstr ""
 msgid "Abort loading project"
 msgstr "Batalkan pengambilan proyek"
 
+#: lazarusidestrconsts:lisabortwholeloading
+msgid "Abort whole loading"
+msgstr ""
+
 #: lazarusidestrconsts:lismenutemplateabout
 msgid "About"
 msgstr "Tentang"
@@ -1040,6 +1044,10 @@ msgstr "Hanya bisa mengubah kelas dari TComponents."
 msgid "Cancel"
 msgstr "Batal"
 
+#: lazarusidestrconsts:liscancelloadingthiscomponent
+msgid "Cancel loading this component"
+msgstr ""
+
 #: lazarusidestrconsts:liscancelloadingunit
 msgid "Cancel loading unit"
 msgstr "Batalkan pengambilan unit"
@@ -1256,6 +1264,10 @@ msgstr "Class %s%s%s tidak ditemukan."
 msgid "Class Name already exists"
 msgstr "Nama Class sudah ada"
 
+#: lazarusidestrconsts:lisclassconflictswithlfmfiletheunitusesthetheunitwhic
+msgid "Class conflicts with .lfm file:%sThe unit %s%suses the the unit %s%swhich contains the class %s,%sbut the .lfm file contains already another class.%sThere can only be one design class per unit.%sPlease move %s to another unit."
+msgstr ""
+
 #: lazarusidestrconsts:lisclassnotfound
 msgid "Class not found"
 msgstr "Class tidak ditemukan"
@@ -1328,12 +1340,20 @@ msgstr "Tutup"
 msgid "Close All"
 msgstr ""
 
+#: lazarusidestrconsts:lismenucloseproject
+msgid "Close Project"
+msgstr ""
+
 #: lazarusidestrconsts:lismenucloseall
 msgid "Close all editor files"
 msgstr "Tutup semua file editor"
 
 #: lazarusidestrconsts:lissrclosepage
 msgid "Close page"
+msgstr ""
+
+#: lazarusidestrconsts:liskmcloseproject
+msgid "Close project"
 msgstr ""
 
 #: lazarusidestrconsts:dlgcodegeneration
@@ -1903,6 +1923,10 @@ msgstr "Buat proyek dulu!"
 #: lazarusidestrconsts:lisa2pcreatenewfile
 msgid "Create new file"
 msgstr "Buat file baru"
+
+#: lazarusidestrconsts:liscreatenewproject
+msgid "Create new project"
+msgstr ""
 
 #: lazarusidestrconsts:dlgruberbandcreationcolor
 msgid "Creation"
@@ -3675,6 +3699,10 @@ msgstr "Abaikan spasi diawal baris"
 #: lazarusidestrconsts:lisdebugoptionsfrmignoretheseexceptions
 msgid "Ignore these exceptions"
 msgstr "Abaikan eksepsi ini"
+
+#: lazarusidestrconsts:lisignoreusetformasancestor
+msgid "Ignore, use TForm as ancestor"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecimestr
 msgid "Ime Str"
@@ -5952,6 +5980,10 @@ msgstr "UnitPath Proyek"
 msgid "Project changed"
 msgstr "Prouek diubah"
 
+#: lazarusidestrconsts:lisprojectclosed
+msgid "Project closed"
+msgstr ""
+
 #: lazarusidestrconsts:lisprojectdirectory
 msgid "Project directory"
 msgstr "Direktori proyek"
@@ -6047,6 +6079,10 @@ msgstr "Pemeriksaan sintaks cepat"
 #: lazarusidestrconsts:lismenuquit
 msgid "Quit"
 msgstr "Keluar"
+
+#: lazarusidestrconsts:lisquitlazarus
+msgid "Quit Lazarus"
+msgstr ""
 
 #: lazarusidestrconsts:dlgcorange
 msgid "Range"
@@ -8096,6 +8132,10 @@ msgstr "Proyek sudah mempunyai dependensi untuk paket %s%s%s."
 msgid "The project info file %s%s%s%sis equal to the project main source file!"
 msgstr "File info proyek %s%s%s%ssama dengan file sumber utama proyek!"
 
+#: lazarusidestrconsts:listheprojectisclosedtherearenowthreepossibilitieshin
+msgid "The project is closed. There are now three possibilities.%sHint: You do not need to close a project yourself, since this is done automatically."
+msgstr ""
+
 #: lazarusidestrconsts:listheprojectmustbesavedbeforebuildingifyousetthetest
 msgid "The project must be saved before building%sIf you set the Test Directory in the environment options,%syou can create new projects and build them at once.%sSave project?"
 msgstr "Proyek harus disimpan sebelum pembangunan%sJika anda menset Direktori Test dalam opsi lingkungan,%sanda bisa membuat proyek baru dan membangunnya sekaligus.%sSimpan proyek?"
@@ -8103,6 +8143,10 @@ msgstr "Proyek harus disimpan sebelum pembangunan%sJika anda menset Direktori Te
 #: lazarusidestrconsts:lispkgmangtheprojectrequiresthepackagebutitwasnotfound
 msgid "The project requires the package %s%s%s.%sBut it was not found. See Project -> Project Inspector."
 msgstr "Proyek memerlukan paket %s%s%s.%sTetapi tidak ditemukan. Lihat Proyek -> Inspektor Proyek."
+
+#: lazarusidestrconsts:listheresourceclassdescendsfromprobablythisisatypofor
+msgid "The resource class %s%s%s descends from %s%s%s. Probably this is a typo for TForm."
+msgstr ""
 
 #: lazarusidestrconsts:lismakeresstrchooseanothername
 msgid "The resourcestring %s%s%s already exists.%sPlease choose another name.%sUse Ignore to add it anyway."
@@ -8608,6 +8652,10 @@ msgstr "Tidak bisa menemukan file %s%s%s.%sPeriksa path pencarian dalam%sPryek->
 msgid "Unable to find method. Plz fix the error shown in the message window."
 msgstr "Tidak bisa menemukan metode. Silahkan betulkan kesalahan yang ditampilkan dalam jendela pesan."
 
+#: lazarusidestrconsts:lisunabletofindtheunitofcomponentclass
+msgid "Unable to find the unit of component class %s%s%s."
+msgstr ""
+
 #: lazarusidestrconsts:lisunabletogathereditorchanges
 msgid "Unable to gather editor changes."
 msgstr "Tidak bisa mengumpulkan perubahan editor."
@@ -8631,6 +8679,10 @@ msgstr "Tidak bisa mengambil file resource. %sFile resource adalah file include 
 #: lazarusidestrconsts:lispkgmangunabletoloadpackage
 msgid "Unable to load package"
 msgstr "Tidak bisa mengambil paket"
+
+#: lazarusidestrconsts:lisunabletoloadthecomponentclassbecauseitdependsonits
+msgid "Unable to load the component class %s%s%s, because it depends on itself."
+msgstr ""
 
 #: lazarusidestrconsts:lispkgmangunabletoopenthepackage
 msgid "Unable to open the package %s%s%s.%sThis package was marked for installation."

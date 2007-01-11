@@ -1,0 +1,4 @@
+#: ideprinting:sdescrpfselection
+msgid "Print..."
+msgstr "Tulosta..."
+
