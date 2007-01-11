@@ -740,7 +740,7 @@ begin
 
   Msg.msg := LM_HSCROLL;
   // get scrollcode
-  if ssLeft in GTKEventState2ShiftState(Word(Mask))
+  if ssLeft in GTKEventStateToShiftState(Word(Mask))
   then Msg.ScrollCode := SB_THUMBTRACK
   else if V <= L
   then Msg.ScrollCode := SB_TOP
@@ -802,7 +802,7 @@ begin
 
   Msg.msg := LM_VSCROLL;
   // Get scrollcode
-  if ssLeft in GTKEventState2ShiftState(Word(Mask))
+  if ssLeft in GTKEventStateToShiftState(Word(Mask))
   then Msg.ScrollCode := SB_THUMBTRACK
   else if V <= L
   then Msg.ScrollCode := SB_TOP

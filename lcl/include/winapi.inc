@@ -842,11 +842,6 @@ begin
   Result := WidgetSet.UpdateWindow(Handle);
 end;
 
-function VkKeyScan(AChar: Char): Short;
-begin
-  Result := WidgetSet.VkKeyScan(AChar);
-end;
-
 function WindowFromPoint(Point : TPoint) : HWND;
 begin
   Result := WidgetSet.WindowFromPoint(Point);

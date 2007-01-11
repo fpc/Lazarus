@@ -1431,11 +1431,6 @@ begin
   Result := false;
 end;
 
-function TWidgetSet.VkKeyScan(AChar: Char): Short;
-begin
-  Result := -1; // $FFFF
-end;
-
 Function TWidgetSet.WindowFromPoint(Point : TPoint) : HWND;
 begin
   Result := 0;

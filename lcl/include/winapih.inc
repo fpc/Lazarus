@@ -237,8 +237,6 @@ function UpdateWindow(Handle: HWND): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$E
 
 //function UnionRect --> independent
 
-function VkKeyScan(AChar: Char): Short; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-
 Function WindowFromPoint(Point : TPoint) : HWND; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 //##apiwiz##eps##     // Do not remove
 {******************************************************************************

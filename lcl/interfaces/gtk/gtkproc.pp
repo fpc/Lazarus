@@ -29,6 +29,9 @@ interface
 
 {off $DEFINE VerboseAccelerator}
 
+{off $define VerboseModifiermap}
+
+
 {$IFDEF Unix}
   {$DEFINE HasX}
   {$IFDEF Gtk1}
@@ -178,10 +181,16 @@ function gtkfrmactivateAfter( widget: PGtkWidget; Event: PgdkEventFocus;
 function gtkfrmdeactivateAfter( widget: PGtkWidget; Event: PgdkEventFocus;
   data: gPointer): GBoolean; cdecl;
 function GTKMap(Widget: PGTKWidget; Data: gPointer): GBoolean; cdecl;
-function GTKKeyUpDown(Widget: PGtkWidget; Event: pgdkeventkey;
+
+function GTKKeyPress(Widget: PGtkWidget; Event: pgdkeventkey;
   Data: gPointer): GBoolean; cdecl;
-function GTKKeyUpDownAfter(Widget: PGtkWidget; Event: pgdkeventkey;
+function GTKKeyPressAfter(Widget: PGtkWidget; Event: pgdkeventkey;
   Data: gPointer): GBoolean; cdecl;
+function GTKKeyRelease(Widget: PGtkWidget; Event: pgdkeventkey;
+  Data: gPointer): GBoolean; cdecl;
+function GTKKeyReleaseAfter(Widget: PGtkWidget; Event: pgdkeventkey;
+  Data: gPointer): GBoolean; cdecl;
+
 function GTKFocusCB(widget: PGtkWidget; event:PGdkEventFocus;
                     data: gPointer): GBoolean; cdecl;
 function GTKFocusCBAfter(widget: PGtkWidget; event:PGdkEventFocus;
@@ -502,18 +511,15 @@ function GetRGBAsKey(p: pointer): pointer;
 type
   TVKeyUTF8Char = array[0..7] of Char;
   TVKeyInfo = record
-    KeyCode: Byte;
+    KeyCode: array[Boolean] of Byte; // false is primary keycode, true the keycode of the other key when 2 keys exist (like CTRL or extended key)
     KeySym: array[0..7] of Integer;
     KeyChar: array[0..3] of TVKeyUTF8Char;
   end;
 
 procedure InitKeyboardTables;
 procedure DoneKeyboardTables;
-function CharToVKandFlags(const AUTF8Char: TVKeyUTF8Char): Word;
 function GetVKeyInfo(const AVKey: Byte): TVKeyInfo;
-function IsToggleKey(const AVKey: Byte): Boolean;
-function GTKEventState2ShiftState(KeyState: Word): TShiftState;
-//function KeyToListCode_(KeyCode, VirtKeyCode: Word; Extended: boolean): integer;
+function GTKEventStateToShiftState(KeyState: Word): TShiftState;
 procedure gdk_event_key_get_string(Event: PGDKEventKey; var theString: Pointer);
 procedure gdk_event_key_set_string(Event: PGDKEventKey; const NewString: PChar);
 function gdk_event_get_type(Event: Pointer): TGdkEventType;
@@ -521,8 +527,8 @@ procedure RememberKeyEventWasHandledByLCL(Event: PGdkEventKey;
                                           BeforeEvent: boolean);
 function KeyEventWasHandledByLCL(Event: PGdkEventKey;
                                  BeforeEvent: boolean): boolean;
-function HandleGTKKeyUpDown(Widget: PGtkWidget; Event: PGdkEventKey;
-  Data: gPointer; BeforeEvent: boolean) : GBoolean;
+function HandleGTKKeyUpDown(AWidget: PGtkWidget; AEvent: PGdkEventKey;
+  AData: gPointer; ABeforeEvent, AHandleDown: Boolean) : GBoolean;
 
 // ----
 
@@ -941,28 +947,43 @@ uses
   dynlibs;
 
 const
-  VKEY_FLAG_SHIFT    = $01;
-  VKEY_FLAG_CTRL     = $02;
-  VKEY_FLAG_ALT      = $04;
-  VKEY_FLAG_KEY_MASK = $07;
-  VKEY_FLAG_EXT      = $10; // extended key
-  VKEY_FLAG_MULTI_VK = $20; // key has more than one VK
+  KCINFO_FLAG_SHIFT         = $01;
+  KCINFO_FLAG_CTRL          = $02;
+  KCINFO_FLAG_ALTGR         = $04;
+  KCINFO_FLAG_KEY_MASK      = $07;
+  KCINFO_FLAG_EXT           = $10; // extended key
+  KCINFO_FLAG_TOGGLE        = $20; // toggle key
+
+  KCINFO_FLAG_SHIFT_XOR_NUM = $40; // second vkey should be used when numlock <>shift
+  KCINFO_FLAG_MULTI_MASK    = $C0; // key has more than one VK
 
 
 type
-  PVKeyRecord = ^TVKeyRecord;
-  TVKeyRecord = record
-    VKey: Byte;
+  PKeyCodeInfo = ^TKeyCodeInfo;
+  TKeyCodeInfo = record
+    VKey1: Byte;
+    VKey2: Byte; // second code to be used depending on the type of MULTI_VK flag
     Flags: Byte; // indicates if Alt | Ctrl | Shift is needed
                  // extended state
   end;
   
 var
-  MKeyCodeToVK: array[Byte] of Byte;
+  MKeyCodeInfo: array[Byte] of TKeyCodeInfo;
   MVKeyInfo: array[Byte] of TVKeyInfo;
-  MKeySymToVKMap: TMap;  // keysym ->TVKeyRecord
-  MSymCharToVKMap: TMap; //char->TVKeyRecord
+
+  // Modifier keys can be set by a modmap and don't have to be the same on all systems
+  // Some defaults are set here incase we didn't find them
+type
+  TModifier = record
+    Mask: Cardinal;    // if UseValue is set, the modifier is set when the masked state matches the value
+    Value: Cardinal;   // otherwise any nonzero value will match
+    UseValue: Boolean;
+  end;
+
+var
+  MModifiers: array[TShiftStateEnum] of TModifier;
   
+
 type
   // TLCLHandledKeyEvent is used to remember, if an gdk key event was already
   // handled.
@@ -1041,12 +1062,27 @@ procedure InitGTKProc;
 var
   lgs: TLazGtkStyle;
 begin
-  MKeySymToVKMap := TMap.Create(itu4, SizeOf(TVKeyRecord));
+  //MKeySymToVKMap := TMap.Create(itu4, SizeOf(TVKeyRecord));
   // UTF8 is max 4 bytes, acombined makes it 8
-  MSymCharToVKMap := TMap.Create(itu8, SizeOf(TVKeyRecord));
+  //MSymCharToVKMap := TMap.Create(itu8, SizeOf(TVKeyRecord));
+  
+  // fill initial modifier list
+  FillByte(MModifiers, SizeOf(MModifiers), 0);
+  // keyboard
+  MModifiers[ssShift].Mask    := GDK_SHIFT_MASK;
+  MModifiers[ssCaps].Mask     := GDK_LOCK_MASK;
+  MModifiers[ssCtrl].Mask     := GDK_CONTROL_MASK;
+  MModifiers[ssAlt].Mask      := GDK_MOD1_MASK;
+  MModifiers[ssNum].Mask      := GDK_MOD3_MASK; //todo: check this I've 2 here,but 3 was the original code
+  MModifiers[ssSuper].Mask    := GDK_MOD4_MASK;
+  MModifiers[ssScroll].Mask   := GDK_MOD5_MASK; //todo: check this I've ssAltGr here, but ssScroll was the original code
+  MModifiers[ssAltGr].Mask    := GDK_RELEASE_MASK;
+  // mouse
+  MModifiers[ssLeft].Mask     := GDK_BUTTON1_MASK;
+  MModifiers[ssMiddle].Mask   := GDK_BUTTON2_MASK;
+  MModifiers[ssRight].Mask    := GDK_BUTTON3_MASK;
 
-
-  FillChar(MKeyCodeToVK, SizeOf(MKeyCodeToVK), $FF);
+  FillChar(MKeyCodeInfo, SizeOf(MKeyCodeInfo), $FF);
   FillChar(MVKeyInfo, SizeOf(MVKeyInfo), 0);
 
 
@@ -1062,8 +1098,8 @@ end;
 procedure DoneGTKProc;
 begin
   DoneKeyboardTables;
-  FreeAndNil(MKeySymToVKMap);
-  FreeAndNil(MSymCharToVKMap);
+//  FreeAndNil(MKeySymToVKMap);
+//  FreeAndNil(MSymCharToVKMap);
 end;
 
 {$IFDEF GTK1}

@@ -2483,12 +2483,6 @@ Begin
 //    Result := 0;
 End;
 
-{function TWinCEWidgetSet.VkKeyScan(AChar: Char): Short;
-begin
-  Result:=inherited VkKeyScan(AChar);
-end;
-}
-
 
 {------------------------------------------------------------------------------
   Method:  CallDefaultWndHandler

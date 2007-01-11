@@ -3614,13 +3614,13 @@ procedure TGtkWidgetSet.SetCallback(const AMsg: LongInt;
   begin
     //debugln('ConnectKeyPressReleaseEvents A ALCLObject=',DbgSName(ALCLObject));
     ConnectSenderSignal(AnObject,
-      'key-press-event', @GTKKeyUpDown, GDK_KEY_PRESS_MASK);
+      'key-press-event', @GTKKeyPress, GDK_KEY_PRESS_MASK);
     ConnectSenderSignalAfter(AnObject,
-      'key-press-event', @GTKKeyUpDownAfter, GDK_KEY_PRESS_MASK);
+      'key-press-event', @GTKKeyPressAfter, GDK_KEY_PRESS_MASK);
     ConnectSenderSignal(AnObject,
-      'key-release-event', @GTKKeyUpDown, GDK_KEY_RELEASE_MASK);
+      'key-release-event', @GTKKeyRelease, GDK_KEY_RELEASE_MASK);
     ConnectSenderSignalAfter(AnObject,
-      'key-release-event', @GTKKeyUpDownAfter, GDK_KEY_RELEASE_MASK);
+      'key-release-event', @GTKKeyReleaseAfter, GDK_KEY_RELEASE_MASK);
   end;
   
   function GetAdjustment(const gObject: PGTKObject; vertical: boolean):PGtkObject;

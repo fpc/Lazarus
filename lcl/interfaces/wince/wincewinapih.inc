@@ -228,7 +228,6 @@ function StretchMaskBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; X
 Function TextOut(DC: HDC; X,Y : Integer; Str : Pchar; Count: Integer) : Boolean; override;
 
 function UpdateWindow(Handle: HWND): Boolean;override;
-{function VkKeyScan(AChar: Char): Short; override;}
 
 Function WindowFromPoint(Point : TPoint) : HWND; override;
 

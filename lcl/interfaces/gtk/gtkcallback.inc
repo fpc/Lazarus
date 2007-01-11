@@ -584,16 +584,24 @@ begin
   EventTrace('map', data);
 end;
 
-function GTKKeyUpDown(Widget: PGtkWidget; Event: PGdkEventKey;
-  Data: gPointer) : GBoolean; cdecl;
+function GTKKeyPress(Widget: PGtkWidget; Event: PGdkEventKey; Data: gPointer) : GBoolean; cdecl;
 begin
-  Result:=HandleGtkKeyUpDown(Widget,Event,Data,true);
+  Result := HandleGtkKeyUpDown(Widget,Event,Data,true, True);
 end;
 
-function GTKKeyUpDownAfter(Widget: PGtkWidget; Event: pgdkeventkey;
-  Data: gPointer): GBoolean; cdecl;
+function GTKKeyPressAfter(Widget: PGtkWidget; Event: pgdkeventkey; Data: gPointer): GBoolean; cdecl;
 begin
-  Result:=HandleGtkKeyUpDown(Widget,Event,Data,false);
+  Result := HandleGtkKeyUpDown(Widget,Event,Data,false, True);
+end;
+
+function GTKKeyRelease(Widget: PGtkWidget; Event: PGdkEventKey; Data: gPointer) : GBoolean; cdecl;
+begin
+  Result := HandleGtkKeyUpDown(Widget,Event,Data,true, False);
+end;
+
+function GTKKeyReleaseAfter(Widget: PGtkWidget; Event: pgdkeventkey; Data: gPointer): GBoolean; cdecl;
+begin
+  Result := HandleGtkKeyUpDown(Widget,Event,Data,false, False);
 end;
 
 function GTKFocusCB( widget: PGtkWidget; event:PGdkEventFocus;
@@ -914,7 +922,7 @@ begin
                                Point(TruncToInt(Event^.X),TruncToInt(Event^.Y)),
                                PGtkWidget(AWinControl.Handle));
 
-  ShiftState := GTKEventState2ShiftState(Event^.State);
+  ShiftState := GTKEventStateToShiftState(Event^.State);
   with Msg do
   begin
     Msg := LM_MouseMove;
@@ -1252,7 +1260,7 @@ begin
   MousePositionValid:=false;
 
   EventXY:=Point(TruncToInt(Event^.X),TruncToInt(Event^.Y));
-  ShiftState := GTKEventState2ShiftState(Event^.State);
+  ShiftState := GTKEventStateToShiftState(Event^.State);
   MappedXY:=TranslateGdkPointToClientArea(Event^.Window,EventXY,
                                           PGtkWidget(AWinControl.Handle));
   //DebugLn('DeliverMouseDownMessage ',DbgSName(AWinControl),' Mapped=',dbgs(MappedXY.X),',',dbgs(MappedXY.Y),' Event=',dbgs(EventXY.X),',',dbgs(EventXY.Y));
@@ -1526,7 +1534,7 @@ begin
   MessI.XPos := MappedXY.X;
   MessI.YPos := MappedXY.Y;
 
-  ShiftState := gtkeventstate2shiftstate(Event^.State);
+  ShiftState := gtkeventstateToshiftstate(Event^.State);
   MessI.Keys := 0;
   if ssShift in ShiftState then MessI.Keys := MessI.Keys or MK_SHIFT;
   if ssCtrl in ShiftState then MessI.Keys := MessI.Keys or MK_CONTROL;
@@ -1679,7 +1687,7 @@ begin
     and (ofAllowMultiSelect in TOpenDialog(theDialog).Options)
     and (FileSelWidget^.file_list=widget) then begin
       // multi selection
-      ShiftState := GTKEventState2ShiftState(BEvent^.State);
+      ShiftState := GTKEventStateToShiftState(BEvent^.State);
       if ssShift in ShiftState then begin
         if LastFileSelectRow <> -1 then begin
           startRow := LastFileSelectRow;
@@ -2876,11 +2884,11 @@ var
   end;
 
 const
-  STATE_MAP: array[0..3] of Byte = (
-    GDK_SHIFT_MASK,   // shift
-    GDK_CONTROL_MASK, // control
-    GDK_MOD1_MASK,    // alt
-    GDK_MOD4_MASK     // win
+  STATE_MAP: array[0..3] of TShiftStateEnum = (
+    ssShift,
+    ssCtrl,
+    ssAlt,
+    ssSuper
   );
   VK_MAP: array[0..3] of array[0..2] of Byte = (
     // (Main key, alt key 1, alt key 2) to check
@@ -2890,9 +2898,13 @@ const
     (VK_LWIN, VK_RWIN, 0)
   );
 var
-  VKey: PVKeyRecord;
-  Pressed: Boolean;
+  KeyCode: Word;
+  KCInfo: TKeyCodeInfo;
+  VKey: Byte;
+  Pressed, InState: Boolean;
+
   n: Integer;
+  ShiftState: TShiftState;
 begin
   Result := 0;
 
@@ -2905,54 +2917,80 @@ begin
     // not interested
     Exit;
   end;
-
-  VKey := MKeySymToVKMap.GetDataPtr(Event^.keyval);
-  if VKey = nil
+  
+  {$ifdef gtk1}
+    KeyCode := XKeysymToKeycode(gdk_display, Event^.keyval);
+  {$else}
+    KeyCode := Event^.hardware_keycode;
+  {$endif}
+  //DebugLn('GTKKeySnooper: KeyCode=%u -> %s', [KeyCode, {$IFDEF GTK2} Event^._String {$ELSE} Event^.theString {$ENDIF}]);
+  
+  if KeyCode > High(MKeyCodeInfo)
   then begin
     if Pressed
-    then DebugLn(Format('[WARNING] Key pressed without VKey: K=0x%x S="%s"', [
+    then DebugLn('[WARNING] Key pressed with keycode (%u) larger than expected: K=0x%x S="%s"', [
+      KeyCode,
       Event^.KeyVal,
       {$IFDEF GTK2} Event^._String {$ELSE} Event^.theString {$ENDIF}
-    ]));
+    ]);
+    Exit;
+  end;
+  
+  KCInfo := MKeyCodeInfo[KeyCode];
+  if KCInfo.VKey1 = 0
+  then begin
+    if Pressed
+    then DebugLn('[WARNING] Key pressed without VKey: K=0x%x S="%s"', [
+      Event^.KeyVal,
+      {$IFDEF GTK2} Event^._String {$ELSE} Event^.theString {$ENDIF}
+    ]);
     Exit;
   end;
 
-  if FuncData=nil then exit;
+  if FuncData = nil then exit;
   KeyStateList := TObject(FuncData) as TFPList;
+  
+  ShiftState := GTKEventStateToShiftState(Event^.State);
+  
+  if (KCInfo.Flags and KCINFO_FLAG_SHIFT_XOR_NUM <> 0)
+  and ((ssShift in ShiftState) xor (ssNum in ShiftState))
+  then VKey := KCInfo.VKey2
+  else VKey := KCInfo.VKey1;
 
-  UpdateList(Vkey^.VKey, Pressed);
-  if IsToggleKey(Vkey^.VKey)
-  then UpdateToggleList(Vkey^.VKey);
+  UpdateList(VKey, Pressed);
+  if (KCInfo.Flags and KCINFO_FLAG_TOGGLE <> 0)
+  then UpdateToggleList(VKey);
 
   // Add special left and right codes
   case Event^.KeyVal of
-    GDK_Key_Shift_L:    UpdateList(VK_LSHIFT, Pressed);
-    GDK_Key_Shift_R:    UpdateList(VK_RSHIFT, Pressed);
-    GDK_Key_Control_L:  UpdateList(VK_LCONTROL, Pressed);
-    GDK_Key_Control_R:  UpdateList(VK_RCONTROL, Pressed);
-    GDK_Key_Alt_L:      UpdateList(VK_LMENU, Pressed);
-    GDK_Key_Alt_R:      UpdateList(VK_RMENU, Pressed);
+    GDK_Key_Shift_L:   UpdateList(VK_LSHIFT,   Pressed);
+    GDK_Key_Shift_R:   UpdateList(VK_RSHIFT,   Pressed);
+    GDK_Key_Control_L: UpdateList(VK_LCONTROL, Pressed);
+    GDK_Key_Control_R: UpdateList(VK_RCONTROL, Pressed);
+    GDK_Key_Alt_L:     UpdateList(VK_LMENU,    Pressed);
+    GDK_Key_Alt_R:     UpdateList(VK_RMENU,    Pressed);
   end;
 
   // Recheck the list against the modifiers
   for n := 0 to High(STATE_MAP) do
   begin
     // Skip our current key, since the state is updated after the event
-    if VKey^.Vkey = VK_MAP[n][0] then Continue;
-    if VKey^.Vkey = VK_MAP[n][1] then Continue;
-    if VKey^.Vkey = VK_MAP[n][2] then Continue;
+    if VKey = VK_MAP[n][0] then Continue;
+    if VKey = VK_MAP[n][1] then Continue;
+    if VKey = VK_MAP[n][2] then Continue;
 
-    UpdateList(VK_MAP[n][0], (STATE_MAP[n] and Event^.State) <> 0);
-    UpdateList(VK_MAP[n][1], (STATE_MAP[n] and Event^.State) <> 0);
-    UpdateList(VK_MAP[n][2], (STATE_MAP[n] and Event^.State) <> 0);
+    InState := STATE_MAP[n] in ShiftState;
+    UpdateList(VK_MAP[n][0], InState);
+    UpdateList(VK_MAP[n][1], InState);
+    UpdateList(VK_MAP[n][2], InState);
   end;
 
   // if the VKey has multiple VK_codes then SHIFT distinguishes between them
   // In that case SHIFT is not pressed
   // On the next event the shift flag will be restored based on modifiers
-  if Pressed and ((VKey^.Flags and VKEY_FLAG_MULTI_VK) <> 0)
+  if Pressed and ((KCInfo.Flags and KCINFO_FLAG_SHIFT_XOR_NUM) <> 0)
   then begin
-    UpdateList(VK_SHIFT, False);
+    UpdateList(VK_SHIFT,  False);
     UpdateList(VK_LSHIFT, False);
     UpdateList(VK_RSHIFT, False);
   end;

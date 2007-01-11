@@ -978,11 +978,6 @@ begin
   Result:=inherited TextOut(DC, X, Y, Str, Count);
 end;
 
-function TCarbonWidgetSet.VkKeyScan(AChar: Char): Short;
-begin
-  Result:=inherited VkKeyScan(AChar);
-end;
-
 function TCarbonWidgetSet.WindowFromPoint(Point: TPoint): HWND;
 begin
   Result:=inherited WindowFromPoint(Point);

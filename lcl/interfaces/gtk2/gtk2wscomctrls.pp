@@ -27,7 +27,7 @@ unit Gtk2WSComCtrls;
 interface
 
 uses
-// libs
+  // libs
   GLib2, Gtk2, Gdk2, Gdk2pixbuf,
   // LCL
   ComCtrls, Classes, FPCAdds, LCLType, LMessages, Controls, Graphics, CommCtrl,

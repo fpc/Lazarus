@@ -9665,21 +9665,6 @@ begin
   end;
 end;
 {$EndIf}
-{------------------------------------------------------------------------------
-  Function: VkKeyScan
-  Params: AChar: Character to translate
-  Returns: LoByte: VK-code
-           HiByte: ALT | CTRL | SHIFT pressed -> bit2 | bit1 | bit0
-
- ------------------------------------------------------------------------------}
-function TGtkWidgetSet.VkKeyScan(AChar: Char): Short;
-var
-  UTF8Char: TVKeyUTF8Char;
-begin
-  FillByte(UTF8Char, SizeOf(UTF8Char), 0);
-  UTF8Char[0] := AChar;
-  Result := CharToVkAndFlags(UTF8Char);
-end;
 
 {------------------------------------------------------------------------------
   Function: WindowFromPoint
