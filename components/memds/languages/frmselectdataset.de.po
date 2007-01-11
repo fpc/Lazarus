@@ -6,7 +6,7 @@ msgstr ""
 "Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: frmselectdataset:serrcomponentnotfound
@@ -23,5 +23,5 @@ msgstr "Daten aus Dataset kopiern"
 
 #: frmselectdataset:serrselectdataset
 msgid "Please select a dataset first"
-msgstr "Bitte w‰hlen Sie zuerst ein Dataset"
+msgstr "Bitte w√§hlen Sie zuerst ein Dataset"
 

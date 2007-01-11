@@ -274,11 +274,23 @@ var
     if s<>'' then ms.Write(s[1],length(s));
   end;
   
+  procedure WriteLine(const s: string);
+  begin
+    if s<>'' then ms.Write(s[1],length(s));
+    ms.Write(e[1],length(e));
+  end;
+
 begin
   Result:=false;
   try
     e:=LineEnding;
     ms:=TMemoryStream.Create;
+    
+    // write header
+    WriteLine('"MIME-Version: 1.0\n"');
+    WriteLine('"Content-Type: text/plain; charset=UTF-8\n"');
+    WriteLine('"Content-Transfer-Encoding: 8bit\n"');
+    WriteStr(e);
 
     Node:=TreeOfConstItems.FindLowest;
     while Node<>nil do begin
