@@ -74,7 +74,8 @@ function GetLazarusLanguageLocalizedName(const ID: string): String;
 procedure CollectTranslations(const LazarusDir: string);
 
 function ConvertRSTFiles(RSTDirectory, PODirectory: string): Boolean;
-function ConvertRSTFile(const RSTFilename, OutputFilename: string): Boolean;
+function ConvertRSTFile(const RSTFilename, OutputFilename: string;
+             CheckContentChange: Boolean; var ContentChanged: Boolean): Boolean;
 
 var
   LazarusTranslations: TLazarusTranslations = nil;
@@ -259,33 +260,101 @@ begin
 end;
 
 function ConvertToGettextPO(TreeOfConstItems: TAVLTree;
-  const OutFilename: string): Boolean;
+  const OutFilename: string; CheckContentChange: Boolean;
+  var ContentChanged: Boolean): Boolean;
 var
   j: Integer;
   item: TConstItem;
   s: String;
   c: Char;
   Node: TAVLTreeNode;
-  ms: TMemoryStream;
+  NewContent: TMemoryStream;
   e: string;
+  OldContent: TMemoryStream;
   
   procedure WriteStr(const s: string);
   begin
-    if s<>'' then ms.Write(s[1],length(s));
+    if s<>'' then NewContent.Write(s[1],length(s));
   end;
   
   procedure WriteLine(const s: string);
   begin
-    if s<>'' then ms.Write(s[1],length(s));
-    ms.Write(e[1],length(e));
+    if s<>'' then NewContent.Write(s[1],length(s));
+    NewContent.Write(e[1],length(e));
+  end;
+  
+  function CompareMemStreamText(s1, s2: TMemoryStream): Boolean;
+  // compare text in s2, s2 ignoring line ends
+  var
+    p1: PChar;
+    p2: PChar;
+    Count1: Int64;
+    Count2: Int64;
+  begin
+    if s1.Memory=nil then begin
+      Result:=s2.Memory=nil;
+    end else begin
+      if s2.Memory=nil then begin
+        Result:=false;
+      end else begin
+        p1:=PChar(s1.Memory);
+        p2:=PChar(s2.Memory);
+        Count1:=s1.Size;
+        Count2:=s2.Size;
+        repeat
+          if not (p1^ in [#10,#13]) then begin
+            // p1 has normal char
+            if p1^=p2^ then begin
+              inc(p1);
+              dec(Count1);
+              inc(p2);
+              dec(Count2);
+            end else begin
+              exit(false);
+            end;
+          end else begin
+            // p1 has a newline
+            if (p2^ in [#10,#13]) then begin
+              // p2 has a newline
+              if (Count1>1) and (p1[1] in [#10,#13]) and (p1[0]<>p1[1]) then
+              begin
+                inc(p1,2);
+                dec(Count1,2);
+              end else begin
+                inc(p1);
+                dec(Count1);
+              end;
+              if (Count2>1) and (p2[1] in [#10,#13]) and (p2[0]<>p2[1]) then
+              begin
+                inc(p2,2);
+                dec(Count2,2);
+              end else begin
+                inc(p2);
+                dec(Count2);
+              end;
+            end else begin
+              // p1 has newline, p2 not
+              exit(false);
+            end;
+          end;
+          if Count1=0 then begin
+            Result:=Count2=0;
+            exit;
+          end else if Count2=0 then begin
+            exit(false);
+          end;
+        until false;
+      end;
+    end;
   end;
 
 begin
   Result:=false;
+  ContentChanged:=false;
   try
     e:=LineEnding;
-    ms:=TMemoryStream.Create;
-    
+    NewContent:=TMemoryStream.Create;
+
     // write header
     WriteLine('"MIME-Version: 1.0\n"');
     WriteLine('"Content-Type: text/plain; charset=UTF-8\n"');
@@ -331,14 +400,24 @@ begin
       Node:=TreeOfConstItems.FindSuccessor(Node);
     end;
 
-    ms.Position:=0;
-    ms.SaveToFile(OutFilename);
+    NewContent.Position:=0;
+    if CheckContentChange then begin
+      OldContent:=TMemoryStream.Create;
+      OldContent.LoadFromFile(OutFilename);
+      ContentChanged:=CompareMemStreamText(NewContent,OldContent);
+      OldContent.Free;
+    end else begin
+      ContentChanged:=true;
+    end;
+    if ContentChanged then
+      NewContent.SaveToFile(OutFilename);
     Result:=true;
   except
   end;
 end;
 
-function ConvertRSTFile(const RSTFilename, OutputFilename: string): Boolean;
+function ConvertRSTFile(const RSTFilename, OutputFilename: string;
+  CheckContentChange: Boolean; var ContentChanged: Boolean): Boolean;
 var
   TreeOfConstItems: TAVLTree;
 begin
@@ -352,7 +431,9 @@ begin
       exit;
     end;
     // write .po file
-    if not ConvertToGettextPO(TreeOfConstItems,OutputFilename) then begin
+    if not ConvertToGettextPO(TreeOfConstItems,OutputFilename,
+      CheckContentChange,ContentChanged)
+    then begin
       DebugLn(['ConvertRSTFile writing failed: OutputFilename=',OutputFilename]);
       exit;
     end;
@@ -370,6 +451,7 @@ var
   FileInfo: TSearchRec;
   RSTFilename: String;
   OutputFilename: String;
+  ContentChanged: Boolean;
 begin
   Result:=true;
   if (RSTDirectory='') then exit;// nothing to do
@@ -389,9 +471,14 @@ begin
       //DebugLn(['ConvertPackageRSTFiles RSTFilename=',RSTFilename,' OutputFilename=',OutputFilename]);
       if (not FileExists(OutputFilename))
       or (FileAge(RSTFilename)>FileAge(OutputFilename)) then begin
-        if not ConvertRSTFile(RSTFilename,OutputFilename) then begin
+        ContentChanged:=false;
+        if not ConvertRSTFile(RSTFilename,OutputFilename,true,ContentChanged)
+        then begin
           DebugLn(['ConvertPackageRSTFiles FAILED: RSTFilename=',RSTFilename,' OutputFilename=',OutputFilename]);
           exit(false);
+        end;
+        if ContentChanged then begin
+          // ToDo: update translations
         end;
       end;
     until SysUtils.FindNext(FileInfo)<>0;
