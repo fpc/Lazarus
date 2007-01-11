@@ -167,7 +167,7 @@ var
 begin
   lVisible := AWinControl.HandleAllocated and Windows.IsWindowVisible(AWinControl.Handle);
   if lVisible then
-    ScrollWindowPtr(AWinControl.Handle, DeltaX, DeltaY, nil, nil);
+    ScrollWindowPtr(AWinControl.Handle, -DeltaX, -DeltaY, nil, nil);
 end;
 
 { TWin32WSCustomForm }
