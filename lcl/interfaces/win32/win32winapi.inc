@@ -1922,7 +1922,7 @@ begin
   BitmapInfo.bmiHeader.biCompression := BI_RGB;
   {BitmapInfo.bmiHeader.biSizeImage := 0;}
 
-  hScreenDC := Windows.GetDC(0);
+  hScreenDC := Windows.GetDC(Windows.GetDesktopWindow);
   MaskBitmap := 0;
   Bitmap := Windows.CreateDIBitmap(hScreenDC, Windows.TBitmapInfoHeader(BitmapInfo.bmiHeader), 
     CBM_INIT, RawImage.Data, Windows.TBitmapInfo(BitmapInfo), DIB_RGB_COLORS);
@@ -1939,14 +1939,14 @@ begin
         if Result then
         begin
           BitmapInfo.bmiHeader.biBitCount := 1;
-          Result := Windows.SetDIBits(0, MaskBitmap, 0, RawImage.Description.Height, 
+          Result := Windows.SetDIBits(hScreenDC, MaskBitmap, 0, RawImage.Description.Height, 
             RawImage.Mask, Windows.TBitmapInfo(BitmapInfo), DIB_RGB_COLORS) 
               = LongInt(RawImage.Description.Height);
         end;
       end;
     end;
   end;
-  Windows.ReleaseDC(0, hScreenDC);
+  Windows.ReleaseDC(Windows.GetDesktopWindow, hScreenDC);
 end;
 
 function TWin32WidgetSet.CreateDIBSection(DC: HDC; const p2: tagBitmapInfo; p3: UINT;
