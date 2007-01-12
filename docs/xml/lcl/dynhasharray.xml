@@ -416,8 +416,7 @@ if A.Contains(s) then
   writeln('2:it contains s.');
   writeln('2:count:',A.Count);
 ReadLn;
-StrDispose(s);   </code>
-</descr>
+StrDispose(s);   </code></descr>
         <errors/>
         <seealso/>
       </element>
@@ -481,8 +480,7 @@ StrDispose(s);   </code>
       <!-- procedure Visibility: public -->
       <element name="TDynHashArray.Remove">
         <short>Removes an element from the set/hash array</short>
-        <descr><p>An example:</p>
-<code>{$mode objfpc}{$H+}
+        <descr><p>An example:</p><code>{$mode objfpc}{$H+}
 
 uses
   {$IFDEF UNIX}{$IFDEF UseCThreads}
@@ -543,8 +541,7 @@ if A.Contains(s) then
   writeln('2:it contains s.');
   writeln('2:count:',A.Count);
 ReadLn;
-StrDispose(s);   </code>
-</descr>
+StrDispose(s);   </code></descr>
         <errors/>
         <seealso/>
       </element>
@@ -591,8 +588,7 @@ if A.Contains(s) then
   writeln('2:it contains s.');
   writeln('2:count:',A.Count);
 ReadLn;
-StrDispose(s);   </code>
-</descr>
+StrDispose(s);   </code></descr>
         <seealso/>
       </element>
       <!-- function Visibility: public -->
