@@ -1749,9 +1749,9 @@ begin
         Show := WParam <> 0;
         Status := LParam;
       End;
-
-      if assigned(lWinControl) and ((WParam<>0) or not lWinControl.Visible)
-        and ((WParam=0) or lWinControl.Visible)
+      //DebugLn(GetStackTrace(false));
+      if assigned(lWinControl) {and ((WParam<>0) or not lWinControl.Visible)
+        and ((WParam=0) or lWinControl.Visible)}
         and (Application<>nil) and (lWinControl=Application.MainForm) then
       begin
         if WParam=0 then

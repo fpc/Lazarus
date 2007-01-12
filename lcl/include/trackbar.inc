@@ -112,14 +112,22 @@ end;
   Change the orientation of the trackbar.
 ------------------------------------------------------------------------------}
 procedure TCustomTrackBar.SetOrientation(Value: TTrackBarOrientation);
+var
+  OldWidth: LongInt;
+  OldHeight: LongInt;
 begin
   if FOrientation <> Value then
   begin
     FOrientation := Value;
-    if HandleAllocated then
-    begin
+    // switch width and height, but not when loading, because we assume that the
+    // lfm contains a consistent combination of Orientation and (width, height)
+    if not (csLoading in ComponentState) then begin
+      OldWidth:=Width;
+      OldHeight:=Height;
+      SetBounds(Left,Top,OldHeight,OldWidth);
       // TODO: Remove RecreateWnd
-      RecreateWnd(Self);
+      if HandleAllocated then
+        RecreateWnd(Self);
     end;
   end;
 end;
