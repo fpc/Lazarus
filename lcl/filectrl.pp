@@ -156,6 +156,7 @@ begin
   then
     Repeat
       if FileInFilenameMasks(Info.Name,Mask) then begin
+        writeln(Info.Name, ' ', Info.Attr);
         Added:=false;
         AddFile(ftReadOnly,faReadOnly);
         AddFile(ftHidden,faHidden);
@@ -163,7 +164,9 @@ begin
         AddFile(ftVolumeID,faVolumeId);
         AddFile(ftDirectory,faDirectory);
         AddFile(ftArchive,faArchive);
-        AddFile(ftNormal,faArchive);
+        if not Added and (ftNormal in FileType) and
+          (faAnyFile and Info.Attr=0) then
+          Items.Add(Info.Name);
       end;
     Until SysUtils.FindNext(Info) <> 0;
   SysUtils.FindClose(Info);
