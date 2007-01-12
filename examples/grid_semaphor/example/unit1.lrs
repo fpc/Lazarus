@@ -1,86 +1,86 @@
 { This is an automatically generated lazarus resource file }
 
 LazarusResources.Add('TForm1','FORMDATA',[
-  'TPF0'#6'TForm1'#5'Form1'#4'Left'#3#183#0#6'Height'#3#160#1#3'Top'#2's'#5'Wid'
-  +'th'#3'N'#2#18'HorzScrollBar.Page'#3'M'#2#18'VertScrollBar.Page'#3#159#1#13
+  'TPF0'#6'TForm1'#5'Form1'#4'Left'#3#183#0#6'Height'#3#167#1#3'Top'#2's'#5'Wid'
+  +'th'#3'N'#2#18'HorzScrollBar.Page'#3'M'#2#18'VertScrollBar.Page'#3#166#1#13
   +'ActiveControl'#7#13'SemaphorGrid1'#7'Caption'#6#16'Try SemaphorGrid'#8'OnCr'
   +'eate'#7#11'Form1Create'#0#7'TButton'#7'Button1'#4'Left'#2#8#6'Height'#2#25#3
-  +'Top'#3#232#0#5'Width'#2'p'#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6#15
-  +'Toggle Semaphor'#7'OnClick'#7#12'Button1Click'#8'TabOrder'#2#1#0#0#7'TButto'
-  +'n'#7'Button2'#4'Left'#3#128#0#6'Height'#2#25#3'Top'#3#232#0#5'Width'#2'~'#25
-  +'BorderSpacing.InnerBorder'#2#4#7'Caption'#6#19'Next Semafore Style'#7'OnCli'
-  +'ck'#7#12'Button2Click'#8'TabOrder'#2#2#0#0#7'TButton'#7'Button3'#4'Left'#2#8
-  +#6'Height'#2#25#3'Top'#3#8#1#5'Width'#2'r'#25'BorderSpacing.InnerBorder'#2#4
-  +#7'Caption'#6#14'Next Alignment'#7'OnClick'#7#12'Button3Click'#8'TabOrder'#2
-  +#3#0#0#7'TButton'#7'Button4'#4'Left'#3'K'#1#6'Height'#2#25#3'Top'#3#8#1#5'Wi'
-  +'dth'#2'K'#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6#5'Close'#7'OnClick'
-  +#7#12'Button4Click'#8'TabOrder'#2#4#0#0#7'TButton'#7'Button5'#4'Left'#3#128#0
-  +#6'Height'#2#25#3'Top'#3#8#1#5'Width'#2'X'#25'BorderSpacing.InnerBorder'#2#4
-  +#7'Caption'#6#12'Save to File'#7'OnClick'#7#12'Button5Click'#8'TabOrder'#2#5
-  +#0#0#7'TButton'#7'Button6'#4'Left'#3#227#0#6'Height'#2#25#3'Top'#3#8#1#5'Wid'
-  +'th'#2'`'#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6#14'Load from File'#7
-  +'OnClick'#7#12'Button6Click'#8'TabOrder'#2#6#0#0#7'TButton'#7'Button7'#4'Lef'
-  +'t'#3#8#1#6'Height'#2#17#3'Top'#3#232#0#5'Width'#2'C'#25'BorderSpacing.Inner'
-  +'Border'#2#4#7'Caption'#6#9'AutoWidth'#7'OnClick'#7#12'Button7Click'#8'TabOr'
-  +'der'#2#7#0#0#7'TButton'#7'Button8'#4'Left'#3'N'#1#6'Height'#2#17#3'Top'#3
-  +#232#0#5'Width'#2'H'#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6#10'AutoH'
-  +'eight'#7'OnClick'#7#12'Button8Click'#8'TabOrder'#2#8#0#0#7'TButton'#7'Butto'
-  +'n9'#4'Left'#3#176#0#6'Height'#2#20#3'Top'#3#167#0#5'Width'#2'K'#25'BorderSp'
-  +'acing.InnerBorder'#2#4#7'Caption'#6#12'Sort Cols[4]'#7'OnClick'#7#12'Button'
-  +'9Click'#8'TabOrder'#2#9#0#0#12'TRadioButton'#12'RadioButton1'#4'Left'#3#3#1
-  +#6'Height'#2#20#3'Top'#3#164#0#5'Width'#2'T'#7'Caption'#6#9'Ascending'#7'Che'
-  +'cked'#9#5'State'#7#9'cbChecked'#8'TabOrder'#2#10#0#0#12'TRadioButton'#12'Ra'
-  +'dioButton2'#4'Left'#3#3#1#6'Height'#2#20#3'Top'#3#185#0#5'Width'#2'['#7'Cap'
-  +'tion'#6#10'Descending'#8'TabOrder'#2#11#0#0#7'TButton'#8'Button10'#4'Left'#2
-  +#8#6'Height'#2#25#3'Top'#3#164#0#5'Width'#3#142#0#25'BorderSpacing.InnerBord'
-  +'er'#2#4#7'Caption'#6#17'Hide/Show Cols[1]'#7'OnClick'#7#13'Button10Click'#8
-  +'TabOrder'#2#12#0#0#7'TButton'#8'Button11'#4'Left'#2#8#6'Height'#2#25#3'Top'
-  +#3#196#0#5'Width'#2','#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6#5'Clea'
-  +'r'#7'OnClick'#7#13'Button11Click'#8'TabOrder'#2#13#0#0#9'TCheckBox'#9'Check'
-  +'Box1'#4'Left'#2'<'#6'Height'#2#20#3'Top'#3#196#0#5'Width'#2'T'#7'Caption'#6
-  +#9'OnlyValue'#8'TabOrder'#2#14#0#0#7'TButton'#8'Button12'#4'Left'#3#176#0#6
-  +'Height'#2#18#3'Top'#3#190#0#5'Width'#2'K'#25'BorderSpacing.InnerBorder'#2#4
-  +#7'Caption'#6#12'Sort Cols[1]'#7'OnClick'#7#13'Button12Click'#8'TabOrder'#2
-  +#15#0#0#10'TToggleBox'#10'ToggleBox1'#4'Left'#3#128#1#6'Height'#2#13#3'Top'#3
-  +#167#0#5'Width'#2'G'#7'Caption'#6#10'UnEditable'#7'OnClick'#7#15'ToggleBox1C'
-  +'lick'#8'TabOrder'#2#16#0#0#9'TCheckBox'#9'CheckBox2'#4'Left'#3#128#1#6'Heig'
-  +'ht'#2#20#3'Top'#3#203#0#5'Width'#2'S'#7'Caption'#6#10'Only Float'#7'OnClick'
-  +#7#14'CheckBox2Click'#8'TabOrder'#2#17#0#0#7'TButton'#8'Button13'#4'Left'#3
-  +#152#1#6'Height'#2#17#3'Top'#3#232#0#5'Width'#2'H'#25'BorderSpacing.InnerBor'
-  +'der'#2#4#7'Caption'#6#7'AutoFit'#7'OnClick'#7#13'Button13Click'#8'TabOrder'
-  +#2#18#0#0#13'TSemaphorGrid'#13'SemaphorGrid1'#4'Left'#2#8#6'Height'#3#152#0#3
-  +'Top'#2#4#5'Width'#3'L'#1#5'Color'#7#7'clWhite'#8'ColCount'#2#5#16'DefaultRo'
-  +'wHeight'#2#24#10'FixedColor'#7#9'clBtnFace'#13'GridLineWidth'#2#0#7'Options'
-  +#11#15'goFixedVertLine'#15'goFixedHorzLine'#10'goVertLine'#10'goHorzLine'#13
-  +'goRangeSelect'#14'goSmoothScroll'#0#8'RowCount'#2#5#10'ScrollBars'#7#10'ssA'
-  +'utoBoth'#8'TabOrder'#2#0#7'TabStop'#9#21'Constraints.MaxHeight'#3#160#0#20
-  +'Constraints.MaxWidth'#3'^'#1#9'Alignment'#7#8'taCenter'#8'Semaphor'#9#9'Str'
-  +'ingRed'#6#2'no'#12'StringYellow'#6#5'maybe'#11'StringGreen'#6#3'yes'#13'Sem'
-  +'aphorShape'#7#6'ssDisk'#5'Cells'#1#2#24#2#0#2#0#6#3'a\n'#2#0#2#1#6#1'a'#2#0
-  +#2#2#6#1'b'#2#0#2#3#6#1'c'#2#0#2#4#6#1'd'#2#1#2#0#6#1'1'#2#1#2#1#6#2'no'#2#1
-  +#2#2#6#5'alpha'#2#1#2#3#6#3'zed'#2#1#2#4#6#5'maybe'#2#2#2#0#6#1'2'#2#2#2#1#6
-  +#3'yes'#2#2#2#2#6#8'Semaphor'#2#2#2#3#6#6'0.9877'#2#2#2#4#6#3'yes'#2#3#2#0#6
-  +#1'3'#2#3#2#2#6#2'no'#2#3#2#3#6#4'Grid'#2#3#2#4#6#5'maybe'#2#4#2#0#6#1'4'#2#4
-  +#2#1#6#1'5'#2#4#2#2#6#2'12'#2#4#2#3#6#2'-1'#2#4#2#4#6#1'2'#0#0#0#13'TSemapho'
-  +'rGrid'#13'SemaphorGrid2'#6'Height'#2'd'#3'Top'#3'1'#1#5'Width'#3#200#0#8'Co'
-  +'lCount'#2#5#10'FixedColor'#7#9'clBtnFace'#13'GridLineWidth'#2#0#7'Options'
+  +'Top'#3#232#0#5'Width'#3#144#0#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6
+  +#15'Toggle Semaphor'#7'OnClick'#7#12'Button1Click'#8'TabOrder'#2#1#0#0#7'TBu'
+  +'tton'#7'Button2'#4'Left'#3#155#0#6'Height'#2#25#3'Top'#3#232#0#5'Width'#3
+  +#163#0#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6#19'Next Semafore Style'
+  +#7'OnClick'#7#12'Button2Click'#8'TabOrder'#2#2#0#0#7'TButton'#7'Button3'#4'L'
+  +'eft'#2#8#6'Height'#2#25#3'Top'#3#8#1#5'Width'#2'|'#25'BorderSpacing.InnerBo'
+  +'rder'#2#4#7'Caption'#6#14'Next Alignment'#7'OnClick'#7#12'Button3Click'#8'T'
+  +'abOrder'#2#3#0#0#7'TButton'#7'Button4'#4'Left'#3#208#1#6'Height'#2#25#3'Top'
+  +#2'F'#5'Width'#2'o'#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6#5'Close'#7
+  +'OnClick'#7#12'Button4Click'#8'TabOrder'#2#4#0#0#7'TButton'#7'Button5'#4'Lef'
+  +'t'#3#208#1#6'Height'#2#25#3'Top'#2#16#5'Width'#2'o'#25'BorderSpacing.InnerB'
+  +'order'#2#4#7'Caption'#6#12'Save to File'#7'OnClick'#7#12'Button5Click'#8'Ta'
+  +'bOrder'#2#5#0#0#7'TButton'#7'Button6'#4'Left'#3#208#1#6'Height'#2#25#3'Top'
+  +#2'+'#5'Width'#2'o'#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6#14'Load f'
+  +'rom File'#7'OnClick'#7#12'Button6Click'#8'TabOrder'#2#6#0#0#7'TButton'#7'Bu'
+  +'tton7'#4'Left'#3'G'#1#6'Height'#2#24#3'Top'#3#232#0#5'Width'#2'W'#25'Border'
+  +'Spacing.InnerBorder'#2#4#7'Caption'#6#9'AutoWidth'#7'OnClick'#7#12'Button7C'
+  +'lick'#8'TabOrder'#2#7#0#0#7'TButton'#7'Button8'#4'Left'#3#161#1#6'Height'#2
+  +#24#3'Top'#3#232#0#5'Width'#2'Z'#25'BorderSpacing.InnerBorder'#2#4#7'Caption'
+  +#6#10'AutoHeight'#7'OnClick'#7#12'Button8Click'#8'TabOrder'#2#8#0#0#7'TButto'
+  +'n'#7'Button9'#4'Left'#3#176#0#6'Height'#2#26#3'Top'#3#165#0#5'Width'#2'd'#25
+  +'BorderSpacing.InnerBorder'#2#4#7'Caption'#6#12'Sort Cols[4]'#7'OnClick'#7#12
+  +'Button9Click'#8'TabOrder'#2#9#0#0#12'TRadioButton'#12'RadioButton1'#4'Left'
+  +#3#30#1#6'Height'#2#20#3'Top'#3#165#0#5'Width'#2'T'#7'Caption'#6#9'Ascending'
+  +#7'Checked'#9#5'State'#7#9'cbChecked'#8'TabOrder'#2#10#0#0#12'TRadioButton'
+  +#12'RadioButton2'#4'Left'#3#30#1#6'Height'#2#20#3'Top'#3#196#0#5'Width'#2'['
+  +#7'Caption'#6#10'Descending'#8'TabOrder'#2#11#0#0#7'TButton'#8'Button10'#4'L'
+  +'eft'#2#8#6'Height'#2#26#3'Top'#3#165#0#5'Width'#3#144#0#25'BorderSpacing.In'
+  +'nerBorder'#2#4#7'Caption'#6#17'Hide/Show Cols[1]'#7'OnClick'#7#13'Button10C'
+  +'lick'#8'TabOrder'#2#12#0#0#7'TButton'#8'Button11'#4'Left'#2#8#6'Height'#2#25
+  +#3'Top'#3#196#0#5'Width'#2'/'#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6
+  +#5'Clear'#7'OnClick'#7#13'Button11Click'#8'TabOrder'#2#13#0#0#9'TCheckBox'#9
+  +'CheckBox1'#4'Left'#2'<'#6'Height'#2#20#3'Top'#3#196#0#5'Width'#2'T'#7'Capti'
+  +'on'#6#9'OnlyValue'#8'TabOrder'#2#14#0#0#7'TButton'#8'Button12'#4'Left'#3#176
+  +#0#6'Height'#2#23#3'Top'#3#196#0#5'Width'#2'd'#25'BorderSpacing.InnerBorder'
+  +#2#4#7'Caption'#6#12'Sort Cols[1]'#7'OnClick'#7#13'Button12Click'#8'TabOrder'
+  +#2#15#0#0#10'TToggleBox'#10'ToggleBox1'#4'Left'#3#173#1#6'Height'#2#26#3'Top'
+  +#3#165#0#5'Width'#2'f'#7'Caption'#6#10'UnEditable'#7'OnClick'#7#15'ToggleBox'
+  +'1Click'#8'TabOrder'#2#16#0#0#9'TCheckBox'#9'CheckBox2'#4'Left'#3#172#1#6'He'
+  +'ight'#2#20#3'Top'#3#196#0#5'Width'#2'S'#7'Caption'#6#10'Only Float'#7'OnCli'
+  +'ck'#7#14'CheckBox2Click'#8'TabOrder'#2#17#0#0#7'TButton'#8'Button13'#4'Left'
+  +#3#254#1#6'Height'#2#24#3'Top'#3#232#0#5'Width'#2'G'#25'BorderSpacing.InnerB'
+  +'order'#2#4#7'Caption'#6#7'AutoFit'#7'OnClick'#7#13'Button13Click'#8'TabOrde'
+  +'r'#2#18#0#0#13'TSemaphorGrid'#13'SemaphorGrid1'#4'Left'#2#8#6'Height'#3#152
+  +#0#3'Top'#2#4#5'Width'#3'^'#1#5'Color'#7#7'clWhite'#8'ColCount'#2#5#16'Defau'
+  +'ltRowHeight'#2#24#10'FixedColor'#7#9'clBtnFace'#13'GridLineWidth'#2#0#7'Opt'
+  +'ions'#11#15'goFixedVertLine'#15'goFixedHorzLine'#10'goVertLine'#10'goHorzLi'
+  +'ne'#13'goRangeSelect'#14'goSmoothScroll'#0#8'RowCount'#2#5#10'ScrollBars'#7
+  +#10'ssAutoBoth'#8'TabOrder'#2#0#7'TabStop'#9#21'Constraints.MaxHeight'#3#160
+  +#0#20'Constraints.MaxWidth'#3'^'#1#9'Alignment'#7#8'taCenter'#8'Semaphor'#9#9
+  +'StringRed'#6#2'no'#12'StringYellow'#6#5'maybe'#11'StringGreen'#6#3'yes'#13
+  +'SemaphorShape'#7#6'ssDisk'#5'Cells'#1#2#24#2#0#2#0#6#3'a\n'#2#0#2#1#6#1'a'#2
+  +#0#2#2#6#1'b'#2#0#2#3#6#1'c'#2#0#2#4#6#1'd'#2#1#2#0#6#1'1'#2#1#2#1#6#2'no'#2
+  +#1#2#2#6#5'alpha'#2#1#2#3#6#3'zed'#2#1#2#4#6#5'maybe'#2#2#2#0#6#1'2'#2#2#2#1
+  +#6#3'yes'#2#2#2#2#6#8'Semaphor'#2#2#2#3#6#6'0.9877'#2#2#2#4#6#3'yes'#2#3#2#0
+  +#6#1'3'#2#3#2#2#6#2'no'#2#3#2#3#6#4'Grid'#2#3#2#4#6#5'maybe'#2#4#2#0#6#1'4'#2
+  +#4#2#1#6#1'5'#2#4#2#2#6#2'12'#2#4#2#3#6#2'-1'#2#4#2#4#6#1'2'#0#0#0#13'TSemap'
+  +'horGrid'#13'SemaphorGrid2'#6'Height'#2'o'#3'Top'#3'1'#1#5'Width'#3' '#1#8'C'
+  +'olCount'#2#5#10'FixedColor'#7#9'clBtnFace'#13'GridLineWidth'#2#0#7'Options'
   +#11#15'goFixedVertLine'#15'goFixedHorzLine'#10'goVertLine'#10'goHorzLine'#13
   ,'goRangeSelect'#14'goSmoothScroll'#0#8'RowCount'#2#5#10'ScrollBars'#7#10'ssA'
   +'utoBoth'#8'TabOrder'#2#21#7'TabStop'#9#9'StringRed'#6#2'no'#12'StringYellow'
   +#6#5'maybe'#11'StringGreen'#6#3'yes'#13'SemaphorShape'#7#6'ssDisk'#0#0#13'TS'
-  +'emaphorGrid'#13'SemaphorGrid3'#4'Left'#3'@'#1#6'Height'#2'd'#3'Top'#3'0'#1#5
-  +'Width'#3#200#0#8'ColCount'#2#5#10'FixedColor'#7#9'clBtnFace'#13'GridLineWid'
-  +'th'#2#0#7'Options'#11#15'goFixedVertLine'#15'goFixedHorzLine'#10'goVertLine'
+  +'emaphorGrid'#13'SemaphorGrid3'#4'Left'#3'('#1#6'Height'#2'p'#3'Top'#3'0'#1#5
+  +'Width'#3#23#1#8'ColCount'#2#5#10'FixedColor'#7#9'clBtnFace'#13'GridLineWidt'
+  +'h'#2#0#7'Options'#11#15'goFixedVertLine'#15'goFixedHorzLine'#10'goVertLine'
   +#10'goHorzLine'#13'goRangeSelect'#14'goSmoothScroll'#0#8'RowCount'#2#5#10'Sc'
   +'rollBars'#7#10'ssAutoBoth'#8'TabOrder'#2#22#7'TabStop'#9#8'Semaphor'#9#9'St'
   +'ringRed'#6#2'no'#12'StringYellow'#6#5'maybe'#11'StringGreen'#6#3'yes'#13'Se'
-  +'maphorShape'#7#6'ssDisk'#0#0#7'TButton'#8'Button14'#4'Left'#3#155#1#6'Heigh'
-  +'t'#2#25#3'Top'#3#7#1#5'Width'#2'K'#25'BorderSpacing.InnerBorder'#2#4#7'Capt'
-  +'ion'#6#6'Assign'#7'OnClick'#7#13'Button14Click'#8'TabOrder'#2#19#0#0#7'TBut'
-  +'ton'#8'Button15'#4'Left'#3#235#1#6'Height'#2#25#3'Top'#3#7#1#5'Width'#2'M'
-  +#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6#12'Show Content'#7'OnClick'#7
-  +#13'Button15Click'#8'TabOrder'#2#20#0#0#11'TSaveDialog'#11'SaveDialog1'#5'Ti'
-  +'tle'#6#12'Save file as'#11'FilterIndex'#2#0#4'left'#2'('#3'top'#3'`'#1#0#0
-  +#11'TOpenDialog'#11'OpenDialog1'#5'Title'#6#18'Open existing file'#11'Filter'
-  +'Index'#2#0#4'left'#2#8#3'top'#3'`'#1#0#0#0
+  +'maphorShape'#7#6'ssDisk'#0#0#7'TButton'#8'Button14'#4'Left'#3'G'#1#6'Height'
+  +#2#25#3'Top'#3#8#1#5'Width'#2'W'#25'BorderSpacing.InnerBorder'#2#4#7'Caption'
+  +#6#6'Assign'#7'OnClick'#7#13'Button14Click'#8'TabOrder'#2#19#0#0#7'TButton'#8
+  +'Button15'#4'Left'#3#161#1#6'Height'#2#25#3'Top'#3#8#1#5'Width'#2'r'#25'Bord'
+  +'erSpacing.InnerBorder'#2#4#7'Caption'#6#12'Show Content'#7'OnClick'#7#13'Bu'
+  +'tton15Click'#8'TabOrder'#2#20#0#0#11'TSaveDialog'#11'SaveDialog1'#5'Title'#6
+  +#12'Save file as'#11'FilterIndex'#2#0#4'left'#2'('#3'top'#3'x'#1#0#0#11'TOpe'
+  +'nDialog'#11'OpenDialog1'#5'Title'#6#18'Open existing file'#11'FilterIndex'#2
+  +#0#4'left'#2#8#3'top'#3'x'#1#0#0#0
 ]);
