@@ -174,13 +174,13 @@ type
   
 function CompareConstItems(Data1, Data2: Pointer): integer;
 begin
-  Result:=CompareText(TConstItem(Data1).ConstName,TConstItem(Data2).ConstName);
+  Result:=CompareText(TConstItem(Data1).Value,TConstItem(Data2).Value);
 end;
 
-function CompareNameWithConstItems(NamePAnsiString, ConstItem: Pointer): integer;
+function CompareValueWithConstItems(ValuePAnsiString, ConstItem: Pointer): integer;
 begin
-  Result:=CompareText(PAnsiString(NamePAnsiString)^,
-                      TConstItem(ConstItem).ConstName);
+  Result:=CompareText(PAnsiString(ValuePAnsiString)^,
+                      TConstItem(ConstItem).Value);
 end;
 
 function ReadRSTFile(const InFilename: string;
@@ -254,7 +254,7 @@ begin
         end else
           Inc(i);
       end;
-      Node:=TreeOfConstItems.FindKey(@ConstName,@CompareNameWithConstItems);
+      Node:=TreeOfConstItems.FindKey(@Value,@CompareValueWithConstItems);
       if Node=nil then begin
         Item:=TConstItem.Create;
         Item.ModuleName:=ModuleName;
@@ -262,7 +262,7 @@ begin
         Item.Value:=Value;
         TreeOfConstItems.Add(Item);
       end else begin
-        DebugLn(['ReadRSTFile Double ignored: ModuleName=',ModuleName,' ConstName=',ConstName,' Value="',DbgStr(Value),'"']);
+        //DebugLn(['ReadRSTFile Double ignored: ModuleName=',ModuleName,' ConstName=',ConstName,' Value="',DbgStr(Value),'"']);
       end;
     end;
 

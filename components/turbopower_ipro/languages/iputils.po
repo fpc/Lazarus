@@ -2,11 +2,11 @@
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: iputils:slongversion
-msgid "Version %.2f"
-msgstr ""
-
 #: iputils:sshortversion
 msgid "v%.2f"
+msgstr ""
+
+#: iputils:slongversion
+msgid "Version %.2f"
 msgstr ""
 
