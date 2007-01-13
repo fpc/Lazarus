@@ -1,4 +1,3 @@
-{ $Id$}
 {
  ***************************************************************************
  *                                                                         *
@@ -368,6 +367,8 @@ begin
     NewContent:=TMemoryStream.Create;
 
     // write header
+    WriteLine('msgid ""');
+    WriteLine('msgstr ""');
     WriteLine('"MIME-Version: 1.0\n"');
     WriteLine('"Content-Type: text/plain; charset=UTF-8\n"');
     WriteLine('"Content-Transfer-Encoding: 8bit\n"');
