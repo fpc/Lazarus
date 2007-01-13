@@ -156,7 +156,6 @@ begin
   then
     Repeat
       if FileInFilenameMasks(Info.Name,Mask) then begin
-        writeln(Info.Name, ' ', Info.Attr);
         Added:=false;
         AddFile(ftReadOnly,faReadOnly);
         AddFile(ftHidden,faHidden);
