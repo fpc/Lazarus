@@ -177,6 +177,12 @@ begin
   Result:=CompareText(TConstItem(Data1).ConstName,TConstItem(Data2).ConstName);
 end;
 
+function CompareNameWithConstItems(NamePAnsiString, ConstItem: Pointer): integer;
+begin
+  Result:=CompareText(PAnsiString(NamePAnsiString)^,
+                      TConstItem(ConstItem).ConstName);
+end;
+
 function ReadRSTFile(const InFilename: string;
   TreeOfConstItems: TAVLTree): Boolean;
 var
@@ -203,6 +209,7 @@ var
   ConstName: String;
   Value: String;
   fs: TFileStream;
+  Node: TAVLTreeNode;
 begin
   Result:=false;
   try
@@ -247,11 +254,16 @@ begin
         end else
           Inc(i);
       end;
-      Item:=TConstItem.Create;
-      Item.ModuleName:=ModuleName;
-      Item.ConstName:=ConstName;
-      Item.Value:=Value;
-      TreeOfConstItems.Add(Item);
+      Node:=TreeOfConstItems.FindKey(@ConstName,@CompareNameWithConstItems);
+      if Node=nil then begin
+        Item:=TConstItem.Create;
+        Item.ModuleName:=ModuleName;
+        Item.ConstName:=ConstName;
+        Item.Value:=Value;
+        TreeOfConstItems.Add(Item);
+      end else begin
+        DebugLn(['ReadRSTFile Double ignored: ModuleName=',ModuleName,' ConstName=',ConstName,' Value="',DbgStr(Value),'"']);
+      end;
     end;
 
     Result:=true;
@@ -401,7 +413,7 @@ begin
     end;
 
     NewContent.Position:=0;
-    if CheckContentChange then begin
+    if CheckContentChange and FileExists(OutFilename) then begin
       OldContent:=TMemoryStream.Create;
       OldContent.LoadFromFile(OutFilename);
       ContentChanged:=CompareMemStreamText(NewContent,OldContent);
@@ -413,6 +425,9 @@ begin
       NewContent.SaveToFile(OutFilename);
     Result:=true;
   except
+    on E: Exception do begin
+      DebugLn(['ConvertToGettextPO ',E.Message]);
+    end;
   end;
 end;
 
