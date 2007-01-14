@@ -88,6 +88,7 @@ type
     FIterators: TList;  // A List of iterators iterating us
     function FindNode(const AId): TAvgLvlTreeNode;
     function FindItem(const AId): PMapItem;
+    procedure FreeData(ANode: TAvgLvlTreeNode);
     function TreeCompareID(Sender: TAvgLvlTree; AItem1, AItem2: Pointer): Integer;
     //--
     procedure IteratorAdd(AIterator: TBaseMapIterator);
@@ -100,6 +101,7 @@ type
   public
     procedure Add(const AId, AData);
     constructor Create(AIdType: TMapIdType; ADataSize: Cardinal);
+    procedure Clear;
     function Count: Integer;
     function Delete(const AId): Boolean;
     destructor Destroy; override;
@@ -257,6 +259,12 @@ begin
   end;
 end;
 
+procedure TBaseMap.Clear;
+begin
+  FreeData(FTree.Root);
+  FTree.Clear;
+end;
+
 function TBaseMap.Count: Integer;
 begin
   Result := FTree.Count;
@@ -299,15 +307,6 @@ begin
 end;
 
 destructor TBaseMap.Destroy;
-
-  procedure FreeData(ANode: TAvgLvlTreeNode);
-  begin
-    if ANode = nil then Exit;
-    FreeData(ANode.Left);
-    FreeData(ANode.Right);
-    FreeMem(ANode.Data);
-  end;
-
 var
   n: Integer;
 begin
@@ -340,6 +339,14 @@ var
 begin
   Move(AID, Item.ID, ID_LENGTH[FIdType]);
   Result := FTree.Find(@Item);
+end;
+
+procedure TBaseMap.FreeData(ANode: TAvgLvlTreeNode);
+begin
+  if ANode = nil then Exit;
+  FreeData(ANode.Left);
+  FreeData(ANode.Right);
+  FreeMem(ANode.Data);
 end;
 
 function TBaseMap.InternalGetData(AItem: PMapItem; out AData): Boolean;
