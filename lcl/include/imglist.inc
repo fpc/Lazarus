@@ -415,8 +415,9 @@ begin
   FreeThenNil(FImageList);
   FreeThenNil(FMaskList);
   inherited Destroy;
-  FChangeLinkList.Free;
-  FChangeLinkList:=nil;
+  for i:=0 to FChangeLinkList.Count-1 do
+    TChangeLink(FChangeLinkList[i]).Sender:= nil;
+  FreeThenNil(FChangeLinkList);
 end;
 
 {------------------------------------------------------------------------------
