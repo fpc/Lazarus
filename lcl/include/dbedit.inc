@@ -48,14 +48,13 @@ begin
 end;
 
 procedure TDBEdit.ActiveChange(Sender: TObject);
-
 begin
-  if FDatalink.Active then datachange(sender)
-  else
-    begin
-    text := '';
-    FDataLink.reset;
-    end;
+  if FDatalink.Active then 
+    DataChange(Sender)
+  else begin
+    Text := '';
+    FDataLink.Reset;
+  end;
 end;
 
 procedure TDBEdit.LayoutChange(Sender: TObject);
@@ -284,8 +283,8 @@ begin
   FDataLink.OnDataChange := @DataChange;
   FDataLink.OnEditingChange := @EditingChange;
   FDataLink.OnUpdateData := @UpdateData;
-  FDataLInk.OnActiveChange := @ActiveChange;
-  FDatalink.OnLayoutChange := @LayoutChange;
+  FDataLink.OnActiveChange := @ActiveChange;
+  FDataLink.OnLayoutChange := @LayoutChange;
 
   inherited ReadOnly := True;//start read only
 end;
