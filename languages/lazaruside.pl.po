@@ -1,15 +1,17 @@
 msgid ""
 msgstr ""
 "Last-Translator: AlbercikCD\n"
-"PO-Revision-Date: 2006-08-10 20:48+0100\n"
+"PO-Revision-Date: 2007-01-14 00:15+0100\n"
 "Project-Id-Version: lazaruside\n"
-"Language-Team: polski <pl@li.org>\n"
+"Language-Team: \n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.3\n"
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "POT-Creation-Date: \n"
 "MIME-Version: 1.0\n"
+"X-Poedit-Language: Polish\n"
+"X-Poedit-Country: POLAND\n"
 
 #: lazarusidestrconsts:srkmcommand1
 msgid "    command1 \""
@@ -693,7 +695,7 @@ msgstr "Zastosuj zmiany"
 
 #: lazarusidestrconsts:rslanguagearabic
 msgid "Arabic"
-msgstr ""
+msgstr "arabski"
 
 #: lazarusidestrconsts:dlgcoasis
 msgid "As-Is"
@@ -1297,7 +1299,7 @@ msgstr "Czyść wszystko"
 
 #: lazarusidestrconsts:lismenucleandirectory
 msgid "Clean directory ..."
-msgstr "Czyść katalogi ..."
+msgstr "Czyść katalogi..."
 
 #: lazarusidestrconsts:liscldircleansubdirectories
 msgid "Clean sub directories"
@@ -1337,11 +1339,11 @@ msgstr "Zamknij"
 
 #: lazarusidestrconsts:liskmcloseall
 msgid "Close All"
-msgstr ""
+msgstr "Zamknij wszystko"
 
 #: lazarusidestrconsts:lismenucloseproject
 msgid "Close Project"
-msgstr ""
+msgstr "Zamknij projekt"
 
 #: lazarusidestrconsts:lismenucloseall
 msgid "Close all editor files"
@@ -1353,7 +1355,7 @@ msgstr ""
 
 #: lazarusidestrconsts:liskmcloseproject
 msgid "Close project"
-msgstr ""
+msgstr "Zamknij projekt"
 
 #: lazarusidestrconsts:dlgcodegeneration
 msgid "Code"
@@ -1541,7 +1543,7 @@ msgstr "Opcje kompilatora"
 
 #: lazarusidestrconsts:lismenucompileroptions
 msgid "Compiler Options ..."
-msgstr "Opcje kompilatora ..."
+msgstr "Opcje kompilatora..."
 
 #: lazarusidestrconsts:lispckeditcompileroptionsforpackage
 msgid "Compiler Options for Package %s"
@@ -1637,7 +1639,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuconfigcustomcomps
 msgid "Configure custom components ..."
-msgstr "Konfiguruj dodatkowe komponenty ..."
+msgstr "Konfiguruj dodatkowe komponenty..."
 
 #: lazarusidestrconsts:lismenusettings
 msgid "Configure custom tools ..."
@@ -1729,7 +1731,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuconvertdfmtolfm
 msgid "Convert DFM file to LFM ..."
-msgstr "Importuj formularz Delphi ..."
+msgstr "Importuj formularz Delphi..."
 
 #: lazarusidestrconsts:liskmconvertdelphipackagetolazaruspackage
 msgid "Convert Delphi package to Lazarus package"
@@ -1753,7 +1755,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuconvertdelphiunit
 msgid "Convert Delphi unit to Lazarus unit ..."
-msgstr "Importuj moduł Delphi ..."
+msgstr "Importuj moduł Delphi..."
 
 #: lazarusidestrconsts:liscodetoolsdefsconvertnode
 msgid "Convert node"

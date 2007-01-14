@@ -1,13 +1,17 @@
 msgid ""
 msgstr ""
-"Last-Translator: Dominik Zablotny <dominz@wp.pl>\n"
-"PO-Revision-Date: 2004-02-06 02:18+0100\n"
-"Project-Id-Version: codetools\n"
-"Language-Team: polski <pl@li.org>\n"
+"Last-Translator: AlbercikCD\n"
+"PO-Revision-Date: 2007-01-14 00:09+0100\n"
+"Project-Id-Version: codetoolsstrconsts\n"
+"Language-Team: \n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.3\n"
-"Plural-Forms:  nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"POT-Creation-Date: \n"
+"MIME-Version: 1.0\n"
+"X-Poedit-Language: Polish\n"
+"X-Poedit-Country: POLAND\n"
 
 #: codetoolsstrconsts:ctsothercompilerdefines
 msgid "%s Compiler Defines"
@@ -131,7 +135,7 @@ msgstr "Definicja makra %s"
 
 #: codetoolsstrconsts:ctsdefinemacrocarbon1
 msgid "Define macro carbon1"
-msgstr ""
+msgstr "Definiuj makro carbon1"
 
 #: codetoolsstrconsts:ctsdefinemacrognome2
 msgid "Define macro gnome2"
@@ -147,11 +151,11 @@ msgstr "Definicja makra gtk2"
 
 #: codetoolsstrconsts:ctsdefinemacroqt1
 msgid "Define macro qt1"
-msgstr ""
+msgstr "Definiuj makro qt1"
 
 #: codetoolsstrconsts:ctsdefinemacrowince1
 msgid "Define macro wince1"
-msgstr ""
+msgstr "Definiuj makro wince1"
 
 #: codetoolsstrconsts:ctsdefineprocessortype
 msgid "Define processor type"
@@ -223,11 +227,11 @@ msgstr "If LCLWidgetType=gtk2 then"
 
 #: codetoolsstrconsts:ctsiftargetosisnotsrcos
 msgid "If TargetOS<>SrcOS"
-msgstr ""
+msgstr "If TargetOS<>SrcOS"
 
 #: codetoolsstrconsts:ctsiftargetosisnotsrcos2
 msgid "If TargetOS<>SrcOS2"
-msgstr ""
+msgstr "If TargetOS<>SrcOS2"
 
 #: codetoolsstrconsts:ctsiftargetosisnotwin32
 msgid "If TargetOS<>win32 then"
@@ -307,7 +311,7 @@ msgstr "Błąd składniowy w wyrażeniu \"%s\""
 
 #: codetoolsstrconsts:ctstcodetoolmanagerconsistencycheck
 msgid "TCodeToolManager.ConsistencyCheck=%d"
-msgstr ""
+msgstr "TCodeToolManager.ConsistencyCheck=%d"
 
 #: codetoolsstrconsts:ctstermnotsimple
 msgid "Term has no simple type"

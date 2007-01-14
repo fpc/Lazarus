@@ -1,0 +1,25 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: projecttemplates\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2007-01-13 23:44+0100\n"
+"Last-Translator: AlbercikCD\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Polish\n"
+"X-Poedit-Country: POLAND\n"
+
+#: projecttemplates:serrnosuchtemplate
+msgid "\"%s\": No such template."
+msgstr ""
+
+#: projecttemplates:serrcouldnotcreatedir
+msgid "Could not create directory \"%s\""
+msgstr "Nie udało się utworzyć katalogu \"%s\"."
+
+#: projecttemplates:serrfailedtocopyfile
+msgid "Failed to copy file \"%s\" to \"%s\""
+msgstr "Nie udało się skopiować pliku \"%s\" do \"%s\"."
+

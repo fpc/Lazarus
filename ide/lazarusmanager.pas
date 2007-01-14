@@ -60,7 +60,8 @@
      for these systems.
    - When the original directory can't be used (readonly), the build directory
      is <primary config path>/bin/, which results in ~/.lazarus/bin/ on unix
-     style systems like linux, bsd, macosx and {AppData}\Lazarus\bin on windows.
+     style systems like linux, bsd, macosx and {AppData}\Lazarus\bin on windows
+     (this is still a todo on windows).
    - For debugging purposes you can work without startlazarus.
    - To not confuse the user, the running IDE executable is 'lazarus' or
      'lazarus.exe', not 'lazarus.new' or 'lazarus.old'.
@@ -220,7 +221,7 @@ end;
 
 procedure TLazarusManager.WaitForLazarus;
   procedure WaitForPid(PID: integer);
-  {$IFdef MSWindows}
+  {$IFDEF WINDOWS}
   var
     ProcessHandle: THandle;
   begin
