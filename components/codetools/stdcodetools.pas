@@ -1639,15 +1639,37 @@ var
       Params.ContextNode:=ClassContext.Node;
       Params.SetIdentifier(ClassContext.Tool,PChar(Pointer(IdentName)),nil);
       try
-        //DebugLn('FindLFMIdentifier A ',
-        //  ' Ident=',
-        //  '"'+GetIdentifier(Params.Identifier)+'"',
-        //  ' Context="'+ClassContext.Node.DescAsString,'" "',StringToPascalConst(copy(ClassContext.Tool.Src,ClassContext.Node.StartPos,20))+'"',
-        //  ' File="'+ExtractFilename(ClassContext.Tool.MainFilename)+'"',
-        //  ' Flags=['+FindDeclarationFlagsAsString(Params.Flags)+']'
-        //  );
+        if CompareIdentifiers('PopupMenu',PChar(Pointer(IdentName)))=0 then
+        DebugLn('FindLFMIdentifier A ',
+          ' Ident=',
+          '"'+GetIdentifier(Params.Identifier)+'"',
+          ' Context="'+ClassContext.Node.DescAsString,'" "',StringToPascalConst(copy(ClassContext.Tool.Src,ClassContext.Node.StartPos,20))+'"',
+          ' File="'+ExtractFilename(ClassContext.Tool.MainFilename)+'"',
+          ' Flags=['+FindDeclarationFlagsAsString(Params.Flags)+']'
+          );
         if ClassContext.Tool.FindIdentifierInContext(Params) then begin
-          IdentContext:=CreateFindContext(Params);
+          repeat
+            IdentContext:=CreateFindContext(Params);
+        if CompareIdentifiers('PopupMenu',PChar(Pointer(IdentName)))=0 then
+          DebugLn(['FindLFMIdentifier ',FindContextToString(IdentContext)]);
+            if (IdentContext.Node<>nil)
+            and (IdentContext.Node.Desc=ctnProperty)
+            and (IdentContext.Tool.PropNodeIsTypeLess(IdentContext.Node)) then
+            begin
+              // this is a typeless property -> search further
+              DebugLn(['FindLFMIdentifier property ',FindContextToString(IdentContext),' is typeless searching further ...']);
+              Params.Flags:=[fdfSearchInAncestors,fdfExceptionOnNotFound,
+                             fdfExceptionOnPredefinedIdent,
+                             fdfIgnoreMissingParams,
+                             fdfIgnoreCurContextNode,
+                             fdfIgnoreOverloadedProcs];
+              Params.ContextNode:=IdentContext.Node;
+              Params.SetIdentifier(ClassContext.Tool,PChar(Pointer(IdentName)),nil);
+              if not IdentContext.Tool.FindIdentifierInContext(Params) then
+                break;
+            end else
+              break;
+          until false;
         end;
       except
         // ignore search/parse errors
@@ -1818,8 +1840,8 @@ var
         exit;
       end;
 
-      // check if identifier is variable
-      if (not ChildContext.Node.Desc=ctnVarDefinition) then begin
+      // check if identifier is a variable
+      if (ChildContext.Node.Desc <> ctnVarDefinition) then begin
         LFMTree.AddError(lfmeObjectIncompatible,LFMObject,
                          LFMObjectName+' is not a variable'
                          +CreateFootNote(ChildContext),
@@ -1841,8 +1863,9 @@ var
       if LFMObject.TypeName<>'' then begin
         VariableTypeName:=ChildContext.Tool.ExtractDefinitionNodeType(
                                                                ChildContext.Node);
-        if (VariableTypeName='')
-        or (AnsiCompareText(VariableTypeName,LFMObject.TypeName)<>0) then begin
+        if (CompareIdentifiers(PChar(VariableTypeName),
+                 PChar(LFMObject.TypeName))<>0)
+        then begin
           ChildContext.Node:=DefinitionNode;
           LFMTree.AddError(lfmeObjectIncompatible,LFMObject,
                          VariableTypeName+' expected, but '+LFMObject.TypeName+' found.'

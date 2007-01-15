@@ -362,70 +362,75 @@ var
 begin
   Result:=false;
   ContentChanged:=false;
+  NewContent:=nil;
   try
-    e:=LineEnding;
-    NewContent:=TMemoryStream.Create;
+    try
+      e:=LineEnding;
+      NewContent:=TMemoryStream.Create;
 
-    // write header - needed by editors like poedit so they know what encoding
-    //                to create
-    WriteLine('msgid ""');
-    WriteLine('msgstr ""');
-    WriteLine('"MIME-Version: 1.0\n"');
-    WriteLine('"Content-Type: text/plain; charset=UTF-8\n"');
-    WriteLine('"Content-Transfer-Encoding: 8bit\n"');
-    WriteStr(e);
+      // write header - needed by editors like poedit so they know what encoding
+      //                to create
+      WriteLine('msgid ""');
+      WriteLine('msgstr ""');
+      WriteLine('"MIME-Version: 1.0\n"');
+      WriteLine('"Content-Type: text/plain; charset=UTF-8\n"');
+      WriteLine('"Content-Transfer-Encoding: 8bit\n"');
+      WriteStr(e);
 
-    Node:=TreeOfConstItems.FindLowest;
-    while Node<>nil do begin
-      item := TConstItem(Node.Data);
+      Node:=TreeOfConstItems.FindLowest;
+      while Node<>nil do begin
+        item := TConstItem(Node.Data);
 
-      // Convert string to C-style syntax
-      s := '';
-      for j := 1 to Length(item.Value) do begin
-        c := item.Value[j];
-        case c of
-          #9:  s := s + '\t';
-          #10: s := s + '\n';
-          #0..#8,#11..#31,#128..#255:
-            s := s + '\' +
-              Chr(Ord(c) shr 6 + 48) +
-              Chr((Ord(c) shr 3) and 7 + 48) +
-              Chr(Ord(c) and 7 + 48);
-          '\': s := s + '\\';
-          '"': s := s + '\"';
-        else s := s + c;
+        // Convert string to C-style syntax
+        s := '';
+        for j := 1 to Length(item.Value) do begin
+          c := item.Value[j];
+          case c of
+            #9:  s := s + '\t';
+            #10: s := s + '\n';
+            #0..#8,#11..#31,#128..#255:
+              s := s + '\' +
+                Chr(Ord(c) shr 6 + 48) +
+                Chr((Ord(c) shr 3) and 7 + 48) +
+                Chr(Ord(c) and 7 + 48);
+            '\': s := s + '\\';
+            '"': s := s + '\"';
+          else s := s + c;
+          end;
         end;
+
+        // Write msg entry
+        WriteStr('#: ');
+        WriteStr(item.ModuleName);
+        WriteStr(':');
+        WriteStr(item.ConstName);
+        WriteStr(e);
+        WriteStr('msgid "');
+        WriteStr(s);
+        WriteStr('"');
+        WriteStr(e);
+        WriteStr('msgstr ""');
+        WriteStr(e);
+        WriteStr(e);
+
+        Node:=TreeOfConstItems.FindSuccessor(Node);
       end;
 
-      // Write msg entry
-      WriteStr('#: ');
-      WriteStr(item.ModuleName);
-      WriteStr(':');
-      WriteStr(item.ConstName);
-      WriteStr(e);
-      WriteStr('msgid "');
-      WriteStr(s);
-      WriteStr('"');
-      WriteStr(e);
-      WriteStr('msgstr ""');
-      WriteStr(e);
-      WriteStr(e);
-
-      Node:=TreeOfConstItems.FindSuccessor(Node);
+      NewContent.Position:=0;
+      if CheckContentChange and FileExists(OutFilename) then begin
+        OldContent:=TMemoryStream.Create;
+        OldContent.LoadFromFile(OutFilename);
+        ContentChanged:=CompareMemStreamText(NewContent,OldContent);
+        OldContent.Free;
+      end else begin
+        ContentChanged:=true;
+      end;
+      if ContentChanged then
+        NewContent.SaveToFile(OutFilename);
+      Result:=true;
+    finally
+      NewContent.Free;
     end;
-
-    NewContent.Position:=0;
-    if CheckContentChange and FileExists(OutFilename) then begin
-      OldContent:=TMemoryStream.Create;
-      OldContent.LoadFromFile(OutFilename);
-      ContentChanged:=CompareMemStreamText(NewContent,OldContent);
-      OldContent.Free;
-    end else begin
-      ContentChanged:=true;
-    end;
-    if ContentChanged then
-      NewContent.SaveToFile(OutFilename);
-    Result:=true;
   except
     on E: Exception do begin
       DebugLn(['ConvertToGettextPO ',E.Message]);

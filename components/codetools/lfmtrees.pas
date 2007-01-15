@@ -564,7 +564,6 @@ var
 begin
   CreateChildNode(TLFMObjectNode);
   ObjectNode:=TLFMObjectNode(CurNode);
-  //DebugLn('TLFMTree.ProcessObject A ',Parser.TokenString);
   if Parser.TokenSymbolIs('OBJECT') then
     ObjectNode.IsInherited := False
   else begin
@@ -573,43 +572,45 @@ begin
   end;
   Parser.NextToken;
   Parser.CheckToken(toSymbol);
-  ObjectStartLine:=Parser.SourceLine;
-  ObjectNode.Name := '';
-  ObjectNode.TypeName := Parser.TokenString;
-  ObjectNode.TypeNamePosition:=Parser.SourcePos+1;
-  ObjectNode.ChildPos := -1;
-  Parser.NextToken;
-  if Parser.Token = ':' then begin
-    Parser.NextToken;
-    Parser.CheckToken(toSymbol);
-    ObjectNode.Name := ObjectNode.TypeName;
-    ObjectNode.NamePosition:=ObjectNode.TypeNamePosition;
+  if not Parser.TokenSymbolIs('END') then begin
+    ObjectStartLine:=Parser.SourceLine;
+    ObjectNode.Name := '';
     ObjectNode.TypeName := Parser.TokenString;
     ObjectNode.TypeNamePosition:=Parser.SourcePos+1;
+    ObjectNode.ChildPos := -1;
     Parser.NextToken;
-    if parser.Token = '[' then begin
-      parser.NextToken;
-      ObjectNode.ChildPos := parser.TokenInt;
-      parser.NextToken;
-      parser.CheckToken(']');
-      parser.NextToken;
+    if Parser.Token = ':' then begin
+      Parser.NextToken;
+      Parser.CheckToken(toSymbol);
+      ObjectNode.Name := ObjectNode.TypeName;
+      ObjectNode.NamePosition:=ObjectNode.TypeNamePosition;
+      ObjectNode.TypeName := Parser.TokenString;
+      ObjectNode.TypeNamePosition:=Parser.SourcePos+1;
+      Parser.NextToken;
+      if parser.Token = '[' then begin
+        parser.NextToken;
+        ObjectNode.ChildPos := parser.TokenInt;
+        parser.NextToken;
+        parser.CheckToken(']');
+        parser.NextToken;
+      end;
     end;
-  end;
 
-  // read property list
-  while not (Parser.TokenSymbolIs('END')
-  or Parser.TokenSymbolIs('OBJECT')
-  or Parser.TokenSymbolIs('INHERITED')) do
-    ProcessProperty;
+    // read property list
+    while not (Parser.TokenSymbolIs('END')
+    or Parser.TokenSymbolIs('OBJECT')
+    or Parser.TokenSymbolIs('INHERITED')) do
+      ProcessProperty;
 
-  // read child objects
-  while not Parser.TokenSymbolIs('END') do begin
-    if Parser.Token=toEOF then begin
-      Parser.Error('END not found for'
-        +' object='+ObjectNode.Name+':'+ObjectNode.TypeName
-        +' starting at line '+IntToStr(ObjectStartLine));
+    // read child objects
+    while not Parser.TokenSymbolIs('END') do begin
+      if Parser.Token=toEOF then begin
+        Parser.Error('END not found for'
+          +' object='+ObjectNode.Name+':'+ObjectNode.TypeName
+          +' starting at line '+IntToStr(ObjectStartLine));
+      end;
+      ProcessObject;
     end;
-    ProcessObject;
   end;
   Parser.NextToken; // Skip 'END' token
   

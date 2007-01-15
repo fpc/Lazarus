@@ -748,6 +748,7 @@ function ExprTypeToString(const ExprType: TExpressionType): string;
 function CreateExpressionType(const Desc, SubDesc: TExpressionTypeDesc;
   const Context: TFindContext): TExpressionType;
 
+function FindContextToString(const FindContext: TFindContext): string;
 function CreateFindContext(NewTool: TFindDeclarationTool;
   NewNode: TCodeTreeNode): TFindContext;
 function CreateFindContext(Params: TFindDeclarationParams): TFindContext;
@@ -915,24 +916,10 @@ begin
 end;
 
 function ExprTypeToString(const ExprType: TExpressionType): string;
-var
-  IdentNode: TCodeTreeNode;
 begin
   Result:='Desc='+ExpressionTypeDescNames[ExprType.Desc]
-         +' SubDesc='+ExpressionTypeDescNames[ExprType.SubDesc];
-  if ExprType.Context.Node<>nil then begin
-    Result:=Result+' Node='+ExprType.Context.Node.DescAsString;
-    IdentNode:=ExprType.Context.Node;
-    while (IdentNode<>nil) do begin
-      if IdentNode.Desc in AllIdentifierDefinitions then begin
-        Result:=Result+' Ident="'+
-          ExprType.Context.Tool.ExtractIdentifier(IdentNode.StartPos)+'"';
-        break;
-      end;
-      IdentNode:=IdentNode.Parent;
-    end;
-    Result:=Result+' File="'+ExprType.Context.Tool.MainFilename+'"';
-  end;
+         +' SubDesc='+ExpressionTypeDescNames[ExprType.SubDesc]
+         +FindContextToString(ExprType.Context);
 end;
 
 function CreateExpressionType(const Desc, SubDesc: TExpressionTypeDesc;
@@ -944,6 +931,40 @@ begin
 end;
 
 { TFindContext }
+
+function FindContextToString(const FindContext: TFindContext): string;
+var
+  IdentNode: TCodeTreeNode;
+  Caret: TCodeXYPosition;
+begin
+  Result:='';
+  if FindContext.Node<>nil then begin
+    Result:=Result+'Node='+FindContext.Node.DescAsString;
+    IdentNode:=FindContext.Node;
+    while (IdentNode<>nil) do begin
+      if IdentNode.Desc in AllIdentifierDefinitions then begin
+        Result:=Result+' Ident="'+
+          FindContext.Tool.ExtractIdentifier(IdentNode.StartPos)+'"';
+        break;
+      end;
+      if IdentNode.Desc=ctnProperty then begin
+        Result:=Result+' PropName="'+
+          FindContext.Tool.ExtractPropName(IdentNode,false)+'"';
+        break;
+      end;
+      IdentNode:=IdentNode.Parent;
+    end;
+    if FindContext.Tool<>nil then begin
+      if FindContext.Tool.CleanPosToCaret(FindContext.Node.StartPos,Caret) then
+      begin
+        Result:=Result+' File='+Caret.Code.Filename
+                +'('+IntToStr(Caret.Y)+','+IntToStr(Caret.X)+')';
+      end else begin
+        Result:=Result+' File="'+FindContext.Tool.MainFilename+'"';
+      end;
+    end;
+  end;
+end;
 
 function CreateFindContext(NewTool: TFindDeclarationTool;
   NewNode: TCodeTreeNode): TFindContext;
