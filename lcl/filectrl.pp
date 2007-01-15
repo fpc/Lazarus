@@ -64,7 +64,6 @@ Type
     procedure UpdateSelectedFileName;
   protected
     procedure DoChangeFile; virtual;
-    procedure UpdateFileList; virtual;
     procedure Click; override;
     procedure Loaded; override;
     function IndexOfFile(const AFilename: string): integer;
@@ -72,6 +71,7 @@ Type
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
+    procedure UpdateFileList; virtual;
   public
     property Drive: Char Read FDrive Write SetDrive default ' ';
     property Directory: String Read FDirectory Write SetDirectory;
