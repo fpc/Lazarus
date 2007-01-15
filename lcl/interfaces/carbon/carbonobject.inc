@@ -253,7 +253,7 @@ begin
     CurEventClass.Int := GetEventClass(Event);
     CurEventKind.Int := GetEventKind(Event);
     {$IFDEF DebugEventLoop}
-    DebugLn('EventClass: "',CurEventClass.Chars,'" EventKind: "',CurEventKind.Chars,'"');
+    DebugLn('EventClass: "',CurEventClass.Chars,'" EventKind: ',IntToStr(CurEventKind.Int));
     {$ENDIF}
     if CurEventClass.Chars=LCLCarbonEventClass then begin
       // internal carbon intf message

@@ -278,7 +278,7 @@ begin
   CFRelease(Pointer(CFString));
   if Result = 0 then Exit;
 
-  Info := CreateWidgetInfo(Control, AWinControl, cwtControlRef);
+  Info := CreateCtrlWidgetInfo(Control, AWinControl);
   TCarbonPrivateHandleClass(WSPrivate).RegisterEvents(Info);
 end;
 

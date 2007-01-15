@@ -36,9 +36,12 @@ uses
 
 function CreateWidgetInfo(AWidget: Pointer; AObject: TLCLComponent;
   TheType: TCarbonWidgetType): PWidgetInfo;
+function CreateWndWidgetInfo(AWidget: Pointer; AObject: TLCLComponent) : PWidgetInfo;
+function CreateCtrlWidgetInfo(AWidget: Pointer; AObject: TLCLComponent) : PWidgetInfo;
 procedure FreeWidgetInfo(AInfo: PWidgetInfo);
+function GetCtrlWidgetInfo(AWidget: Pointer): PWidgetInfo;
+function GetWndWidgetInfo(AWidget: Pointer): PWidgetInfo;
 function GetWidgetInfo(AWidget: Pointer): PWidgetInfo;
-
 function DeliverMessage(ATarget: TObject; var AMessage): Integer;
 
 function RegisterEventHandler(AHandler: TCarbonWSEventHandlerProc): EventHandlerUPP;
@@ -55,6 +58,9 @@ function Dbgs(const ARect: FPCMacOSAll.Rect): string; overload;
 
 implementation
 
+
+//Create a WidgetInfo and attach it to the widget.
+//TCarbonWidgetType determines if it's a window or a controls
 function CreateWidgetInfo(AWidget: Pointer; AObject: TLCLComponent;
   TheType: TCarbonWidgetType): PWidgetInfo;
 begin
@@ -64,23 +70,34 @@ begin
   Result^.Widget := AWidget;
   Result^.WSClass := AObject.WidgetSetClass;
   Result^.widgetType := TheType;
-
-  if IsValidControlHandle(AWidget)
-  then begin
-    SetControlProperty(AWidget, LAZARUS_FOURCC, WIDGETINFO_FOURCC,
-                       SizeOf(Result), @Result);
-  end
-  else begin
-    // there is no (cheap) check for windows so assume a window
-    // when it is not a control.
-    SetWindowProperty(AWidget, LAZARUS_FOURCC, WIDGETINFO_FOURCC,
-                      SizeOf(Result), @Result);
+  
+  case TheType of
+    cwtControlRef : SetControlProperty(AWidget, LAZARUS_FOURCC, WIDGETINFO_FOURCC, SizeOf(Result), @Result);
+    cwtWindowRef  :  SetWindowProperty(AWidget, LAZARUS_FOURCC, WIDGETINFO_FOURCC, SizeOf(Result), @Result)
+  else Debugln('[CreateWidgetInfo] ***WARNING! Unknown widget type***');
   end;
+end;
+
+//Create a WidgetInfo for a window-like widget and attach it to the widget.
+function CreateWndWidgetInfo(AWidget: Pointer; AObject: TLCLComponent) : PWidgetInfo;
+begin
+  Result:=CreateWidgetInfo(AWidget,AObject,cwtWindowRef);
+end;
+
+//Create a WidgetInfo for a controls-like widget and attach it to the widget.
+function CreateCtrlWidgetInfo(AWidget: Pointer; AObject: TLCLComponent) : PWidgetInfo;
+begin
+  Result:=CreateWidgetInfo(AWidget,AObject,cwtControlRef);
 end;
 
 procedure FreeWidgetInfo(AInfo: PWidgetInfo);
 begin
   if AInfo = nil then Exit;
+  case AInfo^.WidgetType of
+    cwtControlRef : RemoveControlProperty(AInfo^.Widget, LAZARUS_FOURCC, WIDGETINFO_FOURCC);
+    cwtWindowRef  :  RemoveWindowProperty(AInfo^.Widget, LAZARUS_FOURCC, WIDGETINFO_FOURCC);
+  else Debugln('[FreeWidgetInfo] ***WARNING! Unknown widget type***');
+  end;
 
   if (AInfo^.UserData <> nil) and (AInfo^.DataOwner)
   then begin
@@ -88,33 +105,34 @@ begin
     AInfo^.UserData := nil;
   end;
 
-  if IsValidControlHandle(AInfo^.Widget)
-  then begin
-    RemoveControlProperty(AInfo^.Widget, LAZARUS_FOURCC, WIDGETINFO_FOURCC);
-  end
-  else begin
-    // there is no (cheap) check for windows so assume a window
-    // when it is not a control.
-    RemoveWindowProperty(AInfo^.Widget, LAZARUS_FOURCC, WIDGETINFO_FOURCC);
-  end;
-
   Dispose(AInfo);
 end;
 
-function GetWidgetInfo(AWidget: Pointer): PWidgetInfo;
+
+//Get a widget info from a Control-like widget
+function GetCtrlWidgetInfo(AWidget: Pointer): PWidgetInfo;
 var
   m: LongWord;
 begin
-  Result := nil;
-  if IsValidControlHandle(AWidget)
-  then begin
-    GetControlProperty(AWidget, LAZARUS_FOURCC, WIDGETINFO_FOURCC, SizeOf(Result), @m, @Result);
-  end
-  else begin
+  GetControlProperty(AWidget, LAZARUS_FOURCC, WIDGETINFO_FOURCC, SizeOf(Result), @m, @Result);
+end;
+
+//Get a widget info from a Window-like widget
+function GetWndWidgetInfo(AWidget: Pointer): PWidgetInfo;
+var
+  m: LongWord;
+begin
+  GetWindowProperty(AWidget, LAZARUS_FOURCC, WIDGETINFO_FOURCC, SizeOf(Result), @m, @Result);
+end;
+
+//Get a widget info from a generic widget: try to guess the right widget type
+function GetWidgetInfo(AWidget: Pointer): PWidgetInfo;
+begin
+  if IsValidControlHandle(AWidget) then Result:=GetCtrlWidgetInfo(AWidget)
+  else
     // there is no (cheap) check for windows so assume a window
     // when it is not a control.
-    GetWindowProperty(AWidget, LAZARUS_FOURCC, WIDGETINFO_FOURCC, SizeOf(Result), @m, @Result);
-  end;
+    Result:=GetWndWidgetInfo(AWidget);
 end;
 
 {------------------------------------------------------------------------------

@@ -77,7 +77,7 @@ end;
 
 function TCarbonWidgetSet.IntfSendsUTF8KeyPress: boolean;
 begin
-  Result:=inherited IntfSendsUTF8KeyPress;
+  Result:=true;
 end;
 
 function TCarbonWidgetSet.ReplaceBitmapMask(var Image, Mask: HBitmap;

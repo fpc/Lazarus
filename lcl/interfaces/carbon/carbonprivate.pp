@@ -109,6 +109,11 @@ type
 
 implementation  
 
+//Store state of key modifiers so that we can emulate keyup/keydown
+//of keys like control, option, command, caps lock, shift
+var PrevKeyModifiers : UInt32 = 0;
+
+{$I mackeycodes.inc}
 {$I carbonprivatehiview.inc}
 {$I carbonprivatewindow.inc}
 {$I carbonprivatecheckbox.inc}

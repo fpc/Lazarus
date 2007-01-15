@@ -95,7 +95,7 @@ begin
   if Result = 0 then Exit;
 
   // add the info (our data, like which TWinControl belong to this carbon widget)
-  Info := CreateWidgetInfo(Control, AWinControl, cwtControlRef);
+  Info := CreateCtrlWidgetInfo(Control, AWinControl);
   
   // register events (e.g. mouse, focus, keyboard, size, ...)
   TCarbonPrivateHandleClass(WSPrivate).RegisterEvents(Info);

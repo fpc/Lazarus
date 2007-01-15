@@ -256,7 +256,7 @@ begin
                  SizeOf(Boolean), @SingleLine);
 
 
-  Info := CreateWidgetInfo(Control, AWinControl, cwtControlRef);
+  Info := CreateCtrlWidgetInfo(Control, AWinControl);
   Info^.UserData := IsPassword;
   Info^.DataOwner := True;
   TCarbonPrivateHandleClass(WSPrivate).RegisterEvents(Info);
@@ -313,7 +313,7 @@ begin
 
   Result := False;
   Control := ControlRef(AWinControl.Handle);
-  if PBoolean(GetWidgetInfo(Pointer(AWincontrol.Handle))^.UserData)^ = True then// IsPassword
+  if PBoolean(GetCtrlWidgetInfo(Pointer(AWincontrol.Handle))^.UserData)^ = True then// IsPassword
     TextType := kControlEditTextPasswordCFStringTag
   else
     TextType := kControlEditTextCFStringTag;
@@ -360,7 +360,7 @@ begin
   if not WSCheckHandleAllocated(ACustomEdit, 'SetReadOnly')
   then Exit;
 
-  Info := GetWidgetInfo(Pointer(ACustomEdit.Handle));
+  Info := GetCtrlWidgetInfo(Pointer(ACustomEdit.Handle));
   IsPassword := PBoolean(Info^.UserData)^;
   NeedsPassword := (NewChar <> #0);
 
@@ -434,7 +434,7 @@ begin
   then Exit;
 
   Control := ControlRef(AWinControl.Handle);
-  if PBoolean(GetWidgetInfo(Pointer(AWincontrol.Handle))^.UserData)^ = True then// IsPassword
+  if PBoolean(GetCtrlWidgetInfo(Pointer(AWincontrol.Handle))^.UserData)^ = True then// IsPassword
     TextType := kControlEditTextPasswordCFStringTag
   else
     TextType := kControlEditTextCFStringTag;
@@ -476,7 +476,7 @@ begin
   CFRelease(Pointer(CFString));
   if Result = 0 then Exit;
 
-  Info := CreateWidgetInfo(Control, AWinControl, cwtControlRef);
+  Info := CreateCtrlWidgetInfo(Control, AWinControl);
 
   TCarbonPrivateHandleClass(WSPrivate).RegisterEvents(Info);
 end;
