@@ -2003,6 +2003,7 @@ destructor TCursorImage.Destroy;
 begin
   if (FCursorHandle <> 0) and OwnHandle then
     WidgetSet.DestroyCursor(FCursorHandle);
+  inherited Destroy;
 end;
 
 procedure InterfaceFinal;
