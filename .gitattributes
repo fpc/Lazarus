@@ -1474,7 +1474,6 @@ ide/publishmodule.pas svneol=native#text/pascal
 ide/publishprojectdlg.lfm svneol=native#text/plain
 ide/publishprojectdlg.lrs svneol=native#text/pascal
 ide/publishprojectdlg.pas svneol=native#text/pascal
-ide/revision.inc svneol=native#text/plain
 ide/runparamsopts.lfm svneol=native#text/plain
 ide/runparamsopts.lrs svneol=native#text/plain
 ide/runparamsopts.pas svneol=native#text/pascal
