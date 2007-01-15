@@ -4489,7 +4489,7 @@ end;
 
 procedure TCustomGrid.DoEditorShow;
 begin
-  DebugLn(['TCustomGrid.DoEditorShow ']);
+  //DebugLn(['TCustomGrid.DoEditorShow ']);
   {$ifdef dbgGrid}DebugLn('grid.DoEditorShow INIT');{$endif}
   ScrollToCell(FCol,FRow);
   Editor.Parent := nil;

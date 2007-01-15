@@ -2497,6 +2497,11 @@ var
     end;
     parser.NextToken;
     parser.CheckToken(toSymbol);
+    if parser.TokenSymbolIs('END') then begin
+      // 'object end': no name, no content
+      // this is normally invalid, but Delphi can create this, so ignore it
+      exit;
+    end;
     ObjectName := '';
     ObjectType := parser.TokenString;
     parser.NextToken;

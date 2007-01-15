@@ -107,6 +107,32 @@ function CheckLFMBuffer(PascalBuffer, LFMBuffer: TCodeBuffer;
 var
   LFMTree: TLFMTree;
   
+  procedure WriteUnitError(Code: TCodeBuffer; x, Y: integer;
+    const ErrorMessage: string);
+  var
+    Dir: String;
+    Filename: String;
+    Msg: String;
+  begin
+    if not Assigned(OnOutput) then exit;
+    if Code=nil then
+      Code:=PascalBuffer;
+    Dir:=ExtractFilePath(Code.Filename);
+    Filename:=ExtractFilename(Code.Filename);
+    Msg:=Filename
+         +'('+IntToStr(Y)+','+IntToStr(X)+')'
+         +' Error: '
+         +ErrorMessage;
+    debugln('WriteLFMErrors ',Msg);
+    OnOutput(Msg,Dir,-1);
+  end;
+  
+  procedure WriteCodeToolsError;
+  begin
+    WriteUnitError(CodeToolBoss.ErrorCode,CodeToolBoss.ErrorColumn,
+      CodeToolBoss.ErrorLine,CodeToolBoss.ErrorMessage);
+  end;
+
   procedure WriteLFMErrors;
   var
     CurError: TLFMError;
@@ -138,6 +164,7 @@ var
     RegComp: TRegisteredComponent;
     i: Integer;
   begin
+    DebugLn(['FixMissingComponentClasses ',LFMBuffer.Filename]);
     Result:=mrCancel;
     MissingObjectTypes:=TStringList.Create;
     try
@@ -151,6 +178,7 @@ var
         end;
         CurError:=CurError.NextError;
       end;
+      DebugLn(['FixMissingComponentClasses Missing object types in unit: ',MissingObjectTypes.Text]);
       
       // keep all object types with a registered component class
       for i:=MissingObjectTypes.Count-1 downto 0 do begin
@@ -159,36 +187,93 @@ var
           MissingObjectTypes.Delete(i);
       end;
       if MissingObjectTypes.Count=0 then exit;
-      
+      DebugLn(['FixMissingComponentClasses Missing object types, but luckily found in IDE: ',MissingObjectTypes.Text]);
+
       // there are missing object types with registered component classes
       Result:=PackageEditingInterface.AddUnitDependenciesForComponentClasses(
            PascalBuffer.Filename,MissingObjectTypes);
-      if Result<>mrOk then exit;
+      if Result<>mrOk then begin
+        DebugLn(['FixMissingComponentClasses Failed to add dependencies for ',MissingObjectTypes.Text]);
+        exit;
+      end;
 
       // check LFM again
       LFMTree.Free;
       LFMTree:=nil;
       if CodeToolBoss.CheckLFM(PascalBuffer,LFMBuffer,LFMTree,
                                     RootMustBeClassInIntf,ObjectsMustExists)
-      then
+      then begin
+        DebugLn(['FixMissingComponentClasses Success: All found errors fixed']);
         Result:=mrOk;
+      end else begin
+        Result:=mrCancel;
+      end;
     finally
       MissingObjectTypes.Free;
     end;
   end;
   
+  function CheckUnit: boolean;
+  var
+    NewCode: TCodeBuffer;
+    NewX, NewY, NewTopLine: integer;
+    ErrorMsg: string;
+    MissingUnits: TStrings;
+    s: String;
+  begin
+    Result:=false;
+    // check syntax
+    DebugLn(['CheckUnit Checking syntax ...']);
+    if not CodeToolBoss.CheckSyntax(PascalBuffer,NewCode,NewX,NewY,NewTopLine,
+      ErrorMsg)
+    then begin
+      WriteUnitError(NewCode,NewX,NewY,ErrorMsg);
+      exit;
+    end;
+    // check used units
+    MissingUnits:=nil;
+    try
+      DebugLn(['CheckUnit Checking used units ...']);
+      if not CodeToolBoss.FindMissingUnits(PascalBuffer,MissingUnits,false,
+        false)
+      then begin
+        WriteCodeToolsError;
+        exit;
+      end;
+      if (MissingUnits<>nil) and (MissingUnits.Count>0) then begin
+        s:=StringListToText(MissingUnits,',');
+        WriteUnitError(PascalBuffer,1,1,'Units not found: '+s);
+        exit;
+      end;
+    finally
+      MissingUnits.Free;
+    end;
+    if NewTopLine=0 then ;
+    Result:=true;
+  end;
+  
 begin
   Result:=mrCancel;
+  
+  if not CheckUnit then begin
+    DebugLn(['CheckLFMBuffer failed parsing unit: ',PascalBuffer.Filename]);
+    exit;
+  end;
+
   LFMTree:=nil;
   try
     if CodeToolBoss.CheckLFM(PascalBuffer,LFMBuffer,LFMTree,
                              RootMustBeClassInIntf,ObjectsMustExists)
     then begin
+      DebugLn(['CheckLFMBuffer no errors found']);
       Result:=mrOk;
       exit;
     end;
     Result:=FixMissingComponentClasses;
-    if Result in [mrAbort,mrOk] then exit;
+    if Result in [mrAbort,mrOk] then begin
+      DebugLn(['CheckLFMBuffer all errors fixed']);
+      exit;
+    end;
     WriteLFMErrors;
     Result:=ShowRepairLFMWizard(LFMBuffer,LFMTree);
   finally
@@ -220,11 +305,13 @@ var
   CheckLFMDialog: TCheckLFMDialog;
 begin
   Result:=mrCancel;
+  DebugLn(['ShowRepairLFMWizard START']);
   CheckLFMDialog:=TCheckLFMDialog.Create(nil);
   CheckLFMDialog.LFMTree:=LFMTree;
   CheckLFMDialog.LFMSource:=LFMBuffer;
   CheckLFMDialog.LoadLFM;
   Result:=CheckLFMDialog.ShowModal;
+  DebugLn(['ShowRepairLFMWizard END']);
   CheckLFMDialog.Free;
 end;
 

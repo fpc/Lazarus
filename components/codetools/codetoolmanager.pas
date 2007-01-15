@@ -446,7 +446,7 @@ type
     function FindUsedUnitNames(Code: TCodeBuffer; var MainUsesSection,
           ImplementationUsesSection: TStrings): boolean;
     function FindMissingUnits(Code: TCodeBuffer; var MissingUnits: TStrings;
-          FixCase: boolean = false): boolean;
+          FixCase: boolean = false; SearchImplementation: boolean = true): boolean;
     function FindDelphiProjectUnits(Code: TCodeBuffer;
           var FoundInUnits, MissingInUnits, NormalUnits: TStrings): boolean;
     function FindDelphiPackageUnits(Code: TCodeBuffer;
@@ -3033,7 +3033,8 @@ begin
 end;
 
 function TCodeToolManager.FindMissingUnits(Code: TCodeBuffer;
-  var MissingUnits: TStrings; FixCase: boolean): boolean;
+  var MissingUnits: TStrings; FixCase: boolean;
+  SearchImplementation: boolean): boolean;
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
@@ -3042,7 +3043,7 @@ begin
   if not InitCurCodeTool(Code) then exit;
   try
     Result:=FCurCodeTool.FindMissingUnits(MissingUnits,FixCase,
-                                          SourceChangeCache);
+                                        SearchImplementation,SourceChangeCache);
   except
     on e: Exception do Result:=HandleException(e);
   end;

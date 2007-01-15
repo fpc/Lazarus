@@ -114,6 +114,7 @@ type
     function UsesSectionToFilenames(UsesNode: TCodeTreeNode): TStrings;
     function UsesSectionToUnitnames(UsesNode: TCodeTreeNode): TStrings;
     function FindMissingUnits(var MissingUnits: TStrings; FixCase: boolean;
+                              SearchImplementation: boolean;
                               SourceChangeCache: TSourceChangeCache): boolean;
     function CommentUnitsInUsesSections(MissingUnits: TStrings;
                                 SourceChangeCache: TSourceChangeCache): boolean;
@@ -1120,7 +1121,8 @@ begin
 end;
 
 function TStandardCodeTool.FindMissingUnits(var MissingUnits: TStrings;
-  FixCase: boolean; SourceChangeCache: TSourceChangeCache): boolean;
+  FixCase: boolean; SearchImplementation: boolean;
+  SourceChangeCache: TSourceChangeCache): boolean;
   
   function CheckUsesSection(UsesNode: TCodeTreeNode): boolean;
   var
@@ -1187,15 +1189,20 @@ function TStandardCodeTool.FindMissingUnits(var MissingUnits: TStrings;
 begin
   Result:=false;
   BuildTree(false);
-  SourceChangeCache.MainScanner:=Scanner;
+  if FixCase then
+    SourceChangeCache.MainScanner:=Scanner;
   try
     if not CheckUsesSection(FindMainUsesSection) then exit;
-    if not CheckUsesSection(FindImplementationUsesSection) then exit;
+    if SearchImplementation
+    and not CheckUsesSection(FindImplementationUsesSection) then exit;
   except
     FreeAndNil(MissingUnits);
     raise;
   end;
-  Result:=SourceChangeCache.Apply;
+  if FixCase then
+    Result:=SourceChangeCache.Apply
+  else
+    Result:=true;
 end;
 
 function TStandardCodeTool.CommentUnitsInUsesSections(MissingUnits: TStrings;

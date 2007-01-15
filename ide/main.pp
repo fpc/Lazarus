@@ -8792,6 +8792,7 @@ begin
   end;
 
   if ToolStatus<>itNone then begin
+    DebugLn(['TMainIDE.DoCheckLFMInEditor ToolStatus<>itNone']);
     Result:=mrCancel;
     exit;
   end;

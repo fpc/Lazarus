@@ -366,7 +366,8 @@ begin
     e:=LineEnding;
     NewContent:=TMemoryStream.Create;
 
-    // write header
+    // write header - needed by editors like poedit so they know what encoding
+    //                to create
     WriteLine('msgid ""');
     WriteLine('msgstr ""');
     WriteLine('"MIME-Version: 1.0\n"');
