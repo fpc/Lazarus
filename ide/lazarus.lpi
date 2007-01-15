@@ -22,7 +22,6 @@
     <RunParams>
       <local>
         <FormatVersion Value="1"/>
-        <CommandLineParams Value="--nsc"/>
         <LaunchingApplication PathPlusParams="\usr\X11R6\bin\xterm -T 'Lazarus Run Output' -e $(LazarusDir)\tools\runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
@@ -38,7 +37,7 @@
     <Version Value="5"/>
     <PathDelim Value="\"/>
     <Target>
-      <Filename Value="..\lazarus.exe"/>
+      <Filename Value="../lazarus"/>
     </Target>
     <SearchPaths>
       <UnitOutputDirectory Value="$(LazarusDir)\units\$(TargetCPU)-$(TargetOS)"/>
