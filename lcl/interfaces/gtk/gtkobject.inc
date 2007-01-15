@@ -5237,6 +5237,11 @@ begin
   gtk_widget_show(Result);
 end;
 
+function TGTKWidgetSet.CreateStandardCursor(ACursor: SmallInt): hCursor;
+begin
+  Result := GetPredefinedCursor(ACursor);
+end;
+
 {------------------------------------------------------------------------------
   function TGtkWidgetSet.CreateToolBar(ToolBarObject: TObject): PGtkWidget;
 

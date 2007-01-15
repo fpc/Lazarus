@@ -25,7 +25,8 @@ uses
   {$ELSE}
   glib, gdk, gtk,
   {$ENDIF}
-  LMessages, LCLProc, Controls, Forms, LCLIntf, LCLType, GTKDef, DynHashArray;
+  LMessages, LCLProc, Controls, Forms, LCLIntf, LCLType, GTKDef, DynHashArray,
+  Maps;
 
 {$I dragicons.inc}
 
@@ -84,9 +85,8 @@ var
   
   // mouse cursors
 var
-  GDKMouseCursors:   array[crLow..crHigh] of pGDKCursor;
-  // mapping from TCursor to gdk cursor index
-  CursorToGDKCursor: array[crLow..crHigh] of integer;
+  // Map a TCursor (<= 0 = HCursor) or a HCursor to a PGDKCursor
+  MMouseCursorMap: TMap;
 
 var
   LastFileSelectRow : gint;

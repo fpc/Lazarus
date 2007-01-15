@@ -129,6 +129,11 @@ begin
   Result := 0;
 end;
 
+function TWidgetSet.CreateCursor(ACursorInfo: PIconInfo): hCursor;
+begin
+  Result := 0;
+end;
+
 function TWidgetSet.CreateDIBSection(DC: HDC;
   const BitmapInfo: tagBitmapInfo; Usage: UINT;
   var Bits: Pointer; SectionHandle: THandle; Offset: DWORD): HBITMAP;
@@ -193,6 +198,11 @@ begin
 end;
 
 function TWidgetSet.DestroyCaret(Handle : HWND): Boolean;
+begin
+  Result := False;
+end;
+
+function TWidgetSet.DestroyCursor(Handle: hCursor): Boolean;
 begin
   Result := False;
 end;

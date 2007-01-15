@@ -29,6 +29,7 @@ constructor TScreen.Create(AOwner : TComponent);
 begin
   inherited Create(AOwner);
   FFonts := TStringlist.Create;
+  FCursorMap := TMap.Create(its4, SizeOf(HCursor));
   TStringlist(FFonts).Sorted := True;
   FCustomForms:=TList.Create;
   FCustomFormsZOrdered:=TList.Create;
@@ -56,6 +57,8 @@ begin
   FreeThenNil(FCustomFormsZOrdered);
   FreeThenNil(FSaveFocusedList);
   FreeThenNil(FFonts);
+  // DestroyCursors; - free on widgetset free
+  FCursorMap.Free;
   inherited Destroy;
 end;
 
@@ -272,35 +275,15 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  procedure TScreen.CreateCursors;
- ------------------------------------------------------------------------------}
-procedure TScreen.CreateCursors;
-begin
-
-end;
-
-{------------------------------------------------------------------------------
   procedure TScreen.DeleteCursor(Index: Integer);
  ------------------------------------------------------------------------------}
-procedure TScreen.DeleteCursor(Index: Integer);
+procedure TScreen.DeleteCursor(AIndex: Integer);
 var
-  P, Q: PCursorRec;
+  ACursor: HCursor;
 begin
-  P := FCursorList;
-  Q := nil;
-  while (P <> nil) and (P^.Index <> Index) do begin
-    Q := P;
-    P := P^.Next;
-  end;
-  if P <> nil then begin
-    DebugLn('ToDo: TScreen.DeleteCursor');
-    //DestroyCursor(P^.Handle);
-    if Q = nil then
-      FCursorList := P^.Next
-    else
-      Q^.Next := P^.Next;
-    Dispose(P);
-  end;
+  if not FCursorMap.GetData(AIndex, ACursor) then Exit;
+  WidgetSet.DestroyCursor(ACursor);
+  FCursorMap.Delete(AIndex);
 end;
 
 {------------------------------------------------------------------------------
@@ -308,36 +291,41 @@ end;
  ------------------------------------------------------------------------------}
 procedure TScreen.DestroyCursors;
 var
-  P, Next: PCursorRec;
-  //Hdl: THandle;
+  Iterator: TMapIterator;
+  ACursor: HCURSOR;
 begin
-  P := FCursorList;
-  while P <> nil do begin
-    DebugLn('ToDo: TScreen.DeleteCursor');
-    //DestroyCursor(P^.Handle);
-    Next := P^.Next;
-    Dispose(P);
-    P := Next;
+  Iterator := TMapIterator.Create(FCursorMap);
+  Iterator.First;
+  while not Iterator.EOM do
+  begin
+    Iterator.GetData(ACursor);
+    WidgetSet.DestroyCursor(ACursor);
+    Iterator.Next;
   end;
+  Iterator.Free;
+  FCursorMap.Clear;
 end;
 
 {------------------------------------------------------------------------------
   function TScreen.GetCursors(Index: Integer): HCURSOR;
  ------------------------------------------------------------------------------}
-function TScreen.GetCursors(Index: Integer): HCURSOR;
-var
-  P: PCursorRec;
+function TScreen.GetCursors(AIndex: Integer): HCURSOR;
 begin
   Result := 0;
-  if Index <> crNone then
-  begin
-    P := FCursorList;
-    while (P <> nil) and (P^.Index <> Index) do P := P^.Next;
-    if P = nil then
-      Result := FDefaultCursor
-    else
-      Result := P^.Handle;
-  end;
+  if AIndex = crNone then Exit;
+  if FCursorMap.GetData(AIndex, Result) then Exit;
+  
+  Result := FDefaultCursor;
+  if AIndex > crHigh then Exit;
+  if AIndex < crLow then Exit;
+  
+  // not yet loaded
+  Result := WidgetSet.CreateStandardCursor(AIndex);
+  if Result = 0
+  then Result := LoadCursorFromLazarusResource('cur_' + IntToStr(-AIndex));
+  if Result = 0 then Exit;
+  
+  FCursorMap.Add(AIndex, Result);
 end;
 
 {------------------------------------------------------------------------------
@@ -480,9 +468,10 @@ end;
  ------------------------------------------------------------------------------}
 procedure TScreen.SetCursor(const AValue: TCursor);
 begin
-  if AValue <> Cursor then begin
+  if AValue <> Cursor then
+  begin
     FCursor := AValue;
-    LCLIntf.SetCursor(Cursors[FCursor]);
+    WidgetSet.SetCursor(Cursors[FCursor]);
   end;
   Inc(FCursorCount);
 end;
@@ -490,9 +479,22 @@ end;
 {------------------------------------------------------------------------------
   procedure TScreen.SetCursors(Index: Integer; const AValue: HCURSOR);
  ------------------------------------------------------------------------------}
-procedure TScreen.SetCursors(Index: Integer; const AValue: HCURSOR);
+procedure TScreen.SetCursors(AIndex: Integer; const AValue: HCURSOR);
 begin
-
+  case AIndex of
+    crDefault: begin
+      if (AValue = 0) and (WidgetSet <> nil) then
+        FDefaultCursor := WidgetSet.CreateStandardCursor(crDefault)
+      else
+        FDefaultCursor := AValue
+    end;
+    crNone: begin
+    end;
+  else
+    DeleteCursor(AIndex);
+    if AValue <> 0 then
+      FCursorMap.Add(AIndex, AValue);
+  end;
 end;
 
 {------------------------------------------------------------------------------

@@ -538,7 +538,7 @@ Begin
       hIcon := Windows.LoadIcon(MainInstance, 'MAINICON');
       if hIcon = 0 then
        hIcon := Windows.LoadIcon(0, IDI_APPLICATION);
-      hCursor := LoadCursor(0, IDC_ARROW);
+      hCursor := Windows.LoadCursor(0, IDC_ARROW);
       hbrBackground := 0; {GetSysColorBrush(Color_BtnFace);}
       LPSzMenuName := Nil;
       LPSzClassName := PWideChar(WideString(ClsName));
@@ -556,7 +556,7 @@ Begin
       hIcon := Windows.LoadIcon(MainInstance, 'MAINICON');
       if hIcon = 0 then
        hIcon := Windows.LoadIcon(0, IDI_APPLICATION);
-      hCursor := LoadCursor(0, IDC_ARROW);
+      hCursor := Windows.LoadCursor(0, IDC_ARROW);
       hbrBackground := 0; {GetSysColorBrush(Color_BtnFace);}
       LPSzMenuName := Nil;
       LPSzClassName := @ClsName; 

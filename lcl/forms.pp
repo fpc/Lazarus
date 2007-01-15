@@ -39,7 +39,7 @@ interface
 uses
   Classes, SysUtils, TypInfo, Math, LCLStrConsts, LCLType, LCLProc, LCLIntf,
   InterfaceBase, LResources, GraphType, Graphics, Menus, LMessages, CustomTimer,
-  ActnList, ClipBrd, CustApp, HelpIntfs, LCLClasses, Controls;
+  ActnList, ClipBrd, CustApp, HelpIntfs, LCLClasses, Controls, maps;
 
 type
   TProcedure = procedure;
@@ -706,7 +706,7 @@ type
     FActiveForm: TForm;
     FCursor: TCursor;
     FCursorCount: integer;
-    FCursorList: PCursorRec;
+    FCursorMap: TMap;
     FCustomForms: TList;
     FCustomFormsZOrdered: TList;
     FDefaultCursor: HCURSOR;
@@ -721,10 +721,9 @@ type
     FOnActiveFormChange: TNotifyEvent;
     FPixelsPerInch : integer;
     FSaveFocusedList: TList;
-    procedure CreateCursors;
-    procedure DeleteCursor(Index: Integer);
+    procedure DeleteCursor(AIndex: Integer);
     procedure DestroyCursors;
-    function GetCursors(Index: Integer): HCURSOR;
+    function GetCursors(AIndex: Integer): HCURSOR;
     function GetCustomFormCount: Integer;
     function GetCustomFormZOrderCount: Integer;
     function GetCustomForms(Index: Integer): TCustomForm;
@@ -737,7 +736,7 @@ type
     procedure AddForm(AForm: TCustomForm);
     procedure RemoveForm(AForm: TCustomForm);
     procedure SetCursor(const AValue: TCursor);
-    procedure SetCursors(Index: Integer; const AValue: HCURSOR);
+    procedure SetCursors(AIndex: Integer; const AValue: HCURSOR);
     procedure UpdateLastActive;
     procedure AddHandler(HandlerType: TScreenNotification;
                          const Handler: TMethod; AsLast: Boolean);
@@ -1539,6 +1538,8 @@ end;
 procedure FreeWidgetSet;
 begin
   //debugln('FreeWidgetSet');
+  if Screen <> nil then
+    Screen.DestroyCursors;
   if Application=nil then exit;
   Application.Free;
   Application:=nil;
@@ -1767,14 +1768,14 @@ end;
 //==============================================================================
 
 initialization
+  {$INCLUDE cursors.lrs}
   LCLProc.OwnerFormDesignerModifiedProc:=@IfOwnerIsFormThenDesignerModified;
   Screen:=TScreen.Create(nil);
   Application:=TApplication.Create(nil);
 
   {$IFDEF UseFCLDataModule}
   RegisterInitComponentHandler(TComponent,@InitResourceComponent);
-  {$ENDIF}
-
+  {$ENDIF}  
 finalization
   //DebugLn('forms.pp - finalization section');
   LCLProc.OwnerFormDesignerModifiedProc:=nil;

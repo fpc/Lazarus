@@ -147,6 +147,36 @@ begin
   AHandler := nil;
 end;
 
+{------------------------------------------------------------------------------
+  Function:
+  Params:
+
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.CreateStandardCursor(ACursor: SmallInt): hCursor;
+begin
+  Result := 0;
+  if ACursor < crLow then Exit;
+  if ACursor > crHigh then Exit;
+
+  case ACursor of
+    crSqlWait..crDrag,
+    crHandPoint: begin
+      // TODO: load custom cursors here not in the LCL
+    end;
+  else
+    Result := Windows.LoadCursor(0, LclCursorToWin32CursorMap[ACursor]);
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Procedure:
+  Params:
+
+  Returns:
+
+ ------------------------------------------------------------------------------}
 procedure TWin32WidgetSet.DrawArrow(Arrow: TComponent; Canvas: TPersistent);
 const
     { up, down, left, right }

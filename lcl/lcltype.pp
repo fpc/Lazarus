@@ -2054,6 +2054,22 @@ type
     WindowClass: TWndClass;
     WinClassName: array[0..63] of Char;
   end;
+  
+type
+{$ifdef windows}
+  TIconInfo = Windows.TICONINFO;
+  PIconInfo = Windows.PICONINFO;
+{$else windows}
+  TIconInfo = record
+    fIcon: BOOL;
+    xHotspot: DWORD;
+    yHotspot: DWORD;
+    hbmMask: HBITMAP;
+    hbmColor: HBITMAP;
+  end;
+  PIconInfo = ^TIconInfo;
+{$endif windows}
+
 
 //------------------------------------------------------------------------------
 // prototype for timer callback

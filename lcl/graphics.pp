@@ -1294,10 +1294,22 @@ type
     procedure AddBitmap(Bitmap: TBitmap); { Note that Ownership passes to TIcon }
   end;
 
+  { TCursorImage }
   TCursorImage = class(TIcon)
+  private
+    FHotSpot: TPoint;
+    FCursorHandle: hCursor;
+    FOwnHandle: Boolean;
+  protected
+    function GetCursorHandle: hCursor;
   public
+    constructor Create; override;
+    destructor Destroy; override;
     class function GetFileExtensions: string; override;
     function LazarusResourceTypeValid(const ResourceType: string): boolean; override;
+    property HotSpot: TPoint read FHotSpot write FHotSpot;
+    property CursorHandle: hCursor read GetCursorHandle;
+    property OwnHandle: Boolean read FOwnHandle write FOwnHandle;
   end;
 
 function GraphicFilter(GraphicClass: TGraphicClass): string;
@@ -1374,6 +1386,7 @@ function LazResourceXPMToPPChar(const ResourceName: string): PPChar;
 function ReadXPMFromStream(Stream: TStream; Size: integer): PPChar;
 function ReadXPMSize(XPM: PPChar; var Width, Height, ColorCount: integer
                      ): boolean;
+function LoadCursorFromLazarusResource(ACursorName: String): HCursor;
 
 var
   { Stores information about the current screen
@@ -1432,6 +1445,17 @@ begin
   if fsStrikeOut in Style then Add('fsStrikeOut');
   if fsUnderline in Style then Add('fsUnderline');
   Result:='['+Result+']';
+end;
+
+function LoadCursorFromLazarusResource(ACursorName: String): HCursor;
+var
+  CursorImage: TCursorImage;
+begin
+  CursorImage := TCursorImage.Create;
+  CursorImage.LoadFromLazarusResource(ACursorName);
+  CursorImage.OwnHandle := False;
+  Result := CursorImage.CursorHandle;
+  CursorImage.Free;
 end;
 
 procedure Register;
@@ -1949,6 +1973,36 @@ function TCursorImage.LazarusResourceTypeValid(const ResourceType: string): bool
 begin
   Result := inherited LazarusResourceTypeValid(ResourceType) or
             (AnsiCompareText(ResourceType,'CUR')=0);
+end;
+
+function TCursorImage.GetCursorHandle: hCursor;
+var
+  IconInfo: TIconInfo;
+begin
+  if FCursorHandle = 0 then
+  begin
+    IconInfo.fIcon := False;
+    IconInfo.xHotspot := HotSpot.X;
+    IconInfo.yHotSpot := HotSpot.Y;
+    IconInfo.hbmMask := MaskHandle;
+    IconInfo.hbmColor := Handle;
+    FCursorHandle := WidgetSet.CreateCursor(@IconInfo);
+  end;
+  Result := FCursorHandle;
+end;
+
+constructor TCursorImage.Create;
+begin
+  inherited Create;
+  FHotSpot := Point(0, 0);
+  FCursorHandle := 0;
+  FOwnHandle := True;
+end;
+
+destructor TCursorImage.Destroy;
+begin
+  if (FCursorHandle <> 0) and OwnHandle then
+    WidgetSet.DestroyCursor(FCursorHandle);
 end;
 
 procedure InterfaceFinal;

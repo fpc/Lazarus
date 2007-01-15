@@ -115,6 +115,11 @@ begin
   Result := WidgetSet.CreateCompatibleDC(DC);
 end;
 
+function CreateCursor(ACursorInfo: PIconInfo): hCursor;
+begin
+  Result := WidgetSet.CreateCursor(ACursorInfo);
+end;
+
 function CreateFontIndirect(const LogFont: TLogFont): HFONT;
 begin
   Result := WidgetSet.CreateFontIndirect(LogFont);
@@ -164,6 +169,11 @@ end;
 function DestroyCaret(Handle : HWND): Boolean;
 Begin
   Result := WidgetSet.DestroyCaret(Handle);
+end;
+
+function DestroyCursor(Handle: hCursor): Boolean;
+begin
+  Result := WidgetSet.DestroyCursor(Handle);
 end;
 
 Function DrawFrameControl(DC: HDC; var Rect : TRect; uType, uState : Cardinal) : Boolean;

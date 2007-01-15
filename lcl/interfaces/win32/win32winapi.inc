@@ -723,6 +723,18 @@ Begin
 End;
 
 {------------------------------------------------------------------------------
+  Method:  CreateCursor
+  Params:  AInstance - handle to instance; ACursorInfo - pointer to Cursor Information record
+  Returns: handle to a created cursor
+
+  Creates a cursor by color and mask bitmaps and other indo.
+ ------------------------------------------------------------------------------}
+Function TWin32WidgetSet.CreateCursor(ACursorInfo: PIconInfo): hCursor;
+begin
+  Result := Windows.CreateIconIndirect(ACursorInfo);
+end;
+
+{------------------------------------------------------------------------------
   Method:  CreateFontIndirect
   Params:  LogFont - logical font record
   Returns: a handle to a logical font
@@ -1056,6 +1068,18 @@ Begin
 {$endif}
   Assert(False, 'Trace:TODO: [TWin32WidgetSet.DestroyCaret]');
   Result := Boolean(Windows.DestroyCaret);
+End;
+
+{------------------------------------------------------------------------------
+  Method:  DestroyCursor
+  Params:  Handle - handle to the cursor object
+  Returns: If the function succeeds
+
+  Destroys the cursor
+ ------------------------------------------------------------------------------}
+Function TWin32WidgetSet.DestroyCursor(Handle: hCursor): Boolean;
+Begin
+  Result := Boolean(Windows.DestroyCursor(Handle));
 End;
 
 {------------------------------------------------------------------------------
@@ -2978,7 +3002,7 @@ End;
 
 function TWin32WidgetSet.SetCursor(hCursor: HICON): HCURSOR;
 begin
-  Result := Windows.SetCursor(Windows.LoadCursor(0, LclCursorToWin32CursorMap[hCursor]));
+  Result := Windows.SetCursor(hCursor);
 end;
 
 {------------------------------------------------------------------------------

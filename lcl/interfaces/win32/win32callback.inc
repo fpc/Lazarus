@@ -691,7 +691,7 @@ Var
         lControl := lWinControl;
       if lControl.Cursor <> crDefault then
       begin
-        Windows.SetCursor(Windows.LoadCursor(0, LclCursorToWin32CursorMap[lControl.Cursor]));
+        Windows.SetCursor(Screen.Cursors[lControl.Cursor]);
         LMessage.Result := 1;
       end;
     end;

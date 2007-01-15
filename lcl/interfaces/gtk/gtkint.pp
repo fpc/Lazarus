@@ -103,7 +103,7 @@ uses
   // LCL
   ExtDlgs, Dialogs, Controls, Forms, LCLStrConsts, LMessages,
   LCLProc, LCLIntf, LCLType, GtkFontCache, gtkDef, GtkProc, DynHashArray,
-  gtkMsgQueue, GraphType, GraphMath, Graphics, Menus;
+  gtkMsgQueue, GraphType, GraphMath, Graphics, Menus, Maps;
 
 
 type
@@ -428,42 +428,8 @@ begin
   end;
 
   // mouse cursors
-  for cr:=Low(GDKMouseCursors) to High(GDKMouseCursors) do begin
-    GDKMouseCursors[cr]:=nil;
-    CursorToGDKCursor[cr]:=GDK_LEFT_PTR;
-  end;
-  CursorToGDKCursor[crDefault]  := GDK_LEFT_PTR;
-  CursorToGDKCursor[crNone]     := GDK_LEFT_PTR;
-  CursorToGDKCursor[crArrow]    := GDK_Arrow;
-  CursorToGDKCursor[crCross]    := GDK_Cross;
-  CursorToGDKCursor[crIBeam]    := GDK_XTerm;
-  CursorToGDKCursor[crSize]     := GDK_FLEUR;
-  CursorToGDKCursor[crSizeNESW] := GDK_BOTTOM_LEFT_CORNER;
-  CursorToGDKCursor[crSizeNS]   := GDK_SB_V_DOUBLE_ARROW;
-  CursorToGDKCursor[crSizeNWSE] := GDK_TOP_LEFT_CORNER;
-  CursorToGDKCursor[crSizeWE]   := GDK_SB_H_DOUBLE_ARROW;
-  CursorToGDKCursor[crSizeNW]   := GDK_TOP_LEFT_CORNER;
-  CursorToGDKCursor[crSizeN]    := GDK_TOP_SIDE;
-  CursorToGDKCursor[crSizeNE]   := GDK_TOP_RIGHT_CORNER;
-  CursorToGDKCursor[crSizeW]    := GDK_LEFT_SIDE;
-  CursorToGDKCursor[crSizeE]    := GDK_RIGHT_SIDE;
-  CursorToGDKCursor[crSizeSW]   := GDK_BOTTOM_LEFT_CORNER;
-  CursorToGDKCursor[crSizeS]    := GDK_BOTTOM_SIDE;
-  CursorToGDKCursor[crSizeSE]   := GDK_BOTTOM_RIGHT_CORNER;
-  CursorToGDKCursor[crUpArrow]  := GDK_LEFT_PTR;
-  CursorToGDKCursor[crHourGlass]:= GDK_CLOCK;
-  CursorToGDKCursor[crDrag]     := GDK_SAILBOAT;
-  CursorToGDKCursor[crNoDrop]   := GDK_IRON_CROSS;
-  CursorToGDKCursor[crHSplit]   := GDK_SB_H_DOUBLE_ARROW;
-  CursorToGDKCursor[crVSplit]   := GDK_SB_V_DOUBLE_ARROW;
-  CursorToGDKCursor[crMultiDrag]:= GDK_SAILBOAT;
-  CursorToGDKCursor[crSQLWait]  := GDK_LEFT_PTR;
-  CursorToGDKCursor[crNo]       := GDK_LEFT_PTR;
-  CursorToGDKCursor[crAppStart] := GDK_LEFT_PTR;
-  CursorToGDKCursor[crHelp]     := GDK_QUESTION_ARROW;
-  CursorToGDKCursor[crHandPoint]:= GDK_Hand1;
-  CursorToGDKCursor[crSizeAll]  := GDK_FLEUR;
-  
+  MMouseCursorMap := TMap.Create(its2, SizeOf(PGDKCursor));
+
   // charset encodings
   CharSetEncodingList := TList.Create;
   CreateDefaultCharsetEncodings;
@@ -493,6 +459,8 @@ begin
     CharSetEncodingList.Free;
     CharSetEncodingList:=nil;
   end;
+  
+  FreeAndNil(MMouseCursorMap);
 end;
 
 

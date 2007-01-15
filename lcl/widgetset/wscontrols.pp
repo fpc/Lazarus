@@ -61,7 +61,7 @@ type
 
   TWSControl = class(TWSLCLComponent)
     class procedure AddControl(const AControl: TControl); virtual;
-    class procedure SetCursor(const AControl: TControl; const ACursor: TCursor); virtual;
+    class procedure SetCursor(const AControl: TControl; const ACursor: HCursor); virtual;
   end;
 
   TWSControlClass = class of TWSControl;
@@ -125,7 +125,7 @@ class procedure TWSControl.AddControl(const AControl: TControl);
 begin
 end;
 
-class procedure TWSControl.SetCursor(const AControl: TControl; const ACursor: TCursor);
+class procedure TWSControl.SetCursor(const AControl: TControl; const ACursor: HCursor);
 begin
 end;
 

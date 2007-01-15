@@ -120,6 +120,11 @@ begin
   Result := WidgetSet.CreateRegionCopy(SrcRGN);
 end;
 
+function CreateStandardCursor(ACursor: SmallInt): hCursor;
+begin
+  Result := WidgetSet.CreateStandardCursor(ACursor);
+end;
+
 function DCClipRegionValid(DC: HDC): boolean;
 begin
   Result := WidgetSet.DCClipRegionValid(DC);

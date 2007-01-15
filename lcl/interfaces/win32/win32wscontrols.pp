@@ -56,7 +56,7 @@ type
   private
   protected
   public
-    class procedure SetCursor(const AControl: TControl; const ACursor: TCursor); override;
+    class procedure SetCursor(const AControl: TControl; const ACursor: HCursor); override;
   end;
 
   { TWin32WSWinControl }
@@ -275,9 +275,10 @@ end;
 
 { TWin32WSControl }
 
-class procedure TWin32WSControl.SetCursor(const AControl: TControl; const ACursor: TCursor);
+class procedure TWin32WSControl.SetCursor(const AControl: TControl; const ACursor: HCursor);
 begin
-  Windows.SetCursor(Windows.LoadCursor(0, LclCursorToWin32CursorMap[ACursor]));
+  Windows.SetCursor(ACursor);
+  //Windows.SetCursor(Windows.LoadCursor(0, LclCursorToWin32CursorMap[ACursor]));
 end;
 
 { TWin32WSWinControl }

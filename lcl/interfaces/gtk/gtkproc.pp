@@ -552,7 +552,6 @@ function GetWidgetOrigin(TheWidget: PGtkWidget): TPoint;
 function GetWidgetClientOrigin(TheWidget: PGtkWidget): TPoint;
 function TranslateGdkPointToClientArea(SourceWindow: PGdkWindow;
   SourcePos: TPoint;  DestinationWidget: PGtkWidget): TPoint;
-procedure SetCursor(AWinControl: TWinControl; ACursor: TCursor);
 
 // mouse capturing
 procedure CaptureMouseForWidget(Widget: PGtkWidget; Owner: TMouseCaptureType);
@@ -562,8 +561,19 @@ procedure ReleaseCaptureWidget(Widget : PGtkWidget);
 procedure UpdateMouseCaptureControl;
 
 // mouse cursor
-function GetGDKMouseCursor(Cursor: TCursor): PGdkCursor;
-Procedure FreeGDKCursors;
+procedure SetCursor(AWinControl: TWinControl; ACursor: HCursor);
+function GetPredefinedCursor(ACursor: TCursor): HCursor;
+function GetGDKMouseCursor(ACursor: hCursor): PGdkCursor;
+procedure FreeGDKCursors;
+
+const
+  // for now return the same value, in the future we may want to return an
+  // offset of -1 so we can use 0 as error (now crDefault = 0)
+  // In the current situation, a TCursor is passed as hCursor. Since both are
+  // ordinals, the compiler won't complain
+  PREDEFINED_CURSOR_OFFSET = 0; //-1;
+
+
 
 // designing
 type

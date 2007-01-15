@@ -118,6 +118,11 @@ begin
   CombineRGN(Result,SrcRGN,SrcRGN,RGN_COPY);
 end;
 
+function TWidgetSet.CreateStandardCursor(ACursor: SmallInt): hCursor;
+begin
+  Result := 0;
+end;
+
 function TWidgetSet.DCClipRegionValid(DC: HDC): boolean;
 var
   Clip: hRGN;

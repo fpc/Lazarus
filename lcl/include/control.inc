@@ -2212,7 +2212,7 @@ end;
 ------------------------------------------------------------------------------}
 procedure TControl.SetTempCursor(Value: TCursor);
 begin
-  TWSControlClass(WidgetSetClass).SetCursor(Self, Value);
+  TWSControlClass(WidgetSetClass).SetCursor(Self, Screen.Cursors[Value]);
 end;
 
 procedure TControl.ActiveDefaultControlChanged(NewControl: TControl);
