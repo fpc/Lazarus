@@ -2535,6 +2535,13 @@ Begin
   Result := Boolean(Windows.PeekMessage(@LPMsg, Handle, WMsgFilterMin, WMsgFilterMax, WRemoveMsg));
 End;
 
+function TWin32WidgetSet.Pie(DC: HDC; EllipseX1, EllipseY1, EllipseX2,
+  EllipseY2, StartX, StartY, EndX, EndY: Integer): Boolean;
+begin
+  Result := Boolean(Windows.Pie(DC,EllipseX1, EllipseY1, EllipseX2, EllipseY2,
+                                   StartX, StartY, EndX, EndY));
+end;
+
 {------------------------------------------------------------------------------
   Method:  PolyBezier
   Params:  DC, Points, NumPts, Filled, Continous

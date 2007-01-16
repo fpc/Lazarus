@@ -144,6 +144,8 @@ function MessageBox(HWnd: HWND; LPText, LPCaption: PChar; UType: Cardinal): Inte
 function MoveToEx(DC: HDC; X, Y: Integer; OldPoint: PPoint): Boolean; Override;
 
 function PeekMessage(Var LPMsg: TMsg; Handle: HWND; WMsgFilterMin, WMsgFilterMax, WRemoveMsg: UINT): Boolean; Override;
+function Pie(DC: HDC; EllipseX1,EllipseY1,EllipseX2,EllipseY2,
+             StartX,StartY,EndX,EndY: Integer): Boolean; override;
 function PolyBezier(DC: HDC; Points: PPoint; NumPts: Integer; Filled, Continuous: Boolean): Boolean; Override;
 function Polygon(DC: HDC; Points: PPoint; NumPts: Integer; Winding: Boolean): Boolean; Override;
 function Polyline(DC: HDC; Points: PPoint; NumPts: Integer): Boolean; Override;
