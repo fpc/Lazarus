@@ -674,6 +674,7 @@ Var
   var
     lControl: TControl;
     BoundsOffset: TRect;
+    ACursor: TCursor;
   begin
     if (lWinControl <> nil) and not (csDesigning in lWinControl.ComponentState)
       and (LOWORD(LParam) = HTCLIENT) then
@@ -685,13 +686,19 @@ Var
         Dec(P.X, BoundsOffset.Left);
         Dec(P.Y, BoundsOffset.Top);
       end;
-      // statictext controls do not get WM_SETCURSOR messages...
-      lControl := lWinControl.ControlAtPos(P, false, true);
-      if lControl = nil then
-        lControl := lWinControl;
-      if lControl.Cursor <> crDefault then
+      ACursor := Screen.Cursor;
+      if ACursor = crDefault then
       begin
-        Windows.SetCursor(Screen.Cursors[lControl.Cursor]);
+        // statictext controls do not get WM_SETCURSOR messages...
+        lControl := lWinControl.ControlAtPos(P, false, true);
+        if lControl = nil then
+          lControl := lWinControl;
+        if lControl.Cursor <> crDefault then
+          ACursor := lControl.Cursor;
+      end;
+      if ACursor <> crDefault then
+      begin
+        Windows.SetCursor(Screen.Cursors[ACursor]);
         LMessage.Result := 1;
       end;
     end;
