@@ -363,6 +363,7 @@ begin
   Result:=false;
   ContentChanged:=false;
   NewContent:=nil;
+  OldContent:=nil;
   try
     try
       e:=LineEnding;
@@ -430,6 +431,7 @@ begin
       Result:=true;
     finally
       NewContent.Free;
+      OldContent.Free;
     end;
   except
     on E: Exception do begin

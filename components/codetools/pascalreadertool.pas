@@ -67,14 +67,15 @@ type
 
     // properties
     function ExtractPropType(PropNode: TCodeTreeNode;
-        InUpperCase, EmptyIfIndexed: boolean): string;
+                             InUpperCase, EmptyIfIndexed: boolean): string;
     function MoveCursorToPropType(PropNode: TCodeTreeNode): boolean;
     function MoveCursorToPropName(PropNode: TCodeTreeNode): boolean;
     function ExtractPropName(PropNode: TCodeTreeNode;
-        InUpperCase: boolean): string;
+                             InUpperCase: boolean): string;
     function ExtractProperty(PropNode: TCodeTreeNode;
-        Attr: TProcHeadAttributes): string;
+                             Attr: TProcHeadAttributes): string;
     function GetPropertyNameIdentifier(PropNode: TCodeTreeNode): PChar;
+    function GetPropertyTypeIdentifier(PropNode: TCodeTreeNode): PChar;
     function PropertyIsDefault(PropertyNode: TCodeTreeNode): boolean;
     function PropertyNodeHasParamList(PropNode: TCodeTreeNode): boolean;
     function PropNodeIsTypeLess(PropNode: TCodeTreeNode): boolean;
@@ -898,6 +899,18 @@ begin
     ReadNextAtom; // read 'propery'
   end;
   ReadNextAtom; // read name
+  Result:=@Src[CurPos.StartPos];
+end;
+
+function TPascalReaderTool.GetPropertyTypeIdentifier(PropNode: TCodeTreeNode
+  ): PChar;
+begin
+
+  // ToDo: ppu, ppw, dcu
+
+  Result:=nil;
+  if PropNode=nil then exit;
+  if not MoveCursorToPropType(PropNode) then exit;
   Result:=@Src[CurPos.StartPos];
 end;
 

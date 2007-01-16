@@ -134,6 +134,8 @@ const
       ctnImplementation, ctnInitialization, ctnFinalization];
   AllClassSections =
      [ctnClassPublic,ctnClassPublished,ctnClassPrivate,ctnClassProtected];
+  AllClasses =
+     [ctnClass,ctnClassInterface];
   AllDefinitionSections =
      [ctnTypeSection,ctnVarSection,ctnConstSection,ctnResStrSection,
       ctnLabelSection];
