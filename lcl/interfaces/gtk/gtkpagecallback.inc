@@ -15,7 +15,7 @@
  *****************************************************************************
 }
 
-procedure DrawNotebookPageIcon(Page: TPage; Widget: PGtkWidget);
+procedure DrawNotebookPageIcon(Page: TCustomPage; Widget: PGtkWidget);
 var
   NoteBook: TCustomNotebook;
   NoteBookWidget: PGtkWidget;
@@ -41,13 +41,13 @@ end;
 function PageIconWidgetExposeAfter(Widget: PGtkWidget; Event: PGDKEventExpose;
   Data: gPointer): GBoolean; cdecl;
 var
-  ThePage: TPage;
+  ThePage: TCustomPage;
 begin
   Result := false;
   //DebugLn('PageIconWidgetExposeAfter ',DbgS(Widget));
   EventTrace('PageIconWidgetExposeAfter', Data);
   if (Event^.Count > 0) then exit;
-  ThePage:=TObject(Data) as TPage;
+  ThePage:=TObject(Data) as TCustomPage;
   DrawNotebookPageIcon(ThePage,Widget);
 end;
 
@@ -55,12 +55,12 @@ end;
 function PageIconWidgetDrawAfter(Widget: PGtkWidget; area: PGDKRectangle;
   data: gPointer) : GBoolean; cdecl;
 var
-  ThePage: TPage;
+  ThePage: TCustomPage;
 begin
   Result := false;
   //DebugLn('PageIconWidgetDrawAfter ',DbgS(Widget),' ',Area^.x,',',Area^.y);
   EventTrace('PageIconWidgetDrawAfter', Data);
-  ThePage:=TObject(Data) as TPage;
+  ThePage:=TObject(Data) as TCustomPage;
   DrawNotebookPageIcon(ThePage,Widget);
 end;
 {$ENDIF}

@@ -1542,7 +1542,7 @@ function TStandardCodeTool.CheckLFM(LFMBuf: TCodeBuffer; var LFMTree: TLFMTree;
   RootMustBeClassInIntf, ObjectsMustExists: boolean): boolean;
 var
   RootContext: TFindContext;
-
+  
   function CheckLFMObjectValues(LFMObject: TLFMObjectNode;
     const ClassContext: TFindContext): boolean; forward;
 
@@ -1821,7 +1821,6 @@ var
     VariableTypeName: String;
     DefinitionNode: TCodeTreeNode;
     ClassContext: TFindContext;
-    PropertyTypeName: String;
   begin
     // find variable for object
     
@@ -1850,7 +1849,8 @@ var
         exit;
       end;
 
-      // check if identifier is a variable
+      // check if identifier is a variable or property
+      VariableTypeName:='';
       if (ChildContext.Node.Desc=ctnVarDefinition) then begin
         DefinitionNode:=ChildContext.Tool.FindTypeNodeOfDefinition(
                                                              ChildContext.Node);
@@ -1863,38 +1863,12 @@ var
           exit;
         end;
 
-        // check if variable has a compatible type
-        if LFMObject.TypeName<>'' then begin
-          VariableTypeName:=ChildContext.Tool.ExtractDefinitionNodeType(
+        VariableTypeName:=ChildContext.Tool.ExtractDefinitionNodeType(
                                                              ChildContext.Node);
-          if (CompareIdentifiers(PChar(VariableTypeName),
-                   PChar(LFMObject.TypeName))<>0)
-          then begin
-            ChildContext.Node:=DefinitionNode;
-            LFMTree.AddError(lfmeObjectIncompatible,LFMObject,
-                           VariableTypeName+' expected, but '+LFMObject.TypeName+' found.'
-                           +CreateFootNote(ChildContext),
-                           LFMObject.NamePosition);
-            exit;
-          end;
-        end;
       end else if (ChildContext.Node.Desc=ctnProperty) then begin
-        // check if variable has a compatible type
         DefinitionNode:=ChildContext.Node;
-        if LFMObject.TypeName<>'' then begin
-          PropertyTypeName:=
+        VariableTypeName:=
                ChildContext.Tool.ExtractPropType(ChildContext.Node,false,false);
-          if (CompareIdentifiers(PChar(PropertyTypeName),
-                   PChar(LFMObject.TypeName))<>0)
-          then begin
-            ChildContext.Node:=DefinitionNode;
-            LFMTree.AddError(lfmeObjectIncompatible,LFMObject,
-                           PropertyTypeName+' expected, but '+LFMObject.TypeName+' found.'
-                           +CreateFootNote(ChildContext),
-                           LFMObject.NamePosition);
-            exit;
-          end;
-        end;
       end else begin
         LFMTree.AddError(lfmeObjectIncompatible,LFMObject,
                          LFMObjectName+' is not a variable'
@@ -1902,6 +1876,25 @@ var
                          LFMObject.NamePosition);
         exit;
       end;
+      
+      // check if variable/property has a compatible type
+      if (VariableTypeName<>'') then begin
+        if (LFMObject.TypeName<>'')
+        and (CompareIdentifiers(PChar(VariableTypeName),
+                                PChar(LFMObject.TypeName))<>0)
+        then begin
+          ChildContext.Node:=DefinitionNode;
+          LFMTree.AddError(lfmeObjectIncompatible,LFMObject,
+                         VariableTypeName+' expected, but '+LFMObject.TypeName+' found.'
+                         +CreateFootNote(ChildContext),
+                         LFMObject.NamePosition);
+          exit;
+        end;
+        
+        // check if variable/property type exists
+        
+      end;
+
 
       // find class node
       ClassContext:=FindClassNodeForLFMObject(LFMObject,LFMObject.TypeNamePosition,
