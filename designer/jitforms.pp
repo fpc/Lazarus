@@ -77,12 +77,10 @@ type
 
   TJITComponentList = class(TPersistentWithTemplates)
   private
-    FComponentPrefix: string;
     FCurUnknownClass: string;
     FCurUnknownProperty: string;
     FErrors: TLRPositionLinks;
     FOnPropertyNotFound: TJITPropertyNotFoundEvent;
-    procedure SetComponentPrefix(const AValue: string);
   protected
     FCurReadErrorMsg: string;
     FCurReadJITComponent:TComponent;
@@ -178,8 +176,6 @@ type
     property CurReadErrorMsg: string read FCurReadErrorMsg;
     property CurUnknownProperty: string read FCurUnknownProperty;
     property CurUnknownClass: string read FCurUnknownClass;
-    property ComponentPrefix: string read FComponentPrefix
-                                     write SetComponentPrefix;
     property Errors: TLRPositionLinks read FErrors;
   end;
 
@@ -190,7 +186,6 @@ type
   private
     function GetItem(Index: integer): TForm;
   public
-    constructor Create;
     function IsJITForm(AComponent: TComponent): boolean;
     property Items[Index:integer]: TForm read GetItem; default;
   end;
@@ -200,7 +195,6 @@ type
   
   TJITNonFormComponents = class(TJITComponentList)
   public
-    constructor Create;
     function IsJITNonForm(AComponent: TComponent): boolean;
   end;
   
@@ -339,7 +333,7 @@ type
   end;
 
 var
-  TComponentValidateRenameOffset: LongInt;
+  TComponentValidateRenameOffset: LongInt = 0;
 
 procedure TComponentWithOverrideValidateRename.ValidateRename(
   AComponent: TComponent; const CurName, NewName: string);
@@ -543,7 +537,6 @@ end;
 constructor TJITComponentList.Create;
 begin
   inherited Create;
-  FComponentPrefix:='Form';
   FJITComponents:=TList.Create;
   FErrors:=TLRPositionLinks.Create;
 end;
@@ -633,11 +626,15 @@ end;
 procedure TJITComponentList.GetUnusedNames(
   var ComponentName,ComponentClassName:shortstring);
 var a:integer;
+  ComponentPrefix: String;
 begin
   a:=1;
+  ComponentPrefix:=ComponentClassName;
+  if ComponentPrefix[1] in ['t','T'] then
+    ComponentPrefix:=copy(ComponentPrefix,2,length(ComponentPrefix));
   repeat
     ComponentName:=ComponentPrefix+IntToStr(a);
-    ComponentClassName:='T'+ComponentPrefix+IntToStr(a);
+    ComponentClassName:='T'+ComponentName;
     inc(a);
   until (FindComponentByName(ComponentName)<0)
         and (FindComponentByClassName(ComponentClassName)<0);
@@ -1003,12 +1000,6 @@ begin
   Result.Code:=NewCode;
 end;
 
-procedure TJITComponentList.SetComponentPrefix(const AValue: string);
-begin
-  if FComponentPrefix=AValue then exit;
-  FComponentPrefix:=AValue;
-end;
-
 function TJITComponentList.CreateNewJITClass(ParentClass: TClass;
   const NewClassName, NewUnitName: ShortString): TClass;
 // Create a new class (vmt, virtual method table, field table and typeinfo)
@@ -1081,7 +1072,7 @@ begin
   then
     raise Exception.Create('CreateNewClass new aligned TypeData');
 
-  // set TypeData (PropCount is the total number of properties)
+  // set TypeData (PropCount is the total number of properties, including ancestors)
   NewTypeData^.ClassType:=TClass(NewVMT);
   NewTypeData^.ParentInfo:=ParentClass.ClassInfo;
   NewTypeData^.PropCount:=GetTypeData(NewTypeData^.ParentInfo)^.PropCount;
@@ -1094,7 +1085,7 @@ begin
               Pointer(NewVMT+vmtMethodStart)^,
               vmtTailSize);
 
-  // override 'ValidateRename' for TComponent descendents
+  // override 'ValidateRename' for TComponent descendants
   if ParentClass.InheritsFrom(TComponent) then begin
     Pointer(Pointer(NewVMT+TComponentValidateRenameOffset)^):=
                            @TComponentWithOverrideValidateRename.ValidateRename;
@@ -1424,12 +1415,6 @@ end;
 
 { TJITForms }
 
-constructor TJITForms.Create;
-begin
-  inherited Create;
-  FComponentPrefix:='Form';
-end;
-
 function TJITForms.IsJITForm(AComponent: TComponent): boolean;
 begin
   Result:=(AComponent<>nil) and (AComponent is TForm)
@@ -1442,12 +1427,6 @@ begin
 end;
 
 { TJITNonFormComponents }
-
-constructor TJITNonFormComponents.Create;
-begin
-  inherited Create;
-  FComponentPrefix:='DataModule';
-end;
 
 function TJITNonFormComponents.IsJITNonForm(AComponent: TComponent): boolean;
 begin

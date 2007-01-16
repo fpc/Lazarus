@@ -88,6 +88,7 @@ type
   
   TAbstractFormEditor = class
   protected
+    function GetDesignerBaseClasses(Index: integer): TComponentClass; virtual; abstract;
     function GetDesigner(Index: integer): TIDesigner; virtual; abstract;
   public
     // components
@@ -118,6 +119,12 @@ type
     // ancestors
     function GetAncestorLookupRoot(AComponent: TComponent): TComponent; virtual; abstract;
     function GetAncestorInstance(AComponent: TComponent): TComponent; virtual; abstract;
+    function RegisterDesignerBaseClass(AClass: TComponentClass): integer; virtual; abstract;
+    function DesignerBaseClassCount: Integer; virtual; abstract;
+    property DesignerBaseClasses[Index: integer]: TComponentClass read GetDesignerBaseClasses;
+    procedure UnregisterDesignerBaseClass(AClass: TComponentClass); virtual; abstract;
+    function IndexOfDesignerBaseClass(AClass: TComponentClass): integer; virtual; abstract;
+    function FindDesignerBaseClassByName(const AClassName: shortstring): TComponentClass; virtual; abstract;
 
     // designers
     function DesignerCount: integer; virtual; abstract;

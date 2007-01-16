@@ -406,7 +406,6 @@ const
 procedure InternalInit;
 var
   c: TClipboardType;
-  cr: TCursor;
 begin
   gtk_handler_quark := g_quark_from_static_string('gtk-signal-handlers');
 

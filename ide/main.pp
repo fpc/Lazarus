@@ -4924,7 +4924,7 @@ begin
         case  Result of
         mrAbort: exit;
         mrOk:
-          begin
+          if AncestorUnitInfo<>nil then begin
             Result:=DoSaveUnitComponentToBinStream(AncestorUnitInfo,
                                                    AncestorBinStream);
             if Result<>mrOk then exit;
@@ -5212,18 +5212,12 @@ var
   end;
   
   function TryRegisteredClasses(out TheModalResult: TModalResult): boolean;
-  var
-    APersistentClass: TPersistentClass;
   begin
     Result:=false;
-    APersistentClass:=Classes.GetClass(AComponentClassName);
-    if APersistentClass=nil then exit;
-    if not APersistentClass.InheritsFrom(TComponent) then exit;
-    AComponentClass:=TComponentClass(APersistentClass);
-    if AComponentClass.InheritsFrom(TForm)
-    or AComponentClass.InheritsFrom(TDataModule) then begin
-      // at the moment the designer only supports descendants
-      // of TForm and TDataModule
+    AComponentClass:=
+                   FormEditor1.FindDesignerBaseClassByName(AComponentClassName);
+    if AComponentClass<>nil then begin
+      DebugLn(['TMainIDE.DoLoadComponentDependencyHidden.TryRegisteredClasses found: ',AComponentClass.ClassName]);
       TheModalResult:=mrOk;
       Result:=true;
     end;
@@ -5259,7 +5253,10 @@ begin
       if TryUnit(ComponentUnitInfo.Filename,Result,false) then exit;
     end;
 
-    // then search in used units
+    // then try registered classes
+    if TryRegisteredClasses(Result) then exit;
+
+    // finally search in used units
     UsedUnitFilenames:=nil;
     try
       if not CodeToolBoss.FindUsedUnitFiles(AnUnitInfo.Source,UsedUnitFilenames)
@@ -5294,9 +5291,6 @@ begin
       UsedUnitFilenames.Free;
     end;
 
-    // finally try registered classes
-    if TryRegisteredClasses(Result) then exit;
-    
     Result:=QuestionDlg(lisCodeTemplError, Format(
       lisUnableToFindTheUnitOfComponentClass, ['"', AComponentClassName, '"']),
       mtError, [mrCancel, lisCancelLoadingThisComponent,

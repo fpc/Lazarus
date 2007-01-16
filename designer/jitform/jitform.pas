@@ -22,9 +22,13 @@
 
   Abstract:
     JITForm - just-in-time form.
+    This unit contains some of the dirtiest hacks in the lazarus IDE.
+    Nevertheless they work for year on all platforms and make many things
+    much easier.
+    
     Forms are the most common resources/design items in the IDE, hence the name.
-    Of course any TComponent descendant can be editid but naming it
-    'JITComponent' would confuse new developers.
+    Why the tricks: Of course any TComponent descendant can be edited
+    but naming it 'JITComponent' would confuse new developers.
 
     Because the IDE does wild things with forms and datamodules, like creating
     an own class for each opened form/datamodule and dynamically creating

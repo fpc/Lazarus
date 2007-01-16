@@ -117,6 +117,7 @@ each control that's dropped onto the form
     FObj_Inspector: TObjectInspector;
     FDefineProperties: TAVLTree;// tree of TDefinePropertiesCacheItem
     FStandardDefinePropertiesRegistered: Boolean;
+    FDesignerBaseClasses: TFPList; // list of TComponentClass
     function GetPropertyEditorHook: TPropertyEditorHook;
     function FindDefinePropertyNode(const APersistentClassName: string
                                     ): TAVLTreeNode;
@@ -131,11 +132,12 @@ each control that's dropped onto the form
       Instance: TPersistent; var PropName: string; IsPath: boolean;
       var Handled, Skip: Boolean);
 
+    function GetDesignerBaseClasses(Index: integer): TComponentClass; override;
     procedure OnDesignerMenuItemClick(Sender: TObject); virtual;
     function FindNonControlFormNode(LookupRoot: TComponent): TAVLTreeNode;
   public
     JITFormList: TJITForms;// designed forms
-    JITNonFormList: TJITNonFormComponents;// designed data modules
+    JITNonFormList: TJITNonFormComponents;// designed custom components like data modules
 
     constructor Create;
     destructor Destroy; override;
@@ -226,6 +228,11 @@ each control that's dropped onto the form
     // ancestors
     function GetAncestorLookupRoot(AComponent: TComponent): TComponent; override;
     function GetAncestorInstance(AComponent: TComponent): TComponent; override;
+    function RegisterDesignerBaseClass(AClass: TComponentClass): integer; override;
+    function DesignerBaseClassCount: Integer; override;
+    procedure UnregisterDesignerBaseClass(AClass: TComponentClass); override;
+    function IndexOfDesignerBaseClass(AClass: TComponentClass): integer; override;
+    function FindDesignerBaseClassByName(const AClassName: shortstring): TComponentClass; override;
 
     // define properties
     procedure FindDefineProperty(const APersistentClassName,
@@ -288,6 +295,12 @@ each control that's dropped onto the form
     property Target: TPersistent read FTarget;
   end;
   
+
+const
+  StandardDesignerBaseClasses: array[1..2] of TComponentClass = (
+    Forms.TForm,
+    {$IFNDEF UseFCLDataModule}Forms.{$ENDIF}TDataModule
+    );
   
   
 function CompareComponentInterfaces(Data1, Data2: Pointer): integer;
@@ -782,12 +795,18 @@ end;
 { TCustomFormEditor }
 
 constructor TCustomFormEditor.Create;
+var
+  l: Integer;
 begin
   inherited Create;
   FComponentInterfaces := TAVLTree.Create(@CompareComponentInterfaces);
   FNonControlForms:=TAVLTree.Create(@CompareNonControlDesignerForms);
   FSelection := TPersistentSelectionList.Create;
-  
+  FDesignerBaseClasses:=TFPList.Create;
+  for l:=Low(StandardDesignerBaseClasses) to High(StandardDesignerBaseClasses)
+  do
+    FDesignerBaseClasses.Add(StandardDesignerBaseClasses[l]);
+
   JITFormList := TJITForms.Create;
   JITFormList.OnReaderError:=@JITListReaderError;
   JITFormList.OnPropertyNotFound:=@JITListPropertyNotFound;
@@ -811,6 +830,7 @@ begin
   end;
   FreeAndNil(JITFormList);
   FreeAndNil(JITNonFormList);
+  FreeAndNil(FDesignerBaseClasses);
   FreeAndNil(FComponentInterfaces);
   FreeAndNil(FSelection);
   FreeAndNil(FNonControlForms);
@@ -1440,6 +1460,12 @@ Begin
       end
       else begin
         // non TControl
+        if CompWidth<=0 then CompWidth:=50;
+        if CompHeight<=0 then CompHeight:=50;
+        if CompLeft<0 then
+          CompLeft:=Max(1,Min(250,Screen.Width-CompWidth-50));
+        if CompTop<0 then
+          CompTop:=Max(1,Min(250,Screen.Height-CompHeight-50));
         with LongRec(Temp.Component.DesignInfo) do begin
           Lo:=word(Min(32000,CompLeft));
           Hi:=word(Min(32000,CompTop));
@@ -1591,6 +1617,51 @@ begin
   Result:=FindJITComponentByClass(TComponentClass(AComponent.ClassParent));
 end;
 
+function TCustomFormEditor.RegisterDesignerBaseClass(AClass: TComponentClass
+  ): integer;
+begin
+  if AClass=nil then
+    RaiseGDBException('TCustomFormEditor.RegisterDesignerBaseClass');
+  Result:=FDesignerBaseClasses.IndexOf(AClass);
+  if Result<0 then
+    Result:=FDesignerBaseClasses.Add(AClass)
+end;
+
+function TCustomFormEditor.DesignerBaseClassCount: Integer;
+begin
+  Result:=FDesignerBaseClasses.Count;
+end;
+
+procedure TCustomFormEditor.UnregisterDesignerBaseClass(AClass: TComponentClass
+  );
+var
+  l: Integer;
+begin
+  for l:=Low(StandardDesignerBaseClasses) to High(StandardDesignerBaseClasses)
+  do
+    if StandardDesignerBaseClasses[l]=AClass then
+      RaiseGDBException('TCustomFormEditor.UnregisterDesignerBaseClass');
+  FDesignerBaseClasses.Remove(AClass);
+end;
+
+function TCustomFormEditor.IndexOfDesignerBaseClass(AClass: TComponentClass
+  ): integer;
+begin
+  Result:=FDesignerBaseClasses.IndexOf(AClass);
+end;
+
+function TCustomFormEditor.FindDesignerBaseClassByName(
+  const AClassName: shortstring): TComponentClass;
+var
+  i: Integer;
+begin
+  for i:=FDesignerBaseClasses.Count-1 downto 0 do begin
+    Result:=DesignerBaseClasses[i];
+    if CompareText(Result.ClassName,AClassName)=0 then exit;
+  end;
+  Result:=nil;
+end;
+
 procedure TCustomFormEditor.FindDefineProperty(
   const APersistentClassName, AncestorClassName, Identifier: string;
   var IsDefined: boolean);
@@ -1630,6 +1701,7 @@ var
   function GetDefinePersistent(const AClassName: string): Boolean;
   var
     APersistentClass: TPersistentClass;
+    AncestorClass: TComponentClass;
   begin
     Result:=false;
     
@@ -1663,12 +1735,11 @@ var
     end;
 
     // try default classes
-    if (APersistent=nil) and (CompareText(AClassName,'TDataModule')=0) then
-    begin
-      if not CreateTempPersistent(TDataModule) then exit;
-    end;
-    if (APersistent=nil) and (CompareText(AClassName,'TForm')=0) then begin
-      if not CreateTempPersistent(TForm) then exit;
+    if (APersistent=nil) then begin
+      AncestorClass:=FindDesignerBaseClassByName(AClassName);
+      if AncestorClass<>nil then begin
+        if not CreateTempPersistent(AncestorClass) then exit;
+      end;
     end;
 
     Result:=true;
@@ -1793,14 +1864,14 @@ var
   JITComponentList: TJITComponentList;
 begin
   JITComponentList:=TJITComponentList(Sender);
-  aCaption:='Error reading '+JITComponentList.ComponentPrefix;
+  aCaption:='Error reading '+JITComponentList.ClassName;
   aMsg:='';
   DlgType:=mtError;
   Buttons:=[mbCancel];
   HelpCtx:=0;
   
   with JITComponentList do begin
-    aMsg:=aMsg+ComponentPrefix+': ';
+    aMsg:=aMsg+ClassName+': ';
     if CurReadJITComponent<>nil then
       aMsg:=aMsg+CurReadJITComponent.Name+':'+CurReadJITComponent.ClassName
     else
@@ -1874,6 +1945,12 @@ begin
   DebugLn('TCustomFormEditor.JITListPropertyNotFound ',Sender.ClassName,
     ' Instance=',Instance.ClassName,' PropName="',PropName,
     '" IsPath=',BoolToStr(IsPath));
+end;
+
+function TCustomFormEditor.GetDesignerBaseClasses(Index: integer
+  ): TComponentClass;
+begin
+  Result:=TComponentClass(FDesignerBaseClasses[Index]);
 end;
 
 function TCustomFormEditor.GetPropertyEditorHook: TPropertyEditorHook;
