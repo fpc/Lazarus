@@ -332,7 +332,7 @@ end;
 
 procedure TCustomListBox.SetItemHeight(Value: Integer);
 begin
-  if (FItemHeight <> Value) and (Value > 0) then begin
+  if (FItemHeight <> Value) and (Value >= 0) then begin
     FItemHeight := Value;
     if (not HandleAllocated) or (csLoading in ComponentState) then exit;
     // TODO: remove RecreateWnd
