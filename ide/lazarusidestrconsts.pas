@@ -2093,6 +2093,9 @@ resourcestring
   lisCodeTemplComment = 'Comment:';
   lisCodeTemplATokenAlreadyExists = ' A token %s%s%s already exists! ';
   lisCodeTemplError = 'Error';
+  lisUnableToOpenDesignerTheClassDoesNotDescendFromADes = 'Unable to open '
+    +'designer.%sThe class %s does not descend from a designable class like '
+    +'TForm or TDataModule.';
   lisClassConflictsWithLfmFileTheUnitUsesTheTheUnitWhic = 'Class conflicts '
     +'with .lfm file:%sThe unit %s%suses the the unit %s%swhich contains the '
     +'class %s,%sbut the .lfm file contains already another class.%sThere can '

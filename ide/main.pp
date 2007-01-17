@@ -4911,6 +4911,14 @@ begin
             NewClassName, '"', '"', AncestorClassName, '"']),
             mtError,[mbCancel],0);
           Result:=mrCancel;
+          exit;
+        end else if CompareText(AncestorClassName,'TComponent')=0 then begin
+          MessageDlg(lisCodeTemplError, Format(
+            lisUnableToOpenDesignerTheClassDoesNotDescendFromADes, [#13,
+            NewClassName]),
+            mtError,[mbCancel],0);
+          Result:=mrCancel;
+          exit;
         end;
       end else begin
         AncestorType:=TForm;
@@ -5318,7 +5326,7 @@ function TMainIDE.CloseUnitComponent(AnUnitInfo: TUnitInfo; Flags: TCloseFlags
   begin
     CompUnitInfo:=Project1.FirstUnitWithComponent;
     while CompUnitInfo<>nil do begin
-      DebugLn(['FreeUnusedComponents ',CompUnitInfo.Filename,' ',dbgsName(CompUnitInfo.Component),' UnitComponentIsUsed=',UnitComponentIsUsed(CompUnitInfo,true)]);
+      //DebugLn(['FreeUnusedComponents ',CompUnitInfo.Filename,' ',dbgsName(CompUnitInfo.Component),' UnitComponentIsUsed=',UnitComponentIsUsed(CompUnitInfo,true)]);
       if not UnitComponentIsUsed(CompUnitInfo,true) then begin
         CloseUnitComponent(CompUnitInfo,Flags);
         exit;
@@ -5334,7 +5342,7 @@ var
 begin
   LookupRoot:=AnUnitInfo.Component;
   if LookupRoot=nil then exit(mrOk);
-  DebugLn(['TMainIDE.CloseUnitComponent ',AnUnitInfo.Filename,' ',dbgsName(LookupRoot)]);
+  //DebugLn(['TMainIDE.CloseUnitComponent ',AnUnitInfo.Filename,' ',dbgsName(LookupRoot)]);
 
   // save
   if (cfSaveFirst in Flags) and (AnUnitInfo.EditorIndex>=0) then begin
@@ -5356,7 +5364,7 @@ begin
     FLastFormActivated:=nil;
   if (OldDesigner=nil) then begin
     // hidden component
-    DebugLn(['TMainIDE.CloseUnitComponent freeing hidden component without designer: ',AnUnitInfo.Filename,' ',DbgSName(AnUnitInfo.Component)]);
+    //DebugLn(['TMainIDE.CloseUnitComponent freeing hidden component without designer: ',AnUnitInfo.Filename,' ',DbgSName(AnUnitInfo.Component)]);
     if UnitComponentIsUsed(AnUnitInfo,false) then begin
       // hidden component is still used => keep it
     end else begin
@@ -5369,11 +5377,11 @@ begin
     // component with designer
     if UnitComponentIsUsed(AnUnitInfo,false) then begin
       // free designer, keep component hidden
-      DebugLn(['TMainIDE.CloseUnitComponent hiding component and freeing designer: ',AnUnitInfo.Filename,' ',DbgSName(AnUnitInfo.Component)]);
+      //DebugLn(['TMainIDE.CloseUnitComponent hiding component and freeing designer: ',AnUnitInfo.Filename,' ',DbgSName(AnUnitInfo.Component)]);
       OldDesigner.FreeDesigner(false);
     end else begin
       // free designer and design form
-      DebugLn(['TMainIDE.CloseUnitComponent freeing component and designer: ',AnUnitInfo.Filename,' ',DbgSName(AnUnitInfo.Component)]);
+      //DebugLn(['TMainIDE.CloseUnitComponent freeing component and designer: ',AnUnitInfo.Filename,' ',DbgSName(AnUnitInfo.Component)]);
       OldDesigner.FreeDesigner(true);
       AnUnitInfo.Component:=nil;
       FreeUnusedComponents;
@@ -12424,7 +12432,7 @@ begin
     Result:=FormEditor1.GetDesignerForm(AnUnitInfo.Component);
   if ((Result=nil) or (Result.Designer=nil)) and LoadForm
   and FilenameIsPascalSource(AnUnitInfo.Filename) then begin
-    DebugLn(['TMainIDE.GetFormOfSource ',AnUnitInfo.Filename,' ',dbgsName(AnUnitInfo.Component)]);
+    //DebugLn(['TMainIDE.GetFormOfSource ',AnUnitInfo.Filename,' ',dbgsName(AnUnitInfo.Component)]);
     DoLoadLFM(AnUnitInfo,[],[]);
   end;
   if (Result=nil) and (AnUnitInfo.Component<>nil) then
