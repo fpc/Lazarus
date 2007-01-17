@@ -784,16 +784,20 @@ var
   ok: boolean;
 begin
   Result:=-1;
-  // create new class and an instance
-  //debugln('[TJITForms.DoCreateJITComponent] Creating new JIT class '''+NewClassName+''' ...');
-  Pointer(FCurReadClass):=CreateNewJITClass(ParentClass,NewClassName,
-                                            NewUnitName);
-  //debugln('[TJITForms.DoCreateJITComponent] Creating an instance of JIT class "'+NewClassName+'" = class('+ParentClass.ClassName+') ...');
-  Instance:=TComponent(FCurReadClass.NewInstance);
-  //debugln('[TJITForms.DoCreateJITComponent] Initializing new instance ... ',DbgS(Instance));
-  TComponent(FCurReadJITComponent):=Instance;
+  Instance:=nil;
+  FCurReadClass:=nil;
+  FCurReadJITComponent:=nil;
+  
   try
     ok:=false;
+    // create new class and an instance
+    //debugln('[TJITForms.DoCreateJITComponent] Creating new JIT class '''+NewClassName+''' ...');
+    Pointer(FCurReadClass):=CreateNewJITClass(ParentClass,NewClassName,
+                                              NewUnitName);
+    //debugln('[TJITForms.DoCreateJITComponent] Creating an instance of JIT class "'+NewClassName+'" = class('+ParentClass.ClassName+') ...');
+    Instance:=TComponent(FCurReadClass.NewInstance);
+    //debugln('[TJITForms.DoCreateJITComponent] Initializing new instance ... ',DbgS(Instance));
+    TComponent(FCurReadJITComponent):=Instance;
     try
       // set into design mode
       SetComponentDesignMode(Instance,true);
@@ -817,7 +821,8 @@ begin
     on E: Exception do begin
       DebugLn('[TJITForms.DoCreateJITComponent] Error ',E.Message);
       try
-        FreeJITClass(FCurReadClass);
+        if FCurReadClass<>nil then
+          FreeJITClass(FCurReadClass);
         Instance.Free;
       except
         on E: Exception do begin

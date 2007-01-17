@@ -1504,9 +1504,13 @@ Begin
             NewComponent.Free;
             NewComponent:=nil;
           except
-            MessageDlg('Error destroying component',
-              'Error destroying component of type '+TypeClass.ClassName,
-              mtError,[mbCancel],0);
+            on E: Exception do begin
+              MessageDlg('Error destroying component',
+                'Error destroying component of type '+TypeClass.ClassName
+                +' of unit '+AUnitName+':'#13
+                +E.Message,
+                mtError,[mbCancel],0);
+            end;
           end;
         end;
       end;
