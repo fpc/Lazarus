@@ -1326,6 +1326,7 @@ Var
   NewComponentName: String;
   DesignForm: TCustomForm;
   NewUnitName: String;
+  s: String;
 Begin
   Result:=nil;
   Temp:=nil;
@@ -1505,11 +1506,12 @@ Begin
             NewComponent:=nil;
           except
             on E: Exception do begin
-              MessageDlg('Error destroying component',
-                'Error destroying component of type '+TypeClass.ClassName
+              s:='Error destroying component of type '+TypeClass.ClassName
                 +' of unit '+AUnitName+':'#13
-                +E.Message,
-                mtError,[mbCancel],0);
+                +E.Message;
+              DebugLn(['TCustomFormEditor.CreateComponent ',s]);
+              DumpExceptionBackTrace;
+              MessageDlg('Error destroying component',s,mtError,[mbCancel],0);
             end;
           end;
         end;
