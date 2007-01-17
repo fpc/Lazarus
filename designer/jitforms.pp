@@ -630,6 +630,8 @@ var a:integer;
 begin
   a:=1;
   ComponentPrefix:=ComponentClassName;
+  if ComponentPrefix='' then
+    ComponentPrefix:='Component';
   if ComponentPrefix[1] in ['t','T'] then
     ComponentPrefix:=copy(ComponentPrefix,2,length(ComponentPrefix));
   repeat
@@ -648,6 +650,7 @@ begin
   {$IFDEF VerboseJITForms}
   debugln('[TJITComponentList] AddNewJITComponent');
   {$ENDIF}
+  NewClassName:=ParentClass.ClassName;
   GetUnusedNames(NewComponentName,NewClassName);
   {$IFDEF VerboseJITForms}
   debugln('TJITComponentList.AddNewJITComponent NewComponentName=',NewComponentName,' NewClassName=',NewClassName,
