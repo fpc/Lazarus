@@ -194,15 +194,18 @@ begin
   if Operation = opRemove then begin
     FLastMouseControlValid:=false;
     if AComponent=FMouseControl then FMouseControl:=nil;
-    if AComponent = MainForm then begin
-      FMainForm:= nil;
-      Terminate;
+    if AComponent=FCreatingForm then begin
+      FCreatingForm:=nil;
     end;
     if AComponent=FHintWindow then begin
       FHintWindow:=nil;
     end;
     if AComponent=FHintTimer then begin
       FHintTimer:=nil;
+    end;
+    if AComponent = MainForm then begin
+      FMainForm:= nil;
+      Terminate;
     end;
   end;
 end;
@@ -219,6 +222,7 @@ begin
   FLastMouseControlValid:=false;
   if AControl=FMouseControl then FMouseControl:=nil;
   if AControl = MainForm then FMainForm:= nil;
+  if AControl = FCreatingForm then FCreatingForm:= nil;
   if Screen.FActiveControl = AControl then Screen.FActiveControl := nil;
   if Screen.FActiveCustomForm = AControl then
   begin
@@ -1551,20 +1555,23 @@ begin
 
   ok:=false;
   try
+    if (FCreatingForm=nil) and (Instance is TForm) then
+      FCreatingForm:=TForm(Instance);
     Instance.Create(Self);
     ok:=true;
   finally
-    if not ok then
+    if not ok then begin
       TComponent(Reference) := nil;
+      if FCreatingForm=Instance then
+        FCreatingForm:=nil;
+    end;
   end;
 
   if (Instance is TForm) then begin
     AForm:=TForm(Instance);
-    if (FMainForm = nil) and not (AForm.FormStyle in [fsMDIChild, fsSplash])
-    then begin
-      FMainForm := AForm;
+    UpdateMainForm(AForm);
+    if FMainForm = AForm then
       AForm.HandleNeeded;
-    end;
     if not Assigned(FFormList) then
       FFormList := TList.Create;
     FFormList.Add(AForm);
@@ -1580,6 +1587,16 @@ begin
     TDataModule(instance).AfterConstruction;
   end;
   {$ENDIF}
+end;
+
+procedure TApplication.UpdateMainForm(AForm: TForm);
+begin
+  if (FMainForm = nil)
+  and (FCreatingForm=AForm)
+  and (not (AppDestroying in FFlags))
+  and not (AForm.FormStyle in [fsMDIChild, fsSplash])
+  then
+    FMainForm := AForm;
 end;
 
 procedure TApplication.QueueAsyncCall(AMethod: TDataEvent; Data: PtrInt);

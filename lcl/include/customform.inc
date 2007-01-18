@@ -1992,6 +1992,17 @@ end;
 
 //==============================================================================
 
+{ TForm }
+
+procedure TForm.CreateWnd;
+begin
+  if (Application<>nil) then
+    Application.UpdateMainForm(TForm(Self));
+  inherited CreateWnd;
+end;
+
+//==============================================================================
+
 { TFormPropertyStorage }
 
 procedure TFormPropertyStorage.FormFirstShow(Sender: TObject);

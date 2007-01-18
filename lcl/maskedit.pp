@@ -59,7 +59,7 @@ type
 
   EDBEditError = class(Exception);
 
-  TMbcsByteType = (mbSingleByte, mbLeadByte, mbTrailByte);
+  //TMbcsByteType = (mbSingleByte, mbLeadByte, mbTrailByte);
   
 
   { TCustomMaskEdit }
@@ -194,7 +194,9 @@ function MaskGetFldSeparator(const EditMask: string): Integer;
 
 procedure Register;
 
+
 implementation
+
 
 procedure Register;
 begin
@@ -204,10 +206,6 @@ end;
 function ByteType(const S: string; Index: Integer): TMbcsByteType;
 begin
   Result := mbSingleByte;
-  { ToDo:
-    if SysLocale.FarEast then
-      Result := ByteTypeTest(PChar(S), Index-1);
-  }
 end;
 
 function MaskGetCharType(const EditMask: string; MaskOffset: Integer): TMaskCharType;

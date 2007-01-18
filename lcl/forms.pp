@@ -557,6 +557,8 @@ type
   TForm = class(TCustomForm)
   private
     FClientHandle: HWND;
+  protected
+    procedure CreateWnd; override;
   public
     property ClientHandle: HWND read FClientHandle;
     property DockManager;
@@ -880,6 +882,7 @@ type
     FApplicationHandlers: array[TApplicationHandlerType] of TMethodList;
     FApplicationType: TApplicationType;
     FCaptureExceptions: boolean;
+    FCreatingForm: TForm;// currently created form (CreateForm), candidate for MainForm
     FFindGlobalComponentEnabled: boolean;
     FFlags: TApplicationFlags;
     FHint: string;
@@ -978,8 +981,9 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure ControlDestroyed(AControl: TControl);
-    Procedure BringToFront;
+    procedure BringToFront;
     procedure CreateForm(InstanceClass: TComponentClass; var Reference);
+    procedure UpdateMainForm(AForm: TForm);
     procedure QueueAsyncCall(AMethod: TDataEvent; Data: PtrInt);
     procedure ReleaseComponent(AComponent: TComponent);
     function ExecuteAction(ExeAction: TBasicAction): Boolean; override;
