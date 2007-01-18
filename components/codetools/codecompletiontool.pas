@@ -1009,14 +1009,25 @@ var
   OldCodePos: TCodePosition;
 begin
   Result:=false;
-  
+
+  {$IFDEF VerboseCompleteMethod}
+  DebugLn(['TCodeCompletionCodeTool.CompleteMethod A ',ProcNode<>nil]);
+  {$ENDIF}
   // check if cursor in a method
   ProcNode:=CursorNode.GetNodeOfType(ctnProcedure);
+  {$IFDEF VerboseCompleteMethod}
+  DebugLn(['TCodeCompletionCodeTool.CompleteMethod B ',ProcNode<>nil]);
+  {$ENDIF}
   if (ProcNode=nil) and (CursorNode.Desc=ctnProcedure) then
     ProcNode:=CursorNode;
+  {$IFDEF VerboseCompleteMethod}
+  DebugLn(['TCodeCompletionCodeTool.CompleteMethod C ',ProcNode<>nil]);
+  {$ENDIF}
   if (ProcNode=nil) or (ProcNode.Desc<>ctnProcedure)
-  or ((ProcNode.SubDesc and ctnsForwardDeclaration)<>0)
   or (not NodeIsMethodBody(ProcNode)) then begin
+    {$IFDEF VerboseCompleteMethod}
+    DebugLn(['TCodeCompletionCodeTool.CompleteMethod node is not a method body ',ProcNode<>nil]);
+    {$ENDIF}
     exit;
   end;
 
@@ -1051,6 +1062,9 @@ begin
   ProcCode:=ExtractProcHead(ProcNode,
     [phpWithStart,phpWithoutClassName,phpWithVarModifiers,phpWithParameterNames,
      phpWithDefaultValues,phpWithResultType,phpWithCallingSpecs]);
+  {$IFDEF VerboseCompleteMethod}
+  DebugLn(['TCodeCompletionCodeTool.CompleteMethod Adding ProcName="',ProcName,'"']);
+  {$ENDIF}
   AddClassInsertion(CleanProcCode,ProcCode,ProcName,ncpPrivateProcs);
 
   // apply changes
