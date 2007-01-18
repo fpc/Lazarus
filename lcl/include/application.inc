@@ -1559,18 +1559,28 @@ begin
 
   ok:=false;
   try
+    // before calling the constructor, set 'MainForm'
+    if (Instance is TForm) then begin
+      AForm:=TForm(Instance);
+      if (FMainForm = nil) and not (AForm.FormStyle in [fsMDIChild, fsSplash])
+      then begin
+        FMainForm := AForm;
+      end;
+    end;
+
     Instance.Create(Self);
     ok:=true;
   finally
-    if not ok then
+    if not ok then begin
       TComponent(Reference) := nil;
+      if FMainForm=Instance then
+        FMainForm:=nil;
+    end;
   end;
 
   if (Instance is TForm) then begin
     AForm:=TForm(Instance);
-    if (FMainForm = nil) and not (AForm.FormStyle in [fsMDIChild, fsSplash])
-    then begin
-      FMainForm := AForm;
+    if (FMainForm = AForm) then begin
       AForm.HandleNeeded;
     end else begin
       if not Assigned(FFormList) then
