@@ -263,6 +263,7 @@ const
   DefaultDoNotInsertSpaceAfter: TAtomTypes = [atDirectiveStart];
 
 function AtomTypeNameToType(const s: string): TAtomType;
+function AtomTypesToStr(const AtomTypes: TAtomTypes): string;
 function WordPolicyNameToPolicy(const s: string): TWordPolicy;
 function ClassPartPolicyNameToPolicy(const s: string): TClassPartInsertPolicy;
 function MethodInsertPolicyNameToPolicy(const s: string): TMethodInsertPolicy;
@@ -276,21 +277,35 @@ implementation
 function AtomTypeNameToType(const s: string): TAtomType;
 begin
   for Result:=Low(TAtomType) to High(TAtomType) do
-    if AnsiCompareText(AtomTypeNames[Result],s)=0 then exit;
+    if SysUtils.CompareText(AtomTypeNames[Result],s)=0 then exit;
   Result:=atNone;
+end;
+
+function AtomTypesToStr(const AtomTypes: TAtomTypes): string;
+var
+  a: TAtomType;
+begin
+  Result:='';
+  for a:=Low(TAtomType) to High(TAtomType) do begin
+    if a in AtomTypes then begin
+      if Result<>'' then Result:=Result+',';
+      Result:=Result+AtomTypeNames[a];
+    end;
+  end;
+  Result:='['+Result+']';
 end;
 
 function WordPolicyNameToPolicy(const s: string): TWordPolicy;
 begin
   for Result:=Low(TWordPolicy) to High(TWordPolicy) do
-    if AnsiCompareText(WordPolicyNames[Result],s)=0 then exit;
+    if SysUtils.CompareText(WordPolicyNames[Result],s)=0 then exit;
   Result:=wpNone;
 end;
 
 function ClassPartPolicyNameToPolicy(const s: string): TClassPartInsertPolicy;
 begin
   for Result:=Low(TClassPartInsertPolicy) to High(TClassPartInsertPolicy) do
-    if AnsiCompareText(ClassPartInsertPolicyNames[Result],s)=0 then exit;
+    if SysUtils.CompareText(ClassPartInsertPolicyNames[Result],s)=0 then exit;
   Result:=cpipLast;
 end;
 
@@ -298,7 +313,7 @@ function MethodInsertPolicyNameToPolicy(
   const s: string): TMethodInsertPolicy;
 begin
   for Result:=Low(TMethodInsertPolicy) to High(TMethodInsertPolicy) do
-    if AnsiCompareText(MethodInsertPolicyNames[Result],s)=0 then exit;
+    if SysUtils.CompareText(MethodInsertPolicyNames[Result],s)=0 then exit;
   Result:=mipLast;
 end;
 
@@ -307,7 +322,8 @@ function ForwardProcBodyInsertPolicyNameToPolicy(
 begin
   for Result:=Low(TForwardProcBodyInsertPolicy)
   to High(TForwardProcBodyInsertPolicy) do
-    if AnsiCompareText(ForwardProcBodyInsertPolicyNames[Result],s)=0 then exit;
+    if SysUtils.CompareText(ForwardProcBodyInsertPolicyNames[Result],s)=0 then
+      exit;
   Result:=fpipBehindMethods;
 end;
 

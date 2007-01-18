@@ -788,6 +788,7 @@ begin
     BeautifyCodeOptions.DoNotSplitLineAfter:=DoNotSplitLineAfter;
     BeautifyCodeOptions.DoInsertSpaceInFront:=DoInsertSpaceInFront;
     BeautifyCodeOptions.DoInsertSpaceAfter:=DoInsertSpaceAfter;
+    DebugLn(['TCodeToolsOptions.AssignTo DoInsertSpaceInFront=',AtomTypesToStr(BeautifyCodeOptions.DoInsertSpaceInFront),' DoInsertSpaceAfter=',AtomTypesToStr(BeautifyCodeOptions.DoInsertSpaceAfter)]);
     BeautifyCodeOptions.PropertyReadIdentPrefix:=PropertyReadIdentPrefix;
     BeautifyCodeOptions.PropertyWriteIdentPrefix:=PropertyWriteIdentPrefix;
     BeautifyCodeOptions.PropertyStoredIdentPostfix:=PropertyStoredIdentPostfix;

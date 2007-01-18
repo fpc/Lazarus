@@ -1122,6 +1122,7 @@ end;
 
 function TCodeCompletionCodeTool.ApplyClassCompletion: boolean;
 begin
+  DebugLn(['TCodeCompletionCodeTool.ApplyClassCompletion DoInsertSpaceInFront=',AtomTypesToStr(ASourceChangeCache.BeautifyCodeOptions.DoInsertSpaceInFront),' DoInsertSpaceAfter=',AtomTypesToStr(ASourceChangeCache.BeautifyCodeOptions.DoInsertSpaceAfter)]);
   Result:=false;
   try
     // insert all new class parts
