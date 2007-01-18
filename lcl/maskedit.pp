@@ -59,9 +59,6 @@ type
 
   EDBEditError = class(Exception);
 
-  //TMbcsByteType = (mbSingleByte, mbLeadByte, mbTrailByte);
-  
-
   { TCustomMaskEdit }
 
   TMaskCharType = (mcNone, mcLiteral, mcIntlLiteral, mcDirective, mcMask,
