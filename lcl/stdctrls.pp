@@ -385,6 +385,7 @@ type
     property AutoSelect;
     property BorderSpacing;
     property CharCase;
+    property Color;
     property Ctl3D;
     property DropDownCount;
     property Enabled;
@@ -411,6 +412,7 @@ type
     property OnMouseMove;
     property OnMouseUp;
     property OnSelect;
+    property ParentColor;
     property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
