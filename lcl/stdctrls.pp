@@ -412,7 +412,7 @@ type
     property OnMouseMove;
     property OnMouseUp;
     property OnSelect;
-    property ParentColor;
+    property ParentColor default false;
     property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
