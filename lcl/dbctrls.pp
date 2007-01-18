@@ -480,6 +480,7 @@ Type
     property Anchors;
     property ArrowKeysTraverseList;
     property AutoDropDown;
+    property Color;
     property Ctl3D;
     property DataField: string read GetDataField write SetDataField;
     property DataSource: TDataSource read GetDataSource write SetDataSource;
@@ -508,6 +509,7 @@ Type
     property OnMouseUp;
     property OnSelect;
     property ParentCtl3D;
+    property ParentColor;
     property ParentFont;
     property ParentShowHint;
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;

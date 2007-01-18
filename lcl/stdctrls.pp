@@ -334,6 +334,7 @@ type
     property OnMeasureItem: TMeasureItemEvent
       read FOnMeasureItem write FOnMeasureItem;
     property OnSelect: TNotifyEvent read FOnSelect write FOnSelect;
+    property ParentColor default false;
     property Sorted: boolean read FSorted write SetSorted;
   public
     constructor Create(TheOwner: TComponent); override;
@@ -412,7 +413,7 @@ type
     property OnMouseMove;
     property OnMouseUp;
     property OnSelect;
-    property ParentColor default false;
+    property ParentColor;
     property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
