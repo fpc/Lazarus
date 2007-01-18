@@ -923,7 +923,7 @@ begin
     {$IFDEF CTDEBUG}
     DebugLn('[TEventsCodeTool.CompleteComponent] invoke class completion');
     {$ENDIF}
-    Result:=ApplyClassCompletion;
+    Result:=ApplyClassCompletion(true);
     {$IFDEF CTDEBUG}
     DebugLn('[TEventsCodeTool.CompleteComponent] END');
     {$ENDIF}

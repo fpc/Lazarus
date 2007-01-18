@@ -192,7 +192,7 @@ type
     // custom class completion
     function InitClassCompletion(const UpperClassName: string;
                                  SourceChangeCache: TSourceChangeCache): boolean;
-    function ApplyClassCompletion: boolean;
+    function ApplyClassCompletion(AddMissingProcBodies: boolean): boolean;
     function ProcExistsInCodeCompleteClass(
                                     const NameAndParamsUpCase: string): boolean;
     function VarExistsInCodeCompleteClass(const UpperName: string): boolean;
@@ -1068,7 +1068,7 @@ begin
   AddClassInsertion(CleanProcCode,ProcCode,ProcName,ncpPrivateProcs);
 
   // apply changes
-  Result:=ApplyClassCompletion;
+  Result:=ApplyClassCompletion(false);
 
   // adjust cursor position
   AdjustCursor(OldCodePos,OldTopLine,NewPos,NewTopLine);
@@ -1120,7 +1120,8 @@ begin
   Result:=true;
 end;
 
-function TCodeCompletionCodeTool.ApplyClassCompletion: boolean;
+function TCodeCompletionCodeTool.ApplyClassCompletion(
+  AddMissingProcBodies: boolean): boolean;
 begin
   Result:=false;
   try
@@ -1128,7 +1129,7 @@ begin
     if not InsertAllNewClassParts then
       RaiseException(ctsErrorDuringInsertingNewClassParts);
     // insert all missing proc bodies
-    if not CreateMissingProcBodies then
+    if AddMissingProcBodies and (not CreateMissingProcBodies) then
       RaiseException(ctsErrorDuringCreationOfNewProcBodies);
     // apply the changes
     if not CodeCompleteSrcChgCache.Apply then
