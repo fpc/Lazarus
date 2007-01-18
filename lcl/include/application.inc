@@ -377,7 +377,6 @@ end;
 function TApplication.InvokeHelp(Command: Word; Data: Longint): Boolean;
 var
   CallHelp: Boolean;
-  //HelpHandle: HWND;
   ActiveForm: TCustomForm;
 begin
   Result := False;
@@ -394,21 +393,14 @@ begin
     if Assigned(ActiveForm) and ActiveForm.HandleAllocated
     and (ActiveForm.FHelpFile <> '') then
     begin
-      //HelpHandle := ActiveForm.Handle;
-      //if ValidateHelpSystem then
-      //  Result := HelpSystem.Hook(Longint(HelpHandle), ActiveForm.FHelpFile,
-      //                            Command, Data);
+
     end
     else
     if HelpFile <> '' then
     begin
-      //HelpHandle := Handle;
-      //if FMainForm <> nil then HelpHandle := FMainForm.Handle;
-      //if ValidateHelpSystem then
-      //  Result := HelpSystem.Hook(Longint(HelpHandle),FHelpFile,Command,Data);
+
     end else begin
-      //if not FHandleCreated then
-      //  PostMessage(FHandle, CM_INVOKEHELP, Command, Data);
+
     end;
   end;
 end;
@@ -1559,34 +1551,23 @@ begin
 
   ok:=false;
   try
-    // before calling the constructor, set 'MainForm'
-    if (Instance is TForm) then begin
-      AForm:=TForm(Instance);
-      if (FMainForm = nil) and not (AForm.FormStyle in [fsMDIChild, fsSplash])
-      then begin
-        FMainForm := AForm;
-      end;
-    end;
-
     Instance.Create(Self);
     ok:=true;
   finally
-    if not ok then begin
+    if not ok then
       TComponent(Reference) := nil;
-      if FMainForm=Instance then
-        FMainForm:=nil;
-    end;
   end;
 
   if (Instance is TForm) then begin
     AForm:=TForm(Instance);
-    if (FMainForm = AForm) then begin
+    if (FMainForm = nil) and not (AForm.FormStyle in [fsMDIChild, fsSplash])
+    then begin
+      FMainForm := AForm;
       AForm.HandleNeeded;
-    end else begin
-      if not Assigned(FFormList) then
-        FFormList := TList.Create;
-      FFormList.Add(AForm);
     end;
+    if not Assigned(FFormList) then
+      FFormList := TList.Create;
+    FFormList.Add(AForm);
     if AForm.FormStyle=fsSplash then begin
       // show the splash form and handle the paint message
       AForm.Show;
