@@ -681,7 +681,7 @@ Var
     begin
       Windows.GetCursorPos(Windows.POINT(P));
       Windows.ScreenToClient(Window, Windows.POINT(P));
-      if GetLCLClientBoundsOffset(lWinControl.Parent, BoundsOffset) then
+      if GetLCLClientBoundsOffset(lWinControl, BoundsOffset) then
       begin
         Dec(P.X, BoundsOffset.Left);
         Dec(P.Y, BoundsOffset.Top);
