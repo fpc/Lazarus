@@ -222,8 +222,9 @@ begin
     Width := LongInt(CW_USEDEFAULT);
     Height := LongInt(CW_USEDEFAULT);
     SubClassWndProc := nil;
-    if ((Application = nil) or (Application.MainForm <> lForm)) 
-        and (lForm.ShowInTaskBar = stAlways) then
+    if ((Application = nil) or (Application.MainForm <> lForm))  and
+       ( not (csDesigning in lForm.ComponentState) and
+        (lForm.ShowInTaskBar = stAlways)) then
       Parent := 0;
   end;
   // create window
