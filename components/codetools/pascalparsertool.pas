@@ -3686,7 +3686,7 @@ begin
              CurPos.StartPos-LastAtomEndPos);
     end else if (ExtractMemStream.Position>0) then
     begin
-      // some code was skipped
+      // some space/comments were skipped
       // -> check if a space must be inserted
       if AddAtom
       and ((phpCommentsToSpace in Attr)

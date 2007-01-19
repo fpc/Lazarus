@@ -2236,8 +2236,8 @@ begin
                   +GetIndentStr(BeautifyCodeOptions.Indent)
                     +ProcCall+BeautifyCodeOptions.LineEnd
                   +'end;';
-      // Graeme
-      DebugLn(['TCodeCompletionCodeTool.CheckForOverrideAndAddInheritedCode ProcCode="',ProcCode,'"']);
+      ProcCode:=ASourceChangeCache.BeautifyCodeOptions.BeautifyProc(
+                 ProcCode,0,false);
       ANodeExt.ExtTxt3:=ProcCode;
     end;
     AnAVLNode:=ClassProcs.FindSuccessor(AnAVLNode);
@@ -2258,14 +2258,11 @@ var
       ProcCode:=ANodeExt.ExtTxt1;
     ProcCode:=ASourceChangeCache.BeautifyCodeOptions.AddClassAndNameToProc(
                  ProcCode,TheClassName,'');
-    { $IFDEF CTDEBUG}
-    // Graeme
+    {$IFDEF CTDEBUG}
     DebugLn('CreateMissingProcBodies InsertProcBody ',TheClassName,' "',ProcCode,'"');
-    { $ENDIF}
+    {$ENDIF}
     ProcCode:=ASourceChangeCache.BeautifyCodeOptions.BeautifyProc(
                  ProcCode,Indent,ANodeExt.ExtTxt3='');
-    // Graeme
-    DebugLn(['CreateMissingProcBodies beautified ProcCode="',ProcCode,'"']);
     ASourceChangeCache.Replace(gtEmptyLine,gtEmptyLine,InsertPos,InsertPos,
       ProcCode);
     if JumpToProcName='' then begin
@@ -2292,8 +2289,6 @@ var
              phpWithParameterNames,phpWithResultType,phpWithCallingSpecs]);
         TheNodeExt.ExtTxt3:=ASourceChangeCache.BeautifyCodeOptions.BeautifyProc(
                      ProcCode,Indent,true);
-        // Graeme
-        DebugLn(['CreateCodeForMissingProcBody TheNodeExt.ExtTxt3="',TheNodeExt.ExtTxt3,'" ProcCode="',ProcCode,'"']);
       end;
     end;
   end;

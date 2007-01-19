@@ -440,17 +440,20 @@ begin
         Result:=IdentItem.Tool.ExtractProcHead(IdentItem.Node,
           [phpWithStart,phpWithVarModifiers,phpWithParameterNames,
            phpWithDefaultValues,phpWithResultType,phpWithCallingSpecs,
-           phpCommentsToSpace,phpWithProcModifiers]);
+           phpWithProcModifiers]);
         // replace virtual with override
         ProcModifierPos:=System.Pos('VIRTUAL;',UpperCaseStr(Result));
         if ProcModifierPos>0 then
           Result:=copy(Result,1,ProcModifierPos-1)+'override;'
                   +copy(Result,ProcModifierPos+8,length(Result));
-        // remove abstact
+        // remove abstract
         ProcModifierPos:=System.Pos('ABSTRACT;',UpperCaseStr(Result));
         if ProcModifierPos>0 then
           Result:=copy(Result,1,ProcModifierPos-1)
                   +copy(Result,ProcModifierPos+9,length(Result));
+        Result:=TrimLeft(CodeToolBoss.SourceChangeCache
+          .BeautifyCodeOptions.BeautifyProc(
+                   Result,CodeToolBoss.IdentifierList.StartContextPos.X,false));
       end;
   end;
 
@@ -473,6 +476,8 @@ begin
     or ([ilcfStartIsLValue,ilcfIsExpression]*IdentList.ContextFlags<>[]) then
       inc(CursorToLeft);
   end;
+
+  //DebugLn(['GetIdentCompletionValue END Result="',Result,'"']);
 end;
 
 function BreakLinesInText(const s: string; MaxLineLength: integer): string;
