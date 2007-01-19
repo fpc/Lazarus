@@ -20,6 +20,8 @@
 //  {$DEFINE ASSERT_IS_ON}
 {$ENDIF}
 
+type
+  TWinControlAccess = class(TWinControl);
 {*************************************************************}
 {            callback routines                                }
 {*************************************************************}
@@ -442,7 +444,13 @@ Var
       if not useDoubleBuffer then
         PaintMsg.DC := DC;
       if not needParentPaint and not isNotebook then
-        lWinControl.EraseBackground(PaintMsg.DC);
+      begin
+        // send through message to allow message override
+        //lWinControl.EraseBackground(PaintMsg.DC);
+        Include(TWinControlAccess(lWinControl).FWinControlFlags, wcfEraseBackground);
+        lWinControl.Perform(LM_ERASEBKGND, PaintMsg.DC, 0);
+        Exclude(TWinControlAccess(lWinControl).FWinControlFlags, wcfEraseBackground);
+      end;
       if ParentPaintWindow <> 0 then
       begin
 {$ifdef MSG_DEBUG}
@@ -1153,21 +1161,26 @@ begin
       ChildWinControl := ChildWindowInfo^.WinControl;
       if ChildWinControl = nil then
         ChildWinControl := ChildWindowInfo^.AWinControl;
-      if (Msg = WM_CTLCOLORSTATIC) or (Msg = WM_CTLCOLORBTN)
-          or (Msg = WM_CTLCOLORSCROLLBAR) then
-      begin
-        if GetNeedParentPaint(ChildWindowInfo, ChildWinControl) then
-        begin
-          // need to draw transparently, draw background
-          GetWin32ControlPos(LParam, Window, P.X, P.Y);
-          MoveWindowOrgEx(WParam, -P.X, -P.Y);
-          SendPaintMessage;
-          MoveWindowOrgEx(WParam, P.X, P.Y);
-          LMessage.Result := GetStockObject(HOLLOW_BRUSH);
-          SetBkMode(WParam, TRANSPARENT);
+      case Msg of
+        WM_CTLCOLORSTATIC,
+        WM_CTLCOLORBTN: begin
+          if GetNeedParentPaint(ChildWindowInfo, ChildWinControl) then
+          begin
+            // need to draw transparently, draw background
+            GetWin32ControlPos(LParam, Window, P.X, P.Y);
+            MoveWindowOrgEx(WParam, -P.X, -P.Y);
+            SendPaintMessage;
+            MoveWindowOrgEx(WParam, P.X, P.Y);
+            LMessage.Result := GetStockObject(HOLLOW_BRUSH);
+            SetBkMode(WParam, TRANSPARENT);
+            WinProcess := false;
+          end;
+        end;
+        WM_CTLCOLORSCROLLBAR: begin
           WinProcess := false;
         end;
       end;
+        
       if WinProcess then
       begin
         if ChildWinControl <> nil then
