@@ -761,7 +761,8 @@ type
                                   LogicalPos: integer): integer;
     function LogicalToPhysicalCol(Line: PChar; LineLen: integer;
                   LogicalPos, StartBytePos, StartPhysicalPos: integer): integer;
-    function PhysicalLineLength(Line: PChar; LineLen: integer): integer;
+    function PhysicalLineLength(Line: PChar; LineLen: integer;
+                                WithTabs: boolean): integer;
     function PhysicalToLogicalPos(const p: TPoint): TPoint;
     function PhysicalToLogicalCol(const Line: string;
                                   PhysicalPos: integer): integer;
@@ -1671,7 +1672,7 @@ begin
   else if (Line>=1) and (Line<=Lines.Count) then begin
     s:=Lines[Line-1];
     if (Result<=length(s)) and UseUTF8 then
-      Result:=UTF8FindNearestCharStart(PChar(s),length(s),Result);
+      Result:=UTF8FindNearestCharStart(PChar(Pointer(s)),length(s),Result);
   end;
 end;
 
@@ -1744,7 +1745,7 @@ function TCustomSynEdit.GetSelText: string;
       Result := Copy(S, Index, Count)
     else begin
       SetLength(Result, DstLen);
-      P := PChar(Result);
+      P := PChar(Pointer(Result));
       StrPCopy(P, Copy(S, Index, Count));
       Inc(P, SrcLen);
       FillChar(P^, DstLen - Srclen, $20);
@@ -1761,7 +1762,7 @@ function TCustomSynEdit.GetSelText: string;
     SrcLen := Length(S);
     if (Index <= SrcLen) and (Count > 0) then begin
       Dec(Index);
-      pSrc := PChar(S) + Index;
+      pSrc := PChar(Pointer(S)) + Index;
       DstLen := Min(SrcLen - Index, Count);
       Move(pSrc^, P^, DstLen);
       Inc(P, DstLen);
@@ -1822,7 +1823,7 @@ begin
           Inc(TotalLen, Length(sLineBreak) * (Last - First));
           // step2: build up result string
           SetLength(Result, TotalLen);
-          P := PChar(Result);
+          P := PChar(Pointer(Result));
           CopyAndForward(Lines[First], ColFrom, MaxInt, P);
           CopyAndForward(sLineBreak, 1, MaxInt, P);
           for i := First + 1 to Last - 1 do begin
@@ -1845,7 +1846,7 @@ begin
           TotalLen := ColLen + (ColLen + Length(sLineBreak)) * (Last - First);
           // step2: build up result string
           SetLength(Result, TotalLen);
-          P := PChar(Result);
+          P := PChar(Pointer(Result));
           for i := First to Last - 1 do begin
             CopyPaddedAndForward(Lines[i], ColFrom, ColLen, P);
             CopyAndForward(sLineBreak, 1, MaxInt, P);
@@ -1889,7 +1890,7 @@ begin
             Dec(TotalLen, Length(sLineBreak));
           // step2: build up result string
           SetLength(Result, TotalLen);
-          P := PChar(Result);
+          P := PChar(Pointer(Result));
           for i := First to Last - 1 do begin
             CopyAndForward(Lines[i], 1, MaxInt, P);
             CopyAndForward(sLineBreak, 1, MaxInt, P);
@@ -3014,7 +3015,7 @@ begin
           s := fGutter.FormatLineNumber(iLine);
           Inc(rcLine.Bottom, fTextHeight);
           fTextDrawer.ExtTextOut(CodeFoldOffset+fGutter.LeftOffset,
-                         rcLine.Top, ETO_OPAQUE,rcLine,PChar(S),Length(S));
+                     rcLine.Top, ETO_OPAQUE,rcLine,PChar(Pointer(S)),Length(S));
         end;
         {$ELSE}
         s := fGutter.FormatLineNumber(iLine);
@@ -3272,7 +3273,7 @@ var
     SrcPos:=0;
     DestPos:=0;
     ScreenPos:=PhysicalStartPos;
-    Dest:=PChar(ExpandedPaintToken);
+    Dest:=PChar(Pointer(ExpandedPaintToken));
     while SrcPos<Count do begin
       c:=p[SrcPos];
       case c of
@@ -3315,7 +3316,7 @@ var
         end;
       end;
     end;
-    p:=PChar(ExpandedPaintToken);
+    p:=PChar(Pointer(ExpandedPaintToken));
     Count:=DestPos;
     //debugln('ExpandSpecialChars Token with Tabs: "',DbgStr(copy(ExpandedPaintToken,1,Count)),'"');
   end;
@@ -3524,7 +3525,7 @@ var
     begin
       if not bSpacesTest then begin
         bSpacesTest := TRUE;
-        pTok := PChar(Token);
+        pTok := PChar(Pointer(Token));
         SpaceCnt:=0;
         while (pTok^ in [' ',#9]) do begin
           Inc(pTok);
@@ -3832,22 +3833,22 @@ var
           // paint unselected text in front of selection
           rcToken.Left := Max(rcLine.Left, ScreenColumnToXValue(FirstCol));
           rcToken.Right := Min(rcLine.Right, ScreenColumnToXValue(nSelStart));
-          PaintToken(PChar(sLine), nTokenLen, 0, FirstCol,
+          PaintToken(PChar(Pointer(sLine)), nTokenLen, 0, FirstCol,
                      FirstColLogical, SelStartLogical-1);
           // paint unselected text behind selection
           rcToken.Left := Max(rcLine.Left, ScreenColumnToXValue(nSelEnd));
           rcToken.Right := Min(rcLine.Right, ScreenColumnToXValue(LastCol));
-          PaintToken(PChar(sLine), nTokenLen, 0, nSelEnd,
+          PaintToken(PChar(Pointer(sLine)), nTokenLen, 0, nSelEnd,
                      SelEndLogical, LastColLogical);
           // paint selection
           SetDrawingColors(TRUE);
           rcToken.Left := Max(rcLine.Left, ScreenColumnToXValue(nSelStart));
           rcToken.Right := Min(rcLine.Right, ScreenColumnToXValue(nSelEnd));
-          PaintToken(PChar(sLine), nTokenLen, 0, nSelStart,
+          PaintToken(PChar(Pointer(sLine)), nTokenLen, 0, nSelStart,
                      SelStartLogical, SelEndLogical-1);
         end else begin
           SetDrawingColors(bLineSelected);
-          PaintToken(PChar(sLine), nTokenLen, 0, FirstCol,
+          PaintToken(PChar(Pointer(sLine)), nTokenLen, 0, FirstCol,
                      FirstColLogical, LastColLogical);
         end;
       end else begin
@@ -5008,7 +5009,7 @@ begin
     if not (eoScrollPastEol in fOptions) then begin
       {$IFDEF SYN_LAZARUS}
       Line:=Lines[Value.Y-1];
-      nMaxX := PhysicalLineLength(PChar(Line),length(Line))+1;
+      nMaxX := PhysicalLineLength(PChar(Line),length(Line),true)+1;
       {$ELSE}
       nMaxX := Length(Lines[Value.Y - 1]) + 1;                                  //abc 2000-09-30
       {$ENDIF}
@@ -10906,7 +10907,7 @@ end;
 function TCustomSynEdit.LogicalToPhysicalCol(const Line: string;
   LogicalPos: integer): integer;
 begin
-  Result:=LogicalToPhysicalCol(PChar(Line),length(Line),LogicalPos,1,1);
+  Result:=LogicalToPhysicalCol(PChar(Pointer(Line)),length(Line),LogicalPos,1,1);
 end;
 
 function TCustomSynEdit.LogicalToPhysicalCol(Line: PChar; LineLen: integer;
@@ -10943,10 +10944,13 @@ begin
   Result := ScreenPos;
 end;
 
-function TCustomSynEdit.PhysicalLineLength(Line: PChar; LineLen: integer
-  ): integer;
+function TCustomSynEdit.PhysicalLineLength(Line: PChar; LineLen: integer;
+  WithTabs: boolean): integer;
 begin
-  Result:=UTF8Length(Line,LineLen);
+  if WithTabs then
+    Result:=LogicalToPhysicalCol(Line,LineLen,LineLen+1,1,1)-1
+  else
+    Result:=UTF8Length(Line,LineLen);
 end;
 
 function TCustomSynEdit.PhysicalToLogicalPos(const p: TPoint): TPoint;
