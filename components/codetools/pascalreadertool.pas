@@ -1360,7 +1360,7 @@ function TPascalReaderTool.FindMainBeginEndNode: TCodeTreeNode;
 begin
   Result:=Tree.Root;
   if (Result=nil) then exit;
-  if (Result.Desc=ctnProgram) then
+  if (Result.Desc in [ctnProgram,ctnLibrary]) then
     Result:=Result.LastChild
   else begin
     Result:=FindImplementationNode;
