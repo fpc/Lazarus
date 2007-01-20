@@ -463,6 +463,17 @@ begin
   end;
 end;
 
+class function TWinCEWSCustomListView.GetViewOrigin(const ALV: TCustomListView): TPoint;
+begin
+  if not WSCheckHandleAllocated(ALV, 'GetViewOrigin')
+  then begin
+    Result := Point(0, 0);
+    Exit;
+  end;
+
+  ListView_GetOrigin(ALV.Handle, Result);
+end;
+
 class function TWinCEWSCustomListView.GetVisibleRowCount(const ALV: TCustomListView): Integer;
 begin
   if not WSCheckHandleAllocated(ALV, 'GetVisibleRowCount')
@@ -660,28 +671,28 @@ begin
   else UpdateStyle(ALV.Handle, LVS_NOSCROLL, 0);
 end;
 
-class procedure TWinCEWSCustomListView.SetScrolledLeft(const ALV: TCustomListView; const AValue: Integer);
-begin
-  if not WSCheckHandleAllocated(ALV, 'SetScrolledLeft')
-  then Exit;
-  
-  ListView_Scroll(ALV.Handle, AValue, 0);
-end;
-
-class procedure TWinCEWSCustomListView.SetScrolledTop(const ALV: TCustomListView; const AValue: Integer);
-begin
-  if not WSCheckHandleAllocated(ALV, 'SetScrolledTop')
-  then Exit;
-
-  ListView_Scroll(ALV.Handle, 0, AValue);
-end;
-
 class procedure TWinCEWSCustomListView.SetSort(const ALV: TCustomListView; const AType: TSortType; const AColumn: Integer);
 begin
   if not WSCheckHandleAllocated(ALV, 'SetSort')
   then Exit;
   
   // TODO: implement
+end;
+
+class procedure TWinCEWSCustomListView.SetViewOrigin(const ALV: TCustomListView; const AValue: TPoint);
+var
+  dx, dy: Integer;
+  Origin: TPoint;
+begin
+  if not WSCheckHandleAllocated(ALV, 'SetViewOrigin')
+  then Exit;
+
+  ListView_GetOrigin(ALV.Handle, Origin);
+
+  dx := AValue.X - Origin.X;
+  dy := AValue.Y - Origin.Y;
+  if (dx <> 0) or (dy <> 0)
+  then ListView_Scroll(ALV.Handle, dx, dy);
 end;
 
 class procedure TWinCEWSCustomListView.SetViewStyle(const ALV: TCustomListView; const Avalue: TViewStyle);

@@ -117,6 +117,7 @@ type
     class function GetSelCount(const ALV: TCustomListView): Integer; override;
     class function GetSelection(const ALV: TCustomListView): Integer; override;
     class function GetTopItem(const ALV: TCustomListView): Integer; override;
+    class function GetViewOrigin(const ALV: TCustomListView): TPoint; override;
     class function GetVisibleRowCount(const ALV: TCustomListView): Integer; override;
 
     class procedure SetAllocBy(const ALV: TCustomListView; const AValue: Integer); override;
@@ -128,9 +129,8 @@ type
     class procedure SetProperty(const ALV: TCustomListView; const AProp: TListViewProperty; const AIsSet: Boolean); override;
     class procedure SetProperties(const ALV: TCustomListView; const AProps: TListViewProperties); override;
     class procedure SetScrollBars(const ALV: TCustomListView; const AValue: TScrollStyle); override;
-    class procedure SetScrolledLeft(const ALV: TCustomListView; const AValue: Integer); override;
-    class procedure SetScrolledTop(const ALV: TCustomListView; const AValue: Integer); override;
     class procedure SetSort(const ALV: TCustomListView; const AType: TSortType; const AColumn: Integer); override;
+    class procedure SetViewOrigin(const ALV: TCustomListView; const AValue: TPoint); override;
     class procedure SetViewStyle(const ALV: TCustomListView; const Avalue: TViewStyle); override;
 {$ENDIF}
   end;

@@ -850,13 +850,13 @@ type
     FSortColumn: Integer;
     FImageChangeLink : TChangeLink;
     FScrollBars: TScrollStyle;
-    FScrolledLeft: integer; // horizontal scrolled pixels (hidden pixels at top)
-    FScrolledTop: integer;  // vertical scrolled pixels (hidden pixels at top)
-    FSelected: TListItem;   // temp copy of the selected item
-    FFocused: TListItem;    // temp copy of the focused item
-    FHoverTime: Integer;    // temp copy of the hover time (the time a mouse must be over a item to auto select)
-    FLastHorzScrollInfo: TScrollInfo;
-    FLastVertScrollInfo: TScrollInfo;
+    FViewOriginCache: TPoint; // scrolled originwhile handle is not created
+    FSelected: TListItem;     // temp copy of the selected item
+    FFocused: TListItem;      // temp copy of the focused item
+    FHoverTime: Integer;      // temp copy of the hover time (the time a mouse must be over a item to auto select)
+    // MWE: not used: see updateScrollbars
+    // FLastHorzScrollInfo: TScrollInfo;
+    // FLastVertScrollInfo: TScrollInfo;
     FUpdateCount: integer;
     FOnChange: TLVChangeEvent;
     FOnColumnClick: TLVColumnClickEvent;
@@ -897,11 +897,10 @@ type
     procedure SetOwnerData(const AValue: Boolean);
     procedure SetProperty(const ALvpOrd: Integer; const AIsSet: Boolean);
     procedure SetScrollBars(const AValue: TScrollStyle);
-    procedure SetScrolledLeft(AValue: Integer);
-    procedure SetScrolledTop(AValue: Integer);
     procedure SetSelection(const AValue: TListItem);
     procedure SetSortColumn(const AValue: Integer);
     procedure SetSortType(const AValue: TSortType);
+    procedure SetViewOrigin(AValue: TPoint);
     procedure SetViewStyle(const Avalue: TViewStyle);
     procedure Sort;
     procedure UpdateScrollbars;
@@ -914,6 +913,8 @@ type
 
   protected
     procedure InitializeWnd; override;
+    procedure FinalizeWnd; override;
+
     procedure DestroyWnd; override;
     procedure Change(AItem: TListItem; AChange: Integer); dynamic;
     procedure ColClick(AColumn: TListColumn); dynamic;
@@ -923,8 +924,6 @@ type
     procedure DoInsert(AItem: TListItem); dynamic;
     procedure DoSelectItem(AItem: TListItem; ASelected: Boolean); dynamic;
     procedure InsertItem(Item : TListItem);
-    function GetMaxScrolledLeft : Integer;
-    function GetMaxScrolledTop : Integer;
     procedure ImageChanged(Sender : TObject);
     procedure Loaded; override;
     
@@ -933,9 +932,6 @@ type
     function CustomDrawItem(AItem: TListItem; AState: TCustomDrawState; AStage: TCustomDrawStage): Boolean; virtual;                       //
     function CustomDrawSubItem(AItem: TListItem; ASubItem: Integer; AState: TCustomDrawState; AStage: TCustomDrawStage): Boolean; virtual; //
     function IntfCustomDraw(ATarget: TCustomDrawTarget; AStage: TCustomDrawStage; AItem, ASubItem: Integer; AState: TCustomDrawState; const ARect: PRect): TCustomDrawResult;
-
-    procedure WMHScroll(var Msg: TLMScroll); message LM_HSCROLL;
-    procedure WMVScroll(var Msg: TLMScroll); message LM_VSCROLL;
   protected
     property AllocBy: Integer read FAllocBy write SetAllocBy default 0;
     property BorderStyle default bsSingle;
@@ -950,8 +946,6 @@ type
     property OwnerData: Boolean read FOwnerData write SetOwnerData default False;
     property OwnerDraw: Boolean index Ord(lvpOwnerDraw) read GetProperty write SetProperty default False;
     property ReadOnly: Boolean index Ord(lvpReadOnly) read GetProperty write SetProperty default False;
-    property ScrolledLeft: integer read FScrolledLeft write SetScrolledLeft;
-    property ScrolledTop: integer read FScrolledTop write SetScrolledTop;
     property ScrollBars: TScrollStyle read FScrollBars write SetScrollBars default ssBoth;
     property ShowColumnHeaders: Boolean index Ord(lvpShowColumnHeaders) read GetProperty write SetProperty default True;
     property ShowWorkAreas: Boolean index Ord(lvpShowWorkAreas) read GetProperty write SetProperty default False;
@@ -996,7 +990,7 @@ type
     property Selected: TListItem read GetSelection write SetSelection;
     property TabStop default true;
     property TopItem: TListItem read GetTopItem;
-    property ViewOrigin: TPoint read GetViewOrigin;
+    property ViewOrigin: TPoint read GetViewOrigin write SetViewOrigin;
     property VisibleRowCount: Integer read GetVisibleRowCount;
   end;
 

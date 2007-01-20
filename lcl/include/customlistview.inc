@@ -28,21 +28,6 @@ begin
   FViewStyle := vsList;
   FSortType := stNone;
 
-// MWE: 
-// A class is initalized to 0 when created
-// so no need to initialize these here again   
-(*
-  FSortColumn := 0;
-  FOnCompare := nil;
-  FOnCustomDraw := nil;
-  FOnCustomDrawItem := nil;
-  FOnCustomDrawSubItem := nil;
-  FOnAdvancedCustomDraw := nil;
-  FOnAdvancedCustomDrawItem := nil;
-  FOnAdvancedCustomDrawSubItem := nil;
-  FSelected := nil;
-  FFocused := nil;
-*)  
   FImageChangeLink := TChangeLink.Create;
   FImageChangeLink.OnChange := @ImageChanged;
   FHoverTime := -1;
@@ -287,8 +272,7 @@ begin
     then LVC.SetImageList(Self, lvil, FImages[lvil]);
   end;
   LVC.SetScrollBars(Self, FScrollBars);
-  LVC.SetScrolledLeft(Self, FScrolledLeft);
-  LVC.SetScrolledTop(Self, FScrolledTop);
+  LVC.SetViewOrigin(Self, FViewOriginCache) ;
   LVC.SetSort(Self, FSortType, FSortColumn);
 
   // add items
@@ -453,6 +437,23 @@ begin
     OwnerFormDesignerModified(Self);
 end;
 
+
+{------------------------------------------------------------------------------}
+{   TCustomListView SetViewOrigin                                              }
+{------------------------------------------------------------------------------}
+procedure TCustomListView.SetViewOrigin(AValue: TPoint);
+begin
+  if AValue.X < 0 then AValue.X := 0;
+  if AValue.Y < 0 then AValue.Y := 0;
+  if HandleAllocated
+  then begin
+    TWSCustomListViewClass(WidgetSetClass).SetViewOrigin(Self, AValue);
+  end
+  else begin
+    FViewOriginCache := AValue;
+  end;
+end;
+
 {------------------------------------------------------------------------------}
 {   TCustomListView SetViewStyle                                               }
 {------------------------------------------------------------------------------}
@@ -463,7 +464,6 @@ begin
   if not HandleAllocated then Exit;
   TWSCustomListViewClass(WidgetSetClass).SetViewStyle(Self, AValue);
 end;
-
 
 {------------------------------------------------------------------------------}
 {   TCustomListView SetSortType                                                }
@@ -587,6 +587,16 @@ begin
   then TWSCustomListViewClass(WidgetSetClass).EndUpdate(Self);
 end;
 
+procedure TCustomListView.FinalizeWnd;
+var
+  LVC: TWSCustomListViewClass;
+begin
+  LVC := TWSCustomListViewClass(WidgetSetClass);
+  // store origin
+  FViewOriginCache := LVC.GetViewOrigin(Self);
+  inherited FinalizeWnd;
+end;
+
 function TCustomListView.FindCaption(StartIndex: Integer; Value: string;
   Partial, Inclusive, Wrap: Boolean; PartStart: Boolean = True): TListItem;
 begin
@@ -692,10 +702,20 @@ begin
   else Result := FListItems[idx];
 end;
 
+{------------------------------------------------------------------------------}
+{   TCustomListView GetViewOrigin                                              }
+{------------------------------------------------------------------------------}
 function TCustomListView.GetViewOrigin: TPoint;
 begin
-  Result := Point(FScrolledLeft, FScrolledTop);
+  if HandleAllocated
+  then begin
+    Result := TWSCustomListViewClass(WidgetSetClass).GetViewOrigin(Self);
+  end
+  else begin
+    Result := FViewOriginCache;
+  end;
 end;
+
 
 function TCustomListView.GetVisibleRowCount: Integer;
 begin
@@ -839,51 +859,31 @@ begin
   UpdateScrollBars;
 end;
 
-procedure TCustomListView.SetScrolledLeft(AValue: integer);
-begin
-  if AValue<0 then AValue:=0;
-  if AValue=FScrolledLeft then exit;
-//  if AValue>GetMaxScrolledLeft then AValue:=GetMaxScrolledLeft;
-//  if AValue=FScrolledLeft then exit;
-  FScrolledLeft:=AValue;
-  if not HandleAllocated then Exit;
-  TWSCustomListViewClass(WidgetSetClass).SetScrolledLeft(Self, AValue);
-end;
-
-procedure TCustomListView.SetScrolledTop(AValue: integer);
-begin
-  if AValue<0 then AValue:=0;
-  if FScrolledTop=AValue then Exit;
-//  if AValue>GetMaxScrolledTop then AValue:=GetMaxScrolledTop;
-//  if AValue=FScrolledTop then Exit;
-  FScrolledTop:=AValue;
-  if not HandleAllocated then Exit;
-  TWSCustomListViewClass(WidgetSetClass).SetScrolledTop(Self, AValue);
-end;
-
 procedure TCustomListView.UpdateScrollbars;
 var
   ScrollInfo: TScrollInfo;
 begin
+  // this needs to be done in the widgetset
   DebugLn('TODO: TCustomListView.UpdateScrollbars');
   exit;
 
-  if not HandleAllocated then exit
-  else
-  begin
+  if not HandleAllocated then exit;
+{
   //  Exclude(FStates,tvsScrollbarChanged);
-    if fScrollBars <> ssNone then begin
-      ScrollInfo.cbSize := SizeOf(ScrollInfo);
-      ScrollInfo.fMask := SIF_ALL or SIF_DISABLENOSCROLL;
-      ScrollInfo.nTrackPos := 0;
-      if fScrollBars in [ssBoth, ssHorizontal] then begin
-        // horizontal scrollbar
-        ScrollInfo.nMin := 0;
-        ScrollInfo.nPage := (ClientWidth-ScrollBarWidth)-2*BorderWidth;
-        if ScrollInfo.nPage<1 then ScrollInfo.nPage:=1;
-        ScrollInfo.nMax := {GetMaxScrollLeft+}ScrollInfo.nPage;
-        if ScrollInfo.nMax<1 then ScrollInfo.nMax:=1;
-        ScrollInfo.nPos := FScrolledLeft;
+  if fScrollBars = ssNone then Exit;
+  
+  ScrollInfo.cbSize := SizeOf(ScrollInfo);
+  ScrollInfo.fMask := SIF_ALL or SIF_DISABLENOSCROLL;
+  ScrollInfo.nTrackPos := 0;
+  if fScrollBars in [ssBoth, ssHorizontal]
+  then begin
+    // horizontal scrollbar
+    ScrollInfo.nMin := 0;
+    ScrollInfo.nPage := (ClientWidth-ScrollBarWidth)-2*BorderWidth;
+    if ScrollInfo.nPage<1 then ScrollInfo.nPage:=1;
+    ScrollInfo.nMax := {GetMaxScrollLeft+}ScrollInfo.nPage;
+    if ScrollInfo.nMax<1 then ScrollInfo.nMax:=1;
+    ScrollInfo.nPos := FScrolledLeft;
         if not CompareMem(@ScrollInfo,@FLastHorzScrollInfo,SizeOf(TScrollInfo))
         then begin
           FLastHorzScrollInfo:=ScrollInfo;
@@ -909,63 +909,6 @@ begin
       end;
     end;
   end;
+}
 end;
-
-procedure TCustomListView.WMHScroll(var Msg: TLMScroll);
-begin
-  case Msg.ScrollCode of
-      // Scrolls to start / end of the text
-    SB_LEFT:       ScrolledLeft := 0;
-    SB_RIGHT:      ScrolledLeft := width{GetMaxScrollLeft};
-      // Scrolls one line left / right
-    SB_LINERIGHT:  ScrolledLeft := ScrolledLeft + FDefaultItemHeight div 2;
-    SB_LINELEFT:   ScrolledLeft := ScrolledLeft - FDefaultItemHeight div 2;
-      // Scrolls one page of lines left / right
-    SB_PAGERIGHT:  ScrolledLeft := ScrolledLeft + (ClientHeight-ScrollBarWidth)
-                                       - FDefaultItemHeight;
-    SB_PAGELEFT:   ScrolledLeft := ScrolledLeft - (ClientHeight-ScrollBarWidth)
-                                       + FDefaultItemHeight;
-      // Scrolls to the current scroll bar position
-    SB_THUMBPOSITION,
-    SB_THUMBTRACK: ScrolledLeft := Msg.Pos;
-      // Ends scrolling
-    SB_ENDSCROLL: ;
-  end;
-end;
-
-procedure TCustomListView.WMVScroll(var Msg: TLMScroll);
-begin
-  case Msg.ScrollCode of
-      // Scrolls to start / end of the text
-    SB_TOP:        ScrolledTop := 0;
-    SB_BOTTOM:     ScrolledTop := Height{GetMaxScrollTop};
-      // Scrolls one line up / down
-    SB_LINEDOWN:   ScrolledTop := ScrolledTop + FDefaultItemHeight div 2;
-    SB_LINEUP:     ScrolledTop := ScrolledTop - FDefaultItemHeight div 2;
-      // Scrolls one page of lines up / down
-    SB_PAGEDOWN:   ScrolledTop := ScrolledTop + (ClientHeight-ScrollBarWidth)
-                                     - FDefaultItemHeight;
-    SB_PAGEUP:     ScrolledTop := ScrolledTop - (ClientHeight-ScrollBarWidth)
-                                     + FDefaultItemHeight;
-      // Scrolls to the current scroll bar position
-    SB_THUMBPOSITION,
-    SB_THUMBTRACK: ScrolledTop := Msg.Pos;
-      // Ends scrolling
-    SB_ENDSCROLL: ;
-  end;
-end;
-
-Function TCustomListView.GetMaxScrolledLeft : Integer;
-begin
-  Result := 0;
-end;
-
-Function TCustomListView.GetMaxScrolledTop : Integer;
-begin
-  Result := 0;
-end;
-
-// included by comctrls.pp
-
-
 

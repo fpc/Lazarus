@@ -1071,6 +1071,22 @@ begin
   then Exit;
 end;
 
+class function TGtk2WSCustomListView.GetViewOrigin(const ALV: TCustomListView): TPoint;
+var
+  Widgets: PTVWidgets;
+begin
+  if not WSCheckHandleAllocated(ALV, 'GetViewOrigin')
+  then begin
+    Result := Point(0, 0);
+    Exit;
+  end;
+  
+  GetCommonTreeViewWidgets(PGtkWidget(ALV.Handle), Widgets);
+  
+  // not really needed to retrieve the adjustments, since the TVWidgets has this info also based on events
+  Result := Point(Widgets^.ScrollingData.HValue, Widgets^.ScrollingData.VValue);
+end;
+
 class function TGtk2WSCustomListView.GetVisibleRowCount(const ALV: TCustomListView
   ): Integer;
 begin
@@ -1171,42 +1187,23 @@ begin
   gtk_scrolled_window_set_policy(ScrollWidget, hPolicy, vPolicy);
 end;
 
-class procedure TGtk2WSCustomListView.SetScrolledLeft(const ALV: TCustomListView;
-  const AValue: Integer);
-var
-  Widgets: PTVWidgets;
-begin
-  if not WSCheckHandleAllocated(ALV, 'SetScrolledLeft')
-  then Exit;
-
-  GetCommonTreeViewWidgets(PGtkWidget(ALV.Handle), Widgets);
-
-  with Widgets^ do begin
-    gtk_tree_view_scroll_to_point(PGtkTreeView(MainView), AValue, -1);
-  end;
-end;
-
-class procedure TGtk2WSCustomListView.SetScrolledTop(const ALV: TCustomListView;
-  const AValue: Integer);
-var
-  Widgets: PTVWidgets;
-begin
-  if not WSCheckHandleAllocated(ALV, 'SetScrolledTop')
-  then Exit;
-
-  GetCommonTreeViewWidgets(PGtkWidget(ALV.Handle), Widgets);
-
-  with Widgets^ do begin
-    gtk_tree_view_scroll_to_point(PGtkTreeView(MainView), -1, AValue);
-  end;
-end;
-
 class procedure TGtk2WSCustomListView.SetSort(const ALV: TCustomListView;
   const AType: TSortType; const AColumn: Integer);
 begin
   if not WSCheckHandleAllocated(ALV, 'SetSort')
   then Exit;
 //  inherited SetSort(ALV, AType, AColumn);
+end;
+
+class procedure TGtk2WSCustomListView.SetViewOrigin(const ALV: TCustomListView; const AValue: TPoint);
+var
+  Widgets: PTVWidgets;
+begin
+  if not WSCheckHandleAllocated(ALV, 'SetViewOrigin')
+  then Exit;
+
+  GetCommonTreeViewWidgets(PGtkWidget(ALV.Handle), Widgets);
+  gtk_tree_view_scroll_to_point(PGtkTreeView(Widgets^.MainView), AValue.X, AValue.Y);
 end;
 
 class procedure TGtk2WSCustomListView.SetViewStyle(const ALV: TCustomListView;

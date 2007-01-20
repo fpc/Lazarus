@@ -114,6 +114,7 @@ type
     class function GetSelCount(const ALV: TCustomListView): Integer; virtual;
     class function GetSelection(const ALV: TCustomListView): Integer; virtual;
     class function GetTopItem(const ALV: TCustomListView): Integer; virtual;
+    class function GetViewOrigin(const ALV: TCustomListView): TPoint; virtual;
     class function GetVisibleRowCount(const ALV: TCustomListView): Integer; virtual;
     
     class procedure SetAllocBy(const ALV: TCustomListView; const AValue: Integer); virtual;
@@ -125,9 +126,8 @@ type
     class procedure SetProperty(const ALV: TCustomListView; const AProp: TListViewProperty; const AIsSet: Boolean); virtual;
     class procedure SetProperties(const ALV: TCustomListView; const AProps: TListViewProperties); virtual;
     class procedure SetScrollBars(const ALV: TCustomListView; const AValue: TScrollStyle); virtual;
-    class procedure SetScrolledLeft(const ALV: TCustomListView; const AValue: Integer); virtual;
-    class procedure SetScrolledTop(const ALV: TCustomListView; const AValue: Integer); virtual;
     class procedure SetSort(const ALV: TCustomListView; const AType: TSortType; const AColumn: Integer); virtual;
+    class procedure SetViewOrigin(const ALV: TCustomListView; const AValue: TPoint); virtual;
     class procedure SetViewStyle(const ALV: TCustomListView; const Avalue: TViewStyle); virtual;
   end;
 
@@ -375,6 +375,11 @@ begin
   Result := -1;
 end;
 
+class function TWSCustomListView.GetViewOrigin(const ALV: TCustomListView): TPoint;
+begin
+  Result := Point(0, 0);
+end;
+
 class function TWSCustomListView.GetVisibleRowCount(const ALV: TCustomListView): Integer;
 begin
   Result := 0;
@@ -412,15 +417,11 @@ class procedure TWSCustomListView.SetScrollBars(const ALV: TCustomListView; cons
 begin
 end;
 
-class procedure TWSCustomListView.SetScrolledLeft(const ALV: TCustomListView; const AValue: Integer);
-begin
-end;
-
-class procedure TWSCustomListView.SetScrolledTop(const ALV: TCustomListView; const AValue: Integer);
-begin
-end;
-
 class procedure TWSCustomListView.SetSort(const ALV: TCustomListView; const AType: TSortType; const AColumn: Integer);
+begin
+end;
+
+class procedure TWSCustomListView.SetViewOrigin(const ALV: TCustomListView; const AValue: TPoint);
 begin
 end;
 

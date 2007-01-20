@@ -1068,6 +1068,22 @@ begin
   Result := -CListWidget^.voffset div (CListWidget^.row_height + 1);
 end;
 
+class function TGtkWSCustomListView.GetViewOrigin(const ALV: TCustomListView): TPoint;
+var
+  WidgetInfo: PWidgetInfo;
+  CListWidget: PGtkCList;
+begin
+  if not WSCheckHandleAllocated(ALV, 'GetViewOrigin')
+  then Exit;
+
+  WidgetInfo := GetWidgetInfo(Pointer(ALV.Handle));
+  CListWidget := PGtkCList(WidgetInfo^.CoreWidget);
+  if CListWidget=nil then exit;
+
+  Result.X := Round(CListWidget^.hAdjustment^.value);
+  Result.Y := Round(CListWidget^.vAdjustment^.value);
+end;
+
 class function TGtkWSCustomListView.GetVisibleRowCount(const ALV: TCustomListView): Integer;
 var
   WidgetInfo: PWidgetInfo;
@@ -1292,35 +1308,6 @@ begin
   gtk_scrolled_window_set_policy(ScrollWidget, hPolicy, vPolicy);
 end;
 
-class procedure TGtkWSCustomListView.SetScrolledLeft(const ALV: TCustomListView; const AValue: Integer);
-var
-  WidgetInfo: PWidgetInfo;
-  CListWidget: PGtkCList;
-begin
-  if not WSCheckHandleAllocated(ALV, 'SetScrolledLeft')
-  then Exit;
-
-  WidgetInfo := GetWidgetInfo(Pointer(ALV.Handle));
-  CListWidget := PGtkCList(WidgetInfo^.CoreWidget);
-  
-  gtk_adjustment_set_value(CListWidget^.hAdjustment, AValue);
-end;
-
-class procedure TGtkWSCustomListView.SetScrolledTop(const ALV: TCustomListView; const AValue: Integer);
-var
-  WidgetInfo: PWidgetInfo;
-  CListWidget: PGtkCList;
-begin
-  if not WSCheckHandleAllocated(ALV, 'SetScrolledTop')
-  then Exit;
-
-  WidgetInfo := GetWidgetInfo(Pointer(ALV.Handle));
-  CListWidget := PGtkCList(WidgetInfo^.CoreWidget);
-  if CListWidget=nil then exit;
-
-  gtk_adjustment_set_value(CListWidget^.vAdjustment, AValue);
-end;
-
 class procedure TGtkWSCustomListView.SetSort(const ALV: TCustomListView;
   const AType: TSortType; const AColumn: Integer);
 var
@@ -1335,6 +1322,22 @@ begin
   
   if CListWidget=nil then exit;
   // TODO implement
+end;
+
+class procedure TGtkWSCustomListView.SetViewOrigin(const ALV: TCustomListView; const AValue: TPoint);
+var
+  WidgetInfo: PWidgetInfo;
+  CListWidget: PGtkCList;
+begin
+  if not WSCheckHandleAllocated(ALV, 'SetViewOrigin')
+  then Exit;
+
+  WidgetInfo := GetWidgetInfo(Pointer(ALV.Handle));
+  CListWidget := PGtkCList(WidgetInfo^.CoreWidget);
+  if CListWidget=nil then exit;
+
+  gtk_adjustment_set_value(CListWidget^.hAdjustment, AValue.X);
+  gtk_adjustment_set_value(CListWidget^.vAdjustment, AValue.Y);
 end;
 
 class procedure TGtkWSCustomListView.SetViewStyle(const ALV: TCustomListView; const Avalue: TViewStyle);
