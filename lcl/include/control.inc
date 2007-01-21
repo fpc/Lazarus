@@ -1454,7 +1454,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  function TControl.GetClientScrollOffset: TPoint;
+  function TControl.GetControlOrigin: TPoint;
 
   Returns the screen coordinate of the topleft pixel of the control.
 ------------------------------------------------------------------------------}

@@ -1695,7 +1695,7 @@ begin
     GetLastNode.Delete;
 end;
 
-procedure TTreeNodes.ClearMultiSelection;
+procedure TTreeNodes.ClearMultiSelection(ClearSelected: boolean = false);
 var
   ANode, OldNode: TTreeNode;
 begin
@@ -1706,6 +1706,8 @@ begin
     ANode:=ANode.GetNextMultiSelected;
     OldNode.MultiSelected:=false;
   end;
+  if ClearSelected then
+    Owner.Selected:=nil;
   if Owner<>nil then Owner.UnlockSelectionChangeEvent;
 end;
 
@@ -3374,8 +3376,8 @@ begin
         lNode.MultiSelectGroup
       else begin
         LockSelectionChangeEvent;
-        FTreeNodes.ClearMultiSelection;
-        lNode.MultiSelected := true;
+        FTreeNodes.ClearMultiSelection(true);
+        lNode.Selected := true;
         UnlockSelectionChangeEvent;
       end;
     end else
@@ -4250,8 +4252,8 @@ begin
           end else begin
             if (Selected<>CursorNode) or Items.IsMultiSelection then begin
               LockSelectionChangeEvent;
-              Items.ClearMultiSelection;
-              CursorNode.MultiSelected:=true;
+              Items.ClearMultiSelection(true);
+              CursorNode.Selected:=true;
               UnlockSelectionChangeEvent;
             end;
           end;

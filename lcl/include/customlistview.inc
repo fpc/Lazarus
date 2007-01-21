@@ -860,55 +860,11 @@ begin
 end;
 
 procedure TCustomListView.UpdateScrollbars;
-var
-  ScrollInfo: TScrollInfo;
 begin
   // this needs to be done in the widgetset
   DebugLn('TODO: TCustomListView.UpdateScrollbars');
   exit;
 
   if not HandleAllocated then exit;
-{
-  //  Exclude(FStates,tvsScrollbarChanged);
-  if fScrollBars = ssNone then Exit;
-  
-  ScrollInfo.cbSize := SizeOf(ScrollInfo);
-  ScrollInfo.fMask := SIF_ALL or SIF_DISABLENOSCROLL;
-  ScrollInfo.nTrackPos := 0;
-  if fScrollBars in [ssBoth, ssHorizontal]
-  then begin
-    // horizontal scrollbar
-    ScrollInfo.nMin := 0;
-    ScrollInfo.nPage := (ClientWidth-ScrollBarWidth)-2*BorderWidth;
-    if ScrollInfo.nPage<1 then ScrollInfo.nPage:=1;
-    ScrollInfo.nMax := {GetMaxScrollLeft+}ScrollInfo.nPage;
-    if ScrollInfo.nMax<1 then ScrollInfo.nMax:=1;
-    ScrollInfo.nPos := FScrolledLeft;
-        if not CompareMem(@ScrollInfo,@FLastHorzScrollInfo,SizeOf(TScrollInfo))
-        then begin
-          FLastHorzScrollInfo:=ScrollInfo;
-          SetScrollInfo(Handle, SB_HORZ, ScrollInfo, True);
-          ShowScrollBar(Handle,SB_HORZ,True);
-        end;
-      end;
-      if fScrollBars in [ssBoth, ssVertical] then begin
-        // vertical scrollbar
-        ScrollInfo.nMin := 0;
-        ScrollInfo.nPage := (ClientHeight-ScrollBarWidth)-FDefaultItemHeight;
-        if ScrollInfo.nPage<1 then ScrollInfo.nPage:=1;
-        ScrollInfo.nMax := {GetMaxScrollTop+}ScrollInfo.nPage;
-        if ScrollInfo.nMax<1 then ScrollInfo.nMax:=1;
-        ScrollInfo.nTrackPos := 0;
-        ScrollInfo.nPos := FScrolledTop;
-        if not CompareMem(@ScrollInfo,@FLastVertScrollInfo,SizeOf(TScrollInfo))
-        then begin
-          FLastVertScrollInfo:=ScrollInfo;
-          SetScrollInfo(Handle, SB_VERT, ScrollInfo, True);
-          ShowScrollBar(Handle,SB_VERT,True);
-        end;
-      end;
-    end;
-  end;
-}
 end;
 

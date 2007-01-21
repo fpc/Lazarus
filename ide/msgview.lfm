@@ -1,28 +1,25 @@
-object MessagesView: TMessagesView
+inherited MessagesView: TMessagesView
   Left = 262
   Height = 79
   Top = 518
   Width = 722
   HorzScrollBar.Page = 721
   VertScrollBar.Page = 78
-  ActiveControl = MessageListBox
+  ActiveControl = MessageTreeView
   BorderStyle = bsSizeToolWin
   Caption = 'MessagesView'
-  ClientHeight = 79
-  ClientWidth = 722
   KeyPreview = True
   OnDeactivate = FormDeactivate
   OnKeyDown = MessagesViewKeyDown
-  PixelsPerInch = 95
-  object MessageListBox: TListBox
+  object MessageTreeView: TTreeView
     Height = 79
     Width = 722
     Align = alClient
-    MultiSelect = True
-    OnExit = MessageViewExit
+    DefaultItemHeight = 14
     PopupMenu = MainPopupMenu
     TabOrder = 0
-    TopIndex = -1
+    OnExit = MessageViewExit
+    Options = [tvoAllowMultiselect, tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
   end
   object MainPopupMenu: TPopupMenu
     OnPopup = MainPopupMenuPopup

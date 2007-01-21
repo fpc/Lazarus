@@ -39,7 +39,7 @@ interface
 uses
   Classes, SysUtils, AVL_Tree,
   LCLProc, LResources, ClipBrd, Controls, Dialogs, FileUtil, Forms, Menus,
-  StdCtrls,
+  StdCtrls, ComCtrls,
   IDEExternToolIntf, IDECommands, MenuIntf, IDEMsgIntf,
   DialogProcs, EnvironmentOpts,
   LazarusIDEStrConsts, IDEOptionDefs, IDEProcs, InputHistory, KeyMapping;
@@ -64,7 +64,7 @@ type
   { TMessagesView }
   
   TMessagesView = class(TIDEMessagesWindowInterface)
-    MessageListBox:   TListBox;
+    MessageTreeView: TTreeView;
     MainPopupMenu: TPopupMenu;
     procedure CopyAllMenuItemClick(Sender: TObject);
     procedure CopyAllAndHiddenMenuItemClick(Sender: TObject);
@@ -78,8 +78,8 @@ type
     procedure MessageViewExit(Sender: TObject);
     procedure MessagesViewKeyDown(Sender: TObject; var Key: word;
       Shift: TShiftState);
-    procedure MessageViewDrawItem(Control: TWinControl; Index: Integer;
-       ARect: TRect; State: TOwnerDrawState);
+    procedure MessageViewDrawItem(Sender: TCustomTreeView; Node: TTreeNode;
+    State: TCustomDrawState; var DefaultDraw: Boolean);
     procedure SaveAllToFileMenuItemClick(Sender: TObject);
     procedure OnQuickFixClick(Sender: TObject);
   private
@@ -126,6 +126,7 @@ type
     function VisibleItemCount: integer;
     function MsgCount: integer;
     procedure FilterLines(Filter: TOnFilterLine);
+    function GetVisibleMessagesAsText: string;
     procedure SaveMessagesToFile(const Filename: string);
     procedure SrcEditLinesInsertedDeleted(const Filename: string;
                                           FirstLine, LineCount: Integer);
@@ -279,9 +280,7 @@ begin
   FLastSelectedIndex := -1;
 
   Caption := lisMenuViewMessages;
-  MessageListBox.Style := lbOwnerDrawFixed;
-  MessageListBox.OnDrawItem := @MessageViewDrawItem;
-  MessageListBox.ClickOnSelChange := false;
+  MessageTreeView.OnCustomDrawItem := @MessageViewDrawItem;
 
   // assign the root TMenuItem to the registered menu root.
   // This will automatically create all registered items
@@ -298,6 +297,8 @@ begin
   EnvironmentOptions.IDEWindowLayoutList.Apply(Self, Name);
   
   FQuickFixItems:=TFPList.Create;
+  
+  DebugLn(['TMessagesView.Create ',MessageTreeView.Items.Count]);
 end;
 
 destructor TMessagesView.Destroy;
@@ -331,7 +332,7 @@ begin
   VisibleIndex := Line.VisiblePosition;
   if VisibleIndex >= 0 then
   begin
-    MessageListBox.Items.Delete(VisibleIndex);
+    MessageTreeView.Items[VisibleIndex].Free;
     FVisibleItems.Delete(VisibleIndex);
   end;
   
@@ -360,7 +361,7 @@ var
   LastItem: TLazMessageLine;
 begin
   //ConsistencyCheck;
-  //DebugLn('TMessagesView.Add START ItemCount=',dbgs(ItemCount),' VisibleCount=',dbgs(VisibleItemCount),' ListBoxCount=',dbgs(MessageListBox.Items.Count),' ProgressLine=',dbgs(ProgressLine),' VisibleLine=',dbgs(VisibleLine),' OriginalIndex=',dbgs(OriginalIndex),' Msg="',Msg,'"');
+  //DebugLn('TMessagesView.Add START ItemCount=',dbgs(ItemCount),' VisibleCount=',dbgs(VisibleItemCount),' ListBoxCount=',dbgs(MessageTreeView.Items.Count),' ProgressLine=',dbgs(ProgressLine),' VisibleLine=',dbgs(VisibleLine),' OriginalIndex=',dbgs(OriginalIndex),' Msg="',Msg,'"');
   NewMsg:=nil;
   if LinesCount>0 then begin
     LastItem:=Items[LinesCount-1];
@@ -388,17 +389,18 @@ begin
       i := FVisibleItems.Count - 1;
       VisibleItems[i].VisiblePosition := -1;
       FVisibleItems.Delete(i);
-      MessageListBox.Items[i] := Msg;
+      MessageTreeView.Items[i].Text := Msg;
     end
     else begin
       // add new line
-      MessageListBox.Items.Add(Msg)// add line
+      MessageTreeView.Items.Add(nil,Msg)// add line
     end;
     NewMsg.VisiblePosition := FVisibleItems.Count;
     FVisibleItems.Add(NewMsg);
     FLastLineIsProgress  := ProgressLine;
-    MessageListBox.TopIndex := MessageListBox.Items.Count - 1;
-    //DebugLn(['TMessagesView.Add ',MessageListBox.TopIndex]);
+    if MessageTreeView.Items.Count>0 then
+      MessageTreeView.Items[MessageTreeView.Items.Count-1].MakeVisible;
+    //DebugLn(['TMessagesView.Add ',MessageTreeView.TopIndex]);
   end;
   //ConsistencyCheck;
 end;
@@ -527,8 +529,8 @@ end;
 
 procedure TMessagesView.ShowTopMessage;
 begin
-  if MessageListBox.Items.Count > 0 then begin
-    MessageListBox.TopIndex := 0;
+  if MessageTreeView.Items.Count > 0 then begin
+    MessageTreeView.Items[MessageTreeView.Items.Count-1].MakeVisible;
     //DebugLn(['TMessagesView.ShowTopMessage ']);
   end;
 end;
@@ -563,24 +565,37 @@ begin
     else
       Line.VisiblePosition := -1;
   end;
-  // rebuild MessageListBox.Items
-  MessageListBox.Items.BeginUpdate;
+  // rebuild MessageTreeView.Items
+  MessageTreeView.BeginUpdate;
   for i := 0 to FVisibleItems.Count - 1 do
   begin
     Line := VisibleItems[i];
-    if MessageListBox.Items.Count > i then
-      MessageListBox.Items[i] := Line.Msg
+    if MessageTreeView.Items.Count > i then
+      MessageTreeView.Items[i].Text := Line.Msg
     else
-      MessageListBox.Items.Add(Line.Msg);
+      MessageTreeView.Items.Add(nil,Line.Msg);
   end;
-  while MessageListBox.Items.Count > FVisibleItems.Count do
-    MessageListBox.Items.Delete(MessageListBox.Items.Count - 1);
-  MessageListBox.Items.EndUpdate;
+  while MessageTreeView.Items.Count > FVisibleItems.Count do
+    MessageTreeView.Items[MessageTreeView.Items.Count - 1].Free;
+  MessageTreeView.EndUpdate;
+end;
+
+function TMessagesView.GetVisibleMessagesAsText: string;
+var
+  sl: TStringList;
+  i: Integer;
+begin
+  sl:=TStringList.Create;
+  for i:=0 to MessageTreeView.Items.Count-1 do
+    sl.Add(MessageTreeView.Items[i].Text);
+  Result:=sl.Text;
+  sl.Free;
 end;
 
 procedure TMessagesView.SaveMessagesToFile(const Filename: string);
+// save visible messages to file
 begin
-  SaveStringToFile(Filename, MessageListBox.Items.Text, []);
+  SaveStringToFile(Filename, GetVisibleMessagesAsText, []);
 end;
 
 procedure TMessagesView.SrcEditLinesInsertedDeleted(const Filename: string;
@@ -623,8 +638,8 @@ end;
 procedure TMessagesView.UpdateMsgLineInListBox(Line: TLazMessageLine);
 begin
   if (Line.VisiblePosition>=0)
-  and (Line.VisiblePosition<MessageListBox.Items.Count) then begin
-    MessageListBox.Items[Line.VisiblePosition]:=Line.Msg;
+  and (Line.VisiblePosition<MessageTreeView.Items.Count) then begin
+    MessageTreeView.Items[Line.VisiblePosition].Text:=Line.Msg;
   end;
 end;
 
@@ -667,10 +682,10 @@ begin
     exit;
   end;
   ClearItems;
-  if not Assigned(MessageListBox.OnClick) then
-    MessageListBox.OnClick := @MessageViewClicked;
-  if not Assigned(MessageListBox.OnDblClick) then
-    MessageListBox.OnDblClick := @MessageViewDblClicked;
+  if not Assigned(MessageTreeView.OnClick) then
+    MessageTreeView.OnClick := @MessageViewClicked;
+  if not Assigned(MessageTreeView.OnDblClick) then
+    MessageTreeView.OnDblClick := @MessageViewDblClicked;
 end;
 
 procedure TMessagesView.GetVisibleMessageAt(Index: integer;
@@ -679,7 +694,7 @@ begin
   // consistency checks
   if (Index < 0) then
     RaiseException('TMessagesView.GetVisibleMessageAt');
-  if MessageListBox.Items.Count <= Index then
+  if MessageTreeView.Items.Count <= Index then
     RaiseException('TMessagesView.GetVisibleMessageAt');
   if (FVisibleItems = nil) then
     RaiseException('TMessagesView.GetVisibleMessageAt');
@@ -713,7 +728,7 @@ begin
     TObject(FItems[i]).Free;
   FItems.Clear;
   FVisibleItems.Clear;
-  MessageListBox.Clear;
+  MessageTreeView.Items.Clear;
   FLastLineIsProgress:=false;
 end;
 
@@ -733,8 +748,8 @@ end;
 function TMessagesView.GetMessage: string;
 begin
   Result := '';
-  if (MessageListBox.Items.Count > 0) and (MessageListBox.SelCount > 0) then
-    Result := MessageListBox.Items.Strings[GetSelectedLineIndex];
+  if (MessageTreeView.Selected<>nil) then
+    Result := MessageTreeView.Selected.Text;
 end;
 
 function TMessagesView.GetMessageLine: TLazMessageLine;
@@ -761,7 +776,7 @@ end;
 
 procedure TMessagesView.CopyAllMenuItemClick(Sender: TObject);
 begin
-  Clipboard.AsText := MessageListBox.Items.Text;
+  Clipboard.AsText := GetVisibleMessagesAsText;
 end;
 
 procedure TMessagesView.CopyAllAndHiddenMenuItemClick(Sender: TObject);
@@ -771,9 +786,8 @@ end;
 
 procedure TMessagesView.CopyMenuItemClick(Sender: TObject);
 begin
-  if MessageListBox.ItemIndex < 0 then
-    exit;
-  Clipboard.AsText := MessageListBox.GetSelectedText;
+  if MessageTreeView.Selected=nil then exit;
+  Clipboard.AsText := MessageTreeView.Selected.Text;
 end;
 
 procedure TMessagesView.FormDeactivate(Sender: TObject);
@@ -839,11 +853,12 @@ begin
   ExecuteIDEShortCut(Self, Key, Shift);
 end;
 
-procedure TMessagesView.MessageViewDrawItem(Control: TWinControl;
-  Index: Integer; ARect: TRect; State: TOwnerDrawState);
+procedure TMessagesView.MessageViewDrawItem(Sender: TCustomTreeView;
+  Node: TTreeNode; State: TCustomDrawState; var DefaultDraw: Boolean);
 var
   TheText: string;
   cl: TColor;
+  ARect: TRect;
 const
   cHint         = 'Hint: User defined:';
   cNote         = 'Note: User defined:';
@@ -853,25 +868,26 @@ const
   clMsgWarning  = clRed;
   cLeftSpacer   = 3;
 begin
-  MessageListBox.Canvas.FillRect(ARect);
-  //DebugLn('TMessagesView.MessageViewDrawItem Index=',dbgs(Index),' Count=',dbgs(MessageListBox.Items.Count));
-  TheText := MessageListBox.Items[Index];
+  ARect:=Node.DisplayRect(true);
+  MessageTreeView.Canvas.FillRect(ARect);
+  //DebugLn('TMessagesView.MessageViewDrawItem Index=',dbgs(Index),' Count=',dbgs(MessageTreeView.Items.Count));
+  TheText := Node.Text;
 
-  cl := MessageListBox.Canvas.Font.Color;   // save original color
+  cl := MessageTreeView.Canvas.Font.Color;   // save original color
 
   { Only use custom colors if not selected, otherwise it is difficult to read }
-  if not (odSelected in State)
+  if not (cdsSelected in State)
   then begin
     if Pos(cNote, TheText) > 0 then
-      MessageListBox.Canvas.Font.Color := clMsgNote
+      MessageTreeView.Canvas.Font.Color := clMsgNote
     else if Pos(cHint, TheText) > 0 then
-      MessageListBox.Canvas.Font.Color := clMsgHint
+      MessageTreeView.Canvas.Font.Color := clMsgHint
     else if Pos(cWarning, TheText) > 0 then
-      MessageListBox.Canvas.Font.Color := clMsgWarning;
+      MessageTreeView.Canvas.Font.Color := clMsgWarning;
   end;
 
-  MessageListBox.Canvas.TextOut(ARect.Left + cLeftSpacer, ARect.Top + 1, TheText);
-  MessageListBox.Canvas.Font.Color := cl;   // restore original color
+  MessageTreeView.Canvas.TextOut(ARect.Left + cLeftSpacer, ARect.Top + 1, TheText);
+  MessageTreeView.Canvas.Font.Color := cl;   // restore original color
 end;
 
 procedure TMessagesView.SaveAllToFileMenuItemClick(Sender: TObject);
@@ -942,25 +958,18 @@ begin
 end;
 
 function TMessagesView.GetSelectedLineIndex: integer;
-var
-  I: integer;
 begin
   Result := -1;
-  if (MessageListBox.Items.Count > 0) and (MessageListBox.SelCount > 0) then
-    for i := 0 to MessageListBox.Items.Count - 1 do
-      if MessageListBox.Selected[I] then
-      begin
-        Result := I;
-        Break;
-      end;
+  if (MessageTreeView.Selected<>nil) then
+    Result:=MessageTreeView.Selected.AbsoluteIndex;
 end;
 
 procedure TMessagesView.SetLastLineIsProgress(const AValue: boolean);
 begin
   if FLastLineIsProgress = AValue then
     exit;
-  if FLastLineIsProgress then
-    MessageListBox.Items.Delete(MessageListBox.Items.Count - 1);
+  if FLastLineIsProgress and (MessageTreeView.Items.Count>0) then
+    MessageTreeView.Items[MessageTreeView.Items.Count - 1].Free;
   FLastLineIsProgress := AValue;
 end;
 
@@ -968,7 +977,7 @@ procedure TMessagesView.DoSelectionChange;
 var
   NewSelectedIndex: LongInt;
 begin
-  if (MessageListBox.Items.Count > 0) and (MessageListBox.SelCount > 0) then
+  if (MessageTreeView.Selected<>nil) then
   begin
     NewSelectedIndex:=GetSelectedLineIndex;
     if NewSelectedIndex<>FLastSelectedIndex then begin
@@ -981,8 +990,11 @@ end;
 
 procedure TMessagesView.SetSelectedLineIndex(const AValue: integer);
 begin
-  MessageListBox.ItemIndex := AValue;
-  MessageListBox.TopIndex  := MessageListBox.ItemIndex;
+  if AValue>=0 then begin
+    MessageTreeView.Items[AValue].Selected := true;
+    //MessageTreeView.TopItem  := MessageTreeView.Selected;
+  end else
+    MessageTreeView.Selected := nil;
 end;
 
 procedure TMessagesView.UpdateMsgSrcPos(Line: TLazMessageLine);
@@ -1015,8 +1027,8 @@ begin
       RaiseGDBException('TMessagesView.ConsistencyCheck i='+dbgs(i)+' "'+Line.Msg+'" Position='+dbgs(Line.Position));
     if (Line.VisiblePosition>=0) and (VisibleItems[Line.VisiblePosition]<>Line) then
       RaiseGDBException('TMessagesView.ConsistencyCheck i='+dbgs(i)+' "'+Line.Msg+'" VisiblePosition='+dbgs(Line.VisiblePosition)+' '+VisibleItems[Line.VisiblePosition].Msg);
-    if (Line.VisiblePosition>=0) and (MessageListBox.Items[Line.VisiblePosition]<>Line.Msg) then
-      RaiseGDBException('TMessagesView.ConsistencyCheck i='+dbgs(i)+' "'+Line.Msg+'" VisiblePosition='+dbgs(Line.VisiblePosition)+' Listbox="'+MessageListBox.Items[Line.VisiblePosition]+'"');
+    if (Line.VisiblePosition>=0) and (MessageTreeView.Items[Line.VisiblePosition].Text<>Line.Msg) then
+      RaiseGDBException('TMessagesView.ConsistencyCheck i='+dbgs(i)+' "'+Line.Msg+'" VisiblePosition='+dbgs(Line.VisiblePosition)+' Listbox="'+MessageTreeView.Items[Line.VisiblePosition].Text+'"');
   end;
   for i:=0 to FVisibleItems.Count-1 do begin
     Line:=VisibleItems[i];

@@ -1950,7 +1950,7 @@ type
     procedure Assign(Source: TPersistent); override;
     procedure BeginUpdate;
     procedure Clear;
-    procedure ClearMultiSelection;
+    procedure ClearMultiSelection(ClearSelected: boolean = false);
     function IsMultiSelection: boolean;
     procedure Delete(Node: TTreeNode);
     procedure EndUpdate;
