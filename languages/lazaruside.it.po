@@ -8682,6 +8682,10 @@ msgstr "Impossibile caricare il file"
 msgid "Unable to load the component class %s%s%s, because it depends on itself."
 msgstr ""
 
+#: lazarusidestrconsts:lisunabletoopendesignertheclassdoesnotdescendfromades
+msgid "Unable to open designer.%sThe class %s does not descend from a designable class like TForm or TDataModule."
+msgstr ""
+
 #: lazarusidestrconsts:lispkgmangunabletoopenthepackage
 msgid "Unable to open the package %s%s%s.%sThis package was marked for installation."
 msgstr "Non riesco ad aprire il pacchetto %s%s%s.%sIl pacchetto è stato marcato per l'installazione."

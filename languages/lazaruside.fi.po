@@ -1328,7 +1328,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenucloseproject
 msgid "Close Project"
-msgstr ""
+msgstr "Sulje projekti"
 
 #: lazarusidestrconsts:lismenucloseall
 msgid "Close all editor files"
@@ -1336,7 +1336,7 @@ msgstr "Sulje kaikki editorin tiedostot"
 
 #: lazarusidestrconsts:lissrclosepage
 msgid "Close page"
-msgstr ""
+msgstr "Sulje välilehti"
 
 #: lazarusidestrconsts:liskmcloseproject
 msgid "Close project"
@@ -1912,7 +1912,7 @@ msgstr ""
 
 #: lazarusidestrconsts:liscreatenewproject
 msgid "Create new project"
-msgstr ""
+msgstr "Luodaan uusi projekti"
 
 #: lazarusidestrconsts:dlgruberbandcreationcolor
 msgid "Creation"
@@ -2304,7 +2304,7 @@ msgstr "Kansio jossa käännetään testiprojektit"
 
 #: lazarusidestrconsts:lisenvoptdlgdirectorynotfound
 msgid "Directory not found"
-msgstr ""
+msgstr "Kansiota ei löytynyt"
 
 #: lazarusidestrconsts:lisfindfiledirectoryoptions
 msgid "Directory options"
@@ -2828,7 +2828,7 @@ msgstr "FPC:n (FreePascal:n) lähdekoodin kansio"
 
 #: lazarusidestrconsts:lisenvoptdlgfpcsrcdirnotfoundmsg
 msgid "FPC source directory \"%s\" not found."
-msgstr ""
+msgstr "FPC:n (FreePascal:n) lähdekoodin kansiota \"%s\" ei löytynyt."
 
 #: lazarusidestrconsts:lisexttoolfailedtoruntool
 msgid "Failed to run tool"
@@ -4488,7 +4488,7 @@ msgstr "Lazarus:n kansio (oletuksena kaikissa projekteissa)"
 
 #: lazarusidestrconsts:lisenvoptdlglazarusdirnotfoundmsg
 msgid "Lazarus directory \"%s\" not found."
-msgstr ""
+msgstr "Lazarus:n kansiota \"%s\" ei löytynyt."
 
 #: lazarusidestrconsts:lislazarusdirectorynotfound
 msgid "Lazarus directory not found"
@@ -5080,7 +5080,7 @@ msgstr "Luo uusi Projekti ..."
 
 #: lazarusidestrconsts:lismenunewprojectfromfile
 msgid "New Project from file ..."
-msgstr ""
+msgstr "Luo uusi projekti tiedostoon ..."
 
 #: lazarusidestrconsts:lisprojaddnewrequirement
 msgid "New Requirement"
@@ -5968,7 +5968,7 @@ msgstr "Projekti on muuttunut"
 
 #: lazarusidestrconsts:lisprojectclosed
 msgid "Project closed"
-msgstr ""
+msgstr "Projekti suljettiin"
 
 #: lazarusidestrconsts:lisprojectdirectory
 msgid "Project directory"
@@ -6068,7 +6068,7 @@ msgstr "Lopeta"
 
 #: lazarusidestrconsts:lisquitlazarus
 msgid "Quit Lazarus"
-msgstr ""
+msgstr "Poistu Lazaruksesta"
 
 #: lazarusidestrconsts:dlgcorange
 msgid "Range"
@@ -6304,7 +6304,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lispkgmangrenamefileinpackage
 msgid "Rename file in package?"
-msgstr ""
+msgstr "Vaihdetaanko tiedoston nimeä komponenttipaketissa?"
 
 #: lazarusidestrconsts:lisrenamefile
 msgid "Rename file?"
@@ -7012,7 +7012,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisselectiontool
 msgid "Selection tool"
-msgstr ""
+msgstr "Valintatyökalu"
 
 #: lazarusidestrconsts:liscodetoolsoptssemicolon
 msgid "Semicolon"
@@ -7668,7 +7668,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisenvoptdlgtestdirnotfoundmsg
 msgid "Test directory \"%s\" not found."
-msgstr ""
+msgstr "Testiprojektien kansiota \"%s\" ei löytynyt. "
 
 #: lazarusidestrconsts:lispkgfiletypetext
 msgid "Text"
@@ -8044,7 +8044,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lispkgmangthepackageownsthefileshouldthefileberenamed
 msgid "The package %s owns the file%s%s%s%s.%sShould the file be renamed in the package as well?"
-msgstr ""
+msgstr "Komponenttipaketti %s omistaa tiedoston%s%s%s%s.%sPitäisikö tuota komponenttipaketin nimeäkin myöskin muuttaa?"
 
 #: lazarusidestrconsts:lispkgmangthepackagefailedtocompileremoveitfromtheinstallati
 msgid "The package %s%s%s failed to compile.%sRemove it from the installation list?"
@@ -8120,7 +8120,7 @@ msgstr "Projektn info tiedosto %s%s%s%son/olisi saman niminen kuin projektin pä
 
 #: lazarusidestrconsts:listheprojectisclosedtherearenowthreepossibilitieshin
 msgid "The project is closed. There are now three possibilities.%sHint: You do not need to close a project yourself, since this is done automatically."
-msgstr ""
+msgstr "Projekti on suljettu. Nyt on kolme mahdollisuutta. Ole hyvä ja valitse niistä jokin.%sVihje: Sinun ei enään tarvitse huolehtia projektin sulkemisesta koska se tehtiin jo."
 
 #: lazarusidestrconsts:listheprojectmustbesavedbeforebuildingifyousetthetest
 msgid "The project must be saved before building%sIf you set the Test Directory in the environment options,%syou can create new projects and build them at once.%sSave project?"
@@ -8668,6 +8668,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisunabletoloadthecomponentclassbecauseitdependsonits
 msgid "Unable to load the component class %s%s%s, because it depends on itself."
+msgstr ""
+
+#: lazarusidestrconsts:lisunabletoopendesignertheclassdoesnotdescendfromades
+msgid "Unable to open designer.%sThe class %s does not descend from a designable class like TForm or TDataModule."
 msgstr ""
 
 #: lazarusidestrconsts:lispkgmangunabletoopenthepackage
