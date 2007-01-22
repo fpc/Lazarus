@@ -1443,6 +1443,15 @@ type
     wcfCreatingChildHandles // Set while constructing the handles of the childs
     );
   TWinControlFlags = set of TWinControlFlag;
+  
+  TControlAtPosFlag = (
+    capfAllowDisabled,   // include controls with Enabled=false
+    capfAllowWinControls,// include TWinControls
+    capfOnlyClientAreas, // use the client areas, not the whole child area
+    capfRecursive,       // search recursively in grand childrens
+    capfNoScrolling      // do not add the scroll offset to Pos
+    );
+  TControlAtPosFlags = set of TControlAtPosFlag;
 
   TWinControl = class(TControl)
   private
@@ -1700,10 +1709,7 @@ type
     function ControlAtPos(const Pos: TPoint; AllowDisabled: Boolean): TControl;
     function ControlAtPos(const Pos: TPoint;
                           AllowDisabled, AllowWinControls: Boolean): TControl;
-    function ControlAtPos(const Pos: TPoint;
-                          AllowDisabled, AllowWinControls, OnlyClientAreas: Boolean): TControl;
-    function ControlAtPos(const Pos: TPoint;
-                          AllowDisabled, AllowWinControls, OnlyClientAreas, Recursive: Boolean): TControl; virtual;
+    function ControlAtPos(const Pos: TPoint; Flags: TControlAtPosFlags): TControl;
     function  ContainsControl(Control: TControl): Boolean;
     procedure DoAdjustClientRectChange;
     procedure InvalidateClientRectCache(WithChildControls: boolean);
@@ -2347,7 +2353,8 @@ begin
   if AWinControl=nil then exit;
   // find control at mouse cursor
   ClientPos:=AWinControl.ScreenToClient(ScreenPos);
-  Result:=AWinControl.ControlAtPos(ClientPos,true,true,false);
+  Result:=AWinControl.ControlAtPos(ClientPos,
+                        [capfAllowDisabled,capfAllowWinControls,capfRecursive]);
   if Result=nil then Result:=AWinControl;
 end;
 
@@ -2408,7 +2415,7 @@ begin
   then begin
     Result := WinControl;
     Control := WinControl.ControlAtPos(WinControl.ScreenToClient(Position),
-                                       AllowDisabled,true,false,true);
+                        [capfAllowDisabled,capfAllowWinControls,capfRecursive]);
     //debugln(['FindControlAtPosition ',dbgs(Position),' ',DbgSName(WinControl),' ',dbgs(WinControl.ScreenToClient(Position)),' ',DbgSName(Control)]);
     if Control <> nil then Result := Control;
   end;
@@ -2437,7 +2444,8 @@ var
 begin
   Control:=AWinControl;
   if (AWinControl<>nil) then begin
-    Control:=AWinControl.ControlAtPos(Position,false,true,false);
+    Control:=AWinControl.ControlAtPos(Position,
+                                      [capfAllowWinControls,capfRecursive]);
     if Control=nil then
       Control:=AWinControl;
   end;

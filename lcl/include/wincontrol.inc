@@ -2198,7 +2198,8 @@ begin
       {$IFDEF VerboseDrag}
       DebugLn('TWinControl.DoDragMsg dmFindTarget ',Name,':',ClassName,' Start DragMsg.DragRec^.Pos=',DragMsg.DragRec^.Pos.X,',',DragMsg.DragRec^.Pos.Y);
       {$ENDIF}
-      TargetControl := ControlatPos(ScreentoClient(DragMsg.DragRec^.Pos),False);
+      TargetControl := ControlatPos(ScreentoClient(DragMsg.DragRec^.Pos),
+                                    [capfAllowWinControls,capfRecursive]);
       if TargetControl = nil then TargetControl := Self;
       {$IFDEF VerboseDrag}
       DebugLn('TWinControl.DoDragMsg dmFindTarget ',Name,':',ClassName,' End Result=',TargetControl.Name,':',TargetControl.ClassName);
@@ -2887,7 +2888,8 @@ begin
     then Control := CaptureControl;
   end
   else begin
-    Control := ControlAtPos(SmallPointToPoint(TheMessage.Pos),False,True,False);
+    Control := ControlAtPos(SmallPointToPoint(TheMessage.Pos),
+                            [capfAllowWinControls,capfRecursive]);
   end;
 
   //DebugLn('TWinControl.IsControlMouseMsg ',DbgSName(Self),' Control=',DbgSName(Control));
@@ -3154,7 +3156,7 @@ end;
 Function TWinControl.ControlAtPos(const Pos : TPoint;
   AllowDisabled : Boolean): TControl;
 Begin
-  Result := ControlAtPos(Pos,AllowDisabled,false,true);
+  Result := ControlAtPos(Pos,AllowDisabled,false);
 end;
 
 {------------------------------------------------------------------------------
@@ -3168,31 +3170,26 @@ end;
 ------------------------------------------------------------------------------}
 Function TWinControl.ControlAtPos(const Pos : TPoint;
   AllowDisabled, AllowWinControls: Boolean): TControl;
+var
+  Flags: TControlAtPosFlags;
 begin
-  Result := ControlAtPos(Pos,AllowDisabled,AllowWinControls,true);
-end;
-
-function TWinControl.ControlAtPos(const Pos: TPoint; AllowDisabled,
-  AllowWinControls, OnlyClientAreas: Boolean): TControl;
-begin
-  Result := ControlAtPos(Pos,AllowDisabled,AllowWinControls,true,false);
+  Flags:=[capfOnlyClientAreas];
+  if AllowDisabled then Include(Flags,capfAllowDisabled);
+  if AllowWinControls then Include(Flags,capfAllowWinControls);
+  Result := ControlAtPos(Pos,Flags);
 end;
 
 {------------------------------------------------------------------------------
   TWinControl ControlAtPos
   Params: const Pos : TPoint
-          AllowDisabled, AllowWinControls, OnlyClientAreas, Recursive: Boolean
+          Flags: TControlAtPosFlags
   Results: TControl
 
   Searches a child (not grand child) control, which contains Pos.
   Pos is relative to the ClientOrigin.
-  If AllowDisabled is true it will also search in disabled controls.
-  If AllowWinControls is true it will also search in the child wincontrols.
-  If OnlyClientAreas is true then only the client areas are compared.
-  If Recursive is true then continue in the child controls.
 ------------------------------------------------------------------------------}
-function TWinControl.ControlAtPos(const Pos: TPoint; AllowDisabled,
-  AllowWinControls, OnlyClientAreas, Recursive: Boolean): TControl;
+function TWinControl.ControlAtPos(const Pos: TPoint;
+  Flags: TControlAtPosFlags): TControl;
 var
   I: Integer;
   P: TPoint;
@@ -3212,7 +3209,7 @@ var
       ControlPos:=Point(P.X-Left,P.Y-Top);
       Result:=(ControlPos.X>=0) and (ControlPos.Y>=0)
               and (ControlPos.X<Width) and (ControlPos.Y<Height);
-      if Result and OnlyClientAreas then begin
+      if Result and (capfOnlyClientAreas in Flags) then begin
         ControlClientBounds:=GetChildsRect(false);
         Result:=PtInRect(ControlClientBounds,ControlPos);
       end;
@@ -3231,7 +3228,7 @@ var
               and
               (Visible)
               and
-              (Enabled or AllowDisabled)
+              (Enabled or (capfAllowDisabled in Flags))
               and
               (Perform(CM_HITTEST, 0,
                        LParam(Integer(PointToSmallPoint(ControlPos)))) <> 0)
@@ -3270,12 +3267,16 @@ begin
   end;
 
   // map Pos to logical client area
-  ScrolledOffset:=GetClientScrollOffset;
-  P:=Point(Pos.X+ScrolledOffset.X,Pos.Y+ScrolledOffset.Y);
+  P:=Pos;
+  if not (capfNoScrolling in Flags) then begin
+    ScrolledOffset:=GetClientScrollOffset;
+    inc(P.X,ScrolledOffset.X);
+    inc(P.Y,ScrolledOffset.Y);
+  end;
 
   LControl := nil;
   // check wincontrols
-  if AllowWinControls and (FWinControls <> nil) then
+  if (capfAllowWinControls in Flags) and (FWinControls <> nil) then
     for I := FWinControls.Count - 1 downto 0 do
       if GetControlAtPos(TControl(FWinControls[I])) then
         Break;
@@ -3287,15 +3288,14 @@ begin
   Result := LControl;
   
   // check recursive sub childs
-  if Recursive and (Result is TWinControl)
+  if (capfRecursive in Flags) and (Result is TWinControl)
   and (TWinControl(Result).ControlCount>0) then begin
     OldClientOrigin:=ClientOrigin;
     NewClientOrigin:=TWinControl(Result).ClientOrigin;
     NewPos:=Pos;
     NewPos.X:=NewPos.X-NewClientOrigin.X+OldClientOrigin.X;
     NewPos.Y:=NewPos.Y-NewClientOrigin.Y+OldClientOrigin.Y;
-    LControl:=TWinControl(Result).ControlAtPos(NewPos,
-                           AllowDisabled,AllowWinControls,OnlyClientAreas,true);
+    LControl:=TWinControl(Result).ControlAtPos(NewPos,Flags-[capfNoScrolling]);
     //debugln(['TWinControl.RECURSED ControlAtPos Result=',DbgSName(Result),' LControl=',DbgSName(LControl),' ',dbgs(NewPos),' AllowDisabled=',AllowDisabled,' OnlyClientAreas=',OnlyClientAreas]);
     if LControl<>nil then
       Result:=LControl;
@@ -3421,7 +3421,8 @@ Begin
     begin
       inherited WndPRoc(Message);
       if (Message.Result = HTTRANSPARENT)
-      and (ControlAtPos(ScreenToClient(SmallPointToPoint(TLMNCHitTest(Message).Pos)), False) <> nil)
+      and (ControlAtPos(ScreenToClient(SmallPointToPoint(TLMNCHitTest(Message).Pos)),
+                        False) <> nil)
       then  Message.Result := HTCLIENT;
       Exit;
     end;
