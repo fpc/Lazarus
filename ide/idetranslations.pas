@@ -213,10 +213,13 @@ begin
   Result:=false;
   try
     fs:=TFileStream.Create(InFilename,fmOpenRead);
-    SetLength(s,fs.Size);
-    if s='' then exit;
-    fs.Read(s[1],length(s));
-    fs.Free;
+    try
+      SetLength(s,fs.Size);
+      if s='' then exit;
+      fs.Read(s[1],length(s));
+    finally
+      fs.Free;
+    end;
     NextLineStartPos:=1;
 
     while NextLineStartPos<=length(s) do begin
@@ -267,6 +270,9 @@ begin
 
     Result:=true;
   except
+    on E: Exception do begin
+      DebugLn(['ReadRSTFile InFilename="',InFilename,'" Error=',E.Message]);
+    end;
   end;
 end;
 
@@ -422,7 +428,7 @@ begin
         OldContent:=TMemoryStream.Create;
         OldContent.LoadFromFile(OutFilename);
         ContentChanged:=CompareMemStreamText(NewContent,OldContent);
-        OldContent.Free;
+        FreeAndNil(OldContent);
       end else begin
         ContentChanged:=true;
       end;
@@ -435,6 +441,7 @@ begin
     end;
   except
     on E: Exception do begin
+      DumpExceptionBackTrace;
       DebugLn(['ConvertToGettextPO ',E.Message]);
     end;
   end;
