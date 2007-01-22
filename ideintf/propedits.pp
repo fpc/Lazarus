@@ -1492,7 +1492,7 @@ begin
     // read all property infos of current class
     TypeData:=GetTypeData(TypeInfo);
     // skip unitname
-    PropInfo:=PPropInfo(@TypeData^.UnitName+Length(TypeData^.UnitName)+1);
+    PropInfo:=PPropInfo(PByte(@TypeData^.UnitName)+Length(TypeData^.UnitName)+1);
     // read property count
     CurCount:=PWord(PropInfo)^;
     inc(PtrInt(PropInfo),SizeOf(Word));

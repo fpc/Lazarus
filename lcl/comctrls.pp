@@ -1951,6 +1951,7 @@ type
     procedure BeginUpdate;
     procedure Clear;
     procedure ClearMultiSelection(ClearSelected: boolean = false);
+    procedure SelectOnlyThis(Node: TTreeNode);
     function IsMultiSelection: boolean;
     procedure Delete(Node: TTreeNode);
     procedure EndUpdate;

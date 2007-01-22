@@ -556,14 +556,24 @@ begin
 end;
 
 procedure TTreeNode.SetSelected(AValue: Boolean);
+var
+  MultiSelect: Boolean;
 begin
   if AValue=GetSelected then exit;
   if AValue then begin
     Include(FStates,nsSelected);
-    if (TreeView<>nil) and (TreeView.Selected=nil) then begin
-      TreeView.Selected:=Self;
-      if TreeView.Selected<>Self then
-        Exclude(FStates,nsSelected);
+    if (TreeView<>nil) then begin
+      MultiSelect:=tvoAllowMultiselect in TreeView.Options;
+      if MultiSelect then TreeView.LockSelectionChangeEvent;
+      try
+        TreeView.Selected:=Self;
+        if TreeView.Selected<>Self then
+          Exclude(FStates,nsSelected);
+        if (nsSelected in FStates) and MultiSelect then
+          MultiSelected:=true;
+      finally
+        if MultiSelect then TreeView.UnlockSelectionChangeEvent;
+      end;
     end;
   end else begin
     Exclude(FStates,nsSelected);
@@ -1291,21 +1301,24 @@ begin
   if (TreeView<>nil) and (not (tvoAllowMultiselect in TreeView.Options)) then
     exit;
   if (TreeView<>nil) then TreeView.LockSelectionChangeEvent;
-  FirstNode:=GetPrevSibling;
-  while (FirstNode<>nil) and (not FirstNode.MultiSelected) do
-    FirstNode:=FirstNode.GetPrevSibling;
-  if FirstNode=nil then FirstNode:=Self;
-  LastNode:=GetNextSibling;
-  while (LastNode<>nil) and (not LastNode.MultiSelected) do
-    LastNode:=LastNode.GetNextSibling;
-  if LastNode=nil then LastNode:=Self;
-  ANode:=FirstNode;
-  while ANode<>nil do begin
-    ANode.MultiSelected:=true;
-    if ANode=LastNode then break;
-    ANode:=ANode.GetNextSibling;
+  try
+    FirstNode:=GetPrevSibling;
+    while (FirstNode<>nil) and (not FirstNode.MultiSelected) do
+      FirstNode:=FirstNode.GetPrevSibling;
+    if FirstNode=nil then FirstNode:=Self;
+    LastNode:=GetNextSibling;
+    while (LastNode<>nil) and (not LastNode.MultiSelected) do
+      LastNode:=LastNode.GetNextSibling;
+    if LastNode=nil then LastNode:=Self;
+    ANode:=FirstNode;
+    while ANode<>nil do begin
+      ANode.MultiSelected:=true;
+      if ANode=LastNode then break;
+      ANode:=ANode.GetNextSibling;
+    end;
+  finally
+    if (TreeView<>nil) then TreeView.UnlockSelectionChangeEvent;
   end;
-  if (TreeView<>nil) then TreeView.UnlockSelectionChangeEvent;
 end;
 
 procedure TTreeNode.MakeVisible;
@@ -1700,15 +1713,29 @@ var
   ANode, OldNode: TTreeNode;
 begin
   if Owner<>nil then Owner.LockSelectionChangeEvent;
-  ANode:=FFirstMultiSelected;
-  while ANode<>nil do begin
-    OldNode:=ANode;
-    ANode:=ANode.GetNextMultiSelected;
-    OldNode.MultiSelected:=false;
+  try
+    ANode:=FFirstMultiSelected;
+    while ANode<>nil do begin
+      OldNode:=ANode;
+      ANode:=ANode.GetNextMultiSelected;
+      OldNode.MultiSelected:=false;
+    end;
+    if ClearSelected then
+      Owner.Selected:=nil;
+  finally
+    if Owner<>nil then Owner.UnlockSelectionChangeEvent;
   end;
-  if ClearSelected then
-    Owner.Selected:=nil;
-  if Owner<>nil then Owner.UnlockSelectionChangeEvent;
+end;
+
+procedure TTreeNodes.SelectOnlyThis(Node: TTreeNode);
+begin
+  if Owner<>nil then Owner.LockSelectionChangeEvent;
+  try
+    ClearMultiSelection(true);
+    Node.Selected:=true;
+  finally
+    if Owner<>nil then Owner.UnlockSelectionChangeEvent;
+  end;
 end;
 
 function TTreeNodes.IsMultiSelection: boolean;
@@ -3413,10 +3440,7 @@ begin
       if ([ssCtrl,ssShift] * Shift) <> [] then
         lNode.MultiSelectGroup
       else begin
-        LockSelectionChangeEvent;
-        FTreeNodes.ClearMultiSelection(true);
-        lNode.Selected := true;
-        UnlockSelectionChangeEvent;
+        FTreeNodes.SelectOnlyThis(lNode);
       end;
     end else
       Selected := lNode;
@@ -4289,10 +4313,7 @@ begin
             CursorNode.MultiSelected:=not CursorNode.MultiSelected;
           end else begin
             if (Selected<>CursorNode) or Items.IsMultiSelection then begin
-              LockSelectionChangeEvent;
-              Items.ClearMultiSelection(true);
-              CursorNode.Selected:=true;
-              UnlockSelectionChangeEvent;
+              Items.SelectOnlyThis(CursorNode);
             end;
           end;
         end;
