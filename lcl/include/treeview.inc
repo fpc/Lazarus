@@ -1956,6 +1956,13 @@ begin
       else Result := CacheNode.GetNext;
     end;
   end
+  else if Index>Count-5 then begin
+    // optimization for the last nodes
+    Result:=GetLastSubNode;
+    i:=Count-1;
+    while (Index<i) do
+      Result:=Result.GetPrev;
+  end
   else begin
     Result := GetFirstNode;
     I:=0;
