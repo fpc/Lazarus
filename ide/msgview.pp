@@ -330,7 +330,7 @@ begin
   VisibleIndex := Line.VisiblePosition;
   if VisibleIndex >= 0 then
   begin
-    MessageTreeView.Items[VisibleIndex].Free;
+    MessageTreeView.Items.TopLvlItems[VisibleIndex].Free;
     FVisibleItems.Delete(VisibleIndex);
   end;
   
@@ -387,7 +387,7 @@ begin
       i := FVisibleItems.Count - 1;
       VisibleItems[i].VisiblePosition := -1;
       FVisibleItems.Delete(i);
-      MessageTreeView.Items[i].Text := Msg;
+      MessageTreeView.Items.TopLvlItems[i].Text := Msg;
     end
     else begin
       // add new line
@@ -397,7 +397,7 @@ begin
     FVisibleItems.Add(NewMsg);
     FLastLineIsProgress  := ProgressLine;
     if MessageTreeView.Items.Count>0 then
-      MessageTreeView.Items[MessageTreeView.Items.Count-1].MakeVisible;
+      MessageTreeView.Items.TopLvlItems[MessageTreeView.Items.Count-1].MakeVisible;
     //DebugLn(['TMessagesView.Add ',MessageTreeView.TopIndex]);
   end;
   //ConsistencyCheck;
@@ -528,7 +528,7 @@ end;
 procedure TMessagesView.ShowTopMessage;
 begin
   if MessageTreeView.Items.Count > 0 then begin
-    MessageTreeView.Items[MessageTreeView.Items.Count-1].MakeVisible;
+    MessageTreeView.Items.TopLvlItems[MessageTreeView.Items.Count-1].MakeVisible;
     //DebugLn(['TMessagesView.ShowTopMessage ']);
   end;
 end;
@@ -569,12 +569,12 @@ begin
   begin
     Line := VisibleItems[i];
     if MessageTreeView.Items.Count > i then
-      MessageTreeView.Items[i].Text := Line.Msg
+      MessageTreeView.Items.TopLvlItems[i].Text := Line.Msg
     else
       MessageTreeView.Items.Add(nil,Line.Msg);
   end;
   while MessageTreeView.Items.Count > FVisibleItems.Count do
-    MessageTreeView.Items[MessageTreeView.Items.Count - 1].Free;
+    MessageTreeView.Items.TopLvlItems[MessageTreeView.Items.Count - 1].Free;
   MessageTreeView.EndUpdate;
 end;
 
@@ -585,7 +585,7 @@ var
 begin
   sl:=TStringList.Create;
   for i:=0 to MessageTreeView.Items.Count-1 do
-    sl.Add(MessageTreeView.Items[i].Text);
+    sl.Add(MessageTreeView.Items.TopLvlItems[i].Text);
   Result:=sl.Text;
   sl.Free;
 end;
@@ -637,7 +637,7 @@ procedure TMessagesView.UpdateMsgLineInListBox(Line: TLazMessageLine);
 begin
   if (Line.VisiblePosition>=0)
   and (Line.VisiblePosition<MessageTreeView.Items.Count) then begin
-    MessageTreeView.Items[Line.VisiblePosition].Text:=Line.Msg;
+    MessageTreeView.Items.TopLvlItems[Line.VisiblePosition].Text:=Line.Msg;
   end;
 end;
 
@@ -967,7 +967,7 @@ begin
   if FLastLineIsProgress = AValue then
     exit;
   if FLastLineIsProgress and (MessageTreeView.Items.Count>0) then
-    MessageTreeView.Items[MessageTreeView.Items.Count - 1].Free;
+    MessageTreeView.Items.TopLvlItems[MessageTreeView.Items.Count - 1].Free;
   FLastLineIsProgress := AValue;
 end;
 
@@ -989,7 +989,7 @@ end;
 procedure TMessagesView.SetSelectedLineIndex(const AValue: integer);
 begin
   if AValue>=0 then begin
-    MessageTreeView.Items[AValue].Selected := true;
+    MessageTreeView.Items.TopLvlItems[AValue].Selected := true;
     //MessageTreeView.TopItem  := MessageTreeView.Selected;
   end else
     MessageTreeView.Selected := nil;
