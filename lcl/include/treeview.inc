@@ -1987,8 +1987,10 @@ begin
     // optimization for the last nodes
     Result:=GetLastSubNode;
     i:=Count-1;
-    while (Index<i) do
+    while (Index<i) do begin
       Result:=Result.GetPrev;
+      dec(i);
+    end;
   end
   else begin
     Result := GetFirstNode;
