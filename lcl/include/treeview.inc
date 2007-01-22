@@ -25,7 +25,6 @@
   ToDo:
     - Editing
     - Columns
-    - create FTopLvlItems only on demand and update only if easy
 }
 
 
@@ -64,11 +63,6 @@ begin
   raise ETreeViewError.Create(Msg);
 end;
 
-{procedure TreeViewErrorFmt(const Msg: string; Format: array of const);
-begin
-  raise ETreeViewError.CreateFmt(Msg, Format);
-end;}
-
 procedure TreeNodeError(const Msg: string);
 begin
   raise ETreeNodeError.Create(Msg);
@@ -89,7 +83,7 @@ begin
   r:=Count-1;
   while (l<=r) do begin
     m:=(l+r) shr 1;
-//DebugLn(':0 [IndexOfNodeAtTop] m=',m,' y=',y,' ',NodeArray[m].Text,' NodeArray[m].Top=',NodeArray[m].Top,' NodeArray[m].BottomExpanded=',NodeArray[m].BottomExpanded);
+    //DebugLn(':0 [IndexOfNodeAtTop] m=',m,' y=',y,' ',NodeArray[m].Text,' NodeArray[m].Top=',NodeArray[m].Top,' NodeArray[m].BottomExpanded=',NodeArray[m].BottomExpanded);
     if NodeArray[m].Top>y then
       r:=m-1
     else if NodeArray[m].BottomExpanded<=y then
@@ -100,10 +94,9 @@ begin
   Result:=-1;
 end;
 
-{ procedure for sorting a TTreeNodeArray}
-
+// procedure for sorting a TTreeNodeArray
 procedure Sort(Nodes: TTreeNodeArray; Count: integer;
-  SortProc: TTreeNodeCompare);
+  SortProc: TTreeNodeCompare; UpdateIndex: Boolean);
 // Sorts the nodes using merge sort and updates the sibling links
 var
   Buffer: TTreeNodeArray;
@@ -169,9 +162,11 @@ begin
     // update sibling links
     Nodes[0].FPrevBrother := nil;
     Nodes[Count-1].FNextBrother := nil;
+    if UpdateIndex then Nodes[0].FIndex:=0;
     for i:= 1 to Count-1 do begin
       Nodes[i].FPrevBrother := Nodes[i-1];
       Nodes[i-1].FNextBrother := Nodes[i];
+      if UpdateIndex then Nodes[i].FIndex:=i;
     end;
   end;
 end;
@@ -264,7 +259,8 @@ begin
   FStateIndex := -1;
   FStates := [];
   FOwner := AnOwner;
-  FSubTreeCount:=1;
+  FSubTreeCount := 1;
+  FIndex := -1;
   if Owner<>nil then inc(Owner.FCount);
 end;
 
@@ -273,7 +269,7 @@ begin
   {$IFDEF TREEVIEW_DEBUG}
   DebugLn('[TTreeNode.Destroy] Self=',DbgS(Self),' Self.Text=',Text);
   {$ENDIF}
-  FDeleting := True;
+  Include(FStates,nsDeleting);
   // delete childs
   HasChildren := false;
   // unbind all references
@@ -356,7 +352,8 @@ begin
   FText := S;
   if TreeView=nil then exit;
   Include(TreeView.FStates,tvsMaxRightNeedsUpdate);
-  if (TreeView.SortType in [stText, stBoth]) and FInTree then begin
+  if (TreeView.SortType in [stText, stBoth])
+  and (nsInTree in FStates) then begin
     if (Parent <> nil) then Parent.AlphaSort
     else TreeView.AlphaSort;
   end;
@@ -369,7 +366,8 @@ begin
   FData := AValue;
   if (TreeView<>nil)
   and (TreeView.SortType in [stData, stBoth]) and Assigned(TreeView.OnCompare)
-  and (not Deleting) and FInTree then
+  and (not Deleting)
+  and (nsInTree in FStates) then
   begin
     if Parent <> nil then
       Parent.AlphaSort
@@ -879,6 +877,11 @@ begin
   until ANode=nil;
 end;
 
+function TTreeNode.GetDeleting: Boolean;
+begin
+  Result:=nsDeleting in FStates;
+end;
+
 function TTreeNode.GetHeight: integer;
 begin
   if FHeight<=0 then begin
@@ -895,6 +898,9 @@ function TTreeNode.GetIndex: Integer;
 var
   ANode: TTreeNode;
 begin
+  if FIndex>=0 then begin
+    Result:=FIndex;
+  end;
   // many algorithms uses the last sibling, so we check that first for speed
   if (Parent<>nil) and (Parent[Parent.Count-1]=Self) then begin
     Result:=Parent.Count-1;
@@ -914,13 +920,6 @@ begin
   if (AnIndex<0) or (AnIndex>=Count) then
     TreeNodeErrorFmt(rsIndexOutOfBounds,[ClassName, AnIndex, Count]);
   Result:=FItems[AnIndex];
-  {Result := GetFirstChild;
-  while (Result <> nil) and (Index > 0) do
-  begin
-    Result := GetNextChild(Result);
-    Dec(Index);
-  end;
-  if Result = nil then TreeViewError(SListIndexError);}
 end;
 
 procedure TTreeNode.SetItems(AnIndex: Integer; AValue: TTreeNode);
@@ -948,15 +947,11 @@ end;
 
 function TTreeNode.IndexOf(AValue: TTreeNode): Integer;
 begin
-  if AValue=nil then begin
+  if (AValue=nil) or (AValue.FParent<>Self) then begin
     Result:=-1;
     exit;
   end;
-  Result:=Count-1;
-  while Result>=0 do begin
-    if FItems[Result]=AValue then exit;
-    dec(Result);
-  end;
+  Result:=AValue.GetIndex;
 end;
 
 function TTreeNode.IndexOfText(const NodeText: string): Integer;
@@ -1031,13 +1026,13 @@ begin
     end;
     //if TreeNodes<>nil then Dec(TreeNodes.FCount,FSubTreeCount);
     // remove from parents list
-    OldIndex:=FParent.FCount-1;
-    while (OldIndex>=0) and (FParent.FItems[OldIndex]<>Self) do
-      dec(OldIndex);
+    OldIndex:=FIndex;
     if OldIndex<0 then
       RaiseGDBException('');
-    for i:=OldIndex to FParent.FCount-2 do
+    for i:=OldIndex to FParent.FCount-2 do begin
       FParent.FItems[i]:=FParent.FItems[i+1];
+      FParent.FItems[i].FIndex:=i;
+    end;
     dec(FParent.FCount);
     if (FParent.FCapacity>15) and (FParent.FCount<(FParent.FCapacity shr 2))
     then begin
@@ -1122,10 +1117,13 @@ begin
       NewIndex:=ANode.Index;
     end;
     // move next siblings
-    for i:=FParent.FCount-1 downto NewIndex+1 do
+    for i:=FParent.FCount-1 downto NewIndex+1 do begin
       FParent.FItems[i]:=FParent.FItems[i-1];
+      FParent.FItems[i].FIndex:=i;
+    end;
     // insert this node to parent's items
     FParent.FItems[NewIndex]:=Self;
+    FIndex:=NewIndex;
     // set Next and Prev sibling
     if NewIndex>0 then
       FPrevBrother:=FParent.FItems[NewIndex-1]
@@ -1444,21 +1442,11 @@ begin
 end;
 
 function TTreeNode.CustomSort(SortProc: TTreeNodeCompare): Boolean;
-//var SortCB: TTVSortCB;
 begin
   if FCount>0 then begin
     if Owner<>nil then Owner.ClearCache;
     if not Assigned(SortProc) then SortProc:=@DefaultTreeViewSort;
-    Sort(FItems, FCount, SortProc);
-    {
-    with SortCB do begin
-      if not Assigned(SortProc) then lpfnCompare := @DefaultTreeViewSort
-      else lpfnCompare := SortProc;
-      hParent := ItemId;
-      lParam := Data;
-    end;
-    Result := TreeView_SortChildrenCB(Handle, SortCB, 0);
-    }
+    Sort(FItems, FCount, SortProc, true);
   end;
   Result:=true;
 end;
@@ -1596,12 +1584,18 @@ var RealSubTreeCount: integer;
 begin
   if FOwner<>nil then begin
   end;
-  if FCapacity<0 then RaiseGDBException('');
-  if FCapacity<FCount then RaiseGDBException('');
-  if FCount<0 then RaiseGDBException('');
-  if FHeight<0 then RaiseGDBException('');
-  if (FItems<>nil) and (FCapacity<=0) then RaiseGDBException('');
-  if (FCapacity>0) and (FItems=nil) then RaiseGDBException('');
+  if FCapacity<0 then
+    RaiseGDBException('');
+  if FCapacity<FCount then
+    RaiseGDBException('');
+  if FCount<0 then
+    RaiseGDBException('');
+  if FHeight<0 then
+    RaiseGDBException('');
+  if (FItems<>nil) and (FCapacity<=0) then
+    RaiseGDBException('');
+  if (FCapacity>0) and (FItems=nil) then
+    RaiseGDBException('');
   if (FNextBrother<>nil) and (FNextBrother.FPrevBrother<>Self) then
     RaiseGDBException('');
   if (FPrevBrother<>nil) and (FPrevBrother.FNextBrother<>Self) then
@@ -1610,18 +1604,24 @@ begin
   RealSubTreeCount:=1;
   for i:=0 to FCount-1 do begin
     if (Items[i]=nil) then RaiseGDBException('');
-    if (i=0) and (Items[i].FPrevBrother<>nil) then RaiseGDBException('');
-    if (i>0) and (Items[i].FPrevBrother=nil) then RaiseGDBException('');
-    if (i>0) and (Items[i].FPrevBrother<>Items[i-1]) then RaiseGDBException('');
-    if (i<FCount-1) and (Items[i].FNextBrother=nil) then
+    Node1:=Items[i];
+    if Node1.FParent<>Self then RaiseGDBException('');
+    if (i=0) and (Node1.FPrevBrother<>nil) then
       RaiseGDBException('');
-    if (i<FCount-1) and (Items[i].FNextBrother<>Items[i+1]) then
+    if (i>0) and (Node1.FPrevBrother=nil) then
       RaiseGDBException('');
-    if (i=FCount-1) and (Items[i].FNextBrother<>nil) then
+    if (i>0) and (Node1.FPrevBrother<>Items[i-1]) then
       RaiseGDBException('');
-    if Items[i].FParent<>Self then RaiseGDBException('');
-    Items[i].ConsistencyCheck;
-    inc(RealSubTreeCount,Items[i].SubTreeCount);
+    if (i<FCount-1) and (Node1.FNextBrother=nil) then
+      RaiseGDBException('');
+    if (i<FCount-1) and (Node1.FNextBrother<>Items[i+1]) then
+      RaiseGDBException('');
+    if (i=FCount-1) and (Node1.FNextBrother<>nil) then
+      RaiseGDBException('');
+    if Node1.FIndex<>i then
+      RaiseGDBException('');
+    Node1.ConsistencyCheck;
+    inc(RealSubTreeCount,Node1.SubTreeCount);
   end;
   if FParent<>nil then begin
     if FParent.IndexOf(Self)<0 then RaiseGDBException('');
@@ -1824,7 +1824,7 @@ end;
 
 procedure TTreeNodes.SortTopLevelNodes(SortProc: TTreeNodeCompare);
 begin
-  Sort(FTopLvlItems, FTopLvlCount, SortProc);
+  Sort(FTopLvlItems, FTopLvlCount, SortProc, true);
 end;
 
 function TTreeNodes.InternalAddObject(Node: TTreeNode; const S: string;
@@ -1917,12 +1917,36 @@ end;
 
 function TTreeNodes.GetNodeFromIndex(Index: Integer): TTreeNode;
 // find node with absolute index in ALL nodes (even collapsed)
+
+  procedure RaiseIndexOutOfBounds;
+  begin
+    TreeNodeError('TTreeNodes.GetNodeFromIndex Index '+IntToStr(Index)
+           +' out of bounds (Count='+IntToStr(FCount)+')');
+  end;
+  
+  procedure RaiseSubTreeCount0;
+  begin
+    TreeNodeError(
+      'TTreeNodes.GetNodeFromIndex: Consistency error - SubTreeCount=0');
+  end;
+  
+  procedure RaiseSubTreeCountTooBig;
+  begin
+    TreeNodeError(
+      'TTreeNodes.GetNodeFromIndex: Consistency error - invalid SubTreeCount');
+  end;
+  
+  procedure RaiseCountTooBig;
+  begin
+    TreeNodeError(
+      'TTreeNodes.GetNodeFromIndex: Consistency Error - Count too big');
+  end;
+
 var
   I, J: Integer;
 begin
   if (Index < 0) or (Index >= FCount) then
-    TreeNodeError('TTreeNodes.GetNodeFromIndex Index '+IntToStr(Index)
-           +' out of bounds (Count='+IntToStr(FCount)+')');
+    RaiseIndexOutOfBounds;
   if (FNodeCache.CacheNode <> nil) and (Abs(FNodeCache.CacheIndex - Index) <= 1)
   then begin
     with FNodeCache do
@@ -1939,9 +1963,7 @@ begin
       Repeat
         // calculate the absolute index of the next sibling
         J:=I+Result.FSubTreeCount;
-        if J=I then
-          TreeNodeError(
-            'TTreeNodes.GetNodeFromIndex: Consistency error - SubTreeCount=0');
+        if J=I then RaiseSubTreeCount0;
         if J<=Index then begin
           // Index > absolute index of next sibling -> search in next sibling
           Result:=Result.GetNextSibling;
@@ -1952,17 +1974,12 @@ begin
       if (Result<>nil) and (Index>I) then begin
         // Index is somewhere in subtree of Result
         Result:=Result.GetFirstChild;
-        if Result=nil then
-          TreeNodeError(
-            'TTreeNodes.GetNodeFromIndex: Consistency error'
-            +' - invalid SubTreeCount');
+        if Result=nil then RaiseSubTreeCountTooBig;
         inc(I);
       end;
     end;
   end;
-  if Result = nil then
-    TreeNodeError(
-      'TTreeNodes.GetNodeFromIndex: Consistency Error - Count too big');
+  if Result = nil then RaiseCountTooBig;
   FNodeCache.CacheNode := Result;
   FNodeCache.CacheIndex := Index;
 end;
@@ -2055,9 +2072,10 @@ end;
 
 function TTreeNodes.IndexOfTopLvlItem(Node: TTreeNode): integer;
 begin
-  if (FTopLvlItems<>nil) and (FTopLvlItems[0]=Node) then exit(0);
-  Result:=FTopLvlCount-1;
-  while (Result>=0) and (FTopLvlItems[Result]<>Node) do dec(Result);
+  if (Node<>nil) and (Node.Owner=Self) then
+    Result:=Node.FIndex
+  else
+    Result:=-1;
 end;
 
 procedure TTreeNodes.MoveTopLvlNode(TopLvlFromIndex, TopLvlToIndex: integer;
@@ -2081,19 +2099,26 @@ begin
       // move node
       if TopLvlFromIndex<TopLvlToIndex then begin
         // move forward
-        for i:=TopLvlFromIndex to TopLvlToIndex-1 do
+        for i:=TopLvlFromIndex to TopLvlToIndex-1 do begin
           FTopLvlItems[i]:=FTopLvlItems[i+1];
+          FTopLvlItems[i].FIndex:=i;
+        end;
       end else begin
         // move backward
-        for i:=TopLvlToIndex downto TopLvlFromIndex+1 do
+        for i:=TopLvlToIndex downto TopLvlFromIndex+1 do begin
           FTopLvlItems[i]:=FTopLvlItems[i-1];
+          FTopLvlItems[i].FIndex:=i;
+        end;
       end;
       FTopLvlItems[TopLvlToIndex]:=Node;
+      FTopLvlItems[TopLvlToIndex].FIndex:=TopLvlToIndex;
     end else begin
       // remove node
       if FTopLvlItems<>nil then begin
-        for i:=TopLvlFromIndex to FTopLvlCount-2 do
+        for i:=TopLvlFromIndex to FTopLvlCount-2 do begin
           FTopLvlItems[i]:=FTopLvlItems[i+1];
+          FTopLvlItems[i].FIndex:=i;
+        end;
       end;
       Dec(FTopLvlCount);
       if FTopLvlCount<0 then
@@ -2108,9 +2133,12 @@ begin
       if (FTopLvlCount=FTopLvlCapacity) then GrowTopLvlItems;
       inc(FTopLvlCount);
       if FTopLvlItems<>nil then begin
-        for i:=FTopLvlCount-1 downto TopLvlToIndex+1 do
+        for i:=FTopLvlCount-1 downto TopLvlToIndex+1 do begin
           FTopLvlItems[i]:=FTopLvlItems[i-1];
+          FTopLvlItems[i].FIndex:=i;
+        end;
         FTopLvlItems[TopLvlToIndex]:=Node;
+        FTopLvlItems[TopLvlToIndex].FIndex:=TopLvlToIndex;
       end;
     end else begin
       // nothing to do
@@ -2284,17 +2312,20 @@ begin
   if (FTopLvlCount<0) then
     RaiseGDBException('');
   for i:=0 to FTopLvlCount-1 do begin
-    if (i=0) and (FTopLvlItems[i].FPrevBrother<>nil) then
+    Node:=FTopLvlItems[i];
+    if (i=0) and (Node.FPrevBrother<>nil) then
       RaiseGDBException('');
-    if (i>0) and (FTopLvlItems[i].FPrevBrother<>FTopLvlItems[i-1]) then
+    if (i>0) and (Node.FPrevBrother<>FTopLvlItems[i-1]) then
       RaiseGDBException('');
-    if (i<FTopLvlCount-1) and (FTopLvlItems[i].FNextBrother<>FTopLvlItems[i+1])
+    if (i<FTopLvlCount-1) and (Node.FNextBrother<>FTopLvlItems[i+1])
     then begin
       DebugLn(' CONSISTENCY i=%d FTopLvlCount=%d FTopLvlItems[i]=%p FTopLvlItems[i].FNextBrother=%p FTopLvlItems[i+1]=%p',
-             [i, FTopLvlCount, Pointer(FTopLvlItems[i]), Pointer(FTopLvlItems[i].FNextBrother), Pointer(FTopLvlItems[i+1])]);
+             [i, FTopLvlCount, Pointer(Node), Pointer(Node.FNextBrother), Pointer(FTopLvlItems[i+1])]);
       RaiseGDBException('');
     end;
-    if (i=FTopLvlCount-1) and (FTopLvlItems[i].FNextBrother<>nil) then
+    if (i=FTopLvlCount-1) and (Node.FNextBrother<>nil) then
+      RaiseGDBException('');
+    if Node.FIndex<>i then
       RaiseGDBException('');
   end;
   if FNodeCache.CacheNode<>nil then begin

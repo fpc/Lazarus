@@ -1649,7 +1649,7 @@ type
   TTreeNode = class;
 
   TNodeState = (nsCut, nsDropHilited, nsFocused, nsSelected, nsMultiSelected,
-                nsExpanded, nsHasChildren);
+                nsExpanded, nsHasChildren, nsInTree, nsDeleting);
   TNodeStates = set of TNodeState;
   TNodeAttachMode = (
     naAdd,           // add as last sibling of Destination
@@ -1738,10 +1738,9 @@ type
     FCapacity: integer;   // size of FItems
     FCount: integer;      // # of first level childs in FItems
     FData: Pointer;       // custom data
-    FDeleting: Boolean;
     FHeight: integer;     // height in pixels
-    FInTree: Boolean;
     FImageIndex: integer;
+    FIndex: integer;      // index in parent
     FItems: TTreeNodeArray;  // first level child nodes
     FNextBrother: TTreeNode; // next sibling
     FNextMultiSelected: TTreeNode;
@@ -1762,6 +1761,7 @@ type
     procedure DoExpand(ExpandIt: Boolean);
     procedure ExpandItem(ExpandIt: Boolean; Recurse: Boolean);
     function GetAbsoluteIndex: Integer;
+    function GetDeleting: Boolean;
     function GetHasChildren: Boolean;
     function GetCount: Integer;
     function GetCut: boolean;
@@ -1860,7 +1860,7 @@ type
     property Count: Integer read GetCount;
     property Cut: Boolean read GetCut write SetCut;
     property Data: Pointer read FData write SetData;
-    property Deleting: Boolean read FDeleting;
+    property Deleting: Boolean read GetDeleting;
     property Focused: Boolean read GetFocused write SetFocused;
     property DropTarget: Boolean read GetDropTarget write SetDropTarget;
     property Expanded: Boolean read GetExpanded write SetExpanded;

@@ -3190,7 +3190,6 @@ begin
   CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
   CodeCompleteSrcChgCache:=SourceChangeCache;
 
-  DebugLn(['TCodeCompletionCodeTool.CompleteCode DoInsertSpaceInFront=',AtomTypesToStr(CodeCompleteSrcChgCache.BeautifyCodeOptions.DoInsertSpaceInFront),' DoInsertSpaceAfter=',AtomTypesToStr(CodeCompleteSrcChgCache.BeautifyCodeOptions.DoInsertSpaceAfter)]);
   {$IFDEF CTDEBUG}
   DebugLn('TCodeCompletionCodeTool.CompleteCode A CleanCursorPos=',dbgs(CleanCursorPos),' NodeDesc=',NodeDescriptionAsString(CursorNode.Desc));
   {$ENDIF}

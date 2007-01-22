@@ -297,8 +297,6 @@ begin
   EnvironmentOptions.IDEWindowLayoutList.Apply(Self, Name);
   
   FQuickFixItems:=TFPList.Create;
-  
-  DebugLn(['TMessagesView.Create ',MessageTreeView.Items.Count]);
 end;
 
 destructor TMessagesView.Destroy;
