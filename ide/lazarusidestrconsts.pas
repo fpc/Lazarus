@@ -155,6 +155,7 @@ resourcestring
   lisKMSaveAs = 'SaveAs';
   lisKMSaveAll = 'SaveAll';
   lisDiscardChanges = 'Discard changes';
+  lisDoNotCloseTheProject = 'Do not close the project';
   lisDoNotCloseTheIDE = 'Do not close the IDE';
   lisMenuSaveAs = 'Save As ...';
   lisMenuSaveAll = 'Save All';

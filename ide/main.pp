@@ -3091,7 +3091,31 @@ procedure TMainIDE.mnuCloseProjectClicked(Sender: TObject);
 var
   DlgResult: TModalResult;
 begin
+  // stop debugging/compiling/...
+  if not DoResetToolStatus(true) then exit;
+
+  // check foreign windows
+  if not CloseQueryIDEWindows then exit;
+
+  // check project
+  if SomethingOfProjectIsModified then begin
+    DlgResult:=QuestionDlg(lisProjectChanged,
+      Format(lisSaveChangesToProject, [Project1.Title]), mtConfirmation,
+      [mrYes, lisMenuSave, mrNo, lisDiscardChanges,
+       mrAbort, lisDoNotCloseTheProject],
+      0);
+    case DlgResult of
+    mrYes:
+      if not (DoSaveProject([]) in [mrOk,mrIgnore]) then exit;
+    mrCancel, mrAbort:
+      Exit;
+    end;
+  end;
+
+  // close
   DoCloseProject;
+  
+  // ask what to do next
   while Project1=nil do begin
     DlgResult:=QuestionDlg(lisProjectClosed,
       Format(lisTheProjectIsClosedThereAreNowThreePossibilitiesHin, [#13]),
