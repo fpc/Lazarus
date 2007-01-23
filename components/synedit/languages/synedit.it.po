@@ -34,7 +34,7 @@ msgstr "File Form Borland (*.dfm;*.xfm)|*.dfm;*.xfm"
 
 #: syneditstrconst:syns_filtercpp
 msgid "C++ Files (*.c,*.cpp,*.h,*.hpp,*.hh)|*.c;*.cpp;*.h;*.hpp;*.hh"
-msgstr ""
+msgstr "Files C++ (*.c,*.cpp,*.h,*.hpp,*.hh)|*.c;*.cpp;*.h;*.hpp;*.hh"
 
 #: syneditstrconst:syns_filtercaclipper
 msgid "CA-Clipper Files (*.prg,*.ch,*.inc)|*.prg;*.ch;*.inc"
@@ -82,7 +82,7 @@ msgstr "File Galaxy (*.gtv,*.galrep,*.txt)|*.gtv;*.galrep;*.txt"
 
 #: syneditstrconst:syns_filterhp
 msgid "HP48 Files (*.s,*.sou,*.a,*.hp)|*.S;*.SOU;*.A;*.HP"
-msgstr ""
+msgstr "Files HP48 (*.s,*.sou,*.a,*.hp)|*.S;*.SOU;*.A;*.HP"
 
 #: syneditstrconst:syns_filterhp48
 msgid "HP48 Files (*.s,*.sou,*.a,*.hp)|*.s;*.sou;*.a;*.hp"

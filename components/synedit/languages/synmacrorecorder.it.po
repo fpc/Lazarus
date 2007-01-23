@@ -10,17 +10,17 @@ msgstr ""
 
 #: synmacrorecorder:scannotpause
 msgid "Can only pause when recording"
-msgstr ""
+msgstr "Puoi solo mettere in pausa mentre stai registrando"
 
 #: synmacrorecorder:scannotresume
 msgid "Can only resume when paused"
-msgstr ""
+msgstr "Puoi solo ricominciare mentre sei in pausa"
 
 #: synmacrorecorder:scannotplay
 msgid "Cannot playback macro when recording"
-msgstr ""
+msgstr "Non puoi eseguire una macro mentre stai registrando"
 
 #: synmacrorecorder:scannotrecord
 msgid "Cannot record macro when recording"
-msgstr ""
+msgstr "Non puoi registrare una macro mentre ne stai registrando un'altra"
 
