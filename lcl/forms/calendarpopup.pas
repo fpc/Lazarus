@@ -39,7 +39,6 @@ type
     procedure CalendarKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState
       );
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
-    procedure FormCreate(Sender: TObject);
     procedure FormDeactivate(Sender: TObject);
   private
     { private declarations }
@@ -82,15 +81,6 @@ procedure TCalendarPopupForm.FormClose(Sender: TObject;
 begin
   FClosed := true;
   CloseAction := caFree;
-end;
-
-procedure TCalendarPopupForm.FormCreate(Sender: TObject);
-begin
-  AutoSize:=false;
-  Calendar.Top:=1;
-  Calendar.Left:=1;
-  Width:=Calendar.Width + 2;
-  Height:=Calendar.Height + 2;
 end;
 
 procedure TCalendarPopupForm.CalendarDblClick(Sender: TObject);
