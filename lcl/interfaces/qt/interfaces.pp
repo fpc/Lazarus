@@ -43,6 +43,6 @@ initialization
 
 finalization
 
-  WidgetSet.Free;
+  FreeWidgetset;
 
 end.

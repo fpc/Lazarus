@@ -49,6 +49,7 @@ type
   TQtWidgetSet = Class(TWidgetSet)
   private
     App: QApplicationH;
+    SavedDCList: TList;
   public
     // Application
     procedure AppInit(var ScreenInfo: TScreenInfo); override;
@@ -150,6 +151,39 @@ const
   KEYMAP_VKUNKNOWN = $10000;
   KEYMAP_TOGGLE    = $20000;
   KEYMAP_EXTENDED  = $40000;
+
+
+function QtObjectFromWidgetH(const WidgetH: QWidgetH): TQtWidget;
+var
+  V: QVariantH;
+  Ok: Boolean;
+  QtWg: TQtWidget;
+begin
+  Result:=nil;
+  V := QVariant_Create();
+  try
+    QObject_property(QObjectH(WidgetH), V, 'lclwidget');
+    if not QVariant_IsNull(v) and QVariant_isValid(V) then
+    begin
+      //Write('Got a valid variant .. ');
+      QtWg:=TQtWidget(QVariant_toUint(V, @Ok));
+      if OK then
+      begin
+        //Write('Converted successfully, Control=');
+        if QtWg<>nil then
+        begin
+          Result := QtWg;
+          //WriteLn(Result.LCLObject.Name);
+        end else
+          ;//WriteLn('nil');
+      end else
+        ;//WriteLn('Can''t convert to UINT');
+    end else
+      ;//Writeln('GetFocus: Variant is NULL or INVALID');
+  finally
+    QVariant_Destroy(V);
+  end;
+end;
 
 procedure EventTrace(message: string; data: pointer);
 begin

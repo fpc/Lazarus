@@ -920,7 +920,7 @@ begin
 
   // Focus
 
-  QWidget_setFocusPolicy(QtCheckBox.Widget, QtStrongFocus);
+  //QWidget_setFocusPolicy(QtCheckBox.Widget, QtStrongFocus);
   
   // Returns the Handle
 
@@ -1038,7 +1038,7 @@ begin
   
   // Focus
   
-  QWidget_setFocusPolicy(QtRadioButton.Widget, QtStrongFocus);
+  //QWidget_setFocusPolicy(QtRadioButton.Widget, QtStrongFocus);
   
   // Returns the Handle
 

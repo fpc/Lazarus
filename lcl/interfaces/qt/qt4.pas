@@ -1,6 +1,6 @@
 unit qt4;
 
-{ Version : 1.21 }
+{ Version : 1.24 }
 
 {$ifdef fpc}
   {$mode delphi}
@@ -26,6 +26,13 @@ const
 
 
 type
+
+{$ifndef fpc}
+  PPtrInt = ^PtrInt;
+  PtrInt = longint; // 32bit dcc 
+  qword = type int64;
+{$endif}
+
   QHookH = TMethod;
   PSizePolicy = ^TSizePolicy;
   TSizePolicy = packed record
@@ -44,7 +51,8 @@ type
   qreal = double;
   qrgb = longword;
   
-  TCoreApplicationEventFilter = procedure(Msg:PChar;Res:PLongInt) cdecl;
+  TCoreApplicationEventFilter = function(Msg:PChar;Res:PLongInt):boolean cdecl;
+  TAbstractEventFilter = function(Msg:PChar):boolean cdecl;
     
 
   PIntArray = ^TIntArray;
@@ -166,6 +174,7 @@ QMatrixH = class(TObject) end;
 QMimeSourceH = class(TObject) end;
 QModelIndexH = class(TObject) end;
 QObjectH = class(TObject) end;
+  QAbstractEventDispatcherH = class(QObjectH) end;
   QAbstractItemDelegateH = class(QObjectH) end;
   QAbstractItemModelH = class(QObjectH) end;
   QAbstractTextDocumentLayoutH = class(QObjectH) end;
@@ -182,6 +191,7 @@ QObjectH = class(TObject) end;
   QMimeDataH = class(QObjectH) end;
   QMovieH = class(QObjectH) end;
   QSessionManagerH = class(QObjectH) end;
+  QSocketNotifierH = class(QObjectH) end;
   QStyleH = class(QObjectH) end;
   QTextDocumentH = class(QObjectH) end;
   QTextObjectH = class(QObjectH) end;
@@ -1144,7 +1154,7 @@ procedure QObject_removeEventFilter(handle: QObjectH; p1: QObjectH); cdecl; exte
 function QObject_connect(sender: QObjectH; signal: PAnsiChar; receiver: QObjectH; member: PAnsiChar; p5: QtConnectionType = QtAutoConnection): Boolean; overload; cdecl; external QtIntf name 'QObject_connect';
 function QObject_connect(handle: QObjectH; sender: QObjectH; signal: PAnsiChar; member: PAnsiChar; _type: QtConnectionType = QtAutoConnection): Boolean; overload; cdecl; external QtIntf name 'QObject_connect2';
 function QObject_disconnect(sender: QObjectH; signal: PAnsiChar; receiver: QObjectH; member: PAnsiChar): Boolean; overload; cdecl; external QtIntf name 'QObject_disconnect';
-function QObject_disconnect(handle: QObjectH; receiver: QObjectH; member: PAnsiChar = 0): Boolean; overload; cdecl; external QtIntf name 'QObject_disconnect3';
+function QObject_disconnect(handle: QObjectH; receiver: QObjectH; member: PAnsiChar = nil): Boolean; overload; cdecl; external QtIntf name 'QObject_disconnect3';
 procedure QObject_dumpObjectTree(handle: QObjectH); cdecl; external QtIntf name 'QObject_dumpObjectTree';
 procedure QObject_dumpObjectInfo(handle: QObjectH); cdecl; external QtIntf name 'QObject_dumpObjectInfo';
 function QObject_setProperty(handle: QObjectH; name: PAnsiChar; value: QVariantH): Boolean; cdecl; external QtIntf name 'QObject_setProperty';
@@ -1346,7 +1356,7 @@ procedure QCoreApplication_addLibraryPath(p1: PWideString); cdecl; external QtIn
 procedure QCoreApplication_removeLibraryPath(p1: PWideString); cdecl; external QtIntf name 'QCoreApplication_removeLibraryPath';
 procedure QCoreApplication_installTranslator(messageFile: QTranslatorH); cdecl; external QtIntf name 'QCoreApplication_installTranslator';
 procedure QCoreApplication_removeTranslator(messageFile: QTranslatorH); cdecl; external QtIntf name 'QCoreApplication_removeTranslator';
-procedure QCoreApplication_translate(retval: PWideString; context: PAnsiChar; key: PAnsiChar; comment: PAnsiChar = 0; encoding: QCoreApplicationEncoding = QCoreApplicationDefaultCodec); cdecl; external QtIntf name 'QCoreApplication_translate';
+procedure QCoreApplication_translate(retval: PWideString; context: PAnsiChar; key: PAnsiChar; comment: PAnsiChar = nil; encoding: QCoreApplicationEncoding = QCoreApplicationDefaultCodec); cdecl; external QtIntf name 'QCoreApplication_translate';
 procedure QCoreApplication_flush(); cdecl; external QtIntf name 'QCoreApplication_flush';
 {$ifdef DARWIN or LINUX }
 procedure QCoreApplication_watchUnixSignal(signal: Integer; watch: Boolean); cdecl; external QtIntf name 'QCoreApplication_watchUnixSignal';
@@ -1366,7 +1376,7 @@ type
 
 function QTranslator_create(parent: QObjectH = nil): QTranslatorH; cdecl; external QtIntf name 'QTranslator_create';
 procedure QTranslator_destroy(handle: QTranslatorH); cdecl; external QtIntf name 'QTranslator_destroy'; 
-procedure QTranslator_translate(handle: QTranslatorH; retval: PWideString; context: PAnsiChar; sourceText: PAnsiChar; comment: PAnsiChar = 0); cdecl; external QtIntf name 'QTranslator_translate';
+procedure QTranslator_translate(handle: QTranslatorH; retval: PWideString; context: PAnsiChar; sourceText: PAnsiChar; comment: PAnsiChar = nil); cdecl; external QtIntf name 'QTranslator_translate';
 function QTranslator_isEmpty(handle: QTranslatorH): Boolean; cdecl; external QtIntf name 'QTranslator_isEmpty';
 function QTranslator_load(handle: QTranslatorH; filename: PWideString; directory: PWideString = nil; search_delimiters: PWideString = nil; suffix: PWideString = nil): Boolean; overload; cdecl; external QtIntf name 'QTranslator_load';
 function QTranslator_load(handle: QTranslatorH; data: PByte; len: Integer): Boolean; overload; cdecl; external QtIntf name 'QTranslator_load2';
@@ -1482,12 +1492,12 @@ function QVariant_isNull(handle: QVariantH): Boolean; cdecl; external QtIntf nam
 procedure QVariant_clear(handle: QVariantH); cdecl; external QtIntf name 'QVariant_clear';
 procedure QVariant_detach(handle: QVariantH); cdecl; external QtIntf name 'QVariant_detach';
 function QVariant_isDetached(handle: QVariantH): Boolean; cdecl; external QtIntf name 'QVariant_isDetached';
-function QVariant_toInt(handle: QVariantH; ok: PBoolean = 0): Integer; cdecl; external QtIntf name 'QVariant_toInt';
-function QVariant_toUInt(handle: QVariantH; ok: PBoolean = 0): Cardinal; cdecl; external QtIntf name 'QVariant_toUInt';
-function QVariant_toLongLong(handle: QVariantH; ok: PBoolean = 0): int64; cdecl; external QtIntf name 'QVariant_toLongLong';
-function QVariant_toULongLong(handle: QVariantH; ok: PBoolean = 0): qword; cdecl; external QtIntf name 'QVariant_toULongLong';
+function QVariant_toInt(handle: QVariantH; ok: PBoolean = nil): Integer; cdecl; external QtIntf name 'QVariant_toInt';
+function QVariant_toUInt(handle: QVariantH; ok: PBoolean = nil): Cardinal; cdecl; external QtIntf name 'QVariant_toUInt';
+function QVariant_toLongLong(handle: QVariantH; ok: PBoolean = nil): int64; cdecl; external QtIntf name 'QVariant_toLongLong';
+function QVariant_toULongLong(handle: QVariantH; ok: PBoolean = nil): qword; cdecl; external QtIntf name 'QVariant_toULongLong';
 function QVariant_toBool(handle: QVariantH): Boolean; cdecl; external QtIntf name 'QVariant_toBool';
-function QVariant_toDouble(handle: QVariantH; ok: PBoolean = 0): Double; cdecl; external QtIntf name 'QVariant_toDouble';
+function QVariant_toDouble(handle: QVariantH; ok: PBoolean = nil): Double; cdecl; external QtIntf name 'QVariant_toDouble';
 procedure QVariant_toByteArray(handle: QVariantH; retval: QByteArrayH); cdecl; external QtIntf name 'QVariant_toByteArray';
 procedure QVariant_toBitArray(handle: QVariantH; retval: QBitArrayH); cdecl; external QtIntf name 'QVariant_toBitArray';
 procedure QVariant_toString(handle: QVariantH; retval: PWideString); cdecl; external QtIntf name 'QVariant_toString';
@@ -1512,6 +1522,23 @@ procedure QVariant_save(handle: QVariantH; ds: QDataStreamH); cdecl; external Qt
 function QVariant_typeToName(_type: QVariantType): PAnsiChar; cdecl; external QtIntf name 'QVariant_typeToName';
 function QVariant_nameToType(name: PAnsiChar): QVariantType; cdecl; external QtIntf name 'QVariant_nameToType';
 function QVariant_constData(handle: QVariantH): Pointer; cdecl; external QtIntf name 'QVariant_constData';
+
+function QAbstractEventDispatcher_instance(thread: QThreadH = nil): QAbstractEventDispatcherH; cdecl; external QtIntf name 'QAbstractEventDispatcher_instance';
+function QAbstractEventDispatcher_processEvents(handle: QAbstractEventDispatcherH; flags: QEventLoopProcessEventsFlags): Boolean; cdecl; external QtIntf name 'QAbstractEventDispatcher_processEvents';
+function QAbstractEventDispatcher_hasPendingEvents(handle: QAbstractEventDispatcherH): Boolean; cdecl; external QtIntf name 'QAbstractEventDispatcher_hasPendingEvents';
+procedure QAbstractEventDispatcher_registerSocketNotifier(handle: QAbstractEventDispatcherH; notifier: QSocketNotifierH); cdecl; external QtIntf name 'QAbstractEventDispatcher_registerSocketNotifier';
+procedure QAbstractEventDispatcher_unregisterSocketNotifier(handle: QAbstractEventDispatcherH; notifier: QSocketNotifierH); cdecl; external QtIntf name 'QAbstractEventDispatcher_unregisterSocketNotifier';
+function QAbstractEventDispatcher_registerTimer(handle: QAbstractEventDispatcherH; interval: Integer; _object: QObjectH): Integer; overload; cdecl; external QtIntf name 'QAbstractEventDispatcher_registerTimer';
+procedure QAbstractEventDispatcher_registerTimer(handle: QAbstractEventDispatcherH; timerId: Integer; interval: Integer; _object: QObjectH); overload; cdecl; external QtIntf name 'QAbstractEventDispatcher_registerTimer2';
+function QAbstractEventDispatcher_unregisterTimer(handle: QAbstractEventDispatcherH; timerId: Integer): Boolean; cdecl; external QtIntf name 'QAbstractEventDispatcher_unregisterTimer';
+function QAbstractEventDispatcher_unregisterTimers(handle: QAbstractEventDispatcherH; _object: QObjectH): Boolean; cdecl; external QtIntf name 'QAbstractEventDispatcher_unregisterTimers';
+procedure QAbstractEventDispatcher_wakeUp(handle: QAbstractEventDispatcherH); cdecl; external QtIntf name 'QAbstractEventDispatcher_wakeUp';
+procedure QAbstractEventDispatcher_interrupt(handle: QAbstractEventDispatcherH); cdecl; external QtIntf name 'QAbstractEventDispatcher_interrupt';
+procedure QAbstractEventDispatcher_flush(handle: QAbstractEventDispatcherH); cdecl; external QtIntf name 'QAbstractEventDispatcher_flush';
+procedure QAbstractEventDispatcher_startingUp(handle: QAbstractEventDispatcherH); cdecl; external QtIntf name 'QAbstractEventDispatcher_startingUp';
+procedure QAbstractEventDispatcher_closingDown(handle: QAbstractEventDispatcherH); cdecl; external QtIntf name 'QAbstractEventDispatcher_closingDown';
+function QAbstractEventDispatcher_setEventFilter(handle: QAbstractEventDispatcherH; filter: TAbstractEventFilter): TAbstractEventFilter; cdecl; external QtIntf name 'QAbstractEventDispatcher_setEventFilter';
+function QAbstractEventDispatcher_filterEvent(handle: QAbstractEventDispatcherH; message: Pointer): Boolean; cdecl; external QtIntf name 'QAbstractEventDispatcher_filterEvent';
 
 function QStringList_create(): QStringListH; overload; cdecl; external QtIntf name 'QStringList_create';
 procedure QStringList_destroy(handle: QStringListH); cdecl; external QtIntf name 'QStringList_destroy'; 
@@ -1687,9 +1714,9 @@ procedure QApplication_restoreOverrideCursor(); cdecl; external QtIntf name 'QAp
 procedure QApplication_palette(retval: QPaletteH); overload; cdecl; external QtIntf name 'QApplication_palette';
 procedure QApplication_palette(retval: QPaletteH; p1: QWidgetH); overload; cdecl; external QtIntf name 'QApplication_palette2';
 procedure QApplication_palette(retval: QPaletteH; className: PAnsiChar); overload; cdecl; external QtIntf name 'QApplication_palette3';
-procedure QApplication_setPalette(p1: QPaletteH; className: PAnsiChar = 0); cdecl; external QtIntf name 'QApplication_setPalette';
+procedure QApplication_setPalette(p1: QPaletteH; className: PAnsiChar = nil); cdecl; external QtIntf name 'QApplication_setPalette';
 procedure QApplication_font(retval: QFontH; p1: QWidgetH = nil); cdecl; external QtIntf name 'QApplication_font';
-procedure QApplication_setFont(p1: QFontH; className: PAnsiChar = 0); cdecl; external QtIntf name 'QApplication_setFont';
+procedure QApplication_setFont(p1: QFontH; className: PAnsiChar = nil); cdecl; external QtIntf name 'QApplication_setFont';
 procedure QApplication_fontMetrics(retval: QFontMetricsH); cdecl; external QtIntf name 'QApplication_fontMetrics';
 procedure QApplication_setWindowIcon(icon: QIconH); cdecl; external QtIntf name 'QApplication_setWindowIcon';
 procedure QApplication_windowIcon(retval: QIconH); cdecl; external QtIntf name 'QApplication_windowIcon';
@@ -2662,9 +2689,9 @@ function QColor_blueF(handle: QColorH): Double; cdecl; external QtIntf name 'QCo
 procedure QColor_setRedF(handle: QColorH; red: Double); cdecl; external QtIntf name 'QColor_setRedF';
 procedure QColor_setGreenF(handle: QColorH; green: Double); cdecl; external QtIntf name 'QColor_setGreenF';
 procedure QColor_setBlueF(handle: QColorH; blue: Double); cdecl; external QtIntf name 'QColor_setBlueF';
-procedure QColor_getRgb(handle: QColorH; r: PInteger; g: PInteger; b: PInteger; a: PInteger = 0); cdecl; external QtIntf name 'QColor_getRgb';
+procedure QColor_getRgb(handle: QColorH; r: PInteger; g: PInteger; b: PInteger; a: PInteger = nil); cdecl; external QtIntf name 'QColor_getRgb';
 procedure QColor_setRgb(handle: QColorH; r: Integer; g: Integer; b: Integer; a: Integer = 255); overload; cdecl; external QtIntf name 'QColor_setRgb';
-procedure QColor_getRgbF(handle: QColorH; r: PDouble; g: PDouble; b: PDouble; a: PDouble = 0); cdecl; external QtIntf name 'QColor_getRgbF';
+procedure QColor_getRgbF(handle: QColorH; r: PDouble; g: PDouble; b: PDouble; a: PDouble = nil); cdecl; external QtIntf name 'QColor_getRgbF';
 procedure QColor_setRgbF(handle: QColorH; r: Double; g: Double; b: Double; a: Double = 1.0); cdecl; external QtIntf name 'QColor_setRgbF';
 function QColor_rgba(handle: QColorH): QRgb; cdecl; external QtIntf name 'QColor_rgba';
 procedure QColor_setRgba(handle: QColorH; rgba: QRgb); cdecl; external QtIntf name 'QColor_setRgba';
@@ -2676,9 +2703,9 @@ function QColor_value(handle: QColorH): Integer; cdecl; external QtIntf name 'QC
 function QColor_hueF(handle: QColorH): Double; cdecl; external QtIntf name 'QColor_hueF';
 function QColor_saturationF(handle: QColorH): Double; cdecl; external QtIntf name 'QColor_saturationF';
 function QColor_valueF(handle: QColorH): Double; cdecl; external QtIntf name 'QColor_valueF';
-procedure QColor_getHsv(handle: QColorH; h: PInteger; s: PInteger; v: PInteger; a: PInteger = 0); cdecl; external QtIntf name 'QColor_getHsv';
+procedure QColor_getHsv(handle: QColorH; h: PInteger; s: PInteger; v: PInteger; a: PInteger = nil); cdecl; external QtIntf name 'QColor_getHsv';
 procedure QColor_setHsv(handle: QColorH; h: Integer; s: Integer; v: Integer; a: Integer = 255); cdecl; external QtIntf name 'QColor_setHsv';
-procedure QColor_getHsvF(handle: QColorH; h: PDouble; s: PDouble; v: PDouble; a: PDouble = 0); cdecl; external QtIntf name 'QColor_getHsvF';
+procedure QColor_getHsvF(handle: QColorH; h: PDouble; s: PDouble; v: PDouble; a: PDouble = nil); cdecl; external QtIntf name 'QColor_getHsvF';
 procedure QColor_setHsvF(handle: QColorH; h: Double; s: Double; v: Double; a: Double = 1.0); cdecl; external QtIntf name 'QColor_setHsvF';
 function QColor_cyan(handle: QColorH): Integer; cdecl; external QtIntf name 'QColor_cyan';
 function QColor_magenta(handle: QColorH): Integer; cdecl; external QtIntf name 'QColor_magenta';
@@ -2688,9 +2715,9 @@ function QColor_cyanF(handle: QColorH): Double; cdecl; external QtIntf name 'QCo
 function QColor_magentaF(handle: QColorH): Double; cdecl; external QtIntf name 'QColor_magentaF';
 function QColor_yellowF(handle: QColorH): Double; cdecl; external QtIntf name 'QColor_yellowF';
 function QColor_blackF(handle: QColorH): Double; cdecl; external QtIntf name 'QColor_blackF';
-procedure QColor_getCmyk(handle: QColorH; c: PInteger; m: PInteger; y: PInteger; k: PInteger; a: PInteger = 0); cdecl; external QtIntf name 'QColor_getCmyk';
+procedure QColor_getCmyk(handle: QColorH; c: PInteger; m: PInteger; y: PInteger; k: PInteger; a: PInteger = nil); cdecl; external QtIntf name 'QColor_getCmyk';
 procedure QColor_setCmyk(handle: QColorH; c: Integer; m: Integer; y: Integer; k: Integer; a: Integer = 255); cdecl; external QtIntf name 'QColor_setCmyk';
-procedure QColor_getCmykF(handle: QColorH; c: PDouble; m: PDouble; y: PDouble; k: PDouble; a: PDouble = 0); cdecl; external QtIntf name 'QColor_getCmykF';
+procedure QColor_getCmykF(handle: QColorH; c: PDouble; m: PDouble; y: PDouble; k: PDouble; a: PDouble = nil); cdecl; external QtIntf name 'QColor_getCmykF';
 procedure QColor_setCmykF(handle: QColorH; c: Double; m: Double; y: Double; k: Double; a: Double = 1.0); cdecl; external QtIntf name 'QColor_setCmykF';
 procedure QColor_toRgb(handle: QColorH; retval: PQColor); cdecl; external QtIntf name 'QColor_toRgb';
 procedure QColor_toHsv(handle: QColorH; retval: PQColor); cdecl; external QtIntf name 'QColor_toHsv';
@@ -2739,7 +2766,7 @@ function QMatrix_shear(handle: QMatrixH; sh: Double; sv: Double): QMatrixH; cdec
 function QMatrix_rotate(handle: QMatrixH; a: Double): QMatrixH; cdecl; external QtIntf name 'QMatrix_rotate';
 function QMatrix_isInvertible(handle: QMatrixH): Boolean; cdecl; external QtIntf name 'QMatrix_isInvertible';
 function QMatrix_det(handle: QMatrixH): Double; cdecl; external QtIntf name 'QMatrix_det';
-procedure QMatrix_inverted(handle: QMatrixH; retval: QMatrixH; invertible: PBoolean = 0); cdecl; external QtIntf name 'QMatrix_inverted';
+procedure QMatrix_inverted(handle: QMatrixH; retval: QMatrixH; invertible: PBoolean = nil); cdecl; external QtIntf name 'QMatrix_inverted';
 
 
 type
@@ -3007,8 +3034,8 @@ procedure QPainter_drawText(handle: QPainterH; p: QPointFH; s: PWideString); ove
 procedure QPainter_drawText(handle: QPainterH; p: PPoint; s: PWideString); overload; cdecl; external QtIntf name 'QPainter_drawText2';
 procedure QPainter_drawText(handle: QPainterH; x: Integer; y: Integer; s: PWideString); overload; cdecl; external QtIntf name 'QPainter_drawText3';
 procedure QPainter_drawText(handle: QPainterH; r: QRectFH; flags: Integer; text: PWideString; br: QRectFH = nil); overload; cdecl; external QtIntf name 'QPainter_drawText4';
-procedure QPainter_drawText(handle: QPainterH; r: PRect; flags: Integer; text: PWideString; br: PRect); overload; cdecl; external QtIntf name 'QPainter_drawText5';
-procedure QPainter_drawText(handle: QPainterH; x: Integer; y: Integer; w: Integer; h: Integer; flags: Integer; text: PWideString; br: PRect); overload; cdecl; external QtIntf name 'QPainter_drawText6';
+procedure QPainter_drawText(handle: QPainterH; r: PRect; flags: Integer; text: PWideString; br: PRect = nil); overload; cdecl; external QtIntf name 'QPainter_drawText5';
+procedure QPainter_drawText(handle: QPainterH; x: Integer; y: Integer; w: Integer; h: Integer; flags: Integer; text: PWideString; br: PRect = nil); overload; cdecl; external QtIntf name 'QPainter_drawText6';
 procedure QPainter_drawText(handle: QPainterH; r: QRectFH; text: PWideString; o: QTextOptionH = nil); overload; cdecl; external QtIntf name 'QPainter_drawText7';
 procedure QPainter_boundingRect(handle: QPainterH; retval: QRectFH; rect: QRectFH; flags: Integer; text: PWideString); overload; cdecl; external QtIntf name 'QPainter_boundingRect';
 procedure QPainter_boundingRect(handle: QPainterH; retval: PRect; rect: PRect; flags: Integer; text: PWideString); overload; cdecl; external QtIntf name 'QPainter_boundingRect2';
@@ -3024,7 +3051,7 @@ procedure QPainter_setRenderHint(handle: QPainterH; hint: QPainterRenderHint; _o
 function QPainter_renderHints(handle: QPainterH): QPainterRenderHints; cdecl; external QtIntf name 'QPainter_renderHints';
 function QPainter_paintEngine(handle: QPainterH): QPaintEngineH; cdecl; external QtIntf name 'QPainter_paintEngine';
 procedure QPainter_setRedirected(device: QPaintDeviceH; replacement: QPaintDeviceH; offset: PPoint = nil); cdecl; external QtIntf name 'QPainter_setRedirected';
-function QPainter_redirected(device: QPaintDeviceH; offset: PPoint = 0): QPaintDeviceH; cdecl; external QtIntf name 'QPainter_redirected';
+function QPainter_redirected(device: QPaintDeviceH; offset: PPoint = nil): QPaintDeviceH; cdecl; external QtIntf name 'QPainter_redirected';
 procedure QPainter_restoreRedirected(device: QPaintDeviceH); cdecl; external QtIntf name 'QPainter_restoreRedirected';
 
 
@@ -3515,9 +3542,9 @@ function QFontMetrics_width(handle: QFontMetricsH; p1: PWideChar): Integer; over
 function QFontMetrics_charWidth(handle: QFontMetricsH; str: PWideString; pos: Integer): Integer; cdecl; external QtIntf name 'QFontMetrics_charWidth';
 procedure QFontMetrics_boundingRect(handle: QFontMetricsH; retval: PRect; p1: PWideChar); overload; cdecl; external QtIntf name 'QFontMetrics_boundingRect';
 procedure QFontMetrics_boundingRect(handle: QFontMetricsH; retval: PRect; text: PWideString); overload; cdecl; external QtIntf name 'QFontMetrics_boundingRect2';
-procedure QFontMetrics_boundingRect(handle: QFontMetricsH; retval: PRect; r: PRect; flags: Integer; text: PWideString; tabstops: Integer = 0; tabarray: PInteger = 0); overload; cdecl; external QtIntf name 'QFontMetrics_boundingRect3';
-procedure QFontMetrics_boundingRect(handle: QFontMetricsH; retval: PRect; x: Integer; y: Integer; w: Integer; h: Integer; flags: Integer; text: PWideString; tabstops: Integer = 0; tabarray: PInteger = 0); overload; cdecl; external QtIntf name 'QFontMetrics_boundingRect4';
-procedure QFontMetrics_size(handle: QFontMetricsH; retval: PSize; flags: Integer; str: PWideString; tabstops: Integer = 0; tabarray: PInteger = 0); cdecl; external QtIntf name 'QFontMetrics_size';
+procedure QFontMetrics_boundingRect(handle: QFontMetricsH; retval: PRect; r: PRect; flags: Integer; text: PWideString; tabstops: Integer = 0; tabarray: PInteger = nil); overload; cdecl; external QtIntf name 'QFontMetrics_boundingRect3';
+procedure QFontMetrics_boundingRect(handle: QFontMetricsH; retval: PRect; x: Integer; y: Integer; w: Integer; h: Integer; flags: Integer; text: PWideString; tabstops: Integer = 0; tabarray: PInteger = nil); overload; cdecl; external QtIntf name 'QFontMetrics_boundingRect4';
+procedure QFontMetrics_size(handle: QFontMetricsH; retval: PSize; flags: Integer; str: PWideString; tabstops: Integer = 0; tabarray: PInteger = nil); cdecl; external QtIntf name 'QFontMetrics_size';
 function QFontMetrics_underlinePos(handle: QFontMetricsH): Integer; cdecl; external QtIntf name 'QFontMetrics_underlinePos';
 function QFontMetrics_overlinePos(handle: QFontMetricsH): Integer; cdecl; external QtIntf name 'QFontMetrics_overlinePos';
 function QFontMetrics_strikeOutPos(handle: QFontMetricsH): Integer; cdecl; external QtIntf name 'QFontMetrics_strikeOutPos';
@@ -3542,8 +3569,8 @@ function QFontMetricsF_width(handle: QFontMetricsFH; _string: PWideString): Doub
 function QFontMetricsF_width(handle: QFontMetricsFH; p1: PWideChar): Double; overload; cdecl; external QtIntf name 'QFontMetricsF_width2';
 procedure QFontMetricsF_boundingRect(handle: QFontMetricsFH; retval: QRectFH; _string: PWideString); overload; cdecl; external QtIntf name 'QFontMetricsF_boundingRect';
 procedure QFontMetricsF_boundingRect(handle: QFontMetricsFH; retval: QRectFH; p1: PWideChar); overload; cdecl; external QtIntf name 'QFontMetricsF_boundingRect2';
-procedure QFontMetricsF_boundingRect(handle: QFontMetricsFH; retval: QRectFH; r: QRectFH; flags: Integer; _string: PWideString; tabstops: Integer = 0; tabarray: PInteger = 0); overload; cdecl; external QtIntf name 'QFontMetricsF_boundingRect3';
-procedure QFontMetricsF_size(handle: QFontMetricsFH; retval: QSizeFH; flags: Integer; str: PWideString; tabstops: Integer = 0; tabarray: PInteger = 0); cdecl; external QtIntf name 'QFontMetricsF_size';
+procedure QFontMetricsF_boundingRect(handle: QFontMetricsFH; retval: QRectFH; r: QRectFH; flags: Integer; _string: PWideString; tabstops: Integer = 0; tabarray: PInteger = nil); overload; cdecl; external QtIntf name 'QFontMetricsF_boundingRect3';
+procedure QFontMetricsF_size(handle: QFontMetricsFH; retval: QSizeFH; flags: Integer; str: PWideString; tabstops: Integer = 0; tabarray: PInteger = nil); cdecl; external QtIntf name 'QFontMetricsF_size';
 function QFontMetricsF_underlinePos(handle: QFontMetricsFH): Double; cdecl; external QtIntf name 'QFontMetricsF_underlinePos';
 function QFontMetricsF_overlinePos(handle: QFontMetricsFH): Double; cdecl; external QtIntf name 'QFontMetricsF_overlinePos';
 function QFontMetricsF_strikeOutPos(handle: QFontMetricsFH): Double; cdecl; external QtIntf name 'QFontMetricsF_strikeOutPos';
@@ -3668,7 +3695,7 @@ function QPixmap_create(): QPixmapH; overload; cdecl; external QtIntf name 'QPix
 procedure QPixmap_destroy(handle: QPixmapH); cdecl; external QtIntf name 'QPixmap_destroy'; 
 function QPixmap_create(w: Integer; h: Integer): QPixmapH; overload; cdecl; external QtIntf name 'QPixmap_create2';
 function QPixmap_create(p1: PSize): QPixmapH; overload; cdecl; external QtIntf name 'QPixmap_create3';
-function QPixmap_create(fileName: PWideString; format: PAnsiChar = 0; flags: QtImageConversionFlags = QtAutoColor): QPixmapH; overload; cdecl; external QtIntf name 'QPixmap_create4';
+function QPixmap_create(fileName: PWideString; format: PAnsiChar = nil; flags: QtImageConversionFlags = QtAutoColor): QPixmapH; overload; cdecl; external QtIntf name 'QPixmap_create4';
 function QPixmap_create(xpm: PAnsiChar): QPixmapH; overload; cdecl; external QtIntf name 'QPixmap_create5';
 function QPixmap_create(p1: QPixmapH): QPixmapH; overload; cdecl; external QtIntf name 'QPixmap_create6';
 function QPixmap_isNull(handle: QPixmapH): Boolean; cdecl; external QtIntf name 'QPixmap_isNull';
@@ -3679,7 +3706,7 @@ procedure QPixmap_size(handle: QPixmapH; retval: PSize); cdecl; external QtIntf 
 procedure QPixmap_rect(handle: QPixmapH; retval: PRect); cdecl; external QtIntf name 'QPixmap_rect';
 function QPixmap_depth(handle: QPixmapH): Integer; cdecl; external QtIntf name 'QPixmap_depth';
 function QPixmap_defaultDepth(): Integer; cdecl; external QtIntf name 'QPixmap_defaultDepth';
-procedure QPixmap_fill(handle: QPixmapH; fillColor: PQColor = Qtwhite); overload; cdecl; external QtIntf name 'QPixmap_fill';
+procedure QPixmap_fill(handle: QPixmapH; fillColor: PQColor); overload; cdecl; external QtIntf name 'QPixmap_fill';
 procedure QPixmap_fill(handle: QPixmapH; widget: QWidgetH; ofs: PPoint); overload; cdecl; external QtIntf name 'QPixmap_fill2';
 procedure QPixmap_fill(handle: QPixmapH; widget: QWidgetH; xofs: Integer; yofs: Integer); overload; cdecl; external QtIntf name 'QPixmap_fill3';
 procedure QPixmap_mask(handle: QPixmapH; retval: QBitmapH); cdecl; external QtIntf name 'QPixmap_mask';
@@ -3701,9 +3728,9 @@ procedure QPixmap_transformed(handle: QPixmapH; retval: QPixmapH; p1: QMatrixH; 
 procedure QPixmap_trueMatrix(retval: QMatrixH; m: QMatrixH; w: Integer; h: Integer); cdecl; external QtIntf name 'QPixmap_trueMatrix';
 procedure QPixmap_toImage(handle: QPixmapH; retval: QImageH); cdecl; external QtIntf name 'QPixmap_toImage';
 procedure QPixmap_fromImage(retval: QPixmapH; image: QImageH; flags: QtImageConversionFlags = QtAutoColor); cdecl; external QtIntf name 'QPixmap_fromImage';
-function QPixmap_load(handle: QPixmapH; fileName: PWideString; format: PAnsiChar = 0; flags: QtImageConversionFlags = QtAutoColor): Boolean; cdecl; external QtIntf name 'QPixmap_load';
-function QPixmap_loadFromData(handle: QPixmapH; buf: PByte; len: Cardinal; format: PAnsiChar = 0; flags: QtImageConversionFlags = QtAutoColor): Boolean; overload; cdecl; external QtIntf name 'QPixmap_loadFromData';
-function QPixmap_loadFromData(handle: QPixmapH; data: QByteArrayH; format: PAnsiChar = 0; flags: QtImageConversionFlags = QtAutoColor): Boolean; overload; cdecl; external QtIntf name 'QPixmap_loadFromData2';
+function QPixmap_load(handle: QPixmapH; fileName: PWideString; format: PAnsiChar = nil; flags: QtImageConversionFlags = QtAutoColor): Boolean; cdecl; external QtIntf name 'QPixmap_load';
+function QPixmap_loadFromData(handle: QPixmapH; buf: PByte; len: Cardinal; format: PAnsiChar = nil; flags: QtImageConversionFlags = QtAutoColor): Boolean; overload; cdecl; external QtIntf name 'QPixmap_loadFromData';
+function QPixmap_loadFromData(handle: QPixmapH; data: QByteArrayH; format: PAnsiChar = nil; flags: QtImageConversionFlags = QtAutoColor): Boolean; overload; cdecl; external QtIntf name 'QPixmap_loadFromData2';
 function QPixmap_save(handle: QPixmapH; fileName: PWideString; format: PAnsiChar; quality: Integer = -1): Boolean; overload; cdecl; external QtIntf name 'QPixmap_save';
 function QPixmap_save(handle: QPixmapH; device: QIODeviceH; format: PAnsiChar; quality: Integer = -1): Boolean; overload; cdecl; external QtIntf name 'QPixmap_save2';
 procedure QPixmap_copy(handle: QPixmapH; retval: QPixmapH; x: Integer; y: Integer; width: Integer; height: Integer); overload; cdecl; external QtIntf name 'QPixmap_copy';
@@ -3744,8 +3771,8 @@ function QImage_create(size: PSize; format: QImageFormat): QImageH; overload; cd
 function QImage_create(width: Integer; height: Integer; format: QImageFormat): QImageH; overload; cdecl; external QtIntf name 'QImage_create3';
 function QImage_create(data: PByte; width: Integer; height: Integer; format: QImageFormat): QImageH; overload; cdecl; external QtIntf name 'QImage_create4';
 function QImage_create(xpm: PAnsiChar): QImageH; overload; cdecl; external QtIntf name 'QImage_create5';
-function QImage_create(fileName: PWideString; format: PAnsiChar = 0): QImageH; overload; cdecl; external QtIntf name 'QImage_create6';
-function QImage_create(fileName: PAnsiChar; format: PAnsiChar = 0): QImageH; overload; cdecl; external QtIntf name 'QImage_create7';
+function QImage_create(fileName: PWideString; format: PAnsiChar = nil): QImageH; overload; cdecl; external QtIntf name 'QImage_create6';
+function QImage_create(fileName: PAnsiChar; format: PAnsiChar = nil): QImageH; overload; cdecl; external QtIntf name 'QImage_create7';
 function QImage_create(p1: QImageH): QImageH; overload; cdecl; external QtIntf name 'QImage_create8';
 function QImage_isNull(handle: QImageH): Boolean; cdecl; external QtIntf name 'QImage_isNull';
 function QImage_devType(handle: QImageH): Integer; cdecl; external QtIntf name 'QImage_devType';
@@ -3790,13 +3817,13 @@ procedure QImage_mirrored(handle: QImageH; retval: QImageH; horizontally: Boolea
 procedure QImage_rgbSwapped(handle: QImageH; retval: QImageH); cdecl; external QtIntf name 'QImage_rgbSwapped';
 procedure QImage_invertPixels(handle: QImageH; p1: QImageInvertMode = QImageInvertRgb); cdecl; external QtIntf name 'QImage_invertPixels';
 function QImage_load(handle: QImageH; device: QIODeviceH; format: PAnsiChar): Boolean; overload; cdecl; external QtIntf name 'QImage_load';
-function QImage_load(handle: QImageH; fileName: PWideString; format: PAnsiChar = 0): Boolean; overload; cdecl; external QtIntf name 'QImage_load2';
-function QImage_loadFromData(handle: QImageH; buf: PByte; len: Integer; format: PAnsiChar = 0): Boolean; overload; cdecl; external QtIntf name 'QImage_loadFromData';
-function QImage_loadFromData(handle: QImageH; data: QByteArrayH; aformat: PAnsiChar = 0): Boolean; overload; cdecl; external QtIntf name 'QImage_loadFromData2';
+function QImage_load(handle: QImageH; fileName: PWideString; format: PAnsiChar = nil): Boolean; overload; cdecl; external QtIntf name 'QImage_load2';
+function QImage_loadFromData(handle: QImageH; buf: PByte; len: Integer; format: PAnsiChar = nil): Boolean; overload; cdecl; external QtIntf name 'QImage_loadFromData';
+function QImage_loadFromData(handle: QImageH; data: QByteArrayH; aformat: PAnsiChar = nil): Boolean; overload; cdecl; external QtIntf name 'QImage_loadFromData2';
 function QImage_save(handle: QImageH; fileName: PWideString; format: PAnsiChar; quality: Integer = -1): Boolean; overload; cdecl; external QtIntf name 'QImage_save';
 function QImage_save(handle: QImageH; device: QIODeviceH; format: PAnsiChar; quality: Integer = -1): Boolean; overload; cdecl; external QtIntf name 'QImage_save2';
-procedure QImage_fromData(retval: QImageH; data: PByte; size: Integer; format: PAnsiChar = 0); overload; cdecl; external QtIntf name 'QImage_fromData';
-procedure QImage_fromData(retval: QImageH; data: QByteArrayH; format: PAnsiChar = 0); overload; cdecl; external QtIntf name 'QImage_fromData2';
+procedure QImage_fromData(retval: QImageH; data: PByte; size: Integer; format: PAnsiChar = nil); overload; cdecl; external QtIntf name 'QImage_fromData';
+procedure QImage_fromData(retval: QImageH; data: QByteArrayH; format: PAnsiChar = nil); overload; cdecl; external QtIntf name 'QImage_fromData2';
 function QImage_serialNumber(handle: QImageH): Integer; cdecl; external QtIntf name 'QImage_serialNumber';
 function QImage_paintEngine(handle: QImageH): QPaintEngineH; cdecl; external QtIntf name 'QImage_paintEngine';
 function QImage_dotsPerMeterX(handle: QImageH): Integer; cdecl; external QtIntf name 'QImage_dotsPerMeterX';
@@ -3808,7 +3835,7 @@ procedure QImage_setOffset(handle: QImageH; p1: PPoint); cdecl; external QtIntf 
 procedure QImage_textKeys(handle: QImageH; retval: QStringListH); cdecl; external QtIntf name 'QImage_textKeys';
 procedure QImage_text(handle: QImageH; retval: PWideString; key: PWideString = nil); overload; cdecl; external QtIntf name 'QImage_text';
 procedure QImage_setText(handle: QImageH; key: PWideString; value: PWideString); overload; cdecl; external QtIntf name 'QImage_setText';
-procedure QImage_text(handle: QImageH; retval: PWideString; key: PAnsiChar; lang: PAnsiChar = 0); overload; cdecl; external QtIntf name 'QImage_text2';
+procedure QImage_text(handle: QImageH; retval: PWideString; key: PAnsiChar; lang: PAnsiChar = nil); overload; cdecl; external QtIntf name 'QImage_text2';
 procedure QImage_textLanguages(handle: QImageH; retval: QStringListH); cdecl; external QtIntf name 'QImage_textLanguages';
 procedure QImage_setText(handle: QImageH; key: PAnsiChar; lang: PAnsiChar; p3: PWideString); overload; cdecl; external QtIntf name 'QImage_setText2';
 
@@ -3817,7 +3844,7 @@ procedure QBitmap_destroy(handle: QBitmapH); cdecl; external QtIntf name 'QBitma
 function QBitmap_create(p1: QPixmapH): QBitmapH; overload; cdecl; external QtIntf name 'QBitmap_create2';
 function QBitmap_create(w: Integer; h: Integer): QBitmapH; overload; cdecl; external QtIntf name 'QBitmap_create3';
 function QBitmap_create(p1: PSize): QBitmapH; overload; cdecl; external QtIntf name 'QBitmap_create4';
-function QBitmap_create(fileName: PWideString; format: PAnsiChar = 0): QBitmapH; overload; cdecl; external QtIntf name 'QBitmap_create5';
+function QBitmap_create(fileName: PWideString; format: PAnsiChar = nil): QBitmapH; overload; cdecl; external QtIntf name 'QBitmap_create5';
 procedure QBitmap_clear(handle: QBitmapH); cdecl; external QtIntf name 'QBitmap_clear';
 procedure QBitmap_fromImage(retval: QBitmapH; image: QImageH; flags: QtImageConversionFlags = QtAutoColor); cdecl; external QtIntf name 'QBitmap_fromImage';
 procedure QBitmap_fromData(retval: QBitmapH; size: PSize; bits: PByte; monoFormat: QImageFormat = QImageFormat_MonoLSB); cdecl; external QtIntf name 'QBitmap_fromData';
@@ -3832,10 +3859,10 @@ function QPicture_size(handle: QPictureH): Cardinal; cdecl; external QtIntf name
 function QPicture_data(handle: QPictureH): PAnsiChar; cdecl; external QtIntf name 'QPicture_data';
 procedure QPicture_setData(handle: QPictureH; data: PAnsiChar; size: Cardinal); cdecl; external QtIntf name 'QPicture_setData';
 function QPicture_play(handle: QPictureH; p: QPainterH): Boolean; cdecl; external QtIntf name 'QPicture_play';
-function QPicture_load(handle: QPictureH; dev: QIODeviceH; format: PAnsiChar = 0): Boolean; overload; cdecl; external QtIntf name 'QPicture_load';
-function QPicture_load(handle: QPictureH; fileName: PWideString; format: PAnsiChar = 0): Boolean; overload; cdecl; external QtIntf name 'QPicture_load2';
-function QPicture_save(handle: QPictureH; dev: QIODeviceH; format: PAnsiChar = 0): Boolean; overload; cdecl; external QtIntf name 'QPicture_save';
-function QPicture_save(handle: QPictureH; fileName: PWideString; format: PAnsiChar = 0): Boolean; overload; cdecl; external QtIntf name 'QPicture_save2';
+function QPicture_load(handle: QPictureH; dev: QIODeviceH; format: PAnsiChar = nil): Boolean; overload; cdecl; external QtIntf name 'QPicture_load';
+function QPicture_load(handle: QPictureH; fileName: PWideString; format: PAnsiChar = nil): Boolean; overload; cdecl; external QtIntf name 'QPicture_load2';
+function QPicture_save(handle: QPictureH; dev: QIODeviceH; format: PAnsiChar = nil): Boolean; overload; cdecl; external QtIntf name 'QPicture_save';
+function QPicture_save(handle: QPictureH; fileName: PWideString; format: PAnsiChar = nil): Boolean; overload; cdecl; external QtIntf name 'QPicture_save2';
 procedure QPicture_boundingRect(handle: QPictureH; retval: PRect); cdecl; external QtIntf name 'QPicture_boundingRect';
 procedure QPicture_setBoundingRect(handle: QPictureH; r: PRect); cdecl; external QtIntf name 'QPicture_setBoundingRect';
 procedure QPicture_detach(handle: QPictureH); cdecl; external QtIntf name 'QPicture_detach';
@@ -4703,7 +4730,7 @@ procedure QComboBox_setDuplicatesEnabled(handle: QComboBoxH; enable: Boolean); c
 procedure QComboBox_setFrame(handle: QComboBoxH; p1: Boolean); cdecl; external QtIntf name 'QComboBox_setFrame';
 function QComboBox_hasFrame(handle: QComboBoxH): Boolean; cdecl; external QtIntf name 'QComboBox_hasFrame';
 function QComboBox_findText(handle: QComboBoxH; text: PWideString; flags: QtMatchFlags = QtMatchExactly or QtMatchCaseSensitive): Integer; cdecl; external QtIntf name 'QComboBox_findText';
-function QComboBox_findData(handle: QComboBoxH; data: QVariantH; role: Integer = QtUserRole; flags: QtMatchFlags = QtMatchExactly or QtMatchCaseSensitive): Integer; cdecl; external QtIntf name 'QComboBox_findData';
+function QComboBox_findData(handle: QComboBoxH; data: QVariantH; role: QtItemDataRole = QtUserRole; flags: QtMatchFlags = QtMatchExactly or QtMatchCaseSensitive): Integer; cdecl; external QtIntf name 'QComboBox_findData';
 function QComboBox_insertPolicy(handle: QComboBoxH): QComboBoxInsertPolicy; cdecl; external QtIntf name 'QComboBox_insertPolicy';
 procedure QComboBox_setInsertPolicy(handle: QComboBoxH; policy: QComboBoxInsertPolicy); cdecl; external QtIntf name 'QComboBox_setInsertPolicy';
 function QComboBox_sizeAdjustPolicy(handle: QComboBoxH): QComboBoxSizeAdjustPolicy; cdecl; external QtIntf name 'QComboBox_sizeAdjustPolicy';
@@ -4730,7 +4757,7 @@ function QComboBox_currentIndex(handle: QComboBoxH): Integer; cdecl; external Qt
 procedure QComboBox_currentText(handle: QComboBoxH; retval: PWideString); cdecl; external QtIntf name 'QComboBox_currentText';
 procedure QComboBox_itemText(handle: QComboBoxH; retval: PWideString; index: Integer); cdecl; external QtIntf name 'QComboBox_itemText';
 procedure QComboBox_itemIcon(handle: QComboBoxH; retval: QIconH; index: Integer); cdecl; external QtIntf name 'QComboBox_itemIcon';
-procedure QComboBox_itemData(handle: QComboBoxH; retval: QVariantH; index: Integer; role: Integer = QtUserRole); cdecl; external QtIntf name 'QComboBox_itemData';
+procedure QComboBox_itemData(handle: QComboBoxH; retval: QVariantH; index: Integer; role: QtItemDataRole = QtUserRole); cdecl; external QtIntf name 'QComboBox_itemData';
 procedure QComboBox_addItem(handle: QComboBoxH; text: PWideString; userData: QVariantH = nil); overload; cdecl; external QtIntf name 'QComboBox_addItem';
 procedure QComboBox_addItem(handle: QComboBoxH; icon: QIconH; text: PWideString; userData: QVariantH = nil); overload; cdecl; external QtIntf name 'QComboBox_addItem2';
 procedure QComboBox_addItems(handle: QComboBoxH; texts: QStringListH); cdecl; external QtIntf name 'QComboBox_addItems';
@@ -4740,7 +4767,7 @@ procedure QComboBox_insertItems(handle: QComboBoxH; index: Integer; texts: QStri
 procedure QComboBox_removeItem(handle: QComboBoxH; index: Integer); cdecl; external QtIntf name 'QComboBox_removeItem';
 procedure QComboBox_setItemText(handle: QComboBoxH; index: Integer; text: PWideString); cdecl; external QtIntf name 'QComboBox_setItemText';
 procedure QComboBox_setItemIcon(handle: QComboBoxH; index: Integer; icon: QIconH); cdecl; external QtIntf name 'QComboBox_setItemIcon';
-procedure QComboBox_setItemData(handle: QComboBoxH; index: Integer; value: QVariantH; role: Integer = QtUserRole); cdecl; external QtIntf name 'QComboBox_setItemData';
+procedure QComboBox_setItemData(handle: QComboBoxH; index: Integer; value: QVariantH; role: QtItemDataRole = QtUserRole); cdecl; external QtIntf name 'QComboBox_setItemData';
 function QComboBox_view(handle: QComboBoxH): QAbstractItemViewH; cdecl; external QtIntf name 'QComboBox_view';
 procedure QComboBox_setView(handle: QComboBoxH; itemView: QAbstractItemViewH); cdecl; external QtIntf name 'QComboBox_setView';
 procedure QComboBox_sizeHint(handle: QComboBoxH; retval: PSize); cdecl; external QtIntf name 'QComboBox_sizeHint';
@@ -5539,13 +5566,13 @@ procedure QMessageBox_aboutQt(parent: QWidgetH; caption: PWideString = nil); cde
 procedure QMessageBox_sizeHint(handle: QMessageBoxH; retval: PSize); cdecl; external QtIntf name 'QMessageBox_sizeHint';
 procedure QMessageBox_standardIcon(retval: QPixmapH; icon: QMessageBoxIcon); cdecl; external QtIntf name 'QMessageBox_standardIcon';
 
-procedure QInputDialog_getText(retval: PWideString; parent: QWidgetH; title: PWideString; _label: PWideString; echo: QLineEditEchoMode = QLineEditNormal; text: PWideString = nil; ok: PBoolean = 0; f: QtWindowFlags = 0); cdecl; external QtIntf name 'QInputDialog_getText';
-function QInputDialog_getInteger(parent: QWidgetH; title: PWideString; _label: PWideString; value: Integer = 0; minValue: Integer = -2147483647; maxValue: Integer = 2147483647; step: Integer = 1; ok: PBoolean = 0; f: QtWindowFlags = 0): Integer; cdecl; external QtIntf name 'QInputDialog_getInteger';
-function QInputDialog_getDouble(parent: QWidgetH; title: PWideString; _label: PWideString; value: Double = 0; minValue: Double = -2147483647; maxValue: Double = 2147483647; decimals: Integer = 1; ok: PBoolean = 0; f: QtWindowFlags = 0): Double; cdecl; external QtIntf name 'QInputDialog_getDouble';
-procedure QInputDialog_getItem(retval: PWideString; parent: QWidgetH; title: PWideString; _label: PWideString; list: QStringListH; current: Integer = 0; editable: Boolean = True; ok: PBoolean = 0; f: QtWindowFlags = 0); cdecl; external QtIntf name 'QInputDialog_getItem';
+procedure QInputDialog_getText(retval: PWideString; parent: QWidgetH; title: PWideString; _label: PWideString; echo: QLineEditEchoMode = QLineEditNormal; text: PWideString = nil; ok: PBoolean = nil; f: QtWindowFlags = 0); cdecl; external QtIntf name 'QInputDialog_getText';
+function QInputDialog_getInteger(parent: QWidgetH; title: PWideString; _label: PWideString; value: Integer = 0; minValue: Integer = -2147483647; maxValue: Integer = 2147483647; step: Integer = 1; ok: PBoolean = nil; f: QtWindowFlags = 0): Integer; cdecl; external QtIntf name 'QInputDialog_getInteger';
+function QInputDialog_getDouble(parent: QWidgetH; title: PWideString; _label: PWideString; value: Double = 0; minValue: Double = -2147483647; maxValue: Double = 2147483647; decimals: Integer = 1; ok: PBoolean = nil; f: QtWindowFlags = 0): Double; cdecl; external QtIntf name 'QInputDialog_getDouble';
+procedure QInputDialog_getItem(retval: PWideString; parent: QWidgetH; title: PWideString; _label: PWideString; list: QStringListH; current: Integer = 0; editable: Boolean = True; ok: PBoolean = nil; f: QtWindowFlags = 0); cdecl; external QtIntf name 'QInputDialog_getItem';
 
-procedure QColorDialog_getColor(retval: PQColor; init: PQColor = Qtwhite; parent: QWidgetH = nil); cdecl; external QtIntf name 'QColorDialog_getColor';
-function QColorDialog_getRgba(p1: QRgb; ok: PBoolean = 0; parent: QWidgetH = nil): QRgb; cdecl; external QtIntf name 'QColorDialog_getRgba';
+procedure QColorDialog_getColor(retval: PQColor; init: PQColor; parent: QWidgetH = nil); cdecl; external QtIntf name 'QColorDialog_getColor';
+function QColorDialog_getRgba(p1: QRgb; ok: PBoolean = nil; parent: QWidgetH = nil): QRgb; cdecl; external QtIntf name 'QColorDialog_getRgba';
 function QColorDialog_customCount(): Integer; cdecl; external QtIntf name 'QColorDialog_customCount';
 function QColorDialog_customColor(p1: Integer): QRgb; cdecl; external QtIntf name 'QColorDialog_customColor';
 procedure QColorDialog_setCustomColor(p1: Integer; p2: QRgb); cdecl; external QtIntf name 'QColorDialog_setCustomColor';

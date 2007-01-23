@@ -38,9 +38,14 @@ end;
  ------------------------------------------------------------------------------}
 destructor TQtWidgetSet.Destroy;
 begin
+
   QtWidgetSet := nil;
+  
+  if SavedDCList<>nil then
+    SavedDCList.Free;
 
   inherited Destroy;
+  
 end;
 
 {------------------------------------------------------------------------------
@@ -162,6 +167,7 @@ begin
   begin
     Result := TColor(QImage_pixel(TQtDeviceContext(CanvasHandle).vImage, X, Y));
 
+
 {    Color := QColor_create(QImage_pixel(TQtDeviceContext(CanvasHandle).vImage, X, Y));
 
     Result := RGBToColor(QColor_red(Color), QColor_green(Color), QColor_blue(Color));
@@ -170,9 +176,37 @@ begin
   end;
 end;
 
-procedure TQtWidgetSet.DCSetPixel(CanvasHandle: HDC; X, Y: integer; AColor: TGraphicsColor);
+procedure dbgcolor(msg: string; C:TQColor);
 begin
+  debugLn(msg+' spec=%x alpha=%x r=%x g=%x b=%x pad=%x',[c.ColorSpec,c.Alpha,c.r,c.g,c.b,c.pad]);
+end;
 
+procedure TQtWidgetSet.DCSetPixel(CanvasHandle: HDC; X, Y: integer; AColor: TGraphicsColor);
+var
+  Color: TQColor;
+  Pen, APen: QPenH;
+  Painter: QPainterH;
+begin
+  if IsValidDC(CanvasHandle) then
+  begin
+    //WriteLn('TQtWidgetSet.DCSetPixel X=',X,' Y=',Y, ' AColor=',dbghex(AColor));
+    
+    //TODO: First compare color if same, draw point with current pen
+    
+    Painter :=TQtDeviceContext(CanvasHandle).Widget;
+    Pen := QPainter_Pen(Painter);
+    APen := QPen_Create(Pen);
+
+    QPen_color(APen,@Color);
+    ColorRefToTQColor(AColor, Color);
+    QPen_setColor(Apen, @Color);
+    
+    Qpainter_SetPen(Painter, APen);
+    QPainter_DrawPoint(Painter, X,Y);
+    QPainter_SetPen(Painter, Pen);
+    
+    QPen_Destroy(APen);
+  end;
 end;
 
 procedure TQtWidgetSet.DCRedraw(CanvasHandle: HDC);
@@ -232,7 +266,8 @@ begin
 
   if aObject is TObject then
   begin
-    Result := (aObject is TQtFont) or (aObject is TQtBrush) or (aObject is TQtImage);
+    Result := (aObject is TQtFont) or (aObject is TQtBrush) or (aObject is TQtImage)
+      or (aObject is TQtPen) or (aObject is TQTRegion);
   end;
 end;
 

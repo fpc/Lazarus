@@ -30,7 +30,7 @@ uses
   // Bindings
   qt4, qtwidgets,
   // LCL
-  SysUtils, Controls, LCLType, Forms, Graphics,
+  SysUtils, Controls, LCLType, LCLProc, Forms, Graphics,
   // Widgetset
   InterfaceBase, WSControls, WSLCLClasses;
 
@@ -122,6 +122,9 @@ var
   Method: TMethod;
   Hook : QObject_hookH;
 begin
+  {$ifdef VerboseQt}
+    WriteLn('> TQtWSWinControl.CreateHandle for ',dbgsname(AWinControl));
+  {$endif}
   QtWidget := TQtWidget.Create(AWinControl, AParams);
 
   // Various Events
@@ -137,7 +140,7 @@ begin
   Result := THandle(QtWidget);
 
   {$ifdef VerboseQt}
-    WriteLn('TQtWSWinControl.CreateHandle Result: ', IntToStr(Result));
+    WriteLn('< TQtWSWinControl.CreateHandle for ',dbgsname(AWinControl),' Result: ', dbgHex(Result));
   {$endif}
 end;
 

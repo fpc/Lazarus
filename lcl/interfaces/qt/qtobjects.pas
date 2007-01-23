@@ -31,9 +31,17 @@ uses
   // Free Pascal
   Classes, SysUtils, Types,
   // LCL
-  LCLType, Menus, LCLProc;
+  LCLType, Menus, LCLProc, Graphics;
 
 type
+
+  { TQtResource }
+
+  TQtResource = class(TObject)
+  public
+    Owner: TObject;
+  end;
+
   { TQtAction }
 
   TQtAction = class(TObject)
@@ -70,7 +78,7 @@ type
 
   { TQtFont }
 
-  TQtFont = class(TObject)
+  TQtFont = class(TQtResource)
   private
   public
     Widget: QFontH;
@@ -116,11 +124,10 @@ type
 
   { TQtBrush }
 
-  TQtBrush = class(TObject)
+  TQtBrush = class(TQtResource)
   private
   public
     Widget: QBrushH;
-  public
     constructor Create(CreateHandle: Boolean); virtual;
     destructor Destroy; override;
     procedure setStyle(style: QtBrushStyle);
@@ -128,13 +135,13 @@ type
 
   { TQtPen }
 
-  TQtPen = class(TObject)
+  TQtPen = class(TQtResource)
   private
   public
     Widget: QPenH;
-  public
     constructor Create(CreateHandle: Boolean); virtual;
     destructor Destroy; override;
+  public
     function Width: Integer;
     function Style: QtPenStyle;
     procedure setStyle(style: QtPenStyle);
@@ -146,37 +153,57 @@ type
 
   { TQtRegion }
 
-  TQtRegion = class(TObject)
+  TQtRegion = class(TQtResource)
   private
   public
     Widget: QRegionH;
-  public
     constructor Create(CreateHandle: Boolean); virtual; overload;
     constructor Create(CreateHandle: Boolean; X1,Y1,X2,Y2: Integer); virtual; overload;
     destructor Destroy; override;
   end;
 
+  // NOTE: PQtDCData was a pointer to a structure with QPainter information
+  //       about current state, currently this functionality is implemented
+  //       using native functions qpainter_save and qpainter_restore. If in
+  //       future it needs to save/restore aditional information, PQtDCData
+  //       should point to a structure holding the additional information.
+  //       see SaveDC and RestoreDC for more information.
+  //       for example: what about textcolor, it's currently not saved....
+  PQtDCData = pointer;
 
   { TQtDeviceContext }
 
   TQtDeviceContext = class(TObject)
   private
+    SelFont: TQTFont;
+    SelBrush: TQTBrush;
+    SelPen: TQtPen;
+    PenColor: TQColor;
+    procedure RestorePenColor;
+    procedure RestoreTextColor;
   public
     Widget: QPainterH;
     Parent: QWidgetH;
-    Origin: TPoint;
+    ParentPixmap: QPixmapH;
     vBrush: TQtBrush;
     vFont: TQtFont;
     vImage: QImageH;
     vPen: TQtPen;
     vRegion: TQtRegion;
-  public
+    vBackgroundBrush: TQtBrush;
+    vClipRect: PRect;         // is the cliprect paint event give to us
+    vClipRectDirty: boolean;  // false=paint cliprect is still valid
+    vTextColor: TColor;
     constructor Create(WidgetHandle: THandle); virtual;
     destructor Destroy; override;
   public
+    function CreateDCData: PQtDCDATA;
+    function RestoreDCData(DCData: PQtDCData): boolean;
+    procedure DebugClipRect(const msg: string);
     procedure drawPoint(x1: Integer; y1: Integer);
     procedure drawRect(x1: Integer; y1: Integer; w: Integer; h: Integer);
-    procedure drawText(x: Integer; y: Integer; s: PWideString);
+    procedure drawText(x: Integer; y: Integer; s: PWideString); overload;
+    procedure DrawText(x,y,w,h,flags: Integer; s:PWideString); overload;
     procedure drawLine(x1: Integer; y1: Integer; x2: Integer; y2: Integer);
     procedure drawEllipse(x: Integer; y: Integer; w: Integer; h: Integer);
     procedure setBrushOrigin(x, y: Integer);
@@ -185,8 +212,11 @@ type
     procedure setFont(f: TQtFont);
     function brush: TQtBrush;
     procedure setBrush(brush: TQtBrush);
+    function BackgroundBrush: TQtBrush;
     function  pen: TQtPen;
     procedure setPen(pen: TQtPen);
+    function  SetBkColor(Color: TcolorRef): TColorRef;
+    function  SetBkMode(BkMode: Integer): Integer;
     function region: TQtRegion;
     procedure setRegion(region: TQtRegion); 
     procedure drawImage(targetRect: PRect; image: QImageH; sourceRect: PRect; flags: QtImageConversionFlags = QtAutoColor);
@@ -209,6 +239,10 @@ type
     procedure grabWindow(p1: Cardinal; x: Integer = 0; y: Integer = 0; w: Integer = -1; h: Integer = -1);
     procedure toImage(retval: QImageH);
   end;
+  
+  procedure TQColorToColorRef(const AColor: TQColor; out AColorRef: TColorRef);
+  procedure ColorRefToTQColor(const AColorRef: TColorRef; var AColor:TQColor);
+  procedure DebugRegion(const msg: string; Rgn: QRegionH);
 
 implementation
 
@@ -684,8 +718,65 @@ begin
   inherited Destroy;
 end;
 
-
 { TQtDeviceContext }
+
+procedure TQtDeviceContext.DebugClipRect(const msg: string);
+var
+  Rgn: QRegionH;
+  R: TRect;
+  ok: boolean;
+begin
+  ok := QPainter_hasClipping(Widget);
+  Write(Msg, 'DC: HasClipping=', ok);
+  if Ok then
+  begin
+    Rgn := QRegion_Create;
+    QPainter_ClipRegion(Widget, Rgn);
+    DebugRegion('', Rgn);
+    QRegion_Destroy(Rgn);
+  end else
+    WriteLn;
+end;
+
+
+{------------------------------------------------------------------------------
+  Function: TQtDeviceContext.Create
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+function TQtDeviceContext.CreateDCData: PQtDCDATA;
+begin
+  Qpainter_save(Widget);
+  result:=nil; // doesn't matter;
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtDeviceContext.RestoreDCData
+  Params:  DCData, dummy in current implementation
+  Returns: true if QPainter state was successfuly restored
+ ------------------------------------------------------------------------------}
+function TQtDeviceContext.RestoreDCData(DCData: PQtDCData):boolean;
+begin
+  QPainter_restore(Widget);
+  result:=true;
+end;
+
+procedure TQtDeviceContext.RestorePenColor;
+begin
+  Qpainter_setPen(Widget, @PenColor);
+end;
+
+procedure TQtDeviceContext.RestoreTextColor;
+var
+  CurPen: QPenH;
+  TxtColor: TQColor;
+begin
+  CurPen := QPainter_Pen(Widget);
+  QPen_color(CurPen, @PenColor);
+  TxtColor := PenColor;
+  ColorRefToTQColor(vTextColor, TxtColor);
+  Qpainter_setPen(Widget, @txtColor);
+end;
 
 {------------------------------------------------------------------------------
   Function: TQtDeviceContext.Create
@@ -700,19 +791,26 @@ begin
 
   if WidgetHandle = 0 then
   begin
-    Parent := nil;
-    Widget := QPainter_create
+    ParentPixmap := QPixmap_Create(10,10);
+    Widget := QPainter_Create(QPaintDeviceH(ParentPixmap));
   end
   else
   begin
-    Parent := TQtMainWindow(WidgetHandle).Widget;
+    Parent := TQtWidget(WidgetHandle).Widget;
     Widget := QPainter_create(QWidget_to_QPaintDevice(Parent));
   end;
 
   vBrush := TQtBrush.Create(False);
+  vBrush.Owner := Self;
   vFont := TQtFont.Create(False);
+  vFont.Owner := Self;;
   vPen  := TQtPen.Create(False);
+  vPen.Owner := Self;
   vRegion := TQtRegion.Create(False);
+  vRegion.Owner := Self;
+  vBackgroundBrush := TQtBrush.Create(False);
+  vBackgroundBrush.Owner := Self;
+  vTextColor := ColorToRGB(clWindowText);
 end;
 
 {------------------------------------------------------------------------------
@@ -726,6 +824,9 @@ begin
     WriteLn('TQtDeviceContext.Destroy');
   {$endif}
 
+  if vClipRect<>nil then
+    dispose(vClipRect);
+
   vBrush.Widget := nil;
   vBrush.Free;
   vFont.Widget := nil;
@@ -734,10 +835,15 @@ begin
   vPen.Free;
   vRegion.Widget := nil;
   vRegion.Free;
+  vBackgroundBrush.Widget := nil;
+  vBackgroundBrush.Free;
   
   if vImage <> nil then QImage_destroy(vImage);
 
   QPainter_destroy(Widget);
+
+  if ParentPixmap<>nil then
+    QPixmap_destroy(ParentPixmap);
 
   inherited Destroy;
 end;
@@ -772,27 +878,41 @@ var
   QtFontMetrics: TQtFontMetrics;
 begin
   {$ifdef VerboseQt}
-    Write('TQtDeviceContext.drawText TargetX: ', (Origin.X + X), ' TargetY: ', (Origin.Y + Y));
+  Write('TQtDeviceContext.drawText TargetX: ', X, ' TargetY: ', Y);
   {$endif}
 
   QtFontMetrics := TQtFontMetrics.Create(Font.Widget);
   try
+
     Save;
-
-    translate(Origin.X + x, Origin.Y + y + QtFontMetrics.height);
-
+    
+    translate(x, y);
     Rotate(-0.1 * vFont.Angle);
-
-    QPainter_drawText(Widget, 0, 0, s);
-
+    
+    RestoreTextColor;
+    
+    QPainter_drawText(Widget, 0, QtFontMetrics.ascent, s);
+    
+    RestorePenColor;
+    
     Restore;
     
     {$ifdef VerboseQt}
-      WriteLn(' Font metrics height: ', QtFontMetrics.height, ' Angle: ', Round(0.1 * vFont.Angle));
+    WriteLn(' Font metrics height: ', QtFontMetrics.height, ' Angle: ',
+      Round(0.1 * vFont.Angle));
     {$endif}
   finally
     QtFontMetrics.Free;
   end;
+end;
+
+procedure TQtDeviceContext.DrawText(x, y, w, h, flags: Integer; s: PWideString);
+begin
+  RestoreTextColor;
+
+  QPainter_DrawText(Widget, x, y, w, h, Flags, s);
+
+  RestorePenColor;
 end;
 
 {------------------------------------------------------------------------------
@@ -859,8 +979,10 @@ end;
 function TQtDeviceContext.font: TQtFont;
 begin
   vFont.Widget := QPainter_font(Widget);
-
-  Result := vFont;
+  if SelFont=nil then
+    Result := vFont
+  else
+    Result := SelFont;
 end;
 
 {------------------------------------------------------------------------------
@@ -870,10 +992,10 @@ end;
  ------------------------------------------------------------------------------}
 procedure TQtDeviceContext.setFont(f: TQtFont);
 begin
-  if (f.Widget <> nil) and (Widget <> nil) and (Parent <> nil) then
+  SelFont := F;
+  if (f.Widget <> nil) and (Widget <> nil) {and (Parent <> nil)} then
   begin
     QPainter_setFont(Widget, QFontH(f.Widget));
-    
     vFont.Angle := f.Angle;
   end;
 end;
@@ -886,8 +1008,10 @@ end;
 function TQtDeviceContext.brush: TQtBrush;
 begin
   vBrush.Widget := QPainter_brush(Widget);
-
-  Result := vBrush;
+  if SelBrush=nil then
+    Result := vBrush
+  else
+    Result := SelBrush;
 end;
 
 {------------------------------------------------------------------------------
@@ -897,7 +1021,15 @@ end;
  ------------------------------------------------------------------------------}
 procedure TQtDeviceContext.setBrush(brush: TQtBrush);
 begin
-  if (brush.Widget <> nil) and (Widget <> nil) then QPainter_setBrush(Widget, brush.Widget);
+  SelBrush := Brush;
+  if (brush.Widget <> nil) and (Widget <> nil) then
+    QPainter_setBrush(Widget, brush.Widget);
+end;
+
+function TQtDeviceContext.BackgroundBrush: TQtBrush;
+begin
+  vBackgroundBrush.Widget := QPainter_background(Widget);
+  result := vBackGroundBrush;
 end;
 
 {------------------------------------------------------------------------------
@@ -908,7 +1040,10 @@ end;
 function TQtDeviceContext.pen: TQtPen;
 begin
   vPen.Widget := QPainter_pen(Widget);
-  Result := vPen;
+  if SelPen=nil then
+    Result := vPen
+  else
+    Result := SelPen;
 end;
 
 {------------------------------------------------------------------------------
@@ -918,7 +1053,69 @@ end;
  ------------------------------------------------------------------------------}
 procedure TQtDeviceContext.setPen(pen: TQtPen);
 begin
-  if (pen.Widget <> nil) and (Widget <> nil) then QPainter_setPen(Widget, pen.Widget);
+  SelPen := Pen;
+  if (pen.Widget <> nil) and (Widget <> nil) then
+    QPainter_setPen(Widget, pen.Widget);
+end;
+
+procedure TQColorToColorRef(const AColor: TQColor; out AColorRef: TColorRef);
+begin
+  AColorRef:=(( AColor.r shr 8) and $FF)
+       or (AColor.g  and $ff00)
+       or ((AColor.b  shl 8) and $ff0000);
+end;
+
+procedure ColorRefToTQColor(const AColorRef: TColorRef; var AColor:TQColor);
+begin
+  AColor.r:=(AColorRef and $ff);
+  AColor.r:=AColor.r+(AColor.r shl 8);
+  AColor.g:=(AColorRef and $ff00);
+  AColor.g:=AColor.g+(AColor.g shr 8);
+  AColor.b:=(AColorRef and $ff0000) shr 8;
+  AColor.b:=AColor.b+(AColor.b shr 8);
+end;
+
+procedure DebugRegion(const msg: string; Rgn: QRegionH);
+var
+  R: TRect;
+  ok: boolean;
+begin
+  Write(Msg);
+  ok := QRegion_isEmpty(Rgn);
+  QRegion_BoundingRect(Rgn, @R);
+  WriteLn(' Empty=',Ok,' Rect=', dbgs(R));
+end;
+
+function TQtDeviceContext.SetBkColor(Color: TcolorRef): TColorRef;
+var
+  ABrush: QBrushH;
+  NColor: TQColor;
+begin
+  result := CLR_INVALID;
+  ABrush := BackgroundBrush.Widget;
+  if ABrush<>nil then
+  begin
+    NColor := QBrush_Color(aBrush)^;
+    TQColorToColorRef(NColor, Result);
+    ColorRefToTQColor(ColorToRGB(Color), NColor);
+    QBrush_setColor(ABrush, @NColor);
+  end;
+end;
+
+function TQtDeviceContext.SetBkMode(BkMode: Integer): Integer;
+var
+  Mode: QtBGMode;
+begin
+  result := 0;
+  if Widget<>nil then
+  begin
+    Mode := QPainter_BackgroundMode(Widget);
+    if Mode=QtOpaqueMode then result := OPAQUE
+    else                      result := TRANSPARENT;
+    if BkMode=OPAQUE then Mode := QtOpaqueMode
+    else                  Mode := QtTransparentMode;
+    QPainter_SetBackgroundMode(Widget, Mode);
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -928,6 +1125,9 @@ end;
  ------------------------------------------------------------------------------}
 function TQtDeviceContext.region: TQtRegion;
 begin
+  if vRegion.Widget=nil then
+    vRegion.Widget := QRegion_Create();
+    
   QPainter_clipRegion(Widget,  vRegion.Widget);
   Result := vRegion;
 end;
@@ -939,7 +1139,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TQtDeviceContext.setRegion(region: TQtRegion);
 begin
-  if (region.Widget <> nil) and (Widget <> nil) then QPainter_setClipRegion(Widget, Region.Widget);
+  if (region.Widget <> nil) and (Widget <> nil) then
+    QPainter_setClipRegion(Widget, Region.Widget);
 end;
 
 {------------------------------------------------------------------------------
@@ -953,11 +1154,6 @@ var
   LocalRect: TRect;
 begin
   LocalRect := targetRect^;
-  
-  LocalRect.Left := LocalRect.Left + Origin.X;
-
-  LocalRect.Top := LocalRect.Top + Origin.Y;
-
   QPainter_drawImage(Widget, PRect(@LocalRect), image, sourceRect, flags);
 end;
 

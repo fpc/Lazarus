@@ -31,15 +31,30 @@ uses
   // Free Pascal
   Classes, SysUtils, Types,
   // LCL
-  LMessages, Buttons, Forms, Controls, LCLType, LCLProc, ComCtrls, ExtCtrls, StdCtrls, Menus;
+  LCLType, LCLProc, LCLIntf, LMessages, Buttons, Forms, Controls, ComCtrls, ExtCtrls, StdCtrls, Menus;
 
+type
+  TPaintData = record
+    ClipRect: Prect;
+    ClipRegion: QRegionH;
+  end;
+  
 type
   { TQtWidget }
 
   TQtWidget = class(TObject)
   private
+    FProps: TStringList;
+    FPaintData: TPaintData;
+    function GetProps(const AnIndex: String): pointer;
     function QtKeyToLCLKey(key: Integer): Word;
+    procedure DeliverMessage(var Msg);
+    procedure SetProps(const AnIndex: String; const AValue: pointer);
+  protected
+    function CreateWidget(const Params: TCreateParams):QWidgetH; virtual;
+    procedure SetGeometry; virtual;
   public
+    AVariant: QVariantH;
     Widget: QWidgetH;
     LCLObject: TWinControl;
   public
@@ -76,6 +91,9 @@ type
     procedure setWidth(p1: Integer);
     procedure setHeight(p1: Integer);
     procedure setTabOrder(p1, p2: TQtWidget);
+    
+    property Props[AnIndex:String]:pointer read GetProps write SetProps;
+    property PaintData: TPaintData read FPaintData write FPaintData;
   end;
 
   { TQtAbstractButton }
@@ -94,8 +112,9 @@ type
 
   TQtPushButton = class(TQtAbstractButton)
   private
+  protected
+    function CreateWidget(const AParams: TCreateParams): QWidgetH; override;
   public
-    constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); override;
     destructor Destroy; override;
     procedure SlotClicked; cdecl;
   end;
@@ -106,16 +125,14 @@ type
 
   TQtMainWindow = class(TQtWidget)
   private
+  protected
+    function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
     Splitter: QSplitterH;
     MenuBar: TQtMenuBar;
-  public
     Canvas: TQtDeviceContext;
-  public
-    constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); override;
     destructor Destroy; override;
     procedure setTabOrders;
-  public
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     procedure SlotWindowStateChange; cdecl;
   end;
@@ -124,8 +141,9 @@ type
 
   TQtStaticText = class(TQtWidget)
   private
+  protected
+    function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
-    constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); override;
     destructor Destroy; override;
     procedure SetText(text: PWideString);
     procedure Text(retval: PWideString);
@@ -147,8 +165,10 @@ type
   { TQtCheckBox }
 
   TQtCheckBox = class(TQtAbstractButton)
+  protected
+    function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
+    procedure SetGeometry; override;
   public
-    constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); override;
     destructor Destroy; override;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     function CheckState: QtCheckState;
@@ -158,8 +178,10 @@ type
   { TQtRadioButton }
 
   TQtRadioButton = class(TQtAbstractButton)
+  protected
+    function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
+    procedure SetGeometry; override;
   public
-    constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); override;
     destructor Destroy; override;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
   end;
@@ -167,10 +189,11 @@ type
   { TQtGroupBox }
 
   TQtGroupBox = class(TQtWidget)
+  protected
+    function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   private
     VBoxLayout: QVBoxLayoutH;
   public
-    constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); override;
     destructor Destroy; override;
   end;
 
@@ -178,8 +201,9 @@ type
 
   TQtFrame = class(TQtWidget)
   private
+  protected
+    function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
-    constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); override;
     destructor Destroy; override;
     procedure setFrameStyle(p1: Integer);
     procedure setFrameShape(p1: QFrameShape);
@@ -190,8 +214,9 @@ type
 
   TQtAbstractSlider = class(TQtWidget)
   private
+  protected
+    function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
-    constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); override;
     destructor Destroy; override;
 
     procedure setInvertedAppereance(p1: Boolean); virtual;
@@ -214,16 +239,17 @@ type
   
   TQtScrollBar = class(TQtAbstractSlider)
   private
-  public
-     constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); override;
+  protected
+    function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   end;	
 
   { TQtTrackBar }
   
   TQtTrackBar = class(TQtAbstractSlider)
   private
+  protected
+    function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
-     constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); override;
      procedure SetTickPosition(Value: QSliderTickPosition);
      procedure SetTickInterval(Value: Integer);
   end;
@@ -232,8 +258,9 @@ type
 
   TQtLineEdit = class(TQtWidget)
   private
+  protected
+    function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
-    constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); override;
     destructor Destroy; override;
     procedure SetColor(const Value: PQColor); override;
   end;
@@ -242,8 +269,9 @@ type
 
   TQtTextEdit = class(TQtWidget)
   private
+  protected
+    function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
-    constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); override;
     destructor Destroy; override;
     procedure SetColor(const Value: PQColor); override;
   end;
@@ -252,8 +280,9 @@ type
 
   TQtTabWidget = class(TQtWidget)
   private
+  protected
+    function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
-    constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); override;
     destructor Destroy; override;
   public
     function insertTab(index: Integer; page: QWidgetH; p2: PWideString): Integer;
@@ -263,8 +292,9 @@ type
 
   TQtComboBox = class(TQtWidget)
   private
+  protected
+    function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
-    constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); override;
     destructor Destroy; override;
     procedure SetColor(const Value: PQColor); override;
     function currentIndex: Integer;
@@ -278,8 +308,9 @@ type
 
   TQtSpinBox = class(TQtWidget)
   private
+  protected
+    function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
-    constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); override;
     destructor Destroy; override;
   end;
 
@@ -299,12 +330,11 @@ type
 
   TQtListWidget = class(TQtListView)
   private
+  protected
+    function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
-    constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); override;
     destructor Destroy; override;
-  public
     procedure SlotSelectionChange(current: QListWidgetItemH; previous: QListWidgetItemH); cdecl;
-  public
     function currentRow: Integer;
     procedure setCurrentRow(row: Integer);
   end;
@@ -341,8 +371,9 @@ type
 
   TQtProgressBar = class(TQtWidget)
   private
+  protected
+    function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
-    constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); override;
     destructor Destroy; override;
   public
     procedure setRange(minimum: Integer; maximum: Integer);
@@ -358,8 +389,9 @@ type
 
   TQtStatusBar = class(TQtWidget)
   private
+  protected
+    function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
-    constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); override;
     destructor Destroy; override;
   public
     procedure showMessage(text: PWideString; timeout: Integer = 0);
@@ -375,7 +407,7 @@ type
   public
     function exec: Integer;
   end;
-
+  
 implementation
 
 { Helper functions }
@@ -395,19 +427,29 @@ end;
   Returns: Nothing
  ------------------------------------------------------------------------------}
 constructor TQtWidget.Create(const AWinControl: TWinControl; const AParams: TCreateParams);
-var
-  Parent: QWidgetH;
 begin
   // Initializes the properties
   LCLObject := AWinControl;
 
   // Creates the widget
-  Parent := TQtWidget(AWinControl.Parent.Handle).Widget;
-  Widget := QWidget_create(Parent);
+  Widget := CreateWidget(AParams);
+  {$ifdef VerboseQt}
+  DebugLn('TQtWidget.Create: Self:%x Widget:%x was created for control %s',
+    [ptrint(Self), ptrint(Widget), LCLObject.Name]);
+  {$endif}
+  
+  // set Handle->QWidget map
+  AVariant := QVariant_Create(Int64(ptruint(Self)));
+  QObject_setProperty(QObjectH(Widget), 'lclwidget', AVariant);
+  
+  fillchar(FpaintData, sizeOf(FPaintData), 0);
 
-  // Sets it´ s initial properties
-  QWidget_setGeometry(Widget, AWinControl.Left, AWinControl.Top,
-   AWinControl.Width, AWinControl.Height);
+  // Sets it's initial properties
+  SetGeometry;
+  
+  // set focus policy
+  if AWinControl.TabStop then
+    QWidget_setFocusPolicy(Widget, QtStrongFocus);
 end;
 
 {------------------------------------------------------------------------------
@@ -418,7 +460,8 @@ end;
   Special constructor for notebook pages.
   Pages should be created without a parent for Qt
  ------------------------------------------------------------------------------}
-constructor TQtWidget.CreatePage(const AWinControl: TWinControl; const AParams: TCreateParams);
+constructor TQtWidget.CreatePage(const AWinControl: TWinControl;
+  const AParams: TCreateParams);
 begin
   // Initializes the properties
   LCLObject := AWinControl;
@@ -426,9 +469,7 @@ begin
   // Creates the widget
   Widget := QWidget_create;
 
-  // Sets it´ s initial properties
-  QWidget_setGeometry(Widget, AWinControl.Left, AWinControl.Top,
-   AWinControl.Width, AWinControl.Height);
+  SetGeometry;
 end;
 
 {------------------------------------------------------------------------------
@@ -438,14 +479,150 @@ end;
  ------------------------------------------------------------------------------}
 destructor TQtWidget.Destroy;
 begin
+
+  QVariant_destroy(AVariant);
+  
   {$ifdef VerboseQt}
 //    WriteLn('Calling QWidget_destroy');
   {$endif}
 
-//  QWidget_destroy(QWidgetH(Widget));
+  if Widget<>nil then
+  begin
+    QWidget_destroy(QWidgetH(Widget));
+    Widget:=nil;
+  end;
+  
+  if FProps<>nil then
+  begin
+    FProps.Free;
+    FProps:=nil;
+  end;
+
+  if FPaintData.ClipRegion<>nil then
+  begin
+    QRegion_Destroy(FPaintData.ClipRegion);
+    FPaintData.ClipRegion:=nil;
+  end;
 
   inherited Destroy;
 end;
+
+{.$IFDEF VerboseQt}
+function EventTypeToStr(Event:QEventH):string;
+begin
+  case QEvent_type(Event) of
+    QEventNone: result:='QEventNone';
+    QEventTimer: result:='QEventTimer';
+    QEventMouseButtonPress: result:='QEventMouseButtonPress';
+    QEventMouseButtonRelease: result:='QEventMouseButtonRelease';
+    QEventMouseButtonDblClick: result:='QEventMouseButtonDblClick';
+    QEventMouseMove: result:='QEventMouseMove';
+    QEventKeyPress: result:='QEventKeyPress';
+    QEventKeyRelease: result:='QEventKeyRelease';
+    QEventFocusIn: result:='QEventFocusIn';
+    QEventFocusOut: result:='QEventFocusOut';
+    QEventEnter: result:='QEventEnter';
+    QEventLeave: result:='QEventLeave';
+    QEventPaint: result:='QEventPaint';
+    QEventMove: result:='QEventMove';
+    QEventResize: result:='QEventResize';
+    QEventCreate: result:='QEventCreate';
+    QEventDestroy: result:='QEventDestroy';
+    QEventShow: result:='QEventShow';
+    QEventHide: result:='QEventHide';
+    QEventClose: result:='QEventClose';
+    QEventQuit: result:='QEventQuit';
+    QEventParentChange: result:='QEventParentChange';
+    QEventThreadChange: result:='QEventThreadChange';
+    QEventWindowActivate: result:='QEventWindowActivate';
+    QEventWindowDeactivate: result:='QEventWindowDeactivate';
+    QEventShowToParent: result:='QEventShowToParent';
+    QEventHideToParent: result:='QEventHideToParent';
+    QEventWheel: result:='QEventWheel';
+    QEventWindowTitleChange: result:='QEventWindowTitleChange';
+    QEventWindowIconChange: result:='QEventWindowIconChange';
+    QEventApplicationWindowIconChange: result:='QEventApplicationWindowIconChange';
+    QEventApplicationFontChange: result:='QEventApplicationFontChange';
+    QEventApplicationLayoutDirectionChange: result:='QEventApplicationLayoutDirectionChange';
+    QEventApplicationPaletteChange: result:='QEventApplicationPaletteChange';
+    QEventPaletteChange: result:='QEventPaletteChange';
+    QEventClipboard: result:='QEventClipboard';
+    QEventSpeech: result:='QEventSpeech';
+    QEventMetaCall: result:='QEventMetaCall';
+    QEventSockAct: result:='QEventSockAct';
+    QEventShortcutOverride: result:='QEventShortcutOverride';
+    QEventDeferredDelete: result:='QEventDeferredDelete';
+    QEventDragEnter: result:='QEventDragEnter';
+    QEventDragMove: result:='QEventDragMove';
+    QEventDragLeave: result:='QEventDragLeave';
+    QEventDrop: result:='QEventDrop';
+    QEventDragResponse: result:='QEventDragResponse';
+    QEventChildAdded: result:='QEventChildAdded';
+    QEventChildPolished: result:='QEventChildPolished';
+    QEventChildRemoved: result:='QEventChildRemoved';
+    QEventShowWindowRequest: result:='QEventShowWindowRequest';
+    QEventPolishRequest: result:='QEventPolishRequest';
+    QEventPolish: result:='QEventPolish';
+    QEventLayoutRequest: result:='QEventLayoutRequest';
+    QEventUpdateRequest: result:='QEventUpdateRequest';
+    QEventUpdateLater: result:='QEventUpdateLater';
+    QEventEmbeddingControl: result:='QEventEmbeddingControl';
+    QEventActivateControl: result:='QEventActivateControl';
+    QEventDeactivateControl: result:='QEventDeactivateControl';
+    QEventContextMenu: result:='QEventContextMenu';
+    QEventInputMethod: result:='QEventInputMethod';
+    QEventAccessibilityPrepare: result:='QEventAccessibilityPrepare';
+    QEventTabletMove: result:='QEventTabletMove';
+    QEventLocaleChange: result:='QEventLocaleChange';
+    QEventLanguageChange: result:='QEventLanguageChange';
+    QEventLayoutDirectionChange: result:='QEventLayoutDirectionChange';
+    QEventStyle: result:='QEventStyle';
+    QEventTabletPress: result:='QEventTabletPress';
+    QEventTabletRelease: result:='QEventTabletRelease';
+    QEventOkRequest: result:='QEventOkRequest';
+    QEventHelpRequest: result:='QEventHelpRequest';
+    QEventIconDrag: result:='QEventIconDrag';
+    QEventFontChange: result:='QEventFontChange';
+    QEventEnabledChange: result:='QEventEnabledChange';
+    QEventActivationChange: result:='QEventActivationChange';
+    QEventStyleChange: result:='QEventStyleChange';
+    QEventIconTextChange: result:='QEventIconTextChange';
+    QEventModifiedChange: result:='QEventModifiedChange';
+    QEventWindowBlocked: result:='QEventWindowBlocked';
+    QEventWindowUnblocked: result:='QEventWindowUnblocked';
+    QEventWindowStateChange: result:='QEventWindowStateChange';
+    QEventMouseTrackingChange: result:='QEventMouseTrackingChange';
+    QEventToolTip: result:='QEventToolTip';
+    QEventWhatsThis: result:='QEventWhatsThis';
+    QEventStatusTip: result:='QEventStatusTip';
+    QEventActionChanged: result:='QEventActionChanged';
+    QEventActionAdded: result:='QEventActionAdded';
+    QEventActionRemoved: result:='QEventActionRemoved';
+    QEventFileOpen: result:='QEventFileOpen';
+    QEventShortcut: result:='QEventShortcut';
+    QEventWhatsThisClicked: result:='QEventWhatsThisClicked';
+    QEventAccessibilityHelp: result:='QEventAccessibilityHelp';
+    QEventToolBarChange: result:='QEventToolBarChange';
+    QEventApplicationActivated: result:='QEventApplicationActivated';
+    QEventApplicationDeactivated: result:='QEventApplicationDeactivated';
+    QEventQueryWhatsThis: result:='QEventQueryWhatsThis';
+    QEventEnterWhatsThisMode: result:='QEventEnterWhatsThisMode';
+    QEventLeaveWhatsThisMode: result:='QEventLeaveWhatsThisMode';
+    QEventZOrderChange: result:='QEventZOrderChange';
+    QEventHoverEnter: result:='QEventHoverEnter';
+    QEventHoverLeave: result:='QEventHoverLeave';
+    QEventHoverMove: result:='QEventHoverMove';
+    QEventAccessibilityDescription: result:='QEventAccessibilityDescription';
+    QEventParentAboutToChange: result:='QEventParentAboutToChange';
+    QEventWinEventAct: result:='QEventWinEventAct';
+    QEventAcceptDropsChange: result:='QEventAcceptDropsChange';
+    QEventMenubarUpdated: result:='QEventMenubarUpdated';
+    QEventZeroTimerEvent: result:='QEventZeroTimerEvent';
+    QEventUser: result:='QEventUser';
+    QEventMaxUser: result:='QEventMaxUser';
+  end;
+end;
+{.$ENDIF}
 
 {------------------------------------------------------------------------------
   Function: TQtWidget.EventFilter
@@ -456,11 +633,16 @@ function TQtWidget.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl
 begin
   Result := False;
 
+  QEvent_accept(Event);
+
   {.$ifdef VerboseQt}
-//  WriteLn(Integer(QEvent_type(Event)));
+  WriteLn('TQtWidget.EventFilter: Sender=', IntToHex(ptrint(Sender),8),
+    ' LCLObject=', dbgsName(LCLObject),
+    ' Event=', EventTypeToStr(Event));
   {.$endif}
 
-  QEvent_accept(Event);
+
+  
 
   case QEvent_type(Event) of
    QEventShow: SlotShow(True);
@@ -584,8 +766,8 @@ procedure TQtWidget.SlotFocus(FocusIn: Boolean); cdecl;
 var
   Msg: TLMessage;
 begin
-  {$ifdef VerboseQt}
-    WriteLn('TQtWidget.SlotFocus');
+  {$ifdef VerboseFocus}
+    WriteLn('TQtWidget.SlotFocus In=',FocusIn,' For ', dbgsname(LCLObject));
   {$endif}
 
   FillChar(Msg, SizeOf(Msg), #0);
@@ -598,6 +780,9 @@ begin
   except
     Application.HandleException(nil);
   end;
+  {$ifdef VerboseFocus}
+    WriteLn('TQtWidget.SlotFocus END');
+  {$endif}
 end;
 
 {------------------------------------------------------------------------------
@@ -681,6 +866,8 @@ procedure TQtWidget.SlotMouse(Event: QEventH); cdecl;
 var
   Msg: TLMMouse;
   MousePos: TPoint;
+  Mbutton: QTMouseButtons;
+  Modifiers: QtKeyboardModifiers;
 begin
   {$ifdef VerboseQt}
     WriteLn('TQtWidget.SlotMouse');
@@ -688,39 +875,78 @@ begin
 
   FillChar(Msg, SizeOf(Msg), #0);
   
-  QCursor_pos(@MousePos);
+  MousePos := QMouseEvent_pos(QMouseEventH(Event))^;
+  Msg.Keys := 0;
+  
+  //TODO: test this.
+  Modifiers := QInputEvent_modifiers(QInputEventH(Event));
+  if Modifiers and qtShiftModifier <> 0 then Msg.Keys := Msg.Keys or MK_SHIFT;
+  if Modifiers and qtControlModifier<>0 then Msg.Keys := Msg.Keys or MK_CONTROL;
+  //TODO: what about ALT, META, NUMKEYPAD?
 
   Msg.XPos := SmallInt(MousePos.X);
   Msg.YPos := SmallInt(MousePos.Y);
+  
+  MButton := QmouseEvent_Button(QMouseEventH(Event));
 
   case QEvent_type(Event) of
-   QEventMouseButtonPress: Msg.Msg := LM_PRESSED;
+   QEventMouseButtonPress:
+    begin
+      case MButton of
+        QtLeftButton:
+          begin
+            Msg.Msg := LM_LBUTTONDOWN;
+            Msg.Keys := MK_LBUTTON;
+          end;
+        QtRightButton:
+          begin
+            Msg.Msg := LM_RBUTTONDOWN;
+            Msg.Keys := MK_RBUTTON;
+          end;
+        QtMidButton:
+          begin
+            Msg.Msg := LM_MBUTTONDOWN;
+            Msg.Msg := MK_MBUTTON;
+          end;
+      end;
+      DeliverMessage(Msg);
+      Msg.Msg := LM_PRESSED;
+      DeliverMessage(Msg);
+    end;
    QEventMouseButtonRelease:
    begin
+      case MButton of
+        QtLeftButton:
+          begin
+            Msg.Msg := LM_LBUTTONUP;
+            Msg.Keys := MK_LBUTTON;
+          end;
+        QtRightButton:
+          begin
+            Msg.Msg := LM_RBUTTONUP;
+            Msg.Keys := MK_RBUTTON;
+          end;
+        QtMidButton:
+          begin
+            Msg.Msg := LM_MBUTTONUP;
+            Msg.Msg := MK_MBUTTON;
+          end;
+      end;
+      DeliverMessage(Msg);
      { Clicking on buttons operates differently, because QEventMouseButtonRelease
        is sent if you click a control, drag the mouse out of it and release, but
        buttons should not be clicked on this case. }
      if not (LCLObject is TCustomButton) then
      begin
        Msg.Msg := LM_CLICKED;
-
-       try
-         LCLObject.WindowProc(TLMessage(Msg));
-       except
-         Application.HandleException(nil);
-       end;
+       DeliverMessage(Msg);
      end;
 
      Msg.Msg := LM_RELEASED;
    end;
    QEventMouseButtonDblClick: Msg.Msg := LM_CLICKED;
   end;
-
-  try
-    LCLObject.WindowProc(TLMessage(Msg));
-  except
-     Application.HandleException(nil);
-  end;
+  DeliverMessage(Msg);
 end;
 
 {------------------------------------------------------------------------------
@@ -734,8 +960,10 @@ var
   MousePos: TPoint;
 begin
   FillChar(Msg, SizeOf(Msg), #0);
+  
+  MousePos := QMouseEvent_pos(QMouseEventH(Event))^;
 
-  QCursor_pos(@MousePos);
+  //QCursor_pos(@MousePos);
 
   Msg.XPos := SmallInt(MousePos.X);
   Msg.YPos := SmallInt(MousePos.Y);
@@ -771,8 +999,23 @@ begin
     Msg.Msg := LM_PAINT;
     Msg.DC := 0;
 
+    // send paint message
     try
-      LCLObject.WindowProc(TLMessage(Msg));
+
+      // Saving clip rect and clip region
+      with PaintData do begin
+        ClipRegion := QPaintEvent_Region(QPaintEventH(Event));
+        if ClipRect=nil then
+          New(ClipRect);
+        QPaintEvent_Rect(QPaintEventH(Event), ClipRect);
+      end;
+
+      try
+        LCLObject.WindowProc(TLMessage(Msg));
+      finally
+        Dispose(PaintData.ClipRect);
+        Fillchar(PaintData, SizeOf(PaintData), 0);
+      end;
     except
       Application.HandleException(nil);
     end;
@@ -1258,6 +1501,61 @@ begin
   end;
 end;
 
+function TQtWidget.GetProps(const AnIndex: String): pointer;
+var
+  i: Integer;
+begin
+  if (Fprops<>nil) then
+  begin
+    i:=Fprops.IndexOf(AnIndex);
+    if i>=0 then
+    begin
+      result:=Fprops.Objects[i];
+      exit;
+    end;
+  end;
+  result := nil;
+end;
+
+procedure TQtWidget.DeliverMessage(var Msg);
+begin
+  try
+    LCLObject.WindowProc(TLMessage(Msg));
+  except
+    Application.HandleException(nil);
+  end;
+end;
+
+procedure TQtWidget.SetProps(const AnIndex: String; const AValue: pointer);
+var
+  i: Integer;
+begin
+  if FProps=nil then
+  begin
+    FProps:=TStringList.Create;
+    //FProps.CaseSensitive:=false;
+    FProps.Sorted:=true;
+  end;
+  i:=Fprops.IndexOf(AnIndex);
+  if i<0 then
+    i:=FProps.Add(AnIndex);
+  Fprops.Objects[i] := TObject(AValue);
+end;
+
+function TQtWidget.CreateWidget(const Params: TCreateParams): QWidgetH;
+var
+  Parent: QWidgetH;
+begin
+  Parent := TQtWidget(LCLObject.Parent.Handle).Widget;
+  Widget := QWidget_create(Parent);
+end;
+
+procedure TQtWidget.SetGeometry;
+begin
+  with LCLOBject do
+    QWidget_setGeometry(Widget, Left, Top, Width, Height);
+end;
+
 { TQtAbstractButton }
 
 {------------------------------------------------------------------------------
@@ -1321,31 +1619,20 @@ end;
 
 { TQtPushButton }
 
-{------------------------------------------------------------------------------
-  Function: TQtPushButton.Create
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-constructor TQtPushButton.Create(const AWinControl: TWinControl; const AParams: TCreateParams);
+function TQtPushButton.CreateWidget(const AParams: TCreateParams): QWidgetH;
 var
   Str: WideString;
   Parent: QWidgetH;
 begin
-  // Initializes the properties
-  LCLObject := AWinControl;
-
   // Creates the widget
   {$ifdef VerboseQt}
-    WriteLn('TQtPushButton.Create Left:', dbgs(AWinControl.Left), ' Top:', dbgs(AWinControl.Top));
+    WriteLn('TQtPushButton.Create Left:', dbgs(LCLObject.Left), ' Top:', dbgs(LCLObject.Top));
   {$endif}
 
-  Str := UTF8Decode(AWinControl.Caption);
-  Parent := TQtWidget(AWinControl.Parent.Handle).Widget;
-  Widget := QPushButton_create(@Str, Parent);
+  Str := UTF8Decode(LCLObject.Caption);
+  Parent := TQtWidget(LCLObject.Parent.Handle).Widget;
 
-  // Sets it´ s initial properties
-  QWidget_setGeometry(Widget, AWinControl.Left, AWinControl.Top,
-   AWinControl.Width, AWinControl.Height);
+  Result := QPushButton_create(@Str, Parent);
 end;
 
 {------------------------------------------------------------------------------
@@ -1360,6 +1647,7 @@ begin
   {$endif}
 
   QPushButton_destroy(QPushButtonH(Widget));
+  Widget:=nil;
 
   inherited Destroy;
 end;
@@ -1399,28 +1687,17 @@ end;
 
 { TQtMainWindow }
 
-{------------------------------------------------------------------------------
-  Function: TQtMainWindow.Create
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-constructor TQtMainWindow.Create(const AWinControl: TWinControl; const AParams: TCreateParams);
+function TQtMainWindow.CreateWidget(const AParams: TCreateParams): QWidgetH;
 begin
-  // Initializes the properties
-  LCLObject := AWinControl;
-
   // Creates the widget
   {$ifdef VerboseQt}
-    WriteLn('TQtMainWindow.Create Name: ', AWinControl.Name);
+    WriteLn('TQtMainWindow.CreateWidget Name: ', LCLObject.Name);
   {$endif}
-  Widget := QWidget_create(nil, QtWindow);
-
-  // Form initial position
-  QWidget_setGeometry(Widget, AWinControl.Left, AWinControl.Top,
-   AWinControl.Width, AWinControl.Height);
+  
+  Result := QWidget_create(nil, QtWindow);
 
   // Main menu bar
-  MenuBar := TQtMenuBar.Create(Widget);
+  MenuBar := TQtMenuBar.Create(Result);
 end;
 
 {------------------------------------------------------------------------------
@@ -1434,7 +1711,13 @@ begin
     WriteLn('TQtMainWindow.Destroy');
   {$endif}
 
-  QWidget_destroy(QDialogH(Widget));
+  MenuBar.Free;
+
+  if Widget=nil then
+    WriteLn('WARNING: QtMainWindow Widget is already nil');
+    
+  QWidget_destroy(Widget);
+  Widget:=nil;
 
   inherited Destroy;
 end;
@@ -1478,7 +1761,7 @@ begin
   end;
   
   { The last element points to the first }
-  if List.Count > 0 then
+  if List.Count > 1 then
   begin
     setTabOrder(TQtWidget(TWinControl(List.Items[List.Count - 1]).Handle),
      TQtWidget(TWinControl(List.Items[0]).Handle));
@@ -1549,31 +1832,19 @@ end;
 
 { TQtStaticText }
 
-{------------------------------------------------------------------------------
-  Function: TQtStaticText.Create
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-constructor TQtStaticText.Create(const AWinControl: TWinControl; const AParams: TCreateParams);
+function TQtStaticText.CreateWidget(const AParams: TCreateParams): QWidgetH;
 var
   Str: WideString;
   Parent: QWidgetH;
 begin
-  // Initializes the properties
-  LCLObject := AWinControl;
-
   // Creates the widget
   {$ifdef VerboseQt}
     WriteLn('TQtStaticText.Create');
   {$endif}
-  Parent := TQtWidget(AWinControl.Parent.Handle).Widget;
-  Widget := QLabel_create(Parent);
+  Parent := TQtWidget(LCLObject.Parent.Handle).Widget;
+  Result := QLabel_create(Parent);
 
-  // Sets it´ s initial properties
-  QWidget_setGeometry(Widget, AWinControl.Left, AWinControl.Top,
-   AWinControl.Width, AWinControl.Height);
-
-  Str := UTF8Decode(AWinControl.Caption);
+  Str := UTF8Decode(LCLObject.Caption);
   SetText(@Str);
 end;
 
@@ -1589,6 +1860,7 @@ begin
   {$endif}
 
   QLabel_destroy(QLabelH(Widget));
+  Widget:=nil;
 
   inherited Destroy;
 end;
@@ -1672,41 +1944,36 @@ end;
 
 { TQtCheckBox }
 
-{------------------------------------------------------------------------------
-  Function: TQtCheckBox.Create
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-constructor TQtCheckBox.Create(const AWinControl: TWinControl; const AParams: TCreateParams);
+function TQtCheckBox.CreateWidget(const AParams: TCreateParams): QWidgetH;
 var
   Str: WideString;
   Parent: QWidgetH;
 begin
-  // Initializes the properties
-  LCLObject := AWinControl;
-
   // Creates the widget
   {$ifdef VerboseQt}
     WriteLn('TQtCheckBox.Create');
   {$endif}
 
-  if (AWinControl.Parent is TCustomCheckGroup) then
+  if (LCLObject.Parent is TCustomCheckGroup) then
   begin
-    Widget := QCheckBox_create;
-    QLayout_addWidget(TQtGroupBox(AWinControl.Parent.Handle).VBoxLayout, Widget);
+    Result := QCheckBox_create;
+    QLayout_addWidget(TQtGroupBox(LCLObject.Parent.Handle).VBoxLayout, Result);
   end
   else
   begin
-    Parent := TQtWidget(AWinControl.Parent.Handle).Widget;
-    Widget := QCheckBox_create(Parent);
-
-    // Sets it´ s initial properties
-    QWidget_setGeometry(Widget, AWinControl.Left, AWinControl.Top,
-     AWinControl.Width, AWinControl.Height);
+    Parent := TQtWidget(LCLObject.Parent.Handle).Widget;
+    Result := QCheckBox_create(Parent);
+    
+    inherited SetGeometry;
   end;
 
-  Str := UTF8Decode(AWinControl.Caption);
+  Str := UTF8Decode(LCLObject.Caption);
   SetText(@Str);
+end;
+
+procedure TQtCheckBox.SetGeometry;
+begin
+  // special handling
 end;
 
 {------------------------------------------------------------------------------
@@ -1721,6 +1988,7 @@ begin
   {$endif}
 
   QCheckBox_destroy(QCheckBoxH(Widget));
+  Widget:=nil;
 
   inherited Destroy;
 end;
@@ -1760,41 +2028,36 @@ end;
 
 { TQtRadioButton }
 
-{------------------------------------------------------------------------------
-  Function: TQtRadioButton.Create
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-constructor TQtRadioButton.Create(const AWinControl: TWinControl; const AParams: TCreateParams);
+function TQtRadioButton.CreateWidget(const AParams: TCreateParams): QWidgetH;
 var
   Str: WideString;
   Parent: QWidgetH;
 begin
-  // Initializes the properties
-  LCLObject := AWinControl;
-
   // Creates the widget
   {$ifdef VerboseQt}
     WriteLn('TQtRadioButton.Create');
   {$endif}
 
-  if (AWinControl.Parent is TCustomRadioGroup) then
+  if (LCLObject.Parent is TCustomRadioGroup) then
   begin
-    Widget := QRadioButton_create;
-    QLayout_addWidget(TQtGroupBox(AWinControl.Parent.Handle).VBoxLayout, Widget);
+    Result := QRadioButton_create;
+    QLayout_addWidget(TQtGroupBox(LCLObject.Parent.Handle).VBoxLayout, Result);
   end
   else
   begin
-    Parent := TQtWidget(AWinControl.Parent.Handle).Widget;
-    Widget := QRadioButton_create(Parent);
+    Parent := TQtWidget(LCLObject.Parent.Handle).Widget;
+    Result := QRadioButton_create(Parent);
 
-    // Sets it´ s initial properties
-    QWidget_setGeometry(Widget, AWinControl.Left, AWinControl.Top,
-     AWinControl.Width, AWinControl.Height);
+    inherited SetGeometry;
   end;
 
-  Str := UTF8Decode(AWinControl.Caption);
+  Str := UTF8Decode(LCLObject.Caption);
   SetText(@Str);
+end;
+
+procedure TQtRadioButton.SetGeometry;
+begin
+  // special handling
 end;
 
 {------------------------------------------------------------------------------
@@ -1809,6 +2072,7 @@ begin
   {$endif}
 
   QRadioButton_destroy(QRadioButtonH(Widget));
+  Widget:=nil;
 
   inherited Destroy;
 end;
@@ -1828,40 +2092,27 @@ end;
 
 { TQtGroupBox }
 
-{------------------------------------------------------------------------------
-  Function: TQtGroupBox.Create
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-constructor TQtGroupBox.Create(const AWinControl: TWinControl;
-  const AParams: TCreateParams);
+function TQtGroupBox.CreateWidget(const AParams: TCreateParams): QWidgetH;
 var
   Parent: QWidgetH;
 begin
-  // Initializes the properties
-  LCLObject := AWinControl;
-
   // Creates the widget
   {$ifdef VerboseQt}
-    WriteLn('TQtGroupBox.Create');
+    WriteLn('TQtGroupBox.Create ');
   {$endif}
-  Parent := TQtWidget(AWinControl.Parent.Handle).Widget;
-  Widget := QGroupBox_create(Parent);
-
-  // Sets it´ s initial properties
-  QWidget_setGeometry(Widget, AWinControl.Left, AWinControl.Top,
-   AWinControl.Width, AWinControl.Height);
+  Parent := TQtWidget(LCLObject.Parent.Handle).Widget;
+  Result := QGroupBox_create(Parent);
 
   {------------------------------------------------------------------------------
     Adds a vertical layout if the control is a group
    ------------------------------------------------------------------------------}
-  if (AWinControl is TCustomRadioGroup) or (AWinControl is TCustomCheckGroup) then
+  if (LCLOBject is TCustomRadioGroup) or (LCLObject is TCustomCheckGroup) then
   begin
     VBoxLayout := QVBoxLayout_create;
-
-    QWidget_setLayout(Widget, VBoxLayout);
+    QWidget_setLayout(Result, VBoxLayout);
   end;
 end;
+
 
 {------------------------------------------------------------------------------
   Function: TQtGroupBox.Destroy
@@ -1875,35 +2126,23 @@ begin
   {$endif}
 
   QGroupBox_destroy(QGroupBoxH(Widget));
+  Widget:=nil;
 
   inherited Destroy;
 end;
 
 { TQtFrame }
 
-{------------------------------------------------------------------------------
-  Function: TQtFrame.Create
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-constructor TQtFrame.Create(const AWinControl: TWinControl;
-  const AParams: TCreateParams);
+function TQtFrame.CreateWidget(const AParams: TCreateParams): QWidgetH;
 var
   Parent: QWidgetH;
 begin
-  // Initializes the properties
-  LCLObject := AWinControl;
-
   // Creates the widget
   {$ifdef VerboseQt}
     WriteLn('TQtFrame.Create');
   {$endif}
-  Parent := TQtWidget(AWinControl.Parent.Handle).Widget;
-  Widget := QFrame_create(Parent);
-
-  // Sets it´ s initial properties
-  QWidget_setGeometry(Widget, AWinControl.Left, AWinControl.Top,
-   AWinControl.Width, AWinControl.Height);
+  Parent := TQtWidget(LCLObject.Parent.Handle).Widget;
+  Result := QFrame_create(Parent);
 end;
 
 {------------------------------------------------------------------------------
@@ -1918,6 +2157,7 @@ begin
   {$endif}
 
   QFrame_destroy(QFrameH(Widget));
+  Widget:=nil;
 
   inherited Destroy;
 end;
@@ -1952,30 +2192,17 @@ begin
   QFrame_setFrameShadow(QFrameH(Widget), p1);
 end;
 
-{ TQtAbstractSlider }
-{------------------------------------------------------------------------------
-  Function: TQtAbstractSlider.Create
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-constructor TQtAbstractSlider.Create(const AWinControl: TWinControl;
-  const AParams: TCreateParams);
+function TQtAbstractSlider.CreateWidget(const AParams: TCreateParams
+  ): QWidgetH;
 var
   Parent: QWidgetH;
 begin
-  // Initializes the properties
-  LCLObject := AWinControl;
-
   // Creates the widget
   {$ifdef VerboseQt}
     WriteLn('TQtAbstractSlider.Create');
   {$endif}
-  Parent := TQtWidget(AWinControl.Parent.Handle).Widget;
-  Widget := QAbstractSlider_create(Parent);
-
-  // Sets it´ s initial properties
-  QWidget_setGeometry(Widget, AWinControl.Left, AWinControl.Top,
-   AWinControl.Width, AWinControl.Height);
+  Parent := TQtWidget(LCLObject.Parent.Handle).Widget;
+  Result := QAbstractSlider_create(Parent);
 end;
 
 {------------------------------------------------------------------------------
@@ -1989,6 +2216,8 @@ begin
     WriteLn('TQtAbstractSlider.Destroy');
   {$endif}
   QAbstractSlider_destroy(QAbstractSliderH(Widget));
+  Widget:=nil;
+  
   inherited Destroy;
 end;
 
@@ -2115,57 +2344,30 @@ end;
 
 { TQtScrollBar }
 
-{------------------------------------------------------------------------------
-  Function: TQtScrollBar.Create
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-constructor TQtScrollBar.Create(const AWinControl: TWinControl;
-  const AParams: TCreateParams);
+function TQtScrollBar.CreateWidget(const AParams: TCreateParams): QWidgetH;
 var
   Parent: QWidgetH;
 begin
-  // Initializes the properties
-  LCLObject := AWinControl;
-
   // Creates the widget
   {$ifdef VerboseQt}
     WriteLn('TQtScrollBar.Create');
   {$endif}
-  Parent := TQtWidget(AWinControl.Parent.Handle).Widget;
-  Widget := QScrollBar_create(Parent);
-
-  // Sets it´ s initial properties
-  QWidget_setGeometry(Widget, AWinControl.Left, AWinControl.Top,
-   AWinControl.Width, AWinControl.Height);
+  Parent := TQtWidget(LCLObject.Parent.Handle).Widget;
+  Result := QScrollBar_create(Parent);
 end;
-
 
 { TQtTrackBar }
 
-{------------------------------------------------------------------------------
-  Function: TQtTrackBar.Create
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------ }
-constructor TQtTrackBar.Create(const AWinControl: TWinControl;
-  const AParams: TCreateParams);
+function TQtTrackBar.CreateWidget(const AParams: TCreateParams): QWidgetH;
 var
   Parent: QWidgetH;
 begin
-  // Initializes the properties
-  LCLObject := AWinControl;
-
   // Creates the widget
   {$ifdef VerboseQt}
     WriteLn('TQtTrackBar.Create');
   {$endif}
-  Parent := TQtWidget(AWinControl.Parent.Handle).Widget;
-  Widget := QSlider_create(Parent);
-
-  // Sets it´ s initial properties
-  QWidget_setGeometry(Widget, AWinControl.Left, AWinControl.Top,
-   AWinControl.Width, AWinControl.Height);
+  Parent := TQtWidget(LCLObject.Parent.Handle).Widget;
+  Result := QSlider_create(Parent);
 end;
 
 {------------------------------------------------------------------------------
@@ -2191,31 +2393,18 @@ end;
 
 { TQtLineEdit }
 
-{------------------------------------------------------------------------------
-  Function: TQtLineEdit.Create
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-constructor TQtLineEdit.Create(const AWinControl: TWinControl;
-  const AParams: TCreateParams);
+function TQtLineEdit.CreateWidget(const AParams: TCreateParams): QWidgetH;
 var
   Parent: QWidgetH;
   Str: WideString;
 begin
-  // Initializes the properties
-  LCLObject := AWinControl;
-
   // Creates the widget
   {$ifdef VerboseQt}
     WriteLn('TQtLineEdit.Create');
   {$endif}
-  Parent := TQtWidget(AWinControl.Parent.Handle).Widget;
-  Str := UTF8Decode((AWinControl as TCustomEdit).Text);
-  Widget := QLineEdit_create(@Str, Parent);
-
-  // Sets it´ s initial properties
-  QWidget_setGeometry(Widget, AWinControl.Left, AWinControl.Top,
-   AWinControl.Width, AWinControl.Height);
+  Parent := TQtWidget(LCLObject.Parent.Handle).Widget;
+  Str := UTF8Decode((LCLObject as TCustomEdit).Text);
+  Result := QLineEdit_create(@Str, Parent);
 end;
 
 {------------------------------------------------------------------------------
@@ -2230,6 +2419,7 @@ begin
   {$endif}
 
   QLineEdit_destroy(QLineEditH(Widget));
+  Widget:=nil;
 
   inherited Destroy;
 end;
@@ -2255,38 +2445,26 @@ end;
 
 { TQtTextEdit }
 
-{------------------------------------------------------------------------------
-  Function: TQtTextEdit.Create
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-constructor TQtTextEdit.Create(const AWinControl: TWinControl;
-  const AParams: TCreateParams);
+function TQtTextEdit.CreateWidget(const AParams: TCreateParams): QWidgetH;
 var
   Parent: QWidgetH;
   Str: WideString;
-
 begin
-  // Initializes the properties
-  LCLObject := AWinControl;
-
   // Creates the widget
   {$ifdef VerboseQt}
     WriteLn('TQtTextEdit.Create');
   {$endif}
 
-  Parent := TQtWidget(AWinControl.Parent.Handle).Widget;
-  Str := (AWinControl as TCustomMemo).Text;
-  Widget := QTextEdit_create(@Str, Parent);
+  Parent := TQtWidget(LCLObject.Parent.Handle).Widget;
+  Str := (LCLObject as TCustomMemo).Text;
+  Result := QTextEdit_create(@Str, Parent);
 
-  // Sets it´ s initial properties
-  QWidget_setGeometry(Widget, AWinControl.Left, AWinControl.Top,
-   AWinControl.Width, AWinControl.Height);
-  QTextEdit_setReadOnly(QTextEditH(Widget),(AWinControl as TCustomMemo).ReadOnly);
-  if (AWinControl as TCustomMemo).WordWrap then
-     QTextEdit_setLineWrapMode(QTextEditH(Widget),QTextEditWidgetWidth)
+  QTextEdit_setReadOnly(QTextEditH(Result),(LCLObject as TCustomMemo).ReadOnly);
+  
+  if (LCLObject as TCustomMemo).WordWrap then
+     QTextEdit_setLineWrapMode(QTextEditH(Result),QTextEditWidgetWidth)
   else
-     QTextEdit_setLineWrapMode(QTextEditH(Widget),QTextEditNoWrap);
+     QTextEdit_setLineWrapMode(QTextEditH(Result),QTextEditNoWrap);
 end;
 
 {------------------------------------------------------------------------------
@@ -2301,6 +2479,7 @@ begin
   {$endif}
 
   QTextEdit_destroy(QTextEditH(Widget));
+  Widget:=nil;
 
   inherited Destroy;
 end;
@@ -2326,29 +2505,16 @@ end;
 
 { TQtTabWidget }
 
-{------------------------------------------------------------------------------
-  Function: TQtTabWidget.Create
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-constructor TQtTabWidget.Create(const AWinControl: TWinControl;
-  const AParams: TCreateParams);
+function TQtTabWidget.CreateWidget(const AParams: TCreateParams): QWidgetH;
 var
   Parent: QWidgetH;
 begin
-  // Initializes the properties
-  LCLObject := AWinControl;
-
   // Creates the widget
   {$ifdef VerboseQt}
     WriteLn('TQtTabWidget.Create');
   {$endif}
-  Parent := TQtWidget(AWinControl.Parent.Handle).Widget;
-  Widget := QTabWidget_create(Parent);
-
-  // Sets it´ s initial properties
-  QWidget_setGeometry(Widget, AWinControl.Left, AWinControl.Top,
-   AWinControl.Width, AWinControl.Height);
+  Parent := TQtWidget(LCLObject.Parent.Handle).Widget;
+  Result := QTabWidget_create(Parent);
 end;
 
 {------------------------------------------------------------------------------
@@ -2363,6 +2529,7 @@ begin
   {$endif}
 
   QTabWidget_destroy(QTabWidgetH(Widget));
+  Widget:=nil;
 
   inherited Destroy;
 end;
@@ -2379,13 +2546,7 @@ end;
 
 { TQtComboBox }
 
-{------------------------------------------------------------------------------
-  Function: TQtComboBox.Create
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-constructor TQtComboBox.Create(const AWinControl: TWinControl;
-  const AParams: TCreateParams);
+function TQtComboBox.CreateWidget(const AParams: TCreateParams): QWidgetH;
 var
   Parent: QWidgetH;
   Str: WideString;
@@ -2399,26 +2560,19 @@ begin
    ------------------------------------------------------------------------------}
   data := QVariant_create(10);
 
-  // Initializes the properties
-  LCLObject := AWinControl;
-
   // Creates the widget
   {$ifdef VerboseQt}
     WriteLn('TQtComboBox.Create');
   {$endif}
-  Parent := TQtWidget(AWinControl.Parent.Handle).Widget;
-  Widget := QComboBox_create(Parent);
+  Parent := TQtWidget(LCLObject.Parent.Handle).Widget;
+  Result := QComboBox_create(Parent);
 
   // Add the items to the combo box
-  for i := 0 to (AWinControl as TCustomComboBox).Items.Count - 1 do
+  for i := 0 to (LCLObject as TCustomComboBox).Items.Count - 1 do
   begin
-    Str := UTF8Decode((AWinControl as TCustomComboBox).Items.Strings[i]);
-    QComboBox_addItem(QComboBoxH(Widget), @Str, data);
+    Str := UTF8Decode((LCLObject as TCustomComboBox).Items.Strings[i]);
+    QComboBox_addItem(QComboBoxH(Result), @Str, data);
   end;
-
-  // Sets it´ s initial properties
-  QWidget_setGeometry(Widget, AWinControl.Left, AWinControl.Top,
-   AWinControl.Width, AWinControl.Height);
 
   // Clean up
   QVariant_destroy(data);
@@ -2436,6 +2590,7 @@ begin
   {$endif}
 
   QComboBox_destroy(QComboBoxH(Widget));
+  Widget:=nil;
 
   inherited Destroy;
 end;
@@ -2497,29 +2652,16 @@ end;
 
 { TQtSpinBox }
 
-{------------------------------------------------------------------------------
-  Function: TQtSpinBox.Create
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-constructor TQtSpinBox.Create(const AWinControl: TWinControl;
-  const AParams: TCreateParams);
+function TQtSpinBox.CreateWidget(const AParams: TCreateParams): QWidgetH;
 var
   Parent: QWidgetH;
 begin
-  // Initializes the properties
-  LCLObject := AWinControl;
-
   // Creates the widget
   {$ifdef VerboseQt}
     WriteLn('TQtSpinBox.Create');
   {$endif}
-  Parent := TQtWidget(AWinControl.Parent.Handle).Widget;
-  Widget := QSpinBox_create(Parent);
-
-  // Sets it´ s initial properties
-  QWidget_setGeometry(Widget, AWinControl.Left, AWinControl.Top,
-   AWinControl.Width, AWinControl.Height);
+  Parent := TQtWidget(LCLObject.Parent.Handle).Widget;
+  Result := QSpinBox_create(Parent);
 end;
 
 {------------------------------------------------------------------------------
@@ -2534,41 +2676,30 @@ begin
   {$endif}
 
   QSpinBox_destroy(QSpinBoxH(Widget));
+  Widget:=nil;
 
   inherited Destroy;
 end;
 
-{------------------------------------------------------------------------------
-  Function: TQtListWidget.Create
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-constructor TQtListWidget.Create(const AWinControl: TWinControl; const AParams: TCreateParams);
+function TQtListWidget.CreateWidget(const AParams: TCreateParams): QWidgetH;
 var
   Parent: QWidgetH;
   Text: WideString;
   i: Integer;
 begin
-  // Initializes the properties
-  LCLObject := AWinControl;
-
   // Creates the widget
   {$ifdef VerboseQt}
     WriteLn('TQListWidget.Create');
   {$endif}
-  Parent := TQtWidget(AWinControl.Parent.Handle).Widget;
-  Widget := QListWidget_create(Parent);
+  Parent := TQtWidget(LCLObject.Parent.Handle).Widget;
+  Result := QListWidget_create(Parent);
 
   // Sets the initial items
-  for I := 0 to TCustomListBox(AWinControl).Items.Count - 1 do
+  for I := 0 to TCustomListBox(LCLObject).Items.Count - 1 do
   begin
-    Text := UTF8Decode(TCustomListBox(AWinControl).Items.Strings[i]);
-    QListWidget_addItem(QListWidgetH(Widget), @Text);
+    Text := UTF8Decode(TCustomListBox(LCLObject).Items.Strings[i]);
+    QListWidget_addItem(QListWidgetH(Result), @Text);
   end;
-
-  // Sets it´ s initial properties
-  QWidget_setGeometry(Widget, AWinControl.Left, AWinControl.Top,
-   AWinControl.Width, AWinControl.Height);
 end;
 
 {------------------------------------------------------------------------------
@@ -2583,6 +2714,7 @@ begin
   {$endif}
 
   QListWidget_destroy(QListWidgetH(Widget));
+  Widget:=nil;
 
   inherited Destroy;
 end;
@@ -2694,29 +2826,17 @@ end;
 
 { TQtProgressBar }
 
-{------------------------------------------------------------------------------
-  Function: TQtProgressBar.Create
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-constructor TQtProgressBar.Create(const AWinControl: TWinControl; const AParams: TCreateParams);
+function TQtProgressBar.CreateWidget(const AParams: TCreateParams): QWidgetH;
 var
   Parent: QWidgetH;
   Text: WideString;
 begin
-  // Initializes the properties
-  LCLObject := AWinControl;
-
   // Creates the widget
   {$ifdef VerboseQt}
     WriteLn('TQProgressBar.Create');
   {$endif}
-  Parent := TQtWidget(AWinControl.Parent.Handle).Widget;
-  Widget := QProgressBar_create(Parent);
-
-  // Sets it´ s initial properties
-  QWidget_setGeometry(Widget, AWinControl.Left, AWinControl.Top,
-   AWinControl.Width, AWinControl.Height);
+  Parent := TQtWidget(LCLObject.Parent.Handle).Widget;
+  Result := QProgressBar_create(Parent);
 end;
 
 {------------------------------------------------------------------------------
@@ -2731,6 +2851,7 @@ begin
   {$endif}
 
   QProgressBar_destroy(QProgressBarH(Widget));
+  Widget:=nil;
 
   inherited Destroy;
 end;
@@ -2772,35 +2893,23 @@ end;
 
 { TQtStatusBar }
 
-{------------------------------------------------------------------------------
-  Function: TQtStatusBar.Create
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-constructor TQtStatusBar.Create(const AWinControl: TWinControl; const AParams: TCreateParams);
+function TQtStatusBar.CreateWidget(const AParams: TCreateParams): QWidgetH;
 var
   Parent: QWidgetH;
   Text: WideString;
 begin
-  // Initializes the properties
-  LCLObject := AWinControl;
-
   // Creates the widget
   {$ifdef VerboseQt}
     WriteLn('TQtStatusBar.Create');
   {$endif}
-  Parent := TQtWidget(AWinControl.Parent.Handle).Widget;
-  Widget := QStatusBar_create(Parent);
+  Parent := TQtWidget(LCLObject.Parent.Handle).Widget;
+  Result := QStatusBar_create(Parent);
 
-  if (AWinControl as TStatusBar).SimplePanel then
+  if (LCLObject as TStatusBar).SimplePanel then
   begin;
-    Text := UTF8Decode((AWinControl as TStatusBar).SimpleText);
+    Text := UTF8Decode((LCLObject as TStatusBar).SimpleText);
     showMessage(@Text);
   end;
-
-  // Sets it´ s initial properties
-  QWidget_setGeometry(Widget, AWinControl.Left, AWinControl.Top,
-   AWinControl.Width, AWinControl.Height);
 end;
 
 {------------------------------------------------------------------------------
@@ -2815,6 +2924,7 @@ begin
   {$endif}
 
   QStatusBar_destroy(QStatusBarH(Widget));
+  Widget:=nil;
 
   inherited Destroy;
 end;
@@ -2834,6 +2944,9 @@ end;
 destructor TQtDialog.Destroy;
 begin
   QDialog_destroy(QDialogH(Widget));
+  Widget:=nil;
+  
+  inherited Destroy;
 end;
 
 function TQtDialog.exec: Integer;

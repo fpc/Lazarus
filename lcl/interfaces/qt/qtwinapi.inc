@@ -39,6 +39,9 @@
   - Once on every OnPaint event
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.BeginPaint(Handle: hWnd; Var PS : TPaintStruct): hdc;
+var
+  Widget: TQtWidget;
+  DC: TQtDeviceContext;
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('Trace:> [WinAPI BeginPaint] Handle=', dbgs(Handle));
@@ -48,9 +51,31 @@ begin
     Result :=GetDoubleBufferedDC(Handle)
   else}
   
-  PS.hdc := HDC(TQtDeviceContext.Create(Handle));
-
-  if Handle <> 0 then TQtMainWindow(Handle).Canvas := TQtDeviceContext(PS.hdc);
+  DC := TQtDeviceContext.Create(Handle);
+  PS.hdc := HDC(DC);
+  
+  if Handle<>0 then
+  begin
+    // if current handle has paintdata information,
+    // setup hdc with it
+    //DC.DebugClipRect('BeginPaint: Before');
+    Widget := TQtWidget(Handle);
+    if Widget.PaintData.ClipRegion<>nil then
+    begin
+      //Write('>>> Setting Paint ClipRegion: ');
+      //DebugRegion('PaintData.ClipRegion: ', Widget.PaintData.ClipRegion);
+      QPainter_SetClipRegion(DC.Widget, Widget.PaintData.ClipRegion);
+    end;
+    if Widget.PaintData.ClipRect<>nil then
+    begin
+      New(DC.vClipRect);
+      DC.vClipRect^ := Widget.PaintData.ClipRect^;
+    end;
+    //DC.DebugClipRect('BeginPaint: After');
+    // TODO: ask what is this good for
+    if Widget is TQtMainWindow then
+      TQtMainWindow(Widget).Canvas := DC;
+  end;
 
   Result := PS.hdc;
 
@@ -90,8 +115,47 @@ end;
 
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.CombineRgn(Dest, Src1, Src2: HRGN; fnCombineMode: Longint): Longint;
+var
+  RDest,RSrc1,RSrc2: QRegionH;
 begin
-  Result := SimpleRegion;
+  result:=ERROR;
+
+  if not IsValidGDIObject(Dest) or not IsValidGDIObject(Src1) then
+    exit
+  else begin
+    RDest := TQtRegion(Dest).Widget;
+    RSrc1 := TQtRegion(Src1).Widget;
+  end;
+  
+  if (fnCombineMode<>RGN_COPY) and not IsValidGDIObject(Src2) then
+    exit
+  else
+    RSrc2 := TQtRegion(Src2).Widget;
+  
+  case fnCombineMode of
+    RGN_AND:
+      QRegion_Intersect(RSrc1, RDest, RSrc2);
+    RGN_COPY:
+      begin
+        // union of Src1 with a null region
+        RSrc2 := QRegion_Create;
+        QRegion_unite(RSrc1, RDest, RSrc2);
+        QRegion_Destroy(RSrc2);
+      end;
+    RGN_DIFF:
+      QRegion_Subtract(RSrc1, RDest, RSrc2);
+    RGN_OR:
+      QRegion_Unite(RSrc1, RDest, RSrc2);
+    RGN_XOR:
+      QRegion_eor(RSrc1, RDest, RSrc2);
+  end;
+  
+  if QRegion_isEmpty(RDest) then
+    result := NULLREGION
+  else begin
+    // TODO: Evaluate if region is complex
+    Result := SIMPLEREGION;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -143,9 +207,11 @@ end;
 function TQtWidgetSet.CreateBrushIndirect(const LogBrush: TLogBrush): HBRUSH;
 var
   QtBrush: TQtBrush;
+  Color: TQColor;
 begin
   {$ifdef VerboseQtWinAPI}
-    WriteLn(Format('Trace:> [WinAPI CreateBrushIndirect]  Style: %d, Color: %8x', [LogBrush.lbStyle, LogBrush.lbColor]));
+    WriteLn(Format('Trace:> [WinAPI CreateBrushIndirect]  Style: %d, Color: %8x (%s)',
+      [LogBrush.lbStyle, LogBrush.lbColor, ColorToString(LogBrush.lbColor)]));
   {$endif}
 
   result := 0;
@@ -210,6 +276,12 @@ begin
     QtRadialGradientPattern,
     QtConicalGradientPattern,
     QtTexturePattern = 24 );}
+    
+    // set brush color
+    Color := QBrush_Color(QtBrush.Widget)^;
+    ColorRefToTQColor(ColorToRGB(logBrush.lbColor), Color);
+    QBrush_setColor(QtBrush.Widget, @Color);
+    
   except
     {$ifdef VerboseQtWinAPI}
       WriteLn('[WinAPI CreateBrushIndirect] Failed');
@@ -327,27 +399,23 @@ begin
   
   with LogPen do
   begin
-     case lopnStyle of
-	PS_SOLID: QtPen.setStyle(QtSolidLine);	
-	PS_DASH: QtPen.setStyle(QtDashLine);	
-        PS_DOT: QtPen.setStyle(QtDotLine);
-        PS_DASHDOT:QtPen.setStyle(QtDashDotLine);  
-        PS_DASHDOTDOT:QtPen.setStyle(QtDashDotDotLine);
-        PS_USERSTYLE: QtPen.setStyle(QtCustomDashLine); 
-        PS_NULL:QtPen.setStyle(QtNoPen);	 
-        else
-	QtPen.setStyle(QtSolidLine);	
-     end;		
+    case lopnStyle of
+      PS_SOLID: QtPen.setStyle(QtSolidLine);
+      PS_DASH: QtPen.setStyle(QtDashLine);
+      PS_DOT: QtPen.setStyle(QtDotLine);
+      PS_DASHDOT:QtPen.setStyle(QtDashDotLine);
+      PS_DASHDOTDOT:QtPen.setStyle(QtDashDotDotLine);
+      PS_USERSTYLE: QtPen.setStyle(QtCustomDashLine);
+      PS_NULL:QtPen.setStyle(QtNoPen);
+      else
+	      QtPen.setStyle(QtSolidLine);
+    end;
 
-     QtPen.setWidth(lopnWidth.X);
-     {TODO: FIX Color issues }
-     color.Alpha := TColorToFPColor(lopnColor).Alpha;
-     color.r     := TColorToFPColor(lopnColor).Red;
-     color.g     := TColorToFPColor(lopnColor).Green;
-     color.b     := TColorToFPColor(lopnColor).Blue;
+    QtPen.setWidth(lopnWidth.X);
 
-     QtPen.setColor(Color);
-
+    QPen_Color(QtPen.Widget, @Color);
+    ColorRefToTQColor(ColorToRGB(lopnColor), Color);
+    QPen_setColor(QtPen.Widget, @Color);
   end;
 
   Result := HPEN(QtPen);
@@ -366,6 +434,9 @@ var
 begin
   QtRegion := TQtRegion.Create(True, X1,Y1,X2,Y2);
   Result := HRGN(QtRegion); 
+  {$ifdef VerboseQtWinAPI}
+    WriteLn('Trace: [WinAPI CreateRectRgn] Result: ', IntToStr(Result),' QRegionH=', ptrint(QtRegion.Widget));
+  {$endif}
 end;
 
 {------------------------------------------------------------------------------
@@ -442,7 +513,43 @@ begin
     {$endif}
 
 //    TQtImage(aObject).Free;
+  end
+  {------------------------------------------------------------------------------
+    Region
+   ------------------------------------------------------------------------------}
+  else if aObject is TQtRegion then
+  begin
+    {$ifdef VerboseQtWinAPI}
+      ObjType := 'Region';
+    {$endif}
+    
+//    TQtRegion(aObject).Free;
+  end
+  
+  {------------------------------------------------------------------------------
+    Pen
+   ------------------------------------------------------------------------------}
+  else if aObject is TQtPen then
+  begin
+    {$ifdef VerboseQtWinAPI}
+      ObjType := 'Pen';
+    {$endif}
+
+//    TQtRegion(aObject).Free;
   end;
+
+  if AObject is TQtResource then
+    if TQtResource(AObject).Owner<>nil then
+    begin
+      // this is an owned (default) resource, let owner free it
+      DebugLn('WARNING: Trying to Free a default resource');
+      AObject:=nil;
+    end;
+  
+  if AObject<>nil then
+    AObject.Free;
+  
+  
 
   // Find out if we want to release internal GDI object
 {    case GDIType of
@@ -480,36 +587,76 @@ function TQtWidgetSet.DrawText(DC: HDC; Str: PChar; Count: Integer;
 var
   WideStr: WideString;
   QtFontMetrics: TQtFontMetrics;
+  R: TRect;
+  F: Integer;
+  QtDC: TQtDeviceContext;
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI DrawText] DC: ', dbgs(DC), ' Str: ', string(Str),
-     ' CalcRect: ', dbgs((Flags and DT_CALCRECT) = DT_CALCRECT),
-     ' Rect.Left: ', Rect.Left, ' Rect.Top: ', Rect.Top);
+     ' CalcRect: ', dbgs((Flags and DT_CALCRECT) = DT_CALCRECT));
   {$endif}
 
   Result := 0;
 
-  if not IsValidDC(DC) then Exit;
+  if not IsValidDC(DC) then
+    Exit;
+    
+  QtDC :=TQtDeviceContext(DC);
 
   WideStr := UTF8Decode(Str);
 
-  QtFontMetrics := TQtFontMetrics.Create(TQtDeviceContext(DC).font.Widget);
+  QtFontMetrics := TQtFontMetrics.Create(QtDC.font.Widget);
   try
+    // convert DT flags to QT Flags
+    F := 0;
+    // horizontal alignment
+    if Flags and DT_CENTER <> 0 then
+      F := F or  QTAlignHCenter
+    else
+    if Flags and DT_RIGHT <> 0 then
+      F := F or QTAlignRight
+    else
+      F := F or QTAlignLeft;
+    // vertical alignment
+    if Flags and DT_VCENTER <> 0 then
+      F := F or QTAlignVCenter
+    else
+    if Flags and DT_BOTTOM <> 0 then
+      F := F or QTAlignBottom
+    else
+      F := F or QTAlignTop;
+
+    // mutually exclusive wordbreak and singleline
+    if Flags and DT_WORDBREAK <> 0 then
+      F := F or $1000{QTTExtWordWrap}
+    else
+    if Flags and DT_SINGLELINE <> 0 then
+      F := F or $100;{QTTextSingleLine;}
+
+    if Flags and DT_NOPREFIX = 0 then
+      F := F or $800;{QTTextShowMnemonic;}
+    
+    QFontMetrics_BoundingRect(QtFontMetrics.Widget, @R, @Rect, F, @WideStr);
+    
+    
+    //TODO: result should be different when DT_VCENTER or DT_BOTTOM is set
     Result := QtFontMetrics.height;
-    
-    if (Flags and DT_CALCRECT) = DT_CALCRECT then
-    begin
-      Rect.Right := Rect.Left + QtFontMetrics.width(@WideStr);
-      Rect.Bottom := Rect.Top + QtFontMetrics.height;
-    end;
-    
+
   finally
     QtFontMetrics.Free;
   end;
 
-  if (Flags and DT_CALCRECT) = DT_CALCRECT then Exit;
+  if (Flags and DT_CALCRECT) = DT_CALCRECT then
+  begin
+    {$ifdef VerboseQtWinAPI}
+      WriteLn('[WinAPI DrawText] Rect=', dbgs(Rect));
+    {$endif}
+    Exit;
+  end;
 
-  TQtDeviceContext(DC).drawText(Rect.Left, Rect.Top, @WideStr);
+  with Rect do
+    QtDC.DrawText(left, Top, Right-Left, Bottom-Top, F, @WideStr);
+  
 end;
 
 {------------------------------------------------------------------------------
@@ -566,6 +713,7 @@ function TQtWidgetSet.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint;
   Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
 var
   WideStr: WideString;
+  Painter: QPainterH;
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI ExtTextOut]');
@@ -577,12 +725,33 @@ begin
 
   WideStr := UTF8Decode(Str);
 
-//  if TQtDeviceContext(DC).isDrawing then TQtDeviceContext(DC).drawText(X, Y, @WideStr)
-//  else TQtDeviceContext(DC).AddObject(dcTextOut, @WideStr, X, Y);
-
   TQtDeviceContext(DC).drawText(X, Y, @WideStr);
-
   Result := True;
+end;
+
+function TQtWidgetSet.FillRect(DC: HDC; const Rect: TRect; Brush: HBRUSH
+  ): Boolean;
+var
+  Painter: QPainterH;
+  ABrush: QBrushH;
+begin
+  result:=false;
+  
+  {$ifdef VerboseQtWinAPI}
+    DebugLn('[WinAPI FillRect Rect=', dbgs(Rect),' Brush=', dbgHex(Brush));
+  {$endif}
+
+  if not IsValidDC(DC) then
+    exit;
+  if not IsValidGdiObject(Brush) then
+    exit;
+
+  Painter:= TQTDeviceContext(DC).Widget;
+  ABrush := TQTBrush(Brush).Widget;
+  
+  QPainter_FillRect(Painter, @Rect, ABrush);
+  
+  result := true;
 end;
 
 {------------------------------------------------------------------------------
@@ -661,6 +830,61 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Function: GetClipBox
+  Params: dc, lprect
+  Returns: Integer
+
+  Returns the smallest rectangle which includes the entire current
+  Clipping Region, or if no Clipping Region is set, the current
+  dimensions of the Drawable.
+
+  The result can be one of the following constants
+      Error
+      NullRegion
+      SimpleRegion
+      ComplexRegion
+ ------------------------------------------------------------------------------}
+function TQtWidgetSet.GetClipBox(DC: hDC; lpRect: PRect): Longint;
+var
+  ARegion: QRegionH;
+begin
+  Result := SIMPLEREGION;
+  If lpRect <> nil then
+    lpRect^ := Rect(0,0,0,0);
+
+  If not IsValidDC(DC) then
+    Result := ERROR;
+
+  if Result <> ERROR
+  then with TQtDeviceContext(DC) do
+  begin
+    {$ifdef VerboseQtWinAPI}
+    Write('TQtWidgetSet.GetClipBox FastClip=',((vClipRect<>nil) and not vClipRectDirty));
+    {$endif}
+    
+    // the most correct way to get a clipbox if through
+    // region.boundingrect, but it's slower.
+    
+    // TODO: remove "and false" below when vClipRectDirty is implemented
+    //       it should be "true" when user set a custom clip rect
+    //       and "false" on beginpaint
+    if (vClipRect<>nil) and not vClipRectDirty and false then
+      lpRect^ := vClipRect^
+    else
+    if QPainter_HasClipping(Widget) then
+    begin
+      ARegion := QRegion_Create;
+      QPainter_ClipRegion(Widget, ARegion);
+      QRegion_boundingRect(ARegion, lpRect);
+      QRegion_destroy(ARegion);
+    end;
+    {$ifdef VerboseQtWinAPI}
+    WriteLn(' Rect=', dbgs(lprect^));
+    {$endif}
+  end;
+end;
+
+{------------------------------------------------------------------------------
   Function: GetClipRGN
   Params: dc, rgn
   Returns: Integer
@@ -674,7 +898,25 @@ end;
  ------------------------------------------------------------------------------}
 Function TQtWidgetSet.GetClipRGN(DC : hDC; RGN : hRGN): Longint;
 begin
-  Result := 1;
+  {$ifdef VerboseQtWinAPI}
+    Write('Trace: [WinAPI GetClipRgn] DC: ', IntToStr(DC),' RGN: ', IntToStr(Rgn));
+    if RGN<>0 then
+      WriteLn(' QRegionH=', PtrInt(TQtRegion(Rgn).Widget))
+    else
+      WriteLn(' Rgn=0');
+  {$endif}
+  // it assumes that clipregion object has been created some other place
+  result := -1;
+  if not IsValidDC(DC) then
+    exit;
+  if rgn=0 then
+    exit;
+  if not QPainter_HasClipping(TQtDeviceContext(DC).Widget) then
+    result := 0
+  else begin
+    QPainter_ClipRegion(TQtDeviceContext(DC).Widget, TQtRegion(Rgn).Widget);
+    Result := 1;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -705,13 +947,35 @@ begin
     WriteLn('Trace:> [WinAPI GetDC] hWnd: ', IntToStr(hWnd));
   {$endif}
 
-  Result := HDC(TQtDeviceContext.Create(0));
+  Result := HDC(TQtDeviceContext.Create(hWnd));
   
 //  if hWnd <> 0 then TQtCustomForm(hWnd).Canvas := TQtDeviceContext(Result);
 
   {$ifdef VerboseQtWinAPI}
     WriteLn('Trace:< [WinAPI GetDC] Result: ', dbgs(Result));
   {$endif}
+end;
+
+function TQtWidgetSet.GetFocus: HWND;
+var
+  WidgetH: QWidgetH;
+  Obj: TQtWidget;
+begin
+  result:=0;
+  WidgetH:=QApplication_FocusWidget();
+  if WidgetH<>nil then
+  begin
+    Obj := QtObjectFromWidgetH(WidgetH);
+    if Obj<>nil then
+      result:=Hwnd(Obj);
+    {$ifdef VerboseFocus}
+    Write('TQtWidgetSet.GetFocus: WidgetH=',dbghex(ptrint(WidgetH)), ' QtWidget=', dbgsname(Obj));
+    if Obj<>nil then
+      WriteLn(' LclObject=', dbgsname(Obj.LCLObject))
+    else
+      WriteLn;
+    {$endif}
+  end;
 end;
 
 
@@ -909,6 +1173,14 @@ begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('Trace:< [WinAPI GetObject] Result=', dbgs(Result), ' ObjectType=', ObjType);
   {$endif}
+end;
+
+function TQtWidgetSet.GetProp(Handle: hwnd; Str: PChar): Pointer;
+begin
+  if Handle<>0 then
+    result := TQtWidget(Handle).Props[str]
+  else
+    result := nil;
 end;
 
 {------------------------------------------------------------------------------
@@ -1550,6 +1822,34 @@ begin
   end;
 end;
 
+function TQtWidgetSet.GetWindowOrgEx(dc: hdc; P: PPoint): Integer;
+var
+  Matrix: QMatrixH;
+begin
+  {$ifdef VerboseQtWinAPI}
+    WriteLn('Trace: > [WinAPI GetWindowOrgEx]');
+  {$endif}
+  Result := 0;
+  if not IsValidDC(DC) and (P<>nil) then
+  begin
+    {$ifdef VerboseQtWinAPI}
+      WriteLn('Trace: < [WinAPI GetWindowOrgEx] No valid DC or P is nil');
+    {$endif}
+    exit;
+  end;
+    
+  Matrix := QPainter_Matrix(TQtDeviceContext(DC).Widget);
+  if Matrix<>nil then
+  begin
+    P^.X := Trunc(QMatrix_Dx(Matrix));
+    P^.Y := Trunc(QMatrix_Dy(Matrix));
+    result := 1;
+  end;
+  {$ifdef VerboseQtWinAPI}
+    WriteLn('Trace: < [WinAPI GetWindowOrgEx] Result=', dbgs(p^));
+  {$endif}
+end;
+
 
 {------------------------------------------------------------------------------
   Method:  GetWindowRect
@@ -1673,11 +1973,14 @@ end;
 
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.InvalidateRect(aHandle: HWND; Rect: pRect; bErase: Boolean): Boolean;
+var
+  R: TRect;
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI Invalidate Rect]');
   {$endif}
 
+  //TODO: QWidget_update(TQtWidget(aHandle).Widget,Rect);
   TQtWidget(aHandle).Update;
   
   Result := True;
@@ -1702,12 +2005,11 @@ begin
 
   if not IsValidDC(DC) then Exit;
 
+  //TODO: check this brushorigin stuff, don't smell good.
+  //      replace with DC local point.
   TQtDeviceContext(DC).brushOrigin(@BrushPos);
 
-  TQtDeviceContext(DC).drawLine(
-   TQtDeviceContext(DC).Origin.X + BrushPos.X,
-   TQtDeviceContext(DC).Origin.Y + BrushPos.Y,
-   X, Y);
+  TQtDeviceContext(DC).drawLine( BrushPos.X, BrushPos.Y, X, Y);
    
   MoveToEx(DC, X, Y, nil);
   
@@ -1782,6 +2084,140 @@ begin
   Result := 1;
 end;
 
+
+{------------------------------------------------------------------------------
+  Function: RestoreDC: Restore a previously saved DC state
+  Params:
+    DC: Handle to a DeviceContext
+    SavedDC: Index of saved state that needs to be restored
+  Returns: True if state was successfuly restored.
+-------------------------------------------------------------------------------}
+function TQtWidgetSet.RestoreDC(DC: HDC; SavedDC: Integer): Boolean;
+var
+  DCData: PQtDCData;
+begin
+  {$ifdef VerboseQTWinAPI}
+  WriteLn('Trace:> [WinAPI RestoreDC] DC=', dbghex(DC),' SavedDC=',SavedDC);
+  {$Endif}
+  // if SavedDC is positive, it represents the wished saved dc instance
+  // if SavedDC is negative, it's a relative number from last pushed state
+  Result := False;
+  if SavedDCList=nil then
+  begin
+    {$ifdef VerboseQTWinAPI}
+    WriteLn('Trace:< [WinAPI RestoreDC] there is no List yet, result=', result);
+    {$Endif}
+    exit;
+  end;
+
+  if SavedDC<0 then
+    SavedDC := SavedDC+SavedDCList.Count;
+
+  // check index
+  result := (SavedDC>0)and(SavedDC<SavedDCList.Count);
+  if result then
+  begin
+
+    if SavedDC<>SavedDCList.Count-1 then
+      DebugLn('WARNING: poping other than last saved DC from stack');
+
+    result := true;
+    while SavedDC>0 do
+    begin
+      DCData := PQtDcData(SavedDCList[SavedDC]);
+      SavedDCList.Delete(SAvedDC);
+      result := TQtDeviceContext(DC).RestoreDCData(DCData);
+      Dec(SavedDC);
+    end;
+    
+  end;
+  {$ifdef VerboseQTWinAPI}
+  WriteLn('Trace:< [WinAPI RestoreDC]');
+  {$Endif}
+end;
+
+{------------------------------------------------------------------------------
+  Function: SaveDC: save DC state information to a stack
+  Params:  DC
+  Returns: The index assigned to the or 0 if DC is not valid
+-------------------------------------------------------------------------------}
+function TQtWidgetSet.SaveDC(DC: HDC): Integer;
+var
+  DCData: PQtDCData;
+begin
+  {$ifdef VerboseQTWinAPI}
+  WriteLn('Trace:> [WinAPI SaveDC] DC=', dbghex(DC));
+  {$Endif}
+
+  result:=0;
+  
+  if not IsValidDC(DC) then
+  begin
+    {$ifdef VerboseQTWinAPI}
+    WriteLn('Trace:< [WinAPI SaveDC] DC Invalid, result=', result);
+    {$Endif}
+    exit;
+  end;
+
+  if SavedDCList=nil then
+  begin
+    SavedDCList := TList.Create;
+    SavedDCList.Add(nil); // start at index 1, 0 is an invalid saved state
+  end;
+  
+  DCData := TQtDeviceContext(Dc).CreateDCData;
+  result := SavedDCList.Add(DCData);
+  
+  {$ifdef VerboseQTWinAPI}
+  WriteLn('Trace:< [WinAPI SaveDC] result=', result);
+  {$Endif}
+end;
+
+{------------------------------------------------------------------------------
+  Function: SelectClipRGN
+  Params:  DC, RGN
+  Returns: longint
+
+  Sets the DeviceContext's ClipRegion. The Return value
+  is the new clip regions type, or ERROR.
+
+  The result can be one of the following constants
+      Error
+      NullRegion
+      SimpleRegion
+      ComplexRegion
+
+ ------------------------------------------------------------------------------}
+function TQtWidgetSet.SelectClipRGN(DC: hDC; RGN: HRGN): Longint;
+var
+  ARegion: QRegionH;
+  Painter: QPainterH;
+begin
+  result := ERROR;
+  if IsValidDC(DC) then
+  begin
+    Painter := TQtDeviceContext(DC).Widget;
+    QPainter_setClipRegion(Painter, TQtRegion(Rgn).Widget);
+    if QPainter_hasClipping(Painter) then
+    begin
+      // TODO: isNull is trated as isEmpty, is not right but isNull is not
+      //       in the bindings, it's not also in QT documentation :(
+      //       however in QT documentation for isEmpty, isNull is mentioned
+      ARegion := QRegion_Create;
+      QPainter_ClipRegion(Painter, ARegion);
+      if QRegion_isEmpty(ARegion) then
+        result := NULLREGION
+      else begin
+        result := SIMPLEREGION;
+        // TODO: test for complex region
+      end;
+      QRegion_Destroy(ARegion);
+    end else begin
+      result := NULLREGION;
+    end;
+  end;
+end;
+
 {------------------------------------------------------------------------------
   Function: SelectObject
   Params:  none
@@ -1797,7 +2233,7 @@ var
   {$endif}
 begin
   {$ifdef VerboseQtWinAPI}
-    WriteLn('Trace:> [WinAPI SelectObject] DC=', dbgs(DC), ' GDIObj=', dbgs(GDIObj));
+    WriteLn('Trace:> [WinAPI SelectObject] DC=', dbghex(DC), ' GDIObj=', dbghex(GDIObj));
   {$endif}
 
   Result := 0;
@@ -1832,6 +2268,15 @@ begin
     
     TQtDeviceContext(DC).setFont(TQtFont(aObject));
   end
+  else if aObject is TQtPen then
+  begin
+    {$ifdef VerboseQtWinAPI}
+      ObjType := 'Pen'      ;
+    {$endif}
+    result := HGDIOBJ(TQtDeviceContext(DC).pen);
+    
+    TQtDeviceContext(DC).setPen(TQtPen(aObject));
+  end
   else if aObject is TQtBrush then
   begin
     {$ifdef VerboseQtWinAPI}
@@ -1839,6 +2284,8 @@ begin
     {$endif}
     
     Result := HGDIOBJ(TQtDeviceContext(DC).brush);
+    
+    TQtDeviceContext(DC).setBrush(TQtBrush(aObject));
   end
   else if aObject is TQtImage then
   begin
@@ -1847,13 +2294,63 @@ begin
     {$endif}
 
     Result := HGDIOBJ(TQtDeviceContext(DC).vImage);
-
+    
+    // TODO: is this also saved in qpainter_save?
     TQtDeviceContext(DC).vImage := TQtImage(aObject).Handle;
   end;
 
   {$ifdef VerboseQtWinAPI}
-    WriteLn('Trace:< [WinAPI SelectObject] Result=', dbgs(Result), ' ObjectType=', ObjType);
+    WriteLn('Trace:< [WinAPI SelectObject] Result=', dbghex(Result), ' ObjectType=', ObjType);
   {$endif}
+end;
+
+{------------------------------------------------------------------------------
+  Function: SetCursorPos
+  Params: X:
+          Y:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TQtWidgetSet.SetBKColor(DC: HDC; Color: TColorRef): TColorRef;
+var
+  Brush: TQtBrush;
+begin
+  {$ifdef VerboseQtWinAPI}
+    WriteLn('Trace:> [WinAPI SetBkColor] DC=', dbgs(DC), ' Color=', dbgs(Color));
+  {$endif}
+
+  Result := 0;
+
+  if not IsValidDC(DC) then
+  begin
+    {$ifdef VerboseQtWinAPI}
+      WriteLn('Trace:< [WinAPI SetBkColor] Invalid DC');
+    {$endif}
+
+    Exit;
+  end;
+  
+  result := TQtDeviceContext(DC).SetBkColor(Color);
+end;
+
+function TQtWidgetSet.SetBkMode(DC: HDC; bkMode: Integer): Integer;
+begin
+  {$ifdef VerboseQtWinAPI}
+    WriteLn('Trace:> [WinAPI SetBkMode] DC=', dbgs(DC), ' BkMode=', dbgs(bkMode));
+  {$endif}
+
+  Result := 0;
+
+  if not IsValidDC(DC) then
+  begin
+    {$ifdef VerboseQtWinAPI}
+      WriteLn('Trace:< [WinAPI SetBkMode] Invalid DC');
+    {$endif}
+
+    Exit;
+  end;
+
+  result := TQtDeviceContext(DC).SetBkMode(bkMode);
 end;
 
 {------------------------------------------------------------------------------
@@ -1872,6 +2369,23 @@ begin
   QCursor_setPos(X, Y);
   
   Result := True;
+end;
+
+function TQtWidgetSet.SetFocus(hWnd: HWND): HWND;
+var
+  Widget: QWidgetH;
+begin
+  if hwnd<>0 then
+  begin
+    {$ifdef VerboseFocus}
+    WriteLn('*********  TQtWidgetSet.SetFocus INIT focusing ', TQtWidget(hwnd).lclobject.name);
+    {$endif}
+    result := GetFocus;
+    QWidget_SetFocus(TQtWidget(hWnd).Widget);
+    {$ifdef VerboseFocus}
+    DebugLn('********* TQtWidgetSet.SetFocus END was %x now is %x',[result,hwnd]);
+    {$endif}
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -1894,13 +2408,43 @@ begin
 
   if IsValidDC(DC) then
   begin
-    TQtDeviceContext(DC).Origin.X := -NewX;
-    TQtDeviceContext(DC).Origin.Y := -NewY;
-    
-    if OldPoint <> nil then OldPoint^ := TQtDeviceContext(DC).Origin;
+
+    GetWindowOrgEx(DC, OldPoint);
+    QPainter_translate(TQtDeviceContext(DC).Widget, -NewX, -NewY);
+
   end;
 
   Result := True;
+end;
+
+function TQtWidgetSet.SetProp(Handle: hwnd; Str: PChar; Data: Pointer
+  ): Boolean;
+begin
+  if Handle<>0 then
+  begin
+    TQtWidget(Handle).Props[str] := Data;
+    result:=(TQtWidget(Handle).Props[str]=Data);
+    {$ifdef VerboseQT}
+    DebugLn('[WinAPI SetProp win=%s str=%s data=%x',[dbgsname(TQtWidget(Handle)), str, ptrint(data)]);
+    {$endif}
+  end else
+    result:=False;
+end;
+
+function TQtWidgetSet.SetTextColor(DC: HDC; Color: TColorRef): TColorRef;
+begin
+  {$ifdef VerboseQtWinAPI}
+    WriteLn('[WinAPI SetTextColor] DC: ', dbgs(DC));
+  {$endif}
+  result := CLR_INVALID;
+  if not IsValidDC(DC) then begin
+    {$ifdef VerboseQtWinAPI}
+    WriteLn('[WinAPI SetTextColor] Invalid DC');
+    {$endif}
+    exit;
+  end;
+  result := TQtDeviceContext(DC).vTextColor;
+  TQtDeviceContext(DC).vTextColor := ColorToRGB(Color); // be sure we get TColorRef
 end;
 
 {------------------------------------------------------------------------------
@@ -1919,7 +2463,7 @@ begin
 
   Result := False;
   
-  Widget := QWidgetH(hWnd);
+  Widget := TQTWidget(hWnd).Widget; //QWidgetH(hWnd);
 
 //  if Widget = nil then RaiseException('TQtWidgetSet.ShowWindow  hWnd is nil');
 

@@ -45,15 +45,20 @@ function Ellipse(DC: HDC; x1, y1, x2, y2: Integer): Boolean; override;
 function EndPaint(Handle: hwnd; var PS: TPaintStruct): Integer; override;
 function ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean; override;
 
+function FillRect(DC: HDC; const Rect: TRect; Brush: HBRUSH): Boolean; override;
+
 function GetBitmapRawImageDescription(Bitmap: HBITMAP; Desc: PRawImageDescription): Boolean; override;
 function GetClientBounds(handle : HWND; var ARect : TRect) : Boolean; override;
 function GetClientRect(handle : HWND; var ARect : TRect) : Boolean; override;
+function GetClipBox(DC : hDC; lpRect : PRect) : Longint; override;
 Function GetClipRGN(DC: hDC; RGN: hRGN): Longint; override;
 function GetCursorPos(var lpPoint: TPoint ): Boolean; override;
 function GetDeviceRawImageDescription(DC: HDC; Desc: PRawImageDescription): boolean; override;
 function GetDeviceSize(DC: HDC; var P: TPoint): Boolean; Override;
 function GetDC(hWnd: HWND): HDC; override;
+function GetFocus: HWND; override;
 function GetObject(GDIObj: HGDIOBJ; BufSize: Integer; Buf: Pointer): Integer; override;
+function GetProp(Handle : hwnd; Str : PChar): Pointer; override;
 function GetRawImageFromDevice(SrcDC: HDC; const SrcRect: TRect; var NewRawImage: TRawImage): boolean; override;
 function GetRawImageFromBitmap(SrcBitmap, SrcMaskBitmap: HBITMAP; const SrcRect: TRect; var NewRawImage: TRawImage): boolean; Override;
 function GetSysColor(nIndex: Integer): DWORD; override;
@@ -61,6 +66,7 @@ function GetSystemMetrics(nIndex: Integer): Integer; override;
 function GetTextColor(DC: HDC) : TColorRef; Override;
 function GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer; var Size: TSize): Boolean; override;
 function GetTextMetrics(DC: HDC; var TM: TTextMetric): Boolean;  override;
+Function GetWindowOrgEx(dc : hdc; P : PPoint): Integer; override;
 function GetWindowRect(Handle: hwnd; var ARect: TRect): Integer; override;
 function GetWindowRelativePosition(Handle: hwnd; var Left, Top: Integer): boolean; override;
 function GetWindowSize(Handle: hwnd; var Width, Height: Integer): boolean; override;
@@ -73,9 +79,17 @@ function MoveToEx(DC: HDC; X, Y: Integer; OldPoint: PPoint): Boolean; override;
 
 function Rectangle(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean; override;
 function ReleaseDC(hWnd: HWND; DC: HDC): Integer; override;
+function RestoreDC(DC: HDC; SavedDC: Integer): Boolean; override;
 
+function SaveDC(DC: HDC): Integer; override;
+Function SelectClipRGN(DC : hDC; RGN : HRGN) : Longint; override;
 function SelectObject(DC: HDC; GDIObj: HGDIOBJ): HGDIOBJ; override;
+function SetBKColor(DC: HDC; Color: TColorRef): TColorRef; override;
+Function SetBkMode(DC: HDC; bkMode : Integer) : Integer; override;
 function SetCursorPos(X, Y: Integer): Boolean; override;
+function SetFocus(hWnd: HWND): HWND; override;
+Function SetProp(Handle: hwnd; Str : PChar; Data : Pointer) : Boolean; override;
+function SetTextColor(DC: HDC; Color: TColorRef): TColorRef; override;
 function SetWindowOrgEx(DC : HDC; NewX, NewY : Integer; OldPoint: PPoint) : Boolean; override;
 function ShowWindow(hWnd: HWND; nCmdShow: Integer): Boolean; override;
 function StretchBlt(DestDC: HDC; X, Y, Width, Height: Integer;
