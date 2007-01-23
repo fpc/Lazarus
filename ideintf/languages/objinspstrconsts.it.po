@@ -140,7 +140,7 @@ msgstr "Aggiungi Immagini"
 
 #: objinspstrconsts:s_addassingle
 msgid "Add as single"
-msgstr ""
+msgstr "Aggiungi come singolo"
 
 #: objinspstrconsts:clbadd
 msgid "Add new Item"
@@ -152,7 +152,7 @@ msgstr "Aggiungi pagina"
 
 #: objinspstrconsts:tccesaddtab
 msgid "Add tab"
-msgstr ""
+msgstr "Aggiungi scheda"
 
 #: objinspstrconsts:oisaddtofavorites
 msgid "Add to Favorites"
@@ -328,7 +328,7 @@ msgstr "Taglia"
 
 #: objinspstrconsts:oiscutcomponents
 msgid "Cut components"
-msgstr "aglia i componenti"
+msgstr "Taglia i componenti"
 
 #: objinspstrconsts:cactionlisteditordatabasecategory
 msgid "Database"
@@ -360,7 +360,7 @@ msgstr "Cancella pagina"
 
 #: objinspstrconsts:tccesdeletetab
 msgid "Delete tab"
-msgstr ""
+msgstr "Cancella scheda"
 
 #: objinspstrconsts:clbdelete
 msgid "Delete the Item %d \"%s\"?"
@@ -372,7 +372,7 @@ msgstr "Finestra di dialogo"
 
 #: objinspstrconsts:s_suggestsplitimage
 msgid "Do you want to split the image?"
-msgstr ""
+msgstr "Vuoi tagliare l'immagine?"
 
 #: objinspstrconsts:clbdown
 msgid "Do&wn"
@@ -492,7 +492,7 @@ msgstr "Inserisci pagina"
 
 #: objinspstrconsts:tccesinserttab
 msgid "Insert tab"
-msgstr ""
+msgstr "Inserisci scheda"
 
 #: objinspstrconsts:oisint64
 msgid "Int64"
@@ -596,11 +596,11 @@ msgstr "Sposta la pagina a destra"
 
 #: objinspstrconsts:tccesmovetableft
 msgid "Move tab left"
-msgstr ""
+msgstr "Muovi scheda a sinistra"
 
 #: objinspstrconsts:tccesmovetabright
 msgid "Move tab right"
-msgstr ""
+msgstr "Muovi scheda a destra"
 
 #: objinspstrconsts:rscdmoveup
 msgid "Move up"
@@ -812,7 +812,7 @@ msgstr "Ordina"
 
 #: objinspstrconsts:s_splitimage
 msgid "Split image"
-msgstr ""
+msgstr "Taglia immagine"
 
 #: objinspstrconsts:oisstdactionlisteditor
 msgid "Standard Action Classes"
