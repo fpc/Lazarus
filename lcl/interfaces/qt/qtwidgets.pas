@@ -635,11 +635,11 @@ begin
 
   QEvent_accept(Event);
 
-  {.$ifdef VerboseQt}
+  {$ifdef VerboseQt}
   WriteLn('TQtWidget.EventFilter: Sender=', IntToHex(ptrint(Sender),8),
     ' LCLObject=', dbgsName(LCLObject),
     ' Event=', EventTypeToStr(Event));
-  {.$endif}
+  {$endif}
 
 
   
