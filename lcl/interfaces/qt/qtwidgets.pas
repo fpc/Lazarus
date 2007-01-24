@@ -447,6 +447,7 @@ begin
   // Sets it's initial properties
   SetGeometry;
   
+  
   // set focus policy
   if AWinControl.TabStop then
     QWidget_setFocusPolicy(Widget, QtStrongFocus);
@@ -1843,9 +1844,6 @@ begin
   {$endif}
   Parent := TQtWidget(LCLObject.Parent.Handle).Widget;
   Result := QLabel_create(Parent);
-
-  Str := UTF8Decode(LCLObject.Caption);
-  SetText(@Str);
 end;
 
 {------------------------------------------------------------------------------
@@ -1963,17 +1961,14 @@ begin
   begin
     Parent := TQtWidget(LCLObject.Parent.Handle).Widget;
     Result := QCheckBox_create(Parent);
-    
-    inherited SetGeometry;
   end;
-
-  Str := UTF8Decode(LCLObject.Caption);
-  SetText(@Str);
 end;
 
 procedure TQtCheckBox.SetGeometry;
 begin
-  // special handling
+  if LCLObject.Parent is TCustomCheckGroup then
+    exit;
+  inherited SetGeometry;
 end;
 
 {------------------------------------------------------------------------------
@@ -2047,17 +2042,14 @@ begin
   begin
     Parent := TQtWidget(LCLObject.Parent.Handle).Widget;
     Result := QRadioButton_create(Parent);
-
-    inherited SetGeometry;
   end;
-
-  Str := UTF8Decode(LCLObject.Caption);
-  SetText(@Str);
 end;
 
 procedure TQtRadioButton.SetGeometry;
 begin
-  // special handling
+  if LCLObject.Parent is TCustomRadioGroup then
+    exit;
+  inherited SetGeometry;
 end;
 
 {------------------------------------------------------------------------------
@@ -2896,7 +2888,6 @@ end;
 function TQtStatusBar.CreateWidget(const AParams: TCreateParams): QWidgetH;
 var
   Parent: QWidgetH;
-  Text: WideString;
 begin
   // Creates the widget
   {$ifdef VerboseQt}
@@ -2904,12 +2895,14 @@ begin
   {$endif}
   Parent := TQtWidget(LCLObject.Parent.Handle).Widget;
   Result := QStatusBar_create(Parent);
-
+  
+  {TODO: this should be made in initializeWND?
   if (LCLObject as TStatusBar).SimplePanel then
   begin;
     Text := UTF8Decode((LCLObject as TStatusBar).SimpleText);
     showMessage(@Text);
   end;
+  }
 end;
 
 {------------------------------------------------------------------------------
