@@ -658,7 +658,6 @@ type
     procedure SetTopRow(const AValue: Integer);
     procedure TryScrollTo(aCol,aRow: integer);
     procedure UpdateScrollBarPos(Which: TScrollStyle);
-    procedure UpdateSelectionRange;
     procedure WriteColumns(Writer: TWriter);
     procedure WriteColWidths(Writer: TWriter);
     procedure WriteRowHeights(Writer: TWriter);
@@ -795,6 +794,7 @@ type
     function  SelectCell(ACol, ARow: Integer): Boolean; virtual;
     procedure SetCanvasFont(aFont: TFont);
     procedure SetColor(Value: TColor); override;
+    procedure SetColRow(const ACol,ARow: Integer);
     procedure SetEditText(ACol, ARow: Longint; const Value: string); dynamic;
     procedure SetBorderStyle(NewStyle: TBorderStyle); override;
     procedure SetFixedcolor(const AValue: TColor); virtual;
@@ -805,6 +805,7 @@ type
     function  TryMoveSelection(Relative: Boolean; var DCol, DRow: Integer): Boolean;
     procedure UnLockEditor;
     procedure UpdateHorzScrollBar(const aVisible: boolean; const aRange,aPage: Integer); virtual;
+    procedure UpdateSelectionRange;
     procedure UpdateVertScrollbar(const aVisible: boolean; const aRange,aPage: Integer); virtual;
     procedure UpdateBorderStyle;
     procedure VisualChange; virtual;
@@ -2675,6 +2676,13 @@ begin
   if AlternateColor = Color then
     FAlternateColor := Value;
   inherited SetColor(Value);
+end;
+
+procedure TCustomGrid.SetColRow(const ACol, ARow: Integer);
+begin
+  FCol := ACol;
+  FRow := ARow;
+  UpdateSelectionRange;
 end;
 
 procedure TCustomGrid.DrawBorder;

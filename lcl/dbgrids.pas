@@ -2336,6 +2336,9 @@ var
   CurActiveRecord: Integer;
 begin
   if FDataLink.Active then begin
+    {$ifdef dbgGridPaint}
+    DebugLn('DrawAllRows: Link.ActiveRecord=%d, Row=%d',[FDataLink.ActiveRecord, Row]);
+    {$endif}
     CurActiveRecord:=FDataLink.ActiveRecord;
     FDrawingEmptyDataset:=FDatalink.DataSet.IsEmpty;
   end else
@@ -2377,7 +2380,7 @@ begin
   {$endif}
   inherited DrawRow(ARow);
   {$ifdef dbgGridPaint}
-  DebugLn('End Row')
+  DebugLn(' End Row')
   {$endif}
 end;
 
@@ -2501,6 +2504,7 @@ begin
   // find out the column count, if result=0 then
   // there are no visible columns defined or dataset is inactive
   // or there are no visible fields, ie the grid is blank
+  {$IfDef dbgDBGrid}DebugLn('TCustomDbgrid.UpdateGridCounts INIT');{$endif}
   BeginVisualChange;
   try
     Result := GetColumnCount;
@@ -2528,11 +2532,15 @@ begin
       RowCount := RecCount;
       FixedRows := FRCount;
       FixedCols := FCCount;
+      
       UpdateGridColumnSizes;
+
+      SetColRow(Col, FixedRows + FDatalink.ActiveRecord);
     end;
   finally
     EndVisualChange;
   end;
+  {$IfDef dbgDBGrid}DebugLn('TCustomDbgrid.UpdateGridCounts END');{$endif}
 end;
 
 procedure TCustomDBGrid.UpdateVertScrollbar(const aVisible: boolean;
