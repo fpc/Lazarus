@@ -263,7 +263,7 @@ type
     function IncludeDirective: boolean;
     function IncludeFile(const AFilename: string): boolean;
     function IncludePathDirective: boolean;
-    function SearchIncludeFile(const AFilename: string; var NewCode: Pointer;
+    function SearchIncludeFile(AFilename: string; var NewCode: Pointer;
       var MissingIncludeFile: TMissingIncludeFile): boolean;
     function ShortSwitchDirective: boolean;
     function ReadNextSwitchDirective: boolean;
@@ -2487,12 +2487,13 @@ begin
   end;
 end;
 
-function TLinkScanner.SearchIncludeFile(const AFilename: string;
+function TLinkScanner.SearchIncludeFile(AFilename: string;
   var NewCode: Pointer; var MissingIncludeFile: TMissingIncludeFile): boolean;
 var PathStart, PathEnd: integer;
   IncludePath, PathDivider, CurPath: string;
   ExpFilename: string;
   SecondaryFilename: String;
+  HasPathDelims: Boolean;
 
   function SearchPath(const APath: string): boolean;
   begin
@@ -2533,8 +2534,13 @@ begin
     if not Result then SetMissingIncludeFile;
     exit;
   end;
+
   // include filename is relative
-  
+  // beware of 'dir/file.inc'
+  HasPathDelims:=(System.Pos('/',AFilename)>0) or (System.Pos('\',AFilename)>0);
+  if HasPathDelims then
+    DoDirSeparators(AFilename);
+
   // first search include file in the directory of the main source
   {$IFDEF VerboseIncludeSearch}
   DebugLn('TLinkScanner.SearchIncludeFile MainSourceFilename="',FMainSourceFilename,'"');
@@ -2545,7 +2551,7 @@ begin
     NewCode:=LoadSourceCaseLoUp(ExpFilename);
     Result:=(NewCode<>nil);
     if Result then exit;
-  end else begin
+  end else if (not HasPathDelims) then begin
     // main source has relative filename (= virtual)
     NewCode:=FOnLoadSource(Self,TrimFilename(AFilename),true);
     if NewCode=nil then begin
@@ -2563,43 +2569,46 @@ begin
   end;
   
   // then search the include file in the include path
-  if MissingIncludeFile=nil then
-    IncludePath:=Values.Variables[ExternalMacroStart+'INCPATH']
-  else
-    IncludePath:=MissingIncludeFile.IncludePath;
-    
-  if Values.IsDefined('DELPHI') then
-    PathDivider:=':'
-  else
-    PathDivider:=':;';
-  {$IFDEF VerboseIncludeSearch}
-  DebugLn('TLinkScanner.SearchIncludeFile IncPath="',IncludePath,'" PathDivider="',PathDivider,'"');
-  {$ENDIF}
-  PathStart:=1;
-  PathEnd:=PathStart;
-  while PathEnd<=length(IncludePath) do begin
-    if ((Pos(IncludePath[PathEnd],PathDivider))>0)
-    {$IFDEF MSWindows}
-    and (not ((PathEnd-PathStart=1) // ignore colon in drive
-          and (IncludePath[PathEnd]=':')
-          and (IsWordChar[IncludePath[PathEnd-1]])))
+  if not HasPathDelims then begin
+    if MissingIncludeFile=nil then
+      IncludePath:=Values.Variables[ExternalMacroStart+'INCPATH']
+    else
+      IncludePath:=MissingIncludeFile.IncludePath;
+
+    if Values.IsDefined('DELPHI') then
+      PathDivider:=':'
+    else
+      PathDivider:=':;';
+    {$IFDEF VerboseIncludeSearch}
+    DebugLn('TLinkScanner.SearchIncludeFile IncPath="',IncludePath,'" PathDivider="',PathDivider,'"');
     {$ENDIF}
-    then begin
-      if PathEnd>PathStart then begin
-        CurPath:=TrimFilename(copy(IncludePath,PathStart,PathEnd-PathStart));
-        Result:=SearchPath(CurPath);
-        if Result then exit;
-      end;
-      PathStart:=PathEnd+1;
-      PathEnd:=PathStart;
-    end else
-      inc(PathEnd);
+    PathStart:=1;
+    PathEnd:=PathStart;
+    while PathEnd<=length(IncludePath) do begin
+      if ((Pos(IncludePath[PathEnd],PathDivider))>0)
+      {$IFDEF MSWindows}
+      and (not ((PathEnd-PathStart=1) // ignore colon in drive
+            and (IncludePath[PathEnd]=':')
+            and (IsWordChar[IncludePath[PathEnd-1]])))
+      {$ENDIF}
+      then begin
+        if PathEnd>PathStart then begin
+          CurPath:=TrimFilename(copy(IncludePath,PathStart,PathEnd-PathStart));
+          Result:=SearchPath(CurPath);
+          if Result then exit;
+        end;
+        PathStart:=PathEnd+1;
+        PathEnd:=PathStart;
+      end else
+        inc(PathEnd);
+    end;
+    if PathEnd>PathStart then begin
+      CurPath:=TrimFilename(copy(IncludePath,PathStart,PathEnd-PathStart));
+      Result:=SearchPath(CurPath);
+      if Result then exit;
+    end;
   end;
-  if PathEnd>PathStart then begin
-    CurPath:=TrimFilename(copy(IncludePath,PathStart,PathEnd-PathStart));
-    Result:=SearchPath(CurPath);
-    if Result then exit;
-  end;
+  
   SetMissingIncludeFile;
 end;
 
