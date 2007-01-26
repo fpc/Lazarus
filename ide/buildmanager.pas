@@ -447,7 +447,7 @@ begin
   if ScanningCompilerDisabled then exit;
   GetFPCCompilerParamsForEnvironmentTest(CurOptions);
   {$IFDEF VerboseFPCSrcScan}
-  writeln('TMainIDE.RescanCompilerDefines A ',CurOptions,
+  debugln(['TMainIDE.RescanCompilerDefines A ',CurOptions,
     ' OnlyIfCompilerChanged=',OnlyIfCompilerChanged,
     ' Valid=',InputHistories.FPCConfigCache.Valid(true),
     ' ID=',InputHistories.FPCConfigCache.FindItem(CurOptions),
@@ -455,7 +455,7 @@ begin
     ' EnvCompilerFilename=',EnvironmentOptions.CompilerFilename,
     ' CurDefinesCompilerOptions="',CurDefinesCompilerOptions,'"',
     ' CurOptions="',CurOptions,'"',
-    '');
+    '']);
   {$ENDIF}
   // rescan compiler defines
   // ask the compiler for its settings
