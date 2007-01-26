@@ -423,6 +423,7 @@ type
   protected
     FFormBorderStyle: TFormBorderStyle;
     FActionLists: TList;
+    procedure CMShowingChanged(var Message: TLMessage); message CM_SHOWINGCHANGED;
     procedure Activate; dynamic;
     procedure ActiveChanged; dynamic;
     procedure BeginFormUpdate;

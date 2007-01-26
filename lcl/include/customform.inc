@@ -428,9 +428,6 @@ begin
           {$ENDIF}
           LCLIntf.SetFocus(FActiveControl.Handle);
         end;
-        DoShow;
-      end else begin
-        DoHide;
       end;
     end;
   finally
@@ -471,6 +468,14 @@ begin
   Deactivate;
 end;
 
+procedure TCustomForm.CMShowingChanged(var Message: TLMessage);
+begin
+  inherited;
+  if Showing then
+    DoShow
+  else
+    DoHide;
+end;
 {------------------------------------------------------------------------------
   Method: TCustomForm.Activate
   Params: none
