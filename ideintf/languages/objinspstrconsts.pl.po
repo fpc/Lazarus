@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Last-Translator: AlbercikCD\n"
-"PO-Revision-Date: 2007-01-14 00:00+0100\n"
+"PO-Revision-Date: 2007-01-19 23:17+0100\n"
 "Project-Id-Version: objinspstrconsts\n"
 "Language-Team: \n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -27,7 +27,7 @@ msgstr "&Dodaj"
 
 #: objinspstrconsts:oistdactdatasetcancelheadline
 msgid "&Cancel"
-msgstr ""
+msgstr "&Anuluj"
 
 #: objinspstrconsts:oistdacthelpcontentsheadline
 msgid "&Contents"
@@ -35,7 +35,7 @@ msgstr ""
 
 #: objinspstrconsts:oistdacteditcopyheadline
 msgid "&Copy"
-msgstr ""
+msgstr "&Kopiuj"
 
 #: objinspstrconsts:oiscdelete
 msgid "&Delete"
@@ -43,7 +43,7 @@ msgstr "&Usuń"
 
 #: objinspstrconsts:oistdactdataseteditheadline
 msgid "&Edit"
-msgstr ""
+msgstr "&Edytuj"
 
 #: objinspstrconsts:oistdactdatasetfirstheadline
 msgid "&First"
@@ -55,7 +55,7 @@ msgstr ""
 
 #: objinspstrconsts:oistdactdatasetinsertheadline
 msgid "&Insert"
-msgstr ""
+msgstr "&Wstaw"
 
 #: objinspstrconsts:oistdactdatasetlastheadline
 msgid "&Last"
@@ -79,7 +79,7 @@ msgstr ""
 
 #: objinspstrconsts:oistdacteditpasteheadline
 msgid "&Paste"
-msgstr ""
+msgstr "Wkl&ej"
 
 #: objinspstrconsts:oistdactdatasetpriorheadline
 msgid "&Prior"
@@ -111,7 +111,7 @@ msgstr ""
 
 #: objinspstrconsts:cactionlisteditorunknowncategory
 msgid "(Unknown)"
-msgstr ""
+msgstr "(Nieznany)"
 
 #: objinspstrconsts:oisnone
 msgid "(none)"
@@ -127,7 +127,7 @@ msgstr ""
 
 #: objinspstrconsts:oisaction
 msgid "Action"
-msgstr ""
+msgstr "Akcja"
 
 #: objinspstrconsts:oisactionlisteditor
 msgid "Action List Editor"
@@ -171,7 +171,7 @@ msgstr ""
 
 #: objinspstrconsts:rscdalignment
 msgid "Alignment"
-msgstr ""
+msgstr "Wyrównanie"
 
 #: objinspstrconsts:oisall
 msgid "All"
@@ -183,7 +183,7 @@ msgstr "Wszystkie pliki"
 
 #: objinspstrconsts:sccstredtapply
 msgid "Apply"
-msgstr ""
+msgstr "Zastosuj"
 
 #: objinspstrconsts:oisarray
 msgid "Array"
@@ -207,7 +207,7 @@ msgstr ""
 
 #: objinspstrconsts:oistdactdatasetcancel1hint
 msgid "Cancel"
-msgstr ""
+msgstr "Anuluj"
 
 #: objinspstrconsts:rscdcaption
 msgid "Caption"
@@ -299,27 +299,27 @@ msgstr ""
 
 #: objinspstrconsts:oistdacteditselectallshortcut
 msgid "Ctrl+A"
-msgstr ""
+msgstr "Ctrl+A"
 
 #: objinspstrconsts:oistdacteditcopyshortcut
 msgid "Ctrl+C"
-msgstr ""
+msgstr "Ctrl+C"
 
 #: objinspstrconsts:oistdactfileopenshortcut
 msgid "Ctrl+O"
-msgstr ""
+msgstr "Ctrl+O"
 
 #: objinspstrconsts:oistdacteditpasteshortcut
 msgid "Ctrl+V"
-msgstr ""
+msgstr "Ctrl+V"
 
 #: objinspstrconsts:oistdacteditcutshortcut
 msgid "Ctrl+X"
-msgstr ""
+msgstr "Ctrl+X"
 
 #: objinspstrconsts:oistdacteditundoshortcut
 msgid "Ctrl+Z"
-msgstr ""
+msgstr "Ctrl+Z"
 
 #: objinspstrconsts:oistdacteditcutheadline
 msgid "Cu&t"
@@ -459,7 +459,7 @@ msgstr ""
 
 #: objinspstrconsts:cactionlisteditorhelpcategory
 msgid "Help"
-msgstr ""
+msgstr "Pomoc"
 
 #: objinspstrconsts:oistdacthelpcontentshint
 msgid "Help Contents"
@@ -499,15 +499,15 @@ msgstr ""
 
 #: objinspstrconsts:oisint64
 msgid "Int64"
-msgstr ""
+msgstr "Int64"
 
 #: objinspstrconsts:oisinteger
 msgid "Integer"
-msgstr ""
+msgstr "Integer"
 
 #: objinspstrconsts:oisinterface
 msgid "Interface"
-msgstr ""
+msgstr "Interfejs"
 
 #: objinspstrconsts:rscdinvalidnumericvalue
 msgid "Invalid numeric Value"
@@ -635,7 +635,7 @@ msgstr ""
 
 #: objinspstrconsts:rscdok
 msgid "OK"
-msgstr ""
+msgstr "OK"
 
 #: objinspstrconsts:oisobject
 msgid "Object"
@@ -647,11 +647,11 @@ msgstr "Inspektor obiektów"
 
 #: objinspstrconsts:oisok2
 msgid "Ok"
-msgstr ""
+msgstr "Ok"
 
 #: objinspstrconsts:sccstredtopendialog
 msgid "Open"
-msgstr ""
+msgstr "Otwórz"
 
 #: objinspstrconsts:oispeopenimagefile
 msgid "Open image file"
@@ -827,7 +827,7 @@ msgstr ""
 
 #: objinspstrconsts:sccsiledtstretch
 msgid "Stretch"
-msgstr ""
+msgstr "Rozciągnij"
 
 #: objinspstrconsts:oisstring
 msgid "String"

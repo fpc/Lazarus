@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: iputils\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-01-13 23:40+0100\n"
+"PO-Revision-Date: 2007-01-19 23:18+0100\n"
 "Last-Translator: AlbercikCD\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -13,9 +13,9 @@ msgstr ""
 
 #: iputils:sshortversion
 msgid "v%.2f"
-msgstr ""
+msgstr "v%.2f"
 
 #: iputils:slongversion
 msgid "Version %.2f"
-msgstr ""
+msgstr "Wersja %.2f"
 
