@@ -2483,12 +2483,13 @@ procedure TCustomDBGrid.UpdateActive;
 var
   PrevRow: Integer;
 begin
-  if (csDestroying in ComponentState) or not FDatalink.Active then
+  if (csDestroying in ComponentState) or not FDatalink.Active or
+    (FDatalink.ActiveRecord<0) then
     exit;
-    {$IfDef dbgDBGrid}
+  {$IfDef dbgDBGrid}
   DebugLn(Name,'.UpdateActive: ActiveRecord=', dbgs(FDataLink.ActiveRecord),
             ' FixedRows=',dbgs(FixedRows), ' Row=', dbgs(Row));
-    {$endif}
+  {$endif}
   PrevRow := Row;
   Row:= FixedRows + FDataLink.ActiveRecord;
   if PrevRow<>Row then
