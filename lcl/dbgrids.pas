@@ -2535,7 +2535,8 @@ begin
       
       UpdateGridColumnSizes;
 
-      SetColRow(Col, FixedRows + FDatalink.ActiveRecord);
+      if FDatalink.Active then
+        SetColRow(Col, FixedRows + FDatalink.ActiveRecord);
     end;
   finally
     EndVisualChange;
