@@ -1,0 +1,26 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2007-01-23 19:02+0100\n"
+"Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
+"Language-Team: Deutsch <lazarus@miraclec.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: German\n"
+"X-Poedit-Country: GERMANY\n"
+"X-Poedit-SourceCharset: utf-8\n"
+
+#: pfidesource:sdescrpfselection
+msgid "Pretty-Format Selection"
+msgstr "Verschönerungs-Datei"
+
+#: pfidesource:sdescrpffile
+msgid "Pretty-Format File"
+msgstr "Verschönerungs-Datei"
+
+#: pfidesource:sdescrformatting
+msgid "Formatting commands"
+msgstr "Formatierbefehle"
+
