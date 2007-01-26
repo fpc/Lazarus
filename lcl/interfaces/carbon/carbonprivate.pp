@@ -39,6 +39,7 @@ uses
   // interface
   CarbonDef, CarbonProc;
 
+{$define VerboseMouse}
 
 type
   { TCarbonPrivate }
@@ -77,7 +78,6 @@ type
   TCarbonPrivateHiView = class(TCarbonPrivateHiObject)
   private
   protected
-//    class procedure InstallControlHandler(AInfo: PWidgetInfo; AClass: UInt32; AKind: UInt32; AHandler: Pointer; var AUPP: EventHandlerUPP);
   public
     class procedure RegisterEvents(AInfo: PWidgetInfo); override;
     class procedure UnregisterEvents; override;
@@ -109,11 +109,12 @@ type
 
 implementation  
 
-//Store state of key modifiers so that we can emulate keyup/keydown
-//of keys like control, option, command, caps lock, shift
+// Store state of key modifiers so that we can emulate keyup/keydown
+// of keys like control, option, command, caps lock, shift
 var PrevKeyModifiers : UInt32 = 0;
 
 {$I mackeycodes.inc}
+{$I carbonprivatecommon.inc}
 {$I carbonprivatehiview.inc}
 {$I carbonprivatewindow.inc}
 {$I carbonprivatecheckbox.inc}

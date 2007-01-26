@@ -30,7 +30,7 @@ uses
   // libs
   FPCMacOSAll,
   // LCL
-  Controls, Buttons, LCLType,
+  Controls, Buttons, LCLType, LCLProc,
   // widgetset
   WSButtons, WSLCLClasses,
   // interface
@@ -54,6 +54,7 @@ type
   private
   protected
   public
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
   end;
 
   { TCarbonWSSpeedButton }
@@ -69,29 +70,33 @@ implementation
 
 { TCarbonWSButton }
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonWSButton.CreateHandle
+  Params:  AWinControl - LCL control
+           AParams     - Creation parameters
+  Returns: Handle to the control in Carbon interface
+  
+  Creates new button control in Carbon interface with the specified parameters
+ ------------------------------------------------------------------------------}
 class function TCarbonWSButton.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
-  //Button: TCustomButton;
   Control: ControlRef;
   CFString: CFStringRef;
-  R: FPCMacOSAll.Rect;
   Info: PWidgetInfo;
 begin
   Result := 0;
-  //Button := AWinControl as TCustomButton;
 
   // create the button at bounds with title
-  R:=GetCarbonRect(AParams.X,AParams.Y,
-                   AParams.X + AParams.Width,AParams.Y + AParams.Height);
-
-  CFString := CFStringCreateWithCString(nil, Pointer(AParams.Caption),
-                                        DEFAULT_CFSTRING_ENCODING);
-  if CreatePushButtonControl(WindowRef(AParams.WndParent), R,
-    CFString, Control) = noErr
-  then
-    Result := TLCLIntfHandle(Control);
-  CFRelease(Pointer(CFString));
+  CreateCarbonString(AParams.Caption, CFString);
+  try
+    if CreatePushButtonControl(GetTopParentWindow(AWinControl), ParamsToCarbonRect(AParams),
+      CFString, Control) = noErr
+    then
+      Result := TLCLIntfHandle(Control);
+  finally
+    FreeCarbonString(CFString);
+  end;
   if Result = 0 then Exit;
 
   // add the info (our data, like which TWinControl belong to this carbon widget)
@@ -102,6 +107,46 @@ begin
 end;
 
 
+{ TCarbonWSBitBtn }
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWSBitBtn.CreateHandle
+  Params:  AWinControl - LCL control
+           AParams     - Creation parameters
+  Returns: Handle to the control in Carbon interface
+
+  Creates new bitmap button control in Carbon interface with the specified
+  parameters
+ ------------------------------------------------------------------------------}
+class function TCarbonWSBitBtn.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): TLCLIntfHandle;
+var
+  Control: ControlRef;
+  CFString: CFStringRef;
+  Info: PWidgetInfo;
+begin
+  Result := 0;
+
+  // create the button at bounds with title
+  CreateCarbonString(AParams.Caption, CFString);
+  try
+    if CreateBevelButtonControl(GetTopParentWindow(AWinControl), ParamsToCarbonRect(AParams),
+      CFString, kControlBevelButtonNormalBevel, kControlBehaviorPushbutton,
+      nil, 0, 0, 0, Control) = noErr
+    then
+      Result := TLCLIntfHandle(Control);
+  finally
+    FreeCarbonString(CFString);
+  end;
+  if Result = 0 then Exit;
+
+  // add the info (our data, like which TWinControl belong to this carbon widget)
+  Info := CreateCtrlWidgetInfo(Control, AWinControl);
+
+  // register events (e.g. mouse, focus, keyboard, size, ...)
+  TCarbonPrivateHandleClass(WSPrivate).RegisterEvents(Info);
+end;
+
 initialization
 
 ////////////////////////////////////////////////////
@@ -111,7 +156,7 @@ initialization
 // which actually implement something
 ////////////////////////////////////////////////////
   RegisterWSComponent(TCustomButton, TCarbonWSButton);
-//  RegisterWSComponent(TCustomBitBtn, TCarbonWSBitBtn);
+  RegisterWSComponent(TCustomBitBtn, TCarbonWSBitBtn);
 //  RegisterWSComponent(TCustomSpeedButton, TCarbonWSSpeedButton);
 ////////////////////////////////////////////////////
 end.

@@ -86,32 +86,20 @@ begin
   Msg.msg := LM_CLOSEQUERY;
 
   // Message results : 0 - do nothing, 1 - destroy or hide window
-  if DeliverMessage(AInfo^.LCLObject, Msg) = 0
-  then begin
+  if DeliverMessage(AInfo^.LCLObject, Msg) = 0 then
+  begin
+    Result := noErr;
+    Exit;
+  end;
+  
+  if (AInfo^.LCLObject is TCustomForm) and
+    (fsModal in (AInfo^.LCLObject as TCustomForm).FormState) then
+  begin // form is modal - avoid destroy
     Result := noErr;
     Exit;
   end;
 
   Result := CallNextEventHandler(ANextHandler, AEvent);
-end;
-
-function CarbonPrivateWindow_Closed(ANextHandler: EventHandlerCallRef;
-                                    AEvent: EventRef;
-                                    AInfo: PWidgetInfo): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
-var
-  Msg: TLMessage;
-  PrivateClass: TCarbonPrivateWindowClass;
-begin
-  //debugln('CarbonPrivateWindow_Closed ',DbgSName(AInfo^.LCLObject));
-  Result := CallNextEventHandler(ANextHandler, AEvent);
-  PrivateClass := TCarbonPrivateWindowClass(AInfo^.WSClass.WSPrivate);
-
-  FillChar(Msg, SizeOf(Msg),0);
-  Msg.msg := LM_DESTROY;
-  DeliverMessage(AInfo^.LCLObject, Msg);
-  
-  PrivateClass.UnregisterEvents;
-  FreeWidgetInfo(AInfo);
 end;
 
 
@@ -415,8 +403,12 @@ begin
   GetRootControl(AWindowInfo^.Widget, Root);
   Control := nil;
   HIViewGetViewForMouseEvent(Root, AEvent, Control);
-  if Control = nil 
-  then Control := Root;
+  
+  if Control = nil then
+  begin
+    DebugLn('Mouse event on nil!');
+    Control := Root;
+  end;
   
   // if a control other than root is found, send the message 
   // to the control instead of the window 
@@ -835,35 +827,69 @@ begin
     if not EmulateModifiersDownUp then exit;
   end
   else
-  if not TranslateMacKeyCode then
-  begin
-    Debugln('[CarbonPrivateWindow_KeyboardProc] ***WARNING: TranslateMacKeyCode failed***');
-    exit;
-  end;
+    if not TranslateMacKeyCode then
+    begin
+      Debugln('[CarbonPrivateWindow_KeyboardProc] ***WARNING: TranslateMacKeyCode failed***');
+      exit;
+    end;
+  
   case EventKind of
-    kEventRawKeyDown: Result:=HandleRawKeyDownEvent;
-    kEventRawKeyRepeat: Result:=HandleRawKeyDownEvent;
-    kEventRawKeyUp: Result:=HandleRawKeyUpEvent;
+    kEventRawKeyDown  : Result := HandleRawKeyDownEvent;
+    kEventRawKeyRepeat: Result := HandleRawKeyDownEvent;
+    kEventRawKeyUp    : Result := HandleRawKeyUpEvent;
   end;
-
 end;
 
-//These two functions will never be called in compositing mode!
-
-function CarbonPrivateWindow_Update(ANextHandler: EventHandlerCallRef;
-  AEvent: EventRef;
-  AWindowInfo: PWidgetInfo): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
+function CarbonPrivateWindow_ActivateProc(ANextHandler: EventHandlerCallRef; AEvent: EventRef;
+  AInfo: PWidgetInfo): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
+var
+  Msg: TLMessage;
+  EventKind: UInt32;
 begin
-  debugln('CarbonPrivateWindow_Update ',DbgSName(AWindowInfo^.LCLObject));
+  DebugLn('CarbonPrivateWindow_ActivateProc');
   Result := CallNextEventHandler(ANextHandler, AEvent);
+  
+  FillChar(Msg, SizeOf(Msg), 0);
+  
+  EventKind := GetEventKind(AEvent);
+  case EventKind of
+  kEventWindowActivated: Msg.msg := LM_ACTIVATE;
+  kEventWindowDeactivated: Msg.msg := LM_DEACTIVATE;
+  else Exit;
+  end;
+  DeliverMessage(AInfo^.LCLObject, Msg);
 end;
 
-function CarbonPrivateWindow_DrawContent(ANextHandler: EventHandlerCallRef;
-  AEvent: EventRef;
-  AWindowInfo: PWidgetInfo): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
+function CarbonPrivateWindow_ShowWindow(ANextHandler: EventHandlerCallRef; AEvent: EventRef;
+  AInfo: PWidgetInfo): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
+var
+  Msg: TLMShowWindow;
+  EventKind: UInt32;
 begin
-  debugln('CarbonPrivateWindow_DrawContent ',DbgSName(AWindowInfo^.LCLObject));
+  DebugLn('CarbonPrivateWindow_ShowWindow');
   Result := CallNextEventHandler(ANextHandler, AEvent);
+
+  FillChar(Msg, SizeOf(Msg), 0);
+  Msg.msg := LM_SHOWWINDOW;
+
+  EventKind := GetEventKind(AEvent);
+  case EventKind of
+  kEventWindowCollapsed:
+    begin
+      Msg.Show := False;
+      Msg.Status := SW_MINIMIZE;
+    end;
+  kEventWindowExpanded, kEventWindowZoomed:
+    begin
+      Msg.Show := True;
+      if IsWindowInStandardState(WindowRef(AInfo^.Widget), nil, nil) then
+        Msg.Status := SW_SHOWNORMAL
+      else
+        Msg.Status := SW_SHOWMAXIMIZED;
+    end;
+  else Exit;
+  end;
+  DeliverMessage(AInfo^.LCLObject, Msg);
 end;
 
 // ==================================================================
@@ -877,6 +903,8 @@ var
   MouseSpec: array [0..6] of EventTypeSpec;
   TmpSpec: EventTypeSpec;
   KeySpecs: array[0..3] of EventTypeSpec;
+  ActivateSpecs: array[0..1] of EventTypeSpec;
+  ShowWindowSpecs: array[0..2] of EventTypeSpec;
 begin
   TmpSpec := MakeEventSpec(kEventClassWindow, kEventWindowClose);
   InstallWindowEventHandler(AInfo^.Widget,
@@ -885,9 +913,9 @@ begin
 
   TmpSpec := MakeEventSpec(kEventClassWindow, kEventWindowClosed);
   InstallWindowEventHandler(AInfo^.Widget,
-    RegisterEventHandler(@CarbonPrivateWindow_Closed),
+    RegisterEventHandler(@CarbonPrivateCommon_Dispose),
     1, @TmpSpec, Pointer(AInfo), nil);
-
+  
   MouseSpec[0].eventClass := kEventClassMouse;
   MouseSpec[0].eventKind := kEventMouseDown;
   MouseSpec[1].eventClass := kEventClassMouse;
@@ -920,28 +948,49 @@ begin
     RegisterEventHandler(@CarbonPrivateWindow_KeyboardProc),
     4, @KeySpecs[0], Pointer(AInfo), nil);
 
-  debugln('TCarbonPrivateWindow.RegisterEvents ',DbgSName(AInfo^.LCLObject));
-
-//In compositing mode these events are never sent!
-  TmpSpec := MakeEventSpec(kEventClassWindow, kEventWindowUpdate);
+  ActivateSpecs[0].eventClass := kEventClassWindow;
+  ActivateSpecs[0].eventKind := kEventWindowActivated;
+  ActivateSpecs[1].eventClass := kEventClassWindow;
+  ActivateSpecs[1].eventKind := kEventWindowDeactivated;
+  
   InstallWindowEventHandler(AInfo^.Widget,
-    RegisterEventHandler(@CarbonPrivateWindow_Update),
-    1, @TmpSpec, Pointer(AInfo), nil);
+    RegisterEventHandler(@CarbonPrivateWindow_ActivateProc),
+    2, @ActivateSpecs[0], Pointer(AInfo), nil);
+    
+  ShowWindowSpecs[0].eventClass := kEventClassWindow;
+  ShowWindowSpecs[0].eventKind := kEventWindowCollapsed;
+  ShowWindowSpecs[1].eventClass := kEventClassWindow;
+  ShowWindowSpecs[1].eventKind := kEventWindowExpanded;
+  ShowWindowSpecs[2].eventClass := kEventClassWindow;
+  ShowWindowSpecs[2].eventKind := kEventWindowZoomed;
+
+  InstallWindowEventHandler(AInfo^.Widget,
+    RegisterEventHandler(@CarbonPrivateWindow_ShowWindow),
+    3, @ShowWindowSpecs[0], Pointer(AInfo), nil);
 
   TmpSpec := MakeEventSpec(kEventClassWindow, kEventWindowDrawContent);
   InstallWindowEventHandler(AInfo^.Widget,
-    RegisterEventHandler(@CarbonPrivateWindow_DrawContent),
+    RegisterEventHandler(@CarbonPrivateCommon_Draw),
     1, @TmpSpec, Pointer(AInfo), nil);
     
+  TmpSpec := MakeEventSpec(kEventClassWindow, kEventWindowBoundsChanged);
+  InstallWindowEventHandler(AInfo^.Widget,
+    RegisterEventHandler(@CarbonPrivateCommon_BoundsChanged),
+    1, @TmpSpec, Pointer(AInfo), nil);
+    
+  debugln('TCarbonPrivateWindow.RegisterEvents ',DbgSName(AInfo^.LCLObject));
 end;
 
 class procedure TCarbonPrivateWindow.UnregisterEvents;
 begin                      
   UnregisterEventHandler(@CarbonPrivateWindow_Close);
-  UnregisterEventHandler(@CarbonPrivateWindow_Closed); 
-  UnregisterEventHandler(@CarbonPrivateWindow_MouseProc);
-  UnRegisterEventHandler(@CarbonPrivateWindow_KeyboardProc);
+  UnregisterEventHandler(@CarbonPrivateCommon_Dispose);
   
-  UnRegisterEventHandler(@CarbonPrivateWindow_Update);
-  UnRegisterEventHandler(@CarbonPrivateWindow_DrawContent);
+  UnregisterEventHandler(@CarbonPrivateWindow_MouseProc);
+  UnregisterEventHandler(@CarbonPrivateWindow_KeyboardProc);
+  UnregisterEventHandler(@CarbonPrivateWindow_ActivateProc);
+  UnregisterEventHandler(@CarbonPrivateWindow_ShowWindow);
+  
+  UnregisterEventHandler(@CarbonPrivateCommon_Draw);  
+  UnregisterEventHandler(@CarbonPrivateCommon_BoundsChanged); 
 end;

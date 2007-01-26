@@ -152,11 +152,35 @@ begin
 *)
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonWidgetSet.AppInit
+  Params:  ScreenInfo
+  Returns: Nothing
+
+  Initialize Carbon Widget Set
+ ------------------------------------------------------------------------------}
 procedure TCarbonWidgetSet.AppInit(var ScreenInfo: TScreenInfo);
+var
+  ScreenDC: HDC;
 begin
-  WakeMainThread:=@OnWakeMainThread;
+  WakeMainThread := @OnWakeMainThread;
+  
+  // fill the screen info
+  ScreenDC := GetDC(0);
+  try
+    ScreenInfo.PixelsPerInchX := GetDeviceCaps(ScreenDC, LOGPIXELSX);
+    ScreenInfo.PixelsPerInchY := GetDeviceCaps(ScreenDC, LOGPIXELSY);
+    ScreenInfo.ColorDepth := GetDeviceCaps(ScreenDC, BITSPIXEL);
+  finally
+    ReleaseDC(0, ScreenDC);
+  end;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonWidgetSet.AppRun
+  Params:  ALoop
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
 procedure TCarbonWidgetSet.AppRun(const ALoop: TApplicationMainLoop);
   // A reimplementation of RunApplicationEventLoop that supports
   // yielding time to cooperative threads.  It relies on the
@@ -216,7 +240,7 @@ begin
         then
           RaiseGDBException('TCarbonWidgetSet.AppRun setparam to first event failed');
 
-        DebuglnThreadLog('TCarbonWidgetSet.AppRun '+dbgs(GetMainEventQueue));
+        //DebuglnThrea dLog('TCarbonWidgetSet.AppRun '+dbgs(GetMainEventQueue));
         CurMainEventQueue:=GetMainEventQueue;
         if PostEventToQueue(CurMainEventQueue, DummyEvent,
                             kEventPriorityHigh) <> noErr
@@ -237,6 +261,13 @@ begin
   end;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonWidgetSet.AppProcessMessages
+  Params:  None
+  Returns: Nothing
+
+  Handle all pending messages
+ ------------------------------------------------------------------------------}
 procedure TCarbonWidgetSet.AppProcessMessages;
 var
   Target: EventTargetRef;
@@ -269,6 +300,13 @@ begin
   until Application.Terminated;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonWidgetSet.AppWaitMessage
+  Params:  None
+  Returns: Nothing
+
+  Passes execution control to Carbon
+ ------------------------------------------------------------------------------}
 procedure TCarbonWidgetSet.AppWaitMessage;
 var
   Event: EventRef;
@@ -303,6 +341,7 @@ end;
 destructor TCarbonWidgetSet.Destroy;
 begin
   FreeAndNil(FTimerMap);
+  
   inherited Destroy;
   CarbonWidgetSet:=nil;
 end;
@@ -312,12 +351,17 @@ begin
   inherited PassCmdLineOptions;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonWidgetSet.SendCheckSynchronizeMessage
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
 procedure TCarbonWidgetSet.SendCheckSynchronizeMessage;
 var
   EventSpec: EventTypeSpec;
   DummyEvent: EventRef;
 begin
-  if fMainEventQueue=nil then exit;;
+  if fMainEventQueue=nil then exit;
   
   //DebuglnThreadLog('TCarbonWidgetSet.SendCheckSynchronizeMessage ');
   EventSpec := MakeEventSpec(LCLCarbonEventClass,LCLCarbonEventKindWake);
@@ -345,54 +389,148 @@ begin
   //DebuglnThreadLog('TCarbonWidgetSet.SendCheckSynchronizeMessage END');
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonWidgetSet.OnWakeMainThread
+  Params:  Sender
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
 procedure TCarbonWidgetSet.OnWakeMainThread(Sender: TObject);
 begin
   SendCheckSynchronizeMessage;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonWidgetSet.AppTerminate
+  Params:  None
+  Returns: Nothing
+
+  Tells Carbon to halt the application
+ ------------------------------------------------------------------------------}
 procedure TCarbonWidgetSet.AppTerminate;
 begin
   if FTerminating then Exit;
   QuitApplicationEventLoop;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonWidgetSet.AppMinimize
+  Params:  None
+  Returns: Nothing
+
+  Minimizes the whole application to the taskbar
+ ------------------------------------------------------------------------------}
 procedure TCarbonWidgetSet.AppMinimize;
 begin
-
+  CollapseAllWindows(True);
 end;
 
-procedure TCarbonWidgetSet.AppBringToFront;
+{------------------------------------------------------------------------------
+  Method:  TCarbonWidgetSet.AppRestore
+  Params:  None
+  Returns: Nothing
+
+  Restore the whole minimized application from the taskbar
+ ------------------------------------------------------------------------------}
+procedure TCarbonWidgetSet.AppRestore;
 begin
-
+  CollapseAllWindows(False);
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonWidgetSet.AppBringToFront
+  Params:  None
+  Returns: Nothing
+
+  Brings the entire application on top of all other non-topmost programs
+ ------------------------------------------------------------------------------}
+procedure TCarbonWidgetSet.AppBringToFront;
+var
+  I: Integer;
+begin
+  CollapseAllWindows(False);
+  
+  for I := 0 to Pred(Screen.CustomFormZOrderCount) do
+  begin
+    BringToFront(WindowRef(Screen.CustomFormsZOrdered[I].Handle));
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWidgetSet.WidgetSetName
+  Params:  None
+  Returns: Name of Carbon widget set
+
+  Returns name of widget set.
+ ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.WidgetSetName: string;
 begin
   Result:='carbon';
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonWidgetSet.DCGetPixel
+  Params:  CanvasHandle - canvas handle to get color from
+           X, Y         - position
+  Returns: Color at specified point
+
+  Gets the color of the specified pixel on the canvas
+  Not implemented!
+ ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.DCGetPixel(CanvasHandle: HDC; X, Y: integer
   ): TGraphicsColor;
 begin
-  Result:=clNone;
+  Result := clNone;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonWidgetSet.DCSetPixel
+  Params:  CanvasHandle - canvas handle to get color from
+           X, Y         - position
+           AColor       - new color for specified position
+  Returns: Nothing
+
+  Sets the color of the specified pixel on the canvas
+  Not implemented!
+ ------------------------------------------------------------------------------}
 procedure TCarbonWidgetSet.DCSetPixel(CanvasHandle: HDC; X, Y: integer;
   AColor: TGraphicsColor);
 begin
 
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonWidgetSet.DCReDraw
+  Params:  CanvasHandle - canvas handle to redraw
+  Returns: Nothing
+
+  Redraws (the window of) a canvas
+  Not implemented!
+ ------------------------------------------------------------------------------}
 procedure TCarbonWidgetSet.DCRedraw(CanvasHandle: HDC);
 begin
 
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonWidgetSet.SetDesigning
+  Params:  AComponent - component to set designing
+  Returns: Nothing
+
+  Not implemented!
+ ------------------------------------------------------------------------------}
 procedure TCarbonWidgetSet.SetDesigning(AComponent: TComponent);
 begin
 
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonWidgetSet.CreateComponent
+  Params:  Sender
+  Returns: Nothing
+
+  Tells Carbon to create a control
+  Deprecated! Implement TCarbonWS*.CreateHandle method instead.
+ ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.CreateComponent(Sender: TObject): THandle;
 begin
   DebugLn('WARNING: TCarbonWidgetSet.CreateComponent is deprecated, should not be called!! Go whack somebody with a large throut!');
@@ -428,7 +566,6 @@ function TCarbonWidgetSet.CreateTimer(Interval: integer; TimerFunc: TFNTimerProc
 var
   Timer: EventLoopTimerRef;
 begin
-  Result:=0;
   Result := 0;
   if (Interval > 0) and (TimerFunc <> nil) then
   begin
@@ -454,4 +591,45 @@ begin
   Result := FTimerMap.Delete(TimerHandle);
   if Result // valid timer
   then RemoveEventLoopTimer(EventLoopTimerRef(TimerHandle));
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWidgetSet.IsValidDC
+  Params:  DC -  handle to a device context (TCarbonDeviceContext)
+  Returns: If the DC is valid
+ ------------------------------------------------------------------------------}
+function TCarbonWidgetSet.IsValidDC(const DC: HDC): Boolean;
+var
+  AObject: TObject;
+begin
+  if DC = 0 then
+  begin
+    Result := False;
+    Exit;
+  end;
+  
+  AObject := TObject(DC);
+  Result := (AObject is TCarbonDeviceContext);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWidgetSet.IsValidGDIObject
+  Params:  GDIObject - handle to a GDI Object (TCarbonFont, ...)
+  Returns: If the GDIObject is valid
+
+  Remark: All handles for GDI objects must be pascal objects so we can
+ distinguish between them
+ ------------------------------------------------------------------------------}
+function TCarbonWidgetSet.IsValidGDIObject(const GDIObject: HGDIOBJ): Boolean;
+var
+  AObject: TObject;
+begin
+  if GDIObject = 0 then
+  begin
+    Result := False;
+    Exit;
+  end;
+
+  AObject := TObject(GDIObject);
+  Result := (AObject is TCarbonFont);
 end;

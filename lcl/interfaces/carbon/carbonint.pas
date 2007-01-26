@@ -33,15 +33,13 @@ interface
 {$endif}
 
 uses
-  // rtl+ftl
+ // rtl+ftl
   Types, Classes, SysUtils, Math, FPCAdds,
-  // interfacebase
-  InterfaceBase,
-  // carbon bindings
-
+ // carbon bindings
   FPCMacOSAll, CarbonUtils, CarbonExtra,
-
-  // LCL
+ // interfacebase
+  InterfaceBase,
+ // LCL
   Controls, Forms, Dialogs, LCLStrConsts, LMessages, LCLProc, LCLIntf, LCLType,
   GraphType, GraphMath, Graphics, Menus, Maps;
 
@@ -70,6 +68,7 @@ type
     procedure AppProcessMessages; override;
     procedure AppTerminate; override;
     procedure AppMinimize; override;
+    procedure AppRestore; override;
     procedure AppBringToFront; override;
     function  WidgetSetName: string; override;
     
@@ -82,6 +81,10 @@ type
     function CreateComponent(Sender : TObject): THandle; override;
     function CreateTimer(Interval: integer; TimerFunc: TFNTimerProc) : THandle; override;
     function DestroyTimer(TimerHandle: THandle) : boolean; override;
+    
+    // device contexts
+    function IsValidDC(const DC: HDC): Boolean; virtual;
+    function IsValidGDIObject(const GDIObject: HGDIOBJ): Boolean; virtual;
 
     // the winapi compatibility methods
     {$I carbonwinapih.inc}
