@@ -492,10 +492,9 @@ begin
   end;
 end;
 
-procedure TCustomSplitter.StartSplitterMove(Restart: boolean;
-  const MouseXY: TPoint);
+procedure TCustomSplitter.StartSplitterMove(const MouseXY: TPoint);
 begin
-  if (not Restart) and FSplitDragging then exit;
+  if FSplitDragging then exit;
   FSplitDragging := True;
   fSplitterStartMouseXY := MouseXY;
   fSplitterStartLeftTop := Point(Left,Top);
@@ -509,7 +508,7 @@ begin
   inherited MouseDown(Button, Shift, X, Y);
   // While resizing X, Y are not valid. Use absolute mouse position.
   GetCursorPos(MousePos);
-  StartSplitterMove(True,MousePos);
+  StartSplitterMove(MousePos);
 end;
 
 procedure TCustomSplitter.MouseMove(Shift: TShiftState; X, Y: Integer);
@@ -518,11 +517,10 @@ var
   MousePos: TPoint;
 begin
   inherited MouseMove(Shift, X, Y);
-  if (ssLeft in Shift) and (Parent <> nil) then begin
+  if (ssLeft in Shift) and (Parent <> nil) and (FSplitDragging) then
+  begin
     // While resizing X, Y are not valid. Use the absolute mouse position.
     GetCursorPos(MousePos);
-    StartSplitterMove(False,MousePos);
-
     case ResizeAnchor of
       akLeft, akRight:
          Offset := (MousePos.X-fSplitterStartMouseXY.X)

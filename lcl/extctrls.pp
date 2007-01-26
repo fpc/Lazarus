@@ -407,7 +407,7 @@ type
     procedure SetResizeControl(const AValue: TControl);
     procedure SetResizeStyle(const AValue: TResizeStyle);
   protected
-    procedure StartSplitterMove(Restart: boolean; const MouseXY: TPoint);
+    procedure StartSplitterMove(const MouseXY: TPoint);
     procedure MouseDown(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); override;
     procedure MouseMove(Shift: TShiftState; X,Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); override;
