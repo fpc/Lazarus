@@ -1039,6 +1039,7 @@ examples/codepageconverter/filefind/filefindlaz.lpk svneol=native#text/pascal
 examples/codepageconverter/filefind/filefindlaz.pas svneol=native#text/pascal
 examples/codepageconverter/filefind/tfilesearch.xpm -text svneol=native#image/x-xpixmap
 examples/codepageconverter/languages/lazconverter.ru_RU.UTF-8.po svneol=native#text/plain
+examples/codepageconverter/lazconverter.de.po svneol=native#text/plain
 examples/codepageconverter/lazconverter.lpi svneol=native#text/plain
 examples/codepageconverter/lazconverter.lpr svneol=native#text/pascal
 examples/codepageconverter/lazconverter.po svneol=native#text/plain
