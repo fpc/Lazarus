@@ -1043,6 +1043,7 @@ examples/codepageconverter/lazconverter.de.po svneol=native#text/plain
 examples/codepageconverter/lazconverter.lpi svneol=native#text/plain
 examples/codepageconverter/lazconverter.lpr svneol=native#text/pascal
 examples/codepageconverter/lazconverter.po svneol=native#text/plain
+examples/codepageconverter/mainunit.de.po svneol=native#text/plain
 examples/codepageconverter/mainunit.lfm svneol=native#text/plain
 examples/codepageconverter/mainunit.lrs svneol=native#text/pascal
 examples/codepageconverter/mainunit.lrt svneol=native#text/plain
