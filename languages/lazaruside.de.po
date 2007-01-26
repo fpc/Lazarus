@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-01-10 19:54+0100\n"
+"PO-Revision-Date: 2007-01-23 19:02+0100\n"
 "Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -354,7 +354,7 @@ msgstr "Das Laden des Projekts abbrechen"
 
 #: lazarusidestrconsts:lisabortwholeloading
 msgid "Abort whole loading"
-msgstr ""
+msgstr "Abbruch beim Laden"
 
 #: lazarusidestrconsts:lismenutemplateabout
 msgid "About"
@@ -1046,7 +1046,7 @@ msgstr "Abbrechen"
 
 #: lazarusidestrconsts:liscancelloadingthiscomponent
 msgid "Cancel loading this component"
-msgstr ""
+msgstr "Laden dieser Komponente abbrechen"
 
 #: lazarusidestrconsts:liscancelloadingunit
 msgid "Cancel loading unit"
@@ -1342,7 +1342,7 @@ msgstr "Alle auswählen"
 
 #: lazarusidestrconsts:lismenucloseproject
 msgid "Close Project"
-msgstr ""
+msgstr "Projekt schließen"
 
 #: lazarusidestrconsts:lismenucloseall
 msgid "Close all editor files"
@@ -1354,7 +1354,7 @@ msgstr "Seite schließen"
 
 #: lazarusidestrconsts:liskmcloseproject
 msgid "Close project"
-msgstr ""
+msgstr "Projekt schließen"
 
 #: lazarusidestrconsts:dlgcodegeneration
 msgid "Code"
@@ -1926,7 +1926,7 @@ msgstr "Erzeuge neue Datei"
 
 #: lazarusidestrconsts:liscreatenewproject
 msgid "Create new project"
-msgstr ""
+msgstr "Neues Projekt beginnen"
 
 #: lazarusidestrconsts:dlgruberbandcreationcolor
 msgid "Creation"
@@ -2054,7 +2054,7 @@ msgstr "Debuggerfehler"
 
 #: lazarusidestrconsts:lisdebuggererrorooopsthedebuggerenteredtheerrorstate
 msgid "Debugger error%sOoops, the debugger entered the error state%sSave your work now !%sHit Stop, and hope the best, we're pulling the plug."
-msgstr "Debuggerfehler%sDer Debugger ging in den Fehlerzustand%sSpeichern Sie jetzt Ihre Arbeit!%sDrücken Sie Stop und hoffen Sie das beste."
+msgstr "Debuggerfehler%sDer Debugger ist abgestürzt.%sSpeichern Sie Ihre Arbeit!%sDrücken Sie \"Ok\" und hoffen Sie auf einen Fix für diesen Bug."
 
 #: lazarusidestrconsts:lisdebugoptionsfrmdebuggergeneraloptions
 msgid "Debugger general options"
@@ -3702,7 +3702,7 @@ msgstr "Diese Exceptions ignorieren"
 
 #: lazarusidestrconsts:lisignoreusetformasancestor
 msgid "Ignore, use TForm as ancestor"
-msgstr ""
+msgstr "Übergehen, TForm als Vorfahr verwenden"
 
 #: lazarusidestrconsts:srkmecimestr
 msgid "Ime Str"
@@ -5982,7 +5982,7 @@ msgstr "Projekt verändert"
 
 #: lazarusidestrconsts:lisprojectclosed
 msgid "Project closed"
-msgstr ""
+msgstr "Projekt geschlossen"
 
 #: lazarusidestrconsts:lisprojectdirectory
 msgid "Project directory"
@@ -6082,7 +6082,7 @@ msgstr "&Beenden"
 
 #: lazarusidestrconsts:lisquitlazarus
 msgid "Quit Lazarus"
-msgstr ""
+msgstr "Lazarus beenden"
 
 #: lazarusidestrconsts:dlgcorange
 msgid "Range"
@@ -8134,7 +8134,7 @@ msgstr "Die Projekt-Infodatei %s%s%s%sist identisch zur Haupt-Quelltextdatei des
 
 #: lazarusidestrconsts:listheprojectisclosedtherearenowthreepossibilitieshin
 msgid "The project is closed. There are now three possibilities.%sHint: You do not need to close a project yourself, since this is done automatically."
-msgstr ""
+msgstr "Das Projekt ist geschlossen. Sie haben jetzt drei Möglichkeiten.%sÜbrigens: Sie brauchen ein Projekt nicht explizit schließen, das wird automatisch gemacht."
 
 #: lazarusidestrconsts:listheprojectmustbesavedbeforebuildingifyousetthetest
 msgid "The project must be saved before building%sIf you set the Test Directory in the environment options,%syou can create new projects and build them at once.%sSave project?"
@@ -8654,7 +8654,7 @@ msgstr "Die Methode konnte nicht gefunden werden. Bitte beheben Sie dem Meldungs
 
 #: lazarusidestrconsts:lisunabletofindtheunitofcomponentclass
 msgid "Unable to find the unit of component class %s%s%s."
-msgstr ""
+msgstr "Kann die Unit der Komponentenklasse %s%s%s nicht finden."
 
 #: lazarusidestrconsts:lisunabletogathereditorchanges
 msgid "Unable to gather editor changes."
@@ -8682,11 +8682,11 @@ msgstr "Das Package konnte nicht geladen werden"
 
 #: lazarusidestrconsts:lisunabletoloadthecomponentclassbecauseitdependsonits
 msgid "Unable to load the component class %s%s%s, because it depends on itself."
-msgstr ""
+msgstr "Kann die Komponentenklasse %s%s%s nicht laden, da sie von sich selbst abhängt."
 
 #: lazarusidestrconsts:lisunabletoopendesignertheclassdoesnotdescendfromades
 msgid "Unable to open designer.%sThe class %s does not descend from a designable class like TForm or TDataModule."
-msgstr ""
+msgstr "Designer kann nicht geöffnet werden.%sDie Klasse %s stammt nicht von einer design-fähigen Klasse wie TForm oder TDataModule ab."
 
 #: lazarusidestrconsts:lispkgmangunabletoopenthepackage
 msgid "Unable to open the package %s%s%s.%sThis package was marked for installation."
