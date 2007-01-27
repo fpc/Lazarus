@@ -255,7 +255,7 @@ end;
 
   Retrieves the text (caption) of window in Carbon interface
  ------------------------------------------------------------------------------}
-function TCarbonWSCustomForm.GetText(const AWinControl: TWinControl;
+class function TCarbonWSCustomForm.GetText(const AWinControl: TWinControl;
   var AText: String): Boolean;
 var
   CFString: CFStringRef;
@@ -306,7 +306,7 @@ end;
 
   Sets color of window in Carbon interface according to the LCL control
  ------------------------------------------------------------------------------}
-procedure TCarbonWSCustomForm.SetColor(const AWinControl: TWinControl);
+class procedure TCarbonWSCustomForm.SetColor(const AWinControl: TWinControl);
 begin
   if not WSCheckHandleAllocated(AWinControl, 'SetColor') then Exit;
   
