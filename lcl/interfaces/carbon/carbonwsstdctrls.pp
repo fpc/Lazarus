@@ -239,7 +239,7 @@ implementation
 
   Creates new custom group box in Carbon interface with the specified parameters
  ------------------------------------------------------------------------------}
-function TCarbonWSCustomGroupBox.CreateHandle(const AWinControl: TWinControl;
+class function TCarbonWSCustomGroupBox.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
   Control: ControlRef;
