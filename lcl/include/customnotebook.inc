@@ -353,22 +353,19 @@ end;
  ------------------------------------------------------------------------------}
 function TCustomNotebook.GetActivePage: String;
 begin
-  if (PageIndex>=0) and (PageIndex<PageCount) then
-    Result := TCustomPage(fPageList[PageIndex]).Caption
+  if (FPageIndex >= 0) and (FPageIndex < PageCount) then
+    Result := TCustomPage(FPageList[FPageIndex]).Caption
   else
-    Result:='';
+    Result := '';
 end;
 
 {------------------------------------------------------------------------------
   function TCustomNotebook.GetActivePageComponent: TCustomPage;
  ------------------------------------------------------------------------------}
 function TCustomNotebook.GetActivePageComponent: TCustomPage;
-var
-  i: Integer;
 begin
-  i:=PageIndex;
-  if (i>=0) and (i<PageCount) then
-    Result:=Page[i]
+  if (FPageIndex >= 0) and (FPageIndex < PageCount) then
+    Result:=Page[FPageIndex]
   else
     Result:=nil;
 end;
@@ -487,6 +484,44 @@ begin
   Change;
 end;
 
+{------------------------------------------------------------------------------
+  function TCustomNotebook.FindVisiblePage(Index: Integer): Integer;
+
+  It tries to find the next (at right) visible page. If no one is found,
+  it tries to to find the previous (at left) visible page.
+  Returns -1 if there's no visible pages.
+ ------------------------------------------------------------------------------}
+
+function TCustomNotebook.FindVisiblePage(Index: Integer): Integer;
+begin
+  for Result := Index to FPageList.Count - 1 do
+    if TCustomPage(FPageList[Result]).TabVisible then
+      exit;
+  // if arrived here no visible forward page was found, search backwards
+  for Result := Index - 1 downto 0 do
+    if TCustomPage(FPageList[Result]).TabVisible then
+      exit;
+  Result := -1;
+end;
+
+procedure TCustomNotebook.PageRemoved(Index: Integer);
+var
+  NewPageIndex: Integer;
+begin
+  if not (csLoading in ComponentState) then
+  begin
+    // if this page is showing, then show the next page before deleting it
+    if Index = FPageIndex then 
+    begin
+      NewPageIndex := FindVisiblePage(Index);
+      if NewPageIndex >= 0 then
+        PageIndex := NewPageIndex
+      else
+        FPageIndex := NewPageIndex;
+    end;
+  end;
+end;
+
 procedure TCustomNotebook.WSMovePage(APage: TCustomPage; NewIndex: Integer);
 var
   RealIndex: Integer;
@@ -518,7 +553,7 @@ begin
   end else begin
     if not (pfAdded in APage.FFlags) then exit;
     Exclude(APage.FFlags,pfAdded);
-    TWSCustomNotebookClass(WidgetSetClass).RemovePage(Self, APage.PageIndex);
+    TWSCustomNotebookClass(WidgetSetClass).RemovePage(Self, APage.VisibleIndex);
     if APage.HandleAllocated then
       APage.DestroyHandle;
   end;
@@ -526,7 +561,6 @@ end;
 
 procedure TCustomNotebook.RemovePage(Index: Integer);
 var
-  NewPageIndex: integer;
   APage: TCustomPage;
 begin
   // Make sure Index is in the range of valid pages to delete
@@ -534,36 +568,17 @@ begin
   DebugLn(['TCustomNotebook.RemovePage A ',dbgsName(Self),' Index=',Index,
     ' FPageList.Count=',FPageList.Count,' PageIndex=',PageIndex]);
   {$ENDIF}
-  if (Index >= 0) and
-     (Index < FPageList.Count) then
+  if (Index >= 0) and (Index < FPageList.Count) then
   begin
     APage:=TCustomPage(fPageList[Index]);
-    NewPageIndex:=PageIndex;
-    if not (csLoading in ComponentState) then begin
-      // If that page is showing, then show the next page before deleting it
-      if (Index = PageIndex) then begin
-        if NewPageIndex<FPageList.Count-1 then
-          // switch current page to next (right) page
-          inc(NewPageIndex)
-        else if FPageList.Count>0 then
-          // switch to previous (left) page
-          dec(NewPageIndex)
-        else
-          // deleting last page
-          NewPageIndex:=-1;
-
-        if NewPageIndex>=0 then
-          PageIndex:=NewPageIndex;
-      end;
-    end;
-    if HandleAllocated then begin
-      APage.FTabVisible:=false;
+    APage.FTabVisible:=false;
+    PageRemoved(Index);
+    if HandleAllocated then
       AddRemovePageHandle(APage);
-    end;
     FPageList.Delete(Index);
     APage.Parent:=nil;
-    if fPageIndex >= Index then
-      Dec(fPageIndex);
+    if FPageIndex >= Index then
+      Dec(FPageIndex);
   end;
   {$IFDEF NOTEBOOK_DEBUG}
   DebugLn(['TCustomNotebook.RemovePage END ',dbgsName(Self),' Index=',Index,' fPageList.Count=',fPageList.Count,' PageIndex=',PageIndex]);

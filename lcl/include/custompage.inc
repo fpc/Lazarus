@@ -56,8 +56,15 @@ end;
 procedure TCustomPage.SetTabVisible(const AValue: Boolean);
 begin
   if AValue = FTabVisible then exit;
-  fTabVisible := AValue;
+  FTabVisible := AValue;
+  // if the page is active, set a new pageindex
+  if not FTabVisible then
+    TCustomNotebook(Parent).PageRemoved(PageIndex);
   TCustomNotebook(Parent).AddRemovePageHandle(Self);
+  // check if there was no visible tab
+  if FTabVisible then
+    if TCustomNotebook(Parent).PageIndex = -1 then
+      TCustomNotebook(Parent).PageIndex:=PageIndex;
 end;
 
 {------------------------------------------------------------------------------
@@ -98,7 +105,6 @@ begin
     if i>=0 then begin
       Include(FFlags,pfRemoving);
       try
-        TabVisible := False;
         ParentNotebook.RemovePage(i);
       finally
         Exclude(FFlags,pfRemoving);

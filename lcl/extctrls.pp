@@ -151,11 +151,13 @@ type
     function GetPage(aIndex: Integer): TCustomPage;
     function GetPageCount : integer;
     function GetPageIndex: Integer;
+    function FindVisiblePage(Index: Integer): Integer;
     procedure InsertPage(APage: TCustomPage; Index: Integer);
     function IsStoredActivePage: boolean;
     procedure AddRemovePageHandle(APage: TCustomPage);
     procedure MoveTab(Sender: TObject; NewIndex: Integer);
     procedure WSMovePage(APage: TCustomPage; NewIndex: Integer);
+    procedure PageRemoved(Index: Integer);
     procedure RemovePage(Index: Integer);
     procedure SetActivePage(const Value: String);
     procedure SetActivePageComponent(const AValue: TCustomPage);
@@ -267,6 +269,7 @@ type
     property Enabled;
     property Images;
     property OnChangeBounds;
+    property OnChanging;
     property OnCloseTabClicked;
     property OnContextPopup;
     property OnEnter;
