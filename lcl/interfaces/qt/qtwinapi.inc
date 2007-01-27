@@ -159,6 +159,34 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method:  TQtWidgetSet.CreateBitmap
+  Params:
+  Returns:
+
+  This functions is for TBitmap support.
+  Specifically it´s utilized on when a handle for a bitmap is needed
+ ------------------------------------------------------------------------------}
+function TQtWidgetSet.CreateBitmap(Width, Height: Integer;
+  Planes, BitCount: Longint; BitmapBits: Pointer): HBITMAP;
+begin
+  {$ifdef VerboseQtWinAPI}
+    WriteLn('Trace:> [WinAPI CreateBitmap]',
+     ' Width:', dbgs(Width),
+     ' Height:', dbgs(Height),
+     ' Planes:', dbgs(Planes),
+     ' BitCount:', dbgs(BitCount),
+     ' BitmapBits: ', dbgs(BitmapBits));
+  {$endif}
+
+  Result := HBitmap(TQtImage.Create(BitmapBits, Width,
+   Height, QImageFormat_RGB32));
+   
+  {$ifdef VerboseQtWinAPI}
+    WriteLn('Trace:< [WinAPI CreateBitmap] Bitmap:', dbgs(Integer(Result)));
+  {$endif}
+end;
+
+{------------------------------------------------------------------------------
   Method:  TQtWidgetSet.CreateBitmapFromRawImage
   Params:
   Returns:

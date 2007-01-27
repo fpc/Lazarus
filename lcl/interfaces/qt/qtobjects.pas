@@ -299,7 +299,9 @@ end;
  ------------------------------------------------------------------------------}
 constructor TQtImage.Create(Adata: PByte; width: Integer; height: Integer; format: QImageFormat);
 begin
-  Handle := QImage_create(AData, width, height, format);
+  if Adata = nil then
+    Handle := QImage_create(width, height, format)
+  else Handle := QImage_create(AData, width, height, format);
 
   {$ifdef VerboseQt}
     WriteLn('TQtImage.Create Result:', PtrInt(Handle));
