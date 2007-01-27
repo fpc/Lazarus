@@ -182,6 +182,7 @@ type
     procedure RestorePenColor;
     procedure RestoreTextColor;
   public
+    { public fields }
     Widget: QPainterH;
     Parent: QWidgetH;
     ParentPixmap: QPixmapH;
@@ -194,12 +195,16 @@ type
     vClipRect: PRect;         // is the cliprect paint event give to us
     vClipRectDirty: boolean;  // false=paint cliprect is still valid
     vTextColor: TColor;
+  public
+    { Our own functions }
     constructor Create(WidgetHandle: THandle); virtual;
     destructor Destroy; override;
-  public
     function CreateDCData: PQtDCDATA;
     function RestoreDCData(DCData: PQtDCData): boolean;
     procedure DebugClipRect(const msg: string);
+    procedure setImage(AImage: TQtImage);
+  public
+    { Qt functions }
     procedure drawPoint(x1: Integer; y1: Integer);
     procedure drawRect(x1: Integer; y1: Integer; w: Integer; h: Integer);
     procedure drawText(x: Integer; y: Integer; s: PWideString); overload;
@@ -304,7 +309,7 @@ begin
   else Handle := QImage_create(AData, width, height, format);
 
   {$ifdef VerboseQt}
-    WriteLn('TQtImage.Create Result:', PtrInt(Handle));
+    WriteLn('TQtImage.Create Result:', dbghex(PtrInt(Handle)));
   {$endif}
 end;
 
@@ -722,64 +727,6 @@ end;
 
 { TQtDeviceContext }
 
-procedure TQtDeviceContext.DebugClipRect(const msg: string);
-var
-  Rgn: QRegionH;
-  R: TRect;
-  ok: boolean;
-begin
-  ok := QPainter_hasClipping(Widget);
-  Write(Msg, 'DC: HasClipping=', ok);
-  if Ok then
-  begin
-    Rgn := QRegion_Create;
-    QPainter_ClipRegion(Widget, Rgn);
-    DebugRegion('', Rgn);
-    QRegion_Destroy(Rgn);
-  end else
-    WriteLn;
-end;
-
-
-{------------------------------------------------------------------------------
-  Function: TQtDeviceContext.Create
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-function TQtDeviceContext.CreateDCData: PQtDCDATA;
-begin
-  Qpainter_save(Widget);
-  result:=nil; // doesn't matter;
-end;
-
-{------------------------------------------------------------------------------
-  Function: TQtDeviceContext.RestoreDCData
-  Params:  DCData, dummy in current implementation
-  Returns: true if QPainter state was successfuly restored
- ------------------------------------------------------------------------------}
-function TQtDeviceContext.RestoreDCData(DCData: PQtDCData):boolean;
-begin
-  QPainter_restore(Widget);
-  result:=true;
-end;
-
-procedure TQtDeviceContext.RestorePenColor;
-begin
-  Qpainter_setPen(Widget, @PenColor);
-end;
-
-procedure TQtDeviceContext.RestoreTextColor;
-var
-  CurPen: QPenH;
-  TxtColor: TQColor;
-begin
-  CurPen := QPainter_Pen(Widget);
-  QPen_color(CurPen, @PenColor);
-  TxtColor := PenColor;
-  ColorRefToTQColor(vTextColor, TxtColor);
-  Qpainter_setPen(Widget, @txtColor);
-end;
-
 {------------------------------------------------------------------------------
   Function: TQtDeviceContext.Create
   Params:  None
@@ -788,7 +735,7 @@ end;
 constructor TQtDeviceContext.Create(WidgetHandle: THandle);
 begin
   {$ifdef VerboseQt}
-    WriteLn('TQtDeviceContext.Create ( WidgetHandle: ' + IntToStr(WidgetHandle) + ' )');
+    WriteLn('TQtDeviceContext.Create ( WidgetHandle: ', dbghex(WidgetHandle), ' )');
   {$endif}
 
   if WidgetHandle = 0 then
@@ -806,7 +753,7 @@ begin
   vBrush.Owner := Self;
   vFont := TQtFont.Create(False);
   vFont.Owner := Self;;
-  vPen  := TQtPen.Create(False);
+  vPen := TQtPen.Create(False);
   vPen.Owner := Self;
   vRegion := TQtRegion.Create(False);
   vRegion.Owner := Self;
@@ -826,7 +773,7 @@ begin
     WriteLn('TQtDeviceContext.Destroy');
   {$endif}
 
-  if vClipRect<>nil then
+  if (vClipRect <> nil) then
     dispose(vClipRect);
 
   vBrush.Widget := nil;
@@ -839,15 +786,109 @@ begin
   vRegion.Free;
   vBackgroundBrush.Widget := nil;
   vBackgroundBrush.Free;
-  
+
   if vImage <> nil then QImage_destroy(vImage);
 
   QPainter_destroy(Widget);
 
-  if ParentPixmap<>nil then
+  if ParentPixmap <> nil then
     QPixmap_destroy(ParentPixmap);
 
   inherited Destroy;
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtDeviceContext.DebugClipRect
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+procedure TQtDeviceContext.DebugClipRect(const msg: string);
+var
+  Rgn: QRegionH;
+  R: TRect;
+  ok: boolean;
+begin
+  ok := QPainter_hasClipping(Widget);
+  Write(Msg, 'DC: HasClipping=', ok);
+  
+  if Ok then
+  begin
+    Rgn := QRegion_Create;
+    QPainter_ClipRegion(Widget, Rgn);
+    DebugRegion('', Rgn);
+    QRegion_Destroy(Rgn);
+  end
+  else
+    WriteLn;
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtDeviceContext.setImage
+  Params:  None
+  Returns: Nothing
+  
+  This function will destroy the previous DC handle and generate
+ a new one based on an image. This is necessary because when painting
+ is being done to a TBitmap, LCL will create a completely abstract DC,
+ using GetDC(0), and latter use SelectObject to associate that DC
+ with the Image.
+ ------------------------------------------------------------------------------}
+procedure TQtDeviceContext.setImage(AImage: TQtImage);
+begin
+  vImage := AImage.Handle;
+  
+  QPainter_destroy(Widget);
+
+  Widget := QPainter_Create(vImage);
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtDeviceContext.CreateDCData
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+function TQtDeviceContext.CreateDCData: PQtDCDATA;
+begin
+  Qpainter_save(Widget);
+  result := nil; // doesn't matter;
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtDeviceContext.RestoreDCData
+  Params:  DCData, dummy in current implementation
+  Returns: true if QPainter state was successfuly restored
+ ------------------------------------------------------------------------------}
+function TQtDeviceContext.RestoreDCData(DCData: PQtDCData):boolean;
+begin
+  QPainter_restore(Widget);
+  result:=true;
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtDeviceContext.RestorePenColor
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+procedure TQtDeviceContext.RestorePenColor;
+begin
+  Qpainter_setPen(Widget, @PenColor);
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtDeviceContext.RestoreTextColor
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+procedure TQtDeviceContext.RestoreTextColor;
+var
+  CurPen: QPenH;
+  TxtColor: TQColor;
+begin
+  CurPen := QPainter_Pen(Widget);
+  QPen_color(CurPen, @PenColor);
+  TxtColor := PenColor;
+  ColorRefToTQColor(vTextColor, TxtColor);
+  Qpainter_setPen(Widget, @txtColor);
 end;
 
 {------------------------------------------------------------------------------
@@ -859,7 +900,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TQtDeviceContext.drawRect(x1: Integer; y1: Integer; w: Integer; h: Integer);
 begin
-  QPainter_drawRect(Widget, x1, y1, w, h);
+   QPainter_drawRect(Widget, x1, y1, w, h);
 end;
 
 {------------------------------------------------------------------------------
@@ -908,6 +949,11 @@ begin
   end;
 end;
 
+{------------------------------------------------------------------------------
+  Function: TQtDeviceContext.DrawText
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
 procedure TQtDeviceContext.DrawText(x, y, w, h, flags: Integer; s: PWideString);
 begin
   RestoreTextColor;

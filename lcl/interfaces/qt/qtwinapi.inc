@@ -44,7 +44,7 @@ var
   DC: TQtDeviceContext;
 begin
   {$ifdef VerboseQtWinAPI}
-    WriteLn('Trace:> [WinAPI BeginPaint] Handle=', dbgs(Handle));
+    WriteLn('Trace:> [WinAPI BeginPaint] Handle=', dbghex(Handle));
   {$endif}
 
 {  if IsDoubleBuffered then
@@ -80,7 +80,7 @@ begin
   Result := PS.hdc;
 
   {$ifdef VerboseQtWinAPI}
-    WriteLn('Trace:< [WinAPI BeginPaint] Result=', dbgs(Result));
+    WriteLn('Trace:< [WinAPI BeginPaint] Result=', dbghex(Result));
   {$endif}
 end;
 
@@ -182,7 +182,7 @@ begin
    Height, QImageFormat_RGB32));
    
   {$ifdef VerboseQtWinAPI}
-    WriteLn('Trace:< [WinAPI CreateBitmap] Bitmap:', dbgs(Integer(Result)));
+    WriteLn('Trace:< [WinAPI CreateBitmap] Bitmap:', dbghex(Result));
   {$endif}
 end;
 
@@ -223,7 +223,7 @@ begin
   Result := True;
 
   {$ifdef VerboseQtWinAPI}
-    WriteLn('Trace:< [WinAPI CreateBitmapFromRawImage] Bitmap:', dbgs(Integer(Bitmap)));
+    WriteLn('Trace:< [WinAPI CreateBitmapFromRawImage] Bitmap:', dbghex(Bitmap));
   {$endif}
 end;
 
@@ -319,7 +319,7 @@ begin
   Result := HBRUSH(QtBrush);
 
   {$ifdef VerboseQtWinAPI}
-    WriteLn(Format('Trace:< [WinAPI CreateBrushIndirect] Got --> %x', [Result]));
+    WriteLn('Trace:< [WinAPI CreateBrushIndirect] Result: ', dbghex(Result));
   {$endif}
 end;
 
@@ -333,7 +333,7 @@ end;
 function TQtWidgetSet.CreateCompatibleDC(DC: HDC): HDC;
 begin
   {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI CreateCompatibleDC] DC: ', IntToStr(DC));
+    WriteLn('[WinAPI CreateCompatibleDC] DC: ', dbghex(DC));
   {$endif}
 
   Result := GetDC(0);
@@ -463,7 +463,8 @@ begin
   QtRegion := TQtRegion.Create(True, X1,Y1,X2,Y2);
   Result := HRGN(QtRegion); 
   {$ifdef VerboseQtWinAPI}
-    WriteLn('Trace: [WinAPI CreateRectRgn] Result: ', IntToStr(Result),' QRegionH=', ptrint(QtRegion.Widget));
+    WriteLn('Trace: [WinAPI CreateRectRgn] Result: ', dbghex(Result),
+     ' QRegionH: ', dbghex(PtrInt(QtRegion.Widget)));
   {$endif}
 end;
 
@@ -481,7 +482,7 @@ var
   {$endif}
 begin
   {$ifdef VerboseQtWinAPI}
-    WriteLn('Trace:> [WinAPI DeleteObject] GDIObject: ', IntToStr(GDIObject));
+    WriteLn('Trace:> [WinAPI DeleteObject] GDIObject: ', dbghex(GDIObject));
     ObjType := 'Unidentifyed';
   {$endif}
 
@@ -574,11 +575,10 @@ begin
       AObject:=nil;
     end;
   
-  if AObject<>nil then
+  if (AObject <> nil) then
     AObject.Free;
   
   
-
   // Find out if we want to release internal GDI object
 {    case GDIType of
       gdiBrush:
@@ -620,7 +620,7 @@ var
   QtDC: TQtDeviceContext;
 begin
   {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI DrawText] DC: ', dbgs(DC), ' Str: ', string(Str),
+    WriteLn('[WinAPI DrawText] DC: ', dbghex(DC), ' Str: ', string(Str),
      ' CalcRect: ', dbgs((Flags and DT_CALCRECT) = DT_CALCRECT));
   {$endif}
 
@@ -714,7 +714,8 @@ end;
 function TQtWidgetSet.EndPaint(Handle: hwnd; var PS: TPaintStruct): Integer;
 begin
   {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI EndPaint] Handle: ', IntToStr(Handle), ' PS.HDC: ', IntToStr(PS.HDC));
+    WriteLn('[WinAPI EndPaint] Handle: ', dbghex(Handle),
+     ' PS.HDC: ', dbghex(PS.HDC));
   {$endif}
 
   Result := 1;
@@ -757,8 +758,14 @@ begin
   Result := True;
 end;
 
-function TQtWidgetSet.FillRect(DC: HDC; const Rect: TRect; Brush: HBRUSH
-  ): Boolean;
+{------------------------------------------------------------------------------
+  Function: FillRect
+  Params:  none
+  Returns: Nothing
+
+
+ ------------------------------------------------------------------------------}
+function TQtWidgetSet.FillRect(DC: HDC; const Rect: TRect; Brush: HBRUSH): Boolean;
 var
   Painter: QPainterH;
   ABrush: QBrushH;
@@ -766,7 +773,7 @@ begin
   result:=false;
   
   {$ifdef VerboseQtWinAPI}
-    DebugLn('[WinAPI FillRect Rect=', dbgs(Rect),' Brush=', dbgHex(Brush));
+    DebugLn('[WinAPI FillRect Rect=', dbgs(Rect),' Brush=', dbghex(Brush));
   {$endif}
 
   if not IsValidDC(DC) then
@@ -795,7 +802,8 @@ var
   BitmapInfo: TDIBSECTION;
 begin
   {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI GetBitmapRawImageDescription] Bitmap=', dbgs(Bitmap));
+    WriteLn('[WinAPI GetBitmapRawImageDescription]',
+     ' Bitmap=', dbghex(Bitmap));
   {$endif}
 
   Result := true;
@@ -825,7 +833,7 @@ end;
   the inner area of a control, where the child controls are visible. The
   coordinates are relative to the control's left and top.
  ------------------------------------------------------------------------------}
-Function TQtWidgetSet.GetClientBounds(handle : HWND; var ARect : TRect) : Boolean;
+function TQtWidgetSet.GetClientBounds(handle : HWND; var ARect : TRect) : Boolean;
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI GetClientBounds]');
@@ -846,7 +854,7 @@ end;
   the inner area of a control, where the child controls are visible. The
   coordinates are relative to the control's left and top.
  ------------------------------------------------------------------------------}
-Function TQtWidgetSet.GetClientRect(handle : HWND; var ARect : TRect) : Boolean;
+function TQtWidgetSet.GetClientRect(handle : HWND; var ARect : TRect) : Boolean;
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI GetClientRect]');
@@ -887,7 +895,8 @@ begin
   then with TQtDeviceContext(DC) do
   begin
     {$ifdef VerboseQtWinAPI}
-    Write('TQtWidgetSet.GetClipBox FastClip=',((vClipRect<>nil) and not vClipRectDirty));
+      Write('TQtWidgetSet.GetClipBox FastClip=',
+       ((vClipRect <> nil) and not vClipRectDirty) );
     {$endif}
     
     // the most correct way to get a clipbox if through
@@ -924,10 +933,12 @@ end;
      1 = ok
     -1 = error
  ------------------------------------------------------------------------------}
-Function TQtWidgetSet.GetClipRGN(DC : hDC; RGN : hRGN): Longint;
+function TQtWidgetSet.GetClipRGN(DC : hDC; RGN : hRGN): Longint;
 begin
   {$ifdef VerboseQtWinAPI}
-    Write('Trace: [WinAPI GetClipRgn] DC: ', IntToStr(DC),' RGN: ', IntToStr(Rgn));
+    Write('Trace: [WinAPI GetClipRgn]',
+     ' DC: ', dbghex(DC),
+     ' RGN: ', dbghex(Rgn));
     if RGN<>0 then
       WriteLn(' QRegionH=', PtrInt(TQtRegion(Rgn).Widget))
     else
@@ -972,7 +983,7 @@ end;
 function TQtWidgetSet.GetDC(hWnd: HWND): HDC;
 begin
   {$ifdef VerboseQtWinAPI}
-    WriteLn('Trace:> [WinAPI GetDC] hWnd: ', IntToStr(hWnd));
+    WriteLn('Trace:> [WinAPI GetDC] hWnd: ', dbghex(hWnd));
   {$endif}
 
   Result := HDC(TQtDeviceContext.Create(hWnd));
@@ -980,10 +991,16 @@ begin
 //  if hWnd <> 0 then TQtCustomForm(hWnd).Canvas := TQtDeviceContext(Result);
 
   {$ifdef VerboseQtWinAPI}
-    WriteLn('Trace:< [WinAPI GetDC] Result: ', dbgs(Result));
+    WriteLn('Trace:< [WinAPI GetDC] Result: ', dbghex(Result));
   {$endif}
 end;
 
+{------------------------------------------------------------------------------
+  Function: GetFocus
+  Params:  None
+  Returns: Nothing
+
+ ------------------------------------------------------------------------------}
 function TQtWidgetSet.GetFocus: HWND;
 var
   WidgetH: QWidgetH;
@@ -1017,7 +1034,7 @@ end;
 function TQtWidgetSet.GetDeviceRawImageDescription(DC: HDC; Desc: PRawImageDescription): boolean;
 begin
   {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI GetDeviceRawImageDescription] DC: ' + IntToStr(DC));
+    WriteLn('[WinAPI GetDeviceRawImageDescription] DC: ' + dbghex(DC));
   {$endif}
   Result := true;
 
@@ -1077,7 +1094,7 @@ var
   {$endif}
 begin
   {$ifdef VerboseQtWinAPI}
-    WriteLn('Trace:> [WinAPI GetObject] GDIObj: ' + IntToStr(GDIObj));
+    WriteLn('Trace:> [WinAPI GetObject] GDIObj: ' + dbghex(GDIObj));
     ObjType := '';
   {$endif}
   
@@ -1238,7 +1255,7 @@ var
   Image: QImageH;
 begin
   {$ifdef VerboseQtWinAPI}
-    WriteLn('Trace:> [WinAPI GetRawImageFromDevice] SrcDC: ', dbgs(SrcDC),
+    WriteLn('Trace:> [WinAPI GetRawImageFromDevice] SrcDC: ', dbghex(SrcDC),
      ' SrcWidth: ', dbgs(SrcRect.Right - SrcRect.Left),
      ' SrcHeight: ', dbgs(SrcRect.Bottom - SrcRect.Top));
   {$endif}
@@ -1314,7 +1331,7 @@ var
   Image: TQtImage;
 begin
   {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI GetRawImageFromBitmap] SrcBitmap: ', dbgs(SrcBitmap));
+    WriteLn('[WinAPI GetRawImageFromBitmap] SrcBitmap: ', dbghex(SrcBitmap));
   {$endif}
   Result := false;
   
@@ -2054,7 +2071,10 @@ end;
 function TQtWidgetSet.MoveToEx(DC: HDC; X, Y: Integer; OldPoint: PPoint): Boolean;
 begin
   {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI MoveToEx] DC:', dbgs(DC), ' X:', dbgs(X), ' Y:', dbgs(Y));
+    WriteLn('[WinAPI MoveToEx]',
+     ' DC:', dbghex(DC),
+     ' X:', dbgs(X),
+     ' Y:', dbgs(Y));
   {$endif}
 
   Result := False;
@@ -2078,10 +2098,8 @@ end;
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.Rectangle(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean;
 begin
-  //  Result := IsValidDC(DC);
-
   {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI Rectangle]');
+    WriteLn('[WinAPI Rectangle] DC: ', dbghex(DC));
   {$endif}
 
   Result := False;
@@ -2102,7 +2120,9 @@ end;
 function TQtWidgetSet.ReleaseDC(hWnd: HWND; DC: HDC): Integer;
 begin
   {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI ReleaseDC] hWnd: ', dbgs(hWnd), ' DC: ', dbgs(DC));
+    WriteLn('[WinAPI ReleaseDC]',
+     ' hWnd: ', dbghex(hWnd),
+     ' DC: ', dbghex(DC));
   {$endif}
 
   Result := 0;
@@ -2261,7 +2281,9 @@ var
   {$endif}
 begin
   {$ifdef VerboseQtWinAPI}
-    WriteLn('Trace:> [WinAPI SelectObject] DC=', dbghex(DC), ' GDIObj=', dbghex(GDIObj));
+    WriteLn('Trace:> [WinAPI SelectObject]',
+    ' DC=', dbghex(DC),
+    ' GDIObj=', dbghex(GDIObj));
   {$endif}
 
   Result := 0;
@@ -2324,7 +2346,7 @@ begin
     Result := HGDIOBJ(TQtDeviceContext(DC).vImage);
     
     // TODO: is this also saved in qpainter_save?
-    TQtDeviceContext(DC).vImage := TQtImage(aObject).Handle;
+    TQtDeviceContext(DC).setImage(TQtImage(aObject));
   end;
 
   {$ifdef VerboseQtWinAPI}
@@ -2344,7 +2366,9 @@ var
   Brush: TQtBrush;
 begin
   {$ifdef VerboseQtWinAPI}
-    WriteLn('Trace:> [WinAPI SetBkColor] DC=', dbgs(DC), ' Color=', dbgs(Color));
+    WriteLn('Trace:> [WinAPI SetBkColor]',
+     ' DC: ', dbghex(DC),
+     ' Color: ', dbgs(Color));
   {$endif}
 
   Result := 0;
@@ -2364,7 +2388,7 @@ end;
 function TQtWidgetSet.SetBkMode(DC: HDC; bkMode: Integer): Integer;
 begin
   {$ifdef VerboseQtWinAPI}
-    WriteLn('Trace:> [WinAPI SetBkMode] DC=', dbgs(DC), ' BkMode=', dbgs(bkMode));
+    WriteLn('Trace:> [WinAPI SetBkMode] DC=', dbghex(DC), ' BkMode=', dbgs(bkMode));
   {$endif}
 
   Result := 0;
@@ -2429,7 +2453,7 @@ end;
 function TQtWidgetSet.SetWindowOrgEx(DC : HDC; NewX, NewY : Integer; OldPoint: PPoint) : Boolean;
 begin
   {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI SetWindowOrgEx] DC: ', dbgs(DC), ' NewX: ', dbgs(NewX), ' NewY: ', dbgs(NewY));
+    WriteLn('[WinAPI SetWindowOrgEx] DC: ', dbghex(DC), ' NewX: ', dbgs(NewX), ' NewY: ', dbgs(NewY));
   {$endif}
 
   Result := False;
@@ -2462,7 +2486,7 @@ end;
 function TQtWidgetSet.SetTextColor(DC: HDC; Color: TColorRef): TColorRef;
 begin
   {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI SetTextColor] DC: ', dbgs(DC));
+    WriteLn('[WinAPI SetTextColor] DC: ', dbghex(DC));
   {$endif}
   result := CLR_INVALID;
   if not IsValidDC(DC) then begin
@@ -2574,8 +2598,10 @@ begin
   Image := TQtDeviceContext(SrcDC).vImage;
 
   {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI StretchMaskBlt] DestDC:', dbgs(DestDC), ' SrcDC:', dbgs(SrcDC),
-     ' Image:', dbgs(PtrInt(Image)),
+    WriteLn('[WinAPI StretchMaskBlt]',
+     ' DestDC:', dbghex(DestDC),
+     ' SrcDC:', dbghex(SrcDC),
+     ' Image:', dbghex(PtrInt(Image)),
      ' X:', dbgs(X), ' Y:', dbgs(Y),
      ' W:', dbgs(Width), ' H:', dbgs(Height),
      ' XSrc:', dbgs(XSrc), ' YSrc:', dbgs(YSrc),

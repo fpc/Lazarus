@@ -29,7 +29,7 @@
 
 function BeginPaint(Handle: hWnd; Var PS : TPaintStruct) : hdc; override;
 
-Function CombineRgn(Dest, Src1, Src2: HRGN; fnCombineMode: Longint): Longint;  override;
+function CombineRgn(Dest, Src1, Src2: HRGN; fnCombineMode: Longint): Longint;  override;
 function CreateBitmap(Width, Height: Integer; Planes, BitCount: Longint; BitmapBits: Pointer): HBITMAP; override;
 function CreateBitmapFromRawImage(const RawImage: TRawImage; var Bitmap, MaskBitmap: HBitmap; AlwaysCreateMask: boolean): boolean; override;
 function CreateBrushIndirect(const LogBrush: TLogBrush): HBRUSH; override;
@@ -52,7 +52,7 @@ function GetBitmapRawImageDescription(Bitmap: HBITMAP; Desc: PRawImageDescriptio
 function GetClientBounds(handle : HWND; var ARect : TRect) : Boolean; override;
 function GetClientRect(handle : HWND; var ARect : TRect) : Boolean; override;
 function GetClipBox(DC : hDC; lpRect : PRect) : Longint; override;
-Function GetClipRGN(DC: hDC; RGN: hRGN): Longint; override;
+function GetClipRGN(DC: hDC; RGN: hRGN): Longint; override;
 function GetCursorPos(var lpPoint: TPoint ): Boolean; override;
 function GetDeviceRawImageDescription(DC: HDC; Desc: PRawImageDescription): boolean; override;
 function GetDeviceSize(DC: HDC; var P: TPoint): Boolean; Override;
@@ -67,7 +67,7 @@ function GetSystemMetrics(nIndex: Integer): Integer; override;
 function GetTextColor(DC: HDC) : TColorRef; Override;
 function GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer; var Size: TSize): Boolean; override;
 function GetTextMetrics(DC: HDC; var TM: TTextMetric): Boolean;  override;
-Function GetWindowOrgEx(dc : hdc; P : PPoint): Integer; override;
+function GetWindowOrgEx(dc : hdc; P : PPoint): Integer; override;
 function GetWindowRect(Handle: hwnd; var ARect: TRect): Integer; override;
 function GetWindowRelativePosition(Handle: hwnd; var Left, Top: Integer): boolean; override;
 function GetWindowSize(Handle: hwnd; var Width, Height: Integer): boolean; override;
@@ -83,13 +83,13 @@ function ReleaseDC(hWnd: HWND; DC: HDC): Integer; override;
 function RestoreDC(DC: HDC; SavedDC: Integer): Boolean; override;
 
 function SaveDC(DC: HDC): Integer; override;
-Function SelectClipRGN(DC : hDC; RGN : HRGN) : Longint; override;
+function SelectClipRGN(DC : hDC; RGN : HRGN) : Longint; override;
 function SelectObject(DC: HDC; GDIObj: HGDIOBJ): HGDIOBJ; override;
 function SetBKColor(DC: HDC; Color: TColorRef): TColorRef; override;
-Function SetBkMode(DC: HDC; bkMode : Integer) : Integer; override;
+function SetBkMode(DC: HDC; bkMode : Integer) : Integer; override;
 function SetCursorPos(X, Y: Integer): Boolean; override;
 function SetFocus(hWnd: HWND): HWND; override;
-Function SetProp(Handle: hwnd; Str : PChar; Data : Pointer) : Boolean; override;
+function SetProp(Handle: hwnd; Str : PChar; Data : Pointer) : Boolean; override;
 function SetTextColor(DC: HDC; Color: TColorRef): TColorRef; override;
 function SetWindowOrgEx(DC : HDC; NewX, NewY : Integer; OldPoint: PPoint) : Boolean; override;
 function ShowWindow(hWnd: HWND; nCmdShow: Integer): Boolean; override;
