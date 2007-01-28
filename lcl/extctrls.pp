@@ -62,7 +62,6 @@ type
     procedure SetParent(AParent: TWinControl); override;
     property Flags: TPageFlags read FFlags write FFlags;
     procedure CMHitTest(var Message: TLMNCHITTEST); message CM_HITTEST;
-    procedure DestroyHandle; override;
     function GetPageIndex: integer;
     procedure SetPageIndex(AValue: Integer);
     function  DialogChar(var Message: TLMKey): boolean; override;

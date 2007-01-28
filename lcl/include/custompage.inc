@@ -143,12 +143,6 @@ begin
     ' Message.Result=',Message.Result);}
 end;
 
-procedure TCustomPage.DestroyHandle;
-begin
-  inherited DestroyHandle;
-  Exclude(FFlags,pfAdded);
-end;
-
 {------------------------------------------------------------------------------
   TCustomPage AdjustClientRect
   Params: Rect

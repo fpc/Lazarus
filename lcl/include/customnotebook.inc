@@ -615,7 +615,7 @@ end;
 function TCustomNotebook.GetPage(aIndex: Integer): TCustomPage;
 begin
   if (aIndex<0) or (aIndex>=fPageList.Count) then
-    RaiseGDBException('TCustomNotebook.GeTCustomPage Index out of bounds');
+    RaiseGDBException('TCustomNotebook.GetCustomPage Index out of bounds');
   Result := TCustomPage(fPageList.Items[aIndex]);
 end;
 
