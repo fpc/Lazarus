@@ -203,6 +203,7 @@ type
     function RestoreDCData(DCData: PQtDCData): boolean;
     procedure DebugClipRect(const msg: string);
     procedure setImage(AImage: TQtImage);
+    procedure CorrectCoordinates(var ARect: TRect);
   public
     { Qt functions }
     procedure drawPoint(x1: Integer; y1: Integer);
@@ -840,6 +841,30 @@ begin
   QPainter_destroy(Widget);
 
   Widget := QPainter_Create(vImage);
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtDeviceContext.CorrectCoordinates
+  Params:  None
+  Returns: Nothing
+  
+  If you draw an image with negative coordinates
+ (for example x: -50 y: -50 w: 100 h: 100), the result is not well
+ defined in Qt, and could well be: (x: 0 y: 0 w: 100 h: 100)
+  This method corrects the coordinates, cutting the result, so we draw:
+ (x: 0 y: 0 w: 50 h: 50)
+ ------------------------------------------------------------------------------}
+procedure TQtDeviceContext.CorrectCoordinates(var ARect: TRect);
+var
+  Buffer: Integer;
+begin
+  if ARect.Left < 0 then ARect.Left := 0;
+
+  if ARect.Top < 0 then ARect.Top := 0;
+
+{  if ARect.Right > MaxRight then ARect.Right := MaxRight;
+
+  if ARect.Bottom > MaxBottom then ARect.Bottom := MaxBottom;}
 end;
 
 {------------------------------------------------------------------------------

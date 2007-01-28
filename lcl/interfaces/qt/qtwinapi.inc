@@ -2641,12 +2641,6 @@ var
   SrcRect, DstRect: TRect;
   Image: QImageH;
 begin
-  DstRect := Bounds(X, Y, Width, Height);
-
-  SrcRect := Bounds(XSrc, YSrc, SrcWidth, SrcHeight);
-  
-  Image := TQtDeviceContext(SrcDC).vImage;
-
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI StretchMaskBlt]',
      ' DestDC:', dbghex(DestDC),
@@ -2657,6 +2651,16 @@ begin
      ' XSrc:', dbgs(XSrc), ' YSrc:', dbgs(YSrc),
      ' WSrc:', dbgs(SrcWidth), ' HSrc:', dbgs(SrcHeight));
   {$endif}
+
+  DstRect := Bounds(X, Y, Width, Height);
+
+  SrcRect := Bounds(XSrc, YSrc, SrcWidth, SrcHeight);
+  
+  Image := TQtDeviceContext(SrcDC).vImage;
+
+  TQtDeviceContext(DestDC).CorrectCoordinates(DstRect);
+
+  TQtDeviceContext(DestDC).CorrectCoordinates(SrcRect);
 
   TQtDeviceContext(DestDC).drawImage(@DstRect, Image, @SrcRect);
 
