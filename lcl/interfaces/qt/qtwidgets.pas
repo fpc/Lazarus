@@ -447,10 +447,12 @@ begin
   // Sets it's initial properties
   SetGeometry;
   
-  
   // set focus policy
   if AWinControl.TabStop then
     QWidget_setFocusPolicy(Widget, QtStrongFocus);
+
+  // Set mouse move messages policy
+  QWidget_setMouseTracking(Widget, True);
 end;
 
 {------------------------------------------------------------------------------
@@ -641,9 +643,6 @@ begin
     ' LCLObject=', dbgsName(LCLObject),
     ' Event=', EventTypeToStr(Event));
   {$endif}
-
-
-  
 
   case QEvent_type(Event) of
    QEventShow: SlotShow(True);
