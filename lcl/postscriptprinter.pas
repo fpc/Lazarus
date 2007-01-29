@@ -168,7 +168,7 @@ type
     procedure Polyline(Points: PPoint; NumPts: Integer);
     procedure Ellipse(x1, y1, x2, y2: Integer);
     procedure Ellipse(const Rect: TRect);
-    procedure Pie(x,y,width,mheight,angle1,angle2 : Integer);
+    procedure RadialPie(x,y,width,mheight,angle1,angle2 : Integer);
     //procedure Pie(x,y,width,height,SX,SY,EX,EY : Integer);
     procedure Writeln(const AString: String);
     procedure TextOut(X,Y: Integer; const Text: String);
@@ -506,7 +506,7 @@ begin
   self.Ellipse(Rect.Left, Rect.Top, Rect.Right, Rect.Bottom);
 end;
 
-procedure TPostScriptCanvas.Pie(x, y, width, mheight, angle1, angle2: Integer);
+procedure TPostScriptCanvas.RadialPie(x, y, width, mheight, angle1, angle2: Integer);
 begin
   // set zero at center
   FPostScript.Add('newpath '+IntToStr(X)+' '+IntToStr(TranslateY(Y))+' translate');

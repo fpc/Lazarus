@@ -2666,21 +2666,6 @@ Begin
 End;
 
 {------------------------------------------------------------------------------
-  Method:   RadialPie
-  Params:   DC, x1, y1, x2, y2, sx, sy, ex, ey
-  Returns:  Nothing
-
-  Use RadialPie to draw a filled Pie-shaped Wedge on the canvas. The values
-  sx,sy, and ex,ey represent the starting and ending radial-points between which
-  the bounding-Arc is drawn.
-
-------------------------------------------------------------------------------}
-function TWin32WidgetSet.RadialPie(DC: HDC; x1, y1, x2, y2, sx, sy, ex, ey: Integer): Boolean;
-Begin
-  Result := Boolean(Windows.Pie(DC, x1, y1, x2, y2, sx, sy, ex, ey));
-End;
-
-{------------------------------------------------------------------------------
   Method:  RealizePalette
   Params:  DC - handle of device context
   Returns: number of entries in the logical palette mapped to the system

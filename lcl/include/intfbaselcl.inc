@@ -545,16 +545,7 @@ Begin
   Result := AngleChord(DC, x1, y1, x2, y2, RoundToInt(A1), RoundToInt(A2));
 End;
 
-function TWidgetSet.RadialPie(DC: HDC; x1, y1, x2, y2, sx, sy, ex, ey: Integer): Boolean;
-var
-  A1, A2 : Extended;
-begin
-  Coords2Angles(x1, y1, x2-x1, y2-y1, sx, sy, ex, ey, A1, A2);
-  Result := RadialPieWithAngles(DC, x1, y1, x2, y2,
-                                RoundToInt(A1), RoundToInt(A2));
-end;
-
-function TWidgetSet.RadialPieWithAngles(DC: HDC; x1, y1, x2, y2,
+function TWidgetSet.RadialPie(DC: HDC; x1, y1, x2, y2,
   Angle1, Angle2: Integer): Boolean;
 var
   Points : PPoint;

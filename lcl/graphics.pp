@@ -974,7 +974,6 @@ type
     procedure MoveTo(X1,Y1: Integer); virtual; // already in fpcanvas
     procedure RadialPie(x1, y1, x2, y2,
                         StartAngle16Deg, EndAngle16Deg: Integer); virtual;
-    procedure RadialPie(x1, y1, x2, y2, sx, sy, ex, ey: Integer); virtual;
     procedure Pie(EllipseX1,EllipseY1,EllipseX2,EllipseY2,
                   StartX,StartY,EndX,EndY: Integer); virtual;
     procedure PolyBezier(Points: PPoint; NumPts: Integer;

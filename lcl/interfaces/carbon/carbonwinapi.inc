@@ -1283,12 +1283,6 @@ begin
   Result:=inherited RadialChord(DC, x1, y1, x2, y2, sx, sy, ex, ey);
 end;
 
-function TCarbonWidgetSet.RadialPie(DC: HDC; x1, y1, x2, y2, sx, sy, ex,
-  ey: Integer): Boolean;
-begin
-  Result:=inherited RadialPie(DC, x1, y1, x2, y2, sx, sy, ex, ey);
-end;
-
 function TCarbonWidgetSet.RealizePalette(DC: HDC): Cardinal;
 begin
   Result:=inherited RealizePalette(DC);

@@ -589,11 +589,9 @@ begin
                                         wMsgFilterMin,wMsgFilterMax,wRemoveMsg);
 end;
 
-function Pie(DC: HDC; EllipseX1,EllipseY1,EllipseX2,EllipseY2,
-  StartX,StartY,EndX,EndY: Integer): Boolean;
+function Pie(DC: HDC; x1, y1, x2, y2, sx, sy, ex, ey: Integer): Boolean;
 begin
-  Result := WidgetSet.Pie(DC,EllipseX1,EllipseY1,EllipseX2,EllipseY2,
-                                StartX,StartY,EndX,EndY);
+  Result := WidgetSet.Pie(DC,x1, y1, x2, y2, sx, sy, ex, ey);
 end;
 
 function PolyBezier(DC: HDC; Points: PPoint; NumPts: Integer;

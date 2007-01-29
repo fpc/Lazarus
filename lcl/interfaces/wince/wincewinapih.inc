@@ -181,7 +181,6 @@ function PostMessage(Handle: HWND; Msg: Cardinal; wParam: WParam; lParam: LParam
 
 {function RadialArc(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): Boolean; override;
 function RadialChord(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): Boolean; override;
-function RadialPie(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): Boolean; override;
 function RealizePalette(DC: HDC): Cardinal; override;}
 function Rectangle(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean; override;
 function RectVisible(dc : hdc; const ARect: TRect) : Boolean; override;

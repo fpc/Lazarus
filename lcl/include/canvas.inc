@@ -567,26 +567,7 @@ procedure TCanvas.RadialPie(x1, y1, x2, y2,
 begin
   Changing;
   RequiredState([csHandleValid, csBrushValid, csPenValid]);
-  LCLIntf.RadialPieWithAngles(FHandle, x1, y1, x2, y2,
-                              StartAngle16Deg,EndAngle16Deg);
-  Changed;
-end;
-
-{------------------------------------------------------------------------------
-  Method:   TCanvas.RadialPie
-  Params:   x1, y1, x2, y2, sx, sy, ex, ey
-  Returns:  Nothing
-
-  Use Pie to draw a filled Pie-shaped wedge on the canvas. The values sx,sy,
-  and ex,ey represent the starting and ending radial-points between which
-  the Bounding-Arc is drawn.
-
-------------------------------------------------------------------------------}
-procedure TCanvas.RadialPie(x1, y1, x2, y2, sx, sy, ex, ey: Integer);
-begin
-  Changing;
-  RequiredState([csHandleValid, csBrushValid, csPenValid]);
-  LCLIntf.RadialPie(FHandle, x1, y1, x2, y2, sx, sy, ex, ey);
+  LCLIntf.RadialPie(FHandle, x1, y1, x2, y2, StartAngle16Deg,EndAngle16Deg);
   Changed;
 end;
 

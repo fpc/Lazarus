@@ -1068,14 +1068,13 @@ Begin
   Result := False;
 End;
 
-function TWidgetSet.Pie(DC: HDC;
-  EllipseX1,EllipseY1,EllipseX2,EllipseY2,
-  StartX,StartY,EndX,EndY: Integer): Boolean;
+function TWidgetSet.Pie(DC: HDC; x1, y1, x2, y2,
+                        sx, sy, ex, ey: Integer): Boolean;
+var
+  A1, A2: extended;
 begin
-  Result := RadialPie(DC,
-                      Min(EllipseX1,EllipseX2), Min(EllipseY1,EllipseY2),
-                      Abs(EllipseX2-EllipseX1), Abs(EllipseY2-EllipseY1),
-                      StartX,StartY, EndX,EndY);
+  Coords2Angles(x1, y1, x2-x1, y2-y1, sx, sy, ex, ey, A1, A2);
+  Result := RadialPie(DC, x1, y1, x2, y2, RoundToInt(A1), RoundToInt(A2));
 end;
 
 function TWidgetSet.PolyBezier(DC: HDC; Points: PPoint; NumPts: Integer;

@@ -388,15 +388,10 @@ begin
   Result := WidgetSet.RadialArc(DC, left, top, right, bottom, sx, sy, ex, ey);
 end;
 
-function RadialPie(DC: HDC; x1, y1, x2, y2, sx, sy, ex, ey: Integer): Boolean;
-begin
-  Result := WidgetSet.RadialPie(DC, x1, y1, x2, y2, sx, sy, ex, ey);
-end;
-
-function RadialPieWithAngles(DC: HDC; x1, y1, x2, y2,
+function RadialPie(DC: HDC; x1, y1, x2, y2,
   Angle1,Angle2: Integer): Boolean;
 begin
-  Result := WidgetSet.RadialPieWithAngles(DC, x1, y1, x2, y2, Angle1, Angle2);
+  Result := WidgetSet.RadialPie(DC, x1, y1, x2, y2, Angle1, Angle2);
 end;
 
 function RegroupMenuItem(hndMenu: HMENU; GroupIndex: integer) : Boolean;

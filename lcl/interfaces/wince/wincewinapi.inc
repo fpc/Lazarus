@@ -1903,12 +1903,6 @@ begin
   Result:=inherited RadialChord(DC, x, y, width, height, sx, sy, ex, ey);
 end;
 
-function TWinCEWidgetSet.RadialPie(DC: HDC; x, y, width, height, sx, sy, ex,
-  ey: Integer): Boolean;
-begin
-  Result:=inherited RadialPie(DC, x, y, width, height, sx, sy, ex, ey);
-end;
-
 function TWinCEWidgetSet.RealizePalette(DC: HDC): Cardinal;
 begin
   Result:=inherited RealizePalette(DC);

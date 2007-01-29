@@ -7286,32 +7286,6 @@ begin
 End;
 
 {------------------------------------------------------------------------------
-  Method:   RadialPie
-  Params:   DC, x1, y1, x2, y2, sx, sy, ex, ey
-  Returns:  Nothing
-
-  Use RadialPie to draw a filled Pie-shaped Wedge on the canvas. The values
-  sx,sy, and ex,ey represent the starting and ending radial-points between which
-  the bounding-Arc is drawn.
-
-------------------------------------------------------------------------------}
-function TGtkWidgetSet.RadialPie(DC: HDC; x1, y1, x2, y2, sx, sy, ex, ey: Integer): Boolean;
-begin
-  Result := IsValidDC(DC);
-  if Result
-  then with TDeviceContext(DC) do
-  begin
-    if GC = nil
-    then begin
-      DebugLn('WARNING: [TGtkWidgetSet.RadialPie] Uninitialized GC');
-      Result := False;
-    end
-    else
-      Result := Inherited RadialPie(DC, x1, y1, x2, y2, sx, sy, ex, ey);
-  end;
-end;
-
-{------------------------------------------------------------------------------
   Function: RealizePalette
   Params:  DC: HDC
   Returns: Nothing

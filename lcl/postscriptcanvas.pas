@@ -141,7 +141,6 @@ Type
     procedure Chord(x1, y1, x2, y2, SX, SY, EX, EY: Integer); override;
     procedure Frame3d(var ARect: TRect; const FrameWidth: integer;
                       const Style: TGraphicsBevelCut); override;
-    procedure RadialPie(x1,y1,x2,y2,sx,sy,ex,ey: Integer); override;
     procedure Pie(EllipseX1,EllipseY1,EllipseX2,EllipseY2,
                   StartX,StartY,EndX,EndY: Integer); override;
     procedure TextRect(ARect: TRect; X, Y: integer; const Text: string;
@@ -1857,12 +1856,6 @@ end;
 
 procedure TPostscriptPrinterCanvas.Frame3d(var ARect: TRect;
   const FrameWidth: integer; const Style: TGraphicsBevelCut);
-begin
-  //Not implemented
-end;
-
-procedure TPostscriptPrinterCanvas.RadialPie(x1, y1, x2, y2, sx, sy, ex,
-  ey: Integer);
 begin
   //Not implemented
 end;
