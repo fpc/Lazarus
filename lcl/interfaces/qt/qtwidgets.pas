@@ -410,15 +410,6 @@ type
   
 implementation
 
-{ Helper functions }
-
-function SortListByTabOrder(Item1: Pointer; Item2: Pointer): Integer;
-begin
-  if TWinControl(Item1).TabOrder = TWinControl(Item2).TabOrder then Result := 0
-  else if TWinControl(Item1).TabOrder < TWinControl(Item2).TabOrder then Result := -1
-  else if TWinControl(Item1).TabOrder > TWinControl(Item2).TabOrder then Result := 1;
-end;
-
 { TQtWidget }
 
 {------------------------------------------------------------------------------
@@ -1731,48 +1722,39 @@ end;
  ------------------------------------------------------------------------------}
 procedure TQtMainWindow.setTabOrders;
 var
-  i: Integer;
-  Form: TForm;
-  List: TList;
+ i: Integer;
+ Form: TForm;
+ List: TFPList;
 begin
-  List := TList.Create;
-  
-  Form := TForm(LCLObject);
+ Form := TForm(LCLObject);
 
-  { Creates a list with childs of the form that are available to receive Tab focus }
-  for i := 0 to Form.ComponentCount - 1 do
-  begin
-    if Form.Components[i] is TWinControl then
-     if TWinControl(Form.Components[i]).TabStop then
-      List.Add(Form.Components[i]);
-  end;
+ List := TFPList.Create;
+ Form.GetTabOrderList(List);
 
-  List.Sort(SortListByTabOrder);
+ for i := 0 to List.Count - 2 do
+ begin
+   setTabOrder(TQtWidget(TWinControl(List.Items[i]).Handle),
+    TQtWidget(TWinControl(List.Items[i + 1]).Handle));
 
-  for i := 0 to List.Count - 2 do
-  begin
-    setTabOrder(TQtWidget(TWinControl(List.Items[i]).Handle),
-     TQtWidget(TWinControl(List.Items[i + 1]).Handle));
+   {$ifdef VerboseQt}
+     WriteLn('Setting Tab Order first: ', TWinControl(List.Items[i]).Name, ' second: ',
+      TWinControl(List.Items[i + 1]).Name);
+   {$endif}
+ end;
 
-    {$ifdef VerboseQt}
-      WriteLn('Setting Tab Order first: ', TWinControl(List.Items[i]).Name, ' second: ',
-       TWinControl(List.Items[i + 1]).Name);
-    {$endif}
-  end;
-  
-  { The last element points to the first }
-  if List.Count > 1 then
-  begin
-    setTabOrder(TQtWidget(TWinControl(List.Items[List.Count - 1]).Handle),
-     TQtWidget(TWinControl(List.Items[0]).Handle));
-     
-    {$ifdef VerboseQt}
-      WriteLn('Setting Tab Order first: ', TWinControl(List.Items[List.Count - 1]).Name, ' second: ',
-       TWinControl(List.Items[0]).Name);
-    {$endif}
-  end;
-  
-  List.Free;
+ { The last element points to the first }
+ if List.Count > 1 then
+ begin
+   setTabOrder(TQtWidget(TWinControl(List.Items[List.Count - 1]).Handle),
+    TQtWidget(TWinControl(List.Items[0]).Handle));
+
+   {$ifdef VerboseQt}
+     WriteLn('Setting Tab Order first: ', TWinControl(List.Items[List.Count - 1]).Name, ' second: ',
+      TWinControl(List.Items[0]).Name);
+   {$endif}
+ end;
+
+ List.Free;
 end;
 
 {------------------------------------------------------------------------------
