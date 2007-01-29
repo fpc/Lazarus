@@ -39,7 +39,7 @@ uses
   // widgetset
   WSComCtrls, WSLCLClasses, WSProc, WSControls,
   // interface
-  GtkDef;
+  GtkDef, GtkExtra;
 
 type
 

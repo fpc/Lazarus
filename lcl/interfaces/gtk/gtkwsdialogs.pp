@@ -27,9 +27,14 @@ unit GtkWSDialogs;
 interface
 
 uses
-  {$IFDEF GTK2} Gtk2, Glib2, gdk2, {$ELSE} Gtk, gdk, Glib, {$ENDIF}
+  {$ifdef gtk2}
+  Gtk2, Glib2, gdk2,
+  {$else}
+  Gtk, gdk, Glib,
+  {$endif}
   SysUtils, Classes, Controls, LMessages, InterfaceBase, graphics,
-  LCLType, Dialogs, WSDialogs, WSLCLClasses, gtkint, gtkproc, gtkwscontrols;
+  LCLType, Dialogs, WSDialogs, WSLCLClasses,
+  gtkint, gtkproc, gtkwscontrols, gtkExtra;
 
 type
 

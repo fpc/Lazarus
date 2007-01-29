@@ -33,7 +33,7 @@ uses
   {$ELSE}
   glib, gdk, gtk, {$Ifndef NoGdkPixbufLib}gdkpixbuf,{$EndIf}
   {$ENDIF}
-  GtkInt, gtkProc, gtkglobals, Menus;
+  GtkInt, gtkProc, gtkglobals, GTKExtra, Menus;
 
 type
   { TGtkWSMenuItem }

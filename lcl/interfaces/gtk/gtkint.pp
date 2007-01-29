@@ -33,43 +33,8 @@ interface
 {$ASSERTIONS ON}
 {$endif}
 
-{ $DEFINE VerboseTimer}
-{ $DEFINE VerboseMouseBugfix}
-{ $DEFINE RaiseExceptionOnNilPointers}
 
-{$DEFINE Use_KeyStateList} // keep track of keystates instead of using OS
-                           // This is the old mode and might be removed
-
-// TODO: Test on all platforms
-{$IFNDEF DisableAsyncProcess}
-  {$IFDEF Linux}
-    {$IFDEF CPUI386}
-      {off $DEFINE UseAsyncProcess}
-    {$ENDIF}
-  {$ENDIF}
-{$ENDIF}
-
-{$IFDEF win32}
-{$DEFINE NoGdkPixbufLib}
-{$ELSE}
-{off $DEFINE NoGdkPixbufLib}
-{$ENDIF}
-{off $Define DisableCriticalSections}
-
-{off $Define Disable_GC_SysColors}
-
-{$IFDEF gtk2}
-  {$IFDEF NoGdkPixbufLib}
-    {$UNDEF NoGdkPixbufLib}
-  {$EndIF}
-{$EndIF}
-
-{$IFDEF Unix}
-  {$DEFINE HasX}
-  {$IFDEF Gtk1}
-    {$DEFINE HasGtkX}
-  {$ENDIF}
-{$ENDIF}
+{$I gtkdefines.inc}
 
 uses
   {$IFDEF WIN32}
@@ -91,19 +56,24 @@ uses
   InterfaceBase,
   // gtk
   {$IFDEF gtk2}
-  glib2, gdk2pixbuf, gdk2, gtk2, Pango,
+    glib2, gdk2pixbuf, gdk2, gtk2, Pango,
+    {$ifdef HasGdk2X}
+      gdk2x,
+    {$endif}
   {$ELSE}
-  glib, gdk, gtk, {$Ifndef NoGdkPixbufLib}gdkpixbuf,{$EndIf}
+    glib, gdk, gtk, {$Ifndef NoGdkPixbufLib}gdkpixbuf,{$EndIf}
   {$ENDIF}
   // Target OS specific
-  {$IFDEF UNIX}
+  {$ifdef HasX}
   x, xlib,
-  {$ENDIF}
+  {$endif}
   Math, // after gtk to get the correct Float type
   // LCL
   ExtDlgs, Dialogs, Controls, Forms, LCLStrConsts, LMessages,
-  LCLProc, LCLIntf, LCLType, GtkFontCache, gtkDef, GtkProc, DynHashArray,
-  gtkMsgQueue, GraphType, GraphMath, Graphics, Menus, Maps;
+  LCLProc, LCLIntf, LCLType, DynHashArray, GraphType, GraphMath,
+  Graphics, Menus, Maps,
+  // widgetset
+  GtkFontCache, gtkDef, GtkProc, gtkMsgQueue, GtkExtra;
 
 
 type

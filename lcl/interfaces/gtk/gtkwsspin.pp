@@ -32,7 +32,7 @@ uses
   {$ELSE}
   glib, gdk, gtk,
   {$ENDIF}
-  LCLProc, Spin, GtkProc, GtkWSStdCtrls, WSSpin, WSLCLClasses, LCLType;
+  LCLProc, Spin, GtkProc, gtkExtra, GtkWSStdCtrls, WSSpin, WSLCLClasses, LCLType;
 
 type
 

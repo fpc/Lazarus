@@ -3224,7 +3224,8 @@ begin
   end;
 end;
 
-{.$define VerboseEnumFonts}
+{.$define VerboseEnumFonts}  
+{$note: compare TGtkWidgetSet.EnumFontFamilies with gtkproc.FillScreenFonts}
 function TGtkWidgetSet.EnumFontFamilies(DC: HDC; Family: Pchar;
   EnumFontFamProc: FontEnumProc; LParam:Lparam):longint;
 var
@@ -3250,7 +3251,7 @@ begin
     {$ifdef VerboseEnumFonts}
     WriteLn('Looking for fonts matching: ', tmp);
     {$endif}
-    {$ifdef UNIX}
+    {$ifdef HasX}
     XFonts := XListFonts(gdk_display, pchar(Tmp), 10000, @N);
     {$else}
     {$warning implement getting XFonts for this OS}
@@ -3285,7 +3286,7 @@ begin
           end;
         end;
     finally
-      {$ifdef UNIX}
+      {$ifdef HasX}
       XFreeFontNames(XFonts);
       {$endif}
     end;
@@ -3632,7 +3633,7 @@ begin
     for j:=0 to CharSetFilter.Count-1 do begin
       for k:=0 to PitchFilter.Count-1 do begin
         tmp := '-'+FAndF+'-*-*-*-*-*-*-*-*-'+PitchFilter[k]+'-*-'+CharSetFilter[j];
-        {$ifdef UNIX}
+        {$ifdef HasX}
         XFonts := XListFonts(gdk_display, pchar(Tmp), 10000, @N);
         {$else}
         {$warning implement getting XFonts for this OS}
@@ -3647,7 +3648,7 @@ begin
               if ProcessXFont(i, XFonts[i], FontList) then
                 break;
         finally
-          {$ifdef UNIX}
+          {$ifdef HasX}
           XFreeFontNames(XFonts);
           {$endif}
         end;
@@ -4775,7 +4776,7 @@ end;
 
  ------------------------------------------------------------------------------}
 function TGtkWidgetSet.GetCursorPos(var lpPoint: TPoint): Boolean;
-{$IFDEF unix}
+{$IFDEF HasX}
 var
   dpy: PDisplay;
   root, child: twindow;
@@ -4810,7 +4811,7 @@ begin
   // TODO: GTK1-win32 GetCursorPos
   Result := False;
 end;
-{$ENDIF unix}
+{$ENDIF HasX}
 
 {------------------------------------------------------------------------------
   Function: GetDC
@@ -8479,7 +8480,7 @@ end;
 
  ------------------------------------------------------------------------------}
 function TGtkWidgetSet.SetCursorPos(X, Y: Integer): Boolean;
-{$IFDEF UNIX}
+{$IFDEF HasX}
 var
   dpy: PDisplay;
 begin

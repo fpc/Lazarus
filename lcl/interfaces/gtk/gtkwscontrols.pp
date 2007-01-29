@@ -36,7 +36,7 @@ uses
   {$ENDIF}
   SysUtils, Classes, Controls, LMessages, InterfaceBase,
   WSControls, WSLCLClasses, WSProc,
-  Graphics, ComCtrls, GtkDef, LCLType;
+  Graphics, ComCtrls, GtkDef, GTKExtra, LCLType;
 
 type
 

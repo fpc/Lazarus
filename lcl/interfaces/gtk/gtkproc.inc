@@ -154,222 +154,6 @@ begin
   end;
 end;
 
-{$IfNdef GTK2}
-function gtk_class_get_type(aclass : Pointer) : TGtkType;
-begin
-  If (aclass <> nil) then
-    result := PGtkTypeClass(aclass)^.thetype
-  else
-    result := 0;
-end;
-
-function gtk_object_get_class(anobject : Pointer) : Pointer;
-begin
-  If (anobject <> nil) then
-    result := PGtkTypeObject(anobject)^.klass
-  else
-    result := nil;
-end;
-
-function gtk_window_get_modal(window:PGtkWindow):gboolean;
-begin
-  if assigned(Window) then
-    result := (Window^.flag0 and bm_modal)<>0
-  else
-    result := False;
-end;
-
-function gtk_bin_get_child(bin : PGTKBin) : PGTKWidget;
-begin
-  if (bin <> nil) then
-    result := bin^.Child
-  else
-    result := nil;
-end;
-
-Procedure gtk_menu_item_set_right_justified(menu_item : PGtkMenuItem; right_justified : gboolean);
-begin
-  if right_justified then
-    menu_item^.flag0:=menu_item^.flag0 or bm_right_justify
-  else
-    menu_item^.flag0:=menu_item^.flag0 and (not bm_right_justify);
-end;
-
-Function gtk_check_menu_item_get_active(menu_item : PGtkCheckMenuItem) : gboolean;
-begin
-   Result:=(menu_item^.flag0 and bm_checkmenuitem_active <> 0);
-end;
-
-Procedure gtk_menu_append(menu : PGTKWidget; Item : PGtkWidget);
-begin
-  gtk.gtk_menu_append(PGTKMenu(menu), Item);
-end;
-
-Procedure gtk_menu_insert(menu : PGtkWidget; Item : PGTKWidget; Index : gint);
-begin
-  gtk.gtk_menu_insert(PGTKMenu(menu), Item, Index);
-end;
-
-Procedure gtk_menu_bar_insert(menubar : PGtkWidget; Item : PGTKWidget; Index : gint);
-begin
-  gtk.gtk_menu_bar_insert(PGtkMenuBar(menubar), Item, Index);
-end;
-
-Function gtk_image_new :PGTKWidget;
-begin
-  result := gtk.gtk_image_new(nil,nil);
-end;
-
-Function gtk_toolbar_new : PGTKWidget;
-begin
-  result := gtk.gtk_toolbar_new(GTK_ORIENTATION_HORIZONTAL,GTK_TOOLBAR_BOTH);
-end;
-
-Procedure gtk_color_selection_get_current_color(colorsel : PGTKColorSelection; Color : PGDKColor);
-var
-  colorArray : array[0..2] of double;
-begin
-  gtk_color_selection_get_color(colorsel, @colorArray[0]);
-  Color^.pixel := 0;
-  Color^.red := gushort(TruncToCardinal(colorArray[0] * $FFFF));
-  Color^.green := gushort(TruncToCardinal(colorArray[1] * $FFFF));
-  Color^.blue := gushort(TruncToCardinal(colorArray[2] * $FFFF));
-  {$IFDEF VerboseColorDialog}
-  DebugLn('gtk_color_selection_get_current_color ',
-    ' Red=',DbgS(Color^.Red),
-    ' Green=',DbgS(Color^.Green),
-    ' Blue=',DbgS(Color^.Blue),
-    '');
-  {$ENDIF}
-end;
-
-Procedure gtk_color_selection_set_current_color(colorsel : PGTKColorSelection;
-  Color : PGDKColor);
-var
-  SelectionColor: PGDouble;
-begin
-  {$IFDEF VerboseColorDialog}
-  DebugLn('gtk_color_selection_set_current_color ',
-    ' Red=',DbgS(Color^.Red),
-    ' Green=',DbgS(Color^.Green),
-    ' Blue=',DbgS(Color^.Blue),
-    '');
-  {$ENDIF}
-  GetMem(SelectionColor,4*SizeOf(GDouble));
-  try
-    SelectionColor[0]:=gdouble(Color^.Red)/65535;
-    SelectionColor[1]:=gdouble(Color^.Green)/65535;
-    SelectionColor[2]:=gdouble(Color^.Blue)/65535;
-    SelectionColor[3]:=0.0;
-    gtk_color_selection_set_color(colorSel,SelectionColor);
-  finally
-    FreeMem(SelectionColor);
-  end;
-end;
-
-procedure gdk_image_unref(Image : PGdkImage);
-begin
-  gdk_window_unref(PGdkWindow(Image));
-end;
-
-Procedure gdk_colormap_query_color(colormap : PGDKColormap; Pixel : gulong; Result : PGDKColor);
-var
-  GdkColorContext: PGdkColorContext;
-begin
-  if (Colormap = nil) or (Result = nil) then exit;
-  GdkColorContext:= gdk_color_context_new(gdk_colormap_get_visual(colormap),colormap);
-  Result^.Pixel := Pixel;
-  gdk_color_context_query_color(GdkColorContext, Result);
-  gdk_color_context_free(GdkColorContext);
-end;
-
-Function gdk_region_intersect(source1:PGdkRegion; source2:PGdkRegion) : PGdkRegion;
-begin
-  result := gdk_regions_intersect(source1, source2);
-end;
-
-Function gdk_region_union(source1:PGdkRegion; source2:PGdkRegion) : PGdkRegion;
-begin
-  result := gdk_regions_union(source1, source2);
-end;
-
-Function gdk_region_subtract(source1:PGdkRegion; source2:PGdkRegion) : PGdkRegion;
-begin
-  result := gdk_regions_subtract(source1, source2);
-end;
-
-Function gdk_region_xor(source1:PGdkRegion; source2:PGdkRegion) : PGdkRegion;
-begin
-  result := gdk_regions_xor(source1, source2);
-end;
-
-function gdk_region_copy(region: PGDKRegion): PGDKRegion;
-var
-  EmptyRegion: PGdkRegion;
-begin
-  EmptyRegion := gdk_region_new;
-  Result := gdk_regions_union(region, EmptyRegion);
-  gdk_region_destroy(EmptyRegion);
-end;
-
-function gdk_region_rectangle(rect: PGdkRectangle): PGDKRegion;
-var
-  EmptyRegion: PGdkRegion;
-begin
-  EmptyRegion := gdk_region_new;
-  Result := gdk_region_union_with_rect(EmptyRegion,Rect);
-  gdk_region_destroy(EmptyRegion);
-end;
-
-Function gdk_pixmap_create_from_xpm_d (window : PGdkWindow; var mask : PGdkBitmap; transparent_color : PGdkColor; data : PPgchar) : PGdkPixmap;
-begin
-  result := gdk.gdk_pixmap_create_from_xpm_d(window, @mask, transparent_color, data)
-end;
-
-Function gdk_pixmap_colormap_create_from_xpm_d (window : PGdkWindow; colormap: PGdkColormap; var mask : PGdkBitmap; transparent_color : PGdkColor; data : PPgchar) : PGdkPixmap;
-begin
-  result := gdk.gdk_pixmap_colormap_create_from_xpm_d(window, colormap, @mask, transparent_color, data)
-end;
-
-Function gdk_pixmap_colormap_create_from_xpm (window : PGdkWindow; colormap: PGdkColormap; var mask : PGdkBitmap; transparent_color : PGdkColor; filename : Pgchar) : PGdkPixmap;
-begin
-  result := gdk.gdk_pixmap_colormap_create_from_xpm(window, colormap, @mask, transparent_color, filename)
-end;
-
-{$IfNDef NoGdkPixbufLib}
-Procedure gdk_pixbuf_render_pixmap_and_mask(pixbuf : PGdkPixbuf; var pixmap_return : PGdkPixmap; var mask_return : PGdkBitmap; alpha_threshold : gint);
-begin
-  {$IFDEF VerboseGdkPixbuf}
-  debugln('gdk_pixbuf_render_pixmap_and_mask A1');
-  {$ENDIF}
-  gdkpixbuf.gdk_pixbuf_render_pixmap_and_mask(pixbuf, @pixmap_return, @mask_return, alpha_threshold);
-  {$IFDEF VerboseGdkPixbuf}
-  debugln('gdk_pixbuf_render_pixmap_and_mask A2');
-  {$ENDIF}
-end;
-{$EndIf}
-
-Function gdk_drawable_get_depth(Drawable : PGDKDrawable) : gint;
-begin
-  gdk_window_get_geometry(Drawable, nil, nil, nil, nil, @result);
-end;
-
-Procedure gdk_drawable_get_size(Drawable : PGDKDrawable; Width, Height : PGInt);
-begin
-  gdk_window_get_geometry(Drawable, nil, nil, Width, Height, nil);
-end;
-
-Function gdk_drawable_get_image(Drawable : PGDKDrawable; x, y, width, height : gint) : PGdkImage;
-begin
-  result := gdk_image_get(Drawable, x, y, width, height);
-end;
-
-Function gdk_drawable_get_colormap(Drawable : PGDKDrawable) : PGdkColormap;
-begin
-  result := gdk_window_get_colormap(Drawable);
-end;
-
-{$EndIf}
 
 {$Ifdef GTK2}
 function gtk_class_get_type(aclass : Pointer) : TGtkType;
@@ -1030,7 +814,7 @@ end;
 
 procedure GrabKeyBoardToForm(AForm: TCustomForm);
 begin
-  {$IFDEF HasGtkX}
+  {$IFDEF HasX}
   XGrabKeyboard(gdk_display, FormToX11Window(AForm), true, GrabModeASync,
                 GrabModeASync, CurrentTime);
   {$ENDIF}
@@ -1038,13 +822,13 @@ end;
 
 procedure ReleaseKeyBoardFromForm(AForm: TCustomForm);
 begin
-  {$IFDEF HasGtkX}
+  {$IFDEF HasX}
   XUngrabKeyboard(gdk_display, CurrentTime);
   {$ENDIF}
 end;
 
 procedure GrabMouseToForm(AForm: TCustomForm);
-{$IFDEF HasGtkX}
+{$IFDEF HasX}
 var
   eventMask: LongInt;
 begin
@@ -1062,23 +846,25 @@ end;
 
 procedure ReleaseMouseFromForm(AForm: TCustomForm);
 begin
-  {$IFDEF HasGtkX}
+  {$IFDEF HasX}
   XUngrabPointer(gdk_display, CurrentTime);
   {$ENDIF}
 end;
 
-{$IFDEF HasGtkX}
+{$IFDEF HasX}
 function FormToX11Window(const AForm: TCustomForm): X.TWindow;
 var
-  GdkWindow: PGdkWindowPrivate;
   Widget: PGtkWidget;
 begin
   Result:=0;
   if (AForm=nil) or (not AForm.HandleAllocated) then exit;
   Widget:=PGtkWidget(AForm.Handle);
-  GdkWindow := PGdkWindowPrivate(Widget^.window);
-  if GdkWindow=nil then exit;
-  Result := GdkWindow^.xwindow;
+  if Widget^.window = nil then exit;
+  {$ifdef gtk1}
+  Result := PGdkWindowPrivate(Widget^.window)^.xwindow;
+  {$else}
+  Result := gdk_window_xwindow(Widget^.window);
+  {$endif}
 end;
 {$ENDIF}
 
@@ -1583,13 +1369,6 @@ begin
   GDK_GC_Unref(GC);
 end;
 
-{$IfDef Win32}
-Procedure gdk_window_copy_area(Dest : PGDKWindow; GC : PGDKGC; DestX,
-  DestY : Longint; SRC : PGDKWindow; XSRC, YSRC, Width, Height : Longint);
-begin
-  gdk_draw_pixmap(Dest, GC, Src, XSrc, YSrc, DestX, DestY, Width, Height);
-End;
-{$EndIf}
 
 {------------------------------------------------------------------------------
   Function: AllocGDKColor
@@ -2566,8 +2345,6 @@ end;
 
   Initializes the CharToVK and CKeyToVK tables
  ------------------------------------------------------------------------------}
-{$IFDEF UNIX}
-{$DEFINE InitKeyboardTables}
 procedure InitKeyboardTables;
 
   procedure FindVKeyInfo(const AKeySym: TKeySym; var AVKey: Byte;
@@ -2608,7 +2385,7 @@ procedure InitKeyboardTables;
       GDK_KEY_Tab,
       GDK_KEY_ISO_Left_Tab: AVKey := VK_TAB;
       GDK_KEY_RETURN:       AVKey := VK_RETURN;
-//    GDK_KEY_LINEFEED;     AVKey := $0A;
+  //    GDK_KEY_LINEFEED;     AVKey := $0A;
 
       // Cursor block / keypad
       GDK_KEY_INSERT:
@@ -2661,7 +2438,7 @@ procedure InitKeyboardTables;
         AExtended := True;
         AVKey := VK_END;
       end;
-      
+
       // Keypad
       GDK_KEY_KP_ENTER:
       begin
@@ -2785,7 +2562,7 @@ procedure InitKeyboardTables;
         AVKey := VK_NUMPAD0 + AKeySym - GDK_KEY_KP_0;
         AHasMultiVK := True;
       end;
-      
+
       GDK_KEY_BackSpace:    AVKey := VK_BACK;
       GDK_KEY_Clear:        AVKey := VK_CLEAR;
       GDK_KEY_Pause:        AVKey := VK_PAUSE;
@@ -2815,8 +2592,8 @@ procedure InitKeyboardTables;
         AVKey := VK_CONTROL;
         ASecondKey := True;
       end;
-//      GDK_Key_Meta_L:       AVKey := VK_MENU;  //shifted alt, so it is found by alt
-//      GDK_Key_Meta_R:       AVKey := VK_MENU;
+  //      GDK_Key_Meta_L:       AVKey := VK_MENU;  //shifted alt, so it is found by alt
+  //      GDK_Key_Meta_R:       AVKey := VK_MENU;
       GDK_Key_Alt_L:        AVKey := VK_MENU;
       GDK_Key_Alt_R:
       begin
@@ -2832,7 +2609,7 @@ procedure InitKeyboardTables;
 
       // Function keys
       GDK_KEY_F1..GDK_KEY_F24:  AVKey := VK_F1 + AKeySym - GDK_Key_F1;
-      
+
       // Extra keys on a "internet" keyboard
       GDKX_KEY_Sleep:
       begin
@@ -2928,8 +2705,8 @@ procedure InitKeyboardTables;
       begin
         AExtended := True;
         AVKey := VK_LAUNCH_APP2;
-      end;                    
-      
+      end;
+
       // For faster cases, group by families
       $400..$4FF: begin
         // Katakana
@@ -3029,24 +2806,24 @@ procedure InitKeyboardTables;
           GDK_KEY_greek_omega:           AVKey := VK_V;
         end;
       end;
-      
+
       $C00..$CFF: begin
         // Hebrew
         // Shifted keys will produce A..Z so the VK codes will be assigned there
       end;
-      
+
       $D00..$DFF: begin
         // Thai
-        // To many differences to assign VK codes through lookup 
+        // To many differences to assign VK codes through lookup
         // Thai Kedmanee and Thai Pattachote are complete different layouts
       end;
-      
+
       $E00..$EFF: begin
         // Korean
       end;
     end;
   end;
-  
+
   function IgnoreShifted(const AUnshiftKeySym: TKeySym): Boolean;
   begin
     case AUnshiftKeySym of
@@ -3088,10 +2865,33 @@ procedure InitKeyboardTables;
     end;
   end;
   
-var
-  ModMap: array[Byte] of Cardinal;
-  
-  procedure SetupModifiers(ADisplay: Pointer);
+
+const
+  KEYFLAGS: array[0..3] of Byte = (
+    $00,
+    KCINFO_FLAG_SHIFT,
+    KCINFO_FLAG_ALTGR,
+    KCINFO_FLAG_ALTGR or KCINFO_FLAG_SHIFT
+  );
+  EXTFLAG: array[Boolean] of Byte = (
+    $00,
+    KCINFO_FLAG_EXT
+  );
+  MULTIFLAG: array[Boolean] of Byte = (
+    $00,
+    KCINFO_FLAG_SHIFT_XOR_NUM
+  );
+
+{$ifdef HasX}
+{
+ Starting gdk 2.10 Alt, meta, hyper are reported by a own mask. Since we support
+ older versions, we need to create the modifiermap ourselves for X and we cannot
+ ise them
+}
+type
+  TModMap = array[Byte] of Cardinal;
+
+  procedure SetupModifiers(ADisplay: Pointer; var AModMap: TModMap);
   const
     MODIFIERS: array[0..7] of Cardinal = (
       GDK_SHIFT_MASK,
@@ -3108,7 +2908,7 @@ var
     KeyCode: PKeyCode;
     Modifier, n: Integer;
   begin
-    FillByte(ModMap, SizeOf(ModMap), 0);
+    FillByte(AModMap, SizeOf(AModMap), 0);
   
     Map := XGetModifierMapping(ADisplay);
     KeyCode := Map^.modifiermap;
@@ -3119,7 +2919,7 @@ var
       begin
         if KeyCode^ <> 0
         then begin
-          ModMap[KeyCode^] := MODIFIERS[Modifier];
+          AModMap[KeyCode^] := MODIFIERS[Modifier];
           {$ifdef VerboseModifiermap}
           DebugLn('Mapped keycode=%u to modifier=$%2.2x', [KeyCode^, MODIFIERS[Modifier]]);
           {$endif}
@@ -3131,7 +2931,7 @@ var
     XFreeModifiermap(Map);
   end;
   
-  procedure UpdateModifierMap(AKeyCode: Byte; AKeySym: TKeySym);
+  procedure UpdateModifierMap(const AModMap: TModMap; AKeyCode: Byte; AKeySym: TKeySym);
   {$ifdef VerboseModifiermap}
   const
     STATE_NAME: array[TShiftStateEnum] of String = ('ssShift', 'ssAlt', 'ssCtrl',
@@ -3142,7 +2942,7 @@ var
   var
     ShiftState: TShiftStateEnum;
   begin
-    if ModMap[AKeyCode] = 0 then Exit;
+    if AModMap[AKeyCode] = 0 then Exit;
     
     case AKeySym of
       GDK_Key_Shift_L,
@@ -3166,61 +2966,64 @@ var
       Exit;
     end;
     
-    MModifiers[ShiftState].Mask := ModMap[AKeyCode];
+    MModifiers[ShiftState].Mask := AModMap[AKeyCode];
     MModifiers[ShiftState].UseValue := False;
     
     {$ifdef VerboseModifiermap}
-    DebugLn('Mapped keycode=%u, keysym=$%x, modifier=$%2.2x to shiftstate %s', [AKeyCode, AKeySym, ModMap[AKeyCode], STATE_NAME[ShiftState]]);
+    DebugLn('Mapped keycode=%u, keysym=$%x, modifier=$%2.2x to shiftstate %s', [AKeyCode, AKeySym, AModMap[AKeyCode], STATE_NAME[ShiftState]]);
     {$endif}
 
   end;
+{$endif HasX}
 
-  
 const
-  KEYFLAGS: array[0..3] of Byte = (
-    $00,
-    KCINFO_FLAG_SHIFT,
-    KCINFO_FLAG_ALTGR,
-    KCINFO_FLAG_ALTGR or KCINFO_FLAG_SHIFT
-  );
-  EXTFLAG: array[Boolean] of Byte = (
-    $00,
-    KCINFO_FLAG_EXT
-  );
-  MULTIFLAG: array[Boolean] of Byte = (
-    $00,
-    KCINFO_FLAG_SHIFT_XOR_NUM
-  );
+  // first OEM specific VK
+  VK_FIRST_OEM = $92;
 
 var
-  Display: Pointer;
+{$ifdef gtk1}
+  XKeyEvent: TXKeyEvent;
+  KeySymStart, KeySymNext: PKeySym;
+  UpKeySym, LoKeySym: TKeySym;
+  KeySyms: array of TKeySym;
+{$else}
+  KeySyms: array of guint;
+  KeyVals: Pguint;
+  KeymapKeys: PGdkKeymapKey;
+  UniChar: gunichar;
+{$endif}
+  KeySymCount: Integer;
+  KeySymChars: array[0..16] of Char;
+  KeySymCharLen: Integer;
+
+{$ifdef HasX}
+  XDisplay: Pointer;
+  ModMap: TModMap;
+{$endif}
+
   KeyCode: Byte;
   m: Integer;
   LoKey, HiKey: Integer;
-  KeySymStart, KeySymNext: PKeySym;
-  KeySymCount: Integer;
-  KeySyms: array of TKeySym;
-  UpKeySym, LoKeySym: TKeySym;
 
   VKey, FreeVK: Byte;
   HasMultiVK, DummyBool, Extended, SecondKey, HasKey, ComputeVK: Boolean;
-  KeySymChars: array[0..16] of Char;
-  KeySymCharLen: Integer;
-  XKeyEvent: TXKeyEvent;
 begin
-  Display := gdk_display;
-  if Display = nil then Exit;
-  
-  SetupModifiers(Display);
-  
+{$ifdef HasX}
+  XDisplay := gdk_display;
+  if XDisplay = nil then Exit;
+
+  SetupModifiers(XDisplay, ModMap);
+{$endif}
+
+{$ifdef gtk1}
   // Init dummy XEvent to retrieve the char corresponding to a key
   FillChar(XKeyEvent, SizeOf(XKeyEvent), 0);
   XKeyEvent._Type := GDK_KEY_PRESS;
-  XKeyEvent.Display := Display;
+  XKeyEvent.Display := XDisplay;
   XKeyEvent.Same_Screen := True;
 
   // Retrieve the KeyCode bounds
-  XDisplayKeyCodes(Display, @LoKey, @HiKey);
+  XDisplayKeyCodes(XDisplay, @LoKey, @HiKey);
   if LoKey < 0
   then begin
     DebugLn('[WARNING] Low keycode (%d) negative, adjusting to 0', [LoKey]);
@@ -3231,11 +3034,11 @@ begin
     DebugLn('[WARNING] High keycode (%d) larget than 255, adjusting to 255', [HiKey]);
     HiKey := 255;
   end;
-
-  KeySymCount := 0;
-  KeySymStart := XGetKeyboardMapping(display, LoKey, HiKey - LoKey + 1, @KeySymCount);
-  KeySymNext := KeySymStart;
   
+  KeySymCount := 0;
+  KeySymStart := XGetKeyboardMapping(XDisplay, LoKey, HiKey - LoKey + 1, @KeySymCount);
+  KeySymNext := KeySymStart;
+
   if (KeySymCount = 0) or (KeySymStart = nil)
   then begin
     DebugLn('[WARNING] failed to retrieve keyboardmapping');
@@ -3246,15 +3049,19 @@ begin
   if KeySymCount > Length(MVKeyInfo[0].KeySym)
   then DebugLn('[WARNING] keysymcount=%u larger than expected=%u', [KeySymCount, Length(MVKeyInfo[0].KeySym)]);
   SetLength(KeySyms, KeySymCount);
+{$else gtk1}
+  LoKey := 0;
+  HiKey := 255;
+{$endif}
 
-  FreeVK := $92; // first OEM specific VK
+  FreeVK := VK_FIRST_OEM;
   for KeyCode := LoKey to HiKey do
   begin
-    VKey := VK_UNDEFINED;
-    HasKey := False;
+  {$ifdef gtk1}
     Move(KeySymNext^, KeySyms[0], SizeOf(KeySyms[0]) * KeySymCount);
     Inc(KeySymNext, KeySymCount);
-    
+
+    HasKey := False;
     m := 0;
     while m < KeySymCount do
     begin
@@ -3277,30 +3084,50 @@ begin
       Inc(m, 2);
     end;
 
-    // Check if this keycode is in th emodifiers map
+  {$else}
+    if not gdk_keymap_get_entries_for_keycode(nil, KeyCode, KeymapKeys, KeyVals, @KeySymCount) then Continue;
+    SetLength(KeySyms, KeySymCount);
+    Move(KeyVals^, KeySyms[0], SizeOf(KeySyms[0]) * KeySymCount);
+    g_free(KeyVals);
+    g_free(KeymapKeys); // unused but we cannot pass a nil as param
+    HasKey := KeySyms[0] <> 0;
+  {$endif}
+  
+  {$ifdef HasX}
+    // Check if this keycode is in the modifiers map
     // loop through all keysyms till one found.
-    // Some maps have a modifier with an undefined first value
+    // Some maps have a modifier with an undefined first keysym. It is checked for
+    // modifiers, but not for vkeys
     for m := 0 to KeySymCount - 1 do
     begin
       if KeySyms[m] = 0 then Continue;
-      UpdateModifierMap(KeyCode, KeySyms[m]);
+      UpdateModifierMap(ModMap, KeyCode, KeySyms[m]);
       Break;
     end;
+  {$endif}
 
     // Continue if there is no keysym found
     if not HasKey then Continue;
-    
 
+    // Start looking fo a VKcode
+    VKey := VK_UNDEFINED;
     for m := 0 to KeySymCount - 1 do
     begin
       if KeySyms[m] = 0 then Continue;
       FindVKeyInfo(KeySyms[m], VKey, Extended, HasMultiVK, SecondKey);
+    {$ifdef Windows}
+      // on windows, the keycode is perdef the VK,
+      // we only enter this loop to set the correct flags
+      VKey := KeyCode;
+      Break;
+    {$else}
       if HasMultiVK then Break; // has VK per def
       if VKey = VK_UNDEFINED then Continue;
       if MVKeyInfo[VKey].KeyCode[SecondKey or Extended] = 0 then Break; // found unused VK
 
       // already in use
       VKey := VK_UNDEFINED;
+    {$endif}
     end;
 
     ComputeVK := VKey = VK_UNDEFINED;
@@ -3320,14 +3147,14 @@ begin
     end;
     MKeyCodeInfo[KeyCode].VKey1 := VKey;
 
-    for m := 0 to KeySymCount - 1 do
+    for m := 0 to Min(High(MVKeyInfo[0].KeyChar), KeySymCount - 1) do
     begin
       if KeySyms[m] = 0 then Continue;
       if (m >= 2) and (KeySyms[m] = KeySyms[m - 2]) then Continue;
 
       if HasMultiVK
       then begin
-        if m >= 2 then Continue; // Only process shift
+        if m >= 2 then Break; // Only process shift
 
         // The keypadkeys have 2 VK_keycodes :(
         // In that case we have to FIndKeyInfo for every keysym
@@ -3337,7 +3164,10 @@ begin
           MKeyCodeInfo[KeyCode].VKey2 := VKey;
         end;
       end;
-
+      if VKey = VK_UNDEFINED then Continue;
+      
+      FillByte(KeySymChars, SizeOf(KeySymChars), 0);
+    {$ifdef gtk1}
       // Retrieve the chars for this KeySym
       XKeyEvent.KeyCode := KeyCode;
       case m of
@@ -3350,7 +3180,6 @@ begin
         Continue;
       end;
 
-      FillByte(KeySymChars, SizeOf(KeySymChars), 0);
       KeySymCharLen := XLookupString(@XKeyEvent, KeySymChars, SizeOf(KeySymChars), nil, nil);
       if (KeySymCharLen > 0) and (KeySymChars[KeySymCharLen - 1] = #0)
       then Dec(KeySymCharLen);
@@ -3358,44 +3187,19 @@ begin
       if (KeySymCharLen > SizeOf(TVKeyUTF8Char))
       then DebugLn('[WARNING] InitKeyboardTables - Keysymstring for keycode=%u longer than %u bytes: %s', [KeyCode, SizeOf(TVKeyUTF8Char), KeySymChars]);
 
-      if  (VKey <> VK_UNDEFINED)
-      and (m <= High(MVKeyInfo[VKey].KeyChar))
-      then Move(KeySymChars[0], MVKeyInfo[VKey].KeyChar[m], SizeOf(TVKeyUTF8Char));
+    {$else gtk1}
+      UniChar := gdk_keyval_to_unicode(KeySyms[m]);
+      if UniChar = 0 then Continue;
+      KeySymCharLen := g_unichar_to_utf8(UniChar, @KeySymChars[0]);
+    {$endif}
+      Move(KeySymChars[0], MVKeyInfo[VKey].KeyChar[m], SizeOf(TVKeyUTF8Char));
     end;
   end;
 
+{$ifdef gtk1}
   XFree(KeySymStart);
+{$endif}
 end;
-{$ENDIF}
-
-{$IFDEF WIN32}
-{$DEFINE InitKeyboardTables}
-procedure InitKeyboardTables;
-var
-  n: Integer;
-  VKey: Byte;
-begin
-  for n := 0 to 255 do
-  begin
-    MCharToVK[Chr(n)] := TVKeyRecord(Windows.VkKeyScan(Chr(n)));
-    VKey := MapVirtualKey(n, 3);
-    MKeyCodeToVK[n] := VKey;
-    if VKey <> $FF
-    then MVKeyInfo[VKey].KeyCode := Byte(n);
-    //WARNING: the other fields of MVKeyInfo are not set.
-    //At this moment it is not clear, what they should be.
-    //This is code is to be removed when the keyboard handling is updated for
-    //gtk2, (gtk1 won't be supported on windows), so it will be obsolete soon
-  end
-end;
-{$ENDIF}
-
-{$IFNDEF InitKeyboardTables}
-procedure InitKeyboardTables;
-begin
-  DebugLn('[WARNING] Keyboardtables not initialized (platform not supported)');
-end;
-{$ENDIF}
 
 {------------------------------------------------------------------------------
   Procedure: DoneKeyboardTables
@@ -8137,18 +7941,6 @@ begin
   end;
 end;
 
-{$IFDEF GTK1}
-function G_OBJECT(p: Pointer): PGtkObject;
-begin
-  Result:=PGtkObject(p);
-end;
-
-function G_CALLBACK(p: Pointer): TGTKSignalFunc;
-begin
-  Result:=TGTKSignalFunc(p);
-end;
-{$ENDIF}
-
 Function DeleteAmpersands(var Str : String) : Longint;
 // convert double ampersands to single & and delete single &
 // return the position of the letter after the first deleted single ampersand
@@ -8654,21 +8446,18 @@ end;
 
 Procedure FillScreenFonts(ScreenFonts : TStrings);
 var
-  {$IFDEF GTK1}
-  {$IFDEF UNIX}
+  {$ifdef gtk1}
   theFonts : PPChar;
-  {$ENDIF UNIX}
-  {$Else}
+  {$else}
   Widget : PGTKWidget;
   Context : PPangoContext;
   families : PPPangoFontFamily;
-  {$EndIf}
+  {$endif}
   Tmp: AnsiString;
   I, N: Integer;
 begin
   ScreenFonts.Clear;
-  {$IFDEF GTK1}
-  {$IFDEF UNIX}
+  {$ifdef gtk1}
   theFonts := XListFonts(gdk_display,PChar('-*-*-*-*-*-*-*-*-*-*-*-*-*-*'), 10000, @N);
   debugln('FillScreenFonts N=',dbgs(N));
   for I := 0 to N - 1 do
@@ -8679,8 +8468,7 @@ begin
           ScreenFonts.Append(Tmp);
     end;
    XFreeFontNames(theFonts);
-  {$ENDIF UNIX}
-  {$ELSE}
+  {$else}
    Widget := GetStyleWidget(lgsDefault);
    if Widget = nil then begin
      exit;//raise an error here I guess
@@ -8701,7 +8489,7 @@ begin
     end;
    if (families <> nil) then
      g_free(families);
-  {$ENDIF GTK2}
+  {$endif gtk2}
 end;
 
 function GetTextHeight(DCTextMetric: TDevContextTextMetric): integer;

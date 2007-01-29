@@ -34,7 +34,7 @@ uses
   glib, gdk, gtk, {$Ifndef NoGdkPixbufLib}gdkpixbuf,{$EndIf} GtkFontCache,
   {$ENDIF}
   WSStdCtrls, WSLCLClasses, WSProc, WSControls, GtkInt, LCLType, GtkDef, LCLProc,
-  GTKWinApiWindow, gtkglobals, gtkproc, InterfaceBase;
+  GTKWinApiWindow, gtkglobals, gtkproc, gtkExtra, InterfaceBase;
 
 
 type
@@ -273,16 +273,18 @@ type
 function  WidgetGetSelStart(const Widget: PGtkWidget): integer;
 procedure WidgetSetSelLength(const Widget: PGtkWidget; NewLength: integer);
 
-{$DEFINE MEMOHEADER}
-{$I gtkmemostrings.inc}
-{$UNDEF MEMOHEADER}
+{$ifdef gtk1}
+{$I gtk1memostringsh.inc}
+{$endif}
 
 implementation
 
 uses
   GtkWSControls;
 
-{$I gtkmemostrings.inc}
+{$ifdef gtk1}
+{$I gtk1memostrings.inc}
+{$endif}
 
 { helper routines }
 
@@ -776,7 +778,7 @@ var
   Widget: PGtkWidget;
 begin
   Widget:=PGtkCombo(ACustomComboBox.Handle)^.entry;
-  if GtkWidgetIsA(Widget,{$ifdef GTK1}GTK_ENTRY_TYPE{$else}GTK_TYPE_ENTRY{$endif}) then
+  if GtkWidgetIsA(Widget, GTK_TYPE_ENTRY) then
     gtk_entry_set_editable(PGtkEntry(Widget), not ACustomComboBox.ReadOnly);
 end;
 
@@ -859,7 +861,7 @@ var
   Widget: PGtkWidget;
 begin
   Widget:=PGtkWidget(ACustomEdit.Handle);
-  if GtkWidgetIsA(Widget,{$ifdef GTK1}GTK_ENTRY_TYPE{$else}GTK_TYPE_ENTRY{$endif}) then
+  if GtkWidgetIsA(Widget, GTK_TYPE_ENTRY) then
     gtk_entry_set_max_length(GTK_ENTRY(Widget), guint16(NewLength));
 end;
 
@@ -869,7 +871,7 @@ var
   Widget: PGtkWidget;
 begin
   Widget:=PGtkWidget(ACustomEdit.Handle);
-  if GtkWidgetIsA(Widget,{$ifdef GTK1}GTK_ENTRY_TYPE{$else}GTK_TYPE_ENTRY{$endif}) then
+  if GtkWidgetIsA(Widget, GTK_TYPE_ENTRY) then
     gtk_entry_set_visibility(GTK_ENTRY(Widget),
       (ACustomEdit.EchoMode = emNormal) and (NewChar = #0));
 end;
@@ -880,7 +882,7 @@ var
   Widget: PGtkWidget;
 begin
   Widget:=PGtkWidget(ACustomEdit.Handle);
-  if GtkWidgetIsA(Widget,{$ifdef GTK1}GTK_ENTRY_TYPE{$else}GTK_TYPE_ENTRY{$endif}) then
+  if GtkWidgetIsA(Widget, GTK_TYPE_ENTRY) then
     gtk_entry_set_editable(GTK_ENTRY(Widget), not ACustomEdit.ReadOnly);
 end;
 

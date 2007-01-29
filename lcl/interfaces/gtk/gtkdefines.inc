@@ -1,0 +1,98 @@
+{%MainUnit gtkproc.pp}{%MainUnit gtkint.pp}
+{ $Id$ }
+
+{******************************************************************************
+  Centralized includefile for some common gtk defines
+ ******************************************************************************}
+
+
+// TODO: Test on all platforms
+{$IFNDEF DisableAsyncProcess}
+  {$IFDEF Linux}
+    {$IFDEF CPUI386}
+      {off $DEFINE UseAsyncProcess}
+    {$ENDIF}
+  {$ENDIF}
+{$ENDIF}
+
+{$IFDEF windows}
+  {off $DEFINE NoGdkPixbufLib}
+{$ELSE}
+  {off $DEFINE NoGdkPixbufLib}
+{$ENDIF}
+
+{$IFDEF gtk2}
+  {$IFDEF NoGdkPixbufLib}
+    {$UNDEF NoGdkPixbufLib}
+  {$EndIF}
+{$EndIF}
+// soin all cases pixbuflib is efectively used
+
+
+
+{off $DEFINE GDK_ERROR_TRAP_FLUSH}
+
+{$DEFINE REPORT_GDK_ERRORS}
+
+{off $DEFINE VerboseAccelerator}
+
+{off $define VerboseModifiermap}
+
+{off $DEFINE VerboseTimer}
+
+{off $DEFINE VerboseMouseBugfix}
+
+{off $DEFINE RaiseExceptionOnNilPointers}
+
+{off $Define DisableCriticalSections}
+
+{off $Define Disable_GC_SysColors}
+
+
+(*
+ keep track of keystates instead of using OS
+ This is the old mode and might be removed
+*)
+{$DEFINE Use_KeyStateList}
+
+(*
+ Since some platforms (Darwin) can have X but also have a native gtk
+ implementation, the following defines are used
+
+ HasX -> X can be used for accessing functions not implented in gtk/gdk
+         (this does not mean that gdkx functions can be used)
+ HasGdk2X -> gdk2x can be used (gdk2x is defined for fpc 2.1+)
+ UseX -> Use the X version of gtk instead of a native version
+*)
+
+{off $define UseX}
+
+{$ifdef Unix}
+  {$ifdef Gtk1}
+    {$define HasX}
+  {$else}
+    // on darwin we try to use native gtk
+    {$ifdef Darwin}
+      {$ifdef UseX} // it can be overridden
+        {$info Compiling with gtk2 for X}
+        {$define HasX}
+      {$else}
+        {$note On darwin the native gtk2 widgetset is used. }
+        {$note If you want to use gtk2 for X, define UseX }
+      {$endif}
+    {$else}
+      {$define HasX}
+    {$endif}
+    {$if defined(HasX) and not defined(VER2_0)}
+      {$define HasGdk2X}
+    {$endif}
+  {$endif}
+{$else}
+  {$ifdef Gtk1}
+    // not supported
+    {$fatal X is required for GTK1}
+  {$endif}
+{$endif}
+
+
+

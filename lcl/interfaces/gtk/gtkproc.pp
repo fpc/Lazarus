@@ -18,29 +18,10 @@ unit GTKProc;
 
 interface
 
-{$IFDEF win32}
-{off $DEFINE NoGdkPixbufLib}
-{$ELSE}
-{off $DEFINE NoGdkPixbufLib}
-{$ENDIF}
-
-{off $DEFINE GDK_ERROR_TRAP_FLUSH}
-{$DEFINE REPORT_GDK_ERRORS}
-
-{off $DEFINE VerboseAccelerator}
-
-{off $define VerboseModifiermap}
-
-
-{$IFDEF Unix}
-  {$DEFINE HasX}
-  {$IFDEF Gtk1}
-    {$DEFINE HasGtkX}
-  {$ENDIF}
-{$ENDIF}
+{$I gtkdefines.inc}
 
 uses
-  {$IFDEF win32}
+  {$IFDEF windows}
     // use windows unit first,
     // if not, Rect and Point are taken from the windows unit instead of classes.
     Windows, // needed for keyboard handling
@@ -55,21 +36,24 @@ uses
   InterfaceBase,
   {$IFDEF gtk2}
     glib2, gdk2pixbuf, gdk2, gtk2, Pango,
+    {$ifdef HasGdk2X}
+    gdk2x,
+    {$endif}
   {$ELSE}
     glib, gdk, gtk, {$Ifndef NoGdkPixbufLib}gdkpixbuf,{$EndIf}
   {$ENDIF}
+  Math, // after gtk to get the correct Float type
   LMessages, LCLProc, LCLStrConsts, LCLIntf, LCLType, DynHashArray, Maps,
   GraphType, GraphMath, Graphics, GTKWinApiWindow, LResources, Controls, Forms,
   Buttons, Menus, StdCtrls, ComCtrls, CommCtrl, ExtCtrls, Dialogs, ExtDlgs,
-  FileUtil, ImgList, GtkFontCache, GTKGlobals, gtkDef;
+  FileUtil, ImgList, GtkFontCache, GTKGlobals, gtkDef, GtkExtra;
 
 
 
 const
   GtkListItemGtkListTag = 'GtkList';
   GtkListItemLCLListTag = 'LCLList';
-
-
+  
 type
   PPWaitHandleEventHandler = ^PWaitHandleEventHandler;
   PWaitHandleEventHandler = ^TWaitHandleEventHandler;
@@ -95,60 +79,6 @@ type
   end;
     
 {$endif}
-
-{$IFDEF gtk2}
-const
-  gdkdll = gdklib;
-{$ENDIF}
-
-{$IFDEF GTK1}
-  function GDK_GET_CURRENT_DESKTOP(): gint;
-  function GDK_WINDOW_GET_DESKTOP(Window: PGdkWindowPrivate): gint;
-  function GDK_WINDOW_SET_DESKTOP(Window: PGdkWindowPrivate; Desktop: gint): gint;
-  procedure GDK_WINDOW_ACTIVATE(Window: PGdkWindowPrivate);
-  procedure GDK_WINDOW_MAXIMIZE(Window: PGdkWindowPrivate);
-  procedure GDK_WINDOW_MINIMIZE(Window: PGdkWindowPrivate);
-  function GDK_WINDOW_GET_MAXIMIZED(Window: PGdkWindowPrivate): gboolean;
-  procedure GDK_WINDOW_SHOW_IN_TASKBAR(Window: PGdkWindowPrivate; Show: Boolean);
-{$ENDIF}
-  
-
-{$IFNDEF GTK2}
-  function  GTK_TYPE_WIDGET : TGTKType; cdecl; external gtkdll name 'gtk_widget_get_type';
-  function  GTK_TYPE_CONTAINER: TGTKType; cdecl; external gtkdll name 'gtk_container_get_type';
-  function  GTK_TYPE_BIN : TGTKType; cdecl; external gtkdll name 'gtk_bin_get_type';
-  function  GTK_TYPE_HBOX : TGTKType; cdecl; external gtkdll name 'gtk_hbox_get_type';
-  function  GTK_TYPE_SCROLLED_WINDOW: TGTKType; cdecl; external gtkdll name 'gtk_scrolled_window_get_type';
-  function  GTK_TYPE_COMBO : TGTKType; cdecl; external gtkdll name 'gtk_combo_get_type';
-  function  GTK_TYPE_WINDOW : TGTKType; cdecl; external gtkdll name 'gtk_window_get_type';
-  function  GTK_TYPE_MENU : TGTKType; cdecl; external gtkdll name 'gtk_menu_get_type';
-  function  GTK_TYPE_MENU_ITEM : TGTKType; cdecl; external gtkdll name 'gtk_menu_item_get_type';
-  function  GTK_TYPE_MENU_BAR : TGTKType; cdecl; external gtkdll name 'gtk_menu_bar_get_type';
-  function  GTK_TYPE_RADIO_MENU_ITEM : TGTKType; cdecl; external gtkdll name 'gtk_radio_menu_item_get_type';
-  function  GTK_TYPE_CHECK_MENU_ITEM : TGTKType; cdecl; external gtkdll name 'gtk_check_menu_item_get_type';
-  function  GTK_TYPE_TEXT : TGTKType; cdecl; external gtkdll name 'gtk_text_get_type';
-  function  GTK_TYPE_ENTRY : TGTKType; cdecl; external gtkdll name 'gtk_entry_get_type';
-  function  GTK_TYPE_RANGE : TGTKType; cdecl; external gtkdll name 'gtk_range_get_type';
-  function  GTK_TYPE_SCROLLBAR: TGTKType; cdecl; external gtkdll name 'gtk_scrollbar_get_type';
-  function  GTK_TYPE_HSCROLLBAR: TGTKType; cdecl; external gtkdll name 'gtk_hscrollbar_get_type';
-  function  GTK_TYPE_VSCROLLBAR: TGTKType; cdecl; external gtkdll name 'gtk_vscrollbar_get_type';
-  function  GTK_TYPE_LIST_ITEM: TGTKType; cdecl; external gtkdll name 'gtk_list_item_get_type';
-{$ENDIF}
-
-// missing gtk2 functions/vars
-{$IFDEF GTK2}
-{$IFDEF Unix}
-  var
-    gdk_display: PDisplay; external gdkdll name 'gdk_display';
-
-  function gdk_screen_get_default: PGdkScreen; cdecl; external gdklib;
-{$ENDIF UNIX}
-{$ENDIF GTK2}
-
-
-procedure laz_gdk_gc_set_dashes(gc:PGdkGC; dash_offset:gint;
-  dashlist:Pgint8; n:gint); cdecl; external gdkdll name 'gdk_gc_set_dashes';
-
 
 // GTKCallback.inc headers
 procedure EventTrace(const TheMessage: string; data: pointer);
@@ -685,10 +615,6 @@ procedure ConnectSignalAfter(const AnObject:PGTKObject; const ASignal: PChar;
 procedure ConnectInternalWidgetsSignals(AWidget: PGtkWidget;
   AWinControl: TWinControl);
   
-{$IFDEF GTK1}
-function G_OBJECT(p: Pointer): PGtkObject;
-function G_CALLBACK(p: Pointer): TGTKSignalFunc;
-{$ENDIF}
 //--
   
 // accelerators
@@ -740,10 +666,6 @@ procedure DrawImageListIconOnWidget(ImgList: TCustomImageList;
   CenterHorizontally, CenterVertically: boolean;
   DestLeft, DestTop: integer);
 function GetPGdkImageBitsPerPixel(Image: PGdkImage): cardinal;
-{$IfDef Win32}
-Procedure gdk_window_copy_area(Dest: PGDKWindow; GC: PGDKGC;
-  DestX, DestY: Longint; SRC: PGDKWindow; XSRC, YSRC, Width, Height: Longint);
-{$EndIf}
 function CreateGdkBitmap(Window: PGdkWindow; Width, Height: integer): PGdkBitmap;
 function ExtractGdkBitmap(Bitmap: PGdkBitmap; const SrcRect: TRect): PGdkBitmap;
 
@@ -833,95 +755,6 @@ function gtk_widget_get_xthickness(Widget: PGTKWidget): gint; overload;
 function gtk_widget_get_ythickness(Widget: PGTKWidget): gint; overload;
 function GetGtkContainerBorderWidth(Widget: PGtkContainer): gint;
 
-{$Ifdef GTK1}
-  type
-     PGtkOldEditable = PGtkEditable;
-
-  function gtk_class_get_type(aclass: Pointer): TGtkType;
-
-  //routines to mimic GObject routines/behaviour-->
-  procedure g_signal_emit_by_name(anObject:PGtkObject; name:Pgchar;
-           args: array of const);
-           cdecl; overload; external gtkdll name 'gtk_signal_emit_by_name';
-  procedure g_signal_emit_by_name(anObject:PGtkObject; name:Pgchar);
-           cdecl; overload; external gtkdll name 'gtk_signal_emit_by_name';
-
-  Procedure g_signal_handlers_destroy(anObject: PGtkObject);
-           cdecl; external gtkdll name 'gtk_signal_handlers_destroy';
-  Procedure g_signal_stop_emission_by_name(anObject: PGtkObject;
-           detailed_signal: Pgchar);
-           cdecl; external gtkdll name 'gtk_signal_emit_stop_by_name';
-  Function g_signal_connect(anObject: PGtkObject; name: Pgchar;
-           func: TGtkSignalFunc; func_data: gpointer): guint;
-           cdecl; external gtkdll name 'gtk_signal_connect';
-  Function g_signal_connect_after(anObject: PGtkObject; name: Pgchar;
-           func: TGtkSignalFunc; func_data: gpointer): guint;
-           cdecl; external gtkdll name 'gtk_signal_connect_after';
-  Function g_signal_lookup(name: Pgchar; anObject: TGTKType): guint;
-           cdecl; external gtkdll name 'gtk_signal_lookup';
-
-  //routines to mimic similar GTK2 routines/behaviour-->
-  function gtk_object_get_class(anobject: Pointer): Pointer;
-  Function gtk_window_get_modal(window:PGtkWindow):gboolean;
-  Function gtk_bin_get_child(bin: PGTKBin): PGTKWidget;
-  Procedure gtk_menu_item_set_right_justified(menu_item: PGtkMenuItem;
-                                              right_justified: gboolean);
-  Function gtk_check_menu_item_get_active(menu_item: PGtkCheckMenuItem): gboolean;
-  Procedure gtk_menu_append(menu: PGTKWidget; Item: PGtkWidget);
-  Procedure gtk_menu_insert(menu: PGtkWidget; Item: PGTKWidget; Index: gint);
-  Procedure gtk_menu_bar_insert(menubar: PGtkWidget; Item: PGTKWidget; Index: gint);
-  Function gtk_image_new: PGTKWidget;
-  Function gtk_toolbar_new: PGTKWidget;
-  Procedure gtk_color_selection_get_current_color(colorsel: PGTKColorSelection;
-                                                  Color: PGDKColor);
-  Procedure gtk_color_selection_set_current_color(colorsel: PGTKColorSelection;
-                                                  Color: PGDKColor);
-
-  //routines to mimic similar GDK2 routines/behaviour-->
-  procedure gdk_image_unref(Image: PGdkImage);
-  Procedure gdk_colormap_query_color(colormap: PGDKColormap; Pixel: gulong;
-                                     Result: PGDKColor);
-
-  //Wrapper around misnamed "regions" routines -->
-  Function gdk_region_intersect(source1:PGdkRegion; source2:PGdkRegion): PGdkRegion;
-  Function gdk_region_union(source1:PGdkRegion; source2:PGdkRegion): PGdkRegion;
-  Function gdk_region_subtract(source1:PGdkRegion; source2:PGdkRegion): PGdkRegion;
-  Function gdk_region_xor(source1:PGdkRegion; source2:PGdkRegion): PGdkRegion;
-  function gdk_region_copy(region: PGDKRegion): PGDKRegion;
-  function gdk_region_rectangle(rect: PGdkRectangle): PGDKRegion;
-
-  //routines to mimic similar GDK2 routines/behaviour-->
-  Function gdk_pixmap_create_from_xpm_d (window: PGdkWindow;
-                             var mask: PGdkBitmap; transparent_color: PGdkColor;
-                             data: PPgchar): PGdkPixmap;
-  Function gdk_pixmap_colormap_create_from_xpm_d (window: PGdkWindow;
-                       colormap: PGdkColormap; var mask: PGdkBitmap;
-                       transparent_color: PGdkColor; data: PPgchar): PGdkPixmap;
-  Function gdk_pixmap_colormap_create_from_xpm (window: PGdkWindow;
-                    colormap: PGdkColormap; var mask: PGdkBitmap;
-                    transparent_color: PGdkColor; filename: Pgchar): PGdkPixmap;
-
-  {$IfNDef NoGdkPixbufLib}
-  Procedure gdk_pixbuf_render_pixmap_and_mask(pixbuf: PGdkPixbuf;
-    var pixmap_return: PGdkPixmap; var mask_return: PGdkBitmap;
-    alpha_threshold: gint);
-  {$EndIf}
-  
-  //Wrapper around window functions like gtk2 -->
-  Function gdk_drawable_get_depth(Drawable: PGDKDrawable): gint;
-  Procedure gdk_drawable_get_size(Drawable: PGDKDrawable; Width, Height: PGInt);
-  Function gdk_drawable_get_image(Drawable: PGDKDrawable;
-                                  x, y, width, height: gint): PGdkImage;
-  Function gdk_drawable_get_colormap(Drawable: PGDKDrawable): PGdkColormap;
-  
-  {$IFDEF UseXinerama}
-  // Xinerama
-  function GetFirstScreen: Boolean;
-  {$ENDIF}
-var
-  FirstScreen: TPoint;
-{$EndIF GTK1}
-
 {$Ifdef GTK2}
   function gtk_class_get_type(aclass: Pointer): TGtkType;
 
@@ -944,10 +777,10 @@ var
         LineLength: Longint; lbearing, rbearing, width, ascent, descent: Pgint);
 {$EndIf}
 
-{$IFDEF HasGtkX}
+{$ifdef HasX}
 // X functions
 function FormToX11Window(const AForm: TCustomForm): X.TWindow;
-{$ENDIF}
+{$endif}
 
 implementation
 
@@ -1112,294 +945,6 @@ begin
 //  FreeAndNil(MSymCharToVKMap);
 end;
 
-{$IFDEF GTK1}
-function GDK_GET_CURRENT_DESKTOP(): gint;
-var
-  XDisplay: PDisplay;
-  XScreen: PScreen;
-  XWindow: TWindow;
-  AtomType: x.TAtom;
-  Format: gint;
-  nitems: gulong;
-  bytes_after: gulong;
-  current_desktop: pguint;
-begin
-  Result := -1;
-
-  xdisplay := gdk_display;
-  xscreen := XDefaultScreenOfDisplay(xdisplay);
-  xwindow := XRootWindowOfScreen(xscreen);
-
-  XGetWindowProperty (xdisplay, xwindow,
-             XInternAtom(xdisplay, '_NET_CURRENT_DESKTOP', false),
-             0, MaxInt, False, XA_CARDINAL, @atomtype, @format, @nitems,
-             @bytes_after, gpointer(@current_desktop));
-
-  if (atomtype = XA_CARDINAL) and (format = 32) and  (nitems > 0) then
-  begin
-    Result := current_desktop[0];
-    XFree (current_desktop);
-  end;
-end;
-
-
-function GDK_WINDOW_GET_DESKTOP(Window: PGdkWindowPrivate): gint;
-var
-  xdisplay: PDisplay;
-  xwindow: TWindow;
-
-  atomtype: x.TAtom;
-  format: gint;
-  nitems: gulong;
-  bytes_after: gulong;
-  current_desktop: pguint;
-begin
-  Result := -1;
-  XWindow := GDK_WINDOW_XWINDOW (Window);
-  XDisplay := GDK_WINDOW_XDISPLAY (Window);
-  XGetWindowProperty (xdisplay, xwindow,
-             XInternAtom(xdisplay, '_NET_WM_DESKTOP', false),
-             0, MaxInt, False, XA_CARDINAL, @atomtype, @format, @nitems,
-             @bytes_after, gpointer(@current_desktop));
-
-  if (atomtype = XA_CARDINAL) and (format = 32) and  (nitems > 0) then
-  begin
-    Result := current_desktop[0];
-    XFree (current_desktop);
-  end;
-end;
-
-function GDK_WINDOW_SET_DESKTOP(Window: PGdkWindowPrivate; Desktop: gint): gint;
-var
-  XDisplay: PDisplay;
-  XScreen: PScreen;
-  XRootWindow,
-  XWindow: TWindow;
-  XEvent: TXClientMessageEvent;
-  _NET_WM_DESKTOP: Integer;
-begin
-
-  Result := -1;
-
-  XDisplay := GDK_WINDOW_XDISPLAY (Window);
-  XScreen := XDefaultScreenOfDisplay(xdisplay);
-  XRootWindow := XRootWindowOfScreen(xscreen);
-  XWindow := GDK_WINDOW_XWINDOW (Window);
-
-  _NET_WM_DESKTOP := XInternAtom(xdisplay, '_NET_WM_DESKTOP', false);
-
-  XEvent._type := ClientMessage;
-  XEvent.window := XWindow;
-  XEvent.message_type := _NET_WM_DESKTOP;
-  XEvent.format := 32;
-  XEvent.data.l[0] := Desktop;
-
-  XSendEvent(XDisplay, XRootWindow, False, SubstructureNotifyMask, PXEvent(@XEvent));
-end;
-
-
-procedure GDK_WINDOW_ACTIVATE(Window: PGdkWindowPrivate);
-var
-  XDisplay: PDisplay;
-  XScreen: PScreen;
-  aXRootWindow,
-  XWindow: x.TWindow;
-  XEvent: xlib.TXClientMessageEvent;
-  _NET_ACTIVE_WINDOW: Integer;
-begin
-  if (Window=nil) or (gdk.destroyed(Window^)<>0) then exit;
-
-  XDisplay := GDK_WINDOW_XDISPLAY (Window);
-  if XDisplay=nil then exit;
-  XScreen := XDefaultScreenOfDisplay(xdisplay);
-  if XScreen=nil then exit;
-  aXRootWindow := XRootWindowOfScreen(xscreen);
-  if aXRootWindow=0 then exit;
-  XWindow := GDK_WINDOW_XWINDOW (Window);
-  if XWindow=0 then exit;
-
-  _NET_ACTIVE_WINDOW := XInternAtom(xdisplay, '_NET_ACTIVE_WINDOW', false);
-
-  XEvent._type := ClientMessage;
-  XEvent.window := XWindow;
-  XEvent.message_type := _NET_ACTIVE_WINDOW;
-  XEvent.format := 32;
-  XEvent.data.l[0] := 1; //Message is from program
-  XEvent.data.l[1] := CurrentTime;
-  XEvent.data.l[2] := 0; // Applications current active window
-
-  XSendEvent(XDisplay, aXRootWindow, False, SubstructureNotifyMask, PXEvent(@XEvent));
-end;
-
-procedure GDK_WINDOW_MAXIMIZE(Window: PGdkWindowPrivate);
-const
-  _NET_WM_STATE_REMOVE    =    0;   // remove/unset property
-  _NET_WM_STATE_ADD       =    1;   // add/set property
-  _NET_WM_STATE_TOGGLE    =    2;   // toggle property
-var
-  XDisplay: PDisplay;
-  XScreen: PScreen;
-  aXRootWindow,
-  XWindow: TWindow;
-  XEvent: TXClientMessageEvent;
-  _NET_WM_STATE,
-  _NET_WM_STATE_MAXIMIZED_VERT,
-  _NET_WM_STATE_MAXIMIZED_HORZ: Integer;
-
-begin
-  XDisplay := GDK_WINDOW_XDISPLAY (Window);
-  XScreen := XDefaultScreenOfDisplay(xdisplay);
-  aXRootWindow := XRootWindowOfScreen(xscreen);
-  XWindow := GDK_WINDOW_XWINDOW (Window);
-
-  _NET_WM_STATE := XInternAtom(xdisplay, '_NET_WM_STATE', false);
-  _NET_WM_STATE_MAXIMIZED_VERT := XInternAtom(xdisplay, '_NET_WM_STATE_MAXIMIZED_VERT', false);
-  _NET_WM_STATE_MAXIMIZED_HORZ := XInternAtom(xdisplay, '_NET_WM_STATE_MAXIMIZED_HORZ', false);
-
-  XEvent._type := ClientMessage;
-  XEvent.window := XWindow;
-  XEvent.message_type := _NET_WM_STATE;
-  XEvent.format := 32;
-  XEvent.data.l[0] := _NET_WM_STATE_ADD;
-  XEvent.data.l[1] := _NET_WM_STATE_MAXIMIZED_HORZ;
-  XEvent.data.l[2] := _NET_WM_STATE_MAXIMIZED_VERT;
-
-  XSendEvent(XDisplay, aXRootWindow, False, SubstructureNotifyMask, PXEvent(@XEvent));
-end;
-
-
-
-procedure GDK_WINDOW_MINIMIZE(Window: PGdkWindowPrivate);
-const
-  _NET_WM_STATE_REMOVE    =    0;   // remove/unset property
-  _NET_WM_STATE_ADD       =    1;   // add/set property
-  _NET_WM_STATE_TOGGLE    =    2;   // toggle property
-var
-  XDisplay: PDisplay;
-  XScreen: PScreen;
-  XWindow: x.TWindow;
-  _NET_WM_STATE,
-  _NET_WM_STATE_HIDDEN: Integer;
-  atomtype: x.TAtom;
-  format: gint;
-  nitems: gulong;
-  bytes_after: gulong;
-  windowstates: Pcuchar;
-  X: Integer;
-
-begin
-  XDisplay := GDK_WINDOW_XDISPLAY (Window);
-  XScreen := XDefaultScreenOfDisplay(xdisplay);
-  XWindow := GDK_WINDOW_XWINDOW (Window);
-
-  _NET_WM_STATE := XInternAtom(xdisplay, '_NET_WM_STATE', false);
-  _NET_WM_STATE_HIDDEN := XInternAtom(xdisplay, '_NET_WM_STATE_HIDDEN', false);
-  
-  XGetWindowProperty (xdisplay, xwindow, _NET_WM_STATE             ,
-             0, MaxInt, False, XA_CARDINAL, @atomtype, @format, @nitems,
-             @bytes_after, @windowstates);
-  if (atomtype = XA_CARDINAL) and (format = 32) and  (nitems > 0) then
-  begin
-    // Check to see if the window is already minimized...
-    for X := 0 to nitems do begin
-      if windowstates[X] = _NET_WM_STATE_HIDDEN then begin
-        XFree (windowstates);
-        exit;
-      end;
-    end;
-    XFree (windowstates);
-  end;
-  
-  XIconifyWindow(XDisplay, XWindow, XScreenNumberOfScreen(XScreen));
-end;
-
-function GDK_WINDOW_GET_MAXIMIZED(Window: PGdkWindowPrivate): gboolean;
-var
-  xdisplay: PDisplay;
-  xwindow: TWindow;
-
-  atomtype: x.TAtom;
-  format: gint;
-  nitems: gulong;
-  bytes_after: gulong;
-  state_array: pguint;
-  _NET_WM_STATE,
-  _NET_WM_STATE_MAXIMIZED_VERT,
-  _NET_WM_STATE_MAXIMIZED_HORZ: x.TAtom;
-  X: Integer;
-begin
-  Result := False;
-  XWindow := GDK_WINDOW_XWINDOW (Window);
-  XDisplay := GDK_WINDOW_XDISPLAY (Window);
-  
-  _NET_WM_STATE := XInternAtom(xdisplay, '_NET_WM_STATE', false);
-  _NET_WM_STATE_MAXIMIZED_VERT := XInternAtom(xdisplay, '_NET_WM_STATE_MAXIMIZED_VERT', false);
-  _NET_WM_STATE_MAXIMIZED_HORZ := XInternAtom(xdisplay, '_NET_WM_STATE_MAXIMIZED_HORZ', false);
-
-  XGetWindowProperty (xdisplay, xwindow,
-             _NET_WM_STATE,
-             0, MaxInt, False, XA_ATOM, @atomtype, @format, @nitems,
-             @bytes_after, gpointer(@state_array));
-
-  if (atomtype = XA_ATOM) and (format = 32) and  (nitems > 0) then
-  begin
-    for X := 0 to nitems-1 do begin
-      if
-      (state_array[X] = _NET_WM_STATE_MAXIMIZED_VERT)
-      or
-      (state_array[X] = _NET_WM_STATE_MAXIMIZED_HORZ)
-      then Result := True;
-      
-      if Result then Break;
-    end;
-    XFree (state_array);
-  end;
-end;
-
-procedure GDK_WINDOW_SHOW_IN_TASKBAR(Window: PGdkWindowPrivate; Show: Boolean);
-// this is a try to hide windows from the taskbar.
-// Unpleasantly, some windowmangers like metacity also hides form the Alt-Tab
-// cycle.
-// This feature is therefore disabled on default.
-{$IFDEF EnableHideFromTaskBar}
-var
-  XDisplay: PDisplay;
-  XScreen: PScreen;
-  XRootWindow,
-  XWindow: TWindow;
-  XEvent: TXClientMessageEvent;
-  _NET_WM_STATE,
-  _NET_WM_STATE_SKIP_TASKBAR: clong;
-{$ENDIF}
-begin
-  {$IFDEF EnableHideFromTaskBar}
-  // GTK1: reshowing does not work, so a modal form will hide the whole application
-  // GTK
-
-  XDisplay := GDK_WINDOW_XDISPLAY (Window);
-  XScreen := XDefaultScreenOfDisplay(xdisplay);
-  XRootWindow := XRootWindowOfScreen(xscreen);
-  XWindow := GDK_WINDOW_XWINDOW (Window);
-
-  _NET_WM_STATE := XInternAtom(xdisplay, '_NET_WM_STATE', false);
-  _NET_WM_STATE_SKIP_TASKBAR := XInternAtom(xdisplay, '_NET_WM_STATE_SKIP_TASKBAR', false);
-
-  XEvent._type := ClientMessage;
-  XEvent.window := XWindow;
-  XEvent.message_type := _NET_WM_STATE;
-  XEvent.format := 32;
-  if Show then
-    XEvent.data.l[0] := 1
-  else
-    XEvent.data.l[0] := 0;// 0=Remove 1=Add 2=Toggle
-  XEvent.data.l[1] := _NET_WM_STATE_SKIP_TASKBAR;
-
-  XSendEvent(XDisplay, XRootWindow, False, SubstructureNotifyMask, @XEvent);
-  {$ENDIF}
-end;
-
-
-{$ENDIF}
 
 initialization
   InitGTKProc;

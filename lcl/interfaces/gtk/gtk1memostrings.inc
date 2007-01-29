@@ -1,57 +1,18 @@
-{$IFDEF GTK1}
-{$IFDEF MEMOHEADER}
-
-
-type
-
-  PGtkTextInsertEvent = ^TGtkTextInsertEvent;
-  TGtkTextInsertEvent = procedure (NewText: pgchar; NewTextLength: gint; position: pgint) of object;
-  
-  PGtkTextDeleteEvent = ^TGtkTextDeleteEvent;
-  TGtkTextDeleteEvent = procedure(StartPos, EndPos: gint) of object;
-  { TGtkMemoStrings }
-
-  TGtkMemoStrings = class(TStrings)
-  private
-    FGtkText : PGtkText;
-    FOwner: TWinControl;
-    fTextInsertEvent: TGtkTextInsertEvent;
-    fTextDeleteEvent: TGtkTextDeleteEvent;
-    FCachedCount: Integer;
-    FLineStartCapacity: Integer;
-    FLineStartPos: array of Integer;
-  protected
-    fModified: Boolean;
-    fDeleting: Boolean;
-    function GetTextStr: string; override;
-    function GetCount: integer; override;
-    function Get(Index : Integer) : string; override;
-    procedure AdjustIndices(FromIndex, ToIndex: Integer; ACount: Integer; Back: Boolean);
-    procedure InsertIndices(StartIndex: Integer; AValue: array of Integer; ACount: Integer);
-    procedure DeleteIndices(StartIndex, ACount: Integer);
-    procedure SetCachedCount(AValue: Integer);
-    procedure TextInserted(NewText: pgchar; NewTextLength: gint; position: pgint);
-    procedure TextDeleted(StartPos, EndPos: gint);
-    function PositionToLine(Position: Integer; StartLine: Integer = 0): Integer;
-    //procedure SetSorted(Val : boolean); virtual;
-  public
-    constructor Create(GtkText : PGtkText; TheOwner: TWinControl);
-    destructor Destroy; override;
-    procedure Assign(Source : TPersistent); override;
-    procedure Clear; override;
-    procedure Delete(Index : integer); override;
-    procedure Insert(Index : integer; const S: string); override;
-    procedure SetText(TheText: PChar); override;
-    //procedure Sort; virtual;
-  public
-    //property Sorted: boolean read FSorted write SetSorted;
-    property Owner: TWinControl read FOwner;
-  end;
-{$ELSE}
+{%mainunit gtkwsstdctrls.pp}
+{ $Id$}
 {
-
-Implementation
-
+ *****************************************************************************
+ *                                                                           *
+ *  This file is part of the Lazarus Component Library (LCL)                 *
+ *                                                                           *
+ *  See the file COPYING.modifiedLGPL, included in this distribution,        *
+ *  for details about the copyright.                                         *
+ *                                                                           *
+ *  This program is distributed in the hope that it will be useful,          *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of           *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                     *
+ *                                                                           *
+ *****************************************************************************
 }
 
 //////// Callbacks   //////
@@ -339,5 +300,3 @@ begin
   LockOnChange(PGtkObject(FGtkText),-1);
   //debugln('TGtkMemoStrings.SetText ',DbgSName(Owner),' "',TheText,'" ',dbgs(gtk_text_get_length(FGtkText)));
 end;
-{$ENDIF}
-{$ENDIF}
