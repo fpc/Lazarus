@@ -2,15 +2,12 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Lazarus 1.x\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2006-06-03 01:08+0700\n"
+"PO-Revision-Date: 2007-01-30 01:16+0700\n"
 "Last-Translator: Zaenal Mutaqin <ade999@gmail.com>\n"
 "Language-Team: Indonesian <ade999@gmail.com>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-Language: Indonesian\n"
-"X-Poedit-Country: INDONESIA\n"
-"X-Poedit-SourceCharset: iso-8859-1\n"
 
 #: lazarusidestrconsts:srkmcommand1
 msgid "    command1 \""
@@ -42,7 +39,7 @@ msgstr "%s (debugging ...)"
 
 #: lazarusidestrconsts:liscovarious
 msgid "%s (various)"
-msgstr ""
+msgstr "%s (beragam)"
 
 #: lazarusidestrconsts:lisnewproject
 msgid "%s - (new project)"
@@ -154,11 +151,11 @@ msgstr "%sPaket ini otomatis dibuat"
 
 #: lazarusidestrconsts:lisnone
 msgid "%snone"
-msgstr ""
+msgstr "%snone"
 
 #: lazarusidestrconsts:liswladd
 msgid "&Add"
-msgstr ""
+msgstr "T&ambah"
 
 #: lazarusidestrconsts:uemaddbreakpoint
 msgid "&Add Breakpoint"
@@ -166,7 +163,7 @@ msgstr "&Tambah Breakpoint"
 
 #: lazarusidestrconsts:lisclose
 msgid "&Close"
-msgstr ""
+msgstr "&Tutup"
 
 #: lazarusidestrconsts:uemclosepage
 msgid "&Close Page"
@@ -178,7 +175,7 @@ msgstr "&Komponen"
 
 #: lazarusidestrconsts:liswldelete
 msgid "&Delete"
-msgstr ""
+msgstr "&Hapus"
 
 #: lazarusidestrconsts:lismenuedit
 msgid "&Edit"
@@ -186,7 +183,7 @@ msgstr "&Edit"
 
 #: lazarusidestrconsts:liswlenabled
 msgid "&Enabled"
-msgstr ""
+msgstr "&Dihidupkan"
 
 #: lazarusidestrconsts:lismenufile
 msgid "&File"
@@ -206,11 +203,11 @@ msgstr "&Panduan"
 
 #: lazarusidestrconsts:lisplistobjects
 msgid "&Objects"
-msgstr ""
+msgstr "&Objects"
 
 #: lazarusidestrconsts:lisok
 msgid "&Ok"
-msgstr ""
+msgstr "&Ok"
 
 #: lazarusidestrconsts:uemopenfileatcursor
 msgid "&Open file at cursor"
@@ -222,7 +219,7 @@ msgstr "&Proyek"
 
 #: lazarusidestrconsts:liswlproperties
 msgid "&Properties"
-msgstr ""
+msgstr "&Properti"
 
 #: lazarusidestrconsts:dlgreplacewith
 msgid "&Replace With"
@@ -274,7 +271,7 @@ msgstr "(makro tidak dikenal: %s)"
 
 #: lazarusidestrconsts:lisplistall
 msgid "<All>"
-msgstr ""
+msgstr "<Semua>"
 
 #: lazarusidestrconsts:lislazdocnotagcaption
 msgid "<NONE>"
@@ -282,7 +279,7 @@ msgstr "<TIDAK ADA>"
 
 #: lazarusidestrconsts:lisplistnone
 msgid "<None>"
-msgstr ""
+msgstr "<Tidak ada>"
 
 #: lazarusidestrconsts:lisa2pchooseanexistingfile
 msgid "<choose an existing file>"
@@ -290,15 +287,15 @@ msgstr "<pilih file yang sudah ada>"
 
 #: lazarusidestrconsts:lismodifiedlgplnotice
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version with the following modification:%sAs a special exception, the copyright holders of this library give you permission to link this library with independent modules to produce an executable, regardless of the license terms of these independent modules,and to copy and distribute the resulting executable under terms of your choice, provided that you also meet, for each linked independent module, the terms and conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this library, you may extend this exception to your version of the library, but you are not obligated to do so. If you do not wish to do so, delete this exception statement from your version.%sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
-msgstr ""
+msgstr "<description>%sHak Cipta (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version with the following modification:%sAs a special exception, the copyright holders of this library give you permission to link this library with independent modules to produce an executable, regardless of the license terms of these independent modules,and to copy and distribute the resulting executable under terms of your choice, provided that you also meet, for each linked independent module, the terms and conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this library, you may extend this exception to your version of the library, but you are not obligated to do so. If you do not wish to do so, delete this exception statement from your version.%sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 
 #: lazarusidestrconsts:lislgplnotice
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
-msgstr ""
+msgstr "<description>%sCopyright (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 
 #: lazarusidestrconsts:lisgplnotice
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis source is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. %sA copy of the GNU General Public License is available on the World Wide Web at <http://www.gnu.org/copyleft/gpl.html>. You can also obtain it by writing to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
-msgstr ""
+msgstr "<description>%sCopyright (C) <year> <name of author> <contact>%sThis source is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. %sA copy of the GNU General Public License is available on the World Wide Web at <http://www.gnu.org/copyleft/gpl.html>. You can also obtain it by writing to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 
 #: lazarusidestrconsts:lisctdefnovariableselected
 msgid "<no variable selected>"
@@ -346,7 +343,7 @@ msgstr "Batalkan semua pengambilan"
 
 #: lazarusidestrconsts:liskmabortbuilding
 msgid "Abort building"
-msgstr ""
+msgstr "Batalkan pembuatan"
 
 #: lazarusidestrconsts:lisabortloadingproject
 msgid "Abort loading project"
@@ -354,7 +351,7 @@ msgstr "Batalkan pengambilan proyek"
 
 #: lazarusidestrconsts:lisabortwholeloading
 msgid "Abort whole loading"
-msgstr ""
+msgstr "Batalkan seluruh pengambilan"
 
 #: lazarusidestrconsts:lismenutemplateabout
 msgid "About"
@@ -410,7 +407,7 @@ msgstr "Tambah unit aktif ke paket"
 
 #: lazarusidestrconsts:liskmaddactiveunittoproject
 msgid "Add active unit to project"
-msgstr ""
+msgstr "Tambah unit aktif ke proyek"
 
 #: lazarusidestrconsts:lispckeditaddanitem
 msgid "Add an item"
@@ -418,7 +415,7 @@ msgstr "Tambah item"
 
 #: lazarusidestrconsts:liskmaddbreakpoint
 msgid "Add break point"
-msgstr ""
+msgstr "Tambah titik pisah"
 
 #: lazarusidestrconsts:lismenuaddbreakpoint
 msgid "Add breakpoint"
@@ -478,7 +475,7 @@ msgstr "Tambah path ke paket dependen/proyek"
 
 #: lazarusidestrconsts:dlgaddsemicolon
 msgid "Add semicolon"
-msgstr ""
+msgstr "Tambah titik koma"
 
 #: lazarusidestrconsts:lisoifaddtofavouriteproperties
 msgid "Add to favourite properties"
@@ -498,7 +495,7 @@ msgstr "Tambah unit ke klausul uses dari paket. Matikan ini hanya untuk unit yan
 
 #: lazarusidestrconsts:liskmaddwatch
 msgid "Add watch"
-msgstr ""
+msgstr "Tambah pengawasan"
 
 #: lazarusidestrconsts:lismenuaddwatch
 msgid "Add watch ..."
@@ -530,7 +527,7 @@ msgstr "Sesuaikan baris atas karena komentar di depan"
 
 #: lazarusidestrconsts:rslanguageafrikaans
 msgid "Afrikaans"
-msgstr ""
+msgstr "Afrikaans"
 
 #: lazarusidestrconsts:fdmalignword
 msgid "Align"
@@ -546,7 +543,7 @@ msgstr "Semua File"
 
 #: lazarusidestrconsts:lisallblockslooksok
 msgid "All blocks looks ok."
-msgstr ""
+msgstr "Seluruh blok terlihat ok."
 
 #: lazarusidestrconsts:dlgallfiles
 msgid "All files"
@@ -582,11 +579,11 @@ msgstr "Mode kolom set Alt-Key"
 
 #: lazarusidestrconsts:srkmalternkey
 msgid "Alternative key (or 2 keys combination)"
-msgstr ""
+msgstr "Kunci alternatif (atau 2 kunci kombinasi)"
 
 #: lazarusidestrconsts:lisbfalwaysbuildbeforerun
 msgid "Always Build before Run"
-msgstr ""
+msgstr "Selalu Membangun sebelum Dijalankan"
 
 #: lazarusidestrconsts:lisprojoptsalwaysbuildevenifnothingchanged
 msgid "Always build (even if nothing changed)"
@@ -918,7 +915,7 @@ msgstr "Bangun CodeTools"
 
 #: lazarusidestrconsts:lisbfbuildcommand
 msgid "Build Command"
-msgstr ""
+msgstr "Perintah Bangun"
 
 #: lazarusidestrconsts:lisbuildcomponent
 msgid "Build Component"
@@ -982,7 +979,7 @@ msgstr "Bangun semua"
 
 #: lazarusidestrconsts:liskmbuildallfilesofprojectprogram
 msgid "Build all files of project/program"
-msgstr ""
+msgstr "Bangun seluruh file proyek/program"
 
 #: lazarusidestrconsts:srkmecbuildlazarus
 msgid "Build lazarus"
@@ -994,7 +991,7 @@ msgstr "Bangun proyek baru"
 
 #: lazarusidestrconsts:liskmbuildprojectprogram
 msgid "Build project/program"
-msgstr ""
+msgstr "Bangun proyek/program"
 
 #: lazarusidestrconsts:dlgcmacro
 msgid "C Style Macros (global)"
@@ -1046,7 +1043,7 @@ msgstr "Batal"
 
 #: lazarusidestrconsts:liscancelloadingthiscomponent
 msgid "Cancel loading this component"
-msgstr ""
+msgstr "Batalkan pengambilan komponen ini"
 
 #: lazarusidestrconsts:liscancelloadingunit
 msgid "Cancel loading unit"
@@ -1118,7 +1115,7 @@ msgstr "Ubah Class"
 
 #: lazarusidestrconsts:lisplistchangefont
 msgid "Change Font"
-msgstr ""
+msgstr "Ubah Font"
 
 #: lazarusidestrconsts:lismenuinsertchangelogentry
 msgid "ChangeLog entry"
@@ -1158,11 +1155,11 @@ msgstr "Periksa:"
 
 #: lazarusidestrconsts:rslanguagechinese
 msgid "Chinese"
-msgstr ""
+msgstr "Cina"
 
 #: lazarusidestrconsts:lispochoosepofiledirectory
 msgid "Choose .po file directory"
-msgstr ""
+msgstr "Pilih direktori file .po"
 
 #: lazarusidestrconsts:lischoosedelphipackage
 msgid "Choose Delphi package (*.dpk)"
@@ -1186,7 +1183,7 @@ msgstr "Pilih direktori sumber FPC"
 
 #: lazarusidestrconsts:liskmchoosekeymappingscheme
 msgid "Choose Keymapping scheme"
-msgstr ""
+msgstr "Pilih skema Pemetaan kunci"
 
 #: lazarusidestrconsts:lischooselazarussourcedirectory
 msgid "Choose Lazarus Directory"
@@ -1266,7 +1263,7 @@ msgstr "Nama Class sudah ada"
 
 #: lazarusidestrconsts:lisclassconflictswithlfmfiletheunitusesthetheunitwhic
 msgid "Class conflicts with .lfm file:%sThe unit %s%suses the the unit %s%swhich contains the class %s,%sbut the .lfm file contains already another class.%sThere can only be one design class per unit.%sPlease move %s to another unit."
-msgstr ""
+msgstr "Class konflik dengan file .lfm:%sUnit %s%smenggunakan unit %s%syang berisi kelas %s,%stapi file .lfm sudah berisi kelas lain.%sHarus ada satu kelas desain per unit.%sSilahkan pindahkan %s ke unit lain."
 
 #: lazarusidestrconsts:lisclassnotfound
 msgid "Class not found"
@@ -1282,7 +1279,7 @@ msgstr "Bagian Class menyisipkan kebijakan"
 
 #: lazarusidestrconsts:liskmclassic
 msgid "Classic"
-msgstr ""
+msgstr "Klasik"
 
 #: lazarusidestrconsts:liscldircleandirectory
 msgid "Clean Directory"
@@ -1318,11 +1315,11 @@ msgstr "Clear"
 
 #: lazarusidestrconsts:lispckeditcleardependencydefaultfilename
 msgid "Clear dependency filename"
-msgstr ""
+msgstr "Bersihkan nama file dependensi"
 
 #: lazarusidestrconsts:lisuiclearincludedbyreference
 msgid "Clear include cache"
-msgstr ""
+msgstr "Bersihkan cache include"
 
 #: lazarusidestrconsts:lisdebugoptionsfrmclearlogonrun
 msgid "Clear log on run"
@@ -1338,11 +1335,11 @@ msgstr "Tutup"
 
 #: lazarusidestrconsts:liskmcloseall
 msgid "Close All"
-msgstr ""
+msgstr "Tutup Semua"
 
 #: lazarusidestrconsts:lismenucloseproject
 msgid "Close Project"
-msgstr ""
+msgstr "Tutuip Proyek"
 
 #: lazarusidestrconsts:lismenucloseall
 msgid "Close all editor files"
@@ -1350,11 +1347,11 @@ msgstr "Tutup semua file editor"
 
 #: lazarusidestrconsts:lissrclosepage
 msgid "Close page"
-msgstr ""
+msgstr "Tutup halaman"
 
 #: lazarusidestrconsts:liskmcloseproject
 msgid "Close project"
-msgstr ""
+msgstr "Tutup proyek"
 
 #: lazarusidestrconsts:dlgcodegeneration
 msgid "Code"
@@ -1378,7 +1375,7 @@ msgstr "Piranti Kode"
 
 #: lazarusidestrconsts:dlgusecodefolding
 msgid "Code folding"
-msgstr ""
+msgstr "Lipatan kode"
 
 #: lazarusidestrconsts:dlgedcodeparams
 msgid "Code parameters"
@@ -1398,7 +1395,7 @@ msgstr "Opsi CodeExplorer"
 
 #: lazarusidestrconsts:lispkgsyscodetoolstoolsandfunctionstoparsebrowseandeditpasc
 msgid "CodeTools - tools and functions to parse, browse and edit pascal sources"
-msgstr ""
+msgstr "CodeTools -  piranti dan fungsi untuk mengurai, melihat dan mengedit sumber pascal"
 
 #: lazarusidestrconsts:liscodetoolsdefscodetoolsdefineseditor
 msgid "CodeTools Defines Editor"
@@ -1426,7 +1423,7 @@ msgstr "Perintah CodeTools"
 
 #: lazarusidestrconsts:liskmcodetoolsdefineseditor
 msgid "CodeTools defines editor"
-msgstr ""
+msgstr "CodeTools mendefinisikan editor"
 
 #: lazarusidestrconsts:lismenucodetoolsdefineseditor
 msgid "CodeTools defines editor ..."
@@ -1434,7 +1431,7 @@ msgstr "Editor definisi CodeTools ..."
 
 #: lazarusidestrconsts:liskmcodetoolsoptions
 msgid "CodeTools options"
-msgstr ""
+msgstr "Opsi CodeTools"
 
 #: lazarusidestrconsts:srkmeccodetoolsdefinesed
 msgid "Codetools defines editor"
@@ -1458,7 +1455,7 @@ msgstr "Warna"
 
 #: lazarusidestrconsts:dlgclrscheme
 msgid "Color Scheme"
-msgstr ""
+msgstr "Skema Warna"
 
 #: lazarusidestrconsts:dlgenvcolors
 msgid "Colors"
@@ -1562,7 +1559,7 @@ msgstr "Nama file kompilator"
 
 #: lazarusidestrconsts:liskmcompileroptions
 msgid "Compiler options"
-msgstr ""
+msgstr "Opsi Kompilator"
 
 #: lazarusidestrconsts:dlgfpcpath
 msgid "Compiler path (e.g. %s)"
@@ -1594,7 +1591,7 @@ msgstr "Nama komponen %s%s%s bukan pengenal yang benar"
 
 #: lazarusidestrconsts:lisfpcomponents
 msgid "Components"
-msgstr ""
+msgstr "Komponen"
 
 #: lazarusidestrconsts:srkmcatcomponentsmenu
 msgid "Components menu commands"
@@ -1602,7 +1599,7 @@ msgstr "Perintah menu Komponen"
 
 #: lazarusidestrconsts:liskmconfigbuildfile
 msgid "Config %sBuild File%s"
-msgstr ""
+msgstr "Konfig %sBuild File%s"
 
 #: lazarusidestrconsts:dlgconfigfiles
 msgid "Config Files:"
@@ -1614,15 +1611,15 @@ msgstr "Konfigurasi %sBuild Lazarus%s"
 
 #: lazarusidestrconsts:lisconfigurebuild
 msgid "Configure Build %s"
-msgstr ""
+msgstr "Konfigurasi Pembangunan %s"
 
 #: lazarusidestrconsts:lismenuconfigbuildfile
 msgid "Configure Build+Run File ..."
-msgstr ""
+msgstr "Konfigurasi Pembangunan+Jalankan File ..."
 
 #: lazarusidestrconsts:liskmconfigurehelp
 msgid "Configure Help"
-msgstr ""
+msgstr "Konfigurasi Bantuan"
 
 #: lazarusidestrconsts:lismenuconfigurehelp
 msgid "Configure Help ..."
@@ -1630,11 +1627,11 @@ msgstr "Konfigurasi Panduan ..."
 
 #: lazarusidestrconsts:lismenuconfigurebuildlazarus
 msgid "Configure \"Build Lazarus\" ..."
-msgstr ""
+msgstr "Konfigurasi \"Bangun Lazarus\" ..."
 
 #: lazarusidestrconsts:liskmconfigurecustomcomponents
 msgid "Configure custom components"
-msgstr ""
+msgstr "Konfigurasi komponen kustom"
 
 #: lazarusidestrconsts:lismenuconfigcustomcomps
 msgid "Configure custom components ..."
@@ -1646,7 +1643,7 @@ msgstr "Konfigurasi piranti kustom ..."
 
 #: lazarusidestrconsts:liskmconfigureinstalledpackages
 msgid "Configure installed packages"
-msgstr ""
+msgstr "Konfigurasi paket terinstalasi"
 
 #: lazarusidestrconsts:lismenueditinstallpkgs
 msgid "Configure installed packages ..."
@@ -1674,7 +1671,7 @@ msgstr "Konflik"
 
 #: lazarusidestrconsts:lispeconflictfound
 msgid "Conflict found"
-msgstr ""
+msgstr "Konflik ditemukan"
 
 #: lazarusidestrconsts:dlginitdoneonly
 msgid "Constructor name must be 'init' (destructor must be 'done')"
@@ -1690,7 +1687,7 @@ msgstr "Panduan sensitif isi"
 
 #: lazarusidestrconsts:liskmcontextsensitivehelp
 msgid "Context sensitive help"
-msgstr ""
+msgstr "Bantuan sensitif konteks"
 
 #: lazarusidestrconsts:liscontinue
 msgid "Continue"
@@ -1726,7 +1723,7 @@ msgstr "Konversi"
 
 #: lazarusidestrconsts:liskmconvertdfmfiletolfm
 msgid "Convert DFM file to LFM"
-msgstr ""
+msgstr "Ubah file DFM ke LFM"
 
 #: lazarusidestrconsts:lismenuconvertdfmtolfm
 msgid "Convert DFM file to LFM ..."
@@ -1734,7 +1731,7 @@ msgstr "Konversi file DFM ke LFM ..."
 
 #: lazarusidestrconsts:liskmconvertdelphipackagetolazaruspackage
 msgid "Convert Delphi package to Lazarus package"
-msgstr ""
+msgstr "Ubah paket Delphi ke paket Lazarus"
 
 #: lazarusidestrconsts:lismenuconvertdelphipackage
 msgid "Convert Delphi package to Lazarus package ..."
@@ -1742,7 +1739,7 @@ msgstr "Konversi paket Delphi ke paket Lazarus ..."
 
 #: lazarusidestrconsts:liskmconvertdelphiprojecttolazarusproject
 msgid "Convert Delphi project to Lazarus project"
-msgstr ""
+msgstr "Ubah proyek Delphi ke proyek Lazarus"
 
 #: lazarusidestrconsts:lismenuconvertdelphiproject
 msgid "Convert Delphi project to Lazarus project ..."
@@ -1750,7 +1747,7 @@ msgstr "Konversi proyek Delphi ke proyek Lazarus ..."
 
 #: lazarusidestrconsts:liskmconvertdelphiunittolazarusunit
 msgid "Convert Delphi unit to Lazarus unit"
-msgstr ""
+msgstr "Ubah unit Delphi ke unit Lazarus"
 
 #: lazarusidestrconsts:lismenuconvertdelphiunit
 msgid "Convert Delphi unit to Lazarus unit ..."
@@ -1790,15 +1787,15 @@ msgstr "Copy nama file"
 
 #: lazarusidestrconsts:lisldcopyfrominherited
 msgid "Copy from inherited"
-msgstr ""
+msgstr "Copy dari inherited"
 
 #: lazarusidestrconsts:lisplistcopymethodtoclipboard
 msgid "Copy method name to the clipboard"
-msgstr ""
+msgstr "Copy nama method ke clipboard"
 
 #: lazarusidestrconsts:liskmcopyselectedcomponentstoclipboard
 msgid "Copy selected Components to clipboard"
-msgstr ""
+msgstr "Copy Komponen yang dipilih ke clipboard"
 
 #: lazarusidestrconsts:lisdsgcopycomponents
 msgid "Copy selected components to clipboard"
@@ -1858,7 +1855,7 @@ msgstr "Buat Makro FPC dan path untuk direktori proyek fpc"
 
 #: lazarusidestrconsts:lismenucreatelazdocfiles
 msgid "Create LazDoc files"
-msgstr ""
+msgstr "Buat file LazDoc"
 
 #: lazarusidestrconsts:lispckeditcreatemakefile
 msgid "Create Makefile"
@@ -1926,7 +1923,7 @@ msgstr "Buat file baru"
 
 #: lazarusidestrconsts:liscreatenewproject
 msgid "Create new project"
-msgstr ""
+msgstr "Buat proyek baru"
 
 #: lazarusidestrconsts:dlgruberbandcreationcolor
 msgid "Creation"
@@ -2006,7 +2003,7 @@ msgstr "Cut"
 
 #: lazarusidestrconsts:liskmcutselectedcomponentstoclipboard
 msgid "Cut selected Components to clipboard"
-msgstr ""
+msgstr "Cut Komponen yang dipilih ke clipboard"
 
 #: lazarusidestrconsts:lisdsgcutcomponents
 msgid "Cut selected components to clipboard"
@@ -2018,7 +2015,7 @@ msgstr "Potong pilihan ke clipboard"
 
 #: lazarusidestrconsts:liswldisableall
 msgid "D&isable All"
-msgstr ""
+msgstr "Mat&ikan Semua"
 
 #: lazarusidestrconsts:lishlpoptsdatabases
 msgid "Databases"
@@ -2030,7 +2027,7 @@ msgstr "Tanggal"
 
 #: lazarusidestrconsts:liswldeleteall
 msgid "De&lete All"
-msgstr ""
+msgstr "&Hapus Semua"
 
 #: lazarusidestrconsts:uemdebugword
 msgid "Debug"
@@ -2106,7 +2103,7 @@ msgstr "Definisikan Berulang"
 
 #: lazarusidestrconsts:lisctdefdefinetemplates
 msgid "Define templates"
-msgstr ""
+msgstr "Definisikan template"
 
 #: lazarusidestrconsts:dlgeddelay
 msgid "Delay"
@@ -2162,7 +2159,7 @@ msgstr "Penghapusan file gagal"
 
 #: lazarusidestrconsts:liskmdeletelastchar
 msgid "Delete last char"
-msgstr ""
+msgstr "Hapus karakter terakhir"
 
 #: lazarusidestrconsts:lislazdocdeletelinkbutton
 msgid "Delete link"
@@ -2298,7 +2295,7 @@ msgstr "Diff"
 
 #: lazarusidestrconsts:liskmdiffeditorfiles
 msgid "Diff editor files"
-msgstr ""
+msgstr "File editor Diff"
 
 #: lazarusidestrconsts:dlgdirection
 msgid "Direction"
@@ -2346,7 +2343,7 @@ msgstr "Bedakan huruf besar dan kecil contoh A dan a"
 
 #: lazarusidestrconsts:dlgcfdividerdrawlevel
 msgid "Divider Draw Level"
-msgstr ""
+msgstr "Level Draw Divider"
 
 #: lazarusidestrconsts:lisdonotclosetheide
 msgid "Do not close the IDE"
@@ -2418,7 +2415,7 @@ msgstr "File Drop"
 
 #: lazarusidestrconsts:lisduplicatenameacomponentnamedalreadyexistsintheinhe
 msgid "Duplicate name: A component named %s%s%s already exists in the inherited component %s"
-msgstr ""
+msgstr "Duplikasi nama: Komponen bernama %s%s%ssudah ada dalam komponen inherited %s"
 
 #: lazarusidestrconsts:rslanguagedutch
 msgid "Dutch"
@@ -2426,7 +2423,7 @@ msgstr "Belanda"
 
 #: lazarusidestrconsts:liswlenableall
 msgid "E&nable All"
-msgstr ""
+msgstr "Hidupka&n Semua"
 
 #: lazarusidestrconsts:lismenuenvironent
 msgid "E&nvironment"
@@ -2438,7 +2435,7 @@ msgstr "Edit"
 
 #: lazarusidestrconsts:liskmeditcodetemplates
 msgid "Edit Code Templates"
-msgstr ""
+msgstr "Edit Template Kode"
 
 #: lazarusidestrconsts:lispckediteditgeneraloptions
 msgid "Edit General Options"
@@ -2462,11 +2459,11 @@ msgstr "Edit template kode"
 
 #: lazarusidestrconsts:lismenueditcontexthelp
 msgid "Edit context sensitive Help"
-msgstr ""
+msgstr "Edit Bantuan sensitif konteks"
 
 #: lazarusidestrconsts:liskmeditcontextsensitivehelp
 msgid "Edit context sensitive help"
-msgstr ""
+msgstr "Edit Bantuan sensitif konteks"
 
 #: lazarusidestrconsts:srkmeditforcmd
 msgid "Edit keys for command"
@@ -2474,7 +2471,7 @@ msgstr "Edit kunci untuk perintah"
 
 #: lazarusidestrconsts:lispvueditvirtualunit
 msgid "Edit virtual unit"
-msgstr ""
+msgstr "Edit unit virtual"
 
 #: lazarusidestrconsts:dlgededit
 msgid "Edit..."
@@ -2494,7 +2491,7 @@ msgstr "Tinggi font editor"
 
 #: lazarusidestrconsts:liskmeditoroptions
 msgid "Editor options"
-msgstr ""
+msgstr "Opsi Editor"
 
 #: lazarusidestrconsts:lismenueditoroptions
 msgid "Editor options ..."
@@ -2518,7 +2515,7 @@ msgstr "ElseIf"
 
 #: lazarusidestrconsts:lisenablemacros
 msgid "Enable Macros"
-msgstr ""
+msgstr "Hidupkan makro"
 
 #: lazarusidestrconsts:lisenabled
 msgid "Enabled"
@@ -2538,7 +2535,7 @@ msgstr "Tutup Pemilihan"
 
 #: lazarusidestrconsts:liskmencloseselection
 msgid "Enclose selection"
-msgstr ""
+msgstr "Tutupi pilihan"
 
 #: lazarusidestrconsts:lismenuencloseselection
 msgid "Enclose selection ..."
@@ -2594,11 +2591,11 @@ msgstr "Kesalahan Penulisan Paket"
 
 #: lazarusidestrconsts:lisiecoerroraccessingxml
 msgid "Error accessing xml"
-msgstr ""
+msgstr "Kesalahan mengakses xml"
 
 #: lazarusidestrconsts:lisiecoerroraccessingxmlfile
 msgid "Error accessing xml file %s%s%s:%s%s"
-msgstr ""
+msgstr "Kesalahan mengakses file xml %s%s%s:%s%s"
 
 #: lazarusidestrconsts:liserrorcreatingfile
 msgid "Error creating file"
@@ -2626,11 +2623,11 @@ msgstr "Kesalahan menginisialisasi program%s%s%s%s%sKesalahan: %s"
 
 #: lazarusidestrconsts:lisiecoerrorloadingxml
 msgid "Error loading xml"
-msgstr ""
+msgstr "Kesalahan mengambil xml"
 
 #: lazarusidestrconsts:lisiecoerrorloadingxmlfile
 msgid "Error loading xml file %s%s%s:%s%s"
-msgstr ""
+msgstr "Kesalahan mengambil file xml %s%s%s:%s%s"
 
 #: lazarusidestrconsts:liserrormovingcomponent
 msgid "Error moving component"
@@ -2702,7 +2699,7 @@ msgstr "Escape"
 
 #: lazarusidestrconsts:liskmevaluatemodify
 msgid "Evaluate/Modify"
-msgstr ""
+msgstr "Evaluasi/Ubah"
 
 #: lazarusidestrconsts:lismenuevaluate
 msgid "Evaluate/Modify ..."
@@ -2770,11 +2767,11 @@ msgstr "Nama file lebar dari file editor saat ini"
 
 #: lazarusidestrconsts:lisiecoexportfileexistsopenfileandreplaceonlycompileropti
 msgid "Export file %s%s%s exists.%sOpen file and replace only compiler options?%s(Other settings will be kept.)"
-msgstr ""
+msgstr "File ekspor %s%s%s sudah ada.%sBuka file dan hanya timpa opsi kompilator?%s(Seting lain akan disimpan.)"
 
 #: lazarusidestrconsts:lisiecoexportfileexists
 msgid "Export file exists"
-msgstr ""
+msgstr "File ekspor sudah ada"
 
 #: lazarusidestrconsts:lisexportlist
 msgid "Export list"
@@ -2782,7 +2779,7 @@ msgstr "Daftar ekspor"
 
 #: lazarusidestrconsts:liswlexpression
 msgid "Expression"
-msgstr ""
+msgstr "Ekspresi"
 
 #: lazarusidestrconsts:lisextendunitpath
 msgid "Extend unit path?"
@@ -2790,7 +2787,7 @@ msgstr "Lebarkan path unit?"
 
 #: lazarusidestrconsts:liskmexternaltoolssettings
 msgid "External Tools settings"
-msgstr ""
+msgstr "Seting Piranti Eksternal"
 
 #: lazarusidestrconsts:srkmecexttool
 msgid "External tool %d"
@@ -2826,7 +2823,7 @@ msgstr "Ekstraks prosedur ..."
 
 #: lazarusidestrconsts:lishofpcdochtmlpath
 msgid "FPC Doc HTML Path"
-msgstr ""
+msgstr "Path FPC Doc HTML"
 
 #: lazarusidestrconsts:liscodetoolsdefsfpcsvnsourcedirectory
 msgid "FPC SVN source directory"
@@ -2902,7 +2899,7 @@ msgstr "File sudah dalam paket"
 
 #: lazarusidestrconsts:dlgfileexts
 msgid "File extensions"
-msgstr ""
+msgstr "Ekstensi file"
 
 #: lazarusidestrconsts:lispkgmangfileisalreadyinpackage
 msgid "File is already in package"
@@ -2978,7 +2975,7 @@ msgstr "Nama file sedang digunakan oleh proyek"
 
 #: lazarusidestrconsts:lispefilename
 msgid "Filename:"
-msgstr ""
+msgstr "Nama file:"
 
 #: lazarusidestrconsts:lisoipfilename
 msgid "Filename:  %s"
@@ -2990,11 +2987,11 @@ msgstr "File"
 
 #: lazarusidestrconsts:lisplistfilterany
 msgid "Filter by matching any part of method"
-msgstr ""
+msgstr "Filter menyamai setiap bagian dari method"
 
 #: lazarusidestrconsts:lisplistfilterstart
 msgid "Filter by matching with start of method"
-msgstr ""
+msgstr "Filter menyamai setiap awal dari method"
 
 #: lazarusidestrconsts:srvk_final
 msgid "Final"
@@ -3054,7 +3051,7 @@ msgstr "Cari awal blok kode"
 
 #: lazarusidestrconsts:liscomppalfindcomponent
 msgid "Find component"
-msgstr ""
+msgstr "Cari komponen"
 
 #: lazarusidestrconsts:srkmecfinddeclaration
 msgid "Find declaration"
@@ -3070,7 +3067,7 @@ msgstr "Cari dalam file"
 
 #: lazarusidestrconsts:liskmfindincremental
 msgid "Find incremental"
-msgstr ""
+msgstr "Cari inkremental"
 
 #: lazarusidestrconsts:srkmecfindnext
 msgid "Find next"
@@ -3078,7 +3075,7 @@ msgstr "Cari berikutnya"
 
 #: lazarusidestrconsts:srkmecfindnextwordoccurrence
 msgid "Find next word occurrence"
-msgstr ""
+msgstr "Cari keberadaan kata berikutnya"
 
 #: lazarusidestrconsts:lisfrifindorrenameidentifier
 msgid "Find or Rename Identifier"
@@ -3090,7 +3087,7 @@ msgstr "Cari akhir blok kode lainnya"
 
 #: lazarusidestrconsts:lisfpfindpalettecomponent
 msgid "Find palette component"
-msgstr ""
+msgstr "Cari komponen palet"
 
 #: lazarusidestrconsts:srkmecfindprevious
 msgid "Find previous"
@@ -3098,7 +3095,7 @@ msgstr "Cari sebelumnya"
 
 #: lazarusidestrconsts:srkmecfindprevwordoccurrence
 msgid "Find previous word occurrence"
-msgstr ""
+msgstr "Cari keberadaan kata sebelumnya"
 
 #: lazarusidestrconsts:srkmecfindproceduredefinition
 msgid "Find procedure definiton"
@@ -3150,7 +3147,7 @@ msgstr "Editor Form"
 
 #: lazarusidestrconsts:rsformdatafiledfm
 msgid "Form data file (*.dfm)|*.dfm"
-msgstr ""
+msgstr "Dari file data (*.dfm)|*.dfm"
 
 #: lazarusidestrconsts:lisformloaderror
 msgid "Form load error"
@@ -3294,43 +3291,43 @@ msgstr "Pergi ke nomor baris"
 
 #: lazarusidestrconsts:liskmgotomarker0
 msgid "Go to marker 0"
-msgstr ""
+msgstr "Pergi ke penanda 0"
 
 #: lazarusidestrconsts:liskmgotomarker1
 msgid "Go to marker 1"
-msgstr ""
+msgstr "Pergi ke penanda 1"
 
 #: lazarusidestrconsts:liskmgotomarker2
 msgid "Go to marker 2"
-msgstr ""
+msgstr "Pergi ke penanda 2"
 
 #: lazarusidestrconsts:liskmgotomarker3
 msgid "Go to marker 3"
-msgstr ""
+msgstr "Pergi ke penanda 3"
 
 #: lazarusidestrconsts:liskmgotomarker4
 msgid "Go to marker 4"
-msgstr ""
+msgstr "Pergi ke penanda 4"
 
 #: lazarusidestrconsts:liskmgotomarker5
 msgid "Go to marker 5"
-msgstr ""
+msgstr "Pergi ke penanda 5"
 
 #: lazarusidestrconsts:liskmgotomarker6
 msgid "Go to marker 6"
-msgstr ""
+msgstr "Pergi ke penanda 6"
 
 #: lazarusidestrconsts:liskmgotomarker7
 msgid "Go to marker 7"
-msgstr ""
+msgstr "Pergi ke penanda 7"
 
 #: lazarusidestrconsts:liskmgotomarker8
 msgid "Go to marker 8"
-msgstr ""
+msgstr "Pergi ke penanda 8"
 
 #: lazarusidestrconsts:liskmgotomarker9
 msgid "Go to marker 9"
-msgstr ""
+msgstr "Pergi ke penanda 9"
 
 #: lazarusidestrconsts:srkmecmatchbracket
 msgid "Go to matching bracket"
@@ -3346,43 +3343,43 @@ msgstr "Pergi ke editor sebelumnya"
 
 #: lazarusidestrconsts:liskmgotosourceeditor1
 msgid "Go to source editor 1"
-msgstr ""
+msgstr "Pergi ke editor sumber 1"
 
 #: lazarusidestrconsts:liskmgotosourceeditor10
 msgid "Go to source editor 10"
-msgstr ""
+msgstr "Pergi ke editor sumber 10"
 
 #: lazarusidestrconsts:liskmgotosourceeditor2
 msgid "Go to source editor 2"
-msgstr ""
+msgstr "Pergi ke editor sumber 2"
 
 #: lazarusidestrconsts:liskmgotosourceeditor3
 msgid "Go to source editor 3"
-msgstr ""
+msgstr "Pergi ke editor sumber 3"
 
 #: lazarusidestrconsts:liskmgotosourceeditor4
 msgid "Go to source editor 4"
-msgstr ""
+msgstr "Pergi ke editor sumber 4"
 
 #: lazarusidestrconsts:liskmgotosourceeditor5
 msgid "Go to source editor 5"
-msgstr ""
+msgstr "Pergi ke editor sumber 5"
 
 #: lazarusidestrconsts:liskmgotosourceeditor6
 msgid "Go to source editor 6"
-msgstr ""
+msgstr "Pergi ke editor sumber 6"
 
 #: lazarusidestrconsts:liskmgotosourceeditor7
 msgid "Go to source editor 7"
-msgstr ""
+msgstr "Pergi ke editor sumber 7"
 
 #: lazarusidestrconsts:liskmgotosourceeditor8
 msgid "Go to source editor 8"
-msgstr ""
+msgstr "Pergi ke editor sumber 8"
 
 #: lazarusidestrconsts:liskmgotosourceeditor9
 msgid "Go to source editor 9"
-msgstr ""
+msgstr "Pergi ke editor sumber 9"
 
 #: lazarusidestrconsts:srkmecgotoincludedirective
 msgid "Go to to include directive of current include file"
@@ -3390,7 +3387,7 @@ msgstr "Pergi ke direktif include dari file include saat ini"
 
 #: lazarusidestrconsts:listodogoto
 msgid "Goto"
-msgstr ""
+msgstr "Pergi ke"
 
 #: lazarusidestrconsts:srkmecgotoxy
 msgid "Goto XY"
@@ -3422,11 +3419,11 @@ msgstr "Pergi ke baris sumber yang dipilih"
 
 #: lazarusidestrconsts:srkmgrabkey
 msgid "Grab key"
-msgstr ""
+msgstr "Ambil kunci"
 
 #: lazarusidestrconsts:srkmgrabsecondkey
 msgid "Grab second key"
-msgstr ""
+msgstr "Ambil kunci kedua"
 
 #: lazarusidestrconsts:dlggrabbercolor
 msgid "Grabber color"
@@ -3450,7 +3447,7 @@ msgstr "Besar grid Y"
 
 #: lazarusidestrconsts:dlggroupundo
 msgid "Group Undo"
-msgstr ""
+msgstr "Undi Grup"
 
 #: lazarusidestrconsts:srkmecguessmisplacedifdef
 msgid "Guess misplaced $IFDEF"
@@ -3530,7 +3527,7 @@ msgstr "Opsi Panduan"
 
 #: lazarusidestrconsts:lishfmhelpforfreepascalcompilermessage
 msgid "Help for FreePascal Compiler message"
-msgstr ""
+msgstr "Bantuan untuk pesan Kompilator FreePascal"
 
 #: lazarusidestrconsts:srkmcarhelpmenu
 msgid "Help menu commands"
@@ -3662,7 +3659,7 @@ msgstr "Abaikan besar dari karakter spasi"
 
 #: lazarusidestrconsts:lispkgmangignoreandsavepackagenow
 msgid "Ignore and save package now"
-msgstr ""
+msgstr "Abaikan dan simpan paket sekarang"
 
 #: lazarusidestrconsts:lisignorebinaries
 msgid "Ignore binaries"
@@ -3702,7 +3699,7 @@ msgstr "Abaikan eksepsi ini"
 
 #: lazarusidestrconsts:lisignoreusetformasancestor
 msgid "Ignore, use TForm as ancestor"
-msgstr ""
+msgstr "Abaikan, gunakan TForm sebagai leluhur"
 
 #: lazarusidestrconsts:srkmecimestr
 msgid "Ime Str"
@@ -3738,7 +3735,7 @@ msgstr "File Include"
 
 #: lazarusidestrconsts:lisincludepaths
 msgid "Include paths"
-msgstr ""
+msgstr "Sertakan path"
 
 #: lazarusidestrconsts:lisfindfileincludesubdirectories
 msgid "Include sub directories"
@@ -3770,7 +3767,7 @@ msgstr "Lekukan pilihan"
 
 #: lazarusidestrconsts:rslanguageindonesian
 msgid "Indonesian"
-msgstr ""
+msgstr "Indonesian"
 
 #: lazarusidestrconsts:lisinformationaboutunit
 msgid "Information about %s"
@@ -3786,7 +3783,7 @@ msgstr "Insert"
 
 #: lazarusidestrconsts:liskminsertifdef
 msgid "Insert $IFDEF"
-msgstr ""
+msgstr "Sisipkan $IFDEF"
 
 #: lazarusidestrconsts:lismenuconditionalselection
 msgid "Insert $IFDEF..."
@@ -3950,7 +3947,7 @@ msgstr "Sisipkan nama pemakai saat ini"
 
 #: lazarusidestrconsts:liskminsertdateandtime
 msgid "Insert date and time"
-msgstr ""
+msgstr "Sisipkan tanggal dan jam"
 
 #: lazarusidestrconsts:lismenuinsertcharacter
 msgid "Insert from Character Map"
@@ -3966,7 +3963,7 @@ msgstr "Sisipkan tag format miring"
 
 #: lazarusidestrconsts:srkmecinsertmodifiedlgplnotice
 msgid "Insert modified LGPL notice"
-msgstr ""
+msgstr "Sisipkan catatan LGPL yang diubah"
 
 #: lazarusidestrconsts:liscodetoolsdefsinsertnodeaschild
 msgid "Insert node as child"
@@ -3998,7 +3995,7 @@ msgstr "Sisipkan tag format garis bawah"
 
 #: lazarusidestrconsts:liskminsertusername
 msgid "Insert username"
-msgstr ""
+msgstr "Sisipkan nama pengguna"
 
 #: lazarusidestrconsts:lislazdochintvartag
 msgid "Insert var formatting tag"
@@ -4006,7 +4003,7 @@ msgstr "Sisipkan tag format var"
 
 #: lazarusidestrconsts:liskminspect
 msgid "Inspect"
-msgstr ""
+msgstr "Inspeksi"
 
 #: lazarusidestrconsts:lismenuinspect
 msgid "Inspect ..."
@@ -4174,7 +4171,7 @@ msgstr "Pemilihan multi tidak benar"
 
 #: lazarusidestrconsts:liserrinvalidoption
 msgid "Invalid option at position %d: \"%s\""
-msgstr ""
+msgstr "opsi tidak benar di posisi %d: \"%s\""
 
 #: lazarusidestrconsts:lisaf2pinvalidpackageid
 msgid "Invalid package ID: %s%s%s"
@@ -4230,11 +4227,11 @@ msgstr "Pilihan tidak benar"
 
 #: lazarusidestrconsts:lispeinvalidunitfilename
 msgid "Invalid unit filename"
-msgstr ""
+msgstr "Nama file unit tidak benar"
 
 #: lazarusidestrconsts:lispeinvalidunitname
 msgid "Invalid unitname"
-msgstr ""
+msgstr "Nama unit tidak benar"
 
 #: lazarusidestrconsts:lissvuoinvalidvariablename
 msgid "Invalid variable name"
@@ -4274,7 +4271,7 @@ msgstr "Jepang"
 
 #: lazarusidestrconsts:lisplistjumptoselection
 msgid "Jump To Selection"
-msgstr ""
+msgstr "Lompat Ke Pilihan"
 
 #: lazarusidestrconsts:lismenujumpback
 msgid "Jump back"
@@ -4342,7 +4339,7 @@ msgstr "Biarkan urutan dari procedure"
 
 #: lazarusidestrconsts:liskeepthemandcontinue
 msgid "Keep them and continue"
-msgstr ""
+msgstr "Biarkan mereka dan lanjutkan"
 
 #: lazarusidestrconsts:lisedtexttoolkey
 msgid "Key"
@@ -4350,7 +4347,7 @@ msgstr "Kunci"
 
 #: lazarusidestrconsts:srkmkey
 msgid "Key (or 2 keys combination)"
-msgstr ""
+msgstr "Tombol (atau 2 kombinasi tombol)"
 
 #: lazarusidestrconsts:dlgkeymappingscheme
 msgid "Key Mapping Scheme"
@@ -4366,7 +4363,7 @@ msgstr "Pemetaan kunci salah"
 
 #: lazarusidestrconsts:liskmkeymappingscheme
 msgid "Keymapping Scheme"
-msgstr ""
+msgstr "Skema Pemetaan tombol"
 
 #: lazarusidestrconsts:liscodetoolsoptskeyword
 msgid "Keyword"
@@ -4514,15 +4511,15 @@ msgstr "Form Lazarus"
 
 #: lazarusidestrconsts:lislazarusinclude
 msgid "Lazarus include file"
-msgstr ""
+msgstr "File include Lazarus"
 
 #: lazarusidestrconsts:lislazaruslanguageid
 msgid "Lazarus language ID (e.g. en, de, br, fi)"
-msgstr ""
+msgstr "ID bahasa Lazarus  (contoh. en, de, id, fi)"
 
 #: lazarusidestrconsts:lislazaruslanguagename
 msgid "Lazarus language name (e.g. english, deutsch)"
-msgstr ""
+msgstr "Nama bahasa Lazarus (contoh english, dutsch)"
 
 #: lazarusidestrconsts:lislazaruspackage
 msgid "Lazarus package"
@@ -4650,7 +4647,7 @@ msgstr "Ambil seting desktop dari file"
 
 #: lazarusidestrconsts:lisiecoloadfromfile
 msgid "Load from file"
-msgstr ""
+msgstr "Ambil dari file"
 
 #: lazarusidestrconsts:dlgcoloadsave
 msgid "Load/Save"
@@ -4822,7 +4819,7 @@ msgstr "Lain-lain"
 
 #: lazarusidestrconsts:lismissingevents
 msgid "Missing Events"
-msgstr ""
+msgstr "Event Hilang"
 
 #: lazarusidestrconsts:lismissingpackages
 msgid "Missing Packages"
@@ -4842,7 +4839,7 @@ msgstr "Dimodifikasi"
 
 #: lazarusidestrconsts:lismenuinsertmodifiedlgplnotice
 msgid "Modified LGPL notice"
-msgstr ""
+msgstr "Catatan LGPL yang diubah"
 
 #: lazarusidestrconsts:lispckeditmodified
 msgid "Modified: %s"
@@ -4970,7 +4967,7 @@ msgstr "Pindahkan editor ke kanan"
 
 #: lazarusidestrconsts:lisldmoveentriestoinherited
 msgid "Move entries to inherited"
-msgstr ""
+msgstr "Pindahkan entri ke inherited"
 
 #: lazarusidestrconsts:liscodetoolsdefsmovenodedown
 msgid "Move node down"
@@ -5010,11 +5007,11 @@ msgstr "Pilihan Multi"
 
 #: lazarusidestrconsts:dlgmultiline
 msgid "Multiline"
-msgstr ""
+msgstr "Multi baris"
 
 #: lazarusidestrconsts:lisfindfilemultiline
 msgid "Multiline pattern"
-msgstr ""
+msgstr "Pola Multi baris"
 
 #: lazarusidestrconsts:fdinvalidmultiselectiontext
 msgid "Multiselected components must be of a single form."
@@ -5038,7 +5035,7 @@ msgstr "CATATAN: pengambilan file opsi codetools lama:"
 
 #: lazarusidestrconsts:liseonoteonlyabsolutepathsaresupportednow
 msgid "NOTE: only absolute paths are supported now"
-msgstr ""
+msgstr "CATATAN: hanya path absolut yang sekarang didukung"
 
 #: lazarusidestrconsts:lisdebugoptionsfrmname
 msgid "Name"
@@ -5114,11 +5111,11 @@ msgstr "Nama class baru:"
 
 #: lazarusidestrconsts:liskmnewproject
 msgid "New project"
-msgstr ""
+msgstr "Proyek baru"
 
 #: lazarusidestrconsts:liskmnewprojectfromfile
 msgid "New project from file"
-msgstr ""
+msgstr "Proyek baru dari file"
 
 #: lazarusidestrconsts:lispkgeditnewunitnotinunitpath
 msgid "New unit not in unitpath"
@@ -5150,7 +5147,7 @@ msgstr "ResourceString Section tidak ditemukan"
 
 #: lazarusidestrconsts:lisnobackupfiles
 msgid "No backup files"
-msgstr ""
+msgstr "Tidak ada file backup"
 
 #: lazarusidestrconsts:lisnochange
 msgid "No change"
@@ -5242,7 +5239,7 @@ msgstr "Tdak sekarang"
 
 #: lazarusidestrconsts:liskmnoteallkeyswillbesettothevaluesofthechoosenscheme
 msgid "Note: All keys will be set to the values of the choosen scheme."
-msgstr ""
+msgstr "Catatan: Semua tombol akan disetel ke nilai dari skema yang dipilih."
 
 #: lazarusidestrconsts:dlgenvbackuphelpnote
 msgid "Notes: Project files are all files in the project directory"
@@ -5262,7 +5259,7 @@ msgstr "Numpad %d"
 
 #: lazarusidestrconsts:lisifdok
 msgid "OK"
-msgstr ""
+msgstr "OK"
 
 #: lazarusidestrconsts:lisdebugoptionsfrmosexceptions
 msgid "OS Exceptions"
@@ -5298,7 +5295,7 @@ msgstr "Kelas Lama"
 
 #: lazarusidestrconsts:lisbfonbuildprojectexecutethebuildfilecommandinstead
 msgid "On build project execute the Build File command instead"
-msgstr ""
+msgstr "Saat membangun proyek sebaliknya menjalankan perintah Bangun File"
 
 #: lazarusidestrconsts:lisceoonidle
 msgid "On idle"
@@ -5306,7 +5303,7 @@ msgstr "Saat menganggur"
 
 #: lazarusidestrconsts:lisbfonrunprojectexecutetherunfilecommandinstead
 msgid "On run project execute the Run File command instead"
-msgstr ""
+msgstr "Saat menjalankan proyek sebaliknya menjalankan perintah Jalankan File"
 
 #: lazarusidestrconsts:lismenuonlinehelp
 msgid "Online Help"
@@ -5346,7 +5343,7 @@ msgstr "Buka Diff dalam editor"
 
 #: lazarusidestrconsts:liscpopenpackage
 msgid "Open Package %s"
-msgstr ""
+msgstr "Buka Paket %s"
 
 #: lazarusidestrconsts:lisopenpackagefile
 msgid "Open Package File"
@@ -5386,7 +5383,7 @@ msgstr "Buka Proyek Terakhir ..."
 
 #: lazarusidestrconsts:liscpopenunit
 msgid "Open Unit %s"
-msgstr ""
+msgstr "Buka Unit %s"
 
 #: lazarusidestrconsts:lisopenasxmlfile
 msgid "Open as XML file"
@@ -5394,7 +5391,7 @@ msgstr "Buka sebagai file XML"
 
 #: lazarusidestrconsts:lisopenexistingfile
 msgid "Open existing file"
-msgstr ""
+msgstr "Buka file yang ada"
 
 #: lazarusidestrconsts:lisopenfile
 msgid "Open file"
@@ -5422,7 +5419,7 @@ msgstr "Buka paket yang diambil ..."
 
 #: lazarusidestrconsts:lisiecoopenorloadcompileroptions
 msgid "Open or Load Compiler Options"
-msgstr ""
+msgstr "Buka atau Ambil Opsi Kompilator"
 
 #: lazarusidestrconsts:liscomppalopenpackage
 msgid "Open package"
@@ -5430,11 +5427,11 @@ msgstr "Buka paket"
 
 #: lazarusidestrconsts:liskmopenpackagefile
 msgid "Open package file"
-msgstr ""
+msgstr "Buka file paket"
 
 #: lazarusidestrconsts:lismenuopenpackagefile
 msgid "Open package file (.lpk) ..."
-msgstr ""
+msgstr "Buka file paket (.lpk) ..."
 
 #: lazarusidestrconsts:lismenuopenpackageofcurunit
 msgid "Open package of current unit"
@@ -5450,7 +5447,7 @@ msgstr "Buka lagi proyek"
 
 #: lazarusidestrconsts:lisiecoopenrecent
 msgid "Open recent"
-msgstr ""
+msgstr "Buka yang terbaru"
 
 #: lazarusidestrconsts:lismenuopenrecentpkg
 msgid "Open recent package ..."
@@ -5458,7 +5455,7 @@ msgstr "Buka paket terbaru ..."
 
 #: lazarusidestrconsts:lisopenthefileasnormalsource
 msgid "Open the file as normal source"
-msgstr ""
+msgstr "Buka file sebagai sumber normal"
 
 #: lazarusidestrconsts:lisopenthepackage
 msgid "Open the package %s?"
@@ -5478,11 +5475,11 @@ msgstr "Optimasi:"
 
 #: lazarusidestrconsts:liserrnooptionallowed
 msgid "Option at position %d does not allow an argument: %s"
-msgstr ""
+msgstr "Opsi di posisi %d tidak membolehkan argumen: %s"
 
 #: lazarusidestrconsts:liserroptionneeded
 msgid "Option at position %d needs an argument : %s"
-msgstr ""
+msgstr "Opsi di posisi %d tidak membolehkan argumen: %s"
 
 #: lazarusidestrconsts:fdmsnaptogridoption
 msgid "Option: Snap to grid"
@@ -5622,7 +5619,7 @@ msgstr "Paket konflik"
 
 #: lazarusidestrconsts:lispkgmangpackagefilemissing
 msgid "Package file missing"
-msgstr ""
+msgstr "File Paket hilang"
 
 #: lazarusidestrconsts:lispkgsyspackagefilenotfound
 msgid "Package file not found"
@@ -5630,11 +5627,11 @@ msgstr "File paket tidak ditemukan"
 
 #: lazarusidestrconsts:lispkgmangpackagefilenotsaved
 msgid "Package file not saved"
-msgstr ""
+msgstr "File paket tidak disimpan"
 
 #: lazarusidestrconsts:liskmpackagegraph
 msgid "Package graph"
-msgstr ""
+msgstr "Grafik Paket"
 
 #: lazarusidestrconsts:lispkgmangpackageisnodesigntimepackage
 msgid "Package is no designtime package"
@@ -5730,7 +5727,7 @@ msgstr "Paste"
 
 #: lazarusidestrconsts:liskmpastecomponentsfromclipboard
 msgid "Paste Components from clipboard"
-msgstr ""
+msgstr "Paste Komponen dari clipboard"
 
 #: lazarusidestrconsts:srkmecpaste
 msgid "Paste clipboard to current position"
@@ -5766,7 +5763,7 @@ msgstr "Kunci Pause"
 
 #: lazarusidestrconsts:liskmpauseprogram
 msgid "Pause program"
-msgstr ""
+msgstr "Istirahatkan program"
 
 #: lazarusidestrconsts:dlgpersistentcaret
 msgid "Persistent caret"
@@ -5878,7 +5875,7 @@ msgstr "Procedure"
 
 #: lazarusidestrconsts:uemprocedurejump
 msgid "Procedure Jump"
-msgstr ""
+msgstr "Procedure Lompat"
 
 #: lazarusidestrconsts:srkmecprocedurelist
 msgid "Procedure List ..."
@@ -5982,7 +5979,7 @@ msgstr "Prouek diubah"
 
 #: lazarusidestrconsts:lisprojectclosed
 msgid "Project closed"
-msgstr ""
+msgstr "Proyek ditutup"
 
 #: lazarusidestrconsts:lisprojectdirectory
 msgid "Project directory"
@@ -6006,7 +6003,7 @@ msgstr "Proyek bisa dijalankan"
 
 #: lazarusidestrconsts:lisprojectmacroproperties
 msgid "Project macro properties"
-msgstr ""
+msgstr "Properti makro proyek"
 
 #: lazarusidestrconsts:srkmcatprojectmenu
 msgid "Project menu commands"
@@ -6054,7 +6051,7 @@ msgstr "Publikasikan Proyek ..."
 
 #: lazarusidestrconsts:liskmpublishproject
 msgid "Publish project"
-msgstr ""
+msgstr "Terbitkan proyek"
 
 #: lazarusidestrconsts:lispublishprojdir
 msgid "Publish project directory"
@@ -6066,11 +6063,11 @@ msgstr "Metode Published"
 
 #: lazarusidestrconsts:lismenuquickcompile
 msgid "Quick compile"
-msgstr ""
+msgstr "Kompilasi Cepat"
 
 #: lazarusidestrconsts:liskmquickcompilenolinking
 msgid "Quick compile, no linking"
-msgstr ""
+msgstr "Kompilasi cepat, tanpa linking"
 
 #: lazarusidestrconsts:lismenuquicksyntaxcheck
 msgid "Quick syntax check"
@@ -6082,7 +6079,7 @@ msgstr "Keluar"
 
 #: lazarusidestrconsts:lisquitlazarus
 msgid "Quit Lazarus"
-msgstr ""
+msgstr "Keluar Lazarus"
 
 #: lazarusidestrconsts:dlgcorange
 msgid "Range"
@@ -6130,7 +6127,7 @@ msgstr "Bangun ulang Lazarus?"
 
 #: lazarusidestrconsts:lisiecorecentfiles
 msgid "Recent files"
-msgstr ""
+msgstr "File Terbaru"
 
 #: lazarusidestrconsts:lispckeditrecompileallrequired
 msgid "Recompile all required"
@@ -6198,7 +6195,7 @@ msgstr "Ekspresi reguler"
 
 #: lazarusidestrconsts:lisrelativepaths
 msgid "Relative paths"
-msgstr ""
+msgstr "Path relatif"
 
 #: lazarusidestrconsts:lispckoptsrelease
 msgid "Release"
@@ -6218,7 +6215,7 @@ msgstr "Hapus Dependensi?"
 
 #: lazarusidestrconsts:liskmremoveactiveunitfromproject
 msgid "Remove active unit from project"
-msgstr ""
+msgstr "Hapus unit aktif dari proyek"
 
 #: lazarusidestrconsts:lisremoveallinvalidproperties
 msgid "Remove all invalid properties"
@@ -6226,7 +6223,7 @@ msgstr "Hapus semua properti yang tidak benar"
 
 #: lazarusidestrconsts:liskmremovebreakpoint
 msgid "Remove break point"
-msgstr ""
+msgstr "Hapus titik pisah"
 
 #: lazarusidestrconsts:lispckeditremovedependency
 msgid "Remove dependency"
@@ -6278,7 +6275,7 @@ msgstr "Hapus item yang dipilih"
 
 #: lazarusidestrconsts:lisremovethem
 msgid "Remove them"
-msgstr ""
+msgstr "Hapus mereka"
 
 #: lazarusidestrconsts:lispckeditremovedfilestheseentriesarenotsavedtothelpkfile
 msgid "Removed Files (these entries are not saved to the lpk file)"
@@ -6494,7 +6491,7 @@ msgstr "Jalankan"
 
 #: lazarusidestrconsts:lisbfruncommand
 msgid "Run Command"
-msgstr ""
+msgstr "Jalankan Perintah"
 
 #: lazarusidestrconsts:lismenurunfile
 msgid "Run File"
@@ -6514,7 +6511,7 @@ msgstr "Parameter Menjalankan"
 
 #: lazarusidestrconsts:liskmrunprogram
 msgid "Run program"
-msgstr ""
+msgstr "Jalankan program"
 
 #: lazarusidestrconsts:lismenuruntocursor
 msgid "Run to cursor"
@@ -6550,7 +6547,7 @@ msgstr "Simpan"
 
 #: lazarusidestrconsts:lissave
 msgid "Save ..."
-msgstr ""
+msgstr "Simpan ..."
 
 #: lazarusidestrconsts:lismenusaveall
 msgid "Save All"
@@ -6650,7 +6647,7 @@ msgstr "Simpan file %s%s%s%ssebelum menutup form %s%s%s?"
 
 #: lazarusidestrconsts:lissavefileas
 msgid "Save file as"
-msgstr ""
+msgstr "Simpan file sebagai"
 
 #: lazarusidestrconsts:lisa2psavefiledialog
 msgid "Save file dialog"
@@ -6658,7 +6655,7 @@ msgstr "Simpan dialog file"
 
 #: lazarusidestrconsts:fdmsaveformasxml
 msgid "Save form as xml"
-msgstr ""
+msgstr "Simpan form sebagai xml"
 
 #: lazarusidestrconsts:lisposaveinlpifil
 msgid "Save in .lpi file"
@@ -6690,11 +6687,11 @@ msgstr "Simpan paket?"
 
 #: lazarusidestrconsts:liskmsaveproject
 msgid "Save project"
-msgstr ""
+msgstr "Simpan proyek"
 
 #: lazarusidestrconsts:liskmsaveprojectas
 msgid "Save project as"
-msgstr ""
+msgstr "Simpan proyek sebagai"
 
 #: lazarusidestrconsts:lisposavesessioninformationin
 msgid "Save session information in"
@@ -6702,23 +6699,23 @@ msgstr "Simpan informasi sesi dalam"
 
 #: lazarusidestrconsts:lislazbuildsavesettings
 msgid "Save settings"
-msgstr ""
+msgstr "Simpan seting"
 
 #: lazarusidestrconsts:lisiecosavetofile
 msgid "Save to file"
-msgstr ""
+msgstr "Simpan ke file"
 
 #: lazarusidestrconsts:lisiecosavetorecent
 msgid "Save to recent"
-msgstr ""
+msgstr "Simpan ke terbaru"
 
 #: lazarusidestrconsts:liskmsaveall
 msgid "SaveAll"
-msgstr ""
+msgstr "Simpan Semua"
 
 #: lazarusidestrconsts:liskmsaveas
 msgid "SaveAs"
-msgstr ""
+msgstr "SimpanS ebagai"
 
 #: lazarusidestrconsts:fdmscaleword
 msgid "Scale"
@@ -6958,19 +6955,19 @@ msgstr "Pilih baris"
 
 #: lazarusidestrconsts:liskmselectlineend
 msgid "Select line end"
-msgstr ""
+msgstr "Pilih akhir baris"
 
 #: lazarusidestrconsts:liskmselectlinestart
 msgid "Select line start"
-msgstr ""
+msgstr "Pilih awal baris"
 
 #: lazarusidestrconsts:liskmselectpagebottom
 msgid "Select page bottom"
-msgstr ""
+msgstr "Pilih bawah halaman"
 
 #: lazarusidestrconsts:liskmselectpagetop
 msgid "Select page top"
-msgstr ""
+msgstr "Pilih atas halaman"
 
 #: lazarusidestrconsts:lismenuselectparagraph
 msgid "Select paragraph"
@@ -6998,11 +6995,11 @@ msgstr "Pilih kata"
 
 #: lazarusidestrconsts:liskmselectwordleft
 msgid "Select word left"
-msgstr ""
+msgstr "Pilih kata ke kiri"
 
 #: lazarusidestrconsts:liskmselectwordright
 msgid "Select word right"
-msgstr ""
+msgstr "Pilih kata ke kanan"
 
 #: lazarusidestrconsts:liscodetoolsdefsselectednode
 msgid "Selected Node:"
@@ -7058,47 +7055,47 @@ msgstr "Set elemen ke default"
 
 #: lazarusidestrconsts:liskmsetfreebookmark
 msgid "Set free Bookmark"
-msgstr ""
+msgstr "Setel Bookmark bebas"
 
 #: lazarusidestrconsts:liskmsetmarker0
 msgid "Set marker 0"
-msgstr ""
+msgstr "Set penanda 0"
 
 #: lazarusidestrconsts:liskmsetmarker1
 msgid "Set marker 1"
-msgstr ""
+msgstr "Set penanda 1"
 
 #: lazarusidestrconsts:liskmsetmarker2
 msgid "Set marker 2"
-msgstr ""
+msgstr "Set penanda 2"
 
 #: lazarusidestrconsts:liskmsetmarker3
 msgid "Set marker 3"
-msgstr ""
+msgstr "Set penanda 3"
 
 #: lazarusidestrconsts:liskmsetmarker4
 msgid "Set marker 4"
-msgstr ""
+msgstr "Set penanda 4"
 
 #: lazarusidestrconsts:liskmsetmarker5
 msgid "Set marker 5"
-msgstr ""
+msgstr "Set penanda 5"
 
 #: lazarusidestrconsts:liskmsetmarker6
 msgid "Set marker 6"
-msgstr ""
+msgstr "Set penanda 6"
 
 #: lazarusidestrconsts:liskmsetmarker7
 msgid "Set marker 7"
-msgstr ""
+msgstr "Set penanda 7"
 
 #: lazarusidestrconsts:liskmsetmarker8
 msgid "Set marker 8"
-msgstr ""
+msgstr "Set penanda 8"
 
 #: lazarusidestrconsts:liskmsetmarker9
 msgid "Set marker 9"
-msgstr ""
+msgstr "Set penanda 9"
 
 #: lazarusidestrconsts:dlgsetpropertyvariable
 msgid "Set property Variable"
@@ -7398,7 +7395,7 @@ msgstr "Sumber dari halaman %s%s%s sudah diubah. Simpan?"
 
 #: lazarusidestrconsts:lissourcepaths
 msgid "Source paths"
-msgstr ""
+msgstr "Path sumber"
 
 #: lazarusidestrconsts:lismakeresstrsourcepreview
 msgid "Source preview"
@@ -7490,7 +7487,7 @@ msgstr "Hentikan debugging?"
 
 #: lazarusidestrconsts:liskmstopprogram
 msgid "Stop program"
-msgstr ""
+msgstr "Hentikan program"
 
 #: lazarusidestrconsts:lisstopthedebugging
 msgid "Stop the debugging?"
@@ -7498,7 +7495,7 @@ msgstr "Hentikan debugging?"
 
 #: lazarusidestrconsts:lispckeditsetdependencydefaultfilename
 msgid "Store dependency filename"
-msgstr ""
+msgstr "Simpan nama file dependensi"
 
 #: lazarusidestrconsts:dlgcdtstoredpostfix
 msgid "Stored postfix"
@@ -7546,7 +7543,7 @@ msgstr "Sub properti"
 
 #: lazarusidestrconsts:lissuccess
 msgid "Success"
-msgstr ""
+msgstr "Sukses"
 
 #: lazarusidestrconsts:lisa2pswitchpaths
 msgid "Switch Paths"
@@ -7918,7 +7915,7 @@ msgstr "Direktori \""
 
 #: lazarusidestrconsts:listhefileseemstobetheprogramfileofanexistinglazarusp
 msgid "The file %s seems to be the program file of an existing lazarus Project."
-msgstr ""
+msgstr "File %s nampaknya file program dari Proyek Lazarus yang sudah ada."
 
 #: lazarusidestrconsts:listhefile
 msgid "The file %s%s%s"
@@ -7954,11 +7951,11 @@ msgstr "File %s%s%s%ssaat ini tidak dalam unitpath dari paket.%s%sTambah %s%s%s 
 
 #: lazarusidestrconsts:lispkgmangthefileofpackageismissing
 msgid "The file %s%s%s%sof package %s is missing."
-msgstr ""
+msgstr "File %s%s%s%sdari paket %s hilang."
 
 #: lazarusidestrconsts:lispkgmangthefileofpackageneedstobesavedfirst
 msgid "The file %s%s%s%sof package %s needs to be saved first."
-msgstr ""
+msgstr "File %s%s%s%sdari paket %s perlu disimpan lebih dulu."
 
 #: lazarusidestrconsts:listhefileseemstobeaprogramclosecurrentproject
 msgid "The file %s%s%s%sseems to be a program. Close current project and create a new lazarus project for this program?%s\"No\" will load the file as normal source."
@@ -7998,7 +7995,7 @@ msgstr "Nama file %s%s%s dwimakna, karena paket belum mempunyai direktori defaul
 
 #: lazarusidestrconsts:listhefollowingmethodsusedbyarenotinthesourceremoveth
 msgid "The following methods used by %s are not in the source%s%s%s%s%s%sRemove the dangling references?"
-msgstr ""
+msgstr "Method berikut digunakan oleh %s tidak dalam sumber%s%s%s%s%s%sHapus referensi dangling?"
 
 #: lazarusidestrconsts:lispkgmangthefollowingpackagefailedtoload
 msgid "The following package failed to load:"
@@ -8134,7 +8131,7 @@ msgstr "File info proyek %s%s%s%ssama dengan file sumber utama proyek!"
 
 #: lazarusidestrconsts:listheprojectisclosedtherearenowthreepossibilitieshin
 msgid "The project is closed. There are now three possibilities.%sHint: You do not need to close a project yourself, since this is done automatically."
-msgstr ""
+msgstr "Proyek ditutup. Sekarang ada tiga kemungkinan.%sPetunjuk: Anda tidak perlu menutup sebuah proyek sendiri, karena ini dikerjakan secara otomatis."
 
 #: lazarusidestrconsts:listheprojectmustbesavedbeforebuildingifyousetthetest
 msgid "The project must be saved before building%sIf you set the Test Directory in the environment options,%syou can create new projects and build them at once.%sSave project?"
@@ -8146,7 +8143,7 @@ msgstr "Proyek memerlukan paket %s%s%s.%sTetapi tidak ditemukan. Lihat Proyek ->
 
 #: lazarusidestrconsts:listheresourceclassdescendsfromprobablythisisatypofor
 msgid "The resource class %s%s%s descends from %s%s%s. Probably this is a typo for TForm."
-msgstr ""
+msgstr "Resource class %s%s%s turunan dari %s%s%s. Mungkin ini salah ketik untuk TForm."
 
 #: lazarusidestrconsts:lismakeresstrchooseanothername
 msgid "The resourcestring %s%s%s already exists.%sPlease choose another name.%sUse Ignore to add it anyway."
@@ -8202,11 +8199,11 @@ msgstr "Nama unit %s%s%s sudah ada dalam paket ini."
 
 #: lazarusidestrconsts:lispvutheunitnameisnotavalidpascalidentifier
 msgid "The unitname is not a valid pascal identifier."
-msgstr ""
+msgstr "Nama unit bukan pengenal pascal yang benar."
 
 #: lazarusidestrconsts:lispvutheunitnameisusedwhentheideextendsusesclauses
 msgid "The unitname is used when the IDE extends uses clauses."
-msgstr ""
+msgstr "Nama unit digunakan ketika IDE melebarkan klausul uses."
 
 #: lazarusidestrconsts:lispkgedtherearemorefunctionsinthepopupmenu
 msgid "There are more functions in the popupmenu"
@@ -8262,7 +8259,7 @@ msgstr "Sudah ada unit dengan nama%s%s%s. Pengenal Pascal harus unik."
 
 #: lazarusidestrconsts:lispvuthereisalreadyanunitwiththisnamefile
 msgid "There is already an unit with this name.%sFile: %s"
-msgstr ""
+msgstr "Sudah ada unit dengan nama ini.%sFile: %s"
 
 #: lazarusidestrconsts:lisdesthereisalreadyanothercomponentwiththename
 msgid "There is already another component with the name %s%s%s."
@@ -8374,7 +8371,7 @@ msgstr "Toggle Mode"
 
 #: lazarusidestrconsts:liskmtogglebetweenunitandform
 msgid "Toggle between Unit and Form"
-msgstr ""
+msgstr "Toggle antara Unit dan Form"
 
 #: lazarusidestrconsts:lismenuviewtoggleformunit
 msgid "Toggle form/unit view"
@@ -8382,55 +8379,55 @@ msgstr "Toggle tampilan form/unit"
 
 #: lazarusidestrconsts:liskmtoggleviewbreakpoints
 msgid "Toggle view Breakpoints"
-msgstr ""
+msgstr "Togglel ihat Breakpoints"
 
 #: lazarusidestrconsts:liskmtoggleviewcallstack
 msgid "Toggle view Call Stack"
-msgstr ""
+msgstr "Toggle lihat Call Stack"
 
 #: lazarusidestrconsts:liskmtoggleviewcodeexplorer
 msgid "Toggle view Code Explorer"
-msgstr ""
+msgstr "Toggle lihat Explorer Kode"
 
 #: lazarusidestrconsts:liskmtoggleviewdebuggeroutput
 msgid "Toggle view Debugger Output"
-msgstr ""
+msgstr "Toggle lihat Output Debugger"
 
 #: lazarusidestrconsts:liskmtoggleviewdocumentationeditor
 msgid "Toggle view Documentation Editor"
-msgstr ""
+msgstr "Toggle lihat Editor Dokumentasi"
 
 #: lazarusidestrconsts:liskmtoggleviewidespeedbuttons
 msgid "Toggle view IDE speed buttons"
-msgstr ""
+msgstr "Toggle lihat tombol cepat IDE"
 
 #: lazarusidestrconsts:liskmtoggleviewlocalvariables
 msgid "Toggle view Local Variables"
-msgstr ""
+msgstr "Toggle lihat Variabel Lokal"
 
 #: lazarusidestrconsts:liskmtoggleviewmessages
 msgid "Toggle view Messages"
-msgstr ""
+msgstr "Toggle lihat Pesan"
 
 #: lazarusidestrconsts:liskmtoggleviewobjectinspector
 msgid "Toggle view Object Inspector"
-msgstr ""
+msgstr "Toggle lihat Inspektor Obyek"
 
 #: lazarusidestrconsts:liskmtoggleviewsearchresults
 msgid "Toggle view Search Results"
-msgstr ""
+msgstr "Toggle lihat Hasil Pencarian"
 
 #: lazarusidestrconsts:liskmtoggleviewsourceeditor
 msgid "Toggle view Source Editor"
-msgstr ""
+msgstr "Toggle lihat Editor Sumber"
 
 #: lazarusidestrconsts:liskmtoggleviewwatches
 msgid "Toggle view Watches"
-msgstr ""
+msgstr "Toggle lihat Pengawasan"
 
 #: lazarusidestrconsts:liskmtoggleviewcomponentpalette
 msgid "Toggle view component palette"
-msgstr ""
+msgstr "Toggle lihat palet komponen"
 
 #: lazarusidestrconsts:liscodetempltoken
 msgid "Token:"
@@ -8654,7 +8651,7 @@ msgstr "Tidak bisa menemukan metode. Silahkan betulkan kesalahan yang ditampilka
 
 #: lazarusidestrconsts:lisunabletofindtheunitofcomponentclass
 msgid "Unable to find the unit of component class %s%s%s."
-msgstr ""
+msgstr "Tidak bisa mencari unit kelas komponen %s%s%s."
 
 #: lazarusidestrconsts:lisunabletogathereditorchanges
 msgid "Unable to gather editor changes."
@@ -8682,11 +8679,11 @@ msgstr "Tidak bisa mengambil paket"
 
 #: lazarusidestrconsts:lisunabletoloadthecomponentclassbecauseitdependsonits
 msgid "Unable to load the component class %s%s%s, because it depends on itself."
-msgstr ""
+msgstr "Tidak bisa mengambil kelas komponen %s%s%s, karena ia tergantung pada dirinya sendiri."
 
 #: lazarusidestrconsts:lisunabletoopendesignertheclassdoesnotdescendfromades
 msgid "Unable to open designer.%sThe class %s does not descend from a designable class like TForm or TDataModule."
-msgstr ""
+msgstr "Tidak bisa membuka desainer.%sKelas %s bukan turunan dari kelas bisa didesain seperti TForm atau TDataModule."
 
 #: lazarusidestrconsts:lispkgmangunabletoopenthepackage
 msgid "Unable to open the package %s%s%s.%sThis package was marked for installation."
@@ -8966,7 +8963,7 @@ msgstr "Direktori output unit (-FU):"
 
 #: lazarusidestrconsts:lisunitpaths
 msgid "Unit paths"
-msgstr ""
+msgstr "Path Unit"
 
 #: lazarusidestrconsts:lisunitlfmfile
 msgid "Unit: %s%sLFM file: %s"
@@ -8982,11 +8979,11 @@ msgstr "Nama unit sudah ada dalam proyek"
 
 #: lazarusidestrconsts:lispvuunitnameandfilenamedonotmatchexampleunit1pasanduni
 msgid "Unitname and Filename do not match.%sExample: unit1.pas and Unit1"
-msgstr ""
+msgstr "Namam unit dan nama file tidak sama.%sContoh: unit1.pas dan Unit1"
 
 #: lazarusidestrconsts:lispeunitname
 msgid "Unitname:"
-msgstr ""
+msgstr "Nama unit:"
 
 #: lazarusidestrconsts:lisunitsnotfound2
 msgid "Units not found"
@@ -9130,7 +9127,7 @@ msgstr "Versi"
 
 #: lazarusidestrconsts:versioninfotitle
 msgid "Version Info"
-msgstr ""
+msgstr "Info Versi"
 
 #: lazarusidestrconsts:lisvertical
 msgid "Vertical"
@@ -9158,7 +9155,7 @@ msgstr "Lihat Palet Komponen"
 
 #: lazarusidestrconsts:srkmectogglelazdoc
 msgid "View Documentation Editor"
-msgstr ""
+msgstr "Lihat Editor Dokumentasi"
 
 #: lazarusidestrconsts:lishintviewforms
 msgid "View Forms"
@@ -9210,7 +9207,7 @@ msgstr "Lihat Ketergantungan Unit"
 
 #: lazarusidestrconsts:liskmviewunitinfo
 msgid "View Unit Info"
-msgstr ""
+msgstr "Lihat Info Unit"
 
 #: lazarusidestrconsts:lismenuviewunitinfo
 msgid "View Unit Information"
@@ -9246,7 +9243,7 @@ msgstr "Lihat form"
 
 #: lazarusidestrconsts:liskmviewjumphistory
 msgid "View jump history"
-msgstr ""
+msgstr "Lihat histori lompat"
 
 #: lazarusidestrconsts:srkmectogglelocals
 msgid "View local variables"
@@ -9262,7 +9259,7 @@ msgstr "Lihat pesan"
 
 #: lazarusidestrconsts:liskmviewprojecttodolist
 msgid "View project ToDo list"
-msgstr ""
+msgstr "Lihat daftar proyek ToDo"
 
 #: lazarusidestrconsts:dlgmainviewforms
 msgid "View project forms"
@@ -9270,11 +9267,11 @@ msgstr "Lihat form proyek"
 
 #: lazarusidestrconsts:liskmviewprojectoptions
 msgid "View project options"
-msgstr ""
+msgstr "Lihat opsi proyek"
 
 #: lazarusidestrconsts:liskmviewprojectsource
 msgid "View project source"
-msgstr ""
+msgstr "Lihat sumber proyek"
 
 #: lazarusidestrconsts:dlgmainviewunits
 msgid "View project units"
@@ -9334,7 +9331,7 @@ msgstr "Peringatan: file dwimakna ditemukan: %s%s%s. File Sumber adalah: %s%s%s"
 
 #: lazarusidestrconsts:liswlwatchlist
 msgid "Watch list"
-msgstr ""
+msgstr "Daftar Pengawasan"
 
 #: lazarusidestrconsts:lismenuviewwatches
 msgid "Watches"
@@ -9350,7 +9347,7 @@ msgstr "Saat menukar file dalam editor sumber"
 
 #: lazarusidestrconsts:lisbfwhenthisfileisactiveinsourceeditor
 msgid "When this file is active in source editor ..."
-msgstr ""
+msgstr "Ketika file ini aktif dalam editor sumber ..."
 
 #: lazarusidestrconsts:lisfindfilewhere
 msgid "Where"
@@ -9398,7 +9395,7 @@ msgstr "Kata"
 
 #: lazarusidestrconsts:lisbfworkingdirectoryleaveemptyforfilepath2
 msgid "Working Directory (Leave empty for file path)"
-msgstr ""
+msgstr "Direktori Kerja (biarkan kosong untuk path file)"
 
 #: lazarusidestrconsts:lisedtexttoolworkingdirectory
 msgid "Working Directory:"
@@ -9410,15 +9407,15 @@ msgstr "Direktori Pekerjaan"
 
 #: lazarusidestrconsts:lisbfworkingdirectoryleaveemptyforfilepath
 msgid "Working directory (Leave empty for file path)"
-msgstr ""
+msgstr "Direktori kerja (biarkan kosong untuk path file)"
 
 #: lazarusidestrconsts:lisworkingdirectoryforbuilding
 msgid "Working directory for building"
-msgstr ""
+msgstr "Direktori kerja untuk membangun"
 
 #: lazarusidestrconsts:lisworkingdirectoryforrun
 msgid "Working directory for run"
-msgstr ""
+msgstr "Direktori kerja untuk menjalankan"
 
 #: lazarusidestrconsts:liswriteerror
 msgid "Write Error"
@@ -9586,7 +9583,7 @@ msgstr "huruf kecil"
 
 #: lazarusidestrconsts:lisprojectmacrounitpath
 msgid "macro ProjectUnitPath"
-msgstr ""
+msgstr "makro ProjectUnitPath"
 
 #: lazarusidestrconsts:lisoipmissing
 msgid "missing"
@@ -9610,7 +9607,7 @@ msgstr "tanpa nama"
 
 #: lazarusidestrconsts:lisnone2
 msgid "none"
-msgstr ""
+msgstr "tidak ada"
 
 #: lazarusidestrconsts:liscodetoolsdefsnoneselected
 msgid "none selected"
@@ -9622,7 +9619,7 @@ msgstr "path objek"
 
 #: lazarusidestrconsts:lisor
 msgid "or"
-msgstr ""
+msgstr "atau"
 
 #: lazarusidestrconsts:lispckeditpackagenotsaved
 msgid "package %s not saved"
@@ -9646,7 +9643,7 @@ msgstr "direktori konfigurasi utama, dimana Lazarus menyimpan file konfigurasiny
 
 #: lazarusidestrconsts:srkmecquickcompile
 msgid "quick compile, no linking"
-msgstr ""
+msgstr "kompilasi cepat, tanpa linking"
 
 #: lazarusidestrconsts:lisoipreadonly
 msgid "readonly"

@@ -2,19 +2,18 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Lazarus Code Tools v1.x\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2006-06-03 02:29+0700\n"
+"PO-Revision-Date: 2007-01-29 22:39+0700\n"
 "Last-Translator: Zaenal Mutaqin <ade999@gmail.com>\n"
 "Language-Team: Zaenal Mutaqin <ade999@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=iso-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-Language: Indonesian\n"
 "X-Poedit-Country: INDONESIA\n"
 "X-Poedit-SourceCharset: iso-8859-1\n"
 
 #: codetoolsstrconsts:ctsothercompilerdefines
 msgid "%s Compiler Defines"
-msgstr "%s Defines Kompilator"
+msgstr "%s Defininisi Kompilator"
 
 #: codetoolsstrconsts:ctsnameddirectory
 msgid "%s Directory"
@@ -310,7 +309,7 @@ msgstr "Kesalahan sintaks dalam ekspresi \"%s\""
 
 #: codetoolsstrconsts:ctstcodetoolmanagerconsistencycheck
 msgid "TCodeToolManager.ConsistencyCheck=%d"
-msgstr ""
+msgstr "TCodeToolManager.ConsistencyCheck=%d"
 
 #: codetoolsstrconsts:ctstermnotsimple
 msgid "Term has no simple type"
@@ -466,7 +465,7 @@ msgstr "kesalahan selama penyisipan bagian class"
 
 #: codetoolsstrconsts:ctserrorduringinsertingnewusessection
 msgid "error during inserting new units to the main uses section"
-msgstr ""
+msgstr "kesalahan selama menyisipkan unit baru ke seksi uses utama"
 
 #: codetoolsstrconsts:ctserrorindirectiveexpression
 msgid "error in directive expression"

@@ -1,16 +1,13 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Lazarus\n"
+"Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2006-06-03 01:09+0700\n"
+"PO-Revision-Date: 2007-01-29 23:56+0700\n"
 "Last-Translator: Zaenal Mutaqin <ade999@gmail.com>\n"
-"Language-Team: Lazarus Team <ade999@gmail.com>\n"
+"Language-Team: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-Language: Indonesian\n"
-"X-Poedit-Country: INDONESIA\n"
-"X-Poedit-SourceCharset: iso-8859-1\n"
 
 #: objinspstrconsts:oisdlinesdchars
 msgid "%d lines, %d chars"
@@ -142,7 +139,7 @@ msgstr "Tambah Gambar"
 
 #: objinspstrconsts:s_addassingle
 msgid "Add as single"
-msgstr ""
+msgstr "Tambah sebagai single"
 
 #: objinspstrconsts:clbadd
 msgid "Add new Item"
@@ -154,7 +151,7 @@ msgstr "Tambah halaman"
 
 #: objinspstrconsts:tccesaddtab
 msgid "Add tab"
-msgstr ""
+msgstr "Tambah tab"
 
 #: objinspstrconsts:oisaddtofavorites
 msgid "Add to Favorites"
@@ -170,7 +167,7 @@ msgstr "Penyesuaian"
 
 #: objinspstrconsts:rscdalignment
 msgid "Alignment"
-msgstr ""
+msgstr "Penjajaran"
 
 #: objinspstrconsts:oisall
 msgid "All"
@@ -190,7 +187,7 @@ msgstr "Array"
 
 #: objinspstrconsts:rscdautosize
 msgid "Auto Size"
-msgstr ""
+msgstr "Auto Ukuran"
 
 #: objinspstrconsts:oisstdactionlisteditorclass
 msgid "Available Action Classes:"
@@ -210,7 +207,7 @@ msgstr "Batal"
 
 #: objinspstrconsts:rscdcaption
 msgid "Caption"
-msgstr ""
+msgstr "Judul"
 
 #: objinspstrconsts:sccslvedtlabelcaption
 msgid "Caption:"
@@ -262,7 +259,7 @@ msgstr "Pilih Warna"
 
 #: objinspstrconsts:rscdcolumneditor
 msgid "Column Editor"
-msgstr ""
+msgstr "Editor Kolom"
 
 #: objinspstrconsts:oiscomponentnameisnotavalididentifier
 msgid "Component name %s%s%s is not a valid identifier"
@@ -282,7 +279,7 @@ msgstr "Copy"
 
 #: objinspstrconsts:oiscopycomponents
 msgid "Copy components"
-msgstr ""
+msgstr "Copy komponen"
 
 #: objinspstrconsts:oiscreateanewpascalunit
 msgid "Create a new pascal unit."
@@ -330,7 +327,7 @@ msgstr "Cut"
 
 #: objinspstrconsts:oiscutcomponents
 msgid "Cut components"
-msgstr ""
+msgstr "Cut komponen"
 
 #: objinspstrconsts:cactionlisteditordatabasecategory
 msgid "Database"
@@ -350,7 +347,7 @@ msgstr "Hapus Aksi"
 
 #: objinspstrconsts:oisdeletecomponents
 msgid "Delete components"
-msgstr ""
+msgstr "Hapus komponen"
 
 #: objinspstrconsts:oisdeleteitem
 msgid "Delete item %s%s%s?"
@@ -362,7 +359,7 @@ msgstr "Hapus halaman"
 
 #: objinspstrconsts:tccesdeletetab
 msgid "Delete tab"
-msgstr ""
+msgstr "Hapus tab"
 
 #: objinspstrconsts:clbdelete
 msgid "Delete the Item %d \"%s\"?"
@@ -374,7 +371,7 @@ msgstr "Dialog"
 
 #: objinspstrconsts:s_suggestsplitimage
 msgid "Do you want to split the image?"
-msgstr ""
+msgstr "Anda ingin memisahkan gambar?"
 
 #: objinspstrconsts:clbdown
 msgid "Do&wn"
@@ -494,7 +491,7 @@ msgstr "Sisipkan halaman"
 
 #: objinspstrconsts:tccesinserttab
 msgid "Insert tab"
-msgstr ""
+msgstr "Sisipkan tab"
 
 #: objinspstrconsts:oisint64
 msgid "Int64"
@@ -510,7 +507,7 @@ msgstr "Interface"
 
 #: objinspstrconsts:rscdinvalidnumericvalue
 msgid "Invalid numeric Value"
-msgstr ""
+msgstr "Nilai numerik tidak benar"
 
 #: objinspstrconsts:oisinvalidpropertyvalue
 msgid "Invalid property value"
@@ -538,7 +535,7 @@ msgstr "Terakhir"
 
 #: objinspstrconsts:rscdleft
 msgid "Left"
-msgstr ""
+msgstr "Kiri"
 
 #: objinspstrconsts:sccslvedtcaption
 msgid "ListView Items Editor"
@@ -578,7 +575,7 @@ msgstr "Turunkan"
 
 #: objinspstrconsts:sccssgedtmoverowscols
 msgid "Move Rows/Cols"
-msgstr ""
+msgstr "Pindahkan Baris/Kolom"
 
 #: objinspstrconsts:sccsiledtmoveup
 msgid "Move Up"
@@ -586,7 +583,7 @@ msgstr "Naikan"
 
 #: objinspstrconsts:rscdmovedown
 msgid "Move down"
-msgstr ""
+msgstr "Pindahkan ke bawah"
 
 #: objinspstrconsts:nbcesmovepageleft
 msgid "Move page left"
@@ -598,15 +595,15 @@ msgstr "Pindahkan halaman kekanan"
 
 #: objinspstrconsts:tccesmovetableft
 msgid "Move tab left"
-msgstr ""
+msgstr "Pindahkan tab ke kiri"
 
 #: objinspstrconsts:tccesmovetabright
 msgid "Move tab right"
-msgstr ""
+msgstr "Pindahkan tab ke kanan"
 
 #: objinspstrconsts:rscdmoveup
 msgid "Move up"
-msgstr ""
+msgstr "Pindahkan ke atas"
 
 #: objinspstrconsts:cactionlisteditornewaction
 msgid "New Action"
@@ -634,7 +631,7 @@ msgstr "Tidak ada"
 
 #: objinspstrconsts:rscdok
 msgid "OK"
-msgstr ""
+msgstr "OK"
 
 #: objinspstrconsts:oisobject
 msgid "Object"
@@ -654,7 +651,7 @@ msgstr "Buka"
 
 #: objinspstrconsts:oispeopenimagefile
 msgid "Open image file"
-msgstr ""
+msgstr "Buka file gambar"
 
 #: objinspstrconsts:oisopenmaskfile
 msgid "Open masks file (*.dem)"
@@ -678,11 +675,11 @@ msgstr "Paste"
 
 #: objinspstrconsts:oispastecomponents
 msgid "Paste components"
-msgstr ""
+msgstr "Paste komponen"
 
 #: objinspstrconsts:oispepicture
 msgid "Picture"
-msgstr ""
+msgstr "Gambar"
 
 #: objinspstrconsts:clbdisable
 msgid "Popup to disable/enable items"
@@ -718,7 +715,7 @@ msgstr "Hapus dari Favorit"
 
 #: objinspstrconsts:rscdright
 msgid "Right"
-msgstr ""
+msgstr "Kanan"
 
 #: objinspstrconsts:oissamplemasks
 msgid "Sample Masks:"
@@ -746,7 +743,7 @@ msgstr "Simpan Karakter Literal"
 
 #: objinspstrconsts:oispesaveimageas
 msgid "Save image as"
-msgstr ""
+msgstr "Simpan gambar sebagai"
 
 #: objinspstrconsts:oissavepicture
 msgid "Save picture"
@@ -814,7 +811,7 @@ msgstr "Urut"
 
 #: objinspstrconsts:s_splitimage
 msgid "Split image"
-msgstr ""
+msgstr "Pisahkan gambar"
 
 #: objinspstrconsts:oisstdactionlisteditor
 msgid "Standard Action Classes"
@@ -894,11 +891,11 @@ msgstr "Varian"
 
 #: objinspstrconsts:rscdvisible
 msgid "Visible"
-msgstr ""
+msgstr "Visibel"
 
 #: objinspstrconsts:rscdwidth
 msgid "Width"
-msgstr ""
+msgstr "Panjang"
 
 #: objinspstrconsts:oisword
 msgid "Word"
