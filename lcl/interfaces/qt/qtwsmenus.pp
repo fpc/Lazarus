@@ -194,6 +194,10 @@ begin
 
       Action.MenuItem := AMenuItem;
 
+      Action.setEnabled(AMenuItem.Enabled);
+
+      Action.setChecked(AMenuItem.Checked);
+
       Result := HMENU(Action);
     end;
   end;

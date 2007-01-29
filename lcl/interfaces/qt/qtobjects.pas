@@ -56,6 +56,7 @@ type
     procedure SlotTriggered(checked: Boolean = False); cdecl;
   public
     procedure setChecked(p1: Boolean);
+    procedure setCheckable(p1: Boolean);
     procedure setEnabled(p1: Boolean);
     procedure setVisible(p1: Boolean);
   end;
@@ -271,9 +272,30 @@ begin
   if Assigned(MenuItem) and Assigned(MenuItem.OnClick) then MenuItem.OnClick(Self);
 end;
 
+{------------------------------------------------------------------------------
+  Method: TQtAction.setChecked
+
+  Checks or unchecks a menu entry
+  
+  To mimic the behavior LCL should have we added code to handle
+ setCheckable automatically
+ ------------------------------------------------------------------------------}
 procedure TQtAction.setChecked(p1: Boolean);
 begin
+  if p1 then setCheckable(True)
+  else setCheckable(False);
+
   QAction_setChecked(Handle, p1);
+end;
+
+{------------------------------------------------------------------------------
+  Method: TQtAction.setCheckable
+
+  Set's if a menu can be checked. Is false by default
+ ------------------------------------------------------------------------------}
+procedure TQtAction.setCheckable(p1: Boolean);
+begin
+  QAction_setCheckable(Handle, p1);
 end;
 
 procedure TQtAction.setEnabled(p1: Boolean);
