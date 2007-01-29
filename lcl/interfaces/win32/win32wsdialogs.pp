@@ -113,6 +113,11 @@ type
 
 implementation
 
+// The size of the OPENFILENAME record depends on the windows version
+// In the initialization section the correct size is determined.
+var
+  OpenFileNameSize: integer = 0;
+
 {------------------------------------------------------------------------------
   Method: GetOwnerHandle
   Params:  ADialog - dialog to get 'guiding parent' window handle for
@@ -387,7 +392,7 @@ begin
   ZeroMemory(@OpenFile, sizeof(OpenFileName));
   with OpenFile Do
   begin
-    lStructSize := sizeof(OpenFileName);
+    lStructSize := OpenFileNameSize;
     hWndOwner := GetOwnerHandle(AOpenDialog);
     hInstance := System.hInstance;
     lpStrFilter := StrAlloc(Length(Filter)+1);
@@ -601,6 +606,11 @@ end;
 
 initialization
 
+  if (Win32MajorVersion=4) then
+    OpenFileNameSize := sizeof(OPENFILENAME_NT4)
+  else
+    OpenFileNameSize:=sizeof(OPENFILENAME);
+
 ////////////////////////////////////////////////////
 // I M P O R T A N T
 ////////////////////////////////////////////////////
@@ -616,4 +626,5 @@ initialization
 //  RegisterWSComponent(TColorButton, TWin32WSColorButton);
   RegisterWSComponent(TFontDialog, TWin32WSFontDialog);
 ////////////////////////////////////////////////////
+
 end.
