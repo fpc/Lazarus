@@ -235,13 +235,18 @@ begin
     We can detect this menu item checking if HasParent is false }
   if AMenuItem.HasParent then
   begin
-    { Here the menu item has a QMenuH handle }
+    { Here the menu item has a QMenuH handle
+
+      Obs: Commented because they cause access violations inside Qt
+      library on the Virtual Magnifying Glass }
     if AMenuItem.Count > 0 then
     begin
+//      TQtMenu(AMenuItem.Handle).Free;
     end
     { Here the menu item has a QActionH handle }
     else
     begin
+//      TQtAction(AMenuItem.Handle).Free;
     end;
   end;
 end;

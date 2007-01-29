@@ -257,19 +257,35 @@ uses qtwidgets;
 
 { TQtAction }
 
+{------------------------------------------------------------------------------
+  Method: TQtAction.Create
+
+  Contructor for the class.
+ ------------------------------------------------------------------------------}
 constructor TQtAction.Create(const AHandle: QActionH);
 begin
   Handle := AHandle;
 end;
 
+{------------------------------------------------------------------------------
+  Method: TQtAction.Destroy
+
+  Destructor for the class.
+ ------------------------------------------------------------------------------}
 destructor TQtAction.Destroy;
 begin
   inherited Destroy;
 end;
 
+{------------------------------------------------------------------------------
+  Method: TQtAction.SlotTriggered
+
+  Callback for menu item click
+ ------------------------------------------------------------------------------}
 procedure TQtAction.SlotTriggered(checked: Boolean); cdecl;
 begin
-  if Assigned(MenuItem) and Assigned(MenuItem.OnClick) then MenuItem.OnClick(Self);
+  if Assigned(MenuItem) and Assigned(MenuItem.OnClick) then
+   MenuItem.OnClick(Self.MenuItem);
 end;
 
 {------------------------------------------------------------------------------
@@ -298,11 +314,17 @@ begin
   QAction_setCheckable(Handle, p1);
 end;
 
+{------------------------------------------------------------------------------
+  Method: TQtAction.setEnabled
+ ------------------------------------------------------------------------------}
 procedure TQtAction.setEnabled(p1: Boolean);
 begin
   QAction_setEnabled(Handle, p1);
 end;
 
+{------------------------------------------------------------------------------
+  Method: TQtAction.setVisible
+ ------------------------------------------------------------------------------}
 procedure TQtAction.setVisible(p1: Boolean);
 begin
   QAction_setVisible(Handle, p1);
