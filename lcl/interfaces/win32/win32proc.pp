@@ -27,7 +27,8 @@ unit win32proc;
 interface
 
 uses
-  Windows, Classes, LMessages, LCLType, LCLProc, Controls, Forms, Menus;
+  Windows, Classes, SysUtils,
+  LMessages, LCLType, LCLProc, Controls, Forms, Menus;
 
 Type
   TEventType = (etNotify, etKey, etKeyPress, etMouseWheel, etMouseUpDown);
@@ -123,7 +124,7 @@ var
 implementation
 
 uses
-  SysUtils, LCLStrConsts, Dialogs, StdCtrls, ExtCtrls,
+  LCLStrConsts, Dialogs, StdCtrls, ExtCtrls,
   LCLIntf; //remove this unit when GetWindowSize is moved to TWSWinControl
 
 {$IFOPT C-}
@@ -1157,10 +1158,6 @@ begin
 end;
 
 procedure DoInitialization;
-{$ifdef WindowsUnicodeSupport}
-var
-  WinVersion: TOSVersionInfo;
-{$endif}
 begin
   FillChar(DefaultWindowInfo, sizeof(DefaultWindowInfo), 0);
   DefaultWindowInfo.DrawItemIndex := -1;
@@ -1168,12 +1165,7 @@ begin
   ChangedMenus := TList.Create;
 
  {$ifdef WindowsUnicodeSupport}
-
-  WinVersion.dwOSVersionInfoSize := SizeOf(TOSVersionInfo);
-  GetVersionEx(WinVersion);
-
-  UnicodeEnabledOS := (WinVersion.dwPlatformID = VER_PLATFORM_WIN32_NT);
-
+  UnicodeEnabledOS := (Win32Platform = VER_PLATFORM_WIN32_NT);
  {$endif}
 end;
 
