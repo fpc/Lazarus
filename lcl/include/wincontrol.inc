@@ -3259,6 +3259,16 @@ begin
 
   // check if Pos in visible client area
   ClientBounds:=GetClientRect;
+  ScrolledOffset:=GetClientScrollOffset;
+  if capfHasScrollOffset in Flags then
+  begin
+    { ClientBounds do not include scrolling offset }
+    inc(ClientBounds.Left, ScrolledOffset.x);
+    inc(ClientBounds.Right, ScrolledOffset.x);
+    inc(ClientBounds.Top, ScrolledOffset.y);
+    inc(ClientBounds.Bottom, ScrolledOffset.y);
+  end;
+
   if not PtInRect(ClientBounds,Pos) then begin
     //debugln(['TWinControl.ControlAtPos OUT OF CLIENTBOUNDS ',DbgSName(Self),' P=',dbgs(Pos),' ClientBounds=',dbgs(ClientBounds)]);
     //DumpStack;
@@ -3268,8 +3278,7 @@ begin
 
   // map Pos to logical client area
   P:=Pos;
-  if not (capfNoScrolling in Flags) then begin
-    ScrolledOffset:=GetClientScrollOffset;
+  if not (capfHasScrollOffset in Flags) then begin
     inc(P.X,ScrolledOffset.X);
     inc(P.Y,ScrolledOffset.Y);
   end;
@@ -3295,7 +3304,7 @@ begin
     NewPos:=Pos;
     NewPos.X:=NewPos.X-NewClientOrigin.X+OldClientOrigin.X;
     NewPos.Y:=NewPos.Y-NewClientOrigin.Y+OldClientOrigin.Y;
-    LControl:=TWinControl(Result).ControlAtPos(NewPos,Flags-[capfNoScrolling]);
+    LControl:=TWinControl(Result).ControlAtPos(NewPos,Flags-[capfHasScrollOffset]);
     //debugln(['TWinControl.RECURSED ControlAtPos Result=',DbgSName(Result),' LControl=',DbgSName(LControl),' ',dbgs(NewPos),' AllowDisabled=',AllowDisabled,' OnlyClientAreas=',OnlyClientAreas]);
     if LControl<>nil then
       Result:=LControl;

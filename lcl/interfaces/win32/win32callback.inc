@@ -698,7 +698,8 @@ Var
       if ACursor = crDefault then
       begin
         // statictext controls do not get WM_SETCURSOR messages...
-        lControl := lWinControl.ControlAtPos(P, false, true);
+        lControl := lWinControl.ControlAtPos(P, [capfOnlyClientAreas, 
+          capfAllowWinControls, capfHasScrollOffset]);
         if lControl = nil then
           lControl := lWinControl;
         if lControl.Cursor <> crDefault then
