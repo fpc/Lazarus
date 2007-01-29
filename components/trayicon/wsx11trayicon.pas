@@ -362,13 +362,8 @@ begin
           2: if Assigned(OnMouseUp) then
              OnMouseDown(Self, mbMiddle, [], Round(BtnPressEv^.X), Round(BtnPressEv^.Y));
 
-          3:
-          begin
-            if Assigned(OnMouseUp) then
+          3: if Assigned(OnMouseUp) then
              OnMouseDown(Self, mbRight, [], Round(BtnPressEv^.X), Round(BtnPressEv^.Y));
-            if Assigned(PopUpMenu) then
-             PopUpMenu.PopUp(BtnPressEv^.x_root, BtnPressEv^.y_root);
-          end;
         end;
       end;
       Expose, GraphicsExpose, VisibilityNotify, VisibilityUnobscured, VisibilityPartiallyObscured:
