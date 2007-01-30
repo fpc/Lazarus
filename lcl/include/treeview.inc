@@ -1942,6 +1942,20 @@ begin
     Result:=Result.GetNextSibling;
 end;
 
+function TTreeNodes.FindNodeWithText(const NodeText: string): TTreeNode;
+begin
+  Result:=GetFirstNode;
+  while (Result<>nil) and (Result.Text<>NodeText) do
+    Result:=Result.GetNext;
+end;
+
+function TTreeNodes.FindNodeWithData(const NodeData: Pointer): TTreeNode;
+begin
+  Result:=GetFirstNode;
+  while (Result<>nil) and (Result.Data<>NodeData) do
+    Result:=Result.GetNext;
+end;
+
 function TTreeNodes.GetNodeFromIndex(Index: Integer): TTreeNode;
 // find node with absolute index in ALL nodes (even collapsed)
 

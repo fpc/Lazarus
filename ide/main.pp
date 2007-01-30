@@ -3854,7 +3854,8 @@ begin
 
   NewUnitInfo.ComponentName:=NewComponent.Name;
   NewUnitInfo.ComponentResourceName:=NewUnitInfo.ComponentName;
-  if NewUnitInfo.IsPartOfProject and Project1.AutoCreateForms then begin
+  if NewUnitInfo.IsPartOfProject and Project1.AutoCreateForms
+  and (pfMainUnitHasCreateFormStatements in Project1.Flags) then begin
     Project1.AddCreateFormToProjectFile(NewComponent.ClassName,
                                         NewComponent.Name);
   end;

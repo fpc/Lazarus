@@ -1096,9 +1096,9 @@ const
     // dsNone, dsIdle, dsStop, dsPause, dsInit,     dsRun,      dsError
     itNone, itNone, itNone, itDebugger, itDebugger, itDebugger, itDebugger
   );
-  STATENAME: array[TDBGState] of string = (
-    'dsNone', 'dsIdle', 'dsStop', 'dsPause', 'dsInit', 'dsRun', 'dsError'
-  );
+  //STATENAME: array[TDBGState] of string = (
+  //  'dsNone', 'dsIdle', 'dsStop', 'dsPause', 'dsInit', 'dsRun', 'dsError'
+  //);
 var
   Editor: TSourceEditor;
 begin

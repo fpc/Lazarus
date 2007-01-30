@@ -2578,11 +2578,15 @@ end;
 function TProject.AddCreateFormToProjectFile(
   const AClassName, AName: string):boolean;
 begin
-  Result:=CodeToolBoss.AddCreateFormStatement(MainUnitInfo.Source,
-    AClassName,AName);
-  if Result then begin
-    Modified:=true;
-    MainUnitInfo.Modified:=true;
+  if (pfMainUnitHasCreateFormStatements in Project1.Flags) then begin
+    Result:=CodeToolBoss.AddCreateFormStatement(MainUnitInfo.Source,
+      AClassName,AName);
+    if Result then begin
+      Modified:=true;
+      MainUnitInfo.Modified:=true;
+    end;
+  end else begin
+    Result:=false;
   end;
 end;
 

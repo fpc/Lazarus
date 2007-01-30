@@ -442,7 +442,7 @@ begin
   Result:=Result+' UnitName="'+TypeData^.UnitName+'"';
 
   // skip unitname
-  PropInfo:=PPropInfo(@TypeData^.UnitName+Length(TypeData^.UnitName)+1);
+  PropInfo:=PPropInfo(PByte(@TypeData^.UnitName)+Length(TypeData^.UnitName)+1);
   // read property count
   CurCount:=PWord(PropInfo)^;
   Result:=Result+' CurPropCnt='+IntToStr(CurCount);
@@ -490,7 +490,7 @@ begin
     Result := Result + IntToStr(i) 
       + ':Name="' + FieldInfo^.Name + '"'
       + ':Offset=' +IntToStr(FieldInfo^.FieldOffset);
-    FieldInfo := PFieldInfo(@FieldInfo^.Name + 1 + Length(FieldInfo^.Name));
+    FieldInfo := PFieldInfo(PByte(@FieldInfo^.Name) + 1 + Length(FieldInfo^.Name));
     {$ifndef FPC_REQUIRES_PROPER_ALIGNMENT}
     FieldInfo := Align(FieldInfo, SizeOf(Pointer));
     {$endif FPC_REQUIRES_PROPER_ALIGNMENT}
@@ -512,7 +512,7 @@ end;
 
 function GetTypeDataPropCountAddr(TypeData: PTypeData): PWord;
 begin
-  Result:=PWord(@(TypeData^.UnitName)+Length(TypeData^.UnitName)+1);
+  Result:=PWord(PByte(@(TypeData^.UnitName)+Length(TypeData^.UnitName)+1));
   {$ifdef FPC_REQUIRES_PROPER_ALIGNMENT}
   Result := Align(Result, SizeOf(Pointer));
   {$endif}

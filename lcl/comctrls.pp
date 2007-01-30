@@ -1960,6 +1960,8 @@ type
     function GetLastSubNode: TTreeNode; // absolute last node
     function GetLastExpandedSubNode: TTreeNode; // absolute last node
     function FindTopLvlNode(const NodeText: string): TTreeNode;
+    function FindNodeWithText(const NodeText: string): TTreeNode;
+    function FindNodeWithData(const NodeData: Pointer): TTreeNode;
     function Insert(NextNode: TTreeNode; const S: string): TTreeNode;
     function InsertObject(NextNode: TTreeNode; const S: string;
       Data: Pointer): TTreeNode;
