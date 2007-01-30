@@ -186,7 +186,6 @@ begin
   CreateWithName(ATestName);
   FPath := APath;
   FProjectFile := FindProjectFile(FPath);
-  writeln(FProjectFile);
 end;
 
 class function TBugTestCase.CreateSuite(Path: string): TTestSuite;
@@ -209,7 +208,7 @@ begin
   ProgPath := ExtractFilePath(ParamStr(0));
   if FindFirst(ProgPath+'*', faAnyFile, SearchRec)=0 then
     repeat
-      if (SearchRec.Attr=faDirectory) and
+      if (SearchRec.Attr and (faDirectory + faHidden)=faDirectory) and
          (SearchRec.Name<>'.') and (SearchRec.Name<>'..')
       then
         GetTestRegistry.AddTest(
