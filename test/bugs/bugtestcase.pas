@@ -145,7 +145,7 @@ var
   MinLineCount: integer;
   i: integer;
 begin
-  ExpectedFileName := AppendPathDelim(FPath) + 'Expected.txt';
+  ExpectedFileName := AppendPathDelim(FPath) + 'expected.txt';
   AssertTrue('File missing: '+ExpectedFileName, FileExists(ExpectedFileName));
   ExpectedLines := nil;
   ActualLines := nil;
@@ -209,7 +209,8 @@ begin
   if FindFirst(ProgPath+'*', faAnyFile, SearchRec)=0 then
     repeat
       if (SearchRec.Attr and (faDirectory + faHidden)=faDirectory) and
-         (SearchRec.Name<>'.') and (SearchRec.Name<>'..')
+         (SearchRec.Name<>'.') and (SearchRec.Name<>'..') and
+         (SearchRec.Name<>'.svn')
       then
         GetTestRegistry.AddTest(
           TBugTestCase.CreateSuite(ProgPath+SearchRec.Name));
