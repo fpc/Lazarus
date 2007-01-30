@@ -57,6 +57,7 @@ type
     tbWatch: TToolButton;
     tbModify: TToolButton;
     tbEvaluate: TToolButton;
+    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormShow(Sender: TObject);
     procedure cmbExpressionChange(Sender: TObject);
     procedure cmbExpressionKeyDown(Sender: TObject; var Key: Word;
@@ -117,6 +118,13 @@ end;
 procedure TEvaluateDlg.FormShow(Sender: TObject);
 begin
   cmbExpression.SetFocus;
+end;
+
+procedure TEvaluateDlg.FormKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_ESCAPE then
+    Close;
 end;
 
 procedure TEvaluateDlg.tbEvaluateClick(Sender: TObject);
