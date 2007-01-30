@@ -217,8 +217,13 @@ begin
     2: if Assigned(vwsTrayIcon.OnMouseUp) then
         vwsTrayIcon.OnMouseUp(vwsTrayIcon, mbMiddle, [], Round(event^.X), Round(event^.Y));
 
-    3: if Assigned(vwsTrayIcon.OnMouseUp) then
-        vwsTrayIcon.OnMouseUp(vwsTrayIcon, mbRight, [], Round(event^.X), Round(event^.Y));
+    3:
+    begin
+      if Assigned(vwsTrayIcon.OnMouseUp) then
+       vwsTrayIcon.OnMouseUp(vwsTrayIcon, mbRight, [], Round(event^.X), Round(event^.Y));
+      if Assigned(vwsTrayIcon.PopUpMenu) then
+       vwsTrayIcon.PopUpMenu.PopUp(Mouse.CursorPos.X, Mouse.CursorPos.Y);
+     end;
   end;
 end;
 
@@ -246,19 +251,14 @@ begin
   else
   begin
     case event^.button of
-      1: if Assigned(vwsTrayIcon.OnMouseUp) then
+      1: if Assigned(vwsTrayIcon.OnMouseDown) then
           vwsTrayIcon.OnMouseDown(vwsTrayIcon, mbLeft, [], Round(event^.X), Round(event^.Y));
 
-      2: if Assigned(vwsTrayIcon.OnMouseUp) then
-         vwsTrayIcon.OnMouseDown(vwsTrayIcon, mbMiddle, [], Round(event^.X), Round(event^.Y));
+      2: if Assigned(vwsTrayIcon.OnMouseDown) then
+          vwsTrayIcon.OnMouseDown(vwsTrayIcon, mbMiddle, [], Round(event^.X), Round(event^.Y));
 
-      3:
-      begin
-        if Assigned(vwsTrayIcon.OnMouseUp) then
-         vwsTrayIcon.OnMouseDown(vwsTrayIcon, mbRight, [], Round(event^.X), Round(event^.Y));
-        if Assigned(vwsTrayIcon.PopUpMenu) then
-         vwsTrayIcon.PopUpMenu.PopUp(Mouse.CursorPos.X, Mouse.CursorPos.Y);
-      end;
+      3: if Assigned(vwsTrayIcon.OnMouseDown) then
+          vwsTrayIcon.OnMouseDown(vwsTrayIcon, mbRight, [], Round(event^.X), Round(event^.Y));
     end;
   end;
 end;

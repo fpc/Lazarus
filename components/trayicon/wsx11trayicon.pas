@@ -356,13 +356,13 @@ begin
       begin
         BtnPressEv := PXButtonPressedEvent(@ev);
         case BtnPressEv^.button of
-          1: if Assigned(OnMouseUp) then
+          1: if Assigned(OnMouseDown) then
              OnMouseDown(Self, mbLeft, [], Round(BtnPressEv^.X), Round(BtnPressEv^.Y));
 
-          2: if Assigned(OnMouseUp) then
+          2: if Assigned(OnMouseDown) then
              OnMouseDown(Self, mbMiddle, [], Round(BtnPressEv^.X), Round(BtnPressEv^.Y));
 
-          3: if Assigned(OnMouseUp) then
+          3: if Assigned(OnMouseDown) then
              OnMouseDown(Self, mbRight, [], Round(BtnPressEv^.X), Round(BtnPressEv^.Y));
         end;
       end;
