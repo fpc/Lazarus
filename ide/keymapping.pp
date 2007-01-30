@@ -79,7 +79,6 @@ type
     fRelations: TList; // list of TKeyCommandRelation, sorted with Command
     fCategories: TList;// list of TKeyCommandCategory
     fExtToolCount: integer;
-    function GetCategory(Index: integer): TIDECommandCategory; override;
     function GetRelation(Index: integer): TKeyCommandRelation;
     function GetRelationCount: integer;
     function AddCategory(const Name, Description: string;
@@ -94,6 +93,8 @@ type
                         const Name, LocalizedName: string;
                         Command: word):integer;
     procedure SetExtToolCount(NewCount: integer);
+  protected
+    function GetCategory(Index: integer): TIDECommandCategory; override;
   public
     constructor Create;
     destructor Destroy; override;
