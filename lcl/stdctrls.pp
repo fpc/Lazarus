@@ -906,8 +906,10 @@ type
     property Checked: Boolean read GetChecked write SetChecked stored IsCheckedStored default False;
     property ClicksDisabled: Boolean read FClicksDisabled write FClicksDisabled;
     property UseOnChange: boolean read FUseOnChange write FUseOnChange stored UseOnChangeIsStored;
+    property ParentColor default false;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   public
+    property Color default clBtnFace;
     constructor Create(TheOwner: TComponent); override;
   end;
 
@@ -974,6 +976,7 @@ type
     property BorderSpacing;
     property Caption;
     property Checked;
+    property Color;
     property Constraints;
     property DragCursor;
     property DragKind;
@@ -997,6 +1000,7 @@ type
     property OnMouseUp;
     property OnResize;
     property OnStartDrag;
+    property ParentColor;
     property ParentShowHint;
     property PopupMenu;
     property ShowHint;

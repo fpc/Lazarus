@@ -93,7 +93,6 @@ type
     procedure UpdateRolesForForm; override;
   public
     property Active: boolean read FActive stored false;
-    property Color default clBtnFace;
     property Default: Boolean read FDefault write SetDefault default false;
     property ModalResult: TModalResult read FModalResult write SetModalResult default mrNone;
     property Cancel: Boolean read FCancel write SetCancel default false;

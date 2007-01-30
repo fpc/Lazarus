@@ -416,6 +416,7 @@ Type
     property Anchors;
     property AutoSize;
     property Caption;
+    property Color;
     property DataField: string read GetDataField write SetDataField;
     property DataSource: TDataSource read GetDataSource write SetDataSource;
     property DragCursor;
@@ -434,6 +435,7 @@ Type
     property OnMouseMove;
     property OnMouseUp;
     property OnStartDrag;
+    property ParentColor;
     property ParentShowHint;
     property PopupMenu;
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
