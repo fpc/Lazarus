@@ -1209,6 +1209,7 @@ begin
   SetLength(Result, len);
   n := 0;
   idx := 1;
+  Trailor:='';
   while idx <= len do
   begin
     case S[idx] of
@@ -2708,6 +2709,7 @@ begin
   HookCount := 0;
   InString := ssNone;
   LastWord := '';
+  S:='';
   for n := 1 to Length(AExpression)  do
   begin
     if AExpression[n] = ''''

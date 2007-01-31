@@ -2249,9 +2249,12 @@ begin
   AnUnit.OnFileBackup:=@OnUnitFileBackup;
   AnUnit.OnLoadSaveFilename:=@OnLoadSaveFilename;
   AnUnit.OnUnitNameChange:=@OnUnitNameChange;
-
+  
   // check if this is the new Main Unit
-  if MainUnitID=NewIndex then
+  // or if this is the first unit, make it automatically the main unit
+  if (MainUnitID<0) and (UnitCount=1) then
+    MainUnitID:=0
+  else if MainUnitID=NewIndex then
     MainUnitInfo.IncreaseAutoRevertLock;
 
   if AddToProjectUsesClause and (MainUnitID>=0) and (MainUnitID<>NewIndex) then
@@ -4530,8 +4533,6 @@ begin
   AProject.MainFile.SetSourceText(NewSource);
   
   // add lcl pp/pas dirs to source search path
-  AProject.AddSrcPath('$(LazarusDir)/lcl;'
-               +'$(LazarusDir)/lcl/interfaces/$(LCLWidgetType)');
   AProject.AddPackageDependency('LCL');
   AProject.LazCompilerOptions.Win32GraphicApp:=true;
 end;

@@ -512,7 +512,7 @@ end;
 
 function GetTypeDataPropCountAddr(TypeData: PTypeData): PWord;
 begin
-  Result:=PWord(PByte(@(TypeData^.UnitName)+Length(TypeData^.UnitName)+1));
+  Result:=PWord(PByte(@TypeData^.UnitName)+Length(TypeData^.UnitName)+1);
   {$ifdef FPC_REQUIRES_PROPER_ALIGNMENT}
   Result := Align(Result, SizeOf(Pointer));
   {$endif}
