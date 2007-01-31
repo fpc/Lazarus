@@ -57,7 +57,7 @@ begin
     BufferedOutput.SetSize(BytesRead + READ_BYTES);
 
     // try reading it
-    if AProcess.NumBytesAvailable>0 then begin
+    if AProcess.Output.NumBytesAvailable>0 then begin
       n := AProcess.Output.Read((BufferedOutput.Memory + BytesRead)^, READ_BYTES);
       Inc(BytesRead, n)
     end
@@ -70,7 +70,7 @@ begin
     // make sure we have room
     BufferedOutput.SetSize(BytesRead + READ_BYTES);
     // try reading it
-    if AProcess.NumBytesAvailable>0 then begin
+    if AProcess.Output.NumBytesAvailable>0 then begin
       n := AProcess.Output.Read((BufferedOutput.Memory + BytesRead)^, READ_BYTES);
       Inc(BytesRead, n);
     end

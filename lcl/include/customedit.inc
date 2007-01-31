@@ -411,7 +411,8 @@ Begin
     if Temp <> Text then Text := Temp;
   end;
 
-  Modified := True;
+  if not (wcfCreatingHandle in FWinControlFlags) then
+    Modified := True;
   if HandleAllocated then Change;
 End;
 
