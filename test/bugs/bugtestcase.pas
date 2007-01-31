@@ -33,28 +33,34 @@ var
 
 implementation
 
+const
+  // Maximal number of bytes read from stream
+  READ_BYTES = 2048;
+  // Maximal run time for a test program
+  TIME_OUT = 30;
+
 var
   BufferedOutput: TMemoryStream; // a global variable is not nice, but it works.
   
-const
-  READ_BYTES = 2048;
-
 procedure ReadOutput(AProcess:TProcess);
 var
   BytesRead: Integer;
   n: Integer;
+  EndTime: TDateTime;
 begin
   BytesRead := 0;
   BufferedOutput.Clear;
-  while AProcess.Running do
+  EndTime := Now + TIME_OUT / (24 * 60 * 60);
+  while AProcess.Running and (Now<EndTime) do
   begin
     // make sure we have room
     BufferedOutput.SetSize(BytesRead + READ_BYTES);
 
     // try reading it
-    n := AProcess.Output.Read((BufferedOutput.Memory + BytesRead)^, READ_BYTES);
-    if n > 0 then
+    if AProcess.NumBytesAvailable>0 then begin
+      n := AProcess.Output.Read((BufferedOutput.Memory + BytesRead)^, READ_BYTES);
       Inc(BytesRead, n)
+    end
     else
       // no data, wait 100 ms
       Sleep(100);
@@ -64,9 +70,12 @@ begin
     // make sure we have room
     BufferedOutput.SetSize(BytesRead + READ_BYTES);
     // try reading it
-    n := AProcess.Output.Read((BufferedOutput.Memory + BytesRead)^, READ_BYTES);
-    if n > 0 then
+    if AProcess.NumBytesAvailable>0 then begin
+      n := AProcess.Output.Read((BufferedOutput.Memory + BytesRead)^, READ_BYTES);
       Inc(BytesRead, n);
+    end
+    else
+      n := 0;
   until n <= 0;
   BufferedOutput.SetSize(BytesRead);
 end;
@@ -127,11 +136,15 @@ begin
   AssertTrue(ExeName + 'does not exist.', FileExists(ExeName));
   TestProcess := TProcess.Create(nil);
   try
-    TestProcess.CommandLine := ExeName;
+    TestProcess.CommandLine := ExeName + ' --runtest';
     TestProcess.Options := [poUsePipes];
     TestProcess.Execute;
-    //RunScript;
-    ReadOutput(TestProcess);
+    try
+      ReadOutput(TestProcess);
+      AssertFalse('TestProcess did not auto-terminate', TestProcess.Running);
+    finally
+      TestProcess.Terminate(0);
+    end;
   finally
     TestProcess.Free;
   end;
