@@ -365,7 +365,6 @@ begin
   FExtUTF8OutCacheSize:=0;
 
   FreeAllStyles;
-  FreeGDKCursors;
   FreeStockItems;
 
   if FGTKToolTips<>nil then begin
@@ -3530,7 +3529,7 @@ procedure TGtkWidgetSet.SetDesigning(AComponent: TComponent);
 begin
   // change cursor
   if AComponent is TWinControl then
-    gtkproc.SetCursor(TWinControl(AComponent), TCursor(PtrUInt(nil)));
+    gtkproc.SetCursor(TWinControl(AComponent), Screen.Cursors[TWinControl(AComponent).Cursor]);    
 end;
 
 {------------------------------------------------------------------------------
@@ -5238,8 +5237,46 @@ begin
 end;
 
 function TGTKWidgetSet.CreateStandardCursor(ACursor: SmallInt): hCursor;
+var
+  CursorValue: Integer;
 begin
-  Result := GetPredefinedCursor(ACursor);
+  Result := 0;
+  if ACursor < crLow then Exit;
+  if ACursor > crHigh then Exit;
+
+  case TCursor(ACursor) of
+    crDefault:  CursorValue := GDK_LEFT_PTR;
+    crNone:     CursorValue := GDK_LEFT_PTR;
+    crArrow:    CursorValue := GDK_Arrow;
+    crCross:    CursorValue := GDK_Cross;
+    crIBeam:    CursorValue := GDK_XTerm;
+//    crSize:     CursorValue := GDK_FLEUR;
+    crSizeNESW: CursorValue := GDK_BOTTOM_LEFT_CORNER;
+    crSizeNS:   CursorValue := GDK_SB_V_DOUBLE_ARROW;
+    crSizeNWSE: CursorValue := GDK_TOP_LEFT_CORNER;
+    crSizeWE:   CursorValue := GDK_SB_H_DOUBLE_ARROW;
+    crSizeNW:   CursorValue := GDK_TOP_LEFT_CORNER;
+    crSizeN:    CursorValue := GDK_TOP_SIDE;
+    crSizeNE:   CursorValue := GDK_TOP_RIGHT_CORNER;
+    crSizeW:    CursorValue := GDK_LEFT_SIDE;
+    crSizeE:    CursorValue := GDK_RIGHT_SIDE;
+    crSizeSW:   CursorValue := GDK_BOTTOM_LEFT_CORNER;
+    crSizeS:    CursorValue := GDK_BOTTOM_SIDE;
+    crSizeSE:   CursorValue := GDK_BOTTOM_RIGHT_CORNER;
+    crUpArrow:  CursorValue := GDK_LEFT_PTR;
+    crHourGlass:CursorValue := GDK_CLOCK;
+    crHSplit:   CursorValue := GDK_SB_H_DOUBLE_ARROW;
+    crVSplit:   CursorValue := GDK_SB_V_DOUBLE_ARROW;
+    crNo:       CursorValue := GDK_LEFT_PTR;
+    crAppStart: CursorValue := GDK_LEFT_PTR;
+    crHelp:     CursorValue := GDK_QUESTION_ARROW;
+    crHandPoint:CursorValue := GDK_Hand1;
+    crSizeAll:  CursorValue := GDK_FLEUR;
+  else
+    CursorValue := -1;
+  end;
+  if CursorValue <> -1 then
+    Result := hCursor(gdk_cursor_new(CursorValue));
 end;
 
 {------------------------------------------------------------------------------

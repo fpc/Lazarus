@@ -4630,109 +4630,39 @@ var
   AWindow: PGdkWindow;
   NewCursor: PGdkCursor;
 begin
+  {$ifdef gtk2}
+  // MWE:
+  // We seriously need to rethink the way of setting cursors.
+  // for instance a button doesn't have an own xwindow.
+  // so setting the cursor results in a cursor set for the parent (=most times form)
+  // buttons have for instance a event_window, we might be able to set a cursor
+  // for that (if an input only window allows that).
+  // using an overridden Tgtk2WSButtonPrivate.SetCursor might solve it.
+  {$note Rethink gtk2 setcursor}
+  Exit;
+  {$endif}
+
   if not ((AWinControl is TWinControl) and AWinControl.HandleAllocated)
   then exit;
   
   AWidget:= PGtkWidget(AWinControl.Handle);
 
+  {$note Move designcursor to LCL}
   if csDesigning in AWinControl.ComponentState
   then begin
     AWindow:=GetControlWindow(AWidget);
-    if AWindow = nil then exit;
-    if ACursor = crDefault then
-      SetCursorRecursive(AWindow, GetGDKMouseCursor(GetPredefinedCursor(crDefault)))
-    else begin
-      NewCursor:= GetGDKMouseCursor(ACursor);
-      if NewCursor <> nil then SetCursorRecursive(AWindow, NewCursor);
-    end;  
-  end
-  else begin
-
+    ACursor := Screen.Cursors[crDefault];
+  end else
+  begin
     FixWidget:= GetFixedWidget(AWidget);
     AWindow:= GetControlWindow(FixWidget);
-    if AWindow = nil then exit;
-    
-    NewCursor:= GetGDKMouseCursor(AWinControl.Cursor);
-    if NewCursor <> nil then DoSetCursor(AWindow, NewCursor);
   end;
-end;
+  if AWindow = nil then exit;
 
-function GetPredefinedCursor(ACursor: TCursor): HCursor;
-begin
-  Result := 0;
-  if ACursor > crHigh then Exit;
-  if ACursor < crLow then Exit;
+  NewCursor := PGdkCursor(ACursor);
+  if NewCursor = nil then Exit;
   
-  Result := ACursor - PREDEFINED_CURSOR_OFFSET;
-end;
-
-function GetGDKMouseCursor(ACursor: HCursor): PGdkCursor;
-var
-  CursorValue: Integer;
-begin
-  Result := nil;
-  if ACursor < Low(SmallInt) then Exit;
-  if ACursor > High(SmallInt) then Exit;
-
-  if MMouseCursorMap.GetData(ACursor, Result) then Exit;
-  // not yet created or illegal value
-
-  if TCursor(ACursor + PREDEFINED_CURSOR_OFFSET) > crHigh then Exit;
-  if TCursor(ACursor + PREDEFINED_CURSOR_OFFSET) < crLow then Exit;
-    
-  // add it now
-  case TCursor(ACursor + PREDEFINED_CURSOR_OFFSET) of
-    crDefault:  CursorValue := GDK_LEFT_PTR;
-    crNone:     CursorValue := GDK_LEFT_PTR;
-    crArrow:    CursorValue := GDK_Arrow;
-    crCross:    CursorValue := GDK_Cross;
-    crIBeam:    CursorValue := GDK_XTerm;
-//    crSize:     CursorValue := GDK_FLEUR;
-    crSizeNESW: CursorValue := GDK_BOTTOM_LEFT_CORNER;
-    crSizeNS:   CursorValue := GDK_SB_V_DOUBLE_ARROW;
-    crSizeNWSE: CursorValue := GDK_TOP_LEFT_CORNER;
-    crSizeWE:   CursorValue := GDK_SB_H_DOUBLE_ARROW;
-    crSizeNW:   CursorValue := GDK_TOP_LEFT_CORNER;
-    crSizeN:    CursorValue := GDK_TOP_SIDE;
-    crSizeNE:   CursorValue := GDK_TOP_RIGHT_CORNER;
-    crSizeW:    CursorValue := GDK_LEFT_SIDE;
-    crSizeE:    CursorValue := GDK_RIGHT_SIDE;
-    crSizeSW:   CursorValue := GDK_BOTTOM_LEFT_CORNER;
-    crSizeS:    CursorValue := GDK_BOTTOM_SIDE;
-    crSizeSE:   CursorValue := GDK_BOTTOM_RIGHT_CORNER;
-    crUpArrow:  CursorValue := GDK_LEFT_PTR;
-    crHourGlass:CursorValue := GDK_CLOCK;
-    crDrag:     CursorValue := GDK_SAILBOAT;
-    crNoDrop:   CursorValue := GDK_IRON_CROSS;
-    crHSplit:   CursorValue := GDK_SB_H_DOUBLE_ARROW;
-    crVSplit:   CursorValue := GDK_SB_V_DOUBLE_ARROW;
-    crMultiDrag:CursorValue := GDK_SAILBOAT;
-    crSQLWait:  CursorValue := GDK_LEFT_PTR;
-    crNo:       CursorValue := GDK_LEFT_PTR;
-    crAppStart: CursorValue := GDK_LEFT_PTR;
-    crHelp:     CursorValue := GDK_QUESTION_ARROW;
-    crHandPoint:CursorValue := GDK_Hand1;
-    crSizeAll:  CursorValue := GDK_FLEUR;
-  else
-    CursorValue := GDK_LEFT_PTR;
-  end;
-  
-  Result := gdk_cursor_new(CursorValue);
-  MMouseCursorMap.Add(ACursor, Result);
-end;
-
-procedure FreeGDKCursors;
-var
-  Iterator: TMapIterator;
-begin
-  Iterator := TMapIterator.Create(MMouseCursorMap);
-  while not Iterator.EOM do
-  begin
-    gdk_Cursor_destroy(PGdkCursor(Iterator.DataPtr^));
-    Iterator.Next;
-  end;
-  Iterator.Free;
-  MMouseCursorMap.Clear;
+  SetCursorRecursive(AWindow, NewCursor);
 end;
 
 {-------------------------------------------------------------------------------

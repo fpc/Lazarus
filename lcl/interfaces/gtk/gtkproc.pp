@@ -492,9 +492,6 @@ procedure UpdateMouseCaptureControl;
 
 // mouse cursor
 procedure SetCursor(AWinControl: TWinControl; ACursor: HCursor);
-function GetPredefinedCursor(ACursor: TCursor): HCursor;
-function GetGDKMouseCursor(ACursor: hCursor): PGdkCursor;
-procedure FreeGDKCursors;
 
 const
   // for now return the same value, in the future we may want to return an

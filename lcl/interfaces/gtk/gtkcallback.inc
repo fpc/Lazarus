@@ -242,9 +242,10 @@ begin
         {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
       end;
 
-      if TheWinControl<>nil then begin
+      if TheWinControl<>nil then 
+      begin
         TheWinControl.CNPreferredSizeChanged;
-        SetCursor(TheWinControl, crDefault);
+        SetCursor(TheWinControl, Screen.Cursors[TheWinControl.Cursor]);
         ConnectInternalWidgetsSignals(MainWidget,TheWinControl);
 
         if TheWinControl is TCustomPage then
