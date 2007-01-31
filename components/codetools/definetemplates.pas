@@ -2896,7 +2896,7 @@ begin
   SetLength(Buf,1024);
   Step:='Init';
   try
-    CmdLine:=CompilerPath+' -va ';
+    CmdLine:=CompilerPath+' -va -vs- ';
     if FileExistsCached(EnglishErrorMsgFilename) then
       CmdLine:=CmdLine+'-Fr'+EnglishErrorMsgFilename+' ';
     if CompilerOptions<>'' then
