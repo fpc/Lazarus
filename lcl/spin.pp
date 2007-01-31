@@ -65,6 +65,7 @@ type
     Procedure UpdateControl;
     function ValueIsStored: boolean;
   protected
+    function  RealGetText: TCaption; override;
     procedure TextChanged; override;
     procedure SetDecimals(Num: Integer);
     function GetValue: Single;

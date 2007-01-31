@@ -38,6 +38,14 @@ begin
   Result:=true; // fpc bug, default value is always 0
 end;
 
+function TCustomFloatSpinEdit.RealGetText: TCaption;
+begin
+  if HandleAllocated then
+    Result:=inherited RealGetText
+  else
+    Result:=FloatToStrF(FValue, ffFixed, 20, DecimalPlaces);
+end;
+
 procedure TCustomFloatSpinEdit.TextChanged;
 var
   lPrevValue: single;

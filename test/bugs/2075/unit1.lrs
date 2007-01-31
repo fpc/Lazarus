@@ -1,0 +1,24 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TForm1','FORMDATA',[
+  'TPF0'#6'TForm1'#5'Form1'#4'Left'#3'g'#2#6'Height'#2''#3'Top'#3'F'#1#5'Width'
+  +#3#218#0#18'HorzScrollBar.Page'#3#217#0#18'VertScrollBar.Page'#2'~'#13'Activ'
+  +'eControl'#7#14'FloatSpinEdit1'#7'Caption'#6#5'Form1'#8'OnCreate'#7#10'FormC'
+  +'reate'#0#6'TLabel'#6'Label1'#4'Left'#2#16#6'Height'#2#14#3'Top'#2#17#5'Widt'
+  +'h'#2' '#7'Caption'#6#6'Label1'#5'Color'#7#6'clNone'#11'ParentColor'#8#0#0#6
+  +'TLabel'#6'Label2'#4'Left'#2#16#6'Height'#2#14#3'Top'#2'0'#5'Width'#2' '#7'C'
+  +'aption'#6#6'Label2'#5'Color'#7#6'clNone'#11'ParentColor'#8#0#0#14'TFloatSpi'
+  +'nEdit'#14'FloatSpinEdit1'#4'Left'#2'H'#6'Height'#2#23#3'Top'#2#8#5'Width'#3
+  +#130#0#9'Increment'#5#0#0#0#0#0#0#0#128#255'?'#8'MaxValue'#5#0#0#0#0#0#0#0
+  +#200#5'@'#8'TabOrder'#2#0#5'Value'#5#0#0#0#0#0#20#174#169#4'@'#0#0#7'TButton'
+  +#11'CloseButton'#4'Left'#2'H'#6'Height'#2#25#3'Top'#2'X'#5'Width'#2'K'#25'Bo'
+  +'rderSpacing.InnerBorder'#2#4#7'Caption'#6#5'Close'#7'OnClick'#7#16'CloseBut'
+  +'tonClick'#8'TabOrder'#2#1#0#0#14'TFloatSpinEdit'#14'FloatSpinEdit2'#4'Left'
+  +#2'H'#6'Height'#2#23#3'Top'#2'('#5'Width'#3#130#0#13'DecimalPlaces'#2#3#9'In'
+  +'crement'#5#0#0#0#0#0#0#0#128#255'?'#8'MaxValue'#5#0#0#0#0#0#0#0#200#6'@'#8
+  +'TabOrder'#2#2#5'Value'#5#0#0#0#0#0#156#196#144#255'?'#0#0#22'TApplicationPr'
+  +'operties'#22'ApplicationProperties1'#17'CaptureExceptions'#9#9'HintColor'#7
+  +#8'clInfoBk'#13'HintHidePause'#3#196#9#9'HintPause'#3#244#1#13'HintShortCuts'
+  +#9#8'ShowHint'#9#6'OnIdle'#7#26'ApplicationProperties1Idle'#4'left'#2#8#3'to'
+  +'p'#2'X'#0#0#0
+]);
