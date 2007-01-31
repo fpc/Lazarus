@@ -55,8 +55,8 @@ type
   public
     procedure Execute; override;
     destructor Destroy; override;
-  published
     property NumBytesAvailable: dword read GetNumBytesAvailable;
+  published
     property OnReadData: TNotifyEvent read FOnReadData write FOnReadData;// You must read all the data in this event. Otherwise it is called again.
     property OnTerminate: TNotifyEvent read FOnTerminate write FOnTerminate;
   end;
@@ -84,11 +84,6 @@ end;
 {$else below for not Windows}
 
 uses BaseUnix, TermIO;
-
-{$ifdef BSD}
-const
-  FIONREAD = $4004667;
-{$endif}
 
 function TAsyncProcess.GetNumBytesAvailable: dword;
 begin
