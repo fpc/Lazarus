@@ -70,6 +70,7 @@ type
     procedure SlotKey(Event: QEventH); cdecl;
     procedure SlotMouse(Event: QEventH); cdecl;
     procedure SlotMouseMove(Event: QEventH); cdecl;
+    procedure SlotMouseWheel(Event: QEventH); cdecl;
     procedure SlotPaint(Event: QEventH); cdecl;
     procedure SlotResize; cdecl;
     procedure SlotContextMenu; cdecl;
@@ -648,6 +649,7 @@ begin
    QEventMouseButtonRelease: SlotMouse(Event);
    QEventMouseButtonDblClick: SlotMouse(Event);
    QEventMouseMove: SlotMouseMove(Event);
+   QEventWheel: SlotMouseWheel(Event);
    QEventResize: SlotResize;
    QEventPaint: SlotPaint(Event);
    QEventContextMenu: SlotContextMenu;
@@ -688,11 +690,7 @@ begin
   Msg.Msg := LM_SHOWWINDOW;
   Msg.Show := vShow;
 
-  try
-    LCLObject.WindowProc(TLMessage(Msg));
-  except
-    Application.HandleException(nil);
-  end;
+  DeliverMessage(Msg);
 end;
 
 {------------------------------------------------------------------------------
@@ -715,11 +713,7 @@ begin
 
   Msg.Msg := LM_CLOSEQUERY;
 
-  try
-    LCLObject.WindowProc(TLMessage(Msg));
-  except
-   Application.HandleException(nil);
-  end;
+  DeliverMessage(Msg);
 end;
 
 {------------------------------------------------------------------------------
@@ -741,11 +735,7 @@ begin
 
   Msg.Msg := LM_DESTROY;
 
-  try
-    LCLObject.WindowProc(TLMessage(Msg));
-  except
-    Application.HandleException(nil);
-  end;
+  DeliverMessage(Msg);
 end;
 
 {------------------------------------------------------------------------------
@@ -766,11 +756,8 @@ begin
   if FocusIn then Msg.Msg := LM_SETFOCUS
   else Msg.Msg := LM_KILLFOCUS;
 
-  try
-    LCLObject.WindowProc(TLMessage(Msg));
-  except
-    Application.HandleException(nil);
-  end;
+  DeliverMessage(Msg);
+
   {$ifdef VerboseFocus}
     WriteLn('TQtWidget.SlotFocus END');
   {$endif}
@@ -961,11 +948,37 @@ begin
 
   Msg.Msg := LM_MOUSEMOVE;
 
-  try
-    LCLObject.WindowProc(TLMessage(Msg));
-  except
-    Application.HandleException(nil);
-  end;
+  DeliverMessage(Msg);
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtWidget.SlotMouseWheel
+  Params:  None
+  Returns: Nothing
+
+  Qt stores the delta in 1/8 of a degree
+  Most mouses scroll 15 degrees each time
+ 
+  Msg.WheelData: -1 for up, 1 for down
+ ------------------------------------------------------------------------------}
+procedure TQtWidget.SlotMouseWheel(Event: QEventH); cdecl;
+var
+  Msg: TLMMouseEvent;
+  MousePos: TPoint;
+begin
+  FillChar(Msg, SizeOf(Msg), #0);
+
+  MousePos := QWheelEvent_pos(QWheelEventH(Event))^;
+
+  Msg.Msg := LM_MOUSEWHEEL;
+
+  Msg.X := SmallInt(MousePos.X);
+  Msg.Y := SmallInt(MousePos.Y);
+
+  Msg.WheelDelta := QWheelEvent_delta(QWheelEventH(Event)) div 120;
+  
+  NotifyApplicationUserInput(Msg.Msg);
+  DeliverMessage(Msg);
 end;
 
 {------------------------------------------------------------------------------
@@ -1045,11 +1058,7 @@ begin
   Msg.Width := QWidget_width(Widget);
   Msg.Height := QWidget_height(Widget);
 
-  try
-    LCLObject.WindowProc(TLMessage(Msg));
-  except
-    Application.HandleException(nil);
-  end;
+  DeliverMessage(Msg);
 end;
 
 procedure TQtWidget.SlotContextMenu; cdecl;
