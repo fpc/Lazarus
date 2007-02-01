@@ -32,7 +32,7 @@
         <PackageName Value="FCL"/>
       </Item3>
     </RequiredPackages>
-    <Units Count="2">
+    <Units Count="3">
       <Unit0>
         <Filename Value="runtestsgui.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -43,6 +43,11 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestLpi"/>
       </Unit1>
+      <Unit2>
+        <Filename Value="testglobals.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="testglobals"/>
+      </Unit2>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

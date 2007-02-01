@@ -32,7 +32,7 @@
         <PackageName Value="FCL"/>
       </Item3>
     </RequiredPackages>
-    <Units Count="3">
+    <Units Count="4">
       <Unit0>
         <Filename Value="runtests.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -48,6 +48,11 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="FPCUnitProject1"/>
       </Unit2>
+      <Unit3>
+        <Filename Value="bugtestcase.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="BugTestCase"/>
+      </Unit3>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

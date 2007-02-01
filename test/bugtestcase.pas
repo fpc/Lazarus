@@ -1,3 +1,21 @@
+{ $Id$}
+{ Copyright (C) 2007 Vincent Snijders
+
+  This source is free software; you can redistribute it and/or modify it under
+  the terms of the GNU General Public License as published by the Free
+  Software Foundation; either version 2 of the License, or (at your option)
+  any later version.
+
+  This code is distributed in the hope that it will be useful, but WITHOUT ANY
+  WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+  FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+  details.
+
+  A copy of the GNU General Public License is available on the World Wide Web
+  at <http://www.gnu.org/copyleft/gpl.html>. You can also obtain it by writing
+  to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
+  MA 02111-1307, USA.
+}
 unit BugTestCase;
 
 {$mode objfpc}{$H+}
@@ -5,7 +23,8 @@ unit BugTestCase;
 interface
 
 uses
-  Classes, SysUtils, Math, process, fileutil, fpcunit, testutils, testregistry;
+  Classes, SysUtils, Math, process, fileutil, fpcunit, testutils, testregistry,
+  TestGlobals;
 
 type
 
@@ -15,9 +34,6 @@ type
   private
     FPath: string;
     FProjectFile: string;
-  protected
-    procedure SetUp; override; 
-    procedure TearDown; override;
   public
     constructor Create(APath, ATestName: string); reintroduce;
     class function CreateSuite(Path: string) : TTestSuite;
@@ -28,9 +44,6 @@ type
     procedure HeaptrcLog;
   end; 
   
-var
-  Compiler: string;
-
 implementation
 
 const
@@ -103,7 +116,7 @@ var
 begin
   AssertTrue('Project file '+ FProjectFile + ' does not exist',
     FileExists(FProjectFile));
-  LazarusDir := ExpandFileName(ExtractFilePath(ParamStr(0)) + '../../');
+  LazarusDir := ExpandFileName(ExtractFilePath(ParamStr(0)) + '../');
   LazBuildPath := LazarusDir + 'lazbuild' + GetExeExt;
   AssertTrue(LazBuildPath + ' does not exist', FileExists(LazBuildPath));
   LazBuild := TProcess.Create(nil);
@@ -186,14 +199,6 @@ begin
 
 end;
 
-procedure TBugTestCase.SetUp; 
-begin
-end; 
-
-procedure TBugTestCase.TearDown; 
-begin
-end;
-
 constructor TBugTestCase.Create(APath, ATestName: string);
 begin
   CreateWithName(ATestName);
@@ -217,15 +222,18 @@ procedure GatherTests;
 var
   ProgPath: string;
   SearchRec: TSearchRec;
+  BugsTestSuite: TTestSuite;
 begin
-  ProgPath := ExtractFilePath(ParamStr(0));
+  BugsTestSuite := TTestSuite.Create('Bugs');
+  GetTestRegistry.AddTest(BugsTestSuite);
+  ProgPath := ExtractFilePath(ParamStr(0)) + 'bugs' + pathdelim;
   if FindFirst(ProgPath+'*', faAnyFile, SearchRec)=0 then
     repeat
       if (SearchRec.Attr and (faDirectory + faHidden)=faDirectory) and
          (SearchRec.Name<>'.') and (SearchRec.Name<>'..') and
          (SearchRec.Name<>'.svn')
       then
-        GetTestRegistry.AddTest(
+        BugsTestSuite.AddTest(
           TBugTestCase.CreateSuite(ProgPath+SearchRec.Name));
     until FindNext(SearchRec)<>0;
   FindClose(SearchRec);
