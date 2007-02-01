@@ -2191,6 +2191,10 @@ begin
   // don't fire the event if key is to be ignored
   if not (sfIgnoreNextChar in fStateFlags) then begin
     if Assigned(OnUTF8KeyPress) then OnUTF8KeyPress(Self, Key);
+    // The key will be handled in UTFKeyPress always and KeyPress won't be called
+    // so we we fire the OnKeyPress here
+    if (ord(key[1])< %1100000) and (key[1]<>#0) and Assigned(OnKeyPress) then
+      OnKeyPress(Self, Key[1]);
     {$IFDEF VerboseKeyboard}
     DebugLn('TCustomSynEdit.UTF8KeyPress ',DbgSName(Self),' Key="',DbgStr(Key),'" UseUTF8=',dbgs(UseUTF8));
     {$ENDIF}
