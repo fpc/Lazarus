@@ -415,22 +415,29 @@ var i, j, FilenameEndPos: integer;
   MessageStartPos: Integer;
   LineNumberEndPos: LongInt;
   AbsFilename: String;
+
+  function CompStr(const SubStr, s: string; Position: integer): boolean;
+  begin
+    Result:=(SubStr<>'') and (length(s)>=(Position+length(SubStr)-1))
+          and (strlcomp(PChar(Pointer(@s[Position])),
+                        PChar(Pointer(SubStr)),length(SubStr))=0);
+  end;
   
-  function CheckForCompilingState: boolean;
+  function CheckForCompilingState(p: integer): boolean;
   var
     AFilename: string;
   begin
     Result:=false;
-    if ('Compiling '=copy(s,1,length('Compiling '))) then begin
+    if CompStr('Compiling ',s,p) then begin
       // for example 'Compiling ./subdir/unit1.pas'
       fLastMessageType:=omtFPC;
       fLastErrorType:=etNone;
       // add path to history
       if fCompilingHistory=nil then fCompilingHistory:=TStringList.Create;
-      i:=length('Compiling ');
-      if (length(s)>=i+2) and (s[i+1]='.') and (s[i+2]=PathDelim) then
+      inc(p,length('Compiling '));
+      if (length(s)>=i+1) and (s[i]='.') and (s[i+1]=PathDelim) then
         inc(i,2);
-      AFilename:=TrimFilename(copy(s,i+1,length(s)-i));
+      AFilename:=TrimFilename(copy(s,i,length(s)));
       fCompilingHistory.Add(AFilename);
       CurrentMessageParts.Values['Stage']:='FPC';
       CurrentMessageParts.Values['Type']:='Compiling';
@@ -439,11 +446,10 @@ var i, j, FilenameEndPos: integer;
     end;
   end;
   
-  function CheckForAssemblingState: boolean;
+  function CheckForAssemblingState(p: integer): boolean;
   begin
     Result:=false;
-    if ('Assembling '=copy(s,1,length('Assembling ')))
-    then begin
+    if CompStr('Assembling ',s,p) then begin
       fLastMessageType:=omtFPC;
       fLastErrorType:=etNone;
       CurrentMessageParts.Values['Stage']:='FPC';
@@ -452,27 +458,27 @@ var i, j, FilenameEndPos: integer;
     end;
   end;
   
-  function CheckForUrgentMessages: boolean;
+  function CheckForUrgentMessages(p: integer): boolean;
   var
     NewLine: String;
     LastFile: string;
     FullFilename: String;
   begin
     Result:=false;
-    if ('Fatal: '=copy(s,1,length('Fatal: ')))
-    or ('Panic'=copy(s,1,length('Panic')))
-    or ('Error: '=copy(s,1,length('Error: ')))
-    or ('Closing script ppas.sh'=s)
+    if CompStr('Fatal: ',s,p)
+    or CompStr('Panic',s,p)
+    or CompStr('Error: ',s,p)
+    or CompStr('Closing script ppas.sh',s,p)
     then begin
       // always show fatal, panic and linker errors
       fLastMessageType:=omtFPC;
-      if ('Panic'=copy(s,1,length('Panic'))) then
+      if CompStr('Panic',s,p) then
         fLastErrorType:=etPanic
-      else if ('Fatal: '=copy(s,1,length('Fatal: '))) then
+      else if CompStr('Fatal: ',s,p) then
         fLastErrorType:=etFatal
-      else if ('Error: '=copy(s,1,length('Error: '))) then
+      else if CompStr('Error: ',s,p) then
         fLastErrorType:=etError
-      else if ('Closing script ppas.sh'=s) then begin
+      else if CompStr('Closing script ppas.sh',s,p) then begin
         // linker error
         fLastMessageType:=omtLinker;
         fLastErrorType:=etFatal;
@@ -483,7 +489,7 @@ var i, j, FilenameEndPos: integer;
         CurrentMessageParts.Values['Stage']:='FPC';
       CurrentMessageParts.Values['Type']:=ErrorTypeNames[fLastErrorType];
 
-      NewLine:=s;
+      NewLine:=copy(s,p,length(s));
       if fLastErrorType in [etPanic,etFatal] then begin
         // fatal and panic errors are not very informative
         // -> prepend current file
@@ -512,11 +518,11 @@ var i, j, FilenameEndPos: integer;
     end;
   end;
   
-  function CheckForNoteMessages: boolean;
+  function CheckForNoteMessages(p: integer): boolean;
   begin
     Result:=false;
-    if ('Note: '=copy(s,1,length('Note: '))) then begin
-      DoAddFilteredLine(s);
+    if CompStr('Note: ',s,p) then begin
+      DoAddFilteredLine(copy(s,p,length(s)));
       fLastErrorType:=etNote;
       CurrentMessageParts.Values['Stage']:='FPC';
       CurrentMessageParts.Values['Type']:=ErrorTypeNames[fLastErrorType];
@@ -543,17 +549,13 @@ var i, j, FilenameEndPos: integer;
   function CheckForString(const Str: string; var p: integer;
     const Find: string): boolean;
   begin
-    Result:=(p+length(Find)-1<=length(Str))
-            and (CompareText(Find,copy(s,p,length(Find)))=0);
+    Result:=CompStr(Find,Str,p);
     if Result then inc(p,length(Find));
   end;
 
-  function CheckForLineProgress: boolean;
-  var
-    p: Integer;
+  function CheckForLineProgress(p: integer): boolean;
   begin
     Result:=false;
-    p:=1;
     if not CheckForNumber(s,p) then exit;
     if not CheckForChar(s,p,' ') then exit;
     if not CheckForNumber(s,p) then exit;
@@ -564,12 +566,12 @@ var i, j, FilenameEndPos: integer;
     // I don't think it should be shown in filtered lines: DoAddFilteredLine(s);
   end;
   
-  function CheckForLinesCompiled: boolean;
+  function CheckForLinesCompiled(p: integer): boolean;
   var
-    p: Integer;
+    OldStart: LongInt;
   begin
     Result:=false;
-    p:=1;
+    OldStart:=p;
     if not CheckForNumber(s,p) then exit;
     if not CheckForString(s,p,' Lines compiled, ') then exit;
     if not CheckForNumber(s,p) then exit;
@@ -579,7 +581,7 @@ var i, j, FilenameEndPos: integer;
     Result:=true;
     if (CompilerOptions<>nil)
     and (CompilerOptions.ShowAll or CompilerOptions.ShowSummary) then
-      DoAddFilteredLine(s);
+      DoAddFilteredLine(copy(s,OldStart,length(s)));
   end;
 
   { For example:
@@ -589,12 +591,12 @@ var i, j, FilenameEndPos: integer;
   Stack space reserved: 262144 bytes
   Stack space commited: 4096 bytes
   }
-  function CheckForExecutableInfo: boolean;
+  function CheckForExecutableInfo(p: integer): boolean;
   var
-    p: Integer;
+    OldStart: LongInt;
   begin
     Result:=false;
-    p:=1;
+    OldStart:=p;
     if not (CheckForString(s,p,'Size of Code: ') or
             CheckForString(s,p,'Size of initialized data: ') or
             CheckForString(s,p,'Size of uninitialized data: ') or
@@ -606,44 +608,60 @@ var i, j, FilenameEndPos: integer;
     Result:=true;
     if (CompilerOptions<>nil)
     and (CompilerOptions.ShowAll or CompilerOptions.ShowExecInfo) then
-      DoAddFilteredLine(s);
+      DoAddFilteredLine(copy(s,OldStart,length(s)));
   end;
   
   { For example:
     linkerror.o(.text$_main+0x9):linkerror.pas: undefined reference to `NonExistingFunction'
   }
-  function CheckForLinkingErrors: boolean;
+  function CheckForLinkingErrors(p: integer): boolean;
+  var
+    OldStart: LongInt;
   begin
-  
     Result:=false;
+    OldStart:=p;
+    while (p<=length(s)) and (s[p] in ['0'..'9','a'..'z','A'..'Z','_']) do
+      inc(p);
+    if not CompStr('.o(',s,p) then exit;
+    Result:=true;
+    DoAddFilteredLine(copy(s,OldStart,length(s)));
   end;
 
 begin
   Result:=false;
   if s='' then exit;
+  i:=1;
+  // skip time [0.000]
+  if (s<>'') and (s[1]='[') then begin
+    inc(i);
+    while (i<=length(s)) and (s[i] in ['0'..'9','.']) do inc(i);
+    if (i<=length(s)) and (s[i]=']') then inc(i);
+    while (i<=length(s)) and (s[i] in [' ']) do inc(i);
+  end;
+  
   // check for 'Compiling <filename>'
-  Result:=CheckForCompilingState;
+  Result:=CheckForCompilingState(i);
   if Result then exit;
   // check for 'Assembling <filename>'
-  Result:=CheckForAssemblingState;
+  Result:=CheckForAssemblingState(i);
   if Result then exit;
   // check for 'Fatal: ', 'Panic: ', 'Error: ', 'Closing script ppas.sh'
-  Result:=CheckForUrgentMessages;
+  Result:=CheckForUrgentMessages(i);
   if Result then exit;
   // check for 'Note: '
-  Result:=CheckForNoteMessages;
+  Result:=CheckForNoteMessages(i);
   if Result then exit;
   // check for '<line> <kb>/<kb>'...
-  Result:=CheckForLineProgress;
+  Result:=CheckForLineProgress(i);
   if Result then exit;
   // check for '<int> Lines compiled, <int>.<int> sec'
-  Result:=CheckForLinesCompiled;
+  Result:=CheckForLinesCompiled(i);
   if Result then exit;
   // check for -vx output
-  Result:=CheckForExecutableInfo;
+  Result:=CheckForExecutableInfo(i);
   if Result then exit;
   // check for linking errors
-  Result:=CheckForLinkingErrors;
+  Result:=CheckForLinkingErrors(i);
   if Result then exit;
 
   // search for round bracket open

@@ -34,7 +34,7 @@
       <Unit1>
         <Filename Value="scanexamples/simpleunit1.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="SimpleUnit1"/>
+        <UnitName Value="S"/>
       </Unit1>
     </Units>
   </ProjectOptions>

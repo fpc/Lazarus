@@ -2774,8 +2774,7 @@ function TDefinePool.CreateFPCTemplate(
 // To get reliable values the compiler itself is asked for
 var
   LastDefTempl: TDefineTemplate;
-  ShortUpTestFile: string;
-  
+
   procedure AddTemplate(NewDefTempl: TDefineTemplate);
   begin
     if NewDefTempl=nil then exit;
@@ -2825,90 +2824,60 @@ var
   procedure ProcessOutputLine(var Line: string);
   var
     SymbolName, SymbolValue, UpLine, NewPath: string;
-    i, len, curpos, remain: integer;
+    i, len, curpos: integer;
   begin
     len := length(Line);
     if len <= 6 then Exit; // shortest match
     
     CurPos := 1;
-
-    remain:=len;
-    
-    // strip timestamp
+    // strip timestamp e.g. [0.306]
     if Line[CurPos] = '[' then begin
       repeat
         inc(CurPos);
         if CurPos > len then Exit;
       until line[CurPos] = ']';
       Inc(CurPos, 2); //skip space also
-      remain := len - CurPos + 1;
-      if remain <= 6 then Exit; // shortest match
+      if len - CurPos < 6 then Exit; // shortest match
     end;
 
     UpLine:=UpperCaseStr(Line);
     
-    // check for filename
-    i := length(ShortUpTestFile);
-    if  (remain > i) and (StrLComp(@ShortUpTestFile[1], @UpLine[CurPos], i) = 0) then begin
-      Inc(Curpos, i);
-      if Line[CurPos] <> '(' then Exit; // no linenumbers ??
-      
-      // strip linenumbers
-      repeat
-        inc(CurPos);
-        if CurPos > len then Exit;
-      until Line[CurPos] = ')';
-      repeat
-        inc(CurPos);
-        if CurPos > len then Exit;
-      until Line[CurPos] <> ' ';
-      Dec(CurPos);
-      remain := len - CurPos + 1;
-      if remain <= 6 then Exit; // shortest match
-    end;
-
     case UpLine[CurPos] of
-      'M': begin
-        if StrLComp(@UpLine[CurPos], 'MACRO ', 6) <> 0 then Exit; // no macro
-        Inc(CurPos, 6);
-        Dec(remain, 6);
-        
-        if (remain > 9) and (StrLComp(@UpLine[CurPos], 'DEFINED: ', 9) = 0) then begin
-          Inc(CurPos, 9);
-          Dec(remain, 9);
-          SymbolName:=copy(UpLine, CurPos, remain);
-          DefineSymbol(SymbolName,'');
-          Exit;
-        end;
-      
-        if (remain > 11) and (StrLComp(@UpLine[CurPos], 'UNDEFINED: ', 11) = 0) then begin
-          Inc(CurPos, 11);
-          Dec(remain, 11);
-          SymbolName:=copy(UpLine,CurPos,remain);
-          UndefineSymbol(SymbolName);
-          Exit;
-        end;
-        
-        // MACRO something...
-        i := CurPos;
-        while (i <= len) and (Line[i]<>' ') do inc(i);
-        SymbolName:=copy(UpLine,CurPos,i-CurPos);
-        CurPos := i + 1; // skip space
-        remain := len - CurPos + 1;
-        if remain < 7 then Exit;
+      'M':
+        if StrLComp(@UpLine[CurPos], 'MACRO ', 6) = 0 then begin
+          // no macro
+          Inc(CurPos, 6);
 
-        if StrLComp(@UpLine[CurPos], 'SET TO ', 7) = 0 then begin
-          Inc(CurPos, 7);
-          Dec(remain, 7);
-          SymbolValue:=copy(Line, CurPos, remain);
-          DefineSymbol(SymbolName, SymbolValue);
+          if (StrLComp(@UpLine[CurPos], 'DEFINED: ', 9) = 0) then begin
+            Inc(CurPos, 9);
+            SymbolName:=copy(UpLine, CurPos, len);
+            DefineSymbol(SymbolName,'');
+            Exit;
+          end;
+
+          if (StrLComp(@UpLine[CurPos], 'UNDEFINED: ', 11) = 0) then begin
+            Inc(CurPos, 11);
+            SymbolName:=copy(UpLine,CurPos,len);
+            UndefineSymbol(SymbolName);
+            Exit;
+          end;
+
+          // MACRO something...
+          i := CurPos;
+          while (i <= len) and (Line[i]<>' ') do inc(i);
+          SymbolName:=copy(UpLine,CurPos,i-CurPos);
+          CurPos := i + 1; // skip space
+
+          if StrLComp(@UpLine[CurPos], 'SET TO ', 7) = 0 then begin
+            Inc(CurPos, 7);
+            SymbolValue:=copy(Line, CurPos, len);
+            DefineSymbol(SymbolName, SymbolValue);
+          end;
         end;
-      end;
-      'U': begin
-        if (remain > 17) and (StrLComp(@UpLine[CurPos], 'USING UNIT PATH: ', 17) = 0) then begin
+      'U':
+        if (StrLComp(@UpLine[CurPos], 'USING UNIT PATH: ', 17) = 0) then begin
           Inc(CurPos, 17);
-          Dec(remain, 17);
-          NewPath:=copy(Line,CurPos,Remain);
+          NewPath:=copy(Line,CurPos,len);
           if not FilenameIsAbsolute(NewPath) then
             NewPath:=ExpandFileName(NewPath);
           {$IFDEF VerboseFPCSrcScan}
@@ -2916,7 +2885,6 @@ var
           {$ENDIF}
           UnitSearchPath:=UnitSearchPath+NewPath+';';
         end;
-      end;
     end;
   end;
   
@@ -2945,14 +2913,13 @@ begin
   SetLength(Buf,1024);
   Step:='Init';
   try
-    CmdLine:=CompilerPath+' -va -vs- ';
+    CmdLine:=CompilerPath+' -va ';
     if FileExistsCached(EnglishErrorMsgFilename) then
       CmdLine:=CmdLine+'-Fr'+EnglishErrorMsgFilename+' ';
     if CompilerOptions<>'' then
       CmdLine:=CmdLine+CompilerOptions+' ';
     CmdLine:=CmdLine+TestPascalFile;
     //DebugLn('TDefinePool.CreateFPCTemplate CmdLine="',CmdLine,'"');
-    ShortUpTestFile := UpperCaseStr(ExtractFileName(TestPascalFile));
 
     TheProcess := TProcess.Create(nil);
     TheProcess.CommandLine := CmdLine;
