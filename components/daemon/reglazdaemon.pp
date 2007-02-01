@@ -1,16 +1,26 @@
-unit reglazdaemon;
+{
+ *****************************************************************************
+ *                                                                           *
+ *  See the file COPYING.modifiedLGPL, included in this distribution,        *
+ *  for details about the copyright.                                         *
+ *                                                                           *
+ *  This program is distributed in the hope that it will be useful,          *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of           *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                     *
+ *                                                                           *
+ *****************************************************************************
+}
+unit RegLazDaemon;
 
 {$mode objfpc}{$H+}
 
 interface
 
 uses
-  Classes, SysUtils, FormEditingIntf, projectintf,newitemintf, lazideintf,
-  controls, forms;
+  Classes, SysUtils, FormEditingIntf, ProjectIntf, NewItemIntf, LazIDEIntf,
+  Controls, Forms;
 
-Type
-
-  { TDaemonFileDescriptor }
+type
 
   { TDaemonMapperDescriptor }
 
@@ -23,6 +33,9 @@ Type
     function GetImplementationSource(const Filename, SourceName, ResourceName: string): string; override;
   end;
   
+
+  { TDaemonFileDescriptor }
+
   TDaemonFileDescriptor = Class(TFileDescPascalUnitWithResource)
   Public
     Constructor Create; override;
@@ -32,6 +45,7 @@ Type
     function GetImplementationSource(const Filename, SourceName, ResourceName: string): string; override;
   end;
   
+
   { TDaemonProjectDescriptor }
 
   TDaemonProjectDescriptor = class(TProjectDescriptor)

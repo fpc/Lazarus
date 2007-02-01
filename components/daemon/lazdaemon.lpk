@@ -17,8 +17,10 @@
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
-    <Description Value="Lazarus Service (Daemon) Support"/>
-    <License Value="Modified LGPL as in FCL or RTL"/>
+    <Description Value="Lazarus Service (Daemon) Support
+"/>
+    <License Value="Modified LGPL as in FCL or RTL
+"/>
     <Version Minor="9" Release="9"/>
     <Files Count="2">
       <Item1>
