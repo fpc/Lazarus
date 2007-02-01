@@ -24,14 +24,16 @@ object H2PasDialog: TH2PasDialog
     TabOrder = 4
     object FilesTabSheet: TTabSheet
       Caption = 'FilesTabSheet'
-      object CHeaderFilesCheckListBox: TCheckListBox
+      object CHeaderFilesCheckTreeView: TTreeView
         Height = 427
         Width = 255
         Align = alLeft
-        OnClick = CHeaderFilesCheckListBoxClick
-        OnItemClick = CHeaderFilesCheckListBoxItemClick
+        DefaultItemHeight = 18
+        StateImages = FileStateImageList
         TabOrder = 0
-        TopIndex = -1
+        OnMouseDown = CHeaderFilesCheckTreeViewMouseDown
+        OnSelectionChanged = CHeaderFilesCheckTreeViewSelectionChanged
+        Options = [tvoAllowMultiselect, tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
       end
       object AddCHeaderFilesButton: TButton
         AnchorSideLeft.Control = CHeaderFilesSplitter1
@@ -59,7 +61,7 @@ object H2PasDialog: TH2PasDialog
         OnClick = DeleteCHeaderFilesButtonClick
         TabOrder = 2
       end
-      object SelectAllCHeaderFilesButton: TButton
+      object EnableAllCHeaderFilesButton: TButton
         AnchorSideLeft.Control = CHeaderFilesSplitter1
         AnchorSideLeft.Side = asrBottom
         Left = 266
@@ -68,11 +70,11 @@ object H2PasDialog: TH2PasDialog
         Width = 185
         BorderSpacing.Left = 6
         BorderSpacing.InnerBorder = 4
-        Caption = 'SelectAllCHeaderFilesButton'
-        OnClick = SelectAllCHeaderFilesButtonClick
+        Caption = 'EnableAllCHeaderFilesButton'
+        OnClick = EnableAllCHeaderFilesButtonClick
         TabOrder = 3
       end
-      object UnselectAllCHeaderFilesButton: TButton
+      object DisableAllCHeaderFilesButton: TButton
         AnchorSideLeft.Control = CHeaderFilesSplitter1
         AnchorSideLeft.Side = asrBottom
         Left = 266
@@ -81,8 +83,8 @@ object H2PasDialog: TH2PasDialog
         Width = 185
         BorderSpacing.Left = 6
         BorderSpacing.InnerBorder = 4
-        Caption = 'UnselectAllCHeaderFilesButton'
-        OnClick = UnselectAllCHeaderFilesButtonClick
+        Caption = 'DisableAllCHeaderFilesButton'
+        OnClick = DisableAllCHeaderFilesButtonClick
         TabOrder = 4
       end
       object CHeaderFilesSplitter1: TSplitter
@@ -117,7 +119,7 @@ object H2PasDialog: TH2PasDialog
       end
       object MoveFileUpButton: TButton
         AnchorSideLeft.Control = AddCHeaderFilesButton
-        AnchorSideTop.Control = UnselectAllCHeaderFilesButton
+        AnchorSideTop.Control = DisableAllCHeaderFilesButton
         AnchorSideTop.Side = asrBottom
         AnchorSideRight.Control = AddCHeaderFilesButton
         AnchorSideRight.Side = asrBottom
@@ -439,5 +441,39 @@ object H2PasDialog: TH2PasDialog
     Caption = 'ConvertAndBuildButton'
     OnClick = ConvertAndBuildButtonClick
     TabOrder = 5
+  end
+  object FileStateImageList: TImageList
+    left = 136
+    top = 94
+    Bitmap = {
+      6C69020000001000000010000000BF0100002F2A2058504D202A2F0A73746174
+      69632063686172202A20706B675F72656D6F76656466696C65735F78706D5B5D
+      203D207B0A2231342031332031302031222C0A22200963204E6F6E65222C0A22
+      2E09632023303030303434222C0A222B09632023303030303535222C0A224009
+      632023464631343134222C0A222309632023303030303834222C0A2224096320
+      23303030303333222C0A222509632023464646464646222C0A22260963202344
+      3544354546222C0A222A09632023434243424342222C0A223D09632023303030
+      303030222C0A2220202E2E2B2B2E2E2E2E20202020222C0A2220202E40402323
+      23232E20404020222C0A222020242540402525262E40402020222C0A22202024
+      2A2540402E2E40402E2E20222C0A2220203D25252E404040402E2E2E20222C0A
+      222E2E2E2B2B242540402525263D25222C0A222E2E2E2E2E244040404026263D
+      25222C0A222E252A2525404025254040263D25222C0A222E2A25254040252626
+      2640403D25222C0A222E252540403D3D3D3D3D3D404025222C0A222E25404026
+      26263D252525254025222C0A222E40403D3D3D3D3D252020202020222C0A2220
+      25252525252525252020202020227D3B0AA80100002F2A2058504D202A2F0A73
+      74617469632063686172202A20706B675F66696C65735F78706D5B5D203D207B
+      0A22313420313320392031222C0A22200963204E6F6E65222C0A222E09632023
+      303030303434222C0A222B09632023303030303535222C0A2240096320233030
+      30303834222C0A222309632023303030303333222C0A22240963202346464646
+      4646222C0A222509632023434243424342222C0A222609632023443544354546
+      222C0A222A09632023303030303030222C0A2220202E2E2B2B2E2E2E2E202020
+      20222C0A2220202E4040404040402E20202020222C0A22202023242524242426
+      2E24202020222C0A2220202325242E2E2E2E2E2E2E2E20222C0A2220202A2424
+      2E2E2E2E2E2E2E2E20222C0A222E2E2E2B2B232425242424262A24222C0A222E
+      2E2E2E2E232524242426262A24222C0A222E242524242A2424242624262A2422
+      2C0A222E252424242A2426262626262A24222C0A222E242424242A2A2A2A2A2A
+      2A2A24222C0A222E2426262626262A242424242424222C0A222E2A2A2A2A2A2A
+      2A242020202020222C0A222024242424242424242020202020227D3B0A
+    }
   end
 end

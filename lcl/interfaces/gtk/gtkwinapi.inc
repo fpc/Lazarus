@@ -1375,6 +1375,7 @@ function TGtkWidgetSet.DestroyCursor(Handle: hCursor): Boolean;
 begin
   if Handle <> 0 then
     gdk_cursor_destroy(PGdkCursor(Handle));
+  Result:=true;
 end;
 
 {------------------------------------------------------------------------------

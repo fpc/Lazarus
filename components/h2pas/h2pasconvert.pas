@@ -143,6 +143,14 @@ type
     function CodeToIdentifier(const Code: string): string;
   end;
 
+  { TFixArrayOfParameterType - Replace "array of )" with "array of const)" }
+
+  TFixArrayOfParameterType = class(TCustomTextConverterTool)
+  public
+    class function ClassDescription: string; override;
+    function Execute(aText: TIDETextConverter): TModalResult; override;
+  end;
+
   TH2PasProject = class;
   TH2PasConverter = class;
 
@@ -1111,6 +1119,7 @@ begin
   AddNewTextConverterTool(FPostH2PasTools,TRemoveRedefinedPointerTypes);
   AddNewTextConverterTool(FPostH2PasTools,TRemoveEmptyTypeVarConstSections);
   AddNewTextConverterTool(FPostH2PasTools,TReplaceImplicitTypes);
+  AddNewTextConverterTool(FPostH2PasTools,TFixArrayOfParameterType);
 end;
 
 { TH2PasConverter }
@@ -2566,6 +2575,44 @@ begin
       exit;
     end;
   until false;
+end;
+
+{ TFixArrayOfParameterType }
+
+class function TFixArrayOfParameterType.ClassDescription: string;
+begin
+  Result:='Fix open arrays'#13
+         +'Replace "array of )" with "array of const)"';
+end;
+
+function TFixArrayOfParameterType.Execute(aText: TIDETextConverter
+  ): TModalResult;
+{ search for
+    array of )
+  and replace it with
+    array of const)
+}
+var
+  Lines: TStrings;
+  i: Integer;
+  Line: string;
+  MatchPos: integer;
+  MatchLen: integer;
+begin
+  Result:=mrCancel;
+  if aText=nil then exit;
+  Lines:=aText.Strings;
+  i:=0;
+  while i<=Lines.Count-1 do begin
+    Line:=Lines[i];
+    if REMatches(Line,'array of *\)','I') then begin
+      REVarPos(0,MatchPos,MatchLen);
+      Lines[i]:=copy(Line,1,MatchPos-1)+'array of const)'
+                +copy(Line,MatchPos+MatchLen,length(Line));
+    end;
+    inc(i);
+  end;
+  Result:=mrOk;
 end;
 
 end.

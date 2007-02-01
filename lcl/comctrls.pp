@@ -1653,7 +1653,7 @@ type
   TNodeStates = set of TNodeState;
   TNodeAttachMode = (
     naAdd,           // add as last sibling of Destination
-    naAddFirst,      // add as first sibling of Destnation
+    naAddFirst,      // add as first sibling of Destination
     naAddChild,      // add as last child of Destination
     naAddChildFirst, // add as first child of Destination
     naInsert,        // insert in front of Destination
@@ -1793,6 +1793,7 @@ type
     procedure SetHasChildren(AValue: Boolean);
     procedure SetHeight(AValue: integer);
     procedure SetImageIndex(AValue: integer);
+    procedure SetIndex(const AValue: Integer);
     procedure SetItems(AnIndex: Integer; AValue: TTreeNode);
     procedure SetMultiSelected(const AValue: Boolean);
     procedure SetOverlayIndex(AValue: Integer);
@@ -1850,6 +1851,7 @@ type
     function IndexOf(AValue: TTreeNode): Integer;
     function IndexOfText(const NodeText: string): Integer;
     function FindNode(const NodeText: string): TTreeNode;
+    function GetTextPath: string;
     procedure MakeVisible;
     procedure MoveTo(Destination: TTreeNode; Mode: TNodeAttachMode); virtual;
     procedure MultiSelectGroup;
@@ -1868,7 +1870,7 @@ type
     property HasChildren: Boolean read GetHasChildren write SetHasChildren;
     property Height: integer read GetHeight write SetHeight;
     property ImageIndex: integer read FImageIndex write SetImageIndex;
-    property Index: Integer read GetIndex;
+    property Index: Integer read GetIndex write SetIndex;
     property IsVisible: Boolean read IsNodeVisible;
     property IsFullHeightVisible: Boolean read IsNodeHeightFullVisible;
     property Items[ItemIndex: Integer]: TTreeNode read GetItems write SetItems; default;

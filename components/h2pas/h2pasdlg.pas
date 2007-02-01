@@ -23,7 +23,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LCLType, LResources, Forms, Controls,
-  Graphics, Dialogs, ComCtrls, Buttons, StdCtrls, ExtCtrls, CheckLst,
+  Graphics, Dialogs, ComCtrls, Buttons, StdCtrls, ExtCtrls,
   LazConfigStorage,
   SynEdit, SynHighlighterCPP,
   FileProcs,
@@ -36,6 +36,7 @@ type
   { TH2PasDialog }
 
   TH2PasDialog = class(TForm)
+    FileStateImageList: TImageList;
     MoveFileDownButton: TButton;
     MoveFileUpButton: TButton;
     ConvertAndBuildButton: TButton;
@@ -47,10 +48,10 @@ type
     FilesTabSheet: TTabSheet;
     CHeaderFilesSplitter1: TSplitter;
     AddCHeaderFilesButton: TButton;
-    UnselectAllCHeaderFilesButton: TButton;
-    SelectAllCHeaderFilesButton: TButton;
+    DisableAllCHeaderFilesButton: TButton;
+    EnableAllCHeaderFilesButton: TButton;
     DeleteCHeaderFilesButton: TButton;
-    CHeaderFilesCheckListBox: TCheckListBox;
+    CHeaderFilesCheckTreeView: TTreeView;
 
     // pre h2pas
     PreH2PasTabSheet: TTabSheet;
@@ -89,9 +90,9 @@ type
     CloseButton: TButton;
 
     procedure AddCHeaderFilesButtonClick(Sender: TObject);
-    procedure CHeaderFilesCheckListBoxClick(Sender: TObject);
-    procedure CHeaderFilesCheckListBoxItemClick(Sender: TObject; Index: LongInt
-      );
+    procedure CHeaderFilesCheckTreeViewMouseDown(Sender: TOBject;
+      Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+    procedure CHeaderFilesCheckTreeViewSelectionChanged(Sender: TObject);
     procedure CloseButtonClick(Sender: TObject);
     procedure ConstantsInsteadOfEnumsCheckBoxChange(Sender: TObject);
     procedure ConvertAndBuildButtonClick(Sender: TObject);
@@ -115,8 +116,8 @@ type
     procedure PreH2PasEditModified(Sender: TObject);
     procedure SaveSettingsAsButtonClick(Sender: TObject);
     procedure SaveSettingsButtonClick(Sender: TObject);
-    procedure SelectAllCHeaderFilesButtonClick(Sender: TObject);
-    procedure UnselectAllCHeaderFilesButtonClick(Sender: TObject);
+    procedure EnableAllCHeaderFilesButtonClick(Sender: TObject);
+    procedure DisableAllCHeaderFilesButtonClick(Sender: TObject);
     procedure h2pasFilenameBrowseButtonClick(Sender: TObject);
     procedure h2pasOptionsCheckGroupItemClick(Sender: TObject; Index: LongInt);
     procedure OnShowSrcEditSection(Sender: TObject);
@@ -136,6 +137,7 @@ type
     procedure CreateLazarusMenuItems;
     function GetCurrentCHeaderFile: TH2PasFile;
     procedure MoveCurrentFile(Offset: integer);
+    function GetFileNodeStateIndex(aFile: TH2PasFile): Integer;
 
     // project settings
     procedure UpdateFilesPage;
@@ -207,6 +209,7 @@ begin
   TextConverterToolClasses.RegisterClass(TRemoveRedefinedPointerTypes);
   TextConverterToolClasses.RegisterClass(TRemoveEmptyTypeVarConstSections);
   TextConverterToolClasses.RegisterClass(TReplaceImplicitTypes);
+  TextConverterToolClasses.RegisterClass(TFixArrayOfParameterType);
 end;
 
 { TH2PasDialog }
@@ -217,8 +220,8 @@ begin
   FilesTabSheet.Caption:='C header files';
     AddCHeaderFilesButton.Caption:='Add .h files ...';
     DeleteCHeaderFilesButton.Caption:='Delete selected .h files';
-    SelectAllCHeaderFilesButton.Caption:='Enable all .h files';
-    UnselectAllCHeaderFilesButton.Caption:='Disable all .h files';
+    EnableAllCHeaderFilesButton.Caption:='Enable all .h files';
+    DisableAllCHeaderFilesButton.Caption:='Disable all .h files';
     MoveFileDownButton.Caption:='Move file down';
     MoveFileUpButton.Caption:='Move file up';
     FileInfoGroupBox.Caption:='File information';
@@ -341,14 +344,16 @@ end;
 procedure TH2PasDialog.DeleteCHeaderFilesButtonClick(Sender: TObject);
 var
   DeleteFiles: TStringList;
-  Target: TStrings;
-  i: Integer;
+  Node: TTreeNode;
 begin
   DeleteFiles:=TStringList.Create;
-  Target:=CHeaderFilesCheckListBox.Items;
-  for i:=0 to Target.Count-1 do begin
-    if CHeaderFilesCheckListBox.Selected[i] then
-      DeleteFiles.Add(Project.LongenFilename(Target[i]));
+  Node:=CHeaderFilesCheckTreeView.GetFirstMultiSelected;
+  while Node<>nil do begin
+    if Node.Parent=nil then begin
+      // top lvl node is a .h file
+      DeleteFiles.Add(Project.LongenFilename(Node.Text));
+    end;
+    Node:=Node.GetNextMultiSelected;
   end;
   if DeleteFiles.Count>0 then begin
     if QuestionDlg('Confirm removal',
@@ -384,19 +389,31 @@ begin
   end;
 end;
 
-procedure TH2PasDialog.CHeaderFilesCheckListBoxClick(Sender: TObject);
+procedure TH2PasDialog.CHeaderFilesCheckTreeViewMouseDown(Sender: TOBject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+var
+  Node: TTreeNode;
+  StateIconLeft: LongInt;
+  AFilename: String;
+  CurFile: TH2PasFile;
 begin
-  UpdateFileInfo;
+  Node:=CHeaderFilesCheckTreeView.GetNodeAt(X,Y);
+  if (Node=nil) or (Node.Parent<>nil) then exit;
+  StateIconLeft:=Node.DisplayStateIconLeft;
+  if (x>=StateIconLeft) and (x<StateIconLeft+FileStateImageList.Width) then
+  begin
+    AFilename:=Project.LongenFilename(Node.Text);
+    CurFile:=Project.CHeaderFileWithFilename(AFilename);
+    if CurFile=nil then exit;
+    CurFile.Enabled:=not CurFile.Enabled;
+    Node.StateIndex:=GetFileNodeStateIndex(CurFile);
+  end;
 end;
 
-procedure TH2PasDialog.CHeaderFilesCheckListBoxItemClick(Sender: TObject;
-  Index: LongInt);
-var
-  AFile: TH2PasFile;
+procedure TH2PasDialog.CHeaderFilesCheckTreeViewSelectionChanged(Sender: TObject
+  );
 begin
-  AFile:=GetCurrentCHeaderFile;
-  if AFile<>nil then
-    AFile.Enabled:=CHeaderFilesCheckListBox.Checked[Index];
+  UpdateFileInfo;
 end;
 
 procedure TH2PasDialog.FormDestroy(Sender: TObject);
@@ -512,20 +529,30 @@ begin
   SaveProject('',[]);
 end;
 
-procedure TH2PasDialog.SelectAllCHeaderFilesButtonClick(Sender: TObject);
+procedure TH2PasDialog.EnableAllCHeaderFilesButtonClick(Sender: TObject);
 var
   i: Integer;
 begin
-  for i:=0 to CHeaderFilesCheckListBox.Items.Count-1 do
-    CHeaderFilesCheckListBox.Selected[i]:=true;
+  CHeaderFilesCheckTreeView.BeginUpdate;
+  for i:=0 to CHeaderFilesCheckTreeView.Items.TopLvlCount-1 do
+    CHeaderFilesCheckTreeView.Items.TopLvlItems[i].StateIndex:=1;
+  for i:=0 to Project.CHeaderFileCount-1 do
+    Project.CHeaderFiles[i].Enabled:=true;
+  CHeaderFilesCheckTreeView.EndUpdate;
+  UpdateFileInfo;
 end;
 
-procedure TH2PasDialog.UnselectAllCHeaderFilesButtonClick(Sender: TObject);
+procedure TH2PasDialog.DisableAllCHeaderFilesButtonClick(Sender: TObject);
 var
   i: Integer;
 begin
-  for i:=0 to CHeaderFilesCheckListBox.Items.Count-1 do
-    CHeaderFilesCheckListBox.Selected[i]:=false;
+  CHeaderFilesCheckTreeView.BeginUpdate;
+  for i:=0 to CHeaderFilesCheckTreeView.Items.TopLvlCount-1 do
+    CHeaderFilesCheckTreeView.Items.TopLvlItems[i].StateIndex:=0;
+  for i:=0 to Project.CHeaderFileCount-1 do
+    Project.CHeaderFiles[i].Enabled:=false;
+  CHeaderFilesCheckTreeView.EndUpdate;
+  UpdateFileInfo;
 end;
 
 procedure TH2PasDialog.h2pasFilenameBrowseButtonClick(Sender: TObject);
@@ -687,13 +714,13 @@ end;
 
 function TH2PasDialog.GetCurrentCHeaderFile: TH2PasFile;
 var
-  Index: LongInt;
   AFilename: String;
+  Node: TTreeNode;
 begin
   Result:=nil;
-  Index:=CHeaderFilesCheckListBox.ItemIndex;
-  if Index<0 then exit;
-  AFilename:=Project.LongenFilename(CHeaderFilesCheckListBox.Items[Index]);
+  Node:=CHeaderFilesCheckTreeView.Selected;
+  if (Node=nil) or (Node.Parent<>nil) then exit;
+  AFilename:=Project.LongenFilename(Node.Text);
   Result:=Project.CHeaderFileWithFilename(AFilename);
 end;
 
@@ -702,17 +729,15 @@ var
   Index: LongInt;
   AFilename: String;
   NewIndex: Integer;
+  Node: TTreeNode;
 begin
   if Offset=0 then begin
     DebugLn(['TH2PasDialog.MoveCurrentFile Offset=0']);
     exit;
   end;
-  Index:=CHeaderFilesCheckListBox.ItemIndex;
-  if (Index<0) then begin
-    DebugLn(['TH2PasDialog.MoveCurrentFile CHeaderFilesCheckListBox.ItemIndex<0']);
-    exit;
-  end;
-  AFilename:=Project.LongenFilename(CHeaderFilesCheckListBox.Items[Index]);
+  Node:=CHeaderFilesCheckTreeView.Selected;
+  if (Node=nil) or (Node.Parent<>nil) then exit;
+  AFilename:=Project.LongenFilename(Node.Text);
   Index:=Project.CHeaderFileIndexWithFilename(AFilename);
   if Index<0 then begin
     DebugLn(['TH2PasDialog.MoveCurrentFile not found: Filename=',AFilename]);
@@ -724,43 +749,69 @@ begin
     exit;
   end;
   Project.CHeaderFileMove(Index,NewIndex);
-  CHeaderFilesCheckListBox.Items.Move(Index,NewIndex);
+  CHeaderFilesCheckTreeView.ConsistencyCheck;
+  Node.Index:=NewIndex;
+  CHeaderFilesCheckTreeView.ConsistencyCheck;
+end;
+
+function TH2PasDialog.GetFileNodeStateIndex(aFile: TH2PasFile): Integer;
+begin
+  if aFile=nil then
+    Result:=0
+  else if aFile.Enabled then
+    Result:=1
+  else
+    Result:=0;
 end;
 
 procedure TH2PasDialog.UpdateFilesPage;
 var
   i: Integer;
-  Target: TStrings;
   CurFile: TH2PasFile;
-  OldSelected: TStringList;
+  OldSelection: TStringList;
   s: String;
+  OldExpandedState: TTreeNodeExpandedState;
+  Node: TTreeNode;
+  OldSelected: String;
 begin
-  Target:=CHeaderFilesCheckListBox.Items;
-  Target.BeginUpdate;
-  // remember old selection
-  OldSelected:=TStringList.Create;
-  for i:=0 to Target.Count-1 do begin
-    if CHeaderFilesCheckListBox.Selected[i] then
-      OldSelected.Add(Target[i]);
+  CHeaderFilesCheckTreeView.ConsistencyCheck;
+  CHeaderFilesCheckTreeView.BeginUpdate;
+  OldSelection:=nil;
+  OldExpandedState:=TTreeNodeExpandedState.Create(CHeaderFilesCheckTreeView);
+  try
+    // remember old selection
+    OldSelected:='';
+    if CHeaderFilesCheckTreeView.Selected<>nil then
+      OldSelected:=CHeaderFilesCheckTreeView.Selected.Text;
+    OldSelection:=TStringList.Create;
+    Node:=CHeaderFilesCheckTreeView.GetFirstMultiSelected;
+    while Node<>nil do begin
+      //DebugLn(['TH2PasDialog.UpdateFilesPage Node.Text="',Node.Text,'" Index=',Node.Index]);
+      OldSelection.Add(Node.GetTextPath);
+      Node:=Node.GetNextMultiSelected;
+    end;
+    
+    // clear
+    CHeaderFilesCheckTreeView.Items.Clear;
+    
+    // fill
+    for i:=0 to Project.CHeaderFileCount-1 do begin
+      CurFile:=Project.CHeaderFiles[i];
+      s:=Project.ShortenFilename(CurFile.Filename);
+      Node:=CHeaderFilesCheckTreeView.Items.Add(nil,s);
+      Node.MultiSelected:=OldSelection.IndexOf(Node.GetTextPath)>=0;
+      Node.Selected:=Node.Text=OldSelected;
+      Node.StateIndex:=GetFileNodeStateIndex(CurFile);
+    end;
+
+    // restore expanded state
+    OldExpandedState.Apply(CHeaderFilesCheckTreeView);
+  finally
+    OldExpandedState.Free;
+    OldSelection.Free;
+    CHeaderFilesCheckTreeView.EndUpdate;
   end;
-  // replace items in CHeaderFilesCheckListBox and restore selection
-  for i:=0 to Project.CHeaderFileCount-1 do begin
-    CurFile:=Project.CHeaderFiles[i];
-    s:=Project.ShortenFilename(CurFile.Filename);
-    if Target.Count>i then
-      Target[i]:=s
-    else
-      Target.Add(s);
-    CHeaderFilesCheckListBox.Checked[i]:=CurFile.Enabled;
-    CHeaderFilesCheckListBox.Selected[i]:=
-                                       OldSelected.IndexOf(CurFile.Filename)>=0;
-  end;
-  // remove unneeded item
-  while Target.Count>Project.CHeaderFileCount do
-    Target.Delete(Target.Count-1);
-  Target.EndUpdate;
-  OldSelected.Free;
-  
+
   UpdateFileInfo;
 end;
 

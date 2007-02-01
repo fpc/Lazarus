@@ -31,3 +31,4 @@ procedure DoSomething1(var a: array[0..3] of TMyClass);
 
 procedure DoSomething2(var a: array[MinValue..MaxValue] of char);
 
+procedure DoSomething3(a: array of );

@@ -5,6 +5,7 @@ object LazDocForm: TLazDocForm
   Width = 753
   HorzScrollBar.Page = 752
   VertScrollBar.Page = 116
+  ActiveControl = InheritedShortEdit
   BorderStyle = bsSizeToolWin
   Caption = 'LazDoc editor'
   OnCreate = FormCreate
@@ -14,9 +15,9 @@ object LazDocForm: TLazDocForm
     Left = 17
     Height = 117
     Width = 736
-    ActivePage = InheritedTabSheet
+    ActivePage = ShortTabSheet
     Align = alClient
-    TabIndex = 5
+    TabIndex = 0
     TabOrder = 0
     TabPosition = tpBottom
     object ShortTabSheet: TTabSheet
@@ -26,7 +27,7 @@ object LazDocForm: TLazDocForm
         Width = 730
         Align = alTop
         BorderSpacing.Right = 2
-        OnChange = DocumentationTagChange
+        OnEditingDone = DocumentationTagChange
         TabOrder = 0
         Text = 'ShortEdit'
       end

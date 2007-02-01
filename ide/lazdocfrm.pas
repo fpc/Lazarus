@@ -678,7 +678,8 @@ begin
                                  +GetContextTitle(Entry.PascalContext);
   end;
   MoveToInheritedButton.Enabled:=(fInheritedEntries<>nil)
-                                 and (fInheritedEntries.Count>1);
+                                 and (fInheritedEntries.Count>1)
+                                 and (ShortEdit.Text<>'');
   CopyFromInheritedButton.Enabled:=(Entry<>nil);
 end;
 

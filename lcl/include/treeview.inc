@@ -398,6 +398,38 @@ begin
   Update;
 end;
 
+procedure TTreeNode.SetIndex(const AValue: Integer);
+
+  procedure RaiseMissingTreeNodes;
+  begin
+    TreeViewError('TTreeNode.SetIndex missing Owner');
+  end;
+
+var
+  OldIndex: LongInt;
+begin
+  OldIndex:=Index;
+  if OldIndex=AValue then exit;
+  if Parent=nil then begin
+    // moving a top level node
+    if Owner=nil then RaiseMissingTreeNodes;
+    if AValue=0 then
+      MoveTo(Owner.GetFirstNode,naInsert)
+    else if AValue<OldIndex then
+      MoveTo(Owner.TopLvlItems[AValue-1],naInsertBehind)
+    else
+      MoveTo(Owner.TopLvlItems[AValue],naInsertBehind);
+  end else begin
+    // moving a normal node
+    if AValue=0 then
+      MoveTo(Parent.GetFirstChild,naInsert)
+    else if AValue<OldIndex then
+      MoveTo(Parent.Items[AValue-1],naInsertBehind)
+    else
+      MoveTo(Parent.Items[AValue],naInsertBehind);
+  end;
+end;
+
 procedure TTreeNode.SetSelectedIndex(AValue: Integer);
 begin
   if FSelectedIndex = AValue then exit;
@@ -980,6 +1012,20 @@ begin
     Result:=Result.GetNextSibling;
 end;
 
+function TTreeNode.GetTextPath: string;
+var
+  Node: TTreeNode;
+begin
+  Result:='';
+  Node:=Self;
+  while Node<>nil do begin
+    if Result<>'' then
+      Result:='/'+Result;
+    Result:=Node.Text+Result;
+    Node:=Node.Parent;
+  end;
+end;
+
 function TTreeNode.GetCount: Integer;
 begin
   Result:=FCount;
@@ -1019,7 +1065,7 @@ begin
         TheTreeView.FInsertMarkNode:=nil;
     end;
   end;
-  // unselect (multi)
+  // unmultiselect (keeping MultiSelected, but leaving multiselection list)
   UnbindFromMultiSelected;
   // remove from sibling list
   if FPrevBrother<>nil then FPrevBrother.FNextBrother:=FNextBrother;
@@ -1085,6 +1131,7 @@ procedure TTreeNode.InternalMove(ANode: TTreeNode;
 }
 var HigherNode: TTreeNode;
   NewIndex, NewParentItemSize, i: integer;
+  WasSelected: Boolean;
 begin
   {$IFDEF TREEVIEW_DEBUG}
   DbgOut('[TTreeNode.InternalMove]  Self=',DbgS(Self),' Self.Text=',Text
@@ -1092,101 +1139,112 @@ begin
   if ANode<>nil then DbgOut(' ANode.Text=',ANode.Text);
   DebugLn('');
   {$ENDIF}
-  Unbind;
-  // set parent
-  if AddMode in [taAdd, taAddFirst] then
-    FParent:=ANode
-  else begin // taInsert
-    if (ANode=nil) then
-      TreeNodeError('TTreeNode.InternalMove AddMode=taInsert but ANode=nil');
-    FParent:=ANode.Parent;
-    FPrevBrother:=ANode.FPrevBrother;
-    FNextBrother:=ANode;
-  end;
-  if FParent<>nil then begin
-    FParent.HasChildren:=true;
-    if (FParent.FCount=FParent.FCapacity) then begin
-      // grow FParent.FItems
-      if FParent.FCapacity=0 then
-        FParent.FCapacity:=5
+  if TreeView<>nil then TreeView.BeginUpdate;
+  try
+    WasSelected:=Selected;
+    Unbind;
+    // set parent
+    if AddMode in [taAdd, taAddFirst] then
+      FParent:=ANode
+    else begin // taInsert
+      if (ANode=nil) then
+        TreeNodeError('TTreeNode.InternalMove AddMode=taInsert but ANode=nil');
+      FParent:=ANode.Parent;
+      FPrevBrother:=ANode.FPrevBrother;
+      FNextBrother:=ANode;
+    end;
+    if FParent<>nil then begin
+      FParent.HasChildren:=true;
+      if (FParent.FCount=FParent.FCapacity) then begin
+        // grow FParent.FItems
+        if FParent.FCapacity=0 then
+          FParent.FCapacity:=5
+        else
+          FParent.FCapacity:=FParent.FCapacity shl 1;
+        NewParentItemSize:=SizeOf(Pointer)*FParent.FCapacity;
+        if FParent.FItems=nil then
+          GetMem(FParent.FItems,NewParentItemSize)
+        else
+          ReAllocMem(FParent.FItems,NewParentItemSize);
+      end;
+      inc(FParent.FCount);
+      // calculate new Index
+      case AddMode of
+      taAdd: NewIndex:=FParent.Count-1;
+      taAddFirst: NewIndex:=0;
       else
-        FParent.FCapacity:=FParent.FCapacity shl 1;
-      NewParentItemSize:=SizeOf(Pointer)*FParent.FCapacity;
-      if FParent.FItems=nil then
-        GetMem(FParent.FItems,NewParentItemSize)
+        // taInsert
+        NewIndex:=ANode.Index;
+      end;
+      // move next siblings
+      for i:=FParent.FCount-1 downto NewIndex+1 do begin
+        FParent.FItems[i]:=FParent.FItems[i-1];
+        FParent.FItems[i].FIndex:=i;
+      end;
+      // insert this node to parent's items
+      FParent.FItems[NewIndex]:=Self;
+      FIndex:=NewIndex;
+      // set Next and Prev sibling
+      if NewIndex>0 then
+        FPrevBrother:=FParent.FItems[NewIndex-1]
       else
-        ReAllocMem(FParent.FItems,NewParentItemSize);
-    end;
-    inc(FParent.FCount);
-    // calculate new Index
-    case AddMode of
-    taAdd: NewIndex:=FParent.Count-1;
-    taAddFirst: NewIndex:=0;
-    else
-      // taInsert
-      NewIndex:=ANode.Index;
-    end;
-    // move next siblings
-    for i:=FParent.FCount-1 downto NewIndex+1 do begin
-      FParent.FItems[i]:=FParent.FItems[i-1];
-      FParent.FItems[i].FIndex:=i;
-    end;
-    // insert this node to parent's items
-    FParent.FItems[NewIndex]:=Self;
-    FIndex:=NewIndex;
-    // set Next and Prev sibling
-    if NewIndex>0 then
-      FPrevBrother:=FParent.FItems[NewIndex-1]
-    else
-      FPrevBrother:=nil;
-    if NewIndex<FParent.Count-1 then
-      FNextBrother:=FParent.FItems[NewIndex+1]
-    else
-      FNextBrother:=nil;
-    // update total node count of all parents
-    HigherNode:=FParent;
-    while HigherNode<>nil do begin
-      inc(HigherNode.FSubTreeCount,FSubTreeCount);
-      HigherNode:=HigherNode.Parent;
-    end;
-    //if TreeNodes<>nil then inc(TreeNodes.FCount,FSubTreeCount);
-  end else begin
-    // add as top level node
-    case AddMode of
-    taAdd:
-      begin
-        // add as last top level node
-        if Owner<>nil then begin
-          FPrevBrother:=Owner.GetLastNode;
-          Owner.MoveTopLvlNode(-1,Owner.FTopLvlCount,Self);
-        end;
+        FPrevBrother:=nil;
+      if NewIndex<FParent.Count-1 then
+        FNextBrother:=FParent.FItems[NewIndex+1]
+      else
+        FNextBrother:=nil;
+      // update total node count of all parents
+      HigherNode:=FParent;
+      while HigherNode<>nil do begin
+        inc(HigherNode.FSubTreeCount,FSubTreeCount);
+        HigherNode:=HigherNode.Parent;
       end;
-    taAddFirst:
-      begin
-        // add as first top level node = root node
-        if Owner<>nil then begin
-          FNextBrother:=Owner.GetFirstNode;
-          Owner.MoveTopLvlNode(-1,0,Self);
+      //if TreeNodes<>nil then inc(TreeNodes.FCount,FSubTreeCount);
+    end else begin
+      // add as top level node
+      case AddMode of
+      taAdd:
+        begin
+          // add as last top level node
+          if Owner<>nil then begin
+            FPrevBrother:=Owner.GetLastNode;
+            Owner.MoveTopLvlNode(-1,Owner.FTopLvlCount,Self);
+          end;
         end;
-      end;
-    taInsert:
-      begin
-        // insert node in front of ANode
-        //DebugLn('[TTreeNode.InternalMove] ANode.Index=',ANode.Index,' ANode=',DbgS(ANode));
-        FNextBrother:=ANode;
-        FPrevBrother:=ANode.GetPrevSibling;
-        if Owner<>nil then begin
-          Owner.MoveTopLvlNode(-1,ANode.Index,Self);
+      taAddFirst:
+        begin
+          // add as first top level node = root node
+          if Owner<>nil then begin
+            FNextBrother:=Owner.GetFirstNode;
+            Owner.MoveTopLvlNode(-1,0,Self);
+          end;
+        end;
+      taInsert:
+        begin
+          // insert node in front of ANode
+          //DebugLn('[TTreeNode.InternalMove] ANode.Index=',ANode.Index,' ANode=',DbgS(ANode));
+          FNextBrother:=ANode;
+          FPrevBrother:=ANode.GetPrevSibling;
+          if Owner<>nil then begin
+            Owner.MoveTopLvlNode(-1,ANode.Index,Self);
+          end;
         end;
       end;
     end;
+    // connect Next and Prev sibling
+    if FPrevBrother<>nil then FPrevBrother.FNextBrother:=Self;
+    if FNextBrother<>nil then FNextBrother.FPrevBrother:=Self;
+    if Owner.Owner<>nil then
+      Owner.Owner.FStates:=Owner.Owner.FStates+[tvsMaxRightNeedsUpdate,
+        tvsTopsNeedsUpdate,tvsTopItemNeedsUpdate,tvsBottomItemNeedsUpdate];
+    // re-add to multiselection list
+    if MultiSelected then
+      BindToMultiSelected;
+    if WasSelected then
+      Selected:=true;
+  finally
+    if TreeView<>nil then TreeView.EndUpdate;
   end;
-  // connect Next and Prev sibling
-  if FPrevBrother<>nil then FPrevBrother.FNextBrother:=Self;
-  if FNextBrother<>nil then FNextBrother.FPrevBrother:=Self;
-  if Owner.Owner<>nil then
-    Owner.Owner.FStates:=Owner.Owner.FStates+[tvsMaxRightNeedsUpdate,
-      tvsTopsNeedsUpdate,tvsTopItemNeedsUpdate,tvsBottomItemNeedsUpdate];
 
   {$IFDEF TREEVIEW_DEBUG}
   DbgOut('[TTreeNode.InternalMove] END Self=',DbgS(Self),' Self.Text=',Text
@@ -1194,43 +1252,6 @@ begin
   if ANode<>nil then DbgOut(' ANode.Text=',ANode.Text);
   DebugLn('');
   {$ENDIF}
-
-{var
-  I: Integer;
-  NodeId: HTreeItem;
-  TreeViewItem: TTVItem;
-  Children: Boolean;
-  IsSelected: Boolean;
-begin
-  Owner.ClearCache;
-  if (AddMode = taInsert) and (Node <> nil) then
-    NodeId := Node.ItemId else
-    NodeId := nil;
-  Children := HasChildren;
-  IsSelected := Selected;
-  if (Parent <> nil) and (Parent.CompareCount(1)) then
-  begin
-    Parent.Expanded := False;
-    Parent.HasChildren := False;
-  end;
-  with TreeViewItem do
-  begin
-    mask := TVIF_PARAM;
-    hItem := ItemId;
-    lParam := 0;
-  end;
-  TreeView_SetItem(Handle, TreeViewItem);
-  with Owner do
-    HItem := AddItem(HItem, NodeId, CreateItem(Self), AddMode);
-  if HItem = nil then
-    raise EOutOfResources.Create(sInsertError);
-  for I := Count - 1 downto 0 do
-    Item[I].InternalMove(Self, nil, HItem, taAddFirst);
-  TreeView_DeleteItem(Handle, ItemId);
-  FItemId := HItem;
-  Assign(Self);
-  HasChildren := Children;
-  Selected := IsSelected;}
 end;
 
 procedure TTreeNode.MoveTo(Destination: TTreeNode; Mode: TNodeAttachMode);
@@ -1280,13 +1301,8 @@ begin
       else
         AddMode:=taAdd;
       end;
-      {if ANode <> nil then
-        HItem := ANode.ItemId else
-        HItem := nil;}
       if (Destination <> Self) then
         InternalMove(Destination, AddMode);
-      if Parent <> nil then
-        Parent.Expanded := True;
     finally
       TreeView.OnChanging := OldOnChanging;
       TreeView.OnChange := OldOnChange;
@@ -1613,6 +1629,20 @@ begin
     RaiseGDBException('');
   if (FPrevBrother<>nil) and (FPrevBrother.FNextBrother<>Self) then
     RaiseGDBException('');
+  if (FNextMultiSelected<>nil) and (FNextMultiSelected.FPrevMultiSelected<>Self) then
+    RaiseGDBException('');
+  if (FPrevMultiSelected<>nil) and (FPrevMultiSelected.FNextMultiSelected<>Self) then
+    RaiseGDBException('');
+  if MultiSelected then begin
+    Node1:=TreeView.GetFirstMultiSelected;
+    while (Node1<>nil) and (Node1<>Self) do Node1:=Node1.FNextMultiSelected;
+    if Node1=nil then
+      RaiseGDBException('');
+  end;
+  if Selected and (TreeView<>nil) and (tvoAllowMultiselect in TreeView.Options)
+  and (not MultiSelected) then
+    RaiseGDBException('');// selected, but not multiselected
+
   // check childs
   RealSubTreeCount:=1;
   for i:=0 to FCount-1 do begin
