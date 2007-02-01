@@ -7,34 +7,12 @@
       <Flags>
         <SaveOnlyProjectUnits Value="True"/>
       </Flags>
+      <SessionStorage Value="InIDEConfig"/>
       <MainUnit Value="0"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=".exe"/>
       <Title Value="project1"/>
-      <ActiveEditorIndexAtStart Value="0"/>
     </General>
-    <Units Count="2">
-      <Unit0>
-        <CursorPos X="25" Y="6"/>
-        <Filename Value="project1.lpr"/>
-        <IsPartOfProject Value="True"/>
-        <TopLine Value="1"/>
-        <UnitName Value="project1"/>
-        <UsageCount Value="43"/>
-      </Unit0>
-      <Unit1>
-        <CursorPos X="44" Y="138"/>
-        <EditorIndex Value="0"/>
-        <Filename Value="unit1.pas"/>
-        <ComponentName Value="Form1"/>
-        <IsPartOfProject Value="True"/>
-        <Loaded Value="True"/>
-        <ResourceFilename Value="Unit1.lrs"/>
-        <TopLine Value="132"/>
-        <UnitName Value="Unit1"/>
-        <UsageCount Value="43"/>
-      </Unit1>
-    </Units>
     <PublishOptions>
       <Version Value="2"/>
       <DestinationDirectory Value="$(TestDir)\publishedproject\"/>
@@ -57,6 +35,20 @@
         <PackageName Value="LCL"/>
       </Item2>
     </RequiredPackages>
+    <Units Count="2">
+      <Unit0>
+        <Filename Value="project1.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="project1"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="unit1.pas"/>
+        <ComponentName Value="Form1"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceFilename Value="Unit1.lrs"/>
+        <UnitName Value="Unit1"/>
+      </Unit1>
+    </Units>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>

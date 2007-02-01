@@ -1,40 +1,19 @@
 <?xml version="1.0"?>
 <CONFIG>
   <ProjectOptions>
-    <Version Value="3"/>
+    <PathDelim Value="\"/>
+    <Version Value="5"/>
     <General>
-      <ProjectType Value="Application"/>
       <Flags>
         <SaveClosedFiles Value="False"/>
         <SaveOnlyProjectUnits Value="True"/>
       </Flags>
+      <SessionStorage Value="InIDEConfig"/>
       <MainUnit Value="0"/>
-      <ActiveEditorIndexAtStart Value="0"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=""/>
       <Title Value="TV_Add_Remove"/>
     </General>
-    <Units Count="2">
-      <Unit0>
-        <CursorPos X="6" Y="11"/>
-        <Filename Value="TV_Add_Remove.dpr"/>
-        <IsPartOfProject Value="True"/>
-        <TopLine Value="1"/>
-        <UsageCount Value="36"/>
-      </Unit0>
-      <Unit1>
-        <CursorPos X="1" Y="98"/>
-        <EditorIndex Value="0"/>
-        <Filename Value="tv_add_remove_u1.pas"/>
-        <ComponentName Value="Form1"/>
-        <IsPartOfProject Value="True"/>
-        <Loaded Value="True"/>
-        <ResourceFilename Value="tv_add_remove_u1.lrs"/>
-        <TopLine Value="72"/>
-        <UnitName Value="TV_Add_Remove_U1"/>
-        <UsageCount Value="36"/>
-      </Unit1>
-    </Units>
     <PublishOptions>
       <Version Value="2"/>
       <IgnoreBinaries Value="False"/>
@@ -53,12 +32,25 @@
         <MinVersion Major="1" Valid="True"/>
       </Item1>
     </RequiredPackages>
+    <Units Count="2">
+      <Unit0>
+        <Filename Value="TV_Add_Remove.dpr"/>
+        <IsPartOfProject Value="True"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="tv_add_remove_u1.pas"/>
+        <ComponentName Value="Form1"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceFilename Value="tv_add_remove_u1.lrs"/>
+        <UnitName Value="TV_Add_Remove_U1"/>
+      </Unit1>
+    </Units>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="2"/>
+    <Version Value="5"/>
+    <PathDelim Value="\"/>
     <SearchPaths>
-      <LCLWidgetType Value="gtk"/>
-      <SrcPath Value="$(LazarusDir)/lcl/;$(LazarusDir)/lcl/interfaces/$(LCLWidgetType)/"/>
+      <SrcPath Value="$(LazarusDir)\lcl\;$(LazarusDir)\lcl\interfaces\$(LCLWidgetType)\"/>
     </SearchPaths>
     <CodeGeneration>
       <Generate Value="Faster"/>

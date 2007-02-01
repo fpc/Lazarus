@@ -14,7 +14,7 @@ interface
 {$mode objfpc} {$H+}
 
 uses
-  SysUtils, LResources, Classes, Graphics, Controls, Forms, Dialogs,
+  SysUtils, LResources, Classes, LCLProc, Graphics, Controls, Forms, Dialogs,
   StdCtrls, ComCtrls, Buttons;
 
 type
