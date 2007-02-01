@@ -39,6 +39,7 @@ type
 
 procedure TLazTestRunner.AppendLongOpts;
 begin
+  inherited;
   LongOpts.Add('compiler:');
 end;
 
