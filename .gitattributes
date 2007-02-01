@@ -2845,6 +2845,7 @@ test/runtests.lpi svneol=native#text/plain
 test/runtests.lpr svneol=native#text/plain
 test/runtestsgui.lpi svneol=native#text/plain
 test/runtestsgui.lpr svneol=native#text/plain
+test/testglobals.pas svneol=native#text/plain
 test/testlpi.pas svneol=native#text/plain
 tools/apiwizz/apiwizard.lfm svneol=native#text/plain
 tools/apiwizz/apiwizard.lrs svneol=native#text/pascal
