@@ -2831,6 +2831,8 @@ var
     if len <= 6 then Exit; // shortest match
     
     CurPos := 1;
+
+    remain:=len;
     
     // strip timestamp
     if Line[CurPos] = '[' then begin
