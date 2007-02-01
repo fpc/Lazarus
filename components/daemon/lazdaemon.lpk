@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <Package Version="2">
+    <Name Value="lazdaemon"/>
+    <Author Value="Michael Van Canneyt"/>
+    <CompilerOptions>
+      <Version Value="5"/>
+      <SearchPaths>
+        <IncludeFiles Value="unix/"/>
+        <OtherUnitFiles Value="unix/"/>
+        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
+      </SearchPaths>
+      <CodeGeneration>
+        <Generate Value="Faster"/>
+      </CodeGeneration>
+      <Other>
+        <CompilerPath Value="$(CompPath)"/>
+      </Other>
+    </CompilerOptions>
+    <Description Value="Lazarus Service (Daemon) Support"/>
+    <License Value="Modified LGPL as in FCL or RTL"/>
+    <Version Minor="9" Release="9"/>
+    <Files Count="2">
+      <Item1>
+        <Filename Value="reglazdaemon.pp"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="reglazdaemon"/>
+      </Item1>
+      <Item2>
+        <Filename Value="daemonapp.pp"/>
+        <Type Value="Virtual Unit"/>
+        <UnitName Value="daemonapp"/>
+      </Item2>
+    </Files>
+    <Type Value="DesignTime"/>
+    <RequiredPkgs Count="3">
+      <Item1>
+        <PackageName Value="LCL"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="IDEIntf"/>
+      </Item2>
+      <Item3>
+        <PackageName Value="FCL"/>
+        <MinVersion Major="1" Valid="True"/>
+      </Item3>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)/"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IgnoreBinaries Value="False"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>
