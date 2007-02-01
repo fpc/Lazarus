@@ -46,7 +46,7 @@
       <Unit2>
         <Filename Value="testglobals.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="testglobals"/>
+        <UnitName Value="TestGlobals"/>
       </Unit2>
     </Units>
   </ProjectOptions>

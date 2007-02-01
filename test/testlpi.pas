@@ -101,19 +101,28 @@ begin
 end;
 
 class function TLpiTest.ExamplesSuite: TTestSuite;
-var
-  SearchMask: String;
-  FileInfo: TSearchRec;
+  procedure SearchDirectory(const ADirectory: string);
+  var
+    SearchMask: String;
+    FileInfo: TSearchRec;
+  begin
+    SearchMask := ADirectory + '*';
+    if FindFirst(SearchMask,faAnyFile,FileInfo)=0 then begin
+      repeat
+        // skip special directory entries
+        if (FileInfo.Name='.') or (FileInfo.Name='..') then continue;
+        
+        if RightStr(FileInfo.Name,4)='.lpi' then
+          Result.AddTest(Suite(ADirectory + FileInfo.Name))
+        else if (FileInfo.Attr and faDirectory=faDirectory) then
+          SearchDirectory(AppendPathDelim(ADirectory+FileInfo.Name));
+      until FindNext(FileInfo)<>0;
+    end;
+    FindClose(FileInfo);
+  end;
 begin
   Result := TTestSuite.Create('Examples');
-  SearchMask := ExamplesDir + '*.lpi';
-  if FindFirst(SearchMask,faAnyFile,FileInfo)=0 then begin
-    repeat
-      if RightStr(FileInfo.Name,4)='.lpi' then
-        Result.AddTest(Suite(ExamplesDir + FileInfo.Name));
-    until FindNext(FileInfo)<>0;
-  end;
-  FindClose(FileInfo);
+  SearchDirectory(AppendPathDelim(ExamplesDir))
 end;
 
 procedure TLpiTest.TestCompile;
