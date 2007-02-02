@@ -23,7 +23,7 @@ unit BugTestCase;
 interface
 
 uses
-  Classes, SysUtils, Math, process, fileutil, fpcunit, testutils, testregistry,
+  Classes, SysUtils, Math, process, fileutil, fpcunit, testregistry,
   TestGlobals;
 
 type

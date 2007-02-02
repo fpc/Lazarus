@@ -160,7 +160,6 @@ var
         WriteXMLFile(XMLResultsWriter.Document, output);
     finally
       XMLResultsWriter.Free;
-      testResult.Free;
     end;
   end;
 
@@ -177,7 +176,6 @@ var
       PlainResultsWriter.WriteResult(testResult);
     finally
       PlainResultsWriter.Free;
-      testResult.Free;
     end;
   end;
   {$ENDIF}
@@ -197,9 +195,12 @@ begin
       else
         doXMLTestRun(aTest);
     end;
+    if testResult.NumberOfErrors+testResult.NumberOfFailures>0 then
+      ExitCode := 1;
   finally
     if ShowProgress then
       progressWriter.Free;
+    testResult.Free;
   end;
 end;
 
