@@ -36,8 +36,8 @@ type
     procedure RunScript;
   public
     constructor Create(const APath: string; const ATestName: string); overload;
-    class function Suite(const APath: string): TTestSuite;
-    class function ExamplesSuite: TTestSuite;
+    class function CreateProjectSuite(const aName, APath: string): TTestSuite;
+    class function CreateSuiteFromDirectory(const AName, ABasePath: string): TTestSuite;
   published
     procedure TestCompile;
     procedure TestRun;
@@ -48,12 +48,14 @@ implementation
 var
   LazarusDir: string;
   ExamplesDir: string;
+  LCLTestDir: string;
   ScriptEngine: string;
   
 procedure InitDirectories;
 begin
   LazarusDir := ExpandFileName(ExtractFilePath(ParamStr(0)) + '../');
   ExamplesDir := LazarusDir + 'examples' + PathDelim;
+  LCLTestDir := LazarusDir + 'lcl' + PathDelim + 'tests' + PathDelim;
   ScriptEngine := 'C:\Program Files\AutoHotkey\AutoHotKey.exe';
 end;
 
@@ -85,11 +87,12 @@ begin
   FPath := APath;
 end;
 
-class function TLpiTest.Suite(const APath: string): TTestSuite;
+class function TLpiTest.CreateProjectSuite(const AName,
+  APath: string): TTestSuite;
 var
   AhkFileName: String;
 begin
-  Result := TTestSuite.Create(APath);
+  Result := TTestSuite.Create(AName);
   Result.AddTest(TLpiTest.Create(APath, 'TestCompile'));
 {$IFDEF win32}
   AhkFileName := GetScriptFileName(APath);
@@ -100,29 +103,33 @@ begin
 {$ENDIF}
 end;
 
-class function TLpiTest.ExamplesSuite: TTestSuite;
+class function TLpiTest.CreateSuiteFromDirectory(const AName,
+  ABasePath: string): TTestSuite;
+
   procedure SearchDirectory(const ADirectory: string);
   var
-    SearchMask: String;
+    RelativePath: string;
+    SearchMask: string;
     FileInfo: TSearchRec;
   begin
-    SearchMask := ADirectory + '*';
+    SearchMask := ABasePath+ADirectory + '*';
     if FindFirst(SearchMask,faAnyFile,FileInfo)=0 then begin
       repeat
         // skip special directory entries
         if (FileInfo.Name='.') or (FileInfo.Name='..') then continue;
         
+        RelativePath := ADirectory+ FileInfo.Name;
         if RightStr(FileInfo.Name,4)='.lpi' then
-          Result.AddTest(Suite(ADirectory + FileInfo.Name))
+          Result.AddTest(CreateProjectSuite(RelativePath, ABasePath+RelativePath))
         else if (FileInfo.Attr and faDirectory=faDirectory) then
-          SearchDirectory(AppendPathDelim(ADirectory+FileInfo.Name));
+          SearchDirectory(AppendPathDelim(RelativePath));
       until FindNext(FileInfo)<>0;
     end;
     FindClose(FileInfo);
   end;
 begin
-  Result := TTestSuite.Create('Examples');
-  SearchDirectory(AppendPathDelim(ExamplesDir))
+  Result := TTestSuite.Create(AName);
+  SearchDirectory('')
 end;
 
 procedure TLpiTest.TestCompile;
@@ -173,6 +180,9 @@ end;
 
 initialization
   InitDirectories;
-  GetTestRegistry.AddTest(TLpiTest.ExamplesSuite);
+  GetTestRegistry.AddTest(
+    TLpiTest.CreateSuiteFromDirectory('Examples', ExamplesDir));
+  GetTestRegistry.AddTest(
+    TLpiTest.CreateSuiteFromDirectory('LCL test', LCLTestDir));
 end.
 
