@@ -37,8 +37,10 @@ uses
   {$ELSE}
   Gtk, Glib, Gdk,
   {$ENDIF}
+  // RTL
+  Classes, SysUtils, 
   // LCL
-  LCLType, LMessages, LCLProc, Controls, Classes, SysUtils, Forms,
+  LCLType, LMessages, LCLProc, Controls, Forms,
   // widgetset
   WSControls, WSLCLClasses, WSProc,
   // interface
