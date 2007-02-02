@@ -24,8 +24,14 @@ unit consoletestrunner;
 interface
 
 uses
-  custapp, Classes, SysUtils, fpcunit, testregistry, testreport, testutils,
-  dom, xmlreporter, xmlwrite;
+  custapp, Classes, SysUtils,
+  fpcunit, testregistry, testutils,
+{$IFDEF VER2_0}
+  testreport, xmlreporter,
+{$ELSE}
+  fpcunitreport, latextestreport, xmltestreport, plaintestreport,
+{$ENDIF}
+  dom, xmlwrite;
 
 const
   Version = '0.2';
@@ -52,6 +58,7 @@ type
     procedure AppendLongOpts; virtual;
     procedure WriteCustomHelp; virtual;
     procedure ParseOptions; virtual;
+    procedure ExtendXmlDocument(Doc: TXMLDocument);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -124,7 +131,7 @@ end;
 
 var
   FormatParam: TFormat;
-
+{$IFDEF VER2_0}
 procedure TTestRunner.doTestRun(aTest: TTest);
 var
   testResult: TTestResult;
@@ -134,26 +141,13 @@ var
   var
     XMLResultsWriter: TXMLResultsWriter;
     
-    procedure ExtendDocument(Doc: TXMLDocument);
-    var
-      n: TDOMElement;
-    begin
-      if StyleSheet<>'' then begin
-        Doc.StylesheetType := 'text/xsl';
-        Doc.StylesheetHRef := StyleSheet;
-      end;
-      n := Doc.CreateElement('Title');
-      n.AppendChild(Doc.CreateTextNode(Title));
-      Doc.FirstChild.AppendChild(n);
-    end;
-    
   begin
     try
       XMLResultsWriter := TXMLResultsWriter.Create;
       testResult.AddListener(XMLResultsWriter);
       aTest.Run(testResult);
       XMLResultsWriter.WriteResult(testResult);
-      ExtendDocument(XMLResultsWriter.Document);
+      ExtendXmlDocument(XMLResultsWriter.Document);
       if FileName<>'' then
         WriteXMLFile(XMLResultsWriter.Document, FileName)
       else
@@ -162,23 +156,6 @@ var
       XMLResultsWriter.Free;
     end;
   end;
-
-  {$IFNDEF VER2_0}
-  procedure doPlainTestRun(aTest: TTest);
-  var
-    PlainResultsWriter: TPlainResultsWriter;
-  begin
-    try
-      PlainResultsWriter := TPlainResultsWriter.Create;
-      testResult.AddListener(PlainResultsWriter);
-      PlainResultsWriter.WriteHeader;
-      aTest.Run(testResult);
-      PlainResultsWriter.WriteResult(testResult);
-    finally
-      PlainResultsWriter.Free;
-    end;
-  end;
-  {$ENDIF}
 
 begin
   testResult := TTestResult.Create;
@@ -189,9 +166,6 @@ begin
   try
     case FormatParam of
       fLatex: doXMLTestRun(aTest); //no latex implemented yet
-      {$IFNDEF VER2_0}
-      fPlain: doPlainTestRun(aTest);
-      {$ENDIF}
       else
         doXMLTestRun(aTest);
     end;
@@ -203,6 +177,51 @@ begin
     testResult.Free;
   end;
 end;
+{$ELSE}
+procedure TTestRunner.doTestRun(aTest: TTest);
+
+  procedure ExecuteTest(aTest: TTest; aResultsWriter: TCustomResultsWriter);
+  var
+    testResult: TTestResult;
+    progressWriter: TProgressWriter;
+  begin
+    testResult := TTestResult.Create;
+    try
+      if ShowProgress then
+      begin
+        progressWriter := TProgressWriter.Create;
+        testResult.AddListener(progressWriter);
+      end;
+      testResult.AddListener(aResultsWriter);
+      aTest.Run(testResult);
+      aResultsWriter.WriteResult(testResult);
+    finally
+      if ShowProgress then
+        progressWriter.Free;
+      testResult.Free;
+    end;
+  end;
+
+var
+  ResultsWriter: TCustomResultsWriter;
+begin
+  case FormatParam of
+    fLatex: ResultsWriter := TLatexResultsWriter.Create(nil);
+    fPlain: ResultsWriter := TPlainResultsWriter.Create(nil);
+  else
+    begin
+      ResultsWriter := TXmlResultsWriter.Create(nil);
+      ExtendXmlDocument(TXMLResultsWriter(ResultsWriter).Document);
+    end;
+  end;
+  try
+    ResultsWriter.Filename := FileName;
+    ExecuteTest(aTest, ResultsWriter);
+  finally
+    ResultsWriter.Free;
+  end;
+end;
+{$ENDIF}
 
 function TTestRunner.GetShortOpts: string;
 begin
@@ -266,6 +285,19 @@ begin
     StyleSheet := GetOptionValue('stylesheet');
 end;
 
+procedure TTestRunner.ExtendXmlDocument(Doc: TXMLDocument);
+var
+  n: TDOMElement;
+begin
+  if StyleSheet<>'' then begin
+    Doc.StylesheetType := 'text/xsl';
+    Doc.StylesheetHRef := StyleSheet;
+  end;
+  n := Doc.CreateElement('Title');
+  n.AppendChild(Doc.CreateTextNode(Title));
+  Doc.FirstChild.AppendChild(n);
+end;
+
 constructor TTestRunner.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -296,9 +328,11 @@ begin
       fLatex: Write(GetSuiteAsLatex(GetTestRegistry));
       {$IFNDEF VER2_0}
       fPlain: Write(GetSuiteAsPlain(GetTestRegistry));
+      {$ELSE}
+      fXML: Write(GetSuiteAsXML(GetTestRegistry));
       {$ENDIF}
       else
-        Write(GetSuiteAsXML(GetTestRegistry));
+        Write(GetSuiteAsLatex(GetTestRegistry));;
     end;
 
   //run the tests

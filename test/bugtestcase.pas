@@ -70,6 +70,7 @@ begin
     BufferedOutput.SetSize(BytesRead + READ_BYTES);
 
     // try reading it
+    {$IFNDEF VER2_0}
     if AProcess.Output.NumBytesAvailable>0 then begin
       n := AProcess.Output.Read((BufferedOutput.Memory + BytesRead)^, READ_BYTES);
       Inc(BytesRead, n)
@@ -77,18 +78,32 @@ begin
     else
       // no data, wait 100 ms
       Sleep(100);
+    {$ELSE}
+    n := AProcess.Output.Read((BufferedOutput.Memory + BytesRead)^, READ_BYTES);
+    if n>0 then
+      Inc(BytesRead, n)
+    else
+      // no data, wait 100 ms
+      Sleep(100);
+    {$ENDIF}
   end;
   // read last part
   repeat
     // make sure we have room
     BufferedOutput.SetSize(BytesRead + READ_BYTES);
     // try reading it
+    {$IFNDEF VER2_0}
     if AProcess.Output.NumBytesAvailable>0 then begin
       n := AProcess.Output.Read((BufferedOutput.Memory + BytesRead)^, READ_BYTES);
       Inc(BytesRead, n);
     end
     else
       n := 0;
+    {$ELSE}
+    n := AProcess.Output.Read((BufferedOutput.Memory + BytesRead)^, READ_BYTES);
+    if n>0 then
+      Inc(BytesRead, n);
+    {$ENDIF}
   until n <= 0;
   BufferedOutput.SetSize(BytesRead);
 end;
