@@ -435,9 +435,9 @@ var i, j, FilenameEndPos: integer;
       // add path to history
       if fCompilingHistory=nil then fCompilingHistory:=TStringList.Create;
       inc(p,length('Compiling '));
-      if (length(s)>=i+1) and (s[i]='.') and (s[i+1]=PathDelim) then
-        inc(i,2);
-      AFilename:=TrimFilename(copy(s,i,length(s)));
+      if (length(s)>=p+1) and (s[p]='.') and (s[p+1]=PathDelim) then
+        inc(p,2);
+      AFilename:=TrimFilename(copy(s,p,length(s)));
       fCompilingHistory.Add(AFilename);
       CurrentMessageParts.Values['Stage']:='FPC';
       CurrentMessageParts.Values['Type']:='Compiling';
