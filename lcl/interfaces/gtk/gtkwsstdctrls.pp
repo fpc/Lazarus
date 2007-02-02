@@ -34,7 +34,7 @@ uses
   glib, gdk, gtk, {$Ifndef NoGdkPixbufLib}gdkpixbuf,{$EndIf} GtkFontCache,
   {$ENDIF}
   WSStdCtrls, WSLCLClasses, WSProc, WSControls, GtkInt, LCLType, GtkDef, LCLProc,
-  GTKWinApiWindow, gtkglobals, gtkproc, gtkExtra, InterfaceBase;
+  GTKWinApiWindow, gtkglobals, gtkproc, gtkExtra, GtkPrivate, InterfaceBase;
 
 
 type
@@ -1208,10 +1208,10 @@ initialization
 //  RegisterWSComponent(TGroupBox, TGtkWSGroupBox);
   RegisterWSComponent(TCustomComboBox, TGtkWSCustomComboBox);
 //  RegisterWSComponent(TComboBox, TGtkWSComboBox);
-  RegisterWSComponent(TCustomListBox, TGtkWSCustomListBox, TGtkWSScrollingPrivate);
+  RegisterWSComponent(TCustomListBox, TGtkWSCustomListBox, TGtkPrivateScrolling);
 //  RegisterWSComponent(TListBox, TGtkWSListBox);
   RegisterWSComponent(TCustomEdit, TGtkWSCustomEdit);
-  RegisterWSComponent(TCustomMemo, TGtkWSCustomMemo, TGtkWSScrollingPrivate);
+  RegisterWSComponent(TCustomMemo, TGtkWSCustomMemo, TGtkPrivateScrolling);
 //  RegisterWSComponent(TButtonControl, TGtkWSButtonControl);
   RegisterWSComponent(TCustomCheckBox, TGtkWSCustomCheckBox);
 //  RegisterWSComponent(TCheckBox, TGtkWSCheckBox);

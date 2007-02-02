@@ -1,18 +1,6 @@
-{ $Id$ }
+{%mainunit gtkprivate.pp}
+
 {
- ---------------------------------------------------------------------------
- gtkextra.pp  -  GTK(2) widgetset - additional gdk/gtk functions
- ---------------------------------------------------------------------------
-
- This unit contains missing gdk/gtk functions and defines for certain 
- versions of gtk or fpc.
-
- ---------------------------------------------------------------------------
-
- @created(Sun Jan 28th WET 2006)
- @lastmod($Date$)
- @author(Marc Weustink <marc@@dommelstein.nl>)
-
  *****************************************************************************
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
@@ -25,33 +13,10 @@
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                     *
  *                                                                           *
  *****************************************************************************
- }
-
-unit GtkExtra;
-
-{$mode objfpc}{$H+}
-
-interface
-
-{$I gtkdefines.inc}
-
-{$ifdef gtk1}
-{$I gtk1extrah.inc}
-{$endif}
-
-{$ifdef gtk2}
-{$I ../gtk2/gtk2extrah.inc}
-{$endif}
+}
 
 
-implementation
-
-{$ifdef gtk1}
-{$I gtk1extra.inc}
-{$endif}
-
-{$ifdef gtk2}
-{$I ../gtk2/gtk2extra.inc}
-{$endif}
-
-end.
+class procedure TGtk2PrivateWidget.UpdateCursor(AInfo: PWidgetInfo);
+begin
+  //specific button code here
+end;

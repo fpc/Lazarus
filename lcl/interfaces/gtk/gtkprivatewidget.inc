@@ -1,18 +1,6 @@
-{ $Id$ }
+{%mainunit gtkprivate.pp}
+
 {
- ---------------------------------------------------------------------------
- gtkextra.pp  -  GTK(2) widgetset - additional gdk/gtk functions
- ---------------------------------------------------------------------------
-
- This unit contains missing gdk/gtk functions and defines for certain 
- versions of gtk or fpc.
-
- ---------------------------------------------------------------------------
-
- @created(Sun Jan 28th WET 2006)
- @lastmod($Date$)
- @author(Marc Weustink <marc@@dommelstein.nl>)
-
  *****************************************************************************
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
@@ -25,33 +13,34 @@
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                     *
  *                                                                           *
  *****************************************************************************
- }
+}
 
-unit GtkExtra;
+{ TGtkPrivateWidget }
 
-{$mode objfpc}{$H+}
+class procedure TGtkPrivateWidget.UpdateCursor(AInfo: PWidgetInfo);
+begin
+  //move code from gtkproc.inc here
 
-interface
+end;
 
-{$I gtkdefines.inc}
+class procedure TGtkPrivateWidget.SetZPosition(const AWinControl: TWinControl; const APosition: TWSZPosition);
+var
+  Widget: PGtkWidget;
+begin
+  if not WSCheckHandleAllocated(AWincontrol, 'SetZPosition')
+  then Exit;
 
-{$ifdef gtk1}
-{$I gtk1extrah.inc}
-{$endif}
+  Widget := GetWidgetWithWindow(AWincontrol.Handle);
+  if Widget = nil then Exit;
+  if Widget^.Window=nil then exit;
 
-{$ifdef gtk2}
-{$I ../gtk2/gtk2extrah.inc}
-{$endif}
+  case APosition of
+    wszpBack:  begin
+      gdk_window_lower(Widget^.Window);
+    end;
+    wszpFront: begin
+      gdk_window_raise(Widget^.Window);
+    end;
+  end;
+end;
 
-
-implementation
-
-{$ifdef gtk1}
-{$I gtk1extra.inc}
-{$endif}
-
-{$ifdef gtk2}
-{$I ../gtk2/gtk2extra.inc}
-{$endif}
-
-end.

@@ -36,7 +36,12 @@ uses
   {$ENDIF}
   SysUtils, Classes, Controls, LMessages, InterfaceBase,
   WSControls, WSLCLClasses, WSProc,
-  Graphics, ComCtrls, GtkDef, GTKExtra, LCLType;
+  Graphics, ComCtrls, LCLType,
+  GTKPrivate,
+  {$ifdef gtk1}
+  GTK1Private,
+  {$endif}
+  GtkDef, GTKExtra;
 
 type
 
@@ -55,16 +60,6 @@ type
   protected
   public
   end;
-
-  { TGtkWSWinControlPrivate }
-
-  TGtkWSWinControlPrivate = class(TWSPrivate)
-  private
-  protected
-  public
-    class procedure SetZPosition(const AWinControl: TWinControl; const APosition: TWSZPosition); virtual;
-  end;
-  TGtkWSWinControlPrivateClass = class of TGtkWSWinControlPrivate;
 
 
   { TGtkWSWinControl }
@@ -146,16 +141,6 @@ type
     class procedure SetCallbacks(const AWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   end;
 
-  { TGtkWSScrollingPrivate }
-
-  TGtkWSScrollingPrivate = class(TGtkWSWinControlPrivate)
-  private
-  protected
-  public
-    class procedure SetZPosition(const AWinControl: TWinControl; const APosition: TWSZPosition); override;
-  end;
-
-
 procedure GtkWindowShowModal(GtkWindow: PGtkWindow);
 function GetWidgetHAdjustment(AWidget: PGTKWidget): PGTKAdjustment;
 function GetWidgetVAdjustment(AWidget: PGTKWidget): PGTKAdjustment;
@@ -166,23 +151,6 @@ uses
   GtkInt, gtkglobals, gtkproc, GTKWinApiWindow,
   StdCtrls, LCLProc, LCLIntf;
 
-
-// Helper functions
-
-function GetWidgetWithWindow(const AHandle: THandle): PGtkWidget;
-var
-  Children: PGList;
-begin
-  Result := PGTKWidget(AHandle);
-  while (Result <> nil) and GTK_WIDGET_NO_WINDOW(Result)
-  and GtkWidgetIsA(Result,gtk_container_get_type) do
-  begin
-    Children := gtk_container_children(PGtkContainer(Result));
-    if Children = nil
-    then Result := nil
-    else Result := Children^.Data;
-  end;
-end;
 
 
 { TGtkWSWinControl }
@@ -369,7 +337,7 @@ begin
     begin
       child := TWinControlHack(AChildren[n]);
       if child.HandleAllocated
-      then TGtkWSWinControlPrivateClass(child.WidgetSetClass.WSPrivate).
+      then TGtkPrivateWidgetClass(child.WidgetSetClass.WSPrivate).
                   SetZPosition(child, wszpBack);
     end;
   end
@@ -379,7 +347,7 @@ begin
     begin
       child := TWinControlHack(AChildren[n]);
       if child.HandleAllocated
-      then TGtkWSWinControlPrivateClass(child.WidgetSetClass.WSPrivate).SetZPosition(child, wszpFront);
+      then TGtkPrivateWidgetClass(child.WidgetSetClass.WSPrivate).SetZPosition(child, wszpFront);
     end;
   end;
 end;
@@ -626,29 +594,6 @@ begin
   Assert(False, Format('trace:  [TGtkWidgetSet.SetLabel] %s --> END', [AWinControl.ClassName]));
 end;
 
-{ TGtkWSWinControlPrivate }
-
-class procedure TGtkWSWinControlPrivate.SetZPosition(const AWinControl: TWinControl; const APosition: TWSZPosition);
-var
-  Widget: PGtkWidget;
-begin
-  if not WSCheckHandleAllocated(AWincontrol, 'SetZPosition')
-  then Exit;
-
-  Widget := GetWidgetWithWindow(AWincontrol.Handle);
-  if Widget = nil then Exit;
-  if Widget^.Window=nil then exit;
-
-  case APosition of
-    wszpBack:  begin
-      gdk_window_lower(Widget^.Window);
-    end;
-    wszpFront: begin
-      gdk_window_raise(Widget^.Window);
-    end;
-  end;
-end;
-
 
 
 { helper/common routines }
@@ -881,42 +826,6 @@ begin
   );
 end;
 
-{ TGtkWSScrollingPrivate }
-
-class procedure TGtkWSScrollingPrivate.SetZPosition(const AWinControl: TWinControl; const APosition: TWSZPosition);
-var
-  ScrollWidget: PGtkScrolledWindow;
-//  WidgetInfo: PWidgetInfo;
-  Widget: PGtkWidget;
-begin
-  if not WSCheckHandleAllocated(AWincontrol, 'SetZPosition')
-  then Exit;
-
-  ScrollWidget := Pointer(AWinControl.Handle);
-//  WidgetInfo := GetWidgetInfo(ScrollWidget);
-  // Some controls have viewports, so we get the first window.
-  Widget := GetWidgetWithWindow(AWinControl.Handle);
-
-  case APosition of
-    wszpBack:  begin
-      //gdk_window_lower(WidgetInfo^.CoreWidget^.Window);
-      gdk_window_lower(Widget^.Window);
-      if ScrollWidget^.hscrollbar <> nil
-      then gdk_window_lower(ScrollWidget^.hscrollbar^.Window);
-      if ScrollWidget^.vscrollbar <> nil
-      then gdk_window_lower(ScrollWidget^.vscrollbar^.Window);
-    end;
-    wszpFront: begin
-      //gdk_window_raise(WidgetInfo^.CoreWidget^.Window);
-      gdk_window_raise(Widget^.Window);
-      if ScrollWidget^.hscrollbar <> nil
-      then gdk_window_raise(ScrollWidget^.hscrollbar^.Window);
-      if ScrollWidget^.vscrollbar <> nil
-      then gdk_window_raise(ScrollWidget^.vscrollbar^.Window);
-    end;
-  end;
-end;
-
 initialization
 
 ////////////////////////////////////////////////////
@@ -927,7 +836,7 @@ initialization
 ////////////////////////////////////////////////////
 //  RegisterWSComponent(TDragImageList, TGtkWSDragImageList);
 //  RegisterWSComponent(TControl, TGtkWSControl);
-  RegisterWSComponent(TWinControl, TGtkWSWinControl, TGtkWSWinControlPrivate);
+  RegisterWSComponent(TWinControl, TGtkWSWinControl, TGtkPrivateWidget);
 //  RegisterWSComponent(TGraphicControl, TGtkWSGraphicControl);
 //  RegisterWSComponent(TCustomControl, TGtkWSCustomControl);
 //  RegisterWSComponent(TImageList, TGtkWSImageList);

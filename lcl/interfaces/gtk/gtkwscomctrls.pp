@@ -39,7 +39,7 @@ uses
   // widgetset
   WSComCtrls, WSLCLClasses, WSProc, WSControls,
   // interface
-  GtkDef, GtkExtra;
+  GtkDef, GtkExtra, GtkPrivate;
 
 type
 
@@ -449,7 +449,7 @@ initialization
   RegisterWSComponent(TStatusBar, TGtkWSStatusBar);
 //  RegisterWSComponent(TCustomTabSheet, TGtkWSTabSheet);
 //  RegisterWSComponent(TCustomPageControl, TGtkWSPageControl);
-  RegisterWSComponent(TCustomListView, TGtkWSCustomListView, TGtkWSScrollingPrivate);
+  RegisterWSComponent(TCustomListView, TGtkWSCustomListView, TGtkPrivateScrolling);
 //  RegisterWSComponent(TCustomListView, TGtkWSListView);
   RegisterWSComponent(TCustomProgressBar, TGtkWSProgressBar);
 //  RegisterWSComponent(TCustomUpDown, TGtkWSCustomUpDown);
