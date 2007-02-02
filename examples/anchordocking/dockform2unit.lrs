@@ -1,0 +1,13 @@
+LazarusResources.Add('TDockFormX','FORMDATA',[
+  'TPF0'#10'TDockFormX'#9'DockFormX'#4'Left'#3#234#1#6'Height'#2''#3'Top'#3#215
+  +#0#5'Width'#3#224#0#18'HorzScrollBar.Page'#3#223#0#18'VertScrollBar.Page'#2
+  +'~'#13'ActiveControl'#7#7'Button1'#7'Caption'#6#9'DockFormX'#28'ChildSizing.'
+  +'LeftRightSpacing'#2#1#28'ChildSizing.TopBottomSpacing'#2#1#8'OnCreate'#7#10
+  +'FormCreate'#7'OnPaint'#7#9'FormPaint'#9'PopupMenu'#7#10'PopupMenu1'#0#7'TBu'
+  +'tton'#7'Button1'#4'Left'#2#24#6'Height'#2#25#3'Top'#2'0'#5'Width'#2'K'#25'B'
+  +'orderSpacing.InnerBorder'#2#4#7'Caption'#6#7'Button1'#8'TabOrder'#2#0#0#0#9
+  +'TGroupBox'#9'GroupBox1'#4'Left'#2'v'#6'Height'#2'}'#3'Top'#2#1#5'Width'#2'i'
+  +#5'Align'#7#7'alRight'#7'Caption'#6#9'GroupBox1'#8'TabOrder'#2#1#0#0#10'TPop'
+  +'upMenu'#10'PopupMenu1'#4'left'#2'V'#3'top'#2'4'#0#9'TMenuItem'#12'HideMenuI'
+  +'tem'#7'Caption'#6#4'Hide'#7'OnClick'#7#17'HideMenuItemClick'#0#0#0#0
+]);
