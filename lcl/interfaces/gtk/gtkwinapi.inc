@@ -1272,7 +1272,7 @@ function TGtkWidgetSet.CreateCursor(ACursorInfo: PIconInfo): hCursor;
     var
       c_bit, m_bit: byte;
     begin
-      c_bit := ord(c.pixel = $FFFFFF);
+      c_bit := Ord(0.222 * c.red + 0.707 * c.green + 0.071 * c.blue >= $8000);
       m_bit := ord(MaskPixel = 0);
 
       AImgBits^ := AImgBits^ or (c_bit shl offset);
