@@ -137,7 +137,7 @@ var
   threadsync_giochannel: pgiochannel;
   childsig_pending: boolean;
 
-{$ifdef BSD}
+{$if defined(ver2_0) and defined(BSD)}
 procedure ChildEventHandler(sig: longint; var siginfo: tsiginfo_t;
   var sigcontext: sigcontextrec); cdecl;
 {$else}
