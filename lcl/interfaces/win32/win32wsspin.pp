@@ -86,6 +86,14 @@ begin
   Result := SendMessage(AHandle, UDM_GETBUDDY, 0, 0)
 end;
 
+function SpinWindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
+    LParam: Windows.LParam): LResult; stdcall;
+begin
+  if Msg = WM_SETFOCUS then
+    Window := GetBuddyWindow(Window);
+  Result := WindowProc(Window, Msg, WParam, LParam);
+end;
+
 procedure UpdateFloatSpinEditControl(const Handle: HWND;
   const AFloatSpinEdit: TCustomFloatSpinEdit);
 var
@@ -120,6 +128,7 @@ begin
   // customization of Params
   with Params do
   begin
+    SubClassWndProc := @SpinWindowProc;
     Buddy := CreateWindowEx(WS_EX_CLIENTEDGE, 'EDIT', StrCaption, Flags Or ES_AUTOHSCROLL, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
     Window := CreateUpDownControl(Flags or DWORD(WS_BORDER or UDS_ALIGNRIGHT or UDS_ARROWKEYS),
       0, 0,       // pos -  ignored for buddy
@@ -134,6 +143,9 @@ begin
   Params.SubClassWndProc := @WindowProc;
   WindowCreateInitBuddy(AWinControl, Params);
   Params.BuddyWindowInfo^.isChildEdit := true;
+  // make possible LCL Wincontrol identification by Buddy handle
+  // TODO: should move to widget specific SetProp method
+  SetProp(Params.Buddy, 'WinControl', PtrUInt(AWinControl));
   Result := Params.Window;
 end;
 
