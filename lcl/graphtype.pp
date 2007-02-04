@@ -827,24 +827,30 @@ begin
   begin
     for HighValue := 0 to 7 do
     begin
-      // Value represents the three highest bits
+      // HighValue represents the three highest bits
       // For example:
       //   Prec=5 and the read value is %10110
-      //   => Value=%101
-      // copy the value till all missing bits are set
+      //   => HighValue=%101
+      // copy the HighValue till all missing bits are set
       // For example:
       //   Prec=5, HighValue=%110
       // => MissingBits[5,6]:=%0000011011011011
+      //   because 00000 110 110 110 11
       MissingBits[Prec, HighValue] := 0;
       if Prec = 0 then Continue;
-      if Prec >= 3 then DShift := 3
-      else DShift := Prec;
-      
-      Bits := HighValue;
+
+      if Prec>=3 then begin
+        DShift := 3;
+        Bits := HighValue;
+      end else begin
+        DShift := Prec;
+        Bits := HighValue shr (3-Prec);
+      end;
       
       CurShift := 16 - Prec;
       while CurShift > 0 do
       begin
+        //DebugLn(['InternalInit CurShift=',CurShift,' DShift=',DShift]);
         if CurShift >= DShift then
           MissingBits[Prec, HighValue] :=
             MissingBits[Prec, HighValue] or (Bits shl (CurShift - DShift))
