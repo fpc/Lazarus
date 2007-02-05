@@ -172,7 +172,6 @@ begin
         if not (TheProcess.ExitStatus in [0,1]) then  begin
           WriteError(Format(listCompilerInternalError,[TheProcess.ExitStatus]));
           Result:=mrCancel;
-          exit;
         end;
       end;
     except
