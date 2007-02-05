@@ -135,7 +135,10 @@ begin
     FSavedBrushHandle:=OldHandle;
   Include(FState, csBrushValid);
   SetBkColor(FHandle, Brush.Color);
-  SetBkMode(FHandle, TRANSPARENT);
+  if Brush.Style=bsSolid then
+    SetBkMode(FHandle, OPAQUE)
+  else
+    SetBkMode(FHandle, TRANSPARENT);
 end;
 
 {------------------------------------------------------------------------------
