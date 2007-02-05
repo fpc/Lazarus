@@ -397,6 +397,7 @@ type
 
   TFileDescPascalUnitWithResource = class(TFileDescPascalUnit)
   public
+    function GetInterfaceUsesSection: string; override;
     function GetInterfaceSource(const Filename, SourceName,
                                 ResourceName: string): string; override;
     function GetImplementationSource(const Filename, SourceName,
@@ -944,6 +945,12 @@ begin
 end;
 
 { TFileDescPascalUnitWithResource }
+
+function TFileDescPascalUnitWithResource.GetInterfaceUsesSection: string;
+begin
+  Result:=inherited GetInterfaceUsesSection;
+  Result:=Result+', LResources';
+end;
 
 function TFileDescPascalUnitWithResource.GetInterfaceSource(const Filename,
   SourceName, ResourceName: string): string;
