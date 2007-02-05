@@ -464,7 +464,6 @@ type
     LazDocAddPathButton: TButton;
     LazDocPathsGroupBox: TGroupBox;
     LazDocListBox: TListBox;
-    LazDocNoteLabel: TLabel;
 
     // language
     LanguageGroupBox: TGroupBox;
@@ -2055,8 +2054,7 @@ begin
   LazDocPathsGroupBox.Caption := lisLazDocPathsGroupBox;
   LazDocAddPathButton.Caption := lisLazDocAddPathButton;
   LazDocDeletePathButton.Caption := lisLazDocDeletePathButton;
-  LazDocNoteLabel.Caption:=lisEONOTEOnlyAbsolutePathsAreSupportedNow;
-  
+
   LazDocPathEdit.Clear;
 end;
 

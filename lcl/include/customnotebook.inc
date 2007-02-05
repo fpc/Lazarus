@@ -572,9 +572,9 @@ begin
   begin
     APage:=TCustomPage(fPageList[Index]);
     APage.FTabVisible:=false;
-    PageRemoved(Index);
     if HandleAllocated then
       AddRemovePageHandle(APage);
+    PageRemoved(Index);
     FPageList.Delete(Index);
     APage.Parent:=nil;
     if FPageIndex >= Index then
