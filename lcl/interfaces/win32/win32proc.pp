@@ -51,7 +51,7 @@ Type
     isComboEdit: boolean;     // is buddy of combobox, the edit control
     isChildEdit: boolean;     // is buddy edit of a control
     isGroupBox: boolean;      // is groupbox, and does not have themed tabpage as parent
-    MaxLength: dword;
+    MaxLength: integer;
     DrawItemIndex: integer;   // in case of listbox, when handling WM_DRAWITEM
     DrawItemSelected: boolean;// whether this item is selected LB_GETSEL not uptodate yet
     MouseX, MouseY: word; // noticing spurious WM_MOUSEMOVE messages
