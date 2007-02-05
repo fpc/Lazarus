@@ -24,7 +24,7 @@ unit CustomComponentClass;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Forms, FormEditingIntf;
+  Classes, SysUtils, LCLProc, LResources, Forms, FormEditingIntf;
   
 type
 
