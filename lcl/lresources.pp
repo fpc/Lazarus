@@ -262,6 +262,8 @@ var
   LRSObjectReaderClass: TLRSObjectReaderClass=TLRSObjectReader;
   LRSObjectWriterClass: TLRSObjectWriterClass=TLRSObjectWriter;
 
+function InitResourceComponent(Instance: TComponent;
+  RootAncestor: TClass):Boolean;
 function InitLazResourceComponent(Instance: TComponent;
                                   RootAncestor: TClass): Boolean;
 function CreateLRSReader(s: TStream; var DestroyDriver: boolean): TReader;
@@ -496,6 +498,12 @@ begin
          or (Value^.Right<>0)
          or (Value^.Bottom<>0);
   end;
+end;
+
+function InitResourceComponent(Instance: TComponent;
+  RootAncestor: TClass):Boolean;
+begin
+  Result:=InitLazResourceComponent(Instance,RootAncestor);
 end;
 
 procedure DefineRectProperty(Filer: TFiler; const Name: string; ARect,
@@ -4009,12 +4017,6 @@ begin
 end;
 
 
-//------------------------------------------------------------------------------
-procedure InternalInit;
-begin
-  LazarusResources:=TLResourceList.Create;
-end;
-
 { TLRPositionLinks }
 
 function TLRPositionLinks.GetLFM(Index: integer): Int64;
@@ -4330,6 +4332,13 @@ begin
   finally
     AStream.Free;
   end;
+end;
+
+//------------------------------------------------------------------------------
+procedure InternalInit;
+begin
+  LazarusResources:=TLResourceList.Create;
+  RegisterInitComponentHandler(TComponent,@InitResourceComponent);
 end;
 
 initialization

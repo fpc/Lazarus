@@ -1280,9 +1280,6 @@ function IsAccel(VK: word; const Str: string): Boolean;
 procedure NotifyApplicationUserInput(Msg: Cardinal);
 
 
-function InitResourceComponent(Instance: TComponent;
-  RootAncestor: TClass):Boolean;
-
 function GetShortHint(const Hint: string): string;
 function GetLongHint(const Hint: string): string;
 
@@ -1457,12 +1454,6 @@ begin
 end;
 
 //==============================================================================
-
-function InitResourceComponent(Instance: TComponent;
-  RootAncestor: TClass):Boolean;
-begin
-  Result:=InitLazResourceComponent(Instance,RootAncestor);
-end;
 
 function FindRootDesigner(AComponent: TComponent): TIDesigner;
 var
@@ -1778,9 +1769,6 @@ initialization
   Screen:=TScreen.Create(nil);
   Application:=TApplication.Create(nil);
 
-  {$IFDEF UseFCLDataModule}
-  RegisterInitComponentHandler(TComponent,@InitResourceComponent);
-  {$ENDIF}  
 finalization
   //DebugLn('forms.pp - finalization section');
   LCLProc.OwnerFormDesignerModifiedProc:=nil;
