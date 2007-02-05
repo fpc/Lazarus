@@ -169,6 +169,11 @@ begin
         end;
       finally
         TheProcess.WaitOnExit;
+        if not (TheProcess.ExitStatus in [0,1]) then  begin
+          WriteError(Format(listCompilerInternalError,[TheProcess.ExitStatus]));
+          Result:=mrCancel;
+          exit;
+        end;
       end;
     except
       on e: EOutputFilterError do begin

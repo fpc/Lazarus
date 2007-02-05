@@ -1899,6 +1899,7 @@ resourcestring
 
   // compiler
   lisCompilerErrorInvalidCompiler = 'Error: invalid compiler: %s';
+  listCompilerInternalError = 'Internal compiler error! (%d)';
   lisCompilerHintYouCanSetTheCompilerPath = 'Hint: you can set the compiler '
     +'path in Environment->Environment options->Files->Compiler Path';
   lisCompilerNOTELoadingOldCodetoolsOptionsFile = 'NOTE: loading old '
