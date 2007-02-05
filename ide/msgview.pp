@@ -79,7 +79,8 @@ type
     procedure MessagesViewKeyDown(Sender: TObject; var Key: word;
       Shift: TShiftState);
     procedure MessageViewDrawItem(Sender: TCustomTreeView; Node: TTreeNode;
-    State: TCustomDrawState; var DefaultDraw: Boolean);
+      State: TCustomDrawState; Stage: TCustomDrawStage;
+      var PaintImages, DefaultDraw: Boolean);
     procedure SaveAllToFileMenuItemClick(Sender: TObject);
     procedure OnQuickFixClick(Sender: TObject);
   private
@@ -280,7 +281,7 @@ begin
   FLastSelectedIndex := -1;
 
   Caption := lisMenuViewMessages;
-  MessageTreeView.OnCustomDrawItem := @MessageViewDrawItem;
+  MessageTreeView.OnAdvancedCustomDrawItem := @MessageViewDrawItem;
 
   // assign the root TMenuItem to the registered menu root.
   // This will automatically create all registered items
@@ -852,10 +853,10 @@ begin
 end;
 
 procedure TMessagesView.MessageViewDrawItem(Sender: TCustomTreeView;
-  Node: TTreeNode; State: TCustomDrawState; var DefaultDraw: Boolean);
+  Node: TTreeNode; State: TCustomDrawState; Stage: TCustomDrawStage;
+  var PaintImages, DefaultDraw: Boolean);
 var
   TheText: string;
-  cl: TColor;
   ARect: TRect;
 const
   cHint         = 'Hint: User defined:';
@@ -864,28 +865,36 @@ const
   clMsgHint     = clBlue;
   clMsgNote     = clGreen;
   clMsgWarning  = clRed;
-  cLeftSpacer   = 3;
+  cLeftSpacer   = 0;
+  
+  procedure ChangeFontColor(c: TColor);
+  var
+    OldFontColor: TColor;
+  begin
+    OldFontColor := MessageTreeView.Canvas.Font.Color;   // save original color
+    ARect:=Node.DisplayRect(true);
+    MessageTreeView.Canvas.FillRect(ARect);
+    MessageTreeView.Canvas.Font.Color := c;
+    MessageTreeView.Canvas.TextOut(ARect.Left + cLeftSpacer, ARect.Top + 1, TheText);
+    MessageTreeView.Canvas.Font.Color := OldFontColor;   // restore original color
+  end;
+  
 begin
-  ARect:=Node.DisplayRect(true);
-  MessageTreeView.Canvas.FillRect(ARect);
-  //DebugLn('TMessagesView.MessageViewDrawItem Index=',dbgs(Index),' Count=',dbgs(MessageTreeView.Items.Count));
-  TheText := Node.Text;
+  if Stage<>cdPostPaint then exit;
 
-  cl := MessageTreeView.Canvas.Font.Color;   // save original color
+  //DebugLn(['TMessagesView.MessageViewDrawItem Index=',Node.Index,' Count=',MessageTreeView.Items.Count,' TheText="',TheText,'"']);
 
   { Only use custom colors if not selected, otherwise it is difficult to read }
   if not (cdsSelected in State)
   then begin
+    TheText := Node.Text;
     if Pos(cNote, TheText) > 0 then
-      MessageTreeView.Canvas.Font.Color := clMsgNote
+      ChangeFontColor(clMsgNote)
     else if Pos(cHint, TheText) > 0 then
-      MessageTreeView.Canvas.Font.Color := clMsgHint
+      ChangeFontColor(clMsgHint)
     else if Pos(cWarning, TheText) > 0 then
-      MessageTreeView.Canvas.Font.Color := clMsgWarning;
+      ChangeFontColor(clMsgWarning);
   end;
-
-  MessageTreeView.Canvas.TextOut(ARect.Left + cLeftSpacer, ARect.Top + 1, TheText);
-  MessageTreeView.Canvas.Font.Color := cl;   // restore original color
 end;
 
 procedure TMessagesView.SaveAllToFileMenuItemClick(Sender: TObject);
