@@ -110,30 +110,48 @@ end;
 {------------------------------------------------------------------------------
   Function: TMenu.FindItem
   Params:
-  Returns:
+  Returns: the menu item with the shortcut
 
 
  ------------------------------------------------------------------------------}
-function TMenu.FindItem(AValue: Integer; Kind: TFindItemKind): TMenuItem;
+function TMenu.FindItem(AValue: PtrInt; Kind: TFindItemKind): TMenuItem;
 
   function Find(Item: TMenuItem): TMenuItem;
   var
     I: Integer;
+    {$IFDEF UseAltKeysForMenuItems}
+    Key: Word;
+    Shift: TShiftState;
+    {$ENDIF}
   begin
     Result := nil;
+    //DebugLn(['Find ',dbgsName(Item),' Item.ShortCut=',dbgs(Item.ShortCut),' ',dbgs(TShortCut(AValue))]);
     if Item=nil then exit;
     if ((Kind = fkCommand) and (AValue = Item.Command))
-    or ((Kind = fkHandle) and (AValue = Integer(Item.FHandle)))
-    or ((Kind = fkShortCut) and (AValue = Item.ShortCut)) then
-    begin
+    or ((Kind = fkHandle) and (HMenu(AValue) = Item.FHandle))
+    or ((Kind = fkShortCut) and (AValue = Item.ShortCut))
+    then begin
       Result := Item;
-    end
-    else
-      for I := 0 to Item.GetCount - 1 do begin
-        Result:=Find(Item[I]);
-        if Result<>nil then
-          Exit;
+      exit;
+    end;
+    {$IFDEF UseAltKeysForMenuItems}
+    if (Kind = fkShortCut) and (Item.IsInMenuBar)
+    then begin
+      // ToDo: check if parent is currently visible
+      // item caption is currently visible -> check caption for
+      ShortCutToKey(TShortCut(AValue),Key,Shift);
+      if (Shift=[ssAlt]) and IsAccel(Key,Item.Caption) then begin
+        Result := Item;
+        exit;
       end;
+    end;
+    {$ENDIF}
+
+    for I := 0 to Item.GetCount - 1 do begin
+      Result:=Find(Item[I]);
+      if Result<>nil then
+        Exit;
+    end;
   end;
 
 begin
@@ -150,6 +168,7 @@ begin
   Shortcut := Menus.Shortcut(Message.CharCode, ShiftState);
   Item := FindItem(Shortcut, fkShortcut);
   Result := Item <> nil;
+  //DebugLn(['TMenu.IsShortcut ',dbgsName(Self),' Result=',Result,' Message.CharCode=',Message.CharCode,' ShiftState=',dbgs(ShiftState)]);
   if Result then
   begin
     FShortcutHandled := true;
@@ -184,9 +203,9 @@ procedure TMenu.GetChildren(Proc: TGetChildProc; Root: TComponent);
 var
    i : integer;
 begin
-   for i := 0 to FItems.Count - 1
-      do if FItems[i].Owner = Root
-       	    then Proc(TComponent (FItems [i]));
+   for i := 0 to FItems.Count - 1 do
+     if FItems[i].Owner = Root
+     then Proc(TComponent (FItems [i]));
 end;
 
 procedure TMenu.MenuChanged(Sender: TObject; Source: TMenuItem; Rebuild: Boolean
@@ -223,7 +242,7 @@ end;
  ------------------------------------------------------------------------------}
 function TMenu.HandleAllocated : Boolean;
 begin
-   Result := FItems.HandleAllocated;
+  Result := FItems.HandleAllocated;
 end;
 
 {------------------------------------------------------------------------------

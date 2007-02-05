@@ -673,6 +673,8 @@ procedure LockRadioGroupOnChange(RadioGroup: PGSList; const ADelta: Integer);
 procedure UpdateRadioGroupChecks(RadioGroup: PGSList);
 procedure UpdateInnerMenuItem(LCLMenuItem: TMenuItem;
   MenuItemWidget: PGtkWidget);
+procedure UpdateInnerMenuItem(LCLMenuItem: TMenuItem;
+  MenuItemWidget: PGtkWidget; NewShortCut: TShortCut);
 function CreateMenuItem(LCLMenuItem: TMenuItem): Pointer;
 procedure GetGdkPixmapFromMenuItem(LCLMenuItem: TMenuItem;
   var IconImg, IconMask: PGdkPixmap; var Width, Height: integer);

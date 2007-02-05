@@ -188,7 +188,7 @@ class procedure TGtk2WSCustomMemo.SetSelLength(const ACustomEdit: TCustomEdit;
 var
   TextView: PGtkTextView;
   TextBuffer: PGtkTextBuffer;
-  StartIter, EndIter: TGtkTextIter;
+  StartIter: TGtkTextIter;
   SelStart: Integer;
 begin
   if not ACustomEdit.HandleAllocated then exit;
@@ -241,7 +241,6 @@ var
   TextView: PGtkTextView;
   TextBuffer: PGtkTextBuffer;
   StartIter, EndIter: TGtkTextIter;
-  TmpStr: String;
 begin
   Result := 0;
   if not ACustomEdit.HandleAllocated then exit;

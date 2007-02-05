@@ -176,12 +176,14 @@ end;
 class procedure TGtkWSMenuItem.SetShortCut(const AMenuItem: TMenuItem;
   const OldShortCut, NewShortCut: TShortCut);
 begin
-  Accelerate(AMenuItem, PGtkWidget(AMenuItem.Handle), NewShortcut,
+  //DebugLn(['TGtkWSMenuItem.SetShortCut ',dbgsName(AMenuItem),' ',ShortCutToText(NewShortCut)]);
+  UpdateInnerMenuItem(AMenuItem,PGTKWidget(AMenuItem.Handle),NewShortCut);
+  //Accelerate(AMenuItem, PGtkWidget(AMenuItem.Handle), NewShortcut,
     // The LCL already delegates the menu shortcuts.
     // just call a dummy callback
-    'grab-focus'
+    //'grab-focus'
     //{$Ifdef GTK2}'activate'{$Else}'activate_item'{$EndIF}
-    );
+    //);
 end;
 
 class procedure TGtkWSMenuItem.SetVisible(const AMenuItem: TMenuItem;

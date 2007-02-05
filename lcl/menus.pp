@@ -292,7 +292,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure DestroyHandle; virtual;
-    function FindItem(AValue: Integer; Kind: TFindItemKind) : TMenuItem;
+    function FindItem(AValue: PtrInt; Kind: TFindItemKind) : TMenuItem;
     function IsShortcut(var Message: TLMKey): boolean;
     function HandleAllocated: Boolean;
     Function IsRightToLeft: Boolean;

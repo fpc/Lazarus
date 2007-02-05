@@ -1918,7 +1918,7 @@ var
   FocusedWinControl: TWinControl;
   HandledByLCL: Boolean;
   TargetWidget: PGtkWidget;
-  TargetData: gPointer;
+  TargetObj: gPointer;
   KeyPressesChar: char;
 
   procedure StopKeyEvent(const AEventName: PChar);
@@ -2032,31 +2032,70 @@ var
     end;
   end;
   
-(*
-  //no functional code, is it still used ?
   function KeyActivatedAccelerator: boolean;
-  //var
-  //  AComponent: TComponent;
+  
+    function CheckMenuChilds(AMenuItem: TMenuItem): boolean;
+    var
+      i: Integer;
+      Item: TMenuItem;
+      MenuItemWidget: PGtkWidget;
+    begin
+      Result:=false;
+      if (AMenuItem=nil) or (not AMenuItem.HandleAllocated) then exit;
+      for i:=0 to AMenuItem.Count-1 do begin
+        Item:=AMenuItem[i];
+        if not Item.HandleAllocated then continue;
+        if not GTK_WIDGET_SENSITIVE(PGTKWidget(Item.Handle)) then continue;
+        if IsAccel(Msg.CharCode,Item.Caption) then begin
+          // found
+          Result:=true;
+          MenuItemWidget:=PGTKWidget(Item.Handle);
+          if GtkWidgetIsA(MenuItemWidget,gtk_menu_item_get_type) then begin
+            //DebugLn(['CheckMenuChilds popup: ',dbgsName(Item)]);
+            // popup the submenu
+            gtk_signal_emit_by_name(PGtkObject(MenuItemWidget),'activate-item');
+          end;
+          exit;
+        end;
+      end;
+    end;
+  
+  var
+    AComponent: TComponent;
+    AControl: TControl;
+    AForm: TCustomForm;
   begin
     Result:=false;
     //debugln('KeyActivatedAccelerator A');
     if not SysKey then exit;
     // it is a system key -> try menus
-    if (Msg.CharCode in [VK_A..VK_Z])
-    and (TObject(TargetData) is TComponent) then begin
-      {AComponent:=TComponent(TargetData);
-      if AComponent is TControl then begin
-        debugln('KeyActivatedAccelerator call TControl.DialogChar');
-        if TControl(AComponent).DialogChar(Msg.CharCode) then begin
-          debugln('KeyActivatedAccelerator C handled by LCL');
-          StopKeyEvent('key_press_event');
-          Result:=true;
+    if (Msg.CharCode in [VK_A..VK_Z]) then begin
+      if (TObject(TargetObj) is TComponent) then begin
+        AComponent:=TComponent(TargetObj);
+        //DebugLn(['KeyActivatedAccelerator ',dbgsName(AComponent)]);
+        if AComponent is TControl then begin
+          AControl:=TControl(AComponent);
+          repeat
+            AForm:=GetFirstParentForm(AControl);
+            if AForm<>nil then begin
+              if AForm.Menu<>nil then begin
+                Result:=CheckMenuChilds(AForm.Menu.Items);
+                if Result then exit;
+              end;
+            end;
+            AControl:=AForm.Parent;
+          until AControl=nil;
+          {debugln('KeyActivatedAccelerator call TControl.DialogChar');
+          if TControl(AComponent).DialogChar(Msg.CharCode) then begin
+            debugln('KeyActivatedAccelerator C handled by LCL');
+            StopKeyEvent('key_press_event');
+            Result:=true;
+          end;}
         end;
-      end;}
+      end;
     end;
   end;
-*)
-  
+
   procedure EmulateEatenKeys;
   begin
     // some widgets eats keys, but do not do anything useful for the LCL
@@ -2083,7 +2122,7 @@ var
 
       // send the (Sys)KeyDown message directly to the LCL
       NotifyApplicationUserInput(Msg.Msg);
-      Result := DeliverMessage(TargetData, Msg) = 0;
+      Result := DeliverMessage(TargetObj, Msg) = 0;
     end;
     {$ENDIF}
   end;
@@ -2104,7 +2143,7 @@ begin
   if HandledByLCL then Exit;
 
   TargetWidget := AWidget;
-  TargetData := AData;
+  TargetObj := AData;
   FocusedWinControl := nil;
 
   // The gtk sends keys first to the gtkwindow and then to the focused control.
@@ -2130,7 +2169,7 @@ begin
           {$ENDIF}
           // redirect key to lcl control
           TargetWidget := FocusedWidget;
-          TargetData := FocusedWinControl;
+          TargetObj := FocusedWinControl;
         end;
       end;
     end;
@@ -2205,7 +2244,7 @@ begin
       then begin
         // send the (Sys)KeyDown message directly to the LCL
         NotifyApplicationUserInput(Msg.Msg);
-        Result := DeliverMessage(TargetData, Msg) = 0;
+        Result := DeliverMessage(TargetObj, Msg) = 0;
       end;
 
       if Msg.CharCode <> Vkey
@@ -2214,11 +2253,10 @@ begin
         StopKeyEvent('key_press_event');
       end;
 
-      // KeyActivatedAccelerator always returns false, so is thsi still used (MWE)
-      // if (not EventStopped) and BeforeEvent
-      // then begin
-      //  if KeyActivatedAccelerator then exit;
-      // end;
+      if (not EventStopped) and aBeforeEvent
+      then begin
+        if KeyActivatedAccelerator then exit;
+      end;
     end
     else begin
       {$IFDEF VerboseKeyboard}
@@ -2233,7 +2271,7 @@ begin
       // send the message directly to the LCL
       Msg.Result:=0;
       NotifyApplicationUserInput(Msg.Msg);
-      Result := DeliverMessage(TargetData, Msg) = 0;
+      Result := DeliverMessage(TargetObj, Msg) = 0;
 
       if Msg.CharCode <> VKey
       then begin
@@ -2307,7 +2345,7 @@ begin
         // send the (Sys)Char message directly (not queued) to the LCL
         Msg.Result:=0;
         Msg.CharCode := Ord(KeyPressesChar);
-        Result := DeliverMessage(TargetData, Msg) = 0;
+        Result := DeliverMessage(TargetObj, Msg) = 0;
 
         if Ord(KeyPressesChar) <> Msg.CharCode
         then begin
@@ -5692,17 +5730,22 @@ begin
   //DebugLn('MenuSizeRequest C ',GetWidgetDebugReport(widget),' ',requisition^.width,',',requisition^.height);
 end;
 
+procedure UpdateInnerMenuItem(LCLMenuItem: TMenuItem; MenuItemWidget: PGtkWidget
+  );
+begin
+  UpdateInnerMenuItem(LCLMenuItem,MenuItemWidget,LCLMenuItem.ShortCut);
+end;
+
 {------------------------------------------------------------------------------
   procedure UpdateInnerMenuItem(LCLMenuItem: TMenuItem;
-    MenuItemWidget: PGtkWidget);
+    MenuItemWidget: PGtkWidget; NewShortCut: TShortCut);
 
   Update the inner widgets of a menuitem widget.
  ------------------------------------------------------------------------------}
 procedure UpdateInnerMenuItem(LCLMenuItem: TMenuItem;
-  MenuItemWidget: PGtkWidget);
+  MenuItemWidget: PGtkWidget; NewShortCut: TShortCut);
 var
   HBoxWidget: PGtkWidget;
-  LabelWidget: PGtkAccelLabel;
 
   procedure SetMenuItemLabelText(LCLMenuItem: TMenuItem;
     MenuItemWidget: PGtkWidget);
@@ -5718,18 +5761,17 @@ var
     //Check for a shortcut key
     s:=LCLMenuItem.Caption;
     ShortCutPos := pos('&', s);
-    if ShortCutPos <> 0 then begin
+    //DebugLn(['SetMenuItemLabelText ',dbgsName(LCLMenuItem),' s="',s,'"']);
+    if ShortCutPos > 0 then begin
       if (LCLMenuItem.Parent<>nil)
       and (LCLMenuItem.Parent.HandleAllocated)
       and GtkWidgetIsA(PGtkWidget(LCLMenuItem.Parent.Handle),GTK_TYPE_MENU_BAR)
       then begin
         // this is a menu item in the main bar of a form
         // -> accelerator should be Alt+Key
-        s[ShortCutPos] := '_';
-        Accelerate(LCLMenuItem,MenuItemWidget,
-          gtk_label_parse_uline(LabelWidget,PChar(s)),
-          MModifiers[ssAlt].Mask, 
-          {$Ifdef GTK2}'activate'{$Else}'activate_item'{$EndIF});
+        System.Delete(s,ShortCutPos,1);
+        gtk_label_set_text(LabelWidget,PChar(s));
+        gtk_label_set_pattern(LabelWidget, PChar(StringOfChar(' ', ShortCutPos-1)+'_'));
       end else begin
         // Because gnome changes menuitem shortcuts via keyboard, we can't
         // set the accelerator.
@@ -5743,14 +5785,54 @@ var
         System.Delete(s,ShortCutPos,1);
         gtk_label_set_text(LabelWidget,PChar(s));
         gtk_label_set_pattern(LabelWidget, PChar(StringOfChar(' ', ShortCutPos-1)+'_'));
-        //Accelerate(LCLMenuItem,MenuItemWidget,
-          //gtk_label_parse_uline(LabelWidget,PChar(s)),
-          //0,{$Ifdef GTK2}'activate'{$Else}'activate_item'{$EndIF});
       end;
     end
     else begin
       gtk_label_set_text(LabelWidget,PChar(s));
       gtk_label_set_pattern(LabelWidget, #0);  // Ensure any underlines removed
+    end;
+  end;
+  
+  procedure UpdateShortCutLabel;
+  var
+    LabelWidget: PGtkLabel;
+    NeedShortCut: Boolean;
+    Key: Word;
+    Shift: TShiftState;
+    s: String;
+  begin
+    //DebugLn(['UpdateShortCutLabel ',dbgsName(LCLMenuItem),' ',ShortCutToText(NewShortCut)]);
+    ShortCutToKey(NewShortCut,Key,Shift);
+
+    // check if shortcut is needed
+    NeedShortCut:=Key<>0;
+    if NeedShortCut
+    and (LCLMenuItem.Parent<>nil)
+    and (LCLMenuItem.Parent.HandleAllocated)
+    and GtkWidgetIsA(PGtkWidget(LCLMenuItem.Parent.Handle),GTK_TYPE_MENU_BAR)
+    then begin
+      // no shortcuts for items in menubar
+      NeedShortCut:=false;
+    end;
+    
+    LabelWidget:=PGtkLabel(gtk_object_get_data(
+                               PGtkObject(MenuItemWidget), 'LCLShortCutLabel'));
+                               
+    if NeedShortCut then begin
+      s:='    '+ShortCutToText(NewShortCut);
+      if LabelWidget=nil then begin
+        // create a label for the ShortCut
+        LabelWidget:=PGtkLabel(gtk_label_new(PChar(Pointer(s))));
+        gtk_misc_set_alignment(GTK_MISC (LabelWidget), 1.0, 0.5);
+        gtk_object_set_data(PGtkObject(MenuItemWidget), 'LCLShortCutLabel', LabelWidget);
+        gtk_container_add(GTK_CONTAINER(HBoxWidget),PGtkWidget(LabelWidget));
+        gtk_widget_show(PGtkWidget(LabelWidget));
+      end else begin
+        gtk_label_set_text(LabelWidget,PChar(Pointer(s)));
+      end;
+    end else begin
+      if LabelWidget<>nil then
+        gtk_widget_destroy(PGtkWidget(LabelWidget));
     end;
   end;
 
@@ -5798,17 +5880,19 @@ var
   end;
 
   procedure CreateLabel;
+  var
+    LabelWidget: PGtkLabel;
   begin
     // create a label for the Caption
-    LabelWidget:=PGtkAccelLabel(gtk_accel_label_new(''));
+    LabelWidget:=PGtkLabel(gtk_label_new(''));
     gtk_misc_set_alignment(GTK_MISC (LabelWidget), 0.0, 0.5);
     gtk_object_set_data(PGtkObject(MenuItemWidget), 'LCLLabel', LabelWidget);
-    gtk_container_add(GTK_CONTAINER(HBoxWidget),PgtkWidget(LabelWidget));
+    gtk_container_add(GTK_CONTAINER(HBoxWidget),PGtkWidget(LabelWidget));
     SetMenuItemLabelText(LCLMenuItem,MenuItemWidget);
-    gtk_accel_label_set_accel_widget(GTK_ACCEL_LABEL(LabelWidget),MenuItemWidget);
+    //gtk_accel_label_set_accel_widget(GTK_ACCEL_LABEL(LabelWidget),MenuItemWidget);
     gtk_widget_show(PGtkWidget(LabelWidget));
   end;
-
+  
 begin
   HBoxWidget:=gtk_object_get_data(PGtkObject(MenuItemWidget), 'LCLHBox');
   if HBoxWidget=nil then begin
@@ -5821,6 +5905,7 @@ begin
     gtk_object_set_data(PGtkObject(MenuItemWidget), 'LCLHBox', HBoxWidget);
     CreateIcon;
     CreateLabel;
+    UpdateShortCutLabel;
     gtk_container_add(GTK_CONTAINER(MenuItemWidget),HBoxWidget);
     gtk_widget_show(HBoxWidget);
   end else begin
@@ -5832,6 +5917,7 @@ begin
     end else begin
       // just update the content
       SetMenuItemLabelText(LCLMenuItem,MenuItemWidget);
+      UpdateShortCutLabel;
     end;
   end;
 end;
@@ -5883,7 +5969,7 @@ begin
   if LCLMenuItem.RightJustify then
     gtk_menu_item_right_justify(PGtkMenuItem(MenuItemWidget));
 
-  // create the hbox containing the label and the control
+  // create the hbox containing the label and the icon
   UpdateInnerMenuItem(LCLMenuItem,MenuItemWidget);
 
   gtk_widget_show(MenuItemWidget);
