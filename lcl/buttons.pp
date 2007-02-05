@@ -303,6 +303,7 @@ type
     FState: TButtonState;
     function GetNumGlyphs: Integer;
     procedure GlyphChanged(Sender: TObject);
+    function  DialogChar(var Message: TLMKey): boolean; override;
     procedure MouseEnter; override;
     procedure MouseLeave; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;

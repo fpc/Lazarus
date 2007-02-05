@@ -402,6 +402,22 @@ Begin
   Invalidate;
 end;
 
+function TCustomSpeedButton.DialogChar(var Message: TLMKey): boolean;
+begin
+  Result := false;
+
+  Assert(Message.Msg = LM_SYSCHAR, '*** Warning: non LM_SYSCHAR passed to TCustomSpeedButton.DialogChar ! ***');
+
+  if not FShowAccelChar then exit;
+
+  if IsAccel(Message.CharCode, Caption) then
+  begin
+    Result := true;
+    Self.Click;
+  end else
+    Result := inherited DialogChar(Message);
+end;
+
 {------------------------------------------------------------------------------
   Method: TCustomSpeedButton.Paint
   Params: none
