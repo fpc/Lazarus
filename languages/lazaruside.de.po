@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-01-23 19:02+0100\n"
+"PO-Revision-Date: 2007-01-27 22:48+0100\n"
 "Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -286,7 +286,7 @@ msgstr "<Keine>"
 
 #: lazarusidestrconsts:lisa2pchooseanexistingfile
 msgid "<choose an existing file>"
-msgstr "<Wählen Sie eine vorhandene Datei>"
+msgstr "<Wählen Sie eine bestehende Datei>"
 
 #: lazarusidestrconsts:lismodifiedlgplnotice
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version with the following modification:%sAs a special exception, the copyright holders of this library give you permission to link this library with independent modules to produce an executable, regardless of the license terms of these independent modules,and to copy and distribute the resulting executable under terms of your choice, provided that you also meet, for each linked independent module, the terms and conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this library, you may extend this exception to your version of the library, but you are not obligated to do so. If you do not wish to do so, delete this exception statement from your version.%sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
@@ -670,7 +670,7 @@ msgstr "Anker der ausgewählten Kontrollelemente"
 
 #: lazarusidestrconsts:lismakeresstrappendtosection
 msgid "Append to section"
-msgstr "An resourcestring Abschnitt anhängen"
+msgstr "An Ressourcenstring-Abschnitt anhängen"
 
 #: lazarusidestrconsts:dlgpoapplication
 msgid "Application"
@@ -922,7 +922,7 @@ msgstr "Build-Befehl"
 
 #: lazarusidestrconsts:lisbuildcomponent
 msgid "Build Component"
-msgstr "Komponenten erstellen"
+msgstr "Komponente erstellen"
 
 #: lazarusidestrconsts:lislazbuildbuildcomponentssyneditcodetools
 msgid "Build Components (SynEdit, CodeTools)"
@@ -1150,7 +1150,7 @@ msgstr "Änderungen auf dem Datenträger beim Laden prüfen"
 
 #: lazarusidestrconsts:dlgcheckconsistency
 msgid "Check consistency"
-msgstr "Konsistenz überprüfen"
+msgstr "Konsistenz prüfen"
 
 #: lazarusidestrconsts:dlgcochecks
 msgid "Checks:"
@@ -1198,7 +1198,7 @@ msgstr "Schema auswählen"
 
 #: lazarusidestrconsts:lisoifchooseabaseclassforthefavouriteproperty
 msgid "Choose a base class for the favourite property %s%s%s."
-msgstr "Wählen Sie eine Basisklasse für den Favouriten %s%s%s."
+msgstr "Wählen Sie eine Basisklasse für den Favoriten %s%s%s."
 
 #: lazarusidestrconsts:lischooseadifferentname
 msgid "Choose a different name"
@@ -1266,7 +1266,7 @@ msgstr "Klassenname bereits vorhanden"
 
 #: lazarusidestrconsts:lisclassconflictswithlfmfiletheunitusesthetheunitwhic
 msgid "Class conflicts with .lfm file:%sThe unit %s%suses the the unit %s%swhich contains the class %s,%sbut the .lfm file contains already another class.%sThere can only be one design class per unit.%sPlease move %s to another unit."
-msgstr ""
+msgstr "Klassenkonflike mit er .lfm-Datei:%sDie Unit %s%snutzt die Unit %s%sdie die Klasse %s,%sverwendet, aber die .lfm-Datei enthält schon eine andere Klasse.%sPro Unit ist nur eine Designklasse erlaubt.%sBitte verschieben Sie %s in eine andere Unit."
 
 #: lazarusidestrconsts:lisclassnotfound
 msgid "Class not found"
@@ -1430,7 +1430,7 @@ msgstr "Editor für CodeTools-Einstellungen"
 
 #: lazarusidestrconsts:lismenucodetoolsdefineseditor
 msgid "CodeTools defines editor ..."
-msgstr "CodeTools Defines Editor ..."
+msgstr "Editor für CodeTools-Eigenschaften ..."
 
 #: lazarusidestrconsts:liskmcodetoolsoptions
 msgid "CodeTools options"
@@ -2351,6 +2351,10 @@ msgstr "Trenner-Zeichenebenen"
 #: lazarusidestrconsts:lisdonotclosetheide
 msgid "Do not close the IDE"
 msgstr "IDE nicht schließen"
+
+#: lazarusidestrconsts:lisdonotclosetheproject
+msgid "Do not close the project"
+msgstr ""
 
 #: lazarusidestrconsts:lispodonotsaveanysessioninfo
 msgid "Do not save any session info"
@@ -6806,7 +6810,7 @@ msgstr "Suchpfade:"
 
 #: lazarusidestrconsts:lisuesearchstringnotfound
 msgid "Search string '%s' not found!"
-msgstr "Suchstring '%s' nicht gefunden!"
+msgstr "Suchbegriff '%s' nicht gefunden!"
 
 #: lazarusidestrconsts:dlgsearchabort
 msgid "Search terminated by user."
@@ -7038,7 +7042,7 @@ msgstr "Sitzung"
 
 #: lazarusidestrconsts:srkmecsetmarker
 msgid "Set Marker %d"
-msgstr "Marker %d setzen"
+msgstr "Markierung %d setzen"
 
 #: lazarusidestrconsts:uemsetfreebookmark
 msgid "Set a free Bookmark"
@@ -7062,43 +7066,43 @@ msgstr "Freies Lesezeichen setzen"
 
 #: lazarusidestrconsts:liskmsetmarker0
 msgid "Set marker 0"
-msgstr "Marker 0 setzen"
+msgstr "Markierung 0 setzen"
 
 #: lazarusidestrconsts:liskmsetmarker1
 msgid "Set marker 1"
-msgstr "Marker 1 setzen"
+msgstr "Markierung 1 setzen"
 
 #: lazarusidestrconsts:liskmsetmarker2
 msgid "Set marker 2"
-msgstr "Marker 2 setzen"
+msgstr "Markierung 2 setzen"
 
 #: lazarusidestrconsts:liskmsetmarker3
 msgid "Set marker 3"
-msgstr "Marker 3 setzen"
+msgstr "Markierung 3 setzen"
 
 #: lazarusidestrconsts:liskmsetmarker4
 msgid "Set marker 4"
-msgstr "Marker 4 setzen"
+msgstr "Markierung 4 setzen"
 
 #: lazarusidestrconsts:liskmsetmarker5
 msgid "Set marker 5"
-msgstr "Marker 5 setzen"
+msgstr "Markierung 5 setzen"
 
 #: lazarusidestrconsts:liskmsetmarker6
 msgid "Set marker 6"
-msgstr "Marker 6 setzen"
+msgstr "Markierung 6 setzen"
 
 #: lazarusidestrconsts:liskmsetmarker7
 msgid "Set marker 7"
-msgstr "Marker 7 setzen"
+msgstr "Markierung 7 setzen"
 
 #: lazarusidestrconsts:liskmsetmarker8
 msgid "Set marker 8"
-msgstr "Marker 8 setzen"
+msgstr "Markierung 8 setzen"
 
 #: lazarusidestrconsts:liskmsetmarker9
 msgid "Set marker 9"
-msgstr "Marker 9 setzen"
+msgstr "Markierung 9 setzen"
 
 #: lazarusidestrconsts:dlgsetpropertyvariable
 msgid "Set property Variable"
@@ -7130,7 +7134,7 @@ msgstr "Dateiname verkürzen oder expandieren"
 
 #: lazarusidestrconsts:lispkgmangshouldthefilerenamedlowercaseto
 msgid "Should the file be renamed lowercase to%s%s%s%s?"
-msgstr "Soll die Datei auf Kleinbuchstaben nach%s%s%s%sumbenannt werden?"
+msgstr "Soll die Datei in Kleinbuchstaben nach%s%s%s%sumbenannt werden?"
 
 #: lazarusidestrconsts:lisaf2pshowall
 msgid "Show All"
@@ -7318,7 +7322,7 @@ msgstr "Aufruf des Compilers übergehen"
 
 #: lazarusidestrconsts:lisskipfileandcontinueloading
 msgid "Skip file and continue loading"
-msgstr "Datei übergehen und Laden fortsetzen"
+msgstr "Datei übergehen und das Laden fortsetzen"
 
 #: lazarusidestrconsts:lisskiploadinglastproject
 msgid "Skip loading last project"
@@ -7550,7 +7554,7 @@ msgstr "Erfolg"
 
 #: lazarusidestrconsts:lisa2pswitchpaths
 msgid "Switch Paths"
-msgstr "Pfade vertauschen"
+msgstr "Pfade tauschen"
 
 #: lazarusidestrconsts:srkmectoggleformunit
 msgid "Switch between form and unit"
@@ -7642,7 +7646,7 @@ msgstr "Zielbetriebssystem:"
 
 #: lazarusidestrconsts:dlgtargetplatform
 msgid "Target Platform:"
-msgstr "Zielplattform"
+msgstr "Zielplattform:"
 
 #: lazarusidestrconsts:dlgpotargetfilename
 msgid "Target file name:"
@@ -7950,7 +7954,7 @@ msgstr "Die Datei %s%s%s%s befindet sich bereits im Package %s."
 
 #: lazarusidestrconsts:lispkgeditthefileiscurrentlynotintheunitpathofthepackage
 msgid "The file %s%s%s%sis currently not in the unitpath of the package.%s%sAdd %s%s%s to UnitPath?"
-msgstr "Die Datei %s%s%s%sbefindet sich aktuell nicht im Unitpfad des Packages.%s%s. %s%s%s in den Unitpfad aufnehmen?"
+msgstr "Die Datei %s%s%s%sbefindet sich derzeit nicht im Unitpfad des Packages.%s%s. %s%s%s in den Unitpfad aufnehmen?"
 
 #: lazarusidestrconsts:lispkgmangthefileofpackageismissing
 msgid "The file %s%s%s%sof package %s is missing."
@@ -8794,7 +8798,7 @@ msgstr "Konnte Datei %s%s%s%s nicht schreiben%s."
 
 #: lazarusidestrconsts:lisunabletowritefile
 msgid "Unable to write file"
-msgstr "Konte die Datei nicht schreiben"
+msgstr "Konnte die Datei nicht schreiben"
 
 #: lazarusidestrconsts:lisunabletowritefile2
 msgid "Unable to write file %s%s%s"

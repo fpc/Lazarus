@@ -326,6 +326,10 @@ msgstr ""
 msgid "Discard changes"
 msgstr ""
 
+#: lazarusidestrconsts:lisdonotclosetheproject
+msgid "Do not close the project"
+msgstr ""
+
 #: lazarusidestrconsts:lisdonotclosetheide
 msgid "Do not close the IDE"
 msgstr ""

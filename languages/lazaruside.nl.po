@@ -2349,6 +2349,10 @@ msgstr ""
 msgid "Do not close the IDE"
 msgstr "IDE niet sluiten"
 
+#: lazarusidestrconsts:lisdonotclosetheproject
+msgid "Do not close the project"
+msgstr ""
+
 #: lazarusidestrconsts:lispodonotsaveanysessioninfo
 msgid "Do not save any session info"
 msgstr "Geen sessie info opslaan"

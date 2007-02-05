@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-01-23 19:41+0100\n"
+"PO-Revision-Date: 2007-01-27 22:47+0100\n"
 "Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "X-Poedit-Language: German\n"
@@ -358,11 +358,11 @@ msgstr "Dateiname:"
 
 #: ipconst:sftplogin
 msgid " logged in"
-msgstr ""
+msgstr "eingeloggt"
 
 #: ipconst:sftplogout
 msgid " logged out"
-msgstr ""
+msgstr "ausgeloggt"
 
 #: ipconst:slogpsnoop
 msgid " {psNoOp)"
@@ -374,11 +374,11 @@ msgstr "\":\" erwartet"
 
 #: ipconst:spop3nottransacting
 msgid "%s can not be called in authentication state"
-msgstr ""
+msgstr "%s kann nicht während der Authentifizierung aufgerufen werden"
 
 #: ipconst:spop3notauthenticating
 msgid "%s can not be called in transaction state"
-msgstr ""
+msgstr "%s kann nicht während der Übertragung aufgerufen werden"
 
 #: ipconst:snowinsock2err
 msgid "%s requires WinSock 2, and this system only has WinSock 1"
@@ -398,7 +398,7 @@ msgstr "%s: Entweder Zeile %s oder Spalte %s überschreitet den Bereich"
 
 #: ipconst:slesszero
 msgid "%s: new col count %d is less than zero"
-msgstr ""
+msgstr "%s: Die neue Spaltenzählung %s ist kleiner als Null"
 
 #: ipconst:scounttoosmall
 msgid "%s: new count too small"
@@ -406,7 +406,7 @@ msgstr "%s: Neuer Wert zu klein"
 
 #: ipconst:srowoor
 msgid "%s: row number is out of range"
-msgstr ""
+msgstr "%s: Zeilennummer außerhalb des gültigen Bereichs"
 
 #: ipconst:spngerrorconstant
 msgid "**** ERROR ****"
@@ -490,7 +490,7 @@ msgstr ""
 
 #: ipconst:srasauthack
 msgid "Authenticate acknowledged"
-msgstr ""
+msgstr "Authentifizierung bestätigt"
 
 #: ipconst:srasauthcallback
 msgid "Authenticate callback"
@@ -518,19 +518,19 @@ msgstr ""
 
 #: ipconst:srasauthenticated
 msgid "Authenticated"
-msgstr ""
+msgstr "Authentifiziert"
 
 #: ipconst:sntauthenticate
 msgid "Authenticating"
-msgstr ""
+msgstr "Authentifizierung"
 
 #: ipconst:sssauthpass
 msgid "Authenticating password"
-msgstr ""
+msgstr "Paßwortüberprüfung"
 
 #: ipconst:sssauthuser
 msgid "Authenticating username"
-msgstr ""
+msgstr "Usernamenüberprüfung"
 
 #: ipconst:snntpcmdauthpass
 msgid "AUTHINFO PASS"
@@ -566,51 +566,51 @@ msgstr "Fehlerhaftes Ziel"
 
 #: ipconst:ssmtpresponse11
 msgid "Bad destination mailbox address"
-msgstr ""
+msgstr "Fehlerhafte Zielmailbox-Adresse"
 
 #: ipconst:ssmtpresponse13
 msgid "Bad destination mailbox address syntax"
-msgstr ""
+msgstr "Fehlerhafte Zielmailbox-Adressensyntax"
 
 #: ipconst:ssmtpresponse12
 msgid "Bad destination system address"
-msgstr ""
+msgstr "Fehlerhafte Zielsystem-Adresse"
 
 #: ipconst:swsaebadf
 msgid "Bad file descriptor"
-msgstr ""
+msgstr "Fehlerhafter Dateideskriptor"
 
 #: ipconst:sbinhexbadheadercrc
 msgid "Bad header CRC"
-msgstr ""
+msgstr "Fehlerhafte Header-CRC"
 
 #: ipconst:sipicmp_bad_option
 msgid "Bad option"
-msgstr ""
+msgstr "Fehlerhafte Option"
 
 #: ipconst:swsaenoprotoopt
 msgid "Bad protocol option"
-msgstr ""
+msgstr "Fehlerhafte Protokolloption"
 
 #: ipconst:ssslbadpublicencoding
 msgid "Bad public encoding type."
-msgstr ""
+msgstr "Fehlerhafter öffentlicher Verschlüsselungstyp"
 
 #: ipconst:sipicmp_bad_req
 msgid "Bad request"
-msgstr ""
+msgstr "Fehlerhafte Anfrage"
 
 #: ipconst:sipicmp_bad_route
 msgid "Bad route"
-msgstr ""
+msgstr "Fehlerhafte Route"
 
 #: ipconst:ssmtpresponse17
 msgid "Bad sender's mailbox address syntax"
-msgstr ""
+msgstr "Fehlerhafte Postfachadreß-Syntax des Senders"
 
 #: ipconst:ssmtpresponse18
 msgid "Bad sender's system address"
-msgstr ""
+msgstr "Fehlerhafte Systemadresse des Senders"
 
 #: ipconst:spngbitdepth
 msgid "Bit Depth: %d"
@@ -626,7 +626,7 @@ msgstr ""
 
 #: ipconst:shtmldefbrowsecaption
 msgid "Browse..."
-msgstr ""
+msgstr "Durchsuchen..."
 
 #: ipconst:sbibuffernotassigned
 msgid "Buffer not assigned"
@@ -646,7 +646,7 @@ msgstr "Puffer zu klein"
 
 #: ipconst:cachedirnotexist
 msgid "Cache directory %s does not exist."
-msgstr ""
+msgstr "Cache-Verzeichis %s nicht vorhanden."
 
 #: ipconst:cacheadding
 msgid "Caching item (%s = %s)"
@@ -654,7 +654,7 @@ msgstr ""
 
 #: ipconst:srascallbackcomplete
 msgid "Callback complete"
-msgstr ""
+msgstr "Callback abgeschlossen"
 
 #: ipconst:srascallbacksetbycaller
 msgid "Callback set by caller"
@@ -674,7 +674,7 @@ msgstr "Abgebrochen"
 
 #: ipconst:swsaeaddrnotavail
 msgid "Cannot assign requested address"
-msgstr ""
+msgstr "Kann angeforderte Adresse nicht zuweisen"
 
 #: ipconst:swebimagecannotload
 msgid "Cannot load %s"
@@ -682,7 +682,7 @@ msgstr "Kann %s nicht laden"
 
 #: ipconst:swebimagestreambad
 msgid "Cannot load image from stream"
-msgstr ""
+msgstr "Kann Bild nicht aus Stream laden"
 
 #: ipconst:swsaeshutdown
 msgid "Cannot send after socket shutdown"
@@ -698,7 +698,7 @@ msgstr "Kann nicht in Stream schreiben"
 
 #: ipconst:ssslbadcerttype
 msgid "Cert type not found"
-msgstr ""
+msgstr "Zertifizierungstyp nicht gefunden"
 
 #: ipconst:ssslnocertificate
 msgid "Certificate is not available."
@@ -710,11 +710,11 @@ msgstr "Zeichenstack-Überlauf"
 
 #: ipconst:cachecheckfreshness
 msgid "Checking Freshness (%s)"
-msgstr ""
+msgstr "Prüfe Aktualität (%s)"
 
 #: ipconst:spngtruncateddata
 msgid "Chunk data is truncated"
-msgstr ""
+msgstr "Chunk-Daten sind abgeschnitten"
 
 #: ipconst:seventdisconnect
 msgid "Close:   Loc: %s Rem: %s"
@@ -806,7 +806,7 @@ msgstr "Verschlüsselungsalgorithmus nicht unterstützt"
 
 #: ipconst:ssmtpresponse75
 msgid "Cryptographic failure"
-msgstr ""
+msgstr "Verschlüsselungsfehler"
 
 #: ipconst:snntpcmddate
 msgid "DATE"
@@ -822,7 +822,7 @@ msgstr ""
 
 #: ipconst:ssmtpresponse71
 msgid "Delivery not authorized, message refused"
-msgstr ""
+msgstr "Zustellung nicht authorisiert, Meldung abgelehnt"
 
 #: ipconst:ssmtpresponse47
 msgid "Delivery time expired"
@@ -834,7 +834,7 @@ msgstr "Zieladresse benötigt"
 
 #: ipconst:sipicmp_no_resources
 msgid "Destination does not have resources to complete"
-msgstr ""
+msgstr "Ziel hat keine Ressourcen um abzuschließen"
 
 #: ipconst:sipicmp_dest_host_unreachable
 msgid "Destination host unreachable"
@@ -850,7 +850,7 @@ msgstr ""
 
 #: ipconst:ssmtpresponse15
 msgid "Destination mailbox address valid"
-msgstr ""
+msgstr "Zielpostfachadresse gültig"
 
 #: ipconst:sipicmp_dest_net_unreachable
 msgid "Destination network unreachable"
@@ -862,7 +862,7 @@ msgstr "Zielport nicht erreichbar"
 
 #: ipconst:sipicmp_dest_prot_unreachable
 msgid "Destination protocol unreachable"
-msgstr ""
+msgstr "Zielprotokoll nicht erreichbar"
 
 #: ipconst:sdestroying
 msgid "Destroying"
@@ -882,7 +882,7 @@ msgstr "Verzeichnis nicht leer"
 
 #: ipconst:srasdisconnected
 msgid "Disconnected"
-msgstr ""
+msgstr "Nicht verbunden"
 
 #: ipconst:httpdisconnect
 msgid "Disconnected: (%s), %s Total bytes received"
@@ -890,15 +890,15 @@ msgstr ""
 
 #: ipconst:spsquit
 msgid "Disconnecting"
-msgstr ""
+msgstr "Verbindungsauflösung"
 
 #: ipconst:swsaedquot
 msgid "Disk quota exceeded"
-msgstr ""
+msgstr "Disk-Quota erschöpft"
 
 #: ipconst:providerunknownformat
 msgid "Don't know how to handle %s"
-msgstr ""
+msgstr "Weiß nicht wie %s zu behandeln ist"
 
 #: ipconst:sbrokerdownloadreq
 msgid "Download %s?"
@@ -910,7 +910,7 @@ msgstr "Download: (%s), Fehler beim Herunterladen"
 
 #: ipconst:httpgotheader
 msgid "Download: (%s), Got Header Data"
-msgstr ""
+msgstr "Download: (%s), Headerdaten erhalten"
 
 #: ipconst:httpsizemismatch
 msgid "Download: (%s), Size Mismatch expecting %s , got %s"
@@ -936,23 +936,23 @@ msgstr ""
 
 #: ipconst:spngeffectivefilter
 msgid "Effective filter is %s"
-msgstr ""
+msgstr "Wirklicher Filter ist %s"
 
 #: ipconst:sunsupportedencoding
 msgid "Encoding method not supported"
-msgstr ""
+msgstr "Kodierungsmethode nicht unterstützt"
 
 #: ipconst:ssslencryptbuf2small
 msgid "Encrypt buffer to small."
-msgstr ""
+msgstr "Verschlüsselungspuffer zu klein"
 
 #: ipconst:ssslencryptiontype
 msgid "Encryption type not defined."
-msgstr ""
+msgstr "Verschlüsselungsart nicht angegeben."
 
 #: ipconst:spngmissingiend
 msgid "End of PNG found with no IEND chunk"
-msgstr ""
+msgstr "Ende der PNG-Datei ohne IEND-Chunk"
 
 #: ipconst:shtmllineerror
 msgid "Error \"%s\" at line %d, position %d"
@@ -960,7 +960,7 @@ msgstr ""
 
 #: ipconst:swsa_qos_admission_failure
 msgid "Error due to lack of resources"
-msgstr ""
+msgstr "Fehler wegen Ressourcenmangels"
 
 #: ipconst:sssexpand
 msgid "Expanding"
@@ -1084,23 +1084,23 @@ msgstr "Hilfe"
 
 #: ipconst:swsaehostdown
 msgid "Host is down"
-msgstr ""
+msgstr "Host ist heruntergefahren"
 
 #: ipconst:swsahost_not_found
 msgid "Host not found"
-msgstr ""
+msgstr "Host nicht gefunden"
 
 #: ipconst:spngihdrtoolong
 msgid "IHDR chunk is long."
-msgstr ""
+msgstr "IHDR-Chunk ist lang."
 
 #: ipconst:spngmissingihdr
 msgid "IHDR Chunk is missing"
-msgstr ""
+msgstr "IHDR-Chunk fehlt"
 
 #: ipconst:spngihdrtooshort
 msgid "IHDR chunk is short."
-msgstr ""
+msgstr "IHDR-Chunk ist kurz."
 
 #: ipconst:ssslillegalparameter
 msgid "Illegal Parameter."
@@ -1108,7 +1108,7 @@ msgstr "Ungültiger Parameter."
 
 #: ipconst:spngimagesize
 msgid "Image size is %dx%d pixels"
-msgstr ""
+msgstr "Bildgröße ist %sx%d Pixel"
 
 #: ipconst:sbadimagelibstream
 msgid "ImageLib must use TMemoryStreams"
@@ -1120,11 +1120,11 @@ msgstr "Index-Bereichsüberschreitung"
 
 #: ipconst:srasinteractive
 msgid "Interactive"
-msgstr ""
+msgstr "Interaktiv"
 
 #: ipconst:spnginterlacemethod
 msgid "Interlace Method: %d"
-msgstr ""
+msgstr "Halbbildmethode: %d"
 
 #: ipconst:shtmlinternal
 msgid "Internal error"
@@ -1132,7 +1132,7 @@ msgstr "Interner Fehler"
 
 #: ipconst:swsaeintr
 msgid "Interrupted function call"
-msgstr ""
+msgstr "Unterbrochener Funktionsaufruf"
 
 #: ipconst:shtmlinvalign
 msgid "Invalid alignment specified"
@@ -1144,11 +1144,11 @@ msgstr "Ungültiges Argument"
 
 #: ipconst:sbinhexbadchar
 msgid "Invalid BinHex character"
-msgstr ""
+msgstr "Ungültiges BinHex-Zeichen"
 
 #: ipconst:sbinhexbadformat
 msgid "Invalid BinHex format"
-msgstr ""
+msgstr "Ungültiges BinHex-Format"
 
 #: ipconst:ssslinvalidcipher
 msgid "Invalid cipher."
@@ -1168,7 +1168,7 @@ msgstr ""
 
 #: ipconst:sbinhexlengtherr
 msgid "Invalid data length"
-msgstr ""
+msgstr "Ungültige Datenlänge"
 
 #: ipconst:shtmlinvdir
 msgid "Invalid dir value specified"
@@ -1180,7 +1180,7 @@ msgstr "Ungültiger Frame angegeben"
 
 #: ipconst:shtmlinvgraphic
 msgid "Invalid graphic returned"
-msgstr ""
+msgstr "Ungültige Grafik zurückgegeben"
 
 #: ipconst:shtmlinvint
 msgid "Invalid integer constant"
@@ -1192,31 +1192,31 @@ msgstr "Ungültige Zeilenlänge"
 
 #: ipconst:slinelengtherr
 msgid "Invalid line length for encoded text"
-msgstr ""
+msgstr "Ungültige Zeilenlänge für kodierten Text"
 
 #: ipconst:sbadlineterminator
 msgid "Invalid line terminator"
-msgstr ""
+msgstr "Ungültiges Zeilenende"
 
 #: ipconst:shtmlinvmethod
 msgid "Invalid method specified"
-msgstr ""
+msgstr "Ungültige Methode angegeben"
 
 #: ipconst:spngbadmodificationtime
 msgid "Invalid Modification Time"
-msgstr ""
+msgstr "Ungültige Änderungszeit"
 
 #: ipconst:spngbadpalettelength
 msgid "Invalid Palette Length"
-msgstr ""
+msgstr "Ungültige Palettenlänge"
 
 #: ipconst:providerunknownpicture
 msgid "Invalid picture format"
-msgstr ""
+msgstr "Ungültiges Bildformat"
 
 #: ipconst:shtmlinvpicture
 msgid "Invalid picture returned"
-msgstr ""
+msgstr "Ungültiges Bild zurückgegeben"
 
 #: ipconst:spngbadsignature
 msgid "Invalid PNG Signature"
@@ -1228,7 +1228,7 @@ msgstr ""
 
 #: ipconst:sinvalrespcode
 msgid "Invalid response code"
-msgstr ""
+msgstr "Ungültiger Antwortcode"
 
 #: ipconst:shtmlinvrule
 msgid "Invalid rule specified"
@@ -1236,7 +1236,7 @@ msgstr "Ungültige Regel angegeben"
 
 #: ipconst:shtmlinvscope
 msgid "Invalid scope specified"
-msgstr ""
+msgstr "Ungültiger Bereich angegeben"
 
 #: ipconst:shtmlinvscroll
 msgid "Invalid scrolling specified"
@@ -1244,7 +1244,7 @@ msgstr ""
 
 #: ipconst:sbadseekorigin
 msgid "Invalid seek origin"
-msgstr ""
+msgstr "Ungültiger Suchursprung"
 
 #: ipconst:swsaeinvalidprovider
 msgid "Invalid service provider version number"
@@ -1260,7 +1260,7 @@ msgstr ""
 
 #: ipconst:shtmlinvtype
 msgid "Invalid type specified"
-msgstr ""
+msgstr "Ungültiger Typ angegeben"
 
 #: ipconst:shtmlinvvaltype
 msgid "Invalid value type specified"
@@ -1316,27 +1316,27 @@ msgstr ""
 
 #: ipconst:sstlogon
 msgid "Logging on"
-msgstr ""
+msgstr "Logge ein"
 
 #: ipconst:spsapop
 msgid "Logging on with APOP"
-msgstr ""
+msgstr "Logge ein mit APOP"
 
 #: ipconst:sssehlo
 msgid "Logging on with EHLO"
-msgstr ""
+msgstr "Logge ein mit EHLO"
 
 #: ipconst:ssshelo
 msgid "Logging on with HELO"
-msgstr ""
+msgstr "Logge ein mit HELO"
 
 #: ipconst:spspass
 msgid "Logging on with Password"
-msgstr ""
+msgstr "Logge ein mit Paßwort"
 
 #: ipconst:spsuser
 msgid "Logging on with User"
-msgstr ""
+msgstr "Logge ein mit User"
 
 #: ipconst:sraslogonnetwork
 msgid "Logon network"
@@ -1348,11 +1348,11 @@ msgstr ""
 
 #: ipconst:ssslbadmac
 msgid "MAC did not match."
-msgstr ""
+msgstr "MAC hat nicht gepaßt."
 
 #: ipconst:ssmtpresponse31
 msgid "Mail system full"
-msgstr ""
+msgstr "Mailsystem voll"
 
 #: ipconst:ssmtpresponse21
 msgid "Mailbox disabled, not accepting messages"
@@ -1360,11 +1360,11 @@ msgstr ""
 
 #: ipconst:ssmtpresponse22
 msgid "Mailbox full"
-msgstr ""
+msgstr "Postfach ist voll"
 
 #: ipconst:ssmtpresponse16
 msgid "Mailbox has moved"
-msgstr ""
+msgstr "Postfach wurde verschoben"
 
 #: ipconst:ssmtpresponse24
 msgid "Mailing list expansion problem"
@@ -1380,15 +1380,15 @@ msgstr ""
 
 #: ipconst:ssslbadmd5hash
 msgid "MD5 hash did not match."
-msgstr ""
+msgstr "MD5-Hash hat nicht gepaßt."
 
 #: ipconst:ssmtpresponse61
 msgid "Media not supported"
-msgstr ""
+msgstr "Medium nicht unterstützt"
 
 #: ipconst:spngmemoryrequired
 msgid "Memory required for image: %d bytes"
-msgstr ""
+msgstr "Für Bild benötigter Speicher: %d Byte"
 
 #: ipconst:ssmtpresponse77
 msgid "Message integrity failure"
@@ -1400,15 +1400,15 @@ msgstr ""
 
 #: ipconst:ssmtpresponse34
 msgid "Message too big for system"
-msgstr ""
+msgstr "Meldung zu groß für System"
 
 #: ipconst:swsaemsgsize
 msgid "Message too long"
-msgstr ""
+msgstr "Message zu lang"
 
 #: ipconst:spngmodificationdate
 msgid "Modification Date: %s"
-msgstr ""
+msgstr "Änderungsdatum: %s"
 
 #: ipconst:ssmtpresponse45
 msgid "Network congestion"
@@ -1420,15 +1420,15 @@ msgstr ""
 
 #: ipconst:swsaenetdown
 msgid "Network is down"
-msgstr ""
+msgstr "Netzwerk ist heruntergefahren"
 
 #: ipconst:swsaenetunreach
 msgid "Network is unreachable"
-msgstr ""
+msgstr "Netzwerk nicht erreichbar"
 
 #: ipconst:swsasysnotready
 msgid "Network subsystem is unavailable"
-msgstr ""
+msgstr "Netzwerk-Subsystem ist nicht verfügbar"
 
 #: ipconst:snntpcmdnewgroups
 msgid "NEWGROUPS"
@@ -1444,7 +1444,7 @@ msgstr ""
 
 #: ipconst:slognextmessagenotready
 msgid "Next message not ready"
-msgstr ""
+msgstr "Nächste Message nicht bereit"
 
 #: ipconst:slognextmessageready
 msgid "Next message ready"
@@ -1452,7 +1452,7 @@ msgstr ""
 
 #: ipconst:ssmtpresponse41
 msgid "No answer from host"
-msgstr ""
+msgstr "Keine Antwort vom Host"
 
 #: ipconst:swsaenobufs
 msgid "No buffer space available"
@@ -1484,7 +1484,7 @@ msgstr ""
 
 #: ipconst:swsaenomore
 msgid "No more data available"
-msgstr ""
+msgstr "Keine Daten mehr verfügbar"
 
 #: ipconst:shtmlnogetimage
 msgid "No OnGetImage event handler assigned"
@@ -1600,7 +1600,7 @@ msgstr ""
 
 #: ipconst:sipicmp_packet_too_big
 msgid "Packet too large"
-msgstr ""
+msgstr "Packet zu groß"
 
 #: ipconst:ssslpaddingerror
 msgid "Padding error."
@@ -1624,7 +1624,7 @@ msgstr ""
 
 #: ipconst:ssslparsererror
 msgid "Parsing error."
-msgstr ""
+msgstr "Parserfehler."
 
 #: ipconst:spop3cmdpass
 msgid "PASS"
@@ -1648,7 +1648,7 @@ msgstr ""
 
 #: ipconst:swsaeacces
 msgid "Permission denied"
-msgstr ""
+msgstr "Zugriff abgelehnt"
 
 #: ipconst:ssmtpresponse05
 msgid "Persistent, "
@@ -1988,7 +1988,7 @@ msgstr ""
 
 #: ipconst:sssspecial
 msgid "Sending special command"
-msgstr ""
+msgstr "Sende Spezialbefehl"
 
 #: ipconst:ssslservernohandshake
 msgid "Server cid not return a handshake message."
@@ -2004,7 +2004,7 @@ msgstr ""
 
 #: ipconst:ssslunexpectedmessage
 msgid "Server received an unexpected message."
-msgstr ""
+msgstr "Server erhielt eine unerwartete Nachricht."
 
 #: ipconst:ssslclosenotify
 msgid "Server sent close notify."
@@ -2020,23 +2020,23 @@ msgstr "Session-ID ist größer als 32 Byte."
 
 #: ipconst:ssslshabuf2small
 msgid "SHA1 buffer to small."
-msgstr ""
+msgstr "SHA1-Puffer zu klein."
 
 #: ipconst:ssslbadsha1hash
 msgid "SHA1 hash did not match."
-msgstr ""
+msgstr "SHA1-Hash hat nicht gepaßt."
 
 #: ipconst:swsaeisconn
 msgid "Socket is already connected"
-msgstr ""
+msgstr "Socket bereits verbunden"
 
 #: ipconst:swsaenotconn
 msgid "Socket is not connected"
-msgstr ""
+msgstr "Socket nicht verbunden"
 
 #: ipconst:snosockerr
 msgid "Socket not assigned"
-msgstr ""
+msgstr "Socket nicht zugewiesen"
 
 #: ipconst:swsaenotsock
 msgid "Socket operation on nonsocket"
@@ -2084,11 +2084,11 @@ msgstr ""
 
 #: ipconst:srasstartauthentication
 msgid "Start authentication"
-msgstr ""
+msgstr "Beginne Authentifizierung"
 
 #: ipconst:slogtaskstart
 msgid "Starting task: "
-msgstr ""
+msgstr "Starte Task:"
 
 #: ipconst:spop3cmdstat
 msgid "STAT"
@@ -2096,7 +2096,7 @@ msgstr ""
 
 #: ipconst:slogstate
 msgid "State change: "
-msgstr ""
+msgstr "Statusänderung:"
 
 #: ipconst:sftpstore
 msgid "Storing "
@@ -2112,11 +2112,11 @@ msgstr "Stream nicht zugewiesen"
 
 #: ipconst:srassubentryconnected
 msgid "Sub-entry connected"
-msgstr ""
+msgstr "Untereintrag verbunden"
 
 #: ipconst:srassubentrydisconnected
 msgid "Sub-entry disconnected"
-msgstr ""
+msgstr "Untereintrag nicht verbunden"
 
 #: ipconst:shtmldefsubmitcaption
 msgid "Submit"
@@ -2124,11 +2124,11 @@ msgstr ""
 
 #: ipconst:ssmtpresponse02
 msgid "Success, "
-msgstr ""
+msgstr "Erfolg,"
 
 #: ipconst:sipicmp_success
 msgid "Successful"
-msgstr ""
+msgstr "Erfolgreich"
 
 #: ipconst:swsanotinitialised
 msgid "Successful WSAStartup not yet performed"
@@ -2136,15 +2136,15 @@ msgstr ""
 
 #: ipconst:sstreamcreated
 msgid "Successfully created "
-msgstr ""
+msgstr "Erfolgreich erzeugt"
 
 #: ipconst:ssmtpresponse52
 msgid "Syntax error"
-msgstr ""
+msgstr "Syntaxfehler"
 
 #: ipconst:swsasyscallfailure
 msgid "System call failure"
-msgstr ""
+msgstr "Systemaufruffehler"
 
 #: ipconst:ssmtpresponse32
 msgid "System not accepting network messages"
@@ -2252,7 +2252,7 @@ msgstr ""
 
 #: ipconst:sicmptracecomplete
 msgid "Trace complete (%s), %d hops"
-msgstr ""
+msgstr "Verfolgung abgeschlossen (%s), %d Hops"
 
 #: ipconst:sicmptracestart
 msgid "Trace to %s started"
@@ -2268,7 +2268,7 @@ msgstr "Übertragung abgeschlossen."
 
 #: ipconst:sftptimeout
 msgid "Transfer timed out"
-msgstr ""
+msgstr "Zeitüberschreitung bei Übertragung "
 
 #: ipconst:ssmtpresponse04
 msgid "Transient, "
@@ -2276,7 +2276,7 @@ msgstr ""
 
 #: ipconst:spngtransparentcolor
 msgid "Transparent Color: %x"
-msgstr ""
+msgstr "Transparente Farbe: %x"
 
 #: ipconst:swsatype_not_found
 msgid "Type not found"
@@ -2296,7 +2296,7 @@ msgstr "Kann Grafik %s nicht laden"
 
 #: ipconst:ssmtpresponse44
 msgid "Unable to route"
-msgstr ""
+msgstr "Kann Route nicht folgen"
 
 #: ipconst:spngdefilterpass
 msgid "Unfilering Pass %d  Size: %dx%d  From: %dx%d"
@@ -2304,7 +2304,7 @@ msgstr ""
 
 #: ipconst:ssslunknowncertificate
 msgid "Unknown Certificate."
-msgstr ""
+msgstr "Unbekanntes Zertifikat"
 
 #: ipconst:swsa_qos_bad_style
 msgid "Unknown or conflicting style"
@@ -2328,7 +2328,7 @@ msgstr "Unbekannter Status"
 
 #: ipconst:ssmtpresponsesubunknown
 msgid "Unknown subcode"
-msgstr ""
+msgstr "Unbekannter Untercode"
 
 #: ipconst:sptunknown
 msgid "Unknown task"
@@ -2340,11 +2340,11 @@ msgstr "Unbekannter Token"
 
 #: ipconst:spngbadchunktype
 msgid "Unrecognized Chunk Type: %s"
-msgstr ""
+msgstr "Unerkannter Chunk-Typ: %s"
 
 #: ipconst:spngbadcolortype
 msgid "Unrecognized color type of %d"
-msgstr ""
+msgstr "Unerkannter Farbtyp von %s"
 
 #: ipconst:sbadimagelibfileformat
 msgid "Unrecognized file format"
@@ -2352,7 +2352,7 @@ msgstr "Unbekanntes Dateiformat"
 
 #: ipconst:spngbadinterlacemethod
 msgid "Unrecognized Interlace Method"
-msgstr ""
+msgstr "Unerkannte Haldbbildmethode"
 
 #: ipconst:sbadframelistobject
 msgid "Unrecognized object of class %s in GIF Frame List"
@@ -2360,15 +2360,15 @@ msgstr ""
 
 #: ipconst:spngbadpixeldepth
 msgid "Unrecognized pixel depth of %d"
-msgstr ""
+msgstr "Unerkannte Pixeltiefe von %d"
 
 #: ipconst:spngbadbitdepth
 msgid "Unsupported Bit Depth of %d"
-msgstr ""
+msgstr "Nicht unterstützte Bit-Tiefe von %s"
 
 #: ipconst:ssslunsupportedcertificate
 msgid "Unsupported Certificate."
-msgstr ""
+msgstr "Nicht unterstütztes Zertifikat."
 
 #: ipconst:ssslunsupportedchiper
 msgid "Unsupported cipher chosen."
@@ -2376,11 +2376,11 @@ msgstr ""
 
 #: ipconst:shtmlunsupprotocol
 msgid "Unsupported protocol in URL:%s"
-msgstr ""
+msgstr "Nicht unterstütztes Protokoll im URL:%s "
 
 #: ipconst:ssslunsupportedencoding
 msgid "Unsupported public encoding."
-msgstr ""
+msgstr "Nicht unterstützte öffentliche Kodierung"
 
 #: ipconst:spop3cmduser
 msgid "USER"
@@ -2392,15 +2392,15 @@ msgstr ""
 
 #: ipconst:sssverify
 msgid "Verifying"
-msgstr ""
+msgstr "Prüfe"
 
 #: ipconst:sraswaitforcallback
 msgid "Wait for callback"
-msgstr ""
+msgstr "Warte auf Callback"
 
 #: ipconst:sraswaitformodemreset
 msgid "Wait for modem reset"
-msgstr ""
+msgstr "Warte auf Modem-Reset"
 
 #: ipconst:soriginfrombegin
 msgid "When origin is soFromBeginning, Offset must be >= 0"
@@ -2412,7 +2412,7 @@ msgstr ""
 
 #: ipconst:saccessprocerr
 msgid "Win32 error loading '%s' pointer: %s"
-msgstr ""
+msgstr "Win32-Fehler beim Laden des '%s'-Zeigers: %s"
 
 #: ipconst:swsavernotsupported
 msgid "WinSock DLL version not supported"
