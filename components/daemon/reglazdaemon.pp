@@ -10,17 +10,19 @@
  *                                                                           *
  *****************************************************************************
 }
-unit RegLazDaemon;
+unit reglazdaemon;
 
 {$mode objfpc}{$H+}
 
 interface
 
 uses
-  Classes, SysUtils, FormEditingIntf, ProjectIntf, NewItemIntf, LazIDEIntf,
-  Controls, Forms;
+  Classes, SysUtils, FormEditingIntf, projectintf,newitemintf, lazideintf,
+  controls, forms;
 
-type
+Type
+
+  { TDaemonFileDescriptor }
 
   { TDaemonMapperDescriptor }
 
@@ -33,9 +35,6 @@ type
     function GetImplementationSource(const Filename, SourceName, ResourceName: string): string; override;
   end;
   
-
-  { TDaemonFileDescriptor }
-
   TDaemonFileDescriptor = Class(TFileDescPascalUnitWithResource)
   Public
     Constructor Create; override;
@@ -45,7 +44,6 @@ type
     function GetImplementationSource(const Filename, SourceName, ResourceName: string): string; override;
   end;
   
-
   { TDaemonProjectDescriptor }
 
   TDaemonProjectDescriptor = class(TProjectDescriptor)
@@ -83,6 +81,7 @@ begin
   RegisterProjectFileDescriptor(TDaemonFileDescriptor.Create,SDaemonApps);
   RegisterProjectFileDescriptor(TDaemonMapperDescriptor.Create,SDaemonApps);
   FormEditingHook.RegisterDesignerBaseClass(TDaemonMapper);
+  FormEditingHook.RegisterDesignerBaseClass(TDaemon);
  end;
 
 
@@ -186,7 +185,8 @@ begin
         Add('Uses');
         Add('{$IFDEF UNIX}{$IFDEF UseCThreads}');
         Add('  cthreads,');
-        Add('  {$ENDIF}{$ENDIF}');
+        Add('{$ENDIF}{$ENDIF}');
+        Add('  lazdaemon,');
         Add('  daemonapp');
         Add('  { add your units here };');
         Add('');

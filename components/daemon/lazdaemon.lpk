@@ -17,12 +17,10 @@
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
-    <Description Value="Lazarus Service (Daemon) Support
-"/>
-    <License Value="Modified LGPL as in FCL or RTL
-"/>
+    <Description Value="Lazarus Service (Daemon) Support"/>
+    <License Value="Modified LGPL as in FCL or RTL"/>
     <Version Minor="9" Release="9"/>
-    <Files Count="2">
+    <Files Count="3">
       <Item1>
         <Filename Value="reglazdaemon.pp"/>
         <HasRegisterProc Value="True"/>
@@ -33,6 +31,9 @@
         <Type Value="Virtual Unit"/>
         <UnitName Value="daemonapp"/>
       </Item2>
+      <Item3>
+        <Filename Value="lazdaemonapp.pp"/>
+      </Item3>
     </Files>
     <Type Value="DesignTime"/>
     <RequiredPkgs Count="3">

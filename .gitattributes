@@ -151,6 +151,7 @@ components/customform/lazcustforms.lpk svneol=native#text/plain
 components/customform/lazcustforms.pas svneol=native#text/plain
 components/daemon/lazdaemon.lpk svneol=native#text/plain
 components/daemon/lazdaemon.pas svneol=native#text/plain
+components/daemon/lazdaemonapp.pp svneol=native#text/plain
 components/daemon/reglazdaemon.pp svneol=native#text/plain
 components/fpcunit/Makefile svneol=native#text/plain
 components/fpcunit/Makefile.fpc svneol=native#text/plain

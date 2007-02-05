@@ -7,7 +7,7 @@ unit lazdaemon;
 interface
 
 uses
-  reglazdaemon, daemonapp, LazarusPackageIntf; 
+  reglazdaemon, daemonapp, lazdaemonapp, LazarusPackageIntf; 
 
 implementation
 
