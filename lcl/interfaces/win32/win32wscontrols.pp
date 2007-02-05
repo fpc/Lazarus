@@ -56,7 +56,6 @@ type
   private
   protected
   public
-    class procedure SetCursor(const AControl: TControl; const ACursor: HCursor); override;
   end;
 
   { TWin32WSWinControl }
@@ -76,6 +75,7 @@ type
     class procedure SetColor(const AWinControl: TWinControl); override;
     class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
     class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
+    class procedure SetCursor(const AControl: TControl; const ACursor: HCursor); override;
 
     class procedure ConstraintsChange(const AWinControl: TWinControl); override;
     class function  CreateHandle(const AWinControl: TWinControl;
@@ -273,14 +273,6 @@ begin
       BuddyWindowInfo := nil;
 end;
 
-{ TWin32WSControl }
-
-class procedure TWin32WSControl.SetCursor(const AControl: TControl; const ACursor: HCursor);
-begin
-  Windows.SetCursor(ACursor);
-  //Windows.SetCursor(Windows.LoadCursor(0, LclCursorToWin32CursorMap[ACursor]));
-end;
-
 { TWin32WSWinControl }
 
 class function TWin32WSWinControl.CreateHandle(const AWinControl: TWinControl;
@@ -436,6 +428,13 @@ Begin
   Windows.SetWindowText(AWinControl.Handle, PChar(AText));
 {$endif}
 End;
+
+class procedure TWin32WSWinControl.SetCursor(const AControl: TControl;
+  const ACursor: HCursor);
+begin
+  Windows.SetCursor(ACursor);
+  //Windows.SetCursor(Windows.LoadCursor(0, LclCursorToWin32CursorMap[ACursor]));
+end;
 
 class procedure TWin32WSWinControl.ConstraintsChange(const AWinControl: TWinControl);
 begin

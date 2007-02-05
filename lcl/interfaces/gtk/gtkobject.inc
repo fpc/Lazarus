@@ -3528,8 +3528,8 @@ end;
 procedure TGtkWidgetSet.SetDesigning(AComponent: TComponent);
 begin
   // change cursor
-  if AComponent is TWinControl then
-    gtkproc.SetCursor(TWinControl(AComponent), Screen.Cursors[TWinControl(AComponent).Cursor]);    
+  //if AComponent is TWinControl then
+  //  gtkproc.SetCursor(TWinControl(AComponent), Screen.Cursors[TWinControl(AComponent).Cursor]);
 end;
 
 {------------------------------------------------------------------------------

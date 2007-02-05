@@ -2692,6 +2692,12 @@ begin
   if CurControl <> nil then CurControl.SetFocus;
 end;
 
+procedure TWinControl.SetTempCursor(Value: TCursor);
+begin
+  if not HandleAllocated then exit;
+  TWSWinControlClass(WidgetSetClass).SetCursor(Self, Screen.Cursors[Value]);
+end;
+
 {------------------------------------------------------------------------------
   TWinControl FindChildControl
 ------------------------------------------------------------------------------}
@@ -4070,6 +4076,16 @@ Procedure TWinControl.Invalidate;
 Begin
   if HandleAllocated and ([csDestroying,csLoading]*ComponentState=[]) then
     TWSWinControlClass(WidgetSetClass).Invalidate(Self);
+end;
+
+{------------------------------------------------------------------------------
+  TWinControl AddControl
+
+  Add Handle object to parents Handle object.
+------------------------------------------------------------------------------}
+procedure TWinControl.AddControl;
+begin
+  TWSControlClass(WidgetSetClass).AddControl(Self);
 end;
 
 {------------------------------------------------------------------------------

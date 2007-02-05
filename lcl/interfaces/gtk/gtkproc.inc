@@ -4668,33 +4668,13 @@ var
   AWindow: PGdkWindow;
   NewCursor: PGdkCursor;
 begin
-  {$ifdef gtk2}
-  // MWE:
-  // We seriously need to rethink the way of setting cursors.
-  // for instance a button doesn't have an own xwindow.
-  // so setting the cursor results in a cursor set for the parent (=most times form)
-  // buttons have for instance a event_window, we might be able to set a cursor
-  // for that (if an input only window allows that).
-  // using an overridden Tgtk2WSButtonPrivate.SetCursor might solve it.
-  {$note Rethink gtk2 setcursor}
-  Exit;
-  {$endif}
-
   if not ((AWinControl is TWinControl) and AWinControl.HandleAllocated)
   then exit;
   
   AWidget:= PGtkWidget(AWinControl.Handle);
 
-  {$note Move designcursor to LCL}
-  if csDesigning in AWinControl.ComponentState
-  then begin
-    AWindow:=GetControlWindow(AWidget);
-    ACursor := Screen.Cursors[crDefault];
-  end else
-  begin
-    FixWidget:= GetFixedWidget(AWidget);
-    AWindow:= GetControlWindow(FixWidget);
-  end;
+  FixWidget:= GetFixedWidget(AWidget);
+  AWindow:= GetControlWindow(FixWidget);
   if AWindow = nil then exit;
 
   NewCursor := PGdkCursor(ACursor);

@@ -1020,6 +1020,7 @@ type
     procedure MouseEnter; virtual;
     procedure MouseLeave; virtual;
     function  DialogChar(var Message: TLMKey): boolean; virtual;
+    procedure UpdateMouseCursor(X, Y: integer);
   protected
     procedure Changed;
     function  GetPalette: HPalette; virtual;
@@ -1172,12 +1173,11 @@ type
     procedure Refresh;
     procedure Repaint; virtual;
     procedure Invalidate; virtual;
-    procedure AddControl; virtual;
     function CheckChildClassAllowed(ChildClass: TClass;
                                     ExceptionOnInvalid: boolean): boolean;
     procedure CheckNewParent(AParent: TWinControl); virtual;
     procedure SendToBack;
-    procedure SetTempCursor(Value: TCursor);
+    procedure SetTempCursor(Value: TCursor); virtual;
     procedure UpdateRolesForForm; virtual;
     procedure ActiveDefaultControlChanged(NewControl: TControl); virtual;
     function  GetTextBuf(Buffer: PChar; BufSize: Integer): Integer; virtual;
@@ -1734,11 +1734,13 @@ type
     function ControlByName(const ControlName: string): TControl;
     procedure SelectNext(CurControl: TWinControl;
                          GoForward, CheckTabStop: Boolean);
+    procedure SetTempCursor(Value: TCursor); override;
     procedure BroadCast(var ToAllMessage);
     procedure NotifyControls(Msg: Word);
     procedure DefaultHandler(var AMessage); override;
     function  GetTextLen: Integer; override;
     procedure Invalidate; override;
+    procedure AddControl; virtual;
     procedure InsertControl(AControl: TControl);
     procedure InsertControl(AControl: TControl; Index: integer); virtual;
     procedure RemoveControl(AControl: TControl);

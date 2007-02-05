@@ -1972,14 +1972,11 @@ begin
   Result := false;
 end;
 
-{------------------------------------------------------------------------------
-  TControl AddControl
-  
-  Add Handle object to parents Handle object.
-------------------------------------------------------------------------------}
-procedure TControl.AddControl;
+procedure TControl.UpdateMouseCursor(X, Y: integer);
 begin
-  TWSControlClass(WidgetSetClass).AddControl(Self);
+  //DebugLn(['TControl.UpdateMouseCursor ',DbgSName(Self)]);
+  if not (csDesigning in ComponentState) then
+    SetTempCursor(Cursor);
 end;
 
 {------------------------------------------------------------------------------
@@ -2212,7 +2209,8 @@ end;
 ------------------------------------------------------------------------------}
 procedure TControl.SetTempCursor(Value: TCursor);
 begin
-  TWSControlClass(WidgetSetClass).SetCursor(Self, Screen.Cursors[Value]);
+  if Parent<>nil then
+    Parent.SetTempCursor(Value);
 end;
 
 procedure TControl.ActiveDefaultControlChanged(NewControl: TControl);
@@ -3011,49 +3009,41 @@ Begin
   end;
 end;
 
-{------------------------------------------------------------------------------}
-{  TControl SetPopupMenu                                                                 }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  TControl SetPopupMenu
+------------------------------------------------------------------------------}
 procedure TControl.SetPopupMenu(Value: TPopupMenu);
 begin
   FPopupMenu :=  Value;
-{    If Value <> nil then
-  begin
-
-  end;
-}
 end;
 
-{------------------------------------------------------------------------------}
-{  TControl WMDragStart
-}
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  TControl WMDragStart
+------------------------------------------------------------------------------}
 Procedure TControl.WMDragStart(Var Message: TLMessage);
 Begin
   //do this here?
   BeginDrag(true);
 end;
 
-
 {------------------------------------------------------------------------------
   TControl WMMouseMove
 ------------------------------------------------------------------------------}
-Procedure TControl.WMMouseMove(Var Message: TLMMouseMove);
+procedure TControl.WMMouseMove(Var Message: TLMMouseMove);
 Begin
   {$IFDEF VerboseMouseBugfix}
   DebugLn(['[TControl.WMMouseMove] ',Name,':',ClassName,' ',Message.XPos,',',Message.YPos]);
   {$ENDIF}
   DoBeforeMouseMessage;
+  UpdateMouseCursor(Message.XPos,Message.YPos);
   if not (csNoStdEvents in ControlStyle)
   then with Message do
     MouseMove(KeystoShiftState(Keys), XPos, YPos);
 End;
 
-{------------------------------------------------------------------------------}
-{  TControl MouseDown
-}
-{------------------------------------------------------------------------------}
-
+{------------------------------------------------------------------------------
+  TControl MouseDown
+------------------------------------------------------------------------------}
 Procedure TControl.MouseDown(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 var
@@ -3068,7 +3058,6 @@ end;
 
 {------------------------------------------------------------------------------
   TControl MouseMove
-
 ------------------------------------------------------------------------------}
 Procedure TControl.MouseMove(Shift: TShiftState; X, Y: Integer);
 var

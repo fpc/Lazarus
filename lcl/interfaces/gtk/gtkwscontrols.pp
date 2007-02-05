@@ -83,7 +83,7 @@ type
     class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); override;
     class procedure SetChildZPosition(const AWinControl, AChild: TWinControl; const AOldPos, ANewPos: Integer; const AChildren: TFPList); override;
     class procedure SetColor(const AWinControl: TWinControl); override;
-    class procedure SetCursor(const AControl: TControl; const ACursor: HCursor); override;
+    class procedure SetCursor(const AWinControl: TWinControl; const ACursor: HCursor); override;
     class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
     class procedure SetSize(const AWinControl: TWinControl; const AWidth, AHeight: Integer); override;
     class procedure SetPos(const AWinControl: TWinControl; const ALeft, ATop: Integer); override;
@@ -352,9 +352,12 @@ begin
   end;
 end;
 
-class procedure TGtkWSWinControl.SetCursor(const AControl: TControl; const ACursor: HCursor);
+class procedure TGtkWSWinControl.SetCursor(const AWinControl: TWinControl;
+  const ACursor: HCursor);
 begin
-  GtkProc.SetCursor(AControl as TWinControl, ACursor);
+  //DebugLn(['TGtkWSWinControl.SetCursor ',DbgSName(AWinControl)]);
+  if (not AWinControl.HandleAllocated) then exit;
+  GtkProc.SetCursor(AWinControl, ACursor);
 end;
 
 class procedure TGtkWSWinControl.SetFont(const AWinControl: TWinControl;

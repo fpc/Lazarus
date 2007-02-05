@@ -61,7 +61,6 @@ type
 
   TWSControl = class(TWSLCLComponent)
     class procedure AddControl(const AControl: TControl); virtual;
-    class procedure SetCursor(const AControl: TControl; const ACursor: HCursor); virtual;
   end;
 
   TWSControlClass = class of TWSControl;
@@ -87,6 +86,7 @@ type
     class procedure SetPos(const AWinControl: TWinControl; const ALeft, ATop: Integer); virtual;
     class procedure SetSize(const AWinControl: TWinControl; const AWidth, AHeight: Integer); virtual;
     class procedure SetText(const AWinControl: TWinControl; const AText: String); virtual;
+    class procedure SetCursor(const AWinControl: TWinControl; const ACursor: HCursor); virtual;
 
     { TODO: this procedure is only used in win32 interface }
     class procedure AdaptBounds(const AWinControl: TWinControl;
@@ -122,10 +122,6 @@ implementation
 { TWSControl }
 
 class procedure TWSControl.AddControl(const AControl: TControl);
-begin
-end;
-
-class procedure TWSControl.SetCursor(const AControl: TControl; const ACursor: HCursor);
 begin
 end;
 
@@ -195,7 +191,6 @@ end;
 
 class procedure TWSWinControl.SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer);
 begin
-
 end;
     
 class procedure TWSWinControl.SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle);
@@ -209,6 +204,10 @@ begin
 end;
 
 class procedure TWSWinControl.SetColor(const AWinControl: TWinControl);
+begin
+end;
+
+class procedure TWSWinControl.SetCursor(const AWinControl: TWinControl; const ACursor: HCursor);
 begin
 end;
 
