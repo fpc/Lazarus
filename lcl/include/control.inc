@@ -1922,10 +1922,10 @@ begin
     MouseCapture := False;
   end;
   
+  if CheckMenuPopup(Message.pos) then
+    Message.Result := 1;
+
   DoMouseUp(Message, mbRight);
-  if Message.Result = 0 then 
-    if CheckMenuPopup(Message.pos) then
-      Message.Result := 1;
 end;
 
 {------------------------------------------------------------------------------
