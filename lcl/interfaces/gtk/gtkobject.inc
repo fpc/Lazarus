@@ -3490,7 +3490,7 @@ begin
           else SelectionMode:= GTK_SELECTION_MULTIPLE;
     end
     else
-      SelectionMode:= GTK_SELECTION_BROWSE;
+      SelectionMode:= GTK_SELECTION_SINGLE;
     case AControl.fCompStyle of
 
     csListBox, csCheckListBox:
@@ -4869,6 +4869,10 @@ begin
 
   gtk_combo_disable_activate(Widget);
   gtk_combo_set_case_sensitive(Widget, GdkTrue);
+  
+  // Prevents the OnSelect event be fired after inserting the first item
+  // or deleting the selected item
+  gtk_list_set_selection_mode(PGtkList(Widget^.List),GTK_SELECTION_SINGLE);
 
   // Items
   ItemList:= TGtkListStringList.Create(PGtkList(Widget^.List),ComboBox,False);
