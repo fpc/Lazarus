@@ -1323,8 +1323,6 @@ function TGtkWidgetSet.CreateCursor(ACursorInfo: PIconInfo): hCursor;
     gdk_image_unref(MaskImage);
   end;
 
-
-
 var
   FG, BG: TGDKColor;
   Img, Msk: PGdkPixmap;
@@ -1337,8 +1335,9 @@ begin
   
   Img := PGDIObject(ACursorInfo^.hbmColor)^.GDIBitmapObject;
   Msk := PGDIObject(ACursorInfo^.hbmColor)^.GDIBitmapMaskObject;
-  
+
   gdk_drawable_get_size(Img, @W, @H);
+
   bitlen := (W * H) shr 3;
   SetLength(ImgBits, bitlen);
   SetLength(MskBits, bitlen);
@@ -1363,7 +1362,6 @@ begin
   bg.blue := 0;
   bg.pixel := 0;
 
-  // TODO: for gtk2, use gdk_cursor_new_from_pixbuf for colored cursors
   Result := hCursor(gdk_cursor_new_from_pixmap (srcbitmap, mskbitmap, @fg, @bg,
     ACursorInfo^.xHotspot, ACursorInfo^.yHotspot));
     

@@ -18,9 +18,15 @@
 { TGtkPrivateWidget }
 
 class procedure TGtkPrivateWidget.UpdateCursor(AInfo: PWidgetInfo);
+var
+  Widget, FixWidget: PGtkWidget;
+  Window: PGdkWindow;
 begin
-  //move code from gtkproc.inc here
-
+  Widget := AInfo^.CoreWidget;
+  FixWidget := GetFixedWidget(Widget);
+  Window := GetControlWindow(FixWidget);
+  if Window = nil then Exit;
+  SetWindowCursor(Window, AInfo^.ControlCursor, False);
 end;
 
 class procedure TGtkPrivateWidget.SetZPosition(const AWinControl: TWinControl; const APosition: TWSZPosition);

@@ -228,6 +228,10 @@ var
   CS: PChar;
   Handle: HWND;
 begin
+  Result := False;
+  if not WSCheckHandleAllocated(AWinControl, 'GetText')
+  then Exit;
+
   Result := true;
   Handle := AWinControl.Handle;
   case AWinControl.fCompStyle of
@@ -252,6 +256,9 @@ end;
 
 class procedure TGtkWSWinControl.Invalidate(const AWinControl: TWinControl);
 begin
+  if not WSCheckHandleAllocated(AWinControl, 'Invalidate')
+  then Exit;
+
   Assert(false, 'Trace:Trying to invalidate window... !!!');
   //THIS DOESN'T WORK YET....
   {
@@ -276,6 +283,9 @@ end;
 
 class procedure TGtkWSWinControl.SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer);
 begin
+  if not WSCheckHandleAllocated(AWinControl, 'SetBounds')
+  then Exit;
+
   TGtkWidgetSet(WidgetSet).SetResizeRequest(PGtkWidget(AWinControl.Handle));
 end;
 
@@ -285,6 +295,9 @@ var
   Widget: PGtkWidget;
   APIWidget: PGTKAPIWidget;
 begin
+  if not WSCheckHandleAllocated(AWinControl, 'SetBorderStyle')
+  then Exit;
+
   Widget := PGtkWidget(AWinControl.Handle);
   if GtkWidgetIsA(Widget,GTKAPIWidget_GetType) then begin
     //DebugLn('TGtkWSWinControl.SetBorderStyle ',AWinControl.Name,':',AWinControl.ClassName,' ',ord(ABorderStyle));
@@ -352,12 +365,17 @@ begin
   end;
 end;
 
-class procedure TGtkWSWinControl.SetCursor(const AWinControl: TWinControl;
-  const ACursor: HCursor);
+class procedure TGtkWSWinControl.SetCursor(const AWinControl: TWinControl; const ACursor: HCursor);
+var
+  WidgetInfo: PWidgetInfo;
 begin
-  //DebugLn(['TGtkWSWinControl.SetCursor ',DbgSName(AWinControl)]);
-  if (not AWinControl.HandleAllocated) then exit;
-  GtkProc.SetCursor(AWinControl, ACursor);
+  if not WSCheckHandleAllocated(AWinControl, 'SetCursor')
+  then Exit;
+
+  WidgetInfo := GetWidgetInfo(Pointer(AWinControl.Handle));
+  if WidgetInfo^.ControlCursor = ACursor then Exit;
+  WidgetInfo^.ControlCursor := ACursor;
+  TGtkPrivateWidgetClass(AWinControl.WidgetSetClass.WSPrivate).UpdateCursor(WidgetInfo);
 end;
 
 class procedure TGtkWSWinControl.SetFont(const AWinControl: TWinControl;
@@ -365,7 +383,9 @@ class procedure TGtkWSWinControl.SetFont(const AWinControl: TWinControl;
 var
   Widget: PGtkWidget;
 begin
-  if not AWinControl.HandleAllocated then exit;
+  if not WSCheckHandleAllocated(AWinControl, 'SetFont')
+  then Exit;
+
   Widget:=pGtkWidget(AWinControl.handle);
   if GtkWidgetIsA(Widget,GTKAPIWidget_GetType) then
     exit;
@@ -385,6 +405,9 @@ var
   Widget: PGtkWidget;
   Allocation: TGTKAllocation;
 begin
+  if not WSCheckHandleAllocated(AWinControl, 'SetPos')
+  then Exit;
+  
   Widget := PGtkWidget(AWinControl.Handle);
   Allocation.X := gint16(ALeft);
   Allocation.Y := gint16(ATop);
@@ -399,7 +422,9 @@ var
   Widget: PGtkWidget;
   Allocation: TGTKAllocation;
 begin
-  if not AWinControl.HandleAllocated then exit;
+  if not WSCheckHandleAllocated(AWinControl, 'SetSize')
+  then Exit;
+
   Widget := PGtkWidget(AWinControl.Handle);
   Allocation.X := Widget^.Allocation.X;
   Allocation.Y := Widget^.Allocation.Y;
@@ -410,7 +435,9 @@ end;
 
 class procedure TGtkWSWinControl.SetColor(const AWinControl: TWinControl);
 begin
-  if not AWinControl.HandleAllocated then exit;
+  if not WSCheckHandleAllocated(AWinControl, 'SetColor')
+  then Exit;
+
   if  ((csOpaque in AWinControl.ControlStyle)
   and GtkWidgetIsA(pGtkWidget(AWinControl.handle),GTKAPIWidget_GetType)) then
     exit;
@@ -467,7 +494,9 @@ var
   aLabel, pLabel: pchar;
   AccelKey : integer;
 begin
-  if not AWinControl.HandleAllocated then exit;
+  if not WSCheckHandleAllocated(AWinControl, 'SetText')
+  then Exit;
+
   //TODO: create classprocedures for this in the corresponding classes
 
   P := Pointer(AWinControl.Handle);

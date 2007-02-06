@@ -245,7 +245,7 @@ begin
       if TheWinControl<>nil then 
       begin
         TheWinControl.CNPreferredSizeChanged;
-        SetCursor(TheWinControl, Screen.Cursors[TheWinControl.Cursor]);
+        TGtkPrivateWidgetClass(TheWinControl.WidgetSetClass.WSPrivate).UpdateCursor(WinWidgetInfo);
         ConnectInternalWidgetsSignals(MainWidget,TheWinControl);
 
         if TheWinControl is TCustomPage then

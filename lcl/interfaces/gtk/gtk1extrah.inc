@@ -97,10 +97,10 @@ Procedure gdk_pixbuf_render_pixmap_and_mask(pixbuf: PGdkPixbuf;
 
 //Wrapper around window functions like gtk2 -->
 Function gdk_drawable_get_depth(Drawable: PGDKDrawable): gint;
-Procedure gdk_drawable_get_size(Drawable: PGDKDrawable; Width, Height: PGInt);
-Function gdk_drawable_get_image(Drawable: PGDKDrawable;
+procedure gdk_drawable_get_size(Drawable: PGDKDrawable; Width, Height: PGInt);
+function gdk_drawable_get_image(Drawable: PGDKDrawable;
                                 x, y, width, height: gint): PGdkImage;
-Function gdk_drawable_get_colormap(Drawable: PGDKDrawable): PGdkColormap;
+function gdk_drawable_get_colormap(Drawable: PGDKDrawable): PGdkColormap;
 
 
 function  GTK_TYPE_WIDGET : TGTKType; cdecl; external gtkdll name 'gtk_widget_get_type';

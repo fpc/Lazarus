@@ -1,4 +1,4 @@
-{%mainunit gtkprivate.pp}
+{%mainunit gtk2private.pp}
 
 {
  *****************************************************************************
@@ -16,7 +16,13 @@
 }
 
 
-class procedure TGtk2PrivateWidget.UpdateCursor(AInfo: PWidgetInfo);
+class procedure TGtk2PrivateButton.UpdateCursor(AInfo: PWidgetInfo);
+var
+  Widget: PGtkWidget;
+  Window: PGdkWindow;
 begin
-  //specific button code here
+  Widget := AInfo^.CoreWidget;
+  Window := PGTkButton(Widget)^.event_window;
+  if Window = nil then Exit;
+  SetWindowCursor(Window, AInfo^.ControlCursor, False);
 end;

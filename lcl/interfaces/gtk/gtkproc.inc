@@ -4631,58 +4631,6 @@ begin
   ReleaseMouseCapture;
 end;
 
-{------------------------------------------------------------------------------
-  procedure: SetCursor
-  Params:  AWinControl : TWinControl
-  Returns: Nothing
-
-  Sets the cursor for a widget.
- ------------------------------------------------------------------------------}
-procedure SetCursor(AWinControl : TWinControl; ACursor: HCursor);
-
-  procedure DoSetCursor(AWindow: PGdkWindow; Cursor: pGDKCursor);
-  begin
-    if Cursor <> nil then begin
-      gdk_window_set_cursor(AWindow, Cursor);
-    end;
-  end;
-
-  procedure SetCursorRecursive(AWindow: PGdkWindow; Cursor: PGdkCursor);
-  var
-    ChildWindows, ListEntry: PGList;
-  begin
-    DoSetCursor(AWindow, Cursor);
-    
-    ChildWindows:=gdk_window_get_children(AWindow);
-
-    ListEntry:=ChildWindows;
-    while ListEntry<>nil do begin
-      SetCursorRecursive(PGdkWindow(ListEntry^.Data), Cursor);
-      ListEntry:=ListEntry^.Next;
-    end;
-    g_list_free(ChildWindows);
-  end;
-
-var
-  AWidget, FixWidget: PGtkWidget;
-  AWindow: PGdkWindow;
-  NewCursor: PGdkCursor;
-begin
-  if not ((AWinControl is TWinControl) and AWinControl.HandleAllocated)
-  then exit;
-  
-  AWidget:= PGtkWidget(AWinControl.Handle);
-
-  FixWidget:= GetFixedWidget(AWidget);
-  AWindow:= GetControlWindow(FixWidget);
-  if AWindow = nil then exit;
-
-  NewCursor := PGdkCursor(ACursor);
-  if NewCursor = nil then Exit;
-  
-  SetCursorRecursive(AWindow, NewCursor);
-end;
-
 {-------------------------------------------------------------------------------
   procedure: SignalConnect
   Params:  AWidget: PGTKWidget

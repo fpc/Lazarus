@@ -46,7 +46,7 @@ uses
   GTKWinApiWindow, StdCtrls, ComCtrls,
   Dialogs, ExtDlgs, LResources, Math, GTKGlobals,
   {Buttons, CListBox, Calendar, Arrow, Spin, FileCtrl, CommCtrl, ExtCtrls, }
-  gtkDef, gtkFontCache, gtkInt;
+  gtkDef, gtkFontCache, gtkInt, GtkExtra;
 
 type
 
@@ -118,19 +118,6 @@ type
     property Sorted : boolean read FSorted write SetSorted;
     property Owner: TWinControl read FOwner;
   end;
-
-{$IfDef GTK2_2}
-procedure gdk_display_get_pointer(display : PGdkDisplay; screen :PGdkScreen; x :Pgint; y : Pgint; mask : PGdkModifierType); cdecl; external gdklib;
-function gdk_display_get_default:PGdkDisplay; cdecl; external gdklib;
-
-procedure gdk_draw_pixbuf(drawable : PGdkDrawable; gc : PGdkGC; pixbuf : PGdkPixbuf; src_x, src_y, dest_x, dest_y, width, height : gint;
-                                             dither : TGdkRgbDither; x_dither, y_dither : gint); cdecl; external gdklib;
-{$Else}
-  {$IfNDef Win32}
-  Function gdk_x11_drawable_get_xdisplay(drawable : PGdkDrawable) :   PDisplay; cdecl; external gdklib;
-  Function gdk_x11_drawable_get_xid(drawable : PGdkDrawable) :  Integer; cdecl; external gdklib;
-  {$EndIf}
-{$EndIf}
 
 var
   GTK2WidgetSet: TGTK2WidgetSet absolute GtkWidgetSet;

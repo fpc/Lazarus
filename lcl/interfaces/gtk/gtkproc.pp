@@ -490,8 +490,6 @@ procedure ReleaseMouseCapture;
 procedure ReleaseCaptureWidget(Widget : PGtkWidget);
 procedure UpdateMouseCaptureControl;
 
-// mouse cursor
-procedure SetCursor(AWinControl: TWinControl; ACursor: HCursor);
 
 const
   // for now return the same value, in the future we may want to return an
@@ -786,7 +784,7 @@ implementation
 
 uses
   {$IFDEF StaticXinerama} Xinerama, {$ENDIF}
-  dynlibs;
+  dynlibs, GtkPrivate;
 
 const
   KCINFO_FLAG_SHIFT         = $01;

@@ -410,46 +410,9 @@ end;
 
  ------------------------------------------------------------------------------}
 function TGtk2WidgetSet.GetCursorPos(var lpPoint: TPoint ): Boolean;
-{$IfnDef GTK2_2} //we need a GTK2_2 FLAG somehow
-  {$IfNDef Win32}
-  var
-    root, child: TWindow;
-    winx, winy: Integer;
-    xmask: Cardinal;
-    TopList, List: PGList;
-  {$EndIf}
-{$EndIf}
 begin
-  Result := False;
-{$IfDef GTK2_2} //we need a GTK2_2 FLAG somehow
   gdk_display_get_pointer(gdk_display_get_default(), nil, @lpPoint.X, @lpPoint.Y, nil);
   Result := True;
-{$Else}
-  {$IfNDef Win32}
-   TopList := gdk_window_get_toplevels;
-   List := TopList;
-   while List <> nil do
-   begin
-     if (List^.Data <> nil)
-     and gdk_window_is_visible(List^.Data)
-     then begin
-       XQueryPointer(gdk_x11_drawable_get_xdisplay (List^.Data),
-                     gdk_x11_drawable_get_xid(List^.Data),
-                     @root, @child, @lpPoint.X, @lpPoint.Y, @winx, @winy, @xmask);
-
-       Result := True;
-       Break;
-     end;
-     List := g_list_next(List);
-   end;
-
-   if TopList <> nil
-   then g_list_free(TopList);
-   {$Else}
-      // Win32 Todo
-      DebugLn('ToDo(Win32): TGtk2WidgetSet.GetCursorPos');
-  {$EndIf}
-{$EndIf}
 end;
 
 {------------------------------------------------------------------------------

@@ -32,6 +32,7 @@ interface
 
 uses
   // libs
+  Gtk2, Glib2, Gdk2,
   // LCL
   LCLType, LMessages, LCLProc, Controls, Classes, SysUtils, Forms,
   // widgetset
@@ -102,6 +103,6 @@ type
   end;
 
 implementation
-
+{$I Gtk2PrivateWidget.inc}
 end.
   

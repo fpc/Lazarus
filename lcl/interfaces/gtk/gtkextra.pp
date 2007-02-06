@@ -40,7 +40,7 @@ interface
 {$endif}
 
 {$ifdef gtk2}
-{$I ../gtk2/gtk2extrah.inc}
+{$I gtk2extrah.inc}
 {$endif}
 
 
@@ -51,7 +51,7 @@ implementation
 {$endif}
 
 {$ifdef gtk2}
-{$I ../gtk2/gtk2extra.inc}
+{$I gtk2extra.inc}
 {$endif}
 
 end.

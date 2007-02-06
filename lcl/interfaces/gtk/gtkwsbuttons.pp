@@ -29,9 +29,9 @@ interface
 uses
   // libs
   {$IFDEF GTK2}
-  GLib2, Gtk2,
+  GLib2, Gtk2, Gtk2Private,
   {$ELSE}
-  GLib, Gtk, 
+  GLib, Gtk, Gtk1Private,
   {$ENDIF}
   // LCL
   Classes, LCLProc, LCLType, LMessages, Controls, Graphics, Buttons,
@@ -582,9 +582,14 @@ initialization
 ////////////////////////////////////////////////////
 // To improve speed, register only classes
 // which actually implement something
-////////////////////////////////////////////////////
-  RegisterWSComponent(TCustomButton, TGtkWSButton);
-  RegisterWSComponent(TCustomBitBtn, TGtkWSBitBtn); // register it to fallback to default
+////////////////////////////////////////////////////                 
+{$ifdef gtk1}
+  RegisterWSComponent(TCustomButton, TGtkWSButton, TGtk1PrivateButton);
+  RegisterWSComponent(TCustomBitBtn, TGtkWSBitBtn, TGtk1PrivateButton); // register it to fallback to default
+{$else}
+  RegisterWSComponent(TCustomButton, TGtkWSButton, TGtk2PrivateButton);
+  RegisterWSComponent(TCustomBitBtn, TGtkWSBitBtn, TGtk2PrivateButton); // register it to fallback to default
+{$endif}  
 //  RegisterWSComponent(TCustomSpeedButton, TGtkWSSpeedButton);
 ////////////////////////////////////////////////////
 end.

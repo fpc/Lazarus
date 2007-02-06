@@ -3526,10 +3526,18 @@ begin
 end;
 
 procedure TGtkWidgetSet.SetDesigning(AComponent: TComponent);
+{var
+  AWinControl: TWinControl absolute AComponent;
+}
 begin
   // change cursor
-  //if AComponent is TWinControl then
-  //  gtkproc.SetCursor(TWinControl(AComponent), Screen.Cursors[TWinControl(AComponent).Cursor]);
+{
+  Paul Ishenin:
+    this will never happen
+
+  if (AComponent is TWinControl) and (AWinControl.HandleAllocated) then
+    TGtkWSWinControl(AWinControl.WidgetSetClass).SetCursor(AWinControl, Screen.Cursors[crDefault]);
+}
 end;
 
 {------------------------------------------------------------------------------

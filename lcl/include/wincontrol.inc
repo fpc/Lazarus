@@ -5278,6 +5278,11 @@ begin
       TWSWinControlClass(WidgetSetClass).SetText(Self, CachedText);
     InvalidatePreferredSize;
   end;
+  
+  if csDesigning in ComponentState
+  then TWSWinControlClass(WidgetSetClass).SetCursor(Self, Screen.Cursors[crDefault])
+  else TWSWinControlClass(WidgetSetClass).SetCursor(Self, Screen.Cursors[Cursor]);
+
 
   // send pending resize event
   Resize;
