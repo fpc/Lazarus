@@ -75,7 +75,7 @@ type
     class procedure SetColor(const AWinControl: TWinControl); override;
     class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
     class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
-    class procedure SetCursor(const AControl: TControl; const ACursor: HCursor); override;
+    class procedure SetCursor(const AWinControl: TWinControl; const ACursor: HCursor); override;
 
     class procedure ConstraintsChange(const AWinControl: TWinControl); override;
     class function  CreateHandle(const AWinControl: TWinControl;
@@ -429,7 +429,7 @@ Begin
 {$endif}
 End;
 
-class procedure TWin32WSWinControl.SetCursor(const AControl: TControl;
+class procedure TWin32WSWinControl.SetCursor(const AWinControl: TWinControl;
   const ACursor: HCursor);
 begin
   Windows.SetCursor(ACursor);

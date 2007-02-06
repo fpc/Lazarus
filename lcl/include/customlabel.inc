@@ -351,11 +351,15 @@ var
 begin
   R := Rect(0,0,Width,Height);
   With Canvas do begin
-    if enabled then   Color := Self.Color
-               else   Color := clNone;
+    if Enabled then  Color := Self.Color
+               else  Color := clNone;
     Font := Self.Font;
-    if (Color<>clNone) and not Transparent then
+    if (Color<>clNone) and not Transparent then begin
+      Brush.Style:=bsSolid;
       FillRect(R);
+    end else begin
+      Brush.Style:=bsClear;
+    end;
 {
     If BorderStyle <> sbsNone then begin
       InflateRect(R,-2,-2);
