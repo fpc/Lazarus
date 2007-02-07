@@ -49,6 +49,7 @@ type
   TCodeBrowserUnit = class;
   TCodeBrowserUnitList = class;
 
+
   { TCodeBrowserNode }
 
   TCodeBrowserNode = class

@@ -1405,6 +1405,8 @@ begin
       if Result.Left>Result.Right then
         Result.Left:=Result.Right;
       Result.Right:=DisplayTextRight;
+      if Result.Right<Result.Left then
+        Result.Right:=Result.Left;
     end;
     //TreeView_GetItemRect(Handle, ItemId, Result, TextOnly);
   end;
@@ -1414,7 +1416,7 @@ function TTreeNode.DisplayExpandSignLeft: integer;
 begin
   Result:=0;
   if TreeView<>nil then begin
-    inc(Result,TreeView.Indent*Level+TreeView.BorderWidth);
+    inc(Result,TreeView.Indent*Level+TreeView.BorderWidth-TreeView.FScrolledLeft);
   end;
 end;
 
@@ -3187,7 +3189,6 @@ begin
   if (X>=BorderWidth) and (X<ClientWidth-BorderWidth) then begin
     Result:=GetNodeAtY(Y);
     if Result<>nil then begin
-      inc(X,FScrolledLeft-BorderWidth);
       if (X<Result.DisplayExpandSignLeft) then
         Result:=nil;
     end;
@@ -3283,7 +3284,6 @@ begin
   then begin
     Node:=GetNodeAtY(Y);
     if Node<>nil then begin
-      inc(X,FScrolledLeft);
       Include(Result,htOnItem);
       if X<Node.DisplayExpandSignLeft then
         Include(Result,htOnIndent)
@@ -4332,7 +4332,7 @@ begin
   inherited MouseDown(Button, Shift, X, Y);
 
   CursorNode:=GetNodeAt(X,Y);
-  LogicalX:=X+FScrolledLeft-BorderWidth;
+  LogicalX:=X;
   bStartDrag := false;
   if ([ssDouble,ssTriple,ssQuad]*Shift)=[] then begin
     if (Button = mbLeft) and (CursorNode<>nil) then begin
