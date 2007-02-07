@@ -245,6 +245,7 @@ type
   public
     procedure grabWindow(p1: Cardinal; x: Integer = 0; y: Integer = 0; w: Integer = -1; h: Integer = -1);
     procedure toImage(retval: QImageH);
+    class procedure fromImage(retval: QPixmapH; image: QImageH; flags: QtImageConversionFlags = QtAutoColor);
   end;
   
   procedure TQColorToColorRef(const AColor: TQColor; out AColorRef: TColorRef);
@@ -1344,6 +1345,11 @@ end;
 procedure TQtPixmap.toImage(retval: QImageH);
 begin
   QPixmap_toImage(Handle, retval);
+end;
+
+class procedure TQtPixmap.fromImage(retval: QPixmapH; image: QImageH; flags: QtImageConversionFlags = QtAutoColor);
+begin
+  QPixmap_fromImage(retval, image, flags);
 end;
 
 end.

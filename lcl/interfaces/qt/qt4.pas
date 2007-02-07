@@ -1,6 +1,6 @@
 unit qt4;
 
-{ Version : 1.26 }
+{ Version : 1.27 }
 
 {$ifdef fpc}
   {$mode delphi}
@@ -83,6 +83,7 @@ type
     MenuHandle                          = ^LongInt;
     MenuRef                             = MenuHandle;
     EventHandlerCallRef                 = ^LongInt;
+    CGImageRef                          = Pointer;    
 {$ENDIF}
 
 
@@ -207,6 +208,7 @@ QObjectH = class(TObject) end;
   QSessionManagerH = class(QObjectH) end;
   QSocketNotifierH = class(QObjectH) end;
   QStyleH = class(QObjectH) end;
+  QSystemTrayIconH = class(QObjectH) end;
   QTextDocumentH = class(QObjectH) end;
   QTextObjectH = class(QObjectH) end;
     QTextBlockGroupH = class(QTextObjectH) end;
@@ -367,6 +369,7 @@ QTreeWidgetItem_hookH = class(QObject_hookH) end;
 QTreeWidget_hookH = class(QTreeView_hookH) end;
 QDialog_hookH = class(QWidget_hookH) end;
 QProgressDialog_hookH = class(QDialog_hookH) end;
+QSystemTrayIcon_hookH = class(QObject_hookH) end;
 QIODevice_hookH = class(QObject_hookH) end;
 
   TPictureIOHandler = procedure(Pic: QPictureIOH) cdecl;
@@ -6272,6 +6275,37 @@ type
   QProgressDialog_canceled_Event = procedure () of object cdecl;
 
 
+
+type
+  QSystemTrayIconActivationReason = ( // QSystemTrayIcon::ActivationReason (1)
+    QSystemTrayIconUnknown, QSystemTrayIconContext, QSystemTrayIconDoubleClick, QSystemTrayIconTrigger, QSystemTrayIconMiddleClick );
+
+  QSystemTrayIconMessageIcon = ( // QSystemTrayIcon::MessageIcon (1)
+    QSystemTrayIconNoIcon, QSystemTrayIconInformation, QSystemTrayIconWarning, QSystemTrayIconCritical );
+
+function QSystemTrayIcon_create(parent: QObjectH = nil): QSystemTrayIconH; overload; cdecl; external QtIntf name 'QSystemTrayIcon_create';
+procedure QSystemTrayIcon_destroy(handle: QSystemTrayIconH); cdecl; external QtIntf name 'QSystemTrayIcon_destroy'; 
+function QSystemTrayIcon_create(icon: QIconH; parent: QObjectH = nil): QSystemTrayIconH; overload; cdecl; external QtIntf name 'QSystemTrayIcon_create2';
+procedure QSystemTrayIcon_setContextMenu(handle: QSystemTrayIconH; menu: QMenuH); cdecl; external QtIntf name 'QSystemTrayIcon_setContextMenu';
+function QSystemTrayIcon_contextMenu(handle: QSystemTrayIconH): QMenuH; cdecl; external QtIntf name 'QSystemTrayIcon_contextMenu';
+procedure QSystemTrayIcon_icon(handle: QSystemTrayIconH; retval: QIconH); cdecl; external QtIntf name 'QSystemTrayIcon_icon';
+procedure QSystemTrayIcon_setIcon(handle: QSystemTrayIconH; icon: QIconH); cdecl; external QtIntf name 'QSystemTrayIcon_setIcon';
+procedure QSystemTrayIcon_toolTip(handle: QSystemTrayIconH; retval: PWideString); cdecl; external QtIntf name 'QSystemTrayIcon_toolTip';
+procedure QSystemTrayIcon_setToolTip(handle: QSystemTrayIconH; tip: PWideString); cdecl; external QtIntf name 'QSystemTrayIcon_setToolTip';
+function QSystemTrayIcon_isSystemTrayAvailable(): Boolean; cdecl; external QtIntf name 'QSystemTrayIcon_isSystemTrayAvailable';
+function QSystemTrayIcon_supportsMessages(): Boolean; cdecl; external QtIntf name 'QSystemTrayIcon_supportsMessages';
+procedure QSystemTrayIcon_showMessage(handle: QSystemTrayIconH; title: PWideString; msg: PWideString; icon: QSystemTrayIconMessageIcon = QSystemTrayIconInformation; msecs: Integer = 10000); cdecl; external QtIntf name 'QSystemTrayIcon_showMessage';
+function QSystemTrayIcon_isVisible(handle: QSystemTrayIconH): Boolean; cdecl; external QtIntf name 'QSystemTrayIcon_isVisible';
+procedure QSystemTrayIcon_setVisible(handle: QSystemTrayIconH; visible: Boolean); cdecl; external QtIntf name 'QSystemTrayIcon_setVisible';
+procedure QSystemTrayIcon_show(handle: QSystemTrayIconH); cdecl; external QtIntf name 'QSystemTrayIcon_show';
+procedure QSystemTrayIcon_hide(handle: QSystemTrayIconH); cdecl; external QtIntf name 'QSystemTrayIcon_hide';
+
+
+type
+  QSystemTrayIcon_activated_Event = procedure (reason: QSystemTrayIconActivationReason) of object cdecl;
+  QSystemTrayIcon_messageClicked_Event = procedure () of object cdecl;
+
+
 type
   QIODeviceOpenModeFlag = cardinal; //  QIODevice::OpenModeFlag (4)
   QIODeviceOpenMode = QIODeviceOpenModeFlag; // QFlags<>
@@ -6613,6 +6647,11 @@ procedure QDialog_hook_hook_rejected(handle: QDialog_hookH; hook: QHookH); cdecl
 function QProgressDialog_hook_create(handle: QObjectH): QProgressDialog_hookH; cdecl; external QtIntf name 'QProgressDialog_hook_create';
 procedure QProgressDialog_hook_destroy(handle: QProgressDialog_hookH); cdecl; external QtIntf name 'QProgressDialog_hook_destroy'; 
 procedure QProgressDialog_hook_hook_canceled(handle: QProgressDialog_hookH; hook: QHookH); cdecl; external QtIntf name 'QProgressDialog_hook_hook_canceled';
+
+function QSystemTrayIcon_hook_create(handle: QObjectH): QSystemTrayIcon_hookH; cdecl; external QtIntf name 'QSystemTrayIcon_hook_create';
+procedure QSystemTrayIcon_hook_destroy(handle: QSystemTrayIcon_hookH); cdecl; external QtIntf name 'QSystemTrayIcon_hook_destroy'; 
+procedure QSystemTrayIcon_hook_hook_activated(handle: QSystemTrayIcon_hookH; hook: QHookH); cdecl; external QtIntf name 'QSystemTrayIcon_hook_hook_activated';
+procedure QSystemTrayIcon_hook_hook_messageClicked(handle: QSystemTrayIcon_hookH; hook: QHookH); cdecl; external QtIntf name 'QSystemTrayIcon_hook_hook_messageClicked';
 
 function QIODevice_hook_create(handle: QObjectH): QIODevice_hookH; cdecl; external QtIntf name 'QIODevice_hook_create';
 procedure QIODevice_hook_destroy(handle: QIODevice_hookH); cdecl; external QtIntf name 'QIODevice_hook_destroy'; 
