@@ -880,7 +880,6 @@ type
     function IsOnClickStored: Boolean;
     function IsShowHintStored: Boolean;
     function IsVisibleStored: Boolean;
-    function CheckMenuPopup(const P: TSmallPoint): boolean;
     procedure DoBeforeMouseMessage;
     procedure DoConstrainedResize(var NewLeft, NewTop, NewWidth, NewHeight: integer);
     procedure DoMouseDown(var Message: TLMMouse; Button: TMouseButton;
@@ -954,6 +953,7 @@ type
     function GetControlOrigin: TPoint; virtual;
   protected
     // protected messages
+    procedure WMContextMenu(Var Message: TLMMouse); message LM_CONTEXTMENU;
     procedure WMLButtonDown(Var Message: TLMLButtonDown); message LM_LBUTTONDOWN;
     procedure WMRButtonDown(Var Message: TLMRButtonDown); message LM_RBUTTONDOWN;
     procedure WMMButtonDown(Var Message: TLMMButtonDown); message LM_MBUTTONDOWN;

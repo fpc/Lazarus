@@ -1719,24 +1719,31 @@ begin
       WinProcess := false;
       NotifyUserInput := True;
       PLMsg:=@LMMouse;
-      With LMMouse Do
-      Begin
-        Msg := LM_RBUTTONUP;
+      with LMMouse do
+      begin
+        Msg := LM_CONTEXTMENU;
         XPos := GET_X_LPARAM(LParam);
         YPos := GET_Y_LPARAM(LParam);
         Result := 0;
-      End;
-      if (LMMouse.XPos<>-1) and (LMMouse.YPos<>-1) then
-      begin
-        P := SmallPointToPoint(LMMouse.Pos);
-        Windows.ScreenToClient(Window, Windows.POINT(P));
-        LMMouse.Pos := PointToSmallPoint(P);
-      end
-      else
-      begin
-       LMMouse.XPos := 0;
-       LMMouse.YPos := 0; {TODO : Fix that in future because popup menu should
-                           appear near selected element of control}
+        //Only keyboard triggered contextmenu (Shift-F10) should be sent to LCL
+        //but calling default handler is necessary. This schema avoids parent recursion
+        //and also keeps default popupmenu (TMemo)
+        if XPos = -1 then
+        begin
+          P := SmallPointToPoint(Pos);
+          Windows.GetCursorPos(P);
+          //if the mouse is not over the window is better to set to 0 to avoid weird behaviors
+          if Windows.WindowFromPoint(P) = Window then
+            Windows.ScreenToClient(Window, P)
+          else
+          begin
+            P.X:=0;
+            P.Y:=0;
+          end;
+          Pos := PointToSmallPoint(P);
+        end
+        else
+          lWinControl:=nil;
       end;
     end;
     WM_SETCURSOR:
@@ -2038,7 +2045,7 @@ begin
 
   // respond to result of LCL handling the message
   case PLMsg^.Msg of
-    LM_ERASEBKGND, LM_SETCURSOR, LM_RBUTTONUP:
+    LM_ERASEBKGND, LM_SETCURSOR, LM_RBUTTONUP, LM_CONTEXTMENU:
     begin
       if PLMsg^.Result = 0 then
         WinProcess := true;

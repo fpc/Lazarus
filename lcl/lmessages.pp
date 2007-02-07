@@ -117,6 +117,8 @@ const
   LM_DRAWLISTITEM   = LM_User+80;
 
   LM_SETCURSOR      = LM_User+81;
+  
+  LM_CONTEXTMENU    = LM_User+82;
 
   LM_INTERNALPAINT  = LM_User + 90;
 

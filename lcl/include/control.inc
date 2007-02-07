@@ -457,42 +457,6 @@ Begin
 end;
 
 {------------------------------------------------------------------------------
-       TControl.CheckMenuPopup
-
-       returns whether was handled
-------------------------------------------------------------------------------}
-function TControl.CheckMenuPopup(const P: TSmallPoint): boolean;
-var
-  Control: TControl;
-  TempPopupMenu: TPopupMenu;
-  P2: TPoint;
-begin
-  Result:=false;
-  if csDesigning in ComponentState then Exit;
-
-  P2 := SmallPointToPoint(P);
-  DoContextPopup(P2,Result);
-  if Result then exit;
-
-  Control := Self;
-  while Control <> nil do
-  begin
-    TempPopupMenu := Control.GetPopupMenu;
-    if (TempPopupMenu <> nil) then
-    begin
-      if not TempPopupMenu.AutoPopup then Exit;
-//      SendCancelMode(nil);
-      TempPopupMenu.PopupComponent := Control;
-      P2 := ClientToScreen(P2);
-      TempPopupMenu.Popup(P2.X, P2.Y);
-      Result := true;
-      Exit;
-    end;
-    Control := Control.Parent;
-  end;
-end;
-
-{------------------------------------------------------------------------------
   procedure TControl.CalculateDockSizes;
 
   Compute docking width, height based on docking properties.
@@ -1470,6 +1434,7 @@ begin
   end;
 end;
 
+
 {------------------------------------------------------------------------------
        TControl WndPRoc
 ------------------------------------------------------------------------------}
@@ -1619,6 +1584,50 @@ begin
   if FBorderSpacing=AValue then exit;
   FBorderSpacing.Assign(AValue);
 end;
+
+{------------------------------------------------------------------------------
+  Method: TControl.WMContextMenu
+  Params: Message
+  Returns: Nothing
+
+  ContextMenu event handler
+ ------------------------------------------------------------------------------}
+
+procedure TControl.WMContextMenu(var Message: TLMMouse);
+var
+  Control: TControl;
+  TempPopupMenu: TPopupMenu;
+  P2: TPoint;
+  Handled: Boolean;
+begin
+  if (csDesigning in ComponentState) or (Message.Result <> 0) then Exit;
+  P2 := SmallPointToPoint(Message.Pos);
+  Handled:=False;
+  DoContextPopup(P2,Handled);
+  if Handled then
+  begin
+    Message.Result:=1;
+    Exit;
+  end;
+
+  Control := Self;
+  while Control <> nil do
+  begin
+    TempPopupMenu := Control.GetPopupMenu;
+    if (TempPopupMenu <> nil) then
+    begin
+      if not TempPopupMenu.AutoPopup then Exit;
+//      SendCancelMode(nil);
+      TempPopupMenu.PopupComponent := Control;
+      P2 := ClientToScreen(P2);
+      TempPopupMenu.Popup(P2.X, P2.Y);
+      Message.Result:= 1;
+      Exit;
+    end;
+    Control := Control.Parent;
+  end;
+end;
+
 
 {------------------------------------------------------------------------------
   Method: TControl.WMLButtonDown
@@ -1922,9 +1931,8 @@ begin
     MouseCapture := False;
   end;
   
-  if CheckMenuPopup(Message.pos) then
-    Message.Result := 1;
-
+  WindowProc(Message);
+  //MouseUp event is independent of return values of contextmenu
   DoMouseUp(Message, mbRight);
 end;
 
