@@ -151,6 +151,22 @@ type
     function Execute(aText: TIDETextConverter): TModalResult; override;
   end;
 
+  { TH2PasFileCInclude }
+
+  TH2PasFileCInclude = class
+  private
+    FFilename: string;
+    FSrcFilename: string;
+    FSrcPos: TPoint;
+    procedure SetFilename(const AValue: string);
+    procedure SetSrcFilename(const AValue: string);
+    procedure SetSrcPos(const AValue: TPoint);
+  public
+    property SrcFilename: string read FSrcFilename write SetSrcFilename;
+    property SrcPos: TPoint read FSrcPos write SetSrcPos;
+    property Filename: string read FFilename write SetFilename;
+  end;
+
   TH2PasProject = class;
   TH2PasConverter = class;
 
@@ -158,14 +174,20 @@ type
 
   TH2PasFile = class(TPersistent)
   private
+    FCIncludes: TFPList; // list of TH2PasFileCInclude
+    FCIncludesValid: boolean;
+    FCIncludesFileAge: TDateTime;
     FEnabled: boolean;
     FFilename: string;
     FModified: boolean;
     FProject: TH2PasProject;
+    function GetCIncludeCount: integer;
+    function GetCIncludes(Index: integer): TH2PasFileCInclude;
     procedure SetEnabled(const AValue: boolean);
     procedure SetFilename(const AValue: string);
     procedure SetModified(const AValue: boolean);
     procedure SetProject(const AValue: TH2PasProject);
+    procedure SearchCIncFilenames;
   public
     constructor Create;
     destructor Destroy; override;
@@ -178,11 +200,15 @@ type
     function GetOutputDirectory: string;
     function GetOutputExtension: string;
     function GetH2PasParameters(const InputFilename: string = ''): string;
+    function ReadCIncludes(ForceUpdate: boolean): TModalResult;
+    function CIncludesValid: boolean;
   public
     property Project: TH2PasProject read FProject write SetProject;
     property Filename: string read FFilename write SetFilename;
     property Enabled: boolean read FEnabled write SetEnabled;
     property Modified: boolean read FModified write SetModified;
+    property CIncludeCount: integer read GetCIncludeCount;
+    property CIncludes[Index: integer]: TH2PasFileCInclude read GetCIncludes;
   end;
 
   { TH2PasProject }
@@ -263,6 +289,8 @@ type
     function HasEnabledFiles: boolean;
     procedure AddDefaultPreH2PasTools;
     procedure AddDefaultPostH2PasTools;
+    function SearchIncludedCHeaderFile(aFile: TH2PasFile;
+                                       const SrcFilename: string): string;
   public
     property CHeaderFileCount: integer read GetCHeaderFileCount;
     property CHeaderFiles[Index: integer]: TH2PasFile read GetCHeaderFiles;
@@ -372,6 +400,7 @@ begin
   NewValue:=TrimFilename(AValue);
   if FFilename=NewValue then exit;
   FFilename:=NewValue;
+  FCIncludesValid:=false;
   Modified:=true;
 end;
 
@@ -380,6 +409,19 @@ begin
   if FEnabled=AValue then exit;
   FEnabled:=AValue;
   Modified:=true;
+end;
+
+function TH2PasFile.GetCIncludeCount: integer;
+begin
+  if (FCIncludes=nil) or (not FCIncludesValid) then
+    Result:=0
+  else
+    Result:=FCIncludes.Count;
+end;
+
+function TH2PasFile.GetCIncludes(Index: integer): TH2PasFileCInclude;
+begin
+  Result:=TH2PasFileCInclude(FCIncludes[Index]);
 end;
 
 procedure TH2PasFile.SetModified(const AValue: boolean);
@@ -393,6 +435,7 @@ end;
 procedure TH2PasFile.SetProject(const AValue: TH2PasProject);
 begin
   if FProject=AValue then exit;
+  FCIncludesValid:=false;
   if FProject<>nil then begin
     FProject.InternalRemoveCHeaderFile(Self);
   end;
@@ -401,6 +444,20 @@ begin
     FProject.InternalAddCHeaderFile(Self);
   end;
   Modified:=true;
+end;
+
+procedure TH2PasFile.SearchCIncFilenames;
+var
+  i: Integer;
+  IncFile: TH2PasFileCInclude;
+begin
+  if FCIncludes=nil then exit;
+  if Project=nil then exit;
+  for i:=0 to FCIncludes.Count-1 do begin
+    IncFile:=CIncludes[i];
+    IncFile.Filename:=
+      Project.SearchIncludedCHeaderFile(Self,IncFile.SrcFilename);
+  end;
 end;
 
 constructor TH2PasFile.Create;
@@ -422,6 +479,8 @@ begin
   FEnabled:=true;
   FFilename:='';
   FModified:=false;
+  FCIncludesValid:=false;
+  FreeAndNil(FCIncludes);
 end;
 
 procedure TH2PasFile.Assign(Source: TPersistent);
@@ -433,6 +492,7 @@ begin
     if not IsEqual(Src) then begin
       FEnabled:=Src.FEnabled;
       FFilename:=Src.FFilename;
+      FCIncludesValid:=false;
       Modified:=true;
     end;
   end else begin
@@ -452,6 +512,7 @@ begin
   FFilename:=Config.GetValue('Filename/Value','');
   if Project<>nil then
     FFilename:=Project.NormalizeFilename(FFilename);
+  FCIncludesValid:=false;
   FModified:=false;
 end;
 
@@ -517,6 +578,58 @@ begin
     Add(InputFilename)
   else
     Add(Filename);
+end;
+
+function TH2PasFile.ReadCIncludes(ForceUpdate: boolean): TModalResult;
+var
+  sl: TStringList;
+  i: Integer;
+  SrcFilename: String;
+  Item: TH2PasFileCInclude;
+begin
+  if (not ForceUpdate) and CIncludesValid then exit(mrOk);
+  Result:=mrCancel;
+  if not FileExistsCached(Filename) then exit;
+  FCIncludesFileAge:=FileAge(Filename);
+  FCIncludesValid:=true;
+  DebugLn(['TH2PasFile.ReadCIncludes Filename="',Filename,'"']);
+  try
+    sl:=TStringList.Create;
+    try
+      sl.LoadFromFile(Filename);
+      for i:=0 to sl.Count-1 do begin
+        if not REMatches(sl[i],'^#include "(.+)"') then continue;
+        SrcFilename:=Trim(REVar(1));
+        if SrcFilename='' then continue;
+        // add new include
+        if FCIncludes=nil then FCIncludes:=TFPList.Create;
+        Item:=TH2PasFileCInclude.Create;
+        Item.SrcFilename:=SrcFilename;
+        Item.SrcPos:=Point(1,i);
+        FCIncludes.Add(Item);
+      end;
+    finally
+      sl.Free;
+    end;
+    SearchCIncFilenames;
+    Result:=mrOk;
+  except
+    on e: Exception do begin
+      DebugLn(['TH2PasFile.ReadCIncludes File="',Filename,'" Msg=',E.Message]);
+    end;
+  end;
+end;
+
+function TH2PasFile.CIncludesValid: boolean;
+begin
+  Result:=false;
+  if not FCIncludesValid then exit;
+  FCIncludesValid:=false;
+  if Project=nil then exit;
+  if (not FileExistsCached(Filename)) then exit;
+  if FileAge(Filename)>FCIncludesFileAge then exit;
+  FCIncludesValid:=true;
+  Result:=true;
 end;
 
 { TH2PasProject }
@@ -1120,6 +1233,32 @@ begin
   AddNewTextConverterTool(FPostH2PasTools,TRemoveEmptyTypeVarConstSections);
   AddNewTextConverterTool(FPostH2PasTools,TReplaceImplicitTypes);
   AddNewTextConverterTool(FPostH2PasTools,TFixArrayOfParameterType);
+end;
+
+function TH2PasProject.SearchIncludedCHeaderFile(aFile: TH2PasFile;
+  const SrcFilename: string): string;
+var
+  AFilename: String;
+  i: Integer;
+  CurFile: TH2PasFile;
+begin
+  AFilename:=SetDirSeparators(SrcFilename);
+  if System.Pos(PathDelim,AFilename)>0 then begin
+    // with sub path -> only search relative to AFile
+    Result:=TrimFilename(ExtractFilePath(aFile.Filename)+AFilename);
+    if FileExistsCached(Result) then exit;
+  end else begin
+    // search relative to AFile
+    Result:=TrimFilename(ExtractFilePath(aFile.Filename)+AFilename);
+    if FileExistsCached(Result) then exit;
+    // search relative to all other .h files
+    for i:=0 to CHeaderFileCount-1 do begin
+      CurFile:=CHeaderFiles[i];
+      Result:=TrimFilename(ExtractFilePath(CurFile.Filename)+AFilename);
+      if FileExistsCached(Result) then exit;
+    end;
+  end;
+  Result:='';
 end;
 
 { TH2PasConverter }
@@ -2613,6 +2752,26 @@ begin
     inc(i);
   end;
   Result:=mrOk;
+end;
+
+{ TH2PasFileCInclude }
+
+procedure TH2PasFileCInclude.SetFilename(const AValue: string);
+begin
+  if FFilename=AValue then exit;
+  FFilename:=AValue;
+end;
+
+procedure TH2PasFileCInclude.SetSrcFilename(const AValue: string);
+begin
+  if FSrcFilename=AValue then exit;
+  FSrcFilename:=AValue;
+  FFilename:='';
+end;
+
+procedure TH2PasFileCInclude.SetSrcPos(const AValue: TPoint);
+begin
+  FSrcPos:=AValue;
 end;
 
 end.

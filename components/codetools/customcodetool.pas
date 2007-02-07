@@ -120,10 +120,11 @@ type
   private
     FLastProgressPos: integer;
     FLastScannerChangeStep: integer;
-    FScanner: TLinkScanner;
     FOnGetGlobalWriteLockInfo: TOnGetWriteLockInfo;
     FOnParserProgress: TOnParserProgress;
     FOnSetGlobalWriteLock: TOnSetWriteLock;
+    FScanner: TLinkScanner;
+    FTreeChangeStep: integer;
   protected
     FIgnoreErrorAfter: TCodePosition;
     KeyWordFuncList: TKeyWordFunctionList;
@@ -138,6 +139,7 @@ type
     procedure RaiseBracketCloseExpectedButAtomFound;
     procedure RaiseUndoImpossible;
     procedure SetIgnoreErrorAfter(const AValue: TCodePosition); virtual;
+    procedure IncreaseTreeChangeStep;
   protected
     LastErrorMessage: string;
     LastErrorCurPos: TAtomPosition;
@@ -176,6 +178,7 @@ type
     
     property Scanner: TLinkScanner read FScanner write SetScanner;
     function MainFilename: string;
+    property TreeChangeStep: integer read FTreeChangeStep;
     
     function FindDeepestNodeAtPos(P: integer;
       ExceptionOnNotFound: boolean): TCodeTreeNode; inline;
@@ -339,11 +342,10 @@ end;
 destructor TCustomCodeTool.Destroy;
 begin
   Clear;
-  LastAtoms.Free;
-  Tree.Free;
-  KeyWordFuncList.Free;
-  DirtySrc.Free;
-  DirtySrc:=nil;
+  FreeAndNil(LastAtoms);
+  FreeAndNil(Tree);
+  FreeAndNil(KeyWordFuncList);
+  FreeAndNil(DirtySrc);
   inherited Destroy;
 end;
 
@@ -1899,6 +1901,14 @@ begin
     Scanner.SetIgnoreErrorAfter(IgnoreErrorAfter.P,IgnoreErrorAfter.Code);
 end;
 
+procedure TCustomCodeTool.IncreaseTreeChangeStep;
+begin
+  if FTreeChangeStep=High(integer) then
+    FTreeChangeStep:=Low(integer)
+  else
+    inc(FTreeChangeStep);
+end;
+
 procedure TCustomCodeTool.RaiseExceptionInstance(TheException: ECodeToolError);
 var CaretXY: TCodeXYPosition;
   CursorPos: integer;
@@ -2384,6 +2394,7 @@ end;
 procedure TCustomCodeTool.DoDeleteNodes;
 begin
   Tree.Clear;
+  IncreaseTreeChangeStep;
 end;
 
 procedure TCustomCodeTool.RaiseIdentExpectedButAtomFound;

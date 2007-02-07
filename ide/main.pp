@@ -119,7 +119,7 @@ uses
   DelphiUnit2Laz, DelphiProject2Laz, LazXMLForms,
   // rest of the ide
   Splash, IDEDefs, LazarusIDEStrConsts, LazConf, MsgView, SearchResultView,
-  CodeTemplatesDlg,
+  CodeTemplatesDlg, CodeBrowser,
   PublishModule, EnvironmentOpts, TransferMacros, KeyMapping, IDETranslations,
   IDEProcs, ExtToolDialog, ExtToolEditDlg, OutputFilter,
   BuildLazDialog, MiscOptions, InputHistory, UnitDependencies, ClipBoardHistory,
@@ -229,6 +229,7 @@ type
     procedure mnuViewUnitInfoClicked(Sender: TObject);
     procedure mnuViewLazDocClicked(Sender: TObject);
     procedure mnuViewCodeExplorerClick(Sender: TObject);
+    procedure mnuViewCodeBrowserClick(Sender: TObject);
     procedure mnuViewMessagesClick(Sender: TObject);
     procedure mnuViewSearchResultsClick(Sender: TObject);
     procedure mnuToggleFormUnitClicked(Sender: TObject);
@@ -665,6 +666,7 @@ type
     procedure DoViewUnitDependencies;
     procedure DoViewUnitInfo;
     procedure DoShowCodeExplorer;
+    procedure DoShowCodeBrowser;
     procedure DoShowLazDoc;
     function CreateNewUniqueFilename(const Prefix, Ext: string;
        NewOwner: TObject; Flags: TSearchIDEFileFlags; TryWithoutNumber: boolean
@@ -1158,6 +1160,7 @@ begin
 
   FreeThenNil(ProjInspector);
   FreeThenNil(CodeExplorerView);
+  FreeThenNil(CodeBrowserView);
   FreeAndNil(LazFindReplaceDialog);
   FreeAndNil(MessagesView);
   FreeThenNil(AnchorDesigner);
@@ -1749,6 +1752,8 @@ begin
       DoViewUnitDependencies;
     nmiwProjectInspector:
       DoShowProjectInspector;
+    nmiwCodeBrowser:
+      DoShowCodeBrowser;
     nmiwCodeExplorerName:
       DoShowCodeExplorer;
     nmiwLazDocName:
@@ -1976,6 +1981,8 @@ begin
     itmViewInspector.OnClick := @mnuViewInspectorClicked;
     itmViewSourceEditor.OnClick := @mnuViewSourceEditorClicked;
     itmViewCodeExplorer.OnClick := @mnuViewCodeExplorerClick;
+    itmViewCodeBrowser.OnClick := @mnuViewCodeBrowserClick;
+    itmViewCodeBrowser.Visible:=false;
     itmViewLazDoc.OnClick := @mnuViewLazDocClicked;  //DBlaszijk 5-sep-05
     itmViewUnits.OnClick := @mnuViewUnitsClicked;
     itmViewForms.OnClick := @mnuViewFormsClicked;
@@ -2490,6 +2497,9 @@ begin
   ecToggleCodeExpl:
     DoShowCodeExplorer;
 
+  ecToggleCodeBrowser:
+    DoShowCodeBrowser;
+
   ecToggleLazDoc:
     DoShowLazDoc;
 
@@ -2994,6 +3004,11 @@ end;
 Procedure TMainIDE.mnuViewCodeExplorerClick(Sender: TObject);
 begin
   DoShowCodeExplorer;
+end;
+
+Procedure TMainIDE.mnuViewCodeBrowserClick(Sender: TObject);
+begin
+  DoShowCodeBrowser;
 end;
 
 Procedure TMainIDE.mnuViewMessagesClick(Sender: TObject);
@@ -6799,6 +6814,15 @@ begin
   EnvironmentOptions.IDEWindowLayoutList.ItemByEnum(nmiwCodeExplorerName).Apply;
   CodeExplorerView.ShowOnTop;
   CodeExplorerView.Refresh;
+end;
+
+procedure TMainIDE.DoShowCodeBrowser;
+begin
+  if CodeBrowserView=nil then begin
+    CodeBrowserView:=TCodeBrowserView.Create(OwningComponent);
+  end;
+
+  CodeBrowserView.ShowOnTop;
 end;
 
 procedure TMainIDE.DoShowLazDoc;
@@ -13099,6 +13123,10 @@ begin
   nmiwCodeExplorerName:
     begin
       ALayout.Form.SetBounds(Screen.Width-200,130,170,Max(50,Screen.Height-230));
+    end;
+  nmiwCodeBrowser:
+    begin
+      ALayout.Form.SetBounds(200,100,650,500);
     end;
   nmiwClipbrdHistoryName:
     ALayout.Form.SetBounds(250,Screen.Height-400,400,300);

@@ -175,8 +175,9 @@ const
   ecToggleCallStack         = ecFirstLazarus + 315;
   ecToggleSearchResults     = ecFirstLazarus + 316;
   ecViewAnchorEditor        = ecFirstLazarus + 317;
-  ecToggleCompPalette       = ecFirstLazarus + 318;
-  ecToggleIDESpeedBtns      = ecFirstLazarus + 319;
+  ecToggleCodeBrowser       = ecFirstLazarus + 318;
+  ecToggleCompPalette       = ecFirstLazarus + 319;
+  ecToggleIDESpeedBtns      = ecFirstLazarus + 320;
 
   // sourcenotebook commands
   ecNextEditor              = ecFirstLazarus + 330;

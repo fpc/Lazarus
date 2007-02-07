@@ -179,6 +179,7 @@ type
         itmViewSourceEditor: TIDEMenuCommand;
         itmViewCodeExplorer: TIDEMenuCommand;
         itmViewLazDoc: TIDEMenuCommand;
+        itmViewCodeBrowser: TIDEMenuCommand;
       //itmViewUnitWindows: TIDEMenuSection;
         itmViewUnits: TIDEMenuCommand;
         itmViewForms: TIDEMenuCommand;

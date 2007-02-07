@@ -23,18 +23,22 @@
         <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
-    <RequiredPackages Count="3">
+    <RequiredPackages Count="4">
       <Item1>
         <PackageName Value="SimpleIDEIntf"/>
         <MinVersion Valid="True"/>
       </Item1>
       <Item2>
-        <PackageName Value="H2PasWizard"/>
-        <MinVersion Valid="True"/>
+        <PackageName Value="LCL"/>
+        <MinVersion Major="1" Valid="True"/>
       </Item2>
       <Item3>
-        <PackageName Value="CodeTools"/>
+        <PackageName Value="H2PasWizard"/>
+        <MinVersion Valid="True"/>
       </Item3>
+      <Item4>
+        <PackageName Value="CodeTools"/>
+      </Item4>
     </RequiredPackages>
     <Units Count="1">
       <Unit0>

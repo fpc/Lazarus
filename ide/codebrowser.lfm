@@ -1,0 +1,164 @@
+object CodeBrowserView: TCodeBrowserView
+  Left = 290
+  Height = 564
+  Top = 189
+  Width = 634
+  HorzScrollBar.Page = 633
+  VertScrollBar.Page = 563
+  ActiveControl = ScopeComboBox
+  Caption = 'CodeBrowserView'
+  OnClose = FormClose
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  object ScopeGroupBox: TGroupBox
+    Left = 6
+    Height = 50
+    Top = 6
+    Width = 622
+    Align = alTop
+    BorderSpacing.Around = 6
+    Caption = 'ScopeGroupBox'
+    TabOrder = 0
+    object ScopeComboBox: TComboBox
+      Left = 3
+      Height = 25
+      Width = 315
+      AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+      MaxLength = 0
+      OnDropDown = ScopeComboBoxDropDown
+      TabOrder = 0
+      Text = 'ScopeComboBox'
+    end
+    object ScopeWithRequiredPackagesCheckBox: TCheckBox
+      Left = 328
+      Height = 20
+      Top = 3
+      Width = 249
+      Caption = 'ScopeWithRequiredPackagesCheckBox'
+      TabOrder = 1
+    end
+  end
+  object LevelsCheckGroup: TCheckGroup
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = ScopeGroupBox
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 135
+    Top = 62
+    Width = 185
+    AutoFill = True
+    BorderSpacing.Around = 6
+    Caption = 'LevelsCheckGroup'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    Items.Strings = (
+      'Packages'
+      'Units'
+      'Classes'
+      'Sections'
+    )
+    TabOrder = 1
+    Data = {
+      0400000002020202
+    }
+  end
+  object SortGroupBox: TGroupBox
+    AnchorSideLeft.Control = LevelsCheckGroup
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = ScopeGroupBox
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 197
+    Height = 135
+    Top = 62
+    Width = 431
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Around = 6
+    Caption = 'SortGroupBox'
+    TabOrder = 2
+    object SortUpSpeedButton: TSpeedButton
+      Left = 168
+      Height = 22
+      Top = 55
+      Width = 23
+      Color = clBtnFace
+      NumGlyphs = 0
+      OnClick = SortUpSpeedButtonClick
+      ShowHint = True
+      ParentShowHint = False
+    end
+    object SortDownSpeedButton: TSpeedButton
+      Left = 168
+      Height = 22
+      Top = 80
+      Width = 23
+      Color = clBtnFace
+      NumGlyphs = 0
+      OnClick = SortDownSpeedButtonClick
+      ShowHint = True
+      ParentShowHint = False
+    end
+    object SortAddSpeedButton: TSpeedButton
+      Left = 193
+      Height = 22
+      Top = 14
+      Width = 23
+      Color = clBtnFace
+      NumGlyphs = 0
+      OnClick = SortAddSpeedButtonClick
+      ShowHint = True
+      ParentShowHint = False
+    end
+    object SortRemoveSpeedButton: TSpeedButton
+      Left = 223
+      Height = 22
+      Top = 14
+      Width = 23
+      Color = clBtnFace
+      NumGlyphs = 0
+      OnClick = SortRemoveSpeedButtonClick
+      ShowHint = True
+      ParentShowHint = False
+    end
+    object SortListBox: TListBox
+      Height = 118
+      Width = 163
+      Align = alLeft
+      TabOrder = 0
+      TopIndex = -1
+    end
+    object SortAddsListBox: TListBox
+      Left = 258
+      Height = 118
+      Width = 169
+      Align = alRight
+      Anchors = [akTop, akLeft, akRight, akBottom]
+      TabOrder = 1
+      TopIndex = -1
+    end
+  end
+  object BrowseTreeView: TTreeView
+    AnchorSideTop.Control = LevelsCheckGroup
+    AnchorSideTop.Side = asrBottom
+    Height = 341
+    Top = 203
+    Width = 634
+    Align = alBottom
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    DefaultItemHeight = 14
+    TabOrder = 3
+  end
+  object StatusBar1: TStatusBar
+    Height = 20
+    Top = 544
+    Width = 634
+    Panels = <>
+  end
+end

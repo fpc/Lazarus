@@ -91,7 +91,8 @@ type
     nmiwEvaluate,
     // extra
     nmiwSearchResultsViewName,
-    nmiwAnchorEditor
+    nmiwAnchorEditor,
+    nmiwCodeBrowser
     );
 
 const
@@ -128,7 +129,8 @@ const
     'EvaluateModify',
     // extra
     'SearchResults',
-    'AnchorEditor'
+    'AnchorEditor',
+    'CodeBrowser'
    );
    
 type

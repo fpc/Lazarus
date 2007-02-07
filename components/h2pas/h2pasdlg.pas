@@ -43,6 +43,7 @@ type
     FileInfoGroupBox: TGroupBox;
     FileInfoLabel: TLabel;
     MainPageControl: TPageControl;
+    AddIncludedCHeaderFilesButton: TButton;
 
     // c header files
     FilesTabSheet: TTabSheet;
@@ -90,6 +91,7 @@ type
     CloseButton: TButton;
 
     procedure AddCHeaderFilesButtonClick(Sender: TObject);
+    procedure AddIncludedCHeaderFilesButtonClick(Sender: TObject);
     procedure CHeaderFilesCheckTreeViewMouseDown(Sender: TOBject;
       Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure CHeaderFilesCheckTreeViewSelectionChanged(Sender: TObject);
@@ -225,6 +227,7 @@ begin
     MoveFileDownButton.Caption:='Move file down';
     MoveFileUpButton.Caption:='Move file up';
     FileInfoGroupBox.Caption:='File information';
+    AddIncludedCHeaderFilesButton.Caption:='Add included .h files';
   h2pasOptionsTabSheet.Caption:='h2pas Options';
     h2pasOptionsCheckGroup.Caption:='Options';
     with h2pasOptionsCheckGroup.Items do begin
@@ -407,6 +410,54 @@ begin
     if CurFile=nil then exit;
     CurFile.Enabled:=not CurFile.Enabled;
     Node.StateIndex:=GetFileNodeStateIndex(CurFile);
+  end;
+end;
+
+procedure TH2PasDialog.AddIncludedCHeaderFilesButtonClick(Sender: TObject);
+var
+  AFile: TH2PasFile;
+  sl: TStringList;
+  i: Integer;
+  IncFile: TH2PasFileCInclude;
+  CurFilename: String;
+  j: Integer;
+  s: String;
+begin
+  AFile:=GetCurrentCHeaderFile;
+  if AFile=nil then exit;
+  AFile.ReadCIncludes(false);
+  sl:=TStringList.Create;
+  try
+    for i:=0 to AFile.CIncludeCount-1 do begin
+      IncFile:=AFile.CIncludes[i];
+      CurFilename:=IncFile.Filename;
+      if CurFilename='' then continue;
+      // .h file found in include directories
+      if Project.CHeaderFileWithFilename(CurFilename)<>nil then continue;
+      // .h file not yet in project
+      j:=sl.Count-1;
+      while (j>=0) and (CompareFilenames(CurFilename,sl[j])<>0) do dec(j);
+      if j>=0 then continue;
+      // .h file not yet in list
+      sl.Add(CurFilename);
+    end;
+    if sl.Count>0 then begin
+      s:='';
+      for i:=0 to sl.Count-1 do begin
+        CurFilename:=Project.ShortenFilename(sl[i]);
+        s:=s+#13+CurFilename;
+      end;
+      if QuestionDlg('Add .h files?',
+        'Add these .h files to h2pas project:'#13#13
+        +s+#13+'?',
+        mtConfirmation,[mbYes,mbNo],0)=mrYes
+      then begin
+        Project.AddFiles(sl);
+        UpdateFilesPage;
+      end;
+    end;
+  finally
+    sl.Free;
   end;
 end;
 
@@ -678,6 +729,8 @@ var
   s: String;
   Filename: String;
   OutputFilename: String;
+  i: Integer;
+  IncFile: TH2PasFileCInclude;
 begin
   AFile:=GetCurrentCHeaderFile;
   if AFile<>nil then begin
@@ -687,9 +740,23 @@ begin
       s:=s+#13+'ERROR: file not found';
     OutputFilename:=AFile.GetOutputFilename;
     s:=s+#13+'Output: '+OutputFilename;
+
+    AFile.ReadCIncludes(false);
+    if AFile.CIncludeCount>0 then begin
+      s:=s+#13#13+'Includes:';
+      for i:=0 to AFile.CIncludeCount-1 do begin
+        IncFile:=AFile.CIncludes[i];
+        s:=s+#13+IncFile.SrcFilename+':'+IntToStr(IncFile.SrcPos.Y);
+      end;
+      AddIncludedCHeaderFilesButton.Visible:=true;
+    end else begin
+      AddIncludedCHeaderFilesButton.Visible:=false;
+    end;
+
     FileInfoLabel.Caption:=s;
   end else begin
     FileInfoLabel.Caption:='No file selected.';
+    AddIncludedCHeaderFilesButton.Visible:=false;
   end;
 end;
 

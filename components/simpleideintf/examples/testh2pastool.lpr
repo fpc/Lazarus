@@ -53,32 +53,6 @@ begin
   end;
 end;
 
-procedure TestTFixArrayOfParameterType(Converter: TIDETextConverter);
-var
-  Tool: TFixArrayOfParameterType;
-begin
-  Tool:=nil;
-  try
-    Tool:=TFixArrayOfParameterType.Create(nil);
-    Tool.Execute(Converter);
-  finally
-    Tool.Free;
-  end;
-end;
-
-procedure TestTFixArrayOfParameterType(Converter: TIDETextConverter);
-var
-  Tool: TFixArrayOfParameterType;
-begin
-  Tool:=nil;
-  try
-    Tool:=TFixArrayOfParameterType.Create(nil);
-    Tool.Execute(Converter);
-  finally
-    Tool.Free;
-  end;
-end;
-
 var
   Filename: String;
   Converter: TIDETextConverter;

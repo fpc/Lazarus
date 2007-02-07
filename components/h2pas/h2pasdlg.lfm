@@ -15,8 +15,9 @@ object H2PasDialog: TH2PasDialog
   Position = poDesktopCenter
   object MainPageControl: TPageControl
     AnchorSideBottom.Control = OpenSettingsButton
-    Height = 461
+    Height = 465
     Width = 785
+    TabStop = True
     ActivePage = FilesTabSheet
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
@@ -25,10 +26,10 @@ object H2PasDialog: TH2PasDialog
     object FilesTabSheet: TTabSheet
       Caption = 'FilesTabSheet'
       object CHeaderFilesCheckTreeView: TTreeView
-        Height = 427
+        Height = 435
         Width = 255
         Align = alLeft
-        DefaultItemHeight = 18
+        DefaultItemHeight = 16
         StateImages = FileStateImageList
         TabOrder = 0
         OnMouseDown = CHeaderFilesCheckTreeViewMouseDown
@@ -89,7 +90,7 @@ object H2PasDialog: TH2PasDialog
       end
       object CHeaderFilesSplitter1: TSplitter
         Left = 255
-        Height = 427
+        Height = 435
         Width = 5
         Beveled = True
       end
@@ -101,7 +102,7 @@ object H2PasDialog: TH2PasDialog
         AnchorSideBottom.Control = FilesTabSheet
         AnchorSideBottom.Side = asrBottom
         Left = 260
-        Height = 219
+        Height = 227
         Top = 208
         Width = 521
         Anchors = [akTop, akLeft, akRight, akBottom]
@@ -109,12 +110,27 @@ object H2PasDialog: TH2PasDialog
         TabOrder = 5
         object FileInfoLabel: TLabel
           Left = 8
-          Height = 17
+          Height = 13
           Top = 1
-          Width = 92
+          Width = 73
           Caption = 'FileInfoLabel'
           Color = clNone
           ParentColor = False
+        end
+        object AddIncludedCHeaderFilesButton: TButton
+          AnchorSideBottom.Control = FileInfoGroupBox
+          AnchorSideBottom.Side = asrBottom
+          Left = 8
+          Height = 26
+          Top = 178
+          Width = 197
+          Anchors = [akLeft, akBottom]
+          AutoSize = True
+          BorderSpacing.Around = 6
+          BorderSpacing.InnerBorder = 4
+          Caption = 'AddIncludedCHeaderFilesButton'
+          OnClick = AddIncludedCHeaderFilesButtonClick
+          TabOrder = 0
         end
       end
       object MoveFileUpButton: TButton
@@ -155,7 +171,7 @@ object H2PasDialog: TH2PasDialog
     object PreH2PasTabSheet: TTabSheet
       Caption = 'PreH2PasTabSheet'
       object PreH2PasGroupBox: TGroupBox
-        Height = 427
+        Height = 435
         Width = 781
         Align = alClient
         Caption = 'PreH2PasGroupBox'
@@ -280,7 +296,7 @@ object H2PasDialog: TH2PasDialog
     object PostH2PasTabSheet: TTabSheet
       Caption = 'PostH2PasTabSheet'
       object PostH2PasGroupBox: TGroupBox
-        Height = 427
+        Height = 435
         Width = 781
         Align = alClient
         Caption = 'PostH2PasGroupBox'
@@ -367,9 +383,9 @@ object H2PasDialog: TH2PasDialog
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 5
-    Height = 30
-    Top = 466
-    Width = 161
+    Height = 26
+    Top = 470
+    Width = 124
     Anchors = [akLeft, akBottom]
     AutoSize = True
     BorderSpacing.Around = 5
@@ -383,10 +399,10 @@ object H2PasDialog: TH2PasDialog
     AnchorSideLeft.Side = asrBottom
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 171
-    Height = 30
-    Top = 466
-    Width = 158
+    Left = 134
+    Height = 26
+    Top = 470
+    Width = 122
     Anchors = [akLeft, akBottom]
     AutoSize = True
     BorderSpacing.Around = 5
@@ -399,10 +415,10 @@ object H2PasDialog: TH2PasDialog
     AnchorSideLeft.Control = SaveSettingsButton
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = OpenSettingsButton
-    Left = 344
-    Height = 30
-    Top = 466
-    Width = 119
+    Left = 271
+    Height = 26
+    Top = 470
+    Width = 93
     AutoSize = True
     BorderSpacing.Left = 15
     BorderSpacing.InnerBorder = 4
@@ -415,10 +431,10 @@ object H2PasDialog: TH2PasDialog
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 677
-    Height = 30
-    Top = 466
-    Width = 103
+    Left = 699
+    Height = 26
+    Top = 470
+    Width = 81
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Around = 5
@@ -431,10 +447,10 @@ object H2PasDialog: TH2PasDialog
     AnchorSideLeft.Control = ConvertButton
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = OpenSettingsButton
-    Left = 469
-    Height = 30
-    Top = 466
-    Width = 183
+    Left = 370
+    Height = 26
+    Top = 470
+    Width = 144
     AutoSize = True
     BorderSpacing.Left = 6
     BorderSpacing.InnerBorder = 4
