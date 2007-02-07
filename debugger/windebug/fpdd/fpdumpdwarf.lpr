@@ -44,7 +44,7 @@ var
   Dwarf: TDbgDwarf;
   AbbrevDecoder: TDwarfAbbrevDecoder;
   StatementDecoder: TDwarfStatementDecoder;
-
+  FrameDecoder: TVerboseDwarfCallframeDecoder;
   Loader: TDbgImageLoader;
 
 begin
@@ -68,8 +68,13 @@ begin
     StatementDecoder.Free;
     WriteLN;
   end;
-
   Dwarf.Free;
+
+  WriteLn('Call info:');
+  FrameDecoder := TVerboseDwarfCallframeDecoder.Create(Loader);
+  FrameDecoder.Decode;
+  FrameDecoder.Free;
+
   Loader.Free;
 end.
 

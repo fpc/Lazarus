@@ -313,6 +313,19 @@ type
     procedure Decode;
   end;
   
+  { TVerboseDwarfCallframeDecoder }
+
+  TVerboseDwarfCallframeDecoder = class(TObject)
+  private
+    FLoader: TDbgImageLoader;
+    procedure InternalDecode(AData: Pointer; ASize, AStart: QWord);
+  protected
+  public
+    constructor Create(ALoader: TDbgImageLoader);
+    procedure Decode;
+  end;
+  
+  
   { TDbgDwarfProcSymbol }
 
   TDbgDwarfProcSymbol = class(TDbgSymbol)
@@ -387,7 +400,7 @@ type
     function GetCompilationUnitClass: TDwarfCompilationUnitClass; override;
   public
   end;
-
+  
 
 function DwarfTagToString(AValue: Integer): String;
 function DwarfAttributeToString(AValue: Integer): String;
@@ -3058,6 +3071,248 @@ begin
       EpilogueBegin := False;
       Inc(p);
     end;
+  end;
+end;
+
+{ TVerboseDwarfCallframeDecoder }
+
+constructor TVerboseDwarfCallframeDecoder.Create(ALoader: TDbgImageLoader);
+begin
+  inherited Create;
+  FLoader := Aloader;
+end;
+
+procedure TVerboseDwarfCallframeDecoder.Decode;
+var
+  Section: PDbgImageSection;
+begin
+  Section := FLoader.Section[DWARF_SECTION_NAME[dsFrame]];
+  if Section <> nil
+  then InternalDecode(Section^.RawData, Section^.Size, Section^.VirtualAdress);
+end;
+
+procedure TVerboseDwarfCallframeDecoder.InternalDecode(AData: Pointer; ASize: QWord; AStart: QWord);
+var
+  Is64bit: boolean;
+
+  procedure DecodeInstructions(p: Pointer; MaxAddr: Pointer);
+  var
+    pb: PByte absolute p;
+    pw: PWord absolute p;
+    pc: PCardinal absolute p;
+    pq: PQWord absolute p;
+    q: QWord;
+  begin
+    repeat
+      Write(' ');
+      Inc(pb);
+      case pb[-1] of
+        DW_CFA_nop: begin
+          WriteLn('DW_CFA_nop');
+        end;
+        DW_CFA_set_loc: begin
+          // address
+          Write('DW_CFA_set_loc $');
+          if Is64Bit
+          then begin
+            WriteLn(IntToHex(pq^, 16));
+            Inc(pq);
+          end
+          else begin
+            WriteLn(IntToHex(pc^, 8));
+            Inc(pc);
+          end;
+        end;
+        DW_CFA_advance_loc1: begin
+          // 1-byte delta
+          WriteLn('DW_CFA_advance_loc1 ', pb^, ' * caf');
+          Inc(pb);
+        end;
+        DW_CFA_advance_loc2: begin
+          // 2-byte delta
+          WriteLn('DW_CFA_advance_loc2 ', pw^, ' * caf');
+          Inc(pw);
+        end;
+        DW_CFA_advance_loc4: begin
+          // 4-byte delta
+          WriteLn('DW_CFA_advance_loc4 ', pc^, ' * caf');
+          Inc(pw);
+        end;
+        DW_CFA_offset_extended: begin
+          // ULEB128 register, ULEB128 offset
+          WriteLn('DW_CFA_offset_extended R', ULEB128toOrdinal(p), ' + ', ULEB128toOrdinal(p), ' * daf');
+        end;
+        DW_CFA_restore_extended: begin
+          // ULEB128 register
+          WriteLn('DW_CFA_restore_extended R', ULEB128toOrdinal(p));
+        end;
+        DW_CFA_undefined: begin
+          // ULEB128 register
+          WriteLn('DW_CFA_undefined R', ULEB128toOrdinal(p));
+        end;
+        DW_CFA_same_value: begin
+          // ULEB128 register
+          WriteLn('DW_CFA_same_value R', ULEB128toOrdinal(p));
+        end;
+        DW_CFA_register: begin
+          // ULEB128 register, ULEB128 register
+          WriteLn('DW_CFA_register R', ULEB128toOrdinal(p), ' R', ULEB128toOrdinal(p));
+        end;
+        DW_CFA_remember_state: begin
+          WriteLn('DW_CFA_remember_state');
+        end;
+        DW_CFA_restore_state: begin
+          WriteLn('DW_CFA_restore_state');
+        end;
+        DW_CFA_def_cfa: begin
+          // ULEB128 register, ULEB128 offset
+          WriteLn('DW_CFA_def_cfa R', ULEB128toOrdinal(p), ' + ', ULEB128toOrdinal(p));
+        end;
+        DW_CFA_def_cfa_register: begin
+          // ULEB128 register
+          WriteLn('DW_CFA_def_cfa_register R', ULEB128toOrdinal(p));
+        end;
+        DW_CFA_def_cfa_offset: begin
+          // ULEB128 offset
+          WriteLn('DW_CFA_def_cfa_offset ', ULEB128toOrdinal(p));
+        end;
+        // --- DWARF3 ---
+        DW_CFA_def_cfa_expression: begin
+          // BLOCK
+          q := ULEB128toOrdinal(p);
+          WriteLn('DW_CFA_def_cfa_expression, lenght=',q);
+          Inc(p, q);
+        end;
+        DW_CFA_expression: begin
+          // ULEB128 register, BLOCK
+          Write('DW_CFA_expression R', ULEB128toOrdinal(p), ' lenght=',q);
+          q := ULEB128toOrdinal(p);
+          WriteLn(q);
+          Inc(p, q);
+        end;
+        DW_CFA_offset_extended_sf: begin
+          // ULEB128 register, SLEB128 offset
+          WriteLn('DW_CFA_offset_extended_sf R', ULEB128toOrdinal(p), ' + ', SLEB128toOrdinal(p), ' * daf');
+        end;
+        DW_CFA_def_cfa_sf: begin
+          // ULEB128 register, SLEB128 offset
+          WriteLn('DW_CFA_def_cfa_sf R', ULEB128toOrdinal(p), ' + ', SLEB128toOrdinal(p), ' * daf');
+        end;
+        DW_CFA_def_cfa_offset_sf: begin
+          // SLEB128 offset
+          WriteLn('DW_CFA_def_cfa_offset_sf ', SLEB128toOrdinal(p), ' * daf' );
+        end;
+        DW_CFA_val_offset: begin
+          // ULEB128         , ULEB128
+          WriteLn('DW_CFA_val_offset R', ULEB128toOrdinal(p), ' + ', ULEB128toOrdinal(p), ' * daf');
+        end;
+        DW_CFA_val_offset_sf: begin
+          // ULEB128         , SLEB128
+          WriteLn('DW_CFA_val_offset_sf R', ULEB128toOrdinal(p), ' + ', SLEB128toOrdinal(p), ' * daf');
+        end;
+        DW_CFA_val_expression: begin
+          // ULEB128         , BLOCK
+          Write('DW_CFA_val_expression R', ULEB128toOrdinal(p), ' lenght=',q);
+          q := ULEB128toOrdinal(p);
+          WriteLn(q);
+          Inc(p, q);
+        end;
+        // ---  ---
+        DW_CFA_lo_user..DW_CFA_hi_user: begin
+          WriteLn('DW_CFA_user=', pb^);
+        end;
+        // ---  ---
+        DW_CFA_advance_loc..DW_CFA_offset-1: begin
+          // delta
+          WriteLn('DW_CFA_advance_loc ', pb[-1] and $3F, ' * caf');
+        end;
+        DW_CFA_offset..DW_CFA_restore-1: begin
+          // register  ULEB128 offset
+          WriteLn('DW_CFA_offset R', pb[-1] and $3F, ' + ', ULEB128toOrdinal(p),' * caf');
+        end;
+        DW_CFA_restore..$FF: begin
+         // register
+          WriteLn('DW_CFA_restore R', pb[-1] and $3F);
+        end;
+      else
+        WriteLn('Undefined $', IntToHex(pb[-1], 2));
+      end;
+    until p >= MaxAddr;
+  end;
+
+var
+  p, next: Pointer;
+  pb: PByte absolute p;
+  pw: PWord absolute p;
+  pi: PInteger absolute p;
+  pc: PCardinal absolute p;
+  pq: PQWord absolute p;
+  
+  len: QWord;
+  version: Byte;
+  IsCie: Boolean;
+
+  s: String;
+begin
+  p := AData;
+  while p < Adata + ASize do
+  begin
+    WriteLn('[', PtrUInt(p) - PtrUInt(AData), ']');
+
+    Is64bit := pi^ = -1;
+    if Is64bit
+    then begin
+      Inc(pi);
+      len := pq^;
+      Inc(pq);
+      IsCie := Int64(pq^) = -1;
+    end
+    else begin
+      len := pc^;
+      Inc(pc);
+      IsCie := pi^ = -1;
+    end;
+    next := p + len;
+
+    if IsCie
+    then WriteLn('=== CIE ===')
+    else WriteLn('--- FDE ---');
+
+    WriteLn('Length: ', len);
+
+    if IsCie
+    then begin
+      Inc(pi);
+      version := pb^;
+      WriteLn('Version: ', version);
+      Inc(pb);
+      S := Pchar(p);
+      WriteLn('Augmentation: ', S);
+      Inc(p, Length(s) + 1);
+      WriteLn('Code alignment factor (caf): ', ULEB128toOrdinal(p));
+      WriteLn('Data alignment factor (daf): ', SLEB128toOrdinal(p));
+      Write('Return addr: R');
+      if version <= 2
+      then begin
+        WriteLn(pb^);
+        Inc(pb);
+      end
+      else WriteLn(ULEB128toOrdinal(p));
+    end
+    else begin
+      if pc^ > ASize
+      then WriteLn('CIE: $', IntToHex(pc^, 8), ' (=adress ?) -> offset: ', pc^ - AStart - FLoader.ImageBase)
+      else WriteLn('CIE: ', pc^);
+      Inc(pc);
+      WriteLn('InitialLocation: $', IntToHex(pc^, 8));
+      Inc(pc);
+      WriteLn('Address range: ', pc^);
+      Inc(pc);
+    end;
+    WriteLn('Instructions:');
+    DecodeInstructions(p, next);
+
+    p := next;
   end;
 end;
 
