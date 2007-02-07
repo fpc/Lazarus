@@ -1771,11 +1771,11 @@ type
     procedure FontChanged(Sender: TObject); override;
     procedure Paint; virtual;
     procedure DoOnChangeBounds; override;
+    property OnPaint: TNotifyEvent read FOnPaint write FOnPaint;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     property Canvas: TCanvas read FCanvas;
-    property OnPaint: TNotifyEvent read FOnPaint write FOnPaint;
   end;
 
 

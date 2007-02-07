@@ -73,6 +73,8 @@ begin
         end;
     end;
   end;
+  // to fire OnPaint event
+  inherited Paint;
 end;
 
 procedure TShape.StyleChanged(Sender: TObject);

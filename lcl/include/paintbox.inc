@@ -41,7 +41,7 @@ begin
   if Assigned(FOnPaint) then begin
     Canvas.Font := Font;
     Canvas.Brush.Color := Color;
-    FOnPaint(Self);
+    inherited Paint;
   end;
 end;
 

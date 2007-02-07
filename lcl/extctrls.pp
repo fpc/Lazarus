@@ -365,6 +365,7 @@ type
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
+    property OnPaint;
     property OnResize;
 //    property OnStartDock;
 //    property OnStartDrag;
@@ -507,7 +508,7 @@ type
     property OnMouseUp;
     property OnMouseEnter;
     property OnMouseLeave;
-    property OnPaint: TNotifyEvent read FOnPaint write FOnPaint;
+    property OnPaint;
     property OnResize;
 //    property OnStartDock;
 //    property OnStartDrag;
