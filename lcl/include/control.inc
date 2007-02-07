@@ -1931,7 +1931,7 @@ begin
     MouseCapture := False;
   end;
   
-  WindowProc(Message);
+  WindowProc(TLMessage(Message));
   //MouseUp event is independent of return values of contextmenu
   DoMouseUp(Message, mbRight);
 end;
