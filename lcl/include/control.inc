@@ -1931,7 +1931,8 @@ begin
     MouseCapture := False;
   end;
   
-  WindowProc(TLMessage(Message));
+  Message.Result := Perform(LM_CONTEXTMENU,TLMessage(Message).WParam,
+     TLMessage(Message).LParam);
   //MouseUp event is independent of return values of contextmenu
   DoMouseUp(Message, mbRight);
 end;
