@@ -36,17 +36,79 @@
 constructor TWinCEWidgetSet.Create;
 begin
   Inherited Create;
-
+  FTimerData  := TList.Create;
+  FMetrics.cbSize := SizeOf(FMetrics);
+  //roozbeh:new stuff seems to be always true as we dont have that flag under ce??!!
+  FMetricsFailed := True;
+  //FMetricsFailed := not Windows.SystemParametersInfo(SPI_GETNONCLIENTMETRICS,
+  //  SizeOf(FMetrics), @FMetrics, 0);
+  if FMetricsFailed then
+  begin
+    FMetrics.iMenuHeight := GetSystemMetrics(SM_CYMENU);
+  end;
+//roozbeh what does it mean?!
   WinCEWidgetSet := Self;
 end;
+{------------------------------------------------------------------------------
+  Method: TWin32WidgetSet.Destroy
+  Params:  None
+  Returns: Nothing
 
-destructor TWinCEWidgetSet.Destroy;
-begin
-  WinCEWidgetSet := nil;
+  Destructor for the class.
+ ------------------------------------------------------------------------------}
+Destructor TWinCEWidgetSet.Destroy;
+var
+  n: integer;
+  TimerInfo : PWinCETimerInfo;
+Begin
+  Assert(False, 'Trace:TWin32WidgetSet is being destroyed');
+
+  n := FTimerData.Count;
+  if (n > 0) then
+  begin
+    DebugLn(Format('[TWin32WidgetSet.Destroy] WARNING: There are %d TimerInfo structures left, I''ll free them' ,[n]));
+    while (n > 0) do
+    begin
+      dec(n);
+      TimerInfo := PWinCETimerinfo(FTimerData[n]);
+      Dispose(TimerInfo);
+      FTimerData.Delete(n);
+    end;
+  end;
+
+  if FStockNullBrush <> 0 then
+  begin
+    DeleteObject(FStockNullBrush);
+    DeleteObject(FStockBlackBrush);
+    DeleteObject(FStockLtGrayBrush);
+    DeleteObject(FStockGrayBrush);
+    DeleteObject(FStockDkGrayBrush);
+    DeleteObject(FStockWhiteBrush);
+  end;
+
+  if FStatusFont <> 0 then
+  begin
+    Windows.DeleteObject(FStatusFont);
+    Windows.DeleteObject(FMessageFont);
+  end;
+
+  FTimerData.Free;
+
+  if FAppHandle <> 0 then
+    DestroyWindow(FAppHandle);
+
+  Windows.UnregisterClass(@ClsName, System.HInstance);
 
   inherited Destroy;
-end;
+End;
 
+{------------------------------------------------------------------------------
+  Method: TWin32WidgetSet.AppInit
+  Params:  None
+  Returns: Nothing
+
+  Initialize Windows
+ ------------------------------------------------------------------------------}
 procedure TWinCEWidgetSet.AppInit(var ScreenInfo: TScreenInfo);
 var
   Handle: HWND;
@@ -71,6 +133,14 @@ begin
   FStockDkGrayBrush := Windows.CreateSolidBrush($404040);
   FStockWhiteBrush := Windows.CreateSolidBrush($FFFFFF);
 
+  if FMetricsFailed then
+  begin
+    FStatusFont := Windows.GetStockObject(DEFAULT_GUI_FONT);
+    FMessageFont := Windows.GetStockObject(DEFAULT_GUI_FONT);
+  end else begin
+    FStatusFont := Windows.CreateFontIndirect(@FMetrics.lfStatusFont);
+    FMessageFont := Windows.CreateFontIndirect(@FMetrics.lfMessageFont);
+  end;
 
   // Create parent of all windows, `button on taskbar'
 //does this work on wince?!
@@ -85,8 +155,13 @@ begin
   SendMessage(FAppHandle, WM_SETICON, ICON_BIG,
     Windows.LoadIcon(MainInstance, 'MAINICON'));
   // remove useless menuitems from sysmenu
-
- // initialize ScreenInfo
+ //roozbeh:new stuff check it 
+  {SysMenu := Windows.GetSystemMenu(FAppHandle, False);
+  Windows.DeleteMenu(SysMenu, SC_MAXIMIZE, MF_BYCOMMAND);
+  Windows.DeleteMenu(SysMenu, SC_SIZE, MF_BYCOMMAND);
+  Windows.DeleteMenu(SysMenu, SC_MOVE, MF_BYCOMMAND);
+}
+  // initialize ScreenInfo
   Handle := GetDesktopWindow;
   DC := Windows.GetDC(Handle);
   ScreenInfo.PixelsPerInchX := GetDeviceCaps(DC, LOGPIXELSX);
@@ -94,64 +169,53 @@ begin
   ScreenInfo.ColorDepth := GetDeviceCaps(DC, BITSPIXEL);
   ReleaseDC(Handle, DC);
 
+  //roozbeh:what is this?!!
+  // Thread.Synchronize support
+  //WakeMainThread := @HandleWakeMainThread;
 end;
 
-procedure TWinCEWidgetSet.AppMinimize;
+{------------------------------------------------------------------------------
+  Method: TWinCEWidgetSet.AppMinimize
+  Params:  None
+  Returns: Nothing
+
+  Minimizes the whole application to the taskbar
+ ------------------------------------------------------------------------------}
+{procedure TWinCEWidgetSet.AppMinimize;
 begin
-
+  Windows.SendMessage(FAppHandle, WM_SYSCOMMAND, SC_MINIMIZE, 0);
 end;
+}
+{------------------------------------------------------------------------------
+  Method: TWinCEWidgetSet.AppRestore
+  Params:  None
+  Returns: Nothing
 
+  Restore minimized whole application from taskbar
+ ------------------------------------------------------------------------------}
+{
+procedure TWinCEWidgetSet.AppRestore;
+begin
+  Windows.SendMessage(FAppHandle, WM_SYSCOMMAND, SC_RESTORE, 0);
+end;
+}
+
+{------------------------------------------------------------------------------
+  Method: TWin32WidgetSet.AppBringToFront
+  Params:  None
+  Returns: Nothing
+
+  Brings the entire application on top of all other non-topmost programs
+ ------------------------------------------------------------------------------}
 procedure TWinCEWidgetSet.AppBringToFront;
 begin
   Windows.SetForegroundWindow(FAppHandle);
 end;
 
-Function TWinCEWidgetSet.WinRegister: Boolean;
-Var
-  WindowClass: Windows.WndClass;
-Begin
-  FillChar(WindowClass, SizeOf(WindowClass), #0);
-
-  with WindowClass do
-  begin
-    LPFnWndProc := @WindowProc;
-    Style := CS_HREDRAW or CS_VREDRAW;
-    CbClsExtra := 0;
-    CbWndExtra := 0;
-    hInstance := System.HInstance;
-    hIcon := Windows.LoadIcon(System.hInstance, nil);
-    if hIcon = 0 then
-      hIcon := Windows.LoadIcon(0, IDI_APPLICATION);
-    hCursor := LoadCursor(0, IDC_ARROW);
-    hbrBackground := GetSysColorBrush(Color_BtnFace);
-    LPSzMenuName := nil;
-    LPSzClassName := @ClsName;
-  end;
-  
-  Result := Windows.RegisterClass(@WindowClass) <> 0;
-End;
-
-
-procedure TWinCEWidgetSet.DCSetPixel(CanvasHandle: HDC; X, Y: integer;
-  AColor: TGraphicsColor);
-begin
-  Windows.SetPixel(CanvasHandle, X, Y, AColor);
-end;
-
-function TWinCEWidgetSet.DCGetPixel(CanvasHandle: HDC; X, Y: integer
-  ): TGraphicsColor;
-begin
-  Result := Windows.GetPixel(CanvasHandle, X, Y);
-end;
-
-procedure TWinCEWidgetSet.DCRedraw(CanvasHandle: HDC);
-begin
-
-end;
 
 procedure TWinCEWidgetSet.SetDesigning(AComponent: TComponent);
 begin
-
+  //if Data<>nil then EnableWindow((AComponent As TWinControl).Handle, boolean(Data^));
 end;
 
 {------------------------------------------------------------------------------
@@ -200,7 +264,18 @@ Begin
   if Window=0 then exit;
 End;
 
-
+//roozbeh : how can we have hints on ce?
+{
+function TWinCEWidgetSet.InitHintFont(HintFont: TObject): Boolean;
+begin
+  TFont(HintFont).Name := FMetrics.lfStatusFont.lfFaceName;
+  TFont(HintFont).Style := [];
+  TFont(HintFont).Height := FMetrics.lfStatusFont.lfHeight;
+  TFont(HintFont).Color := clInfoText;
+  TFont(HintFont).Pitch := fpDefault;
+  Result := true;
+end;
+}
 {------------------------------------------------------------------------------
   Method: TWinCEWidgetSet.AppProcessMessages
   Params:  None
@@ -222,6 +297,11 @@ Begin
 {$endif}
     retVal := Windows.MsgWaitForMultipleObjects(FWaitHandleCount,
       FWaitHandles[0], false, 0, QS_ALLINPUT);
+
+    //roozbeh:added
+    if FWaitHandleCount = 0 then
+      retVal := WAIT_OBJECT_0;
+
     if (WAIT_OBJECT_0 <= retVal) and (retVal < WAIT_OBJECT_0 + FWaitHandleCount) then
     begin
       index := retVal-WAIT_OBJECT_0;
@@ -239,7 +319,8 @@ Begin
           DispatchMessage(@AMessage);
         end;
       end;
-    end else
+    end
+    else
     if retVal = WAIT_TIMEOUT then
     begin
       // check for pending to-be synchronized methods
@@ -252,6 +333,7 @@ Begin
       DebugLn('[TWinCEWidgetSet.AppProcessMessages] MsgWaitForMultipleObjects returned: ', IntToStr(GetLastError));
       break;
     end;
+
   until false;
 End;
 
@@ -259,22 +341,35 @@ procedure TWinCEWidgetSet.CheckPipeEvents;
 var
   lHandler: PPipeEventInfo;
   lBytesAvail: dword;
+  SomethingChanged: Boolean;
+  ChangedCount:integer;
 begin
   lHandler := FWaitPipeHandlers;
-  while lHandler <> nil do
+  ChangedCount:=0;
+  while (lHandler <> nil) and (ChangedCount<10) do
   begin
     {
     roozbeh : ooops not supported
+    SomethingChanged:=true;
     if Windows.PeekNamedPipe(lHandler^.Handle, nil, 0, nil, @lBytesAvail, nil) then
     begin
       if lBytesAvail <> 0 then
-        lHandler^.OnEvent(lHandler^.UserData, [prDataAvailable]);
-    end else}
+        lHandler^.OnEvent(lHandler^.UserData, [prDataAvailable])
+      else
+        SomethingChanged := false;
+    end else
       lHandler^.OnEvent(lHandler^.UserData, [prBroken]);
-    lHandler := lHandler^.Next;
+    if SomethingChanged then
+      lHandler := FWaitPipeHandlers
+    else begin
+      lHandler := lHandler^.Next;
+      ChangedCount := 0;
+    end;
+    inc(ChangedCount);}
   end;
 end;
 
+{
 procedure TWinCEWidgetSet.AppRun(const ALoop: TApplicationMainLoop);
 var
   AMessage: TMsg;
@@ -283,33 +378,132 @@ begin
   WriteLn('TWinCEWidgetSet.AppRun');
   {$endif}
 
-  while Windows.GetMessage(@AMessage, 0, 0, 0) and (not AppTerminated) do
+//roozbeh:why we dont have this in win32?
+  while Windows.GetMessage(@AMessage, 0, 0, 0) do
   begin
     Windows.TranslateMessage(@AMessage);
     Windows.DispatchMessage(@AMessage);
   end;
 end;
+}
+{------------------------------------------------------------------------------
+  Method: TWin32WidgetSet.AppWaitMessage
+  Params:  None
+  Returns: Nothing
 
+  Passes execution control to Windows
+ ------------------------------------------------------------------------------}
+//roozbeh:new update...whole procedure body is added.what is it?
 procedure TWinCEWidgetSet.AppWaitMessage;
+var
+  timeout,retVal: dword;
 begin
+//  RedrawMenus;
+  Assert(False, 'Trace:TWin32WidgetSet.WaitMessage - Start');
+  if FWaitPipeHandlers <> nil then
+    timeout := 100
+  else
+    timeout := INFINITE;
 
-end;
+//roozbeh...remove raise after testing!
+  retVal := Windows.MsgWaitForMultipleObjects(FWaitHandleCount, FWaitHandles[0],
+    false, timeout, QS_ALLINPUT);
+
+  if retVal = $FFFFFFFF then
+    RaiseGDBException('Failaure on MsgWaitForMultipleObjects');
+
+  Assert(False,'Trace:Leave wait message');
+End;
+
+{------------------------------------------------------------------------------
+  Method: TWin32WidgetSet.AppTerminate
+  Params:  None
+  Returns: Nothing
+
+  Tells Windows to halt and destroy
+ ------------------------------------------------------------------------------}
 
 procedure TWinCEWidgetSet.AppTerminate;
 begin
-  AppTerminated := True;
-  PostQuitMessage(0);
+  Assert(False, 'Trace:TWin32WidgetSet.AppTerminate - Start');
+//  roozbeh
+//  not existed in win32
+//  AppTerminated := True;
+//  PostQuitMessage(0);
 end;
+
+
+procedure TWinCEWidgetSet.AppSetTitle(const ATitle: string);
+var
+tmpText : PWideChar;
+begin
+  tmpText := CreatePWideCharFromString(ATitle);
+  Windows.SetWindowText(FAppHandle, @tmpText);
+  DisposePWideChar(tmpText);
+end;
+
 
 function TWinCEWidgetSet.WidgetSetName: string;
 begin
   Result:='wince';
 end;
 
-function TWinCEWidgetSet.InitHintFont(HintFont: TObject): Boolean;
-begin
+{------------------------------------------------------------------------------
+  Function: CreateTimer
+  Params: Interval:
+          TimerFunc: Callback
+  Returns: a Timer id (use this ID to destroy timer)
 
+  Design: A timer which calls TimerCallBackProc, is created.
+    The TimerCallBackProc calls the TimerFunc.
+ ------------------------------------------------------------------------------}
+function TWinCEWidgetSet.CreateTimer(Interval: integer; TimerFunc: TFNTimerProc) : THandle;
+var
+  TimerInfo: PWinCETimerInfo;
+begin
+  Assert(False,'Trace:Create Timer: ' + IntToStr(Interval));
+  Result := 0;
+  if (Interval > 0) and (TimerFunc <> nil) then begin
+    New(TimerInfo);
+    TimerInfo^.TimerFunc := TimerFunc;
+    TimerInfo^.TimerID := Windows.SetTimer(0, 0, Interval, @TimerCallBackProc);
+    if TimerInfo^.TimerID=0 then
+      dispose(TimerInfo)
+    else begin
+      FTimerData.Add(TimerInfo);
+      Result := TimerInfo^.TimerID;
+    end;
+  end;
+  Assert(False,'Trace:Result: ' + IntToStr(result));
 end;
+
+{------------------------------------------------------------------------------
+  Function: DestroyTimer
+  Params: TimerHandle
+  Returns:
+ ------------------------------------------------------------------------------}
+function TWinCEWidgetSet.DestroyTimer(TimerHandle: THandle) : boolean;
+var
+  n : integer;
+  TimerInfo : PWinCETimerinfo;
+begin
+  Result:= false;
+  Assert(False,'Trace:removing timer: '+ IntToStr(TimerHandle));
+  n := FTimerData.Count;
+  while (n>0) do begin
+    dec(n);
+    TimerInfo := FTimerData[n];
+    if (TimerInfo^.TimerID=UINT(TimerHandle)) then
+    begin
+      Result := Boolean(Windows.KillTimer(0, UINT(TimerHandle)));
+      FTimerData.Delete(n);
+      Dispose(TimerInfo);
+    end;
+  end;
+  Assert(False,'Trace:Destroy timer Result: '+ BOOL_RESULT[result]);
+end;
+
+
 
 procedure TWinCEWidgetSet.AttachMenuToWindow(AMenuObject: TComponent);
 var
@@ -331,16 +525,42 @@ begin
 
 end;
 
-function TWinCEWidgetSet.CreateTimer(Interval: integer; TimerFunc: TFNTimerProc
-  ): THandle;
-begin
+{ Private methods (in no significant order) }
 
-end;
+{------------------------------------------------------------------------------
+  Method: TWin32WidgetSet.WinRegister
+  Params: None
+  Returns: If the window was successfully regitered
 
-function TWinCEWidgetSet.DestroyTimer(TimerHandle: THandle): boolean;
-begin
+  Registers the main window class
+ ------------------------------------------------------------------------------}
+Function TWinCEWidgetSet.WinRegister: Boolean;
+Var
+  WindowClass: Windows.WndClass;
+Begin
+  FillChar(WindowClass, SizeOf(WindowClass), #0);
 
-end;
+  with WindowClass do
+  begin
+    LPFnWndProc := @WindowProc;
+    Style := CS_HREDRAW or CS_VREDRAW;
+    CbClsExtra := 0;
+    CbWndExtra := 0;
+    hInstance := System.HInstance;
+    hIcon := Windows.LoadIcon(System.hInstance, nil);
+    if hIcon = 0 then
+      hIcon := Windows.LoadIcon(0, IDI_APPLICATION);
+    hCursor := LoadCursor(0, IDC_ARROW);
+    hbrBackground := GetSysColorBrush(Color_BtnFace);
+    LPSzMenuName := nil;
+    LPSzClassName := @ClsName;
+  end;
+  
+  Result := Windows.RegisterClass(@WindowClass) <> 0;
+End;
+
+
+
 
 {------------------------------------------------------------------------------
   Method: TWinCEWidgetSet.ShowHide
@@ -388,6 +608,51 @@ Begin
     ShowWindow(Handle, SW_HIDE);
   End;
 End;
+
+{------------------------------------------------------------------------------
+  Method: TWin32WidgetSet.DCReDraw
+  Params: CanvasHandle - HDC to redraw
+  Returns: Nothing
+
+  Redraws (the window of) a canvas
+ ------------------------------------------------------------------------------}
+procedure TWinCEWidgetSet.DCRedraw(CanvasHandle: HDC);
+begin
+  // TODO: implement me!
+  Assert(False, 'TRACE:[TWin32WidgetSet.ReDraw] Redrawing...');
+  Assert(False, 'TRACE:Invalidating the window');
+  Assert(False, 'TRACE:Updating the window');
+  Assert(False, 'TRACE:[TWin32WidgetSet.ReDraw] Finished redrawing');
+end;
+
+{------------------------------------------------------------------------------
+  Method: TWin32WidgetSet.SetPixel
+  Params:  Canvas - canvas to set color on
+           X, Y   - position
+           AColor - new color for specified position
+  Returns: nothing
+
+  Set the color of the specified pixel on the canvas
+ ------------------------------------------------------------------------------}
+procedure TWinCEWidgetSet.DCSetPixel(CanvasHandle: HDC; X, Y: integer; AColor: TGraphicsColor);
+begin
+  Windows.SetPixel(CanvasHandle, X, Y, AColor);
+end;
+
+{------------------------------------------------------------------------------
+  Method: TWin32WidgetSet.GetPixel
+  Params:  Canvas - canvas to get color from
+           X, Y   - position
+  Returns: Color at specified point
+
+  Get the color of the specified pixel on the canvas
+ -----------------------------------------------------------------------------}
+
+function TWinCEWidgetSet.DCGetPixel(CanvasHandle: HDC; X, Y: integer
+  ): TGraphicsColor;
+begin
+  Result := Windows.GetPixel(CanvasHandle, X, Y);
+end;
 
 {$IFDEF ASSERT_IS_ON}
   {$UNDEF ASSERT_IS_ON}

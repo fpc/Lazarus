@@ -43,7 +43,7 @@ interface
 Uses
   Windows, Classes, ComCtrls, Controls, Buttons, Dialogs, DynHashArray,
   ExtCtrls, Forms, GraphMath, GraphType, InterfaceBase, LCLIntf, LCLType,
-  LMessages, StdCtrls, SysUtils, Graphics, Menus,Winceproc,WinCEWinAPIEmu;
+  LMessages, StdCtrls, SysUtils, Graphics, Menus,Winceproc,WinCEWinAPIEmu,WinExt,WinCEDef;
 //roozbeh:the following makes some errors in wincewinapih that some procedures cannot be overriden!
 //also causes some nasty problems too....
 //why so many common names?just by changing units order program should not be ok or wrong...!!
@@ -124,6 +124,9 @@ type
   private
     AppTerminated: Boolean;
 
+    // The parent of all windows, represents the button of the taskbar
+    // This window is also the owner of the clipboard.
+    // Assoc. windowproc also acts as handler for popup menus
     FAppHandle: HWND;//roozbeh:in win32 it was parrent of all..a window on taskbar
 
     FMetrics: TNonClientMetrics;
@@ -171,15 +174,17 @@ type
     Destructor Destroy; Override;
     { Initialize the API }
     procedure AppInit(var ScreenInfo: TScreenInfo); override;
-    procedure AppMinimize; override;
+//    procedure AppMinimize; override;
+//    procedure AppRestore; override;
     procedure AppBringToFront; override;
     procedure AppProcessMessages; override;
     procedure AppWaitMessage; override;
     Procedure AppTerminate; Override;
+    procedure AppSetTitle(const ATitle: string); override;
     function  WidgetSetName: string; override;
-    Function  InitHintFont(HintFont: TObject): Boolean; override;
+    //Function  InitHintFont(HintFont: TObject): Boolean; override;
     Procedure AttachMenuToWindow(AMenuObject: TComponent); override;
-    procedure AppRun(const ALoop: TApplicationMainLoop); override;
+//    procedure AppRun(const ALoop: TApplicationMainLoop); override;
     procedure DCSetPixel(CanvasHandle: HDC; X, Y: integer; AColor: TGraphicsColor); override;
     function  DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor; override;
     procedure DCRedraw(CanvasHandle: HDC); override;
@@ -231,9 +236,9 @@ var
   WinCEWidgetSet: TWinCEWidgetSet;
 
 
-implementation
+Implementation
 
-uses
+Uses
 ////////////////////////////////////////////////////
 // I M P O R T A N T
 ////////////////////////////////////////////////////
@@ -277,7 +282,6 @@ type
     UserData: PtrInt;
     OnEvent: TChildExitEvent;
   end;
-
 
 var
   MouseDownTime: dword;

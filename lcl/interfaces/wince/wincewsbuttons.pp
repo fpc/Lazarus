@@ -209,7 +209,7 @@ const
     (bsUp, bsExclusive, bsDown, bsDisabled, bsUp, bsUp);
   BitBtnEnabledToButtonState: array[boolean] of TButtonState =
     (bsDisabled, bsUp);
-  
+
 type
   BUTTON_IMAGELIST = packed record
     himl: Windows.HIMAGELIST;
@@ -254,7 +254,7 @@ var
     MonoDC: HDC;
     MonoBmp, OldMonoBmp: HBITMAP;
     BkColor: TColorRef;
-    
+
     TextFlags: integer; // flags for caption (enabled or disabled)
     numGlyphs, glyphLeft, glyphWidth, glyphHeight: integer;
     themesActive, emulateDisabled: boolean;
@@ -268,9 +268,9 @@ var
     case AState of
       bsDisabled:
       begin
-        if numGlyphs > 1 then 
-          glyphLeft := glyphWidth 
-        else 
+        if numGlyphs > 1 then
+          glyphLeft := glyphWidth
+        else
           emulateDisabled := true;
         TextFlags := TextFlags or DSS_DISABLED;
       end;
@@ -317,6 +317,7 @@ var
         DeleteObject(MonoBmp);
       end;  
     end;
+
     SetBkMode(hdcNewBitmap, TRANSPARENT);
     SetTextColor(hdcNewBitmap, 0);
     DrawState(hdcNewBitmap, 0, nil, LPARAM(ButtonCaption), 0, XDestText, YDestText, 0, 0, TextFlags);

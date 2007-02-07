@@ -238,8 +238,7 @@ begin
       if Window = 0 then
       begin
         Writeln('failed to create wince control, error: '+ IntToStr(GetLastError()));
-        exit;
-        //raise exception.create('failed to create win32 control, error: '+IntToStr(GetLastError()));
+        raise exception.create('failed to create win32 control, error: '+IntToStr(GetLastError()));
       end;
     end;
     { after creating a child window the following happens:
@@ -258,8 +257,8 @@ begin
       // some controls (combobox) immediately send a message upon setting font
       WindowInfo := AllocWindowInfo(Window);
       WindowInfo^.myButton := Window;
-      if GetWindowInfo(Parent)^.hasTabParent then
-        WindowInfo^.hasTabParent := true;
+      if GetWindowInfo(Parent)^.needParentPaint then
+        WindowInfo^.needParentPaint := true;
       WindowInfo^.WinControl := AWinControl;
       AWinControl.Handle := Window;
       if SubClassWndProc <> nil then

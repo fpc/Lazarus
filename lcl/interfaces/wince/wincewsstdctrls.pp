@@ -437,7 +437,7 @@ begin
   // create window
   FinishCreateWindow(AWinControl, Params, false);
   // listbox is not a transparent control -> no need for parentpainting
-  Params.WindowInfo^.hasTabParent := false;
+  Params.WindowInfo^.needParentPaint := false;
   Result := Params.Window;
 end;
 
@@ -595,7 +595,7 @@ begin
   // create window
   FinishCreateWindow(AWinControl, Params, false);
   // combobox is not a transparent control -> no need for parentpainting
-  Params.WindowInfo^.hasTabParent := false;
+  Params.WindowInfo^.needParentPaint := false;
 
   // get edit window within
   with Params do
@@ -845,6 +845,7 @@ end;
 
 class procedure TWinCEWSCustomEdit.SetEchoMode(const ACustomEdit: TCustomEdit; NewMode: TEchoMode);
 begin
+  // nothing to do, SetPasswordChar will do the work
 end;
 
 class procedure TWinCEWSCustomEdit.SetMaxLength(const ACustomEdit: TCustomEdit; NewLength: integer);
@@ -910,7 +911,7 @@ begin
   // create window
   FinishCreateWindow(AWinControl, Params, false);
   // memo is not a transparent control -> no need for parentpainting
-  Params.WindowInfo^.hasTabParent := false;
+  Params.WindowInfo^.needParentPaint := false;
   Result := Params.Window;
 end;
 

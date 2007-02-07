@@ -61,7 +61,7 @@ function ClipboardGetOwnerShip(ClipboardType: TClipboardType;
 function ClipboardRegisterFormat(const AMimeType: string): TClipboardFormat; override;}
 
 Function CombineRgn(Dest, Src1, Src2 : HRGN; fnCombineMode : Longint) : Longint;  override;
-//function ComboBoxDropDown(Handle: HWND; DropDown: boolean): boolean; override;
+function ComboBoxDropDown(Handle: HWND; DropDown: boolean): boolean; override;
 function CreateBitmap(Width, Height: Integer; Planes, BitCount: Longint; BitmapBits: Pointer): HBITMAP; override;
 //function CreateBitmapFromRawImage(const RawImage: TRawImage; var Bitmap, MaskBitmap: HBitmap; AlwaysCreateMask: boolean): boolean; override;
 function CreateBrushIndirect(const LogBrush: TLogBrush): HBRUSH; override;
@@ -82,29 +82,29 @@ function CreateRectRgn(X1,Y1,X2,Y2 : Integer): HRGN; override;
 {procedure DeleteCriticalSection(var CritSection: TCriticalSection); override;}
 function DeleteDC(hDC: HDC): Boolean; override;
 function DeleteObject(GDIObject: HGDIOBJ): Boolean;  override;
-{function DestroyCaret(Handle : HWND): Boolean; override;
+//function DestroyCaret(Handle : HWND): Boolean; override;
 Function DrawFrameControl(DC: HDC; var Rect : TRect; uType, uState : Cardinal) : Boolean; override;
-function DrawEdge(DC: HDC; var ARect: TRect; Edge: Cardinal; grfFlags: Cardinal): Boolean; override;}
+function DrawEdge(DC: HDC; var ARect: TRect; Edge: Cardinal; grfFlags: Cardinal): Boolean; override;
 function DrawText(DC: HDC; Str: PChar; Count: Integer; var Rect: TRect; Flags: Cardinal): Integer; Override;
 
 {function Ellipse(DC: HDC; x1,y1,x2,y2: Integer): Boolean; override;
-function EnableScrollBar(Wnd: HWND; wSBflags, wArrows: Cardinal): Boolean; override;
-function EnableWindow(hWnd: HWND; bEnable: Boolean): Boolean; override;}
+function EnableScrollBar(Wnd: HWND; wSBflags, wArrows: Cardinal): Boolean; override;}
+function EnableWindow(hWnd: HWND; bEnable: Boolean): Boolean; override;
 function EndPaint(Handle : hwnd; var PS : TPaintStruct): Integer; override;
 {procedure EnterCriticalSection(var CritSection: TCriticalSection); Override;
 function EnumFontFamilies(DC: HDC; Family: Pchar; EnumFontFamProc: FontEnumProc; LParam:Lparam):longint; override;
-function EnumFontFamiliesEx(DC: HDC; lpLogFont: PLogFont; Callback: FontEnumExProc; Lparam: LParam; Flags: dword): longint; override;
-function ExcludeClipRect(dc: hdc; Left, Top, Right, Bottom : Integer) : Integer; override;}
+function EnumFontFamiliesEx(DC: HDC; lpLogFont: PLogFont; Callback: FontEnumExProc; Lparam: LParam; Flags: dword): longint; override;}
+function ExcludeClipRect(dc: hdc; Left, Top, Right, Bottom : Integer) : Integer; override;
 function ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;  override;
 function ExtSelectClipRGN(dc: hdc; rgn : hrgn; Mode : Longint) : Integer;  override;
 
 function FillRect(DC: HDC; const Rect: TRect; Brush: HBRUSH): Boolean; override;
-//function Frame(DC: HDC; const ARect: TRect): Integer; override;
+function Frame(DC: HDC; const ARect: TRect): Integer; override;
 function Frame3d(DC: HDC; var ARect: TRect; const FrameWidth : integer; const Style : TBevelCut): Boolean; override;
-//function FrameRect(DC: HDC; const ARect: TRect; hBr: HBRUSH): Integer; override;
+function FrameRect(DC: HDC; const ARect: TRect; hBr: HBRUSH): Integer; override;
 
-{Function GetActiveWindow : HWND; override;
-function GetBitmapBits(Bitmap: HBITMAP; Count: Longint;  Bits: Pointer): Longint; override;}
+Function GetActiveWindow : HWND; override;
+//function GetBitmapBits(Bitmap: HBITMAP; Count: Longint;  Bits: Pointer): Longint; override;
 function GetBitmapRawImageDescription(Bitmap: HBITMAP; Desc: PRawImageDescription): boolean; override;
 function GetDeviceRawImageDescription(DC: HDC; Desc: PRawImageDescription): boolean; Override;
 function GetRawImageFromDevice(SrcDC: HDC; const SrcRect: TRect; var NewRawImage: TRawImage): boolean; Override;

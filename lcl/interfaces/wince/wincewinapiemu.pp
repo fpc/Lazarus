@@ -65,9 +65,10 @@ SYSCOLOR_55AABrush : HBRUSH;
 function DrawState(dc:HDC ; hbr : HBRUSH ; func: DRAWSTATEPROC ; lp:LPARAM; wp:WPARAM;x,y,cx,cy:integer;flags:UINT) : boolean;
 function GetTopWindow(hWnd:HWND):HWND;
 
-function SetProp(hWnd:HWND; {lpString:LPCSTR;} hData:HANDLE):WINBOOL;
-function GetProp(hWnd:HWND{; lpString:LPCSTR}):HANDLE;
-function RemoveProp(hWnd:HWND{; lpString:LPCSTR}):HANDLE;
+function SetProp(_hWnd:HWND; {lpString:LPCSTR;} hData:HANDLE):WINBOOL;
+function GetProp(_hWnd:HWND{; lpString:LPCSTR}):HANDLE;
+function RemoveProp(_hWnd:HWND{; lpString:LPCSTR}):HANDLE;
+function EnumProps(_hWnd:HWND;lpEnumFunc:PROPENUMPROC) : integer;
 
 implementation
 
@@ -86,13 +87,9 @@ var
 h55AABitmap : HBITMAP;//when free it?!
 ThePropertyLists : PTPropertyListWindows;
 
-//roozbeh:
-//well becouse as far as i noticed to use win32 lcl implementations-which seems to working good enough so why not use it-
-//it depends heavilly on windowinfos for everything
-//unfortunatly there are not setprop or removeprops exist on wince...so we have to implement something similar!
 
 
-function SetProp(hWnd:HWND; {lpString:LPCSTR;} hData:HANDLE):WINBOOL;
+function SetProp(_hWnd:HWND; {lpString:LPCSTR;} hData:HANDLE):WINBOOL;
 var
   pPrevPropertyLists,pPropertyLists : PTPropertyListWindows;
 begin
@@ -106,30 +103,32 @@ begin
   end;
   pPropertyLists := ThePropertyLists;
   pPrevPropertyLists := nil;
+  //traverse through previously created ones and then change it.
   repeat
-    if (pPropertyLists^.WindowHWND = hWnd) or (pPropertyLists^.WindowHWND = 0) then
+    if (pPropertyLists^.WindowHWND = _hWnd) or (pPropertyLists^.WindowHWND = 0) then
     begin
       pPropertyLists^.WindowInfo := hData;
-      pPropertyLists^.WindowHWND := hWnd;//if it was 0 then make it hwnd
+      pPropertyLists^.WindowHWND := _hWnd;//if it was 0 then make it hwnd
       break;
     end;
     pPrevPropertyLists := pPropertyLists;
     pPropertyLists := pPropertyLists^.NextPropertyListWindows;
   until pPropertyLists = nil;
 
-  if pPropertyLists = nil then//not found in previously created ones
+  //not found in previously created ones so create a new node
+  if pPropertyLists = nil then
   begin
     New(pPrevPropertyLists^.NextPropertyListWindows);
     pPropertyLists := pPrevPropertyLists^.NextPropertyListWindows;
 
     pPropertyLists^.NextPropertyListWindows := nil;
-    pPropertyLists^.WindowHWND := hWnd;
+    pPropertyLists^.WindowHWND := _hWnd;
     pPropertyLists^.WindowInfo := hData;
   end;
 end;
 
 
-function GetProp(hWnd:HWND{; lpString:LPCSTR}):HANDLE;
+function GetProp(_hWnd:HWND{; lpString:LPCSTR}):HANDLE;
 var
   pPropertyLists : PTPropertyListWindows;
 begin
@@ -140,7 +139,7 @@ begin
     exit;
   end;
   repeat
-    if (pPropertyLists^.WindowHWND = hWnd) then
+    if (pPropertyLists^.WindowHWND = _hWnd) then
     begin
       result := pPropertyLists^.WindowInfo;
       break;
@@ -150,7 +149,7 @@ begin
 end;
 
 
-function RemoveProp(hWnd:HWND{; lpString:LPCSTR}):HANDLE;
+function RemoveProp(_hWnd:HWND{; lpString:LPCSTR}):HANDLE;
 var
   pPrevPropertyLists,pPropertyLists : PTPropertyListWindows;
 begin
@@ -159,7 +158,7 @@ begin
   pPrevPropertyLists := nil;
   if pPropertyLists = nil then exit;
   repeat
-    if (pPropertyLists^.WindowHWND = hWnd) then
+    if (pPropertyLists^.WindowHWND = _hWnd) then
     begin
       result := pPropertyLists^.WindowInfo;
       if pPrevPropertyLists <> nil then
@@ -179,6 +178,35 @@ begin
   until pPropertyLists = nil;
 end;
 
+//well we only have one property for each window handle so just find and call that
+// return -1 if none found!
+function EnumProps(_hWnd:HWND;lpEnumFunc:PROPENUMPROC) : integer;
+var
+h:HANDLE;
+begin
+Result := -1;
+h:=GetProp(_hWnd);
+if h<>0 then
+Result := integer(lpEnumFunc(_hWnd,'',h));
+end;
+
+
+procedure FreePropList;
+var
+  pPropertyLists,pNextPropertyList : PTPropertyListWindows;
+begin
+  pPropertyLists := ThePropertyLists;
+  pNextPropertyList := nil;
+  if pPropertyLists = nil then exit;
+
+  repeat
+    pNextPropertyList := pPropertyLists^.NextPropertyListWindows;
+    Dispose(pPropertyLists);
+    pPropertyLists := pNextPropertyList;
+  until pPropertyLists = nil;
+  
+ ThePropertyLists := nil;
+end;
 
 
 function GetTopWindow(hWnd:HWND):HWND;
@@ -186,7 +214,8 @@ begin
   Result := GetWindow(hWnd,GW_CHILD);
 end;
 
-{ Wine sources -www.winehq.com- mostly used for emulating DrawState functions }
+
+{ Wine sources - www.winehq.com - mostly used for emulating DrawState functions }
 function DrawStateJam(dc:HDC;opcode:UINT;func: DrawStateProc; lp:LPARAM ;wp: WPARAM ;
                                   rc:LPRECT ; dtflags : UINT) : boolean;
 var
@@ -419,5 +448,6 @@ initialization
 
 finalization
 
+//  FreePropList;//roozbeh:best place to call?!
 end.
 
