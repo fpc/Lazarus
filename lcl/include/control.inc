@@ -1984,8 +1984,9 @@ end;
 procedure TControl.UpdateMouseCursor(X, Y: integer);
 begin
   //DebugLn(['TControl.UpdateMouseCursor ',DbgSName(Self)]);
-  if not (csDesigning in ComponentState) then
-    SetTempCursor(Cursor);
+  if csDesigning in ComponentState then Exit;
+  if Screen.Cursor <> crDefault then Exit;
+  SetTempCursor(Cursor);
 end;
 
 {------------------------------------------------------------------------------

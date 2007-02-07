@@ -26,3 +26,16 @@ begin
   if Window = nil then Exit;
   SetWindowCursor(Window, AInfo^.ControlCursor, False);
 end;
+
+class procedure TGtk2PrivateNotebook.UpdateCursor(AInfo: PWidgetInfo);
+var
+  Widget: PGtkWidget;
+  Window: PGdkWindow;
+begin
+  Widget := AInfo^.CoreWidget;
+  Window := PGTkNotebook(Widget)^.event_window;
+  if Window <> nil then
+    SetWindowCursor(Window, AInfo^.ControlCursor, False);
+  // dont know how to set cursor under tabs
+end;
+

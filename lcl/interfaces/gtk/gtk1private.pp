@@ -101,6 +101,12 @@ type
   public
   end;
 
+  TGtk1PrivateNotebook = class(TGtkPrivateNotebook)
+  private
+  protected
+  public
+  end;
+  
 implementation
 // {$I Gtk1PrivateWidget.inc}
 

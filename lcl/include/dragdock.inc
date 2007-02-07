@@ -21,7 +21,6 @@ var
   DragStartPos: TPoint;  // mouse position at start of drag
   ActiveDrag: TDragOperation;// current phase of drag operation
   DragThreshold: Integer;// treshold before the drag becomes activated
-  DragStartCursor: hCursor; // cursor that was before dragging
 
 Procedure DragTo(const Position: TPoint); forward;
 
@@ -164,13 +163,6 @@ begin
     GetCursorPos(DragStartPos);
     DragObject.DragPos := DragStartPos;
 
-    // get current cursor
-    // But this would not be work if control sets its cursor via WM_SETCURSOR
-    // to handle such situaltions we must call here: WidgetSet.GetCursor
-    if Screen.Cursor = crDefault then
-      DragStartCursor := Screen.Cursors[Control.Cursor] else
-      DragStartCursor := Screen.Cursors[Screen.Cursor];
-    
     //DragCapture := DragObject.Capture;
     DragThreshold := Threshold;
 
@@ -347,7 +339,7 @@ Begin
     // erase global variables (dragging stopped)
     DragControl := nil;
     DragObject := nil;
-    WidgetSet.SetCursor(DragStartCursor);
+    WidgetSet.SetCursor(Screen.Cursors[Screen.Cursor]);
     
     // drop
     if (OldDragObject<>nil) and (OldDragObject.DragTarget <> nil) then

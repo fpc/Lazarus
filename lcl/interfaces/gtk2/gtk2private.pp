@@ -101,6 +101,14 @@ type
   public
     class procedure UpdateCursor(AInfo: PWidgetInfo); override;
   end;
+  
+  TGtk2PrivateNotebook = class(TGtkPrivateNotebook)
+  private
+  protected
+  public
+    class procedure UpdateCursor(AInfo: PWidgetInfo); override;
+  end;
+
 
 implementation
 {$I Gtk2PrivateWidget.inc}

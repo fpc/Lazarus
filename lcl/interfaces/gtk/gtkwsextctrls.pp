@@ -31,7 +31,7 @@ uses
 {$IFDEF GTK2}
   gtk2, gdk2, gdk2PixBuf, glib2,
 {$ELSE GTK2}
-  gtk, gdk, glib,
+  gtk, gdk, glib, gtk1private,
 {$ENDIF GTK2}
   GtkGlobals, GtkProc, GtkDef, ExtCtrls, Classes,
   WSExtCtrls, WSLCLClasses, gtkint, interfacebase;
@@ -563,7 +563,9 @@ initialization
 // which actually implement something
 ////////////////////////////////////////////////////
   RegisterWSComponent(TCustomPage, TGtkWSCustomPage);
-  RegisterWSComponent(TCustomNotebook, TGtkWSCustomNotebook);
+{$IFDEF GTK1}
+  RegisterWSComponent(TCustomNotebook, TGtkWSCustomNotebook, TGtk1PrivateNotebook);
+{$ENDIF}
 //  RegisterWSComponent(TPage, TGtkWSPage);
 //  RegisterWSComponent(TNotebook, TGtkWSNotebook);
 //  RegisterWSComponent(TShape, TGtkWSShape);

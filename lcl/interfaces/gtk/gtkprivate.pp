@@ -144,6 +144,18 @@ type
   public
   end;
 
+
+  { TGtkPrivateNotebook }
+  { Private class for gtknotebooks }
+
+  TGtkPrivateNotebook = class(TGtkPrivateBin)
+  private
+  protected
+  public
+  end;
+  
+  
+
 function GetWidgetWithWindow(const AHandle: THandle): PGtkWidget;
 procedure SetWindowCursor(AWindow: PGdkWindow; ACursor: HCursor; ARecursive: Boolean);
 
@@ -200,9 +212,6 @@ begin
   then SetCursorRecursive(AWindow)
   else gdk_window_set_cursor(AWindow, Cursor);
 end;
-
-
-
 
 { TGtkPrivateScrolling }
 { temp class to keep things working }

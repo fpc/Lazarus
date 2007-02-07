@@ -73,7 +73,7 @@ uses
   LCLProc, LCLIntf, LCLType, DynHashArray, GraphType, GraphMath,
   Graphics, Menus, Maps,
   // widgetset
-  GtkFontCache, gtkDef, GtkProc, gtkMsgQueue, GtkExtra;
+  GtkFontCache, gtkDef, GtkProc, gtkMsgQueue, GtkExtra, gtkPrivate, WSLCLClasses;
 
 
 type
@@ -122,6 +122,7 @@ type
     FStockSystemFont: HFONT;
     FExtUTF8OutCache: Pointer;
     FExtUTF8OutCacheSize: integer;
+    FGlobalCursor: HCursor;
 
   public
     procedure InitStockItems; virtual;

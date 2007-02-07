@@ -26,7 +26,9 @@ begin
   FixWidget := GetFixedWidget(Widget);
   Window := GetControlWindow(FixWidget);
   if Window = nil then Exit;
-  SetWindowCursor(Window, AInfo^.ControlCursor, False);
+  // always recurse windows which do not accept controls.
+  // this way we will catch all widgets with double windows
+  SetWindowCursor(Window, AInfo^.ControlCursor, not (csAcceptsControls in TControl(AInfo^.LCLObject).ControlStyle));
 end;
 
 class procedure TGtkPrivateWidget.SetZPosition(const AWinControl: TWinControl; const APosition: TWSZPosition);

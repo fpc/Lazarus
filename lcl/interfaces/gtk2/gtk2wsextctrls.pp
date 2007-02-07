@@ -28,12 +28,12 @@ interface
 
 uses
 // libs
-  GLib2, Gtk2, Gdk2, Gtk2Int,gtkProc,GtkDef,
+  GLib2, Gtk2, Gdk2, Gtk2Int, gtkProc, GtkDef,
   // LCL
   ExtCtrls, Classes, Controls, LCLType,
   // widgetset
   WSExtCtrls, WSLCLClasses, WSProc,
-  GtkWSExtCtrls;
+  GtkWSExtCtrls, gtk2private;
 
 type
 
@@ -250,7 +250,7 @@ initialization
 // which actually implement something
 ////////////////////////////////////////////////////
 //  RegisterWSComponent(TCustomPage, TGtk2WSCustomPage);
-  RegisterWSComponent(TCustomNotebook, TGtk2WSCustomNotebook);
+  RegisterWSComponent(TCustomNotebook, TGtk2WSCustomNotebook, TGtk2PrivateNotebook);
 //  RegisterWSComponent(TPage, TGtk2WSPage);
 //  RegisterWSComponent(TNotebook, TGtk2WSNotebook);
 //  RegisterWSComponent(TShape, TGtk2WSShape);
