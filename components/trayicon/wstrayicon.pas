@@ -52,8 +52,12 @@ uses
 
   {$ifdef DARWIN}
   
-    wscarbontrayicon,
-    
+    {$ifdef LCLQt}
+      wsqttrayicon,
+    {$else}
+      wscarbontrayicon,
+    {$endif}
+
   {$else}
 
     {$ifdef LCLGtk}
@@ -69,9 +73,13 @@ uses
     {$endif}
 
     {$ifdef LCLQt}
+      wsqttrayicon,
+    {$endif}
+    
+    {$ifdef LCLFPGUI}
       wsx11trayicon,
     {$endif}
-  
+
   {$endif}
 
 {$endif}
