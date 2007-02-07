@@ -29,7 +29,7 @@ unit LCLClasses;
 interface
 
 uses
-  Classes, LCLProc, WSLCLClasses;
+  Classes, WSLCLClasses, LCLType, LCLProc;
 
 type
 
@@ -46,6 +46,27 @@ type
     class function NewInstance: TObject; override;
     procedure RemoveAllHandlersOfObject(AnObject: TObject); virtual;
     property WidgetSetClass: TWSLCLComponentClass read FWidgetSetClass;
+  end;
+  
+  { TLCLHandleComponent }         
+  // A base class for all components having a handle
+
+  TLCLHandleComponent = class(TLCLComponent)
+  private
+    FHandle: TLCLIntfHandle;
+    FCreating: Boolean; // Set if we are creating the handle
+    function  GetHandle: TLCLIntfHandle;
+    procedure HandleNeeded;
+  protected
+    procedure CreateHandle; 
+    procedure CreateParams(var AParams: TCreateParams); virtual;
+    procedure DestroyHandle; 
+    procedure HandleCreated; virtual;    // gets called after the Handle is created
+    procedure HandleDestroying; virtual; // gets called before the Handle is destroyed
+  protected
+    property Handle: TLCLIntfHandle read GetHandle;
+  public             
+    function HandleAllocated: Boolean;
   end;
 
 implementation                    
@@ -84,7 +105,72 @@ end;
 
 procedure TLCLComponent.RemoveAllHandlersOfObject(AnObject: TObject);
 begin
+end;
 
+{ TLCLHandleComponent }
+
+function TLCLHandleComponent.GetHandle: TLCLIntfHandle;
+begin
+  if FHandle = 0 then HandleNeeded;
+  Result := FHandle;
+end;
+
+procedure TLCLHandleComponent.HandleNeeded;
+begin
+  if FHandle <> 0 then Exit;
+  if FCreating
+  then begin
+    // raise some error ?
+    DebugLn('TLCLHandleComponent: Circulair handle creation');
+    Exit;
+  end;
+
+  FCreating := True;
+  try
+    CreateHandle;
+    if FHandle = 0
+    then begin
+      // raise some error ?
+      DebugLn('TLCLHandleComponent: Handle creation failed');
+      Exit;
+    end;
+  finally
+    FCreating := False;
+  end;
+  HandleCreated;
+end;
+
+procedure TLCLHandleComponent.CreateHandle;
+var
+  Params: TCreateParams;
+begin
+  CreateParams(Params);
+  // TODO: some WScall here
+end;
+
+procedure TLCLHandleComponent.CreateParams(var AParams: TCreateParams);
+begin
+end;
+
+procedure TLCLHandleComponent.DestroyHandle;
+begin
+  HandleDestroying;
+  // TODO: some WScall here
+  FHandle := 0;
+end;
+
+procedure TLCLHandleComponent.HandleCreated;
+begin
+end;
+
+procedure TLCLHandleComponent.HandleDestroying;
+begin
+end;
+
+function TLCLHandleComponent.HandleAllocated: Boolean;
+begin
+  Result := FHandle <> 0;
 end;
 
 end.
+

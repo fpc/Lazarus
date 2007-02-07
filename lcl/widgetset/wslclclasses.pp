@@ -62,8 +62,12 @@ type
     class function WSPrivate: TWSPrivateClass; //inline;
   end;
 {$M-}
-
   TWSLCLComponentClass = class of TWSLCLComponent;
+
+  { TWSLCLHandleComponent }
+
+  TWSLCLHandleComponent = class(TWSLCLComponent)
+  end;
 
 
 function FindWSComponentClass(const AComponent: TComponentClass): TWSLCLComponentClass;
