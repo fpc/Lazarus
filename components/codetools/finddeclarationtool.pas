@@ -1953,13 +1953,35 @@ end;
 
 function TFindDeclarationTool.IdentifierIsDefined(IdentAtom: TAtomPosition;
   ContextNode: TCodeTreeNode; Params: TFindDeclarationParams): boolean;
+var
+  Identifier: PChar;
+  Node: TCodeTreeNode;
 begin
   // find declaration of identifier
+  Identifier:=@Src[IdentAtom.StartPos];
+  //DebugLn(['TFindDeclarationTool.IdentifierIsDefined ',GetIdentifier(Identifier),' ',CompareIdentifiers(Identifier,'Result'),' ',]);
+  if (CompareIdentifiers(Identifier,'Self')=0) then begin
+    Node:=ContextNode;
+    while (Node<>nil) do begin
+      if NodeIsMethodBody(Node) then
+        exit(true);
+      Node:=Node.Parent;
+    end;
+  end;
+  if (CompareIdentifiers(Identifier,'Result')=0) then begin
+    Node:=ContextNode;
+    while (Node<>nil) do begin
+      if NodeIsFunction(Node) then
+        exit(true);
+      Node:=Node.Parent;
+    end;
+  end;
   Params.ContextNode:=ContextNode;
-  Params.SetIdentifier(Self,@Src[IdentAtom.StartPos],nil);
+  Params.SetIdentifier(Self,Identifier,nil);
   Params.Flags:=[fdfSearchInParentNodes,fdfSearchInAncestors,
                  fdfTopLvlResolving,fdfFindVariable,fdfIgnoreCurContextNode];
   Result:=FindIdentifierInContext(Params);
+  //DebugLn(['TFindDeclarationTool.IdentifierIsDefined END Result=',Result]);
 end;
 
 function TFindDeclarationTool.FindIdentifierInContext(
