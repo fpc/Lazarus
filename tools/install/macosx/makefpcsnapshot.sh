@@ -126,5 +126,5 @@ $HDIUTIL create -anyowners -volname fpc-$FPCVERSION -imagekey zlib-level=9 -form
 
 if [ -e $DMGFILE ]; then
 #update lazarus snapshot web page
-  echo "$DMGFILE fpc-*-*-$FPCARCH-macosx.dmg" >> $UPDATELIST
+  echo "$DMGFILE fpc-$FPCVERSION-*-$FPCARCH-macosx.dmg" >> $UPDATELIST
 fi

@@ -16,7 +16,7 @@ packages=rtl fcl
 #units=apiwizard
 
 [compiler]
-options=-gl
+options=-gl $(LAZARUS_LIBPATHS)
 unitdir=. $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) \
           $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
 unittargetdir=.
@@ -33,6 +33,11 @@ LCL_PLATFORM=gtk
 endif
 endif
 export LCL_PLATFORM
+
+ifeq ($(OS_TARGET),darwin)
+LAZARUS_LIBPATHS=-Fl/usr/X11R6/lib -Fl/sw/lib
+endif
+
 
 [rules]
 .PHONY: all

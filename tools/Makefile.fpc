@@ -15,7 +15,7 @@ programs=lazres svn2revisioninc updatepofiles
 packages=rtl fcl
 
 [compiler]
-options=-gl
+options=-gl $(LAZARUS_LIBPATHS)
 unitdir=. $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) \
           $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
 unittargetdir=.
@@ -24,7 +24,6 @@ targetdir=.
 [prerules]
 LAZDIR=..
 
-[prerules]
 # LCL Platform
 ifndef LCL_PLATFORM
 ifeq ($(OS_TARGET),win32)
@@ -35,11 +34,16 @@ endif
 endif
 export LCL_PLATFORM
 
+ifeq ($(OS_TARGET),darwin)
+LAZARUS_LIBPATHS=-Fl/usr/X11R6/lib -Fl/sw/lib
+endif
+
 
 [rules]
 .PHONY: all
 
 all: apiwizz_all
+        echo $(LAZARUS_LIBPATHS)
         $(MAKE) --assume-new=lazres.pp lazres$(EXEEXT)
         $(MAKE) --assume-new=svn2revisioninc.pas svn2revisioninc$(EXEEXT)
         $(MAKE) --assume-new=updatepofiles.pas updatepofiles$(EXEEXT)
