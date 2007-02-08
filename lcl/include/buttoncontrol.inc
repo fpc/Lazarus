@@ -69,8 +69,6 @@ begin
   inherited Create(TheOwner);
   FUseOnChange:=DefaultButtonControlUseOnChange;
   ControlStyle:=ControlStyle-csMultiClicks-[csAcceptsControls];
-  Color:=clBtnFace;
-  ParentColor:=false;
 end;
 
 { TButtonActionLink }

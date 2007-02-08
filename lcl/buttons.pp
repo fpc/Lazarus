@@ -85,6 +85,7 @@ type
     function DialogChar(var Message: TLMKey): boolean; override;
     function ChildClassAllowed(ChildClass: TClass): boolean; override;
     function IsBorderSpacingInnerBorderStored: Boolean; override;
+    property ParentColor default false;
   public
     constructor Create(TheOwner: TComponent); override;
     procedure ExecuteDefaultAction; override;
@@ -96,6 +97,7 @@ type
     property Default: Boolean read FDefault write SetDefault default false;
     property ModalResult: TModalResult read FModalResult write SetModalResult default mrNone;
     property Cancel: Boolean read FCancel write SetCancel default false;
+    property Color default clBtnFace;
     property TabStop default true;
   end;
 

@@ -27,6 +27,8 @@ begin
   // set the component style to csButton
   fCompStyle := csButton;
   ControlStyle:=ControlStyle-[csClickEvents]+[csHasDefaultAction,csHasCancelAction];
+  Color:=clBtnFace;
+  ParentColor:=false;
   TabStop := true;
   // set default alignment
   Align := alNone;
