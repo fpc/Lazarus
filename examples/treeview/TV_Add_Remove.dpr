@@ -5,7 +5,9 @@ uses
   Forms,
   TV_Add_Remove_U1 in 'TV_Add_Remove_U1.pas' {Form1};
 
-{$R *.RES}
+{$ifdef windows}
+{$R *.res}
+{$endif}
 
 begin
   Application.Initialize;
