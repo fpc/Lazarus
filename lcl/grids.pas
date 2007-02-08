@@ -6691,7 +6691,7 @@ begin
     end;
     DefaultDrawCell(aCol,aRow,aRect,aState);
   end;
-  inherited DrawCellGrid(aCol,aRow,aRect,aState);
+  DrawCellGrid(aCol,aRow,aRect,aState);
 end;
 
 procedure TCustomDrawGrid.DrawFocusRect(aCol, aRow: Integer; ARect: TRect);

@@ -893,6 +893,8 @@ begin
 end;
 
 procedure TCustomDBGrid.OnDataSetScrolled(aDataset: TDataSet; Distance: Integer);
+var
+  OldEditorMode: boolean;
 begin
   {$ifdef dbgDBGrid}
   DebugLn(ClassName, ' (',name,')', '.OnDataSetScrolled(',IntToStr(Distance),')');
@@ -902,11 +904,20 @@ begin
   // todo: Use a fast interface method to scroll a rectangular section of window
   //       if distance=+, Row[Distance] to Row[RowCount-2] UP
   //       if distance=-, Row[FixedRows+1] to Row[RowCount+Distance] DOWN
+
+  OldEditorMode := EditorMode;
+  if OldEditorMode then
+    EditorMode := False;
+
   if Distance<>0 then begin
     Row:= FixedRows + FDataLink.ActiveRecord;
     Invalidate
   end else
     UpdateActive;
+
+
+  if OldEditorMode and (dgAlwaysShowEditor in Options) then
+    EditorMode := True;
 end;
 
 procedure TCustomDBGrid.OnUpdateData(aDataSet: TDataSet);
