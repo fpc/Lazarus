@@ -242,7 +242,6 @@ Function Split(Const Str: String; SplitStr: String; Count: Integer; Const CaseSe
 {$ifdef VER2_0}
 function GET_X_LPARAM(lp : Windows.LParam) : longint;
 function GET_Y_LPARAM(lp : Windows.LParam) : longint;
-{$endif VER2_0}
 
 // the declaration in the windows unit doesn't have the FlagsEx field
 type
@@ -276,6 +275,7 @@ type
      POPENFILENAME = ^OPENFILENAME;
      
      OPENFILENAME_NT4 = Windows.OPENFILENAME;
+{$endif}
 
 
 Implementation
