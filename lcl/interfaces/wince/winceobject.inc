@@ -319,6 +319,10 @@ Begin
           DispatchMessage(@AMessage);
         end;
       end;
+
+    if FWaitHandleCount = 0 then
+     break;
+
     end
     else
     if retVal = WAIT_TIMEOUT then
