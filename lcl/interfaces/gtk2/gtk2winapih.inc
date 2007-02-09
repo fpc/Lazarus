@@ -35,6 +35,7 @@
 
 function BeginPaint(Handle: hWnd; Var PS : TPaintStruct) : hdc; override;
 
+function CreateCursor(ACursorInfo: PIconInfo): hCursor; override;
 function CreateFontIndirectEx(const LogFont: TLogFont; const LongFontName: string): HFONT; override;
 
 function EndPaint(Handle : hwnd; var PS : TPaintStruct): Integer; override;

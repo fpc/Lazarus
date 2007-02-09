@@ -64,6 +64,41 @@ begin
   end;
 end;
 
+function TGtk2WidgetSet.CreateCursor(ACursorInfo: PIconInfo): hCursor;
+var
+  pixmap: PGdkPixmap;
+  bitmap: PGdkBitmap;
+  w, h: integer;
+  pixbuf, masked_pixbuf: PGdkPixbuf;
+begin
+  Result := 0;
+  if not IsValidGDIObject(ACursorInfo^.hbmColor) then Exit;
+
+  pixmap := PGDIObject(ACursorInfo^.hbmColor)^.GDIBitmapObject;
+  bitmap := PGDIObject(ACursorInfo^.hbmColor)^.GDIBitmapMaskObject;
+
+  gdk_drawable_get_size(pixmap, @w, @h);
+
+  // create alpha pixbuf
+  pixbuf := gdk_pixbuf_new(GDK_COLORSPACE_RGB, True, 8, w, h);
+
+  // fill pixbuf from pixmap
+  gdk_pixbuf_get_from_drawable(pixbuf, pixmap, nil, 0, 0, 0, 0, -1, -1);
+
+  // dont know why, but transparent color is black
+  masked_pixbuf := GdkPixbufAddBitmapMask(pixbuf, bitmap, 1);
+  if masked_pixbuf <> nil then
+  begin
+    // masked_pixuf is a new pixbuf created from pixbuf with applying mask
+    gdk_pixbuf_unref(pixbuf);
+    pixbuf := masked_pixbuf;
+  end;
+
+  // create cursor from pixbuf
+  Result := hCursor(gdk_cursor_new_from_pixbuf(gdk_display_get_default, pixbuf,
+    ACursorInfo^.xHotSpot, ACursorInfo^.yHotSpot));
+end;
+
 function TGtk2WidgetSet.CreateFontIndirectEx(const LogFont: TLogFont;
   const LongFontName: string): HFONT;
 {off $DEFINE VerboseFonts}

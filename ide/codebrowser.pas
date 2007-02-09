@@ -40,10 +40,9 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
-  AvgLvlTree, StdCtrls,
+  LCLIntf, AvgLvlTree, StdCtrls, ExtCtrls, ComCtrls, Buttons,
   CodeTree, CodeCache, CodeToolManager, LazConfigStorage, PackageSystem,
-  LazarusIDEStrConsts, IDEOptionDefs, EnvironmentOpts, ExtCtrls, ComCtrls,
-  Buttons;
+  LazarusIDEStrConsts, IDEOptionDefs, EnvironmentOpts;
 
 type
   TCodeBrowserUnit = class;
@@ -107,7 +106,42 @@ type
     property Units: TAvgLvlTree read FUnits;
   end;
   
-  
+type
+  TCodeBrowserLevel = (
+    cblPackages,
+    cblUnits,
+    cblClasses,
+    cblSections
+    );
+    
+const
+  CodeBrowserLevelNames: array[TCodeBrowserLevel] of string = (
+    'Packages',
+    'Units',
+    'Classes',
+    'Sections'
+    );
+
+type
+  TCodeBrowserSortItem = (
+    cbsiPackages,
+    cbsiUnits,
+    cbsiClasses,
+    cbsiSections,
+    cbsiAlphabetically
+    );
+
+const
+  CodeBrowserSortItemNames: array[TCodeBrowserSortItem] of string = (
+    'Packages',
+    'Units',
+    'Classes',
+    'Sections',
+    'Alphabetically'
+    );
+
+type
+
   { TCodeBrowserViewOptions }
 
   TCodeBrowserViewOptions = class
@@ -136,6 +170,15 @@ type
   end;
 
 
+  TCodeBrowserWorkStage = (
+    cbwsGetOptions,
+    cbwsGatherPackages,
+    cbwsGatherFiles,
+    cbwsUpdateUnits,
+    cbwsUpdateNodes,
+    cbwsFinished
+    );
+
   { TCodeBrowserView }
 
   TCodeBrowserView = class(TForm)
@@ -155,11 +198,15 @@ type
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure LevelsCheckGroupClick(Sender: TObject);
     procedure ScopeComboBoxDropDown(Sender: TObject);
+    procedure ScopeComboBoxEditingDone(Sender: TObject);
+    procedure ScopeWithRequiredPackagesCheckBoxChange(Sender: TObject);
     procedure SortAddSpeedButtonClick(Sender: TObject);
     procedure SortDownSpeedButtonClick(Sender: TObject);
     procedure SortRemoveSpeedButtonClick(Sender: TObject);
     procedure SortUpSpeedButtonClick(Sender: TObject);
+    procedure OnIdle(Sender: TObject);
   private
     FIDEAlias: string;
     fLocalizedSortItems: TStrings;
@@ -167,6 +214,7 @@ type
     FProjectAlias: string;
     FUnitList: TCodeBrowserUnitList;
     fUpdateCount: integer;
+    fStage: TCodeBrowserWorkStage;
     procedure LoadOptions;
     procedure LoadLevelsCheckGroup;
     procedure LoadSortListBoxes;
@@ -174,6 +222,9 @@ type
     procedure AddSortItem;
     procedure RemoveSortItem;
     procedure FillScopeComboBox;
+    procedure Work;
+    procedure WorkGetOptions;
+    procedure WorkGatherPackages;
   public
     procedure BeginUpdate;
     procedure EndUpdate;
@@ -200,11 +251,11 @@ begin
   FProjectAlias:='Project';
 
   fLocalizedSortItems:=TStringList.Create;
-  fLocalizedSortItems.Values['Packages']:='Packages';
-  fLocalizedSortItems.Values['Units']:='Units';
-  fLocalizedSortItems.Values['Classes']:='Classes';
-  fLocalizedSortItems.Values['Sections']:='Sections';
-  fLocalizedSortItems.Values['Alphabetically']:='Alphabetically';
+  fLocalizedSortItems.Values[CodeBrowserSortItemNames[cbsiPackages]]:='Packages';
+  fLocalizedSortItems.Values[CodeBrowserSortItemNames[cbsiUnits]]:='Units';
+  fLocalizedSortItems.Values[CodeBrowserSortItemNames[cbsiClasses]]:='Classes';
+  fLocalizedSortItems.Values[CodeBrowserSortItemNames[cbsiSections]]:='Sections';
+  fLocalizedSortItems.Values[CodeBrowserSortItemNames[cbsiAlphabetically]]:='Alphabetically';
 
   Name:=NonModalIDEWindowNames[nmiwCodeBrowser];
   Caption := 'Code browser';
@@ -230,6 +281,9 @@ begin
   SortRemoveSpeedButton.Glyph.LoadFromLazarusResource('arrow_right');
 
   LoadOptions;
+  
+  fStage:=cbwsGetOptions;
+  Application.AddOnIdleHandler(@OnIdle);
 end;
 
 procedure TCodeBrowserView.FormDestroy(Sender: TObject);
@@ -237,9 +291,25 @@ begin
   FreeAndNil(FOptions);
 end;
 
+procedure TCodeBrowserView.LevelsCheckGroupClick(Sender: TObject);
+begin
+  fStage:=cbwsGetOptions;
+end;
+
 procedure TCodeBrowserView.ScopeComboBoxDropDown(Sender: TObject);
 begin
   FillScopeComboBox;
+end;
+
+procedure TCodeBrowserView.ScopeComboBoxEditingDone(Sender: TObject);
+begin
+  fStage:=cbwsGetOptions;
+end;
+
+procedure TCodeBrowserView.ScopeWithRequiredPackagesCheckBoxChange(
+  Sender: TObject);
+begin
+  fStage:=cbwsGetOptions;
 end;
 
 procedure TCodeBrowserView.SortAddSpeedButtonClick(Sender: TObject);
@@ -262,6 +332,16 @@ begin
   MoveSortItem(-1);
 end;
 
+procedure TCodeBrowserView.OnIdle(Sender: TObject);
+var
+  AControl: TWinControl;
+begin
+  AControl:=FindOwnerControl(GetFocus);
+  if (AControl=nil) or (GetFirstParentForm(AControl)<>Self) then exit;
+  // this form is focused -> let's work
+  Work;
+end;
+
 procedure TCodeBrowserView.LoadOptions;
 begin
   BeginUpdate;
@@ -273,11 +353,12 @@ begin
 end;
 
 procedure TCodeBrowserView.LoadLevelsCheckGroup;
+var
+  i: Integer;
 begin
-  LevelsCheckGroup.Checked[0]:=Options.Levels.IndexOf('Packages')>=0;
-  LevelsCheckGroup.Checked[1]:=Options.Levels.IndexOf('Units')>=0;
-  LevelsCheckGroup.Checked[2]:=Options.Levels.IndexOf('Classes')>=0;
-  LevelsCheckGroup.Checked[3]:=Options.Levels.IndexOf('Sections')>=0;
+  for i:=0 to LevelsCheckGroup.Items.Count-1 do
+    LevelsCheckGroup.Checked[i]:=
+      Options.Levels.IndexOf(CodeBrowserLevelNames[TCodeBrowserLevel(i)])>=0;
 end;
 
 procedure TCodeBrowserView.LoadSortListBoxes;
@@ -332,6 +413,7 @@ begin
   if (i+Offset)<0 then exit;
   if (i+Offset)>=SortListBox.Items.Count then exit;
   SortListBox.Items.Move(i,i+Offset);
+  fStage:=cbwsGetOptions;
 end;
 
 procedure TCodeBrowserView.AddSortItem;
@@ -346,6 +428,7 @@ begin
   i:=SortListBox.ItemIndex;
   if i<0 then i:=SortListBox.Items.Count;
   SortListBox.Items.Insert(i,NewItem);
+  fStage:=cbwsGetOptions;
 end;
 
 procedure TCodeBrowserView.RemoveSortItem;
@@ -360,6 +443,7 @@ begin
   i:=SortAddsListBox.ItemIndex;
   if i<0 then i:=SortAddsListBox.Items.Count;
   SortAddsListBox.Items.Insert(i,NewItem);
+  fStage:=cbwsGetOptions;
 end;
 
 procedure TCodeBrowserView.FillScopeComboBox;
@@ -377,6 +461,43 @@ begin
   sl.Insert(1,ProjectAlias);
   ScopeComboBox.Items.Assign(sl);
   sl.Free;
+end;
+
+procedure TCodeBrowserView.Work;
+// do some work
+// This is called during OnIdle, so progress in small steps
+begin
+  case fStage of
+  cbwsGetOptions:     WorkGetOptions;
+  cbwsGatherPackages: WorkGatherPackages;
+  end;
+end;
+
+procedure TCodeBrowserView.WorkGetOptions;
+var
+  i: Integer;
+begin
+  Options.WithRequiredPackages:=ScopeWithRequiredPackagesCheckBox.Checked;
+  Options.Scope:=ScopeComboBox.Text;
+  Options.Levels.Clear;
+  for i:=0 to LevelsCheckGroup.Items.Count-1 do
+    if LevelsCheckGroup.Checked[i] then
+      Options.Levels.Add(CodeBrowserLevelNames[TCodeBrowserLevel(i)]);
+  Options.SortItems.Clear;
+  Options.SortItems.Assign(SortListBox.Items);
+  // this stage finished -> next stage
+  fStage:=cbwsGatherPackages;
+end;
+
+procedure TCodeBrowserView.WorkGatherPackages;
+begin
+  if Options.Scope=IDEAlias then begin
+
+  end else if Options.Scope=ProjectAlias then begin
+
+  end else begin
+
+  end;
 end;
 
 procedure TCodeBrowserView.BeginUpdate;
@@ -516,11 +637,11 @@ end;
 procedure TCodeBrowserViewOptions.Clear;
 begin
   FLevels.Clear;
-  FSortItems.Text:='Alphabetically';
-  FLevels.Text:='Packages'#13
-                  +'Units'#13
-                  +'Classes'#13
-                  +'Sections';
+  FSortItems.Text:=CodeBrowserSortItemNames[cbsiAlphabetically];
+  FLevels.Text:=CodeBrowserLevelNames[cblPackages]+#13
+               +CodeBrowserLevelNames[cblUnits]+#13
+               +CodeBrowserLevelNames[cblClasses]+#13
+               +CodeBrowserLevelNames[cblSections];
   WithRequiredPackages:=false;
   Scope:='Project';
   Modified:=false;

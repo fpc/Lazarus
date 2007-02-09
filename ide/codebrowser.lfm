@@ -26,6 +26,7 @@ object CodeBrowserView: TCodeBrowserView
       AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
       MaxLength = 0
       OnDropDown = ScopeComboBoxDropDown
+      OnEditingDone = ScopeComboBoxEditingDone
       TabOrder = 0
       Text = 'ScopeComboBox'
     end
@@ -35,7 +36,9 @@ object CodeBrowserView: TCodeBrowserView
       Top = 3
       Width = 249
       Caption = 'ScopeWithRequiredPackagesCheckBox'
+      OnChange = ScopeWithRequiredPackagesCheckBoxChange
       TabOrder = 1
+      UseOnChange = True
     end
   end
   object LevelsCheckGroup: TCheckGroup
@@ -63,6 +66,7 @@ object CodeBrowserView: TCodeBrowserView
       'Classes'
       'Sections'
     )
+    OnClick = LevelsCheckGroupClick
     TabOrder = 1
     Data = {
       0400000002020202

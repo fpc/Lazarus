@@ -5400,6 +5400,81 @@ begin
 end;
 {$EndIF}
 
+{
+  function GdkPixbufAddBitmapMask
+
+  pixbuf - original pixbuf to mask
+  mask - mask bitmap
+  mask_value - bit value that should be masked
+
+  Returns new pixbuf with applied mask
+}
+function GdkPixbufAddBitmapMask(pixbuf: PGdkPixbuf; mask: PGdkBitmap; mask_value: byte): PGdkPixbuf;
+var
+  i, j, w, h, r, n: integer;
+  src, dest: Pguchar;
+  Image: PGdkImage;
+  s_buf, d_buf: PCardinal;
+begin
+  Result := nil;
+
+  // first check for null images
+  if (pixbuf = nil) or (mask = nil) then
+    exit;
+
+  n := gdk_pixbuf_get_n_channels(pixbuf);
+  gdk_drawable_get_size(mask, @w, @h);
+
+  // second check. we cannot process pixbuf with channels <> 4
+  // or with different size that image
+  if (n <> 4) or (w <> gdk_pixbuf_get_width(pixbuf)) or
+     (h <> gdk_pixbuf_get_height(pixbuf)) then
+    exit;
+
+  r := gdk_pixbuf_get_rowstride(pixbuf);
+
+  // we need Image to read pixels
+  Image := gdk_drawable_get_image(mask, 0, 0, w, h);
+
+  // source pixels of pixbuf
+  src := gdk_pixbuf_get_pixels(pixbuf);
+
+  // allocate destination buffer for new pixbuf
+  dest := g_malloc(4 * r * h);
+
+  // to run on buffer we need one more pointer to it
+  d_buf := PCardinal(dest);
+
+  for i := 0 to h - 1 do
+  begin
+    // buffer of source row
+    s_buf := PCardinal(src + i * r);
+    for j := 0 to w - 1 do
+    begin
+      if gdk_image_get_pixel(Image, j, i) = mask_value then
+      begin
+        // if pixel should be masked we fill color with zeros
+        d_buf^ := 0;
+      end else
+      begin
+        // in other case we copy it from source
+        d_buf^ := s_buf^;
+      end;
+      inc(d_buf);
+      inc(s_buf);
+    end;
+  end;
+  // image is no more needed, so can be disposed
+  gdk_image_unref(Image);
+
+  // craete result pixbuf from destination buffer
+  Result := gdk_pixbuf_new_from_data(dest, GDK_COLORSPACE_RGB, true, 8, w, h, r, nil, nil);
+
+  // if pixbuf is not created, then destination data should be freed
+  if Result = nil then
+    g_free(dest);
+end;
+
 {-------------------------------------------------------------------------------
   method LoadXPMFromLazResource
   Params: const ResourceName: string;

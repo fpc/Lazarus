@@ -76,6 +76,7 @@ end;
 
 class function TWSCustomImageList.CreateHandle(AList: TCustomImageList; ACount, AGrow: Integer; const AParams: TCreateParams): TLCLIntfHandle;
 begin
+  Result:=0;
 end;
 
 class procedure TWSCustomImageList.Delete(AList: TCustomImageList; AIndex: Integer);

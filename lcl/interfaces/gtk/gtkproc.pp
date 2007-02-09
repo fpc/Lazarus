@@ -639,6 +639,8 @@ procedure LoadPixbufFromLazResource(const ResourceName: string;
   var Pixbuf: PGdkPixbuf);
 procedure LoadXPMFromLazResource(const ResourceName: string;
   Window: PGdkWindow; var PixmapImg, PixmapMask: PGdkPixmap);
+function GdkPixbufAddBitmapMask(pixbuf: PGdkPixbuf; mask:
+  PGdkBitmap; mask_value: byte): PGdkPixbuf;
 
 // pixmaps
 procedure GetGdkPixmapFromGraphic(LCLGraphic: TGraphic;
