@@ -36,8 +36,8 @@ interface
 uses
   Classes, SysUtils, LCLProc, LCLType, GraphType, Graphics, Controls,
   SynEdit, SynRegExpr, SynCompletion,
-  BasicCodeTools, CodeTree, CodeCache, CodeToolManager, PascalParserTool,
-  KeywordFuncLists, FileProcs, IdentCompletionTool,
+  BasicCodeTools, CodeTree, CodeAtom, CodeCache, CodeToolManager,
+  PascalParserTool, KeywordFuncLists, FileProcs, IdentCompletionTool,
   LazIDEIntf, TextTools, IDETextConverter,
   DialogProcs, MainIntf, EditorOptions, CodeToolsOptions;
 
@@ -379,6 +379,7 @@ var
   IdentList: TIdentifierList;
   CursorAtEnd: boolean;
   ProcModifierPos: LongInt;
+  ProcHeadFlags: TProcHeadAttributes;
 begin
   Result:='';
   CursorToLeft:=0;
@@ -435,14 +436,23 @@ begin
       
     icvCompleteProcDeclaration:
       // create complete procedure declaration
-      if (not IdentList.StartUpAtomBehindIs('('))
+      if (not (IdentList.StartAtomBehind.Flag
+               in [cafEdgedBracketOpen,cafRoundBracketOpen]))
       and (IdentItem.Node<>nil) then begin
-        Result:=IdentItem.Tool.ExtractProcHead(IdentItem.Node,
-          [phpWithStart,phpWithVarModifiers,phpWithParameterNames,
+        ProcHeadFlags:=[phpWithStart,phpWithVarModifiers,phpWithParameterNames,
            phpWithDefaultValues,phpWithResultType,phpWithCallingSpecs,
-           phpWithProcModifiers]);
-        // replace virtual with override
+           phpWithProcModifiers];
+        if IdentList.StartUpAtomInFrontIs('PROCEDURE')
+        or IdentList.StartUpAtomInFrontIs('FUNCTION')
+        or IdentList.StartUpAtomInFrontIs('CONSTRUCTOR')
+        or IdentList.StartUpAtomInFrontIs('DESTRUCTOR')
+        then
+          Exclude(ProcHeadFlags,phpWithStart);
+        Result:=IdentItem.Tool.ExtractProcHead(IdentItem.Node,ProcHeadFlags);
+        // replace virtual and dynamic with override
         ProcModifierPos:=System.Pos('VIRTUAL;',UpperCaseStr(Result));
+        if ProcModifierPos<1 then
+          ProcModifierPos:=System.Pos('DYNAMIC;',UpperCaseStr(Result));
         if ProcModifierPos>0 then
           Result:=copy(Result,1,ProcModifierPos-1)+'override;'
                   +copy(Result,ProcModifierPos+8,length(Result));

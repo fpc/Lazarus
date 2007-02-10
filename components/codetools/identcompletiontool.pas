@@ -130,7 +130,7 @@ type
     ilcfStartIsLValue,     // position is start of one statement. e.g. 'A:='
     ilcfNeedsEndSemicolon, // after context a semicolon is needed. e.g. 'A end'
     ilcfIsExpression,      // is expression part of statement. e.g. 'if expr'
-    ilcfCanProcDeclaration // context allows to declarae a procedure/method
+    ilcfCanProcDeclaration // context allows to declare a procedure/method
     );
   TIdentifierListContextFlags = set of TIdentifierListContextFlag;
   
@@ -1260,15 +1260,39 @@ var
   procedure CheckProcedureDeclarationContext;
   var
     Node: TCodeTreeNode;
+    Can: Boolean;
   begin
-    Node:=GatherContext.Node;
-    if Node.Desc in (AllClassSections+AllSourceTypes
+    DebugLn(['CheckProcedureDeclarationContext ',CursorNode.DescAsString]);
+    Node:=CursorNode;
+    Can:=false;
+    if (Node.Parent<>nil) and (Node.Parent.Desc in AllClassSections)
+    and (Node.Desc=ctnVarDefinition)
+    and (CurrentIdentifierList.StartAtomBehind.Flag<>cafColon) then begin
+      { cursor is at a class variable definition without type
+        for example:
+        
+        public
+          MouseM|
+        end;
+      }
+      Can:=true;
+    end
+    else if (Node.Desc=ctnProcedure) and (not NodeIsMethodBody(Node))
+    and (not (CurrentIdentifierList.StartAtomBehind.Flag
+              in [cafEdgedBracketOpen,cafRoundBracketOpen]))
+    then begin
+      // for example: procedure DoSomething|
+      Can:=true;
+    end
+    else if Node.Desc in (AllClassSections+AllSourceTypes
                      +[ctnInterface,ctnImplementation])
     then begin
       //DebugLn(['TIdentCompletionTool.CheckProcedureDeclarationContext ilcfCanProcDeclaration']);
+      Can:=true;
+    end;
+    if Can then
       CurrentIdentifierList.ContextFlags:=
         CurrentIdentifierList.ContextFlags+[ilcfCanProcDeclaration];
-    end;
   end;
   
 begin
@@ -1333,9 +1357,6 @@ begin
 
       // check for incomplete context
       
-      // check for procedure/method declaration context
-      CheckProcedureDeclarationContext;
-
       // context bracket level
       CurrentIdentifierList.StartBracketLvl:=
         GetBracketLvl(Src,CursorNode.StartPos,IdentStartPos,
@@ -1391,6 +1412,9 @@ begin
           end;
         end;
       end;
+
+      // check for procedure/method declaration context
+      CheckProcedureDeclarationContext;
     end;
 
     Result:=true;

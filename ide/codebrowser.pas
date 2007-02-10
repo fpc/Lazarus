@@ -42,7 +42,7 @@ uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
   LCLIntf, AvgLvlTree, StdCtrls, ExtCtrls, ComCtrls, Buttons,
   CodeTree, CodeCache, CodeToolManager, LazConfigStorage, PackageSystem,
-  LazarusIDEStrConsts, IDEOptionDefs, EnvironmentOpts;
+  PackageDefs, LazarusIDEStrConsts, IDEOptionDefs, EnvironmentOpts;
 
 type
   TCodeBrowserUnit = class;
@@ -94,14 +94,14 @@ type
 
   TCodeBrowserUnitList = class
   private
-    FOwner: TObject;
+    FOwner: string;
     FParentList: TCodeBrowserUnitList;
     FUnits: TAvgLvlTree;
   public
-    constructor Create(TheOwner: TObject; TheParent: TCodeBrowserUnitList);
+    constructor Create(TheOwner: string; TheParent: TCodeBrowserUnitList);
     destructor Destroy; override;
     procedure Clear;
-    property Owner: TObject read FOwner;// IDE, project, package
+    property Owner: string read FOwner;// IDE, project, package
     property ParentList: TCodeBrowserUnitList read FParentList;
     property Units: TAvgLvlTree read FUnits;
   end;
@@ -139,6 +139,9 @@ const
     'Sections',
     'Alphabetically'
     );
+    
+  CodeBrowserIDEAlias     = ' '+'Lazarus IDE';// Note: space is needed to avoid name clashing
+  CodeBrowserProjectAlias = ' '+'Project';
 
 type
 
@@ -490,13 +493,36 @@ begin
 end;
 
 procedure TCodeBrowserView.WorkGatherPackages;
+var
+  APackage: TLazPackage;
+  RootOwner: string;
+  Root: TCodeBrowserUnitList;
+  i: Integer;
 begin
+  // find root
+  RootOwner:='';
   if Options.Scope=IDEAlias then begin
-
+    RootOwner:=CodeBrowserIDEAlias;
   end else if Options.Scope=ProjectAlias then begin
-
+    RootOwner:=CodeBrowserProjectAlias;
   end else begin
+    APackage:=PackageGraph.FindAPackageWithName(Options.Scope,nil);
+    if APackage<>nil then
+      RootOwner:=APackage.Name;
+  end;
+  Root:=TCodeBrowserUnitList.Create(RootOwner,nil);
+  
+  // find required packages
+  if Options.WithRequiredPackages then begin
+    if CompareText(Root.Owner,CodeBrowserIDEAlias)=0 then begin
+      for i:=0 to PackageGraph.Count-1 do begin
 
+      end;
+    end else if CompareText(Root.Owner,CodeBrowserIDEAlias)=0 then begin
+    
+    end else begin
+
+    end;
   end;
 end;
 
@@ -561,7 +587,7 @@ end;
 
 { TCodeBrowserUnitList }
 
-constructor TCodeBrowserUnitList.Create(TheOwner: TObject;
+constructor TCodeBrowserUnitList.Create(TheOwner: string;
   TheParent: TCodeBrowserUnitList);
 begin
   FOwner:=TheOwner;
