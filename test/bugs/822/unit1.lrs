@@ -1,0 +1,12 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TForm1','FORMDATA',[
+  'TPF0'#6'TForm1'#5'Form1'#4'Left'#3'"'#1#6'Height'#3','#1#3'Top'#3#175#0#5'Wi'
+  +'dth'#3#144#1#18'HorzScrollBar.Page'#3#143#1#18'VertScrollBar.Page'#3'+'#1#7
+  +'Caption'#6#5'Form1'#0#10'TScrollBar'#10'ScrollBar1'#4'Left'#3#160#0#6'Heigh'
+  +'t'#3#201#0#3'Top'#2'('#5'Width'#2#17#4'Kind'#7#10'sbVertical'#8'TabOrder'#2
+  +#0#0#0#22'TApplicationProperties'#22'ApplicationProperties1'#17'CaptureExcep'
+  +'tions'#9#9'HintColor'#7#8'clInfoBk'#13'HintHidePause'#3#196#9#9'HintPause'#3
+  +#244#1#13'HintShortCuts'#9#8'ShowHint'#9#6'OnIdle'#7#26'ApplicationPropertie'
+  +'s1Idle'#4'left'#2''''#3'top'#2#29#0#0#0
+]);
