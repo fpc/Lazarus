@@ -1564,6 +1564,7 @@ ideintf/allideintf.pas svneol=native#text/pascal
 ideintf/baseideintf.pas svneol=native#text/plain
 ideintf/checkgroupeditordlg.lfm svneol=native#text/plain
 ideintf/checkgroupeditordlg.lrs svneol=native#text/plain
+ideintf/checkgroupeditordlg.pas svneol=native#text/plain
 ideintf/checklistboxeditordlg.lfm svneol=native#text/plain
 ideintf/checklistboxeditordlg.lrs svneol=native#text/plain
 ideintf/checklistboxeditordlg.pas svneol=native#text/plain
