@@ -52,13 +52,13 @@ type
     property Modified: Boolean read FModified write FModified;
   end;
   
-procedure AssignCheck(dstCheck, srcCheck: TCheckListBox);
+procedure AssignCheckList(dstCheck, srcCheck: TCheckListBox);
 
 implementation
 
 uses ObjInspStrConsts;
 
-procedure AssignCheck(dstCheck, srcCheck: TCheckListBox);
+procedure AssignCheckList(dstCheck, srcCheck: TCheckListBox);
 var i: integer;
 begin
   dstCheck.Items.Clear;
@@ -123,16 +123,11 @@ begin
 end;
 
 procedure TCheckListBoxEditorDlg.ApplyCheck(Sender:TObject);
-//var aCheck:TCheckListBox; //coppola
 begin
-//  if FCheck.ItemIndex=-1 then exit;
   if Assigned(FCheck) then begin
-    AssignCheck(aCheck, FCheck);
+    AssignCheckList(aCheck, FCheck);
     FModified := True;
   end;
-
-//  AssignCheck(aCheck, FCheck);
-//  Modified; coppola
 end;
 
 initialization

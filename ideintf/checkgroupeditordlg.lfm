@@ -1,151 +1,243 @@
 object CheckGroupEditorDlg: TCheckGroupEditorDlg
-  ActiveControl = FBtnOK
+  Left = 268
+  Height = 300
+  Top = 207
+  Width = 608
+  HorzScrollBar.Page = 607
+  VertScrollBar.Page = 299
+  ActiveControl = BtnAdd
+  BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'CheckGroupEditorDlg'
-  ClientHeight = 300
-  ClientWidth = 593
-  PixelsPerInch = 96
-  Position = poScreenCenter
-  HorzScrollBar.Page = 592
-  VertScrollBar.Page = 299
-  Left = 290
-  Height = 300
-  Top = 149
-  Width = 593
-  object FPanelOKCancel: TPanel
-    Align = alBottom
-    AutoSize = True
-    ClientHeight = 36
-    ClientWidth = 593
+  object ColumnsLabel: TLabel
+    Left = 369
+    Height = 14
+    Top = 80
+    Width = 66
+    Caption = 'ColumnsLabel'
+    Color = clNone
+    ParentColor = False
+  end
+  object FCheck: TCheckGroup
+    Height = 229
+    Top = 35
+    Width = 360
+    Align = alLeft
+    AutoFill = True
+    Caption = 'FCheck'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    OnItemClick = ItemClick
+    PopupMenu = FPopupMenu
     TabOrder = 0
+  end
+  object FPanelButtons: TPanel
+    Height = 35
+    Width = 608
+    Align = alTop
+    BevelInner = bvLowered
+    TabOrder = 1
+    object LabelDisable: TLabel
+      AnchorSideLeft.Control = BtnModify
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = BtnModify
+      AnchorSideTop.Side = asrCenter
+      Left = 367
+      Height = 14
+      Top = 11
+      Width = 60
+      BorderSpacing.Left = 6
+      Caption = 'LabelDisable'
+      Color = clNone
+      Font.Color = clHotLight
+      ParentColor = False
+    end
+    object BtnAdd: TButton
+      AnchorSideLeft.Control = FPanelButtons
+      AnchorSideTop.Control = FPanelButtons
+      Left = 6
+      Height = 25
+      Top = 6
+      Width = 63
+      AutoSize = True
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 6
+      BorderSpacing.InnerBorder = 4
+      Caption = 'BtnAdd'
+      OnClick = AddItem
+      TabOrder = 0
+    end
+    object BtnDelete: TButton
+      AnchorSideLeft.Control = BtnAdd
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = BtnAdd
+      Left = 69
+      Height = 25
+      Top = 6
+      Width = 75
+      AutoSize = True
+      BorderSpacing.InnerBorder = 4
+      Caption = 'BtnDelete'
+      OnClick = DeleteItem
+      TabOrder = 1
+    end
+    object BtnUp: TButton
+      AnchorSideLeft.Control = BtnDelete
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = BtnDelete
+      Left = 150
+      Height = 25
+      Top = 6
+      Width = 58
+      AutoSize = True
+      BorderSpacing.Left = 6
+      BorderSpacing.InnerBorder = 4
+      Caption = 'BtnUp'
+      OnClick = MoveUpItem
+      TabOrder = 2
+    end
+    object BtnDown: TButton
+      AnchorSideLeft.Control = BtnUp
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = BtnUp
+      Left = 208
+      Height = 25
+      Top = 6
+      Width = 72
+      AutoSize = True
+      BorderSpacing.InnerBorder = 4
+      Caption = 'BtnDown'
+      OnClick = MoveDownItem
+      TabOrder = 3
+    end
+    object BtnModify: TButton
+      AnchorSideLeft.Control = BtnDown
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = BtnDown
+      Left = 286
+      Height = 25
+      Top = 6
+      Width = 75
+      AutoSize = True
+      BorderSpacing.Left = 6
+      BorderSpacing.InnerBorder = 4
+      Caption = 'BtnModify'
+      OnClick = ModifyItem
+      TabOrder = 4
+    end
+  end
+  object FPanelOKCancel: TPanel
     Height = 36
     Top = 264
-    Width = 593
-    object FBtnOK: TBitBtn
-      AutoSize = True
-      
+    Width = 608
+    Align = alBottom
+    BevelInner = bvLowered
+    TabOrder = 2
+    object BtnHelp: TBitBtn
+      AnchorSideRight.Control = FPanelOKCancel
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = FPanelOKCancel
+      AnchorSideBottom.Side = asrBottom
+      Left = 527
+      Height = 25
+      Top = 5
+      Width = 75
+      Anchors = [akRight, akBottom]
+      BorderSpacing.Around = 6
+      Caption = '&Help'
+      Kind = bkHelp
+      NumGlyphs = 0
+      TabOrder = 0
+    end
+    object BtnApply: TBitBtn
+      AnchorSideRight.Control = BtnHelp
+      AnchorSideBottom.Control = FPanelOKCancel
+      AnchorSideBottom.Side = asrBottom
+      Left = 446
+      Height = 25
+      Top = 5
+      Width = 75
+      Anchors = [akRight, akBottom]
+      BorderSpacing.Around = 6
+      Caption = '&Apply'
+      NumGlyphs = 0
+      OnClick = ApplyCheck
+      TabOrder = 1
+    end
+    object BtnCancel: TBitBtn
+      AnchorSideRight.Control = BtnApply
+      AnchorSideBottom.Control = FPanelOKCancel
+      AnchorSideBottom.Side = asrBottom
+      Left = 365
+      Height = 25
+      Top = 5
+      Width = 75
+      Anchors = [akRight, akBottom]
+      BorderSpacing.Around = 6
+      Caption = 'Cancel'
+      Kind = bkCancel
+      ModalResult = 2
+      NumGlyphs = 0
+      TabOrder = 2
+    end
+    object BtnOK: TBitBtn
+      AnchorSideRight.Control = BtnCancel
+      AnchorSideBottom.Control = FPanelOKCancel
+      AnchorSideBottom.Side = asrBottom
+      Left = 284
+      Height = 25
+      Top = 5
+      Width = 75
+      Anchors = [akRight, akBottom]
+      BorderSpacing.Around = 6
       Caption = '&OK'
       Default = True
       Kind = bkOK
       ModalResult = 1
       NumGlyphs = 0
-      TabOrder = 0
-      Left = 1
-      Height = 34
-      Top = 1
-      Width = 68
-    end
-    object FBtnCancel: TBitBtn
-      AutoSize = True
-      
-      Caption = 'Cancel'
-      Kind = bkCancel
-      ModalResult = 2
-      NumGlyphs = 0
-      TabOrder = 1
-      AnchorSideLeft.Control = FBtnOK
-      AnchorSideLeft.Side = asrBottom
-      Left = 69
-      Height = 34
-      Top = 1
-      Width = 80
-    end
-  end
-  object FPanelButtons: TPanel
-    Align = alTop
-    AutoSize = True
-    ClientHeight = 31
-    ClientWidth = 593
-    TabOrder = 1
-    Height = 31
-    Width = 593
-    object LabelDisable: TLabel
-      Caption = 'clbDisable'
-      Color = clBtnFace
-      Font.Color = clHotLight
-      ParentColor = False
-      Transparent = False
-      Left = 368
-      Height = 14
-      Top = 8
-      Width = 48
-    end
-    object FBtnAdd: TButton
-      AutoSize = True
-      
-      Caption = 'FBtnAdd'
-      OnClick = AddItem
-      TabOrder = 0
-      Left = 1
-      Height = 29
-      Top = 1
-      Width = 65
-    end
-    object FBtnDelete: TButton
-      AutoSize = True
-      
-      Caption = 'FBtnDelete'
-      OnClick = DeleteItem
-      TabOrder = 1
-      AnchorSideLeft.Control = FBtnAdd
-      AnchorSideLeft.Side = asrBottom
-      Left = 66
-      Height = 29
-      Top = 1
-      Width = 77
-    end
-    object FBtnUp: TButton
-      AutoSize = True
-      
-      Caption = 'FBtnUp'
-      OnClick = MoveUpItem
-      TabOrder = 2
-      AnchorSideLeft.Control = FBtnDelete
-      AnchorSideLeft.Side = asrBottom
-      Left = 143
-      Height = 29
-      Top = 1
-      Width = 60
-    end
-    object FBtnDown: TButton
-      AutoSize = True
-      
-      Caption = 'FBtnDown'
-      OnClick = MoveDownItem
       TabOrder = 3
-      AnchorSideLeft.Control = FBtnUp
-      AnchorSideLeft.Side = asrBottom
-      Left = 203
-      Height = 29
-      Top = 1
-      Width = 74
-    end
-    object FBtnModify: TButton
-      AutoSize = True
-      
-      Caption = 'FBtnModify'
-      OnClick = ModifyItem
-      TabOrder = 4
-      AnchorSideLeft.Control = FBtnDown
-      AnchorSideLeft.Side = asrBottom
-      Left = 277
-      Height = 29
-      Top = 1
-      Width = 77
     end
   end
-  object FCheck: TCheckGroup
-    Align = alClient
-    OnItemClick = ItemClick
-    PopupMenu = FPopupMenu
-    TabOrder = 2
-    Height = 233
-    Top = 31
-    Width = 593
+  object DuplicateCheckBox: TCheckBox
+    Left = 368
+    Height = 13
+    Top = 48
+    Width = 114
+    Caption = 'DuplicateCheckBox'
+    Checked = True
+    State = cbChecked
+    TabOrder = 3
+  end
+  object ColumnsEdit: TEdit
+    Left = 368
+    Height = 23
+    Top = 97
+    Width = 34
+    Color = clBtnFace
+    OnChange = ColumnsEditChange
+    OnKeyDown = nil
+    ReadOnly = True
+    TabOrder = 4
+    Text = '1'
+  end
+  object ColumnsUpDown: TUpDown
+    Left = 402
+    Height = 23
+    Top = 97
+    Width = 17
+    Associate = ColumnsEdit
+    Min = 1
+    Position = 1
   end
   object FPopupMenu: TPopupMenu
     OnPopup = CreateItems
-    left = 113
-    top = 111
+    left = 184
+    top = 368
   end
 end

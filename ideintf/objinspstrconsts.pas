@@ -166,7 +166,10 @@ resourcestring
   //checkgroup editor
   clbCheckGroupEditor = 'CheckGroup Editor';
   clbDisable = 'Popup to disable/enable items';
-  
+  clbColumns = 'n. columns';
+  clbCheckDuplicate = 'On Add, Check for Duplicate in Items';
+  clbCheckDuplicateMsg = 'The "%s" Item is already listed. Add it anyway? ';
+
   // Collection Editor
 
   oiColEditAdd = 'Add';

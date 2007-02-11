@@ -27,7 +27,8 @@ interface
 uses
   Classes, SysUtils, LResources, TypInfo, LCLProc, Forms, Controls, Menus,
   ExtCtrls, StdCtrls, Graphics, Grids, CheckLst, Buttons, ComCtrls, Dialogs,
-  LazStringGridEdit, CheckListboxEditorDlg, GraphType, PropEdits, ObjInspStrConsts;
+  LazStringGridEdit, CheckListboxEditorDlg, CheckGroupEditorDlg, GraphType, PropEdits,
+  ObjInspStrConsts;
 
 type
   { TComponentEditorDesigner }
@@ -306,7 +307,6 @@ type
   TCheckGroupComponentEditor = class(TDefaultComponentEditor)
   protected
     procedure DoShowEditor;
-    procedure AssignCheck(dstCheck, srcCheck: TCheckGroup);
   public
     procedure ExecuteVerb(Index: Integer); override;
     function GetVerb(Index: Integer): string; override;
@@ -870,11 +870,11 @@ begin
       Dlg.aCheck:=TCheckListBox(GetComponent);
       if not HasHook then exit;
 
-      AssignCheck(Dlg.FCheck, Dlg.aCheck);
+      AssignCheckList(Dlg.FCheck, Dlg.aCheck);
 
       //ShowEditor
       if Dlg.ShowModal=mrOK then begin
-        AssignCheck(Dlg.aCheck, Dlg.FCheck);
+        AssignCheckList(Dlg.aCheck, Dlg.FCheck);
         Modified;
       end;
       if Dlg.Modified then
@@ -902,172 +902,42 @@ end;
 
 { TCheckGroupEditorDlg }
 
-type
-
-  TCheckGroupEditorDlg = class(TForm)
-    FBtnAdd: TButton;
-    FBtnCancel: TBitBtn;
-    FBtnDelete: TButton;
-    FBtnDown: TButton;
-    FBtnModify: TButton;
-    FBtnOK: TBitBtn;
-    FBtnUp: TButton;
-    FCheck: TCheckGroup;
-    FPanelButtons: TPanel;
-    FPanelOKCancel: TPanel;
-    FPopupMenu: TPopupMenu;
-    LabelDisable: TLabel;
-    procedure AddItem(Sender: TObject);
-    procedure CreateItems(Sender: TObject);
-    procedure DeleteItem(Sender: TObject);
-    procedure ItemClick(Sender: TObject; Index: integer);
-    procedure ModifyItem(Sender: TObject);
-    procedure MoveDownItem(Sender: TObject);
-    procedure MoveUpItem(Sender: TObject);
-    procedure EnableDisable(Sender:TObject);
-  private
-    { private declarations }
-    ItemIndex:integer;
-  public
-    { public declarations }
-  end;
-
-procedure TCheckGroupEditorDlg.AddItem(Sender:TObject);
-var strItem:string;
-begin
-  if InputQuery(clbCheckGroupEditor, clbAdd, strItem) then
-    FCheck.Items.Add(strItem);
-end;
-
-procedure TCheckGroupEditorDlg.DeleteItem(Sender:TObject);
-begin
-  if ItemIndex=-1 then exit;
-  if MessageDlg(clbCheckGroupEditor,Format(clbDelete,[ItemIndex, FCheck.Items[ItemIndex]]),
-    mtConfirmation, mbYesNo, 0)=mrYes then begin
-    FCheck.Items.Delete(ItemIndex);
-    if ItemIndex>FCheck.Items.Count-1 then
-      ItemIndex:=FCheck.Items.Count-1;
-  end;
-end;
-
-procedure TCheckGroupEditorDlg.MoveUpItem(Sender:TObject);
-var itemtmp:string;
-    checkedtmp:boolean;
-begin
-  if (FCheck.Items.Count<=1)or(ItemIndex<1) then exit;
-   //swap the caption and the checked states
-  itemtmp:=FCheck.Items[ItemIndex-1];
-  checkedtmp:=FCheck.Checked[ItemIndex-1];
-  FCheck.Items[ItemIndex-1]:=FCheck.Items[ItemIndex];
-  FCheck.Checked[ItemIndex-1]:=FCheck.Checked[ItemIndex];
-  FCheck.Items[ItemIndex]:=itemtmp;
-  FCheck.Checked[ItemIndex]:=checkedtmp;
-  //swap the states enabled
-  checkedtmp:=FCheck.CheckEnabled[ItemIndex-1];
-  FCheck.CheckEnabled[ItemIndex-1]:=FCheck.CheckEnabled[ItemIndex];
-  FCheck.CheckEnabled[ItemIndex]:=checkedtmp;
-
-  ItemIndex:=ItemIndex-1
-end;
-
-procedure TCheckGroupEditorDlg.MoveDownItem(Sender:TObject);
-var itemtmp:string;
-    checkedtmp:boolean;
-begin
-  if (FCheck.Items.Count<=1)or(ItemIndex=FCheck.Items.Count-1)or(ItemIndex=-1) then exit;
-   //swap the caption and the checked states
-  itemtmp:=FCheck.Items[ItemIndex+1];
-  checkedtmp:=FCheck.Checked[ItemIndex+1];
-  FCheck.Items[ItemIndex+1]:=FCheck.Items[ItemIndex];
-  FCheck.Checked[ItemIndex+1]:=FCheck.Checked[ItemIndex];
-  FCheck.Items[ItemIndex]:=itemtmp;
-  FCheck.Checked[ItemIndex]:=checkedtmp;
-  //swap the states enabled
-  checkedtmp:=FCheck.CheckEnabled[ItemIndex+1];
-  FCheck.CheckEnabled[ItemIndex+1]:=FCheck.CheckEnabled[ItemIndex];
-  FCheck.CheckEnabled[ItemIndex]:=checkedtmp;
-
-  ItemIndex:=ItemIndex+1
-end;
-
-procedure TCheckGroupEditorDlg.ModifyItem(Sender:TObject);
-begin
-  if ItemIndex=-1 then exit;
-  FCheck.Items[ItemIndex]:=InputBox(clbCheckGroupEditor,clbModify,FCheck.Items[ItemIndex]);
-end;
-
-procedure TCheckGroupEditorDlg.ItemClick(Sender: TObject; Index: integer);
-begin
-  ItemIndex:=Index;
-end;
-
-procedure TCheckGroupEditorDlg.EnableDisable(Sender:TObject);
-var i:integer;
-begin
-  for i:=0 to FCheck.Items.Count-1 do begin
-    if (Sender=FPopupMenu.Items[i]) then
-      FCheck.CheckEnabled[i]:=not FCheck.CheckEnabled[i]
-  end;
-end;
-
-procedure TCheckGroupEditorDlg.CreateItems(Sender:TObject);
-var i:integer;
-begin
-  FPopupMenu.Items.Clear;
-  for i:=0 to FCheck.Items.Count-1 do begin
-    FPopupMenu.Items.Add(TMenuItem.Create(self));
-    FPopupMenu.Items[i].Caption:=FCheck.Items[i];
-    FPopupMenu.Items[i].Checked:=FCheck.CheckEnabled[i];
-    FPopupMenu.Items[i].OnClick:=@EnableDisable;
-  end;;
-end;
-
 procedure TCheckGroupComponentEditor.DoShowEditor;
 var Dlg : TCheckGroupEditorDlg;
-    aCheck: TCheckGroup;
 begin
   Dlg:=TCheckGroupEditorDlg.Create(nil);
   with Dlg do begin
     Caption:=clbCheckGroupEditor;
     ItemIndex:=-1;
-    FBtnAdd.Caption:=oiscAdd;
-    FBtnDelete.Caption:=oiscDelete;
-    FBtnUp.Caption:=clbUp;
-    FBtnDown.Caption:=clbDown;
-    FBtnModify.ShowHint:=true;
-    FBtnModify.Hint:=clbModify;
-    FBtnModify.Caption:='...';
+    BtnAdd.Caption:=oiscAdd;
+    BtnDelete.Caption:=oiscDelete;
+    BtnUp.Caption:=clbUp;
+    BtnDown.Caption:=clbDown;
+    BtnModify.ShowHint:=true;
+    BtnModify.Hint:=clbModify;
+    BtnModify.Caption:='...';
+    ColumnsLabel.Caption:=clbColumns;
+    DuplicateCheckBox.Caption:=clbCheckDuplicate;
     LabelDisable.Caption:=clbDisable
   end;
 
   try
     if GetComponent is TCheckGroup then begin
-      aCheck:=TCheckGroup(GetComponent);
+      Dlg.aCheck:=TCheckGroup(GetComponent);
       if not HasHook then exit;
 
-      AssignCheck(Dlg.FCheck, aCheck);
-
+      AssignCheckGroup(Dlg.FCheck, Dlg.aCheck);
+      Dlg.ColumnsUpDown.Position:=Dlg.aCheck.Columns;
       //ShowEditor
       if Dlg.ShowModal=mrOK then begin
-        //Apply the modifications
-        AssignCheck(aCheck, Dlg.FCheck);
+        AssignCheckGroup(Dlg.aCheck, Dlg.FCheck);
         Modified;
       end;
+      if Dlg.Modified then
+        Modified;
     end;
   finally
     Dlg.Free;
-  end;
-end;
-
-procedure TCheckGroupComponentEditor.AssignCheck(dstCheck, srcCheck: TCheckGroup);
-var i: integer;
-begin
-  DstCheck.Items.Clear;
-  DstCheck.Items:=srcCheck.Items;
-  DstCheck.Caption:=srcCheck.Caption;
-  for i:=0 to srcCheck.Items.Count-1 do begin
-    dstCheck.Checked[i]:=srcCheck.Checked[i];
-    dstCheck.CheckEnabled[i]:=srcCheck.CheckEnabled[i]
   end;
 end;
 
@@ -1324,7 +1194,6 @@ begin
 end;
 
 initialization
-  {$I checkgroupeditordlg.lrs}
 
   RegisterComponentEditorProc:=@DefaultRegisterComponentEditorProc;
   RegisterComponentEditor(TCustomNotebook,TNotebookComponentEditor);
