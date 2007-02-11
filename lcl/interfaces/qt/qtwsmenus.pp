@@ -30,7 +30,7 @@ uses
   // Bindings
   qt4, qtwidgets, qtobjects,
   // LCL
-  SysUtils, Classes, Menus, Forms, LCLType,
+  SysUtils, Classes, Menus, Forms, LCLType, LCLProc,
   // Widgetset
   WSMenus, WSLCLClasses;
 
@@ -85,6 +85,11 @@ implementation
 
 { TQtWSMenuItem }
 
+{------------------------------------------------------------------------------
+  Function: TQtWSMenuItem.AttachMenu
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
 class procedure TQtWSMenuItem.AttachMenu(const AMenuItem: TMenuItem);
 begin
 
@@ -107,27 +112,39 @@ var
   ActionHandle: Boolean = False;
 begin
   {$ifdef VerboseQt}
-    Write('[TQtWSMenuItem.CreateHandle] Caption: ' + AMenuItem.Caption);
+    WriteLn('trace:> [TQtWSMenuItem.CreateHandle] Caption: ', AMenuItem.Caption,
+     ' Subitems: ' + IntToStr(AMenuItem.Count));
 
-    WriteLn(' Subitems: ' + IntToStr(AMenuItem.Count));
+    Write('trace:< [TQtWSMenuItem.CreateHandle]');
   {$endif}
 
-  { This case should not occur. Menu items without a parent don´t need a handle,
-   because they won´t be shown }
+  {------------------------------------------------------------------------------
+    This case should not happen. A menu item must have a parent, but it seams LCL
+   will sometimes create a menu item prior to creating it's parent.
+    So, if we arrive here, we must create this item as if it was a TMenu
+   ------------------------------------------------------------------------------}
   if (not AMenuItem.HasParent) then
   begin
-    Menu := TQtMenu.Create;
+    {$ifdef VerboseQt}
+      Write(' Parent: Menu without parent');
+    {$endif}
 
-    Result := HMENU(Menu);
+    Result := TQtWSMenu.CreateHandle(AMenuItem.GetParentMenu);
   end
-  { If the parent has no parent, then this item is directly owned by a TMenu
+  {------------------------------------------------------------------------------
+    If the parent has no parent, then this item is directly owned by a TMenu
     In this case we have to detect if the parent is a TMainMenu or a TPopUpMenu
    because TMainMenu uses the special Handle QMenuBar while TPopUpMenu can be
-   treat like if this menu item was a subitem of another item }
+   treat like if this menu item was a subitem of another item
+   ------------------------------------------------------------------------------}
   else if ((not AMenuItem.Parent.HasParent) and (AMenuItem.GetParentMenu is TMainMenu)) then
   begin
     MenuBar := TQtMenuBar(AMenuItem.GetParentMenu.Handle);
-  
+
+    {$ifdef VerboseQt}
+      Write(' Parent: ', dbghex(PtrInt(MenuBar)), ' The Parent is a TMainMenu');
+    {$endif}
+
     { IsLine indicates that the menu item is a separator }
     if AMenuItem.IsLine then
     begin
@@ -159,12 +176,17 @@ begin
       Result := HMENU(Action);
     end;
   end
-  { If the parent has a parent, then that item´s Handle is necessarely a QMenuH }
+  {------------------------------------------------------------------------------
+    If the parent has a parent, then that item´s Handle is necessarely a TQtMenu
+   ------------------------------------------------------------------------------}
   else
   begin
-    if ((not AMenuItem.Parent.HasParent) and (AMenuItem.GetParentMenu is TPopUpMenu)) then
-     ParentMenu := TQtMenu(AMenuItem.GetParentMenu.Handle)
-    else ParentMenu := TQtMenu(AMenuItem.Parent.Handle);
+    ParentMenu := TQtMenu(AMenuItem.Parent.Handle);
+
+    {$ifdef VerboseQt}
+      Write(' Parent: ', dbghex(PtrInt(ParentMenu)),
+       ' The Parent is a TPopUpMenu or a TMenuItem');
+    {$endif}
 
     { IsLine indicates that the menu item is a separator }
     if AMenuItem.IsLine then
@@ -210,6 +232,10 @@ begin
 
     QAction_hook_hook_triggered(QAction_hook_create(Action.Handle), Method);
   end;
+
+  {$ifdef VerboseQt}
+    WriteLn(' Result: ', dbghex(Result));
+  {$endif}
 end;
 
 {------------------------------------------------------------------------------
@@ -251,16 +277,31 @@ begin
   end;
 end;
 
+{------------------------------------------------------------------------------
+  Function: TQtWSMenuItem.SetCaption
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
 class procedure TQtWSMenuItem.SetCaption(const AMenuItem: TMenuItem; const ACaption: string);
 begin
 
 end;
 
+{------------------------------------------------------------------------------
+  Function: TQtWSMenuItem.SetShortCut
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
 class procedure TQtWSMenuItem.SetShortCut(const AMenuItem: TMenuItem; const OldShortCut, NewShortCut: TShortCut);
 begin
 
 end;
 
+{------------------------------------------------------------------------------
+  Function: TQtWSMenuItem.SetVisible
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
 class procedure TQtWSMenuItem.SetVisible(const AMenuItem: TMenuItem; const Visible: boolean);
 begin
   { Here the menu item has a QMenuH handle }
@@ -275,6 +316,11 @@ begin
   end;
 end;
 
+{------------------------------------------------------------------------------
+  Function: TQtWSMenuItem.SetCheck
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
 class function TQtWSMenuItem.SetCheck(const AMenuItem: TMenuItem; const Checked: boolean): boolean;
 begin
   { Here the menu item has a QMenuH handle }
@@ -291,6 +337,11 @@ begin
   Result := True;
 end;
 
+{------------------------------------------------------------------------------
+  Function: TQtWSMenuItem.SetEnable
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
 class function TQtWSMenuItem.SetEnable(const AMenuItem: TMenuItem; const Enabled: boolean): boolean;
 begin
   { Here the menu item has a QMenuH handle }
@@ -307,11 +358,21 @@ begin
   Result := True;
 end;
 
+{------------------------------------------------------------------------------
+  Function: TQtWSMenuItem.SetRadioItem
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
 class function TQtWSMenuItem.SetRadioItem(const AMenuItem: TMenuItem; const RadioItem: boolean): boolean;
 begin
   Result := True;
 end;
 
+{------------------------------------------------------------------------------
+  Function: TQtWSMenuItem.SetRightJustify
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
 class function TQtWSMenuItem.SetRightJustify(const AMenuItem: TMenuItem; const Justified: boolean): boolean;
 begin
 
@@ -333,14 +394,6 @@ var
   Menu: TQtMenu;
   Parent: QWidgetH;
 begin
-  {$ifdef VerboseQt}
-    Write('[TQtWSMenu.CreateHandle] ');
-    
-    if (AMenu is TMainMenu) then Write('IsMainMenu ');
-
-    WriteLn(' Name: ' + AMenu.Name);
-  {$endif}
-
   { If the menu is a main menu, there is no need to create a handle for it.
     It´s already created on the window }
   if (AMenu is TMainMenu) and (AMenu.Owner is TCustomForm) then
@@ -357,6 +410,14 @@ begin
   
     Result := HMENU(Menu);
   end;
+
+  {$ifdef VerboseQt}
+    Write('[TQtWSMenu.CreateHandle] ');
+
+    if (AMenu is TMainMenu) then Write('IsMainMenu ');
+
+    WriteLn(' Handle: ', dbghex(Result), ' Name: ', AMenu.Name);
+  {$endif}
 end;
 
 { TQtWSPopupMenu }
@@ -373,7 +434,7 @@ var
   Point: TPoint;
 begin
   {$ifdef VerboseQt}
-    WriteLn('[TQtWSPopupMenu.Popup] APopupMenu.Handle ' + IntToStr(APopupMenu.Handle)
+    WriteLn('[TQtWSPopupMenu.Popup] APopupMenu.Handle ' + dbghex(APopupMenu.Handle)
      + ' FirstItemName: ' + APopupMenu.Items.Name
      + ' FirstItemWND: ' + IntToStr(APopupMenu.Items.Handle)
      + ' FirstItemCount: ' + IntToStr(APopupMenu.Items.Count));

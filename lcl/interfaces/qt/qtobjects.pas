@@ -248,6 +248,23 @@ type
     class procedure fromImage(retval: QPixmapH; image: QImageH; flags: QtImageConversionFlags = QtAutoColor);
   end;
   
+  { TQtSystemTrayIcon }
+
+  TQtSystemTrayIcon = class(TObject)
+  private
+  public
+    Handle: QSystemTrayIconH;
+  public
+    constructor Create(vIcon: QIconH); virtual;
+    destructor Destroy; override;
+  public
+    procedure setContextMenu(menu: QMenuH);
+    procedure setIcon(icon: QIconH);
+    procedure setToolTip(tip: WideString);
+    procedure show;
+    procedure hide;
+  end;
+
   procedure TQColorToColorRef(const AColor: TQColor; out AColorRef: TColorRef);
   procedure ColorRefToTQColor(const AColorRef: TColorRef; var AColor:TQColor);
   procedure DebugRegion(const msg: string; Rgn: QRegionH);
@@ -1350,6 +1367,47 @@ end;
 class procedure TQtPixmap.fromImage(retval: QPixmapH; image: QImageH; flags: QtImageConversionFlags = QtAutoColor);
 begin
   QPixmap_fromImage(retval, image, flags);
+end;
+
+{ TQtSystemTrayIcon }
+
+constructor TQtSystemTrayIcon.Create(vIcon: QIconH);
+begin
+  inherited Create;
+
+  handle := QSystemTrayIcon_create(vicon, nil);
+end;
+
+destructor TQtSystemTrayIcon.Destroy;
+begin
+  QSystemTrayIcon_destroy(handle);
+
+  inherited Destroy;
+end;
+
+procedure TQtSystemTrayIcon.setContextMenu(menu: QMenuH);
+begin
+  QSystemTrayIcon_setContextMenu(handle, menu);
+end;
+
+procedure TQtSystemTrayIcon.setIcon(icon: QIconH);
+begin
+  QSystemTrayIcon_setIcon(handle, icon);
+end;
+
+procedure TQtSystemTrayIcon.setToolTip(tip: WideString);
+begin
+  QSystemTrayIcon_setToolTip(handle, @tip)
+end;
+
+procedure TQtSystemTrayIcon.show;
+begin
+  QSystemTrayIcon_show(handle);
+end;
+
+procedure TQtSystemTrayIcon.hide;
+begin
+  QSystemTrayIcon_hide(handle);
 end;
 
 end.
