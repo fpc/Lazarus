@@ -28,7 +28,7 @@ interface
 
 uses
   Classes, SysUtils, Graphics, ExtCtrls, Menus, Controls, Lclintf,
-  wscommontrayicon, qt4;
+  wscommontrayicon, qt4, qtobjects, qtwidgets;
 
 type
 
@@ -37,14 +37,12 @@ type
   TWidgetTrayIcon = class(TCustomWidgetTrayIcon)
     private
       IconHandle: QIconH;
-      handle: QSystemTrayIconH;
+      SystemTrayIcon: TQtSystemTrayIcon;
       function CreateIcon: QIconH;
       function GetCanvas: TCanvas;
     protected
     public
       hIcon, hSmallIcon: Cardinal;
-      ShowToolTip: Boolean;
-      ToolTip: string;
       function Hide: Boolean; override;
       function Show: Boolean; override;
       property Canvas: TCanvas read GetCanvas;
@@ -55,7 +53,7 @@ type
 
 implementation
 
-uses WSTrayIcon, qtobjects, qtwidgets;
+uses WSTrayIcon;
 
 { TWidgetTrayIcon }
 
@@ -73,13 +71,13 @@ function TWidgetTrayIcon.CreateIcon: QIconH;
 var
   Pixmap: QPixmapH;
 begin
-  if Self.Icon.Handle <> 0 then
+{  if Self.Icon.Handle <> 0 then
   begin
-    TQtPixmap.fromImage(Pixmap, TQtImage(Self.Icon.Handle).Handle);
+    QPixmap_fromImage(Pixmap, TQtImage(Self.Icon.Handle).Handle);
     
     Result := QIcon_create(Pixmap);
   end
-  else
+  else }
     Result := QIcon_create();
 end;
 
@@ -114,10 +112,13 @@ begin
 
   if not vVisible then Exit;
 
-  QSystemTrayIcon_hide(Handle);
-  QSystemTrayIcon_destroy(Handle);
+  SystemTrayIcon.hide;
+
+  SystemTrayIcon.Free;
 
   QIcon_destroy(IconHandle);
+
+  vVisible := False;
 
   Result := True;
 end;
@@ -133,6 +134,8 @@ end;
 *
 *******************************************************************}
 function TWidgetTrayIcon.Show: Boolean;
+var
+  Text: WideString;
 begin
   Result := False;
 
@@ -140,13 +143,18 @@ begin
   
   IconHandle := CreateIcon;
   
-  Handle := QSystemTrayIcon_create(IconHandle, nil);
+  SystemTrayIcon := TQtSystemTrayIcon.create(IconHandle);
 
-{  if Assigned(PopUpMenu) then
+  Text := UTF8Decode(Hint);
+  SystemTrayIcon.setToolTip(Text);
+
+  if Assigned(PopUpMenu) then
    if TQtMenu(PopUpMenu.Handle).Widget <> nil then
-    QSystemTrayIcon_setContextMenu(Handle, QMenuH(TQtMenu(PopUpMenu.Handle).Widget));}
+    SystemTrayIcon.setContextMenu(QMenuH(TQtMenu(PopUpMenu.Handle).Widget));
 
-  QSystemTrayIcon_show(Handle);
+  SystemTrayIcon.show;
+  
+  vVisible := True;
 
   Result := True;
 end;
@@ -164,7 +172,10 @@ end;
 *******************************************************************}
 procedure TWidgetTrayIcon.InternalUpdate;
 begin
-
+  { PopUpMenu }
+  if Assigned(PopUpMenu) then
+   if TQtMenu(PopUpMenu.Handle).Widget <> nil then
+    SystemTrayIcon.setContextMenu(QMenuH(TQtMenu(PopUpMenu.Handle).Widget));
 end;
 
 {*******************************************************************
