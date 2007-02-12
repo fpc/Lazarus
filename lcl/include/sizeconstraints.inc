@@ -76,6 +76,8 @@ end;
 
 function TSizeConstraints.EffectiveMinWidth: integer;
 begin
+  if csLoading in Control.ComponentState then
+    exit(0);
   if (MinWidth>MinInterfaceWidth) then begin
     Result:=MinWidth;
     if (MaxInterfaceWidth>0) and (MaxInterfaceWidth<MinWidth) then
@@ -86,6 +88,8 @@ end;
 
 function TSizeConstraints.EffectiveMinHeight: integer;
 begin
+  if csLoading in Control.ComponentState then
+    exit(0);
   if (MinHeight>MinInterfaceHeight) then begin
     Result:=MinHeight;
     if (MaxInterfaceHeight>0) and (Result>MaxInterfaceHeight) then
@@ -99,6 +103,8 @@ end;
 // A zero value is interpreted as unconstraint.
 function TSizeConstraints.EffectiveMaxWidth: integer;
 begin
+  if csLoading in Control.ComponentState then
+    exit(0);
   if (MaxInterfaceWidth>0) and
     ((MaxWidth=0) or (MaxInterfaceWidth<MaxWidth)) then
     Result := MaxInterfaceWidth
@@ -113,6 +119,8 @@ end;
 // A zero value is interpreted as unconstraint.
 function TSizeConstraints.EffectiveMaxHeight: integer;
 begin
+  if csLoading in Control.ComponentState then
+    exit(0);
   if (MaxInterfaceHeight>0) and
     ((MaxHeight=0) or (MaxInterfaceHeight<MaxHeight)) then
     Result := MaxInterfaceHeight
