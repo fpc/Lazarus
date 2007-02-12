@@ -830,6 +830,7 @@ type
     property SelEnd: Integer read GetSelEnd write SetSelEnd;
     {$ENDIF}
     property Font: TFont read GetFont write SetFont;
+    property GutterWidth: Integer read fGutterWidth;
     property Highlighter: TSynCustomHighlighter
       read fHighlighter write SetHighlighter;
     property LeftChar: Integer read fLeftChar write SetLeftChar;

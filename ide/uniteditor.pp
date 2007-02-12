@@ -3685,7 +3685,7 @@ begin
                                      (NoteBook<>nil) and (NoteBook.PageCount>1);
 
   EditorPopupPoint:=EditorComp.ScreenToClient(SrcPopUpMenu.PopupPoint);
-  if EditorPopupPoint.X>EditorComp.Gutter.Width then begin
+  if EditorPopupPoint.X>EditorComp.GutterWidth then begin
     // user clicked on text
     SelAvail:=ASrcEdit.EditorComponent.SelAvail;
     SelAvailAndWritable:=SelAvail and (not ASrcEdit.ReadOnly);

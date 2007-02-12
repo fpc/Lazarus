@@ -1262,7 +1262,7 @@ var
     Node: TCodeTreeNode;
     Can: Boolean;
   begin
-    DebugLn(['CheckProcedureDeclarationContext ',CursorNode.DescAsString]);
+    //DebugLn(['CheckProcedureDeclarationContext ',CursorNode.DescAsString]);
     Node:=CursorNode;
     Can:=false;
     if (Node.Parent<>nil) and (Node.Parent.Desc in AllClassSections)
