@@ -2983,9 +2983,10 @@ end;
 procedure TCustomGrid.DrawCellText(aCol, aRow: Integer; aRect: TRect;
   aState: TGridDrawState; aText: String);
 begin
+  dec(aRect.Right, 3);
   case Canvas.TextStyle.Alignment of
     Classes.taLeftJustify: Inc(aRect.Left, 3);
-    Classes.taRightJustify: Dec(aRect.Right, 3);
+    Classes.taRightJustify: Dec(aRect.Right, 1);
   end;
   case Canvas.TextStyle.Layout of
     tlTop: Inc(aRect.Top, 3);

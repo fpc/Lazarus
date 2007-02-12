@@ -2398,7 +2398,9 @@ end;
 procedure TCustomDBGrid.DrawCell(aCol, aRow: Integer; aRect: TRect;
   aState: TGridDrawState);
 begin
-  inherited DrawCell(aCol, aRow, aRect, aState);
+  PrepareCanvas(aCol, aRow, aState);
+  if DefaultDrawing then
+    Canvas.FillRect(aRect);
   {$ifdef dbgGridPaint}
   DbgOut(' ',IntToStr(aCol));
   if gdSelected in aState then DbgOut('S');
@@ -2409,6 +2411,7 @@ begin
     OnDrawColumnCell(Self, aRect, aCol, TColumn(ColumnFromGridColumn(aCol)), aState)
   else
     DefaultDrawCell(aCol, aRow, aRect, aState);
+  DrawCellGrid(aCol, aRow, aRect, aState);
 end;
 
 procedure TCustomDBGrid.DrawCheckboxBitmaps(aCol: Integer; aRect: TRect;
