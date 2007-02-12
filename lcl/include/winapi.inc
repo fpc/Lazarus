@@ -1026,6 +1026,7 @@ var
   Info: TScrollInfo;
 begin
   Info.fMask:=SIF_POS;
+  Info.nPos:=0;
   GetScrollInfo(Handle, nBar, Info);
   Result := Info.nPos;
 end;
