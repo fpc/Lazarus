@@ -983,7 +983,7 @@ type
     destructor Destroy; override;
     procedure ControlDestroyed(AControl: TControl);
     procedure BringToFront;
-    procedure CreateForm(InstanceClass: TComponentClass; var Reference);
+    procedure CreateForm(InstanceClass: TComponentClass; out Reference);
     procedure UpdateMainForm(AForm: TForm);
     procedure QueueAsyncCall(AMethod: TDataEvent; Data: PtrInt);
     procedure ReleaseComponent(AComponent: TComponent);

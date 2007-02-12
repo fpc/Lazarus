@@ -471,8 +471,6 @@ type
   { TPaintBox }
 
   TPaintBox = class(TGraphicControl)
-  private
-    FOnPaint: TNotifyEvent;
   protected
     procedure Paint; override;
   public

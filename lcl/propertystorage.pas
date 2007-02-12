@@ -137,8 +137,8 @@ Type
     procedure RestoreProperties; virtual;
     Procedure GetPropertyList(List: TStrings); virtual; abstract;
     procedure FinishPropertyList(List: TStrings); virtual;
-    function  DoReadInteger(const Section, Ident : String; Default: Integer): Integer; Virtual;
-    function  DoReadString(const Section, Ident, Default: string): string; Virtual; Abstract;
+    function  DoReadInteger(const Section, Ident : String; DefaultValue: Integer): Integer; Virtual;
+    function  DoReadString(const Section, Ident, DefaultValue: string): string; Virtual; Abstract;
     procedure DoWriteString(const Section, Ident, Value: string); Virtual; Abstract;
     procedure DoWriteInteger(const Section, Ident : String; Value: Integer); Virtual;
     Procedure DoEraseSections(const ARootSection : String);virtual;abstract;
@@ -150,14 +150,16 @@ Type
     // Public Read/Write methods
     procedure StorageNeeded(ReadOnly: Boolean);Virtual;
     procedure FreeStorage; Virtual;
-    function  ReadString(const Ident, Default: string): string;
-    function  ReadInteger(const Ident: string; Default: Longint): Longint;
+    function  ReadBoolean(const Ident: string; DefaultValue: Boolean): Boolean;
+    function  ReadString(const Ident, DefaultValue: string): string;
+    function  ReadInteger(const Ident: string; DefaultValue: Longint): Longint;
     procedure ReadRect(const Ident: string; out ARect: TRect;
                        const Default: TRect);
     procedure ReadStrings(const Ident: string; const List: TStrings;
                           const DefaultList: TStrings = nil);
     procedure WriteString(const Ident, Value: string);
     procedure WriteInteger(const Ident: string; Value: Longint);
+    procedure WriteBoolean(const Ident: string; Value: Boolean);
     procedure WriteRect(const Ident: string; const Value: TRect);
     procedure WriteStrings(const Ident: string; const List: TStrings);
     procedure EraseSections;
@@ -657,9 +659,9 @@ begin
 end;
 
 function TCustomPropertyStorage.DoReadInteger(const Section, Ident: String;
-  Default: Integer): Integer;
+  DefaultValue: Integer): Integer;
 begin
-  Result:=StrToIntDef(DoReadString(Section,Ident,IntToStr(Default)),Default);
+  Result:=StrToIntDef(DoReadString(Section,Ident,IntToStr(DefaultValue)),DefaultValue);
 end;
 
 procedure TCustomPropertyStorage.DoWriteInteger(const Section, Ident: String;
@@ -676,9 +678,9 @@ procedure TCustomPropertyStorage.FreeStorage;
 begin
 end;
 
-function TCustomPropertyStorage.ReadString(const Ident, Default: string): string;
+function TCustomPropertyStorage.ReadString(const Ident, DefaultValue: string): string;
 begin
-  Result := DoReadString(RootSection, Ident, Default);
+  Result := DoReadString(RootSection, Ident, DefaultValue);
 end;
 
 procedure TCustomPropertyStorage.WriteString(const Ident, Value: string);
@@ -686,9 +688,14 @@ begin
   DoWriteString(RootSection, Ident, Value);
 end;
 
-function TCustomPropertyStorage.ReadInteger(const Ident: string; Default: Longint): Longint;
+function TCustomPropertyStorage.ReadInteger(const Ident: string; DefaultValue: Longint): Longint;
 begin
-  Result := DoReadInteger(RootSection, Ident, Default);
+  Result := DoReadInteger(RootSection, Ident, DefaultValue);
+end;
+
+function TCustomPropertyStorage.ReadBoolean(const Ident: string; DefaultValue: Boolean): Boolean;
+begin
+  Result := DoReadInteger(RootSection, Ident, Ord(DefaultValue)) <> Ord(False);
 end;
 
 procedure TCustomPropertyStorage.ReadRect(const Ident: string;
@@ -730,6 +737,11 @@ end;
 procedure TCustomPropertyStorage.WriteInteger(const Ident: string; Value: Longint);
 begin
   DoWriteInteger(RootSection, Ident, Value);
+end;
+
+procedure TCustomPropertyStorage.WriteBoolean(const Ident: string; Value: Boolean);
+begin
+  DoWriteInteger(RootSection, Ident, Ord(Value));
 end;
 
 procedure TCustomPropertyStorage.WriteRect(const Ident: string;

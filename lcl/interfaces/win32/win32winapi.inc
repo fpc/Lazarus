@@ -1111,12 +1111,8 @@ Begin
 End;
 
 function TWin32WidgetSet.DrawFocusRect(DC: HDC; const Rect: TRect): boolean;
-var
-  lRect: Windows.RECT;
 begin
-  {$message warn TWin32WidgetSet.DrawFocusRect TODO: optimize Rect copying}
-  lRect:=Rect;
-  Result:= Windows.DrawFocusRect(DC, lRect);
+  Result:= Windows.DrawFocusRect(DC, PRect(@Rect)^);
 end;
 
 {------------------------------------------------------------------------------
@@ -1434,12 +1430,8 @@ End;
 
 function TWin32WidgetSet.FrameRect(DC: HDC; const ARect: TRect;
   hBr: HBRUSH) : integer;
-var
-  lRect: Windows.RECT;
 begin
-  {$message warn TWin32WidgetSet.FrameRect TODO: optimize ARect copying}
-  lRect := ARect;
-  Result := Windows.FrameRect(DC, lRect, hBr);
+  Result := Windows.FrameRect(DC, PRect(@ARect)^, hBr);
 end;
 
 {------------------------------------------------------------------------------

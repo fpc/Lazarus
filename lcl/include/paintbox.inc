@@ -38,7 +38,7 @@ begin
     end;
     exit;
   end;
-  if Assigned(FOnPaint) then begin
+  if Assigned(OnPaint) then begin
     Canvas.Font := Font;
     Canvas.Brush.Color := Color;
     inherited Paint;

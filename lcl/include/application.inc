@@ -1541,7 +1541,7 @@ end;
   forms list
 ------------------------------------------------------------------------------}
 procedure TApplication.CreateForm(InstanceClass: TComponentClass;
-  var Reference);
+  out Reference);
 var
   Instance: TComponent;
   ok: boolean;
