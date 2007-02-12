@@ -4,14 +4,13 @@
     <PathDelim Value="\"/>
     <Version Value="5"/>
     <General>
+      <SessionStorage Value="InIDEConfig"/>
       <MainUnit Value="0"/>
+      <IconPath Value="./"/>
       <TargetFileExt Value=".exe"/>
-      <ActiveEditorIndexAtStart Value="1"/>
     </General>
     <VersionInfo>
       <ProjectVersion Value=""/>
-      <Language Value=""/>
-      <CharSet Value=""/>
     </VersionInfo>
     <PublishOptions>
       <Version Value="2"/>
@@ -30,12 +29,11 @@
         <PackageName Value="LCL"/>
       </Item1>
     </RequiredPackages>
-    <Units Count="16">
+    <Units Count="3">
       <Unit0>
         <Filename Value="bug822.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="bug822"/>
-        <UsageCount Value="20"/>
       </Unit0>
       <Unit1>
         <Filename Value="unit1.pas"/>
@@ -43,205 +41,12 @@
         <IsPartOfProject Value="True"/>
         <ResourceFilename Value="unit1.lrs"/>
         <UnitName Value="Unit1"/>
-        <CursorPos X="29" Y="43"/>
-        <TopLine Value="10"/>
-        <EditorIndex Value="0"/>
-        <UsageCount Value="20"/>
-        <Loaded Value="True"/>
       </Unit1>
       <Unit2>
-        <Filename Value="..\..\..\lcl\stdctrls.pp"/>
-        <UnitName Value="StdCtrls"/>
-        <CursorPos X="18" Y="95"/>
-        <TopLine Value="72"/>
-        <EditorIndex Value="3"/>
-        <UsageCount Value="10"/>
-        <Loaded Value="True"/>
-      </Unit2>
-      <Unit3>
-        <Filename Value="..\..\..\lcl\include\scrollbar.inc"/>
-        <CursorPos X="33" Y="30"/>
-        <TopLine Value="7"/>
-        <EditorIndex Value="4"/>
-        <UsageCount Value="10"/>
-        <Loaded Value="True"/>
-      </Unit3>
-      <Unit4>
-        <Filename Value="..\..\..\lcl\interfaces\gtk\gtkwsstdctrls.pp"/>
-        <UnitName Value="GtkWSStdCtrls"/>
-        <CursorPos X="40" Y="36"/>
-        <TopLine Value="14"/>
-        <EditorIndex Value="5"/>
-        <UsageCount Value="10"/>
-        <Loaded Value="True"/>
-      </Unit4>
-      <Unit5>
-        <Filename Value="..\..\..\lcl\widgetset\wscontrols.pp"/>
-        <UnitName Value="WSControls"/>
-        <CursorPos X="28" Y="143"/>
-        <TopLine Value="139"/>
-        <EditorIndex Value="6"/>
-        <UsageCount Value="10"/>
-        <Loaded Value="True"/>
-      </Unit5>
-      <Unit6>
-        <Filename Value="..\..\..\lcl\interfacebase.pp"/>
-        <UnitName Value="InterfaceBase"/>
-        <CursorPos X="14" Y="82"/>
-        <TopLine Value="64"/>
-        <EditorIndex Value="7"/>
-        <UsageCount Value="10"/>
-        <Loaded Value="True"/>
-      </Unit6>
-      <Unit7>
-        <Filename Value="..\..\..\lcl\interfaces\gtk\gtkint.pp"/>
-        <UnitName Value="GtkInt"/>
-        <CursorPos X="14" Y="307"/>
-        <TopLine Value="289"/>
-        <EditorIndex Value="8"/>
-        <UsageCount Value="10"/>
-        <Loaded Value="True"/>
-      </Unit7>
-      <Unit8>
-        <Filename Value="..\..\..\lcl\interfaces\gtk\gtkobject.inc"/>
-        <CursorPos X="22" Y="5933"/>
-        <TopLine Value="5927"/>
-        <EditorIndex Value="9"/>
-        <UsageCount Value="10"/>
-        <Loaded Value="True"/>
-      </Unit8>
-      <Unit9>
-        <Filename Value="..\..\..\lcl\interfaces\carbon\carbonint.pas"/>
-        <UnitName Value="CarbonInt"/>
-        <CursorPos X="14" Y="39"/>
-        <TopLine Value="21"/>
-        <EditorIndex Value="10"/>
-        <UsageCount Value="10"/>
-        <Loaded Value="True"/>
-      </Unit9>
-      <Unit10>
-        <Filename Value="..\..\..\..\fpc\2.1\packages\extra\univint\FPCMacOSAll.pas"/>
-        <UnitName Value="FPCMacOSAll"/>
-        <CursorPos X="11" Y="16480"/>
-        <TopLine Value="16463"/>
-        <EditorIndex Value="11"/>
-        <UsageCount Value="10"/>
-        <Loaded Value="True"/>
-      </Unit10>
-      <Unit11>
-        <Filename Value="..\..\..\lcl\interfaces\gtk\gtklclintf.inc"/>
-        <CursorPos X="39" Y="339"/>
-        <TopLine Value="373"/>
-        <EditorIndex Value="12"/>
-        <UsageCount Value="10"/>
-        <Loaded Value="True"/>
-      </Unit11>
-      <Unit12>
-        <Filename Value="..\..\..\lcl\include\sizeconstraints.inc"/>
-        <CursorPos X="1" Y="49"/>
-        <TopLine Value="25"/>
-        <EditorIndex Value="14"/>
-        <UsageCount Value="10"/>
-        <Loaded Value="True"/>
-      </Unit12>
-      <Unit13>
-        <Filename Value="..\..\..\lcl\include\wincontrol.inc"/>
-        <CursorPos X="17" Y="5181"/>
-        <TopLine Value="5111"/>
-        <EditorIndex Value="13"/>
-        <UsageCount Value="10"/>
-        <Loaded Value="True"/>
-      </Unit13>
-      <Unit14>
-        <Filename Value="..\..\..\lcl\interfaces\win32\interfaces.pp"/>
-        <UnitName Value="Interfaces"/>
-        <CursorPos X="5" Y="39"/>
-        <TopLine Value="10"/>
-        <EditorIndex Value="2"/>
-        <UsageCount Value="10"/>
-        <Loaded Value="True"/>
-      </Unit14>
-      <Unit15>
         <Filename Value="expected.txt"/>
         <IsPartOfProject Value="True"/>
-        <CursorPos X="8" Y="2"/>
-        <TopLine Value="1"/>
-        <EditorIndex Value="1"/>
-        <UsageCount Value="20"/>
-        <Loaded Value="True"/>
-        <SyntaxHighlighter Value="None"/>
-      </Unit15>
+      </Unit2>
     </Units>
-    <JumpHistory Count="17" HistoryIndex="16">
-      <Position1>
-        <Filename Value="..\..\..\lcl\interfaces\gtk\gtkwsstdctrls.pp"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
-      </Position1>
-      <Position2>
-        <Filename Value="..\..\..\lcl\interfaces\gtk\gtkwsstdctrls.pp"/>
-        <Caret Line="319" Column="27" TopLine="301"/>
-      </Position2>
-      <Position3>
-        <Filename Value="..\..\..\lcl\interfaces\gtk\gtkwsstdctrls.pp"/>
-        <Caret Line="36" Column="40" TopLine="14"/>
-      </Position3>
-      <Position4>
-        <Filename Value="..\..\..\lcl\widgetset\wscontrols.pp"/>
-        <Caret Line="95" Column="24" TopLine="69"/>
-      </Position4>
-      <Position5>
-        <Filename Value="..\..\..\lcl\widgetset\wscontrols.pp"/>
-        <Caret Line="143" Column="28" TopLine="139"/>
-      </Position5>
-      <Position6>
-        <Filename Value="..\..\..\lcl\interfaces\gtk\gtkint.pp"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
-      </Position6>
-      <Position7>
-        <Filename Value="..\..\..\lcl\interfaces\carbon\carbonint.pas"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
-      </Position7>
-      <Position8>
-        <Filename Value="..\..\..\lcl\interfaces\carbon\carbonint.pas"/>
-        <Caret Line="39" Column="10" TopLine="21"/>
-      </Position8>
-      <Position9>
-        <Filename Value="..\..\..\..\fpc\2.1\packages\extra\univint\FPCMacOSAll.pas"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
-      </Position9>
-      <Position10>
-        <Filename Value="..\..\..\lcl\interfaces\gtk\gtklclintf.inc"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
-      </Position10>
-      <Position11>
-        <Filename Value="..\..\..\lcl\include\sizeconstraints.inc"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
-      </Position11>
-      <Position12>
-        <Filename Value="..\..\..\lcl\include\wincontrol.inc"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
-      </Position12>
-      <Position13>
-        <Filename Value="..\..\..\lcl\include\sizeconstraints.inc"/>
-        <Caret Line="49" Column="1" TopLine="23"/>
-      </Position13>
-      <Position14>
-        <Filename Value="unit1.pas"/>
-        <Caret Line="25" Column="16" TopLine="1"/>
-      </Position14>
-      <Position15>
-        <Filename Value="unit1.pas"/>
-        <Caret Line="17" Column="78" TopLine="1"/>
-      </Position15>
-      <Position16>
-        <Filename Value="unit1.pas"/>
-        <Caret Line="37" Column="31" TopLine="5"/>
-      </Position16>
-      <Position17>
-        <Filename Value="..\..\..\lcl\interfaces\win32\interfaces.pp"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
-      </Position17>
-    </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>
