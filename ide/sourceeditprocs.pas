@@ -62,7 +62,8 @@ type
     icvIdentifier,
     icvProcWithParams,
     icvIndexedProp,
-    icvCompleteProcDeclaration
+    icvCompleteProcDeclaration,
+    icvUnitName
     );
 
 // completion form and functions
@@ -370,6 +371,17 @@ begin
   end;
 end;
 
+function FindUnitName(IdentList: TIdentifierList;
+  IdentItem: TIdentifierListItem): string;
+var
+  CodeBuf: TCodeBuffer;
+begin
+  Result:=GetIdentifier(IdentItem.Identifier);
+  CodeBuf:=CodeToolBoss.FindUnitSource(IdentList.StartContextPos.Code,Result,'');
+  if CodeBuf=nil then exit;
+  Result:=CodeToolBoss.GetSourceName(CodeBuf,true);
+end;
+
 function GetIdentCompletionValue(aCompletion : TSynCompletion;
   AddChar: TUTF8Char;
   out ValueType: TIdentComplValue; out CursorToLeft: integer): string;
@@ -413,6 +425,8 @@ begin
       if IdentItem.IsPropertyWithParams then
         ValueType:=icvIndexedProp;
 
+    ctnUnit, ctnPackage, ctnLibrary:
+      ValueType:=icvUnitName;
   end;
 
   case ValueType of
@@ -464,6 +478,11 @@ begin
         Result:=TrimLeft(CodeToolBoss.SourceChangeCache
           .BeautifyCodeOptions.BeautifyProc(
                    Result,CodeToolBoss.IdentifierList.StartContextPos.X,false));
+      end;
+
+    icvUnitName:
+      begin
+        Result:=FindUnitName(IdentList,IdentItem);
       end;
   end;
 

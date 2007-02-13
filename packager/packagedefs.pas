@@ -63,7 +63,7 @@ type
   TIteratePackagesEvent =
     procedure(APackage: TLazPackageID) of object;
   TGetAllRequiredPackagesEvent =
-    procedure(FirstDependency: TPkgDependency; var List: TFPList) of object;
+    procedure(FirstDependency: TPkgDependency; out List: TFPList) of object;
   TGetDependencyOwnerDescription =
     procedure(Dependency: TPkgDependency; out Description: string) of object;
   TGetDependencyOwnerDirectory =

@@ -41,8 +41,13 @@ interface
 uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
   LCLIntf, AvgLvlTree, StdCtrls, ExtCtrls, ComCtrls, Buttons,
-  CodeTree, CodeCache, CodeToolManager, LazConfigStorage, PackageSystem,
-  PackageDefs, LazarusIDEStrConsts, IDEOptionDefs, EnvironmentOpts;
+  // codetools
+  CodeTree, CodeCache, CodeToolManager,
+  // IDEIntf
+  LazConfigStorage, Project,
+  // IDE
+  PackageSystem, PackageDefs, LazarusIDEStrConsts, IDEOptionDefs,
+  EnvironmentOpts;
 
 type
   TCodeBrowserUnit = class;
@@ -96,14 +101,17 @@ type
   private
     FOwner: string;
     FParentList: TCodeBrowserUnitList;
+    FUnitLists: TAvgLvlTree;
     FUnits: TAvgLvlTree;
+    procedure SetOwner(const AValue: string);
   public
     constructor Create(TheOwner: string; TheParent: TCodeBrowserUnitList);
     destructor Destroy; override;
     procedure Clear;
-    property Owner: string read FOwner;// IDE, project, package
+    property Owner: string read FOwner write SetOwner;// IDE, project, package
     property ParentList: TCodeBrowserUnitList read FParentList;
     property Units: TAvgLvlTree read FUnits;
+    property UnitLists: TAvgLvlTree read FUnitLists;
   end;
   
 type
@@ -176,6 +184,7 @@ type
   TCodeBrowserWorkStage = (
     cbwsGetOptions,
     cbwsGatherPackages,
+    cbwsFreeUnusedPackages,
     cbwsGatherFiles,
     cbwsUpdateUnits,
     cbwsUpdateNodes,
@@ -215,7 +224,8 @@ type
     fLocalizedSortItems: TStrings;
     FOptions: TCodeBrowserViewOptions;
     FProjectAlias: string;
-    FUnitList: TCodeBrowserUnitList;
+    FRoot: TCodeBrowserUnitList;
+    FWorkingRoot: TCodeBrowserUnitList;
     fUpdateCount: integer;
     fStage: TCodeBrowserWorkStage;
     procedure LoadOptions;
@@ -228,10 +238,12 @@ type
     procedure Work;
     procedure WorkGetOptions;
     procedure WorkGatherPackages;
+    procedure WorkFreeUnusedPackages;
   public
     procedure BeginUpdate;
     procedure EndUpdate;
-    property UnitList: TCodeBrowserUnitList read FUnitList;
+    property Root: TCodeBrowserUnitList read FRoot;
+    property WorkingRoot: TCodeBrowserUnitList read FWorkingRoot;
     property Options: TCodeBrowserViewOptions read FOptions;
     property IDEAlias: string read FIDEAlias;
     property ProjectAlias: string read FProjectAlias;
@@ -291,6 +303,8 @@ end;
 
 procedure TCodeBrowserView.FormDestroy(Sender: TObject);
 begin
+  FreeAndNil(FRoot);
+  FreeAndNil(FWorkingRoot);
   FreeAndNil(FOptions);
 end;
 
@@ -470,9 +484,11 @@ procedure TCodeBrowserView.Work;
 // do some work
 // This is called during OnIdle, so progress in small steps
 begin
+  DebugLn(['TCodeBrowserView.Work START']);
   case fStage of
   cbwsGetOptions:     WorkGetOptions;
   cbwsGatherPackages: WorkGatherPackages;
+  cbwsFreeUnusedPackages: WorkFreeUnusedPackages;
   end;
 end;
 
@@ -480,6 +496,7 @@ procedure TCodeBrowserView.WorkGetOptions;
 var
   i: Integer;
 begin
+  DebugLn(['TCodeBrowserView.WorkGetOptions START']);
   Options.WithRequiredPackages:=ScopeWithRequiredPackagesCheckBox.Checked;
   Options.Scope:=ScopeComboBox.Text;
   Options.Levels.Clear;
@@ -488,15 +505,39 @@ begin
       Options.Levels.Add(CodeBrowserLevelNames[TCodeBrowserLevel(i)]);
   Options.SortItems.Clear;
   Options.SortItems.Assign(SortListBox.Items);
+
   // this stage finished -> next stage
   fStage:=cbwsGatherPackages;
 end;
 
 procedure TCodeBrowserView.WorkGatherPackages;
+
+  procedure AddPackage(APackage: TLazPackage);
+  begin
+    TCodeBrowserUnitList.Create(APackage.Name,fWorkingRoot);
+  end;
+  
+  procedure AddPackages(FirstDependency: TPkgDependency);
+  var
+    List: TFPList;
+    i: Integer;
+  begin
+    List:=nil;
+    try
+      PackageGraph.GetAllRequiredPackages(Project1.FirstRequiredDependency,List);
+      if (List=nil) then exit;
+      for i:=0 to List.Count-1 do begin
+        if TObject(List[i]) is TLazPackage then
+          AddPackage(TLazPackage(List[i]));
+      end;
+    finally
+      List.Free;
+    end;
+  end;
+
 var
   APackage: TLazPackage;
   RootOwner: string;
-  Root: TCodeBrowserUnitList;
   i: Integer;
 begin
   // find root
@@ -510,20 +551,70 @@ begin
     if APackage<>nil then
       RootOwner:=APackage.Name;
   end;
-  Root:=TCodeBrowserUnitList.Create(RootOwner,nil);
+  DebugLn(['TCodeBrowserView.WorkGatherPackages RootOwner="',RootOwner,'"']);
+  FreeAndNil(FWorkingRoot);
+  FWorkingRoot:=TCodeBrowserUnitList.Create(RootOwner,nil);
   
   // find required packages
   if Options.WithRequiredPackages then begin
-    if CompareText(Root.Owner,CodeBrowserIDEAlias)=0 then begin
-      for i:=0 to PackageGraph.Count-1 do begin
-
-      end;
-    end else if CompareText(Root.Owner,CodeBrowserIDEAlias)=0 then begin
-    
-    end else begin
-
+    if CompareText(FWorkingRoot.Owner,CodeBrowserIDEAlias)=0 then begin
+      for i:=0 to PackageGraph.Count-1 do
+        AddPackage(PackageGraph[i]);
+    end else if CompareText(FWorkingRoot.Owner,CodeBrowserProjectAlias)=0 then begin
+      AddPackages(Project1.FirstRequiredDependency);
+    end else if FWorkingRoot.Owner<>'' then begin
+      APackage:=PackageGraph.FindAPackageWithName(FWorkingRoot.Owner,nil);
+      if APackage<>nil then
+        AddPackages(APackage.FirstRequiredDependency);
     end;
   end;
+  
+  // update root item (childs will be updated on next Idle)
+  if FRoot=nil then begin
+    FRoot:=TCodeBrowserUnitList.Create(FWorkingRoot.Owner,nil);
+  end else begin
+    FRoot.Owner:=FWorkingRoot.Owner;
+  end;
+  
+  // this stage finished -> next stage
+  fStage:=cbwsFreeUnusedPackages;
+end;
+
+procedure TCodeBrowserView.WorkFreeUnusedPackages;
+
+  function FindUnusedUnitList: TCodeBrowserUnitList;
+  var
+    Node: TAvgLvlTreeNode;
+    UnusedPackage: TCodeBrowserUnitList;
+  begin
+    // find an unused package
+    Result:=nil;
+    if (FRoot<>nil) and (FRoot.UnitLists<>nil) then begin
+      Node:=FRoot.UnitLists.FindLowest;
+      while Node<>nil do begin
+        UnusedPackage:=TCodeBrowserUnitList(Node.Data);
+        if UnusedPackage<>nil then begin
+
+        end;
+        Node:=FRoot.UnitLists.FindSuccessor(Node);
+      end;
+    end;
+  end;
+
+var
+  UnusedPackage: TCodeBrowserUnitList;
+begin
+  DebugLn(['TCodeBrowserView.WorkFreeUnusedPackages START']);
+  // find an unused package
+  UnusedPackage:=FindUnusedUnitList;
+  if UnusedPackage=nil then begin
+    // this stage finished -> next stage
+    fStage:=cbwsFreeUnusedPackages;
+    exit;
+  end;
+
+  // free this unused package
+  
 end;
 
 procedure TCodeBrowserView.BeginUpdate;
@@ -587,6 +678,13 @@ end;
 
 { TCodeBrowserUnitList }
 
+procedure TCodeBrowserUnitList.SetOwner(const AValue: string);
+begin
+  if Owner=AValue then exit;
+  if ParentList<>nil then RaiseGDBException('not allowed');
+  FOwner:=AValue;
+end;
+
 constructor TCodeBrowserUnitList.Create(TheOwner: string;
   TheParent: TCodeBrowserUnitList);
 begin
@@ -605,6 +703,9 @@ begin
   if FUnits<>nil then
     FUnits.FreeAndClear;
   FreeAndNil(FUnits);
+  if FUnitLists<>nil then
+    FUnitLists.FreeAndClear;
+  FreeAndNil(FUnitLists);
 end;
 
 { TCodeBrowserViewOptions }

@@ -219,7 +219,7 @@ type
     function PackageNameExists(const PkgName: string;
                                IgnorePackage: TLazPackage): boolean;
     procedure GetAllRequiredPackages(FirstDependency: TPkgDependency;
-                                     var List: TFPList);
+                                     out List: TFPList);
     procedure GetConnectionsTree(FirstDependency: TPkgDependency;
                                  var PkgList: TFPList; var Tree: TPkgPairTree);
     function GetAutoCompilationOrder(APackage: TLazPackage;
@@ -3553,7 +3553,7 @@ begin
 end;
 
 procedure TLazPackageGraph.GetAllRequiredPackages(
-  FirstDependency: TPkgDependency; var List: TFPList);
+  FirstDependency: TPkgDependency; out List: TFPList);
 // returns packages in topological order, beginning with the top level package
 
   procedure GetTopologicalOrder(CurDependency: TPkgDependency);
