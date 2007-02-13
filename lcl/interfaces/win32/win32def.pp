@@ -40,9 +40,6 @@ Const
   MCM_GETMINREQRECT = MCM_FIRST + 9;
 
 type
-  MakeIntResourceA = PAnsiChar;
-  MakeIntResource = MakeIntResourceA;
-
   TGDIType = (gdiBitmap, gdiBrush, gdiFont, gdiPen, gdiRegion);
   TGDIBitmapType = (gbBitmap, gbPixmap, gbImage);
 
