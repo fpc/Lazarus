@@ -3742,6 +3742,11 @@ begin
     if OffsetToColRow(True, True, X, FSplitter.X, Loc) then begin
       R:=CellRect(FSplitter.x, FSplitter.y);
       FSplitter.y:=X;                       // Resizing X reference
+
+      // if resizing column is partially visible, take the visible boundary.
+      if R.Right>FGCache.ClientWidth then
+        Loc:=FGCache.Clientwidth
+      else
       if (R.Right-X)<(X-R.Left) then
         Loc:=R.Right
       else begin
