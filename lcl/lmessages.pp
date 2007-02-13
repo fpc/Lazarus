@@ -27,12 +27,6 @@ unit LMessages;
 
 {$mode objfpc}{$H+}
 
-{$IF defined(VER2_0_2) and defined(win32)}
-// FPC <= 2.0.2 compatibility code
-// WINDOWS define was added after FPC 2.0.2
-  {$define WINDOWS}
-{$endif}
-
 interface
 
 uses Classes, SysUtils, LCLType, GraphType
@@ -628,7 +622,7 @@ type
     Result: LRESULT;
   end;
 
-{$if defined(ver1_0) or not(defined(WINDOWS))}
+{$ifndef windows}
   TLMSize = record
     Msg: Cardinal;
     SizeType: PtrInt; // see LCLType.pp (e.g. Size_Restored)
@@ -648,7 +642,7 @@ type
   end;
 
   PLMessage = ^TLMessage;
-{$if defined(ver1_0) or not(defined(mswindows))}
+{$ifndef windows}
   TLMessage = record
     Msg : Cardinal;
     case Integer of
@@ -701,7 +695,7 @@ type
 //  TLMVScroll = TWMScroll;
 {.$endif}
 
-{$if defined(ver1_0) or not(defined(WINDOWS))}
+{$ifndef windows}
   TLMShowWindow = record
     Msg: Cardinal;
     Show: LongBool;
@@ -715,7 +709,7 @@ type
   TLMShowWindow = TWMShowWindow;
 {$endif}
 
-{$if defined(ver1_0) or not(defined(WINDOWS))}
+{$ifndef windows}
   TLMKILLFOCUS = TLMSetFocus;
 {$else}
   TLMKillFocus = TWMKillFocus;
