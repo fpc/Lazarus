@@ -92,7 +92,15 @@ gmkdir -p %BUILDDIR%\packager
 cd %BUILDDIR%\packager\registration
 %MAKEEXE% FPC=%compiler%
 gmkdir -p %BUILDDIR%\image\packager\units
-cp -pr %BUILDDIR%\packager\\units\%FPCFULLTARGET% %BUILDDIR%\image\packager\units\%FPCFULLTARGET%
+cp -pr %BUILDDIR%\packager\units\%FPCFULLTARGET% %BUILDDIR%\image\packager\units\%FPCFULLTARGET%
+
+gmkdir -p %BUILDDIR%\components
+%SVN% export %LAZSVNDIR%\components\synedit %BUILDDIR%\components\synedit
+cd %BUILDDIR%\components\synedit
+%MAKEEXE% FPC=%compiler%
+gmkdir -p %BUILDDIR%\image\components\synedit\units
+cp -pr %BUILDDIR%\components\synedit\units\%FPCFULLTARGET% %BUILDDIR%\image\components\synedit\units\%FPCFULLTARGET%
+
 del %INSTALL_BINDIR%\fpc.cfg
 
 cd %OLDCURDIR%
