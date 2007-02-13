@@ -37,7 +37,7 @@ const
   gdkdll = gdklib;
 
 // missing declarations in fpc 2.0
-{$ifndef HasGdk2X}
+{$ifdef HasGdk2X}
 var
   gdk_display: PDisplay; external gdklib name 'gdk_display';
 
