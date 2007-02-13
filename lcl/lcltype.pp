@@ -1690,9 +1690,6 @@ type
 
   TFNWndProc = TFarProc;
 
-  MakeIntResourceA = PAnsiChar;
-  MakeIntResource = MakeIntResourceA;
-
   PLogFontA = ^TLogFontA;
   PLogFontW = ^TLogFontW;
   PLogFont = PLogFontA;

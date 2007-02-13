@@ -1,6 +1,6 @@
 { $Id$
                          ------------------------------
-                         gtkdef.pp  -  Type definitions
+                         win32def.pp  -  Type definitions
                          ------------------------------
 
  @created(Wed Jan 24st WET 2001)
@@ -39,7 +39,10 @@ Const
   MCM_SETCURSEL =  MCM_FIRST + 2;
   MCM_GETMINREQRECT = MCM_FIRST + 9;
 
-Type
+type
+  MakeIntResourceA = PAnsiChar;
+  MakeIntResource = MakeIntResourceA;
+
   TGDIType = (gdiBitmap, gdiBrush, gdiFont, gdiPen, gdiRegion);
   TGDIBitmapType = (gbBitmap, gbPixmap, gbImage);
 
