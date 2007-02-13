@@ -77,6 +77,7 @@ export FPCDIR=~/fpc/lib/fpc/$FPCVERSION
 make bigide PP=$COMPILER USESVN2REVISIONINC=0
 make lazbuilder PP=$COMPILER
 make lcl LCL_PLATFORM=carbon PP=$COMPILER
+make lcl LCL_PLATFORM=gtk2 OPT="-dUseX" PP=$COMPILER
 strip lazarus
 strip startlazarus
 strip lazbuild
