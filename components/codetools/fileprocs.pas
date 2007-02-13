@@ -225,6 +225,8 @@ const
 function ComparePointers(p1, p2: Pointer): integer;
 procedure MergeSort(List: PPointer; ListLength: PtrInt;
                     Compare: TListSortCompare);
+function GetNextDelimitedItem(const List: string; Delimiter: char;
+                              var Position: integer): string;
 
 // debugging
 procedure DebugLn(Args: array of const);
@@ -1838,6 +1840,18 @@ begin
   finally
     FreeMem(MergeList);
   end;
+end;
+
+function GetNextDelimitedItem(const List: string; Delimiter: char;
+  var Position: integer): string;
+var
+  StartPos: LongInt;
+begin
+  StartPos:=Position;
+  while (Position<=length(List)) and (List[Position]<>Delimiter) do
+    inc(Position);
+  Result:=copy(List,StartPos,Position-StartPos);
+  if Position<=length(List) then inc(Position); // skip Delimiter
 end;
 
 procedure DebugLn(Args: array of const);

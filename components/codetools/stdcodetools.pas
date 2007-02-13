@@ -71,7 +71,8 @@ type
     function ReadBackwardTilAnyBracketClose: boolean;
   public
     // explore the code
-    function Explore(WithStatements: boolean): boolean;
+    function Explore(WithStatements: boolean;
+      OnlyInterface: boolean = false): boolean;
   
     // source name  e.g. 'unit UnitName;'
     function GetCachedSourceName: string;
@@ -3580,10 +3581,10 @@ begin
     // search all siblings in front
     ANode:=ANode.Parent;
     MoveCursorToCleanPos(ANode.Parent.StartPos);
-  end else if ANode.Prior<>nil then begin
+  end else if ANode.PriorBrother<>nil then begin
     // search between prior sibling and this node
     //DebugLn('TStandardCodeTool.FindCommentInFront ANode.Prior=',ANode.Prior.DescAsString);
-    MoveCursorToLastNodeAtom(ANode.Prior);
+    MoveCursorToLastNodeAtom(ANode.PriorBrother);
   end else if ANode.Parent<>nil then begin
     // search from start of parent node to this node
     //DebugLn('TStandardCodeTool.FindCommentInFront ANode.Parent=',ANode.Parent.DescAsString);
@@ -5081,28 +5082,28 @@ begin
   end;
 end;
 
-function TStandardCodeTool.Explore(WithStatements: boolean): boolean;
-
-  procedure ExploreNode(ANode: TCodeTreeNode);
-  begin
-    if ANode=nil then exit;
-    case ANode.Desc of
-    ctnClass,ctnClassInterface:
-      BuildSubTreeForClass(ANode);
-    ctnProcedure,ctnProcedureHead:
-      BuildSubTreeForProcHead(ANode);
-    ctnBeginBlock:
-      if WithStatements then
-        BuildSubTreeForBeginBlock(ANode);
-    end;
-    ExploreNode(ANode.FirstChild);
-    ExploreNode(ANode.NextBrother);
-  end;
-
+function TStandardCodeTool.Explore(WithStatements: boolean;
+  OnlyInterface: boolean): boolean;
+var
+  Node: TCodeTreeNode;
 begin
   Result:=true;
-  BuildTree(false);
-  ExploreNode(Tree.Root);
+  BuildTree(OnlyInterface);
+  Node:=Tree.Root;
+  while Node<>nil do begin
+    case Node.Desc of
+    ctnClass,ctnClassInterface:
+      BuildSubTreeForClass(Node);
+    ctnProcedure,ctnProcedureHead:
+      BuildSubTreeForProcHead(Node);
+    ctnBeginBlock:
+      if WithStatements then
+        BuildSubTreeForBeginBlock(Node);
+    ctnImplementation:
+      if OnlyInterface then exit;
+    end;
+    Node:=Node.Next;
+  end;
 end;
 
 

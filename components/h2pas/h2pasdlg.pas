@@ -400,6 +400,7 @@ var
   AFilename: String;
   CurFile: TH2PasFile;
 begin
+  if (Button=mbLeft) and (Shift=[]) then ;
   Node:=CHeaderFilesCheckTreeView.GetNodeAt(X,Y);
   if (Node=nil) or (Node.Parent<>nil) then exit;
   StateIconLeft:=Node.DisplayStateIconLeft;

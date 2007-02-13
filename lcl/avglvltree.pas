@@ -890,6 +890,7 @@ begin
 end;
 
 function TAvgLvlTree.FindPointer(Data: Pointer): TAvgLvlTreeNode;
+// same as Find, but not comparing for key, but same Data too
 begin
   Result:=FindLeftMost(Data);
   while (Result<>nil) do begin

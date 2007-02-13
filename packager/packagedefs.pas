@@ -166,6 +166,8 @@ type
     FFilename: string;
     FFileType: TPkgFileType;
     FFlags: TPkgFileFlags;
+    fFullFilename: string;
+    fFullFilenameStamp: integer;
     FPackage: TLazPackage;
     FSourceDirectoryReferenced: boolean;
     FSourceDirNeedReference: boolean;
@@ -1319,6 +1321,11 @@ begin
   LazPackage.LongenFilename(NewFilename);
   if FFilename=NewFilename then exit;
   FFilename:=NewFilename;
+  fFullFilenameStamp:=CompilerParseStamp;
+  if fFullFilenameStamp=Low(fFullFilenameStamp) then
+    fFullFilenameStamp:=High(fFullFilenameStamp)
+  else
+    dec(fFullFilenameStamp);
   OldDirectory:=FDirectory;
   FDirectory:=ExtractFilePath(fFilename);
   if OldDirectory<>FDirectory then begin
@@ -1439,7 +1446,18 @@ end;
 
 function TPkgFile.GetFullFilename: string;
 begin
-  Result:=Filename;
+  if fFullFilenameStamp<>CompilerParseStamp then begin
+    fFullFilename:=Filename;
+    fFullFilenameStamp:=CompilerParseStamp;
+    if LazPackage<>nil then begin
+      // substitute locally
+      LazPackage.SubstitutePkgMacro(fFullFilename,false);
+    end;
+    // substitute globally
+    IDEMacros.SubstituteMacros(fFullFilename);
+    fFullFilename:=CleanAndExpandFilename(fFullFilename);
+  end;
+  Result:=fFullFilename;
 end;
 
 constructor TPkgFile.Create(ThePackage: TLazPackage);

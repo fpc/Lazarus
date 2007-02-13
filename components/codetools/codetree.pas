@@ -481,17 +481,23 @@ end;
 
 function TCodeTreeNode.Next: TCodeTreeNode;
 begin
-  Result:=Self;
-  while (Result<>nil) and (Result.NextBrother=nil) do
-    Result:=Result.Parent;
-  if Result<>nil then Result:=Result.NextBrother;
+  if FirstChild<>nil then begin
+    Result:=FirstChild;
+  end else begin
+    Result:=Self;
+    while (Result<>nil) and (Result.NextBrother=nil) do
+      Result:=Result.Parent;
+    if Result<>nil then Result:=Result.NextBrother;
+  end;
 end;
 
 function TCodeTreeNode.Prior: TCodeTreeNode;
 begin
-  if PriorBrother<>nil then
-    Result:=PriorBrother
-  else
+  if PriorBrother<>nil then begin
+    Result:=PriorBrother;
+    while Result.LastChild<>nil do
+      Result:=Result.LastChild;
+  end else
     Result:=Parent;
 end;
 

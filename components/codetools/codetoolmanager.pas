@@ -275,7 +275,7 @@ type
     
     // code exploring
     function Explore(Code: TCodeBuffer; out ACodeTool: TCodeTool;
-          WithStatements: boolean): boolean;
+          WithStatements: boolean; OnlyInterface: boolean = false): boolean;
     function CheckSyntax(Code: TCodeBuffer; out NewCode: TCodeBuffer;
           out NewX, NewY, NewTopLine: integer; out ErrorMsg: string): boolean;
 
@@ -1339,14 +1339,15 @@ begin
 end;
 
 function TCodeToolManager.Explore(Code: TCodeBuffer;
-  out ACodeTool: TCodeTool; WithStatements: boolean): boolean;
+  out ACodeTool: TCodeTool; WithStatements: boolean; OnlyInterface: boolean
+  ): boolean;
 begin
   Result:=false;
   ACodeTool:=nil;
   try
     if InitCurCodeTool(Code) then begin
       ACodeTool:=FCurCodeTool;
-      FCurCodeTool.Explore(WithStatements);
+      FCurCodeTool.Explore(WithStatements,OnlyInterface);
       Result:=true;
     end;
   except

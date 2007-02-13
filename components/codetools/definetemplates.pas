@@ -3864,8 +3864,8 @@ begin
   // <LazarusSrcDir>/ide
   DirTempl:=TDefineTemplate.Create('ide',ctsIDEDirectory,
     '','ide',da_Directory);
-  DirTempl.AddChild(TDefineTemplate.Create('LCL path addition',
-    Format(ctsAddsDirToSourcePath,['lcl, components']),
+  DirTempl.AddChild(TDefineTemplate.Create('IDE path addition',
+    Format(ctsAddsDirToSourcePath,['designer, debugger, synedit, ...']),
     ExternalMacroStart+'SrcPath',
       d('..;'
        +'../designer;'
@@ -3874,13 +3874,33 @@ begin
        +'../converter;'
        +'../packager;'
        +'../packager/registration;'
-       +'../ideintf;'
-       +'../lcl;'
-       +'../lcl/interfaces/'+WidgetType+';'
-       +'../components/synedit;'
-       +'../components/codetools;'
        +'../components/custom;'
        +'../components/mpaslex;')
+    ,da_DefineRecurse));
+  DirTempl.AddChild(TDefineTemplate.Create('IDEIntf path addition',
+    Format(ctsAddsDirToSourcePath,['ideintf']),
+    ExternalMacroStart+'SrcPath',
+      d('../ideintf;'
+       +SrcPath)
+    ,da_DefineRecurse));
+  DirTempl.AddChild(TDefineTemplate.Create('SynEdit path addition',
+    Format(ctsAddsDirToSourcePath,['synedit']),
+    ExternalMacroStart+'SrcPath',
+      d('../components/synedit;'
+       +SrcPath)
+    ,da_DefineRecurse));
+  DirTempl.AddChild(TDefineTemplate.Create('CodeTools path addition',
+    Format(ctsAddsDirToSourcePath,['codetools']),
+    ExternalMacroStart+'SrcPath',
+      d('../components/codetools;'
+       +SrcPath)
+    ,da_DefineRecurse));
+  DirTempl.AddChild(TDefineTemplate.Create('LCL path addition',
+    Format(ctsAddsDirToSourcePath,['lcl']),
+    ExternalMacroStart+'SrcPath',
+      d('../lcl;'
+       +'../lcl/interfaces/'+WidgetType+';'
+       +SrcPath)
     ,da_DefineRecurse));
   // include path addition
   DirTempl.AddChild(TDefineTemplate.Create('includepath addition',
