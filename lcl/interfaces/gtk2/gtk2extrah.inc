@@ -37,7 +37,7 @@ const
   gdkdll = gdklib;
 
 // missing declarations in fpc 2.0
-{$ifdef HasGdk2X}
+{$if defined(HasX) and not defined(HasGdk2X)}
 var
   gdk_display: PDisplay; external gdklib name 'gdk_display';
 
@@ -58,7 +58,4 @@ procedure gdk_draw_pixbuf(drawable : PGdkDrawable; gc : PGdkGC; pixbuf : PGdkPix
                                              dither : TGdkRgbDither; x_dither, y_dither : gint); cdecl; external gdklib;
 // gtk 2.4
 function gdk_cursor_new_from_pixbuf(display: PGdkDisplay; pixbuf: PGdkPixbuf; x, y: gint): PGdkCursor; cdecl; external gdklib name 'gdk_cursor_new_from_pixbuf';
-
-
-
 
