@@ -280,6 +280,7 @@ type
     procedure WorkUpdateUnit(AnUnit: TCodeBrowserUnit);
     procedure FreeUnitList(List: TCodeBrowserUnitList);
     procedure UpdateStatusBar(Lazy: boolean);
+    procedure RemoveUnit(AnUnit: TCodeBrowserUnit);
   public
     procedure BeginUpdate;
     procedure EndUpdate;
@@ -815,7 +816,7 @@ var
     end;
     if NewFileList.FindKey(@Filename,@ComparePAnsiStringWithUnitFilename)<>nil
     then exit;
-    DebugLn(['TCodeBrowserView.WorkUpdateFiles AddFile ',Filename]);
+    //DebugLn(['TCodeBrowserView.WorkUpdateFiles AddFile ',Filename]);
     NewFileList.Add(TCodeBrowserUnit.Create(Filename));
   end;
   
@@ -888,7 +889,7 @@ var
   var
     FileInfo: TSearchRec;
   begin
-    DebugLn(['AddFilesOfDirectory Directory="',Directory,'"']);
+    //DebugLn(['AddFilesOfDirectory Directory="',Directory,'"']);
     if (not FilenameIsAbsolute(Directory))
     or (not DirectoryExists(Directory)) then begin
       DebugLn(['AddFilesOfDirectory WARNING: does not exist: "',Directory,'"']);
@@ -912,7 +913,7 @@ var
     Dir: String;
     p: Integer;
   begin
-    DebugLn(['AddFilesOfSearchPath SrcPath="',SrcPath,'" BaseDir="',BaseDir,'"']);
+    //DebugLn(['AddFilesOfSearchPath SrcPath="',SrcPath,'" BaseDir="',BaseDir,'"']);
     p:=1;
     while (p<=length(SrcPath)) do begin
       Dir:=GetNextDelimitedItem(SrcPath,';',p);
@@ -962,7 +963,7 @@ var
       exit;
     end;
     SrcPath:=LazIDESrcPath.Value;
-    AddFilesOfSearchPath(SrcPath,LazDir+'ide'+PathDelim);
+    AddFilesOfSearchPath(SrcPath+';.',LazDir+'ide'+PathDelim);
   end;
 
   procedure DeleteUnusedFiles;
@@ -980,6 +981,7 @@ var
         @ComparePAnsiStringWithUnitFilename)=nil
       then begin
         // this unit is not part of List anymore -> delete
+        RemoveUnit(CurUnit);
         List.DeleteUnit(CurUnit);
       end;
       Node:=NextNode;
@@ -1009,7 +1011,6 @@ begin
   NewFileList:=TAvgLvlTree.Create(@CompareUnitFilenames);
   try
     // get new list of files
-    DebugLn(['TCodeBrowserView.WorkUpdateFiles "',List.Owner,'" "',ProjectAlias,'"']);
     if List.Owner=CodeBrowserIDEAlias then begin
       AddFilesOfIDE;
     end else if List.Owner=CodeBrowserProjectAlias then begin
@@ -1137,6 +1138,7 @@ procedure TCodeBrowserView.WorkUpdateUnit(AnUnit: TCodeBrowserUnit);
     AnUnit.ScannedLines:=LineCnt;
     inc(FScannedBytes,ByteCnt);
     inc(FScannedLines,LineCnt);
+    //DebugLn(['UpdateScannedCounters ',ExtractFileName(AnUnit.Filename),' LineCnt=',LineCnt,' ByteCnt=',ByteCnt]);
   end;
 
 var
@@ -1176,6 +1178,7 @@ var
   Node: TAvgLvlTreeNode;
   AnUnit: TCodeBrowserUnit;
 begin
+  DebugLn(['TCodeBrowserView.FreeUnitList ',List.Owner]);
   dec(FScannedPackages);
   if List.Units<>nil then begin
     Node:=List.Units.FindLowest;
@@ -1183,12 +1186,7 @@ begin
       AnUnit:=TCodeBrowserUnit(Node.Data);
       if fOutdatedFiles<>nil then
         fOutdatedFiles.Remove(AnUnit);
-      if AnUnit.Scanned then begin
-        AnUnit.Scanned:=false;
-        dec(FScannedUnits);
-        dec(FScannedLines,AnUnit.ScannedLines);
-        dec(FScannedBytes,AnUnit.ScannedBytes);
-      end;
+      RemoveUnit(AnUnit);
       Node:=List.Units.FindSuccessor(Node);
     end;
   end;
@@ -1214,6 +1212,16 @@ begin
   if fStage<>cbwsFinished then
     s:=s+'. Scanning ...';
   StatusBar1.SimpleText:=s;
+end;
+
+procedure TCodeBrowserView.RemoveUnit(AnUnit: TCodeBrowserUnit);
+begin
+  if AnUnit.Scanned then begin
+    dec(FScannedUnits);
+    dec(FScannedLines,AnUnit.ScannedLines);
+    dec(FScannedBytes,AnUnit.ScannedBytes);
+    AnUnit.Scanned:=false;
+  end;
 end;
 
 procedure TCodeBrowserView.BeginUpdate;
@@ -1348,13 +1356,21 @@ begin
 end;
 
 procedure TCodeBrowserUnitList.Clear;
+
+  procedure FreeTree(var Tree: TAvgLvlTree);
+  var
+    TmpTree: TAvgLvlTree;
+  begin
+    if Tree=nil then exit;
+    TmpTree:=Tree;
+    Tree:=nil;
+    TmpTree.FreeAndClear;
+    TmpTree.Free;
+  end;
+
 begin
-  if FUnits<>nil then
-    FUnits.FreeAndClear;
-  FreeAndNil(FUnits);
-  if FUnitLists<>nil then
-    FUnitLists.FreeAndClear;
-  FreeAndNil(FUnitLists);
+  FreeTree(FUnits);
+  FreeTree(FUnitLists);
   FUnitsValid:=false;
 end;
 
