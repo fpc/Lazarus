@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <EnvironmentOptions>
+    <Version Value="102"/>
+    <LazarusDirectory Value="%LazDir%">
+    </LazarusDirectory>
+    <CompilerFilename Value="%FpcBinDir%\fpc.exe">
+    </CompilerFilename>
+    <FPCSourceDirectory Value="%FpcSrcDir%">
+    </FPCSourceDirectory>
+    <MakeFilename Value="%FpcBinDir%\make.exe">
+    </MakeFilename>
+    <TestBuildDirectory Value="%Temp%">
+    </TestBuildDirectory>
+    <Debugger Class="TGDBMIDebugger"/>
+    <DebuggerFilename Value="%LazDir%\mingw\bin\gdb.exe">
+    </DebuggerFilename>
+    <Desktop>
+      <MainIDE>
+        <WindowPlacement Value="RestoreWindowGeometry"/>
+        <CustomPosition Width="720" Height="69"/>
+        <WindowState Value="Normal"/>
+        <DockMode Value="Default"/>
+        <Visible Value="True"/>
+      </MainIDE>
+    </Desktop>
+  </EnvironmentOptions>
+</CONFIG>
