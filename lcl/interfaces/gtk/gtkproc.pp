@@ -693,8 +693,14 @@ function CreateTopologicalSortedWidgets(HashArray: TDynHashArray): TFPList;
 procedure GetGTKDefaultWidgetSize(AWinControl: TWinControl;
   var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);
 
-Procedure ReportNotObsolete(const Texts: String);
+// debug
+procedure ReportNotObsolete(const Texts: String);
 
+// screen
+function GetScreenWidthMM(GdkValue: boolean = false): integer;
+function GetScreenHeightMM(GdkValue: boolean = false): integer;
+
+// clipboard
 function WaitForClipboardAnswer(c: PClipboardEventData): boolean;
 function RequestSelectionData(ClipboardWidget: PGtkWidget;
   ClipboardType: TClipboardType;  FormatID: cardinal): TGtkSelectionData;
@@ -743,8 +749,8 @@ function  XGetWorkarea(var ax,ay,awidth,aheight:gint): gint;
 
 
 // decoration
-Function GetWindowDecorations(AForm: TCustomForm): Longint;
-Function GetWindowFunction(AForm: TCustomForm): Longint;
+function GetWindowDecorations(AForm: TCustomForm): Longint;
+function GetWindowFunction(AForm: TCustomForm): Longint;
 
 // functions for easier GTK2<->GTK1 Compatibility/Consistency  ---->
 function gtk_widget_get_xthickness(Style: PGTKStyle): gint; overload;

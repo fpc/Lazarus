@@ -5020,10 +5020,10 @@ begin
   //we will also have to add internal support for Papersizes etc..
 
   LOGPIXELSX : { Logical pixels per inch in X }
-    Result := RoundToInt(gdk_screen_width / (gdk_screen_width_mm / 25.4));
+    Result := RoundToInt(gdk_screen_width / (GetScreenWidthMM / 25.4));
 
   LOGPIXELSY : { Logical pixels per inch in Y }
-    Result := RoundToInt(gdk_screen_height / (gdk_screen_height_mm / 25.4));
+    Result := RoundToInt(gdk_screen_height / (GetScreenHeightMM / 25.4));
 
   SIZEPALETTE: { number of entries in color palette }
     if GetVisual then

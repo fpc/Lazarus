@@ -1154,6 +1154,7 @@ begin
     dec(FScannedLines,AnUnit.ScannedLines);
     AnUnit.ScannedBytes:=0;
     AnUnit.ScannedLines:=0;
+    dec(FScannedUnits);
   end;
   AnUnit.Scanned:=true;
   inc(FScannedUnits);
@@ -1184,8 +1185,6 @@ begin
     Node:=List.Units.FindLowest;
     while Node<>nil do begin
       AnUnit:=TCodeBrowserUnit(Node.Data);
-      if fOutdatedFiles<>nil then
-        fOutdatedFiles.Remove(AnUnit);
       RemoveUnit(AnUnit);
       Node:=List.Units.FindSuccessor(Node);
     end;
@@ -1221,6 +1220,8 @@ begin
     dec(FScannedLines,AnUnit.ScannedLines);
     dec(FScannedBytes,AnUnit.ScannedBytes);
     AnUnit.Scanned:=false;
+    if fOutdatedFiles<>nil then
+      fOutdatedFiles.Remove(AnUnit);
   end;
 end;
 
@@ -1320,7 +1321,7 @@ procedure TCodeBrowserUnitList.InternalRemoveUnitList(List: TCodeBrowserUnitList
   );
 begin
   if FUnitLists<>nil then
-    FUnitLists.Add(List);
+    FUnitLists.Remove(List);
 end;
 
 procedure TCodeBrowserUnitList.InternalAddUnit(AnUnit: TCodeBrowserUnit);
@@ -1333,7 +1334,7 @@ end;
 procedure TCodeBrowserUnitList.InternalRemoveUnit(AnUnit: TCodeBrowserUnit);
 begin
   if FUnits<>nil then
-    FUnits.Add(AnUnit);
+    FUnits.Remove(AnUnit);
 end;
 
 constructor TCodeBrowserUnitList.Create(TheOwner: string;

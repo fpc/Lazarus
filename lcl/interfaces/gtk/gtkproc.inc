@@ -6552,6 +6552,20 @@ begin
   Result:=GdkTrue; // go on, make sure getting a message at least every second
 end;
 
+function GetScreenWidthMM(GdkValue: boolean): integer;
+begin
+  Result:=gdk_screen_width_mm;
+  if (Result<=0) and not GdkValue then
+    Result:=300; // some TV-out screens don't know there size
+end;
+
+function GetScreenHeightMM(GdkValue: boolean): integer;
+begin
+  Result:=gdk_screen_height_mm;
+  if (Result<=0) and not GdkValue then
+    Result:=300; // some TV-out screens don't know there size
+end;
+
 {------------------------------------------------------------------------------
   Function: WaitForClipboardAnswer
   Params: none

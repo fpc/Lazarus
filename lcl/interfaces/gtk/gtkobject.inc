@@ -1917,12 +1917,10 @@ begin
   //FillScreenFonts(Screen.Fonts);
   InitKeyboardTables;
   { Compute pixels per inch variable }
-  //writeln('TGtkWidgetSet.AppInit gdk_screen_width_mm=',gdk_screen_width_mm);
   ScreenInfo.PixelsPerInchX :=
-    RoundToInt(gdk_screen_width / (gdk_screen_width_mm / 25.4));
-  //writeln('TGtkWidgetSet.AppInit gdk_screen_height_mm=',gdk_screen_height_mm);
+    RoundToInt(gdk_screen_width / (GetScreenWidthMM / 25.4));
   ScreenInfo.PixelsPerInchY :=
-    RoundToInt(gdk_screen_height / (gdk_screen_height_mm / 25.4));
+    RoundToInt(gdk_screen_height / (GetScreenHeightMM / 25.4));
   ScreenInfo.ColorDepth := gdk_visual_get_system^.depth;
 end;
 
