@@ -436,7 +436,5 @@ tools/install/slacktgz/units
 tools/install/units
 tools/install/win/*.bak
 tools/install/win/units
-tools/install/win32/*.bak
-tools/install/win32/units
 tools/units
 /units
