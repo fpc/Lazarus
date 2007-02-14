@@ -45,7 +45,7 @@ Name: associate\pp; Description: Associate .pp files with Lazarus; Types: custom
 
 [Files]
 Source: {#BuildDir}\*.*; DestDir: {app}; Flags: recursesubdirs
-Source: environmentoptions.xml; DestDir: {app}; Flags: onlyifdoesntexist; AfterInstall: UpdateEnvironmentOptions
+Source: environmentoptions-{#FPCTargetOS}.xml; DestDir: {app}; Flags: onlyifdoesntexist; AfterInstall: UpdateEnvironmentOptions; DestName: environmentoptions.xml
 Source: editoroptions.xml; DestDir: {app}; Flags: onlyifdoesntexist
 
 [INI]
