@@ -580,6 +580,8 @@ type
     property OnChangeBounds;
     property OnClick;
     property OnDblClick;
+    property OnDragDrop;
+    property OnDragOver;
     property OnDrawItem;
     property OnEnter;
     property OnExit;
