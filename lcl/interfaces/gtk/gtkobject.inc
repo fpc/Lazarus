@@ -5276,7 +5276,7 @@ begin
     crSizeS:    CursorValue := GDK_BOTTOM_SIDE;
     crSizeSE:   CursorValue := GDK_BOTTOM_RIGHT_CORNER;
     crUpArrow:  CursorValue := GDK_LEFT_PTR;
-    crHourGlass:CursorValue := GDK_CLOCK;
+    crHourGlass:CursorValue := GDK_WATCH;
     crHSplit:   CursorValue := GDK_SB_H_DOUBLE_ARROW;
     crVSplit:   CursorValue := GDK_SB_V_DOUBLE_ARROW;
     crNo:       CursorValue := GDK_LEFT_PTR;
