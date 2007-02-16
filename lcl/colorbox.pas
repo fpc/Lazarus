@@ -123,6 +123,8 @@ type
     property ClickOnSelChange;
     property Color;
     property Constraints;
+    property DragCursor;
+    property DragMode;
     property Enabled;
     property ExtendedSelect;
     property Font;
@@ -144,7 +146,10 @@ type
     property OnChangeBounds;
     property OnClick;
     property OnDblClick;
+    property OnDragDrop;
+    property OnDragOver;
     property OnDrawItem;
+    property OnEndDrag;
     property OnEnter;
     property OnExit;
     property OnKeyDown;
@@ -160,7 +165,8 @@ type
     property OnMouseWheelUp;
     property OnResize;
     property OnSelectionChange;
-    property OnShowHint;    
+    property OnShowHint;
+    property OnStartDrag;
   end;
 
 procedure Register;

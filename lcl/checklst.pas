@@ -75,6 +75,8 @@ type
     property BorderSpacing;
     property BorderStyle;
     property Constraints;
+    property DragCursor;
+    property DragMode;
     property ExtendedSelect;
     property Items;
     property ItemHeight;
@@ -82,6 +84,10 @@ type
     property OnClick;
     property OnDblClick;
     property OnDrawItem;
+    property OnDragDrop;
+    property OnDragOver;
+    property OnEndDrag;
+    property OnStartDrag;
     property OnEnter;
     property OnExit;
     property OnItemClick;

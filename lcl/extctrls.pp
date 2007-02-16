@@ -265,12 +265,17 @@ type
     property Anchors;
     property BorderSpacing;
     property Constraints;
+    property DragCursor;
+    property DragMode;
     property Enabled;
     property Images;
     property OnChangeBounds;
     property OnChanging;
     property OnCloseTabClicked;
     property OnContextPopup;
+    property OnDragDrop;
+    property OnDragOver;
+    property OnEndDrag;
     property OnEnter;
     property OnExit;
     property OnGetImageIndex;
@@ -279,6 +284,7 @@ type
     property OnMouseUp;
     property OnPageChanged;
     property OnResize;
+    property OnStartDrag;
     property Options;
     property PageIndex;
     property PopupMenu;
@@ -358,17 +364,17 @@ type
     property ParentShowHint;
     property Pen: TPen read FPen write SetPen;
     property OnChangeBounds;
-//    property OnDragDrop;
-//    property OnDragOver;
+    property OnDragDrop;
+    property OnDragOver;
 //    property OnEndDock;
-//    property OnEndDrag;
+    property OnEndDrag;
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
     property OnPaint;
     property OnResize;
 //    property OnStartDock;
-//    property OnStartDrag;
+    property OnStartDrag;
     property Shape: TShapeType read FShape write SetShape;
     property ShowHint;
     property Visible;
@@ -482,9 +488,9 @@ type
     property BorderSpacing;
     property Color;
     property Constraints;
-//    property DragCursor;
+    property DragCursor;
 //    property DragKind;
-//    property DragMode;
+    property DragMode;
     property Enabled;
     property Font;
     property Hint;
@@ -497,10 +503,10 @@ type
     property OnChangeBounds;
     property OnClick;
     property OnDblClick;
-//    property OnDragDrop;
-//    property OnDragOver;
+    property OnDragDrop;
+    property OnDragOver;
 //    property OnEndDock;
-//    property OnEndDrag;
+    property OnEndDrag;
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
@@ -509,7 +515,7 @@ type
     property OnPaint;
     property OnResize;
 //    property OnStartDock;
-//    property OnStartDrag;
+    property OnStartDrag;
   end;
 
 
@@ -565,10 +571,15 @@ type
     property BorderSpacing;
     property Center;
     property Constraints;
+    property DragCursor;
+    property DragMode;
     property Enabled;
     property OnChangeBounds;
     property OnClick;
     property OnDblClick;
+    property OnDragDrop;
+    property OnDragOver;
+    property OnEndDrag;
     property OnMouseDown;
     property OnMouseEnter;
     property OnMouseLeave;
@@ -576,6 +587,7 @@ type
     property OnMouseUp;
     property OnPaint;
     property OnResize;
+    property OnStartDrag;
     property ParentShowHint;
     property Picture;
     property PopupMenu;
@@ -704,6 +716,8 @@ type
     property Columns;
     property Constraints;
     property Ctl3D;
+    property DragCursor;
+    property DragMode;
     property Enabled;
     property Font;
     property ItemIndex;
@@ -711,6 +725,9 @@ type
     property OnChangeBounds;
     property OnClick;
     property OnDblClick;
+    property OnDragDrop;
+    property OnDragOver;
+    property OnEndDrag;
     property OnEnter;
     property OnExit;
     property OnKeyDown;
@@ -720,6 +737,7 @@ type
     property OnMouseMove;
     property OnMouseUp;
     property OnResize;
+    property OnStartDrag;
     property ParentFont;
     property ParentColor;
     property ParentCtl3D;
@@ -830,6 +848,8 @@ type
   published
     property Caption;
     property Color;
+    property DragCursor;
+    property DragMode;
     property Height;
     property Left;
     property ParentColor;
@@ -844,11 +864,15 @@ type
     property Width;
     property OnClick;
     property OnDblClick;
+    property OnDragDrop;
+    property OnDragOver;
+    property OnEndDrag;
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
     //property OnEnter;
     //property OnExit;
+    property OnStartDrag;
   end;
 
 
@@ -892,6 +916,8 @@ type
     property CharCase;
     property Color;
     property Constraints;
+    property DragCursor;
+    property DragMode;
     property EditLabel;
     property Enabled;
     property LabelPosition;
@@ -911,6 +937,9 @@ type
     property OnChange;
     property OnClick;
     property OnDblClick;
+    property OnDragDrop;
+    property OnDragOver;
+    property OnEndDrag;
     property OnEnter;
     property OnExit;
     property OnKeyDown;
@@ -919,6 +948,7 @@ type
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
+    property OnStartDrag;
   end;
 
 
@@ -982,6 +1012,7 @@ type
     property ClientWidth;
     property Color;
     property Constraints;
+    property DragCursor;
     property DragMode;
     property Enabled;
     property Font;

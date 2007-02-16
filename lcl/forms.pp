@@ -595,6 +595,8 @@ type
     property OnDestroy;
     property OnDockDrop;
     property OnDockOver;
+    property OnDragDrop;
+    property OnDragOver;
     property OnEndDock;
     property OnGetSiteInfo;
     property OnHide;

@@ -118,11 +118,16 @@ type
     property Color;
     property Constraints;
     property Default;
+    property DragCursor;
+    property DragMode;
     property Enabled;
     property Font;
     property ModalResult;
     property OnChangeBounds;
     property OnClick;
+    property OnDragDrop;
+    property OnDragOver;
+    property OnEndDrag;
     property OnEnter;
     property OnExit;
     property OnKeyDown;
@@ -134,6 +139,7 @@ type
     property OnMouseMove;
     property OnMouseUp;
     property OnResize;
+    property OnStartDrag;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;

@@ -91,6 +91,8 @@ Type
     property Anchors;
     property BorderStyle;
     property Constraints;
+    property DragCursor;
+    property DragMode;
     property ExtendedSelect;
     property FileType;
     property Font;
@@ -102,6 +104,9 @@ Type
     property OnChangeBounds;
     property OnClick;
     property OnDblClick;
+    property OnDragDrop;
+    property OnDragOver;
+    property OnEndDrag;
     property OnEnter;
     property OnExit;
     property OnKeyPress;
@@ -114,6 +119,7 @@ Type
     property OnMouseWheelDown;
     property OnMouseWheelUp;
     property OnResize;
+    property OnStartDrag;
     property ParentShowHint;
     property ParentFont;
     property PopupMenu;

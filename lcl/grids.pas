@@ -1106,9 +1106,9 @@ type
     property DefaultColWidth;
     property DefaultDrawing;
     property DefaultRowHeight;
-    //property DragCursor;
+    property DragCursor;
     //property DragKind;
-    //property DragMode;
+    property DragMode;
     property Enabled;
     property FixedColor;
     property FixedCols;
@@ -1166,16 +1166,13 @@ type
     property OnSelectCell;
     property OnSetEditText;
     property OnTopleftChanged;
-
-{
-    property OnContextPopup;
+    //property OnContextPopup;
     property OnDragDrop;
     property OnDragOver;
-    property OnEndDock;
+    //property OnEndDock;
     property OnEndDrag;
-    property OnStartDock;
+    //property OnStartDock;
     property OnStartDrag;
-}
   end;
 
 

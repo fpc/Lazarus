@@ -157,8 +157,12 @@ type
     property Visible default true;
     property Color default clBtnFace;
     property OnDblClick;
+    property OnDragDrop;
+    property OnDragOver;
+    property OnEndDrag;
     property OnHint: TNotifyEvent read FOnHint write FOnHint;
     property OnMouseDown;
+    property OnStartDrag;
   end;
 
 
@@ -197,6 +201,9 @@ type
     property ImageIndex default 0;
     property Left stored False;
     property OnContextPopup;
+    property OnDragDrop;
+    property OnDragOver;
+    property OnEndDrag;
     property OnEnter;
     property OnExit;
     property OnHide: TNotifyEvent read FOnHide write FOnHide;
@@ -205,6 +212,7 @@ type
     property OnMouseUp;
     property OnResize;
     property OnShow: TNotifyEvent read FOnShow write FOnShow;
+    property OnStartDrag;
     property PageIndex stored False;
     property ParentFont;
     property ParentShowHint;
@@ -245,9 +253,9 @@ type
     //property BiDiMode;
     property Constraints;
     //property DockSite;
-    //property DragCursor;
+    property DragCursor;
     //property DragKind;
-    //property DragMode;
+    property DragMode;
     property Enabled;
     property Font;
     //property HotTrack;
@@ -274,11 +282,11 @@ type
     property OnContextPopup;
     //property OnDockDrop;
     //property OnDockOver;
-    //property OnDragDrop;
-    //property OnDragOver;
+    property OnDragDrop;
+    property OnDragOver;
     //property OnDrawTab;
     //property OnEndDock;
-    //property OnEndDrag;
+    property OnEndDrag;
     property OnEnter;
     property OnExit;
     property OnGetImageIndex;
@@ -289,7 +297,7 @@ type
     property OnPageChanged;
     property OnResize;
     //property OnStartDock;
-    //property OnStartDrag;
+    property OnStartDrag;
     //property OnUnDock;
   end;
 
@@ -1009,6 +1017,8 @@ type
     property Columns;
     property ColumnClick;
     property Constraints;
+    property DragCursor;
+    property DragMode;
 //    property DefaultItemHeight;
 //    property DropTarget;
     property Enabled;
@@ -1039,25 +1049,29 @@ type
     property TabOrder;
     property Visible;
     property ViewStyle;
-    property OnMouseMove;
+    property OnAdvancedCustomDraw;
+    property OnAdvancedCustomDrawItem;
+    property OnAdvancedCustomDrawSubItem;
     property OnChange;
     property OnClick;
     property OnColumnClick;
     property OnCompare;
-    property OnDblClick;
-    property OnMouseDown;
-    property OnMouseUp;
-    property OnKeyPress;
-    property OnKeyUp;
-    property OnKeyDown;
-    property OnDeletion;
-    property OnSelectItem;
     property OnCustomDraw;
     property OnCustomDrawItem;
     property OnCustomDrawSubItem;
-    property OnAdvancedCustomDraw;
-    property OnAdvancedCustomDrawItem;
-    property OnAdvancedCustomDrawSubItem;
+    property OnDblClick;
+    property OnDeletion;
+    property OnDragDrop;
+    property OnDragOver;
+    property OnEndDrag;
+    property OnKeyDown;
+    property OnKeyPress;
+    property OnKeyUp;
+    property OnMouseDown;
+    property OnMouseMove;
+    property OnMouseUp;
+    property OnSelectItem;
+    property OnStartDrag;
   end;
 
   TProgressBarOrientation = (pbHorizontal, pbVertical, pbRightToLeft, pbTopDown);
@@ -2411,9 +2425,9 @@ type
     property OnMouseMove;
     property OnMouseUp;
     property OnSelectionChanged;
-    property Options;
     //property OnStartDock;
     property OnStartDrag;
+    property Options;
     property Items;
     property TreeLineColor;
     property ExpandSignColor;

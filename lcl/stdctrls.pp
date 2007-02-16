@@ -388,6 +388,8 @@ type
     property CharCase;
     property Color;
     property Ctl3D;
+    property DragCursor;
+    property DragMode;
     property DropDownCount;
     property Enabled;
     property Font;
@@ -401,7 +403,10 @@ type
     property OnClick;
     property OnCloseUp;
     property OnDblClick;
+    property OnDragDrop;
+    property OnDragOver;
     property OnDrawItem;
+    property OnEndDrag;
     property OnDropDown;
     property OnEditingDone;
     property OnEnter;
@@ -412,6 +417,7 @@ type
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
+    property OnStartDrag;
     property OnSelect;
     property ParentColor;
     property ParentCtl3D;
@@ -584,6 +590,7 @@ type
     property OnDragOver;
     property OnDrawItem;
     property OnEnter;
+    property OnEndDrag;
     property OnExit;
     property OnKeyPress;
     property OnKeyDown;
@@ -599,6 +606,7 @@ type
     property OnResize;
     property OnSelectionChange;
     property OnShowHint;
+    property OnStartDrag;
     property ParentShowHint;
     property ParentFont;
     property PopupMenu;
@@ -759,6 +767,7 @@ type
     property Color;
     property Constraints;
     property CharCase;
+    property DragCursor;
     property DragMode;
     property EchoMode;
     property Enabled;
@@ -767,7 +776,10 @@ type
     property OnChange;
     property OnChangeBounds;
     property OnClick;
+    property OnDragDrop;
+    property OnDragOver;
     property OnEditingDone;
+    property OnEndDrag;
     property OnEnter;
     property OnExit;
     Property OnKeyDown;
@@ -777,6 +789,7 @@ type
     Property OnMouseMove;
     property OnMouseUp;
     property OnResize;
+    property OnStartDrag;
     property ParentFont;
     property ParentShowHint;
     property PasswordChar;
@@ -799,12 +812,17 @@ type
     property BorderSpacing;
     property Color;
     property Constraints;
+    property DragCursor;
+    property DragMode;
     property Enabled;
     property Font;
     property Lines;
     property MaxLength;
     property OnChange;
+    property OnDragDrop;
+    property OnDragOver;
     property OnEditingDone;
+    property OnEndDrag;
     property OnEnter;
     property OnExit;
     property OnKeyDown;
@@ -815,6 +833,7 @@ type
     property OnMouseMove;
     property OnMouseEnter;
     property OnMouseLeave;
+    property OnStartDrag;
     property ParentFont;
     property PopupMenu;
     property ReadOnly;
@@ -868,17 +887,23 @@ type
     property Caption;
     property Color;
     property Constraints;
+    property DragCursor;
+    property DragMode;
     property FocusControl;
     property Font;
     property OnChangeBounds;
     property OnClick;
     property OnDblClick;
+    property OnDragDrop;
+    property OnDragOver;
+    property OnEndDrag;
     property OnMouseDown;
     property OnMouseEnter;
     property OnMouseLeave;
     property OnMouseMove;
     property OnMouseUp;
     property OnResize;
+    property OnStartDrag;
     property ParentFont;
     property ShowAccelChar;
     property TabOrder;
@@ -1246,6 +1271,8 @@ type
     property Caption;
     property Color;
     property Constraints;
+    property DragCursor;
+    property DragMode;
     property Enabled;
     property FocusControl;
     property Font;
@@ -1261,6 +1288,9 @@ type
     property WordWrap;
     property OnClick;
     property OnDblClick;
+    property OnDragDrop;
+    property OnDragOver;
+    property OnEndDrag;
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
@@ -1268,6 +1298,7 @@ type
     property OnMouseLeave;
     property OnChangeBounds;
     property OnResize;
+    property OnStartDrag;
     property OptimalFill;
   end;
 
