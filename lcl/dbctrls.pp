@@ -236,12 +236,18 @@ Type
     property Color;
     property DataField: string read GetDataField write SetDataField;
     property DataSource: TDataSource read GetDataSource write SetDataSource;
+    property DragCursor;
+    property DragMode;
     property FocusControl;
     property Font;
     property Layout;
     property ShowAccelChar;
     property Visible;
     property WordWrap;
+    property OnDragDrop;
+    property OnDragOver;
+    property OnEndDrag;
+    property OnStartDrag;
   end;
 
 
@@ -282,6 +288,8 @@ Type
   published
     property DataField: string read GetDataField write SetDataField;
     property DataSource: TDataSource read GetDataSource write SetDataSource;
+    property DragCursor;
+    property DragMode;
 
     // we need to overrride the write method for db aware.
     // the Read isn't an issue since the list will be updated
@@ -299,7 +307,10 @@ Type
     property MultiSelect;
     property OnClick;
     property OnDblClick;
+    property OnDragDrop;
+    property OnDragOver;
     property OnDrawItem;
+    property OnEndDrag;
     property OnEnter;
     property OnExit;
     property OnKeyPress;
@@ -309,6 +320,7 @@ Type
     property OnMouseDown;
     property OnMouseUp;
     property OnResize;
+    property OnStartDrag;
     property ParentShowHint;
     property ShowHint;
     property Sorted;
@@ -363,15 +375,21 @@ Type
     property Columns;
     property DataField: string read GetDataField write SetDataField;
     property DataSource: TDataSource read GetDataSource write SetDataSource;
+    property DragCursor;
+    property DragMode;
     property Enabled;
     property Items write SetItems;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property OnChangeBounds;
     property OnClick;
+    property OnDragDrop;
+    property OnDragOver;
+    property OnEndDrag;
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseuP;
     property OnResize;
+    property OnStartDrag;
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
     property TabOrder;
     property Values: TStrings read FValues write SetValues;
@@ -486,6 +504,8 @@ Type
     property Ctl3D;
     property DataField: string read GetDataField write SetDataField;
     property DataSource: TDataSource read GetDataSource write SetDataSource;
+    property DragCursor;
+    property DragMode;
     property DropDownCount;
     property Enabled;
     property Font;
@@ -498,9 +518,12 @@ Type
     property OnClick;
     property OnCloseUp;
     property OnDblClick;
+    property OnDragDrop;
+    property OnDragOver;
     property OnDrawItem;
     property OnDropDown;
     property OnEditingDone;
+    property OnEndDrag;
     property OnEnter;
     property OnExit;
     property OnKeyDown;
@@ -510,6 +533,7 @@ Type
     property OnMouseMove;
     property OnMouseUp;
     property OnSelect;
+    property OnStartDrag;
     property ParentCtl3D;
     property ParentColor;
     property ParentFont;
@@ -565,15 +589,21 @@ Type
     property Color;
     property DataField: string read GetDataField write SetDataField;
     property DataSource: TDataSource read GetDataSource write SetDataSource;
+    property DragCursor;
+    property DragMode;
     property Font;
     property Lines;
     property MaxLength;
     property OnChange;
+    property OnDragDrop;
+    property OnDragOver;
+    property OnEndDrag;
     property OnEnter;
     property OnExit;
     property OnKeyDown;
     property OnKeyPress;
     property OnKeyUp;
+    property OnStartDrag;
     property PopupMenu;
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
     property ScrollBars;
@@ -613,10 +643,15 @@ Type
     property Ctl3D;
     property DataField: string read GetDataField write SetDataField;
     property DataSource: TDataSource read GetDataSource write SetDataSource;
+    property DragCursor;
+    property DragMode;
     property Enabled;
     property Font;
     property OnClick;
     property OnDblClick;
+    property OnDragDrop;
+    property OnDragOver;
+    property OnEndDrag;
     property OnEnter;
     property OnExit;
     property OnKeyDown;
@@ -626,6 +661,7 @@ Type
     property OnMouseMove;
     property OnMouseUp;
     property OnResize;
+    property OnStartDrag;
     property ParentColor;
     property ParentCtl3D;
     property ParentFont;
@@ -674,10 +710,16 @@ Type
     property Constraints;
     property DataField: string read GetDataField write SetDataField;
     property DataSource: TDataSource read GetDataSource write SetDataSource;
+    property DragCursor;
+    property DragMode;
     property OnClick;
+    property OnDragDrop;
+    property OnDragOver;
+    property OnEndDrag;
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
+    property OnStartDrag;
     property Picture;
     property Proportional;
     property QuickDraw: Boolean read FQuickDraw write FQuickDraw default True;
@@ -727,12 +769,18 @@ Type
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
 
     property DisplaySettings stored False;
+    property DragCursor;
+    property DragMode;
     property Visible;
     property OnClick;
+    property OnDragDrop;
+    property OnDragOver;
+    property OnEndDrag;
     property OnMouseMove;
     property OnMouseDown;
     property OnDayChanged;
     property OnMonthChanged;
+    property OnStartDrag;
     property OnYearChanged;
   end;
 
@@ -877,6 +925,7 @@ type
     property ConfirmDelete;
     property DataSource;
     property Direction;
+    property DragCursor;
     property DragMode;
     property Enabled;
     property Flat;

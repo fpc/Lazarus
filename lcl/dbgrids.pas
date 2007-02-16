@@ -486,9 +486,9 @@ type
     property DataSource;
     property DefaultDrawing;
     property DefaultRowHeight default 18;
-    //property DragCursor;
+    property DragCursor;
     //property DragKind;
-    //property DragMode;
+    property DragMode;
     property Enabled;
     property FixedColor;
     property Flat;
@@ -518,11 +518,11 @@ type
     property OnColumnSized;
     property OnDrawColumnCell;
     property OnDblClick;
-    //property OnDragDrop;
-    //property OnDragOver;
+    property OnDragDrop;
+    property OnDragOver;
     property OnEditButtonClick;
     //property OnEndDock;
-    //property OnEndDrag;
+    property OnEndDrag;
     property OnEnter;
     property OnExit;
     property OnFieldEditMask;
@@ -535,7 +535,7 @@ type
     property OnPrepareCanvas;
     property OnSelectEditor;
     //property OnStartDock;
-    //property OnStartDrag;
+    property OnStartDrag;
     property OnTitleClick;
     property OnUserCheckboxBitmap;
   end;
