@@ -41,7 +41,7 @@ const
 var
   gdk_display: PDisplay; external gdklib name 'gdk_display';
 
-function gdk_window_xwindow(win : PGdkDrawable): TXID; cdelc; external gdklib name 'gdk_x11_drawable_get_xid';
+function gdk_window_xwindow(win : PGdkDrawable): TXID; cdecl; external gdklib name 'gdk_x11_drawable_get_xid';
 
 {$endif}
 
