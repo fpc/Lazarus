@@ -32,4 +32,12 @@
 
 procedure FillStandardDescription(var Desc: TRawImageDescription);
 
+function PromptUser(const DialogCaption : string;
+                    const DialogMessage : string;
+                          DialogType    : LongInt;
+                          Buttons       : PLongInt;
+                          ButtonCount   : LongInt;
+                          DefaultIndex  : LongInt;
+                          EscapeResult  : LongInt) : LongInt; override;
+
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line
