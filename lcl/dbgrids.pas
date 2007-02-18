@@ -1762,8 +1762,10 @@ var
 
   procedure DoOnKeyDown;
   begin
+    {$ifdef dbgGrid}DebugLn('DoOnKeyDown INIT');{$endif}
     if Assigned(OnKeyDown) then
       OnKeyDown(Self, Key, Shift);
+    {$ifdef dbgGrid}DebugLn('DoOnKeyDown FIN');{$endif}
   end;
   procedure DoMoveBy(amount: Integer);
   begin
@@ -1808,6 +1810,7 @@ var
   end;
   function doVKDown: boolean;
   begin
+    {$ifdef dbgGrid}DebugLn('DoVKDown INIT');{$endif}
     if InsertCancelable then
     begin
       if IsEOF then
@@ -1823,14 +1826,17 @@ var
         doAppend;
       end;
     end;
+    {$ifdef dbgGrid}DebugLn('DoVKDown FIN');{$endif}
   end;
   function DoVKUP: boolean;
   begin
-    if InsertCancelable and IsEOF then
+    {$ifdef dbgGrid}DebugLn('DoVKUP INIT');{$endif}
+    if InsertCancelable then
       doCancel
     else
       doMoveBySmall(-1);
     result := FDatalink.DataSet.BOF;
+    {$ifdef dbgGrid}DebugLn('DoVKUP FIN');{$endif}
   end;
 begin
   {$IfDef dbgGrid}DebugLn('DBGrid.KeyDown INIT Key= ',IntToStr(Key));{$Endif}
