@@ -1332,6 +1332,7 @@ Begin
   Temp:=nil;
   ParentComponent:=nil;
   AParent:=nil;
+  NewComponent:=nil;
   try
     DebugLn('[TCustomFormEditor.CreateComponent] Class='''+TypeClass.ClassName+'''');
     {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TCustomFormEditor.CreateComponent A');{$ENDIF}
@@ -1350,7 +1351,7 @@ Begin
         on e: Exception do begin
           DumpExceptionBackTrace;
           MessageDlg('Error creating component',
-            'Error creating component: '+TypeClass.ClassName,
+            'Error creating component: '+TypeClass.ClassName+#13+E.Message,
             mtError,[mbCancel],0);
           exit;
         end;
