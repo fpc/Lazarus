@@ -199,11 +199,26 @@ begin
   begin
     if FileExists(FLazarusPath) then
     begin
-      if FileExists(BackupFileName)
-        then DeleteFile(BackupFileName);
-      RenameFile(FLazarusPath, BackupFileName);
+      if FileExists(BackupFileName) then
+        if not DeleteFile(BackupFileName) then begin
+          MessageDlg(format('Can''t delete "%s"'#13'%s', [BackupFileName, SysErrorMessage(GetLastOSError)]),
+            mtError, [mbOK], 0);
+          Result := mrAbort;
+          exit;
+        end;
+      if not RenameFile(FLazarusPath, BackupFileName) then begin
+        MessageDlg(format('Can''t rename "%s" to "%s"'#13'%s', [FLazarusPath, BackupFileName, SysErrorMessage(GetLastOSError)]),
+          mtError, [mbOK], 0);
+        Result := mrAbort;
+        exit;
+      end;
     end;
-    RenameFile(NewFileName, FLazarusPath);
+    if not RenameFile(NewFileName, FLazarusPath) then begin
+      MessageDlg(format('Can''t rename "%s" to "%s"'#13'%s', [NewFileName, FLazarusPath, SysErrorMessage(GetLastOSError)]),
+        mtError, [mbOK], 0);
+      Result := mrAbort;
+      exit;
+    end;
   end;
   if not FileExists(FLazarusPath) then begin
     MessageDlg(format('Can''t find lazarus executable: %s', [FLazarusPath]),
