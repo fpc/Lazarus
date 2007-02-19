@@ -2822,6 +2822,7 @@ packager/globallinks/projtemplates-0.lpl svneol=native#text/plain
 packager/globallinks/runtimetypeinfocontrols-0.1.lpl svneol=native#text/plain
 packager/globallinks/semaphorgridlpk-1.lpl svneol=native#text/plain
 packager/globallinks/simpleideintf-0.lpl svneol=native#text/plain
+packager/globallinks/tachartlazaruspkg-0.lpl svneol=native#text/plain
 packager/globallinks/trayiconlaz-0.lpl svneol=native#text/plain
 packager/globallinks/turbopoweripro-1.lpl svneol=native#text/plain
 packager/installpkgsetdlg.lfm svneol=native#text/plain
