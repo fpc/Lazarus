@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <Package Version="2">
+    <Name Value="TAChartLazarusPkg"/>
+    <Author Value="Luís Rodrigues (lr@neei.uevora.pt)"/>
+    <CompilerOptions>
+      <Version Value="5"/>
+      <SearchPaths>
+        <OtherUnitFiles Value="/home/luis/compile/lazarus/TAChart_Final/"/>
+        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
+      </SearchPaths>
+      <CodeGeneration>
+        <Generate Value="Faster"/>
+      </CodeGeneration>
+      <Other>
+        <CompilerPath Value="$(CompPath)"/>
+      </Other>
+    </CompilerOptions>
+    <Description Value="TeeChart compatible graph component"/>
+    <License Value=" See the file COPYING.modifiedLGPL, included in this distribution,
+ for details about the copyright.
+"/>
+    <Files Count="3">
+      <Item1>
+        <Filename Value="TASeries.pas"/>
+        <UnitName Value="TASeries"/>
+      </Item1>
+      <Item2>
+        <Filename Value="TAEngine.pas"/>
+        <UnitName Value="TAEngine"/>
+      </Item2>
+      <Item3>
+        <Filename Value="TAGraph.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="TAGraph"/>
+      </Item3>
+    </Files>
+    <Type Value="RunAndDesignTime"/>
+    <RequiredPkgs Count="2">
+      <Item1>
+        <PackageName Value="LCL"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="FCL"/>
+        <MinVersion Major="1" Valid="True"/>
+      </Item2>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)/"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IgnoreBinaries Value="False"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>

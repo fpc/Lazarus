@@ -1,0 +1,210 @@
+object Form1: TForm1
+  Left = 290
+  Height = 499
+  Top = 202
+  Width = 585
+  HorzScrollBar.Page = 584
+  VertScrollBar.Page = 498
+  Caption = 'Form1'
+  object Chart1: TChart
+    Height = 430
+    Width = 585
+    AutoUpdateXMin = True
+    AutoUpdateXMax = True
+    AutoUpdateYMin = True
+    AutoUpdateYMax = True
+    Legend.Alignment = laRight
+    Legend.Font.Height = -11
+    Legend.Font.Name = 'MS Sans Serif'
+    Legend.Frame.OnChange = nil
+    Legend.OnChange = nil
+    Title.Visible = True
+    Title.Brush.Color = clBtnFace
+    Title.Font.Color = clBlue
+    Title.Font.Height = -11
+    Title.Font.Name = 'MS Sans Serif'
+    Title.Frame.OnChange = nil
+    Title.Alignment = taCenter
+    Title.Text.Strings = (
+      'Centered Chart Title'
+    )
+    Title.OnChange = nil
+    Foot.Brush.Color = clBtnFace
+    Foot.Font.Color = clRed
+    Foot.Font.Height = -13
+    Foot.Font.Name = 'MS Sans Serif'
+    Foot.Font.Style = [fsBold]
+    Foot.Frame.OnChange = nil
+    Foot.Alignment = taCenter
+    Foot.Text.Strings = (
+      'This a LeftAligned Footer'
+    )
+    Foot.OnChange = nil
+    AllowZoom = True
+    LeftAxis.Visible = True
+    LeftAxis.Title.Angle = 90
+    LeftAxis.Title.Font.Height = -11
+    LeftAxis.Title.Font.Name = 'MS Sans Serif'
+    LeftAxis.Title.OnChange = nil
+    LeftAxis.Grid.Color = clGray
+    LeftAxis.Grid.Style = psDot
+    LeftAxis.Grid.Visible = True
+    LeftAxis.Grid.OnChange = nil
+    LeftAxis.OnChange = nil
+    BottomAxis.Visible = True
+    BottomAxis.Title.Font.Height = -11
+    BottomAxis.Title.Font.Name = 'MS Sans Serif'
+    BottomAxis.Title.OnChange = nil
+    BottomAxis.Grid.Color = clGray
+    BottomAxis.Grid.Style = psDot
+    BottomAxis.Grid.Visible = True
+    BottomAxis.Grid.OnChange = nil
+    BottomAxis.OnChange = nil
+    Frame.Visible = True
+    Frame.OnChange = nil
+    BackColor = clBtnFace
+    AxisVisible = True
+    Align = alClient
+    Color = clBtnFace
+    ParentColor = False
+  end
+  object Panel1: TPanel
+    Height = 69
+    Top = 430
+    Width = 585
+    Align = alBottom
+    TabOrder = 0
+    OnClick = Panel1Click
+    object Button1: TButton
+      Left = 16
+      Height = 25
+      Top = 8
+      Width = 75
+      BorderSpacing.InnerBorder = 4
+      Caption = 'create pie'
+      OnClick = Button1Click
+      TabOrder = 0
+    end
+    object Button2: TButton
+      Left = 96
+      Height = 25
+      Top = 8
+      Width = 75
+      BorderSpacing.InnerBorder = 4
+      Caption = 'create area'
+      OnClick = Button2Click
+      TabOrder = 1
+    end
+    object Button3: TButton
+      Left = 96
+      Height = 25
+      Top = 40
+      Width = 75
+      BorderSpacing.InnerBorder = 4
+      Caption = 'create line'
+      OnClick = Button3Click
+      TabOrder = 2
+    end
+    object Button5: TButton
+      Left = 208
+      Height = 25
+      Top = 8
+      Width = 75
+      BorderSpacing.InnerBorder = 4
+      Caption = 'add pie'
+      OnClick = Button5Click
+      TabOrder = 3
+    end
+    object Button7: TButton
+      Left = 288
+      Height = 25
+      Top = 40
+      Width = 75
+      BorderSpacing.InnerBorder = 4
+      Caption = 'add line'
+      OnClick = Button7Click
+      TabOrder = 4
+    end
+    object Button8: TButton
+      Left = 288
+      Height = 25
+      Top = 8
+      Width = 75
+      BorderSpacing.InnerBorder = 4
+      Caption = 'add area'
+      OnClick = Button8Click
+      TabOrder = 5
+    end
+    object Button9: TButton
+      Left = 16
+      Height = 25
+      Top = 40
+      Width = 75
+      BorderSpacing.InnerBorder = 4
+      Caption = 'create bar'
+      OnClick = Button9Click
+      TabOrder = 6
+    end
+    object Button10: TButton
+      Left = 208
+      Height = 25
+      Top = 40
+      Width = 75
+      BorderSpacing.InnerBorder = 4
+      Caption = 'add bar'
+      OnClick = Button10Click
+      TabOrder = 7
+    end
+    object Legend: TCheckBox
+      Left = 408
+      Height = 21
+      Top = 8
+      Width = 64
+      Caption = 'Legend'
+      OnChange = LegendChange
+      TabOrder = 8
+    end
+    object CheckBox1: TCheckBox
+      Left = 408
+      Height = 21
+      Top = 24
+      Width = 90
+      Caption = 'Bottom Axis'
+      Checked = True
+      OnChange = CheckBox1Change
+      State = cbChecked
+      TabOrder = 9
+    end
+    object CheckBox2: TCheckBox
+      Left = 408
+      Height = 21
+      Top = 40
+      Width = 70
+      Caption = 'Left Axis'
+      Checked = True
+      OnChange = CheckBox2Change
+      State = cbChecked
+      TabOrder = 10
+    end
+    object CheckBox3: TCheckBox
+      Left = 496
+      Height = 21
+      Top = 8
+      Width = 44
+      Caption = 'title'
+      Checked = True
+      OnChange = CheckBox3Change
+      State = cbChecked
+      TabOrder = 11
+    end
+    object CheckBox4: TCheckBox
+      Left = 496
+      Height = 21
+      Top = 24
+      Width = 59
+      Caption = 'Footer'
+      OnChange = CheckBox4Change
+      TabOrder = 12
+    end
+  end
+end
