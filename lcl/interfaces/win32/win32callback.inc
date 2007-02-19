@@ -1584,6 +1584,7 @@ begin
           Button := LOWORD(WParam);
           WheelDelta := SmallInt(HIWORD(WParam));
           State := GetShiftState;
+          Result := 0;
           UserData := Pointer(GetWindowLong(Window, GWL_USERDATA));
           WinProcess := false;
         end;
@@ -2181,7 +2182,7 @@ begin
     end;
   end;
 
-  { LMMouseEvent and LMInsertText have no Result field }
+  { LMInsertText has no Result field }
 
   if      PLMsg = @LMScroll     then Result := LMScroll.Result
   else if PLMsg = @LMKey        then Result := LMKey.Result
@@ -2190,7 +2191,7 @@ begin
   else if PLMsg = @LMMouseMove  then Result := LMMouseMove.Result
   else if PLMsg = @LMMove       then Result := LMMove.Result
   else if PLMsg = @LMNotify     then Result := LMNotify.Result
-  else if PLMsg = @LMMouseEvent then Result := 1
+  else if PLMsg = @LMMouseEvent then Result := LMMouseEvent.Result
   else                               Result := PLMsg^.Result;
 
   Assert(False, 'Trace:WindowProc - Exit');
