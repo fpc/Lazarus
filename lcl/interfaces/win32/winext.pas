@@ -223,10 +223,6 @@ function GetRandomRgn(aHDC: HDC; aHRGN: HRGN; iNum: longint): longint; stdcall; 
   e.g. BrowseForFolder dialog functions}
 function CoTaskMemAlloc(cb : ULONG) : PVOID; stdcall; external 'ole32.dll' name 'CoTaskMemAlloc';
 procedure CoTaskMemFree(pv : PVOID); stdcall; external 'ole32.dll' name 'CoTaskMemFree';
-// In the way that ScrollWindow is implemented at Windows unit
-// It's not possible to pass a pointer as argument
-// which prevents the use of nil
-function ScrollWindow(hWnd:HWND; XAmount:longint; YAmount:longint;lpRect,lpClipRect:LPRECT):WINBOOL; external 'user32' name 'ScrollWindow';
 
 { Miscellaneous functions }
 { Convert string Str to a PChar }

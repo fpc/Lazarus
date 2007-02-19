@@ -1272,7 +1272,7 @@ end;
 function ScrollWindow(hWnd: HWND; XAmount, YAmount: Integer;
   Rect, ClipRect: PRect): Boolean; inline;
 begin
-  Result := ScrollWindowEx(hWnd, XAmount, YAmount, Rect, ClipRect, 0, nil, 0);
+  Result := ScrollWindowEx(hWnd, XAmount, YAmount, Rect, ClipRect, 0, nil, SW_INVALIDATE);
 end;
 
 {------------------------------------------------------------------------------
