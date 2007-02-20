@@ -923,6 +923,23 @@ Var
     end;
   end;
   
+  // Gets the cursor position relative to a given window
+  function GetClientCursorPos(ClientWindow: HWND) : TSmallPoint;
+  var
+    P: TPoint;
+  begin
+    Windows.GetCursorPos(P);
+    //if the mouse is not over the window is better to set to 0 to avoid weird behaviors
+    if Windows.WindowFromPoint(P) = ClientWindow then
+      Windows.ScreenToClient(ClientWindow, P)
+    else
+    begin
+      P.X:=0;
+      P.Y:=0;
+    end;
+    Result := PointToSmallPoint(P);
+  end;
+  
 begin
   Assert(False, 'Trace:WindowProc - Start');
 
@@ -1561,9 +1578,6 @@ begin
         if TargetWindow = HWND(nil) then
           exit;
 
-
-
-
         // check if the window is an edit control of a combobox, if so,
         // redirect it to the combobox, not the edit control
         if GetWindowInfo(TargetWindow)^.isComboEdit then
@@ -1647,6 +1661,27 @@ begin
           if WindowInfo^.WinControl <> nil then
             HandleSpinEditDeltaPos(PNMUpDown(LParam));
         end;
+        NM_RCLICK:
+        begin
+          // A listview doesn't get a WM_RBUTTONUP message, because it keeps the
+          // message in its own event loop,
+          // see msdn article about "Default List-View Message Processing"
+          // therefore we take this notification and create a LM_RBUTTONUP
+          // message out of it
+          if (WindowInfo^.WinControl <> nil) and
+            (WindowInfo^.WinControl is TCustomListView) then
+          begin
+            WinProcess := false;
+            PLMsg:=@LMMouse;
+            With LMMouse Do
+            Begin
+              Msg := LM_RBUTTONUP;
+              Pos := GetClientCursorPos(PNMHdr(LParam)^.hwndFrom);
+              Keys := 0;  // I don't know how to get this information
+              Result := 0;
+            end;
+          end;
+        end;
       else
         PLMsg:=@LMNotify;
         With LMNotify Do
@@ -1725,26 +1760,14 @@ begin
         Msg := LM_CONTEXTMENU;
         XPos := GET_X_LPARAM(LParam);
         YPos := GET_Y_LPARAM(LParam);
-        Result := 0;
         //Only keyboard triggered contextmenu (Shift-F10) should be sent to LCL
         //but calling default handler is necessary. This schema avoids parent recursion
         //and also keeps default popupmenu (TMemo)
         if XPos = -1 then
-        begin
-          P := SmallPointToPoint(Pos);
-          Windows.GetCursorPos(P);
-          //if the mouse is not over the window is better to set to 0 to avoid weird behaviors
-          if Windows.WindowFromPoint(P) = Window then
-            Windows.ScreenToClient(Window, P)
-          else
-          begin
-            P.X:=0;
-            P.Y:=0;
-          end;
-          Pos := PointToSmallPoint(P);
-        end
+          Pos := GetClientCursorPos(Window)
         else
-          lWinControl:=nil;
+          lWinControl:=nil; // make sure no message is sent to the LCL
+        Result := 0;
       end;
     end;
     WM_SETCURSOR:
