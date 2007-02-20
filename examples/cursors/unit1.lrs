@@ -1,0 +1,34 @@
+{ Это - файл ресурсов, автоматически созданный lazarus }
+
+LazarusResources.Add('TForm1','FORMDATA',[
+  'TPF0'#6'TForm1'#5'Form1'#4'Left'#3#156#1#6'Height'#3#255#0#3'Top'#3'+'#1#5'W'
+  +'idth'#3')'#1#18'HorzScrollBar.Page'#3'('#1#18'VertScrollBar.Page'#3#254#0#13
+  +'ActiveControl'#7#7'Button1'#11'BorderIcons'#11#12'biSystemMenu'#10'biMinimi'
+  +'ze'#0#11'BorderStyle'#7#12'bsToolWindow'#7'Caption'#6#11'Cursor test'#8'OnC'
+  +'reate'#7#10'FormCreate'#0#6'TLabel'#6'Label1'#6'Cursor'#7#6'crHelp'#4'Left'
+  +#2#16#6'Height'#2#13#3'Top'#2#7#5'Width'#3#157#0#7'Caption'#6#27'Move mouse '
+  +'at this buttons:'#5'Color'#7#6'clNone'#11'ParentColor'#8#0#0#6'TBevel'#6'Be'
+  +'vel1'#4'Left'#2#8#6'Height'#2#3#3'Top'#3#136#0#5'Width'#3#23#1#0#0#6'TLabel'
+  +#6'Label2'#6'Cursor'#7#6'crHelp'#4'Left'#2#16#6'Height'#2#13#3'Top'#3#144#0#5
+  +'Width'#3#209#0#7'Caption'#6'(Drag cursor test: drag buttons into list'#5'Co'
+  +'lor'#7#6'clNone'#11'ParentColor'#8#0#0#7'TButton'#7'Button1'#6'Cursor'#7#8
+  +'crNoDrop'#4'Left'#2#16#6'Height'#2#25#3'Top'#2' '#5'Width'#2'K'#25'BorderSp'
+  +'acing.InnerBorder'#2#4#7'Caption'#6#8'crNoDrop'#8'TabOrder'#2#0#0#0#7'TButt'
+  +'on'#7'Button2'#6'Cursor'#7#6'crDrag'#4'Left'#2#16#6'Height'#2#25#3'Top'#2'@'
+  +#5'Width'#2'K'#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6#6'crDrag'#8'Ta'
+  +'bOrder'#2#1#0#0#7'TButton'#7'Button3'#6'Cursor'#7#9'crSQLWait'#4'Left'#2#16
+  +#6'Height'#2#25#3'Top'#2'`'#5'Width'#2'K'#25'BorderSpacing.InnerBorder'#2#4#7
+  +'Caption'#6#9'crSQLWait'#8'TabOrder'#2#2#0#0#6'TPanel'#6'Panel1'#4'Left'#3
+  +#167#0#6'Height'#2'H'#3'Top'#3#168#0#5'Width'#2'z'#7'Caption'#6#9'Drag here'
+  +#5'Color'#7#7'clWhite'#11'ParentColor'#8#8'TabOrder'#2#3#10'OnDragDrop'#7#14
+  +'Panel1DragDrop'#10'OnDragOver'#7#14'Panel1DragOver'#0#0#6'TPanel'#6'Panel2'
+  +#4'Left'#2#9#6'Height'#2#21#3'Top'#3#184#0#5'Width'#3#145#0#7'Caption'#6#15
+  +'Can be accepted'#8'DragMode'#7#11'dmAutomatic'#8'TabOrder'#2#4#0#0#6'TPanel'
+  +#6'Panel3'#4'Left'#2#9#6'Height'#2#21#3'Top'#3#213#0#5'Width'#3#145#0#7'Capt'
+  +'ion'#6#19'Can not be accepted'#8'DragMode'#7#11'dmAutomatic'#8'TabOrder'#2#5
+  +#0#0#7'TButton'#7'Button4'#4'Left'#3#155#0#6'Height'#2#25#3'Top'#2'`'#5'Widt'
+  +'h'#3#132#0#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6#17'Set Screen.Cur'
+  +'sor'#7'OnClick'#7#12'Button4Click'#8'TabOrder'#2#6#0#0#7'TButton'#7'Button5'
+  +#4'Left'#3#155#0#6'Height'#2#25#3'Top'#2' '#5'Width'#3#132#0#25'BorderSpacin'
+  +'g.InnerBorder'#2#4#7'Caption'#6#13'Custom cursor'#8'TabOrder'#2#7#0#0#0
+]);
