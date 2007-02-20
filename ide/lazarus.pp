@@ -63,7 +63,7 @@ uses
     RunTimeTypeInfoControls, Printer4Lazarus, Printers4LazIDE,
     CGILaz, CGILazIDE,
     MemDSLaz, SDFLaz, TurboPowerIPro, JPEGForLazarus,
-    FPCUnitTestRunner, FPCUnitIDE, ProjTemplates,
+    FPCUnitTestRunner, FPCUnitIDE, ProjTemplates, TAChartLazarusPkg,
     {$IFDEF windows}
       DBFLaz,
       {$IFDEF win32}

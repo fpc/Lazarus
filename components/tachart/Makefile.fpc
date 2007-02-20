@@ -1,0 +1,43 @@
+#   Makefile.fpc for TAChartLazarusPkg 0.0
+
+[package]
+name=tachartlazaruspkg
+version=0.0
+
+[compiler]
+unittargetdir=lib/$(CPU_TARGET)-$(OS_TARGET)
+unitdir=home/luis/compile/lazarus/TAChart_Final/ ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/ ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)/ ../../packager/units/$(CPU_TARGET)-$(OS_TARGET)/ ./
+includedir=./
+options=-dLCL -dLCL$(LCL_PLATFORM) -S2 -gl
+
+[target]
+units=tachartlazaruspkg.pas
+
+[clean]
+files=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) \
+      $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+[prerules]
+# LCL Platform
+ifndef LCL_PLATFORM
+ifeq ($(OS_TARGET),win32)
+LCL_PLATFORM=win32
+else
+ifeq ($(OS_TARGET),win64)
+LCL_PLATFORM=win32
+else
+LCL_PLATFORM=gtk
+endif
+endif
+endif
+export LCL_PLATFORM
+
+[rules]
+.PHONY: cleartarget all
+
+cleartarget:
+        -$(DEL) $(COMPILER_UNITTARGETDIR)/tachartlazaruspkg$(PPUEXT)
+
+all: cleartarget $(COMPILER_UNITTARGETDIR) tachartlazaruspkg$(PPUEXT)

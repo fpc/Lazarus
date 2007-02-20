@@ -31,7 +31,7 @@ interface
 
 uses
   {$IFDEF fpc}
-  LCLIntF, LCLType,
+  LCLIntF, LCLType, LResources,
   {$ELSE}
   Windows,
   {$ENDIF}
@@ -2040,5 +2040,6 @@ end;
 
 {$IFDEF fpc}
 initialization
+  {$I tagraph.lrs}
 {$ENDIF}
 end.

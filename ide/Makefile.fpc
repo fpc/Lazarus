@@ -102,7 +102,8 @@ BIG_IDE_OPTIONS=-dBigIDE $(LAZARUS_LIBPATHS) \
   -Fu../components/projecttemplates/lib/$(CPU_TARGET)-$(OS_TARGET) \
   -Fu../components/sqldb/lib/$(CPU_TARGET)-$(OS_TARGET) \
   -Fu../components/sdf/lib/$(CPU_TARGET)-$(OS_TARGET) \
-  -Fu../components/memds/lib/$(CPU_TARGET)-$(OS_TARGET)
+  -Fu../components/memds/lib/$(CPU_TARGET)-$(OS_TARGET) \
+  -Fu../components/tachart/lib/$(CPU_TARGET)-$(OS_TARGET)
 
 LAZBUILD_OPT=$(LAZARUS_LIBPATHS)
 

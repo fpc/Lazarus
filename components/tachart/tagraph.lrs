@@ -1,0 +1,18 @@
+LazarusResources.Add('tchart','XPM',[
+  '/* XPM */'#10'static char *ttachart[] = {'#10'/* width height num_colors cha'
+  +'rs_per_pixel */'#10'"    23    23       16            1",'#10'/* colors */'
+  +#10'"` c #000000",'#10'". c #800000",'#10'"# c #008000",'#10'"a c #808000",'
+  +#10'"b c #000080",'#10'"c c #800080",'#10'"d c #008080",'#10'"e c #c0c0c0",'
+  +#10'"f c #808080",'#10'"g c #ff0000",'#10'"h c #00ff00",'#10'"i c #ffff00",'
+  +#10'"j c #0000ff",'#10'"k c #ff00ff",'#10'"l c #00ffff",'#10'"m c #ffffff",'
+  +#10'/* pixels */'#10'"mmmmmmmmmmmmmmmmmmmmmmm",'#10'"mmmmmmmmmmmmmmmmmmmmmmm'
+  +'",'#10'"```````````````````````",'#10'"`mmemmmmemmmmemmmmemmm`",'#10'"`mmem'
+  +'mmmemmmmemmmmemmm`",'#10'"`mmegggmemmmmemmmmemmm`",'#10'"``eggegeeegggeeeee'
+  +'eeee`",'#10'"`mmgmmggemgmggmmmmemmm`",'#10'"`mmgmmmgemgmmgmmgggmmm`",'#10'"'
+  +'`gggmmmgemgmmgmmgmggmm`",'#10'"`mmemmmgemgmmgmmgmeggg`",'#10'"``eeeeegeegee'
+  +'geggeeeee`",'#10'"`mmemmmgemgmmgggmmemmm`",'#10'"`mmemmmgemgmmemmmmemmm`",'
+  +#10'"`mmemmmggggmmemmmmemmm`",'#10'"`mmemmmmemmmmemmmmemmm`",'#10'"``eeeeeee'
+  +'eeeeeeeeeeeee`",'#10'"`mmemmmmemmmmemmmmemmm`",'#10'"`mmemmmmemmmmemmmmemmm'
+  +'`",'#10'"`mm`mmmm`mmmm`mmmm`mmm`",'#10'"```````````````````````",'#10'"mmmm'
+  +'mmmmmmmmmmmmmmmmmmm",'#10'"mmmmmmmmmmmmmmmmmmmmmmm"'#10'};'#10
+]);
