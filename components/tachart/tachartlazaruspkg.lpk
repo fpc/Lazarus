@@ -25,15 +25,15 @@
 "/>
     <Files Count="3">
       <Item1>
-        <Filename Value="TASeries.pas"/>
+        <Filename Value="taseries.pas"/>
         <UnitName Value="TASeries"/>
       </Item1>
       <Item2>
-        <Filename Value="TAEngine.pas"/>
+        <Filename Value="taengine.pas"/>
         <UnitName Value="TAEngine"/>
       </Item2>
       <Item3>
-        <Filename Value="TAGraph.pas"/>
+        <Filename Value="tagraph.pas"/>
         <HasRegisterProc Value="True"/>
         <UnitName Value="TAGraph"/>
       </Item3>
