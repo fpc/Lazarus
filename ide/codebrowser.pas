@@ -86,6 +86,7 @@ type
     FFilename: string;
     FScanned: boolean;
     FScannedBytes: integer;
+    FScannedIdentifiers: integer;
     FScannedLines: integer;
     FUnitList: TCodeBrowserUnitList;
     procedure SetScanned(const AValue: boolean);
@@ -101,6 +102,7 @@ type
     property ChildNodes: TAvgLvlTree read FChildNodes;
     property ScannedLines: integer read FScannedLines write FScannedLines;
     property ScannedBytes: integer read FScannedBytes write FScannedBytes;
+    property ScannedIdentifiers: integer read FScannedIdentifiers write FScannedIdentifiers;
     property Scanned: boolean read FScanned write SetScanned;
   end;
   
@@ -249,6 +251,7 @@ type
     FProjectAlias: string;
     FRoot: TCodeBrowserUnitList;
     FScannedBytes: PtrInt;
+    FScannedIdentifiers: PtrInt;
     FScannedLines: PtrInt;
     FScannedPackages: integer;
     FScannedUnits: integer;
@@ -265,6 +268,7 @@ type
     procedure RemoveSortItem;
     procedure FillScopeComboBox;
     procedure SetScannedBytes(const AValue: PtrInt);
+    procedure SetScannedIdentifiers(const AValue: PtrInt);
     procedure SetScannedLines(const AValue: PtrInt);
     procedure SetScannedPackages(const AValue: integer);
     procedure SetScannedUnits(const AValue: integer);
@@ -280,7 +284,9 @@ type
     procedure WorkUpdateUnit(AnUnit: TCodeBrowserUnit);
     procedure FreeUnitList(List: TCodeBrowserUnitList);
     procedure UpdateStatusBar(Lazy: boolean);
+    procedure UpdateTreeView;
     procedure RemoveUnit(AnUnit: TCodeBrowserUnit);
+    function CountIdentifiers(Tool: TCodeTool): integer;
   public
     procedure BeginUpdate;
     procedure EndUpdate;
@@ -293,6 +299,7 @@ type
     property ScannedUnits: integer read FScannedUnits write SetScannedUnits;
     property ScannedLines: PtrInt read FScannedLines write SetScannedLines;
     property ScannedBytes: PtrInt read FScannedBytes write SetScannedBytes;
+    property ScannedIdentifiers: PtrInt read FScannedIdentifiers write SetScannedIdentifiers;
   end;
   
 var
@@ -563,6 +570,12 @@ begin
   FScannedBytes:=AValue;
 end;
 
+procedure TCodeBrowserView.SetScannedIdentifiers(const AValue: PtrInt);
+begin
+  if FScannedIdentifiers=AValue then exit;
+  FScannedIdentifiers:=AValue;
+end;
+
 procedure TCodeBrowserView.SetScannedLines(const AValue: PtrInt);
 begin
   if FScannedLines=AValue then exit;
@@ -601,6 +614,8 @@ begin
   end;
   if ord(OldStage)<ord(cbwsFinished) then begin
     UpdateStatusBar(cbwsFinished<fStage);
+    if fStage=cbwsFinished then
+      UpdateTreeView;
   end;
 end;
 
@@ -1136,8 +1151,10 @@ procedure TCodeBrowserView.WorkUpdateUnit(AnUnit: TCodeBrowserUnit);
     end;
     AnUnit.ScannedBytes:=ByteCnt;
     AnUnit.ScannedLines:=LineCnt;
-    inc(FScannedBytes,ByteCnt);
-    inc(FScannedLines,LineCnt);
+    AnUnit.ScannedIdentifiers:=CountIdentifiers(Tool);
+    inc(FScannedBytes,AnUnit.ScannedBytes);
+    inc(FScannedLines,AnUnit.ScannedLines);
+    inc(FScannedIdentifiers,AnUnit.ScannedIdentifiers);
     //DebugLn(['UpdateScannedCounters ',ExtractFileName(AnUnit.Filename),' LineCnt=',LineCnt,' ByteCnt=',ByteCnt]);
   end;
 
@@ -1152,8 +1169,10 @@ begin
   if AnUnit.Scanned then begin
     dec(FScannedBytes,AnUnit.ScannedBytes);
     dec(FScannedLines,AnUnit.ScannedLines);
+    dec(FScannedIdentifiers,AnUnit.ScannedIdentifiers);
     AnUnit.ScannedBytes:=0;
     AnUnit.ScannedLines:=0;
+    AnUnit.ScannedIdentifiers:=0;
     dec(FScannedUnits);
   end;
   AnUnit.Scanned:=true;
@@ -1206,11 +1225,19 @@ begin
   fLastStatusBarUpdate:=Now;
   s:='packages='+IntToStr(ScannedPackages)
     +' units='+IntToStr(ScannedUnits)
+    +' identifiers='+IntToStr(ScannedIdentifiers)
     +' lines='+IntToStr(ScannedLines)
     +' bytes='+IntToStr(ScannedBytes);
   if fStage<>cbwsFinished then
     s:=s+'. Scanning ...';
   StatusBar1.SimpleText:=s;
+end;
+
+procedure TCodeBrowserView.UpdateTreeView;
+begin
+  BrowseTreeView.BeginUpdate;
+  if Options.Levels.IndexOf(CodeBrowserLevelNames[cblPackages])>=0 then;
+  BrowseTreeView.EndUpdate;
 end;
 
 procedure TCodeBrowserView.RemoveUnit(AnUnit: TCodeBrowserUnit);
@@ -1219,9 +1246,25 @@ begin
     dec(FScannedUnits);
     dec(FScannedLines,AnUnit.ScannedLines);
     dec(FScannedBytes,AnUnit.ScannedBytes);
+    dec(FScannedIdentifiers,AnUnit.ScannedIdentifiers);
     AnUnit.Scanned:=false;
     if fOutdatedFiles<>nil then
       fOutdatedFiles.Remove(AnUnit);
+  end;
+end;
+
+function TCodeBrowserView.CountIdentifiers(Tool: TCodeTool): integer;
+var
+  Node: TCodeTreeNode;
+begin
+  Result:=0;
+  if (Tool=nil) or (Tool.Tree=nil) then exit;
+  Node:=Tool.Tree.Root;
+  while Node<>nil do begin
+    if Node.Desc=ctnImplementation then break;
+    if Node.Desc in (AllIdentifierDefinitions+[ctnProcedure,ctnProperty]) then
+      inc(Result);
+    Node:=Node.Next;
   end;
 end;
 
@@ -1274,6 +1317,7 @@ begin
   FScanned:=AValue;
   FScannedBytes:=0;
   FScannedLines:=0;
+  FScannedIdentifiers:=0;
   if UnitList<>nil then begin
     if FScanned then
       inc(UnitList.FScannedUnits)
