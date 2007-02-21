@@ -1940,11 +1940,11 @@ bigidecomponents: all
 	$(MAKE) -C projecttemplates
 	$(MAKE) -C memds
 	$(MAKE) -C sdf
+	$(MAKE) -C tachart
 ifneq ($(OS_TARGET),darwin)
 	$(MAKE) -C tdbf
 ifneq ($(OS_TARGET),win64)
 	$(MAKE) -C sqldb
-	$(MAKE) -C tachart
 endif
 endif
 cleanlaz: clean
