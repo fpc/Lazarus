@@ -2890,6 +2890,7 @@ begin
   if (FindOwnerControl(GetCapture) = Self) and (CaptureControl <> nil)
   then begin
     Control := nil;
+    //DebugLn(['TWinControl.IsControlMouseMsg A ', DbgSName(CaptureControl), ', ',DbgSName(CaptureControl.Parent),', Self: ', DbgSName(Self)]);
     if (CaptureControl.Parent = Self)
     then Control := CaptureControl;
   end
@@ -2898,7 +2899,7 @@ begin
                             [capfAllowWinControls,capfRecursive]);
   end;
 
-  //DebugLn('TWinControl.IsControlMouseMsg ',DbgSName(Self),' Control=',DbgSName(Control));
+  //DebugLn('TWinControl.IsControlMouseMsg B ',DbgSName(Self),' Control=',DbgSName(Control));
   Result := False;
   if Control <> nil then
   begin
@@ -3412,12 +3413,14 @@ Begin
   LM_SETFOCUS:
     begin
       Assert(False, Format('Trace:[TWinControl.WndPRoc] %s --> LM_SETFOCUS', [ClassName]));
-      Form := GetParentForm(Self);
       {$IFDEF VerboseFocus}
       DebugLn('TWinControl.WndProc LM_SetFocus ',Name,':',ClassName);
       {$ENDIF}
-      if (Form <> nil) and not Form.SetFocusedControl(Self) then Exit;
-      Message.Result:=0;
+      if not (csDestroyingHandle in ControlState) then begin
+        Form := GetParentForm(Self);
+        if (Form <> nil) and not Form.SetFocusedControl(Self) then Exit;
+        Message.Result:=0;
+      end;
     end;
 
   LM_KILLFOCUS:
