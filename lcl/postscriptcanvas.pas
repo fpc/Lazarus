@@ -872,7 +872,7 @@ begin
   WriteHeader('%%Pages: (atend)');
   WriteHeader('%%PageResources: (atend)');
   WriteHeader('%%PageOrder: Ascend');
-  WriteHeader('%%Page: 1');
+  WriteHeader('%%Page: 1 1');
   WriteHeader('');
   WriteHeader('%------------------------------------------------------------');
   WriteHeader('%================== BEGIN SETUP==============================');
@@ -1243,7 +1243,7 @@ begin
   
   Write('stroke');
   Write('showpage');
-  Write('%%'+Format('Page: %d',[PageNumber]));
+  Write('%%'+Format('Page: %d %d',[PageNumber, PageNumber]));
   
   write('newpath');
 end;
