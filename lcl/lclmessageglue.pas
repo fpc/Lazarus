@@ -140,7 +140,7 @@ var
 begin
   Result := 0;
 
-  FillChar(Mess,SizeOf(Mess),#0);
+  FillChar(Mess,SizeOf(Mess),0);
   Mess.Msg := LM_ACTIVATE;
   Mess.Active:=Active;
   Mess.Minimized:=Minimized;
@@ -234,7 +234,7 @@ var
   Mess: TLMSize;
 begin
   Result := 0;
-  FillChar(Mess, 0, SizeOf(Mess));
+  FillChar(Mess, SizeOf(Mess), 0);
   Mess.Msg := LM_SIZE;
   Mess.Width := Width;
   Mess.Height := Height;
@@ -268,7 +268,7 @@ function LCLSendMoveMsg(const Target: TControl; XPos, YPos: SmallInt;
 var
   Mess: TLMMove;
 begin
-  FillChar(Mess, 0, SizeOf(Mess));
+  FillChar(Mess, SizeOf(Mess), 0);
   Mess.Msg := LM_MOVE;
   Mess.XPos := XPos;
   Mess.YPos := YPos;
@@ -299,7 +299,7 @@ var
   Mess: TLMMouseMove;
   Keys: PtrInt;
 begin
-  FillChar(Mess, 0, SizeOf(Mess));
+  FillChar(Mess, SizeOf(Mess), 0);
   Mess.Msg := LM_MouseMove;
   Mess.XPos := XPos;
   Mess.YPos := YPos;
@@ -336,7 +336,7 @@ var
   Mess: TLMMouse;
   Keys: PtrInt;
 begin
-  FillChar(Mess, 0, SizeOf(Mess));
+  FillChar(Mess, SizeOf(Mess), 0);
   case Button of
     mbLeft   : Mess.Msg := LM_LBUTTONDOWN;
     mbMiddle : Mess.Msg := LM_MBUTTONDOWN;
@@ -377,7 +377,7 @@ var
   Mess: TLMMouse;
   Keys: PtrInt;
 begin
-  FillChar(Mess, 0, SizeOf(Mess));
+  FillChar(Mess, SizeOf(Mess), 0);
   case Button of
     mbLeft   : Mess.Msg := LM_LBUTTONUP;
     mbMiddle : Mess.Msg := LM_MBUTTONUP;
@@ -463,7 +463,7 @@ function LCLSendChangedMsg(const Target: TControl; ItemIndex: WPARAM = 0): PtrIn
 var
   Mess: TLMessage;
 begin
-  FillChar(Mess, 0, SizeOf(Mess));
+  FillChar(Mess, SizeOf(Mess), 0);
   Mess.Msg := LM_CHANGED;
   Mess.WParam := ItemIndex;
   Result := DeliverMessage(Target, Mess);
@@ -853,7 +853,7 @@ function LCLSendPaintMsg(const Target: TControl;const  DC: HDC; const PaintStruc
 var
   Mess: TLMPaint;
 begin
-  FillChar(Mess, 0, SizeOf(Mess));
+  FillChar(Mess, SizeOf(Mess), 0);
   Mess.Msg := LM_PAINT;
   Mess.DC := DC;
   Mess.PaintStruct := PaintStruct;
@@ -883,7 +883,7 @@ function LCLSendKeyDownEvent(const Target: TControl; var CharCode: Word;
 var
   Mess: TLMKeyDown;
 begin
-  FillChar(Mess, 0, SizeOf(Mess));
+  FillChar(Mess, SizeOf(Mess), 0);
   if BeforeEvent then begin
     if IsSysKey then
       Mess.Msg := CN_SYSKEYDOWN
@@ -922,7 +922,7 @@ function LCLSendKeyUpEvent(const Target: TControl; var CharCode: Word;
 var
   Mess: TLMKeyUp;
 begin
-  FillChar(Mess, 0, SizeOf(Mess));
+  FillChar(Mess, SizeOf(Mess), 0);
   if BeforeEvent then begin
     if IsSysKey then
       Mess.Msg := CN_SYSKEYUP
@@ -958,7 +958,7 @@ function LCLSendTimerMsg(const Target: TControl; TimerID: WParam;
 var
   Mess: TLMessage;
 begin
-  FillChar(Mess, 0, SizeOf(Mess));
+  FillChar(Mess, SizeOf(Mess), 0);
   Mess.Msg := LM_TIMER;
   Mess.WParam := TimerID;
   Mess.LParam := TimerProc;
@@ -1101,7 +1101,7 @@ var
   Mess: TLMMouse;
   Keys: PtrInt;
 begin
-  FillChar(Mess, 0, SizeOf(Mess));
+  FillChar(Mess, SizeOf(Mess), 0);
   Mess.Msg := LM_UNKNOWN;
   case ClickCount of
     2:
@@ -1154,7 +1154,7 @@ function LCLSendDrawListItemMsg(const Target: TControl; const DrawListItemStruct
 var
   Mess: TLMDrawListItem;
 begin
-  FillChar(Mess, 0, SizeOf(Mess));
+  FillChar(Mess, SizeOf(Mess), 0);
   Mess.Msg := LM_DRAWLISTITEM;
   Mess.DrawListItemStruct := DrawListItemStruct;
 
@@ -1177,7 +1177,7 @@ function LCLSendInternalPaintMsg(const Target: TControl; DC: HDC): PtrInt;
 var
   Mess: TLMessage;
 begin
-  FillChar(Mess, 0, SizeOf(Mess));
+  FillChar(Mess, SizeOf(Mess), 0);
   Mess.Msg := LM_INTERNALPAINT;
   Mess.WParam := DC;
 
