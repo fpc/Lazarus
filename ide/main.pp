@@ -6228,14 +6228,7 @@ begin
   end;
 
   // save source
-  if not (sfSaveToTestDir in Flags) then begin
-    if ActiveUnitInfo.Modified or ActiveUnitInfo.NeedsSaveToDisk then begin
-      // save source to file
-      Result:=ActiveUnitInfo.WriteUnitSource;
-      if Result=mrAbort then exit;
-      DestFilename:=ActiveUnitInfo.Filename;
-    end;
-  end else begin
+  if (sfSaveToTestDir in Flags) or ActiveUnitInfo.IsVirtual then begin
     // save source to test directory
     TestFilename:=MainBuildBoss.GetTestUnitFilename(ActiveUnitInfo);
     if TestFilename<>'' then begin
@@ -6244,6 +6237,13 @@ begin
       DestFilename:=TestFilename;
     end else
       exit;
+  end else begin
+    if ActiveUnitInfo.Modified or ActiveUnitInfo.NeedsSaveToDisk then begin
+      // save source to file
+      Result:=ActiveUnitInfo.WriteUnitSource;
+      if Result=mrAbort then exit;
+      DestFilename:=ActiveUnitInfo.Filename;
+    end;
   end;
 
   if sfCheckAmbiguousFiles in Flags then
