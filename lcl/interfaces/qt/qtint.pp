@@ -166,7 +166,12 @@ begin
     if not QVariant_IsNull(v) and QVariant_isValid(V) then
     begin
       //Write('Got a valid variant .. ');
-      QtWg := TQtWidget(PtrInt(QVariant_toUint(V, @Ok)));
+{$IFDEF CPU32}
+      QtWg := TQtWidget(QVariant_toUint(V, @Ok));
+{$ENDIF}
+{$IFDEF CPU64}
+      QtWg := TQtWidget(QVariant_toULongLong(V, @Ok));
+{$ENDIF}
       if OK then
       begin
         //Write('Converted successfully, Control=');
