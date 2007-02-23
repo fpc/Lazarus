@@ -159,14 +159,14 @@ var
   Ok: Boolean;
   QtWg: TQtWidget;
 begin
-  Result:=nil;
+  Result := nil;
   V := QVariant_Create();
   try
     QObject_property(QObjectH(WidgetH), V, 'lclwidget');
     if not QVariant_IsNull(v) and QVariant_isValid(V) then
     begin
       //Write('Got a valid variant .. ');
-      QtWg:=TQtWidget(QVariant_toUint(V, @Ok));
+      QtWg := TQtWidget(PtrInt(QVariant_toUint(V, @Ok)));
       if OK then
       begin
         //Write('Converted successfully, Control=');
