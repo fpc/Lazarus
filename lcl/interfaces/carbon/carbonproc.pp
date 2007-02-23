@@ -516,9 +516,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure CreateCarbonString(const S: String; var AString: CFStringRef);
 begin
-  if S = '' then AString := nil // empty string = null reference
-  else
-    AString := CFStringCreateWithCString(nil, Pointer(PChar(S)), DEFAULT_CFSTRING_ENCODING);
+  AString := CFStringCreateWithCString(nil, Pointer(PChar(S)), DEFAULT_CFSTRING_ENCODING);
 end;
 
 {------------------------------------------------------------------------------
