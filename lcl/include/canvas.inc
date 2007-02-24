@@ -325,6 +325,46 @@ begin
     Result:=0;
 end;
 
+procedure TCanvas.GradientFill(ARect: TRect; AStart, AStop: TColor; ADirection: TGradientDirection);
+var
+  RStart, RStop: Byte;
+  GStart, GStop: Byte;
+  BStart, BStop: Byte;
+  RDiff, GDiff, BDiff: Integer;
+  Count, I: Integer;
+
+begin
+  RedGreenBlue(ColorToRGB(AStart), RStart, GStart, BStart);
+  RedGreenBlue(ColorToRGB(AStop),  RStop,  GStop,  BStop);
+
+  if ADirection = gdVertical then Count := ARect.Bottom - ARect.Top
+                             else Count := ARect.Right - ARect.Left;
+                             
+  RDiff := RStop - RStart;
+  GDiff := GStop - GStart;
+  BDiff := BStop - BStart;
+
+  Changing;
+  for I := 0 to Count do
+  begin
+    Pen.Color := RGBToColor(RStart + (i * RDiff) div Count,
+                            GStart + (i * GDiff) div Count,
+                            BStart + (i * BDiff) div Count);
+
+    RequiredState([csHandleValid, csPenValid]);
+    if ADirection = gdHorizontal
+    then begin
+      LCLIntf.MoveToEx(FHandle, ARect.Left+I, ARect.Top, nil);
+      LCLIntf.LineTo(FHandle, ARect.Left+I, ARect.Bottom);
+    end
+    else begin
+      LCLIntf.MoveToEx(FHandle, ARect.Left, ARect.Top+I, nil);
+      LCLIntf.LineTo(FHandle, ARect.Right, ARect.Top+I);
+    end;
+  end;
+  Changed;
+end;
+
 procedure TCanvas.DoLockCanvas;
 begin
   if FLock=0 then InitializeCriticalSection(FLock);

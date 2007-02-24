@@ -849,6 +849,9 @@ type
   EInvalidGraphic = class(Exception);
   EInvalidGraphicOperation = class(Exception);
 
+type
+  TGradientDirection = (gdVertical,     // Fill vertical
+                        gdHorizontal);  // Fill Horizontal
 
   { TCanvas }
 
@@ -967,6 +970,7 @@ type
     procedure Frame(X1,Y1,X2,Y2: Integer);     // border using pen
     procedure FrameRect(const ARect: TRect); virtual; // border using brush
     procedure FrameRect(X1,Y1,X2,Y2: Integer); // border using brush
+    procedure GradientFill(ARect: TRect; AStart, AStop: TColor; ADirection: TGradientDirection);
     procedure Line(X1,Y1,X2,Y2: Integer); virtual; // short for MoveTo();LineTo(); // already in fpcanvas
     procedure Line(const p1,p2: TPoint);
     procedure Line(const Points: TRect);
@@ -1333,6 +1337,7 @@ function ColorToString(Color: TColor): AnsiString;
 function StringToColor(const S: shortstring): TColor;
 procedure GetColorValues(Proc: TGetColorStringProc);
 function InvertColor(AColor: TColor): TColor;
+function DecColor(AColor: TColor; AQuantity: Byte): TColor;
 
 Function Blue(rgb: TColor): BYTE;
 Function Green(rgb: TColor): BYTE;
@@ -1424,6 +1429,7 @@ const
  ***************************************************************************)
 
 function DbgS(const Style: TFontStyles): string; overload;
+
 
 procedure Register;
 
@@ -2003,6 +2009,23 @@ begin
   if (FCursorHandle <> 0) and OwnHandle then
     WidgetSet.DestroyCursor(FCursorHandle);
   inherited Destroy;
+end;
+
+// ------------------------------------------------------------------
+// Decrease the component RGBs of a color of the quantity' passed
+//
+// Color    : Color to decrease
+// Quantity : Decrease quantity
+// ------------------------------------------------------------------
+function DecColor(AColor: TColor; AQuantity: Byte) : TColor;
+var
+  R, G, B : Byte;
+begin
+  RedGreenBlue(ColorToRGB(AColor), R, G, B);
+  R := Max(0, Integer(R) - AQuantity);
+  G := Max(0, Integer(G) - AQuantity);
+  B := Max(0, Integer(B) - AQuantity);
+  Result := RGBToColor(R, G, B);
 end;
 
 procedure InterfaceFinal;
