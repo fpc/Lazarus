@@ -69,6 +69,7 @@ var
   pixmap: PGdkPixmap;
   bitmap: PGdkBitmap;
   w, h: integer;
+  max_w, max_h: guint;
   pixbuf, masked_pixbuf: PGdkPixbuf;
 begin
   Result := 0;
@@ -78,6 +79,16 @@ begin
   bitmap := PGDIObject(ACursorInfo^.hbmColor)^.GDIBitmapMaskObject;
 
   gdk_drawable_get_size(pixmap, @w, @h);
+  gdk_display_get_maximal_cursor_size(gdk_display_get_default, @max_w, @max_h);
+  
+  if (w > max_w) or (h > max_h) then
+    exit;
+
+{
+  max_w := gdk_display_get_default_cursor_size(gdk_display_get_default);
+  if (w > max_w) or (h > max_w) then
+    DebugLn(['CreateCursor cursor size:',w,'x',h,' > default size:', max_w]);
+}
 
   // create alpha pixbuf
   pixbuf := gdk_pixbuf_new(GDK_COLORSPACE_RGB, True, 8, w, h);

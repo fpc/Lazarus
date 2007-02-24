@@ -45,17 +45,24 @@ function gdk_window_xwindow(win : PGdkDrawable): TXID; cdecl; external gdklib na
 
 {$endif}
 
-function gdk_screen_get_default: PGdkScreen; cdecl; external gdklib;
-
 procedure laz_gdk_gc_set_dashes(gc:PGdkGC; dash_offset:gint;
   dashlist:Pgint8; n:gint); cdecl; external gdkdll name 'gdk_gc_set_dashes';
 
-// gtk 2.2
+// gdk 2.2
 procedure gdk_display_get_pointer(display : PGdkDisplay; screen :PGdkScreen; x :Pgint; y : Pgint; mask : PGdkModifierType); cdecl; external gdklib;
 function gdk_display_get_default:PGdkDisplay; cdecl; external gdklib;
 
 procedure gdk_draw_pixbuf(drawable : PGdkDrawable; gc : PGdkGC; pixbuf : PGdkPixbuf; src_x, src_y, dest_x, dest_y, width, height : gint;
                                              dither : TGdkRgbDither; x_dither, y_dither : gint); cdecl; external gdklib;
-// gtk 2.4
+function gdk_screen_get_default: PGdkScreen; cdecl; external gdklib;
+
+// gdk 2.4
 function gdk_cursor_new_from_pixbuf(display: PGdkDisplay; pixbuf: PGdkPixbuf; x, y: gint): PGdkCursor; cdecl; external gdklib name 'gdk_cursor_new_from_pixbuf';
+function gdk_display_get_default_cursor_size(display: PGdkDisplay): guint; cdecl; external gdklib;
+procedure gdk_display_get_maximal_cursor_size(display: PGdkDisplay; w, h: pguint); cdecl; external gdklib;
+
+{ for future use
+function gdk_display_supports_cursor_alpha(display: PGdkDisplay): gBoolean; cdecl; external gdklib;
+function gdk_display_supports_cursor_color(display: PGdkDisplay): gBoolean; cdecl; external gdklib;
+}
 
