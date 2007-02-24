@@ -798,15 +798,36 @@ end;
    TCustomListView SetSelection
 ------------------------------------------------------------------------------}
 procedure TCustomListView.SetSelection(const AValue: TListItem);
+var
+  i: integer;
 begin
   if (AValue<>nil) and (AValue.ListView<>Self) then
     raise Exception.Create('item does not belong to this listview');
   if FSelected = AValue then Exit;
-  FSelected := AValue;
   //DebugLn('TCustomListView.SetSelection FSelected=',dbgs(FSelected));
-  if not HandleAllocated then Exit;
-  TWSCustomListViewClass(WidgetSetClass).ItemSetState(Self, FSelected.Index,
-                                                  FSelected, lisSelected, True);
+  if AValue = nil then begin
+    if MultiSelect then begin
+      BeginUpdate;
+      try
+        for i:=0 to Items.Count-1 do
+          with Items[i] do
+            if Selected then
+              Selected:=False;
+      finally
+        EndUpdate;
+      end;
+    end
+    else
+      FSelected.Selected := False;
+    FSelected := nil;
+    Include(FFlags,lffSelectedValid);
+  end
+  else begin
+    FSelected := AValue;
+    if HandleAllocated then
+      TWSCustomListViewClass(WidgetSetClass).ItemSetState(Self, FSelected.Index,
+                                                      FSelected, lisSelected, True);
+  end;
 end;
 
 procedure TCustomListView.SetOwnerData(const AValue: Boolean);
