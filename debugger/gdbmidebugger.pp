@@ -2098,7 +2098,7 @@ function TGDBMIDebugger.StartDebugging(const AContinueCommand: String): Boolean;
       if S <> ''
       then begin
         FMainAddr := StrToIntDef(S, 0);
-        ExecuteCommand('-break-insert -t *' + S,  [cfIgnoreError], R);
+        ExecuteCommand('-break-insert -t *%u', [FMainAddr],  [cfIgnoreError], R);
         Result := R.State <> dsError;
         if Result then Exit;
       end;
@@ -2194,7 +2194,7 @@ begin
     // We could not set our initial break to get info and allow stepping
     // Try it with the program entry point
     FMainAddr := StrToIntDef(EntryPoint, 0);
-    ExecuteCommand('-break-insert -t *' + EntryPoint, [cfIgnoreError], R);
+    ExecuteCommand('-break-insert -t *%u', [FMainAddr], [cfIgnoreError], R);
     TempInstalled := R.State <> dsError;
   end;
   
