@@ -75,8 +75,8 @@ end;
 
 
 function CarbonPrivateWindow_Close(ANextHandler: EventHandlerCallRef;
-                                   AEvent: EventRef;
-                                   AInfo: PWidgetInfo): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
+  AEvent: EventRef;
+  AInfo: TCarbonWidgetInfo): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
 var
   Msg: TLMessage;
 begin
@@ -86,16 +86,17 @@ begin
   Msg.msg := LM_CLOSEQUERY;
 
   // Message results : 0 - do nothing, 1 - destroy or hide window
-  if DeliverMessage(AInfo^.LCLObject, Msg) = 0 then
+  if DeliverMessage(AInfo.LCLObject, Msg) = 0 then
   begin
     Result := noErr;
     Exit;
   end;
   
-  if (AInfo^.LCLObject is TCustomForm) and
-    (fsModal in (AInfo^.LCLObject as TCustomForm).FormState) then
+  if (AInfo.LCLObject is TCustomForm) and
+    (fsModal in (AInfo.LCLObject as TCustomForm).FormState) then
   begin // form is modal - avoid destroy
     Result := noErr;
+    DebugLn('CarbonPrivateWindow_Close Hide modal form');
     Exit;
   end;
 
@@ -107,12 +108,12 @@ end;
   Generic function that handles all mouse dragging events }
 procedure TrackProgress(AControl: ControlRef; APartCode: ControlPartCode); {$IFDEF darwin}mwpascal;{$ENDIF}
 var
+  Msg: TLMMouseMove;
   MousePoint: HIPoint;
   AbsMousePos: FPCMacOSAll.Point;
   Window: WindowRef;
   R: FPCMacOSAll.Rect;
-  Msg: TLMMouseMove;
-  Info:PWidgetInfo;
+  Info: TCarbonWidgetInfo;
 begin
   {$IFDEF VerboseMouse}
   debugln('TrackProgress');
@@ -125,20 +126,21 @@ begin
 
   HIViewConvertPoint(MousePoint, nil, AControl);
 
-  FillChar(Msg.Msg,SizeOf(Msg),0);
-  Msg.Msg := LM_MOUSEMOVE;
-  Msg.XPos := Trunc(MousePoint.X);
-  Msg.YPos := Trunc(MousePoint.Y);
-  Msg.Keys := GetCarbonMsgKeyState;
-
   Info := GetCtrlWidgetInfo(AControl);
   if Info = nil then begin
     //AControl should be fine but if it isn't, default to the window
-    Info := GetWndWidgetInfo(Window);//HIViewGetFirstSubview(HiViewRef(AControl)));
+    Info := GetWndWidgetInfo(Window);
   end;
     
-  if Info <> nil 
-  then DeliverMessage(Info^.LCLObject, Msg);
+  if Info <> nil then
+  begin
+    FillChar(Msg, SizeOf(TLMMouseMove), 0);
+    Msg.Msg := LM_MOUSEMOVE;
+    Msg.XPos := Trunc(MousePoint.X);
+    Msg.YPos := Trunc(MousePoint.Y);
+    Msg.Keys := GetCarbonMsgKeyState;
+    DeliverMessage(Info.LCLObject, Msg);
+  end;
 end;
 
 { CarbonPrivateWindow_ControlTrack
@@ -146,13 +148,13 @@ end;
   For mouse move events while not dragging see below
   CarbonPrivateWindow_MouseProc }
 function CarbonPrivateWindow_ControlTrack(ANextHandler: EventHandlerCallRef;
-                                   AEvent: EventRef;
-                                   AInfo: PWidgetInfo): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
+  AEvent: EventRef;
+  AInfo: TCarbonWidgetInfo): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
 const
-    MSGKIND: array[1..3] of Integer = (LM_LBUTTONUP, LM_RBUTTONUP, LM_MBUTTONUP);
+  MSGKIND: array[1..3] of Integer = (LM_LBUTTONUP, LM_RBUTTONUP, LM_MBUTTONUP);
 var
   Control: ControlRef;
-  MousePoint: HIPoint;//QDPoint;
+  MousePoint: HIPoint;
   ActionUPP, OldActionUPP: ControlActionUPP;
   pt: FPCMacOSAll.Point;
   MouseButton: EventMouseButton;
@@ -180,17 +182,18 @@ begin
   
   GetGlobalMouse(Pt);
 
-  Control := ControlRef(AInfo^.Widget);
+  Control := ControlRef(AInfo.Widget);
   // if control is the rootview or rootcontrol (parent = nil)
   // use the content area. No conversion is needed
-  if HIViewGetSuperView(Control) = nil
-  then begin
+  if HIViewGetSuperView(Control) = nil then
+  begin
     // root
     GetWindowBounds(Window, kWindowContentRgn, R);
     MousePoint.X := pt.h - R.left;
     MousePoint.Y := pt.v - R.Top;
   end
-  else begin
+  else
+  begin
     // non root
     GetWindowBounds(Window, kWindowStructureRgn, R);
     MousePoint.X := pt.h - R.left;
@@ -199,26 +202,25 @@ begin
   end;
   
   FillChar(Msg,SizeOf(Msg),0);
-  if  (MouseButton >= Low(MSGKIND))
-  and (MouseButton <= High(MSGKIND))
-  then Msg.Msg := MSGKIND[MouseButton];
+  if  (MouseButton >= Low(MSGKIND)) and (MouseButton <= High(MSGKIND)) then
+    Msg.Msg := MSGKIND[MouseButton];
 
   Msg.XPos := Trunc(MousePoint.X);
   Msg.YPos := Trunc(MousePoint.Y);
   Msg.Keys := GetCarbonMsgKeyState;
                  
-  DeliverMessage(AInfo^.LCLObject, Msg);
+  DeliverMessage(AInfo.LCLObject, Msg);
 end;
                                    
 function CarbonPrivateWindow_MouseProc(ANextHandler: EventHandlerCallRef;
-                                AEvent: EventRef;
-                                AWIndowInfo: PWidgetInfo): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
+  AEvent: EventRef;
+  AWIndowInfo: TCarbonWidgetInfo): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
 var
-  Root: ControlRef;     // the root control of the window
-  Control: ControlRef;  // the control we are dealing with
-                        // or the rootcontrol if none found          
-  Info: PWidgetInfo;    // the info specific to the mouse event
-                        // or the window's widgetinfo if none found
+  ContentView: ControlRef;// the content control of the window
+  Control: ControlRef;    // the control we are dealing with
+                          // or the rootcontrol if none found
+  Info: TCarbonWidgetInfo;// the info specific to the mouse event
+                          // or the window's widgetinfo if none found
                                 
 //
 // helper functions used commonly
@@ -301,9 +303,7 @@ var
     or (ClickCount > High(MSGKIND))
     then ClickCount := 1;
     
-    if  (MouseButton < Low(MSGKIND[1]))
-    or (MouseButton > High(MSGKIND[1])) then
-      exit;
+    if (MouseButton < Low(MSGKIND[1])) or (MouseButton > High(MSGKIND[1])) then Exit;
     Msg^.Msg := MSGKIND[ClickCount, MouseButton];
     //debugln('HandleMouseDownEvent CliCount=',dbgs(ClickCount),' MouseButton=',dbgs(MouseButton),' Msg^.Msg=',dbgs(Msg^.Msg));
 
@@ -311,7 +311,7 @@ var
     Msg^.YPos := MousePoint.Y;
     Msg^.Keys := GetCarbonMsgKeyState;
 
-//???? What are we doing here????
+    // ???? What rae we doing here ????
     Spec := MakeEventSpec(kEventClassControl, kEventControlTrack);
     InstallControlEventHandler(Control, RegisterEventHandler(@CarbonPrivateWindow_ControlTrack),
       1, @Spec, Info, nil);
@@ -335,9 +335,8 @@ var
     MouseButton := GetMouseButton;
     MousePoint := GetMousePoint;
     
-    if  (MouseButton >= Low(MSGKIND))
-    and (MouseButton <= High(MSGKIND))
-    then Msg^.Msg := MSGKIND[MouseButton];
+    if  (MouseButton >= Low(MSGKIND)) and (MouseButton <= High(MSGKIND)) then
+      Msg^.Msg := MSGKIND[MouseButton];
 
     Msg^.XPos := MousePoint.X;
     Msg^.YPos := MousePoint.Y;
@@ -367,7 +366,7 @@ var
     {$IFDEF VerboseMouse}
     DebugLN('-- mouse dragged --');
     {$ENDIF}
-    //TODO
+    // TODO
   end;
 
   procedure HandleMouseWheelEvent(var AMsg);
@@ -400,14 +399,16 @@ begin
   FillChar(Msg, SizeOf(Msg), 0);
 
   //Find out which control the mouse event should occur for
-  GetRootControl(AWindowInfo^.Widget, Root);
+  ContentView := GetCarbonWindowContent(HWND(AWindowInfo.Widget));
   Control := nil;
-  HIViewGetViewForMouseEvent(Root, AEvent, Control);
+  HIViewGetViewForMouseEvent(ContentView, AEvent, Control);
   
   if Control = nil then
   begin
+    {$IFDEF VerboseMouse}
     DebugLn('Mouse event on nil!');
-    Control := Root;
+    {$ENDIF}
+    Control := ContentView;
   end;
   
   // if a control other than root is found, send the message 
@@ -415,13 +416,13 @@ begin
   // if a lower control without widgetInfo is found, use its parent
   // Note: HIViewGetViewForMouseEvent returns the root if nothing found
   Info := nil;
-  while Control <> Root do
+  while Control <> ContentView do
   begin
     Info := GetCtrlWidgetInfo(Pointer(Control));
     if Info <> nil then Break;
     Control := HIViewGetSuperview(Control);
   end;
-  if (Info = nil) or (Control = Root)
+  if (Info = nil) or (Control = ContentView)
   then Info := AWindowInfo;
   
   EventKind := GetEventKind(AEvent);
@@ -431,34 +432,32 @@ begin
     kEventMouseMoved,//      : HandleMouseMovedEvent(Msg);
     kEventMouseDragged    : HandleMouseMovedEvent(Msg);//HandleMouseDraggedEvent(Msg);
 
-    //For the enter and exit events tracking must be enabled
-    //tracking is enabled by defining a rect that you want to track
+    // For the enter and exit events tracking must be enabled
+    // tracking is enabled by defining a rect that you want to track
     // TODO: Tracking
     kEventMouseEntered    : Msg.Message.Msg := CM_MOUSEENTER;
     kEventMouseExited     : Msg.Message.Msg := CM_MOUSELEAVE;
 
     kEventMouseWheelMoved : HandleMouseWheelEvent(Msg);
   else
-    exit(EventNotHandledErr);
+    Exit(EventNotHandledErr);
   end;
   
   // Msg is set in the Appropriate HandleMousexxx procedure
-  if DeliverMessage(Info^.LCLObject, Msg) = 0 then begin
-    Result :=  EventNotHandledErr; //CallNextEventHandler(ANextHandler, AEvent);
-  end
-  else begin
+  if DeliverMessage(Info.LCLObject, Msg) = 0 then
+    Result :=  EventNotHandledErr //CallNextEventHandler(ANextHandler, AEvent);
+  else
     // the LCL does not want the event propagated
     Result := noErr;
-  end;
 end;
 
 function CarbonPrivateWindow_KeyboardProc(ANextHandler: EventHandlerCallRef;
-                                          AEvent: EventRef;
-                                          AWIndowInfo: PWidgetInfo): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
+  AEvent: EventRef;
+  AWIndowInfo: TCarbonWidgetInfo): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
 var
   Control: ControlRef;      // the control we are dealing with
                             // or the rootcontrol if none found
-  Info: PWidgetInfo;        // the info specific to the mouse event
+  Info: TCarbonWidgetInfo;  // the info specific to the mouse event
                             // or the window's widgetinfo if none found
   KeyChar : char;           //Ascii char, when possible (xx_(SYS)CHAR)
   UTF8Character: TUTF8Char; //char to send via IntfUtf8KeyPress
@@ -664,7 +663,7 @@ var
     //Send message to LCL
     if VKKeyCode<>VK_UNKNOWN then
     begin
-      if (DeliverMessage(Info^.LCLObject, KeyMsg) <> 0) or (KeyMsg.CharCode=VK_UNKNOWN) then
+      if (DeliverMessage(Info.LCLObject, KeyMsg) <> 0) or (KeyMsg.CharCode=VK_UNKNOWN) then
       begin
         // the LCL handled the key
         {$IFDEF VerboseKeyboard}
@@ -681,7 +680,7 @@ var
       //Send a LM_(SYS)KEYDOWN
       if IsSysKey then KeyMsg.Msg := LM_SYSKEYDOWN
       else KeyMsg.Msg := LM_KEYDOWN;
-      if (DeliverMessage(Info^.LCLObject, KeyMsg) <> 0) or (KeyMsg.CharCode=VK_UNKNOWN) then
+      if (DeliverMessage(Info.LCLObject, KeyMsg) <> 0) or (KeyMsg.CharCode=VK_UNKNOWN) then
       begin
         // the LCL handled the key
         {$IFDEF VerboseKeyboard}
@@ -696,7 +695,7 @@ var
     if SendChar then
     begin
       // send the UTF8 keypress
-      if TWinControl(Info^.LCLObject).IntfUTF8KeyPress(UTF8Character,1,IsSysKey) then
+      if TWinControl(Info.LCLObject).IntfUTF8KeyPress(UTF8Character,1,IsSysKey) then
       begin
         // the LCL has handled the key
         {$IFDEF VerboseKeyboard}
@@ -715,7 +714,7 @@ var
       CharMsg.CharCode := ord(KeyChar);
 
       //Send message to LCL
-      if (DeliverMessage(Info^.LCLObject, CharMsg) <> 0) or (CharMsg.CharCode=VK_UNKNOWN) then
+      if (DeliverMessage(Info.LCLObject, CharMsg) <> 0) or (CharMsg.CharCode=VK_UNKNOWN) then
       begin
         // the LCL handled the key
         {$IFDEF VerboseKeyboard}
@@ -734,7 +733,7 @@ var
       //Send a LM_(SYS)CHAR
       if IsSysKey then CharMsg.Msg := LM_SYSCHAR
       else CharMsg.Msg := LM_CHAR;
-      if DeliverMessage(Info^.LCLObject, CharMsg) <> 0 then
+      if DeliverMessage(Info.LCLObject, CharMsg) <> 0 then
       begin
         // the LCL handled the key
         {$IFDEF VerboseKeyboard}
@@ -767,7 +766,7 @@ var
     //Send message to LCL
     if VKKeyCode<>VK_UNKNOWN then
     begin
-      if (DeliverMessage(Info^.LCLObject, KeyMsg) <> 0) or (KeyMsg.CharCode=VK_UNKNOWN) then
+      if (DeliverMessage(Info.LCLObject, KeyMsg) <> 0) or (KeyMsg.CharCode=VK_UNKNOWN) then
       begin
         // the LCL has handled the key
         {$IFDEF VerboseKeyboard}
@@ -784,7 +783,7 @@ var
       //Send a LM_(SYS)KEYUP
       if IsSysKey then KeyMsg.Msg := LM_SYSKEYUP
       else KeyMsg.Msg := LM_KEYUP;
-      if DeliverMessage(Info^.LCLObject, KeyMsg) <> 0 then
+      if DeliverMessage(Info.LCLObject, KeyMsg) <> 0 then
       begin
         // the LCL handled the key
         {$IFDEF VerboseKeyboard}
@@ -798,27 +797,26 @@ var
 
   end;
 
-var Root: ControlRef;
+var ContentView: HIViewRef;
 begin
   Result := EventNotHandledErr;
-  //In compositing mode, this is the Content View.
-  GetRootControl(AWindowInfo^.Widget, Root);
+  //In compositing mode, this is the content view
+  ContentView := GetCarbonWindowContent(HWND(AWindowInfo.Widget));
   Control := nil;
-  GetKeyboardFocus(AWindowInfo^.Widget,Control);
-  if Control = nil
-  then Control := Root;
+  GetKeyboardFocus(AWindowInfo.Widget, Control);
+  if Control = nil then Control := ContentView;
 
   // if a control other than root is found, send the message
   // to the control instead of the window
   // if a lower control without widgetInfo is found, use its parent
   Info := nil;
-  while Control <> Root do
+  while Control <> ContentView do
   begin
     Info := GetCtrlWidgetInfo(Pointer(Control));
     if Info <> nil then Break;
     Control := HIViewGetSuperview(Control);
   end;
-  if (Info = nil) or (Control = Root)
+  if (Info = nil) or (Control = ContentView)
   then Info := AWindowInfo;
 
   EventKind := GetEventKind(AEvent);
@@ -840,8 +838,9 @@ begin
   end;
 end;
 
-function CarbonPrivateWindow_ActivateProc(ANextHandler: EventHandlerCallRef; AEvent: EventRef;
-  AInfo: PWidgetInfo): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
+function CarbonPrivateWindow_ActivateProc(ANextHandler: EventHandlerCallRef;
+  AEvent: EventRef;
+  AInfo: TCarbonWidgetInfo): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
 var
   Msg: TLMessage;
   EventKind: UInt32;
@@ -857,11 +856,12 @@ begin
   kEventWindowDeactivated: Msg.msg := LM_DEACTIVATE;
   else Exit;
   end;
-  DeliverMessage(AInfo^.LCLObject, Msg);
+  DeliverMessage(AInfo.LCLObject, Msg);
 end;
 
-function CarbonPrivateWindow_ShowWindow(ANextHandler: EventHandlerCallRef; AEvent: EventRef;
-  AInfo: PWidgetInfo): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
+function CarbonPrivateWindow_ShowWindow(ANextHandler: EventHandlerCallRef;
+  AEvent: EventRef;
+  AInfo: TCarbonWidgetInfo): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
 var
   Msg: TLMShowWindow;
   EventKind: UInt32;
@@ -882,37 +882,42 @@ begin
   kEventWindowExpanded, kEventWindowZoomed:
     begin
       Msg.Show := True;
-      if IsWindowInStandardState(WindowRef(AInfo^.Widget), nil, nil) then
+      if IsWindowInStandardState(WindowRef(AInfo.Widget), nil, nil) then
         Msg.Status := SW_SHOWNORMAL
       else
         Msg.Status := SW_SHOWMAXIMIZED;
     end;
   else Exit;
   end;
-  DeliverMessage(AInfo^.LCLObject, Msg);
+  DeliverMessage(AInfo.LCLObject, Msg);
 end;
 
 // ==================================================================
 // C L A S S 
 // ==================================================================
 
-  { TCarbonPrivateWindow }
+{ TCarbonPrivateWindow }
 
-class procedure TCarbonPrivateWindow.RegisterEvents(AInfo: PWidgetInfo);
+class procedure TCarbonPrivateWindow.RegisterEvents(AInfo: TCarbonWidgetInfo);
 var
   MouseSpec: array [0..6] of EventTypeSpec;
   TmpSpec: EventTypeSpec;
   KeySpecs: array[0..3] of EventTypeSpec;
   ActivateSpecs: array[0..1] of EventTypeSpec;
   ShowWindowSpecs: array[0..2] of EventTypeSpec;
+  
+  ContentView: HIViewRef;
 begin
+  // find window content view to assign draw events
+  ContentView := GetCarbonWindowContent(HWND(AInfo.Widget));
+
   TmpSpec := MakeEventSpec(kEventClassWindow, kEventWindowClose);
-  InstallWindowEventHandler(AInfo^.Widget,
+  InstallWindowEventHandler(AInfo.Widget,
     RegisterEventHandler(@CarbonPrivateWindow_Close),
     1, @TmpSpec, Pointer(AInfo), nil);
 
   TmpSpec := MakeEventSpec(kEventClassWindow, kEventWindowClosed);
-  InstallWindowEventHandler(AInfo^.Widget,
+  InstallWindowEventHandler(AInfo.Widget,
     RegisterEventHandler(@CarbonPrivateCommon_Dispose),
     1, @TmpSpec, Pointer(AInfo), nil);
   
@@ -931,7 +936,7 @@ begin
   MouseSpec[6].eventClass := kEventClassMouse;
   MouseSpec[6].eventKind := kEventMouseWheelMoved;
 
-  InstallWindowEventHandler(AInfo^.Widget,
+  InstallWindowEventHandler(AInfo.Widget,
     RegisterEventHandler(@CarbonPrivateWindow_MouseProc),
     7, @MouseSpec[0], Pointer(AInfo), nil);
     
@@ -944,7 +949,7 @@ begin
   KeySpecs[3].eventClass := kEventClassKeyboard;
   KeySpecs[3].eventKind := kEventRawKeyModifiersChanged;
 
-  InstallWindowEventHandler(AInfo^.Widget,
+  InstallWindowEventHandler(AInfo.Widget,
     RegisterEventHandler(@CarbonPrivateWindow_KeyboardProc),
     4, @KeySpecs[0], Pointer(AInfo), nil);
 
@@ -953,7 +958,7 @@ begin
   ActivateSpecs[1].eventClass := kEventClassWindow;
   ActivateSpecs[1].eventKind := kEventWindowDeactivated;
   
-  InstallWindowEventHandler(AInfo^.Widget,
+  InstallWindowEventHandler(AInfo.Widget,
     RegisterEventHandler(@CarbonPrivateWindow_ActivateProc),
     2, @ActivateSpecs[0], Pointer(AInfo), nil);
     
@@ -964,21 +969,21 @@ begin
   ShowWindowSpecs[2].eventClass := kEventClassWindow;
   ShowWindowSpecs[2].eventKind := kEventWindowZoomed;
 
-  InstallWindowEventHandler(AInfo^.Widget,
+  InstallWindowEventHandler(AInfo.Widget,
     RegisterEventHandler(@CarbonPrivateWindow_ShowWindow),
     3, @ShowWindowSpecs[0], Pointer(AInfo), nil);
 
-  TmpSpec := MakeEventSpec(kEventClassWindow, kEventWindowDrawContent);
-  InstallWindowEventHandler(AInfo^.Widget,
+  TmpSpec := MakeEventSpec(kEventClassControl, kEventControlDraw);
+  InstallControlEventHandler(ContentView,
     RegisterEventHandler(@CarbonPrivateCommon_Draw),
     1, @TmpSpec, Pointer(AInfo), nil);
     
   TmpSpec := MakeEventSpec(kEventClassWindow, kEventWindowBoundsChanged);
-  InstallWindowEventHandler(AInfo^.Widget,
+  InstallWindowEventHandler(AInfo.Widget,
     RegisterEventHandler(@CarbonPrivateCommon_BoundsChanged),
     1, @TmpSpec, Pointer(AInfo), nil);
     
-  debugln('TCarbonPrivateWindow.RegisterEvents ',DbgSName(AInfo^.LCLObject));
+  debugln('TCarbonPrivateWindow.RegisterEvents ',DbgSName(AInfo.LCLObject));
 end;
 
 class procedure TCarbonPrivateWindow.UnregisterEvents;

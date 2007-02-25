@@ -1,5 +1,5 @@
 {%MainUnit carbonprivate.pp}
-{ $Id: $}
+{ $Id$}
 {
  *****************************************************************************
  *                                                                           *
@@ -16,19 +16,20 @@
 }
 
 
-class procedure TCarbonPrivateCheckBox.RegisterEvents(AInfo: PWidgetInfo);
+class procedure TCarbonPrivateValueControl.RegisterEvents(AInfo: TCarbonWidgetInfo);
 var
   TmpSpec: EventTypeSpec;
 begin
   inherited;
 
   TmpSpec := MakeEventSpec(kEventClassControl, kEventControlValueFieldChanged);
-  InstallControlEventHandler(AInfo^.Widget,
+  InstallControlEventHandler(AInfo.Widget,
     RegisterEventHandler(@CarbonPrivateCommon_ValueChanged),
     1, @TmpSpec, Pointer(AInfo), nil);
+  DebugLn(TWinControl(AInfo.LCLObject).Name,':', TWinControl(Ainfo.LCLObject).ClassName ,' Value Changed Events set')
 end;
 
-class procedure TCarbonPrivateCheckBox.UnRegisterEvents;
+class procedure TCarbonPrivateValueControl.UnRegisterEvents;
 begin
   UnregisterEventHandler(@CarbonPrivateCommon_ValueChanged);
   

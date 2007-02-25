@@ -30,168 +30,334 @@ unit CarbonProc;
 interface
 
 uses
-  FPCMacOSAll, Classes, LCLType,
-  LCLProc, LCLClasses, Controls, LMessages, Forms, Avl_Tree, SysUtils, Graphics,
+  FPCMacOSAll, Classes, LCLType, LCLProc, LCLClasses, LMessages,
+  Controls, Forms, Avl_Tree, SysUtils, Graphics, Math,
   CarbonDef;
+  
 
-function CreateWidgetInfo(AWidget: Pointer; AObject: TLCLComponent;
-  TheType: TCarbonWidgetType): PWidgetInfo;
-function CreateWndWidgetInfo(AWidget: Pointer; AObject: TLCLComponent) : PWidgetInfo;
-function CreateCtrlWidgetInfo(AWidget: Pointer; AObject: TLCLComponent) : PWidgetInfo;
+type
+  TConvertResult = (trNoError, trNullSrc, trNullDest, trDestExhausted,
+    trInvalidChar, trUnfinishedChar);
 
-procedure FreeWidgetInfo(AInfo: PWidgetInfo);
+  TConvertOption = (toInvalidCharError, toInvalidCharToSymbol,
+    toUnfinishedCharError, toUnfinishedCharToSymbol);
+  TConvertOptions = set of TConvertOption;
+  
+function UTF8ToUTF16(const S: UTF8String): WideString;
 
-function GetCtrlWidgetInfo(AWidget: Pointer): PWidgetInfo;
-function GetWndWidgetInfo(AWidget: Pointer): PWidgetInfo;
-function GetWidgetInfo(AWidget: Pointer): PWidgetInfo;
+function GetCtrlWidgetInfo(AWidget: Pointer): TCarbonWidgetInfo;
+function GetWndWidgetInfo(AWidget: Pointer): TCarbonWidgetInfo;
+function GetWidgetInfo(AWidget: Pointer): TCarbonWidgetInfo;
 function GetWidgetType(AWidget: Pointer): TCarbonWidgetType;
-function GetWidgetType(AWidget: Pointer; var AInfo: PWidgetInfo): TCarbonWidgetType;
-
-function DeliverMessage(ATarget: TObject; var AMessage): Integer;
+function GetWidgetType(AWidget: Pointer; var AInfo: TCarbonWidgetInfo): TCarbonWidgetType;
 
 function GetTopParentWindow(AWinControl: TWinControl): WindowRef;
-function GetCarbonLocalWindowRect(Handle: hwnd; var ARect: TRect; Info: PWidgetInfo = nil): Boolean;
-function GetCarbonClientRect(Handle: hwnd; var ARect: TRect; Info: PWidgetInfo = nil): Boolean;
+function GetCarbonLocalWindowRect(Handle: hwnd; var ARect: TRect; Info: TCarbonWidgetInfo = nil): Boolean;
+function GetCarbonClientRect(Handle: hwnd; var ARect: TRect; Info: TCarbonWidgetInfo = nil): Boolean;
 
 procedure InvalidateCarbonControl(AControl: HWnd); inline;
+function GetCarbonWindowContent(AWindow: HWnd): HIViewRef; inline;
+
 function FindCarbonFontID(const FontName: String): ATSUFontID;
+
+function GetEditControlText(AControl: HWnd; var AText: String): Boolean;
+function SetEditControlText(AControl: HWnd; const AText: String): Boolean;
+
+function GetEditControlSelStart(AControl: HWnd; var ASelStart: Integer): Boolean;
+function GetEditControlSelLength(AControl: HWnd; var ASelLength: Integer): Boolean;
+function SetEditControlSelStart(AControl: HWnd; ASelStart: Integer): Boolean;
+function SetEditControlSelLength(AControl: HWnd; ASelLength: Integer): Boolean;
+
+function BeginTextRender(DC: TCarbonDeviceContext; AStr: PChar; ACount: Integer; out ALayout: ATSUTextLayout): Boolean;
+procedure EndTextRender(DC: TCarbonDeviceContext; var ALayout: ATSUTextLayout);
 
 function RegisterEventHandler(AHandler: TCarbonWSEventHandlerProc): EventHandlerUPP;
 procedure UnRegisterEventHandler(AHandler: TCarbonWSEventHandlerProc);
 
-procedure CreateCarbonString(const S: String; var AString: CFStringRef); inline;
+procedure CreateCarbonString(const S: String; out AString: CFStringRef); inline;
 procedure FreeCarbonString(var AString: CFStringRef); inline;
 function CarbonStringToString(AString: CFStringRef): String;
 
 function GetCarbonRect(Left, Top, Width, Height: Integer): FPCMacOSAll.Rect;
 function GetCarbonRect(const ARect: TRect): FPCMacOSAll.Rect;
 function ParamsToCarbonRect(const AParams: TCreateParams): FPCMacOSAll.Rect;
+function GetCGRect(X1, Y1, X2, Y2: Integer): CGRect;
+function RectToCGRect(const ARect: TRect): CGRect;
+function CGRectToRect(const ARect: CGRect): TRect;
+function ParamsToHIRect(const AParams: TCreateParams): HIRect;
 function CarbonRectToRect(const ARect: FPCMacOSAll.Rect): TRect;
 
 function ColorToCarbonColor(const AColor: TColor): RGBColor;
 function CarbonColorToColor(const AColor: RGBColor): TColor; inline;
+function CreateCGColor(const AColor: TColor): CGColorRef;
 
 function Dbgs(const ARect: FPCMacOSAll.Rect): string; overload;
 function Dbgs(const AColor: FPCMacOSAll.RGBColor): string; overload;
 
 implementation
 
-{------------------------------------------------------------------------------
-  Name:    CreateWidgetInfo
-  Params:  AWidget - Pointer to widget
-           AObject - LCL object
-           TheType - Type of Carbon widget (Control or Window)
-  Returns: Pointer to widget info
-
-  Creates basic info for specified widget and LCL object
- ------------------------------------------------------------------------------}
-function CreateWidgetInfo(AWidget: Pointer; AObject: TLCLComponent;
-  TheType: TCarbonWidgetType): PWidgetInfo;
-begin
-  New(Result);
-  FillChar(Result^, SizeOf(Result^), 0);
-  Result^.LCLObject := AObject;
-  Result^.Widget := AWidget;
-  Result^.WSClass := AObject.WidgetSetClass;
-  Result^.widgetType := TheType;
-  
-  case TheType of
-    cwtControlRef: SetControlProperty(AWidget, LAZARUS_FOURCC, WIDGETINFO_FOURCC, SizeOf(Result), @Result);
-    cwtWindowRef : SetWindowProperty(AWidget, LAZARUS_FOURCC, WIDGETINFO_FOURCC, SizeOf(Result), @Result);
-  else Debugln('[CreateWidgetInfo] ***WARNING! Unknown widget type***');
-  end;
-end;
-
+uses CarbonInt;
 
 {------------------------------------------------------------------------------
-  Name:    CreateWndWidgetInfo
-  Params:  AWidget - Pointer to widget
-           AObject - LCL object
-  Returns: Pointer to widget info
+  Name:    ConvertUTF8ToUTF16
+  Params:  Dest                - Pointer to destination string
+           DestWideCharCount   - Wide char count allocated in destination string
+           Src                 - Pointer to source string
+           SrcCharCount        - Char count allocated in source string
+           Options             - Conversion options, if none is set, both
+             invalid and unfinished UTF-8 chars are skipped
 
-  Creates basic info for specified window widget and LCL object
+             toInvalidCharError       - Stop on invalid UTF-8 char and report
+                                      error
+             toInvalidCharToSymbol    - Replace invalid UTF-8 chars with '?'
+             toUnfinishedCharError    - Stop on unfinished UTF-8 char and report
+                                      error
+             toUnfinishedCharToSymbol - Replace unfinished UTF-8 char with '?'
+
+           ActualWideCharCount - Actual wide char count converted from source
+                               string to destination string
+  Returns:
+    trNoError        - The string was successfully converted without
+                     any error
+    trNullSrc        - Pointer to source string is nil
+    trNullDest       - Pointer to destination string is nil
+    trDestExhausted  - Destination buffer size is not big enough to hold
+                     converted string
+    trInvalidChar    - Invalid UTF-8 char has occured
+    trUnfinishedChar - Unfinished UTF-8 char has occured
+
+  Converts the specified UTF-8 encoded string to UTF-16 encoded
  ------------------------------------------------------------------------------}
-function CreateWndWidgetInfo(AWidget: Pointer; AObject: TLCLComponent) : PWidgetInfo;
-begin
-  Result := CreateWidgetInfo(AWidget, AObject, cwtWindowRef);
-end;
+function ConvertUTF8ToUTF16(Dest: PWideChar; DestWideCharCount: SizeUInt;
+  Src: PChar; SrcCharCount: SizeUInt; Options: TConvertOptions;
+  out ActualWideCharCount: SizeUInt): TConvertResult;
+var
+  DestI, SrcI: SizeUInt;
+  B1, B2, B3, B4: Byte;
+  W: Word;
+  C: Cardinal;
 
-{------------------------------------------------------------------------------
-  Name:    CreateWidgetInfo
-  Params:  AWidget - Pointer to widget
-           AObject - LCL object
-  Returns: Pointer to widget info
-
-  Creates basic info for specified control widget and LCL object
- ------------------------------------------------------------------------------}
-function CreateCtrlWidgetInfo(AWidget: Pointer; AObject: TLCLComponent) : PWidgetInfo;
-begin
-  Result := CreateWidgetInfo(AWidget, AObject, cwtControlRef);
-end;
-
-{------------------------------------------------------------------------------
-  Name:    FreeWidgetInfo
-  Params:  AInfo - Pointer to widget info
-  Returns: Nothing
-
-  Frees the specified widget info
- ------------------------------------------------------------------------------}
-procedure FreeWidgetInfo(AInfo: PWidgetInfo);
-begin
-  if AInfo = nil then Exit;
-  
-  case AInfo^.WidgetType of
-    cwtControlRef: RemoveControlProperty(AInfo^.Widget, LAZARUS_FOURCC, WIDGETINFO_FOURCC);
-    cwtWindowRef : RemoveWindowProperty(AInfo^.Widget, LAZARUS_FOURCC, WIDGETINFO_FOURCC);
-  else Debugln('[FreeWidgetInfo] ***WARNING! Unknown widget type***');
-  end;
-
-  if (AInfo^.UserData <> nil) and (AInfo^.DataOwner) then
+  function UnfinishedCharError: Boolean;
   begin
-    System.FreeMem(AInfo^.UserData);
-    AInfo^.UserData := nil;
+    if toUnfinishedCharToSymbol in Options then
+    begin
+      Dest[DestI] := System.WideChar('?');
+      Inc(DestI);
+      Result := False;
+    end
+    else
+      if toUnfinishedCharError in Options then
+      begin
+        ConvertUTF8ToUTF16 := trUnfinishedChar;
+        Result := True;
+      end
+      else Result := False;
   end;
 
-  Dispose(AInfo);
+  function InvalidCharError(Count: Integer): Boolean; inline;
+  begin
+    if toInvalidCharToSymbol in Options then
+    begin
+      Dest[DestI] := System.WideChar('?');
+      Inc(DestI);
+      Dec(SrcI, Count);
+      Result := False;
+    end
+    else
+      if toInvalidCharError in Options then
+      begin
+        ConvertUTF8ToUTF16 := trUnfinishedChar;
+        Result := True;
+      end
+      else
+      begin
+        Dec(SrcI, Count);
+        Result := False;
+      end;
+  end;
+
+begin
+  ActualWideCharCount := 0;
+
+  if not Assigned(Src) then
+  begin
+    Result := trNullSrc;
+    Exit;
+  end;
+
+  if not Assigned(Dest) then
+  begin
+    Result := trNullDest;
+    Exit;
+  end;
+  SrcI := 0;
+  DestI := 0;
+
+  while (DestI < DestWideCharCount) and (SrcI < SrcCharCount) do
+  begin
+    B1 := Byte(Src[SrcI]);
+    Inc(SrcI);
+
+    if B1 < 128 then // single byte UTF-8 char
+    begin
+      Dest[DestI] := System.WideChar(B1);
+      Inc(DestI);
+    end
+    else
+    begin
+      if SrcI >= SrcCharCount then
+        if UnfinishedCharError then Exit
+        else Break;
+
+      B2 := Byte(Src[SrcI]);
+      Inc(SrcI);
+
+      if (B1 and %11100000) = %11000000 then // double byte UTF-8 char
+      begin
+        if (B2 and %11000000) = %10000000 then
+        begin
+          Dest[DestI] := System.WideChar(((B1 and %00011111) shl 6) or (B2 and %00111111));
+          Inc(DestI);
+        end
+        else // invalid character, assume single byte UTF-8 char
+          if InvalidCharError(1) then Exit;
+      end
+      else
+      begin
+        if SrcI >= SrcCharCount then
+          if UnfinishedCharError then Exit
+          else Break;
+
+        B3 := Byte(Src[SrcI]);
+        Inc(SrcI);
+
+        if (B1 and %11110000) = %11100000 then // triple byte UTF-8 char
+        begin
+          if ((B2 and %11000000) = %10000000) and ((B3 and %11000000) = %10000000) then
+          begin
+            W := ((B1 and %00011111) shl 12) or ((B2 and %00111111) shl 6) or (B3 and %00111111);
+            if W < $D800 then // to single wide char UTF-16 char
+            begin
+              Dest[DestI] := System.WideChar(W);
+              Inc(DestI);
+            end
+            else // to double wide char UTF-16 char
+            begin
+              Dest[DestI] := System.WideChar($D800 or (W shr 10));
+              Inc(DestI);
+              if DestI >= DestWideCharCount then Break;
+              Dest[DestI] := System.WideChar($DC00 or (W and %0000001111111111));
+              Inc(DestI);
+            end;
+          end
+          else // invalid character, assume single byte UTF-8 char
+            if InvalidCharError(2) then Exit;
+        end
+        else
+        begin
+          if SrcI >= SrcCharCount then
+            if UnfinishedCharError then Exit
+            else Break;
+
+          B4 := Byte(Src[SrcI]);
+          Inc(SrcI);
+
+          if ((B1 and %11111000) = %11110000) and ((B2 and %11000000) = %10000000)
+            and ((B3 and %11000000) = %10000000) and ((B4 and %11000000) = %10000000) then
+          begin // 4 byte UTF-8 char
+            C := ((B1 and %00011111) shl 18) or ((B2 and %00111111) shl 12)
+              or ((B3 and %00111111) shl 6)  or (B4 and %00111111);
+            // to double wide char UTF-16 char
+            Dest[DestI] := System.WideChar($D800 or (C shr 10));
+            Inc(DestI);
+            if DestI >= DestWideCharCount then Break;
+            Dest[DestI] := System.WideChar($DC00 or (C and %0000001111111111));
+            Inc(DestI);
+          end
+          else // invalid character, assume single byte UTF-8 char
+            if InvalidCharError(3) then Exit;
+        end;
+      end;
+    end;
+  end;
+
+  if DestI >= DestWideCharCount then
+  begin
+    DestI := DestWideCharCount - 1;
+    Result := trDestExhausted;
+  end
+  else
+    Result := trNoError;
+
+  Dest[DestI] := #0;
+  ActualWideCharCount := DestI + 1;
+end;
+
+{------------------------------------------------------------------------------
+  Name:    UTF8ToUTF16
+  Params:  S - Source UTF-8 string
+  Returns: UTF-16 encoded string
+
+  Converts the specified UTF-8 encoded string to UTF-16 encoded
+ ------------------------------------------------------------------------------}
+function UTF8ToUTF16(const S: UTF8String): WideString;
+var
+  L: SizeUInt;
+  R: WideString;
+begin
+  Result := '';
+  if S = '' then Exit;
+
+  SetLength(R, Length(S)); // bytes of UTF-8 string >= wide chars of UTF-16
+  if ConvertUTF8ToUTF16(PWideChar(R), Length(R) + 1, PChar(S), Length(S),
+    [toInvalidCharToSymbol], L) = trNoError then
+  begin
+    SetLength(R, L - 1);
+    Result := R;
+  end;
 end;
 
 {------------------------------------------------------------------------------
   Name:    GetCtrlWidgetInfo
   Params:  AWidget - Pointer to control widget
-  Returns: Pointer to widget info
+  Returns: The Carbon control widget info
 
   Retrieves basic info for specified control widget
  ------------------------------------------------------------------------------}
-function GetCtrlWidgetInfo(AWidget: Pointer): PWidgetInfo;
-var
-  M: LongWord;
+function GetCtrlWidgetInfo(AWidget: Pointer): TCarbonWidgetInfo;
 begin
-  GetControlProperty(AWidget, LAZARUS_FOURCC, WIDGETINFO_FOURCC, SizeOf(Result), @M, @Result);
+  if GetControlProperty(AWidget, LAZARUS_FOURCC, WIDGETINFO_FOURCC,
+    SizeOf(TCarbonWidgetInfo), nil, @Result) <> noErr then Result := nil;
 end;
 
 {------------------------------------------------------------------------------
   Name:    GetWndWidgetInfo
   Params:  AWidget - Pointer to window widget
-  Returns: Pointer to widget info
+  Returns: The Carbon window widget info
 
   Retrieves basic info for specified window widget
  ------------------------------------------------------------------------------}
-function GetWndWidgetInfo(AWidget: Pointer): PWidgetInfo;
-var
-  M: LongWord;
+function GetWndWidgetInfo(AWidget: Pointer): TCarbonWidgetInfo;
 begin
-  GetWindowProperty(AWidget, LAZARUS_FOURCC, WIDGETINFO_FOURCC, SizeOf(Result), @M, @Result);
+  if GetWindowProperty(AWidget, LAZARUS_FOURCC, WIDGETINFO_FOURCC,
+    SizeOf(TCarbonWidgetInfo), nil, @Result) <> noErr then Result := nil;
 end;
 
 {------------------------------------------------------------------------------
   Name:    GetWidgetInfo
   Params:  AWidget - Pointer to widget
-  Returns: Pointer to widget info
+  Returns: The Carbon widget info
 
   Retrieves basic info for specified widget (control or window)
  ------------------------------------------------------------------------------}
-function GetWidgetInfo(AWidget: Pointer): PWidgetInfo;
+function GetWidgetInfo(AWidget: Pointer): TCarbonWidgetInfo;
 begin
+  if AWidget = nil then
+  begin
+    Result := nil;
+    Exit;
+  end;
+  
   if IsValidControlHandle(AWidget) then Result := GetCtrlWidgetInfo(AWidget)
   else
     // there is no (cheap) check for windows so assume a window
@@ -208,60 +374,32 @@ end;
  ------------------------------------------------------------------------------}
 function GetWidgetType(AWidget: Pointer): TCarbonWidgetType;
 var
-   AInfo: PWidgetInfo;
+  AInfo: TCarbonWidgetInfo;
 begin
   Result := cwtUnknown;
   
   AInfo := GetWidgetInfo(AWidget);
   if AInfo = nil then Exit;
   
-  Result := AInfo^.WidgetType;
+  Result := AInfo.WidgetType;
 end;
 
 {------------------------------------------------------------------------------
   Name:    GetWidgetType
   Params:  AWidget - Pointer to widget
-           AInfo   - Pointer to widget info
+           AInfo   - Carbon widget info
   Returns: Widget type
 
   Retrieves the type of specified widget (Control or Window) according to
   passed info. If info is not set then it is retrieved from widget.
  ------------------------------------------------------------------------------}
-function GetWidgetType(AWidget: Pointer; var AInfo: PWidgetInfo): TCarbonWidgetType;
+function GetWidgetType(AWidget: Pointer; var AInfo: TCarbonWidgetInfo): TCarbonWidgetType;
 begin
   Result := cwtUnknown;
   if AInfo = nil then AInfo := GetWidgetInfo(AWidget);
   if AInfo = nil then Exit;
 
-  Result := AInfo^.WidgetType;
-end;
-
-{------------------------------------------------------------------------------
-  Name:    DeliverMessage
-  Params:  Message: the message to process
-  Returns: True if handled
-
-  Generic function which calls the WindowProc if defined, otherwise the
-  dispatcher
- ------------------------------------------------------------------------------}
-function DeliverMessage(ATarget: TObject; var AMessage): Integer;
-begin
-  if ATarget = nil
-  then begin
-    DebugLn('[DeliverMessage] Target = nil');
-    Result := 0;
-    Exit;
-  end;
-
-  try
-    if TObject(ATarget) is TControl
-    then TControl(ATarget).WindowProc(TLMessage(AMessage))
-    else TObject(ATarget).Dispatch(TLMessage(AMessage));
-  except
-    Application.HandleException(nil);
-  end;
-
-  Result := TLMessage(AMessage).Result;
+  Result := AInfo.WidgetType;
 end;
 
 //=====================================================
@@ -326,13 +464,13 @@ end;
   Name:    GetCarbonLocalWindowRect
   Params:  Handle - Handle of window
            ARect  - Record for window coordinates
-           Info   - Pointer to widget info (optional)
+           Info   - Carbon widget info (optional)
   Returns: If function succeeds
 
   Returns the window bounding rectangle relative to the client origin of its
   parent
  ------------------------------------------------------------------------------}
-function GetCarbonLocalWindowRect(Handle: hwnd; var ARect: TRect; Info: PWidgetInfo): Boolean;
+function GetCarbonLocalWindowRect(Handle: hwnd; var ARect: TRect; Info: TCarbonWidgetInfo): Boolean;
 var
   AWndRect: FPCMacOSAll.Rect;
 begin
@@ -353,13 +491,13 @@ end;
   Name:    GetCarbonClientRect
   Params:  Handle - Handle of window
            ARect  - Record for client area coordinates
-           Info   - Pointer to widget info (optional)
+           Info   - Carbon widget info (optional)
   Returns: If function succeeds
 
   Returns the window client rectangle relative to the client area parent
   window origin
  ------------------------------------------------------------------------------}
-function GetCarbonClientRect(Handle: hwnd; var ARect: TRect; Info: PWidgetInfo): Boolean;
+function GetCarbonClientRect(Handle: hwnd; var ARect: TRect; Info: TCarbonWidgetInfo): Boolean;
 var
   AWndRect, AClientRect: FPCMacOSAll.Rect;
   OSResult: OSStatus;
@@ -430,6 +568,19 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Name:    GetCarbonWindowContent
+  Params:  AWindow - Handle of window
+  Returns: Carbon window content
+
+  Returns the Carbon window content for the specified window
+ ------------------------------------------------------------------------------}
+function GetCarbonWindowContent(AWindow: HWnd): HIViewRef;
+begin
+  if HIViewFindByID(HIViewGetRoot(WindowRef(AWindow)), kHIViewWindowContentID,
+    Result) <> noErr then Result := nil;
+end;
+
+{------------------------------------------------------------------------------
   Name:    FindCarbonFontID
   Params:  FontName - The font name
   Returns: Caron font ID
@@ -441,8 +592,245 @@ begin
   Result := 0;
 
   if (FontName <> '') and not SameText(FontName, 'default') then
-   ATSUFindFontFromName(@FontName[1], Length(FontName), kFontFamilyName,
-     kFontNoPlatform, kFontNoScript, kFontNoLanguage, Result);
+  begin
+    ATSUFindFontFromName(@FontName[1], Length(FontName), kFontFamilyName,
+      kFontMacintoshPlatform, kFontRomanScript, kFontEnglishLanguage, Result);
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Name:    GetEditControlText
+  Params:  AControl - Handle of edit control
+           AText    - Record for text
+  Returns: If the function suceeds
+
+  Gets the text from the Carbon edit control
+ ------------------------------------------------------------------------------}
+function GetEditControlText(AControl: HWnd; var AText: String): Boolean;
+var
+  Info: TCarbonWidgetInfo;
+  CFString: CFStringRef;
+begin
+  Result := False;
+  Info := GetCtrlWidgetInfo(Pointer(AControl));
+  if Info = nil then Exit;
+  
+  if (Info.UserData <> nil) and (PBoolean(Info.UserData)^ = True) then
+  begin // IsPassword
+    if GetControlData(ControlRef(AControl), kControlEntireControl,
+      kControlEditTextPasswordCFStringTag, SizeOf(CFStringRef),
+      @CFString, nil) <> noErr then Exit;
+  end
+  else
+  begin
+    CFString := HIViewCopyText(HIViewRef(AControl));
+    if CFString = nil then Exit;
+  end;
+  
+  try
+    AText := CarbonStringToString(CFString);
+    Result := True;
+  finally
+    FreeCarbonString(CFString);
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Name:    SetEditControlText
+  Params:  AControl - Handle of edit control
+           AText    - Text to set
+  Returns:  If the function suceeds
+
+  Sets the text of the Carbon edit control
+ ------------------------------------------------------------------------------}
+function SetEditControlText(AControl: HWnd; const AText: String): Boolean;
+var
+  Info: TCarbonWidgetInfo;
+  CFString: CFStringRef;
+begin
+  Result := False;
+  Info := GetCtrlWidgetInfo(Pointer(AControl));
+  if Info = nil then Exit;
+
+  CreateCarbonString(AText, CFString);
+  try
+    if (Info.UserData <> nil) and (PBoolean(Info.UserData)^ = True) then
+      // IsPassword
+      Result := SetControlData(ControlRef(AControl), kControlEntireControl,
+        kControlEditTextPasswordCFStringTag, SizeOf(CFStringRef), @CFString) = noErr
+    else
+      Result := HIViewSetText(HIViewRef(AControl), CFString) = noErr;
+  finally
+    FreeCarbonString(CFString);
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Name:    GetEditControlSelStart
+  Params:  AControl   - Handle of edit control
+           ASelStart  - Selection start
+  Returns: If the function suceeds
+
+  Gets the selection start from the Carbon edit control
+ ------------------------------------------------------------------------------}
+function GetEditControlSelStart(AControl: HWnd; var ASelStart: Integer): Boolean;
+var
+  SelData: ControlEditTextSelectionRec;
+begin
+  Result := GetControlData(ControlRef(AControl), kControlEntireControl,
+    kControlEditTextSelectionTag, SizeOf(ControlEditTextSelectionRec),
+    @SelData, nil) = noErr;
+
+  if Result then ASelStart := SelData.SelStart;
+end;
+
+{------------------------------------------------------------------------------
+  Name:    GetEditControlSelLength
+  Params:  AControl   - Handle of edit control
+           ASelLength - Selection length
+  Returns: If the function suceeds
+
+  Gets the selection length from the Carbon edit control
+ ------------------------------------------------------------------------------}
+function GetEditControlSelLength(AControl: HWnd; var ASelLength: Integer): Boolean;
+var
+  SelData: ControlEditTextSelectionRec;
+begin
+  Result := GetControlData(ControlRef(AControl), kControlEntireControl,
+    kControlEditTextSelectionTag, SizeOf(ControlEditTextSelectionRec),
+    @SelData, nil) = noErr;
+
+  if Result then ASelLength := SelData.SelEnd - SelData.SelStart;
+end;
+
+{------------------------------------------------------------------------------
+  Name:    SetEditControlSelStart
+  Params:  AControl   - Handle of edit control
+           ASelStart  - Selection start
+  Returns: If the function suceeds
+
+  Sets the selection start of the Carbon edit control
+ ------------------------------------------------------------------------------}
+function SetEditControlSelStart(AControl: HWnd; ASelStart: Integer): Boolean;
+var
+  SelData: ControlEditTextSelectionRec;
+begin
+  Result := GetControlData(ControlRef(AControl), kControlEntireControl,
+    kControlEditTextSelectionTag, SizeOf(ControlEditTextSelectionRec),
+    @SelData, nil) = noErr;
+
+  if Result then
+  begin
+    if SelData.SelStart = ASelStart then Exit;
+  
+    SelData.SelEnd := (SelData.SelEnd - SelData.SelStart) + ASelStart;
+    SelData.SelStart := ASelStart;
+    Result := SetControlData(ControlRef(AControl), kControlEntireControl,
+      kControlEditTextSelectionTag, SizeOf(ControlEditTextSelectionRec),
+      @SelData) = noErr;
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Name:    SetEditControlSelLength
+  Params:  AControl   - Handle of edit control
+           ASelLength - Selection length
+  Returns: If the function suceeds
+
+  Sets the selection length of the Carbon edit control
+ ------------------------------------------------------------------------------}
+function SetEditControlSelLength(AControl: HWnd; ASelLength: Integer): Boolean;
+var
+  SelData: ControlEditTextSelectionRec;
+begin
+  Result := GetControlData(ControlRef(AControl), kControlEntireControl,
+    kControlEditTextSelectionTag, SizeOf(ControlEditTextSelectionRec),
+    @SelData, nil) = noErr;
+
+  if Result then
+  begin
+    if SelData.SelEnd = SelData.SelStart + ASelLength then Exit;
+    
+    SelData.SelEnd := SelData.SelStart + ASelLength;
+    Result := SetControlData(ControlRef(AControl), kControlEntireControl,
+      kControlEditTextSelectionTag, SizeOf(ControlEditTextSelectionRec),
+      @SelData) = noErr;
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Name:    BeginTextRender
+  Params:  DC      - Carbon device context
+           AStr    - UTF8 string to render
+           ACount  - Count of chars to render
+           ALayout - ATSU layout
+  Returns: If the function suceeds
+
+  Creates the ATSU text layout for the specified text and manages the device
+  context to render the text
+ ------------------------------------------------------------------------------}
+function BeginTextRender(DC: TCarbonDeviceContext; AStr: PChar;
+  ACount: Integer; out ALayout: ATSUTextLayout): Boolean;
+var
+  TextStyle: ATSUStyle;
+  TextLength: LongWord;
+  S: String;
+  W: WideString;
+  Tag: ATSUAttributeTag;
+  DataSize: ByteCount;
+  PContext: ATSUAttributeValuePtr;
+begin
+  Result := False;
+  if DC = nil then Exit;
+
+  // save context
+  CGContextSaveGState(DC.CGContext);
+  
+  // convert UTF-8 string to UTF-16 string
+  if ACount < 0 then S := AStr
+  else S := Copy(AStr, 1, ACount);
+  W := UTF8ToUTF16(S);
+
+  if not CarbonWidgetSet.IsValidGDIObject(HFONT(DC.CurrentFont)) then
+    TextStyle := DefaultTextStyle
+  else
+    TextStyle := DC.CurrentFont.Style;
+    
+  // apply text color and bk color
+  DC.TextPen.Apply(DC, False); // do not use ROP2
+  DC.BkBrush.Apply(DC, False);
+
+  // create text layout
+  TextLength := kATSUToTextEnd;
+  if ATSUCreateTextLayoutWithTextPtr(ConstUniCharArrayPtr(@W[1]),
+    kATSUFromTextBeginning, kATSUToTextEnd, Length(W), 1, @TextLength, @TextStyle,
+    ALayout) = noErr then
+  begin
+    // set layout context
+    Tag := kATSUCGContextTag;
+    DataSize := SizeOf(CGContextRef);
+
+    PContext := Pointer(DC.CGContext);
+    Result := ATSUSetLayoutControls(ALayout, 1, @Tag, @DataSize, @PContext) = noErr;
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Name:    EndTextRender
+  Params:  DC      - Carbon device context
+           ALayout - ATSU layout
+  Returns: Nothing
+
+  Frees the ATSU text layout and manages the device
+  context to render ordinary graphic
+ ------------------------------------------------------------------------------}
+procedure EndTextRender(DC: TCarbonDeviceContext; var ALayout: ATSUTextLayout);
+begin
+  if DC <> nil then
+    // restore context
+    CGContextRestoreGState(DC.CGContext);
+    
+  if ALayout <> nil then ATSUDisposeTextLayout(ALayout);
 end;
 
 {------------------------------------------------------------------------------
@@ -514,7 +902,7 @@ end;
 
   Creates new Core Foundation string form specified string
  ------------------------------------------------------------------------------}
-procedure CreateCarbonString(const S: String; var AString: CFStringRef);
+procedure CreateCarbonString(const S: String; out AString: CFStringRef);
 begin
   AString := CFStringCreateWithCString(nil, Pointer(PChar(S)), DEFAULT_CFSTRING_ENCODING);
 end;
@@ -552,9 +940,9 @@ begin
 
   // Try the quick way first
   Str := CFStringGetCStringPtr(AString, DEFAULT_CFSTRING_ENCODING);
-  {if Str <> nil then
+  if Str <> nil then
     Result := PChar(Str)
-  else}
+  else
   begin
     // if that doesn't work this will
     StrSize := CFStringGetLength(AString) + 1; // + 1 for null terminator
@@ -614,6 +1002,83 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Name:    RectToCGRect
+  Params:  X1, Y1, X2, Y2 - Rectangle coordinates
+  Returns: CGRect
+
+  CGRect constructor, coordinates are sorted
+ ------------------------------------------------------------------------------}
+function GetCGRect(X1, Y1, X2, Y2: Integer): CGRect;
+begin
+  if X1 <= X2 then
+  begin
+    Result.origin.x := X1;
+    Result.size.width := X2 - X1;
+  end
+  else
+  begin
+    Result.origin.x := X2;
+    Result.size.width := X1 - X2;
+  end;
+  
+  if Y1 <= Y2 then
+  begin
+    Result.origin.y := Y1;
+    Result.size.height := Y2 - Y1;
+  end
+  else
+  begin
+    Result.origin.y := Y2;
+    Result.size.height := Y1 - Y2;
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Name:    RectToCGRect
+  Params:  ARect - Rectangle
+  Returns: CGRect
+
+  CGRect constructor
+ ------------------------------------------------------------------------------}
+function RectToCGRect(const ARect: TRect): CGRect;
+begin
+  Result.origin.x := ARect.Left;
+  Result.origin.y := ARect.Top;
+  Result.size.width := ARect.Right - ARect.Left;
+  Result.size.height := ARect.Bottom - ARect.Top;
+end;
+
+{------------------------------------------------------------------------------
+  Name:    CGRectToRect
+  Params:  ARect - CGRect
+  Returns: TRect
+
+  Converts CGRect to TRect
+ ------------------------------------------------------------------------------}
+function CGRectToRect(const ARect: CGRect): TRect;
+begin
+  Result.Left := Floor(ARect.origin.x);
+  Result.Top := Floor(ARect.origin.y);
+  Result.Right := Ceil(ARect.origin.x + ARect.size.width);
+  Result.Bottom := Ceil(ARect.origin.y + ARect.size.height);
+end;
+
+{------------------------------------------------------------------------------
+  Name:    ParamsToHIRect
+  Params:  AParams - Creation parameters
+  Returns: HIView Rect
+
+  HIView Rect constructor from creation parameters
+ ------------------------------------------------------------------------------}
+function ParamsToHIRect(const AParams: TCreateParams): HIRect;
+begin
+  Result.origin.x := AParams.X;
+  Result.origin.y := AParams.Y;
+  Result.size.width := AParams.Width;
+  Result.size.height := AParams.Height;
+end;
+
+{------------------------------------------------------------------------------
   Name:    CarbonRectToRect
   Params:  ARect - Carbon Rect
   Returns: Rectangle
@@ -630,10 +1095,10 @@ end;
 
 {------------------------------------------------------------------------------
   Name:    ColorToCarbonColor
-  Params:  AColor - color
+  Params:  AColor - Color
   Returns: RGBColor
 
-  Converts color to Carbon RGBColor
+  Converts the color to Carbon RGBColor
  ------------------------------------------------------------------------------}
 function ColorToCarbonColor(const AColor: TColor): RGBColor;
 var
@@ -659,6 +1124,27 @@ end;
 function CarbonColorToColor(const AColor: RGBColor): TColor;
 begin
   Result := RGBToColor(AColor.Red shr 8, AColor.Green shr 8, AColor.Blue shr 8);
+end;
+
+{------------------------------------------------------------------------------
+  Name:    CreateCGColor
+  Params:  AColor - Color
+  Returns: CGColorRef
+
+  Creates CGColorRef form the specified color
+ ------------------------------------------------------------------------------}
+function CreateCGColor(const AColor: TColor): CGColorRef;
+var
+  V: TColor;
+  F: Array [0..3] of Single;
+begin
+  V := ColorToRGB(AColor);
+
+  F[0] := Red(V) / 255;
+  F[1] := Green(V) / 255;
+  F[2] := Blue(V) / 255;
+  F[3] := 1; // Alpha
+  Result := CGColorCreate(RGBColorSpace, @F[0]);
 end;
 
 function Dbgs(const ARect: FPCMacOSAll.Rect): String;

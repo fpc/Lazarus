@@ -65,6 +65,7 @@ type
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
     class function  GetClientBounds(const AWincontrol: TWinControl; var ARect: TRect): Boolean; override;
     class function  GetClientRect(const AWincontrol: TWinControl; var ARect: TRect): Boolean; override;
+    class procedure GetPreferredSize(const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); override;
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
     class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); override;
     class procedure SetChildZPosition(const AWinControl, AChild: TWinControl;
@@ -107,6 +108,38 @@ implementation
 { TCarbonWSWinControl }
 
 {------------------------------------------------------------------------------
+  Method:  TCarbonWSWinControl.GetPreferredSize
+  Params:  AWinControl     - LCL control
+           PreferredWidth  - Preferred width, valid if > 0
+           PreferredHeight - Preferred height, valid if > 0
+           WithThemeSpace  - Whether to include space for theme
+  Returns: Nothing
+
+  Retrieves the preferred size of control in Carbon interface to support
+  autosizing of controls
+ ------------------------------------------------------------------------------}
+class procedure TCarbonWSWinControl.GetPreferredSize(const AWinControl: TWinControl;
+  var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);
+var
+  R: FPCMacOSAll.Rect;
+  S: SmallInt;
+begin
+  if not WSCheckHandleAllocated(AWinControl, 'GetPreferredSize') then Exit;
+  
+  R := GetCarbonRect(0, 0, 0, 0);
+  if GetBestControlRect(ControlRef(AWinControl.Handle), R, S) = noErr then
+  begin
+    PreferredWidth := R.right - R.left;
+    PreferredHeight := R.bottom - R.top;
+  end
+  else
+  begin
+    PreferredWidth := 0;
+    PreferredHeight := 0;
+  end;
+end;
+
+{------------------------------------------------------------------------------
   Method:  TCarbonWSWinControl.GetText
   Params:  AWinControl - LCL control
            AText       - Text
@@ -119,13 +152,14 @@ class function TCarbonWSWinControl.GetText(const AWinControl: TWinControl;
 var
   CFString: CFStringRef;
 begin
+  Result := False;
   if not WSCheckHandleAllocated(AWinControl, 'GetText') then Exit;
 
-  Result := CopyControlTitleAsCFString(ControlRef(AWinControl.Handle), CFString) = NoErr;
+  CFString := HIViewCopyText(HIViewRef(AWinControl.Handle));
+  if CFString = nil then Exit;
   try
-    if Result = False then Exit;
-    
     AText := CarbonStringToString(CFString);
+    Result := True;
   finally
     FreeCarbonString(CFString);
   end;
@@ -270,7 +304,7 @@ begin
 
   CreateCarbonString(AText, CFString);
   try
-    SetControlTitleWithCFString(ControlRef(AWinControl.Handle), CFString);
+    HIViewSetText(HIViewRef(AWinControl.Handle), CFString);
   finally
     FreeCarbonString(CFString);
   end;
@@ -301,7 +335,7 @@ class procedure TCarbonWSWinControl.ShowHide(const AWinControl: TWinControl);
 begin
   if not WSCheckHandleAllocated(AWinControl, 'ShowHide') then Exit;
   
-  SetControlVisibility(ControlRef(AWinControl.Handle), AWinControl.Visible, True);
+  HIViewSetVisible(HIViewRef(AWinControl.Handle), AWinControl.Visible);
 end;
 
 {------------------------------------------------------------------------------
@@ -309,16 +343,29 @@ end;
   Params:  AControl - LCL control to add
   Returns: Nothing
 
-  Adds new control to parent control in Carbon interface
+  Adds new control to parent control or window in Carbon interface
  ------------------------------------------------------------------------------}
 class procedure TCarbonWSWinControl.AddControl(const AControl: TControl);
+var
+  ParentView: HIViewRef;
 begin
-  if not WSCheckHandleAllocated(AControl.Parent, 'AddControl') then Exit;
+  if not WSCheckHandleAllocated(AControl as TWinControl, 'AddControl') then Exit;
+  if not WSCheckHandleAllocated(AControl.Parent, 'AddControl Parent') then Exit;
   
-  DebugLn('AddControl ' + AControl.Name + ' in ' + AControl.Parent.Name);
+  if AControl.Parent is TCustomForm then
+  begin // parent is Carbon window -> add to window content
+    DebugLn('AddControl ' + AControl.Name + ' in form ' + AControl.Parent.Name);
+    ParentView := GetCarbonWindowContent(AControl.Parent.Handle);
+  end
+  else
+  begin
+    DebugLn('AddControl ' + AControl.Name + ' in ' + AControl.Parent.Name);
+    ParentView := HIViewRef(AControl.Parent.Handle);
+  end;
   
-  EmbedControl(ControlRef((AControl as TWinControl).Handle),
-    ControlRef(AControl.Parent.Handle));
+  HIViewAddSubview(ParentView,
+    HIViewRef((AControl as TWinControl).Handle));
+  HIViewSetVisible(HIViewRef((AControl as TWinControl).Handle), AControl.Visible);
 end;
 
 {------------------------------------------------------------------------------
@@ -384,7 +431,7 @@ class function TCarbonWSCustomControl.CreateHandle(const AWinControl: TWinContro
 var
   Control: ControlRef;
   Attrs: LongWord;
-  Info: PWidgetInfo;
+  Info: TCarbonWidgetInfo;
 begin
   Result := 0;
 
@@ -397,7 +444,7 @@ begin
 
   if Result = 0 then Exit;
 
-  Info := CreateCtrlWidgetInfo(Control, AWinControl);
+  Info := TCarbonWidgetInfo.CreateForControl(Control, AWinControl);
   TCarbonPrivateHandleClass(WSPrivate).RegisterEvents(Info);
 end;
 

@@ -21,114 +21,133 @@
 
 function CarbonPrivateCommon_Dispose(ANextHandler: EventHandlerCallRef;
   AEvent: EventRef;
-  AInfo: PWidgetInfo): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
+  AInfo: TCarbonWidgetInfo): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
 var
-  Msg: TLMessage;
   PrivateClass: TCarbonPrivateHiViewClass;
 begin
   Result := CallNextEventHandler(ANextHandler, AEvent);
-  PrivateClass := TCarbonPrivateHiViewClass(AInfo^.WSClass.WSPrivate);
+  PrivateClass := TCarbonPrivateHiViewClass(AInfo.WSClass.WSPrivate);
 
-  FillChar(Msg, SizeOf(Msg),0);
-  Msg.msg := LM_DESTROY;
-  DeliverMessage(AInfo^.LCLObject, Msg);
+  LCLSendDestroyMsg(AInfo.LCLObject as TControl);
 
   PrivateClass.UnregisterEvents;
-  FreeWidgetInfo(AInfo);
+  AInfo.Free;
 end;
 
 function CarbonPrivateCommon_Draw(ANextHandler: EventHandlerCallRef;
   AEvent: EventRef;
-  AInfo: PWidgetInfo): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
+  AInfo: TCarbonWidgetInfo): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
 var
-  PaintMsg: TLMPaint;
+  EraseMsg: TLMEraseBkgnd;
   AStruct: PPaintStruct;
 begin
-  debugln('CarbonPrivateCommon_Draw ',DbgSName(AInfo^.LCLObject));
+  Debugln('CarbonPrivateCommon_Draw ', DbgSName(AInfo.LCLObject));
+  
+  {
+  // send erase background messsage
+  FillChar(PaintMsg,SizeOf(EraseMsg),0);
+  PaintMsg.Msg := LM_ERASEBKGND;
+  PaintMsg.DC := HDC(DC);
+  DeliverMessage(AInfo.LCLObject, EraseMsg);}
+  
   // first let carbon draw/update
   Result := CallNextEventHandler(ANextHandler, AEvent);
+  
+  GetEventParameter(AEvent, kEventParamCGContextRef, typeCGContextRef, nil,
+    SizeOf(CGContextRef), nil, @(AInfo.CGContext));
+    
+  AInfo.Context.Update;
 
-  FillChar(PaintMsg,SizeOf(PaintMsg),0);
-  PaintMsg.Msg := LM_PAINT;
-  PaintMsg.DC := HDC(TCarbonDeviceContext.Create(AInfo));
-  New(PaintMsg.PaintStruct);
-  AStruct := PaintMsg.PaintStruct;
+  // TODO: save DC
+  
+  New(AStruct);
   FillChar(AStruct^, SizeOf(TPaintStruct), 0);
-  AStruct^.hdc := PaintMsg.DC;
+  AStruct^.hdc := HDC(AInfo.Context);
   try
-    debugln('CarbonPrivateCommon_Draw LM_PAINT to ', DbgSName(AInfo^.LCLObject));
-    DeliverMessage(AInfo^.LCLObject, PaintMsg);
+    DebugLn('CarbonPrivateCommon_Draw LM_PAINT to ', DbgSName(AInfo.LCLObject));
+    LCLSendPaintMsg(AInfo.LCLObject as TControl, HDC(AInfo.Context), AStruct);
   finally
-    Dispose(PaintMsg.PaintStruct);
-    TCarbonDeviceContext(PaintMsg.DC).Free;
+    Dispose(AStruct);
+    
+    // TODO: restore DC
   end;
 end;
 
 function CarbonPrivateCommon_BoundsChanged(ANextHandler: EventHandlerCallRef;
   AEvent: EventRef;
-  AInfo: PWidgetInfo): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
+  AInfo: TCarbonWidgetInfo): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
 var
   AWinControl: TWinControl;
-  PosMsg : TLMWindowPosChanged;
-  SizeMsg: TLMSize;
-  MoveMsg: TLMMove;
   WidgetBounds: TRect;
 begin
-  debugln('CarbonPrivateCommon_BoundsChanged ', DbgSName(AInfo^.LCLObject));
+  debugln('CarbonPrivateCommon_BoundsChanged ', DbgSName(AInfo.LCLObject));
   // first let carbon draw/update
   Result := CallNextEventHandler(ANextHandler, AEvent);
   
-  if AInfo^.LCLObject is TWinControl then
+  if AInfo.LCLObject is TWinControl then
   begin
-    AWinControl := TWinControl(AInfo^.LCLObject);
+    AWinControl := TWinControl(AInfo.LCLObject);
     GetCarbonLocalWindowRect(AWinControl.Handle, WidgetBounds, AInfo);
-
-    // first send a LM_WINDOWPOSCHANGED message
-    if (AWinControl.Left <> WidgetBounds.Left) or
-       (AWinControl.Top <> WidgetBounds.Top) or
-       (AWinControl.Left + AWinControl.Width <> WidgetBounds.Right) or
-       (AWinControl.Top + AWinControl.Height <> WidgetBounds.Bottom) then
-    begin
-      FillChar(PosMsg,SizeOf(PosMsg),0);
-      PosMsg.Msg := LM_WINDOWPOSCHANGED;
-      New(PosMsg.WindowPos);
-      try
-        with PosMsg.WindowPos^ do begin
-          hWndInsertAfter := 0;
-          x := WidgetBounds.Left;
-          y := WidgetBounds.Top;
-          cx := WidgetBounds.Right - WidgetBounds.Left;
-          cy := WidgetBounds.Bottom - WidgetBounds.Top;
-          flags := 0;
-        end;
-        DeliverMessage(AInfo^.LCLObject, PosMsg);
-      finally
-        Dispose(PosMsg.WindowPos);
-      end;
-    end;
 
     // then send a LM_SIZE message
     if (AWinControl.Width <> WidgetBounds.Right - WidgetBounds.Left) or
        (AWinControl.Height <> WidgetBounds.Bottom - WidgetBounds.Top) then
     begin
-      FillChar(SizeMsg,SizeOf(SizeMsg),0);
-      SizeMsg.Msg := LM_SIZE;
-      SizeMsg.SizeType := Size_SourceIsInterface;
-      SizeMsg.Width := WidgetBounds.Right - WidgetBounds.Left;
-      SizeMsg.Height := WidgetBounds.Bottom - WidgetBounds.Top;
-      DeliverMessage(AInfo^.LCLObject, SizeMsg);
+      LCLSendSizeMsg(AWinControl, WidgetBounds.Right - WidgetBounds.Left,
+        WidgetBounds.Bottom - WidgetBounds.Top, Size_SourceIsInterface);
     end;
 
     // then send a LM_MOVE message
     if (AWinControl.Left <> WidgetBounds.Left) or
        (AWinControl.Top <> WidgetBounds.Top) then
     begin
-      FillChar(MoveMsg,SizeOf(MoveMsg),0);
-      MoveMsg.Msg := LM_MOVE;
-      MoveMsg.MoveType := Move_SourceIsInterface;
-      MoveMsg.XPos := WidgetBounds.Left;
-      MoveMsg.YPos := WidgetBounds.Top;
-      DeliverMessage(AInfo^.LCLObject, MoveMsg);
+      LCLSendMoveMsg(AWinControl, WidgetBounds.Left,
+        WidgetBounds.Top, Move_SourceIsInterface);
     end;
   end;
+end;
+
+function CarbonPrivateCommon_ValueChanged(ANextHandler: EventHandlerCallRef;
+  AEvent: EventRef;
+  AInfo: TCarbonWidgetInfo): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
+var
+  I: Integer;
+  RadioButton: TRadioButton;
+  ScrollMsg: TLMScroll;
+begin
+  DebugLn('CarbonPrivateCommon_ValueChanged ', DbgSName(AInfo.LCLObject));
+
+  Result := CallNextEventHandler(ANextHandler, AEvent);
+  
+  if AInfo.LCLObject is TRadioButton then
+  begin
+    if GetControl32BitValue(ControlRef(AInfo.Widget)) = kControlCheckBoxCheckedValue then
+    begin
+      DebugLn('CarbonPrivateCommon_ValueChanged Uncheck Sibling');
+      // uncheck sibling radio buttons
+      RadioButton := (AInfo.LCLObject as TRadioButton);
+      if RadioButton.Parent <> nil then
+      begin
+      
+        for I := 0 to RadioButton.Parent.ControlCount - 1 do
+          if (RadioButton.Parent.Controls[I] is TRadioButton) and
+            (RadioButton.Parent.Controls[I] <> RadioButton) then
+            (RadioButton.Parent.Controls[I] as TRadioButton).Checked := False;
+      end;
+    end;
+  end;
+  
+  if AInfo.LCLObject is TCustomScrollBar then
+  begin
+    FillChar(ScrollMsg, SizeOf(TLMScroll), 0);
+
+    ScrollMsg.Msg := LM_HSCROLL;
+    ScrollMsg.ScrollCode := SB_THUMBTRACK;
+    ScrollMsg.Pos := GetControl32BitValue(ControlRef(AInfo.Widget));
+    ScrollMsg.ScrollBar := HWnd(AInfo.Widget);
+
+    DeliverMessage(AInfo.LCLObject, ScrollMsg);
+  end
+  else
+    LCLSendChangedMsg(AInfo.LCLObject as TControl);
 end;

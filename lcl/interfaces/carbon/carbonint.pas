@@ -40,8 +40,8 @@ uses
  // interfacebase
   InterfaceBase,
  // LCL
-  Controls, Forms, Dialogs, LCLStrConsts, LMessages, LCLProc, LCLIntf, LCLType,
-  GraphType, GraphMath, Graphics, Menus, Maps;
+  LCLStrConsts, LMessages, LCLMessageGlue, LCLProc, LCLIntf, LCLType,
+  GraphType, GraphMath, Graphics, Controls, Forms, Dialogs, Menus, Maps;
 
 
 type
@@ -112,7 +112,7 @@ uses
 // CarbonWSCalendar,
 // CarbonWSCheckLst,
 // CarbonWSCListBox,
-// CarbonWSComCtrls,
+  CarbonWSComCtrls,
   CarbonWSControls,
 // CarbonWSDbCtrls,
 // CarbonWSDBGrids,

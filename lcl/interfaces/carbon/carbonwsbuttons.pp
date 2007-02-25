@@ -83,7 +83,7 @@ class function TCarbonWSButton.CreateHandle(const AWinControl: TWinControl;
 var
   Control: ControlRef;
   CFString: CFStringRef;
-  Info: PWidgetInfo;
+  Info: TCarbonWidgetInfo;
 begin
   Result := 0;
 
@@ -100,7 +100,7 @@ begin
   if Result = 0 then Exit;
 
   // add the info (our data, like which TWinControl belong to this carbon widget)
-  Info := CreateCtrlWidgetInfo(Control, AWinControl);
+  Info := TCarbonWidgetInfo.CreateForControl(Control, AWinControl);
   
   // register events (e.g. mouse, focus, keyboard, size, ...)
   TCarbonPrivateHandleClass(WSPrivate).RegisterEvents(Info);
@@ -123,7 +123,7 @@ class function TCarbonWSBitBtn.CreateHandle(const AWinControl: TWinControl;
 var
   Control: ControlRef;
   CFString: CFStringRef;
-  Info: PWidgetInfo;
+  Info: TCarbonWidgetInfo;
 begin
   Result := 0;
 
@@ -141,7 +141,7 @@ begin
   if Result = 0 then Exit;
 
   // add the info (our data, like which TWinControl belong to this carbon widget)
-  Info := CreateCtrlWidgetInfo(Control, AWinControl);
+  Info := TCarbonWidgetInfo.CreateForControl(Control, AWinControl);
 
   // register events (e.g. mouse, focus, keyboard, size, ...)
   TCarbonPrivateHandleClass(WSPrivate).RegisterEvents(Info);

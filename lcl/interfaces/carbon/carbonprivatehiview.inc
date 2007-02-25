@@ -21,46 +21,36 @@
 
 function CarbonPrivateHIView_Hit(ANextHandler: EventHandlerCallRef;
   AEvent: EventRef;
-  AInfo: PWidgetInfo): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
-var
-  Msg: TLMessage;
+  AInfo: TCarbonWidgetInfo): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
 begin
   {$ifdef VerboseMouse}
-  DebugLn('PrivateHiView_Hit: ', (AInfo^.LCLObject as TComponent).Name);
+  DebugLn('PrivateHiView_Hit: ', (AInfo.LCLObject as TComponent).Name);
   {$endif}
   Result := CallNextEventHandler(ANextHandler, AEvent);
   
-  FillChar(Msg, SizeOf(Msg), 0);
-  Msg.msg := LM_CLICKED;
-  DeliverMessage(AInfo^.LCLObject, Msg);
+  if AInfo.LCLObject is TCustomCheckBox then
+  // pass changed to check box to update checked property before click
+    LCLSendChangedMsg(AInfo.LCLObject as TControl);
+  
+  LCLSendClickedMsg(AInfo.LCLObject as TControl);
 end;
 
 function CarbonPrivateHIView_MouseMove(ANextHandler: EventHandlerCallRef;
   AEvent: EventRef;
-  AInfo: PWidgetInfo): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
+  AInfo: TCarbonWidgetInfo): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
 begin
   {$ifdef VerboseMouse}
-  DebugLn('PrivateHiView_MouseMove: ', (AInfo^.LCLObject as TComponent).Name);
+  DebugLn('PrivateHiView_MouseMove: ', (AInfo.LCLObject as TComponent).Name);
   {$endif}
-  Result := CallNextEventHandler(ANextHandler, AEvent);
-end;
-
-function CarbonPrivateHIView_ApplyBackground(ANextHandler: EventHandlerCallRef;
-  AEvent: EventRef;
-  AInfo: PWidgetInfo): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
-begin
-  DebugLn('PrivateHiView_ApplyBackground: ', (AInfo^.LCLObject as TComponent).Name);
   Result := CallNextEventHandler(ANextHandler, AEvent);
 end;
 
 function CarbonPrivateHIView_SetFocusPart(ANextHandler: EventHandlerCallRef;
   AEvent: EventRef;
-  AInfo: PWidgetInfo): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
-var
-  Msg: TLMessage;
+  AInfo: TCarbonWidgetInfo): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
   //Focus: ControlTypeCode;
 begin
-  DebugLn('PrivateHiView_SetFocusPart: ', (AInfo^.LCLObject as TComponent).Name);
+  DebugLn('PrivateHiView_SetFocusPart: ', (AInfo.LCLObject as TComponent).Name);
   Result := CallNextEventHandler(ANextHandler, AEvent);
   
   (*if GetEventParameter(AEvent, kEventParamControlPart, typeControlPartCode, nil,
@@ -70,7 +60,7 @@ begin
   FillChar(Msg, SizeOf(Msg), 0);
   if Focus then Msg.msg := LM_SETFOCUS
   else Msg.msg := LM_FILLFOCUS;
-  DeliverMessage(AInfo^.LCLObject, Msg);*)
+  DeliverMessage(AInfo.LCLObject, Msg);*)
 end;
 
 // ==================================================================
@@ -79,49 +69,44 @@ end;
 
 { TCarbonWSWinControlPrivate }
 
-class procedure TCarbonPrivateHiView.RegisterEvents(AInfo: PWidgetInfo);
+class procedure TCarbonPrivateHiView.RegisterEvents(AInfo: TCarbonWidgetInfo);
 var
   MouseSpec: array [0..6] of EventTypeSpec;
   TmpSpec: EventTypeSpec;
 begin
   TmpSpec := MakeEventSpec(kEventClassControl, kEventControlDispose);
-  InstallControlEventHandler(AInfo^.Widget,
+  InstallControlEventHandler(AInfo.Widget,
     RegisterEventHandler(@CarbonPrivateCommon_Dispose),
     1, @TmpSpec, Pointer(AInfo), nil);
 
   TmpSpec := MakeEventSpec(kEventClassControl, kEventControlHit);
-  InstallControlEventHandler(AInfo^.Widget,
+  InstallControlEventHandler(AInfo.Widget,
     RegisterEventHandler(@CarbonPrivateHIView_Hit),
     1, @TmpSpec, Pointer(AInfo), nil);
 
   MouseSpec[0] := MakeEventSpec(kEventClassMouse, kEventMouseMoved);
   MouseSpec[1] := MakeEventSpec(kEventClassMouse, kEventMouseDragged);
   
-  InstallControlEventHandler(AInfo^.Widget,
+  InstallControlEventHandler(AInfo.Widget,
     RegisterEventHandler(@CarbonPrivateHIView_MouseMove),
     2, @MouseSpec[0], Pointer(AInfo), nil);
 
   TmpSpec := MakeEventSpec(kEventClassControl, kEventControlDraw);
-  InstallControlEventHandler(AInfo^.Widget,
+  InstallControlEventHandler(AInfo.Widget,
     RegisterEventHandler(@CarbonPrivateCommon_Draw),
     1, @TmpSpec, Pointer(AInfo), nil);
     
   TmpSpec := MakeEventSpec(kEventClassControl, kEventControlBoundsChanged);
-  InstallControlEventHandler(AInfo^.Widget,
+  InstallControlEventHandler(AInfo.Widget,
     RegisterEventHandler(@CarbonPrivateCommon_BoundsChanged),
     1, @TmpSpec, Pointer(AInfo), nil);
     
-  TmpSpec := MakeEventSpec(kEventClassControl, kEventControlApplyBackground);
-  InstallControlEventHandler(AInfo^.Widget,
-    RegisterEventHandler(@CarbonPrivateHIView_ApplyBackground),
-    1, @TmpSpec, Pointer(AInfo), nil);
-    
   TmpSpec := MakeEventSpec(kEventClassControl, kEventControlSetFocusPart);
-  InstallControlEventHandler(AInfo^.Widget,
+  InstallControlEventHandler(AInfo.Widget,
     RegisterEventHandler(@CarbonPrivateHIView_SetFocusPart),
     1, @TmpSpec, Pointer(AInfo), nil);
   
-  DebugLN(TWinControl(Ainfo^.LCLObject).Name,':', TWinControl(Ainfo^.LCLObject).ClassName ,' Events set')
+  DebugLn(TWinControl(AInfo.LCLObject).Name,':', TWinControl(Ainfo.LCLObject).ClassName ,' Events set')
 end;
 
 class procedure TCarbonPrivateHiView.UnregisterEvents;

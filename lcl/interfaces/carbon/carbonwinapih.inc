@@ -139,7 +139,7 @@ function HideCaret(hWnd: HWND): Boolean; override;
 
 procedure InitializeCriticalSection(var CritSection: TCriticalSection); Override;
 function IntersectClipRect(dc: hdc; Left, Top, Right, Bottom: Integer): Integer; override;
-function InvalidateRect(aHandle : HWND; Rect : pRect; bErase : Boolean) : Boolean; override;
+function InvalidateRect(AHandle : HWND; Rect : pRect; bErase : Boolean) : Boolean; override;
 function IsWindowEnabled(Handle: HWND): boolean; override;
 function IsWindowVisible(Handle: HWND): boolean; override;
 
@@ -168,6 +168,7 @@ function RectVisible(dc : hdc; const ARect: TRect) : Boolean; override;
 function RegroupMenuItem(hndMenu: HMENU; GroupIndex: integer): Boolean; override;
 function ReleaseCapture : Boolean; override;
 function ReleaseDC(HWnd: HWND; DC: HDC): Integer; override;
+function RemoveProp(Handle: hwnd; Str: PChar): THandle; override;
 function RestoreDC(DC: HDC; SavedDC: Integer): Boolean; override;
 function RoundRect(DC : hDC; X1, Y1, X2, Y2: Integer; RX,RY : Integer): Boolean;  override;
 
@@ -180,14 +181,16 @@ function SelectPalette(DC: HDC; Palette: HPALETTE; ForceBackground: Boolean): HP
 function SendMessage(HandleWnd: HWND; Msg: Cardinal; wParam: WParam; lParam: LParam): LResult; override;
 function SetActiveWindow(Handle: HWND): HWND; override;
 function SetBkColor(DC: HDC; Color: TColorRef): TColorRef; override;
-function SetBkMode(DC: HDC; bkMode : Integer) : Integer; override;
+function SetBkMode(DC: HDC; BkMode : Integer) : Integer; override;
 function SetComboMinDropDownSize(Handle: HWND; MinItemsWidth, MinItemsHeight, MinItemCount: integer): boolean; override;
 function SetCapture(AHandle: HWND): HWND; override;
 function SetCaretPos(X, Y: Integer): Boolean; override;
 function SetCaretPosEx(Handle: HWnd; X, Y: Integer): Boolean; override;
 function SetCaretRespondToFocus(handle: HWND; ShowHideOnFocus: boolean): Boolean; override;
 function SetFocus(HWnd: HWND): HWND; override;
+function SetForegroundWindow(HWnd: HWND): boolean; override;
 function SetProp(Handle: hwnd; Str : PChar; Data : Pointer) : Boolean; override;
+function SetROP2(DC: HDC; Mode: Integer): Integer; override;
 function SetScrollInfo(Handle : HWND; SBStyle : Integer; ScrollInfo: TScrollInfo; bRedraw : Boolean): Integer; override;
 function SetSysColors(cElements: Integer; const lpaElements; const lpaRgbValues): Boolean; override;
 function SetTextCharacterExtra(_hdc : hdc; nCharExtra : Integer):Integer; override;
@@ -203,7 +206,7 @@ function StretchBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc,
 function StretchMaskBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; Mask: HBITMAP; XMask, YMask: Integer; Rop: DWORD): Boolean; override;
 
 function TextOut(DC: HDC; X,Y : Integer; Str : Pchar; Count: Integer) : Boolean; override;
-
+function UpdateWindow(Handle: HWND): Boolean; override;
 function WindowFromPoint(Point : TPoint) : HWND; override;
 
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line

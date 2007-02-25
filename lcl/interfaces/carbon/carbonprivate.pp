@@ -33,13 +33,14 @@ uses
   // libs
   FPCMacOSAll, CarbonUtils, 
   // LCL
-  LCLType, LMessages, LCLProc, Controls, Classes, SysUtils, Forms,
+  LCLType, LMessages, LCLMessageGlue, LCLProc, Controls, Classes, SysUtils,
+  StdCtrls, Forms,
   // widgetset
   WSControls, WSLCLClasses, WSProc,
   // interface
   CarbonDef, CarbonProc;
 
-{$define VerboseMouse}
+//{ $ define VerboseMouse}
 
 type
   { TCarbonPrivate }
@@ -58,7 +59,7 @@ type
   private
   protected
   public
-    class procedure RegisterEvents(AInfo: PWidgetInfo); virtual;
+    class procedure RegisterEvents(AInfo: TCarbonWidgetInfo); virtual;
     class procedure UnregisterEvents; virtual;
   end;
   TCarbonPrivateHandleClass = class of TCarbonPrivateHandle;
@@ -79,7 +80,7 @@ type
   private
   protected
   public
-    class procedure RegisterEvents(AInfo: PWidgetInfo); override;
+    class procedure RegisterEvents(AInfo: TCarbonWidgetInfo); override;
     class procedure UnregisterEvents; override;
   end;
   TCarbonPrivateHiViewClass = class of TCarbonPrivateHiView;
@@ -91,23 +92,33 @@ type
   private
   protected
   public
-    class procedure RegisterEvents(AInfo: PWidgetInfo); override;
+    class procedure RegisterEvents(AInfo: TCarbonWidgetInfo); override;
     class procedure UnregisterEvents; override;
   end;
   TCarbonPrivateWindowClass = class of TCarbonPrivateWindow;
   
-  TCarbonPrivateCheckBox = class(TCarbonPrivateHiView)
+  TCarbonPrivateValueControl = class(TCarbonPrivateHiView)
   private
   protected
   public
-    class procedure RegisterEvents(AInfo: PWidgetInfo); override;
+    class procedure RegisterEvents(AInfo: TCarbonWidgetInfo); override;
     class procedure UnregisterEvents; override;
   end;
-  TCarbonPrivateCheckBoxClass = class of TCarbonPrivateCheckBox;
+  TCarbonPrivateValueControlClass = class of TCarbonPrivateValueControl;
 
-  
+  TCarbonPrivateEdit = class(TCarbonPrivateHiView)
+  private
+  protected
+  public
+    class procedure RegisterEvents(AInfo: TCarbonWidgetInfo); override;
+    class procedure UnregisterEvents; override;
+  end;
+  TCarbonPrivateEditClass = class of TCarbonPrivateEdit;
 
 implementation  
+
+uses
+  CarbonWSStdCtrls;
 
 // Store state of key modifiers so that we can emulate keyup/keydown
 // of keys like control, option, command, caps lock, shift
@@ -117,10 +128,11 @@ var PrevKeyModifiers : UInt32 = 0;
 {$I carbonprivatecommon.inc}
 {$I carbonprivatehiview.inc}
 {$I carbonprivatewindow.inc}
-{$I carbonprivatecheckbox.inc}
+{$I carbonprivatevaluecontrol.inc}
+{$I carbonprivateedit.inc}
 
 // move to inc
-class procedure TCarbonPrivateHandle.RegisterEvents(AInfo: PWidgetInfo);
+class procedure TCarbonPrivateHandle.RegisterEvents(AInfo: TCarbonWidgetInfo);
 begin
 end;
 

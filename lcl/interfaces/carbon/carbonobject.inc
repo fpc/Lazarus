@@ -23,7 +23,7 @@
  *****************************************************************************
 }
 
-{$DEFINE DebugEventLoop}
+//{ $ DEFINE DebugEventLoop}
 
 { TCarbonWidgetSet }
 
@@ -464,7 +464,7 @@ end;
  ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.WidgetSetName: string;
 begin
-  Result:='carbon';
+  Result := 'carbon';
 end;
 
 {------------------------------------------------------------------------------
@@ -504,11 +504,15 @@ end;
   Returns: Nothing
 
   Redraws (the window of) a canvas
-  Not implemented!
  ------------------------------------------------------------------------------}
 procedure TCarbonWidgetSet.DCRedraw(CanvasHandle: HDC);
+var
+  ADC: TCarbonControlContext;
 begin
+  if not (TObject(CanvasHandle) is TCarbonControlContext) then Exit;
+  ADC := TCarbonControlContext(CanvasHandle);
 
+  CGContextFlush(ADC.CGContext);
 end;
 
 {------------------------------------------------------------------------------
@@ -534,7 +538,7 @@ end;
 function TCarbonWidgetSet.CreateComponent(Sender: TObject): THandle;
 begin
   DebugLn('WARNING: TCarbonWidgetSet.CreateComponent is deprecated, should not be called!! Go whack somebody with a large throut!');
-  Result:=0;
+  Result := 0;
 end;
 
 {------------------------------------------------------------------------------
@@ -631,5 +635,5 @@ begin
   end;
 
   AObject := TObject(GDIObject);
-  Result := (AObject is TCarbonFont);
+  Result := (AObject is TCarbonGDIObject);
 end;

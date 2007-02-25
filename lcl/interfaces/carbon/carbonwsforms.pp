@@ -79,7 +79,7 @@ type
   public
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
-    class procedure AddControl(const AControl: TControl); override;
+    class procedure GetPreferredSize(const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); override;
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
     class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); override;
     class procedure SetColor(const AWinControl: TWinControl); override;
@@ -144,9 +144,8 @@ class function TCarbonWSCustomForm.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
   Window: WindowRef;
-  Root: ControlRef;
   NewBounds: FPCMacOSAll.Rect;
-  Info: PWidgetInfo;
+  Info: TCarbonWidgetInfo;
   NewWindowClass: Integer;
   MinSize, MaxSize: HISize;
   Attributes: WindowAttributes;
@@ -191,9 +190,8 @@ begin
 
   SetText(AWinControl, AParams.Caption);
   SetColor(AWinControl);
-  CreateRootControl(Window, @Root);
 
-  Info := CreateWndWidgetInfo(Window, AWinControl);
+  Info := TCarbonWidgetInfo.CreateForWindow(Window, AWinControl);
   TCarbonPrivateHandleClass(WSPrivate).RegisterEvents(Info);
   
   MinSize.width := AWinControl.Constraints.EffectiveMinWidth;
@@ -203,7 +201,7 @@ begin
   if MaxSize.width <= 0 then MaxSize.width := 10000;
   if MaxSize.height <= 0 then MaxSize.height := 10000;
   
-  SetWindowResizeLimits(Window,@MinSize,@MaxSize);
+  SetWindowResizeLimits(Window, @MinSize, @MaxSize);
 end;
 
 {------------------------------------------------------------------------------
@@ -214,37 +212,31 @@ end;
   Destroys window in Carbon interface
  ------------------------------------------------------------------------------}
 class procedure TCarbonWSCustomForm.DestroyHandle(const AWinControl: TWinControl);
-var
-  Root: ControlRef;
 begin
   if not WSCheckHandleAllocated(AWinControl, 'DestroyHandle') then Exit;
 
   DebugLn('DestroyHandle ' + AWinControl.Name);
 
-  // free root control
-  GetRootControl(WindowRef(AWinControl.Handle), Root);
-  DisposeControl(Root);
-
   DisposeWindow(WindowRef(AWinControl.Handle));
 end;
 
 {------------------------------------------------------------------------------
-  Method:  TCarbonWSCustomForm.AddControl
-  Params:  AControl - LCL control to add
+  Method:  TCarbonWSCustomForm.GetPreferredSize
+  Params:  AWinControl     - LCL control
+           PreferredWidth  - Preferred width, valid if > 0
+           PreferredHeight - Preferred height, valid if > 0
+           WithThemeSpace  - Whether to include space for theme
   Returns: Nothing
 
-  Adds new control to parent window in Carbon interface
+  Retrieves the preferred size of window in Carbon interface to support
+  autosizing of controls
  ------------------------------------------------------------------------------}
-class procedure TCarbonWSCustomForm.AddControl(const AControl: TControl);
-var
-  Root: ControlRef;
+class procedure TCarbonWSCustomForm.GetPreferredSize(
+  const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer;
+  WithThemeSpace: Boolean);
 begin
-  if not WSCheckHandleAllocated(AControl.Parent, 'AddControl') then Exit;
-  
-  DebugLn('AddControl ' + AControl.Name + ' in ' + AControl.Parent.Name);
-
-  GetRootControl(WindowRef(AControl.Parent.Handle), Root);
-  EmbedControl(ControlRef((AControl as TWinControl).Handle), Root);
+  PreferredWidth := 0;
+  PreferredHeight := 0;
 end;
 
 {------------------------------------------------------------------------------
@@ -304,7 +296,7 @@ end;
   Params:  AWinControl - LCL control
   Returns: Nothing
 
-  Sets color of window in Carbon interface according to the LCL control
+  Sets the color of window in Carbon interface according to the LCL control
  ------------------------------------------------------------------------------}
 class procedure TCarbonWSCustomForm.SetColor(const AWinControl: TWinControl);
 begin

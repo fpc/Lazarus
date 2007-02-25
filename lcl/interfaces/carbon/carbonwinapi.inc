@@ -137,10 +137,21 @@ begin
   Result:=inherited ComboBoxDropDown(Handle, DropDown);
 end;
 
+{------------------------------------------------------------------------------
+  Method:  CreateBitmap
+  Params:  Width      - Bitmap width, in pixels
+           Height     - Bitmap height, in pixels
+           Planes     - Number of color planes
+           BitCount   - Number of bits required to identify a color (TODO)
+           BitmapBits - Pointer to array containing color data (TODO)
+  Returns: A handle to a bitmap
+
+  Creates a bitmap with the specified width, height and color format
+ ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.CreateBitmap(Width, Height: Integer; Planes,
   BitCount: Longint; BitmapBits: Pointer): HBITMAP;
 begin
-  Result:=inherited CreateBitmap(Width, Height, Planes, BitCount, BitmapBits);
+  Result := HBitmap(TCarbonBitmap.Create(Width, Height, BitCount, BitmapBits));
 end;
 
 function TCarbonWidgetSet.CreateBitmapFromRawImage(const RawImage: TRawImage;
@@ -150,10 +161,18 @@ begin
     AlwaysCreateMask);
 end;
 
+{------------------------------------------------------------------------------
+  Method:   CreateBrushIndirect
+  Params:   LogBrush - Record with brush characteristic
+  Returns:  Handle to a logical brush
+
+  Creates new logical brush that has the specified style, color, and pattern
+  TODO: patterns
+ ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.CreateBrushIndirect(const LogBrush: TLogBrush
   ): HBRUSH;
 begin
-  Result:=inherited CreateBrushIndirect(LogBrush);
+  Result := HBRUSH(TCarbonBrush.Create(LogBrush));
 end;
 
 function TCarbonWidgetSet.CreateCaret(Handle: HWND; Bitmap: hBitmap; width,
@@ -168,9 +187,16 @@ begin
   Result:=inherited CreateCompatibleBitmap(DC, Width, Height);
 end;
 
+{------------------------------------------------------------------------------
+  Method:  CreateCompatibleDC
+  Params:  DC - Handle to memory device context
+  Returns: Handle to a memory device context
+
+  Creates a memory device context (DC) compatible with the specified device
+ ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.CreateCompatibleDC(DC: HDC): HDC;
 begin
-  Result:=inherited CreateCompatibleDC(DC);
+  Result := HDC(TCarbonBitmapContext.Create);
 end;
 
 {------------------------------------------------------------------------------
@@ -205,9 +231,16 @@ begin
   Result:=inherited CreatePalette(LogPalette);
 end;
 
+{------------------------------------------------------------------------------
+  Method:  CreatePenIndirect
+  Params:  LogPen - Record with pen characteristic
+  Returns: Handle to a logical cosmetic pen
+
+  Creates new logical cosmetic pen that has the specified style, width and color
+ ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.CreatePenIndirect(const LogPen: TLogPen): HPEN;
 begin
-  Result:=inherited CreatePenIndirect(LogPen);
+  Result := HPEN(TCarbonPen.Create(LogPen));
 end;
 
 function TCarbonWidgetSet.CreatePixmapIndirect(const Data: Pointer;
@@ -227,45 +260,58 @@ begin
   Result:=inherited CreateRectRgn(X1, Y1, X2, Y2);
 end;
 
+{------------------------------------------------------------------------------
+  Method:  DeleteCriticalSection
+  Params:  CritSection - Critical section to be deleted
+  Returns: Nothing
+
+  Deletes the specified critical section
+ ------------------------------------------------------------------------------}
 procedure TCarbonWidgetSet.DeleteCriticalSection(
   var CritSection: TCriticalSection);
 var
   ACritSec: System.PRTLCriticalSection;
 begin
-  ACritSec:=System.PRTLCriticalSection(CritSection);
+  ACritSec := System.PRTLCriticalSection(CritSection);
+
   System.DoneCriticalsection(ACritSec^);
   Dispose(ACritSec);
-  CritSection:=0;
+  
+  CritSection := 0;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  DeleteDC
+  Params:  HDC - Handle to device context
+  Returns: If the function succeeds
+
+  Deletes the specified device context (DC)
+ ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.DeleteDC(hDC: HDC): Boolean;
 begin
-  Result:=inherited DeleteDC(hDC);
+  Result := False;
+  if not IsValidDC(hDC) then Exit;
+  
+  TCarbonDeviceContext(hDC).Free;
+  Result := True;
 end;
 
 {------------------------------------------------------------------------------
   Method:  DeleteObject
-  Params:  GDIObject - Handle to the graphic object
+  Params:  GDIObject - Handle to graphic object
   Returns: If the function succeeds
 
-  Deletes a graphic object, freeing all system resources associated with the
-  object
+  Deletes the specified graphic object, freeing all system resources associated
+  with the object
  ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.DeleteObject(GDIObject: HGDIOBJ): Boolean;
-var
-  AObject: TObject;
 begin
   Result := False;
   
   if not IsValidGDIObject(GDIObject) then Exit;
   
-  AObject := TObject(GDIObject);
-  
-  if AObject is TCarbonFont then
-  begin
-    (AObject as TCarbonFont).Free;
-    Result := True;
-  end;
+  TCarbonGDIObject(GDIObject).Free;
+  Result := True;
 end;
 
 function TCarbonWidgetSet.DestroyCaret(Handle: HWND): Boolean;
@@ -291,9 +337,35 @@ begin
   Result:=inherited DrawText(DC, Str, Count, Rect, Flags);
 end;
 
+{------------------------------------------------------------------------------
+  Method:  Ellipse
+  Params:
+           DC - Handle to device context
+           X1 - X-coord. of bounding rectangle's upper-left corner
+           Y1 - Y-coord. of bounding rectangle's upper-left corner
+           X2 - X-coord. of bounding rectangle's lower-right corner
+           Y2 - Y-coord. of bounding rectangle's lower-right corner
+  Returns: If the function succeeds
+
+  Draws a ellipse. The ellipse is outlined by using the current pen and filled
+  by using the current brush.
+ ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.Ellipse(DC: HDC; x1, y1, x2, y2: Integer): Boolean;
+var
+  ADC: TCarbonDeviceContext;
+  R: CGRect;
 begin
-  Result:=inherited Ellipse(DC, x1, y1, x2, y2);
+  Result := False;
+  if not IsValidDC(DC) then Exit;
+
+  ADC := TCarbonDeviceContext(DC);
+  
+  R := GetCGRect(X1, -Y1, X2, -Y2);
+
+  CGContextFillEllipseInRect(ADC.CGContext, R);
+  CGContextStrokeEllipseInRect(ADC.CGContext, R);
+  
+  Result := True;
 end;
 
 function TCarbonWidgetSet.EnableScrollBar(Wnd: HWND; wSBflags, wArrows: Cardinal
@@ -313,37 +385,37 @@ end;
  ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.EnableWindow(hWnd: HWND; bEnable: Boolean): Boolean;
 var
-  Root: ControlRef;
+  ContentView: HIviewRef;
 begin
   case GetWidgetType(Pointer(hWnd)) of
-  cwtWindowRef:
-    begin
-      GetRootControl(WindowRef(hWnd), Root);
-      
-      // enable/disable root
-      // add/remove standard handler
-      if bEnable then
+    cwtWindowRef:
       begin
-        FPCMacOSAll.EnableControl(Root);
-        ChangeWindowAttributes(WindowRef(hWnd), kWindowStandardHandlerAttribute,
-          kWindowNoAttributes);
-      end
-      else
-      begin
-        FPCMacOSAll.DisableControl(Root);
-        ChangeWindowAttributes(WindowRef(hWnd), kWindowNoAttributes,
-          kWindowStandardHandlerAttribute);
+        ContentView := GetCarbonWindowContent(hWnd);
+
+        // enable/disable window content
+        // add/remove standard handler
+        if bEnable then
+        begin
+          FPCMacOSAll.EnableControl(ContentView);
+          ChangeWindowAttributes(WindowRef(hWnd), kWindowStandardHandlerAttribute,
+            kWindowNoAttributes);
+        end
+        else
+        begin
+          FPCMacOSAll.DisableControl(ContentView);
+          ChangeWindowAttributes(WindowRef(hWnd), kWindowNoAttributes,
+            kWindowStandardHandlerAttribute);
+        end;
       end;
-    end;
-  cwtControlRef:
-    begin
-      Result := not FPCMacOSAll.IsControlEnabled(ControlRef(hWnd));
-      
-      if bEnable then
-        FPCMacOSAll.EnableControl(ControlRef(hWnd))
-      else
-        FPCMacOSAll.DisableControl(ControlRef(hWnd));
-    end;
+    cwtControlRef:
+      begin
+        Result := not FPCMacOSAll.IsControlEnabled(ControlRef(hWnd));
+
+        if bEnable then
+          FPCMacOSAll.EnableControl(ControlRef(hWnd))
+        else
+          FPCMacOSAll.DisableControl(ControlRef(hWnd));
+      end;
   end;
 end;
 
@@ -353,6 +425,13 @@ begin
   Result:=inherited EndPaint(Handle, PS);
 end;
 
+{------------------------------------------------------------------------------
+  Method:  EnterCriticalSection
+  Params:  CritSection - Critical section to be entered
+  Returns: Nothing
+
+  Enters the specified critical section
+ ------------------------------------------------------------------------------}
 procedure TCarbonWidgetSet.EnterCriticalSection(
   var CritSection: TCriticalSection);
 var
@@ -379,13 +458,14 @@ end;
 
   Enumerates all the font families in the system that match specified
   characteristic
+  TODO: specific face or specific char set enumeration
  ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.EnumFontFamiliesEx(DC: HDC; lpLogFont: PLogFont;
   Callback: FontEnumExProc; LParam: Lparam; flags: dword): Longint;
 var
   FamilyCount, NameLength: LongWord;
   FamilyListPtr, PFamily: ^ATSUFontID;
-  FontName: PChar;
+  FontName: String;
   EnumLogFont: TEnumLogFontEx;
   Metric: TNewTextMetricEx;
   FontType, I: Integer;
@@ -408,30 +488,26 @@ begin
       for I := 0 to Pred(FamilyCount) do
       begin
         // retrieve font name length
-        if ATSUFindFontName(PFamily^, kFontFamilyName, kFontNoPlatform,
-          kFontNoScript, kFontNoLanguage, NameLength, nil,
+        if ATSUFindFontName(PFamily^, kFontFamilyName, kFontMacintoshPlatform,
+          kFontRomanScript, kFontEnglishLanguage, NameLength, nil,
           @NameLength, nil) <> noErr then Continue;
         
-        GetMem(FontName, NameLength);
-        FillChar(FontName^, NameLength, #0);
-        try
-          // retrieve font name
-          if ATSUFindFontName(PFamily^, kFontFamilyName, kFontNoPlatform,
-            kFontNoScript, kFontNoLanguage, NameLength,
-            Pointer(FontName), @NameLength, nil) <> noErr then Continue;
-            
-          if FontName <> '' then // execute callback
-          begin
-            FillChar(EnumLogFont, SizeOf(EnumLogFont), #0);
-            FillChar(Metric, SizeOf(Metric), #0);
-            FontType := 0;
-            EnumLogFont.elfLogFont.lfFaceName := FontName;
-            // TODO: get all attributes
-            
-            Result := Callback(EnumLogFont, Metric, FontType, LParam);
-          end;
-        finally
-          System.FreeMem(FontName);
+        SetLength(FontName, NameLength);
+
+        // retrieve font name
+        if ATSUFindFontName(PFamily^, kFontFamilyName, kFontMacintoshPlatform,
+          kFontRomanScript, kFontEnglishLanguage, NameLength,
+          @FontName[1], @NameLength, nil) <> noErr then Continue;
+          
+        if FontName <> '' then // execute callback
+        begin
+          FillChar(EnumLogFont, SizeOf(EnumLogFont), #0);
+          FillChar(Metric, SizeOf(Metric), #0);
+          FontType := 0;
+          EnumLogFont.elfLogFont.lfFaceName := FontName;
+          // TODO: get all attributes
+          
+          Result := Callback(EnumLogFont, Metric, FontType, LParam);
         end;
         Inc(PFamily);
       end;
@@ -451,10 +527,50 @@ begin
   Result:=inherited ExcludeClipRect(dc, Left, Top, Right, Bottom);
 end;
 
+{------------------------------------------------------------------------------
+  Method:  ExtTextOut
+  Params:  DC      - Handle to device context
+           X       - X-coordinate of reference point
+           Y       - Y-coordinate of reference point
+           Options - Text-output options
+           Rect    - Optional clipping and/or opaquing rectangle (TODO)
+           Str     - Character string to be drawn
+           Count   - Number of characters in string
+           Dx      - Pointer to array of intercharacter spacing values (IGNORED)
+  Returns: If the string was drawn
+
+  Draws a character string by using the currently selected font
+ ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint;
   Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
+var
+  TextLayout: ATSUTextLayout;
+  ADC: TCarbonDeviceContext;
+  TextBefore, TextAfter, Ascent, Descent: ATSUTextMeasurement;
 begin
-  Result:=inherited ExtTextOut(DC, X, Y, Options, Rect, Str, Count, Dx);
+  Result := False;
+  if not IsValidDC(DC) then Exit;
+  ADC := TCarbonDeviceContext(DC);
+
+  if not BeginTextRender(ADC, Str, Count, TextLayout) then Exit;
+  try
+    // get text ascent
+    if ATSUGetUnjustifiedBounds(TextLayout, kATSUFromTextBeginning,
+      kATSUToTextEnd, TextBefore, TextAfter, Ascent, Descent) <> noErr then Exit;
+
+    // fill drawed text background
+    if (Options and ETO_OPAQUE) > 0 then
+      CGContextFillRect(ADC.CGContext, GetCGRect(X - TextBefore shr 16,
+        -Y shr 16, X + TextAfter shr 16, -Y - (Ascent + Descent) shr 16));
+
+    // finally draw the text
+    Result := ATSUDrawText(TextLayout, kATSUFromTextBeginning, kATSUToTextEnd,
+      X shl 16 - TextBefore, -(Y shl 16) - Descent) = noErr;
+     if Result then
+       DebugLn('ExtTextOut text drawed');
+  finally
+    EndTextRender(ADC, TextLayout);
+  end;
 end;
 
 function TCarbonWidgetSet.ExtSelectClipRGN(dc: hdc; rgn: hrgn; Mode: Longint
@@ -463,10 +579,37 @@ begin
   Result:=inherited ExtSelectClipRGN(dc, rgn, Mode);
 end;
 
+{------------------------------------------------------------------------------
+  Method:  FillRect
+  Params:  DC    - Handle to device context
+           Rect  - Record with rectangle coordinates
+           Brush - Handle to brush
+  Returns: If the function succeeds
+
+  Fills the rectangle by using the specified brush
+  It includes the left and top borders, but excludes the right and
+  bottom borders of the rectangle!
+ ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.FillRect(DC: HDC; const Rect: TRect; Brush: HBRUSH
   ): Boolean;
+var
+  ADC: TCarbonDeviceContext;
+  TempBrush: HBRUSH;
 begin
-  Result:=inherited FillRect(DC, Rect, Brush);
+  Result := False;
+  if not IsValidDC(DC) then Exit;
+  if not (TObject(Brush) is TCarbonBrush) then Exit;
+
+  ADC := TCarbonDeviceContext(DC);
+  
+  TempBrush := HBRUSH(ADC.CurrentBrush);
+  TCarbonBrush(Brush).Apply(ADC, False); // do not use ROP2
+  try
+    CGContextFillRect(ADC.CGContext, RectToCGRect(Rect));
+    Result := True;
+  finally
+    SelectObject(DC, TempBrush);
+  end;
 end;
 
 function TCarbonWidgetSet.Frame(DC: HDC; const ARect: TRect): Integer;
@@ -567,9 +710,34 @@ begin
   if Result then OffsetRect(ARect, -ARect.Left, -ARect.Top);
 end;
 
+{------------------------------------------------------------------------------
+  Method:  GetClipBox
+  Params:  DC   - Handle to device context
+           Rect - Record for client coordinates of clipping box
+  Returns: See bellow
+
+  Retrieves the smallest rectangle which includes the entire current clipping
+  region. The result can be one of the following constants: ERROR, NULLREGION,
+  SIMPLEREGION, COMPLEXREGION.
+ ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.GetClipBox(DC: hDC; lpRect: PRect): Longint;
+var
+  ADC: TCarbonDeviceContext;
 begin
-  Result:=inherited GetClipBox(DC, lpRect);
+  if not IsValidDC(DC) then
+  begin
+    Result := ERROR;
+    Exit;
+  end
+  else Result := COMPLEXREGION;
+  ADC := TCarbonDeviceContext(DC);
+  
+  if lpRect <> nil then
+  begin
+    lpRect^ := CGRectToRect(CGContextGetClipBoundingBox(ADC.CGContext));
+    lpRect^.Top := -lpRect^.Top;
+    lpRect^.Bottom := -lpRect^.Bottom;
+  end;
 end;
 
 function TCarbonWidgetSet.GetClipRGN(DC: hDC; RGN: hRGN): Longint;
@@ -606,17 +774,23 @@ end;
            area
 
   Retrieves a handle of a display device context (DC) for the client area of
-  the specified window.
+  the specified window
+  TODO: implement screen context
  ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.GetDC(HWnd: HWND): HDC;
 var
-  AInfo: PWidgetInfo;
+  AInfo: TCarbonWidgetInfo;
 begin
-  if HWnd = 0 then Result := HDC(TCarbonDeviceContext.Create(nil))
+  Result := 0;
+  
+  if HWnd = 0 then Result := HDC(TCarbonScreenContext.Create)
   else
   begin
     AInfo := GetWidgetInfo(Pointer(HWnd));
-    Result := HDC(TCarbonDeviceContext.Create(AInfo));
+    if AInfo = nil then Exit;
+    
+    // TODO: save DC
+    Result := HDC(AInfo.Context);
   end;
 end;
 
@@ -641,13 +815,12 @@ end;
  ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.GetDeviceCaps(DC: HDC; Index: Integer): Integer;
 var
-  DeviceContext: TCarbonDeviceContext;
+  ADC: TCarbonDeviceContext;
   ResX, ResY: FPCMacOSAll.SInt16;
 begin
   Result := 0;
   if not IsValidDC(DC) then Exit;
-
-  DeviceContext := TCarbonDeviceContext(DC);
+  ADC := TCarbonDeviceContext(DC);
 
   case Index of
   LOGPIXELSX,
@@ -667,9 +840,24 @@ begin
   Result:=inherited GetDeviceRawImageDescription(DC, Desc);
 end;
 
+{------------------------------------------------------------------------------
+  Method:  GetDeviceSize
+  Params:  DC - Handle to device context
+           P  - Record point for result
+  Returns: If the function succeeds
+
+  Retrieves the size of the specified device context
+ ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.GetDeviceSize(DC: HDC; var p: TPoint): boolean;
+var
+  ADC: TCarbonDeviceContext;
 begin
-  Result:=inherited GetDeviceSize(DC, p);
+  Result := False;
+  if not IsValidDC(DC) then Exit;
+  ADC := TCarbonDeviceContext(DC);
+  
+  P := ADC.Size;
+  Result := True;
 end;
 
 function TCarbonWidgetSet.GetDIBits(DC: HDC; Bitmap: HBitmap; StartScan,
@@ -734,7 +922,7 @@ begin
       // the ssCtrl/VK_CONTROL is mapped to cmdKey under MacOS
       Result:=-1;
   else
-    debugln('TCarbonWidgetSet.GetKeyState TODO ',dbgs(nVirtkey));
+    DebugLn('TCarbonWidgetSet.GetKeyState TODO ', DbgS(nVirtkey));
   end;
 end;
 
@@ -744,14 +932,42 @@ begin
   Result:=inherited GetObject(GDIObj, BufSize, Buf);
 end;
 
+{------------------------------------------------------------------------------
+  Method:  GetParent
+  Params:  Handle - Handle of child window
+  Returns: The handle of the parent window
+
+  Retrieves the handle of the specified child window's parent window.
+ ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.GetParent(Handle: HWND): HWND;
 begin
-  Result:=inherited GetParent(Handle);
+  Result := 0;
+  if Handle = 0 then Exit;
+  
+  case GetWidgetType(Pointer(Handle)) of
+  cwtControlRef: Result := HWND(HIViewGetSuperview(HIViewRef(Handle)));
+  end;
+  // Carbon windows has no parent
 end;
 
+{------------------------------------------------------------------------------
+  Method:  GetProp
+  Params:  Handle - Handle of window
+           Str    - Property name
+  Returns: The property data or nil if the property is not listed
+
+  Retrieves a pointer to data from the property list of the specified window or
+  nil if the property is not listed
+ ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.GetProp(Handle: hwnd; Str: PChar): Pointer;
+var
+  Info: TCarbonWidgetInfo;
 begin
-  Result:=inherited GetProp(Handle, Str);
+  Result := nil;
+  Info := GetWidgetInfo(Pointer(Handle));
+  if Info = nil then Exit;
+
+  Result := Info.Properties[Str];
 end;
 
 function TCarbonWidgetSet.GetRawImageFromDevice(SrcDC: HDC;
@@ -791,9 +1007,26 @@ begin
   Result:=inherited GetScrollInfo(Handle, SBStyle, ScrollInfo);
 end;
 
+{------------------------------------------------------------------------------
+  Method:  GetStockObject
+  Params:  Value - Type of stock object
+  Returns: A value identifying the logical object requested
+
+  Retrieves a handle to one of the predefined stock objects
+ ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.GetStockObject(Value: Integer): LongInt;
 begin
-  Result:=inherited GetStockObject(Value);
+  case Value of
+    NULL_BRUSH: // null brush (equivalent to HOLLOW_BRUSH).
+      Result := HBRUSH(StockNullBrush);
+    DEFAULT_GUI_FONT, SYSTEM_FONT:
+      Result := HFONT(StockSystemFont);
+  else
+    begin
+      DebugLn('TCarbonWidgetSet.GetStockObject TODO ', DbgS(Value));
+      Result := 0;
+    end;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -801,7 +1034,8 @@ end;
   Params:  NIndex - Display element whose color is to be retrieved
   Returns: RGB color value
 
-  Retrieves the current color of the specified display element.
+  Retrieves the current color of the specified display element
+  TODO: all system colors
  ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.GetSysColor(NIndex: Integer): DWORD;
 var
@@ -855,6 +1089,8 @@ begin
   //COLOR_HOTLIGHT:
   COLOR_WINDOW, COLOR_FORM:
     R := GetThemeBrushAsColor(kThemeBrushDocumentWindowBackground, Depth, True, C);
+  else
+    DebugLn('TCarbonWidgetSet.GetSysColor TODO ', DbgS(NIndex));
   end;
   
   if R = noErr then
@@ -871,13 +1107,14 @@ end;
 function TCarbonWidgetSet.GetSystemMetrics(NIndex: Integer): Integer;
 begin
   Result := 0;
+  
   case NIndex of
-  //SM_CYHSCROLL
-  //SM_CXVSCROLL
-  SM_CXSCREEN: Result := CGDisplayPixelsWide(CGMainDisplayID);
-  SM_CYSCREEN: Result := CGDisplayPixelsHigh(CGMainDisplayID);
+    SM_CYHSCROLL, SM_CXVSCROLL:
+      GetThemeMetric(kThemeMetricScrollBarWidth, Result);
+    SM_CXSCREEN: Result := CGDisplayPixelsWide(CGMainDisplayID);
+    SM_CYSCREEN: Result := CGDisplayPixelsHigh(CGMainDisplayID);
   else
-    Result := inherited GetSystemMetrics(NIndex);
+    DebugLn('TCarbonWidgetSet.GetSystemMetrics TODO ', DbgS(NIndex));;
   end;
 end;
 
@@ -899,43 +1136,16 @@ end;
 function TCarbonWidgetSet.GetTextExtentPoint(DC: HDC; Str: PChar;
   Count: Integer; var Size: TSize): Boolean;
 var
-  W: WideString;
-  S: String;
-  TextLength: LongWord;
   TextLayout: ATSUTextLayout;
-  TextStyle: ATSUStyle;
   ADC: TCarbonDeviceContext;
-  AFont: TCarbonFont;
   TextBefore, TextAfter, Ascent, Descent: ATSUTextMeasurement;
 begin
   Result := False;
   if not IsValidDC(DC) then Exit;
-
-  // convert str to wide string
-  if Count < 0 then S := Str
-  else
-  begin
-    SetLength(S, Count);
-    System.Move(Str^, S[1], Count);
-  end;
-  W := Utf8Decode(S);
-
   ADC := TCarbonDeviceContext(DC);
-  if not IsValidGDIObject(ADC.CurrentFont) then
-    TextStyle := DafultTextStyle
-  else
-  begin
-    AFont := TCarbonFont(ADC.CurrentFont);
-    TextStyle := AFont.Style;
-  end;
 
-  // create text layout
-  TextLength := kATSUToTextEnd;
-  if ATSUCreateTextLayoutWithTextPtr(ConstUniCharArrayPtr(@W[1]),
-      kATSUFromTextBeginning, kATSUToTextEnd, Count, 1, @TextLength, @TextStyle,
-      TextLayout) <> noErr then Exit;
+  if not BeginTextRender(ADC, Str, Count, TextLayout) then Exit;
   try
-
     // finally compute the text dimensions
     Result := ATSUGetUnjustifiedBounds(TextLayout, kATSUFromTextBeginning,
       kATSUToTextEnd, TextBefore, TextAfter, Ascent, Descent) = noErr;
@@ -946,7 +1156,7 @@ begin
       Size.cy := (Descent + Ascent) shr 16;
     end;
   finally
-    ATSUDisposeTextLayout(TextLayout);
+    EndTextRender(ADC, TextLayout);
   end;
 end;
 
@@ -956,63 +1166,78 @@ end;
            TM - The Record for the text metrics
   Returns: If the function succeeds
 
-  Fills the specified buffer with the metrics for the currently selected font.
+  Fills the specified buffer with the metrics for the currently selected font
+  TODO: get exact max. and av. char width, pitch and charset
  ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.GetTextMetrics(DC: HDC; var TM: TTextMetric): Boolean;
 var
   TextStyle: ATSUStyle;
   ADC: TCarbonDeviceContext;
-  AFont: TCarbonFont;
   M: ATSUTextMeasurement;
   B: Boolean;
-  S: TSize;
+  R: OSStatus;
+  TextLayout: ATSUTextLayout;
+  TextBefore, TextAfter, Ascent, Descent: ATSUTextMeasurement;
 begin
   Result := False;
   if not IsValidDC(DC) then Exit;
 
   ADC := TCarbonDeviceContext(DC);
-  if not IsValidGDIObject(ADC.CurrentFont) then
-    TextStyle := DafultTextStyle
+  if not IsValidGDIObject(HFONT(ADC.CurrentFont)) then
+    TextStyle := DefaultTextStyle
   else
-  begin
-    AFont := TCarbonFont(ADC.CurrentFont);
-    TextStyle := AFont.Style;
-  end;
+    TextStyle := ADC.CurrentFont.Style;
   
   FillChar(TM, SizeOf(TM), 0);
-  
-  //if ATSUGetAttribute(TextStyle, kATSULineAscentTag, SizeOf(M), @M, nil) <> noErr then Exit;
-  //TM.tmAscent := (-M) shr 16;
-  
-  //if ATSUGetAttribute(TextStyle, kATSULineDescentTag, SizeOf(M), @M, nil) <> noErr then Exit;
-  //TM.tmDescent := M shr 16;
-  
-  //TM.tmHeight := TM.tmAscent + TM.tmDescent;
-  
-  if ATSUGetAttribute(TextStyle, kATSULeadingTag, SizeOf(M), @M, nil) <> noErr then Exit;
-  TM.tmInternalLeading := M shr 16;
 
   // According to the MSDN library, TEXTMETRIC:
   // the average char width is generally defined as the width of the letter x
-  if not GetTextExtentPoint(DC, 'x', 1, S) then Exit;
-  TM.tmAveCharWidth := S.cx;
+  if not BeginTextRender(ADC, 'x', 1, TextLayout) then Exit;
+  try
+    if ATSUGetUnjustifiedBounds(TextLayout, kATSUFromTextBeginning,
+      kATSUToTextEnd, TextBefore, TextAfter, Ascent, Descent) <> noErr then Exit
+  finally
+    EndTextRender(ADC, TextLayout);
+  end;
   
-  TM.tmMaxCharWidth := TM.tmAscent; //TODO: don't know how to determine this right
+  TM.tmAscent := Ascent shr 16;
+  TM.tmDescent := Descent shr 16;
+  TM.tmHeight := (Ascent + Descent) shr 16;
   
-  if ATSUGetAttribute(TextStyle, kATSUQDBoldfaceTag, SizeOf(B), @B, nil) <> noErr then Exit;
+  R := ATSUGetAttribute(TextStyle, kATSULeadingTag, SizeOf(M), @M, nil);
+  if (R <> noErr) and (R <> kATSUNotSetErr) then Exit;
+  TM.tmInternalLeading := M shr 16;
+  TM.tmExternalLeading := 0;
+  
+  TM.tmAveCharWidth := (TextAfter - TextBefore) shr 16;
+  
+  TM.tmMaxCharWidth := TM.tmAscent; // TODO: don't know how to determine this right
+  TM.tmOverhang := 0;
+  TM.tmDigitizedAspectX := 0;
+  TM.tmDigitizedAspectY := 0;
+  TM.tmFirstChar := 'a';
+  TM.tmLastChar := 'z';
+  TM.tmDefaultChar := 'x';
+  TM.tmBreakChar := '?';
+  
+  R := ATSUGetAttribute(TextStyle, kATSUQDBoldfaceTag, SizeOf(B), @B, nil);
+  if (R <> noErr) and (R <> kATSUNotSetErr) then Exit;
   if B then TM.tmWeight := FW_NORMAL
        else TM.tmWeight := FW_BOLD;
   
-  if ATSUGetAttribute(TextStyle, kATSUQDItalicTag, SizeOf(B), @B, nil) <> noErr then Exit;
+  R := ATSUGetAttribute(TextStyle, kATSUQDItalicTag, SizeOf(B), @B, nil);
+  if (R <> noErr) and (R <> kATSUNotSetErr) then Exit;
   TM.tmItalic := Byte(B);
   
-  if ATSUGetAttribute(TextStyle, kATSUQDUnderlineTag, SizeOf(B), @B, nil) <> noErr then Exit;
+  R := ATSUGetAttribute(TextStyle, kATSUQDUnderlineTag, SizeOf(B), @B, nil);
+  if (R <> noErr) and (R <> kATSUNotSetErr) then Exit;
   TM.tmUnderlined := Byte(B);
   
-  if ATSUGetAttribute(TextStyle, kATSUStyleStrikeThroughTag, SizeOf(B), @B, nil) <> noErr then Exit;
+  R := ATSUGetAttribute(TextStyle, kATSUStyleStrikeThroughTag, SizeOf(B), @B, nil);
+  if (R <> noErr) and (R <> kATSUNotSetErr) then Exit;
   TM.tmStruckOut := Byte(B);
 
-  //TODO: get these from font
+  // TODO: get these from font
   TM.tmPitchAndFamily := FIXED_PITCH or TRUETYPE_FONTTYPE;
   TM.tmCharSet := DEFAULT_CHARSET;
   
@@ -1041,34 +1266,34 @@ end;
 function TCarbonWidgetSet.GetWindowRect(Handle: hwnd; var ARect: TRect): Integer;
 var
   WinControl: TWinControl;
-  AInfo: PWidgetInfo;
+  AInfo: TCarbonWidgetInfo;
   R: TRect;
 begin
   Result := 0;
   
   AInfo := nil;
   case GetWidgetType(Pointer(Handle), AInfo) of
-  cwtWindowRef:
-    if GetCarbonLocalWindowRect(Handle, ARect, AInfo) then Result := 1;
-  cwtControlRef:
-  begin
-    if not GetCarbonLocalWindowRect(Handle, ARect, AInfo) then Exit;
-    
-    WinControl := (AInfo^.LCLObject as TWinControl).Parent;
+    cwtWindowRef:
+      if GetCarbonLocalWindowRect(Handle, ARect, AInfo) then Result := 1;
+    cwtControlRef:
+      begin
+        if not GetCarbonLocalWindowRect(Handle, ARect, AInfo) then Exit;
 
-    while WinControl <> nil do
-    begin
-      if not GetCarbonLocalWindowRect(WinControl.Handle, R) then Exit;
-      OffsetRect(ARect, R.Left, R.Top);
-      if not GetCarbonClientRect(Handle, R, AInfo) then Exit;
-      OffsetRect(ARect, R.Left, R.Top);
-      
-      WinControl := WinControl.Parent;
+        WinControl := (AInfo.LCLObject as TWinControl).Parent;
+
+        while WinControl <> nil do
+        begin
+          if not GetCarbonLocalWindowRect(WinControl.Handle, R) then Exit;
+          OffsetRect(ARect, R.Left, R.Top);
+          if not GetCarbonClientRect(Handle, R, AInfo) then Exit;
+          OffsetRect(ARect, R.Left, R.Top);
+
+          WinControl := WinControl.Parent;
+        end;
+
+        Result := 1;
+      end;
     end;
-    
-    Result := 1;
-  end;
-  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -1125,14 +1350,22 @@ begin
   Result:=inherited HideCaret(hWnd);
 end;
 
+{------------------------------------------------------------------------------
+  Method:  InitializeCriticalSection
+  Params:  CritSection - Record for initialized critical section
+  Returns: Nothing
+
+  Creates a new critical section
+ ------------------------------------------------------------------------------}
 procedure TCarbonWidgetSet.InitializeCriticalSection(
   var CritSection: TCriticalSection);
 var
   ACritSec: System.PRTLCriticalSection;
 begin
   New(ACritSec);
+  
   System.InitCriticalSection(ACritSec^);
-  CritSection:=TCriticalSection(ACritSec);
+  CritSection := TCriticalSection(ACritSec);
 end;
 
 function TCarbonWidgetSet.IntersectClipRect(dc: hdc; Left, Top, Right,
@@ -1141,10 +1374,40 @@ begin
   Result:=inherited IntersectClipRect(dc, Left, Top, Right, Bottom);
 end;
 
-function TCarbonWidgetSet.InvalidateRect(aHandle: HWND; Rect: pRect;
+{------------------------------------------------------------------------------
+  Method:  InvalidateRect
+  Params:  AHandle - Handle of window
+           Rect    - Pointer to rectangle coordinates
+           BErase  - Specifies whether the background is to be erased
+  Returns: If the function succeeds
+
+  Adds a rectangle to the specified window's update region
+ ------------------------------------------------------------------------------}
+function TCarbonWidgetSet.InvalidateRect(AHandle: HWND; Rect: pRect;
   bErase: Boolean): Boolean;
+var
+  AInfo: TCarbonWidgetInfo;
+  R: TRect;
 begin
-  Result:=inherited InvalidateRect(aHandle, Rect, bErase);
+  Result := False;
+  
+  AInfo := GetWidgetInfo(Pointer(AHandle));
+  if AInfo = nil then Exit;
+  
+  if not GetCarbonClientRect(AHandle, R, AInfo) then Exit;
+  
+  if Rect <> nil then // offset to client origin
+  begin
+    OffsetRect(Rect^, R.Left, R.Top);
+    R := Rect^;
+  end;
+  
+  case AInfo.WidgetType of
+    cwtWindowRef:
+      Result := InvalWindowRect(WindowRef(AHandle), GetCarbonRect(R)) = noErr;
+    cwtControlRef:
+      Result := HIViewSetNeedsDisplayInRect(HIViewRef(AHandle), RectToCGRect(R), True) = noErr;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -1153,19 +1416,16 @@ end;
   Returns: True if window is enabled, false otherwise
  ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.IsWindowEnabled(Handle: HWND): boolean;
-var
-  Root: ControlRef;
 begin
   Result := False;
 
   case GetWidgetType(Pointer(Handle)) of
-  cwtWindowRef:
-    begin
-      GetRootControl(WindowRef(Handle), Root);
-      Result := IsControlEnabled(Root);
-    end;
-  cwtControlRef:
-    Result := IsControlEnabled(ControlRef(Handle));
+    cwtWindowRef:
+      begin
+        Result := IsControlEnabled(GetCarbonWindowContent(Handle));
+      end;
+    cwtControlRef:
+      Result := IsControlEnabled(ControlRef(Handle));
   end;
 end;
 
@@ -1179,25 +1439,56 @@ begin
   Result := False;
   
   case GetWidgetType(Pointer(Handle)) of
-  cwtWindowRef:
-    Result := FPCMacOSAll.IsWindowVisible(WindowRef(Handle));
-  cwtControlRef:
-    Result := FPCMacOSAll.IsControlVisible(ControlRef(Handle));
+    cwtWindowRef:
+      Result := FPCMacOSAll.IsWindowVisible(WindowRef(Handle));
+    cwtControlRef:
+      Result := FPCMacOSAll.IsControlVisible(ControlRef(Handle));
   end;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  LeaveCriticalSection
+  Params:  CritSection - Critical section to be left
+  Returns: Nothing
+
+  Leaves the specified critical section
+ ------------------------------------------------------------------------------}
 procedure TCarbonWidgetSet.LeaveCriticalSection(
   var CritSection: TCriticalSection);
 var
   ACritSec: System.PRTLCriticalSection;
 begin
-  ACritSec:=System.PRTLCriticalSection(CritSection);
+  ACritSec := System.PRTLCriticalSection(CritSection);
   System.LeaveCriticalsection(ACritSec^);
 end;
 
+{------------------------------------------------------------------------------
+  Method:  LineTo
+  Params:  DC - Handle to device context
+           X  - X-coordinate of line's ending point
+           Y  - Y-coordinate of line's ending point
+  Returns: If the function succeeds
+
+  Draws a line from the current position up to the specified point except and
+  updates the current position
+ ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.LineTo(DC: HDC; X, Y: Integer): Boolean;
+var
+  ADC: TCarbonDeviceContext;
 begin
-  Result:=inherited LineTo(DC, X, Y);
+  Result := False;
+  if not IsValidDC(DC) then Exit;
+
+  ADC := TCarbonDeviceContext(DC);
+
+  CGContextBeginPath(ADC.CGContext);
+  CGContextMoveToPoint(ADC.CGContext, ADC.PenPos.x, -ADC.PenPos.y);
+  CGContextAddLineToPoint(ADC.CGContext, X, -Y);
+  CGContextStrokePath(ADC.CGContext);
+  
+  Result := True;
+  ADC.PenPos.x := X;
+  ADC.PenPos.y := Y;
 end;
 
 function TCarbonWidgetSet.MessageBox(hWnd: HWND; lpText, lpCaption: PChar;
@@ -1206,10 +1497,31 @@ begin
   Result:=inherited MessageBox(hWnd, lpText, lpCaption, uType);
 end;
 
+{------------------------------------------------------------------------------
+  Method:  MoveToEx
+  Params:  DC       - Handle to device context
+           X        - X-coordinate of new current position
+           Y        - Y-coordinate of new current position
+           OldPoint - Pointer to old current position
+  Returns: If the function succeeds.
+
+  Updates the current position to the specified point
+ ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.MoveToEx(DC: HDC; X, Y: Integer; OldPoint: PPoint
   ): Boolean;
+var
+  ADC: TCarbonDeviceContext;
 begin
-  Result:=inherited MoveToEx(DC, X, Y, OldPoint);
+  Result := False;
+  if not IsValidDC(DC) then Exit;
+
+  ADC := TCarbonDeviceContext(DC);
+
+  if OldPoint <> nil then OldPoint^ := ADC.PenPos;
+  ADC.PenPos.x := X;
+  ADC.PenPos.y := Y;
+  
+  Result := True;
 end;
 
 function TCarbonWidgetSet.MoveWindowOrgEx(DC: HDC; dX, dY: Integer): Boolean;
@@ -1253,16 +1565,83 @@ begin
   Result:=inherited PolyBezier(DC, Points, NumPts, Filled, Continuous);
 end;
 
+{------------------------------------------------------------------------------
+  Method:  Polygon
+  Params:  DC      - Handle to device context
+           Points  - Pointer to polygon's vertices
+           NumPts  - Number of polygon's vertices
+           Winding - Use winding fill rule
+  Returns: If the function succeeds
+
+  Draws a closed, many-sided shape on the canvas, using the pen and brush.
+  If Winding is set, Polygon fills the shape using the Winding fill algorithm.
+  Otherwise, Polygon uses the even-odd (alternative) fill algorithm. The first
+  point is always connected to the last point.
+ ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.Polygon(DC: HDC; Points: PPoint; NumPts: Integer;
   Winding: boolean): boolean;
+var
+  ADC: TCarbonDeviceContext;
 begin
-  Result:=inherited Polygon(DC, Points, NumPts, Winding);
+  Result := False;
+  if not IsValidDC(DC) then Exit;
+  if Points = nil then Exit;
+
+  ADC := TCarbonDeviceContext(DC);
+
+  CGContextBeginPath(ADC.CGContext);
+  CGContextMoveToPoint(ADC.CGContext, Points^.x, -Points^.y);
+
+  while NumPts > 1 do
+  begin
+    Inc(Points);
+    CGContextAddLineToPoint(ADC.CGContext, Points^.x, -Points^.y);
+    Dec(NumPts);
+  end;
+
+  CGContextClosePath(ADC.CGContext);
+  
+  if Winding then
+    CGContextDrawPath(ADC.CGContext, kCGPathFillStroke)
+  else
+    CGContextDrawPath(ADC.CGContext, kCGPathEOFillStroke);
+    
+  Result := True;
 end;
 
-function TCarbonWidgetSet.Polyline(DC: HDC; Points: PPoint; NumPts: Integer
-  ): boolean;
+{------------------------------------------------------------------------------
+  Method:  Polyline
+  Params:  DC     - Handle to device context
+           Points - Pointer to array containing points
+           NumPts - Number of points in the array
+  Returns: If the function succeeds
+
+  Draws a series of line segments by connecting the points in the specified
+  array
+ ------------------------------------------------------------------------------}
+function TCarbonWidgetSet.Polyline(DC: HDC; Points: PPoint; NumPts: Integer): boolean;
+var
+  ADC: TCarbonDeviceContext;
 begin
-  Result:=inherited Polyline(DC, Points, NumPts);
+  Result := False;
+  if not IsValidDC(DC) then Exit;
+  if Points = nil then Exit;
+
+  ADC := TCarbonDeviceContext(DC);
+  
+  CGContextBeginPath(ADC.CGContext);
+  CGContextMoveToPoint(ADC.CGContext, Points^.x, -Points^.y);
+
+  while NumPts > 1 do
+  begin
+    Inc(Points);
+    CGContextAddLineToPoint(ADC.CGContext, Points^.x, -Points^.y);
+    Dec(NumPts);
+  end;
+  
+  CGContextStrokePath(ADC.CGContext);
+
+  Result := True;
 end;
 
 function TCarbonWidgetSet.PostMessage(Handle: HWND; Msg: Cardinal;
@@ -1288,9 +1667,34 @@ begin
   Result:=inherited RealizePalette(DC);
 end;
 
+{------------------------------------------------------------------------------
+  Method:  Rectangle
+  Params:  DC - Handle to device context
+           X1 - X-coordinate of bounding rectangle's upper-left corner
+           Y1 - Y-coordinate of bounding rectangle's upper-left corner
+           X2 - X-coordinate of bounding rectangle's lower-right corner
+           Y2 - Y-coordinate of bounding rectangle's lower-right corner
+  Returns: If the function succeeds
+
+  Draws a rectangle. The rectangle is outlined by using the current pen and
+  filled by using the current brush.
+ ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.Rectangle(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean;
+var
+  ADC: TCarbonDeviceContext;
+  R: CGRect;
 begin
-  Result:=inherited Rectangle(DC, X1, Y1, X2, Y2);
+  Result := False;
+  if not IsValidDC(DC) then Exit;
+
+  ADC := TCarbonDeviceContext(DC);
+
+  R := GetCGRect(X1, -Y1, X2, -Y2);
+
+  CGContextFillRect(ADC.CGContext, R);
+  CGContextStrokeRect(ADC.CGContext, R);
+
+  Result := True;
 end;
 
 function TCarbonWidgetSet.RectVisible(dc: hdc; const ARect: TRect): Boolean;
@@ -1321,8 +1725,29 @@ function TCarbonWidgetSet.ReleaseDC(HWnd: HWND; DC: HDC): Integer;
 begin
   Result := 0;
   if not IsValidDC(DC) then Exit;
-  TCarbonDeviceContext(DC).Free;
+  // TODO: restore DC
   Result := 1;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  RemoveProp
+  Params:  Handle - Handle of window
+           Str    - Property name
+  Returns: Property data or nil if the property is not listed
+
+  Removes the an existing entry from the property list of the
+  specified window
+ ------------------------------------------------------------------------------}
+function TCarbonWidgetSet.RemoveProp(Handle: hwnd; Str: PChar): THandle;
+var
+  Info: TCarbonWidgetInfo;
+begin
+  Result := 0;
+  Info := GetWidgetInfo(Pointer(Handle));
+  if Info = nil then Exit;
+
+  Result := THandle(Info.Properties[Str]);
+  Info.Properties[Str] := nil;
 end;
 
 function TCarbonWidgetSet.RestoreDC(DC: HDC; SavedDC: Integer): Boolean;
@@ -1382,10 +1807,34 @@ begin
   ADC := TCarbonDeviceContext(DC);
   AObject := TObject(GDIObj);
   
-  if AObject is TCarbonFont then
+  if AObject is TCarbonFont then // select font
   begin
-    Result := ADC.CurrentFont;
-    ADC.CurrentFont := GDIObj;
+    Result := HFONT(ADC.CurrentFont);
+    ADC.CurrentFont := TCarbonFont(GDIObj);
+  end;
+  
+  if AObject is TCarbonBrush then // select brush
+  begin
+    Result := HBRUSH(ADC.CurrentBrush);
+    ADC.CurrentBrush := TCarbonBrush(GDIObj);
+  end;
+  
+  if AObject is TCarbonPen then // select pen
+  begin
+    Result := HPEN(ADC.CurrentPen);
+    ADC.CurrentPen := TCarbonPen(GDIObj);
+  end;
+  
+  if AObject is TCarbonBitmap then // select bitmap
+  begin
+    if not (ADC is TCarbonBitmapContext) then
+    begin
+      DebugLn('SelectObject error - The specified device is not bitmap context!');
+      Exit;
+    end;
+    
+    Result := HBITMAP((ADC as TCarbonBitmapContext).Bitmap);
+    (ADC as TCarbonBitmapContext).Bitmap := TCarbonBitmap(GDIObj);
   end;
 end;
 
@@ -1395,10 +1844,31 @@ begin
   Result:=inherited SelectPalette(DC, Palette, ForceBackground);
 end;
 
+{------------------------------------------------------------------------------
+  Method:  SendMessage
+  Params:  HandleWnd - Handle of destination window
+           Msg       - LCL message to send
+           WParam    - First message parameter
+           LParam    - Second message parameter
+  Returns: The result of the message processing
+
+  Sends the specified LCL message to the specified window
+ ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.SendMessage(HandleWnd: HWND; Msg: Cardinal;
   wParam: WParam; lParam: LParam): LResult;
+var
+  Info: TCarbonWidgetInfo;
+  AMsg: TLMessage;
 begin
-  Result:=inherited SendMessage(HandleWnd, Msg, wParam, lParam);
+  Result := 0;
+  Info := GetWidgetInfo(Pointer(HandleWnd));
+  if Info = nil then Exit;
+  
+  AMsg.Msg := Msg;
+  AMsg.WParam := wParam;
+  AMsg.LParam := lParam;
+  
+  Result := DeliverMessage(Info.LCLObject, AMsg);
 end;
 
 {------------------------------------------------------------------------------
@@ -1416,14 +1886,44 @@ begin
   if ActivateWindow(WindowRef(Handle), True) <> NoErr then Result := 0;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  SetBkColor
+  Params:  DC    - Handle to device context
+           Color - Background color value
+  Returns: The previous background color if succeeds, otherwise CLR_INVALID
+
+  Sets the current background color to the specified color value
+ ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.SetBkColor(DC: HDC; Color: TColorRef): TColorRef;
+var
+  ADC: TCarbonDeviceContext;
 begin
-  Result:=inherited SetBkColor(DC, Color);
+  Result := CLR_INVALID;
+  if not IsValidDC(DC) then Exit;
+  ADC := TCarbonDeviceContext(DC);
+
+  Result := ADC.BkColor;
+  ADC.BkColor := Color;
 end;
 
-function TCarbonWidgetSet.SetBkMode(DC: HDC; bkMode: Integer): Integer;
+{------------------------------------------------------------------------------
+  Method:  SetBkMode
+  Params:  DC     - Handle to device context
+           BkMode - Flag specifying background mode
+  Returns: The previous background mode if suceeds, otherwise 0
+
+  Sets the background mix mode of the specified device context
+ ------------------------------------------------------------------------------}
+function TCarbonWidgetSet.SetBkMode(DC: HDC; BkMode: Integer): Integer;
+var
+  ADC: TCarbonDeviceContext;
 begin
-  Result:=inherited SetBkMode(DC, bkMode);
+  Result := 0;
+  if not IsValidDC(DC) then Exit;
+  ADC := TCarbonDeviceContext(DC);
+
+  Result := ADC.BkMode;
+  ADC.BkMode := BkMode;
 end;
 
 function TCarbonWidgetSet.SetCapture(AHandle: HWND): HWND;
@@ -1464,14 +1964,14 @@ function TCarbonWidgetSet.SetFocus(HWnd: HWND): HWND;
 var
   Window: WindowRef;
   Control: ControlRef;
-  Info: PWidgetInfo;
+  Info: TCarbonWidgetInfo;
 begin
   Result := GetFocus;
   if HWnd = 0 then Exit;
   if HWnd = Result then Exit; // if window is already focused exit
   
   Info := GetWidgetInfo(Pointer(HWnd));
-  Window := GetTopParentWindow(Info^.LCLObject as TWinControl);
+  Window := GetTopParentWindow(Info.LCLObject as TWinControl);
   
   ActivateWindow(Window, True); // can change focus!
   if HWnd <> THandle(Window) then
@@ -1482,16 +1982,94 @@ begin
   end;
 end;
 
-function TCarbonWidgetSet.SetProp(Handle: hwnd; Str: PChar; Data: Pointer
-  ): Boolean;
+{------------------------------------------------------------------------------
+  Method:  SetForegroundWindow
+  Params:  HWnd - Handle of window
+  Returns: If the function suceeds
+
+  Brings the specified window to the top
+ ------------------------------------------------------------------------------}
+function TCarbonWidgetSet.SetForegroundWindow(HWnd: HWND): boolean;
 begin
-  Result:=inherited SetProp(Handle, Str, Data);
+  Result := ActivateWindow(WindowRef(HWnd), True) = noErr;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  SetProp
+  Params:  Handle - Handle of window
+           Str    - Property name
+           Data   - Property data
+  Returns: If the function suceeds
+
+  Adds a new entry or changes an existing entry in the property list of the
+  specified window
+ ------------------------------------------------------------------------------}
+function TCarbonWidgetSet.SetProp(Handle: hwnd; Str: PChar; Data: Pointer): Boolean;
+var
+  Info: TCarbonWidgetInfo;
+begin
+  Result := False;
+  Info := GetWidgetInfo(Pointer(Handle));
+  if Info = nil then Exit;
+  
+  Info.Properties[Str] := Data;
+  Result := True;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  SetROP2
+  Params:  DC		- Handle to device context
+           Mode	- Foreground mixing mode
+  Returns: The previous mode if succeeds, otherwise 0
+  
+  Sets the specified foreground mixing mode to the device context
+  TODO: implement all modes
+ ------------------------------------------------------------------------------}
+function TCarbonWidgetSet.SetROP2(DC: HDC; Mode: Integer): Integer;
+var
+  ADC: TCarbonDeviceContext;
+begin
+  Result := 0;
+  if not IsValidDC(DC) then Exit;
+  ADC := TCarbonDeviceContext(DC);
+
+  Result := ADC.ROP2;
+  ADC.ROP2 := Mode;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  SetScrollInfo
+  Params:  Handle     - Handle of window
+           SBStyle    - Scroll bar flag
+           ScrollInfo - Scrolling info
+           bRedraw    - Redraw the scroll bar?
+  Returns: The old position value
+
+  Sets the parameters of a scroll bar
+  TODO: set info of window scrollbars
+ ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.SetScrollInfo(Handle: HWND; SBStyle: Integer;
   ScrollInfo: TScrollInfo; bRedraw: Boolean): Integer;
 begin
-  Result:=inherited SetScrollInfo(Handle, SBStyle, ScrollInfo, bRedraw);
+  Result := 0;
+  if Handle = 0 then Exit;
+  
+  if SBStyle = SB_CTL then
+  begin
+    Result := GetControl32BitValue(ControlRef(Handle));
+    if (SIF_RANGE and ScrollInfo.fMask) > 0 then
+    begin
+      SetControl32BitMinimum(ControlRef(Handle), ScrollInfo.nMin);
+      SetControl32BitMaximum(ControlRef(Handle), ScrollInfo.nMax);
+    end;
+    if (SIF_POS and ScrollInfo.fMask) > 0 then
+      SetControl32BitValue(ControlRef(Handle), ScrollInfo.nPos);
+    if (SIF_PAGE and ScrollInfo.fMask) > 0 then
+      SetControlviewSize(ControlRef(Handle), ScrollInfo.nPage);
+  end
+  else
+    // TODO: SB_VERT, SB_HORZ
+    DebugLn('TCarbonWidgetSet.SetScrollInfo TODO SB_VERT, SB_HORZ');
 end;
 
 function TCarbonWidgetSet.SetSysColors(cElements: Integer; const lpaElements;
@@ -1506,9 +2084,24 @@ begin
   Result:=inherited SetTextCharacterExtra(_hdc, nCharExtra);
 end;
 
+{------------------------------------------------------------------------------
+  Method:  SetTextColor
+  Params:  DC    - Handle to device context.
+           Color - Specifies the color of the text
+  Returns: The previous color if succeeds, CLR_INVALID otherwise
+
+  Sets the text color for the specified device context to the specified color
+ ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.SetTextColor(DC: HDC; Color: TColorRef): TColorRef;
+var
+  ADC: TCarbonDeviceContext;
 begin
-  Result:=inherited SetTextColor(DC, Color);
+  Result := CLR_INVALID;
+  if not IsValidDC(DC) then Exit;
+  ADC := TCarbonDeviceContext(DC);
+  
+  Result := ADC.TextColor;
+  ADC.TextColor := Color;
 end;
 
 function TCarbonWidgetSet.SetWindowLong(Handle: HWND; Idx: Integer;
@@ -1547,10 +2140,11 @@ end;
   Returns: If the function succeeds
   
   Shows the window normal, minimized or maximized
+  TODO: solve maximized <-> normal bug
 ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.ShowWindow(hWnd: HWND; nCmdShow: Integer): Boolean;
 var
- P: FPCMacOSAll.Point;
+  P: FPCMacOSAll.Point;
 begin
   Result := False;
 
@@ -1584,12 +2178,50 @@ begin
     SrcWidth, SrcHeight, ROp);
 end;
 
+{------------------------------------------------------------------------------
+  Method:  StretchMaskBlt
+  Params:  DestDC              - Handle to destination device context
+           X, Y                - Left/top corner of the destination rectangle
+           Width, Height       - Size of the destination rectangle
+           SrcDC               - Handle to source device context
+           XSrc, YSrc          - Left/top corner of the source rectangle
+           SrcWidth, SrcHeight - Size of the source rectangle
+           Mask                - Handle of a monochrome bitmap (IGNORED)
+           XMask, YMask        - Left/top corner of the mask rectangle
+           Rop                 - Raster operation to be performed (TODO)
+  Returns: If the function succeeds
+
+  Copies a bitmap from a source rectangle into a destination rectangle using
+  the specified mask and raster operations. If needed it resizes the bitmap to
+  fit the dimensions of the destination rectangle. Sizing is done according to
+  the stretching mode currently set in the destination device context.
+  TODO: copy from any canvas
+        ROP
+        stretch mode
+        SrcX, SrcY, SrcWidth, SrcHeight
+ ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.StretchMaskBlt(DestDC: HDC; X, Y, Width,
   Height: Integer; SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer;
   Mask: HBITMAP; XMask, YMask: Integer; Rop: DWORD): Boolean;
 begin
-  Result:=inherited StretchMaskBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc,
-    YSrc, SrcWidth, SrcHeight, Mask, XMask, YMask, Rop);
+  Result := False;
+  if not IsValidDC(DestDC) then
+  begin
+    DebugLn('StretchMaskBlt error - invalid destination device context!');
+    Exit;
+  end;
+  
+  if (not IsValidDC(SrcDC)) or not (TCarbonDeviceContext(SrcDC) is TCarbonBitmapContext) or
+   (TCarbonBitmapContext(SrcDC).Bitmap = nil) then
+  begin
+    DebugLn('StretchMaskBlt error - invalid source device context!');
+    Exit;
+  end;
+  
+  CGContextDrawImage(TCarbonDeviceContext(SrcDC).CGContext,
+    GetCGRect(X, -Y, Width, -Y - Height),
+    TCarbonBitmapContext(SrcDC).Bitmap.CGImage);
+  Result := True;
 end;
 
 {------------------------------------------------------------------------------
@@ -1602,58 +2234,32 @@ end;
   Returns: If the function succeeds
 
   Draws a character string at the specified location, using the currently
-  selected font.
+  selected font
  ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.TextOut(DC: HDC; X, Y: Integer; Str: Pchar;
   Count: Integer): Boolean;
-var
-  W: WideString;
-  S: String;
-  TextLength: LongWord;
-  TextLayout: ATSUTextLayout;
-  TextStyle: ATSUStyle;
-  ADC: TCarbonDeviceContext;
-  AFont: TCarbonFont;
-  TextBefore, TextAfter, Ascent, Descent: ATSUTextMeasurement;
+begin
+  Result := ExtTextOut(DC, X, Y, 0, nil, Str, Count, nil);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  UpdateWindow
+  Params:  Handle - Handle to window
+  Returns: If the function succeeds
+
+  Updates the dirty areas of the specified window
+ ------------------------------------------------------------------------------}
+function TCarbonWidgetSet.UpdateWindow(Handle: HWND): Boolean;
 begin
   Result := False;
-  if not IsValidDC(DC) then Exit;
   
-  // convert str to wide string
-  if Count < 0 then S := Str
-  else
-  begin
-    SetLength(S, Count);
-    System.Move(Str^, S[1], Count);
-  end;
-  W := Utf8Decode(S);
-
-  ADC := TCarbonDeviceContext(DC);
-  ADC.Activate;
-  
-  if not IsValidGDIObject(ADC.CurrentFont) then
-    TextStyle := DafultTextStyle
-  else
-  begin
-    AFont := TCarbonFont(ADC.CurrentFont);
-    TextStyle := AFont.Style;
-  end;
-
-  // create text layout
-  TextLength := kATSUToTextEnd;
-  if ATSUCreateTextLayoutWithTextPtr(ConstUniCharArrayPtr(@W[1]),
-      kATSUFromTextBeginning, kATSUToTextEnd, Count, 1, @TextLength, @TextStyle,
-      TextLayout) <> noErr then Exit;
-  try
-    // get text ascent
-    if ATSUGetUnjustifiedBounds(TextLayout, kATSUFromTextBeginning,
-      kATSUToTextEnd, TextBefore, TextAfter, Ascent, Descent) <> noErr then Exit;
-      
-    // finally draw the text
-    Result := ATSUDrawText(TextLayout, kATSUFromTextBeginning, kATSUToTextEnd,
-      X shl 16, Y shl 16 + Ascent) = noErr;
-  finally
-    ATSUDisposeTextLayout(TextLayout);
+  case GetWidgetType(Pointer(Handle)) of
+    cwtControlRef:
+      Result := HIViewRender(HIViewRef(Handle)) = noErr;
+    cwtWindowRef:
+      begin
+        Result := HIViewRender(GetCarbonWindowContent(Handle)) = noErr;
+      end;
   end;
 end;
 
