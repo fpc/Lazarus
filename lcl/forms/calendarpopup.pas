@@ -67,7 +67,7 @@ begin
   PopupForm.FOnReturnDate := OnReturnDate;
   //TODO: Change to PopupForm.Show when gtk supports non modal forms on top of
   //modal forms.
-  {$IFDEF MSWindows}
+  {$IFDEF windows}
   PopupForm.Show;
   {$ELSE}
   PopupForm.ShowModal;
