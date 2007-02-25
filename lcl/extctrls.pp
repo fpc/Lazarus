@@ -535,8 +535,8 @@ type
     procedure SetProportional(const AValue: Boolean);
     procedure SetStretch(Value : Boolean);
     procedure SetTransparent(Value : Boolean);
-    procedure PictureChanged(Sender : TObject);
   protected
+    procedure PictureChanged(Sender : TObject); virtual;
     function DestRect: TRect; virtual;
     procedure DoAutoSize; Override;
     Procedure Paint; Override;

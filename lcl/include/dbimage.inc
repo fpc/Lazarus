@@ -30,6 +30,13 @@ function TDBImage.GetField: TField;
 begin
   Result:=FDataLink.Field;
 end;
+procedure TDBImage.Change;
+begin
+  //need to override this to make sure the datalink gets notified
+  //its been modified, then when post etc, it will call
+  //updatedata to update the field data with current value
+  FDataLink.Modified;
+end;
 
 function TDBImage.GetReadOnly: Boolean;
 begin
@@ -72,24 +79,107 @@ end;
 
 procedure TDBImage.DataChange(Sender: TObject);
 begin
+  FUpdatingRecord := True;
   Picture.Graphic:=nil;
   FPictureLoaded:=False;
   if AutoDisplay then LoadPicture;
+  FUpdatingRecord := False;
 end;
 
 procedure TDBImage.UpdateData(Sender: TObject);
+
+var s        : Tstream;
+    fe       : String;
+    i        : Integer;
+
 begin
-  if Picture.Graphic is TBitmap then
-    FDataLink.Field.Assign(Picture.Graphic)
-  else
+  if not assigned(Picture.Graphic) or (Picture.Graphic.Empty) then
+    begin
     FDataLink.Field.Clear;
+    end
+  else
+    begin
+    fe := Picture.Graphic.GetFileExtensions;
+    s := FDataLink.DataSet.CreateBlobStream(FDataLink.Field,bmwrite);
+    try
+      i := pos(';',fe);
+      if i > 0 then fe := copy(fe,1,i-1);
+      s.WriteAnsiString(fe);
+      Picture.Graphic.SaveToStream(s);
+    finally
+      s.Free;
+    end;
+    end;
+end;
+
+procedure TDBImage.ActiveChange(Sender: TObject);
+begin
+  if FDatalink.Active then datachange(sender)
+  else
+    begin
+    Picture.Clear;
+    FDataLink.reset;
+    end;
+end;
+
+procedure TDBImage.PictureChanged(Sender: TObject);
+begin
+  Inherited;
+  if not FUpdatingRecord then
+    Change;
 end;
 
 procedure TDBImage.LoadPicture;
+
+var s        : Tstream;
+    GraphExt : string;
+    gc       : TGraphicClass;
+    AGraphic : TGraphic;
+    
 begin
-  if not FPictureLoaded
-  and (not Assigned(FDataLink.Field) or FDataLink.Field.IsBlob) then
-    Picture.Assign(FDataLink.Field);
+  if not FPictureLoaded then
+    begin
+    FUpdatingRecord := True;
+    if not assigned(FDatalink.Field) then Picture.Assign(FDatalink.Field)
+    else
+    if FDatalink.field.IsBlob then
+      begin
+      if FDatalink.field is TBlobField then
+        begin
+        if FDatalink.Field.IsNull then
+          begin
+          Picture.Clear;
+          exit;
+          end;
+        s := FDataLink.DataSet.CreateBlobStream(FDataLink.Field,bmRead);
+        if s.Size = 0 then
+          begin
+          Picture.Clear;
+          exit;
+          end;
+        try
+          GraphExt :=  s.ReadAnsiString;
+
+          gc := GetGraphicClassForFileExtension(GraphExt);
+          if assigned(gc) then
+            begin
+            AGraphic := gc.Create;
+            AGraphic.LoadFromStream(s);
+
+            Picture.Assign(AGraphic);
+            end;
+        finally
+          if assigned(AGraphic) then AGraphic.Free;
+          s.Free;
+        end {try}
+
+        end
+      else
+        Picture.Assign(FDataLink.FField);
+        
+      end;
+    FUpdatingRecord := False;
+    end;
 end;
 
 procedure TDBImage.Loaded;
@@ -109,6 +199,8 @@ begin
   FDataLink.Control:=Self;
   FDataLink.OnDataChange:=@DataChange;
   FDataLink.OnUpdateData:=@UpdateData;
+  FDataLInk.OnActiveChange := @ActiveChange;
+  FUpdatingRecord := False;
 end;
 
 destructor TDBImage.Destroy;

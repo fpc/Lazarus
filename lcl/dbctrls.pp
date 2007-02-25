@@ -568,6 +568,7 @@ Type
     function WordWrapIsStored: boolean; override;
     procedure DataChange(Sender: TObject); virtual;
     procedure EditingChange(Sender: TObject); virtual;
+    procedure ActiveChange(Sender: TObject); virtual;
     procedure Notification(AComponent: TComponent;
                            Operation: TOperation); override;
     procedure UpdateData(Sender: TObject); virtual;
@@ -682,6 +683,7 @@ Type
     FDataLink: TFieldDataLink;
     FQuickDraw: Boolean;
     FPictureLoaded: boolean;
+    FUpdatingRecord: boolean;
     function GetDataField: string;
     function GetDataSource: TDataSource;
     function GetField: TField;
@@ -695,12 +697,15 @@ Type
       Operation: TOperation); override;
     procedure DataChange(Sender: TObject); virtual;
     procedure UpdateData(Sender: TObject); virtual;
+    procedure ActiveChange(Sender: TObject); virtual;
+    procedure PictureChanged(Sender: TObject); override;
     procedure LoadPicture; virtual;
     procedure Loaded; override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     property Field: TField read GetField;
+    procedure Change; virtual;
   published
     property Align;
     property Anchors;
