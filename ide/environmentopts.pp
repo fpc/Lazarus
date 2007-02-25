@@ -1755,6 +1755,7 @@ begin
     Add(lisCodeExplorer);
     Add(lisMenuPackageGraph);
     Add(dlgUnitDepCaption);
+    Add(lisMenuLazDoc);
     EndUpdate;
   end;
   WindowPositionsBox:=TIDEWindowSetupLayoutComponent.Create(Self);
@@ -2610,6 +2611,7 @@ begin
   5: WindowPositionsBox.Layout:=FLayouts.ItemByEnum(nmiwCodeExplorerName);
   6: WindowPositionsBox.Layout:=FLayouts.ItemByEnum(nmiwPkgGraphExplorer);
   7: WindowPositionsBox.Layout:=FLayouts.ItemByEnum(nmiwUnitDependenciesName);
+  8: WindowPositionsBox.Layout:=FLayouts.ItemByEnum(nmiwLazDocName);
   end;
   if Index>=0 then
     WindowPositionsBox.Caption:=WindowPositionsListBox.Items[Index];

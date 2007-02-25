@@ -303,6 +303,9 @@ begin
   Reset;
   
   Application.AddOnIdleHandler(@ApplicationIdle);
+  
+  Name := NonModalIDEWindowNames[nmiwLazDocName];
+  EnvironmentOptions.IDEWindowLayoutList.Apply(Self, Name);
 end;
 
 procedure TLazDocForm.FormDestroy(Sender: TObject);

@@ -93,17 +93,12 @@ begin
 end;
 
 constructor TClipBoardHistory.Create(TheOwner: TComponent);
-var
-  ALayout: TIDEWindowLayout;
 begin
   inherited Create(TheOwner);
   
   Name:=NonModalIDEWindowNames[nmiwClipbrdHistoryName];
   Caption := 'Clipboard History';
-  ALayout:=EnvironmentOptions.IDEWindowLayoutList.ItemByFormID(Name);
-  ALayout.Form:=TForm(Self);
-  ALayout.Apply;
-
+  EnvironmentOptions.IDEWindowLayoutList.Apply(Self, Name);
 
   CopyToIDEBitBtn:=TBitBtn.Create(Self);
   with CopyToIDEBitBtn do begin

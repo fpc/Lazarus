@@ -1,69 +1,89 @@
 object AlignComponentsDialog: TAlignComponentsDialog
+  Left = 312
+  Height = 238
+  Top = 606
+  Width = 400
+  HorzScrollBar.Page = 399
+  VertScrollBar.Page = 237
   ActiveControl = OKButton
   BorderStyle = bsSizeToolWin
   Caption = 'AlignComponentsDialog'
-  ClientHeight = 238
-  ClientWidth = 400
   OnResize = FormResize
-  PixelsPerInch = 96
   Position = poScreenCenter
-  HorzScrollBar.Page = 399
-  VertScrollBar.Page = 237
-  Left = 312
-  Height = 238
-  Top = 674
-  Width = 400
   object HorizontalRadioGroup: TRadioGroup
+    Left = 6
+    Height = 195
+    Top = 6
+    Width = 191
     Anchors = [akTop, akLeft, akBottom]
+    AutoFill = True
     BorderSpacing.Around = 6
     Caption = 'HorizontalRadioGroup'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
     TabOrder = 0
-    Left = 6
-    Height = 190
-    Top = 6
-    Width = 191
   end
   object VerticalRadioGroup: TRadioGroup
-    Anchors = [akTop, akRight, akBottom]
-    BorderSpacing.Around = 6
-    Caption = 'VerticalRadioGroup'
-    TabOrder = 1
     AnchorSideBottom.Control = OKButton
     Left = 203
-    Height = 190
+    Height = 195
     Top = 6
     Width = 191
+    Anchors = [akTop, akRight, akBottom]
+    AutoFill = True
+    BorderSpacing.Around = 6
+    Caption = 'VerticalRadioGroup'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    TabOrder = 1
   end
   object OKButton: TBitBtn
+    AnchorSideRight.Control = CancelButton
+    Left = 226
+    Height = 25
+    Top = 207
+    Width = 75
     Anchors = [akRight, akBottom]
-    BorderSpacing.Bottom = 6
-    
+    AutoSize = True
+    BorderSpacing.Right = 6
     Caption = '&OK'
+    Constraints.MaxHeight = 25
+    Constraints.MinWidth = 75
     Default = True
     Kind = bkOK
     ModalResult = 1
     NumGlyphs = 0
     TabOrder = 2
-    AnchorSideBottom.Control = Owner
-    AnchorSideBottom.Side = asrBottom
-    Left = 319
-    Height = 30
-    Top = 202
-    Width = 75
   end
   object CancelButton: TBitBtn
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 307
+    Height = 25
+    Top = 207
+    Width = 87
     Anchors = [akRight, akBottom]
+    AutoSize = True
     BorderSpacing.Right = 6
-    
+    BorderSpacing.Bottom = 6
     Caption = 'Cancel'
+    Constraints.MaxHeight = 25
+    Constraints.MinWidth = 75
     Kind = bkCancel
     ModalResult = 2
     NumGlyphs = 0
     TabOrder = 3
-    AnchorSideRight.Control = OKButton
-    Left = 238
-    Height = 30
-    Top = 202
-    Width = 75
   end
 end

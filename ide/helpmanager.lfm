@@ -1,7 +1,7 @@
 object HelpSelectorDialog: THelpSelectorDialog
   Left = 328
   Height = 300
-  Top = 574
+  Top = 573
   Width = 500
   HorzScrollBar.Page = 499
   VertScrollBar.Page = 299
@@ -34,7 +34,7 @@ object HelpSelectorDialog: THelpSelectorDialog
     Height = 25
     Top = 268
     Width = 87
-    Anchors = [akTop, akRight, akBottom]
+    Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Right = 6
     Caption = 'Cancel'
