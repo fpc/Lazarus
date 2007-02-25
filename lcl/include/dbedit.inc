@@ -32,11 +32,12 @@ begin
 
     //if we are focused its possible to edit,
     //if the field is currently modifiable
-    if Focused and FDataLink.CanModify then
+    if Focused and FDataLink.CanModify then begin
       //display the real text since we can modify it
       //Text := FDataLink.Field.DisplayText//this is wrong, but Text seems Broken
-      Text := FDatalink.Field.Text
-    else
+      Text := FDatalink.Field.Text;
+      SelectAll;
+    end else
       //otherwise display the pretified/formated text since we can't
       EditText := FDataLink.Field.DisplayText;
   end
@@ -248,14 +249,6 @@ begin
   inherited Reset;
 end;
 
-procedure TDBEdit.SetFocus;
-begin
-  if not Focused then begin
-    inherited SetFocus;
-    FDataLink.Reset;//force call to data changed to update text(display vs actual)
-  end;
-end;
-
 procedure TDBEdit.EditingDone;
 begin
   inherited EditingDone;
@@ -266,11 +259,18 @@ begin
   end;
 end;
 
+procedure TDBEdit.WMSetFocus(var Message: TLMSetFocus);
+begin
+  inherited WMSetFocus(Message);
+  FDatalink.Reset;
+end;
+
 procedure TDBEdit.WMKillFocus(var Message: TLMKillFocus);
 begin
-  if not FUpdatingRecord then
-    inherited WMKillFocus(Message)
-  else
+  if not FUpdatingRecord then begin
+    inherited WMKillFocus(Message);
+    FDatalink.Reset;
+  end else
     FUpdatingRecord := False;
 end;
 

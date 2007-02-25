@@ -149,9 +149,9 @@ Type
 
     procedure Change; override;
     procedure Reset; override;
-    procedure SetFocus; override;
 
     procedure EditingDone; override;
+    procedure WMSetFocus(var Message: TLMSetFocus); message LM_SETFOCUS;
     procedure WMKillFocus(var Message: TLMKillFocus); message LM_KILLFOCUS;
   public
     constructor Create(AOwner: TComponent); override;
