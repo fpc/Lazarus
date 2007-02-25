@@ -4607,11 +4607,29 @@ end;
 procedure ReleaseMouseCapture;
 var
   OldMouseCaptureWidget: PGtkWidget;
+  Info: PWidgetInfo;
 begin
   {$IFDEF VerboseMouseCapture}
   DebugLn('ReleaseMouseCapture ',dbgs(ord(MouseCaptureType)),' MouseCaptureWidget=[',GetWidgetDebugReport(MouseCaptureWidget),']');
   {$ENDIF}
-  if MouseCaptureType=mctGTK then exit;
+  if MouseCaptureType=mctGTK then
+  begin
+    Info := GetWidgetInfo(gtk_grab_get_current, false);
+    if (Info <> nil) and (Info^.CoreWidget <> nil) then
+    begin
+      if GtkWidgetIsA(Info^.CoreWidget, gtk_list_get_type) then
+      begin
+        // Paul Ishenin:
+        // listbox grabs pointer and other control for itself, when we click on lisebox item
+        // aslo it change its state to drag_selection
+        // this is not expected in LCL and as result cause bugs, such as 7892
+        // so we need end drag selection manually
+        OldMouseCaptureWidget := Info^.CoreWidget;
+        gtk_list_end_drag_selection(PGtkList(OldMouseCaptureWidget));
+      end;
+    end;
+    exit;
+  end;
   OldMouseCaptureWidget:=MouseCaptureWidget;
   MouseCaptureWidget:=nil;
   MouseCaptureType:=mctGTK;
