@@ -10,7 +10,7 @@ object ExternalToolDialog: TExternalToolDialog
   Caption = 'ExternalToolDialog'
   Position = poScreenCenter
   object ToolBar: TToolBar
-    Height = 48
+    Height = 94
     Width = 400
     AutoSize = True
     ButtonHeight = 46
@@ -22,28 +22,28 @@ object ExternalToolDialog: TExternalToolDialog
     ShowHint = True
     TabOrder = 0
     object MoveDownButton: TToolButton
-      Left = 299
-      Top = 2
+      Left = 117
+      Top = 48
       Caption = 'MoveDownButton'
       ImageIndex = 4
       OnClick = MoveDownButtonClick
     end
     object MoveUpButton: TToolButton
-      Left = 220
-      Top = 2
+      Left = 1
+      Top = 48
       Caption = 'MoveUpButton'
       ImageIndex = 3
       OnClick = MoveUpButtonClick
     end
     object EditButton: TToolButton
-      Left = 139
+      Left = 203
       Top = 2
       Caption = 'EditButton'
       ImageIndex = 2
       OnClick = EditButtonClick
     end
     object RemoveButton: TToolButton
-      Left = 60
+      Left = 86
       Top = 2
       Caption = 'RemoveButton'
       ImageIndex = 1
@@ -57,7 +57,7 @@ object ExternalToolDialog: TExternalToolDialog
       OnClick = AddButtonClick
     end
     object tbSeparator: TToolButton
-      Left = 197
+      Left = 287
       Top = 2
       Width = 23
       Caption = 'tbSeparator'
@@ -66,26 +66,29 @@ object ExternalToolDialog: TExternalToolDialog
   end
   object ListBox: TListBox
     AnchorSideBottom.Control = OKButton
-    Height = 310
-    Top = 48
+    Height = 269
+    Top = 94
     Width = 400
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Bottom = 6
     OnClick = ListboxClick
     TabOrder = 1
+    TopIndex = -1
   end
   object OKButton: TBitBtn
+    AnchorSideRight.Control = CancelButton
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 312
-    Height = 30
-    Top = 364
+    Left = 226
+    Height = 25
+    Top = 369
     Width = 75
     Anchors = [akRight, akBottom]
     AutoSize = True
-    BorderSpacing.Bottom = 6
+    BorderSpacing.Around = 6
     Caption = '&OK'
+    Constraints.MaxHeight = 25
     Constraints.MinWidth = 75
     Default = True
     Kind = bkOK
@@ -94,20 +97,21 @@ object ExternalToolDialog: TExternalToolDialog
     TabOrder = 2
   end
   object CancelButton: TBitBtn
-    AnchorSideTop.Control = OKButton
-    AnchorSideRight.Control = OKButton
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 222
-    Height = 30
-    Top = 364
-    Width = 84
-    Anchors = [akTop, akRight, akBottom]
+    Left = 307
+    Height = 19
+    Top = 375
+    Width = 87
+    Anchors = [akRight, akBottom]
     AutoSize = True
-    BorderSpacing.Right = 6
-    BorderSpacing.Bottom = 6
+    BorderSpacing.Around = 6
     Cancel = True
     Caption = 'Cancel'
+    Constraints.MaxHeight = 25
     Constraints.MinWidth = 75
     Kind = bkCancel
     ModalResult = 2
