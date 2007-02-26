@@ -5,7 +5,7 @@ object EditorOptionsForm: TEditorOptionsForm
   Width = 481
   HorzScrollBar.Page = 480
   VertScrollBar.Page = 530
-  ActiveControl = chkCodeFoldingEnabled
+  ActiveControl = LanguageComboBox
   Caption = 'EditorOptionsForm'
   Position = poScreenCenter
   object MainNotebook: TNotebook
@@ -369,7 +369,7 @@ object EditorOptionsForm: TEditorOptionsForm
       end
       object DisplayPreview: TSynEdit
         Left = 6
-        Height = 173
+        Height = 169
         Top = 282
         Width = 465
         Align = alBottom
@@ -379,8 +379,6 @@ object EditorOptionsForm: TEditorOptionsForm
         Font.Name = 'courier'
         ParentColor = False
         TabOrder = 2
-        BookMarkOptions.OnChange = nil
-        Gutter.OnChange = nil
         Gutter.CodeFoldingWidth = 14
         Keystrokes = <        
           item
@@ -707,7 +705,6 @@ object EditorOptionsForm: TEditorOptionsForm
           'DisplayPreview'
         )
         ReadOnly = True
-        SelectedColor.OnChange = nil
         OnSpecialLineColors = OnSpecialLineColors
       end
     end
@@ -756,7 +753,7 @@ object EditorOptionsForm: TEditorOptionsForm
       end
       object KeyMappingTreeView: TTreeView
         Left = 6
-        Height = 363
+        Height = 359
         Top = 92
         Width = 465
         Align = alClient
@@ -774,36 +771,36 @@ object EditorOptionsForm: TEditorOptionsForm
       Caption = 'ColorPage'
       object LanguageLabel: TLabel
         Left = 214
-        Height = 13
+        Height = 17
         Top = 12
-        Width = 88
+        Width = 112
         Caption = 'LanguageLabel'
         Color = clNone
         ParentColor = False
       end
       object ColorSchemeLabel: TLabel
         Left = 214
-        Height = 13
+        Height = 17
         Top = 36
-        Width = 107
+        Width = 138
         Caption = 'ColorSchemeLabel'
         Color = clNone
         ParentColor = False
       end
       object FileExtensionsLabel: TLabel
         Left = 214
-        Height = 13
+        Height = 17
         Top = 60
-        Width = 113
+        Width = 144
         Caption = 'FileExtensionsLabel'
         Color = clNone
         ParentColor = False
       end
       object ColorElementLabel: TLabel
         Left = 4
-        Height = 13
+        Height = 17
         Top = 90
-        Width = 106
+        Width = 138
         Caption = 'ColorElementLabel'
         Color = clNone
         ParentColor = False
@@ -853,7 +850,7 @@ object EditorOptionsForm: TEditorOptionsForm
       end
       object ColorPreview: TSynEdit
         Left = 4
-        Height = 98
+        Height = 94
         Top = 359
         Width = 469
         Align = alBottom
@@ -864,8 +861,6 @@ object EditorOptionsForm: TEditorOptionsForm
         ParentColor = False
         TabOrder = 3
         OnMouseDown = ColorPreviewMouseUp
-        BookMarkOptions.OnChange = nil
-        Gutter.OnChange = nil
         Gutter.CodeFoldingWidth = 14
         Keystrokes = <        
           item
@@ -1192,7 +1187,6 @@ object EditorOptionsForm: TEditorOptionsForm
           'ColorPreview'
         )
         ReadOnly = True
-        SelectedColor.OnChange = nil
         OnSpecialLineColors = OnSpecialLineColors
       end
       object ColorElementListBox: TListBox
@@ -1236,8 +1230,8 @@ object EditorOptionsForm: TEditorOptionsForm
         TabOrder = 7
         object ForeGroundLabel: TLabel
           Left = 8
-          Height = 13
-          Width = 99
+          Height = 17
+          Width = 127
           Caption = 'ForeGroundLabel'
           Color = clNone
           ParentColor = False
@@ -1247,7 +1241,7 @@ object EditorOptionsForm: TEditorOptionsForm
           AnchorSideTop.Side = asrBottom
           Left = 8
           Height = 21
-          Top = 15
+          Top = 19
           Width = 75
           BorderSpacing.Top = 2
           BorderWidth = 2
@@ -1260,7 +1254,7 @@ object EditorOptionsForm: TEditorOptionsForm
           AnchorSideTop.Side = asrBottom
           Left = 8
           Height = 21
-          Top = 56
+          Top = 64
           Width = 75
           BorderSpacing.Top = 2
           BorderWidth = 2
@@ -1272,9 +1266,9 @@ object EditorOptionsForm: TEditorOptionsForm
           AnchorSideTop.Control = ForeGroundLabel
           AnchorSideTop.Side = asrBottom
           Left = 8
-          Height = 13
-          Top = 41
-          Width = 101
+          Height = 17
+          Top = 45
+          Width = 130
           BorderSpacing.Top = 28
           Caption = 'BackGroundLabel'
           Color = clNone
@@ -1284,9 +1278,9 @@ object EditorOptionsForm: TEditorOptionsForm
           AnchorSideTop.Control = ForeGroundLabel
           AnchorSideTop.Side = asrBottom
           Left = 94
-          Height = 20
-          Top = 15
-          Width = 152
+          Height = 24
+          Top = 19
+          Width = 148
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Top = 2
           Caption = 'ForeGroundUseDefaultCheckBox'
@@ -1297,9 +1291,9 @@ object EditorOptionsForm: TEditorOptionsForm
           AnchorSideTop.Control = BackGroundLabel
           AnchorSideTop.Side = asrBottom
           Left = 94
-          Height = 20
-          Top = 54
-          Width = 152
+          Height = 24
+          Top = 62
+          Width = 148
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Right = 2
           Caption = 'BackGroundUseDefaultCheckBox'
@@ -1308,8 +1302,8 @@ object EditorOptionsForm: TEditorOptionsForm
         end
         object TextBoldCheckBox: TCheckBox
           Left = 6
-          Height = 20
-          Top = 101
+          Height = 24
+          Top = 85
           Width = 247
           Align = alBottom
           BorderSpacing.Around = 6
@@ -1319,8 +1313,8 @@ object EditorOptionsForm: TEditorOptionsForm
         end
         object TextItalicCheckBox: TCheckBox
           Left = 6
-          Height = 20
-          Top = 127
+          Height = 24
+          Top = 115
           Width = 247
           Align = alBottom
           BorderSpacing.Around = 6
@@ -1330,8 +1324,8 @@ object EditorOptionsForm: TEditorOptionsForm
         end
         object TextUnderlineCheckBox: TCheckBox
           Left = 6
-          Height = 20
-          Top = 153
+          Height = 24
+          Top = 145
           Width = 247
           Align = alBottom
           BorderSpacing.Around = 6
@@ -1345,7 +1339,7 @@ object EditorOptionsForm: TEditorOptionsForm
       Caption = 'CodetoolsPage'
       object AutomaticFeaturesGroupBox: TGroupBox
         Left = 6
-        Height = 449
+        Height = 445
         Top = 6
         Width = 465
         Align = alClient
@@ -1489,24 +1483,39 @@ object EditorOptionsForm: TEditorOptionsForm
     end
   end
   object CancelButton: TButton
-    Left = 396
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 363
     Height = 25
-    Top = 495
-    Width = 75
+    Top = 500
+    Width = 112
     Anchors = [akRight, akBottom]
+    AutoSize = True
+    BorderSpacing.Around = 6
     BorderSpacing.InnerBorder = 4
     Caption = 'CancelButton'
+    Constraints.MaxHeight = 25
+    Constraints.MinWidth = 75
     OnClick = CancelButtonClick
     TabOrder = 1
   end
   object OkButton: TButton
-    Left = 316
+    AnchorSideRight.Control = CancelButton
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 274
     Height = 25
-    Top = 495
-    Width = 75
+    Top = 500
+    Width = 83
     Anchors = [akRight, akBottom]
+    AutoSize = True
+    BorderSpacing.Around = 6
     BorderSpacing.InnerBorder = 4
     Caption = 'OkButton'
+    Constraints.MaxHeight = 25
+    Constraints.MinWidth = 75
     OnClick = OkButtonClick
     TabOrder = 2
   end
