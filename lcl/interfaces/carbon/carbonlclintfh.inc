@@ -42,6 +42,14 @@ function GetListBoxItemRect(ListBox: TComponent; Index: integer; var ARect: TRec
 
 function IntfSendsUTF8KeyPress: boolean; override;
 
+function PromptUser(const DialogCaption : string;
+                    const DialogMessage : string;
+                          DialogType    : LongInt;
+                          Buttons       : PLongInt;
+                          ButtonCount   : LongInt;
+                          DefaultIndex  : LongInt;
+                          EscapeResult  : LongInt) : LongInt; override;
+
 function ReplaceBitmapMask(var Image, Mask: HBitmap; NewMask: HBitmap): boolean; override;
 
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line
