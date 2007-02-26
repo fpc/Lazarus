@@ -5848,8 +5848,14 @@ end;
  ------------------------------------------------------------------------------}
 function TGtkWidgetSet.GetSystemMetrics(nIndex: Integer): Integer;
 var
-  P : Pointer;
-  ax,ay,ah,aw : gint;
+  P: Pointer;
+  ax,ay,ah,aw: gint;
+  auw, auh: guint;
+ {$ifndef GTK2}{$ifdef HasX}
+   XDisplay: PDisplay;
+   XScreen: PScreen;
+   XWindow: TWindow;
+ {$endif}{$endif}
 begin
   Assert(False, Format('Trace:> [TGtkWidgetSet.GetSystemMetrics] %d', [nIndex]));
   case nIndex of
@@ -5873,13 +5879,27 @@ begin
       begin
         Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYBORDER         ');
       end;
-    SM_CXCURSOR:
-      begin
-        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CXCURSOR         ');
-      end;
+    SM_CXCURSOR,
     SM_CYCURSOR:
       begin
-        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYCURSOR         ');
+      {$IFDEF GTK2}
+        // Width and height of a cursor, in pixels. For win32 system cannot create cursors of other sizes.
+        // For gtk this should be maximal cursor sizes
+        gdk_display_get_maximal_cursor_size(gdk_display_get_default, @auw, @auh);
+      {$ELSE}
+        {$IFDEF HasX}
+          // same code used in gtk2 library
+          XDisplay := gdk_display;
+          XScreen := XDefaultScreenOfDisplay(XDisplay);
+          XWindow := XRootWindowOfScreen(XScreen);
+          XQueryBestCursor(XDisplay, XWindow, 128, 128, @auw, @auh);
+        {$ELSE}
+          Result := 32; // Default windows size
+        {$ENDIF}
+      {$ENDIF}
+        if nIndex = SM_CXCURSOR
+        then Result := auw // return width
+        else Result := auh; // return height
       end;
     SM_CXDOUBLECLK:
       begin
