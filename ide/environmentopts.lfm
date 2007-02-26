@@ -105,7 +105,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           Left = 6
           Height = 21
           Top = 3
-          Width = 484
+          Width = 480
           Anchors = [akTop, akLeft, akRight]
           AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
           MaxLength = 0
@@ -113,7 +113,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           Text = 'LazarusDirComboBox'
         end
         object LazarusDirButton: TButton
-          Left = 495
+          Left = 491
           Height = 21
           Top = 3
           Width = 20
@@ -139,7 +139,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           Left = 6
           Height = 21
           Top = 3
-          Width = 484
+          Width = 480
           Anchors = [akTop, akLeft, akRight]
           AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
           MaxLength = 0
@@ -147,7 +147,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           Text = 'CompilerPathComboBox'
         end
         object CompilerPathButton: TButton
-          Left = 495
+          Left = 491
           Height = 21
           Top = 3
           Width = 20
@@ -173,7 +173,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           Left = 6
           Height = 21
           Top = 2
-          Width = 484
+          Width = 480
           Anchors = [akTop, akLeft, akRight]
           AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
           MaxLength = 0
@@ -181,7 +181,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           Text = 'FPCSourceDirComboBox'
         end
         object FPCSourceDirButton: TButton
-          Left = 495
+          Left = 491
           Height = 21
           Top = 2
           Width = 20
@@ -207,7 +207,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           Left = 6
           Height = 21
           Top = 3
-          Width = 484
+          Width = 480
           Anchors = [akTop, akLeft, akRight]
           AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
           MaxLength = 0
@@ -215,7 +215,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           Text = 'MakePathComboBox'
         end
         object MakePathButton: TButton
-          Left = 495
+          Left = 491
           Height = 21
           Top = 3
           Width = 20
@@ -241,7 +241,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           Left = 6
           Height = 21
           Top = 3
-          Width = 484
+          Width = 480
           Anchors = [akTop, akLeft, akRight]
           AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
           MaxLength = 0
@@ -249,7 +249,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           Text = 'TestBuildDirComboBox'
         end
         object TestBuildDirButton: TButton
-          Left = 495
+          Left = 491
           Height = 21
           Top = 3
           Width = 20
@@ -1307,9 +1307,9 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         end
         object LazDocAddPathButton: TButton
           Left = 6
-          Height = 26
+          Height = 30
           Top = 122
-          Width = 140
+          Width = 180
           AutoSize = True
           BorderSpacing.InnerBorder = 4
           Caption = 'LazDocAddPathButton'
@@ -1319,10 +1319,10 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         object LazDocDeletePathButton: TButton
           AnchorSideLeft.Control = LazDocAddPathButton
           AnchorSideLeft.Side = asrBottom
-          Left = 156
-          Height = 26
+          Left = 196
+          Height = 30
           Top = 122
-          Width = 153
+          Width = 198
           AutoSize = True
           BorderSpacing.Left = 10
           BorderSpacing.InnerBorder = 4
@@ -1335,8 +1335,8 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           AnchorSideTop.Side = asrBottom
           Left = 6
           Height = 23
-          Top = 154
-          Width = 473
+          Top = 158
+          Width = 469
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Top = 6
           TabOrder = 3
@@ -1345,7 +1345,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         object LazDocBrowseButton: TButton
           AnchorSideLeft.Control = LazDocPathEdit
           AnchorSideLeft.Side = asrBottom
-          Left = 485
+          Left = 481
           Height = 23
           Top = 156
           Width = 19
@@ -1359,25 +1359,40 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
     end
   end
   object CancelButton: TButton
-    Left = 459
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 424
     Height = 25
-    Top = 487
-    Width = 75
+    Top = 491
+    Width = 112
     Anchors = [akRight, akBottom]
+    AutoSize = True
+    BorderSpacing.Around = 6
     BorderSpacing.InnerBorder = 4
     Cancel = True
     Caption = 'CancelButton'
+    Constraints.MaxHeight = 25
+    Constraints.MinWidth = 75
     OnClick = CancelButtonClick
     TabOrder = 1
   end
   object OkButton: TButton
-    Left = 377
+    AnchorSideRight.Control = CancelButton
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 343
     Height = 25
-    Top = 487
+    Top = 491
     Width = 75
     Anchors = [akRight, akBottom]
+    AutoSize = True
+    BorderSpacing.Around = 6
     BorderSpacing.InnerBorder = 4
     Caption = 'Ok'
+    Constraints.MaxHeight = 25
+    Constraints.MinWidth = 75
     Default = True
     OnClick = OkButtonClick
     TabOrder = 2
