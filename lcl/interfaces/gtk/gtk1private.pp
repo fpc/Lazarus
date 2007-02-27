@@ -1,11 +1,11 @@
-{ $Id: $ }
+{ $Id$ }
 {
                   ----------------------------------------
                   gtk1private.pp  -  Gtk1 internal classes
                   ----------------------------------------
 
  @created(Thu Feb 1st WET 2007)
- @lastmod($Date: $)
+ @lastmod($Date$)
  @author(Marc Weustink <marc@@lazarus.dommelstein.net>)
 
  This unit contains the private classhierarchy for the gtk implemetations
