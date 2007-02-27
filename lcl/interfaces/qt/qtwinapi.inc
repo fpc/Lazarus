@@ -85,6 +85,18 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method:  ClientToScreen
+  Params:  Handle    -
+  Returns:
+ ------------------------------------------------------------------------------}
+function TQtWidgetSet.ClientToScreen(Handle: HWND; var P: TPoint) : Boolean;
+begin
+  Result := True;
+  if Handle <> 0 then
+    QWidget_mapToGlobal(TQtWidget(Handle).Widget, @P, @P);
+end;
+
+{------------------------------------------------------------------------------
   Function: CombineRgn
   Params:  Dest, Src1, Src2, fnCombineMode
   Returns: longint
@@ -179,7 +191,7 @@ begin
   {$endif}
 
   Result := HBitmap(TQtImage.Create(BitmapBits, Width,
-   Height, QImageFormat_RGB32));
+   Height, QImageFormat_ARGB32));
    
   {$ifdef VerboseQtWinAPI}
     WriteLn('Trace:< [WinAPI CreateBitmap] Bitmap:', dbghex(Result));
@@ -194,7 +206,7 @@ end;
   This functions is for TBitmap support
   
   The memory allocation code was added because it is necessary for
- TBitmap.LoadFromDevice support. For other operations it isn´t needed
+ TBitmap.LoadFromDevice support. For other operations it isnt needed
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.CreateBitmapFromRawImage(const RawImage: TRawImage;
   var Bitmap, MaskBitmap: HBitmap; AlwaysCreateMask: boolean): boolean;
@@ -218,7 +230,7 @@ begin
   Move(RawImage.Data^, NewData^, RawImage.DataSize);
 
   Bitmap := HBitmap(TQtImage.Create(NewData, RawImage.Description.Width,
-   RawImage.Description.Height, QImageFormat_RGB32));
+   RawImage.Description.Height, QImageFormat_ARGB32));
 
   Result := True;
 
@@ -337,6 +349,47 @@ begin
   {$endif}
 
   Result := GetDC(0);
+end;
+
+{------------------------------------------------------------------------------
+  Function: CreateCursor
+  Params:  ACursorInfo - PIconInfo
+  Returns: hCursor (QCursorH)
+
+  Creates a cursor from bitmap and mask.
+ ------------------------------------------------------------------------------}
+function TQtWidgetSet.CreateCursor(ACursorInfo: PIconInfo): hCursor;
+var
+  Image: TQtImage;
+  Pixmap: QPixmapH;
+  ConvertedImage: QImageH;
+  i, j: integer;
+  AColor: qrgb;
+begin
+  Result := 0;
+  if IsValidGDIObject(ACursorInfo^.hbmColor) then
+  begin
+    // we can get here only QImage. This is not so good as 2 QBitmaps and not
+    // so good as QPixmap :(
+    // So, we need process mask ourself
+    Image := TQtImage(ACursorInfo^.hbmColor);
+    ConvertedImage := QImage_create(Image.Handle);
+    
+    // convert alpha channel
+    for j := 0 to Image.Height - 1 do
+      for i := 0 to Image.Width - 1 do
+      begin
+        AColor := QImage_pixel(ConvertedImage, j, i);
+        AColor := ((not Byte(AColor shr 24)) shl 24) or (AColor and $00FFFFFF);
+        QImage_setPixel(ConvertedImage, j, i, AColor);
+      end;
+    //
+    Pixmap := QPixmap_create();
+    QPixmap_fromImage(Pixmap, ConvertedImage);
+    Result := hCursor(QCursor_create(Pixmap, ACursorInfo^.xHotspot, ACursorInfo^.yHotspot));
+    QPixmap_destroy(Pixmap);
+    QImage_destroy(ConvertedImage);
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -595,6 +648,17 @@ begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('Trace:< [WinAPI DeleteObject] Result=', dbgs(Result), ' ObjectType=', ObjType);
   {$endif}
+end;
+
+{------------------------------------------------------------------------------
+  Method:  DestroyCursor
+  Params:  Handle
+  Returns: Result of destroying
+ ------------------------------------------------------------------------------}
+function TQtWidgetSet.DestroyCursor(Handle: hCursor): Boolean;
+begin
+  QCursor_destroy(QCursorH(Handle));
+  Result := True;
 end;
 
 {------------------------------------------------------------------------------
@@ -1285,7 +1349,7 @@ end;
 
   Important note: LCL requires that a Data and a Mask be allocated, even if not necessary,
  because it will try to free them without checking if they are nil.
-  Allocating dummy data won´t leak memory, because LCL takes care to free it.
+  Allocating dummy data wont leak memory, because LCL takes care to free it.
   What is important here is to free all Qt handles utilized.
   
   This function is utilized when the function TBitmap.LoadFromDevice is called
@@ -1917,6 +1981,11 @@ begin
   end;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  GetWindowOrgEx
+  Params:  DC    -
+  Returns:
+ ------------------------------------------------------------------------------}
 function TQtWidgetSet.GetWindowOrgEx(dc: hdc; P: PPoint): Integer;
 var
   Matrix: QMatrixH;
@@ -2435,6 +2504,11 @@ begin
   result := TQtDeviceContext(DC).SetBkColor(Color);
 end;
 
+{------------------------------------------------------------------------------
+  Method:  SetBkMode
+  Params:  DC    -
+  Returns:
+ ------------------------------------------------------------------------------}
 function TQtWidgetSet.SetBkMode(DC: HDC; bkMode: Integer): Integer;
 begin
   {$ifdef VerboseQtWinAPI}
@@ -2456,6 +2530,27 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Function: SetCursor
+  Params: ACursor - HCursor (QCursorH)
+  Returns:
+       previous global cursor
+ ------------------------------------------------------------------------------}
+function TQtWidgetSet.SetCursor(ACursor: HCURSOR): HCURSOR;
+begin
+  Result := hCursor(QApplication_overrideCursor());
+  if Result = ACursor then exit;
+  if Screen.Cursors[crDefault] = ACursor then
+  begin
+    QApplication_restoreOverrideCursor();
+  end else
+  begin
+    if Result = 0 then
+      QApplication_setOverrideCursor(QCursorH(ACursor)) else
+      QApplication_changeOverrideCursor(QCursorH(ACursor));
+  end;
+end;
+
+{------------------------------------------------------------------------------
   Function: SetCursorPos
   Params: X:
           Y:
@@ -2473,6 +2568,12 @@ begin
   Result := True;
 end;
 
+{------------------------------------------------------------------------------
+  Function: SetFocus
+  Params: hWnd   - Window handle to be focused
+  Returns:
+
+ ------------------------------------------------------------------------------}
 function TQtWidgetSet.SetFocus(hWnd: HWND): HWND;
 var
   Widget: QWidgetH;
@@ -2519,8 +2620,12 @@ begin
   Result := True;
 end;
 
-function TQtWidgetSet.SetProp(Handle: hwnd; Str: PChar; Data: Pointer
-  ): Boolean;
+{------------------------------------------------------------------------------
+  Method:  SetProp
+  Params:  Handle -
+  Returns:
+ ------------------------------------------------------------------------------}
+function TQtWidgetSet.SetProp(Handle: hwnd; Str: PChar; Data: Pointer): Boolean;
 begin
   if Handle<>0 then
   begin
@@ -2533,6 +2638,11 @@ begin
     result:=False;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  SetTextColor
+  Params:  Handle -
+  Returns:
+ ------------------------------------------------------------------------------}
 function TQtWidgetSet.SetTextColor(DC: HDC; Color: TColorRef): TColorRef;
 begin
   {$ifdef VerboseQtWinAPI}
@@ -2699,5 +2809,24 @@ begin
   Result := True;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  WindowFromPoint
+  Params:  Point -
+  Returns:
+ ------------------------------------------------------------------------------}
+function TQtWidgetSet.WindowFromPoint(Point: TPoint): HWND;
+var
+  Widget: QWidgetH;
+begin
+  Widget := QApplication_widgetAt(@Point);
+  if Widget <> nil then
+  begin
+    Widget := QWidget_window(Widget);
+    Result := HWND(QtObjectFromWidgetH(Widget));
+  end else
+    Result := 0;
+end;
+
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line
+
 

@@ -30,13 +30,65 @@
 
 //##apiwiz##sps##   // Do not remove
 
+{------------------------------------------------------------------------------
+  Function: CreateStandardCursor
+  Params:
+  Returns:
+ ------------------------------------------------------------------------------}
+function TQtWidgetSet.CreateStandardCursor(ACursor: SmallInt): hCursor;
+var
+  CursorShape: QtCursorShape;
+begin
+  Result := 0;
+  if ACursor < crLow then Exit;
+  if ACursor > crHigh then Exit;
+
+  // TODO: map is better
+  case TCursor(ACursor) of
+    crDefault   : CursorShape := QtArrowCursor;
+    crNone      : CursorShape := QtBlankCursor;
+    crArrow     : CursorShape := QtArrowCursor;
+    crCross     : CursorShape := QtCrossCursor;
+    crIBeam     : CursorShape := QtIBeamCursor;
+    crSizeAll   : CursorShape := QtSizeAllCursor;
+    crSizeNESW  : CursorShape := QtSizeBDiagCursor;
+    crSizeNS    : CursorShape := QtSizeVerCursor;
+    crSizeNWSE  : CursorShape := QtSizeFDiagCursor;
+    crSizeWE    : CursorShape := QtSizeHorCursor;
+    crSizeNW    : CursorShape := QtSizeFDiagCursor;
+    crSizeN     : CursorShape := QtSizeVerCursor;
+    crSizeNE    : CursorShape := QtSizeBDiagCursor;
+    crSizeW     : CursorShape := QtSizeHorCursor;
+    crSizeE     : CursorShape := QtSizeHorCursor;
+    crSizeSW    : CursorShape := QtSizeBDiagCursor;
+    crSizeS     : CursorShape := QtSizeVerCursor;
+    crSizeSE    : CursorShape := QtSizeFDiagCursor;
+    crUpArrow   : CursorShape := QtUpArrowCursor;
+    crHourGlass : CursorShape := QtWaitCursor;
+    crHSplit    : CursorShape := QtSplitHCursor;
+    crVSplit    : CursorShape := QtSplitVCursor;
+    crNo        : CursorShape := QtForbiddenCursor;
+    crAppStart  : CursorShape := QtBusyCursor;
+    crHelp      : CursorShape := QtWhatsThisCursor;
+    crHandPoint : CursorShape := QtPointingHandCursor;
+  else
+    CursorShape := QtCursorShape(-1);
+  end;
+  if CursorShape <> QtCursorShape(-1) then
+    Result := hCursor(QCursor_create(CursorShape));
+end;
+
+{------------------------------------------------------------------------------
+  Function: FillStandardDescription
+  Params:
+  Returns:
+ ------------------------------------------------------------------------------}
 procedure TQtWidgetSet.FillStandardDescription(var Desc: TRawImageDescription);
 begin
   FillChar(Desc, SizeOf(Desc), 0);
 
   Desc.Format := ricfRGBA;
   Desc.HasPalette := False;
-//  Desc.Depth := 32;
   // Width and Height not relevant
   Desc.PaletteColorCount := 0;
   Desc.BitOrder := riboReversedBits;
@@ -46,22 +98,29 @@ begin
   Desc.BitsPerPixel := 32;
   Desc.LineEnd := rileDWordBoundary;
 
-  // 0-8-8-8 mode, high byte is not used
+  // 8-8-8-8 mode, high byte is Alpha
   Desc.RedPrec := 8;
   Desc.GreenPrec := 8;
   Desc.BluePrec := 8;
   Desc.RedShift := 16;
   Desc.GreenShift := 8;
   Desc.BlueShift := 0;
-  Desc.Depth := 24;
+  Desc.Depth := 32;
 
-  Desc.AlphaPrec := 0;
+  Desc.AlphaPrec := 8;
   Desc.AlphaSeparate := False;
   // Qt wants dword-aligned data
   Desc.AlphaLineEnd := rileDWordBoundary;
-  Desc.AlphaShift := 0;
+  Desc.AlphaShift := 24;
 end;
 
+{------------------------------------------------------------------------------
+  Function: PromptUser
+  Params:
+  Returns:
+
+  Note: Qt appears to map Esc key to Cancel button, so no need for EscapeResult.
+ ------------------------------------------------------------------------------}
 function TQtWidgetSet.PromptUser(const DialogCaption : string;
                                  const DialogMessage : string;
                                        DialogType    : LongInt;
@@ -69,7 +128,6 @@ function TQtWidgetSet.PromptUser(const DialogCaption : string;
                                        ButtonCount   : LongInt;
                                        DefaultIndex  : LongInt;
                                        EscapeResult  : LongInt) : LongInt;
- {Note: Qt appears to map Esc key to Cancel button, so no need for EscapeResult.}
 var
   QBtns      : QMessageBoxStandardButtons;
   DefQBtn    : QMessageBoxStandardButton;
@@ -117,6 +175,9 @@ begin
      QResult := QMessageBox_information(nil, @CaptionStr, @MessageStr, QBtns, DefQBtn);
     idDialogConfirm : 
      QResult := QMessageBox_question(nil, @CaptionStr, @MessageStr, QBtns, DefQBtn);
+    else
+      // simple show message
+      QResult := QMessageBox_information(nil, @CaptionStr, @MessageStr, QBtns, DefQBtn);
     end;
 
    {Convert Qt result to LCL "id" dialog result}

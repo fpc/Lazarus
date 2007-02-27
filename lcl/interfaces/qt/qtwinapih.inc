@@ -29,17 +29,20 @@
 
 function BeginPaint(Handle: hWnd; Var PS : TPaintStruct) : hdc; override;
 
+function ClientToScreen(Handle: HWND; var P: TPoint) : Boolean; override;
 function CombineRgn(Dest, Src1, Src2: HRGN; fnCombineMode: Longint): Longint;  override;
 function CreateBitmap(Width, Height: Integer; Planes, BitCount: Longint; BitmapBits: Pointer): HBITMAP; override;
 function CreateBitmapFromRawImage(const RawImage: TRawImage; var Bitmap, MaskBitmap: HBitmap; AlwaysCreateMask: boolean): boolean; override;
 function CreateBrushIndirect(const LogBrush: TLogBrush): HBRUSH; override;
 function CreateCompatibleDC(DC: HDC): HDC; override;
+function CreateCursor(ACursorInfo: PIconInfo): hCursor; override;
 function CreateFontIndirect(const LogFont: TLogFont): HFONT; override;
 function CreateFontIndirectEx(const LogFont: TLogFont; const LongFontName: string): HFONT; override;
 function CreatePenIndirect(const LogPen: TLogPen): HBRUSH; override;
 function CreateRectRgn(X1, Y1, X2, Y2: Integer): HRGN; override;
 
 function DeleteObject(GDIObject: HGDIOBJ): Boolean; override;
+function DestroyCursor(Handle: hCursor): Boolean; override;
 function DrawText(DC: HDC; Str: PChar; Count: Integer; var Rect: TRect; Flags: Cardinal): Integer; override;
 
 function Ellipse(DC: HDC; x1, y1, x2, y2: Integer): Boolean; override;
@@ -90,6 +93,7 @@ function SelectClipRGN(DC : hDC; RGN : HRGN) : Longint; override;
 function SelectObject(DC: HDC; GDIObj: HGDIOBJ): HGDIOBJ; override;
 function SetBKColor(DC: HDC; Color: TColorRef): TColorRef; override;
 function SetBkMode(DC: HDC; bkMode : Integer) : Integer; override;
+function SetCursor(ACursor: HCURSOR): HCURSOR; override;
 function SetCursorPos(X, Y: Integer): Boolean; override;
 function SetFocus(hWnd: HWND): HWND; override;
 function SetProp(Handle: hwnd; Str : PChar; Data : Pointer) : Boolean; override;
@@ -103,6 +107,8 @@ function StretchMaskBlt(DestDC: HDC; X, Y, Width, Height: Integer;
   XMask, YMask: Integer; Rop: DWORD): Boolean; override;
 
 function TextOut(DC: HDC; X,Y : Integer; Str : Pchar; Count: Integer) : Boolean; override;
+function WindowFromPoint(Point: TPoint): HWND; override;
 
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line
+
 

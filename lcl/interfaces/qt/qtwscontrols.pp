@@ -68,6 +68,7 @@ type
     class procedure SetSize(const AWinControl: TWinControl; const AWidth, AHeight: Integer); override;
     class procedure ShowHide(const AWinControl: TWinControl); override; //TODO: rename to SetVisible(control, visible)
     class procedure SetColor(const AWinControl: TWinControl); override;
+    class procedure SetCursor(const AWinControl: TWinControl; const ACursor: HCursor); override;
 
 //    class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
 //    class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
@@ -273,6 +274,14 @@ begin
 
   // Set color of the widget to QColor
   TQtWidget(AWinControl.Handle).SetColor(@QColor);
+end;
+
+class procedure TQtWSWinControl.SetCursor(const AWinControl: TWinControl; const ACursor: HCursor);
+begin
+  if AWinControl = nil then exit;
+  if not AWinControl.HandleAllocated then exit;
+  
+  TQtWidget(AWinControl.Handle).SetCursor(QCursorH(ACursor));
 end;
 
 initialization

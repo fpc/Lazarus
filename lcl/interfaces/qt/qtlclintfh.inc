@@ -30,6 +30,7 @@
 
 //##apiwiz##sps##   // Do not remove
 
+function CreateStandardCursor(ACursor: SmallInt): hCursor; override;
 procedure FillStandardDescription(var Desc: TRawImageDescription);
 
 function PromptUser(const DialogCaption : string;

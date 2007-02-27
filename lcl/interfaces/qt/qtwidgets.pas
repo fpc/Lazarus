@@ -76,6 +76,7 @@ type
     procedure SlotContextMenu; cdecl;
   public
     procedure SetColor(const Value: PQColor); virtual;
+    procedure SetCursor(const ACursor: QCursorH); virtual;
     procedure Update;
     procedure Repaint;
     procedure setWindowTitle(Str: PWideString);
@@ -1084,6 +1085,12 @@ begin
   // Set the Palette
   QWidget_setPalette(Widget,Palette);
   QPalette_destroy(Palette);
+end;
+
+procedure TQtWidget.SetCursor(const ACursor: QCursorH);
+begin
+  if ACursor <> nil then
+    QWidget_setCursor(Widget, ACursor);
 end;
 
 {------------------------------------------------------------------------------
@@ -2938,4 +2945,5 @@ begin
 end;
 
 end.
+
 
