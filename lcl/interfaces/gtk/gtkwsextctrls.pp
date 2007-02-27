@@ -31,7 +31,7 @@ uses
 {$IFDEF GTK2}
   gtk2, gdk2, gdk2PixBuf, glib2,
 {$ELSE GTK2}
-  gtk, gdk, glib, gtk1private,
+  gtk, gdk, glib, gtk1WSPrivate,
 {$ENDIF GTK2}
   GtkGlobals, GtkProc, GtkDef, ExtCtrls, Classes,
   WSExtCtrls, WSLCLClasses, gtkint, interfacebase;

@@ -792,7 +792,7 @@ implementation
 
 uses
   {$IFDEF StaticXinerama} Xinerama, {$ENDIF}
-  dynlibs, GtkPrivate;
+  dynlibs, GtkWSPrivate;
 
 const
   KCINFO_FLAG_SHIFT         = $01;

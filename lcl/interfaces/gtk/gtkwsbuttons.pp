@@ -29,9 +29,9 @@ interface
 uses
   // libs
   {$IFDEF GTK2}
-  GLib2, Gtk2, Gtk2Private,
+  GLib2, Gtk2, Gtk2WSPrivate,
   {$ELSE}
-  GLib, Gtk, Gtk1Private,
+  GLib, Gtk, Gtk1WSPrivate,
   {$ENDIF}
   // LCL
   Classes, LCLProc, LCLType, LMessages, Controls, Graphics, Buttons,

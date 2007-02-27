@@ -33,7 +33,7 @@ uses
   ExtCtrls, Classes, Controls, LCLType,
   // widgetset
   WSExtCtrls, WSLCLClasses, WSProc,
-  GtkWSExtCtrls, gtk2private;
+  GtkWSExtCtrls, gtk2WSPrivate;
 
 type
 

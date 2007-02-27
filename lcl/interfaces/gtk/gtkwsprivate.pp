@@ -1,7 +1,7 @@
 { $Id$ }
 {
                   ----------------------------------------
-                   Gtkprivate.pp  -  Gtk internal classes
+                  GtkWSprivate.pp  -  Gtk internal classes
                   ----------------------------------------
 
  @created(Thu Feb 1st WET 2007)
@@ -25,7 +25,7 @@
  *****************************************************************************
 }
 
-unit GtkPrivate;
+unit GtkWSPrivate;
 {$mode objfpc}{$H+}
 
 interface

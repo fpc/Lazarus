@@ -37,9 +37,9 @@ uses
   SysUtils, Classes, Controls, LMessages, InterfaceBase,
   WSControls, WSLCLClasses, WSProc,
   Graphics, ComCtrls, LCLType,
-  GTKPrivate,
+  GTKWSPrivate,
   {$ifdef gtk1}
-  GTK1Private,
+  GTK1WSPrivate,
   {$endif}
   GtkDef, GTKExtra;
 

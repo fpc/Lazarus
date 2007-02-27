@@ -73,7 +73,7 @@ uses
   LCLProc, LCLIntf, LCLType, DynHashArray, GraphType, GraphMath,
   Graphics, Menus, Maps,
   // widgetset
-  GtkFontCache, gtkDef, GtkProc, gtkMsgQueue, GtkExtra, gtkPrivate, WSLCLClasses;
+  GtkFontCache, gtkDef, GtkProc, gtkMsgQueue, GtkExtra, gtkWSPrivate, WSLCLClasses;
 
 
 type

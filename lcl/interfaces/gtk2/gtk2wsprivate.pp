@@ -1,8 +1,8 @@
 { $Id$ }
 {
-                  ----------------------------------------
-                  gtk2private.pp  -  Gtk2 internal classes
-                  ----------------------------------------
+                 ------------------------------------------
+                 gtk2wsprivate.pp  -  Gtk2 internal classes
+                 ------------------------------------------
 
  @created(Thu Feb 1st WET 2007)
  @lastmod($Date$)
@@ -25,7 +25,7 @@
  *****************************************************************************
 }
 
-unit Gtk2Private;
+unit Gtk2WSPrivate;
 {$mode objfpc}{$H+}
 
 interface
@@ -38,7 +38,7 @@ uses
   // widgetset
   WSControls, WSLCLClasses, WSProc,
   // interface
-  GtkDef, GtkProc, GtkPrivate;
+  GtkDef, GtkProc, GtkWSPrivate;
 
 
 type

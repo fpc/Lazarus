@@ -34,7 +34,7 @@ uses
   glib, gdk, gtk, {$Ifndef NoGdkPixbufLib}gdkpixbuf,{$EndIf} GtkFontCache,
   {$ENDIF}
   WSStdCtrls, WSLCLClasses, WSProc, WSControls, GtkInt, LCLType, GtkDef, LCLProc,
-  GTKWinApiWindow, gtkglobals, gtkproc, gtkExtra, GtkPrivate, InterfaceBase;
+  GTKWinApiWindow, gtkglobals, gtkproc, gtkExtra, GtkWSPrivate, InterfaceBase;
 
 
 type

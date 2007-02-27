@@ -25,7 +25,7 @@
  *****************************************************************************
 }
 
-unit Gtk1Private;
+unit Gtk1WSPrivate;
 {$mode objfpc}{$H+}
 
 interface
@@ -38,7 +38,7 @@ uses
   // widgetset
   WSControls, WSLCLClasses, WSProc,
   // interface
-  GtkDef, GtkProc, GtkPrivate;
+  GtkDef, GtkProc, GtkWSPrivate;
 
 
 type
