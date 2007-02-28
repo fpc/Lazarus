@@ -40,7 +40,7 @@ type
   TCustomCheckListBox = class(TCustomListBox)
   private
     FItemDataOffset: Integer;
-    FOnClickChecked : TNotifyEvent;
+    FOnClickCheck : TNotifyEvent;
     FOnItemClick: TCheckListClicked;
     function GetChecked(const AIndex: Integer): Boolean;
     function GetCount: integer;
@@ -55,13 +55,13 @@ type
     procedure DefineProperties(Filer: TFiler); override;
     procedure ReadData(Stream: TStream);
     procedure WriteData(Stream: TStream);
-    procedure ClickChecked;
+    procedure ClickCheck; dynamic;
     procedure ItemClick(const AIndex: Integer);
   public
     constructor Create(AOwner: TComponent); override;
     property Checked[const AIndex: Integer]: Boolean read GetChecked write SetChecked;
     property Count: integer read GetCount;
-    property OnClickChecked: TNotifyEvent read FOnClickChecked write FOnClickChecked;
+    property OnClickCheck: TNotifyEvent read FOnClickCheck write FOnClickCheck;
     property OnItemClick: TCheckListClicked read FOnItemClick write FOnItemClick;
   end;
   
@@ -82,6 +82,7 @@ type
     property ItemHeight;
     property MultiSelect;
     property OnClick;
+    property OnClickCheck;
     property OnDblClick;
     property OnDrawItem;
     property OnDragDrop;
@@ -152,7 +153,7 @@ end;
 procedure TCustomCheckListBox.DoChange(var Msg: TLMessage);
 begin
   //DebugLn(['TCustomCheckListBox.DoChange ',DbgSName(Self),' ',Msg.WParam]);
-  ClickChecked;
+  ClickCheck;
   ItemClick(Msg.WParam);
 end;
 
@@ -207,9 +208,9 @@ begin
   else PCachedItemData(GetCachedData(AIndex) + FItemDataOffset)^ := AValue;
 end;
 
-procedure TCustomCheckListBox.ClickChecked;
+procedure TCustomCheckListBox.ClickCheck;
 begin
-  if Assigned(fOnClickChecked) then FOnClickChecked(self);
+  if Assigned(FOnClickCheck) then FOnClickCheck(Self);
 end;
 
 procedure TCustomCheckListBox.ItemClick(const AIndex: Integer);
