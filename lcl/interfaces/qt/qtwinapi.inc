@@ -1610,11 +1610,11 @@ begin
       end;
     SM_CXCURSOR:
       begin
-        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CXCURSOR         ');
+        Result := 32; // recomended in docs
       end;
     SM_CYCURSOR:
       begin
-        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYCURSOR         ');
+        Result := 32; // recomended in docs
       end;
     SM_CXDOUBLECLK:
       begin
