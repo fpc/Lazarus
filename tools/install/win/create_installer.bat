@@ -66,7 +66,7 @@ del %INSTALL_BINDIR%\gdb.exe
 :: copy fpc source
 gmkdir -p %INSTALL_BASE%\source
 %SVN% export %FPCSVNDIR%\fpcsrc\rtl %INSTALL_BASE%\source\rtl >> %LOGFILE%
-%SVN% export %FPCSVNDIR%\fpcsrc\fcl %INSTALL_BASE%\source\fcl >> %LOGFILE%
+IF %HASFCL%==1 %SVN% export %FPCSVNDIR%\fpcsrc\fcl %INSTALL_BASE%\source\fcl >> %LOGFILE%
 %SVN% export %FPCSVNDIR%\fpcsrc\packages %INSTALL_BASE%\source\packages >> %LOGFILE%
 
 :: exit if no compiler has been made
