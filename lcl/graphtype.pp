@@ -72,7 +72,8 @@ type
                        // of 5 unused bits at the end.
     rileWordBoundary,  // each line starts at word (16bit) boundary
     rileDWordBoundary, // each line starts at double word (32bit) boundary
-    rileQWordBoundary  // each line starts at quad word (64bit) boundary
+    rileQWordBoundary, // each line starts at quad word (64bit) boundary
+    rileDQWordBoundary // each line starts at double quad word (128bit) boundary
     );
 
   TRawImageLineOrder = (
@@ -151,7 +152,8 @@ const
     'rileByteBoundary',
     'rileWordBoundary',
     'rileDWordBoundary',
-    'rileQWordBoundary'
+    'rileQWordBoundary',
+    'rileDQWordBoundary'
     );
 
   RawImageLineOrderNames: array[TRawImageLineOrder] of string = (
@@ -648,10 +650,11 @@ begin
   BitsPerLine:=Width*BitsPerPixel;
   case LineEnd of
   rileTight: ;
-  rileByteBoundary:  BitsPerLine:=(BitsPerLine+7) and not cardinal(7);
-  rileWordBoundary:  BitsPerLine:=(BitsPerLine+15) and not cardinal(15);
-  rileDWordBoundary: BitsPerLine:=(BitsPerLine+31) and not cardinal(31);
-  rileQWordBoundary: BitsPerLine:=(BitsPerLine+63) and not cardinal(63);
+  rileByteBoundary:   BitsPerLine:=(BitsPerLine+7) and not cardinal(7);
+  rileWordBoundary:   BitsPerLine:=(BitsPerLine+15) and not cardinal(15);
+  rileDWordBoundary:  BitsPerLine:=(BitsPerLine+31) and not cardinal(31);
+  rileQWordBoundary:  BitsPerLine:=(BitsPerLine+63) and not cardinal(63);
+  rileDQWordBoundary: BitsPerLine:=(BitsPerLine+127) and not cardinal(127);
   end;
   Result:=BitsPerLine;
 end;
