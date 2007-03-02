@@ -22,10 +22,18 @@ unit testglobals;
 
 interface
 
+uses
+  fpcunit, testregistry;
+
 var
   Compiler: string;
+  BugsTestSuite: TTestSuite;
 
 implementation
+
+initialization
+  BugsTestSuite := TTestSuite.Create('Bugs');
+  GetTestRegistry.AddTest(BugsTestSuite);
 
 end.
 

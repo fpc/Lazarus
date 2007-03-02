@@ -21,7 +21,7 @@
 }
 unit FPCAdds;
 
-{$mode objfpc}{$H+}
+{$mode objfpc}{$H+}{$inline on}
 {$IFDEF VER2_0_2}
 {$DEFINE FPC_HAS_NO_STRTOQWORD}
 {$ENDIF}
@@ -29,7 +29,7 @@ unit FPCAdds;
 interface
 
 uses
-  Classes, SysUtils
+  Classes, SysUtils, Math
 {$IFDEF FPC_HAS_NO_STRTOQWORD}
   ,sysconst
 {$ENDIF}
@@ -42,6 +42,7 @@ type
   TCompareMemSize = integer;
   PHandle = ^THandle;
 
+function CompareValue ( const A, B  : QWord) : TValueRelationship; inline;
 function StrToWord(const s: string): word;
 {$IFDEF FPC_HAS_NO_STRTOQWORD}
 function StrToQWord(const s: string): QWord;
@@ -59,6 +60,17 @@ begin
     Result:=Result*10+ord(s[p])-ord('0');
     inc(p);
   end;
+end;
+
+function CompareValue ( const A, B  : QWord) : TValueRelationship;
+
+begin
+  result:=GreaterThanValue;
+  if a=b then
+    result:=EqualsValue
+  else
+   if a<b then
+     result:=LessThanValue;
 end;
 
 {$IFDEF FPC_HAS_NO_STRTOQWORD}

@@ -237,10 +237,7 @@ procedure GatherTests;
 var
   ProgPath: string;
   SearchRec: TSearchRec;
-  BugsTestSuite: TTestSuite;
 begin
-  BugsTestSuite := TTestSuite.Create('Bugs');
-  GetTestRegistry.AddTest(BugsTestSuite);
   ProgPath := ExtractFilePath(ParamStr(0)) + 'bugs' + pathdelim;
   if FindFirst(ProgPath+'*', faAnyFile, SearchRec)=0 then
     repeat

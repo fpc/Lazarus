@@ -23,7 +23,7 @@ program runtestsgui;
 uses
   Interfaces, Forms,
   GuiTestRunner,
-  TestLpi, BugTestCase;
+  TestLpi, BugTestCase, bug8432;
 
 begin
   Application.Title:='Run Lazarus tests';

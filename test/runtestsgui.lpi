@@ -46,21 +46,29 @@
       <Unit2>
         <Filename Value="testglobals.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="TestGlobals"/>
+        <UnitName Value="testglobals"/>
       </Unit2>
       <Unit3>
-        <Filename Value="testglobals.pas"/>
+        <Filename Value="bugs\bug8432.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="testglobals"/>
+        <UnitName Value="bug8432"/>
       </Unit3>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>
     <PathDelim Value="\"/>
+    <SearchPaths>
+      <OtherUnitFiles Value="bugs\"/>
+    </SearchPaths>
     <CodeGeneration>
       <Generate Value="Faster"/>
     </CodeGeneration>
+    <Linking>
+      <Debugging>
+        <UseHeaptrc Value="True"/>
+      </Debugging>
+    </Linking>
     <Other>
       <CompilerPath Value="$(CompPath)"/>
     </Other>

@@ -30,7 +30,7 @@ unit maps;
 interface
 
 uses
-  Classes, SysUtils, AvgLvlTree;
+  Classes, SysUtils, Math, FPCAdds, AvgLvlTree;
   
 type
   TMapIdType = (itu1, its1, itu2, its2, itu4, its4, itu8, its8, itu16, its16,
@@ -412,41 +412,41 @@ var
   Item2: PMapItem absolute AItem2;
 begin
   case FIdType of
-    itu1: Result := Item1^.ID.U1 - Item2^.ID.U1;
-    its1: Result := Item1^.ID.S1 - Item2^.ID.S1;
-    itu2: Result := Item1^.ID.U2 - Item2^.ID.U2;
-    its2: Result := Item1^.ID.S2 - Item2^.ID.S2;
-    itu4: Result := Item1^.ID.U4 - Item2^.ID.U4;
-    its4: Result := Item1^.ID.S4 - Item2^.ID.S4;
-    itu8: Result := Item1^.ID.U8 - Item2^.ID.U8;
-    its8: Result := Item1^.ID.S8 - Item2^.ID.S8;
+    itu1: Result := CompareValue(Item1^.ID.U1, Item2^.ID.U1);
+    its1: Result := CompareValue(Item1^.ID.S1, Item2^.ID.S1);
+    itu2: Result := CompareValue(Item1^.ID.U2, Item2^.ID.U2);
+    its2: Result := CompareValue(Item1^.ID.S2, Item2^.ID.S2);
+    itu4: Result := CompareValue(Item1^.ID.U4, Item2^.ID.U4);
+    its4: Result := CompareValue(Item1^.ID.S4, Item2^.ID.S4);
+    itu8: Result := CompareValue(Item1^.ID.U8, Item2^.ID.U8);
+    its8: Result := CompareValue(Item1^.ID.S8, Item2^.ID.S8);
     itu16: begin
-      Result := Item1^.ID.U16H - Item2^.ID.U16H;
+      Result := CompareValue(Item1^.ID.U16H, Item2^.ID.U16H);
       if Result = 0
-      then Result := Item1^.ID.U16L - Item2^.ID.U16L;
+      then Result := CompareValue(Item1^.ID.U16L, Item2^.ID.U16L);
     end;
     its16: begin
-      Result := Item1^.ID.S16H - Item2^.ID.S16H;
+      Result := CompareValue(Item1^.ID.S16H, Item2^.ID.S16H);
       if Result = 0
-      then Result := Item1^.ID.S16L - Item2^.ID.S16L;
+      then Result := CompareValue(Item1^.ID.S16L, Item2^.ID.S16L);
     end;
     itu32: begin
-      Result := Item1^.ID.U32HH - Item2^.ID.U32HH;
+      Result := CompareValue(Item1^.ID.U32HH,Item2^.ID.U32HH);
       if Result = 0
-      then Result := Item1^.ID.U32HL - Item2^.ID.U32HL;
+      then Result := CompareValue(Item1^.ID.U32HL, Item2^.ID.U32HL);
       if Result = 0
-      then Result := Item1^.ID.U32LH - Item2^.ID.U32LH;
+      then Result := CompareValue(Item1^.ID.U32LH, Item2^.ID.U32LH);
       if Result = 0
-      then Result := Item1^.ID.U32LL - Item2^.ID.U32LL;
+      then Result := CompareValue(Item1^.ID.U32LL, Item2^.ID.U32LL);
     end;
     its32: begin
-      Result := Item1^.ID.S32HH - Item2^.ID.S32HH;
+      Result := CompareValue(Item1^.ID.S32HH, Item2^.ID.S32HH);
       if Result = 0
-      then Result := Item1^.ID.S32HL - Item2^.ID.S32HL;
+      then Result := CompareValue(Item1^.ID.S32HL, Item2^.ID.S32HL);
       if Result = 0
-      then Result := Item1^.ID.S32LH - Item2^.ID.S32LH;
+      then Result := CompareValue(Item1^.ID.S32LH, Item2^.ID.S32LH);
       if Result = 0
-      then Result := Item1^.ID.S32LL - Item2^.ID.S32LL;
+      then Result := CompareValue(Item1^.ID.S32LL, Item2^.ID.S32LL);
     end;
   end;
 end;
