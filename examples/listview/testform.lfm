@@ -1,67 +1,74 @@
 object Form1: TForm1
-  ActiveControl = CheckBox3
-  Caption = 'Listview test'
-  ClientHeight = 299
-  ClientWidth = 627
-  PixelsPerInch = 96
-  HorzScrollBar.Page = 626
-  VertScrollBar.Page = 298
   Left = 356
   Height = 299
   Top = 150
   Width = 627
+  HorzScrollBar.Page = 626
+  VertScrollBar.Page = 298
+  ActiveControl = CheckBox3
+  Caption = 'Listview test'
   object Notebook1: TNotebook
-    Anchors = [akTop, akRight]
-    PageIndex = 0
     Left = 433
     Height = 280
     Top = 8
     Width = 184
+    Anchors = [akTop, akRight]
+    PageIndex = 0
     object Page3: TPage
       Caption = 'LV'
-      ClientWidth = 176
-      ClientHeight = 254
-      Height = 254
-      Width = 176
       object Label11: TLabel
-        Caption = 'Scrollbars'
         Left = 6
         Height = 14
         Top = 60
         Width = 47
+        Caption = 'Scrollbars'
+        Color = clNone
+        ParentColor = False
       end
       object Label12: TLabel
-        Caption = 'SortColumn'
         Left = 6
         Height = 14
         Top = 122
         Width = 56
+        Caption = 'SortColumn'
+        Color = clNone
+        ParentColor = False
       end
       object Label13: TLabel
-        Caption = 'SortType'
         Left = 6
         Height = 14
         Top = 154
         Width = 45
+        Caption = 'SortType'
+        Color = clNone
+        ParentColor = False
       end
       object Label14: TLabel
-        Caption = 'ViewStyle'
         Left = 6
         Height = 14
         Top = 186
         Width = 47
+        Caption = 'ViewStyle'
+        Color = clNone
+        ParentColor = False
       end
       object CheckBox3: TCheckBox
-        Caption = 'Multiselect'
-        OnChange = CheckBox3Change
-        OnClick = CheckBox3Click
-        TabOrder = 0
         Left = 6
         Height = 13
         Top = 4
         Width = 70
+        Caption = 'Multiselect'
+        OnChange = CheckBox3Change
+        OnClick = CheckBox3Click
+        TabOrder = 0
       end
       object ComboBox2: TComboBox
+        Left = 77
+        Height = 21
+        Top = 52
+        Width = 95
+        AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+        ItemIndex = 6
         Items.Strings = (
           'ssNone'
           'ssHorizontal'
@@ -71,325 +78,350 @@ object Form1: TForm1
           'ssAutoVertical'
           'ssAutoBoth'
         )
-        ItemIndex = 6
         MaxLength = 0
         OnChange = ComboBox2Change
         Style = csDropDownList
         TabOrder = 1
         Text = 'ssAutoBoth'
-        Left = 77
-        Height = 21
-        Top = 52
-        Width = 95
       end
       object Edit11: TEdit
-        OnChange = Edit11Change
-        TabOrder = 2
-        Text = '0'
         Left = 78
         Height = 23
         Top = 116
         Width = 80
+        OnChange = Edit11Change
+        TabOrder = 2
+        Text = '0'
       end
       object ComboBox3: TComboBox
+        Left = 77
+        Height = 21
+        Top = 146
+        Width = 95
+        AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+        ItemIndex = 0
         Items.Strings = (
           'stNone'
           'stData'
           'stText'
           'stBoth'
         )
-        ItemIndex = 0
         MaxLength = 0
         OnChange = ComboBox3Change
         Style = csDropDownList
         TabOrder = 3
         Text = 'stNone'
-        Left = 77
-        Height = 21
-        Top = 146
-        Width = 95
       end
       object ComboBox4: TComboBox
+        Left = 78
+        Height = 21
+        Top = 178
+        Width = 95
+        AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+        ItemIndex = 3
         Items.Strings = (
           'vsIcon'
           'vsSmallIcon'
           'vsList'
           'vsReport'
         )
-        ItemIndex = 3
         MaxLength = 0
         OnChange = ComboBox4Change
         Style = csDropDownList
         TabOrder = 4
         Text = 'vsReport'
-        Left = 78
-        Height = 21
-        Top = 178
-        Width = 95
       end
       object CheckBox4: TCheckBox
-        Caption = 'RowSelect'
-        OnClick = CheckBox4Click
-        TabOrder = 5
         Left = 6
         Height = 13
         Top = 28
         Width = 72
+        Caption = 'RowSelect'
+        OnClick = CheckBox4Click
+        TabOrder = 5
       end
       object CheckBox5: TCheckBox
+        Left = 6
+        Height = 13
+        Top = 84
+        Width = 122
         Caption = 'ShowColumnHeaders'
         Checked = True
         OnClick = CheckBox5Click
         State = cbChecked
         TabOrder = 6
-        Left = 6
+      end
+      object HideSelection: TCheckBox
+        Left = 91
         Height = 13
-        Top = 84
-        Width = 122
+        Top = 4
+        Width = 86
+        Caption = 'HideSelection'
+        Checked = True
+        OnChange = HideSelectionChange
+        State = cbChecked
+        TabOrder = 7
       end
     end
     object Page1: TPage
       Caption = 'Items'
-      ClientWidth = 176
-      ClientHeight = 254
-      Height = 254
-      Width = 176
       object Label6: TLabel
-        Caption = 'Index'
         Left = 6
         Height = 17
         Top = 4
         Width = 65
+        Caption = 'Index'
+        Color = clNone
+        ParentColor = False
       end
       object Label7: TLabel
-        Caption = 'SubIndex'
         Left = 94
         Height = 17
         Top = 4
         Width = 65
+        Caption = 'SubIndex'
+        Color = clNone
+        ParentColor = False
       end
       object Label9: TLabel
-        Caption = 'Text'
         Left = 6
         Height = 17
         Top = 116
         Width = 65
+        Caption = 'Text'
+        Color = clNone
+        ParentColor = False
       end
       object Label10: TLabel
-        Caption = 'ImageIndex'
         Left = 94
         Height = 17
         Top = 116
         Width = 65
+        Caption = 'ImageIndex'
+        Color = clNone
+        ParentColor = False
       end
       object Button1: TButton
-        
+        Left = 6
+        Height = 25
+        Top = 52
+        Width = 75
+        BorderSpacing.InnerBorder = 4
         Caption = 'Insert'
         OnClick = Button1Click
         TabOrder = 0
-        Left = 6
+      end
+      object Button2: TButton
+        Left = 94
         Height = 25
         Top = 52
         Width = 75
-      end
-      object Button2: TButton
-        
+        BorderSpacing.InnerBorder = 4
         Caption = 'Delete'
         OnClick = Button2Click
         TabOrder = 1
-        Left = 94
-        Height = 25
-        Top = 52
-        Width = 75
       end
       object Button5: TButton
-        
+        Left = 6
+        Height = 25
+        Top = 84
+        Width = 75
+        BorderSpacing.InnerBorder = 4
         Caption = 'Select'
         OnClick = Button5Click
         TabOrder = 2
-        Left = 6
+      end
+      object Button6: TButton
+        Left = 94
         Height = 25
         Top = 84
         Width = 75
-      end
-      object Button6: TButton
-        
+        BorderSpacing.InnerBorder = 4
         Caption = 'Focus'
         OnClick = Button6Click
         TabOrder = 3
-        Left = 94
-        Height = 25
-        Top = 84
-        Width = 75
       end
       object Edit1: TEdit
+        Left = 6
+        Height = 23
+        Top = 20
+        Width = 80
         OnChange = Edit1Change
         TabOrder = 4
         Text = '0'
-        Left = 6
-        Height = 23
-        Top = 20
-        Width = 80
       end
       object Edit4: TEdit
+        Left = 6
+        Height = 23
+        Top = 132
+        Width = 80
         OnChange = Edit4Change
         TabOrder = 5
         Text = 'Edit4'
-        Left = 6
-        Height = 23
-        Top = 132
-        Width = 80
       end
       object Edit5: TEdit
-        OnChange = Edit5Change
-        TabOrder = 6
-        Text = '0'
         Left = 94
         Height = 23
         Top = 20
         Width = 80
+        OnChange = Edit5Change
+        TabOrder = 6
+        Text = '0'
       end
       object Edit10: TEdit
-        OnChange = Edit10Change
-        TabOrder = 7
-        Text = '-1'
         Left = 94
         Height = 23
         Top = 132
         Width = 80
+        OnChange = Edit10Change
+        TabOrder = 7
+        Text = '-1'
       end
     end
     object Page2: TPage
       Caption = 'Columns'
-      ClientWidth = 176
-      ClientHeight = 254
-      Height = 254
-      Width = 176
       object Label1: TLabel
-        Caption = 'Caption'
         Left = 6
         Height = 17
         Top = 84
         Width = 65
+        Caption = 'Caption'
+        Color = clNone
+        ParentColor = False
       end
       object Label2: TLabel
-        Caption = 'Width'
         Left = 94
         Height = 17
         Top = 84
         Width = 65
+        Caption = 'Width'
+        Color = clNone
+        ParentColor = False
       end
       object Label3: TLabel
-        Caption = 'Minwidth'
         Left = 6
         Height = 17
         Top = 132
         Width = 65
+        Caption = 'Minwidth'
+        Color = clNone
+        ParentColor = False
       end
       object Label4: TLabel
-        Caption = 'Maxwidth'
         Left = 94
         Height = 17
         Top = 132
         Width = 65
+        Caption = 'Maxwidth'
+        Color = clNone
+        ParentColor = False
       end
       object Label5: TLabel
-        Caption = 'Image'
         Left = 6
         Height = 17
         Top = 179
         Width = 65
+        Caption = 'Image'
+        Color = clNone
+        ParentColor = False
       end
       object Label8: TLabel
-        Caption = 'Index'
         Left = 6
         Height = 17
         Top = 4
         Width = 65
+        Caption = 'Index'
+        Color = clNone
+        ParentColor = False
       end
       object Button3: TButton
-        
-        Caption = 'Insert'
-        OnClick = Button3Click
-        TabOrder = 0
         Left = 6
         Height = 25
         Top = 52
         Width = 75
+        BorderSpacing.InnerBorder = 4
+        Caption = 'Insert'
+        OnClick = Button3Click
+        TabOrder = 0
       end
       object Button4: TButton
-        
-        Caption = 'Delete'
-        OnClick = Button4Click
-        TabOrder = 1
         Left = 94
         Height = 25
         Top = 52
         Width = 75
+        BorderSpacing.InnerBorder = 4
+        Caption = 'Delete'
+        OnClick = Button4Click
+        TabOrder = 1
       end
       object Edit2: TEdit
-        OnChange = Edit2Change
-        TabOrder = 2
-        Text = '0'
         Left = 6
         Height = 23
         Top = 20
         Width = 80
+        OnChange = Edit2Change
+        TabOrder = 2
+        Text = '0'
       end
       object Edit3: TEdit
+        Left = 6
+        Height = 23
+        Top = 100
+        Width = 80
         OnChange = Edit3Change
         TabOrder = 3
         Text = 'Edit3'
-        Left = 6
+      end
+      object Edit6: TEdit
+        Left = 94
         Height = 23
         Top = 100
         Width = 80
-      end
-      object Edit6: TEdit
         OnChange = Edit6Change
         TabOrder = 4
         Text = '0'
-        Left = 94
-        Height = 23
-        Top = 100
-        Width = 80
       end
       object Edit7: TEdit
-        OnChange = Edit7Change
-        TabOrder = 7
-        Text = '0'
         Left = 6
         Height = 23
         Top = 148
         Width = 80
+        OnChange = Edit7Change
+        TabOrder = 7
+        Text = '0'
       end
       object Edit8: TEdit
-        OnChange = Edit8Change
-        TabOrder = 9
-        Text = '0'
         Left = 94
         Height = 23
         Top = 148
         Width = 80
+        OnChange = Edit8Change
+        TabOrder = 9
+        Text = '0'
       end
       object CheckBox1: TCheckBox
-        Caption = 'Visible'
-        OnClick = CheckBox1Click
-        TabOrder = 5
         Left = 6
         Height = 20
         Top = 220
         Width = 80
+        Caption = 'Visible'
+        OnClick = CheckBox1Click
+        TabOrder = 5
       end
       object Edit9: TEdit
-        TabOrder = 6
-        Text = '-1'
         Left = 6
         Height = 23
         Top = 193
         Width = 80
+        TabOrder = 6
+        Text = '-1'
       end
       object ComboBox1: TComboBox
+        Left = 94
+        Height = 21
+        Top = 191
+        Width = 80
+        AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
         Items.Strings = (
           'taLeftJustify'
           'taRightJustify'
@@ -399,23 +431,23 @@ object Form1: TForm1
         OnChange = ComboBox1Change
         ParentCtl3D = False
         TabOrder = 8
-        Left = 94
-        Height = 21
-        Top = 191
-        Width = 80
       end
       object CheckBox2: TCheckBox
-        Caption = 'Autosize'
-        OnClick = CheckBox2Click
-        TabOrder = 10
         Left = 94
         Height = 20
         Top = 220
         Width = 80
+        Caption = 'Autosize'
+        OnClick = CheckBox2Click
+        TabOrder = 10
       end
     end
   end
   object ListView1: TListView
+    Left = 8
+    Height = 280
+    Top = 8
+    Width = 417
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderWidth = 2
     Columns = <    
@@ -432,15 +464,10 @@ object Form1: TForm1
     }
     ScrollBars = ssAutoBoth
     SmallImages = ImageList1
+    TabOrder = 1
     ViewStyle = vsReport
-    OnChange = ListView1Change
-    OnClick = ListView1Click
     OnColumnClick = ListView1ColumnClick
     OnSelectItem = ListView1SelectItem
-    Left = 8
-    Height = 280
-    Top = 8
-    Width = 417
   end
   object ImageList1: TImageList
     OnChange = ImageList1Change

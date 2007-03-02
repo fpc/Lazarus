@@ -24,6 +24,7 @@ type
     CheckBox3: TCheckBox;
     CheckBox4: TCheckBox;
     CheckBox5: TCheckBox;
+    HideSelection: TCheckBox;
     ComboBox1: TComboBox;
     ComboBox2: TComboBox;
     ComboBox3: TComboBox;
@@ -85,9 +86,8 @@ type
     procedure Edit6Change(Sender: TObject);
     procedure Edit7Change(Sender: TObject);
     procedure Edit8Change(Sender: TObject);
+    procedure HideSelectionChange(Sender: TObject);
     procedure ImageList1Change(Sender: TObject);
-    procedure ListView1Change(Sender: TObject; Item: TListItem; Change: TItemChange);
-    procedure ListView1Click(Sender: TObject);
     procedure ListView1ColumnClick(Sender: TObject; Column: TListColumn);
     procedure ListView1SelectItem(Sender: TObject; Item: TListItem; Selected: Boolean);
   private
@@ -299,17 +299,12 @@ begin
   Column.MaxWidth := StrToIntDef(Edit8.Text, 0);
 end;
 
+procedure TForm1.HideSelectionChange(Sender: TObject);
+begin
+  Listview1.HideSelection := HideSelection.Checked;
+end;
+
 procedure TForm1.ImageList1Change(Sender: TObject);
-begin
-
-end;
-
-procedure TForm1.ListView1Change(Sender: TObject; Item: TListItem; Change: TItemChange);
-begin
-
-end;
-
-procedure TForm1.ListView1Click(Sender: TObject);
 begin
 
 end;
