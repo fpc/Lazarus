@@ -383,8 +383,6 @@ begin
   LevelsCheckGroup.Caption:='Levels';
   LevelsCheckGroup.Items[0]:='Packages';
   LevelsCheckGroup.Items[1]:='Units';
-  LevelsCheckGroup.Items[2]:='Classes';
-  LevelsCheckGroup.Items[3]:='Sections';
 
   FilterGroupBox.Caption:='Filter';
   ShowPrivateCheckBox.Caption:='Private';
