@@ -202,6 +202,7 @@ type
     StartPos, EndPos: integer;
     Cache: TObject;
     function Next: TCodeTreeNode;
+    function NextSkipChilds: TCodeTreeNode;
     function Prior: TCodeTreeNode;
     function HasAsParent(Node: TCodeTreeNode): boolean;
     function HasAsChild(Node: TCodeTreeNode): boolean;
@@ -489,6 +490,14 @@ begin
       Result:=Result.Parent;
     if Result<>nil then Result:=Result.NextBrother;
   end;
+end;
+
+function TCodeTreeNode.NextSkipChilds: TCodeTreeNode;
+begin
+  Result:=Self;
+  while (Result<>nil) and (Result.NextBrother=nil) do
+    Result:=Result.Parent;
+  if Result<>nil then Result:=Result.NextBrother;
 end;
 
 function TCodeTreeNode.Prior: TCodeTreeNode;

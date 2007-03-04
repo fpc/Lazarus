@@ -46,7 +46,7 @@ object CodeBrowserView: TCodeBrowserView
     AnchorSideTop.Control = ScopeGroupBox
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 135
+    Height = 82
     Top = 62
     Width = 185
     AutoFill = True
@@ -63,106 +63,78 @@ object CodeBrowserView: TCodeBrowserView
     Items.Strings = (
       'Packages'
       'Units'
-      'Classes'
-      'Sections'
     )
-    OnClick = LevelsCheckGroupClick
+    OnItemClick = LevelsCheckGroupItemClick
     TabOrder = 1
     Data = {
-      0400000002020202
+      020000000202
     }
   end
-  object SortGroupBox: TGroupBox
+  object FilterGroupBox: TGroupBox
     AnchorSideLeft.Control = LevelsCheckGroup
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = ScopeGroupBox
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = LevelsCheckGroup
+    AnchorSideBottom.Side = asrBottom
     Left = 197
-    Height = 135
+    Height = 82
     Top = 62
     Width = 431
-    Anchors = [akTop, akLeft, akRight]
-    BorderSpacing.Around = 6
-    Caption = 'SortGroupBox'
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    BorderSpacing.Right = 6
+    Caption = 'FilterGroupBox'
     TabOrder = 2
-    object SortUpSpeedButton: TSpeedButton
-      Left = 168
-      Height = 22
-      Top = 55
-      Width = 23
-      Color = clBtnFace
-      NumGlyphs = 0
-      OnClick = SortUpSpeedButtonClick
-      ShowHint = True
-      ParentShowHint = False
-    end
-    object SortDownSpeedButton: TSpeedButton
-      Left = 168
-      Height = 22
-      Top = 80
-      Width = 23
-      Color = clBtnFace
-      NumGlyphs = 0
-      OnClick = SortDownSpeedButtonClick
-      ShowHint = True
-      ParentShowHint = False
-    end
-    object SortAddSpeedButton: TSpeedButton
-      Left = 193
-      Height = 22
-      Top = 14
-      Width = 23
-      Color = clBtnFace
-      NumGlyphs = 0
-      OnClick = SortAddSpeedButtonClick
-      ShowHint = True
-      ParentShowHint = False
-    end
-    object SortRemoveSpeedButton: TSpeedButton
-      Left = 223
-      Height = 22
-      Top = 14
-      Width = 23
-      Color = clBtnFace
-      NumGlyphs = 0
-      OnClick = SortRemoveSpeedButtonClick
-      ShowHint = True
-      ParentShowHint = False
-    end
-    object SortListBox: TListBox
-      Height = 118
-      Width = 163
-      Align = alLeft
+    object ShowPrivateCheckBox: TCheckBox
+      Left = 12
+      Height = 20
+      Top = 8
+      Width = 154
+      Caption = 'ShowPrivateCheckBox'
+      OnChange = ShowPrivateCheckBoxChange
       TabOrder = 0
-      TopIndex = -1
+      UseOnChange = True
     end
-    object SortAddsListBox: TListBox
-      Left = 258
-      Height = 118
-      Width = 169
-      Align = alRight
-      Anchors = [akTop, akLeft, akRight, akBottom]
+    object ShowProtectedCheckBox: TCheckBox
+      Left = 12
+      Height = 20
+      Top = 37
+      Width = 168
+      Caption = 'ShowProtectedCheckBox'
+      OnChange = ShowProtectedCheckBoxChange
       TabOrder = 1
-      TopIndex = -1
+      UseOnChange = True
     end
   end
   object BrowseTreeView: TTreeView
     AnchorSideTop.Control = LevelsCheckGroup
     AnchorSideTop.Side = asrBottom
-    Height = 341
-    Top = 203
+    Height = 394
+    Top = 150
     Width = 634
     Align = alBottom
     Anchors = [akTop, akLeft, akRight, akBottom]
-    DefaultItemHeight = 14
+    DefaultItemHeight = 16
+    Images = ImageList1
+    ParentShowHint = False
+    ShowHint = True
+    ShowRoot = False
     TabOrder = 3
+    OnShowHint = BrowseTreeViewShowHint
+    Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoShowButtons, tvoShowLines, tvoToolTips]
   end
   object StatusBar1: TStatusBar
     Height = 20
     Top = 544
     Width = 634
     Panels = <>
+  end
+  object ImageList1: TImageList
+    left = 298
+    top = 196
   end
 end

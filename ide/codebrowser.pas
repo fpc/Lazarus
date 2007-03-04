@@ -42,8 +42,8 @@ uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
   LCLIntf, AvgLvlTree, StdCtrls, ExtCtrls, ComCtrls, Buttons,
   // codetools
-  BasicCodeTools, DefineTemplates, CodeTree, CodeCache, CodeToolManager,
-  LinkScanner, FileProcs,
+  CodeAtom, BasicCodeTools, DefineTemplates, CodeTree, CodeCache, CodeToolManager,
+  PascalParserTool, LinkScanner, FileProcs,
   // IDEIntf
   LazConfigStorage, Project,
   // IDE
@@ -61,17 +61,22 @@ type
   private
     FCBUnit: TCodeBrowserUnit;
     FChildNodes: TAvgLvlTree;
+    FDescription: string;
     FNode: TCodeTreeNode;
     FParentNode: TCodeBrowserNode;
   public
     constructor Create(TheUnit: TCodeBrowserUnit; TheNode: TCodeTreeNode;
-                       TheParent: TCodeBrowserNode);
+                       TheParent: TCodeBrowserNode;
+                       const TheDescription: string);
     destructor Destroy; override;
     procedure Clear;
+    function AddNode(CTNode: TCodeTreeNode;
+                     const Description: string): TCodeBrowserNode;
     property CBUnit: TCodeBrowserUnit read FCBUnit;
     property Node: TCodeTreeNode read FNode;
     property ParentNode: TCodeBrowserNode read FParentNode;
     property ChildNodes: TAvgLvlTree read FChildNodes;
+    property Description: string read FDescription;
   end;
 
 
@@ -89,14 +94,18 @@ type
     FScannedIdentifiers: integer;
     FScannedLines: integer;
     FUnitList: TCodeBrowserUnitList;
+    procedure SetCodeBuffer(const AValue: TCodeBuffer);
+    procedure SetCodeTool(const AValue: TCodeTool);
     procedure SetScanned(const AValue: boolean);
   public
     constructor Create(const TheFilename: string);
     destructor Destroy; override;
     procedure Clear;
+    function AddNode(CTNode: TCodeTreeNode;
+                     const Description: string): TCodeBrowserNode;
     property Filename: string read FFilename;
-    property CodeBuffer: TCodeBuffer read FCodeBuffer;
-    property CodeTool: TCodeTool read FCodeTool;
+    property CodeBuffer: TCodeBuffer read FCodeBuffer write SetCodeBuffer;
+    property CodeTool: TCodeTool read FCodeTool write SetCodeTool;
     property CodeTreeChangeStep: integer read FCodeTreeChangeStep;
     property UnitList: TCodeBrowserUnitList read FUnitList;
     property ChildNodes: TAvgLvlTree read FChildNodes;
@@ -141,39 +150,18 @@ type
 type
   TCodeBrowserLevel = (
     cblPackages,
-    cblUnits,
-    cblClasses,
-    cblSections
+    cblUnits
     );
     
 const
   CodeBrowserLevelNames: array[TCodeBrowserLevel] of string = (
     'Packages',
-    'Units',
-    'Classes',
-    'Sections'
+    'Units'
     );
 
-type
-  TCodeBrowserSortItem = (
-    cbsiPackages,
-    cbsiUnits,
-    cbsiClasses,
-    cbsiSections,
-    cbsiAlphabetically
-    );
-
-const
-  CodeBrowserSortItemNames: array[TCodeBrowserSortItem] of string = (
-    'Packages',
-    'Units',
-    'Classes',
-    'Sections',
-    'Alphabetically'
-    );
-    
-  CodeBrowserIDEAlias     = ' '+'Lazarus IDE';// Note: space is needed to avoid name clashing
-  CodeBrowserProjectAlias = ' '+'Project';
+  CodeBrowserIDEName     = ' '+'Lazarus IDE';// Note: space is needed to avoid name clashing
+  CodeBrowserProjectName = ' '+'Project';
+  CodeBrowserHidden = ' ';
 
 type
 
@@ -184,12 +172,14 @@ type
     FModified: boolean;
     FScope: string;
     FLevels: TStrings;
-    FSortItems: TStrings;
+    FShowPrivate: boolean;
+    FShowProtected: boolean;
     FWithRequiredPackages: boolean;
     procedure SetModified(const AValue: boolean);
     procedure SetScope(const AValue: string);
     procedure SetLevels(const AValue: TStrings);
-    procedure SetSortItems(const AValue: TStrings);
+    procedure SetShowPrivate(const AValue: boolean);
+    procedure SetShowProtected(const AValue: boolean);
     procedure SetWithRequiredPackages(const AValue: boolean);
   public
     constructor Create;
@@ -197,10 +187,12 @@ type
     procedure Clear;
     procedure LoadFromConfig(ConfigStore: TConfigStorage; const Path: string);
     procedure SaveToConfig(ConfigStore: TConfigStorage; const Path: string);
+    function HasLevel(Level: TCodeBrowserLevel): boolean;
     property Scope: string read FScope write SetScope;
     property WithRequiredPackages: boolean read FWithRequiredPackages write SetWithRequiredPackages;
     property Levels: TStrings read FLevels write SetLevels;
-    property SortItems: TStrings read FSortItems write SetSortItems;
+    property ShowPrivate: boolean read FShowPrivate write SetShowPrivate;
+    property ShowProtected: boolean read FShowProtected write SetShowProtected;
     property Modified: boolean read FModified write SetModified;
   end;
 
@@ -213,59 +205,71 @@ type
     cbwsGatherFiles,
     cbwsGatherOutdatedFiles,
     cbwsUpdateUnits,
+    cbwsUpdateTreeView,
     cbwsFinished
     );
 
   { TCodeBrowserView }
 
   TCodeBrowserView = class(TForm)
-    SortAddsListBox: TListBox;
-    SortListBox: TListBox;
-    SortGroupBox: TGroupBox;
+    ShowProtectedCheckBox: TCheckBox;
+    ShowPrivateCheckBox: TCheckBox;
+    ImageList1: TImageList;
+    FilterGroupBox: TGroupBox;
     LevelsCheckGroup: TCheckGroup;
     ScopeWithRequiredPackagesCheckBox: TCheckBox;
     ScopeComboBox: TComboBox;
     ScopeGroupBox: TGroupBox;
-    SortUpSpeedButton: TSpeedButton;
-    SortDownSpeedButton: TSpeedButton;
-    SortAddSpeedButton: TSpeedButton;
-    SortRemoveSpeedButton: TSpeedButton;
     BrowseTreeView: TTreeView;
     StatusBar1: TStatusBar;
+    procedure BrowseTreeViewShowHint(Sender: TObject; HintInfo: PHintInfo);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
-    procedure LevelsCheckGroupClick(Sender: TObject);
+    procedure LevelsCheckGroupItemClick(Sender: TObject; Index: integer);
     procedure ScopeComboBoxDropDown(Sender: TObject);
     procedure ScopeComboBoxEditingDone(Sender: TObject);
     procedure ScopeWithRequiredPackagesCheckBoxChange(Sender: TObject);
-    procedure SortAddSpeedButtonClick(Sender: TObject);
-    procedure SortDownSpeedButtonClick(Sender: TObject);
-    procedure SortRemoveSpeedButtonClick(Sender: TObject);
-    procedure SortUpSpeedButtonClick(Sender: TObject);
     procedure OnIdle(Sender: TObject);
+    procedure ShowPrivateCheckBoxChange(Sender: TObject);
+    procedure ShowProtectedCheckBoxChange(Sender: TObject);
   private
-    FIDEAlias: string;
-    fLocalizedSortItems: TStrings;
+    FIDEDescription: string;
     FOptions: TCodeBrowserViewOptions;
-    FProjectAlias: string;
-    FRoot: TCodeBrowserUnitList;
+    FProjectDescription: string;
+    FParserRoot: TCodeBrowserUnitList;
     FScannedBytes: PtrInt;
     FScannedIdentifiers: PtrInt;
     FScannedLines: PtrInt;
     FScannedPackages: integer;
     FScannedUnits: integer;
-    FWorkingRoot: TCodeBrowserUnitList;
+    FViewRoot: TObject;
+    FWorkingParserRoot: TCodeBrowserUnitList;
     fUpdateCount: integer;
     fStage: TCodeBrowserWorkStage;
     fOutdatedFiles: TAvgLvlTree;// tree of TCodeBrowserUnit
     fLastStatusBarUpdate: TDateTime;
+    ImgIDDefault: integer;
+    ImgIDProgramCode: Integer;
+    ImgIDUnitCode: Integer;
+    ImgIDInterfaceSection: Integer;
+    ImgIDImplementation: Integer;
+    ImgIDInitialization: Integer;
+    ImgIDFinalization: Integer;
+    ImgIDTypeSection: Integer;
+    ImgIDType: Integer;
+    ImgIDVarSection: Integer;
+    ImgIDVariable: Integer;
+    ImgIDConstSection: Integer;
+    ImgIDConst: Integer;
+    ImgIDClass: Integer;
+    ImgIDProc: Integer;
+    ImgIDProperty: Integer;
+    ImgIDPackage: Integer;
+    ImgIDProject: Integer;
     procedure LoadOptions;
     procedure LoadLevelsCheckGroup;
-    procedure LoadSortListBoxes;
-    procedure MoveSortItem(Offset: integer);
-    procedure AddSortItem;
-    procedure RemoveSortItem;
+    procedure LoadFilterGroupbox;
     procedure FillScopeComboBox;
     procedure SetScannedBytes(const AValue: PtrInt);
     procedure SetScannedIdentifiers(const AValue: PtrInt);
@@ -282,19 +286,27 @@ type
     procedure WorkGatherOutdatedFiles;
     procedure WorkUpdateUnits;
     procedure WorkUpdateUnit(AnUnit: TCodeBrowserUnit);
+    procedure WorkUpdateTreeView;
     procedure FreeUnitList(List: TCodeBrowserUnitList);
     procedure UpdateStatusBar(Lazy: boolean);
-    procedure UpdateTreeView;
     procedure RemoveUnit(AnUnit: TCodeBrowserUnit);
     function CountIdentifiers(Tool: TCodeTool): integer;
+    procedure UpdateTreeView;
+    procedure ClearTreeView;
+    function InitTreeView: TTreeNode;
+    function ListOwnerToText(const ListOwner: string): string;
+    procedure InitImageList;
+    function GetNodeImage(CodeNode: TObject): integer;
+    function GetTVNodeHint(TVNode: TTreeNode): string;
   public
     procedure BeginUpdate;
     procedure EndUpdate;
-    property Root: TCodeBrowserUnitList read FRoot;
-    property WorkingRoot: TCodeBrowserUnitList read FWorkingRoot;
+    property ParserRoot: TCodeBrowserUnitList read FParserRoot;
+    property WorkingParserRoot: TCodeBrowserUnitList read FWorkingParserRoot;
+    property ViewRoot: TObject read FViewRoot;// can be TCodeBrowserUnitList or TCodeBrowserUnit or TCodeBrowserNode
     property Options: TCodeBrowserViewOptions read FOptions;
-    property IDEAlias: string read FIDEAlias;
-    property ProjectAlias: string read FProjectAlias;
+    property IDEDescription: string read FIDEDescription;
+    property ProjectDescription: string read FProjectDescription;
     property ScannedPackages: integer read FScannedPackages write SetScannedPackages;
     property ScannedUnits: integer read FScannedUnits write SetScannedUnits;
     property ScannedLines: PtrInt read FScannedLines write SetScannedLines;
@@ -309,6 +321,8 @@ function CompareUnitListOwners(Data1, Data2: Pointer): integer;
 function ComparePAnsiStringWithUnitListOwner(Data1, Data2: Pointer): integer;
 function CompareUnitFilenames(Data1, Data2: Pointer): integer;
 function ComparePAnsiStringWithUnitFilename(Data1, Data2: Pointer): integer;
+function CompareNodeDescriptions(Data1, Data2: Pointer): integer;
+function ComparePAnsiStringWithNodeDescription(Data1, Data2: Pointer): integer;
 
 
 implementation
@@ -338,6 +352,18 @@ begin
                            TCodeBrowserUnit(Data2).Filename);
 end;
 
+function CompareNodeDescriptions(Data1, Data2: Pointer): integer;
+begin
+  Result:=SysUtils.CompareText(TCodeBrowserNode(Data1).Description,
+                               TCodeBrowserNode(Data2).Description);
+end;
+
+function ComparePAnsiStringWithNodeDescription(Data1, Data2: Pointer): integer;
+begin
+  Result:=SysUtils.CompareText(PAnsiString(Data1)^,
+                               TCodeBrowserNode(Data2).Description);
+end;
+
 
 { TCodeBrowserView }
 
@@ -345,15 +371,8 @@ procedure TCodeBrowserView.FormCreate(Sender: TObject);
 begin
   FOptions:=TCodeBrowserViewOptions.Create;
   
-  FIDEAlias:='Lazarus IDE';
-  FProjectAlias:='Project';
-
-  fLocalizedSortItems:=TStringList.Create;
-  fLocalizedSortItems.Values[CodeBrowserSortItemNames[cbsiPackages]]:='Packages';
-  fLocalizedSortItems.Values[CodeBrowserSortItemNames[cbsiUnits]]:='Units';
-  fLocalizedSortItems.Values[CodeBrowserSortItemNames[cbsiClasses]]:='Classes';
-  fLocalizedSortItems.Values[CodeBrowserSortItemNames[cbsiSections]]:='Sections';
-  fLocalizedSortItems.Values[CodeBrowserSortItemNames[cbsiAlphabetically]]:='Alphabetically';
+  FIDEDescription:='Lazarus IDE';
+  FProjectDescription:='Project';
 
   Name:=NonModalIDEWindowNames[nmiwCodeBrowser];
   Caption := 'Code browser';
@@ -367,17 +386,11 @@ begin
   LevelsCheckGroup.Items[2]:='Classes';
   LevelsCheckGroup.Items[3]:='Sections';
 
-  SortGroupBox.Caption:='Sort';
-  SortUpSpeedButton.Hint:='Move up';
-  DebugLn(['TCodeBrowserView.FormCreate ',LazarusResources.Find('arrow_up')<>nil]);
-  SortUpSpeedButton.Glyph.LoadFromLazarusResource('arrow_up');
-  SortDownSpeedButton.Hint:='Move down';
-  SortDownSpeedButton.Glyph.LoadFromLazarusResource('arrow_down');
-  SortAddSpeedButton.Hint:='Add';
-  SortAddSpeedButton.Glyph.LoadFromLazarusResource('arrow_left');
-  SortRemoveSpeedButton.Hint:='Remove';
-  SortRemoveSpeedButton.Glyph.LoadFromLazarusResource('arrow_right');
+  FilterGroupBox.Caption:='Filter';
+  ShowPrivateCheckBox.Caption:='Private';
+  ShowProtectedCheckBox.Caption:='Protected';
 
+  InitImageList;
   LoadOptions;
   
   fStage:=cbwsGetOptions;
@@ -386,13 +399,16 @@ end;
 
 procedure TCodeBrowserView.FormDestroy(Sender: TObject);
 begin
+  ClearTreeView;
   FreeAndNil(fOutdatedFiles);
-  FreeAndNil(FRoot);
-  FreeAndNil(FWorkingRoot);
+  FreeAndNil(FViewRoot);
+  FreeAndNil(FParserRoot);
+  FreeAndNil(FWorkingParserRoot);
   FreeAndNil(FOptions);
 end;
 
-procedure TCodeBrowserView.LevelsCheckGroupClick(Sender: TObject);
+procedure TCodeBrowserView.LevelsCheckGroupItemClick(Sender: TObject;
+  Index: integer);
 begin
   fStage:=cbwsGetOptions;
 end;
@@ -413,26 +429,6 @@ begin
   fStage:=cbwsGetOptions;
 end;
 
-procedure TCodeBrowserView.SortAddSpeedButtonClick(Sender: TObject);
-begin
-  AddSortItem;
-end;
-
-procedure TCodeBrowserView.SortDownSpeedButtonClick(Sender: TObject);
-begin
-  MoveSortItem(+1);
-end;
-
-procedure TCodeBrowserView.SortRemoveSpeedButtonClick(Sender: TObject);
-begin
-  RemoveSortItem;
-end;
-
-procedure TCodeBrowserView.SortUpSpeedButtonClick(Sender: TObject);
-begin
-  MoveSortItem(-1);
-end;
-
 procedure TCodeBrowserView.OnIdle(Sender: TObject);
 var
   AControl: TWinControl;
@@ -443,13 +439,23 @@ begin
   Work;
 end;
 
+procedure TCodeBrowserView.ShowPrivateCheckBoxChange(Sender: TObject);
+begin
+  fStage:=cbwsGetOptions;
+end;
+
+procedure TCodeBrowserView.ShowProtectedCheckBoxChange(Sender: TObject);
+begin
+  fStage:=cbwsGetOptions;
+end;
+
 procedure TCodeBrowserView.LoadOptions;
 begin
   BeginUpdate;
   ScopeWithRequiredPackagesCheckBox.Checked:=Options.WithRequiredPackages;
   ScopeComboBox.Text:=Options.Scope;
   LoadLevelsCheckGroup;
-  LoadSortListBoxes;
+  LoadFilterGroupbox;
   EndUpdate;
 end;
 
@@ -458,93 +464,13 @@ var
   i: Integer;
 begin
   for i:=0 to LevelsCheckGroup.Items.Count-1 do
-    LevelsCheckGroup.Checked[i]:=
-      Options.Levels.IndexOf(CodeBrowserLevelNames[TCodeBrowserLevel(i)])>=0;
+    LevelsCheckGroup.Checked[i]:=Options.HasLevel(TCodeBrowserLevel(i));
 end;
 
-procedure TCodeBrowserView.LoadSortListBoxes;
-var
-  i: Integer;
-  sl: TStringList;
-  CurItem: string;
+procedure TCodeBrowserView.LoadFilterGroupbox;
 begin
-  BeginUpdate;
-  sl:=TStringList.Create;
-  
-  // SortListBox
-  for i:=0 to Options.SortItems.Count-1 do begin
-    CurItem:=fLocalizedSortItems.Values[Options.SortItems[i]];
-    if CurItem='' then continue;
-    sl.Add(CurItem);
-  end;
-  if SortListBox.ItemIndex>=0 then
-    CurItem:=SortListBox.Items[SortListBox.ItemIndex]
-  else
-    CurItem:='';
-  SortListBox.Items.Assign(sl);
-  if CurItem<>'' then
-    SortListBox.ItemIndex:=sl.IndexOf(CurItem);
-    
-  // SortAddsListBox
-  sl.Clear;
-  for i:=0 to fLocalizedSortItems.Count-1 do begin
-    CurItem:=fLocalizedSortItems.Names[i];
-    if Options.SortItems.IndexOf(CurItem)<0 then
-      sl.Add(fLocalizedSortItems.ValueFromIndex[i]);
-  end;
-  if SortAddsListBox.ItemIndex>=0 then
-    CurItem:=SortAddsListBox.Items[SortAddsListBox.ItemIndex]
-  else
-    CurItem:='';
-  SortAddsListBox.Items.Assign(sl);
-  if CurItem<>'' then
-    SortAddsListBox.ItemIndex:=sl.IndexOf(CurItem);
-
-  sl.Free;
-  EndUpdate;
-end;
-
-procedure TCodeBrowserView.MoveSortItem(Offset: integer);
-var
-  i: LongInt;
-begin
-  if Offset=0 then exit;
-  i:=SortListBox.ItemIndex;
-  if i<0 then exit;
-  if (i+Offset)<0 then exit;
-  if (i+Offset)>=SortListBox.Items.Count then exit;
-  SortListBox.Items.Move(i,i+Offset);
-  fStage:=cbwsGetOptions;
-end;
-
-procedure TCodeBrowserView.AddSortItem;
-var
-  i: LongInt;
-  NewItem: string;
-begin
-  i:=SortAddsListBox.ItemIndex;
-  if i<0 then exit;
-  NewItem:=SortAddsListBox.Items[i];
-  SortAddsListBox.Items.Delete(i);
-  i:=SortListBox.ItemIndex;
-  if i<0 then i:=SortListBox.Items.Count;
-  SortListBox.Items.Insert(i,NewItem);
-  fStage:=cbwsGetOptions;
-end;
-
-procedure TCodeBrowserView.RemoveSortItem;
-var
-  i: LongInt;
-  NewItem: string;
-begin
-  i:=SortListBox.ItemIndex;
-  if i<0 then exit;
-  NewItem:=SortListBox.Items[i];
-  SortListBox.Items.Delete(i);
-  i:=SortAddsListBox.ItemIndex;
-  if i<0 then i:=SortAddsListBox.Items.Count;
-  SortAddsListBox.Items.Insert(i,NewItem);
-  fStage:=cbwsGetOptions;
+  ShowPrivateCheckBox.Checked:=Options.ShowPrivate;
+  ShowProtectedCheckBox.Checked:=Options.ShowProtected;
 end;
 
 procedure TCodeBrowserView.FillScopeComboBox;
@@ -558,10 +484,45 @@ begin
       sl.Add(PackageGraph.Packages[i].Name);
   end;
   sl.Sort;
-  sl.Insert(0,IDEAlias);
-  sl.Insert(1,ProjectAlias);
+  sl.Insert(0,IDEDescription);
+  sl.Insert(1,ProjectDescription);
   ScopeComboBox.Items.Assign(sl);
   sl.Free;
+end;
+
+procedure TCodeBrowserView.InitImageList;
+
+  procedure AddResImg(ImgList: TImageList; const ResName: string;
+    out ImgID: integer);
+  var Pixmap: TPixmap;
+  begin
+    Pixmap:=TPixmap.Create;
+    if LazarusResources.Find(ResName)=nil then
+      DebugLn('TCodeExplorerView.CodeExplorerViewCREATE: ',
+        ' WARNING: icon not found: "',ResName,'"');
+    Pixmap.LoadFromLazarusResource(ResName);
+    ImgID:=ImgList.AddDirect(Pixmap,nil)
+  end;
+
+begin
+  AddResImg(Imagelist1,'ce_default',ImgIDDefault);
+  AddResImg(Imagelist1,'ce_program',ImgIDProgramCode);
+  AddResImg(Imagelist1,'ce_unit',ImgIDUnitCode);
+  AddResImg(Imagelist1,'ce_interface',ImgIDInterfaceSection);
+  AddResImg(Imagelist1,'ce_implementation',ImgIDImplementation);
+  AddResImg(Imagelist1,'ce_initialization',ImgIDInitialization);
+  AddResImg(Imagelist1,'ce_finalization',ImgIDFinalization);
+  AddResImg(Imagelist1,'ce_type',ImgIDTypeSection);
+  AddResImg(Imagelist1,'ce_type',ImgIDType);
+  AddResImg(Imagelist1,'ce_variable',ImgIDVarSection);
+  AddResImg(Imagelist1,'ce_variable',ImgIDVariable);
+  AddResImg(Imagelist1,'ce_const',ImgIDConstSection);
+  AddResImg(Imagelist1,'ce_const',ImgIDConst);
+  AddResImg(Imagelist1,'ce_class',ImgIDClass);
+  AddResImg(Imagelist1,'ce_procedure',ImgIDProc);
+  AddResImg(Imagelist1,'ce_property',ImgIDProperty);
+  AddResImg(Imagelist1,'pkg_package',ImgIDPackage);
+  AddResImg(Imagelist1,'pkg_project',ImgIDProject);
 end;
 
 procedure TCodeBrowserView.SetScannedBytes(const AValue: PtrInt);
@@ -609,13 +570,12 @@ begin
   cbwsGatherFiles:         WorkGatherFileLists;
   cbwsGatherOutdatedFiles: WorkGatherOutdatedFiles;
   cbwsUpdateUnits:         WorkUpdateUnits;
+  cbwsUpdateTreeView:      WorkUpdateTreeView;
   else
     exit;
   end;
   if ord(OldStage)<ord(cbwsFinished) then begin
-    UpdateStatusBar(cbwsFinished<fStage);
-    if fStage=cbwsFinished then
-      UpdateTreeView;
+    UpdateStatusBar(fStage<cbwsFinished);
   end;
 end;
 
@@ -626,12 +586,12 @@ begin
   DebugLn(['TCodeBrowserView.WorkGetOptions START']);
   Options.WithRequiredPackages:=ScopeWithRequiredPackagesCheckBox.Checked;
   Options.Scope:=ScopeComboBox.Text;
+  Options.ShowPrivate:=ShowPrivateCheckBox.Checked;
+  Options.ShowProtected:=ShowProtectedCheckBox.Checked;
   Options.Levels.Clear;
   for i:=0 to LevelsCheckGroup.Items.Count-1 do
     if LevelsCheckGroup.Checked[i] then
       Options.Levels.Add(CodeBrowserLevelNames[TCodeBrowserLevel(i)]);
-  Options.SortItems.Clear;
-  Options.SortItems.Assign(SortListBox.Items);
 
   // this stage finished -> next stage
   fStage:=cbwsGatherPackages;
@@ -641,7 +601,7 @@ procedure TCodeBrowserView.WorkGatherPackages;
 
   procedure AddPackage(APackage: TLazPackage);
   begin
-    TCodeBrowserUnitList.Create(APackage.Name,fWorkingRoot);
+    TCodeBrowserUnitList.Create(APackage.Name,FWorkingParserRoot);
   end;
   
   procedure AddPackages(FirstDependency: TPkgDependency);
@@ -667,41 +627,41 @@ var
   RootOwner: string;
   i: Integer;
 begin
-  // find root
+  // find ParserRoot
   RootOwner:='';
-  if Options.Scope=IDEAlias then begin
-    RootOwner:=CodeBrowserIDEAlias;
-  end else if Options.Scope=ProjectAlias then begin
-    RootOwner:=CodeBrowserProjectAlias;
+  if Options.Scope=IDEDescription then begin
+    RootOwner:=CodeBrowserIDEName;
+  end else if Options.Scope=ProjectDescription then begin
+    RootOwner:=CodeBrowserProjectName;
   end else begin
     APackage:=PackageGraph.FindAPackageWithName(Options.Scope,nil);
     if APackage<>nil then
       RootOwner:=APackage.Name;
   end;
   DebugLn(['TCodeBrowserView.WorkGatherPackages RootOwner="',RootOwner,'"']);
-  FreeAndNil(FWorkingRoot);
-  FWorkingRoot:=TCodeBrowserUnitList.Create(RootOwner,nil);
+  FreeAndNil(FWorkingParserRoot);
+  FWorkingParserRoot:=TCodeBrowserUnitList.Create(RootOwner,nil);
   
   // find required packages
   if Options.WithRequiredPackages then begin
-    if SysUtils.CompareText(FWorkingRoot.Owner,CodeBrowserIDEAlias)=0 then begin
+    if SysUtils.CompareText(FWorkingParserRoot.Owner,CodeBrowserIDEName)=0 then begin
       for i:=0 to PackageGraph.Count-1 do
         AddPackage(PackageGraph[i]);
-    end else if SysUtils.CompareText(FWorkingRoot.Owner,CodeBrowserProjectAlias)=0
+    end else if SysUtils.CompareText(FWorkingParserRoot.Owner,CodeBrowserProjectName)=0
     then begin
       AddPackages(Project1.FirstRequiredDependency);
-    end else if FWorkingRoot.Owner<>'' then begin
-      APackage:=PackageGraph.FindAPackageWithName(FWorkingRoot.Owner,nil);
+    end else if FWorkingParserRoot.Owner<>'' then begin
+      APackage:=PackageGraph.FindAPackageWithName(FWorkingParserRoot.Owner,nil);
       if APackage<>nil then
         AddPackages(APackage.FirstRequiredDependency);
     end;
   end;
   
-  // update root item (childs will be updated on next Idle)
-  if FRoot=nil then begin
-    FRoot:=TCodeBrowserUnitList.Create(FWorkingRoot.Owner,nil);
+  // update ParserRoot item (childs will be updated on next Idle)
+  if FParserRoot=nil then begin
+    FParserRoot:=TCodeBrowserUnitList.Create(FWorkingParserRoot.Owner,nil);
   end else begin
-    FRoot.Owner:=FWorkingRoot.Owner;
+    FParserRoot.Owner:=FWorkingParserRoot.Owner;
   end;
   
   // this stage finished -> next stage
@@ -716,22 +676,22 @@ procedure TCodeBrowserView.WorkFreeUnusedPackages;
     UnusedPackage: TCodeBrowserUnitList;
     PackageName: String;
   begin
-    // find an unused package (a package in Root but not in WorkingRoot)
+    // find an unused package (a package in ParserRoot but not in WorkingParserRoot)
     Result:=nil;
-    if (FRoot=nil) or (FRoot.UnitLists=nil) then exit;
-    Node:=FRoot.UnitLists.FindLowest;
+    if (FParserRoot=nil) or (FParserRoot.UnitLists=nil) then exit;
+    Node:=FParserRoot.UnitLists.FindLowest;
     while Node<>nil do begin
       UnusedPackage:=TCodeBrowserUnitList(Node.Data);
       PackageName:=UnusedPackage.Owner;
-      if (FWorkingRoot=nil)
-      or (FWorkingRoot.UnitLists=nil)
-      or (FWorkingRoot.UnitLists.FindKey(@PackageName,
+      if (FWorkingParserRoot=nil)
+      or (FWorkingParserRoot.UnitLists=nil)
+      or (FWorkingParserRoot.UnitLists.FindKey(@PackageName,
          @ComparePAnsiStringWithUnitListOwner)=nil)
       then begin
         Result:=UnusedPackage;
         exit;
       end;
-      Node:=FRoot.UnitLists.FindSuccessor(Node);
+      Node:=FParserRoot.UnitLists.FindSuccessor(Node);
     end;
   end;
   
@@ -756,17 +716,17 @@ var
   Node: TAvgLvlTreeNode;
   List: TCodeBrowserUnitList;
 begin
-  if (FWorkingRoot<>nil) and (FWorkingRoot.UnitLists<>nil)
-  and (FRoot<>nil) then begin
-    Node:=FWorkingRoot.UnitLists.FindLowest;
+  if (FWorkingParserRoot<>nil) and (FWorkingParserRoot.UnitLists<>nil)
+  and (FParserRoot<>nil) then begin
+    Node:=FWorkingParserRoot.UnitLists.FindLowest;
     while Node<>nil do begin
       List:=TCodeBrowserUnitList(Node.Data);
-      if FRoot.FindUnitList(List.Owner)=nil then begin
+      if FParserRoot.FindUnitList(List.Owner)=nil then begin
         // new unit list
-        TCodeBrowserUnitList.Create(List.Owner,FRoot);
+        TCodeBrowserUnitList.Create(List.Owner,FParserRoot);
         inc(FScannedPackages);
       end;
-      Node:=FWorkingRoot.UnitLists.FindSuccessor(Node);
+      Node:=FWorkingParserRoot.UnitLists.FindSuccessor(Node);
     end;
   end;
   
@@ -808,7 +768,7 @@ var
 begin
   DebugLn(['TCodeBrowserView.WorkGatherFiles START']);
   // find a unit list which needs update
-  List:=FindListWithInvalidFileList(FRoot);
+  List:=FindListWithInvalidFileList(FParserRoot);
   if List=nil then begin
     // this stage finished -> next stage
     fStage:=cbwsGatherOutdatedFiles;
@@ -824,6 +784,7 @@ var
 
   procedure AddFile(const Filename: string);
   begin
+    //DebugLn(['AddFile Filename="',Filename,'"']);
     if Filename='' then exit;
     if System.Pos('$',Filename)>0 then begin
       DebugLn(['WARNING: TCodeBrowserView.WorkUpdateFiles Macros in filename ',Filename]);
@@ -841,8 +802,11 @@ var
   begin
     if AProject=nil then exit;
     AnUnitInfo:=AProject.FirstPartOfProject;
+    //DebugLn(['AddFilesOfProject ',AnUnitInfo<>nil]);
     while AnUnitInfo<>nil do begin
-      if FilenameIsPascalUnit(AnUnitInfo.Filename) then
+      //DebugLn(['AddFilesOfProject ',AnUnitInfo.Filename]);
+      if FilenameIsPascalUnit(AnUnitInfo.Filename)
+      or (AnUnitInfo=aProject.MainUnitInfo) then
         AddFile(AnUnitInfo.Filename);
       AnUnitInfo:=AnUnitInfo.NextPartOfProject;
     end;
@@ -1011,8 +975,10 @@ var
     Node:=NewFileList.FindLowest;
     while Node<>nil do begin
       AnUnit:=TCodeBrowserUnit(Node.Data);
+      //DebugLn(['AddNewFiles ',AnUnit.Filename,' exists=',List.FindUnit(AnUnit.Filename)<>nil]);
       if List.FindUnit(AnUnit.Filename)=nil then begin
         // this unit was not part of List -> add
+        //DebugLn(['AddNewFiles "',List.Owner,'" "',AnUnit.Filename,'"']);
         List.AddUnit(AnUnit.Filename);
       end;
       Node:=NewFileList.FindSuccessor(Node);
@@ -1026,9 +992,9 @@ begin
   NewFileList:=TAvgLvlTree.Create(@CompareUnitFilenames);
   try
     // get new list of files
-    if List.Owner=CodeBrowserIDEAlias then begin
+    if List.Owner=CodeBrowserIDEName then begin
       AddFilesOfIDE;
-    end else if List.Owner=CodeBrowserProjectAlias then begin
+    end else if List.Owner=CodeBrowserProjectName then begin
       AddFilesOfProject(Project1);
     end else begin
       APackage:=PackageGraph.FindAPackageWithName(List.Owner,nil);
@@ -1080,7 +1046,7 @@ procedure TCodeBrowserView.WorkGatherOutdatedFiles;
 begin
   if fOutdatedFiles<>nil then
     fOutdatedFiles.FreeAndClear;
-  AddFiles(Root);
+  AddFiles(ParserRoot);
 
   // this stage finished -> next stage
   fStage:=cbwsUpdateUnits;
@@ -1114,7 +1080,7 @@ begin
       AnUnit:=FindOutdatedUnit;
       if AnUnit=nil then begin
         // this stage finished -> next stage
-        fStage:=cbwsFinished;
+        fStage:=cbwsUpdateTreeView;
         exit;
       end;
 
@@ -1152,10 +1118,11 @@ procedure TCodeBrowserView.WorkUpdateUnit(AnUnit: TCodeBrowserUnit);
     AnUnit.ScannedBytes:=ByteCnt;
     AnUnit.ScannedLines:=LineCnt;
     AnUnit.ScannedIdentifiers:=CountIdentifiers(Tool);
+    AnUnit.CodeTool:=Tool;
     inc(FScannedBytes,AnUnit.ScannedBytes);
     inc(FScannedLines,AnUnit.ScannedLines);
     inc(FScannedIdentifiers,AnUnit.ScannedIdentifiers);
-    //DebugLn(['UpdateScannedCounters ',ExtractFileName(AnUnit.Filename),' LineCnt=',LineCnt,' ByteCnt=',ByteCnt]);
+    //DebugLn(['UpdateScannedCounters ',ExtractFileName(AnUnit.Filename),' LineCnt=',LineCnt,' ByteCnt=',ByteCnt,' ',DbgSName(AnUnit.CodeTool)]);
   end;
 
 var
@@ -1191,6 +1158,13 @@ begin
   CodeToolBoss.Explore(AnUnit.CodeBuffer,Tool,false,true);
   UpdateScannedCounters(Tool);
   //DebugLn(['TCodeBrowserView.WorkUpdateUnit END ',AnUnit.Filename]);
+end;
+
+procedure TCodeBrowserView.WorkUpdateTreeView;
+begin
+  UpdateTreeView;
+  // this stage finished -> next stage
+  fStage:=cbwsFinished;
 end;
 
 procedure TCodeBrowserView.FreeUnitList(List: TCodeBrowserUnitList);
@@ -1234,10 +1208,314 @@ begin
 end;
 
 procedure TCodeBrowserView.UpdateTreeView;
+var
+  ShowPackages: boolean;
+  ShowUnits: boolean;
+  ShowPrivate: boolean;
+  ShowProtected: boolean;
+
+  function GetCodeTool(AnUnit: TCodeBrowserUnit): TCodeTool;
+  begin
+    //DebugLn(['GetCodeTool ',AnUnit.CodeTool<>nil,' ',AnUnit.CodeBuffer<>nil]);
+    Result:=AnUnit.CodeTool;
+    if Result<>nil then exit;
+    if AnUnit.CodeBuffer=nil then exit;
+    Result:=CodeToolBoss.GetCodeToolForSource(AnUnit.CodeBuffer,true,false)
+                as TCodeTool;
+    //DebugLn(['GetCodeTool END ',Result<>nil]);
+  end;
+  
+  procedure AddUnitNodes(SrcUnit: TCodeBrowserUnit; var DestUnit: TObject);
+  var
+    Tool: TCodeTool;
+    
+    procedure AddUnit;
+    begin
+      if DestUnit=nil then
+        DestUnit:=TCodeBrowserUnit.Create('');
+    end;
+
+    procedure AddIdentifierNode(CTNode: TCodeTreeNode;
+      const Description: string);
+    var
+      NewNode: TCodeBrowserNode;
+      ChildCTNode: TCodeTreeNode;
+
+      procedure AddChildNode(const ChildDescription: string);
+      begin
+        //DebugLn(['AddChildNode ',ChildCTNode.DescAsString,' ',ChildDescription]);
+        if (ChildCTNode.Parent.Desc=ctnClassPrivate) and (not ShowPrivate) then
+          exit;
+        if (ChildCTNode.Parent.Desc=ctnClassProtected) and (not ShowProtected)
+        then
+          exit;
+        NewNode.AddNode(ChildCTNode,ChildDescription);
+      end;
+
+    begin
+      AddUnit;
+      //DebugLn(['AddIdentifierNode ',CTNode.DescAsString,' Description="',Description,'"']);
+      NewNode:=TCodeBrowserUnit(DestUnit).AddNode(CTNode,Description);
+      if (CTNode.Desc=ctnTypeDefinition)
+      and (CTNode.FirstChild<>nil)
+      and (CTNode.FirstChild.Desc in [ctnClass,ctnClassInterface,ctnRecordType,
+         ctnEnumerationType])
+      then begin
+        // add child nodes
+        ChildCTNode:=CTNode.FirstChild;
+        while (ChildCTNode<>nil) and (ChildCTNode.StartPos<CTNode.EndPos) do
+        begin
+          case ChildCTNode.Desc of
+          ctnProcedure:
+            AddChildNode(Tool.ExtractProcHead(ChildCTNode,
+                [phpWithoutClassKeyword,phpWithParameterNames,
+                 phpWithVarModifiers,phpWithResultType]));
+          ctnVarDefinition:
+            AddChildNode(Tool.ExtractDefinitionName(ChildCTNode));
+          ctnProperty:
+            AddChildNode(Tool.ExtractProperty(ChildCTNode,
+              [phpWithoutClassKeyword,phpWithParameterNames,
+               phpWithVarModifiers,phpWithResultType]));
+          ctnEnumIdentifier:
+            AddChildNode(Tool.ExtractIdentifier(ChildCTNode.StartPos));
+          end;
+          if ChildCTNode.Desc=ctnProcedureHead then
+            ChildCTNode:=ChildCTNode.NextSkipChilds
+          else
+            ChildCTNode:=ChildCTNode.Next;
+        end;
+      end;
+    end;
+    
+  var
+    CTNode: TCodeTreeNode;
+  begin
+    if SrcUnit=nil then exit;
+    DebugLn(['AddUnitNodes SrcUnit.Filename="',SrcUnit.Filename,'"']);
+    Tool:=GetCodeTool(SrcUnit);
+    if Tool=nil then exit;
+    if Tool.Tree=nil then exit;
+    
+    CTNode:=Tool.Tree.Root;
+    while CTNode<>nil do begin
+      //DebugLn(['AddUnitNodes ',CTNode.DescAsString]);
+      case CTNode.Desc of
+      ctnProcedure:
+        if not Tool.NodeIsMethodBody(CTNode) then
+          AddIdentifierNode(CTNode,Tool.ExtractProcHead(CTNode,
+            [phpWithoutClassKeyword,phpWithoutClassName,phpWithParameterNames,
+             phpWithVarModifiers,phpWithResultType]));
+      ctnVarDefinition,ctnConstDefinition,ctnTypeDefinition:
+        if not Tool.NodeIsForwardDeclaration(CTNode) then
+          AddIdentifierNode(CTNode,Tool.ExtractDefinitionName(CTNode));
+      end;
+
+      // go to next node
+      case CTNode.Desc of
+      ctnProgram,ctnLibrary,ctnPackage,ctnUnit,ctnInterface,
+      ctnTypeSection,ctnConstSection,ctnVarSection,ctnResStrSection:
+        // go into child nodes
+        CTNode:=CTNode.Next;
+      ctnImplementation, ctnBeginBlock, ctnAsmBlock: break;
+      else
+        // skip childs and go to next sibling or parent
+        CTNode:=CTNode.NextSkipChilds;
+      end;
+    end;
+  end;
+  
+  procedure AddUnits(SrcList: TCodeBrowserUnitList;
+    var DestParentList: TObject);
+    
+    procedure RaiseParentNotUnitList;
+    begin
+      raise Exception.Create('TCodeBrowserView.UpdateTreeView.AddUnits.RaiseParentNotUnitList');
+    end;
+    
+  var
+    Node: TAvgLvlTreeNode;
+    CurUnit: TCodeBrowserUnit;
+    NewUnit: TCodeBrowserUnit;
+  begin
+    if SrcList=nil then exit;
+    DebugLn(['AddUnits SrcList.Owner="',SrcList.Owner,'" HasUnits=',SrcList.Units<>nil]);
+    if SrcList.Units<>nil then begin
+      Node:=SrcList.Units.FindLowest;
+      NewUnit:=nil;
+      while Node<>nil do begin
+        CurUnit:=TCodeBrowserUnit(Node.Data);
+        if DestParentList=nil then begin
+          DestParentList:=TCodeBrowserUnitList.Create(CodeBrowserHidden,nil);
+        end else if not (DestParentList is TCodeBrowserUnitList) then
+          RaiseParentNotUnitList;
+        if ShowUnits then begin
+          // create a unit node
+          NewUnit:=TCodeBrowserUnitList(DestParentList).AddUnit(CurUnit.Filename);
+          NewUnit.CodeBuffer:=CurUnit.CodeBuffer;
+          NewUnit.CodeTool:=CurUnit.CodeTool;
+        end else if NewUnit=nil then begin
+          // create a dummy unit node to add all identifiers
+          NewUnit:=TCodeBrowserUnitList(DestParentList).AddUnit('');
+        end;
+        //DebugLn(['AddUnits AddUnitNodes ',CurUnit.Filename]);
+        AddUnitNodes(CurUnit,NewUnit);
+        if (DestParentList=nil) then
+          DestParentList:=NewUnit;
+        Node:=SrcList.Units.FindSuccessor(Node);
+      end;
+    end;
+  end;
+
+  procedure AddUnitLists(SrcList: TCodeBrowserUnitList;
+    var DestParentList: TObject);
+  var
+    Node: TAvgLvlTreeNode;
+    SubList: TCodeBrowserUnitList;
+    NewList: TCodeBrowserUnitList;
+  begin
+    if SrcList=nil then exit;
+    DebugLn(['AddUnitLists SrcList.Owner="',SrcList.Owner,'"']);
+    // create node
+    if ShowPackages then begin
+      if DestParentList=nil then begin
+        DestParentList:=TCodeBrowserUnitList.Create(CodeBrowserHidden,nil);
+      end;
+      NewList:=TCodeBrowserUnitList.Create(SrcList.Owner,
+                                          TCodeBrowserUnitList(DestParentList));
+    end else begin
+      NewList:=TCodeBrowserUnitList(DestParentList);
+    end;
+    // create nodes for unitlists
+    if SrcList.UnitLists<>nil then begin
+      Node:=SrcList.UnitLists.FindLowest;
+      while Node<>nil do begin
+        SubList:=TCodeBrowserUnitList(Node.Data);
+        AddUnitLists(SubList,DestParentList);
+        Node:=SrcList.UnitLists.FindSuccessor(Node);
+      end;
+    end;
+    // create nodes for units
+    AddUnits(SrcList,NewList);
+    // update DestParentList
+    if (DestParentList=nil) then
+      DestParentList:=NewList;
+  end;
+
+  procedure AddTreeNodes(CodeNode: TObject; ParentViewNode: TTreeNode);
+  // create visual nodes (TTreeNode)
+  var
+    List: TCodeBrowserUnitList;
+    ListName: String;
+    Node: TAvgLvlTreeNode;
+    TVNode: TTreeNode;
+    CurUnit: TCodeBrowserUnit;
+    CurUnitName: String;
+    CurTool: TCodeTool;
+    CurNode: TCodeBrowserNode;
+  begin
+    if CodeNode=nil then exit;
+    //DebugLn(['AddTreeNodes ',DbgSName(CodeNode)]);
+    if CodeNode is TCodeBrowserUnitList then begin
+      // unit list
+      List:=TCodeBrowserUnitList(CodeNode);
+      if List.Owner=CodeBrowserHidden then begin
+        TVNode:=ParentViewNode;
+      end else begin
+        ListName:=ListOwnerToText(List.Owner);
+        TVNode:=BrowseTreeView.Items.AddChildObject(
+                                              ParentViewNode,ListName,CodeNode);
+        TVNode.ImageIndex:=GetNodeImage(CodeNode);
+        TVNode.StateIndex:=TVNode.ImageIndex;
+      end;
+      if List.UnitLists<>nil then begin
+        Node:=List.UnitLists.FindLowest;
+        while Node<>nil do begin
+          AddTreeNodes(TObject(Node.Data),TVNode);
+          Node:=List.UnitLists.FindSuccessor(Node);
+        end;
+      end;
+      if List.Units<>nil then begin
+        Node:=List.Units.FindLowest;
+        while Node<>nil do begin
+          AddTreeNodes(TObject(Node.Data),TVNode);
+          Node:=List.Units.FindSuccessor(Node);
+        end;
+      end;
+    end
+    else if CodeNode is TCodeBrowserUnit then begin
+      // unit
+      CurUnit:=TCodeBrowserUnit(CodeNode);
+      CurTool:=nil;
+      if CurUnit.Filename<>'' then
+        CurTool:=GetCodeTool(CurUnit);
+      if CurTool<>nil then begin
+        // add a treenode for this unit
+        CurUnitName:=CurTool.GetCachedSourceName;
+        if CurUnitName='' then
+          CurUnitName:=ExtractFileNameOnly(CurTool.MainFilename);
+        TVNode:=BrowseTreeView.Items.AddChildObject(ParentViewNode,
+                                                    CurUnitName,CodeNode);
+        TVNode.ImageIndex:=GetNodeImage(CodeNode);
+        TVNode.StateIndex:=TVNode.ImageIndex;
+      end else begin
+        // do not add a tree node for this unit
+        TVNode:=ParentViewNode;
+      end;
+      // create tree nodes for code nodes
+      if CurUnit.ChildNodes<>nil then begin
+        Node:=CurUnit.ChildNodes.FindLowest;
+        while Node<>nil do begin
+          AddTreeNodes(TObject(Node.Data),TVNode);
+          Node:=CurUnit.ChildNodes.FindSuccessor(Node);
+        end;
+      end;
+    end
+    else if CodeNode is TCodeBrowserNode then begin
+      // code node
+      CurNode:=TCodeBrowserNode(CodeNode);
+      if CurNode.Description<>'' then begin
+        TVNode:=BrowseTreeView.Items.AddChildObject(ParentViewNode,
+                                                  CurNode.Description,CodeNode);
+        TVNode.ImageIndex:=GetNodeImage(CodeNode);
+        TVNode.StateIndex:=TVNode.ImageIndex;
+
+        // create tree nodes for child code nodes
+        if CurNode.ChildNodes<>nil then begin
+          Node:=CurNode.ChildNodes.FindLowest;
+          while Node<>nil do begin
+            AddTreeNodes(TObject(Node.Data),TVNode);
+            Node:=CurNode.ChildNodes.FindSuccessor(Node);
+          end;
+        end;
+      end;
+    end;
+    
+    ParentViewNode.Expanded:=true;
+  end;
+
+var
+  RootTVNode: TTreeNode;
 begin
+  ShowPackages:=Options.HasLevel(cblPackages);
+  ShowUnits:=Options.HasLevel(cblUnits);
+  ShowPrivate:=Options.ShowPrivate;
+  ShowProtected:=Options.ShowProtected;
+  DebugLn(['TCodeBrowserView.UpdateTreeView ShowPackages=',ShowPackages,' ShowUnits=',ShowUnits]);
+
   BrowseTreeView.BeginUpdate;
-  if Options.Levels.IndexOf(CodeBrowserLevelNames[cblPackages])>=0 then;
-  BrowseTreeView.EndUpdate;
+  CodeToolBoss.ActivateWriteLock;
+  try
+    RootTVNode:=InitTreeView;
+
+    // create internal nodes
+    AddUnitLists(ParserRoot,fViewRoot);
+
+    // create treeview nodes
+    AddTreeNodes(ViewRoot,RootTVNode);
+  finally
+    CodeToolBoss.DeactivateWriteLock;
+    BrowseTreeView.EndUpdate;
+  end;
 end;
 
 procedure TCodeBrowserView.RemoveUnit(AnUnit: TCodeBrowserUnit);
@@ -1262,9 +1540,114 @@ begin
   Node:=Tool.Tree.Root;
   while Node<>nil do begin
     if Node.Desc=ctnImplementation then break;
-    if Node.Desc in (AllIdentifierDefinitions+[ctnProcedure,ctnProperty]) then
+    if (Node.Desc in (AllIdentifierDefinitions+[ctnProcedure,ctnProperty]))
+    and (not Tool.NodeIsForwardDeclaration(Node)) then
       inc(Result);
-    Node:=Node.Next;
+    if not (Node.Desc in [ctnProcedure,ctnBeginBlock,ctnAsmBlock]) then
+      Node:=Node.Next
+    else
+      Node:=Node.NextSkipChilds;
+  end;
+end;
+
+procedure TCodeBrowserView.ClearTreeView;
+begin
+  BrowseTreeView.Items.Clear;
+  FreeAndNil(FViewRoot);
+end;
+
+function TCodeBrowserView.InitTreeView: TTreeNode;
+begin
+  ClearTreeView;
+  Result:=BrowseTreeView.Items.Add(nil,'Root');
+end;
+
+function TCodeBrowserView.ListOwnerToText(const ListOwner: string): string;
+begin
+  if ListOwner=CodeBrowserIDEName then
+    Result:=IDEDescription
+  else if ListOwner=CodeBrowserProjectName then
+    Result:=ProjectDescription
+  else
+    Result:=ListOwner;
+end;
+
+function TCodeBrowserView.GetNodeImage(CodeNode: TObject): integer;
+var
+  List: TCodeBrowserUnitList;
+  Node: TCodeBrowserNode;
+begin
+  Result:=ImgIDDefault;
+  
+  if CodeNode is TCodeBrowserUnit then begin
+    Result:=ImgIDUnitCode;
+  end else if CodeNode is TCodeBrowserUnitList then begin
+    List:=TCodeBrowserUnitList(CodeNode);
+    if List.Owner=IDEDescription then
+      Result:=ImgIDProject
+    else if List.Owner=ProjectDescription then
+      Result:=ImgIDProject
+    else
+      Result:=ImgIDPackage;
+  end else if CodeNode is TCodeBrowserNode then begin
+    Node:=TCodeBrowserNode(CodeNode);
+    if Node.Node<>nil then begin
+      case Node.Node.Desc of
+      ctnProgram,ctnLibrary,ctnPackage:
+        Result:=ImgIDProgramCode;
+      ctnUnit:
+        Result:=ImgIDUnitCode;
+      ctnInterface:
+        Result:=ImgIDInterfaceSection;
+      ctnImplementation:
+        Result:=ImgIDImplementation;
+      ctnInitialization:
+        Result:=ImgIDInitialization;
+      ctnFinalization:
+        Result:=ImgIDFinalization;
+      ctnTypeSection:
+        Result:=ImgIDTypeSection;
+      ctnTypeDefinition:
+        Result:=ImgIDType;
+      ctnVarSection:
+        Result:=ImgIDVarSection;
+      ctnVarDefinition:
+        Result:=ImgIDVariable;
+      ctnConstSection,ctnResStrSection:
+        Result:=ImgIDConstSection;
+      ctnConstDefinition:
+        Result:=ImgIDConst;
+      ctnClass:
+        Result:=ImgIDClass;
+      ctnProcedure:
+        Result:=ImgIDProc;
+      ctnProperty:
+        Result:=ImgIDProperty;
+      end;
+    end;
+  end;
+end;
+
+function TCodeBrowserView.GetTVNodeHint(TVNode: TTreeNode): string;
+var
+  NodeData: TObject;
+  CurUnit: TCodeBrowserUnit;
+  Node: TCodeBrowserNode;
+begin
+  Result:='';
+  if (TVNode=nil) or (TVNode.Data=nil) then exit;
+  NodeData:=TObject(TVNode.Data);
+  if NodeData is TCodeBrowserUnitList then begin
+
+  end else if NodeData is TCodeBrowserUnit then begin
+    CurUnit:=TCodeBrowserUnit(NodeData);
+    if CurUnit.Filename<>'' then
+      Result:=CurUnit.Filename;
+  end else if NodeData is TCodeBrowserNode then begin
+    Node:=TCodeBrowserNode(NodeData);
+    if Node.Node<>nil then begin
+
+    end;
   end;
 end;
 
@@ -1286,14 +1669,34 @@ begin
 
 end;
 
+procedure TCodeBrowserView.BrowseTreeViewShowHint(Sender: TObject;
+  HintInfo: PHintInfo);
+var
+  TVNode: TTreeNode;
+  NodeData: TObject;
+begin
+  DebugLn(['TCodeBrowserView.BrowseTreeViewShowHint ']);
+  TVNode:=BrowseTreeView.Selected;
+  if TVNode<>nil then begin
+    NodeData:=TObject(TVNode.Data);
+    if NodeData<>nil then begin
+
+    end;
+  end;
+  // cancel
+  HintInfo^.HintStr:='';
+end;
+
 { TCodeBrowserNode }
 
 constructor TCodeBrowserNode.Create(TheUnit: TCodeBrowserUnit;
-  TheNode: TCodeTreeNode; TheParent: TCodeBrowserNode);
+  TheNode: TCodeTreeNode; TheParent: TCodeBrowserNode;
+  const TheDescription: string);
 begin
   FCBUnit:=TheUnit;
   FNode:=TheNode;
   FParentNode:=TheParent;
+  FDescription:=TheDescription;
 end;
 
 destructor TCodeBrowserNode.Destroy;
@@ -1307,6 +1710,15 @@ begin
   if FChildNodes<>nil then
     FChildNodes.FreeAndClear;
   FreeAndNil(FChildNodes);
+end;
+
+function TCodeBrowserNode.AddNode(CTNode: TCodeTreeNode;
+  const Description: string): TCodeBrowserNode;
+begin
+  Result:=TCodeBrowserNode.Create(nil,CTNode,Self,Description);
+  if FChildNodes=nil then
+    FChildNodes:=TAvgLvlTree.Create(@CompareNodeDescriptions);
+  FChildNodes.Add(Result);
 end;
 
 { TCodeBrowserUnit }
@@ -1326,6 +1738,18 @@ begin
   end;
 end;
 
+procedure TCodeBrowserUnit.SetCodeTool(const AValue: TCodeTool);
+begin
+  if FCodeTool=nil then exit;
+  FCodeTool:=AValue;
+end;
+
+procedure TCodeBrowserUnit.SetCodeBuffer(const AValue: TCodeBuffer);
+begin
+  if FCodeBuffer=AValue then exit;
+  FCodeBuffer:=AValue;
+end;
+
 constructor TCodeBrowserUnit.Create(const TheFilename: string);
 begin
   FFilename:=TheFilename;
@@ -1342,6 +1766,15 @@ begin
   if FChildNodes<>nil then
     FChildNodes.FreeAndClear;
   FreeAndNil(FChildNodes);
+end;
+
+function TCodeBrowserUnit.AddNode(CTNode: TCodeTreeNode;
+  const Description: string): TCodeBrowserNode;
+begin
+  Result:=TCodeBrowserNode.Create(Self,CTNode,nil,Description);
+  if FChildNodes=nil then
+    FChildNodes:=TAvgLvlTree.Create(@CompareNodeDescriptions);
+  FChildNodes.Add(Result);
 end;
 
 { TCodeBrowserUnitList }
@@ -1483,11 +1916,17 @@ begin
   Modified:=true;
 end;
 
-procedure TCodeBrowserViewOptions.SetSortItems(const AValue: TStrings);
+procedure TCodeBrowserViewOptions.SetShowPrivate(const AValue: boolean);
 begin
-  if FSortItems=AValue then exit;
-  if FSortItems.Text=AValue.Text then exit;
-  FSortItems.Assign(AValue);
+  if FShowPrivate=AValue then exit;
+  FShowPrivate:=AValue;
+  Modified:=true;
+end;
+
+procedure TCodeBrowserViewOptions.SetShowProtected(const AValue: boolean);
+begin
+  if FShowProtected=AValue then exit;
+  FShowProtected:=AValue;
   Modified:=true;
 end;
 
@@ -1501,14 +1940,12 @@ end;
 
 constructor TCodeBrowserViewOptions.Create;
 begin
-  FSortItems:=TStringList.Create;
   FLevels:=TStringList.Create;
   Clear;
 end;
 
 destructor TCodeBrowserViewOptions.Destroy;
 begin
-  FreeAndNil(FSortItems);
   FreeAndNil(FLevels);
   inherited Destroy;
 end;
@@ -1516,12 +1953,11 @@ end;
 procedure TCodeBrowserViewOptions.Clear;
 begin
   FLevels.Clear;
-  FSortItems.Text:=CodeBrowserSortItemNames[cbsiAlphabetically];
   FLevels.Text:=CodeBrowserLevelNames[cblPackages]+#13
-               +CodeBrowserLevelNames[cblUnits]+#13
-               +CodeBrowserLevelNames[cblClasses]+#13
-               +CodeBrowserLevelNames[cblSections];
+               +CodeBrowserLevelNames[cblUnits];
   WithRequiredPackages:=false;
+  ShowPrivate:=false;
+  ShowProtected:=true;
   Scope:='Project';
   Modified:=false;
 end;
@@ -1533,7 +1969,8 @@ begin
   WithRequiredPackages:=
                   ConfigStore.GetValue(Path+'WithRequiredPackages/Value',false);
   Scope:=ConfigStore.GetValue(Path+'Scope/Value','Project');
-  ConfigStore.GetValue(Path+'SortItems/',fSortItems);
+  ShowPrivate:=ConfigStore.GetValue(Path+'ShowPrivate/Value',false);
+  ShowProtected:=ConfigStore.GetValue(Path+'ShowProtected/Value',true);
   ConfigStore.GetValue(Path+'Levels/',FLevels);
   Modified:=false;
 end;
@@ -1544,9 +1981,15 @@ begin
   ConfigStore.SetDeleteValue(Path+'WithRequiredPackages/Value',
                              WithRequiredPackages,false);
   ConfigStore.SetDeleteValue(Path+'Scope/Value',Scope,'Project');
-  ConfigStore.SetValue(Path+'SortItems/',fSortItems);
+  ConfigStore.SetDeleteValue(Path+'ShowPrivate/Value',ShowPrivate,false);
+  ConfigStore.SetDeleteValue(Path+'ShowProtected/Value',ShowProtected,true);
   ConfigStore.SetValue(Path+'Levels/',FLevels);
   Modified:=false;
+end;
+
+function TCodeBrowserViewOptions.HasLevel(Level: TCodeBrowserLevel): boolean;
+begin
+  Result:=Levels.IndexOf(CodeBrowserLevelNames[Level])>=0;
 end;
 
 initialization

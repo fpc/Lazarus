@@ -201,7 +201,8 @@ end;
 
 procedure TCodeExplorerView.CodeExplorerViewCREATE(Sender: TObject);
 
-  procedure AddResImg(ImgList: TImageList; const ResName: string);
+  procedure AddResImg(ImgList: TImageList; const ResName: string;
+    out ImgID: integer);
   var Pixmap: TPixmap;
   begin
     Pixmap:=TPixmap.Create;
@@ -209,7 +210,7 @@ procedure TCodeExplorerView.CodeExplorerViewCREATE(Sender: TObject);
       DebugLn('TCodeExplorerView.CodeExplorerViewCREATE: ',
         ' WARNING: icon not found: "',ResName,'"');
     Pixmap.LoadFromLazarusResource(ResName);
-    ImgList.AddDirect(Pixmap,nil)
+    ImgID:=ImgList.AddDirect(Pixmap,nil)
   end;
 
 begin
@@ -223,38 +224,22 @@ begin
   OptionsButton.Caption:=dlgFROpts;
   FilterEdit.Text:=lisCEFilter;
   
-  ImgIDDefault:=0;
-  AddResImg(Imagelist1,'ce_default');
-  ImgIDProgram:=Imagelist1.Count;
-  AddResImg(Imagelist1,'ce_program');
-  ImgIDUnit:=Imagelist1.Count;
-  AddResImg(Imagelist1,'ce_unit');
-  ImgIDInterfaceSection:=Imagelist1.Count;
-  AddResImg(Imagelist1,'ce_interface');
-  ImgIDImplementation:=Imagelist1.Count;
-  AddResImg(Imagelist1,'ce_implementation');
-  ImgIDInitialization:=Imagelist1.Count;
-  AddResImg(Imagelist1,'ce_initialization');
-  ImgIDFinalization:=Imagelist1.Count;
-  AddResImg(Imagelist1,'ce_finalization');
-  ImgIDTypeSection:=Imagelist1.Count;
-  AddResImg(Imagelist1,'ce_type');
-  ImgIDType:=Imagelist1.Count;
-  AddResImg(Imagelist1,'ce_type');
-  ImgIDVarSection:=Imagelist1.Count;
-  AddResImg(Imagelist1,'ce_variable');
-  ImgIDVariable:=Imagelist1.Count;
-  AddResImg(Imagelist1,'ce_variable');
-  ImgIDConstSection:=Imagelist1.Count;
-  AddResImg(Imagelist1,'ce_const');
-  ImgIDConst:=Imagelist1.Count;
-  AddResImg(Imagelist1,'ce_const');
-  ImgIDClass:=Imagelist1.Count;
-  AddResImg(Imagelist1,'ce_class');
-  ImgIDProc:=Imagelist1.Count;
-  AddResImg(Imagelist1,'ce_procedure');
-  ImgIDProperty:=Imagelist1.Count;
-  AddResImg(Imagelist1,'ce_property');
+  AddResImg(Imagelist1,'ce_default',ImgIDDefault);
+  AddResImg(Imagelist1,'ce_program',ImgIDProgram);
+  AddResImg(Imagelist1,'ce_unit',ImgIDUnit);
+  AddResImg(Imagelist1,'ce_interface',ImgIDInterfaceSection);
+  AddResImg(Imagelist1,'ce_implementation',ImgIDImplementation);
+  AddResImg(Imagelist1,'ce_initialization',ImgIDInitialization);
+  AddResImg(Imagelist1,'ce_finalization',ImgIDFinalization);
+  AddResImg(Imagelist1,'ce_type',ImgIDTypeSection);
+  AddResImg(Imagelist1,'ce_type',ImgIDType);
+  AddResImg(Imagelist1,'ce_variable',ImgIDVarSection);
+  AddResImg(Imagelist1,'ce_variable',ImgIDVariable);
+  AddResImg(Imagelist1,'ce_const',ImgIDConstSection);
+  AddResImg(Imagelist1,'ce_const',ImgIDConst);
+  AddResImg(Imagelist1,'ce_class',ImgIDClass);
+  AddResImg(Imagelist1,'ce_procedure',ImgIDProc);
+  AddResImg(Imagelist1,'ce_property',ImgIDProperty);
   
   // assign the root TMenuItem to the registered menu root.
   // This will automatically create all registered items

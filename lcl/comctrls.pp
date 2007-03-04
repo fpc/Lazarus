@@ -2425,6 +2425,7 @@ type
     property OnMouseMove;
     property OnMouseUp;
     property OnSelectionChanged;
+    property OnShowHint;
     //property OnStartDock;
     property OnStartDrag;
     property Options;
