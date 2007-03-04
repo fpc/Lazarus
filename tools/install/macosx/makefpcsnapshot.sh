@@ -100,8 +100,11 @@ ln -sf ../lib/fpc/$FPCVERSION/$PPCARCH $INSTALLDIR/bin/$PPCARCH
 
 # install for use by lazarus
 cd fpcsrc
-make compiler_install rtl_install fcl_install packages_install utils_install \
+make compiler_install rtl_install packages_install utils_install \
   INSTALL_PREFIX=$INSTALLFPCDIR PP=$COMPILER FPCMAKE=$FPCBUILDDIR/fpcsrc/utils/fpcm/fpcmake
+if [ -d $FPCBUILDDIR/fpcsrc/fcl ]; then
+  make fcl_install INSTALL_PREFIX=$INSTALLFPCDIR PP=$COMPILER FPCMAKE=$FPCBUILDDIR/fpcsrc/utils/fpcm/fpcmake
+fi
 make -C compiler installsymlink PP=$COMPILER INSTALL_PREFIX=$INSTALLFPCDIR
 
 
