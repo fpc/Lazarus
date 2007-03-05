@@ -65,7 +65,6 @@ $SVN export $FPCSOURCEDIR/rtl $INSTALLDIR/fpcsrc/rtl
 if [ -d $FPCSOURCEDIR/fcl ] ; then
   $SVN export $FPCSOURCEDIR/fcl $INSTALLDIR/fpcsrc/fcl
 fi
-$SVN export $FPCSOURCEDIR/fcl $INSTALLDIR/fpcsrc/fcl
 $SVN export $FPCSOURCEDIR/packages $INSTALLDIR/fpcsrc/packages
 
 # fill in packproj template.
