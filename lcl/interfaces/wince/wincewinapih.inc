@@ -167,12 +167,7 @@ function LineTo(DC: HDC; X, Y: Integer): Boolean; override;
 
 function MessageBox(hWnd: HWND; lpText, lpCaption: PChar; uType: Cardinal): integer; override;
 function MoveToEx(DC: HDC; X, Y: Integer; OldPoint: PPoint): Boolean; override;
-{function MoveWindowOrgEx(DC: HDC; dX, dY: Integer): Boolean; override;
-
-function PairSplitterAddSide(SplitterHandle, SideHandle: hWnd; Side: integer): Boolean; override;
-function PairSplitterGetInterfaceInfo: Boolean; override;
-function PairSplitterRemoveSide(SplitterHandle, SideHandle: hWnd; Side: integer): Boolean; override;
-function PairSplitterSetPosition(SplitterHandle: hWnd; var NewPosition: integer): Boolean; override;}
+{function MoveWindowOrgEx(DC: HDC; dX, dY: Integer): Boolean; override;}
 function PeekMessage(var lpMsg : TMsg; Handle : HWND; wMsgFilterMin, wMsgFilterMax,wRemoveMsg : UINT): Boolean; override;
 //function PolyBezier(DC: HDC; Points: PPoint; NumPts: Integer; Filled, Continuous: boolean): boolean; override;
 function Polygon(DC: HDC; Points: PPoint; NumPts: Integer; Winding: boolean): boolean; override;

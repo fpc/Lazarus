@@ -5194,8 +5194,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  function TGtkWidgetSet.CreatePairSplitter(PairSplitterObject: TObject
-    ): PGtkWidget;
+  function TGtkWidgetSet.CreateStatusBar(StatusBar: TObject): PGtkWidget;
 
   Create a TStatusBar widget set
  ------------------------------------------------------------------------------}

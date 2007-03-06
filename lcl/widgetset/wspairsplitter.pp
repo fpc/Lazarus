@@ -43,10 +43,7 @@ uses
 ////////////////////////////////////////////////////
 // To get as little as posible circles,
 // uncomment only when needed for registration
-////////////////////////////////////////////////////
-//  PairSplitter,
-////////////////////////////////////////////////////
-  WSLCLClasses, WSControls;
+  PairSplitter, WSLCLClasses, WSControls;
 
 type
   { TWSPairSplitterSide }
@@ -57,7 +54,11 @@ type
   { TWSCustomPairSplitter }
 
   TWSCustomPairSplitter = class(TWSWinControl)
+    class function AddSide(ASplitter: TCustomPairSplitter; ASide: TPairSplitterSide; Side: integer): Boolean; virtual;
+    class function RemoveSide(ASplitter: TCustomPairSplitter; ASide: TPairSplitterSide; Side: integer): Boolean; virtual;
+    class function SetPosition(ASplitter: TCustomPairSplitter; var NewPosition: integer): Boolean; virtual;
   end;
+  TWSCustomPairSplitterClass = class of TWSCustomPairSplitter;
 
   { TWSPairSplitter }
 
@@ -66,6 +67,98 @@ type
 
 
 implementation
+uses
+  WSProc, Controls, ExtCtrls;
+  
+function GetInternalSplitter(ASplitter: TCustomPairSplitter): TSplitter;
+var
+  i: integer;
+begin
+  Result := nil;
+  for i := 0 to ASplitter.ControlCount - 1 do
+    if ASplitter.Controls[i] is TSplitter then
+    begin
+      Result := TSplitter(ASplitter.Controls[i]);
+      break;
+    end;
+end;
+
+{ TWSCustomPairSplitter }
+
+class function TWSCustomPairSplitter.AddSide(ASplitter: TCustomPairSplitter;
+  ASide: TPairSplitterSide; Side: integer): Boolean;
+var
+  InternalSplitter: TSplitter;
+begin
+  // this implementation can be common for all widgetsets and should be
+  // overrided only if widgetset support such controls itself
+  
+  Result := False;
+  if not (WSCheckHandleAllocated(ASplitter, 'AddSide - splitter') and
+          WSCheckHandleAllocated(ASide, 'AddSide - side'))
+  then Exit;
+
+  if (Side < 0) or (Side > 1) then exit;
+
+  if Side = 0 then
+  begin
+    if ASplitter.SplitterType = pstHorizontal then
+      ASide.Align := alLeft else
+      ASide.Align := alTop;
+  end else
+  begin
+    InternalSplitter := GetInternalSplitter(ASplitter);
+    if InternalSplitter = nil then
+    begin
+      InternalSplitter := TSplitter.Create(ASplitter);
+      InternalSplitter.Parent := ASplitter;
+      InternalSplitter.Align := ASplitter.Sides[0].Align;
+    end;
+    if ASplitter.SplitterType = pstHorizontal then
+      InternalSplitter.Left := ASplitter.Sides[0].Width + 1 else
+      InternalSplitter.Top := ASplitter.Sides[0].Height + 1;
+    ASide.Align := alClient;
+  end;
+
+  Result := True;
+end;
+
+class function TWSCustomPairSplitter.RemoveSide(ASplitter: TCustomPairSplitter;
+  ASide: TPairSplitterSide; Side: integer): Boolean;
+begin
+  Result := False;
+end;
+
+class function TWSCustomPairSplitter.SetPosition(
+  ASplitter: TCustomPairSplitter; var NewPosition: integer): Boolean;
+var
+  InternalSplitter: TSplitter;
+begin
+  Result := False;
+  if not WSCheckHandleAllocated(ASplitter, 'SetPosition')
+  then Exit;
+
+  if NewPosition >= 0 then
+  begin
+    InternalSplitter := GetInternalSplitter(ASplitter);
+    if ASplitter.SplitterType = pstHorizontal then
+    begin
+      ASplitter.Sides[0].Width := NewPosition;
+      if InternalSplitter <> nil then
+        InternalSplitter.Left := NewPosition + 1;
+    end else
+    begin
+      ASplitter.Sides[0].Height := NewPosition;
+      if InternalSplitter <> nil then
+        InternalSplitter.Top := NewPosition + 1;
+    end;
+  end;
+  if ASplitter.SplitterType = pstHorizontal then
+    NewPosition := ASplitter.Sides[0].Width else
+    NewPosition := ASplitter.Sides[0].Height;
+
+  Result := True;
+end;
 
 initialization
 
@@ -74,7 +167,7 @@ initialization
 // which actually implement something
 ////////////////////////////////////////////////////
 //  RegisterWSComponent(TPairSplitterSide, TWSPairSplitterSide);
-//  RegisterWSComponent(TCustomPairSplitter, TWSCustomPairSplitter);
+  RegisterWSComponent(TCustomPairSplitter, TWSCustomPairSplitter);
 //  RegisterWSComponent(TPairSplitter, TWSPairSplitter);
 ////////////////////////////////////////////////////
 end.

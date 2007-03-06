@@ -45,6 +45,8 @@ type
   private
   protected
   public
+    class function AddSide(ASplitter: TCustomPairSplitter; ASide: TPairSplitterSide; Side: integer): Boolean; override;
+    class function SetPosition(ASplitter: TCustomPairSplitter; var NewPosition: integer): Boolean; override;
   end;
 
   { TGtkWSPairSplitter }
@@ -57,6 +59,41 @@ type
 
 
 implementation
+uses
+  WSProc, gtk;
+
+{ TGtkWSCustomPairSplitter }
+
+class function TGtkWSCustomPairSplitter.AddSide(ASplitter: TCustomPairSplitter;
+  ASide: TPairSplitterSide; Side: integer): Boolean;
+begin
+  Result:=false;
+  
+  if not (WSCheckHandleAllocated(ASplitter, 'AddSide - splitter') and
+          WSCheckHandleAllocated(ASide, 'AddSide - side'))
+  then Exit;
+
+  if (Side<0) or (Side>1) then exit;
+  
+  if Side=0 then
+    gtk_paned_add1(PGtkPaned(ASplitter.Handle),PGtkWidget(ASide.Handle))
+  else
+    gtk_paned_add2(PGtkPaned(ASPlitter.Handle),PGtkWidget(ASide.Handle));
+    
+  Result:=true;
+end;
+
+class function TGtkWSCustomPairSplitter.SetPosition(
+  ASplitter: TCustomPairSplitter; var NewPosition: integer): Boolean;
+begin
+  Result:=false;
+  if not WSCheckHandleAllocated(ASplitter, 'SetPosition')
+  then Exit;
+  if NewPosition>=0 then
+    gtk_paned_set_position(PGtkPaned(ASplitter.Handle),NewPosition);
+  NewPosition:=PGtkPaned(ASplitter.Handle)^.child1_size;
+  Result:=true;
+end;
 
 initialization
 
@@ -67,7 +104,7 @@ initialization
 // which actually implement something
 ////////////////////////////////////////////////////
 //  RegisterWSComponent(TPairSplitterSide, TGtkWSPairSplitterSide);
-//  RegisterWSComponent(TCustomPairSplitter, TGtkWSCustomPairSplitter);
+  RegisterWSComponent(TCustomPairSplitter, TGtkWSCustomPairSplitter);
 //  RegisterWSComponent(TPairSplitter, TGtkWSPairSplitter);
 ////////////////////////////////////////////////////
 end.

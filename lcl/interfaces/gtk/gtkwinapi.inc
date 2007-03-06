@@ -7007,58 +7007,6 @@ begin
   end;
 end;
 
-{------------------------------------------------------------------------------
-  function TGtkWidgetSet.PairSplitterAddSide(SplitterHandle, SideHandle: hWnd;
-    Side: integer): Boolean;
- ------------------------------------------------------------------------------}
-function TGtkWidgetSet.PairSplitterAddSide(SplitterHandle, SideHandle: hWnd;
-  Side: integer): Boolean;
-begin
-  Result:=false;
-  if (SplitterHandle=0) or (SideHandle=0) or (Side<0) or (Side>1) then exit;
-  if Side=0 then
-    gtk_paned_add1(PGtkPaned(SplitterHandle),PGtkWidget(SideHandle))
-  else
-    gtk_paned_add2(PGtkPaned(SplitterHandle),PGtkWidget(SideHandle));
-  Result:=true;
-end;
-
-{------------------------------------------------------------------------------
-  function TGtkWidgetSet.PairSplitterGetInterfaceInfo: Boolean;
- ------------------------------------------------------------------------------}
-function TGtkWidgetSet.PairSplitterGetInterfaceInfo: Boolean;
-begin
-  Result:=true;
-end;
-
-{------------------------------------------------------------------------------
-  function TGtkWidgetSet.PairSplitterRemoveSide(SplitterHandle, SideHandle: hWnd;
-    Side: integer): Boolean;
- ------------------------------------------------------------------------------}
-function TGtkWidgetSet.PairSplitterRemoveSide(SplitterHandle, SideHandle: hWnd;
-  Side: integer): Boolean;
-begin
-  Result:=false;
-  DebugLn('WARNING: TGtkWidgetSet.PairSplitterRemoveSide not implemented');
-end;
-
-{------------------------------------------------------------------------------
-  function TGtkWidgetSet.PairSplitterSetPosition(SplitterHandle: hWnd;
-    var NewPosition: integer): Boolean;
-
-  Negative values for NewPosition will only read the value
- ------------------------------------------------------------------------------}
-function TGtkWidgetSet.PairSplitterSetPosition(SplitterHandle: hWnd;
-  var NewPosition: integer): Boolean;
-begin
-  Result:=false;
-  if (SplitterHandle=0) then exit;
-  if NewPosition>=0 then
-    gtk_paned_set_position(PGtkPaned(SplitterHandle),NewPosition);
-  NewPosition:=PGtkPaned(SplitterHandle)^.child1_size;
-  Result:=true;
-end;
-
 
 {------------------------------------------------------------------------------
   Function: PeekMessage

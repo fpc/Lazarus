@@ -333,27 +333,6 @@ begin
   Result := WidgetSet.MoveWindowOrgEx(DC, dX, dY);
 end;
 
-function PairSplitterAddSide(SplitterHandle, SideHandle: hWnd;
-  Side: integer): Boolean;
-begin
-  Result:=WidgetSet.PairSplitterAddSide(SplitterHandle,SideHandle,Side);
-end;
-
-function PairSplitterGetInterfaceInfo: boolean;
-begin
-  Result:=WidgetSet.PairSplitterGetInterfaceInfo;
-end;
-
-function PairSplitterRemoveSide(SplitterHandle, SideHandle: hWnd;Side: integer): Boolean;
-begin
-  Result:=WidgetSet.PairSplitterRemoveSide(SplitterHandle,SideHandle, Side);
-end;
-
-function PairSplitterSetPosition(SplitterHandle: hWnd; var NewPosition: integer): Boolean;
-begin
-  Result:=WidgetSet.PairSplitterSetPosition(SplitterHandle,NewPosition);
-end;
-
 function PromptUser(const DialogMessage : String; DialogType : longint; Buttons : PLongint;
   ButtonCount, DefaultIndex, EscapeResult : Longint) : Longint;
 begin

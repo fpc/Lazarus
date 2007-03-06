@@ -33,8 +33,6 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-//  PairSplitter,
-////////////////////////////////////////////////////
   WSPairSplitter, WSLCLClasses;
 
 type
@@ -62,7 +60,6 @@ type
   protected
   public
   end;
-
 
 implementation
 

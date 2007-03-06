@@ -2156,30 +2156,6 @@ begin
   Result:=inherited MoveWindowOrgEx(DC, dX, dY);
 end;
 
-function TWinCEWidgetSet.PairSplitterAddSide(SplitterHandle, SideHandle: hWnd;
-  Side: integer): Boolean;
-begin
-  Result:=inherited PairSplitterAddSide(SplitterHandle, SideHandle, Side);
-end;
-
-function TWinCEWidgetSet.PairSplitterGetInterfaceInfo: Boolean;
-begin
-  Result:=inherited PairSplitterGetInterfaceInfo;
-end;
-
-function TWinCEWidgetSet.PairSplitterRemoveSide(SplitterHandle,
-  SideHandle: hWnd; Side: integer): Boolean;
-begin
-  Result:=inherited PairSplitterRemoveSide(SplitterHandle, SideHandle, Side);
-end;
-
-function TWinCEWidgetSet.PairSplitterSetPosition(SplitterHandle: hWnd;
-  var NewPosition: integer): Boolean;
-begin
-  Result:=inherited PairSplitterSetPosition(SplitterHandle, NewPosition);
-end;
-
-
 function TWinCEWidgetSet.PolyBezier(DC: HDC; Points: PPoint; NumPts: Integer;
   Filled, Continuous: boolean): boolean;
 begin

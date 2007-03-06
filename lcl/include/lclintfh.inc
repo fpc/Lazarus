@@ -97,10 +97,6 @@ function LoadStockPixmap(StockID: longint) : HBitmap; {$IFDEF IF_BASE_MEMBER}vir
 
 function MoveWindowOrgEx(dc : hdc; dX,dY : Integer): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
-function PairSplitterAddSide(SplitterHandle, SideHandle: hWnd; Side: integer): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function PairSplitterGetInterfaceInfo: boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function PairSplitterRemoveSide(SplitterHandle, SideHandle: hWnd; Side: integer): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function PairSplitterSetPosition(SplitterHandle: hWnd; var NewPosition: integer): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function PromptUser(const DialogCaption, DialogMessage : String; DialogType : longint; Buttons : PLongint; ButtonCount, DefaultIndex, EscapeResult : Longint) : Longint;{$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function PromptUserAtXY(const DialogCaption, DialogMessage : String; DialogType : longint; Buttons : PLongint; ButtonCount, DefaultIndex, EscapeResult : Longint; X, Y : Longint) : Longint;{$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 

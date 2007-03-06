@@ -1529,29 +1529,6 @@ begin
   Result:=inherited MoveWindowOrgEx(DC, dX, dY);
 end;
 
-function TCarbonWidgetSet.PairSplitterAddSide(SplitterHandle, SideHandle: hWnd;
-  Side: integer): Boolean;
-begin
-  Result:=inherited PairSplitterAddSide(SplitterHandle, SideHandle, Side);
-end;
-
-function TCarbonWidgetSet.PairSplitterGetInterfaceInfo: Boolean;
-begin
-  Result:=inherited PairSplitterGetInterfaceInfo;
-end;
-
-function TCarbonWidgetSet.PairSplitterRemoveSide(SplitterHandle,
-  SideHandle: hWnd; Side: integer): Boolean;
-begin
-  Result:=inherited PairSplitterRemoveSide(SplitterHandle, SideHandle, Side);
-end;
-
-function TCarbonWidgetSet.PairSplitterSetPosition(SplitterHandle: hWnd;
-  var NewPosition: integer): Boolean;
-begin
-  Result:=inherited PairSplitterSetPosition(SplitterHandle, NewPosition);
-end;
-
 function TCarbonWidgetSet.PeekMessage(var lpMsg: TMsg; Handle: HWND;
   wMsgFilterMin, wMsgFilterMax, wRemoveMsg: UINT): Boolean;
 begin

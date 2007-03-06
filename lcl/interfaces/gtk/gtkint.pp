@@ -355,7 +355,7 @@ uses
 // GtkWSImgList,
 // GtkWSMaskEdit,
  GtkWSMenus,
-// GtkWSPairSplitter,
+ GtkWSPairSplitter,
  GtkWSSpin,
  GtkWSStdCtrls,
 // GtkWSToolwin,

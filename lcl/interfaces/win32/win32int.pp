@@ -271,7 +271,7 @@ Uses
 // Win32WSImgList,
 // Win32WSMaskEdit,
  Win32WSMenus,
-// Win32WSPairSplitter,
+ Win32WSPairSplitter,
  Win32WSSpin,
  Win32WSStdCtrls,
 // Win32WSToolwin,

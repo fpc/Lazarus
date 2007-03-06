@@ -480,29 +480,6 @@ Begin
   Result:=SetWindowOrgEx(dc, P.x-dX, P.y-dY, @P);
 end;
 
-function TWidgetSet.PairSplitterAddSide(SplitterHandle, SideHandle: hWnd;
-  Side: integer): Boolean;
-begin
-  Result:=false;
-end;
-
-function TWidgetSet.PairSplitterGetInterfaceInfo: boolean;
-begin
-  Result:=false;
-end;
-
-function TWidgetSet.PairSplitterRemoveSide(SplitterHandle, SideHandle: hWnd;
-  Side: integer): Boolean;
-begin
-  Result:=false;
-end;
-
-function TWidgetSet.PairSplitterSetPosition(SplitterHandle: hWnd;
-  var NewPosition: integer): Boolean;
-begin
-  Result:=false;
-end;
-
 Function TWidgetSet.PromptUser(const DialogCaption, DialogMessage : String;
   DialogType : longint; Buttons : PLongint;
   ButtonCount, DefaultIndex, EscapeResult : Longint) : Longint;

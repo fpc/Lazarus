@@ -104,7 +104,6 @@ type
     procedure UpdatePosition;
     procedure CreateSides;
     procedure Loaded; override;
-    class function IsSupportedByInterface: boolean;
     function ChildClassAllowed(ChildClass: TClass): boolean; override;
   public
     property Sides[Index: integer]: TPairSplitterSide read GetSides;
@@ -138,7 +137,9 @@ type
 procedure Register;
   
 implementation
-
+uses
+  WSPairSplitter, extctrls;
+  
 procedure Register;
 begin
   RegisterComponents('Additional',[TPairSplitter]);
@@ -234,7 +235,7 @@ begin
   if FPosition<0 then
     FPosition:=0;
   if HandleAllocated and (not (csLoading in ComponentState)) then
-    PairSplitterSetPosition(Handle,FPosition);
+    TWSCustomPairSplitterClass(WidgetSetClass).SetPosition(Self, FPosition);
 end;
 
 procedure TCustomPairSplitter.SetSplitterType(const AValue: TPairSplitterType);
@@ -256,7 +257,7 @@ begin
     if FSides[i]=nil then begin
       FSides[i]:=ASide;
       if HandleAllocated then
-        PairSplitterAddSide(Handle,ASide.Handle,i);
+        TWSCustomPairSplitterClass(WidgetSetClass).AddSide(Self, ASide, i);
       break;
     end;
     inc(i);
@@ -273,7 +274,7 @@ begin
   for i:=Low(FSides) to High(FSides) do
     if FSides[i]=ASide then begin
       if HandleAllocated and ASide.HandleAllocated then
-        PairSplitterRemoveSide(Handle,ASide.Handle,i);
+        TWSCustomPairSplitterClass(WidgetSetClass).RemoveSide(Self, ASide, i);
       FSides[i]:=nil;
     end;
   // if the user deletes a side at designtime, autocreate a new one
@@ -312,9 +313,9 @@ begin
   inherited CreateWnd;
   for i:=Low(FSides) to High(FSides) do
     if FSides[i]<>nil then
-      PairSplitterAddSide(Handle,FSides[i].Handle,i);
+      TWSCustomPairSplitterClass(WidgetSetClass).AddSide(Self, FSides[i], i);
   APosition:=FPosition;
-  PairSplitterSetPosition(Handle,APosition);
+  TWSCustomPairSplitterClass(WidgetSetClass).SetPosition(Self, APosition);
   if not (csLoading in ComponentState) then
     FPosition:=APosition;
 end;
@@ -323,9 +324,10 @@ procedure TCustomPairSplitter.UpdatePosition;
 var
   CurPosition: Integer;
 begin
-  if HandleAllocated then begin
+  if HandleAllocated then
+  begin
     CurPosition:=-1;
-    PairSplitterSetPosition(Handle,CurPosition);
+    TWSCustomPairSplitterClass(WidgetSetClass).SetPosition(Self, CurPosition);
     FPosition:=CurPosition;
   end;
 end;
@@ -354,17 +356,13 @@ begin
   inherited Loaded;
   CreateSides;
   if HandleAllocated then
-    PairSplitterSetPosition(Handle,FPosition);
-end;
-
-class function TCustomPairSplitter.IsSupportedByInterface: boolean;
-begin
-  Result:=PairSplitterGetInterfaceInfo;
+    TWSCustomPairSplitterClass(WidgetSetClass).SetPosition(Self, FPosition);
 end;
 
 function TCustomPairSplitter.ChildClassAllowed(ChildClass: TClass): boolean;
 begin
-  Result:=ChildClass.InheritsFrom(TPairSplitterSide);
+  Result := ChildClass.InheritsFrom(TPairSplitterSide) or
+            ChildClass.InheritsFrom(TSplitter);
 end;
 
 end.
