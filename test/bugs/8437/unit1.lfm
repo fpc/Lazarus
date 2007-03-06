@@ -23,13 +23,14 @@ object Form1: TForm1
         Width = 75
         BorderSpacing.InnerBorder = 4
         Caption = 'Button2'
+        OnClick = Button2Click
         TabOrder = 0
       end
     end
     object PairSplitterSide2: TPairSplitterSide
-      Left = 111
+      Left = 112
       Height = 90
-      Width = 107
+      Width = 106
       object Button3: TButton
         Left = 27
         Height = 25
@@ -37,8 +38,20 @@ object Form1: TForm1
         Width = 75
         BorderSpacing.InnerBorder = 4
         Caption = 'Button3'
+        OnClick = Button3Click
         TabOrder = 0
       end
     end
+  end
+  object ApplicationProperties1: TApplicationProperties
+    CaptureExceptions = True
+    HintColor = clInfoBk
+    HintHidePause = 2500
+    HintPause = 500
+    HintShortCuts = True
+    ShowHint = True
+    OnIdle = ApplicationProperties1Idle
+    left = 32
+    top = 10
   end
 end

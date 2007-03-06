@@ -7,9 +7,13 @@ LazarusResources.Add('TForm1','FORMDATA',[
   +'rSplitter1'#4'Left'#2'f'#6'Height'#2'Z'#3'Top'#2'k'#5'Width'#3#218#0#8'Posi'
   +'tion'#2'j'#0#17'TPairSplitterSide'#17'PairSplitterSide1'#6'Height'#2'Z'#5'W'
   +'idth'#2'j'#0#7'TButton'#7'Button2'#4'Left'#2#20#6'Height'#2#25#3'Top'#2'"'#5
-  +'Width'#2'K'#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6#7'Button2'#8'Tab'
-  +'Order'#2#0#0#0#0#17'TPairSplitterSide'#17'PairSplitterSide2'#4'Left'#2'o'#6
-  +'Height'#2'Z'#5'Width'#2'k'#0#7'TButton'#7'Button3'#4'Left'#2#27#6'Height'#2
-  +#25#3'Top'#2''''#5'Width'#2'K'#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6
-  +#7'Button3'#8'TabOrder'#2#0#0#0#0#0#0
+  +'Width'#2'K'#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6#7'Button2'#7'OnC'
+  +'lick'#7#12'Button2Click'#8'TabOrder'#2#0#0#0#0#17'TPairSplitterSide'#17'Pai'
+  +'rSplitterSide2'#4'Left'#2'p'#6'Height'#2'Z'#5'Width'#2'j'#0#7'TButton'#7'Bu'
+  +'tton3'#4'Left'#2#27#6'Height'#2#25#3'Top'#2''''#5'Width'#2'K'#25'BorderSpac'
+  +'ing.InnerBorder'#2#4#7'Caption'#6#7'Button3'#7'OnClick'#7#12'Button3Click'#8
+  +'TabOrder'#2#0#0#0#0#0#22'TApplicationProperties'#22'ApplicationProperties1'
+  +#17'CaptureExceptions'#9#9'HintColor'#7#8'clInfoBk'#13'HintHidePause'#3#196#9
+  +#9'HintPause'#3#244#1#13'HintShortCuts'#9#8'ShowHint'#9#6'OnIdle'#7#26'Appli'
+  +'cationProperties1Idle'#4'left'#2' '#3'top'#2#10#0#0#0
 ]);

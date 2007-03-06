@@ -1,0 +1,3 @@
+Side 1: 106, Side 2: 106
+Side 1: 81, Side 2: 132
+Side 1: 106, Side 2: 107

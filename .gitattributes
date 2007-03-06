@@ -2895,6 +2895,7 @@ test/bugs/8284/expected.txt svneol=native#text/plain
 test/bugs/8284/unit1.lfm svneol=native#text/plain
 test/bugs/8284/unit1.lrs svneol=native#text/plain
 test/bugs/8284/unit1.pas svneol=native#text/plain
+test/bugs/8437/expected.txt svneol=native#text/plain
 test/bugs/8437/project1.lpi svneol=native#text/plain
 test/bugs/8437/project1.lpr svneol=native#text/pascal
 test/bugs/8437/unit1.lfm svneol=native#text/plain
