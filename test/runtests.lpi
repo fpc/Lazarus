@@ -58,6 +58,9 @@
   <CompilerOptions>
     <Version Value="5"/>
     <PathDelim Value="\"/>
+    <SearchPaths>
+      <OtherUnitFiles Value="bugs\"/>
+    </SearchPaths>
     <CodeGeneration>
       <Generate Value="Faster"/>
     </CodeGeneration>
