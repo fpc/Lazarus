@@ -124,6 +124,7 @@ object CodeBrowserView: TCodeBrowserView
     ShowHint = True
     ShowRoot = False
     TabOrder = 3
+    OnMouseDown = BrowseTreeViewMouseDown
     OnShowHint = BrowseTreeViewShowHint
     Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoShowButtons, tvoShowLines, tvoToolTips]
   end

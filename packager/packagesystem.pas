@@ -1146,7 +1146,7 @@ begin
     Filename:=SetDirSeparators('$(LazarusDir)/lcl/');
     Version.SetValues(1,0,0,0);
     Author:='Lazarus';
-    License:='LGPL-2';
+    License:='modified LGPL-2';
     AutoInstall:=pitStatic;
     AutoUpdate:=pupManually;
     Description:=lisPkgSysTheLCLLazarusComponentLibraryContainsAllBase;
@@ -1159,39 +1159,9 @@ begin
     // add requirements
     AddRequiredDependency(FCLPackage.CreateDependencyWithOwner(Result));
 
-    // add registering units
-    AddFile('menus.pp','Menus',pftUnit,[pffHasRegisterProc],cpBase);
-    AddFile('buttons.pp','Buttons',pftUnit,[pffHasRegisterProc],cpBase);
-    AddFile('stdctrls.pp','StdCtrls',pftUnit,[pffHasRegisterProc],cpBase);
-    AddFile('extctrls.pp','ExtCtrls',pftUnit,[pffHasRegisterProc],cpBase);
-    AddFile('comctrls.pp','ComCtrls',pftUnit,[pffHasRegisterProc],cpBase);
-    AddFile('maskedit.pp','MaskEdit',pftUnit,[pffHasRegisterProc],cpBase);
-    AddFile('checklst.pas','CheckLst',pftUnit,[pffHasRegisterProc],cpBase);
-    AddFile('forms.pp','Forms',pftUnit,[pffHasRegisterProc],cpBase);
-    AddFile('graphics.pp','Graphics',pftUnit,[pffHasRegisterProc],cpBase);
-    AddFile('grids.pas','Grids',pftUnit,[pffHasRegisterProc],cpBase);
-    AddFile('controls.pp','Controls',pftUnit,[pffHasRegisterProc],cpBase);
-    AddFile('dialogs.pp','Dialogs',pftUnit,[pffHasRegisterProc],cpBase);
-    AddFile('lazhelphtml.pas','LazHelpHTML',pftUnit,[],cpBase);
-    AddFile('spin.pp','Spin',pftUnit,[pffHasRegisterProc],cpBase);
-    AddFile('arrow.pp','Arrow',pftUnit,[pffHasRegisterProc],cpBase);
-    AddFile('calendar.pp','Calendar',pftUnit,[pffHasRegisterProc],cpBase);
-    AddFile('pairsplitter.pas','PairSplitter',pftUnit,[pffHasRegisterProc],cpBase);
-    AddFile('extdlgs.pas','ExtDlgs',pftUnit,[pffHasRegisterProc],cpBase);
-    AddFile('dbctrls.pp','DBCtrls',pftUnit,[pffHasRegisterProc],cpBase);
-    AddFile('dbgrids.pas','DBGrids',pftUnit,[pffHasRegisterProc],cpBase);
-    AddFile('editbtn.pas','EditBtn',pftUnit,[pffHasRegisterProc],cpBase);
-    AddFile('actnlist.pas','ActnList',pftUnit,[pffHasRegisterProc],cpBase);
-    AddFile('stdactns.pas','StdActns',pftUnit,[pffHasRegisterProc],cpBase);
-    AddFile('dbactns.pas','DBActns',pftUnit,[pffHasRegisterProc],cpBase);
-    AddFile('filectrl.pp','FileCtrl',pftUnit,[pffHasRegisterProc],cpBase);
-    AddFile('xmlpropstorage.pas','XMLPropStorage',pftUnit,[pffHasRegisterProc],cpBase);
-    AddFile('inipropstorage.pas','IniPropStorage',pftUnit,[pffHasRegisterProc],cpBase);
-    AddFile('chart.pp','Chart',pftUnit,[pffHasRegisterProc],cpBase);
-    AddFile('colorbox.pas','ColorBox',pftUnit,[pffHasRegisterProc],cpBase);
-    AddFile('buttonpanel.pas','ButtonPanel',pftUnit,[pffHasRegisterProc],cpBase);
-    AddFile('lresources.pp','LResources',pftUnit,[pffHasRegisterProc],cpBase);
-    AddFile('lclstrconsts.pas','LCLStrConsts',pftUnit,[],cpBase);
+    // register files
+    {$I pkgfileslcl.inc}
+    
     // increase priority by one, so that the LCL components are inserted to the
     // left in the palette
     for i:=0 to FileCount-1 do

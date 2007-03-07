@@ -2511,6 +2511,9 @@ begin
   ecViewForms:
     DoViewUnitsAndForms(true);
 
+  ecProjectInspector:
+    DoShowProjectInspector;
+
   ecConfigCustomComps:
     PkgBoss.ShowConfigureCustomComponents;
 
