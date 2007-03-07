@@ -992,6 +992,7 @@ type
   public
     class function Caption: String; virtual;         // The name of the debugger as shown in the debuggeroptions
     class function ExePaths: String; virtual;        // The default locations of the exe
+    class function HasExePath: boolean; virtual;        // If the debugger needs to have an exe path
 
     // debugger properties
     class function CreateProperties: TDebuggerProperties; virtual;         // Creates debuggerproperties
@@ -1370,6 +1371,11 @@ end;
 class function TDebugger.ExePaths: String;
 begin
   Result := '';
+end;
+
+class function TDebugger.HasExePath: boolean;
+begin
+  Result := true; // most debugger are external and have an exe path
 end;
 
 function TDebugger.GetCommands: TDBGCommands;

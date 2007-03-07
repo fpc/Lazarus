@@ -57,6 +57,7 @@ type
     function  RequestCommand(const ACommand: TDBGCommand; const AParams: array of const): Boolean; override;
   public
     class function Caption: String; override;
+    class function HasExePath: boolean; override;
 
   published
   end;
@@ -165,6 +166,11 @@ begin
   {$ELSE}
   Result := '(none)';
   {$ENDIF}
+end;
+
+class function TProcessDebugger.HasExePath: boolean;
+begin
+  Result:= false; // no need to have a valid exe path for the process debugger
 end;
 
 initialization

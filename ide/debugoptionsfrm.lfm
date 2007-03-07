@@ -339,9 +339,9 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
       Caption = 'Page4'
       object gbSignals: TGroupBox
         Left = 6
-        Height = 354
+        Height = 362
         Top = 6
-        Width = 454
+        Width = 450
         Align = alClient
         BorderSpacing.Around = 6
         Caption = 'Signals'
@@ -352,9 +352,9 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           AnchorSideRight.Side = asrBottom
           AnchorSideBottom.Control = gbSignals
           AnchorSideBottom.Side = asrBottom
-          Left = 369
+          Left = 365
           Height = 25
-          Top = 302
+          Top = 313
           Width = 75
           Anchors = [akRight, akBottom]
           AutoSize = True
@@ -370,9 +370,9 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           AnchorSideRight.Control = cmdSignalRemove
           AnchorSideBottom.Control = gbSignals
           AnchorSideBottom.Side = asrBottom
-          Left = 288
+          Left = 284
           Height = 25
-          Top = 302
+          Top = 313
           Width = 75
           Anchors = [akRight, akBottom]
           AutoSize = True
@@ -386,9 +386,9 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
         object lvSignals: TListView
           AnchorSideBottom.Control = cmdSignalAdd
           Left = 6
-          Height = 290
+          Height = 301
           Top = 6
-          Width = 438
+          Width = 434
           Align = alTop
           Anchors = [akTop, akLeft, akRight, akBottom]
           BorderSpacing.Around = 6
@@ -419,7 +419,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
     AnchorSideRight.Control = cmdCancel
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 308
+    Left = 311
     Height = 25
     Top = 412
     Width = 75
@@ -429,8 +429,8 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
     Caption = '&OK'
     Constraints.MaxHeight = 25
     Constraints.MinWidth = 75
+    Default = True
     Kind = bkOK
-    ModalResult = 1
     NumGlyphs = 0
     OnClick = cmdOKCLICK
     TabOrder = 1
@@ -440,10 +440,10 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 389
+    Left = 392
     Height = 25
     Top = 412
-    Width = 87
+    Width = 84
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6

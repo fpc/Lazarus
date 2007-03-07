@@ -103,6 +103,7 @@ type
     FCurDebuggerClass: TDebuggerClass; // currently shown debugger class
     procedure AddExceptionLine(const AException: TIDEException; AName: String);
     procedure AddSignalLine(const ASignal: TIDESignal);
+    function CheckValues: boolean;
     procedure FetchDebuggerClass;
     procedure FetchDebuggerGeneralOptions;
     procedure FetchDebuggerSpecificOptions;
@@ -145,6 +146,19 @@ begin
   Item.SubItems.Add(HANDLEDBY_CAPTION[ASignal.HandledByDebugger]);
   Item.SubItems.Add(RESUME_CAPTION[ASignal.ResumeHandled]);
   Item.Data := ASignal;
+end;
+
+function TDebuggerOptionsForm.CheckValues: boolean;
+begin
+  Result := false;
+  
+  if assigned(FCurDebuggerClass) and FCurDebuggerClass.HasExePath and
+    not CheckExecutable(FOldDebuggerPathAndParams,cmbDebuggerPath.Text,
+          lisEnvOptDlgInvalidDebuggerFilename,
+          lisEnvOptDlgInvalidDebuggerFilenameMsg)
+  then exit;
+
+  Result := true;
 end;
 
 procedure TDebuggerOptionsForm.FetchDebuggerClass;
@@ -290,6 +304,8 @@ var
   n: Integer;
   ie: TIDEException;
 begin
+  if not CheckValues then exit;
+
   for n := 0 to FExceptionDeleteList.Count - 1 do
     FExceptionDeleteList.Objects[n].Free;
     
