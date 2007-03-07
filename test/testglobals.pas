@@ -28,8 +28,15 @@ uses
 var
   Compiler: string;
   BugsTestSuite: TTestSuite;
+  
+procedure AddToBugsTestSuite(ATest: TTest);
 
 implementation
+
+procedure AddToBugsTestSuite(ATest: TTest);
+begin
+  BugsTestSuite.AddTest(ATest);
+end;
 
 initialization
   BugsTestSuite := TTestSuite.Create('Bugs');

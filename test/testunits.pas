@@ -1,5 +1,9 @@
-{ $Id$}
+{ $Id: runtestsgui.lpr 10703 2007-03-02 15:39:03Z vincents $}
 { Copyright (C) 2006 Vincent Snijders
+
+  This unit is use both by the console test runner and the gui test runner.
+  Its main purpose is to include all test units, so that they will register
+  their tests.
 
   This source is free software; you can redistribute it and/or modify it under
   the terms of the GNU General Public License as published by the Free
@@ -16,19 +20,17 @@
   to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
   MA 02111-1307, USA.
 }
-program runtestsgui;
+unit testunits;
 
 {$mode objfpc}{$H+}
 
-uses
-  Interfaces, Forms,
-  GuiTestRunner,
-  testunits;
+interface
 
-begin
-  Application.Title:='Run Lazarus tests';
-  Application.Initialize;
-  Application.CreateForm(TGuiTestRunner, TestRunner);
-  Application.Run;
+uses
+  TestLpi, BugTestCase,
+  bug8432, testfileutil;
+
+implementation
+
 end.
 

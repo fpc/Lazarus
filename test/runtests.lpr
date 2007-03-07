@@ -22,7 +22,7 @@ program runtests;
 
 uses
   Classes, consoletestrunner,
-  testglobals, TestLpi, BugTestCase;
+  testglobals, testunits;
   
 type
 

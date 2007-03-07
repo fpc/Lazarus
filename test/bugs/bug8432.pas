@@ -131,6 +131,6 @@ begin
 end;
 
 initialization
-  BugsTestSuite.AddTest(TTestSuite.Create(TTestBug8432, '8432'));
+  AddToBugsTestSuite(TTestSuite.Create(TTestBug8432, '8432'));
 end.
 

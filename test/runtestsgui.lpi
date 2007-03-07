@@ -32,7 +32,7 @@
         <PackageName Value="FCL"/>
       </Item3>
     </RequiredPackages>
-    <Units Count="4">
+    <Units Count="6">
       <Unit0>
         <Filename Value="runtestsgui.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -53,6 +53,16 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="bug8432"/>
       </Unit3>
+      <Unit4>
+        <Filename Value="bugs\testfileutil.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="testfileutil"/>
+      </Unit4>
+      <Unit5>
+        <Filename Value="testunits.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="testunits"/>
+      </Unit5>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
