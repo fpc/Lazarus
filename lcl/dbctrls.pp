@@ -165,6 +165,7 @@ Type
 
     property Anchors;
     property AutoSize;
+    property BorderSpacing;
     property CharCase;
     property Color;
     property Constraints;
@@ -288,8 +289,6 @@ Type
   published
     property DataField: string read GetDataField write SetDataField;
     property DataSource: TDataSource read GetDataSource write SetDataSource;
-    property DragCursor;
-    property DragMode;
 
     // we need to overrride the write method for db aware.
     // the Read isn't an issue since the list will be updated
@@ -301,7 +300,10 @@ Type
 
     property Align;
     property Anchors;
+    property BorderSpacing;
     property BorderStyle;
+    property DragCursor;
+    property DragMode;
     property ExtendedSelect;
     property ItemHeight;
     property MultiSelect;
@@ -371,6 +373,7 @@ Type
   published
     property Align;
     property Anchors;
+    property BorderSpacing;
     property Caption;
     property Columns;
     property DataField: string read GetDataField write SetDataField;
@@ -433,6 +436,7 @@ Type
     property AllowGrayed;
     property Anchors;
     property AutoSize;
+    property BorderSpacing;
     property Caption;
     property Color;
     property DataField: string read GetDataField write SetDataField;
@@ -500,6 +504,7 @@ Type
     property Anchors;
     property ArrowKeysTraverseList;
     property AutoDropDown;
+    property BorderSpacing;
     property Color;
     property Ctl3D;
     property DataField: string read GetDataField write SetDataField;
@@ -587,6 +592,7 @@ Type
     property Align;
     property Anchors;
     property AutoDisplay: Boolean read FAutoDisplay write SetAutoDisplay default True;
+    property BorderSpacing;
     property Color;
     property DataField: string read GetDataField write SetDataField;
     property DataSource: TDataSource read GetDataSource write SetDataSource;
@@ -636,6 +642,7 @@ Type
   published
     property Align;
     property Anchors;
+    property BorderSpacing;
     property Caption;
     property ClientHeight;
     property ClientWidth;
@@ -711,6 +718,7 @@ Type
     property Anchors;
     property AutoDisplay: Boolean read FAutoDisplay write SetAutoDisplay default True;
     property AutoSize;
+    property BorderSpacing;
     property Center;
     property Constraints;
     property DataField: string read GetDataField write SetDataField;
@@ -767,6 +775,7 @@ Type
 
     property Field: TField read GetField;
   published
+    property BorderSpacing;
     property DataField: string read GetDataField write SetDataField;
     property DataSource: TDataSource read GetDataSource write SetDataSource;
 
@@ -921,6 +930,7 @@ type
     property BevelInner;
     property BevelOuter;
     property BevelWidth;
+    property BorderSpacing;
     property BorderStyle;
     property BorderWidth;
     property Caption;
