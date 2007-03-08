@@ -51,6 +51,7 @@ begin
   FMargin := -1;
   FTransparent := true;
   Color := clBtnFace;
+  FShowCaption := true;
 end;
 
 {------------------------------------------------------------------------------
@@ -379,6 +380,13 @@ begin
   Result := FGlyph.Glyph;
 end;
 
+procedure TCustomSpeedButton.SetShowCaption(const AValue: boolean);
+begin
+  if FShowCaption=AValue then exit;
+  FShowCaption:=AValue;
+  invalidate;
+end;
+
 {------------------------------------------------------------------------------
   Method: TCustomSpeedButton.GetNumGlyphs
   Params: none
@@ -558,7 +566,7 @@ begin
   end;
 
   DrawGlyph(Canvas, PaintRect, Offset, FState, Transparent, 0);
-  if Caption <> '' then
+  if FShowCaption and (Caption <> '') then
   begin
     TXTStyle := Canvas.TextStyle;
     TXTStyle.Opaque := False;
@@ -759,7 +767,7 @@ var
   TXTStyle: TTextStyle;
   Flags: Cardinal;
 begin
-  if Caption <> '' then
+  if FShowCaption and (Caption <> '') then
   begin
     TMP := Caption;
     TXTStyle := Canvas.TextStyle;

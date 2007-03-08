@@ -296,9 +296,11 @@ type
     FMouseInControl: Boolean;
     FShortcut: TShortCut;
     FShowAccelChar: boolean;
+    FShowCaption: boolean;
     FSpacing: integer;
     FTransparent: Boolean;
     function GetGlyph: TBitmap;
+    procedure SetShowCaption(const AValue: boolean);
     procedure UpdateExclusive;
     procedure SetAllowAllUp(Value: Boolean);
     procedure SetGlyph(Value: TBitmap);
@@ -353,8 +355,9 @@ type
     property Layout: TButtonLayout read FLayout write SetLayout default blGlyphLeft;
     property Margin: integer read FMargin write SetMargin default -1;
     property NumGlyphs: Integer read GetNumGlyphs write SetNumGlyphs default 1;
-    property Spacing: integer read FSpacing write SetSpacing default 4;
     property ShowAccelChar: boolean read FShowAccelChar write SetShowAccelChar default true;
+    property ShowCaption: boolean read FShowCaption write SetShowCaption default true;
+    property Spacing: integer read FSpacing write SetSpacing default 4;
     property Transparent: Boolean read FTransparent write SetTransparent default true;
   end;
 
@@ -391,6 +394,7 @@ type
     property OnPaint;
     property OnResize;
     property OnChangeBounds;
+    property ShowCaption;
     property ShowHint;
     property ParentFont;
     property ParentShowHint;
