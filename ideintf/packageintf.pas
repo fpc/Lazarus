@@ -37,8 +37,9 @@ type
   TPkgSaveFlags = set of TPkgSaveFlag;
 
   TPkgOpenFlag = (
-    pofAddToRecent,
-    pofRevert
+    pofAddToRecent,  // add file to recent files
+    pofRevert,       // reload file if already open
+    pofConvertMacros // replace macros in filename
     );
   TPkgOpenFlags = set of TPkgOpenFlag;
 
@@ -69,6 +70,8 @@ type
 
   TPackageEditingInterface = class(TComponent)
   public
+    function DoOpenPackageWithName(const APackageName: string;
+                         Flags: TPkgOpenFlags): TModalResult; virtual; abstract;
     function DoOpenPackageFile(AFilename: string;
                          Flags: TPkgOpenFlags): TModalResult; virtual; abstract;
     function DoSaveAllPackages(Flags: TPkgSaveFlags): TModalResult; virtual; abstract;

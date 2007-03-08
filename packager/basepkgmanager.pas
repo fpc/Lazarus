@@ -105,7 +105,8 @@ type
 
     // package editors
     function DoNewPackage: TModalResult; virtual; abstract;
-    function DoOpenPackage(APackage: TLazPackage): TModalResult; virtual; abstract;
+    function DoOpenPackage(APackage: TLazPackage; Flags: TPkgOpenFlags
+                           ): TModalResult; virtual; abstract;
     function DoSavePackage(APackage: TLazPackage;
                           Flags: TPkgSaveFlags): TModalResult; virtual; abstract;
 
@@ -145,7 +146,8 @@ const
 
   PkgOpenFlagNames: array[TPkgOpenFlag] of string = (
     'pofAddToRecent',
-    'pofRevert'
+    'pofRevert',
+    'pofConvertMacros'
     );
 
 function PkgSaveFlagsToString(Flags: TPkgSaveFlags): string;

@@ -2,17 +2,17 @@
 
 LazarusResources.Add('TForm1','FORMDATA',[
   'TPF0'#6'TForm1'#5'Form1'#4'Left'#3'"'#1#6'Height'#3','#1#3'Top'#3#189#0#5'Wi'
-  +'dth'#3#144#1#18'HorzScrollBar.Page'#3#143#1#18'VertScrollBar.Page'#3'+'#1#7
-  +'Caption'#6#5'Form1'#8'OnCreate'#7#10'FormCreate'#0#11'TStringGrid'#11'Strin'
-  +'gGrid1'#4'Left'#2#25#6'Height'#3#227#0#3'Top'#2'-'#5'Width'#3'h'#1#8'ColCou'
-  +'nt'#2#5#10'FixedColor'#7#9'clBtnFace'#13'GridLineWidth'#2#0#7'Options'#11#15
-  +'goFixedVertLine'#15'goFixedHorzLine'#10'goVertLine'#10'goHorzLine'#13'goRan'
-  +'geSelect'#9'goEditing'#18'goAlwaysShowEditor'#14'goSmoothScroll'#0#8'RowCou'
-  +'nt'#2#5#10'ScrollBars'#7#10'ssAutoBoth'#8'TabOrder'#2#0#7'TabStop'#9#14'OnS'
-  +'electEditor'#7#23'StringGrid1SelectEditor'#0#0#9'TComboBox'#9'ComboBox1'#4
-  +'Left'#3#140#0#6'Height'#2#25#3'Top'#3#170#0#5'Width'#2'd'#16'AutoCompleteTe'
-  +'xt'#11#22'cbactEndOfLineComplete'#20'cbactSearchAscending'#0#9'ItemIndex'#2
-  +#0#13'Items.Strings'#1#6#1'A'#6#1'B'#6#1'C'#0#9'MaxLength'#2#0#13'OnEditingD'
-  +'one'#7#20'ComboBox1EditingDone'#8'TabOrder'#2#1#4'Text'#6#1'A'#7'Visible'#8
-  +#0#0#0
+  +'dth'#3#144#1#18'HorzScrollBar.Page'#3#143#1#18'VertScrollBar.Page'#3'+'#1#13
+  +'ActiveControl'#7#11'StringGrid1'#7'Caption'#6#5'Form1'#8'OnCreate'#7#10'For'
+  +'mCreate'#0#11'TStringGrid'#11'StringGrid1'#4'Left'#2#25#6'Height'#3#227#0#3
+  +'Top'#2'-'#5'Width'#3'h'#1#8'ColCount'#2#5#10'FixedColor'#7#9'clBtnFace'#13
+  +'GridLineWidth'#2#0#7'Options'#11#15'goFixedVertLine'#15'goFixedHorzLine'#10
+  +'goVertLine'#10'goHorzLine'#13'goRangeSelect'#9'goEditing'#18'goAlwaysShowEd'
+  +'itor'#14'goSmoothScroll'#0#8'RowCount'#2#5#10'ScrollBars'#7#10'ssAutoBoth'#8
+  +'TabOrder'#2#0#7'TabStop'#9#14'OnSelectEditor'#7#23'StringGrid1SelectEditor'
+  +#0#0#9'TComboBox'#9'ComboBox1'#4'Left'#2'x'#6'Height'#2#25#3'Top'#3#175#0#5
+  +'Width'#2'd'#16'AutoCompleteText'#11#22'cbactEndOfLineComplete'#20'cbactSear'
+  +'chAscending'#0#9'ItemIndex'#2#0#13'Items.Strings'#1#6#1'A'#6#1'B'#6#1'C'#0#9
+  +'MaxLength'#2#0#13'OnEditingDone'#7#20'ComboBox1EditingDone'#8'TabOrder'#2#1
+  +#4'Text'#6#1'A'#7'Visible'#8#0#0#0
 ]);

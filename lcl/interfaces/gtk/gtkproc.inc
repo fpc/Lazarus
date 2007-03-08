@@ -2302,14 +2302,17 @@ begin
     debugln('[HandleGTKKeyUpDown] GDK_KEY_PRESS UTF8="',DbgStr(Character),'"');
     {$ENDIF}
 
-    if Character <> ''
-    then begin
-      LCLObject := GetNearestLCLObject(TargetWidget);
-      if LCLObject is TWinControl
+    if not ABeforeEvent then begin
+      if Character <> ''
       then begin
-        Result := TWinControl(LCLObject).IntfUTF8KeyPress(Character, 1, SysKey);
-        if Result or (Character = '')
-        then StopKeyEvent('key_press_event');
+        LCLObject := GetNearestLCLObject(TargetWidget);
+        if LCLObject is TWinControl
+        then begin
+          // send the key after navigation keys were handled
+          Result := TWinControl(LCLObject).IntfUTF8KeyPress(Character, 1, SysKey);
+          if Result or (Character = '')
+          then StopKeyEvent('key_press_event');
+        end;
       end;
     end;
 
@@ -2330,7 +2333,7 @@ begin
         if AEvent^.KeyVal < 128
         then begin
           // non ASCII key was pressed
-          // MWE: imo this is impossible since when eventlenght > 1 it contains
+          // MWE: imo this is impossible since when eventlength > 1 it contains
           //      a UTF char and that case keyval is never < 128
           KeyPressesChar := chr(byte(AEvent^.KeyVal));
         end;

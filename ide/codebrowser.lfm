@@ -41,54 +41,23 @@ object CodeBrowserView: TCodeBrowserView
       UseOnChange = True
     end
   end
-  object LevelsCheckGroup: TCheckGroup
+  object OptionsGroupBox: TGroupBox
     AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = ScopeGroupBox
-    AnchorSideTop.Side = asrBottom
-    Left = 6
-    Height = 82
-    Top = 62
-    Width = 185
-    AutoFill = True
-    BorderSpacing.Around = 6
-    Caption = 'LevelsCheckGroup'
-    ChildSizing.LeftRightSpacing = 6
-    ChildSizing.TopBottomSpacing = 6
-    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
-    ChildSizing.EnlargeVertical = crsHomogenousChildResize
-    ChildSizing.ShrinkHorizontal = crsScaleChilds
-    ChildSizing.ShrinkVertical = crsScaleChilds
-    ChildSizing.Layout = cclLeftToRightThenTopToBottom
-    ChildSizing.ControlsPerLine = 1
-    Items.Strings = (
-      'Packages'
-      'Units'
-    )
-    OnItemClick = LevelsCheckGroupItemClick
-    TabOrder = 1
-    Data = {
-      020000000202
-    }
-  end
-  object FilterGroupBox: TGroupBox
-    AnchorSideLeft.Control = LevelsCheckGroup
-    AnchorSideLeft.Side = asrBottom
-    AnchorSideTop.Control = ScopeGroupBox
+    AnchorSideTop.Control = LevelsGroupBox
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    AnchorSideBottom.Control = LevelsCheckGroup
     AnchorSideBottom.Side = asrBottom
-    Left = 197
-    Height = 82
-    Top = 62
-    Width = 431
-    Anchors = [akTop, akLeft, akRight, akBottom]
+    Left = 6
+    Height = 50
+    Top = 190
+    Width = 622
+    Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     BorderSpacing.Right = 6
-    Caption = 'FilterGroupBox'
-    TabOrder = 2
+    Caption = 'OptionsGroupBox'
+    TabOrder = 1
     object ShowPrivateCheckBox: TCheckBox
       Left = 12
       Height = 20
@@ -100,9 +69,9 @@ object CodeBrowserView: TCodeBrowserView
       UseOnChange = True
     end
     object ShowProtectedCheckBox: TCheckBox
-      Left = 12
+      Left = 272
       Height = 20
-      Top = 37
+      Top = 8
       Width = 168
       Caption = 'ShowProtectedCheckBox'
       OnChange = ShowProtectedCheckBoxChange
@@ -111,19 +80,21 @@ object CodeBrowserView: TCodeBrowserView
     end
   end
   object BrowseTreeView: TTreeView
-    AnchorSideTop.Control = LevelsCheckGroup
+    AnchorSideTop.Control = OptionsGroupBox
     AnchorSideTop.Side = asrBottom
-    Height = 394
-    Top = 150
+    Height = 298
+    Top = 246
     Width = 634
     Align = alBottom
     Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Top = 6
     DefaultItemHeight = 16
     Images = ImageList1
     ParentShowHint = False
+    PopupMenu = PopupMenu1
     ShowHint = True
     ShowRoot = False
-    TabOrder = 3
+    TabOrder = 2
     OnMouseDown = BrowseTreeViewMouseDown
     OnShowHint = BrowseTreeViewShowHint
     Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoShowButtons, tvoShowLines, tvoToolTips]
@@ -134,8 +105,146 @@ object CodeBrowserView: TCodeBrowserView
     Width = 634
     Panels = <>
   end
+  object LevelsGroupBox: TGroupBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = ScopeGroupBox
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 122
+    Top = 62
+    Width = 622
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Around = 6
+    Caption = 'LevelsGroupBox'
+    TabOrder = 3
+    object PackageFilterBeginsSpeedButton: TSpeedButton
+      AnchorSideLeft.Control = PackageFilterEdit
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = PackageFilterEdit
+      Left = 424
+      Height = 22
+      Top = 2
+      Width = 23
+      Color = clBtnFace
+      NumGlyphs = 0
+    end
+    object PackageFilterContainsSpeedButton: TSpeedButton
+      AnchorSideLeft.Control = PackageFilterBeginsSpeedButton
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = PackageFilterEdit
+      Left = 447
+      Height = 22
+      Top = 2
+      Width = 23
+      Color = clBtnFace
+      NumGlyphs = 0
+    end
+    object PackageFilterRegExSpeedButton: TSpeedButton
+      AnchorSideLeft.Control = PackageFilterContainsSpeedButton
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = PackageFilterEdit
+      Left = 470
+      Height = 22
+      Top = 2
+      Width = 23
+      Color = clBtnFace
+      NumGlyphs = 0
+    end
+    object ShowPackagesCheckBox: TCheckBox
+      Left = 6
+      Height = 20
+      Top = 3
+      Width = 170
+      Caption = 'ShowPackagesCheckBox'
+      OnChange = ShowPackagesCheckBoxChange
+      TabOrder = 0
+    end
+    object ShowUnitsCheckBox: TCheckBox
+      Left = 6
+      Height = 20
+      Top = 27
+      Width = 142
+      Caption = 'ShowUnitsCheckBox'
+      OnChange = ShowUnitsCheckBoxChange
+      TabOrder = 1
+    end
+    object ShowIdentifiersCheckBox: TCheckBox
+      Left = 6
+      Height = 20
+      Top = 51
+      Width = 168
+      Caption = 'ShowIdentifiersCheckBox'
+      OnChange = ShowIdentifiersCheckBoxChange
+      TabOrder = 2
+    end
+    object PackageFilterEdit: TEdit
+      AnchorSideTop.Control = ShowPackagesCheckBox
+      AnchorSideTop.Side = asrCenter
+      Left = 223
+      Height = 23
+      Top = 2
+      Width = 201
+      TabOrder = 3
+      Text = 'PackageFilterEdit'
+    end
+  end
   object ImageList1: TImageList
     left = 298
     top = 196
+  end
+  object PopupMenu1: TPopupMenu
+    OnPopup = PopupMenu1Popup
+    left = 248
+    top = 196
+    object CopyDescriptionMenuItem: TMenuItem
+      Caption = 'CopyDescriptionMenuItem'
+      OnClick = CopyDescriptionMenuItemClick
+    end
+    object CopyIdentifierMenuItem: TMenuItem
+      Caption = 'CopyIdentifierMenuItem'
+      OnClick = CopyIdentifierMenuItemClick
+    end
+    object CopySeparatorMenuItem: TMenuItem
+      Caption = '-'
+    end
+    object ExpandAllPackagesMenuItem: TMenuItem
+      Caption = 'ExpandAllPackagesMenuItem'
+      OnClick = ExpandAllPackagesMenuItemClick
+    end
+    object CollapseAllPackagesMenuItem: TMenuItem
+      Caption = 'CollapseAllPackagesMenuItem'
+      OnClick = CollapseAllPackagesMenuItemClick
+    end
+    object AllPackagesSeparatorMenuItem: TMenuItem
+      Caption = '-'
+    end
+    object ExpandAllUnitsMenuItem: TMenuItem
+      Caption = 'ExpandAllUnitsMenuItem'
+      OnClick = ExpandAllUnitsMenuItemClick
+    end
+    object CollapseAllUnitsMenuItem: TMenuItem
+      Caption = 'CollapseAllUnitsMenuItem'
+      OnClick = CollapseAllUnitsMenuItemClick
+    end
+    object AllUnitsSeparatorMenuItem: TMenuItem
+      Caption = '-'
+    end
+    object ExpandAllClassesMenuItem: TMenuItem
+      Caption = 'ExpandAllClassesMenuItem'
+      OnClick = ExpandAllClassesMenuItemClick
+    end
+    object CollapseAllClassesMenuItem: TMenuItem
+      Caption = 'CollapseAllClassesMenuItem'
+      OnClick = CollapseAllClassesMenuItemClick
+    end
+    object AllClassesSeparatorMenuItem: TMenuItem
+      Caption = '-'
+    end
+    object ExportMenuItem: TMenuItem
+      Caption = 'ExportMenuItem'
+      OnClick = ExportMenuItemClick
+    end
   end
 end

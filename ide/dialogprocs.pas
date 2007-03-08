@@ -74,7 +74,10 @@ function LoadStringListFromFile(const Filename, ListTitle: string;
 function CreateEmptyFile(const Filename: string;
                          ErrorButtons: TMsgDlgButtons): TModalResult;
 function CheckCreatingFile(const AFilename: string;
-                           CheckReadable: boolean): TModalResult;
+                           CheckReadable: boolean;
+                           WarnOverwrite: boolean = false;
+                           CreateBackup: boolean = false
+                           ): TModalResult;
 function CheckFileIsWritable(const Filename: string;
                              ErrorButtons: TMsgDlgButtons): TModalResult;
 function ForceDirectoryInteractive(Directory: string;
@@ -295,14 +298,15 @@ begin
   Result:=mrOk;
 end;
 
-function CheckCreatingFile(const AFilename: string; CheckReadable: boolean
+function CheckCreatingFile(const AFilename: string;
+  CheckReadable: boolean; WarnOverwrite: boolean; CreateBackup: boolean
   ): TModalResult;
 var
   fs: TFileStream;
   c: char;
 begin
   // create if not yet done
-  if not FileExists(AFilename) then begin
+  if not FileExistsCached(AFilename) then begin
     try
       InvalidateFileStateCache;
       fs:=TFileStream.Create(AFilename,fmCreate);
@@ -311,6 +315,21 @@ begin
       Result:=IDEMessageDialog(lisUnableToCreateFile,
         Format(lisUnableToCreateFilename, ['"', AFilename, '"']), mtError, [
           mbCancel, mbAbort]);
+      exit;
+    end;
+  end else begin
+    // file already exists
+    if WarnOverwrite then begin
+      Result:=QuestionDlg(lisOverwriteFile,
+        Format(lisAFileAlreadyExistsReplaceIt, ['"', AFilename, '"', #13]),
+        mtConfirmation,
+        [mrYes, lisOverwriteFileOnDisk, mbCancel], 0);
+      if Result=mrCancel then exit;
+    end;
+    if CreateBackup then begin
+      Result:=BackupFileInteractive(AFilename);
+      if Result in [mrCancel,mrAbort] then exit;
+      Result:=CheckCreatingFile(AFilename,CheckReadable,false,false);
       exit;
     end;
   end;

@@ -304,6 +304,7 @@ type
     SrcLen: integer; // length of current source
     Code: pointer;   // current code object
     Values: TExpressionEvaluator;
+    SrcFilename: string;// current parsed filename
 
     ScannedRange: TLinkScannerRange;
 
@@ -849,6 +850,7 @@ begin
     SrcLog:=FOnGetSource(Self,ACode);
     if SrcLog=nil then
       RaiseUnableToGetCode;
+    SrcFilename:=FOnGetFileName(Self,ACode);
     AddSourceChangeStep(ACode,SrcLog.ChangeStep);
     Src:=SrcLog.Source;
     Code:=ACode;
@@ -2541,13 +2543,13 @@ begin
   if HasPathDelims then
     DoDirSeparators(AFilename);
 
-  // first search include file in the directory of the main source
+  // first search include file in the directory of the current source
   {$IFDEF VerboseIncludeSearch}
   DebugLn('TLinkScanner.SearchIncludeFile MainSourceFilename="',FMainSourceFilename,'"');
   {$ENDIF}
-  if FilenameIsAbsolute(FMainSourceFilename) then begin
+  if FilenameIsAbsolute(SrcFilename) then begin
     // main source has absolute filename
-    ExpFilename:=ExtractFilePath(FMainSourceFilename)+AFilename;
+    ExpFilename:=ExtractFilePath(SrcFilename)+AFilename;
     NewCode:=LoadSourceCaseLoUp(ExpFilename);
     Result:=(NewCode<>nil);
     if Result then exit;

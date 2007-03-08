@@ -250,7 +250,10 @@ type
     // package editors
     function DoNewPackage: TModalResult; override;
     function DoShowOpenInstalledPckDlg: TModalResult; override;
-    function DoOpenPackage(APackage: TLazPackage): TModalResult; override;
+    function DoOpenPackage(APackage: TLazPackage; Flags: TPkgOpenFlags
+                           ): TModalResult; override;
+    function DoOpenPackageWithName(const APackageName: string;
+                         Flags: TPkgOpenFlags): TModalResult; override;
     function DoOpenPackageFile(AFilename: string;
                          Flags: TPkgOpenFlags): TModalResult; override;
     function DoSavePackage(APackage: TLazPackage;
@@ -509,7 +512,7 @@ end;
 procedure TPkgManager.IDEComponentPaletteOpenPackage(Sender: TObject);
 begin
   if (Sender=nil) or (not (Sender is TLazPackage)) then exit;
-  DoOpenPackage(TLazPackage(Sender));
+  DoOpenPackage(TLazPackage(Sender),[]);
 end;
 
 procedure TPkgManager.IDEComponentPaletteOpenUnit(Sender: TObject);
@@ -649,7 +652,7 @@ var
 begin
   PkgFile:=GetPackageOfCurrentSourceEditor;
   if PkgFile<>nil then
-    DoOpenPackage(PkgFile.LazPackage);
+    DoOpenPackage(PkgFile.LazPackage,[]);
 end;
 
 procedure TPkgManager.MainIDEitmPkgAddCurUnitToPkgClick(Sender: TObject);
@@ -821,7 +824,7 @@ end;
 function TPkgManager.OnPackageEditorOpenPackage(Sender: TObject;
   APackage: TLazPackage): TModalResult;
 begin
-  Result:=DoOpenPackage(APackage);
+  Result:=DoOpenPackage(APackage,[]);
 end;
 
 function TPkgManager.OnPackageEditorSavePackage(Sender: TObject;
@@ -874,7 +877,7 @@ end;
 function TPkgManager.PackageGraphExplorerOpenPackage(Sender: TObject;
   APackage: TLazPackage): TModalResult;
 begin
-  Result:=DoOpenPackage(APackage);
+  Result:=DoOpenPackage(APackage,[]);
 end;
 
 function TPkgManager.PackageGraphExplorerOpenProject(Sender: TObject;
@@ -2190,17 +2193,50 @@ var
 begin
   Result:=ShowOpenInstalledPkgDlg(APackage);
   if (Result<>mrOk) then exit;
-  Result:=DoOpenPackage(APackage);
+  Result:=DoOpenPackage(APackage,[]);
 end;
 
-function TPkgManager.DoOpenPackage(APackage: TLazPackage): TModalResult;
+function TPkgManager.DoOpenPackage(APackage: TLazPackage;
+  Flags: TPkgOpenFlags): TModalResult;
 var
   CurEditor: TPackageEditorForm;
+  AFilename: String;
 begin
+  AFilename:=APackage.Filename;
+  
+  // revert: if possible and wanted
+  if (pofRevert in Flags) and (FileExistsCached(AFilename)) then begin
+    Result:=DoOpenPackageFile(AFilename,Flags);
+    exit;
+  end;
+
   // open a package editor
   CurEditor:=PackageEditors.OpenEditor(APackage);
   CurEditor.ShowOnTop;
+  
+  // add to recent packages
+  if (pofAddToRecent in Flags) then begin
+    AFilename:=APackage.Filename;
+    if FileExistsCached(AFilename) then begin
+      AddToRecentList(AFilename,EnvironmentOptions.RecentPackageFiles,
+                      EnvironmentOptions.MaxRecentPackageFiles);
+      SetRecentPackagesMenu;
+    end;
+  end;
+
   Result:=mrOk;
+end;
+
+function TPkgManager.DoOpenPackageWithName(const APackageName: string;
+  Flags: TPkgOpenFlags): TModalResult;
+var
+  APackage: TLazPackage;
+begin
+  APackage:=PackageGraph.FindAPackageWithName(APackageName,nil);
+  if APackage=nil then
+    Result:=mrCancel
+  else
+    Result:=DoOpenPackage(APackage,Flags);
 end;
 
 function TPkgManager.DoOpenPackageFile(AFilename: string; Flags: TPkgOpenFlags
@@ -2210,6 +2246,11 @@ var
   XMLConfig: TXMLConfig;
   AlternativePkgName: String;
 begin
+  // replace macros
+  if pofConvertMacros in Flags then begin
+    if not GlobalMacroList.SubstituteStr(AFilename) then exit(mrCancel);
+  end;
+
   AFilename:=CleanAndExpandFilename(AFilename);
   
   // check file extension
@@ -2302,7 +2343,7 @@ begin
     end;
   end;
 
-  Result:=DoOpenPackage(APackage);
+  Result:=DoOpenPackage(APackage,[]);
 end;
 
 function TPkgManager.DoSavePackage(APackage: TLazPackage;
@@ -3591,7 +3632,7 @@ begin
   Result:=true;
   if PackageGraph.OpenDependency(Dependency)<>lprSuccess then
     exit;
-  DoOpenPackage(Dependency.RequiredPackage);
+  DoOpenPackage(Dependency.RequiredPackage,[]);
 end;
 
 function TPkgManager.OnProjectInspectorAddDependency(Sender: TObject;
