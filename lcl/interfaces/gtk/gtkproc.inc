@@ -3183,7 +3183,7 @@ begin
       MKeyCodeInfo[KeyCode].Flags := $FF
     end
     else begin
-      MKeyCodeInfo[KeyCode].Flags := KEYFLAGS[m] or EXTFLAG[Extended] or MULTIFLAG[HasMultiVK];
+      MKeyCodeInfo[KeyCode].Flags := EXTFLAG[Extended] or MULTIFLAG[HasMultiVK];
       MVKeyInfo[VKey].KeyCode[SecondKey] := KeyCode;
     end;
     MKeyCodeInfo[KeyCode].VKey1 := VKey;
@@ -3206,7 +3206,9 @@ begin
         end;
       end;
       if VKey = VK_UNDEFINED then Continue;
-      
+
+      MKeyCodeInfo[KeyCode].Flags := MKeyCodeInfo[KeyCode].Flags or KEYFLAGS[m];
+
       FillByte(KeySymChars, SizeOf(KeySymChars), 0);
     {$ifdef gtk1}
       // Retrieve the chars for this KeySym
