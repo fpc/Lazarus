@@ -27,6 +27,9 @@
 {$ENDIF}
 
 Type
+
+  { TWin32ListStringList }
+
   TWin32ListStringList = Class(TStrings)
   Private
     FWin32List: HWND;
@@ -49,6 +52,7 @@ Type
     FFlagSetItemIndex: cardinal;
     FFlagGetSelected: cardinal;
     FFlagsetSelected: cardinal;
+    FFlagInitStorage: cardinal;
   Protected
     function Add(const S: string): Integer; override;
     Function Get(Index: Integer): String; Override;
@@ -56,6 +60,8 @@ Type
     Function GetObject(Index: Integer): TObject; Override;
     procedure Put(Index: integer; const S: string); override;
     Procedure PutObject(Index: Integer; AObject: TObject); Override;
+    procedure SetCapacity(NewCapacity: Integer); override;
+    procedure SetUpdateState(Updating: Boolean); override;
 
     procedure InitFlags; virtual;
     Procedure SetSorted(Val: Boolean); Virtual;

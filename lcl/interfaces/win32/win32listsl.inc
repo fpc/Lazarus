@@ -95,6 +95,7 @@ begin
   FFlagSetItemIndex := UINT(LB_SETCURSEL);
   FFlagGetSelected  := UINT(LB_GETSEL);
   FFlagSetSelected  := UINT(LB_SETSEL);
+  FFlagInitStorage  := UINT(LB_INITSTORAGE);
 end;
 
 {------------------------------------------------------------------------------
@@ -281,6 +282,18 @@ Begin
   Windows.SendMessage(FWin32List, FFlagSetItemData, Index, LPARAM(AObject));
 End;
 
+procedure TWin32ListStringList.SetCapacity(NewCapacity: Integer);
+begin
+  Windows.SendMessage(FWin32List, FFlagInitStorage, NewCapacity, 0);
+end;
+
+procedure TWin32ListStringList.SetUpdateState(Updating: Boolean);
+begin
+  Windows.SendMessage(FWin32List, WM_SETREDRAW, WPARAM(not Updating), 0);
+  if not Updating then
+    Windows.InvalidateRect(FWin32List, nil, TRUE);
+end;
+
 { TWin32ComboBoxStringList }
 
 procedure TWin32ComboBoxStringList.InitFlags;
@@ -301,6 +314,7 @@ begin
   FFlagSetItemIndex := UINT(CB_SETCURSEL);
   FFlagGetSelected  := UINT(0);
   FFlagSetSelected  := UINT(0);
+  FFlagInitStorage  := UINT(CB_INITSTORAGE);
   //Get edit and item sizes
   Windows.GetClientRect(FWin32List,@R);
   FEditHeight := R.Bottom;
