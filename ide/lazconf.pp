@@ -273,9 +273,12 @@ begin
   Result:=false;
   if DirPathExists(ADirectory) then begin
     Dir:=AppendPathDelim(ADirectory);
-    Result:=DirPathExists(Dir+'compiler')
-        and DirPathExists(Dir+'rtl')
-        and DirPathExists(Dir+'packages');
+    // test on rtl/inc, to prevent a false positive on a fpc compiled units dir
+    // fpc 2.0: fcl is in fcl directory in fpc 2.0.x,
+    // fpc 2.1 and later: fcl is in packages/fcl-base
+    Result:=DirPathExists(Dir+SetDirSeparators('rtl/inc'))
+        and (DirPathExists(SetDirSeparators(Dir+'packages/fcl-base'))
+          or DirPathExists(SetDirSeparators(Dir+'fcl')));
   end;
 end;
 
