@@ -148,6 +148,7 @@ echo '  * Unofficial snapshot build for lazarus' >> $File
 echo " -- Mattias Gaertner <mattias@freepascal.org>  $Date" >> $File
 echo "" >> $File
 cat $ResourceDir/changelog >> $File
+rm $File.gz
 gzip --best $File
 
 # create postinst if needed
@@ -161,6 +162,7 @@ fi
 echo "creating changelog.Debian file ..."
 File=$DebianDocDir/changelog.Debian
 cp $ResourceDir/changelog.Debian $File
+rm $File.gz
 gzip --best $File
 
 # create debian copyright file
@@ -176,9 +178,9 @@ if [ "$PackageName" = "fpc-src" ]; then
 fi
 if [ "$PackageName" = "fpc" ]; then
     # build fpc
-    mkdir $FPCBuildDir/etc
+    mkdir -p $FPCBuildDir/etc
     cd $FPCSrcDir
-    make all
+    make clean all
     mkdir -p $DebianInstallDir
     make install INSTALL_PREFIX=$DebianInstallDir
     cd -

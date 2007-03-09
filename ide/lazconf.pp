@@ -273,7 +273,7 @@ begin
   Result:=false;
   if DirPathExists(ADirectory) then begin
     Dir:=AppendPathDelim(ADirectory);
-    Result:=DirPathExists(Dir+'fcl')
+    Result:=DirPathExists(Dir+'compiler')
         and DirPathExists(Dir+'rtl')
         and DirPathExists(Dir+'packages');
   end;

@@ -988,7 +988,7 @@ resourcestring
     +' Normally it contains directories like lcl, debugger, designer, components, ... .';
   lisEnvOptDlgFPCSrcDirNotFoundMsg = 'FPC source directory "%s" not found.';
   lisEnvOptDlgInvalidFPCSrcDir = 'The FPC source directory "%s" does not look correct.'
-    +' Normally it contains directories like rtl, fcl, packages, compiler, ... .';
+    +' Normally it contains directories like rtl, packages, compiler, ... .';
   lisEnvOptDlgTestDirNotFoundMsg = 'Test directory "%s" not found.';
 
   // editor options
