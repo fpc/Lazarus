@@ -176,7 +176,8 @@ begin
     Close;
     Open;
     for i:=0 to FieldDefs.Count - 1 do
-      listFields.Items.AddObject(FieldDefs[i].Name,TObject(FieldDefs[i].DataType));
+      listFields.Items.AddObject(FieldDefs[i].Name,
+                                 TObject(PtrInt(FieldDefs[i].DataType)));
     listFields.ItemIndex:=0;
     Sql:=OldSql;
     Active:=OldActive;
@@ -291,7 +292,7 @@ begin
   begin
     Clear;
     for i:= 0 to listFields.Items.Count - 1 do
-      Add(listFields.Items[i],TFieldType(listFields.Items.Objects[i]));
+      Add(listFields.Items[i],TFieldType(PtrInt(listFields.Items.Objects[i])));
   end;
   DataSet.CreateTable;
 
