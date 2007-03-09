@@ -81,7 +81,9 @@ var
 begin
   ARect := ClientRect;
   Canvas.Brush.Color := Color;
+  //DebugLn(['THintWindow.Paint Canvas.Brush.Color=',dbgs(Canvas.Brush.Color)]);
   Canvas.Pen.Width := 1;
+  Canvas.FillRect(ARect);
   DrawEdge(Canvas.Handle, ARect, BDR_RAISEDOUTER, BF_RECT);
   InflateRect(ARect,-2*HintBorderWidth,-2*HintBorderWidth);
   DrawText(Canvas.GetUpdatedHandle([csFontValid]),

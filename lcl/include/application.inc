@@ -685,6 +685,7 @@ begin
     end;}
 
     FHintWindow.Color := HintInfo.HintColor;
+    //DebugLn(['TApplication.ShowHintWindow FHintWindow.Color=',dbgs(FHintWindow.Color),' HintInfo.HintColor=',dbgs(HintInfo.HintColor)]);
 
     //debugln('TApplication.ShowHintWindow B HintWinRect=',dbgs(HintWinRect),' HintStr="',DbgStr(HintInfo.HintStr),'"');
     FHintWindow.ActivateHint(HintWinRect,HintInfo.HintStr);
