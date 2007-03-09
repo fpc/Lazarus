@@ -2677,22 +2677,21 @@ var
 
     Style := GetStyle(lgsCheckbox);
 
-    If Style = nil then
+    If Style = nil then begin
       Style := GetStyle(lgsGTK_Default);
-
-    If Style <> nil then
-      Style := gtk_style_attach(gtk_style_ref(Style),aDC.Drawable);
+      If Style <> nil then
+        Style := gtk_style_attach(gtk_style_ref(Style),aDC.Drawable);
+    end;
 
     Widget := GetStyleWidget(lgsCheckbox);
     If Widget = nil then
       Widget := GetStyleWidget(lgsDefault);
     If (Widget <> nil) and (Style <> nil) then begin
       Widget^.Window := aDC.Drawable;
-      if Style<>nil then
-        gtk_paint_check(Style,aDC.Drawable, State,
-          Shadow, nil, Widget, 'checkbutton',
-          Rect.Left+DCOrigin.X,Rect.Top+DCOrigin.Y,
-          Rect.Right-Rect.Left, Rect.Bottom-Rect.Top);
+      gtk_paint_check(Style,aDC.Drawable, State,
+        Shadow, nil, Widget, 'checkbutton',
+        Rect.Left+DCOrigin.X,Rect.Top+DCOrigin.Y,
+        Rect.Right-Rect.Left, Rect.Bottom-Rect.Top);
       Result := True;
     end
     else begin
