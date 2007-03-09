@@ -2226,7 +2226,7 @@ function WindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
     LParam: Windows.LParam): LResult; stdcall;
 begin
   DebugLn(MessageStackDepth, 'WindowProc called for window=', IntToHex(Window, 8),' msg=',
-    WM_To_String(msg),' wparam=', IntToHex(WParam, sizeof(WParam)*4), ' lparam=', IntToHex(lparam, sizeof(lparam)*4));
+    WM_To_String(msg),' wparam=', IntToHex(WParam, sizeof(WParam)*2), ' lparam=', IntToHex(lparam, sizeof(lparam)*2));
   MessageStackDepth := MessageStackDepth + ' ';
 
   Result := RealWindowProc(Window, Msg, WParam, LParam);
