@@ -3589,6 +3589,7 @@ var
   CurAnchorSide: TAnchorSide;
 begin
   //DebugLn('[TControl.Destroy] A ',Name,':',ClassName);
+  MouseCapture := false;
   Application.ControlDestroyed(Self);
   SetParent(nil);
   FreeThenNil(FActionLink);
