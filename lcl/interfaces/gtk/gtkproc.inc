@@ -2282,8 +2282,7 @@ begin
   end;
 
   // send keypresses
-  if not EventStopped and AHandleDown
-  then begin
+  if not EventStopped and AHandleDown and ABeforeEvent then begin
 
     // send the UTF8 keypress
     // try to get the UTF8 representation of the key
@@ -2302,17 +2301,15 @@ begin
     debugln('[HandleGTKKeyUpDown] GDK_KEY_PRESS UTF8="',DbgStr(Character),'"');
     {$ENDIF}
 
-    if not ABeforeEvent then begin
-      if Character <> ''
+    if Character <> ''
+    then begin
+      LCLObject := GetNearestLCLObject(TargetWidget);
+      if LCLObject is TWinControl
       then begin
-        LCLObject := GetNearestLCLObject(TargetWidget);
-        if LCLObject is TWinControl
-        then begin
-          // send the key after navigation keys were handled
-          Result := TWinControl(LCLObject).IntfUTF8KeyPress(Character, 1, SysKey);
-          if Result or (Character = '')
-          then StopKeyEvent('key_press_event');
-        end;
+        // send the key after navigation keys were handled
+        Result := TWinControl(LCLObject).IntfUTF8KeyPress(Character, 1, SysKey);
+        if Result or (Character = '')
+        then StopKeyEvent('key_press_event');
       end;
     end;
 

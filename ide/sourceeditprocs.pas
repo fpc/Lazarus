@@ -257,6 +257,7 @@ begin
     if MeasureOnly then
       Inc(Result.X, 1+ACanvas.TextWidth(s))
     else begin
+      //DebugLn(['PaintCompletionItem ',x,',',y,' ',s]);
       ACanvas.TextOut(x+1,y,s);
       inc(x,ACanvas.TextWidth(s));
       if x>MaxX then exit;

@@ -628,6 +628,7 @@ begin
     canvas.brush.color := color;
     canvas.Rectangle(0, 0, Width, Height);
     {$ENDIF}
+    //DebugLn(['TSynBaseCompletionForm.Paint NbLinesInWindow=',NbLinesInWindow,' ItemList.Count=',ItemList.Count]);
     for i := 0 to min(NbLinesInWindow - 1, ItemList.Count - 1) do begin
       if i + Scroll.Position = Position then begin
         Canvas.Brush.Color := clSelect;
@@ -652,7 +653,8 @@ begin
           Canvas.Font.Color := clBlack;
           {$ENDIF}
         end;
-        
+
+      //DebugLn(['TSynBaseCompletionForm.Paint ',i,' ',ItemList[Scroll.Position + i]]);
       if not Assigned(OnPaintItem)
       or not OnPaintItem(ItemList[Scroll.Position + i], Canvas,
           {$IFDEF SYN_LAZARUS}
