@@ -77,11 +77,11 @@ type
   protected
     procedure Click; override;
     procedure CreateWnd; override;
-    procedure DoSendBtnDefault; virtual;
     procedure ControlKeyDown(var Key: Word; Shift: TShiftState); override;
     procedure ControlKeyUp(var Key: Word; Shift: TShiftState); override;
     procedure SetParent(AParent: TWinControl); override;
     procedure RealSetText(const Value: TCaption); override;
+    procedure WSSetDefault;
     function DialogChar(var Message: TLMKey): boolean; override;
     function ChildClassAllowed(ChildClass: TClass): boolean; override;
     function IsBorderSpacingInnerBorderStored: Boolean; override;

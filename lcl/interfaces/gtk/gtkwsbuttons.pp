@@ -58,15 +58,16 @@ type
     class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   public
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
-    class procedure ActiveDefaultButtonChanged(const AButton: TCustomButton); override;
-    class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
-    class procedure SetShortcut(const AButton: TCustomButton; const OldShortcut, NewShortcut: TShortcut); override;
-    class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
-    class procedure SetColor(const AWinControl: TWinControl); override;
-    class procedure SetFont(const AWinControl: TWinControl; const AFont : tFont); override;
     class procedure GetPreferredSize(const AWinControl: TWinControl;
                         var PreferredWidth, PreferredHeight: integer;
                         WithThemeSpace: Boolean); override;
+    class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
+
+    class procedure SetColor(const AWinControl: TWinControl); override;
+    class procedure SetFont(const AWinControl: TWinControl; const AFont : TFont); override;
+    class procedure SetDefault(const AButton: TCustomButton; ADefault: Boolean); override;
+    class procedure SetShortcut(const AButton: TCustomButton; const OldShortcut, NewShortcut: TShortcut); override;
+    class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
   end;
 
   { TGtkWSBitBtn }
@@ -145,9 +146,18 @@ begin
   SetCallbacks(PGtkWidget(Result), WidgetInfo);
 end;
 
-class procedure TGtkWSButton.ActiveDefaultButtonChanged(const AButton: TCustomButton);
+class function TGtkWSButton.GetText(const AWinControl: TWinControl; var AText: String): Boolean;
+begin             
+  // The button text is static, so let the LCL fallback to FCaption
+  Result := False;
+end;
+
+class procedure TGtkWSButton.SetDefault(const AButton: TCustomButton; ADefault: Boolean);
 begin
-  if (AButton.Active)
+  if not WSCheckHandleAllocated(AButton, 'SetDefault')
+  then Exit;
+
+  if ADefault
   and (GTK_WIDGET_CAN_DEFAULT(pgtkwidget(AButton.Handle))) then
     //gtk_widget_grab_default(pgtkwidget(handle))
   else begin
@@ -160,12 +170,6 @@ begin
   end;
 end;
     
-class function TGtkWSButton.GetText(const AWinControl: TWinControl; var AText: String): Boolean;
-begin             
-  // The button text is static, so let the LCL fallback to FCaption
-  Result := False;
-end;
-
 class procedure TGtkWSButton.SetCallbacks(const AGtkWidget: PGtkWidget;
   const AWidgetInfo: PWidgetInfo);
 begin        

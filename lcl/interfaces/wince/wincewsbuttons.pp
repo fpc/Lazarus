@@ -43,8 +43,8 @@ type
   public
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
-//    class procedure ActiveDefaultButtonChanged(const AButton: TCustomButton); override;
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
+//    class procedure SetDefault(const AButton: TCustomButton; ADefault: Boolean); override;
 //    class procedure SetShortcut(const AButton: TCustomButton; const OldShortcut, NewShortcut: TShortcut); override;
     class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
 //    class procedure GetPreferredSize(const AWinControl: TWinControl;

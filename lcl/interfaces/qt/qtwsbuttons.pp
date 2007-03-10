@@ -32,7 +32,7 @@ uses
   // LCL
   SysUtils, Controls, LCLType, Forms, InterfaceBase, Buttons, LMessages, Graphics,
   // Widgetset
-  WSButtons, WSLCLClasses;
+  WSProc, WSButtons, WSLCLClasses;
 
 type
 
@@ -44,8 +44,8 @@ type
   public
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
-//    class procedure ActiveDefaultButtonChanged(const AButton: TCustomButton); override;
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
+//    class procedure SetDefault(const AButton: TCustomButton; ADefault: Boolean); override;
 //    class procedure SetShortcut(const AButton: TCustomButton; const OldShortcut, NewShortcut: TShortcut); override;
     class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
 //    class procedure GetPreferredSize(const AWinControl: TWinControl;
@@ -61,8 +61,8 @@ type
   public
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
-//    class procedure ActiveDefaultButtonChanged(const AButton: TCustomButton); override;
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
+//    class procedure SetDefault(const AButton: TCustomButton; ADefault: Boolean); override;
 //    class procedure SetShortcut(const AButton: TCustomButton; const OldShortcut, NewShortcut: TShortcut); override;
     class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
 //    class procedure GetPreferredSize(const AWinControl: TWinControl;
@@ -147,6 +147,10 @@ class function TQtWSButton.GetText(const AWinControl: TWinControl; var AText: St
 var
   Str: WideString;
 begin
+  Result := False;
+  if not WSCheckHandleAllocated(AWincontrol, 'GetText')
+  then Exit;
+
   TQtAbstractButton(AWinControl.Handle).Text(@Str);
 
   AText := UTF8Encode(Str);
@@ -163,6 +167,9 @@ class procedure TQtWSButton.SetText(const AWinControl: TWinControl; const AText:
 var
   Str: WideString;
 begin
+  if not WSCheckHandleAllocated(AWincontrol, 'SetText')
+  then Exit;
+
   Str := UTF8Decode(AText);
 
   TQtAbstractButton(AWinControl.Handle).SetText(@Str);
@@ -181,9 +188,8 @@ var
   QColor: TQColor;
   Color: TColor;
 begin
-  if AWinControl = nil then exit;
-
-  if not AWinControl.HandleAllocated then exit;
+  if not WSCheckHandleAllocated(AWincontrol, 'SetColor')
+  then Exit;
 
   if AWinControl.Color = CLR_INVALID then exit;
 
@@ -261,6 +267,10 @@ class function TQtWSBitBtn.GetText(const AWinControl: TWinControl; var AText: St
 var
   Str: WideString;
 begin
+  Result := False;
+  if not WSCheckHandleAllocated(AWincontrol, 'GetText')
+  then Exit;
+
   TQtAbstractButton(AWinControl.Handle).Text(@Str);
 
   AText := UTF8Encode(Str);
@@ -278,6 +288,8 @@ class procedure TQtWSBitBtn.SetText(const AWinControl: TWinControl;
 var
   Str: WideString;
 begin
+  if not WSCheckHandleAllocated(AWincontrol, 'SetText')
+  then Exit;
   Str := UTF8Decode(AText);
 
   TQtAbstractButton(AWinControl.Handle).SetText(@Str);
@@ -296,9 +308,8 @@ var
   QColor: TQColor;
   Color: TColor;
 begin
-  if AWinControl = nil then exit;
-
-  if not AWinControl.HandleAllocated then exit;
+  if not WSCheckHandleAllocated(AWincontrol, 'SetColor')
+  then Exit;
 
   if AWinControl.Color = CLR_INVALID then exit;
 

@@ -49,16 +49,7 @@ begin
   inherited CreateWnd;
   //this is done in TWinControl
   //SetText(Caption);//To ensure shortcut is set
-  DoSendBtnDefault;
-end;
-
-{------------------------------------------------------------------------------
-  procedure TCustomButton.DoSendBtnDefault;
- ------------------------------------------------------------------------------}
-procedure TCustomButton.DoSendBtnDefault;
-begin
-  if HandleAllocated then
-    TWSButtonClass(WidgetSetClass).ActiveDefaultButtonChanged(Self);
+  WSSetDefault;
 end;
 
 procedure TCustomButton.ControlKeyDown(var Key: Word; Shift: TShiftState);
@@ -89,7 +80,7 @@ begin
     if FCancel then
       Form.CancelControl := Self;
   end;
-  DoSendBtnDefault;
+  WSSetDefault;
 end;
 
 procedure TCustomButton.UpdateRolesForForm;
@@ -149,7 +140,7 @@ begin
     else
       Form.DefaultControl := nil;
   end;
-  DoSendBtnDefault;
+  WSSetDefault;
 end;
 
 procedure TCustomButton.SetModalResult(const AValue: TModalResult);
@@ -219,7 +210,7 @@ begin
     FActive := FDefault;
   end;
   if lPrevActive <> FActive then
-    DoSendBtnDefault;
+    WSSetDefault;
 end;
 
 procedure TCustomButton.CMUIActivate(var Message: TLMessage);
@@ -258,7 +249,7 @@ begin
       lForm := GetParentForm(Self);
       if (lForm <> nil) and (lForm.ActiveDefaultControl = Self) then
         lForm.ActiveDefaultControl := nil;
-      DoSendBtnDefault;
+      WSSetDefault;
     end;
   end;
 end;
@@ -290,6 +281,15 @@ end;
 function TCustomButton.IsBorderSpacingInnerBorderStored: Boolean;
 begin
   Result:=BorderSpacing.InnerBorder<>2;
+end;
+
+{------------------------------------------------------------------------------
+  procedure TCustomButton.DoSendBtnDefault;
+ ------------------------------------------------------------------------------}
+procedure TCustomButton.WSSetDefault;
+begin
+  if HandleAllocated then
+    TWSButtonClass(WidgetSetClass).SetDefault(Self, FDefault);
 end;
 
 

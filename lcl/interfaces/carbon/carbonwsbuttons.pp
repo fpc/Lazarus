@@ -46,7 +46,7 @@ type
   protected
   public
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
-    class procedure ActiveDefaultButtonChanged(const AButton: TCustomButton); override;
+    class procedure SetDefault(const AButton: TCustomButton; ADefault: Boolean); override;
   end;
 
   { TCarbonWSBitBtn }
@@ -108,22 +108,18 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method:  TCarbonWSButton.ActiveDefaultButtonChanged
+  Method:  TCarbonWSButton.SetDefault
   Params:  AButton - LCL button control
   Returns: Nothing
 
   Updates default button indication
  ------------------------------------------------------------------------------}
-class procedure TCarbonWSButton.ActiveDefaultButtonChanged(
-  const AButton: TCustomButton);
-var
-  ADefault: Boolean;
+class procedure TCarbonWSButton.SetDefault(const AButton: TCustomButton; ADefault: Boolean);
 begin
-  if not WSCheckHandleAllocated(AButton, 'ActiveDefaultButtonChanged') then Exit;
+  if not WSCheckHandleAllocated(AButton, 'SetDefault') then Exit;
   
-  ADefault := AButton.Default;
   SetControlData(ControlRef(AButton.Handle), kControlEntireControl,
-    kControlPushButtonDefaultTag, SizeOf(Boolean), @ADefault);
+    kControlPushButtonDefaultTag, SizeOf(ADefault), @ADefault);
 end;
 
 

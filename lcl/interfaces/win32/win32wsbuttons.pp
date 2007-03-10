@@ -35,7 +35,8 @@ uses
 ////////////////////////////////////////////////////
   Windows, Buttons, Graphics, Controls,
 ////////////////////////////////////////////////////
-  WSControls, WSButtons, WSLCLClasses, Win32WSControls, LCLType;
+  WSProc, WSControls, WSButtons, WSLCLClasses, 
+  Win32WSControls, LCLType;
 
 type
 
@@ -47,7 +48,7 @@ type
   public
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
-    class procedure ActiveDefaultButtonChanged(const AButton: TCustomButton); override;
+    class procedure SetDefault(const AButton: TCustomButton; ADefault: Boolean); override;
     class procedure SetShortCut(const AButton: TCustomButton; const OldKey, NewKey: word); override;
   end;
 
@@ -108,12 +109,14 @@ begin
   Result := Params.Window;
 end;
 
-class procedure TWin32WSButton.ActiveDefaultButtonChanged(const AButton: TCustomButton);
+class procedure TWin32WSButton.SetDefault(const AButton: TCustomButton; ADefault: Boolean);
 var
   WindowStyle: dword;
 begin
+  if not WSCheckHandleAllocated(AButton, 'SetDefault') then Exit;
+
   WindowStyle := GetWindowLong(AButton.Handle, GWL_STYLE) and not (BS_DEFPUSHBUTTON or BS_PUSHBUTTON);
-  If AButton.Active then
+  if ADefault then
     WindowStyle := WindowStyle or BS_DEFPUSHBUTTON
   else
     WindowStyle := WindowStyle or BS_PUSHBUTTON;
@@ -122,6 +125,7 @@ end;
 
 class procedure TWin32WSButton.SetShortCut(const AButton: TCustomButton; const OldKey, NewKey: word);
 begin
+  if not WSCheckHandleAllocated(AButton, 'SetShortcut') then Exit;
   // TODO: implement me!
 end;
 
@@ -515,6 +519,7 @@ end;
 class procedure TWin32WSBitBtn.SetBounds(const AWinControl: TWinControl;
   const ALeft, ATop, AWidth, AHeight: integer);
 begin
+  if not WSCheckHandleAllocated(AWinControl, 'SetBounds') then Exit;
   TWin32WSWinControl.SetBounds(AWinControl, ALeft, ATop, AWidth, AHeight);
   if TCustomBitBtn(AWinControl).Spacing = -1 then
     DrawBitBtnImage(TCustomBitBtn(AWinControl), PChar(AWinControl.Caption));
@@ -523,6 +528,7 @@ end;
 class procedure TWin32WSBitBtn.SetFont(const AWinControl: TWinControl;
   const AFont: TFont);
 begin
+  if not WSCheckHandleAllocated(AWinControl, 'SetFont') then Exit;
   TWin32WSWinControl.SetFont(AWinControl, AFont);
   DrawBitBtnImage(TCustomBitBtn(AWinControl), PChar(AWinControl.Caption));
 end;
@@ -530,29 +536,34 @@ end;
 class procedure TWin32WSBitBtn.SetGlyph(const ABitBtn: TCustomBitBtn;
   const AValue: TBitmap);
 begin
+  if not WSCheckHandleAllocated(ABitBtn, 'SetGlyph') then Exit;
   DrawBitBtnImage(ABitBtn, PChar(ABitBtn.Caption));
 end;
 
 class procedure TWin32WSBitBtn.SetLayout(const ABitBtn: TCustomBitBtn;
   const AValue: TButtonLayout);
 begin
+  if not WSCheckHandleAllocated(ABitBtn, 'SetLayout') then Exit;
   DrawBitBtnImage(ABitBtn, PChar(ABitBtn.Caption));
 end;
 
 class procedure TWin32WSBitBtn.SetMargin(const ABitBtn: TCustomBitBtn;
   const AValue: Integer);
 begin
+  if not WSCheckHandleAllocated(ABitBtn, 'SetMargin') then Exit;
   DrawBitBtnImage(ABitBtn, PChar(ABitBtn.Caption));
 end;
 
 class procedure TWin32WSBitBtn.SetSpacing(const ABitBtn: TCustomBitBtn;
   const AValue: Integer);
 begin
+  if not WSCheckHandleAllocated(ABitBtn, 'SetSpacing') then Exit;
   DrawBitBtnImage(ABitBtn, PChar(ABitBtn.Caption));
 end;
 
 class procedure TWin32WSBitBtn.SetText(const AWinControl: TWinControl; const AText: string);
 begin
+  if not WSCheckHandleAllocated(AWinControl, 'SetText') then Exit;
   DrawBitBtnImage(TCustomBitBtn(AWinControl), PChar(AText));
 end;
 
