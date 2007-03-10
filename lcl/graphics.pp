@@ -1202,6 +1202,7 @@ type
     procedure CreateIntfImage(var IntfImage: TLazIntfImage);
     function CreateIntfImage: TLazIntfImage;
     function CanReadGraphicStreams(AClass: TFPCustomImageWriterClass): boolean; virtual;
+    procedure SetHandles(NewHandle, NewMaskHandle: HBITMAP);
   public
     property Canvas: TCanvas read GetCanvas;
     property Handle: HBITMAP read GetHandle write SetHandle;

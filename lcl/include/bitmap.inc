@@ -85,8 +85,7 @@ begin
         IntfImage.GetDescriptionFromDevice(0);
       IntfImage.Assign(SrcFPImage);
       IntfImage.CreateBitmap(ImgHandle,ImgMaskHandle,false);
-      Handle:=ImgHandle;
-      MaskHandle:=ImgMaskHandle;
+      SetHandles(ImgHandle,ImgMaskHandle);
     finally
       IntfImage.Free;
     end;
@@ -174,7 +173,6 @@ end;
 
 procedure TBitMap.FreeImage;
 begin
-  UnshareImage(false);
   Handle := 0;
 end;
 
@@ -208,9 +206,8 @@ begin
     //DebugLn('TBitmap.CreateFromBitmapHandles B SrRect=',dbgs(SrcRect));
     if not CreateBitmapFromRawImage(NewRawImage,ImgHandle,ImgMaskHandle,false) then
       raise EInvalidGraphicOperation.Create('TBitmap.CreateFromBitmapHandles Create bitmaps');
-    Handle:=ImgHandle;
+    SetHandles(ImgHandle,ImgMaskHandle);
     ImgHandle:=0;
-    MaskHandle:=ImgMaskHandle;
     ImgMaskHandle:=0;
   finally
     FreeRawImageData(@NewRawImage);
@@ -235,9 +232,8 @@ begin
     // create HBitmap
     IntfImg.CreateBitmap(ImgHandle,ImgMaskHandle,false);
     // feed HBitmap into a TBitmap
-    Handle:=ImgHandle;
+    SetHandles(ImgHandle,ImgMaskHandle);
     ImgHandle:=0;
-    MaskHandle:=ImgMaskHandle;
     ImgMaskHandle:=0;
   finally
     IntfImg.Free;
@@ -334,8 +330,7 @@ begin
         end;
       end;
       IntfImage.CreateBitmap(ImgHandle,ImgMaskHandle,false);
-      Handle:=ImgHandle;
-      MaskHandle:=ImgMaskHandle;
+      SetHandles(ImgHandle,ImgMaskHandle);
     finally
       IntfImage.Free;
     end;
@@ -495,8 +490,7 @@ var
   ImgHandle, ImgMaskHandle: HBitmap;
 begin
   IntfImage.CreateBitmap(ImgHandle,ImgMaskHandle,false);
-  Handle:=ImgHandle;
-  MaskHandle:=ImgMaskHandle;
+  SetHandles(ImgHandle,ImgMaskHandle);
 end;
 
 function TBitmap.GetMonochrome: Boolean;
@@ -552,9 +546,8 @@ end;
 
 procedure TBitmap.FreeSaveStream;
 begin
-  if FImage.FSaveStream<>nil then begin
-    //DebugLn('TBitmap.FreeSaveStream A ',ClassName,' ',FImage.FSaveStream.Size);
-  end;
+  if FImage.FSaveStream=nil then exit;
+  //DebugLn(['TBitmap.FreeSaveStream A ',ClassName,' ',FImage.FSaveStream.Size]);
   UnshareImage(false);
   FreeAndNil(FImage.FSaveStream);
   FImage.SaveStreamType:=bnNone;
@@ -701,6 +694,27 @@ begin
         and ((AClass=TFPWriterBMP) or (AClass=TLazWriterXPM)));
 end;
 
+procedure TBitmap.SetHandles(NewHandle, NewMaskHandle: HBITMAP);
+begin
+  if (FImage.FHandle = NewHandle) and (FImage.FMaskHandle = NewMaskHandle) then exit;
+  // free old handles
+  FreeCanvasContext;
+  UnshareImage(false);
+  FreeSaveStream;
+  FImage.FreeHandle;
+  FImage.FreeMaskHandle;
+  // get the properties from new bitmap
+  FImage.FHandle:=NewHandle;
+  //DebugLn('TBitMap.SetHandle Self=',DbgS(Self),' FImage.FHandle=',DbgS(FImage.FHandle));
+  FillChar(FImage.FDIB, SizeOf(FImage.FDIB), 0);
+  if FImage.FHandle <> 0 then
+    GetObject(FImage.FHandle, SizeOf(FImage.FDIB), @FImage.FDIB);
+  if FImage.FMaskHandle<>NewMaskHandle then
+    ReplaceBitmapMask(FImage.FHandle,FImage.FMaskHandle,NewMaskHandle);
+  FTransparent := FImage.FMaskHandle <> 0;
+  Changed(Self);
+end;
+
 {------------------------------------------------------------------------------
   procedure TBitmap.ReadStreamWithFPImage(Stream: TStream; UseSize: boolean;
     Size: Longint; ReaderClass: TFPCustomImageReaderClass);
@@ -774,8 +788,7 @@ begin
     end;
     FinalizeFPImageReader(ImgReader);
     IntfImg.CreateBitmap(ImgHandle,ImgMaskHandle,false);
-    Handle:=ImgHandle;
-    MaskHandle:=ImgMaskHandle;
+    SetHandles(ImgHandle,ImgMaskHandle);
   finally
     // set save stream
     FImage.SaveStream:=NewSaveStream;
@@ -818,7 +831,7 @@ var
   ImgWriter: TFPCustomImageWriter;
   RawImage: TRawImage;
 begin
-  //DebugLn('WriteStreamWithFPImage Self=',DbgS(Self),' ',Width,',',Height,' Using SaveStream=',(FImage.SaveStream<>nil) and (FImage.SaveStream.Size>0));
+  //DebugLn(['WriteStreamWithFPImage Self=',DbgS(Self),' ',Width,',',Height,' Using SaveStream=',(FImage.SaveStream<>nil) and (FImage.SaveStream.Size>0)]);
   if (FImage.SaveStream<>nil) and (FImage.SaveStream.Size>0)
   and ((FImage.SaveStreamType<>bnNone)
     or CanReadGraphicStreams(FImage.SaveStreamClass))
@@ -828,7 +841,7 @@ begin
     DoWriteOriginal;
     exit;
   end;
-  //DebugLn('WriteStreamWithFPImage');
+  //DebugLn('WriteStreamWithFPImage no savestream, creating stream ...');
   
   // write image to temporary stream
   MemStream:=TMemoryStream.Create;
@@ -933,6 +946,7 @@ begin
   // free old handles
   FreeCanvasContext;
   UnshareImage(false);
+  FreeSaveStream;
   FImage.FreeHandle;
   // get the properties from new bitmap
   FImage.FHandle:=Value;
