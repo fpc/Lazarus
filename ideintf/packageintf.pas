@@ -77,7 +77,8 @@ type
     function DoSaveAllPackages(Flags: TPkgSaveFlags): TModalResult; virtual; abstract;
 
     function AddUnitDependenciesForComponentClasses(const UnitFilename: string;
-                         ComponentClassnames: TStrings): TModalResult; virtual; abstract;
+                         ComponentClassnames: TStrings;
+                         Quiet: boolean = false): TModalResult; virtual; abstract;
     function GetOwnersOfUnit(const UnitFilename: string): TFPList; virtual; abstract;
     procedure ExtendOwnerListWithUsedByOwners(OwnerList: TFPList); virtual; abstract;
     function GetSourceFilesOfOwners(OwnerList: TFPList): TStrings; virtual; abstract;

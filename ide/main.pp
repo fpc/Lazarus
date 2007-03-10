@@ -12695,12 +12695,13 @@ end;
 procedure TMainIDE.OnPropHookPersistentAdded(APersistent: TPersistent;
   Select: boolean);
 var
-  ComponentClass: TRegisteredComponent;
+  RegComp: TRegisteredComponent;
   ADesigner: TDesigner;
   AComponent: TComponent;
   ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
   Ancestor: TComponent;
+  ComponentClassNames: TStringList;
 begin
   DebugLn('TMainIDE.OnPropHookPersistentAdded A ',dbgsName(APersistent));
   ADesigner:=nil;
@@ -12708,8 +12709,8 @@ begin
     AComponent:=TComponent(APersistent)
   else
     AComponent:=nil;
-  ComponentClass:=IDEComponentPalette.FindComponent(APersistent.ClassName);
-  if (ComponentClass=nil) and (AComponent<>nil) then begin
+  RegComp:=IDEComponentPalette.FindComponent(APersistent.ClassName);
+  if (RegComp=nil) and (AComponent<>nil) then begin
     DebugLn('TMainIDE.OnPropHookPersistentAdded ',APersistent.ClassName,
             ' not registered');
     exit;
@@ -12729,9 +12730,7 @@ begin
     ADesigner:=FindRootDesigner(AComponent) as TDesigner;
   end;
 
-  if ComponentClass<>nil then begin
-    // add needed package to required packages
-    PkgBoss.AddProjectRegCompDependency(Project1,ComponentClass);
+  if RegComp<>nil then begin
     if not BeginCodeTool(ADesigner,ActiveSrcEdit,ActiveUnitInfo,
       [ctfSwitchToFormSource])
     then exit;
@@ -12739,10 +12738,16 @@ begin
     // remember cursor position
     SourceNotebook.AddJumpPointClicked(Self);
 
-    // add needed unit to source
-    CodeToolBoss.AddUnitToMainUsesSection(ActiveUnitInfo.Source,
-                                          ComponentClass.GetUnitName,'');
-    ActiveUnitInfo.Modified:=true;
+    // add needed package to required packages
+    ComponentClassNames:=TStringList.Create;
+    try
+      ComponentClassNames.Add(APersistent.ClassName);
+      //DebugLn(['TMainIDE.OnPropHookPersistentAdded ComponentClassNames=',ComponentClassNames.Text]);
+      PkgBoss.AddUnitDependenciesForComponentClasses(ActiveUnitInfo.Filename,
+        ComponentClassNames,true);
+    finally
+      ComponentClassNames.Free;
+    end;
 
     // add component definitions to form source
     Ancestor:=GetAncestorLookupRoot(ActiveUnitInfo);
