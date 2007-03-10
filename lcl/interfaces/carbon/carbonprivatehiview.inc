@@ -22,15 +22,13 @@
 function CarbonPrivateHIView_Hit(ANextHandler: EventHandlerCallRef;
   AEvent: EventRef;
   AInfo: TCarbonWidgetInfo): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
+var
+  Value: UInt32;
+  I: Integer;
+  RadioButton: TRadioButton;
 begin
-  {$ifdef VerboseMouse}
   DebugLn('PrivateHiView_Hit: ', (AInfo.LCLObject as TComponent).Name);
-  {$endif}
   Result := CallNextEventHandler(ANextHandler, AEvent);
-  
-  if AInfo.LCLObject is TCustomCheckBox then
-  // pass changed to check box to update checked property before click
-    LCLSendChangedMsg(AInfo.LCLObject as TControl);
   
   LCLSendClickedMsg(AInfo.LCLObject as TControl);
 end;

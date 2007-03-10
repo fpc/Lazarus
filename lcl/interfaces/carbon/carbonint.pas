@@ -116,7 +116,7 @@ uses
   CarbonWSControls,
 // CarbonWSDbCtrls,
 // CarbonWSDBGrids,
-// CarbonWSDialogs,
+ CarbonWSDialogs,
 // CarbonWSDirSel,
 // CarbonWSEditBtn,
 // CarbonWSExtCtrls,

@@ -767,7 +767,8 @@ end;
   Returns: If the function suceeds
 
   Creates the ATSU text layout for the specified text and manages the device
-  context to render the text
+  context to render the text.
+  NOTE: Coordination system is upside-down!
  ------------------------------------------------------------------------------}
 function BeginTextRender(DC: TCarbonDeviceContext; AStr: PChar;
   ACount: Integer; out ALayout: ATSUTextLayout): Boolean;
@@ -778,6 +779,7 @@ var
   W: WideString;
   Tag: ATSUAttributeTag;
   DataSize: ByteCount;
+  TempContext: CGContextRef;
   PContext: ATSUAttributeValuePtr;
 begin
   Result := False;
@@ -785,6 +787,10 @@ begin
 
   // save context
   CGContextSaveGState(DC.CGContext);
+  
+  // change coordination system
+  CGContextScaleCTM(DC.CGContext, 1, -1);
+  CGContextTranslateCTM(DC.CGContext, 0, 0);
   
   // convert UTF-8 string to UTF-16 string
   if ACount < 0 then S := AStr
@@ -810,7 +816,8 @@ begin
     Tag := kATSUCGContextTag;
     DataSize := SizeOf(CGContextRef);
 
-    PContext := Pointer(DC.CGContext);
+    TempContext := DC.CGContext;
+    PContext := @TempContext;
     Result := ATSUSetLayoutControls(ALayout, 1, @Tag, @DataSize, @PContext) = noErr;
   end;
 end;

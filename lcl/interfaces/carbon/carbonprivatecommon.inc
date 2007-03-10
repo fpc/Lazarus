@@ -41,7 +41,9 @@ var
   EraseMsg: TLMEraseBkgnd;
   AStruct: PPaintStruct;
 begin
+  {$IFDEF VerbosePaint}
   Debugln('CarbonPrivateCommon_Draw ', DbgSName(AInfo.LCLObject));
+  {$ENDIF}
   
   {
   // send erase background messsage
@@ -56,7 +58,7 @@ begin
   GetEventParameter(AEvent, kEventParamCGContextRef, typeCGContextRef, nil,
     SizeOf(CGContextRef), nil, @(AInfo.CGContext));
     
-  AInfo.Context.Update;
+  AInfo.Context.Reset;
 
   // TODO: save DC
   
@@ -64,7 +66,9 @@ begin
   FillChar(AStruct^, SizeOf(TPaintStruct), 0);
   AStruct^.hdc := HDC(AInfo.Context);
   try
+    {$IFDEF VerbosePaint}
     DebugLn('CarbonPrivateCommon_Draw LM_PAINT to ', DbgSName(AInfo.LCLObject));
+    {$ENDIF}
     LCLSendPaintMsg(AInfo.LCLObject as TControl, HDC(AInfo.Context), AStruct);
   finally
     Dispose(AStruct);
@@ -111,32 +115,44 @@ function CarbonPrivateCommon_ValueChanged(ANextHandler: EventHandlerCallRef;
   AEvent: EventRef;
   AInfo: TCarbonWidgetInfo): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
 var
-  I: Integer;
-  RadioButton: TRadioButton;
   ScrollMsg: TLMScroll;
+  RadioButton: TRadioButton;
+  I: Integer;
 begin
   DebugLn('CarbonPrivateCommon_ValueChanged ', DbgSName(AInfo.LCLObject));
 
   Result := CallNextEventHandler(ANextHandler, AEvent);
   
-  if AInfo.LCLObject is TRadioButton then
+  if AInfo.LCLObject is TCustomCheckBox then
   begin
-    if GetControl32BitValue(ControlRef(AInfo.Widget)) = kControlCheckBoxCheckedValue then
+    (*// toggle custom check box state before on click event is proceed
+    case GetControl32BitValue(ControlRef(AInfo.Widget)) of
+      kControlCheckBoxCheckedValue  : Value := cbUnchecked;
+      kControlCheckBoxUncheckedValue: Value := cbChecked;
+      kControlCheckBoxMixedValue    : Value := cbGrayed; // Is this right?
+    end;
+
+    SetControl32BitValue(ControlRef(AInfo.Widget), Value);*)
+
+    if AInfo.LCLObject is TRadioButton then
     begin
-      DebugLn('CarbonPrivateCommon_ValueChanged Uncheck Sibling');
-      // uncheck sibling radio buttons
-      RadioButton := (AInfo.LCLObject as TRadioButton);
-      if RadioButton.Parent <> nil then
+      if GetControl32BitValue(ControlRef(AInfo.Widget))
+        = kControlCheckBoxCheckedValue then
       begin
-      
-        for I := 0 to RadioButton.Parent.ControlCount - 1 do
-          if (RadioButton.Parent.Controls[I] is TRadioButton) and
-            (RadioButton.Parent.Controls[I] <> RadioButton) then
-            (RadioButton.Parent.Controls[I] as TRadioButton).Checked := False;
+        DebugLn('CarbonPrivateCommon_ValueChanged Uncheck Sibling');
+        // uncheck sibling radio buttons
+        RadioButton := (AInfo.LCLObject as TRadioButton);
+        if RadioButton.Parent <> nil then
+        begin
+          for I := 0 to RadioButton.Parent.ControlCount - 1 do
+            if (RadioButton.Parent.Controls[I] is TRadioButton) and
+              (RadioButton.Parent.Controls[I] <> RadioButton) then
+              (RadioButton.Parent.Controls[I] as TRadioButton).Checked := False;
+        end;
       end;
     end;
   end;
-  
+
   if AInfo.LCLObject is TCustomScrollBar then
   begin
     FillChar(ScrollMsg, SizeOf(TLMScroll), 0);

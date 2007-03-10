@@ -32,7 +32,7 @@ uses
   // LCL
   Controls, Buttons, LCLType, LCLProc,
   // widgetset
-  WSButtons, WSLCLClasses,
+  WSButtons, WSLCLClasses, WSProc,
   // interface
   CarbonDef, CarbonProc, CarbonPrivate,
   CarbonWSControls;
@@ -46,6 +46,7 @@ type
   protected
   public
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class procedure ActiveDefaultButtonChanged(const AButton: TCustomButton); override;
   end;
 
   { TCarbonWSBitBtn }
@@ -106,6 +107,25 @@ begin
   TCarbonPrivateHandleClass(WSPrivate).RegisterEvents(Info);
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonWSButton.ActiveDefaultButtonChanged
+  Params:  AButton - LCL button control
+  Returns: Nothing
+
+  Updates default button indication
+ ------------------------------------------------------------------------------}
+class procedure TCarbonWSButton.ActiveDefaultButtonChanged(
+  const AButton: TCustomButton);
+var
+  ADefault: Boolean;
+begin
+  if not WSCheckHandleAllocated(AButton, 'ActiveDefaultButtonChanged') then Exit;
+  
+  ADefault := AButton.Default;
+  SetControlData(ControlRef(AButton.Handle), kControlEntireControl,
+    kControlPushButtonDefaultTag, SizeOf(Boolean), @ADefault);
+end;
+
 
 { TCarbonWSBitBtn }
 
@@ -115,8 +135,8 @@ end;
            AParams     - Creation parameters
   Returns: Handle to the control in Carbon interface
 
-  Creates new bitmap button control in Carbon interface with the specified
-  parameters
+  Creates new bevel button with bitmap control in Carbon interface with the
+  specified parameters
  ------------------------------------------------------------------------------}
 class function TCarbonWSBitBtn.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
@@ -127,7 +147,6 @@ var
 begin
   Result := 0;
 
-  // create the button at bounds with title
   CreateCarbonString(AParams.Caption, CFString);
   try
     if CreateBevelButtonControl(GetTopParentWindow(AWinControl), ParamsToCarbonRect(AParams),
@@ -140,10 +159,7 @@ begin
   end;
   if Result = 0 then Exit;
 
-  // add the info (our data, like which TWinControl belong to this carbon widget)
   Info := TCarbonWidgetInfo.CreateForControl(Control, AWinControl);
-
-  // register events (e.g. mouse, focus, keyboard, size, ...)
   TCarbonPrivateHandleClass(WSPrivate).RegisterEvents(Info);
 end;
 

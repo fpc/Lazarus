@@ -24,7 +24,7 @@ function CarbonPrivateEdit_TextChanged(ANextHandler: EventHandlerCallRef;
   AInfo: TCarbonWidgetInfo): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
 var
   S: String;
-  M: Integer;
+  M, SelStart: Integer;
   Msg: TLMessage;
   MemoStrings: TCarbonMemoStrings;
 begin
@@ -37,11 +37,13 @@ begin
     M := (AInfo.LCLObject as TCustomEdit).MaxLength;
     if M > 0 then
     begin
-      if TCarbonWSCustomEdit.GetText(AInfo.LCLObject as TWinControl, S) then
+      if GetEditControlText(HWnd(AInfo.Widget), S) then
         if UTF8Length(S) > M then
         begin
+          GetEditControlSelStart(HWnd(AInfo.Widget), SelStart);
           S := UTF8Copy(S, 1, M);
-          TCarbonWSCustomEdit.SetText(AInfo.LCLObject as TWinControl, S);
+          if SetEditControlText(HWnd(AInfo.Widget), S) then
+            SetEditControlSelStart(HWnd(AInfo.Widget), SelStart);
         end;
     end;
     

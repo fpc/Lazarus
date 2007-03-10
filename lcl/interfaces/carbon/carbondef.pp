@@ -243,6 +243,7 @@ type
     function GetCGContext: CGContextRef; virtual; abstract;
     function GetSize: TPoint; virtual; abstract;
   public
+    constructor Create;
     destructor Destroy; override;
     
     procedure Reset; virtual;
@@ -622,6 +623,12 @@ begin
   end;
 end;
 
+constructor TCarbonDeviceContext.Create;
+begin
+  FBkBrush := TCarbonBrush.Create;
+  FTextPen := TCarbonPen.Create;
+end;
+
 destructor TCarbonDeviceContext.Destroy;
 begin
   BkBrush.Free;
@@ -638,26 +645,18 @@ begin
   PenPos.y := 0;
 
   // create brush for bk color and mode
-  FBkColor := clWhite;
+  FBkColor := clNone;
   FBkMode := TRANSPARENT;
-  FBkBrush := TCarbonBrush.Create;
 
   // create pen for text color
-  FTextColor := clBlack;
-  FTextPen := TCarbonPen.Create;
+  FTextColor := clNone;
 
   // set raster operation to copy
   FROP2 := R2_COPYPEN;
 
   // set initial pen and brush
-  FCurrentPen := TextPen;
-  FCurrentBrush := BkBrush;
-  
-  if CGContext <> nil then
-  begin
-    CurrentPen.Apply(Self);
-    CurrentBrush.Apply(Self);
-  end;
+  FCurrentPen := nil;
+  FCurrentBrush := nil;
   
   Update;
 end;
@@ -666,10 +665,9 @@ procedure TCarbonDeviceContext.Update;
 begin
   if CGContext <> nil then
   begin
+    {$IFDEF VerbosePaint}
     DebugLn('TCarbonDeviceContext.Update');
-    // change origin of coordination system (botom-left to top-left)
-    // note that the coordination system is upside-down
-    CGContextTranslateCTM(CGContext, 0, Size.Y);
+    {$ENDIF}
     // disable anti-aliasing
     CGContextSetShouldAntialias(CGContext, 0);
   end;

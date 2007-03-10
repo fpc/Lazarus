@@ -80,23 +80,17 @@ function CarbonPrivateWindow_Close(ANextHandler: EventHandlerCallRef;
 var
   Msg: TLMessage;
 begin
+  DebugLn('CarbonPrivateWindow_Close: ', (AInfo.LCLObject as TComponent).Name);
   // Do canclose query, if false then exit
 
   FillChar(Msg, SizeOf(Msg),0);
   Msg.msg := LM_CLOSEQUERY;
 
-  // Message results : 0 - do nothing, 1 - destroy or hide window
+  // Message results : 0 - do nothing, 1 - destroy window
   if DeliverMessage(AInfo.LCLObject, Msg) = 0 then
   begin
+    DebugLn('CarbonPrivateWindow_Close Can''t close: ', (AInfo.LCLObject as TComponent).Name);
     Result := noErr;
-    Exit;
-  end;
-  
-  if (AInfo.LCLObject is TCustomForm) and
-    (fsModal in (AInfo.LCLObject as TCustomForm).FormState) then
-  begin // form is modal - avoid destroy
-    Result := noErr;
-    DebugLn('CarbonPrivateWindow_Close Hide modal form');
     Exit;
   end;
 
@@ -311,7 +305,7 @@ var
     Msg^.YPos := MousePoint.Y;
     Msg^.Keys := GetCarbonMsgKeyState;
 
-    // ???? What rae we doing here ????
+    // ???? What are we doing here ????
     Spec := MakeEventSpec(kEventClassControl, kEventControlTrack);
     InstallControlEventHandler(Control, RegisterEventHandler(@CarbonPrivateWindow_ControlTrack),
       1, @Spec, Info, nil);
@@ -326,7 +320,7 @@ var
     Msg: ^TLMMouse;
   begin
     {$IFDEF VerboseMouse}
-    DebugLN('HandleMouseUpEvent');
+    DebugLn('HandleMouseUpEvent');
     {$ENDIF}
     // this is not called if NextHandler is called on MouseDown
     // perhaps mousetracking can fix this

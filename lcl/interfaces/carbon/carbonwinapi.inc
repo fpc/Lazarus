@@ -360,7 +360,7 @@ begin
 
   ADC := TCarbonDeviceContext(DC);
   
-  R := GetCGRect(X1, -Y1, X2, -Y2);
+  R := GetCGRect(X1, Y1, X2, Y2);
 
   CGContextFillEllipseInRect(ADC.CGContext, R);
   CGContextStrokeEllipseInRect(ADC.CGContext, R);
@@ -565,7 +565,7 @@ begin
 
     // finally draw the text
     Result := ATSUDrawText(TextLayout, kATSUFromTextBeginning, kATSUToTextEnd,
-      X shl 16 - TextBefore, -(Y shl 16) - Descent) = noErr;
+      X shl 16 - TextBefore, -(Y shl 16) - Ascent) = noErr;
      if Result then
        DebugLn('ExtTextOut text drawed');
   finally
@@ -735,8 +735,6 @@ begin
   if lpRect <> nil then
   begin
     lpRect^ := CGRectToRect(CGContextGetClipBoundingBox(ADC.CGContext));
-    lpRect^.Top := -lpRect^.Top;
-    lpRect^.Bottom := -lpRect^.Bottom;
   end;
 end;
 
@@ -881,7 +879,7 @@ var
   Window: WindowRef;
 begin
   Result := 0;
-  Window := WindowRef(GetActiveWindow);
+  Window := WindowRef(GetUserFocusWindow);
   if Window = nil then Exit;
   
   Control := nil;
@@ -1482,8 +1480,8 @@ begin
   ADC := TCarbonDeviceContext(DC);
 
   CGContextBeginPath(ADC.CGContext);
-  CGContextMoveToPoint(ADC.CGContext, ADC.PenPos.x, -ADC.PenPos.y);
-  CGContextAddLineToPoint(ADC.CGContext, X, -Y);
+  CGContextMoveToPoint(ADC.CGContext, ADC.PenPos.x, ADC.PenPos.y);
+  CGContextAddLineToPoint(ADC.CGContext, X, Y);
   CGContextStrokePath(ADC.CGContext);
   
   Result := True;
@@ -1567,12 +1565,12 @@ begin
   ADC := TCarbonDeviceContext(DC);
 
   CGContextBeginPath(ADC.CGContext);
-  CGContextMoveToPoint(ADC.CGContext, Points^.x, -Points^.y);
+  CGContextMoveToPoint(ADC.CGContext, Points^.x, Points^.y);
 
   while NumPts > 1 do
   begin
     Inc(Points);
-    CGContextAddLineToPoint(ADC.CGContext, Points^.x, -Points^.y);
+    CGContextAddLineToPoint(ADC.CGContext, Points^.x, Points^.y);
     Dec(NumPts);
   end;
 
@@ -1607,12 +1605,12 @@ begin
   ADC := TCarbonDeviceContext(DC);
   
   CGContextBeginPath(ADC.CGContext);
-  CGContextMoveToPoint(ADC.CGContext, Points^.x, -Points^.y);
+  CGContextMoveToPoint(ADC.CGContext, Points^.x, Points^.y);
 
   while NumPts > 1 do
   begin
     Inc(Points);
-    CGContextAddLineToPoint(ADC.CGContext, Points^.x, -Points^.y);
+    CGContextAddLineToPoint(ADC.CGContext, Points^.x, Points^.y);
     Dec(NumPts);
   end;
   
@@ -1666,7 +1664,7 @@ begin
 
   ADC := TCarbonDeviceContext(DC);
 
-  R := GetCGRect(X1, -Y1, X2, -Y2);
+  R := GetCGRect(X1, Y1, X2, Y2);
 
   CGContextFillRect(ADC.CGContext, R);
   CGContextStrokeRect(ADC.CGContext, R);
@@ -1824,28 +1822,17 @@ end;
 {------------------------------------------------------------------------------
   Method:  SendMessage
   Params:  HandleWnd - Handle of destination window
-           Msg       - LCL message to send
+           Msg       - Message to send
            WParam    - First message parameter
            LParam    - Second message parameter
   Returns: The result of the message processing
 
-  Sends the specified LCL message to the specified window
+  Sends the specified message to the specified window
  ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.SendMessage(HandleWnd: HWND; Msg: Cardinal;
   wParam: WParam; lParam: LParam): LResult;
-var
-  Info: TCarbonWidgetInfo;
-  AMsg: TLMessage;
 begin
-  Result := 0;
-  Info := GetWidgetInfo(Pointer(HandleWnd));
-  if Info = nil then Exit;
-  
-  AMsg.Msg := Msg;
-  AMsg.WParam := wParam;
-  AMsg.LParam := lParam;
-  
-  Result := DeliverMessage(Info.LCLObject, AMsg);
+  Result := inherited SendMessage(HandleWnd, Msg, wParam, lParam);
 end;
 
 {------------------------------------------------------------------------------
@@ -1950,7 +1937,7 @@ begin
   Info := GetWidgetInfo(Pointer(HWnd));
   Window := GetTopParentWindow(Info.LCLObject as TWinControl);
   
-  ActivateWindow(Window, True); // can change focus!
+  SetUserFocusWindow(Window); // can change focus!
   if HWnd <> THandle(Window) then
   begin
     GetKeyboardFocus(Window, Control);
@@ -2196,7 +2183,7 @@ begin
   end;
   
   CGContextDrawImage(TCarbonDeviceContext(SrcDC).CGContext,
-    GetCGRect(X, -Y, Width, -Y - Height),
+    GetCGRect(X, Y, X + Width, Y + Height),
     TCarbonBitmapContext(SrcDC).Bitmap.CGImage);
   Result := True;
 end;

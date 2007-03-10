@@ -445,14 +445,21 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCarbonWidgetSet.AppBringToFront;
 var
-  I: Integer;
+  //I: Integer;
+  Proc: ProcessSerialNumber;
 begin
-  CollapseAllWindows(False);
+  {CollapseAllWindows(False);
   
   for I := 0 to Pred(Screen.CustomFormZOrderCount) do
   begin
     BringToFront(WindowRef(Screen.CustomFormsZOrdered[I].Handle));
-  end;
+  end;}
+  (*
+    According to Carbon Development Tips & Tricks:
+    34. How do I bring all my windows to the front?
+  *)
+
+  if GetCurrentProcess(Proc) = noErr then SetFrontProcess(Proc);
 end;
 
 {------------------------------------------------------------------------------

@@ -33,10 +33,14 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-//  Dialogs,
-////////////////////////////////////////////////////
-  LCLType, WSDialogs, WSLCLClasses;
-
+  // libs
+  FPCMacOSAll,
+  // LCL
+  Controls, Dialogs, LCLType, LCLProc,
+  // widgetset
+  WSLCLClasses, WSProc, WSDialogs,
+  // interface
+  CarbonDef, CarbonProc, CarbonPrivate;
 type
 
   { TCarbonWSCommonDialog }
@@ -85,6 +89,7 @@ type
   private
   protected
   public
+    class procedure ShowModal(const ACommonDialog: TCommonDialog); override;
   end;
 
   { TCarbonWSColorButton }
@@ -106,6 +111,47 @@ type
 
 implementation
 
+{ TCarbonWSColorDialog }
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWSColorDialog.ShowModal
+  Params:  ACommonDialog - LCL color dialog
+  Returns: Nothing
+
+  Shows Carbon interface color picker
+ ------------------------------------------------------------------------------}
+class procedure TCarbonWSColorDialog.ShowModal(
+  const ACommonDialog: TCommonDialog);
+var
+  ColorInfo: ColorPickerInfo;
+  ColorDialog: TColorDialog;
+begin
+  ColorDialog := ACommonDialog as TColorDialog;
+  
+  FillChar(ColorInfo, SizeOf(ColorPickerInfo), 0);
+  ColorInfo.theColor.color.rgb := CMRGBColor(ColorToCarbonColor(ColorDialog.Color));
+  ColorInfo.theColor.profile := nil;
+  ColorInfo.dstProfile := nil;
+  ColorInfo.flags := kColorPickerDialogIsModal or kColorPickerDialogIsMoveable or
+    kColorPickerInPickerDialog;
+  ColorInfo.placeWhere :=  kCenterOnMainScreen;
+  ColorInfo.pickerType := 0; // use last picker subtype
+  ColorInfo.eventProc := nil;
+  ColorInfo.colorProc := nil;
+  ColorInfo.prompt := UTF8ToAnsi(ColorDialog.Title); // does not function!
+
+  if PickColor(ColorInfo) = noErr then
+    if ColorInfo.newColorChosen then
+    begin
+      ColorDialog.Color := CarbonColorToColor(
+        RGBColor(ColorInfo.theColor.color.rgb));
+      ACommonDialog.UserChoice := mrOK;
+      Exit;
+    end;
+
+  ACommonDialog.UserChoice := mrCancel;
+end;
+
 initialization
 
 ////////////////////////////////////////////////////
@@ -119,7 +165,7 @@ initialization
 //  RegisterWSComponent(TOpenDialog, TCarbonWSOpenDialog);
 //  RegisterWSComponent(TSaveDialog, TCarbonWSSaveDialog);
 //  RegisterWSComponent(TSelectDirectoryDialog, TCarbonWSSelectDirectoryDialog);
-//  RegisterWSComponent(TColorDialog, TCarbonWSColorDialog);
+  RegisterWSComponent(TColorDialog, TCarbonWSColorDialog);
 //  RegisterWSComponent(TColorButton, TCarbonWSColorButton);
 //  RegisterWSComponent(TFontDialog, TCarbonWSFontDialog);
 ////////////////////////////////////////////////////

@@ -350,14 +350,10 @@ end;
   Invalidates window in Carbon interface
  ------------------------------------------------------------------------------}
 class procedure TCarbonWSCustomForm.Invalidate(const AWinControl: TWinControl);
-var
- AWndRect:  FPCMacOSAll.Rect;
- Result: Boolean;
 begin
   if not WSCheckHandleAllocated(AWinControl, 'Invalidate') then Exit;
 
-  Result := GetWindowBounds(WindowRef(AWinControl.Handle), kWindowContentRgn, AWndRect) <> 0;
-  if Result then InvalWindowRect(WindowRef(AWinControl.Handle), AWndRect);
+  HIViewSetNeedsDisplay(GetCarbonWindowContent(AWinControl.Handle), True);
 end;
 
 {------------------------------------------------------------------------------

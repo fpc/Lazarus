@@ -202,6 +202,7 @@ type
   private
   protected
   public
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
   end;
 
   { TCarbonWSRadioButton }
@@ -412,7 +413,7 @@ begin
 
   // set edit single line
   SetControlData(Control, kControlEntireControl, kControlEditTextSingleLineTag,
-                 SizeOf(Boolean), @SingleLine);
+    SizeOf(Boolean), @SingleLine);
 
   Info := TCarbonWidgetInfo.CreateForControl(Control, AWinControl);
   Info.UserData := IsPassword;
@@ -775,13 +776,20 @@ var
   Control: ControlRef;
   CFString: CFStringRef;
   Info: TCarbonWidgetInfo;
+  Value: UInt32;
 begin
   Result := 0;
+  
+  case (AWinControl as TCustomCheckBox).State of
+    cbChecked  : Value := kControlCheckBoxCheckedValue;
+    cbUnChecked: Value := kControlCheckBoxUncheckedValue;
+    cbGrayed   : Value := kControlCheckBoxMixedValue;
+  end;
 
   CreateCarbonString(AParams.Caption, CFString);
   try
     if CreateCheckBoxControl(GetTopParentWindow(AWinControl),
-      ParamsToCarbonRect(AParams), CFString, 0, True, Control) = noErr
+      ParamsToCarbonRect(AParams), CFString, Value, True, Control) = noErr
     then
       Result := TLCLIntfHandle(Control);
   finally
@@ -835,6 +843,52 @@ begin
   SetControl32BitValue(ControlRef(ACustomCheckBox.Handle), Value);
 end;
 
+
+{ TCarbonWSToggleBox }
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWSToggleBox.CreateHandle
+  Params:  AWinControl - LCL control
+           AParams     - Creation parameters
+  Returns: Handle to the control in Carbon interface
+
+  Creates new toggle push button in Carbon interface with the specified
+  parameters
+ ------------------------------------------------------------------------------}
+class function TCarbonWSToggleBox.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): TLCLIntfHandle;
+var
+  Control: ControlRef;
+  CFString: CFStringRef;
+  Info: TCarbonWidgetInfo;
+  Value: UInt32;
+begin
+  Result := 0;
+
+  case (AWinControl as TToggleBox).State of
+    cbChecked  : Value := kControlCheckBoxCheckedValue;
+    cbUnChecked: Value := kControlCheckBoxUncheckedValue;
+    cbGrayed   : Value := kControlCheckBoxMixedValue;
+  end;
+
+  CreateCarbonString(AParams.Caption, CFString);
+  try
+    if CreateBevelButtonControl(GetTopParentWindow(AWinControl),
+      ParamsToCarbonRect(AParams), CFString, kControlBevelButtonNormalBevel,
+      kControlBehaviorToggles, nil, 0, 0, 0, Control) = noErr
+    then
+      Result := TLCLIntfHandle(Control);
+  finally
+    FreeCarbonString(CFString);
+  end;
+  if Result = 0 then Exit;
+  
+  SetControl32BitValue(Control, Value);
+
+  Info := TCarbonWidgetInfo.CreateForControl(Control, AWinControl);
+  TCarbonPrivateHandleClass(WSPrivate).RegisterEvents(Info);
+end;
+
 { TCarbonWSRadioButton }
 
 {------------------------------------------------------------------------------
@@ -851,14 +905,20 @@ var
   Control: ControlRef;
   CFString: CFStringRef;
   Info: TCarbonWidgetInfo;
+  Value: UInt32;
 begin
   Result := 0;
+
+  case (AWinControl as TRadioButton).State of
+    cbChecked  : Value := kControlCheckBoxCheckedValue;
+    cbUnChecked: Value := kControlCheckBoxUncheckedValue;
+    cbGrayed   : Value := kControlCheckBoxMixedValue;
+  end;
 
   CreateCarbonString(AParams.Caption, CFString);
   try
     if CreateRadioButtonControl(GetTopParentWindow(AWinControl),
-      ParamsToCarbonRect(AParams), CFString,
-      Ord((AWinControl as TRadioButton).Checked), True, Control) = noErr
+      ParamsToCarbonRect(AParams), CFString, Value, True, Control) = noErr
     then
       Result := TLCLIntfHandle(Control);
   finally
@@ -962,7 +1022,7 @@ var
   S: String;
 begin
   S := '';
-  DebugLn('TCarbonMemoStrings.InternalUpdate ' + FOwner.Name);
+  //DebugLn('TCarbonMemoStrings.InternalUpdate ' + FOwner.Name);
   if GetEditControlText(FOwner.Handle, S) then
     FStringList.Text := S;
   
@@ -977,7 +1037,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCarbonMemoStrings.ExternalUpdate;
 begin
-  DebugLn('TCarbonMemoStrings.ExternalUpdate ' + FOwner.Name + ' Text: ' + FStringList.Text);
+  //DebugLn('TCarbonMemoStrings.ExternalUpdate ' + FOwner.Name + ' Text: ' + FStringList.Text);
   SetEditControlText(FOwner.Handle, FStringList.Text);
 end;
 
@@ -1151,7 +1211,7 @@ initialization
 //  RegisterWSComponent(TButtonControl, TCarbonWSButtonControl);
   RegisterWSComponent(TCustomCheckBox, TCarbonWSCustomCheckBox, TCarbonPrivateValueControl);
 //  RegisterWSComponent(TCheckBox, TCarbonWSCheckBox);
-//  RegisterWSComponent(TToggleBox, TCarbonWSToggleBox);
+  RegisterWSComponent(TToggleBox, TCarbonWSToggleBox, TCarbonPrivateValueControl);
   RegisterWSComponent(TRadioButton, TCarbonWSRadioButton, TCarbonPrivateValueControl);
   RegisterWSComponent(TCustomStaticText, TCarbonWSCustomStaticText);
 //  RegisterWSComponent(TStaticText, TCarbonWSStaticText);

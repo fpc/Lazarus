@@ -71,6 +71,7 @@ type
     class procedure SetChildZPosition(const AWinControl, AChild: TWinControl;
                                       const AOldPos, ANewPos: Integer;
                                       const AChildren: TFPList); override;
+    class procedure SetColor(const AWinControl: TWinControl); override;
     class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
     class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
     class procedure Invalidate(const AWinControl: TWinControl); override;
@@ -246,6 +247,32 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method:  TCarbonWSWinControl.SetColor
+  Params:  AWinControl - LCL control
+  Returns: Nothing
+
+  Sets the color of control in Carbon interface according to the LCL control
+  NOTE: Functions only for edit
+ ------------------------------------------------------------------------------}
+class procedure TCarbonWSWinControl.SetColor(const AWinControl: TWinControl);
+var
+  FontStyle: ControlFontStyleRec;
+begin
+  if not WSCheckHandleAllocated(AWinControl, 'SetColor') then Exit;
+
+  // preserve other font settings
+  GetControlData(ControlRef(AWinControl.Handle), kControlEntireControl,
+    kControlFontStyleTag, SizeOf(FontStyle), @FontStyle, nil);
+
+  FontStyle.flags := FontStyle.flags or kControlUseBackColorMask;
+  FontStyle.backColor := ColorToCarbonColor(AWinControl.Color);
+
+  SetControlFontStyle(ControlRef(AWinControl.Handle), FontStyle);
+  // invalidate control
+  InvalidateCarbonControl(AWinControl.Handle);
+end;
+
+{------------------------------------------------------------------------------
   Method:  TCarbonWSWinControl.SetFont
   Params:  AWinControl - LCL control
            AFont       - Font
@@ -363,9 +390,7 @@ begin
     ParentView := HIViewRef(AControl.Parent.Handle);
   end;
   
-  HIViewAddSubview(ParentView,
-    HIViewRef((AControl as TWinControl).Handle));
-  HIViewSetVisible(HIViewRef((AControl as TWinControl).Handle), AControl.Visible);
+  HIViewAddSubview(ParentView, HIViewRef((AControl as TWinControl).Handle));
 end;
 
 {------------------------------------------------------------------------------
