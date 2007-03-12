@@ -3589,6 +3589,7 @@ var
   CurAnchorSide: TAnchorSide;
 begin
   //DebugLn('[TControl.Destroy] A ',Name,':',ClassName);
+  // make sure the capture is released
   MouseCapture := false;
   Application.ControlDestroyed(Self);
   SetParent(nil);
