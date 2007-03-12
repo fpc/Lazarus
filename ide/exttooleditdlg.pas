@@ -69,6 +69,8 @@ type
     TitleLabel: TLabel;
     TitleEdit: TEdit;
     FilenameLabel: TLabel;
+    OpenDialog: TOpenDialog;
+    OpenButton:TButton;
     FilenameEdit: TEdit;
     ParametersLabel: TLabel;
     ParametersEdit: TEdit;
@@ -96,6 +98,7 @@ type
     procedure KeyGrabButtonClick(Sender: TObject);
     procedure MacrosInsertButtonClick(Sender: TObject);
     procedure MacrosListboxClick(Sender: TObject);
+    procedure OpenButtonClick(sender : TOBject);
   private
     fOptions: TExternalToolOptions;
     fTransferMacros: TTransferMacroList;
@@ -191,9 +194,31 @@ begin
     with FilenameEdit do begin
       Name:='FilenameEdit';
       Parent:=Self;
-      SetBounds(TitleEdit.Left,FilenameLabel.Top+2,TitleEdit.Width,
+      SetBounds(TitleEdit.Left,FilenameLabel.Top+2,TitleEdit.Width-TitleEdit.Height-5,
         TitleEdit.Height);
     end;
+    
+    OpenButton:=TButton.Create(Self);
+    with OpenButton do
+         begin
+           Name     := 'OpenButton';
+           Caption  := '...';
+           ShowHint := True;
+           Hint     := 'Click here to browse the file';
+           Parent   := Self;
+           SetBounds(FilenameEdit.Left+FilenameEdit.Width+5,
+                     FilenameLabel.Top+2,TitleEdit.Height,
+                     TitleEdit.Height);
+           OnClick := @OpenButtonClick;
+         end;
+    
+    OpenDialog:=TOpenDialog.Create(Self);
+    with OpenDialog do
+         begin
+           Title   := 'Select the file';
+           Filter  := 'Programs (*.exe)|*.exe|All Files (*.*)|*.*';
+           Options := [ofPathMustExist, ofFileMustExist, ofEnableSizing, ofViewDetail];
+         End;
     
     ParametersLabel:=TLabel.Create(Self);
     with ParametersLabel do begin
@@ -208,7 +233,7 @@ begin
     with ParametersEdit do begin
       Name:='ParametersEdit';
       Parent:=Self;
-      SetBounds(FilenameEdit.Left,ParametersLabel.Top+2,FilenameEdit.Width,
+      SetBounds(FilenameEdit.Left,ParametersLabel.Top+2,TitleEdit.Width,
         FilenameEdit.Height);
     end;
     
@@ -397,6 +422,12 @@ begin
   inherited Destroy;
 end;
 
+procedure TExternalToolOptionDlg.OpenButtonClick(sender : TOBject);
+begin
+  OpenDialog.FileName := FilenameEdit.Text;
+  If OpenDialog.Execute Then FilenameEdit.Text := OpenDialog.FileName;
+End;
+
 procedure TExternalToolOptionDlg.SaveToOptions;
 begin
   fOptions.Title:=TitleEdit.Text;
@@ -468,8 +499,8 @@ begin
   end;
 
   with FilenameEdit do begin
-    SetBounds(TitleEdit.Left,FilenameLabel.Top+2,TitleEdit.Width,
-      TitleEdit.Height);
+    SetBounds(TitleEdit.Left,FilenameLabel.Top+2,TitleEdit.Width-TitleEdit.Height-5,
+              TitleEdit.Height);
   end;
 
   with ParametersLabel do begin
@@ -478,7 +509,7 @@ begin
   end;
 
   with ParametersEdit do begin
-    SetBounds(FilenameEdit.Left,ParametersLabel.Top+2,FilenameEdit.Width,
+    SetBounds(FilenameEdit.Left,ParametersLabel.Top+2,TitleEdit.Width,
       FilenameEdit.Height);
   end;
 
