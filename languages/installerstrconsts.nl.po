@@ -14,3 +14,31 @@ msgstr "&Package openen"
 msgid "&Open project"
 msgstr "&Project openen"
 
+#: installerstrconsts:wisassociateincfiles
+msgid "Associate .inc files with Lazarus"
+msgstr ""
+
+#: installerstrconsts:wisassociatelfmfiles
+msgid "Associate .lfm files with Lazarus"
+msgstr ""
+
+#: installerstrconsts:wisassociatelpifiles
+msgid "Associate .lpi files with Lazarus"
+msgstr ""
+
+#: installerstrconsts:wisassociatelpkfiles
+msgid "Associate .lpk files with Lazarus"
+msgstr ""
+
+#: installerstrconsts:wisassociatelprfiles
+msgid "Associate .lpr files with Lazarus"
+msgstr ""
+
+#: installerstrconsts:wisassociatepasfiles
+msgid "Associate .pas files with Lazarus"
+msgstr ""
+
+#: installerstrconsts:wisassociatefiles
+msgid "Associate Lazarus files with Lazarus"
+msgstr ""
+
