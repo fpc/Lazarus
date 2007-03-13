@@ -1091,7 +1091,7 @@ begin
       {$endif}
 
       StartUpdating;
-      edField.AsString := FTempText;
+      edField.Text := FTempText;
       EndUpdating;
 
       EditingColumn(FEditingColumn, False);
