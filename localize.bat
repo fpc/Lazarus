@@ -38,11 +38,11 @@ tools\updatepofiles languages\lazaruside.po
 
 @REM IDEIntf
 @set ObjInsp_RST=ideintf\units\%ArchOS%\ObjInspStrConsts.rst
-rstconv -i %ObjInsp_RST% -o languages\objinspstrconsts.po
-tools\updatepofiles languages\objinspstrconsts.po
+rstconv -i %ObjInsp_RST% -o ideintf\languages\objinspstrconsts.po
+tools\updatepofiles ideintf\languages\objinspstrconsts.po
 
 @REM INSTALLER
-@set Installer_RST=tools\install\win32\installerstrconsts.rst
+@set Installer_RST=tools\install\win\installerstrconsts.rst
 if not exist %Installer_RST% goto SkipInstaller
 rstconv -i %Installer_RST% -o languages\installerstrconsts.po
 tools\updatepofiles languages\installerstrconsts.po
