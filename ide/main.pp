@@ -7276,7 +7276,7 @@ begin
                        +Flags*[sfCheckAmbiguousFiles];
         if (sfSaveToTestDir in Flags) then begin
           AnUnitInfo:=Project1.UnitWithEditorIndex(i);
-          if AnUnitInfo.IsPartOfProject or AnUnitInfo.IsVirtual then
+          if AnUnitInfo.IsVirtual then
             Include(SaveFileFlags,sfSaveToTestDir);
         end;
         Result:=DoSaveEditorFile(i,SaveFileFlags);
