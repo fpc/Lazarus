@@ -3082,7 +3082,7 @@ var
     If LeftOffset <> DT_Left then
       GetTextExtentPoint(DC, theLine, LineLength, Points[0]);
 
-    If TempBrush = -1 then
+    If TempBrush = HBRUSH(-1) then
       TempBrush := SelectObject(DC, GetStockObject(NULL_BRUSH));
     Case LeftOffset of
       DT_Left:
@@ -3109,18 +3109,18 @@ var
   begin
     AStr := Copy(String(theLine), 1, LineLength);
 
-    If (Flags and DT_NoPrefix) <> DT_NoPrefix then
+    if (Flags and DT_NoPrefix) <> DT_NoPrefix then
       pIndex := DeleteAmpersands(aStr)
     else
       pIndex := -1;
 
-    If TempBrush = -1 then
+    if TempBrush = HBRUSH(-1) then
       TempBrush := SelectObject(DC, GetStockObject(NULL_BRUSH));
 
-    If LeftOffset <> DT_Left then
+    if LeftOffset <> DT_Left then
       GetTextExtentPoint(DC, PChar(aStr), Length(aStr), Points[0]);
 
-    Case LeftOffset of
+    case LeftOffset of
       DT_Left:
         LeftPos := theRect.Left;
       DT_Center:
@@ -3134,9 +3134,9 @@ var
     TextUtf8Out(DC, LeftPos, TopPos, PChar(aStr), Length(aStr));
 
     {Draw Prefix}
-    If pIndex > 0 then begin
+    if pIndex > 0 then begin
       {Create & select pen of font color}
-      If TempPen = -1 then begin
+      if TempPen = HPEN(-1) then begin
         LogP.lopnStyle := PS_SOLID;
         LogP.lopnWidth.X := 1;
         LogP.lopnColor := GetTextColor(DC);
@@ -3174,9 +3174,9 @@ begin
     Result := 0;
     Lines := nil;
     NumLines := 0;
-    TempDC := -1;
-    TempPen := -1;
-    TempBrush := -1;
+    TempDC := HDC(-1);
+    TempPen := HPEN(-1);
+    TempBrush := HBRUSH(-1);
     try
       if (Flags and (DT_SingleLine+DT_CalcRect+Dt_NoPrefix+DT_NOClip))
         =(DT_SingleLine+Dt_NoPrefix+Dt_NoClip)
@@ -3193,7 +3193,7 @@ begin
 
       DoCalcRect;
 
-      If (Flags and DT_CalcRect) = DT_CalcRect then begin
+      if (Flags and DT_CalcRect) = DT_CalcRect then begin
         //DebugLn(['TGtkWidgetSet.DrawText Complex Calc']);
         CopyRect(Rect, theRect);
         Result := 1;
@@ -3202,33 +3202,33 @@ begin
         TempDC := SaveDC(DC);
       end;
 
-      If (Flags and DT_NOCLIP) <> DT_NOCLIP then begin
-        If theRect.Right > Rect.Right then
+      if (Flags and DT_NOCLIP) <> DT_NOCLIP then begin
+        if theRect.Right > Rect.Right then
           theRect.Right := Rect.Right;
-        If theRect.Bottom > Rect.Bottom then
+        if theRect.Bottom > Rect.Bottom then
           theRect.Bottom := Rect.Bottom;
         IntersectClipRect(DC, theRect.Left, theRect.Top,
           theRect.Right, theRect.Bottom);
       end;
 
-      If (Flags and DT_SingleLine) = DT_SingleLine then begin
+      if (Flags and DT_SingleLine) = DT_SingleLine then begin
         //DebugLn(['TGtkWidgetSet.DrawText Draw single line']);
         DrawLine(Str, Count, theRect.Top);
         Result := 1;
       end
       else If (Lines <> nil) and (NumLines <> 0) then begin
         //DebugLn(['TGtkWidgetSet.DrawText Draw multiline']);
-        For I := 0 to NumLines - 1 do begin
+        for I := 0 to NumLines - 1 do begin
           if I>0 then
             Inc(theRect.Top, TM.tmDescent);// space between lines
 
-          If (((Flags and DT_EditControl) = DT_EditControl) and
+          if (((Flags and DT_EditControl) = DT_EditControl) and
             (tm.tmHeight > (theRect.Bottom - theRect.Top))) or
             (theRect.Top > theRect.Bottom)
           then
             break;
 
-          If Lines[I] <> nil then
+          if Lines[I] <> nil then
             DrawLine(Lines[I], StrLen(Lines[I]), theRect.Top);
 
           Inc(theRect.Top, TM.tmHeight);
@@ -3238,11 +3238,11 @@ begin
 
     finally
       Reallocmem(Lines, 0);
-      If TempBrush <> -1 then
+      if TempBrush <> HBRUSH(-1) then
         SelectObject(DC, TempBrush);
-      If TempPen <> -1 then
+      if TempPen <> HPEN(-1) then
         DeleteObject(SelectObject(DC, TempPen));
-      If TempDC <> -1 then
+      if TempDC <> HDC(-1) then
         RestoreDC(DC, TempDC);
     end;
   end;
@@ -8685,6 +8685,7 @@ begin
 end;
 {$ELSE UNIX}
 begin
+  Result := False;
   DebugLn('TGtkWidgetSet.SetCursorPos not implemented for this platform');
   // Can this call TWin32WidgetSet.SetCursorPos?
 end;

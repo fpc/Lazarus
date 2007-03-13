@@ -27,7 +27,13 @@ unit GtkWSPairSplitter;
 interface
 
 uses
-  PairSplitter, WSPairSplitter, WSLCLClasses;
+  {$IFDEF GTK2}
+  Gtk2, //Glib2, Gdk2,
+  {$ELSE}
+  Gtk, //Glib, Gdk,
+  {$ENDIF}
+  PairSplitter,
+  WSPairSplitter, WSLCLClasses, WSProc;
 
 type
 
@@ -59,8 +65,6 @@ type
 
 
 implementation
-uses
-  WSProc, gtk;
 
 { TGtkWSCustomPairSplitter }
 

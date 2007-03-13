@@ -2385,7 +2385,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure InitKeyboardTables;
 
-  procedure FindVKeyInfo(const AKeySym: TKeySym; var AVKey: Byte;
+  procedure FindVKeyInfo(const AKeySym: Cardinal; var AVKey: Byte;
     var AExtended, AHasMultiVK, ASecondKey: Boolean);
   var
     ByteKey: Byte;
@@ -2862,7 +2862,7 @@ procedure InitKeyboardTables;
     end;
   end;
 
-  function IgnoreShifted(const AUnshiftKeySym: TKeySym): Boolean;
+  function IgnoreShifted(const AUnshiftKeySym: Cardinal): Boolean;
   begin
     case AUnshiftKeySym of
       GDK_KEY_END,
@@ -2969,7 +2969,7 @@ type
     XFreeModifiermap(Map);
   end;
   
-  procedure UpdateModifierMap(const AModMap: TModMap; AKeyCode: Byte; AKeySym: TKeySym);
+  procedure UpdateModifierMap(const AModMap: TModMap; AKeyCode: Byte; AKeySym: Cardinal);
   {$ifdef VerboseModifiermap}
   const
     STATE_NAME: array[TShiftStateEnum] of String = ('ssShift', 'ssAlt', 'ssCtrl',

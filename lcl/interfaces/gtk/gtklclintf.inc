@@ -180,6 +180,7 @@ end;
 function TGtkWidgetSet.AddProcessEventHandler(AHandle: THandle;
   AEventHandler: TChildExitEvent; AData: PtrInt): PProcessEventHandler;
 begin
+  Result := nil;
 end;
 
 procedure TGtkWidgetSet.RemoveProcessEventHandler(var AHandler: PProcessEventHandler);
