@@ -3148,6 +3148,7 @@ begin
         ItemCnt:=CodeToolBoss.IdentifierList.GetFilteredCount;
         SL:=TStringList.Create;
         try
+          sl.Capacity:=ItemCnt;
           for i:=0 to ItemCnt-1 do
             SL.Add('Dummy'); // these entries are not shown
           CurCompletionControl.ItemList:=SL;

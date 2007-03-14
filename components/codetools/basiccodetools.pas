@@ -135,6 +135,7 @@ function ComparePrefixIdent(PrefixIdent, Identifier: PChar): boolean;
 function TextBeginsWith(Txt: PChar; TxtLen: integer; StartTxt: PChar;
     StartTxtLen: integer; CaseSensitive: boolean): boolean;
 function StrBeginsWith(const s, Prefix: string): boolean;
+function IdentifierPos(Search, Identifier: PChar): PtrInt;
 
 // space and special chars
 function TrimCodeSpace(const ACode: string): string;
@@ -2675,6 +2676,33 @@ begin
     inc(p2);
   end;
   Result:=true;
+end;
+
+function IdentifierPos(Search, Identifier: PChar): PtrInt;
+var
+  i: Integer;
+begin
+  if Search=nil then exit(-1);
+  if Identifier=nil then exit(-1);
+  Result:=0;
+  while (IsIdentChar[Identifier[Result]]) do begin
+    if UpChars[Search^]=UpChars[Identifier[Result]] then begin
+      i:=1;
+      repeat
+        if IsIdentChar[Search[i]] then begin
+          if (UpChars[Search[i]]=UpChars[Identifier[Result+i]]) then
+            inc(i)
+          else
+            break;
+        end else begin
+          // whole found
+          exit;
+        end;
+      until false;
+    end;
+    inc(Result);
+  end;
+  Result:=-1;
 end;
 
 function GetIdentifier(Identifier: PChar): string;

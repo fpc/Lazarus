@@ -106,6 +106,7 @@ type
     destructor Destroy; override;
     procedure Clear;
     function AddNode(const Description, Identifier: string): TCodeBrowserNode;
+    procedure DeleteNode(var Node: TCodeBrowserNode);
     property Filename: string read FFilename;
     property CodeBuffer: TCodeBuffer read FCodeBuffer write SetCodeBuffer;
     property CodeTool: TCodeTool read FCodeTool write SetCodeTool;
@@ -253,6 +254,8 @@ type
   { TCodeBrowserView }
 
   TCodeBrowserView = class(TForm)
+    UnitFilterEdit: TEdit;
+    IdentifierFilterEdit: TEdit;
     PackageFilterEdit: TEdit;
     ShowIdentifiersCheckBox: TCheckBox;
     ShowUnitsCheckBox: TCheckBox;
@@ -283,6 +286,12 @@ type
     PackageFilterBeginsSpeedButton: TSpeedButton;
     PackageFilterContainsSpeedButton: TSpeedButton;
     PackageFilterRegExSpeedButton: TSpeedButton;
+    UnitFilterBeginsSpeedButton: TSpeedButton;
+    UnitFilterContainsSpeedButton: TSpeedButton;
+    UnitFilterRegExSpeedButton: TSpeedButton;
+    IdentifierFilterBeginsSpeedButton: TSpeedButton;
+    IdentifierFilterContainsSpeedButton: TSpeedButton;
+    IdentifierFilterRegExSpeedButton: TSpeedButton;
     StatusBar1: TStatusBar;
     procedure BrowseTreeViewMouseDown(Sender: TOBject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
@@ -299,6 +308,7 @@ type
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure PackageFilterEditEditingDone(Sender: TObject);
     procedure PopupMenu1Popup(Sender: TObject);
     procedure ScopeComboBoxDropDown(Sender: TObject);
     procedure ScopeComboBoxEditingDone(Sender: TObject);
@@ -489,6 +499,16 @@ begin
   ExpandAllClassesMenuItem.Caption:='Expand all classes';
   CollapseAllClassesMenuItem.Caption:='Collapse all classes';
   ExportMenuItem.Caption:='Export ...';
+  
+  PackageFilterBeginsSpeedButton.Hint:='Package name begins with ...';
+  PackageFilterContainsSpeedButton.Hint:='Package name contains ...';
+  PackageFilterRegExSpeedButton.Hint:='Package name fits regular expression ...';
+  UnitFilterBeginsSpeedButton.Hint:='Unit name begins with ...';
+  UnitFilterContainsSpeedButton.Hint:='Unit name contains ...';
+  UnitFilterRegExSpeedButton.Hint:='Unit name fits regular expression ...';
+  IdentifierFilterBeginsSpeedButton.Hint:='Identifier begins with ...';
+  IdentifierFilterContainsSpeedButton.Hint:='Identifier contains ...';
+  IdentifierFilterRegExSpeedButton.Hint:='Identifier fits regular expression ...';
 
   InitImageList;
   LoadOptions;
@@ -505,6 +525,11 @@ begin
   FreeAndNil(FParserRoot);
   FreeAndNil(FWorkingParserRoot);
   FreeAndNil(FOptions);
+end;
+
+procedure TCodeBrowserView.PackageFilterEditEditingDone(Sender: TObject);
+begin
+  fStage:=cbwsGetOptions;
 end;
 
 procedure TCodeBrowserView.PopupMenu1Popup(Sender: TObject);
@@ -619,6 +644,27 @@ procedure TCodeBrowserView.LoadFilterGroupbox;
 begin
   ShowPrivateCheckBox.Checked:=Options.ShowPrivate;
   ShowProtectedCheckBox.Checked:=Options.ShowProtected;
+  
+  PackageFilterEdit.Text:=Options.LevelFilterText[cblPackages];
+  case Options.LevelFilterType[cblPackages] of
+  cbtfBegins:   PackageFilterBeginsSpeedButton.Down:=true;
+  cbtfContains: PackageFilterContainsSpeedButton.Down:=true;
+  cbtfRegEx:    PackageFilterRegExSpeedButton.Down:=true;
+  end;
+
+  UnitFilterEdit.Text:=Options.LevelFilterText[cblUnits];
+  case Options.LevelFilterType[cblUnits] of
+  cbtfBegins:   UnitFilterBeginsSpeedButton.Down:=true;
+  cbtfContains: UnitFilterContainsSpeedButton.Down:=true;
+  cbtfRegEx:    UnitFilterRegExSpeedButton.Down:=true;
+  end;
+
+  IdentifierFilterEdit.Text:=Options.LevelFilterText[cblIdentifiers];
+  case Options.LevelFilterType[cblIdentifiers] of
+  cbtfBegins:   IdentifierFilterBeginsSpeedButton.Down:=true;
+  cbtfContains: IdentifierFilterContainsSpeedButton.Down:=true;
+  cbtfRegEx:    IdentifierFilterRegExSpeedButton.Down:=true;
+  end;
 end;
 
 procedure TCodeBrowserView.FillScopeComboBox;
@@ -745,6 +791,8 @@ begin
   Options.Scope:=ScopeComboBox.Text;
   Options.ShowPrivate:=ShowPrivateCheckBox.Checked;
   Options.ShowProtected:=ShowProtectedCheckBox.Checked;
+  
+  // levels
   NewLevels:=TStringList.Create;
   if ShowPackagesCheckBox.Checked then
     NewLevels.Add(CodeBrowserLevelNames[cblPackages]);
@@ -754,6 +802,32 @@ begin
     NewLevels.Add(CodeBrowserLevelNames[cblIdentifiers]);
   Options.Levels:=NewLevels;
   NewLevels.Free;
+  
+  // level filter
+  Options.LevelFilterText[cblPackages]:=PackageFilterEdit.Text;
+  if PackageFilterBeginsSpeedButton.Down then
+    Options.LevelFilterType[cblPackages]:=cbtfBegins;
+  if PackageFilterContainsSpeedButton.Down then
+    Options.LevelFilterType[cblPackages]:=cbtfContains;
+  if PackageFilterRegExSpeedButton.Down then
+    Options.LevelFilterType[cblPackages]:=cbtfRegEx;
+
+  Options.LevelFilterText[cblUnits]:=UnitFilterEdit.Text;
+  DebugLn(['TCodeBrowserView.WorkGetOptions UnitFIlter=',Options.LevelFilterText[cblUnits],' Edit=',UnitFilterEdit.Text]);
+  if UnitFilterBeginsSpeedButton.Down then
+    Options.LevelFilterType[cblUnits]:=cbtfBegins;
+  if UnitFilterContainsSpeedButton.Down then
+    Options.LevelFilterType[cblUnits]:=cbtfContains;
+  if UnitFilterRegExSpeedButton.Down then
+    Options.LevelFilterType[cblUnits]:=cbtfRegEx;
+
+  Options.LevelFilterText[cblIdentifiers]:=IdentifierFilterEdit.Text;
+  if IdentifierFilterBeginsSpeedButton.Down then
+    Options.LevelFilterType[cblIdentifiers]:=cbtfBegins;
+  if IdentifierFilterContainsSpeedButton.Down then
+    Options.LevelFilterType[cblIdentifiers]:=cbtfContains;
+  if IdentifierFilterRegExSpeedButton.Down then
+    Options.LevelFilterType[cblIdentifiers]:=cbtfRegEx;
 
   // this stage finished -> next stage
   if UpdateNeeded or Options.Modified then
@@ -1379,6 +1453,9 @@ var
   ShowIdentifiers: boolean;
   ShowPrivate: boolean;
   ShowProtected: boolean;
+  
+  LevelFilterText: array[TCodeBrowserLevel] of string;
+  LevelFilterType: array[TCodeBrowserLevel] of TCodeBrowserTextFilter;
 
   function GetCodeTool(AnUnit: TCodeBrowserUnit): TCodeTool;
   begin
@@ -1391,6 +1468,26 @@ var
     //DebugLn(['GetCodeTool END ',Result<>nil]);
   end;
   
+  function IdentifierFitsFilter(LvlType: TCodeBrowserLevel;
+    const Identifier: string): boolean;
+  begin
+    //DebugLn(['IdentifierFitsFilter Identifier=',Identifier,' Filter=',LevelFilterText[LvlType]]);
+    if (LevelFilterText[LvlType]='') then exit(true);
+    if Identifier='' then exit(false);
+
+    case LevelFilterType[LvlType] of
+    cbtfBegins,
+    cbtfRegEx:
+      Result:=ComparePrefixIdent(PChar(Pointer(LevelFilterText[LvlType])),
+                                 PChar(Pointer(Identifier)));
+    cbtfContains:
+      Result:=IdentifierPos(PChar(Pointer(LevelFilterText[LvlType])),
+                            PChar(Pointer(Identifier)))>=0;
+    else
+      Result:=true;
+    end;
+  end;
+
   procedure AddUnitNodes(SrcUnit: TCodeBrowserUnit; var DestUnit: TObject);
   var
     Tool: TCodeTool;
@@ -1468,7 +1565,7 @@ var
         end;
       end;
     end;
-
+    
     procedure AddIdentifierNode(CTNode: TCodeTreeNode);
     var
       NewNode: TCodeBrowserNode;
@@ -1486,21 +1583,26 @@ var
         then
           exit;
         GetNodeDescription(ChildCTNode,ChildDescription,ChildIdentifier);
-        NewChildNode:=NewNode.AddNode(ChildDescription,ChildIdentifier);
-        if NewChildNode<>nil then begin
-          NewChildNode.Desc:=ChildCTNode.Desc;
-          Tool.CleanPosToCodePos(ChildCTNode.StartPos,NewChildNode.FCodePos);
+        
+        if IdentifierFitsFilter(cblIdentifiers,ChildIdentifier) then begin
+          NewChildNode:=NewNode.AddNode(ChildDescription,ChildIdentifier);
+          if NewChildNode<>nil then begin
+            NewChildNode.Desc:=ChildCTNode.Desc;
+            Tool.CleanPosToCodePos(ChildCTNode.StartPos,NewChildNode.FCodePos);
+          end;
         end;
       end;
       
     var
       Description, Identifier: string;
+      CurUnit: TCodeBrowserUnit;
     begin
       if not ShowIdentifiers then exit;
       AddUnit;
+      CurUnit:=TCodeBrowserUnit(DestUnit);
       //DebugLn(['AddIdentifierNode ',CTNode.DescAsString,' Description="',Description,'"']);
       GetNodeDescription(CTNode,Description,Identifier);
-      NewNode:=TCodeBrowserUnit(DestUnit).AddNode(Description,Identifier);
+      NewNode:=CurUnit.AddNode(Description,Identifier);
       NewNode.Desc:=CTNode.Desc;
       Tool.CleanPosToCodePos(CTNode.StartPos,NewNode.FCodePos);
       //DebugLn(['AddIdentifierNode Code=',NewNode.FCodePos.Code<>nil,' P=',NewNode.FCodePos.P]);
@@ -1524,6 +1626,12 @@ var
           else
             ChildCTNode:=ChildCTNode.Next;
         end;
+      end;
+      
+      if (NewNode.ChildNodes=nil)
+      and (not IdentifierFitsFilter(cblIdentifiers,Identifier)) then begin
+        // identifier is not needed -> remove
+        CurUnit.DeleteNode(NewNode);
       end;
     end;
     
@@ -1582,23 +1690,26 @@ var
       NewUnit:=nil;
       while Node<>nil do begin
         CurUnit:=TCodeBrowserUnit(Node.Data);
-        if DestParentList=nil then begin
-          DestParentList:=TCodeBrowserUnitList.Create(CodeBrowserHidden,nil);
-        end else if not (DestParentList is TCodeBrowserUnitList) then
-          RaiseParentNotUnitList;
-        if ShowUnits then begin
-          // create a unit node
-          NewUnit:=TCodeBrowserUnitList(DestParentList).AddUnit(CurUnit.Filename);
-          NewUnit.CodeBuffer:=CurUnit.CodeBuffer;
-          NewUnit.CodeTool:=CurUnit.CodeTool;
-        end else if NewUnit=nil then begin
-          // create a dummy unit node to add all identifiers
-          NewUnit:=TCodeBrowserUnitList(DestParentList).AddUnit('');
+        if IdentifierFitsFilter(cblUnits,ExtractFileNameOnly(CurUnit.Filename))
+        then begin
+          if DestParentList=nil then begin
+            DestParentList:=TCodeBrowserUnitList.Create(CodeBrowserHidden,nil);
+          end else if not (DestParentList is TCodeBrowserUnitList) then
+            RaiseParentNotUnitList;
+          if ShowUnits then begin
+            // create a unit node
+            NewUnit:=TCodeBrowserUnitList(DestParentList).AddUnit(CurUnit.Filename);
+            NewUnit.CodeBuffer:=CurUnit.CodeBuffer;
+            NewUnit.CodeTool:=CurUnit.CodeTool;
+          end else if NewUnit=nil then begin
+            // create a dummy unit node to add all identifiers
+            NewUnit:=TCodeBrowserUnitList(DestParentList).AddUnit('');
+          end;
+          //DebugLn(['AddUnits AddUnitNodes ',CurUnit.Filename]);
+          AddUnitNodes(CurUnit,NewUnit);
+          if (DestParentList=nil) then
+            DestParentList:=NewUnit;
         end;
-        //DebugLn(['AddUnits AddUnitNodes ',CurUnit.Filename]);
-        AddUnitNodes(CurUnit,NewUnit);
-        if (DestParentList=nil) then
-          DestParentList:=NewUnit;
         Node:=SrcList.Units.FindSuccessor(Node);
       end;
     end;
@@ -1613,6 +1724,10 @@ var
   begin
     if SrcList=nil then exit;
     //DebugLn(['AddUnitLists SrcList.Owner="',SrcList.Owner,'"']);
+    
+    // check filter
+    if not IdentifierFitsFilter(cblPackages,SrcList.Owner) then exit;
+    
     // create node
     if ShowPackages then begin
       if DestParentList=nil then begin
@@ -1733,12 +1848,20 @@ var
 
 var
   RootTVNode: TTreeNode;
+  lvl: TCodeBrowserLevel;
 begin
   ShowPackages:=Options.HasLevel(cblPackages);
   ShowUnits:=Options.HasLevel(cblUnits);
   ShowIdentifiers:=Options.HasLevel(cblIdentifiers);
   ShowPrivate:=Options.ShowPrivate;
   ShowProtected:=Options.ShowProtected;
+
+  for lvl:=Low(TCodeBrowserLevel) to High(TCodeBrowserLevel) do begin
+    LevelFilterText[lvl]:=Options.LevelFilterText[lvl];
+    LevelFilterType[lvl]:=Options.LevelFilterType[lvl];
+  end;
+  DebugLn(['TCodeBrowserView.UpdateTreeView UnitFilter=',LevelFilterText[cblUnits]]);
+  
   DebugLn(['TCodeBrowserView.UpdateTreeView ShowPackages=',ShowPackages,' ShowUnits=',ShowUnits]);
 
   BrowseTreeView.BeginUpdate;
@@ -2230,6 +2353,14 @@ begin
   FChildNodes.Add(Result);
 end;
 
+procedure TCodeBrowserUnit.DeleteNode(var Node: TCodeBrowserNode);
+begin
+  if Node=nil then exit;
+  if ChildNodes<>nil then
+    FChildNodes.RemovePointer(Node);
+  FreeAndNil(Node);
+end;
+
 { TCodeBrowserUnitList }
 
 procedure TCodeBrowserUnitList.SetOwner(const AValue: string);
@@ -2437,13 +2568,14 @@ var
 begin
   FLevels.Clear;
   FLevels.Text:=CodeBrowserLevelNames[cblPackages]+#13
-               +CodeBrowserLevelNames[cblUnits];
+               +CodeBrowserLevelNames[cblUnits]+#13
+               +CodeBrowserLevelNames[cblIdentifiers];
   WithRequiredPackages:=false;
   ShowPrivate:=false;
   ShowProtected:=true;
   Scope:='Project';
   for l:=Low(TCodeBrowserLevel) to High(TCodeBrowserLevel) do begin
-    FLevelFilterType[l]:=cbtfBegins;
+    FLevelFilterType[l]:=cbtfContains;
     FLevelFilterText[l]:='';
   end;
   Modified:=false;

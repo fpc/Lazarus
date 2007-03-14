@@ -125,10 +125,14 @@ object CodeBrowserView: TCodeBrowserView
       AnchorSideTop.Control = PackageFilterEdit
       Left = 424
       Height = 22
-      Top = 2
+      Top = 3
       Width = 23
       Color = clBtnFace
+      GroupIndex = 1
       NumGlyphs = 0
+      OnClick = PackageFilterEditEditingDone
+      ShowHint = True
+      ParentShowHint = False
     end
     object PackageFilterContainsSpeedButton: TSpeedButton
       AnchorSideLeft.Control = PackageFilterBeginsSpeedButton
@@ -136,10 +140,14 @@ object CodeBrowserView: TCodeBrowserView
       AnchorSideTop.Control = PackageFilterEdit
       Left = 447
       Height = 22
-      Top = 2
+      Top = 3
       Width = 23
       Color = clBtnFace
+      GroupIndex = 1
       NumGlyphs = 0
+      OnClick = PackageFilterEditEditingDone
+      ShowHint = True
+      ParentShowHint = False
     end
     object PackageFilterRegExSpeedButton: TSpeedButton
       AnchorSideLeft.Control = PackageFilterContainsSpeedButton
@@ -147,15 +155,115 @@ object CodeBrowserView: TCodeBrowserView
       AnchorSideTop.Control = PackageFilterEdit
       Left = 470
       Height = 22
-      Top = 2
+      Top = 3
       Width = 23
       Color = clBtnFace
+      GroupIndex = 1
       NumGlyphs = 0
+      OnClick = PackageFilterEditEditingDone
+      ShowHint = True
+      ParentShowHint = False
+    end
+    object UnitFilterBeginsSpeedButton: TSpeedButton
+      AnchorSideLeft.Control = UnitFilterEdit
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = UnitFilterEdit
+      AnchorSideTop.Side = asrCenter
+      Left = 424
+      Height = 22
+      Top = 31
+      Width = 23
+      Color = clBtnFace
+      GroupIndex = 2
+      NumGlyphs = 0
+      OnClick = PackageFilterEditEditingDone
+      ShowHint = True
+      ParentShowHint = False
+    end
+    object UnitFilterContainsSpeedButton: TSpeedButton
+      AnchorSideLeft.Control = UnitFilterBeginsSpeedButton
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = UnitFilterEdit
+      AnchorSideTop.Side = asrCenter
+      Left = 447
+      Height = 22
+      Top = 31
+      Width = 23
+      Color = clBtnFace
+      GroupIndex = 2
+      NumGlyphs = 0
+      OnClick = PackageFilterEditEditingDone
+      ShowHint = True
+      ParentShowHint = False
+    end
+    object UnitFilterRegExSpeedButton: TSpeedButton
+      AnchorSideLeft.Control = UnitFilterContainsSpeedButton
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = UnitFilterEdit
+      AnchorSideTop.Side = asrCenter
+      Left = 470
+      Height = 22
+      Top = 31
+      Width = 23
+      Color = clBtnFace
+      GroupIndex = 2
+      NumGlyphs = 0
+      OnClick = PackageFilterEditEditingDone
+      ShowHint = True
+      ParentShowHint = False
+    end
+    object IdentifierFilterBeginsSpeedButton: TSpeedButton
+      AnchorSideLeft.Control = IdentifierFilterEdit
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = IdentifierFilterEdit
+      AnchorSideTop.Side = asrCenter
+      Left = 424
+      Height = 22
+      Top = 58
+      Width = 23
+      Color = clBtnFace
+      GroupIndex = 3
+      NumGlyphs = 0
+      OnClick = PackageFilterEditEditingDone
+      ShowHint = True
+      ParentShowHint = False
+    end
+    object IdentifierFilterContainsSpeedButton: TSpeedButton
+      AnchorSideLeft.Control = IdentifierFilterBeginsSpeedButton
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = IdentifierFilterEdit
+      AnchorSideTop.Side = asrCenter
+      Left = 447
+      Height = 22
+      Top = 58
+      Width = 23
+      Color = clBtnFace
+      GroupIndex = 3
+      NumGlyphs = 0
+      OnClick = PackageFilterEditEditingDone
+      ShowHint = True
+      ParentShowHint = False
+    end
+    object IdentifierFilterRegExSpeedButton: TSpeedButton
+      AnchorSideLeft.Control = IdentifierFilterContainsSpeedButton
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = IdentifierFilterEdit
+      AnchorSideTop.Side = asrCenter
+      Left = 470
+      Height = 22
+      Top = 58
+      Width = 23
+      Color = clBtnFace
+      GroupIndex = 3
+      NumGlyphs = 0
+      OnClick = PackageFilterEditEditingDone
+      ShowHint = True
+      ParentShowHint = False
     end
     object ShowPackagesCheckBox: TCheckBox
       Left = 6
       Height = 20
-      Top = 3
+      Top = 4
       Width = 170
       Caption = 'ShowPackagesCheckBox'
       OnChange = ShowPackagesCheckBoxChange
@@ -164,7 +272,7 @@ object CodeBrowserView: TCodeBrowserView
     object ShowUnitsCheckBox: TCheckBox
       Left = 6
       Height = 20
-      Top = 27
+      Top = 32
       Width = 142
       Caption = 'ShowUnitsCheckBox'
       OnChange = ShowUnitsCheckBoxChange
@@ -173,7 +281,7 @@ object CodeBrowserView: TCodeBrowserView
     object ShowIdentifiersCheckBox: TCheckBox
       Left = 6
       Height = 20
-      Top = 51
+      Top = 59
       Width = 168
       Caption = 'ShowIdentifiersCheckBox'
       OnChange = ShowIdentifiersCheckBoxChange
@@ -184,10 +292,33 @@ object CodeBrowserView: TCodeBrowserView
       AnchorSideTop.Side = asrCenter
       Left = 223
       Height = 23
-      Top = 2
+      Top = 3
       Width = 201
+      OnEditingDone = PackageFilterEditEditingDone
       TabOrder = 3
       Text = 'PackageFilterEdit'
+    end
+    object UnitFilterEdit: TEdit
+      AnchorSideTop.Control = ShowUnitsCheckBox
+      AnchorSideTop.Side = asrCenter
+      Left = 223
+      Height = 23
+      Top = 31
+      Width = 201
+      OnEditingDone = PackageFilterEditEditingDone
+      TabOrder = 4
+      Text = 'UnitFilterEdit'
+    end
+    object IdentifierFilterEdit: TEdit
+      AnchorSideTop.Control = ShowIdentifiersCheckBox
+      AnchorSideTop.Side = asrCenter
+      Left = 223
+      Height = 23
+      Top = 58
+      Width = 201
+      OnEditingDone = PackageFilterEditEditingDone
+      TabOrder = 5
+      Text = 'IdentifierFilterEdit'
     end
   end
   object ImageList1: TImageList
