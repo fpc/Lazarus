@@ -149,21 +149,6 @@ object CodeBrowserView: TCodeBrowserView
       ShowHint = True
       ParentShowHint = False
     end
-    object PackageFilterRegExSpeedButton: TSpeedButton
-      AnchorSideLeft.Control = PackageFilterContainsSpeedButton
-      AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = PackageFilterEdit
-      Left = 470
-      Height = 22
-      Top = 3
-      Width = 23
-      Color = clBtnFace
-      GroupIndex = 1
-      NumGlyphs = 0
-      OnClick = PackageFilterEditEditingDone
-      ShowHint = True
-      ParentShowHint = False
-    end
     object UnitFilterBeginsSpeedButton: TSpeedButton
       AnchorSideLeft.Control = UnitFilterEdit
       AnchorSideLeft.Side = asrBottom
@@ -186,22 +171,6 @@ object CodeBrowserView: TCodeBrowserView
       AnchorSideTop.Control = UnitFilterEdit
       AnchorSideTop.Side = asrCenter
       Left = 447
-      Height = 22
-      Top = 31
-      Width = 23
-      Color = clBtnFace
-      GroupIndex = 2
-      NumGlyphs = 0
-      OnClick = PackageFilterEditEditingDone
-      ShowHint = True
-      ParentShowHint = False
-    end
-    object UnitFilterRegExSpeedButton: TSpeedButton
-      AnchorSideLeft.Control = UnitFilterContainsSpeedButton
-      AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = UnitFilterEdit
-      AnchorSideTop.Side = asrCenter
-      Left = 470
       Height = 22
       Top = 31
       Width = 23
@@ -244,22 +213,6 @@ object CodeBrowserView: TCodeBrowserView
       ShowHint = True
       ParentShowHint = False
     end
-    object IdentifierFilterRegExSpeedButton: TSpeedButton
-      AnchorSideLeft.Control = IdentifierFilterContainsSpeedButton
-      AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = IdentifierFilterEdit
-      AnchorSideTop.Side = asrCenter
-      Left = 470
-      Height = 22
-      Top = 58
-      Width = 23
-      Color = clBtnFace
-      GroupIndex = 3
-      NumGlyphs = 0
-      OnClick = PackageFilterEditEditingDone
-      ShowHint = True
-      ParentShowHint = False
-    end
     object ShowPackagesCheckBox: TCheckBox
       Left = 6
       Height = 20
@@ -268,6 +221,7 @@ object CodeBrowserView: TCodeBrowserView
       Caption = 'ShowPackagesCheckBox'
       OnChange = ShowPackagesCheckBoxChange
       TabOrder = 0
+      UseOnChange = True
     end
     object ShowUnitsCheckBox: TCheckBox
       Left = 6
@@ -277,6 +231,7 @@ object CodeBrowserView: TCodeBrowserView
       Caption = 'ShowUnitsCheckBox'
       OnChange = ShowUnitsCheckBoxChange
       TabOrder = 1
+      UseOnChange = True
     end
     object ShowIdentifiersCheckBox: TCheckBox
       Left = 6
@@ -286,6 +241,7 @@ object CodeBrowserView: TCodeBrowserView
       Caption = 'ShowIdentifiersCheckBox'
       OnChange = ShowIdentifiersCheckBoxChange
       TabOrder = 2
+      UseOnChange = True
     end
     object PackageFilterEdit: TEdit
       AnchorSideTop.Control = ShowPackagesCheckBox
