@@ -1690,7 +1690,7 @@ begin
   UpdateFont;
 
   //The Y origine for ps text it's Left bottom corner
-  Dec(Y,Abs(Round(Font.Size)));
+  Dec(Y,Abs(Font.Size));
   
   if fsUnderline in Font.Style then
   begin
