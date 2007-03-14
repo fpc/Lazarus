@@ -61,6 +61,37 @@ begin
   DeliverMessage(AInfo.LCLObject, Msg);*)
 end;
 
+function CarbonPrivateHIView_SetCursor(ANextHandler: EventHandlerCallRef;
+  AEvent: EventRef;
+  AInfo: TCarbonWidgetInfo): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
+var
+{
+  Msg: TLMessage;
+}
+  ACursor: TCursor;
+begin
+  // too much messages in terminal
+  // DebugLn('PrivateHiView_SetCursor: ', (AInfo.LCLObject as TComponent).Name);
+  CallNextEventHandler(ANextHandler, AEvent);
+  
+{
+  Paul Ishenin: maybe we should ask control about it cursor via LM_SetCursor ???
+  
+  FillChar(Msg, SizeOf(Msg), 0);
+  Msg.msg := LM_SETCURSOR;
+  DeliverMessage(AInfo.LCLObject, Msg);
+}
+
+  ACursor := Screen.Cursor;
+  if ACursor = crDefault then
+  begin
+    if (AInfo.LCLObject is TControl) then
+      ACursor := TControl(AInfo.LCLObject).Cursor;
+  end;
+  WidgetSet.SetCursor(Screen.Cursors[ACursor]);
+  Result := noErr; // cursor was setted
+end;
+
 // ==================================================================
 // C L A S S 
 // ==================================================================
@@ -104,6 +135,12 @@ begin
     RegisterEventHandler(@CarbonPrivateHIView_SetFocusPart),
     1, @TmpSpec, Pointer(AInfo), nil);
   
+  // cursor set
+  TmpSpec := MakeEventSpec(kEventClassControl, kEventControlSetCursor);
+  InstallControlEventHandler(AInfo.Widget,
+    RegisterEventHandler(@CarbonPrivateHIView_SetCursor),
+    1, @TmpSpec, Pointer(AInfo), nil);
+    
   DebugLn(TWinControl(AInfo.LCLObject).Name,':', TWinControl(Ainfo.LCLObject).ClassName ,' Events set')
 end;
 
@@ -114,4 +151,5 @@ begin
   UnregisterEventHandler(@CarbonPrivateHIView_MouseMove);
   UnregisterEventHandler(@CarbonPrivateCommon_Draw);
   UnregisterEventHandler(@CarbonPrivateCommon_BoundsChanged);
+  UnregisterEventHandler(@CarbonPrivateHIView_SetCursor);
 end;

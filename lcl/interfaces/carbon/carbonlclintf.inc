@@ -30,6 +30,19 @@
 
 //##apiwiz##sps##   // Do not remove
 
+function TCarbonWidgetSet.CreateStandardCursor(ACursor: SmallInt): hCursor;
+var
+  AThemeCursor: ThemeCursor;
+begin
+  Result := 0;
+  if (ACursor >= crLow) and (ACursor <= crHigh) then
+  begin
+    AThemeCursor := CursorToThemeCursor[TCursor(ACursor)];
+    if AThemeCursor <> kThemeUndefCursor then
+      Result := hCursor(TCarbonCursor.CreateThemed(AThemeCursor));
+  end;
+end;
+
 function TCarbonWidgetSet.DrawSplitter(DC: HDC; const ARect: TRect;
   Horizontal: boolean): boolean;
 begin

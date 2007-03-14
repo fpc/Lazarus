@@ -118,7 +118,7 @@ type
 implementation  
 
 uses
-  CarbonWSStdCtrls;
+  CarbonWSStdCtrls, InterfaceBase;
 
 // Store state of key modifiers so that we can emulate keyup/keydown
 // of keys like control, option, command, caps lock, shift

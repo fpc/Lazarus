@@ -329,6 +329,7 @@ begin
   inherited Create;
   FTerminating := False;
   FTimerMap := TMap.Create(its4, SizeOf(TFNTimerProc));
+  FCurrentCursor := 0;
 end;
 
 {------------------------------------------------------------------------------

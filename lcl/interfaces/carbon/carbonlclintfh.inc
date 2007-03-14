@@ -27,6 +27,7 @@
 
 //##apiwiz##sps##   // Do not remove
 
+function CreateStandardCursor(ACursor: SmallInt): hCursor; override;
 function DrawSplitter(DC: HDC; const ARect: TRect; Horizontal: boolean): boolean; override;
 
 function ExtUTF8Out(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect;

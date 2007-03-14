@@ -55,6 +55,7 @@ function CreateBitmap(Width, Height: Integer; Planes, BitCount: Longint; BitmapB
 function CreateBitmapFromRawImage(const RawImage: TRawImage; var Bitmap, MaskBitmap: HBitmap; AlwaysCreateMask: boolean): boolean; override;
 function CreateBrushIndirect(const LogBrush: TLogBrush): HBRUSH; override;
 function CreateCaret(Handle : HWND; Bitmap : hBitmap; width, Height : Integer) : Boolean; override;
+function CreateCursor(ACursorInfo: PIconInfo): hCursor; Override;
 function CreateCompatibleBitmap(DC: HDC; Width, Height: Integer): HBITMAP; override;
 function CreateCompatibleDC(DC: HDC): HDC; override;
 function CreateFontIndirect(const LogFont: TLogFont): HFONT; override;
@@ -69,6 +70,7 @@ procedure DeleteCriticalSection(var CritSection: TCriticalSection); Override;
 function DeleteDC(hDC: HDC): Boolean; override;
 function DeleteObject(GDIObject: HGDIOBJ): Boolean;  override;
 function DestroyCaret(Handle : HWND): Boolean; override;
+function DestroyCursor(Handle: hCursor): Boolean; Override;
 function DrawFrameControl(DC: HDC; var Rect : TRect; uType, uState : Cardinal) : Boolean; override;
 function DrawEdge(DC: HDC; var ARect: TRect; Edge: Cardinal; grfFlags: Cardinal): Boolean; override;
 function DrawText(DC: HDC; Str: PChar; Count: Integer; var Rect: TRect; Flags: Cardinal): Integer; Override;
@@ -183,6 +185,7 @@ function SetCapture(AHandle: HWND): HWND; override;
 function SetCaretPos(X, Y: Integer): Boolean; override;
 function SetCaretPosEx(Handle: HWnd; X, Y: Integer): Boolean; override;
 function SetCaretRespondToFocus(handle: HWND; ShowHideOnFocus: boolean): Boolean; override;
+function SetCursor(hCursor: HICON): HCURSOR; override;
 function SetFocus(HWnd: HWND): HWND; override;
 function SetForegroundWindow(HWnd: HWND): boolean; override;
 function SetProp(Handle: hwnd; Str : PChar; Data : Pointer) : Boolean; override;
@@ -206,4 +209,7 @@ function UpdateWindow(Handle: HWND): Boolean; override;
 function WindowFromPoint(Point : TPoint) : HWND; override;
 
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line
+
+
+
 

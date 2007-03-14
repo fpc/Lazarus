@@ -167,3 +167,56 @@ begin
   else
     LCLSendChangedMsg(AInfo.LCLObject as TControl);
 end;
+
+function CarbonPrivateCommon_CursorChange(ANextHandler: EventHandlerCallRef;
+  AEvent: EventRef;
+  AInfo: TCarbonWidgetInfo): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
+var
+  AStatus: OSSTATUS;
+  ALocation: FPCMacOSAll.Point;
+  AModifiers: UInt32;
+  ACursorWasSet: Boolean;
+  ACursor: TCursor;
+  
+  AContentView: ControlRef;// the content control of the window
+  AControl: ControlRef;    // the control we are dealing with
+                           // or the rootcontrol if none found
+begin
+  Result := CallNextEventHandler(ANextHandler, AEvent);
+  AStatus := GetEventParameter(AEvent, kEventParamMouseLocation, typeQDPoint, nil,
+    SizeOf(ALocation), nil, @ALocation);
+  if AStatus = noErr then
+  begin
+    AStatus := GetEventParameter(AEvent, kEventParamKeyModifiers, typeUInt32, nil,
+      SizeOf(AModifiers), nil, @AModifiers);
+    if AStatus = noErr then
+    begin
+      //Find out which control the mouse event should occur for
+      AContentView := GetCarbonWindowContent(HWND(AInfo.Widget));
+      AControl := nil;
+      HIViewGetViewForMouseEvent(AContentView, AEvent, AControl);
+
+      if AControl = nil then
+      begin
+        DebugLn('CarbonPrivateCommon_CursorChange - Mouse event on nil!');
+        AControl := AContentView;
+      end;
+      
+      GlobalToLocal(ALocation);
+      AStatus := HandleControlSetCursor(AControl, ALocation,
+        AModifiers, ACursorWasSet);
+
+      if AStatus <> noErr then
+        ACursorWasSet := False;
+
+      if not ACursorWasSet then
+      begin
+        ACursor := Screen.Cursor;
+        if ACursor = crDefault then
+          ACursor := TControl(AInfo.LCLObject).Cursor;
+        WidgetSet.SetCursor(Screen.Cursors[ACursor]);
+      end;
+      Result := noErr;
+    end;
+  end;
+end;

@@ -54,6 +54,7 @@ type
     FTerminating: Boolean;
     FMainEventQueue: EventQueueRef;
     FTimerMap: TMap; // the map contains all installed timers
+    FCurrentCursor: hCursor;
   protected
     procedure PassCmdLineOptions; override;
     procedure SendCheckSynchronizeMessage;

@@ -32,7 +32,7 @@ interface
 
 uses
   WSLCLClasses, LCLClasses,
-  LCLType, LCLProc, Math, Classes, Graphics, Controls,
+  LCLType, LCLProc, Math, SysUtils, Classes, Graphics, Controls,
   FPCMacOSAll, CarbonUtils;
 
 const
@@ -91,6 +91,8 @@ const
   LCLCarbonEventKindWake = 'Wake';
   LCLCarbonEventKindMain = 'Main';
   
+  kThemeUndefCursor = ThemeCursor(-1); // undefined mac theme cursor
+  
   CursorToThemeCursor: array[crLow..crHigh] of ThemeCursor =
     ({crSizeSE      } kThemeResizeLeftCursor, {!!}
      {crSizeS       } kThemeResizeLeftCursor, {!!}
@@ -100,16 +102,16 @@ const
      {crSizeNE      } kThemeResizeLeftCursor, {!!}
      {crSizeN       } kThemeResizeRightCursor, {!!}
      {crSizeNW      } kThemeResizeRightCursor, {!!}
-     {crSizeAll     } kThemeResizeLeftRightCursor, {!!}
+     {crSizeAll     } kThemeUndefCursor, // will be loaded from resource
      {crHandPoint   } kThemePointingHandCursor,
      {crHelp        } kThemeContextualMenuArrowCursor, {!!}
-     {crAppStart    } kThemeSpinningCursor, {!!}
-     {crNo          } kThemeArrowCursor, {!!}
-     {crSQLWait     } kThemeSpinningCursor, {!!}
-     {crMultiDrag   } kThemeCopyArrowCursor, {!!}
-     {crVSplit      } kThemeResizeLeftRightCursor,
-     {crHSplit      } kThemeResizeLeftRightCursor, {!!}
-     {crNoDrop      } kThemeArrowCursor, {!!}
+     {crAppStart    } kThemeSpinningCursor,
+     {crNo          } kThemeUndefCursor,
+     {crSQLWait     } kThemeUndefCursor, // will be loaded from resource
+     {crMultiDrag   } kThemeUndefCursor, // will be loaded from resource
+     {crVSplit      } kThemeResizeUpDownCursor,
+     {crHSplit      } kThemeResizeLeftRightCursor,
+     {crNoDrop      } kThemeNotAllowedCursor, // will be loaded from resource
      {crDrag        } kThemeCopyArrowCursor,
      {crHourGlass   } kThemeSpinningCursor,
      {crUpArrow     } kThemeArrowCursor, {!!}
@@ -307,6 +309,39 @@ type
   end;
   // TODO: TCarbonPrinterContext
   
+  TCarbonCursorType =
+  (
+    cctUnknown,  // undefined
+    cctImage,    // from image
+    cctTheme,    // theme cursor
+    cctAnimated, // animated theme cursor
+    cctWait      // special wait cursor
+  );
+  { TCarbonCursor }
+  
+  TCarbonCursor = class(TCarbonGDIObject)
+  private
+    // TODO: cursor from image
+
+    FCursorType: TCarbonCursorType;
+    FThemeCursor: ThemeCursor;
+    FAnimationStep: Integer;
+    FTaskID: MPTaskID;
+
+    procedure CreateThread;
+    procedure DestroyThread;
+  public
+    constructor Create;
+    constructor CreateFromInfo(AInfo: PIconInfo);
+    constructor CreateThemed(AThemeCursor: ThemeCursor);
+    destructor Destroy; override;
+
+    procedure Install;
+    procedure UnInstall;
+    function StepAnimation: Boolean;
+    property CursorType: TCarbonCursorType read FCursorType;
+  end;
+  
 var
   DefaultTextStyle: ATSUStyle; // default Carbon text style
   RGBColorSpace: CGColorSpaceRef; // global RGB color space
@@ -320,6 +355,20 @@ implementation
 uses
   CarbonProc;
   
+const
+  kThemeCursorAnimationDelay = 70;
+  
+function AnimationCursorHandler(parameter: UnivPtr): OSStatus; MWPascal;
+begin
+  Result := noErr;
+  while true do
+  begin
+    if TCarbonCursor(parameter).StepAnimation then
+      Sleep(kThemeCursorAnimationDelay) else
+      break;
+  end;
+end;
+
 { TCarbonWidgetInfo }
 
 {------------------------------------------------------------------------------
@@ -994,6 +1043,126 @@ end;
 
 var
   LogBrush: TLogBrush;
+
+{ TCarbonCursor }
+
+constructor TCarbonCursor.Create;
+begin
+  FCursorType := cctUnknown;
+  FThemeCursor := 0;
+  FAnimationStep := 0;
+end;
+
+procedure TCarbonCursor.CreateThread;
+begin
+  FTaskID := nil;
+  MPCreateTask(@AnimationCursorHandler, Self, 0, nil, nil, nil, 0, @FTaskID);
+end;
+
+procedure TCarbonCursor.DestroyThread;
+begin
+  MPTerminateTask(FTaskID, noErr);
+  FTaskID := nil;
+end;
+
+constructor TCarbonCursor.CreateFromInfo(AInfo: PIconInfo);
+begin
+  // TODO:
+  Create;
+  FCursorType := cctImage;
+end;
+
+constructor TCarbonCursor.CreateThemed(AThemeCursor: ThemeCursor);
+const
+  kThemeCursorTypeMap: array[kThemeArrowCursor..22] of TCarbonCursorType =
+  (
+    cctTheme,    // kThemeArrowCursor
+    cctTheme,    // kThemeCopyArrowCursor
+    cctTheme,    // 2
+    cctTheme,    // 3
+    cctTheme,    // 4
+    cctTheme,    // 5
+    cctTheme,    // 6
+    cctAnimated, // kThemeWatchCursor
+    cctTheme,    // 8
+    cctTheme,    // 9
+    cctTheme,    // 10
+    cctAnimated, // kThemeCountingUpHandCursor
+    cctAnimated, // kThemeCountingDownHandCursor
+    cctAnimated, // kThemeCountingUpAndDownHandCursor
+    cctWait,     // kThemeSpinningCursor (obsolte and thats why we should use wait instead)
+    cctTheme,    // 15
+    cctTheme,    // 16
+    cctTheme,    // 17
+    cctTheme,    // 18
+    cctTheme,    // 19
+    cctTheme,    // 20
+    cctTheme,    // 21
+    cctTheme     // kThemeProofCursor
+  );
+begin
+  Create;
+  FThemeCursor := AThemeCursor;
+  if (AThemeCursor >= Low(kThemeCursorTypeMap)) and
+     (AThemeCursor <= High(kThemeCursorTypeMap)) then
+    FCursorType := kThemeCursorTypeMap[FThemeCursor] else
+    FCursorType := cctTheme;
+end;
+
+destructor TCarbonCursor.Destroy;
+begin
+  UnInstall;
+  if CursorType = cctImage then
+  begin
+    // TODO:
+  end;
+  inherited Destroy;
+end;
+
+procedure TCarbonCursor.Install;
+begin
+  if CursorType = cctImage then
+  begin
+    // TODO : SetCCursor();
+  end else
+  if CursorType = cctTheme then
+  begin
+    SetThemeCursor(FThemeCursor);
+  end else
+  if CursorType = cctAnimated then
+  begin
+    FAnimationStep := 0;
+    CreateThread;
+  end else
+  if CursorType = cctWait then
+  begin
+    QDDisplayWaitCursor(True);
+  end else
+    DebugLn('[TCarbonCursor.Apply] !!! Unknown cursor type');
+end;
+
+procedure TCarbonCursor.UnInstall;
+begin
+  if CursorType = cctWait then
+    QDDisplayWaitCursor(False) else
+  if CursorType = cctAnimated then
+  begin
+    DestroyThread;
+  end;
+end;
+
+function TCarbonCursor.StepAnimation: Boolean;
+begin
+  Result := SetAnimatedThemeCursor(FThemeCursor, FAnimationStep) <> themeBadCursorIndexErr;
+  if Result then
+  begin
+    inc(FAnimationStep);
+  end else
+  begin
+    FCursorType := cctTheme;
+    SetThemeCursor(FThemeCursor);
+  end;
+end;
 
 initialization
   LAZARUS_FOURCC := MakeFourCC('Laz ');

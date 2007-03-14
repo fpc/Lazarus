@@ -200,6 +200,18 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method:  CreateCursor
+  Params:  ACursorInfo - cursor info as in win32
+  Returns: Handle to a cursor
+
+  Creates a cursor from bitmap and mask
+ ------------------------------------------------------------------------------}
+function TCarbonWidgetSet.CreateCursor(ACursorInfo: PIconInfo): hCursor;
+begin
+  Result := hCursor(TCarbonCursor.CreateFromInfo(ACursorInfo));
+end;
+
+{------------------------------------------------------------------------------
   Method:  CreateFontIndirect
   Params:  LogFont - Font characteristic
   Returns: Handle to the font
@@ -317,6 +329,20 @@ end;
 function TCarbonWidgetSet.DestroyCaret(Handle: HWND): Boolean;
 begin
   Result:=inherited DestroyCaret(Handle);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  DestroyCursor
+  Params:  Handle: hCursor
+  Returns: Handle true if cursor had been destroyed
+
+  Destroy previously created cursor
+ ------------------------------------------------------------------------------}
+function TCarbonWidgetSet.DestroyCursor(Handle: hCursor): Boolean;
+begin
+  Result := Handle <> 0;
+  if Result then
+    TCarbonCursor(Handle).Free;
 end;
 
 function TCarbonWidgetSet.DrawFrameControl(DC: HDC; var Rect: TRect; uType,
@@ -1918,6 +1944,28 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method:  SetCursor
+  Params:  hCursor - Handle of cursor to set
+  Returns: Previous cursor
+
+  Sets the cursor to application
+ ------------------------------------------------------------------------------}
+function TCarbonWidgetSet.SetCursor(hCursor: HICON): HCURSOR;
+begin
+  Result := FCurrentCursor;
+  if (hCursor <> 0) and (hcursor <> FCurrentCursor) then
+  begin
+    // If we setted cursor before, them we should uninstall it.
+    // This needs for animated cursors (because of threading) and wait cursor
+    if (FCurrentCursor <> 0) then
+      TCarbonCursor(FCurrentCursor).UnInstall;
+
+    // install new cursor
+    TCarbonCursor(hCursor).Install;
+    FCurrentCursor := hCursor;
+  end;
+end;
+{------------------------------------------------------------------------------
   Method:  SetFocus
   Params:  HWnd - Handle of new focus window
   Returns: Previous focused window
@@ -2234,4 +2282,7 @@ end;
 
 
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line
+
+
+
 

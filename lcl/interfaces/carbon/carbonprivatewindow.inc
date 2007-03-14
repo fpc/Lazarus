@@ -976,7 +976,13 @@ begin
   InstallWindowEventHandler(AInfo.Widget,
     RegisterEventHandler(@CarbonPrivateCommon_BoundsChanged),
     1, @TmpSpec, Pointer(AInfo), nil);
-    
+
+  // cursor change
+  TmpSpec := MakeEventSpec(kEventClassWindow, kEventWindowCursorChange);
+  InstallWindowEventHandler(AInfo.Widget,
+    RegisterEventHandler(@CarbonPrivateCommon_CursorChange),
+    1, @TmpSpec, Pointer(AInfo), nil);
+
   debugln('TCarbonPrivateWindow.RegisterEvents ',DbgSName(AInfo.LCLObject));
 end;
 
@@ -992,4 +998,5 @@ begin
   
   UnregisterEventHandler(@CarbonPrivateCommon_Draw);  
   UnregisterEventHandler(@CarbonPrivateCommon_BoundsChanged); 
+  UnregisterEventHandler(@CarbonPrivateCommon_CursorChange);
 end;
