@@ -166,28 +166,9 @@ implementation
   Creates new progress bar in Carbon interface with the specified parameters
  ------------------------------------------------------------------------------}
 class function TCarbonWSProgressBar.CreateHandle(
-  const AWinControl: TWinControl; const AParams: TCreateParams
-  ): TLCLIntfHandle;
-var
-  ProgressBar: TCustomProgressBar;
-  Control: ControlRef;
-  Info: TCarbonWidgetInfo;
+  const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
 begin
-  Result := 0;
-
-  ProgressBar := AWinControl as TCustomProgressBar;
-
-  // create determinate progress bar
-  if CreateProgressBarControl(GetTopParentWindow(AWinControl),
-    ParamsToCarbonRect(AParams), ProgressBar.Position, ProgressBar.Min,
-    ProgressBar.Max, False, Control) = noErr
-  then
-    Result := TLCLIntfHandle(Control);
-
-  if Result = 0 then Exit;
-
-  Info := TCarbonWidgetInfo.CreateForControl(Control, AWinControl);
-  TCarbonPrivateHandleClass(WSPrivate).RegisterEvents(Info);
+  Result := TLCLIntfHandle(TCarbonProgressBar.Create(AWinControl, AParams));
 end;
 
 {------------------------------------------------------------------------------
@@ -201,9 +182,8 @@ class procedure TCarbonWSProgressBar.ApplyChanges(
 begin
   if not WSCheckHandleAllocated(AProgressBar, 'ApplyChanges') then Exit;
 
-  SetControl32BitMinimum(ControlRef(AProgressBar.Handle), AProgressBar.Min);
-  SetControl32BitMaximum(ControlRef(AProgressBar.Handle), AProgressBar.Max);
-  SetControl32BitValue(ControlRef(AProgressBar.Handle), AProgressBar.Position);
+  TCarbonCustomBar(AProgressBar.Handle).SetData(AProgressBar.Position,
+    AProgressBar.Min, AProgressBar.Max);
 end;
 
 {------------------------------------------------------------------------------
@@ -218,26 +198,10 @@ class procedure TCarbonWSProgressBar.SetPosition(
 begin
   if not WSCheckHandleAllocated(AProgressBar, 'SetPosition') then Exit;
 
-  SetControl32BitValue(ControlRef(AProgressBar.Handle), AProgressBar.Position);
+  TCarbonCustomBar(AProgressBar.Handle).SetData(AProgressBar.Position);
 end;
 
 { TCarbonWSTrackBar }
-
-{------------------------------------------------------------------------------
-  Name:  TrackBarLiveTrack
-
-  Callback procedure for Carbon slider live tracking
- ------------------------------------------------------------------------------}
-procedure TrackBarLiveTrack(Control: ControlRef; partCode: ControlPartCode);
-  {$IFDEF darwin}mwpascal;{$ENDIF}
-var
-  AInfo: TCarbonWidgetInfo;
-begin
-  AInfo := GetCtrlWidgetInfo(Pointer(Control));
-  if AInfo = nil then Exit;
-
-  LCLSendChangedMsg(AInfo.LCLObject as TControl);
-end;
 
 {------------------------------------------------------------------------------
   Method:  TCarbonWSTrackBar.CreateHandle
@@ -249,37 +213,8 @@ end;
  ------------------------------------------------------------------------------}
 class function TCarbonWSTrackBar.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
-var
-  TrackBar: TCustomTrackBar;
-  Control: ControlRef;
-  PTicks: PLongWord;
-  Info: TCarbonWidgetInfo;
 begin
-  Result := 0;
-
-  TrackBar := AWinControl as TCustomTrackBar;
-  
-  New(PTicks);
-  
-  if TrackBar.TickStyle = tsNone then PTicks^ := 0
-  else
-    if TrackBar.Frequency > 0 then
-      PTicks^ := Ceil((TrackBar.Max - TrackBar.Min) / TrackBar.Frequency) + 1
-    else
-      PTicks^ := 2;
-      
-  if CreateSliderControl(GetTopParentWindow(AWinControl),
-    ParamsToCarbonRect(AParams), TrackBar.Position, TrackBar.Min, TrackBar.Max,
-    kControlSliderPointsDownOrRight, PTicks^, False, nil, Control) = noErr
-  then
-    Result := TLCLIntfHandle(Control);
-
-  if Result = 0 then Exit;
-
-  Info := TCarbonWidgetInfo.CreateForControl(Control, AWinControl);
-  Info.UserData := PTicks;
-  Info.DataOwner := True;
-  TCarbonPrivateHandleClass(WSPrivate).RegisterEvents(Info);
+  Result := TLCLIntfHandle(TCarbonTrackBar.Create(AWinControl, AParams));
 end;
 
 {------------------------------------------------------------------------------
@@ -290,45 +225,30 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TCarbonWSTrackBar.ApplyChanges(const ATrackBar: TCustomTrackBar);
 var
-  AInfo: TCarbonWidgetInfo;
-  PTicks: PLongWord;
-  NewTicks: LongWord;
+  CarbonTrackBar: TCarbonTrackBar;
 begin
   if not WSCheckHandleAllocated(ATrackBar, 'ApplyChanges') then Exit;
-  
-  if ATrackBar.TickStyle = tsNone then NewTicks := 0
-  else
-    if ATrackBar.Frequency > 0 then
-      NewTicks := Ceil((ATrackBar.Max - ATrackBar.Min) / ATrackBar.Frequency) + 1
-    else
-      NewTicks := 2;
 
-  AInfo := GetCtrlWidgetInfo(Pointer(ATrackBar.Handle));
-  PTicks := PLongWord(AInfo.UserData);
+  CarbonTrackBar := TCarbonTrackBar(ATrackBar.Handle);
   
-  if PTicks^ <> NewTicks then
+  if CarbonTrackBar.Ticks <> CarbonTrackBar.GetTicks then
     RecreateWnd(ATrackBar) // recreate track bar if ticks have changed
   else
-  begin
-    SetControl32BitMinimum(ControlRef(ATrackBar.Handle), ATrackBar.Min);
-    SetControl32BitMaximum(ControlRef(ATrackBar.Handle), ATrackBar.Max);
-    SetControl32BitValue(ControlRef(ATrackBar.Handle), ATrackBar.Position);
-  end;
+    CarbonTrackBar.SetData(ATrackBar.Position, ATrackBar.Min, ATrackBar.Max);
 end;
 
 {------------------------------------------------------------------------------
   Method:  TCarbonWSTrackBar.GetPosition
   Params:  ATrackBar - LCL custom track bar
-  Returns: Position of slider
-
-  Gets the position of sliderr in Carbon interface
+  Returns: Position of sliderr in Carbon interface
  ------------------------------------------------------------------------------}
 class function TCarbonWSTrackBar.GetPosition(const ATrackBar: TCustomTrackBar
   ): integer;
 begin
+  Result := 0;
   if not WSCheckHandleAllocated(ATrackBar, 'GetPosition') then Exit;
 
-  Result := GetControl32BitValue(ControlRef(ATrackBar.Handle));
+  Result := TCarbonTrackBar(ATrackBar.Handle).GetPos;
 end;
 
 {------------------------------------------------------------------------------
@@ -343,7 +263,7 @@ class procedure TCarbonWSTrackBar.SetPosition(const ATrackBar: TCustomTrackBar;
 begin
   if not WSCheckHandleAllocated(ATrackBar, 'SetPosition') then Exit;
 
-  SetControl32BitValue(ControlRef(ATrackBar.Handle), ATrackBar.Position);
+  TCarbonTrackBar(ATrackBar.Handle).SetData(ATrackBar.Position);
 end;
 
 initialization
@@ -366,7 +286,7 @@ initialization
 //  RegisterWSComponent(TCustomToolBar, TCarbonWSToolBar);
 //  RegisterWSComponent(TCustomToolButton, TCarbonWSToolButton);
 //  RegisterWSComponent(TCustomToolBar, TCarbonWSToolBar);
-  RegisterWSComponent(TCustomTrackBar, TCarbonWSTrackBar, TCarbonPrivateValueControl);
+  RegisterWSComponent(TCustomTrackBar, TCarbonWSTrackBar);
 //  RegisterWSComponent(TCustomTreeView, TCarbonWSCustomTreeView);
 //  RegisterWSComponent(TCustomTreeView, TCarbonWSTreeView);
 ////////////////////////////////////////////////////

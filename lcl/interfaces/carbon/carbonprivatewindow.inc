@@ -19,201 +19,40 @@
 // H A N D L E R S 
 // ==================================================================
 
-function GetCarbonMsgKeyState: PtrInt;
-var
-  Modifiers, ButtonState: UInt32;
-begin
-  Result:=0;
-
-  Modifiers := GetCurrentEventKeyModifiers; // shift, control, option, command
-  ButtonState := GetCurrentEventButtonState; // Bit 0 first button (left),
-   // bit 1 second (right), bit2 third (middle) ...
-
-  if (ButtonState and 1)>0 then
-    inc(Result,MK_LButton);
-  if (ButtonState and 2)>0 then
-    inc(Result,MK_RButton);
-  if (ButtonState and 4)>0 then
-    inc(Result,MK_MButton);
-  if (shiftKey and Modifiers)>0 then
-    inc(Result,MK_Shift);
-  if (cmdKey and Modifiers)>0 then
-    inc(Result,MK_Control);
-
-  //debugln('GetCarbonMsgKeyState Result=',dbgs(KeysToShiftState(Result)),' Modifiers=',hexstr(Modifiers,8),' ButtonState=',hexstr(ButtonState,8));
-end;
-
-function GetCarbonShiftState: TShiftState;
-var
-  Modifiers, ButtonState: UInt32;
-begin
-  Result:=[];
-
-  Modifiers := GetCurrentEventKeyModifiers; // shift, control, option, command
-  ButtonState := GetCurrentEventButtonState; // Bit 0 first button (left),
-   // bit 1 second (right), bit2 third (middle) ...
-
-  if (ButtonState and 1)>0 then
-    Include(Result,ssLeft);
-  if (ButtonState and 2)>0 then
-    Include(Result,ssRight);
-  if (ButtonState and 4)>0 then
-    Include(Result,ssMiddle);
-  if (shiftKey and Modifiers)>0 then
-    Include(Result,ssShift);
-  if (cmdKey and Modifiers)>0 then
-    Include(Result,ssCtrl);
-  if (controlKey and Modifiers)>0 then
-    Include(Result,ssMeta);
-  if (optionKey and Modifiers)>0 then
-    Include(Result,ssAlt);
-  if (alphaLock and Modifiers)>0 then
-    Include(Result,ssCaps);
-
-  //debugln('GetCarbonShiftState Result=',dbgs(Result),' Modifiers=',hexstr(Modifiers,8),' ButtonState=',hexstr(ButtonState,8));
-end;
-
-
-function CarbonPrivateWindow_Close(ANextHandler: EventHandlerCallRef;
+function CarbonWindow_Close(ANextHandler: EventHandlerCallRef;
   AEvent: EventRef;
-  AInfo: TCarbonWidgetInfo): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
+  AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
 var
   Msg: TLMessage;
 begin
-  DebugLn('CarbonPrivateWindow_Close: ', (AInfo.LCLObject as TComponent).Name);
+  DebugLn('CarbonWindow_Close: ', DbgSName(AWidget.LCLObject));
   // Do canclose query, if false then exit
 
   FillChar(Msg, SizeOf(Msg),0);
   Msg.msg := LM_CLOSEQUERY;
 
   // Message results : 0 - do nothing, 1 - destroy window
-  if DeliverMessage(AInfo.LCLObject, Msg) = 0 then
+  if DeliverMessage(AWidget.LCLObject, Msg) = 0 then
   begin
-    DebugLn('CarbonPrivateWindow_Close Can''t close: ', (AInfo.LCLObject as TComponent).Name);
     Result := noErr;
     Exit;
   end;
-
+  
+  DebugLn('CarbonWindow_Close Free: ', DbgSName(AWidget.LCLObject));
   Result := CallNextEventHandler(ANextHandler, AEvent);
 end;
 
-
-{ TrackProgress:
-  Generic function that handles all mouse dragging events }
-procedure TrackProgress(AControl: ControlRef; APartCode: ControlPartCode); {$IFDEF darwin}mwpascal;{$ENDIF}
-var
-  Msg: TLMMouseMove;
-  MousePoint: HIPoint;
-  AbsMousePos: FPCMacOSAll.Point;
-  Window: WindowRef;
-  R: FPCMacOSAll.Rect;
-  Info: TCarbonWidgetInfo;
-begin
-  {$IFDEF VerboseMouse}
-  debugln('TrackProgress');
-  {$ENDIF}
-  GetGlobalMouse(AbsMousePos);
-  Window := HIViewGetWindow(AControl);
-  GetWindowBounds(Window, kWindowStructureRgn, R);
-  MousePoint.X := AbsMousePos.h - R.Left;
-  MousePoint.Y := AbsMousePos.v - R.Top;
-
-  HIViewConvertPoint(MousePoint, nil, AControl);
-
-  Info := GetCtrlWidgetInfo(AControl);
-  if Info = nil then begin
-    //AControl should be fine but if it isn't, default to the window
-    Info := GetWndWidgetInfo(Window);
-  end;
-    
-  if Info <> nil then
-  begin
-    FillChar(Msg, SizeOf(TLMMouseMove), 0);
-    Msg.Msg := LM_MOUSEMOVE;
-    Msg.XPos := Trunc(MousePoint.X);
-    Msg.YPos := Trunc(MousePoint.Y);
-    Msg.Keys := GetCarbonMsgKeyState;
-    DeliverMessage(Info.LCLObject, Msg);
-  end;
-end;
-
-{ CarbonPrivateWindow_ControlTrack
-  Handles/Creates LM_MOUSEMOVE events while dragging.
-  For mouse move events while not dragging see below
-  CarbonPrivateWindow_MouseProc }
-function CarbonPrivateWindow_ControlTrack(ANextHandler: EventHandlerCallRef;
+{------------------------------------------------------------------------------
+  Name: CarbonWindow_MouseProc
+  Handles mouse events
+ ------------------------------------------------------------------------------}
+function CarbonWindow_MouseProc(ANextHandler: EventHandlerCallRef;
   AEvent: EventRef;
-  AInfo: TCarbonWidgetInfo): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
-const
-  MSGKIND: array[1..3] of Integer = (LM_LBUTTONUP, LM_RBUTTONUP, LM_MBUTTONUP);
+  AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
 var
-  Control: ControlRef;
-  MousePoint: HIPoint;
-  ActionUPP, OldActionUPP: ControlActionUPP;
-  pt: FPCMacOSAll.Point;
-  MouseButton: EventMouseButton;
-  Window: WindowRef = nil;
-  R: FPCMacOSAll.Rect;
-  Msg: TLMMouseMove;
-begin                                   
-  {$IFDEF VerboseMouse}
-  DebugLn('CarbonPrivateWindow_ControlTrack');
-  {$ENDIF}
-  GetEventParameter(AEvent, kEventParamControlAction, typeControlActionUPP, nil, sizeof(ActionUPP), nil, @OldActionUPP);
-  GetEventParameter(AEvent, kEventParamMouseButton, typeMouseButton, nil, SizeOf(MouseButton), nil, @MouseButton);
-  GetEventParameter(AEvent, kEventParamWindowRef, typeWindowRef, nil, SizeOf(window), nil, @window);
-
-  ActionUPP := NewControlActionUPP(@TrackProgress);   
-  SetEventParameter(AEvent, kEventParamControlAction, typeControlActionUPP, sizeof(ActionUPP), @ActionUPP);
-
-  // this does not return until the mouse is released
-  Result := CallNextEventHandler(ANextHandler, AEvent);
-                                                   
-  SetEventParameter(AEvent, kEventParamControlAction, typeControlActionUPP, sizeof(OldActionUPP), @OldActionUPP);
-  DisposeControlActionUPP(ActionUPP);
-  
-  // now we will create a MouseUp message to send the LCL 
-  
-  GetGlobalMouse(Pt);
-
-  Control := ControlRef(AInfo.Widget);
-  // if control is the rootview or rootcontrol (parent = nil)
-  // use the content area. No conversion is needed
-  if HIViewGetSuperView(Control) = nil then
-  begin
-    // root
-    GetWindowBounds(Window, kWindowContentRgn, R);
-    MousePoint.X := pt.h - R.left;
-    MousePoint.Y := pt.v - R.Top;
-  end
-  else
-  begin
-    // non root
-    GetWindowBounds(Window, kWindowStructureRgn, R);
-    MousePoint.X := pt.h - R.left;
-    MousePoint.Y := pt.v - R.Top;
-    HIViewConvertPoint(MousePoint, nil, Control);
-  end;
-  
-  FillChar(Msg,SizeOf(Msg),0);
-  if  (MouseButton >= Low(MSGKIND)) and (MouseButton <= High(MSGKIND)) then
-    Msg.Msg := MSGKIND[MouseButton];
-
-  Msg.XPos := Trunc(MousePoint.X);
-  Msg.YPos := Trunc(MousePoint.Y);
-  Msg.Keys := GetCarbonMsgKeyState;
-                 
-  DeliverMessage(AInfo.LCLObject, Msg);
-end;
-                                   
-function CarbonPrivateWindow_MouseProc(ANextHandler: EventHandlerCallRef;
-  AEvent: EventRef;
-  AWIndowInfo: TCarbonWidgetInfo): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
-var
-  ContentView: ControlRef;// the content control of the window
   Control: ControlRef;    // the control we are dealing with
                           // or the rootcontrol if none found
-  Info: TCarbonWidgetInfo;// the info specific to the mouse event
+  Widget: TCarbonWidget;  // the widget specific to the mouse event
                           // or the window's widgetinfo if none found
                                 
 //
@@ -229,10 +68,8 @@ var
     //debugln('GetClickCount ClickCount=',dbgs(ClickCount));
   end;
 
-  function GetMouseButton:Integer;
-  // 1 = left
-  // 2 = right
-  // 3 = middle
+  function GetMouseButton: Integer;
+  // 1 = left, 2 = right, 3 = middle
   var
     MouseButton: EventMouseButton;
   begin
@@ -249,8 +86,8 @@ var
                       SizeOf(MousePoint), nil, @MousePoint); 
     
     HIViewConvertPoint(MousePoint, nil, Control);
-    Result.X := Round(MousePoint.X);
-    Result.Y := Round(MousePoint.Y);
+    Result.X := Trunc(MousePoint.X);
+    Result.Y := Trunc(MousePoint.Y);
   end;
 
   function GetMouseWheelDelta: Integer;
@@ -261,7 +98,7 @@ var
                       SizeOf(WheelDelta), nil, @WheelDelta);
     Result := WheelDelta;
     {$IFDEF VerboseMouse}
-    debugln('GetMouseWheelDelta WheelDelta=',dbgs(WheelDelta),' ',hexstr(WheelDelta,8));
+    DebugLn('GetMouseWheelDelta WheelDelta=', DbgS(WheelDelta), ' ', HexStr(WheelDelta, 8));
     {$ENDIF}
   end;
 
@@ -282,7 +119,6 @@ var
     ClickCount: Integer;
     MousePoint: TPoint;
     Msg: ^TLMMouse;
-    Spec: EventTypeSpec;
   begin
     {$IFDEF VerboseMouse}
     DebugLN('HandleMouseDownEvent');
@@ -293,9 +129,8 @@ var
     MouseButton := GetMouseButton;
     MousePoint := GetMousePoint;
     
-    if (ClickCount < Low(MSGKIND))
-    or (ClickCount > High(MSGKIND))
-    then ClickCount := 1;
+    if (ClickCount < Low(MSGKIND)) or (ClickCount > High(MSGKIND)) then
+      ClickCount := 1;
     
     if (MouseButton < Low(MSGKIND[1])) or (MouseButton > High(MSGKIND[1])) then Exit;
     Msg^.Msg := MSGKIND[ClickCount, MouseButton];
@@ -304,11 +139,6 @@ var
     Msg^.XPos := MousePoint.X;                         
     Msg^.YPos := MousePoint.Y;
     Msg^.Keys := GetCarbonMsgKeyState;
-
-    // ???? What are we doing here ????
-    Spec := MakeEventSpec(kEventClassControl, kEventControlTrack);
-    InstallControlEventHandler(Control, RegisterEventHandler(@CarbonPrivateWindow_ControlTrack),
-      1, @Spec, Info, nil);
   end;
 
   procedure HandleMouseUpEvent(var AMsg);
@@ -319,6 +149,7 @@ var
     MousePoint: TPoint;
     Msg: ^TLMMouse;
   begin
+    DebugLn('HandleMouseUpEvent');
     {$IFDEF VerboseMouse}
     DebugLn('HandleMouseUpEvent');
     {$ENDIF}
@@ -389,35 +220,19 @@ var
     Extra: array[0..20] of Byte; // some messages are a bit larger, make some room
   end;  
   EventKind: UInt32;
+  
 begin
-  FillChar(Msg, SizeOf(Msg), 0);
-
+  Result := EventNotHandledErr;
+  
   //Find out which control the mouse event should occur for
-  ContentView := GetCarbonWindowContent(HWND(AWindowInfo.Widget));
   Control := nil;
-  HIViewGetViewForMouseEvent(ContentView, AEvent, Control);
+  if HIViewGetViewForMouseEvent(AWidget.Content, AEvent, Control) <> noErr then Exit;
+  if Control = nil then Exit;
   
-  if Control = nil then
-  begin
-    {$IFDEF VerboseMouse}
-    DebugLn('Mouse event on nil!');
-    {$ENDIF}
-    Control := ContentView;
-  end;
-  
-  // if a control other than root is found, send the message 
-  // to the control instead of the window 
-  // if a lower control without widgetInfo is found, use its parent
-  // Note: HIViewGetViewForMouseEvent returns the root if nothing found
-  Info := nil;
-  while Control <> ContentView do
-  begin
-    Info := GetCtrlWidgetInfo(Pointer(Control));
-    if Info <> nil then Break;
-    Control := HIViewGetSuperview(Control);
-  end;
-  if (Info = nil) or (Control = ContentView)
-  then Info := AWindowInfo;
+  Widget := GetCarbonWidget(Control);
+  if Widget = nil then Exit;
+
+  FillChar(Msg, SizeOf(Msg), 0);
   
   EventKind := GetEventKind(AEvent);
   case EventKind of
@@ -438,21 +253,21 @@ begin
   end;
   
   // Msg is set in the Appropriate HandleMousexxx procedure
-  if DeliverMessage(Info.LCLObject, Msg) = 0 then
-    Result :=  EventNotHandledErr //CallNextEventHandler(ANextHandler, AEvent);
+  if DeliverMessage(Widget.LCLObject, Msg) = 0 then
+    Result := EventNotHandledErr //CallNextEventHandler(ANextHandler, AEvent);
   else
     // the LCL does not want the event propagated
     Result := noErr;
 end;
 
-function CarbonPrivateWindow_KeyboardProc(ANextHandler: EventHandlerCallRef;
+function CarbonWindow_KeyboardProc(ANextHandler: EventHandlerCallRef;
   AEvent: EventRef;
-  AWIndowInfo: TCarbonWidgetInfo): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
+  AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
 var
   Control: ControlRef;      // the control we are dealing with
                             // or the rootcontrol if none found
-  Info: TCarbonWidgetInfo;  // the info specific to the mouse event
-                            // or the window's widgetinfo if none found
+  Widget: TCarbonWidget;    // the widget specific to the mouse event
+                            // or the window's widget if none found
   KeyChar : char;           //Ascii char, when possible (xx_(SYS)CHAR)
   UTF8Character: TUTF8Char; //char to send via IntfUtf8KeyPress
   VKKeyCode : word;         //VK_ code
@@ -644,7 +459,7 @@ var
   begin
     Result:=EventNotHandledErr;
     {$IFDEF VerboseKeyboard}
-    DebugLN('[HandleRawKeyDownEvent] Info^.LCLObject=',DbgSName(Info^.LCLObject));
+    DebugLN('[HandleRawKeyDownEvent] Widget.LCLObject=',DbgSName(Widget.LCLObject));
     {$ENDIF}
 
     // create the CN_KEYDOWN message
@@ -657,7 +472,7 @@ var
     //Send message to LCL
     if VKKeyCode<>VK_UNKNOWN then
     begin
-      if (DeliverMessage(Info.LCLObject, KeyMsg) <> 0) or (KeyMsg.CharCode=VK_UNKNOWN) then
+      if (DeliverMessage(Widget.LCLObject, KeyMsg) <> 0) or (KeyMsg.CharCode=VK_UNKNOWN) then
       begin
         // the LCL handled the key
         {$IFDEF VerboseKeyboard}
@@ -674,7 +489,7 @@ var
       //Send a LM_(SYS)KEYDOWN
       if IsSysKey then KeyMsg.Msg := LM_SYSKEYDOWN
       else KeyMsg.Msg := LM_KEYDOWN;
-      if (DeliverMessage(Info.LCLObject, KeyMsg) <> 0) or (KeyMsg.CharCode=VK_UNKNOWN) then
+      if (DeliverMessage(Widget.LCLObject, KeyMsg) <> 0) or (KeyMsg.CharCode=VK_UNKNOWN) then
       begin
         // the LCL handled the key
         {$IFDEF VerboseKeyboard}
@@ -689,7 +504,7 @@ var
     if SendChar then
     begin
       // send the UTF8 keypress
-      if TWinControl(Info.LCLObject).IntfUTF8KeyPress(UTF8Character,1,IsSysKey) then
+      if TWinControl(Widget.LCLObject).IntfUTF8KeyPress(UTF8Character,1,IsSysKey) then
       begin
         // the LCL has handled the key
         {$IFDEF VerboseKeyboard}
@@ -708,7 +523,7 @@ var
       CharMsg.CharCode := ord(KeyChar);
 
       //Send message to LCL
-      if (DeliverMessage(Info.LCLObject, CharMsg) <> 0) or (CharMsg.CharCode=VK_UNKNOWN) then
+      if (DeliverMessage(Widget.LCLObject, CharMsg) <> 0) or (CharMsg.CharCode=VK_UNKNOWN) then
       begin
         // the LCL handled the key
         {$IFDEF VerboseKeyboard}
@@ -727,7 +542,7 @@ var
       //Send a LM_(SYS)CHAR
       if IsSysKey then CharMsg.Msg := LM_SYSCHAR
       else CharMsg.Msg := LM_CHAR;
-      if DeliverMessage(Info.LCLObject, CharMsg) <> 0 then
+      if DeliverMessage(Widget.LCLObject, CharMsg) <> 0 then
       begin
         // the LCL handled the key
         {$IFDEF VerboseKeyboard}
@@ -747,7 +562,7 @@ var
   begin
     Result:=EventNotHandledErr;
     {$IFDEF VerboseKeyboard}
-    DebugLN('[HandleRawKeyUpEvent] Info^.LCLObject=',DbgSName(Info^.LCLObject));
+    DebugLN('[HandleRawKeyUpEvent] Widget.LCLObject=',DbgSName(Widget.LCLObject));
     {$ENDIF}
 
     // create the CN_KEYUP message
@@ -760,7 +575,7 @@ var
     //Send message to LCL
     if VKKeyCode<>VK_UNKNOWN then
     begin
-      if (DeliverMessage(Info.LCLObject, KeyMsg) <> 0) or (KeyMsg.CharCode=VK_UNKNOWN) then
+      if (DeliverMessage(Widget.LCLObject, KeyMsg) <> 0) or (KeyMsg.CharCode=VK_UNKNOWN) then
       begin
         // the LCL has handled the key
         {$IFDEF VerboseKeyboard}
@@ -777,7 +592,7 @@ var
       //Send a LM_(SYS)KEYUP
       if IsSysKey then KeyMsg.Msg := LM_SYSKEYUP
       else KeyMsg.Msg := LM_KEYUP;
-      if DeliverMessage(Info.LCLObject, KeyMsg) <> 0 then
+      if DeliverMessage(Widget.LCLObject, KeyMsg) <> 0 then
       begin
         // the LCL handled the key
         {$IFDEF VerboseKeyboard}
@@ -791,27 +606,25 @@ var
 
   end;
 
-var ContentView: HIViewRef;
 begin
   Result := EventNotHandledErr;
   //In compositing mode, this is the content view
-  ContentView := GetCarbonWindowContent(HWND(AWindowInfo.Widget));
   Control := nil;
-  GetKeyboardFocus(AWindowInfo.Widget, Control);
-  if Control = nil then Control := ContentView;
+  GetKeyboardFocus(AWidget.Widget, Control);
+  if Control = nil then Control := AWidget.Content;
 
   // if a control other than root is found, send the message
   // to the control instead of the window
-  // if a lower control without widgetInfo is found, use its parent
-  Info := nil;
-  while Control <> ContentView do
+  // if a lower control without widget is found, use its parent
+  Widget := nil;
+  while Control <> AWidget.Content do
   begin
-    Info := GetCtrlWidgetInfo(Pointer(Control));
-    if Info <> nil then Break;
+    Widget := GetCarbonControl(Pointer(Control));
+    if Widget <> nil then Break;
     Control := HIViewGetSuperview(Control);
   end;
-  if (Info = nil) or (Control = ContentView)
-  then Info := AWindowInfo;
+  if (Widget = nil) or (Control = AWidget.Content)
+  then Widget := AWidget;
 
   EventKind := GetEventKind(AEvent);
   if EventKind = kEventRawKeyModifiersChanged then
@@ -821,7 +634,7 @@ begin
   else
     if not TranslateMacKeyCode then
     begin
-      Debugln('[CarbonPrivateWindow_KeyboardProc] ***WARNING: TranslateMacKeyCode failed***');
+      Debugln('[CarbonWindow_KeyboardProc] ***WARNING: TranslateMacKeyCode failed***');
       exit;
     end;
   
@@ -832,35 +645,35 @@ begin
   end;
 end;
 
-function CarbonPrivateWindow_ActivateProc(ANextHandler: EventHandlerCallRef;
+function CarbonWindow_ActivateProc(ANextHandler: EventHandlerCallRef;
   AEvent: EventRef;
-  AInfo: TCarbonWidgetInfo): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
+  AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
 var
   Msg: TLMessage;
   EventKind: UInt32;
 begin
-  DebugLn('CarbonPrivateWindow_ActivateProc');
+  DebugLn('CarbonWindow_ActivateProc');
   Result := CallNextEventHandler(ANextHandler, AEvent);
   
   FillChar(Msg, SizeOf(Msg), 0);
   
   EventKind := GetEventKind(AEvent);
   case EventKind of
-  kEventWindowActivated: Msg.msg := LM_ACTIVATE;
-  kEventWindowDeactivated: Msg.msg := LM_DEACTIVATE;
+    kEventWindowActivated:   Msg.msg := LM_ACTIVATE;
+    kEventWindowDeactivated: Msg.msg := LM_DEACTIVATE;
   else Exit;
   end;
-  DeliverMessage(AInfo.LCLObject, Msg);
+  DeliverMessage(AWidget.LCLObject, Msg);
 end;
 
-function CarbonPrivateWindow_ShowWindow(ANextHandler: EventHandlerCallRef;
+function CarbonWindow_ShowWindow(ANextHandler: EventHandlerCallRef;
   AEvent: EventRef;
-  AInfo: TCarbonWidgetInfo): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
+  AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
 var
   Msg: TLMShowWindow;
   EventKind: UInt32;
 begin
-  DebugLn('CarbonPrivateWindow_ShowWindow');
+  DebugLn('CarbonWindow_ShowWindow');
   Result := CallNextEventHandler(ANextHandler, AEvent);
 
   FillChar(Msg, SizeOf(Msg), 0);
@@ -876,45 +689,37 @@ begin
   kEventWindowExpanded, kEventWindowZoomed:
     begin
       Msg.Show := True;
-      if IsWindowInStandardState(WindowRef(AInfo.Widget), nil, nil) then
+      if IsWindowInStandardState(WindowRef(AWidget.Widget), nil, nil) then
         Msg.Status := SW_SHOWNORMAL
       else
         Msg.Status := SW_SHOWMAXIMIZED;
     end;
   else Exit;
   end;
-  DeliverMessage(AInfo.LCLObject, Msg);
+  
+  DeliverMessage(AWidget.LCLObject, Msg);
 end;
 
-// ==================================================================
-// C L A S S 
-// ==================================================================
+{ TCarbonWindow }
 
-{ TCarbonPrivateWindow }
-
-class procedure TCarbonPrivateWindow.RegisterEvents(AInfo: TCarbonWidgetInfo);
+procedure TCarbonWindow.RegisterEvents;
 var
   MouseSpec: array [0..6] of EventTypeSpec;
   TmpSpec: EventTypeSpec;
   KeySpecs: array[0..3] of EventTypeSpec;
   ActivateSpecs: array[0..1] of EventTypeSpec;
   ShowWindowSpecs: array[0..2] of EventTypeSpec;
-  
-  ContentView: HIViewRef;
 begin
-  // find window content view to assign draw events
-  ContentView := GetCarbonWindowContent(HWND(AInfo.Widget));
-
   TmpSpec := MakeEventSpec(kEventClassWindow, kEventWindowClose);
-  InstallWindowEventHandler(AInfo.Widget,
-    RegisterEventHandler(@CarbonPrivateWindow_Close),
-    1, @TmpSpec, Pointer(AInfo), nil);
+  InstallWindowEventHandler(Widget,
+    RegisterEventHandler(@CarbonWindow_Close),
+    1, @TmpSpec, Pointer(Self), nil);
 
   TmpSpec := MakeEventSpec(kEventClassWindow, kEventWindowClosed);
-  InstallWindowEventHandler(AInfo.Widget,
-    RegisterEventHandler(@CarbonPrivateCommon_Dispose),
-    1, @TmpSpec, Pointer(AInfo), nil);
-  
+  InstallWindowEventHandler(Widget,
+    RegisterEventHandler(@CarbonCommon_Dispose),
+    1, @TmpSpec, Pointer(Self), nil);
+
   MouseSpec[0].eventClass := kEventClassMouse;
   MouseSpec[0].eventKind := kEventMouseDown;
   MouseSpec[1].eventClass := kEventClassMouse;
@@ -930,10 +735,10 @@ begin
   MouseSpec[6].eventClass := kEventClassMouse;
   MouseSpec[6].eventKind := kEventMouseWheelMoved;
 
-  InstallWindowEventHandler(AInfo.Widget,
-    RegisterEventHandler(@CarbonPrivateWindow_MouseProc),
-    7, @MouseSpec[0], Pointer(AInfo), nil);
-    
+  InstallWindowEventHandler(Widget,
+    RegisterEventHandler(@CarbonWindow_MouseProc),
+    7, @MouseSpec[0], Pointer(Self), nil);
+
   KeySpecs[0].eventClass := kEventClassKeyboard;
   KeySpecs[0].eventKind := kEventRawKeyDown;
   KeySpecs[1].eventClass := kEventClassKeyboard;
@@ -943,19 +748,19 @@ begin
   KeySpecs[3].eventClass := kEventClassKeyboard;
   KeySpecs[3].eventKind := kEventRawKeyModifiersChanged;
 
-  InstallWindowEventHandler(AInfo.Widget,
-    RegisterEventHandler(@CarbonPrivateWindow_KeyboardProc),
-    4, @KeySpecs[0], Pointer(AInfo), nil);
+  InstallWindowEventHandler(Widget,
+    RegisterEventHandler(@CarbonWindow_KeyboardProc),
+    4, @KeySpecs[0], Pointer(Self), nil);
 
   ActivateSpecs[0].eventClass := kEventClassWindow;
   ActivateSpecs[0].eventKind := kEventWindowActivated;
   ActivateSpecs[1].eventClass := kEventClassWindow;
   ActivateSpecs[1].eventKind := kEventWindowDeactivated;
-  
-  InstallWindowEventHandler(AInfo.Widget,
-    RegisterEventHandler(@CarbonPrivateWindow_ActivateProc),
-    2, @ActivateSpecs[0], Pointer(AInfo), nil);
-    
+
+  InstallWindowEventHandler(Widget,
+    RegisterEventHandler(@CarbonWindow_ActivateProc),
+    2, @ActivateSpecs[0], Pointer(Self), nil);
+
   ShowWindowSpecs[0].eventClass := kEventClassWindow;
   ShowWindowSpecs[0].eventKind := kEventWindowCollapsed;
   ShowWindowSpecs[1].eventClass := kEventClassWindow;
@@ -963,40 +768,289 @@ begin
   ShowWindowSpecs[2].eventClass := kEventClassWindow;
   ShowWindowSpecs[2].eventKind := kEventWindowZoomed;
 
-  InstallWindowEventHandler(AInfo.Widget,
-    RegisterEventHandler(@CarbonPrivateWindow_ShowWindow),
-    3, @ShowWindowSpecs[0], Pointer(AInfo), nil);
+  InstallWindowEventHandler(Widget,
+    RegisterEventHandler(@CarbonWindow_ShowWindow),
+    3, @ShowWindowSpecs[0], Pointer(Self), nil);
 
   TmpSpec := MakeEventSpec(kEventClassControl, kEventControlDraw);
-  InstallControlEventHandler(ContentView,
-    RegisterEventHandler(@CarbonPrivateCommon_Draw),
-    1, @TmpSpec, Pointer(AInfo), nil);
+  InstallControlEventHandler(Content,
+    RegisterEventHandler(@CarbonCommon_Draw),
+    1, @TmpSpec, Pointer(Self), nil);
     
-  TmpSpec := MakeEventSpec(kEventClassWindow, kEventWindowBoundsChanged);
-  InstallWindowEventHandler(AInfo.Widget,
-    RegisterEventHandler(@CarbonPrivateCommon_BoundsChanged),
-    1, @TmpSpec, Pointer(AInfo), nil);
+  TmpSpec := MakeEventSpec(kEventClassControl, kEventControlTrack);
+  InstallControlEventHandler(Content,
+    RegisterEventHandler(@CarbonCommon_Track),
+    1, @TmpSpec, Pointer(Self), nil);
 
+  TmpSpec := MakeEventSpec(kEventClassWindow, kEventWindowBoundsChanged);
+  InstallWindowEventHandler(Widget,
+    RegisterEventHandler(@CarbonCommon_BoundsChanged),
+    1, @TmpSpec, Pointer(Self), nil);
+	
   // cursor change
   TmpSpec := MakeEventSpec(kEventClassWindow, kEventWindowCursorChange);
-  InstallWindowEventHandler(AInfo.Widget,
-    RegisterEventHandler(@CarbonPrivateCommon_CursorChange),
-    1, @TmpSpec, Pointer(AInfo), nil);
+  InstallWindowEventHandler(Widget,
+    RegisterEventHandler(@CarbonCommon_CursorChange),
+    1, @TmpSpec, Pointer(Self), nil);	
 
-  debugln('TCarbonPrivateWindow.RegisterEvents ',DbgSName(AInfo.LCLObject));
+  DebugLn('TCarbonWindow.RegisterEvents ', DbgSName(LCLObject));
 end;
 
-class procedure TCarbonPrivateWindow.UnregisterEvents;
-begin                      
-  UnregisterEventHandler(@CarbonPrivateWindow_Close);
-  UnregisterEventHandler(@CarbonPrivateCommon_Dispose);
+procedure TCarbonWindow.UnregisterEvents;
+begin
+  UnregisterEventHandler(@CarbonWindow_Close);
+  UnregisterEventHandler(@CarbonCommon_Dispose);
+
+  UnregisterEventHandler(@CarbonWindow_MouseProc);
+  UnregisterEventHandler(@CarbonWindow_KeyboardProc);
+  UnregisterEventHandler(@CarbonWindow_ActivateProc);
+  UnregisterEventHandler(@CarbonWindow_ShowWindow);
+
+  UnregisterEventHandler(@CarbonCommon_Draw);
+  UnregisterEventHandler(@CarbonCommon_Track);
+  UnregisterEventHandler(@CarbonCommon_BoundsChanged);
+  UnregisterEventHandler(@CarbonCommon_CursorChange);
+end;
+
+procedure TCarbonWindow.CreateWidget(const AParams: TCreateParams);
+var
+  Window: WindowRef;
+  NewWindowClass: Integer;
+  MinSize, MaxSize: HISize;
+  Attributes: WindowAttributes;
+begin
+  // apply appropriate form border style and form style
+  case (LCLObject as TCustomForm).FormStyle of
+  fsStayOnTop, fsSplash: NewWindowClass := kUtilityWindowClass;
+  else
+    NewWindowClass := kDocumentWindowClass;
+  end;
+
+  case (LCLObject as TCustomForm).BorderStyle of
+  bsNone:
+    Attributes := kWindowNoTitleBarAttribute;
+  bsToolWindow, bsSingle:
+    Attributes := kWindowCloseBoxAttribute or kWindowCollapseBoxAttribute;
+  bsSizeable:
+    Attributes := kWindowCloseBoxAttribute or kWindowCollapseBoxAttribute
+      or kWindowFullZoomAttribute or kWindowResizableAttribute;
+  bsDialog:
+    Attributes := kWindowCloseBoxAttribute;
+  bsSizeToolWin:
+    Attributes := kWindowCloseBoxAttribute or kWindowResizableAttribute;
+  end;
+
+  if CreateNewWindow(NewWindowClass,
+    Attributes or kWindowCompositingAttribute or
+    kWindowStandardHandlerAttribute or kWindowLiveResizeAttribute or
+    kWindowInWindowMenuAttribute, ParamsToCarbonRect(AParams),
+    Window) = noErr then
+  begin
+    Widget := Window;
+    
+    SetWindowProperty(Widget, LAZARUS_FOURCC, WIDGETINFO_FOURCC, SizeOf(Self), @Self);
+    SetControlProperty(Content, LAZARUS_FOURCC, WIDGETINFO_FOURCC, SizeOf(Self), @Self);
+  end
+  else RaiseCreateWidgetError(LCLObject);
+
+  SetText(AParams.Caption);
+  SetColor(LCLObject.Color);
+
+  MinSize.width := LCLObject.Constraints.EffectiveMinWidth;
+  MinSize.height := LCLObject.Constraints.EffectiveMinHeight;
+  MaxSize.width := LCLObject.Constraints.EffectiveMaxWidth;
+  MaxSize.height := LCLObject.Constraints.EffectiveMaxHeight;
+  if MaxSize.width <= 0 then MaxSize.width := 10000;
+  if MaxSize.height <= 0 then MaxSize.height := 10000;
+
+  SetWindowResizeLimits(Window, @MinSize, @MaxSize);
+end;
+
+procedure TCarbonWindow.DestroyWidget;
+begin
+  RemoveWindowProperty(Widget, LAZARUS_FOURCC, WIDGETINFO_FOURCC);
+  RemoveControlProperty(Content, LAZARUS_FOURCC, WIDGETINFO_FOURCC);
+        
+  DisposeWindow(WindowRef(Widget));
+  Widget := nil;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWindow.GetContent
+  Returns: Window content area control
+ ------------------------------------------------------------------------------}
+function TCarbonWindow.GetContent: ControlRef;
+begin
+  if HIViewFindByID(HIViewGetRoot(WindowRef(Widget)), kHIViewWindowContentID,
+    Result) <> noErr then Result := nil;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWindow.GetMousePos
+  Returns: The position of mouse cursor in local coordinates
+ ------------------------------------------------------------------------------}
+function TCarbonWindow.GetMousePos: TPoint;
+var
+  P: FPCMacOSAll.Point;
+  R: FPCMacOSAll.Rect;
+begin
+  GetGlobalMouse(P);
+
+  GetWindowBounds(WindowRef(Widget), kWindowContentRgn, R);
+  Result.X := P.h - R.left;
+  Result.Y := P.v - R.Top;
+end;
+
+function TCarbonWindow.GetTopParentWindow: WindowRef;
+begin
+  Result := WindowRef(Widget);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWindow.GetClientRect
+  Params:  ARect - Record for client area coordinates
+  Returns: If the function succeeds
+
+  Returns the window client rectangle relative to the window frame origin
+ ------------------------------------------------------------------------------}
+function TCarbonWindow.GetClientRect(var ARect: TRect): Boolean;
+var
+  AWndRect, AClientRect: FPCMacOSAll.Rect;
+begin
+  Result := False;
+
+  if FPCMacOSAll.GetWindowBounds(WindowRef(Widget), kWindowStructureRgn,
+    AWndRect) <> noErr then Exit;
+  if FPCMacOSAll.GetWindowBounds(WindowRef(Widget), kWindowContentRgn,
+    AClientRect) <> noErr then Exit;
+
+  ARect.Left := AClientRect.Left - AWndRect.Left;
+  ARect.Top := AClientRect.Top - AWndRect.Top;
+  ARect.Right := AClientRect.Right - AWndRect.Left;
+  ARect.Bottom := AClientRect.Bottom - AWndRect.Top;
+
+  Result := True;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWindow.Invalidate
+  Params:  Rect - Pointer to rect (optional)
+  Returns: Nothing
+
+  Invalidates the specified rect or entire area of window content
+ ------------------------------------------------------------------------------}
+procedure TCarbonWindow.Invalidate(Rect: PRect);
+begin
+  if Rect = nil then HiViewSetNeedsDisplay(HIViewRef(Content), True)
+  else
+    HiViewSetNeedsDisplayInRect(HIViewRef(Content), RectToCGRect(Rect^), True);
+end;
+
+function TCarbonWindow.IsEnabled: Boolean;
+begin
+  Result := IsControlEnabled(Content);
+end;
+
+function TCarbonWindow.IsVisible: Boolean;
+begin
+  Result := FPCMacOSAll.IsWindowVisible(WindowRef(Widget));
+end;
+
+function TCarbonWindow.Enable(AEnable: Boolean): boolean;
+begin
+  Result := not FPCMacOSAll.IsControlEnabled(Content);
+
+  // enable/disable window content
+  // add/remove standard handler
+  if AEnable then
+  begin
+    FPCMacOSAll.EnableControl(Content);
+    ChangeWindowAttributes(WindowRef(Widget), kWindowStandardHandlerAttribute,
+      kWindowNoAttributes);
+  end
+  else
+  begin
+    FPCMacOSAll.DisableControl(Content);
+    ChangeWindowAttributes(WindowRef(Widget), kWindowNoAttributes,
+      kWindowStandardHandlerAttribute);
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWindow.GetBounds
+  Params:  ARect         - Record for window coordinates
+  Returns: If function succeeds
+
+  Returns the window bounding rectangle relative to the client origin of its
+  parent
+ ------------------------------------------------------------------------------}
+function TCarbonWindow.GetBounds(var ARect: TRect): Boolean;
+var
+  AWndRect: FPCMacOSAll.Rect;
+begin
+  Result := FPCMacOSAll.GetWindowBounds(WindowRef(Widget), kWindowStructureRgn,
+    AWndRect) = noErr;
+  if Result then ARect := CarbonRectToRect(AWndRect);
+end;
+
+function TCarbonWindow.GetScreenBounds(var ARect: TRect): Boolean;
+begin
+  Result := GetBounds(ARect);
+end;
+
+function TCarbonWindow.SetBounds(const ARect: TRect): Boolean;
+begin
+  Result := FPCMacOSAll.SetWindowBounds(WindowRef(Widget), kWindowContentRgn,
+    GetCarbonRect(ARect)) = noErr;
+end;
+
+procedure TCarbonWindow.SetColor(const AColor: TColor);
+begin
+   SetWindowContentColor(WindowRef(Widget), ColorToRGBColor(AColor));
+end;
+
+procedure TCarbonWindow.SetFont(const AFont: TFont);
+begin
+  //
+end;
+
+procedure TCarbonWindow.ShowHide(AVisible: Boolean);
+begin
+  if AVisible then
+    FPCMacOSAll.ShowWindow(WindowRef(Widget))
+  else
+    FPCMacOSAll.HideWindow(WindowRef(Widget));
+end;
+
+function TCarbonWindow.GetText(var S: String): Boolean;
+var
+  CFString: CFStringRef;
+begin
+  Result := False;
   
-  UnregisterEventHandler(@CarbonPrivateWindow_MouseProc);
-  UnregisterEventHandler(@CarbonPrivateWindow_KeyboardProc);
-  UnregisterEventHandler(@CarbonPrivateWindow_ActivateProc);
-  UnregisterEventHandler(@CarbonPrivateWindow_ShowWindow);
-  
-  UnregisterEventHandler(@CarbonPrivateCommon_Draw);  
-  UnregisterEventHandler(@CarbonPrivateCommon_BoundsChanged); 
-  UnregisterEventHandler(@CarbonPrivateCommon_CursorChange);
+  if CopyWindowTitleAsCFString(WindowRef(Widget), CFString) = NoErr then
+  try
+    S := CFStringToStr(CFString);
+    Result := True;
+  finally
+    FreeCFString(CFString);
+  end;
+end;
+
+function TCarbonWindow.SetText(const S: String): Boolean;
+var
+  CFString: CFStringRef;
+begin
+  Result := False;
+  CreateCFString(S, CFString);
+  try
+    Result := SetWindowTitleWithCFString(WindowRef(Widget), CFString) = noErr;
+  finally
+    FreeCFString(CFString);
+  end;
+end;
+
+function TCarbonWindow.Update: Boolean;
+begin
+  Result := HIViewRender(Content) = noErr;
 end;

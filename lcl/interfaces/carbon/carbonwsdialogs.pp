@@ -126,10 +126,11 @@ var
   ColorInfo: ColorPickerInfo;
   ColorDialog: TColorDialog;
 begin
+  ACommonDialog.UserChoice := mrCancel;
   ColorDialog := ACommonDialog as TColorDialog;
   
   FillChar(ColorInfo, SizeOf(ColorPickerInfo), 0);
-  ColorInfo.theColor.color.rgb := CMRGBColor(ColorToCarbonColor(ColorDialog.Color));
+  ColorInfo.theColor.color.rgb := CMRGBColor(ColorToRGBColor(ColorDialog.Color));
   ColorInfo.theColor.profile := nil;
   ColorInfo.dstProfile := nil;
   ColorInfo.flags := kColorPickerDialogIsModal or kColorPickerDialogIsMoveable or
@@ -138,18 +139,15 @@ begin
   ColorInfo.pickerType := 0; // use last picker subtype
   ColorInfo.eventProc := nil;
   ColorInfo.colorProc := nil;
-  ColorInfo.prompt := UTF8ToAnsi(ColorDialog.Title); // does not function!
-
+  // ColorDialog.Title is ignored, ColorInfo.prompt is not shown anywhere
+  
   if PickColor(ColorInfo) = noErr then
     if ColorInfo.newColorChosen then
     begin
-      ColorDialog.Color := CarbonColorToColor(
+      ColorDialog.Color := RGBColorToColor(
         RGBColor(ColorInfo.theColor.color.rgb));
       ACommonDialog.UserChoice := mrOK;
-      Exit;
     end;
-
-  ACommonDialog.UserChoice := mrCancel;
 end;
 
 initialization

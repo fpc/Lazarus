@@ -55,9 +55,9 @@ function CreateBitmap(Width, Height: Integer; Planes, BitCount: Longint; BitmapB
 function CreateBitmapFromRawImage(const RawImage: TRawImage; var Bitmap, MaskBitmap: HBitmap; AlwaysCreateMask: boolean): boolean; override;
 function CreateBrushIndirect(const LogBrush: TLogBrush): HBRUSH; override;
 function CreateCaret(Handle : HWND; Bitmap : hBitmap; width, Height : Integer) : Boolean; override;
-function CreateCursor(ACursorInfo: PIconInfo): hCursor; Override;
 function CreateCompatibleBitmap(DC: HDC; Width, Height: Integer): HBITMAP; override;
 function CreateCompatibleDC(DC: HDC): HDC; override;
+function CreateCursor(ACursorInfo: PIconInfo): HCURSOR; Override;
 function CreateFontIndirect(const LogFont: TLogFont): HFONT; override;
 function CreateFontIndirectEx(const LogFont: TLogFont; const LongFontName: string): HFONT; override;
 function CreatePalette(const LogPalette: TLogPalette): HPALETTE; override;
@@ -70,7 +70,7 @@ procedure DeleteCriticalSection(var CritSection: TCriticalSection); Override;
 function DeleteDC(hDC: HDC): Boolean; override;
 function DeleteObject(GDIObject: HGDIOBJ): Boolean;  override;
 function DestroyCaret(Handle : HWND): Boolean; override;
-function DestroyCursor(Handle: hCursor): Boolean; Override;
+function DestroyCursor(Handle: HCURSOR): Boolean; override;
 function DrawFrameControl(DC: HDC; var Rect : TRect; uType, uState : Cardinal) : Boolean; override;
 function DrawEdge(DC: HDC; var ARect: TRect; Edge: Cardinal; grfFlags: Cardinal): Boolean; override;
 function DrawText(DC: HDC; Str: PChar; Count: Integer; var Rect: TRect; Flags: Cardinal): Integer; Override;
@@ -140,7 +140,7 @@ function GradientFill(DC: HDC; Vertices: PTriVertex; NumVertices : Longint;
 function HideCaret(hWnd: HWND): Boolean; override;
 
 procedure InitializeCriticalSection(var CritSection: TCriticalSection); Override;
-function IntersectClipRect(dc: hdc; Left, Top, Right, Bottom: Integer): Integer; override;
+function IntersectClipRect(DC: HDC; Left, Top, Right, Bottom: Integer): Integer; override;
 function InvalidateRect(AHandle : HWND; Rect : pRect; bErase : Boolean) : Boolean; override;
 function IsWindowEnabled(Handle: HWND): boolean; override;
 function IsWindowVisible(Handle: HWND): boolean; override;
@@ -209,7 +209,4 @@ function UpdateWindow(Handle: HWND): Boolean; override;
 function WindowFromPoint(Point : TPoint) : HWND; override;
 
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line
-
-
-
 

@@ -31,10 +31,9 @@ interface
 
 uses
   FPCMacOSAll, Classes, LCLType, LCLProc, LCLClasses, LMessages,
-  Controls, Forms, Avl_Tree, SysUtils, Graphics, Math,
-  CarbonDef;
+  Controls, Forms, Avl_Tree, SysUtils, Graphics, Math, GraphType,
+  CarbonDef, CarbonPrivate;
   
-
 type
   TConvertResult = (trNoError, trNullSrc, trNullDest, trDestExhausted,
     trInvalidChar, trUnfinishedChar);
@@ -45,50 +44,46 @@ type
   
 function UTF8ToUTF16(const S: UTF8String): WideString;
 
-function GetCtrlWidgetInfo(AWidget: Pointer): TCarbonWidgetInfo;
-function GetWndWidgetInfo(AWidget: Pointer): TCarbonWidgetInfo;
-function GetWidgetInfo(AWidget: Pointer): TCarbonWidgetInfo;
-function GetWidgetType(AWidget: Pointer): TCarbonWidgetType;
-function GetWidgetType(AWidget: Pointer; var AInfo: TCarbonWidgetInfo): TCarbonWidgetType;
+function AsControlRef(Handle: HWND): ControlRef; inline;
+function AsWindowRef(Handle: HWND): WindowRef; inline;
 
-function GetTopParentWindow(AWinControl: TWinControl): WindowRef;
-function GetCarbonLocalWindowRect(Handle: hwnd; var ARect: TRect; Info: TCarbonWidgetInfo = nil): Boolean;
-function GetCarbonClientRect(Handle: hwnd; var ARect: TRect; Info: TCarbonWidgetInfo = nil): Boolean;
+function CheckWidget(const Handle: HWND; const DbgText: String; AName: String = ''): Boolean;
+function CheckDC(const DC: HDC; const DbgText: String; AName: String = ''): Boolean;
+function CheckGDIObject(const GDIObject: HGDIOBJ; const DbgText: String; AName: String = ''): Boolean;
+function CheckBitmap(const Bitmap: HBITMAP; const DbgText: String; AName: String = ''): Boolean;
 
-procedure InvalidateCarbonControl(AControl: HWnd); inline;
-function GetCarbonWindowContent(AWindow: HWnd): HIViewRef; inline;
+function GetCarbonWidget(AWidget: Pointer): TCarbonWidget;
+function GetCarbonWindow(AWidget: WindowRef): TCarbonWindow;
+function GetCarbonControl(AWidget: ControlRef): TCarbonControl;
+
+function GetCarbonMsgKeyState: PtrInt;
+function GetCarbonShiftState: TShiftState;
 
 function FindCarbonFontID(const FontName: String): ATSUFontID;
+function FontStyleToQDStyle(const AStyle: TFontStyles): FPCMacOSAll.Style;
 
-function GetEditControlText(AControl: HWnd; var AText: String): Boolean;
-function SetEditControlText(AControl: HWnd; const AText: String): Boolean;
-
-function GetEditControlSelStart(AControl: HWnd; var ASelStart: Integer): Boolean;
-function GetEditControlSelLength(AControl: HWnd; var ASelLength: Integer): Boolean;
-function SetEditControlSelStart(AControl: HWnd; ASelStart: Integer): Boolean;
-function SetEditControlSelLength(AControl: HWnd; ASelLength: Integer): Boolean;
-
-function BeginTextRender(DC: TCarbonDeviceContext; AStr: PChar; ACount: Integer; out ALayout: ATSUTextLayout): Boolean;
-procedure EndTextRender(DC: TCarbonDeviceContext; var ALayout: ATSUTextLayout);
+procedure FillStandardDescription(var Desc: TRawImageDescription);
 
 function RegisterEventHandler(AHandler: TCarbonWSEventHandlerProc): EventHandlerUPP;
 procedure UnRegisterEventHandler(AHandler: TCarbonWSEventHandlerProc);
 
-procedure CreateCarbonString(const S: String; out AString: CFStringRef); inline;
-procedure FreeCarbonString(var AString: CFStringRef); inline;
-function CarbonStringToString(AString: CFStringRef): String;
+procedure CreateCFString(const S: String; out AString: CFStringRef); inline;
+procedure FreeCFString(var AString: CFStringRef); inline;
+function CFStringToStr(AString: CFStringRef): String;
 
 function GetCarbonRect(Left, Top, Width, Height: Integer): FPCMacOSAll.Rect;
 function GetCarbonRect(const ARect: TRect): FPCMacOSAll.Rect;
 function ParamsToCarbonRect(const AParams: TCreateParams): FPCMacOSAll.Rect;
+
 function GetCGRect(X1, Y1, X2, Y2: Integer): CGRect;
 function RectToCGRect(const ARect: TRect): CGRect;
 function CGRectToRect(const ARect: CGRect): TRect;
+
 function ParamsToHIRect(const AParams: TCreateParams): HIRect;
 function CarbonRectToRect(const ARect: FPCMacOSAll.Rect): TRect;
 
-function ColorToCarbonColor(const AColor: TColor): RGBColor;
-function CarbonColorToColor(const AColor: RGBColor): TColor; inline;
+function ColorToRGBColor(const AColor: TColor): RGBColor;
+function RGBColorToColor(const AColor: RGBColor): TColor; inline;
 function CreateCGColor(const AColor: TColor): CGColorRef;
 
 function Dbgs(const ARect: FPCMacOSAll.Rect): string; overload;
@@ -96,7 +91,7 @@ function Dbgs(const AColor: FPCMacOSAll.RGBColor): string; overload;
 
 implementation
 
-uses CarbonInt;
+uses CarbonInt, CarbonCanvas, CarbonGDIObjects;
 
 {------------------------------------------------------------------------------
   Name:    ConvertUTF8ToUTF16
@@ -318,88 +313,100 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Name:    GetCtrlWidgetInfo
-  Params:  AWidget - Pointer to control widget
-  Returns: The Carbon control widget info
-
-  Retrieves basic info for specified control widget
+  Name:    AsControlRef
+  Params:  Handle  - Handle of window control
+  Returns: Carbon control
  ------------------------------------------------------------------------------}
-function GetCtrlWidgetInfo(AWidget: Pointer): TCarbonWidgetInfo;
+function AsControlRef(Handle: HWND): ControlRef;
 begin
-  if GetControlProperty(AWidget, LAZARUS_FOURCC, WIDGETINFO_FOURCC,
-    SizeOf(TCarbonWidgetInfo), nil, @Result) <> noErr then Result := nil;
+  Result := ControlRef(TCarbonControl(Handle).Widget);
 end;
 
 {------------------------------------------------------------------------------
-  Name:    GetWndWidgetInfo
-  Params:  AWidget - Pointer to window widget
-  Returns: The Carbon window widget info
-
-  Retrieves basic info for specified window widget
+  Name:    AsControlRef
+  Params:  Handle  - Handle of window
+  Returns: Carbon window
  ------------------------------------------------------------------------------}
-function GetWndWidgetInfo(AWidget: Pointer): TCarbonWidgetInfo;
+function AsWindowRef(Handle: HWND): WindowRef;
 begin
-  if GetWindowProperty(AWidget, LAZARUS_FOURCC, WIDGETINFO_FOURCC,
-    SizeOf(TCarbonWidgetInfo), nil, @Result) <> noErr then Result := nil;
+  Result := WindowRef(TCarbonWindow(Handle).Widget);
 end;
 
 {------------------------------------------------------------------------------
-  Name:    GetWidgetInfo
-  Params:  AWidget - Pointer to widget
-  Returns: The Carbon widget info
-
-  Retrieves basic info for specified widget (control or window)
+  Name:    CheckWidget
+  Params:  Handle  - Handle of window
+           DbgText - Text to output on invalid DC
+           Name    - Param name
+  Returns: If the window is valid
  ------------------------------------------------------------------------------}
-function GetWidgetInfo(AWidget: Pointer): TCarbonWidgetInfo;
+function CheckWidget(const Handle: HWND; const DbgText: String; AName: String): Boolean;
 begin
-  if AWidget = nil then
-  begin
-    Result := nil;
-    Exit;
-  end;
-  
-  if IsValidControlHandle(AWidget) then Result := GetCtrlWidgetInfo(AWidget)
+  if TObject(Handle) is TCarbonWidget then Result := True
   else
-    // there is no (cheap) check for windows so assume a window
-    // when it is not a control.
-    Result := GetWndWidgetInfo(AWidget);
+  begin
+    DebugLn(DbgText + Format(' error - invalid widget %s = %d!',
+      [AName, Integer(Handle)]));
+    Result := False;
+  end;
 end;
 
 {------------------------------------------------------------------------------
-  Name:    GetWidgetType
-  Params:  AWidget - Pointer to widget
-  Returns: Widget type
-
-  Retrieves the type of specified widget (Control or Window)
+  Name:    CheckDC
+  Params:  DC      - Handle to a device context (TCarbonDeviceContext)
+           DbgText - Text to output on invalid DC
+           Name    - Param name
+  Returns: If the DC is valid
  ------------------------------------------------------------------------------}
-function GetWidgetType(AWidget: Pointer): TCarbonWidgetType;
-var
-  AInfo: TCarbonWidgetInfo;
+function CheckDC(const DC: HDC; const DbgText: String; AName: String): Boolean;
 begin
-  Result := cwtUnknown;
-  
-  AInfo := GetWidgetInfo(AWidget);
-  if AInfo = nil then Exit;
-  
-  Result := AInfo.WidgetType;
+  if TObject(DC) is TCarbonDeviceContext then Result := True
+  else
+  begin
+    DebugLn(DbgText + Format(' error - invalid device context %s = %d!',
+      [AName, Integer(DC)]));
+    Result := False;
+  end;
 end;
 
 {------------------------------------------------------------------------------
-  Name:    GetWidgetType
-  Params:  AWidget - Pointer to widget
-           AInfo   - Carbon widget info
-  Returns: Widget type
+  Name:    CheckGDIObject
+  Params:  GDIObject - handle to a GDI Object (TCarbonFont, ...)
+           DbgText   - Text to output on invalid GDIObject
+           Name      - Param name
+  Returns: If the GDIObject is valid
 
-  Retrieves the type of specified widget (Control or Window) according to
-  passed info. If info is not set then it is retrieved from widget.
+  Remark: All handles for GDI objects must be pascal objects so we can
+ distinguish between them
  ------------------------------------------------------------------------------}
-function GetWidgetType(AWidget: Pointer; var AInfo: TCarbonWidgetInfo): TCarbonWidgetType;
+function CheckGDIObject(const GDIObject: HGDIOBJ; const DbgText: String;
+  AName: String): Boolean;
 begin
-  Result := cwtUnknown;
-  if AInfo = nil then AInfo := GetWidgetInfo(AWidget);
-  if AInfo = nil then Exit;
+  if TObject(GDIObject) is TCarbonGDIObject then Result := True
+  else
+  begin
+    DebugLn(DbgText + Format(' error - invalid GDI object %s = %d!',
+      [AName, Integer(GDIObject)]));
+    Result := False;
+  end;
+end;
 
-  Result := AInfo.WidgetType;
+{------------------------------------------------------------------------------
+  Name:    CheckBitmap
+  Params:  Bitmap  - handle to a bitmap (TCarbonBitmap)
+           DbgText - Text to output on invalid GDIObject
+           Name    - Param name
+  Returns: If the bitmap is valid
+ ------------------------------------------------------------------------------}
+function CheckBitmap(const Bitmap: HBITMAP; const DbgText: String;
+  AName: String): Boolean;
+begin
+  if TObject(Bitmap) is TCarbonBitmap then Result := True
+  else
+  begin
+    DebugLn(DbgText + Format(' error - invalid bitmap %s = %d!',
+      [AName, Integer(Bitmap)]));
+    Result := False;
+  end;
 end;
 
 //=====================================================
@@ -438,154 +445,107 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Name:    GetTopParentWindow
-  Params:  AWinControl - Window control
-  Returns: Window reference
+  Name:    GetCarbonWidget
+  Params:  AWidget - Pointer to control or window widget
+  Returns: The Carbon widget
 
-  Retrieves the parent window reference of the control
+  Retrieves widget for specified Carbon control or window
  ------------------------------------------------------------------------------}
-function GetTopParentWindow(AWinControl: TWinControl): WindowRef;
-var
-  Window: TControl;
+function GetCarbonWidget(AWidget: Pointer): TCarbonWidget;
 begin
-  if AWinControl = nil then
+  if AWidget = nil then
   begin
     Result := nil;
     Exit;
   end;
-   
-  Window := AWinControl.GetTopParent;
 
-  if Window is TCustomForm then Result := WindowRef((Window as TCustomForm).Handle)
-  else Result := nil;
+  if IsValidControlHandle(AWidget) then
+    Result := GetCarbonControl(ControlRef(AWidget))
+  else
+    // there is no (cheap) check for windows so assume a window
+    // when it is not a control.
+    Result := GetCarbonWindow(WindowRef(AWidget));
 end;
 
 {------------------------------------------------------------------------------
-  Name:    GetCarbonLocalWindowRect
-  Params:  Handle - Handle of window
-           ARect  - Record for window coordinates
-           Info   - Carbon widget info (optional)
-  Returns: If function succeeds
+  Name:    GetCarbonWindow
+  Params:  AWidget - Pointer to window widget
+  Returns: The Carbon window
 
-  Returns the window bounding rectangle relative to the client origin of its
-  parent
+  Retrieves the Carbon window for specified window widget
  ------------------------------------------------------------------------------}
-function GetCarbonLocalWindowRect(Handle: hwnd; var ARect: TRect; Info: TCarbonWidgetInfo): Boolean;
+function GetCarbonWindow(AWidget: WindowRef): TCarbonWindow;
+begin
+  if GetWindowProperty(AWidget, LAZARUS_FOURCC, WIDGETINFO_FOURCC,
+    SizeOf(TCarbonWidget), nil, @Result) <> noErr then Result := nil;
+end;
+
+{------------------------------------------------------------------------------
+  Name:    GetCarbonControl
+  Params:  AWidget - Pointer to control widget
+  Returns: The Carbon control
+
+  Retrieves the Carbon control for specified control widget
+ ------------------------------------------------------------------------------}
+function GetCarbonControl(AWidget: ControlRef): TCarbonControl;
+begin
+  if GetControlProperty(AWidget, LAZARUS_FOURCC, WIDGETINFO_FOURCC,
+    SizeOf(TCarbonWidget), nil, @Result) <> noErr then Result := nil;
+end;
+
+{------------------------------------------------------------------------------
+  Name:    GetCarbonMsgKeyState
+  Returns: The current state of mouse and function keys
+ ------------------------------------------------------------------------------}
+function GetCarbonMsgKeyState: PtrInt;
 var
-  AWndRect: FPCMacOSAll.Rect;
+  Modifiers, ButtonState: UInt32;
 begin
-  Result := False;
-  
-  case GetWidgetType(Pointer(Handle), Info) of
-  cwtWindowRef:
-    Result := FPCMacOSAll.GetWindowBounds(WindowRef(Handle), kWindowStructureRgn, AWndRect) = noErr;
-  cwtControlRef:
-    Result := FPCMacOSAll.GetControlBounds(ControlRef(Handle), AWndRect) <> nil;
-  end;
-  
-  if not Result then Exit;
-  ARect := CarbonRectToRect(AWndRect);
+  Result := 0;
+
+  Modifiers := GetCurrentEventKeyModifiers;  // shift, control, option, command
+  ButtonState := GetCurrentEventButtonState; // Bit 0 first button (left),
+   // bit 1 second (right), bit2 third (middle) ...
+
+  if (ButtonState and 1)         > 0 then Inc(Result, MK_LButton);
+  if (ButtonState and 2)         > 0 then Inc(Result, MK_RButton);
+  if (ButtonState and 4)         > 0 then Inc(Result, MK_MButton);
+  if (shiftKey    and Modifiers) > 0 then Inc(Result, MK_Shift);
+  if (cmdKey      and Modifiers) > 0 then Inc(Result, MK_Control);
+
+  //DebugLn('GetCarbonMsgKeyState Result=',dbgs(KeysToShiftState(Result)),' Modifiers=',hexstr(Modifiers,8),' ButtonState=',hexstr(ButtonState,8));
 end;
 
 {------------------------------------------------------------------------------
-  Name:    GetCarbonClientRect
-  Params:  Handle - Handle of window
-           ARect  - Record for client area coordinates
-           Info   - Carbon widget info (optional)
-  Returns: If function succeeds
-
-  Returns the window client rectangle relative to the client area parent
-  window origin
+  Name:    GetCarbonShiftState
+  Returns: The current shift state of mouse and function keys
  ------------------------------------------------------------------------------}
-function GetCarbonClientRect(Handle: hwnd; var ARect: TRect; Info: TCarbonWidgetInfo): Boolean;
+function GetCarbonShiftState: TShiftState;
 var
-  AWndRect, AClientRect: FPCMacOSAll.Rect;
-  OSResult: OSStatus;
-  ClientRegion: FPCMacOSAll.RgnHandle;
+  Modifiers, ButtonState: UInt32;
 begin
-  Result := False;
-  
-  case GetWidgetType(Pointer(Handle), Info) of
-  cwtWindowRef:
-  begin
-    Result := FPCMacOSAll.GetWindowBounds(WindowRef(Handle), kWindowStructureRgn, AWndRect) = noErr;
-    if Result then
-    begin
-      Result := FPCMacOSAll.GetWindowBounds(WindowRef(Handle), kWindowContentRgn, AClientRect) = noErr;
-    end;
-    if Result then
-    begin
-      ARect.Left := AClientRect.Left - AWndRect.Left;
-      ARect.Top := AClientRect.Top - AWndRect.Top;
-      ARect.Right := AClientRect.Right - AWndRect.Left;
-      ARect.Bottom := AClientRect.Bottom - AWndRect.Top;
-    end;
-  end;
-  cwtControlRef:
-  begin
-    ClientRegion := FPCMacOSAll.NewRgn();
-    try
-      OSResult := GetControlRegion(ControlRef(Handle), kControlContentMetaPart,
-        ClientRegion);
+  Result := [];
 
-      if OSResult = errInvalidPartCode then
-      begin
-        // controls without content area have clientrect = boundsrect
-        Result := FPCMacOSAll.GetControlBounds(ControlRef(Handle), AClientRect) <> nil;
-        if Result then
-        begin
-          ARect := CarbonRectToRect(AClientRect);
-          OffsetRect(ARect, -ARect.Left, -ARect.Top);
-        end;
-      end
-      else
-      begin
-        Result := OSResult = noErr;
+  Modifiers := GetCurrentEventKeyModifiers;  // shift, control, option, command
+  ButtonState := GetCurrentEventButtonState; // Bit 0 first button (left),
+   // bit 1 second (right), bit2 third (middle) ...
 
-        if Result then
-        begin
-          Result := GetRegionBounds(ClientRegion, AClientRect) <> nil;
-          if Result then ARect := CarbonRectToRect(AClientRect);
-        end;
-      end;
-    finally
-      FPCMacOSAll.DisposeRgn(ClientRegion);
-    end;
-  end;
-  end;
-end;
+  if (ButtonState and 1)         > 0 then Include(Result, ssLeft);
+  if (ButtonState and 2)         > 0 then Include(Result, ssRight);
+  if (ButtonState and 4)         > 0 then Include(Result, ssMiddle);
+  if (shiftKey    and Modifiers) > 0 then Include(Result, ssShift);
+  if (cmdKey      and Modifiers) > 0 then Include(Result, ssCtrl);
+  if (controlKey  and Modifiers) > 0 then Include(Result, ssMeta);
+  if (optionKey   and Modifiers) > 0 then Include(Result, ssAlt);
+  if (alphaLock   and Modifiers) > 0 then Include(Result, ssCaps);
 
-{------------------------------------------------------------------------------
-  Name:    InvalidateCarbonControl
-  Params:  AControl - Handle of control
-  Returns: Nothing
-  
-  Invalidates specified control
- ------------------------------------------------------------------------------}
-procedure InvalidateCarbonControl(AControl: HWnd);
-begin
-  HiViewSetNeedsDisplay(HIViewRef(AControl), True);
-end;
-
-{------------------------------------------------------------------------------
-  Name:    GetCarbonWindowContent
-  Params:  AWindow - Handle of window
-  Returns: Carbon window content
-
-  Returns the Carbon window content for the specified window
- ------------------------------------------------------------------------------}
-function GetCarbonWindowContent(AWindow: HWnd): HIViewRef;
-begin
-  if HIViewFindByID(HIViewGetRoot(WindowRef(AWindow)), kHIViewWindowContentID,
-    Result) <> noErr then Result := nil;
+  //DebugLn('GetCarbonShiftState Result=',dbgs(Result),' Modifiers=',hexstr(Modifiers,8),' ButtonState=',hexstr(ButtonState,8));
 end;
 
 {------------------------------------------------------------------------------
   Name:    FindCarbonFontID
   Params:  FontName - The font name
-  Returns: Caron font ID
-
-  Finds ID of specified font
+  Returns: Carbon font ID of fotn with the specified name
  ------------------------------------------------------------------------------}
 function FindCarbonFontID(const FontName: String): ATSUFontID;
 begin
@@ -599,245 +559,61 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Name:    GetEditControlText
-  Params:  AControl - Handle of edit control
-           AText    - Record for text
-  Returns: If the function suceeds
-
-  Gets the text from the Carbon edit control
+  Name:    FontStyleToQDStyle
+  Params:  AStyle - Font style
+  Returns: QuickDraw Style
  ------------------------------------------------------------------------------}
-function GetEditControlText(AControl: HWnd; var AText: String): Boolean;
-var
-  Info: TCarbonWidgetInfo;
-  CFString: CFStringRef;
+function FontStyleToQDStyle(const AStyle: TFontStyles): FPCMacOSAll.Style;
 begin
-  Result := False;
-  Info := GetCtrlWidgetInfo(Pointer(AControl));
-  if Info = nil then Exit;
+  Result := FPCMacOSAll.normal;
   
-  if (Info.UserData <> nil) and (PBoolean(Info.UserData)^ = True) then
-  begin // IsPassword
-    if GetControlData(ControlRef(AControl), kControlEntireControl,
-      kControlEditTextPasswordCFStringTag, SizeOf(CFStringRef),
-      @CFString, nil) <> noErr then Exit;
-  end
-  else
-  begin
-    CFString := HIViewCopyText(HIViewRef(AControl));
-    if CFString = nil then Exit;
-  end;
-  
-  try
-    AText := CarbonStringToString(CFString);
-    Result := True;
-  finally
-    FreeCarbonString(CFString);
-  end;
+  if fsBold      in AStyle then Result := Result or FPCMacOSAll.bold;
+  if fsItalic    in AStyle then Result := Result or FPCMacOSAll.italic;
+  if fsUnderline in AStyle then Result := Result or FPCMacOSAll.underline;
+  // fsStrikeOut has no counterpart?
 end;
 
 {------------------------------------------------------------------------------
-  Name:    SetEditControlText
-  Params:  AControl - Handle of edit control
-           AText    - Text to set
-  Returns:  If the function suceeds
-
-  Sets the text of the Carbon edit control
- ------------------------------------------------------------------------------}
-function SetEditControlText(AControl: HWnd; const AText: String): Boolean;
-var
-  Info: TCarbonWidgetInfo;
-  CFString: CFStringRef;
-begin
-  Result := False;
-  Info := GetCtrlWidgetInfo(Pointer(AControl));
-  if Info = nil then Exit;
-
-  CreateCarbonString(AText, CFString);
-  try
-    if (Info.UserData <> nil) and (PBoolean(Info.UserData)^ = True) then
-      // IsPassword
-      Result := SetControlData(ControlRef(AControl), kControlEntireControl,
-        kControlEditTextPasswordCFStringTag, SizeOf(CFStringRef), @CFString) = noErr
-    else
-      Result := HIViewSetText(HIViewRef(AControl), CFString) = noErr;
-  finally
-    FreeCarbonString(CFString);
-  end;
-end;
-
-{------------------------------------------------------------------------------
-  Name:    GetEditControlSelStart
-  Params:  AControl   - Handle of edit control
-           ASelStart  - Selection start
-  Returns: If the function suceeds
-
-  Gets the selection start from the Carbon edit control
- ------------------------------------------------------------------------------}
-function GetEditControlSelStart(AControl: HWnd; var ASelStart: Integer): Boolean;
-var
-  SelData: ControlEditTextSelectionRec;
-begin
-  Result := GetControlData(ControlRef(AControl), kControlEntireControl,
-    kControlEditTextSelectionTag, SizeOf(ControlEditTextSelectionRec),
-    @SelData, nil) = noErr;
-
-  if Result then ASelStart := SelData.SelStart;
-end;
-
-{------------------------------------------------------------------------------
-  Name:    GetEditControlSelLength
-  Params:  AControl   - Handle of edit control
-           ASelLength - Selection length
-  Returns: If the function suceeds
-
-  Gets the selection length from the Carbon edit control
- ------------------------------------------------------------------------------}
-function GetEditControlSelLength(AControl: HWnd; var ASelLength: Integer): Boolean;
-var
-  SelData: ControlEditTextSelectionRec;
-begin
-  Result := GetControlData(ControlRef(AControl), kControlEntireControl,
-    kControlEditTextSelectionTag, SizeOf(ControlEditTextSelectionRec),
-    @SelData, nil) = noErr;
-
-  if Result then ASelLength := SelData.SelEnd - SelData.SelStart;
-end;
-
-{------------------------------------------------------------------------------
-  Name:    SetEditControlSelStart
-  Params:  AControl   - Handle of edit control
-           ASelStart  - Selection start
-  Returns: If the function suceeds
-
-  Sets the selection start of the Carbon edit control
- ------------------------------------------------------------------------------}
-function SetEditControlSelStart(AControl: HWnd; ASelStart: Integer): Boolean;
-var
-  SelData: ControlEditTextSelectionRec;
-begin
-  Result := GetControlData(ControlRef(AControl), kControlEntireControl,
-    kControlEditTextSelectionTag, SizeOf(ControlEditTextSelectionRec),
-    @SelData, nil) = noErr;
-
-  if Result then
-  begin
-    if SelData.SelStart = ASelStart then Exit;
-  
-    SelData.SelEnd := (SelData.SelEnd - SelData.SelStart) + ASelStart;
-    SelData.SelStart := ASelStart;
-    Result := SetControlData(ControlRef(AControl), kControlEntireControl,
-      kControlEditTextSelectionTag, SizeOf(ControlEditTextSelectionRec),
-      @SelData) = noErr;
-  end;
-end;
-
-{------------------------------------------------------------------------------
-  Name:    SetEditControlSelLength
-  Params:  AControl   - Handle of edit control
-           ASelLength - Selection length
-  Returns: If the function suceeds
-
-  Sets the selection length of the Carbon edit control
- ------------------------------------------------------------------------------}
-function SetEditControlSelLength(AControl: HWnd; ASelLength: Integer): Boolean;
-var
-  SelData: ControlEditTextSelectionRec;
-begin
-  Result := GetControlData(ControlRef(AControl), kControlEntireControl,
-    kControlEditTextSelectionTag, SizeOf(ControlEditTextSelectionRec),
-    @SelData, nil) = noErr;
-
-  if Result then
-  begin
-    if SelData.SelEnd = SelData.SelStart + ASelLength then Exit;
-    
-    SelData.SelEnd := SelData.SelStart + ASelLength;
-    Result := SetControlData(ControlRef(AControl), kControlEntireControl,
-      kControlEditTextSelectionTag, SizeOf(ControlEditTextSelectionRec),
-      @SelData) = noErr;
-  end;
-end;
-
-{------------------------------------------------------------------------------
-  Name:    BeginTextRender
-  Params:  DC      - Carbon device context
-           AStr    - UTF8 string to render
-           ACount  - Count of chars to render
-           ALayout - ATSU layout
-  Returns: If the function suceeds
-
-  Creates the ATSU text layout for the specified text and manages the device
-  context to render the text.
-  NOTE: Coordination system is upside-down!
- ------------------------------------------------------------------------------}
-function BeginTextRender(DC: TCarbonDeviceContext; AStr: PChar;
-  ACount: Integer; out ALayout: ATSUTextLayout): Boolean;
-var
-  TextStyle: ATSUStyle;
-  TextLength: LongWord;
-  S: String;
-  W: WideString;
-  Tag: ATSUAttributeTag;
-  DataSize: ByteCount;
-  TempContext: CGContextRef;
-  PContext: ATSUAttributeValuePtr;
-begin
-  Result := False;
-  if DC = nil then Exit;
-
-  // save context
-  CGContextSaveGState(DC.CGContext);
-  
-  // change coordination system
-  CGContextScaleCTM(DC.CGContext, 1, -1);
-  CGContextTranslateCTM(DC.CGContext, 0, 0);
-  
-  // convert UTF-8 string to UTF-16 string
-  if ACount < 0 then S := AStr
-  else S := Copy(AStr, 1, ACount);
-  W := UTF8ToUTF16(S);
-
-  if not CarbonWidgetSet.IsValidGDIObject(HFONT(DC.CurrentFont)) then
-    TextStyle := DefaultTextStyle
-  else
-    TextStyle := DC.CurrentFont.Style;
-    
-  // apply text color and bk color
-  DC.TextPen.Apply(DC, False); // do not use ROP2
-  DC.BkBrush.Apply(DC, False);
-
-  // create text layout
-  TextLength := kATSUToTextEnd;
-  if ATSUCreateTextLayoutWithTextPtr(ConstUniCharArrayPtr(@W[1]),
-    kATSUFromTextBeginning, kATSUToTextEnd, Length(W), 1, @TextLength, @TextStyle,
-    ALayout) = noErr then
-  begin
-    // set layout context
-    Tag := kATSUCGContextTag;
-    DataSize := SizeOf(CGContextRef);
-
-    TempContext := DC.CGContext;
-    PContext := @TempContext;
-    Result := ATSUSetLayoutControls(ALayout, 1, @Tag, @DataSize, @PContext) = noErr;
-  end;
-end;
-
-{------------------------------------------------------------------------------
-  Name:    EndTextRender
-  Params:  DC      - Carbon device context
-           ALayout - ATSU layout
+  Name:    FillStandardDescription
+  Params:  Desc - Raw image description
   Returns: Nothing
 
-  Frees the ATSU text layout and manages the device
-  context to render ordinary graphic
+  Fills the raw image description with standard Carbon internal image storing
+  description
  ------------------------------------------------------------------------------}
-procedure EndTextRender(DC: TCarbonDeviceContext; var ALayout: ATSUTextLayout);
+procedure FillStandardDescription(var Desc: TRawImageDescription);
 begin
-  if DC <> nil then
-    // restore context
-    CGContextRestoreGState(DC.CGContext);
-    
-  if ALayout <> nil then ATSUDisposeTextLayout(ALayout);
+  FillChar(Desc, SizeOf(Desc), 0);
+
+// $RRGGBBAA
+  Desc.Format := ricfRGBA;
+  Desc.HasPalette := False;
+// Width and Height skipped
+  Desc.PaletteColorCount := 0;
+  Desc.BitOrder := riboReversedBits;
+{$IFDEF ENDIAN_BIG}
+  Desc.ByteOrder := riboMSBFirst;
+{$ELSE}
+  Desc.ByteOrder := riboLSBFirst;
+{$ENDIF}
+  Desc.LineOrder := riloTopToBottom;
+  Desc.ColorCount := Desc.PaletteColorCount;
+  Desc.BitsPerPixel := 32;
+  Desc.LineEnd := rileDQWordBoundary; // 128bit aligned
+
+  // 8-8-8-8 mode, high byte is Alpha
+  Desc.RedPrec := 8;
+  Desc.GreenPrec := 8;
+  Desc.BluePrec := 8;
+  Desc.RedShift := 24;
+  Desc.GreenShift := 16;
+  Desc.BlueShift := 8;
+  Desc.Depth := 32;
+
+  Desc.AlphaPrec := 8;
+  Desc.AlphaSeparate := False;
+  Desc.AlphaLineEnd := rileDQWordBoundary;
+  Desc.AlphaShift := 24;
 end;
 
 {------------------------------------------------------------------------------
@@ -902,39 +678,39 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Name:    CreateCarbonString
+  Name:    CreateCFString
   Params:  S       - UTF-8 string
            AString - Core Foundation string ref
   Returns: Nothing
 
   Creates new Core Foundation string form specified string
  ------------------------------------------------------------------------------}
-procedure CreateCarbonString(const S: String; out AString: CFStringRef);
+procedure CreateCFString(const S: String; out AString: CFStringRef);
 begin
   AString := CFStringCreateWithCString(nil, Pointer(PChar(S)), DEFAULT_CFSTRING_ENCODING);
 end;
 
 {------------------------------------------------------------------------------
-  Name:    FreeCarbonString
+  Name:    FreeCFString
   Params:  AString - Core Foundation string ref to free
   Returns: Nothing
 
   Frees specified Core Foundation string
  ------------------------------------------------------------------------------}
-procedure FreeCarbonString(var AString: CFStringRef);
+procedure FreeCFString(var AString: CFStringRef);
 begin
   if AString <> nil then
     CFRelease(Pointer(AString));
 end;
 
 {------------------------------------------------------------------------------
-  Name:    CarbonStringToString
+  Name:    CFStringToStr
   Params:  AString - Core Foundation string ref
   Returns: UTF-8 string
 
   Converts Core Foundation string to string
  ------------------------------------------------------------------------------}
-function CarbonStringToString(AString: CFStringRef): String;
+function CFStringToStr(AString: CFStringRef): String;
 var
   Str: Pointer;
   StrSize: CFIndex;
@@ -967,8 +743,6 @@ end;
   Name:    GetCarbonRect
   Params:  Left, Top, Width, Height - coordinates
   Returns: Carbon Rect
-
-  Carbon Rect constructor
  ------------------------------------------------------------------------------}
 function GetCarbonRect(Left, Top, Width, Height: Integer): FPCMacOSAll.Rect;
 begin
@@ -982,8 +756,6 @@ end;
   Name:    GetCarbonRect
   Params:  ARect - Rectangle
   Returns: Carbon Rect
-
-  Carbon Rect constructor
  ------------------------------------------------------------------------------}
 function GetCarbonRect(const ARect: TRect): FPCMacOSAll.Rect;
 begin
@@ -996,9 +768,7 @@ end;
 {------------------------------------------------------------------------------
   Name:    ParamsToCarbonRect
   Params:  AParams - Creation parameters
-  Returns: Carbon Rect
-
-  Carbon Rect constructor from creation parameters
+  Returns: Carbon Rect from creation parameters
  ------------------------------------------------------------------------------}
 function ParamsToCarbonRect(const AParams: TCreateParams): FPCMacOSAll.Rect;
 begin
@@ -1011,9 +781,7 @@ end;
 {------------------------------------------------------------------------------
   Name:    RectToCGRect
   Params:  X1, Y1, X2, Y2 - Rectangle coordinates
-  Returns: CGRect
-
-  CGRect constructor, coordinates are sorted
+  Returns: CGRect, coordinates are sorted
  ------------------------------------------------------------------------------}
 function GetCGRect(X1, Y1, X2, Y2: Integer): CGRect;
 begin
@@ -1044,8 +812,6 @@ end;
   Name:    RectToCGRect
   Params:  ARect - Rectangle
   Returns: CGRect
-
-  CGRect constructor
  ------------------------------------------------------------------------------}
 function RectToCGRect(const ARect: TRect): CGRect;
 begin
@@ -1059,8 +825,6 @@ end;
   Name:    CGRectToRect
   Params:  ARect - CGRect
   Returns: TRect
-
-  Converts CGRect to TRect
  ------------------------------------------------------------------------------}
 function CGRectToRect(const ARect: CGRect): TRect;
 begin
@@ -1073,9 +837,7 @@ end;
 {------------------------------------------------------------------------------
   Name:    ParamsToHIRect
   Params:  AParams - Creation parameters
-  Returns: HIView Rect
-
-  HIView Rect constructor from creation parameters
+  Returns: HIView Rect from creation parameters
  ------------------------------------------------------------------------------}
 function ParamsToHIRect(const AParams: TCreateParams): HIRect;
 begin
@@ -1089,8 +851,6 @@ end;
   Name:    CarbonRectToRect
   Params:  ARect - Carbon Rect
   Returns: Rectangle
-
-  Converts Carbon Rect to rectangle
  ------------------------------------------------------------------------------}
 function CarbonRectToRect(const ARect: FPCMacOSAll.Rect): TRect;
 begin
@@ -1101,13 +861,11 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Name:    ColorToCarbonColor
+  Name:    ColorToRGBColor
   Params:  AColor - Color
-  Returns: RGBColor
-
-  Converts the color to Carbon RGBColor
+  Returns: Carbon RGBColor
  ------------------------------------------------------------------------------}
-function ColorToCarbonColor(const AColor: TColor): RGBColor;
+function ColorToRGBColor(const AColor: TColor): RGBColor;
 var
   V: TColor;
 begin
@@ -1122,13 +880,11 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Name:    CarbonColorToColor
+  Name:    RGBColorToColor
   Params:  AColor - Carbon RGBColor
   Returns: Color
-
-  Converts Carbon RGBColor to color
  ------------------------------------------------------------------------------}
-function CarbonColorToColor(const AColor: RGBColor): TColor;
+function RGBColorToColor(const AColor: RGBColor): TColor;
 begin
   Result := RGBToColor(AColor.Red shr 8, AColor.Green shr 8, AColor.Blue shr 8);
 end;
@@ -1138,7 +894,8 @@ end;
   Params:  AColor - Color
   Returns: CGColorRef
 
-  Creates CGColorRef form the specified color
+  Creates CGColorRef from the specified color. You are responsible for
+  releasing it by CGColorRelease.
  ------------------------------------------------------------------------------}
 function CreateCGColor(const AColor: TColor): CGColorRef;
 var

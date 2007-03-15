@@ -73,6 +73,19 @@ type
   private
   protected
   public
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function  GetSelStart(const ACustomComboBox: TCustomComboBox): integer; override;
+    class function  GetSelLength(const ACustomComboBox: TCustomComboBox): integer; override;
+    class function  GetItemIndex(const ACustomComboBox: TCustomComboBox): integer; override;
+    class function  GetMaxLength(const ACustomComboBox: TCustomComboBox): integer; override;
+
+    class procedure SetSelStart(const ACustomComboBox: TCustomComboBox; NewStart: integer); override;
+    class procedure SetSelLength(const ACustomComboBox: TCustomComboBox; NewLength: integer); override;
+    class procedure SetItemIndex(const ACustomComboBox: TCustomComboBox; NewIndex: integer); override;
+    class procedure SetMaxLength(const ACustomComboBox: TCustomComboBox; NewLength: integer); override;
+
+    class function  GetItems(const ACustomComboBox: TCustomComboBox): TStrings; override;
+    class procedure Sort(const ACustomComboBox: TCustomComboBox; AList: TStrings; IsSorted: boolean); override;
   end;
 
   { TCarbonWSComboBox }
@@ -89,6 +102,19 @@ type
   private
   protected
   public
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function  GetSelCount(const ACustomListBox: TCustomListBox): integer; override;
+    class function  GetSelected(const ACustomListBox: TCustomListBox; const AIndex: integer): boolean; override;
+    class function  GetStrings(const ACustomListBox: TCustomListBox): TStrings; override;
+    class function  GetItemIndex(const ACustomListBox: TCustomListBox): integer; override;
+    class function  GetTopIndex(const ACustomListBox: TCustomListBox): integer; override;
+    class procedure SelectItem(const ACustomListBox: TCustomListBox; AIndex: integer; ASelected: boolean); override;
+    // class procedure SetBorder(const ACustomListBox: TCustomListBox); override;
+    class procedure SetItemIndex(const ACustomListBox: TCustomListBox; const AIndex: integer); override;
+    class procedure SetSelectionMode(const ACustomListBox: TCustomListBox; const AExtendedSelect, AMultiSelect: boolean); override;
+    class procedure SetStyle(const ACustomListBox: TCustomListBox); override;
+    class procedure SetSorted(const ACustomListBox: TCustomListBox; AList: TStrings; ASorted: boolean); override;
+    class procedure SetTopIndex(const ACustomListBox: TCustomListBox; const NewTopIndex: integer); override;
   end;
 
   { TCarbonWSListBox }
@@ -109,7 +135,6 @@ type
 
     class function  GetSelStart(const ACustomEdit: TCustomEdit): integer; override;
     class function  GetSelLength(const ACustomEdit: TCustomEdit): integer; override;
-    class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
 
     class procedure SetCharCase(const ACustomEdit: TCustomEdit; NewCase: TEditCharCase); override;
     class procedure SetEchoMode(const ACustomEdit: TCustomEdit; NewMode: TEchoMode); override;
@@ -118,7 +143,6 @@ type
     class procedure SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean); override;
     class procedure SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer); override;
     class procedure SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
-    class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
   end;
   
   { TCarbonWSCustomMemo }
@@ -131,8 +155,8 @@ type
     class function  GetStrings(const ACustomMemo: TCustomMemo): TStrings; override;
 
     class procedure AppendText(const ACustomMemo: TCustomMemo; const AText: string); override;
-    class procedure SetColor(const AWinControl: TWinControl); override;
     class procedure SetPasswordChar(const ACustomEdit: TCustomEdit; NewChar: char); override;
+    class procedure SetScrollbars(const ACustomMemo: TCustomMemo; const NewScrollbars: TScrollStyle); override;
     class procedure SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean); override;
     class procedure SetWordWrap(const ACustomMemo: TCustomMemo; const NewWordWrap: boolean); override;
   end;
@@ -232,63 +256,12 @@ type
   public
   end;
   
-  { TCarbonMemoStrings }
-
-  TCarbonMemoStrings = class(TStrings)
-  private
-    FStringList: TStringList; // internal strings
-    FOwner: TWinControl;      // LCL control owning strings
-    FExternalChanged: Boolean;// Carbon strings object has changed
-    procedure InternalUpdate;
-    procedure ExternalUpdate;
-  protected
-    function GetTextStr: string; override;
-    function GetCount: Integer; override;
-    function Get(Index: Integer): string; override;
-  public
-    constructor Create(AOwner: TWinControl);
-    destructor Destroy; override;
-    procedure Assign(Source: TPersistent); override;
-    procedure Clear; override;
-    procedure Delete(Index: Integer); override;
-    procedure Insert(Index: Integer; const S: string); override;
-    procedure SetText(TheText: PChar); override;
-    
-    procedure ExternalChanged; dynamic;
-  public
-    property Owner: TWinControl read FOwner;
-  end;
-
 
 implementation
 
+uses CarbonStrings;
+
 { TCarbonWSScrollBar }
-
-{------------------------------------------------------------------------------
-  Name:  ScrollBarLiveTrack
-
-  Callback procedure for Carbon scroll bar live tracking
- ------------------------------------------------------------------------------}
-procedure ScrollBarLiveTrack(Control: ControlRef; partCode: ControlPartCode);
-  {$IFDEF darwin}mwpascal;{$ENDIF}
-var
-  Msg: TLMScroll;
-  AInfo: TCarbonWidgetInfo;
-begin
-  AInfo := GetCtrlWidgetInfo(Pointer(Control));
-  if AInfo = nil then Exit;
-  
-  DebugLn('ScrollBarLiveTrack ' + DbgS(GetControl32BitValue(Control)));
-  
-  FillChar(Msg, SizeOf(Msg), 0);
-  
-  Msg.Msg := LM_HSCROLL;
-  Msg.ScrollCode := SB_THUMBTRACK;
-  Msg.Pos := GetControl32BitValue(Control);
-  Msg.ScrollBar := HWnd(Control);
-
-  DeliverMessage(AInfo.LCLObject, Msg);
-end;
 
 {------------------------------------------------------------------------------
   Method:  TCarbonWSScrollBar.CreateHandle
@@ -300,25 +273,8 @@ end;
  ------------------------------------------------------------------------------}
 class function TCarbonWSScrollBar.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
-var
-  ScrollBar: TCustomScrollBar;
-  Control: ControlRef;
-  Info: TCarbonWidgetInfo;
 begin
-  Result := 0;
-  
-  ScrollBar := AWinControl as TCustomScrollBar;
-
-  if CreateScrollBarControl(GetTopParentWindow(AWinControl),
-    ParamsToCarbonRect(AParams), ScrollBar.Position, ScrollBar.Min, ScrollBar.Max,
-    ScrollBar.PageSize, False, nil, Control) = noErr
-  then
-    Result := TLCLIntfHandle(Control);
-      
-  if Result = 0 then Exit;
-
-  Info := TCarbonWidgetInfo.CreateForControl(Control, AWinControl);
-  TCarbonPrivateHandleClass(WSPrivate).RegisterEvents(Info);
+  Result := TLCLIntfHandle(TCarbonScrollBar.Create(AWinControl, AParams));
 end;
 
 {------------------------------------------------------------------------------
@@ -332,10 +288,8 @@ class procedure TCarbonWSScrollBar.SetParams(const AScrollBar: TCustomScrollBar)
 begin
   if not WSCheckHandleAllocated(AScrollBar, 'SetParams') then Exit;
   
-  SetControl32BitMinimum(ControlRef(AScrollBar.Handle), AScrollBar.Min);
-  SetControl32BitMaximum(ControlRef(AScrollBar.Handle), AScrollBar.Max);
-  SetControl32BitValue(ControlRef(AScrollBar.Handle), AScrollBar.Position);
-  SetControlViewSize(ControlRef(AScrollBar.Handle), AScrollBar.PageSize);
+  TCarbonCustomBar(AScrollBar.Handle).SetData(AScrollBar.Position,
+    AScrollBar.Min, AScrollBar.Max, AScrollBar.PageSize);
 end;
 
 { TCarbonWSCustomGroupBox }
@@ -350,27 +304,400 @@ end;
  ------------------------------------------------------------------------------}
 class function TCarbonWSCustomGroupBox.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
-var
-  Control: ControlRef;
-  CFString: CFStringRef;
-  Info: TCarbonWidgetInfo;
+begin
+  Result := TLCLIntfHandle(TCarbonGroupBox.Create(AWinControl, AParams));
+end;
+
+{ TCarbonWSCustomComboBox }
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWSCustomComboBox.CreateHandle
+  Params:  AWinControl - LCL control
+           AParams     - Creation parameters
+  Returns: Handle to the control in Carbon interface
+
+  Creates new combo box in Carbon interface with the specified parameters
+ ------------------------------------------------------------------------------}
+class function TCarbonWSCustomComboBox.CreateHandle(
+  const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
+begin
+  Result := TLCLIntfHandle(TCarbonComboBox.Create(AWinControl, AParams));
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWSCustomComboBox.GetSelStart
+  Params:  ACustomComboBox - LCL custom combo box
+  Returns: Position of selection start of combo box in Carbon interface
+ ------------------------------------------------------------------------------}
+class function TCarbonWSCustomComboBox.GetSelStart(
+  const ACustomComboBox: TCustomComboBox): integer;
 begin
   Result := 0;
+  if not WSCheckHandleAllocated(ACustomComboBox, 'GetSelStart') then Exit;
 
-  CreateCarbonString(AParams.Caption, CFString);
-  try
-    if CreateGroupBoxControl(GetTopParentWindow(AWinControl),
-      ParamsToCarbonRect(AParams), CFString,
-      not (AWinControl.Parent is TCustomGroupBox), Control) = noErr
-    then
-      Result := TLCLIntfHandle(Control);
-  finally
-    FreeCarbonString(CFString);
+  TCarbonComboBox(ACustomComboBox.Handle).GetSelStart(Result);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWSCustomComboBox.GetSelLength
+  Params:  ACustomComboBox - LCL custom combo box
+  Returns: Length of selection of combo box in Carbon interface
+ ------------------------------------------------------------------------------}
+class function TCarbonWSCustomComboBox.GetSelLength(
+  const ACustomComboBox: TCustomComboBox): integer;
+begin
+  Result := 0;
+  if not WSCheckHandleAllocated(ACustomComboBox, 'GetSelLength') then Exit;
+
+  TCarbonComboBox(ACustomComboBox.Handle).GetSelLength(Result);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWSCustomComboBox.GetItemIndex
+  Params:  ACustomComboBox - LCL custom combo box
+  Returns: Selected item index of combo box in Carbon interface
+ ------------------------------------------------------------------------------}
+class function TCarbonWSCustomComboBox.GetItemIndex(
+  const ACustomComboBox: TCustomComboBox): integer;
+begin
+  Result := -1;
+  if not WSCheckHandleAllocated(ACustomComboBox, 'GetItemIndex') then Exit;
+
+  Result := TCarbonComboBox(ACustomComboBox.Handle).GetItemIndex;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWSCustomComboBox.GetMaxLength
+  Params:  ACustomComboBox - LCL custom combo box
+  Returns: Maximal length of text of combo box in Carbon interface
+ ------------------------------------------------------------------------------}
+class function TCarbonWSCustomComboBox.GetMaxLength(
+  const ACustomComboBox: TCustomComboBox): integer;
+begin
+  Result := 0;
+  if not WSCheckHandleAllocated(ACustomComboBox, 'GetMaxLength') then Exit;
+
+  Result := TCarbonComboBox(ACustomComboBox.Handle).MaxLength;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWSCustomComboBox.SetSelStart
+  Params:  ACustomComboBox - LCL custom combo box
+           NewStart        - New position of selection start
+  Returns: Nothing
+
+  Sets the new position of selection start of combo box in Carbon interface
+ ------------------------------------------------------------------------------}
+class procedure TCarbonWSCustomComboBox.SetSelStart(
+  const ACustomComboBox: TCustomComboBox; NewStart: integer);
+begin
+  if not WSCheckHandleAllocated(ACustomComboBox, 'SetSelStart') then Exit;
+
+  TCarbonComboBox(ACustomComboBox.Handle).SetSelStart(NewStart);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWSCustomComboBox.SetSelLength
+  Params:  ACustomComboBox - LCL custom combo box
+           NewLength       - New length of selection
+  Returns: Nothing
+
+  Sets the new length of selection of combo box in Carbon interface
+ ------------------------------------------------------------------------------}
+class procedure TCarbonWSCustomComboBox.SetSelLength(
+  const ACustomComboBox: TCustomComboBox; NewLength: integer);
+begin
+    if not WSCheckHandleAllocated(ACustomComboBox, 'SetSelLength') then Exit;
+
+  TCarbonComboBox(ACustomComboBox.Handle).SetSelLength(NewLength);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWSCustomComboBox.SetItemIndex
+  Params:  ACustomComboBox - LCL custom combo box
+           NewIndex        - New selected item index
+  Returns: Nothing
+
+  Selects the item with index in combo box in Carbon interface
+ ------------------------------------------------------------------------------}
+class procedure TCarbonWSCustomComboBox.SetItemIndex(
+  const ACustomComboBox: TCustomComboBox; NewIndex: integer);
+begin
+  if not WSCheckHandleAllocated(ACustomComboBox, 'SetItemIndex') then Exit;
+
+  TCarbonComboBox(ACustomComboBox.Handle).SetItemIndex(NewIndex);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWSCustomComboBox.SetMaxLength
+  Params:  ACustomEdit - LCL custom combo box
+           NewLength   - New max length
+  Returns: Nothing
+
+  Sets the new maximal length of text of combo box in Carbon interface
+ ------------------------------------------------------------------------------}
+class procedure TCarbonWSCustomComboBox.SetMaxLength(
+  const ACustomComboBox: TCustomComboBox; NewLength: integer);
+begin
+  if not WSCheckHandleAllocated(ACustomComboBox, 'SetMaxLength') then Exit;
+
+  // text is cropped in callback
+  TCarbonComboBox(ACustomComboBox.Handle).MaxLength := NewLength;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWSCustomComboBox.GetItems
+  Params:  ACustomEdit - LCL custom combo box
+  Returns: Items of combo box in Carbon interface
+ ------------------------------------------------------------------------------}
+class function TCarbonWSCustomComboBox.GetItems(
+  const ACustomComboBox: TCustomComboBox): TStrings;
+begin
+  Result := nil;
+  if not WSCheckHandleAllocated(ACustomComboBox, 'GetItems') then Exit;
+
+  Result := TCarbonComboBoxStrings.Create(TCarbonComboBox(ACustomComboBox.Handle));
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWSCustomComboBox.Sort
+  Params:  ACustomEdit - LCL custom combo box
+           AList       - Strings to sort
+           IsSorted    - Sorted state
+  Returns: Nothing
+
+  Sorts the items in combo box in Carbon interface
+ ------------------------------------------------------------------------------}
+class procedure TCarbonWSCustomComboBox.Sort(
+  const ACustomComboBox: TCustomComboBox; AList: TStrings; IsSorted: boolean);
+begin
+  if not WSCheckHandleAllocated(ACustomComboBox, 'Sort') then Exit;
+  
+  TCarbonComboBoxStrings(AList).Sorted := IsSorted;
+end;
+
+{ TCarbonWSCustomListBox }
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWSCustomListBox.CreateHandle
+  Params:  AWinControl - LCL control
+           AParams     - Creation parameters
+  Returns: Handle to the control in Carbon interface
+
+  Creates new list box in Carbon interface with the specified parameters
+ ------------------------------------------------------------------------------}
+class function TCarbonWSCustomListBox.CreateHandle(
+  const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
+begin
+  Result := TLCLIntfHandle(TCarbonListBox.Create(AWinControl, AParams));
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWSCustomListBox.GetSelCount
+  Params:  ACustomListBox - LCL custom list box
+  Returns: Count of selected items in list box in Carbon interface
+ ------------------------------------------------------------------------------}
+class function TCarbonWSCustomListBox.GetSelCount(
+  const ACustomListBox: TCustomListBox): integer;
+var
+  Item: Cell;
+  I: Integer;
+  List: ListHandle;
+begin
+  Result := 0;
+  if not WSCheckHandleAllocated(ACustomListBox, 'GetSelCount') then Exit;
+  
+  List := TCarbonListBox(ACustomListBox.Handle).List;
+  Item.h := 0;
+  Item.v := 0;
+  for I := 0 to TCarbonListBox(ACustomListBox.Handle).GetItemsCount - 1 do
+  begin
+    if LGetSelect(False, Item, List) then Inc(Result);
+    Inc(Item.v);
   end;
-  if Result = 0 then Exit;
+end;
 
-  Info := TCarbonWidgetInfo.CreateForControl(Control, AWinControl);
-  TCarbonPrivateHandleClass(WSPrivate).RegisterEvents(Info);
+{------------------------------------------------------------------------------
+  Method:  TCarbonWSCustomListBox.GetSelected
+  Params:  ACustomListBox - LCL custom list box
+           AIndex         - Item index
+  Returns: If the specified item in list box in Carbon interface is selected
+ ------------------------------------------------------------------------------}
+class function TCarbonWSCustomListBox.GetSelected(
+  const ACustomListBox: TCustomListBox; const AIndex: integer): boolean;
+var
+  Item: Cell;
+begin
+  Result := False;
+  if not WSCheckHandleAllocated(ACustomListBox, 'GetSelected') then Exit;
+
+  Item.h := 0;
+  Item.v := AIndex;
+  Result := LGetSelect(False, Item, TCarbonListBox(ACustomListBox.Handle).List);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWSCustomListBox.GetStrings
+  Params:  ACustomListBox - LCL custom list box
+  Returns: Items of list box in Carbon interface
+ ------------------------------------------------------------------------------}
+class function TCarbonWSCustomListBox.GetStrings(
+  const ACustomListBox: TCustomListBox): TStrings;
+begin
+  Result := nil;
+  if not WSCheckHandleAllocated(ACustomListBox, 'GetStrings') then Exit;
+  
+  Result := TCarbonListBoxStrings.Create(TCarbonListBox(ACustomListBox.Handle));
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWSCustomListBox.GetItemIndex
+  Params:  ACustomListBox - LCL custom list box
+  Returns: Index of selected item of list box in Carbon interface
+ ------------------------------------------------------------------------------}
+class function TCarbonWSCustomListBox.GetItemIndex(
+  const ACustomListBox: TCustomListBox): integer;
+begin
+  Result := -1;
+  if not WSCheckHandleAllocated(ACustomListBox, 'GetItemIndex') then Exit;
+  
+  Result := TCarbonListBox(ACustomListBox.Handle).GetItemIndex;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWSCustomListBox.GetTopIndex
+  Params:  ACustomListBox - LCL custom list box
+  Returns: Index of top visible item of list box in Carbon interface
+ ------------------------------------------------------------------------------}
+class function TCarbonWSCustomListBox.GetTopIndex(
+  const ACustomListBox: TCustomListBox): integer;
+var
+  Bounds: FPCMacOSAll.Rect;
+begin
+  Result := 0;
+  if not WSCheckHandleAllocated(ACustomListBox, 'GetTopIndex') then Exit;
+
+  if GetListViewBounds(TCarbonListBox(ACustomListBox.Handle).List,
+    Bounds) <> nil then Result := Bounds.top;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWSCustomListBox.SelectItem
+  Params:  ACustomListBox - LCL custom list box
+           AIndex         - Item index to change selection
+           ASelected      - New selection value
+  Returns: Nothing
+
+  Changes selection of item with the specified index of list box in Carbon
+  interface
+ ------------------------------------------------------------------------------}
+class procedure TCarbonWSCustomListBox.SelectItem(
+  const ACustomListBox: TCustomListBox; AIndex: integer; ASelected: boolean);
+var
+  Item: Cell;
+begin
+  if not WSCheckHandleAllocated(ACustomListBox, 'SelectItem') then Exit;
+
+  Item.h := 0;
+  Item.v := AIndex;
+  LSetSelect(ASelected, Item, TCarbonListBox(ACustomListBox.Handle).List);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWSCustomListBox.SetItemIndex
+  Params:  ACustomListBox - LCL custom list box
+           AIndex         - Item index
+  Returns: Nothing
+
+  Sets item index of list box in Carbon interface
+ ------------------------------------------------------------------------------}
+class procedure TCarbonWSCustomListBox.SetItemIndex(
+  const ACustomListBox: TCustomListBox; const AIndex: integer);
+begin
+  if not WSCheckHandleAllocated(ACustomListBox, 'SetItemIndex') then Exit;
+
+  TCarbonListBox(ACustomListBox.Handle).SetItemIndex(AIndex);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWSCustomListBox.SetSelectionMode
+  Params:  ACustomListBox  - LCL custom list box
+           AExtendedSelect - New extended selection value
+           AMultiSelect    - New mutliple selection value
+  Returns: Nothing
+
+  Changes selection mode of list box in Carbon interface
+ ------------------------------------------------------------------------------}
+class procedure TCarbonWSCustomListBox.SetSelectionMode(
+  const ACustomListBox: TCustomListBox; const AExtendedSelect,
+  AMultiSelect: boolean);
+var
+  Options: OptionBits;
+begin
+  if not WSCheckHandleAllocated(ACustomListBox, 'SetSelectionMode') then Exit;
+
+  if AMultiSelect then
+  begin
+    if AExtendedSelect then Options := lUseSense
+    else Options := 0;
+  end
+  else Options := lOnlyOne;
+  
+  SetListSelectionFlags(TCarbonListBox(ACustomListBox.Handle).List, Options);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWSCustomListBox.SetStyle
+  Params:  ACustomListBox - LCL custom list box
+  Returns: Nothing
+
+  Changes style of list box in Carbon interface
+ ------------------------------------------------------------------------------}
+class procedure TCarbonWSCustomListBox.SetStyle(
+  const ACustomListBox: TCustomListBox);
+begin
+  // TODO
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWSCustomListBox.SetSorted
+  Params:  ACustomListBox - LCL custom list box
+           AList          - Items to sort
+           ASorted        - New sorted value
+  Returns: Nothing
+
+  Sorts items of list box in Carbon interface
+ ------------------------------------------------------------------------------}
+class procedure TCarbonWSCustomListBox.SetSorted(
+  const ACustomListBox: TCustomListBox; AList: TStrings; ASorted: boolean);
+begin
+  if not WSCheckHandleAllocated(ACustomListBox, 'SetSorted') then Exit;
+  
+  TCarbonListBoxStrings(AList).Sorted := ASorted;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWSCustomListBox.SetTopIndex
+  Params:  ACustomListBox - LCL custom list box
+           NewTopIndex    - New top index
+  Returns: Nothing
+
+  Sets top visible item of list box in Carbon interface
+ ------------------------------------------------------------------------------}
+class procedure TCarbonWSCustomListBox.SetTopIndex(
+  const ACustomListBox: TCustomListBox; const NewTopIndex: integer);
+var
+  Bounds: FPCMacOSAll.Rect;
+begin
+  if not WSCheckHandleAllocated(ACustomListBox, 'SetTopIndex') then Exit;
+
+  if GetListViewBounds(TCarbonListBox(ACustomListBox.Handle).List,
+    Bounds) <> nil then
+  begin
+    Bounds.bottom := Bounds.bottom + (NewTopIndex - Bounds.top);
+    Bounds.top := NewTopIndex;
+    SetListViewBounds(TCarbonListBox(ACustomListBox.Handle).List, Bounds);
+  end;
 end;
 
 { TCarbonWSCustomEdit }
@@ -385,84 +712,34 @@ end;
  ------------------------------------------------------------------------------}
 class function TCarbonWSCustomEdit.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
-var
-  Edit: TCustomEdit;
-  Control: ControlRef;
-  CFString: CFStringRef;
-  Info: TCarbonWidgetInfo;
-  IsPassword: PBoolean;
-  SingleLine: Boolean = True;
 begin
-  Result := 0;
-  Edit := AWinControl as TCustomEdit;
-
-  CreateCarbonString(AParams.Caption, CFString);
-  try
-    if CreateEditUniCodeTextControl(GetTopParentWindow(AWinControl),
-      ParamsToCarbonRect(AParams), CFString, (Edit.PasswordChar <> #0), nil,
-      Control) = noErr
-    then
-      Result := TLCLIntfHandle(Control);
-  finally
-    FreeCarbonString(CFString);
-  end;
-  if Result = 0 then Exit;
-
-  New(IsPassword);
-  IsPassword^ := Edit.PasswordChar <> #0;
-
-  // set edit single line
-  SetControlData(Control, kControlEntireControl, kControlEditTextSingleLineTag,
-    SizeOf(Boolean), @SingleLine);
-
-  Info := TCarbonWidgetInfo.CreateForControl(Control, AWinControl);
-  Info.UserData := IsPassword;
-  Info.DataOwner := True;
-  TCarbonPrivateHandleClass(WSPrivate).RegisterEvents(Info);
+  Result := TLCLIntfHandle(TCarbonEdit.Create(AWinControl, AParams));
 end;
 
 {------------------------------------------------------------------------------
   Method:  TCarbonWSCustomEdit.GetSelStart
   Params:  ACustomEdit - LCL custom edit
-  Returns: Position of selection start
-
-  Retrieves the position of selection start of edit in Carbon interface
+  Returns: Position of selection start of edit in Carbon interface
  ------------------------------------------------------------------------------}
 class function TCarbonWSCustomEdit.GetSelStart(const ACustomEdit: TCustomEdit): integer;
 begin
+  Result := 0;
   if not WSCheckHandleAllocated(ACustomEdit, 'GetSelStart') then Exit;
 
-  if not GetEditControlSelStart(ACustomEdit.Handle, Result) then Result := 0;
+  TCarbonEdit(ACustomEdit.Handle).GetSelStart(Result);
 end;
 
 {------------------------------------------------------------------------------
   Method:  TCarbonWSCustomEdit.GetSelLength
   Params:  ACustomEdit - LCL custom edit
-  Returns: Length of selection
-
-  Retrieves the length of selection of edit in Carbon interface
+  Returns: Length of selection of edit in Carbon interface
  ------------------------------------------------------------------------------}
 class function TCarbonWSCustomEdit.GetSelLength(const ACustomEdit: TCustomEdit): integer;
 begin
+  Result := 0;
   if not WSCheckHandleAllocated(ACustomEdit, 'GetSelLength') then Exit;
 
-  if not GetEditControlSelLength(ACustomEdit.Handle, Result) then Result := 0;
-end;
-
-{------------------------------------------------------------------------------
-  Method:  TCarbonWSCustomEdit.GetText
-  Params:  AWinControl - LCL control
-           AText       - Text
-  Returns: If the function succeeds
-
-  Retrieves the text of edit in Carbon interface
- ------------------------------------------------------------------------------}
-class function TCarbonWSCustomEdit.GetText(const AWinControl: TWinControl;
-  var AText: String): Boolean;
-begin
-  if not WSCheckHandleAllocated(AWinControl, 'GetText') then Exit;
-
-  Result := GetEditControlText(AWinControl.Handle, AText);
+  TCarbonEdit(ACustomEdit.Handle).GetSelLength(Result);
 end;
 
 {------------------------------------------------------------------------------
@@ -504,7 +781,10 @@ end;
 class procedure TCarbonWSCustomEdit.SetMaxLength(const ACustomEdit: TCustomEdit;
   NewLength: integer);
 begin
- // checked in a callback
+  if not WSCheckHandleAllocated(ACustomEdit, 'SetMaxLength') then Exit;
+
+  // text is cropped in callback
+  TCarbonEdit(ACustomEdit.Handle).MaxLength := NewLength;
 end;
 
 {------------------------------------------------------------------------------
@@ -517,20 +797,11 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TCarbonWSCustomEdit.SetPasswordChar(const ACustomEdit: TCustomEdit;
   NewChar: char);
-var
-  NeedsPassword: Boolean;
-  IsPassword: Boolean;
-  Info: TCarbonWidgetInfo;
 begin
   if not WSCheckHandleAllocated(ACustomEdit, 'SetPasswordChar') then Exit;
 
-  Info := GetCtrlWidgetInfo(Pointer(ACustomEdit.Handle));
-  IsPassword := PBoolean(Info.UserData)^;
-  NeedsPassword := (NewChar <> #0);
-
-  if IsPassword = NeedsPassword then Exit;
-  PBoolean(Info.UserData)^ := NeedsPassword;
-  RecreateWnd(ACustomEdit);
+  if TCarbonEdit(ACustomEdit.Handle).IsPassword <> (NewChar <> #0) then
+    RecreateWnd(ACustomEdit);
 end;
 
 {------------------------------------------------------------------------------
@@ -546,7 +817,7 @@ class procedure TCarbonWSCustomEdit.SetReadOnly(const ACustomEdit: TCustomEdit;
 begin
   if not WSCheckHandleAllocated(ACustomEdit, 'SetReadOnly') then Exit;
 
-  SetControlData(ControlRef(ACustomEdit.Handle), kControlEntireControl,
+  SetControlData(AsControlRef(ACustomEdit.Handle), kControlEntireControl,
     kControlEditTextLockedTag, SizeOf(Boolean), @NewReadOnly);
 end;
 
@@ -561,9 +832,9 @@ end;
 class procedure TCarbonWSCustomEdit.SetSelStart(const ACustomEdit: TCustomEdit;
   NewStart: integer);
 begin
-  if not WSCheckHandleAllocated(ACustomEdit, 'GetSelStart') then Exit;
+  if not WSCheckHandleAllocated(ACustomEdit, 'SetSelStart') then Exit;
 
-  SetEditControlSelStart(ACustomEdit.Handle, NewStart);
+  TCarbonEdit(ACustomEdit.Handle).SetSelStart(NewStart);
 end;
 
 {------------------------------------------------------------------------------
@@ -579,23 +850,7 @@ class procedure TCarbonWSCustomEdit.SetSelLength(const ACustomEdit: TCustomEdit;
 begin
   if not WSCheckHandleAllocated(ACustomEdit, 'SetSelLength') then Exit;
 
-  SetEditControlSelLength(ACustomEdit.Handle, NewLength);
-end;
-
-{------------------------------------------------------------------------------
-  Method:  TCarbonWSCustomEdit.SetText
-  Params:  AWinControl - LCL control
-           AText       - Text
-  Returns: Nothing
-
-  Sets the text of edit in Carbon interface
- ------------------------------------------------------------------------------}
-class procedure TCarbonWSCustomEdit.SetText(const AWinControl: TWinControl;
-  const AText: String);
-begin
-  if not WSCheckHandleAllocated(AWinControl, 'SetText') then Exit;
-
-  SetEditControlText(AWinControl.Handle, AText);
+  TCarbonEdit(ACustomEdit.Handle).SetSelLength(NewLength);
 end;
 
 { TCarbonWSCustomMemo }
@@ -610,42 +865,26 @@ end;
  ------------------------------------------------------------------------------}
 class function TCarbonWSCustomMemo.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
-var
-  Control: ControlRef;
-  Info: TCarbonWidgetInfo;
-  Options: FPCMacOSAll.OptionBits;
-  R: HIRect;
 begin
-  Result := 0;
-
-  Options := kTXNMonostyledTextMask or kOutputTextInUnicodeEncodingMask;
-
-  R := ParamsToHIRect(AParams);
-  if HITextViewCreate(@R, 0, Options, Control) = noErr then
-    Result := TLCLIntfHandle(Control);
-  if Result = 0 then Exit;
-
-  Info := TCarbonWidgetInfo.CreateForControl(Control, AWinControl);
-  TCarbonPrivateHandleClass(WSPrivate).RegisterEvents(Info);
+  Result := TLCLIntfHandle(TCarbonMemo.Create(AWinControl, AParams));
 end;
 
 {------------------------------------------------------------------------------
   Method:  TCarbonWSCustomMemo.GetStrings
   Params:  ACustomMemo - LCL custom memo
   Returns: Strings of memo in Carbon interface
-
-  Creates new strings of memo in Carbon interface
  ------------------------------------------------------------------------------}
 class function TCarbonWSCustomMemo.GetStrings(const ACustomMemo: TCustomMemo
   ): TStrings;
 begin
+  Result := nil;
   if not WSCheckHandleAllocated(ACustomMemo, 'GetStrings') then Exit;
 
-  Result := TCarbonMemoStrings.Create(ACustomMemo);
+  Result := TCarbonMemoStrings.Create(TCarbonMemo(ACustomMemo.Handle));
 end;
 
 {------------------------------------------------------------------------------
-  Method:  TCarbonWSCustomMemo.GetStrings
+  Method:  TCarbonWSCustomMemo.AppendText
   Params:  ACustomMemo - LCL custom memo
            AText       - Text to append
   Returns: Nothing
@@ -661,30 +900,8 @@ begin
 
   if Length(AText) > 0 then
   begin
-    GetText(ACustomMemo, S);
-    S := S + AText;
-    SetText(ACustomMemo, S);
-  end;
-end;
-
-{------------------------------------------------------------------------------
-  Method:  TCarbonWSCustomMemo.SetColor
-  Params:  AWinControl - LCL control
-  Returns: Nothing
-
-  Sets the color of memo in Carbon interface according to the LCL control
- ------------------------------------------------------------------------------}
-class procedure TCarbonWSCustomMemo.SetColor(const AWinControl: TWinControl);
-var
-  AColor: CGColorRef;
-begin
-  if not WSCheckHandleAllocated(AWinControl, 'SetColor') then Exit;
-  
-  AColor := CreateCGColor(AWinControl.Color);
-  try
-    HITextViewSetBackgroundColor(HIViewRef(AWinControl.Handle), AColor);
-  finally
-    CGColorRelease(AColor);
+    if TCarbonMemo(ACustomMemo.Handle).GetText(S) then
+      TCarbonMemo(ACustomMemo.Handle).SetText(S + AText);
   end;
 end;
 
@@ -701,11 +918,27 @@ class procedure TCarbonWSCustomMemo.SetPasswordChar(
 begin
   if not WSCheckHandleAllocated(ACustomEdit, 'SetPasswordChar') then Exit;
 
-  TXNEchoMode(HITextViewGetTXNObject(HIViewRef(ACustomEdit.Handle)), UniChar(NewChar),
-    CreateTextEncoding(kTextEncodingMacRoman, kTextEncodingDefaultVariant,
-    kUnicodeUTF8Format), NewChar <> #0);
+  TXNEchoMode(HITextViewGetTXNObject(AsControlRef(ACustomEdit.Handle)),
+    UniChar(NewChar), CreateTextEncoding(kTextEncodingUnicodeDefault,
+    kUnicodeNoSubset, kUnicodeUTF8Format), NewChar <> #0);
     
-  InvalidateCarbonControl(ACustomEdit.Handle);
+  TCarbonWidget(ACustomEdit.Handle).Invalidate;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWSCustomMemo.SetScrollbars
+  Params:  ACustomEdit   - LCL custom memo
+           NewScrollbars - New scrollbars style
+  Returns: Nothing
+
+  Sets the new scrollbars style of memo in Carbon interface
+ ------------------------------------------------------------------------------}
+class procedure TCarbonWSCustomMemo.SetScrollbars(
+  const ACustomMemo: TCustomMemo; const NewScrollbars: TScrollStyle);
+begin
+  if not WSCheckHandleAllocated(ACustomMemo, 'SetScrollbars') then Exit;
+  
+  TCarbonMemo(ACustomMemo.Handle).ScrollBars := NewScrollbars;
 end;
 
 {------------------------------------------------------------------------------
@@ -720,18 +953,18 @@ class procedure TCarbonWSCustomMemo.SetReadOnly(const ACustomEdit: TCustomEdit;
   NewReadOnly: boolean);
 var
   Tag: TXNControlTag;
-  Data: Boolean;
+  Data: TXNControlData;
 begin
   if not WSCheckHandleAllocated(ACustomEdit, 'SetReadOnly') then Exit;
 
   Tag := kTXNNoUserIOTag;
   if NewReadOnly then
-    Data := kTXNReadOnly
+    Data.uValue := UInt32(kTXNReadOnly)
   else
-    Data := kTXNReadWrite;
+    Data.uValue := UInt32(kTXNReadWrite);
 
-  TXNSetTXNObjectControls(HITextViewGetTXNObject(HIViewRef(ACustomEdit.Handle)),
-    False, 1, @Tag, @Data);
+  TXNSetTXNObjectControls(HITextViewGetTXNObject(
+    AsControlRef(ACustomEdit.Handle)), False, 1, @Tag, @Data);
 end;
 
 {------------------------------------------------------------------------------
@@ -746,18 +979,20 @@ class procedure TCarbonWSCustomMemo.SetWordWrap(const ACustomMemo: TCustomMemo;
   const NewWordWrap: boolean);
 var
   Tag: TXNControlTag;
-  Data: Boolean;
+  Data: TXNControlData;
 begin
   if not WSCheckHandleAllocated(ACustomMemo, 'SetWordWrap') then Exit;
 
   Tag := kTXNWordWrapStateTag;
   if NewWordWrap then
-    Data := kTXNAutoWrap
+    Data.uValue := UInt32(kTXNAutoWrap)
   else
-    Data := kTXNNoAutoWrap;
+    Data.uValue := UInt32(kTXNNoAutoWrap);
 
-  TXNSetTXNObjectControls(HITextViewGetTXNObject(HIViewRef(ACustomMemo.Handle)),
-    False, 1, @Tag, @Data);
+  TXNSetTXNObjectControls(HITextViewGetTXNObject(
+    AsControlRef(ACustomMemo.Handle)), False, 1, @Tag, @Data);
+    
+  TCarbonWidget(ACustomMemo.Handle).Invalidate;
 end;
 
 { TCarbonWSCustomCheckBox }
@@ -772,33 +1007,8 @@ end;
  ------------------------------------------------------------------------------}
 class function TCarbonWSCustomCheckBox.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
-var
-  Control: ControlRef;
-  CFString: CFStringRef;
-  Info: TCarbonWidgetInfo;
-  Value: UInt32;
 begin
-  Result := 0;
-  
-  case (AWinControl as TCustomCheckBox).State of
-    cbChecked  : Value := kControlCheckBoxCheckedValue;
-    cbUnChecked: Value := kControlCheckBoxUncheckedValue;
-    cbGrayed   : Value := kControlCheckBoxMixedValue;
-  end;
-
-  CreateCarbonString(AParams.Caption, CFString);
-  try
-    if CreateCheckBoxControl(GetTopParentWindow(AWinControl),
-      ParamsToCarbonRect(AParams), CFString, Value, True, Control) = noErr
-    then
-      Result := TLCLIntfHandle(Control);
-  finally
-    FreeCarbonString(CFString);
-  end;
-  if Result = 0 then Exit;
-
-  Info := TCarbonWidgetInfo.CreateForControl(Control, AWinControl);
-  TCarbonPrivateHandleClass(WSPrivate).RegisterEvents(Info);
+  Result := TLCLIntfHandle(TCarbonCheckBox.Create(AWinControl, AParams));
 end;
 
 {------------------------------------------------------------------------------
@@ -811,9 +1021,10 @@ end;
 class function TCarbonWSCustomCheckBox.RetrieveState(
   const ACustomCheckBox: TCustomCheckBox): TCheckBoxState;
 begin
+  Result := cbUnchecked;
   if not WSCheckHandleAllocated(ACustomCheckBox, 'RetrieveState') then Exit;
 
-  case GetControl32BitValue(ControlRef(ACustomCheckBox.Handle)) of
+  case GetControl32BitValue(AsControlRef(ACustomCheckBox.Handle)) of
     kControlCheckBoxCheckedValue   : Result := cbChecked;
     kControlCheckBoxUncheckedValue : Result := cbUnchecked;
     kControlCheckBoxMixedValue     : Result := cbGrayed;
@@ -823,7 +1034,7 @@ end;
 {------------------------------------------------------------------------------
   Method:  TCarbonWSCustomCheckBox.SetState
   Params:  ACustomCheckBox - LCL custom check box
-          NewState         - New state of check box
+           NewState        - New state of check box
   Returns: Nothing
 
   Sets the new state of check box in Carbon interface
@@ -840,7 +1051,7 @@ begin
     cbUnChecked: Value := kControlCheckBoxUncheckedValue;
     cbGrayed   : Value := kControlCheckBoxMixedValue;
   end;
-  SetControl32BitValue(ControlRef(ACustomCheckBox.Handle), Value);
+  SetControl32BitValue(AsControlRef(ACustomCheckBox.Handle), Value);
 end;
 
 
@@ -857,36 +1068,8 @@ end;
  ------------------------------------------------------------------------------}
 class function TCarbonWSToggleBox.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
-var
-  Control: ControlRef;
-  CFString: CFStringRef;
-  Info: TCarbonWidgetInfo;
-  Value: UInt32;
 begin
-  Result := 0;
-
-  case (AWinControl as TToggleBox).State of
-    cbChecked  : Value := kControlCheckBoxCheckedValue;
-    cbUnChecked: Value := kControlCheckBoxUncheckedValue;
-    cbGrayed   : Value := kControlCheckBoxMixedValue;
-  end;
-
-  CreateCarbonString(AParams.Caption, CFString);
-  try
-    if CreateBevelButtonControl(GetTopParentWindow(AWinControl),
-      ParamsToCarbonRect(AParams), CFString, kControlBevelButtonNormalBevel,
-      kControlBehaviorToggles, nil, 0, 0, 0, Control) = noErr
-    then
-      Result := TLCLIntfHandle(Control);
-  finally
-    FreeCarbonString(CFString);
-  end;
-  if Result = 0 then Exit;
-  
-  SetControl32BitValue(Control, Value);
-
-  Info := TCarbonWidgetInfo.CreateForControl(Control, AWinControl);
-  TCarbonPrivateHandleClass(WSPrivate).RegisterEvents(Info);
+  Result := TLCLIntfHandle(TCarbonToggleBox.Create(AWinControl, AParams));
 end;
 
 { TCarbonWSRadioButton }
@@ -901,33 +1084,8 @@ end;
  ------------------------------------------------------------------------------}
 class function TCarbonWSRadioButton.CreateHandle(
   const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
-var
-  Control: ControlRef;
-  CFString: CFStringRef;
-  Info: TCarbonWidgetInfo;
-  Value: UInt32;
 begin
-  Result := 0;
-
-  case (AWinControl as TRadioButton).State of
-    cbChecked  : Value := kControlCheckBoxCheckedValue;
-    cbUnChecked: Value := kControlCheckBoxUncheckedValue;
-    cbGrayed   : Value := kControlCheckBoxMixedValue;
-  end;
-
-  CreateCarbonString(AParams.Caption, CFString);
-  try
-    if CreateRadioButtonControl(GetTopParentWindow(AWinControl),
-      ParamsToCarbonRect(AParams), CFString, Value, True, Control) = noErr
-    then
-      Result := TLCLIntfHandle(Control);
-  finally
-    FreeCarbonString(CFString);
-  end;
-  if Result = 0 then Exit;
-
-  Info := TCarbonWidgetInfo.CreateForControl(Control, AWinControl);
-  TCarbonPrivateHandleClass(WSPrivate).RegisterEvents(Info);
+  Result := TLCLIntfHandle(TCarbonRadioButton.Create(AWinControl, AParams));
 end;
 
 { TCarbonWSCustomStaticText }
@@ -942,39 +1100,8 @@ end;
  ------------------------------------------------------------------------------}
 class function TCarbonWSCustomStaticText.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
-var
-  Control: ControlRef;
-  CFString: CFStringRef;
-  Info: TCarbonWidgetInfo;
-  MultiLine: Boolean = True;
-  FontStyle: ControlFontStyleRec;
 begin
-  Result := 0;
-
-  FontStyle.flags := kControlUseJustMask;
-  case (AWinControl as TCustomStaticText).Alignment of
-  taLeftJustify: FontStyle.just := teFlushLeft;
-  taRightJustify: FontStyle.just := teFlushRight;
-  taCenter: FontStyle.just := teCenter;
-  end;
-
-  CreateCarbonString(AParams.Caption, CFString);
-  try
-    if CreateStaticTextControl(GetTopParentWindow(AWinControl),
-      ParamsToCarbonRect(AParams), CFString, @FontStyle, Control) = noErr
-    then
-      Result := TLCLIntfHandle(Control);
-  finally
-    FreeCarbonString(CFString);
-  end;
-  if Result = 0 then Exit;
-
-  // switch on multi-line attribute
-  SetControlData(Control, kControlEntireControl, kControlStaticTextIsMultilineTag,
-    SizeOf(Boolean), @MultiLine);
-    
-  Info := TCarbonWidgetInfo.CreateForControl(Control, AWinControl);
-  TCarbonPrivateHandleClass(WSPrivate).RegisterEvents(Info);
+  Result := TLCLIntfHandle(TCarbonStaticText.Create(AWinControl, AParams));
 end;
 
 {------------------------------------------------------------------------------
@@ -993,7 +1120,7 @@ begin
   if not WSCheckHandleAllocated(ACustomStaticText, 'SetAlignment') then Exit;
 
   // get static text font style and change only justification
-  GetControlData(ControlRef(ACustomStaticText.Handle), kControlEntireControl,
+  GetControlData(AsControlRef(ACustomStaticText.Handle), kControlEntireControl,
     kControlStaticTextStyleTag, SizeOf(FontStyle), @FontStyle, nil);
 
   FontStyle.flags := FontStyle.flags or kControlUseJustMask;
@@ -1003,188 +1130,10 @@ begin
   taCenter      : FontStyle.just := teCenter;
   end;
 
-  SetControlData(ControlRef(ACustomStaticText.Handle), kControlEntireControl,
+  SetControlData(AsControlRef(ACustomStaticText.Handle), kControlEntireControl,
     kControlStaticTextStyleTag, SizeOf(FontStyle), @FontStyle);
   // invalidate static text
-  InvalidateCarbonControl(ACustomStaticText.Handle);
-end;
-
-{ TCarbonMemoStrings }
-
-{------------------------------------------------------------------------------
-  Method:  TCarbonMemoStrings.InternalUpdate
-  Returns: Nothing
-
-  Updates the internal strings from Carbon interface
- ------------------------------------------------------------------------------}
-procedure TCarbonMemoStrings.InternalUpdate;
-var
-  S: String;
-begin
-  S := '';
-  //DebugLn('TCarbonMemoStrings.InternalUpdate ' + FOwner.Name);
-  if GetEditControlText(FOwner.Handle, S) then
-    FStringList.Text := S;
-  
-  FExternalChanged := False;
-end;
-
-{------------------------------------------------------------------------------
-  Method:  TCarbonMemoStrings.ExternalUpdate
-  Returns: Nothing
-
-  Updates the strings in Carbon interface from internal
- ------------------------------------------------------------------------------}
-procedure TCarbonMemoStrings.ExternalUpdate;
-begin
-  //DebugLn('TCarbonMemoStrings.ExternalUpdate ' + FOwner.Name + ' Text: ' + FStringList.Text);
-  SetEditControlText(FOwner.Handle, FStringList.Text);
-end;
-
-{------------------------------------------------------------------------------
-  Method:  TCarbonMemoStrings.GetTextStr
-  Returns: Text of Carbon strings
-
-  Returns the text
- ------------------------------------------------------------------------------}
-function TCarbonMemoStrings.GetTextStr: string;
-begin
-  if FExternalChanged then InternalUpdate;
-  Result := FStringList.Text;
-end;
-
-{------------------------------------------------------------------------------
-  Method:  TCarbonMemoStrings.GetCount
-  Returns: Number of lines
-
-  Returns the number of lines
- ------------------------------------------------------------------------------}
-function TCarbonMemoStrings.GetCount: Integer;
-begin
-  if FExternalChanged then InternalUpdate;
-  Result := FStringList.Count;
-end;
-
-{------------------------------------------------------------------------------
-  Method:  TCarbonMemoStrings.Get
-  Params:  Index - Line index
-  Returns: Text on line
-
-  Returns the text on line with the specified index
- ------------------------------------------------------------------------------}
-function TCarbonMemoStrings.Get(Index: Integer): string;
-begin
-  if FExternalChanged then InternalUpdate;
-  Result := FStringList[Index];
-end;
-
-{------------------------------------------------------------------------------
-  Method:  TCarbonMemoStrings.Create
-  Params:  AOwner     - LCL owner of strings
-  Returns: Nothing
-
-  Creates new strings from Carbon memo strings
- ------------------------------------------------------------------------------}
-constructor TCarbonMemoStrings.Create(AOwner: TWinControl);
-begin
-  FOwner := AOwner;
-  FStringList := TStringList.Create;
-end;
-
-{------------------------------------------------------------------------------
-  Method:  TCarbonMemoStrings.Destroy
-  Returns: Nothing
-
-  Releases strings from Carbon memo strings
- ------------------------------------------------------------------------------}
-destructor TCarbonMemoStrings.Destroy;
-begin
-  FStringList.Free;
-
-  inherited Destroy;
-end;
-
-{------------------------------------------------------------------------------
-  Method:  TCarbonMemoStrings.Assign
-  Params:  Source - Object to assing
-  Returns: Nothing
-
-  Assings strings object
- ------------------------------------------------------------------------------}
-procedure TCarbonMemoStrings.Assign(Source: TPersistent);
-begin
-  if (Source = Self) or (Source = nil) then Exit;
-  if Source is TStrings then
-  begin
-    FStringList.Clear;
-    FStringList.Text := TStrings(Source).Text;
-    ExternalUpdate;
-  end
-  else
-    inherited Assign(Source);
-end;
-
-{------------------------------------------------------------------------------
-  Method:  TCarbonMemoStrings.Clear
-  Returns: Nothing
-
-  Clears strings
- ------------------------------------------------------------------------------}
-procedure TCarbonMemoStrings.Clear;
-begin
-  FStringList.Clear;
-  ExternalUpdate;
-end;
-
-{------------------------------------------------------------------------------
-  Method:  TCarbonMemoStrings.Delete
-  Params:  Index - Line index
-  Returns: Nothing
-
-  Deletes line with the specified index from strings
- ------------------------------------------------------------------------------}
-procedure TCarbonMemoStrings.Delete(Index: Integer);
-begin
-  FStringList.Delete(Index);
-  ExternalUpdate;
-end;
-
-{------------------------------------------------------------------------------
-  Method:  TCarbonMemoStrings.Insert
-  Params:  Index - Line index
-           S     - Text to insert
-  Returns: Nothing
-
-  Inserts the text on line with the specified index
- ------------------------------------------------------------------------------}
-procedure TCarbonMemoStrings.Insert(Index: Integer; const S: string);
-begin
-  FStringList.Insert(Index, S);
-  ExternalUpdate;
-end;
-
-{------------------------------------------------------------------------------
-  Method:  TCarbonMemoStrings.SetText
-  Params:  TheText - Text to set
-  Returns: Nothing
-
-  Sets the text of strings
- ------------------------------------------------------------------------------}
-procedure TCarbonMemoStrings.SetText(TheText: PChar);
-begin
-  FStringList.Text := TheText;
-  ExternalUpdate;
-end;
-
-{------------------------------------------------------------------------------
-  Method:  TCarbonMemoStrings.ExternalChanged
-  Returns: Nothing
-
-  Notifies that strings object in Carbon interface has changed
- ------------------------------------------------------------------------------}
-procedure TCarbonMemoStrings.ExternalChanged;
-begin
-  FExternalChanged := True;
+  TCarbonWidget(ACustomStaticText.Handle).Invalidate;
 end;
 
 initialization
@@ -1195,24 +1144,24 @@ initialization
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
-  RegisterWSComponent(TScrollBar, TCarbonWSScrollBar, TCarbonPrivateValueControl);
+  RegisterWSComponent(TScrollBar, TCarbonWSScrollBar);
   RegisterWSComponent(TCustomGroupBox, TCarbonWSCustomGroupBox);
 //  RegisterWSComponent(TGroupBox, TCarbonWSGroupBox);
-//  RegisterWSComponent(TCustomComboBox, TCarbonWSCustomComboBox);
+  RegisterWSComponent(TCustomComboBox, TCarbonWSCustomComboBox);
 //  RegisterWSComponent(TComboBox, TCarbonWSComboBox);
-//  RegisterWSComponent(TCustomListBox, TCarbonWSCustomListBox);
+  RegisterWSComponent(TCustomListBox, TCarbonWSCustomListBox);
 //  RegisterWSComponent(TListBox, TCarbonWSListBox);
-  RegisterWSComponent(TCustomEdit, TCarbonWSCustomEdit, TCarbonPrivateEdit);
-  RegisterWSComponent(TCustomMemo, TCarbonWSCustomMemo, TCarbonPrivateEdit);
+  RegisterWSComponent(TCustomEdit, TCarbonWSCustomEdit);
+  RegisterWSComponent(TCustomMemo, TCarbonWSCustomMemo);
 //  RegisterWSComponent(TEdit, TCarbonWSEdit);
 //  RegisterWSComponent(TMemo, TCarbonWSMemo);
 //  RegisterWSComponent(TCustomLabel, TCarbonWSCustomLabel);
 //  RegisterWSComponent(TLabel, TCarbonWSLabel);
 //  RegisterWSComponent(TButtonControl, TCarbonWSButtonControl);
-  RegisterWSComponent(TCustomCheckBox, TCarbonWSCustomCheckBox, TCarbonPrivateValueControl);
+  RegisterWSComponent(TCustomCheckBox, TCarbonWSCustomCheckBox);
 //  RegisterWSComponent(TCheckBox, TCarbonWSCheckBox);
-  RegisterWSComponent(TToggleBox, TCarbonWSToggleBox, TCarbonPrivateValueControl);
-  RegisterWSComponent(TRadioButton, TCarbonWSRadioButton, TCarbonPrivateValueControl);
+  RegisterWSComponent(TToggleBox, TCarbonWSToggleBox);
+  RegisterWSComponent(TRadioButton, TCarbonWSRadioButton);
   RegisterWSComponent(TCustomStaticText, TCarbonWSCustomStaticText);
 //  RegisterWSComponent(TStaticText, TCarbonWSStaticText);
 ////////////////////////////////////////////////////

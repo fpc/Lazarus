@@ -54,7 +54,7 @@ type
     FTerminating: Boolean;
     FMainEventQueue: EventQueueRef;
     FTimerMap: TMap; // the map contains all installed timers
-    FCurrentCursor: hCursor;
+    FCurrentCursor: HCURSOR;
   protected
     procedure PassCmdLineOptions; override;
     procedure SendCheckSynchronizeMessage;
@@ -82,10 +82,6 @@ type
     function CreateComponent(Sender : TObject): THandle; override;
     function CreateTimer(Interval: integer; TimerFunc: TFNTimerProc) : THandle; override;
     function DestroyTimer(TimerHandle: THandle) : boolean; override;
-    
-    // device contexts
-    function IsValidDC(const DC: HDC): Boolean; virtual;
-    function IsValidGDIObject(const GDIObject: HGDIOBJ): Boolean; virtual;
 
     // the winapi compatibility methods
     {$I carbonwinapih.inc}
@@ -133,7 +129,7 @@ uses
   CarbonWSStdCtrls,
 // CarbonWSToolwin,
 ////////////////////////////////////////////////////
-  CarbonDef, CarbonProc,
+  CarbonDef, CarbonPrivate, CarbonProc, CarbonCanvas, CarbonGDIObjects,
   Buttons, StdCtrls, PairSplitter, ComCtrls, CListBox, Calendar, Arrow,
   Spin, CommCtrl, ExtCtrls, FileCtrl, LResources;
 

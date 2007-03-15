@@ -32,7 +32,8 @@ interface
 
 uses
   WSLCLClasses, LCLClasses,
-  LCLType, LCLProc, Math, SysUtils, Classes, Graphics, Controls,
+  LCLType, LMessages, LCLMessageGlue, LCLProc,
+  Types, SysUtils, Math, Classes, Graphics, Controls,
   FPCMacOSAll, CarbonUtils;
 
 const
@@ -43,46 +44,76 @@ var
   WIDGETINFO_FOURCC: FourCharCode; // = 'WInf';
 
 type
-  TCarbonControlContext = class;
 
-  TCarbonWidgetType = (cwtWindowRef, cwtControlRef, cwtUnknown);
+  { TCarbonContext }
 
-  (* Info needed by the API of a HWND (=Widget) *)
+  TCarbonContext = class
+  public
+    CGContext: CGContextRef;
+    constructor Create;
+    procedure Reset; virtual; abstract;
+  end;
 
-  { TCarbonWidgetInfo }
-  TCarbonWidgetInfo = class
+  { TCarbonWidget }
+  
+  TCarbonWidget = class
   private
     FProperties: TStringList;
     function GetProperty(AIndex: String): Pointer;
     procedure SetProperty(AIndex: String; const AValue: Pointer);
+  protected
+    procedure RegisterEvents; virtual; abstract;
+    procedure UnregisterEvents; virtual; abstract;
+    procedure CreateWidget(const AParams: TCreateParams); virtual; abstract;
+    procedure DestroyWidget; virtual; abstract;
+    function GetContent: ControlRef; virtual; abstract;
   public
-    LCLObject: TObject;               // The object which created this widget
-    CGContext: CGContextRef;          // Quartz 2D CGContext filled on paint event
-    Context: TCarbonControlContext;   // Carbon control context
-    Widget: Pointer;                  // Reference to the Carbon window or control
-    WidgetType: TCarbonWidgetType;
-    WSClass: TWSLCLComponentClass;    // The Widgetsetclass for this info
-    DataOwner: Boolean;               // Set if the UserData should be freed when the info is freed
-    UserData: Pointer;
+    LCLObject: TWinControl;  // LCL control which created this widget
+    Context: TCarbonContext; // Carbon content area context
+    Widget: Pointer;         // Reference to the Carbon window or control
   public
-    constructor Create(AWidget: Pointer; AObject: TLCLComponent; TheType: TCarbonWidgetType);
-    constructor CreateForControl(AWidget: Pointer; AObject: TLCLComponent);
-    constructor CreateForWindow(AWidget: Pointer; AObject: TLCLComponent);
-    
+    constructor Create(const AObject: TWinControl; const AParams: TCreateParams);
     destructor Destroy; override;
+    function GetClientRect(var ARect: TRect): Boolean; virtual; abstract;
+    function GetPreferredSize: TPoint; virtual;
+    function GetMousePos: TPoint; virtual; abstract;
+    function GetTopParentWindow: WindowRef; virtual; abstract;
+    procedure Invalidate(Rect: PRect = nil); virtual; abstract;
+    function IsEnabled: Boolean; virtual; abstract;
+    function IsVisible: Boolean; virtual; abstract;
+    function Enable(AEnable: Boolean): Boolean; virtual; abstract;
+    
+    function GetBounds(var ARect: TRect): Boolean; virtual; abstract;
+    function GetScreenBounds(var ARect: TRect): Boolean; virtual; abstract;
+    function SetBounds(const ARect: TRect): Boolean; virtual; abstract;
+    
+    procedure SetColor(const AColor: TColor); virtual; abstract;
+    procedure SetFont(const AFont: TFont); virtual; abstract;
+    procedure ShowHide(AVisible: Boolean); virtual; abstract;
+    
+    function GetText(var S: String): Boolean; virtual; abstract;
+    function SetText(const S: String): Boolean; virtual; abstract;
+    function Update: Boolean; virtual; abstract;
   public
+  { Content:
+     = widget in controls without special client control
+     - client area control of control or window
+     - origin of local coordinates
+     - area for embedding child controls
+     - processes track and draw event                  }
+    property Content: ControlRef read GetContent;
     property Properties[AIndex: String]: Pointer read GetProperty write SetProperty;
   end;
   
 type
   TCarbonWSEventHandlerProc = function (ANextHandler: EventHandlerCallRef;
     AEvent: EventRef;
-    AInfo: TCarbonWidgetInfo): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
+    AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
 
 type
   TEventInt = packed record
-    case integer of
-    1: (Chars: array[0..4] of char);
+    case Integer of
+    1: (Chars: array[0..4] of Char);
     2: (Int: FPCMacOSAll.UInt32);
   end;
   
@@ -90,295 +121,31 @@ const
   LCLCarbonEventClass    = 'Laz ';
   LCLCarbonEventKindWake = 'Wake';
   LCLCarbonEventKindMain = 'Main';
-  
-  kThemeUndefCursor = ThemeCursor(-1); // undefined mac theme cursor
-  
-  CursorToThemeCursor: array[crLow..crHigh] of ThemeCursor =
-    ({crSizeSE      } kThemeResizeLeftCursor, {!!}
-     {crSizeS       } kThemeResizeLeftCursor, {!!}
-     {crSizeSW      } kThemeResizeRightCursor, {!!}
-     {crSizeE       } kThemeResizeLeftCursor,
-     {crSizeW       } kThemeResizeRightCursor,
-     {crSizeNE      } kThemeResizeLeftCursor, {!!}
-     {crSizeN       } kThemeResizeRightCursor, {!!}
-     {crSizeNW      } kThemeResizeRightCursor, {!!}
-     {crSizeAll     } kThemeUndefCursor, // will be loaded from resource
-     {crHandPoint   } kThemePointingHandCursor,
-     {crHelp        } kThemeContextualMenuArrowCursor, {!!}
-     {crAppStart    } kThemeSpinningCursor,
-     {crNo          } kThemeUndefCursor,
-     {crSQLWait     } kThemeUndefCursor, // will be loaded from resource
-     {crMultiDrag   } kThemeUndefCursor, // will be loaded from resource
-     {crVSplit      } kThemeResizeUpDownCursor,
-     {crHSplit      } kThemeResizeLeftRightCursor,
-     {crNoDrop      } kThemeNotAllowedCursor, // will be loaded from resource
-     {crDrag        } kThemeCopyArrowCursor,
-     {crHourGlass   } kThemeSpinningCursor,
-     {crUpArrow     } kThemeArrowCursor, {!!}
-     {crSizeWE      } kThemeResizeLeftRightCursor,
-     {crSizeNWSE    } kThemeResizeLeftRightCursor, {!!}
-     {crSizeNS      } kThemeResizeLeftRightCursor, {!!}
-     {crSizeNESW    } kThemeResizeLeftRightCursor, {!!}
-     {undefined     } kThemeArrowCursor, {!!}
-     {crIBeam       } kThemeIBeamCursor,
-     {crCross       } kThemeCrossCursor,
-     {crArrow       } kThemeArrowCursor,
-     {crNone        } kThemeArrowCursor,
-     {crDefault     } kThemeArrowCursor);
-  
-type
-  TCarbonDeviceContext = class;
-
-  { TCarbonGDIObject }
-
-  TCarbonGDIObject = class
-  end;
-
-  { TCarbonFont }
-
-  TCarbonFont = class(TCarbonGDIObject)
-  private
-    FStyle: ATSUStyle;
-  public
-    constructor Create; // default system font
-    constructor Create(ALogFont: TLogFont; AFaceName: String);
-    destructor Destroy; override;
-  public
-    property Style: ATSUStyle read FStyle;
-  end;
-
-  { TCarbonColorObject }
-
-  TCarbonColorObject = class(TCarbonGDIObject)
-  private
-    FR, FG, FB: Byte;
-    FA: Boolean; // alpha: True - solid, False - clear
-  public
-    constructor Create(const AColor: TColor; ASolid: Boolean);
-    procedure SetColor(const AColor: TColor; ASolid: Boolean);
-    procedure GetRGBA(AROP2: Integer; out AR, AG, AB, AA: Single);
-  end;
-
-  { TCarbonBrush }
-
-  TCarbonBrush = class(TCarbonColorObject)
-  private
-    FCGPattern: CGPatternRef; // TODO
-  public
-    constructor Create; // create default brush
-    constructor Create(ALogBrush: TLogBrush);
-    procedure Apply(ADC: TCarbonDeviceContext; UseROP2: Boolean = True);
-  end;
-
-const
-  CarbonDashStyle: Array [0..1] of Single = (4, 2);
-  CarbonDotStyle: Array [0..1] of Single = (2, 2);
-  CarbonDashDotStyle: Array [0..3] of Single = (4, 2, 2, 2);
-  CarbonDashDotDotStyle: Array [0..5] of Single = (4, 2, 2, 2, 2, 2);
-
-type
-
-  { TCarbonPen }
-
-  TCarbonPen = class(TCarbonColorObject)
-  private
-    FWidth: Integer;
-    FStyle: LongWord;
-   public
-    constructor Create; // create default pen
-    constructor Create(ALogPen: TLogPen);
-    procedure Apply(ADC: TCarbonDeviceContext; UseROP2: Boolean = True);
-  end;
-  
-  { TCarbonBitmap }
-
-  TCarbonBitmap = class(TCarbonGDIObject)
-  private
-    FData: Pointer;
-    FDataOwner: Boolean;
-    FDataSize: Integer;
-    FCGDataProvider: CGDataProviderRef;
-    FCGImage: CGImageRef;
-    function GetBitsPerComponent: Integer;
-    function GetBytesPerRow: Integer;
-    function GetHeight: Integer;
-    function GetWidth: Integer;
-  public
-    constructor Create(AWidth, AHeight, ABitsPerPixel: Integer; AData: Pointer);
-    destructor Destroy; override;
-  public
-    property BitsPerComponent: Integer read GetBitsPerComponent;
-    property BytesPerRow: Integer read GetBytesPerRow;
-    property CGImage: CGImageRef read FCGImage;
-    property Data: Pointer read FData;
-    property DataSize: Integer read FDataSize;
-    property Width: Integer read GetWidth;
-    property Height: Integer read GetHeight;
-  end;
-  
-  { TCarbonDeviceContext }
-
-  TCarbonDeviceContext = class
-  private
-    FCurrentFont: TCarbonFont;
-    FCurrentBrush: TCarbonBrush;
-    FCurrentPen: TCarbonPen;
-
-    FBkColor: TColor;
-    FBkMode: Integer;
-    FBkBrush: TCarbonBrush;
-
-    FTextColor: TColor;
-    FTextPen: TCarbonPen;
-
-    FROP2: Integer;
-    FPenPos: TPoint;
-    
-    procedure SetBkColor(const AValue: TColor);
-    procedure SetBkMode(const AValue: Integer);
-    procedure SetCurrentBrush(const AValue: TCarbonBrush);
-    procedure SetCurrentFont(const AValue: TCarbonFont);
-    procedure SetCurrentPen(const AValue: TCarbonPen);
-    procedure SetROP2(const AValue: Integer);
-    procedure SetTextColor(const AValue: TColor);
-  protected
-    function GetCGContext: CGContextRef; virtual; abstract;
-    function GetSize: TPoint; virtual; abstract;
-  public
-    constructor Create;
-    destructor Destroy; override;
-    
-    procedure Reset; virtual;
-    procedure Update; virtual;
-  public
-    property CGContext: CGContextRef read GetCGContext;
-    property Size: TPoint read GetSize;
-    
-    property CurrentFont: TCarbonFont read FCurrentFont write SetCurrentFont;
-    property CurrentBrush: TCarbonBrush read FCurrentBrush write SetCurrentBrush;
-    property CurrentPen: TCarbonPen read FCurrentPen write SetCurrentPen;
-    
-    property BkColor: TColor read FBkColor write SetBkColor;
-    property BkMode: Integer read FBkMode write SetBkMode;
-    property BkBrush: TCarbonBrush read FBkBrush;
-
-    property TextColor: TColor read FTextColor write SetTextColor;
-    property TextPen: TCarbonPen read FTextPen;
-
-    property ROP2: Integer read FROP2 write SetROP2;
-    property PenPos: TPoint read FPenPos write FPenPos;
-  end;
-  
-  { TCarbonScreenContext }
-
-  TCarbonScreenContext = class(TCarbonDeviceContext)
-  protected
-    function GetCGContext: CGContextRef; override; // TODO
-    function GetSize: TPoint; override;
-  public
-    constructor Create;
-  end;
-
-  { TCarbonControlContext }
-
-  TCarbonControlContext = class(TCarbonDeviceContext)
-  private
-    FInfo: TCarbonWidgetInfo;    // owner
-  protected
-    function GetCGContext: CGContextRef; override;
-    function GetSize: TPoint; override;
-  public
-    constructor Create(AInfo: TCarbonWidgetInfo);
-  end;
-  
-  { TCarbonBitmapContext }
-
-  TCarbonBitmapContext = class(TCarbonDeviceContext)
-  private
-    FBitmap: TCarbonBitmap;
-    FBitmapContext: CGContextRef;
-    procedure SetBitmap(const AValue: TCarbonBitmap);
-  protected
-    function GetCGContext: CGContextRef; override;
-    function GetSize: TPoint; override;
-  public
-    constructor Create;
-    destructor Destroy; override;
-  public
-    property Bitmap: TCarbonBitmap read FBitmap write SetBitmap;
-  end;
-  // TODO: TCarbonPrinterContext
-  
-  TCarbonCursorType =
-  (
-    cctUnknown,  // undefined
-    cctImage,    // from image
-    cctTheme,    // theme cursor
-    cctAnimated, // animated theme cursor
-    cctWait      // special wait cursor
-  );
-  { TCarbonCursor }
-  
-  TCarbonCursor = class(TCarbonGDIObject)
-  private
-    // TODO: cursor from image
-
-    FCursorType: TCarbonCursorType;
-    FThemeCursor: ThemeCursor;
-    FAnimationStep: Integer;
-    FTaskID: MPTaskID;
-
-    procedure CreateThread;
-    procedure DestroyThread;
-  public
-    constructor Create;
-    constructor CreateFromInfo(AInfo: PIconInfo);
-    constructor CreateThemed(AThemeCursor: ThemeCursor);
-    destructor Destroy; override;
-
-    procedure Install;
-    procedure UnInstall;
-    function StepAnimation: Boolean;
-    property CursorType: TCarbonCursorType read FCursorType;
-  end;
-  
-var
-  DefaultTextStyle: ATSUStyle; // default Carbon text style
-  RGBColorSpace: CGColorSpaceRef; // global RGB color space
-  
-  StockSystemFont: TCarbonFont;
-  StockNullBrush: TCarbonBrush;
-  
 
 implementation
 
 uses
-  CarbonProc;
+  CarbonProc, CarbonCanvas;
   
-const
-  kThemeCursorAnimationDelay = 70;
-  
-function AnimationCursorHandler(parameter: UnivPtr): OSStatus; MWPascal;
-begin
-  Result := noErr;
-  while true do
-  begin
-    if TCarbonCursor(parameter).StepAnimation then
-      Sleep(kThemeCursorAnimationDelay) else
-      break;
-  end;
-end;
+{ TCarbonContext }
 
-{ TCarbonWidgetInfo }
+constructor TCarbonContext.Create;
+begin
+  inherited;
+
+  CGContext := nil;
+end;
+  
+{ TCarbonWidget }
 
 {------------------------------------------------------------------------------
-  Method:  TCarbonWidgetInfo.GetProperty
+  Method:  TCarbonWidget.GetProperty
   Params:  AIndex - Property name
   Returns: Property data, nil if the property is not listed
 
   Returns the specified property data or nil if the property is not listed
  ------------------------------------------------------------------------------}
-function TCarbonWidgetInfo.GetProperty(AIndex: String): Pointer;
+function TCarbonWidget.GetProperty(AIndex: String): Pointer;
 var
   I: Integer;
 begin
@@ -396,14 +163,14 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method:  TCarbonWidgetInfo.SetProperty
+  Method:  TCarbonWidget.SetProperty
   Params:  AIndex - Property name
            AValue - Property data, nil means remove the property
   Returns: Nothing
 
   Sets the specified property data or removes the property
  ------------------------------------------------------------------------------}
-procedure TCarbonWidgetInfo.SetProperty(AIndex: String; const AValue: Pointer);
+procedure TCarbonWidget.SetProperty(AIndex: String; const AValue: Pointer);
 var
   I: Integer;
 begin
@@ -436,752 +203,64 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method:  TCarbonWidgetInfo.Create
-  Params:  AWidget - Pointer to widget
-           AObject - LCL object
-           TheType - Type of Carbon widget (Control or Window)
-  Returns: The Carbon widget info
+  Method:  TCarbonWidget.Create
+  Params:  AObject - LCL conrol
+           AParams - Creation parameters
+  Returns: The Carbon widget
 
-  Creates basic info for the specified widget and LCL object
+  Creates basic widget for the specified LCL control
  ------------------------------------------------------------------------------}
-constructor TCarbonWidgetInfo.Create(AWidget: Pointer; AObject: TLCLComponent;
-  TheType: TCarbonWidgetType);
+constructor TCarbonWidget.Create(const AObject: TWinControl;
+  const AParams: TCreateParams);
 begin
   LCLObject := AObject;
-  CGContext := nil;
-  Widget := AWidget;
-  WSClass := AObject.WidgetSetClass;
-  WidgetType := TheType;
-  UserData := nil;
-  DataOwner := False;
   FProperties := nil;
+  Widget := nil;
+  
+  CreateWidget(AParams);
+  
+  DebugLn('TCarbonWidget.Create ', ClassName, ' ', DbgSName(LCLObject), ': ',
+    LCLObject.ClassName);
+  
   Context := TCarbonControlContext.Create(Self);
   
-  case TheType of
-    cwtControlRef: SetControlProperty(AWidget, LAZARUS_FOURCC, WIDGETINFO_FOURCC, SizeOf(Self), @Self);
-    cwtWindowRef : SetWindowProperty(AWidget, LAZARUS_FOURCC, WIDGETINFO_FOURCC, SizeOf(Self), @Self);
-  else 
-    DebugLn('[TCarbonWidgetInfo.Create] ***WARNING! Unknown widget type***');
-  end;
+  RegisterEvents;
 end;
 
 {------------------------------------------------------------------------------
-  Method:  TCarbonWidgetInfo.CreateForControl
-  Params:  AWidget - Pointer to control widget
-           AObject - LCL object
-  Returns: The Carbon Control widget info
-
-  Creates basic info for specified control widget and LCL object
- ------------------------------------------------------------------------------}
-constructor TCarbonWidgetInfo.CreateForControl(AWidget: Pointer; AObject: TLCLComponent);
-begin
-  Create(AWidget, AObject, cwtControlRef);
-end;
-
-{------------------------------------------------------------------------------
-  Method:  TCarbonWidgetInfo.CreateForWindow
-  Params:  AWidget - Pointer to window widget
-           AObject - LCL object
-  Returns: The Carbon window widget info
-
-  Creates basic info for specified window widget and LCL object
- ------------------------------------------------------------------------------}
-constructor TCarbonWidgetInfo.CreateForWindow(AWidget: Pointer; AObject: TLCLComponent);
-begin
-  Create(AWidget, AObject, cwtWindowRef);
-end;
-
-{------------------------------------------------------------------------------
-  Method:  TCarbonWidgetInfo.Destroy
+  Method:  TCarbonWidget.Destroy
   Returns: Nothing
 
-  Frees the widget info
+  Frees the widget
  ------------------------------------------------------------------------------}
-destructor TCarbonWidgetInfo.Destroy;
+destructor TCarbonWidget.Destroy;
 begin
-  case WidgetType of
-    cwtControlRef: RemoveControlProperty(Widget, LAZARUS_FOURCC, WIDGETINFO_FOURCC);
-    cwtWindowRef : RemoveWindowProperty(Widget, LAZARUS_FOURCC, WIDGETINFO_FOURCC);
-  else Debugln('[TCarbonWidgetInfo.Destroy] ***WARNING! Unknown widget type***');
-  end;
-
-  if (UserData <> nil) and DataOwner then
-  begin
-    System.FreeMem(UserData);
-    UserData := nil;
-  end;
+  UnregisterEvents;
+  
+  DestroyWidget;
   
   Context.Free;
   FProperties.Free;
+  
+  DebugLn('TCarbonWidget.Destroy ', ClassName, ' ', DbgSName(LCLObject), ': ',
+    LCLObject.ClassName);
 
   inherited Destroy;
 end;
 
-{ TCarbonFont }
-
-constructor TCarbonFont.Create;
+{------------------------------------------------------------------------------
+  Method:  TCarbonWidget.GetPreferredSize
+  Returns: The preffered size of widget for autosizing or (0, 0)
+ ------------------------------------------------------------------------------}
+function TCarbonWidget.GetPreferredSize: TPoint;
 begin
-  FStyle := DefaultTextStyle;
-end;
-
-constructor TCarbonFont.Create(ALogFont: TLogFont; AFaceName: String);
-var
-  Attr: ATSUAttributeTag;
-  M: ATSUTextMeasurement;
-  B: Boolean;
-  S: ByteCount;
-  A: ATSUAttributeValuePtr;
-  ID: ATSUFontID;
-begin
-  ATSUCreateStyle(FStyle);
-  
-  ID := FindCarbonFontID(AFaceName);
-  
-  if ID <> 0 then
-  begin
-    Attr := kATSUFontTag;
-    A := @ID;
-    S := SizeOf(ID);
-    ATSUSetAttributes(FStyle, 1, @Attr, @S, @A);
-  end;
-  
-  if ALogFont.lfHeight <> 0 then
-  begin
-    Attr := kATSUSizeTag;
-    M := Abs(ALogFont.lfHeight) shl 16;
-    A := @M;
-    S := SizeOf(M);
-    ATSUSetAttributes(FStyle, 1, @Attr, @S, @A);
-  end;
-  
-  if ALogFont.lfEscapement <> 0 then
-  begin
-    Attr := kATSULineRotationTag;
-    M := (ALogFont.lfEscapement shl 16) div 10;
-    A := @M;
-    S := SizeOf(M);
-    ATSUSetAttributes(FStyle, 1, @Attr, @S, @A);
-  end;
-  
-  if ALogFont.lfWeight > FW_NORMAL then
-  begin
-    Attr := kATSUQDBoldfaceTag;
-    B := True;
-    A := @B;
-    S := SizeOf(B);
-    ATSUSetAttributes(FStyle, 1, @Attr, @S, @A);
-  end;
-  
-  if ALogFont.lfItalic > 0 then
-  begin
-    Attr := kATSUQDItalicTag;
-    B := True;
-    A := @B;
-    S := SizeOf(B);
-    ATSUSetAttributes(FStyle, 1, @Attr, @S, @A);
-  end;
-  
-  if ALogFont.lfUnderline > 0 then
-  begin
-    Attr := kATSUQDUnderlineTag;
-    B := True;
-    A := @B;
-    S := SizeOf(B);
-    ATSUSetAttributes(FStyle, 1, @Attr, @S, @A);
-  end;
-  
-  if ALogFont.lfStrikeOut > 0 then
-  begin
-    Attr := kATSUStyleStrikeThroughTag;
-    B := True;
-    A := @B;
-    S := SizeOf(B);
-    ATSUSetAttributes(FStyle, 1, @Attr, @S, @A);
-  end;
-end;
-
-destructor TCarbonFont.Destroy;
-begin
-  if FStyle <> DefaultTextStyle then ATSUDisposeStyle(FStyle);
-
-  inherited;
-end;
-
-{ TCarbonDeviceContext }
-
-procedure TCarbonDeviceContext.SetBkColor(const AValue: TColor);
-begin
-  if FBkColor <> AValue then
-  begin
-    FBkColor := AValue;
-    FBkBrush.SetColor(ColorToRGB(AValue), BkMode = OPAQUE);
-  end;
-end;
-
-procedure TCarbonDeviceContext.SetBkMode(const AValue: Integer);
-begin
-  if FBkMode <> AValue then
-  begin
-    FBkMode := AValue;
-    FBkBrush.SetColor(ColorToRGB(BkColor), FBkMode = OPAQUE);
-  end;
-end;
-
-procedure TCarbonDeviceContext.SetCurrentBrush(const AValue: TCarbonBrush);
-begin
-  if FCurrentBrush <> AValue then
-  begin
-    FCurrentBrush := AValue;
-    FCurrentBrush.Apply(Self);
-  end;
-end;
-
-procedure TCarbonDeviceContext.SetCurrentFont(const AValue: TCarbonFont);
-begin
-  if FCurrentFont <> AValue then
-  begin
-    FCurrentFont := AValue;
-  end;
-end;
-
-procedure TCarbonDeviceContext.SetCurrentPen(const AValue: TCarbonPen);
-begin
-  if FCurrentPen <> AValue then
-  begin
-    FCurrentPen := AValue;
-    FCurrentPen.Apply(Self);
-  end;
-end;
-
-procedure TCarbonDeviceContext.SetROP2(const AValue: Integer);
-begin
-  if FROP2 <> AValue then
-  begin
-    FROP2 := AValue;
-    CurrentPen.Apply(Self);
-    CurrentBrush.Apply(Self);
-  end;
-end;
-
-procedure TCarbonDeviceContext.SetTextColor(const AValue: TColor);
-begin
-  if FTextColor <> AValue then
-  begin
-    FTextColor := AValue;
-    TextPen.SetColor(ColorToRGB(AValue), False);
-  end;
-end;
-
-constructor TCarbonDeviceContext.Create;
-begin
-  FBkBrush := TCarbonBrush.Create;
-  FTextPen := TCarbonPen.Create;
-end;
-
-destructor TCarbonDeviceContext.Destroy;
-begin
-  BkBrush.Free;
-  TextPen.Free;
-
-  inherited Destroy;
-end;
-
-procedure TCarbonDeviceContext.Reset;
-begin
-  CurrentFont := nil;
-
-  PenPos.x := 0;
-  PenPos.y := 0;
-
-  // create brush for bk color and mode
-  FBkColor := clNone;
-  FBkMode := TRANSPARENT;
-
-  // create pen for text color
-  FTextColor := clNone;
-
-  // set raster operation to copy
-  FROP2 := R2_COPYPEN;
-
-  // set initial pen and brush
-  FCurrentPen := nil;
-  FCurrentBrush := nil;
-  
-  Update;
-end;
-
-procedure TCarbonDeviceContext.Update;
-begin
-  if CGContext <> nil then
-  begin
-    {$IFDEF VerbosePaint}
-    DebugLn('TCarbonDeviceContext.Update');
-    {$ENDIF}
-    // disable anti-aliasing
-    CGContextSetShouldAntialias(CGContext, 0);
-  end;
-end;
-
-{ TCarbonScreenContext }
-
-function TCarbonScreenContext.GetCGContext: CGContextRef;
-begin
-  Result := nil;
-end;
-
-function TCarbonScreenContext.GetSize: TPoint;
-begin
-  Result.X := CGDisplayPixelsWide(CGMainDisplayID);
-  Result.Y := CGDisplayPixelsHigh(CGMainDisplayID);
-end;
-
-constructor TCarbonScreenContext.Create;
-begin
-  inherited Create;
-  
-  Reset;
-end;
-
-{ TCarbonControlContext }
-
-function TCarbonControlContext.GetCGContext: CGContextRef;
-begin
-  Result := FInfo.CGContext
-end;
-
-function TCarbonControlContext.GetSize: TPoint;
-begin
-  Result.X := (FInfo.LCLObject as TControl).ClientWidth;
-  Result.Y := (FInfo.LCLObject as TControl).ClientHeight;
-end;
-
-constructor TCarbonControlContext.Create(AInfo: TCarbonWidgetInfo);
-begin
-  inherited Create;
-  
-  FInfo := AInfo;
-  Reset;
-end;
-
-{ TCarbonBitmapContext }
-
-procedure TCarbonBitmapContext.SetBitmap(const AValue: TCarbonBitmap);
-begin
-  if FBitmap <> AValue then
-  begin
-    FBitmap := AValue;
-    
-    if FBitmapContext <> nil then CGContextRelease(FBitmapContext);
-
-    if FBitmap = nil then
-    begin
-      FBitmapContext := nil;
-      Exit;
-    end;
-    
-    // create CGBitmapContext
-    FBitmapContext := CGBitmapContextCreate(FBitmap.Data, FBitmap.Width,
-      FBitmap.Height, FBitmap.BitsPerComponent, FBitmap.BytesPerRow, RGBColorSpace,
-      kCGImageAlphaNoneSkipLast);
-    
-    Reset;
-  end;
-end;
-
-function TCarbonBitmapContext.GetCGContext: CGContextRef;
-begin
-  if FBitmap <> nil then
-  begin
-    Result := FBitmapContext;
-  end
-  else
-    Result := nil;
-end;
-
-function TCarbonBitmapContext.GetSize: TPoint;
-begin
-  if FBitmap <> nil then
-  begin
-    Result.X := FBitmap.Width;
-    Result.Y := FBitmap.Height;
-  end
-  else
-  begin
-    Result.X := 0;
-    Result.Y := 0;
-  end;
-end;
-
-constructor TCarbonBitmapContext.Create;
-begin
-  FBitmap := nil;
-end;
-
-destructor TCarbonBitmapContext.Destroy;
-begin
-  if FBitmapContext <> nil then CGContextRelease(FBitmapContext);
-  
-  inherited Destroy;
-end;
-
-{ TCarbonColorObject }
-
-constructor TCarbonColorObject.Create(const AColor: TColor; ASolid: Boolean);
-begin
-  SetColor(AColor, ASolid);
-end;
-
-procedure TCarbonColorObject.SetColor(const AColor: TColor; ASolid: Boolean);
-begin
-  RedGreenBlue(ColorToRGB(AColor), FR, FG, FB);
-  FA := ASolid;
-end;
-
-procedure TCarbonColorObject.GetRGBA(AROP2: Integer; out AR, AG, AB, AA: Single);
-begin
-  case AROP2 of
-    R2_BLACK:
-    begin
-      AR := 0;
-      AG := 0;
-      AB := 0;
-      AA := Byte(FA);
-    end;
-    R2_WHITE:
-    begin
-      AR := 1;
-      AG := 1;
-      AB := 1;
-      AA := Byte(FA);
-    end;
-    R2_NOP:
-    begin
-      AR := 1;
-      AG := 1;
-      AB := 1;
-      AA := 0;
-    end;
-    R2_NOT:
-    begin
-      AR := 1;
-      AG := 1;
-      AB := 1;
-      AA := Byte(FA);
-    end;
-    R2_NOTCOPYPEN:
-    begin
-      AR := (255 - FR) / 255;
-      AG := (255 - FG) / 255;
-      AB := (255 - FB) / 255;
-      AA := Byte(FA);
-    end;
-  else // copy
-    begin
-      AR := FR / 255;
-      AG := FG / 255;
-      AB := FB / 255;
-      AA := Byte(FA);
-    end;
-  end;
-end;
-
-{ TCarbonBrush }
-
-constructor TCarbonBrush.Create;
-begin
-  inherited Create(clWhite, False);
-end;
-
-constructor TCarbonBrush.Create(ALogBrush: TLogBrush);
-begin
-  case ALogBrush.lbStyle of
-    BS_SOLID,
-    BS_HATCHED..BS_MONOPATTERN:
-      begin
-        SetColor(ColorToRGB(ALogBrush.lbColor), True);
-        // TODO: patterns
-      end;
-    else
-      SetColor(ColorToRGB(ALogBrush.lbColor), False);
-  end;
-end;
-
-procedure TCarbonBrush.Apply(ADC: TCarbonDeviceContext; UseROP2: Boolean);
-var
-  AR, AG, AB, AA: Single;
-  AROP2: Integer;
-begin
-  if ADC = nil then Exit;
-  
-  if UseROP2 then AROP2 := ADC.ROP2
-  else AROP2 := R2_COPYPEN;
-
-  GetRGBA(AROP2, AR, AG, AB, AA);
-  
-  if AROP2 <> R2_NOT then
-    CGContextSetBlendMode(ADC.CGContext, kCGBlendModeNormal)
-  else
-    CGContextSetBlendMode(ADC.CGContext, kCGBlendModeDifference);
-
-  CGContextSetRGBFillColor(ADC.CGContext, AR, AG, AB, AA);
-end;
-
-{ TCarbonPen }
-
-constructor TCarbonPen.Create;
-begin
-  inherited Create(clBlack, True);
-  FStyle := PS_SOLID;
-  FWidth := 1;
-end;
-
-constructor TCarbonPen.Create(ALogPen: TLogPen);
-begin
-  case ALogPen.lopnStyle of
-    PS_SOLID..PS_DASHDOTDOT,
-    PS_INSIDEFRAME:
-      begin
-        SetColor(ColorToRGB(ALogPen.lopnColor), True);
-        FWidth := Max(1, ALogPen.lopnWidth.x);
-      end;
-    else
-    begin
-      SetColor(ColorToRGB(ALogPen.lopnColor), True);
-      FWidth := 1;
-    end;
-  end;
-  
-  FStyle := ALogPen.lopnStyle;
-end;
-
-procedure TCarbonPen.Apply(ADC: TCarbonDeviceContext; UseROP2: Boolean);
-var
-  AR, AG, AB, AA: Single;
-  AROP2: Integer;
-begin
-  if ADC = nil then Exit;
-
-  if UseROP2 then AROP2 := ADC.ROP2
-  else AROP2 := R2_COPYPEN;
-
-  GetRGBA(AROP2, AR, AG, AB, AA);
-  
-  if AROP2 <> R2_NOT then
-    CGContextSetBlendMode(ADC.CGContext, kCGBlendModeNormal)
-  else
-    CGContextSetBlendMode(ADC.CGContext, kCGBlendModeDifference);
-    
-  CGContextSetRGBStrokeColor(ADC.CGContext, AR, AG, AB, AA);
-  CGContextSetLineWidth(ADC.CGContext, FWidth);
-  
-  case FStyle of
-    PS_DASH: CGContextSetLineDash(ADC.CGContext, 0, @CarbonDashStyle[0],
-      Length(CarbonDashStyle));
-    PS_DOT: CGContextSetLineDash(ADC.CGContext, 0, @CarbonDotStyle[0],
-      Length(CarbonDotStyle));
-    PS_DASHDOT: CGContextSetLineDash(ADC.CGContext, 0, @CarbonDashDotStyle[0],
-      Length(CarbonDashDotStyle));
-    PS_DASHDOTDOT: CGContextSetLineDash(ADC.CGContext, 0, @CarbonDashDotDotStyle[0],
-      Length(CarbonDashDotDotStyle));
-  else
-    CGContextSetLineDash(ADC.CGContext, 0, nil, 0);
-  end;
-end;
-
-{ TCarbonBitmap }
-
-function TCarbonBitmap.GetHeight: Integer;
-begin
-  Result := CGImageGetHeight(FCGImage);
-end;
-
-function TCarbonBitmap.GetBitsPerComponent: Integer;
-begin
-  Result := CGImageGetBitsPerComponent(FCGImage);
-end;
-
-function TCarbonBitmap.GetBytesPerRow: Integer;
-begin
-  Result := CGImageGetBytesPerRow(FCGImage);
-end;
-
-function TCarbonBitmap.GetWidth: Integer;
-begin
-  Result := CGImageGetWidth(FCGImage);
-end;
-
-constructor TCarbonBitmap.Create(AWidth, AHeight, ABitsPerPixel: Integer;
-  AData: Pointer);
-var
-  DataRowSize: Integer;
-begin
-  if AWidth < 1 then AWidth := 1;
-  if AHeight < 1 then AHeight := 1;
-  
-  // TODO: use AData if assigned, enable more pixel formats
-  ABitsPerPixel := 32; // RGBA-32 format
-  // 16-bytes align for best performance
-  DataRowSize := ((AWidth * ABitsPerPixel shr 3) shl 4 + $F) shr 4;
-  FDataSize := DataRowSize * AHeight;
-  System.GetMem(FData, FDataSize);
-  FDataOwner := True;
-    
-  FCGDataProvider := CGDataProviderCreateWithData(nil, FData, FDataSize, nil);
-  FCGImage := CGImageCreate(AWidth, AHeight, ABitsPerPixel shr 2, ABitsPerPixel,
-    DataRowSize, RGBColorSpace, kCGImageAlphaLast,
-    FCGDataProvider, nil, 0, kCGRenderingIntentDefault);
-end;
-
-destructor TCarbonBitmap.Destroy;
-begin
-  CGImageRelease(FCGImage);
-  CGDataProviderRelease(FCGDataProvider);
-  if FDataOwner then System.FreeMem(FData);
-
-  inherited Destroy;
-end;
-
-var
-  LogBrush: TLogBrush;
-
-{ TCarbonCursor }
-
-constructor TCarbonCursor.Create;
-begin
-  FCursorType := cctUnknown;
-  FThemeCursor := 0;
-  FAnimationStep := 0;
-end;
-
-procedure TCarbonCursor.CreateThread;
-begin
-  FTaskID := nil;
-  MPCreateTask(@AnimationCursorHandler, Self, 0, nil, nil, nil, 0, @FTaskID);
-end;
-
-procedure TCarbonCursor.DestroyThread;
-begin
-  MPTerminateTask(FTaskID, noErr);
-  FTaskID := nil;
-end;
-
-constructor TCarbonCursor.CreateFromInfo(AInfo: PIconInfo);
-begin
-  // TODO:
-  Create;
-  FCursorType := cctImage;
-end;
-
-constructor TCarbonCursor.CreateThemed(AThemeCursor: ThemeCursor);
-const
-  kThemeCursorTypeMap: array[kThemeArrowCursor..22] of TCarbonCursorType =
-  (
-    cctTheme,    // kThemeArrowCursor
-    cctTheme,    // kThemeCopyArrowCursor
-    cctTheme,    // 2
-    cctTheme,    // 3
-    cctTheme,    // 4
-    cctTheme,    // 5
-    cctTheme,    // 6
-    cctAnimated, // kThemeWatchCursor
-    cctTheme,    // 8
-    cctTheme,    // 9
-    cctTheme,    // 10
-    cctAnimated, // kThemeCountingUpHandCursor
-    cctAnimated, // kThemeCountingDownHandCursor
-    cctAnimated, // kThemeCountingUpAndDownHandCursor
-    cctWait,     // kThemeSpinningCursor (obsolte and thats why we should use wait instead)
-    cctTheme,    // 15
-    cctTheme,    // 16
-    cctTheme,    // 17
-    cctTheme,    // 18
-    cctTheme,    // 19
-    cctTheme,    // 20
-    cctTheme,    // 21
-    cctTheme     // kThemeProofCursor
-  );
-begin
-  Create;
-  FThemeCursor := AThemeCursor;
-  if (AThemeCursor >= Low(kThemeCursorTypeMap)) and
-     (AThemeCursor <= High(kThemeCursorTypeMap)) then
-    FCursorType := kThemeCursorTypeMap[FThemeCursor] else
-    FCursorType := cctTheme;
-end;
-
-destructor TCarbonCursor.Destroy;
-begin
-  UnInstall;
-  if CursorType = cctImage then
-  begin
-    // TODO:
-  end;
-  inherited Destroy;
-end;
-
-procedure TCarbonCursor.Install;
-begin
-  if CursorType = cctImage then
-  begin
-    // TODO : SetCCursor();
-  end else
-  if CursorType = cctTheme then
-  begin
-    SetThemeCursor(FThemeCursor);
-  end else
-  if CursorType = cctAnimated then
-  begin
-    FAnimationStep := 0;
-    CreateThread;
-  end else
-  if CursorType = cctWait then
-  begin
-    QDDisplayWaitCursor(True);
-  end else
-    DebugLn('[TCarbonCursor.Apply] !!! Unknown cursor type');
-end;
-
-procedure TCarbonCursor.UnInstall;
-begin
-  if CursorType = cctWait then
-    QDDisplayWaitCursor(False) else
-  if CursorType = cctAnimated then
-  begin
-    DestroyThread;
-  end;
-end;
-
-function TCarbonCursor.StepAnimation: Boolean;
-begin
-  Result := SetAnimatedThemeCursor(FThemeCursor, FAnimationStep) <> themeBadCursorIndexErr;
-  if Result then
-  begin
-    inc(FAnimationStep);
-  end else
-  begin
-    FCursorType := cctTheme;
-    SetThemeCursor(FThemeCursor);
-  end;
+  Result.X := 0;
+  Result.Y := 0;
 end;
 
 initialization
+
   LAZARUS_FOURCC := MakeFourCC('Laz ');
   WIDGETINFO_FOURCC := MakeFourCC('WInf');
-  
-  ATSUCreateStyle(DefaultTextStyle);
-  RGBColorSpace := CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
-  
-  StockSystemFont := TCarbonFont.Create;
-  
-  LogBrush.lbStyle := BS_NULL;
-  LogBrush.lbColor := 0;
-  StockNullBrush := TCarbonBrush.Create(LogBrush);
-  
-finalization
-  StockNullBrush.Free;
-  StockSystemFont.Free;
-  
-  ATSUDisposeStyle(DefaultTextStyle);
-  CGColorSpaceRelease(RGBColorSpace);
 
 end.

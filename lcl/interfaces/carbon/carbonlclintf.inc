@@ -165,10 +165,10 @@ begin
   ParamRec.flags := 0; 
 
   {English defaults to use if no Localizable.strings translations to use}
-  CreateCarbonString(OKKey, OKStr);
-  CreateCarbonString(CancelKey, CancelStr);
-  CreateCarbonString(YesKey, YesStr);
-  CreateCarbonString(NoKey, NoStr);
+  CreateCFString(OKKey, OKStr);
+  CreateCFString(CancelKey, CancelStr);
+  CreateCFString(YesKey, YesStr);
+  CreateCFString(NoKey, NoStr);
 
   {Convert LCL "id" button values to Carbon values}
   if HasButton(idButtonOK) then
@@ -212,8 +212,8 @@ begin
     end;
   end;
 
-  CreateCarbonString(DialogCaption, CaptionStr);
-  CreateCarbonString(DialogMessage, MessageStr);
+  CreateCFString(DialogCaption, CaptionStr);
+  CreateCFString(DialogMessage, MessageStr);
 
   {Note: kAlertCautionAlert displays alert icon and app's icon.
          kAlertStopAlert and kAlertNoteAlert only display app's icon.
@@ -240,15 +240,15 @@ begin
     end;
 
   finally
-    FreeCarbonString(OKStr);
-    FreeCarbonString(CancelStr);
-    FreeCarbonString(YesStr);
-    FreeCarbonString(NoStr);
-    FreeCarbonString(ParamRec.defaultText);
-    FreeCarbonString(ParamRec.cancelText);
-    FreeCarbonString(ParamRec.otherText);
-    FreeCarbonString(CaptionStr);
-    FreeCarbonString(MessageStr);
+    FreeCFString(OKStr);
+    FreeCFString(CancelStr);
+    FreeCFString(YesStr);
+    FreeCFString(NoStr);
+    FreeCFString(ParamRec.defaultText);
+    FreeCFString(ParamRec.cancelText);
+    FreeCFString(ParamRec.otherText);
+    FreeCFString(CaptionStr);
+    FreeCFString(MessageStr);
   end;
 end;  {TCarbonWidgetSet.PromptUser}
 

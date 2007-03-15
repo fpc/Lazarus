@@ -30,11 +30,11 @@ uses
   // libs
   FPCMacOSAll,
   // LCL
-  Controls, Buttons, LCLType, LCLProc,
+  Controls, Buttons, LCLType, LCLProc, Graphics,
   // widgetset
   WSButtons, WSLCLClasses, WSProc,
   // interface
-  CarbonDef, CarbonProc, CarbonPrivate,
+  CarbonDef, CarbonProc, CarbonPrivate, CarbonGDIObjects,
   CarbonWSControls;
 
 type
@@ -56,6 +56,8 @@ type
   protected
   public
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class procedure SetGlyph(const ABitBtn: TCustomBitBtn; const AValue: TBitmap); override;
+    class procedure SetLayout(const ABitBtn: TCustomBitBtn; const AValue: TButtonLayout); override;
   end;
 
   { TCarbonWSSpeedButton }
@@ -81,47 +83,27 @@ implementation
  ------------------------------------------------------------------------------}
 class function TCarbonWSButton.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
-var
-  Control: ControlRef;
-  CFString: CFStringRef;
-  Info: TCarbonWidgetInfo;
 begin
-  Result := 0;
-
-  // create the button at bounds with title
-  CreateCarbonString(AParams.Caption, CFString);
-  try
-    if CreatePushButtonControl(GetTopParentWindow(AWinControl), ParamsToCarbonRect(AParams),
-      CFString, Control) = noErr
-    then
-      Result := TLCLIntfHandle(Control);
-  finally
-    FreeCarbonString(CFString);
-  end;
-  if Result = 0 then Exit;
-
-  // add the info (our data, like which TWinControl belong to this carbon widget)
-  Info := TCarbonWidgetInfo.CreateForControl(Control, AWinControl);
-  
-  // register events (e.g. mouse, focus, keyboard, size, ...)
-  TCarbonPrivateHandleClass(WSPrivate).RegisterEvents(Info);
+  // create the Carbon button widget
+  Result := TLCLIntfHandle(TCarbonButton.Create(AWinControl, AParams));
 end;
 
 {------------------------------------------------------------------------------
   Method:  TCarbonWSButton.SetDefault
-  Params:  AButton - LCL button control
+  Params:  AButton  - LCL button control
+           ADefault
   Returns: Nothing
 
-  Updates default button indication
+  Sets button default indication
  ------------------------------------------------------------------------------}
-class procedure TCarbonWSButton.SetDefault(const AButton: TCustomButton; ADefault: Boolean);
+class procedure TCarbonWSButton.SetDefault(const AButton: TCustomButton;
+  ADefault: Boolean);
 begin
   if not WSCheckHandleAllocated(AButton, 'SetDefault') then Exit;
-  
-  SetControlData(ControlRef(AButton.Handle), kControlEntireControl,
-    kControlPushButtonDefaultTag, SizeOf(ADefault), @ADefault);
-end;
 
+  SetControlData(AsControlRef(AButton.Handle), kControlEntireControl,
+    kControlPushButtonDefaultTag, SizeOf(Boolean), @ADefault);
+end;
 
 { TCarbonWSBitBtn }
 
@@ -131,32 +113,64 @@ end;
            AParams     - Creation parameters
   Returns: Handle to the control in Carbon interface
 
-  Creates new bevel button with bitmap control in Carbon interface with the
+  Creates new bevel button with bitmap in Carbon interface with the
   specified parameters
  ------------------------------------------------------------------------------}
 class function TCarbonWSBitBtn.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
-var
-  Control: ControlRef;
-  CFString: CFStringRef;
-  Info: TCarbonWidgetInfo;
 begin
-  Result := 0;
+  Result := TLCLIntfHandle(TCarbonBitBtn.Create(AWinControl, AParams));
+end;
 
-  CreateCarbonString(AParams.Caption, CFString);
-  try
-    if CreateBevelButtonControl(GetTopParentWindow(AWinControl), ParamsToCarbonRect(AParams),
-      CFString, kControlBevelButtonNormalBevel, kControlBehaviorPushbutton,
-      nil, 0, 0, 0, Control) = noErr
-    then
-      Result := TLCLIntfHandle(Control);
-  finally
-    FreeCarbonString(CFString);
+{------------------------------------------------------------------------------
+  Method:  TCarbonWSBitBtn.SetGlyph
+  Params:  ABitBtn - LCL custom bitmap button
+           AValue  - Bitmap
+  Returns: Nothing
+
+  Sets the bitmap of bevel button in Carbon interface
+ ------------------------------------------------------------------------------}
+class procedure TCarbonWSBitBtn.SetGlyph(const ABitBtn: TCustomBitBtn;
+  const AValue: TBitmap);
+var
+  ContentInfo: ControlButtonContentInfo;
+begin
+  if not WSCheckHandleAllocated(ABitBtn, 'SetGlyph') then Exit;
+  
+  ContentInfo.contentType := kControlContentCGImageRef;
+  if AValue = nil then
+    ContentInfo.imageRef := nil
+  else
+    ContentInfo.imageRef := TCarbonBitmap(AValue.Handle).CGImage;
+  
+  SetBevelButtonContentInfo(AsControlRef(ABitBtn.Handle), @ContentInfo);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWSBitBtn.SetLayout
+  Params:  ABitBtn - LCL custom bitmap button
+           AValue  - Bitmap and caption layout
+  Returns: Nothing
+
+  Sets the bitmap nad caption layout of bevel button in Carbon interface
+ ------------------------------------------------------------------------------}
+class procedure TCarbonWSBitBtn.SetLayout(const ABitBtn: TCustomBitBtn;
+  const AValue: TButtonLayout);
+var
+  Placement: ControlButtonTextPlacement;
+begin
+  if not WSCheckHandleAllocated(ABitBtn, 'SetLayout') then Exit;
+  
+  case AValue of
+    blGlyphLeft  : Placement := kControlBevelButtonPlaceToRightOfGraphic;
+    blGlyphRight : Placement := kControlBevelButtonPlaceToLeftOfGraphic;
+    blGlyphTop   : Placement := kControlBevelButtonPlaceBelowGraphic;
+    blGlyphBottom: Placement := kControlBevelButtonPlaceAboveGraphic;
   end;
-  if Result = 0 then Exit;
-
-  Info := TCarbonWidgetInfo.CreateForControl(Control, AWinControl);
-  TCarbonPrivateHandleClass(WSPrivate).RegisterEvents(Info);
+  
+  SetBevelButtonTextPlacement(AsControlRef(ABitBtn.Handle),
+    Placement);
+  TCarbonWidget(ABitBtn.Handle).Invalidate;
 end;
 
 initialization

@@ -328,6 +328,7 @@ begin
   CarbonWidgetSet:=Self;
   inherited Create;
   FTerminating := False;
+
   FTimerMap := TMap.Create(its4, SizeOf(TFNTimerProc));
   FCurrentCursor := 0;
 end;
@@ -446,15 +447,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCarbonWidgetSet.AppBringToFront;
 var
-  //I: Integer;
   Proc: ProcessSerialNumber;
 begin
-  {CollapseAllWindows(False);
-  
-  for I := 0 to Pred(Screen.CustomFormZOrderCount) do
-  begin
-    BringToFront(WindowRef(Screen.CustomFormsZOrdered[I].Handle));
-  end;}
   (*
     According to Carbon Development Tips & Tricks:
     34. How do I bring all my windows to the front?
@@ -467,8 +461,6 @@ end;
   Method:  TCarbonWidgetSet.WidgetSetName
   Params:  None
   Returns: Name of Carbon widget set
-
-  Returns name of widget set.
  ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.WidgetSetName: string;
 begin
@@ -479,9 +471,7 @@ end;
   Method:  TCarbonWidgetSet.DCGetPixel
   Params:  CanvasHandle - canvas handle to get color from
            X, Y         - position
-  Returns: Color at specified point
-
-  Gets the color of the specified pixel on the canvas
+  Returns: Color of the specified pixel on the canvas
   Not implemented!
  ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.DCGetPixel(CanvasHandle: HDC; X, Y: integer
@@ -603,45 +593,4 @@ begin
   Result := FTimerMap.Delete(TimerHandle);
   if Result // valid timer
   then RemoveEventLoopTimer(EventLoopTimerRef(TimerHandle));
-end;
-
-{------------------------------------------------------------------------------
-  Method:  TCarbonWidgetSet.IsValidDC
-  Params:  DC -  handle to a device context (TCarbonDeviceContext)
-  Returns: If the DC is valid
- ------------------------------------------------------------------------------}
-function TCarbonWidgetSet.IsValidDC(const DC: HDC): Boolean;
-var
-  AObject: TObject;
-begin
-  if DC = 0 then
-  begin
-    Result := False;
-    Exit;
-  end;
-  
-  AObject := TObject(DC);
-  Result := (AObject is TCarbonDeviceContext);
-end;
-
-{------------------------------------------------------------------------------
-  Method:  TCarbonWidgetSet.IsValidGDIObject
-  Params:  GDIObject - handle to a GDI Object (TCarbonFont, ...)
-  Returns: If the GDIObject is valid
-
-  Remark: All handles for GDI objects must be pascal objects so we can
- distinguish between them
- ------------------------------------------------------------------------------}
-function TCarbonWidgetSet.IsValidGDIObject(const GDIObject: HGDIOBJ): Boolean;
-var
-  AObject: TObject;
-begin
-  if GDIObject = 0 then
-  begin
-    Result := False;
-    Exit;
-  end;
-
-  AObject := TObject(GDIObject);
-  Result := (AObject is TCarbonGDIObject);
 end;
