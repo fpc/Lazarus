@@ -1,6 +1,6 @@
 { $Id$ }
 {               ----------------------------------------------
-                 breakpointsdlg.pp  -  Overview of breeakponts
+                 breakpointsdlg.pp  -  Overview of breakpoints
                 ----------------------------------------------
 
  @created(Fri Dec 14st WET 2001)
@@ -47,6 +47,8 @@ type
     );
   TBreakPointsDlgStates = set of TBreakPointsDlgState;
 
+  { TBreakPointsDlg }
+
   TBreakPointsDlg = class(TDebuggerDlg)
     lvBreakPoints: TListView;
     N0: TMenuItem;
@@ -67,7 +69,7 @@ type
     popEnableAllSameSource: TMenuItem;
     popDeleteAllSameSource: TMenuItem;
     procedure BreakpointsDlgCREATE(Sender: TObject);
-    procedure lvBreakPointsClick(Sender: TObject);
+    procedure lvBreakPointsColumnClick(Sender: TObject; Column: TListColumn);
     procedure lvBreakPointsDBLCLICK(Sender: TObject);
     procedure lvBreakPointsSelectItem(Sender: TObject; AItem: TListItem;
       Selected: Boolean);
@@ -260,8 +262,10 @@ begin
   DoJumpToCodePos(CurBreakPoint.Source,CurBreakPoint.Line,0);
 end;
 
-procedure TBreakPointsDlg.lvBreakPointsClick(Sender: TObject);
+procedure TBreakPointsDlg.lvBreakPointsColumnClick(Sender: TObject;
+  Column: TListColumn);
 begin
+  lvBreakPoints.SortColumn := Column.Index;
 end;
 
 procedure TBreakPointsDlg.BreakpointsDlgCREATE(Sender: TObject);
@@ -385,8 +389,13 @@ begin
     'Delete all breakpoints?',
     mtConfirmation,[mbYes,mbCancel],0)<>mrYes
   then exit;
-  for n := lvBreakPoints.Items.Count - 1 downto 0 do
-    TIDEBreakPoint(lvBreakPoints.Items[n].Data).Free;
+  lvBreakPoints.BeginUpdate;
+  try
+    for n := lvBreakPoints.Items.Count - 1 downto 0 do
+      TIDEBreakPoint(lvBreakPoints.Items[n].Data).Free;
+  finally
+    lvBreakPoints.EndUpdate;
+  end;
 end;
 
 procedure TBreakPointsDlg.popShowClick(Sender: TObject);
@@ -395,19 +404,52 @@ begin
 end;
 
 procedure TBreakPointsDlg.popDeleteClick(Sender: TObject);
+//todo: make rsDeleteBreakpointConfirmation translatable
+const
+  rsDeleteBreakpointConfirmation = 'Delete breakpoint at'#13'''"%s" line %d?';
+  rsDeleteSelectedBreakpointConfirmation = 'Delete all selected breakpoints?';
 var
-  CurItem: TListItem;
+  Item: TListItem;
   CurBreakPoint: TIDEBreakPoint;
+  Msg: String;
+  List: TList;
+  n: Integer;
 begin
-  CurItem:=lvBreakPoints.Selected;
-  if CurItem=nil then exit;
-  CurBreakPoint:=TIDEBreakPoint(CurItem.Data);
-  if MessageDlg('Delete breakpoint?',
-    'Delete breakpoint at'#13
-    +'"'+CurBreakPoint.Source+'" line '+IntToStr(CurBreakPoint.Line)+'?',
-    mtConfirmation,[mbYes,mbCancel],0)<>mrYes
-  then exit;
-  CurBreakPoint.Free;
+  Item:=lvBreakPoints.Selected;
+  if Item = nil then exit;
+
+  if lvBreakPoints.SelCount = 1 then
+  begin
+    CurBreakPoint:=TIDEBreakPoint(Item.Data);
+    Msg := Format(rsDeleteBreakpointConfirmation, [CurBreakPoint.Source,
+      CurBreakPoint.Line]);
+  end
+  else
+    Msg := rsDeleteSelectedBreakpointConfirmation;
+  if MessageDlg(Msg, mtConfirmation, [mbYes,mbCancel],0) <> mrYes then exit;
+  
+  if lvBreakPoints.SelCount = 1
+  then begin
+    TObject(Item.Data).Free;
+    Exit;
+  end;
+  
+  List := TList.Create;
+  for n := 0 to lvBreakPoints.Items.Count - 1 do
+  begin
+    Item := lvBreakPoints.Items[n];
+    if Item.Selected
+    then List.Add(Item);
+  end;
+  
+  lvBreakPoints.BeginUpdate;
+  try
+    for n := 0 to List.Count - 1 do
+      TObject(List[n]).Free;
+  finally
+    lvBreakPoints.EndUpdate;
+  end;
+  List.Free;
 end;
 
 procedure TBreakPointsDlg.popDisableAllClick(Sender: TObject);
@@ -438,15 +480,32 @@ end;
 
 procedure TBreakPointsDlg.popEnabledClick(Sender: TObject);
 var
-  CurItem: TListItem;
+  n: Integer;
+  Item: TListItem;
+  Enable: Boolean;
 begin
-  CurItem:=lvBreakPoints.Selected;
-  if (CurItem=nil) then exit;
-  TIDEBreakPoint(CurItem.Data).Enabled:=not TIDEBreakPoint(CurItem.Data).Enabled;
+  Item:=lvBreakPoints.Selected;
+  if (Item=nil) then exit;
+
+  Enable := not TIDEBreakPoint(Item.Data).Enabled;
+
+  if lvBreakPoints.SelCount > 1
+  then begin
+    for n := 0 to lvBreakPoints.Items.Count -1 do
+    begin
+      Item := lvBreakPoints.Items[n];
+      if Item.Selected then
+        TIDEBreakPoint(Item.Data).Enabled := Enable;
+    end;
+  end
+  else begin
+    TIDEBreakPoint(Item.Data).Enabled:= Enable;
+  end;
 end;
 
 procedure TBreakPointsDlg.popPropertiesClick(Sender: TObject);
-begin     
+begin
+  ShowMessage('Not implemented yet.');
 end;
 
 procedure TBreakPointsDlg.DoEndUpdate;

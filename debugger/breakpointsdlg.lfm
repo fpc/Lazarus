@@ -1,17 +1,19 @@
-object BreakpointsDlg: TBreakpointsDlg
-  Caption = 'Breakpoint list'
-  ClientHeight = 205
-  ClientWidth = 560
-  OnCreate = BreakpointsDlgCREATE
-  Visible = True
-  HorzScrollBar.Page = 561
-  VertScrollBar.Page = 206
-  Left = 340
+inherited BreakpointsDlg: TBreakpointsDlg
+  Left = 344
   Height = 205
-  Top = 117
+  Top = 153
   Width = 560
   HelpType = htKeyword
+  HorzScrollBar.Page = 559
+  VertScrollBar.Page = 204
+  ActiveControl = lvBreakPoints
+  Caption = 'Breakpoint list'
+  OnCreate = BreakpointsDlgCREATE
+  Visible = True
   object lvBreakPoints: TListView
+    Height = 205
+    Width = 560
+    HelpType = htKeyword
     Align = alClient
     Columns = <    
       item
@@ -38,17 +40,19 @@ object BreakpointsDlg: TBreakpointsDlg
       end    
       item
         Caption = 'Group'
-        Width = 0
+        Width = 5
       end>
     MultiSelect = True
     PopupMenu = mnuPopup
+    ReadOnly = True
+    RowSelect = True
+    SortColumn = 1
+    SortType = stText
+    TabOrder = 0
     ViewStyle = vsReport
-    OnClick = lvBreakPointsClick
+    OnColumnClick = lvBreakPointsColumnClick
     OnDblClick = lvBreakPointsDBLCLICK
     OnSelectItem = lvBreakPointsSelectItem
-    Height = 205
-    Width = 560
-    HelpType = htKeyword
   end
   object mnuPopup: TPopupMenu
     OnPopup = mnuPopupPopup
@@ -79,11 +83,13 @@ object BreakpointsDlg: TBreakpointsDlg
     end
     object popEnabled: TMenuItem
       Caption = '&Enabled'
+      ShortCut = 16462
       ShowAlwaysCheckable = True
       OnClick = popEnabledClick
     end
     object popDelete: TMenuItem
       Caption = '&Delete'
+      ShortCut = 46
       OnClick = popDeleteClick
     end
     object N2: TMenuItem

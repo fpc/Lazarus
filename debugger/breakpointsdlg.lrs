@@ -1,35 +1,39 @@
+{ This is an automatically generated lazarus resource file }
+
 LazarusResources.Add('TBreakpointsDlg','FORMDATA',[
-  'TPF0'#15'TBreakpointsDlg'#14'BreakpointsDlg'#7'Caption'#6#15'Breakpoint list'
-  +#12'ClientHeight'#3#205#0#11'ClientWidth'#3'0'#2#8'OnCreate'#7#20'Breakpoint'
-  +'sDlgCREATE'#7'Visible'#9#18'HorzScrollBar.Page'#3'1'#2#18'VertScrollBar.Pag'
-  +'e'#3#206#0#4'Left'#3'T'#1#6'Height'#3#205#0#3'Top'#2'u'#5'Width'#3'0'#2#8'H'
-  +'elpType'#7#9'htKeyword'#0#9'TListView'#13'lvBreakPoints'#5'Align'#7#8'alCli'
-  +'ent'#7'Columns'#14#1#7'Caption'#6#5'State'#0#1#7'Caption'#6#16'Filename/Add'
-  +'ress'#5'Width'#3#150#0#0#1#7'Caption'#6#11'Line/Length'#5'Width'#2'd'#0#1#7
-  +'Caption'#6#9'Condition'#5'Width'#2'K'#0#1#7'Caption'#6#6'Action'#0#1#7'Capt'
-  +'ion'#6#10'Pass Count'#5'Width'#2'd'#0#1#7'Caption'#6#5'Group'#5'Width'#2#0#0
-  +#0#11'MultiSelect'#9#9'PopupMenu'#7#8'mnuPopup'#9'ViewStyle'#7#8'vsReport'#7
-  +'OnClick'#7#18'lvBreakPointsClick'#10'OnDblClick'#7#21'lvBreakPointsDBLCLICK'
-  +#12'OnSelectItem'#7#23'lvBreakPointsSelectItem'#6'Height'#3#205#0#5'Width'#3
-  +'0'#2#8'HelpType'#7#9'htKeyword'#0#0#10'TPopupMenu'#8'mnuPopup'#7'OnPopup'#7
-  +#13'mnuPopupPopup'#4'left'#2#24#3'top'#2#8#0#9'TMenuItem'#7'popShow'#7'Capti'
-  +'on'#6#4'Show'#7'Default'#9#7'OnClick'#7#12'popShowClick'#0#0#9'TMenuItem'#2
-  +'N0'#7'Caption'#6#1'-'#0#0#9'TMenuItem'#6'popAdd'#7'Caption'#6#6'Add...'#0#9
-  +'TMenuItem'#14'popAddSourceBP'#7'Caption'#6#18'&Source breakpoint'#7'Enabled'
-  +#8#7'OnClick'#7#19'popAddSourceBPClick'#0#0#0#9'TMenuItem'#2'N1'#7'Caption'#6
-  +#1'-'#0#0#9'TMenuItem'#13'popProperties'#7'Caption'#6#11'&Properties'#7'OnCl'
-  +'ick'#7#18'popPropertiesClick'#0#0#9'TMenuItem'#10'popEnabled'#7'Caption'#6#8
-  +'&Enabled'#19'ShowAlwaysCheckable'#9#7'OnClick'#7#15'popEnabledClick'#0#0#9
-  +'TMenuItem'#9'popDelete'#7'Caption'#6#7'&Delete'#7'OnClick'#7#14'popDeleteCl'
-  +'ick'#0#0#9'TMenuItem'#2'N2'#7'Caption'#6#1'-'#0#0#9'TMenuItem'#13'popDisabl'
-  +'eAll'#7'Caption'#6#12'D&isable All'#7'OnClick'#7#18'popDisableAllClick'#0#0
-  +#9'TMenuItem'#12'popEnableAll'#7'Caption'#6#11'&Enable All'#7'OnClick'#7#17
-  +'popEnableAllClick'#0#0#9'TMenuItem'#12'popDeleteAll'#7'Caption'#6#11'&Delet'
-  +'e All'#7'OnClick'#7#17'popDeleteAllClick'#0#0#9'TMenuItem'#2'N3'#7'Caption'
-  +#6#1'-'#0#0#9'TMenuItem'#23'popDisableAllSameSource'#7'Caption'#6#26'Disable'
-  +' All in same source'#7'OnClick'#7#28'popDisableAllSameSourceCLICK'#0#0#9'TM'
-  +'enuItem'#22'popEnableAllSameSource'#7'Caption'#6#25'Enable All in same sour'
-  +'ce'#7'OnClick'#7#27'popEnableAllSameSourceCLICK'#0#0#9'TMenuItem'#22'popDel'
-  +'eteAllSameSource'#7'Caption'#6#25'Delete All in same source'#7'OnClick'#7#27
-  +'popDeleteAllSameSourceCLICK'#0#0#0#0
+  'TPF0'#241#15'TBreakpointsDlg'#14'BreakpointsDlg'#4'Left'#3'X'#1#6'Height'#3
+  +#205#0#3'Top'#3#153#0#5'Width'#3'0'#2#8'HelpType'#7#9'htKeyword'#18'HorzScro'
+  +'llBar.Page'#3'/'#2#18'VertScrollBar.Page'#3#204#0#13'ActiveControl'#7#13'lv'
+  +'BreakPoints'#7'Caption'#6#15'Breakpoint list'#8'OnCreate'#7#20'BreakpointsD'
+  +'lgCREATE'#7'Visible'#9#0#9'TListView'#13'lvBreakPoints'#6'Height'#3#205#0#5
+  +'Width'#3'0'#2#8'HelpType'#7#9'htKeyword'#5'Align'#7#8'alClient'#7'Columns'
+  +#14#1#7'Caption'#6#5'State'#0#1#7'Caption'#6#16'Filename/Address'#5'Width'#3
+  +#150#0#0#1#7'Caption'#6#11'Line/Length'#5'Width'#2'd'#0#1#7'Caption'#6#9'Con'
+  +'dition'#5'Width'#2'K'#0#1#7'Caption'#6#6'Action'#0#1#7'Caption'#6#10'Pass C'
+  +'ount'#5'Width'#2'd'#0#1#7'Caption'#6#5'Group'#5'Width'#2#5#0#0#11'MultiSele'
+  +'ct'#9#9'PopupMenu'#7#8'mnuPopup'#8'ReadOnly'#9#9'RowSelect'#9#10'SortColumn'
+  +#2#1#8'SortType'#7#6'stText'#8'TabOrder'#2#0#9'ViewStyle'#7#8'vsReport'#13'O'
+  +'nColumnClick'#7#24'lvBreakPointsColumnClick'#10'OnDblClick'#7#21'lvBreakPoi'
+  +'ntsDBLCLICK'#12'OnSelectItem'#7#23'lvBreakPointsSelectItem'#0#0#10'TPopupMe'
+  +'nu'#8'mnuPopup'#7'OnPopup'#7#13'mnuPopupPopup'#4'left'#2#24#3'top'#2#8#0#9
+  +'TMenuItem'#7'popShow'#7'Caption'#6#4'Show'#7'Default'#9#7'OnClick'#7#12'pop'
+  +'ShowClick'#0#0#9'TMenuItem'#2'N0'#7'Caption'#6#1'-'#0#0#9'TMenuItem'#6'popA'
+  +'dd'#7'Caption'#6#6'Add...'#0#9'TMenuItem'#14'popAddSourceBP'#7'Caption'#6#18
+  +'&Source breakpoint'#7'Enabled'#8#7'OnClick'#7#19'popAddSourceBPClick'#0#0#0
+  +#9'TMenuItem'#2'N1'#7'Caption'#6#1'-'#0#0#9'TMenuItem'#13'popProperties'#7'C'
+  +'aption'#6#11'&Properties'#7'OnClick'#7#18'popPropertiesClick'#0#0#9'TMenuIt'
+  +'em'#10'popEnabled'#7'Caption'#6#8'&Enabled'#8'ShortCut'#3'N@'#19'ShowAlways'
+  +'Checkable'#9#7'OnClick'#7#15'popEnabledClick'#0#0#9'TMenuItem'#9'popDelete'
+  +#7'Caption'#6#7'&Delete'#8'ShortCut'#2'.'#7'OnClick'#7#14'popDeleteClick'#0#0
+  +#9'TMenuItem'#2'N2'#7'Caption'#6#1'-'#0#0#9'TMenuItem'#13'popDisableAll'#7'C'
+  +'aption'#6#12'D&isable All'#7'OnClick'#7#18'popDisableAllClick'#0#0#9'TMenuI'
+  +'tem'#12'popEnableAll'#7'Caption'#6#11'&Enable All'#7'OnClick'#7#17'popEnabl'
+  +'eAllClick'#0#0#9'TMenuItem'#12'popDeleteAll'#7'Caption'#6#11'&Delete All'#7
+  +'OnClick'#7#17'popDeleteAllClick'#0#0#9'TMenuItem'#2'N3'#7'Caption'#6#1'-'#0
+  +#0#9'TMenuItem'#23'popDisableAllSameSource'#7'Caption'#6#26'Disable All in s'
+  +'ame source'#7'OnClick'#7#28'popDisableAllSameSourceCLICK'#0#0#9'TMenuItem'
+  +#22'popEnableAllSameSource'#7'Caption'#6#25'Enable All in same source'#7'OnC'
+  +'lick'#7#27'popEnableAllSameSourceCLICK'#0#0#9'TMenuItem'#22'popDeleteAllSam'
+  +'eSource'#7'Caption'#6#25'Delete All in same source'#7'OnClick'#7#27'popDele'
+  +'teAllSameSourceCLICK'#0#0#0#0
 ]);
