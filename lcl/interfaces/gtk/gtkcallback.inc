@@ -3241,6 +3241,7 @@ function gtkListBoxSelectionChangedAfter(widget: PGtkWidget; data: gPointer
   ): GBoolean; cdecl;
 var
   Mess: TLMessage;
+  GtkList: PGtkList;
 begin
   Result := CallBackDefaultReturn;
   {$IFDEF EventTrace}
@@ -3248,26 +3249,13 @@ begin
   {$ENDIF}
   FillChar(Mess,SizeOf(Mess),0);
   Mess.msg := LM_SelChange;
-  if (data=nil) or (PGtkList(widget)^.selection<>nil) then
+  GtkList:=PGtkList(widget);
+  if (data=nil) or (GtkList^.selection<>nil) then begin
+    if gtkListGetSelectionMode(GtkList)=GTK_SELECTION_SINGLE then
+      gtk_list_set_selection_mode(GtkList,GTK_SELECTION_BROWSE);
     DeliverMessage(Data, Mess);
+  end;
 end;
-
-function gtkListSelectChild(widget: PGtkWidget; child: PGtkWidget;
-  data: gPointer): GBoolean; cdecl;
-var
-  Mess: TLMessage;
-begin
-  Result := CallBackDefaultReturn;
-  if LockOnChange(PgtkObject(TWinControl(Data).Handle),0) > 0 then Exit;
-
-  {$IFDEF EventTrace}
-  EventTrace('gtkListSelectChild', data);
-  {$ENDIF}
-  FillChar(Mess,SizeOf(Mess),0);
-  Mess.msg := LM_SelChange;
-  DeliverMessage(Data, Mess);
-end;
-
 
 {$I gtkDragCallback.inc}
 {$I gtkListViewCallback.inc}

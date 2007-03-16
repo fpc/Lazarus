@@ -234,6 +234,7 @@ begin
   Mess.Result := 0;
   DeliverMessage(LCLList.Owner, Mess);
 end;
+
 {*************************************************************}
 {                      TGtkListStringList methods             }
 {*************************************************************}
@@ -785,6 +786,11 @@ begin
   end;
   Include(FStates,glsItemCacheNeedsUpdate);
   CheckForInvalidFocus;
+  if gtkListGetSelectionMode(FGtkList)=GTK_SELECTION_BROWSE then begin
+    // GTK_SELECTION_BROWSE always auto selects one child
+    // -> disable it and enable it when a selection is needed
+    gtk_list_set_selection_mode(FGtkList,GTK_SELECTION_SINGLE);
+  end;
   gtk_list_clear_items(FGtkList, 0, Count);
   FCachedCount:=0;
   EndUpdate;
@@ -821,6 +827,15 @@ begin
     FCachedCapacity:=FCachedCapacity shr 1;
     ReAllocMem(FCachedItems,SizeOf(PGtkListItem)*FCachedCapacity);
   end;
+  // change selection mode if needed
+  if (gtkListGetSelectionMode(FGtkList)=GTK_SELECTION_BROWSE)
+  and (FGtkList^.selection<>nil)
+  and (g_list_nth_data(FGtkList^.children, Index)=FGtkList^.selection) then begin
+    // item is selected and BROWSE mode is enabled
+    // -> change selection mode to prevent, that gtk auto selects another child
+    gtk_list_set_selection_mode(FGtkList,GTK_SELECTION_SINGLE);
+  end;
+
   // remove item from gtk list
   if Count = 0 then
     CheckForInvalidFocus
@@ -839,6 +854,7 @@ begin
   end;
   gtk_list_clear_items(FGtkList, Index, Index + 1);
   Include(FStates,glsItemCacheNeedsUpdate);
+  
   {$IFDEF CheckGtkList}
   ConsistencyCheck;
   {$ENDIF}

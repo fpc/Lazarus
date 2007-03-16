@@ -6152,6 +6152,28 @@ begin
   end;
 end;
 
+function gtkListSelectChild(widget: PGtkWidget; child: PGtkWidget;
+  data: gPointer): GBoolean; cdecl;
+var
+  Mess: TLMessage;
+begin
+  Result := CallBackDefaultReturn;
+  if LockOnChange(PgtkObject(TWinControl(Data).Handle),0) > 0 then Exit;
+
+  {$IFDEF EventTrace}
+  EventTrace('gtkListSelectChild', data);
+  {$ENDIF}
+  FillChar(Mess,SizeOf(Mess),0);
+  Mess.msg := LM_SelChange;
+  DeliverMessage(Data, Mess);
+end;
+
+function gtkListGetSelectionMode(list: PGtkList): TGtkSelectionMode; cdecl;
+begin
+  Result:=TGtkSelectionMode(
+       (list^.flag0 and bm_TGtkList_selection_mode) shr bp_TGtkList_selection_mode);
+end;
+
 {------------------------------------------------------------------------------
   SaveSizeNotification
   Params: Widget: PGtkWidget  A widget that is the handle of a lcl control.

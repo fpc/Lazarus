@@ -3478,6 +3478,8 @@ end;
 var
   AControl: TWinControl;
   SelectionMode: TGtkSelectionMode;
+  GtkList: PGtkList;
+  GtkCList: PGtkCList;
 begin
   AControl:=TWinControl(Sender);
   if (AControl is TWinControl) and
@@ -3489,19 +3491,28 @@ begin
           then SelectionMode:= GTK_SELECTION_EXTENDED
           else SelectionMode:= GTK_SELECTION_MULTIPLE;
     end
-    else
-      SelectionMode:= GTK_SELECTION_SINGLE;
+    else begin
+      SelectionMode:= GTK_SELECTION_BROWSE;
+    end;
     case AControl.fCompStyle of
 
     csListBox, csCheckListBox:
-      gtk_list_set_selection_mode(PGtkList(
-        GetWidgetInfo(Widget, True)^.CoreWidget),
-        SelectionMode);
+      begin
+        GtkList:=PGtkList(GetWidgetInfo(Widget, True)^.CoreWidget);
+        if (GtkList^.selection=nil)
+        and (SelectionMode=GTK_SELECTION_BROWSE) then
+          SelectionMode:=GTK_SELECTION_SINGLE;
+        gtk_list_set_selection_mode(GtkList,SelectionMode);
+      end;
 
     csCListBox:
-      gtk_clist_set_selection_mode(PGtkCList(
-        GetWidgetInfo(Widget, True)^.CoreWidget),
-          SelectionMode);
+      begin
+        GtkCList:=PGtkCList(GetWidgetInfo(Widget, True)^.CoreWidget);
+        if (GtkCList^.selection=nil)
+        and (SelectionMode=GTK_SELECTION_BROWSE) then
+          SelectionMode:=GTK_SELECTION_SINGLE;
+        gtk_clist_set_selection_mode(GtkCList,SelectionMode);
+      end;
 
     else
       Assert (true, 'WARNING:[TGtkWidgetSet.IntSendMessage3] usage of LM_SETSELMODE unimplemented for actual component');
@@ -4868,6 +4879,7 @@ var
   Widget: PGtkCombo;
   ItemList: TGtkListStringList;
   ComboBox: TComboBox;
+  GtkList: PGtkList;
 begin
   ComboBox:=TComboBox(ComboBoxObject);
   Result:= gtk_combo_new();
@@ -4880,17 +4892,21 @@ begin
   
   // Prevents the OnSelect event be fired after inserting the first item
   // or deleting the selected item
-  gtk_list_set_selection_mode(PGtkList(Widget^.List),GTK_SELECTION_SINGLE);
+  GtkList:=PGtkList(Widget^.List);
+  if GtkList^.selection=nil then
+    gtk_list_set_selection_mode(GtkList,GTK_SELECTION_SINGLE)
+  else
+    gtk_list_set_selection_mode(GtkList,GTK_SELECTION_BROWSE);
 
   // Items
-  ItemList:= TGtkListStringList.Create(PGtkList(Widget^.List),ComboBox,False);
+  ItemList:= TGtkListStringList.Create(GtkList,ComboBox,False);
   gtk_object_set_data(PGtkObject(Widget), GtkListItemLCLListTag, ItemList);
   ItemList.Assign(ComboBox.Items);
   ItemList.Sorted:= ComboBox.Sorted;
 
   // ItemIndex
   if ComboBox.ItemIndex >= 0 then
-    gtk_list_select_item(PGtkList(Widget^.list), ComboBox.ItemIndex);
+    gtk_list_select_item(GtkList, ComboBox.ItemIndex);
 
   // MaxLength
   gtk_entry_set_max_length(PGtkEntry(Widget^.entry),guint16(ComboBox.MaxLength));

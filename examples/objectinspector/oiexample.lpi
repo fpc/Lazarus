@@ -1,39 +1,15 @@
 <?xml version="1.0"?>
 <CONFIG>
   <ProjectOptions>
+    <PathDelim Value="/"/>
     <Version Value="5"/>
     <General>
       <MainUnit Value="0"/>
-      <ActiveEditorIndexAtStart Value="0"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=""/>
       <Title Value="Example for the Object Inspector"/>
+      <ActiveEditorIndexAtStart Value="1"/>
     </General>
-    <JumpHistory Count="0" HistoryIndex="-1"/>
-    <Units Count="2">
-      <Unit0>
-        <CursorPos X="6" Y="10"/>
-        <EditorIndex Value="1"/>
-        <Filename Value="oiexample.lpr"/>
-        <IsPartOfProject Value="True"/>
-        <Loaded Value="True"/>
-        <TopLine Value="1"/>
-        <UnitName Value="OIExample"/>
-        <UsageCount Value="29"/>
-      </Unit0>
-      <Unit1>
-        <CursorPos X="6" Y="21"/>
-        <EditorIndex Value="0"/>
-        <Filename Value="mainunit.pas"/>
-        <ComponentName Value="Form1"/>
-        <IsPartOfProject Value="True"/>
-        <Loaded Value="True"/>
-        <ResourceFilename Value="mainunit.lrs"/>
-        <TopLine Value="1"/>
-        <UnitName Value="MainUnit"/>
-        <UsageCount Value="29"/>
-      </Unit1>
-    </Units>
     <PublishOptions>
       <Version Value="2"/>
       <IgnoreBinaries Value="False"/>
@@ -51,9 +27,48 @@
         <PackageName Value="IDEIntf"/>
       </Item1>
     </RequiredPackages>
+    <Units Count="3">
+      <Unit0>
+        <Filename Value="oiexample.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="OIExample"/>
+        <CursorPos X="6" Y="10"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="2"/>
+        <UsageCount Value="29"/>
+        <Loaded Value="True"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="mainunit.pas"/>
+        <ComponentName Value="Form1"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceFilename Value="mainunit.lrs"/>
+        <UnitName Value="MainUnit"/>
+        <CursorPos X="22" Y="28"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="0"/>
+        <UsageCount Value="29"/>
+        <Loaded Value="True"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="../../lcl/interfaces/win32/win32int.pp"/>
+        <UnitName Value="Win32Int"/>
+        <CursorPos X="10" Y="23"/>
+        <TopLine Value="14"/>
+        <EditorIndex Value="1"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit2>
+    </Units>
+    <JumpHistory Count="1" HistoryIndex="0">
+      <Position1>
+        <Filename Value="../../lcl/interfaces/win32/win32int.pp"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
+      </Position1>
+    </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="3"/>
+    <Version Value="5"/>
     <SearchPaths>
       <OtherUnitFiles Value="$(LazarusDir)/components/units/"/>
       <LCLWidgetType Value="gtk"/>
