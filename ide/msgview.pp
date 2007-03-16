@@ -98,7 +98,7 @@ type
     procedure SetLastLineIsProgress(const AValue: boolean);
     procedure DoSelectionChange;
   protected
-    fBlockCount: integer;
+    fBlockLevel: integer;
     FLastSelectedIndex: integer;
     function GetSelectedLineIndex: integer;
     procedure SetSelectedLineIndex(const AValue: integer);
@@ -120,7 +120,7 @@ type
     procedure ShowTopMessage;
     procedure Clear; override;
     procedure GetVisibleMessageAt(Index: integer; var Msg, MsgDirectory: string);
-    procedure BeginBlock; override;
+    procedure BeginBlock(ClearOldBlocks: Boolean = true); override;
     procedure EndBlock; override;
     procedure ClearItems;
     function LinesCount: integer; override;
@@ -510,10 +510,11 @@ procedure TMessagesView.ClearTillLastSeparator;
 var
   LastSeparator: integer;
 begin
-  BeginBlock;
+  BeginBlock(false);
   try
     LastSeparator := VisibleItemCount - 1;
-    while (LastSeparator >= 0) and (VisibleItems[LastSeparator].Msg <> SeparatorLine) do
+    while (LastSeparator >= 0)
+    and (VisibleItems[LastSeparator].Msg <> SeparatorLine) do
       Dec(LastSeparator);
     if LastSeparator >= 0 then
     begin
@@ -676,7 +677,7 @@ end;
 procedure TMessagesView.Clear;
 begin
   if Self=nil then exit;
-  if fBlockCount>0 then begin
+  if fBlockLevel>0 then begin
     // keep the old blocks
     exit;
   end;
@@ -703,19 +704,20 @@ begin
   MsgDirectory := VisibleItems[Index].Directory;
 end;
 
-procedure TMessagesView.BeginBlock;
+procedure TMessagesView.BeginBlock(ClearOldBlocks: Boolean = true);
 begin
-  Clear;
-  //if fBlockCount=0 then DumpStack;
-  Inc(fBlockCount);
+  if ClearOldBlocks then
+    Clear;
+  //if fBlockLevel=0 then DumpStack;
+  Inc(fBlockLevel);
 end;
 
 procedure TMessagesView.EndBlock;
 begin
-  if fBlockCount <= 0 then
+  if fBlockLevel <= 0 then
     RaiseException('TMessagesView.EndBlock Internal Error');
-  Dec(fBlockCount);
-  //if fBlockCount=0 then DumpStack;
+  Dec(fBlockLevel);
+  //if fBlockLevel=0 then DumpStack;
 end;
 
 procedure TMessagesView.ClearItems;

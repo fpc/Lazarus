@@ -183,7 +183,7 @@ type
     procedure AddMsg(const Msg, CurDir: string; OriginalIndex: integer); virtual; abstract;
     property Lines[Index: integer]: TIDEMessageLine read GetLines; default;
     function LinesCount: integer; virtual; abstract;
-    procedure BeginBlock; virtual; abstract;
+    procedure BeginBlock(ClearOldBlocks: Boolean = true); virtual; abstract;
     procedure EndBlock; virtual; abstract;
   end;
 
