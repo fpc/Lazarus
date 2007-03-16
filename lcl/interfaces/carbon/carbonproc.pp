@@ -613,7 +613,7 @@ begin
   Desc.AlphaPrec := 8;
   Desc.AlphaSeparate := False;
   Desc.AlphaLineEnd := rileDQWordBoundary;
-  Desc.AlphaShift := 24;
+  Desc.AlphaShift := 0;
 end;
 
 {------------------------------------------------------------------------------
