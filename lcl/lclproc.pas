@@ -261,7 +261,15 @@ function ClassCase(const AClass: TClass; const ACase: array of TClass; const ADe
 
 
 // UTF utility functions
-// MG: Should be moved to the RTL
+// MG: Should be moved to the RTL  
+
+// MWE: define (missing) UTF16string similar to UTF8 
+//      strictly spoken, a widestring <> utf16string
+// todo: use it in exiting functions
+type
+  UTF16String = type WideString;
+  PUTF16String = ^UTF16String;
+
 function UTF8CharacterLength(p: PChar): integer;
 function UTF8Length(const s: string): integer;
 function UTF8Length(p: PChar; ByteCount: integer): integer;
@@ -285,6 +293,25 @@ function UTF16Length(const s: widestring): integer;
 function UTF16Length(p: PWideChar; WordCount: integer): integer;
 function UTF16CharacterToUnicode(p: PWideChar; out CharLen: integer): Cardinal;
 function UnicodeToUTF16(u: cardinal): widestring;
+
+type
+  TConvertResult = (trNoError, trNullSrc, trNullDest, trDestExhausted,
+    trInvalidChar, trUnfinishedChar);
+
+  TConvertOption = (toInvalidCharError, toInvalidCharToSymbol,
+    toUnfinishedCharError, toUnfinishedCharToSymbol);
+  TConvertOptions = set of TConvertOption;
+
+function ConvertUTF8ToUTF16(Dest: PWideChar; DestWideCharCount: SizeUInt;
+  Src: PChar; SrcCharCount: SizeUInt; Options: TConvertOptions;
+  out ActualWideCharCount: SizeUInt): TConvertResult;
+
+function ConvertUTF16ToUTF8(Dest: PChar; DestCharCount: SizeUInt;
+  Src: PWideChar; SrcWideCharCount: SizeUInt; Options: TConvertOptions;
+  out ActualCharCount: SizeUInt): TConvertResult;
+
+function UTF8ToUTF16(const S: UTF8String): UTF16String;
+function UTF16ToUTF8(const S: UTF16String): UTF8String;
 
 
 // identifier
@@ -2630,6 +2657,442 @@ begin
     Result:=widechar(u)
   else
     Result:=widechar($D800+(u shr 10))+widechar($DC00+(u and $3ff));
+end;
+
+{------------------------------------------------------------------------------
+  Name:    ConvertUTF8ToUTF16
+  Params:  Dest                - Pointer to destination string
+           DestWideCharCount   - Wide char count allocated in destination string
+           Src                 - Pointer to source string
+           SrcCharCount        - Char count allocated in source string
+           Options             - Conversion options, if none is set, both
+             invalid and unfinished source chars are skipped
+
+             toInvalidCharError       - Stop on invalid source char and report
+                                      error
+             toInvalidCharToSymbol    - Replace invalid source chars with '?'
+             toUnfinishedCharError    - Stop on unfinished source char and
+                                      report error
+             toUnfinishedCharToSymbol - Replace unfinished source char with '?'
+
+           ActualWideCharCount - Actual wide char count converted from source
+                               string to destination string
+  Returns:
+    trNoError        - The string was successfully converted without
+                     any error
+    trNullSrc        - Pointer to source string is nil
+    trNullDest       - Pointer to destination string is nil
+    trDestExhausted  - Destination buffer size is not big enough to hold
+                     converted string
+    trInvalidChar    - Invalid source char has occured
+    trUnfinishedChar - Unfinished source char has occured
+
+  Converts the specified UTF-8 encoded string to UTF-16 encoded (system endian)
+ ------------------------------------------------------------------------------}
+function ConvertUTF8ToUTF16(Dest: PWideChar; DestWideCharCount: SizeUInt;
+  Src: PChar; SrcCharCount: SizeUInt; Options: TConvertOptions;
+  out ActualWideCharCount: SizeUInt): TConvertResult;
+var
+  DestI, SrcI: SizeUInt;
+  B1, B2, B3, B4: Byte;
+  W: Word;
+  C: Cardinal;
+
+  function UnfinishedCharError: Boolean;
+  begin
+    if toUnfinishedCharToSymbol in Options then
+    begin
+      Dest[DestI] := WideChar('?');
+      Inc(DestI);
+      Result := False;
+    end
+    else
+      if toUnfinishedCharError in Options then
+      begin
+        ConvertUTF8ToUTF16 := trUnfinishedChar;
+        Result := True;
+      end
+      else Result := False;
+  end;
+
+  function InvalidCharError(Count: SizeUInt): Boolean; inline;
+  begin
+    if not (toInvalidCharError in Options) then
+    begin
+      if toInvalidCharToSymbol in Options then
+      begin
+        Dest[DestI] := WideChar('?');
+        Inc(DestI);
+      end;
+
+      Dec(SrcI, Count);
+
+      // skip trailing UTF-8 char bytes
+      while (Count > 0) do
+      begin
+        if (Byte(Src[SrcI]) and %11000000) <> %10000000 then Break;
+        Inc(SrcI);
+        Dec(Count);
+      end;
+
+      Result := False;
+    end
+    else
+      if toInvalidCharError in Options then
+      begin
+        ConvertUTF8ToUTF16 := trUnfinishedChar;
+        Result := True;
+      end;
+  end;
+
+begin
+  ActualWideCharCount := 0;
+
+  if not Assigned(Src) then
+  begin
+    Result := trNullSrc;
+    Exit;
+  end;
+
+  if not Assigned(Dest) then
+  begin
+    Result := trNullDest;
+    Exit;
+  end;
+  SrcI := 0;
+  DestI := 0;
+
+  while (DestI < DestWideCharCount) and (SrcI < SrcCharCount) do
+  begin
+    B1 := Byte(Src[SrcI]);
+    Inc(SrcI);
+
+    if B1 < 128 then // single byte UTF-8 char
+    begin
+      Dest[DestI] := WideChar(B1);
+      Inc(DestI);
+    end
+    else
+    begin
+      if SrcI >= SrcCharCount then
+        if UnfinishedCharError then Exit
+        else Break;
+
+      B2 := Byte(Src[SrcI]);
+      Inc(SrcI);
+
+      if (B1 and %11100000) = %11000000 then // double byte UTF-8 char
+      begin
+        if (B2 and %11000000) = %10000000 then
+        begin
+          Dest[DestI] := WideChar(((B1 and %00011111) shl 6) or (B2 and %00111111));
+          Inc(DestI);
+        end
+        else // invalid character, assume single byte UTF-8 char
+          if InvalidCharError(1) then Exit;
+      end
+      else
+      begin
+        if SrcI >= SrcCharCount then
+          if UnfinishedCharError then Exit
+          else Break;
+
+        B3 := Byte(Src[SrcI]);
+        Inc(SrcI);
+
+        if (B1 and %11110000) = %11100000 then // triple byte UTF-8 char
+        begin
+          if ((B2 and %11000000) = %10000000) and ((B3 and %11000000) = %10000000) then
+          begin
+            W := ((B1 and %00011111) shl 12) or ((B2 and %00111111) shl 6) or (B3 and %00111111);
+            if W < $D800 then // to single wide char UTF-16 char
+            begin
+              Dest[DestI] := WideChar(W);
+              Inc(DestI);
+            end
+            else // to double wide char UTF-16 char
+            begin
+              Dest[DestI] := WideChar($D800 or (W shr 10));
+              Inc(DestI);
+              if DestI >= DestWideCharCount then Break;
+              Dest[DestI] := WideChar($DC00 or (W and %0000001111111111));
+              Inc(DestI);
+            end;
+          end
+          else // invalid character, assume single byte UTF-8 char
+            if InvalidCharError(2) then Exit;
+        end
+        else
+        begin
+          if SrcI >= SrcCharCount then
+            if UnfinishedCharError then Exit
+            else Break;
+
+          B4 := Byte(Src[SrcI]);
+          Inc(SrcI);
+
+          if ((B1 and %11111000) = %11110000) and ((B2 and %11000000) = %10000000)
+            and ((B3 and %11000000) = %10000000) and ((B4 and %11000000) = %10000000) then
+          begin // 4 byte UTF-8 char
+            C := ((B1 and %00011111) shl 18) or ((B2 and %00111111) shl 12)
+              or ((B3 and %00111111) shl 6)  or (B4 and %00111111);
+            // to double wide char UTF-16 char
+            Dest[DestI] := WideChar($D800 or (C shr 10));
+            Inc(DestI);
+            if DestI >= DestWideCharCount then Break;
+            Dest[DestI] := WideChar($DC00 or (C and %0000001111111111));
+            Inc(DestI);
+          end
+          else // invalid character, assume single byte UTF-8 char
+            if InvalidCharError(3) then Exit;
+        end;
+      end;
+    end;
+  end;
+
+  if DestI >= DestWideCharCount then
+  begin
+    DestI := DestWideCharCount - 1;
+    Result := trDestExhausted;
+  end
+  else
+    Result := trNoError;
+
+  Dest[DestI] := #0;
+  ActualWideCharCount := DestI + 1;
+end;
+
+{------------------------------------------------------------------------------
+  Name:    ConvertUTF16ToUTF8
+  Params:  Dest             - Pointer to destination string
+           DestCharCount    - Char count allocated in destination string
+           Src              - Pointer to source string
+           SrcWideCharCount - Wide char count allocated in source string
+           Options          - Conversion options, if none is set, both
+             invalid and unfinished source chars are skipped.
+             See ConvertUTF8ToUTF16 for details.
+
+           ActualCharCount  - Actual char count converted from source
+                            string to destination string
+  Returns: See ConvertUTF8ToUTF16
+
+  Converts the specified UTF-16 encoded string (system endian) to UTF-8 encoded
+ ------------------------------------------------------------------------------}
+function ConvertUTF16ToUTF8(Dest: PChar; DestCharCount: SizeUInt;
+  Src: PWideChar; SrcWideCharCount: SizeUInt; Options: TConvertOptions;
+  out ActualCharCount: SizeUInt): TConvertResult;
+var
+  DestI, SrcI: SizeUInt;
+  W1, W2: Word;
+  C: Cardinal;
+
+  function UnfinishedCharError: Boolean;
+  begin
+    if toUnfinishedCharToSymbol in Options then
+    begin
+      Dest[DestI] := Char('?');
+      Inc(DestI);
+      Result := False;
+    end
+    else
+      if toUnfinishedCharError in Options then
+      begin
+        ConvertUTF16ToUTF8 := trUnfinishedChar;
+        Result := True;
+      end
+      else Result := False;
+  end;
+
+  function InvalidCharError(Count: SizeUInt): Boolean; inline;
+  begin
+    if not (toInvalidCharError in Options) then
+    begin
+      if toInvalidCharToSymbol in Options then
+      begin
+        Dest[DestI] := Char('?');
+        Inc(DestI);
+      end;
+
+      Dec(SrcI, Count);
+      // skip trailing UTF-16 wide char
+      if (Word(Src[SrcI]) and $FC00) = $DC00 then Inc(SrcI);
+
+      Result := False;
+    end
+    else
+      if toInvalidCharError in Options then
+      begin
+        ConvertUTF16ToUTF8 := trUnfinishedChar;
+        Result := True;
+      end;
+  end;
+
+begin
+  ActualCharCount := 0;
+
+  if not Assigned(Src) then
+  begin
+    Result := trNullSrc;
+    Exit;
+  end;
+
+  if not Assigned(Dest) then
+  begin
+    Result := trNullDest;
+    Exit;
+  end;
+  SrcI := 0;
+  DestI := 0;
+
+  while (DestI < DestCharCount) and (SrcI < SrcWideCharCount) do
+  begin
+    W1 := Word(Src[SrcI]);
+    Inc(SrcI);
+
+    if W1 < $D800 then // single wide char UTF-16 char
+    begin
+      if W1 < $0080 then // to single byte UTF-8 char
+      begin
+        Dest[DestI] := Char(W1);
+        Inc(DestI);
+      end
+      else
+        if W1 < $0800 then // to double byte UTF-8 char
+        begin
+          Dest[DestI] := Char(%11000000 or ((W1 and %11111000000) shr 6));
+          Inc(DestI);
+          if DestI >= DestCharCount then Break;
+          Dest[DestI] := Char(%10000000 or (W1 and %111111));
+          Inc(DestI);
+        end
+        else
+        begin // to triple byte UTF-8 char
+          Dest[DestI] := Char(%11100000 or ((W1 and %1111000000000000) shr 12));
+          Inc(DestI);
+          if DestI >= DestCharCount then Break;
+          Dest[DestI] := Char(%10000000 or ((W1 and %111111000000) shr 6));
+          Inc(DestI);
+          if DestI >= DestCharCount then Break;
+          Dest[DestI] := Char(%10000000 or (W1 and %111111));
+          Inc(DestI);
+        end;
+    end
+    else
+    begin
+      if SrcI >= SrcWideCharCount then
+        if UnfinishedCharError then Exit
+        else Break;
+
+      W2 := Word(Src[SrcI]);
+      Inc(SrcI);
+
+      if (W1 and $F800) = $D800 then // double wide char UTF-16 char
+      begin
+        if (W2 and $FC00) = $DC00 then
+        begin
+          C := (W1 - $D800) shl 10 + (W2 - $DC00);
+          if C >= $D800 then
+          begin
+            if C < $010000 then // to triple byte UTF-8 char
+            begin
+              Dest[DestI] := Char(%11100000 or ((C and $F000) shr 12));
+              Inc(DestI);
+              if DestI >= DestCharCount then Break;
+              Dest[DestI] := Char(%10000000 or ((C and %111111000000) shr 6));
+              Inc(DestI);
+              if DestI >= DestCharCount then Break;
+              Dest[DestI] := Char(%10000000 or (C and %111111));
+              Inc(DestI);
+            end
+            else
+            begin // to 4 byte UTF-8 char
+              Dest[DestI] := Char(%11110000 or (C shr 18));
+              Inc(DestI);
+              if DestI >= DestCharCount then Break;
+              Dest[DestI] := Char(%10000000 or ((C and $3F000) shr 12));
+              Inc(DestI);
+              if DestI >= DestCharCount then Break;
+              Dest[DestI] := Char(%10000000 or ((C and %111111000000) shr 6));
+              Inc(DestI);
+              if DestI >= DestCharCount then Break;
+              Dest[DestI] := Char(%10000000 or (C and %111111));
+              Inc(DestI);
+            end;
+          end
+          else // invalid character, assume single wide char UTF-16 char
+            if InvalidCharError(1) then Exit;
+        end
+        else // invalid character, assume single wide char UTF-16 char
+          if InvalidCharError(1) then Exit;
+      end
+      else // invalid character, assume single wide char UTF-16 char
+        if InvalidCharError(1) then Exit;
+    end;
+  end;
+
+  if DestI >= DestCharCount then
+  begin
+    DestI := DestCharCount - 1;
+    Result := trDestExhausted;
+  end
+  else
+    Result := trNoError;
+
+  Dest[DestI] := #0;
+  ActualCharCount := DestI + 1;
+end;
+
+{------------------------------------------------------------------------------
+  Name:    UTF8ToUTF16
+  Params:  S - Source UTF-8 string
+  Returns: UTF-16 encoded string
+
+  Converts the specified UTF-8 encoded string to UTF-16 encoded (system endian)
+  Avoid copying the result string since on windows a widestring requires a full 
+  copy
+ ------------------------------------------------------------------------------}
+function UTF8ToUTF16(const S: UTF8String): UTF16String;
+var
+  L: SizeUInt;
+begin
+  if S = '' 
+  then begin
+    Result := '';
+    Exit;
+  end;
+
+  SetLength(Result, Length(S));
+  // wide chars of UTF-16 <= bytes of UTF-8 string
+  if ConvertUTF8ToUTF16(PWideChar(Result), Length(Result) + 1, PChar(S), Length(S),
+    [toInvalidCharToSymbol], L) = trNoError 
+  then SetLength(Result, L - 1)
+  else Result := '';
+end;
+
+{------------------------------------------------------------------------------
+  Name:    UTF16ToUTF8
+  Params:  S - Source UTF-16 string (system endian)
+  Returns: UTF-8 encoded string
+
+  Converts the specified UTF-16 encoded string (system endian) to UTF-8 encoded
+ ------------------------------------------------------------------------------}
+function UTF16ToUTF8(const S: UTF16String): UTF8String;
+var
+  L: SizeUInt;
+  R: UTF8String;
+begin
+  Result := '';
+  if S = '' then Exit;
+
+  SetLength(R, Length(S) * 3);
+  // bytes of UTF-8 <= 3 * wide chars of UTF-16 string
+  // e.g. %11100000 10100000 10000000 (UTF-8) is $0800 (UTF-16)
+  if ConvertUTF16ToUTF8(PChar(R), Length(R) + 1, PWideChar(S), Length(S),
+    [toInvalidCharToSymbol], L) = trNoError then
+  begin
+    SetLength(R, L - 1);
+    Result := R;
+  end;
 end;
 
 function CreateFirstIdentifier(const Identifier: string): string;
