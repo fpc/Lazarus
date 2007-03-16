@@ -148,7 +148,7 @@ echo '  * Unofficial snapshot build for lazarus' >> $File
 echo " -- Mattias Gaertner <mattias@freepascal.org>  $Date" >> $File
 echo "" >> $File
 cat $ResourceDir/changelog >> $File
-rm $File.gz
+rm -f $File.gz
 gzip --best $File
 
 # create postinst if needed
@@ -162,7 +162,7 @@ fi
 echo "creating changelog.Debian file ..."
 File=$DebianDocDir/changelog.Debian
 cp $ResourceDir/changelog.Debian $File
-rm $File.gz
+rm -f $File.gz
 gzip --best $File
 
 # create debian copyright file

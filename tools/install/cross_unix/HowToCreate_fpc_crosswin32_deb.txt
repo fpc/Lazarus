@@ -17,7 +17,7 @@ This will download the FPC svn to ~/freepascal/fpc, its install files to
 Create the fpc deb and install it:
 
   []$ cd <lazarusdir>/tools/install
-  []$ ./create_fpc_deb.sh ~/freepascal/fpc
+  []$ ./create_fpc_deb.sh fpc ~/freepascal/fpc
   []$ sudo dpkg -i fpc-<version>.i386.rpm
 
 Then build the fpc_crosswin32 deb and install it:
