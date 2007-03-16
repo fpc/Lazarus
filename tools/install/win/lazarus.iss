@@ -33,14 +33,15 @@ ShowTasksTreeLines=true
 Name: desktopicon; Description: {cm:CreateDesktopIcon}; GroupDescription: {cm:AdditionalIcons}; Flags: unchecked
 
 [Components]
-Name: associate; Description: {code:GetPoString|installerstrconsts:wisAssociateFiles}; Types: custom full
-Name: associate\lfm; Description: {code:GetPoString|installerstrconsts:wisAssociateLfmFiles}; Types: custom full
-Name: associate\lpi; Description: {code:GetPoString|installerstrconsts:wisAssociateLpiFiles}; Types: custom full
-Name: associate\lpk; Description: {code:GetPoString|installerstrconsts:wisAssociateLpkFiles}; Types: custom full
-Name: associate\lpr; Description: {code:GetPoString|installerstrconsts:wisAssociateLprFiles}; Types: custom full
-Name: associate\inc; Description: {code:GetPoString|installerstrconsts:wisAssociateIncFiles}; Types: custom full
-Name: associate\pas; Description: {code:GetPoString|installerstrconsts:wisAssociatePasFiles}; Types: custom full
-Name: associate\pp; Description: {code:GetPoString|installerstrconsts:wisAssociatePpFiles}; Types: custom full
+Name: associate; Description: Associate Lazarus files with Lazarus; Types: custom full
+Name: associate\lpi; Description: Associate .lpi files with Lazarus; Types: custom full
+Name: associate\lfm; Description: Associate .lfm files with Lazarus; Types: custom full
+Name: associate\lpi; Description: Associate .lpi files with Lazarus; Types: custom full
+Name: associate\lpk; Description: Associate .lpk files with Lazarus; Types: custom full
+Name: associate\lpr; Description: Associate .lpr files with Lazarus; Types: custom full
+Name: associate\inc; Description: Associate .inc files with Lazarus; Types: custom full
+Name: associate\pas; Description: Associate .pas files with Lazarus; Types: custom full
+Name: associate\pp; Description: Associate .pp files with Lazarus; Types: custom full
 
 [Files]
 Source: {#BuildDir}\*.*; DestDir: {app}; Flags: recursesubdirs
