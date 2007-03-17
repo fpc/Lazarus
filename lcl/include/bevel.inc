@@ -81,13 +81,13 @@ Begin
   Case Style Of
   bsRaised:
     Begin
-      Colora:=clWhite;
-      Colorb:=clGray;
+      Colora:=cl3DHilight;
+      Colorb:=cl3DShadow;
     End;
   bsLowered:
     Begin
-      Colora:=clGray;
-      Colorb:=clWhite;
+      Colora:=cl3DShadow;
+      Colorb:=cl3DHilight;
     End;
   End;
   Canvas.Pen.Width:=1;
