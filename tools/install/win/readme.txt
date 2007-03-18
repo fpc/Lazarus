@@ -16,19 +16,10 @@ A.3 Lazarus sources
 A Lazarus svn tree, containing the lazarus sources.
 
 A.4. The latest release of the fpc compiler
-You need a fpc 2.0.2 compiler (just the ppc386.exe) to bootstrap compilation of the current fpc version.
+You need a fpc 2.0.4 compiler (just the ppc386.exe) to bootstrap compilation of the current fpc version.
 
 A.5 Debugger
 Download http://prdownloads.sourceforge.net/mingw/gdb-6.0-20031011.exe?download and install it in some directory. Set GDBDIR to this directory.
-
-A.6 Translations of the GPL license
-The installer is able to show its messages in multiple languages. The lazarus svn tree doesn't contain the translations of the GPL languages. Download those translations from http://www.gnu.org/licenses/translations.html and put them in a directory. At the moment the following files are needed:
-http://users.skynet.be/xterm/gpld.txt
-http://www.magnux.org/doc/GPL-pt_BR.txt
-Not for all languages the installer can handle at the moment, there are text files on http://www.gnu.org/licenses/translations.html. For these languages the official GPL is shown.
-
-A.7 Other binary utilities
-You need some third party binary utilities, for example make, ld, strip. Download a recent binary fpc installer, and extract asldw32.zip and makew32.zip to a new directory.
 
 
 B Adjust create_installer.bat to your configuration
@@ -42,7 +33,6 @@ RELEASE_PPC: Path to fpc 2.0.2 compiler
 FPCBINDIR: Path to the directory containing some utilities used by fpc
 GDBDIR: Path to the directory containing the mingw gdb debugger installation
 BUILDDIR: Path to build directory. 
-LICENSEDIR: Path to the directory containing translations of the GPL license
 
 C Run create_installer.bat
 
