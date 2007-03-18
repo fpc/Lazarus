@@ -1358,6 +1358,10 @@ msgstr ""
 msgid "Code"
 msgstr "Code"
 
+#: lazarusidestrconsts:lismenuviewcodebrowser
+msgid "Code Browser"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcodecreation
 msgid "Code Creation"
 msgstr "Création de code"
@@ -4052,6 +4056,10 @@ msgstr "Installer le paquet %s installera automatiquement les paquets :"
 
 #: lazarusidestrconsts:lisdebugoptionsfrminterface
 msgid "Interface"
+msgstr ""
+
+#: lazarusidestrconsts:listcompilerinternalerror
+msgid "Internal compiler error! (%d)"
 msgstr ""
 
 #: lazarusidestrconsts:dlgintvinsec
@@ -7747,8 +7755,8 @@ msgid "The FCL - FreePascal Component Library provides the base classes for obje
 msgstr "la FCL (FreePascal Component Library) fournit les classes de base pour le Pascal objet."
 
 #: lazarusidestrconsts:lisenvoptdlginvalidfpcsrcdir
-msgid "The FPC source directory \"%s\" does not look correct. Normally it contains directories like rtl, fcl, packages, compiler, ... ."
-msgstr "Le répertoire source de FPC '\"%s\" n'a pas la composition correcte. Il contient normalement des répertoires comme rtl, fcl, packages, compiler, ... "
+msgid "The FPC source directory \"%s\" does not look correct. Normally it contains directories like rtl, packages, compiler, ... ."
+msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefsthefreepascalsvnsourcedir
 msgid "The Free Pascal SVN source directory."
@@ -9233,6 +9241,10 @@ msgstr "Afficher les points d'arrêt"
 #: lazarusidestrconsts:srkmectogglecallstack
 msgid "View call stack"
 msgstr "Afficher la pile d'appel"
+
+#: lazarusidestrconsts:srkmectogglecodebrowser
+msgid "View code browser"
+msgstr ""
 
 #: lazarusidestrconsts:srkmectogglecomppalette
 msgid "View component palette"

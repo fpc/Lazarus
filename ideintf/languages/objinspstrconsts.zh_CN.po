@@ -648,6 +648,10 @@ msgstr "对象观察器"
 msgid "Ok"
 msgstr "确定"
 
+#: objinspstrconsts:clbcheckduplicate
+msgid "On Add, Check for Duplicate in Items"
+msgstr ""
+
 #: objinspstrconsts:sccstredtopendialog
 msgid "Open"
 msgstr "打开"
@@ -856,6 +860,10 @@ msgstr "测试对话框..."
 msgid "Text:"
 msgstr "文本:"
 
+#: objinspstrconsts:clbcheckduplicatemsg
+msgid "The \"%s\" Item is already listed. Add it anyway? "
+msgstr ""
+
 #: objinspstrconsts:cactionlisteditorpaneltoolbar
 msgid "Toolbar"
 msgstr "工具栏"
@@ -903,4 +911,8 @@ msgstr "宽度:"
 #: objinspstrconsts:oisword
 msgid "Word"
 msgstr "Word"
+
+#: objinspstrconsts:clbcolumns
+msgid "n. columns"
+msgstr ""
 

@@ -634,6 +634,10 @@ msgstr "Object Inspector"
 msgid "Ok"
 msgstr "Ok"
 
+#: objinspstrconsts:clbcheckduplicate
+msgid "On Add, Check for Duplicate in Items"
+msgstr ""
+
 #: objinspstrconsts:sccstredtopendialog
 msgid "Open"
 msgstr "Open"
@@ -842,6 +846,10 @@ msgstr "Dialoog testen..."
 msgid "Text:"
 msgstr "Tekst:"
 
+#: objinspstrconsts:clbcheckduplicatemsg
+msgid "The \"%s\" Item is already listed. Add it anyway? "
+msgstr ""
+
 #: objinspstrconsts:cactionlisteditorpaneltoolbar
 msgid "Toolbar"
 msgstr "Gereedschapsbalk"
@@ -889,4 +897,8 @@ msgstr ""
 #: objinspstrconsts:oisword
 msgid "Word"
 msgstr "Word"
+
+#: objinspstrconsts:clbcolumns
+msgid "n. columns"
+msgstr ""
 

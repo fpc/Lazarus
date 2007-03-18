@@ -44,6 +44,7 @@ type
 
   TCodeTemplateDialog = class(TForm)
     AddButton: TButton;
+    EditTemplateGroupBox: TGroupBox;
     OkButton: TBitBtn;
     CancelButton: TBitBtn;
     InsertMacroButton: TButton;
@@ -53,7 +54,7 @@ type
     TemplateListBox: TListBox;
     TemplateSynEdit: TSynEdit;
     ASynPasSyn: TSynPasSyn;
-    TemplateGroupBox: TGroupBox;
+    TemplatesGroupBox: TGroupBox;
     FilenameButton: TButton;
     FilenameEdit: TEdit;
     FilenameGroupBox: TGroupBox;
@@ -600,7 +601,7 @@ begin
   EditButton.Caption:=lisCodeToolsDefsEdit;
   DeleteButton.Caption:=dlgEdDelete;
   CancelButton.Caption:=dlgCancel;
-  TemplateGroupBox.Caption:=lisCTDTemplates;
+  TemplatesGroupBox.Caption:=lisCTDTemplates;
   OkButton.Caption:=lisLazBuildOk;
   FilenameGroupBox.Caption:=lisToDoLFile;
   UseMacrosCheckBox.Caption:=lisEnableMacros;
@@ -871,6 +872,8 @@ begin
   //debugln('TCodeTemplateDialog.ShowCurCodeTemplate A i=',dbgs(i));
   if a >= 0
   then begin
+    EditTemplateGroupBox.Caption:=dbgstr(SynAutoComplete.Completions[a])
+                           +' - '+dbgstr(SynAutoComplete.CompletionComments[a]);
     LastTemplate := -1;
     s:=SynAutoComplete.CompletionValues[a];
     //debugln('TCodeTemplateDialog.ShowCurCodeTemplate s="',s,'"');
@@ -887,6 +890,8 @@ begin
     end;
     if (ep>sp) or ((s<>'') and (s[length(s)] in [#10,#13])) then
       AddLine(copy(s,sp,ep-sp));
+  end else begin
+    EditTemplateGroupBox.Caption:='no template selected';
   end;
   LastTemplate := a;
   TemplateSynEdit.Lines.EndUpdate;

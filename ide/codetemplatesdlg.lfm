@@ -1,10 +1,10 @@
 object CodeTemplateDialog: TCodeTemplateDialog
   Left = 310
-  Height = 519
+  Height = 612
   Top = 162
   Width = 497
   HorzScrollBar.Page = 496
-  VertScrollBar.Page = 518
+  VertScrollBar.Page = 611
   ActiveControl = FilenameEdit
   BorderIcons = [biSystemMenu]
   Caption = 'CodeTemplateDialog'
@@ -47,44 +47,138 @@ object CodeTemplateDialog: TCodeTemplateDialog
       TabOrder = 1
     end
   end
-  object TemplateGroupBox: TGroupBox
+  object TemplatesGroupBox: TGroupBox
     AnchorSideBottom.Control = CancelButton
     Left = 6
-    Height = 419
+    Height = 167
     Top = 63
     Width = 485
     Align = alTop
-    Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
     BorderSpacing.InnerBorder = 6
-    Caption = 'TemplateGroupBox'
+    Caption = 'TemplatesGroupBox'
     TabOrder = 1
     object TemplateListBox: TListBox
-      AnchorSideLeft.Control = TemplateGroupBox
-      AnchorSideTop.Control = TemplateGroupBox
+      AnchorSideLeft.Control = TemplatesGroupBox
+      AnchorSideTop.Control = TemplatesGroupBox
       AnchorSideRight.Control = AddButton
-      AnchorSideBottom.Control = InsertMacroButton
+      AnchorSideBottom.Control = TemplatesGroupBox
       AnchorSideBottom.Side = asrBottom
       Left = 6
-      Height = 180
+      Height = 136
       Top = 6
-      Width = 348
+      Width = 315
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
       BorderSpacing.Right = 6
+      BorderSpacing.Bottom = 6
       OnSelectionChange = TemplateListBoxSelectionChange
       TabOrder = 0
       TopIndex = -1
     end
-    object TemplateSynEdit: TSynEdit
+    object AddButton: TButton
       AnchorSideTop.Control = TemplateListBox
+      AnchorSideRight.Control = TemplatesGroupBox
+      AnchorSideRight.Side = asrBottom
+      Left = 327
+      Height = 30
+      Top = 6
+      Width = 148
+      Anchors = [akTop, akRight]
+      BorderSpacing.Right = 6
+      BorderSpacing.InnerBorder = 4
+      Caption = 'AddButton'
+      OnClick = AddButtonClick
+      TabOrder = 1
+    end
+    object DeleteButton: TButton
+      AnchorSideLeft.Control = AddButton
+      AnchorSideTop.Control = AddButton
       AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = AddButton
+      AnchorSideRight.Side = asrBottom
+      Left = 327
+      Height = 30
+      Top = 42
+      Width = 148
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Top = 6
+      BorderSpacing.InnerBorder = 4
+      Caption = 'DeleteButton'
+      OnClick = DeleteButtonClick
+      TabOrder = 3
+    end
+    object EditButton: TButton
+      AnchorSideLeft.Control = AddButton
+      AnchorSideTop.Control = DeleteButton
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = DeleteButton
+      AnchorSideRight.Side = asrBottom
+      Left = 327
+      Height = 30
+      Top = 78
+      Width = 148
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Top = 6
+      BorderSpacing.InnerBorder = 4
+      Caption = 'EditButton'
+      OnClick = EditButtonClick
+      TabOrder = 2
+    end
+  end
+  object EditTemplateGroupBox: TGroupBox
+    AnchorSideTop.Control = TemplatesGroupBox
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = CancelButton
+    Left = 6
+    Height = 339
+    Top = 236
+    Width = 485
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Around = 6
+    Caption = 'EditTemplateGroupBox'
+    TabOrder = 4
+    object UseMacrosCheckBox: TCheckBox
       Left = 6
-      Height = 200
-      Top = 192
+      Height = 22
+      Top = 6
+      Width = 160
+      BorderSpacing.Bottom = 7
+      Caption = 'UseMacrosCheckBox'
+      TabOrder = 0
+    end
+    object InsertMacroButton: TButton
+      AnchorSideLeft.Control = UseMacrosCheckBox
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = UseMacrosCheckBox
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Side = asrBottom
+      Left = 166
+      Height = 28
+      Top = 3
+      Width = 130
+      AutoSize = True
+      BorderSpacing.Top = 6
+      BorderSpacing.Right = 6
+      BorderSpacing.InnerBorder = 4
+      Caption = 'InsertMacroButton'
+      OnClick = InsertMacroButtonClick
+      TabOrder = 2
+    end
+    object TemplateSynEdit: TSynEdit
+      AnchorSideTop.Control = InsertMacroButton
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = EditTemplateGroupBox
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = EditTemplateGroupBox
+      AnchorSideBottom.Side = asrBottom
+      Left = 6
+      Height = 277
+      Top = 37
       Width = 469
-      Align = alBottom
       BorderSpacing.Around = 6
       Anchors = [akTop, akLeft, akRight, akBottom]
       Font.Height = -18
@@ -419,83 +513,6 @@ object CodeTemplateDialog: TCodeTemplateDialog
       Lines.Strings = (
         'TemplateSynEdit'
       )
-      SelectedColor.OnChange = nil
-    end
-    object AddButton: TButton
-      AnchorSideTop.Control = TemplateListBox
-      AnchorSideRight.Control = TemplateGroupBox
-      AnchorSideRight.Side = asrBottom
-      Left = 360
-      Height = 30
-      Top = 6
-      Width = 115
-      Anchors = [akTop, akRight]
-      BorderSpacing.Right = 6
-      BorderSpacing.InnerBorder = 4
-      Caption = 'AddButton'
-      OnClick = AddButtonClick
-      TabOrder = 2
-    end
-    object DeleteButton: TButton
-      AnchorSideTop.Control = AddButton
-      AnchorSideTop.Side = asrBottom
-      AnchorSideRight.Control = AddButton
-      AnchorSideRight.Side = asrBottom
-      Left = 360
-      Height = 30
-      Top = 42
-      Width = 115
-      Anchors = [akTop, akRight]
-      BorderSpacing.Top = 6
-      BorderSpacing.InnerBorder = 4
-      Caption = 'DeleteButton'
-      OnClick = DeleteButtonClick
-      TabOrder = 3
-    end
-    object EditButton: TButton
-      AnchorSideTop.Control = DeleteButton
-      AnchorSideTop.Side = asrBottom
-      AnchorSideRight.Control = DeleteButton
-      AnchorSideRight.Side = asrBottom
-      Left = 360
-      Height = 30
-      Top = 78
-      Width = 115
-      Anchors = [akTop, akRight]
-      BorderSpacing.Top = 6
-      BorderSpacing.InnerBorder = 4
-      Caption = 'EditButton'
-      OnClick = EditButtonClick
-      TabOrder = 4
-    end
-    object UseMacrosCheckBox: TCheckBox
-      AnchorSideLeft.Control = EditButton
-      AnchorSideTop.Control = EditButton
-      AnchorSideTop.Side = asrBottom
-      Left = 360
-      Height = 24
-      Top = 120
-      Width = 182
-      BorderSpacing.Top = 12
-      Caption = 'UseMacrosCheckBox'
-      TabOrder = 5
-    end
-    object InsertMacroButton: TButton
-      AnchorSideTop.Control = UseMacrosCheckBox
-      AnchorSideTop.Side = asrBottom
-      AnchorSideRight.Control = TemplateGroupBox
-      AnchorSideRight.Side = asrBottom
-      Left = 360
-      Height = 30
-      Top = 156
-      Width = 115
-      Anchors = [akTop, akRight]
-      BorderSpacing.Top = 6
-      BorderSpacing.Around = 6
-      BorderSpacing.InnerBorder = 4
-      Caption = 'InsertMacroButton'
-      OnClick = InsertMacroButtonClick
-      TabOrder = 6
     end
   end
   object CancelButton: TBitBtn
@@ -503,10 +520,10 @@ object CodeTemplateDialog: TCodeTemplateDialog
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 404
+    Left = 410
     Height = 25
-    Top = 488
-    Width = 87
+    Top = 581
+    Width = 81
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6
@@ -523,9 +540,9 @@ object CodeTemplateDialog: TCodeTemplateDialog
     AnchorSideRight.Control = CancelButton
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 323
+    Left = 329
     Height = 25
-    Top = 488
+    Top = 581
     Width = 75
     Anchors = [akRight, akBottom]
     AutoSize = True

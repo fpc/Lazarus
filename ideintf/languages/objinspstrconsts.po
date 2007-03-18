@@ -502,6 +502,18 @@ msgstr ""
 msgid "Popup to disable/enable items"
 msgstr ""
 
+#: objinspstrconsts:clbcolumns
+msgid "n. columns"
+msgstr ""
+
+#: objinspstrconsts:clbcheckduplicate
+msgid "On Add, Check for Duplicate in Items"
+msgstr ""
+
+#: objinspstrconsts:clbcheckduplicatemsg
+msgid "The \"%s\" Item is already listed. Add it anyway? "
+msgstr ""
+
 #: objinspstrconsts:oicoleditadd
 msgid "Add"
 msgstr ""

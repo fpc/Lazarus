@@ -1346,6 +1346,10 @@ msgstr ""
 msgid "Code"
 msgstr "Код"
 
+#: lazarusidestrconsts:lismenuviewcodebrowser
+msgid "Code Browser"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcodecreation
 msgid "Code Creation"
 msgstr "Створення коду"
@@ -4040,6 +4044,10 @@ msgstr "При встановленні пакунку %s будуть авто�
 
 #: lazarusidestrconsts:lisdebugoptionsfrminterface
 msgid "Interface"
+msgstr ""
+
+#: lazarusidestrconsts:listcompilerinternalerror
+msgid "Internal compiler error! (%d)"
 msgstr ""
 
 #: lazarusidestrconsts:dlgintvinsec
@@ -7735,8 +7743,8 @@ msgid "The FCL - FreePascal Component Library provides the base classes for obje
 msgstr "FCL - бібліотека компонентів FreePascal забезпечує базові класи для об'єктного паскаля."
 
 #: lazarusidestrconsts:lisenvoptdlginvalidfpcsrcdir
-msgid "The FPC source directory \"%s\" does not look correct. Normally it contains directories like rtl, fcl, packages, compiler, ... ."
-msgstr "Тека кодів FPC \"%s\" виглядає некоректною. Як правило, вона вміщує теки rtl, fcl, packages, compiler, ... ."
+msgid "The FPC source directory \"%s\" does not look correct. Normally it contains directories like rtl, packages, compiler, ... ."
+msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefsthefreepascalsvnsourcedir
 msgid "The Free Pascal SVN source directory."
@@ -9221,6 +9229,10 @@ msgstr "Переглядання точок зупинки"
 #: lazarusidestrconsts:srkmectogglecallstack
 msgid "View call stack"
 msgstr "Переглядання стеку викликів"
+
+#: lazarusidestrconsts:srkmectogglecodebrowser
+msgid "View code browser"
+msgstr ""
 
 #: lazarusidestrconsts:srkmectogglecomppalette
 msgid "View component palette"

@@ -634,6 +634,10 @@ msgstr "Інспектор об'єктів"
 msgid "Ok"
 msgstr "Гаразд"
 
+#: objinspstrconsts:clbcheckduplicate
+msgid "On Add, Check for Duplicate in Items"
+msgstr ""
+
 #: objinspstrconsts:sccstredtopendialog
 msgid "Open"
 msgstr "Відкрити"
@@ -842,6 +846,10 @@ msgstr ""
 msgid "Text:"
 msgstr ""
 
+#: objinspstrconsts:clbcheckduplicatemsg
+msgid "The \"%s\" Item is already listed. Add it anyway? "
+msgstr ""
+
 #: objinspstrconsts:cactionlisteditorpaneltoolbar
 msgid "Toolbar"
 msgstr "Панель інструментів"
@@ -888,5 +896,9 @@ msgstr ""
 
 #: objinspstrconsts:oisword
 msgid "Word"
+msgstr ""
+
+#: objinspstrconsts:clbcolumns
+msgid "n. columns"
 msgstr ""
 
