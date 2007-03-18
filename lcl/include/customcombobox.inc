@@ -103,10 +103,10 @@ end;
 
 procedure TCustomComboBox.DoEnter;
 begin
- inherited DoEnter;
- //AutoSelect when DoEnter is fired by keyboard
- if (Style = csDropDownList) then Exit;//Non editable style
- if (FAutoSelect and not (csLButtonDown in ControlState)) then
+  inherited DoEnter;
+  //AutoSelect when DoEnter is fired by keyboard
+  if (Style = csDropDownList) then Exit;//Non editable style
+  if (FAutoSelect and not (csLButtonDown in ControlState)) then
   begin
    SelectAll;
    if (SelText = Text) then FAutoSelected := True;
@@ -115,8 +115,8 @@ end;
 
 procedure TCustomComboBox.DoExit;
 begin
- FAutoSelected := False;
- inherited DoExit;
+  FAutoSelected := False;
+  inherited DoExit;
 end;
 
 {------------------------------------------------------------------------------
