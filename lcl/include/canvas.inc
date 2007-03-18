@@ -1048,17 +1048,25 @@ begin
       InterSectClipRect(Self.Handle, Left, Top, Right, Bottom);
     Options := Options or DT_NOCLIP; // no clipping as we are handling it here
   end;
-  
-  If Style.Opaque then begin
+
+  if Style.Opaque then begin
     RequiredState([csHandleValid, csBrushValid]);
     FillRect(fRect);
+  end else begin
+    SetBkMode(FHandle, TRANSPARENT);
   end;
   
-  If Style.SystemFont then
+  if Style.SystemFont then
     SetTextColor(Self.Handle, Font.Color);
   //debugln('TCanvas.TextRect DRAW Text="',Text,'" ',dbgs(fRect));
   DrawText(Self.Handle, pChar(Text), Length(Text), fRect, Options);
   
+  if Style.Opaque and (csBrushValid in FState) then begin
+    if Brush.Style=bsSolid then
+      // restore BKMode
+      SetBkMode(FHandle, OPAQUE)
+  end;
+
   if Style.Clipping then begin
     if DCIndex <> -1 then
       RestoreDC(Self.Handle, DCIndex);

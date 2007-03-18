@@ -2533,7 +2533,7 @@ begin
     ExpandTabs := True;
     SystemFont := False;
   end;
-  ACanvas.TextRect(ARect,ARect.Left+2,ARect.Top,GetName, Style);
+  ACanvas.TextRect(ARect,ARect.Left+2,ARect.Top,GetName,Style);
 end;
 
 procedure TPropertyEditor.PropDrawValue(ACanvas:TCanvas; const ARect: TRect;
