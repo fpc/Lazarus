@@ -2204,16 +2204,16 @@ lcl/images/btncalculator.xpm -text svneol=native#image/x-xpixmap
 lcl/images/btncalendar.xpm -text svneol=native#image/x-xpixmap
 lcl/images/btnseldir.xpm -text svneol=native#image/x-xpixmap
 lcl/images/cursors/build.bat -text svneol=CRLF#application/x-bat
-lcl/images/cursors/cur_10.cur -text
+lcl/images/cursors/cur_10.cur -text svneol=unset#image/x-cursor
 lcl/images/cursors/cur_12.cur -text svneol=unset#image/x-cursor
 lcl/images/cursors/cur_13.cur -text svneol=unset#image/x-cursor
 lcl/images/cursors/cur_14.cur -text svneol=unset#image/x-cursor
 lcl/images/cursors/cur_15.cur -text svneol=unset#image/x-cursor
 lcl/images/cursors/cur_16.cur -text svneol=unset#image/x-cursor
 lcl/images/cursors/cur_17.cur -text svneol=unset#image/x-cursor
-lcl/images/cursors/cur_18.cur -text
+lcl/images/cursors/cur_18.cur -text svneol=unset#image/x-cursor
 lcl/images/cursors/cur_21.cur -text svneol=unset#image/x-cursor
-lcl/images/cursors/cur_22.cur -text
+lcl/images/cursors/cur_22.cur -text svneol=unset#image/x-cursor
 lcl/images/dbnavcancel.xpm -text svneol=native#image/x-xpixmap
 lcl/images/dbnavdelete.xpm -text svneol=native#image/x-xpixmap
 lcl/images/dbnavedit.xpm -text svneol=native#image/x-xpixmap
