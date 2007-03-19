@@ -2212,6 +2212,7 @@ lcl/images/cursors/cur_15.cur -text svneol=unset#image/x-cursor
 lcl/images/cursors/cur_16.cur -text svneol=unset#image/x-cursor
 lcl/images/cursors/cur_17.cur -text svneol=unset#image/x-cursor
 lcl/images/cursors/cur_18.cur -text svneol=unset#image/x-cursor
+lcl/images/cursors/cur_20.cur -text svneol=unset#image/x-cursor
 lcl/images/cursors/cur_21.cur -text svneol=unset#image/x-cursor
 lcl/images/cursors/cur_22.cur -text svneol=unset#image/x-cursor
 lcl/images/dbnavcancel.xpm -text svneol=native#image/x-xpixmap
