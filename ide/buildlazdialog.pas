@@ -702,8 +702,8 @@ begin
   Options.Free;
 end;
 
-procedure TConfigureBuildLazarusDlg.ItemsListBoxDrawItem(Control: TWinControl; Index: Integer;
-  ARect: TRect; State: TOwnerDrawState);
+procedure TConfigureBuildLazarusDlg.ItemsListBoxDrawItem(Control: TWinControl;
+  Index: Integer; ARect: TRect; State: TOwnerDrawState);
 var
   ButtonState: integer;
   x: Integer;
@@ -729,6 +729,7 @@ begin
   CurStr:=CurItem.Description;
   TxtH:=ItemsListBox.Canvas.TextHeight(CurStr);
   CurRect:=ARect;
+  ItemsListBox.Canvas.Brush.Style:=bsSolid;
   ItemsListBox.Canvas.FillRect(CurRect);
   // draw the buttons
   x:=0;
@@ -777,6 +778,7 @@ begin
     inc(x,ButtonWidth);
   end;
   // draw description
+  ItemsListBox.Canvas.Brush.Style:=bsClear;
   ItemsListBox.Canvas.TextOut(x+2,
           ARect.Top+(ARect.Bottom-ARect.Top-TxtH) div 2,
           CurStr);
