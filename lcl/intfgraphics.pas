@@ -3699,7 +3699,7 @@ begin
     begin
       CurrentDirEntry := IconDir;
       if Icon is TCursorImage then
-        TCursorImage(Icon).HotSpot := Point(IconDir^.wXHotSpot, IconDir^.wYHotSpot);
+        TCursorImage(Icon).HotSpot := Point(LEtoN(BestDirEntry^.wXHotSpot), LEtoN(BestDirEntry^.wYHotSpot));
       for i := 1 to FnIcons do
       begin
         Stream.Position := FnStartPos + CurrentDirEntry^.dwImageOffset;
