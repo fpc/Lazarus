@@ -11,7 +11,7 @@ Packager:       Mattias Gaertner
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 #BuildRequires:  
-Requires:       fpc-src = FPCVERSION, fpc = FPCVERSION, gdk-pixbuf, gtk+, glibc, gdb
+Requires:       fpc-src = FPCSRCVERSION, fpc = FPCVERSION, gdk-pixbuf, gtk+, glibc, gdb
 # NOTE: without the symlink trick for gtk1, it requires the devel packages.
 
 Requires(post): desktop-file-utils

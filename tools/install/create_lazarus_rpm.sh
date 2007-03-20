@@ -15,8 +15,9 @@ if [ "x$FPCRPM" = "x" ]; then
   echo ERROR: fpc rpm not installed
   exit
 fi
-FPCRPMVersion=`echo $FPCRPM | sed -e 's/fpc-//g'`
+FPCRPMVersion=$(echo $FPCRPM | sed -e 's/fpc-//g')
 echo "installed fpc version: $FPCRPMVersion"
+FPCSRCRPMVersion=$(echo $FPCRPMVersion | cut -d- -f1)
 
 Date=$Year$Month$Day
 LazVersion=$(./get_lazarus_version.sh)
@@ -40,6 +41,7 @@ cat rpm/lazarus.spec.template | \
       -e "s/LAZSOURCE/$Src/g" \
       -e "s/FPCBUILDVERSION/2.0.0/g" \
       -e "s/FPCVERSION/$FPCRPMVersion/g" \
+      -e "s/FPCSRCVERSION/$FPCSRCRPMVersion/g" \
   > $SpecFile
 
 # build rpm

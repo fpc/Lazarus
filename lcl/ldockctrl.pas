@@ -28,8 +28,8 @@
     - restoring layout: pages
     - restoring layout: move form after inserting a control
     - restoring layout: spiral splitter
-    - save TLazDockConfigNode to stream
-    - load TLazDockConfigNode from stream
+    - save TLazDockConfigNode to stream (atm only xml implemented)
+    - load TLazDockConfigNode from stream (atm only xml implemented)
 }
 unit LDockCtrl;
 
@@ -724,6 +724,8 @@ end;
 
 function TCustomLazControlDocker.DockAsPage(Layout: TLazDockConfigNode
   ): boolean;
+// dock as page like in Layout
+// Requirements: Parent in Layout is a ldcntPage and a parent control exists.
 var
   SelfNode: TLazDockConfigNode;
   PageNode: TLazDockConfigNode;
@@ -739,6 +741,7 @@ var
   PageIndex: LongInt;
   NeighbourList: TFPList;
   AnchorControls: TAnchorControls;
+  TopFormBounds: TRect;
 begin
   Result:=false;
   DebugLn(['TCustomLazControlDocker.DockAsPage DockerName="',DockerName,'"']);
@@ -757,7 +760,7 @@ begin
     exit;
   end;
   if PageNode.ChildCount<>1 then begin
-    DebugLn(['TCustomLazControlDocker.DockAsPage SelfNode.Parent.TheType<>ldcntPage DockerName="',DockerName,'"']);
+    DebugLn(['TCustomLazControlDocker.DockAsPage PageNode.ChildCount<>1 DockerName="',DockerName,'"']);
     exit;
   end;
   
@@ -769,15 +772,18 @@ begin
     NeighbourNode:=PagesNode.Childs[PageNodeIndex+1].Childs[0];
   NeighbourControl:=Manager.FindControlByDockerName(NeighbourNode.Name);
   if NeighbourControl=nil then begin
-    DebugLn(['TCustomLazControlDocker.CreateFormAndDockWithSplitter NeighbourControl not found "',NeighbourNode.Name,'"']);
+    DebugLn(['TCustomLazControlDocker.DockAsPage NeighbourControl not found "',NeighbourNode.Name,'"']);
     exit;
   end;
   
   if NeighbourControl.Parent=nil then begin
-    // NeighbourControl is a single top level control
+    // NeighbourControl is a top level control (no parents, no neighbours)
     // => create a TLazDockForm with a TLazDockPages and two TLazDockPage
     TopForm:=TLazDockForm.Create(nil);
-    // TODO: resize TopForm
+    TopFormBounds:=PagesNode.Bounds;
+    // TODO: shrink TopFormBounds
+    TopForm.BoundsRect:=TopFormBounds;
+    
     Pages:=TLazDockPages.Create(nil);
     Pages.DisableAlign;
     try
@@ -817,7 +823,7 @@ begin
     Page:=Pages.Page[PageIndex];
     Control.Parent:=Page;
     Control.AnchorClient(0);
-    // TODO resize parents
+    // TODO enlarge parents
   end else begin
     // NeighbourControl is a child control, but the parent is not yet a page
     // => collect all neighbour controls for a page
@@ -1613,7 +1619,7 @@ var
     Result:=Manager.FindControlByDockerName(ADockerName);
   end;
 
-  function DockWithSpiralSpltter: boolean;
+  function DockWithSpiralSplitter: boolean;
   begin
     // TODO
     Result:=false;
@@ -1636,7 +1642,7 @@ var
         and CreateFormAndDockWithSplitter(Layout,a) then
           exit(true);
         inc(SplitterCount);
-        if (SplitterCount=4) and DockWithSpiralSpltter then
+        if (SplitterCount=4) and DockWithSpiralSplitter then
           exit(true);
       end;
     end;
