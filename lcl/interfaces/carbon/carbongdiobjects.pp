@@ -497,7 +497,7 @@ begin
   // 128bit align for best performance
   FBytesPerRow := ((FWidth * FBitsPerPixel + 127) and not Cardinal(127)) shr 3;
 
-  FDataSize := FBytesPerRow * FWidth;
+  FDataSize := FBytesPerRow * FHeight;
   System.GetMem(FData, FDataSize);
   if AData <> nil then System.Move(AData^, FData^, FDataSize); // copy data
 
