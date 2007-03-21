@@ -150,6 +150,7 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
+    procedure Remove(Key: Pointer);
     function Contains(const Key: Pointer): Boolean;
     function GetFirst(out Key, Value: Pointer): Boolean;
     function GetLast(out Key, Value: Pointer): Boolean;
@@ -1544,6 +1545,18 @@ begin
     Node:=FItems.FindSuccessor(Node);
   end;
   FItems.Clear;
+end;
+
+procedure TPointerToPointerTree.Remove(Key: Pointer);
+var
+  Node: TAvgLvlTreeNode;
+  Item: PPointerToPointerItem;
+begin
+  Node:=FindNode(Key);
+  if Node=nil then exit;
+  Item:=PPointerToPointerItem(Node.Data);
+  FItems.Delete(Node);
+  Dispose(Item);
 end;
 
 function TPointerToPointerTree.Contains(const Key: Pointer): Boolean;

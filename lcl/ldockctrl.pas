@@ -233,7 +233,7 @@ type
                                            Side: TAnchorKind): boolean;
     function DockAsPage(Layout: TLazDockConfigNode): boolean;
     procedure FixControlBounds(Layout: TLazDockConfigNode;
-                               AddedControl: TControl);
+                               ResizedControl: TControl);
     procedure ShrinkNeighbourhood(Layout: TLazDockConfigNode;
                                   AControl: TControl; Sides: TAnchors);
     function FindPageNeighbours(Layout: TLazDockConfigNode;
@@ -844,7 +844,7 @@ begin
 end;
 
 procedure TCustomLazControlDocker.FixControlBounds(Layout: TLazDockConfigNode;
-  AddedControl: TControl);
+  ResizedControl: TControl);
 { Fix bounds after inserting AddedControl }
 type
   TControlInfo = record
@@ -1015,25 +1015,25 @@ var
     OldRect: TRect;
     SideControl: TControl;
   begin
-    for i:=0 to AddedControl.Parent.ControlCount-1 do begin
-      Sibling:=AddedControl.Parent.Controls[i];
+    for i:=0 to ResizedControl.Parent.ControlCount-1 do begin
+      Sibling:=ResizedControl.Parent.Controls[i];
       Info:=GetInfo(Sibling);
       NewRect.Left:=Info^.MinLeft;
       NewRect.Right:=NewRect.Left+Sibling.Width;
       SideControl:=Sibling.AnchorSide[akRight].Control;
       if (akRight in Sibling.Anchors) and (SideControl<>nil) then begin
-        if SideControl=AddedControl.Parent then
+        if SideControl=ResizedControl.Parent then
           NewRect.Right:=ParentClientWidth
-        else if SideControl.Parent=AddedControl.Parent then
+        else if SideControl.Parent=ResizedControl.Parent then
           NewRect.Right:=CalculateMinimumLeft(SideControl);
       end;
       NewRect.Top:=Info^.MinTop;
       NewRect.Bottom:=NewRect.Top+Sibling.Height;
       SideControl:=Sibling.AnchorSide[akBottom].Control;
       if (akBottom in Sibling.Anchors) and (SideControl<>nil) then begin
-        if SideControl=AddedControl.Parent then
+        if SideControl=ResizedControl.Parent then
           NewRect.Bottom:=ParentClientHeight
-        else if SideControl.Parent=AddedControl.Parent then
+        else if SideControl.Parent=ResizedControl.Parent then
           NewRect.Bottom:=CalculateMinimumTop(SideControl);
       end;
       OldRect:=Sibling.BoundsRect;
@@ -1049,9 +1049,10 @@ var
   CurParent: TWinControl;
   DiffWidth: Integer;
   DiffHeight: Integer;
+  AlignDisabledControl: TWinControl;
 begin
-  DebugLn(['TCustomLazControlDocker.FixControlBounds ',DbgSName(AddedControl)]);
-  CurParent:=AddedControl.Parent;
+  DebugLn(['TCustomLazControlDocker.FixControlBounds ',DbgSName(ResizedControl)]);
+  CurParent:=ResizedControl.Parent;
   if CurParent=nil then begin
     DebugLn(['TCustomLazControlDocker.FixControlBounds WARNING: no parent']);
     exit;
@@ -1065,9 +1066,10 @@ begin
     DiffHeight:=ParentSize.Y-CurParent.ClientHeight;
     if (DiffWidth<>0) or (DiffHeight<>0) then begin
       // parent needs resizing
-      DebugLn(['TCustomLazControlDocker.FixControlBounds Parent=',DbgSName(AddedControl.Parent),' needs resizing to ',dbgs(ParentSize)]);
-      if CurParent.Parent<>nil then
-        CurParent.Parent.DisableAlign;
+      DebugLn(['TCustomLazControlDocker.FixControlBounds Parent=',DbgSName(ResizedControl.Parent),' needs resizing to ',dbgs(ParentSize)]);
+      AlignDisabledControl:=CurParent.Parent;
+      if AlignDisabledControl<>nil then
+        AlignDisabledControl.DisableAlign;
       try
         CurParent.ClientWidth:=ParentSize.X;
         CurParent.ClientHeight:=ParentSize.Y;
@@ -1078,12 +1080,13 @@ begin
         end else begin
           // parent is a free form
           // => decide where to move the form on the screen using the Layout
+          
           // TODO
           DebugLn(['TCustomLazControlDocker.FixControlBounds TODO move parent ',DbgSName(CurParent)]);
         end;
       finally
-        if CurParent.Parent<>nil then
-          CurParent.Parent.EnableAlign;
+        if AlignDisabledControl<>nil then
+          AlignDisabledControl.EnableAlign;
       end;
     end;
     ApplyBounds(ParentSize.X,ParentSize.Y);
