@@ -97,7 +97,7 @@ type
     RedPrec: cardinal; // red precision. bits for red
     RedShift: cardinal;
     GreenPrec: cardinal;
-    GreenShift: cardinal; // bitshift. Direction: from least to most signifikant
+    GreenShift: cardinal; // bitshift. Direction: from least to most significant
     BluePrec: cardinal;
     BlueShift: cardinal;
     AlphaPrec: cardinal;
@@ -269,16 +269,21 @@ begin
   Result:=false;
 
   // slow test
-  if TestPixels then begin
+  if TestPixels
+  then begin
     Width:=RawImage^.Description.Width;
     Height:=RawImage^.Description.Height;
-    if RawImage^.Description.AlphaSeparate then begin
+
+    if RawImage^.Description.AlphaSeparate
+    then begin
       BitsPerLine:=GetBitsPerLine(Width,RawImage^.Description.AlphaBitsPerPixel,
                                   RawImage^.Description.AlphaLineEnd);
       UsedBitsPerLine:=Width*RawImage^.Description.AlphaBitsPerPixel;
       if RawImage^.MaskSize<PtrUInt((Height*BitsPerLine+7) shr 3) then
         raise Exception.Create('RawImageMaskIsEmpty Invalid MaskSize');
-      if (BitsPerLine and 7)=0 then begin
+
+      if (BitsPerLine and 7)=0
+      then begin
         // byte boundary
         UsedBytesPerLine:=UsedBitsPerLine shr 3;
         UnusedBitsAtEnd:=(8-(UsedBitsPerLine and 7)) and 7;
@@ -318,16 +323,18 @@ begin
             inc(p);
           end;
         end;
-      end else begin
+      end
+      else begin
         // ToDo: AlphaSeparate and rileTight
         {$IFDEF VerboseRawImage}
         DebugLn('RawImageMaskIsEmpty TODO AlphaSeparate and rileTight');
         {$ENDIF}
         exit;
       end;
-    end else begin
+    end
+    else begin
       {$IFDEF VerboseRawImage}
-      DebugLn('RawImageMaskIsEmpty TODO');
+      DebugLn('RawImageMaskIsEmpty TODO AlphaSeparate=False');
       {$ENDIF}
       exit;
     end;

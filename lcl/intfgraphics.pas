@@ -1022,9 +1022,9 @@ procedure TLazIntfImage.ChooseGetSetColorFunctions;
             if (BitsPerPixel=32) and (Depth=24) and (BitOrder=riboBitsInOrder)
             and (ByteOrder=DefaultByteOrder) and (LineOrder=riloTopToBottom)
             and (LineEnd=rileDWordBoundary)
-            and (RedPrec=8) and (RedShift=16)
+            and (RedPrec=8)   and (RedShift=16)
             and (GreenPrec=8) and (GreenShift=8)
-            and (BluePrec=8) and (BlueShift=0)
+            and (BluePrec=8)  and (BlueShift=0)
             then begin
               if ByteOrder=DefaultByteOrder then
                 OnSetInternalColor:=@SetColor_BPP32_R8G8B8_A1_BIO_TTB
@@ -1032,7 +1032,8 @@ procedure TLazIntfImage.ChooseGetSetColorFunctions;
                 OnSetInternalColor:=@SetColor_BPP32_R8G8B8_A1_BIO_TTB_RBO;
             end;
           end;
-        end else begin
+        end
+        else begin
           OnGetInternalColor:=@GetColor_NoPalette_RGBA_Alpha_Sep_NoMask;
           OnSetInternalColor:=@SetColor_NoPalette_RGBA_NoAlpha;
         end;
@@ -1040,14 +1041,18 @@ procedure TLazIntfImage.ChooseGetSetColorFunctions;
                           FDataDescription.AlphaByteOrder,
                           FDataDescription.AlphaBitOrder,
                           FAlphaReadRawImageBits, FAlphaWriteRawImageBits);
-      end else begin
+      end
+      else begin
+        // alpha included
         OnGetInternalColor:=@GetColor_NoPalette_RGBA_Alpha_NoSep;
         OnSetInternalColor:=@SetColor_NoPalette_RGBA_Alpha_NoSep;
         ChooseRawBitsProc(FDataDescription.BitsPerPixel,
-          FDataDescription.AlphaByteOrder, FDataDescription.AlphaBitOrder,
-          FAlphaReadRawImageBits, FAlphaWriteRawImageBits);
+                          FDataDescription.ByteOrder,
+                          FDataDescription.BitOrder,
+                          FAlphaReadRawImageBits, FAlphaWriteRawImageBits);
       end;
-    end else begin
+    end
+    else begin
       OnGetInternalColor:=@GetColor_NoPalette_RGBA_NoAlpha;
       OnSetInternalColor:=@SetColor_NoPalette_RGBA_NoAlpha;
     end;
@@ -1095,37 +1100,55 @@ var
   MaskPosition: TRawImagePosition;
 begin
   GetXYDataPostion(x,y,Position);
-  if not FDataDescription.HasPalette then begin
+  if not FDataDescription.HasPalette
+  then begin
     case FDataDescription.Format of
     ricfRGBA:
       begin
-        ReadRawImageBits(FPixelData,Position,FDataDescription.BitsPerPixel,
-                     FDataDescription.RedPrec,FDataDescription.RedShift,
+        ReadRawImageBits(FPixelData,Position,
+                     FDataDescription.BitsPerPixel,
+                     FDataDescription.RedPrec,
+                     FDataDescription.RedShift,
                      FDataDescription.BitOrder,Value.Red);
-        ReadRawImageBits(FPixelData,Position,FDataDescription.BitsPerPixel,
-                     FDataDescription.GreenPrec,FDataDescription.GreenShift,
+        ReadRawImageBits(FPixelData,Position,
+                     FDataDescription.BitsPerPixel,
+                     FDataDescription.GreenPrec,
+                     FDataDescription.GreenShift,
                      FDataDescription.BitOrder,Value.Green);
-        ReadRawImageBits(FPixelData,Position,FDataDescription.BitsPerPixel,
-                     FDataDescription.BluePrec,FDataDescription.BlueShift,
+        ReadRawImageBits(FPixelData,Position,
+                     FDataDescription.BitsPerPixel,
+                     FDataDescription.BluePrec,
+                     FDataDescription.BlueShift,
                      FDataDescription.BitOrder,Value.Blue);
-        if FDataDescription.AlphaPrec>0 then begin
-          if FDataDescription.AlphaSeparate then begin
-            if (FMaskData<>nil) then begin
+
+        if FDataDescription.AlphaPrec>0
+        then begin
+          if FDataDescription.AlphaSeparate
+          then begin
+            if (FMaskData<>nil)
+            then begin
               GetXYMaskPostion(x,y,MaskPosition);
               ReadRawImageBits(FMaskData,MaskPosition,
                            FDataDescription.AlphaBitsPerPixel,
                            FDataDescription.AlphaPrec,
                            FDataDescription.AlphaShift,
                            FDataDescription.AlphaBitOrder,Value.Alpha);
-            end else begin
+            end
+            else begin
               // no alpha mask -> set opaque
               Value.Alpha:=high(Value.Alpha);
             end;
-          end else
-            ReadRawImageBits(FPixelData,Position,FDataDescription.BitsPerPixel,
-                         FDataDescription.AlphaPrec,FDataDescription.AlphaShift,
-                         FDataDescription.AlphaBitOrder,Value.Alpha)
-        end else begin
+          end
+          else begin
+            // alpha included
+            ReadRawImageBits(FPixelData,Position,
+                         FDataDescription.BitsPerPixel,
+                         FDataDescription.AlphaPrec,
+                         FDataDescription.AlphaShift,
+                         FDataDescription.BitOrder,Value.Alpha)
+          end
+        end
+        else begin
           // no alpha -> set opaque
           Value.Alpha:=high(Value.Alpha);
         end;
@@ -1133,8 +1156,10 @@ begin
 
     ricfGray:
       begin
-        ReadRawImageBits(FPixelData,Position,FDataDescription.BitsPerPixel,
-                     FDataDescription.RedPrec,FDataDescription.RedShift,
+        ReadRawImageBits(FPixelData,Position,
+                     FDataDescription.BitsPerPixel,
+                     FDataDescription.RedPrec,
+                     FDataDescription.RedShift,
                      FDataDescription.BitOrder,Value.Red);
         Value.Green:=Value.Red;
         Value.Blue:=Value.Red;
@@ -1165,33 +1190,48 @@ begin
     case FDataDescription.Format of
     ricfRGBA:
       begin
-        WriteRawImageBits(FPixelData,Position,FDataDescription.BitsPerPixel,
-                      FDataDescription.RedPrec,FDataDescription.RedShift,
+        WriteRawImageBits(FPixelData,Position,
+                      FDataDescription.BitsPerPixel,
+                      FDataDescription.RedPrec,
+                      FDataDescription.RedShift,
                       FDataDescription.BitOrder,Value.Red);
-        WriteRawImageBits(FPixelData,Position,FDataDescription.BitsPerPixel,
-                      FDataDescription.GreenPrec,FDataDescription.GreenShift,
+        WriteRawImageBits(FPixelData,Position,
+                      FDataDescription.BitsPerPixel,
+                      FDataDescription.GreenPrec,
+                      FDataDescription.GreenShift,
                       FDataDescription.BitOrder,Value.Green);
-        WriteRawImageBits(FPixelData,Position,FDataDescription.BitsPerPixel,
-                      FDataDescription.BluePrec,FDataDescription.BlueShift,
+        WriteRawImageBits(FPixelData,Position,
+                      FDataDescription.BitsPerPixel,
+                      FDataDescription.BluePrec,
+                      FDataDescription.BlueShift,
                       FDataDescription.BitOrder,Value.Blue);
-        if FDataDescription.AlphaPrec>0 then begin
-          if FDataDescription.AlphaSeparate then begin
-            if (FMaskData<>nil) then begin
+        if FDataDescription.AlphaPrec>0
+        then begin
+          if FDataDescription.AlphaSeparate
+          then begin
+            if (FMaskData<>nil)
+            then begin
               GetXYMaskPostion(x,y,MaskPosition);
               WriteRawImageBits(FMaskData,MaskPosition,
                             FDataDescription.AlphaBitsPerPixel,
                             FDataDescription.AlphaPrec,
                             FDataDescription.AlphaShift,
                             FDataDescription.AlphaBitOrder,Value.Alpha);
-            end else begin
+            end
+            else begin
               // no alpha mask
             end;
-          end else
-            WriteRawImageBits(FPixelData,Position,FDataDescription.BitsPerPixel,
+          end
+          else begin
+            // alpha included
+            WriteRawImageBits(FPixelData,Position,
+                          FDataDescription.BitsPerPixel,
                           FDataDescription.AlphaPrec,
                           FDataDescription.AlphaShift,
-                          FDataDescription.AlphaBitOrder,Value.Alpha)
-        end else begin
+                          FDataDescription.BitOrder, Value.Alpha)
+          end
+        end
+        else begin
           // no alpha
         end;
       end;
