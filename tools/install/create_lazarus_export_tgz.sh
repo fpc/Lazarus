@@ -31,7 +31,7 @@ else
 fi
 
 # add ide/revision.inc
-Revision=$(cat /tmp/lazarus/.svn/entries | grep committed-rev= | head -n 1 | cut -d\" -f2)
+Revision=$(svnversion /tmp/lazarus)
 echo "const RevisionStr = '$Revision';" > /tmp/lazarus/ide/revision.inc
 
 cd /tmp
