@@ -585,36 +585,33 @@ procedure FillStandardDescription(var Desc: TRawImageDescription);
 begin
   FillChar(Desc, SizeOf(Desc), 0);
 
-// $RRGGBBAA
   Desc.Format := ricfRGBA;
   Desc.HasPalette := False;
 // Width and Height skipped
   Desc.PaletteColorCount := 0;
-  Desc.BitOrder := riboReversedBits;
-{$IFDEF ENDIAN_BIG}
-  Desc.ByteOrder := riboMSBFirst;
-{$ELSE}
-  Desc.ByteOrder := riboLSBFirst;
-{$ENDIF}
-  Desc.LineOrder := riloTopToBottom;
   Desc.ColorCount := Desc.PaletteColorCount;
-  Desc.BitsPerPixel := 32;
+
+  Desc.BitOrder := riboReversedBits;
+  Desc.ByteOrder := riboMSBFirst;
   Desc.LineEnd := rileDQWordBoundary; // 128bit aligned
 
-  // 8-8-8-8 mode, high byte is Alpha
+  Desc.AlphaSeparate := False;
+ 
+  Desc.LineOrder := riloTopToBottom;
+  Desc.BitsPerPixel := 32;
+  Desc.Depth := 32;
+
+  // 8-8-8-8 mode, $RRGGBBAA
   Desc.RedPrec := 8;
   Desc.GreenPrec := 8;
   Desc.BluePrec := 8;
-  Desc.RedShift := 24;
-  Desc.GreenShift := 16;
-  Desc.BlueShift := 8;
-  Desc.Depth := 32;
-
   Desc.AlphaPrec := 8;
-  Desc.AlphaSeparate := False;
-  Desc.AlphaLineEnd := rileDQWordBoundary;
-  Desc.AlphaShift := 0;
-end;
+
+  Desc.RedShift   := 24;
+  Desc.GreenShift := 16;
+  Desc.BlueShift  := 08;
+  Desc.AlphaShift := 00;
+end; 
 
 {------------------------------------------------------------------------------
   Name:    RegisterEventHandler
