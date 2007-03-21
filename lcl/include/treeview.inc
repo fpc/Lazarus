@@ -4003,7 +4003,7 @@ var
       tvestPlusMinus:
         begin
           // draw a plus or a minus sign
-          Rectangle(ALeft, ATop, ARight, ABottom);
+          Rectangle(ALeft, ATop, ARight+1, ABottom+1);
           MoveTo(ALeft+2,MidY);
           LineTo(ARight-2+1,MidY);
           if not CollapseSign then begin
