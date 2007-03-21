@@ -1,13 +1,16 @@
 msgid ""
 msgstr ""
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2006-08-15 22:13+0100\n"
+"PO-Revision-Date: 2007-03-20 17:16+0100\n"
 "Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
-"Language-Team: \n"
+"Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
+"X-Poedit-Language: German\n"
+"X-Poedit-Country: GERMANY\n"
+"X-Poedit-SourceCharset: utf-8\n"
 
 #: lclstrconsts:rsmodified
 msgid "  modified "
@@ -31,11 +34,11 @@ msgstr "WARNUNG: Es gibt %d nicht freigegebene DCs. Es folgt ein detaillierter D
 
 #: lclstrconsts:rswarningunreleasedgdiobjectsdump
 msgid " WARNING: There are %d unreleased GDIObjects, a detailed dump follows:"
-msgstr "WARNUNG: Es gibt %d nicht freigegebene GDIObjects. Es folgt ein detaillierter Dump:"
+msgstr "WARNUNG: Es gibt %d nicht freigegebene GDI-Objekte. Es folgt ein detaillierter Dump:"
 
 #: lclstrconsts:rswarningunremovedpaintmessages
 msgid " WARNING: There are %s unremoved LM_PAINT/LM_GtkPAINT message links left."
-msgstr "WARNUNG: Es gibt %s nicht entfernte LM_PAINT/LM_GtkPAINT-Meldungs-Links übrig."
+msgstr "WARNUNG: Es sind %s nicht entfernte LM_PAINT/LM_GtkPAINT-Meldungs-Links übrig."
 
 #: lclstrconsts:rsindexoutofbounds
 msgid "%s Index %d out of bounds 0-%d"

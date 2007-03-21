@@ -2,15 +2,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-01-27 22:48+0100\n"
+"PO-Revision-Date: 2007-03-20 17:38+0100\n"
 "Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Language: German\n"
-"X-Poedit-Country: GERMANY\n"
-"X-Poedit-SourceCharset: UTF8\n"
+"X-Poedit-SourceCharset: utf-8\n"
 
 #: lazarusidestrconsts:srkmcommand1
 msgid "    command1 \""
@@ -154,7 +153,7 @@ msgstr "%sDieses Package wurde automatisch erzeugt"
 
 #: lazarusidestrconsts:lisnone
 msgid "%snone"
-msgstr "%keine"
+msgstr "%skeine"
 
 #: lazarusidestrconsts:liswladd
 msgid "&Add"
@@ -234,7 +233,7 @@ msgstr "Sta&rt"
 
 #: lazarusidestrconsts:uemruntocursor
 msgid "&Run to Cursor"
-msgstr "Start bis zum &Cursor"
+msgstr "Sta&rt bis zum Cursor"
 
 #: lazarusidestrconsts:lismenusearch
 msgid "&Search"
@@ -762,7 +761,7 @@ msgstr "Automatisch erzeugt"
 
 #: lazarusidestrconsts:rslanguageautomatic
 msgid "Automatic (or english)"
-msgstr "Automatisch (oder englisch)"
+msgstr "Automatisch (oder Englisch)"
 
 #: lazarusidestrconsts:lisautomaticfeatures
 msgid "Automatic features"
@@ -1006,7 +1005,7 @@ msgstr "C-artige Operatoren (*=, +=, /= und -=)"
 
 #: lazarusidestrconsts:dlgcppinline
 msgid "C++ Styled INLINE"
-msgstr "C++-artige Inlineanweisungen"
+msgstr "C++-artige Inline-Anweisungen"
 
 #: lazarusidestrconsts:lismenuinsertcvskeyword
 msgid "CVS keyword"
@@ -1362,7 +1361,7 @@ msgstr "Quelltext"
 
 #: lazarusidestrconsts:lismenuviewcodebrowser
 msgid "Code Browser"
-msgstr ""
+msgstr "Code-Browser"
 
 #: lazarusidestrconsts:dlgcodecreation
 msgid "Code Creation"
@@ -2090,7 +2089,7 @@ msgstr "Voreinstellung"
 
 #: lazarusidestrconsts:dlgdefaulteditorfont
 msgid "Default editor font"
-msgstr "Voreingestellte Editorschrift"
+msgstr "Voreingestellte Schrift im Editor"
 
 #: lazarusidestrconsts:dlgpasext
 msgid "Default pascal extension"
@@ -2358,7 +2357,7 @@ msgstr "IDE nicht schließen"
 
 #: lazarusidestrconsts:lisdonotclosetheproject
 msgid "Do not close the project"
-msgstr ""
+msgstr "Schließen Sie das Projekt nicht"
 
 #: lazarusidestrconsts:lispodonotsaveanysessioninfo
 msgid "Do not save any session info"
@@ -4062,7 +4061,7 @@ msgstr "Interface"
 
 #: lazarusidestrconsts:listcompilerinternalerror
 msgid "Internal compiler error! (%d)"
-msgstr ""
+msgstr "Interner Compilerfehler! (%d)"
 
 #: lazarusidestrconsts:dlgintvinsec
 msgid "Interval in secs"
@@ -6726,11 +6725,11 @@ msgstr "Zu den zuletzt geöffneten Dateien hinzufügen"
 
 #: lazarusidestrconsts:liskmsaveall
 msgid "SaveAll"
-msgstr ""
+msgstr "Alles speichern"
 
 #: lazarusidestrconsts:liskmsaveas
 msgid "SaveAs"
-msgstr ""
+msgstr "Speichern Als"
 
 #: lazarusidestrconsts:fdmscaleword
 msgid "Scale"
@@ -7758,7 +7757,7 @@ msgstr "Die FCL (Free Pascal Component Library) enthält die Basisklassen für O
 
 #: lazarusidestrconsts:lisenvoptdlginvalidfpcsrcdir
 msgid "The FPC source directory \"%s\" does not look correct. Normally it contains directories like rtl, packages, compiler, ... ."
-msgstr ""
+msgstr "Das FPC-Quellverzeichnis \"%s\" sieht falsch aus. Es sollte Verzeichnisse wie rtl, packages, compiler usw. enthalten ..."
 
 #: lazarusidestrconsts:liscodetoolsdefsthefreepascalsvnsourcedir
 msgid "The Free Pascal SVN source directory."
@@ -9246,7 +9245,7 @@ msgstr "Aufruf-Stacks anzeigen"
 
 #: lazarusidestrconsts:srkmectogglecodebrowser
 msgid "View code browser"
-msgstr ""
+msgstr "Code Browser anzeigen"
 
 #: lazarusidestrconsts:srkmectogglecomppalette
 msgid "View component palette"

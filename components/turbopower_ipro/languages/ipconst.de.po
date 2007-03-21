@@ -1,11 +1,11 @@
 msgid ""
 msgstr ""
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-02-22 15:09+0100\n"
+"PO-Revision-Date: 2007-03-20 17:39+0100\n"
 "Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "X-Poedit-Language: German\n"
@@ -1798,7 +1798,7 @@ msgstr "Ersatz wurde bestätigt"
 
 #: ipconst:shtmldefresetcaption
 msgid "Reset"
-msgstr ""
+msgstr "Reset"
 
 #: ipconst:spsrset
 msgid "Resetting messages"
@@ -1930,7 +1930,7 @@ msgstr ""
 
 #: ipconst:ssmtpresponse43
 msgid "Routing server failure"
-msgstr ""
+msgstr "Routing-Server-Fehler"
 
 #: ipconst:spop3cmdrset
 msgid "RSET"
@@ -1938,7 +1938,7 @@ msgstr ""
 
 #: ipconst:ssmtpresponse73
 msgid "Security conversion required but not possible"
-msgstr ""
+msgstr "Sicherheit-Konvertierung erforderlich aber nicht möglich"
 
 #: ipconst:ssmtpresponse74
 msgid "Security features not supported"
@@ -2014,7 +2014,7 @@ msgstr "Server erhielt eine unerwartete Nachricht."
 
 #: ipconst:ssslclosenotify
 msgid "Server sent close notify."
-msgstr ""
+msgstr "Server sendete Schließen-Nachricht"
 
 #: ipconst:swsaservice_not_found
 msgid "Service not found"
@@ -2046,7 +2046,7 @@ msgstr "Socket nicht zugewiesen"
 
 #: ipconst:swsaenotsock
 msgid "Socket operation on nonsocket"
-msgstr ""
+msgstr "Socket-Operation auf Nicht-Socket"
 
 #: ipconst:swsaesocktnosupport
 msgid "Socket type not supported"
@@ -2062,7 +2062,7 @@ msgstr "Software-bedingter Verbindungsabbruch"
 
 #: ipconst:spsspecial
 msgid "Special command"
-msgstr ""
+msgstr "Spezialbefehl"
 
 #: ipconst:ssslunprocesseddata
 msgid "SSL data processing error."
