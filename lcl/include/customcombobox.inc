@@ -191,14 +191,16 @@ end;
 {------------------------------------------------------------------------------
   procedure TCustomComboBox.Select;
 
-  Returns the selected part of text-field.
+  Called whenever User changes the ItemIndex
+  For Delphi compatibility ignore when user unselects by changing Text.
  ------------------------------------------------------------------------------}
 procedure TCustomComboBox.Select;
 begin
-  if Assigned(FOnSelect) then
-    FOnSelect(Self)
-  else
-    Change;
+  if ItemIndex>=0 then
+    if Assigned(FOnSelect) then
+      FOnSelect(Self)
+    else
+      Change;
 end;
 
 {------------------------------------------------------------------------------
