@@ -40,6 +40,7 @@
 function AddEventHandler(AHandle: THandle; AFlags: dword; AEventHandler: TWaitHandleEvent; AData: PtrInt): PEventHandler; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function AddProcessEventHandler(AHandle: THandle; AEventHandler: TChildExitEvent; AData: PtrInt): PProcessEventHandler; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function AddPipeEventHandler(AHandle: THandle; AEventHandler: TPipeEvent; AData: PtrInt): PPipeEventHandler; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function AddSocketEventHandler(AHandle: THandle; AFlags: dword; AEventHandler: TSocketEvent; AData: PtrInt): PSocketEventHandler; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 procedure AttachMenuToWindow(AMenuObject: TComponent); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
 procedure CallDefaultWndHandler(Sender: TObject; var Message); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
@@ -108,6 +109,7 @@ function ReleaseDesignerDC(hWnd: HWND; DC: HDC): Integer;  {$IFDEF IF_BASE_MEMBE
 procedure RemoveEventHandler(var AHandler: PEventHandler); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 procedure RemoveProcessEventHandler(var AHandler: PProcessEventHandler); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 procedure RemovePipeEventHandler(var AHandler: PPipeEventHandler); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+procedure RemoveSocketEventHandler(var AHandler: PSocketEventHandler); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function ReplaceBitmapMask(var Image, Mask: HBitmap; NewMask: HBitmap): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function RequestInput(const InputCaption, InputPrompt : String; MaskInput : Boolean; var Value : String) : Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 

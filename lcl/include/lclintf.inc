@@ -51,6 +51,12 @@ begin
   Result:=WidgetSet.AddProcessEventHandler(AHandle, AEventHandler, AData);
 end;
 
+function AddSocketEventHandler(AHandle: THandle; AFlags: dword; 
+  AEventHandler: TSocketEvent; AData: PtrInt): PSocketEventHandler;
+begin
+  Result:=WidgetSet.AddSocketEventHandler(AHandle, AFlags, AEventHandler, AData);
+end;
+
 procedure AttachMenuToWindow(AMenuObject: TComponent);
 begin
   WidgetSet.AttachMenuToWindow(AMenuObject);
@@ -396,6 +402,11 @@ end;
 procedure RemovePipeEventHandler(var AHandler: PPipeEventHandler);
 begin
   WidgetSet.RemovePipeEventHandler(AHandler);
+end;
+
+procedure RemoveSocketEventHandler(var AHandler: PSocketEventHandler);
+begin
+  WidgetSet.RemoveSocketEventHandler(AHandler);
 end;
 
 function ReplaceBitmapMask(var Image, Mask: HBitmap; NewMask: HBitmap): boolean;

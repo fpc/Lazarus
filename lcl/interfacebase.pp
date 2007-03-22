@@ -40,6 +40,7 @@ type
   PEventHandler = type Pointer;
   PProcessEventHandler = type Pointer;
   PPipeEventHandler = type Pointer;
+  PSocketEventHandler = type Pointer;
 
   TChildExitReason = (cerExit, cerSignal);
   TPipeReason = (prDataAvailable, prBroken, prCanWrite);
@@ -49,6 +50,7 @@ type
   TWaitHandleEvent = procedure(AData: PtrInt; AFlags: dword) of object;
   TChildExitEvent = procedure(AData: PtrInt; AReason: TChildExitReason; AInfo: dword) of object;
   TPipeEvent = procedure(AData: PtrInt; AReasons: TPipeReasons) of object;
+  TSocketEvent = procedure(AData: PtrInt; AFlags: dword) of object;
 
   { TWidgetSet }
 

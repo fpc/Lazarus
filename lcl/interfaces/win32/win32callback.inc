@@ -922,6 +922,15 @@ Var
       then lmNotify.result := lmNotify.result or CDRFRESULT[ResultFlag];
     end;
   end;
+
+  procedure HandleAsyncSocket;
+  var
+    EventInfo: PSocketEventInfo;
+  begin
+    EventInfo := PSocketEventInfo(TWin32WidgetSet(WidgetSet).FWaitSockets[Pointer(WParam)]);
+    if EventInfo = nil then exit;
+    EventInfo^.OnEvent(EventInfo^.UserData, LParam);
+  end;
   
   // Gets the cursor position relative to a given window
   function GetClientCursorPos(ClientWindow: HWND) : TSmallPoint;
@@ -1915,6 +1924,14 @@ begin
       TWin32WidgetSet(WidgetSet).UpdateThemesActive;
     end;
 
+    { >= WM_USER }
+
+    WM_LCL_SOCK_ASYNC:
+    begin
+      HandleAsyncSocket;
+      exit(0);
+    end;
+
 {$ifdef PassWin32MessagesToLCL}
   else
     // pass along user defined messages
@@ -2034,7 +2051,6 @@ begin
           else LMessage.Result := 1;
       end;
     end;
-
   end;
 
   // convert from win32 client to lcl client pos.

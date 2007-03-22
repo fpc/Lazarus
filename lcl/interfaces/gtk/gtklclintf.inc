@@ -188,6 +188,17 @@ begin
 end;
 {$endif}
 
+function TGtkWidgetSet.AddSocketEventHandler(AHandle: THandle; AFlags: dword;
+  AEventHandler: TSocketEvent; AData: PtrInt): PSocketEventHandler;
+begin
+  Result := AddEventHandler(AHandle, AFlags, AEventHandler, AData);
+end;
+
+procedure TGtkWidgetSet.RemoveSocketEventHandler(var AHandler: PSocketEventHandler);
+begin
+  RemoveEventHandler(AHandler);
+end;
+
 {------------------------------------------------------------------------------
   function TGtkWidgetSet.DrawSplitter(DC: HDC; const ARect: TRect;
     Horizontal: boolean): Integer;

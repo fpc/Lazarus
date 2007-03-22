@@ -39,6 +39,8 @@ Const
   MCM_SETCURSEL =  MCM_FIRST + 2;
   MCM_GETMINREQRECT = MCM_FIRST + 9;
 
+  WM_LCL_SOCK_ASYNC = WM_USER;
+
 type
   TGDIType = (gdiBitmap, gdiBrush, gdiFont, gdiPen, gdiRegion);
   TGDIBitmapType = (gbBitmap, gbPixmap, gbImage);

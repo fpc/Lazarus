@@ -43,7 +43,8 @@ Interface
 Uses
   Windows, Classes, ComCtrls, Controls, Buttons, Dialogs, DynHashArray,
   ExtCtrls, Forms, GraphMath, GraphType, InterfaceBase, LCLIntf, LCLType,
-  LMessages, StdCtrls, SysUtils, Win32Def, Graphics, Menus, CommCtrl;
+  LMessages, StdCtrls, SysUtils, Win32Def, Graphics, Menus, CommCtrl, 
+  AvgLvlTree, JwaWinSock2;
 
 const
 
@@ -117,6 +118,13 @@ Type
     OnEvent: TWaitHandleEvent;
   end;
 
+  PSocketEventInfo = ^TSocketEventInfo;
+  TSocketEventInfo = record
+    Socket: THandle;
+    UserData: PtrInt;
+    OnEvent: TSocketEvent;
+  end;
+
   { Win32 interface-object class }
 
   { TWin32WidgetSet }
@@ -145,6 +153,7 @@ Type
     FWaitHandles: array of HANDLE;
     FWaitHandlers: array of TWaitHandler;
     FWaitPipeHandlers: PPipeEventInfo;
+    FWaitSockets: TPointerToPointerTree;
 
     FThemesActive: boolean;
     FThemeLibrary: HMODULE;
