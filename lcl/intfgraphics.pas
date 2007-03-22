@@ -3621,46 +3621,14 @@ begin
       for Row:=Img.Height-1 downto 0 do
       begin
         ReadScanLine(Row,Stream); // Scanline in LineBuf with Size ReadSize.
-        {
-          ---------------- delete this comment, or apply ------------------------
-          Paul Ishenin: My suggestion is to skip this color setting at all
-          and replace it with direct writing of LineBuf into FMaskData. This will
-          significantly speed up mask setting.
-          
-          e.g. I test this code and it works fine:
-
-          if (Img is TLazIntfImage) and (TLazIntfImage(Img).FMaskData <> nil) then
-            for i := 0 to ReadSize - 1 do
-              TLazIntfImage(Img).FMaskData[(Row * ReadSize) + i] := LineBuf[i];
-
-          ---------------- now it works so: --------------------------------------       
-          For cursors: we should not change main bitmap colors, but we should
-          set mask. If we get 1 in LineBuf bit, then we need set 1 into Mask.
-          If alpha part of color is alphaOpaque ($FFFF) then we set 1 into Mask
-          else if alpha is alphaTransparent ($0000) then we set 0 into Mask
-          so it is just "bit by bit copying" from LineBuf into FMaskData
-          if we need speed up this copying then read my comment before
-        }
-        
         for Column:=0 to Img.Width-1 do
+        begin
+          NewColor := img.colors[Column,Row];
           if ((LineBuf[Column div 8] shr (7-(Column and 7)) ) and 1) <> 0 then
-          begin
-            // I dont want change something in Icon loading code, so I add conditions
-            // ClassType = TLazReaderCursor when need
-            if ClassType = TLazReaderCursor then
-            begin
-              NewColor := img.colors[Column,Row];
-              NewColor.alpha := alphaOpaque;
-            end else
-              NewColor := colTransparent;
-            img.colors[Column,Row] := NewColor;
-          end else
-          if ClassType = TLazReaderCursor then
-          begin
-            NewColor := img.colors[Column,Row];
-            NewColor.alpha := alphaTransparent;
-            img.colors[Column,Row] := NewColor;
-          end;
+            NewColor.alpha := alphaTransparent else
+            NewColor.alpha := alphaOpaque;
+          img.colors[Column,Row] := NewColor;
+        end;
       end;
     finally
       FreeBufs;

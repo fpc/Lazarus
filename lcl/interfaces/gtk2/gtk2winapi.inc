@@ -96,8 +96,7 @@ begin
   // fill pixbuf from pixmap
   gdk_pixbuf_get_from_drawable(pixbuf, pixmap, nil, 0, 0, 0, 0, -1, -1);
 
-  // dont know why, but transparent color is black
-  masked_pixbuf := GdkPixbufAddBitmapMask(pixbuf, bitmap, 1);
+  masked_pixbuf := GdkPixbufAddBitmapMask(pixbuf, bitmap, 0);
   if masked_pixbuf <> nil then
   begin
     // masked_pixuf is a new pixbuf created from pixbuf with applying mask

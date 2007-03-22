@@ -362,33 +362,15 @@ function TQtWidgetSet.CreateCursor(ACursorInfo: PIconInfo): hCursor;
 var
   Image: TQtImage;
   Pixmap: QPixmapH;
-  ConvertedImage: QImageH;
-  i, j: integer;
-  AColor: qrgb;
 begin
   Result := 0;
   if IsValidGDIObject(ACursorInfo^.hbmColor) then
   begin
-    // we can get here only QImage. This is not so good as 2 QBitmaps and not
-    // so good as QPixmap :(
-    // So, we need process mask ourself
     Image := TQtImage(ACursorInfo^.hbmColor);
-    ConvertedImage := QImage_create(Image.Handle);
-    
-    // convert alpha channel
-    for j := 0 to Image.Height - 1 do
-      for i := 0 to Image.Width - 1 do
-      begin
-        AColor := QImage_pixel(ConvertedImage, j, i);
-        AColor := ((not Byte(AColor shr 24)) shl 24) or (AColor and $00FFFFFF);
-        QImage_setPixel(ConvertedImage, j, i, AColor);
-      end;
-    //
     Pixmap := QPixmap_create();
-    QPixmap_fromImage(Pixmap, ConvertedImage);
+    QPixmap_fromImage(Pixmap, Image.Handle);
     Result := hCursor(QCursor_create(Pixmap, ACursorInfo^.xHotspot, ACursorInfo^.yHotspot));
     QPixmap_destroy(Pixmap);
-    QImage_destroy(ConvertedImage);
   end;
 end;
 
@@ -2828,5 +2810,6 @@ begin
 end;
 
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line
+
 
 
