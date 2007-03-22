@@ -7416,6 +7416,9 @@ begin
     end
     else begin
       CalculateLeftTopWidthHeight(X1,Y1,X2,Y2,Left,Top,Width,Height);
+      // X2, Y2 is not part of the rectangle
+      dec(Width);
+      dec(Height);
       // first draw interior in brush color
       SelectGDKBrushProps(DC);
       DCOrigin:=GetDCOffset(TDeviceContext(DC));
