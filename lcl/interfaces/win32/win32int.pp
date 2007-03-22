@@ -44,7 +44,7 @@ Uses
   Windows, Classes, ComCtrls, Controls, Buttons, Dialogs, DynHashArray,
   ExtCtrls, Forms, GraphMath, GraphType, InterfaceBase, LCLIntf, LCLType,
   LMessages, StdCtrls, SysUtils, Win32Def, Graphics, Menus, CommCtrl, 
-  AvgLvlTree, JwaWinSock2;
+  AvgLvlTree, WinSock2;
 
 const
 

@@ -171,8 +171,7 @@ var
   lSocketEvent: PSocketEventInfo absolute AHandler;
 begin
   if AHandler = nil then exit;
-  FWaitSockets.Tree.Remove(FWaitSockets.Tree.FindKey(Pointer(lSocketEvent^.Socket),
-    @ComparePointerWithPtrToPtrItem));
+  FWaitSockets.Remove(Pointer(lSocketEvent^.Socket));
   Dispose(lSocketEvent);
   AHandler := nil;
 end;
