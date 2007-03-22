@@ -42,25 +42,28 @@
       </Item6>
       <Item7>
         <Filename Value="idetextconvlistadd.pas"/>
-        <UnitName Value="idetextconvlistadd"/>
+        <UnitName Value="IDETextConvListAdd"/>
       </Item7>
     </Files>
     <RST OutDir="languages/"/>
     <Type Value="RunAndDesignTime"/>
-    <RequiredPkgs Count="4">
+    <RequiredPkgs Count="5">
       <Item1>
-        <PackageName Value="SynEdit"/>
+        <PackageName Value="LCL"/>
       </Item1>
       <Item2>
-        <PackageName Value="IDEIntf"/>
+        <PackageName Value="SynEdit"/>
       </Item2>
       <Item3>
-        <PackageName Value="FCL"/>
-        <MinVersion Major="1" Valid="True"/>
+        <PackageName Value="IDEIntf"/>
       </Item3>
       <Item4>
-        <PackageName Value="CodeTools"/>
+        <PackageName Value="FCL"/>
+        <MinVersion Major="1" Valid="True"/>
       </Item4>
+      <Item5>
+        <PackageName Value="CodeTools"/>
+      </Item5>
     </RequiredPkgs>
     <UsageOptions>
       <UnitPath Value="$(PkgOutDir)/"/>

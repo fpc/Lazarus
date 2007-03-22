@@ -1,10 +1,10 @@
 object H2PasDialog: TH2PasDialog
   Left = 245
-  Height = 501
+  Height = 549
   Top = 205
   Width = 785
   HorzScrollBar.Page = 784
-  VertScrollBar.Page = 500
+  VertScrollBar.Page = 548
   ActiveControl = ConvertButton
   Caption = 'H2PasDialog'
   KeyPreview = True
@@ -15,9 +15,8 @@ object H2PasDialog: TH2PasDialog
   Position = poDesktopCenter
   object MainPageControl: TPageControl
     AnchorSideBottom.Control = OpenSettingsButton
-    Height = 465
+    Height = 509
     Width = 785
-    TabStop = True
     ActivePage = FilesTabSheet
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
@@ -26,17 +25,18 @@ object H2PasDialog: TH2PasDialog
     object FilesTabSheet: TTabSheet
       Caption = 'FilesTabSheet'
       object CHeaderFilesCheckTreeView: TTreeView
-        Height = 435
+        Height = 475
         Width = 255
         Align = alLeft
-        DefaultItemHeight = 16
+        DefaultItemHeight = 18
         StateImages = FileStateImageList
         TabOrder = 0
+        OnDblClick = CHeaderFilesCheckTreeViewDblClick
         OnMouseDown = CHeaderFilesCheckTreeViewMouseDown
         OnSelectionChanged = CHeaderFilesCheckTreeViewSelectionChanged
         Options = [tvoAllowMultiselect, tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
       end
-      object AddCHeaderFilesButton: TButton
+      object AddCHeadersButton: TButton
         AnchorSideLeft.Control = CHeaderFilesSplitter1
         AnchorSideLeft.Side = asrBottom
         Left = 266
@@ -45,11 +45,11 @@ object H2PasDialog: TH2PasDialog
         Width = 185
         BorderSpacing.Left = 6
         BorderSpacing.InnerBorder = 4
-        Caption = 'AddCHeaderFilesButton'
-        OnClick = AddCHeaderFilesButtonClick
+        Caption = 'AddCHeadersButton'
+        OnClick = AddCHeadersButtonClick
         TabOrder = 1
       end
-      object DeleteCHeaderFilesButton: TButton
+      object DeleteCHeadersButton: TButton
         AnchorSideLeft.Control = CHeaderFilesSplitter1
         AnchorSideLeft.Side = asrBottom
         Left = 266
@@ -58,11 +58,11 @@ object H2PasDialog: TH2PasDialog
         Width = 185
         BorderSpacing.Left = 6
         BorderSpacing.InnerBorder = 4
-        Caption = 'DeleteCHeaderFilesButton'
-        OnClick = DeleteCHeaderFilesButtonClick
+        Caption = 'DeleteCHeadersButton'
+        OnClick = DeleteCHeadersButtonClick
         TabOrder = 2
       end
-      object EnableAllCHeaderFilesButton: TButton
+      object EnableAllCHeadersButton: TButton
         AnchorSideLeft.Control = CHeaderFilesSplitter1
         AnchorSideLeft.Side = asrBottom
         Left = 266
@@ -71,11 +71,11 @@ object H2PasDialog: TH2PasDialog
         Width = 185
         BorderSpacing.Left = 6
         BorderSpacing.InnerBorder = 4
-        Caption = 'EnableAllCHeaderFilesButton'
-        OnClick = EnableAllCHeaderFilesButtonClick
+        Caption = 'EnableAllCHeadersButton'
+        OnClick = EnableAllCHeadersButtonClick
         TabOrder = 3
       end
-      object DisableAllCHeaderFilesButton: TButton
+      object DisableAllCHeadersButton: TButton
         AnchorSideLeft.Control = CHeaderFilesSplitter1
         AnchorSideLeft.Side = asrBottom
         Left = 266
@@ -84,13 +84,13 @@ object H2PasDialog: TH2PasDialog
         Width = 185
         BorderSpacing.Left = 6
         BorderSpacing.InnerBorder = 4
-        Caption = 'DisableAllCHeaderFilesButton'
-        OnClick = DisableAllCHeaderFilesButtonClick
+        Caption = 'DisableAllCHeadersButton'
+        OnClick = DisableAllCHeadersButtonClick
         TabOrder = 4
       end
       object CHeaderFilesSplitter1: TSplitter
         Left = 255
-        Height = 435
+        Height = 475
         Width = 5
         Beveled = True
       end
@@ -102,28 +102,19 @@ object H2PasDialog: TH2PasDialog
         AnchorSideBottom.Control = FilesTabSheet
         AnchorSideBottom.Side = asrBottom
         Left = 260
-        Height = 227
+        Height = 267
         Top = 208
         Width = 521
         Anchors = [akTop, akLeft, akRight, akBottom]
         Caption = 'FileInfoGroupBox'
         TabOrder = 5
-        object FileInfoLabel: TLabel
-          Left = 8
-          Height = 13
-          Top = 1
-          Width = 73
-          Caption = 'FileInfoLabel'
-          Color = clNone
-          ParentColor = False
-        end
         object AddIncludedCHeaderFilesButton: TButton
           AnchorSideBottom.Control = FileInfoGroupBox
           AnchorSideBottom.Side = asrBottom
           Left = 8
-          Height = 26
-          Top = 178
-          Width = 197
+          Height = 30
+          Top = 210
+          Width = 249
           Anchors = [akLeft, akBottom]
           AutoSize = True
           BorderSpacing.Around = 6
@@ -132,12 +123,35 @@ object H2PasDialog: TH2PasDialog
           OnClick = AddIncludedCHeaderFilesButtonClick
           TabOrder = 0
         end
+        object FileInfoMemo: TMemo
+          AnchorSideLeft.Control = FileInfoGroupBox
+          AnchorSideTop.Control = MergeFileCheckBox
+          AnchorSideTop.Side = asrBottom
+          AnchorSideRight.Control = FileInfoGroupBox
+          AnchorSideRight.Side = asrBottom
+          AnchorSideBottom.Control = AddIncludedCHeaderFilesButton
+          Height = 183
+          Top = 21
+          Width = 517
+          Anchors = [akTop, akLeft, akRight, akBottom]
+          Color = clNone
+          ReadOnly = True
+          TabOrder = 1
+        end
+        object MergeFileCheckBox: TCheckBox
+          Left = 8
+          Height = 24
+          Top = -3
+          Width = 168
+          Caption = 'MergeFileCheckBox'
+          TabOrder = 2
+        end
       end
       object MoveFileUpButton: TButton
-        AnchorSideLeft.Control = AddCHeaderFilesButton
-        AnchorSideTop.Control = DisableAllCHeaderFilesButton
+        AnchorSideLeft.Control = AddCHeadersButton
+        AnchorSideTop.Control = DisableAllCHeadersButton
         AnchorSideTop.Side = asrBottom
-        AnchorSideRight.Control = AddCHeaderFilesButton
+        AnchorSideRight.Control = AddCHeadersButton
         AnchorSideRight.Side = asrBottom
         Left = 266
         Height = 25
@@ -151,10 +165,10 @@ object H2PasDialog: TH2PasDialog
         TabOrder = 6
       end
       object MoveFileDownButton: TButton
-        AnchorSideLeft.Control = AddCHeaderFilesButton
+        AnchorSideLeft.Control = AddCHeadersButton
         AnchorSideTop.Control = MoveFileUpButton
         AnchorSideTop.Side = asrBottom
-        AnchorSideRight.Control = AddCHeaderFilesButton
+        AnchorSideRight.Control = AddCHeadersButton
         AnchorSideRight.Side = asrBottom
         Left = 266
         Height = 25
@@ -167,11 +181,21 @@ object H2PasDialog: TH2PasDialog
         OnClick = MoveFileDownButtonClick
         TabOrder = 7
       end
+      object MergeAllCHeadersExceptCurrentButton: TButton
+        Left = 486
+        Height = 25
+        Top = 12
+        Width = 184
+        BorderSpacing.InnerBorder = 4
+        Caption = 'MergeAllCHeadersExceptCurrentButton'
+        OnClick = MergeAllCHeadersExceptCurrentButtonClick
+        TabOrder = 8
+      end
     end
     object PreH2PasTabSheet: TTabSheet
       Caption = 'PreH2PasTabSheet'
       object PreH2PasGroupBox: TGroupBox
-        Height = 435
+        Height = 475
         Width = 781
         Align = alClient
         Caption = 'PreH2PasGroupBox'
@@ -184,9 +208,9 @@ object H2PasDialog: TH2PasDialog
         AnchorSideTop.Control = LibnameEdit
         AnchorSideTop.Side = asrCenter
         Left = 6
-        Height = 13
-        Top = 281
-        Width = 81
+        Height = 17
+        Top = 279
+        Width = 105
         BorderSpacing.Top = 10
         Caption = 'LibNameLabel'
         Color = clNone
@@ -196,9 +220,9 @@ object H2PasDialog: TH2PasDialog
         AnchorSideTop.Control = OutputExtEdit
         AnchorSideTop.Side = asrCenter
         Left = 6
-        Height = 13
-        Top = 313
-        Width = 86
+        Height = 17
+        Top = 311
+        Width = 114
         Caption = 'OutputExtLabel'
         Color = clNone
         ParentColor = False
@@ -207,9 +231,9 @@ object H2PasDialog: TH2PasDialog
         AnchorSideTop.Control = OutputDirEdit
         AnchorSideTop.Side = asrCenter
         Left = 6
-        Height = 13
-        Top = 342
-        Width = 85
+        Height = 17
+        Top = 340
+        Width = 110
         Caption = 'OutputDirLabel'
         Color = clNone
         ParentColor = False
@@ -218,7 +242,7 @@ object H2PasDialog: TH2PasDialog
         AnchorSideLeft.Control = LibNameLabel
         AnchorSideLeft.Side = asrBottom
         AnchorSideTop.Side = asrBottom
-        Left = 93
+        Left = 117
         Height = 23
         Top = 276
         Width = 113
@@ -232,7 +256,7 @@ object H2PasDialog: TH2PasDialog
         AnchorSideLeft.Control = OutputExtLabel
         AnchorSideLeft.Side = asrBottom
         AnchorSideTop.Side = asrBottom
-        Left = 98
+        Left = 126
         Height = 23
         Top = 308
         Width = 80
@@ -247,7 +271,7 @@ object H2PasDialog: TH2PasDialog
         AnchorSideLeft.Side = asrBottom
         AnchorSideTop.Control = OutputExtEdit
         AnchorSideTop.Side = asrBottom
-        Left = 97
+        Left = 122
         Height = 23
         Top = 337
         Width = 397
@@ -263,7 +287,7 @@ object H2PasDialog: TH2PasDialog
         AnchorSideTop.Control = OutputDirEdit
         AnchorSideBottom.Control = OutputDirEdit
         AnchorSideBottom.Side = asrBottom
-        Left = 494
+        Left = 519
         Height = 23
         Top = 337
         Width = 32
@@ -296,7 +320,7 @@ object H2PasDialog: TH2PasDialog
     object PostH2PasTabSheet: TTabSheet
       Caption = 'PostH2PasTabSheet'
       object PostH2PasGroupBox: TGroupBox
-        Height = 435
+        Height = 475
         Width = 781
         Align = alClient
         Caption = 'PostH2PasGroupBox'
@@ -383,9 +407,9 @@ object H2PasDialog: TH2PasDialog
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 5
-    Height = 26
-    Top = 470
-    Width = 124
+    Height = 30
+    Top = 514
+    Width = 161
     Anchors = [akLeft, akBottom]
     AutoSize = True
     BorderSpacing.Around = 5
@@ -399,10 +423,10 @@ object H2PasDialog: TH2PasDialog
     AnchorSideLeft.Side = asrBottom
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 134
-    Height = 26
-    Top = 470
-    Width = 122
+    Left = 171
+    Height = 30
+    Top = 514
+    Width = 158
     Anchors = [akLeft, akBottom]
     AutoSize = True
     BorderSpacing.Around = 5
@@ -415,10 +439,10 @@ object H2PasDialog: TH2PasDialog
     AnchorSideLeft.Control = SaveSettingsButton
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = OpenSettingsButton
-    Left = 271
-    Height = 26
-    Top = 470
-    Width = 93
+    Left = 344
+    Height = 30
+    Top = 514
+    Width = 119
     AutoSize = True
     BorderSpacing.Left = 15
     BorderSpacing.InnerBorder = 4
@@ -431,10 +455,10 @@ object H2PasDialog: TH2PasDialog
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 699
-    Height = 26
-    Top = 470
-    Width = 81
+    Left = 677
+    Height = 30
+    Top = 514
+    Width = 103
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Around = 5
@@ -447,10 +471,10 @@ object H2PasDialog: TH2PasDialog
     AnchorSideLeft.Control = ConvertButton
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = OpenSettingsButton
-    Left = 370
-    Height = 26
-    Top = 470
-    Width = 144
+    Left = 469
+    Height = 30
+    Top = 514
+    Width = 183
     AutoSize = True
     BorderSpacing.Left = 6
     BorderSpacing.InnerBorder = 4

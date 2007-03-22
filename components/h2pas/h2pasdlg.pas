@@ -36,22 +36,24 @@ type
   { TH2PasDialog }
 
   TH2PasDialog = class(TForm)
+    MergeAllCHeadersExceptCurrentButton: TButton;
+    MergeFileCheckBox: TCheckBox;
+    FileInfoMemo: TMemo;
     FileStateImageList: TImageList;
     MoveFileDownButton: TButton;
     MoveFileUpButton: TButton;
     ConvertAndBuildButton: TButton;
     FileInfoGroupBox: TGroupBox;
-    FileInfoLabel: TLabel;
     MainPageControl: TPageControl;
     AddIncludedCHeaderFilesButton: TButton;
 
     // c header files
     FilesTabSheet: TTabSheet;
     CHeaderFilesSplitter1: TSplitter;
-    AddCHeaderFilesButton: TButton;
-    DisableAllCHeaderFilesButton: TButton;
-    EnableAllCHeaderFilesButton: TButton;
-    DeleteCHeaderFilesButton: TButton;
+    AddCHeadersButton: TButton;
+    DisableAllCHeadersButton: TButton;
+    EnableAllCHeadersButton: TButton;
+    DeleteCHeadersButton: TButton;
     CHeaderFilesCheckTreeView: TTreeView;
 
     // pre h2pas
@@ -90,8 +92,9 @@ type
     ConvertButton: TButton;
     CloseButton: TButton;
 
-    procedure AddCHeaderFilesButtonClick(Sender: TObject);
+    procedure AddCHeadersButtonClick(Sender: TObject);
     procedure AddIncludedCHeaderFilesButtonClick(Sender: TObject);
+    procedure CHeaderFilesCheckTreeViewDblClick(Sender: TObject);
     procedure CHeaderFilesCheckTreeViewMouseDown(Sender: TOBject;
       Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure CHeaderFilesCheckTreeViewSelectionChanged(Sender: TObject);
@@ -99,13 +102,14 @@ type
     procedure ConstantsInsteadOfEnumsCheckBoxChange(Sender: TObject);
     procedure ConvertAndBuildButtonClick(Sender: TObject);
     procedure ConvertButtonClick(Sender: TObject);
-    procedure DeleteCHeaderFilesButtonClick(Sender: TObject);
+    procedure DeleteCHeadersButtonClick(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure H2PasFilenameEditEditingDone(Sender: TObject);
     procedure LibnameEditEditingDone(Sender: TObject);
+    procedure MergeAllCHeadersExceptCurrentButtonClick(Sender: TObject);
     procedure MoveFileDownButtonClick(Sender: TObject);
     procedure MoveFileUpButtonClick(Sender: TObject);
     procedure NewSettingsButtonClick(Sender: TObject);
@@ -118,8 +122,8 @@ type
     procedure PreH2PasEditModified(Sender: TObject);
     procedure SaveSettingsAsButtonClick(Sender: TObject);
     procedure SaveSettingsButtonClick(Sender: TObject);
-    procedure EnableAllCHeaderFilesButtonClick(Sender: TObject);
-    procedure DisableAllCHeaderFilesButtonClick(Sender: TObject);
+    procedure EnableAllCHeadersButtonClick(Sender: TObject);
+    procedure DisableAllCHeadersButtonClick(Sender: TObject);
     procedure h2pasFilenameBrowseButtonClick(Sender: TObject);
     procedure h2pasOptionsCheckGroupItemClick(Sender: TObject; Index: LongInt);
     procedure OnShowSrcEditSection(Sender: TObject);
@@ -131,18 +135,20 @@ type
     
     function GetProject: TH2PasProject;
     
-    procedure UpdateAll;
-    procedure UpdateProjectChanged; // show project settings
+    procedure UpdateAll(ScanIncludes: boolean);
+    procedure UpdateProjectChanged(ScanIncludes: boolean); // show project settings
     procedure UpdateCaption;
     procedure UpdateFileInfo;
     procedure ClearMessages;
     procedure CreateLazarusMenuItems;
+    function GetNodeFilename(Node: TTreeNode): string;
     function GetCurrentCHeaderFile: TH2PasFile;
     procedure MoveCurrentFile(Offset: integer);
     function GetFileNodeStateIndex(aFile: TH2PasFile): Integer;
+    procedure MarkAllCHeadersExceptCurrentToMerge;
 
     // project settings
-    procedure UpdateFilesPage;
+    procedure UpdateFilesPage(ScanIncludes: boolean);
     procedure UpdateH2PasPage;
     procedure UpdateConvertPage;
     // global settings
@@ -220,14 +226,16 @@ procedure TH2PasDialog.FormCreate(Sender: TObject);
 begin
   Caption:=h2pCHeaderFileConverter;
   FilesTabSheet.Caption:='C header files';
-    AddCHeaderFilesButton.Caption:='Add .h files ...';
-    DeleteCHeaderFilesButton.Caption:='Delete selected .h files';
-    EnableAllCHeaderFilesButton.Caption:='Enable all .h files';
-    DisableAllCHeaderFilesButton.Caption:='Disable all .h files';
+    AddCHeadersButton.Caption:='Add .h files ...';
+    DeleteCHeadersButton.Caption:='Delete selected .h files';
+    EnableAllCHeadersButton.Caption:='Enable all .h files';
+    DisableAllCHeadersButton.Caption:='Disable all .h files';
     MoveFileDownButton.Caption:='Move file down';
     MoveFileUpButton.Caption:='Move file up';
     FileInfoGroupBox.Caption:='File information';
     AddIncludedCHeaderFilesButton.Caption:='Add included .h files';
+    MergeAllCHeadersExceptCurrentButton.Caption:='Merge all but this';
+  MergeFileCheckBox.Caption:='Merge file';
   h2pasOptionsTabSheet.Caption:='h2pas Options';
     h2pasOptionsCheckGroup.Caption:='Options';
     with h2pasOptionsCheckGroup.Items do begin
@@ -301,7 +309,7 @@ begin
     PostH2PasEdit.ListOfTools:=Project.PostH2PasTools;
   end;
 
-  UpdateAll;
+  UpdateAll(false);
 end;
 
 procedure TH2PasDialog.FormCloseQuery(Sender: TObject; var CanClose: boolean);
@@ -344,7 +352,7 @@ begin
   Convert;
 end;
 
-procedure TH2PasDialog.DeleteCHeaderFilesButtonClick(Sender: TObject);
+procedure TH2PasDialog.DeleteCHeadersButtonClick(Sender: TObject);
 var
   DeleteFiles: TStringList;
   Node: TTreeNode;
@@ -354,7 +362,7 @@ begin
   while Node<>nil do begin
     if Node.Parent=nil then begin
       // top lvl node is a .h file
-      DeleteFiles.Add(Project.LongenFilename(Node.Text));
+      DeleteFiles.Add(GetNodeFilename(Node));
     end;
     Node:=Node.GetNextMultiSelected;
   end;
@@ -367,12 +375,12 @@ begin
     then begin
       Project.DeleteFiles(DeleteFiles);
     end;
-    UpdateFilesPage;
+    UpdateFilesPage(true);
   end;
   DeleteFiles.Free;
 end;
 
-procedure TH2PasDialog.AddCHeaderFilesButtonClick(Sender: TObject);
+procedure TH2PasDialog.AddCHeadersButtonClick(Sender: TObject);
 var
   OpenDialog: TOpenDialog;
 begin
@@ -384,7 +392,7 @@ begin
     OpenDialog.Filter:='C header file (*.h)|*.h|All files (*.*)|'+FileMask;
     if OpenDialog.Execute then begin
       Project.AddFiles(OpenDialog.Files);
-      UpdateFilesPage;
+      UpdateFilesPage(true);
     end;
   finally
     StoreIDEFileDialog(OpenDialog);
@@ -406,7 +414,7 @@ begin
   StateIconLeft:=Node.DisplayStateIconLeft;
   if (x>=StateIconLeft) and (x<StateIconLeft+FileStateImageList.Width) then
   begin
-    AFilename:=Project.LongenFilename(Node.Text);
+    AFilename:=GetNodeFilename(Node);
     CurFile:=Project.CHeaderFileWithFilename(AFilename);
     if CurFile=nil then exit;
     CurFile.Enabled:=not CurFile.Enabled;
@@ -449,17 +457,27 @@ begin
         s:=s+#13+CurFilename;
       end;
       if QuestionDlg('Add .h files?',
-        'Add these .h files to h2pas project:'#13#13
+        'Add these .h files to h2pas project:'#13
         +s+#13+'?',
-        mtConfirmation,[mbYes,mbNo],0)=mrYes
+        mtConfirmation,[mrYes,mrNo],0)=mrYes
       then begin
         Project.AddFiles(sl);
-        UpdateFilesPage;
+        Project.ReadAllCIncludes(true);
+        UpdateFilesPage(false);
       end;
     end;
   finally
     sl.Free;
   end;
+end;
+
+procedure TH2PasDialog.CHeaderFilesCheckTreeViewDblClick(Sender: TObject);
+var
+  CurFile: TH2PasFile;
+begin
+  CurFile:=GetCurrentCHeaderFile;
+  if CurFile<>nil then
+    LazarusIDE.DoOpenEditorFile(CurFile.Filename,-1,[]);
 end;
 
 procedure TH2PasDialog.CHeaderFilesCheckTreeViewSelectionChanged(Sender: TObject
@@ -500,6 +518,12 @@ begin
     Project.Libname:=LibnameEdit.Text;
 end;
 
+procedure TH2PasDialog.MergeAllCHeadersExceptCurrentButtonClick(Sender: TObject
+  );
+begin
+  MarkAllCHeadersExceptCurrentToMerge;
+end;
+
 procedure TH2PasDialog.MoveFileDownButtonClick(Sender: TObject);
 begin
   MoveCurrentFile(1);
@@ -514,7 +538,7 @@ procedure TH2PasDialog.NewSettingsButtonClick(Sender: TObject);
 begin
   Project.Filename:='';
   Project.Clear(true);
-  UpdateAll;
+  UpdateAll(true);
 end;
 
 procedure TH2PasDialog.OpenLastProjectOnStartCheckBoxChange(Sender: TObject);
@@ -581,7 +605,7 @@ begin
   SaveProject('',[]);
 end;
 
-procedure TH2PasDialog.EnableAllCHeaderFilesButtonClick(Sender: TObject);
+procedure TH2PasDialog.EnableAllCHeadersButtonClick(Sender: TObject);
 var
   i: Integer;
 begin
@@ -594,7 +618,7 @@ begin
   UpdateFileInfo;
 end;
 
-procedure TH2PasDialog.DisableAllCHeaderFilesButtonClick(Sender: TObject);
+procedure TH2PasDialog.DisableAllCHeadersButtonClick(Sender: TObject);
 var
   i: Integer;
 begin
@@ -697,19 +721,19 @@ begin
   Result:=Converter.Project;
 end;
 
-procedure TH2PasDialog.UpdateAll;
+procedure TH2PasDialog.UpdateAll(ScanIncludes: boolean);
 begin
   UpdateCaption;
-  UpdateFilesPage;
+  UpdateFilesPage(ScanIncludes);
   UpdateH2PasPage;
   UpdateConvertPage;
   UpdateSettingsPage;
 end;
 
-procedure TH2PasDialog.UpdateProjectChanged;
+procedure TH2PasDialog.UpdateProjectChanged(ScanIncludes: boolean);
 begin
   UpdateCaption;
-  UpdateFilesPage;
+  UpdateFilesPage(ScanIncludes);
   UpdateH2PasPage;
   UpdateConvertPage;
 end;
@@ -747,17 +771,29 @@ begin
       s:=s+#13#13+'Includes:';
       for i:=0 to AFile.CIncludeCount-1 do begin
         IncFile:=AFile.CIncludes[i];
-        s:=s+#13+IncFile.SrcFilename+':'+IntToStr(IncFile.SrcPos.Y);
+        s:=s+#13+Project.ShortenFilename(IncFile.Filename)+':'+IntToStr(IncFile.SrcPos.Y);
       end;
-      AddIncludedCHeaderFilesButton.Visible:=true;
+      AddIncludedCHeaderFilesButton.Enabled:=true;
     end else begin
-      AddIncludedCHeaderFilesButton.Visible:=false;
+      AddIncludedCHeaderFilesButton.Enabled:=false;
     end;
 
-    FileInfoLabel.Caption:=s;
+    if AFile.CIncludedByCount>0 then begin
+      s:=s+#13#13+'Included by:';
+      for i:=0 to AFile.CIncludedByCount-1 do begin
+        IncFile:=AFile.CIncludedBy[i];
+        s:=s+#13+Project.ShortenFilename(IncFile.Owner.Filename)+':'+IntToStr(IncFile.SrcPos.Y);
+      end;
+    end;
+
+    FileInfoMemo.Caption:=s;
+
+    MergeFileCheckBox.Checked:=AFile.Merge;
+    MergeFileCheckBox.Enabled:=true;
   end else begin
-    FileInfoLabel.Caption:='No file selected.';
-    AddIncludedCHeaderFilesButton.Visible:=false;
+    FileInfoMemo.Caption:='No file selected.';
+    MergeFileCheckBox.Enabled:=false;
+    AddIncludedCHeaderFilesButton.Enabled:=false;
   end;
 end;
 
@@ -780,6 +816,17 @@ begin
       @OnAddSearchAndReplaceBeforeH2PasClick);
 end;
 
+function TH2PasDialog.GetNodeFilename(Node: TTreeNode): string;
+var
+  p: LongInt;
+begin
+  Result:=Node.Text;
+  p:=System.Pos('(',Result);
+  if p>0 then
+    Result:=copy(Result,1,p-2);
+  Result:=Project.LongenFilename(Result);
+end;
+
 function TH2PasDialog.GetCurrentCHeaderFile: TH2PasFile;
 var
   AFilename: String;
@@ -788,7 +835,7 @@ begin
   Result:=nil;
   Node:=CHeaderFilesCheckTreeView.Selected;
   if (Node=nil) or (Node.Parent<>nil) then exit;
-  AFilename:=Project.LongenFilename(Node.Text);
+  AFilename:=GetNodeFilename(Node);
   Result:=Project.CHeaderFileWithFilename(AFilename);
 end;
 
@@ -805,7 +852,7 @@ begin
   end;
   Node:=CHeaderFilesCheckTreeView.Selected;
   if (Node=nil) or (Node.Parent<>nil) then exit;
-  AFilename:=Project.LongenFilename(Node.Text);
+  AFilename:=GetNodeFilename(Node);
   Index:=Project.CHeaderFileIndexWithFilename(AFilename);
   if Index<0 then begin
     DebugLn(['TH2PasDialog.MoveCurrentFile not found: Filename=',AFilename]);
@@ -832,7 +879,23 @@ begin
     Result:=0;
 end;
 
-procedure TH2PasDialog.UpdateFilesPage;
+procedure TH2PasDialog.MarkAllCHeadersExceptCurrentToMerge;
+var
+  CurFile: TH2PasFile;
+  i: Integer;
+  OtherFile: TH2PasFile;
+begin
+  if Project=nil then exit;
+  CurFile:=GetCurrentCHeaderFile;
+  if CurFile=nil then exit;
+  for i:=0 to Project.CHeaderFileCount-1 do begin
+    OtherFile:=Project.CHeaderFiles[i];
+    OtherFile.Merge:=OtherFile<>CurFile;
+  end;
+  UpdateFileInfo;
+end;
+
+procedure TH2PasDialog.UpdateFilesPage(ScanIncludes: boolean);
 var
   i: Integer;
   CurFile: TH2PasFile;
@@ -841,8 +904,10 @@ var
   OldExpandedState: TTreeNodeExpandedState;
   Node: TTreeNode;
   OldSelected: String;
+  j: Integer;
 begin
-  CHeaderFilesCheckTreeView.ConsistencyCheck;
+  if ScanIncludes and (Project<>nil) then
+    Project.ReadAllCIncludes(false);
   CHeaderFilesCheckTreeView.BeginUpdate;
   OldSelection:=nil;
   OldExpandedState:=TTreeNodeExpandedState.Create(CHeaderFilesCheckTreeView);
@@ -866,10 +931,15 @@ begin
     for i:=0 to Project.CHeaderFileCount-1 do begin
       CurFile:=Project.CHeaderFiles[i];
       s:=Project.ShortenFilename(CurFile.Filename);
+      if CurFile.CIncludedByCount>0 then
+        s:=s+' (included by '+IntToStr(CurFile.CIncludedByCount)+')';
       Node:=CHeaderFilesCheckTreeView.Items.Add(nil,s);
       Node.MultiSelected:=OldSelection.IndexOf(Node.GetTextPath)>=0;
       Node.Selected:=Node.Text=OldSelected;
       Node.StateIndex:=GetFileNodeStateIndex(CurFile);
+      for j:=0 to CurFile.CIncludeCount-1 do begin
+
+      end;
     end;
 
     // restore expanded state
@@ -1196,7 +1266,7 @@ begin
     Project.Filename:=NewFilename;
   end;
   
-  UpdateProjectChanged;
+  UpdateProjectChanged(true);
 end;
 
 initialization

@@ -3356,6 +3356,7 @@ resourcestring
   lisPListAll                   = '<All>';
   lisPListNone                  = '<None>';
   lisUIClearIncludedByReference = 'Clear include cache';
+  lisChangeParent = 'Change parent ...';
 
 implementation
 end.

@@ -151,20 +151,29 @@ type
     function Execute(aText: TIDETextConverter): TModalResult; override;
   end;
 
+  TH2PasFile = class;
+
   { TH2PasFileCInclude }
 
   TH2PasFileCInclude = class
   private
     FFilename: string;
+    FH2PasFile: TH2PasFile;
+    FOwner: TH2PasFile;
     FSrcFilename: string;
     FSrcPos: TPoint;
     procedure SetFilename(const AValue: string);
+    procedure SetH2PasFile(const AValue: TH2PasFile);
     procedure SetSrcFilename(const AValue: string);
     procedure SetSrcPos(const AValue: TPoint);
   public
+    constructor Create(TheOwner: TH2PasFile);
+    destructor Destroy; override;
+    property Owner: TH2PasFile read FOwner;
     property SrcFilename: string read FSrcFilename write SetSrcFilename;
     property SrcPos: TPoint read FSrcPos write SetSrcPos;
     property Filename: string read FFilename write SetFilename;
+    property H2PasFile: TH2PasFile read FH2PasFile write SetH2PasFile;
   end;
 
   TH2PasProject = class;
@@ -177,21 +186,30 @@ type
     FCIncludes: TFPList; // list of TH2PasFileCInclude
     FCIncludesValid: boolean;
     FCIncludesFileAge: TDateTime;
+    FCIncludedBy: TFPList; // list of TH2PasFileCInclude
     FEnabled: boolean;
     FFilename: string;
+    FMerge: boolean;
     FModified: boolean;
     FProject: TH2PasProject;
     function GetCIncludeCount: integer;
+    function GetCIncludedBy(Index: integer): TH2PasFileCInclude;
+    function GetCIncludedByCount: integer;
     function GetCIncludes(Index: integer): TH2PasFileCInclude;
     procedure SetEnabled(const AValue: boolean);
     procedure SetFilename(const AValue: string);
+    procedure SetMerge(const AValue: boolean);
     procedure SetModified(const AValue: boolean);
     procedure SetProject(const AValue: TH2PasProject);
     procedure SearchCIncFilenames;
+    procedure InternalAddCIncludedBy(CIncludedBy: TH2PasFileCInclude);
+    procedure InternalRemoveCIncludedBy(CIncludedBy: TH2PasFileCInclude);
   public
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
+    procedure ClearIncludedByReferences;
+    procedure ClearCIncludes;
     procedure Assign(Source: TPersistent); override;
     function IsEqual(AFile: TH2PasFile): boolean;
     procedure Load(Config: TConfigStorage);
@@ -202,6 +220,7 @@ type
     function GetH2PasParameters(const InputFilename: string = ''): string;
     function ReadCIncludes(ForceUpdate: boolean): TModalResult;
     function CIncludesValid: boolean;
+    function FindCIncludedByWithOwner(ByOwner: TH2PasFile): TH2PasFileCInclude;
   public
     property Project: TH2PasProject read FProject write SetProject;
     property Filename: string read FFilename write SetFilename;
@@ -209,6 +228,9 @@ type
     property Modified: boolean read FModified write SetModified;
     property CIncludeCount: integer read GetCIncludeCount;
     property CIncludes[Index: integer]: TH2PasFileCInclude read GetCIncludes;
+    property CIncludedByCount: integer read GetCIncludedByCount;
+    property CIncludedBy[Index: integer]: TH2PasFileCInclude read GetCIncludedBy;
+    property Merge: boolean read FMerge write SetMerge;
   end;
 
   { TH2PasProject }
@@ -291,6 +313,7 @@ type
     procedure AddDefaultPostH2PasTools;
     function SearchIncludedCHeaderFile(aFile: TH2PasFile;
                                        const SrcFilename: string): string;
+    function ReadAllCIncludes(ForceUpdate: boolean): TModalResult;
   public
     property CHeaderFileCount: integer read GetCHeaderFileCount;
     property CHeaderFiles[Index: integer]: TH2PasFile read GetCHeaderFiles;
@@ -369,6 +392,9 @@ type
     procedure SaveProject(const Filename: string);
     function Execute: TModalResult;
     function ConvertFile(AFile: TH2PasFile): TModalResult;
+    function CheckMergeDependencies: TModalResult;
+    function MergeIncludeFiles(AFile: TH2PasFile;
+                               TextConverter: TIDETextConverter): TModalResult;
     function GetH2PasFilename: string;
     function FindH2PasErrorMessage: integer;
     function GetH2PasErrorPostion(const Line: string;
@@ -404,6 +430,13 @@ begin
   Modified:=true;
 end;
 
+procedure TH2PasFile.SetMerge(const AValue: boolean);
+begin
+  if FMerge=AValue then exit;
+  FMerge:=AValue;
+  Modified:=true;
+end;
+
 procedure TH2PasFile.SetEnabled(const AValue: boolean);
 begin
   if FEnabled=AValue then exit;
@@ -417,6 +450,19 @@ begin
     Result:=0
   else
     Result:=FCIncludes.Count;
+end;
+
+function TH2PasFile.GetCIncludedBy(Index: integer): TH2PasFileCInclude;
+begin
+  Result:=TH2PasFileCInclude(FCIncludedBy[Index]);
+end;
+
+function TH2PasFile.GetCIncludedByCount: integer;
+begin
+  if (FCIncludedBy=nil) then
+    Result:=0
+  else
+    Result:=FCIncludedBy.Count;
 end;
 
 function TH2PasFile.GetCIncludes(Index: integer): TH2PasFileCInclude;
@@ -456,8 +502,24 @@ begin
   for i:=0 to FCIncludes.Count-1 do begin
     IncFile:=CIncludes[i];
     IncFile.Filename:=
-      Project.SearchIncludedCHeaderFile(Self,IncFile.SrcFilename);
+                    Project.SearchIncludedCHeaderFile(Self,IncFile.SrcFilename);
+    IncFile.H2PasFile:=Project.CHeaderFileWithFilename(IncFile.Filename);
   end;
+end;
+
+procedure TH2PasFile.InternalAddCIncludedBy(CIncludedBy: TH2PasFileCInclude);
+begin
+  if FCIncludedBy=nil then
+    FCIncludedBy:=TFPList.Create;
+  FCIncludedBy.Add(CIncludedBy);
+  //DebugLn(['TH2PasFile.InternalAddCIncludedBy ',Filename,' included by ',CIncludedBy.Filename]);
+end;
+
+procedure TH2PasFile.InternalRemoveCIncludedBy(CIncludedBy: TH2PasFileCInclude
+  );
+begin
+  if FCIncludedBy=nil then exit;
+  FCIncludedBy.Remove(CIncludedBy);
 end;
 
 constructor TH2PasFile.Create;
@@ -471,6 +533,7 @@ begin
     Project:=nil;
   end;
   Clear;
+  ClearIncludedByReferences;
   inherited Destroy;
 end;
 
@@ -479,8 +542,37 @@ begin
   FEnabled:=true;
   FFilename:='';
   FModified:=false;
+  FMerge:=false;
+  ClearCIncludes;
+end;
+
+procedure TH2PasFile.ClearIncludedByReferences;
+var
+  i: Integer;
+  IncFile: TH2PasFileCInclude;
+begin
+  if FCIncludedBy=nil then exit;
+  for i:=FCIncludedBy.Count-1 downto 0 do begin
+    IncFile:=TH2PasFileCInclude(FCIncludedBy[i]);
+    if IncFile=nil then continue;
+    IncFile.FH2PasFile:=nil;
+  end;
+  FCIncludedBy.Clear;
+end;
+
+procedure TH2PasFile.ClearCIncludes;
+var
+  i: Integer;
+  IncFile: TH2PasFileCInclude;
+begin
   FCIncludesValid:=false;
-  FreeAndNil(FCIncludes);
+  if FCIncludes<>nil then begin
+    for i:=0 to FCIncludes.Count-1 do begin
+      IncFile:=TH2PasFileCInclude(FCIncludes[i]);
+      IncFile.Free;
+    end;
+    FreeAndNil(FCIncludes);
+  end;
 end;
 
 procedure TH2PasFile.Assign(Source: TPersistent);
@@ -509,6 +601,7 @@ end;
 procedure TH2PasFile.Load(Config: TConfigStorage);
 begin
   FEnabled:=Config.GetValue('Enabled/Value',true);
+  FMerge:=Config.GetValue('Merge/Value',false);
   FFilename:=Config.GetValue('Filename/Value','');
   if Project<>nil then
     FFilename:=Project.NormalizeFilename(FFilename);
@@ -521,6 +614,7 @@ var
   AFilename: String;
 begin
   Config.SetDeleteValue('Enabled/Value',Enabled,true);
+  Config.SetDeleteValue('Merge/Value',Merge,true);
   AFilename:=FFilename;
   if Project<>nil then
     AFilename:=Project.ShortenFilename(AFilename);
@@ -590,9 +684,10 @@ begin
   if (not ForceUpdate) and CIncludesValid then exit(mrOk);
   Result:=mrCancel;
   if not FileExistsCached(Filename) then exit;
+  ClearCIncludes;
   FCIncludesFileAge:=FileAge(Filename);
   FCIncludesValid:=true;
-  DebugLn(['TH2PasFile.ReadCIncludes Filename="',Filename,'"']);
+  //DebugLn(['TH2PasFile.ReadCIncludes Filename="',Filename,'"']);
   try
     sl:=TStringList.Create;
     try
@@ -603,9 +698,10 @@ begin
         if SrcFilename='' then continue;
         // add new include
         if FCIncludes=nil then FCIncludes:=TFPList.Create;
-        Item:=TH2PasFileCInclude.Create;
+        Item:=TH2PasFileCInclude.Create(Self);
         Item.SrcFilename:=SrcFilename;
         Item.SrcPos:=Point(1,i);
+        //DebugLn(['TH2PasFile.ReadCIncludes Self=',Filename,' include=',SrcFilename,' ',dbgs(Item.SrcPos)]);
         FCIncludes.Add(Item);
       end;
     finally
@@ -630,6 +726,20 @@ begin
   if FileAge(Filename)>FCIncludesFileAge then exit;
   FCIncludesValid:=true;
   Result:=true;
+end;
+
+function TH2PasFile.FindCIncludedByWithOwner(ByOwner: TH2PasFile
+  ): TH2PasFileCInclude;
+var
+  i: Integer;
+begin
+  if FCIncludedBy<>nil then begin
+    for i:=0 to CIncludedByCount-1 do begin
+      Result:=CIncludedBy[i];
+      if Result.Owner=ByOwner then exit;
+    end;
+  end;
+  Result:=nil;
 end;
 
 { TH2PasProject }
@@ -1261,6 +1371,17 @@ begin
   Result:='';
 end;
 
+function TH2PasProject.ReadAllCIncludes(ForceUpdate: boolean): TModalResult;
+var
+  i: Integer;
+begin
+  for i:=0 to CHeaderFileCount-1 do begin
+    Result:=CHeaderFiles[i].ReadCIncludes(ForceUpdate);
+    if Result=mrAbort then exit;
+  end;
+  Result:=mrOk;
+end;
+
 { TH2PasConverter }
 
 procedure TH2PasConverter.OnParseH2PasLine(Sender: TObject;
@@ -1480,10 +1601,18 @@ begin
   FExecuting:=true;
   try
     FLastUsedFilename:='';
+
+    CurResult:=CheckMergeDependencies;
+    if CurResult=mrAbort then begin
+      DebugLn(['TH2PasConverter.Execute aborted because merging not possible']);
+      exit(mrAbort);
+    end;
+
     // convert every c header file
     for i:=0 to Project.CHeaderFileCount-1 do begin
       AFile:=Project.CHeaderFiles[i];
       if not AFile.Enabled then continue;
+      if AFile.Merge then continue;
       CurResult:=ConvertFile(AFile);
       if CurResult=mrAbort then begin
         DebugLn(['TH2PasConverter.Execute aborted on file ',AFile.Filename]);
@@ -1506,7 +1635,7 @@ var
 begin
   Result:=mrCancel;
   FLastUsedFilename:='';
-
+  
   // check if file exists
   InputFilename:=AFile.Filename;
   if not FileExistsCached(InputFilename) then begin
@@ -1527,13 +1656,20 @@ begin
         mtError,[mbCancel,mbAbort],'');
       exit;
     end;
-
+    
     TextConverter.Filename:=TempCHeaderFilename;
     FLastUsedFilename:=TextConverter.Filename;
     DebugLn(['TH2PasConverter.ConvertFile TempCHeaderFilename="',TempCHeaderFilename,'" CurrentType=',ord(TextConverter.CurrentType),' FileSize=',FileSize(TempCHeaderFilename)]);
+    
+    // merge files
+    TextConverter.LoadFromFile(InputFilename);
+    Result:=MergeIncludeFiles(AFile,TextConverter);
+    if Result<>mrOk then begin
+      DebugLn(['TH2PasConverter.ConvertFile Failed merging include files in ',TempCHeaderFilename]);
+      exit;
+    end;
 
     // run converters for .h file to make it compatible for h2pas
-    TextConverter.LoadFromFile(InputFilename);
     Result:=TextConverter.Execute(Project.PreH2PasTools);
     if Result<>mrOk then begin
       DebugLn(['TH2PasConverter.ConvertFile Failed running Project.PreH2PasTools on ',TempCHeaderFilename]);
@@ -1585,6 +1721,141 @@ begin
   end;
 
   Result:=mrOk;
+end;
+
+function TH2PasConverter.CheckMergeDependencies: TModalResult;
+var
+  CheckedFiles: TFPList;
+
+  procedure AddIncludedByFiles(IncludedByFiles: TFPList; CurFile: TH2PasFile);
+  var
+    i: Integer;
+    IncludedBy: TH2PasFile;
+  begin
+    if CheckedFiles.IndexOf(CurFile)>=0 then exit;
+    CheckedFiles.Add(CurFile);
+    for i:=0 to CurFile.CIncludedByCount-1 do begin
+      IncludedBy:=CurFile.CIncludedBy[i].Owner;
+      if IncludedBy.Merge then
+        AddIncludedByFiles(IncludedByFiles,IncludedBy)
+      else
+        if IncludedByFiles.IndexOf(IncludedBy)<0 then
+          IncludedByFiles.Add(IncludedBy);
+    end;
+  end;
+
+var
+  i: Integer;
+  CurFile: TH2PasFile;
+  j: Integer;
+  IncludedByFiles: TFPList;
+  Warning: String;
+begin
+  // update graph
+  Result:=Project.ReadAllCIncludes(true);
+  if Result=mrAbort then begin
+    DebugLn(['TH2PasConverter.CheckMergeDependencies aborted reading all include dependencies']);
+    exit;
+  end;
+
+  Warning:='';
+  for i:=0 to Project.CHeaderFileCount-1 do begin
+    CurFile:=Project.CHeaderFiles[i];
+    if CurFile.Merge then begin
+      // this file should be merged
+      // -> check if it is included only once
+      IncludedByFiles:=TFPList.Create;
+      CheckedFiles:=TFPList.Create;
+      AddIncludedByFiles(IncludedByFiles,CurFile);
+      if IncludedByFiles.Count>1 then begin
+        // this merged file is included by more than unit
+        Warning:=Warning
+          +'Warning: the file "'+Project.ShortenFilename(CurFile.Filename)+'"'#13
+          +'will be merged into multiple files:'#13;
+        for j:=0 to IncludedByFiles.Count-1 do begin
+          if j>0 then
+            Warning:=Warning+', ';
+          Warning:=Warning
+              +Project.ShortenFilename(TH2PasFile(IncludedByFiles[j]).Filename);
+        end;
+        Warning:=Warning+#13;
+      end;
+      CheckedFiles.Free;
+      IncludedByFiles.Free;
+    end;
+  end;
+  
+  if Warning<>'' then begin
+    Result:=MessageDlg('Warning',
+      'Ambiguous merges:'#13
+      +Warning,mtWarning,[mbIgnore,mbAbort],0);
+    if Result<>mrIgnore then exit(mrCancel);
+  end;
+
+  Result:=mrOk;
+end;
+
+function TH2PasConverter.MergeIncludeFiles(AFile: TH2PasFile;
+  TextConverter: TIDETextConverter): TModalResult;
+  
+  procedure GetMergeFiles(MergedFiles: TFPList; CurFile: TH2PasFile);
+  var
+    i: Integer;
+    CInclude: TH2PasFileCInclude;
+    IncFile: TH2PasFile;
+  begin
+    //DebugLn(['GetMergeFiles CurFile=',CurFile.Filename,' CurFile.CIncludeCount=',CurFile.CIncludeCount]);
+    for i:=0 to CurFile.CIncludeCount-1 do begin
+      CInclude:=CurFile.CIncludes[i];
+      IncFile:=CInclude.H2PasFile;
+      if IncFile=nil then continue;
+      //DebugLn(['GetMergeFiles AFile=',AFile.Filename,' CInclude=',CInclude.Filename,' IncFile.Merge=',IncFile.Merge,' ']);
+      if not IncFile.Merge then continue;
+      if IncFile=AFile then continue;
+      if MergedFiles.IndexOf(IncFile)<0 then
+        MergedFiles.Add(IncFile);
+      GetMergeFiles(MergedFiles,IncFile);
+    end;
+  end;
+  
+var
+  MergedFiles: TFPList;// list of TH2PasFile
+  i: Integer;
+  IncludeFile: TH2PasFile;
+  fs: TFileStream;
+  s: string;
+begin
+  Result:=mrCancel;
+  MergedFiles:=TFPList.Create;
+  try
+    GetMergeFiles(MergedFiles,AFile);
+    for i:=0 to MergedFiles.Count-1 do begin
+      IncludeFile:=TH2PasFile(MergedFiles[i]);
+      DebugLn(['TH2PasConverter.MergeIncludeFiles merging file '
+         ,'"'+IncludeFile.Filename+'"'+' into "'+TextConverter.Filename+'"']);
+      try
+        fs:=TFileStream.Create(IncludeFile.Filename,fmOpenRead);
+        try
+          SetLength(s,fs.Size);
+          if s<>'' then begin
+            fs.Read(s[1],length(s));
+            TextConverter.Source:=TextConverter.Source+LineEnding+s;
+          end;
+        finally
+          fs.Free;
+        end;
+      except
+        on E: Exception do begin
+          MessageDlg('Error','Unable to merge file "'+IncludeFile.Filename+'"'
+            +' into "'+TextConverter.Filename+'"',mtError,[mbCancel],0);
+          exit;
+        end;
+      end;
+    end;
+    Result:=mrOk;
+  finally
+    MergedFiles.Free;
+  end;
 end;
 
 function TH2PasConverter.GetH2PasFilename: string;
@@ -2762,6 +3033,16 @@ begin
   FFilename:=AValue;
 end;
 
+procedure TH2PasFileCInclude.SetH2PasFile(const AValue: TH2PasFile);
+begin
+  if FH2PasFile=AValue then exit;
+  if (FH2PasFile<>nil) then
+    FH2PasFile.InternalRemoveCIncludedBy(Self);
+  FH2PasFile:=AValue;
+  if (FH2PasFile<>nil) then
+    FH2PasFile.InternalAddCIncludedBy(Self);
+end;
+
 procedure TH2PasFileCInclude.SetSrcFilename(const AValue: string);
 begin
   if FSrcFilename=AValue then exit;
@@ -2772,6 +3053,17 @@ end;
 procedure TH2PasFileCInclude.SetSrcPos(const AValue: TPoint);
 begin
   FSrcPos:=AValue;
+end;
+
+constructor TH2PasFileCInclude.Create(TheOwner: TH2PasFile);
+begin
+  FOwner:=TheOwner;
+end;
+
+destructor TH2PasFileCInclude.Destroy;
+begin
+  H2PasFile:=nil;
+  inherited Destroy;
 end;
 
 end.
