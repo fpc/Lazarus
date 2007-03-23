@@ -136,9 +136,13 @@ begin
   if Form <> nil then
   begin
     if Value then
-      Form.DefaultControl := Self
-    else
-      Form.DefaultControl := nil;
+    begin
+      Form.DefaultControl := Self;
+    end else
+    begin
+      if Form.DefaultControl = Self then
+        Form.DefaultControl := nil;
+     end;
   end;
   WSSetDefault;
 end;
@@ -299,4 +303,5 @@ procedure TButton.Click;
 begin
   inherited Click;
 end;
+
 
