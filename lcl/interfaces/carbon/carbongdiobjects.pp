@@ -100,12 +100,14 @@ type
   TCarbonBitmap = class(TCarbonGDIObject)
   private
     FData: Pointer;
+    FARGBData: Pointer;
     FDataSize: Integer;
     FBytesPerRow: Integer;
     FBitsPerPixel: Integer;
     FWidth: Integer;
     FHeight: Integer;
     FCGImage: CGImageRef;
+    function GetARGBData: Pointer;
     function GetBitsPerComponent: Integer;
   public
     constructor Create(AWidth, AHeight, ABitsPerPixel: Integer; AData: Pointer);
@@ -117,6 +119,8 @@ type
     property CGImage: CGImageRef read FCGImage;
     property Data: Pointer read FData;
     property DataSize: Integer read FDataSize;
+    property RGBAData: Pointer read FData;
+    property ARGBData: Pointer read GetARGBData;
     property Width: Integer read FWidth;
     property Height: Integer read FHeight;
   end;
@@ -133,22 +137,22 @@ const
      {crSizeNE      } kThemeResizeLeftCursor, {!!}
      {crSizeN       } kThemeResizeUpCursor,
      {crSizeNW      } kThemeResizeRightCursor, {!!}
-     {crSizeAll     } kThemeResizeLeftRightCursor, {!!}
+     {crSizeAll     } kThemeUndefCursor,           // will be loaded from resource
      {crHandPoint   } kThemePointingHandCursor,
-     {crHelp        } kThemeContextualMenuArrowCursor, {!!}
-     {crAppStart    } kThemeSpinningCursor, {!!}
-     {crNo          } kThemeArrowCursor, {!!}
-     {crSQLWait     } kThemeSpinningCursor, {!!}
-     {crMultiDrag   } kThemeCopyArrowCursor, {!!}
-     {crVSplit      } kThemeResizeLeftRightCursor,
-     {crHSplit      } kThemeResizeLeftRightCursor, {!!}
-     {crNoDrop      } kThemeArrowCursor, {!!}
+     {crHelp        } kThemeUndefCursor,           // will be loaded from resource
+     {crAppStart    } kThemeSpinningCursor,
+     {crNo          } kThemeUndefCursor,
+     {crSQLWait     } kThemeUndefCursor,           // will be loaded from resource
+     {crMultiDrag   } kThemeUndefCursor,           // will be loaded from resource
+     {crVSplit      } kThemeResizeUpDownCursor,
+     {crHSplit      } kThemeResizeLeftRightCursor,
+     {crNoDrop      } kThemeNotAllowedCursor, 
      {crDrag        } kThemeCopyArrowCursor,
      {crHourGlass   } kThemeSpinningCursor,
-     {crUpArrow     } kThemeArrowCursor, {!!}
+     {crUpArrow     } kThemeUndefCursor,           // will be loaded from resource
      {crSizeWE      } kThemeResizeLeftRightCursor,
      {crSizeNWSE    } kThemeResizeLeftRightCursor, {!!}
-     {crSizeNS      } kThemeResizeUpDownCursor,
+     {crSizeNS      } kThemeResizeLeftRightCursor, {!!}
      {crSizeNESW    } kThemeResizeLeftRightCursor, {!!}
      {undefined     } kThemeArrowCursor, {!!}
      {crIBeam       } kThemeIBeamCursor,
@@ -160,26 +164,31 @@ const
 type
   TCarbonCursorType =
   (
-    cctUnknown,  // undefined
-    cctImage,    // from image
-    cctTheme,    // theme cursor
-    cctAnimated, // animated theme cursor
-    cctWait      // special wait cursor
+    cctUnknown,    // undefined
+    cctQDHardware, // QuickDraw hardware cursor
+    cctQDColor,    // QuickDraw Color cursor
+    cctTheme,      // theme cursor
+    cctAnimated,   // animated theme cursor
+    cctWait        // special wait cursor
   );
-
   { TCarbonCursor }
   
   TCarbonCursor = class(TCarbonGDIObject)
   private
-    // TODO: cursor from image
-
     FCursorType: TCarbonCursorType;
     FThemeCursor: ThemeCursor;
+    // animation
     FAnimationStep: Integer;
     FTaskID: MPTaskID;
-
+    // color cursors
+    FQDColorCursorHandle: CCrsrHandle;
+    FQDHardwareCursorName: String;
+    FPixmapHandle: PixmapHandle;
     procedure CreateThread;
     procedure DestroyThread;
+  protected
+    procedure CreateHardwareCursor(ABitmap: TCarbonBitmap; AHotSpot: Point);
+    procedure CreateColorCursor(ABitmap: TCarbonBitmap; AHotSpot: Point);
   public
     constructor Create;
     constructor CreateFromInfo(AInfo: PIconInfo);
@@ -189,6 +198,8 @@ type
     procedure Install;
     procedure UnInstall;
     function StepAnimation: Boolean;
+    class function HardwareCursorsSupported: Boolean;
+  public
     property CursorType: TCarbonCursorType read FCursorType;
   end;
   
@@ -206,9 +217,27 @@ implementation
 uses
   CarbonProc, CarbonCanvas;
 
+type
+  THardwareCursorsAvailability =
+  (
+    hcaUndef,
+    hcaAvailable,
+    hcaUnavailable
+  );
+
 const
-  kThemeCursorAnimationDelay = 70;
+// missed error codes
+  kQDNoColorHWCursorSupport = -3951;
+  kQDCursorAlreadyRegistered = -3952;
+  kQDCursorNotRegistered = -3953;
+  kQDCorruptPICTDataErr = -3954;
   
+  kThemeCursorAnimationDelay = 70;
+  LazarusCursorInfix = '_lazarus_';
+
+var
+  MHardwareCursorsSupported: THardwareCursorsAvailability = hcaUndef;
+
 function AnimationCursorHandler(parameter: UnivPtr): OSStatus;
   {$IFDEF darwin}mwpascal;{$ENDIF}
 begin
@@ -482,6 +511,38 @@ begin
   Result := CGImageGetBitsPerComponent(FCGImage);
 end;
 
+function TCarbonBitmap.GetARGBData: Pointer;
+var
+  i, j: integer;
+  RowPtr, BytePtr: PByte;
+begin
+  if (FData = nil) or (FARGBData <> nil)
+  then begin
+    Result := FARGBData;
+    Exit;
+  end;
+
+  // Since we need to shift from $RRGGBBAA to $AARRGGBB we move the data with
+  // one byte offset so that the RRGGBB part is in place
+  System.GetMem(FARGBData, FDataSize + 1);
+  System.Move(FData^, PByte(FARGBData)[1], FDataSize);
+
+  // now only the Alpha part needs to get inplace
+  RowPtr := FARGBData;
+  for i := 0 to FHeight - 1 do
+  begin
+    BytePtr := RowPtr;
+    for j := 0 to FWidth - 1 do
+    begin
+      BytePtr[0] := BytePtr[4];
+      Inc(BytePtr, 4);
+    end;
+    Inc(RowPtr, FBytesPerRow);
+  end;
+
+  Result := FARGBData;
+end;
+
 constructor TCarbonBitmap.Create(AWidth, AHeight, ABitsPerPixel: Integer;
   AData: Pointer);
 begin
@@ -511,6 +572,7 @@ destructor TCarbonBitmap.Destroy;
 begin
   CGImageRelease(FCGImage);
   System.FreeMem(FData);
+  System.FreeMem(FARGBData);
 
   inherited Destroy;
 end;
@@ -539,6 +601,8 @@ begin
   FCursorType := cctUnknown;
   FThemeCursor := 0;
   FAnimationStep := 0;
+  FQDHardwareCursorName := '';
+  FPixmapHandle := nil;
 end;
 
 procedure TCarbonCursor.CreateThread;
@@ -553,11 +617,135 @@ begin
   FTaskID := nil;
 end;
 
-constructor TCarbonCursor.CreateFromInfo(AInfo: PIconInfo);
+procedure TCarbonCursor.CreateHardwareCursor(ABitmap: TCarbonBitmap; AHotSpot: Point);
+var
+  B: Rect;
+  Status: OSStatus;
 begin
-  // TODO:
+  FCursorType := cctQDHardware;
+
+  B.top := 0;
+  B.left := 0;
+  B.bottom := ABitmap.Height;
+  B.right := ABitmap.Width;
+
+  FPixmapHandle := PixMapHandle(NewHandleClear(SizeOf(PixMap)));
+  // tell that this is pixmap (bit 15 := 1)
+  FPixmapHandle^^.rowBytes := ABitmap.BytesPerRow or $8000;
+  FPixmapHandle^^.bounds := B;
+  FPixmapHandle^^.pmVersion := 0;
+  FPixmapHandle^^.packType := 0;
+  FPixmapHandle^^.packSize := 0;
+  FPixmapHandle^^.hRes := $00480000; // 72 dpi
+  FPixmapHandle^^.vRes := $00480000; // 72 dpi
+  FPixmapHandle^^.pixelType := RGBDirect;
+  FPixmapHandle^^.cmpCount := 4;  // $AARRGGBB
+  FPixmapHandle^^.cmpSize := ABitmap.BitsPerComponent;
+  FPixmapHandle^^.pixelSize := FPixmapHandle^^.cmpCount * FPixmapHandle^^.cmpSize; // depth
+  FPixmapHandle^^.pmTable := nil;
+  FPixmapHandle^^.baseAddr := Ptr(ABitmap.ARGBData);
+
+  FQDHardwareCursorName := Application.Title + LazarusCursorInfix + IntToStr(Integer(Self));
+  Status := QDRegisterNamedPixMapCursor(FPixmapHandle, nil, AHotSpot, PChar(FQDHardwareCursorName));
+  if Status <> noErr then
+  begin
+    DebugLn('[TCarbonCursor.CreateFromInfo] - Hardware cursor error: ', IntToStr(Status));
+  end;
+end;
+
+procedure TCarbonCursor.CreateColorCursor(ABitmap: TCarbonBitmap; AHotSpot: Point);
+var
+  Bounds: Rect;
+  i, j, rowBytes: integer;
+  SrcRowPtr, SrcPtr, DstRowPtr: PByte;
+  RowMask, RowData, Bit: UInt16;
+begin
+  FCursorType := cctQDColor;
+  Bounds.top := 0;
+  Bounds.left := 0;
+  Bounds.bottom := 16;
+  Bounds.right := 16;
+
+  FPixmapHandle := PixMapHandle(NewHandleClear(SizeOf(PixMap)));
+  FPixmapHandle^^.baseAddr := nil;
+  FPixmapHandle^^.bounds := Bounds;
+  // tell that this is pixmap (bit 15 := 1)
+  FPixmapHandle^^.pmVersion := 0;
+  FPixmapHandle^^.packType := 0;
+  FPixmapHandle^^.packSize := 0;
+  FPixmapHandle^^.hRes := $00480000; // 72 dpi
+  FPixmapHandle^^.vRes := $00480000; // 72 dpi
+  FPixmapHandle^^.pixelType := RGBDirect;
+  FPixmapHandle^^.cmpCount := 4;  // RGBA
+  FPixmapHandle^^.cmpSize := ABitmap.BitsPerComponent;
+  FPixmapHandle^^.pixelSize := FPixmapHandle^^.cmpCount * FPixmapHandle^^.cmpSize; // depth
+  rowBytes := FPixmapHandle^^.Bounds.right * (FPixmapHandle^^.pixelSize shr 3);
+  FPixmapHandle^^.rowBytes := rowBytes or $8000;
+  FPixmapHandle^^.pmTable := nil;
+
+  // create cursor handle
+  FQDColorCursorHandle := CCrsrHandle(NewHandleClear(SizeOf(CCrsr)));
+  FQDColorCursorHandle^^.crsrType := SInt16($8001); // color cursor ($8000 - bw)
+  FQDColorCursorHandle^^.crsrMap := FPixmapHandle;
+  FQDColorCursorHandle^^.crsrXData := nil;
+  FQDColorCursorHandle^^.crsrXValid := 0;
+  FQDColorCursorHandle^^.crsrXHandle := nil;
+  FQDColorCursorHandle^^.crsrHotspot.h := Min(15, AHotSpot.h);
+  FQDColorCursorHandle^^.crsrHotspot.v := Min(15, AHotSpot.v);
+  FQDColorCursorHandle^^.crsrXTable := 0;
+  FQDColorCursorHandle^^.crsrID := GetCTSeed;
+
+  // handle for data with size = rowBytes * height
+  FQDColorCursorHandle^^.crsrData := NewHandleClear(rowBytes * FPixmapHandle^^.bounds.bottom);
+
+  // fill cursor bitmap and mask
+  SrcRowPtr := ABitmap.ARGBData;
+  DstRowPtr := PByte(FQDColorCursorHandle^^.crsrData^);
+  for i := 0 to 15 do
+  begin
+    RowMask := 0;
+    RowData := 0;
+    Bit := $8000;
+    SrcPtr := SrcRowPtr;
+    System.Move(SrcPtr^, DstRowPtr^, 16 * 4);
+    for j := 0 to 15 do
+    begin
+      // check alpha
+      if SrcPtr[0] and $FF = 0 then
+        RowData := RowData or Bit
+      else
+        RowMask := RowMask or Bit;
+
+      Bit := Bit shr 1;
+      Inc(SrcPtr, 4);
+    end;
+ {$IFDEF ENDIAN_BIG}
+    FQDColorCursorHandle^^.crsrMask[i] := RowMask;
+    FQDColorCursorHandle^^.crsr1Data[i] := RowData;
+ {$ELSE}
+    FQDColorCursorHandle^^.crsrMask[i] := CFSwapInt16(RowMask);
+    FQDColorCursorHandle^^.crsr1Data[i] := CFSwapInt16(RowData);
+ {$ENDIF}
+    Inc(SrcRowPtr, ABitmap.BytesPerRow);
+    Inc(DstRowPtr, rowBytes);
+  end;
+end;
+
+constructor TCarbonCursor.CreateFromInfo(AInfo: PIconInfo);
+var
+  AHotspot: Point;
+begin
   Create;
-  FCursorType := cctImage;
+
+  if (AInfo^.hbmColor = 0) or not (TObject(AInfo^.hbmColor) is TCarbonBitmap) then
+    exit;
+
+  AHotspot.h := AInfo^.xHotspot;
+  AHotspot.v := AInfo^.yHotspot;
+  
+  if HardwareCursorsSupported then
+    CreateHardwareCursor(TCarbonBitmap(AInfo^.hbmColor), AHotSpot) else
+    CreateColorCursor(TCarbonBitmap(AInfo^.hbmColor), AHotSpot);
 end;
 
 constructor TCarbonCursor.CreateThemed(AThemeCursor: ThemeCursor);
@@ -566,27 +754,27 @@ const
   (
     cctTheme,    // kThemeArrowCursor
     cctTheme,    // kThemeCopyArrowCursor
-    cctTheme,    // 2
-    cctTheme,    // 3
-    cctTheme,    // 4
-    cctTheme,    // 5
-    cctTheme,    // 6
+    cctTheme,    // kThemeAliasArrowCursor
+    cctTheme,    // kThemeContextualMenuArrowCursor
+    cctTheme,    // kThemeIBeamCursor
+    cctTheme,    // kThemeCrossCursor
+    cctTheme,    // kThemePlusCursor
     cctAnimated, // kThemeWatchCursor
-    cctTheme,    // 8
-    cctTheme,    // 9
-    cctTheme,    // 10
+    cctTheme,    // kThemeClosedHandCursor
+    cctTheme,    // kThemeOpenHandCursor
+    cctTheme,    // kThemePointingHandCursor
     cctAnimated, // kThemeCountingUpHandCursor
     cctAnimated, // kThemeCountingDownHandCursor
     cctAnimated, // kThemeCountingUpAndDownHandCursor
-    cctWait,     // kThemeSpinningCursor (obsolte and thats why we should use wait instead)
-    cctTheme,    // 15
-    cctTheme,    // 16
-    cctTheme,    // 17
-    cctTheme,    // 18
-    cctTheme,    // 19
-    cctTheme,    // 20
-    cctTheme,    // 21
-    cctTheme     // kThemeProofCursor
+    cctWait,     // kThemeSpinningCursor (!!! obsolte and thats why we should use wait instead)
+    cctTheme,    // kThemeResizeLeftCursor
+    cctTheme,    // kThemeResizeRightCursor
+    cctTheme,    // kThemeResizeLeftRightCursor
+    cctTheme,    // kThemeNotAllowedCursor
+    cctTheme,    // kThemeResizeUpCursor
+    cctTheme,    // kThemeResizeDownCursor
+    cctTheme,    // kThemeResizeUpDownCursor
+    cctTheme     // kThemePoofCursor
   );
 begin
   Create;
@@ -600,42 +788,49 @@ end;
 destructor TCarbonCursor.Destroy;
 begin
   UnInstall;
-  if CursorType = cctImage then
-  begin
-    // TODO:
+  case CursorType of
+    cctQDHardware:
+      if FQDHardwareCursorName <> '' then
+      begin
+        QDUnregisterNamedPixmapCursor(PChar(FQDHardwareCursorName));
+        System.FreeMem(FPixmapHandle^^.baseAddr);
+        FPixmapHandle^^.baseAddr := nil;
+        DisposePixMap(FPixmapHandle);
+      end;
+    cctQDColor:
+      DisposeCCursor(FQDColorCursorHandle);  // suppose pixmap will be disposed too
   end;
   inherited Destroy;
 end;
 
 procedure TCarbonCursor.Install;
 begin
-  if CursorType = cctImage then
-  begin
-    // TODO : SetCCursor();
-  end else
-  if CursorType = cctTheme then
-  begin
-    SetThemeCursor(FThemeCursor);
-  end else
-  if CursorType = cctAnimated then
-  begin
-    FAnimationStep := 0;
-    CreateThread;
-  end else
-  if CursorType = cctWait then
-  begin
-    QDDisplayWaitCursor(True);
-  end else
-    DebugLn('[TCarbonCursor.Apply] !!! Unknown cursor type');
+  DebugLn('TCarbonCursor.Install type: ', IntToStr(Ord(CursorType)));
+  case CursorType of
+    cctQDHardware:
+      if FQDHardwareCursorName <> '' then
+        QDSetNamedPixmapCursor(PChar(FQDHardwareCursorName));
+    cctQDColor:
+     SetCCursor(FQDColorCursorHandle);
+    cctTheme:
+      SetThemeCursor(FThemeCursor);
+    cctAnimated:
+      begin
+        FAnimationStep := 0;
+        CreateThread;
+      end;
+    cctWait:
+      QDDisplayWaitCursor(True);
+    else
+      DebugLn('[TCarbonCursor.Apply] !!! Unknown cursor type');
+  end;
 end;
 
 procedure TCarbonCursor.UnInstall;
 begin
-  if CursorType = cctWait then
-    QDDisplayWaitCursor(False) else
-  if CursorType = cctAnimated then
-  begin
-    DestroyThread;
+  case CursorType of
+    cctWait: QDDisplayWaitCursor(False);
+    cctAnimated: DestroyThread;
   end;
 end;
 
@@ -652,11 +847,35 @@ begin
   end;
 end;
 
+class function TCarbonCursor.HardwareCursorsSupported: Boolean;
+var
+  P: Point;
+  ATestCursorName: String;
+  ATempPixmap: PixmapHandle;
+begin
+  if MHardwareCursorsSupported = hcaUndef then
+  begin
+    ATestCursorName := Application.Title + LazarusCursorInfix + 'test';
+    P.v := 0;
+    P.h := 0;
+    
+    ATempPixmap := PixMapHandle(NewHandleClear(SizeOf(PixMap)));
+    if QDRegisterNamedPixMapCursor(ATempPixmap, nil, P, PChar(ATestCursorName)) = kQDNoColorHWCursorSupport then
+      MHardwareCursorsSupported := hcaUnavailable else
+      MHardwareCursorsSupported := hcaAvailable;
+    QDUnregisterNamedPixmapCursor(PChar(ATestCursorName));
+    DisposePixMap(ATempPixmap);
+  end;
+  Result := MHardwareCursorsSupported = hcaAvailable;
+end;
+
 
 var
   LogBrush: TLogBrush;
 
 initialization
+
+  InitCursor;
 
   ATSUCreateStyle(DefaultTextStyle);
   RGBColorSpace := CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);

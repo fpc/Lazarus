@@ -1272,6 +1272,13 @@ begin
       GetThemeMetric(kThemeMetricScrollBarWidth, Result);
     SM_CXSCREEN: Result := CGDisplayPixelsWide(CGMainDisplayID);
     SM_CYSCREEN: Result := CGDisplayPixelsHigh(CGMainDisplayID);
+    SM_CXCURSOR,
+    SM_CYCURSOR:
+      begin
+        if TCarbonCursor.HardwareCursorsSupported then
+          Result := 64 else
+          Result := 16;
+      end;
   else
     DebugLn('TCarbonWidgetSet.GetSystemMetrics TODO ', DbgS(NIndex));;
   end;
@@ -2476,4 +2483,8 @@ end;
 
 
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line
+
+
+
+
 
