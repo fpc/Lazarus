@@ -793,7 +793,6 @@ begin
       if FQDHardwareCursorName <> '' then
       begin
         QDUnregisterNamedPixmapCursor(PChar(FQDHardwareCursorName));
-        System.FreeMem(FPixmapHandle^^.baseAddr);
         FPixmapHandle^^.baseAddr := nil;
         DisposePixMap(FPixmapHandle);
       end;
