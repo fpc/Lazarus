@@ -23,7 +23,6 @@
 
 unit TASeries;
 
-
 {$IFDEF fpc}
 {$MODE DELPHI}{$H+}
 {$ENDIF}
@@ -35,7 +34,7 @@ uses
   {$ELSE}
   Windows,
   {$ENDIF}
-  classes, graphics, tagraph, sysutils, dialogs;
+  classes, graphics, tagraph, taengine, sysutils, dialogs;
 
 Const clTAColor = clScrollBar;
 
@@ -49,17 +48,6 @@ type
   PChartCoord = ^ChartCoord;
 
   TPointStyle=(psRectangle,psCircle,psCross,psDiagCross,psStar);
-  //not completetly implemented (only TPieSeries - not all)
-  TSeriesMarksStyle =( smsValue,          { 1234 }
-                      smsPercent,        { 12 % }
-                      smsLabel,          { Cars }
-                      smsLabelPercent,   { Cars 12 % }
-                      smsLabelValue,     { Cars 1234 }
-                      smsLegend,         { ? }
-                      smsPercentTotal,   { 12 % of 1234 }
-                      smsLabelPercentTotal, { Cars 12 % of 1234 }
-                      smsXValue);        { 21/6/1996 }
-
 
   BarException=class(Exception);
 
@@ -73,10 +61,12 @@ type
     FCoordList: TList;
     FActive:Boolean;
     FMarks: TSeriesMarksStyle;
+    FShowInLegend: Boolean;
 
     procedure SetActive(Value:Boolean);
     procedure SetMarks(Value:TSeriesMarksStyle);
     function GetXMinVal: Integer;
+    procedure SetShowInLegend(Value: Boolean);
   public
     Chart:TChart;
     procedure Draw; virtual; abstract;
@@ -101,11 +91,11 @@ type
   published
       property MarksStyle: TSeriesMarksStyle read FMarks write SetMarks; //this should be an object
       property Active:Boolean read FActive write SetActive;
-
+      property ShowInLegend:Boolean read FShowInLegend write SetShowInLegend;
   end;
 
 
-{  TCustomSeries = class(TChartSeries);
+{  TTACustomSeries = class(TChartSeries);
 
   TTACustomBarSeries = class(TChartSeries)
   public
@@ -312,6 +302,7 @@ begin
      YGraphMax:=MinDouble;
 
      FActive := True;
+     FShowInLegend := True;
      FMarks := smsLabel;
      FCoordList := TList.Create;
 end;
@@ -385,6 +376,12 @@ end;
 procedure TChartSeries.SetActive(Value:Boolean);
 begin
      FActive:=Value;
+     if Chart <> nil then Chart.Invalidate;
+end;
+
+procedure TChartSeries.SetShowInLegend(Value:Boolean);
+begin
+     FShowInLegend:=Value;
      if Chart <> nil then Chart.Invalidate;
 end;
 

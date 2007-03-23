@@ -41,6 +41,12 @@ Installation
     * Click on Compile
     * Click on Install
 
+Changes
+-------
+
+* 12/03/2007 - Bugfixes and implement ShowInLegend
+* 01/01/2007 - Initial Release
+
 
 Copyright (C) 2005-2006 by Philippe Martinole  <philippe.martinole@teleauto.org>
-Copyright (C) 2006-2006 by Luis Rodrigues  <lr@neei.uevora.pt>
+Copyright (C) 2006-2007 by Luis Rodrigues  <lr@neei.uevora.pt>

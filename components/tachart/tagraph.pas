@@ -22,7 +22,6 @@
 }
 unit TAGraph;
 
-
 {$IFDEF fpc}
 {$MODE DELPHI}{$H+}
 {$ENDIF}
@@ -43,7 +42,7 @@ const
   MaxArray=2;
   MaxColor=15;
   Colors:array[1..MaxColor] of TColor=
-     ( clRed,
+     ( clRed,   
        clGreen,
        clyellow,
        clBlue,
@@ -62,13 +61,10 @@ const
 
 type
 
-
-
   TDrawVertReticule=procedure(Sender:TComponent;IndexSerie,Index,Xi,Yi:Integer;Xg,Yg:Double) of object;
   TDrawReticule=procedure(Sender:TComponent;IndexSerie,Index,Xi,Yi:Integer;Xg,Yg:Double) of object;
 
 
-  ///luis teste
   TCustomChart = class(TGraphicControl);
 
   TChartPen = class(TPen)
@@ -82,9 +78,6 @@ type
     property Visible: boolean read FVisible write SetVisible;
     property OnChange: TNotifyEvent read FChanged write FChanged;
   end;
-
-
-
 
   TLegendAlignment=(laLeft,laRight,laTop,laBottom);
   TChartLegend = class(TPersistent)
@@ -172,7 +165,6 @@ type
     property OnChange: TNotifyEvent read FChanged write FChanged;
   end;
 
-
   TChartAxis = class(TPersistent)
   private
     FVisible: boolean;
@@ -196,9 +188,6 @@ type
     property Grid: TChartPen read FGrid write SetGrid;
     property OnChange: TNotifyEvent read FChanged write FChanged;
   end;
-
-
-
 
   TChart = class(TCustomChart)
   private
@@ -224,7 +213,6 @@ type
 
     FAllowZoom: Boolean;
 
-
     FGraphBrush:TBrush;
     AxisColor:TColor;                           // Axis color
     ax,bx,ay,by:Double;                         // Image<->Graphe conversion coefs
@@ -249,7 +237,6 @@ type
     FBackColor: TColor;
 
     FAxisVisible: boolean;
-
 
     procedure SetAutoUpdateXMin(Value:Boolean);
     procedure SetAutoUpdateXMax(Value:Boolean);
@@ -287,8 +274,8 @@ type
     function GetSeriesCount: Integer;
 
     function only_pie: boolean;
-   function get_pie: pointer;
-
+    function get_pie: pointer;
+    function SeriesInLegendCount: integer;
   protected
     { Déclarations protégées }
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
@@ -297,9 +284,8 @@ type
     procedure DoDrawVertReticule(IndexSerie,Index,Xi,Yi:Integer;Xg,Yg:Double); virtual;
     procedure DoDrawReticule(IndexSerie,Index,Xi,Yi:Integer;Xg,Yg:Double); virtual;
   public
-      XImageMin,YImageMin:Integer;                // Image coordinates of limits
+    XImageMin,YImageMin:Integer;                // Image coordinates of limits
     XImageMax,YImageMax:Integer;
-
 
     { Déclarations publiques }
     constructor Create(AOwner:TComponent); override;
@@ -312,7 +298,7 @@ type
     procedure DrawLegend;
 
     procedure AddSerie(Serie:TComponent);
-//    procedure DeleteSerie(Serie:TTASerie);
+//    procedure DeleteSerie(Serie:TSerie);
     procedure DeleteSerie(Serie:TComponent);
     function  GetSerie(i:Integer):TComponent;
     procedure SetAutoXMin(Auto:Boolean);
@@ -360,7 +346,6 @@ type
     property Legend: TChartLegend read FLegend write SetLegend;
     property Title: TChartTitle read FTitle write SetTitle;
     property Foot: TChartTitle read FFoot write SetFoot;
-
 
     property AllowZoom: Boolean read FAllowZoom write FAllowZoom;
 
@@ -422,8 +407,6 @@ begin
   DeleteObject(SelectObject(DC,OldFont));
 end;
 
-
-
 procedure TChartPen.SetVisible(Value: Boolean);
 begin
      FVisible := Value;
@@ -465,7 +448,6 @@ begin
      inherited;
 end;
 
-
 procedure TChartAxis.SetVisible(value: boolean);
 begin
      FVisible := value;
@@ -484,7 +466,6 @@ begin
      if assigned( FChanged ) then FChanged(Self);
 end;
 
-
 procedure TChartAxis.Assign(Source:TPersistent);
 begin
      if Source is TChartAxis then
@@ -500,11 +481,9 @@ begin
      if assigned( FChanged ) then FChanged(Self);
 end;
 
-
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
-
 
 Constructor TChartAxisTitle.Create(AOwner: TCustomChart);
 begin
@@ -552,12 +531,9 @@ begin
     inherited Assign(Source);
 end;
 
-
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
-
-
 
 Constructor TChartLegend.Create(AOwner: TCustomChart);
 begin
@@ -836,7 +812,7 @@ if (Mini<0) and (Maxi>0) then
    end
 else
    begin
-   // Don't work if mini is negative and > 1
+   // Don''t work if mini is negative and > 1
 //   if Abs(Mini)<1 then
       Debut:=Round((Mini-Pas)*Mult[Index[j]])/Mult[Index[j]]
 //   else
@@ -920,10 +896,12 @@ var
    MySerie:TChartSeries;
    i,c: integer;
 begin
-     c := FSeries.Count - 1;                 
-     for i := 0 to c do  begin
-         TChartSeries(FSeries.Items[0]).Free;
-         FSeries.Delete( 0 );
+     if FSeries.Count > 0 then begin
+       c := FSeries.Count - 1;
+       for i := 0 to c do  begin
+           TChartSeries(FSeries.Items[0]).Free;
+           FSeries.Delete( 0 );
+       end;
      end;
 
      FSeries.Free;
@@ -1225,7 +1203,6 @@ procedure TChart.DrawLegend;
 var
    w,h,x1,y1,x2,y2,i,TH:Integer;
    MySerie:TSerie;
-
 begin
    TmpBrush.Assign(Canvas.Brush);
    TmpPen.Assign(Canvas.Pen);
@@ -1238,7 +1215,7 @@ begin
       MySerie := get_pie;
       h:=5+MySerie.Count*(TH+5);
    end else begin
-      h:=5+SeriesCount*(TH+5);
+      h:=5+SeriesInLegendCount*(TH+5);
    end;
    x1:=Width-w-5;
    y1 := YImageMax;
@@ -1265,10 +1242,12 @@ begin
    end else begin
       for i:=0 to SeriesCount-1 do begin
          MySerie:=Series[i];
-         Canvas.TextOut(x1+20,y1+5+i*(TH+5),MySerie.Title);
-         Canvas.Pen.Color := MySerie.SeriesColor;
-         Canvas.MoveTo(x1+5,y1+5+i*(TH+5)+TH div 2);
-         Canvas.LineTo(x1+15,y1+5+i*(TH+5)+TH div 2);
+         if MySerie.ShowInLegend then begin
+            Canvas.TextOut(x1+20,y1+5+i*(TH+5),MySerie.Title);
+            Canvas.Pen.Color := MySerie.SeriesColor;
+            Canvas.MoveTo(x1+5,y1+5+i*(TH+5)+TH div 2);
+            Canvas.LineTo(x1+15,y1+5+i*(TH+5)+TH div 2);
+         end;
       end;
    end;
 
@@ -1360,7 +1339,7 @@ var
    i,j,k:Integer;
    MySerie:TSerie;
 begin
-if not FLegend.Visible then begin Result:=0; Exit; end;
+if (not FLegend.Visible) or (SeriesInLegendCount = 0) then begin Result:=0; Exit; end;
 
    if only_pie then begin//if only one pie show diferent legend
       MySerie := get_pie;
@@ -1374,8 +1353,10 @@ if not FLegend.Visible then begin Result:=0; Exit; end;
       j:=0;
       for i:=0 to SeriesCount-1 do begin
          MySerie:=Series[i];
-         k:=Canvas.TextWidth(MySerie.Title);
-         if k>j then j:=k;
+         if MySerie.ShowInLegend then begin
+            k:=Canvas.TextWidth(MySerie.Title);
+            if k>j then j:=k;
+         end;
       end;
       Result:=j+20+10;
    end;
@@ -1406,7 +1387,7 @@ Series.Add(Serie);
 TChartSeries(Serie).Chart := Self;
 end;
 
-//procedure TChart.DeleteSerie(Serie:TTASerie);
+//procedure TChart.DeleteSerie(Serie:TSerie);
 procedure TChart.DeleteSerie(Serie:TComponent);
 var
    i:Integer;
@@ -1970,68 +1951,75 @@ end;
 
 procedure TChart.SetBackColor(Value: TColor);
 begin
-   FBackColor := Value;
-   Invalidate;
-end;
+     FBackColor := Value;
+     Invalidate;
+end; 
 
 procedure TChart.SetAxisVisible(Value: boolean);
 begin
-   FAxisVisible := Value;
-   Invalidate;
-end;
+    FAxisVisible := Value;
+    Invalidate;
+end; 
 
 function TChart.GetChartHeight: integer;
 begin
-      result := YImageMax - YImageMin;
+   result := YImageMax - YImageMin;
 end;
 
 function TChart.GetChartWidth: integer;
 begin
-     result := XImageMax - XImageMin;
-end;
+   result := XImageMax - XImageMin;
+end; 
 
 function TChart.GetSeriesCount: integer;
 var i: integer;
 begin
-     result := 0;
-     for i := 0 to FSeries.count -1 do
-         if TChartSeries(FSeries.Items[i]).Active then inc(Result);
+   {result := 0;
+   for i := 0 to FSeries.count -1 do
+      if TChartSeries(FSeries.Items[i]).Active then
+         inc(Result);     }
+   result := FSeries.count;
 end;
 
 
+////////////////////////UTILS.... clean a bit
+//checks if only a pie chart is enabled
+function TChart.only_pie: boolean;
+var i: integer;
+begin
+     if FSeries.count > 0 then result := true
+     else result := false;
+     for i := 0 to FSeries.count -1  do begin
+         if ( not (TChartSeries(Series.Items[i])  is TPieSeries)) and
+            TChartSeries(FSeries.Items[i]).Active then begin
+               result := false;
+               break;
+         end;
+     end;
+end;
 
-/////////////////////////UTILS.... clean a bit
-   //checks if only a pie chart is enabled
-   function TChart.only_pie: boolean;
-   var i: integer;
-   begin
-        if FSeries.count > 0 then result := true
-        else result := false;
-        for i := 0 to FSeries.count -1  do begin
-            if ( not (TChartSeries(Series.Items[i])  is TPieSeries)) and
-               TChartSeries(FSeries.Items[i]).Active then begin
-                  result := false;
-                  break;
-            end;
-        end;
-   end;
+//get enabled pie chart
+function TChart.get_pie: pointer;
+var i: integer;
+begin
+     result := nil;
+     for i := 0 to FSeries.count -1  do begin
+         if ( (TChartSeries(Series.Items[i])  is TPieSeries)) and
+            TChartSeries(FSeries.Items[i]).Active then begin
+               result := TChartSeries(Series.Items[i]) ;
+               break;
+         end;
+     end;
+end; 
 
-   //get enabled pie chart
-   function TChart.get_pie: pointer;
-   var i: integer;
-   begin
-        result := nil;
-        for i := 0 to FSeries.count -1  do begin
-            if ( (TChartSeries(Series.Items[i])  is TPieSeries)) and
-               TChartSeries(FSeries.Items[i]).Active then begin
-                  result := TChartSeries(Series.Items[i]) ;
-                  break;
-            end;
-        end;
-   end;
-
-
-
+function TChart.SeriesInLegendCount: integer;
+var i: integer;
+begin
+   Result := 0;
+   for i:=0 to SeriesCount-1 do
+      if TChartSeries(Series[i]).ShowInLegend then
+	 Inc(Result);
+end; 
 
 procedure Register;
 begin
@@ -2042,4 +2030,6 @@ end;
 initialization
   {$I tagraph.lrs}
 {$ENDIF}
+
+
 end.

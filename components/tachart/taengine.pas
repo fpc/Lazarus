@@ -22,12 +22,22 @@
 }
 unit TAEngine;
 
-
 interface
 
 uses Classes;
 
 type
+     //not completetly implemented (only TPieSeries - not all)
+     TSeriesMarksStyle=( smsValue,          { 1234 }
+                      smsPercent,        { 12 % }
+                      smsLabel,          { Cars }
+                      smsLabelPercent,   { Cars 12 % }
+                      smsLabelValue,     { Cars 1234 }
+                      smsLegend,         { ? }
+                      smsPercentTotal,   { 12 % of 1234 }
+                      smsLabelPercentTotal, { Cars 12 % of 1234 }
+                      smsXValue);        { 21/6/1996 }
+
 
     TSeriesList = class(TList)
 
@@ -38,8 +48,6 @@ type
     end;
 
 implementation
-
-
-
+ 
 end.
 
