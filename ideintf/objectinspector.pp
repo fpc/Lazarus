@@ -2079,7 +2079,7 @@ var
     with Canvas do begin
       Brush.Color:=clWhite;
       Pen.Color:=clBlack;
-      Rectangle(x,y,x+8,y+8);
+      Rectangle(x,y,x+9,y+9);
       MoveTo(x+2,y+4);
       LineTo(x+7,y+4);
       if Plus then begin
