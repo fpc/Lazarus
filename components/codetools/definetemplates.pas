@@ -102,7 +102,7 @@ const
       'i386', 'powerpc', 'm68k', 'x86_64', 'sparc', 'arm'
     );
 
-  Lazarus_CPU_OS_Widget_Combinations: array[1..31] of shortstring = (
+  Lazarus_CPU_OS_Widget_Combinations: array[1..35] of shortstring = (
     'i386-linux-gtk',
     'i386-linux-gnome',
     'i386-linux-gtk2',
@@ -133,7 +133,11 @@ const
     'powerpc-linux-gtk2',
     'sparc-linux-gtk',
     'sparc-linux-gtk2',
-    'arm-wince-wince'
+    'arm-wince-wince',
+    'x86_64-linux-gtk',
+    'x86_64-linux-gnome',
+    'x86_64-linux-gtk2',
+    'x86_64-linux-qt'
     );
 
 type
