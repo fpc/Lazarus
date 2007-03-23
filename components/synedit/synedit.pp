@@ -2931,10 +2931,10 @@ var
     iSquare := Max(0, rcCodeFold.Bottom - rcCodeFold.Top - 14) div 2;
 
     //area of drawbox
-    rcNode.Right := rcCodeFold.Right - cNodeOffset;
+    rcNode.Right := rcCodeFold.Right - cNodeOffset + 1;
     rcNode.Left := rcCodeFold.Left + cNodeOffset;
     rcNode.Top := rcCodeFold.Top + cNodeOffset + iSquare;
-    rcNode.Bottom := rcCodeFold.Bottom - cNodeOffset - iSquare;
+    rcNode.Bottom := rcCodeFold.Bottom - cNodeOffset - iSquare + 1;
 
     Canvas.Brush.Color:=clWhite;
     Canvas.Rectangle(rcNode);
