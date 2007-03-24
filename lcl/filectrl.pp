@@ -157,8 +157,8 @@ Var
 begin
   if [csloading,csdestroying]*ComponentState<>[] then exit;
   Clear;
-  If SysUtils.FindFirst(FDirectory+DirectorySeparator+GetAllFilesMask,faAnyFile,
-    Info)=0
+  If SysUtils.FindFirst(FDirectory+DirectorySeparator+AllDirectoryEntriesMask,
+    faAnyFile, Info)=0
   then
     Repeat
       if FileInFilenameMasks(Info.Name,Mask) then begin
@@ -230,7 +230,7 @@ end;
 
 function TCustomFileListBox.MaskIsStored: boolean;
 begin
-  Result:=(FMask<>GetAllFilesMask);
+  Result:=(FMask<>AllDirectoryEntriesMask);
 end;
 
 procedure TCustomFileListBox.SetDrive(const AValue: Char);
@@ -289,7 +289,7 @@ var
 begin
   inherited Create(TheOwner);
   //Initializes the Mask property.
-  FMask := GetAllFilesMask;
+  FMask := AllDirectoryEntriesMask;
   //Initializes the FileType property.
   FFileType := [ftNormal];
   //Initializes the Directory and Drive properties to the current directory.

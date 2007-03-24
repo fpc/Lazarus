@@ -23,12 +23,6 @@ unit FileUtil;
 
 {$mode objfpc}{$H+}
 
-{$IF defined(VER2_0_2) and defined(win32)}
-// FPC <= 2.0.2 compatibility code
-// WINDOWS define was added after FPC 2.0.2
-  {$define WINDOWS}
-{$endif}
-
 interface
 
 uses
@@ -94,6 +88,9 @@ type
     );
   TSearchFileInPathFlags = set of TSearchFileInPathFlag;
 
+const
+  AllDirectoryEntriesMask = '*';
+  
 function GetAllFilesMask: string;
 function GetExeExt: string;
 function SearchFileInPath(const Filename, BasePath, SearchPath,
