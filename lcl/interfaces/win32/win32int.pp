@@ -43,8 +43,7 @@ Interface
 Uses
   Windows, Classes, ComCtrls, Controls, Buttons, Dialogs, DynHashArray,
   ExtCtrls, Forms, GraphMath, GraphType, InterfaceBase, LCLIntf, LCLType,
-  LMessages, StdCtrls, SysUtils, Win32Def, Graphics, Menus, CommCtrl, 
-  AvgLvlTree, WinSock2;
+  LMessages, StdCtrls, SysUtils, Win32Def, Graphics, Menus, CommCtrl;
 
 const
 
