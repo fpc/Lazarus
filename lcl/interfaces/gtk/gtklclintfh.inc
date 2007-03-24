@@ -35,8 +35,6 @@ function AddPipeEventHandler(AHandle: THandle;
   AEventHandler: TPipeEvent; AData: PtrInt): PPipeEventHandler; override;
 function AddProcessEventHandler(AHandle: THandle;
   AEventHandler: TChildExitEvent; AData: PtrInt): PProcessEventHandler; override;
-function AddSocketEventHandler(AHandle: THandle; AFlags: dword;
-  AEventHandler: TSocketEvent; AData: PtrInt): PSocketEventHandler; override;
 
 function CreateStandardCursor(ACursor: SmallInt): hCursor; override;
 
@@ -60,7 +58,6 @@ function IntfSendsUTF8KeyPress: boolean; override;
 procedure RemoveEventHandler(var AHandler: PEventHandler); override;
 procedure RemovePipeEventHandler(var AHandler: PPipeEventHandler); override;
 procedure RemoveProcessEventHandler(var AHandler: PProcessEventHandler); override;
-procedure RemoveSocketEventHandler(var AHandler: PSocketEventHandler); override;
 function ReplaceBitmapMask(var Image, Mask: HBitmap; NewMask: HBitmap): boolean; override;
 
 procedure SetEventHandlerFlags(AHandler: PEventHandler; NewFlags: dword); override;

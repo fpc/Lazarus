@@ -147,35 +147,6 @@ begin
   AHandler := nil;
 end;
 
-function TWin32WidgetSet.AddSocketEventHandler(AHandle: THandle; AFlags: dword; 
-  AEventHandler: TSocketEvent; AData: PtrInt): PSocketEventHandler;
-var
-  lHandler: PSocketEventInfo;
-begin
-  if AEventHandler = nil then exit;
-  New(lHandler);
-  lHandler^.Socket := AHandle;
-  lHandler^.UserData := AData;
-  lHandler^.OnEvent := AEventHandler;
-  if WSAAsyncSelect(AHandle, FAppHandle, WM_LCL_SOCK_ASYNC, AFlags) <> 0 then
-  begin
-    Dispose(lHandler);
-    lHandler := nil;
-  end else
-    FWaitSockets[Pointer(AHandle)] := lHandler;
-  Result := lHandler;
-end;
-
-procedure TWin32WidgetSet.RemoveSocketEventHandler(var AHandler: PSocketEventHandler);
-var
-  lSocketEvent: PSocketEventInfo absolute AHandler;
-begin
-  if AHandler = nil then exit;
-  FWaitSockets.Remove(Pointer(lSocketEvent^.Socket));
-  Dispose(lSocketEvent);
-  AHandler := nil;
-end;
-
 {------------------------------------------------------------------------------
   Function:
   Params:

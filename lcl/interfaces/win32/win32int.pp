@@ -118,12 +118,7 @@ Type
     OnEvent: TWaitHandleEvent;
   end;
 
-  PSocketEventInfo = ^TSocketEventInfo;
-  TSocketEventInfo = record
-    Socket: THandle;
-    UserData: PtrInt;
-    OnEvent: TSocketEvent;
-  end;
+  TSocketEvent = function(ASocket: THandle; Flags: dword): Integer of object;
 
   { Win32 interface-object class }
 
@@ -153,13 +148,14 @@ Type
     FWaitHandles: array of HANDLE;
     FWaitHandlers: array of TWaitHandler;
     FWaitPipeHandlers: PPipeEventInfo;
-    FWaitSockets: TPointerToPointerTree;
 
     FThemesActive: boolean;
     FThemeLibrary: HMODULE;
     IsThemeActive: function: LongBool; stdcall;
     IsAppThemed: function: LongBool; stdcall;
     InitCommonControlsEx: function(ICC: PInitCommonControlsEx): LongBool; stdcall;
+
+    FOnAsyncSocketMsg: TSocketEvent;
 
     Procedure AssignSelf(Window: HWnd; Data: Pointer);
 
@@ -223,6 +219,7 @@ Type
     property AppHandle: HWND read FAppHandle;
     property MessageFont: HFONT read FMessageFont;
     property ThemesActive: boolean read FThemesActive;
+    property OnAsyncSocketMsg: TSocketEvent read FOnAsyncSocketMsg write FOnAsyncSocketMsg;
   End;
 
   {$I win32listslh.inc}

@@ -923,15 +923,6 @@ Var
     end;
   end;
 
-  procedure HandleAsyncSocket;
-  var
-    EventInfo: PSocketEventInfo;
-  begin
-    EventInfo := PSocketEventInfo(TWin32WidgetSet(WidgetSet).FWaitSockets[Pointer(WParam)]);
-    if EventInfo = nil then exit;
-    EventInfo^.OnEvent(EventInfo^.UserData, LParam);
-  end;
-  
   // Gets the cursor position relative to a given window
   function GetClientCursorPos(ClientWindow: HWND) : TSmallPoint;
   var
@@ -1928,8 +1919,10 @@ begin
 
     WM_LCL_SOCK_ASYNC:
     begin
-      HandleAsyncSocket;
-      exit(0);
+      if Assigned(TWin32WidgetSet(WidgetSet).FOnAsyncSocketMsg) then
+        exit(TWin32WidgetSet(WidgetSet).FOnAsyncSocketMsg(WParam, LParam))
+      else
+        exit(0);
     end;
 
 {$ifdef PassWin32MessagesToLCL}

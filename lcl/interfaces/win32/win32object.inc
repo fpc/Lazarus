@@ -32,7 +32,6 @@ Constructor TWin32WidgetSet.Create;
 Begin
   Inherited Create;
   FTimerData  := TList.Create;
-  FWaitSockets := TPointerToPointerTree.Create;
   FMetrics.cbSize := SizeOf(FMetrics);
   FMetricsFailed := not Windows.SystemParametersInfo(SPI_GETNONCLIENTMETRICS,
     SizeOf(FMetrics), @FMetrics, 0);
@@ -114,8 +113,6 @@ Begin
 
   if FThemeLibrary <> 0 then
     FreeLibrary(FThemeLibrary);
-
-  FWaitSockets.Free;
 
   inherited Destroy;
 End;

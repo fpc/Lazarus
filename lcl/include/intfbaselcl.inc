@@ -44,12 +44,6 @@ begin
   Result := nil;
 end;
 
-function TWidgetSet.AddSocketEventHandler(AHandle: THandle; AFlags: dword;
-  AEventHandler: TSocketEvent; AData: PtrInt): PSocketEventHandler;
-begin
-  Result := nil;
-end;
-
 procedure TWidgetSet.AttachMenuToWindow(AMenuObject: TComponent);
 begin
 end;
@@ -561,10 +555,6 @@ begin
 end;
 
 procedure TWidgetSet.RemovePipeEventHandler(var AHandler: PPipeEventHandler);
-begin
-end;
-
-procedure TWidgetSet.RemoveSocketEventHandler(var AHandler: PSocketEventHandler);
 begin
 end;
 
