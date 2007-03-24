@@ -2021,11 +2021,33 @@ function TGDBMIDebugger.StartDebugging(const AContinueCommand: String): Boolean;
     case StringCase(AFileType, [
       'efi-app-ia32', 'elf32-i386',
       'elf64-x86-64',
-      'mach-o-be'
+      'mach-o-be',
+      'mach-o-le',
+      'pei-arm-little',
+      'pei-arm-big'
     ], True, False) of
-      0..1: FTargetCPU := 'i386';
+      0..1: FTargetCPU := 'x86';
       2: FTargetCPU := 'x86_64';
-      3: FTargetCPU := FGDBCPU; //mach-o
+      3: begin
+         //mach-o-be
+        FTargetIsBE := True;
+        if FGDBCPU <> ''
+        then FTargetCPU := FGDBCPU
+        else FTargetCPU := 'powerpc'; // guess
+      end;
+      4: begin
+        //mach-o-le
+        if FGDBCPU <> ''
+        then FTargetCPU := FGDBCPU
+        else FTargetCPU := 'x86'; // guess
+      end;
+      5: begin
+        FTargetCPU := 'arm';
+      end;
+      6: begin
+        FTargetIsBE := True;
+        FTargetCPU := 'arm';
+      end;
     else
       // Unknown filetype, use GDB cpu
       DebugLn('[WARNING] [Debugger.TargetInfo] Unknown FileType: %s, using GDB cpu', [AFileType]);
@@ -2034,22 +2056,22 @@ function TGDBMIDebugger.StartDebugging(const AContinueCommand: String): Boolean;
     end;
 
     case StringCase(FTargetCPU, [
-      'i386', 'i486', 'i586', 'i686',
+      'x86', 'i386', 'i486', 'i586', 'i686',
       'ia64', 'x86_64', 'powerpc',
       'sparc', 'arm'
     ], True, False) of
-      0..3: begin // ix86
+      0..4: begin // x86
         FTargetRegisters[0] := '$eax';
         FTargetRegisters[1] := '$edx';
         FTargetRegisters[2] := '$ecx';
       end;
-      4, 5: begin // ia64, x86_64
+      5, 6: begin // ia64, x86_64
         FTargetRegisters[0] := '$rdi';
         FTargetRegisters[1] := '$rsi';
         FTargetRegisters[2] := '$rdx';
         FTargetPtrSize := 8;
       end;
-      6: begin // powerpc
+      7: begin // powerpc
         FTargetIsBE := True;
         // alltough darwin can start with r2, it seems that all OS start with r3
 //        if UpperCase(FTargetOS) = 'DARWIN'
@@ -2064,13 +2086,13 @@ function TGDBMIDebugger.StartDebugging(const AContinueCommand: String): Boolean;
           FTargetRegisters[2] := '$r5';
 //        end;
       end;
-      7: begin // sparc
+      8: begin // sparc
         FTargetIsBE := True;
         FTargetRegisters[0] := '$g1';
         FTargetRegisters[1] := '$o0';
         FTargetRegisters[2] := '$o1';
       end;
-      8: begin // arm
+      9: begin // arm
         FTargetRegisters[0] := '$r0';
         FTargetRegisters[1] := '$r1';
         FTargetRegisters[2] := '$r2';
