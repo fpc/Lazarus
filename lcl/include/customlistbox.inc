@@ -158,6 +158,14 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  function TCustomListBox.GetCount: Integer;
+------------------------------------------------------------------------------}
+function TCustomListBox.GetCount: Integer;
+begin
+  Result := Items.Count;
+end;
+
+{------------------------------------------------------------------------------
   procedure TCustomListBox.SetTopIndex(const AValue: Integer);
 ------------------------------------------------------------------------------}
 procedure TCustomListBox.SetTopIndex(const AValue: Integer);
