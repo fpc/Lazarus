@@ -186,10 +186,10 @@ function TrimFilename(const AFilename: string): string;
       '.':
         if (i=1) or (TheFilename[i-1]=PathDelim) then begin
           // check for . directories
-          if (TheFilename[i+1]=PathDelim) or ((i=l) and (i>1)) then exit;
+          if ((i<l) and (TheFilename[i+1]=PathDelim)) or ((i=l) and (i>1)) then exit;
           // check for .. directories
-          if (TheFilename[i+1]='.')
-          and ((i=l-1) or (TheFilename[i+2]=PathDelim)) then exit;
+          if (i<l) and (TheFilename[i+1]='.')
+          and ((i+1=l) or ((i+2<=l) and (TheFilename[i+2]=PathDelim))) then exit;
         end;
         
       end;
