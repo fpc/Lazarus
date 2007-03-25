@@ -124,7 +124,7 @@ const
     idButtonYesToAll);
 
 Function GetPromptUserButtons(Buttons: TMsgDlgButtons; var CancelValue,
-  DefaultIndex, ButtonCount : Longint) : PLongint;
+  DefaultIndex, ButtonCount : Longint; UseDefButton: Boolean; DefButton: TMsgDlgBtn) : PLongint;
 var
   CurBtn      : TMsgDlgBtn; // variable to loop through TMsgDlgButtons
   DefaultButton : TMsgDlgBtn;
@@ -132,7 +132,9 @@ begin
   If (Buttons = []) or (Buttons = [mbHelp]) then
     Buttons := Buttons + [mbOk];
   CancelValue := ButtonResults[ModalEscapeValue (Buttons)];
-  DefaultButton := ModalDefaultButton(Buttons);
+  if UseDefButton then
+    DefaultButton := DefButton else
+    DefaultButton := ModalDefaultButton(Buttons);
   DefaultIndex := 0;
   ButtonCount := 0;
   Result := nil;
@@ -155,7 +157,8 @@ var
   ButtonCount : Longint;
   Btns : PLongint;
 begin
-  Btns := GetPromptUserButtons(Buttons, CancelValue, DefaultIndex, ButtonCount);
+  Btns := GetPromptUserButtons(Buttons, CancelValue, DefaultIndex, ButtonCount,
+    False, mbYes);
   Result := DialogResults[PromptUser(aMsg, DialogIds[DlgType], Btns, ButtonCount,
     DefaultIndex, CancelValue)];
   ReallocMem(Btns, 0);
@@ -169,7 +172,23 @@ var
   ButtonCount : Longint;
   Btns : PLongint;
 begin
-  Btns := GetPromptUserButtons(Buttons, CancelValue, DefaultIndex, ButtonCount);
+  Btns := GetPromptUserButtons(Buttons, CancelValue, DefaultIndex, ButtonCount,
+    False, mbYes);
+  Result := DialogResults[PromptUser(aCaption, aMsg, DialogIds[DlgType], Btns,
+    ButtonCount, DefaultIndex, CancelValue)];
+  ReallocMem(Btns, 0);
+end;
+
+function MessageDlg(const aCaption, aMsg: string; DlgType: TMsgDlgType;
+            Buttons: TMsgDlgButtons; HelpCtx: Longint; DefaultButton: TMsgDlgBtn): Integer;
+var
+  DefaultIndex,
+  CancelValue,
+  ButtonCount : Longint;
+  Btns : PLongint;
+begin
+  Btns := GetPromptUserButtons(Buttons, CancelValue, DefaultIndex, ButtonCount,
+    True, DefaultButton);
   Result := DialogResults[PromptUser(aCaption, aMsg, DialogIds[DlgType], Btns,
     ButtonCount, DefaultIndex, CancelValue)];
   ReallocMem(Btns, 0);
@@ -179,7 +198,7 @@ function MessageDlg(const aCaption, aMsg: string; DlgType: TMsgDlgType;
   Buttons: TMsgDlgButtons; const HelpKeyword: string): Integer;
 begin
   // TODO: handle HelpKeyword
-  Result:=MessageDlg(aCaption,aMsg,DlgType,Buttons,0);
+  Result:=MessageDlg(aCaption, aMsg, DlgType, Buttons, 0);
 end;
 
 function MessageDlgPos(const aMsg: String; DlgType: TMsgDlgType;
@@ -190,7 +209,8 @@ var
   ButtonCount : Longint;
   Btns : PLongint;
 begin
-  Btns := GetPromptUserButtons(Buttons, CancelValue, DefaultIndex, ButtonCount);
+  Btns := GetPromptUserButtons(Buttons, CancelValue, DefaultIndex, ButtonCount,
+    False, mbYes);
   Result := DialogResults[PromptUserAtXY(aMsg, DialogIds[DlgType], Btns,
     ButtonCount, DefaultIndex, CancelValue, X, Y)];
   ReallocMem(Btns, 0);

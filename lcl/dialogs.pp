@@ -439,6 +439,8 @@ function MessageDlg(const aMsg: string; DlgType: TMsgDlgType;
 function MessageDlg(const aCaption, aMsg: string; DlgType: TMsgDlgType;
             Buttons: TMsgDlgButtons; HelpCtx: Longint): Integer;
 function MessageDlg(const aCaption, aMsg: string; DlgType: TMsgDlgType;
+            Buttons: TMsgDlgButtons; HelpCtx: Longint; DefaultButton: TMsgDlgBtn): Integer;
+function MessageDlg(const aCaption, aMsg: string; DlgType: TMsgDlgType;
             Buttons: TMsgDlgButtons; const HelpKeyword: string): Integer;
 function MessageDlgPos(const aMsg: string; DlgType: TMsgDlgType;
             Buttons: TMsgDlgButtons; HelpCtx: Longint; X, Y: Integer): Integer;
@@ -500,6 +502,8 @@ function ShowMessageBox(Text, Caption : PChar; Flags : Longint) : Integer;
 var
   DlgType : TMsgDlgType;
   Buttons : TMsgDlgButtons;
+  CurBtn, DefButton: TMsgDlgBtn;
+  DefButtonIndex: Integer;
 begin
   //This uses TMessageBox class in MessageDialogs.inc
   if (Flags and MB_RETRYCANCEL) = MB_RETRYCANCEL then
@@ -537,7 +541,24 @@ begin
   else
     DlgTYpe := mtCustom;
 
-  Result := MessageDlg(Caption,Text,DlgType,Buttons,0);
+  if (Flags and MB_DEFBUTTON2) = MB_DEFBUTTON2 then
+    DefButtonIndex := 2 else
+  if (Flags and MB_DEFBUTTON3) = MB_DEFBUTTON3 then
+    DefButtonIndex := 3 else
+  if (Flags and MB_DEFBUTTON4) = MB_DEFBUTTON4 then
+    DefButtonIndex := 4 else
+    DefButtonIndex := 1;
+
+  DefButton := Low(TMsgDlgBtn);
+  for CurBtn := Low(TMsgDlgBtn) to High(TMsgDlgBtn) do
+  begin
+    DefButton := CurBtn;
+    if CurBtn in Buttons then
+      Dec(DefButtonIndex);
+    if DefButtonIndex = 0 then
+      break;
+  end;
+  Result := MessageDlg(Caption, Text, DlgType, Buttons, 0, DefButton);
 end;
 
 
