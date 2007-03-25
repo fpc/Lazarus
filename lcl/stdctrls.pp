@@ -461,6 +461,7 @@ type
     FSorted: boolean;
     FStyle: TListBoxStyle;
     FTopIndex: integer;
+    function GetCount: Integer;
     function GetTopIndex: Integer;
     procedure SetTopIndex(const AValue: Integer);
     procedure UpdateSelectionMode;
@@ -521,6 +522,7 @@ type
     property ClickOnSelChange: boolean read FClickOnSelChange
                write FClickOnSelChange default true; // true is Delphi behaviour
     property Constraints;
+    property Count: Integer read GetCount; // for Delphi compatability
     property ExtendedSelect: boolean read FExtendedSelect write SetExtendedSelect default true;
     property Font;
     property IntegralHeight: boolean read FIntegralHeight write FIntegralHeight; // not implemented
