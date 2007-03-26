@@ -2282,34 +2282,36 @@ begin
   end;
 
   // send keypresses
-  if not EventStopped and AHandleDown and ABeforeEvent then begin
+  if not EventStopped and AHandleDown then begin
 
     // send the UTF8 keypress
-    // try to get the UTF8 representation of the key
-    {$IFDEF GTK1}
-    Character := '';
-    if (AEvent^.length > 0) and (AEvent^.length <= 8) //max composed UTF8 char has lenght 8
-    then begin
-      SetLength(Character, AEvent^.length);
-      System.Move(AEvent^.thestring^, Character[1], length(Character));
-    end;
-    {$ELSE GTK2}
-    Character := UnicodeToUTF8(gdk_keyval_to_unicode(AEvent^.KeyVal));
-    {$ENDIF GTK2}
-
-    {$IFDEF VerboseKeyboard}
-    debugln('[HandleGTKKeyUpDown] GDK_KEY_PRESS UTF8="',DbgStr(Character),'"');
-    {$ENDIF}
-
-    if Character <> ''
-    then begin
-      LCLObject := GetNearestLCLObject(TargetWidget);
-      if LCLObject is TWinControl
+    if ABeforeEvent then begin
+      // try to get the UTF8 representation of the key
+      {$IFDEF GTK1}
+      Character := '';
+      if (AEvent^.length > 0) and (AEvent^.length <= 8) //max composed UTF8 char has lenght 8
       then begin
-        // send the key after navigation keys were handled
-        Result := TWinControl(LCLObject).IntfUTF8KeyPress(Character, 1, SysKey);
-        if Result or (Character = '')
-        then StopKeyEvent('key_press_event');
+        SetLength(Character, AEvent^.length);
+        System.Move(AEvent^.thestring^, Character[1], length(Character));
+      end;
+      {$ELSE GTK2}
+      Character := UnicodeToUTF8(gdk_keyval_to_unicode(AEvent^.KeyVal));
+      {$ENDIF GTK2}
+
+      {$IFDEF VerboseKeyboard}
+      debugln('[HandleGTKKeyUpDown] GDK_KEY_PRESS UTF8="',DbgStr(Character),'"');
+      {$ENDIF}
+
+      if Character <> ''
+      then begin
+        LCLObject := GetNearestLCLObject(TargetWidget);
+        if LCLObject is TWinControl
+        then begin
+          // send the key after navigation keys were handled
+          Result := TWinControl(LCLObject).IntfUTF8KeyPress(Character, 1, SysKey);
+          if Result or (Character = '')
+          then StopKeyEvent('key_press_event');
+        end;
       end;
     end;
 
@@ -2340,7 +2342,7 @@ begin
         FillChar(Msg, SizeOf(Msg), 0);
 
         Msg.KeyData := CommonKeyData;
-        Msg.msg := CHAR_MAP[SysKey, ABeforeEvent];
+        Msg.Msg := CHAR_MAP[SysKey, ABeforeEvent];
 
         // send the (Sys)Char message directly (not queued) to the LCL
         Msg.Result:=0;
