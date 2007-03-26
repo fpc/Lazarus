@@ -175,7 +175,7 @@ begin
 
   // Create parent of all windows, `button on taskbar'
   FAppHandle := CreateWindow(@ClsName, PChar(Application.Title), WS_POPUP or
-    WS_CLIPSIBLINGS or WS_CAPTION or WS_SYSMENU or WS_MINIMIZEBOX,
+    WS_CLIPSIBLINGS or WS_SYSMENU or WS_MINIMIZEBOX,
     0, {Windows.GetSystemMetrics(SM_CXSCREEN) div 2,}
     0, {Windows.GetSystemMetrics(SM_CYSCREEN) div 2,}
     0, 0, HWND(nil), HMENU(nil), HInstance, nil);
@@ -400,6 +400,7 @@ end;
 procedure TWin32WidgetSet.AppWaitMessage;
 var
   timeout: dword;
+  pHandles: Windows.LPHANDLE;
 begin
   RedrawMenus;
   Assert(False, 'Trace:TWin32WidgetSet.WaitMessage - Start');
@@ -407,7 +408,10 @@ begin
     timeout := 100
   else
     timeout := INFINITE;
-  Windows.MsgWaitForMultipleObjects(FWaitHandleCount, FWaitHandles[0],
+  pHandles := nil;
+  if FWaitHandleCount > 0 then
+    pHandles := @FWaitHandles[0];
+  Windows.MsgWaitForMultipleObjects(FWaitHandleCount, pHandles,
     false, timeout, QS_ALLINPUT);
   Assert(False,'Trace:Leave wait message');
 End;

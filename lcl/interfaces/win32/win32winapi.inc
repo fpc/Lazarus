@@ -145,7 +145,7 @@ var
     MoveWindowOrgEx(PaintMsg.DC,-ClientBoundRect.Left,-ClientBoundRect.Top);
     try
       // call win32 paint handler
-      CallDefaultWindowProc(Handle, WM_PAINT, PaintMsg.DC, 0);
+      CallDefaultWindowProc(Handle, WM_PAINT, WPARAM(PaintMsg.DC), 0);
     finally
       // restore DC origin
       MoveWindowOrgEx(PaintMsg.DC, ClientBoundRect.Left, ClientBoundRect.Top);

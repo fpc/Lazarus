@@ -448,7 +448,7 @@ Var
         // send through message to allow message override
         //lWinControl.EraseBackground(PaintMsg.DC);
         Include(TWinControlAccess(lWinControl).FWinControlFlags, wcfEraseBackground);
-        lWinControl.Perform(LM_ERASEBKGND, PaintMsg.DC, 0);
+        lWinControl.Perform(LM_ERASEBKGND, Windows.WPARAM(PaintMsg.DC), 0);
         Exclude(TWinControlAccess(lWinControl).FWinControlFlags, wcfEraseBackground);
       end;
       if ParentPaintWindow <> 0 then
