@@ -5043,7 +5043,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWinControl.WMChar(var Message: TLMChar);
 begin
-  debugln('TWinControl.WMChar ',DbgSName(Self),' ',dbgs(Message.CharCode));
+  //debugln('TWinControl.WMChar ',DbgSName(Self),' ',dbgs(Message.CharCode));
   if SendDialogChar(Message) then
     Message.Result := 1;
   Assert(False, Format('Trace:[TWinControl.WMChar] %s', [ClassName]));
