@@ -384,6 +384,8 @@ type
     FShowInTaskbar: TShowInTaskbar;
     FWindowState: TWindowState;
     function GetPixelsPerInch: Longint;
+    function GetRestoredLeft: integer;
+    function GetRestoredTop: integer;
     function IsForm : Boolean;
     function IsHelpFileStored: boolean;
     function IsIconStored: Boolean;
@@ -538,8 +540,8 @@ type
                          read fOnWindowStateChange write fOnWindowStateChange;
     property PixelsPerInch: Longint read GetPixelsPerInch write FPixelsPerInch stored False;
     property Position: TPosition read FPosition write SetPosition default poDesigned;
-    property RestoredLeft: integer read FRestoredLeft;
-    property RestoredTop: integer read FRestoredTop;
+    property RestoredLeft: integer read GetRestoredLeft;
+    property RestoredTop: integer read GetRestoredTop;
     property RestoredWidth: integer read FRestoredWidth;
     property RestoredHeight: integer read FRestoredHeight;
     property ShowInTaskBar: TShowInTaskbar read FShowInTaskbar write SetShowInTaskBar
