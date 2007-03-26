@@ -432,8 +432,10 @@ begin
       end else begin
         ContentChanged:=true;
       end;
-      if ContentChanged then
+      if ContentChanged then begin
+        ForceDirectories(ExtractFileDir(OutFileName));
         NewContent.SaveToFile(OutFilename);
+      end;
       Result:=true;
     finally
       NewContent.Free;
@@ -441,8 +443,8 @@ begin
     end;
   except
     on E: Exception do begin
-      DumpExceptionBackTrace;
       DebugLn(['ConvertToGettextPO ',E.Message]);
+      DumpExceptionBackTrace;
     end;
   end;
 end;
