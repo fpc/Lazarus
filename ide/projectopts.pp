@@ -138,6 +138,7 @@ type
     procedure LazDocAddPathButtonClick(Sender: TObject);
     procedure LazDocBrowseButtonClick(Sender: TObject);
     procedure LazDocDeletePathButtonClick(Sender: TObject);
+    procedure NotebookChangeBounds(Sender: TObject);
     procedure ProjectOptionsClose(Sender: TObject;
                                   var CloseAction: TCloseAction);
     procedure FormsAddToAutoCreatedFormsBtnClick(Sender: TObject);
@@ -518,6 +519,11 @@ procedure TProjectOptionsDialog.LazDocDeletePathButtonClick(Sender: TObject);
 begin
   if (LazDocListBox.ItemIndex >= 0) then
     LazDocListBox.Items.Delete(LazDocListBox.ItemIndex);
+end;
+
+procedure TProjectOptionsDialog.NotebookChangeBounds(Sender: TObject);
+begin
+
 end;
 
 function TProjectOptionsDialog.GetAutoCreatedFormsList: TStrings;
