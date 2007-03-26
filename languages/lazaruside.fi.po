@@ -56,7 +56,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisisaninvalidprojectnamepleasechooseanotheregproject
 msgid "%s%s%s is an invalid project name.%sPlease choose another (e.g. project1.lpi)"
-msgstr ""
+msgstr "%s%s%s on vääränlainen projektin tiedostonimi.%sOle hyvä ja valitse joku muu (esim. projekti1.lpi)"
 
 #: lazarusidestrconsts:lissvuoisnotavalididentifier
 msgid "%s%s%s is not a valid identifier."
@@ -1106,6 +1106,10 @@ msgstr ""
 msgid "Change Font"
 msgstr ""
 
+#: lazarusidestrconsts:lischangeparent
+msgid "Change parent ..."
+msgstr ""
+
 #: lazarusidestrconsts:lismenuinsertchangelogentry
 msgid "ChangeLog entry"
 msgstr ""
@@ -1324,7 +1328,7 @@ msgstr "Sulje"
 
 #: lazarusidestrconsts:liskmcloseall
 msgid "Close All"
-msgstr ""
+msgstr "Sulje kaikki"
 
 #: lazarusidestrconsts:lismenucloseproject
 msgid "Close Project"
@@ -1560,11 +1564,11 @@ msgstr "FreePascal kääntäjä (%s) löytyy tästä polusta/linkistä"
 
 #: lazarusidestrconsts:lismenucompletecode
 msgid "Complete Code"
-msgstr ""
+msgstr "Täydennä koodia"
 
 #: lazarusidestrconsts:srkmeccompletecode
 msgid "Complete code"
-msgstr ""
+msgstr "Täydennä koodia"
 
 #: lazarusidestrconsts:dlgcompleteproperties
 msgid "Complete properties"
@@ -1800,7 +1804,7 @@ msgstr "Kopio valitut kääntäjän viestit leikepöydälle"
 
 #: lazarusidestrconsts:srkmeccopy
 msgid "Copy selection to clipboard"
-msgstr ""
+msgstr "Kopio valittu leikepöydälle"
 
 #: lazarusidestrconsts:dlgcopywordatcursoroncopynone
 msgid "Copy word on copy none"
@@ -2004,7 +2008,7 @@ msgstr ""
 
 #: lazarusidestrconsts:srkmeccut
 msgid "Cut selection to clipboard"
-msgstr ""
+msgstr "Leikkaa valittu leikepöydälle"
 
 #: lazarusidestrconsts:liswldisableall
 msgid "D&isable All"
@@ -3068,7 +3072,7 @@ msgstr ""
 
 #: lazarusidestrconsts:srkmecfindnext
 msgid "Find next"
-msgstr ""
+msgstr "Etsi seuraava"
 
 #: lazarusidestrconsts:srkmecfindnextwordoccurrence
 msgid "Find next word occurrence"
@@ -3088,7 +3092,7 @@ msgstr "Etsi komponenttipaletista komponentti"
 
 #: lazarusidestrconsts:srkmecfindprevious
 msgid "Find previous"
-msgstr ""
+msgstr "Etsi edellinen"
 
 #: lazarusidestrconsts:srkmecfindprevwordoccurrence
 msgid "Find previous word occurrence"
@@ -3284,7 +3288,7 @@ msgstr ""
 
 #: lazarusidestrconsts:srkmecgotolinenumber
 msgid "Go to line number"
-msgstr ""
+msgstr "Siirry riville"
 
 #: lazarusidestrconsts:liskmgotomarker0
 msgid "Go to marker 0"
@@ -3532,7 +3536,7 @@ msgstr "Ohjevalikon komennot"
 
 #: lazarusidestrconsts:lishelpselectordialog
 msgid "Help selector"
-msgstr ""
+msgstr "Ohjeen valinta"
 
 #: lazarusidestrconsts:dlghideideonrun
 msgid "Hide IDE windows on run"
@@ -4220,7 +4224,7 @@ msgstr "Vääränlainen aliohjelman nimi"
 
 #: lazarusidestrconsts:lisinvalidprojectfilename
 msgid "Invalid project filename"
-msgstr ""
+msgstr "Vääränlainen projektitiedoston nimi"
 
 #: lazarusidestrconsts:lisinvalidselection
 msgid "Invalid selection"
@@ -4928,11 +4932,11 @@ msgstr ""
 
 #: lazarusidestrconsts:srkmeclineend
 msgid "Move cursor to line end"
-msgstr ""
+msgstr "Siirrä kursori rivin loppuun"
 
 #: lazarusidestrconsts:srkmeclinestart
 msgid "Move cursor to line start"
-msgstr ""
+msgstr "Siirrä kursori rivin alkuun"
 
 #: lazarusidestrconsts:srkmecpagetop
 msgid "Move cursor to top of page"
@@ -5092,7 +5096,7 @@ msgstr "Luo uusi Projekti ..."
 
 #: lazarusidestrconsts:lismenunewprojectfromfile
 msgid "New Project from file ..."
-msgstr "Luo uusi projekti tiedostoon ..."
+msgstr "Luo uusi projekti tiedostosta ..."
 
 #: lazarusidestrconsts:lisprojaddnewrequirement
 msgid "New Requirement"
@@ -5732,7 +5736,7 @@ msgstr ""
 
 #: lazarusidestrconsts:srkmecpaste
 msgid "Paste clipboard to current position"
-msgstr ""
+msgstr "Liitä leikepöydältä"
 
 #: lazarusidestrconsts:lisdsgpastecomponents
 msgid "Paste selected components from clipboard"
@@ -6548,7 +6552,7 @@ msgstr "Tallenna "
 
 #: lazarusidestrconsts:lissave
 msgid "Save ..."
-msgstr ""
+msgstr "Tallenna ..."
 
 #: lazarusidestrconsts:lismenusaveall
 msgid "Save All"
@@ -6712,11 +6716,11 @@ msgstr ""
 
 #: lazarusidestrconsts:liskmsaveall
 msgid "SaveAll"
-msgstr ""
+msgstr "Tallenna kaikki"
 
 #: lazarusidestrconsts:liskmsaveas
 msgid "SaveAs"
-msgstr ""
+msgstr "Tallenna nimellä"
 
 #: lazarusidestrconsts:fdmscaleword
 msgid "Scale"
@@ -6924,7 +6928,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisselectahelpitem
 msgid "Select a help item:"
-msgstr "Valitse ohje kohta seuraavista:"
+msgstr "Valitse jokin kohta seuraavista:"
 
 #: lazarusidestrconsts:lisselectanode
 msgid "Select a node"
@@ -7744,7 +7748,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisenvoptdlginvalidfpcsrcdir
 msgid "The FPC source directory \"%s\" does not look correct. Normally it contains directories like rtl, packages, compiler, ... ."
-msgstr ""
+msgstr "Kansio \"%s\" ei vaikuta FreePascalin lähdekoodin kansiolta! Senhän pitäisi sisältää sellaisia kansioita kuten  rtl, packages, compiler jne."
 
 #: lazarusidestrconsts:liscodetoolsdefsthefreepascalsvnsourcedir
 msgid "The Free Pascal SVN source directory."
@@ -8824,7 +8828,7 @@ msgstr "Tallentaminen tiedostoon %s%s%s ei onnistunut"
 
 #: lazarusidestrconsts:lisunabletowritetofile
 msgid "Unable to write to file %s%s%s!"
-msgstr ""
+msgstr "Ei pystytä tallettamaan tiedostoon %s%s%s!"
 
 #: lazarusidestrconsts:dlguncertopt
 msgid "Uncertain Optimizations"
@@ -9612,7 +9616,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisnone2
 msgid "none"
-msgstr ""
+msgstr "Ei mikään"
 
 #: lazarusidestrconsts:liscodetoolsdefsnoneselected
 msgid "none selected"
@@ -9624,7 +9628,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisor
 msgid "or"
-msgstr ""
+msgstr "tai"
 
 #: lazarusidestrconsts:lispckeditpackagenotsaved
 msgid "package %s not saved"

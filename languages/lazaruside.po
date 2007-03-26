@@ -10142,3 +10142,7 @@ msgstr ""
 msgid "Clear include cache"
 msgstr ""
 
+#: lazarusidestrconsts:lischangeparent
+msgid "Change parent ..."
+msgstr ""
+

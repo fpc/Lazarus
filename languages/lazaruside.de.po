@@ -1119,6 +1119,10 @@ msgstr "Klasse ändern"
 msgid "Change Font"
 msgstr "Schriftart ändern"
 
+#: lazarusidestrconsts:lischangeparent
+msgid "Change parent ..."
+msgstr ""
+
 #: lazarusidestrconsts:lismenuinsertchangelogentry
 msgid "ChangeLog entry"
 msgstr "ChangeLog-Eintrag"

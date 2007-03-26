@@ -1120,6 +1120,10 @@ msgstr "更改类"
 msgid "Change Font"
 msgstr ""
 
+#: lazarusidestrconsts:lischangeparent
+msgid "Change parent ..."
+msgstr ""
+
 #: lazarusidestrconsts:lismenuinsertchangelogentry
 msgid "ChangeLog entry"
 msgstr "ChangeLog 条目"

@@ -1116,6 +1116,10 @@ msgstr "クラスを変更"
 msgid "Change Font"
 msgstr "フォントを変更"
 
+#: lazarusidestrconsts:lischangeparent
+msgid "Change parent ..."
+msgstr ""
+
 #: lazarusidestrconsts:lismenuinsertchangelogentry
 msgid "ChangeLog entry"
 msgstr "変更ログエントリー"

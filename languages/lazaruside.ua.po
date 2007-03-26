@@ -1106,6 +1106,10 @@ msgstr "Змінити клас"
 msgid "Change Font"
 msgstr ""
 
+#: lazarusidestrconsts:lischangeparent
+msgid "Change parent ..."
+msgstr ""
+
 #: lazarusidestrconsts:lismenuinsertchangelogentry
 msgid "ChangeLog entry"
 msgstr "Елемент ChangeLog"

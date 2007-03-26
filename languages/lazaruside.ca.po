@@ -1117,6 +1117,10 @@ msgstr "Canvia la Classe"
 msgid "Change Font"
 msgstr "Canvia Font"
 
+#: lazarusidestrconsts:lischangeparent
+msgid "Change parent ..."
+msgstr ""
+
 #: lazarusidestrconsts:lismenuinsertchangelogentry
 msgid "ChangeLog entry"
 msgstr "Entrada de registre de canvis"
