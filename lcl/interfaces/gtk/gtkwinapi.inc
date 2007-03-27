@@ -2539,7 +2539,7 @@ end;
 
 
  ------------------------------------------------------------------------------}
-function TGtkWidgetSet.DrawFrameControl(DC: HDC; var Rect : TRect;
+function TGtkWidgetSet.DrawFrameControl(DC: HDC; const Rect : TRect;
   uType, uState : Cardinal) : Boolean;
 {const
   ADJUST_FLAG: array[Boolean] of Integer = (0, BF_ADJUST);

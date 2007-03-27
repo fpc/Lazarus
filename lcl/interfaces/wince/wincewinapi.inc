@@ -650,7 +650,7 @@ end;}
 
   Draws a frame control of the specified type and style.
  ------------------------------------------------------------------------------}
-Function TWinCEWidgetSet.DrawFrameControl(DC: HDC; var Rect: TRect; uType,uState: Cardinal): Boolean;
+Function TWinCEWidgetSet.DrawFrameControl(DC: HDC; const Rect: TRect; uType,uState: Cardinal): Boolean;
 var
   Flags: dword;
 Begin

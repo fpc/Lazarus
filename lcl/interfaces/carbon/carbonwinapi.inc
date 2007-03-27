@@ -371,7 +371,7 @@ begin
     TCarbonCursor(Handle).Free;
 end;
 
-function TCarbonWidgetSet.DrawFrameControl(DC: HDC; var Rect: TRect; uType,
+function TCarbonWidgetSet.DrawFrameControl(DC: HDC; const Rect: TRect; uType,
   uState: Cardinal): Boolean;
 begin
   Result:=inherited DrawFrameControl(DC, Rect, uType, uState);

@@ -207,7 +207,7 @@ begin
   Result := False;
 end;
 
-function TWidgetSet.DrawFrameControl(DC: HDC; var Rect : TRect; uType, uState : Cardinal) : Boolean;
+function TWidgetSet.DrawFrameControl(DC: HDC; const Rect : TRect; uType, uState : Cardinal) : Boolean;
 begin
   Result := False;
 end;

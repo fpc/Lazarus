@@ -176,7 +176,7 @@ begin
   Result := WidgetSet.DestroyCursor(Handle);
 end;
 
-Function DrawFrameControl(DC: HDC; var Rect : TRect; uType, uState : Cardinal) : Boolean;
+Function DrawFrameControl(DC: HDC; const Rect : TRect; uType, uState : Cardinal) : Boolean;
 Begin
   Result := WidgetSet.DrawFrameControl(DC, Rect, uType, uState);
 end;

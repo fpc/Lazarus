@@ -1137,7 +1137,7 @@ End;
 
   Draws a frame control of the specified type and style.
  ------------------------------------------------------------------------------}
-Function TWin32WidgetSet.DrawFrameControl(DC: HDC; Var Rect: TRect; UType, UState: Cardinal): Boolean;
+Function TWin32WidgetSet.DrawFrameControl(DC: HDC; const Rect: TRect; UType, UState: Cardinal): Boolean;
 var
   Flags: dword;
 Begin
