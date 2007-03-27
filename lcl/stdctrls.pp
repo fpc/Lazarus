@@ -821,6 +821,7 @@ type
     property Lines;
     property MaxLength;
     property OnChange;
+    property OnClick;
     property OnDragDrop;
     property OnDragOver;
     property OnEditingDone;
