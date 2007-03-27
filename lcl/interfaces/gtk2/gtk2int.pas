@@ -34,7 +34,7 @@ interface
 uses
   Types, Classes, SysUtils,
   {$IfNDef GTK2_2}
-    {$IfNDef Win32}
+    {$IfNDef Windows}
      XLib, X, //XUtil,
     {$EndIf}
   {$EndIf}
