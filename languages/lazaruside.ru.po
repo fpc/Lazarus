@@ -1381,6 +1381,10 @@ msgstr "Шаблоны кода ..."
 msgid "Code Tools"
 msgstr "CodeTools"
 
+#: lazarusidestrconsts:liscodebrowser
+msgid "Code browser"
+msgstr ""
+
 #: lazarusidestrconsts:dlgusecodefolding
 msgid "Code folding"
 msgstr "Сворачивание кода"
@@ -1448,6 +1452,18 @@ msgstr "Редактор определений CodeTools"
 #: lazarusidestrconsts:srkmeccodetoolsoptions
 msgid "Codetools options"
 msgstr "Настройки Codetools"
+
+#: lazarusidestrconsts:liscollapseallclasses
+msgid "Collapse all classes"
+msgstr ""
+
+#: lazarusidestrconsts:liscollapseallpackages
+msgid "Collapse all packages"
+msgstr ""
+
+#: lazarusidestrconsts:liscollapseallunits
+msgid "Collapse all units"
+msgstr ""
 
 #: lazarusidestrconsts:lismenucollectpofil
 msgid "Collect .po files"
@@ -2773,9 +2789,25 @@ msgstr "Выход"
 msgid "Exit without Save"
 msgstr "Выход без сохранения"
 
+#: lazarusidestrconsts:lisexpandallclasses
+msgid "Expand all classes"
+msgstr ""
+
+#: lazarusidestrconsts:lisexpandallpackages
+msgid "Expand all packages"
+msgstr ""
+
+#: lazarusidestrconsts:lisexpandallunits
+msgid "Expand all units"
+msgstr ""
+
 #: lazarusidestrconsts:lisexpandedfilenameofcurrenteditor
 msgid "Expanded filename of current editor file"
 msgstr "Полное имя файла в данном редакторе"
+
+#: lazarusidestrconsts:lisexport
+msgid "Export ..."
+msgstr ""
 
 #: lazarusidestrconsts:lisiecoexportfileexistsopenfileandreplaceonlycompileropti
 msgid "Export file %s%s%s exists.%sOpen file and replace only compiler options?%s(Other settings will be kept.)"
@@ -2996,6 +3028,10 @@ msgstr "Имя файла: %s"
 #: lazarusidestrconsts:dlgenvfiles
 msgid "Files"
 msgstr "Файлы"
+
+#: lazarusidestrconsts:lisfilter
+msgid "Filter"
+msgstr ""
 
 #: lazarusidestrconsts:lisplistfilterany
 msgid "Filter by matching any part of method"
@@ -3621,9 +3657,17 @@ msgstr "ВСТ"
 msgid "Identifier"
 msgstr "Идентификатор"
 
+#: lazarusidestrconsts:lisidentifierbeginswith
+msgid "Identifier begins with ..."
+msgstr ""
+
 #: lazarusidestrconsts:dlgedidcomlet
 msgid "Identifier completion"
 msgstr "Завершение идентификаторов"
+
+#: lazarusidestrconsts:lisidentifiercontains
+msgid "Identifier contains ..."
+msgstr ""
 
 #: lazarusidestrconsts:lismakeresstridentifierlength
 msgid "Identifier length:"
@@ -4493,6 +4537,10 @@ msgstr "Редактор Lazarus v%s"
 msgid "Lazarus File"
 msgstr "Файл Lazarus"
 
+#: lazarusidestrconsts:lislazaruside
+msgid "Lazarus IDE"
+msgstr ""
+
 #: lazarusidestrconsts:lislazarusprojectinfofile
 msgid "Lazarus Project Info file"
 msgstr "Файл информации проекта Lazarus"
@@ -4596,6 +4644,10 @@ msgstr "Уровень 2 (уровень 1 + более медленная)"
 #: lazarusidestrconsts:dlglevel3opt
 msgid "Level 3 (Level 2 + Uncertain)"
 msgstr "Уровень 3 (уровень 3 + нестандартная)"
+
+#: lazarusidestrconsts:lislevels
+msgid "Levels"
+msgstr ""
 
 #: lazarusidestrconsts:dlgcolibraries
 msgid "Libraries (-Fl):"
@@ -5665,6 +5717,14 @@ msgstr "Требуется пакет"
 msgid "Package name already exists"
 msgstr "Имя пакета уже занято"
 
+#: lazarusidestrconsts:lispackagenamebeginswith
+msgid "Package name begins with ..."
+msgstr ""
+
+#: lazarusidestrconsts:lispackagenamecontains
+msgid "Package name contains ..."
+msgstr ""
+
 #: lazarusidestrconsts:lispackageneedsinstallation
 msgid "Package needs installation"
 msgstr "Пакет требует установки"
@@ -5877,6 +5937,10 @@ msgstr "Распечатать элементы todo"
 msgid "Prior"
 msgstr "Перед"
 
+#: lazarusidestrconsts:lisprivate
+msgid "Private"
+msgstr ""
+
 #: lazarusidestrconsts:lisprivatemethod
 msgid "Private Method"
 msgstr "Скрытый метод"
@@ -6048,6 +6112,10 @@ msgstr "Завершение свойств"
 #: lazarusidestrconsts:dlgpropnamecolor
 msgid "Property name"
 msgstr "Имя свойства"
+
+#: lazarusidestrconsts:lisprotected
+msgid "Protected"
+msgstr ""
 
 #: lazarusidestrconsts:lisprotectedmethod
 msgid "Protected Method"
@@ -7269,6 +7337,10 @@ msgstr "Всплывающие подсказки поля (лев)"
 msgid "Show hints in Object Inspector"
 msgstr "Показывать всплывающие подсказки в Инспекторе Объектов"
 
+#: lazarusidestrconsts:lisshowidentifiers
+msgid "Show identifiers"
+msgstr ""
+
 #: lazarusidestrconsts:dlgshowlinenumbers
 msgid "Show line numbers"
 msgstr "Показать номера строк"
@@ -7285,6 +7357,10 @@ msgstr "Ничего не показывать(только ошибки)"
 msgid "Show old tab order"
 msgstr "Показать старый порядок перехода"
 
+#: lazarusidestrconsts:lisshowpackages
+msgid "Show packages"
+msgstr ""
+
 #: lazarusidestrconsts:dlgshowscrollhint
 msgid "Show scroll hint"
 msgstr "Показывать подсказку при прокрутке"
@@ -7296,6 +7372,10 @@ msgstr "Показать обзор"
 #: lazarusidestrconsts:dlgshowtriedfiles
 msgid "Show tried files"
 msgstr "Показать опробованные файлы"
+
+#: lazarusidestrconsts:lisshowunits
+msgid "Show units"
+msgstr ""
 
 #: lazarusidestrconsts:dlgshowusedfiles
 msgid "Show used files"
@@ -8965,6 +9045,14 @@ msgstr "Идентификатор модуля существует"
 msgid "Unit name already exists"
 msgstr "Имя модуля уже существует"
 
+#: lazarusidestrconsts:lisunitnamebeginswith
+msgid "Unit name begins with ..."
+msgstr ""
+
+#: lazarusidestrconsts:lisunitnamecontains
+msgid "Unit name contains ..."
+msgstr ""
+
 #: lazarusidestrconsts:lisunitnotfound
 msgid "Unit not found"
 msgstr "Модуль не найден"
@@ -9401,6 +9489,10 @@ msgstr "Окна"
 msgid "With Packages"
 msgstr "С пакетами"
 
+#: lazarusidestrconsts:liswithrequiredpackages
+msgid "With required packages"
+msgstr ""
+
 #: lazarusidestrconsts:liswordatcursorincurrenteditor
 msgid "Word at cursor in current editor"
 msgstr "Слово под курсором в этом редакторе"
@@ -9493,6 +9585,10 @@ msgstr "автоустановить динамически"
 msgid "auto install static"
 msgstr "автоустановить статически"
 
+#: lazarusidestrconsts:lisbegins
+msgid "begins"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecbuildall
 msgid "build all files of program/project"
 msgstr "собрать все файлы программы/проекта"
@@ -9524,6 +9620,10 @@ msgstr "путь к компилятору"
 #: lazarusidestrconsts:srkmecconfigbuildfile
 msgid "config build file"
 msgstr "файл настроек сборки"
+
+#: lazarusidestrconsts:liscontains
+msgid "contains"
+msgstr ""
 
 #: lazarusidestrconsts:liscustomoptions
 msgid "custom options"

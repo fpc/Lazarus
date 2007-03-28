@@ -1380,6 +1380,10 @@ msgstr "コードテンプレート ..."
 msgid "Code Tools"
 msgstr "コードツール"
 
+#: lazarusidestrconsts:liscodebrowser
+msgid "Code browser"
+msgstr ""
+
 #: lazarusidestrconsts:dlgusecodefolding
 msgid "Code folding"
 msgstr "コードの折り畳み"
@@ -1447,6 +1451,18 @@ msgstr "コードツールがエディタを定義する"
 #: lazarusidestrconsts:srkmeccodetoolsoptions
 msgid "Codetools options"
 msgstr "コードツールオプション"
+
+#: lazarusidestrconsts:liscollapseallclasses
+msgid "Collapse all classes"
+msgstr ""
+
+#: lazarusidestrconsts:liscollapseallpackages
+msgid "Collapse all packages"
+msgstr ""
+
+#: lazarusidestrconsts:liscollapseallunits
+msgid "Collapse all units"
+msgstr ""
 
 #: lazarusidestrconsts:lismenucollectpofil
 msgid "Collect .po files"
@@ -2772,9 +2788,25 @@ msgstr "終了"
 msgid "Exit without Save"
 msgstr "保存せずに終了"
 
+#: lazarusidestrconsts:lisexpandallclasses
+msgid "Expand all classes"
+msgstr ""
+
+#: lazarusidestrconsts:lisexpandallpackages
+msgid "Expand all packages"
+msgstr ""
+
+#: lazarusidestrconsts:lisexpandallunits
+msgid "Expand all units"
+msgstr ""
+
 #: lazarusidestrconsts:lisexpandedfilenameofcurrenteditor
 msgid "Expanded filename of current editor file"
 msgstr "現在のエディタファイルの拡張されたファイル名"
+
+#: lazarusidestrconsts:lisexport
+msgid "Export ..."
+msgstr ""
 
 #: lazarusidestrconsts:lisiecoexportfileexistsopenfileandreplaceonlycompileropti
 msgid "Export file %s%s%s exists.%sOpen file and replace only compiler options?%s(Other settings will be kept.)"
@@ -2995,6 +3027,10 @@ msgstr "ファイル名: %s"
 #: lazarusidestrconsts:dlgenvfiles
 msgid "Files"
 msgstr "ファイル"
+
+#: lazarusidestrconsts:lisfilter
+msgid "Filter"
+msgstr ""
 
 #: lazarusidestrconsts:lisplistfilterany
 msgid "Filter by matching any part of method"
@@ -3620,9 +3656,17 @@ msgstr ""
 msgid "Identifier"
 msgstr "識別子"
 
+#: lazarusidestrconsts:lisidentifierbeginswith
+msgid "Identifier begins with ..."
+msgstr ""
+
 #: lazarusidestrconsts:dlgedidcomlet
 msgid "Identifier completion"
 msgstr "識別子補完"
+
+#: lazarusidestrconsts:lisidentifiercontains
+msgid "Identifier contains ..."
+msgstr ""
 
 #: lazarusidestrconsts:lismakeresstridentifierlength
 msgid "Identifier length:"
@@ -4492,6 +4536,10 @@ msgstr "Lazarus エディター v%s"
 msgid "Lazarus File"
 msgstr "Lazarusファイル"
 
+#: lazarusidestrconsts:lislazaruside
+msgid "Lazarus IDE"
+msgstr ""
+
 #: lazarusidestrconsts:lislazarusprojectinfofile
 msgid "Lazarus Project Info file"
 msgstr "Lazarusプロジェクト情報ファイル"
@@ -4595,6 +4643,10 @@ msgstr "レベル2(Level 1 + より遅い最適化)"
 #: lazarusidestrconsts:dlglevel3opt
 msgid "Level 3 (Level 2 + Uncertain)"
 msgstr "レベル3(Level 2 +不確定)"
+
+#: lazarusidestrconsts:lislevels
+msgid "Levels"
+msgstr ""
 
 #: lazarusidestrconsts:dlgcolibraries
 msgid "Libraries (-Fl):"
@@ -5664,6 +5716,14 @@ msgstr "パッケージが要求されています"
 msgid "Package name already exists"
 msgstr "パッケージ名はすでに存在します"
 
+#: lazarusidestrconsts:lispackagenamebeginswith
+msgid "Package name begins with ..."
+msgstr ""
+
+#: lazarusidestrconsts:lispackagenamecontains
+msgid "Package name contains ..."
+msgstr ""
+
 #: lazarusidestrconsts:lispackageneedsinstallation
 msgid "Package needs installation"
 msgstr "パッケージはインストールが必要です"
@@ -5876,6 +5936,10 @@ msgstr "ToDo項目を印刷"
 msgid "Prior"
 msgstr "前の"
 
+#: lazarusidestrconsts:lisprivate
+msgid "Private"
+msgstr ""
+
 #: lazarusidestrconsts:lisprivatemethod
 msgid "Private Method"
 msgstr "privateメソッド"
@@ -6047,6 +6111,10 @@ msgstr "プロパティ補完"
 #: lazarusidestrconsts:dlgpropnamecolor
 msgid "Property name"
 msgstr "プロパティ名"
+
+#: lazarusidestrconsts:lisprotected
+msgid "Protected"
+msgstr ""
 
 #: lazarusidestrconsts:lisprotectedmethod
 msgid "Protected Method"
@@ -7268,6 +7336,10 @@ msgstr "余白ヒントを表示"
 msgid "Show hints in Object Inspector"
 msgstr "オブジェクトインスペクターのヒントを表示"
 
+#: lazarusidestrconsts:lisshowidentifiers
+msgid "Show identifiers"
+msgstr ""
+
 #: lazarusidestrconsts:dlgshowlinenumbers
 msgid "Show line numbers"
 msgstr "行番号を表示"
@@ -7284,6 +7356,10 @@ msgstr "何も表示しない（エラーのみ）"
 msgid "Show old tab order"
 msgstr "古いタブオーダーを表示"
 
+#: lazarusidestrconsts:lisshowpackages
+msgid "Show packages"
+msgstr ""
+
 #: lazarusidestrconsts:dlgshowscrollhint
 msgid "Show scroll hint"
 msgstr "スクロールヒントを表示"
@@ -7295,6 +7371,10 @@ msgstr "要約を表示"
 #: lazarusidestrconsts:dlgshowtriedfiles
 msgid "Show tried files"
 msgstr "試行されたファイルを表示"
+
+#: lazarusidestrconsts:lisshowunits
+msgid "Show units"
+msgstr ""
 
 #: lazarusidestrconsts:dlgshowusedfiles
 msgid "Show used files"
@@ -8964,6 +9044,14 @@ msgstr "ユニットの識別子が存在します"
 msgid "Unit name already exists"
 msgstr "ユニット名はすでに存在します"
 
+#: lazarusidestrconsts:lisunitnamebeginswith
+msgid "Unit name begins with ..."
+msgstr ""
+
+#: lazarusidestrconsts:lisunitnamecontains
+msgid "Unit name contains ..."
+msgstr ""
+
 #: lazarusidestrconsts:lisunitnotfound
 msgid "Unit not found"
 msgstr "ユニットが見つかりません"
@@ -9400,6 +9488,10 @@ msgstr "ウィンドウズ"
 msgid "With Packages"
 msgstr "パッケージを用いて"
 
+#: lazarusidestrconsts:liswithrequiredpackages
+msgid "With required packages"
+msgstr ""
+
 #: lazarusidestrconsts:liswordatcursorincurrenteditor
 msgid "Word at cursor in current editor"
 msgstr "現在のエディタ内のカーソル位置の単語"
@@ -9492,6 +9584,10 @@ msgstr "動的な自動インストール"
 msgid "auto install static"
 msgstr "静的な自動インストール"
 
+#: lazarusidestrconsts:lisbegins
+msgid "begins"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecbuildall
 msgid "build all files of program/project"
 msgstr "すべてのプログラム/プロジェクトファイルを構築"
@@ -9523,6 +9619,10 @@ msgstr "コンパイラパス"
 #: lazarusidestrconsts:srkmecconfigbuildfile
 msgid "config build file"
 msgstr "構築ファイルの設定"
+
+#: lazarusidestrconsts:liscontains
+msgid "contains"
+msgstr ""
 
 #: lazarusidestrconsts:liscustomoptions
 msgid "custom options"

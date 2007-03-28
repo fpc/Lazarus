@@ -1382,6 +1382,10 @@ msgstr "modèles de code ..."
 msgid "Code Tools"
 msgstr "Audit de code"
 
+#: lazarusidestrconsts:liscodebrowser
+msgid "Code browser"
+msgstr ""
+
 #: lazarusidestrconsts:dlgusecodefolding
 msgid "Code folding"
 msgstr ""
@@ -1449,6 +1453,18 @@ msgstr ""
 #: lazarusidestrconsts:srkmeccodetoolsoptions
 msgid "Codetools options"
 msgstr "Options des Outils de code"
+
+#: lazarusidestrconsts:liscollapseallclasses
+msgid "Collapse all classes"
+msgstr ""
+
+#: lazarusidestrconsts:liscollapseallpackages
+msgid "Collapse all packages"
+msgstr ""
+
+#: lazarusidestrconsts:liscollapseallunits
+msgid "Collapse all units"
+msgstr ""
 
 #: lazarusidestrconsts:lismenucollectpofil
 msgid "Collect .po files"
@@ -2774,9 +2790,25 @@ msgstr "Quitter"
 msgid "Exit without Save"
 msgstr "Quitter sans enregistrer"
 
+#: lazarusidestrconsts:lisexpandallclasses
+msgid "Expand all classes"
+msgstr ""
+
+#: lazarusidestrconsts:lisexpandallpackages
+msgid "Expand all packages"
+msgstr ""
+
+#: lazarusidestrconsts:lisexpandallunits
+msgid "Expand all units"
+msgstr ""
+
 #: lazarusidestrconsts:lisexpandedfilenameofcurrenteditor
 msgid "Expanded filename of current editor file"
 msgstr "Nom étendu du fichier de l'éditeur courant"
+
+#: lazarusidestrconsts:lisexport
+msgid "Export ..."
+msgstr ""
 
 #: lazarusidestrconsts:lisiecoexportfileexistsopenfileandreplaceonlycompileropti
 msgid "Export file %s%s%s exists.%sOpen file and replace only compiler options?%s(Other settings will be kept.)"
@@ -2997,6 +3029,10 @@ msgstr "Nom de fichier : %s"
 #: lazarusidestrconsts:dlgenvfiles
 msgid "Files"
 msgstr "Fichiers"
+
+#: lazarusidestrconsts:lisfilter
+msgid "Filter"
+msgstr ""
 
 #: lazarusidestrconsts:lisplistfilterany
 msgid "Filter by matching any part of method"
@@ -3622,9 +3658,17 @@ msgstr "INS"
 msgid "Identifier"
 msgstr "Identificateur"
 
+#: lazarusidestrconsts:lisidentifierbeginswith
+msgid "Identifier begins with ..."
+msgstr ""
+
 #: lazarusidestrconsts:dlgedidcomlet
 msgid "Identifier completion"
 msgstr "Compléter l'identificateur"
+
+#: lazarusidestrconsts:lisidentifiercontains
+msgid "Identifier contains ..."
+msgstr ""
 
 #: lazarusidestrconsts:lismakeresstridentifierlength
 msgid "Identifier length:"
@@ -4494,6 +4538,10 @@ msgstr "Editeur Lazarus v%s"
 msgid "Lazarus File"
 msgstr "Fichier Lazarus"
 
+#: lazarusidestrconsts:lislazaruside
+msgid "Lazarus IDE"
+msgstr ""
+
 #: lazarusidestrconsts:lislazarusprojectinfofile
 msgid "Lazarus Project Info file"
 msgstr "fichier d'information du projet Lazarus"
@@ -4597,6 +4645,10 @@ msgstr "Niveau 2 (niveau 1 + optimisations plus lentes)"
 #: lazarusidestrconsts:dlglevel3opt
 msgid "Level 3 (Level 2 + Uncertain)"
 msgstr "Niveau 3 (niveau 2 + incertitudes)"
+
+#: lazarusidestrconsts:lislevels
+msgid "Levels"
+msgstr ""
 
 #: lazarusidestrconsts:dlgcolibraries
 msgid "Libraries (-Fl):"
@@ -5666,6 +5718,14 @@ msgstr "Le paquet est requis"
 msgid "Package name already exists"
 msgstr "Nom de paquet déjà existant"
 
+#: lazarusidestrconsts:lispackagenamebeginswith
+msgid "Package name begins with ..."
+msgstr ""
+
+#: lazarusidestrconsts:lispackagenamecontains
+msgid "Package name contains ..."
+msgstr ""
+
 #: lazarusidestrconsts:lispackageneedsinstallation
 msgid "Package needs installation"
 msgstr "Le paquet doit être installé"
@@ -5878,6 +5938,10 @@ msgstr "Imprimer les ToDo"
 msgid "Prior"
 msgstr "Précédent"
 
+#: lazarusidestrconsts:lisprivate
+msgid "Private"
+msgstr ""
+
 #: lazarusidestrconsts:lisprivatemethod
 msgid "Private Method"
 msgstr "Méthode privée"
@@ -6049,6 +6113,10 @@ msgstr "Achèvement de propriété"
 #: lazarusidestrconsts:dlgpropnamecolor
 msgid "Property name"
 msgstr "nom de propriété"
+
+#: lazarusidestrconsts:lisprotected
+msgid "Protected"
+msgstr ""
 
 #: lazarusidestrconsts:lisprotectedmethod
 msgid "Protected Method"
@@ -7270,6 +7338,10 @@ msgstr "Afficher les astuces de gouttière"
 msgid "Show hints in Object Inspector"
 msgstr ""
 
+#: lazarusidestrconsts:lisshowidentifiers
+msgid "Show identifiers"
+msgstr ""
+
 #: lazarusidestrconsts:dlgshowlinenumbers
 msgid "Show line numbers"
 msgstr "Voir les numéros de ligne"
@@ -7286,6 +7358,10 @@ msgstr "Ne rien afficher (sauf les erreurs)"
 msgid "Show old tab order"
 msgstr ""
 
+#: lazarusidestrconsts:lisshowpackages
+msgid "Show packages"
+msgstr ""
+
 #: lazarusidestrconsts:dlgshowscrollhint
 msgid "Show scroll hint"
 msgstr "Afficher les conseils de défilement"
@@ -7297,6 +7373,10 @@ msgstr "Afficher le récapitulatif"
 #: lazarusidestrconsts:dlgshowtriedfiles
 msgid "Show tried files"
 msgstr "Afficher les fichiers essayés"
+
+#: lazarusidestrconsts:lisshowunits
+msgid "Show units"
+msgstr ""
 
 #: lazarusidestrconsts:dlgshowusedfiles
 msgid "Show used files"
@@ -8966,6 +9046,14 @@ msgstr "Identificateur d'unité existant"
 msgid "Unit name already exists"
 msgstr "Nom d'unité déjà existant"
 
+#: lazarusidestrconsts:lisunitnamebeginswith
+msgid "Unit name begins with ..."
+msgstr ""
+
+#: lazarusidestrconsts:lisunitnamecontains
+msgid "Unit name contains ..."
+msgstr ""
+
 #: lazarusidestrconsts:lisunitnotfound
 msgid "Unit not found"
 msgstr "Unité non trouvée"
@@ -9402,6 +9490,10 @@ msgstr "Fenêtres"
 msgid "With Packages"
 msgstr "Avec paquets"
 
+#: lazarusidestrconsts:liswithrequiredpackages
+msgid "With required packages"
+msgstr ""
+
 #: lazarusidestrconsts:liswordatcursorincurrenteditor
 msgid "Word at cursor in current editor"
 msgstr "Mot sous le curseur dans l'éditeur courant"
@@ -9494,6 +9586,10 @@ msgstr "Installation auto dynamique"
 msgid "auto install static"
 msgstr "Installation auto statique"
 
+#: lazarusidestrconsts:lisbegins
+msgid "begins"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecbuildall
 msgid "build all files of program/project"
 msgstr "Construire tous les fichiers du programme"
@@ -9525,6 +9621,10 @@ msgstr "Chemin du compilateur"
 #: lazarusidestrconsts:srkmecconfigbuildfile
 msgid "config build file"
 msgstr "Fichier de configuration de la construction"
+
+#: lazarusidestrconsts:liscontains
+msgid "contains"
+msgstr ""
 
 #: lazarusidestrconsts:liscustomoptions
 msgid "custom options"

@@ -1370,6 +1370,10 @@ msgstr "Koodilyhenteet ..."
 msgid "Code Tools"
 msgstr ""
 
+#: lazarusidestrconsts:liscodebrowser
+msgid "Code browser"
+msgstr ""
+
 #: lazarusidestrconsts:dlgusecodefolding
 msgid "Code folding"
 msgstr "Koodin laskostus"
@@ -1436,6 +1440,18 @@ msgstr ""
 
 #: lazarusidestrconsts:srkmeccodetoolsoptions
 msgid "Codetools options"
+msgstr ""
+
+#: lazarusidestrconsts:liscollapseallclasses
+msgid "Collapse all classes"
+msgstr ""
+
+#: lazarusidestrconsts:liscollapseallpackages
+msgid "Collapse all packages"
+msgstr ""
+
+#: lazarusidestrconsts:liscollapseallunits
+msgid "Collapse all units"
 msgstr ""
 
 #: lazarusidestrconsts:lismenucollectpofil
@@ -2762,8 +2778,24 @@ msgstr "Lopeta"
 msgid "Exit without Save"
 msgstr ""
 
+#: lazarusidestrconsts:lisexpandallclasses
+msgid "Expand all classes"
+msgstr ""
+
+#: lazarusidestrconsts:lisexpandallpackages
+msgid "Expand all packages"
+msgstr ""
+
+#: lazarusidestrconsts:lisexpandallunits
+msgid "Expand all units"
+msgstr ""
+
 #: lazarusidestrconsts:lisexpandedfilenameofcurrenteditor
 msgid "Expanded filename of current editor file"
+msgstr ""
+
+#: lazarusidestrconsts:lisexport
+msgid "Export ..."
 msgstr ""
 
 #: lazarusidestrconsts:lisiecoexportfileexistsopenfileandreplaceonlycompileropti
@@ -2985,6 +3017,10 @@ msgstr ""
 #: lazarusidestrconsts:dlgenvfiles
 msgid "Files"
 msgstr "Tiedostot"
+
+#: lazarusidestrconsts:lisfilter
+msgid "Filter"
+msgstr ""
 
 #: lazarusidestrconsts:lisplistfilterany
 msgid "Filter by matching any part of method"
@@ -3610,9 +3646,17 @@ msgstr "Lisää"
 msgid "Identifier"
 msgstr "Tunniste (mm muuttuja)"
 
+#: lazarusidestrconsts:lisidentifierbeginswith
+msgid "Identifier begins with ..."
+msgstr ""
+
 #: lazarusidestrconsts:dlgedidcomlet
 msgid "Identifier completion"
 msgstr "Koodin täydentäminen"
+
+#: lazarusidestrconsts:lisidentifiercontains
+msgid "Identifier contains ..."
+msgstr ""
 
 #: lazarusidestrconsts:lismakeresstridentifierlength
 msgid "Identifier length:"
@@ -4482,6 +4526,10 @@ msgstr ""
 msgid "Lazarus File"
 msgstr ""
 
+#: lazarusidestrconsts:lislazaruside
+msgid "Lazarus IDE"
+msgstr ""
+
 #: lazarusidestrconsts:lislazarusprojectinfofile
 msgid "Lazarus Project Info file"
 msgstr ""
@@ -4585,6 +4633,10 @@ msgstr "Taso 2 (Taso 1 + hitaampi optimoiti)"
 #: lazarusidestrconsts:dlglevel3opt
 msgid "Level 3 (Level 2 + Uncertain)"
 msgstr "Taso 3 (Taso2 + Uncertain)"
+
+#: lazarusidestrconsts:lislevels
+msgid "Levels"
+msgstr ""
 
 #: lazarusidestrconsts:dlgcolibraries
 msgid "Libraries (-Fl):"
@@ -5654,6 +5706,14 @@ msgstr ""
 msgid "Package name already exists"
 msgstr ""
 
+#: lazarusidestrconsts:lispackagenamebeginswith
+msgid "Package name begins with ..."
+msgstr ""
+
+#: lazarusidestrconsts:lispackagenamecontains
+msgid "Package name contains ..."
+msgstr ""
+
 #: lazarusidestrconsts:lispackageneedsinstallation
 msgid "Package needs installation"
 msgstr ""
@@ -5866,6 +5926,10 @@ msgstr ""
 msgid "Prior"
 msgstr ""
 
+#: lazarusidestrconsts:lisprivate
+msgid "Private"
+msgstr ""
+
 #: lazarusidestrconsts:lisprivatemethod
 msgid "Private Method"
 msgstr "Private - metodi"
@@ -6037,6 +6101,10 @@ msgstr ""
 #: lazarusidestrconsts:dlgpropnamecolor
 msgid "Property name"
 msgstr "Ominaisuuden nimi"
+
+#: lazarusidestrconsts:lisprotected
+msgid "Protected"
+msgstr ""
 
 #: lazarusidestrconsts:lisprotectedmethod
 msgid "Protected Method"
@@ -7258,6 +7326,10 @@ msgstr ""
 msgid "Show hints in Object Inspector"
 msgstr "Näytä komponenttimuokkaimessa vihjeet"
 
+#: lazarusidestrconsts:lisshowidentifiers
+msgid "Show identifiers"
+msgstr ""
+
 #: lazarusidestrconsts:dlgshowlinenumbers
 msgid "Show line numbers"
 msgstr "Näytä rivinumerot"
@@ -7274,6 +7346,10 @@ msgstr "Näytä ainoastaan virheet"
 msgid "Show old tab order"
 msgstr ""
 
+#: lazarusidestrconsts:lisshowpackages
+msgid "Show packages"
+msgstr ""
+
 #: lazarusidestrconsts:dlgshowscrollhint
 msgid "Show scroll hint"
 msgstr ""
@@ -7284,6 +7360,10 @@ msgstr "Näytä yhteenveto"
 
 #: lazarusidestrconsts:dlgshowtriedfiles
 msgid "Show tried files"
+msgstr ""
+
+#: lazarusidestrconsts:lisshowunits
+msgid "Show units"
 msgstr ""
 
 #: lazarusidestrconsts:dlgshowusedfiles
@@ -8954,6 +9034,14 @@ msgstr ""
 msgid "Unit name already exists"
 msgstr "Käännösyksikön (Unit) nimi on jo olemassa"
 
+#: lazarusidestrconsts:lisunitnamebeginswith
+msgid "Unit name begins with ..."
+msgstr ""
+
+#: lazarusidestrconsts:lisunitnamecontains
+msgid "Unit name contains ..."
+msgstr ""
+
 #: lazarusidestrconsts:lisunitnotfound
 msgid "Unit not found"
 msgstr ""
@@ -9390,6 +9478,10 @@ msgstr "Ikkunat"
 msgid "With Packages"
 msgstr ""
 
+#: lazarusidestrconsts:liswithrequiredpackages
+msgid "With required packages"
+msgstr ""
+
 #: lazarusidestrconsts:liswordatcursorincurrenteditor
 msgid "Word at cursor in current editor"
 msgstr ""
@@ -9482,6 +9574,10 @@ msgstr ""
 msgid "auto install static"
 msgstr ""
 
+#: lazarusidestrconsts:lisbegins
+msgid "begins"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecbuildall
 msgid "build all files of program/project"
 msgstr ""
@@ -9512,6 +9608,10 @@ msgstr ""
 
 #: lazarusidestrconsts:srkmecconfigbuildfile
 msgid "config build file"
+msgstr ""
+
+#: lazarusidestrconsts:liscontains
+msgid "contains"
 msgstr ""
 
 #: lazarusidestrconsts:liscustomoptions

@@ -1370,6 +1370,10 @@ msgstr "Кодові шаблони ..."
 msgid "Code Tools"
 msgstr "Інструменти коду"
 
+#: lazarusidestrconsts:liscodebrowser
+msgid "Code browser"
+msgstr ""
+
 #: lazarusidestrconsts:dlgusecodefolding
 msgid "Code folding"
 msgstr ""
@@ -1437,6 +1441,18 @@ msgstr "Редактор визначень Інструментів Коду"
 #: lazarusidestrconsts:srkmeccodetoolsoptions
 msgid "Codetools options"
 msgstr "Параметри Інструментів Коду"
+
+#: lazarusidestrconsts:liscollapseallclasses
+msgid "Collapse all classes"
+msgstr ""
+
+#: lazarusidestrconsts:liscollapseallpackages
+msgid "Collapse all packages"
+msgstr ""
+
+#: lazarusidestrconsts:liscollapseallunits
+msgid "Collapse all units"
+msgstr ""
 
 #: lazarusidestrconsts:lismenucollectpofil
 msgid "Collect .po files"
@@ -2762,9 +2778,25 @@ msgstr "Вихід"
 msgid "Exit without Save"
 msgstr "Вихід без збереження"
 
+#: lazarusidestrconsts:lisexpandallclasses
+msgid "Expand all classes"
+msgstr ""
+
+#: lazarusidestrconsts:lisexpandallpackages
+msgid "Expand all packages"
+msgstr ""
+
+#: lazarusidestrconsts:lisexpandallunits
+msgid "Expand all units"
+msgstr ""
+
 #: lazarusidestrconsts:lisexpandedfilenameofcurrenteditor
 msgid "Expanded filename of current editor file"
 msgstr "Повна назва файлу в поточному редакторі"
+
+#: lazarusidestrconsts:lisexport
+msgid "Export ..."
+msgstr ""
 
 #: lazarusidestrconsts:lisiecoexportfileexistsopenfileandreplaceonlycompileropti
 msgid "Export file %s%s%s exists.%sOpen file and replace only compiler options?%s(Other settings will be kept.)"
@@ -2985,6 +3017,10 @@ msgstr "Назва файлу: %s"
 #: lazarusidestrconsts:dlgenvfiles
 msgid "Files"
 msgstr "Файли"
+
+#: lazarusidestrconsts:lisfilter
+msgid "Filter"
+msgstr ""
 
 #: lazarusidestrconsts:lisplistfilterany
 msgid "Filter by matching any part of method"
@@ -3610,9 +3646,17 @@ msgstr "ВСТ"
 msgid "Identifier"
 msgstr "Ідентифікатор"
 
+#: lazarusidestrconsts:lisidentifierbeginswith
+msgid "Identifier begins with ..."
+msgstr ""
+
 #: lazarusidestrconsts:dlgedidcomlet
 msgid "Identifier completion"
 msgstr "Завершення ідентифікаторів"
+
+#: lazarusidestrconsts:lisidentifiercontains
+msgid "Identifier contains ..."
+msgstr ""
 
 #: lazarusidestrconsts:lismakeresstridentifierlength
 msgid "Identifier length:"
@@ -4482,6 +4526,10 @@ msgstr "Редактор Lazarus%s"
 msgid "Lazarus File"
 msgstr "Файл Lazarus"
 
+#: lazarusidestrconsts:lislazaruside
+msgid "Lazarus IDE"
+msgstr ""
+
 #: lazarusidestrconsts:lislazarusprojectinfofile
 msgid "Lazarus Project Info file"
 msgstr "Файл Info проекту Lazarus"
@@ -4585,6 +4633,10 @@ msgstr "Рівень 2 (Рівень 1 + Повільніше з оптиміз�
 #: lazarusidestrconsts:dlglevel3opt
 msgid "Level 3 (Level 2 + Uncertain)"
 msgstr "Рівень 3 (Рівень 2 + непевний)"
+
+#: lazarusidestrconsts:lislevels
+msgid "Levels"
+msgstr ""
 
 #: lazarusidestrconsts:dlgcolibraries
 msgid "Libraries (-Fl):"
@@ -5654,6 +5706,14 @@ msgstr "Потрібен пакунок"
 msgid "Package name already exists"
 msgstr "Така назва пакунку вже існує"
 
+#: lazarusidestrconsts:lispackagenamebeginswith
+msgid "Package name begins with ..."
+msgstr ""
+
+#: lazarusidestrconsts:lispackagenamecontains
+msgid "Package name contains ..."
+msgstr ""
+
 #: lazarusidestrconsts:lispackageneedsinstallation
 msgid "Package needs installation"
 msgstr "Потрібне встановлення пакунку"
@@ -5866,6 +5926,10 @@ msgstr "Друкувати елементи todo"
 msgid "Prior"
 msgstr "Перед"
 
+#: lazarusidestrconsts:lisprivate
+msgid "Private"
+msgstr ""
+
 #: lazarusidestrconsts:lisprivatemethod
 msgid "Private Method"
 msgstr "Прихований метод"
@@ -6037,6 +6101,10 @@ msgstr "Розширення властивості"
 #: lazarusidestrconsts:dlgpropnamecolor
 msgid "Property name"
 msgstr "Назва властивості"
+
+#: lazarusidestrconsts:lisprotected
+msgid "Protected"
+msgstr ""
 
 #: lazarusidestrconsts:lisprotectedmethod
 msgid "Protected Method"
@@ -7258,6 +7326,10 @@ msgstr "Показати додаткові довідки"
 msgid "Show hints in Object Inspector"
 msgstr "Показувати довідки в Інспекторі об'єкту"
 
+#: lazarusidestrconsts:lisshowidentifiers
+msgid "Show identifiers"
+msgstr ""
+
 #: lazarusidestrconsts:dlgshowlinenumbers
 msgid "Show line numbers"
 msgstr "Показати номери рядків"
@@ -7274,6 +7346,10 @@ msgstr "Показувати тільки помилки"
 msgid "Show old tab order"
 msgstr ""
 
+#: lazarusidestrconsts:lisshowpackages
+msgid "Show packages"
+msgstr ""
+
 #: lazarusidestrconsts:dlgshowscrollhint
 msgid "Show scroll hint"
 msgstr "Показати підказку з прокруткою"
@@ -7285,6 +7361,10 @@ msgstr "Показати підсумкове"
 #: lazarusidestrconsts:dlgshowtriedfiles
 msgid "Show tried files"
 msgstr "Показати випробувальні файли"
+
+#: lazarusidestrconsts:lisshowunits
+msgid "Show units"
+msgstr ""
 
 #: lazarusidestrconsts:dlgshowusedfiles
 msgid "Show used files"
@@ -8954,6 +9034,14 @@ msgstr "Ідентифікатор модуля існує"
 msgid "Unit name already exists"
 msgstr "Назва модуля вже існує"
 
+#: lazarusidestrconsts:lisunitnamebeginswith
+msgid "Unit name begins with ..."
+msgstr ""
+
+#: lazarusidestrconsts:lisunitnamecontains
+msgid "Unit name contains ..."
+msgstr ""
+
 #: lazarusidestrconsts:lisunitnotfound
 msgid "Unit not found"
 msgstr "Модул не знайдений"
@@ -9390,6 +9478,10 @@ msgstr "Вікна"
 msgid "With Packages"
 msgstr "З пакунками"
 
+#: lazarusidestrconsts:liswithrequiredpackages
+msgid "With required packages"
+msgstr ""
+
 #: lazarusidestrconsts:liswordatcursorincurrenteditor
 msgid "Word at cursor in current editor"
 msgstr "Слово під курсором в цьому редакторі"
@@ -9482,6 +9574,10 @@ msgstr "авто-встановити динамічно"
 msgid "auto install static"
 msgstr "авто-встановити статично"
 
+#: lazarusidestrconsts:lisbegins
+msgid "begins"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecbuildall
 msgid "build all files of program/project"
 msgstr "побудувати всі файли програми/проекту"
@@ -9513,6 +9609,10 @@ msgstr "шлях до компілятора"
 #: lazarusidestrconsts:srkmecconfigbuildfile
 msgid "config build file"
 msgstr "файл налаштувань побудови"
+
+#: lazarusidestrconsts:liscontains
+msgid "contains"
+msgstr ""
 
 #: lazarusidestrconsts:liscustomoptions
 msgid "custom options"

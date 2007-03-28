@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-03-20 17:39+0100\n"
+"PO-Revision-Date: 2007-03-28 13:53+0100\n"
 "Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "X-Poedit-Language: German\n"
@@ -14,315 +14,315 @@ msgstr ""
 
 #: ipconst:slognsarticle
 msgid " (nsArticle)"
-msgstr ""
+msgstr " (nsArticle)"
 
 #: ipconst:slognsauthpass
 msgid " (nsAuthPass)"
-msgstr ""
+msgstr " (nsAuthPass)"
 
 #: ipconst:slognsauthuser
 msgid " (nsAuthUser)"
-msgstr ""
+msgstr " (nsAuthUser)"
 
 #: ipconst:slognsbody
 msgid " (nsBody)"
-msgstr ""
+msgstr " (nsBody)"
 
 #: ipconst:slognsconnect
 msgid " (nsConnect)"
-msgstr ""
+msgstr " (nsConnect)"
 
 #: ipconst:slognsdate
 msgid " (nsDate)"
-msgstr ""
+msgstr " (nsDate)"
 
 #: ipconst:slognsgroup
 msgid " (nsGroup)"
-msgstr ""
+msgstr " (nsGroup)"
 
 #: ipconst:slognshead
 msgid " (nsHead)"
-msgstr ""
+msgstr " (nsHead)"
 
 #: ipconst:slognshelp
 msgid " (nsHelp)"
-msgstr ""
+msgstr " (nsHelp)"
 
 #: ipconst:slognslast
 msgid " (nsLast)"
-msgstr ""
+msgstr " (nsLast)"
 
 #: ipconst:slognslist
 msgid " (nsList)"
-msgstr ""
+msgstr " (nsList)"
 
 #: ipconst:slognslistactivetimes
 msgid " (nsListActiveTimes)"
-msgstr ""
+msgstr " (nsListActiveTimes)"
 
 #: ipconst:slognslistdistribpats
 msgid " (nsListDistribPats)"
-msgstr ""
+msgstr " (nsListDistribPats)"
 
 #: ipconst:slognslistdistributions
 msgid " (nsListDistributions)"
-msgstr ""
+msgstr " (nsListDistributions)"
 
 #: ipconst:slognslistext
 msgid " (nsListExt)"
-msgstr ""
+msgstr " (nsListExt)"
 
 #: ipconst:slognslistgroup
 msgid " (nsListGroup)"
-msgstr ""
+msgstr " (nsListGroup)"
 
 #: ipconst:slognslistnewsgroups
 msgid " (nsListNewsGroups)"
-msgstr ""
+msgstr " (nsListNewsGroups)"
 
 #: ipconst:slognslistoverviewfmt
 msgid " (nsListOverviewFmt)"
-msgstr ""
+msgstr " (nsListOverviewFmt)"
 
 #: ipconst:slognsnewgroups
 msgid " (nsNewGroups)"
-msgstr ""
+msgstr " (nsNewGroups)"
 
 #: ipconst:slognsnewnews
 msgid " (nsNewNews)"
-msgstr ""
+msgstr " (nsNewNews)"
 
 #: ipconst:slognsnext
 msgid " (nsNext)"
-msgstr ""
+msgstr " (nsNext)"
 
 #: ipconst:slognsnoop
 msgid " (nsNoOp)"
-msgstr ""
+msgstr " (nsNoOp)"
 
 #: ipconst:slognsover
 msgid " (nsOver)"
-msgstr ""
+msgstr " (nsOver)"
 
 #: ipconst:slognspat
 msgid " (nsPat)"
-msgstr ""
+msgstr " (nsPat)"
 
 #: ipconst:slognspost
 msgid " (nsPost)"
-msgstr ""
+msgstr " (nsPost)"
 
 #: ipconst:slognsprepost
 msgid " (nsPrePost)"
-msgstr ""
+msgstr " (nsPrePost)"
 
 #: ipconst:slognsquit
 msgid " (nsQuit)"
-msgstr ""
+msgstr " (nsQuit)"
 
 #: ipconst:slognsspecial
 msgid " (nsSpecial)"
-msgstr ""
+msgstr " (nsSpecial)"
 
 #: ipconst:slognsstat
 msgid " (nsStat)"
-msgstr ""
+msgstr " (nsStat)"
 
 #: ipconst:slogntauthenticate
 msgid " (ntAuthenticate)"
-msgstr ""
+msgstr " (ntAuthenticate)"
 
 #: ipconst:slogntnewnews
 msgid " (ntNewNews)"
-msgstr ""
+msgstr " (ntNewNews)"
 
 #: ipconst:slogntnotask
 msgid " (ntNoTask)"
-msgstr ""
+msgstr " (ntNoTask)"
 
 #: ipconst:slogntpostto
 msgid " (ntPostTo)"
-msgstr ""
+msgstr " (ntPostTo)"
 
 #: ipconst:slogntselectgroup
 msgid " (ntSelectGroup)"
-msgstr ""
+msgstr " (ntSelectGroup)"
 
 #: ipconst:slogpsapop
 msgid " (psApop)"
-msgstr ""
+msgstr " (psApop)"
 
 #: ipconst:slogpsconnect
 msgid " (psConnect)"
-msgstr ""
+msgstr " (psConnect)"
 
 #: ipconst:slogpsdele
 msgid " (psDele)"
-msgstr ""
+msgstr " (psDele)"
 
 #: ipconst:slogoslist
 msgid " (psList)"
-msgstr ""
+msgstr " (psList)"
 
 #: ipconst:slogpspass
 msgid " (psPass)"
-msgstr ""
+msgstr " (psPass)"
 
 #: ipconst:slogpsquit
 msgid " (psQuit)"
-msgstr ""
+msgstr " (psQuit)"
 
 #: ipconst:slogpsretr
 msgid " (psRetr)"
-msgstr ""
+msgstr " (psRetr)"
 
 #: ipconst:slogpsrset
 msgid " (psRSet)"
-msgstr ""
+msgstr " (psRSet)"
 
 #: ipconst:slogpsspecial
 msgid " (psSpecial)"
-msgstr ""
+msgstr " (psSpecial)"
 
 #: ipconst:slogpsstat
 msgid " (psStat)"
-msgstr ""
+msgstr " (psStat)"
 
 #: ipconst:slogpstop
 msgid " (psTop)"
-msgstr ""
+msgstr " (psTop)"
 
 #: ipconst:slogpsuidl
 msgid " (psUidl)"
-msgstr ""
+msgstr " (psUidl)"
 
 #: ipconst:slogpsuser
 msgid " (psUser)"
-msgstr ""
+msgstr " (psUser)"
 
 #: ipconst:slogptlist
 msgid " (ptList)"
-msgstr ""
+msgstr " (ptList)"
 
 #: ipconst:slogptlogon
 msgid " (ptLogon)"
-msgstr ""
+msgstr " (ptLogon)"
 
 #: ipconst:slogptnone
 msgid " (ptNone)"
-msgstr ""
+msgstr " (ptNone)"
 
 #: ipconst:slogptuidl
 msgid " (ptUIDL)"
-msgstr ""
+msgstr " (ptUIDL)"
 
 #: ipconst:slogauthlogin
 msgid " (ssAuthLogin)"
-msgstr ""
+msgstr " (ssAuthLogin)"
 
 #: ipconst:slogauthpass
 msgid " (ssAuthPass)"
-msgstr ""
+msgstr " (ssAuthPass)"
 
 #: ipconst:slogauthuser
 msgid " (ssAuthUser)"
-msgstr ""
+msgstr " (ssAuthUser)"
 
 #: ipconst:slogssconnect
 msgid " (ssConnect)"
-msgstr ""
+msgstr " (ssConnect)"
 
 #: ipconst:slogdata
 msgid " (ssData)"
-msgstr ""
+msgstr " (ssData)"
 
 #: ipconst:slogehlo
 msgid " (ssEhlo)"
-msgstr ""
+msgstr " (ssEhlo)"
 
 #: ipconst:slogexpand
 msgid " (ssExpand)"
-msgstr ""
+msgstr " (ssExpand)"
 
 #: ipconst:sloghelo
 msgid " (ssHelo)"
-msgstr ""
+msgstr " (ssHelo)"
 
 #: ipconst:sloghelp
 msgid " (ssHelp)"
-msgstr ""
+msgstr " (ssHelp)"
 
 #: ipconst:slogmailfrom
 msgid " (ssMailFrom)"
-msgstr ""
+msgstr " (ssMailFrom)"
 
 #: ipconst:slogssnoop
 msgid " (ssNoOp)"
-msgstr ""
+msgstr " (ssNoOp)"
 
 #: ipconst:slogquit
 msgid " (ssQuit)"
-msgstr ""
+msgstr " (ssQuit)"
 
 #: ipconst:slogrcptbcc
 msgid " (ssRcptBcc)"
-msgstr ""
+msgstr " (ssRcptBcc)"
 
 #: ipconst:slogrcptcc
 msgid " (ssRcptCc)"
-msgstr ""
+msgstr " (ssRcptCc)"
 
 #: ipconst:slogrcptto
 msgid " (ssRcptTo)"
-msgstr ""
+msgstr " (ssRcptTo)"
 
 #: ipconst:slogrset
 msgid " (ssRSet)"
-msgstr ""
+msgstr " (ssRcptTo)"
 
 #: ipconst:slogsaml
 msgid " (ssSaml)"
-msgstr ""
+msgstr " (ssSaml)"
 
 #: ipconst:slogsend
 msgid " (ssSend)"
-msgstr ""
+msgstr " (ssSend)"
 
 #: ipconst:slogsendenvelope
 msgid " (ssSendEnvelope)"
-msgstr ""
+msgstr " (ssSendEnvelope)"
 
 #: ipconst:slogsendmessage
 msgid " (ssSendMessage)"
-msgstr ""
+msgstr " (ssSendMessage)"
 
 #: ipconst:slogsoml
 msgid " (ssSoml)"
-msgstr ""
+msgstr " (ssSoml)"
 
 #: ipconst:slogspecial
 msgid " (ssSpecial)"
-msgstr ""
+msgstr " (ssSpecial)"
 
 #: ipconst:slogturn
 msgid " (ssTurn)"
-msgstr ""
+msgstr " (ssTurn)"
 
 #: ipconst:slogverify
 msgid " (ssVerify)"
-msgstr ""
+msgstr " (ssVerify)"
 
 #: ipconst:slogstlogon
 msgid " (stLogon)"
-msgstr ""
+msgstr " (stLogon)"
 
 #: ipconst:slogstnotask
 msgid " (stNoTask)"
-msgstr ""
+msgstr " (stNoTask)"
 
 #: ipconst:slogstsendmail
 msgid " (stSendMail)"
-msgstr ""
+msgstr " (stSendMail)"
 
 #: ipconst:sbytesfromstream
 msgid " bytes from stream"
@@ -366,7 +366,7 @@ msgstr "ausgeloggt"
 
 #: ipconst:slogpsnoop
 msgid " {psNoOp)"
-msgstr ""
+msgstr " (psNoOp)"
 
 #: ipconst:sbinhexcolonexpected
 msgid "\":\" expected"
@@ -430,7 +430,7 @@ msgstr "- erwartet"
 
 #: ipconst:spop3errresp
 msgid "-ERR"
-msgstr ""
+msgstr "-ERR"
 
 #: ipconst:spngunsupportedfeature
 msgid "A %s chunk was found in the PNG File. This feature is not supported in this version of the PNG decoder"
@@ -458,11 +458,11 @@ msgstr "Beim letzten Task trat ein Fehler auf."
 
 #: ipconst:spop3cmdapop
 msgid "APOP"
-msgstr ""
+msgstr "APOP"
 
 #: ipconst:snntpcmdarticle
 msgid "ARTICLE"
-msgstr ""
+msgstr "ARTICLE"
 
 #: ipconst:swsa_qos_senders
 msgid "At least one Path has arrived"
@@ -534,11 +534,11 @@ msgstr "Usernamenüberprüfung"
 
 #: ipconst:snntpcmdauthpass
 msgid "AUTHINFO PASS"
-msgstr ""
+msgstr "AUTHINFO PASS"
 
 #: ipconst:snntpcmdauthuser
 msgid "AUTHINFO USER"
-msgstr ""
+msgstr "AUTHINFO USER"
 
 #: ipconst:snsauthpass
 msgid "Authorizing password"
@@ -622,7 +622,7 @@ msgstr "Blockgrößenfehler"
 
 #: ipconst:snntpcmdbody
 msgid "BODY"
-msgstr ""
+msgstr "BODY"
 
 #: ipconst:shtmldefbrowsecaption
 msgid "Browse..."
@@ -810,11 +810,11 @@ msgstr "Verschlüsselungsfehler"
 
 #: ipconst:snntpcmddate
 msgid "DATE"
-msgstr ""
+msgstr "DATE"
 
 #: ipconst:spop3cmddele
 msgid "DELE"
-msgstr ""
+msgstr "DELE"
 
 #: ipconst:sftpdelete
 msgid "Deleting "
@@ -1042,11 +1042,11 @@ msgstr "Erzeuge OnTop-Event"
 
 #: ipconst:httpget
 msgid "GET: (%s)"
-msgstr ""
+msgstr "GET: (%s)"
 
 #: ipconst:httpgeterror
 msgid "GET: (%s) FAILED"
-msgstr ""
+msgstr "GET: (%s) FAILED"
 
 #: ipconst:snsnewnews
 msgid "Getting new articles"
@@ -1062,7 +1062,7 @@ msgstr "Verzögerter Shutdown wird durchgeführt"
 
 #: ipconst:snntpcmdgroup
 msgid "GROUP"
-msgstr ""
+msgstr "GROUP"
 
 #: ipconst:ssslhandshakefailure
 msgid "Handshake failure."
@@ -1074,15 +1074,15 @@ msgstr "Hardwarefehler"
 
 #: ipconst:snntpcmdhead
 msgid "HEAD"
-msgstr ""
+msgstr "HEAD"
 
 #: ipconst:httphead
 msgid "HEAD: (%s)"
-msgstr ""
+msgstr "HEAD: (%s)"
 
 #: ipconst:httpheaderror
 msgid "HEAD: (%s) FAILED"
-msgstr ""
+msgstr "HEAD: (%s) FAILED"
 
 #: ipconst:ssshelp
 msgid "Help"
@@ -1278,31 +1278,31 @@ msgstr "Nachricht zum Schlüsselaustausch erwartet aber nicht erhalten"
 
 #: ipconst:snntpcmdlast
 msgid "LAST"
-msgstr ""
+msgstr "LAST"
 
 #: ipconst:spop3cmdlist
 msgid "LIST"
-msgstr ""
+msgstr "LIST"
 
 #: ipconst:snntpcmdlistacttimes
 msgid "LIST ACTIVE.TIMES"
-msgstr ""
+msgstr "LIST ACTIVE.TIMES"
 
 #: ipconst:snntpcmdlistdistribpats
 msgid "LIST DISTRIB.PATS"
-msgstr ""
+msgstr "LIST DISTRIB.PATS"
 
 #: ipconst:snntpcmdlistdistrib
 msgid "LIST DISTRIBUTIONS"
-msgstr ""
+msgstr "LIST DISTRIBUTIONS"
 
 #: ipconst:snntpcmdlistext
 msgid "LIST EXTENSIONS"
-msgstr ""
+msgstr "LIST EXTENSIONS"
 
 #: ipconst:snntpcmdlistnewsgroups
 msgid "LIST NEWSGROUPS"
-msgstr ""
+msgstr "LIST NEWSGROUPS"
 
 #: ipconst:slistnotassigned
 msgid "List not assigned"
@@ -1310,11 +1310,11 @@ msgstr "Liste nicht zugewiesen"
 
 #: ipconst:snntpcmdlistoverfmt
 msgid "LIST OVERVIEW.FMT"
-msgstr ""
+msgstr "LIST OVERVIEW.FMT"
 
 #: ipconst:snntpcmdlistgroup
 msgid "LISTGROUP"
-msgstr ""
+msgstr "LISTGROUP"
 
 #: ipconst:cacheretrieving
 msgid "Loading from Cache (%s = %s)"
@@ -1438,15 +1438,15 @@ msgstr "Netzwerk-Subsystem ist nicht verfügbar"
 
 #: ipconst:snntpcmdnewgroups
 msgid "NEWGROUPS"
-msgstr ""
+msgstr "NEWGROUPS"
 
 #: ipconst:snntpcmdnewnews
 msgid "NEWNEWS"
-msgstr ""
+msgstr "NEWNEWS"
 
 #: ipconst:snntpcmdnext
 msgid "NEXT"
-msgstr ""
+msgstr "NEXT"
 
 #: ipconst:slognextmessagenotready
 msgid "Next message not ready"
@@ -1534,7 +1534,7 @@ msgstr ""
 
 #: ipconst:spop3cmdnoop
 msgid "NOOP"
-msgstr ""
+msgstr "NOOP"
 
 #: ipconst:snotenoughdata
 msgid "Not enough data in queue (%s bytes) to satisfy read request (%s bytes)"
@@ -1634,7 +1634,7 @@ msgstr "Parserfehler."
 
 #: ipconst:spop3cmdpass
 msgid "PASS"
-msgstr ""
+msgstr "PASS"
 
 #: ipconst:sraspasswordexpired
 msgid "Password expired"
@@ -1642,7 +1642,7 @@ msgstr "Paßwort abgelaufen"
 
 #: ipconst:snntpcmdpat
 msgid "PAT"
-msgstr ""
+msgstr "PAT"
 
 #: ipconst:sbadpath
 msgid "Path does not exist"
@@ -1694,15 +1694,15 @@ msgstr "Port geöffnet"
 
 #: ipconst:snntpcmdpost
 msgid "POST"
-msgstr ""
+msgstr "POST"
 
 #: ipconst:httppost
 msgid "POST: (%s)"
-msgstr ""
+msgstr "POST: (%s)"
 
 #: ipconst:httpposterror
 msgid "POST: (%s) FAILED"
-msgstr ""
+msgstr "POST: (%s) FAILED"
 
 #: ipconst:snspost
 msgid "Posting article"
@@ -1822,7 +1822,7 @@ msgstr "Ressource nicht verfügbar:"
 
 #: ipconst:spop3cmdretr
 msgid "RETR"
-msgstr ""
+msgstr "RETR"
 
 #: ipconst:sftpretrieve
 msgid "Retrieving "
@@ -1926,7 +1926,7 @@ msgstr "Widerrufe Zertifikat."
 
 #: ipconst:ssmtpresponse46
 msgid "Routing loop detected"
-msgstr ""
+msgstr "Endlos-Routing entdeckt"
 
 #: ipconst:ssmtpresponse43
 msgid "Routing server failure"
@@ -1934,7 +1934,7 @@ msgstr "Routing-Server-Fehler"
 
 #: ipconst:spop3cmdrset
 msgid "RSET"
-msgstr ""
+msgstr "RSET"
 
 #: ipconst:ssmtpresponse73
 msgid "Security conversion required but not possible"
@@ -1998,11 +1998,11 @@ msgstr "Sende Spezialbefehl"
 
 #: ipconst:ssslservernohandshake
 msgid "Server cid not return a handshake message."
-msgstr ""
+msgstr "Server lieferte keine Handshake-Meldung."
 
 #: ipconst:ssslservernoserverhello
 msgid "Server cid not return a server hello message."
-msgstr ""
+msgstr "Server gab kein Server-Hello zurück."
 
 #: ipconst:ssslbadrecordmac
 msgid "Server received a bad record MAC."
@@ -2054,7 +2054,7 @@ msgstr "Socket-Typ nicht unterstützt"
 
 #: ipconst:ssockserr
 msgid "SOCKS request refused - %d"
-msgstr ""
+msgstr "SOCKS-Request abgelehnt - %d"
 
 #: ipconst:swsaeconnaborted
 msgid "Software caused connection abort"
@@ -2070,19 +2070,19 @@ msgstr "Verarbeitungsfehler der SSL-Daten."
 
 #: ipconst:ssssaml
 msgid "ssSaml"
-msgstr ""
+msgstr "ssSaml"
 
 #: ipconst:ssssend
 msgid "ssSend"
-msgstr ""
+msgstr "ssSend"
 
 #: ipconst:ssssoml
 msgid "ssSoml"
-msgstr ""
+msgstr "ssSoml"
 
 #: ipconst:sssturn
 msgid "ssTurn"
-msgstr ""
+msgstr "ssTurn"
 
 #: ipconst:swsaestale
 msgid "Stale NFS file handle"
@@ -2098,7 +2098,7 @@ msgstr "Starte Task:"
 
 #: ipconst:spop3cmdstat
 msgid "STAT"
-msgstr ""
+msgstr "STAT"
 
 #: ipconst:slogstate
 msgid "State change: "
@@ -2254,7 +2254,7 @@ msgstr "Zu viele User"
 
 #: ipconst:spop3cmdtop
 msgid "TOP"
-msgstr ""
+msgstr "TOP"
 
 #: ipconst:sicmptracecomplete
 msgid "Trace complete (%s), %d hops"
@@ -2290,7 +2290,7 @@ msgstr "Typ nicht gefunden"
 
 #: ipconst:spop3cmduidl
 msgid "UIDL"
-msgstr ""
+msgstr "UIDL"
 
 #: ipconst:swsaeproviderfailedinit
 msgid "Unable to initialize a service provider"
@@ -2390,7 +2390,7 @@ msgstr "Nicht unterstützte öffentliche Kodierung"
 
 #: ipconst:spop3cmduser
 msgid "USER"
-msgstr ""
+msgstr "USER"
 
 #: ipconst:swsano_data
 msgid "Valid name, no data record of requested type"
@@ -2434,7 +2434,7 @@ msgstr "Falsche Protokollversion"
 
 #: ipconst:snntpcmdxover
 msgid "XOVER"
-msgstr ""
+msgstr "XOVER"
 
 #: ipconst:smemmapfilenamerequired
 msgid "You must specify a file name for TIpMemMapStream"
@@ -2442,17 +2442,17 @@ msgstr "Für TIpMemMapStream muß ein Dateiname angegeben werden"
 
 #: ipconst:slogicmpclass
 msgid "[ICMP] "
-msgstr ""
+msgstr "[ICMP] "
 
 #: ipconst:slognntpclass
 msgid "[NNTP] "
-msgstr ""
+msgstr "[NNTP] "
 
 #: ipconst:slogpop3class
 msgid "[POP3] "
-msgstr ""
+msgstr "[POP3] "
 
 #: ipconst:slogsmtpclass
 msgid "[SMTP] "
-msgstr ""
+msgstr "[SMTP] "
 

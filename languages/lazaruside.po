@@ -2366,6 +2366,10 @@ msgstr ""
 msgid "Project"
 msgstr ""
 
+#: lazarusidestrconsts:liscodebrowser
+msgid "Code browser"
+msgstr ""
+
 #: lazarusidestrconsts:dlgintvinsec
 msgid "Interval in secs"
 msgstr ""
@@ -4096,6 +4100,98 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgscope
 msgid "Scope"
+msgstr ""
+
+#: lazarusidestrconsts:liswithrequiredpackages
+msgid "With required packages"
+msgstr ""
+
+#: lazarusidestrconsts:lislevels
+msgid "Levels"
+msgstr ""
+
+#: lazarusidestrconsts:lisshowpackages
+msgid "Show packages"
+msgstr ""
+
+#: lazarusidestrconsts:lisshowunits
+msgid "Show units"
+msgstr ""
+
+#: lazarusidestrconsts:lisshowidentifiers
+msgid "Show identifiers"
+msgstr ""
+
+#: lazarusidestrconsts:lisfilter
+msgid "Filter"
+msgstr ""
+
+#: lazarusidestrconsts:lisprivate
+msgid "Private"
+msgstr ""
+
+#: lazarusidestrconsts:lisprotected
+msgid "Protected"
+msgstr ""
+
+#: lazarusidestrconsts:lisexpandallpackages
+msgid "Expand all packages"
+msgstr ""
+
+#: lazarusidestrconsts:liscollapseallpackages
+msgid "Collapse all packages"
+msgstr ""
+
+#: lazarusidestrconsts:lisexpandallunits
+msgid "Expand all units"
+msgstr ""
+
+#: lazarusidestrconsts:liscollapseallunits
+msgid "Collapse all units"
+msgstr ""
+
+#: lazarusidestrconsts:lisexpandallclasses
+msgid "Expand all classes"
+msgstr ""
+
+#: lazarusidestrconsts:liscollapseallclasses
+msgid "Collapse all classes"
+msgstr ""
+
+#: lazarusidestrconsts:lisexport
+msgid "Export ..."
+msgstr ""
+
+#: lazarusidestrconsts:lisbegins
+msgid "begins"
+msgstr ""
+
+#: lazarusidestrconsts:lisidentifierbeginswith
+msgid "Identifier begins with ..."
+msgstr ""
+
+#: lazarusidestrconsts:lisunitnamebeginswith
+msgid "Unit name begins with ..."
+msgstr ""
+
+#: lazarusidestrconsts:lispackagenamebeginswith
+msgid "Package name begins with ..."
+msgstr ""
+
+#: lazarusidestrconsts:liscontains
+msgid "contains"
+msgstr ""
+
+#: lazarusidestrconsts:lisidentifiercontains
+msgid "Identifier contains ..."
+msgstr ""
+
+#: lazarusidestrconsts:lisunitnamecontains
+msgid "Unit name contains ..."
+msgstr ""
+
+#: lazarusidestrconsts:lispackagenamecontains
+msgid "Package name contains ..."
 msgstr ""
 
 #: lazarusidestrconsts:lisfriincurrentunit
@@ -10144,5 +10240,9 @@ msgstr ""
 
 #: lazarusidestrconsts:lischangeparent
 msgid "Change parent ..."
+msgstr ""
+
+#: lazarusidestrconsts:lislazaruside
+msgid "Lazarus IDE"
 msgstr ""
 

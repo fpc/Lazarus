@@ -1384,6 +1384,10 @@ msgstr "代码模板 ..."
 msgid "Code Tools"
 msgstr "代码工具"
 
+#: lazarusidestrconsts:liscodebrowser
+msgid "Code browser"
+msgstr ""
+
 #: lazarusidestrconsts:dlgusecodefolding
 msgid "Code folding"
 msgstr ""
@@ -1451,6 +1455,18 @@ msgstr "Codetools 定义编辑器"
 #: lazarusidestrconsts:srkmeccodetoolsoptions
 msgid "Codetools options"
 msgstr "代码工具选项"
+
+#: lazarusidestrconsts:liscollapseallclasses
+msgid "Collapse all classes"
+msgstr ""
+
+#: lazarusidestrconsts:liscollapseallpackages
+msgid "Collapse all packages"
+msgstr ""
+
+#: lazarusidestrconsts:liscollapseallunits
+msgid "Collapse all units"
+msgstr ""
 
 #: lazarusidestrconsts:lismenucollectpofil
 msgid "Collect .po files"
@@ -2776,9 +2792,25 @@ msgstr "退出"
 msgid "Exit without Save"
 msgstr "不保存退出"
 
+#: lazarusidestrconsts:lisexpandallclasses
+msgid "Expand all classes"
+msgstr ""
+
+#: lazarusidestrconsts:lisexpandallpackages
+msgid "Expand all packages"
+msgstr ""
+
+#: lazarusidestrconsts:lisexpandallunits
+msgid "Expand all units"
+msgstr ""
+
 #: lazarusidestrconsts:lisexpandedfilenameofcurrenteditor
 msgid "Expanded filename of current editor file"
 msgstr "展开当前编辑器中文件的名称"
+
+#: lazarusidestrconsts:lisexport
+msgid "Export ..."
+msgstr ""
 
 #: lazarusidestrconsts:lisiecoexportfileexistsopenfileandreplaceonlycompileropti
 msgid "Export file %s%s%s exists.%sOpen file and replace only compiler options?%s(Other settings will be kept.)"
@@ -2999,6 +3031,10 @@ msgstr "文件名: %s"
 #: lazarusidestrconsts:dlgenvfiles
 msgid "Files"
 msgstr "文件"
+
+#: lazarusidestrconsts:lisfilter
+msgid "Filter"
+msgstr ""
 
 #: lazarusidestrconsts:lisplistfilterany
 msgid "Filter by matching any part of method"
@@ -3624,9 +3660,17 @@ msgstr "插入"
 msgid "Identifier"
 msgstr "标识符"
 
+#: lazarusidestrconsts:lisidentifierbeginswith
+msgid "Identifier begins with ..."
+msgstr ""
+
 #: lazarusidestrconsts:dlgedidcomlet
 msgid "Identifier completion"
 msgstr "标识符自动完成"
+
+#: lazarusidestrconsts:lisidentifiercontains
+msgid "Identifier contains ..."
+msgstr ""
 
 #: lazarusidestrconsts:lismakeresstridentifierlength
 msgid "Identifier length:"
@@ -4496,6 +4540,10 @@ msgstr "Lazarus 编辑器 v%s"
 msgid "Lazarus File"
 msgstr "Lazarus 文件"
 
+#: lazarusidestrconsts:lislazaruside
+msgid "Lazarus IDE"
+msgstr ""
+
 #: lazarusidestrconsts:lislazarusprojectinfofile
 msgid "Lazarus Project Info file"
 msgstr "Lazarus 工程信息文件"
@@ -4599,6 +4647,10 @@ msgstr "Level 2 (Level 1 + 更慢的优化)"
 #: lazarusidestrconsts:dlglevel3opt
 msgid "Level 3 (Level 2 + Uncertain)"
 msgstr "Level 3 (Level 2 + 不确定的优化)"
+
+#: lazarusidestrconsts:lislevels
+msgid "Levels"
+msgstr ""
 
 #: lazarusidestrconsts:dlgcolibraries
 msgid "Libraries (-Fl):"
@@ -5668,6 +5720,14 @@ msgstr "需要包"
 msgid "Package name already exists"
 msgstr "包名已经存在"
 
+#: lazarusidestrconsts:lispackagenamebeginswith
+msgid "Package name begins with ..."
+msgstr ""
+
+#: lazarusidestrconsts:lispackagenamecontains
+msgid "Package name contains ..."
+msgstr ""
+
 #: lazarusidestrconsts:lispackageneedsinstallation
 msgid "Package needs installation"
 msgstr "保需要安装"
@@ -5880,6 +5940,10 @@ msgstr "打印 todo 项目"
 msgid "Prior"
 msgstr "优先"
 
+#: lazarusidestrconsts:lisprivate
+msgid "Private"
+msgstr ""
+
 #: lazarusidestrconsts:lisprivatemethod
 msgid "Private Method"
 msgstr "Private Method"
@@ -6051,6 +6115,10 @@ msgstr "属性自动完成"
 #: lazarusidestrconsts:dlgpropnamecolor
 msgid "Property name"
 msgstr "属性名称"
+
+#: lazarusidestrconsts:lisprotected
+msgid "Protected"
+msgstr ""
 
 #: lazarusidestrconsts:lisprotectedmethod
 msgid "Protected Method"
@@ -7272,6 +7340,10 @@ msgstr "显示指导线提示"
 msgid "Show hints in Object Inspector"
 msgstr "在对象观察器中显示提示"
 
+#: lazarusidestrconsts:lisshowidentifiers
+msgid "Show identifiers"
+msgstr ""
+
 #: lazarusidestrconsts:dlgshowlinenumbers
 msgid "Show line numbers"
 msgstr "显示行号"
@@ -7288,6 +7360,10 @@ msgstr "只显示错误"
 msgid "Show old tab order"
 msgstr "显示原来的 Tab 顺序"
 
+#: lazarusidestrconsts:lisshowpackages
+msgid "Show packages"
+msgstr ""
+
 #: lazarusidestrconsts:dlgshowscrollhint
 msgid "Show scroll hint"
 msgstr "显示滚动提示"
@@ -7299,6 +7375,10 @@ msgstr "显示概要"
 #: lazarusidestrconsts:dlgshowtriedfiles
 msgid "Show tried files"
 msgstr "显示可靠的文件"
+
+#: lazarusidestrconsts:lisshowunits
+msgid "Show units"
+msgstr ""
 
 #: lazarusidestrconsts:dlgshowusedfiles
 msgid "Show used files"
@@ -8968,6 +9048,14 @@ msgstr "单元标识符已经存在"
 msgid "Unit name already exists"
 msgstr "单元名已经存在"
 
+#: lazarusidestrconsts:lisunitnamebeginswith
+msgid "Unit name begins with ..."
+msgstr ""
+
+#: lazarusidestrconsts:lisunitnamecontains
+msgid "Unit name contains ..."
+msgstr ""
+
 #: lazarusidestrconsts:lisunitnotfound
 msgid "Unit not found"
 msgstr "单元没有发现"
@@ -9404,6 +9492,10 @@ msgstr "窗口"
 msgid "With Packages"
 msgstr "和包一起"
 
+#: lazarusidestrconsts:liswithrequiredpackages
+msgid "With required packages"
+msgstr ""
+
 #: lazarusidestrconsts:liswordatcursorincurrenteditor
 msgid "Word at cursor in current editor"
 msgstr "当前编辑器光标处的单词"
@@ -9496,6 +9588,10 @@ msgstr "自动动态安装"
 msgid "auto install static"
 msgstr "自动静态安装"
 
+#: lazarusidestrconsts:lisbegins
+msgid "begins"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecbuildall
 msgid "build all files of program/project"
 msgstr "构建程序或单元的所有文件"
@@ -9527,6 +9623,10 @@ msgstr "编译器路径"
 #: lazarusidestrconsts:srkmecconfigbuildfile
 msgid "config build file"
 msgstr "配置 构建配置 文件"
+
+#: lazarusidestrconsts:liscontains
+msgid "contains"
+msgstr ""
 
 #: lazarusidestrconsts:liscustomoptions
 msgid "custom options"
