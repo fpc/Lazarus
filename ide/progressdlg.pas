@@ -45,7 +45,7 @@ type
     procedure FormDestroy(Sender: TObject);
   private
   public
-    procedure ApplicationIdle(Sender: TObject);
+    procedure ApplicationIdle(Sender: TObject; var Done: Boolean);
   end; 
   
 var
@@ -65,7 +65,7 @@ type
     StartTime: TDateTime;
     StartTimeValid: boolean;
     constructor Create;
-    procedure ApplicationIdle(Sender: TObject);
+    procedure ApplicationIdle(Sender: TObject; var Done: Boolean);
   end;
 
 { TProgressWait }
@@ -75,7 +75,7 @@ begin
   Application.AddOnIdleHandler(@ApplicationIdle);
 end;
 
-procedure TProgressWait.ApplicationIdle(Sender: TObject);
+procedure TProgressWait.ApplicationIdle(Sender: TObject; var Done: Boolean);
 begin
   StartTimeValid:=false;
 end;
@@ -139,7 +139,8 @@ begin
   Application.RemoveOnIdleHandler(@ApplicationIdle);
 end;
 
-procedure TIDEProgressDialog.ApplicationIdle(Sender: TObject);
+procedure TIDEProgressDialog.ApplicationIdle(Sender: TObject;
+  var Done: Boolean);
 begin
   // IDE got idle => progress dialog is not used anymore
   if Screen.FormIndex(Self)>=0 then begin

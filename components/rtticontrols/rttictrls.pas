@@ -121,7 +121,7 @@ Type
     function CheckPropInfo(const APropInfo: PPropInfo): boolean; virtual;
     procedure CreateHook; virtual;
     procedure UpdateIdleHandler; virtual;
-    procedure OnApplicationIdle(Sender: TObject); virtual;
+    procedure OnApplicationIdle(Sender: TObject; var Done: Boolean); virtual;
     procedure Notification(AComponent: TComponent;
                            Operation: TOperation); virtual;
     procedure GetEditorValues(const NewValue: string); virtual;
@@ -1734,9 +1734,11 @@ begin
   end;
 end;
 
-procedure TCustomPropertyLink.OnApplicationIdle(Sender: TObject);
+procedure TCustomPropertyLink.OnApplicationIdle(Sender: TObject;
+  var Done: Boolean);
 begin
   if Sender=nil then ;
+  if Done then ;
   if (ploReadOnIdle in FOptions) then begin
     // only update if not editing
     // => check for editing

@@ -26,7 +26,7 @@ type
     TestGroupbox: TGROUPBOX;
     OutputListbox: TLISTBOX;
     OutputGroupBox: TGROUPBOX;
-    procedure ApplicationOnIdle(Sender: TObject);
+    procedure ApplicationOnIdle(Sender: TObject; var Done: Boolean);
     procedure CloseButtonCLICK(Sender: TObject);
   private
     FMacroList: TTransferMacroList;
@@ -59,7 +59,8 @@ implementation
 
 { TCheckCompilerOptsDlg }
 
-procedure TCheckCompilerOptsDlg.ApplicationOnIdle(Sender: TObject);
+procedure TCheckCompilerOptsDlg.ApplicationOnIdle(Sender: TObject;
+  var Done: Boolean);
 begin
   Application.RemoveOnIdleHandler(@ApplicationOnIdle);
   DoTest;

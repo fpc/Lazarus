@@ -324,7 +324,7 @@ type
     procedure SetAutoStartEvent(const AValue: TIdleTimerAutoEvent);
   protected
     procedure SetAutoEnabled(const AValue: boolean); virtual;
-    procedure DoOnIdle(Sender: TObject); virtual;
+    procedure DoOnIdle(Sender: TObject; var Done: Boolean); virtual;
     procedure DoOnIdleEnd(Sender: TObject); virtual;
     procedure DoOnUserInput(Sender: TObject; Msg: Cardinal); virtual;
     procedure Loaded; override;

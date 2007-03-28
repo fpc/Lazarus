@@ -49,7 +49,7 @@ type
   { TCodeContextFrm }
 
   TCodeContextFrm = class(THintWindow)
-    procedure ApplicationIdle(Sender: TObject);
+    procedure ApplicationIdle(Sender: TObject; var Done: Boolean);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -110,7 +110,7 @@ end;
 
 { TCodeContextFrm }
 
-procedure TCodeContextFrm.ApplicationIdle(Sender: TObject);
+procedure TCodeContextFrm.ApplicationIdle(Sender: TObject; var Done: Boolean);
 begin
   if not Visible then exit;
   UpdateHints;

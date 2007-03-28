@@ -534,9 +534,9 @@ procedure TCustomForm.WMSize(var Message: TLMSize);
 var
   OldState: TWindowState;
 begin
-  //{$IFDEF CHECK_POSITION}
+  {$IFDEF CHECK_POSITION}
   DebugLn('[TCustomForm.WMSize] ',DbgSName(Self),' Message.SizeType=',dbgs(Message.SizeType),' Message.Width=',dbgs(Message.Width),' Message.Height=',dbgs(Message.Height));
-  //{$ENDIF}
+  {$ENDIF}
   Assert(False, 'Trace:WMSIZE in TCustomForm');
   if not (csDesigning in ComponentState) then begin
     OldState:=FWindowState;
@@ -569,7 +569,7 @@ begin
     FRestoredTop := Top;
     FRestoredWidth := Width;
     FRestoredHeight := Height;
-    DebugLn('[TCustomForm.WMSize] saving restored bounds ',DbgSName(Self),' ',dbgs(FRestoredWidth),'x',dbgs(FRestoredHeight));
+    //DebugLn('[TCustomForm.WMSize] saving restored bounds ',DbgSName(Self),' ',dbgs(FRestoredWidth),'x',dbgs(FRestoredHeight));
   end;
 End;
 

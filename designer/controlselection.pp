@@ -372,7 +372,7 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    procedure OnIdle(Sender: TObject);
+    procedure OnIdle(Sender: TObject; var Done: Boolean);
 
     // items
     property Items[Index:integer]:TSelectedControl
@@ -830,7 +830,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TControlSelection.OnIdle(Sender: TObject);
+procedure TControlSelection.OnIdle(Sender: TObject; var Done: Boolean);
 begin
   CheckForLCLChanges(true);
 end;

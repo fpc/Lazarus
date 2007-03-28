@@ -875,6 +875,7 @@ resourcestring
   dlgAutoSave = 'Auto save';
   dlgEdFiles = 'Editor files';
   dlgEnvProject = 'Project';
+  lisCodeBrowser = 'Code browser';
   dlgIntvInSec = 'Interval in secs';
   dlgDesktopFiles = 'Desktop files';
   dlgSaveDFile = 'Save desktop settings to file';
@@ -1349,6 +1350,29 @@ resourcestring
   dlgFromCursor = 'From Cursor';
   dlgEntireScope = 'Entire Scope';
   dlgScope = 'Scope';
+  lisWithRequiredPackages = 'With required packages';
+  lisLevels = 'Levels';
+  lisShowPackages = 'Show packages';
+  lisShowUnits = 'Show units';
+  lisShowIdentifiers = 'Show identifiers';
+  lisFilter = 'Filter';
+  lisPrivate = 'Private';
+  lisProtected = 'Protected';
+  lisExpandAllPackages = 'Expand all packages';
+  lisCollapseAllPackages = 'Collapse all packages';
+  lisExpandAllUnits = 'Expand all units';
+  lisCollapseAllUnits = 'Collapse all units';
+  lisExpandAllClasses = 'Expand all classes';
+  lisCollapseAllClasses = 'Collapse all classes';
+  lisExport = 'Export ...';
+  lisBegins = 'begins';
+  lisIdentifierBeginsWith = 'Identifier begins with ...';
+  lisUnitNameBeginsWith = 'Unit name begins with ...';
+  lisPackageNameBeginsWith = 'Package name begins with ...';
+  lisContains = 'contains';
+  lisIdentifierContains = 'Identifier contains ...';
+  lisUnitNameContains = 'Unit name contains ...';
+  lisPackageNameContains = 'Package name contains ...';
   lisFRIinCurrentUnit = 'in current unit';
   lisFRIinMainProject = 'in main project';
   lisFRIinProjectPackageOwningCurrentUnit = 'in project/package owning '
@@ -3357,6 +3381,7 @@ resourcestring
   lisPListNone                  = '<None>';
   lisUIClearIncludedByReference = 'Clear include cache';
   lisChangeParent = 'Change parent ...';
+  lisLazarusIDE = 'Lazarus IDE';
 
 implementation
 end.

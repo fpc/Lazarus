@@ -307,7 +307,7 @@ type
     procedure ScopeComboBoxDropDown(Sender: TObject);
     procedure ScopeComboBoxEditingDone(Sender: TObject);
     procedure ScopeWithRequiredPackagesCheckBoxChange(Sender: TObject);
-    procedure OnIdle(Sender: TObject);
+    procedure OnIdle(Sender: TObject; var Done: Boolean);
     procedure ShowIdentifiersCheckBoxChange(Sender: TObject);
     procedure ShowPackagesCheckBoxChange(Sender: TObject);
     procedure ShowPrivateCheckBoxChange(Sender: TObject);
@@ -364,7 +364,7 @@ type
     procedure SetVisibleIdentifiers(const AValue: PtrInt);
     procedure SetVisiblePackages(const AValue: integer);
     procedure SetVisibleUnits(const AValue: integer);
-    procedure Work;
+    procedure Work(var Done: Boolean);
     procedure WorkGetScopeOptions;
     procedure WorkGatherPackages;
     procedure WorkFreeUnusedPackages;
@@ -479,38 +479,44 @@ procedure TCodeBrowserView.FormCreate(Sender: TObject);
 begin
   FOptions:=TCodeBrowserViewOptions.Create;
   
-  FIDEDescription:='Lazarus IDE';
-  FProjectDescription:='Project';
+  FIDEDescription:=lisLazarusIDE;
+  FProjectDescription:=dlgEnvProject;
 
   Name:=NonModalIDEWindowNames[nmiwCodeBrowser];
-  Caption := 'Code browser';
+  Caption := lisCodeBrowser;
   EnvironmentOptions.IDEWindowLayoutList.Apply(Self,Name);
   
-  ScopeGroupBox.Caption:='Scope';
-  ScopeWithRequiredPackagesCheckBox.Caption:='With required packages';
-  LevelsGroupBox.Caption:='Levels';
-  ShowPackagesCheckBox.Caption:='Show packages';
-  ShowUnitsCheckBox.Caption:='Show units';
-  ShowIdentifiersCheckBox.Caption:='Show identifiers';
+  ScopeGroupBox.Caption:=dlgScope;
+  ScopeWithRequiredPackagesCheckBox.Caption:=lisWithRequiredPackages;
+  LevelsGroupBox.Caption:=lisLevels;
+  ShowPackagesCheckBox.Caption:=lisShowPackages;
+  ShowUnitsCheckBox.Caption:=lisShowUnits;
+  ShowIdentifiersCheckBox.Caption:=lisShowIdentifiers;
 
-  OptionsGroupBox.Caption:='Filter';
-  ShowPrivateCheckBox.Caption:='Private';
-  ShowProtectedCheckBox.Caption:='Protected';
+  OptionsGroupBox.Caption:=lisFilter;
+  ShowPrivateCheckBox.Caption:=lisPrivate;
+  ShowProtectedCheckBox.Caption:=lisProtected;
   
-  ExpandAllPackagesMenuItem.Caption:='Expand all packages';
-  CollapseAllPackagesMenuItem.Caption:='Collapse all packages';
-  ExpandAllUnitsMenuItem.Caption:='Expand all units';
-  CollapseAllUnitsMenuItem.Caption:='Collapse all units';
-  ExpandAllClassesMenuItem.Caption:='Expand all classes';
-  CollapseAllClassesMenuItem.Caption:='Collapse all classes';
-  ExportMenuItem.Caption:='Export ...';
+  ExpandAllPackagesMenuItem.Caption:=lisExpandAllPackages;
+  CollapseAllPackagesMenuItem.Caption:=lisCollapseAllPackages;
+  ExpandAllUnitsMenuItem.Caption:=lisExpandAllUnits;
+  CollapseAllUnitsMenuItem.Caption:=lisCollapseAllUnits;
+  ExpandAllClassesMenuItem.Caption:=lisExpandAllClasses;
+  CollapseAllClassesMenuItem.Caption:=lisCollapseAllClasses;
+  ExportMenuItem.Caption:=lisExport;
   
-  PackageFilterBeginsSpeedButton.Hint:='Package name begins with ...';
-  PackageFilterContainsSpeedButton.Hint:='Package name contains ...';
-  UnitFilterBeginsSpeedButton.Hint:='Unit name begins with ...';
-  UnitFilterContainsSpeedButton.Hint:='Unit name contains ...';
-  IdentifierFilterBeginsSpeedButton.Hint:='Identifier begins with ...';
-  IdentifierFilterContainsSpeedButton.Hint:='Identifier contains ...';
+  PackageFilterBeginsSpeedButton.Caption:=lisBegins;
+  PackageFilterBeginsSpeedButton.Hint:=lisPackageNameBeginsWith;
+  PackageFilterContainsSpeedButton.Caption:=lisContains;
+  PackageFilterContainsSpeedButton.Hint:=lisPackageNameContains;
+  UnitFilterBeginsSpeedButton.Caption:=lisBegins;
+  UnitFilterBeginsSpeedButton.Hint:=lisUnitNameBeginsWith;
+  UnitFilterContainsSpeedButton.Caption:=lisContains;
+  UnitFilterContainsSpeedButton.Hint:=lisUnitNameContains;
+  IdentifierFilterBeginsSpeedButton.Caption:=lisBegins;
+  IdentifierFilterBeginsSpeedButton.Hint:=lisIdentifierBeginsWith;
+  IdentifierFilterContainsSpeedButton.Caption:=lisContains;
+  IdentifierFilterContainsSpeedButton.Hint:=lisIdentifierContains;
 
   InitImageList;
   LoadOptions;
@@ -590,14 +596,14 @@ begin
   InvalidateStage(cbwsGetScopeOptions);
 end;
 
-procedure TCodeBrowserView.OnIdle(Sender: TObject);
+procedure TCodeBrowserView.OnIdle(Sender: TObject; var Done: Boolean);
 var
   AControl: TWinControl;
 begin
   AControl:=FindOwnerControl(GetFocus);
   if (AControl=nil) or (GetFirstParentForm(AControl)<>Self) then exit;
   // this form is focused -> let's work
-  Work;
+  Work(Done);
 end;
 
 procedure TCodeBrowserView.ShowIdentifiersCheckBoxChange(Sender: TObject);
@@ -775,7 +781,7 @@ begin
   FVisibleUnits:=AValue;
 end;
 
-procedure TCodeBrowserView.Work;
+procedure TCodeBrowserView.Work(var Done: Boolean);
 // do some work
 // This is called during OnIdle, so progress in small steps
 var
@@ -794,9 +800,11 @@ begin
   cbwsUpdateTreeView:      WorkUpdateTreeView;
   else
     UpdateNeeded:=false;
+    Done:=true;
     exit;
   end;
   if ord(OldStage)<ord(cbwsFinished) then begin
+    Done:=false;
     UpdateStatusBar(fStage<cbwsFinished);
   end;
 end;
@@ -1268,7 +1276,7 @@ begin
   if fOutdatedFiles<>nil then
     fOutdatedFiles.Clear;
   AddFiles(ParserRoot);
-
+  
   // this stage finished -> next stage
   fStage:=cbwsUpdateUnits;
 end;
@@ -1779,7 +1787,7 @@ var
       Node:=SrcList.UnitLists.FindLowest;
       while Node<>nil do begin
         SubList:=TCodeBrowserUnitList(Node.Data);
-        AddUnitLists(SubList,NewList);
+        AddUnitLists(SubList,DestParentList);// DestParentList because: as sibling not child!
         Node:=SrcList.UnitLists.FindSuccessor(Node);
       end;
     end;
@@ -1801,8 +1809,10 @@ var
     CurUnitName: String;
     CurTool: TCodeTool;
     CurNode: TCodeBrowserNode;
+    ExpandParent: Boolean;
   begin
     if CodeNode=nil then exit;
+    ExpandParent:=true;
     //DebugLn(['AddTreeNodes ',DbgSName(CodeNode)]);
     if CodeNode is TCodeBrowserUnitList then begin
       // unit list
@@ -1880,10 +1890,13 @@ var
             Node:=CurNode.ChildNodes.FindSuccessor(Node);
           end;
         end;
+
+        // do not expand unit nodes
+        if (TObject(ParentViewNode.Data) is TCodeBrowserUnit) then
+          ExpandParent:=false;
       end;
     end;
-    
-    ParentViewNode.Expanded:=true;
+    ParentViewNode.Expanded:=ExpandParent;
   end;
 
 var

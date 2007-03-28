@@ -966,7 +966,7 @@ type
     procedure Deactivate;
   protected
     function GetConsoleApplication: boolean; override;
-    procedure NotifyIdleHandler;
+    procedure NotifyIdleHandler(var Done: Boolean);
     procedure NotifyIdleEndHandler;
     procedure NotifyActivateHandler;
     procedure NotifyDeactivateHandler;
@@ -1027,8 +1027,8 @@ type
                                    var Key: Word; Shift: TShiftState);
     procedure ControlKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure ControlKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
-    procedure AddOnIdleHandler(Handler: TNotifyEvent; AsLast: Boolean=true);
-    procedure RemoveOnIdleHandler(Handler: TNotifyEvent);
+    procedure AddOnIdleHandler(Handler: TIdleEvent; AsLast: Boolean=true);
+    procedure RemoveOnIdleHandler(Handler: TIdleEvent);
     procedure AddOnIdleEndHandler(Handler: TNotifyEvent; AsLast: Boolean=true);
     procedure RemoveOnIdleEndHandler(Handler: TNotifyEvent);
     procedure AddOnUserInputHandler(Handler: TOnUserInputEvent;

@@ -28,7 +28,7 @@ begin
   UpdateHandlers;
 end;
 
-procedure TIdleTimer.DoOnIdle(Sender: TObject);
+procedure TIdleTimer.DoOnIdle(Sender: TObject; var Done: Boolean);
 begin
   if not AutoEnabled then exit;
   // automatic start, stop or restart

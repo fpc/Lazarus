@@ -138,7 +138,7 @@ type
     procedure IDEComponentPaletteOpenUnit(Sender: TObject);
 
     // LCL
-    procedure OnApplicationIdle(Sender: TObject);
+    procedure OnApplicationIdle(Sender: TObject; var Done: Boolean);
 
     // package links
     function PkgLinksDependencyOwnerGetPkgFilename(PkgLinks: TPackageLinks;
@@ -969,7 +969,7 @@ begin
   end;
 end;
 
-procedure TPkgManager.OnApplicationIdle(Sender: TObject);
+procedure TPkgManager.OnApplicationIdle(Sender: TObject; var Done: Boolean);
 begin
   if (Screen.ActiveCustomForm<>nil)
   and (fsModal in Screen.ActiveCustomForm.FormState) then exit;

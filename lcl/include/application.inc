@@ -286,7 +286,8 @@ begin
   Done := True;
   if (FIdleLockCount=0) then begin
     if Assigned(FOnIdle) then FOnIdle(Self, Done);
-    NotifyIdleHandler;
+    if Done then
+      NotifyIdleHandler(Done);
   end;
   if Done
   then begin
@@ -523,11 +524,20 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  procedure TApplication.NotifyIdleHandler;
+  procedure TApplication.NotifyIdleHandler(var Done: Boolean);
+  
+  Done = true will wait for the next message
+  Done = false will repeat calling the OnIdle handlers
  ------------------------------------------------------------------------------}
-procedure TApplication.NotifyIdleHandler;
+procedure TApplication.NotifyIdleHandler(var Done: Boolean);
+var
+  i: LongInt;
 begin
-  FApplicationHandlers[ahtIdle].CallNotifyEvents(Self);
+  i:=FApplicationHandlers[ahtIdle].Count;
+  while FApplicationHandlers[ahtIdle].NextDownIndex(i) do begin
+    TIdleEvent(FApplicationHandlers[ahtIdle][i])(Self,Done);
+    if not Done then exit;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -1310,13 +1320,13 @@ begin
   FLastKeyDownKey := VK_UNKNOWN;
 end;
 
-procedure TApplication.AddOnIdleHandler(Handler: TNotifyEvent;
+procedure TApplication.AddOnIdleHandler(Handler: TIdleEvent;
   AsLast: Boolean);
 begin
   AddHandler(ahtIdle,TMethod(Handler),AsLast);
 end;
 
-procedure TApplication.RemoveOnIdleHandler(Handler: TNotifyEvent);
+procedure TApplication.RemoveOnIdleHandler(Handler: TIdleEvent);
 begin
   RemoveHandler(ahtIdle,TMethod(Handler));
 end;

@@ -140,7 +140,7 @@ type
     procedure MainIDEFormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure MainIDEFormCloseQuery(Sender: TObject; var CanClose: boolean);
     procedure OnApplicationUserInput(Sender: TObject; Msg: Cardinal);
-    procedure OnApplicationIdle(Sender: TObject);
+    procedure OnApplicationIdle(Sender: TObject; var Done: Boolean);
     procedure OnApplicationActivate(Sender: TObject);
     procedure OnApplicationKeyDown(Sender: TObject;
                                    var Key: Word; Shift: TShiftState);
@@ -8445,6 +8445,9 @@ begin
     Result:=mrCancel;
     exit;
   end;
+  
+  Result:=DoSaveAll([sfCheckAmbiguousFiles]);
+  if Result<>mrOk then exit;
 
   MessagesView.BeginBlock;
   try
@@ -12219,7 +12222,7 @@ begin
   end;
 end;
 
-procedure TMainIDE.OnApplicationIdle(Sender: TObject);
+procedure TMainIDE.OnApplicationIdle(Sender: TObject; var Done: Boolean);
 var
   SrcEdit: TSourceEditor;
   AnUnitInfo: TUnitInfo;

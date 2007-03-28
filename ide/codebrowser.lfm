@@ -32,9 +32,9 @@ object CodeBrowserView: TCodeBrowserView
     end
     object ScopeWithRequiredPackagesCheckBox: TCheckBox
       Left = 328
-      Height = 20
+      Height = 22
       Top = 3
-      Width = 249
+      Width = 275
       Caption = 'ScopeWithRequiredPackagesCheckBox'
       OnChange = ScopeWithRequiredPackagesCheckBoxChange
       TabOrder = 1
@@ -60,9 +60,9 @@ object CodeBrowserView: TCodeBrowserView
     TabOrder = 1
     object ShowPrivateCheckBox: TCheckBox
       Left = 12
-      Height = 20
+      Height = 22
       Top = 8
-      Width = 154
+      Width = 167
       Caption = 'ShowPrivateCheckBox'
       OnChange = ShowPrivateCheckBoxChange
       TabOrder = 0
@@ -70,9 +70,9 @@ object CodeBrowserView: TCodeBrowserView
     end
     object ShowProtectedCheckBox: TCheckBox
       Left = 272
-      Height = 20
+      Height = 22
       Top = 8
-      Width = 168
+      Width = 184
       Caption = 'ShowProtectedCheckBox'
       OnChange = ShowProtectedCheckBoxChange
       TabOrder = 1
@@ -82,7 +82,7 @@ object CodeBrowserView: TCodeBrowserView
   object BrowseTreeView: TTreeView
     AnchorSideTop.Control = OptionsGroupBox
     AnchorSideTop.Side = asrBottom
-    Height = 298
+    Height = 296
     Top = 246
     Width = 634
     Align = alBottom
@@ -100,8 +100,8 @@ object CodeBrowserView: TCodeBrowserView
     Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoShowButtons, tvoShowLines, tvoToolTips]
   end
   object StatusBar1: TStatusBar
-    Height = 20
-    Top = 544
+    Height = 22
+    Top = 542
     Width = 634
     Panels = <>
   end
@@ -125,8 +125,8 @@ object CodeBrowserView: TCodeBrowserView
       AnchorSideTop.Control = PackageFilterEdit
       Left = 424
       Height = 22
-      Top = 3
-      Width = 23
+      Top = 4
+      Width = 86
       Color = clBtnFace
       GroupIndex = 1
       NumGlyphs = 0
@@ -138,10 +138,10 @@ object CodeBrowserView: TCodeBrowserView
       AnchorSideLeft.Control = PackageFilterBeginsSpeedButton
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = PackageFilterEdit
-      Left = 447
+      Left = 510
       Height = 22
-      Top = 3
-      Width = 23
+      Top = 4
+      Width = 86
       Color = clBtnFace
       GroupIndex = 1
       NumGlyphs = 0
@@ -156,8 +156,8 @@ object CodeBrowserView: TCodeBrowserView
       AnchorSideTop.Side = asrCenter
       Left = 424
       Height = 22
-      Top = 31
-      Width = 23
+      Top = 32
+      Width = 86
       Color = clBtnFace
       GroupIndex = 2
       NumGlyphs = 0
@@ -170,10 +170,10 @@ object CodeBrowserView: TCodeBrowserView
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = UnitFilterEdit
       AnchorSideTop.Side = asrCenter
-      Left = 447
+      Left = 510
       Height = 22
-      Top = 31
-      Width = 23
+      Top = 32
+      Width = 86
       Color = clBtnFace
       GroupIndex = 2
       NumGlyphs = 0
@@ -188,8 +188,8 @@ object CodeBrowserView: TCodeBrowserView
       AnchorSideTop.Side = asrCenter
       Left = 424
       Height = 22
-      Top = 58
-      Width = 23
+      Top = 59
+      Width = 86
       Color = clBtnFace
       GroupIndex = 3
       NumGlyphs = 0
@@ -202,10 +202,10 @@ object CodeBrowserView: TCodeBrowserView
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = IdentifierFilterEdit
       AnchorSideTop.Side = asrCenter
-      Left = 447
+      Left = 510
       Height = 22
-      Top = 58
-      Width = 23
+      Top = 59
+      Width = 86
       Color = clBtnFace
       GroupIndex = 3
       NumGlyphs = 0
@@ -215,9 +215,9 @@ object CodeBrowserView: TCodeBrowserView
     end
     object ShowPackagesCheckBox: TCheckBox
       Left = 6
-      Height = 20
+      Height = 22
       Top = 4
-      Width = 170
+      Width = 185
       Caption = 'ShowPackagesCheckBox'
       OnChange = ShowPackagesCheckBoxChange
       TabOrder = 0
@@ -225,9 +225,9 @@ object CodeBrowserView: TCodeBrowserView
     end
     object ShowUnitsCheckBox: TCheckBox
       Left = 6
-      Height = 20
+      Height = 22
       Top = 32
-      Width = 142
+      Width = 155
       Caption = 'ShowUnitsCheckBox'
       OnChange = ShowUnitsCheckBoxChange
       TabOrder = 1
@@ -235,9 +235,9 @@ object CodeBrowserView: TCodeBrowserView
     end
     object ShowIdentifiersCheckBox: TCheckBox
       Left = 6
-      Height = 20
+      Height = 22
       Top = 59
-      Width = 168
+      Width = 185
       Caption = 'ShowIdentifiersCheckBox'
       OnChange = ShowIdentifiersCheckBoxChange
       TabOrder = 2
@@ -248,7 +248,7 @@ object CodeBrowserView: TCodeBrowserView
       AnchorSideTop.Side = asrCenter
       Left = 223
       Height = 23
-      Top = 3
+      Top = 4
       Width = 201
       OnEditingDone = PackageFilterEditEditingDone
       TabOrder = 3
@@ -259,7 +259,7 @@ object CodeBrowserView: TCodeBrowserView
       AnchorSideTop.Side = asrCenter
       Left = 223
       Height = 23
-      Top = 31
+      Top = 32
       Width = 201
       OnEditingDone = PackageFilterEditEditingDone
       TabOrder = 4
@@ -270,7 +270,7 @@ object CodeBrowserView: TCodeBrowserView
       AnchorSideTop.Side = asrCenter
       Left = 223
       Height = 23
-      Top = 58
+      Top = 59
       Width = 201
       OnEditingDone = PackageFilterEditEditingDone
       TabOrder = 5

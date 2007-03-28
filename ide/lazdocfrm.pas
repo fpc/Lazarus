@@ -127,7 +127,7 @@ type
     procedure FormatButtonClick(Sender: TObject);
     procedure LinkChange(Sender: TObject);
     procedure LinkListBoxClick(Sender: TObject);
-    procedure ApplicationIdle(Sender: TObject);
+    procedure ApplicationIdle(Sender: TObject; var Done: Boolean);
     procedure MoveToInheritedButtonClick(Sender: TObject);
   private
     FCaretXY: TPoint;
@@ -390,7 +390,7 @@ begin
     LinkTextEdit.Text := Copy(strTmp, 1, Length(strTmp) - Length('</link>'));
 end;
 
-procedure TLazDocForm.ApplicationIdle(Sender: TObject);
+procedure TLazDocForm.ApplicationIdle(Sender: TObject; var Done: Boolean);
 begin
   if ldffInheritedNeedsUpdate in FFlags then
     UpdateInherited
