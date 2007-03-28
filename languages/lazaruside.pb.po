@@ -11,7 +11,7 @@ msgstr "    comando2 \""
 
 #: lazarusidestrconsts:liscodetemplatokenalreadyexists
 msgid " A token %s%s%s already exists! "
-msgstr " Uma indicação %s%s%s já existe!"
+msgstr " Uma ocorrencia de %s%s%s já existe!"
 
 #: lazarusidestrconsts:srkmalreadyconnected
 msgid " The key \"%s\" is already connected to \"%s\"."
@@ -131,7 +131,7 @@ msgstr "%sEstado: "
 
 #: lazarusidestrconsts:lispkgmangthefollowingunitswillbeaddedtotheusessectionof
 msgid "%sThe following units will be added to the uses section of%s%s:%s%s%s"
-msgstr "%sAs seguintes unidades serão adicionadas a seção Uses de%s%s:%s%s%s"
+msgstr "%sAs seguintes unidades serão adicionadas a seção uses de%s%s:%s%s%s"
 
 #: lazarusidestrconsts:lisoipthispackageisinstalledbutthelpkfilewasnotfound
 msgid "%sThis package is installed, but the lpk file was not found"
@@ -203,7 +203,7 @@ msgstr ""
 
 #: lazarusidestrconsts:uemopenfileatcursor
 msgid "&Open file at cursor"
-msgstr "&Abrir Arquivo do Cursor"
+msgstr "&Abrir Arquivo no Cursor"
 
 #: lazarusidestrconsts:lismenuproject
 msgid "&Project"
@@ -459,7 +459,7 @@ msgstr "Adicionar opções para pacotes e projetos dependentes"
 
 #: lazarusidestrconsts:lislazdocaddpathbutton
 msgid "Add path"
-msgstr "Adicionar Caminho"
+msgstr "+ Caminho"
 
 #: lazarusidestrconsts:lispckoptsaddpathstodependentpackagesprojects
 msgid "Add paths to dependent packages/projects"
@@ -479,7 +479,7 @@ msgstr "Adicionar ao pacote"
 
 #: lazarusidestrconsts:lisprojaddtoproject
 msgid "Add to project"
-msgstr "Adicionar ao projeto"
+msgstr "Adicionar ao Projeto"
 
 #: lazarusidestrconsts:lispkgmangaddunittousesclauseofpackagedisablethisonlyforunit
 msgid "Add unit to uses clause of package. Disable this only for units, that should not be compiled in all cases."
@@ -671,7 +671,7 @@ msgstr "Configurações da Aplicação"
 
 #: lazarusidestrconsts:lisapplicationagraphicallclfreepascalprogramtheprogra
 msgid "Application%sA graphical lcl/freepascal program. The program file is automatically maintained by lazarus."
-msgstr "Aplicação%sUm programa LCL/Free Pascal gráfico. O arquivo do programa é automaticamente mantido pelo lazarus."
+msgstr "Aplicação%sUm programa LCL/Free Pascal gráfico. O arquivo do programa é automaticamente mantido pelo Lazarus."
 
 #: lazarusidestrconsts:dlgbutapply
 msgid "Apply"
@@ -799,7 +799,7 @@ msgstr "Backup"
 
 #: lazarusidestrconsts:lisbackupfilefailed
 msgid "Backup file failed"
-msgstr "Falhou o arquivo de Backup"
+msgstr "Falha no arquivo de Backup"
 
 #: lazarusidestrconsts:lisfrbackwardsearch
 msgid "Backward search"
@@ -947,19 +947,19 @@ msgstr "Construir LCL"
 
 #: lazarusidestrconsts:lismenubuildlazarus
 msgid "Build Lazarus"
-msgstr "Construir Lazarus"
+msgstr "Reconstruir o Lazarus"
 
 #: lazarusidestrconsts:lisbuildnumber
 msgid "Build Number"
-msgstr "Numero da Construcao"
+msgstr "Numero da Construção"
 
 #: lazarusidestrconsts:lisbuildpkgreg
 msgid "Build Package Registration"
-msgstr "Registro de Construcao do Pacote""
+msgstr "Registro de Construção do Pacote""
 
 #: lazarusidestrconsts:lisbuildstarter
 msgid "Build Starter"
-msgstr "Iniciador de Construcao"
+msgstr "Iniciador de Construção"
 
 #: lazarusidestrconsts:lisbuildsynedit
 msgid "Build SynEdit"
@@ -1051,11 +1051,11 @@ msgstr "Não foi possível encontrar a lista de colaboradores."
 
 #: lazarusidestrconsts:liscannotfindlazarusstarter
 msgid "Cannot find lazarus starter:%s%s"
-msgstr "Não foi possível encontrar 'lazarus starter':%s%s"
+msgstr "Não foi possível encontrar o inicializador do Lazarus:%s%s"
 
 #: lazarusidestrconsts:srvk_capital
 msgid "Capital"
-msgstr ""
+msgstr "Primeira Maiuscula"
 
 #: lazarusidestrconsts:dlgcaretskipsselection
 msgid "Caret skips selection"
@@ -1155,7 +1155,7 @@ msgstr "Chines"
 
 #: lazarusidestrconsts:lispochoosepofiledirectory
 msgid "Choose .po file directory"
-msgstr "Escolher diret�rio de arquivo PO"
+msgstr "Escolher diretório de arquivo PO"
 
 #: lazarusidestrconsts:lischoosedelphipackage
 msgid "Choose Delphi package (*.dpk)"
@@ -1171,11 +1171,11 @@ msgstr "Escolher Unidade Delphi (*.pas)"
 
 #: lazarusidestrconsts:lisctdefchoosedirectory
 msgid "Choose Directory"
-msgstr "Escolha o Diretorio"
+msgstr "Escolha o Diretório"
 
 #: lazarusidestrconsts:lischoosefpcsourcedir
 msgid "Choose FPC source directory"
-msgstr "Escolher diretorio fonte FPC"
+msgstr "Escolher diretório-fonte FPC"
 
 #: lazarusidestrconsts:liskmchoosekeymappingscheme
 msgid "Choose Keymapping scheme"
@@ -1183,7 +1183,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lischooselazarussourcedirectory
 msgid "Choose Lazarus Directory"
-msgstr "Escolher Diretorio Lazarus"
+msgstr "Escolher DiretórioLazarus"
 
 #: lazarusidestrconsts:lisedoptschoosescheme
 msgid "Choose Scheme"
@@ -1279,7 +1279,7 @@ msgstr ""
 
 #: lazarusidestrconsts:liscldircleandirectory
 msgid "Clean Directory"
-msgstr "Limpar Diretorio"
+msgstr "Limpar Diretório"
 
 #: lazarusidestrconsts:liscleanlazarussource
 msgid "Clean Lazarus Source"
@@ -1339,7 +1339,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenucloseall
 msgid "Close all editor files"
-msgstr "Fechar Todos os Arquivos"
+msgstr "Fechar Tudo"
 
 #: lazarusidestrconsts:lissrclosepage
 msgid "Close page"
@@ -1515,7 +1515,7 @@ msgstr "Comando:"
 
 #: lazarusidestrconsts:lismenucommentselection
 msgid "Comment selection"
-msgstr "Código Selecionado como Comentário"
+msgstr "Comentarizar Seleção"
 
 #: lazarusidestrconsts:liscodetemplcomment
 msgid "Comment:"
@@ -1623,7 +1623,7 @@ msgstr "Arquivos de configuração:"
 
 #: lazarusidestrconsts:lisconfigurebuildlazarus
 msgid "Configure %sBuild Lazarus%s"
-msgstr "Configurar %sConstrucao do Lazarus%s"
+msgstr "Configurar %sConstrução do Lazarus%s"
 
 #: lazarusidestrconsts:lisconfigurebuild
 msgid "Configure Build %s"
@@ -1847,7 +1847,7 @@ msgstr "Criar arquivos .po"
 
 #: lazarusidestrconsts:liscodetoolsdefscreatedefinesfordirectory
 msgid "Create Defines for %s Directory"
-msgstr "Criar Definições para Diretorio %s"
+msgstr "Criar Definições para Diretório %s"
 
 #: lazarusidestrconsts:liscodetoolsdefscreatedefinesforproject
 msgid "Create Defines for %s Project"
@@ -1863,11 +1863,11 @@ msgstr "Criar Definições para os fontes SVN do Free Pascal"
 
 #: lazarusidestrconsts:liscodetoolsdefscreatedefinesforlazarusdir
 msgid "Create Defines for Lazarus Directory"
-msgstr "Criar Definições para diretorio Lazarus"
+msgstr "Criar Definições para diretório Lazarus"
 
 #: lazarusidestrconsts:liscodetoolsdefscreatefpcmacrosandpathsforafpcprojectdirectory
 msgid "Create FPC Macros and paths for a fpc project directory"
-msgstr "Criar Macros FPC e caminhos para um diretorio de projeto do FPC"
+msgstr "Criar Macros FPC e caminhos para um diretório de projeto do FPC"
 
 #: lazarusidestrconsts:lismenucreatelazdocfiles
 msgid "Create LazDoc files"
@@ -2047,15 +2047,15 @@ msgstr "E&liminar tudo"
 
 #: lazarusidestrconsts:uemdebugword
 msgid "Debug"
-msgstr "Depuracao"
+msgstr "Depuração"
 
 #: lazarusidestrconsts:lismenuviewdebugoutput
 msgid "Debug output"
-msgstr "Saída de Depuracao"
+msgstr "Saída de Depuração"
 
 #: lazarusidestrconsts:lismenudebugwindows
 msgid "Debug windows"
-msgstr "Janela de Depuracao"
+msgstr "Janela de Depuração"
 
 #: lazarusidestrconsts:lismendebuggeroptions
 msgid "Debugger Options ..."
@@ -2167,11 +2167,11 @@ msgstr "Eliminar dependência para %s?"
 
 #: lazarusidestrconsts:lispkgmangdeletefailed
 msgid "Delete failed"
-msgstr "Falhou a Exclusão"
+msgstr "Falha na Exclusão"
 
 #: lazarusidestrconsts:lisdeletefilefailed
 msgid "Delete file failed"
-msgstr "Falhou a exclusão de arquivo"
+msgstr "Falha na exclusão do arquivo"
 
 #: lazarusidestrconsts:liskmdeletelastchar
 msgid "Delete last char"
@@ -2339,7 +2339,7 @@ msgstr "Opções de Diretório"
 
 #: lazarusidestrconsts:lisdiscardchanges
 msgid "Discard changes"
-msgstr "Ignorar Mudancas"
+msgstr "Ignorar Mudanças"
 
 #: lazarusidestrconsts:dlgeddisplay
 msgid "Display"
@@ -2347,7 +2347,7 @@ msgstr "Mostrar"
 
 #: lazarusidestrconsts:dlgrunodisplay
 msgid "Display (not for win32, e.g. 198.112.45.11:0, x.org:1, hydra:0.1)"
-msgstr "Exibição (nao para win32, ex: 198.112.45.11:0, x.org:1, hydra:0.1)"
+msgstr "Exibição (não para win32, ex: 198.112.45.11:0, x.org:1, hydra:0.1)"
 
 #: lazarusidestrconsts:dlglnumsbct
 msgid "Display Line Numbers in Run-time Error Backtraces"
@@ -2383,7 +2383,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgnotsplitlinefront
 msgid "Do not split line In front of:"
-msgstr "Nao dividir linha na frente de:"
+msgstr "Não dividir linha na frente de:"
 
 #: lazarusidestrconsts:dlgnotsplitlineafter
 msgid "Do not split line after:"
@@ -2863,23 +2863,23 @@ msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefsfpcsvnsourcedirectory
 msgid "FPC SVN source directory"
-msgstr "Diretorio SVN do fonte FPC"
+msgstr "Diretório SVN do fonte FPC"
 
 #: lazarusidestrconsts:lisfpcsourcedirectoryerror
 msgid "FPC Source Directory error"
-msgstr "Erro no Diretorio de Fonte FPC"
+msgstr "Erro no Diretório de Fonte FPC"
 
 #: lazarusidestrconsts:dlgfpcsrcpath
 msgid "FPC source directory"
-msgstr "Diretorio Fonte FPC"
+msgstr "Diretório Fonte FPC"
 
 #: lazarusidestrconsts:lisenvoptdlgfpcsrcdirnotfoundmsg
 msgid "FPC source directory \"%s\" not found."
-msgstr "Diretorio fonte do FPC \"%s\" nao encontrado."
+msgstr "Diretório-fonte do FPC \"%s\" não encontrado."
 
 #: lazarusidestrconsts:lisexttoolfailedtoruntool
 msgid "Failed to run tool"
-msgstr "Falhou a executação da ferramenta"
+msgstr "Falha na execução da ferramenta"
 
 #: lazarusidestrconsts:dlgcofast
 msgid "Faster Code"
@@ -2915,7 +2915,7 @@ msgstr "Arquivo %s%s%s não encontrado.%sDeseja cria-lo?%s"
 
 #: lazarusidestrconsts:lisfiledoesnotlooklikeatextfileopenitanyway
 msgid "File %s%s%s%sdoes not look like a text file.%sOpen it anyway?"
-msgstr "Arquivo %s%s%s%snao é visto como um arquivo de texto.%sAbri-lo mesmo assim?"
+msgstr "Arquivo %s%s%s%snão parecee um arquivo texto.%sAbri-lo mesmo assim?"
 
 #: lazarusidestrconsts:lispckeditfileproperties
 msgid "File Properties"
@@ -3107,7 +3107,7 @@ msgstr "Localizar em Arquivos"
 
 #: lazarusidestrconsts:liskmfindincremental
 msgid "Find incremental"
-msgstr "Localizacao incremental"
+msgstr "Localização incremental"
 
 #: lazarusidestrconsts:srkmecfindnext
 msgid "Find next"
@@ -4075,7 +4075,7 @@ msgstr "Instalar Seleção"
 
 #: lazarusidestrconsts:lisinstallationfailed
 msgid "Installation failed"
-msgstr "Falhou a instalação"
+msgstr "Falha na instalação"
 
 #: lazarusidestrconsts:lispckexplinstalled
 msgid "Installed"
@@ -4119,23 +4119,23 @@ msgstr "Nome da Classe inválido"
 
 #: lazarusidestrconsts:lisinvalidcompilerfilename
 msgid "Invalid Compiler Filename"
-msgstr "Nome de Arquivo do Compilador Invalido"
+msgstr "Nome de Arquivo do Compilador Inválido"
 
 #: lazarusidestrconsts:lispublprojinvalidexcludefilter
 msgid "Invalid Exclude filter"
-msgstr "Filttro de Exclusão invalido"
+msgstr "Filttro de Exclusão inválido"
 
 #: lazarusidestrconsts:lisinvalidfreepascalsourcedirectory
 msgid "Invalid Free Pascal source directory"
-msgstr "Diretorio Fonte do Free Pascal invalido"
+msgstr "Diretório-Fonte do Free Pascal inválido"
 
 #: lazarusidestrconsts:lisfriinvalididentifier
 msgid "Invalid Identifier"
-msgstr "Identificador Invalido"
+msgstr "Identificador Inválido"
 
 #: lazarusidestrconsts:lispublprojinvalidincludefilter
 msgid "Invalid Include filter"
-msgstr "Filtro de Incluisão invalido"
+msgstr "Filtro de Inclusão inválido"
 
 #: lazarusidestrconsts:lisprojaddinvalidminmaxversion
 msgid "Invalid Min-Max version"
@@ -4143,15 +4143,15 @@ msgstr "Versão Min-Max invalida"
 
 #: lazarusidestrconsts:lisaf2pinvalidpackage
 msgid "Invalid Package"
-msgstr "Pacote Invalido"
+msgstr "Pacote Inválido"
 
 #: lazarusidestrconsts:lispkgmanginvalidpackagename2
 msgid "Invalid Package Name"
-msgstr "Nome de pacote invalido"
+msgstr "Nome de pacote inválido"
 
 #: lazarusidestrconsts:lisinvalidpascalidentifiercap
 msgid "Invalid Pascal Identifier"
-msgstr "Identificador Pascal invalido"
+msgstr "Identificador Pascal inválido"
 
 #: lazarusidestrconsts:lismakeresstrinvalidresourcestringsect
 msgid "Invalid Resourcestring section"
@@ -4159,11 +4159,11 @@ msgstr "Seção de ResourceString invalida"
 
 #: lazarusidestrconsts:lisa2pinvalidunitname
 msgid "Invalid Unit Name"
-msgstr "Nome de unidade invalido"
+msgstr "Nome de unidade inválido"
 
 #: lazarusidestrconsts:lispkgsysinvalidunitname
 msgid "Invalid Unitname: %s"
-msgstr "Nome de unidade invalido: %s"
+msgstr "Nome de unidade inválido: %s"
 
 #: lazarusidestrconsts:lisinvalidcommand
 msgid "Invalid command"
@@ -4323,7 +4323,7 @@ msgstr "Japones"
 
 #: lazarusidestrconsts:lisplistjumptoselection
 msgid "Jump To Selection"
-msgstr "Saltar para a selecao"
+msgstr "Saltar para a seleção"
 
 #: lazarusidestrconsts:lismenujumpback
 msgid "Jump back"
@@ -4439,7 +4439,7 @@ msgstr "Interface LCL"
 
 #: lazarusidestrconsts:lislclunitpathmissing
 msgid "LCL unit path missing"
-msgstr "Falta caminho de unidade LCL"
+msgstr "O caminho de unidade LCL est� faltando"
 
 #: lazarusidestrconsts:lispkgfiletypelfm
 msgid "LFM - Lazarus form text"
@@ -4455,7 +4455,7 @@ msgstr "Arquivo LFM corrompido"
 
 #: lazarusidestrconsts:lislfmfilenotfound
 msgid "LFM file not found"
-msgstr "Arquivo LFM nao encontrado"
+msgstr "Arquivo LFM não encontrado"
 
 #: lazarusidestrconsts:lismenuinsertlgplnotice
 msgid "LGPL notice"
@@ -4519,7 +4519,7 @@ msgstr "Configurações da Area de Trabalho do Lazarus"
 
 #: lazarusidestrconsts:liscodetoolsdefslazarusdirectory
 msgid "Lazarus Directory"
-msgstr "Diretorio Lazarus"
+msgstr "Diretório Lazarus"
 
 #: lazarusidestrconsts:lislazaruseditorv
 msgid "Lazarus Editor v%s"
@@ -5079,15 +5079,15 @@ msgstr "Multipla Seleção de Componente deve ser de um único formulário."
 
 #: lazarusidestrconsts:lisnotecouldnotcreatedefinetemplateforfreepascal
 msgid "NOTE: Could not create Define Template for Free Pascal Sources"
-msgstr "NOTA: Nao foi possivel criar Modelo definido para Fontes do Free Pascal"
+msgstr "NOTA: Não foi possivel criar Modelo definido para Fontes do Free Pascal"
 
 #: lazarusidestrconsts:lisnotecouldnotcreatedefinetemplateforlazarussources
 msgid "NOTE: Could not create Define Template for Lazarus Sources"
-msgstr "NOTA: Nao foi possivel criar Modelo definido para Fontes do Lazarus"
+msgstr "NOTA: Não foi possivel criar Modelo definido para Fontes do Lazarus"
 
 #: lazarusidestrconsts:liscompilernotecodetoolsconfigfilenotfoundusingdefaults
 msgid "NOTE: codetools config file not found - using defaults"
-msgstr "NOTA: nao foi encontrado o arquivo de configuração das ferramentas de código - usando padroes"
+msgstr "NOTA: não foi encontrado o arquivo de configuração das ferramentas de código - usando padroes"
 
 #: lazarusidestrconsts:liscompilernoteloadingoldcodetoolsoptionsfile
 msgid "NOTE: loading old codetools options file: "
@@ -5187,7 +5187,7 @@ msgstr "Nova Ramificação"
 
 #: lazarusidestrconsts:lispkgmangnewpackage
 msgid "NewPackage"
-msgstr "Novo Pacote"
+msgstr "NovoPacote"
 
 #: lazarusidestrconsts:liscodetoolsoptsnewline
 msgid "Newline"
@@ -5203,7 +5203,7 @@ msgstr "Próximo Marcador"
 
 #: lazarusidestrconsts:lisnoresourcestringsectionfound
 msgid "No ResourceString Section found"
-msgstr "Nao foi encontrada uma Seção de 'ResourceString'"
+msgstr "Não foi encontrada uma Seção de 'ResourceString'"
 
 #: lazarusidestrconsts:lisnobackupfiles
 msgid "No backup files"
@@ -5579,7 +5579,7 @@ msgstr "Outros Fontes (arquivos .pp/.pas, usado somente pela IDE não pelo Compi
 
 #: lazarusidestrconsts:dlgotherunitfiles
 msgid "Other Unit Files (-Fu) (Delimiter is semicolon):"
-msgstr "Outros arquivos de unit (-Fu) (Semi-Virgula é o Demilitador)"
+msgstr "Outros arquivos de unidade (-Fu) (ponto e v�rgula é o demilitador)"
 
 #: lazarusidestrconsts:dlgenvotherfiles
 msgid "Other files"
@@ -5591,7 +5591,7 @@ msgstr "Saída"
 
 #: lazarusidestrconsts:dlgpooutputsettings
 msgid "Output Settings"
-msgstr "Configurações de saida"
+msgstr "Configurações de sa�da"
 
 #: lazarusidestrconsts:lispkgdefsoutputdirectory
 msgid "Output directory"
@@ -5671,7 +5671,7 @@ msgstr "Opções do Pacote"
 
 #: lazarusidestrconsts:lispkgdefssrcdirmark
 msgid "Package Source Directory Mark"
-msgstr "Marca do Diretorio Fonte do Pacote"
+msgstr "Marca do Diretório-Fonte do Pacote"
 
 #: lazarusidestrconsts:lispkgmangpackageconflicts
 msgid "Package conflicts"
@@ -5979,11 +5979,11 @@ msgstr ""
 
 #: lazarusidestrconsts:lisprogramafreepascalprogramtheprogramfileisautomatic
 msgid "Program%sA freepascal program. The program file is automatically maintained by lazarus."
-msgstr "Programa%sUm Programa Free Pascal. O Programa é automaticamente mantido por Lazarus."
+msgstr "Programa%sUm programa Free Pascal. O programa é automaticamente mantido pelo Lazarus."
 
 #: lazarusidestrconsts:lisedtexttoolprogramfilename
 msgid "Programfilename:"
-msgstr "Nome de arquivo do Programa:"
+msgstr "Nome de arquivo do programa:"
 
 #: lazarusidestrconsts:lispdprogress
 msgid "Progress"
@@ -6015,7 +6015,7 @@ msgstr "Inspetor de Projeto"
 
 #: lazarusidestrconsts:lisprojinspprojectinspector
 msgid "Project Inspector - %s"
-msgstr "Inspetor de Objetos - %s"
+msgstr "Inspetor de Projetos - %s"
 
 #: lazarusidestrconsts:dlgprojectoptions
 msgid "Project Options"
@@ -6139,7 +6139,7 @@ msgstr "Método Publicado"
 
 #: lazarusidestrconsts:lismenuquickcompile
 msgid "Quick compile"
-msgstr "Compilacao Rapida"
+msgstr "Compilação Rápida"
 
 #: lazarusidestrconsts:liskmquickcompilenolinking
 msgid "Quick compile, no linking"
@@ -6343,7 +6343,7 @@ msgstr "Remover do Projeto"
 
 #: lazarusidestrconsts:lislazdocdeletepathbutton
 msgid "Remove path"
-msgstr "Remover Caminho"
+msgstr "- Caminho"
 
 #: lazarusidestrconsts:lispckeditremoveselecteditem
 msgid "Remove selected item"
@@ -6387,7 +6387,7 @@ msgstr "Renomear todas as Referências"
 
 #: lazarusidestrconsts:lisrenamefilefailed
 msgid "Rename file failed"
-msgstr "Falhou a renomeação de arquivo"
+msgstr "Falha na renomeação do arquivo"
 
 #: lazarusidestrconsts:lispkgmangrenamefileinpackage
 msgid "Rename file in package?"
@@ -6439,7 +6439,7 @@ msgstr "Substituir esta ocorrência de %s%s%s%s com %s%s%s?"
 
 #: lazarusidestrconsts:lisreplacingselectionfailed
 msgid "Replacing selection failed."
-msgstr "A Substituição da seleção falhou."
+msgstr "Falha na Substituição da seleção."
 
 #: lazarusidestrconsts:dlgreport
 msgid "Report"
@@ -6511,7 +6511,7 @@ msgstr "Reverter"
 
 #: lazarusidestrconsts:lisrevertfailed
 msgid "Revert failed"
-msgstr "Falhou a Reversão"
+msgstr "Falha na Reversão"
 
 #: lazarusidestrconsts:lispkgeditrevertpackage
 msgid "Revert package?"
@@ -6575,7 +6575,7 @@ msgstr "Executar Arquivo"
 
 #: lazarusidestrconsts:lismenurunparameters
 msgid "Run Parameters ..."
-msgstr "Parametros de Execução ..."
+msgstr "Parâmetros de Execução ..."
 
 #: lazarusidestrconsts:srkmcatrunmenu
 msgid "Run menu commands"
@@ -6595,7 +6595,7 @@ msgstr "Executar do cursor"
 
 #: lazarusidestrconsts:lisruntofailed
 msgid "Run-to failed"
-msgstr "Falhou ao tentar executar"
+msgstr "Falha ao tentar executar"
 
 #: lazarusidestrconsts:lispckoptsruntimeonly
 msgid "Runtime only"
@@ -6879,7 +6879,7 @@ msgstr "Caminhos de Busca:"
 
 #: lazarusidestrconsts:lisuesearchstringnotfound
 msgid "Search string '%s' not found!"
-msgstr "Sequência'%s' não encontrada!"
+msgstr "Sequência '%s' não encontrada!"
 
 #: lazarusidestrconsts:dlgsearchabort
 msgid "Search terminated by user."
@@ -7835,23 +7835,23 @@ msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefsthefreepascalsvnsourcedir
 msgid "The Free Pascal SVN source directory."
-msgstr "Diretorio SVN do fonte Free Pascal"
+msgstr "Diretório SVN do fonte Free Pascal"
 
 #: lazarusidestrconsts:liscodetoolsdefsthefreepascalcvssourcedirectory
 msgid "The Free Pascal SVN source directory. Not required. This will improve find declarationand debugging."
-msgstr "O Diretorio SVN do fonte Free Pascal. Nao requerido. Este sempre melhores procura a declaração e debugging."
+msgstr "O Diretório SVN do fonte Free Pascal. não requerido. Este sempre melhores procura a declaração e debugging."
 
 #: lazarusidestrconsts:listhefreepascalcompilerfilenamewasnotfounditisrecomm
 msgid "The Free Pascal compiler (filename: %s) was not found.%sIt is recommended that you install fpc."
-msgstr "O Free Pascal compiler (nome do arquivo: %s) nao foi encontrado.%sRecomenda-se que voce instale o fpc."
+msgstr "O Free Pascal compiler (nome do arquivo: %s) não foi encontrado.%sRecomenda-se que você instale o fpc."
 
 #: lazarusidestrconsts:liscodetoolsdefsthefreepascalprojectdirectory
 msgid "The Free Pascal project directory."
-msgstr "O Diretorio do Projeto Free Pascal"
+msgstr "O Diretório do Projeto Free Pascal"
 
 #: lazarusidestrconsts:listhefreepascalsourcedirectorywasnotfoundsomecodefun
 msgid "The Free Pascal source directory was not found.%sSome code functions will not work.%sIt is recommended that you install it and set the path%sEnvironment -> Environment Options -> Files"
-msgstr "O diretorio fonte do Free Pascal nao foi encontrado.%sAlguns codigos de funções nao trabalharao.%sE' recomendado que voce o instale e ajuste o caminho%sAmbiente -> Opções de Ambiente -> Arquivos"
+msgstr "O diretório-fonte do Free Pascal não foi encontrado.%sAlguns codigos de funções não trabalharao.%sE' recomendado que você o instale e ajuste o caminho%sAmbiente -> Opções de Ambiente -> Arquivos"
 
 #: lazarusidestrconsts:lispkgsysthelcllazaruscomponentlibrarycontainsallbase
 msgid "The LCL - Lazarus Component Library contains all base components for form editing."
@@ -7863,11 +7863,11 @@ msgstr ""
 
 #: lazarusidestrconsts:listhelazarusdirectorywasnotfoundyouwillnotbeabletocr
 msgid "The Lazarus directory was not found.%sYou will not be able to create LCL applications.%sPlz check Environment -> Environment Options -> Files"
-msgstr "O diretorio Lazarus nao foi encontrado.%sVoce nao poderia criar aplicações LCL.%sPor favor verifique Ambiente -> Opções de Ambiente -> Arquivos"
+msgstr "O diretório Lazarus não foi encontrado.%sVocê não poderia criar aplicações LCL.%sPor favor verifique Ambiente -> Opções de Ambiente -> Arquivos"
 
 #: lazarusidestrconsts:liscodetoolsdefsthelazarusmaindirectory
 msgid "The Lazarus main directory."
-msgstr "O Diretorio principal do Lazarus"
+msgstr "O Diretório principal do Lazarus"
 
 #: lazarusidestrconsts:lisprojaddthemaximumversionisinvalid
 msgid "The Maximum Version %s%s%s is invalid.%sPlease use the format major.minor.release.build%sFor exmaple: 1.0.20.10"
@@ -7887,7 +7887,7 @@ msgstr "A RTL - Run-Time Library (Biblioteca de Tempo de Execução) e' o basico
 
 #: lazarusidestrconsts:listhetestdirectorycouldnotbefoundseeenvironmentopt
 msgid "The Test Directory could not be found:%s%s%s%s%s(see environment options)"
-msgstr "O Diretorio de Teste nao pode ser encontrado:%s%s%s%s%s(veja opções de ambiente)"
+msgstr "O Diretório de Teste não pode ser encontrado:%s%s%s%s%s(veja opções de ambiente)"
 
 #: lazarusidestrconsts:lisa2ptheancestortypehasthesamenameastheunit
 msgid "The ancestor type %s%s%s has the same name as%sthe unit %s%s%s."
@@ -7943,19 +7943,19 @@ msgstr "O componente editor da classe %s%s%sfoi criado com o erro:%s%s%s%s"
 
 #: lazarusidestrconsts:listhecurrentfreepascalsourcedirectorydoesnotlookcorr2
 msgid "The current Free Pascal source directory %s%s%s%sdoes not look correct.%sCheck Environment -> Environment Options -> Files"
-msgstr "O diretório Fonte do Free Pascal atual %s%s%s%snao e visto como o correto.%sVerifique Ambiente -> Opções de Ambiente -> Arquivos"
+msgstr "O diretório Fonte do Free Pascal atual %s%s%s%snão parece correto.%sVerifique Ambiente -> Opções de Ambiente -> Arquivos"
 
 #: lazarusidestrconsts:listhecurrentfreepascalsourcedirectorydoesnotlookcorr
 msgid "The current Free Pascal source directory %s%s%s%sdoes not look correct.%sChoose Ok to choose the default %s%s%s.%sOtherwise check Environment -> Environment Options -> Files"
-msgstr "O atual diretório fonte do Free Pascal %s%s%s%snao é visto como o correto.%sEscolha Ok para escolher o padrão %s%s%s.%sCaso contrario verifique Ambiente -> Opções de Ambiente -> Arquivos"
+msgstr "O atual diretório fonte do Free Pascal %s%s%s%snão parece correto.%sEscolha Ok para escolher o padrão %s%s%s.%sCaso contrario verifique Ambiente -> Opções de Ambiente -> Arquivos"
 
 #: lazarusidestrconsts:listhecurrentlazarusdirectorydoesnotlookcorrectwithou2
 msgid "The current Lazarus directory %s%s%s%sdoes not look correct.%sWithout it You will not be able to create LCL applications.%sCheck Environment -> Environment Options -> Files"
-msgstr "O atual diretório do Lazarus %s%s%s%s não é visto como o correto.%sSem ele você não podera criar aplicações LCL.%sVerifique Ambiente -> Opções de Ambiente -> Arquivos"
+msgstr "O atual diretório do Lazarus %s%s%s%s não parece correto.%sSem ele você não podera criar aplicações LCL.%sVerifique Ambiente -> Opções de Ambiente -> Arquivos"
 
 #: lazarusidestrconsts:listhecurrentlazarusdirectorydoesnotlookcorrectwithou
 msgid "The current Lazarus directory %s%s%s%sdoes not look correct.%sWithout it You will not be able to create LCL applications.%sChoose Ok to choose the default %s%s%s.%sOtherwise check Environment -> Environment Options -> Files"
-msgstr "O atual diretório do Lazarus %s%s%s%s não é visto como o correto.%sSem ele você não podera criar aplicações LCL.%sEscolha Ok para escolher o padrão %s%s%s.%sCaso contrario verifique Ambiente -> Opções de Ambiente -> Arquivos"
+msgstr "O atual diretório do Lazarus %s%s%s%s não parece correto.%sSem ele você não podera criar aplicações LCL.%sEscolha Ok para escolher o padrão %s%s%s.%sCaso contrario verifique Ambiente -> Opções de Ambiente -> Arquivos"
 
 #: lazarusidestrconsts:listhecurrentcompilerfilenameisnotavalidexecutablecho
 msgid "The current compiler filename %s%s%s%sis not a valid executable.%sChoose Ok to choose the default %s%s%s.%sOtherwise check Environment -> Environment Options -> Files"
@@ -7971,11 +7971,11 @@ msgstr ""
 
 #: lazarusidestrconsts:listhecurrentunitpathforthefileisthepathtothelclunits
 msgid "The current unit path for the file%s%s%s%s is%s%s%s%s.%s%sThe path to the LCL units %s%s%s is missing.%s%sHint for newbies:%sCreate a lazarus application and put the file into the project directory."
-msgstr "O caminho da unidade atual para o arquivo%s%s%s%s é %s%s%s%s.%s%sO caminho para unidades LCL %s%s%s está faltando.%s%sDica para novatos:%sCriar uma aplicação lazarus e colocar o arquivo em um diretório de projeto."
+msgstr "O caminho atual de unidades para o arquivo%s%s%s%s é %s%s%s%s.%sO caminho para unidades LCL %s%s%s estão faltando.%s%sDica para novatos:%sCriar uma aplicação Lazarus e colocar o arquivo em um diretório de projeto."
 
 #: lazarusidestrconsts:listhedebuggerdoesnotexistsorisnotexecutableseeenviro
 msgid "The debugger %s%s%s%sdoes not exist or is not executable.%s%sSee Environment -> Debugger Options"
-msgstr "O debugger %s%s%s%snao existe ou não é um executável.%s%sVeja Ambiente -> Opções de Depurador"
+msgstr "O depurador %s%s%s%snão existe ou não é um executável.%s%sVeja Ambiente -> Opções de Depurador"
 
 #: lazarusidestrconsts:lisenvoptdlginvaliddebuggerfilenamemsg
 msgid "The debugger file \"%s\" is not an executable."
@@ -8035,7 +8035,7 @@ msgstr "O Arquivo %s%s%s%sja existe no pacote %s."
 
 #: lazarusidestrconsts:lispkgeditthefileiscurrentlynotintheunitpathofthepackage
 msgid "The file %s%s%s%sis currently not in the unitpath of the package.%s%sAdd %s%s%s to UnitPath?"
-msgstr "O Arquivo %s%s%s%snao está atualmente em um caminho das unidades do pacote.%s%sAdiciona-lo %s%s%s para o Caminho das unidade?"
+msgstr "O Arquivo %s%s%s%snão está atualmente em um caminho das unidades do pacote.%s%sAdiciona-lo %s%s%s para o Caminho das unidade?"
 
 #: lazarusidestrconsts:lispkgmangthefileofpackageismissing
 msgid "The file %s%s%s%sof package %s is missing."
@@ -8051,7 +8051,7 @@ msgstr "O Arquivo %s%s%s%sparece ser um programa. Fechar o projeto atual e criar
 
 #: lazarusidestrconsts:listhefilewasfoundinoneofthesourcedirectoriesofthepac
 msgid "The file %s%s%s%swas found in one of the source directories of the package %s and looks like a compiled unit.Compiled units must be in the output directory of the package, otherwise other packages can get problems using this package.%s%sDelete ambiguous file?"
-msgstr "O arquivo %s%s%s%snao foi encontrado em um dos diretórios fontes do pacote %s e é visto como uma unidade compilada. Unidades compiladas deve estar no diretório de saída do pacote, caso contrario outros pacotes pode ter problemas usando este pacote.%s%sEliminar arquivo ambiguo?""
+msgstr "O arquivo %s%s%s%sfoi encontrado em um dos diretórios fontes do pacote %s e parece uma unidade compilada. Unidades compiladas devem estar no diretório de saída do pacote, caso contrario outros pacotes podem ter problemas usando este pacote.%s%sEliminar arquivo ambiguo?""
 
 #: lazarusidestrconsts:listhefilewasnotfounddoyouwanttolocateityourself
 msgid "The file %s%s%s%swas not found.%sDo you want to locate it yourself ?%s"
@@ -8087,15 +8087,15 @@ msgstr ""
 
 #: lazarusidestrconsts:lispkgmangthefollowingpackagefailedtoload
 msgid "The following package failed to load:"
-msgstr "Falhou ao carregar o seguinte pacote:"
+msgstr "Falha ao carregar o seguinte pacote:"
 
 #: lazarusidestrconsts:lispkgmangthefollowingpackagesfailedtoload
 msgid "The following packages failed to load:"
-msgstr "Falhou ao carregar os seguintes pacotes:"
+msgstr "Falha ao carregar os seguintes pacotes:"
 
 #: lazarusidestrconsts:listhefollowingunitswerenotfound1eithertheseunitsaren
 msgid "The following units were not found:%s%s%s%s1) Either these units are not in the unit path, then you can abort now, fix the unit path and try again.%s2) Or you can ignore the missing units and comment them out."
-msgstr ""
+msgstr "As seguintes unidades não foram encontradas:%s%s%s%s1)  Essas unidades não estão no caminho das unidades, você pode abortar agora, reparar o caminho das unidades e tentar de novo. %s2) Você pode ignorar as  unidades que faltam e comentariza-las"
 
 #: lazarusidestrconsts:lisrunparamsthehostapplicationisnotexecutable
 msgid "The host application %s%s%s is not executable."
@@ -8103,11 +8103,11 @@ msgstr "A Aplicação hospedeira %s%s%s não é um executável."
 
 #: lazarusidestrconsts:listhelaunchingapplicationdoesnotexistsorisnotexecuta
 msgid "The launching application %s%s%s%sdoes not exist or is not executable.%s%sSee Run -> Run parameters -> Local"
-msgstr "A Inicialização de aplicação %s%s%s%s não existe ou não é um executável.%s%sVeja Executar -> Parâmetros de Execução -> Local"
+msgstr "A aplicação %s%s%s%s não existe ou não é um executável.%s%sVeja Executar -> Parâmetros de Execução -> Local"
 
 #: lazarusidestrconsts:lisenvoptdlginvalidlazarusdir
 msgid "The lazarus directory \"%s\" does not look correct. Normally it contains directories like lcl, debugger, designer, components, ... ."
-msgstr "O diretório lazarus \"%s\" não é visto como o correto. Normalmente ele contém diretórios como lcl, depurador, designer, componentes, ..."
+msgstr "O diretório do Lazarus \"%s\" não parece correto. Normalmente ele contém diretórios como lcl, debugger, designer, components, ..."
 
 #: lazarusidestrconsts:lisenvoptdlginvalidmakefilenamemsg
 msgid "The make file \"%s\" is not an executable."
@@ -8147,7 +8147,7 @@ msgstr "O pacote %s é proprietario do arquivo%s%s%s%s.%sO Arquivo deve ser reno
 
 #: lazarusidestrconsts:lispkgmangthepackagefailedtocompileremoveitfromtheinstallati
 msgid "The package %s%s%s failed to compile.%sRemove it from the installation list?"
-msgstr "Falhou a compilação do pacote %s%s%s.%sRemove-lo da lista de instalação?"
+msgstr "Falha na compilação do pacote %s%s%s.%sRemove-lo da lista de instalação?"
 
 #: lazarusidestrconsts:lispckoptsthepackagehastheautoinstallflagthismeans
 msgid "The package %s%s%s has the auto install flag.%sThis means it will be installed in the IDE. Installation packages%smust be designtime Packages."
@@ -8363,7 +8363,7 @@ msgstr "Existe um pacote não salvo nos pacotes requeridos. Veja o gráfico de p
 
 #: lazarusidestrconsts:lisdbgmangthereisnodebuggerspecifiedsettingbreakpointshaveno
 msgid "There is no debugger specified.%sSetting breakpoints have no effect until you setup a Debugger in the debugger options dialog in the menu."
-msgstr "Não ha um depurador especificado.%sConfigurar pontos de interrupção não tem efeito enquanto voce não instalar o depurador no dialogo de opções de depurador no menu."
+msgstr "Não ha um depurador especificado.%sConfigurar pontos de interrupção não tem efeito enquanto você não instalar o depurador no dialogo de opções de depurador no menu."
 
 #: lazarusidestrconsts:listherewasanerrorduringwritingtheselectedcomponent
 msgid "There was an error during writing the selected component %s:%s:%s%s"
@@ -8379,7 +8379,7 @@ msgstr "Ocorreu um erro ao copiar o stream do componente para Área de Transfer�
 
 #: lazarusidestrconsts:lispkgthisfileisnotinanyloadedpackage
 msgid "This file is not in any loaded package."
-msgstr "O Arquivo não é nenhum pacote carregado."
+msgstr "O Arquivo não é um pacote carregado."
 
 #: lazarusidestrconsts:lispkgmangthisfilewasautomaticallycreatedbylazarusdonotedit
 msgid "This file was automatically created by Lazarus. Do not edit!"
@@ -8459,7 +8459,7 @@ msgstr "Alternar Modo"
 
 #: lazarusidestrconsts:liskmtogglebetweenunitandform
 msgid "Toggle between Unit and Form"
-msgstr ""
+msgstr "Altenar unidade/formulário"
 
 #: lazarusidestrconsts:lismenuviewtoggleformunit
 msgid "Toggle form/unit view"
@@ -8919,7 +8919,7 @@ msgstr "Otimizações Incertas"
 
 #: lazarusidestrconsts:lismenuuncommentselection
 msgid "Uncomment selection"
-msgstr "Comentário Selecionado como Código"
+msgstr "Descomentarizar Seleção"
 
 #: lazarusidestrconsts:liscodetoolsdefsundefine
 msgid "Undefine"
@@ -9011,7 +9011,7 @@ msgstr "Nome da Unidade:"
 
 #: lazarusidestrconsts:lisunitoutputdirectory
 msgid "Unit Output directory"
-msgstr "Diretorio de saida de unidade"
+msgstr "Diretório de sa�da de unidade"
 
 #: lazarusidestrconsts:lispkgdefsunitpath
 msgid "Unit Path"
@@ -9055,11 +9055,11 @@ msgstr "Unidade não encontrada: %s%s%s"
 
 #: lazarusidestrconsts:dlgunitoutp
 msgid "Unit output directory (-FU):"
-msgstr ""
+msgstr "Diretorio de saida das unidades  (-FU):"
 
 #: lazarusidestrconsts:lisunitpaths
 msgid "Unit paths"
-msgstr ""
+msgstr "Caminho das unidades"
 
 #: lazarusidestrconsts:lisunitlfmfile
 msgid "Unit: %s%sLFM file: %s"
@@ -9067,7 +9067,7 @@ msgstr "Unidade: %s%sArquivo LFM: %s"
 
 #: lazarusidestrconsts:lisa2punitnamealreadyexists
 msgid "Unitname already exists"
-msgstr "Nome da unidade da existe"
+msgstr "Nome da unidade já existe"
 
 #: lazarusidestrconsts:lisunitnamealreadyexistscap
 msgid "Unitname already in project"
@@ -9083,7 +9083,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisunitsnotfound2
 msgid "Units not found"
-msgstr "unidades não encontradas"
+msgstr "Unidades não encontradas"
 
 #: lazarusidestrconsts:lismenuviewunits
 msgid "Units..."
@@ -9263,11 +9263,11 @@ msgstr "Mostrar Botoes da IDE"
 
 #: lazarusidestrconsts:lismenuviewjumphistory
 msgid "View Jump-History ..."
-msgstr "Ver Histórico de Salto ..."
+msgstr "Mostrar Histórico de Salto ..."
 
 #: lazarusidestrconsts:srkmectoggleobjectinsp
 msgid "View Object Inspector"
-msgstr "Exibir Inspetor de Objetos"
+msgstr "Mostrar Inspetor de Objetos"
 
 #: lazarusidestrconsts:lispckeditviewpackgesource
 msgid "View Package Source"
@@ -9411,7 +9411,7 @@ msgstr "Medianiz Visivel"
 
 #: lazarusidestrconsts:dlgvisiblerightmargin
 msgid "Visible right margin"
-msgstr "Margem Diretira Visivel"
+msgstr "Margem Direita Visivel"
 
 #: lazarusidestrconsts:dlgambigwarn
 msgid "Warn on compile"
@@ -9419,7 +9419,7 @@ msgstr "Aviso ao compilar"
 
 #: lazarusidestrconsts:liscowarningtheadditionalcompilerconfigfilehasthesamena
 msgid "Warning: The additional compiler config file has the same name, as one of the standard config filenames the FreePascal compiler is looking for. This can result in ONLY parsing the additional config and skipping the standard config."
-msgstr "Aviso: O arquivo adicional de configuração do compilador tem o mesmo nome que um arquivo padrão de configuração do compilador Free Pascal. Isto pode resultar em SOMENTE analise do arquivo adicional de configuração ao inves da configuração padrão."
+msgstr ""
 
 #: lazarusidestrconsts:lispkgmangwarningthefilebelongstothecurrentproject
 msgid "Warning: The file %s%s%s%sbelongs to the current project."
@@ -9439,7 +9439,7 @@ msgstr "Observadores"
 
 #: lazarusidestrconsts:dlgautocreatenewforms
 msgid "When creating new forms, add them to auto-created forms"
-msgstr "Quando criar novos formulários, adiciona-los para formulários criados automaticamente"
+msgstr "Quando criar novos formulários, adicioná-los a formulários criados automaticamente"
 
 #: lazarusidestrconsts:lisceowhenswitchingfile
 msgid "When switching file in source editor"
@@ -9459,7 +9459,7 @@ msgstr "Somente Palavra Inteira"
 
 #: lazarusidestrconsts:lisfindfilewholewordsonly
 msgid "Whole words only"
-msgstr "Somente palavras inteiras"
+msgstr "Somente palavra inteira"
 
 #: lazarusidestrconsts:dlgwidthpos
 msgid "Width:"
@@ -9503,7 +9503,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisedtexttoolworkingdirectory
 msgid "Working Directory:"
-msgstr "Diretorio de Trabalho:"
+msgstr "Diretório de Trabalho:"
 
 #: lazarusidestrconsts:dlgroworkingdirectory
 msgid "Working directory"
@@ -9543,7 +9543,7 @@ msgstr "Arquivos XML"
 
 #: lazarusidestrconsts:lisyoucannotbuildlazaruswhiledebuggingorcompiling
 msgid "You can not build lazarus while debugging or compiling."
-msgstr "Voce nao pode reconstruir o Lazarus enquanto depuracao ou compilacao estiverem ativos."
+msgstr "Você não pode reconstruir o Lazarus enquanto depuração ou compilação estiverem ativos."
 
 #: lazarusidestrconsts:dlgdoesnotexist
 msgid "\" does not exist."
@@ -9555,7 +9555,7 @@ msgstr "\" não pode ser escrito."
 
 #: lazarusidestrconsts:srkmecabortbuild
 msgid "abort build"
-msgstr "abortar construcao"
+msgstr "abortar construção"
 
 #: lazarusidestrconsts:srkmecaddbreakpoint
 msgid "add break point"
@@ -9707,7 +9707,7 @@ msgstr "modificado"
 
 #: lazarusidestrconsts:lisuidno
 msgid "no"
-msgstr "nao"
+msgstr "não"
 
 #: lazarusidestrconsts:dlgnoautomaticrenaming
 msgid "no automatic renaming"
@@ -9855,7 +9855,7 @@ msgstr "caminho das unidades"
 
 #: lazarusidestrconsts:srkmecunknown
 msgid "unknown editor command"
-msgstr "editor de comando desconhecido"
+msgstr ""
 
 #: lazarusidestrconsts:lisedtdefuseheaptrcunit
 msgid "use HeapTrc unit"
