@@ -239,6 +239,7 @@ var
   _NET_WM_STATE_MAXIMIZED_VERT,
   _NET_WM_STATE_MAXIMIZED_HORZ: x.TAtom;
   X: Integer;
+  maximized_horz, maximized_vert: Boolean;
 begin
   Result := False;
   XWindow := GDK_WINDOW_XWINDOW (Window);
@@ -255,12 +256,12 @@ begin
 
   if (atomtype = XA_ATOM) and (format = 32) and  (nitems > 0) then
   begin
+    maximized_horz := False;
+    maximized_vert := False;
     for X := 0 to nitems-1 do begin
-      if
-      (state_array[X] = _NET_WM_STATE_MAXIMIZED_VERT)
-      or
-      (state_array[X] = _NET_WM_STATE_MAXIMIZED_HORZ)
-      then Result := True;
+      if (state_array[X] = _NET_WM_STATE_MAXIMIZED_VERT) then maximized_vert := True;
+      if (state_array[X] = _NET_WM_STATE_MAXIMIZED_HORZ) then maximized_horz := True;
+      Result:=(maximized_horz and maximized_vert);
 
       if Result then Break;
     end;
