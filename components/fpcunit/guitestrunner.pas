@@ -25,24 +25,19 @@ unit GuiTestRunner;
 
 {$mode objfpc}{$H+}
 
-{ By default the old XML unit will be used for FPC 2.0.2 and the new XML unit
-  for any FPC versions above 2.0.2. The benefit of using the new XML unit is
-  that it creates valid XML data with reserved characters escaped and allows
-  for further processing with XSLT etc. }
-{$IFDEF VER2_0_2}
-  {$DEFINE UseOldXML}
-{$ENDIF}
-
 interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ExtCtrls,
   Buttons, ComCtrls, ActnList, Menus, Clipbrd, StdCtrls,
   testdecorator,
-  {$IFDEF UseOldXML}
-  testreport,
-  {$ENDIF}
+{$IFDEF VER2_0}
+  xmlreporter,
+{$ELSE}
+  xmltestreport,
+{$ENDIF}
   fpcunit, testregistry, SynEdit, SynHighlighterXML;
+
 
 type
 
@@ -146,12 +141,10 @@ var
 
 
 implementation
-{$IFNDEF UseOldXML}
+
 uses
-  xmlreporter
-  ,xmlwrite
+  xmlwrite
   ;
-{$ENDIF}
 
 type
 
@@ -180,14 +173,12 @@ begin
   PageControl1.ActivePage := tsTestTree;
 end;
 
-
 procedure TGUITestRunner.RunExecute(Sender: TObject);
 begin
   testSuite := GetTestRegistry;
   TestTree.Selected := TestTree.Items[0];
   RunTest(testSuite);
 end;
-
 
 procedure TGUITestRunner.ActCloseFormExecute(Sender: TObject);
 begin
@@ -607,10 +598,8 @@ var
   testResult:TTestResult;
   FStopCrono: TDateTime;
   FStartCrono: TDateTime;
-  {$IFNDEF UseOldXML}
-    w: TXMLResultsWriter;
-    m: TMemoryStream;
-  {$ENDIF}
+  w: TXMLResultsWriter;
+  m: TMemoryStream;
 
 begin
   barcolor := clGreen;
@@ -624,10 +613,13 @@ begin
     SkipUncheckedTests(testResult, TestTree.Selected);
     skipsCounter := testResult.NumberOfSkippedTests;
     testResult.AddListener(self);
-    {$IFNDEF UseOldXML}
+    {$IFDEF VER2_0}
     w := TXMLResultsWriter.Create;
-    testResult.AddListener(w);
+    {$ELSE}
+    w := TXMLResultsWriter.Create(nil);
     {$ENDIF}
+    testResult.AddListener(w);
+
     MemoLog('Running ' + TestTree.Selected.Text);
     FStartCrono := Now;
     aTest.Run(testResult);
@@ -636,23 +628,17 @@ begin
     MemoLog('Number of executed tests: ' + IntToStr(testResult.RunTests)
       + '  Time elapsed: '
       + FormatDateTime('hh:nn:ss.zzz', FStopCrono - FStartCrono));
-    {$IFNDEF UseOldXML}
-      w.WriteResult(testResult);
-      m := TMemoryStream.Create;
-      WriteXMLFile(w.Document, m);
-      m.Position := 0;
-      XMLSynEdit.Lines.LoadFromStream(m);
-    {$ELSE}
-      XMLSynEdit.lines.text := '<TestResults>' + system.sLineBreak +
-      TestResultAsXML(testResult) + system.sLineBreak + '</TestResults>';
-    {$ENDIF}
+
+    w.WriteResult(testResult);
+    m := TMemoryStream.Create;
+    WriteXMLFile(w.Document, m);
+    m.Position := 0;
+    XMLSynEdit.Lines.LoadFromStream(m);
 
     pbBar.Invalidate;
    finally
-    {$IFNDEF UseOldXML}
-      m.free;
-      w.Free;
-    {$ENDIF}
+    m.free;
+    w.Free;
     testResult.Free;
   end;
 end;
