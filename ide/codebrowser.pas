@@ -1920,6 +1920,7 @@ begin
   
   DebugLn(['TCodeBrowserView.UpdateTreeView ShowPackages=',ShowPackages,' ShowUnits=',ShowUnits,' ShowIdentifiers=',ShowIdentifiers]);
 
+  BrowseTreeView.Cursor:=crHourGlass;
   BrowseTreeView.BeginUpdate;
   CodeToolBoss.ActivateWriteLock;
   try
@@ -1933,6 +1934,7 @@ begin
   finally
     CodeToolBoss.DeactivateWriteLock;
     BrowseTreeView.EndUpdate;
+    BrowseTreeView.Cursor:=crDefault;
   end;
   VisiblePackages:=NewPackageCount;
   VisibleUnits:=NewUnitCount;
