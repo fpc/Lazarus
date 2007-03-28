@@ -102,6 +102,7 @@ type
                                      AMultiSelect: boolean); override;
     class procedure SetSorted(const ACustomListBox: TCustomListBox; AList: TStrings; ASorted: boolean); override;
     class procedure SetTopIndex(const ACustomListBox: TCustomListBox; const NewTopIndex: integer); override;
+    class procedure SetFont(const AWinControl: TWinControl; const AFont : TFont); override;
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
   end;
 
@@ -408,6 +409,20 @@ begin
   APath := gtk_tree_model_get_path(ListStoreModel, @Iter);
   gtk_tree_view_scroll_to_cell(TreeView, APath, NULL, true, 0.0, 0.0);
   gtk_tree_path_free(APath);
+end;
+
+class procedure TGtk2WSCustomListBox.SetFont(const AWinControl: TWinControl;
+  const AFont: TFont);
+var
+  Widget: PGtkWidget;
+  Selection: PGtkTreeSelection;
+begin
+  Widget:=GetWidgetInfo(Pointer(AWinControl.Handle),True)^.CoreWidget;
+
+  Gtk2WidgetSet.SetWidgetColor(Widget, AWinControl.Font.Color, clNone,
+            [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED]);
+            Gtk2WidgetSet.SetWidgetFont(Widget, AFont);
+
 end;
 
 class function TGtk2WSCustomListBox.CreateHandle(const AWinControl: TWinControl;
