@@ -46,16 +46,6 @@ begin
   PageIndex:=AValue;
 end;
 
-procedure TTabSheet.DoHide;
-begin
-
-end;
-
-procedure TTabSheet.DoShow;
-begin
-
-end;
-
 constructor TTabSheet.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);

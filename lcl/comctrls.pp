@@ -177,15 +177,10 @@ type
 
   TTabSheet = class(TCustomPage)
   private
-    FOnHide: TNotifyEvent;
-    FOnShow: TNotifyEvent;
     function GetPageControl: TPageControl;
     function GetTabIndex: Integer;
     procedure SetPageControl(APageControl: TPageControl);
     procedure SetTabIndex(const AValue: Integer);
-  protected
-    procedure DoHide; dynamic;
-    procedure DoShow; dynamic;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -206,12 +201,12 @@ type
     property OnEndDrag;
     property OnEnter;
     property OnExit;
-    property OnHide: TNotifyEvent read FOnHide write FOnHide;
+    property OnHide;
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
     property OnResize;
-    property OnShow: TNotifyEvent read FOnShow write FOnShow;
+    property OnShow;
     property OnStartDrag;
     property PageIndex stored False;
     property ParentFont;

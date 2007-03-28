@@ -54,6 +54,8 @@ type
     FTabVisible: Boolean;
     FFlags: TPageFlags;
     FImageIndex: integer;
+    FOnHide: TNotifyEvent;
+    FOnShow: TNotifyEvent;
     function GetTabVisible: Boolean;
     procedure SetImageIndex(const AValue: integer);
     procedure SetTabVisible(const AValue: Boolean);
@@ -65,6 +67,8 @@ type
     function GetPageIndex: integer;
     procedure SetPageIndex(AValue: Integer);
     function  DialogChar(var Message: TLMKey): boolean; override;
+    procedure DoHide; dynamic;
+    procedure DoShow; dynamic;
   public
     constructor Create(TheOwner: TComponent); override;
     procedure AdjustClientRect(var ARect: TRect); override;
@@ -81,6 +85,8 @@ type
     property Height stored False;
     property TabOrder stored False;
     property Visible stored false;
+    property OnHide: TNotifyEvent read FOnHide write FOnHide;
+    property OnShow: TNotifyEvent read FOnShow write FOnShow;
   end;
 
   TCustomPageClass = class of TCustomPage;

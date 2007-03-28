@@ -716,8 +716,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomNotebook.Change;
 Begin
-  fPageIndexOnLastChange:=fPageIndex;
   ShowCurrentPage;
+  fPageIndexOnLastChange := fPageIndex;
   if ([csLoading,csDestroying]*ComponentState=[])
   and (not fAddingPages) then begin
     if Assigned(fOnPageChanged) then fOnPageChanged(Self);
@@ -794,7 +794,17 @@ end;
 procedure TCustomNotebook.ShowCurrentPage;
 begin
   if (FPageIndex >= 0) and (FPageIndex < PageCount) then
+  begin
     Page[FPageIndex].Visible := true;
+    Page[FPageIndex].DoShow;
+    if (FPageIndexOnLastChange >= 0) and (FPageIndexOnLastChange < PageCount) and
+       (FPageIndexOnLastChange <> FPageIndex) then
+    begin
+      // Page[FPageIndexOnLastChange].Visible := False; <-- this will be better,
+      // but this is not work on gtk (tab hides too)
+      Page[FPageIndexOnLastChange].DoHide;
+    end;
+  end;
 end;
 
 {------------------------------------------------------------------------------

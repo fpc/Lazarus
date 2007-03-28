@@ -188,6 +188,18 @@ begin
     Result:=inherited DialogChar(Message);
 end;
 
+procedure TCustomPage.DoHide;
+begin
+  if Assigned(FOnHide) then
+    FOnHide(Self);
+end;
+
+procedure TCustomPage.DoShow;
+begin
+  if Assigned(FOnShow) then
+    FOnShow(Self);
+end;
+
 function TCustomPage.IsControlVisible: Boolean;
 begin
   if Parent is TCustomNotebook then
