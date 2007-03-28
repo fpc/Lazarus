@@ -40,42 +40,41 @@ SET OLDCURDRIVE=%CD:~,2%
 
 SET FPCBINDIR=%FPCSVNDIR%\install\binw32
 FOR /F %%L IN ('%FPCBINDIR%\gdate.exe +%%Y%%m%%d') DO SET DATESTAMP=%%L
-SET FPCVERSION=2.1.1
-SET LAZVERSION=0.9.21
-SET FPCSOURCEOS=win32
 SET FPCFULLTARGET=%TARGETCPU%-%TARGETOS%
-SET SHORT_VERSION=2.1
 
 SET TIMESTAMP=%date:~9,4%%date:~6,2%%date:~3,2%-%time:~,2%%time:~3,2%%time:~6,2%
-SET INSTALL_BASE=%BUILDDIR%\image\fpc\%FPCVERSION%
-SET INSTALL_BINDIR=%INSTALL_BASE%\bin\i386-win32
-
 SET MAKEEXE=%FPCBINDIR%\make.exe
 PATH=%FPCBINDIR%
 cd %FPCSVNDIR%\fpcsrc
-
-:: copy the binutils
-rmdir /s /q %BUILDDIR%
-gmkdir -p %INSTALL_BINDIR%
-cp %BINUTILSDIR%\%FPCFULLTARGET%\*.* %INSTALL_BINDIR%
 
 %MAKEEXE% distclean FPC=%RELEASE_PPC% > NUL
 rm -rf %FPCSVNDIR%\fpcsrc\compiler\*.exe
 :: create a native compiler + utils
 %MAKEEXE% compiler_cycle FPC=%RELEASE_PPC%
+
 FOR /F %%L IN ('%FPCSVNDIR%\fpcsrc\compiler\utils\fpc.exe -PB') DO SET COMPILER=%FPCSVNDIR%\fpcsrc\compiler\%%L
 FOR /F %%L IN ('%FPCSVNDIR%\fpcsrc\compiler\utils\fpc.exe -P%TARGETCPU% -PB') DO SET PPCNAME=%%L
+
 %MAKEEXE% compiler FPC=%COMPILER% PPC_TARGET=%TARGETCPU% EXENAME=%PPCNAME%
 SET COMPILER=%FPCSVNDIR%\fpcsrc\compiler\%PPCNAME%
 SET CPU_TARGET=%TARGETCPU%
 SET OS_TARGET=%TARGETOS%
-SET CROSSBINDIR=%INSTALL_BINDIR%
+SET CROSSBINDIR=%BINUTILSDIR%\%FPCFULLTARGET%
 SET BINUTILSPREFIX=%FPCFULLTARGET%-
 
 %MAKEEXE% -C rtl clean FPC=%COMPILER%
-%MAKEEXE% rtl packages_base_all fcl packages_extra_all FPC=%COMPILER% OPT="-g" 
+%MAKEEXE% rtl packages FPC=%COMPILER% OPT="-g" 
 
-%MAKEEXE% rtl_install fcl_install packages_install FPCMAKE=c:\fpc\%fpcversion%\bin\i386-win32\fpcmake.exe INSTALL_PREFIX=%INSTALL_BASE% FPC=%COMPILER%
+FOR /F %%L IN ('%COMPILER% -iV') DO SET FPCVERSION=%%L
+SET INSTALL_BASE=%BUILDDIR%\image\fpc\%FPCVERSION%
+SET INSTALL_BINDIR=%INSTALL_BASE%\bin\i386-win32
+
+:: copy the binutils
+rmdir /s /q %BUILDDIR%
+gmkdir -p %INSTALL_BINDIR%
+cp %CROSSBINDIR% %INSTALL_BINDIR%
+
+%MAKEEXE% rtl_install packages_install FPCMAKE=c:\fpc\%fpcversion%\bin\i386-win32\fpcmake.exe INSTALL_PREFIX=%INSTALL_BASE% FPC=%COMPILER%
 
 copy %COMPILER% %INSTALL_BINDIR%
 %FPCSVNDIR%\fpcsrc\compiler\utils\fpcmkcfg.exe -d "basepath=%INSTALL_BASE%" -o %INSTALL_BINDIR%\fpc.cfg
@@ -104,6 +103,7 @@ cp -pr %BUILDDIR%\components\synedit\units\%FPCFULLTARGET% %BUILDDIR%\image\comp
 del %INSTALL_BINDIR%\fpc.cfg
 
 cd %OLDCURDIR%
+FOR /F "delims='" %%F IN (%LAZSVNDIR%\ide\version.inc) DO set LAZVERSION=%%F
 %ISCC% lazarus-cross.iss 
 
 SET CPU_TARGET=
