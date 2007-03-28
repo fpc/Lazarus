@@ -118,7 +118,8 @@ end;
 Procedure PrettyPrintFile(Sender : TObject);
 
 Var
-  S1,S2 : TMemoryStream;
+  S1 : TMemoryStream;
+  S2 : TStringStream;
   E  : TSourceEditorInterface;
 
 begin
@@ -130,11 +131,11 @@ begin
   Try
     E.Lines.SaveToStream(S1);
     S1.Position:=0;
-    S2:=TMemoryStream.Create;
+    S2:=TStringStream.Create('');
     Try
       PrettyPrintStream(S1,S2);
       S2.Position:=0;
-      E.Lines.LoadFromStream(S2);
+      E.ReplaceLines(0, E.LineCount, S2.DataString);
     Finally
       S2.Free;
     end;
