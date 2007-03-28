@@ -53,6 +53,7 @@ rm -rf %FPCSVNDIR%\fpcsrc\compiler\*.exe
 %MAKEEXE% compiler_cycle FPC=%RELEASE_PPC%
 
 FOR /F %%L IN ('%FPCSVNDIR%\fpcsrc\compiler\utils\fpc.exe -PB') DO SET COMPILER=%FPCSVNDIR%\fpcsrc\compiler\%%L
+FOR /F %%L IN ('%FPCSVNDIR%\fpcsrc\compiler\utils\fpc.exe -iSO') DO SET FPCSourceOS=%FPCSVNDIR%\fpcsrc\compiler\%%L
 FOR /F %%L IN ('%FPCSVNDIR%\fpcsrc\compiler\utils\fpc.exe -P%TARGETCPU% -PB') DO SET PPCNAME=%%L
 
 %MAKEEXE% compiler FPC=%COMPILER% PPC_TARGET=%TARGETCPU% EXENAME=%PPCNAME%
