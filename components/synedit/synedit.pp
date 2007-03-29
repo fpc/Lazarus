@@ -9245,6 +9245,7 @@ begin
           and (ptFoundStart.X >= ptStart.X) and (ptFoundEnd.X <= ptEnd.X)) then
       begin
         // pattern found
+        Inc(Result);
         // Select the text, so the user can see it in the OnReplaceText event
         // handler or as the search result.
         BlockBegin := ptFoundStart;
