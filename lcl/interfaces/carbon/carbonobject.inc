@@ -60,8 +60,11 @@ function QuitEventHandler(inHandlerCallRef: EventHandlerCallRef;
 begin
   Result := CallNextEventHandler(inHandlerCallRef, inEvent);
   if Result <> noErr then Exit;
+  
   if (Widgetset <> nil) and TCarbonWidgetSet(Widgetset).FTerminating then Exit;
+
   TCarbonWidgetSet(Widgetset).FTerminating := True;
+
   if Application = nil then Exit;
   Application.Terminate;
 end;
@@ -163,6 +166,10 @@ procedure TCarbonWidgetSet.AppInit(var ScreenInfo: TScreenInfo);
 var
   ScreenDC: HDC;
 begin
+  {$IFDEF VerboseObject}
+    DebugLn('TCarbonWidgetSet.AppInit');
+  {$ENDIF}
+  
   WakeMainThread := @OnWakeMainThread;
   
   // fill the screen info
@@ -194,6 +201,10 @@ var
   EventSpec: EventTypeSpec;
   CurMainEventQueue: EventQueueRef;
 begin
+  {$IFDEF VerboseObject}
+    DebugLn('TCarbonWidgetSet.AppRun');
+  {$ENDIF}
+  
   DummyEvent := nil;
 
   // Create a UPP for EventLoopEventHandler and QuitEventHandler
@@ -259,6 +270,10 @@ begin
   finally
     DisposeEventHandlerUPP(EventLoopUPP);
   end;
+  
+  {$IFDEF VerboseObject}
+    DebugLn('TCarbonWidgetSet.AppRun END');
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -275,17 +290,24 @@ var
   CurEventClass: TEventInt;
   CurEventKind: TEventInt;
 begin
+  {$IFDEF VerboseObject}
+    DebugLn('TCarbonWidgetSet.AppProcessMessages');
+  {$ENDIF}
+  
   Target := GetEventDispatcherTarget;
   CurEventClass.Chars[4] := #0;
   CurEventKind.Chars[4] := #0;
   repeat
-    if ReceiveNextEvent(0, nil, kEventDurationNoWait, True, Event) <> noErr then
-      Break;
+    if ReceiveNextEvent(0, nil, kEventDurationNoWait, True,
+      Event) <> noErr then Break;
+      
     CurEventClass.Int := GetEventClass(Event);
     CurEventKind.Int := GetEventKind(Event);
+
     {$IFDEF DebugEventLoop}
     DebugLn('EventClass: "',CurEventClass.Chars,'" EventKind: ',IntToStr(CurEventKind.Int));
     {$ENDIF}
+
     if CurEventClass.Chars=LCLCarbonEventClass then begin
       // internal carbon intf message
       if (CurEventKind.Chars=LCLCarbonEventKindWake) and IsMultiThread then
@@ -297,7 +319,12 @@ begin
 
     SendEventToEventTarget(Event, Target);
     ReleaseEvent(Event);
+    
   until Application.Terminated;
+  
+  {$IFDEF VerboseObject}
+    DebugLn('TCarbonWidgetSet.AppProcessMessages END');
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -311,9 +338,14 @@ procedure TCarbonWidgetSet.AppWaitMessage;
 var
   Event: EventRef;
 begin
+  {$IFDEF VerboseObject}
+    DebugLn('TCarbonWidgetSet.AppWaitMessage');
+  {$ENDIF}
+  
   // Simply wait forever for the next event.
   // Don't pull it, so we can handle it later.
-  ReceiveNextEvent(0, nil, kEventDurationForever, False, Event);
+  OsError(ReceiveNextEvent(0, nil, kEventDurationForever, False, Event),
+    Self, 'AppWaitMessage', 'ReceiveNextEvent');
 end;
 
 {------------------------------------------------------------------------------
@@ -365,30 +397,43 @@ var
 begin
   if fMainEventQueue=nil then exit;
   
-  //DebuglnThreadLog('TCarbonWidgetSet.SendCheckSynchronizeMessage ');
+  {$IFDEF VerboseObject}
+    DebugLnThreadLog('TCarbonWidgetSet.SendCheckSynchronizeMessage ');
+  {$ENDIF}
+  
   EventSpec := MakeEventSpec(LCLCarbonEventClass,LCLCarbonEventKindWake);
   DummyEvent:=nil;
   try
     if CreateEvent(nil, EventSpec.eventClass, EventSpec.eventKind,
-                       0{GetCurrentEventTime}, kEventAttributeNone,
-                       DummyEvent) <> noErr
-    then begin
-      //DebuglnThreadLog('TCarbonWidgetSet.SendCheckSynchronizeMessage create event FAILED');
-      exit;
+      0{GetCurrentEventTime}, kEventAttributeNone, DummyEvent) <> noErr then
+    begin
+      {$IFDEF VerboseObject}
+        DebugLnThreadLog('TCarbonWidgetSet.SendCheckSynchronizeMessage Create event FAILED');
+      {$ENDIF}
+      
+      Exit;
     end;
+    
+    {$IFDEF VerboseObject}
+      DebugLnThreadLog('TCarbonWidgetSet.SendCheckSynchronizeMessage GetMainEventQueue='+dbgs(GetMainEventQueue));
+    {$ENDIF}
 
-    //DebuglnThreadLog('TCarbonWidgetSet.SendCheckSynchronizeMessage GetMainEventQueue='+dbgs(GetMainEventQueue));
     if PostEventToQueue(fMainEventQueue, DummyEvent,
-                        kEventPriorityHigh) <> noErr
-    then begin
-      //DebuglnThreadLog('TCarbonWidgetSet.SendCheckSynchronizeMessage post event FAILED');
-      exit;
+      kEventPriorityHigh) <> noErr then
+    begin
+      {$IFDEF VerboseObject}
+        DebugLnThreadLog('TCarbonWidgetSet.SendCheckSynchronizeMessage Post event FAILED');
+      {$ENDIF}
+      
+      Exit;
     end;
   finally
-    if DummyEvent<>nil then
-      ReleaseEvent(DummyEvent);
+    if DummyEvent <> nil then ReleaseEvent(DummyEvent);
   end;
-  //DebuglnThreadLog('TCarbonWidgetSet.SendCheckSynchronizeMessage END');
+  
+  {$IFDEF VerboseObject}
+    DebugLnThreadLog('TCarbonWidgetSet.SendCheckSynchronizeMessage END');
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -411,6 +456,10 @@ end;
 procedure TCarbonWidgetSet.AppTerminate;
 begin
   if FTerminating then Exit;
+  {$IFDEF VerboseObject}
+    DebugLn('TCarbonWidgetSet.AppTerminate');
+  {$ENDIF}
+  
   QuitApplicationEventLoop;
 end;
 
@@ -423,7 +472,11 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCarbonWidgetSet.AppMinimize;
 begin
-  CollapseAllWindows(True);
+  {$IFDEF VerboseObject}
+    DebugLn('TCarbonWidgetSet.AppMinimize');
+  {$ENDIF}
+  
+  OSError(CollapseAllWindows(True), Self, 'AppMinimize', 'CollapseAllWindows');
 end;
 
 {------------------------------------------------------------------------------
@@ -435,7 +488,11 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCarbonWidgetSet.AppRestore;
 begin
-  CollapseAllWindows(False);
+  {$IFDEF VerboseObject}
+    DebugLn('TCarbonWidgetSet.AppRestore');
+  {$ENDIF}
+
+  OSError(CollapseAllWindows(False), Self, 'AppRestore', 'CollapseAllWindows');
 end;
 
 {------------------------------------------------------------------------------
@@ -448,13 +505,19 @@ end;
 procedure TCarbonWidgetSet.AppBringToFront;
 var
   Proc: ProcessSerialNumber;
+const AName = 'AppBringToFront';
 begin
+  {$IFDEF VerboseObject}
+    DebugLn('TCarbonWidgetSet.AppBringToFront');
+  {$ENDIF}
+  
   (*
     According to Carbon Development Tips & Tricks:
     34. How do I bring all my windows to the front?
   *)
 
-  if GetCurrentProcess(Proc) = noErr then SetFrontProcess(Proc);
+  if OSError(GetCurrentProcess(Proc), Self, AName, 'GetCurrentProcess') then Exit;
+  OSError(SetFrontProcess(Proc), Self, AName, 'SetFrontProcess');
 end;
 
 {------------------------------------------------------------------------------
@@ -468,23 +531,50 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method:  TCarbonWidgetSet.AttachMenuToWindow
+  Params:  AMenuObject - Menu
+
+  Attaches the menu of window to menu bar
+  TODO: change menu on activation
+ ------------------------------------------------------------------------------}
+procedure TCarbonWidgetSet.AttachMenuToWindow(AMenuObject: TComponent);
+begin
+  {$IFDEF VerboseObject}
+    DebugLn('TCarbonWidgetSet.AttachMenuToWindow ' + AMenuObject.Name);
+  {$ENDIF}
+  
+  if (AMenuObject is TMainMenu) and (TMainMenu(AMenuObject).Handle <> 0) then
+  begin
+    if not CheckMenu(TMainMenu(AMenuObject).Handle,
+      'TCarbonWidgetSet.AttachMenuToWindow') then Exit;
+      
+    TCarbonMenu(TMainMenu(AMenuObject).Handle).AttachToMenuBar;
+  end;
+end;
+
+{------------------------------------------------------------------------------
   Method:  TCarbonWidgetSet.DCGetPixel
-  Params:  CanvasHandle - canvas handle to get color from
-           X, Y         - position
+  Params:  CanvasHandle - Canvas handle to get color from
+           X, Y         - Position
   Returns: Color of the specified pixel on the canvas
   Not implemented!
  ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.DCGetPixel(CanvasHandle: HDC; X, Y: integer
   ): TGraphicsColor;
 begin
+  {$IFDEF VerboseObject}
+    DebugLn('TCarbonWidgetSet.DCGetPixel DC: ' + DbgS(CanvasHandle) + ' X: ' + DbgS(X) + ' Y: ' + DbgS(Y));
+  {$ENDIF}
+  
+  DebugLn('TCarbonWidgetSet.DCGetPixel TODO');
   Result := clNone;
 end;
 
 {------------------------------------------------------------------------------
   Method:  TCarbonWidgetSet.DCSetPixel
-  Params:  CanvasHandle - canvas handle to get color from
-           X, Y         - position
-           AColor       - new color for specified position
+  Params:  CanvasHandle - Canvas handle to get color from
+           X, Y         - Position
+           AColor       - New color for specified position
   Returns: Nothing
 
   Sets the color of the specified pixel on the canvas
@@ -493,29 +583,34 @@ end;
 procedure TCarbonWidgetSet.DCSetPixel(CanvasHandle: HDC; X, Y: integer;
   AColor: TGraphicsColor);
 begin
-
+  {$IFDEF VerboseObject}
+    DebugLn('TCarbonWidgetSet.DCSetPixel DC: ' + DbgS(CanvasHandle) + ' X: ' + DbgS(X) + ' Y: ' + DbgS(Y) + 'Color: ' + DbgS(AColor));
+  {$ENDIF}
+  
+  DebugLn('TCarbonWidgetSet.DCSetPixel TODO');
 end;
 
 {------------------------------------------------------------------------------
   Method:  TCarbonWidgetSet.DCReDraw
-  Params:  CanvasHandle - canvas handle to redraw
+  Params:  CanvasHandle - Canvas handle to redraw
   Returns: Nothing
 
   Redraws (the window of) a canvas
  ------------------------------------------------------------------------------}
 procedure TCarbonWidgetSet.DCRedraw(CanvasHandle: HDC);
-var
-  ADC: TCarbonControlContext;
 begin
-  if not (TObject(CanvasHandle) is TCarbonControlContext) then Exit;
-  ADC := TCarbonControlContext(CanvasHandle);
-
-  CGContextFlush(ADC.CGContext);
+  {$IFDEF VerboseObject}
+    DebugLn('TCarbonWidgetSet.DCRedraw DC: ' + DbgS(CanvasHandle));
+  {$ENDIF}
+  
+  if not CheckDC(CanvasHandle, 'DCRedraw') then Exit;
+  
+  CGContextFlush(TCarbonContext(CanvasHandle).CGContext);
 end;
 
 {------------------------------------------------------------------------------
   Method:  TCarbonWidgetSet.SetDesigning
-  Params:  AComponent - component to set designing
+  Params:  AComponent - Component to set designing
   Returns: Nothing
 
   Not implemented!
@@ -541,8 +636,8 @@ end;
 
 {------------------------------------------------------------------------------
   Method:  TimerCallback
-  Params:  inTimer    - timer reference
-           inUserData - user data passed when installing timer
+  Params:  inTimer    - Timer reference
+           inUserData - User data passed when installing timer
   Returns: Nothing
 
   Calls the timer function associated with specified timer
@@ -551,15 +646,25 @@ procedure TimerCallback(inTimer: EventLoopTimerRef; inUserData: UnivPtr);
 var
   TimerFunc: TFNTimerProc;
 begin
+  {$IFDEF VerboseTimer}
+    DebugLn('TimerCallback');
+  {$ENDIF}
+  
   if CarbonWidgetSet = nil then Exit;
-  if CarbonWidgetSet.FTimerMap.GetData(inTimer, TimerFunc)
-  then TimerFunc;
+  if CarbonWidgetSet.FTimerMap.GetData(inTimer, TimerFunc) then
+  begin
+    {$IFDEF VerboseTimer}
+      DebugLn('TimerCallback Timer instaåled, calling func.');
+    {$ENDIF}
+    
+    TimerFunc;
+  end;
 end;
 
 {------------------------------------------------------------------------------
   Method:  TCarbonWidgetSet.CreateTimer
-  Params:  Interval  - new timer interval
-           TimerFunc - new timer callback
+  Params:  Interval  - New timer interval
+           TimerFunc - New timer callback
   Returns: A Timer id
 
   Creates new timer with specified interval and callback function
@@ -568,17 +673,25 @@ function TCarbonWidgetSet.CreateTimer(Interval: integer; TimerFunc: TFNTimerProc
 var
   Timer: EventLoopTimerRef;
 begin
+  {$IFDEF VerboseTimer}
+    DebugLn('TCarbonWidgetSet.CreateTimer Interval: ' + DbgS(Interval));
+  {$ENDIF}
   Result := 0;
+  
   if (Interval > 0) and (TimerFunc <> nil) then
   begin
-    if InstallEventLoopTimer(GetMainEventLoop,
+    if OSError(InstallEventLoopTimer(GetMainEventLoop,
       Interval / 1000, Interval / 1000, // converts msec -> sec
-      EventLoopTimerUPP(@TimerCallback), nil, Timer) = noErr then
-    begin
-      FTimerMap.Add(Timer, TimerFunc);
-      Result := THandle(Timer);
-    end;
+      EventLoopTimerUPP(@TimerCallback), nil, Timer), Self,
+      'CreateTimer', 'InstallEventLoopTimer') then Exit;
+      
+    FTimerMap.Add(Timer, TimerFunc);
+    Result := THandle(Timer)
   end;
+  
+  {$IFDEF VerboseTimer}
+    DebugLn('TCarbonWidgetSet.CreateTimer Result: ' + DbgS(Result));
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -590,7 +703,13 @@ end;
  ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.DestroyTimer(TimerHandle: THandle): boolean;
 begin
+  {$IFDEF VerboseTimer}
+    DebugLn('TCarbonWidgetSet.DestroyTimer Handle: ' + DbgS(TimerHandle));
+  {$ENDIF}
+
   Result := FTimerMap.Delete(TimerHandle);
-  if Result // valid timer
-  then RemoveEventLoopTimer(EventLoopTimerRef(TimerHandle));
+  
+  if Result then // valid timer
+    OSError(RemoveEventLoopTimer(EventLoopTimerRef(TimerHandle)), Self,
+      'DestroyTimer', 'RemoveEventLoopTimer');
 end;

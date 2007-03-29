@@ -36,7 +36,7 @@ uses
   // libs
   FPCMacOSAll,
   // LCL
-  Controls, Dialogs, LCLType, LCLProc,
+  SysUtils, Controls, Dialogs, LCLType, LCLProc,
   // widgetset
   WSLCLClasses, WSProc, WSDialogs,
   // interface
@@ -57,6 +57,7 @@ type
   private
   protected
   public
+    class procedure ShowModal(const ACommonDialog: TCommonDialog); override;
   end;
 
   { TCarbonWSOpenDialog }
@@ -111,6 +112,155 @@ type
 
 implementation
 
+{ TCarbonWSFileDialog }
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWSFileDialog.ShowModal
+  Params:  ACommonDialog - LCL common dialog
+  
+  Shows a file dialog (open, save, slect directory) in Carbon interface. Sets
+  ACommonDialog.UserChoice to mrOK or mrCancel. If mrOK, also sets
+  ACommonDialog.FileName to first file selected and adds file(s) selected to
+  ACommonDialog.Files.
+ ------------------------------------------------------------------------------}
+class procedure TCarbonWSFileDialog.ShowModal(const ACommonDialog: TCommonDialog);
+
+ {
+  Called by Execute method of TOpenDialog, TSaveDialog and TSelectDirectoryDialog.
+   TODO: Figure out how to use dialog's InitialDir property.
+   TODO: Figure out how to pass UPP of a custom filter callback function as 
+         inFilterProc to NavCreateGetFileDialog and pass FileDialog as
+         inClientData so callback function can access dialog's Filter property.
+ }
+var
+  FileDialog: TFileDialog;
+  CreationOptions: NavDialogCreationOptions;
+  DialogRef: NavDialogRef;
+  DialogReply: NavReplyRecord;
+  FileCount: Integer;
+  FileIdx: Integer;
+  Keyword: AEKeyword;
+  FileDesc: AEDesc;
+  FileRef: FSRef;
+  FileURL: CFURLRef;
+  FileCFStr: CFStringRef;
+const AName = 'TCarbonWSFileDialog.ShowModal';
+begin
+  {$IFDEF VerboseWSClass}
+    DebugLn('TCarbonWSFileDialog.ShowModal for ' + ACommonDialog.Name);
+  {$ENDIF}
+
+  FileDialog := ACommonDialog as TFileDialog;
+
+  // Initialize record to default values
+  if OSError(NavGetDefaultDialogCreationOptions(CreationOptions),
+    AName, 'NavGetDefaultDialogCreationOptions') then Exit;
+
+  if FileDialog.Title <> '' then  // Override dialog's default title?
+    CreateCFString(FileDialog.Title, CreationOptions.windowTitle);
+
+  FileDialog.UserChoice := mrCancel; // Return this if user cancels or we need to exit
+
+  try
+    if FileDialog is TSaveDialog then
+    begin  // Checking for TSaveDialog first since it's descendent of TOpenDialog
+      CreateCFString(ExtractFileName(FileDialog.FileName),
+        CreationOptions.saveFileName);  // Note doesn't like path
+        
+      if ofOverwritePrompt in TOpenDialog(FileDialog).Options then
+        CreationOptions.optionFlags :=
+           CreationOptions.optionFlags xor kNavDontConfirmReplacement
+      else
+        CreationOptions.optionFlags :=
+          CreationOptions.optionFlags or kNavDontConfirmReplacement;
+         
+      // Create Save dialog
+      if OSError(NavCreatePutFileDialog(@CreationOptions, 0, 0, nil, nil,
+        DialogRef), AName, 'NavCreatePutFileDialog') then Exit;
+    end
+    else
+      if FileDialog is TSelectDirectoryDialog then // Create Choose folder dialog
+      begin
+        if OSError(NavCreateChooseFolderDialog(@CreationOptions, nil, nil, nil,
+          DialogRef), AName, 'NavCreateChooseFolderDialog') then Exit;
+      end
+      else
+        if FileDialog is TOpenDialog then
+        begin
+          if not (ofAllowMultiSelect in TOpenDialog(FileDialog).Options) then
+            CreationOptions.optionFlags :=
+              CreationOptions.optionFlags xor kNavAllowMultipleFiles
+          else
+            CreationOptions.optionFlags :=
+              CreationOptions.optionFlags or kNavAllowMultipleFiles;
+
+          // Create Open dialog
+          if OSError(NavCreateGetFileDialog(@CreationOptions, nil, nil, nil, nil,
+            nil, DialogRef), AName, 'NavCreateGetFileDialog') then Exit;
+        end;
+
+    try
+      // Display dialog
+      if OSError(NavDialogRun(DialogRef), AName, 'NavDialogRun') then Exit;
+      
+      if NavDialogGetUserAction(DialogRef) <> kNavUserActionCancel then // User OK?
+      begin
+        if OSError(NavDialogGetReply(DialogRef, DialogReply), AName,
+          'NavDialogGetReply') then Exit;  // Get user's selection
+          
+        if OSError(AECountItems(DialogReply.Selection, FileCount), AName,
+          'AECountItems') then Exit;
+          
+        for FileIdx := 1 to FileCount do
+        begin
+          if OSError(AEGetNthDesc(DialogReply.Selection, FileIdx, typeFSRef,
+            @Keyword, FileDesc), AName, 'AEGetNthDesc') then Exit;
+          // Get file reference
+          if OSError(AEGetDescData(FileDesc, @FileRef, SizeOf(FSRef)), AName,
+            'AEGetDescData') then Exit;
+          if OSError(AEDisposeDesc(FileDesc), AName, 'AEDisposeDesc') then Exit;
+          
+          FileURL := CFURLCreateFromFSRef(kCFAllocatorDefault, FileRef); // Get URL
+          FileCFStr := CFURLCopyFileSystemPath(FileURL, kCFURLPOSIXPathStyle); // Get path
+          
+          FileDialog.Files.Add(CFStringToStr(FileCFStr));
+
+          FreeCFString(FileURL);
+          FreeCFString(FileCFStr);
+          // Note: Previous 5 lines replace next 2 lines and eliminate need
+          //   to decide what size to make FileBuf array.
+          //   See http://developer.apple.com/technotes/tn2002/tn2078.html
+          //  FSRefMakePath(FileRef, @FileBuf, SizeOf(FileBuf));  {Get file path}
+          //  FileDialog.Files.Add(string(FileBuf));  //FileBuf contains UTF8 C string
+        end;
+          
+        FileDialog.FileName := FileDialog.Files.Strings[0];
+
+        if FileDialog is TSaveDialog then
+          FileDialog.FileName := FileDialog.FileName + PathDelim +
+            CFStringToStr(NavDialogGetSaveFileName(DialogRef));
+            {Note: Not at all clear from Apple docs that NavReplyRecord.Selection
+              returns only path to file's folder with Save dialog. Also, what they
+              mean by the "full file name" returned by NavDialogGetSaveFileName
+              must mean extension and not path to file's folder.}
+              
+        // Dispose of data that record points to (?)
+        if OSError(NavDisposeReply(DialogReply), AName, 'NavDisposeReply') then
+          Exit;
+          
+        FileDialog.UserChoice := mrOK;
+      end;
+    finally
+      NavDialogDispose(DialogRef);  // Dispose of dialog
+    end;
+
+  finally
+    FreeCFString(CreationOptions.windowTitle);
+    FreeCFString(CreationOptions.saveFileName);
+  end;
+
+end;  {TCarbonWSFileDialog.ShowModal}
+
 { TCarbonWSColorDialog }
 
 {------------------------------------------------------------------------------
@@ -126,6 +276,10 @@ var
   ColorInfo: ColorPickerInfo;
   ColorDialog: TColorDialog;
 begin
+  {$IFDEF VerboseWSClass}
+    DebugLn('TCarbonWSColorDialog.ShowModal for ' + ACommonDialog.Name);
+  {$ENDIF}
+  
   ACommonDialog.UserChoice := mrCancel;
   ColorDialog := ACommonDialog as TColorDialog;
   
@@ -141,13 +295,13 @@ begin
   ColorInfo.colorProc := nil;
   // ColorDialog.Title is ignored, ColorInfo.prompt is not shown anywhere
   
-  if PickColor(ColorInfo) = noErr then
-    if ColorInfo.newColorChosen then
-    begin
-      ColorDialog.Color := RGBColorToColor(
-        RGBColor(ColorInfo.theColor.color.rgb));
-      ACommonDialog.UserChoice := mrOK;
-    end;
+  if OSError(PickColor(ColorInfo), Self, 'ShowModal', 'PickColor') then Exit;
+  
+  if ColorInfo.newColorChosen then
+  begin
+    ColorDialog.Color := RGBColorToColor(RGBColor(ColorInfo.theColor.color.rgb));
+    ACommonDialog.UserChoice := mrOK;
+  end;
 end;
 
 initialization
@@ -159,7 +313,7 @@ initialization
 // which actually implement something
 ////////////////////////////////////////////////////
 //  RegisterWSComponent(TCommonDialog, TCarbonWSCommonDialog);
-//  RegisterWSComponent(TFileDialog, TCarbonWSFileDialog);
+  RegisterWSComponent(TFileDialog, TCarbonWSFileDialog);
 //  RegisterWSComponent(TOpenDialog, TCarbonWSOpenDialog);
 //  RegisterWSComponent(TSaveDialog, TCarbonWSSaveDialog);
 //  RegisterWSComponent(TSelectDirectoryDialog, TCarbonWSSelectDirectoryDialog);

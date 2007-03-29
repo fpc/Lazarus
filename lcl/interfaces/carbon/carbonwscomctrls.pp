@@ -180,7 +180,7 @@ end;
 class procedure TCarbonWSProgressBar.ApplyChanges(
   const AProgressBar: TCustomProgressBar);
 begin
-  if not WSCheckHandleAllocated(AProgressBar, 'ApplyChanges') then Exit;
+  if not CheckHandle(AProgressBar, Self, 'ApplyChanges') then Exit;
 
   TCarbonCustomBar(AProgressBar.Handle).SetData(AProgressBar.Position,
     AProgressBar.Min, AProgressBar.Max);
@@ -196,7 +196,7 @@ end;
 class procedure TCarbonWSProgressBar.SetPosition(
   const AProgressBar: TCustomProgressBar; const NewPosition: integer);
 begin
-  if not WSCheckHandleAllocated(AProgressBar, 'SetPosition') then Exit;
+  if not CheckHandle(AProgressBar, Self, 'SetPosition') then Exit;
 
   TCarbonCustomBar(AProgressBar.Handle).SetData(AProgressBar.Position);
 end;
@@ -227,7 +227,7 @@ class procedure TCarbonWSTrackBar.ApplyChanges(const ATrackBar: TCustomTrackBar)
 var
   CarbonTrackBar: TCarbonTrackBar;
 begin
-  if not WSCheckHandleAllocated(ATrackBar, 'ApplyChanges') then Exit;
+  if not CheckHandle(ATrackBar, Self, 'ApplyChanges') then Exit;
 
   CarbonTrackBar := TCarbonTrackBar(ATrackBar.Handle);
   
@@ -246,7 +246,7 @@ class function TCarbonWSTrackBar.GetPosition(const ATrackBar: TCustomTrackBar
   ): integer;
 begin
   Result := 0;
-  if not WSCheckHandleAllocated(ATrackBar, 'GetPosition') then Exit;
+  if not CheckHandle(ATrackBar, Self, 'GetPosition') then Exit;
 
   Result := TCarbonTrackBar(ATrackBar.Handle).GetPos;
 end;
@@ -261,7 +261,7 @@ end;
 class procedure TCarbonWSTrackBar.SetPosition(const ATrackBar: TCustomTrackBar;
   const NewPosition: integer);
 begin
-  if not WSCheckHandleAllocated(ATrackBar, 'SetPosition') then Exit;
+  if not CheckHandle(ATrackBar, Self, 'SetPosition') then Exit;
 
   TCarbonTrackBar(ATrackBar.Handle).SetData(ATrackBar.Position);
 end;

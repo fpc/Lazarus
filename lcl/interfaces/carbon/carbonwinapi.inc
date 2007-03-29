@@ -76,8 +76,12 @@ function TCarbonWidgetSet.ClientToScreen(Handle: HWND; var P: TPoint): Boolean;
 var
   R: TRect;
 begin
-  if not CheckWidget(Handle, 'TCarbonWidgetSet.ClientToScreen') then Exit;
-  Result := GetWindowRect(Handle, R) <> 0;
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.ClientToScreen P: ' + DbgS(P));
+  {$ENDIF}
+  
+  if not CheckWidget(Handle, 'ClientToScreen') then Exit;
+  Result := TCarbonWidget(Handle).GetScreenBounds(R);
   
   if Result then
   begin
@@ -92,6 +96,10 @@ begin
       Inc(P.Y, R.Top);
     end;
   end;
+  
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.ClientToScreen Result: ' + DbgS(Result) + ' P: ' + DbgS(P));
+  {$ENDIF}
 end;
 
 function TCarbonWidgetSet.ClipboardFormatToMimeType(FormatID: TClipboardFormat
@@ -143,10 +151,17 @@ end;
 function TCarbonWidgetSet.ComboBoxDropDown(Handle: HWND; DropDown: boolean
   ): boolean;
 begin
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.ComboBoxDropDown Handle: ' + DbgS(Handle) + ' Drop: ' + DbgS(DropDown));
+  {$ENDIF}
+  
   Result := False;
-  if not CheckWidget(Handle, 'TCarbonWidgetSet.ComboBoxDropDown') then Exit;
+  if not CheckWidget(Handle, 'ComboBoxDropDown') then Exit;
 
-  Result := HIComboBoxSetListVisible(AsControlRef(Handle), DropDown) = noErr;
+  if OSError(HIComboBoxSetListVisible(AsControlRef(Handle), DropDown), Self,
+    'ComboBoxDropDown', 'HIComboBoxSetListVisible') then Exit;
+    
+  Result := True;
 end;
 
 {------------------------------------------------------------------------------
@@ -163,6 +178,10 @@ end;
 function TCarbonWidgetSet.CreateBitmap(Width, Height: Integer; Planes,
   BitCount: Longint; BitmapBits: Pointer): HBITMAP;
 begin
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.CreateBitmap');
+  {$ENDIF}
+  
   Result := HBITMAP(TCarbonBitmap.Create(Width, Height, BitCount, BitmapBits));
 end;
 
@@ -179,6 +198,10 @@ end;
 function TCarbonWidgetSet.CreateBitmapFromRawImage(const RawImage: TRawImage;
   var Bitmap, MaskBitmap: HBitmap; AlwaysCreateMask: boolean): boolean;
 begin
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.CreateBitmapFromRawImage');
+  {$ENDIF}
+  
   Result := False;
   Bitmap := 0;
   MaskBitmap := 0;
@@ -199,6 +222,10 @@ end;
 function TCarbonWidgetSet.CreateBrushIndirect(const LogBrush: TLogBrush
   ): HBRUSH;
 begin
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.CreateBrushIndirect');
+  {$ENDIF}
+  
   Result := HBRUSH(TCarbonBrush.Create(LogBrush));
 end;
 
@@ -223,6 +250,10 @@ end;
  ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.CreateCompatibleDC(DC: HDC): HDC;
 begin
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.CreateCompatibleDC');
+  {$ENDIF}
+  
   Result := HDC(TCarbonBitmapContext.Create);
 end;
 
@@ -235,6 +266,10 @@ end;
  ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.CreateCursor(ACursorInfo: PIconInfo): HCURSOR;
 begin
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.CreateCursor');
+  {$ENDIF}
+  
   Result := HCURSOR(TCarbonCursor.CreateFromInfo(ACursorInfo));
 end;
 
@@ -247,6 +282,10 @@ end;
  ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.CreateFontIndirect(const LogFont: TLogFont): HFONT;
 begin
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.CreateFontIndirect');
+  {$ENDIF}
+  
   Result := HFONT(TCarbonFont.Create(LogFont, LogFont.lfFaceName));
 end;
 
@@ -261,6 +300,10 @@ end;
 function TCarbonWidgetSet.CreateFontIndirectEx(const LogFont: TLogFont;
   const LongFontName: string): HFONT;
 begin
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.CreateFontIndirectEx');
+  {$ENDIF}
+  
   Result := HFONT(TCarbonFont.Create(LogFont, LongFontName));
 end;
 
@@ -279,6 +322,10 @@ end;
  ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.CreatePenIndirect(const LogPen: TLogPen): HPEN;
 begin
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.CreatePenIndirect');
+  {$ENDIF}
+  
   Result := HPEN(TCarbonPen.Create(LogPen));
 end;
 
@@ -311,6 +358,10 @@ procedure TCarbonWidgetSet.DeleteCriticalSection(
 var
   ACritSec: System.PRTLCriticalSection;
 begin
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.DeleteCriticalSection Section: ' + DbgS(CritSection));
+  {$ENDIF}
+  
   ACritSec := System.PRTLCriticalSection(CritSection);
 
   System.DoneCriticalsection(ACritSec^);
@@ -328,8 +379,12 @@ end;
  ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.DeleteDC(hDC: HDC): Boolean;
 begin
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.DeleteDC DC: ' + DbgS(hDC));
+  {$ENDIF}
+  
   Result := False;
-  if not CheckDC(hDC, 'TCarbonWidgetSet.DeleteDC') then Exit;
+  if not CheckDC(hDC, 'DeleteDC') then Exit;
   
   TCarbonDeviceContext(hDC).Free;
   Result := True;
@@ -345,8 +400,12 @@ end;
  ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.DeleteObject(GDIObject: HGDIOBJ): Boolean;
 begin
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.DeleteObject GDIObject: ' + DbgS(GDIObject));
+  {$ENDIF}
+  
   Result := False;
-  if not CheckGDIObject(GDIObject, 'TCarbonWidgetSet.DeleteObject') then Exit;
+  if not CheckGDIObject(GDIObject, 'DeleteObject') then Exit;
   
   TCarbonGDIObject(GDIObject).Free;
   Result := True;
@@ -366,9 +425,13 @@ end;
  ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.DestroyCursor(Handle: HCURSOR): Boolean;
 begin
-  Result := Handle <> 0;
-  if Result then
-    TCarbonCursor(Handle).Free;
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.DestroyCursor Handle: ' + DbgS(Handle));
+  {$ENDIF}
+  
+  Result := False;
+  if not CheckCursor(Handle, 'DestroyCursor') then Exit;
+  TCarbonCursor(Handle).Free;
 end;
 
 function TCarbonWidgetSet.DrawFrameControl(DC: HDC; const Rect: TRect; uType,
@@ -406,14 +469,17 @@ function TCarbonWidgetSet.Ellipse(DC: HDC; x1, y1, x2, y2: Integer): Boolean;
 var
   ADC: TCarbonDeviceContext;
 begin
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.Ellipse DC: ' + DbgS(DC) + ' R: ' + DbgS(Classes.Rect(X1, Y1, X2, Y2)));
+  {$ENDIF}
+  
   Result := False;
-  if not CheckDC(DC, 'TCarbonWidgetSet.Ellipse') then Exit;
+  if not CheckDC(DC, 'Ellipse') then Exit;
 
   ADC := TCarbonDeviceContext(DC);
-
-  // use paths to stroke and fill at one blow (because of ROP)
+  
   CGContextBeginPath(ADC.CGContext);
-  CGContextAddEllipseInRect(ADC.CGContext, GetCGrect(X1, Y1, X2, Y2));
+  CGContextAddEllipseInRect(ADC.CGContext, GetCGRectSorted(X1, Y1, X2, Y2));
   CGContextDrawPath(ADC.CGContext, kCGPathFillStroke);
 
   Result := True;
@@ -436,8 +502,12 @@ end;
  ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.EnableWindow(hWnd: HWND; bEnable: Boolean): Boolean;
 begin
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.EnableWindow Handle: ' + DbgS(hWnd) + 'Enable: ' + DbgS(bEnable));
+  {$ENDIF}
+  
   Result := False;
-  if not CheckWidget(HWnd, 'TCarbonWidgetSet.EnableWindow') then Exit;
+  if not CheckWidget(HWnd, 'EnableWindow') then Exit;
   Result := TCarbonWidget(HWnd).Enable(bEnable);
 end;
 
@@ -459,6 +529,10 @@ procedure TCarbonWidgetSet.EnterCriticalSection(
 var
   ACritSec: System.PRTLCriticalSection;
 begin
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.EnterCriticalSection Section: ' + DbgS(CritSection));
+  {$ENDIF}
+  
   ACritSec:=System.PRTLCriticalSection(CritSection);
   System.EnterCriticalsection(ACritSec^);
 end;
@@ -487,11 +561,16 @@ function TCarbonWidgetSet.EnumFontFamiliesEx(DC: HDC; lpLogFont: PLogFont;
 var
   FamilyCount, NameLength: LongWord;
   FamilyListPtr, PFamily: ^ATSUFontID;
-  FontName: String;
+  FontName: UTF8String;
   EnumLogFont: TEnumLogFontEx;
   Metric: TNewTextMetricEx;
   FontType, I: Integer;
+const AName = 'TCarbonWidgetSet.EnumFontFamiliesEx';
 begin
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.EnumFontFamiliesEx');
+  {$ENDIF}
+  
   Result := 0;
   if (lpLogFont = nil) or not Assigned(Callback) then Exit;
   
@@ -500,26 +579,30 @@ begin
   if (lpLogFont^.lfCharSet = DEFAULT_CHARSET) and (lpLogFont^.lfFaceName = '') then
   begin
     // all system fonts
-    if ATSUFontCount(FamilyCount) <> noErr then Exit;
+    if OSError(ATSUFontCount(FamilyCount), AName, 'ATSUFontCount') then Exit;
     
     GetMem(FamilyListPtr, SizeOf(ATSUFontID) * FamilyCount);
     try
-      if ATSUGetFontIDs(FamilyListPtr, FamilyCount, nil) <> noErr then Exit;
+      if OSError(ATSUGetFontIDs(FamilyListPtr, FamilyCount, nil), AName, 'ATSUGetFontIDs') then Exit;
+
+      {$IFDEF VerboseWinAPI}
+        DebugLn(AName + ' Found: ' + DbgS(FamilyCount));
+      {$ENDIF}
 
       PFamily := FamilyListPtr;
       for I := 0 to Pred(FamilyCount) do
       begin
         // retrieve font name length
-        if ATSUFindFontName(PFamily^, kFontFamilyName, kFontMacintoshPlatform,
+        if OSError(ATSUFindFontName(PFamily^, kFontFamilyName, kFontMacintoshPlatform,
           kFontRomanScript, kFontEnglishLanguage, NameLength, nil,
-          @NameLength, nil) <> noErr then Continue;
+          @NameLength, nil), AName, 'ATSUFindFontName', 'Length') then Continue;
         
         SetLength(FontName, NameLength);
 
-        // retrieve font name
-        if ATSUFindFontName(PFamily^, kFontFamilyName, kFontMacintoshPlatform,
+        // retrieve font name, UTF-16 encoded
+        if OSError(ATSUFindFontName(PFamily^, kFontFamilyName, kFontMacintoshPlatform,
           kFontRomanScript, kFontEnglishLanguage, NameLength,
-          @FontName[1], @NameLength, nil) <> noErr then Continue;
+          @FontName[1], @NameLength, nil), AName, 'ATSUFindFontName', 'Name') then Continue;
           
         if FontName <> '' then // execute callback
         begin
@@ -539,14 +622,49 @@ begin
   end
   else
   begin
-    DebugLn('TCarbonWidgetSet.EnumFontFamiliesEx with specific face or specific char set is not implemented!');
+    DebugLn(AName + ' with specific face or specific char set is not implemented!');
   end;
 end;
 
-function TCarbonWidgetSet.ExcludeClipRect(dc: hdc; Left, Top, Right,
+{------------------------------------------------------------------------------
+  Method:  ExcludeClipRect
+  Params:  DC - Handle to device context
+           Left, Top, Right, Bottom - Rectangle coordinates
+  Returns: See bellow
+
+  Subtracts all intersecting points of the passed bounding rectangle from the
+  current clipping region of the device context. The result can be one of the
+  following constants: ERROR, NULLREGION, SIMPLEREGION, COMPLEXREGION.
+ ------------------------------------------------------------------------------}
+function TCarbonWidgetSet.ExcludeClipRect(DC: HDC; Left, Top, Right,
   Bottom: Integer): Integer;
+var
+  ClipBox: TRect;
+  Rects: CGRectArray;
 begin
-  Result:=inherited ExcludeClipRect(dc, Left, Top, Right, Bottom);
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.ExcludeClipRect DC: ' + DbgS(DC) + ' R: ' +
+      DbgS(Classes.Rect(Left, Top, Right, Bottom)));
+  {$ENDIF}
+  
+  Result := ERROR;
+  if not CheckDC(DC, 'ExcludeClipRect') then Exit;
+  
+  if (Left < Right) and (Top < Bottom) then
+  begin
+    ClipBox := CGRectToRect(
+      CGContextGetClipBoundingBox(TCarbonDeviceContext(DC).CGContext));
+      
+    Rects := ExcludeRect(ClipBox, Classes.Rect(Left, Top, Right, Bottom));
+
+    if Length(Rects) > 0 then
+      CGContextClipToRects(TCarbonDeviceContext(DC).CGContext, @Rects[0],
+        Length(Rects))
+    else
+      CGContextClipToRect(TCarbonDeviceContext(DC).CGContext, CGRectZero);
+  end;
+  
+  Result := COMPLEXREGION;
 end;
 
 {------------------------------------------------------------------------------
@@ -570,10 +688,14 @@ var
   ADC: TCarbonDeviceContext;
   TextBefore, TextAfter, Ascent, Descent: ATSUTextMeasurement;
 begin
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.ExtTextOut DC: ' + DbgS(DC) + ' ' + DbgS(X) +
+      ', ' + DbgS(Y) + ' Str: ' + Str);
+  {$ENDIF}
+  
   Result := False;
-  if not CheckDC(DC, 'TCarbonWidgetSet.ExtTextOut') then Exit;
+  if not CheckDC(DC, 'ExtTextOut') then Exit;
   ADC := TCarbonDeviceContext(DC);
-  DebugLn('TCarbonWidgetSet.ExtTextOut ' + DbgS(X) + ', ' + DbgS(Y) + ' Text: ' + Str);
 
   if not ADC.BeginTextRender(Str, Count, TextLayout) then Exit;
   try
@@ -585,7 +707,7 @@ begin
     if (Options and ETO_OPAQUE) > 0 then
     begin
       ADC.BkBrush.Apply(ADC, False); // do not use ROP2
-      CGContextFillRect(ADC.CGContext, GetCGRect(X - TextBefore shr 16,
+      CGContextFillRect(ADC.CGContext, GetCGRectSorted(X - TextBefore shr 16,
         -Y, X + TextAfter shr 16, -Y - (Ascent + Descent) shr 16));
     end;
         
@@ -600,6 +722,10 @@ begin
   finally
     ADC.EndTextRender(TextLayout);
   end;
+  
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.ExtTextOut Result: ' + DbgS(Result));
+  {$ENDIF}
 end;
 
 function TCarbonWidgetSet.ExtSelectClipRGN(dc: hdc; rgn: hrgn; Mode: Longint
@@ -625,11 +751,16 @@ var
   ADC: TCarbonDeviceContext;
   SavedBrush: HBRUSH;
 begin
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.FillRect DC: ' + DbgS(DC) + ' R: ' + DbgS(Rect) +
+      ' Brush: ' + DbgS(Brush));
+  {$ENDIF}
+  
   Result := False;
-  if not CheckDC(DC, 'TCarbonWidgetSet.FillRect') then Exit;
+  if not CheckDC(DC, 'FillRect') then Exit;
   if not (TObject(Brush) is TCarbonBrush) then
   begin
-    DebugLn('TCarbonWidgetSet.FillRect error - invalid Brush!');
+    DebugLn('TCarbonWidgetSet.FillRect Error - invalid Brush!');
     Exit;
   end;
 
@@ -639,31 +770,103 @@ begin
   TCarbonBrush(Brush).Apply(ADC, False); // do not use ROP2
   try
     CGContextFillRect(ADC.CGContext, RectToCGRect(Rect));
-    Result := True;
   finally
     SelectObject(DC, SavedBrush);
     if SavedBrush = Brush then
       TCarbonBrush(SavedBrush).Apply(ADC); // ensure that saved brush is applied
   end;
+  
+  Result := True;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  Frame
+  Params:  DC    - Handle to device context
+           ARect - Bounding box of frame
+  Returns: > 0 if the function succeeds
+
+  Draws a border in Carbon native style
+ ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.Frame(DC: HDC; const ARect: TRect): Integer;
 begin
-  Result:=inherited Frame(DC, ARect);
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.Frame DC: ' + DbgS(DC) + ' R: ' + DbgS(ARect));
+  {$ENDIF}
+  
+  Result := 0;
+  if not CheckDC(DC, 'Frame') then Exit;
+  
+  Result := Integer(Rectangle(DC, ARect.Left, ARect.Top, ARect.Right, ARect.Bottom));
 end;
 
+{------------------------------------------------------------------------------
+  Method:  Frame3D
+  Params:  DC         - Handle to device context
+           ARect      - Bounding box of frame
+           FrameWidth - Frame width
+           Style      - Frame style
+  Returns: If the function succeeds
+
+  Draws a 3d border in Carbon native style
+  TODO: bvLowered style (rotate CTM by 180°)
+ ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.Frame3d(DC: HDC; var ARect: TRect;
   const FrameWidth: integer; const Style: TBevelCut): Boolean;
+var
+  I, D: Integer;
+  DrawInfo: HIThemeGroupBoxDrawInfo;
 begin
-  // test
-  Rectangle(DC, Arect.Left, ARect.Top, ARect.Right, ARect.Bottom);
-  Result:=inherited Frame3d(DC, ARect, FrameWidth, Style);
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.Frame3D DC: ' + DbgS(DC) + ' R: ' + DbgS(ARect) +
+      ' Width: ' + DbgS(FrameWidth) + ' Style: ' + DbgS(Integer(Style)));
+  {$ENDIF}
+  
+  Result := False;
+  if not CheckDC(DC, 'Frame3d') then Exit;
+  if FrameWidth <= 0 then Exit;
+  
+  if Style in [bvLowered, bvRaised] then
+  begin
+    GetThemeMetric(kThemeMetricPrimaryGroupBoxContentInset, D);
+  
+    // draw frame as group box
+    DrawInfo.version := 0;
+    DrawInfo.state := kThemeStateActive;
+    DrawInfo.kind := kHIThemeGroupBoxKindPrimary;
+  
+    for I := 1 to FrameWidth do
+    begin
+      HIThemeDrawGroupBox(RectToCGRect(ARect), DrawInfo,
+        TCarbonDeviceContext(DC).CGContext, kHIThemeOrientationNormal);
+      InflateRect(ARect, -D, -D);
+    end;
+  end;
+  
+  Result := True;
 end;
 
-function TCarbonWidgetSet.FrameRect(DC: HDC; const ARect: TRect; hBr: HBRUSH
-  ): Integer;
+{------------------------------------------------------------------------------
+  Method:  FrameRect
+  Params:  DC    - Handle to device context
+           ARect - Bounding box of frame
+           hBr   - Border brush (ignored)
+  Returns: > 0 if the function succeeds
+
+  Draws a border with the specified brush in Carbon native style
+  TODO: use brush
+ ------------------------------------------------------------------------------}
+function TCarbonWidgetSet.FrameRect(DC: HDC; const ARect: TRect;
+  hBr: HBRUSH): Integer;
 begin
-  Result:=inherited FrameRect(DC, ARect, hBr);
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.FrameRect DC: ' + DbgS(DC) + ' R: ' + DbgS(ARect) +
+      ' Brush: ' + DbgS(hBr));
+  {$ENDIF}
+  
+  Result := 0;
+  if not CheckDC(DC, 'FrameRect') then Exit;
+
+  Result := Integer(Rectangle(DC, ARect.Left, ARect.Top, ARect.Right, ARect.Bottom));
 end;
 
 {------------------------------------------------------------------------------
@@ -683,6 +886,10 @@ begin
     Window := GetNextWindow(Window);
 
   Result := HWND(GetCarbonWindow(Window));
+  
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.GetActiveWindow Result: ' + DbgS(Result));
+  {$ENDIF}
 end;
 
 function TCarbonWidgetSet.GetBitmapBits(Bitmap: HBITMAP; Count: Longint;
@@ -703,13 +910,17 @@ end;
 function TCarbonWidgetSet.GetBitmapRawImageDescription(Bitmap: HBITMAP;
   Desc: PRawImageDescription): Boolean;
 begin
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.GetBitmapRawImageDescription Bitmap: ' + DbgS(Bitmap));
+  {$ENDIF}
+  
   Result := False;
   if Desc = nil then
   begin
     DebugLn('TCarbonWidgetSet.GetBitmapRawImageDescription error - Desc = nil!');
     Exit;
   end;
-  if not CheckBitmap(Bitmap, 'TCarbonWidgetSet.GetBitmapRawImageDescription') then Exit;
+  if not CheckBitmap(Bitmap, 'GetBitmapRawImageDescription') then Exit;
 
   FillStandardDescription(Desc^);
 
@@ -751,8 +962,16 @@ end;
  ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.GetClientBounds(Handle: HWND; var ARect: TRect): Boolean;
 begin
-  if not CheckWidget(Handle, 'TCarbonWidgetSet.GetClientBounds') then Exit;
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.GetClientBounds Handle: ' + DbgS(Handle));
+  {$ENDIF}
+  
+  if not CheckWidget(Handle, 'GetClientBounds') then Exit;
   Result := TCarbonWidget(Handle).GetClientRect(ARect);
+  
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.GetClientBounds Result: ' + DbgS(Result));
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -766,9 +985,18 @@ end;
  ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.GetClientRect(Handle: HWND; var ARect: TRect): Boolean;
 begin
-  if not CheckWidget(Handle, 'TCarbonWidgetSet.GetClientRect') then Exit;
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.GetClientRect Handle: ' + DbgS(Handle));
+  {$ENDIF}
+  
+  if not CheckWidget(Handle, 'GetClientRect') then Exit;
+  
   Result := TCarbonWidget(Handle).GetClientRect(ARect);
   if Result then OffsetRect(ARect, -ARect.Left, -ARect.Top);
+  
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.GetClientRect Result: ' + DbgS(Result));
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -782,21 +1010,24 @@ end;
   SIMPLEREGION, COMPLEXREGION.
  ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.GetClipBox(DC: hDC; lpRect: PRect): Longint;
-var
-  ADC: TCarbonDeviceContext;
 begin
-  if not CheckDC(DC, 'TCarbonWidgetSet.GetClipBox') then
-  begin
-    Result := ERROR;
-    Exit;
-  end
-  else Result := COMPLEXREGION;
-  ADC := TCarbonDeviceContext(DC);
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.GetClipBox DC: ' + DbgS(DC));
+  {$ENDIF}
+  
+  Result := ERROR;
+  if not CheckDC(DC, 'GetClipBox') then Exit;
   
   if lpRect <> nil then
-  begin
-    lpRect^ := CGRectToRect(CGContextGetClipBoundingBox(ADC.CGContext));
-  end;
+    lpRect^ := CGRectToRect(
+      CGContextGetClipBoundingBox(TCarbonDeviceContext(DC).CGContext));
+
+  Result := COMPLEXREGION;
+  
+  {$IFDEF VerboseWinAPI}
+    if lpRect <> nil then
+      DebugLn('TCarbonWidgetSet.GetClipBox Rect: ' + DbgS(lpRect^));
+  {$ENDIF}
 end;
 
 function TCarbonWidgetSet.GetClipRGN(DC: hDC; RGN: hRGN): Longint;
@@ -821,9 +1052,15 @@ var
   Pt: FPCMacOSAll.Point;
 begin
   GetGlobalMouse(Pt);
+  
   lpPoint.X := Pt.h;
   lpPoint.Y := Pt.v;
+  
   Result := True;
+  
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.GetCursorPos Point: ' + DbgS(lpPoint));
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -838,16 +1075,24 @@ end;
  ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.GetDC(HWnd: HWND): HDC;
 begin
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.GetDC HWnd: ' + DbgS(HWnd));
+  {$ENDIF}
+  
   Result := 0;
   
   if HWnd = 0 then Result := HDC(TCarbonScreenContext.Create)
   else
   begin
-    if not CheckWidget(HWnd, 'TCarbonWidgetSet.GetDC') then Exit;
+    if not CheckWidget(HWnd, 'GetDC') then Exit;
     
     // TODO: save DC
     Result := HDC(TCarbonWidget(HWnd).Context);
   end;
+  
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.GetDC Result: ' + DbgS(Result));
+  {$ENDIF}
 end;
 
 function TCarbonWidgetSet.GetDCOriginRelativeToWindow(PaintDC: HDC;
@@ -874,8 +1119,12 @@ var
   ADC: TCarbonDeviceContext;
   ResX, ResY: FPCMacOSAll.SInt16;
 begin
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.GetDeviceCaps DC: ' + DbgS(DC) + ' Index: ' + DbgS(Index));
+  {$ENDIF}
+  
   Result := 0;
-  if not CheckDC(DC, 'TCarbonWidgetSet.GetDeviceCaps') then Exit;
+  if not CheckDC(DC, 'GetDeviceCaps') then Exit;
   ADC := TCarbonDeviceContext(DC);
 
   case Index of
@@ -887,7 +1136,13 @@ begin
                             else Result := ResY;
     end;
   BITSPIXEL:  Result := CGDisplayBitsPerPixel(CGMainDisplayID);
+  else
+    DebugLn('TCarbonWidgetSet.GetDeviceCaps TODO Index: ' + DbgS(Index));
   end;
+  
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.GetDeviceCaps Result: ' + DbgS(Result));
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -901,6 +1156,10 @@ end;
 function TCarbonWidgetSet.GetDeviceRawImageDescription(DC: HDC;
   Desc: PRawImageDescription): boolean;
 begin
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.GetDeviceRawImageDescription DC: ' + DbgS(DC));
+  {$ENDIF}
+  
   if Desc = nil then
   begin
     Result := False;
@@ -923,12 +1182,20 @@ function TCarbonWidgetSet.GetDeviceSize(DC: HDC; var p: TPoint): boolean;
 var
   ADC: TCarbonDeviceContext;
 begin
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.GetDeviceSize DC: ' + DbgS(DC));
+  {$ENDIF}
+  
   Result := False;
-  if not CheckDC(DC, 'TCarbonWidgetSet.GetDeviceSize') then Exit;
+  if not CheckDC(DC, 'GetDeviceSize') then Exit;
   ADC := TCarbonDeviceContext(DC);
   
   P := ADC.Size;
   Result := True;
+  
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.GetDeviceSize Size: ' + DbgS(P));
+  {$ENDIF}
 end;
 
 function TCarbonWidgetSet.GetDIBits(DC: HDC; Bitmap: HBitmap; StartScan,
@@ -951,6 +1218,10 @@ var
   Control: ControlRef;
   Window: WindowRef;
 begin
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.GetFocus');
+  {$ENDIF}
+  
   Result := 0;
   Window := WindowRef(GetUserFocusWindow);
   if Window = nil then Exit;
@@ -960,6 +1231,10 @@ begin
   if Control <> nil then
     Result := HWND(GetCarbonControl(Control))
   else Result := HWND(GetCarbonWindow(Window));
+  
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.GetFocus Result: ' + DbgS(Result));
+  {$ENDIF}
 end;
 
 function TCarbonWidgetSet.GetFontLanguageInfo(DC: HDC): DWord;
@@ -978,6 +1253,10 @@ end;
  ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.GetKeyState(nVirtKey: Integer): Smallint;
 begin
+  {$IFDEF VerboseKeyboard}
+    DebugLn('TCarbonWidgetSet.GetKeyState ' + DbgSVKCode(nVirtKey));
+  {$ENDIF}
+  
   Result:=0;
   
   case nVirtKey of
@@ -993,8 +1272,12 @@ begin
       // the ssCtrl/VK_CONTROL is mapped to cmdKey under MacOS
       Result:=-1;
   else
-    DebugLn('TCarbonWidgetSet.GetKeyState TODO ', DbgS(nVirtkey));
+    DebugLn('TCarbonWidgetSet.GetKeyState TODO ', DbgSVKCode(nVirtkey));
   end;
+  
+  {$IFDEF VerboseKeyboard}
+    DebugLn('TCarbonWidgetSet.GetKeyState Result: ' + DbgS(Result));
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -1013,8 +1296,12 @@ var
   DIB: TDIBSection;
   Width, Height: Integer;
 begin
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.GetObject GDIObj: ' + DbgS(GDIObj));
+  {$ENDIF}
+  
   Result := 0;
-  if not CheckGDIObject(GDIObj, 'TCarbonWidgetSet.GetObject') then Exit;
+  if not CheckGDIObject(GDIObj, 'GetObject') then Exit;
   
   AObject := TCarbonGDIObject(GDIObj);
   if AObject is TCarbonBitmap then
@@ -1077,12 +1364,20 @@ end;
  ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.GetParent(Handle: HWND): HWND;
 begin
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.GetParent Handle: ' + DbgS(Handle));
+  {$ENDIF}
+  
   Result := 0;
-  if not CheckWidget(Handle, 'TCarbonWidgetSet.GetParent') then Exit;
+  if not CheckWidget(Handle, 'GetParent') then Exit;
   
   if TCarbonWidget(Handle) is TCarbonControl then
      Result := HWnd(GetCarbonWidget(HIViewGetSuperview(AsControlRef(Handle))));
   // Carbon windows has no parent
+  
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.GetParent Result: ' + DbgS(Result));
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -1096,10 +1391,18 @@ end;
  ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.GetProp(Handle: hwnd; Str: PChar): Pointer;
 begin
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.GetProp Handle: ' + DbgS(Handle) + ' Str: ' + Str);
+  {$ENDIF}
+  
   Result := nil;
-  if not CheckWidget(Handle, 'TCarbonWidgetSet.GetProp') then Exit;
+  if not CheckWidget(Handle, 'GetProp') then Exit;
 
   Result := TCarbonWidget(Handle).Properties[Str];
+  
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.GetProp Result: ' + DbgS(Result));
+  {$ENDIF}
 end;
 
 function TCarbonWidgetSet.GetRawImageFromDevice(SrcDC: HDC;
@@ -1124,8 +1427,13 @@ function TCarbonWidgetSet.GetRawImageFromBitmap(SrcBitmap,
 var
   Bitmap: TCarbonBitmap;
 begin
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.GetRawImageFromBitmap SrcBitmap: ' + DbgS(SrcBitmap) +
+      ' SrcMaskBitmap: ' + DbgS(SrcMaskBitmap) + ' SrcRect: ' + DbgS(SrcRect));
+  {$ENDIF}
+  
   Result := False;
-  if not CheckBitmap(SrcBitmap, 'TCarbonWidgetSet.GetRawImageFromBitmap') then Exit;
+  if not CheckBitmap(SrcBitmap, 'GetRawImageFromBitmap') then Exit;
   
   Bitmap := TCarbonBitmap(SrcBitmap);
 
@@ -1175,16 +1483,19 @@ end;
  ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.GetStockObject(Value: Integer): LongInt;
 begin
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.GetStockObject Value: ' + DbgS(Value));
+  {$ENDIF}
+  
+  Result := 0;
+  
   case Value of
     NULL_BRUSH: // null brush (equivalent to HOLLOW_BRUSH).
       Result := HBRUSH(StockNullBrush);
     DEFAULT_GUI_FONT, SYSTEM_FONT:
       Result := HFONT(StockSystemFont);
   else
-    begin
-      DebugLn('TCarbonWidgetSet.GetStockObject TODO ', DbgS(Value));
-      Result := 0;
-    end;
+    DebugLn('TCarbonWidgetSet.GetStockObject TODO ', DbgS(Value));
   end;
 end;
 
@@ -1202,6 +1513,10 @@ var
   Depth: SInt16;
   R: OSStatus;
 begin
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.GetSysColor NIndex: ' + DbgS(NIndex));
+  {$ENDIF}
+  
   Result := 0;
   R := not noErr;
   
@@ -1215,7 +1530,7 @@ begin
   //COLOR_WINDOWFRAME:
   COLOR_MENUTEXT:
     R := GetThemeTextColor(kThemeTextColorMenuItemActive, Depth, True, C);
-  COLOR_WINDOWTEXT:
+  COLOR_INFOTEXT, COLOR_WINDOWTEXT:
     R := GetThemeTextColor(kThemeTextColorMenuItemActive, Depth, True, C);
   COLOR_CAPTIONTEXT:
     R := GetThemeTextColor(kThemeTextColorDocumentWindowTitleActive, Depth, True, C);
@@ -1243,17 +1558,20 @@ begin
     R := GetThemeBrushAsColor(kThemeBrushButtonActiveDarkShadow, Depth, True, C);
   COLOR_3DLIGHT:
     R := GetThemeBrushAsColor(kThemeBrushButtonActiveLightShadow, Depth, True, C);
-  //COLOR_INFOTEXT:
-  //COLOR_INFOBK:
   //COLOR_HOTLIGHT:
-  COLOR_WINDOW, COLOR_FORM:
+  COLOR_INFOBK, COLOR_WINDOW, COLOR_FORM:
     R := GetThemeBrushAsColor(kThemeBrushDocumentWindowBackground, Depth, True, C);
   else
     DebugLn('TCarbonWidgetSet.GetSysColor TODO ', DbgS(NIndex));
   end;
   
-  if R = noErr then
-    Result := RGBColorToColor(C);
+  if OSError(R, Self, 'GetSysColor', 'NIndex = ' + DbgS(NIndex)) then Exit;
+
+  Result := RGBColorToColor(C);
+    
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.GetSysColor Result: ' + DbgS(Result));
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -1265,6 +1583,10 @@ end;
  ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.GetSystemMetrics(NIndex: Integer): Integer;
 begin
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.GetSystemMetrics NIndex: ' + DbgS(NIndex));
+  {$ENDIF}
+  
   Result := 0;
   
   case NIndex of
@@ -1282,6 +1604,10 @@ begin
   else
     DebugLn('TCarbonWidgetSet.GetSystemMetrics TODO ', DbgS(NIndex));;
   end;
+  
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.GetSystemMetrics Result: ' + DbgS(Result));
+  {$ENDIF}
 end;
 
 function TCarbonWidgetSet.GetTextColor(DC: HDC): TColorRef;
@@ -1306,8 +1632,12 @@ var
   ADC: TCarbonDeviceContext;
   TextBefore, TextAfter, Ascent, Descent: ATSUTextMeasurement;
 begin
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.GetTextExtentPoint DC: ' + DbgS(DC) + ' Str: ' + Str);
+  {$ENDIF}
+  
   Result := False;
-  if not CheckDC(DC, 'TCarbonWidgetSet.GetTextExtentPoint') then Exit;
+  if not CheckDC(DC, 'GetTextExtentPoint') then Exit;
   ADC := TCarbonDeviceContext(DC);
 
   if not ADC.BeginTextRender(Str, Count, TextLayout) then Exit;
@@ -1324,6 +1654,10 @@ begin
   finally
     ADC.EndTextRender(TextLayout);
   end;
+  
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.GetTextExtentPoint Size: ' + DbgS(Size));
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -1344,9 +1678,15 @@ var
   R: OSStatus;
   TextLayout: ATSUTextLayout;
   TextBefore, TextAfter, Ascent, Descent: ATSUTextMeasurement;
+const AName = 'GetTextMetrics';
+      AGetAttrName = 'ATSUGetAttribute';
 begin
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.GetTextMetrics DC: ' + DbgS(DC));
+  {$ENDIF}
+  
   Result := False;
-  if not CheckDC(DC, 'TCarbonWidgetSet.GetTextMetrics') then Exit;
+  if not CheckDC(DC, AName) then Exit;
 
   ADC := TCarbonDeviceContext(DC);
   if not (ADC.CurrentFont is TCarbonFont) then
@@ -1360,8 +1700,9 @@ begin
   // the average char width is generally defined as the width of the letter x
   if not ADC.BeginTextRender('x', 1, TextLayout) then Exit;
   try
-    if ATSUGetUnjustifiedBounds(TextLayout, kATSUFromTextBeginning,
-      kATSUToTextEnd, TextBefore, TextAfter, Ascent, Descent) <> noErr then Exit
+    if OSError(ATSUGetUnjustifiedBounds(TextLayout, kATSUFromTextBeginning,
+      kATSUToTextEnd, TextBefore, TextAfter, Ascent, Descent), AName,
+      'ATSUGetUnjustifiedBounds') then Exit
   finally
     ADC.EndTextRender(TextLayout);
   end;
@@ -1370,8 +1711,8 @@ begin
   TM.tmDescent := Descent shr 16;
   TM.tmHeight := (Ascent + Descent) shr 16;
   
-  R := ATSUGetAttribute(TextStyle, kATSULeadingTag, SizeOf(M), @M, nil);
-  if (R <> noErr) and (R <> kATSUNotSetErr) then Exit;
+  if OSError(ATSUGetAttribute(TextStyle, kATSULeadingTag, SizeOf(M), @M, nil),
+    Self, AName, AGetAttrName, 'kATSULeadingTag', kATSUNotSetErr) then Exit;
   TM.tmInternalLeading := M shr 16;
   TM.tmExternalLeading := 0;
   
@@ -1386,21 +1727,21 @@ begin
   TM.tmDefaultChar := 'x';
   TM.tmBreakChar := '?';
   
-  R := ATSUGetAttribute(TextStyle, kATSUQDBoldfaceTag, SizeOf(B), @B, nil);
-  if (R <> noErr) and (R <> kATSUNotSetErr) then Exit;
+  if OSError(ATSUGetAttribute(TextStyle, kATSUQDBoldfaceTag, SizeOf(B), @B, nil),
+    Self, AName, AGetAttrName, 'kATSUQDBoldfaceTag', kATSUNotSetErr) then Exit;
   if B then TM.tmWeight := FW_NORMAL
        else TM.tmWeight := FW_BOLD;
   
-  R := ATSUGetAttribute(TextStyle, kATSUQDItalicTag, SizeOf(B), @B, nil);
-  if (R <> noErr) and (R <> kATSUNotSetErr) then Exit;
+  if OSError(ATSUGetAttribute(TextStyle, kATSUQDItalicTag, SizeOf(B), @B, nil),
+    Self, AName, AGetAttrName, 'kATSUQDItalicTag', kATSUNotSetErr) then Exit;
   TM.tmItalic := Byte(B);
   
-  R := ATSUGetAttribute(TextStyle, kATSUQDUnderlineTag, SizeOf(B), @B, nil);
-  if (R <> noErr) and (R <> kATSUNotSetErr) then Exit;
+  if OSError(ATSUGetAttribute(TextStyle, kATSUQDUnderlineTag, SizeOf(B), @B, nil),
+    Self, AName, AGetAttrName, 'kATSUQDUnderlineTag', kATSUNotSetErr) then Exit;
   TM.tmUnderlined := Byte(B);
   
-  R := ATSUGetAttribute(TextStyle, kATSUStyleStrikeThroughTag, SizeOf(B), @B, nil);
-  if (R <> noErr) and (R <> kATSUNotSetErr) then Exit;
+  if OSError(ATSUGetAttribute(TextStyle, kATSUStyleStrikeThroughTag, SizeOf(B), @B, nil),
+    Self, AName, AGetAttrName, 'kATSUStyleStrikeThroughTag', kATSUNotSetErr) then Exit;
   TM.tmStruckOut := Byte(B);
 
   // TODO: get these from font
@@ -1408,6 +1749,10 @@ begin
   TM.tmCharSet := DEFAULT_CHARSET;
   
   Result := True;
+  
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.GetTextMetrics Result: ' + DbgS(Result));
+  {$ENDIF}
 end;
 
 function TCarbonWidgetSet.GetWindowLong(Handle: hwnd; int: Integer): PtrInt;
@@ -1431,9 +1776,17 @@ end;
  ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.GetWindowRect(Handle: hwnd; var ARect: TRect): Integer;
 begin
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.GetWindowRect Handle: ' + DbgS(Handle));
+  {$ENDIF}
+  
   Result := 0;
-  if not CheckWidget(Handle, 'TCarbonWidgetSet.GetWindowRect') then Exit;
+  if not CheckWidget(Handle, 'GetWindowRect') then Exit;
   Result := Integer(TCarbonWidget(Handle).GetScreenBounds(ARect));
+  
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.GetWindowRect R: ' + DbgS(ARect));
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -1449,13 +1802,22 @@ function TCarbonWidgetSet.GetWindowRelativePosition(Handle: hwnd; var Left,
 var
   ARect: TRect;
 begin
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.GetWindowRelativePosition Handle: ' + DbgS(Handle));
+  {$ENDIF}
+  
   Result := False;
-  if not CheckWidget(Handle, 'TCarbonWidgetSet.GetWindowRelativePosition') then Exit;
+  if not CheckWidget(Handle, 'GetWindowRelativePosition') then Exit;
   Result := TCarbonWidget(Handle).GetBounds(ARect);
   
   if not Result then Exit;
   Left := ARect.Left;
   Top := ARect.Top;
+  
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.GetWindowRelativePosition Left: ' + DbgS(Left) +
+      ' Top: ' + DbgS(Top));
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -1472,13 +1834,22 @@ function TCarbonWidgetSet.GetWindowSize(Handle: hwnd; var Width, Height: integer
 var
   ARect: TRect;
 begin
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.GetWindowSize Handle: ' + DbgS(Handle));
+  {$ENDIF}
+  
   Result := False;
-  if not CheckWidget(Handle, 'TCarbonWidgetSet.GetWindowSize') then Exit;
+  if not CheckWidget(Handle, 'GetWindowSize') then Exit;
   Result := TCarbonWidget(Handle).GetBounds(ARect);
     
   if not Result then Exit;
   Width := ARect.Right - ARect.Left;
   Height := ARect.Bottom - ARect.Top;
+  
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.GetWindowSize Width: ' + DbgS(Width) + ' Height:'
+      + DbgS(Height));
+  {$ENDIF}
 end;
 
 function TCarbonWidgetSet.GradientFill(DC: HDC; Vertices: PTriVertex;
@@ -1510,6 +1881,10 @@ begin
   
   System.InitCriticalSection(ACritSec^);
   CritSection := TCriticalSection(ACritSec);
+  
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.InitializeCriticalSection Section: ' + DbgS(CritSection));
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -1525,8 +1900,13 @@ end;
 function TCarbonWidgetSet.IntersectClipRect(DC: HDC; Left, Top, Right,
   Bottom: Integer): Integer;
 begin
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.IntersectClipRect DC: ' + DbgS(DC) + ' R: ' +
+      DbgS(Classes.Rect(Left, Top, Right, Bottom)));
+  {$ENDIF}
+  
   Result := ERROR;
-  if not CheckDC(DC, 'TCarbonWidgetSet.IntersectClipRect') then Exit;
+  if not CheckDC(DC, 'IntersectClipRect') then Exit;
   
   CGContextClipToRect(TCarbonContext(DC).CGContext,
     RectToCGRect(Classes.Rect(Left, Top, Right, Bottom)));
@@ -1545,8 +1925,12 @@ end;
 function TCarbonWidgetSet.InvalidateRect(AHandle: HWND; Rect: pRect;
   bErase: Boolean): Boolean;
 begin
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.InvalidateRect Handle: ' + DbgS(AHandle));
+  {$ENDIF}
+  
   Result := False;
-  if not CheckWidget(AHandle, 'TCarbonWidgetSet.InvalidateRect') then Exit;
+  if not CheckWidget(AHandle, 'InvalidateRect') then Exit;
   TCarbonWidget(AHandle).Invalidate(Rect);
   Result := True;
 end;
@@ -1558,9 +1942,17 @@ end;
  ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.IsWindowEnabled(Handle: HWND): boolean;
 begin
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.IsWindowEnabled Handle: ' + DbgS(Handle));
+  {$ENDIF}
+  
   Result := False;
-  if not CheckWidget(Handle, 'TCarbonWidgetSet.IsWindowEnabled') then Exit;
+  if not CheckWidget(Handle, 'IsWindowEnabled') then Exit;
   Result := TCarbonWidget(Handle).IsEnabled;
+  
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.IsWindowEnabled Result: ' + DbgS(Result));
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -1570,9 +1962,17 @@ end;
  ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.IsWindowVisible(Handle: HWND): boolean;
 begin
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.IsWindowVisible Handle: ' + DbgS(Handle));
+  {$ENDIF}
+  
   Result := False;
-  if not CheckWidget(Handle, 'TCarbonWidgetSet.IsWindowVisible') then Exit;
+  if not CheckWidget(Handle, 'IsWindowVisible') then Exit;
   Result := TCarbonWidget(Handle).IsVisible;
+  
+   {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.IsWindowVisible Result: ' + DbgS(Result));
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -1587,6 +1987,10 @@ procedure TCarbonWidgetSet.LeaveCriticalSection(
 var
   ACritSec: System.PRTLCriticalSection;
 begin
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.LeaveCriticalSection Section: ' + DbgS(CritSection));
+  {$ENDIF}
+  
   ACritSec := System.PRTLCriticalSection(CritSection);
   System.LeaveCriticalsection(ACritSec^);
 end;
@@ -1605,8 +2009,13 @@ function TCarbonWidgetSet.LineTo(DC: HDC; X, Y: Integer): Boolean;
 var
   ADC: TCarbonDeviceContext;
 begin
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.LineTo DC: ' + DbgS(DC) + ' ' + DbgS(X) + ', ' +
+      DbgS(Y));
+  {$ENDIF}
+  
   Result := False;
-  if not CheckDC(DC, 'TCarbonWidgetSet.LineTo') then Exit;
+  if not CheckDC(DC, 'LineTo') then Exit;
 
   ADC := TCarbonDeviceContext(DC);
 
@@ -1641,8 +2050,13 @@ function TCarbonWidgetSet.MoveToEx(DC: HDC; X, Y: Integer; OldPoint: PPoint
 var
   ADC: TCarbonDeviceContext;
 begin
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.MoveToEx DC: ' + DbgS(DC) + ' ' + DbgS(X) + ', ' +
+      DbgS(Y));
+  {$ENDIF}
+  
   Result := False;
-  if not CheckDC(DC, 'TCarbonWidgetSet.MoveToEx') then Exit;
+  if not CheckDC(DC, 'MoveToEx') then Exit;
 
   ADC := TCarbonDeviceContext(DC);
 
@@ -1664,8 +2078,13 @@ end;
  ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.MoveWindowOrgEx(DC: HDC; dX, dY: Integer): Boolean;
 begin
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.MoveWindowOrgEx DC: ' + DbgS(DC) + ' ' + DbgS(DX)
+      + ', ' + DbgS(DY));
+  {$ENDIF}
+  
   Result := False;
-  if not CheckDC(DC, 'TCarbonWidgetSet.MoveWindowOrgEx') then Exit;
+  if not CheckDC(DC, 'MoveWindowOrgEx') then Exit;
   
   CGContextTranslateCTM(TCarbonContext(DC).CGContext, DX, DY);
   Result := True;
@@ -1696,8 +2115,14 @@ var
   ADC: TCarbonDeviceContext;
   C1, C2: TPoint;
 begin
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.PolyBezier DC: ' + DbgS(DC) + ' NumPts: ' +
+      DbgS(NumPts) + ' Filled: ' + DbgS(Filled) + ' Continuous: ' +
+      DbgS(Continuous));
+  {$ENDIF}
+  
   Result := False;
-  if not CheckDC(DC, 'TCarbonWidgetSet.PolyBezier') then Exit;
+  if not CheckDC(DC, 'PolyBezier') then Exit;
   if Points = nil then Exit;
   if NumPts < 4 then Exit;
 
@@ -1765,8 +2190,13 @@ function TCarbonWidgetSet.Polygon(DC: HDC; Points: PPoint; NumPts: Integer;
 var
   ADC: TCarbonDeviceContext;
 begin
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.Polygon DC: ' + DbgS(DC) + ' NumPts: ' +
+      DbgS(NumPts) + ' Winding: ' + DbgS(Winding));
+  {$ENDIF}
+  
   Result := False;
-  if not CheckDC(DC, 'TCarbonWidgetSet.Polygon') then Exit;
+  if not CheckDC(DC, 'Polygon') then Exit;
   if Points = nil then Exit;
   if NumPts < 2 then Exit;
 
@@ -1807,8 +2237,12 @@ function TCarbonWidgetSet.Polyline(DC: HDC; Points: PPoint; NumPts: Integer): bo
 var
   ADC: TCarbonDeviceContext;
 begin
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.Polyline DC: ' + DbgS(DC) + ' NumPts: ' + DbgS(NumPts));
+  {$ENDIF}
+  
   Result := False;
-  if not CheckDC(DC, 'TCarbonWidgetSet.Polyline') then Exit;
+  if not CheckDC(DC, 'Polyline') then Exit;
   if Points = nil then Exit;
 
   ADC := TCarbonDeviceContext(DC);
@@ -1868,22 +2302,51 @@ function TCarbonWidgetSet.Rectangle(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean;
 var
   ADC: TCarbonDeviceContext;
 begin
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.Rectangle DC: ' + DbgS(DC) + ' R: ' +
+      DbgS(Classes.Rect(X1, Y1, X2, Y2)));
+  {$ENDIF}
+  
   Result := False;
-  if not CheckDC(DC, 'TCarbonWidgetSet.Rectangle') then Exit;
+  if not CheckDC(DC, 'Rectangle') then Exit;
 
   ADC := TCarbonDeviceContext(DC);
 
   CGContextBeginPath(ADC.CGContext);
-  CGContextAddRect(ADC.CGContext, GetCGRect(X1, Y1, X2, Y2));
+  CGContextAddRect(ADC.CGContext, GetCGRectSorted(X1, Y1, X2, Y2));
   CGContextDrawPath(ADC.CGContext, kCGPathFillStroke);
 
   Result := True;
 end;
 
-function TCarbonWidgetSet.RectVisible(dc: hdc; const ARect: TRect): Boolean;
+{------------------------------------------------------------------------------
+  Method:  RectVisible
+  Params:  DC    - Handle to device context
+           ARect - Rectangle to test
+  Returns: If the rectangle is not completely clipped away
+ ------------------------------------------------------------------------------}
+function TCarbonWidgetSet.RectVisible(DC: HDC; const ARect: TRect): Boolean;
+var
+  ClipBox: CGRect;
+  R: TRect;
 begin
-  // test, TODO implement
-  Result := True;
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.RectVisible DC: ' + DbgS(DC) + ' R: ' + DbgS(ARect));
+  {$ENDIF}
+  
+  Result := False;
+  if not CheckDC(DC, 'RectVisible') then Exit;
+  if (ARect.Right <= ARect.Left) or (ARect.Bottom <= ARect.Top) then Exit;
+  
+  // In Quartz 2D there is no direct access to clipping path of CGContext,
+  // therefore we can only test bounding box of the clipping path.
+  
+  ClipBox := CGContextGetClipBoundingBox(TCarbonContext(DC).CGContext);
+  Result := IntersectRect(R, ARect, CGRectToRect(ClipBox));
+  
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.RectVisible Result: ' + DbgS(Result) + ' Clip: ' + DbgS(CGRectToRect(ClipBox)));
+  {$ENDIF}
 end;
 
 function TCarbonWidgetSet.RegroupMenuItem(hndMenu: HMENU; GroupIndex: integer
@@ -1907,8 +2370,12 @@ end;
  ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.ReleaseDC(HWnd: HWND; DC: HDC): Integer;
 begin
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.ReleaseDC HWnd: ' + DbgS(HWnd) + ' DC: ' + DbgS(DC));
+  {$ENDIF}
+  
   Result := 0;
-  if not CheckDC(DC, 'TCarbonWidgetSet.ReleaseDC') then Exit;
+  if not CheckDC(DC, 'ReleaseDC') then Exit;
   // TODO: restore DC
   Result := 1;
 end;
@@ -1924,8 +2391,13 @@ end;
  ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.RemoveProp(Handle: hwnd; Str: PChar): THandle;
 begin
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.RemoveProp Handle: ' + DbgS(Handle) + ' Str: ' +
+      DbgS(Str));
+  {$ENDIF}
+  
   Result := 0;
-  if not CheckWidget(Handle, 'TCarbonWidgetSet.RemoveProp') then Exit;
+  if not CheckWidget(Handle, 'RemoveProp') then Exit;
 
   Result := THandle(TCarbonWidget(Handle).Properties[Str]);
   TCarbonWidget(Handle).Properties[Str] := nil;
@@ -1941,10 +2413,19 @@ end;
  ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.RestoreDC(DC: HDC; SavedDC: Integer): Boolean;
 begin
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.RestoreDC DC: ' + DbgS(DC) + ' SavedDC: ' +
+      DbgS(SavedDC));
+  {$ENDIF}
+  
   Result := False;
-  if not CheckDC(DC, 'TCarbonWidgetSet.RestoreDC') then Exit;
+  if not CheckDC(DC, 'RestoreDC') then Exit;
 
   Result := TCarbonDeviceContext(DC).RestoreDC(SavedDC);
+  
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.RestoreDC Result: ' + DbgS(Result));
+  {$ENDIF}
 end;
 
 function TCarbonWidgetSet.RoundRect(DC: hDC; X1, Y1, X2, Y2: Integer; RX,
@@ -1962,10 +2443,18 @@ end;
  ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.SaveDC(DC: HDC): Integer;
 begin
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.SaveDC DC: ' + DbgS(DC));
+  {$ENDIF}
+  
   Result := 0;
-  if not CheckDC(DC, 'TCarbonWidgetSet.SaveDC') then Exit;
+  if not CheckDC(DC, 'SaveDC') then Exit;
   
   Result := TCarbonDeviceContext(DC).SaveDC;
+  
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.SaveDC Result: ' + DbgS(Result));
+  {$ENDIF}
 end;
 
 function TCarbonWidgetSet.ScreenToClient(Handle: HWND; var P: TPoint): Integer;
@@ -1998,10 +2487,16 @@ function TCarbonWidgetSet.SelectObject(DC: HDC; GDIObj: HGDIOBJ): HGDIOBJ;
 var
   AObject: TObject;
   ADC: TCarbonDeviceContext;
+const AName = 'TCarbonWidgetSet.SelectObject';
 begin
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.SelectObject DC: ' + DbgS(DC) + ' GDIObj: ' +
+      DbgS(GDIObj));
+  {$ENDIF}
+  
   Result := 0;
-  if not CheckDC(DC, 'TCarbonWidgetSet.SelectObject') then Exit;
-  if not CheckGDIObject(GDIObj, 'TCarbonWidgetSet.SelectObject') then Exit;
+  if not CheckDC(DC, AName) then Exit;
+  if not CheckGDIObject(GDIObj, AName) then Exit;
   
   ADC := TCarbonDeviceContext(DC);
   AObject := TObject(GDIObj);
@@ -2028,13 +2523,17 @@ begin
   begin
     if not (ADC is TCarbonBitmapContext) then
     begin
-      DebugLn('SelectObject error - The specified device context is not bitmap context!');
+      DebugLn(AName + ' Error - The specified device context is not bitmap context!');
       Exit;
     end;
     
     Result := HBITMAP((ADC as TCarbonBitmapContext).GetBitmap);
     (ADC as TCarbonBitmapContext).SetBitmap(TCarbonBitmap(GDIObj));
   end;
+  
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.SelectObject Result: ' + DbgS(Result));
+  {$ENDIF}
 end;
 
 function TCarbonWidgetSet.SelectPalette(DC: HDC; Palette: HPALETTE;
@@ -2068,8 +2567,12 @@ end;
  ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.SetActiveWindow(Handle: HWND): HWND;
 begin
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.SetActiveWindow Handle: ' + DbgS(Handle));
+  {$ENDIF}
+  
   Result := 0;
-  if not CheckWidget(Handle, 'TCarbonWidgetSet.SetActiveWindow') then Exit;
+  if not CheckWidget(Handle, 'SetActiveWindow') then Exit;
   Result := GetActiveWindow;
   if ActivateWindow(AsWindowRef(Handle), True) <> NoErr then Result := 0;
 end;
@@ -2086,8 +2589,12 @@ function TCarbonWidgetSet.SetBkColor(DC: HDC; Color: TColorRef): TColorRef;
 var
   ADC: TCarbonDeviceContext;
 begin
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.SetBkColor DC: ' + DbgS(DC) + ' Color: ' + DbgS(Color));
+  {$ENDIF}
+  
   Result := CLR_INVALID;
-  if not CheckDC(DC, 'TCarbonWidgetSet.SetBkColor') then Exit;
+  if not CheckDC(DC, 'SetBkColor') then Exit;
   ADC := TCarbonDeviceContext(DC);
 
   Result := ADC.BkColor;
@@ -2106,8 +2613,12 @@ function TCarbonWidgetSet.SetBkMode(DC: HDC; BkMode: Integer): Integer;
 var
   ADC: TCarbonDeviceContext;
 begin
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.SetBkMode DC: ' + DbgS(DC) + ' BkMode: ' + DbgS(BkMode));
+  {$ENDIF}
+  
   Result := 0;
-  if not CheckDC(DC, 'TCarbonWidgetSet.SetBkMode') then Exit;
+  if not CheckDC(DC, 'SetBkMode') then Exit;
   ADC := TCarbonDeviceContext(DC);
 
   Result := ADC.BkMode;
@@ -2144,25 +2655,28 @@ end;
 
 {------------------------------------------------------------------------------
   Method:  SetCursor
-  Params:  hCursor - Handle of cursor to set
+  Params:  ACursor - Handle of cursor to set
   Returns: Previous cursor
 
   Sets the cursor to application
  ------------------------------------------------------------------------------}
-function TCarbonWidgetSet.SetCursor(hCursor: HICON): HCURSOR;
+function TCarbonWidgetSet.SetCursor(ACursor: HCURSOR): HCURSOR;
 begin
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.SetCursor ACursor: ' + DbgS(ACursor));
+  {$ENDIF}
+  
   Result := FCurrentCursor;
-  if (hCursor <> 0) and (hCursor <> FCurrentCursor) then
-  begin
-    // If we setted cursor before, them we should uninstall it.
-    // This needs for animated cursors (because of threading) and wait cursor
-    if (FCurrentCursor <> 0) then
-      TCarbonCursor(FCurrentCursor).UnInstall;
+  if not CheckCursor(ACursor, 'SetCursor') then Exit;
 
-    // install new cursor
-    TCarbonCursor(hCursor).Install;
-    FCurrentCursor := hCursor;
-  end;
+  // If we setted cursor before, them we should uninstall it.
+  // This needs for animated cursors (because of threading) and wait cursor
+  if (FCurrentCursor <> 0) then
+    TCarbonCursor(FCurrentCursor).UnInstall;
+
+  // install new cursor
+  TCarbonCursor(ACursor).Install;
+  FCurrentCursor := ACursor;
 end;
 
 {------------------------------------------------------------------------------
@@ -2177,10 +2691,14 @@ var
   Window: WindowRef;
   Control: ControlRef;
 begin
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.SetFocus HWnd: ' + DbgS(HWnd));
+  {$ENDIF}
+  
   Result := GetFocus;
   if HWnd = 0 then Exit;
   if HWnd = Result then Exit; // if window is already focused exit
-  if not CheckWidget(HWnd, 'TCarbonWidgetSet.SetFocus') then Exit;
+  if not CheckWidget(HWnd, 'SetFocus') then Exit;
   
   Window := TCarbonWidget(HWnd).GetTopParentWindow;
   
@@ -2203,7 +2721,11 @@ end;
  ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.SetForegroundWindow(HWnd: HWND): boolean;
 begin
-  if not CheckWidget(HWnd, 'TCarbonWidgetSet.SetForegroundWindow') then Exit;
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.SetForegroundWindow HWnd: ' + DbgS(HWnd));
+  {$ENDIF}
+  
+  if not CheckWidget(HWnd, 'SetForegroundWindow') then Exit;
   Result := ActivateWindow(AsWindowRef(HWnd), True) = noErr;
 end;
 
@@ -2219,8 +2741,13 @@ end;
  ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.SetProp(Handle: hwnd; Str: PChar; Data: Pointer): Boolean;
 begin
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.SetProp Handle: ' + DbgS(Handle) + ' Str: ' + Str +
+      ' Data: ' + DbgS(Data));
+  {$ENDIF}
+  
   Result := False;
-  if not CheckWidget(Handle, 'TCarbonWidgetSet.SetProp') then Exit;
+  if not CheckWidget(Handle, 'SetProp') then Exit;
   
   TCarbonWidget(Handle).Properties[Str] := Data;
   Result := True;
@@ -2239,8 +2766,12 @@ function TCarbonWidgetSet.SetROP2(DC: HDC; Mode: Integer): Integer;
 var
   ADC: TCarbonDeviceContext;
 begin
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.SetROP2 DC: ' + DbgS(DC) + ' Mode: ' + DbgS(Mode));
+  {$ENDIF}
+  
   Result := 0;
-  if not CheckDC(DC, 'TCarbonWidgetSet.SetROP2') then Exit;
+  if not CheckDC(DC, 'SetROP2') then Exit;
   ADC := TCarbonDeviceContext(DC);
 
   Result := ADC.ROP2;
@@ -2261,8 +2792,13 @@ end;
 function TCarbonWidgetSet.SetScrollInfo(Handle: HWND; SBStyle: Integer;
   ScrollInfo: TScrollInfo; bRedraw: Boolean): Integer;
 begin
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.SetScrollInfo Handle: ' + DbgS(Handle) +
+      ' SBStyle: ' + DbgS(SBStyle));
+  {$ENDIF}
+  
   Result := 0;
-  if not CheckWidget(Handle, 'TCarbonWidgetSet.SetScrollInfo') then Exit;
+  if not CheckWidget(Handle, 'SetScrollInfo') then Exit;
   
   if SBStyle = SB_CTL then
   begin
@@ -2306,8 +2842,12 @@ function TCarbonWidgetSet.SetTextColor(DC: HDC; Color: TColorRef): TColorRef;
 var
   ADC: TCarbonDeviceContext;
 begin
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.SetTextColor DC: ' + DbgS(DC) + ' Color: ' + DbgS(Color));
+  {$ENDIF}
+  
   Result := CLR_INVALID;
-  if not CheckDC(DC, 'TCarbonWidgetSet.SetTextColor') then Exit;
+  if not CheckDC(DC, 'SetTextColor') then Exit;
   ADC := TCarbonDeviceContext(DC);
   
   Result := ADC.TextColor;
@@ -2356,8 +2896,13 @@ function TCarbonWidgetSet.ShowWindow(hWnd: HWND; nCmdShow: Integer): Boolean;
 var
   P: FPCMacOSAll.Point;
 begin
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.ShowWindow hWnd: ' + DbgS(hWnd) + ' nCmdShow: ' +
+      DbgS(nCmdShow));
+  {$ENDIF}
+  
   Result := False;
-  if not CheckWidget(HWnd, 'TCarbonWidgetSet.ShowWindow') then Exit;
+  if not CheckWidget(HWnd, 'ShowWindow') then Exit;
 
   case nCmdShow of
   SW_SHOWNORMAL, SW_SHOWMAXIMIZED:
@@ -2414,13 +2959,23 @@ end;
 function TCarbonWidgetSet.StretchMaskBlt(DestDC: HDC; X, Y, Width,
   Height: Integer; SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer;
   Mask: HBITMAP; XMask, YMask: Integer; Rop: DWORD): Boolean;
+const
+  AName = 'TCarbonWidgetSet.StretchMaskBlt';
 begin
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.StretchMaskBlt DestDC: ' + DbgS(DestDC) + ' SrcDC: ',
+      DbgS(SrcDC) + ' X: ' +  DbgS(X) + ' Y: ' + DbgS(Y),
+     ' W: ' + DbgS(Width) + ' H: ', DbgS(Height),
+     ' XSrc: ' + DbgS(XSrc) + ' YSrc: ' + DbgS(YSrc),
+     ' SrcW: ' + DbgS(SrcWidth), ' SrcH: ' + DbgS(SrcHeight) + ' Rop: ' + DbgS(Rop));
+  {$ENDIF}
+  
   Result := False;
-  if not CheckDC(DestDC, 'TCarbonWidgetSet.StretchMaskBlt', 'Dest') then Exit;
-  if not CheckDC(SrcDC, 'TCarbonWidgetSet.StretchMaskBlt', 'Src') then Exit;
+  if not CheckDC(DestDC, AName, 'Dest') then Exit;
+  if not CheckDC(SrcDC, AName, 'Src') then Exit;
   if not (TCarbonDeviceContext(SrcDC) is TCarbonBitmapContext) then
   begin
-    DebugLn('TCarbonWidgetSet.StretchMaskBlt error - invalid source device context!');
+    DebugLn(AName + ' Error - invalid source device context!');
     Exit;
   end;
   
@@ -2431,7 +2986,7 @@ begin
 
   try
     HIViewDrawCGImage(TCarbonDeviceContext(DestDC).CGContext,
-      GetCGRect(X, Y, X + Width, Y + Height),
+      GetCGRectSorted(X, Y, X + Width, Y + Height),
       TCarbonBitmapContext(SrcDC).GetBitmap.CGImage);
     Result := True;
    {DebugLn('StretchMaskBlt succeeds: ', Format('Dest %d Src %d X %d Y %d',
@@ -2470,15 +3025,56 @@ end;
  ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.UpdateWindow(Handle: HWND): Boolean;
 begin
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.UpdateWindow Handle: ' + DbgS(Handle));
+  {$ENDIF}
+  
   Result := False;
-  if not CheckWidget(Handle, 'TCarbonWidgetSet.UpdateWindow') then Exit;
+  if not CheckWidget(Handle, 'UpdateWindow') then Exit;
   
   TCarbonWidget(Handle).Update;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  WindowFromPoint
+  Params:  Point - Screen point
+  Returns: Carbon control or window under the specified screen point
+ ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.WindowFromPoint(Point: TPoint): HWND;
+var
+  Window: WindowRef;
+  Control: ControlRef;
+  WindowPart: WindowPartCode;
+  P: FPCMacOSAll.Point;
+  R: FPCMacOSAll.Rect;
 begin
-  Result:=inherited WindowFromPoint(Point);
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.WindowFromPoint Point: ' + DbgS(Point));
+  {$ENDIF}
+  
+  Result := 0;
+  
+  P.h := Point.X;
+  P.v := Point.Y;
+  if FindWindowOfClass(P, kAllWindowClasses, Window, @WindowPart) <> noErr then Exit;
+  if Window = nil then Exit;
+  if WindowPart <> inContent then Exit;
+  
+  if OSError(GetWindowBounds(Window, kWindowContentRgn, R), Self,
+    'WindowFromPoint', 'GetWindowBounds') then Exit;
+    
+  Dec(P.h, R.left);
+  Dec(P.v, R.top);
+  
+  Control := FindControlUnderMouse(P, Window, nil);
+  if Control = nil then
+    Result := HWND(GetCarbonWidget(Window))
+  else
+    Result := HWND(GetCarbonWidget(Control));
+    
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.WindowFromPoint Result: ' + DbgS(Result));
+  {$ENDIF}
 end;
 
 

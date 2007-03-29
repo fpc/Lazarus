@@ -286,7 +286,7 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TCarbonWSScrollBar.SetParams(const AScrollBar: TCustomScrollBar);
 begin
-  if not WSCheckHandleAllocated(AScrollBar, 'SetParams') then Exit;
+  if not CheckHandle(AScrollBar, Self, 'SetParams') then Exit;
   
   TCarbonCustomBar(AScrollBar.Handle).SetData(AScrollBar.Position,
     AScrollBar.Min, AScrollBar.Max, AScrollBar.PageSize);
@@ -333,7 +333,7 @@ class function TCarbonWSCustomComboBox.GetSelStart(
   const ACustomComboBox: TCustomComboBox): integer;
 begin
   Result := 0;
-  if not WSCheckHandleAllocated(ACustomComboBox, 'GetSelStart') then Exit;
+  if not CheckHandle(ACustomComboBox, Self, 'GetSelStart') then Exit;
 
   TCarbonComboBox(ACustomComboBox.Handle).GetSelStart(Result);
 end;
@@ -347,7 +347,7 @@ class function TCarbonWSCustomComboBox.GetSelLength(
   const ACustomComboBox: TCustomComboBox): integer;
 begin
   Result := 0;
-  if not WSCheckHandleAllocated(ACustomComboBox, 'GetSelLength') then Exit;
+  if not CheckHandle(ACustomComboBox, Self, 'GetSelLength') then Exit;
 
   TCarbonComboBox(ACustomComboBox.Handle).GetSelLength(Result);
 end;
@@ -361,7 +361,7 @@ class function TCarbonWSCustomComboBox.GetItemIndex(
   const ACustomComboBox: TCustomComboBox): integer;
 begin
   Result := -1;
-  if not WSCheckHandleAllocated(ACustomComboBox, 'GetItemIndex') then Exit;
+  if not CheckHandle(ACustomComboBox, Self, 'GetItemIndex') then Exit;
 
   Result := TCarbonComboBox(ACustomComboBox.Handle).GetItemIndex;
 end;
@@ -375,7 +375,7 @@ class function TCarbonWSCustomComboBox.GetMaxLength(
   const ACustomComboBox: TCustomComboBox): integer;
 begin
   Result := 0;
-  if not WSCheckHandleAllocated(ACustomComboBox, 'GetMaxLength') then Exit;
+  if not CheckHandle(ACustomComboBox, Self, 'GetMaxLength') then Exit;
 
   Result := TCarbonComboBox(ACustomComboBox.Handle).MaxLength;
 end;
@@ -391,7 +391,7 @@ end;
 class procedure TCarbonWSCustomComboBox.SetSelStart(
   const ACustomComboBox: TCustomComboBox; NewStart: integer);
 begin
-  if not WSCheckHandleAllocated(ACustomComboBox, 'SetSelStart') then Exit;
+  if not CheckHandle(ACustomComboBox, Self, 'SetSelStart') then Exit;
 
   TCarbonComboBox(ACustomComboBox.Handle).SetSelStart(NewStart);
 end;
@@ -407,7 +407,7 @@ end;
 class procedure TCarbonWSCustomComboBox.SetSelLength(
   const ACustomComboBox: TCustomComboBox; NewLength: integer);
 begin
-    if not WSCheckHandleAllocated(ACustomComboBox, 'SetSelLength') then Exit;
+    if not CheckHandle(ACustomComboBox, Self, 'SetSelLength') then Exit;
 
   TCarbonComboBox(ACustomComboBox.Handle).SetSelLength(NewLength);
 end;
@@ -423,7 +423,7 @@ end;
 class procedure TCarbonWSCustomComboBox.SetItemIndex(
   const ACustomComboBox: TCustomComboBox; NewIndex: integer);
 begin
-  if not WSCheckHandleAllocated(ACustomComboBox, 'SetItemIndex') then Exit;
+  if not CheckHandle(ACustomComboBox, Self, 'SetItemIndex') then Exit;
 
   TCarbonComboBox(ACustomComboBox.Handle).SetItemIndex(NewIndex);
 end;
@@ -439,7 +439,7 @@ end;
 class procedure TCarbonWSCustomComboBox.SetMaxLength(
   const ACustomComboBox: TCustomComboBox; NewLength: integer);
 begin
-  if not WSCheckHandleAllocated(ACustomComboBox, 'SetMaxLength') then Exit;
+  if not CheckHandle(ACustomComboBox, Self, 'SetMaxLength') then Exit;
 
   // text is cropped in callback
   TCarbonComboBox(ACustomComboBox.Handle).MaxLength := NewLength;
@@ -454,7 +454,7 @@ class function TCarbonWSCustomComboBox.GetItems(
   const ACustomComboBox: TCustomComboBox): TStrings;
 begin
   Result := nil;
-  if not WSCheckHandleAllocated(ACustomComboBox, 'GetItems') then Exit;
+  if not CheckHandle(ACustomComboBox, Self, 'GetItems') then Exit;
 
   Result := TCarbonComboBoxStrings.Create(TCarbonComboBox(ACustomComboBox.Handle));
 end;
@@ -471,7 +471,7 @@ end;
 class procedure TCarbonWSCustomComboBox.Sort(
   const ACustomComboBox: TCustomComboBox; AList: TStrings; IsSorted: boolean);
 begin
-  if not WSCheckHandleAllocated(ACustomComboBox, 'Sort') then Exit;
+  if not CheckHandle(ACustomComboBox, Self, 'Sort') then Exit;
   
   TCarbonComboBoxStrings(AList).Sorted := IsSorted;
 end;
@@ -505,7 +505,7 @@ var
   List: ListHandle;
 begin
   Result := 0;
-  if not WSCheckHandleAllocated(ACustomListBox, 'GetSelCount') then Exit;
+  if not CheckHandle(ACustomListBox, Self, 'GetSelCount') then Exit;
   
   List := TCarbonListBox(ACustomListBox.Handle).List;
   Item.h := 0;
@@ -529,7 +529,7 @@ var
   Item: Cell;
 begin
   Result := False;
-  if not WSCheckHandleAllocated(ACustomListBox, 'GetSelected') then Exit;
+  if not CheckHandle(ACustomListBox, Self, 'GetSelected') then Exit;
 
   Item.h := 0;
   Item.v := AIndex;
@@ -545,7 +545,7 @@ class function TCarbonWSCustomListBox.GetStrings(
   const ACustomListBox: TCustomListBox): TStrings;
 begin
   Result := nil;
-  if not WSCheckHandleAllocated(ACustomListBox, 'GetStrings') then Exit;
+  if not CheckHandle(ACustomListBox, Self, 'GetStrings') then Exit;
   
   Result := TCarbonListBoxStrings.Create(TCarbonListBox(ACustomListBox.Handle));
 end;
@@ -559,7 +559,7 @@ class function TCarbonWSCustomListBox.GetItemIndex(
   const ACustomListBox: TCustomListBox): integer;
 begin
   Result := -1;
-  if not WSCheckHandleAllocated(ACustomListBox, 'GetItemIndex') then Exit;
+  if not CheckHandle(ACustomListBox, Self, 'GetItemIndex') then Exit;
   
   Result := TCarbonListBox(ACustomListBox.Handle).GetItemIndex;
 end;
@@ -575,7 +575,7 @@ var
   Bounds: FPCMacOSAll.Rect;
 begin
   Result := 0;
-  if not WSCheckHandleAllocated(ACustomListBox, 'GetTopIndex') then Exit;
+  if not CheckHandle(ACustomListBox, Self, 'GetTopIndex') then Exit;
 
   if GetListViewBounds(TCarbonListBox(ACustomListBox.Handle).List,
     Bounds) <> nil then Result := Bounds.top;
@@ -596,7 +596,7 @@ class procedure TCarbonWSCustomListBox.SelectItem(
 var
   Item: Cell;
 begin
-  if not WSCheckHandleAllocated(ACustomListBox, 'SelectItem') then Exit;
+  if not CheckHandle(ACustomListBox, Self, 'SelectItem') then Exit;
 
   Item.h := 0;
   Item.v := AIndex;
@@ -614,7 +614,7 @@ end;
 class procedure TCarbonWSCustomListBox.SetItemIndex(
   const ACustomListBox: TCustomListBox; const AIndex: integer);
 begin
-  if not WSCheckHandleAllocated(ACustomListBox, 'SetItemIndex') then Exit;
+  if not CheckHandle(ACustomListBox, Self, 'SetItemIndex') then Exit;
 
   TCarbonListBox(ACustomListBox.Handle).SetItemIndex(AIndex);
 end;
@@ -634,7 +634,7 @@ class procedure TCarbonWSCustomListBox.SetSelectionMode(
 var
   Options: OptionBits;
 begin
-  if not WSCheckHandleAllocated(ACustomListBox, 'SetSelectionMode') then Exit;
+  if not CheckHandle(ACustomListBox, Self, 'SetSelectionMode') then Exit;
 
   if AMultiSelect then
   begin
@@ -671,7 +671,7 @@ end;
 class procedure TCarbonWSCustomListBox.SetSorted(
   const ACustomListBox: TCustomListBox; AList: TStrings; ASorted: boolean);
 begin
-  if not WSCheckHandleAllocated(ACustomListBox, 'SetSorted') then Exit;
+  if not CheckHandle(ACustomListBox, Self, 'SetSorted') then Exit;
   
   TCarbonListBoxStrings(AList).Sorted := ASorted;
 end;
@@ -689,7 +689,7 @@ class procedure TCarbonWSCustomListBox.SetTopIndex(
 var
   Bounds: FPCMacOSAll.Rect;
 begin
-  if not WSCheckHandleAllocated(ACustomListBox, 'SetTopIndex') then Exit;
+  if not CheckHandle(ACustomListBox, Self, 'SetTopIndex') then Exit;
 
   if GetListViewBounds(TCarbonListBox(ACustomListBox.Handle).List,
     Bounds) <> nil then
@@ -724,7 +724,7 @@ end;
 class function TCarbonWSCustomEdit.GetSelStart(const ACustomEdit: TCustomEdit): integer;
 begin
   Result := 0;
-  if not WSCheckHandleAllocated(ACustomEdit, 'GetSelStart') then Exit;
+  if not CheckHandle(ACustomEdit, Self, 'GetSelStart') then Exit;
 
   TCarbonEdit(ACustomEdit.Handle).GetSelStart(Result);
 end;
@@ -737,7 +737,7 @@ end;
 class function TCarbonWSCustomEdit.GetSelLength(const ACustomEdit: TCustomEdit): integer;
 begin
   Result := 0;
-  if not WSCheckHandleAllocated(ACustomEdit, 'GetSelLength') then Exit;
+  if not CheckHandle(ACustomEdit, Self, 'GetSelLength') then Exit;
 
   TCarbonEdit(ACustomEdit.Handle).GetSelLength(Result);
 end;
@@ -781,7 +781,7 @@ end;
 class procedure TCarbonWSCustomEdit.SetMaxLength(const ACustomEdit: TCustomEdit;
   NewLength: integer);
 begin
-  if not WSCheckHandleAllocated(ACustomEdit, 'SetMaxLength') then Exit;
+  if not CheckHandle(ACustomEdit, Self, 'SetMaxLength') then Exit;
 
   // text is cropped in callback
   TCarbonEdit(ACustomEdit.Handle).MaxLength := NewLength;
@@ -798,7 +798,7 @@ end;
 class procedure TCarbonWSCustomEdit.SetPasswordChar(const ACustomEdit: TCustomEdit;
   NewChar: char);
 begin
-  if not WSCheckHandleAllocated(ACustomEdit, 'SetPasswordChar') then Exit;
+  if not CheckHandle(ACustomEdit, Self, 'SetPasswordChar') then Exit;
 
   if TCarbonEdit(ACustomEdit.Handle).IsPassword <> (NewChar <> #0) then
     RecreateWnd(ACustomEdit);
@@ -815,7 +815,7 @@ end;
 class procedure TCarbonWSCustomEdit.SetReadOnly(const ACustomEdit: TCustomEdit;
   NewReadOnly: boolean);
 begin
-  if not WSCheckHandleAllocated(ACustomEdit, 'SetReadOnly') then Exit;
+  if not CheckHandle(ACustomEdit, Self, 'SetReadOnly') then Exit;
 
   SetControlData(AsControlRef(ACustomEdit.Handle), kControlEntireControl,
     kControlEditTextLockedTag, SizeOf(Boolean), @NewReadOnly);
@@ -832,7 +832,7 @@ end;
 class procedure TCarbonWSCustomEdit.SetSelStart(const ACustomEdit: TCustomEdit;
   NewStart: integer);
 begin
-  if not WSCheckHandleAllocated(ACustomEdit, 'SetSelStart') then Exit;
+  if not CheckHandle(ACustomEdit, Self, 'SetSelStart') then Exit;
 
   TCarbonEdit(ACustomEdit.Handle).SetSelStart(NewStart);
 end;
@@ -848,7 +848,7 @@ end;
 class procedure TCarbonWSCustomEdit.SetSelLength(const ACustomEdit: TCustomEdit;
   NewLength: integer);
 begin
-  if not WSCheckHandleAllocated(ACustomEdit, 'SetSelLength') then Exit;
+  if not CheckHandle(ACustomEdit, Self, 'SetSelLength') then Exit;
 
   TCarbonEdit(ACustomEdit.Handle).SetSelLength(NewLength);
 end;
@@ -878,7 +878,7 @@ class function TCarbonWSCustomMemo.GetStrings(const ACustomMemo: TCustomMemo
   ): TStrings;
 begin
   Result := nil;
-  if not WSCheckHandleAllocated(ACustomMemo, 'GetStrings') then Exit;
+  if not CheckHandle(ACustomMemo, Self, 'GetStrings') then Exit;
 
   Result := TCarbonMemoStrings.Create(TCarbonMemo(ACustomMemo.Handle));
 end;
@@ -896,7 +896,7 @@ class procedure TCarbonWSCustomMemo.AppendText(const ACustomMemo: TCustomMemo;
 var
   S: String;
 begin
-  if not WSCheckHandleAllocated(ACustomMemo, 'AppendText') then Exit;
+  if not CheckHandle(ACustomMemo, Self, 'AppendText') then Exit;
 
   if Length(AText) > 0 then
   begin
@@ -916,7 +916,7 @@ end;
 class procedure TCarbonWSCustomMemo.SetPasswordChar(
   const ACustomEdit: TCustomEdit; NewChar: char);
 begin
-  if not WSCheckHandleAllocated(ACustomEdit, 'SetPasswordChar') then Exit;
+  if not CheckHandle(ACustomEdit, Self, 'SetPasswordChar') then Exit;
 
   TXNEchoMode(HITextViewGetTXNObject(AsControlRef(ACustomEdit.Handle)),
     UniChar(NewChar), CreateTextEncoding(kTextEncodingUnicodeDefault,
@@ -936,7 +936,7 @@ end;
 class procedure TCarbonWSCustomMemo.SetScrollbars(
   const ACustomMemo: TCustomMemo; const NewScrollbars: TScrollStyle);
 begin
-  if not WSCheckHandleAllocated(ACustomMemo, 'SetScrollbars') then Exit;
+  if not CheckHandle(ACustomMemo, Self, 'SetScrollbars') then Exit;
   
   TCarbonMemo(ACustomMemo.Handle).ScrollBars := NewScrollbars;
 end;
@@ -955,7 +955,7 @@ var
   Tag: TXNControlTag;
   Data: TXNControlData;
 begin
-  if not WSCheckHandleAllocated(ACustomEdit, 'SetReadOnly') then Exit;
+  if not CheckHandle(ACustomEdit, Self, 'SetReadOnly') then Exit;
 
   Tag := kTXNNoUserIOTag;
   if NewReadOnly then
@@ -981,7 +981,7 @@ var
   Tag: TXNControlTag;
   Data: TXNControlData;
 begin
-  if not WSCheckHandleAllocated(ACustomMemo, 'SetWordWrap') then Exit;
+  if not CheckHandle(ACustomMemo, Self, 'SetWordWrap') then Exit;
 
   Tag := kTXNWordWrapStateTag;
   if NewWordWrap then
@@ -1022,7 +1022,7 @@ class function TCarbonWSCustomCheckBox.RetrieveState(
   const ACustomCheckBox: TCustomCheckBox): TCheckBoxState;
 begin
   Result := cbUnchecked;
-  if not WSCheckHandleAllocated(ACustomCheckBox, 'RetrieveState') then Exit;
+  if not CheckHandle(ACustomCheckBox, Self, 'RetrieveState') then Exit;
 
   case GetControl32BitValue(AsControlRef(ACustomCheckBox.Handle)) of
     kControlCheckBoxCheckedValue   : Result := cbChecked;
@@ -1044,7 +1044,7 @@ class procedure TCarbonWSCustomCheckBox.SetState(
 var
   Value: UInt32;
 begin
-  if not WSCheckHandleAllocated(ACustomCheckBox, 'SetState') then Exit;
+  if not CheckHandle(ACustomCheckBox, Self, 'SetState') then Exit;
 
   case NewState of
     cbChecked  : Value := kControlCheckBoxCheckedValue;
@@ -1117,7 +1117,7 @@ class procedure TCarbonWSCustomStaticText.SetAlignment(
 var
   FontStyle: ControlFontStyleRec;
 begin
-  if not WSCheckHandleAllocated(ACustomStaticText, 'SetAlignment') then Exit;
+  if not CheckHandle(ACustomStaticText, Self, 'SetAlignment') then Exit;
 
   // get static text font style and change only justification
   GetControlData(AsControlRef(ACustomStaticText.Handle), kControlEntireControl,

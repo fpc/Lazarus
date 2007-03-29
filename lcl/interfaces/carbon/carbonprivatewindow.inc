@@ -258,6 +258,8 @@ begin
   else
     // the LCL does not want the event propagated
     Result := noErr;
+    
+  NotifyApplicationUserInput(Msg.Message.Msg);
 end;
 
 function CarbonWindow_KeyboardProc(ANextHandler: EventHandlerCallRef;
@@ -786,6 +788,27 @@ begin
   InstallWindowEventHandler(Widget,
     RegisterEventHandler(@CarbonCommon_BoundsChanged),
     1, @TmpSpec, Pointer(Self), nil);
+
+  TmpSpec := MakeEventSpec(kEventClassControl, kEventControlContextualMenuClick);
+  InstallControlEventHandler(Content,
+    RegisterEventHandler(@CarbonCommon_ContextualMenuClick),
+    1, @TmpSpec, Pointer(Self), nil);
+    
+  TmpSpec := MakeEventSpec(kEventClassControl, kEventControlSetFocusPart);
+  InstallControlEventHandler(Content,
+    RegisterEventHandler(@CarbonCommon_SetFocusPart),
+    1, @TmpSpec, Pointer(Self), nil);
+
+  TmpSpec := MakeEventSpec(kEventClassControl, kEventControlGetNextFocusCandidate);
+  InstallControlEventHandler(Content,
+    RegisterEventHandler(@CarbonCommon_GetNextFocusCandidate),
+    1, @TmpSpec, Pointer(Self), nil);
+    
+  // cursor set
+  TmpSpec := MakeEventSpec(kEventClassControl, kEventControlSetCursor);
+  InstallControlEventHandler(Content,
+    RegisterEventHandler(@CarbonCommon_SetCursor),
+    1, @TmpSpec, Pointer(Self), nil);
 	
   // cursor change
   TmpSpec := MakeEventSpec(kEventClassWindow, kEventWindowCursorChange);
@@ -809,6 +832,10 @@ begin
   UnregisterEventHandler(@CarbonCommon_Draw);
   UnregisterEventHandler(@CarbonCommon_Track);
   UnregisterEventHandler(@CarbonCommon_BoundsChanged);
+  UnregisterEventHandler(@CarbonCommon_ContextualMenuClick);
+  UnregisterEventHandler(@CarbonCommon_SetFocusPart);
+  UnregisterEventHandler(@CarbonCommon_GetNextFocusCandidate);
+  UnregisterEventHandler(@CarbonCommon_SetCursor);
   UnregisterEventHandler(@CarbonCommon_CursorChange);
 end;
 

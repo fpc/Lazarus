@@ -30,10 +30,19 @@
 
 //##apiwiz##sps##   // Do not remove
 
+{------------------------------------------------------------------------------
+  Method:  CreateStandardCursor
+  Params:  ACursor - Cursor type
+  Returns: Cursor object in Carbon for the specified cursor type
+ ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.CreateStandardCursor(ACursor: SmallInt): hCursor;
 var
   AThemeCursor: ThemeCursor;
 begin
+  {$IFDEF VerboseLCLIntf}
+    DebugLn('TCarbonWidgetSet.CreateStandardCursor ACursor: ' + DbgS(ACursor));
+  {$ENDIF}
+  
   Result := 0;
   if (ACursor >= crLow) and (ACursor <= crHigh) then
   begin
@@ -41,6 +50,10 @@ begin
     if AThemeCursor <> kThemeUndefCursor then
       Result := hCursor(TCarbonCursor.CreateThemed(AThemeCursor));
   end;
+  
+  {$IFDEF VerboseLCLIntf}
+    DebugLn('TCarbonWidgetSet.CreateStandardCursor Result: ' + DbgS(Result));
+  {$ENDIF}
 end;
 
 function TCarbonWidgetSet.DrawSplitter(DC: HDC; const ARect: TRect;
@@ -71,9 +84,25 @@ begin
   Result:=inherited GetControlConstraints(Constraints);
 end;
 
+{------------------------------------------------------------------------------
+  Method:  GetLCLOwnerObject
+  Params:  Handle - Handle of window
+  Returns: LCL control which has the specified widget
+ ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.GetLCLOwnerObject(Handle: HWnd): TObject;
 begin
-  Result:=inherited GetLCLOwnerObject(Handle);
+  {$IFDEF VerboseLCLIntf}
+    DebugLn('TCarbonWidgetSet.GetLCLOwnerObject Handle: ' + DbgS(Handle));
+  {$ENDIF}
+  
+  Result := nil;
+  if not CheckWidget(Handle, 'TCarbonWidgetSet.GetLCLOwnerObject') then Exit;
+  
+  Result := TCarbonWidget(Handle).LCLObject;
+  
+  {$IFDEF VerboseLCLIntf}
+    DebugLn('TCarbonWidgetSet.GetLCLOwnerObject Result: ' + DbgS(Result));
+  {$ENDIF}
 end;
 
 function TCarbonWidgetSet.GetListBoxIndexAtY(ListBox: TComponent; y: integer
@@ -93,6 +122,20 @@ begin
   Result:=true;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  PromptUser
+  Params:  DialogCaption - Dialog caption
+           DialogMessage - Dialog message text
+           DialogType    - Type of dialog
+           Buttons       - Pointer to button types
+           ButtonCount   - Count of passed buttons
+           DefaultIndex  - Index of default button
+           EscapeResult  - Result value of escape
+  Returns: The result value of pushed button
+  
+  Shows modal dialog with the specified caption, message and buttons and prompts
+  user to push one.
+ ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.PromptUser(const DialogCaption : string;
                                      const DialogMessage : string;
                                            DialogType    : LongInt;
@@ -129,7 +172,7 @@ const
   CancelKey = 'Cancel';
   YesKey    = 'Yes';
   NoKey     = 'No';
- {Note: Not using Pointer(kAlertDefaultOKText) or Pointer(kAlertDefaultCancelText)
+{ Note: Not using Pointer(kAlertDefaultOKText) or Pointer(kAlertDefaultCancelText)
   since this just passes in -1, which tells button to use its normal text and
   we need to override with Yes and No. If Localizable.strings file is in app 
   bundle's .lproj folder, will use localized strings for above keys if they
@@ -150,12 +193,35 @@ var
   AlertBtnIdx : DialogItemIndex;
 
 begin
+  {$IFDEF VerboseLCLIntf}
+    DebugLn('TCarbonWidgetSet.PromptUser DialogCaption: ' + DialogCaption +
+      ' DialogMessage: ' + DialogMessage + ' DialogType: ' + DbgS(DialogType) +
+      ' ButtonCount: ' + DbgS(ButtonCount) + ' DefaultIndex: ' +
+      DbgS(DefaultIndex) + ' EscapeResult: ' + DbgS(EscapeResult));
+  {$ENDIF}
+  
   Result := -1;
+  
+  if (ButtonCount > 4) or ((ButtonCount = 4) and not HasButton(idButtonHelp)) then
+  begin
+    // if the button count is bigger than 3 + help button we can not use
+    // native alert
+    
+    {$IFDEF VerboseLCLIntf}
+      DebugLn('TCarbonWidgetSet.PromptUser Use LCL standard one.');
+    {$ENDIF}
+    
+    Result := inherited;
+
+    {$IFDEF VerboseLCLIntf}
+      DebugLn('TCarbonWidgetSet.PromptUser LCL Result: ' + DbgS(Result));
+    {$ENDIF}
+  end;
 
   {Initialize record}
   ParamRec.version := kStdCFStringAlertVersionOne;
   ParamRec.movable := True;
-  ParamRec.helpButton := False;
+  ParamRec.helpButton := HasButton(idButtonHelp);
   ParamRec.defaultText := nil;
   ParamRec.cancelText := nil;
   ParamRec.otherText := nil;
@@ -228,7 +294,6 @@ begin
   end;
 
   try
-    DebugLn('TCarbonWidgetSet.PromptUser: CreateStandardAlert');
     CreateStandardAlert(AlertCode, CaptionStr, MessageStr, @ParamRec, AlertRef);
     RunStandardAlert(AlertRef, nil, AlertBtnIdx);
 
@@ -250,6 +315,10 @@ begin
     FreeCFString(CaptionStr);
     FreeCFString(MessageStr);
   end;
+  
+  {$IFDEF VerboseLCLIntf}
+    DebugLn('TCarbonWidgetSet.PromptUser Result: ' + DbgS(Result));
+  {$ENDIF}
 end;  {TCarbonWidgetSet.PromptUser}
 
 function TCarbonWidgetSet.ReplaceBitmapMask(var Image, Mask: HBitmap;

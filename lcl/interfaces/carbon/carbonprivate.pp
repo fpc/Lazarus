@@ -88,7 +88,7 @@ type
   public
   { Frame:
      = widget in controls without special frame control
-     - frame area control of control or window
+     - frame area control of control
      - determines bounds of control
      - processes only bounds changed event            }
     property Frame: ControlRef read GetFrame;
@@ -124,6 +124,13 @@ type
     function SetText(const S: String): Boolean; override;
     
     function Update: Boolean; override;
+  end;
+  
+  { TCarbonHintWindow }
+
+  TCarbonHintWindow = class(TCarbonWindow)
+  protected
+    procedure CreateWidget(const AParams: TCreateParams); override;
   end;
 
   { TCarbonCustomControl }
@@ -364,6 +371,28 @@ var SavedMouseUpMsg: TLMMouse;
 {$I carbonprivatecommon.inc}
 {$I carbonprivatecontrol.inc}
 {$I carbonprivatewindow.inc}
+
+{ TCarbonHintWindow }
+
+procedure TCarbonHintWindow.CreateWidget(const AParams: TCreateParams);
+var
+  Window: WindowRef;
+  MinSize, MaxSize: HISize;
+begin
+  if CreateNewWindow(kHelpWindowClass,
+    kWindowCompositingAttribute or
+    kWindowHideOnSuspendAttribute or kWindowStandardHandlerAttribute,
+    ParamsToCarbonRect(AParams), Window) = noErr then
+  begin
+    Widget := Window;
+
+    SetWindowProperty(Widget, LAZARUS_FOURCC, WIDGETINFO_FOURCC, SizeOf(Self), @Self);
+    SetControlProperty(Content, LAZARUS_FOURCC, WIDGETINFO_FOURCC, SizeOf(Self), @Self);
+  end
+  else RaiseCreateWidgetError(LCLObject);
+  
+  SetColor(LCLObject.Color);
+end;
 
 { TCarbonCustomControl }
 
@@ -1417,6 +1446,7 @@ begin
     DeliverMessage(LCLObject, ScrollMsg);
   end;
 end;
+
 
 
 end.

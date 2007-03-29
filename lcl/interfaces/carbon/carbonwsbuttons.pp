@@ -99,7 +99,7 @@ end;
 class procedure TCarbonWSButton.SetDefault(const AButton: TCustomButton;
   ADefault: Boolean);
 begin
-  if not WSCheckHandleAllocated(AButton, 'SetDefault') then Exit;
+  if not CheckHandle(AButton, Self, 'SetDefault') then Exit;
 
   SetControlData(AsControlRef(AButton.Handle), kControlEntireControl,
     kControlPushButtonDefaultTag, SizeOf(Boolean), @ADefault);
@@ -135,7 +135,7 @@ class procedure TCarbonWSBitBtn.SetGlyph(const ABitBtn: TCustomBitBtn;
 var
   ContentInfo: ControlButtonContentInfo;
 begin
-  if not WSCheckHandleAllocated(ABitBtn, 'SetGlyph') then Exit;
+  if not CheckHandle(ABitBtn, Self, 'SetGlyph') then Exit;
   
   ContentInfo.contentType := kControlContentCGImageRef;
   if AValue = nil then
@@ -159,7 +159,7 @@ class procedure TCarbonWSBitBtn.SetLayout(const ABitBtn: TCustomBitBtn;
 var
   Placement: ControlButtonTextPlacement;
 begin
-  if not WSCheckHandleAllocated(ABitBtn, 'SetLayout') then Exit;
+  if not CheckHandle(ABitBtn, Self, 'SetLayout') then Exit;
   
   case AValue of
     blGlyphLeft  : Placement := kControlBevelButtonPlaceToRightOfGraphic;

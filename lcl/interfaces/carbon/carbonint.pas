@@ -32,6 +32,21 @@ interface
 {$ASSERTIONS ON}
 {$endif}
 
+// Show debug info when tracing:
+
+{off $DEFINE DebugEventLoop}
+
+{off $DEFINE VerboseObject}    // Carbon object
+{off $DEFINE VerboseTimer}
+{off $DEFINE VerboseWinAPI}    // Carbon WinAPI
+{off $DEFINE VerboseLCLIntf}   // Carbon LCLIntf
+{off $DEFINE VerboseMouse}
+{off $DEFINE VerboseCursor}    // Carbon cursor
+{off $DEFINE VerboseKeyboard}
+{off $DEFINE VerbosePaint}
+
+{off $DEFINE VerboseWSClass}       // Carbon WS class
+
 uses
  // rtl+ftl
   Types, Classes, SysUtils, Math, FPCAdds,
@@ -72,6 +87,7 @@ type
     procedure AppRestore; override;
     procedure AppBringToFront; override;
     function  WidgetSetName: string; override;
+    procedure AttachMenuToWindow(AMenuObject: TComponent); Override;
     
     function  DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor; override;
     procedure DCSetPixel(CanvasHandle: HDC; X, Y: integer; AColor: TGraphicsColor); override;
@@ -123,13 +139,14 @@ uses
 // CarbonWSGrids,
 // CarbonWSImgList,
 // CarbonWSMaskEdit,
-// CarbonWSMenus,
+  CarbonWSMenus,
 // CarbonWSPairSplitter,
 // CarbonWSSpin,
   CarbonWSStdCtrls,
 // CarbonWSToolwin,
 ////////////////////////////////////////////////////
   CarbonDef, CarbonPrivate, CarbonProc, CarbonCanvas, CarbonGDIObjects,
+  CarbonMenus,
   Buttons, StdCtrls, PairSplitter, ComCtrls, CListBox, Calendar, Arrow,
   Spin, CommCtrl, ExtCtrls, FileCtrl, LResources;
 

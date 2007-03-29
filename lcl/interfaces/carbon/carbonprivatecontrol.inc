@@ -19,62 +19,6 @@
 // H A N D L E R S 
 // ==================================================================
 
-function CarbonControl_SetFocusPart(ANextHandler: EventHandlerCallRef;
-  AEvent: EventRef;
-  AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
-  //Focus: ControlTypeCode;
-begin
-  DebugLn('CarbonControl_SetFocusPart: ', DbgSName(AWidget.LCLObject));
-  Result := CallNextEventHandler(ANextHandler, AEvent);
-  
-  {if GetEventParameter(AEvent, kEventParamControlPart, typeControlPartCode, nil,
-                      SizeOf(Boolean), nil, @Focus) <> noErr then Focus := kControlFocusNoPart;
-                      
-  
-  FillChar(Msg, SizeOf(Msg), 0);
-  if Focus then Msg.msg := LM_SETFOCUS
-  else Msg.msg := LM_FILLFOCUS;
-  DeliverMessage(AWidget.LCLObject, Msg);}
-end;
-
-function CarbonControl_GetNextFocusCandidate(ANextHandler: EventHandlerCallRef;
-  AEvent: EventRef;
-  AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
-begin
-  DebugLn('CarbonControl_GetNextFocusCandidate: ', DbgSName(AWidget.LCLObject));
-  Result := CallNextEventHandler(ANextHandler, AEvent);
-end;
-
-function CarbonControl_SetCursor(ANextHandler: EventHandlerCallRef;
-  AEvent: EventRef;
-  AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
-var
-{
-  Msg: TLMessage;
-}
-  ACursor: TCursor;
-begin
-  // too much messages in terminal
-  // DebugLn('PrivateHiView_SetCursor: ', AWidget.LCLObject.Name);
-  CallNextEventHandler(ANextHandler, AEvent);
-  
-{
-  Paul Ishenin: maybe we should ask control about it cursor via LM_SetCursor ???
-  
-  FillChar(Msg, SizeOf(Msg), 0);
-  Msg.msg := LM_SETCURSOR;
-  DeliverMessage(AWidget.LCLObject, Msg);
-}
-
-  ACursor := Screen.Cursor;
-  if ACursor = crDefault then
-  begin
-    ACursor := AWidget.LCLObject.Cursor;
-  end;
-  WidgetSet.SetCursor(Screen.Cursors[ACursor]);
-  Result := noErr; // cursor was setted
-end;
-
 {------------------------------------------------------------------------------
   Name: CarbonControl_Hit
   Handles click and LM_MOUSEUP events
@@ -226,6 +170,11 @@ begin
     RegisterEventHandler(@CarbonCommon_BoundsChanged),
     1, @TmpSpec, Pointer(Self), nil);
     
+  TmpSpec := MakeEventSpec(kEventClassControl, kEventControlContextualMenuClick);
+  InstallControlEventHandler(Widget,
+    RegisterEventHandler(@CarbonCommon_ContextualMenuClick),
+    1, @TmpSpec, Pointer(Self), nil);
+    
   TmpSpec := MakeEventSpec(kEventClassControl, kEventControlTrack);
   InstallControlEventHandler(Widget,
     RegisterEventHandler(@CarbonCommon_Track),
@@ -240,19 +189,19 @@ begin
   end;
 
   TmpSpec := MakeEventSpec(kEventClassControl, kEventControlSetFocusPart);
-  InstallControlEventHandler(Widget,
-    RegisterEventHandler(@CarbonControl_SetFocusPart),
+  InstallControlEventHandler(Content,
+    RegisterEventHandler(@CarbonCommon_SetFocusPart),
     1, @TmpSpec, Pointer(Self), nil);
 
   TmpSpec := MakeEventSpec(kEventClassControl, kEventControlGetNextFocusCandidate);
-  InstallControlEventHandler(Widget,
-    RegisterEventHandler(@CarbonControl_GetNextFocusCandidate),
+  InstallControlEventHandler(Content,
+    RegisterEventHandler(@CarbonCommon_GetNextFocusCandidate),
     1, @TmpSpec, Pointer(Self), nil);
     
 // cursor set
   TmpSpec := MakeEventSpec(kEventClassControl, kEventControlSetCursor);
   InstallControlEventHandler(Widget,
-    RegisterEventHandler(@CarbonControl_SetCursor),
+    RegisterEventHandler(@CarbonCommon_SetCursor),
     1, @TmpSpec, Pointer(Self), nil);
 
   if cceHit in Events then
@@ -307,13 +256,16 @@ begin
 
   UnregisterEventHandler(@CarbonCommon_Dispose);
   UnregisterEventHandler(@CarbonCommon_Draw);
+  UnregisterEventHandler(@CarbonCommon_BoundsChanged);
+  UnregisterEventHandler(@CarbonCommon_ContextualMenuClick);
   UnregisterEventHandler(@CarbonCommon_Track);
   if Content <> ControlRef(Widget) then
     UnregisterEventHandler(@CarbonCommon_Track);
-  UnregisterEventHandler(@CarbonCommon_BoundsChanged);
-  UnregisterEventHandler(@CarbonControl_SetFocusPart);
-  UnregisterEventHandler(@CarbonControl_GetNextFocusCandidate);
-  UnregisterEventHandler(@CarbonControl_SetCursor);
+    
+  UnregisterEventHandler(@CarbonCommon_SetFocusPart);
+  UnregisterEventHandler(@CarbonCommon_GetNextFocusCandidate);
+  UnregisterEventHandler(@CarbonCommon_SetCursor);
+  
   if cceHit in Events then
     UnregisterEventHandler(@CarbonControl_Hit);
   if cceValueChanged in Events then
@@ -413,22 +365,18 @@ end;
 
 function TCarbonControl.GetScreenBounds(var ARect: TRect): Boolean;
 var
-  BoundsHIRect: HIRect;
-  BoundsRect: TRect;
+  BoundsRect: HIRect;
   WindowRect: FPCMacOSAll.Rect;
 begin
   Result := False;
 
-  if not GetBounds(BoundsRect) then Exit;
-  OffsetRect(BoundsRect, -BoundsRect.Left, -BoundsRect.Left);
-  
-  BoundsHIRect := RectToCGRect(BoundsRect);
-  if HIViewConvertRect(BoundsHIRect, Frame, nil) <> noErr then Exit;
+  if HIViewGetBounds(Frame, BoundsRect) <> noErr then Exit;
+  if HIViewConvertRect(BoundsRect, Frame, nil) <> noErr then Exit;
   
   if GetWindowBounds(GetTopParentWindow, kWindowStructureRgn,
     WindowRect) <> noErr then Exit;
     
-  ARect := CGRectToRect(BoundsHIRect);
+  ARect := CGRectToRect(BoundsRect);
   OffsetRect(ARect, WindowRect.left, WindowRect.top);
 
   Result := True;

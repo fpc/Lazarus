@@ -46,6 +46,7 @@ type
     constructor Create(AOwner: TCarbonComboBox);
     procedure Clear; override;
     procedure Delete(Index: Integer); override;
+    procedure Sort; override;
   public
     property Owner: TCarbonComboBox read FOwner;
   end;
@@ -211,6 +212,29 @@ procedure TCarbonComboBoxStrings.Delete(Index: Integer);
 begin
   inherited Delete(Index);
   HIComboBoxRemoveItemAtIndex(HIViewRef(FOwner.Widget), Index);
+end;
+{------------------------------------------------------------------------------
+  Method:  TCarbonComboBoxStrings.Sort
+
+  Sorts the strings
+ ------------------------------------------------------------------------------}
+procedure TCarbonComboBoxStrings.Sort;
+var
+  CFString: CFStringRef;
+  I: Integer;
+begin
+  inherited Sort;
+  
+  for I := 0 to Count - 1 do
+  begin
+    CreateCFString(Strings[I], CFString);
+    try
+      if HIComboBoxRemoveItemAtIndex(HIViewRef(FOwner.Widget), I) = noErr then
+        HIComboBoxInsertTextItemAtIndex(HIViewRef(FOwner.Widget), I, CFString);
+    finally
+      FreeCFString(CFString);
+    end;
+  end;
 end;
 
 { TCarbonListBoxStrings }

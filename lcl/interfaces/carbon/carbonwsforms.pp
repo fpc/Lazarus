@@ -27,13 +27,13 @@ unit CarbonWSForms;
 interface
 
 uses
-  // libs
+  // Libs
   FPCMacOSAll, CarbonUtils, CarbonExtra,
   // LCL
   Controls, Forms, Graphics, LCLType, LMessages, LCLProc, Classes,
-  // widgetset
+  // Widgetset
   WSForms, WSLCLClasses, WSProc,
-  // interface
+  // Interface
   CarbonDef, CarbonProc, CarbonPrivate,
   CarbonWSControls;
 
@@ -100,6 +100,7 @@ type
   private
   protected
   public
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
   end;
 
   { TCarbonWSScreen }
@@ -146,7 +147,7 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TCarbonWSCustomForm.CloseModal(const ACustomForm: TCustomForm);
 begin
-  if not WSCheckHandleAllocated(ACustomForm, 'CloseModal') then Exit;
+  if not CheckHandle(ACustomForm, Self, 'CloseModal') then Exit;
   
   FPCMacOSAll.SetWindowModality(AsWindowRef(ACustomForm.Handle),
     kWindowModalityNone, nil);
@@ -161,7 +162,7 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TCarbonWSCustomForm.ShowModal(const ACustomForm: TCustomForm);
 begin
-  if not WSCheckHandleAllocated(ACustomForm, 'ShowModal') then Exit;
+  if not CheckHandle(ACustomForm, Self, 'ShowModal') then Exit;
 
   SetWindowModality(AsWindowRef(ACustomForm.Handle),
     kWindowModalityAppModal, nil);
@@ -181,7 +182,7 @@ class procedure TCarbonWSCustomForm.SetBorderIcons(const AForm: TCustomForm;
 var
   AttrsSet, AttrsClear: WindowAttributes;
 begin
-  if not WSCheckHandleAllocated(AForm, 'SetBorderIcons') then Exit;
+  if not CheckHandle(AForm, Self, 'SetBorderIcons') then Exit;
 
   AttrsSet := 0;
   AttrsClear := 0;
@@ -211,6 +212,22 @@ begin
 end;
 
 
+{ TCarbonWSHintWindow }
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWSHintWindow.CreateHandle
+  Params:  AWinControl - LCL control
+           AParams     - Creation parameters
+  Returns: Handle to the window in Carbon interface
+
+  Creates new hint window in Carbon interface with the specified parameters
+ ------------------------------------------------------------------------------}
+class function TCarbonWSHintWindow.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): TLCLIntfHandle;
+begin
+  Result := TLCLIntfHandle(TCarbonHintWindow.Create(AWinControl, AParams));
+end;
+
 initialization
 
 ////////////////////////////////////////////////////
@@ -225,7 +242,7 @@ initialization
 //  RegisterWSComponent(TFrame, TCarbonWSFrame);
   RegisterWSComponent(TCustomForm, TCarbonWSCustomForm);
 //  RegisterWSComponent(TForm, TCarbonWSForm);
-//  RegisterWSComponent(THintWindow, TCarbonWSHintWindow);
+  RegisterWSComponent(THintWindow, TCarbonWSHintWindow);
 //  RegisterWSComponent(TScreen, TCarbonWSScreen);
 //  RegisterWSComponent(TApplicationProperties, TCarbonWSApplicationProperties);
 ////////////////////////////////////////////////////

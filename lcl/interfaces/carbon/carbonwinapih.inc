@@ -82,7 +82,7 @@ function EndPaint(Handle : hwnd; var PS : TPaintStruct): Integer; override;
 procedure EnterCriticalSection(var CritSection: TCriticalSection); override;
 function EnumFontFamilies(DC: HDC; Family:Pchar; EnumFontFamProc: FontEnumProc; LParam: Lparam): Longint; override;
 function EnumFontFamiliesEx(DC: HDC; lpLogFont: PLogFont; Callback: FontEnumExProc; LParam: Lparam; flags: dword): Longint; override;
-function ExcludeClipRect(dc: hdc; Left, Top, Right, Bottom : Integer) : Integer; override;
+function ExcludeClipRect(DC: HDC; Left, Top, Right, Bottom : Integer) : Integer; override;
 function ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;  override;
 function ExtSelectClipRGN(dc: hdc; rgn : hrgn; Mode : Longint) : Integer;  override;
 
@@ -162,7 +162,7 @@ function RadialArc(DC: HDC; Left, Top, Right, Bottom, sx, sy, ex, ey: Integer): 
 function RadialChord(DC: HDC; x1, y1, x2, y2, sx, sy, ex, ey: Integer): Boolean; override;
 function RealizePalette(DC: HDC): Cardinal; override;
 function Rectangle(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean; override;
-function RectVisible(dc : hdc; const ARect: TRect) : Boolean; override;
+function RectVisible(DC: HDC; const ARect: TRect) : Boolean; override;
 function RegroupMenuItem(hndMenu: HMENU; GroupIndex: integer): Boolean; override;
 function ReleaseCapture : Boolean; override;
 function ReleaseDC(HWnd: HWND; DC: HDC): Integer; override;
@@ -185,7 +185,7 @@ function SetCapture(AHandle: HWND): HWND; override;
 function SetCaretPos(X, Y: Integer): Boolean; override;
 function SetCaretPosEx(Handle: HWnd; X, Y: Integer): Boolean; override;
 function SetCaretRespondToFocus(handle: HWND; ShowHideOnFocus: boolean): Boolean; override;
-function SetCursor(hCursor: HICON): HCURSOR; override;
+function SetCursor(ACursor: HCURSOR): HCURSOR; override;
 function SetFocus(HWnd: HWND): HWND; override;
 function SetForegroundWindow(HWnd: HWND): boolean; override;
 function SetProp(Handle: hwnd; Str : PChar; Data : Pointer) : Boolean; override;

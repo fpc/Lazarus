@@ -124,7 +124,7 @@ class procedure TCarbonWSWinControl.GetPreferredSize(const AWinControl: TWinCont
 var
   S: TPoint;
 begin
-  if not WSCheckHandleAllocated(AWinControl, 'GetPreferredSize') then Exit;
+  if not CheckHandle(AWinControl, Self, 'GetPreferredSize') then Exit;
   
   S := TCarbonWidget(AWinControl.Handle).GetPreferredSize;
   PreferredWidth := S.X;
@@ -143,7 +143,7 @@ class function TCarbonWSWinControl.GetText(const AWinControl: TWinControl;
   var AText: String): Boolean;
 begin
   Result := False;
-  if not WSCheckHandleAllocated(AWinControl, 'GetText') then Exit;
+  if not CheckHandle(AWinControl, Self,'GetText') then Exit;
 
   Result := TCarbonWidget(AWinControl.Handle).GetText(AText);
 end;
@@ -159,7 +159,7 @@ end;
 class procedure TCarbonWSWinControl.SetBounds(const AWinControl: TWinControl;
   const ALeft, ATop, AWidth, AHeight: Integer);
 begin
-  if not WSCheckHandleAllocated(AWinControl, 'SetBounds') then Exit;
+  if not CheckHandle(AWinControl, Self, 'SetBounds') then Exit;
 
   TCarbonWidget(AWinControl.Handle).SetBounds(Bounds(ALeft, ATop, AWidth, AHeight));
 end;
@@ -183,8 +183,8 @@ var
   I, StopPos: Integer;
   Child: TWinControl;
 begin
-  if not WSCheckHandleAllocated(AWinControl, 'SetChildZPosition') then Exit;
-  if not WSCheckHandleAllocated(AChild, 'SetChildZPosition AChild') then Exit;
+  if not CheckHandle(AWinControl, Self, 'SetChildZPosition') then Exit;
+  if not CheckHandle(AChild, Self, 'SetChildZPosition AChild') then Exit;
   
   RefView := nil;
   if ANewPos <= 0 then // send behind all
@@ -230,7 +230,7 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TCarbonWSWinControl.SetColor(const AWinControl: TWinControl);
 begin
-  if not WSCheckHandleAllocated(AWinControl, 'SetColor') then Exit;
+  if not CheckHandle(AWinControl, Self, 'SetColor') then Exit;
 
   TCarbonWidget(AWinControl.Handle).SetColor(AWinControl.Color);
 end;
@@ -246,7 +246,7 @@ end;
 class procedure TCarbonWSWinControl.SetFont(const AWinControl: TWinControl;
   const AFont: TFont);
 begin
-  if not WSCheckHandleAllocated(AWinControl, 'SetFont') then Exit;
+  if not CheckHandle(AWinControl, Self, 'SetFont') then Exit;
   
   TCarbonWidget(AWinControl.Handle).SetFont(AFont);
 end;
@@ -262,7 +262,7 @@ end;
 class procedure TCarbonWSWinControl.SetText(const AWinControl: TWinControl;
   const AText: String);
 begin
-  if not WSCheckHandleAllocated(AWinControl, 'SetText') then Exit;
+  if not CheckHandle(AWinControl, Self, 'SetText') then Exit;
   
   //DebugLn('TCarbonWSWinControl.SetText ',dbgsName(AWinControl),' ',AText);
   TCarbonWidget(AWinControl.Handle).SetText(AText);
@@ -277,7 +277,7 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TCarbonWSWinControl.Invalidate(const AWinControl: TWinControl);
 begin
-  if not WSCheckHandleAllocated(AWinControl, 'Invalidate') then Exit;
+  if not CheckHandle(AWinControl, Self, 'Invalidate') then Exit;
 
   TCarbonWidget(AWinControl.Handle).Invalidate;
 end;
@@ -291,7 +291,7 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TCarbonWSWinControl.ShowHide(const AWinControl: TWinControl);
 begin
-  if not WSCheckHandleAllocated(AWinControl, 'ShowHide') then Exit;
+  if not CheckHandle(AWinControl, Self, 'ShowHide') then Exit;
   
   TCarbonWidget(AWinControl.Handle).ShowHide(AWinControl.Visible);
 end;
@@ -305,8 +305,8 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TCarbonWSWinControl.AddControl(const AControl: TControl);
 begin
-  if not WSCheckHandleAllocated(AControl as TWinControl, 'AddControl') then Exit;
-  if not WSCheckHandleAllocated(AControl.Parent, 'AddControl Parent') then Exit;
+  if not CheckHandle(AControl as TWinControl, Self, 'AddControl') then Exit;
+  if not CheckHandle(AControl.Parent, Self, 'AddControl Parent') then Exit;
   
   // add frame control to content area
   HIViewAddSubview(TCarbonWidget(AControl.Parent.Handle).Content,
@@ -322,9 +322,8 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TCarbonWSWinControl.DestroyHandle(const AWinControl: TWinControl);
 begin
-  if not WSCheckHandleAllocated(AWinControl, 'DestroyHandle') then Exit;
-  
-  DebugLn('TCarbonWSWinControl.DestroyHandle ', DbgSName(AWinControl));
+  if not CheckHandle(AWinControl, Self, 'DestroyHandle') then Exit;
+
   TCarbonWidget(AWinControl.Handle).Free;
 end;
 
@@ -340,7 +339,7 @@ class function TCarbonWSWinControl.GetClientBounds(const AWinControl: TWinContro
   var ARect: TRect): Boolean;
 begin
   Result := False;
-  if not WSCheckHandleAllocated(AWinControl, 'GetClientBounds') then Exit;
+  if not CheckHandle(AWinControl, Self, 'GetClientBounds') then Exit;
   
   Result := TCarbonWidget(AWinControl.Handle).GetClientRect(ARect);
 end;
@@ -357,7 +356,7 @@ class function TCarbonWSWinControl.GetClientRect(const AWinControl: TWinControl;
   var ARect: TRect): Boolean;
 begin
   Result := False;
-  if not WSCheckHandleAllocated(AWinControl, 'GetClientRect') then Exit;
+  if not CheckHandle(AWinControl, Self, 'GetClientRect') then Exit;
   
   Result := TCarbonWidget(AWinControl.Handle).GetClientRect(ARect);
   if Result then OffsetRect(ARect, -ARect.Left, -ARect.Top);

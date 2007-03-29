@@ -560,7 +560,10 @@ begin
 
   FDataSize := FBytesPerRow * FHeight;
   System.GetMem(FData, FDataSize);
-  if AData <> nil then System.Move(AData^, FData^, FDataSize); // copy data
+  if AData <> nil then
+    System.Move(AData^, FData^, FDataSize) // copy data
+  else
+    FillDWord(FData^, FDataSize shr 2, 0); // clear bitmap
 
 //DebugLn(Format('TCarbonBitmap.Create %d x %d Data: %d RowSize: %d Size: %d',
 //  [AWidth, AHeight, Integer(AData), DataRowSize, FDataSize]));
@@ -804,7 +807,10 @@ end;
 
 procedure TCarbonCursor.Install;
 begin
-  DebugLn('TCarbonCursor.Install type: ', IntToStr(Ord(CursorType)));
+  {$IFDEF VerboseCursor}
+    DebugLn('TCarbonCursor.Install type: ', DbgS(Ord(CursorType)));
+  {$ENDIF}
+  
   case CursorType of
     cctQDHardware:
       if FQDHardwareCursorName <> '' then

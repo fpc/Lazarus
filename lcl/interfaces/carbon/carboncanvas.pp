@@ -83,7 +83,6 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-
     procedure Reset; override;
     
     function SaveDC: Integer;
@@ -91,6 +90,8 @@ type
     
     function BeginTextRender(AStr: PChar; ACount: Integer; out ALayout: ATSUTextLayout): Boolean;
     procedure EndTextRender(var ALayout: ATSUTextLayout);
+    
+    procedure SetAntialiasing(AValue: Boolean);
   public
     property Size: TPoint read GetSize;
 
@@ -411,7 +412,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Name:    TCarbonDeviceContext.EndTextRender
+  Method:  TCarbonDeviceContext.EndTextRender
   Params:  ALayout - ATSU layout
   Returns: Nothing
 
@@ -424,6 +425,17 @@ begin
   CGContextRestoreGState(CGContext);
 
   if ALayout <> nil then ATSUDisposeTextLayout(ALayout);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonDeviceContext.SetAntialiasing
+  Params:  AValue - If should antialias
+
+  Sets whether device context should antialias
+ ------------------------------------------------------------------------------}
+procedure TCarbonDeviceContext.SetAntialiasing(AValue: Boolean);
+begin
+  CGContextSetShouldAntialias(CGContext, CBool(AValue));
 end;
 
 { TCarbonScreenContext }

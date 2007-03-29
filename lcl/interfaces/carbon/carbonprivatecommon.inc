@@ -245,3 +245,134 @@ begin
     end;
   end;
 end;
+
+function CarbonCommon_ContextualMenuClick(ANextHandler: EventHandlerCallRef;
+  AEvent: EventRef;
+  AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
+var
+  Msg: TLMMouse;
+  P: TPoint;
+begin
+  DebugLn('CarbonCommon_ContextualMenuClick: ', DbgSName(AWidget.LCLObject));
+  // Result := CallNextEventHandler(ANextHandler, AEvent);
+
+  P := AWidget.GetMousePos;
+  
+  DebugLn('CarbonCommon_ContextualMenuClick: ', DbgS(P));
+
+  FillChar(Msg, SizeOf(TLMMouse), 0);
+  Msg.Msg := LM_CONTEXTMENU;
+  Msg.Pos.X := P.X;
+  Msg.Pos.Y := P.Y;
+  
+  DeliverMessage(AWidget.LCLObject, Msg);
+  Result := noErr; // do not propagate
+end;
+
+function CarbonCommon_SetFocusPart(ANextHandler: EventHandlerCallRef;
+  AEvent: EventRef;
+  AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
+var
+  FocusPart: ControlPartCode;
+begin
+  Result := CallNextEventHandler(ANextHandler, AEvent);
+
+  if GetEventParameter(AEvent, kEventParamControlPart, typeControlPartCode, nil,
+    SizeOf(ControlPartCode), nil, @FocusPart) <> noErr then Exit;
+
+  DebugLn('CarbonCommon_SetFocusPart: ', DbgSName(AWidget.LCLObject), ' ' +
+    IntToStr(Integer(FocusPart)));
+
+  if FocusPart <> kControlFocusNoPart then
+    LCLSendSetFocusMsg(AWidget.LCLObject)
+  else
+    LCLSendKillFocusMsg(AWidget.LCLObject);
+end;
+
+function CarbonCommon_GetNextFocusCandidate(ANextHandler: EventHandlerCallRef;
+  AEvent: EventRef;
+  AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
+var
+  StartControl, NextControl: ControlRef;
+  FocusPart: ControlPartCode;
+  TabIndex: Integer;
+  TabList: TFPList;
+  AControl: TCarbonWidget;
+begin
+  DebugLn('CarbonCommon_GetNextFocusCandidate: ', DbgSName(AWidget.LCLObject));
+  //Result := CallNextEventHandler(ANextHandler, AEvent);
+  
+  if GetEventParameter(AEvent, kEventParamStartControl, typeControlRef, nil,
+    SizeOf(ControlRef), nil, @StartControl) <> noErr then Exit;
+  if GetEventParameter(AEvent, kEventParamControlPart, typeControlPartCode, nil,
+    SizeOf(ControlPartCode), nil, @FocusPart) <> noErr then Exit;
+  
+  TabIndex := 0;
+  TabList := TFPList.Create;
+  try
+    (AWidget.LCLObject.GetTopParent as TWinControl).GetTabOrderList(TabList);
+    AControl := GetCarbonWidget(StartControl);
+    
+    if AControl <> nil then
+    begin
+      TabIndex := TabList.IndexOf(AControl.LCLObject);
+      if TabIndex >= 0 then
+      begin
+        if FocusPart = kControlFocusNextPart then
+        begin
+          Inc(TabIndex);
+          if TabIndex >= TabList.Count then TabIndex := 0;
+        end
+        else
+        begin
+          Dec(TabIndex);
+          if TabIndex < 0 then TabIndex := TabList.Count - 1;
+        end;
+      end
+      else TabIndex := 0;
+    end;
+    
+    if TabIndex < TabList.Count then
+      NextControl := AsControlRef(TWinControl(TabList[TabIndex]).Handle)
+    else
+      NextControl := nil;
+    
+    OSError(SetEventParameter(AEvent, kEventParamNextControl, typeControlRef,
+        SizeOf(ControlRef), @NextControl), 'CarbonCommon_GetNextFocusCandidate',
+        'SetEventParameter');
+  finally
+    TabList.Free;
+  end;
+  
+  Result := noErr;
+end;
+
+function CarbonCommon_SetCursor(ANextHandler: EventHandlerCallRef;
+  AEvent: EventRef;
+  AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
+var
+{
+  Msg: TLMessage;
+}
+  ACursor: TCursor;
+begin
+  // too much messages in terminal
+  // DebugLn('CarbonCommon_SetCursor: ', AWidget.LCLObject.Name);
+  CallNextEventHandler(ANextHandler, AEvent);
+
+{
+  Paul Ishenin: maybe we should ask control about it cursor via LM_SetCursor ???
+
+  FillChar(Msg, SizeOf(Msg), 0);
+  Msg.msg := LM_SETCURSOR;
+  DeliverMessage(AWidget.LCLObject, Msg);
+}
+
+  ACursor := Screen.Cursor;
+  if ACursor = crDefault then
+  begin
+    ACursor := AWidget.LCLObject.Cursor;
+  end;
+  WidgetSet.SetCursor(Screen.Cursors[ACursor]);
+  Result := noErr; // cursor was setted
+end;
