@@ -1239,13 +1239,17 @@ end;
 
 procedure TPostscriptPrinterCanvas.NewPage;
 begin
-  Inherited NewPage;
-  
+  inherited NewPage;
+
   Write('stroke');
   Write('showpage');
   Write('%%'+Format('Page: %d %d',[PageNumber, PageNumber]));
   
   write('newpath');
+  
+  // after showpage, font holds an invalid font dictionary
+  // force selection of current font
+  FirstUpdatefont:=True;
 end;
 
 //Move the current position
