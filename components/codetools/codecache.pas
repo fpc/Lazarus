@@ -114,6 +114,8 @@ type
        ALastTimeUsed: TDateTime);
   end;
 
+  { TCodeCache }
+
   TCodeCache = class(TObject)
   private
     FItems: TAVLTree;  // tree of TCodeBuffer
@@ -129,6 +131,7 @@ type
     fChangeStep: integer;
     function FindIncludeLink(const IncludeFilename: string): string;
     function FindIncludeLinkNode(const IncludeFilename: string): TIncludedByLink;
+    function FindIncludeLinkAVLNode(const IncludeFilename: string): TAVLTreeNode;
     function OnScannerCheckFileOnDisk(Code: pointer): boolean;
     function OnScannerGetFileName(Sender: TObject; Code: pointer): string;
     function OnScannerGetSource(Sender: TObject; Code: pointer): TSourceLog;
@@ -162,6 +165,7 @@ type
                                    const XMLPath: string): boolean;
     procedure Clear;
     procedure ClearAllSourceLogEntries;
+    procedure ClearIncludedByEntry(const IncludeFilename: string);
     procedure OnBufferSetFileName(Sender: TCodeBuffer;
           const OldFilename: string);
     procedure OnBufferSetScanner(Sender: TCodeBuffer);
@@ -196,6 +200,11 @@ begin
   Result:=CompareFilenames(Link1.IncludeFilename,Link2.IncludeFilename);
 end;
 
+function ComparePAnsiStringWithIncludedByLink(Key, Data: pointer): integer;
+begin
+  Result:=CompareFilenames(PAnsiString(Key)^,
+                           TIncludedByLink(Data).IncludeFilename);
+end;
 
 { TCodeCache }
 
@@ -212,6 +221,20 @@ begin
   while ANode<>nil do begin
     TCodeBuffer(ANode.Data).ClearEntries;
     ANode:=FItems.FindSuccessor(ANode);
+  end;
+end;
+
+procedure TCodeCache.ClearIncludedByEntry(const IncludeFilename: string);
+var Code: TCodeBuffer;
+  Node: TAVLTreeNode;
+begin
+  Code:=FindFile(IncludeFilename);
+  if Code<>nil then
+    Code.LastIncludedByFile:=''
+  else begin
+    Node:=FindIncludeLinkAVLNode(IncludeFilename);
+    if Node<>nil then
+      FIncludeLinks.FreeAndDelete(Node);
   end;
 end;
 
@@ -493,6 +516,13 @@ begin
     end;
   end;
   Result:=nil;
+end;
+
+function TCodeCache.FindIncludeLinkAVLNode(const IncludeFilename: string
+  ): TAVLTreeNode;
+begin
+  Result:=FIncludeLinks.FindKey(@IncludeFilename,
+                               @ComparePAnsiStringWithIncludedByLink);
 end;
 
 function TCodeCache.FindIncludeLink(const IncludeFilename: string): string;

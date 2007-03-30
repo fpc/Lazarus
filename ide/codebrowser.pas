@@ -1011,7 +1011,7 @@ procedure TCodeBrowserView.WorkUpdateFileList(List: TCodeBrowserUnitList);
 var
   NewFileList: TAvgLvlTree;
 
-  procedure AddFile(const Filename: string);
+  procedure AddFile(const Filename: string; ClearIncludedByInfo: boolean);
   begin
     //DebugLn(['AddFile Filename="',Filename,'"']);
     if Filename='' then exit;
@@ -1023,6 +1023,9 @@ var
     then exit;
     //DebugLn(['TCodeBrowserView.WorkUpdateFiles AddFile ',Filename]);
     NewFileList.Add(TCodeBrowserUnit.Create(Filename));
+    if ClearIncludedByInfo then begin
+      CodeToolBoss.SourceCache.ClearIncludedByEntry(Filename);
+    end;
   end;
   
   procedure AddFilesOfProject(AProject: TProject);
@@ -1036,7 +1039,7 @@ var
       //DebugLn(['AddFilesOfProject ',AnUnitInfo.Filename]);
       if FilenameIsPascalUnit(AnUnitInfo.Filename)
       or (AnUnitInfo=aProject.MainUnitInfo) then
-        AddFile(AnUnitInfo.Filename);
+        AddFile(AnUnitInfo.Filename,false);
       AnUnitInfo:=AnUnitInfo.NextPartOfProject;
     end;
   end;
@@ -1066,7 +1069,7 @@ var
           inc(SpacePos);
         if (SpacePos>StartPos) and (SpacePos<EndPos) then begin
           Filename:=copy(UnitLinks,SpacePos+1,EndPos-SpacePos-1);
-          AddFile(Filename);
+          AddFile(Filename,true);
         end;
       end;
       StartPos:=EndPos;
@@ -1085,14 +1088,15 @@ var
     for i:=0 to APackage.FileCount-1 do begin
       PkgFile:=APackage.Files[i];
       if (PkgFile.FileType in PkgFileUnitTypes) then
-        AddFile(PkgFile.GetFullFilename);
+        AddFile(PkgFile.GetFullFilename,true);
     end;
     if APackage.Name='FCL' then begin
       AddFilesOfPackageFCL;
     end;
   end;
   
-  procedure AddFilesOfDirectory(const Directory: string);
+  procedure AddFilesOfDirectory(const Directory: string;
+    ClearIncludedByInfo: boolean);
   // ! needs ending PathDelim !
   var
     FileInfo: TSearchRec;
@@ -1110,13 +1114,14 @@ var
         then
           continue;
         if FilenameIsPascalUnit(FileInfo.Name) then
-          AddFile(Directory+FileInfo.Name);
+          AddFile(Directory+FileInfo.Name,ClearIncludedByInfo);
       until SysUtils.FindNext(FileInfo)<>0;
     end;
     SysUtils.FindClose(FileInfo);
   end;
   
-  procedure AddFilesOfSearchPath(const SrcPath, BaseDir: string);
+  procedure AddFilesOfSearchPath(const SrcPath, BaseDir: string;
+    ClearIncludedByInfo: boolean);
   var
     Dir: String;
     p: Integer;
@@ -1129,7 +1134,7 @@ var
         if not FilenameIsAbsolute(Dir) then
           Dir:=BaseDir+PathDelim+Dir;
         Dir:=CleanAndExpandDirectory(Dir);
-        AddFilesOfDirectory(Dir);
+        AddFilesOfDirectory(Dir,ClearIncludedByInfo);
       end;
     end;
   end;
@@ -1171,7 +1176,7 @@ var
       exit;
     end;
     SrcPath:=LazIDESrcPath.Value;
-    AddFilesOfSearchPath(SrcPath+';.',LazDir+'ide'+PathDelim);
+    AddFilesOfSearchPath(SrcPath+';.',LazDir+'ide'+PathDelim,true);
   end;
 
   procedure DeleteUnusedFiles;
@@ -1379,8 +1384,9 @@ begin
   // check if this is a unit
   MainCodeBuf:=CodeToolBoss.GetMainCode(AnUnit.CodeBuffer);
   if MainCodeBuf<>AnUnit.CodeBuffer then begin
-    // this is not a unit, but an include file
-    DebugLn(['TCodeBrowserView.WorkUpdateUnit HINT: this is not a unit: ',AnUnit.Filename]);
+    // this file was used as an include file
+    DebugLn(['TCodeBrowserView.WorkUpdateUnit HINT: this is not a unit: ',AnUnit.Filename,
+      ' (it was included by ',MainCodeBuf.Filename,')']);
     exit;
   end;
   // scan
