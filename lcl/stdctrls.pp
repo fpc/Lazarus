@@ -160,7 +160,6 @@ type
   protected
   public
     constructor Create(AOwner: TComponent); Override;
-    function CanTab: boolean; override;
   end;
 
 

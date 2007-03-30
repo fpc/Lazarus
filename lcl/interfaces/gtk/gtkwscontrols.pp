@@ -72,12 +72,12 @@ type
     class procedure SetCallbacks(const AGTKObject: PGTKObject; const AComponent: TComponent);
   public
     class procedure AddControl(const AControl: TControl); override;
-
-    class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
-
+    class function  CanFocus(const AWinControl: TWinControl): Boolean; override;
     class procedure ConstraintsChange(const AWinControl: TWinControl); override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
     class procedure Invalidate(const AWinControl: TWinControl); override;
+
+    class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
 
     class procedure SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle); override;
     class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); override;
@@ -186,6 +186,19 @@ begin
       RegroupAccelerator(ChildWidget);
     end;
   end;
+end;
+
+class function TGtkWSWinControl.CanFocus(const AWinControl: TWinControl): Boolean;
+var
+  Widget, FocusWidget: PGtkWidget;
+begin
+  if AWinControl.HandleAllocated then
+  begin
+    Widget := PGtkWidget(AWinControl.Handle);
+    FocusWidget := FindFocusWidget(Widget);
+    Result := (FocusWidget <> nil) and GTK_WIDGET_CAN_FOCUS(FocusWidget);
+  end else
+    Result := False;
 end;
 
 class procedure TGtkWSWinControl.ConstraintsChange(const AWinControl: TWinControl);

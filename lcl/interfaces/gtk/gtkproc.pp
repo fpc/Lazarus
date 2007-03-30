@@ -789,6 +789,7 @@ function GetGtkContainerBorderWidth(Widget: PGtkContainer): gint;
 // X functions
 function FormToX11Window(const AForm: TCustomForm): X.TWindow;
 {$endif}
+function FindFocusWidget(AWidget: PGtkWidget): PGtkWidget;
 
 implementation
 

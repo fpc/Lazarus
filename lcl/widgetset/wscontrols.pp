@@ -72,6 +72,8 @@ type
   { TWSWinControl }
 
   TWSWinControl = class(TWSControl)
+    class function  CanFocus(const AWincontrol: TWinControl): Boolean; virtual;
+    
     class function  GetClientBounds(const AWincontrol: TWinControl; var ARect: TRect): Boolean; virtual;
     class function  GetClientRect(const AWincontrol: TWinControl; var ARect: TRect): Boolean; virtual;
     class procedure GetPreferredSize(const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); virtual;
@@ -145,6 +147,12 @@ end;
 
 class procedure TWSWinControl.DestroyHandle(const AWinControl: TWinControl);
 begin
+end;
+
+class function TWSWinControl.CanFocus(const AWincontrol: TWinControl): Boolean;
+begin
+  // lets consider that by deafult all WinControls can be focused
+  Result := True;
 end;
 
 class function TWSWinControl.GetClientBounds(const AWincontrol: TWinControl; var ARect: TRect): Boolean;

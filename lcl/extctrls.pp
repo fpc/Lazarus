@@ -751,6 +751,7 @@ type
     property PopupMenu;
     property ShowHint;
     property TabOrder;
+    property TabStop;
     property Visible;
   end;
 

@@ -2184,7 +2184,7 @@ end;
 ------------------------------------------------------------------------------}
 Function TWinControl.CanTab: Boolean;
 begin
-  Result := CanFocus;
+  Result := CanFocus and TWSWinControlClass(WidgetSetClass).CanFocus(Self);
 end;
 
 procedure TWinControl.DoDragMsg(var DragMsg: TCMDrag);

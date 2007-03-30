@@ -26,9 +26,4 @@ begin
   Height:= 105;
 end;
 
-function TCustomGroupBox.CanTab: boolean;
-begin
-  Result:=false;
-end;
- 
 // included by stdctrls.pp

@@ -51,10 +51,10 @@ uses
 type
   { TWSScrollBar }
 
-  TWSScrollBarClass = class of TWSScrollBar;
   TWSScrollBar = class(TWSWinControl)
     class procedure SetParams(const AScrollBar: TCustomScrollBar); virtual;
   end;
+  TWSScrollBarClass = class of TWSScrollBar;
 
   { TWSCustomGroupBox }
 
