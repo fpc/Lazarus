@@ -2760,6 +2760,24 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Function: SystemParametersInfo
+  Params: uiAction: System-wide parameter to be retrieved or set
+          uiParam: Depends on the system parameter being queried or set
+          pvParam: Depends on the system parameter being queried or set
+          fWinIni:
+  Returns: True if the function succeeds
+  retrieves or sets the value of one of the system-wide parameters
+ ------------------------------------------------------------------------------}
+function TQtWidgetSet.SystemParametersInfo(uiAction: DWord; uiParam: DWord; pvParam: Pointer; fWinIni: DWord): LongBool;
+begin
+  case uiAction of
+    SPI_GETWHEELSCROLLLINES: PDword(pvPAram)^ := QApplication_wheelScrollLines;
+  else
+    Result := False;
+  end
+end;
+
+{------------------------------------------------------------------------------
   Function: TextOut
   Params: DC:
           X:

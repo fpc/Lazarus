@@ -1430,6 +1430,15 @@ begin
   Result := 0;
 end;
 
+function TWidgetSet.SystemParametersInfo(uiAction: DWord; uiParam: DWord; pvParam: Pointer; fWinIni: DWord): LongBool;
+begin
+  case uiAction of
+    SPI_GETWHEELSCROLLLINES: PDword(pvPAram)^ := 3; // default value
+  else
+    Result := False;
+  end
+end;
+
 Function TWidgetSet.TextOut(DC: HDC; X,Y : Integer; Str : Pchar; Count: Integer) : Boolean;
 begin
   Result := false;

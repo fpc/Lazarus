@@ -3393,6 +3393,20 @@ Begin
 end;
 
 {------------------------------------------------------------------------------
+  Function: SystemParametersInfo
+  Params: uiAction: System-wide parameter to be retrieved or set
+          uiParam: Depends on the system parameter being queried or set
+          pvParam: Depends on the system parameter being queried or set
+          fWinIni:
+  Returns: True if the function succeeds
+  retrieves or sets the value of one of the system-wide parameters
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.SystemParametersInfo(uiAction: DWord; uiParam: DWord; pvParam: Pointer; fWinIni: DWord): LongBool;
+begin
+  Result := Windows.SystemParametersInfo(uiAction, uiParam, pvParam, fWinIni);
+end;
+
+{------------------------------------------------------------------------------
   Method:  TextOut
   Params: DC    - handle of device context
           X     - x-coordinate of starting position
@@ -3473,5 +3487,6 @@ end;
   {$UNDEF ASSERT_IS_ON}
   {$C-}
 {$ENDIF}
+
 
 

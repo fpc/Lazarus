@@ -197,6 +197,7 @@ function ShowWindow(hWnd: HWND; nCmdShow: Integer): Boolean; Override;
 function StretchBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; Rop: Cardinal): Boolean; Override;
 { Copies a bitmap from a source rectangle into a destination rectangle using the specified mask and raster operations }
 function StretchMaskBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; Mask: HBITMAP; XMask, YMask: Integer; Rop: DWORD): Boolean; Override;
+function SystemParametersInfo(uiAction: DWord; uiParam: DWord; pvParam: Pointer; fWinIni: DWord): LongBool; override;
 
 function TextOut(DC: HDC; X, Y: Integer; Str: PChar; Count: Integer): Boolean; Override;
 

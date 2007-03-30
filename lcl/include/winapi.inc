@@ -840,6 +840,11 @@ begin
                           SrcX,SrcY,SrcWidth,SrcHeight,Bits,BitsInfo,Usage,Rop);
 end;
 
+function SystemParametersInfo(uiAction: DWord; uiParam: DWord; pvParam: Pointer; fWinIni: DWord): LongBool;
+begin
+  Result := WidgetSet.SystemParametersInfo(uiAction, uiParam, pvParam, fWinIni);
+end;
+
 function TextOut(DC: HDC; X,Y : Integer; Str : Pchar; Count: Integer) : Boolean;
 begin
   Result := WidgetSet.TextOut(DC, X, Y, Str, Count);
