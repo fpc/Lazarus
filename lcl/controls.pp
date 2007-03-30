@@ -2025,14 +2025,17 @@ type
   { TMouse }
 
   TMouse = class
+  private
     FCapture: HWND;
     FDragImmediate: Boolean;
     FDragThreshold: Integer;
+    FWheelScrollLines: Integer;
     Procedure SetCapture(const Value: HWND);
     Function GetCapture: HWND;
     Function GetCursorPos: TPoint;
     function GetIsDragging: Boolean;
     procedure SetCursorPos(AValue : TPoint);
+    function GetWheelScrollLines: Integer;
   public
     constructor Create;
     destructor Destroy; override;
@@ -2041,6 +2044,7 @@ type
     property DragImmediate: Boolean read FDragImmediate write FDragImmediate default True;
     property DragThreshold: Integer read FDragThreshold write FDragThreshold default 5;
     property IsDragging: Boolean read GetIsDragging;
+    property WheelScrollLines: Integer read GetWheelScrollLines;
   end;
 
 

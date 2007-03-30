@@ -21,6 +21,7 @@
 constructor TMouse.Create;
 begin
   inherited Create;
+  FWheelScrollLines := -1;
 end;
 
 destructor TMouse.destroy;
@@ -56,6 +57,15 @@ end;
 procedure TMouse.SetCursorPos(AValue : TPoint);
 Begin
   WidgetSet.SetCursorPos(AValue.X, AValue.Y);
+end;
+
+function TMouse.GetWheelScrollLines: Integer;
+begin
+  if FWheelScrollLines = -1 then
+  begin
+    WidgetSet.SystemParametersInfo(SPI_GETWHEELSCROLLLINES, 0, @FWheelScrollLines, 0);
+  end;
+  Result := FWheelScrollLines;
 end;
 
 function TMouse.GetIsDragging: Boolean;
