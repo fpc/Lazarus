@@ -94,7 +94,6 @@ type
      fCachePaperRect: TPaperRect;
      fCachePaperRectResult: Integer;
      FBeginDocCount: Integer;
-     fRawModefileName: string;
      fRawModeStream: TMemoryStream;
 
      function GetCupsRequest : Pipp_t;

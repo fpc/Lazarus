@@ -516,47 +516,44 @@ begin
   else
     Extension:='.ps';
 
-  fRawModeFileName:=AppendPathDelim(NewPath)
+  TPostscriptPrinterCanvas(Canvas).OutputFileName:=AppendPathDelim(NewPath)
                    +'OutPrinter_'+FormatDateTime('yyyymmmddd-hhnnss',Now)+Extension;
-                   
-  if not RawMode then
-    TPostscriptPrinterCanvas(Canvas).OutputFileName:=fRawModeFileName;
 end;
 
 //If not aborted, send PostScript file to printer.
 //After, delete this file.
 procedure TCUPSPrinter.DoEndDoc(aAborded: Boolean);
-{$ifdef LogPrintOutFile}
-var
-  s:string;
-{$endif}
 begin
   inherited DoEndDoc(aAborded);
   dec(FBeginDocCount);
   Exclude(FStates,cpsPaperRectValid);
 
   {$IFDEF LogPrintOutFile}
-  s := TPostscriptPrinterCanvas(Canvas).OutPutFileName;
-  if FileExists(s) then begin
-    CopyFile(s, 'printout'+ExtractFileExt(s));
-  end;
+  with TPostScriptPrinterCanvas(Canvas) do
+    if FileExists(OutPutFileName) then
+      CopyFile(OutPutFileName, 'printout'+ExtractFileExt(OutPutFileName));
   {$ENDIF}
 
   if RawMode then begin
 
-    if not aAborded and assigned(fRawModeStream) then begin
-      fRawModeStream.SaveToFile(FRawModeFileName);
-      PrintFile(FRawModeFileName);
-      DeleteFile(FRawModeFileName);
+    if not aAborded and (fRawModeStream<>nil)
+      and (FRawModeStream.Size>0) then
+    with TPostScriptPrinterCanvas(Canvas) do begin
+      try
+        fRawModeStream.SaveToFile(OutputFileName);
+        PrintFile(OutputFileName);
+        DeleteFile(OutputFileName);
+      finally
+        FRawModeStream.Clear;
+      end;
     end;
     
   end else begin
     if not aAborded then
       PrintFile(TPostscriptPrinterCanvas(Canvas).OutPutFileName);
-
     DeleteFile(TPostscriptPrinterCanvas(Canvas).OutPutFileName);
-    TPostscriptPrinterCanvas(Canvas).OutPutFileName:='';
   end;
+  TPostscriptPrinterCanvas(Canvas).OutPutFileName:='';
 end;
 
 procedure TCUPSPrinter.DoResetPrintersList;
