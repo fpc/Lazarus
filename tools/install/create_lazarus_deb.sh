@@ -22,6 +22,7 @@ LazBuildDir=$TmpDir/lazarus_build
 LazDeb=$CurDir/lazarus_${LazVersion}-${LazRelease}_$Arch.deb
 DebianSrcDir=$CurDir/debian_lazarus
 LazDestDir=$LazBuildDir/usr/share/lazarus
+LazDestDirInstalled=/usr/share/lazarus
 FPCVersion=$(ppc386 -v | grep version| sed 's/.*\([0-9]\+\.[0-9]\+\.[0-9]\+\).*/\1/')
 ChangeLogDate=`date --rfc-822`
 
@@ -85,9 +86,9 @@ mkdir -p $LazBuildDir/usr/share/applications
 mkdir -p $LazBuildDir/usr/bin/
 install -m 644 $LazDestDir/images/ide_icon48x48.png $LazBuildDir/usr/share/pixmaps/lazarus.png
 install -m 644 $LazDestDir/install/lazarus.desktop $LazBuildDir/usr/share/applications/lazarus.desktop
-ln -s $LazDestDir/lazarus $LazBuildDir/usr/bin/lazarus
-ln -s $LazDestDir/startlazarus $LazBuildDir/usr/bin/startlazarus
-ln -s $LazDestDir/lazbuild $LazBuildDir/usr/bin/lazbuild
+ln -s $LazDestDirInstalled/lazarus $LazBuildDir/usr/bin/lazarus
+ln -s $LazDestDirInstalled/startlazarus $LazBuildDir/usr/bin/startlazarus
+ln -s $LazDestDirInstalled/lazbuild $LazBuildDir/usr/bin/lazbuild
 
 # docs
 mkdir -p $LazBuildDir/usr/share/man/man1
@@ -102,8 +103,11 @@ echo "creating deb ..."
 cd $TmpDir
 fakeroot dpkg-deb --build $LazBuildDir
 mv $LazBuildDir.deb $LazDeb
-echo "the new deb can be found at $LazDeb."
+echo "the new deb can be found at $LazDeb"
 cd -
+
+# removing temporary files
+rm -r $TmpDir
 
 # end.
 

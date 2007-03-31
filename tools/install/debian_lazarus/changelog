@@ -1,3 +1,11 @@
+lazarus (0.9.22)
+
+The Lazarus IDE is started with "startlazarus" or directly with "lazarus".
+Some other lazarus packages out there uses "lazarus-ide" to start.
+If you are switching from such a package to this, please check your desktop
+icons.
+
+
 lazarus (0.9.4)
 
 	  * Started package
