@@ -2379,7 +2379,7 @@ begin
   begin
     { do not use Perform, use WndProc so we can save the Result }
     Inc(TLMessage(Message).Msg, CN_BASE);
-    AWinControl.WndProc(TLMessage(Message));
+    AWinControl.WindowProc(TLMessage(Message));
     Dec(TLMessage(Message).Msg, CN_BASE);
     Result := true;
   end;
