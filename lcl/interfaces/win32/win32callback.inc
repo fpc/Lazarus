@@ -290,7 +290,7 @@ Var
     end;
   end;
   
-  procedure SendPaintMessage;
+  procedure SendPaintMessage(ControlDC: HDC);
   var
     DC: HDC;
     DoubleBufferBitmapOld: HBITMAP;
@@ -331,7 +331,7 @@ Var
     // WM_ERASEBKGND and WM_CTLCOLORSTATIC for native controls
     // sent by default paint handler
     if WindowInfo^.isTabPage or (needParentPaint
-      and (not isNativeControl or (WParam <> 0))) then
+      and (not isNativeControl or (ControlDC <> 0))) then
     begin
       ParentPaintWindow := Window;
       lNotebookFound := false;
@@ -350,7 +350,7 @@ Var
       PushEraseBkgndCommand(ecDiscard);
 
     // check if double buffering is requested
-    useDoubleBuffer := (WParam = 0) and (lWinControl.DoubleBuffered
+    useDoubleBuffer := (ControlDC = 0) and (lWinControl.DoubleBuffered
       or TWin32WidgetSet(WidgetSet).ThemesActive);
 {$ifdef MSG_DEBUG}
     if useDoubleBuffer and (DoubleBufferDC <> 0) then
@@ -386,7 +386,7 @@ Var
 
     WinProcess := false;
     try
-      if WParam = 0 then
+      if ControlDC = 0 then
       begin
         // ignore first erase background on themed control, paint will do everything
         if TWin32WidgetSet(WidgetSet).ThemesActive then
@@ -428,7 +428,7 @@ Var
           Windows.DeleteObject(PaintRegion);
         end;
       end else begin
-        DC := WParam;
+        DC := ControlDC;
         PaintRegion := 0;
       end;
       if ParentPaintWindow <> 0 then
@@ -463,7 +463,7 @@ Var
         Windows.SendMessage(ParentPaintWindow, WM_PAINT, PaintMsg.DC, 0);
         Windows.RestoreDC(PaintMsg.DC, DCIndex);
       end;
-      if (WParam = 0) or not needParentPaint then
+      if (ControlDC = 0) or not needParentPaint then
       begin
         DCIndex := Windows.SaveDC(PaintMsg.DC);
         MoveWindowOrgEx(PaintMsg.DC, ORect.Left, ORect.Top);
@@ -478,7 +478,7 @@ Var
       end;
       if useDoubleBuffer then
         Windows.BitBlt(DC, 0, 0, WindowWidth, WindowHeight, DoubleBufferDC, 0, 0, SRCCOPY);
-      if WParam = 0 then
+      if ControlDC = 0 then
         Windows.EndPaint(Window, @PS);
     finally
       if useDoubleBuffer then
@@ -498,6 +498,14 @@ Var
 {$endif}
       end;
     end;
+  end;
+
+  procedure SendParentPaintMessage(Window, Parent: HWND; ControlDC: HDC);
+  begin
+    GetWin32ControlPos(Window, Parent, P.X, P.Y);
+    MoveWindowOrgEx(ControlDC, -P.X, -P.Y);
+    SendPaintMessage(ControlDC);
+    MoveWindowOrgEx(ControlDC, P.X, P.Y);
   end;
 
   procedure CheckListBoxLButtonDown;
@@ -1182,13 +1190,11 @@ begin
       case Msg of
         WM_CTLCOLORSTATIC,
         WM_CTLCOLORBTN: begin
-          if GetNeedParentPaint(ChildWindowInfo, ChildWinControl) then
+          if GetNeedParentPaint(ChildWindowInfo, ChildWinControl) 
+            and not ChildWindowInfo^.ThemedCustomDraw then
           begin
             // need to draw transparently, draw background
-            GetWin32ControlPos(LParam, Window, P.X, P.Y);
-            MoveWindowOrgEx(WParam, -P.X, -P.Y);
-            SendPaintMessage;
-            MoveWindowOrgEx(WParam, P.X, P.Y);
+            SendParentPaintMessage(LParam, Window, WParam);
             LMessage.Result := GetStockObject(HOLLOW_BRUSH);
             SetBkMode(WParam, TRANSPARENT);
             WinProcess := false;
@@ -1360,7 +1366,7 @@ begin
           LMessage.LParam := LParam;
         end;
       end else begin
-        SendPaintMessage;
+        SendPaintMessage(WParam);
         LMessage.Result := 1;
       end;
       WinProcess := false;
@@ -1696,7 +1702,28 @@ begin
               NM_CUSTOMDRAW:
               begin
                 if WindowInfo^.WinControl is TCustomListView
-                then HandleListViewCustomDraw(TCustomListViewAccess(WindowInfo^.WinControl));
+                then HandleListViewCustomDraw(TCustomListViewAccess(WindowInfo^.WinControl))
+                else if GetNeedParentPaint(WindowInfo, lWinControl) 
+                  and WindowInfo^.ThemedCustomDraw then
+                begin
+                  case PNMCustomDraw(LParam)^.dwDrawStage of
+                    CDDS_PREPAINT:
+                    begin
+                      Result := CDRF_NOTIFYITEMDRAW;
+                      WinProcess := false;
+                    end;
+                    CDDS_ITEMPREPAINT:
+                    begin
+                      case PNMCustomDraw(LParam)^.dwItemSpec of
+                        TBCD_TICS, TBCD_CHANNEL:
+                          SendParentPaintMessage(Window, Windows.GetParent(Window), 
+                            PNMCustomDraw(LParam)^.hDC);
+                      end;
+                      Result := CDRF_DODEFAULT;
+                      WinProcess := false;
+                    end;
+                  end;
+                end;
               end;
             end;
         end;
@@ -1704,7 +1731,7 @@ begin
     end;
     WM_PAINT:
     Begin
-      SendPaintMessage;
+      SendPaintMessage(WParam);
       // SendPaintMessage sets winprocess to false
     End;
     WM_PASTE:

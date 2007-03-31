@@ -2377,8 +2377,10 @@ begin
   AWinControl := FindOwnerControl(Handle);
   if AWinControl <> nil then
   begin
-    with TLMessage(Message) do
-      Result := AWinControl.Perform(Msg + CN_BASE, WParam, LParam);
+    { do not use Perform, use WndProc so we can save the Result }
+    Inc(TLMessage(Message).Msg, CN_BASE);
+    AWinControl.WndProc(TLMessage(Message));
+    Dec(TLMessage(Message).Msg, CN_BASE);
     Result := true;
   end;
 end;

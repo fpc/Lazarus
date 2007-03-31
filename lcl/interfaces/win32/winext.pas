@@ -42,6 +42,17 @@ Type
   { Pointer to @link(COMBOBOXINFO) }
   PComboBoxInfo = ^COMBOBOXINFO;
 
+  TNMCustomDraw = record
+    hdr        : NMHDR;
+    dwDrawStage: DWORD;
+    hdc        : HDC;
+    rc         : TRECT;
+    dwItemSpec : DWORD;
+    uItemState : UINT;
+    lItemlParam: LPARAM;
+  end;
+  PNMCustomDraw=^TNMCustomDraw;
+
   TNMLVCustomDraw = Record
                    hdr          : NMHDR;
                    dwDrawStage  : DWORD;
@@ -192,6 +203,11 @@ Const
   CDRF_NOTIFYSUBITEMDRAW = $20; // flags are the same, we can distinguish by context
   CDRF_NOTIFYPOSTERASE   = $40;
   CDRF_NOTIFYITEMERASE   = $80; 
+
+  // trackbar customdraw
+  TBCD_TICS          = $01;
+  TBCD_THUMB         = $02;
+  TBCD_CHANNEL       = $03;
   
 // progressbar
   PBM_SETRANGE32          = 1030;

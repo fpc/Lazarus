@@ -524,6 +524,7 @@ begin
   end;
   // create window
   FinishCreateWindow(AWinControl, Params, false);
+  Params.WindowInfo^.ThemedCustomDraw := true;
   Result := Params.Window;
 end;
 
