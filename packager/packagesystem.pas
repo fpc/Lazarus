@@ -52,6 +52,8 @@ uses
   CodeToolManager,
   // IDEIntf,
   SrcEditorIntf, IDEExternToolIntf, IDEDialogs, IDEMsgIntf, PackageIntf,
+  LazIDEIntf,
+  // package registration
   LazarusPackageIntf,
   // IDE
   LazarusIDEStrConsts, IDEProcs, LazConf, TransferMacros, DialogProcs,
@@ -2508,13 +2510,15 @@ begin
       end;
     end;
 
-    // auto increase version
-    // ToDo
-
     BlockBegan:=IDEMessagesWindow<>nil;
     if BlockBegan then
       IDEMessagesWindow.BeginBlock;
     try
+      if (LazarusIDE<>nil) then
+        LazarusIDE.MainBarSubTitle:=APackage.Name;
+      // auto increase version
+      // ToDo
+
       Result:=PreparePackageOutputDirectory(APackage,pcfCleanCompile in Flags);
       if Result<>mrOk then begin
         DebugLn('TLazPackageGraph.CompilePackage PreparePackageOutputDirectory failed: ',APackage.IDAsString);
@@ -2634,6 +2638,8 @@ begin
         end;
       end;
     finally
+      if (LazarusIDE<>nil) then
+        LazarusIDE.MainBarSubTitle:='';
       if BlockBegan and (IDEMessagesWindow<>nil) then
         IDEMessagesWindow.EndBlock;
       if Result<>mrOk then begin

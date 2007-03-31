@@ -126,6 +126,7 @@ type
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
 
+    procedure SetMainBarSubTitle(const AValue: string); override;
     procedure UpdateCaption; virtual; abstract;
     procedure HideIDE; virtual; abstract;
     procedure UnhideIDE; virtual; abstract;
@@ -211,7 +212,8 @@ const
      'sfSaveToTestDir',
      'sfProjectSaving',
      'sfCheckAmbiguousFiles',
-     'sfSaveNonProjectFiles'
+     'sfSaveNonProjectFiles',
+     'sfDoNotSaveVirtualFiles'
     );
 
 function OpenFlagsToString(Flags: TOpenFlags): string;
@@ -314,6 +316,13 @@ destructor TMainIDEInterface.Destroy;
 begin
   inherited Destroy;
   MainIDEInterface:=nil;
+end;
+
+procedure TMainIDEInterface.SetMainBarSubTitle(const AValue: string);
+begin
+  if MainBarSubTitle=AValue then exit;
+  inherited SetMainBarSubTitle(AValue);
+  UpdateCaption;
 end;
 
 function TMainIDEInterface.GetPrimaryConfigPath: String;

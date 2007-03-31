@@ -1639,7 +1639,7 @@ var
 begin
   if wcfAligningControls in FWinControlFlags then exit;
   Include(FWinControlFlags,wcfAligningControls);
-  // debugln('TWinControl.AlignControls ',DbgSName(Self));
+  //debugln('TWinControl.AlignControls ',DbgSName(Self));
 
   // unset all align needed flags
   Exclude(FWinControlFlags,wcfReAlignNeeded);

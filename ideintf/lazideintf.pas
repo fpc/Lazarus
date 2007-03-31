@@ -66,7 +66,8 @@ type
     sfSaveToTestDir,
     sfProjectSaving,
     sfCheckAmbiguousFiles,
-    sfSaveNonProjectFiles
+    sfSaveNonProjectFiles,
+    sfDoNotSaveVirtualFiles
     );
   TSaveFlags = set of TSaveFlag;
   
@@ -125,6 +126,7 @@ type
   TLazIDEInterface = class(TComponent)
   private
     FLazarusIDEHandlers: array[TLazarusIDEHandlerType] of TMethodList;
+    FMainBarSubTitle: string;
     procedure AddHandler(HandlerType: TLazarusIDEHandlerType;
                          const AMethod: TMethod; AsLast: boolean = false);
     procedure RemoveHandler(HandlerType: TLazarusIDEHandlerType;
@@ -134,10 +136,15 @@ type
     procedure DoCallNotifyHandler(HandlerType: TLazarusIDEHandlerType);
     function DoCallModalFunctionHandler(HandlerType: TLazarusIDEHandlerType
                                         ): TModalResult;
+    procedure SetMainBarSubTitle(const AValue: string); virtual;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     
+    // the main window with the IDE menu
+    function GetMainBar: TComponent; virtual; abstract;
+    property MainBarSubTitle: string read FMainBarSubTitle write SetMainBarSubTitle;
+
     // find file
     function FindUnitFile(const AFilename: string): string; virtual; abstract;
     function FindSourceFile(const AFilename, BaseDirectory: string;
@@ -235,6 +242,12 @@ procedure TLazIDEInterface.RemoveHandler(HandlerType: TLazarusIDEHandlerType;
   const AMethod: TMethod);
 begin
   FLazarusIDEHandlers[HandlerType].Remove(AMethod);
+end;
+
+procedure TLazIDEInterface.SetMainBarSubTitle(const AValue: string);
+begin
+  if FMainBarSubTitle=AValue then exit;
+  FMainBarSubTitle:=AValue;
 end;
 
 procedure TLazIDEInterface.DoCallNotifyHandler(

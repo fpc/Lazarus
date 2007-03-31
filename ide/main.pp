@@ -7182,20 +7182,23 @@ begin
 
   if DoCheckFilesOnDisk(true) in [mrCancel,mrAbort] then exit;
 
-  // check that all new units are saved first to get valid filenames
-  // (this can alter the mainunit: e.g. used unit names)
-  for i:=0 to Project1.UnitCount-1 do begin
-    AnUnitInfo:=Project1.Units[i];
-    if (AnUnitInfo.Loaded) and (AnUnitInfo.IsVirtual)
-    and (Project1.MainUnitID<>i) then begin
-      SaveFileFlags:=[sfSaveAs,sfProjectSaving]
-                     +[sfCheckAmbiguousFiles]*Flags;
-      if sfSaveToTestDir in Flags then begin
-        if AnUnitInfo.IsPartOfProject or AnUnitInfo.IsVirtual then
-          Include(SaveFileFlags,sfSaveToTestDir);
+  if (not Project1.IsVirtual) or (not (sfDoNotSaveVirtualFiles in Flags)) then
+  begin
+    // check that all new units are saved first to get valid filenames
+    // (this can alter the mainunit: e.g. used unit names)
+    for i:=0 to Project1.UnitCount-1 do begin
+      AnUnitInfo:=Project1.Units[i];
+      if (AnUnitInfo.Loaded) and (AnUnitInfo.IsVirtual)
+      and (Project1.MainUnitID<>i) then begin
+        SaveFileFlags:=[sfSaveAs,sfProjectSaving]
+                       +[sfCheckAmbiguousFiles]*Flags;
+        if sfSaveToTestDir in Flags then begin
+          if AnUnitInfo.IsPartOfProject or AnUnitInfo.IsVirtual then
+            Include(SaveFileFlags,sfSaveToTestDir);
+        end;
+        Result:=DoSaveEditorFile(AnUnitInfo.EditorIndex,SaveFileFlags);
+        if (Result=mrAbort) or (Result=mrCancel) then exit;
       end;
-      Result:=DoSaveEditorFile(AnUnitInfo.EditorIndex,SaveFileFlags);
-      if (Result=mrAbort) or (Result=mrCancel) then exit;
     end;
   end;
 
@@ -7213,7 +7216,9 @@ begin
   // save project specific settings of the source editor
   SaveSourceEditorProjectSpecificSettings;
 
-  if Project1.IsVirtual then Include(Flags,sfSaveAs);
+  if Project1.IsVirtual
+  and (not (sfDoNotSaveVirtualFiles in Flags)) then
+    Include(Flags,sfSaveAs);
   if ([sfSaveAs,sfSaveToTestDir]*Flags=[sfSaveAs]) then begin
     // let user choose a filename
     Result:=DoShowSaveProjectAsDialog;
@@ -7224,7 +7229,8 @@ begin
   DoUpdateProjectResourceInfo;
 
   // save project info file
-  if not (sfSaveToTestDir in Flags) then begin
+  if (not (sfSaveToTestDir in Flags))
+  and (not Project1.IsVirtual) then begin
     Result:=Project1.WriteProject([],'');
     if Result=mrAbort then exit;
     EnvironmentOptions.LastSavedProjectFile:=Project1.ProjectInfoFile;
@@ -7236,7 +7242,7 @@ begin
   end;
 
   // save main source
-  if MainUnitInfo<>nil then begin
+  if (MainUnitInfo<>nil) and (not MainUnitInfo.IsVirtual) then begin
     if MainUnitInfo.Loaded then begin
       // loaded in source editor
       Result:=DoSaveEditorFile(MainUnitInfo.EditorIndex,
@@ -7271,10 +7277,12 @@ begin
       or (Project1.MainUnitInfo.EditorIndex<>i) then begin
         SaveFileFlags:=[sfProjectSaving]
                        +Flags*[sfCheckAmbiguousFiles];
-        if (sfSaveToTestDir in Flags) then begin
-          AnUnitInfo:=Project1.UnitWithEditorIndex(i);
-          if AnUnitInfo.IsVirtual then
-            Include(SaveFileFlags,sfSaveToTestDir);
+        AnUnitInfo:=Project1.UnitWithEditorIndex(i);
+        if AnUnitInfo.IsVirtual then begin
+          if (sfSaveToTestDir in Flags) then
+            Include(SaveFileFlags,sfSaveToTestDir)
+          else
+            continue;
         end;
         Result:=DoSaveEditorFile(i,SaveFileFlags);
         if Result=mrAbort then exit;
@@ -8085,8 +8093,8 @@ begin
     and (not (pfAlwaysBuild in Project1.Flags))
     then begin
       Result:=DoCheckIfProjectNeedsCompilation(Project1,
-                                             CompilerFilename,CompilerParams,
-                                             SrcFilename);
+                                               CompilerFilename,CompilerParams,
+                                               SrcFilename);
       if Result=mrNo then begin
         Result:=mrOk;
         exit;
@@ -8446,7 +8454,7 @@ begin
     exit;
   end;
   
-  Result:=DoSaveAll([sfCheckAmbiguousFiles]);
+  Result:=DoSaveAll([sfDoNotSaveVirtualFiles]);
   if Result<>mrOk then exit;
 
   MessagesView.BeginBlock;
@@ -9367,13 +9375,17 @@ var NewCaption: string;
 begin
   if MainIDEBar=nil then exit;
   NewCaption := Format(lisLazarusEditorV, [GetLazarusVersionString]);
-  if Project1<>nil then begin
-    if Project1.Title<>'' then
-      NewCaption:=NewCaption +' - '+Project1.Title
-    else if Project1.ProjectInfoFile<>'' then
-      NewCaption:=NewCaption+' - '+ExtractFileName(Project1.ProjectInfoFile)
-    else
-      NewCaption:=Format(lisnewProject, [NewCaption])
+  if MainBarSubTitle<>'' then begin
+    NewCaption:=NewCaption+' - '+MainBarSubTitle;
+  end else begin
+    if Project1<>nil then begin
+      if Project1.Title<>'' then
+        NewCaption:=NewCaption +' - '+Project1.Title
+      else if Project1.ProjectInfoFile<>'' then
+        NewCaption:=NewCaption+' - '+ExtractFileName(Project1.ProjectInfoFile)
+      else
+        NewCaption:=Format(lisnewProject, [NewCaption])
+    end;
   end;
   case ToolStatus of
   itBuilder:  NewCaption:=Format(liscompiling, [NewCaption]);

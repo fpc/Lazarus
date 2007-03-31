@@ -555,6 +555,7 @@ type
 
   TCustomFormClass = class of TCustomForm;
 
+
   { TForm }
 
   TForm = class(TCustomForm)

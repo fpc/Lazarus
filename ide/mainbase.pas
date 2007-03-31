@@ -79,6 +79,8 @@ type
   protected
     OwningComponent: TComponent;
 
+    function GetMainBar: TComponent; override;
+
     function CreateMenuSeparator : TMenuItem;
     procedure CreateMenuItem(Section: TIDEMenuSection;
                              var MenuItem: TIDEMenuCommand;
@@ -247,6 +249,11 @@ begin
   GetCurrentUnit(ASrcEdit, AnUnitInfo);
   ActiveSourceEditor:=ASrcEdit;
   ActiveUnitInfo:=AnUnitInfo;
+end;
+
+function TMainIDEBase.GetMainBar: TComponent;
+begin
+  Result:=MainIDEBar;
 end;
 
 function TMainIDEBase.CreateMenuSeparator : TMenuItem;

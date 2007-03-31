@@ -414,7 +414,8 @@ begin
     if Message.Status = 0 then
     begin
       if Message.Show then begin
-        if FActiveControl = nil then begin
+        if (FActiveControl = nil) and (Parent=nil) then begin
+          // automatically choose a control to focus
           FActiveControl := FindFirstControl;
           {$IFDEF VerboseFocus}
           DebugLn('TCustomForm.WMShowWindow Set FActiveControl := FindFirstControl = ',DbgSName(FActiveControl));
@@ -1754,7 +1755,7 @@ begin
   inherited Loaded;
   if FMenu<>nil then
     FMenu.HandleNeeded;
-  if ActiveControl <> nil then
+  if (ActiveControl <> nil) and (Parent=nil) then
   begin
     Control := ActiveControl;
     {$IFDEF VerboseFocus}
