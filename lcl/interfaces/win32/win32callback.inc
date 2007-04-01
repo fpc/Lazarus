@@ -1946,10 +1946,9 @@ begin
 
     WM_LCL_SOCK_ASYNC:
     begin
-      if Assigned(TWin32WidgetSet(WidgetSet).FOnAsyncSocketMsg) then
+      if (Window = TWin32WidgetSet(WidgetSet).AppHandle) and 
+          Assigned(TWin32WidgetSet(WidgetSet).FOnAsyncSocketMsg) then
         exit(TWin32WidgetSet(WidgetSet).FOnAsyncSocketMsg(WParam, LParam))
-      else
-        exit(0);
     end;
 
 {$ifdef PassWin32MessagesToLCL}
