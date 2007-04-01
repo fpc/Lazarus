@@ -73,7 +73,7 @@ SET INSTALL_BINDIR=%INSTALL_BASE%\bin\i386-win32
 :: copy the binutils
 rmdir /s /q %BUILDDIR%
 gmkdir -p %INSTALL_BINDIR%
-cp %CROSSBINDIR% %INSTALL_BINDIR%
+cp %CROSSBINDIR%\* %INSTALL_BINDIR%
 
 %MAKEEXE% rtl_install packages_install FPCMAKE=c:\fpc\%fpcversion%\bin\i386-win32\fpcmake.exe INSTALL_PREFIX=%INSTALL_BASE% FPC=%COMPILER%
 
