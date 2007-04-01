@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2006-09-17 12:24+0100\n"
+"PO-Revision-Date: 2007-03-31 21:29+0100\n"
 "Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -11,7 +11,7 @@ msgstr ""
 
 #: synmacrorecorder:scannotpause
 msgid "Can only pause when recording"
-msgstr "Kann nur während der Aufnahme pausieren"
+msgstr "Kann nur während der Aufnahme anhalten"
 
 #: synmacrorecorder:scannotresume
 msgid "Can only resume when paused"

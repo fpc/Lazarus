@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-03-28 13:38+0100\n"
+"PO-Revision-Date: 2007-03-31 21:19+0100\n"
 "Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -21,7 +21,7 @@ msgstr "   Befehl2 \""
 
 #: lazarusidestrconsts:liscodetemplatokenalreadyexists
 msgid " A token %s%s%s already exists! "
-msgstr " Das Token %s%s%s existiert bereits! "
+msgstr " Es gibt bereits ein Token %s%s%s!"
 
 #: lazarusidestrconsts:srkmalreadyconnected
 msgid " The key \"%s\" is already connected to \"%s\"."
@@ -1385,7 +1385,7 @@ msgstr "CodeTools"
 
 #: lazarusidestrconsts:liscodebrowser
 msgid "Code browser"
-msgstr ""
+msgstr "Code-Browser"
 
 #: lazarusidestrconsts:dlgusecodefolding
 msgid "Code folding"
@@ -1457,15 +1457,15 @@ msgstr "CodeTools-Einstellungen"
 
 #: lazarusidestrconsts:liscollapseallclasses
 msgid "Collapse all classes"
-msgstr ""
+msgstr "Alle Klassen einklappen"
 
 #: lazarusidestrconsts:liscollapseallpackages
 msgid "Collapse all packages"
-msgstr ""
+msgstr "Alle Packages einklappen"
 
 #: lazarusidestrconsts:liscollapseallunits
 msgid "Collapse all units"
-msgstr ""
+msgstr "Alle Units einklappen"
 
 #: lazarusidestrconsts:lismenucollectpofil
 msgid "Collect .po files"
@@ -2793,15 +2793,15 @@ msgstr "Beenden ohne Speichern"
 
 #: lazarusidestrconsts:lisexpandallclasses
 msgid "Expand all classes"
-msgstr ""
+msgstr "Alle Klassen ausklappen"
 
 #: lazarusidestrconsts:lisexpandallpackages
 msgid "Expand all packages"
-msgstr ""
+msgstr "Alle Packages ausklappen"
 
 #: lazarusidestrconsts:lisexpandallunits
 msgid "Expand all units"
-msgstr ""
+msgstr "Alle Units ausklappen"
 
 #: lazarusidestrconsts:lisexpandedfilenameofcurrenteditor
 msgid "Expanded filename of current editor file"
@@ -2809,7 +2809,7 @@ msgstr "Vollständiger Name der Datei im aktuellen Editor"
 
 #: lazarusidestrconsts:lisexport
 msgid "Export ..."
-msgstr ""
+msgstr "Export ..."
 
 #: lazarusidestrconsts:lisiecoexportfileexistsopenfileandreplaceonlycompileropti
 msgid "Export file %s%s%s exists.%sOpen file and replace only compiler options?%s(Other settings will be kept.)"
@@ -3033,7 +3033,7 @@ msgstr "Dateien"
 
 #: lazarusidestrconsts:lisfilter
 msgid "Filter"
-msgstr ""
+msgstr "Filter"
 
 #: lazarusidestrconsts:lisplistfilterany
 msgid "Filter by matching any part of method"
@@ -3661,7 +3661,7 @@ msgstr "Bezeichner"
 
 #: lazarusidestrconsts:lisidentifierbeginswith
 msgid "Identifier begins with ..."
-msgstr ""
+msgstr "Bezeichner beginnt mit ..."
 
 #: lazarusidestrconsts:dlgedidcomlet
 msgid "Identifier completion"
@@ -3669,7 +3669,7 @@ msgstr "Bezeichner-Vervollständigung"
 
 #: lazarusidestrconsts:lisidentifiercontains
 msgid "Identifier contains ..."
-msgstr ""
+msgstr "Bezeichner enthält ..."
 
 #: lazarusidestrconsts:lismakeresstridentifierlength
 msgid "Identifier length:"
@@ -4541,7 +4541,7 @@ msgstr "Lazarus-Datei"
 
 #: lazarusidestrconsts:lislazaruside
 msgid "Lazarus IDE"
-msgstr ""
+msgstr "Lazarus-IDE"
 
 #: lazarusidestrconsts:lislazarusprojectinfofile
 msgid "Lazarus Project Info file"
@@ -4649,7 +4649,7 @@ msgstr "Stufe 3 (Stufe 2 und unsichere Optimierungen)"
 
 #: lazarusidestrconsts:lislevels
 msgid "Levels"
-msgstr ""
+msgstr "Stufen"
 
 #: lazarusidestrconsts:dlgcolibraries
 msgid "Libraries (-Fl):"
@@ -5721,11 +5721,11 @@ msgstr "Packagename ist schon vorhanden"
 
 #: lazarusidestrconsts:lispackagenamebeginswith
 msgid "Package name begins with ..."
-msgstr ""
+msgstr "Name des Packages beginnt mit ..."
 
 #: lazarusidestrconsts:lispackagenamecontains
 msgid "Package name contains ..."
-msgstr ""
+msgstr "Name des Packages enthält ..."
 
 #: lazarusidestrconsts:lispackageneedsinstallation
 msgid "Package needs installation"
@@ -5941,7 +5941,7 @@ msgstr "Vorher"
 
 #: lazarusidestrconsts:lisprivate
 msgid "Private"
-msgstr ""
+msgstr "Private"
 
 #: lazarusidestrconsts:lisprivatemethod
 msgid "Private Method"
@@ -6117,7 +6117,7 @@ msgstr "Name der Property"
 
 #: lazarusidestrconsts:lisprotected
 msgid "Protected"
-msgstr ""
+msgstr "Protected"
 
 #: lazarusidestrconsts:lisprotectedmethod
 msgid "Protected Method"
@@ -7341,7 +7341,7 @@ msgstr "Anzeigen der Hinweise im Objektinspektor"
 
 #: lazarusidestrconsts:lisshowidentifiers
 msgid "Show identifiers"
-msgstr ""
+msgstr "Bezeichner anzeigen"
 
 #: lazarusidestrconsts:dlgshowlinenumbers
 msgid "Show line numbers"
@@ -7361,7 +7361,7 @@ msgstr "Zeige alte Tabulatorreihenfolge"
 
 #: lazarusidestrconsts:lisshowpackages
 msgid "Show packages"
-msgstr ""
+msgstr "Packages anzeigen"
 
 #: lazarusidestrconsts:dlgshowscrollhint
 msgid "Show scroll hint"
@@ -7377,7 +7377,7 @@ msgstr "Versuchte Dateien anzeigen"
 
 #: lazarusidestrconsts:lisshowunits
 msgid "Show units"
-msgstr ""
+msgstr "Units anzeigen"
 
 #: lazarusidestrconsts:dlgshowusedfiles
 msgid "Show used files"
@@ -9049,11 +9049,11 @@ msgstr "Unitname ist bereits vorhanden"
 
 #: lazarusidestrconsts:lisunitnamebeginswith
 msgid "Unit name begins with ..."
-msgstr ""
+msgstr "Der Unit-Name beginnt mit ..."
 
 #: lazarusidestrconsts:lisunitnamecontains
 msgid "Unit name contains ..."
-msgstr ""
+msgstr "Der Unit-Name enthält ..."
 
 #: lazarusidestrconsts:lisunitnotfound
 msgid "Unit not found"
@@ -9493,7 +9493,7 @@ msgstr "Mit Packages"
 
 #: lazarusidestrconsts:liswithrequiredpackages
 msgid "With required packages"
-msgstr ""
+msgstr "Mit benötigten Packages"
 
 #: lazarusidestrconsts:liswordatcursorincurrenteditor
 msgid "Word at cursor in current editor"
@@ -9589,7 +9589,7 @@ msgstr "statische automatische Installation"
 
 #: lazarusidestrconsts:lisbegins
 msgid "begins"
-msgstr ""
+msgstr "beginnt"
 
 #: lazarusidestrconsts:srkmecbuildall
 msgid "build all files of program/project"
@@ -9625,7 +9625,7 @@ msgstr "Konfiguriere Erstellungsdatei"
 
 #: lazarusidestrconsts:liscontains
 msgid "contains"
-msgstr ""
+msgstr "enthält"
 
 #: lazarusidestrconsts:liscustomoptions
 msgid "custom options"
