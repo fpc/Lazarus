@@ -176,7 +176,7 @@ begin
     SubClassWndProc := @WindowProc;
     WindowTitle := nil;
 
-    StrCaption := CreatePWideCharFromString(AWinControl.Caption);
+    StrCaption := StringToPWideChar(AWinControl.Caption);
     WindowTitle := nil;
     Height := AWinControl.Height;
     Left := AWinControl.Left;
@@ -447,9 +447,9 @@ var
 begin
   if not WSCheckHandleAllocated(AWincontrol, 'SetText')
   then Exit;
-  tmpStr := CreatePWideCharFromString(AText);
+  tmpStr := StringToPWideChar(AText);
   Windows.SetWindowText(AWinControl.Handle, PWideChar(tmpStr));
-  DisposePWideChar(tmpStr);
+  FreeMem(tmpStr);
 end;
 
 class procedure TWinCEWSWinControl.ConstraintsChange(const AWinControl: TWinControl);

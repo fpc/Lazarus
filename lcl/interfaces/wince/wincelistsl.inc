@@ -148,9 +148,9 @@ Begin
     Windows.SendMessage(FWinCEList, FFlagResetContent, 0, 0);
     For Counter := 0 To (TStrings(Source).Count - 1) Do
     Begin
-      tmpStr := CreatePWideCharFromString(s[Counter]);
+      tmpStr := StringToPWideChar(s[Counter]);
       AnIndex := Windows.SendMessage(FWinCEList, FFlagAddString, 0, LPARAM(PWideChar(tmpStr))); //Insert
-      DisposePWideChar(tmpStr);
+      FreeMem(tmpStr);
       PutObject(AnIndex, S.Objects[Counter]);
     end;
   End
@@ -249,12 +249,12 @@ var
 tmpS : PWideChar;
 Begin
   FLastInsertedIndex := Index;
-  tmpS := CreatePWideCharFromString(s);
+  tmpS := StringToPWideChar(s);
   If FSorted Then
     FLastInsertedIndex := Windows.SendMessage(FWinCEList, FFlagAddString, 0, LPARAM(PWideChar(tmpS)))
   Else
     Windows.SendMessage(FWinCEList, FFlagInsertString, Index, LPARAM(PWideChar(tmpS)));
-    DisposePWideChar(tmpS);
+    FreeMem(tmpS);
 End;
 
 procedure TWinCEListStringList.Put(Index: integer; const S: string);
@@ -619,12 +619,12 @@ Procedure TWinCECListStringList.Insert(Index: Integer; Const S: String);
 var
 tmpS : PWideChar;
 Begin
-  tmpS := CreatePWideCharFromString(S);
+  tmpS := StringToPWideChar(S);
   If FSorted Then
     Windows.SendMessage(FWinCECList,LB_ADDSTRING, 0, LPARAM(PWideChar(tmpS)))
   Else
     Windows.SendMessage(FWinCECList,LB_INSERTSTRING, Index, LPARAM(PWideChar(tmpS)));
-  DisposePWideChar(tmpS);
+  FreeMem(tmpS);
 End;
 
 {------------------------------------------------------------------------------
@@ -643,4 +643,7 @@ End;
 {$ELSE}
   {$H-}
 {$ENDIF}
+
+
+
 

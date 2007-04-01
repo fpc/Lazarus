@@ -62,6 +62,7 @@ PBM_SETRANGE32=WM_USER+6;
 var
 SYSCOLOR_55AABrush : HBRUSH;
 
+
 function DrawState(dc:HDC ; hbr : HBRUSH ; func: DRAWSTATEPROC ; lp:LPARAM; wp:WPARAM;x,y,cx,cy:integer;flags:UINT) : boolean;
 function GetTopWindow(hWnd:HWND):HWND;
 
@@ -86,7 +87,6 @@ wPattern55AA :  array[1..8] of word = ( $5555, $aaaa, $5555, $aaaa, $5555, $aaaa
 var
 h55AABitmap : HBITMAP;//when free it?!
 ThePropertyLists : PTPropertyListWindows;
-
 
 
 function SetProp(_hWnd:HWND; {lpString:LPCSTR;} hData:HANDLE):WINBOOL;
@@ -450,4 +450,7 @@ finalization
 
 //  FreePropList;//roozbeh:best place to call?!
 end.
+
+
+
 

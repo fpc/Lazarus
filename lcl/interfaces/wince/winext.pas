@@ -68,10 +68,6 @@ Const
   GA_ROOT = 2;
   { The window's owner }
   GA_ROOTOWNER = 3;
-  { Application starting cursor }
-  IDC_APPSTARTING = 32650;
-  { Hand cursor }
-  IDC_HAND = 32649;
   { Get the progress bar range }
   PBM_GETRANGE = 1031;
   { Smooth progrss bar }

@@ -107,9 +107,9 @@ var
 begin
   editHandle := GetBuddyWindow(ASpinHandle);
   newValueText := FloatToStrF(ANewValue, ffFixed, 20, ADecimalPlaces);
-  pwnewValueText := CreatePWideCharFromString(newValueText);
+  pwnewValueText := StringToPWideChar(newValueText);
   Windows.SendMessage(editHandle, WM_SETTEXT, 0, Windows.LPARAM(PWideChar(pwnewValueText)));
-  DisposePWideChar(pwnewValueText);
+  FreeMem(pwnewValueText);
 end;
   
 class function TWinCEWSCustomFloatSpinEdit.CreateHandle(const AWinControl: TWinControl;

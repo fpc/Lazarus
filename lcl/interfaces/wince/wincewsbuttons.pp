@@ -119,7 +119,7 @@ begin
    //   Flags := Flags or BS_PUSHBUTTON;
     Flags := WS_CHILD or WS_VISIBLE;
     pClassName := @ButtonClsName;
-    WindowTitle := CreatePWideCharFromString(StrCaption);
+    WindowTitle := StringToPWideChar(StrCaption);
     Left := AWinControl.Left;
     Top := AWinControl.Top;
     Width := AWinControl.Width;
@@ -175,9 +175,9 @@ class procedure TWinCEWSButton.SetText(const AWinControl: TWinControl; const ATe
 var
 tmpStr : PWideChar;
 begin
- tmpstr := CreatePWideCharFromString(AText);
+ tmpstr := StringToPWideChar(AText);
  Windows.SetWindowText(AWinControl.Handle,tmpStr);
- DisposePWideChar(tmpStr);
+ FreeMem(tmpStr);
 end;
 
 { TWinCEWSBitBtn }
@@ -345,9 +345,9 @@ begin
   BitBtnDC := GetDC(BitBtnHandle);
   hdcNewBitmap := CreateCompatibleDC(BitBtnDC);
   OldFontHandle := SelectObject(hdcNewBitmap, BitBtn.Font.Handle);
-  tmpWideText := CreatePWideCharFromString(ButtonCaption);
+  tmpWideText := StringToPWideChar(ButtonCaption);
   GetTextExtentPoint32(hdcNewBitmap, tmpWideText, Length(ButtonCaption), @TextSize);
-  DisposePWideChar(tmpWideText);
+  FreeMem(tmpWideText);
   // calculate size of new bitmap
   case BitBtnLayout of
     blGlyphLeft, blGlyphRight:
@@ -577,9 +577,9 @@ begin
   TWinCEWSWinControl.SetBounds(AWinControl, ALeft, ATop, AWidth, AHeight);
   if TCustomBitBtn(AWinControl).Spacing = -1 then
     begin
-      pwCaption := CreatePWideCharFromString(AWinControl.Caption);
+      pwCaption := StringToPWideChar(AWinControl.Caption);
       DrawBitBtnImage(TCustomBitBtn(AWinControl), pwCaption);
-      DisposePWideChar(pwCaption);
+      FreeMem(pwCaption);
     end;
 end;
 
@@ -589,9 +589,9 @@ var
 pwCaption : PWideChar;
 begin
   TWinCEWSWinControl.SetFont(AWinControl, AFont);
-  pwCaption := CreatePWideCharFromString(AWinControl.Caption);
+  pwCaption := StringToPWideChar(AWinControl.Caption);
   DrawBitBtnImage(TCustomBitBtn(AWinControl), pwCaption);
-  DisposePWideChar(pwCaption);
+  FreeMem(pwCaption);
 end;
 
 class procedure TWinCEWSBitBtn.SetGlyph(const ABitBtn: TCustomBitBtn;
@@ -599,9 +599,9 @@ class procedure TWinCEWSBitBtn.SetGlyph(const ABitBtn: TCustomBitBtn;
 var
 pwCaption : PWideChar;
 begin
-  pwCaption := CreatePWideCharFromString(ABitBtn.Caption);
+  pwCaption := StringToPWideChar(ABitBtn.Caption);
   DrawBitBtnImage(ABitBtn, pwCaption);
-  DisposePWideChar(pwCaption);
+  FreeMem(pwCaption);
 end;
 
 class procedure TWinCEWSBitBtn.SetLayout(const ABitBtn: TCustomBitBtn;
@@ -609,9 +609,9 @@ class procedure TWinCEWSBitBtn.SetLayout(const ABitBtn: TCustomBitBtn;
 var
 pwCaption : PWideChar;
 begin
-  pwCaption := CreatePWideCharFromString(ABitBtn.Caption);
+  pwCaption := StringToPWideChar(ABitBtn.Caption);
   DrawBitBtnImage(ABitBtn, pwCaption);
-  DisposePWideChar(pwCaption);
+  FreeMem(pwCaption);
 end;
 
 class procedure TWinCEWSBitBtn.SetMargin(const ABitBtn: TCustomBitBtn;
@@ -619,9 +619,9 @@ class procedure TWinCEWSBitBtn.SetMargin(const ABitBtn: TCustomBitBtn;
 var
 pwCaption : PWideChar;
 begin
-  pwCaption := CreatePWideCharFromString(ABitBtn.Caption);
+  pwCaption := StringToPWideChar(ABitBtn.Caption);
   DrawBitBtnImage(ABitBtn, pwCaption);
-  DisposePWideChar(pwCaption);
+  FreeMem(pwCaption);
 end;
 
 class procedure TWinCEWSBitBtn.SetSpacing(const ABitBtn: TCustomBitBtn;
@@ -629,18 +629,18 @@ class procedure TWinCEWSBitBtn.SetSpacing(const ABitBtn: TCustomBitBtn;
 var
 pwCaption : PWideChar;
 begin
-  pwCaption := CreatePWideCharFromString(ABitBtn.Caption);
+  pwCaption := StringToPWideChar(ABitBtn.Caption);
   DrawBitBtnImage(ABitBtn, pwCaption);
-  DisposePWideChar(pwCaption);
+  FreeMem(pwCaption);
 end;
 
 class procedure TWinCEWSBitBtn.SetText(const AWinControl: TWinControl; const AText: string);
 var
 pwCaption : PWideChar;
 begin
-  pwCaption := CreatePWideCharFromString(AText);
+  pwCaption := StringToPWideChar(AText);
   DrawBitBtnImage(TCustomBitBtn(AWinControl), pwCaption);
-  DisposePWideChar(pwCaption);
+  FreeMem(pwCaption);
 end;
 
 

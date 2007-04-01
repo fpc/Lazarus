@@ -723,12 +723,12 @@ var
 begin
   Assert(False, Format('Trace:TWin32WSCustomComboBox.SetText --> %S', [AText]));
   Handle := AWinControl.Handle;
-  pwAText := CreatePWideCharFromString(AText);
+  pwAText := StringToPWideChar(AText);
   if TCustomComboBox(AWinControl).ReadOnly then
     Windows.SendMessage(Handle, CB_SELECTSTRING, -1, LPARAM(pwAText))
   else
     Windows.SendMessage(Handle, WM_SETTEXT, 0, LPARAM(pwAText));
-  DisposePWideChar(pwAText);
+  FreeMem(pwAText);
 end;
 
 class function  TWinCEWSCustomComboBox.GetItems(const ACustomComboBox: TCustomComboBox): TStrings;
@@ -791,7 +791,7 @@ begin
   WriteLn('TWinCEWSCustomEdit.CreateHandle');
   {$endif}
 
-  Str := CreatePWideCharFromString(AWinControl.Caption);
+  Str := StringToPWideChar(AWinControl.Caption);
 
   hwnd := CreateWindow(
     @EditClsName,               // Name of the registered class
@@ -808,7 +808,7 @@ begin
 
   if (hwnd = 0) then WriteLn('CreateWindow failed');
 
-  DisposePWideChar(Str);
+  FreeMem(Str);
   Result := hwnd;
 end;
 
@@ -943,9 +943,9 @@ class procedure TWinCEWSCustomMemo.SetText(const AWinControl: TWinControl; const
 var
 tmpWideStr : PWideChar;
 begin
-  tmpWideStr := CreatePWideCharFromString(AText);
+  tmpWideStr := StringToPWideChar(AText);
   SendMessage(AWinControl.Handle, WM_SETTEXT, 0, LPARAM(PWideChar(tmpWideStr)));
-  DisposePWideChar(tmpWideStr);
+  FreeMem(tmpWideStr);
 end;
 
 class procedure TWinCEWSCustomMemo.SetWordWrap(const ACustomMemo: TCustomMemo; const NewWordWrap: boolean);
@@ -979,13 +979,13 @@ begin
   with Params do
   begin
     pClassName := @LabelClsName;
-    WindowTitle := CreatePWideCharFromString(AWinControl.Caption);//roozbeh..we already have this in strcaptiob..whats the diffrence?
+    WindowTitle := StringToPWideChar(AWinControl.Caption);//roozbeh..we already have this in strcaptiob..whats the diffrence?
     Flags := WS_CHILD or WS_VISIBLE or WS_TABSTOP or SS_LEFT;//Flags or CalcStaticTextFlags(TCustomStaticText(AWinControl).Alignment);//is ws_child included?
   end;
 
   // create window
   FinishCreateWindow(AWinControl, Params, false);
-  DisposePWideChar(Params.WindowTitle);
+  FreeMem(Params.WindowTitle);
   Result := Params.Window;
 end;
 
@@ -1023,7 +1023,7 @@ begin
   with Params do
   begin
     pClassName := 'BUTTON';
-    WindowTitle := CreatePWideCharFromString(AWinControl.Caption);
+    WindowTitle := StringToPWideChar(AWinControl.Caption);
     if TCustomCheckBox(AWinControl).AllowGrayed then
       Flags := Flags Or BS_AUTO3STATE
     else
@@ -1031,7 +1031,7 @@ begin
   end;
   // create window
   FinishCreateWindow(AWinControl, Params, false);
-  DisposePWideChar(Params.WindowTitle);
+  FreeMem(Params.WindowTitle);
   Result := Params.Window;
 
 end;
@@ -1121,14 +1121,14 @@ begin
   with Params do
   begin
     pClassName := @ButtonClsName;
-    WindowTitle := CreatePWideCharFromString(AWinControl.Caption);
+    WindowTitle := StringToPWideChar(AWinControl.Caption);
     // BS_AUTORADIOBUTTON may hang the application,
     // if the radiobuttons are not consecutive controls.//roozbeh:is it so in wince?
     Flags := Flags or BS_AUTORADIOBUTTON;
   end;
   // create window
   FinishCreateWindow(AWinControl, Params, false);
-  DisposePWideChar(Params.WindowTitle);
+  FreeMem(Params.WindowTitle);
   Result := Params.Window;
 end;
 

@@ -504,6 +504,67 @@ Begin
 End;
 
 {------------------------------------------------------------------------------
+  Method:  CreateCursor
+  Params:  AInstance - handle to instance; ACursorInfo - pointer to Cursor Information record
+  Returns: handle to a created cursor
+
+  Creates a cursor by color and mask bitmaps and other indo.
+ ------------------------------------------------------------------------------}
+Function TWinCEWidgetSet.CreateCursor(ACursorInfo: PIconInfo): hCursor;
+{var
+  ConvertedInfo: TIconInfo;
+  AData: PByte;
+  ADataSize: PtrUInt;
+  ABitmap : Windows.TBitmap;
+  ABitmapInfo: TBitmapInfo;
+  DC: HDC;
+  i: integer;
+}
+begin
+  Result := 0;
+  // TODO: GetDIBits, SetDIBits dependent
+{
+  // create a copy of info to prevent it changing
+  Move(ACursorInfo^, ConvertedInfo, SizeOf(TIconInfo));
+  if (GetObject(ACursorInfo^.hbmMask, SizeOf(ABitmap), @ABitmap) > 0) then
+  begin
+    // create new mask bitmap
+    ConvertedInfo.hbmMask := Windows.CreateBitmap(ABitmap.bmWidth,
+      ABitmap.bmHeight, 1, 1, nil);
+    if ConvertedInfo.hbmMask <> 0 then
+    begin
+      FillChar(ABitmapInfo, SizeOf(ABitmapInfo), 0);
+      ABitmapInfo.bmiHeader.biSize := SizeOf(ABitmapInfo.bmiHeader);
+      ABitmapInfo.bmiHeader.biWidth := ABitmap.bmWidth;
+      ABitmapInfo.bmiHeader.biHeight := -ABitmap.bmHeight;
+      ABitmapInfo.bmiHeader.biPlanes := 1;
+      ABitmapInfo.bmiHeader.biBitCount := ABitmap.bmBitsPixel;
+      ABitmapInfo.bmiHeader.biCompression := BI_RGB;
+      ADataSize := ((ABitmap.bmWidthBytes+3) and not 3) * ABitmap.bmHeight;
+      GetMem(AData, ADataSize);
+      DC := GetDC(0);
+      // get mask data
+      GetDIBits(DC, ACursorInfo^.hbmMask, 0, ABitmap.bmHeight, AData,
+        Windows.BitmapInfo(ABitmapInfo), DIB_RGB_COLORS);
+      // convert it
+      for i := 0 to ADataSize - 1 do
+        (AData + i)^ := (AData + i)^ xor $FF;
+      // set to new mask bitmap
+      SetDIBits(DC, ConvertedInfo.hbmMask, 0, ABitmap.bmHeight, AData,
+        Windows.BitmapInfo(ABitmapInfo), DIB_RGB_COLORS);
+      ReleaseDC(0, DC);
+      // create cursor
+      Result := Windows.CreateIconIndirect(@ConvertedInfo);
+      // no more need new bitmap
+      DeleteObject(ConvertedInfo.hbmMask);
+      // and data
+      FreeMem(AData);
+    end;
+  end;
+}
+end;
+
+{------------------------------------------------------------------------------
   Method:  CreateFontIndirect
   Params:  LogFont - logical font record
   Returns: a handle to a logical font
@@ -640,6 +701,20 @@ End;
 begin
   Result:=inherited DestroyCaret(Handle);
 end;}
+
+{------------------------------------------------------------------------------
+  Method:  DestroyCursor
+  Params:  Handle - handle to the cursor object
+  Returns: If the function succeeds
+
+  Destroys the cursor
+ ------------------------------------------------------------------------------}
+Function TWinCEWidgetSet.DestroyCursor(Handle: hCursor): Boolean;
+Begin
+  Result := False;
+  //Result := Boolean(Windows.DestroyCursor(Handle));
+End;
+
 {------------------------------------------------------------------------------
   Method:  DrawFrameControl
   Params: DC     - handle to device context
@@ -699,9 +774,9 @@ WideStr : PWideChar;
 begin
   Assert(False, Format('trace:> [TWinCEWidgetSet.DrawText] DC:0x%x, Str:''%s'', Count: %d, Rect = %d,%d,%d,%d, Flags:%d',
     [DC, Str, Count, Rect.Left, Rect.Top, Rect.Right, Rect.Bottom, Flags]));
-  WideStr := CreatePWideCharFromString(String(str));
+  WideStr := StringToPWideChar(String(str));
   Result := Windows.DrawText(DC, WideStr, Count, @Rect, Flags);
-  DisposePWideChar(WideStr);
+  FreeMem(WideStr);
   Assert(False, Format('trace:> [TWinCEWidgetSet.DrawText] DC:0x%x, Str:''%s'', Count: %d, Rect = %d,%d,%d,%d, Flags:%d',
     [DC, Str, Count, Rect.Left, Rect.Top, Rect.Right, Rect.Bottom, Flags]));
 end;
@@ -820,9 +895,9 @@ var
 pWideStr : PWideChar;
 Begin
   Assert(False, Format('trace:> [TWinCEWidgetSet.ExtTextOut] DC:0x%x, X:%d, Y:%d, Options:%d, Str:''%s'', Count: %d', [DC, X, Y, Options, Str, Count]));
-  pWideStr := CreatePWideCharFromString(string(Str));
+  pWideStr := StringToPWideChar(string(Str));
   Result := Boolean(Windows.ExtTextOut(DC, X, Y, Options, LPRECT(Rect), pWideStr, Count, Dx));
-  DisposePWideChar(pWideStr);
+  FreeMem(pWideStr);
   Assert(False, Format('trace:< [TWinCEWidgetSet.ExtTextOut] DC:0x%x, X:%d, Y:%d, Options:%d, Str:''%s'', Count: %d', [DC, X, Y, Options, Str, Count]));
 End;
 
@@ -1056,12 +1131,12 @@ end;
 {function TWinCEWidgetSet.GetCmdLineParamDescForInterface: string;
 begin
   Result:=inherited GetCmdLineParamDescForInterface;
-end;
+end;}
 
 function TWinCEWidgetSet.GetCursorPos(var lpPoint: TPoint): Boolean;
 begin
-  Result:=inherited GetCursorPos(lpPoint);
-end;}
+  Result := Boolean(Windows.GetCursorPos(@LPPoint));
+end;
 
 {------------------------------------------------------------------------------
   Method:  GetDC
@@ -1187,7 +1262,6 @@ end;
 function TWinCEWidgetSet.GetDIBits(DC: HDC; Bitmap: HBitmap; StartScan, NumScans: UINT; Bits: Pointer; var BitInfo: BitmapInfo; Usage: UINT): Integer;
 begin
   Result := 0;
-  //Result := Windows.GetDIBits(DC, Bitmap, StartScan, NumScans, Bits, Windows.PBitmapInfo(@BitInfo)^, Usage)
 end;
 
 {function TWinCEWidgetSet.GetBitmapBits(Bitmap: HBITMAP; Count: Longint;  Bits: Pointer): Longint;
@@ -1353,8 +1427,6 @@ begin
   Windows.DeleteDC(hMemDC);
   Windows.DeleteObject(hMemBitmap);
 end;
-
-
 
 procedure TWinCEWidgetSet.AllocAndCopy(const BitmapInfo: Windows.TBitmap;
   const BitmapHandle: HBITMAP; const SrcRect: TRect; var Data: PByte;
@@ -1793,9 +1865,9 @@ WideStr : PWideChar;
 Begin
   Assert(False, 'Trace:[TWinCEWidgetSet.GetTextExtentPoint] - Start');
   Result := false;
-  WideStr := CreatePWideCharFromString(String(Str));
+  WideStr := StringToPWideChar(String(Str));
   Result := Boolean(Windows.GetTextExtentExPoint(DC, WideStr, Count, 0,nil,nil,@Size));
-  DisposePWideChar(WideStr);
+  FreeMem(WideStr);
   Assert(False, 'Trace:[TWinCEWidgetSet.GetTextExtentPoint] - Exit');
 End;
 
@@ -2127,11 +2199,11 @@ Function TWinCEWidgetSet.MessageBox(HWnd: HWND; LPText, LPCaption: PChar; UType:
 var
 LPWCaption,LPWText : PWideChar;
 Begin
-  LPWCaption := CreatePWideCharFromString(String(LPCaption));
-  LPWText := CreatePWideCharFromString(String(LPText));
+  LPWCaption := StringToPWideChar(String(LPCaption));
+  LPWText := StringToPWideChar(String(LPText));
   Result := Windows.MessageBox(HWnd, LPWText, LPWCaption, UType);
-  DisposePWideChar(LPWCaption);
-  DisposePWideChar(LPWText);
+  FreeMem(LPWCaption);
+  FreeMem(LPWText);
 End;
 
 {------------------------------------------------------------------------------
@@ -2597,6 +2669,11 @@ function TWinCEWidgetSet.SetCaretRespondToFocus(handle: HWND;
 begin
   Result:=inherited SetCaretRespondToFocus(handle, ShowHideOnFocus);
 end;}
+
+function TWinCEWidgetSet.SetCursor(hCursor: HICON): HCURSOR;
+begin
+  Result := Windows.SetCursor(hCursor);
+end;
 
 {------------------------------------------------------------------------------
   Function: SetCursorPos

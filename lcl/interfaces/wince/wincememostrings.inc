@@ -72,7 +72,7 @@ begin
     PWord(textbuf)^ := Word(fLength+1);
     SendMessage(fHandle, EM_GETLINE, Index, lparam(textbuf));
     Result := WideStringToString(WideString(textbuf));
-    DisposePWideChar(textbuf);
+    FreeMem(textbuf);
   end;
 end;
 
@@ -127,10 +127,10 @@ begin
     //insert with LineEnding
     LineStart := GetLineStart(Index);
     NewLine := S+LineEnding;
-    tmpNewLine := CreatePWideCharFromString(NewLine);
+    tmpNewLine := StringToPWideChar(NewLine);
     SendMessage(fHandle, EM_SETSEL, LineStart, LineStart);
     SendMessage(fHandle, EM_REPLACESEL,0 , lparam(PWideChar(tmpNewLine)));
-    DisposePWideChar(tmpNewLine);
+    FreeMem(tmpNewLine);
   end
   else begin
     //append with a preceding LineEnding
@@ -140,9 +140,9 @@ begin
       NewLine := LineEnding+S+LineEnding
     else
       NewLine := S+LineEnding;
-    tmpNewLine := CreatePWideCharFromString(NewLine);
+    tmpNewLine := StringToPWideChar(NewLine);
     SendMessage(fHandle, EM_REPLACESEL,0 , lparam(PWideChar(tmpNewLine)));
-    DisposePWideChar(tmpNewLine);
+    FreeMem(tmpNewLine);
   end;
 end;
 
@@ -150,9 +150,9 @@ procedure TWinCEMemoStrings.SetText(TheText: PChar);
 var
 tmpTheText : PWideChar;
 begin
-  tmpTheText := CreatePWideCharFromString(TheText);
+  tmpTheText := StringToPWideChar(TheText);
   SendMessage(fHandle, WM_SETTEXT, 0, LPARAM(tmpTheText));
-  DisposePWideChar(tmpTheText);
+  FreeMem(tmpTheText);
 end;
 
 {$ENDIF}

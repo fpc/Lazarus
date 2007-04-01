@@ -144,7 +144,7 @@ begin
 
   // Create parent of all windows, `button on taskbar'
 //does this work on wince?!
-  FAppHandle := CreateWindow(@ClsName, CreatePWideCharFromString(Application.Title),
+  FAppHandle := CreateWindow(@ClsName, StringToPWideChar(Application.Title),
   WS_POPUP or WS_CLIPSIBLINGS or WS_CAPTION or WS_SYSMENU or WS_MINIMIZEBOX,
     0, {Windows.GetSystemMetrics(SM_CXSCREEN) div 2,}
     0, {Windows.GetSystemMetrics(SM_CYSCREEN) div 2,}
@@ -155,12 +155,16 @@ begin
   SendMessage(FAppHandle, WM_SETICON, ICON_BIG,
     Windows.LoadIcon(MainInstance, 'MAINICON'));
   // remove useless menuitems from sysmenu
- //roozbeh:new stuff check it 
-  {SysMenu := Windows.GetSystemMenu(FAppHandle, False);
-  Windows.DeleteMenu(SysMenu, SC_MAXIMIZE, MF_BYCOMMAND);
-  Windows.DeleteMenu(SysMenu, SC_SIZE, MF_BYCOMMAND);
-  Windows.DeleteMenu(SysMenu, SC_MOVE, MF_BYCOMMAND);
-}
+  {}
+//  SysMenu := Windows.GetSystemMenu(FAppHandle, False);
+
+//  Windows.DeleteMenu(SysMenu, SC_MAXIMIZE, MF_BYCOMMAND);
+
+//  Windows.DeleteMenu(SysMenu, SC_SIZE, MF_BYCOMMAND);
+
+//  Windows.DeleteMenu(SysMenu, SC_MOVE, MF_BYCOMMAND);
+
+
   // initialize ScreenInfo
   Handle := GetDesktopWindow;
   DC := Windows.GetDC(Handle);
@@ -181,11 +185,11 @@ end;
 
   Minimizes the whole application to the taskbar
  ------------------------------------------------------------------------------}
-{procedure TWinCEWidgetSet.AppMinimize;
+procedure TWinCEWidgetSet.AppMinimize;
 begin
-  Windows.SendMessage(FAppHandle, WM_SYSCOMMAND, SC_MINIMIZE, 0);
+//  Windows.SendMessage(FAppHandle, WM_SYSCOMMAND, SC_MINIMIZE, 0);
 end;
-}
+
 {------------------------------------------------------------------------------
   Method: TWinCEWidgetSet.AppRestore
   Params:  None
@@ -193,12 +197,12 @@ end;
 
   Restore minimized whole application from taskbar
  ------------------------------------------------------------------------------}
-{
+
 procedure TWinCEWidgetSet.AppRestore;
 begin
-  Windows.SendMessage(FAppHandle, WM_SYSCOMMAND, SC_RESTORE, 0);
+//  Windows.SendMessage(FAppHandle, WM_SYSCOMMAND, SC_RESTORE, 0);
 end;
-}
+
 
 {------------------------------------------------------------------------------
   Method: TWin32WidgetSet.AppBringToFront
@@ -373,23 +377,6 @@ begin
   end;
 end;
 
-{
-procedure TWinCEWidgetSet.AppRun(const ALoop: TApplicationMainLoop);
-var
-  AMessage: TMsg;
-begin
-  {$ifdef VerboseWinCE}
-  WriteLn('TWinCEWidgetSet.AppRun');
-  {$endif}
-
-//roozbeh:why we dont have this in win32?
-  while Windows.GetMessage(@AMessage, 0, 0, 0) do
-  begin
-    Windows.TranslateMessage(@AMessage);
-    Windows.DispatchMessage(@AMessage);
-  end;
-end;
-}
 {------------------------------------------------------------------------------
   Method: TWin32WidgetSet.AppWaitMessage
   Params:  None
@@ -402,7 +389,7 @@ procedure TWinCEWidgetSet.AppWaitMessage;
 var
   timeout,retVal: dword;
 begin
-//  RedrawMenus;
+  RedrawMenus;
   Assert(False, 'Trace:TWin32WidgetSet.WaitMessage - Start');
   if FWaitPipeHandlers <> nil then
     timeout := 100
@@ -441,9 +428,9 @@ procedure TWinCEWidgetSet.AppSetTitle(const ATitle: string);
 var
 tmpText : PWideChar;
 begin
-  tmpText := CreatePWideCharFromString(ATitle);
+  tmpText := StringToPWideChar(ATitle);
   Windows.SetWindowText(FAppHandle, @tmpText);
-  DisposePWideChar(tmpText);
+  FreeMem(tmpText);
 end;
 
 
@@ -518,8 +505,7 @@ begin
   if AMenu is TMainMenu then
   begin
     AWinControl := TWinControl(AMenu.Owner);
-//roozbeh this is somehow very difficut to achieve for now!
-//    Windows.SetMenu(AWinControl.Handle, AMenu.Handle);
+    CeSetMenu(AWinControl.Handle, AMenu.Handle);
     AddToChangedMenus(AWinControl.Handle);
   end;
 end;

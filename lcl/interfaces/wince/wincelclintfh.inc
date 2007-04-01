@@ -35,6 +35,8 @@ function AddPipeEventHandler(AHandle: THandle;
 function AddProcessEventHandler(AHandle: THandle;
   AEventHandler: TChildExitEvent; AData: PtrInt): PProcessEventHandler; override;
   
+function CreateStandardCursor(ACursor: SmallInt): hCursor; override;
+
 procedure DrawArrow(Arrow: TComponent; Canvas: TPersistent); override;
 
 function GetAcceleratorString(const AVKey: Byte; const AShiftState: TShiftState): String; override;

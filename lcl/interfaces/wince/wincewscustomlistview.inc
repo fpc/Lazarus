@@ -110,10 +110,10 @@ begin
   then Exit;
 
   lvc.Mask := LVCF_TEXT;
-  lvc.pszText := CreatePWideCharFromString(AColumn.Caption);
+  lvc.pszText := StringToPWideChar(AColumn.Caption);
 
   ListView_InsertColumn(ALV.Handle, AIndex, lvc);
-  DisposePWideChar(lvc.pszText);
+  FreeMem(lvc.pszText);
 end;
 
 class procedure TWinCEWSCustomListView.ColumnMove(const ALV: TCustomListView; const AOldIndex, ANewIndex: Integer; const AColumn: TListColumn);
@@ -195,10 +195,10 @@ begin
   then Exit;
 
   lvc.Mask := LVCF_TEXT;
-  lvc.pszText := CreatePWideCharFromString(ACaption);
+  lvc.pszText := StringToPWideChar(ACaption);
 
   ListView_SetColumn(ALV.Handle, AIndex, lvc);
-  DisposePWideChar(lvc.pszText);
+  FreeMem(lvc.pszText);
 end;
 
 class procedure TWinCEWSCustomListView.ColumnSetImage(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const AImageIndex: Integer);
@@ -302,10 +302,10 @@ begin
   lvi.Mask := LVIF_TEXT;
   lvi.iItem := AIndex;
   lvi.iSubItem := 0;
-  lvi.pszText := CreatePWideCharFromString(AItem.Caption);
+  lvi.pszText := StringToPWideChar(AItem.Caption);
 
   ListView_InsertItem(ALV.Handle, lvi);
-  DisposePWideChar(lvi.pszText);
+  FreeMem(lvi.pszText);
 end;
 
 class procedure TWinCEWSCustomListView.ItemSetImage(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const ASubIndex, AImageIndex: Integer);
@@ -345,9 +345,9 @@ begin
   if not WSCheckHandleAllocated(ALV, 'ItemSetText')
   then Exit;
 
-  tmpAText := CreatePWideCharFromString(AText);
+  tmpAText := StringToPWideChar(AText);
   ListView_SetItemText(ALV.Handle, AIndex, ASubIndex, PWideChar(tmpAText));
-  DisposePWideChar(tmpAText);
+  FreeMem(tmpAText);
 end;
 
 class procedure TWinCEWSCustomListView.ItemShow(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const PartialOK: Boolean);
@@ -747,4 +747,7 @@ begin
  //Invalidate Listview, so that changes are made visible
   Windows.InvalidateRect(AHandle, nil, true);}
 end;
+
+
+
 

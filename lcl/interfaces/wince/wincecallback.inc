@@ -13,6 +13,8 @@
  *                                                                           *
  *****************************************************************************
 }
+type
+TWinControlAccess = class(TWinControl);
 
 {*************************************************************}
 {            callback routines                                }
@@ -38,7 +40,6 @@ Begin
   Result := True;
   Assert(False, 'Trace:PropEnumProc - Exit');
 End;
-
 
 {------------------------------------------------------------------------------
  Function: CallDefaultWindowProc
@@ -158,11 +159,10 @@ type
     Length : Integer;
     Position : Integer;
     UserData : Pointer;
-  end;
-
+  end;                 
+  
   TCustomListViewAccess = class(TCustomListView)
   end;
-
 
 {------------------------------------------------------------------------------
  Function: WindowProc
@@ -240,31 +240,37 @@ Var
     Result := PageIndex;
   end;
 
-//roozbeh:menus little tricky!
   function GetMenuItemObject: TObject;
-  var MenuInfo: MENUITEMINFO;
-      MainMenuHandle: HMENU;
-      PopupMenu: TPopupMenu;
+  var
+    MenuInfo: MENUITEMINFO;
+    MainMenuHandle: HMENU;
+    PopupMenu: TPopupMenu;
+    Index: Integer;
   begin
     Result:=nil;
-(*    MenuInfo.cbSize:=sizeof(MENUITEMINFO);
+    FillChar(MenuInfo,SizeOf(MenuInfo),0);
+    MenuInfo.cbSize:=sizeof(MENUITEMINFO);
     MenuInfo.fMask:=MIIM_DATA;
     {first we have to decide if the command is from a popup menu or from the window main menu}
     //if the 'PopupMenu' property exists, there is a big probability that the command is from a popup menu
     PopupMenu := WindowInfo^.PopupMenu;
-    if PopupMenu<>nil then //processing popup menu
+    if PopupMenu <> nil then //processing popup menu
     begin
       WindowInfo^.PopupMenu := nil;
       Result := PopupMenu.FindItem(LOWORD(WParam), fkCommand);
     end;
     if Result=nil then //if Result is still nil, process main menu
     begin
-      MainMenuHandle := GetMenu(Window);
-      if GetMenuItemInfo(MainMenuHandle, LOWORD(WParam), false, @MenuInfo) then
-        Result := TObject(MenuInfo.dwItemData);
-    end;*)
+      MainMenuHandle := SHFindMenuBar(Window);
+      // roozbeh : this is the only way we have
+      Index := MenuItemsList.IndexOf(IntToStr(LOWORD(WParam)));
+      if (Index >= 0) and (Index < MenuItemsList.Count) then
+        Result := MenuItemsList.Objects[Index];
+      {if GetMenuItemInfo(MainMenuHandle, LOWORD(WParam), false, @MenuInfo) then
+        Result := TObject(MenuInfo.dwItemData);}
+    end;
   end;
-
+  
   procedure SendPaintMessage;
   var
     DC: HDC;
@@ -415,7 +421,13 @@ Var
       if not useDoubleBuffer then
         PaintMsg.DC := DC;
       if not needParentPaint and not isNotebook then
-        lWinControl.EraseBackground(PaintMsg.DC);
+      begin
+        // send through message to allow message override
+        //lWinControl.EraseBackground(PaintMsg.DC);
+        Include(TWinControlAccess(lWinControl).FWinControlFlags, wcfEraseBackground);
+        lWinControl.Perform(LM_ERASEBKGND, PaintMsg.DC, 0);
+        Exclude(TWinControlAccess(lWinControl).FWinControlFlags, wcfEraseBackground);
+      end;
       if ParentPaintWindow <> 0 then
       begin
 {$ifdef MSG_DEBUG}
@@ -648,25 +660,32 @@ Var
   var
     lControl: TControl;
     BoundsOffset: TRect;
+    ACursor: TCursor;
   begin
     if (lWinControl <> nil) and not (csDesigning in lWinControl.ComponentState)
       and (Lo(LParam) = HTCLIENT) then
     begin
       Windows.GetCursorPos(@(Windows.POINT(P)));
       Windows.ScreenToClient(Window, @(Windows.POINT(P)));
-      if GetLCLClientBoundsOffset(lWinControl.Parent, BoundsOffset) then
+      if GetLCLClientBoundsOffset(lWinControl, BoundsOffset) then
       begin
         Dec(P.X, BoundsOffset.Left);
         Dec(P.Y, BoundsOffset.Top);
       end;
-      // statictext controls do not get WM_SETCURSOR messages...
-      lControl := lWinControl.ControlAtPos(P, false, true);
-      if lControl = nil then
-        lControl := lWinControl;
-      if lControl.Cursor <> crDefault then
+      ACursor := Screen.Cursor;
+      if ACursor = crDefault then
       begin
-//roozbeh:currently strange problems with makeintresource
-//        Windows.SetCursor(Windows.LoadCursor(0, LclCursorToWin32CursorMap[lControl.Cursor]));
+        // statictext controls do not get WM_SETCURSOR messages...
+        lControl := lWinControl.ControlAtPos(P, [capfOnlyClientAreas, 
+          capfAllowWinControls, capfHasScrollOffset]);
+        if lControl = nil then
+          lControl := lWinControl;
+        if lControl.Cursor <> crDefault then
+          ACursor := lControl.Cursor;
+      end;
+      if ACursor <> crDefault then
+      begin
+        Windows.SetCursor(Screen.Cursors[ACursor]);
         LMessage.Result := 1;
       end;
     end;
@@ -988,6 +1007,7 @@ begin
           Windows.SetWindowPos(TWinCEWidgetSet(WidgetSet).AppHandle, HWND_TOP,
             0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE);
         end;
+        
         // activate/deactivate main window
         if (Application <> nil) and (Application.MainForm <> nil) and
             Application.MainForm.HandleAllocated then
@@ -1033,20 +1053,18 @@ begin
       End;
       WinProcess := false;
     End;
-    {WM_MENUCHAR:
+    WM_MENUCHAR:
     Begin
       PLMsg^.Result := FindMenuItemAccelerator(chr(LOWORD(WParam)), LParam);
       WinProcess := false;
-    End;}
+    End;
     WM_CLOSE:
     Begin
       if (Window = TWinCEWidgetSet(WidgetSet).AppHandle) and
         (Application.MainForm <> nil) then
       begin
         Windows.SendMessage(Application.MainForm.Handle, WM_CLOSE, 0, 0);
-       // Application.Terminate;
-      end
-      else begin
+      end else begin
         LMessage.Msg := LM_CLOSEQUERY;
       end;
       // default is to destroy window, inhibit
@@ -1054,20 +1072,19 @@ begin
     End;
     WM_COMMAND:
     Begin
-      if LParam=0 then
+      if Hi(WParam) < 2 then //1 for accelerator 0 for menu
+        TargetObject := GetMenuItemObject else // menuitem or shortcut
+        TargetObject := nil;
+      if TargetObject is TMenuItem then
       begin
-        {menuitem or shortcut}
-        TargetObject := GetMenuItemObject;
-        if TargetObject is TMenuItem then
+        if (Hi(WParam) = 0) or (Hi(WParam) = 1) then
         begin
-          if (Hi(WParam) = 0) or (Hi(WParam) = 1) then
-          begin
-            LMessage.Msg := LM_ACTIVATE;
-            TargetObject.Dispatch(LMessage);
-          end;
-          lWinControl := nil;
+          LMessage.Msg := LM_ACTIVATE;
+          TargetObject.Dispatch(LMessage);
         end;
-      end else begin
+        lWinControl := nil;
+      end else
+      begin
         lWinControl := GetWindowInfo(LParam)^.WinControl;
         // buddy controls use 'awincontrol' to designate associated wincontrol
         if lWinControl = nil then
@@ -1139,18 +1156,22 @@ begin
       ChildWinControl := ChildWindowInfo^.WinControl;
       if ChildWinControl = nil then
         ChildWinControl := ChildWindowInfo^.AWinControl;
-      if (Msg = WM_CTLCOLORSTATIC) or (Msg = WM_CTLCOLORBTN)
-          or (Msg = WM_CTLCOLORSCROLLBAR) then
-      begin
-        if GetNeedParentPaint(ChildWindowInfo, ChildWinControl) then
-        begin
-          // need to draw transparently, draw background
-          GetWin32ControlPos(LParam, Window, P.X, P.Y);
-          MoveWindowOrgEx(WParam, -P.X, -P.Y);
-          SendPaintMessage;
-          MoveWindowOrgEx(WParam, P.X, P.Y);
-          LMessage.Result := GetStockObject(HOLLOW_BRUSH);
-          SetBkMode(WParam, TRANSPARENT);
+      case Msg of
+        WM_CTLCOLORSTATIC,
+        WM_CTLCOLORBTN: begin
+          if GetNeedParentPaint(ChildWindowInfo, ChildWinControl) then
+          begin
+            // need to draw transparently, draw background
+            GetWin32ControlPos(LParam, Window, P.X, P.Y);
+            MoveWindowOrgEx(WParam, -P.X, -P.Y);
+            SendPaintMessage;
+            MoveWindowOrgEx(WParam, P.X, P.Y);
+            LMessage.Result := GetStockObject(HOLLOW_BRUSH);
+            SetBkMode(WParam, TRANSPARENT);
+            WinProcess := false;
+          end;
+        end;
+        WM_CTLCOLORSCROLLBAR: begin
           WinProcess := false;
         end;
       end;
@@ -1206,8 +1227,7 @@ begin
     End;*)
     WM_DRAWITEM:
     Begin
-      {
-      roozbeh : no menus yet
+
       if (WParam = 0) and (PDrawItemStruct(LParam)^.ctlType = ODT_MENU) then
       begin
         menuItem := TObject(PDrawItemStruct(LParam)^.itemData);
@@ -1215,7 +1235,7 @@ begin
         begin
           DrawMenuItem(TMenuItem(menuItem), PDrawItemStruct(LParam)^._hDC, PDrawItemStruct(LParam)^.rcItem, PDrawItemStruct(LParam)^.itemState and ODS_SELECTED <> 0);
         end
-      end;}
+      end;
 
       // TODO: this could crash for a MenuItem.
       WindowInfo := GetWindowInfo(PDrawItemStruct(LParam)^.hwndItem);
@@ -1538,6 +1558,8 @@ begin
           exit;
 
 
+
+
         // check if the window is an edit control of a combobox, if so,
         // redirect it to the combobox, not the edit control
         if GetWindowInfo(TargetWindow)^.isComboEdit then
@@ -1689,7 +1711,7 @@ begin
         Result := 0;
       End;
     End;
-{    WM_CONTEXTMENU:
+    WM_CONTEXTMENU:
     begin
       WinProcess := false;
       NotifyUserInput := True;
@@ -1713,7 +1735,7 @@ begin
        LMMouse.YPos := 0; {TODO : Fix that in future because popup menu should
                            appear near selected element of control}
       end;
-    end;}
+    end;
     WM_SETCURSOR:
     begin
       HandleSetCursor;
@@ -1822,8 +1844,6 @@ begin
     End;
     WM_MEASUREITEM:
     Begin
-      {
-      roozbeh : no menues yet!
       if WParam = 0 then begin
         menuItem := TObject(PMeasureItemStruct(LParam)^.itemData);
         if menuItem is TMenuItem then
@@ -1836,7 +1856,7 @@ begin
           Winprocess := False;
         end else
           DebugLn('WM_MEASUREITEM for a menuitem catched but menuitem is not TmenuItem');
-      end;}
+      end;
       if LWinControl<>nil then begin
         if LWinControl is TCustomCombobox then begin
           LMessage.Msg := LM_MEASUREITEM;
@@ -2112,9 +2132,7 @@ begin
         if PLMsg^.Result = 0 then
           DeliverMessage(lWinControl, PLMsg^);
 
-
         // handle Ctrl-A for edit controls
-
         if (PLMsg^.Result = 0) and (Msg = WM_KEYDOWN) and (WParam = Ord('A'))
           and (GetKeyState(VK_CONTROL) < 0) and (GetKeyState(VK_MENU) >= 0) then
         begin
@@ -2281,6 +2299,10 @@ begin
     end;
   end;
 end;
+
+
+
+
 
 
 

@@ -26,7 +26,7 @@ unit WinCEInt;
 
 {$mode objfpc}{$H+}
 
-interface
+Interface
 
 {$IFDEF Trace}
 {$ASSERTIONS ON}
@@ -44,43 +44,8 @@ Uses
   Windows, Classes, ComCtrls, Controls, Buttons, Dialogs, DynHashArray,
   ExtCtrls, Forms, GraphMath, GraphType, InterfaceBase, LCLIntf, LCLType,
   LMessages, StdCtrls, SysUtils, Graphics, Menus,Winceproc,WinCEWinAPIEmu,WinExt,WinCEDef;
-//roozbeh:the following makes some errors in wincewinapih that some procedures cannot be overriden!
-//also causes some nasty problems too....
-//why so many common names?just by changing units order program should not be ok or wrong...!!
-//uses
-//  Windows,Classes, Types, ComCtrls, Controls, Buttons, Dialogs, ExtCtrls, Forms,
-//  GraphMath, GraphType, InterfaceBase, LCLIntf, LCLType, Winceproc,
-//  LMessages, StdCtrls, SysUtils, Graphics, Menus;
 
-(*const
-
-  IDC_ARROW     = MakeIntResource(32512);
-  IDC_IBEAM     = MakeIntResource(32513);
-  IDC_WAIT      = MakeIntResource(32514);
-  IDC_CROSS     = MakeIntResource(32515);
-  IDC_UPARROW   = MakeIntResource(32516);
-  IDC_SIZE      = MakeIntResource(32640);
-  IDC_ICON      = MakeIntResource(32641);
-  IDC_SIZENWSE  = MakeIntResource(32642);
-  IDC_SIZENESW  = MakeIntResource(32643);
-  IDC_SIZEWE    = MakeIntResource(32644);
-  IDC_SIZENS    = MakeIntResource(32645);
-  IDC_SIZEALL   = MakeIntResource(32646);
-  IDC_NO        = MakeIntResource(32648);
-  IDC_HAND      = MakeIntResource(32649);
-  IDC_APPSTARTING = MakeIntResource(32650);
-  IDC_HELP      = MakeIntResource(32651);
-
-{
-  These are add-ons, don't exist in windows itself!
-  IDC_NODROP    = MakeIntResource(32767);
-  IDC_DRAG      = MakeIntResource(32766);
-  IDC_HSPLIT    = MakeIntResource(32765);
-  IDC_VSPLIT    = MakeIntResource(32764);
-  IDC_MULTIDRAG = MakeIntResource(32763);
-  IDC_SQLWAIT   = MakeIntResource(32762);
-  IDC_HANDPT    = MakeIntResource(32761);
-}
+const
   IDC_NODROP    = IDC_NO;
   IDC_DRAG      = IDC_ARROW;
   IDC_HSPLIT    = IDC_SIZEWE;
@@ -89,14 +54,14 @@ Uses
   IDC_SQLWAIT   = IDC_WAIT;
   IDC_HANDPT    = IDC_HAND;
 
-  LclCursorToWin32CursorMap: array[crLow..crHigh] of PChar = (
+  LclCursorToWin32CursorMap: array[crLow..crHigh] of PWideChar = (
   // uni-direction cursors are mapped to bidirection win32 cursors
      IDC_SIZENWSE, IDC_SIZENS, IDC_SIZENESW, IDC_SIZEWE, IDC_SIZEWE,
      IDC_SIZENESW, IDC_SIZENS, IDC_SIZENWSE, IDC_SIZEALL, IDC_HANDPT, IDC_HELP,
      IDC_APPSTARTING, IDC_NO, IDC_SQLWAIT, IDC_MULTIDRAG, IDC_VSPLIT,
      IDC_HSPLIT, IDC_NODROP, IDC_DRAG, IDC_WAIT, IDC_UPARROW, IDC_SIZEWE,
      IDC_SIZENWSE, IDC_SIZENS, IDC_SIZENESW, IDC_SIZE, IDC_IBEAM, IDC_CROSS,
-     IDC_ARROW, IDC_ARROW, IDC_ARROW); *)
+     IDC_ARROW, IDC_ARROW, IDC_ARROW);
 
 type
 
@@ -162,7 +127,7 @@ type
 
     Function WinRegister: Boolean;
 
-  public
+  Public
     { Creates a callback of Lazarus message Msg for Sender }
     Procedure SetCallback(Msg: LongInt; Sender: TObject); virtual;
     { Removes all callbacks for Sender }
@@ -174,8 +139,8 @@ type
     Destructor Destroy; Override;
     { Initialize the API }
     procedure AppInit(var ScreenInfo: TScreenInfo); override;
-//    procedure AppMinimize; override;
-//    procedure AppRestore; override;
+    procedure AppMinimize; override;
+    procedure AppRestore; override;
     procedure AppBringToFront; override;
     procedure AppProcessMessages; override;
     procedure AppWaitMessage; override;
@@ -265,7 +230,7 @@ Uses
 // WinCEWSGrids,
 // WinCEWSImgList,
 // WinCEWSMaskEdit,
-// WinCEWSMenus,//roozbeh:not yet ready for use!
+ WinCEWSMenus,
 // WinCEWSPairSplitter,
  WinCEWSSpin,
  WinCEWSStdCtrls,

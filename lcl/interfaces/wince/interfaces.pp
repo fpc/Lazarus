@@ -25,7 +25,6 @@
 unit Interfaces;
 
 {$mode objfpc}{$H+}
-//{$define OldToolbar}
 
 interface 
 

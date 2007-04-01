@@ -68,6 +68,7 @@ function CreateBrushIndirect(const LogBrush: TLogBrush): HBRUSH; override;
 function CreateCaret(Handle : HWND; Bitmap : hBitmap; width, Height : Integer) : Boolean; override;
 function CreateCompatibleBitmap(DC: HDC; Width, Height: Integer): HBITMAP; override;
 function CreateCompatibleDC(DC: HDC): HDC; override;
+function CreateCursor(ACursorInfo: PIconInfo): hCursor; Override;
 function CreateDIBitmap(DC: HDC; var InfoHeader: TBitmapInfoHeader;dwUsage: DWORD; InitBits: PChar; var InitInfo: TBitmapInfo;  wUsage: UINT): HBITMAP; override;
 function CreateDIBSection(DC: HDC; const p2: tagBitmapInfo; p3: UINT;
   var p4: Pointer; p5: THandle; p6: DWORD): HBITMAP; Override;
@@ -84,6 +85,7 @@ function DeleteDC(hDC: HDC): Boolean; override;
 function DeleteObject(GDIObject: HGDIOBJ): Boolean;  override;
 //function DestroyCaret(Handle : HWND): Boolean; override;
 Function DrawFrameControl(DC: HDC; const Rect : TRect; uType, uState : Cardinal) : Boolean; override;
+function DestroyCursor(Handle: hCursor): Boolean; Override;
 function DrawEdge(DC: HDC; var ARect: TRect; Edge: Cardinal; grfFlags: Cardinal): Boolean; override;
 function DrawText(DC: HDC; Str: PChar; Count: Integer; var Rect: TRect; Flags: Cardinal): Integer; Override;
 
@@ -119,8 +121,8 @@ Function GetClientBounds(handle : HWND; var Rect : TRect) : Boolean; override;
 Function GetClientRect(handle : HWND; var Rect : TRect) : Boolean; override;
 Function GetClipBox(DC : hDC; lpRect : PRect) : Longint; override;
 Function GetClipRGN(DC : hDC; RGN : hRGN) : Longint; override;
-{Function GetCmdLineParamDescForInterface: string; override;
-function GetCursorPos(var lpPoint: TPoint): Boolean; override;}
+{Function GetCmdLineParamDescForInterface: string; override;}
+function GetCursorPos(var lpPoint: TPoint): Boolean; override;
 function GetDC(hWnd: HWND): HDC;  override;
 function GetDCOriginRelativeToWindow(PaintDC: HDC; WindowHandle: HWND; var OriginDiff: TPoint): boolean; override;
 {function GetDesignerDC(WindowHandle: HWND): HDC; override;}
@@ -200,8 +202,9 @@ Function SetBkMode(DC: HDC; bkMode : Integer) : Integer; override;
 function SetCapture(AHandle: HWND): HWND; override;
 function SetCaretPos(X, Y: Integer): Boolean; override;
 function SetCaretPosEx(Handle: HWnd; X, Y: Integer): Boolean; override;
-function SetCaretRespondToFocus(handle: HWND; ShowHideOnFocus: boolean): Boolean; override;
-function SetCursorPos(X, Y: Integer): Boolean; override;}
+function SetCaretRespondToFocus(handle: HWND; ShowHideOnFocus: boolean): Boolean; override;}
+function SetCursor(hCursor: HICON): HCURSOR; override;
+//function SetCursorPos(X, Y: Integer): Boolean; override;
 function SetFocus(hWnd: HWND): HWND; override;
 //Function SetProp(Handle: hwnd; Str : PChar; Data : Pointer) : Boolean; override;
 function SetROP2(DC: HDC; Mode: Integer): Integer; override;
@@ -227,5 +230,9 @@ Function WindowFromPoint(Point : TPoint) : HWND; override;
 
 
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line
+
+
+
+
 
 

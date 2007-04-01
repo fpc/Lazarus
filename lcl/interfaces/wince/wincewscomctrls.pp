@@ -257,9 +257,9 @@ begin
     pbLowered: BevelType := 0;
     pbRaised: BevelType := Windows.SBT_POPOUT;
   end;
-  pwText := CreatePWideCharFromString(Text);
+  pwText := StringToPWideChar(Text);
   Windows.SendMessage(StatusPanel.StatusBar.Handle, SB_SETTEXT, StatusPanel.Index or BevelType, LPARAM(pwText));
-  DisposePWideChar(pwText);
+  FreeMem(pwText);
 end;
 
 procedure UpdateStatusBarPanelWidths(const StatusBar: TStatusBar);
@@ -352,9 +352,9 @@ tmpSimpleText : PWideChar;
 begin
   if AStatusBar.SimplePanel then
     begin
-      tmpSimpleText := CreatePWideCharFromString(AStatusBar.SimpleText);
+      tmpSimpleText := StringToPWideChar(AStatusBar.SimpleText);
       Windows.SendMessage(AStatusBar.Handle, SB_SETTEXT, 255, LPARAM(PWideChar(tmpSimpleText)));
-      DisposePWideChar(tmpSimpleText);
+      FreeMem(tmpSimpleText);
     end
   else
     UpdateStatusBarPanel(AStatusBar.Panels[PanelIndex]);
@@ -485,7 +485,7 @@ begin
   Assert(False, 'Trace:!!!!!!!!!!!!!!!!!!!!!!!!!');
   If (AControl is TWinControl) Then
   Begin
-    PStr := CreatePWideCharFromString(TToolButton(AControl).Caption);
+    PStr := StringToPWideChar(TToolButton(AControl).Caption);
   End
   Else
   Begin
@@ -509,7 +509,7 @@ begin
 
   SendMessage(TWinControl(AControl).Parent.Handle, TB_BUTTONSTRUCTSIZE, SizeOf(TBBUTTON), 0);
   SendMessage(TWinControl(AControl).Parent.Handle, TB_ADDBUTTONS, 1, LParam(LPTBButton(@tbb)));
-  DisposePWideChar(PStr);
+  FreeMem(PStr);
   Assert(False, 'Trace:!!!!!!!!!!!!!!!!!!!!!!!!!');
 end;
 

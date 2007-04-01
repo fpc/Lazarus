@@ -151,6 +151,30 @@ begin
   AHandler := nil;
 end;
 
+{------------------------------------------------------------------------------
+  Function:
+  Params:
+
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TWinCEWidgetSet.CreateStandardCursor(ACursor: SmallInt): hCursor;
+begin
+  Result := 0;
+  if ACursor < crLow then Exit;
+  if ACursor > crHigh then Exit;
+
+  case ACursor of
+    crSqlWait..crDrag,
+    crHandPoint: 
+      begin
+        // will be created later by CreateCursor
+      end;
+  else
+    Result := Windows.LoadCursor(0, LclCursorToWin32CursorMap[ACursor]);
+  end;
+end;
+
 procedure TWinCEWidgetSet.DrawArrow(Arrow: TComponent; Canvas: TPersistent);
 const
     { up, down, left, right }

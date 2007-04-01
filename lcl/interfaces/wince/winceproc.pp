@@ -42,9 +42,7 @@ Type
       );
   end;
 
-function CreatePWideCharFromString(inString : string): PWideChar;
 function WideStringToString(inWideString : WideString) : String;
-procedure DisposePWideChar(inPWideChar : PWideChar);
 function WM_To_String(WM_Message: Integer): string;
 function WindowPosFlagsToString(Flags: UINT): string;
 procedure EventTrace(Message: String; Data: TObject);
@@ -86,6 +84,7 @@ function DisableWindowsProc(Window: HWND; Data: LParam): LongBool; stdcall;
 procedure DisableApplicationWindows(Window: HWND);
 procedure EnableApplicationWindows(Window: HWND);
 procedure AddToChangedMenus(Window: HWnd);
+procedure RedrawMenus;
 function MeasureText(const AWinControl: TWinControl; Text: string; var Width, Height: integer): boolean;
 function GetControlText(AHandle: HWND): string;
 
@@ -108,14 +107,6 @@ uses
   LCLIntf; //remove this unit when GetWindowSize is moved to TWSWinControl
 
 
-function CreatePWideCharFromString(inString : string): PWideChar;
-var
-tmpWideChar : PWideChar;
-begin
-    tmpWideChar := PWideChar(SysAllocStringLen(nil,Length(inString)));//it automatically reserves +1 to string!
-    MultiByteToWideChar(CP_ACP, 0, PChar(inString), -1, tmpWideChar, Length(inString));
-    Result := tmpWideChar;
-end;
 
 //well this is diffrent from normal string(widestring) or other rtl functions becouse it uses windows local codepage
 //better name for this?!
@@ -134,10 +125,6 @@ begin
   StrDispose(tmpStr);
 end;
 
-procedure DisposePWideChar(inPWideChar: PWideChar);
-begin
-  SysFreeString(inPWideChar);
-end;
 
 {------------------------------------------------------------------------------
   Function: WM_To_String
@@ -628,16 +615,16 @@ Begin
     If TWinControl(AObject).HandleAllocated Then
       Handle := TWinControl(AObject).Handle
   End
-//  Else If (AObject Is TMenuItem) Then
-//  Begin
-//    If TMenuItem(AObject).HandleAllocated Then
-//      Handle := TMenuItem(AObject).Handle
-//  End
-//  Else If (AObject Is TMenu) Then
-//  Begin
-//    If TMenu(AObject).HandleAllocated Then
-//      Handle := TMenu(AObject).Items.Handle
-//  End
+  Else If (AObject Is TMenuItem) Then
+  Begin
+    If TMenuItem(AObject).HandleAllocated Then
+      Handle := TMenuItem(AObject).Handle
+  End
+  Else If (AObject Is TMenu) Then
+  Begin
+    If TMenu(AObject).HandleAllocated Then
+      Handle := TMenu(AObject).Items.Handle
+  End
 //  Else If (AObject Is TCommonDialog) Then
 //  Begin
 //    {If TCommonDialog(AObject).HandleAllocated Then }
@@ -1001,7 +988,7 @@ var
   tmpText : PWideChar;
 begin
   Result := $FFFFFFFF;
-  tmpText := CreatePWideCharFromString(FileName);
+  tmpText := StringToPWideChar(FileName);
   lenBuf := GetFileVersionInfoSize(tmpText, lenBuf);
   if lenBuf > 0 then
   begin
@@ -1013,10 +1000,8 @@ begin
     end;
     FreeMem(buf);
   end;
-  DisposePWideChar(tmpText);
+  FreeMem(tmpText);
 end;
-
-
 
 function AllocWindowInfo(Window: HWND): PWindowInfo;
 var
@@ -1028,7 +1013,6 @@ begin
   WinCEWinAPIEmu.SetProp(Window, {PChar(dword(WindowInfoAtom)),} dword(WindowInfo));
   Result := WindowInfo;
 end;
-
 
 function DisposeWindowInfo(Window: HWND): boolean;
 var
@@ -1042,7 +1026,6 @@ begin
     Dispose(WindowInfo);
   end;
 end;
-
 
 function GetWindowInfo(Window: HWND): PWindowInfo;
 begin
@@ -1102,7 +1085,6 @@ begin
   InDisableApplicationWindows := false;
 end;
 
-
 procedure EnableApplicationWindows(Window: HWND);
 var
   WindowInfo: PWindowInfo;
@@ -1117,7 +1099,43 @@ begin
   end;
 end;
 
-(*
+function MeasureText(const AWinControl: TWinControl; Text: string; var Width, Height: integer): boolean;
+var
+  textSize: Windows.SIZE;
+  winHandle: HWND;
+  canvasHandle: HDC;
+  oldFontHandle: HFONT;
+  tmpText : PWideChar;
+begin
+  winHandle := AWinControl.Handle;
+  canvasHandle := GetDC(winHandle);
+  oldFontHandle := SelectObject(canvasHandle, Windows.SendMessage(winHandle, WM_GetFont, 0, 0));
+  DeleteAmpersands(Text);
+  tmpText := StringToPWideChar(Text);
+  Result := Windows.GetTextExtentPoint32(canvasHandle, PWideChar(tmpText), Length(Text), @textSize);
+  FreeMem(tmpText);
+  if Result then
+  begin
+    Width := textSize.cx;
+    Height := textSize.cy;
+  end;
+  SelectObject(canvasHandle, oldFontHandle);
+  ReleaseDC(winHandle, canvasHandle);
+end;
+
+function GetControlText(AHandle: HWND): string;
+var
+  TextLen: dword;
+  tmpWideStr : PWideChar;
+begin
+  TextLen := GetWindowTextLength(AHandle);
+  tmpWideStr := PWideChar(SysAllocStringLen(nil,TextLen + 1));
+  GetWindowText(AHandle, PWideChar(tmpWideStr), TextLen + 1);
+  Result := WideStringToString(widestring(tmpWideStr));
+  FreeMem(tmpWideStr);
+end;
+
+
 {-------------------------------------------------------------------------------
   procedure AddToChangedMenus(Window: HWnd);
 
@@ -1144,80 +1162,17 @@ begin
     DrawMenuBar(HWND(ChangedMenus[I]));
   ChangedMenus.Clear;
 end;
-*)
-function MeasureText(const AWinControl: TWinControl; Text: string; var Width, Height: integer): boolean;
-var
-  textSize: Windows.SIZE;
-  winHandle: HWND;
-  canvasHandle: HDC;
-  oldFontHandle: HFONT;
-  tmpText : PWideChar;
-begin
-  winHandle := AWinControl.Handle;
-  canvasHandle := GetDC(winHandle);
-  oldFontHandle := SelectObject(canvasHandle, Windows.SendMessage(winHandle, WM_GetFont, 0, 0));
-  DeleteAmpersands(Text);
-  tmpText := CreatePWideCharFromString(Text);
-  Result := Windows.GetTextExtentPoint32(canvasHandle, PWideChar(tmpText), Length(Text), @textSize);
-  DisposePWideChar(tmpText);
-  if Result then
-  begin
-    Width := textSize.cx;
-    Height := textSize.cy;
-  end;
-  SelectObject(canvasHandle, oldFontHandle);
-  ReleaseDC(winHandle, canvasHandle);
-end;
-
-function GetControlText(AHandle: HWND): string;
-var
-  TextLen: dword;
-  tmpWideStr : PWideChar;
-begin
-  TextLen := GetWindowTextLength(AHandle);
-  tmpWideStr := PWideChar(SysAllocStringLen(nil,TextLen + 1));
-  GetWindowText(AHandle, PWideChar(tmpWideStr), TextLen + 1);
-  Result := WideStringToString(widestring(tmpWideStr));
-  DisposePWideChar(tmpWideStr);
-end;
-
-
-{-------------------------------------------------------------------------------
-  procedure AddToChangedMenus(Window: HWnd);
-
-  Adds Window to the list of windows which need to redraw the main menu.
--------------------------------------------------------------------------------}
-procedure AddToChangedMenus(Window: HWnd);
-begin
-  if ChangedMenus.IndexOf(Pointer(Window)) = -1 then // Window handle is not yet in the list
-    ChangedMenus.Add(Pointer(Window));
-end;
-
-{------------------------------------------------------------------------------
-  Method: RedrawMenus
-  Params:  None
-  Returns: Nothing
-
-  Redraws all changed menus
- ------------------------------------------------------------------------------}
-{procedure RedrawMenus;
-var
-  I: integer;
-begin
-  for I := 0 to  ChangedMenus.Count - 1 do
-    DrawMenuBar(HWND(ChangedMenus[I]));
-  ChangedMenus.Clear;
-end;}
-
-
 
 initialization
   FillChar(DefaultWindowInfo, sizeof(DefaultWindowInfo), 0);
   DefaultWindowInfo.DrawItemIndex := -1;
+  ChangedMenus := TList.Create;
 
 finalization
 //roozbeh:unless i implement enumprop i should free my tpropertylist myself!
+  ChangedMenus.Free;
 
 end.
+
 
 
