@@ -83,12 +83,12 @@ begin
     MessageStackDepth[depthLen] := '#';
 {$endif}
   PrevWndProc := GetWindowInfo(Window)^.DefWndProc;
-  if PrevWndProc = nil 
+  if PrevWndProc = nil
   then begin
-    if UnicodeEnabledOS 
+    if UnicodeEnabledOS
     then Result := Windows.DefWindowProcW(Window, Msg, WParam, LParam)
     else Result := Windows.DefWindowProc(Window, Msg, WParam, LParam)
-  end    
+  end
   else begin
     // combobox child edit weirdness: combobox handling WM_SIZE will compare text
     // to list of strings, and if appears in there, will set the text, and select it
@@ -163,7 +163,7 @@ end;
 
 function GetNeedParentPaint(AWindowInfo: PWindowInfo; AWinControl: TWinControl): boolean;
 begin
-  Result := AWindowInfo^.needParentPaint 
+  Result := AWindowInfo^.needParentPaint
     and ((AWinControl = nil) or not (csOpaque in AWinControl.ControlStyle));
 end;
 
@@ -177,8 +177,8 @@ type
     Length : Integer;
     Position : Integer;
     UserData : Pointer;
-  end;                 
-  
+  end;
+
   TCustomListViewAccess = class(TCustomListView)
   end;
 
@@ -232,7 +232,7 @@ Var
   LMNotify: TLMNotify; // used by WM_NOTIFY
   DrawListItemStruct: TDrawListItemStruct; //used by WM_DRAWITEM
   CancelEndSession : Boolean;//use by WM_QUERYENDSESSION
-  
+
   NMHdr: PNMHdr absolute LParam; // used by WM_NOTIFY
   TmpSize: TSize; // used by WM_MEASUREITEM
 
@@ -259,7 +259,7 @@ Var
   end;
 
   function GetMenuItemObject: TObject;
-  var 
+  var
     MenuInfo: MENUITEMINFO;
     MainMenuHandle: HMENU;
     PopupMenu: TPopupMenu;
@@ -289,7 +289,7 @@ Var
         Result := TObject(MenuInfo.dwItemData);
     end;
   end;
-  
+
   procedure SendPaintMessage(ControlDC: HDC);
   var
     DC: HDC;
@@ -706,7 +706,7 @@ Var
       if ACursor = crDefault then
       begin
         // statictext controls do not get WM_SETCURSOR messages...
-        lControl := lWinControl.ControlAtPos(P, [capfOnlyClientAreas, 
+        lControl := lWinControl.ControlAtPos(P, [capfOnlyClientAreas,
           capfAllowWinControls, capfHasScrollOffset]);
         if lControl = nil then
           lControl := lWinControl;
@@ -757,7 +757,7 @@ Var
             end;
           end;
         end;
-        
+
       SC_MINIMIZE:
         begin
 
@@ -775,7 +775,7 @@ Var
                 Application.MainForm.Width, 0, SWP_NOACTIVATE);
                 if Application.MainForm.HandleAllocated then
                  Windows.ShowWindow(Application.MainForm.Handle,SW_HIDE);
-                 
+
               Application.IntfAppMinimize;
           end;
         end;
@@ -793,7 +793,7 @@ Var
             if Windows.IsWindowEnabled(Application.MainForm.Handle)
              then Windows.SetActiveWindow(Application.MainForm.Handle);
             WinProcess := false;
-            
+
             Application.IntfAppRestore;
           end;
         end;
@@ -866,7 +866,7 @@ Var
       SetWin32SizePoint(MaxWidth, MaxHeight, MinMaxInfo.ptMaxTrackSize);
     end;
   end;
-  
+
   procedure HandleListViewCustomDraw(ALV: TCustomListViewAccess);
     function ConvState(const State: uint): TCustomDrawState;
     begin
@@ -881,8 +881,8 @@ Var
       if state and CDIS_MARKED <> 0 then Include(Result, cdsMarked);
       if state and CDIS_SELECTED <> 0 then Include(Result, cdsSelected);
     end;
- 
-  const 
+
+  const
     CDRFRESULT: array[TCustomDrawResultFlag] of Integer = (
       CDRF_SKIPDEFAULT,
       CDRF_NOTIFYPOSTPAINT,
@@ -891,7 +891,7 @@ Var
       CDRF_NOTIFYPOSTERASE,
       CDRF_NOTIFYITEMERASE
     );
-  var 
+  var
     DrawInfo: PNMLVCustomDraw absolute NMHdr;
     Stage: TCustomDrawStage;
     DrawResult: TCustomDrawResult;
@@ -902,12 +902,12 @@ Var
     case DrawInfo^.dwDrawStage and $7 of //Get drawing state
       CDDS_PREPAINT:  Stage := cdPrePaint;
       CDDS_POSTPAINT: Stage := cdPostPaint;
-      CDDS_PREERASE:  Stage := cdPreErase; 
+      CDDS_PREERASE:  Stage := cdPreErase;
       CDDS_POSTERASE: Stage := cdPostErase;
     else
       Exit;
-    end;  
-    
+    end;
+
     case DrawInfo^.dwDrawStage and (CDDS_ITEM or CDDS_SUBITEM) of
       0: begin //Whole control
         DrawResult := ALV.IntfCustomDraw(dtControl, Stage, -1, -1, [], @DrawInfo^.rc);
@@ -920,7 +920,7 @@ Var
         if DrawInfo^.iSubItem = 0 then Exit;
         DrawResult := ALV.IntfCustomDraw(dtItem, Stage, DrawInfo^.dwItemSpec, DrawInfo^.iSubItem, ConvState(DrawInfo^.uItemState), nil);
       end;
-    else 
+    else
       Exit;
     end;
 
@@ -947,7 +947,7 @@ Var
     end;
     Result := PointToSmallPoint(P);
   end;
-  
+
 begin
   Assert(False, 'Trace:WindowProc - Start');
 
@@ -1037,7 +1037,7 @@ begin
           Windows.SetWindowPos(TWin32WidgetSet(WidgetSet).AppHandle, HWND_TOP,
             0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE);
         end;
-        
+
         // activate/deactivate main window
         if (Application <> nil) and (Application.MainForm <> nil) and
             Application.MainForm.HandleAllocated then
@@ -1190,7 +1190,7 @@ begin
       case Msg of
         WM_CTLCOLORSTATIC,
         WM_CTLCOLORBTN: begin
-          if GetNeedParentPaint(ChildWindowInfo, ChildWinControl) 
+          if GetNeedParentPaint(ChildWindowInfo, ChildWinControl)
             and not ChildWindowInfo^.ThemedCustomDraw then
           begin
             // need to draw transparently, draw background
@@ -1204,7 +1204,7 @@ begin
           WinProcess := false;
         end;
       end;
-        
+
       if WinProcess then
       begin
         if ChildWinControl <> nil then
@@ -1343,7 +1343,7 @@ begin
         if DoubleBufferDC <> 0 then
           WParam := DoubleBufferDC;
         if WindowInfo^.isTabPage then
-          EraseBkgndStack := (EraseBkgndStack and not ((1 shl EraseBkgndStackShift)-1)) 
+          EraseBkgndStack := (EraseBkgndStack and not ((1 shl EraseBkgndStackShift)-1))
             or dword(ecDiscardNoRemove);
       end else if eraseBkgndCommand <> ecDiscardNoRemove then
         EraseBkgndStack := EraseBkgndStack shr EraseBkgndStackShift;
@@ -1587,13 +1587,15 @@ begin
         // check if the window is an edit control of a combobox, if so,
         // redirect it to the combobox, not the edit control
         if GetWindowInfo(TargetWindow)^.isComboEdit then
-        begin
           TargetWindow := Windows.GetParent(TargetWindow);
-          if (TargetWindow <> Window) then
-          begin
-            Result := SendMessage(TargetWindow, WM_MOUSEWHEEL, WParam, LParam);
-            exit;
-          end;
+
+        // check InMouseWheelRedirection to prevent recursion
+        if not InMouseWheelRedirection and (TargetWindow <> Window) then
+        begin
+          InMouseWheelRedirection := true;
+          Result := SendMessage(TargetWindow, WM_MOUSEWHEEL, WParam, LParam);
+          InMouseWheelRedirection := false;
+          exit;
         end;
 
         // the mousewheel message is for us
@@ -1703,7 +1705,7 @@ begin
               begin
                 if WindowInfo^.WinControl is TCustomListView
                 then HandleListViewCustomDraw(TCustomListViewAccess(WindowInfo^.WinControl))
-                else if GetNeedParentPaint(WindowInfo, lWinControl) 
+                else if GetNeedParentPaint(WindowInfo, lWinControl)
                   and WindowInfo^.ThemedCustomDraw then
                 begin
                   case PNMCustomDraw(LParam)^.dwDrawStage of
@@ -1716,7 +1718,7 @@ begin
                     begin
                       case PNMCustomDraw(LParam)^.dwItemSpec of
                         TBCD_TICS, TBCD_CHANNEL:
-                          SendParentPaintMessage(Window, Windows.GetParent(Window), 
+                          SendParentPaintMessage(Window, Windows.GetParent(Window),
                             PNMCustomDraw(LParam)^.hDC);
                       end;
                       Result := CDRF_DODEFAULT;
@@ -1946,7 +1948,7 @@ begin
 
     WM_LCL_SOCK_ASYNC:
     begin
-      if (Window = TWin32WidgetSet(WidgetSet).AppHandle) and 
+      if (Window = TWin32WidgetSet(WidgetSet).AppHandle) and
           Assigned(TWin32WidgetSet(WidgetSet).FOnAsyncSocketMsg) then
         exit(TWin32WidgetSet(WidgetSet).FOnAsyncSocketMsg(WParam, LParam))
     end;
@@ -2109,7 +2111,7 @@ begin
       if PLMsg^.Result = 0 then
         WinProcess := true;
     end;
-    
+
     CN_CHAR, CN_SYSCHAR:
     begin
       // if key not yet processed, let windows process it
@@ -2141,7 +2143,7 @@ begin
         if MouseDownFocusStatus = mfFocusSense then
           MouseDownFocusStatus := mfNone;
       end;
-      
+
 
       WM_NCDESTROY:
       begin
@@ -2299,8 +2301,8 @@ begin
       // free our own data associated with window
       DisposeWindowInfo(Window);
     end;
-  else 
-    if UnicodeEnabledOS 
+  else
+    if UnicodeEnabledOS
     then Result := Windows.DefWindowProcW(Window, Msg, WParam, LParam)
     else Result := Windows.DefWindowProc(Window, Msg, WParam, LParam);
   end;

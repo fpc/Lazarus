@@ -302,6 +302,8 @@ var
   MouseDownFocusStatus: TMouseDownFocusStatus = mfNone;
   ComboBoxHandleSizeWindow: HWND = 0;
   IgnoreNextCharWindow: HWND = 0;  // ignore next WM_(SYS)CHAR message
+  // set to true, if we are redirecting a WM_MOUSEWHEEL message, to prevent recursion
+  InMouseWheelRedirection: boolean = false;
   OnClipBoardRequest: TClipboardRequestEvent;
 {$ifdef MSG_DEBUG}
   MessageStackDepth: string = '';
