@@ -1,0 +1,124 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <Package Version="2">
+    <Name Value="weblaz"/>
+    <CompilerOptions>
+      <Version Value="5"/>
+      <SearchPaths>
+        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
+      </SearchPaths>
+      <CodeGeneration>
+        <Generate Value="Faster"/>
+      </CodeGeneration>
+      <Other>
+        <CustomOptions Value="-dcgidebug
+"/>
+        <CompilerPath Value="$(CompPath)"/>
+      </Other>
+    </CompilerOptions>
+    <Files Count="16">
+      <Item1>
+        <Filename Value="weblazideintf.pp"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="WebLazIDEIntf"/>
+      </Item1>
+      <Item2>
+        <Filename Value="fpweb.pp"/>
+        <Type Value="Virtual Unit"/>
+        <UnitName Value="fpWeb"/>
+      </Item2>
+      <Item3>
+        <Filename Value="httpdefs.pp"/>
+        <Type Value="Virtual Unit"/>
+        <UnitName Value="HTTPDefs"/>
+      </Item3>
+      <Item4>
+        <Filename Value="fphttp.pp"/>
+        <Type Value="Virtual Unit"/>
+        <UnitName Value="fphttp"/>
+      </Item4>
+      <Item5>
+        <Filename Value="fpcgi.pp"/>
+        <Type Value="Virtual Unit"/>
+        <UnitName Value="fpcgi"/>
+      </Item5>
+      <Item6>
+        <Filename Value="custcgi.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <Type Value="Virtual Unit"/>
+        <UnitName Value="custcgi"/>
+      </Item6>
+      <Item7>
+        <Filename Value="lazweb.pp"/>
+        <UnitName Value="lazweb"/>
+      </Item7>
+      <Item8>
+        <Filename Value="fptemplate.pp"/>
+        <Type Value="Virtual Unit"/>
+        <UnitName Value="fpTemplate"/>
+      </Item8>
+      <Item9>
+        <Filename Value="htmldefs.pp"/>
+        <Type Value="Virtual Unit"/>
+        <UnitName Value="HTMLDefs"/>
+      </Item9>
+      <Item10>
+        <Filename Value="htmlelements.pp"/>
+        <Type Value="Virtual Unit"/>
+        <UnitName Value="htmlelements"/>
+      </Item10>
+      <Item11>
+        <Filename Value="htmlwriter.pp"/>
+        <Type Value="Virtual Unit"/>
+        <UnitName Value="htmlwriter"/>
+      </Item11>
+      <Item12>
+        <Filename Value="webutil.pp"/>
+        <Type Value="Virtual Unit"/>
+        <UnitName Value="webutil"/>
+      </Item12>
+      <Item13>
+        <Filename Value="fphtml.pp"/>
+        <Type Value="Virtual Unit"/>
+        <UnitName Value="fphtml"/>
+      </Item13>
+      <Item14>
+        <Filename Value="fpdatasetform.pp"/>
+        <Type Value="Virtual Unit"/>
+        <UnitName Value="fpdatasetform"/>
+      </Item14>
+      <Item15>
+        <Filename Value="websession.pp"/>
+        <Type Value="Virtual Unit"/>
+        <UnitName Value="websession"/>
+      </Item15>
+      <Item16>
+        <Filename Value="fpapache.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <Type Value="Virtual Unit"/>
+        <UnitName Value="fpapache"/>
+      </Item16>
+    </Files>
+    <Type Value="RunAndDesignTime"/>
+    <RequiredPkgs Count="3">
+      <Item1>
+        <PackageName Value="LCL"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="IDEIntf"/>
+      </Item2>
+      <Item3>
+        <PackageName Value="FCL"/>
+        <MinVersion Major="1" Valid="True"/>
+      </Item3>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+      <DestinationDirectory Value="/home/michael/projects/lazarus/components/fpweb/"/>
+      <IgnoreBinaries Value="False"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>
