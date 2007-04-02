@@ -1,0 +1,3 @@
+ComboBox SelText: boB
+ComboBox.Text: Com1234ox1
+ComboBox.SelText: 1234

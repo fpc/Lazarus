@@ -259,7 +259,7 @@ function TCustomComboBox.GetSelText: string;
 begin
   //debugln('TCustomComboBox.GetSelText ');
   if FStyle in [csDropDown, csSimple] then
-    Result:= Copy(Text, SelStart, SelLength)
+    Result:= Copy(Text, SelStart + 1, SelLength)
   else
     Result:= '';
 end;
@@ -274,13 +274,17 @@ end;
 procedure TCustomComboBox.SetSelText(const Val: string);
 var
   OldText, NewText: string;
+  OldSelStart: integer;
 begin
   //debugln('TCustomComboBox.SetSelText ',Val);
   if FStyle in [csDropDown, csSimple] then begin
     OldText:=Text;
-    NewText:=LeftStr(OldText,SelStart-1)+Val
-               +RightStr(OldText,length(OldText)-SelStart-SelLength+1);
+    OldSelStart:=SelStart;
+    NewText:=LeftStr(OldText,OldSelStart)+Val
+               +RightStr(OldText,length(OldText)-SelStart-SelLength);
     Text:=NewText;
+    SelStart:=OldSelStart;
+    SelLength:=length(Val);
   end;
 end;
 
