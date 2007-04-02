@@ -182,8 +182,8 @@ begin
   AllocWindowInfo(FAppHandle);
 
   // set nice main icon
-  SendMessage(FAppHandle, WM_SETICON, ICON_BIG,
-    Windows.LoadIcon(MainInstance, 'MAINICON'));
+  Windows.SendMessage(FAppHandle, WM_SETICON, ICON_BIG,
+    LParam(Windows.LoadIcon(MainInstance, 'MAINICON')));
   // remove useless menuitems from sysmenu
   SysMenu := Windows.GetSystemMenu(FAppHandle, False);
   Windows.DeleteMenu(SysMenu, SC_MAXIMIZE, MF_BYCOMMAND);
