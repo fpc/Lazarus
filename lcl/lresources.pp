@@ -2154,16 +2154,16 @@ end;
 function TestFormStreamFormat(Stream: TStream): TLRSStreamOriginalFormat;
 var
   Pos: TStreamSeekType;
-  Signature: Integer;
+  Signature: Array[1..4] of Char;
 begin
   Pos := Stream.Position;
-  Signature := 0;
+  Signature[1] := #0; // initialize, in case the stream is at its end
   Stream.Read(Signature, SizeOf(Signature));
   Stream.Position := Pos;
-  if (Byte(Signature) = $FF) or (Signature = Integer(FilerSignature)) then
+  if (Signature[1] = #$FF) or (Signature = FilerSignature) then
     Result := sofBinary
     // text format may begin with "object", "inherited", or whitespace
-  else if Char(Signature) in ['o','O','i','I',' ',#13,#11,#9] then
+  else if Signature[1] in ['o','O','i','I',' ',#13,#11,#9] then
     Result := sofText
   else
     Result := sofUnknown;
