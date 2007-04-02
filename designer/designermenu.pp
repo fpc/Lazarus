@@ -332,7 +332,7 @@ begin
   MenuItem^.SubMenuPanel:=TPanel.Create(self);
   
   MenuItem^.SelfPanel:=TPanel.Create(self);
-  MenuItem^.SelfPanel.Name:=MenuItem^.ID;
+  MenuItem^.SelfPanel.Name:='SelfPanel_' + MenuItem^.ID;
   MenuItem^.SelfPanel.Caption:='';
   MenuItem^.SelfPanel.Height:=DESIGNER_MENU_ITEM_HEIGHT;
   Menuitem^.SelfPanel.OnMouseDown:=@MenuItemMouseDown;
