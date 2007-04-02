@@ -2179,6 +2179,7 @@ procedure InternalLRSBinaryToText(Input, Output: TStream;
 var
   Pos: TStreamSeekType;
   Signature: Integer;
+  SignatureChars: array[1..4] of Char absolute Signature;
 begin
   Pos := Input.Position;
   Signature := 0;
@@ -2207,7 +2208,7 @@ begin
     begin
       if OriginalFormat = sofUnknown then
       begin   // text format may begin with "object", "inherited", or whitespace
-        if Char(Signature) in ['o','O','i','I',' ',#13,#11,#9] then
+        if SignatureChars[1] in ['o','O','i','I',' ',#13,#11,#9] then
           OriginalFormat := sofText
         else    // not binary, not text... let it raise the exception
         begin
