@@ -292,7 +292,7 @@ begin
 }
   else
     iconHandle := Windows.LoadIcon(MainInstance, 'MAINICON');
-  SendMessage(winHandle, WM_SETICON, ICON_BIG, iconHandle);
+  SendMessage(winHandle, WM_SETICON, ICON_BIG, LPARAM(iconHandle));
 end;
 
 class procedure TWin32WSCustomForm.SetShowInTaskbar(const AForm: TCustomForm;
