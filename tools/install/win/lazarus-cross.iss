@@ -6,7 +6,6 @@ EnableISX=true
 #define FPCSourceOS GetEnv('FPCSourceOS')
 #define FPCFullSource GetEnv('FPCFullSource')
 #define FPCFullTarget GetEnv('FPCFullTarget')
-#define FPCTargetOS GetEnv('FPCSourceOS')
 #define AppName "Lazarus"
 #define SetupDate GetEnv('DateStamp')
 #define BuildDir GetEnv('BuildDir')
