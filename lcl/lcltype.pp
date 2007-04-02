@@ -129,9 +129,6 @@ type
   LPARAM = Windows.LPARAM;
   LRESULT = Windows.LRESULT;
 
-{$if defined(VER2_0_2)}
-  ULONG_PTR = type PtrUInt;
-{$endif}
 {$endif}
 
   TLCLIntfHandle = type THandle;
