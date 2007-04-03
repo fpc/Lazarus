@@ -3109,9 +3109,13 @@ var
   begin
     AStr := Copy(String(theLine), 1, LineLength);
 
-    if (Flags and DT_NoPrefix) <> DT_NoPrefix then
-      pIndex := DeleteAmpersands(aStr)
-    else
+    if (Flags and DT_NoPrefix) <> DT_NoPrefix then begin
+      pIndex := DeleteAmpersands(aStr);
+      If Length(aStr) = 0 then
+        Exit; { String consists of '&' only }
+      If pIndex > Length(aStr) then
+        pIndex := -1; { String ended in '&', which was deleted }
+    end else
       pIndex := -1;
 
     if TempBrush = HBRUSH(-1) then
