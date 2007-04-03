@@ -171,6 +171,90 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method: CallbackAllocateHWnd
+  Params:   None
+  Returns:  Nothing
+
+  Callback for the AllocateHWnd function
+ ------------------------------------------------------------------------------}
+procedure CallbackAllocateHWnd(Ahwnd: HWND; uMsg: UINT; wParam: WParam; lParam: LParam); stdcall;
+var
+  Msg: TLMessage;
+  PMethod: ^TLCLWndMethod;
+begin
+  FillChar(Msg, SizeOf(Msg), #0);
+  
+  Msg.msg := uMsg;
+  Msg.wParam := wParam;
+  Msg.lParam := lParam;
+
+  {------------------------------------------------------------------------------
+    Here we get the callback WndMethod associated with this window
+   ------------------------------------------------------------------------------}
+  PMethod := Pointer(Widgetset.GetWindowLong(ahwnd, GWL_USERDATA));
+
+  if Assigned(PMethod) then PMethod^(Msg);
+   
+  Windows.DefWindowProc(ahwnd, uMsg, wParam, lParam);
+end;
+
+{------------------------------------------------------------------------------
+  Method: TWin32WidgetSet.AllocateHWnd
+  Params:   Method  - The callback method for the window. Can be nil
+  Returns:  A window handle
+
+  Allocates a non-visible window that can be utilized to receive and send message
+  
+  On Windows, you must call Windows.DefWindowProc(MyHandle, Msg.msg, Msg.wParam, msg.lParam);
+  in your callback function, if you provide one at all, of course.
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.AllocateHWnd(Method: TLCLWndMethod): HWND;
+var
+  PMethod: ^TLCLWndMethod;
+begin
+  Result := Windows.CreateWindow(@ClsName[0],
+   '', WS_OVERLAPPED, 0, 0, 0, 0, 0, 0, MainInstance, nil);
+
+  {------------------------------------------------------------------------------
+    SetWindowLong has only space for 1 pointer on each slot, but a method is
+   referenced as a structure with 2 pointers, so here we allocate memory for
+   the structure before it can be used to transport data between the callback
+   and this function
+   ------------------------------------------------------------------------------}
+  if Assigned(Method) then
+  begin
+    Getmem(PMethod, SizeOf(TMethod));
+    PMethod^ := Method;
+
+    Self.SetWindowLong(Result, GWL_USERDATA, PtrInt(PMethod));
+  end;
+  
+  Self.SetWindowLong(Result, GWL_WNDPROC, PtrInt(@CallbackAllocateHWnd))
+end;
+
+{------------------------------------------------------------------------------
+  Method: TWin32WidgetSet.DeallocateHWnd
+  Params:   Wnd   - A Window handle, that was created with AllocateHWnd
+  Returns:  Nothing
+ ------------------------------------------------------------------------------}
+procedure TWin32WidgetSet.DeallocateHWnd(Wnd: HWND);
+var
+  PMethod: ^TLCLWndMethod;
+begin
+  PMethod := Pointer(Self.GetWindowLong(Wnd, GWL_USERDATA));
+
+  if Wnd <> 0 then Windows.DestroyWindow(Wnd);
+
+  {------------------------------------------------------------------------------
+    This must be done after DestroyWindow, otherwise a Access Violation will
+   happen when WM_CLOSE message is sent to the callback
+
+    This memory is for the TMethod structure allocated on AllocateHWnd
+   ------------------------------------------------------------------------------}
+  if Assigned(PMethod) then Freemem(PMethod);
+end;
+
+{------------------------------------------------------------------------------
   Procedure:
   Params:
 

@@ -35,9 +35,11 @@ function AddPipeEventHandler(AHandle: THandle;
   AEventHandler: TPipeEvent; AData: PtrInt): PPipeEventHandler; override;
 function AddProcessEventHandler(AHandle: THandle;
   AEventHandler: TChildExitEvent; AData: PtrInt): PProcessEventHandler; override;
+function AllocateHWnd(Method: TLCLWndMethod): HWND; override;
 
 function CreateStandardCursor(ACursor: SmallInt): hCursor; override;
 
+procedure DeallocateHWnd(Wnd: HWND); override;
 procedure DrawArrow(Arrow: TComponent; Canvas: TPersistent); override;
 
 function GetAcceleratorString(const AVKey: Byte; const AShiftState: TShiftState): String; override;

@@ -44,6 +44,11 @@ begin
   Result := nil;
 end;
 
+function TWidgetSet.AllocateHWnd(Method: TLCLWndMethod): HWND;
+begin
+  Result := 0;
+end;
+
 procedure TWidgetSet.AttachMenuToWindow(AMenuObject: TComponent);
 begin
 end;
@@ -132,6 +137,11 @@ begin
   Clip:=CreateEmptyRegion;
   Result:=GetClipRGN(DC,Clip)>=0;
   DeleteObject(Clip);
+end;
+
+procedure TWidgetSet.DeallocateHWnd(Wnd: HWND);
+begin
+
 end;
 
 procedure TWidgetSet.DrawArrow(Arrow: TComponent; Canvas: TPersistent);

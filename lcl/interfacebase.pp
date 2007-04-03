@@ -52,6 +52,8 @@ type
   TPipeEvent = procedure(AData: PtrInt; AReasons: TPipeReasons) of object;
   TSocketEvent = procedure(AData: PtrInt; AFlags: dword) of object;
 
+  TLCLWndMethod = procedure(var TheMessage: TLMessage) of Object;
+
   { TWidgetSet }
 
   TWidgetSet = class(TObject)

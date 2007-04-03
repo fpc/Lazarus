@@ -51,6 +51,11 @@ begin
   Result:=WidgetSet.AddProcessEventHandler(AHandle, AEventHandler, AData);
 end;
 
+function AllocateHWnd(Method: TLCLWndMethod): HWND;
+begin
+  Result := WidgetSet.AllocateHWnd(Method);
+end;
+
 procedure AttachMenuToWindow(AMenuObject: TComponent);
 begin
   WidgetSet.AttachMenuToWindow(AMenuObject);
@@ -128,6 +133,11 @@ end;
 function DCClipRegionValid(DC: HDC): boolean;
 begin
   Result := WidgetSet.DCClipRegionValid(DC);
+end;
+
+procedure DeallocateHWnd(Wnd: HWND);
+begin
+  WidgetSet.DeallocateHWnd(Wnd);
 end;
 
 procedure DrawArrow(Arrow: TComponent; Canvas: TPersistent);

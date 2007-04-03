@@ -40,6 +40,7 @@
 function AddEventHandler(AHandle: THandle; AFlags: dword; AEventHandler: TWaitHandleEvent; AData: PtrInt): PEventHandler; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function AddProcessEventHandler(AHandle: THandle; AEventHandler: TChildExitEvent; AData: PtrInt): PProcessEventHandler; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function AddPipeEventHandler(AHandle: THandle; AEventHandler: TPipeEvent; AData: PtrInt): PPipeEventHandler; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function AllocateHWnd(Method: TLCLWndMethod): HWND; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 procedure AttachMenuToWindow(AMenuObject: TComponent); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
 procedure CallDefaultWndHandler(Sender: TObject; var Message); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
@@ -61,6 +62,7 @@ function CreateRegionCopy(SrcRGN: hRGN): hRGN; {$IFDEF IF_BASE_MEMBER}virtual;{$
 function CreateStandardCursor(ACursor: SmallInt): hCursor; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
 function DCClipRegionValid(DC: HDC): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+procedure DeallocateHWnd(Wnd: HWND); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 procedure DrawArrow(Arrow: TComponent; Canvas: TPersistent); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
 function ExtUTF8Out(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;  {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
