@@ -2729,12 +2729,13 @@ var
         while j>=0 do begin
           CurSelected:=ControlSelection[j];
           //DebugLn(['UpdateChangeParentMenu ',CurSelected.IsTControl,' ',DbgSName(CurSelected.Persistent),' ',CurSelected.IsTWinControl]);
-          if not CurSelected.IsTControl then continue;
-          if CurSelected.Persistent=Candidate then break;
-          if CurSelected.IsTWinControl
-          and TWinControl(CurSelected.Persistent).IsParentOf(Candidate)
-          then
-            break;
+          if CurSelected.IsTControl then begin
+            if CurSelected.Persistent=Candidate then break;
+            if CurSelected.IsTWinControl
+            and TWinControl(CurSelected.Persistent).IsParentOf(Candidate)
+            then
+              break;
+          end;
           dec(j);
         end;
         //DebugLn(['UpdateChangeParentMenu j=',j,' ',dbgsName(Candidate)]);

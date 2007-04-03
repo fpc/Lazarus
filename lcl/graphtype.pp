@@ -252,7 +252,7 @@ var
   UnusedByteMask: Byte; // Alpha Bits should be all set. The Byte at line end
                         // can contain some unused bits. This mask OR byte at
                         // line end makes the unsused bits all true.
-  UsedBytesPerLine: cardinal;
+  UsedBytesPerLine: integer;
 begin
   Result:=true;
   //DebugLn('RawImageMaskIsEmpty Quicktest: empty ',dbgs(RawImage^.Description.Width),'x',dbgs(RawImage^.Description.Height));
