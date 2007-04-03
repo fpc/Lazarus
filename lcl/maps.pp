@@ -19,7 +19,7 @@
     The Map maps an unique ID to arbitrary data. The ID->Data is stored in a
     Average Level binary Tree for fast indexing.
     The map maintans also a linked list beween the ordered items for fast
-    iterating throug all elements.
+    iterating through all elements.
     The ID can be signed or unsigned, with a size of 1,2,4,8,16 or 32 bytes
     The data can be of any (constant) size.
 }

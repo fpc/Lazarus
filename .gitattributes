@@ -2506,7 +2506,6 @@ lcl/interfaces/gtk/gtklclintf.inc svneol=native#text/pascal
 lcl/interfaces/gtk/gtklclintfh.inc svneol=native#text/pascal
 lcl/interfaces/gtk/gtklistsl.inc svneol=native#text/pascal
 lcl/interfaces/gtk/gtklistslh.inc svneol=native#text/pascal
-lcl/interfaces/gtk/gtklistviewcallback.inc svneol=native#text/pascal
 lcl/interfaces/gtk/gtkmsgqueue.pp svneol=native#text/pascal
 lcl/interfaces/gtk/gtkobject.inc svneol=native#text/pascal
 lcl/interfaces/gtk/gtkpagecallback.inc svneol=native#text/pascal

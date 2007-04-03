@@ -3272,7 +3272,6 @@ begin
 end;
 
 {$I gtkDragCallback.inc}
-{$I gtkListViewCallback.inc}
 {$I gtkComboBoxCallback.inc}
 {$I gtkPageCallback.inc}
 

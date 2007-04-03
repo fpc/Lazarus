@@ -250,13 +250,6 @@ Function Edit_source_drag_data_delete (widget: pGtkWidget;
                    context: pGdkDragContext;
                    data: gpointer): gBoolean ; cdecl;
 
-// gtklistviewcallbacks.inc headers
-function gtkLVAbortColumnResize(AList: PGTKCList; AData: gPointer): GBoolean; cdecl;
-function gtkLVResizeColumn(AList: PGTKCList; AColumn, AWidth: Integer;
-                           AData: gPointer): GBoolean; cdecl;
-function gtkLVClickColumn(AList: PGTKCList; AColumn: Integer;
-                          AData: gPointer): GBoolean; cdecl;
-
 // gtkcomboboxcallbacks.inc headers
 function gtkComboBoxShowAfter(widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 function gtkComboBoxHideAfter(widget: PGtkWidget; data: gPointer): GBoolean; cdecl;

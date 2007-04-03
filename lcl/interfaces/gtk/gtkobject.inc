@@ -4052,30 +4052,6 @@ begin
     end;
 
     // Listview & Header control
-
-    //HDN_BEGINTRACK
-    //HDN_DIVIDERDBLCLICK
-
-    HDN_ENDTRACK,
-    HDN_TRACK:
-    begin
-      ConnectSenderSignal(gObject, 'resize-column', @gtkLVResizeColumn);
-      ConnectSenderSignal(gObject, 'abort-column-resize',
-                          @gtkLVAbortColumnResize);
-    end;
-
-    HDN_ITEMCHANGED,
-    HDN_ITEMCHANGING:
-    begin
-      ConnectSenderSignal(gObject, 'resize-column', @gtkLVResizeColumn);
-    end;
-
-//    HDN_ITEMDBLCLICK
-    HDN_ITEMCLICK:
-    begin
-      ConnectSenderSignal(gCore, 'click-column', @gtkLVClickColumn);
-    end;
-
     LM_COMMAND:
     begin
       if ALCLObject is TCustomComboBox then begin
