@@ -95,5 +95,4 @@ begin
     Application.HandleMessage;
   until false;
   Result := (FUserChoice = mrOk);
-  if Assigned(FOnClose) then FOnClose(Self);
 end;
