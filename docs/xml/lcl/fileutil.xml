@@ -379,8 +379,8 @@
         <short>Appends the path delimeter to the path.</short>
         <descr>AppendPathDelim checks if the last character in the path is the path delimeter. If it isn't the path delimeter, it is added, otherwise the unmodified path is returned.
 </descr>
-        <errors></errors>
-        <seealso></seealso>
+        <errors/>
+        <seealso/>
       </element>
       <!-- function result Visibility: default -->
       <element name="AppendPathDelim.Result">
@@ -394,8 +394,8 @@
       <element name="ChompPathDelim">
         <short>Removes trailing path delimeter</short>
         <descr>ChompPathDelim checks if the last character in the path is the path delimeter. If it is the path delimeter, it is removed, otherwise the unmodified path is returned.</descr>
-        <errors></errors>
-        <seealso></seealso>
+        <errors/>
+        <seealso/>
       </element>
       <!-- function result Visibility: default -->
       <element name="ChompPathDelim.Result">
@@ -560,8 +560,11 @@
       </element>
       <!-- function Visibility: default -->
       <element name="GetAllFilesMask">
-        <short/>
-        <descr/>
+        <short>File mask representing all files suitable for showing in a file filter.</short>
+        <descr>GetAllFilesMask returns a File Mask suitable for showing in a filter of a Open File Dialog.
+
+
+ windows '*.*' is returned, on other operating systems just '*'.</descr>
         <errors/>
         <seealso/>
       </element>
