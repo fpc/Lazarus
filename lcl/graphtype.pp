@@ -292,12 +292,8 @@ begin
         else
           UnusedByteMask:=(1 shl UnusedBitsAtEnd) - 1;
         p:=RawImage^.Mask;
-        DebugLn(['RawImageMaskIsEmpty A Height', Height]);
-        DebugLn(['RawImageMaskIsEmpty B UsedBytesPerLine', UsedBytesPerLine]);
         for y:=0 to Height-1 do begin
           // check fully used bytes in line
-          if UsedBytesPerLine = 0 then
-            debugln('UsedBytesPerLine is 0');
           for x:=0 to UsedBytesPerLine-1 do begin
             if p^<>$ff then begin
               // not all bits set -> transparent pixels found -> Mask needed
