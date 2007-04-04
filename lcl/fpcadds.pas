@@ -22,18 +22,15 @@
 unit FPCAdds;
 
 {$mode objfpc}{$H+}{$inline on}
-{$IFDEF VER2_0_2}
-{$DEFINE FPC_HAS_NO_STRTOQWORD}
+
+{$IFDEF VER2_3}
+{$DEFINE FPC_HAS_QWORDCOMPAREVALUE}
 {$ENDIF}
 
 interface
 
 uses
-  Classes, SysUtils, Math
-{$IFDEF FPC_HAS_NO_STRTOQWORD}
-  ,sysconst
-{$ENDIF}
-  ;
+  Classes, SysUtils, Math;
 
 // current TStream calculates in int64, old in longint
 type
@@ -42,11 +39,10 @@ type
   TCompareMemSize = integer;
   PHandle = ^THandle;
 
+{$IFNDEF FPC_HAS_QWORDCOMPAREVALUE}
 function CompareValue ( const A, B  : QWord) : TValueRelationship; inline;
-function StrToWord(const s: string): word;
-{$IFDEF FPC_HAS_NO_STRTOQWORD}
-function StrToQWord(const s: string): QWord;
 {$ENDIF}
+function StrToWord(const s: string): word;
 
 implementation
 
@@ -62,8 +58,8 @@ begin
   end;
 end;
 
+{$IFNDEF FPC_HAS_QWORDCOMPAREVALUE}
 function CompareValue ( const A, B  : QWord) : TValueRelationship;
-
 begin
   result:=GreaterThanValue;
   if a=b then
@@ -71,14 +67,6 @@ begin
   else
    if a<b then
      result:=LessThanValue;
-end;
-
-{$IFDEF FPC_HAS_NO_STRTOQWORD}
-function StrToQWord(const s: string): QWord;
-var Error: word;
-begin
-  Val(S, result, Error);
-  if Error <> 0 then raise EConvertError.createfmt(SInvalidInteger,[S]);
 end;
 {$ENDIF}
 
