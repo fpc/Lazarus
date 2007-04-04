@@ -1183,7 +1183,7 @@ begin
       // only static and button controls have transparent parts
       // others need to erased with their window color
       // scrollbar also has buttons
-      ChildWindowInfo := GetWindowInfo(LParam);
+      ChildWindowInfo := GetWindowInfo(HWND(LParam));
       ChildWinControl := ChildWindowInfo^.WinControl;
       if ChildWinControl = nil then
         ChildWinControl := ChildWindowInfo^.AWinControl;

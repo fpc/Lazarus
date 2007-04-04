@@ -246,7 +246,7 @@ begin
         lhFont := GetStockObject(DEFAULT_GUI_FONT)
       else
         lhFont := AWinControl.Font.Handle;
-      Windows.SendMessage(Window, WM_SETFONT, lhFont, 0)
+      Windows.SendMessage(Window, WM_SETFONT, WPARAM(lhFont), 0)
     end;
   end;
 end;
