@@ -242,7 +242,7 @@ begin
     GTKWidgetSet.AddDummyNoteBookPage(AWidget);
 
   gtk_notebook_set_tab_pos(AWidget, GtkPositionTypeMap[TCustomNotebook(AWinControl).TabPosition]);
-  GTKWidgetSet.FinishComponentCreate(AWinControl, AWidget, False);
+  GTKWidgetSet.FinishComponentCreate(AWinControl, AWidget);
   Result := THandle(AWidget);
 end;
 
@@ -409,15 +409,6 @@ class function TGtkWSCustomNotebook.GetNotebookMinTabWidth(
 begin
   Result:=inherited GetNotebookMinTabWidth(AWinControl);
 end;
-
-{ Code pasted from LM_GETITEMINDEX message implementation
-     csNotebook:
-       begin
-         TLMNotebookEvent(Data^).Page :=
-           gtk_notebook_get_current_page(PGtkNotebook(Handle));
-         UpdateNoteBookClientWidget(ACustomListBox);
-       end;
-}
 
 class function TGtkWSCustomNotebook.GetTabIndexAtPos(
   const ANotebook: TCustomNotebook; const AClientPos: TPoint): integer;

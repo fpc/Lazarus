@@ -4890,7 +4890,7 @@ begin
 end;
 
 
-procedure TGtkWidgetSet.FinishComponentCreate(const ALCLObject: TObject; const AGTKObject: Pointer; const ASetupProps : Boolean);
+procedure TGtkWidgetSet.FinishComponentCreate(const ALCLObject: TObject; const AGTKObject: Pointer);
 begin
   // MWE: next will be obsoleted by WinWidgetInfo
   if AGTKObject <> nil then
@@ -4921,9 +4921,6 @@ begin
     TCommonDialog(ALCLObject).Handle:= THandle(AGTKObject);
 
   Set_RC_Name(ALCLObject, AGTKObject);
-
-  if ASetupProps then
-    { TODO: call this in CreateHandle when converted: SetProperties(ALCLObject) };
 
   if AGTKObject <> nil then begin
     {$IFNDEF NoStyle}
@@ -5331,12 +5328,10 @@ var
   ParentForm: TCustomForm;
   AccelText : PChar;
   AccelKey  : guint;
-  SetupProps : boolean;
   AWindow: PGdkWindow;
   Adjustment: PGtkAdjustment;
 begin
   p := nil;
-  SetupProps:= false;
 
   CompStyle := GetCompStyle(Sender);
   Caption   := GetCaption(Sender);
@@ -5500,7 +5495,6 @@ begin
     begin
       P := gtk_label_new(StrTemp);
       SetLabelAlignment(PGtkLabel(p),TCustomStaticText(Sender).Alignment);
-      SetupProps:= true;
     end;
 
   csListBox, csCheckListBox:
@@ -5588,8 +5582,6 @@ begin
       gtk_text_set_word_wrap(PGtkText(TempWidget), GdkTrue);
 
       gtk_widget_show_all(P);
-
-      SetupProps:= true;
     end;
   {$EndIF}
   csMenuBar :
@@ -5604,17 +5596,6 @@ begin
   csMenuItem :
     p:=CreateMenuItem(TMenuItem(Sender));
 
-{  csNotebook :
-    begin
-      P := gtk_notebook_new();
-      gtk_notebook_set_scrollable(P, true);
-      gtk_notebook_popup_enable(P);
-      if TCustomNotebook(Sender).PageCount=0 then
-        // a gtk notebook needs a page
-        // -> add dummy page
-        AddDummyNoteBookPage(PGtkNotebook(p));
-    end;
-}
   csPage:    // TCustomPage - Notebook page
     P:=CreateSimpleClientAreaWidget(Sender,true);
 
@@ -5779,7 +5760,7 @@ begin
 
   end; //end case
   StrDispose(StrTemp);
-  FinishComponentCreate(Sender, P, SetupProps);
+  FinishComponentCreate(Sender, P);
   {$IFDEF DebugLCLComponents}
   DebugGtkWidgets.MarkCreated(P,dbgsName(Sender));
   {$ENDIF}

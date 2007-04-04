@@ -261,7 +261,7 @@ type
     procedure RealizeWidgetSize(Widget: PGtkWidget;
                                 NewWidth, NewHeight: integer); virtual;
     procedure FinishComponentCreate(const ALCLObject: TObject;
-              const AGTKObject: Pointer; const ASetupProps : Boolean); virtual;
+              const AGTKObject: Pointer); virtual;
 
     // show, hide and invalidate
     procedure ShowHide(Sender : TObject);virtual;
