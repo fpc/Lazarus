@@ -61,7 +61,6 @@ type
     function LoadStockPixmap(StockID: longint) : HBitmap; override;
     procedure SetCallback(const AMsg: LongInt; const AGTKObject: PGTKObject; const ALCLObject: TObject);override;
     //procedure SetLabel(Sender : TObject; Data : Pointer);
-    //function SetProperties(Sender : TObject) : integer; override;
     procedure SetSelectionMode(Sender: TObject; Widget: PGtkWidget;
       MultiSelect, ExtendedSelect: boolean); override;
     //function SetTopIndex(Sender: TObject; NewTopIndex: integer): integer; override;
