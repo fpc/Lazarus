@@ -1358,7 +1358,7 @@ begin
             and (lWinControl <> nil) then
         begin
           // Groupbox (which is a button) doesn't erase it's background properly; force repaint
-          lWinControl.EraseBackground(WParam);
+          lWinControl.EraseBackground(HDC(WParam));
           LMessage.Result := 1;
         end else begin
           LMessage.Msg := LM_ERASEBKGND;
