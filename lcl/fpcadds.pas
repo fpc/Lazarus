@@ -26,6 +26,9 @@ unit FPCAdds;
 {$IFDEF VER2_3}
 {$DEFINE FPC_HAS_QWORDCOMPAREVALUE}
 {$ENDIF}
+{$IFNDEF VER2_0}
+{$DEFINE FPC_HAS_COMPAREVALUE}
+{$ENDIF}
 
 interface
 
@@ -41,6 +44,10 @@ type
 
 {$IFNDEF FPC_HAS_QWORDCOMPAREVALUE}
 function CompareValue ( const A, B  : QWord) : TValueRelationship; inline;
+// other CompareValue functions have to be declare too, otherwise fpc
+// doesn't find them: http://www.freepascal.org/mantis/view.php?id=8620
+function CompareValue ( const A, B  : Integer) : TValueRelationship; inline;
+function CompareValue ( const A, B  : Int64) : TValueRelationship; inline;
 {$ENDIF}
 function StrToWord(const s: string): word;
 
@@ -59,7 +66,7 @@ begin
 end;
 
 {$IFNDEF FPC_HAS_QWORDCOMPAREVALUE}
-function CompareValue ( const A, B  : QWord) : TValueRelationship;
+function CompareValue (const A, B  : QWord) : TValueRelationship;
 begin
   result:=GreaterThanValue;
   if a=b then
@@ -67,6 +74,34 @@ begin
   else
    if a<b then
      result:=LessThanValue;
+end;
+
+function CompareValue(const A, B: Integer): TValueRelationship; inline;
+begin
+{$IFDEF FPC_HAS_COMPAREVALUE}
+  Result := Math.CompareValue(A, B);
+{$ELSE}
+  result:=GreaterThanValue;
+  if a=b then
+    result:=EqualsValue
+  else
+   if a<b then
+     result:=LessThanValue;
+{$ENDIF}
+end;
+
+function CompareValue(const A, B: Int64): TValueRelationship; inline;
+begin
+{$IFDEF FPC_HAS_COMPAREVALUE}
+  Result := Math.CompareValue(A, B);
+{$ELSE}
+  result:=GreaterThanValue;
+  if a=b then
+    result:=EqualsValue
+  else
+   if a<b then
+     result:=LessThanValue;
+{$ENDIF}
 end;
 {$ENDIF}
 
