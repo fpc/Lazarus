@@ -55,7 +55,7 @@ Type
     MaxLength: integer;
     DrawItemIndex: integer;   // in case of listbox, when handling WM_DRAWITEM
     DrawItemSelected: boolean;// whether this item is selected LB_GETSEL not uptodate yet
-    MouseX, MouseY: word; // noticing spurious WM_MOUSEMOVE messages
+    MouseX, MouseY: smallint; // noticing spurious WM_MOUSEMOVE messages
     case integer of
       0: (spinValue: single);
       1: (
