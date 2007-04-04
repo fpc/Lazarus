@@ -248,7 +248,7 @@ var
   UnusedBitsAtEnd: cardinal;
   p: PByte;
   y: cardinal;
-  x: cardinal;
+  x: integer;
   UnusedByteMask: Byte; // Alpha Bits should be all set. The Byte at line end
                         // can contain some unused bits. This mask OR byte at
                         // line end makes the unsused bits all true.
