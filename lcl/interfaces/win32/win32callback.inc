@@ -460,7 +460,7 @@ Var
         // tabpage parent and got a dc to draw in, divert paint to parent
         DCIndex := Windows.SaveDC(PaintMsg.DC);
         MoveWindowOrgEx(PaintMsg.DC, -parLeft, -parTop);
-        Windows.SendMessage(ParentPaintWindow, WM_PAINT, PaintMsg.DC, 0);
+        Windows.SendMessage(ParentPaintWindow, WM_PAINT, Windows.WParam(PaintMsg.DC), 0);
         Windows.RestoreDC(PaintMsg.DC, DCIndex);
       end;
       if (ControlDC = 0) or not needParentPaint then
@@ -1341,7 +1341,7 @@ begin
       if eraseBkgndCommand = ecDoubleBufferNoRemove then
       begin
         if DoubleBufferDC <> 0 then
-          WParam := DoubleBufferDC;
+          WParam := Windows.WParam(DoubleBufferDC);
         if WindowInfo^.isTabPage then
           EraseBkgndStack := (EraseBkgndStack and not ((1 shl EraseBkgndStackShift)-1))
             or dword(ecDiscardNoRemove);
@@ -1366,7 +1366,7 @@ begin
           LMessage.LParam := LParam;
         end;
       end else begin
-        SendPaintMessage(WParam);
+        SendPaintMessage(HDC(WParam));
         LMessage.Result := 1;
       end;
       WinProcess := false;
@@ -1733,7 +1733,7 @@ begin
     end;
     WM_PAINT:
     Begin
-      SendPaintMessage(WParam);
+      SendPaintMessage(HDC(WParam));
       // SendPaintMessage sets winprocess to false
     End;
     WM_PASTE:
