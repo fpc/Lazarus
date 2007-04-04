@@ -288,6 +288,7 @@ type
     destructor Destroy; override;
   public
     function insertTab(index: Integer; page: QWidgetH; p2: PWideString): Integer;
+    procedure SetTabPosition(ATabPosition: QTabWidgetTabPosition);
   end;
 
   { TQtComboBox }
@@ -2531,6 +2532,11 @@ end;
 function TQtTabWidget.insertTab(index: Integer; page: QWidgetH; p2: PWideString): Integer;
 begin
   Result := QTabWidget_insertTab(QTabWidgetH(Widget), index, page, p2);
+end;
+
+procedure TQtTabWidget.SetTabPosition(ATabPosition: QTabWidgetTabPosition);
+begin
+  QTabWidget_setTabPosition(QTabWidgetH(Widget), ATabPosition);
 end;
 
 { TQtComboBox }

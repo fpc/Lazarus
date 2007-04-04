@@ -255,7 +255,6 @@ begin
   fAddingPages:=false;
 
   DoSendShowTabs;
-  DoSendTabPosition;
   DoSendPageIndex;
 end;
 

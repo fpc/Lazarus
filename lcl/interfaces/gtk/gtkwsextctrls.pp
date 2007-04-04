@@ -53,7 +53,9 @@ type
   private
   protected
   public
-    class procedure AddPage(const ANotebook: TCustomNotebook; 
+    class function  CreateHandle(const AWinControl: TWinControl;
+      const AParams: TCreateParams): TLCLIntfHandle; override;
+    class procedure AddPage(const ANotebook: TCustomNotebook;
       const AChild: TCustomPage; const AIndex: integer); override;
     class procedure MovePage(const ANotebook: TCustomNotebook; 
       const AChild: TCustomPage; const NewIndex: integer); override;
@@ -208,6 +210,15 @@ type
 
 implementation
 
+const
+  GtkPositionTypeMap: array[TTabPosition] of TGtkPositionType =
+  (
+{ tpTop    } GTK_POS_TOP,
+{ tpBottom } GTK_POS_BOTTOM,
+{ tpLeft   } GTK_POS_LEFT,
+{ tpRight  } GTK_POS_RIGHT
+  );
+
 { TGtkWSCustomPage }
 
 class procedure TGtkWSCustomPage.UpdateProperties(const ACustomPage: TCustomPage);
@@ -216,6 +227,24 @@ begin
 end;
 
 { TGtkWSCustomNotebook }
+
+class function TGtkWSCustomNotebook.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): TLCLIntfHandle;
+var
+  AWidget: PGtkNoteBook;
+begin
+  AWidget := PGtkNoteBook(gtk_notebook_new());
+  gtk_notebook_set_scrollable(AWidget, true);
+  gtk_notebook_popup_enable(AWidget);
+  if TCustomNotebook(AWinControl).PageCount=0 then
+    // a gtk notebook needs a page
+    // -> add dummy page
+    GTKWidgetSet.AddDummyNoteBookPage(AWidget);
+
+  gtk_notebook_set_tab_pos(AWidget, GtkPositionTypeMap[TCustomNotebook(AWinControl).TabPosition]);
+  GTKWidgetSet.FinishComponentCreate(AWinControl, AWidget, False);
+  Result := THandle(AWidget);
+end;
 
 class procedure TGtkWSCustomNotebook.AddPage(const ANotebook: TCustomNotebook;
   const AChild: TCustomPage; const AIndex: integer);
@@ -435,16 +464,9 @@ end;
 
 class procedure TGtkWSCustomNotebook.SetTabPosition(
   const ANotebook: TCustomNotebook; const ATabPosition: TTabPosition);
-var
-  GtkNotebook: PGtkNotebook;
 begin
-  GtkNotebook := PGtkNotebook(ANotebook.Handle);
-  case ATabPosition of
-    tpTop   : gtk_notebook_set_tab_pos(GtkNotebook, GTK_POS_TOP);
-    tpBottom: gtk_notebook_set_tab_pos(GtkNotebook, GTK_POS_BOTTOM);
-    tpLeft  : gtk_notebook_set_tab_pos(GtkNotebook, GTK_POS_LEFT);
-    tpRight : gtk_notebook_set_tab_pos(GtkNotebook, GTK_POS_RIGHT);
-  end;
+  gtk_notebook_set_tab_pos(PGtkNotebook(ANotebook.Handle),
+    GtkPositionTypeMap[ATabPosition]);
 end;
 
 class procedure TGtkWSCustomNotebook.ShowTabs(const ANotebook: TCustomNotebook;

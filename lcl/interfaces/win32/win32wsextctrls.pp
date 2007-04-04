@@ -356,6 +356,16 @@ begin
   // customization of Params
   with Params do
   begin
+    case TCustomNoteBook(AWinControl).TabPosition of
+      tpTop:
+        Flags := Flags and not(TCS_VERTICAL or TCS_MULTILINE or TCS_BOTTOM);
+      tpBottom:
+        Flags := (Flags or TCS_BOTTOM) and not (TCS_VERTICAL or TCS_MULTILINE);
+      tpLeft:
+        Flags := (Flags or TCS_VERTICAL or TCS_MULTILINE) and not TCS_RIGHT;
+      tpRight:
+        Flags := Flags or (TCS_VERTICAL or TCS_RIGHT or TCS_MULTILINE);
+    end;
     pClassName := WC_TABCONTROL;
   end;
   // create window
@@ -538,24 +548,9 @@ begin
 end;
 
 class procedure TWin32WSCustomNotebook.SetTabPosition(const ANotebook: TCustomNotebook; const ATabPosition: TTabPosition);
-var
-  NotebookHandle: HWND;
-  WindowStyle: PtrInt;
 begin
-  // VS: not tested
-  NotebookHandle := ANotebook.Handle;
-  WindowStyle := GetWindowLong(NotebookHandle, GWL_STYLE);
-  case ATabPosition of
-    tpTop:
-      WindowStyle := WindowStyle and not(TCS_VERTICAL or TCS_MULTILINE or TCS_BOTTOM);
-    tpBottom:
-      WindowStyle := (WindowStyle or TCS_BOTTOM) and not (TCS_VERTICAL or TCS_MULTILINE);
-    tpLeft:
-      WindowStyle := (WindowStyle or TCS_VERTICAL or TCS_MULTILINE) and not TCS_RIGHT;
-    tpRight:
-      WindowStyle := WindowStyle or (TCS_VERTICAL or TCS_RIGHT or TCS_MULTILINE);
-  end;
-  SetWindowLong(NotebookHandle, GWL_STYLE, WindowStyle);
+  if ANoteBook.HandleAllocated then
+    RecreateWnd(ANoteBook);
 end;
 
 class procedure TWin32WSCustomNotebook.ShowTabs(const ANotebook: TCustomNotebook; AShowTabs: boolean);

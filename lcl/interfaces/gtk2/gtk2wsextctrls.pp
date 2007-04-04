@@ -235,8 +235,9 @@ class function TGtk2WSCustomNotebook.CreateHandle(const AWinControl: TWinControl
 var
   P: PGtkNoteBook;
 begin
-  if OldNoteBookButtonPress = nil then HookNoteBookClass;
-  P := PGtknotebook(WidgetSet.CreateComponent(AWinControl));
+  if OldNoteBookButtonPress = nil then
+    HookNoteBookClass;
+  P := PGtkNoteBook(inherited CreateHandle(AWinControl, AParams));
   Result := HWND(P);
 end;
 

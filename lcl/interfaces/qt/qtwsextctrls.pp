@@ -70,9 +70,9 @@ type
 
     class function GetPageRealIndex(const ANotebook: TCustomNotebook; AIndex: Integer): Integer; override;
     class function GetTabIndexAtPos(const ANotebook: TCustomNotebook; const AClientPos: TPoint): integer; override;
-    class procedure SetPageIndex(const ANotebook: TCustomNotebook; const AIndex: integer); override;
+    class procedure SetPageIndex(const ANotebook: TCustomNotebook; const AIndex: integer); override;}
     class procedure SetTabPosition(const ANotebook: TCustomNotebook; const ATabPosition: TTabPosition); override;
-    class procedure ShowTabs(const ANotebook: TCustomNotebook; AShowTabs: boolean); override;}
+    {class procedure ShowTabs(const ANotebook: TCustomNotebook; AShowTabs: boolean); override;}
   end;
 
   { TQtWSPage }
@@ -217,6 +217,16 @@ type
 
 implementation
 
+const
+  QTabWidgetTabPositionMap: array[TTabPosition] of QTabWidgetTabPosition =
+  (
+{ tpTop    } QTabWidgetNorth,
+{ tpBottom } QTabWidgetSouth,
+{ tpLeft   } QTabWidgetWest,
+{ tpRight  } QTabWidgetEast
+  );
+
+
 { TQtWSCustomPanel }
 
 {------------------------------------------------------------------------------
@@ -347,6 +357,7 @@ begin
   {$endif}
 
   QtTabWidget := TQtTabWidget.Create(AWinControl, AParams);
+  QtTabWidget.SetTabPosition(QTabWidgetTabPositionMap[TCustomNoteBook(AWinControl).TabPosition]);
 
   // Various Events
 
@@ -392,6 +403,12 @@ begin
   Str := UTF8Decode(AChild.Caption);
 
   TQtTabWidget(ANotebook.Handle).insertTab(AIndex, TQtWidget(AChild.Handle).Widget, @Str);
+end;
+
+class procedure TQtWSCustomNotebook.SetTabPosition(
+  const ANotebook: TCustomNotebook; const ATabPosition: TTabPosition);
+begin
+  TQtTabWidget(ANotebook.Handle).SetTabPosition(QTabWidgetTabPositionMap[ATabPosition]);
 end;
 
 initialization

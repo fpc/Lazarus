@@ -217,9 +217,6 @@ type
     procedure CheckRCFilename;virtual;
     procedure ParseRCFile;virtual;
 
-    // notebook
-    procedure AddDummyNoteBookPage(NoteBookWidget: PGtkNoteBook);virtual;
-
     // forms and dialogs
     procedure BringFormToFront(Sender: TObject);
     procedure SetWindowSizeAndPosition(Window: PGtkWindow;
@@ -283,6 +280,8 @@ type
     procedure AppBringToFront; override;
     procedure AppSetTitle(const ATitle: string); override;
     function  WidgetSetName: string; override;
+    // notebook
+    procedure AddDummyNoteBookPage(NoteBookWidget: PGtkNoteBook);virtual;
   public
     constructor Create;
     destructor Destroy; override;

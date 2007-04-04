@@ -2109,7 +2109,7 @@ begin
 end;
 
 {-------------------------------------------------------------------------------
-  TWinControl InvalidateClientRectCache
+  TWinControl ClientRectNeedsInterfaceUpdate
 
   The clientrect is cached. Check if cache is valid.
 -------------------------------------------------------------------------------}

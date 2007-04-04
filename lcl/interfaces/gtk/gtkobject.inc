@@ -5604,7 +5604,7 @@ begin
   csMenuItem :
     p:=CreateMenuItem(TMenuItem(Sender));
 
-  csNotebook :
+{  csNotebook :
     begin
       P := gtk_notebook_new();
       gtk_notebook_set_scrollable(P, true);
@@ -5614,7 +5614,7 @@ begin
         // -> add dummy page
         AddDummyNoteBookPage(PGtkNotebook(p));
     end;
-
+}
   csPage:    // TCustomPage - Notebook page
     P:=CreateSimpleClientAreaWidget(Sender,true);
 
