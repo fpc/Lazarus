@@ -1229,7 +1229,7 @@ begin
   DebugLn('ScalePixmap Creating PixBuf from pixmap SrcWhole='+dbgs(SrcWholeWidth),','+dbgs(SrcWholeHeight));
   {$ENDIF}
   ScaleSRC := gdk_pixbuf_get_from_drawable(nil,SrcPixmap,
-    SrcColorMap,0,0,SrcX,SrcY,SrcWidth,SrcHeight);
+    SrcColorMap,SrcX,SrcY,0,0,SrcWidth,SrcHeight);
   If ScaleSRC = nil then begin
     DebugLn('WARNING: ScalePixmap ScaleSRC=nil');
     exit;
