@@ -415,7 +415,6 @@ class procedure TGtk2WSCustomListBox.SetFont(const AWinControl: TWinControl;
   const AFont: TFont);
 var
   Widget: PGtkWidget;
-  Selection: PGtkTreeSelection;
 begin
   Widget:=GetWidgetInfo(Pointer(AWinControl.Handle),True)^.CoreWidget;
 
@@ -599,21 +598,14 @@ end;
 class function TGtk2WSCustomEdit.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
-
   p: PGtkWidget;                 // ptr to the newly created GtkWidget
-  SetupProps : boolean;
-
-
 begin
-   SetupProps := false;
    p :=  gtk_entry_new();
    gtk_editable_set_editable (PGtkEditable(P), not TCustomEdit(AWinControl).ReadOnly);
    gtk_widget_show_all(P);
    Result := TLCLIntfHandle(P);
    if result = 0 then exit;
-   gtk2WidgetSet.FinishComponentCreate(AWinControl, P, SetupProps);
-
-
+   gtk2WidgetSet.FinishComponentCreate(AWinControl, P);
 end;
 
 

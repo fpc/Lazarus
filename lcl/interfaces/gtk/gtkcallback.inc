@@ -78,6 +78,7 @@ var
   {$ENDIF}
 begin
   if (not RepaintAll) and ((Area^.Width<1) or (Area^.Width<1)) then exit;
+
   MSG.Msg := LM_GtkPAINT;
   MSG.Data:=TLMGtkPaintData.Create;
   MSG.Data.Widget := Widget;
@@ -462,7 +463,7 @@ function gtkExposeEventAfter(Widget: PGtkWidget; Event : PGDKEventExpose;
 var
   DesignOnlySignal: boolean;
   {$IFDEF GTK2}
-  children: PGList;
+  //children: PGList;
   {$ENDIF}
 begin
   Result := CallBackDefaultReturn;
@@ -485,13 +486,16 @@ begin
   end;
 
   //DebugLn(['gtkExposeEventAfter ',GetWidgetDebugReport(Widget),' ',dbgGRect(@Event^.Area)]);
-  
+
   // the expose area is ok, but some gtk widgets repaints everything on expose
   // -> maximize the area
   DeliverGtkPaintMessage(Data,Widget,@Event^.Area,true);
   {$IFDEF GTK2}
   // Some widgets in gtk2 don't have their own exclusive "windows" so a synthetic event must be sent
-  if GTK_IS_FIXED(Widget) then begin
+  // MG: That is already done by the gtk2. For which widgets does this not work?
+  //     Enabling this results in double painting, which is slower and
+  //     wrong for anitaliased text.
+  {if GTK_IS_FIXED(Widget) then begin
     children := gtk_container_get_children(PGtkContainer(Widget));
     while children <> nil do begin
       if (children^.data <> nil) then begin
@@ -502,7 +506,7 @@ begin
       end;
     end;
     g_list_free(children);
-  end;
+  end;}
   {$ENDIF}
 end;
 
@@ -1067,7 +1071,7 @@ begin
 
   if TObject(Data) is TCustomForm then begin
     TheForm := TCustomForm(Data);
-    DebugLn(['GTKWindowStateEventCB ',DbgSName(TheForm),' new_window_state=',state^.new_window_state,' changed_mask=',state^.changed_mask]);
+    //DebugLn(['GTKWindowStateEventCB ',DbgSName(TheForm),' new_window_state=',state^.new_window_state,' changed_mask=',state^.changed_mask]);
     if TheForm.Parent = nil then begin (* toplevel window, just as a sanity check *)
       if GTK_WIDGET_REALIZED(Widget) then begin
         // send a WMSize Message (see TCustomForm.WMSize)
@@ -1075,7 +1079,7 @@ begin
         if GtkWidth<0 then GtkWidth:=0;
         GtkHeight:=Widget^.Allocation.Height;
         if GtkHeight<0 then GtkHeight:=0;
-        debugln('GTKWindowStateEventCB ',DbgSName(TObject(Data)),' ',dbgs(state^.new_window_state),' ',WidgetFlagsToString(Widget));
+        //debugln('GTKWindowStateEventCB ',DbgSName(TObject(Data)),' ',dbgs(state^.new_window_state),' ',WidgetFlagsToString(Widget));
         if ((GDK_WINDOW_STATE_ICONIFIED and state^.new_window_state)>0) then begin
           {$IFDEF HasX}
           NetAtom := gdk_atom_intern('_NET_WM_DESKTOP', True);

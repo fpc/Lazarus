@@ -284,11 +284,8 @@ function TGtk2WidgetSet.CreateComponent(Sender : TObject): THandle;
 var
   p: PGtkWidget;                 // ptr to the newly created GtkWidget
   CompStyle: integer;            // componentstyle (type) of GtkWidget which will be created
-  SetupProps : boolean;
 begin
   p := nil;
-  SetupProps:= false;
-
   CompStyle := GetCompStyle(Sender);
 
   case CompStyle of
@@ -303,7 +300,7 @@ begin
       Exit;
     end;
   end; //end case
-  FinishComponentCreate(Sender, P, SetupProps);
+  FinishComponentCreate(Sender, P);
   Result := THandle(P);
 end;
 

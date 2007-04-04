@@ -139,7 +139,7 @@ begin
 end;
 
 class function TWSWinControl.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): HWND;
+  const AParams: TCreateParams): TLCLIntfHandle;
 begin
   // For now default to the old creation routines
   Result := WidgetSet.CreateComponent(AWinControl);

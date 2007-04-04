@@ -8,7 +8,7 @@
       <MainUnit Value="0"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=""/>
-      <Title Value="test1_5checkbox"/>
+      <Title Value="test1_6checkgroup"/>
     </General>
     <PublishOptions>
       <Version Value="2"/>
@@ -28,9 +28,9 @@
     </RequiredPackages>
     <Units Count="1">
       <Unit0>
-        <Filename Value="test1_5checkbox.lpr"/>
+        <Filename Value="test1_6checkgroup.lpr"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="test1_5checkbox"/>
+        <UnitName Value="test1_6checkgroup"/>
       </Unit0>
     </Units>
   </ProjectOptions>

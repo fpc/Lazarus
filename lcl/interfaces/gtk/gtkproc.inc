@@ -611,6 +611,16 @@ begin
       Result:=Result+'St';
     if  GTK_WIDGET_PARENT_SENSITIVE(Widget) then
       Result:=Result+'Pr';
+    {$IFDEF Gtk2}
+    if GTK_WIDGET_NO_WINDOW(Widget) then
+      Result:=Result+'Nw';
+    if GTK_WIDGET_COMPOSITE_CHILD(Widget) then
+      Result:=Result+'Cc';
+    if GTK_WIDGET_APP_PAINTABLE(Widget) then
+      Result:=Result+'Ap';
+    if GTK_WIDGET_DOUBLE_BUFFERED(Widget) then
+      Result:=Result+'Db';
+    {$ENDIF}
   end;
   Result:=Result+']';
 end;

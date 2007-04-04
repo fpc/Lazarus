@@ -294,7 +294,7 @@ begin
       end else if (CompAtom('NOT')) then begin
         Result:=EvalAtPos();
         if ErrorPos>=0 then exit;
-        // Note: for Delphi compatibility: "IF not NotDefined" is valid
+        // Note: for Delphi compatibility: "IF not UndefinedVariable" is valid
         if (Result='0') then Result:='1'
         else Result:='0';
         exit;
@@ -309,8 +309,7 @@ begin
           ErrorPos:=CurPos;
           exit;
         end;
-        Result:=Variables[copy(Expr,AtomStart,AtomEnd-AtomStart)];
-        if Result<>'' then
+        if IsDefined(copy(Expr,AtomStart,AtomEnd-AtomStart)) then
           Result:='1'
         else
           Result:='0';

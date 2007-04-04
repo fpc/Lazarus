@@ -68,8 +68,8 @@ function TGtk2WidgetSet.CreateCursor(ACursorInfo: PIconInfo): hCursor;
 var
   pixmap: PGdkPixmap;
   bitmap: PGdkBitmap;
-  w, h: integer;
-  max_w, max_h: guint;
+  Width, Height: integer;
+  MaxWidth, MaxHeight: guint;
   pixbuf, masked_pixbuf: PGdkPixbuf;
 begin
   Result := 0;
@@ -78,20 +78,21 @@ begin
   pixmap := PGDIObject(ACursorInfo^.hbmColor)^.GDIBitmapObject;
   bitmap := PGDIObject(ACursorInfo^.hbmColor)^.GDIBitmapMaskObject;
 
-  gdk_drawable_get_size(pixmap, @w, @h);
-  gdk_display_get_maximal_cursor_size(gdk_display_get_default, @max_w, @max_h);
+  gdk_drawable_get_size(pixmap, @Width, @Height);
+  gdk_display_get_maximal_cursor_size(gdk_display_get_default,
+                                      @MaxWidth, @MaxHeight);
   
-  if (w > max_w) or (h > max_h) then
+  if (Width > integer(MaxWidth)) or (Height > integer(MaxHeight)) then
     exit;
 
 {
-  max_w := gdk_display_get_default_cursor_size(gdk_display_get_default);
-  if (w > max_w) or (h > max_w) then
-    DebugLn(['CreateCursor cursor size:',w,'x',h,' > default size:', max_w]);
+  MaxWidth := gdk_display_get_default_cursor_size(gdk_display_get_default);
+  if (Width > MaxWidth) or (Height > MaxWidth) then
+    DebugLn(['CreateCursor cursor size:',Width,'x',Height,' > default size:', MaxWidth]);
 }
 
   // create alpha pixbuf
-  pixbuf := gdk_pixbuf_new(GDK_COLORSPACE_RGB, True, 8, w, h);
+  pixbuf := gdk_pixbuf_new(GDK_COLORSPACE_RGB, True, 8, Width, Height);
 
   // fill pixbuf from pixmap
   gdk_pixbuf_get_from_drawable(pixbuf, pixmap, nil, 0, 0, 0, 0, -1, -1);
