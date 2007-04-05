@@ -1,138 +1,144 @@
 object ApiWizForm: TApiWizForm
-  Caption = 'ApiWiZZ'
-  ClientHeight = 383
-  ClientWidth = 583
-  OnCreate = ApiWizFormCreate
-  PixelsPerInch = 96
-  Position = poDefaultPosOnly
-  HorzScrollBar.Page = 582
-  VertScrollBar.Page = 382
   Left = 392
   Height = 383
   Top = 134
   Width = 583
+  HorzScrollBar.Page = 582
+  VertScrollBar.Page = 382
+  ActiveControl = txtLazarus
+  Caption = 'ApiWiZZ'
+  OnCreate = ApiWizFormCreate
+  Position = poDefaultPosOnly
   object lblDeclare: TLabel
-    Anchors = [akTop, akLeft, akRight]
-    BorderSpacing.OnChange = nil
-    Caption = 'Declaration (each line is a separate entry):'
-    Color = clNone
     Left = 4
-    Height = 16
+    Height = 14
     Top = 56
     Width = 404
+    Anchors = [akTop, akLeft, akRight]
+    Caption = 'Declaration (each line is a separate entry):'
+    Color = clNone
+    ParentColor = False
   end
   object lblLazarus: TLabel
-    BorderSpacing.OnChange = nil
+    Left = 4
+    Height = 14
+    Top = 8
+    Width = 57
     Caption = 'Lazarus dir:'
     Color = clNone
-    Left = 4
-    Height = 16
-    Top = 8
-    Width = 120
+    ParentColor = False
   end
   object cmdGenerate: TButton
-    Anchors = [akTop, akRight]
-    BorderSpacing.OnChange = nil
-    Caption = 'Generate'
-    OnClick = cmdGenerateClick
-    TabOrder = 1
     Left = 416
     Height = 28
     Top = 256
     Width = 162
+    Anchors = [akTop, akRight]
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Generate'
+    OnClick = cmdGenerateClick
+    TabOrder = 1
   end
   object txtLazarus: TEdit
-    Anchors = [akTop, akLeft, akRight]
-    BorderSpacing.OnChange = nil
-    TabOrder = 0
+    Tag = 493
     Left = 4
     Height = 24
     Top = 24
     Width = 404
-    Tag = 493
+    Anchors = [akTop, akLeft, akRight]
+    TabOrder = 0
   end
   object rdgApiType: TRadioGroup
+    Left = 416
+    Height = 72
+    Top = 176
+    Width = 162
     Anchors = [akTop, akRight]
-    BorderSpacing.OnChange = nil
+    AutoFill = True
     Caption = 'Api type'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
     ItemIndex = 0
     Items.Strings = (
       'win32 compatibility'
       'LCL interface'
     )
     OnClick = rdgApiTypeClick
-    ParentColor = True
-    Left = 416
-    Height = 72
-    Top = 176
-    Width = 162
+    TabOrder = 2
   end
   object Groupbox1: TGroupBox
-    Anchors = [akTop, akRight]
-    BorderSpacing.OnChange = nil
-    Caption = 'LCL Platform'
-    ClientHeight = 142
-    ClientWidth = 158
-    ParentColor = True
-    ParentCtl3D = False
-    TabOrder = 3
     Left = 416
     Height = 160
     Top = 8
     Width = 162
+    Anchors = [akTop, akRight]
+    Caption = 'LCL Platform'
+    ParentCtl3D = False
+    TabOrder = 3
     object rbIndependent: TRadioButton
+      Left = 10
+      Height = 13
+      Top = 3
+      Width = 80
       AllowGrayed = True
-      BorderSpacing.OnChange = nil
       Caption = 'Independent'
       Checked = True
       OnClick = rbPlatformDependencyClick
       State = cbChecked
       TabOrder = 0
-      Left = 10
-      Height = 20
-      Top = 3
-      Width = 115
     end
     object cbgLCLPlatform: TCheckGroup
-      BorderSpacing.OnChange = nil
+      Left = 26
+      Height = 107
+      Top = 30
+      Width = 128
+      AutoFill = True
+      ChildSizing.LeftRightSpacing = 6
+      ChildSizing.TopBottomSpacing = 6
+      ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+      ChildSizing.EnlargeVertical = crsHomogenousChildResize
+      ChildSizing.ShrinkHorizontal = crsScaleChilds
+      ChildSizing.ShrinkVertical = crsScaleChilds
+      ChildSizing.Layout = cclLeftToRightThenTopToBottom
+      ChildSizing.ControlsPerLine = 1
       Enabled = False
       Items.Strings = (
-        'gnome'
+        'fpgui'
         'gtk'
         'gtk2'
         'qt'
         'win32'
       )
-      ParentColor = True
-      Left = 26
-      Height = 107
-      Top = 30
-      Width = 128
+      TabOrder = 2
       Data = {
         050000000202020202
       }
     end
     object rbDependent: TRadioButton
+      Left = 10
+      Height = 13
+      Top = 30
+      Width = 73
       AllowGrayed = True
-      BorderSpacing.OnChange = nil
       Caption = 'Dependent'
       OnClick = rbPlatformDependencyClick
       TabOrder = 1
-      Left = 10
-      Height = 20
-      Top = 30
-      Width = 106
     end
   end
   object txtDeclarations: TMemo
-    Anchors = [akTop, akLeft, akRight, akBottom]
-    BorderSpacing.OnChange = nil
-    ScrollBars = ssBoth
-    TabOrder = 4
-    WordWrap = False
     Left = 4
     Height = 303
     Top = 72
     Width = 404
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    ScrollBars = ssBoth
+    TabOrder = 4
+    WordWrap = False
   end
 end

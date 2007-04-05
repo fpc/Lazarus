@@ -4,7 +4,7 @@ It is organized according to the following structure:
 
 interfaces
   |
-  +--- gnome
+  +--- fpgui
   |
   +--- gtk
   |
@@ -19,11 +19,10 @@ interfaces
   +--- ...
   |
 
-interfaces/gnome:
-  All gnome 1.x specific code goes here.
-  The gnome 1 interface inherits from the gtk 1 interface.
+interfaces/fpgui:
+  All fpgui (http://opensoft.homeip.net/fpgui/) specific code goes here.
 
-interfaces/gtk:
+ interfaces/gtk:
   All gtk 1.x specific code goes here. (With some specials for gtk2.x)
 
 interfaces/gtk2:

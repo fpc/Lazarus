@@ -112,10 +112,10 @@ all: cleartarget $(COMPILER_UNITTARGETDIR) alllclunits$(PPUEXT) $(TARGET_DIRS)
 cleanlaz: clean
         $(MAKE) -C interfaces clean
         $(MAKE) -C interfaces/carbon clean
+        $(MAKE) -C interfaces/fpgui clean
         $(MAKE) -C interfaces/gtk clean
         $(MAKE) -C interfaces/gtk2 clean
-        $(MAKE) -C interfaces/gnome clean
+        $(MAKE) -C interfaces/qt clean
         $(MAKE) -C interfaces/win32 clean
         $(MAKE) -C interfaces/wince clean
-        $(MAKE) -C interfaces/qt clean
 

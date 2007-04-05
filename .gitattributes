@@ -2930,6 +2930,7 @@ test/testunits.pas svneol=native#text/plain
 tools/apiwizz/apiwizard.lfm svneol=native#text/plain
 tools/apiwizz/apiwizard.lrs svneol=native#text/pascal
 tools/apiwizz/apiwizard.pp svneol=native#text/pascal
+tools/apiwizz/apiwizz.lpi svneol=native#text/plain
 tools/apiwizz/apiwizz.pp svneol=native#text/pascal
 tools/check_ide_libs.sh -text svneol=native#application/x-sh
 tools/convert_po_file_to_utf-8.sh svneol=native#text/plain
