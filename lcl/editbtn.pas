@@ -88,8 +88,9 @@ type
     property Align;
     property Anchors;
     property BorderSpacing;
-    Property ButtonOnlyWhenFocused;
-    Property ButtonWidth;
+    property ButtonOnlyWhenFocused;
+    property ButtonWidth;
+    property CharCase;
     property Color;
     property Ctl3D;
     Property DirectInput;
@@ -107,6 +108,7 @@ type
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
+    property OnEditingDone;
     property OnEndDrag;
     property OnEnter;
     property OnExit;
@@ -203,6 +205,7 @@ type
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
+    property OnEditingDone;
     property OnEndDrag;
     property OnEnter;
     property OnExit;
@@ -276,6 +279,7 @@ type
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
+    property OnEditingDone;
     property OnEndDrag;
     property OnEnter;
     property OnExit;
@@ -428,6 +432,7 @@ type
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
+    property OnEditingDone;
     property OnEndDrag;
     property OnEnter;
     property OnExit;
