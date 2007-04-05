@@ -712,9 +712,9 @@ begin
     Result:=HWND(NewWidget);
     PGtkobject(NewWidget)^.flags:=PGtkobject(NewWidget)^.flags or GTK_CAN_FOCUS;
     {$IFDEF LCLGtk}
-    TGTKWidgetSet(WidgetSet).FinishComponentCreate(AWinControl,NewWidget,true);
+    TGTKWidgetSet(WidgetSet).FinishComponentCreate(AWinControl,NewWidget);
     {$ELSE}
-    TGTK2WidgetSet(WidgetSet).FinishComponentCreate(AWinControl,NewWidget,true);
+    TGTK2WidgetSet(WidgetSet).FinishComponentCreate(AWinControl,NewWidget);
     {$ENDIF}
   finally
     FreeMem(AttrList);
