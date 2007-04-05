@@ -472,7 +472,7 @@ begin
             Add('');
             Add(DeclarationText + ';');
             Add('begin');
-            Add('  ' + PROC_RESULT[ProcType] + 'InterfaceObject.' + ProcName + S + ';');
+            Add('  ' + PROC_RESULT[ProcType] + 'WidgetSet.' + ProcName + S + ';');
             Add('end;');
           end;
         end;

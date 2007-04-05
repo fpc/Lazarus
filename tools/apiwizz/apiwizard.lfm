@@ -1,7 +1,7 @@
 object ApiWizForm: TApiWizForm
-  Left = 392
+  Left = 396
   Height = 383
-  Top = 134
+  Top = 170
   Width = 583
   HorzScrollBar.Page = 582
   VertScrollBar.Page = 382
@@ -11,7 +11,7 @@ object ApiWizForm: TApiWizForm
   Position = poDefaultPosOnly
   object lblDeclare: TLabel
     Left = 4
-    Height = 14
+    Height = 13
     Top = 56
     Width = 404
     Anchors = [akTop, akLeft, akRight]
@@ -21,9 +21,9 @@ object ApiWizForm: TApiWizForm
   end
   object lblLazarus: TLabel
     Left = 4
-    Height = 14
+    Height = 13
     Top = 8
-    Width = 57
+    Width = 66
     Caption = 'Lazarus dir:'
     Color = clNone
     ParentColor = False
@@ -31,7 +31,7 @@ object ApiWizForm: TApiWizForm
   object cmdGenerate: TButton
     Left = 416
     Height = 28
-    Top = 256
+    Top = 299
     Width = 162
     Anchors = [akTop, akRight]
     BorderSpacing.InnerBorder = 4
@@ -51,7 +51,7 @@ object ApiWizForm: TApiWizForm
   object rdgApiType: TRadioGroup
     Left = 416
     Height = 72
-    Top = 176
+    Top = 219
     Width = 162
     Anchors = [akTop, akRight]
     AutoFill = True
@@ -74,18 +74,18 @@ object ApiWizForm: TApiWizForm
   end
   object Groupbox1: TGroupBox
     Left = 416
-    Height = 160
+    Height = 208
     Top = 8
     Width = 162
     Anchors = [akTop, akRight]
-    Caption = 'LCL Platform'
+    Caption = 'LCL Widgetset'
     ParentCtl3D = False
     TabOrder = 3
     object rbIndependent: TRadioButton
       Left = 10
-      Height = 13
+      Height = 20
       Top = 3
-      Width = 80
+      Width = 96
       AllowGrayed = True
       Caption = 'Independent'
       Checked = True
@@ -95,7 +95,7 @@ object ApiWizForm: TApiWizForm
     end
     object cbgLCLPlatform: TCheckGroup
       Left = 26
-      Height = 107
+      Height = 154
       Top = 30
       Width = 128
       AutoFill = True
@@ -109,22 +109,24 @@ object ApiWizForm: TApiWizForm
       ChildSizing.ControlsPerLine = 1
       Enabled = False
       Items.Strings = (
+        'carbon'
         'fpgui'
         'gtk'
         'gtk2'
         'qt'
         'win32'
+        'wince'
       )
       TabOrder = 2
       Data = {
-        050000000202020202
+        0700000002020202020202
       }
     end
     object rbDependent: TRadioButton
       Left = 10
-      Height = 13
+      Height = 20
       Top = 30
-      Width = 73
+      Width = 88
       AllowGrayed = True
       Caption = 'Dependent'
       OnClick = rbPlatformDependencyClick
