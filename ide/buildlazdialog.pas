@@ -764,14 +764,12 @@ begin
       ImgIndex:=ImageIndexNone;
     end;
 
-    if ImgIndex <> ImageIndexNone
-    then
-      ImageList.Draw(
-        ItemsListBox.Canvas,
-        ARect.Left + x + ((ButtonWidth - ImageList.Width) div 2),
-        ARect.Top + ((ARect.Bottom - ARect.Top - ImageList.Height) div 2),
-        ImgIndex
-      ) ;
+    ImageList.Draw(
+      ItemsListBox.Canvas,
+      ARect.Left + x + ((ButtonWidth - ImageList.Width) div 2),
+      ARect.Top + ((ARect.Bottom - ARect.Top - ImageList.Height) div 2),
+      ImgIndex
+    ) ;
     Inc(x, ButtonWidth);
   end;
   
