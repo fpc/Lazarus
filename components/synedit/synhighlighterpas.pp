@@ -99,22 +99,23 @@ type
     fAsmStart: Boolean;
     fRange: TRangeState;
     {$IFDEF SYN_LAZARUS}
-    fLine: string;
+    fLineStr: string;
+    fLine: PChar;
     fLineLen: integer;
     {$ELSE}
     fLine: PChar;
     {$ENDIF}
     fLineNumber: Integer;
     fProcTable: array[#0..#255] of TProcTableProc;
-    Run: LongInt;
-    fStringLen: Integer;
+    Run: LongInt;// current parser postion in fLine
+    fStringLen: Integer;// current length of hash
     {$IFDEF SYN_LAZARUS}
-    fToIdent: integer;
+    fToIdent: integer;// start of current identifier in fLine
     {$ELSE}
     fToIdent: PChar;
     {$ENDIF}
     fIdentFuncTable: array[0..191] of TIdentFuncTableFunc;
-    fTokenPos: Integer;
+    fTokenPos: Integer;// start of current token in fLine
     FTokenID: TtkTokenKind;
     fStringAttri: TSynHighlighterAttributes;
     fNumberAttri: TSynHighlighterAttributes;
@@ -202,7 +203,7 @@ type
     {$endif}
     function Func117: TtkTokenKind;
     {$ifdef SYN_LAZARUS}
-    function Func122: TtkTokenKind;
+    function Func122: TtkTokenKind; // "otherwise"
     {$endif}
     function Func126: TtkTokenKind;
     function Func128: TtkTokenKind;
@@ -540,8 +541,8 @@ var
   Start, ToHash: PChar;
 begin
   Result := 0;
-  if (fToIdent<=fLineLen) and (fLine<>'') then begin
-    Start := PChar(fLine) + fToIdent - 1;
+  if (fToIdent<fLineLen) then begin
+    Start := fLine + fToIdent;
     ToHash := Start;
     while (IsLetterChar[ToHash^]) do begin
       inc(Result, mHashTable[ToHash^]);
@@ -553,7 +554,7 @@ begin
   end else begin
     fStringLen := 0;
   end;
-  //if CompareText(copy(fLine,fToIdent,fStringLen),'nostackframe')=0 then debugln('TSynPasSyn.KeyHash '+copy(fLine,fToIdent,fStringLen)+'='+dbgs(Result));
+  //if CompareText(copy(fLineStr,fToIdent,fStringLen),'nostackframe')=0 then debugln('TSynPasSyn.KeyHash '+copy(fLineStr,fToIdent,fStringLen)+'='+dbgs(Result));
 end; { KeyHash }
 {$ELSE}
 function TSynPasSyn.KeyHash(ToHash: PChar): Integer;
@@ -577,7 +578,7 @@ begin
   if Length(aKey) = fStringLen then
   begin
     {$IFDEF SYN_LAZARUS}
-    Temp := PChar(fLine) + fToIdent - 1;
+    Temp := fLine + fToIdent;
     {$ELSE}
     Temp := fToIdent;
     {$ENDIF}
@@ -1263,9 +1264,10 @@ procedure TSynPasSyn.SetLine(const NewValue: string; LineNumber:Integer);
 begin
   //DebugLn(['TSynPasSyn.SetLine LineNumber=',LineNumber,' Line="',NewValue,'"']);
   {$IFDEF SYN_LAZARUS}
-  fLine := NewValue;
-  fLineLen:=length(fLine);
-  Run := 1;
+  fLineStr := NewValue;
+  fLineLen:=length(fLineStr);
+  fLine:=PChar(Pointer(fLineStr));
+  Run := 0;
   Inherited SetLine(NewValue,LineNumber);
   {$ELSE}
   fLine := PChar(NewValue);
@@ -1273,28 +1275,22 @@ begin
   {$ENDIF}
   fLineNumber := LineNumber;
   Next;
+  //if copy(fLineStr,1,9)='procedure' then
+  //  DebugLn(['TSynPasSyn.SetLine Run=',Run,' fTokenID=',ord(fTokenID),' fLine="',fLineStr,'"']);
 end; { SetLine }
 
 procedure TSynPasSyn.AddressOpProc;
 begin
   fTokenID := tkSymbol;
   inc(Run);
-  {$IFDEF SYN_LAZARUS}
-  if (Run<=FLineLen) and (fLine[Run] = '@') then inc(Run);
-  {$ELSE}
   if fLine[Run] = '@' then inc(Run);
-  {$ENDIF}
 end;
 
 procedure TSynPasSyn.AsciiCharProc;
 begin
   fTokenID := tkString;
   inc(Run);
-  {$IFDEF SYN_LAZARUS}
-  while (Run<=fLineLen) and (FLine[Run] in ['0'..'9']) do inc(Run);
-  {$ELSE}
   while (FLine[Run] in ['0'..'9']) do inc(Run);
-  {$ENDIF}
 end;
 
 procedure TSynPasSyn.BorProc;
@@ -1321,7 +1317,7 @@ begin
       end;
     end;
     Inc(Run);
-  until (Run>fLineLen) or (fLine[Run] in [#0, #10, #13]);
+  until (Run>=fLineLen) or (fLine[Run] in [#0, #10, #13]);
   {$ELSE}
   case fLine[Run] of
      #0: NullProc;
@@ -1351,7 +1347,7 @@ begin
   fTokenID := tkDirective;
   repeat
     case fLine[Run] of
-    #0: break;
+    #0,#10,#13: break;
     '}':
       if TopPascalCodeFoldBlockType=cfbtNestedComment then
         EndCodeFoldBlock
@@ -1369,14 +1365,16 @@ begin
       end;
     end;
     Inc(Run);
-  until (Run>fLineLen) or (fLine[Run] in [#0, #10, #13]);
+  until (Run>=fLineLen);
+  //DebugLn(['TSynPasSyn.DirectiveProc Run=',Run,' fTokenPos=',fTokenPos,' fLineStr=',fLineStr,' Token=',GetToken]);
 end;
 {$ENDIF}
 
 procedure TSynPasSyn.BraceOpenProc;
 begin
   {$IFDEF SYN_LAZARUS}
-  if (Run=fLineLen) or (fLine[Run+1]<>'$') then begin
+  if (Run=fLineLen-1) or (fLine[Run+1]<>'$') then begin
+    // curly bracket open -> borland comment
     inc(Run);
   {$ENDIF}
     if fRange = rsAsm then
@@ -1386,6 +1384,7 @@ begin
     BorProc;
   {$IFDEF SYN_LAZARUS}
   end else begin
+    // compiler directive
     if fRange = rsAsm then
       fRange := rsDirectiveAsm
     else
@@ -1400,35 +1399,25 @@ procedure TSynPasSyn.ColonOrGreaterProc;
 begin
   fTokenID := tkSymbol;
   inc(Run);
-  {$IFDEF SYN_LAZARUS}
-  if (Run<=fLineLen) and (fLine[Run] = '=') then inc(Run);
-  {$ELSE}
   if fLine[Run] = '=' then inc(Run);
-  {$ENDIF}
 end;
 
 procedure TSynPasSyn.CRProc;
 begin
   fTokenID := tkSpace;
   inc(Run);
-  {$IFDEF SYN_LAZARUS}
-  if (Run<=fLineLen) and (fLine[Run] = #10) then inc(Run);
-  {$ELSE}
   if fLine[Run] = #10 then inc(Run);
-  {$ENDIF}
 end;
 
 procedure TSynPasSyn.IdentProc;
 begin
   {$IFDEF SYN_LAZARUS}
   fTokenID := IdentKind(Run);
-  inc(Run, fStringLen);
-  while (Run<=fLineLen) and (Identifiers[fLine[Run]]) do inc(Run);
   {$ELSE}
   fTokenID := IdentKind((fLine + Run));
+  {$ENDIF}
   inc(Run, fStringLen);
   while Identifiers[fLine[Run]] do inc(Run);
-  {$ENDIF}
 end;
 
 procedure TSynPasSyn.IntegerProc;
@@ -1436,7 +1425,7 @@ begin
   inc(Run);
   fTokenID := tkNumber;
   {$IFDEF SYN_LAZARUS}
-  while (Run<=fLineLen) and (IsIntegerChar[FLine[Run]]) do inc(Run);
+  while (IsIntegerChar[FLine[Run]]) do inc(Run);
   {$ELSE}
   while FLine[Run] in ['0'..'9', 'A'..'F', 'a'..'f'] do inc(Run);
   {$ENDIF}
@@ -1452,18 +1441,14 @@ procedure TSynPasSyn.LowerProc;
 begin
   fTokenID := tkSymbol;
   inc(Run);
-  {$IFDEF SYN_LAZARUS}
-  if (Run<=fLineLen) and (fLine[Run] in ['=', '>']) then inc(Run);
-  {$ELSE}
   if fLine[Run] in ['=', '>'] then inc(Run);
-  {$ENDIF}
 end;
 
 procedure TSynPasSyn.NullProc;
 begin
   fTokenID := tkNull;
   {$IFDEF SYN_LAZARUS}
-  if Run<=fLineLen then inc(Run);
+  if Run<fLineLen then inc(Run);
   {$ENDIF}
 end;
 
@@ -1472,10 +1457,12 @@ begin
   inc(Run);
   fTokenID := tkNumber;
   {$IFDEF SYN_LAZARUS}
-  while (Run<=fLineLen) and (IsNumberChar[FLine[Run]]) do begin
-    if (FLine[Run]='.') and (Run<fLineLen) and (fLine[Run+1]='.')  then
-      break;
-    inc(Run);
+  if Run<fLineLen then begin
+    while (IsNumberChar[FLine[Run]]) do begin
+      if (FLine[Run]='.') and (fLine[Run+1]='.')  then
+        break;
+      inc(Run);
+    end;
   end;
   {$ELSE}
   while FLine[Run] in ['0'..'9', '.', 'e', 'E'] do
@@ -1493,11 +1480,7 @@ procedure TSynPasSyn.PointProc;
 begin
   fTokenID := tkSymbol;
   inc(Run);
-  {$IFDEF SYN_LAZARUS}
-  if (Run<=FLineLen) and (fLine[Run] in ['.', ')']) then inc(Run);
-  {$ELSE}
   if fLine[Run] in ['.', ')'] then inc(Run);
-  {$ENDIF}
 end;
 
 procedure TSynPasSyn.AnsiProc;
@@ -1507,8 +1490,8 @@ begin
   repeat
     if fLine[Run]=#0 then
       break
-    else if (fLine[Run] = '*') and (Run<fLineLen) and (fLine[Run + 1] = ')')
-    then begin
+    else if (fLine[Run] = '*') and (fLine[Run + 1] = ')') then
+    begin
       Inc(Run, 2);
       if TopPascalCodeFoldBlockType=cfbtNestedComment then begin
         EndCodeFoldBlock;
@@ -1521,13 +1504,13 @@ begin
       end;
     end
     else if NestedComments
-    and (fLine[Run] = '(') and (Run<fLineLen) and (fLine[Run + 1] = '*') then
+    and (fLine[Run] = '(') and (fLine[Run + 1] = '*') then
     begin
       Inc(Run,2);
       StartPascalCodeFoldBlock(cfbtNestedComment);
     end else
       Inc(Run);
-  until (Run>fLineLen) or (fLine[Run] in [#0, #10, #13]);
+  until (Run>=fLineLen) or (fLine[Run] in [#0, #10, #13]);
   {$ELSE}
   case fLine[Run] of
      #0: NullProc;
@@ -1554,7 +1537,7 @@ procedure TSynPasSyn.RoundOpenProc;
 begin
   Inc(Run);
   {$IFDEF SYN_LAZARUS}
-  if Run>fLineLen then begin
+  if Run>=fLineLen then begin
     fTokenID:=tkSymbol;
     exit;
   end;
@@ -1568,11 +1551,7 @@ begin
         else
           fRange := rsAnsi;
         fTokenID := tkComment;
-        {$IFDEF SYN_LAZARUS}
-        if (Run<=fLineLen) and not (fLine[Run] in [#0, #10, #13]) then begin
-        {$ELSE}
         if not (fLine[Run] in [#0, #10, #13]) then begin
-        {$ENDIF}
           AnsiProc;
         end;
       end;
@@ -1599,19 +1578,11 @@ end;
 procedure TSynPasSyn.SlashProc;
 begin
   Inc(Run);
-  {$IFDEF SYN_LAZARUS}
-  if (Run<=fLineLen) and (fLine[Run] = '/') then begin
-  {$ELSE}
   if fLine[Run] = '/' then begin
-  {$ENDIF}
     fTokenID := tkComment;
     repeat
       Inc(Run);
-    {$IFDEF SYN_LAZARUS}
-    until (Run>fLineLen) or (fLine[Run] in [#0, #10, #13]);
-    {$ELSE}
     until fLine[Run] in [#0, #10, #13];
-    {$ENDIF}
   end else
     fTokenID := tkSymbol;
 end;
@@ -1621,7 +1592,7 @@ begin
   inc(Run);
   fTokenID := tkSpace;
   {$IFDEF SYN_LAZARUS}
-  while (Run<=fLineLen) and (IsSpaceChar[FLine[Run]]) do inc(Run);
+  while IsSpaceChar[FLine[Run]] do inc(Run);
   {$ELSE}
   while FLine[Run] in [#1..#9, #11, #12, #14..#32] do inc(Run);
   {$ENDIF}
@@ -1632,10 +1603,10 @@ begin
   fTokenID := tkString;
   Inc(Run);
   {$IFDEF SYN_LAZARUS}
-  while (Run<=FLineLen) and (not (fLine[Run] in [#0, #10, #13])) do begin
+  while (not (fLine[Run] in [#0, #10, #13])) do begin
     if fLine[Run] = '''' then begin
       Inc(Run);
-      if (Run>fLineLen) or (fLine[Run] <> '''') then
+      if (fLine[Run] <> '''') then
         break;
     end;
     Inc(Run);
@@ -1669,7 +1640,7 @@ begin
   fAsmStart := False;
   fTokenPos := Run;
   {$IFDEF SYN_LAZARUS}
-  if Run>fLineLen then begin
+  if Run>=fLineLen then begin
     fTokenID := tkNull;
     exit;
   end;
@@ -1694,6 +1665,7 @@ begin
   {$IFDEF SYN_LAZARUS}
   end;
   {$ENDIF}
+  //DebugLn(['TSynPasSyn.Next Run=',Run,' fTokenPos=',fTokenPos,' fLineStr=',fLineStr,' Token=',GetToken]);
 end;
 
 function TSynPasSyn.GetDefaultAttribute(Index: integer):
@@ -1712,7 +1684,8 @@ end;
 
 function TSynPasSyn.GetEol: Boolean;
 begin
-  Result := (fTokenID = tkNull) {$IFDEF SYN_LAZARUS}and (Run > fLineLen){$ENDIF};
+  Result := (fTokenID = tkNull)
+            {$IFDEF SYN_LAZARUS}and (Run >= fLineLen){$ENDIF};
 end;
 
 function TSynPasSyn.GetToken: string;
@@ -1722,7 +1695,8 @@ begin
   Len := Run - fTokenPos;
   {$IFDEF SYN_LAZARUS}
   SetLength(Result,Len);
-  System.Move(fLine[fTokenPos],Result[1],Len);
+  if Len>0 then
+    System.Move(fLine[fTokenPos],Result[1],Len);
   {$ELSE}
   SetString(Result, (FLine + fTokenPos), Len);
   {$ENDIF}
@@ -1777,7 +1751,7 @@ end;
 
 function TSynPasSyn.GetTokenPos: Integer;
 begin
-  Result := fTokenPos {$IFDEF SYN_LAZARUS} -1 {$ENDIF};
+  Result := fTokenPos;
 end;
 
 function TSynPasSyn.GetRange: Pointer;
