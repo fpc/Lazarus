@@ -245,160 +245,160 @@ endif
 export LCL_PLATFORM
 override DEFAULT_DIR=$(LCL_PLATFORM)
 ifeq ($(FULL_TARGET),i386-linux)
-override TARGET_DIRS+=gtk gtk2 win32 wince gnome qt carbon fpgui
+override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui
 endif
 ifeq ($(FULL_TARGET),i386-go32v2)
-override TARGET_DIRS+=gtk gtk2 win32 wince gnome qt carbon fpgui
+override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui
 endif
 ifeq ($(FULL_TARGET),i386-win32)
-override TARGET_DIRS+=gtk gtk2 win32 wince gnome qt carbon fpgui
+override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui
 endif
 ifeq ($(FULL_TARGET),i386-os2)
-override TARGET_DIRS+=gtk gtk2 win32 wince gnome qt carbon fpgui
+override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui
 endif
 ifeq ($(FULL_TARGET),i386-freebsd)
-override TARGET_DIRS+=gtk gtk2 win32 wince gnome qt carbon fpgui
+override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui
 endif
 ifeq ($(FULL_TARGET),i386-beos)
-override TARGET_DIRS+=gtk gtk2 win32 wince gnome qt carbon fpgui
+override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui
 endif
 ifeq ($(FULL_TARGET),i386-netbsd)
-override TARGET_DIRS+=gtk gtk2 win32 wince gnome qt carbon fpgui
+override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui
 endif
 ifeq ($(FULL_TARGET),i386-solaris)
-override TARGET_DIRS+=gtk gtk2 win32 wince gnome qt carbon fpgui
+override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui
 endif
 ifeq ($(FULL_TARGET),i386-qnx)
-override TARGET_DIRS+=gtk gtk2 win32 wince gnome qt carbon fpgui
+override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui
 endif
 ifeq ($(FULL_TARGET),i386-netware)
-override TARGET_DIRS+=gtk gtk2 win32 wince gnome qt carbon fpgui
+override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui
 endif
 ifeq ($(FULL_TARGET),i386-openbsd)
-override TARGET_DIRS+=gtk gtk2 win32 wince gnome qt carbon fpgui
+override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui
 endif
 ifeq ($(FULL_TARGET),i386-wdosx)
-override TARGET_DIRS+=gtk gtk2 win32 wince gnome qt carbon fpgui
+override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui
 endif
 ifeq ($(FULL_TARGET),i386-darwin)
-override TARGET_DIRS+=gtk gtk2 win32 wince gnome qt carbon fpgui
+override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui
 endif
 ifeq ($(FULL_TARGET),i386-emx)
-override TARGET_DIRS+=gtk gtk2 win32 wince gnome qt carbon fpgui
+override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui
 endif
 ifeq ($(FULL_TARGET),i386-watcom)
-override TARGET_DIRS+=gtk gtk2 win32 wince gnome qt carbon fpgui
+override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui
 endif
 ifeq ($(FULL_TARGET),i386-netwlibc)
-override TARGET_DIRS+=gtk gtk2 win32 wince gnome qt carbon fpgui
+override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui
 endif
 ifeq ($(FULL_TARGET),i386-wince)
-override TARGET_DIRS+=gtk gtk2 win32 wince gnome qt carbon fpgui
+override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui
 endif
 ifeq ($(FULL_TARGET),i386-embedded)
-override TARGET_DIRS+=gtk gtk2 win32 wince gnome qt carbon fpgui
+override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui
 endif
 ifeq ($(FULL_TARGET),i386-symbian)
-override TARGET_DIRS+=gtk gtk2 win32 wince gnome qt carbon fpgui
+override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui
 endif
 ifeq ($(FULL_TARGET),m68k-linux)
-override TARGET_DIRS+=gtk gtk2 win32 wince gnome qt carbon fpgui
+override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui
 endif
 ifeq ($(FULL_TARGET),m68k-freebsd)
-override TARGET_DIRS+=gtk gtk2 win32 wince gnome qt carbon fpgui
+override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui
 endif
 ifeq ($(FULL_TARGET),m68k-netbsd)
-override TARGET_DIRS+=gtk gtk2 win32 wince gnome qt carbon fpgui
+override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui
 endif
 ifeq ($(FULL_TARGET),m68k-amiga)
-override TARGET_DIRS+=gtk gtk2 win32 wince gnome qt carbon fpgui
+override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui
 endif
 ifeq ($(FULL_TARGET),m68k-atari)
-override TARGET_DIRS+=gtk gtk2 win32 wince gnome qt carbon fpgui
+override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui
 endif
 ifeq ($(FULL_TARGET),m68k-openbsd)
-override TARGET_DIRS+=gtk gtk2 win32 wince gnome qt carbon fpgui
+override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui
 endif
 ifeq ($(FULL_TARGET),m68k-palmos)
-override TARGET_DIRS+=gtk gtk2 win32 wince gnome qt carbon fpgui
+override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui
 endif
 ifeq ($(FULL_TARGET),m68k-embedded)
-override TARGET_DIRS+=gtk gtk2 win32 wince gnome qt carbon fpgui
+override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui
 endif
 ifeq ($(FULL_TARGET),powerpc-linux)
-override TARGET_DIRS+=gtk gtk2 win32 wince gnome qt carbon fpgui
+override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui
 endif
 ifeq ($(FULL_TARGET),powerpc-netbsd)
-override TARGET_DIRS+=gtk gtk2 win32 wince gnome qt carbon fpgui
+override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui
 endif
 ifeq ($(FULL_TARGET),powerpc-amiga)
-override TARGET_DIRS+=gtk gtk2 win32 wince gnome qt carbon fpgui
+override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui
 endif
 ifeq ($(FULL_TARGET),powerpc-macos)
-override TARGET_DIRS+=gtk gtk2 win32 wince gnome qt carbon fpgui
+override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui
 endif
 ifeq ($(FULL_TARGET),powerpc-darwin)
-override TARGET_DIRS+=gtk gtk2 win32 wince gnome qt carbon fpgui
+override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui
 endif
 ifeq ($(FULL_TARGET),powerpc-morphos)
-override TARGET_DIRS+=gtk gtk2 win32 wince gnome qt carbon fpgui
+override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui
 endif
 ifeq ($(FULL_TARGET),powerpc-embedded)
-override TARGET_DIRS+=gtk gtk2 win32 wince gnome qt carbon fpgui
+override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui
 endif
 ifeq ($(FULL_TARGET),sparc-linux)
-override TARGET_DIRS+=gtk gtk2 win32 wince gnome qt carbon fpgui
+override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui
 endif
 ifeq ($(FULL_TARGET),sparc-netbsd)
-override TARGET_DIRS+=gtk gtk2 win32 wince gnome qt carbon fpgui
+override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui
 endif
 ifeq ($(FULL_TARGET),sparc-solaris)
-override TARGET_DIRS+=gtk gtk2 win32 wince gnome qt carbon fpgui
+override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui
 endif
 ifeq ($(FULL_TARGET),sparc-embedded)
-override TARGET_DIRS+=gtk gtk2 win32 wince gnome qt carbon fpgui
+override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui
 endif
 ifeq ($(FULL_TARGET),x86_64-linux)
-override TARGET_DIRS+=gtk gtk2 win32 wince gnome qt carbon fpgui
+override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui
 endif
 ifeq ($(FULL_TARGET),x86_64-freebsd)
-override TARGET_DIRS+=gtk gtk2 win32 wince gnome qt carbon fpgui
+override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui
 endif
 ifeq ($(FULL_TARGET),x86_64-win64)
-override TARGET_DIRS+=gtk gtk2 win32 wince gnome qt carbon fpgui
+override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui
 endif
 ifeq ($(FULL_TARGET),x86_64-embedded)
-override TARGET_DIRS+=gtk gtk2 win32 wince gnome qt carbon fpgui
+override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui
 endif
 ifeq ($(FULL_TARGET),arm-linux)
-override TARGET_DIRS+=gtk gtk2 win32 wince gnome qt carbon fpgui
+override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui
 endif
 ifeq ($(FULL_TARGET),arm-palmos)
-override TARGET_DIRS+=gtk gtk2 win32 wince gnome qt carbon fpgui
+override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui
 endif
 ifeq ($(FULL_TARGET),arm-wince)
-override TARGET_DIRS+=gtk gtk2 win32 wince gnome qt carbon fpgui
+override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui
 endif
 ifeq ($(FULL_TARGET),arm-gba)
-override TARGET_DIRS+=gtk gtk2 win32 wince gnome qt carbon fpgui
+override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui
 endif
 ifeq ($(FULL_TARGET),arm-nds)
-override TARGET_DIRS+=gtk gtk2 win32 wince gnome qt carbon fpgui
+override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui
 endif
 ifeq ($(FULL_TARGET),arm-embedded)
-override TARGET_DIRS+=gtk gtk2 win32 wince gnome qt carbon fpgui
+override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui
 endif
 ifeq ($(FULL_TARGET),arm-symbian)
-override TARGET_DIRS+=gtk gtk2 win32 wince gnome qt carbon fpgui
+override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui
 endif
 ifeq ($(FULL_TARGET),powerpc64-linux)
-override TARGET_DIRS+=gtk gtk2 win32 wince gnome qt carbon fpgui
+override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui
 endif
 ifeq ($(FULL_TARGET),powerpc64-darwin)
-override TARGET_DIRS+=gtk gtk2 win32 wince gnome qt carbon fpgui
+override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui
 endif
 ifeq ($(FULL_TARGET),powerpc64-embedded)
-override TARGET_DIRS+=gtk gtk2 win32 wince gnome qt carbon fpgui
+override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui
 endif
 ifdef REQUIRE_UNITSDIR
 override UNITSDIR+=$(REQUIRE_UNITSDIR)
@@ -2728,7 +2728,6 @@ TARGET_DIRS_GTK=1
 TARGET_DIRS_GTK2=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
-TARGET_DIRS_GNOME=1
 TARGET_DIRS_QT=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
@@ -2738,7 +2737,6 @@ TARGET_DIRS_GTK=1
 TARGET_DIRS_GTK2=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
-TARGET_DIRS_GNOME=1
 TARGET_DIRS_QT=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
@@ -2748,7 +2746,6 @@ TARGET_DIRS_GTK=1
 TARGET_DIRS_GTK2=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
-TARGET_DIRS_GNOME=1
 TARGET_DIRS_QT=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
@@ -2758,7 +2755,6 @@ TARGET_DIRS_GTK=1
 TARGET_DIRS_GTK2=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
-TARGET_DIRS_GNOME=1
 TARGET_DIRS_QT=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
@@ -2768,7 +2764,6 @@ TARGET_DIRS_GTK=1
 TARGET_DIRS_GTK2=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
-TARGET_DIRS_GNOME=1
 TARGET_DIRS_QT=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
@@ -2778,7 +2773,6 @@ TARGET_DIRS_GTK=1
 TARGET_DIRS_GTK2=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
-TARGET_DIRS_GNOME=1
 TARGET_DIRS_QT=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
@@ -2788,7 +2782,6 @@ TARGET_DIRS_GTK=1
 TARGET_DIRS_GTK2=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
-TARGET_DIRS_GNOME=1
 TARGET_DIRS_QT=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
@@ -2798,7 +2791,6 @@ TARGET_DIRS_GTK=1
 TARGET_DIRS_GTK2=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
-TARGET_DIRS_GNOME=1
 TARGET_DIRS_QT=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
@@ -2808,7 +2800,6 @@ TARGET_DIRS_GTK=1
 TARGET_DIRS_GTK2=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
-TARGET_DIRS_GNOME=1
 TARGET_DIRS_QT=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
@@ -2818,7 +2809,6 @@ TARGET_DIRS_GTK=1
 TARGET_DIRS_GTK2=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
-TARGET_DIRS_GNOME=1
 TARGET_DIRS_QT=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
@@ -2828,7 +2818,6 @@ TARGET_DIRS_GTK=1
 TARGET_DIRS_GTK2=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
-TARGET_DIRS_GNOME=1
 TARGET_DIRS_QT=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
@@ -2838,7 +2827,6 @@ TARGET_DIRS_GTK=1
 TARGET_DIRS_GTK2=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
-TARGET_DIRS_GNOME=1
 TARGET_DIRS_QT=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
@@ -2848,7 +2836,6 @@ TARGET_DIRS_GTK=1
 TARGET_DIRS_GTK2=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
-TARGET_DIRS_GNOME=1
 TARGET_DIRS_QT=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
@@ -2858,7 +2845,6 @@ TARGET_DIRS_GTK=1
 TARGET_DIRS_GTK2=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
-TARGET_DIRS_GNOME=1
 TARGET_DIRS_QT=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
@@ -2868,7 +2854,6 @@ TARGET_DIRS_GTK=1
 TARGET_DIRS_GTK2=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
-TARGET_DIRS_GNOME=1
 TARGET_DIRS_QT=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
@@ -2878,7 +2863,6 @@ TARGET_DIRS_GTK=1
 TARGET_DIRS_GTK2=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
-TARGET_DIRS_GNOME=1
 TARGET_DIRS_QT=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
@@ -2888,7 +2872,6 @@ TARGET_DIRS_GTK=1
 TARGET_DIRS_GTK2=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
-TARGET_DIRS_GNOME=1
 TARGET_DIRS_QT=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
@@ -2898,7 +2881,6 @@ TARGET_DIRS_GTK=1
 TARGET_DIRS_GTK2=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
-TARGET_DIRS_GNOME=1
 TARGET_DIRS_QT=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
@@ -2908,7 +2890,6 @@ TARGET_DIRS_GTK=1
 TARGET_DIRS_GTK2=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
-TARGET_DIRS_GNOME=1
 TARGET_DIRS_QT=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
@@ -2918,7 +2899,6 @@ TARGET_DIRS_GTK=1
 TARGET_DIRS_GTK2=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
-TARGET_DIRS_GNOME=1
 TARGET_DIRS_QT=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
@@ -2928,7 +2908,6 @@ TARGET_DIRS_GTK=1
 TARGET_DIRS_GTK2=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
-TARGET_DIRS_GNOME=1
 TARGET_DIRS_QT=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
@@ -2938,7 +2917,6 @@ TARGET_DIRS_GTK=1
 TARGET_DIRS_GTK2=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
-TARGET_DIRS_GNOME=1
 TARGET_DIRS_QT=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
@@ -2948,7 +2926,6 @@ TARGET_DIRS_GTK=1
 TARGET_DIRS_GTK2=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
-TARGET_DIRS_GNOME=1
 TARGET_DIRS_QT=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
@@ -2958,7 +2935,6 @@ TARGET_DIRS_GTK=1
 TARGET_DIRS_GTK2=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
-TARGET_DIRS_GNOME=1
 TARGET_DIRS_QT=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
@@ -2968,7 +2944,6 @@ TARGET_DIRS_GTK=1
 TARGET_DIRS_GTK2=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
-TARGET_DIRS_GNOME=1
 TARGET_DIRS_QT=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
@@ -2978,7 +2953,6 @@ TARGET_DIRS_GTK=1
 TARGET_DIRS_GTK2=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
-TARGET_DIRS_GNOME=1
 TARGET_DIRS_QT=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
@@ -2988,7 +2962,6 @@ TARGET_DIRS_GTK=1
 TARGET_DIRS_GTK2=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
-TARGET_DIRS_GNOME=1
 TARGET_DIRS_QT=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
@@ -2998,7 +2971,6 @@ TARGET_DIRS_GTK=1
 TARGET_DIRS_GTK2=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
-TARGET_DIRS_GNOME=1
 TARGET_DIRS_QT=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
@@ -3008,7 +2980,6 @@ TARGET_DIRS_GTK=1
 TARGET_DIRS_GTK2=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
-TARGET_DIRS_GNOME=1
 TARGET_DIRS_QT=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
@@ -3018,7 +2989,6 @@ TARGET_DIRS_GTK=1
 TARGET_DIRS_GTK2=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
-TARGET_DIRS_GNOME=1
 TARGET_DIRS_QT=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
@@ -3028,7 +2998,6 @@ TARGET_DIRS_GTK=1
 TARGET_DIRS_GTK2=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
-TARGET_DIRS_GNOME=1
 TARGET_DIRS_QT=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
@@ -3038,7 +3007,6 @@ TARGET_DIRS_GTK=1
 TARGET_DIRS_GTK2=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
-TARGET_DIRS_GNOME=1
 TARGET_DIRS_QT=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
@@ -3048,7 +3016,6 @@ TARGET_DIRS_GTK=1
 TARGET_DIRS_GTK2=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
-TARGET_DIRS_GNOME=1
 TARGET_DIRS_QT=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
@@ -3058,7 +3025,6 @@ TARGET_DIRS_GTK=1
 TARGET_DIRS_GTK2=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
-TARGET_DIRS_GNOME=1
 TARGET_DIRS_QT=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
@@ -3068,7 +3034,6 @@ TARGET_DIRS_GTK=1
 TARGET_DIRS_GTK2=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
-TARGET_DIRS_GNOME=1
 TARGET_DIRS_QT=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
@@ -3078,7 +3043,6 @@ TARGET_DIRS_GTK=1
 TARGET_DIRS_GTK2=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
-TARGET_DIRS_GNOME=1
 TARGET_DIRS_QT=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
@@ -3088,7 +3052,6 @@ TARGET_DIRS_GTK=1
 TARGET_DIRS_GTK2=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
-TARGET_DIRS_GNOME=1
 TARGET_DIRS_QT=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
@@ -3098,7 +3061,6 @@ TARGET_DIRS_GTK=1
 TARGET_DIRS_GTK2=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
-TARGET_DIRS_GNOME=1
 TARGET_DIRS_QT=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
@@ -3108,7 +3070,6 @@ TARGET_DIRS_GTK=1
 TARGET_DIRS_GTK2=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
-TARGET_DIRS_GNOME=1
 TARGET_DIRS_QT=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
@@ -3118,7 +3079,6 @@ TARGET_DIRS_GTK=1
 TARGET_DIRS_GTK2=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
-TARGET_DIRS_GNOME=1
 TARGET_DIRS_QT=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
@@ -3128,7 +3088,6 @@ TARGET_DIRS_GTK=1
 TARGET_DIRS_GTK2=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
-TARGET_DIRS_GNOME=1
 TARGET_DIRS_QT=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
@@ -3138,7 +3097,6 @@ TARGET_DIRS_GTK=1
 TARGET_DIRS_GTK2=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
-TARGET_DIRS_GNOME=1
 TARGET_DIRS_QT=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
@@ -3148,7 +3106,6 @@ TARGET_DIRS_GTK=1
 TARGET_DIRS_GTK2=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
-TARGET_DIRS_GNOME=1
 TARGET_DIRS_QT=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
@@ -3158,7 +3115,6 @@ TARGET_DIRS_GTK=1
 TARGET_DIRS_GTK2=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
-TARGET_DIRS_GNOME=1
 TARGET_DIRS_QT=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
@@ -3168,7 +3124,6 @@ TARGET_DIRS_GTK=1
 TARGET_DIRS_GTK2=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
-TARGET_DIRS_GNOME=1
 TARGET_DIRS_QT=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
@@ -3178,7 +3133,6 @@ TARGET_DIRS_GTK=1
 TARGET_DIRS_GTK2=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
-TARGET_DIRS_GNOME=1
 TARGET_DIRS_QT=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
@@ -3188,7 +3142,6 @@ TARGET_DIRS_GTK=1
 TARGET_DIRS_GTK2=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
-TARGET_DIRS_GNOME=1
 TARGET_DIRS_QT=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
@@ -3198,7 +3151,6 @@ TARGET_DIRS_GTK=1
 TARGET_DIRS_GTK2=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
-TARGET_DIRS_GNOME=1
 TARGET_DIRS_QT=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
@@ -3208,7 +3160,6 @@ TARGET_DIRS_GTK=1
 TARGET_DIRS_GTK2=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
-TARGET_DIRS_GNOME=1
 TARGET_DIRS_QT=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
@@ -3218,7 +3169,6 @@ TARGET_DIRS_GTK=1
 TARGET_DIRS_GTK2=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
-TARGET_DIRS_GNOME=1
 TARGET_DIRS_QT=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
@@ -3228,7 +3178,6 @@ TARGET_DIRS_GTK=1
 TARGET_DIRS_GTK2=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
-TARGET_DIRS_GNOME=1
 TARGET_DIRS_QT=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
@@ -3238,7 +3187,6 @@ TARGET_DIRS_GTK=1
 TARGET_DIRS_GTK2=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
-TARGET_DIRS_GNOME=1
 TARGET_DIRS_QT=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
@@ -3422,51 +3370,6 @@ wince_makefiles:
 wince:
 	$(MAKE) -C wince all
 .PHONY: wince_all wince_debug wince_smart wince_release wince_units wince_examples wince_shared wince_install wince_sourceinstall wince_exampleinstall wince_distinstall wince_zipinstall wince_zipsourceinstall wince_zipexampleinstall wince_zipdistinstall wince_clean wince_distclean wince_cleanall wince_info wince_makefiles wince
-endif
-ifdef TARGET_DIRS_GNOME
-gnome_all:
-	$(MAKE) -C gnome all
-gnome_debug:
-	$(MAKE) -C gnome debug
-gnome_smart:
-	$(MAKE) -C gnome smart
-gnome_release:
-	$(MAKE) -C gnome release
-gnome_units:
-	$(MAKE) -C gnome units
-gnome_examples:
-	$(MAKE) -C gnome examples
-gnome_shared:
-	$(MAKE) -C gnome shared
-gnome_install:
-	$(MAKE) -C gnome install
-gnome_sourceinstall:
-	$(MAKE) -C gnome sourceinstall
-gnome_exampleinstall:
-	$(MAKE) -C gnome exampleinstall
-gnome_distinstall:
-	$(MAKE) -C gnome distinstall
-gnome_zipinstall:
-	$(MAKE) -C gnome zipinstall
-gnome_zipsourceinstall:
-	$(MAKE) -C gnome zipsourceinstall
-gnome_zipexampleinstall:
-	$(MAKE) -C gnome zipexampleinstall
-gnome_zipdistinstall:
-	$(MAKE) -C gnome zipdistinstall
-gnome_clean:
-	$(MAKE) -C gnome clean
-gnome_distclean:
-	$(MAKE) -C gnome distclean
-gnome_cleanall:
-	$(MAKE) -C gnome cleanall
-gnome_info:
-	$(MAKE) -C gnome info
-gnome_makefiles:
-	$(MAKE) -C gnome makefiles
-gnome:
-	$(MAKE) -C gnome all
-.PHONY: gnome_all gnome_debug gnome_smart gnome_release gnome_units gnome_examples gnome_shared gnome_install gnome_sourceinstall gnome_exampleinstall gnome_distinstall gnome_zipinstall gnome_zipsourceinstall gnome_zipexampleinstall gnome_zipdistinstall gnome_clean gnome_distclean gnome_cleanall gnome_info gnome_makefiles gnome
 endif
 ifdef TARGET_DIRS_QT
 qt_all:
