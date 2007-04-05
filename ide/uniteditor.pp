@@ -4125,7 +4125,7 @@ begin
   CurIndex:=FindReplaceDlgHistoryIndex[FindDlgComponent];
   CurText:=LazFindReplaceDialog.ComponentText[FindDlgComponent];
   //writeln('TSourceNotebook.FindReplaceDlgKey CurIndex=',CurIndex,' CurText="',CurText,'"');
-  if Key=VK_Down then begin
+  if Key=VK_UP then begin
     // go forward in history
     if CurIndex>=0 then begin
       if (HistoryList[CurIndex]<>CurText) then begin
@@ -4137,7 +4137,7 @@ begin
     end;
     FetchFocus;
     Key:=VK_UNKNOWN;
-  end else if Key=VK_UP then begin
+  end else if Key=VK_DOWN then begin
     if (CurIndex<0)
     or (HistoryList[CurIndex]<>CurText) then
     begin
