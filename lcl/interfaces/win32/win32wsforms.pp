@@ -202,11 +202,24 @@ begin
   Flags := Flags or CalcBorderIconsFlags(AForm);
 end;
 
+procedure AdjustFormBounds(const AForm: TCustomForm; var SizeRect: TRect);
+var
+  BorderStyle: TFormBorderStyle;
+begin
+  // the LCL defines the size of a form without border, win32 with.
+  // -> adjust size according to BorderStyle
+  SizeRect := AForm.BoundsRect;
+  BorderStyle := GetDesigningBorderStyle(AForm);
+  Windows.AdjustWindowRectEx(@SizeRect, BorderStyleToWin32Flags(
+      BorderStyle), false, BorderStyleToWin32FlagsEx(BorderStyle));
+end;
+
 class function TWin32WSCustomForm.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
   Params: TCreateWindowExParams;
   lForm: TCustomForm;
+  Bounds: TRect;
 begin
   // general initialization of Params
   PrepareCreateWindow(AWinControl, Params);
@@ -217,10 +230,16 @@ begin
     CalcFormWindowFlags(lForm, Flags, FlagsEx);
     pClassName := @ClsName[0];
     WindowTitle := StrCaption;
-    Left := LongInt(CW_USEDEFAULT);
+    // TODO: Use TCustomForm.Position
+{    Left := LongInt(CW_USEDEFAULT);
     Top := LongInt(CW_USEDEFAULT);
     Width := LongInt(CW_USEDEFAULT);
-    Height := LongInt(CW_USEDEFAULT);
+    Height := LongInt(CW_USEDEFAULT);}
+    AdjustFormBounds(lForm, Bounds);
+    Left := Bounds.Left;
+    Top := Bounds.Top;
+    Width := Bounds.Right - Bounds.Left;
+    Height := Bounds.Bottom - Bounds.Top;
     SubClassWndProc := nil;
     if ((Application = nil) or (Application.MainForm <> lForm))  and
        ( not (csDesigning in lForm.ComponentState) and
