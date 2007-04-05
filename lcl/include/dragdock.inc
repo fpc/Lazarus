@@ -21,6 +21,7 @@ var
   DragStartPos: TPoint;  // mouse position at start of drag
   ActiveDrag: TDragOperation;// current phase of drag operation
   DragThreshold: Integer;// treshold before the drag becomes activated
+  DragImages: TDragImageList; // DragObject.GetDragImages
 
 Procedure DragTo(const Position: TPoint); forward;
 
@@ -162,6 +163,7 @@ begin
     DragObject.DragTarget := nil;
     GetCursorPos(DragStartPos);
     DragObject.DragPos := DragStartPos;
+    DragImages := DragObject.GetDragImages;
 
     //DragCapture := DragObject.Capture;
     DragThreshold := Threshold;
@@ -275,6 +277,15 @@ Begin
     // same target => send dmDragMove
     DragObject.DragPos := Position;
     ADragCursor := DragObject.GetDragCursor(SendDragOver(dmDragMove), Position.X, Position.Y);
+    if DragImages <> nil then
+    begin
+      if (DragObject.DragTarget = nil) or (csDisplayDragImage in DragObject.DragTarget.ControlStyle) then
+      begin
+        DragImages.DragCursor := ADragCursor;
+        DragImages.DragMove(Position.X, Position.Y);
+      end else
+        DragImages.EndDrag;
+    end;
     WidgetSet.SetCursor(Screen.Cursors[ADragCursor]);
     if DragObject = nil then Exit;
   end;
@@ -336,11 +347,14 @@ Begin
     // last DragOver message (make sure, there is at least one)
     Accepted:=(ActiveDrag <> dopNone) and SendDragOver(dmDragLeave) and Drop;
 
+    if DragImages <> nil then
+      DragImages.EndDrag;
+    WidgetSet.SetCursor(Screen.Cursors[Screen.Cursor]);
     // erase global variables (dragging stopped)
     DragControl := nil;
     DragObject := nil;
-    WidgetSet.SetCursor(Screen.Cursors[Screen.Cursor]);
-    
+    DragImages := nil;
+
     // drop
     if (OldDragObject<>nil) and (OldDragObject.DragTarget <> nil) then
     Begin

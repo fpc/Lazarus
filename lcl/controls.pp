@@ -272,9 +272,29 @@ type
   { TDragImageList }
 
   TDragImageList = class(TCustomImageList)
+  private
+    FDragCursor: TCursor;
+    FDragging: Boolean;
+    FDragHotspot: TPoint;
+    FOldCursor: TCursor;
+    FImageIndex: Integer;
+    procedure SetDragCursor(const AValue: TCursor);
+  protected
+    procedure Initialize; override;
+  public
+    function BeginDrag(Window: HWND; X, Y: Integer): Boolean;
+    function DragLock(Window: HWND; XPos, YPos: Integer): Boolean;
+    function DragMove(X, Y: Integer): Boolean;
+    procedure DragUnlock;
+    function EndDrag: Boolean;
+    function GetHotSpot: TPoint; override;
+    procedure HideDragImage;
+    function SetDragImage(Index, HotSpotX, HotSpotY: Integer): Boolean;
+    procedure ShowDragImage;
+    property DragCursor: TCursor read FDragCursor write SetDragCursor;
+    property DragHotspot: TPoint read FDragHotspot write FDragHotspot;
+    property Dragging: Boolean read FDragging;
   end;
-
-
 
   TKeyEvent = procedure(Sender: TObject; var Key: Word; Shift: TShiftState) of Object;
   TKeyPressEvent = procedure(Sender: TObject; var Key: char) of Object;
@@ -391,9 +411,6 @@ type
   protected
     function GetDragCursor(Accepted: Boolean; X, Y: Integer): TCursor; override;
     function GetDragImages: TDragImageList; override;
-  public
-    procedure HideDragImage; override;
-    procedure ShowDragImage; override;
   end;
 
 
@@ -989,6 +1006,7 @@ type
     procedure CalculateDockSizes;
     function CreateFloatingDockSite(const Bounds: TRect): TWinControl;
     function GetDockEdge(const MousePos: TPoint): TAlign; dynamic;
+    function GetDragImages: TDragImageList; virtual;
     function GetFloating: Boolean; virtual;
     function GetFloatingDockSiteClass: TWinControlClass; virtual;
     procedure BeginAutoDrag; dynamic;
@@ -2595,6 +2613,7 @@ end;
 {$I docktree.inc}
 {$I mouse.inc}
 {$I dragobject.inc}
+{$I dragimagelist.inc}
 
 { TControlBorderSpacing }
 

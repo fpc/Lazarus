@@ -115,6 +115,8 @@ end;
 
 procedure TDragObject.HideDragImage;
 begin
+  if GetDragImages <> nil then
+    GetDragImages.HideDragImage;
 end;
 
 function TDragObject.Instance: THandle;
@@ -125,14 +127,14 @@ end;
 
 procedure TDragObject.ShowDragImage;
 begin
+  if GetDragImages <> nil then
+    GetDragImages.ShowDragImage;
 end;
 
 { TDragControlObject }
 
-function TDragControlObject.GetDragCursor(Accepted: Boolean; X, Y: Integer
-  ): TCursor;
+function TDragControlObject.GetDragCursor(Accepted: Boolean; X, Y: Integer): TCursor;
 begin
-  //Result := inherited GetDragCursor(Accepted, X, Y);
   if Accepted then
     Result := Control.DragCursor else
     Result := crNoDrop;
@@ -140,17 +142,7 @@ end;
 
 function TDragControlObject.GetDragImages: TDragImageList;
 begin
-  Result:=inherited GetDragImages;
-end;
-
-procedure TDragControlObject.HideDragImage;
-begin
-  inherited HideDragImage;
-end;
-
-procedure TDragControlObject.ShowDragImage;
-begin
-  inherited ShowDragImage;
+  Result := Control.GetDragImages;
 end;
 
 { TDragDockObject }

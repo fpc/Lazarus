@@ -178,6 +178,16 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  function TControl.GetDragImages: TDragImageList;
+
+  Returns Drag image list that will be used while drag opetations
+------------------------------------------------------------------------------}
+function TControl.GetDragImages: TDragImageList;
+begin
+  Result := nil;
+end;
+
+{------------------------------------------------------------------------------
   procedure TControl.PositionDockRect(DragDockObject: TDragDockObject);
   
   

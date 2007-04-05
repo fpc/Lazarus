@@ -55,8 +55,15 @@ type
   { TWSDragImageList }
 
   TWSDragImageList = class(TWSCustomImageList)
+    class function BeginDrag(const ADragImageList: TDragImageList; Window: HWND; X, Y: Integer): Boolean; virtual;
+    class function DragMove(const ADragImageList: TDragImageList; X, Y: Integer): Boolean; virtual;
+    class procedure EndDrag(const ADragImageList: TDragImageList); virtual;
+    class procedure HideDragImage(const ADragImageList: TDragImageList); virtual;
+    class procedure ShowDragImage(const ADragImageList: TDragImageList); virtual;
   end;
 
+  TWSDragImageListClass = class of TWSDragImageList;
+  
   { TWSControl }
 
   TWSControl = class(TWSLCLComponent)
@@ -247,13 +254,39 @@ class procedure TWSWinControl.ShowHide(const AWinControl: TWinControl);
 begin
 end;
 
+{ TWSDragImageList }
+
+class function TWSDragImageList.BeginDrag(const ADragImageList: TDragImageList;
+  Window: HWND; X, Y: Integer): Boolean;
+begin
+  Result := False;
+end;
+
+class function TWSDragImageList.DragMove(const ADragImageList: TDragImageList;
+  X, Y: Integer): Boolean;
+begin
+  Result := False;
+end;
+
+class procedure TWSDragImageList.EndDrag(const ADragImageList: TDragImageList);
+begin
+end;
+
+class procedure TWSDragImageList.HideDragImage(const ADragImageList: TDragImageList);
+begin
+end;
+
+class procedure TWSDragImageList.ShowDragImage(const ADragImageList: TDragImageList);
+begin
+end;
+
 initialization
 
 ////////////////////////////////////////////////////
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
-//  RegisterWSComponent(TDragImageList, TWSDragImageList);
+  RegisterWSComponent(TDragImageList, TWSDragImageList);
   RegisterWSComponent(TControl, TWSControl);
   RegisterWSComponent(TWinControl, TWSWinControl);
 //  RegisterWSComponent(TGraphicControl, TWSGraphicControl);
