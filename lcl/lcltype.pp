@@ -191,19 +191,22 @@ const
 //------------
 // DrawText flags
 //------------
-  DT_TOP = 0;
-  DT_LEFT = 0;
-  DT_CENTER = 1;
-  DT_RIGHT = 2;
-  DT_VCENTER = 4;
-  DT_BOTTOM = 8;
+  DT_TOP = $0;
+  DT_LEFT = $0;
+  DT_CENTER = $1;
+  DT_RIGHT = $2;
+  DT_VCENTER = $4;
+  DT_BOTTOM = $8;
   DT_WORDBREAK = $10;
   DT_SINGLELINE = $20;
+  DT_EXPANDTABS = $40;
   DT_NOCLIP = $100;
   DT_CALCRECT = $400;
   DT_NOPREFIX = $800;
   DT_INTERNAL = $1000;
   DT_EDITCONTROL = $2000;
+  DT_END_ELLIPSIS = $8000;
+  DT_MODIFYSTRING = $10000;
 
 //==============================================
 // Draw frame constants
