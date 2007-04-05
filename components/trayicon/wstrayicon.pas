@@ -64,10 +64,6 @@ uses
       wsgtktrayicon,
     {$endif}
 
-    {$ifdef LCLGnome}
-      wsgtktrayicon,
-    {$endif}
-
     {$ifdef LCLGtk2}
       wsgtk2trayicon,
     {$endif}

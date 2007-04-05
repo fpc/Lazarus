@@ -379,8 +379,6 @@ lcl/interfaces/carbon/*.bak
 lcl/interfaces/carbon/units
 lcl/interfaces/fpgui/*.bak
 lcl/interfaces/fpgui/units
-lcl/interfaces/gnome/*.bak
-lcl/interfaces/gnome/units
 lcl/interfaces/gtk/*.bak
 lcl/interfaces/gtk/tests/*.bak
 lcl/interfaces/gtk/tests/units

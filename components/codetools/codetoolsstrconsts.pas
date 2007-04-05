@@ -200,15 +200,12 @@ ResourceString
   ctsIfLCLWidgetTypeEqualsGtk2 = 'If LCLWidgetType=gtk2 then';
   ctsElse = 'else';
   ctsIfTargetOSIsNotWin32 = 'If TargetOS<>win32 then';
-  ctsIfLCLWidgetTypeEqualsGnome2 = 'If LCLWidgetType=gnome2 then';
   ctsDefineMacroGTK1 = 'Define macro gtk1';
   ctsDefineMacroGTK2 = 'Define macro gtk2';
-  ctsDefineMacroGnome2 = 'Define macro gnome2';
   ctsDefineMacroCarbon1 = 'Define macro carbon1';
   ctsDefineMacroQT1 = 'Define macro qt1';
   ctsGtk2IntfDirectory = 'gtk2 interface directory';
   ctsDefineMacroWinCE1 = 'Define macro wince1';
-  ctsGnomeIntfDirectory = 'gnome interface directory';
   ctsComponentsDirectory = 'Components Directory';
   ctsCustomComponentsDirectory = 'Custom Components Directory';
   ctsToolsDirectory = 'Tools Directory';

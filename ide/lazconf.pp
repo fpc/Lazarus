@@ -52,7 +52,6 @@ type
   TLCLPlatform = (
     lpGtk,
     lpGtk2,
-    lpGnome,
     lpWin32,
     lpWinCE,
     lpCarbon,
@@ -62,7 +61,7 @@ type
   
 const
   LCLPlatformNames: array[TLCLPlatform] of string = (
-      'gtk', 'gtk2', 'gnome', 'win32', 'wince', 'carbon', 'qt'
+      'gtk', 'gtk2', 'win32', 'wince', 'carbon', 'qt'
     );
 
 

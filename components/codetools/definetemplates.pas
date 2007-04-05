@@ -102,26 +102,22 @@ const
       'i386', 'powerpc', 'm68k', 'x86_64', 'sparc', 'arm'
     );
 
-  Lazarus_CPU_OS_Widget_Combinations: array[1..35] of shortstring = (
+  Lazarus_CPU_OS_Widget_Combinations: array[1..30] of shortstring = (
     'i386-linux-gtk',
-    'i386-linux-gnome',
     'i386-linux-gtk2',
     'i386-linux-qt',
     'i386-freebsd-gtk',
-    'i386-freebsd-gnome',
     'i386-freebsd-gtk2',
     'i386-freebsd-qt',
     'i386-openbsd-gtk',
-    'i386-openbsd-gnome',
     'i386-openbsd-gtk2',
     'i386-openbsd-qt',
     'i386-netbsd-gtk',
-    'i386-netbsd-gnome',
     'i386-netbsd-gtk2',
     'i386-netbsd-qt',
     'i386-win32-win32',
-    'i386-win32-wince',
-    'i386-win32-gtk',
+    'i386-win32-gtk2',
+    'i386-wince-wince',
     'i386-darwin-gtk',
     'i386-darwin-gtk2',
     'i386-darwin-carbon',
@@ -135,7 +131,6 @@ const
     'sparc-linux-gtk2',
     'arm-wince-wince',
     'x86_64-linux-gtk',
-    'x86_64-linux-gnome',
     'x86_64-linux-gtk2',
     'x86_64-linux-qt'
     );
@@ -3776,11 +3771,11 @@ function TDefinePool.CreateLazarusSrcTemplate(
   const LazarusSrcDir, WidgetType, ExtraOptions: string;
   Owner: TObject): TDefineTemplate;
 type
-  TLazWidgetSet = (wsGtk, wsGtk2, wsGnome, wsWin32, wsWinCE, wsCarbon, wsQT);
+  TLazWidgetSet = (wsGtk, wsGtk2, wsWin32, wsWinCE, wsCarbon, wsQT);
 const
   ds: char = PathDelim;
   LazWidgetSets: array[TLazWidgetSet] of string = (
-    'gtk','gtk2','gnome','win32','wince','carbon','qt');
+    'gtk','gtk2','win32','wince','carbon','qt');
 
   function D(const Filename: string): string;
   begin
@@ -4161,7 +4156,7 @@ begin
         '',CurWidgetSet,da_Directory);
       LCLUnitsCPUOSDir.AddChild(LCLUnitsCPUOSWidgetSetDir);
       ExtraSrcPath:='../../../interfaces/'+CurWidgetSet;
-      if (CurWidgetSet='gnome') or (CurWidgetSet='gtk2') then
+      if (CurWidgetSet='gtk2') then
         ExtraSrcPath:=ExtraSrcPath+';../../../interfaces/gtk';
       LCLUnitsCPUOSWidgetSetDir.AddChild(
         TDefineTemplate.Create('CompiledSrcPath',
@@ -4216,22 +4211,6 @@ begin
     d('../gtk;')+SrcPath,da_Define));
   SubDirTempl.AddChild(IntfDirTemplate);
   
-  // <LazarusSrcDir>/lcl/interfaces/gnome
-  IntfDirTemplate:=TDefineTemplate.Create('gnome',
-    ctsGnomeIntfDirectory,'','gnome',da_Directory);
-  // add '../gtk' to the SrcPath
-  IntfDirTemplate.AddChild(TDefineTemplate.Create('SrcPath',
-    Format(ctsAddsDirToSourcePath,['gtk']),ExternalMacroStart+'SrcPath',
-    d('../gtk;')+SrcPath,da_Define));
-    // if LCLWidgetType=gnome2
-    IfTemplate:=TDefineTemplate.Create('IF '''+WidgetType+'''=''gnome2''',
-      ctsIfLCLWidgetTypeEqualsGnome2,'',''''+WidgetType+'''=''gnome2''',da_If);
-      // then define gnome2
-      IfTemplate.AddChild(TDefineTemplate.Create('Define gnome2',
-        ctsDefineMacroGTK2,'gnome2','',da_Define));
-    IntfDirTemplate.AddChild(IfTemplate);
-  SubDirTempl.AddChild(IntfDirTemplate);
-
   // <LazarusSrcDir>/lcl/interfaces/win32
   // no special
 

@@ -28,10 +28,6 @@ unit OpenGLContext;
   {$DEFINE UseGtkGLX}
   {$DEFINE OpenGLTargetDefined}
 {$ENDIF}
-{$IFDEF LCLGnome}
-  {$DEFINE UseGtkGLX}
-  {$DEFINE OpenGLTargetDefined}
-{$ENDIF}
 {$IFDEF LCLGTK2}
   {$DEFINE UseGtkGLX}
   {$DEFINE OpenGLTargetDefined}
