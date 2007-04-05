@@ -218,14 +218,15 @@ Const
 
 // for GetRandomRgn
   SYSRGN                  = 4;
-  
+
+{not used anymore
 // missing listview macros
 function ListView_GetHeader(hwndLV: HWND): HWND;
 function ListView_GetExtendedListViewStyle(hwndLV: HWND): DWORD;
 function ListView_SetExtendedListViewStyle(hwndLV: HWND; dw: DWORD): BOOL;
 function ListView_GetHoverTime(hwndLV: HWND): DWORD;
 function ListView_SetHoverTime(hwndLV: HWND; dwHoverTimeMs: DWORD): DWORD;
-
+}
 
 
 { Win32 API functions not included in windows.pp }
@@ -296,6 +297,7 @@ Uses SysUtils;
 
 {$PACKRECORDS NORMAL}
 
+{not used anymore
 function ListView_GetHeader(hwndLV: HWND): HWND;
 begin
   Result := SendMessage(hwndLV, LVM_GETHEADER, 0, 0);
@@ -324,7 +326,7 @@ end;
 procedure ListView_SetCheckState(hwndLV: HWND; iIndex: UINT;fCheck:BOOL);
 begin
 end;
-
+}
 
 Var
   TmpStr: PChar;

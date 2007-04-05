@@ -470,7 +470,7 @@ begin
   if not WSCheckHandleAllocated(ALV, 'GetHoverTime')
   then Exit;
 
-  Result := ListView_GetHoverTime(ALV.Handle);
+  Result := SendMessage(ALV.Handle, LVM_GETHOVERTIME, 0, 0);
 end;
 
 class function TWin32WSCustomListView.GetItemAt(const ALV: TCustomListView; x,y: integer): Integer;
@@ -547,7 +547,7 @@ end;
 
 class function TWin32WSCustomListView.GetHeader(const AHandle: THandle): THandle;
 begin
-  Result := ListView_GetHeader(AHandle);
+  Result := SendMessage(AHandle, LVM_GETHEADER, 0, 0);
   if Result <> 0 then Exit;
 
   // probably old version, try the first child
@@ -640,7 +640,7 @@ begin
   if not WSCheckHandleAllocated(ALV, 'SetHoverTime')
   then Exit;
 
-  ListView_SetHoverTime(ALV.Handle, AValue);
+  SendMessage(ALV.Handle, LVM_SETHOVERTIME, 0, AValue);
 end;
 
 class procedure TWin32WSCustomListView.SetImageList(const ALV: TCustomListView; const AList: TListViewImageList; const AValue: TCustomImageList);
@@ -788,13 +788,13 @@ class procedure TWin32WSCustomListView.UpdateExStyle(const AHandle: THandle; con
 var
   OldStyle, NewStyle: Integer;
 begin
-  OldStyle := ListView_GetExtendedListViewStyle(AHandle);
+  OldStyle := SendMessage(AHandle, LVM_GETEXTENDEDLISTVIEWSTYLE, 0, 0);
 
   NewStyle := (OldStyle and not AMask) or AStyle;
 
   if OldStyle = NewStyle then Exit;
 
-  ListView_SetExtendedListViewStyle(AHandle, NewStyle);
+  SendMessage(AHandle, LVM_SETEXTENDEDLISTVIEWSTYLE, 0, NewStyle);
 
  //Invalidate Listview, so that changes are made visible
   Windows.InvalidateRect(AHandle, nil, true);
