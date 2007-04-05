@@ -208,12 +208,10 @@ var
   ParentForm: TCustomForm;
   CompStyle : Longint;
   DoFinishComp,
-  SetupProps : Boolean;
   ACustomForm: TCustomForm;
 begin
   P := nil;
   DoFinishComp := True;
-  SetupProps := False;
 
   CompStyle := GetCompStyle(Sender);
   //Caption   := GetCaption(Sender);
@@ -288,7 +286,7 @@ begin
           gnome_widget_add_help(Pointer(Handle), nil);
 
   If DoFinishComp then
-    FinishComponentCreate(Sender, P, SetupProps);
+    FinishComponentCreate(Sender, P);
     
   Result:=THandle(P);
 end;
