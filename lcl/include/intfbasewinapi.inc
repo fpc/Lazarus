@@ -545,7 +545,7 @@ begin
 
   {If just calculating rect, finish up here}
   If CalcRect then begin
-    theRect:=Rect;
+    Rect:=theRect;
     Lines.Free;
     exit;
   end;
