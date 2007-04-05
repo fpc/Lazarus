@@ -1,0 +1,153 @@
+object EdtTbConfigForm: TEdtTbConfigForm
+  Left = 375
+  Height = 330
+  Top = 200
+  Width = 651
+  HorzScrollBar.Page = 650
+  VertScrollBar.Page = 329
+  ActiveControl = btnOK
+  Caption = 'EdtTbConfigForm'
+  OnCreate = FormCreate
+  object lblMenuTree: TLabel
+    Left = 16
+    Height = 17
+    Top = 10
+    Width = 89
+    Caption = 'lblMenuTree'
+    Color = clNone
+    ParentColor = False
+  end
+  object lblToolbar: TLabel
+    Left = 456
+    Height = 17
+    Top = 10
+    Width = 70
+    Caption = 'lblToolbar'
+    Color = clNone
+    ParentColor = False
+  end
+  object pnlButtons: TPanel
+    Height = 42
+    Top = 288
+    Width = 651
+    Align = alBottom
+    BevelOuter = bvNone
+    Color = clGreen
+    ParentColor = False
+    TabOrder = 0
+    object Bevel1: TBevel
+      Height = 2
+      Width = 651
+      Align = alTop
+    end
+    object btnOK: TButton
+      AnchorSideRight.Control = btnCancel
+      AnchorSideBottom.Control = pnlButtons
+      AnchorSideBottom.Side = asrBottom
+      Left = 477
+      Height = 25
+      Top = 11
+      Width = 75
+      Anchors = [akRight, akBottom]
+      AutoSize = True
+      BorderSpacing.Right = 6
+      BorderSpacing.Bottom = 6
+      BorderSpacing.InnerBorder = 4
+      Caption = 'btnOK'
+      Constraints.MaxHeight = 25
+      Constraints.MinHeight = 25
+      Constraints.MinWidth = 75
+      ModalResult = 1
+      OnClick = btnOKClick
+      TabOrder = 0
+    end
+    object btnCancel: TButton
+      AnchorSideRight.Control = pnlButtons
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = pnlButtons
+      AnchorSideBottom.Side = asrBottom
+      Left = 558
+      Height = 25
+      Top = 11
+      Width = 87
+      Anchors = [akRight, akBottom]
+      AutoSize = True
+      BorderSpacing.Right = 6
+      BorderSpacing.Bottom = 6
+      BorderSpacing.InnerBorder = 4
+      Caption = 'btnCancel'
+      Constraints.MaxHeight = 25
+      Constraints.MinHeight = 25
+      Constraints.MinWidth = 75
+      ModalResult = 2
+      TabOrder = 1
+    end
+  end
+  object btnAddDivider: TButton
+    Left = 492
+    Height = 25
+    Top = 256
+    Width = 115
+    Anchors = [akRight, akBottom]
+    AutoSize = True
+    BorderSpacing.InnerBorder = 4
+    Caption = 'btnAddDivider'
+    Constraints.MaxHeight = 25
+    Constraints.MinHeight = 25
+    Constraints.MinWidth = 75
+    TabOrder = 1
+  end
+  object lbToolbar: TListBox
+    Left = 456
+    Height = 225
+    Top = 28
+    Width = 183
+    TabOrder = 2
+    TopIndex = -1
+  end
+  object btnRemove: TBitBtn
+    Left = 432
+    Height = 26
+    Top = 74
+    Width = 22
+    NumGlyphs = 0
+    OnClick = btnRemoveClick
+    TabOrder = 3
+  end
+  object btnAdd: TBitBtn
+    Left = 432
+    Height = 26
+    Top = 99
+    Width = 22
+    NumGlyphs = 0
+    OnClick = btnAddClick
+    TabOrder = 4
+  end
+  object btnMoveUp: TBitBtn
+    Left = 432
+    Height = 26
+    Top = 157
+    Width = 22
+    Enabled = False
+    NumGlyphs = 0
+    TabOrder = 5
+  end
+  object btnMoveDown: TBitBtn
+    Left = 432
+    Height = 26
+    Top = 182
+    Width = 22
+    Enabled = False
+    NumGlyphs = 0
+    TabOrder = 6
+  end
+  object TV: TTreeView
+    Left = 16
+    Height = 253
+    Top = 28
+    Width = 392
+    DefaultItemHeight = 18
+    TabOrder = 7
+    OnChange = TVChange
+  end
+end
