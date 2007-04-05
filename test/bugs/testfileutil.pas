@@ -15,7 +15,8 @@ type
   TTestFileUtil= class(TTestCase)
   published
     procedure TestFileIsExecutable;
-  end; 
+    procedure TestExtractFileNameWithoutExt;
+  end;
 
 implementation
 
@@ -30,6 +31,21 @@ begin
   DoTest(ParamStr(0),true);
   // a directory is not an executable file
   DoTest(ExtractFileDir(ParamStr(0)), false);
+end;
+
+procedure TTestFileUtil.TestExtractFileNameWithoutExt;
+var
+  DirName : string;
+  procedure DoTest(const FileName, Expected: string);
+  begin
+    AssertEquals(FileName, Expected, ExtractFileNameWithoutExt(FileName));
+  end;
+begin
+  DoTest('test.pas', 'test');
+  DoTest('test.pas.bak', 'test');
+  DirName := AppendPathDelim('testdir');
+  DoTest(DirName + 'test.pas', DirName + 'test');
+  DoTest(DirName + 'test.pas.bak', DirName + 'test');
 end;
 
 initialization

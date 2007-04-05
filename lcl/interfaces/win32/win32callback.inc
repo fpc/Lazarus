@@ -1116,7 +1116,7 @@ begin
           lWinControl := nil;
         end;
       end else begin
-        lWinControl := GetWindowInfo(LParam)^.WinControl;
+        lWinControl := GetWindowInfo(HWND(LParam))^.WinControl;
         // buddy controls use 'awincontrol' to designate associated wincontrol
         if lWinControl = nil then
           lWinControl := GetWindowInfo(LParam)^.AWinControl;
