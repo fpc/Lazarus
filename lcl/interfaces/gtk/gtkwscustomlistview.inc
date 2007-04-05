@@ -501,6 +501,7 @@ begin
   and (AItem.ImageIndex < TLVHack(ALV).SmallImages.Count)
   then begin
     // set image & caption
+    {$ifdef IMGLIST_OLDSTYLE}
     TLVHack(ALV).SmallImages.GetInternalImage(AItem.ImageIndex, ImageBitmap, MaskBitmap, ImageRect);
     if (ImageRect.Left <> 0)
     or (ImageRect.Top <> 0)
@@ -508,6 +509,9 @@ begin
     Pixmap := PGDIObject(ImageBitmap.Handle)^.GDIPixmapObject;
     Mask := PGdkBitmap(PGDIObject(ImageBitmap.Handle)^.GDIBitmapMaskObject);
     gtk_clist_set_pixtext(ACListWidget, AIndex, 0, PChar(AItem.Caption), 3, Pixmap, Mask);
+    {$else}
+    {$note implement}
+    {$endif}
   end
   else begin
     // set caption alone
@@ -634,6 +638,7 @@ begin
   WidgetInfo := GetWidgetInfo(Pointer(ALV.Handle));
   CListWidget := PGtkCList(WidgetInfo^.CoreWidget);
 
+  {$ifdef IMGLIST_OLDSTYLE}
   if  (TLVHack(ALV).SmallImages <> nil)
   and (AImageIndex >= 0)
   and (AImageIndex < TLVHack(ALV).SmallImages.Count)
@@ -650,6 +655,11 @@ begin
     Pixmap := nil;
     Mask := nil;
   end;
+  {$else}
+  {$note implement}
+    Pixmap := nil;
+    Mask := nil;
+  {$endif}
 
   CellType := gtk_clist_get_cell_type(CListWidget, AIndex, ASubIndex);
   // Sigh. 

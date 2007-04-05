@@ -210,7 +210,8 @@ procedure TCodeExplorerView.CodeExplorerViewCREATE(Sender: TObject);
       DebugLn('TCodeExplorerView.CodeExplorerViewCREATE: ',
         ' WARNING: icon not found: "',ResName,'"');
     Pixmap.LoadFromLazarusResource(ResName);
-    ImgID:=ImgList.AddDirect(Pixmap,nil)
+    ImgID:=ImgList.Add(Pixmap, nil);
+    Pixmap.Free;
   end;
 
 begin

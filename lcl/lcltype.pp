@@ -1053,6 +1053,15 @@ type
        end;
   TRGBQuad = tagRGBQUAD;
   RGBQUAD = tagRGBQUAD;
+  
+  TRGBAQuad = record
+    Blue:  Byte;
+    Green: Byte;
+    Red:   Byte;
+    Alpha: Byte;
+  end;
+  PRGBAQuad = ^TRGBAQuad;
+
 
   PBitmapInfo = ^TBitmapInfo;
   tagBITMAPINFO = record

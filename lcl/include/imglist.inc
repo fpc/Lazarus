@@ -24,6 +24,7 @@ type
 const
   SIG_LAZ1 = #1#0;
   SIG_LAZ2 = 'li';
+  SIG_LAZ3 = 'Li';
   SIG_D3   = 'IL';
 
 {------------------------------------------------------------------------------
@@ -61,9 +62,15 @@ end;
  ------------------------------------------------------------------------------}
 function TCustomImageList.Add(Image, Mask: TBitmap): Integer;
 begin
+  {$ifdef IMGLIST_OLDSTYLE}
   Result:=AddCopy(Image,Mask);
+  {$else}
+  Result := Count;
+  Insert(Result, Image, Mask);
+  {$endif}
 end;
 
+{$ifdef IMGLIST_OLDSTYLE}
 function TCustomImageList.AddDirect(Image, Mask: TBitmap): Integer;
 begin
   try
@@ -76,7 +83,9 @@ begin
     end;
   end;
 end;
+{$endif}
 
+{$ifdef IMGLIST_OLDSTYLE}
 function TCustomImageList.AddCopy(SrcImage, SrcMask: TBitmap): Integer;
 var
   NewImage: TBitmap;
@@ -100,6 +109,7 @@ begin
     NewMask.Free;
   end;
 end;
+{$endif}
 
 {------------------------------------------------------------------------------
   Function: TCustomImageList.AddIcon
@@ -133,6 +143,8 @@ var
   NewMask: TBitmap;
 begin
   if (Value = nil) or (Value=Self) then exit;
+
+  {$ifdef IMGLIST_OLDSTYLE}
   BeginUpdate;
   for n := 0 to Value.Count - 1 do begin
     SrcImage:=TBitmap(Value.FImageList[n]);
@@ -149,6 +161,9 @@ begin
     end;
   end;
   EndUpdate;
+  {$else}
+  {$note implement}
+  {$endif}
 end;
 
 {------------------------------------------------------------------------------
@@ -179,14 +194,21 @@ end;
     
   Load TBitmap from lazarus resources and add it.
  ------------------------------------------------------------------------------}
-function TCustomImageList.AddFromLazarusResource(const ResourceName: string
-  ): integer;
+function TCustomImageList.AddLazarusResource(const ResourceName: string; MaskColor: TColor): integer;
 var
-  ABitmap: TBitmap;
+  Bmp: TBitmap;
 begin
-  ABitmap:=TBitmap.Create;
-  ABitmap.LoadFromLazarusResource(ResourceName);
-  Result:=AddDirect(ABitmap,nil);
+  Bmp := TBitmap.Create;
+
+  Bmp.LoadFromLazarusResource(ResourceName);
+  if MaskColor <> clNone then
+    Bmp.TransparentColor := MaskColor;
+  {$ifdef IMGLIST_OLDSTYLE}
+  Result := AddDirect(Bmp, nil);
+  {$else}
+  Result := Add(Bmp, nil);
+  Bmp.Free;
+  {$endif}
 end;
 
 {------------------------------------------------------------------------------
@@ -197,27 +219,46 @@ end;
   Checks if there is enough space for Amount images,  increases the internal 
   list if necessary .
  ------------------------------------------------------------------------------}
+{$ifdef IMGLIST_OLDSTYLE}
 procedure TCustomImageList.AllocBitmap(Amount: Integer);
 var
-  Num: Integer;
+  n: Integer;
 begin
   Assert(FAllocCount >= FCount, 'Less space allocated than images');
-  if FAllocCount < FCount + Amount
-  then begin
-    // calculate number of blocks
-    Num := Amount div FAllocBy;
-    // add an extra block for the remainder.
-    if Amount mod FAllocBy <> 0 then Inc(Num);
+  if FAllocCount >= FCount + Amount
+  then Exit;
 
-    if FBitMap<>nil then
-      FBitMap.Height := FBitMap.Height + Num * FAllocBy * FHeight;
-    if FMaskBitmap<>nil then
-      FMaskBitmap.Height := FBitMap.Height;
-    Inc(FAllocCount, Num * FAllocBy);
-  end;
+  // calculate number of blocks, add an extra block for the remainder.
+  n := Amount mod FAllocBy;
+  if n <> 0
+  then Inc(Amount, FAllocBy - n);
 
-  //raise Exception.Create('Unable to allocate bitmap space');
+  if FBitMap<>nil then
+    FBitMap.Height := FBitMap.Height + Amount * FHeight;
+  if FMaskBitmap<>nil then
+    FMaskBitmap.Height := FBitMap.Height;
+
+  Inc(FAllocCount, Amount);
 end;
+{$else}
+procedure TCustomImageList.AllocData(ACount: Integer);
+var
+  n: Integer;
+begin
+  Assert(FAllocCount >= FCount, 'Less space allocated than images');
+  if FAllocCount >= FCount + ACount
+  then Exit;
+
+  // calculate number of blocks, add an extra block for the remainder.
+  n := ACount mod FAllocBy;
+  if n <> 0
+  then Inc(ACount, FAllocBy - n);
+
+  SetLength(FData, ACount * FWidth * FHeight * SizeOf(FData[0]));
+
+  Inc(FAllocCount, ACount);
+end;
+{$endif}
 
 {------------------------------------------------------------------------------
   Method:  TCustomImageList.Assign
@@ -283,6 +324,22 @@ begin
   FChanged := false;
 end;
 
+procedure TCustomImageList.CheckIndex(AIndex: Integer; AForInsert: Boolean);
+  // aviod exceptionframe generation
+  procedure Error;
+  begin
+    raise EInvalidOperation.Create(SInvalidIndex);
+  end;
+begin
+  if AForInsert
+  then begin
+    if AIndex > FCount then Error;
+  end
+  else begin
+    if AIndex >= FCount then Error;
+  end;
+end;
+
 {------------------------------------------------------------------------------
   Method:  TCustomImageList.Clear
   Params:  None
@@ -292,12 +349,17 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomImageList.Clear;
 begin
-  if FCount=0 then exit;
-  While Count>0 do
+  if FCount = 0 then Exit;
+  {$ifdef IMGLIST_OLDSTYLE}
+  while Count>0 do
     Delete(0);
-  FCount := 0;
   FImageList.Clear;
   FMaskList.Clear;
+  {$else}
+  {$note implement}
+  {$endif}
+  
+  FCount := 0;
   Change;
 end;
 
@@ -308,13 +370,16 @@ end;
 
   Constructor for the class.
  ------------------------------------------------------------------------------}
-constructor TCustomImageList.Create(TheOwner: TComponent);
+constructor TCustomImageList.Create(AOwner: TComponent);
 begin
-  inherited Create(TheOwner);
+  inherited Create(AOwner);
   FHeight := 16;
   FWidth := 16;
+
+  {$ifdef IMGLIST_OLDSTYLE}
   FImageList := TList.Create;  //shane
   FMaskList := TList.Create;
+  {$endif}
   Initialize;
 end;
 
@@ -326,15 +391,20 @@ end;
 
   Runtime constructor for the class with a given width and height.
  ------------------------------------------------------------------------------}
+{.$ifdef IMGLIST_KEEP_EXTRA}
 constructor TCustomImageList.CreateSize(AWidth, AHeight: Integer);
 begin
   inherited Create(nil);
   FHeight := AHeight;
   FWidth := AWidth;
+  {$ifdef IMGLIST_OLDSTYLE}
   FImageList := TList.Create;  //shane
   FMaskList := TList.Create;
+  {$endif}
   Initialize;
 end;
+{.$endif}
+
 
 {------------------------------------------------------------------------------
   Method:  TCustomImageList.DefineProperties
@@ -379,6 +449,7 @@ begin
     Clear
   else
   begin
+    {$ifdef IMGLIST_OLDSTYLE}
     Obj:=TObject(fImageList.Items[Index]);
     If Assigned(Obj) then
       Obj.Free;
@@ -390,6 +461,9 @@ begin
 //    ShiftImages(FBitmap.Canvas, Index, 1);
 //    ShiftImages(FMaskBitmap.Canvas, Index, 1);
     FCount := fImageList.Count;
+    {$else}
+    {$note implement}
+    {$endif}
     FChanged := true;
     Change;
   end;
@@ -406,6 +480,7 @@ destructor TCustomImageList.Destroy;
 var
   i: integer;
 begin
+  {$ifdef IMGLIST_OLDSTYLE}
   FBitmap.Free;
   FBitmap:=nil;
   FMaskBitmap.Free;
@@ -414,6 +489,7 @@ begin
   for i:=0 to FMaskList.Count-1 do TObject(FMaskList[i]).Free;
   FreeThenNil(FImageList);
   FreeThenNil(FMaskList);
+  {$endif}
   inherited Destroy;
   while FChangeLinkList.Count>0 do
     UnregisterChanges(TChangeLink(FChangeLinkList[0]));
@@ -437,8 +513,13 @@ var
   aBitmap: TBitmap;
 begin
   if (FCount = 0) or (Index >= FCount) then Exit;
+
+  {$ifdef IMGLIST_OLDSTYLE}
   aBitmap := TBitmap(FImageList[Index]);
   Canvas.Draw(X,Y,aBitmap);
+  {$else}
+  {$note implement}
+  {$endif}
 end;
 
 {------------------------------------------------------------------------------
@@ -457,6 +538,36 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method:  TCustomImageList.FillDescription
+  Params:  Desc: the description to fill
+  Returns: Nothing
+
+  Fills the description with the default info of the imagedata
+ ------------------------------------------------------------------------------}
+procedure TCustomImageList.FillDescription(ADesc: TRawImageDescription);
+begin
+  ADesc.Format := ricfRGBA;
+  ADesc.HasPalette := False;
+  ADesc.Depth := 32;
+  ADesc.Width := FWidth;
+  ADesc.Height := FHeight;
+  ADesc.BitOrder := riboBitsInOrder;
+  ADesc.ByteOrder := riboMSBFirst;
+  ADesc.LineOrder := riloTopToBottom;
+  ADesc.BitsPerPixel := 32;
+  ADesc.LineEnd := rileDWordBoundary;
+  ADesc.RedPrec := 8; // red precision. bits for red
+  ADesc.RedShift := 24;
+  ADesc.GreenPrec := 8;
+  ADesc.GreenShift := 16;
+  ADesc.BluePrec := 8;
+  ADesc.BlueShift := 8;
+  ADesc.AlphaPrec := 8;
+  ADesc.AlphaShift := 0;
+  ADesc.AlphaSeparate := False;
+end;
+
+{------------------------------------------------------------------------------
   Method:  TCustomImageList.GetBitmap
   Params:  Index: the index of the requested image
            Image: a bitmap as a container for the bitmap
@@ -465,10 +576,27 @@ end;
   Creates a copy of the index'th image.
  ------------------------------------------------------------------------------}
 procedure TCustomImageList.GetBitmap(Index: Integer; Image: TBitmap);
+{$ifndef IMGLIST_OLDSTYLE}
+var
+  RawImg: TRawImage;
+  IntfImg: TLazIntfImage;
+{$endif}
 begin
   if (FCount = 0) or (Image = nil) then Exit; 
-  //DebugLn('TCustomImageList.GetBitmap Index=',Index,' Image=',DbgS(Image),' Bitmap=',DbgS(FImageList.Items[Index]));
+
+  {$ifdef IMGLIST_OLDSTYLE}
   Image.Assign(TBitMap(FImageList.Items[Index]));
+  {$else}
+  CheckIndex(Index);
+  FillChar(RawImg, SizeOf(RawImg), 0);
+  FillDescription(RawImg.Description);
+  RawImg.DataSize := FWidth * FHeight;
+  RawImg.Data := @FData[Index * RawImg.DataSize];
+
+  IntfImg := TLazIntfImage.Create(RawImg);
+  Image.LoadFromIntfImage(IntfImg);
+  IntfImg.Free;
+  {$endif}
 end;
 
 {------------------------------------------------------------------------------
@@ -479,6 +607,7 @@ end;
   images into one bitmap (plus one mask), therefore ImageRect contains the
   bounds of the n-th image on the bitmap.
  ------------------------------------------------------------------------------}
+{$ifdef IMGLIST_KEEP_EXTRA}
 procedure TCustomImageList.GetInternalImage(Index: integer; var Image,
   Mask: TBitmap; var ImageRect: TRect);
 begin
@@ -486,6 +615,7 @@ begin
   Mask:=TBitmap(FMaskList[Index]);
   ImageRect:=Rect(0,0,Image.Width,Image.Height);
 end;
+{$endif}
 
 {------------------------------------------------------------------------------
   Function: TCustomImageList.GetHotspot
@@ -527,6 +657,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomImageList.GetImages(Index: Integer; const Image, Mask: TBitmap);
 begin
+{$ifdef IMGLIST_OLDSTYLE}
   with Image do FBitmap.Canvas.CopyRect(
     Rect(0, 0, Width, Height),
     Canvas,
@@ -537,6 +668,9 @@ begin
     Canvas,
     Rect(0, Index * FHeight, FWidth, (Index + 1) * FHeight)
   );
+{$else}
+{$note implement}
+{$endif}
 end;
 
 {------------------------------------------------------------------------------
@@ -546,10 +680,12 @@ end;
 
   This function checks if the internal image is allocated
  ------------------------------------------------------------------------------}
+{$ifdef IMGLIST_OLDSTYLE}
 function TCustomImageList.HandleAllocated: Boolean;
 begin
   Result := (FBitmap <> nil);
 end;
+{$endif}
 
 {------------------------------------------------------------------------------
   Method:  TCustomImageList.Initialize
@@ -570,6 +706,7 @@ begin
   if (Height < 1) or (Height > 32768) or (Width < 1) 
   then raise EInvalidOperation.Create(SInvalidImageSize);
 
+  {$ifdef IMGLIST_OLDSTYLE}
   FBitmap := TBitmap.Create;
   FBitmap.Height := Height;
   FBitmap.Width := Width;
@@ -581,6 +718,7 @@ begin
     Canvas.Brush.Color := clWhite;
     Monochrome := True;
   end;
+  {$endif}
 end;
 
 procedure TCustomImageList.SetWidthHeight(NewWidth, NewHeight: integer);
@@ -588,9 +726,11 @@ begin
   if (FHeight=NewHeight) and (FWidth=NewWidth) then exit;
   FHeight := NewHeight;
   FWidth := NewWidth;
+  {$ifdef IMGLIST_OLDSTYLE}
   FBitMap.Width := 0;
   FBitMap.Height := 0;
   AllocBitmap(0);
+  {$endif}
   Clear;
 end;
 
@@ -606,11 +746,11 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomImageList.Insert(Index: Integer; Image, Mask: TBitmap);
 begin
-  if (Index > Count)
-  then raise EInvalidOperation.Create(SInvalidIndex);
+  CheckIndex(Index, True);
 
   if (Index < 0) then Index := 0;
 
+  {$ifdef IMGLIST_OLDSTYLE}
   if (Image <> nil)
   then begin
     FImageList.Insert(Index,Image);
@@ -619,6 +759,10 @@ begin
     FChanged := true;
     Change;
   end;
+  {$else}
+  {$note Implement}
+  {$endif}
+
 end;
 
 {------------------------------------------------------------------------------
@@ -631,13 +775,14 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomImageList.InsertIcon(Index: Integer; Image: TIcon);
 begin
-  if (Index > FCount)
-  then raise EInvalidOperation.Create(SInvalidIndex);
+  CheckIndex(Index, True);
 
   if (Index < 0) then Index := 0;
   
   //No Icon Support yet
-
+  {$ifndef IMGLIST_OLDSTYLE}
+  {$note implement}
+  {$endif}
 end;
 
 {------------------------------------------------------------------------------
@@ -664,6 +809,9 @@ begin
     Mask(MaskColor);
   end;
   Insert(Index, Image, Mask);
+  {$ifndef IMGLIST_OLDSTYLE}
+  Mask.Free;
+  {$endif}
 end;
 
 {------------------------------------------------------------------------------
@@ -675,13 +823,40 @@ end;
   Moves an image from the CurIndex'th location to NewIndex'th location
  ------------------------------------------------------------------------------}
 procedure TCustomImageList.Move(CurIndex, NewIndex: Integer);
+{$ifndef IMGLIST_OLDSTYLE}
+var
+  ImgSize, DataSize: Cardinal;
+  p: Pointer;
+{$endif}
 begin
-  if CurIndex <> NewIndex then begin
-    FImageList.Move(CurIndex,NewIndex);
-    FMaskList.Move(CurIndex,NewIndex);
-    FChanged := true;
-    Change;
-  end;
+  if CurIndex = NewIndex then Exit;
+  CheckIndex(CurIndex);
+  CheckIndex(NewIndex);
+
+  if CurIndex < 0 then CurIndex := 0;
+  if NewIndex < 0 then NewIndex := 0;
+
+  {$ifdef IMGLIST_OLDSTYLE}
+  FImageList.Move(CurIndex,NewIndex);
+  FMaskList.Move(CurIndex,NewIndex);
+  {$else}
+  
+  ImgSize := FWidth * FHeight;
+  DataSize := ImgSize * SizeOf(FData[0]);
+  p := GetMem(DataSize);
+  // store current
+  System.Move(FData[Cardinal(CurIndex) * ImgSize], p^, DataSize);
+  // move all one up
+  if CurIndex < NewIndex
+  then System.Move(FData[(Cardinal(CurIndex) + 1) * ImgSize], FData[Cardinal(CurIndex) * ImgSize], DataSize * Cardinal(NewIndex - CurIndex))
+  else System.Move(FData[Cardinal(NewIndex) * ImgSize], FData[(Cardinal(NewIndex) + 1) * ImgSize], DataSize * Cardinal(NewIndex - CurIndex));
+  // restore current
+  System.Move(p^, FData[Cardinal(NewIndex) * ImgSize], DataSize);
+  FreeMem(p);
+  {$endif}
+
+  FChanged := true;
+  Change;
 end;
 
 {------------------------------------------------------------------------------
@@ -715,7 +890,11 @@ var
   Signature: TImageListSignature;
 begin
   //Write signature
+  {$ifdef IMGLIST_OLDSTYLE}
   Signature:=SIG_LAZ2;
+  {$else}
+  Signature:=SIG_LAZ3;
+  {$endif}
   AStream.Write(Signature,SizeOf(Signature));
 
   //Count of image
@@ -723,12 +902,17 @@ begin
   WriteLRSInteger(AStream,Width);
   WriteLRSInteger(AStream,Height);
 
+  //images
+  {$ifdef IMGLIST_OLDSTYLE}
   for i:=0 to Count-1 do
   begin
     CurImage:=TBitmap(FImageList[i]);
     //DebugLn('TCustomImageList.WriteData Position=',AStream.Position,' ',CurImage.Width,',',CurImage.Height);
     CurImage.WriteNativeStream(AStream,true,bnXPixmap);
   end;
+  {$else}
+  AStream.Write(FData[0], FWidth * FHeight * FCount * SizeOf(FData[0]));
+  {$endif}
 end;
 
 {------------------------------------------------------------------------------
@@ -748,17 +932,20 @@ var
     i, NewCount, Size: Integer;
     bmp: TBitmap;
   begin
-    //DebugLn('TCustomImageList.ReadData DoReadLaz1');
     // provided for compatability for earlier lazarus streams
     NewCount := AStream.ReadWord;
-    //DebugLn('TCustomImageList.ReadData DoReadLaz1 NewCount=',NewCount);
     for i := 0 to NewCount - 1 do
     begin
       bmp := TBitMap.Create;
       Size:=ReadLRSInteger(AStream);
       bmp.ReadStream(AStream, True, Size);
       bmp.Transparent := True;
+      {$ifdef IMGLIST_OLDSTYLE}
       AddDirect(bmp, nil);
+      {$else}
+      Add(bmp, nil);
+      bmp.Free;
+      {$endif}
     end;
   end;
 
@@ -779,8 +966,30 @@ var
       Size:=ReadLRSCardinal(AStream);
       //DebugLn('TCustomImageList.ReadData DoReadLaz2 Size=',Size,' ',AStream.Position);
       bmp.ReadStream(AStream, True, Size);
+      {$ifdef IMGLIST_OLDSTYLE}
       AddDirect(bmp, nil);
+      {$else}
+      Add(bmp, nil);
+      bmp.Free;
+      {$endif}
     end;
+  end;
+  
+  procedure DoReadLaz3;
+  begin
+    FCount := ReadLRSCardinal(AStream);
+    FWidth := ReadLRSCardinal(AStream);
+    FHeight := ReadLRSCardinal(AStream);
+    
+    {$ifdef IMGLIST_OLDSTYLE}
+    AStream.Seek(FWidth * FHeight * FCount * 4, soCurrent);
+    {$else}
+    AllocData(FCount);
+    AStream.ReadBuffer(FData[0], FWidth * FHeight * FCount *  SizeOf(FData[0])) ;
+    {$endif}
+
+    FChanged := true;
+    Change;
   end;
 
   procedure CreateImagesFromRawImage(IntfImage: TLazIntfImage;
@@ -817,7 +1026,12 @@ var
           Img.Handle:=ImgHandle;
           Img.MaskHandle:=MaskHandle;
 
+          {$ifdef IMGLIST_OLDSTYLE}
           AddDirect(Img, nil);
+          {$else}
+          Add(Img, nil);
+          Img.Free;
+          {$endif}
           //DebugLn('CreateImagesFromRawImage B ',Img.Width,',',Img.Height,' ',Count);
           Img := nil;
           Dec(NewCount);
@@ -887,55 +1101,67 @@ var
   NewCount: Integer;
   Size: integer;
 begin
-  Clear;
+  BeginUpdate; // avoid multiple changed calls
+  try
+    Clear;
 
-  StreamPos := AStream.Position;                // check stream signature
-  AStream.Read(Signature, SizeOf(Signature));
+    StreamPos := AStream.Position;                // check stream signature
+    AStream.Read(Signature, SizeOf(Signature));
 
-  if Signature = SIG_LAZ1
-  then begin
-    DoReadLaz1;
-    Exit;
-  end;
+    if Signature = SIG_LAZ3
+    then begin
+      DoReadLaz3;
+      Exit;
+    end;
 
-  if Signature = SIG_LAZ2
-  then begin
-    DoReadLaz2;
-    Exit;
-  end;
+    if Signature = SIG_LAZ2
+    then begin
+      DoReadLaz2;
+      Exit;
+    end;
 
-  // Delphi streams
+    if Signature = SIG_LAZ1
+    then begin
+      DoReadLaz1;
+      Exit;
+    end;
 
-  {$IFDEF SaveDelphiImgListStream}
-  SaveImgListStreamToFile;
-  {$ENDIF}
+    // Delphi streams
 
-  if Signature = SIG_D3
-  then begin
-    AStream.ReadWord; //Skip ?
-    NewCount := ReadLRSWord(AStream);
-    //DebugLn('NewCount=',NewCount);
-    AStream.ReadWord; //Skip Capacity
-    AStream.ReadWord; //Skip Grow
-    FWidth := ReadLRSWord(AStream);
-    //DebugLn('NewWidth=',FWidth);
-    FHeight := ReadLRSWord(AStream);
-    //DebugLn('NewHeight=',FHeight);
-    FBKColor := TColor(ReadLRSInteger(AStream));
-    HasMask := (ReadLRSWord(AStream) and 1) = 1;
-    AStream.ReadDWord; //Skip ?
-    AStream.ReadDWord; //Skip ?
+    {$IFDEF SaveDelphiImgListStream}
+    SaveImgListStreamToFile;
+    {$ENDIF}
 
-    ReadDelphiImageAndMask(HasMask,NewCount);
-  end
-  else begin
-    // D2 has no signature, so restore original position
-    AStream.Position := StreamPos;
-    Size:=ReadLRSInteger(AStream);
-    NewCount:=ReadLRSInteger(AStream);
+    if Signature = SIG_D3
+    then begin
+      AStream.ReadWord; //Skip ?
+      NewCount := ReadLRSWord(AStream);
+      //DebugLn('NewCount=',NewCount);
+      AStream.ReadWord; //Skip Capacity
+      AStream.ReadWord; //Skip Grow
+      FWidth := ReadLRSWord(AStream);
+      //DebugLn('NewWidth=',FWidth);
+      FHeight := ReadLRSWord(AStream);
+      //DebugLn('NewHeight=',FHeight);
+      FBKColor := TColor(ReadLRSInteger(AStream));
+      HasMask := (ReadLRSWord(AStream) and 1) = 1;
+      AStream.ReadDWord; //Skip ?
+      AStream.ReadDWord; //Skip ?
 
-    ReadDelphiImageAndMask(false,NewCount);
-    AStream.Position := StreamPos+Size;
+      ReadDelphiImageAndMask(HasMask,NewCount);
+    end
+    else begin
+      // D2 has no signature, so restore original position
+      AStream.Position := StreamPos;
+      Size:=ReadLRSInteger(AStream);
+      NewCount:=ReadLRSInteger(AStream);
+
+      ReadDelphiImageAndMask(false,NewCount);
+      AStream.Position := StreamPos+Size;
+    end;
+    
+  finally
+    EndUpdate;
   end;
 end;
 
@@ -977,17 +1203,21 @@ begin
   DestinationRect := Rect(0, Index * FHeight, FWidth, (Index + 1) * FHeight);
   SourceRect := Rect(0, 0, FWidth, FHeight);
 
+  {$ifdef IMGLIST_OLDSTYLE}
   CopyImage(FBitmap.Canvas, Image.Canvas, DestinationRect, SourceRect);
   if Mask <> nil
   then CopyImage(FMaskBitmap.Canvas, Mask.Canvas, DestinationRect, SourceRect)
   else FMaskBitmap.Canvas.FillRect(DestinationRect);
+  {$else}
+  {$note implement}
+  {$endif}
 
   FChanged := true;
   Change;
 end;
 
 {------------------------------------------------------------------------------
-  Method:  TCustomImageList.Replace
+  Method:  TCustomImageList.ReplaceIcon
   Params:  Index: the index of the replaceded image
            Image: an icon image
   Returns: Nothing.
@@ -1002,6 +1232,9 @@ begin
   if (Index < 0) then Index := 0;
 
   // No Icon suppport yet
+  {$ifndef IMGLIST_OLDSTYLE}
+  {$note implement}
+  {$endif}
 end;
 
 {------------------------------------------------------------------------------
@@ -1021,6 +1254,9 @@ begin
 
   if (Index < 0) then Index := 0;
 
+  {$ifndef IMGLIST_OLDSTYLE}
+  {$note implement}
+  {$endif}
 end;
 
 {------------------------------------------------------------------------------
@@ -1118,6 +1354,22 @@ begin
   finally
     FMoveBitmap.Free;
   end;
+end;
+
+procedure TCustomImageList.StretchDraw(Canvas: TCanvas; Index: Integer; ARect: TRect; Enabled: Boolean);
+var
+  bmp, msk: TBitmap;
+begin
+  if (FCount = 0) or (Index >= FCount) then Exit;
+
+  {$ifdef IMGLIST_OLDSTYLE}
+  bmp := TBitmap(FImageList[Index]);
+  msk := TBitmap(FMaskList[Index]);
+  StretchMaskBlt(Canvas.Handle, ARect.Left, ARect.Top, ARect.Right - ARect.Left,
+    ARect.Bottom - ARect.Top, bmp.Handle, 0, 0, FWidth, FHeight, msk.Handle, 0, 0, SRCCOPY);
+  {$else}
+  {$note implement}
+  {$endif}
 end;
 
 {------------------------------------------------------------------------------

@@ -685,7 +685,8 @@ begin
   APixmap.TransparentColor:=clBtnFace;
   APixmap.LoadFromLazarusResource(ResName);
   Result:=ImgList.Count;
-  ImgList.AddDirect(APixmap,nil);
+  ImgList.Add(APixmap,nil);
+  APixmap.Free;
 end;
 
 function TSourceMarks.GetSourceEditor(AMark: TSourceMark): TObject;

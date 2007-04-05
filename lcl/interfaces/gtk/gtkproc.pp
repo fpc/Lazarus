@@ -49,10 +49,19 @@ uses
   FileUtil, ImgList, GtkFontCache, GTKGlobals, gtkDef, GtkExtra;
 
 
-
 const
   GtkListItemGtkListTag = 'GtkList';
   GtkListItemLCLListTag = 'LCLList';
+  
+
+  {$if Declared(TOldStyleCustomImageList)}
+    {$define IMGLIST_OLDSTYLE}
+  {$else}
+    {$note TODO: remove me}
+  {$endif}
+
+  
+
   
 type
   PPWaitHandleEventHandler = ^PWaitHandleEventHandler;
@@ -646,12 +655,16 @@ function ScalePixmap(ScaleGC: PGDKGC;
   SrcColorMap: PGdkColormap;
   NewWidth, NewHeight: integer;
   var NewPixmap: PGdkPixmap): Boolean;
+{$ifdef IMGLIST_OLDSTYLE}
 procedure DrawImageListIconOnWidget(ImgList: TCustomImageList;
   Index: integer; DestWidget: PGTKWidget);
 procedure DrawImageListIconOnWidget(ImgList: TCustomImageList;
   Index: integer; DestWidget: PGTKWidget;
   CenterHorizontally, CenterVertically: boolean;
   DestLeft, DestTop: integer);
+{$else}
+{$note TODO: Remove me}
+{$endif}
 function GetPGdkImageBitsPerPixel(Image: PGdkImage): cardinal;
 function CreateGdkBitmap(Window: PGdkWindow; Width, Height: integer): PGdkBitmap;
 function ExtractGdkBitmap(Bitmap: PGdkBitmap; const SrcRect: TRect): PGdkBitmap;

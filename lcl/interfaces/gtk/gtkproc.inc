@@ -1289,12 +1289,17 @@ begin
 {$EndIf}
 end;
 
+{$ifdef IMGLIST_OLDSTYLE}
 procedure DrawImageListIconOnWidget(ImgList: TCustomImageList;
   Index: integer; DestWidget: PGTKWidget);
 begin
   DrawImageListIconOnWidget(ImgList,Index,DestWidget,true,true,0,0);
 end;
+{$else}
+{$note TODO: Remove me}
+{$endif}
 
+{$ifdef IMGLIST_OLDSTYLE}
 procedure DrawImageListIconOnWidget(ImgList: TCustomImageList;
   Index: integer; DestWidget: PGTKWidget;
   CenterHorizontally, CenterVertically: boolean;
@@ -1335,6 +1340,9 @@ begin
     SRCCOPY);
   ReleaseDC(HDC(DestWidget),DestDC);
 end;
+{$else}
+{$note TODO: Remove me}
+{$endif}
 
 function GetPGdkImageBitsPerPixel(Image: PGdkImage): cardinal;
 begin
@@ -5704,8 +5712,12 @@ begin
        IconImg,0,0,ALeft,ATop,-1,-1);
     gdk_gc_set_clip_mask(gtk_widget_get_style(Widget)^.Black_gc, nil);
   end else begin
+    {$ifdef IMGLIST_OLDSTYLE}
     DrawImageListIconOnWidget(LCLMenuItem.GetImageList,LCLMenuItem.ImageIndex,
       Widget,false,false,ALeft,ATop);
+    {$else}
+    {$note Implement}
+    {$endif}
   end;
 end;
 

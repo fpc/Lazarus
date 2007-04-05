@@ -758,25 +758,23 @@ begin
       ButtonRect, DFC_BUTTON, ButtonState);
     // draw icon
     case mm of
-    mmBuild: ImgIndex:=ImageIndexBuild;
-    mmCleanBuild: ImgIndex:=ImageIndexCleanBuild;
-    else ImgIndex:=ImageIndexNone;
+      mmBuild: ImgIndex:=ImageIndexBuild;
+      mmCleanBuild: ImgIndex:=ImageIndexCleanBuild;
+    else
+      ImgIndex:=ImageIndexNone;
     end;
-    ImageList.GetInternalImage(ImgIndex,CurIcon,Mask,IconRect);
-    if CurIcon<>nil then begin
-      IconWidth:=IconRect.Right-IconRect.Left;
-      IconHeight:=IconRect.Bottom-IconRect.Top;
-      DestRect.Left:=ARect.Left+x+((ButtonWidth-IconWidth) div 2);
-      DestRect.Top:=ARect.Top+((ARect.Bottom-ARect.Top-IconHeight) div 2);
-      DestRect.Right:=DestRect.Left+IconWidth;
-      DestRect.Bottom:=DestRect.Top+IconHeight;
-      StretchMaskBlt(ItemsListBox.Canvas.Handle,
-        DestRect.Left, DestRect.Top, IconWidth, IconHeight,
-        CurIcon.Canvas.Handle, 0, 0, IconWidth, IconHeight,
-        CurIcon.MaskHandle, 0, 0, SRCCOPY);
-    end;
-    inc(x,ButtonWidth);
+
+    if ImgIndex <> ImageIndexNone
+    then
+      ImageList.Draw(
+        ItemsListBox.Canvas,
+        ARect.Left + x + ((ButtonWidth - ImageList.Width) div 2),
+        ARect.Top + ((ARect.Bottom - ARect.Top - ImageList.Height) div 2),
+        ImgIndex
+      ) ;
+    Inc(x, ButtonWidth);
   end;
+  
   // draw description
   ItemsListBox.Canvas.Brush.Style:=bsClear;
   ItemsListBox.Canvas.TextOut(x+2,

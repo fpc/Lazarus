@@ -173,6 +173,7 @@ type
     procedure SetColor_BPP32_R8G8B8_A1_BIO_TTB_RBO(x, y: integer; const Value: TFPColor);
   public
     constructor Create(AWidth, AHeight: integer); override;
+    constructor Create(ARawImage: TRawImage);
     destructor Destroy; override;
     procedure BeginUpdate;
     procedure EndUpdate;
@@ -1633,6 +1634,25 @@ begin
   OnGetInternalColor:=@GetColor_NULL;
   OnSetInternalColor:=@SetColor_NULL;
   inherited Create(AWidth, AHeight);
+end;
+
+constructor TLazIntfImage.Create(ARawImage: TRawImage);
+begin
+  Create(FDataDescription.Width, FDataDescription.Height);
+
+  FDataDescription := ARawImage.Description;
+  FPixelData := ARawImage.Data;
+  FPixelDataSize := ARawImage.DataSize;
+  FMaskData := ARawImage.Mask;
+  FMaskDataSize := ARawImage.MaskSize;
+  FCreateAllDataNeeded := False;
+
+  CreateRawImageLineStarts(Width, Height, FDataDescription.BitsPerPixel,
+                           FDataDescription.LineEnd, FLineStarts);
+  if FMaskData <> nil
+  then CreateRawImageLineStarts(Width, Height, FDataDescription.AlphaBitsPerPixel,
+                                FDataDescription.AlphaLineEnd, FMaskLineStarts);
+  ChooseGetSetColorFunctions;
 end;
 
 destructor TLazIntfImage.Destroy;

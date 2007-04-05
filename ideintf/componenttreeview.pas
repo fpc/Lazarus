@@ -247,10 +247,10 @@ begin
   FComponentList:=TBackupComponentList.Create;
   Options:=Options+[tvoAllowMultiselect,tvoAutoItemHeight,tvoKeepCollapsedNodes];
   FImageList := TImageList.Create(nil);
-  FImageList.AddFromLazarusResource('oi_form');
-  FImageList.AddFromLazarusResource('oi_comp');
-  FImageList.AddFromLazarusResource('oi_control');
-  FImageList.AddFromLazarusResource('oi_box');
+  FImageList.AddLazarusResource('oi_form');
+  FImageList.AddLazarusResource('oi_comp');
+  FImageList.AddLazarusResource('oi_control');
+  FImageList.AddLazarusResource('oi_box');
   Images := FImageList;
 end;
 

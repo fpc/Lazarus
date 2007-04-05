@@ -79,33 +79,52 @@ type
   { TCustomImageList }
   {
     @abstract(Contains a list of images)
-    Introduced by Marc Weustink <weus@quicknet.nl>
+    Introduced by Marc Weustink <marc@dommelstein.net>
 
-    ToDo:
-      Delphis TCustomImageList has internally only one bitmap to hold all
-      images. This reduces handle allocation, which is a problem under win9x,
-      but it is not very fast.
-      Because the LCL runs on many platforms, that do not have this limitations,
-      the TCustomImageList should also support a one handle per image mode.
-      The TCustomImageList should ask the interface, if handle allocation
-      should be reduced and if so do it like Delphi.
-      
-      The current TCustomImageList is simply a list of bitmaps. The masks are
-      not saved at all yet.
+    Delphis TCustomImageList is based on the Win32 imagelists which has
+    internally only one bitmap to hold all images. This reduces handle
+    allocation.
+    The original TCustomImageList implementation was LCL only based, so for
+    other platforms the single bitmap implementation had some speed drawbacks.
+    Therefore it was implemented as list of bitmaps, however it doesnt reduce
+    handle allocation.
+    In its current form, the imagelist is again based on a 32bit RGBA raw
+    imagedata and the widgetset is notified when images are added or removed,
+    so the widgetset can create its own optimal storage. The LCL keeps only the
+    data, so all transparency info will be stored cross platform. (not all
+    platforms have a 8bit alpha channel).
 
-      So a lot ToDo.
+    NOTE: due to its implementation, the TCustomImageList is not a TBitmap
+    collection. If a fast storage of bitmaps is needed, create your on list!
   }
+  
+  // Some temp rework defines, for old functionality both need so be set
+
+  {$define IMGLIST_OLDSTYLE}     // Set to keep original functionality
+  {$define IMGLIST_KEEP_EXTRA}   // Not needed for Delphi compat.
+
+  {$ifdef IMGLIST_OLDSTYLE}
+  // hack to set defines in dependent widgetsets.
+  TOldstyleCustomImageList = Boolean;
+  {$endif}
+
   TDrawingStyle = (dsFocus, dsSelected, dsNormal, dsTransparent);
   TImageType = (itImage, itMask);
 
-  TCustomImageList = Class(TLCLComponent)
+  TCustomImageList = class(TLCLHandleComponent)
   private
     FDrawingStyle: TDrawingStyle;
+    FData: array of TRGBAQuad;
+    {$ifdef IMGLIST_OLDSTYLE}
+    FHandle: THandle;
     FImageList: TList;
     FMaskList: TList;
+    {$endif}
+    {$ifdef IMGLIST_KEEP_EXTRA}
     FBitmap: TBitmap;
-    FImageType: TImageType;
     FMaskBitmap: TBitmap;
+    {$endif}
+    FImageType: TImageType;
     FHeight: Integer;
     FMasked: boolean;
     FShareImages: Boolean;
@@ -117,9 +136,14 @@ type
     FOnChange: TNotifyEvent;
     FChangeLinkList: TList;
     FBkColor: TColor;
-    FHandle: THandle;
     FChanged: boolean;
+    {$ifdef IMGLIST_OLDSTYLE}
     procedure AllocBitmap(Amount: Integer);
+    {$else}
+    procedure AllocData(ACount: Integer);
+    {$endif}
+    
+    
     procedure NotifyChangeLink;
     procedure SetBkColor(const Value: TColor);
     procedure SetDrawingStyle(const AValue: TDrawingStyle);
@@ -131,12 +155,14 @@ type
     procedure ShiftImages(const Source: TCanvas; Start, Shift: Integer);
   protected
     FUpdateCount: integer;
+    procedure CheckIndex(AIndex: Integer; AForInsert: Boolean = False);
+    procedure FillDescription(ADesc: TRawImageDescription);
     procedure GetImages(Index: Integer; const Image, Mask: TBitmap);
     procedure Initialize; virtual;
     procedure DefineProperties(Filer: TFiler); override;
     procedure SetWidthHeight(NewWidth,NewHeight: integer); virtual;
   public
-    constructor Create(TheOwner: TComponent); override;
+    constructor Create(AOwner: TComponent); override;
 
     procedure AssignTo(Dest: TPersistent); override;
     procedure Assign(Source: TPersistent); override;
@@ -146,24 +172,33 @@ type
     procedure EndUpdate;
 
     function Add(Image, Mask: TBitmap): Integer; // using AddCopy for Delphi compatibility
+    {$ifdef IMGLIST_OLDSTYLE}
     function AddDirect(Image, Mask: TBitmap): Integer;
     function AddCopy(SrcImage, SrcMask: TBitmap): Integer;
+    {$endif}
     function AddIcon(Image: TIcon): Integer;
     procedure AddImages(Value: TCustomImageList);
     function AddMasked(Image: TBitmap; MaskColor: TColor): Integer;
-    function AddFromLazarusResource(const ResourceName: string): integer;
+    function AddLazarusResource(const ResourceName: string; MaskColor: TColor = clNone): integer;
     procedure Change;
     procedure Clear;
+    {.$ifdef IMGLIST_KEEP_EXTRA}
     constructor CreateSize(AWidth, AHeight: Integer);
+    {.$endif}
     procedure Delete(Index: Integer);
     destructor Destroy; override;
     procedure Draw(Canvas: TCanvas; X, Y, Index: Integer; Enabled: Boolean = True);
     procedure GetBitmap(Index: Integer; Image: TBitmap);
+    {$ifdef IMGLIST_KEEP_EXTRA}
     procedure GetInternalImage(Index: integer; var Image, Mask: TBitmap;
                                var ImageRect: TRect);
+    {$endif}
     function GetHotSpot: TPoint; virtual;
     procedure GetIcon(Index: Integer; Image: TIcon);
+
+    {$ifdef IMGLIST_OLDSTYLE}
     function HandleAllocated: Boolean;
+    {$endif}
     procedure Insert(Index: Integer; Image, Mask: TBitmap);
     procedure InsertIcon(Index: Integer; Image: TIcon);
     procedure InsertMasked(Index: Integer; Image: TBitmap; MaskColor: TColor);
@@ -172,6 +207,7 @@ type
     procedure ReplaceIcon(Index: Integer; Image: TIcon);
     procedure ReplaceMasked(Index: Integer; NewImage: TBitmap; MaskColor: TColor);
     procedure RegisterChanges(Value: TChangeLink);
+    procedure StretchDraw(Canvas: TCanvas; Index: Integer; ARect: TRect; Enabled: Boolean = True);
     procedure UnRegisterChanges(Value: TChangeLink);
   public
     property AllocBy: Integer read FAllocBy write FAllocBy default 4;
@@ -179,13 +215,17 @@ type
     property BkColor: TColor read FBkColor write SetBkColor default clNone;
     property Count: Integer read FCount;
     property DrawingStyle: TDrawingStyle read FDrawingStyle write SetDrawingStyle default dsNormal;
+    {$ifdef IMGLIST_OLDSTYLE}
     property Handle: THandle read FHandle;
+    {$endif}
     property Height: Integer read FHeight write SetHeight default 16;
     property Width: Integer read FWidth write SetWidth default 16;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property Masked: boolean read FMasked write SetMasked;
+    {$ifdef IMGLIST_KEEP_EXTRA}
     property Bitmap: TBitmap read FBitmap;
     property MaskBitmap: TBitmap read FMaskBitmap;
+    {$endif}
     property ShareImages: Boolean read FShareImages write SetShareImages;
     property ImageType: TImageType read FImageType write FImageType default itImage;
   end;

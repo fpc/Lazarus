@@ -419,7 +419,8 @@ procedure TProjectInspectorForm.SetupComponents;
     Pixmap:=TPixmap.Create;
     Pixmap.TransparentColor:=clWhite;
     Pixmap.LoadFromLazarusResource(ResName);
-    ImageList.AddDirect(Pixmap,nil)
+    ImageList.Add(Pixmap,nil);
+    Pixmap.Free;
   end;
 
 begin

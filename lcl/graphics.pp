@@ -1169,8 +1169,8 @@ type
     function PaletteAllocated: boolean;
     procedure CreateFromBitmapHandles(SrcBitmap, SrcMaskBitmap: HBitmap;
                                       const SrcRect: TRect);
-    procedure LoadFromDevice(DC: HDC); virtual;
     function LazarusResourceTypeValid(const ResourceType: string): boolean; virtual;
+    procedure LoadFromDevice(DC: HDC); virtual;
     procedure LoadFromStream(Stream: TStream); override;
     procedure LoadFromLazarusResource(const ResName: String); override;
     procedure LoadFromResourceName(Instance: THandle; const ResName: String); virtual;

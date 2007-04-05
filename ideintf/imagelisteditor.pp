@@ -523,7 +523,8 @@ begin
           Bmp := CreateGlyphSplit(v_CompositeBmp, ImageList.Width, ImageList.Height, c_Part);
 
         Glyph := CreateGlyph(Bmp, ImageList.Width, ImageList.Height, gaNone);
-        I := ImageList.AddDirect(Glyph, nil);
+        I := ImageList.Add(Glyph, nil);
+        Glyph.Free;
 
         New(P);
         P^.Bitmap := Bmp;
