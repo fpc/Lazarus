@@ -12,9 +12,23 @@ packages=rtl fcl
 [target]
 units=interfaces
 
+[prerules]
+ifeq ($(OS_TARGET),linux)
+fpGUIPlatform=x11
+endif
+ifeq ($(OS_TARGET),win32)
+fpGUIPlatform=gdi
+endif
+ifeq ($(OS_TARGET),wince)
+fpGUIPlatform=gdi
+endif
+ifeq ($(OS_TARGET),win64)
+fpGUIPlatform=gdi
+endif
+
 [compiler]
 options=-gl -dfpgui
-unitdir=../../units/$(CPU_TARGET)-$(OS_TARGET) .
+unitdir=../../units/$(CPU_TARGET)-$(OS_TARGET) . gfx gui gfx/$(fpGUIPlatform)
 unittargetdir=../../units/$(CPU_TARGET)-$(OS_TARGET)/fpgui
 
 [clean]

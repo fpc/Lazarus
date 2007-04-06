@@ -2670,12 +2670,15 @@ type
     scatInherited, scatPoint, scatUp,
     scatEdgedBracketOpen, scatEdgedBracketClose,
     scatRoundBracketOpen, scatRoundBracketClose);
+
+{$IFDEF VerboseGetStringConstBounds}
 const
   StrConstTokenTypeName: array[TStrConstTokenType] of string = (
     'scatNone', 'scatStrConst', 'scatPlus', 'scatIdent',
     'scatInherited', 'scatPoint', 'scatUp',
     'scatEdgedBracketOpen', 'scatEdgedBracketClose',
     'scatRoundBracketOpen', 'scatRoundBracketClose');
+{$ENDIF}
 
   function GetCurrentTokenType: TStrConstTokenType;
   begin
@@ -2702,7 +2705,7 @@ const
     else
       Result:=scatNone;
   end;
-  
+
 var
   CleanCursorPos: integer;
   SameArea: TAtomPosition;
@@ -4227,7 +4230,7 @@ var
       // read all property infos of current class
       TypeData:=GetTypeData(TypeInfo);
       // skip unitname
-      PropInfo:=PPropInfo(@TypeData^.UnitName+Length(TypeData^.UnitName)+1);
+      PropInfo:=PPropInfo(PByte(@TypeData^.UnitName)+Length(TypeData^.UnitName)+1);
       // read property count
       CurCount:=PWord(PropInfo)^;
       inc(PtrInt(PropInfo),SizeOf(Word));

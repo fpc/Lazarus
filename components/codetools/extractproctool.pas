@@ -263,8 +263,10 @@ type
   TParameterType = (ptNone, ptConst, ptVar, ptOut, ptNoSpecifier);
 const
   ShortProcFormat = [phpWithoutClassKeyword];
+  {$IFDEF CTDebug}
   ParameterTypeNames: array[TParameterType] of string = (
     'ptNone', 'ptConst', 'ptVar', 'ptOut', 'ptNoSpecifier');
+  {$ENDIF}
 var
   BlockStartPos, BlockEndPos: integer; // the selection
   ProcNode: TCodeTreeNode; // the main proc node of the selection
