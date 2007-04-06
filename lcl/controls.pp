@@ -1001,6 +1001,7 @@ type
     procedure CMParentShowHintChanged(var Message: TLMessage); message CM_PARENTSHOWHINTCHANGED;
     procedure CMVisibleChanged(var Message: TLMessage); message CM_VISIBLECHANGED;
     procedure CMTextChanged(var Message: TLMessage); message CM_TEXTCHANGED;
+    procedure CMDrag(var Message: TCMDrag); message CM_DRAG;
   protected
     // drag and drop
     procedure CalculateDockSizes;

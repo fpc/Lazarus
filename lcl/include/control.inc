@@ -716,6 +716,11 @@ begin
   TextChanged;
 end;
 
+procedure TControl.CMDrag(var Message: TCMDrag);
+begin
+  DoDragMsg(Message);
+end;
+
 {------------------------------------------------------------------------------
        TControl.CMParentColorChanged
 
