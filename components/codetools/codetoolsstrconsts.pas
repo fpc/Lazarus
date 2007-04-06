@@ -191,7 +191,7 @@ ResourceString
   ctsInstallerDirectories = 'Installer directories';
   ctsDefsForLazarusSources = 'Definitions for the Lazarus Sources';
   ctsAddsDirToSourcePath = 'adds %s to SrcPath';
-  ctsIfDefMSWindows = 'IfDef MSWindows';
+  ctsIfDefWindows = 'IfDef Windows';
   ctsIfDefLinux = 'IfDef Linux';
   ctsAddsDirToIncludePath = 'adds %s to IncPath';
   ctsSetsIncPathTo = 'sets IncPath to %s';

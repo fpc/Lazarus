@@ -4181,9 +4181,10 @@ begin
             d(LazarusSrcDir+'/lcl/interfaces/fpgui/gfx/x11')
             +';'+CompiledSrcPath
             ,da_Define));
-      // ifdef mswindows
-      IfTemplate:=TDefineTemplate.Create('IFDEF mswindows',
-        ctsIfDefMSWindows, 'mswindows', '', da_IfDef);
+      LCLUnitsCPUOSWidgetSetDir.AddChild(IfTemplate);
+      // ifdef windows
+      IfTemplate:=TDefineTemplate.Create('IFDEF swindows',
+        ctsIfDefWindows, 'windows', '', da_IfDef);
         // then add gfx/gdi to CompiledSrcPath
         IfTemplate.AddChild(TDefineTemplate.Create('Add gfx/gdi to CompiledSrcPath',
           Format(ctsAddsDirToSourcePath,['gfx/gdi']),
@@ -4276,7 +4277,7 @@ begin
     Format(ctsAddsDirToSourcePath,['gui, gfx']),
       ExternalMacroStart+'SrcPath',
       d(LazarusSrcDir+'/lcl/interfaces/fpgui/gui')
-      +d(LazarusSrcDir+'/lcl/interfaces/fpgui/gfx')
+      +';'+d(LazarusSrcDir+'/lcl/interfaces/fpgui/gfx')
       +';'+SrcPath
       ,da_DefineRecurse));
     // ifdef linux
@@ -4289,9 +4290,10 @@ begin
           d(LazarusSrcDir+'/lcl/interfaces/fpgui/gfx/x11')
           +';'+SrcPath
           ,da_DefineRecurse));
-    // ifdef mswindows
-    IfTemplate:=TDefineTemplate.Create('IFDEF mswindows',
-      ctsIfDefMSWindows, 'mswindows', '', da_IfDef);
+    IntfDirTemplate.AddChild(IfTemplate);
+    // ifdef windows
+    IfTemplate:=TDefineTemplate.Create('IFDEF windows',
+      ctsIfDefWindows, 'windows', '', da_IfDef);
       // then add gdi to SrcPath
       IfTemplate.AddChild(TDefineTemplate.Create('Add gdi to SrcPath',
         Format(ctsAddsDirToSourcePath,['gdi']),
