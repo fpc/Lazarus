@@ -55,13 +55,14 @@ type
     lpWin32,
     lpWinCE,
     lpCarbon,
-    lpQT
+    lpQT,
+    lpfpGUI
     );
   TLCLPlatforms = set of TLCLPlatform;
   
 const
   LCLPlatformNames: array[TLCLPlatform] of string = (
-      'gtk', 'gtk2', 'win32', 'wince', 'carbon', 'qt'
+      'gtk', 'gtk2', 'win32', 'wince', 'carbon', 'qt', 'fpgui'
     );
 
 

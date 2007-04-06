@@ -102,10 +102,11 @@ const
       'i386', 'powerpc', 'm68k', 'x86_64', 'sparc', 'arm'
     );
 
-  Lazarus_CPU_OS_Widget_Combinations: array[1..30] of shortstring = (
+  Lazarus_CPU_OS_Widget_Combinations: array[1..35] of shortstring = (
     'i386-linux-gtk',
     'i386-linux-gtk2',
     'i386-linux-qt',
+    'i386-linux-fpgui',
     'i386-freebsd-gtk',
     'i386-freebsd-gtk2',
     'i386-freebsd-qt',
@@ -117,7 +118,9 @@ const
     'i386-netbsd-qt',
     'i386-win32-win32',
     'i386-win32-gtk2',
+    'i386-win32-fpgui',
     'i386-wince-wince',
+    'i386-wince-fpgui',
     'i386-darwin-gtk',
     'i386-darwin-gtk2',
     'i386-darwin-carbon',
@@ -130,9 +133,11 @@ const
     'sparc-linux-gtk',
     'sparc-linux-gtk2',
     'arm-wince-wince',
+    'arm-wince-fpgui',
     'x86_64-linux-gtk',
     'x86_64-linux-gtk2',
-    'x86_64-linux-qt'
+    'x86_64-linux-qt',
+    'x86_64-linux-fpgui'
     );
 
 type
@@ -4237,6 +4242,9 @@ begin
     IntfDirTemplate.AddChild(TDefineTemplate.Create('Define qt1',
       ctsDefineMacroQT1,'qt1','',da_Define));
   SubDirTempl.AddChild(IntfDirTemplate);
+
+  // <LazarusSrcDir>/lcl/interfaces/fpgui
+  // no special
 
   // <LazarusSrcDir>/components
   DirTempl:=TDefineTemplate.Create('Components',ctsComponentsDirectory,
