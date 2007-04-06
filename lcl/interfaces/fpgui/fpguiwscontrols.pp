@@ -33,7 +33,7 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-//  Controls,
+  Controls, LCLType,
 ////////////////////////////////////////////////////
   WSControls, WSLCLClasses;
 
@@ -53,6 +53,7 @@ type
   private
   protected
   public
+    class procedure AddControl(const AControl: TControl); override;
   end;
 
   { TFpGuiWSWinControl }
@@ -61,6 +62,9 @@ type
   private
   protected
   public
+    class procedure ShowHide(const AWinControl: TWinControl); override;
+    class procedure SetPos(const AWinControl: TWinControl; const ALeft, ATop: Integer); override;
+    class procedure SetSize(const AWinControl: TWinControl; const AWidth, AHeight: Integer); override;
   end;
 
   { TFpGuiWSGraphicControl }
@@ -89,6 +93,48 @@ type
 
 
 implementation
+uses fpgui, FPGUIWSPrivate;
+
+{ TFpGuiWSWinControl }
+
+class procedure TFpGuiWSWinControl.ShowHide(const AWinControl: TWinControl);
+var
+  FPWidget: TFPGUIPrivateWidget;
+begin
+  FPWidget := TFPGUIPrivateWidget(AWincontrol.Handle);
+  FPWidget.Visible := not FPWidget.Visible;
+end;
+
+class procedure TFpGuiWSWinControl.SetPos(const AWinControl: TWinControl;
+  const ALeft, ATop: Integer);
+var
+  FPWidget: TWidget;
+begin
+  FPWidget := TWidget(AWincontrol.Handle);
+  FPWIdget.SetBounds(ALeft, ATop, AWincontrol.Width, AWinControl.Height);
+end;
+
+class procedure TFpGuiWSWinControl.SetSize(const AWinControl: TWinControl;
+  const AWidth, AHeight: Integer);
+var
+  FPWidget: TWidget;
+begin
+  FPWidget := TWidget(AWincontrol.Handle);
+  FPWIdget.SetBounds(AWinControl.Left, AWinControl.Top, AWidth, AHeight);
+end;
+
+{ TFpGuiWSControl }
+
+class procedure TFpGuiWSControl.AddControl(const AControl: TControl);
+var
+  AParent: TWinControl;
+  ParentWidget: TFPGUIPrivateWidget;
+begin
+  AParent := TWinControl(AControl).Parent;
+  ParentWidget := TFPGUIPrivateWidget(AParent.Handle);
+  
+  (ParentWidget as IContainer).AddChild(TWinControl(AControl));
+end;
 
 initialization
 
@@ -99,8 +145,8 @@ initialization
 // which actually implement something
 ////////////////////////////////////////////////////
 //  RegisterWSComponent(TDragImageList, TFpGuiWSDragImageList);
-//  RegisterWSComponent(TControl, TFpGuiWSControl);
-//  RegisterWSComponent(TWinControl, TFpGuiWSWinControl);
+  RegisterWSComponent(TControl, TFpGuiWSControl);
+  RegisterWSComponent(TWinControl, TFpGuiWSWinControl);
 //  RegisterWSComponent(TGraphicControl, TFpGuiWSGraphicControl);
 //  RegisterWSComponent(TCustomControl, TFpGuiWSCustomControl);
 //  RegisterWSComponent(TImageList, TFpGuiWSImageList);

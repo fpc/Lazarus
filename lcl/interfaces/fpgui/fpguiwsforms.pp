@@ -33,9 +33,9 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-//  Forms,
+  Forms,
 ////////////////////////////////////////////////////
-  WSForms, WSLCLClasses;
+  WSForms, WSLCLClasses, LCLType, Controls;
 
 type
 
@@ -77,6 +77,13 @@ type
   private
   protected
   public
+    class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
+    
+    class function  CreateHandle(const AWinControl: TWinControl;
+      const AParams: TCreateParams): TLCLIntfHandle; override;
+    class procedure SetFormBorderStyle(const AForm: Forms.TCustomForm;
+                             const AFormBorderStyle: TFormBorderStyle); override;
+    class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
   end;
 
   { TFpGuiWSForm }
@@ -113,6 +120,45 @@ type
 
 
 implementation
+uses FPGuiWSPrivate, fpgui, fpgfx, gfxbase, Classes;
+
+{ TFpGuiWSCustomForm }
+
+class function TFpGuiWSCustomForm.GetText(const AWinControl: TWinControl;
+  var AText: String): Boolean;
+var
+  FPForm: TFPGUIPrivateWindow;
+begin
+  Result := True;
+  FPForm := TFPGUIPrivateWindow(AWinControl.Handle);
+  AText := FPForm.GetText;
+end;
+class function TFpGuiWSCustomForm.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): TLCLIntfHandle;
+var
+  FPForm: TFPGUIPrivateWindow;
+begin
+  FPForm := TFPGUIPrivateWindow.Create(AWinControl, AParams);
+  Result := TLCLIntfHandle(FPForm);
+end;
+
+class procedure TFpGuiWSCustomForm.SetFormBorderStyle(const AForm: Forms.TCustomForm;
+  const AFormBorderStyle: TFormBorderStyle);
+var
+  FPForm: TFPGUIPrivateWindow;
+begin
+  FPForm := TFPGUIPrivateWindow(AForm.Handle);
+
+end;
+
+class procedure TFpGuiWSCustomForm.SetText(const AWinControl: TWinControl;
+  const AText: String);
+var
+  FPForm: TFPGUIPrivateWindow;
+begin
+  FPForm := TFPGUIPrivateWindow(AWincontrol.Handle);
+  FPForm.SetText(AText);
+end;
 
 initialization
 
@@ -126,8 +172,8 @@ initialization
 //  RegisterWSComponent(TScrollBox, TFpGuiWSScrollBox);
 //  RegisterWSComponent(TCustomFrame, TFpGuiWSCustomFrame);
 //  RegisterWSComponent(TFrame, TFpGuiWSFrame);
-//  RegisterWSComponent(TCustomForm, TFpGuiWSCustomForm);
-//  RegisterWSComponent(TForm, TFpGuiWSForm);
+  RegisterWSComponent(Forms.TCustomForm, TFpGuiWSCustomForm);
+//  RegisterWSComponent(Forms.TForm, TFpGuiWSForm);
 //  RegisterWSComponent(THintWindow, TFpGuiWSHintWindow);
 //  RegisterWSComponent(TScreen, TFpGuiWSScreen);
 //  RegisterWSComponent(TApplicationProperties, TFpGuiWSApplicationProperties);

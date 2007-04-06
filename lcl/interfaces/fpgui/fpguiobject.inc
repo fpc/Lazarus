@@ -75,7 +75,13 @@ end;
   Initializes the application
  ------------------------------------------------------------------------------}
 procedure TFpGuiWidgetSet.AppInit(var ScreenInfo: TScreenInfo);
+var
+  Display: String;
 begin
+  // This doesn't hurt. on other playforms than X it just will do nothing
+  GetEnvironmentVariable('DISPLAY');
+  GFApplication.Initialize(Display);
+  //GFApplication.QuitWhenLastWindowCloses := False;
 end;
 
 {------------------------------------------------------------------------------
@@ -87,6 +93,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TFpGuiWidgetSet.AppRun(const ALoop: TApplicationMainLoop);
 begin
+  // GFApplication.EventFilter can maybe be used on X11 for aloop but it is X only
+  GFApplication.Run;
 end;
 
 {------------------------------------------------------------------------------
@@ -120,6 +128,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TFpGuiWidgetSet.AppTerminate;
 begin
+  GFApplication.Quit;
 end;
 
 {------------------------------------------------------------------------------

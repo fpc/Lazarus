@@ -39,7 +39,10 @@ uses
   // LCL
   InterfaceBase, LCLProc, LCLType, LMessages,
   Controls, ExtCtrls, Forms, Dialogs, StdCtrls, Comctrls, LCLIntf,
-  GraphType;
+  GraphType,
+  // Interface
+  fpgui, fpgfx,
+  FPGUIWSPrivate;
 
 type
 
@@ -97,12 +100,12 @@ uses
 ////////////////////////////////////////////////////
 // FpGuiWSActnList,
 // FpGuiWSArrow,
-// FpGuiWSButtons,
+ FpGuiWSButtons,
 // FpGuiWSCalendar,
 // FpGuiWSCheckLst,
 // FpGuiWSCListBox,
 // FpGuiWSComCtrls,
-// FpGuiWSControls,
+ FpGuiWSControls,
 // FpGuiWSDbCtrls,
 // FpGuiWSDBGrids,
 // FpGuiWSDialogs,
@@ -111,7 +114,7 @@ uses
 // FpGuiWSExtCtrls,
 // FpGuiWSExtDlgs,
 // FpGuiWSFileCtrl,
-// FpGuiWSForms,
+ FpGuiWSForms,
 // FpGuiWSGrids,
 // FpGuiWSImgList,
 // FpGuiWSMaskEdit,

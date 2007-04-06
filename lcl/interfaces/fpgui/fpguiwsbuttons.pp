@@ -33,9 +33,9 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-//  Buttons,
+  Buttons,
 ////////////////////////////////////////////////////
-  WSButtons, WSLCLClasses;
+  WSButtons, WSLCLClasses, LCLType, Controls;
 
 type
 
@@ -45,6 +45,9 @@ type
   private
   protected
   public
+    class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
+    class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
   end;
 
   { TFpGuiWSBitBtn }
@@ -65,6 +68,28 @@ type
 
 
 implementation
+uses FPGUIWSPrivate;
+
+{ TFpGuiWSButton }
+
+class function TFpGuiWSButton.GetText(const AWinControl: TWinControl;
+  var AText: String): Boolean;
+begin
+  Result := True;
+  AText := TFPGUIPrivateButton(AWinControl.Handle).GetText;
+end;
+
+class procedure TFpGuiWSButton.SetText(const AWinControl: TWinControl;
+  const AText: String);
+begin
+  TFPGUIPrivateButton(AWinControl.Handle).SetText(AText);
+end;
+
+class function TFpGuiWSButton.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): TLCLIntfHandle;
+begin
+  Result := TLCLIntfHandle(TFPGUIPrivateButton.Create(AWinControl, AParams));
+end;
 
 initialization
 
@@ -74,7 +99,7 @@ initialization
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
-//  RegisterWSComponent(TCustomButton, TFpGuiWSButton);
+  RegisterWSComponent(Buttons.TCustomButton, TFpGuiWSButton);
 //  RegisterWSComponent(TCustomBitBtn, TFpGuiWSBitBtn);
 //  RegisterWSComponent(TCustomSpeedButton, TFpGuiWSSpeedButton);
 ////////////////////////////////////////////////////
