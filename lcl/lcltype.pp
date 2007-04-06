@@ -254,18 +254,6 @@ const
   DFCS_MONO = 32768;
   DFCS_PUSHED = 512;
 
-//==============================================
-// Registry constants
-//==============================================
-  { Provided for compatibility with Windows registry ONLY }
-  HKEY_CLASSES_ROOT     = $80000000;
-  HKEY_CURRENT_USER     = $80000001;
-  HKEY_LOCAL_MACHINE    = $80000002;
-  HKEY_USERS            = $80000003;
-  HKEY_PERFORMANCE_DATA = $80000004;
-  HKEY_CURRENT_CONFIG   = $80000005;
-  HKEY_DYN_DATA         = $80000006;
-
   HTERROR = -2;
   HTTRANSPARENT = -1;
   HTNOWHERE = 0;
