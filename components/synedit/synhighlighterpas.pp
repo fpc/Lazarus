@@ -53,11 +53,11 @@ interface
 uses
   SysUtils,
   {$IFDEF SYN_LAZARUS}
-  LCLProc, LCLIntf, LCLType,
+  LCLProc, LCLIntf,
   {$ELSE}
-  Windows, Messages, Registry,
+  Windows, Messages,
   {$ENDIF}
-  Classes, Controls, Graphics,
+  Classes, Registry, Controls, Graphics,
   SynEditTypes, SynEditHighlighter, SynEditTextBuffer;
 
 type
