@@ -29,7 +29,10 @@ function CarbonControl_Hit(ANextHandler: EventHandlerCallRef;
 var
   ControlPart: ControlPartCode;
 begin
-  DebugLn('CarbonControl_Hit: ', DbgSName(AWidget.LCLObject));
+  {$IFDEF VerboseControlEvent}
+    DebugLn('CarbonControl_Hit: ', DbgSName(AWidget.LCLObject));
+  {$ENDIF}
+  
   Result := CallNextEventHandler(ANextHandler, AEvent);
 
   if GetEventParameter(AEvent, kEventParamControlPart, typeControlPartCode, nil,
@@ -45,7 +48,10 @@ function CarbonControl_ValueChanged(ANextHandler: EventHandlerCallRef;
   AEvent: EventRef;
   AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
 begin
-  DebugLn('CarbonControl_ValueChanged ', DbgSName(AWidget.LCLObject));
+  {$IFDEF VerboseControlEvent}
+    DebugLn('CarbonControl_ValueChanged ', DbgSName(AWidget.LCLObject));
+  {$ENDIF}
+  
   Result := CallNextEventHandler(ANextHandler, AEvent);
 
   (AWidget as TCarbonControl).ValueChanged;
@@ -55,7 +61,10 @@ function CarbonControl_IndicatorMoved(ANextHandler: EventHandlerCallRef;
   AEvent: EventRef;
   AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
 begin
-  DebugLn('CarbonControl_IndicatorMoved ', DbgSName(AWidget.LCLObject));
+  {$IFDEF VerboseControlEvent}
+    DebugLn('CarbonControl_IndicatorMoved ', DbgSName(AWidget.LCLObject));
+  {$ENDIF}
+  
   Result := CallNextEventHandler(ANextHandler, AEvent);
   
   (AWidget as TCarbonControl).IndicatorMoved;
@@ -65,7 +74,10 @@ function CarbonControl_TextDidChange(ANextHandler: EventHandlerCallRef;
   AEvent: EventRef;
   AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
 begin
-  DebugLn('CarbonControl_TextDidChange: ', DbgSName(AWidget.LCLObject));
+  {$IFDEF VerboseControlEvent}
+    DebugLn('CarbonControl_TextDidChange: ', DbgSName(AWidget.LCLObject));
+  {$ENDIF}
+  
   Result := CallNextEventHandler(ANextHandler, AEvent);
 
   (AWidget as TCarbonControl).TextDidChange;
@@ -77,7 +89,10 @@ function CarbonControl_ListItemSelected(ANextHandler: EventHandlerCallRef;
 var
   Index: CFIndex;
 begin
-  DebugLn('CarbonControl_ListItemSelected: ', DbgSName(AWidget.LCLObject));
+  {$IFDEF VerboseControlEvent}
+    DebugLn('CarbonControl_ListItemSelected: ', DbgSName(AWidget.LCLObject));
+  {$ENDIF}
+  
   Result := CallNextEventHandler(ANextHandler, AEvent);
   
   // get selected item index
@@ -102,50 +117,49 @@ end;
 
 {------------------------------------------------------------------------------
   Method:  TCarbonControl.Hit
-  Returns: Nothing
 
   Hit event handler
  ------------------------------------------------------------------------------}
 procedure TCarbonControl.Hit(AControlPart: ControlPartCode);
 begin
   DebugLn('TCarbonControl.Hit is invalid ', ClassName, ' ',
-    DbgSName(LCLObject), ': ', LCLObject.ClassName);
+    LCLObject.Name, ': ', LCLObject.ClassName);
 end;
 
 procedure TCarbonControl.Draw;
 begin
   DebugLn('TCarbonControl.Draw is invalid ', ClassName, ' ',
-    DbgSName(LCLObject), ': ', LCLObject.ClassName);
+    LCLObject.Name, ': ', LCLObject.ClassName);
 end;
 
 procedure TCarbonControl.ValueChanged;
 begin
   DebugLn('TCarbonControl.ValueChanged is invalid ', ClassName, ' ',
-    DbgSName(LCLObject), ': ', LCLObject.ClassName);
+    LCLObject.Name, ': ', LCLObject.ClassName);
 end;
 
 procedure TCarbonControl.IndicatorMoved;
 begin
   DebugLn('TCarbonControl.IndicatorMoved is invalid ', ClassName, ' ',
-    DbgSName(LCLObject), ': ', LCLObject.ClassName);
+    LCLObject.Name, ': ', LCLObject.ClassName);
 end;
 
 procedure TCarbonControl.TextDidChange;
 begin
   DebugLn('TCarbonControl.TextDidChange is invalid! ', ClassName, ' ',
-    DbgSName(LCLObject), ': ', LCLObject.ClassName);
+    LCLObject.Name, ': ', LCLObject.ClassName);
 end;
 
 procedure TCarbonControl.DoAction(AControlPart: ControlPartCode);
 begin
   DebugLn('TCarbonControl.DoAction is invalid ', ClassName, ' ',
-    DbgSName(LCLObject), ': ', LCLObject.ClassName);
+    LCLObject.Name, ': ', LCLObject.ClassName);
 end;
 
 procedure TCarbonControl.ListItemSelected(AIndex: Integer);
 begin
   DebugLn('TCarbonControl.ListItemSelected is invalid ', ClassName, ' ',
-    DbgSName(LCLObject), ': ', LCLObject.ClassName);
+    LCLObject.Name, ': ', LCLObject.ClassName);
 end;
 
 procedure TCarbonControl.RegisterEvents;
@@ -244,8 +258,10 @@ begin
       1, @TmpSpec, Pointer(Self), nil);
   end;
 
-  DebugLn('TCarbonControl.RegisterEvents ', ClassName, ' ',
-    LCLObject.Name, ': ', LCLObject.ClassName);
+  {$IFDEF VerboseControlEvent}
+    DebugLn('TCarbonControl.RegisterEvents ', ClassName, ' ',
+      LCLObject.Name, ': ', LCLObject.ClassName);
+  {$ENDIF}
 end;
 
 procedure TCarbonControl.UnregisterEvents;
@@ -316,7 +332,6 @@ end;
 {------------------------------------------------------------------------------
   Method:  TCarbonControl.Invalidate
   Params:  Rect - Pointer to rect (optional)
-  Returns: Nothing
 
   Invalidates the specified client rect or entire area of control
  ------------------------------------------------------------------------------}

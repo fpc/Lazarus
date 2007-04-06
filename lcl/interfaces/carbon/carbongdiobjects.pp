@@ -22,6 +22,9 @@ unit CarbonGDIObjects;
 
 interface
 
+// debugging defines
+{$I carbondebug.inc}
+
 uses
  // rtl+ftl
   Types, Classes, SysUtils, Math,
@@ -211,6 +214,8 @@ var
   StockNullBrush: TCarbonBrush;
   WhiteBrush: TCarbonBrush;
   BlackPen: TCarbonPen;
+  
+  DefaultBitmap: TCarbonBitmap; // 1 x 1 bitmap for default context
 
 implementation
 
@@ -893,6 +898,11 @@ initialization
 
   WhiteBrush := TCarbonBrush.Create;
   BlackPen := TCarbonPen.Create;
+  
+  DefaultContext := TCarbonBitmapContext.Create;
+  DefaultBitmap := TCarbonBitmap.Create(1, 1, 32, nil);
+  DefaultContext.SetBitmap(DefaultBitmap);
+  
 
 finalization
   BlackPen.Free;
@@ -903,5 +913,8 @@ finalization
 
   ATSUDisposeStyle(DefaultTextStyle);
   CGColorSpaceRelease(RGBColorSpace);
+  
+  DefaultBitmap.Free;
+  DefaultContext.Free;
 
 end.

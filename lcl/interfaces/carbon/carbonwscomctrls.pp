@@ -26,18 +26,18 @@ unit CarbonWSComCtrls;
 
 interface
 
+// debugging defines
+{$I carbondebug.inc}
+
 uses
-////////////////////////////////////////////////////
-// I M P O R T A N T                                
-////////////////////////////////////////////////////
-// To get as little as posible circles,
-// uncomment only when needed for registration
-////////////////////////////////////////////////////
-  FPCMacOSAll, CarbonDef, CarbonProc, CarbonUtils,
-  Classes, Controls, ComCtrls, LCLType, LCLProc, LMessages, LCLMessageGlue, Math,
-////////////////////////////////////////////////////
+  // libs
+  FPCMacOSAll,
+  // LCL
+  Classes, Controls, ComCtrls, LCLType, LCLProc, Graphics, Math,
+  // widgetset
   WSComCtrls, WSLCLClasses, WSControls, WSProc,
-  CarbonWSControls, CarbonPrivate;
+  // LCL Carbon
+  CarbonDef, CarbonProc, CarbonPrivate, CarbonStrings, CarbonWSControls;
 
 type
 
@@ -47,6 +47,11 @@ type
   private
   protected
   public
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    //class procedure GetPreferredSize(const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); override;
+    class procedure PanelUpdate(const AStatusBar: TStatusBar; PanelIndex: integer); override;
+    class procedure SetPanelText(const AStatusBar: TStatusBar; PanelIndex: integer); override;
+    class procedure Update(const AStatusBar: TStatusBar); override;
   end;
 
   { TCarbonWSTabSheet }
@@ -155,6 +160,45 @@ type
 
 implementation
 
+{ TCarbonWSStatusBar }
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWSStatusBar.CreateHandle
+  Params:  AWinControl - LCL control
+           AParams     - Creation parameters
+  Returns: Handle to the control in Carbon interface
+
+  Creates new status bar in Carbon interface with the specified parameters
+ ------------------------------------------------------------------------------}
+class function TCarbonWSStatusBar.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): TLCLIntfHandle;
+begin
+  Result := TLCLIntfHandle(TCarbonStatusBar.Create(AWinControl, AParams));
+end;
+
+class procedure TCarbonWSStatusBar.PanelUpdate(const AStatusBar: TStatusBar;
+  PanelIndex: integer);
+begin
+  if not CheckHandle(AStatusBar, Self, 'PanelUpdate') then Exit;
+  
+  TCarbonStatusBar(AStatusBar.Handle).UpdatePanel(PanelIndex);
+end;
+
+class procedure TCarbonWSStatusBar.SetPanelText(const AStatusBar: TStatusBar;
+  PanelIndex: integer);
+begin
+  if not CheckHandle(AStatusBar, Self, 'SetPanelText') then Exit;
+  
+  TCarbonStatusBar(AStatusBar.Handle).UpdatePanel(PanelIndex);
+end;
+
+class procedure TCarbonWSStatusBar.Update(const AStatusBar: TStatusBar);
+begin
+  if not CheckHandle(AStatusBar, Self, 'Update') then Exit;
+  
+  TCarbonStatusBar(AStatusBar.Handle).UpdatePanel;
+end;
+
 { TCarbonWSProgressBar }
 
 {------------------------------------------------------------------------------
@@ -209,7 +253,7 @@ end;
            AParams     - Creation parameters
   Returns: Handle to the control in Carbon interface
 
-  Creates new slider in Carbon interface with the specified parameters
+  Creates new track bar in Carbon interface with the specified parameters
  ------------------------------------------------------------------------------}
 class function TCarbonWSTrackBar.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
@@ -266,6 +310,7 @@ begin
   TCarbonTrackBar(ATrackBar.Handle).SetData(ATrackBar.Position);
 end;
 
+
 initialization
 
 ////////////////////////////////////////////////////
@@ -274,7 +319,7 @@ initialization
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
-//  RegisterWSComponent(TCustomStatusBar, TCarbonWSStatusBar);
+  RegisterWSComponent(TStatusBar, TCarbonWSStatusBar);
 //  RegisterWSComponent(TCustomTabSheet, TCarbonWSTabSheet);
 //  RegisterWSComponent(TCustomPageControl, TCarbonWSPageControl);
 //  RegisterWSComponent(TCustomListView, TCarbonWSCustomListView);

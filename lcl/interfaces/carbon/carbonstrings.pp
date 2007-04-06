@@ -22,6 +22,9 @@ unit CarbonStrings;
 
 interface
 
+// debugging defines
+{$I carbondebug.inc}
+
 uses
  // carbon bindings
   FPCMacOSAll,
@@ -30,7 +33,7 @@ uses
  // LCL
   LCLProc, LCLType, Graphics, Controls, StdCtrls,
  // LCL Carbon
-  CarbonDef, CarbonProc, CarbonPrivate;
+  CarbonDef, CarbonProc, CarbonPrivate, CarbonEdits;
 
 type
   { TCarbonComboBoxStrings }
@@ -104,7 +107,6 @@ implementation
   Method:  TCarbonComboBoxStrings.Put
   Params:  Index - Index of string to change
            S     - New text
-  Returns: Nothing
 
   Changes the text on line with the specified index
  ------------------------------------------------------------------------------}
@@ -127,7 +129,6 @@ end;
   Method:  TCarbonComboBoxStrings.Insert
   Params:  Index - Line index
            S     - Text to insert
-  Returns: Nothing
 
   Inserts the text on line with the specified index
  ------------------------------------------------------------------------------}
@@ -150,7 +151,6 @@ end;
   Params:  Index - Line index
            S     - Text to insert
            O     - Object to insert
-  Returns: Nothing
 
   Inserts the text on line with the specified index
  ------------------------------------------------------------------------------}
@@ -172,7 +172,6 @@ end;
 {------------------------------------------------------------------------------
   Method:  TCarbonComboBoxStrings.Create
   Params:  AOwner - Carbon combo box owner of strings
-  Returns: Nothing
 
   Creates new strings for Carbon combo box items
  ------------------------------------------------------------------------------}
@@ -184,7 +183,6 @@ end;
 
 {------------------------------------------------------------------------------
   Method:  TCarbonComboBoxStrings.Clear
-  Returns: Nothing
 
   Clears strings
  ------------------------------------------------------------------------------}
@@ -204,7 +202,6 @@ end;
 {------------------------------------------------------------------------------
   Method:  TCarbonComboBoxStrings.Delete
   Params:  Index - Line index
-  Returns: Nothing
 
   Deletes line with the specified index from strings
  ------------------------------------------------------------------------------}
@@ -243,27 +240,20 @@ end;
   Method:  TCarbonListBoxStrings.Put
   Params:  Index - Index of string to change
            S     - New text
-  Returns: Nothing
 
   Changes the text on line with the specified index
  ------------------------------------------------------------------------------}
 procedure TCarbonListBoxStrings.Put(Index: Integer; const S: string);
-var
-  Item: Cell;
 begin
   inherited Put(Index, S);
   
-  Item.h := 0;
-  Item.v := Index;
-  // change data to update cell
-  LSetCell(@Index, SizeOf(Integer), Item, FOwner.List);
+  // TODO
 end;
 
 {------------------------------------------------------------------------------
   Method:  TCarbonListBoxStrings.Insert
   Params:  Index - Line index
            S     - Text to insert
-  Returns: Nothing
 
   Inserts the text on line with the specified index
  ------------------------------------------------------------------------------}
@@ -271,7 +261,7 @@ procedure TCarbonListBoxStrings.InsertItem(Index: Integer; const S: string);
 begin
   inherited InsertItem(Index, S);
   
-  LAddRow(1, Index, FOwner.List);
+  // TODO
 end;
 
 {------------------------------------------------------------------------------
@@ -279,7 +269,6 @@ end;
   Params:  Index - Line index
            S     - Text to insert
            O     - Object to insert
-  Returns: Nothing
 
   Inserts the text on line with the specified index
  ------------------------------------------------------------------------------}
@@ -288,13 +277,12 @@ procedure TCarbonListBoxStrings.InsertItem(Index: Integer; const S: string;
 begin
   inherited InsertItem(Index, S, O);
   
-  LAddRow(1, Index, FOwner.List);
+  // TODO
 end;
 
 {------------------------------------------------------------------------------
   Method:  TCarbonListBoxStrings.Create
   Params:  AOwner - Carbon list box owner of strings
-  Returns: Nothing
 
   Creates new strings for Carbon list box items
  ------------------------------------------------------------------------------}
@@ -303,12 +291,10 @@ begin
   inherited Create;
   
   FOwner := AOwner;
-  SetListUserHandle(FOwner.List, Handle(Self))
 end;
 
 {------------------------------------------------------------------------------
   Method:  TCarbonListBoxStrings.Clear
-  Returns: Nothing
 
   Clears strings
  ------------------------------------------------------------------------------}
@@ -316,13 +302,12 @@ procedure TCarbonListBoxStrings.Clear;
 begin
   inherited Clear;
   
-  LDelRow(0, 0, FOwner.List);
+  // TODO
 end;
 
 {------------------------------------------------------------------------------
   Method:  TCarbonListBoxStrings.Delete
   Params:  Index - Line index
-  Returns: Nothing
 
   Deletes line with the specified index from strings
  ------------------------------------------------------------------------------}
@@ -330,14 +315,13 @@ procedure TCarbonListBoxStrings.Delete(Index: Integer);
 begin
   inherited Delete(Index);
   
-  LDelRow(1, Index, FOwner.List);
+  // TODO
 end;
 
 { TCarbonMemoStrings }
 
 {------------------------------------------------------------------------------
   Method:  TCarbonMemoStrings.InternalUpdate
-  Returns: Nothing
 
   Updates the internal strings from Carbon interface
  ------------------------------------------------------------------------------}
@@ -355,7 +339,6 @@ end;
 
 {------------------------------------------------------------------------------
   Method:  TCarbonMemoStrings.ExternalUpdate
-  Returns: Nothing
 
   Updates the strings in Carbon interface from internal
  ------------------------------------------------------------------------------}
@@ -399,7 +382,6 @@ end;
 {------------------------------------------------------------------------------
   Method:  TCarbonMemoStrings.Create
   Params:  AOwner - Carbon memo owner of strings
-  Returns: Nothing
 
   Creates new strings for Carbon memo strings
  ------------------------------------------------------------------------------}
@@ -411,7 +393,6 @@ end;
 
 {------------------------------------------------------------------------------
   Method:  TCarbonMemoStrings.Destroy
-  Returns: Nothing
 
   Releases strings from Carbon memo strings
  ------------------------------------------------------------------------------}
@@ -425,7 +406,6 @@ end;
 {------------------------------------------------------------------------------
   Method:  TCarbonMemoStrings.Assign
   Params:  Source - Object to assing
-  Returns: Nothing
 
   Assings strings object
  ------------------------------------------------------------------------------}
@@ -444,7 +424,6 @@ end;
 
 {------------------------------------------------------------------------------
   Method:  TCarbonMemoStrings.Clear
-  Returns: Nothing
 
   Clears strings
  ------------------------------------------------------------------------------}
@@ -457,7 +436,6 @@ end;
 {------------------------------------------------------------------------------
   Method:  TCarbonMemoStrings.Delete
   Params:  Index - Line index
-  Returns: Nothing
 
   Deletes line with the specified index from strings
  ------------------------------------------------------------------------------}
@@ -471,7 +449,6 @@ end;
   Method:  TCarbonMemoStrings.Insert
   Params:  Index - Line index
            S     - Text to insert
-  Returns: Nothing
 
   Inserts the text on line with the specified index
  ------------------------------------------------------------------------------}
@@ -484,7 +461,6 @@ end;
 {------------------------------------------------------------------------------
   Method:  TCarbonMemoStrings.SetText
   Params:  TheText - Text to set
-  Returns: Nothing
 
   Sets the text of strings
  ------------------------------------------------------------------------------}
@@ -496,7 +472,6 @@ end;
 
 {------------------------------------------------------------------------------
   Method:  TCarbonMemoStrings.ExternalChanged
-  Returns: Nothing
 
   Notifies that strings object in Carbon interface has changed
  ------------------------------------------------------------------------------}

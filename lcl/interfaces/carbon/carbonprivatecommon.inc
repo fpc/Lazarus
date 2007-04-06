@@ -35,7 +35,7 @@ var
   AStruct: PPaintStruct;
 begin
   {$IFDEF VerbosePaint}
-  Debugln('CarbonCommon_Draw ', DbgSName(AWidget.LCLObject));
+    Debugln('CarbonCommon_Draw ', DbgSName(AWidget.LCLObject));
   {$ENDIF}
   
   // first let carbon draw/update
@@ -56,7 +56,7 @@ begin
   AStruct^.hdc := HDC(AWidget.Context);
   try
     {$IFDEF VerbosePaint}
-    DebugLn('CarbonCommon_Draw LM_PAINT to ', DbgSName(AWidget.LCLObject));
+      DebugLn('CarbonCommon_Draw LM_PAINT to ', DbgSName(AWidget.LCLObject));
     {$ENDIF}
     LCLSendPaintMsg(AWidget.LCLObject, HDC(AWidget.Context), AStruct);
   finally
@@ -69,9 +69,12 @@ function CarbonCommon_BoundsChanged(ANextHandler: EventHandlerCallRef;
   AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
 var
   AWinControl: TWinControl;
-  WidgetBounds: TRect;
+  WidgetBounds, OldBounds, ResizedBounds: TRect;
+  Resized: Boolean;
 begin
-  debugln('CarbonCommon_BoundsChanged ', DbgSName(AWidget.LCLObject));
+  {$IFDEF VerboseCommonEvent}
+    DebugLn('CarbonCommon_BoundsChanged ', DbgSName(AWidget.LCLObject));
+  {$ENDIF}
   // first let carbon draw/update
   Result := CallNextEventHandler(ANextHandler, AEvent);
   
@@ -79,25 +82,43 @@ begin
   begin
     AWinControl := TWinControl(AWidget.LCLObject);
     AWidget.GetBounds(WidgetBounds);
+    
+    OldBounds := AWinControl.BoundsRect;
+    
+    // form expects client size
+    if AWidget is TCarbonWindow then
+    begin
+      AWidget.GetClientRect(ResizedBounds);
+      OffsetRect(ResizedBounds, WidgetBounds.Left, WidgetBounds.Top);
+    end
+    else ResizedBounds := WidgetBounds;
 
     // then send a LM_SIZE message
-    if (AWinControl.Width <> WidgetBounds.Right - WidgetBounds.Left) or
-       (AWinControl.Height <> WidgetBounds.Bottom - WidgetBounds.Top) then
+    if (OldBounds.Right - OldBounds.Left <> WidgetBounds.Right - WidgetBounds.Left) or
+       (OldBounds.Bottom - OldBounds.Top <> WidgetBounds.Bottom - WidgetBounds.Top) then
     begin
-      LCLSendSizeMsg(AWinControl, WidgetBounds.Right - WidgetBounds.Left,
-        WidgetBounds.Bottom - WidgetBounds.Top, Size_SourceIsInterface);
-    end;
+      LCLSendSizeMsg(AWinControl, ResizedBounds.Right - ResizedBounds.Left,
+        ResizedBounds.Bottom - ResizedBounds.Top, Size_SourceIsInterface);
+      Resized := True;
+    end
+    else Resized := False;
 
     // then send a LM_MOVE message
-    if (AWinControl.Left <> WidgetBounds.Left) or
-       (AWinControl.Top <> WidgetBounds.Top) then
+    if (OldBounds.Left <> WidgetBounds.Left) or
+       (OldBounds.Top <> WidgetBounds.Top) then
     begin
-      LCLSendMoveMsg(AWinControl, WidgetBounds.Left,
-        WidgetBounds.Top, Move_SourceIsInterface);
+      LCLSendMoveMsg(AWinControl, ResizedBounds.Left,
+        ResizedBounds.Top, Move_SourceIsInterface);
     end;
     
     // invalidate control canvas
-    AWinControl.Invalidate;
+    if Resized then AWidget.Invalidate;
+    
+    // invalidate parent client area, previously covered by control
+    if (AWinControl.Parent <> nil) and AWinControl.Parent.HandleAllocated then
+    begin
+      TCarbonWidget(AWinControl.Parent.Handle).Invalidate(@OldBounds);
+    end;
   end;
 end;
 
@@ -113,7 +134,7 @@ var
   Widget: TCarbonWidget;
 begin
   {$IFDEF VerboseMouse}
-  DebugLn('CarbonCommon_TrackProgress');
+    DebugLn('CarbonCommon_TrackProgress');
   {$ENDIF}
 
   Widget := GetCarbonWidget(AControl);
@@ -152,7 +173,7 @@ var
   ControlPart: ControlPartCode;
 begin
   {$IFDEF VerboseMouse}
-  DebugLn('CarbonCommon_Track');
+    DebugLn('CarbonCommon_Track ', DbgSName(AWidget.LCLObject));
   {$ENDIF}
   GetEventParameter(AEvent, kEventParamControlAction, typeControlActionUPP, nil, SizeOf(ActionUPP), nil, @OldActionUPP);
   GetEventParameter(AEvent, kEventParamMouseButton, typeMouseButton, nil, SizeOf(EventMouseButton), nil, @MouseButton);
@@ -184,7 +205,10 @@ begin
     GetEventParameter(AEvent, kEventParamControlPart, typeControlPartCode, nil,
       SizeOf(ControlPartCode), nil, @ControlPart);
 
-    DebugLn('CarbonCommon_Track Control Part ' + DbgS(ControlPart) + ' Button: ' + DbgS(MouseButton));
+    {$IFDEF VerboseMouse}
+      DebugLn('CarbonCommon_Track Control Part ' + DbgS(ControlPart) +
+        ' Button: ' + DbgS(MouseButton));
+    {$ENDIF}
     if (ControlPart > 0) and (ControlPart < 128) then
     begin
       // Mouse up will be fired on hit
@@ -211,6 +235,7 @@ var
                           // or the rootcontrol if none found
 begin
   Result := CallNextEventHandler(ANextHandler, AEvent);
+  
   AStatus := GetEventParameter(AEvent, kEventParamMouseLocation, typeQDPoint, nil,
     SizeOf(ALocation), nil, @ALocation);
   if AStatus = noErr then
@@ -253,12 +278,12 @@ var
   Msg: TLMMouse;
   P: TPoint;
 begin
-  DebugLn('CarbonCommon_ContextualMenuClick: ', DbgSName(AWidget.LCLObject));
+  {$IFDEF VerboseCommonEvent}
+    DebugLn('CarbonCommon_ContextualMenuClick: ', DbgSName(AWidget.LCLObject));
+  {$ENDIF}
   // Result := CallNextEventHandler(ANextHandler, AEvent);
 
   P := AWidget.GetMousePos;
-  
-  DebugLn('CarbonCommon_ContextualMenuClick: ', DbgS(P));
 
   FillChar(Msg, SizeOf(TLMMouse), 0);
   Msg.Msg := LM_CONTEXTMENU;
@@ -280,8 +305,10 @@ begin
   if GetEventParameter(AEvent, kEventParamControlPart, typeControlPartCode, nil,
     SizeOf(ControlPartCode), nil, @FocusPart) <> noErr then Exit;
 
-  DebugLn('CarbonCommon_SetFocusPart: ', DbgSName(AWidget.LCLObject), ' ' +
-    IntToStr(Integer(FocusPart)));
+  {$IFDEF VerboseCommonEvent}
+    DebugLn('CarbonCommon_SetFocusPart: ', DbgSName(AWidget.LCLObject), ' ' +
+      IntToStr(Integer(FocusPart)));
+  {$ENDIF}
 
   if FocusPart <> kControlFocusNoPart then
     LCLSendSetFocusMsg(AWidget.LCLObject)
@@ -299,7 +326,9 @@ var
   TabList: TFPList;
   AControl: TCarbonWidget;
 begin
-  DebugLn('CarbonCommon_GetNextFocusCandidate: ', DbgSName(AWidget.LCLObject));
+  {$IFDEF VerboseCommonEvent}
+    DebugLn('CarbonCommon_GetNextFocusCandidate: ', DbgSName(AWidget.LCLObject));
+  {$ENDIF}
   //Result := CallNextEventHandler(ANextHandler, AEvent);
   
   if GetEventParameter(AEvent, kEventParamStartControl, typeControlRef, nil,

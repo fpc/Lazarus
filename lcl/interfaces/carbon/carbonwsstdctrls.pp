@@ -26,18 +26,19 @@ unit CarbonWSStdCtrls;
 
 interface
 
+// debugging defines
+{$I carbondebug.inc}
+
 uses
-////////////////////////////////////////////////////
-// I M P O R T A N T
-////////////////////////////////////////////////////
-// To get as little as posible circles,
-// uncomment only when needed for registration
-////////////////////////////////////////////////////
-  FPCMacOSAll, CarbonDef, CarbonProc, CarbonUtils,
-  Classes, Controls, StdCtrls, LCLType, LCLProc, LMessages, LCLMessageGlue,
-////////////////////////////////////////////////////
+  // libs
+  FPCMacOSAll,
+  // LCL
+  Classes, Controls, StdCtrls, LCLType, LCLProc, Graphics, Math,
+  // widgetset
   WSStdCtrls, WSLCLClasses, WSControls, WSProc,
-  CarbonWSControls, CarbonPrivate;
+  // LCL Carbon
+  CarbonDef, CarbonProc, CarbonPrivate, CarbonEdits, CarbonWSControls;
+  
 type
 
   { TCarbonWSScrollBar }
@@ -384,7 +385,6 @@ end;
   Method:  TCarbonWSCustomComboBox.SetSelStart
   Params:  ACustomComboBox - LCL custom combo box
            NewStart        - New position of selection start
-  Returns: Nothing
 
   Sets the new position of selection start of combo box in Carbon interface
  ------------------------------------------------------------------------------}
@@ -400,7 +400,6 @@ end;
   Method:  TCarbonWSCustomComboBox.SetSelLength
   Params:  ACustomComboBox - LCL custom combo box
            NewLength       - New length of selection
-  Returns: Nothing
 
   Sets the new length of selection of combo box in Carbon interface
  ------------------------------------------------------------------------------}
@@ -416,7 +415,6 @@ end;
   Method:  TCarbonWSCustomComboBox.SetItemIndex
   Params:  ACustomComboBox - LCL custom combo box
            NewIndex        - New selected item index
-  Returns: Nothing
 
   Selects the item with index in combo box in Carbon interface
  ------------------------------------------------------------------------------}
@@ -432,7 +430,6 @@ end;
   Method:  TCarbonWSCustomComboBox.SetMaxLength
   Params:  ACustomEdit - LCL custom combo box
            NewLength   - New max length
-  Returns: Nothing
 
   Sets the new maximal length of text of combo box in Carbon interface
  ------------------------------------------------------------------------------}
@@ -464,7 +461,6 @@ end;
   Params:  ACustomEdit - LCL custom combo box
            AList       - Strings to sort
            IsSorted    - Sorted state
-  Returns: Nothing
 
   Sorts the items in combo box in Carbon interface
  ------------------------------------------------------------------------------}
@@ -486,8 +482,8 @@ end;
 
   Creates new list box in Carbon interface with the specified parameters
  ------------------------------------------------------------------------------}
-class function TCarbonWSCustomListBox.CreateHandle(
-  const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
+class function TCarbonWSCustomListBox.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): TLCLIntfHandle;
 begin
   Result := TLCLIntfHandle(TCarbonListBox.Create(AWinControl, AParams));
 end;
@@ -497,24 +493,12 @@ end;
   Params:  ACustomListBox - LCL custom list box
   Returns: Count of selected items in list box in Carbon interface
  ------------------------------------------------------------------------------}
-class function TCarbonWSCustomListBox.GetSelCount(
-  const ACustomListBox: TCustomListBox): integer;
-var
-  Item: Cell;
-  I: Integer;
-  List: ListHandle;
+class function TCarbonWSCustomListBox.GetSelCount(const ACustomListBox: TCustomListBox): integer;
 begin
   Result := 0;
   if not CheckHandle(ACustomListBox, Self, 'GetSelCount') then Exit;
   
-  List := TCarbonListBox(ACustomListBox.Handle).List;
-  Item.h := 0;
-  Item.v := 0;
-  for I := 0 to TCarbonListBox(ACustomListBox.Handle).GetItemsCount - 1 do
-  begin
-    if LGetSelect(False, Item, List) then Inc(Result);
-    Inc(Item.v);
-  end;
+  // TODO
 end;
 
 {------------------------------------------------------------------------------
@@ -523,17 +507,13 @@ end;
            AIndex         - Item index
   Returns: If the specified item in list box in Carbon interface is selected
  ------------------------------------------------------------------------------}
-class function TCarbonWSCustomListBox.GetSelected(
-  const ACustomListBox: TCustomListBox; const AIndex: integer): boolean;
-var
-  Item: Cell;
+class function TCarbonWSCustomListBox.GetSelected(const ACustomListBox: TCustomListBox;
+  const AIndex: integer): boolean;
 begin
   Result := False;
   if not CheckHandle(ACustomListBox, Self, 'GetSelected') then Exit;
 
-  Item.h := 0;
-  Item.v := AIndex;
-  Result := LGetSelect(False, Item, TCarbonListBox(ACustomListBox.Handle).List);
+  // TODO
 end;
 
 {------------------------------------------------------------------------------
@@ -571,14 +551,11 @@ end;
  ------------------------------------------------------------------------------}
 class function TCarbonWSCustomListBox.GetTopIndex(
   const ACustomListBox: TCustomListBox): integer;
-var
-  Bounds: FPCMacOSAll.Rect;
 begin
   Result := 0;
   if not CheckHandle(ACustomListBox, Self, 'GetTopIndex') then Exit;
 
-  if GetListViewBounds(TCarbonListBox(ACustomListBox.Handle).List,
-    Bounds) <> nil then Result := Bounds.top;
+  // TODO
 end;
 
 {------------------------------------------------------------------------------
@@ -586,28 +563,22 @@ end;
   Params:  ACustomListBox - LCL custom list box
            AIndex         - Item index to change selection
            ASelected      - New selection value
-  Returns: Nothing
 
   Changes selection of item with the specified index of list box in Carbon
   interface
  ------------------------------------------------------------------------------}
 class procedure TCarbonWSCustomListBox.SelectItem(
   const ACustomListBox: TCustomListBox; AIndex: integer; ASelected: boolean);
-var
-  Item: Cell;
 begin
   if not CheckHandle(ACustomListBox, Self, 'SelectItem') then Exit;
 
-  Item.h := 0;
-  Item.v := AIndex;
-  LSetSelect(ASelected, Item, TCarbonListBox(ACustomListBox.Handle).List);
+  // TODO
 end;
 
 {------------------------------------------------------------------------------
   Method:  TCarbonWSCustomListBox.SetItemIndex
   Params:  ACustomListBox - LCL custom list box
            AIndex         - Item index
-  Returns: Nothing
 
   Sets item index of list box in Carbon interface
  ------------------------------------------------------------------------------}
@@ -624,37 +595,24 @@ end;
   Params:  ACustomListBox  - LCL custom list box
            AExtendedSelect - New extended selection value
            AMultiSelect    - New mutliple selection value
-  Returns: Nothing
 
   Changes selection mode of list box in Carbon interface
  ------------------------------------------------------------------------------}
-class procedure TCarbonWSCustomListBox.SetSelectionMode(
-  const ACustomListBox: TCustomListBox; const AExtendedSelect,
-  AMultiSelect: boolean);
-var
-  Options: OptionBits;
+class procedure TCarbonWSCustomListBox.SetSelectionMode(const ACustomListBox: TCustomListBox;
+  const AExtendedSelect, AMultiSelect: boolean);
 begin
   if not CheckHandle(ACustomListBox, Self, 'SetSelectionMode') then Exit;
 
-  if AMultiSelect then
-  begin
-    if AExtendedSelect then Options := lUseSense
-    else Options := 0;
-  end
-  else Options := lOnlyOne;
-  
-  SetListSelectionFlags(TCarbonListBox(ACustomListBox.Handle).List, Options);
+  // TODO
 end;
 
 {------------------------------------------------------------------------------
   Method:  TCarbonWSCustomListBox.SetStyle
   Params:  ACustomListBox - LCL custom list box
-  Returns: Nothing
 
   Changes style of list box in Carbon interface
  ------------------------------------------------------------------------------}
-class procedure TCarbonWSCustomListBox.SetStyle(
-  const ACustomListBox: TCustomListBox);
+class procedure TCarbonWSCustomListBox.SetStyle(const ACustomListBox: TCustomListBox);
 begin
   // TODO
 end;
@@ -664,7 +622,6 @@ end;
   Params:  ACustomListBox - LCL custom list box
            AList          - Items to sort
            ASorted        - New sorted value
-  Returns: Nothing
 
   Sorts items of list box in Carbon interface
  ------------------------------------------------------------------------------}
@@ -680,24 +637,15 @@ end;
   Method:  TCarbonWSCustomListBox.SetTopIndex
   Params:  ACustomListBox - LCL custom list box
            NewTopIndex    - New top index
-  Returns: Nothing
 
   Sets top visible item of list box in Carbon interface
  ------------------------------------------------------------------------------}
 class procedure TCarbonWSCustomListBox.SetTopIndex(
   const ACustomListBox: TCustomListBox; const NewTopIndex: integer);
-var
-  Bounds: FPCMacOSAll.Rect;
 begin
   if not CheckHandle(ACustomListBox, Self, 'SetTopIndex') then Exit;
 
-  if GetListViewBounds(TCarbonListBox(ACustomListBox.Handle).List,
-    Bounds) <> nil then
-  begin
-    Bounds.bottom := Bounds.bottom + (NewTopIndex - Bounds.top);
-    Bounds.top := NewTopIndex;
-    SetListViewBounds(TCarbonListBox(ACustomListBox.Handle).List, Bounds);
-  end;
+  // TODO
 end;
 
 { TCarbonWSCustomEdit }
@@ -746,7 +694,6 @@ end;
   Method:  TCarbonWSCustomEdit.SetCharCase
   Params:  ACustomEdit - LCL custom edit
            NewCase     - New char case
-  Returns: Nothing
 
   Sets the new char case of edit in Carbon interface
  ------------------------------------------------------------------------------}
@@ -760,7 +707,6 @@ end;
   Method:  TCarbonWSCustomEdit.SetEchoMode
   Params:  ACustomEdit - LCL custom edit
            NewMode     - New echo mode
-  Returns: Nothing
 
   Sets the new echo mode of edit in Carbon interface
  ------------------------------------------------------------------------------}
@@ -774,7 +720,6 @@ end;
   Method:  TCarbonWSCustomEdit.SetMaxLength
   Params:  ACustomEdit - LCL custom edit
            NewLength   - New max length
-  Returns: Nothing
 
   Sets the new max length of edit in Carbon interface
  ------------------------------------------------------------------------------}
@@ -791,7 +736,6 @@ end;
   Method:  TCarbonWSCustomEdit.SetPasswordChar
   Params:  ACustomEdit - LCL custom edit
            NewChar     - New password char
-  Returns: Nothing
 
   Sets the new password char of edit in Carbon interface
  ------------------------------------------------------------------------------}
@@ -808,7 +752,6 @@ end;
   Method:  TCarbonWSCustomEdit.SetReadOnly
   Params:  ACustomEdit - LCL custom edit
            NewReadOnly - Read only behavior
-  Returns: Nothing
 
   Sets the read only behavior of edit in Carbon interface
  ------------------------------------------------------------------------------}
@@ -825,7 +768,6 @@ end;
   Method:  TCarbonWSCustomEdit.SetSelStart
   Params:  ACustomEdit - LCL custom edit
            NewStart    - New position of selection start
-  Returns: Nothing
 
   Sets the new position of selection start of edit in Carbon interface
  ------------------------------------------------------------------------------}
@@ -841,7 +783,6 @@ end;
   Method:  TCarbonWSCustomEdit.SetSelLength
   Params:  ACustomEdit - LCL custom edit
            NewLength   - New length of selection
-  Returns: Nothing
 
   Sets the new length of selection of edit in Carbon interface
  ------------------------------------------------------------------------------}
@@ -887,7 +828,6 @@ end;
   Method:  TCarbonWSCustomMemo.AppendText
   Params:  ACustomMemo - LCL custom memo
            AText       - Text to append
-  Returns: Nothing
 
   Appends the specified text to memo in Carbon interface
  ------------------------------------------------------------------------------}
@@ -909,7 +849,6 @@ end;
   Method:  TCarbonWSCustomMemo.SetPasswordChar
   Params:  ACustomEdit - LCL custom edit
            NewChar     - New password char
-  Returns: Nothing
 
   Sets the new password char of memo in Carbon interface
  ------------------------------------------------------------------------------}
@@ -929,7 +868,6 @@ end;
   Method:  TCarbonWSCustomMemo.SetScrollbars
   Params:  ACustomEdit   - LCL custom memo
            NewScrollbars - New scrollbars style
-  Returns: Nothing
 
   Sets the new scrollbars style of memo in Carbon interface
  ------------------------------------------------------------------------------}
@@ -945,7 +883,6 @@ end;
   Method:  TCarbonWSCustomMemo.SetReadOnly
   Params:  ACustomEdit - LCL custom edit
            NewReadOnly - Read only behavior
-  Returns: Nothing
 
   Sets the read only behavior of memo in Carbon interface
  ------------------------------------------------------------------------------}
@@ -971,7 +908,6 @@ end;
   Method:  TCarbonWSCustomMemo.SetWordWrap
   Params:  ACustomMemo - LCL custom memo
            NewWordWrap - New word wrap
-  Returns: Nothing
 
   Sets the word wrap of memo in Carbon interface
  ------------------------------------------------------------------------------}
@@ -1035,7 +971,6 @@ end;
   Method:  TCarbonWSCustomCheckBox.SetState
   Params:  ACustomCheckBox - LCL custom check box
            NewState        - New state of check box
-  Returns: Nothing
 
   Sets the new state of check box in Carbon interface
  ------------------------------------------------------------------------------}
@@ -1108,7 +1043,6 @@ end;
   Method:  TCarbonWSCustomStaticText.SetAlignment
   Params:  ACustomStaticText - LCL custom static text
            NewAlignment      - New caption alignment
-  Returns: Nothing
 
   Sets the new cpation alignment of static text in Carbon interface
  ------------------------------------------------------------------------------}
@@ -1149,7 +1083,7 @@ initialization
 //  RegisterWSComponent(TGroupBox, TCarbonWSGroupBox);
   RegisterWSComponent(TCustomComboBox, TCarbonWSCustomComboBox);
 //  RegisterWSComponent(TComboBox, TCarbonWSComboBox);
-  RegisterWSComponent(TCustomListBox, TCarbonWSCustomListBox);
+//  RegisterWSComponent(TCustomListBox, TCarbonWSCustomListBox);
 //  RegisterWSComponent(TListBox, TCarbonWSListBox);
   RegisterWSComponent(TCustomEdit, TCarbonWSCustomEdit);
   RegisterWSComponent(TCustomMemo, TCarbonWSCustomMemo);

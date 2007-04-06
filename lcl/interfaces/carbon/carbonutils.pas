@@ -45,6 +45,9 @@ function MakeEventSpec(AClass, AKind: UInt32): EventTypeSpec; inline;
 function MakeFourCC(AFourCC: TFourCC): FourCharCode; inline;
 
 // Some missing macros (params differ)
+function InstallMenuEventHandler(inMenu: MenuRef;
+  inHandler: EventHandlerUPP; inNumTypes: UInt32; inList: EventTypeSpecPtr;
+  inUserData: Pointer; outRef: EventHandlerRefPtr): OSStatus; inline;
 function InstallControlEventHandler(inControl: ControlRef;
   inHandler: EventHandlerUPP; inNumTypes: UInt32; inList: EventTypeSpecPtr;
   inUserData: Pointer; outRef: EventHandlerRefPtr): OSStatus; inline;
@@ -81,12 +84,20 @@ begin
   Result := FourCharCode(AFourCC);
 end;
 
+function InstallMenuEventHandler(inMenu: MenuRef; inHandler: EventHandlerUPP;
+  inNumTypes: UInt32; inList: EventTypeSpecPtr; inUserData: Pointer;
+  outRef: EventHandlerRefPtr): OSStatus; inline;
+begin
+  Result := InstallEventHandler(GetMenuEventTarget(inMenu), inHandler,
+    inNumTypes, inList, inUserData, outRef);
+end;
+
 function InstallControlEventHandler(inControl: ControlRef;
   inHandler: EventHandlerUPP; inNumTypes: UInt32; inList: EventTypeSpecPtr;
   inUserData: Pointer; outRef: EventHandlerRefPtr): OSStatus; inline;
 begin
   Result := InstallEventHandler(GetControlEventTarget(inControl), inHandler,
-                                inNumTypes, inList, inUserData, outRef);
+    inNumTypes, inList, inUserData, outRef);
 end;
 
 function InstallWindowEventHandler(inWindow: WindowRef;
@@ -94,7 +105,7 @@ function InstallWindowEventHandler(inWindow: WindowRef;
   inUserData: Pointer; outRef: EventHandlerRefPtr): OSStatus; inline;
 begin
   Result := InstallEventHandler(GetWindowEventTarget(inWindow), inHandler,
-                                inNumTypes, inList, inUserData, outRef);
+    inNumTypes, inList, inUserData, outRef);
 end;
 
 function InstallApplicationEventHandler(inHandler: EventHandlerUPP;
@@ -102,7 +113,7 @@ function InstallApplicationEventHandler(inHandler: EventHandlerUPP;
   outRef: EventHandlerRefPtr): OSStatus; inline;
 begin
   Result := InstallEventHandler(GetApplicationEventTarget, inHandler,
-                                inNumTypes, inList, inUserData, outRef);
+    inNumTypes, inList, inUserData, outRef);
 end;
 
 

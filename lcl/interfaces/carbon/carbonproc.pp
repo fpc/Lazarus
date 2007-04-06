@@ -30,8 +30,12 @@ unit CarbonProc;
 
 interface
 
+// debugging defines
+{$I carbondebug.inc}
+
 uses
-  FPCMacOSAll, Classes, Types, LCLType, LCLProc, LCLClasses, LMessages,
+  FPCMacOSAll,
+  Classes, Types, LCLType, LCLProc, LCLClasses, LMessages,
   Controls, Forms, Avl_Tree, SysUtils, Graphics, Math, GraphType,
   CarbonDef, CarbonPrivate, CarbonMenus;
 
@@ -64,14 +68,15 @@ function GetCarbonControl(AWidget: ControlRef): TCarbonControl;
 
 function GetCarbonMsgKeyState: PtrInt;
 function GetCarbonShiftState: TShiftState;
+function ShiftStateToModifiers(const Shift: TShiftState): Byte;
 
 function FindCarbonFontID(const FontName: String): ATSUFontID;
 function FontStyleToQDStyle(const AStyle: TFontStyles): FPCMacOSAll.Style;
 
 procedure FillStandardDescription(var Desc: TRawImageDescription);
 
-function RegisterEventHandler(AHandler: TCarbonWSEventHandlerProc): EventHandlerUPP;
-procedure UnRegisterEventHandler(AHandler: TCarbonWSEventHandlerProc);
+function RegisterEventHandler(AHandler: TCarbonEventHandlerProc): EventHandlerUPP;
+procedure UnRegisterEventHandler(AHandler: TCarbonEventHandlerProc);
 
 procedure CreateCFString(const S: String; out AString: CFStringRef); inline;
 procedure FreeCFString(var AString: CFStringRef); inline;
@@ -98,9 +103,10 @@ function ColorToRGBColor(const AColor: TColor): RGBColor;
 function RGBColorToColor(const AColor: RGBColor): TColor; inline;
 function CreateCGColor(const AColor: TColor): CGColorRef;
 
-function Dbgs(const ASize: TSize): string; overload;
-function Dbgs(const ARect: FPCMacOSAll.Rect): string; overload;
-function Dbgs(const AColor: FPCMacOSAll.RGBColor): string; overload;
+function DbgS(const ASize: TSize): string; overload;
+function DbgS(const ARect: FPCMacOSAll.Rect): string; overload;
+function DbgS(const AColor: FPCMacOSAll.RGBColor): string; overload;
+function DbgS(const ATM: TTextMetric): string; overload;
 
 implementation
 
@@ -409,43 +415,6 @@ begin
   end;
 end;
 
-
-//=====================================================
-// UPP mamanger
-//=====================================================
-type
-  TUPPAVLTreeNode = class(TAVLTreeNode)
-  public
-    UPP: EventHandlerUPP;
-    RefCount: Integer;
-    procedure Clear; reintroduce; // not overridable, so reintroduce since we only will call this clear
-    destructor Destroy; override;
-  end;
-
-var
-  UPPTree: TAVLTree = nil;
-
-procedure TUPPAVLTreeNode.Clear;
-begin
-  if UPP <> nil
-  then begin
-    DisposeEventHandlerUPP(UPP);
-    UPP := nil;
-  end;
-  inherited Clear;
-end;
-
-destructor TUPPAVLTreeNode.Destroy;
-begin
-  if UPP <> nil
-  then begin
-    DisposeEventHandlerUPP(UPP);
-    UPP := nil;
-  end;
-  inherited Destroy;
-end;
-
-
 {------------------------------------------------------------------------------
   Name:    GetCarbonWidget
   Params:  AWidget - Pointer to control or window widget
@@ -545,6 +514,24 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Name:    ShiftStateToModifiers
+  Params:  Shift - Shift state to convert
+  Returns: The Carbon key modifiers converted from the passed shift state
+ ------------------------------------------------------------------------------}
+function ShiftStateToModifiers(const Shift: TShiftState): Byte;
+begin
+  if Shift = [ssCtrl] then
+    Result := kMenuNoModifiers
+  else
+  begin
+    Result := kMenuNoCommandModifier;
+    if ssShift in Shift then Inc(Result, kMenuShiftModifier);
+    if ssMeta  in Shift then Inc(Result, kMenuControlModifier);
+    if ssAlt   in Shift then Inc(Result, kMenuOptionModifier);
+  end;
+end;
+
+{------------------------------------------------------------------------------
   Name:    FindCarbonFontID
   Params:  FontName - The font name, UTF-8 encoded
   Returns: Carbon font ID of font with the specified name
@@ -579,7 +566,6 @@ end;
 {------------------------------------------------------------------------------
   Name:    FillStandardDescription
   Params:  Desc - Raw image description
-  Returns: Nothing
 
   Fills the raw image description with standard Carbon internal image storing
   description
@@ -616,6 +602,44 @@ begin
   Desc.AlphaShift := 00;
 end; 
 
+
+//=====================================================
+// UPP mamanger
+//=====================================================
+type
+  TUPPAVLTreeNode = class(TAVLTreeNode)
+  public
+    UPP: EventHandlerUPP;
+    RefCount: Integer;
+    procedure Clear; reintroduce; // not overridable, so reintroduce since we only will call this clear
+    destructor Destroy; override;
+  end;
+
+var
+  UPPTree: TAVLTree = nil;
+
+procedure TUPPAVLTreeNode.Clear;
+begin
+  if UPP <> nil then
+  begin
+    DisposeEventHandlerUPP(UPP);
+    UPP := nil;
+  end;
+  
+  inherited Clear;
+end;
+
+destructor TUPPAVLTreeNode.Destroy;
+begin
+  if UPP <> nil then
+  begin
+    DisposeEventHandlerUPP(UPP);
+    UPP := nil;
+  end;
+  
+  inherited Destroy;
+end;
+
 {------------------------------------------------------------------------------
   Name:    RegisterEventHandler
   Params:  AHandler - Carbon event handler procedure
@@ -623,7 +647,7 @@ end;
 
   Registers new carbon event handler procedure
  ------------------------------------------------------------------------------}
-function RegisterEventHandler(AHandler: TCarbonWSEventHandlerProc): EventHandlerUPP;
+function RegisterEventHandler(AHandler: TCarbonEventHandlerProc): EventHandlerUPP;
 var
   Node: TUPPAVLTreeNode;
 begin
@@ -645,11 +669,10 @@ end;
 {------------------------------------------------------------------------------
   Name:    UnRegisterEventHandler
   Params:  AHandler - Carbon event handler procedure
-  Returns: Nothing
 
   Unregisters event handler procedure
  ------------------------------------------------------------------------------}
-procedure UnRegisterEventHandler(AHandler: TCarbonWSEventHandlerProc);
+procedure UnRegisterEventHandler(AHandler: TCarbonEventHandlerProc);
 var
   Node: TUPPAVLTreeNode;
 begin
@@ -681,7 +704,6 @@ end;
   Name:    CreateCFString
   Params:  S       - UTF-8 string
            AString - Core Foundation string ref
-  Returns: Nothing
 
   Creates new Core Foundation string form specified string
  ------------------------------------------------------------------------------}
@@ -693,7 +715,6 @@ end;
 {------------------------------------------------------------------------------
   Name:    FreeCFString
   Params:  AString - Core Foundation string ref to free
-  Returns: Nothing
 
   Frees specified Core Foundation string
  ------------------------------------------------------------------------------}
@@ -973,24 +994,51 @@ begin
   Result := CGColorCreate(RGBColorSpace, @F[0]);
 end;
 
-function Dbgs(const ASize: TSize): string;
+function DbgS(const ASize: TSize): string;
 begin
-   Result := 'cx: ' + IntToStr(ASize.cx) + ' cy: ' + IntToStr(ASize.cy);
+   Result := 'cx: ' + DbgS(ASize.cx) + ' cy: ' + DbgS(ASize.cy);
 end;
 
-function Dbgs(const ARect: FPCMacOSAll.Rect): String;
+function DbgS(const ARect: FPCMacOSAll.Rect): String;
 begin
-  Result := IntToStr(ARect.left) + ', ' + IntToStr(ARect.top)
-          + ', ' + IntToStr(ARect.right) + ', ' + IntToStr(ARect.bottom);
+  Result := DbgS(ARect.left) + ', ' + DbgS(ARect.top)
+          + ', ' + DbgS(ARect.right) + ', ' + DbgS(ARect.bottom);
 end;
 
-function Dbgs(const AColor: FPCMacOSAll.RGBColor): String;
+function DbgS(const AColor: FPCMacOSAll.RGBColor): String;
 begin
   Result :=
     'R: ' + IntToHex(AColor.Red, 4) +
     ' G: ' + IntToHex(AColor.Green, 4) +
     ' B: ' + IntToHex(AColor.Blue, 4);
 end;
+
+function DbgS(const ATM: TTextMetric): string;
+begin
+  with ATM do
+    Result :=
+      'tmHeight: ' + DbgS(tmHeight) +
+      ' tmAscent: ' + DbgS(tmAscent) +
+      ' tmDescent: ' + DbgS(tmDescent) +
+      ' tmInternalLeading: ' + DbgS(tmInternalLeading) +
+      ' tmExternalLeading: ' + DbgS(tmExternalLeading) +
+      ' tmAveCharWidth: ' + DbgS(tmAveCharWidth) +
+      ' tmMaxCharWidth: ' + DbgS(tmMaxCharWidth) +
+      ' tmWeight: ' + DbgS(tmWeight) +
+      ' tmOverhang: ' + DbgS(tmOverhang) +
+      ' tmDigitizedAspectX: ' + DbgS(tmDigitizedAspectX) +
+      ' tmDigitizedAspectY: ' + DbgS(tmDigitizedAspectY) +
+      ' tmFirstChar: ' + tmFirstChar +
+      ' tmLastChar: ' + tmLastChar +
+      ' tmDefaultChar: ' + tmDefaultChar +
+      ' tmBreakChar: ' + tmBreakChar +
+      ' tmItalic: ' + DbgS(tmItalic) +
+      ' tmUnderlined: ' + DbgS(tmUnderlined) +
+      ' tmStruckOut: ' + DbgS(tmStruckOut) +
+      ' tmPitchAndFamily: ' + DbgS(tmPitchAndFamily) +
+      ' tmCharSet: ' + DbgS(tmCharSet);
+end;
+
 
 finalization
   if UPPTree <> nil then FreeAndNil(UPPTree);

@@ -26,21 +26,19 @@ unit CarbonWSDialogs;
 
 interface
 
+// debugging defines
+{$I carbondebug.inc}
+
 uses
-////////////////////////////////////////////////////
-// I M P O R T A N T                                
-////////////////////////////////////////////////////
-// To get as little as posible circles,
-// uncomment only when needed for registration
-////////////////////////////////////////////////////
   // libs
   FPCMacOSAll,
   // LCL
   SysUtils, Controls, Dialogs, LCLType, LCLProc,
   // widgetset
   WSLCLClasses, WSProc, WSDialogs,
-  // interface
+  // LCL Carbon
   CarbonDef, CarbonProc, CarbonPrivate;
+  
 type
 
   { TCarbonWSCommonDialog }
@@ -266,7 +264,6 @@ end;  {TCarbonWSFileDialog.ShowModal}
 {------------------------------------------------------------------------------
   Method:  TCarbonWSColorDialog.ShowModal
   Params:  ACommonDialog - LCL color dialog
-  Returns: Nothing
 
   Shows Carbon interface color picker
  ------------------------------------------------------------------------------}

@@ -30,18 +30,27 @@ unit CarbonDef;
 
 interface
 
+// debugging defines
+{$I carbondebug.inc}
+
 uses
+  // libs
+  FPCMacOSAll,
+  // wdgetset
   WSLCLClasses, LCLClasses,
-  LCLType, LMessages, LCLMessageGlue, LCLProc,
-  Types, SysUtils, Math, Classes, Graphics, Controls,
-  FPCMacOSAll, CarbonUtils;
+  // LCL + RTL
+  Types, Classes, Controls, LCLType, LCLProc, Graphics, Math, LMessages,
+  LCLMessageGlue,
+  // LCL Carbon
+  CarbonUtils;
 
 const
   DEFAULT_CFSTRING_ENCODING = kCFStringEncodingUTF8;
 
 var
-  LAZARUS_FOURCC: FourCharCode; // = 'Laz ';
+  LAZARUS_FOURCC: FourCharCode;    // = 'Laz ';
   WIDGETINFO_FOURCC: FourCharCode; // = 'WInf';
+  MENU_FOURCC: FourCharCode;       // = 'Menu';
 
 type
 
@@ -106,7 +115,7 @@ type
   end;
   
 type
-  TCarbonWSEventHandlerProc = function (ANextHandler: EventHandlerCallRef;
+  TCarbonEventHandlerProc = function (ANextHandler: EventHandlerCallRef;
     AEvent: EventRef;
     AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
 
@@ -166,7 +175,6 @@ end;
   Method:  TCarbonWidget.SetProperty
   Params:  AIndex - Property name
            AValue - Property data, nil means remove the property
-  Returns: Nothing
 
   Sets the specified property data or removes the property
  ------------------------------------------------------------------------------}
@@ -219,8 +227,10 @@ begin
   
   CreateWidget(AParams);
   
-  DebugLn('TCarbonWidget.Create ', ClassName, ' ', DbgSName(LCLObject), ': ',
-    LCLObject.ClassName);
+  {$IFDEF VerboseWidget}
+    DebugLn('TCarbonWidget.Create ', ClassName, ' ', LCLObject.Name, ': ',
+      LCLObject.ClassName);
+  {$ENDIF}
   
   Context := TCarbonControlContext.Create(Self);
   
@@ -229,7 +239,6 @@ end;
 
 {------------------------------------------------------------------------------
   Method:  TCarbonWidget.Destroy
-  Returns: Nothing
 
   Frees the widget
  ------------------------------------------------------------------------------}
@@ -241,9 +250,11 @@ begin
   
   Context.Free;
   FProperties.Free;
-  
-  DebugLn('TCarbonWidget.Destroy ', ClassName, ' ', DbgSName(LCLObject), ': ',
-    LCLObject.ClassName);
+
+  {$IFDEF VerboseWidget}
+    DebugLn('TCarbonWidget.Destroy ', ClassName, ' ', LCLObject.Name, ': ',
+      LCLObject.ClassName);
+  {$ENDIF}
 
   inherited Destroy;
 end;
@@ -262,5 +273,6 @@ initialization
 
   LAZARUS_FOURCC := MakeFourCC('Laz ');
   WIDGETINFO_FOURCC := MakeFourCC('WInf');
+  MENU_FOURCC := MakeFourCC('Menu');
 
 end.

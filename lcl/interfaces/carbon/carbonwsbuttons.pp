@@ -26,6 +26,9 @@ unit CarbonWSButtons;
 
 interface
 
+// debugging defines
+{$I carbondebug.inc}
+
 uses
   // libs
   FPCMacOSAll,
@@ -33,9 +36,8 @@ uses
   Controls, Buttons, LCLType, LCLProc, Graphics,
   // widgetset
   WSButtons, WSLCLClasses, WSProc,
-  // interface
-  CarbonDef, CarbonProc, CarbonPrivate, CarbonGDIObjects,
-  CarbonWSControls;
+  // LCL Carbon
+  CarbonDef, CarbonProc, CarbonPrivate, CarbonGDIObjects, CarbonWSControls;
 
 type
 
@@ -92,9 +94,8 @@ end;
   Method:  TCarbonWSButton.SetDefault
   Params:  AButton  - LCL button control
            ADefault
-  Returns: Nothing
 
-  Sets button default indication
+  Sets button default indication in Carbon interface
  ------------------------------------------------------------------------------}
 class procedure TCarbonWSButton.SetDefault(const AButton: TCustomButton;
   ADefault: Boolean);
@@ -126,7 +127,6 @@ end;
   Method:  TCarbonWSBitBtn.SetGlyph
   Params:  ABitBtn - LCL custom bitmap button
            AValue  - Bitmap
-  Returns: Nothing
 
   Sets the bitmap of bevel button in Carbon interface
  ------------------------------------------------------------------------------}
@@ -150,7 +150,6 @@ end;
   Method:  TCarbonWSBitBtn.SetLayout
   Params:  ABitBtn - LCL custom bitmap button
            AValue  - Bitmap and caption layout
-  Returns: Nothing
 
   Sets the bitmap nad caption layout of bevel button in Carbon interface
  ------------------------------------------------------------------------------}

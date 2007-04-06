@@ -26,14 +26,17 @@ unit CarbonWSControls;
 
 interface
 
+// debugging defines
+{$I carbondebug.inc}
+
 uses
   // libs
-  FPCMacOSAll, CarbonUtils, CarbonExtra, Classes,
+  FPCMacOSAll, CarbonUtils, Classes,
   // LCL
   Forms, Controls, Graphics, LCLType, LMessages, LCLProc,
   // widgetset
   WSControls, WSLCLClasses, WSProc,
-  // interface
+  // LCL Carbon
   CarbonDef, CarbonProc, CarbonPrivate;
 
 type
@@ -114,7 +117,6 @@ implementation
            PreferredWidth  - Preferred width, valid if > 0
            PreferredHeight - Preferred height, valid if > 0
            WithThemeSpace  - Whether to include space for theme
-  Returns: Nothing
 
   Retrieves the preferred size of control in Carbon interface to support
   autosizing of controls
@@ -152,7 +154,6 @@ end;
   Method:  TCarbonWSWinControl.SetBounds
   Params:  AWinControl - LCL control
            ALeft, ATop, AWidth, AHeight - Coordinates
-  Returns: Nothing
 
   Sets the bounds of control in Carbon interface
  ------------------------------------------------------------------------------}
@@ -171,7 +172,6 @@ end;
            AOldPos     - Old z position
            ANewPos     - New z position
            AChildren   - List of all child controls
-  Returns: Nothing
 
   Sets the child z position of control in Carbon interface in the parent control
  ------------------------------------------------------------------------------}
@@ -223,10 +223,9 @@ end;
 {------------------------------------------------------------------------------
   Method:  TCarbonWSWinControl.SetColor
   Params:  AWinControl - LCL control
-  Returns: Nothing
 
   Sets the color of control in Carbon interface according to the LCL control
-  NOTE: Functions only for edit control
+  NOTE: Functions only for controls with edit
  ------------------------------------------------------------------------------}
 class procedure TCarbonWSWinControl.SetColor(const AWinControl: TWinControl);
 begin
@@ -239,7 +238,6 @@ end;
   Method:  TCarbonWSWinControl.SetFont
   Params:  AWinControl - LCL control
            AFont       - Font
-  Returns: Nothing
 
   Sets the font of control in Carbon interface
  ------------------------------------------------------------------------------}
@@ -255,7 +253,6 @@ end;
   Method:  TCarbonWSWinControl.SetText
   Params:  AWinControl - LCL control
            AText       - Text
-  Returns: Nothing
 
   Sets the text (caption) of control in Carbon interface
  ------------------------------------------------------------------------------}
@@ -271,7 +268,6 @@ end;
 {------------------------------------------------------------------------------
   Method:  TCarbonWSWinControl.Invalidate
   Params:  AWinControl - LCL control
-  Returns: Nothing
 
   Invalidates control in Carbon interface
  ------------------------------------------------------------------------------}
@@ -285,7 +281,6 @@ end;
 {------------------------------------------------------------------------------
   Method:  TCarbonWSWinControl.ShowHide
   Params:  AWinControl - LCL control
-  Returns: Nothing
 
   Changes visibility of control in Carbon interface according to the LCL control
  ------------------------------------------------------------------------------}
@@ -299,7 +294,6 @@ end;
 {------------------------------------------------------------------------------
   Method:  TCarbonWSWinControl.AddControl
   Params:  AControl - LCL control to add
-  Returns: Nothing
 
   Adds new control to parent control or window in Carbon interface
  ------------------------------------------------------------------------------}
@@ -316,7 +310,6 @@ end;
 {------------------------------------------------------------------------------
   Method:  TCarbonWSWinControl.DestroyHandle
   Params:  AWinControl - LCL control
-  Returns: Nothing
 
   Destroys control in Carbon interface
  ------------------------------------------------------------------------------}
@@ -331,7 +324,6 @@ end;
   Method:  TCarbonWSWinControl.GetClientBounds
   Params:  AWinControl - LCL control
            ARect       - Record for client bounding rect
-  Returns: Nothing
 
   Retrieves the client bounding rect of control in Carbon interface
  ------------------------------------------------------------------------------}
@@ -348,7 +340,6 @@ end;
   Method:  TCarbonWSWinControl.GetClientRect
   Params:  AWinControl - LCL control
            ARect       - Record for client rect
-  Returns: Nothing
 
   Retrieves the client rect of control in Carbon interface
  ------------------------------------------------------------------------------}

@@ -349,7 +349,6 @@ end;
 {------------------------------------------------------------------------------
   Method:  DeleteCriticalSection
   Params:  CritSection - Critical section to be deleted
-  Returns: Nothing
 
   Deletes the specified critical section
  ------------------------------------------------------------------------------}
@@ -468,18 +467,31 @@ end;
 function TCarbonWidgetSet.Ellipse(DC: HDC; x1, y1, x2, y2: Integer): Boolean;
 var
   ADC: TCarbonDeviceContext;
+  R: CGRect;
 begin
   {$IFDEF VerboseWinAPI}
     DebugLn('TCarbonWidgetSet.Ellipse DC: ' + DbgS(DC) + ' R: ' + DbgS(Classes.Rect(X1, Y1, X2, Y2)));
   {$ENDIF}
+  
+  if (X1 = X2) or (Y1 = Y2) then
+  begin
+    Result := True;
+    Exit;
+  end;
   
   Result := False;
   if not CheckDC(DC, 'Ellipse') then Exit;
 
   ADC := TCarbonDeviceContext(DC);
   
+  R := GetCGRectSorted(X1, Y1, X2, Y2);
+  R.origin.x := R.origin.x + 0.5;
+  R.origin.y := R.origin.y + 0.5;
+  R.size.width := R.size.width - 1;
+  R.size.height := R.size.height - 1;
+  
   CGContextBeginPath(ADC.CGContext);
-  CGContextAddEllipseInRect(ADC.CGContext, GetCGRectSorted(X1, Y1, X2, Y2));
+  CGContextAddEllipseInRect(ADC.CGContext, R);
   CGContextDrawPath(ADC.CGContext, kCGPathFillStroke);
 
   Result := True;
@@ -520,7 +532,6 @@ end;
 {------------------------------------------------------------------------------
   Method:  EnterCriticalSection
   Params:  CritSection - Critical section to be entered
-  Returns: Nothing
 
   Enters the specified critical section
  ------------------------------------------------------------------------------}
@@ -807,14 +818,15 @@ end;
            Style      - Frame style
   Returns: If the function succeeds
 
-  Draws a 3d border in Carbon native style
-  TODO: bvLowered style (rotate CTM by 180°)
+  Draws a 3D border in Carbon native style
+  TODO: lowered style
  ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.Frame3d(DC: HDC; var ARect: TRect;
   const FrameWidth: integer; const Style: TBevelCut): Boolean;
 var
   I, D: Integer;
   DrawInfo: HIThemeGroupBoxDrawInfo;
+  ADC: TCarbonDeviceContext;
 begin
   {$IFDEF VerboseWinAPI}
     DebugLn('TCarbonWidgetSet.Frame3D DC: ' + DbgS(DC) + ' R: ' + DbgS(ARect) +
@@ -825,19 +837,21 @@ begin
   if not CheckDC(DC, 'Frame3d') then Exit;
   if FrameWidth <= 0 then Exit;
   
+  ADC := TCarbonDeviceContext(DC);
+  
   if Style in [bvLowered, bvRaised] then
   begin
     GetThemeMetric(kThemeMetricPrimaryGroupBoxContentInset, D);
-  
+
     // draw frame as group box
     DrawInfo.version := 0;
     DrawInfo.state := kThemeStateActive;
     DrawInfo.kind := kHIThemeGroupBoxKindPrimary;
-  
+
     for I := 1 to FrameWidth do
     begin
       HIThemeDrawGroupBox(RectToCGRect(ARect), DrawInfo,
-        TCarbonDeviceContext(DC).CGContext, kHIThemeOrientationNormal);
+        ADC.CGContext, kHIThemeOrientationNormal);
       InflateRect(ARect, -D, -D);
     end;
   end;
@@ -1631,26 +1645,30 @@ var
   TextLayout: ATSUTextLayout;
   ADC: TCarbonDeviceContext;
   TextBefore, TextAfter, Ascent, Descent: ATSUTextMeasurement;
+const AName = 'GetTextExtentPoint';
 begin
   {$IFDEF VerboseWinAPI}
     DebugLn('TCarbonWidgetSet.GetTextExtentPoint DC: ' + DbgS(DC) + ' Str: ' + Str);
   {$ENDIF}
   
   Result := False;
-  if not CheckDC(DC, 'GetTextExtentPoint') then Exit;
-  ADC := TCarbonDeviceContext(DC);
+  if not CheckDC(DC, AName) then
+    // workaround for calculating metrics of invisible controls
+    ADC := DefaultContext
+  else
+    ADC := TCarbonDeviceContext(DC);
 
   if not ADC.BeginTextRender(Str, Count, TextLayout) then Exit;
   try
     // finally compute the text dimensions
-    Result := ATSUGetUnjustifiedBounds(TextLayout, kATSUFromTextBeginning,
-      kATSUToTextEnd, TextBefore, TextAfter, Ascent, Descent) = noErr;
+    if OSError(ATSUGetUnjustifiedBounds(TextLayout, kATSUFromTextBeginning,
+        kATSUToTextEnd, TextBefore, TextAfter, Ascent, Descent),
+      Self, AName, 'ATSUGetUnjustifiedBounds') then Exit;
       
-    if Result then
-    begin
-      Size.cx := (TextAfter - TextBefore) shr 16;
-      Size.cy := (Descent + Ascent) shr 16;
-    end;
+    Size.cx := (TextAfter - TextBefore) shr 16;
+    Size.cy := (Descent + Ascent) shr 16;
+
+    Result := True;
   finally
     ADC.EndTextRender(TextLayout);
   end;
@@ -1675,7 +1693,6 @@ var
   ADC: TCarbonDeviceContext;
   M: ATSUTextMeasurement;
   B: Boolean;
-  R: OSStatus;
   TextLayout: ATSUTextLayout;
   TextBefore, TextAfter, Ascent, Descent: ATSUTextMeasurement;
 const AName = 'GetTextMetrics';
@@ -1686,9 +1703,12 @@ begin
   {$ENDIF}
   
   Result := False;
-  if not CheckDC(DC, AName) then Exit;
-
-  ADC := TCarbonDeviceContext(DC);
+  if not CheckDC(DC, AName) then
+    // workaround for calculating metrics of invisible controls
+    ADC := DefaultContext
+  else
+    ADC := TCarbonDeviceContext(DC);
+    
   if not (ADC.CurrentFont is TCarbonFont) then
     TextStyle := DefaultTextStyle
   else
@@ -1751,7 +1771,8 @@ begin
   Result := True;
   
   {$IFDEF VerboseWinAPI}
-    DebugLn('TCarbonWidgetSet.GetTextMetrics Result: ' + DbgS(Result));
+    DebugLn('TCarbonWidgetSet.GetTextMetrics Result: ' + DbgS(Result) +
+      ' TextMetric: ' + DbgS(TM));
   {$ENDIF}
 end;
 
@@ -1868,7 +1889,6 @@ end;
 {------------------------------------------------------------------------------
   Method:  InitializeCriticalSection
   Params:  CritSection - Record for initialized critical section
-  Returns: Nothing
 
   Creates a new critical section
  ------------------------------------------------------------------------------}
@@ -1978,7 +1998,6 @@ end;
 {------------------------------------------------------------------------------
   Method:  LeaveCriticalSection
   Params:  CritSection - Critical section to be left
-  Returns: Nothing
 
   Leaves the specified critical section
  ------------------------------------------------------------------------------}
@@ -2002,8 +2021,8 @@ end;
            Y  - Y-coordinate of line's ending point
   Returns: If the function succeeds
 
-  Draws a line from the current position up to the specified point except and
-  updates the current position
+  Draws a line from the current position up to the specified point and updates
+  the current position
  ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.LineTo(DC: HDC; X, Y: Integer): Boolean;
 var
@@ -2020,8 +2039,9 @@ begin
   ADC := TCarbonDeviceContext(DC);
 
   CGContextBeginPath(ADC.CGContext);
-  CGContextMoveToPoint(ADC.CGContext, ADC.PenPos.x, ADC.PenPos.y);
-  CGContextAddLineToPoint(ADC.CGContext, X, Y);
+  // add 0.5 to both coordinates because context for better rasterization
+  CGContextMoveToPoint(ADC.CGContext, ADC.PenPos.x + 0.5, ADC.PenPos.y + 0.5);
+  CGContextAddLineToPoint(ADC.CGContext, X + 0.5, Y + 0.5);
   CGContextStrokePath(ADC.CGContext);
   
   Result := True;
@@ -2203,13 +2223,13 @@ begin
   ADC := TCarbonDeviceContext(DC);
 
   CGContextBeginPath(ADC.CGContext);
-  CGContextMoveToPoint(ADC.CGContext, Points^.x, Points^.y);
+  CGContextMoveToPoint(ADC.CGContext, Points^.x + 0.5, Points^.y + 0.5);
   Dec(NumPts);
 
   while NumPts > 0 do
   begin
     Inc(Points);
-    CGContextAddLineToPoint(ADC.CGContext, Points^.x, Points^.y);
+    CGContextAddLineToPoint(ADC.CGContext, Points^.x + 0.5, Points^.y + 0.5);
     Dec(NumPts);
   end;
 
@@ -2248,13 +2268,13 @@ begin
   ADC := TCarbonDeviceContext(DC);
   
   CGContextBeginPath(ADC.CGContext);
-  CGContextMoveToPoint(ADC.CGContext, Points^.x, Points^.y);
+  CGContextMoveToPoint(ADC.CGContext, Points^.x + 0.5, Points^.y + 0.5);
   Dec(NumPts);
 
   while NumPts > 0 do
   begin
     Inc(Points);
-    CGContextAddLineToPoint(ADC.CGContext, Points^.x, Points^.y);
+    CGContextAddLineToPoint(ADC.CGContext, Points^.x + 0.5, Points^.y + 0.5);
     Dec(NumPts);
   end;
   
@@ -2301,19 +2321,32 @@ end;
 function TCarbonWidgetSet.Rectangle(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean;
 var
   ADC: TCarbonDeviceContext;
+  R: CGRect;
 begin
   {$IFDEF VerboseWinAPI}
     DebugLn('TCarbonWidgetSet.Rectangle DC: ' + DbgS(DC) + ' R: ' +
       DbgS(Classes.Rect(X1, Y1, X2, Y2)));
   {$ENDIF}
   
+  if (X1 = X2) or (Y1 = Y2) then
+  begin
+    Result := True;
+    Exit;
+  end;
+  
   Result := False;
   if not CheckDC(DC, 'Rectangle') then Exit;
 
   ADC := TCarbonDeviceContext(DC);
 
+  R := GetCGRectSorted(X1, Y1, X2, Y2);
+  R.origin.x := R.origin.x + 0.5;
+  R.origin.y := R.origin.y + 0.5;
+  R.size.width := R.size.width - 1;
+  R.size.height := R.size.height - 1;
+
   CGContextBeginPath(ADC.CGContext);
-  CGContextAddRect(ADC.CGContext, GetCGRectSorted(X1, Y1, X2, Y2));
+  CGContextAddRect(ADC.CGContext, R);
   CGContextDrawPath(ADC.CGContext, kCGPathFillStroke);
 
   Result := True;

@@ -32,26 +32,14 @@ interface
 {$ASSERTIONS ON}
 {$endif}
 
-// Show debug info when tracing:
-
-{off $DEFINE DebugEventLoop}
-
-{off $DEFINE VerboseObject}    // Carbon object
-{off $DEFINE VerboseTimer}
-{off $DEFINE VerboseWinAPI}    // Carbon WinAPI
-{off $DEFINE VerboseLCLIntf}   // Carbon LCLIntf
-{off $DEFINE VerboseMouse}
-{off $DEFINE VerboseCursor}    // Carbon cursor
-{off $DEFINE VerboseKeyboard}
-{off $DEFINE VerbosePaint}
-
-{off $DEFINE VerboseWSClass}       // Carbon WS class
+// debugging defines
+{$I carbondebug.inc}
 
 uses
  // rtl+ftl
   Types, Classes, SysUtils, Math, FPCAdds,
  // carbon bindings
-  FPCMacOSAll, CarbonUtils, CarbonExtra,
+  FPCMacOSAll, CarbonUtils,
  // interfacebase
   InterfaceBase,
  // LCL
@@ -70,10 +58,14 @@ type
     FMainEventQueue: EventQueueRef;
     FTimerMap: TMap; // the map contains all installed timers
     FCurrentCursor: HCURSOR;
+    FMainMenu: TMainMenu; // Main menu attached to menu bar
   protected
     procedure PassCmdLineOptions; override;
     procedure SendCheckSynchronizeMessage;
     procedure OnWakeMainThread(Sender: TObject);
+
+    procedure RegisterEvents;
+    procedure UnregisterEvents;
   public
     constructor Create;
     destructor Destroy; override;
@@ -129,10 +121,10 @@ uses
   CarbonWSControls,
 // CarbonWSDbCtrls,
 // CarbonWSDBGrids,
- CarbonWSDialogs,
+  CarbonWSDialogs,
 // CarbonWSDirSel,
 // CarbonWSEditBtn,
-// CarbonWSExtCtrls,
+  CarbonWSExtCtrls,
 // CarbonWSExtDlgs,
 // CarbonWSFileCtrl,
   CarbonWSForms,
@@ -146,7 +138,8 @@ uses
 // CarbonWSToolwin,
 ////////////////////////////////////////////////////
   CarbonDef, CarbonPrivate, CarbonProc, CarbonCanvas, CarbonGDIObjects,
-  CarbonMenus,
+  CarbonMenus, CarbonEdits, CarbonTabs, CarbonStrings,
+  
   Buttons, StdCtrls, PairSplitter, ComCtrls, CListBox, Calendar, Arrow,
   Spin, CommCtrl, ExtCtrls, FileCtrl, LResources;
 

@@ -23,8 +23,6 @@
  *****************************************************************************
 }
 
-//{ $ DEFINE DebugEventLoop}
-
 { TCarbonWidgetSet }
 
 {
@@ -155,10 +153,61 @@ begin
 *)
 end;
 
+function CarbonApp_CommandProcess(ANextHandler: EventHandlerCallRef;
+  AEvent: EventRef;
+  AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
+var
+  Command: HICommand;
+  CarbonMenu: TCarbonMenu;
+  Msg: TLMessage;
+  S: LongWord;
+const AName = 'CarbonApp_CommandProcess';
+begin
+  {$IFDEF VerboseAppEvent}
+    DebugLn('CarbonApp_CommandProcess');
+  {$ENDIF}
+  
+  // check command and send "click" message to menu item
+  if not OSError(
+    GetEventParameter(AEvent, kEventParamDirectObject,
+      typeHICommand, nil, SizeOf(HICommand), nil, @Command),
+    AName, 'GetEventParameter') then
+  begin
+    {$IFDEF VerboseMenu}
+       DebugLn('CarbonApp_CommandProcess MenuRef: ' + DbgS(Command.menuRef) +
+         ' Item: ' + DbgS(Command.menuItemIndex) + ' CommandID: ' + DbgS(Command.commandID) +
+         ' Attrs: ' + DbgS(Command.attributes));
+    {$ENDIF}
+      
+    if (Command.commandID = MENU_FOURCC) and
+      (Command.attributes and kHICommandFromMenu > 0) and
+      (Command.menuRef <> nil) then
+    begin
+      if not OSError(GetMenuItemProperty(Command.menuRef, Command.menuItemIndex,
+          LAZARUS_FOURCC, WIDGETINFO_FOURCC, SizeOf(TCarbonMenu), S, @CarbonMenu),
+        AName, 'GetMenuItemProperty') then
+      begin
+        {$IFDEF VerboseMenu}
+           DebugLn('CarbonApp_CommandProcess CarbonMenu: ' + DbgS(CarbonMenu));
+        {$ENDIF}
+        if CarbonMenu <> nil then
+        begin
+          Msg.msg := LM_ACTIVATE;
+          CarbonMenu.LCLMenuItem.Dispatch(Msg);
+          
+          Result := noErr;
+          Exit;
+        end;
+      end;
+    end;
+  end;
+  
+  Result := CallNextEventHandler(ANextHandler, AEvent);
+end;
+
 {------------------------------------------------------------------------------
   Method:  TCarbonWidgetSet.AppInit
   Params:  ScreenInfo
-  Returns: Nothing
 
   Initialize Carbon Widget Set
  ------------------------------------------------------------------------------}
@@ -186,7 +235,6 @@ end;
 {------------------------------------------------------------------------------
   Method:  TCarbonWidgetSet.AppRun
   Params:  ALoop
-  Returns: Nothing
  ------------------------------------------------------------------------------}
 procedure TCarbonWidgetSet.AppRun(const ALoop: TApplicationMainLoop);
   // A reimplementation of RunApplicationEventLoop that supports
@@ -278,8 +326,6 @@ end;
 
 {------------------------------------------------------------------------------
   Method:  TCarbonWidgetSet.AppProcessMessages
-  Params:  None
-  Returns: Nothing
 
   Handle all pending messages
  ------------------------------------------------------------------------------}
@@ -329,8 +375,6 @@ end;
 
 {------------------------------------------------------------------------------
   Method:  TCarbonWidgetSet.AppWaitMessage
-  Params:  None
-  Returns: Nothing
 
   Passes execution control to Carbon
  ------------------------------------------------------------------------------}
@@ -350,8 +394,6 @@ end;
 
 {------------------------------------------------------------------------------
   Method:  TCarbonWidgetSet.Create
-  Params:  None
-  Returns: Nothing
 
   Constructor for the class
  ------------------------------------------------------------------------------}
@@ -363,17 +405,20 @@ begin
 
   FTimerMap := TMap.Create(its4, SizeOf(TFNTimerProc));
   FCurrentCursor := 0;
+  FMainMenu := nil;
+  
+  RegisterEvents;
 end;
 
 {------------------------------------------------------------------------------
   Method:  TCarbonWidgetSet.Destroy
-  Params:  None
-  Returns: Nothing
 
   Destructor for the class
  ------------------------------------------------------------------------------}
 destructor TCarbonWidgetSet.Destroy;
 begin
+  UnregisterEvents;
+
   FreeAndNil(FTimerMap);
   
   inherited Destroy;
@@ -387,8 +432,6 @@ end;
 
 {------------------------------------------------------------------------------
   Method:  TCarbonWidgetSet.SendCheckSynchronizeMessage
-  Params:  None
-  Returns: Nothing
  ------------------------------------------------------------------------------}
 procedure TCarbonWidgetSet.SendCheckSynchronizeMessage;
 var
@@ -439,7 +482,6 @@ end;
 {------------------------------------------------------------------------------
   Method:  TCarbonWidgetSet.OnWakeMainThread
   Params:  Sender
-  Returns: Nothing
  ------------------------------------------------------------------------------}
 procedure TCarbonWidgetSet.OnWakeMainThread(Sender: TObject);
 begin
@@ -447,9 +489,29 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method:  TCarbonWidgetSet.RegisterEvents
+  Registers events for Carbon application
+ ------------------------------------------------------------------------------}
+procedure TCarbonWidgetSet.RegisterEvents;
+var
+  TmpSpec: EventTypeSpec;
+begin
+  TmpSpec := MakeEventSpec(kEventClassCommand, kEventCommandProcess);
+  InstallApplicationEventHandler(RegisterEventHandler(@CarbonApp_CommandProcess),
+    1, @TmpSpec, nil, nil);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWidgetSet.UnregisterEvents
+  Unregisters events for Carbon application
+ ------------------------------------------------------------------------------}
+procedure TCarbonWidgetSet.UnregisterEvents;
+begin
+  UnregisterEventHandler(@CarbonApp_CommandProcess);
+end;
+
+{------------------------------------------------------------------------------
   Method:  TCarbonWidgetSet.AppTerminate
-  Params:  None
-  Returns: Nothing
 
   Tells Carbon to halt the application
  ------------------------------------------------------------------------------}
@@ -465,8 +527,6 @@ end;
 
 {------------------------------------------------------------------------------
   Method:  TCarbonWidgetSet.AppMinimize
-  Params:  None
-  Returns: Nothing
 
   Minimizes the whole application to the taskbar
  ------------------------------------------------------------------------------}
@@ -481,8 +541,6 @@ end;
 
 {------------------------------------------------------------------------------
   Method:  TCarbonWidgetSet.AppRestore
-  Params:  None
-  Returns: Nothing
 
   Restore the whole minimized application from the taskbar
  ------------------------------------------------------------------------------}
@@ -497,8 +555,6 @@ end;
 
 {------------------------------------------------------------------------------
   Method:  TCarbonWidgetSet.AppBringToFront
-  Params:  None
-  Returns: Nothing
 
   Brings the entire application on top of all other non-topmost programs
  ------------------------------------------------------------------------------}
@@ -522,7 +578,6 @@ end;
 
 {------------------------------------------------------------------------------
   Method:  TCarbonWidgetSet.WidgetSetName
-  Params:  None
   Returns: Name of Carbon widget set
  ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.WidgetSetName: string;
@@ -535,9 +590,9 @@ end;
   Params:  AMenuObject - Menu
 
   Attaches the menu of window to menu bar
-  TODO: change menu on activation
  ------------------------------------------------------------------------------}
 procedure TCarbonWidgetSet.AttachMenuToWindow(AMenuObject: TComponent);
+const AName = 'TCarbonWidgetSet.AttachMenuToWindow';
 begin
   {$IFDEF VerboseObject}
     DebugLn('TCarbonWidgetSet.AttachMenuToWindow ' + AMenuObject.Name);
@@ -545,10 +600,16 @@ begin
   
   if (AMenuObject is TMainMenu) and (TMainMenu(AMenuObject).Handle <> 0) then
   begin
-    if not CheckMenu(TMainMenu(AMenuObject).Handle,
-      'TCarbonWidgetSet.AttachMenuToWindow') then Exit;
+    if not CheckMenu(TMainMenu(AMenuObject).Handle, AName) then Exit;
+      
+    if FMainMenu <> nil then
+    begin
+      DebugLn(AName + ' Unable to change main menu - menu bar is set yet!');
+      Exit;
+    end;
       
     TCarbonMenu(TMainMenu(AMenuObject).Handle).AttachToMenuBar;
+    FMainMenu := TMainMenu(AMenuObject);
   end;
 end;
 
@@ -575,7 +636,6 @@ end;
   Params:  CanvasHandle - Canvas handle to get color from
            X, Y         - Position
            AColor       - New color for specified position
-  Returns: Nothing
 
   Sets the color of the specified pixel on the canvas
   Not implemented!
@@ -593,7 +653,6 @@ end;
 {------------------------------------------------------------------------------
   Method:  TCarbonWidgetSet.DCReDraw
   Params:  CanvasHandle - Canvas handle to redraw
-  Returns: Nothing
 
   Redraws (the window of) a canvas
  ------------------------------------------------------------------------------}
@@ -611,7 +670,6 @@ end;
 {------------------------------------------------------------------------------
   Method:  TCarbonWidgetSet.SetDesigning
   Params:  AComponent - Component to set designing
-  Returns: Nothing
 
   Not implemented!
  ------------------------------------------------------------------------------}
@@ -623,7 +681,6 @@ end;
 {------------------------------------------------------------------------------
   Method:  TCarbonWidgetSet.CreateComponent
   Params:  Sender
-  Returns: Nothing
 
   Tells Carbon to create a control
   Deprecated! Implement TCarbonWS*.CreateHandle method instead.
@@ -638,7 +695,6 @@ end;
   Method:  TimerCallback
   Params:  inTimer    - Timer reference
            inUserData - User data passed when installing timer
-  Returns: Nothing
 
   Calls the timer function associated with specified timer
  ------------------------------------------------------------------------------}

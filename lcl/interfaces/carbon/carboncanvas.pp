@@ -22,6 +22,9 @@ unit CarbonCanvas;
 
 interface
 
+// debugging defines
+{$I carbondebug.inc}
+
 uses
  // rtl+ftl
   Types, Classes, SysUtils, Math, Contnrs,
@@ -147,6 +150,10 @@ type
   end;
   
   // TODO: TCarbonPrinterContext
+  
+var
+  // context for calculating text parameters for invisible controls
+  DefaultContext: TCarbonBitmapContext;
 
 implementation
 
@@ -261,8 +268,8 @@ begin
     {$IFDEF VerbosePaint}
     DebugLn('TCarbonDeviceContext.Reset set defaults');
     {$ENDIF}
-    // disable anti-aliasing
-    CGContextSetShouldAntialias(CGContext, 0);
+    // enable anti-aliasing
+    CGContextSetShouldAntialias(CGContext, 1);
     CGContextSetBlendMode(CGContext, kCGBlendModeNormal);
     
     CGContextSetRGBFillColor(CGContext, 1, 1, 1, 1);
@@ -414,7 +421,6 @@ end;
 {------------------------------------------------------------------------------
   Method:  TCarbonDeviceContext.EndTextRender
   Params:  ALayout - ATSU layout
-  Returns: Nothing
 
   Frees the ATSU text layout and manages the device
   context to render ordinary graphic

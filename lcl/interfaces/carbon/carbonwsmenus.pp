@@ -26,24 +26,18 @@ unit CarbonWSMenus;
 
 interface
 
+// debugging defines
+{$I carbondebug.inc}
+
 uses
-////////////////////////////////////////////////////
-// I M P O R T A N T                                
-////////////////////////////////////////////////////
-// To get as little as posible circles,
-// uncomment only when needed for registration
-////////////////////////////////////////////////////
-//  Menus,
-////////////////////////////////////////////////////
   // Libs
-  FPCMacOSAll, CarbonUtils, CarbonExtra,
+  FPCMacOSAll, CarbonUtils,
   // LCL
   Controls, Forms, Menus, Graphics, LCLType, LMessages, LCLProc, Classes,
   // Widgetset
   WSMenus, WSLCLClasses,
-  // Interface
-  CarbonDef, CarbonProc, CarbonMenus,
-  CarbonWSControls;
+  // LCL Carbon
+  CarbonDef, CarbonProc, CarbonMenus, CarbonWSControls;
 
 type
 
@@ -127,7 +121,7 @@ begin
     if TObject(AMenuItem.Handle) is TCarbonMenu then
     begin
       {$IFDEF VerboseWSClass}
-        DebugLn(Self.ClassName + '.' + DbgText + ' ' + AParamName + ' for ' + AMenuItem.Name);
+        DebugLn(Self.ClassName + '.' + AMethodName + ' ' + AParamName + ' for ' + AMenuItem.Name);
       {$ENDIF}
 
       Result := True;
@@ -151,7 +145,6 @@ end;
 {------------------------------------------------------------------------------
   Method:  TCarbonWSMenuItem.AttachMenu
   Params:  AMenuItem - LCL menu item
-  Returns: Nothinh
 
   Attaches menu item to its parent menu in Carbon interface
  ------------------------------------------------------------------------------}
@@ -178,7 +171,6 @@ end;
 {------------------------------------------------------------------------------
   Method:  TCarbonWSMenuItem.DestroyHandle
   Params:  AMenuItem - LCL menu item
-  Returns: Nothing
 
   Destroys menu item in Carbon interface
  ------------------------------------------------------------------------------}
@@ -193,7 +185,6 @@ end;
   Method:  TCarbonWSMenuItem.SetCaption
   Params:  AMenuItem - LCL menu item
            ACaption  - Menu item caption
-  Returns: Nothing
 
   Sets the caption of menu item in Carbon interface
  ------------------------------------------------------------------------------}
@@ -211,34 +202,23 @@ end;
   Params:  AMenuItem   - LCL menu item
            OldShortCut - Old shortcut
            NewShortCut - New shortcut
-  Returns: Nothing
 
   Sets the shortcut of menu item in Carbon interface
-  NOTE: only Command Key (ssCtrl) is supported
  ------------------------------------------------------------------------------}
 class procedure TCarbonWSMenuItem.SetShortCut(const AMenuItem: TMenuItem;
   const OldShortCut, NewShortCut: TShortCut);
-var
-  Shift: TShiftState;
-  Key: Word;
 begin
   if not CheckMenuItem(AMenuItem, 'SetShortCut') then Exit;
   if not CheckMenuItem(AMenuItem.Parent, 'SetShortCut', 'Parent') then Exit;
   
-  ShortCutToKey(NewShortCut, Key, Shift);
-  
-  if not (ssCtrl in Shift) then
-    DebugLn('Note: Carbon menus supports only shortcuts with Ctrl!');
-    
-  SetMenuItemCommandKey(AsMenuRef(AMenuItem.Parent.Handle),
-    AMenuItem.MenuIndex + 1, False, Key);
+  if OldShortCut <> NewShortCut then
+    TCarbonMenu(AMenuItem.Handle).SetShortCut(NewShortCut);
 end;
 
 {------------------------------------------------------------------------------
   Method:  TCarbonWSMenuItem.SetVisible
   Params:  AMenuItem - LCL menu item
            Visible   - Menu item visibility
-  Returns: Nothing
 
   Sets the visibility of menu item in Carbon interface
  ------------------------------------------------------------------------------}
@@ -265,21 +245,8 @@ begin
   Result := False;
   if not CheckMenuItem(AMenuItem, 'SetCheck') then Exit;
   if not CheckMenuItem(AMenuItem.Parent, 'SetCheck', 'Parent') then Exit;
-  
-  if AMenuItem.Checked then
-  begin
-    {if AMenuItem.RadioItem then
-      SetItemMark(AsMenuRef(AMenuItem.Parent.Handle), AMenuItem.MenuIndex + 1,
-        Char(kDiamondCharCode)) // or kBulletCharCode
-    else
-      SetItemMark(AsMenuRef(AMenuItem.Parent.Handle), AMenuItem.MenuIndex + 1,
-        Char(kCheckCharCode));}
-  end
-  else
-    if AMenuItem.Count = 0 then
-      SetItemMark(AsMenuRef(AMenuItem.Parent.Handle), AMenuItem.MenuIndex + 1, #0);
-  FPCMacOSAll.CheckMenuItem(AsMenuRef(AMenuItem.Parent.Handle), AMenuItem.MenuIndex + 1,
-    AMenuItem.Checked);
+
+  TCarbonMenu(AMenuItem.Handle).SetCheck(Checked);
 
   Result := True;
 end;
@@ -325,7 +292,6 @@ end;
   Method:  TCarbonWSPopupMenu.Popup
   Params:  APopupMenu - LCL popup menu
            X, Y       - Screen coordinates to popup
-  Returns: Nothing
 
   Creates new menu in Carbon interface
  ------------------------------------------------------------------------------}
@@ -335,7 +301,9 @@ begin
   if not CheckMenu(APopupMenu.Handle, 'TCarbonWSPopupMenu.Popup') then Exit;
   
   PopUpMenuSelect(AsMenuRef(APopupMenu.Handle), Y, X, 0);
-end;                                         // ^- order top, left is correct!
+                                             // ^- order top, left is correct!
+  APopupMenu.Close; // notify LCL popup menu
+end;
 
 initialization
 

@@ -26,16 +26,18 @@ unit CarbonWSForms;
 
 interface
 
+// debugging defines
+{$I carbondebug.inc}
+
 uses
   // Libs
-  FPCMacOSAll, CarbonUtils, CarbonExtra,
+  FPCMacOSAll, CarbonUtils,
   // LCL
   Controls, Forms, Graphics, LCLType, LMessages, LCLProc, Classes,
   // Widgetset
   WSForms, WSLCLClasses, WSProc,
-  // Interface
-  CarbonDef, CarbonProc, CarbonPrivate,
-  CarbonWSControls;
+  // LCL Carbon
+  CarbonDef, CarbonProc, CarbonPrivate, CarbonWSControls;
 
 type
 
@@ -141,7 +143,6 @@ end;
 {------------------------------------------------------------------------------
   Method:  TCarbonWSCustomForm.CloseModal
   Params:  ACustomForm - LCL custom form
-  Returns: Nothing
 
   Closes modal window in Carbon interface
  ------------------------------------------------------------------------------}
@@ -156,7 +157,6 @@ end;
 {------------------------------------------------------------------------------
   Method:  TCarbonWSCustomForm.ShowModal
   Params:  ACustomForm - LCL custom form
-  Returns: Nothing
 
   Shows modal window in Carbon interface
  ------------------------------------------------------------------------------}
@@ -173,7 +173,6 @@ end;
   Method:  TCarbonWSCustomForm.SetBorderIcons
   Params:  AForm        - LCL custom form
            ABorderIcons - Border icons
-  Returns: Nothing
 
   Sets the border icons of window in Carbon interface
  ------------------------------------------------------------------------------}

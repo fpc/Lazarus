@@ -25,7 +25,9 @@ function CarbonWindow_Close(ANextHandler: EventHandlerCallRef;
 var
   Msg: TLMessage;
 begin
-  DebugLn('CarbonWindow_Close: ', DbgSName(AWidget.LCLObject));
+  {$IFDEF VerboseWindowEvent}
+    DebugLn('CarbonWindow_Close: ', DbgSName(AWidget.LCLObject));
+  {$ENDIF}
   // Do canclose query, if false then exit
 
   FillChar(Msg, SizeOf(Msg),0);
@@ -38,7 +40,10 @@ begin
     Exit;
   end;
   
-  DebugLn('CarbonWindow_Close Free: ', DbgSName(AWidget.LCLObject));
+  {$IFDEF VerboseWindowEvent}
+    DebugLn('CarbonWindow_Close Free: ', DbgSName(AWidget.LCLObject));
+  {$ENDIF}
+    
   Result := CallNextEventHandler(ANextHandler, AEvent);
 end;
 
@@ -98,7 +103,7 @@ var
                       SizeOf(WheelDelta), nil, @WheelDelta);
     Result := WheelDelta;
     {$IFDEF VerboseMouse}
-    DebugLn('GetMouseWheelDelta WheelDelta=', DbgS(WheelDelta), ' ', HexStr(WheelDelta, 8));
+      DebugLn('GetMouseWheelDelta WheelDelta=', DbgS(WheelDelta), ' ', HexStr(WheelDelta, 8));
     {$ENDIF}
   end;
 
@@ -121,7 +126,7 @@ var
     Msg: ^TLMMouse;
   begin
     {$IFDEF VerboseMouse}
-    DebugLN('HandleMouseDownEvent');
+      DebugLN('HandleMouseDownEvent');
     {$ENDIF}
     Msg := @AMsg;
 
@@ -149,9 +154,8 @@ var
     MousePoint: TPoint;
     Msg: ^TLMMouse;
   begin
-    DebugLn('HandleMouseUpEvent');
     {$IFDEF VerboseMouse}
-    DebugLn('HandleMouseUpEvent');
+      DebugLn('HandleMouseUpEvent');
     {$ENDIF}
     // this is not called if NextHandler is called on MouseDown
     // perhaps mousetracking can fix this
@@ -174,7 +178,7 @@ var
     MSg: ^TLMMouseMove;
   begin
     {$IFDEF VerboseMouse}
-    DebugLN('HandleMouseMovedEvent');
+      DebugLN('HandleMouseMovedEvent');
     {$ENDIF}
     Msg := @AMsg;
     
@@ -189,7 +193,7 @@ var
   procedure HandleMouseDraggedEvent(var AMsg);
   begin
     {$IFDEF VerboseMouse}
-    DebugLN('-- mouse dragged --');
+      DebugLN('-- mouse dragged --');
     {$ENDIF}
     // TODO
   end;
@@ -200,7 +204,7 @@ var
     MSg: ^TLMMouseEvent;
   begin
     {$IFDEF VerboseMouse}
-    DebugLN('HandleMouseWheelEvent');
+      DebugLN('HandleMouseWheelEvent');
     {$ENDIF}
     Msg := @AMsg;
 
@@ -311,7 +315,7 @@ var
     end;
     Result:=true;
     {$IFDEF VerboseKeyboard}
-    debugln('[EmulateModifiersDownUp] VK=',DbgsVKCode(VKKeyCode));
+      DebugLn('[EmulateModifiersDownUp] VK =', DbgsVKCode(VKKeyCode));
     {$ENDIF}
   end;
 
@@ -386,7 +390,7 @@ var
     begin
       //stop here, we won't send char or UTF8KeyPress
       {$IFDEF VerboseKeyboard}
-      debugln('[TranslateMacKeyCode] VK=',DbgsVKCode(VKKeyCode));
+       DebugLn('[TranslateMacKeyCode] VK = ', DbgsVKCode(VKKeyCode));
       {$ENDIF}
       Result:=true;
       exit;
@@ -447,7 +451,8 @@ var
       if VKKeyCode=VK_UNKNOWN then VKKeyCode:=$E8;
 
       {$IFDEF VerboseKeyboard}
-      debugln('[TranslateMacKeyCode] VK=',DbgsVKCode(VKKeyCode),' Utf8="',UTF8Character,'" KeyChar="',KeyChar,'"');
+       DebugLn('[TranslateMacKeyCode] VK=', DbgsVKCode(VKKeyCode), ' Utf8="',
+         UTF8Character, '" KeyChar="', KeyChar, '"');
       {$ENDIF}
       Result:=true;
     end
@@ -461,7 +466,7 @@ var
   begin
     Result:=EventNotHandledErr;
     {$IFDEF VerboseKeyboard}
-    DebugLN('[HandleRawKeyDownEvent] Widget.LCLObject=',DbgSName(Widget.LCLObject));
+      DebugLN('[HandleRawKeyDownEvent] Widget.LCLObject=', DbgSName(Widget.LCLObject));
     {$ENDIF}
 
     // create the CN_KEYDOWN message
@@ -478,7 +483,7 @@ var
       begin
         // the LCL handled the key
         {$IFDEF VerboseKeyboard}
-        Debugln('[HandleRawKeyDownEvent] LCL handled CN_KEYDOWN, exiting');
+          DebugLn('[HandleRawKeyDownEvent] LCL handled CN_KEYDOWN, exiting');
         {$ENDIF}
         Result := noErr;
         exit;
@@ -495,7 +500,7 @@ var
       begin
         // the LCL handled the key
         {$IFDEF VerboseKeyboard}
-        Debugln('[HandleRawKeyDownEvent] LCL handled LM_KEYDOWN, exiting');
+          DebugLn('[HandleRawKeyDownEvent] LCL handled LM_KEYDOWN, exiting');
         {$ENDIF}
         //Result already set by CallNextEventHandler
         exit;
@@ -510,7 +515,7 @@ var
       begin
         // the LCL has handled the key
         {$IFDEF VerboseKeyboard}
-        Debugln('[HandleRawKeyDownEvent] LCL handled IntfUTF8KeyPress, exiting');
+          Debugln('[HandleRawKeyDownEvent] LCL handled IntfUTF8KeyPress, exiting');
         {$ENDIF}
         if Result=EventNotHandledErr then
           Result := noErr;
@@ -529,7 +534,7 @@ var
       begin
         // the LCL handled the key
         {$IFDEF VerboseKeyboard}
-        Debugln('[HandleRawKeyDownEvent] LCL handled CN_CHAR, exiting');
+          Debugln('[HandleRawKeyDownEvent] LCL handled CN_CHAR, exiting');
         {$ENDIF}
         if Result=EventNotHandledErr then
           Result := noErr;
@@ -548,7 +553,7 @@ var
       begin
         // the LCL handled the key
         {$IFDEF VerboseKeyboard}
-        Debugln('[HandleRawKeyDownEvent] LCL handled LM_CHAR, exiting');
+          Debugln('[HandleRawKeyDownEvent] LCL handled LM_CHAR, exiting');
         {$ENDIF}
         if Result=EventNotHandledErr then
           Result := noErr;
@@ -564,7 +569,7 @@ var
   begin
     Result:=EventNotHandledErr;
     {$IFDEF VerboseKeyboard}
-    DebugLN('[HandleRawKeyUpEvent] Widget.LCLObject=',DbgSName(Widget.LCLObject));
+      DebugLN('[HandleRawKeyUpEvent] Widget.LCLObject=',DbgSName(Widget.LCLObject));
     {$ENDIF}
 
     // create the CN_KEYUP message
@@ -581,7 +586,7 @@ var
       begin
         // the LCL has handled the key
         {$IFDEF VerboseKeyboard}
-        Debugln('[HandleRawKeyUpEvent] LCL handled CN_KEYUP, exiting');
+          Debugln('[HandleRawKeyUpEvent] LCL handled CN_KEYUP, exiting');
         {$ENDIF}
         Result := noErr;
         exit;
@@ -598,7 +603,7 @@ var
       begin
         // the LCL handled the key
         {$IFDEF VerboseKeyboard}
-        Debugln('[HandleRawKeyUpEvent] LCL handled LM_KEYUP, exiting');
+          Debugln('[HandleRawKeyUpEvent] LCL handled LM_KEYUP, exiting');
         {$ENDIF}
         if Result=EventNotHandledErr then
           Result := noErr;
@@ -654,7 +659,9 @@ var
   Msg: TLMessage;
   EventKind: UInt32;
 begin
-  DebugLn('CarbonWindow_ActivateProc');
+  {$IFDEF VerboseWindowEvent}
+    DebugLn('CarbonWindow_ActivateProc ', DbgSName(AWidget.LCLObject));
+  {$ENDIF}
   Result := CallNextEventHandler(ANextHandler, AEvent);
   
   FillChar(Msg, SizeOf(Msg), 0);
@@ -675,7 +682,10 @@ var
   Msg: TLMShowWindow;
   EventKind: UInt32;
 begin
-  DebugLn('CarbonWindow_ShowWindow');
+  {$IFDEF VerboseWindowEvent}
+    DebugLn('CarbonWindow_ShowWindow ', DbgSName(AWidget.LCLObject));
+  {$ENDIF}
+  
   Result := CallNextEventHandler(ANextHandler, AEvent);
 
   FillChar(Msg, SizeOf(Msg), 0);
@@ -816,7 +826,10 @@ begin
     RegisterEventHandler(@CarbonCommon_CursorChange),
     1, @TmpSpec, Pointer(Self), nil);	
 
-  DebugLn('TCarbonWindow.RegisterEvents ', DbgSName(LCLObject));
+  {$IFDEF VerboseWindowEvent}
+    DebugLn('TCarbonWindow.RegisterEvents ', ClassName, ' ',
+      LCLObject.Name, ': ', LCLObject.ClassName);
+  {$ENDIF}
 end;
 
 procedure TCarbonWindow.UnregisterEvents;
@@ -962,7 +975,6 @@ end;
 {------------------------------------------------------------------------------
   Method:  TCarbonWindow.Invalidate
   Params:  Rect - Pointer to rect (optional)
-  Returns: Nothing
 
   Invalidates the specified rect or entire area of window content
  ------------------------------------------------------------------------------}

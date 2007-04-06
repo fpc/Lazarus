@@ -1,8 +1,8 @@
 { $Id$}
 {
  *****************************************************************************
- *                              CarbonWSExtCtrls.pp                              * 
- *                              ---------------                              * 
+ *                              CarbonWSExtCtrls.pp                          *
+ *                              -------------------                          *
  *                                                                           *
  *                                                                           *
  *****************************************************************************
@@ -26,16 +26,18 @@ unit CarbonWSExtCtrls;
 
 interface
 
+// debugging defines
+{$I carbondebug.inc}
+
 uses
-////////////////////////////////////////////////////
-// I M P O R T A N T                                
-////////////////////////////////////////////////////
-// To get as little as posible circles,
-// uncomment only when needed for registration
-////////////////////////////////////////////////////
-//  ExtCtrls,
-////////////////////////////////////////////////////
-  WSExtCtrls, WSLCLClasses;
+  // libs
+  FPCMacOSAll,
+  // LCL
+  Classes, Controls, ExtCtrls, LCLType, LCLProc, Graphics, Math,
+  // widgetset
+  WSExtCtrls, WSLCLClasses, WSControls, WSProc,
+  // LCL Carbon
+  CarbonDef, CarbonProc, CarbonTabs, CarbonStrings, CarbonWSControls;
 
 type
 
@@ -45,6 +47,9 @@ type
   private
   protected
   public
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+
+    class procedure UpdateProperties(const ACustomPage: TCustomPage); override;
   end;
 
   { TCarbonWSCustomNotebook }
@@ -53,6 +58,19 @@ type
   private
   protected
   public
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+
+    class procedure AddPage(const ANotebook: TCustomNotebook; const AChild: TCustomPage; const AIndex: integer); override;
+    class procedure MovePage(const ANotebook: TCustomNotebook; const AChild: TCustomPage; const NewIndex: integer); override;
+    class procedure RemovePage(const ANotebook: TCustomNotebook; const AIndex: integer); override;
+
+    //class function GetNotebookMinTabHeight(const AWinControl: TWinControl): integer; override;
+    //class function GetNotebookMinTabWidth(const AWinControl: TWinControl): integer; override;
+    //class function GetPageRealIndex(const ANotebook: TCustomNotebook; AIndex: Integer): Integer; override;
+    //class function GetTabIndexAtPos(const ANotebook: TCustomNotebook; const AClientPos: TPoint): integer; override;
+    class procedure SetPageIndex(const ANotebook: TCustomNotebook; const AIndex: integer); override;
+    class procedure SetTabPosition(const ANotebook: TCustomNotebook; const ATabPosition: TTabPosition); override;
+    //class procedure ShowTabs(const ANotebook: TCustomNotebook; AShowTabs: boolean); override;
   end;
 
   { TCarbonWSPage }
@@ -159,14 +177,6 @@ type
   public
   end;
 
-  { TCarbonWSBoundLabel }
-
-  TCarbonWSBoundLabel = class(TWSBoundLabel)
-  private
-  protected
-  public
-  end;
-
   { TCarbonWSCustomLabeledEdit }
 
   TCarbonWSCustomLabeledEdit = class(TWSCustomLabeledEdit)
@@ -202,6 +212,132 @@ type
 
 implementation
 
+{ TCarbonWSCustomPage }
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWSCustomPage.CreateHandle
+  Params:  AWinControl - LCL control
+           AParams     - Creation parameters
+  Returns: Handle to the control in Carbon interface
+
+  Creates new custom page in Carbon interface with the specified parameters
+ ------------------------------------------------------------------------------}
+class function TCarbonWSCustomPage.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): TLCLIntfHandle;
+begin
+  Result := TLCLIntfHandle(TCarbonTab.Create(AWinControl, AParams));
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWSCustomPage.UpdateProperties
+  Params:  ACustomPage - LCL custom page
+
+  Update properties of the specified custom page in Carbon interface
+ ------------------------------------------------------------------------------}
+class procedure TCarbonWSCustomPage.UpdateProperties(const ACustomPage: TCustomPage);
+begin
+  if not CheckHandle(ACustomPage, Self, 'UpdateProperties') then Exit;
+  
+  TCarbonTab(ACustomPage.Handle).Update;
+end;
+
+{ TCarbonWSCustomNotebook }
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWSCustomNotebook.CreateHandle
+  Params:  AWinControl - LCL control
+           AParams     - Creation parameters
+  Returns: Handle to the control in Carbon interface
+
+  Creates new custom notebook in Carbon interface with the specified parameters
+ ------------------------------------------------------------------------------}
+class function TCarbonWSCustomNotebook.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): TLCLIntfHandle;
+begin
+  Result := TLCLIntfHandle(TCarbonTabsControl.Create(AWinControl, AParams));
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWSCustomNotebook.AddPage
+  Params:  ANotebook - LCL custom notebook
+           AChild    - New tab
+           AIndex    - New tab index
+
+  Adds tab with the specified index in notebook in Carbon interface
+ ------------------------------------------------------------------------------}
+class procedure TCarbonWSCustomNotebook.AddPage(const ANotebook: TCustomNotebook;
+  const AChild: TCustomPage; const AIndex: integer);
+begin
+  if not CheckHandle(ANotebook, Self, 'AddPage') then Exit;
+  if not CheckHandle(AChild, Self, 'AddPage AChild') then Exit;
+  
+  TCarbonTabsControl(ANotebook.Handle).Add(TCarbonTab(AChild.Handle), AIndex);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWSCustomNotebook.MovePage
+  Params:  ANotebook - LCL custom notebook
+           AChild    - Moved tab
+           AIndex    - New tab index
+
+  Moves tab to the specified index in notebook in Carbon interface
+ ------------------------------------------------------------------------------}
+class procedure TCarbonWSCustomNotebook.MovePage(const ANotebook: TCustomNotebook;
+  const AChild: TCustomPage; const NewIndex: integer);
+begin
+  if not CheckHandle(ANotebook, Self, 'MovePage') then Exit;
+  if not CheckHandle(AChild, Self, 'MovePage AChild') then Exit;
+  
+  TCarbonTabsControl(ANotebook.Handle).Remove(AChild.PageIndex);
+  TCarbonTabsControl(ANotebook.Handle).Add(TCarbonTab(AChild.Handle), NewIndex);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWSCustomNotebook.RemovePage
+  Params:  ANotebook - LCL custom notebook
+           AIndex    - Removed tab index
+
+  Removes tab with the specified index from notebook in Carbon interface
+ ------------------------------------------------------------------------------}
+class procedure TCarbonWSCustomNotebook.RemovePage(const ANotebook: TCustomNotebook;
+  const AIndex: integer);
+begin
+  if not CheckHandle(ANotebook, Self, 'RemovePage') then Exit;
+  
+  TCarbonTabsControl(ANotebook.Handle).Remove(AIndex);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWSCustomNotebook.CreateHandle
+  Params:  ANotebook - LCL custom notebook
+           AIndex    - New tab index
+
+  Selects tab with the specified index in notebook in Carbon interface
+ ------------------------------------------------------------------------------}
+class procedure TCarbonWSCustomNotebook.SetPageIndex(const ANotebook: TCustomNotebook;
+  const AIndex: integer);
+begin
+  if not CheckHandle(ANotebook, Self, 'SetPageIndex') then Exit;
+  
+  SetControl32BitValue(AsControlRef(ANotebook.Handle), AIndex + 1);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWSCustomNotebook.CreateHandle
+  Params:  ANotebook    - LCL custom notebook
+           ATabPosition - New position of tabs
+
+  Changes position of the tabs of notebook in Carbon interface
+ ------------------------------------------------------------------------------}
+class procedure TCarbonWSCustomNotebook.SetTabPosition(const ANotebook: TCustomNotebook;
+  const ATabPosition: TTabPosition);
+begin
+  if not CheckHandle(ANotebook, Self, 'SetTabPosition') then Exit;
+  
+  if TCarbonTabsControl(ANotebook.Handle).TabPosition <> ATabPosition then
+    RecreateWnd(ANotebook);
+end;
+
 initialization
 
 ////////////////////////////////////////////////////
@@ -210,8 +346,8 @@ initialization
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
-//  RegisterWSComponent(TCustomPage, TCarbonWSCustomPage);
-//  RegisterWSComponent(TCustomNotebook, TCarbonWSCustomNotebook);
+  RegisterWSComponent(TCustomPage, TCarbonWSCustomPage);
+  RegisterWSComponent(TCustomNotebook, TCarbonWSCustomNotebook);
 //  RegisterWSComponent(TPage, TCarbonWSPage);
 //  RegisterWSComponent(TNotebook, TCarbonWSNotebook);
 //  RegisterWSComponent(TShape, TCarbonWSShape);
