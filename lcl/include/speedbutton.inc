@@ -574,12 +574,15 @@ begin
     TXTStyle.ShowPrefix := ShowAccelChar;
     TXTStyle.Alignment := taLeftJustify;
     TXTStyle.Layout := tlTop;
+    // set color here, otherwise SystemFont is wrong if the button was disabled before
+    Canvas.Font.Color := Font.Color;
     TXTStyle.SystemFont := Canvas.Font.IsDefault;//Match System Default Style
 
     With PaintRect, OffsetCap do begin
       Left := Left + X;
       Top := Top + Y;
     end;
+
     If not Enabled then begin
       Canvas.Font.Color := clBtnHighlight;
       OffsetRect(PaintRect, 1, 1);
@@ -587,8 +590,12 @@ begin
       Canvas.Font.Color := clBtnShadow;
       OffsetRect(PaintRect, -1, -1);
     end
-    else Canvas.Font.Color := Font.Color;
-    //DebugLn('TCustomSpeedButton.Paint PaintRect=',PaintRect.Left,',',PaintRect.TOp,',',PaintRect.Right,',',PaintRect.Bottom,caption);
+    else begin
+      // if pushed, move text 1 pixel right and down
+      if (FLastDrawFlags and DFCS_PUSHED) <>0 then
+        OffsetRect(PaintRect, 1, 1);
+    end;
+    //DebugLn(['TCustomSpeedButton.Paint PaintRect=',PaintRect.Left,',',PaintRect.TOp,',',PaintRect.Right,',',PaintRect.Bottom,caption,', ', TXTStyle.SystemFont]);
     Canvas.TextRect(PaintRect, PaintRect.Left, PaintRect.Top, Caption, TXTStyle);
   end;
 
