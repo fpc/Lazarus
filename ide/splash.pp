@@ -4,9 +4,6 @@
                                Splash.pp
                                ---------
 
-
-
-
  ***************************************************************************/
 
  ***************************************************************************
@@ -51,15 +48,12 @@ type
 
   TSplashForm = class(TForm)
     Image: TImage;
-    Timer: TTimer;
     procedure ApplicationOnIdle(Sender: TObject; var Done: boolean);
-    procedure TimerTimer(Sender: TObject);
   private
   protected
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure StartTimer;
   end;
 
 var
@@ -87,16 +81,6 @@ end;
 procedure TSplashForm.ApplicationOnIdle(Sender: TObject; var Done: boolean);
 begin
   Hide;
-end;
-
-procedure TSplashForm.TimerTimer(Sender: TObject);
-begin
-  Hide;
-end;
-
-procedure TSplashForm.StartTimer;
-begin
-  Timer.Enabled := True;
 end;
 
 initialization

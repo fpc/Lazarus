@@ -1,19 +1,18 @@
 object SplashForm: TSplashForm
-  AutoSize = True
-  BorderStyle = bsNone
-  Caption = 'Lazarus'
-  ClientHeight = 341
-  ClientWidth = 429
-  FormStyle = fsStayOnTop
-  PixelsPerInch = 96
-  Position = poScreenCenter
-  HorzScrollBar.Page = 428
-  VertScrollBar.Page = 340
   Left = 561
   Height = 341
   Top = 370
   Width = 429
+  HorzScrollBar.Page = 428
+  VertScrollBar.Page = 340
+  AutoSize = True
+  BorderStyle = bsNone
+  Caption = 'Lazarus'
+  FormStyle = fsStayOnTop
+  Position = poScreenCenter
   object Image: TImage
+    Height = 341
+    Width = 429
     Align = alClient
     AutoSize = True
     Picture.Data = {
@@ -9353,15 +9352,5 @@ object SplashForm: TSplashForm
       2D2B782E2D2B4D2E2D2E2D204D2E2D2038202D2038202D202D2E4D2E2D20382B
       2D2E2D20622B2D2038202D204F2E4F2E382B227D3B0D0A
     }
-    Transparent = True
-    Height = 341
-    Width = 429
-  end
-  object Timer: TTimer
-    Enabled = False
-    Interval = 500
-    OnTimer = TimerTimer
-    left = 221
-    top = 46
   end
 end

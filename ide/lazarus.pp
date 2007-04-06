@@ -98,8 +98,6 @@ begin
   CheckHeapWrtMemCnt('lazarus.pp: TMainIDE created');
   {$ENDIF}
 
-  if (SplashForm<>nil) then
-    SplashForm.StartTimer;
   try
     Application.Run;
   except
