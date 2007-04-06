@@ -32,6 +32,8 @@
 function ExtUTF8Out(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect;
   Str: PChar; Count: Longint; Dx: PInteger): Boolean; override;
 function TextUTF8Out(DC: HDC; X, Y: Integer; Str: PChar; Count: Longint): Boolean; override;
+function ComboBoxDropDown(Handle: HWND; DropDown: boolean): boolean; override;
+function SetComboMinDropDownSize(Handle: HWND; MinItemsWidth, MinItemsHeight, MinItemCount: integer): boolean; override;
 
 
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line

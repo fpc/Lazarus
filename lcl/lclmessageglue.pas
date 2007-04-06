@@ -83,6 +83,7 @@ function LCLSendDayChangedMsg(const Target: TControl): PtrInt;
 function LCLSendMouseMultiClickMsg(const Target: TControl; XPos, YPos: SmallInt; Button: TMouseButton; ClickCount: Byte = 2; ShiftState: TShiftState = []): PtrInt;
 function LCLSendDrawListItemMsg(const Target: TControl; const DrawListItemStruct: PDrawListItemStruct): PtrInt;
 function LCLSendInternalPaintMsg(const Target: TControl; DC: HDC): PtrInt;
+function LCLSendDropDownMsg(const Target: TControl): PtrInt;
 
 implementation
 
@@ -1180,6 +1181,30 @@ begin
   FillChar(Mess, SizeOf(Mess), 0);
   Mess.Msg := LM_INTERNALPAINT;
   Mess.WParam := DC;
+
+  Result := DeliverMessage(Target, Mess);
+end;
+
+{******************************************************************************
+ *                                                                            *
+ * LCLSendDropDownMsg                                                         *
+ *                                                                            *
+ * Returns       : 0 to accept the message, non-zero to reject the message    *
+ *                                                                            *
+ * Params                                                                     *
+ *                                                                            *
+ * Target        : The Control that will recieve the message CN_Command       *
+ *                                                                            *
+ * Used to notify a combo that the combobox is popping down                   *
+ *                                                                            *
+ ******************************************************************************}
+function LCLSendDropDownMsg(const Target: TControl): PtrInt;
+var
+  Mess : TLMCommand;
+begin
+  FillChar(Mess, SizeOf(Mess), 0);
+  Mess.Msg := CN_Command;
+  Mess.NotifyCode := CBN_DROPDOWN;
 
   Result := DeliverMessage(Target, Mess);
 end;

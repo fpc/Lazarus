@@ -44,4 +44,35 @@ begin
   Result:=TextOut(DC,X,Y,Str,Count);
 end;
 
+function TGtk2WidgetSet.ComboBoxDropDown(Handle: HWND; DropDown: boolean): boolean;
+var
+  WidgetInfo: PWidgetInfo;
+  Combo: PGtkComboBox;
+begin
+  WidgetInfo := GetWidgetInfo(Pointer(Handle), False);
+  Combo := PGtkComboBox(WidgetInfo^.CoreWidget);
+  
+  case DropDown of
+    True : gtk_combo_box_popup(Combo);
+    False: gtk_combo_box_popdown(Combo);
+  end;
+end;
+
+function TGtk2WidgetSet.SetComboMinDropDownSize(Handle: HWND; MinItemsWidth,
+  MinItemsHeight, MinItemCount: integer): boolean;
+var
+  p: PGtkWidget;
+  Menu: PGtkWidget;
+  Requisition: TGtkRequisition;
+begin
+  Result:=True;
+  p := GetWidgetInfo(Pointer(Handle), False)^.CoreWidget;
+  
+  Menu := PGtkWidget(g_object_get_data(G_OBJECT(p), 'Menu'));
+
+  Requisition.width := MinItemsWidth;
+  Requisition.height := MinItemsHeight * MinItemCount;
+  gtk_widget_size_request(Menu, @Requisition);
+end;
+
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line

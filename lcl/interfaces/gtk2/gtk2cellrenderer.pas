@@ -71,13 +71,15 @@ var
   Msg: TLMDrawListItem;
   ItemPath: PGtkTreePath;
   Column: PGtkTreeViewColumn;
+  Menu: PGtkMenuShell;
+  MenuItem: PGtkMenuItem;
 begin
   {DebugLn(['LCLIntfCellRenderer_Render cell=',dbgs(cell),
     ' ',GetWidgetDebugReport(Widget),' ',
     ' background_area=',dbgGRect(background_area),
     ' cell_area=',dbgGRect(cell_area),
     ' expose_area=',dbgGRect(expose_area)]);}
-    
+
   // draw default
   CellClass:=PLCLIntfCellRendererClass(gtk_object_get_class(cell));
   CellClass^.DefaultGtkRender(cell,Window,Widget,background_area,cell_area,
@@ -100,7 +102,11 @@ begin
       exit;
 
   // get itemindex and area
-  ItemIndex:=0;
+  
+  AreaRect:=Bounds(background_area^.x,background_area^.y,
+                   background_area^.Width,background_area^.Height);
+
+  ItemIndex:=-1;
   if GTK_IS_TREE_VIEW(Widget) then begin
     //check the four possible corners of the cell
     if gtk_tree_view_get_path_at_pos(PGtkTreeView(Widget),cell_area^.x, cell_area^.y, ItemPath, column, nil, nil)
@@ -109,10 +115,26 @@ begin
     or gtk_tree_view_get_path_at_pos(PGtkTreeView(Widget),cell_area^.x+cell_area^.width, cell_area^.y+cell_area^.height, ItemPath, column, nil, nil)
     then
       ItemIndex := StrToInt(gtk_tree_path_to_string(ItemPath));
-  end;
+  end
+  else if AWinControl is TCustomComboBox then begin
+    MenuItem := g_object_get_data(G_OBJECT(cell), 'MenuItem');
+    if MenuItem <> nil then begin
+      Menu := PGtkMenuShell(gtk_widget_get_parent(PGtkWidget(MenuItem)));
+      if Menu <> nil then
+        ItemIndex := g_list_index(Menu^.children, MenuItem);
+      if ItemIndex > -1 then begin
+        AreaRect:=Bounds(0,0,
+                   PGtkWidget(MenuItem)^.allocation.Width,PGtkWidget(MenuItem)^.allocation.height);
+      end;
+    end
+    else begin // it is a renderer not in the dropdown but the combo renderer itself
+      ItemIndex := TCustomComboBox(AWinControl).ItemIndex;
+      AreaRect:=Bounds(0,0, Widget^.allocation.Width, Widget^.allocation.height);
+    end;
 
-  AreaRect:=Bounds(background_area^.x,background_area^.y,
-                   background_area^.Width,background_area^.Height);
+  end;
+  
+  if ItemIndex < 0 then ItemIndex := 0;
 
   // collect state flags
   State:=[odPainted];

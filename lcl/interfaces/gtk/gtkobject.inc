@@ -3773,10 +3773,13 @@ begin
 
     LM_FOCUS :
     begin
+      {$IFDEF GTK1}
       if (ALCLObject is TCustomComboBox) then begin
         ConnectFocusEvents(PgtkObject(PgtkCombo(gObject)^.entry));
         ConnectFocusEvents(PgtkObject(PgtkCombo(gObject)^.list));
-      end else begin
+      end else
+      {$ENDIF}
+      begin
         ConnectFocusEvents(gCore);
       end;
     end;
@@ -3794,10 +3797,13 @@ begin
     LM_SYSKEYUP:
     begin
       //debugln('TGtkWidgetSet.SetCallback A KEY ALCLObject=',DbgSName(ALCLObject),' AMsg=',dbgs(AMsg));
+      {$IFDEF GTK1}
       if (ALCLObject is TCustomComboBox) then begin
         ConnectKeyPressReleaseEvents(PgtkObject(PgtkCombo(gObject)^.entry));
       end
-      else if (ALCLObject is TCustomForm) then begin
+      else
+      {$ENDIF}
+      if (ALCLObject is TCustomForm) then begin
         ConnectKeyPressReleaseEvents(gObject);
       end;
       ConnectKeyPressReleaseEvents(gCore);
@@ -3829,6 +3835,7 @@ begin
 
     LM_MOUSEMOVE:
     begin
+      {$IFDEF GTK1}
       if (ALCLObject is TCustomComboBox) then
       begin
         ConnectSenderSignal(PgtkObject(PgtkCombo(gObject)^.entry),
@@ -3845,7 +3852,9 @@ begin
           'motion-notify-event',
           @GTKMotionNotifyAfter, GDK_POINTER_MOTION_MASK);
       end
-      else begin
+      else
+      {$ENDIF}
+      begin
         ConnectSenderSignal(gFixed, 'motion-notify-event', @GTKMotionNotify,
                       GDK_POINTER_MOTION_MASK);
         ConnectSenderSignalAfter(gFixed, 'motion-notify-event',
@@ -3858,6 +3867,7 @@ begin
     LM_MBUTTONDOWN,
     LM_MOUSEWHEEL :
     begin
+      {$IFDEF GTK1}
       if (ALCLObject is TCustomComboBox) then
       begin
         ConnectSenderSignal(PgtkObject(PgtkCombo(gObject)^.entry),
@@ -3874,7 +3884,9 @@ begin
         // ConnectSenderSignal(PgtkObject(PgtkCOmbo(gObject)^.list),
         //    'button-press-event',  @gtkMouseBtnPress, GDK_BUTTON_PRESS_MASK);
       end
-      else begin
+      else
+      {$ENDIF}
+      begin
         ConnectSenderSignal(gFixed, 'button-press-event', @gtkMouseBtnPress,
                             GDK_BUTTON_PRESS_MASK);
         ConnectSenderSignalAfter(gFixed, 'button-press-event',
@@ -3886,6 +3898,7 @@ begin
     LM_RBUTTONUP,
     LM_MBUTTONUP:
     begin
+      {$IFDEF GTK1}
       if (ALCLObject is TCustomComboBox) then
       Begin
         ConnectSenderSignal(PgtkObject(PgtkCombo(gObject)^.entry),
@@ -3904,7 +3917,9 @@ begin
         //                'button-release-event',  @gtkMouseBtnRelease,
         //                GDK_BUTTON_RELEASE_MASK);
       end
-      else begin
+      else
+      {$ENDIF}
+      begin
         ConnectSenderSignal(gFixed, 'button-release-event', @gtkMouseBtnRelease,
                       GDK_BUTTON_RELEASE_MASK);
         ConnectSenderSignalAfter(gFixed, 'button-release-event',
