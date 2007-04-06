@@ -2471,6 +2471,7 @@ lcl/interfaces/fpgui/fpguiwsimglist.pp svneol=native#text/pascal
 lcl/interfaces/fpgui/fpguiwsmaskedit.pp svneol=native#text/pascal
 lcl/interfaces/fpgui/fpguiwsmenus.pp svneol=native#text/pascal
 lcl/interfaces/fpgui/fpguiwspairsplitter.pp svneol=native#text/pascal
+lcl/interfaces/fpgui/fpguiwsprivate.pp svneol=native#text/plain
 lcl/interfaces/fpgui/fpguiwsspin.pp svneol=native#text/pascal
 lcl/interfaces/fpgui/fpguiwsstdctrls.pp svneol=native#text/pascal
 lcl/interfaces/fpgui/fpguiwstoolwin.pp svneol=native#text/pascal
