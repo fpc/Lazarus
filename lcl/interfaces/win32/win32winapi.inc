@@ -1971,7 +1971,8 @@ end;
 function TWin32WidgetSet.CreateBitmapFromRawImage(const RawImage: TRawImage;
   var Bitmap, MaskBitmap: HBitmap; AlwaysCreateMask: boolean): boolean;
 var
-  BitmapInfo: TBitmapInfo;
+  BitmapInfoArr: array[0..sizeof(TBitmapInfo)+sizeof(RGBQUAD)-1] of Byte;
+  BitmapInfo: TBitmapInfo absolute BitmapInfoArr;
   hScreenDC: HDC;
 begin
   FillChar(BitmapInfo, SizeOf(BitmapInfo), 0);
@@ -1982,6 +1983,8 @@ begin
   BitmapInfo.bmiHeader.biBitCount := RawImage.Description.BitsPerPixel;
   BitmapInfo.bmiHeader.biCompression := BI_RGB;
   {BitmapInfo.bmiHeader.biSizeImage := 0;}
+  { first color is black, second color is white, for monochrome bitmap }
+  pdword(@BitmapInfo.bmiColors[0])[1] := $ffffff;
 
   hScreenDC := Windows.GetDC(Windows.GetDesktopWindow);
   MaskBitmap := 0;
