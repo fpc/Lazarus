@@ -40,7 +40,7 @@ begin
   FGlyph.OnChange := @GlyphChanged;
 
   SetInitialBounds(0, 0, 23, 22);
-  ControlStyle := ControlStyle + [csCaptureMouse]-[csSetCaption];
+  ControlStyle := ControlStyle - [csSetCaption, csDoubleClicks];
 
   FLayout:= blGlyphLeft;
   FAllowAllUp:= false;
