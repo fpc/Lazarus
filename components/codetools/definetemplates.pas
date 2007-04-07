@@ -86,8 +86,9 @@ const
   VirtualTempDir='TEMPORARYDIRECTORY';
   
   // FPC operating systems and processor types
-  FPCOperatingSystemNames: array[1..20] of shortstring =(
-      'linux', 'freebsd', 'openbsd', 'netbsd', 'win32', 'wince',
+  FPCOperatingSystemNames: array[1..21] of shortstring =(
+      'linux', 'freebsd', 'openbsd', 'netbsd',
+      'win32', 'win64', 'wince',
       'go32v1', 'go32v2',
       'beos', 'os2', 'amiga', 'atari', 'sunos', 'palmos', 'qnx', 'watcom',
       'emx', 'darwin', 'wdosx', 'netware'
@@ -102,7 +103,7 @@ const
       'i386', 'powerpc', 'm68k', 'x86_64', 'sparc', 'arm'
     );
 
-  Lazarus_CPU_OS_Widget_Combinations: array[1..35] of shortstring = (
+  Lazarus_CPU_OS_Widget_Combinations: array[1..37] of shortstring = (
     'i386-linux-gtk',
     'i386-linux-gtk2',
     'i386-linux-qt',
@@ -137,7 +138,9 @@ const
     'x86_64-linux-gtk',
     'x86_64-linux-gtk2',
     'x86_64-linux-qt',
-    'x86_64-linux-fpgui'
+    'x86_64-linux-fpgui',
+    'x86_64-win64-win32',
+    'x86_64-win64-fpgui'
     );
 
 type
