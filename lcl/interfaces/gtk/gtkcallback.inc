@@ -1018,6 +1018,9 @@ begin
   end;
 
   DeliverMouseMoveMessage(Widget,Event,TWinControl(Data));
+  {$IFDEF gtk2}
+  if TControl(Data).FCompStyle = csWinControl then Result := True;
+  {$ENDIF}
 end;
 
 {-------------------------------------------------------------------------------
@@ -1618,6 +1621,12 @@ begin
   end;
 
   DeliverMouseUpMessage(Widget,Event,TWinControl(Data));
+  {$IFDEF gtk2}
+  // stop the message here because it can get sent to the parent to make
+  // multiple incorrect mousemove messages
+  if TWinControl(Data).FCompStyle = csWinControl then Result := True;
+  {$ENDIF}
+
 end;
 
 {-------------------------------------------------------------------------------
