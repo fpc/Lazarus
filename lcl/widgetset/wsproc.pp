@@ -29,20 +29,41 @@ unit WSProc;
 interface
 
 uses
-  SysUtils, Controls;
+  LCLClasses, LCLProc, Controls;
 
+
+function WSCheckHandleAllocated(const AComponent: TLCLHandleComponent;
+                                const AProcName: String): Boolean;
 
 function WSCheckHandleAllocated(const AWincontrol: TWinControl;
                                 const AProcName: String): Boolean;
   
 implementation                                                  
                                                               
+function WSCheckHandleAllocated(const AComponent: TLCLHandleComponent;
+  const AProcName: String): Boolean;
+
+  procedure Warn;
+  begin
+    DebugLn('[WARNING] %s called without handle for %s(%s)', [AProcName, AComponent.Name, AComponent.ClassName]);
+  end;
+begin
+  Result := AComponent.HandleAllocated; 
+  if Result then Exit;
+  Warn;
+end;
+
 function WSCheckHandleAllocated(const AWincontrol: TWinControl;
   const AProcName: String): Boolean;
+
+  procedure Warn;
+  begin
+    DebugLn('[WARNING] %s called without handle for %s(%s)', [AProcName, AWincontrol.Name, AWincontrol.ClassName]);
+  end;
 begin
   Result := AWinControl.HandleAllocated; 
-  if not Result
-  then Assert(False, Format('trace: [WARNING] %s called without handle for %s(%s)', [AProcName, AWinControl.Name, AWinControl.ClassName]));
+  if Result then Exit;
+  Warn;
 end;
 
 end.

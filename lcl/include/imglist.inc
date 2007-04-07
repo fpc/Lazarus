@@ -200,9 +200,9 @@ var
 begin
   Bmp := TBitmap.Create;
 
-  Bmp.LoadFromLazarusResource(ResourceName);
   if MaskColor <> clNone then
     Bmp.TransparentColor := MaskColor;
+  Bmp.LoadFromLazarusResource(ResourceName);
   {$ifdef IMGLIST_OLDSTYLE}
   Result := AddDirect(Bmp, nil);
   {$else}

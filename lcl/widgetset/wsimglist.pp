@@ -50,12 +50,16 @@ type
     class procedure Clear(AList: TCustomImageList); virtual;
     class function  CreateHandle(AList: TCustomImageList; ACount, AGrow, AWidth,
       AHeight: Integer; AData: PRGBAQuad): TLCLIntfHandle; virtual;
+
     class procedure Delete(AList: TCustomImageList; AIndex: Integer); virtual;
     class procedure DestroyHandle(AList: TCustomImageList); virtual;
     class procedure Draw(AList: TCustomImageList; AIndex: Integer; ACanvas: TCanvas;
       ABounds: TRect; AEnabled: Boolean; AStyle: TDrawingStyle); virtual;
+
     class procedure Insert(AList: TCustomImageList; AIndex: Integer; AData: PRGBAQuad); virtual;
+
     class procedure Move(AList: TCustomImageList; ACurIndex, ANewIndex: Integer); virtual;
+
     class procedure Replace(AList: TCustomImageList; AIndex: Integer; AData: PRGBAQuad); virtual;
   end;
 

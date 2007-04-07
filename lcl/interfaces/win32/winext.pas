@@ -228,6 +228,14 @@ function ListView_GetHoverTime(hwndLV: HWND): DWORD;
 function ListView_SetHoverTime(hwndLV: HWND; dwHoverTimeMs: DWORD): DWORD;
 }
 
+// missing imagelist macros and constants
+
+const
+  ILCF_MOVE = $00000000;
+  ILCF_SWAP = $00000001;
+
+function ImageList_Copy(himlDst: HIMAGELIST; iDst: longint; himlSrc: HIMAGELIST; Src: longint; uFlags: UINT): BOOL; stdcall; external 'comctl32';
+
 
 { Win32 API functions not included in windows.pp }
 { Get the ancestor at level Flag of window HWnd }
