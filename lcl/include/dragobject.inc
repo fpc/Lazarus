@@ -72,8 +72,23 @@ begin
 end;
 
 procedure TDragObject.CaptureChanged(OldCaptureControl: TControl);
+var
+  i: integer;
+  IsDragging: Boolean;
 begin
-  DragDone(OldCaptureControl.Dragging);
+  // if this is TWinControl, and it have controls (not TWinControls)
+  // then we should check Dragging in those controls
+  IsDragging := OldCaptureControl.Dragging;
+  if (not IsDragging) and (OldCaptureControl is TWinControl) then
+  begin
+    for i := 0 to TWinControl(OldCaptureControl).ControlCount - 1 do
+    begin
+      IsDragging := IsDragging or TWinControl(OldCaptureControl).Controls[i].Dragging;
+      if IsDragging then
+        break;
+    end;
+  end;
+  DragDone(IsDragging);
 end;
 
 procedure TDragObject.KeyDown(var Key: Word; Shift: TShiftState);

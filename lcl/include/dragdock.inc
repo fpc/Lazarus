@@ -245,10 +245,12 @@ Begin
   {$IFDEF VerboseDrag}
   DebugLn('DragTo P=',Position.X,',',Position.Y);
   {$ENDIF}
-  if (ActiveDrag = dopNone)
-  and (Abs(DragStartPos.X - Position.X) < DragThreshold)
-  and (Abs(DragStartPos.Y - Position.Y) < DragThreshold) then begin
+  if (DragControl = nil) or ((ActiveDrag = dopNone) and
+     (Abs(DragStartPos.X - Position.X) < DragThreshold) and
+     (Abs(DragStartPos.Y - Position.Y) < DragThreshold)) then
+  begin
     // dragging not yet started
+    // or CancelDrag happened (DragControl = nil)
     exit;
   end;
 
