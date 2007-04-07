@@ -200,6 +200,7 @@ type
   private
   protected
   public
+    class function  GetPosition(const ATrackBar: TCustomTrackBar): integer; override;
     class procedure SetPosition(const ATrackBar: TCustomTrackBar; const NewPosition: integer); override;
   end;
 
@@ -244,6 +245,18 @@ end;
 {$I gtk2wscustomlistview.inc}
 
 { TGtk2WSTrackBar }
+
+class function TGtk2WSTrackBar.GetPosition(const ATrackBar: TCustomTrackBar
+  ): integer;
+var
+  Range: PGtkRange;
+begin
+  Result := 0;
+  if not ATRackBar.HandleAllocated then exit;
+
+  Range := PGtkRange(ATrackBar.Handle);
+  Result := Trunc(gtk_range_get_value(Range));
+end;
 
 class procedure TGtk2WSTrackBar.SetPosition(const ATrackBar: TCustomTrackBar;
   const NewPosition: integer);
