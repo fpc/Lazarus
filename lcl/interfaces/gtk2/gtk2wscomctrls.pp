@@ -200,6 +200,7 @@ type
   private
   protected
   public
+    class procedure SetPosition(const ATrackBar: TCustomTrackBar; const NewPosition: integer); override;
   end;
 
   { TGtk2WSCustomTreeView }
@@ -242,6 +243,17 @@ end;
 
 {$I gtk2wscustomlistview.inc}
 
+{ TGtk2WSTrackBar }
+
+class procedure TGtk2WSTrackBar.SetPosition(const ATrackBar: TCustomTrackBar;
+  const NewPosition: integer);
+var
+  Range: PGtkRange;
+begin
+  Range := PGtkRange(ATrackBar.Handle);
+  gtk_range_set_value(Range, Trunc(NewPosition));
+end;
+
 initialization
 
 ////////////////////////////////////////////////////
@@ -262,7 +274,7 @@ initialization
 //  RegisterWSComponent(TCustomToolBar, TGtk2WSToolBar);
 //  RegisterWSComponent(TCustomToolButton, TGtk2WSToolButton);
 //  RegisterWSComponent(TCustomToolBar, TGtk2WSToolBar);
-//  RegisterWSComponent(TCustomTrackBar, TGtk2WSTrackBar);
+  RegisterWSComponent(TCustomTrackBar, TGtk2WSTrackBar);
 //  RegisterWSComponent(TCustomTreeView, TGtk2WSCustomTreeView);
 //  RegisterWSComponent(TCustomTreeView, TGtk2WSTreeView);
 ////////////////////////////////////////////////////
