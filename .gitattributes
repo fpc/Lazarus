@@ -2679,6 +2679,8 @@ lcl/interfaces/wince/wincelclintfh.inc svneol=native#text/plain
 lcl/interfaces/wince/wincelistsl.inc svneol=native#text/plain
 lcl/interfaces/wince/wincelistslh.inc svneol=native#text/plain
 lcl/interfaces/wince/wincememostrings.inc svneol=native#text/plain
+lcl/interfaces/wince/wincemenures.rc svneol=native#text/plain
+lcl/interfaces/wince/wincemenures.res -text
 lcl/interfaces/wince/winceobject.inc svneol=native#text/plain
 lcl/interfaces/wince/winceproc.pp svneol=native#text/plain
 lcl/interfaces/wince/wincewinapi.inc svneol=native#text/plain

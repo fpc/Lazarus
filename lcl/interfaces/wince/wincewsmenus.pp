@@ -100,7 +100,7 @@ implementation
 
 uses strutils;
 
-{.$R wincemenures.res}
+{$R wincemenures.res}
 
 { helper routines }
 
