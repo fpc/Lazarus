@@ -220,6 +220,7 @@ Var
   winClassName: array[0..19] of char;
   WindowInfo: PWindowInfo;
   Flags: dword;
+  WindowDC: HDC;
 
   LMInsertText: TLMInsertText; // used by CB_INSERTSTRING, LB_INSERTSTRING
   LMScroll: TLMScroll; // used by WM_HSCROLL
@@ -1183,6 +1184,7 @@ begin
       // only static and button controls have transparent parts
       // others need to erased with their window color
       // scrollbar also has buttons
+      WindowDC := HDC(WParam);
       ChildWindowInfo := GetWindowInfo(HWND(LParam));
       ChildWinControl := ChildWindowInfo^.WinControl;
       if ChildWinControl = nil then
@@ -1194,9 +1196,9 @@ begin
             and not ChildWindowInfo^.ThemedCustomDraw then
           begin
             // need to draw transparently, draw background
-            SendParentPaintMessage(LParam, Window, WParam);
+            SendParentPaintMessage(HWND(LParam), Window, WindowDC);
             LMessage.Result := GetStockObject(HOLLOW_BRUSH);
-            SetBkMode(WParam, TRANSPARENT);
+            SetBkMode(WindowDC, TRANSPARENT);
             WinProcess := false;
           end;
         end;
@@ -1209,8 +1211,8 @@ begin
       begin
         if ChildWinControl <> nil then
         begin
-          Windows.SetTextColor(HDC(WParam), Windows.COLORREF(ColorToRGB(ChildWinControl.Font.Color)));
-          Windows.SetBkColor(HDC(WParam), Windows.COLORREF(ColorToRGB(ChildWinControl.Brush.Color)));
+          Windows.SetTextColor(WindowDC, Windows.COLORREF(ColorToRGB(ChildWinControl.Font.Color)));
+          Windows.SetBkColor(WindowDC, Windows.COLORREF(ColorToRGB(ChildWinControl.Brush.Color)));
           LMessage.Result := LResult(ChildWinControl.Brush.Handle);
           //DebugLn(['WindowProc ', ChildWinControl.Name, ' Brush: ', LMessage.Result]);
           // Override default handling
