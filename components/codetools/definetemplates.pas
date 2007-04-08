@@ -4161,21 +4161,16 @@ begin
       ExtraSrcPath:='../../../interfaces/'+CurWidgetSet;
       if (CurWidgetSet='gtk2') then
         ExtraSrcPath:=ExtraSrcPath+';../../../interfaces/gtk';
-      if (CurWidgetSet='fpgui') then begin
+      if (CurWidgetSet='fpgui') then
         ExtraSrcPath:=ExtraSrcPath
           +';../../../interfaces/fpgui/gfx'
           +';../../../interfaces/fpgui/gui';
-        if (CurOS='win32') or (CurOS='wince') or (CurOS='win64') then
-          ExtraSrcPath:=ExtraSrcPath+';../../../interfaces/fpgui/gfx/gdi'
-        else
-          ExtraSrcPath:=ExtraSrcPath+';../../../interfaces/fpgui/gfx/x11';
-      end;
       LCLUnitsCPUOSWidgetSetDir.AddChild(
         TDefineTemplate.Create('CompiledSrcPath',
           ctsSrcPathForCompiledUnits,CompiledSrcPathMacroName,
           d(ExtraSrcPath),da_Define));
       // ifdef windows
-      IfTemplate:=TDefineTemplate.Create('IFDEF swindows',
+      IfTemplate:=TDefineTemplate.Create('IFDEF windows',
         ctsIfDefWindows, 'windows', '', da_IfDef);
         // then add gfx/gdi to CompiledSrcPath
         IfTemplate.AddChild(TDefineTemplate.Create('Add gfx/gdi to CompiledSrcPath',
