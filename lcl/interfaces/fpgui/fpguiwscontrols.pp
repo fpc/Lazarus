@@ -108,18 +108,18 @@ end;
 class procedure TFpGuiWSWinControl.SetPos(const AWinControl: TWinControl;
   const ALeft, ATop: Integer);
 var
-  FPWidget: TWidget;
+  FPWidget: TFWidget;
 begin
-  FPWidget := TWidget(AWincontrol.Handle);
+  FPWidget := TFWidget(AWincontrol.Handle);
   FPWIdget.SetBounds(ALeft, ATop, AWincontrol.Width, AWinControl.Height);
 end;
 
 class procedure TFpGuiWSWinControl.SetSize(const AWinControl: TWinControl;
   const AWidth, AHeight: Integer);
 var
-  FPWidget: TWidget;
+  FPWidget: TFWidget;
 begin
-  FPWidget := TWidget(AWincontrol.Handle);
+  FPWidget := TFWidget(AWincontrol.Handle);
   FPWIdget.SetBounds(AWinControl.Left, AWinControl.Top, AWidth, AHeight);
 end;
 

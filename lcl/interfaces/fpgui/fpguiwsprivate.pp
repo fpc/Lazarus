@@ -64,7 +64,7 @@ type
 
   TFPGUIPrivateWidget = class(TFPGUIPrivate)
   private
-    fWidget: TWidget;
+    fWidget: TFWidget;
     fLCLObject: TControl;
     function GetVisible: Boolean;
     procedure SetVisible(const AValue: Boolean);
@@ -78,7 +78,7 @@ type
 
     property LCLObject: TControl read fLCLObject;
     property Visible: Boolean read GetVisible write SetVisible;
-    property Widget: TWidget read fWidget write fWidget;
+    property Widget: TFWidget read fWidget write fWidget;
   end;
   
   
@@ -107,13 +107,13 @@ type
 
   TFPGUIPrivateWindow = class(TFPGUIPrivateBin, IContainer, ISimpleText)
   private
-    fFixed: TFixedLayout;
+    fFixed: TFFixedLayout;
   protected
   public
     constructor Create(ALCLObject: TControl; const AParams: TCreateParams); override;
     procedure CreateWidget(const AParams: TCreateParams); override;
     destructor Destroy; override;
-    function Form: TForm;
+    function Form: TFForm;
     procedure SetSize(AWidth, AHeight: LongInt); override;
     procedure SetPosition(AX, AY: Integer); override;
   // IContainer
@@ -128,7 +128,7 @@ type
   { TFPGUIPrivateDialog }
   { Private class for dialogs }
 
-  TFPGUIPrivateDialog = class(fpgui.TWidget) // is there a dialog widget?
+  TFPGUIPrivateDialog = class(TFWidget) // is there a dialog widget?
   private
   protected
   public
@@ -143,7 +143,7 @@ type
     procedure Clicked(Sender: TObject);
   protected
   public
-    function Button: TButton;
+    function Button: TFButton;
     constructor Create(ALCLObject: TControl; const AParams: TCreateParams); override;
     procedure CreateWidget(const AParams: TCreateParams); override;
     // ISimpleText
@@ -164,9 +164,9 @@ uses LCLMessageGlue, GfxBase;
 
 { TFPGUIPrivateWindow }
 
-function TFPGUIPrivateWindow.Form: fpgui.TForm;
+function TFPGUIPrivateWindow.Form: TFForm;
 begin
-  Result := fpgui.TForm(Widget);
+  Result := TFForm(Widget);
 end;
 
 procedure TFPGUIPrivateWindow.SetSize(AWidth, AHeight: LongInt);
@@ -181,7 +181,7 @@ end;
 
 procedure TFPGUIPrivateWindow.AddChild(AControl: TWinControl);
 var
- AWidget: TWidget;
+ AWidget: TFWidget;
 begin
   AWidget := TFPGUIPrivateWidget(AControl.Handle).Widget;
   fFixed.AddWidget(AWidget, AControl.Left, AControl.Top);
@@ -197,13 +197,13 @@ end;
 constructor TFPGUIPrivateWindow.Create(ALCLObject: TControl; const AParams: TCreateParams);
 begin
   inherited Create(ALCLObject, AParams);
-  fFixed := TFixedLayout.Create(Widget);
+  fFixed := TFFixedLayout.Create(Widget);
   Form.InsertChild(fFixed);
 end;
 
 procedure TFPGUIPrivateWindow.CreateWidget(const AParams: TCreateParams);
 begin
-  Widget := fpgui.TForm.Create(LCLObject);
+  Widget := TFForm.Create(LCLObject);
   Form.Wnd.SetSize(Size(AParams.Width, AParams.Height));
   Form.Wnd.SetPosition(Point(AParams.X, AParams.Y));
 end;
@@ -231,14 +231,14 @@ begin
   LCLSendClickedMsg(TControl(LCLObject));
 end;
 
-function TFPGUIPrivateButton.Button: TButton;
+function TFPGUIPrivateButton.Button: TFButton;
 begin
-  Result := fpgui.TButton(Widget);
+  Result := TFButton(Widget);
 end;
 
 procedure TFPGUIPrivateButton.CreateWidget(const AParams: TCreateParams);
 begin
-  Widget := fpgui.TButton.Create(LCLObject);
+  Widget := TFButton.Create(LCLObject);
 end;
 
 constructor TFPGUIPrivateButton.Create(ALCLObject: TControl; const AParams: TCreateParams);
