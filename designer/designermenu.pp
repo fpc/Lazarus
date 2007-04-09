@@ -103,6 +103,7 @@ type
     function GetDesigner: TComponentEditorDesigner;
   protected
     procedure PersistentDeleting(APersistent: TPersistent);
+    function SearchItemByPanel(DesignerMenuItem: PDesignerMenuItem; APanel: TPanel): PDesignerMenuItem;
   public
     // Constructor and destructor
     constructor CreateWithMenu(aOwner: TComponent; aMenu: TMenu);
@@ -740,30 +741,31 @@ end;
 // -------------------------------------------------------------------------------------------------------------------//
 procedure TDesignerMainMenu.MenuItemMouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+var
+  DesignerItem: PDesignerMenuItem;
 begin
   ChangeMenuItem(Root,2,Root^.ID);
   InitIndexSequence;
   if (Sender is TPanel) then
-  begin
-    SelectedDesignerMenuItem:=TPanel(Sender).Name;
-    ChangeMenuItem(Root, 1, TPanel(Sender).Name);
-    CreateIndexSequence(Root, TPanel(Sender).Name, 1);
-  end;
+    DesignerItem := SearchItemByPanel(Root, TPanel(Sender))
+  else
   if (Sender is TLabel) then
-  begin
-    SelectedDesignerMenuItem:=TLabel(Sender).Parent.Name;
-    ChangeMenuItem(Root, 1, TLabel(Sender).Parent.Name);
-    CreateIndexSequence(Root, TLabel(Sender).Parent.Name, 1);
-  end;
+    DesignerItem := SearchItemByPanel(Root, TPanel(TLabel(Sender).Parent))
+  else
   if (Sender is TArrow) then
-  begin
-    SelectedDesignerMenuItem:=TArrow(Sender).Parent.Name;
-    ChangeMenuItem(Root, 1, TArrow(Sender).Parent.Name);
-    CreateIndexSequence(Root, TArrow(Sender).Parent.Name, 1);
-  end;
+    DesignerItem := SearchItemByPanel(Root, TPanel(TArrow(Sender).Parent))
+  else
+    DesignerItem := nil;
 
-  Parent.Invalidate;
-  UpdateMenu(fMenu.Items, GetDesignerMenuItem(Root, SelectedDesignerMenuItem), 1, 9);
+  if DesignerItem <> nil then
+  begin
+    SelectedDesignerMenuItem := DesignerItem^.ID;
+    ChangeMenuItem(Root, 1, SelectedDesignerMenuItem);
+    CreateIndexSequence(Root, SelectedDesignerMenuItem, 1);
+
+    Parent.Invalidate;
+    UpdateMenu(fMenu.Items, GetDesignerMenuItem(Root, SelectedDesignerMenuItem), 1, 9);
+  end;
 end;
 
 procedure TDesignerMainMenu.MenuItemDblClick(Sender: TObject);
@@ -877,6 +879,24 @@ begin
     Parent.Invalidate;
   end;
   inherited;
+end;
+
+function TDesignerMainMenu.SearchItemByPanel(
+  DesignerMenuItem: PDesignerMenuItem; APanel: TPanel): PDesignerMenuItem;
+begin
+  if DesignerMenuItem <> nil then
+  begin
+    if DesignerMenuItem^.SelfPanel = APanel then
+    begin
+      Result := DesignerMenuItem;
+    end else
+    begin
+      Result := SearchItemByPanel(DesignerMenuItem^.SubMenu, APanel);
+      if Result = nil then
+        Result := SearchItemByPanel(DesignerMenuItem^.NextItem, APanel);
+    end;
+  end else
+    Result := nil;
 end;
 
 // -----------------------------------------------------------------//
