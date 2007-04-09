@@ -67,7 +67,9 @@ type
   { TWSLCLHandleComponent }
 
   TWSLCLHandleComponent = class(TWSLCLComponent)
+    class procedure DestroyHandle(AComponent: TComponent); virtual;
   end;
+  TWSLCLHandleComponentClass = class of TWSLCLHandleComponent;
 
 
 function FindWSComponentClass(const AComponent: TComponentClass): TWSLCLComponentClass;
@@ -428,6 +430,12 @@ end;
 class function TWSLCLComponent.WSPrivate: TWSPrivateClass; //inline;
 begin
   Result := TWSPrivateClass(PClass(Pointer(Self) + vmtWSPrivate)^);
+end;
+
+{ TWSLCLHandleComponent }
+
+class procedure TWSLCLHandleComponent.DestroyHandle(AComponent: TComponent);
+begin
 end;
 
 initialization

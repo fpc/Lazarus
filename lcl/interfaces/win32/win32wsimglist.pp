@@ -33,8 +33,8 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-  Windows, SysUtils, ImgList, GraphType, Graphics, LCLType,
-  WinExt, 
+  Windows, SysUtils, Classes, ImgList, GraphType, Graphics, LCLType,
+  WinExt,
 ////////////////////////////////////////////////////
   WSImgList, WSLCLClasses, WSProc;
 
@@ -50,7 +50,7 @@ type
     class function CreateHandle(AList: TCustomImageList; ACount, AGrow, AWidth,
       AHeight: Integer; AData: PRGBAQuad): TLCLIntfHandle; override;
     class procedure Delete(AList: TCustomImageList; AIndex: Integer); override;
-    class procedure DestroyHandle(AList: TCustomImageList); override;
+    class procedure DestroyHandle(AComponent: TComponent); override;
     class procedure Draw(AList: TCustomImageList; AIndex: Integer; ACanvas: TCanvas;
       ABounds: TRect; AEnabled: Boolean; AStyle: TDrawingStyle); override;
     class procedure Insert(AList: TCustomImageList; AIndex: Integer; AData: PRGBAQuad); override;
@@ -107,11 +107,11 @@ begin
   ImageList_Remove(HImageList(AList.Handle), AIndex);
 end;
 
-class procedure TWin32WSCustomImageList.DestroyHandle(AList: TCustomImageList);
+class procedure TWin32WSCustomImageList.DestroyHandle(AComponent: TComponent);
 begin
-  if not WSCheckHandleAllocated(AList, 'DestroyHandle')
+  if not WSCheckHandleAllocated(TCustomImageList(AComponent), 'DestroyHandle')
   then Exit;
-  ImageList_Destroy(AList.Handle);
+  ImageList_Destroy(TCustomImageList(AComponent).Handle);
 end;
 
 class procedure TWin32WSCustomImageList.Draw(AList: TCustomImageList; AIndex: Integer;

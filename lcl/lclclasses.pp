@@ -60,9 +60,11 @@ type
   protected
     procedure CreateHandle; 
     procedure CreateParams(var AParams: TCreateParams); virtual;
-    procedure DestroyHandle; 
+    procedure DestroyHandle;
     procedure HandleCreated; virtual;    // gets called after the Handle is created
     procedure HandleDestroying; virtual; // gets called before the Handle is destroyed
+    function WSCreateHandle(AParams: TCreateParams): TLCLIntfHandle; virtual;
+    procedure WSDestroyHandle; virtual;
   protected
     property Handle: TLCLIntfHandle read GetHandle;
   public             
@@ -145,7 +147,7 @@ var
   Params: TCreateParams;
 begin
   CreateParams(Params);
-  // TODO: some WScall here
+  FHandle := WSCreateHandle(Params);
 end;
 
 procedure TLCLHandleComponent.CreateParams(var AParams: TCreateParams);
@@ -155,7 +157,7 @@ end;
 procedure TLCLHandleComponent.DestroyHandle;
 begin
   HandleDestroying;
-  // TODO: some WScall here
+  WSDestroyHandle;
   FHandle := 0;
 end;
 
@@ -165,6 +167,17 @@ end;
 
 procedure TLCLHandleComponent.HandleDestroying;
 begin
+end;
+
+function TLCLHandleComponent.WSCreateHandle(AParams: TCreateParams): TLCLIntfHandle;
+begin
+  // this function should be overriden in derrived class
+  Result := 0;
+end;
+
+procedure TLCLHandleComponent.WSDestroyHandle;
+begin
+  TWSLCLHandleComponentClass(WidgetSetClass).DestroyHandle(Self);
 end;
 
 function TLCLHandleComponent.HandleAllocated: Boolean;

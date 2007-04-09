@@ -52,7 +52,6 @@ type
       AHeight: Integer; AData: PRGBAQuad): TLCLIntfHandle; virtual;
 
     class procedure Delete(AList: TCustomImageList; AIndex: Integer); virtual;
-    class procedure DestroyHandle(AList: TCustomImageList); virtual;
     class procedure Draw(AList: TCustomImageList; AIndex: Integer; ACanvas: TCanvas;
       ABounds: TRect; AEnabled: Boolean; AStyle: TDrawingStyle); virtual;
 
@@ -80,10 +79,6 @@ end;
 
 class procedure TWSCustomImageList.Delete(AList: TCustomImageList;
   AIndex: Integer);
-begin
-end;
-
-class procedure TWSCustomImageList.DestroyHandle(AList: TCustomImageList);
 begin
 end;
 
