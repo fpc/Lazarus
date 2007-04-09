@@ -134,24 +134,30 @@ end;
 
   Adds images from another imagelist to the list.
  ------------------------------------------------------------------------------}
-procedure TCustomImageList.AddImages(Value: TCustomImageList);
+procedure TCustomImageList.AddImages(AValue: TCustomImageList);
 var
   n: Integer;
+  {$ifdef IMGLIST_OLDSTYLE}
   SrcImage: TBitmap;
   SrcMask: TBitmap;
   NewImage: TBitmap;
   NewMask: TBitmap;
+  {$else}
+  p: PRGBAQuad;
+  DataSize: Integer;
+  OldCount: Integer;
+  {$endif}
 begin
-  if (Value = nil) or (Value=Self) then exit;
+  if (AValue = nil) or (AValue=Self) then exit;
 
   {$ifdef IMGLIST_OLDSTYLE}
   BeginUpdate;
-  for n := 0 to Value.Count - 1 do begin
-    SrcImage:=TBitmap(Value.FImageList[n]);
+  for n := 0 to AValue.Count - 1 do begin
+    SrcImage:=TBitmap(AValue.FImageList[n]);
     if SrcImage<>nil then begin
       NewImage:=TBitmap.Create;
       NewImage.Assign(SrcImage);
-      SrcMask:=TBitmap(Value.FMaskList[n]);
+      SrcMask:=TBitmap(AValue.FMaskList[n]);
       if SrcMask<>nil then begin
         NewMask:=TBitmap.Create;
         NewMask.Assign(SrcMask);
@@ -162,7 +168,26 @@ begin
   end;
   EndUpdate;
   {$else}
+  AllocData(FCount + AValue.FCount);
+  if (AValue.FWidth = FWidth) and (AValue.FHeight = FHeight)
+  then begin
+    DataSize := FWidth * FHeight * SizeOf(FData[0]);
+    System.Move(AVAlue.FData[0], FData[FCount], AValue.FCount * DataSize);
+    OldCount := FCount;
+    Inc(FCount, AValue.FCount);
+    if HandleAllocated
+    then begin
+      p := @FData[OldCount];
+      for n := OldCount to FCount - AValue.FCount - 1 do
+      begin
+        TWSCustomImageListClass(WidgetSetClass).Insert(Self, n, p);
+        Inc(p, DataSize);
+      end;
+    end;
+  end
+  else begin
   {$note implement}
+  end;
   {$endif}
 end;
 
@@ -246,7 +271,7 @@ var
   n: Integer;
 begin
   Assert(FAllocCount >= FCount, 'Less space allocated than images');
-  if FAllocCount >= FCount + ACount
+  if FAllocCount >= ACount
   then Exit;
 
   // calculate number of blocks, add an extra block for the remainder.
@@ -356,7 +381,10 @@ begin
   FImageList.Clear;
   FMaskList.Clear;
   {$else}
-  {$note implement}
+  if HandleAllocated
+  then TWSCustomImageListClass(WidgetSetClass).Clear(Self);
+  SetLength(FData, 0);
+  FAllocCount := 0;
   {$endif}
   
   FCount := 0;
@@ -439,34 +467,39 @@ end;
 
   Deletes the image identified by Index. An index of -1 deletes all
  ------------------------------------------------------------------------------}
-procedure TCustomImageList.Delete(Index: Integer);
-Var Obj : TObject;
+procedure TCustomImageList.Delete(AIndex: Integer);
+var
+  Obj : TObject;
 begin
-  if {(Index < 0) or} (Index >= FCount) // !! Delphi4 has no check for < -1
-  then raise EInvalidOperation.Create(SInvalidIndex);
-
-  if Index = -1 then
-    Clear
-  else
-  begin
-    {$ifdef IMGLIST_OLDSTYLE}
-    Obj:=TObject(fImageList.Items[Index]);
-    If Assigned(Obj) then
-      Obj.Free;
-    fImageList.Delete(Index);
-    Obj:=TObject(fMaskList.Items[Index]);
-    If Assigned(Obj) then
-      Obj.Free;
-    fMaskList.Delete(Index);
-//    ShiftImages(FBitmap.Canvas, Index, 1);
-//    ShiftImages(FMaskBitmap.Canvas, Index, 1);
-    FCount := fImageList.Count;
-    {$else}
-    {$note implement}
-    {$endif}
-    FChanged := true;
-    Change;
+  if AIndex = -1
+  then begin
+    Clear;
+    Exit;
   end;
+  
+  CheckIndex(AIndex);
+
+  {$ifdef IMGLIST_OLDSTYLE}
+  Obj:=TObject(fImageList.Items[AIndex]);
+  If Assigned(Obj) then
+    Obj.Free;
+  fImageList.Delete(AIndex);
+  Obj:=TObject(fMaskList.Items[AIndex]);
+  If Assigned(Obj) then
+    Obj.Free;
+  fMaskList.Delete(AIndex);
+//  ShiftImages(FBitmap.Canvas, Index, 1);
+//  ShiftImages(FMaskBitmap.Canvas, Index, 1);
+  FCount := fImageList.Count;
+  {$else}
+  InternalMove(AIndex, FCount - 1, True);
+  Dec(FCount);
+  if HandleAllocated
+  then TWSCustomImageListClass(WidgetSetClass).Delete(Self, AIndex);
+  // TODO: adjust allocated data
+  {$endif}
+  FChanged := true;
+  Change;
 end;
 
 {------------------------------------------------------------------------------
@@ -507,18 +540,19 @@ end;
 
   Draws the requested image on the given canvas.
  ------------------------------------------------------------------------------}
-procedure TCustomImageList.Draw(Canvas: TCanvas; X, Y, Index: Integer;
-  Enabled: Boolean);
+procedure TCustomImageList.Draw(ACanvas: TCanvas; AX, AY, AIndex: Integer;
+  AEnabled: Boolean);
 var
   aBitmap: TBitmap;
 begin
-  if (FCount = 0) or (Index >= FCount) then Exit;
+  if (FCount = 0) or (AIndex >= FCount) then Exit;
 
   {$ifdef IMGLIST_OLDSTYLE}
-  aBitmap := TBitmap(FImageList[Index]);
-  Canvas.Draw(X,Y,aBitmap);
+  aBitmap := TBitmap(FImageList[AIndex]);
+  ACanvas.Draw(AX,AY,aBitmap);
   {$else}
-  {$note implement}
+  HandleNeeded;
+  TWSCustomImageListClass(WidgetSetClass).Draw(Self, AIndex, ACanvas, Rect(AX, AY, FWidth, FHeight), AEnabled, FDrawingStyle);
   {$endif}
 end;
 
@@ -590,8 +624,8 @@ begin
   CheckIndex(Index);
   FillChar(RawImg, SizeOf(RawImg), 0);
   FillDescription(RawImg.Description);
-  RawImg.DataSize := FWidth * FHeight;
-  RawImg.Data := @FData[Index * RawImg.DataSize];
+  RawImg.DataSize := FWidth * FHeight * SizeOF(FData[0]);
+  RawImg.Data := @FData[Index * FWidth * FHeight];
 
   IntfImg := TLazIntfImage.Create(RawImg);
   Image.LoadFromIntfImage(IntfImg);
@@ -744,25 +778,45 @@ end;
   Inserts one or more (bitmap width / imagelist width) bitmaps into the list 
   at the index'th position.  If Mask is nil, the image has no transparent parts.
  ------------------------------------------------------------------------------}
-procedure TCustomImageList.Insert(Index: Integer; Image, Mask: TBitmap);
+procedure TCustomImageList.Insert(AIndex: Integer; AImage, AMask: TBitmap);
+{$ifndef IMGLIST_OLDSTYLE}
+var
+  RawImg: TRawImage;
+  R: TRect;
+  ImgData: PRGBAQuad;
+  msk: THandle;
+{$endif}
 begin
-  CheckIndex(Index, True);
+  if AImage = nil then Exit;
 
-  if (Index < 0) then Index := 0;
+  CheckIndex(AIndex, True);
+
+  if (AIndex < 0) then AIndex := 0;
 
   {$ifdef IMGLIST_OLDSTYLE}
-  if (Image <> nil)
-  then begin
-    FImageList.Insert(Index,Image);
-    FMaskList.Insert(Index,Mask);
-    FCount := FImageList.Count;
-    FChanged := true;
-    Change;
-  end;
+  FImageList.Insert(AIndex,AImage);
+  FMaskList.Insert(AIndex,AMask);
+  FCount := FImageList.Count;
   {$else}
-  {$note Implement}
+  // todo: add support for multiple images
+  Inc(FCount);
+  AllocData(FCount);
+  if AIndex < FCount - 1
+  then InternalMove(FCount - 1, AIndex, True);
+  
+  if AMask = nil
+  then msk := 0
+  else msk := AMask.Handle;
+  R := Rect(0, 0, FWidth, FHeight);
+  GetRawImageFromBitmap(AImage.Handle, msk, R, RawImg);
+  ImgData := InternalSetImage(AIndex, RawImg);
+
+  if HandleAllocated
+  then TWSCustomImageListClass(WidgetSetClass).Insert(Self, AIndex, ImgData);
   {$endif}
 
+  FChanged := true;
+  Change;
 end;
 
 {------------------------------------------------------------------------------
@@ -815,6 +869,74 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method:  TCustomImageList.InternalMove
+  Params:  CurIndex: the index of the image to be moved
+           NewIndex: the new index of the image
+  Returns: Nothing
+
+  Moves an image from the CurIndex'th location to NewIndex'th location
+  without notifying the widgetset
+ ------------------------------------------------------------------------------}
+{$ifndef IMGLIST_OLDSTYLE}
+procedure TCustomImageList.InternalMove(ACurIndex, ANewIndex: Cardinal; AIgnoreCurrent: Boolean);
+var
+  ImgSize, DataSize: Cardinal;
+  p: Pointer;
+begin
+  ImgSize := FWidth * FHeight;
+  DataSize := ImgSize * SizeOf(FData[0]);
+
+  if not AIgnoreCurrent
+  then begin
+    // store current
+    p := GetMem(DataSize);
+    System.Move(FData[ACurIndex * ImgSize], p^, DataSize);
+  end;
+  
+  // move all one up
+  if ACurIndex < ANewIndex
+  then System.Move(FData[(ACurIndex + 1) * ImgSize], FData[ACurIndex * ImgSize], DataSize * Cardinal(ANewIndex - ACurIndex))
+  else System.Move(FData[ANewIndex * ImgSize], FData[(ANewIndex + 1) * ImgSize], DataSize * Cardinal(ACurIndex - ANewIndex));
+
+  if not AIgnoreCurrent
+  then begin
+    // restore current
+    System.Move(p^, FData[ANewIndex * ImgSize], DataSize);
+    FreeMem(p);
+  end;
+end;
+{$endif}
+
+{------------------------------------------------------------------------------
+  Method:  TCustomImageList.InternalSetImage
+  Params:  AIndex: the index of the location where the image should be set
+           AImage: the new image
+  Returns: Pointer to the updated image data
+
+  Copies the imagedata into the FData array
+ ------------------------------------------------------------------------------}
+{$ifndef IMGLIST_OLDSTYLE}
+function TCustomImageList.InternalSetImage(AIndex: Integer; AImage: TRawImage): PRGBAQuad;
+var
+  RawImg: TRawImage;
+  SrcImg, DstImg: TLazIntfImage;
+begin
+  SrcImg := TLazIntfImage.Create(AImage);
+
+  FillChar(RawImg, SizeOf(RawImg), 0);
+  FillDescription(RawImg.Description);
+  Result := @FData[AIndex * FWidth * FHeight];
+  RawImg.DataSize := FWidth * FHeight * SizeOF(FData[0]);
+  RawImg.Data := PByte(Result);
+  DstImg := TLazIntfImage.Create(RawImg);
+  DstImg.CopyPixels(SrcImg);
+
+  DstImg.Free;
+  SrcImg.Free;
+end;
+{$endif}
+
+{------------------------------------------------------------------------------
   Method:  TCustomImageList.Move
   Params:  CurIndex: the index of the image to be moved
            NewIndex: the new index of the image
@@ -822,37 +944,22 @@ end;
 
   Moves an image from the CurIndex'th location to NewIndex'th location
  ------------------------------------------------------------------------------}
-procedure TCustomImageList.Move(CurIndex, NewIndex: Integer);
-{$ifndef IMGLIST_OLDSTYLE}
-var
-  ImgSize, DataSize: Cardinal;
-  p: Pointer;
-{$endif}
+procedure TCustomImageList.Move(ACurIndex, ANewIndex: Integer);
 begin
-  if CurIndex = NewIndex then Exit;
-  CheckIndex(CurIndex);
-  CheckIndex(NewIndex);
+  if ACurIndex = ANewIndex then Exit;
+  CheckIndex(ACurIndex);
+  CheckIndex(ANewIndex);
 
-  if CurIndex < 0 then CurIndex := 0;
-  if NewIndex < 0 then NewIndex := 0;
+  if ACurIndex < 0 then ACurIndex := 0;
+  if ANewIndex < 0 then ANewIndex := 0;
 
   {$ifdef IMGLIST_OLDSTYLE}
-  FImageList.Move(CurIndex,NewIndex);
-  FMaskList.Move(CurIndex,NewIndex);
+  FImageList.Move(ACurIndex,ANewIndex);
+  FMaskList.Move(ACurIndex,ANewIndex);
   {$else}
-  
-  ImgSize := FWidth * FHeight;
-  DataSize := ImgSize * SizeOf(FData[0]);
-  p := GetMem(DataSize);
-  // store current
-  System.Move(FData[Cardinal(CurIndex) * ImgSize], p^, DataSize);
-  // move all one up
-  if CurIndex < NewIndex
-  then System.Move(FData[(Cardinal(CurIndex) + 1) * ImgSize], FData[Cardinal(CurIndex) * ImgSize], DataSize * Cardinal(NewIndex - CurIndex))
-  else System.Move(FData[Cardinal(NewIndex) * ImgSize], FData[(Cardinal(NewIndex) + 1) * ImgSize], DataSize * Cardinal(NewIndex - CurIndex));
-  // restore current
-  System.Move(p^, FData[Cardinal(NewIndex) * ImgSize], DataSize);
-  FreeMem(p);
+  InternalMove(ACurIndex, ANewIndex, False);
+  if HandleAllocated
+  then TWSCustomImageListClass(WidgetSetClass).Move(Self, ACurIndex, ANewIndex);
   {$endif}
 
   FChanged := true;
@@ -1191,25 +1298,36 @@ end;
   Replaces the index'th image with the image given. If Mask is nil, 
   the image has no transparent parts.
  ------------------------------------------------------------------------------}
-procedure TCustomImageList.Replace(Index: Integer; Image, Mask: TBitmap);
+procedure TCustomImageList.Replace(AIndex: Integer; AImage, AMask: TBitmap);
 var
+  {$ifdef IMGLIST_OLDSTYLE}
   DestinationRect, SourceRect: TRect;
+  {$else}
+  RawImage: TRawImage;
+  R: TRect;
+  ImgData: PRGBAQuad;
+  msk: THandle;
+  {$endif}
 begin
-  if (Index >= FCount)
-  then raise EInvalidOperation.Create(SInvalidIndex);
-
-  if (Index < 0) then Index := 0;
-
-  DestinationRect := Rect(0, Index * FHeight, FWidth, (Index + 1) * FHeight);
-  SourceRect := Rect(0, 0, FWidth, FHeight);
+  if (AIndex < 0) then AIndex := 0;
+  CheckIndex(AIndex);
 
   {$ifdef IMGLIST_OLDSTYLE}
-  CopyImage(FBitmap.Canvas, Image.Canvas, DestinationRect, SourceRect);
-  if Mask <> nil
-  then CopyImage(FMaskBitmap.Canvas, Mask.Canvas, DestinationRect, SourceRect)
+  DestinationRect := Rect(0, AIndex * FHeight, FWidth, (AIndex + 1) * FHeight);
+  SourceRect := Rect(0, 0, FWidth, FHeight);
+  CopyImage(FBitmap.Canvas, AImage.Canvas, DestinationRect, SourceRect);
+  if AMask <> nil
+  then CopyImage(FMaskBitmap.Canvas, AMask.Canvas, DestinationRect, SourceRect)
   else FMaskBitmap.Canvas.FillRect(DestinationRect);
   {$else}
-  {$note implement}
+  if AMask = nil
+  then msk := 0
+  else msk := AMask.Handle;
+  R := Rect(0, 0, FWidth, FHeight);
+  GetRawImageFromBitmap(AImage.Handle, AMask.Handle, R, RawImage);
+  ImgData := InternalSetImage(AIndex, RawImage);
+  if HandleAllocated
+  then TWSCustomImageListClass(WidgetSetClass).Replace(Self, AIndex, ImgData);
   {$endif}
 
   FChanged := true;
@@ -1329,6 +1447,7 @@ end;
 
   Internal routine to move images on the internal image list.
  ------------------------------------------------------------------------------}
+{$ifdef IMGLIST_OLDSTYLE}
 procedure TCustomImageList.ShiftImages(const Source: TCanvas;
   Start, Shift: Integer);
 var
@@ -1355,6 +1474,7 @@ begin
     FMoveBitmap.Free;
   end;
 end;
+{$endif}
 
 procedure TCustomImageList.StretchDraw(Canvas: TCanvas; Index: Integer; ARect: TRect; Enabled: Boolean);
 var
@@ -1384,6 +1504,18 @@ begin
   if (FChangeLinkList<>nil) and (Value.Sender=Self) then
     FChangeLinkList.Remove(Value);
   Value.Sender:=nil;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCustomImageList.WSCreateHandle
+  Params:  AParams: ignored
+  Returns: Handle to created imagelist
+
+  Instructs the widgtset to create an imagelist
+ ------------------------------------------------------------------------------}
+function TCustomImageList.WSCreateHandle(AParams: TCreateParams): TLCLIntfHandle;
+begin
+  Result := TWSCustomImageListClass(WidgetSetClass).CreateHandle(Self, FCount, FAllocBy, FWidth, FHeight, @FData[0]);
 end;
 
 {******************************************************************************

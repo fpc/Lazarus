@@ -137,13 +137,19 @@ type
     FChangeLinkList: TList;
     FBkColor: TColor;
     FChanged: boolean;
+    FUpdateCount: integer;
+
     {$ifdef IMGLIST_OLDSTYLE}
     procedure AllocBitmap(Amount: Integer);
     {$else}
     procedure AllocData(ACount: Integer);
     {$endif}
     
-    
+    {$ifndef IMGLIST_OLDSTYLE}
+    procedure InternalMove(ACurIndex, ANewIndex: Cardinal; AIgnoreCurrent: Boolean);
+    function InternalSetImage(AIndex: Integer; AImage: TRawImage): PRGBAQuad;
+    {$endif}
+
     procedure NotifyChangeLink;
     procedure SetBkColor(const Value: TColor);
     procedure SetDrawingStyle(const AValue: TDrawingStyle);
@@ -152,15 +158,18 @@ type
     procedure SetShareImages(const AValue: Boolean);
     procedure SetWidth(const Value: Integer);
 
+    {$ifdef IMGLIST_OLDSTYLE}
     procedure ShiftImages(const Source: TCanvas; Start, Shift: Integer);
+    {$endif}
   protected
-    FUpdateCount: integer;
     procedure CheckIndex(AIndex: Integer; AForInsert: Boolean = False);
     procedure FillDescription(ADesc: TRawImageDescription);
     procedure GetImages(Index: Integer; const Image, Mask: TBitmap);
     procedure Initialize; virtual;
     procedure DefineProperties(Filer: TFiler); override;
     procedure SetWidthHeight(NewWidth,NewHeight: integer); virtual;
+
+    function  WSCreateHandle(AParams: TCreateParams): TLCLIntfHandle; override;
   public
     constructor Create(AOwner: TComponent); override;
 
@@ -177,7 +186,7 @@ type
     function AddCopy(SrcImage, SrcMask: TBitmap): Integer;
     {$endif}
     function AddIcon(Image: TIcon): Integer;
-    procedure AddImages(Value: TCustomImageList);
+    procedure AddImages(AValue: TCustomImageList);
     function AddMasked(Image: TBitmap; MaskColor: TColor): Integer;
     function AddLazarusResource(const ResourceName: string; MaskColor: TColor = clNone): integer;
     procedure Change;
@@ -185,9 +194,9 @@ type
     {.$ifdef IMGLIST_KEEP_EXTRA}
     constructor CreateSize(AWidth, AHeight: Integer);
     {.$endif}
-    procedure Delete(Index: Integer);
+    procedure Delete(AIndex: Integer);
     destructor Destroy; override;
-    procedure Draw(Canvas: TCanvas; X, Y, Index: Integer; Enabled: Boolean = True);
+    procedure Draw(ACanvas: TCanvas; AX, AY, AIndex: Integer; AEnabled: Boolean = True);
     procedure GetBitmap(Index: Integer; Image: TBitmap);
     {$ifdef IMGLIST_KEEP_EXTRA}
     procedure GetInternalImage(Index: integer; var Image, Mask: TBitmap;
@@ -199,11 +208,11 @@ type
     {$ifdef IMGLIST_OLDSTYLE}
     function HandleAllocated: Boolean;
     {$endif}
-    procedure Insert(Index: Integer; Image, Mask: TBitmap);
+    procedure Insert(AIndex: Integer; AImage, AMask: TBitmap);
     procedure InsertIcon(Index: Integer; Image: TIcon);
     procedure InsertMasked(Index: Integer; Image: TBitmap; MaskColor: TColor);
-    procedure Move(CurIndex, NewIndex: Integer);
-    procedure Replace(Index: Integer; Image, Mask: TBitmap);
+    procedure Move(ACurIndex, ANewIndex: Integer);
+    procedure Replace(AIndex: Integer; AImage, AMask: TBitmap);
     procedure ReplaceIcon(Index: Integer; Image: TIcon);
     procedure ReplaceMasked(Index: Integer; NewImage: TBitmap; MaskColor: TColor);
     procedure RegisterChanges(Value: TChangeLink);
@@ -217,6 +226,9 @@ type
     property DrawingStyle: TDrawingStyle read FDrawingStyle write SetDrawingStyle default dsNormal;
     {$ifdef IMGLIST_OLDSTYLE}
     property Handle: THandle read FHandle;
+    {$else}
+    property Handle;
+    property HandleAllocated;
     {$endif}
     property Height: Integer read FHeight write SetHeight default 16;
     property Width: Integer read FWidth write SetWidth default 16;
@@ -241,7 +253,9 @@ type
 
 implementation
 
-uses dialogs;
+uses
+  dialogs,
+  WSImglist;
 
 {$I imglist.inc}
 

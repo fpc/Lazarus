@@ -133,6 +133,7 @@ function StretchMaskBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; X
 
 function ExcludeClipRgn(dc: hdc; rgn : hrgn) : Integer;
 
+
 procedure NotifyUser(const DialogMessage : String; DialogType : longint);
 procedure NotifyUser(const DialogCaption, DialogMessage : String; DialogType : longint);
 procedure NotifyUserAtXY(const DialogMessage : String; DialogType : longint; X, Y : Longint);

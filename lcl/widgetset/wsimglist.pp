@@ -61,6 +61,7 @@ type
 
     class procedure Replace(AList: TCustomImageList; AIndex: Integer; AData: PRGBAQuad); virtual;
   end;
+  TWSCustomImageListClass = class of TWSCustomImageList;
 
 implementation
 

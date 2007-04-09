@@ -56,19 +56,20 @@ type
     FHandle: TLCLIntfHandle;
     FCreating: Boolean; // Set if we are creating the handle
     function  GetHandle: TLCLIntfHandle;
-    procedure HandleNeeded;
+    function  GetHandleAllocated: Boolean;
   protected
-    procedure CreateHandle; 
     procedure CreateParams(var AParams: TCreateParams); virtual;
     procedure DestroyHandle;
     procedure HandleCreated; virtual;    // gets called after the Handle is created
     procedure HandleDestroying; virtual; // gets called before the Handle is destroyed
-    function WSCreateHandle(AParams: TCreateParams): TLCLIntfHandle; virtual;
+    procedure HandleNeeded;
+    function  WSCreateHandle(AParams: TCreateParams): TLCLIntfHandle; virtual;
     procedure WSDestroyHandle; virtual;
   protected
+  public
+    destructor Destroy; override;
     property Handle: TLCLIntfHandle read GetHandle;
-  public             
-    function HandleAllocated: Boolean;
+    property HandleAllocated: Boolean read GetHandleAllocated;
   end;
 
 implementation                    
@@ -111,15 +112,48 @@ end;
 
 { TLCLHandleComponent }
 
+procedure TLCLHandleComponent.CreateParams(var AParams: TCreateParams);
+begin
+end;
+
+destructor TLCLHandleComponent.Destroy;
+begin
+  DestroyHandle;
+  inherited Destroy;
+end;
+
+procedure TLCLHandleComponent.DestroyHandle;
+begin
+  HandleDestroying;
+  WSDestroyHandle;
+  FHandle := 0;
+end;
+
 function TLCLHandleComponent.GetHandle: TLCLIntfHandle;
 begin
   if FHandle = 0 then HandleNeeded;
   Result := FHandle;
 end;
 
-procedure TLCLHandleComponent.HandleNeeded;
+function TLCLHandleComponent.GetHandleAllocated: Boolean;
 begin
-  if FHandle <> 0 then Exit;
+  Result := FHandle <> 0;
+end;
+
+procedure TLCLHandleComponent.HandleCreated;
+begin
+end;
+
+procedure TLCLHandleComponent.HandleDestroying;
+begin
+end;
+
+procedure TLCLHandleComponent.HandleNeeded;
+var
+  Params: TCreateParams;
+begin
+  if FHandle = 0 then Exit;
+
   if FCreating
   then begin
     // raise some error ?
@@ -127,9 +161,10 @@ begin
     Exit;
   end;
 
+  CreateParams(Params);
   FCreating := True;
   try
-    CreateHandle;
+    FHandle := WSCreateHandle(Params);
     if FHandle = 0
     then begin
       // raise some error ?
@@ -142,33 +177,6 @@ begin
   HandleCreated;
 end;
 
-procedure TLCLHandleComponent.CreateHandle;
-var
-  Params: TCreateParams;
-begin
-  CreateParams(Params);
-  FHandle := WSCreateHandle(Params);
-end;
-
-procedure TLCLHandleComponent.CreateParams(var AParams: TCreateParams);
-begin
-end;
-
-procedure TLCLHandleComponent.DestroyHandle;
-begin
-  HandleDestroying;
-  WSDestroyHandle;
-  FHandle := 0;
-end;
-
-procedure TLCLHandleComponent.HandleCreated;
-begin
-end;
-
-procedure TLCLHandleComponent.HandleDestroying;
-begin
-end;
-
 function TLCLHandleComponent.WSCreateHandle(AParams: TCreateParams): TLCLIntfHandle;
 begin
   // this function should be overriden in derrived class
@@ -178,11 +186,6 @@ end;
 procedure TLCLHandleComponent.WSDestroyHandle;
 begin
   TWSLCLHandleComponentClass(WidgetSetClass).DestroyHandle(Self);
-end;
-
-function TLCLHandleComponent.HandleAllocated: Boolean;
-begin
-  Result := FHandle <> 0;
 end;
 
 end.
