@@ -163,7 +163,7 @@ type
     {$endif}
   protected
     procedure CheckIndex(AIndex: Integer; AForInsert: Boolean = False);
-    procedure FillDescription(ADesc: TRawImageDescription);
+    procedure FillDescription(var ADesc: TRawImageDescription);
     procedure GetImages(Index: Integer; const Image, Mask: TBitmap);
     procedure Initialize; virtual;
     procedure DefineProperties(Filer: TFiler); override;

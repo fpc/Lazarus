@@ -552,7 +552,8 @@ begin
   ACanvas.Draw(AX,AY,aBitmap);
   {$else}
   HandleNeeded;
-  TWSCustomImageListClass(WidgetSetClass).Draw(Self, AIndex, ACanvas, Rect(AX, AY, FWidth, FHeight), AEnabled, FDrawingStyle);
+  TWSCustomImageListClass(WidgetSetClass).Draw(Self, AIndex, ACanvas,
+    Rect(AX, AY, FWidth, FHeight), AEnabled, DrawingStyle);
   {$endif}
 end;
 
@@ -578,7 +579,7 @@ end;
 
   Fills the description with the default info of the imagedata
  ------------------------------------------------------------------------------}
-procedure TCustomImageList.FillDescription(ADesc: TRawImageDescription);
+procedure TCustomImageList.FillDescription(var ADesc: TRawImageDescription);
 begin
   ADesc.Format := ricfRGBA;
   ADesc.HasPalette := False;
@@ -736,6 +737,7 @@ begin
   FAllocCount := 0;
   FBlendColor := clNone;
   FBkColor := clNone;
+  FDrawingStyle := dsNormal;
 
   if (Height < 1) or (Height > 32768) or (Width < 1) 
   then raise EInvalidOperation.Create(SInvalidImageSize);

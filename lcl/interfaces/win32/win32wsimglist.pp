@@ -84,18 +84,23 @@ class function TWin32WSCustomImageList.CreateHandle(AList: TCustomImageList;
 var
   FLags: DWord;
   hbmImage: HBITMAP;
+  i: integer;
 begin
   if (Win32Platform and VER_PLATFORM_WIN32_NT) <> 0 then
     Flags := ILC_COLOR32 or ILC_MASK
   else
     Flags := ILC_COLOR16 or ILC_MASK;
-  Result := ImageList_Create(ACount * AWidth, AHeight, Flags, 0, AGrow);
+  Result := ImageList_Create(AWidth, AHeight, Flags, ACount, AGrow);
   
   if AData <> nil then
   begin
-    hbmImage := CreateBitmap(ACount * AWidth, AHeight, 4, 32, AData);
-    ImageList_Add(Result, hbmImage, 0);
-    DeleteObject(hbmImage);
+    // this is very slow method :(
+    for i := 0 to ACount - 1 do
+    begin
+      hbmImage := CreateBitmap(AWidth, AHeight, 1, 32, @AData[AWidth * AHeight * i]);
+      ImageList_Add(Result, hbmImage, 0);
+      DeleteObject(hbmImage);
+    end;
   end;
 end;
 
@@ -140,7 +145,7 @@ begin
   
   if (AIndex <= ACount) and (AIndex >= 0) then
   begin
-    hbmImage := CreateBitmap(AList.Width, AList.Height, 4, 32, AData);
+    hbmImage := CreateBitmap(AList.Width, AList.Height, 1, 32, AData);
     ImageList_Add(AImageList, hbmImage, 0);
     DeleteObject(hbmImage);
     if AIndex <> ACount 
@@ -182,7 +187,7 @@ begin
   if not WSCheckHandleAllocated(AList, 'Replace')
   then Exit;
 
-  hbmImage := CreateBitmap(AList.Width, AList.Height, 4, 32, AData);
+  hbmImage := CreateBitmap(AList.Width, AList.Height, 1, 32, AData);
   ImageList_Replace(HImageList(AList.Handle), AIndex, hbmImage, 0);
   DeleteObject(hbmImage);
 end;

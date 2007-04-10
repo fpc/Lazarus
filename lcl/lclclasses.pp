@@ -152,7 +152,7 @@ procedure TLCLHandleComponent.HandleNeeded;
 var
   Params: TCreateParams;
 begin
-  if FHandle = 0 then Exit;
+  if FHandle <> 0 then Exit;
 
   if FCreating
   then begin
