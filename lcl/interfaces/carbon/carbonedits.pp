@@ -306,6 +306,7 @@ begin
   finally
     FreeCFString(CFString);
   end;
+  
   FItemIndex := -1;
   FMaxLength := 0;
 end;
@@ -504,9 +505,9 @@ end;
 
 procedure TCarbonMemo.DestroyWidget;
 begin
-  DisposeControl(FScrollView);
-
   inherited DestroyWidget;
+  
+  DisposeControl(FScrollView);
 end;
 
 procedure TCarbonMemo.TextDidChange;

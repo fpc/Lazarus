@@ -542,9 +542,10 @@ begin
 
   if (FontName <> '') and not SameText(FontName, 'default') then
   begin
-    ATSUFindFontFromName(@FontName[1], Length(FontName),
-      kFontFamilyName, kFontMacintoshPlatform, kFontRomanScript,
-      kFontEnglishLanguage, Result);
+    OSError(ATSUFindFontFromName(@FontName[1], Length(FontName),
+        kFontFamilyName, kFontMacintoshPlatform, kFontRomanScript,
+        kFontEnglishLanguage, Result),
+      'FindCarbonFontID', 'ATSUFindFontFromName');
   end;
 end;
 

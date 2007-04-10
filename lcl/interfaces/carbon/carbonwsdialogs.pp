@@ -142,7 +142,7 @@ var
   FileRef: FSRef;
   FileURL: CFURLRef;
   FileCFStr: CFStringRef;
-const AName = 'TCarbonWSFileDialog.ShowModal';
+const SName = 'TCarbonWSFileDialog.ShowModal';
 begin
   {$IFDEF VerboseWSClass}
     DebugLn('TCarbonWSFileDialog.ShowModal for ' + ACommonDialog.Name);
@@ -152,7 +152,7 @@ begin
 
   // Initialize record to default values
   if OSError(NavGetDefaultDialogCreationOptions(CreationOptions),
-    AName, 'NavGetDefaultDialogCreationOptions') then Exit;
+    SName, 'NavGetDefaultDialogCreationOptions') then Exit;
 
   if FileDialog.Title <> '' then  // Override dialog's default title?
     CreateCFString(FileDialog.Title, CreationOptions.windowTitle);
@@ -174,13 +174,13 @@ begin
          
       // Create Save dialog
       if OSError(NavCreatePutFileDialog(@CreationOptions, 0, 0, nil, nil,
-        DialogRef), AName, 'NavCreatePutFileDialog') then Exit;
+        DialogRef), SName, 'NavCreatePutFileDialog') then Exit;
     end
     else
       if FileDialog is TSelectDirectoryDialog then // Create Choose folder dialog
       begin
         if OSError(NavCreateChooseFolderDialog(@CreationOptions, nil, nil, nil,
-          DialogRef), AName, 'NavCreateChooseFolderDialog') then Exit;
+          DialogRef), SName, 'NavCreateChooseFolderDialog') then Exit;
       end
       else
         if FileDialog is TOpenDialog then
@@ -194,29 +194,29 @@ begin
 
           // Create Open dialog
           if OSError(NavCreateGetFileDialog(@CreationOptions, nil, nil, nil, nil,
-            nil, DialogRef), AName, 'NavCreateGetFileDialog') then Exit;
+            nil, DialogRef), SName, 'NavCreateGetFileDialog') then Exit;
         end;
 
     try
       // Display dialog
-      if OSError(NavDialogRun(DialogRef), AName, 'NavDialogRun') then Exit;
+      if OSError(NavDialogRun(DialogRef), SName, 'NavDialogRun') then Exit;
       
       if NavDialogGetUserAction(DialogRef) <> kNavUserActionCancel then // User OK?
       begin
-        if OSError(NavDialogGetReply(DialogRef, DialogReply), AName,
+        if OSError(NavDialogGetReply(DialogRef, DialogReply), SName,
           'NavDialogGetReply') then Exit;  // Get user's selection
           
-        if OSError(AECountItems(DialogReply.Selection, FileCount), AName,
+        if OSError(AECountItems(DialogReply.Selection, FileCount), SName,
           'AECountItems') then Exit;
           
         for FileIdx := 1 to FileCount do
         begin
           if OSError(AEGetNthDesc(DialogReply.Selection, FileIdx, typeFSRef,
-            @Keyword, FileDesc), AName, 'AEGetNthDesc') then Exit;
+            @Keyword, FileDesc), SName, 'AEGetNthDesc') then Exit;
           // Get file reference
-          if OSError(AEGetDescData(FileDesc, @FileRef, SizeOf(FSRef)), AName,
+          if OSError(AEGetDescData(FileDesc, @FileRef, SizeOf(FSRef)), SName,
             'AEGetDescData') then Exit;
-          if OSError(AEDisposeDesc(FileDesc), AName, 'AEDisposeDesc') then Exit;
+          if OSError(AEDisposeDesc(FileDesc), SName, 'AEDisposeDesc') then Exit;
           
           FileURL := CFURLCreateFromFSRef(kCFAllocatorDefault, FileRef); // Get URL
           FileCFStr := CFURLCopyFileSystemPath(FileURL, kCFURLPOSIXPathStyle); // Get path
@@ -243,7 +243,7 @@ begin
               must mean extension and not path to file's folder.}
               
         // Dispose of data that record points to (?)
-        if OSError(NavDisposeReply(DialogReply), AName, 'NavDisposeReply') then
+        if OSError(NavDisposeReply(DialogReply), SName, 'NavDisposeReply') then
           Exit;
           
         FileDialog.UserChoice := mrOK;

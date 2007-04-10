@@ -52,6 +52,7 @@ type
   protected
     procedure RegisterEvents; virtual;
     procedure UnregisterEvents; virtual;
+    procedure Update;
   public
     LCLMenuItem: TMenuItem; // LCL menu item which created this widget
     Menu: MenuRef;          // Reference to the Carbon menu
@@ -88,11 +89,9 @@ begin
   begin
     if FParentMenu <> nil then
     begin
-      SetMenuItemHierarchicalMenu(FParentMenu.Menu, GetIndex + 1, Menu);
-      
       SetCaption(LCLMenuItem.Caption);
-      SetBitmap(LCLMenuItem.Bitmap);
-      SetStyle;
+
+      Update;
     end;
 
     if FItems = nil then FItems := TObjectList.Create(False);
@@ -122,6 +121,22 @@ end;
 procedure TCarbonMenu.UnregisterEvents;
 begin
   //
+end;
+
+procedure TCarbonMenu.Update;
+begin
+  if FParentMenu = nil then Exit;
+
+  // add sub menu if exists
+  if Menu <> nil then
+    SetMenuItemHierarchicalMenu(FParentMenu.Menu, GetIndex + 1, Menu);
+
+  SetCheck(LCLMenuItem.Checked);
+  SetBitmap(LCLMenuItem.Bitmap);
+  SetStyle;
+
+  SetVisible(LCLMenuItem.Visible);
+  SetEnable(LCLMenuItem.Enabled);
 end;
 
 constructor TCarbonMenu.Create(const AMenuItem: TMenuItem; WithMenu: Boolean);
@@ -190,12 +205,13 @@ var
   CFString: CFStringRef;
   Index: Integer;
 begin
+  FParentMenu := AParentMenu;
+
   {$IFDEF VerboseMenu}
     DebugLn('TCarbonMenu.Attach ' + LCLMenuItem.Name + ' Index: ' + DbgS(GetIndex) +
       ' Menu: ' + DbgS(Menu));
   {$ENDIF}
   
-  FParentMenu := AParentMenu;
   Index := GetIndex;
   if FParentMenu.FRoot then MenuNeeded; // menu tiem is in toplevel of root menu
   
@@ -223,15 +239,7 @@ begin
   SetMenuItemProperty(FParentMenu.Menu, Index + 1,
     LAZARUS_FOURCC, WIDGETINFO_FOURCC, SizeOf(TCarbonMenu), @Self);
   
-  // add sub menu if exists
-  if Menu <> nil then
-    SetMenuItemHierarchicalMenu(FParentMenu.Menu, Index + 1, Menu);
-
-  SetBitmap(LCLMenuItem.Bitmap);
-  SetStyle;
-  
-  SetVisible(LCLMenuItem.Visible);
-  SetEnable(LCLMenuItem.Enabled);
+  Update;
 end;
 
 procedure TCarbonMenu.AttachToMenuBar;
@@ -250,6 +258,7 @@ procedure TCarbonMenu.SetCaption(const ACaption: String);
 var
   CFString: CFStringRef;
   Index: Integer;
+  S: String;
 begin
   if FParentMenu = nil then Exit;
   
@@ -261,7 +270,10 @@ begin
     Index := GetIndex;
     ChangeMenuItemAttributes(FParentMenu.Menu, Index + 1, 0, kMenuItemAttrSeparator);
     
-    CreateCFString(LCLMenuItem.Caption, CFString);
+    S := LCLMenuItem.Caption;
+    DeleteAmpersands(S);
+    
+    CreateCFString(S, CFString);
     try
       SetMenuItemTextWithCFString(FParentMenu.Menu, Index + 1, CFString);
 
@@ -315,7 +327,7 @@ var
   IconType: Byte;
   AIcon: CGImageRef;
   AHandle: FPCMacOSAll.Handle;
-const AName = 'TCarbonMenu.SetBitmap';
+const SName = 'TCarbonMenu.SetBitmap';
 begin
   {$IFDEF VerboseMenu}
     DebugLn('TCarbonMenu.SetBitmap ' + LCLMenuItem.Name + ' ABitmap: ' + DbgS(ABitmap)
@@ -327,7 +339,7 @@ begin
   
   if ABitmap <> nil then
   begin
-    if not CheckBitmap(ABitmap.Handle, AName) then Exit;
+    if not CheckBitmap(ABitmap.Handle, SName) then Exit;
     IconType := kMenuCGImageRefType;
     AIcon := TCarbonBitmap(ABitmap.Handle).CGImage;
   end;
@@ -346,20 +358,37 @@ begin
   
   if OSError(
     SetMenuItemIconHandle(FParentMenu.Menu, GetIndex + 1, IconType, AHandle),
-    AName, 'SetMenuItemIconHandle') then Exit;
+    SName, 'SetMenuItemIconHandle') then Exit;
       
   if Menu <> nil then
-    OSError(SetMenuTitleIcon(Menu, IconType, AIcon), AName, 'SetMenuTitleIcon');
+    OSError(SetMenuTitleIcon(Menu, IconType, AIcon), SName, 'SetMenuTitleIcon');
 end;
 
 procedure TCarbonMenu.SetCheck(AChecked: Boolean);
+var
+  I: Integer;
+  Item: TCarbonMenu;
 begin
+  DebugLn('TCarbonMenu.SetShortCut ' + LCLMenuItem.Caption + ' ' + DbgS(AChecked));
   if FParentMenu = nil then Exit;
   
   if AChecked then
   begin
     if LCLMenuItem.RadioItem then
-      SetItemMark(FParentMenu.Menu, GetIndex + 1, Char(kDiamondCharCode)) // or kBulletCharCode
+    begin
+      SetItemMark(FParentMenu.Menu, GetIndex + 1, Char(kBulletCharCode)); // or kDiamondCharCode
+      
+      // uncheck siblings
+      for I := 0 to FParentMenu.FItems.Count - 1 do
+      begin
+        Item := TCarbonMenu(FParentMenu.FItems[I]);
+        if Item = Self then Continue;
+        
+        if Item.LCLMenuItem.RadioItem and Item.LCLMenuItem.AutoCheck and
+          (Item.LCLMenuItem.GroupIndex = LCLMenuItem.GroupIndex) then
+            Item.SetCheck(False);
+      end;
+    end
     else
       SetItemMark(FParentMenu.Menu, GetIndex + 1, Char(kCheckCharCode));
   end
@@ -373,8 +402,9 @@ var
   Shift: TShiftState;
   Key: Word;
   Index: Integer;
-const AName = 'SetShortCut';
+const SName = 'SetShortCut';
 begin
+  DebugLn('TCarbonMenu.SetShortCut ' + ShortCutToText(AShortCut));
   if FParentMenu = nil then Exit;
   
   ShortCutToKey(AShortCut, Key, Shift);
@@ -382,10 +412,10 @@ begin
   Index := GetIndex;
   if OSError(SetMenuItemModifiers(FParentMenu.Menu, Index + 1,
       ShiftStateToModifiers(Shift)),
-    Self, AName, 'SetMenuItemModifiers') then Exit;
+    Self, SName, 'SetMenuItemModifiers') then Exit;
 
   OSError(SetMenuItemCommandKey(FParentMenu.Menu, Index + 1, False, Key),
-    Self, AName, 'SetMenuItemCommandKey');
+    Self, SName, 'SetMenuItemCommandKey');
 end;
 
 procedure TCarbonMenu.SetStyle;

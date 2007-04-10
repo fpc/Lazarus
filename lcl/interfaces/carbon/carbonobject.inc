@@ -121,8 +121,7 @@ begin
 
   try
     TmpSpec := MakeEventSpec(kEventClassApplication, kEventAppQuit);
-    Result := InstallApplicationEventHandler(QuitUPP, 1, @TmpSpec, nil, @QuitHandler);
-    if Result <> noErr then Exit;
+    if not InstallApplicationEventHandler(QuitUPP, 1, @TmpSpec, nil, @QuitHandler) then Exit;
 
     try
       // Run our event loop until quitNow is set.
@@ -161,7 +160,7 @@ var
   CarbonMenu: TCarbonMenu;
   Msg: TLMessage;
   S: LongWord;
-const AName = 'CarbonApp_CommandProcess';
+const SName = 'CarbonApp_CommandProcess';
 begin
   {$IFDEF VerboseAppEvent}
     DebugLn('CarbonApp_CommandProcess');
@@ -171,7 +170,7 @@ begin
   if not OSError(
     GetEventParameter(AEvent, kEventParamDirectObject,
       typeHICommand, nil, SizeOf(HICommand), nil, @Command),
-    AName, 'GetEventParameter') then
+    SName, 'GetEventParameter') then
   begin
     {$IFDEF VerboseMenu}
        DebugLn('CarbonApp_CommandProcess MenuRef: ' + DbgS(Command.menuRef) +
@@ -185,7 +184,7 @@ begin
     begin
       if not OSError(GetMenuItemProperty(Command.menuRef, Command.menuItemIndex,
           LAZARUS_FOURCC, WIDGETINFO_FOURCC, SizeOf(TCarbonMenu), S, @CarbonMenu),
-        AName, 'GetMenuItemProperty') then
+        SName, 'GetMenuItemProperty') then
       begin
         {$IFDEF VerboseMenu}
            DebugLn('CarbonApp_CommandProcess CarbonMenu: ' + DbgS(CarbonMenu));
@@ -280,10 +279,8 @@ begin
     // standard event handlers are installed while our event loop runs.
 
     EventSpec := MakeEventSpec(LCLCarbonEventClass,LCLCarbonEventKindMain);
-    if InstallApplicationEventHandler(EventLoopUPP, 1, @EventSpec, nil,
-                                      @EventLoopHandler) <> noErr
-    then
-      RaiseGDBException('TCarbonWidgetSet.AppRun install eventhandler failed');
+    if not InstallApplicationEventHandler(EventLoopUPP, 1, @EventSpec, nil,
+                                      @EventLoopHandler) then Exit;
 
     try
       if CreateEvent(nil, EventSpec.eventClass, EventSpec.eventKind,
@@ -561,7 +558,7 @@ end;
 procedure TCarbonWidgetSet.AppBringToFront;
 var
   Proc: ProcessSerialNumber;
-const AName = 'AppBringToFront';
+const SName = 'AppBringToFront';
 begin
   {$IFDEF VerboseObject}
     DebugLn('TCarbonWidgetSet.AppBringToFront');
@@ -572,8 +569,8 @@ begin
     34. How do I bring all my windows to the front?
   *)
 
-  if OSError(GetCurrentProcess(Proc), Self, AName, 'GetCurrentProcess') then Exit;
-  OSError(SetFrontProcess(Proc), Self, AName, 'SetFrontProcess');
+  if OSError(GetCurrentProcess(Proc), Self, SName, 'GetCurrentProcess') then Exit;
+  OSError(SetFrontProcess(Proc), Self, SName, 'SetFrontProcess');
 end;
 
 {------------------------------------------------------------------------------
@@ -592,7 +589,7 @@ end;
   Attaches the menu of window to menu bar
  ------------------------------------------------------------------------------}
 procedure TCarbonWidgetSet.AttachMenuToWindow(AMenuObject: TComponent);
-const AName = 'TCarbonWidgetSet.AttachMenuToWindow';
+const SName = 'TCarbonWidgetSet.AttachMenuToWindow';
 begin
   {$IFDEF VerboseObject}
     DebugLn('TCarbonWidgetSet.AttachMenuToWindow ' + AMenuObject.Name);
@@ -600,11 +597,11 @@ begin
   
   if (AMenuObject is TMainMenu) and (TMainMenu(AMenuObject).Handle <> 0) then
   begin
-    if not CheckMenu(TMainMenu(AMenuObject).Handle, AName) then Exit;
+    if not CheckMenu(TMainMenu(AMenuObject).Handle, SName) then Exit;
       
     if FMainMenu <> nil then
     begin
-      DebugLn(AName + ' Unable to change main menu - menu bar is set yet!');
+      DebugLn(SName + ' Unable to change main menu - menu bar is set yet!');
       Exit;
     end;
       

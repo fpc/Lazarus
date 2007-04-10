@@ -211,8 +211,7 @@ begin
   if not CheckMenuItem(AMenuItem, 'SetShortCut') then Exit;
   if not CheckMenuItem(AMenuItem.Parent, 'SetShortCut', 'Parent') then Exit;
   
-  if OldShortCut <> NewShortCut then
-    TCarbonMenu(AMenuItem.Handle).SetShortCut(NewShortCut);
+  TCarbonMenu(AMenuItem.Handle).SetShortCut(NewShortCut);
 end;
 
 {------------------------------------------------------------------------------

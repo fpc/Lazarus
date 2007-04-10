@@ -19,6 +19,9 @@
 // H A N D L E R S 
 // ==================================================================
 
+{------------------------------------------------------------------------------
+  Name: CarbonCommon_Dispose
+ ------------------------------------------------------------------------------}
 function CarbonCommon_Dispose(ANextHandler: EventHandlerCallRef;
   AEvent: EventRef;
   AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
@@ -28,6 +31,10 @@ begin
   LCLSendDestroyMsg(AWidget.LCLObject); // widget is disposed in DestroyHandle
 end;
 
+{------------------------------------------------------------------------------
+  Name: CarbonCommon_Draw
+  Handles draw event
+ ------------------------------------------------------------------------------}
 function CarbonCommon_Draw(ANextHandler: EventHandlerCallRef;
   AEvent: EventRef;
   AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
@@ -41,8 +48,10 @@ begin
   // first let carbon draw/update
   Result := CallNextEventHandler(ANextHandler, AEvent);
   
-  GetEventParameter(AEvent, kEventParamCGContextRef, typeCGContextRef, nil,
-    SizeOf(CGContextRef), nil, @(AWidget.Context.CGContext));
+  if OSError(
+    GetEventParameter(AEvent, kEventParamCGContextRef, typeCGContextRef, nil,
+      SizeOf(CGContextRef), nil, @(AWidget.Context.CGContext)),
+    'CarbonCommon_Draw', SGetEvent, 'kEventParamCGContextRef') then Exit;
   
   AWidget.Context.Reset;
   
@@ -64,12 +73,16 @@ begin
   end;
 end;
 
+{------------------------------------------------------------------------------
+  Name: CarbonCommon_BoundsChanged
+  Handles bounds changing
+ ------------------------------------------------------------------------------}
 function CarbonCommon_BoundsChanged(ANextHandler: EventHandlerCallRef;
   AEvent: EventRef;
   AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
 var
   AWinControl: TWinControl;
-  WidgetBounds, OldBounds, ResizedBounds: TRect;
+  WidgetBounds, OldBounds: TRect;
   Resized: Boolean;
 begin
   {$IFDEF VerboseCommonEvent}
@@ -78,47 +91,37 @@ begin
   // first let carbon draw/update
   Result := CallNextEventHandler(ANextHandler, AEvent);
   
-  if AWidget.LCLObject is TWinControl then
+  AWinControl := TWinControl(AWidget.LCLObject);
+  
+  AWidget.GetBounds(WidgetBounds);
+  OldBounds := AWinControl.BoundsRect;
+
+  // then send a LM_SIZE message
+  if (OldBounds.Right - OldBounds.Left <> WidgetBounds.Right - WidgetBounds.Left) or
+     (OldBounds.Bottom - OldBounds.Top <> WidgetBounds.Bottom - WidgetBounds.Top) then
   begin
-    AWinControl := TWinControl(AWidget.LCLObject);
-    AWidget.GetBounds(WidgetBounds);
-    
-    OldBounds := AWinControl.BoundsRect;
-    
-    // form expects client size
-    if AWidget is TCarbonWindow then
-    begin
-      AWidget.GetClientRect(ResizedBounds);
-      OffsetRect(ResizedBounds, WidgetBounds.Left, WidgetBounds.Top);
-    end
-    else ResizedBounds := WidgetBounds;
+    LCLSendSizeMsg(AWinControl, WidgetBounds.Right - WidgetBounds.Left,
+      WidgetBounds.Bottom - WidgetBounds.Top, Size_SourceIsInterface);
+      
+    Resized := True;
+  end
+  else Resized := False;
 
-    // then send a LM_SIZE message
-    if (OldBounds.Right - OldBounds.Left <> WidgetBounds.Right - WidgetBounds.Left) or
-       (OldBounds.Bottom - OldBounds.Top <> WidgetBounds.Bottom - WidgetBounds.Top) then
-    begin
-      LCLSendSizeMsg(AWinControl, ResizedBounds.Right - ResizedBounds.Left,
-        ResizedBounds.Bottom - ResizedBounds.Top, Size_SourceIsInterface);
-      Resized := True;
-    end
-    else Resized := False;
-
-    // then send a LM_MOVE message
-    if (OldBounds.Left <> WidgetBounds.Left) or
-       (OldBounds.Top <> WidgetBounds.Top) then
-    begin
-      LCLSendMoveMsg(AWinControl, ResizedBounds.Left,
-        ResizedBounds.Top, Move_SourceIsInterface);
-    end;
-    
-    // invalidate control canvas
-    if Resized then AWidget.Invalidate;
-    
-    // invalidate parent client area, previously covered by control
-    if (AWinControl.Parent <> nil) and AWinControl.Parent.HandleAllocated then
-    begin
-      TCarbonWidget(AWinControl.Parent.Handle).Invalidate(@OldBounds);
-    end;
+  // then send a LM_MOVE message
+  if (OldBounds.Left <> WidgetBounds.Left) or
+     (OldBounds.Top <> WidgetBounds.Top) then
+  begin
+    LCLSendMoveMsg(AWinControl, WidgetBounds.Left,
+      WidgetBounds.Top, Move_SourceIsInterface);
+  end;
+  
+  // invalidate control canvas
+  if Resized then AWidget.Invalidate;
+  
+  // invalidate parent client area, previously covered by control
+  if (AWinControl.Parent <> nil) and AWinControl.Parent.HandleAllocated then
+  begin
+    TCarbonWidget(AWinControl.Parent.Handle).Invalidate(@OldBounds);
   end;
 end;
 
@@ -171,24 +174,39 @@ var
   Msg: TLMMouse;
   MouseButton: EventMouseButton;
   ControlPart: ControlPartCode;
+const
+  SName = 'CarbonCommon_Track';
+  SControlAction = 'kEventParamControlAction';
 begin
   {$IFDEF VerboseMouse}
     DebugLn('CarbonCommon_Track ', DbgSName(AWidget.LCLObject));
   {$ENDIF}
-  GetEventParameter(AEvent, kEventParamControlAction, typeControlActionUPP, nil, SizeOf(ActionUPP), nil, @OldActionUPP);
-  GetEventParameter(AEvent, kEventParamMouseButton, typeMouseButton, nil, SizeOf(EventMouseButton), nil, @MouseButton);
+  if OSError(
+    GetEventParameter(AEvent, kEventParamControlAction, typeControlActionUPP,
+      nil, SizeOf(ActionUPP), nil, @OldActionUPP), SName, SGetEvent,
+    SControlAction) then Exit;
+      
+  if OSError(
+    GetEventParameter(AEvent, kEventParamMouseButton, typeMouseButton, nil,
+      SizeOf(EventMouseButton), nil, @MouseButton), SName, SGetEvent,
+    'kEventParamMouseButton') then Exit;
 
   ActionUPP := NewControlActionUPP(@CarbonCommon_TrackProgress);
-  SetEventParameter(AEvent, kEventParamControlAction, typeControlActionUPP,
-    SizeOf(ActionUPP), @ActionUPP);
+  try
+    if OSError(
+      SetEventParameter(AEvent, kEventParamControlAction, typeControlActionUPP,
+        SizeOf(ActionUPP), @ActionUPP), SName, SSetEvent, SControlAction) then Exit;
 
-  // this does not return until the mouse is released
-  Result := CallNextEventHandler(ANextHandler, AEvent);
+    // this does not return until the mouse is released
+    Result := CallNextEventHandler(ANextHandler, AEvent);
 
-  SetEventParameter(AEvent, kEventParamControlAction, typeControlActionUPP,
-    SizeOf(OldActionUPP), @OldActionUPP);
-  DisposeControlActionUPP(ActionUPP);
-
+    if OSError(
+      SetEventParameter(AEvent, kEventParamControlAction, typeControlActionUPP,
+        SizeOf(OldActionUPP), @OldActionUPP), SName, SSetEvent, SControlAction) then Exit;
+  finally
+    DisposeControlActionUPP(ActionUPP);
+  end;
+  
   FillChar(Msg, SizeOf(Msg), 0);
 
   if  (MouseButton >= Low(MSGKIND)) and (MouseButton <= High(MSGKIND)) then
@@ -202,8 +220,9 @@ begin
   if (AWidget is TCarbonControl) and
     (cceHit in (AWidget as TCarbonControl).GetValidEvents) then
   begin
-    GetEventParameter(AEvent, kEventParamControlPart, typeControlPartCode, nil,
-      SizeOf(ControlPartCode), nil, @ControlPart);
+    if OSError(
+      GetEventParameter(AEvent, kEventParamControlPart, typeControlPartCode, nil,
+        SizeOf(ControlPartCode), nil, @ControlPart), SName, SGetEvent, SControlPart) then Exit;
 
     {$IFDEF VerboseMouse}
       DebugLn('CarbonCommon_Track Control Part ' + DbgS(ControlPart) +
@@ -220,57 +239,65 @@ begin
   DeliverMessage(AWidget.LCLObject, Msg);
 end;
 
+{------------------------------------------------------------------------------
+  Name: CarbonCommon_CursorChange
+  Cursor changing
+ ------------------------------------------------------------------------------}
 function CarbonCommon_CursorChange(ANextHandler: EventHandlerCallRef;
   AEvent: EventRef;
   AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
 var
-  AStatus: OSSTATUS;
   ALocation: FPCMacOSAll.Point;
   AModifiers: UInt32;
-  ACursorWasSet: Boolean;
   ACursor: TCursor;
+  ACursorWasSet: Boolean;
   
   Widget:  TCarbonWidget; //
   Control: ControlRef;    // the control we are dealing with
                           // or the rootcontrol if none found
+const
+  SName = 'CarbonCommon_CursorChange';
 begin
   Result := CallNextEventHandler(ANextHandler, AEvent);
   
-  AStatus := GetEventParameter(AEvent, kEventParamMouseLocation, typeQDPoint, nil,
-    SizeOf(ALocation), nil, @ALocation);
-  if AStatus = noErr then
+  if OSError(GetEventParameter(AEvent, kEventParamMouseLocation, typeQDPoint, nil,
+      SizeOf(ALocation), nil, @ALocation), SName, SGetEvent,
+    'kEventParamMouseLocation') then Exit;
+
+  if OSError(GetEventParameter(AEvent, kEventParamKeyModifiers, typeUInt32, nil,
+      SizeOf(AModifiers), nil, @AModifiers), SName, SGetEvent, SKeyModifiers) then Exit;
+
+  //Find out which control the mouse event should occur for
+  Control := nil;
+  if OSError(HIViewGetViewForMouseEvent(AWidget.Content, AEvent, Control),
+    SName, SViewForMouse) then Exit;
+  if Control = nil then Exit;
+
+  Widget := GetCarbonWidget(Control);
+  if Widget = nil then Exit;
+  
+  GlobalToLocal(ALocation);
+  
+  if OSError(HandleControlSetCursor(Control, ALocation, AModifiers, ACursorWasSet),
+    SName, 'HandleControlSetCursor') then
+    ACursorWasSet := False;
+    
+  if not ACursorWasSet then
   begin
-    AStatus := GetEventParameter(AEvent, kEventParamKeyModifiers, typeUInt32, nil,
-      SizeOf(AModifiers), nil, @AModifiers);
-    if AStatus = noErr then
-    begin
-      //Find out which control the mouse event should occur for
-      Control := nil;
-      if HIViewGetViewForMouseEvent(AWidget.Content, AEvent, Control) <> noErr then Exit;
-      if Control = nil then Exit;
+    ACursor := Screen.Cursor;
+    if ACursor = crDefault then
+      ACursor := Widget.LCLObject.Cursor;
 
-      Widget := GetCarbonWidget(Control);
-      if Widget = nil then Exit;
-      
-      GlobalToLocal(ALocation);
-      AStatus := HandleControlSetCursor(Control, ALocation,
-        AModifiers, ACursorWasSet);
-
-      if AStatus <> noErr then
-        ACursorWasSet := False;
-
-      if not ACursorWasSet then
-      begin
-        ACursor := Screen.Cursor;
-        if ACursor = crDefault then
-          ACursor := Widget.LCLObject.Cursor;
-        WidgetSet.SetCursor(Screen.Cursors[ACursor]);
-      end;
-      Result := noErr;
-    end;
+    WidgetSet.SetCursor(Screen.Cursors[ACursor]);
   end;
+      
+  Result := noErr;
 end;
 
+{------------------------------------------------------------------------------
+  Name: CarbonCommon_ContextualMenuClick
+  PopupMenu auto popup support
+ ------------------------------------------------------------------------------}
 function CarbonCommon_ContextualMenuClick(ANextHandler: EventHandlerCallRef;
   AEvent: EventRef;
   AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
@@ -294,6 +321,10 @@ begin
   Result := noErr; // do not propagate
 end;
 
+{------------------------------------------------------------------------------
+  Name: CarbonCommon_SetFocusPart
+  Handles set or kill focus
+ ------------------------------------------------------------------------------}
 function CarbonCommon_SetFocusPart(ANextHandler: EventHandlerCallRef;
   AEvent: EventRef;
   AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
@@ -302,8 +333,10 @@ var
 begin
   Result := CallNextEventHandler(ANextHandler, AEvent);
 
-  if GetEventParameter(AEvent, kEventParamControlPart, typeControlPartCode, nil,
-    SizeOf(ControlPartCode), nil, @FocusPart) <> noErr then Exit;
+  if OSError(
+    GetEventParameter(AEvent, kEventParamControlPart, typeControlPartCode, nil,
+      SizeOf(ControlPartCode), nil, @FocusPart), 'CarbonCommon_SetFocusPart',
+    SGetEvent, SControlPart) then Exit;
 
   {$IFDEF VerboseCommonEvent}
     DebugLn('CarbonCommon_SetFocusPart: ', DbgSName(AWidget.LCLObject), ' ' +
@@ -316,6 +349,10 @@ begin
     LCLSendKillFocusMsg(AWidget.LCLObject);
 end;
 
+{------------------------------------------------------------------------------
+  Name: CarbonCommon_GetNextFocusCandidate
+  TabOrder and TabStop support
+ ------------------------------------------------------------------------------}
 function CarbonCommon_GetNextFocusCandidate(ANextHandler: EventHandlerCallRef;
   AEvent: EventRef;
   AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
@@ -325,16 +362,21 @@ var
   TabIndex: Integer;
   TabList: TFPList;
   AControl: TCarbonWidget;
+const
+  SName = 'CarbonCommon_GetNextFocusCandidate';
 begin
   {$IFDEF VerboseCommonEvent}
     DebugLn('CarbonCommon_GetNextFocusCandidate: ', DbgSName(AWidget.LCLObject));
   {$ENDIF}
   //Result := CallNextEventHandler(ANextHandler, AEvent);
   
-  if GetEventParameter(AEvent, kEventParamStartControl, typeControlRef, nil,
-    SizeOf(ControlRef), nil, @StartControl) <> noErr then Exit;
-  if GetEventParameter(AEvent, kEventParamControlPart, typeControlPartCode, nil,
-    SizeOf(ControlPartCode), nil, @FocusPart) <> noErr then Exit;
+  if OSError(GetEventParameter(AEvent, kEventParamStartControl, typeControlRef,
+      nil, SizeOf(ControlRef), nil, @StartControl), SName, SGetEvent,
+    'kEventParamStartControl') then Exit;
+    
+  if OSError(
+    GetEventParameter(AEvent, kEventParamControlPart, typeControlPartCode, nil,
+      SizeOf(ControlPartCode), nil, @FocusPart), SName, SGetEvent, SControlPart) then Exit;
   
   TabIndex := 0;
   TabList := TFPList.Create;
@@ -367,8 +409,7 @@ begin
       NextControl := nil;
     
     OSError(SetEventParameter(AEvent, kEventParamNextControl, typeControlRef,
-        SizeOf(ControlRef), @NextControl), 'CarbonCommon_GetNextFocusCandidate',
-        'SetEventParameter');
+        SizeOf(ControlRef), @NextControl), SName, SSetEvent, 'kEventParamNextControl');
   finally
     TabList.Free;
   end;
@@ -376,6 +417,10 @@ begin
   Result := noErr;
 end;
 
+{------------------------------------------------------------------------------
+  Name: CarbonCommon_SetCursor
+  Sets cursor
+ ------------------------------------------------------------------------------}
 function CarbonCommon_SetCursor(ANextHandler: EventHandlerCallRef;
   AEvent: EventRef;
   AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
@@ -403,5 +448,6 @@ begin
     ACursor := AWidget.LCLObject.Cursor;
   end;
   WidgetSet.SetCursor(Screen.Cursors[ACursor]);
+  
   Result := noErr; // cursor was setted
 end;

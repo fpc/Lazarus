@@ -576,7 +576,7 @@ var
   EnumLogFont: TEnumLogFontEx;
   Metric: TNewTextMetricEx;
   FontType, I: Integer;
-const AName = 'TCarbonWidgetSet.EnumFontFamiliesEx';
+const SName = 'TCarbonWidgetSet.EnumFontFamiliesEx';
 begin
   {$IFDEF VerboseWinAPI}
     DebugLn('TCarbonWidgetSet.EnumFontFamiliesEx');
@@ -590,14 +590,14 @@ begin
   if (lpLogFont^.lfCharSet = DEFAULT_CHARSET) and (lpLogFont^.lfFaceName = '') then
   begin
     // all system fonts
-    if OSError(ATSUFontCount(FamilyCount), AName, 'ATSUFontCount') then Exit;
+    if OSError(ATSUFontCount(FamilyCount), SName, 'ATSUFontCount') then Exit;
     
     GetMem(FamilyListPtr, SizeOf(ATSUFontID) * FamilyCount);
     try
-      if OSError(ATSUGetFontIDs(FamilyListPtr, FamilyCount, nil), AName, 'ATSUGetFontIDs') then Exit;
+      if OSError(ATSUGetFontIDs(FamilyListPtr, FamilyCount, nil), SName, 'ATSUGetFontIDs') then Exit;
 
       {$IFDEF VerboseWinAPI}
-        DebugLn(AName + ' Found: ' + DbgS(FamilyCount));
+        DebugLn(SName + ' Found: ' + DbgS(FamilyCount));
       {$ENDIF}
 
       PFamily := FamilyListPtr;
@@ -606,14 +606,14 @@ begin
         // retrieve font name length
         if OSError(ATSUFindFontName(PFamily^, kFontFamilyName, kFontMacintoshPlatform,
           kFontRomanScript, kFontEnglishLanguage, NameLength, nil,
-          @NameLength, nil), AName, 'ATSUFindFontName', 'Length') then Continue;
+          @NameLength, nil), SName, 'ATSUFindFontName', 'Length') then Continue;
         
         SetLength(FontName, NameLength);
 
         // retrieve font name, UTF-16 encoded
         if OSError(ATSUFindFontName(PFamily^, kFontFamilyName, kFontMacintoshPlatform,
           kFontRomanScript, kFontEnglishLanguage, NameLength,
-          @FontName[1], @NameLength, nil), AName, 'ATSUFindFontName', 'Name') then Continue;
+          @FontName[1], @NameLength, nil), SName, 'ATSUFindFontName', 'Name') then Continue;
           
         if FontName <> '' then // execute callback
         begin
@@ -633,7 +633,7 @@ begin
   end
   else
   begin
-    DebugLn(AName + ' with specific face or specific char set is not implemented!');
+    DebugLn(SName + ' with specific face or specific char set is not implemented!');
   end;
 end;
 
@@ -1573,7 +1573,8 @@ begin
   COLOR_3DLIGHT:
     R := GetThemeBrushAsColor(kThemeBrushButtonActiveLightShadow, Depth, True, C);
   //COLOR_HOTLIGHT:
-  COLOR_INFOBK, COLOR_WINDOW, COLOR_FORM:
+  COLOR_INFOBK,
+  COLOR_WINDOW, COLOR_FORM:
     R := GetThemeBrushAsColor(kThemeBrushDocumentWindowBackground, Depth, True, C);
   else
     DebugLn('TCarbonWidgetSet.GetSysColor TODO ', DbgS(NIndex));
@@ -1645,14 +1646,14 @@ var
   TextLayout: ATSUTextLayout;
   ADC: TCarbonDeviceContext;
   TextBefore, TextAfter, Ascent, Descent: ATSUTextMeasurement;
-const AName = 'GetTextExtentPoint';
+const SName = 'GetTextExtentPoint';
 begin
   {$IFDEF VerboseWinAPI}
     DebugLn('TCarbonWidgetSet.GetTextExtentPoint DC: ' + DbgS(DC) + ' Str: ' + Str);
   {$ENDIF}
   
   Result := False;
-  if not CheckDC(DC, AName) then
+  if not CheckDC(DC, SName) then
     // workaround for calculating metrics of invisible controls
     ADC := DefaultContext
   else
@@ -1663,7 +1664,7 @@ begin
     // finally compute the text dimensions
     if OSError(ATSUGetUnjustifiedBounds(TextLayout, kATSUFromTextBeginning,
         kATSUToTextEnd, TextBefore, TextAfter, Ascent, Descent),
-      Self, AName, 'ATSUGetUnjustifiedBounds') then Exit;
+      Self, SName, 'ATSUGetUnjustifiedBounds') then Exit;
       
     Size.cx := (TextAfter - TextBefore) shr 16;
     Size.cy := (Descent + Ascent) shr 16;
@@ -1695,7 +1696,7 @@ var
   B: Boolean;
   TextLayout: ATSUTextLayout;
   TextBefore, TextAfter, Ascent, Descent: ATSUTextMeasurement;
-const AName = 'GetTextMetrics';
+const SName = 'GetTextMetrics';
       AGetAttrName = 'ATSUGetAttribute';
 begin
   {$IFDEF VerboseWinAPI}
@@ -1703,7 +1704,7 @@ begin
   {$ENDIF}
   
   Result := False;
-  if not CheckDC(DC, AName) then
+  if not CheckDC(DC, SName) then
     // workaround for calculating metrics of invisible controls
     ADC := DefaultContext
   else
@@ -1721,7 +1722,7 @@ begin
   if not ADC.BeginTextRender('x', 1, TextLayout) then Exit;
   try
     if OSError(ATSUGetUnjustifiedBounds(TextLayout, kATSUFromTextBeginning,
-      kATSUToTextEnd, TextBefore, TextAfter, Ascent, Descent), AName,
+      kATSUToTextEnd, TextBefore, TextAfter, Ascent, Descent), SName,
       'ATSUGetUnjustifiedBounds') then Exit
   finally
     ADC.EndTextRender(TextLayout);
@@ -1732,7 +1733,7 @@ begin
   TM.tmHeight := (Ascent + Descent) shr 16;
   
   if OSError(ATSUGetAttribute(TextStyle, kATSULeadingTag, SizeOf(M), @M, nil),
-    Self, AName, AGetAttrName, 'kATSULeadingTag', kATSUNotSetErr) then Exit;
+    Self, SName, AGetAttrName, 'kATSULeadingTag', kATSUNotSetErr) then Exit;
   TM.tmInternalLeading := M shr 16;
   TM.tmExternalLeading := 0;
   
@@ -1748,20 +1749,20 @@ begin
   TM.tmBreakChar := '?';
   
   if OSError(ATSUGetAttribute(TextStyle, kATSUQDBoldfaceTag, SizeOf(B), @B, nil),
-    Self, AName, AGetAttrName, 'kATSUQDBoldfaceTag', kATSUNotSetErr) then Exit;
+    Self, SName, AGetAttrName, 'kATSUQDBoldfaceTag', kATSUNotSetErr) then Exit;
   if B then TM.tmWeight := FW_NORMAL
        else TM.tmWeight := FW_BOLD;
   
   if OSError(ATSUGetAttribute(TextStyle, kATSUQDItalicTag, SizeOf(B), @B, nil),
-    Self, AName, AGetAttrName, 'kATSUQDItalicTag', kATSUNotSetErr) then Exit;
+    Self, SName, AGetAttrName, 'kATSUQDItalicTag', kATSUNotSetErr) then Exit;
   TM.tmItalic := Byte(B);
   
   if OSError(ATSUGetAttribute(TextStyle, kATSUQDUnderlineTag, SizeOf(B), @B, nil),
-    Self, AName, AGetAttrName, 'kATSUQDUnderlineTag', kATSUNotSetErr) then Exit;
+    Self, SName, AGetAttrName, 'kATSUQDUnderlineTag', kATSUNotSetErr) then Exit;
   TM.tmUnderlined := Byte(B);
   
   if OSError(ATSUGetAttribute(TextStyle, kATSUStyleStrikeThroughTag, SizeOf(B), @B, nil),
-    Self, AName, AGetAttrName, 'kATSUStyleStrikeThroughTag', kATSUNotSetErr) then Exit;
+    Self, SName, AGetAttrName, 'kATSUStyleStrikeThroughTag', kATSUNotSetErr) then Exit;
   TM.tmStruckOut := Byte(B);
 
   // TODO: get these from font
@@ -2520,7 +2521,7 @@ function TCarbonWidgetSet.SelectObject(DC: HDC; GDIObj: HGDIOBJ): HGDIOBJ;
 var
   AObject: TObject;
   ADC: TCarbonDeviceContext;
-const AName = 'TCarbonWidgetSet.SelectObject';
+const SName = 'TCarbonWidgetSet.SelectObject';
 begin
   {$IFDEF VerboseWinAPI}
     DebugLn('TCarbonWidgetSet.SelectObject DC: ' + DbgS(DC) + ' GDIObj: ' +
@@ -2528,8 +2529,8 @@ begin
   {$ENDIF}
   
   Result := 0;
-  if not CheckDC(DC, AName) then Exit;
-  if not CheckGDIObject(GDIObj, AName) then Exit;
+  if not CheckDC(DC, SName) then Exit;
+  if not CheckGDIObject(GDIObj, SName) then Exit;
   
   ADC := TCarbonDeviceContext(DC);
   AObject := TObject(GDIObj);
@@ -2556,7 +2557,7 @@ begin
   begin
     if not (ADC is TCarbonBitmapContext) then
     begin
-      DebugLn(AName + ' Error - The specified device context is not bitmap context!');
+      DebugLn(SName + ' Error - The specified device context is not bitmap context!');
       Exit;
     end;
     
@@ -2923,11 +2924,11 @@ end;
   Returns: If the function succeeds
   
   Shows the window normal, minimized or maximized
-  TODO: solve maximized <-> normal bug
 ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.ShowWindow(hWnd: HWND; nCmdShow: Integer): Boolean;
 var
   P: FPCMacOSAll.Point;
+  Maximized: Boolean;
 begin
   {$IFDEF VerboseWinAPI}
     DebugLn('TCarbonWidgetSet.ShowWindow hWnd: ' + DbgS(hWnd) + ' nCmdShow: ' +
@@ -2941,19 +2942,25 @@ begin
   SW_SHOWNORMAL, SW_SHOWMAXIMIZED:
   begin
     if IsWindowCollapsed(AsWindowRef(HWnd)) then
-      Result := CollapseWindow(AsWindowRef(HWnd), False) = noErr;
+      if CollapseWindow(AsWindowRef(HWnd), False) <> noErr then Exit;
 
-    if Result then
+    // for checking if any change is necessary
+    Maximized := IsWindowInStandardState(AsWindowRef(HWnd), nil, nil);
+    
+    if nCmdShow = SW_SHOWNORMAL then
     begin
-      if nCmdShow = SW_SHOWNORMAL then
-        Result := ZoomWindowIdeal(AsWindowRef(HWnd), inZoomIn, P) = noErr
+      if not Maximized then Result := True
+      else
+        Result := ZoomWindowIdeal(AsWindowRef(HWnd), inZoomIn, P) = noErr;
+    end
+    else
+      if Maximized then Result := True
       else
       begin
         P.v := $3FFF;
         P.h := $3FFF;
         Result := ZoomWindowIdeal(AsWindowRef(HWnd), inZoomOut, P) = noErr;
       end;
-    end;
   end;
   SW_MINIMIZE: Result := CollapseWindow(AsWindowRef(HWnd), True) = noErr;
   end;
@@ -2993,7 +3000,7 @@ function TCarbonWidgetSet.StretchMaskBlt(DestDC: HDC; X, Y, Width,
   Height: Integer; SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer;
   Mask: HBITMAP; XMask, YMask: Integer; Rop: DWORD): Boolean;
 const
-  AName = 'TCarbonWidgetSet.StretchMaskBlt';
+  SName = 'TCarbonWidgetSet.StretchMaskBlt';
 begin
   {$IFDEF VerboseWinAPI}
     DebugLn('TCarbonWidgetSet.StretchMaskBlt DestDC: ' + DbgS(DestDC) + ' SrcDC: ',
@@ -3004,11 +3011,11 @@ begin
   {$ENDIF}
   
   Result := False;
-  if not CheckDC(DestDC, AName, 'Dest') then Exit;
-  if not CheckDC(SrcDC, AName, 'Src') then Exit;
+  if not CheckDC(DestDC, SName, 'Dest') then Exit;
+  if not CheckDC(SrcDC, SName, 'Src') then Exit;
   if not (TCarbonDeviceContext(SrcDC) is TCarbonBitmapContext) then
   begin
-    DebugLn(AName + ' Error - invalid source device context!');
+    DebugLn(SName + ' Error - invalid source device context!');
     Exit;
   end;
   
@@ -3094,7 +3101,7 @@ begin
   if WindowPart <> inContent then Exit;
   
   if OSError(GetWindowBounds(Window, kWindowContentRgn, R), Self,
-    'WindowFromPoint', 'GetWindowBounds') then Exit;
+    'WindowFromPoint', SGetWindowBounds) then Exit;
     
   Dec(P.h, R.left);
   Dec(P.v, R.top);

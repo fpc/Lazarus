@@ -2398,6 +2398,7 @@ lcl/interfacebase.pp svneol=native#text/pascal
 lcl/interfaces/LAYOUT.txt svneol=native#text/plain
 lcl/interfaces/carbon/README.txt svneol=native#text/plain
 lcl/interfaces/carbon/carboncanvas.pp svneol=native#text/pascal
+lcl/interfaces/carbon/carbonconsts.pp svneol=native#text/pascal
 lcl/interfaces/carbon/carbondebug.inc svneol=native#text/plain
 lcl/interfaces/carbon/carbondef.pp svneol=native#text/pascal
 lcl/interfaces/carbon/carbonedits.pp svneol=native#text/pascal

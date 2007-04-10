@@ -188,7 +188,7 @@ var
   AlertBtnIdx : DialogItemIndex;
   I: Integer;
 
-const AName = 'PromptUser';
+const SName = 'PromptUser';
 begin
   {$IFDEF VerboseLCLIntf}
     DebugLn('TCarbonWidgetSet.PromptUser DialogCaption: ' + DialogCaption +
@@ -292,9 +292,9 @@ begin
 
   try
     if OSError(CreateStandardAlert(AlertCode, CaptionStr, MessageStr, @ParamRec, AlertRef),
-      Self, AName, 'CreateStandardAlert') then Exit;
+      Self, SName, 'CreateStandardAlert') then Exit;
       
-    if OSError(RunStandardAlert(AlertRef, nil, AlertBtnIdx), Self, AName,
+    if OSError(RunStandardAlert(AlertRef, nil, AlertBtnIdx), Self, SName,
       'RunStandardAlert') then Exit;
 
     {Convert Carbon result to LCL "id" dialog result}

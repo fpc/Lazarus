@@ -39,7 +39,7 @@ uses
  // rtl+ftl
   Types, Classes, SysUtils, Math, FPCAdds,
  // carbon bindings
-  FPCMacOSAll, CarbonUtils,
+  FPCMacOSAll, CarbonUtils, CarbonConsts,
  // interfacebase
   InterfaceBase,
  // LCL
