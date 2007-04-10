@@ -146,7 +146,7 @@ begin
   // If we have a image, us it. Otherwise supply a default.
   if AMenuItem.HasBitmap then
   begin
-    i := BI.AddCopy(AMenuItem.Bitmap, AMenuItem.Bitmap);
+    i := BI.Add(AMenuItem.Bitmap, AMenuItem.Bitmap);
     B.ImageIndex := i;
   end
   else

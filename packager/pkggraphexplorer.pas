@@ -269,23 +269,13 @@ begin
 end;
 
 procedure TPkgGraphExplorerDlg.SetupComponents;
-
-  function AddResImg(const ResName: string): integer;
-  var Pixmap: TPixmap;
-  begin
-    Pixmap:=TPixmap.Create;
-    Pixmap.TransparentColor:=clWhite;
-    Pixmap.LoadFromLazarusResource(ResName);
-    Result:=ImageList.AddDirect(Pixmap,nil)
-  end;
-
 begin
-  ImgIndexPackage:=AddResImg('pkg_package');
-  ImgIndexInstalledPackage:=AddResImg('pkg_package_install');
-  ImgIndexInstallPackage:=AddResImg('pkg_package_autoinstall');
-  ImgIndexUninstallPackage:=AddResImg('pkg_package_uninstall');
-  ImgIndexCirclePackage:=AddResImg('pkg_package_circle');
-  ImgIndexMissingPackage:=AddResImg('pkg_conflict');
+  ImgIndexPackage := ImageList.AddLazarusResource('pkg_package');
+  ImgIndexInstalledPackage := ImageList.AddLazarusResource('pkg_package_install');
+  ImgIndexInstallPackage := ImageList.AddLazarusResource('pkg_package_autoinstall');
+  ImgIndexUninstallPackage := ImageList.AddLazarusResource('pkg_package_uninstall');
+  ImgIndexCirclePackage := ImageList.AddLazarusResource('pkg_package_circle');
+  ImgIndexMissingPackage := ImageList.AddLazarusResource('pkg_conflict');
 
   PkgTreeLabel.Caption:=lisPckExplLoadedPackages;
   PkgListLabel.Caption:=lisPckExplIsRequiredBy;
