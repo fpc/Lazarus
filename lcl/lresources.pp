@@ -63,7 +63,7 @@ type
     constructor Create;
     destructor Destroy;  override;
     procedure Add(const Name, ValueType, Value: AnsiString);
-    procedure Add(const Name, ValueType: AnsiString; Values: array of string);
+    procedure Add(const Name, ValueType: AnsiString; const Values: array of string);
     function Find(const Name: AnsiString):TLResource;
     function Count: integer;
     property Items[Index: integer]: TLResource read GetItems;
@@ -1130,7 +1130,7 @@ begin
 end;
 
 procedure TLResourceList.Add(const Name,ValueType: AnsiString;
-  Values: array of string);
+  const Values: array of string);
 var
   NewLResource: TLResource;
   i, TotalLen, ValueCount, p: integer;
