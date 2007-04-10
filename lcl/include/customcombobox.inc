@@ -909,7 +909,7 @@ begin
       AHeight := Self.ItemHeight
     else
       Aheight := ItemHeight;
-    MeasureItem(ItemId, AHeight);
+    MeasureItem(Integer(ItemId), AHeight);
     if AHeight>0 then
       ItemHeight := AHeight;
   end;
