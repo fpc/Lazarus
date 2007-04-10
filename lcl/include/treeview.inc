@@ -4134,8 +4134,8 @@ begin
   end else begin
     PaintImages:=true;
   end;
-  VertMid:=(NodeRect.Top+NodeRect.Bottom) shr 1;
-  //DebugLn('[TCustomTreeView.DoPaintNode] Node=',DbgS(Node),' Node.Text=',Node.Text,' NodeRect=',NodeRect.Left,',',NodeRect.Top,',',NodeRect.Right,',',NodeRect.Bottom,' VertMid=',VertMid);
+  VertMid:=(NodeRect.Top+NodeRect.Bottom) div 2;
+  //DebugLn(['[TCustomTreeView.DoPaintNode] Node=',DbgS(Node),' Node.Text=',Node.Text,' NodeRect=',NodeRect.Left,',',NodeRect.Top,',',NodeRect.Right,',',NodeRect.Bottom,' VertMid=',VertMid]);
   with Canvas do begin
     // draw background
     if (tvoRowSelect in FOptions) and NodeSelected then
