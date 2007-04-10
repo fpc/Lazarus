@@ -947,7 +947,7 @@ msgstr "Construir LCL"
 
 #: lazarusidestrconsts:lismenubuildlazarus
 msgid "Build Lazarus"
-msgstr "Reconstruir o Lazarus"
+msgstr "Construir Lazarus"
 
 #: lazarusidestrconsts:lisbuildnumber
 msgid "Build Number"
@@ -4387,7 +4387,7 @@ msgstr "Manter nome"
 
 #: lazarusidestrconsts:dlgforwardprocskeeporder
 msgid "Keep order of procedures"
-msgstr "Ajustar a ordem dos procedimento"
+msgstr "Ajustar a ordem dos procedimentos"
 
 #: lazarusidestrconsts:liskeepthemandcontinue
 msgid "Keep them and continue"
@@ -5579,7 +5579,7 @@ msgstr "Outros Fontes (arquivos .pp/.pas, usado somente pela IDE não pelo Compi
 
 #: lazarusidestrconsts:dlgotherunitfiles
 msgid "Other Unit Files (-Fu) (Delimiter is semicolon):"
-msgstr "Outros arquivos de unidade (-Fu) (ponto e v�rgula é o demilitador)"
+msgstr "Outros arquivos de unidade (-Fu) (ponto e v�rgula é o delimitador)"
 
 #: lazarusidestrconsts:dlgenvotherfiles
 msgid "Other files"
@@ -6859,7 +6859,7 @@ msgstr "Deslizar uma linha acima"
 
 #: lazarusidestrconsts:lissearchfor
 msgid "Search For "
-msgstr "Localiza"
+msgstr "Localizar"
 
 #: lazarusidestrconsts:lismenuviewsearchresults
 msgid "Search Results"
@@ -8123,11 +8123,11 @@ msgstr "A Versão Minima %s%s%s não é uma versão de pacote válida.%s(bom exe
 
 #: lazarusidestrconsts:listhenameisnotavalidpascalidentifier
 msgid "The name %s%s%s is not a valid pascal identifier."
-msgstr ""
+msgstr "O nome %s%s%s não é um identificador Pascal válido."
 
 #: lazarusidestrconsts:lisinvalidpascalidentifiertext
 msgid "The name \"%s\" is not a valid pascal identifier."
-msgstr ""
+msgstr "O nome \"%s\" não é um identificador Pascal válido."
 
 #: lazarusidestrconsts:lispkgmangthepackageisaruntimeonlypackageruntimeonlypackages
 msgid "The package %s is a runtime only package.%sRuntime only packages can not be installed in the IDE."
@@ -8199,11 +8199,11 @@ msgstr "O nome da Página %s%s%s é muito longo (max 100 caracteres)."
 
 #: lazarusidestrconsts:liscodetoolsdefsthepathtothefreepascalcompilerforthisproject
 msgid "The path to the free pascal compiler for this project. Only required if you set the FPC SVN source below. Used to autocreate macros."
-msgstr ""
+msgstr "O Caminho para o compilador free Pascal para este projeto. Somente requerido se você ajustar o fonte SVN do FPC a seguir. Usado para criação automatica de macros."
 
 #: lazarusidestrconsts:liscodetoolsdefsthepathtothefreepascalcompilerforexample
 msgid "The path to the free pascal compiler.%s For example %s/usr/bin/%s -n%s or %s/usr/local/bin/fpc @/etc/fpc.cfg%s."
-msgstr ""
+msgstr "O caminho para free Pascal compiler.%s Por exemplo %s/usr/bin/%s -n%s ou %s/usr/local/bin/fpc @/etc/fpc.cfg%s."
 
 #: lazarusidestrconsts:listheprogrammakewasnotfoundthistoolisneededtobuildla
 msgid "The program %smake%s was not found.%sThis tool is needed to build lazarus.%s"
@@ -8267,7 +8267,7 @@ msgstr "Nome da unidade %s%s%s não corresponde com o nome do arquivo."
 
 #: lazarusidestrconsts:lisprojaddtheunitnameisnotavalidpascalidentifier
 msgid "The unit name %s%s%s is not a valid pascal identifier."
-msgstr ""
+msgstr "O nome de unidade Pascal %s%s%s não é um identificador Pascal válido."
 
 #: lazarusidestrconsts:lisa2ptheunitnameisthesameasanregisteredcomponent
 msgid "The unit name %s%s%s is the same as an registered component.%sUsing this can cause strange error messages."
@@ -8415,7 +8415,7 @@ msgstr "Este é um controle irmão para que o lado superior seja ancorado. Deixa
 
 #: lazarusidestrconsts:listhislookslikeapascalfileitisrecommendedtouselowerc
 msgid "This looks like a pascal file.%sIt is recommended to use lower case filenames, to avoid various problems on some filesystems and different compilers.%sRename it to lowercase?"
-msgstr ""
+msgstr "Este parece um arquivo Pascal.%sE recomendado usar arquivos com nome em minusculos, para evitar varios problemas em alguns sistemas de arquivos e diferentes compiladores.%sRenomeá-lo para minusculas?"
 
 #: lazarusidestrconsts:lispkgsysthispackageisinstalledbutthelpkfilewasnotfound
 msgid "This package is installed, but the lpk file was not found. All its components are deactivated. Please fix this."
@@ -8951,7 +8951,7 @@ msgstr "Limite de Desfazer"
 
 #: lazarusidestrconsts:srkmecblockunindent
 msgid "Unindent block"
-msgstr ""
+msgstr "Retirar recuo de bloco"
 
 #: lazarusidestrconsts:lismenuunindentselection
 msgid "Unindent selection"
@@ -9419,7 +9419,7 @@ msgstr "Aviso ao compilar"
 
 #: lazarusidestrconsts:liscowarningtheadditionalcompilerconfigfilehasthesamena
 msgid "Warning: The additional compiler config file has the same name, as one of the standard config filenames the FreePascal compiler is looking for. This can result in ONLY parsing the additional config and skipping the standard config."
-msgstr ""
+msgstr "Aviso: O arquivo adicional de configuração do compilador tem o mesmo nome que um arquivo padrão de configuração do compilador Free Pascal. Isto pode resultar em SOMENTE analise do arquivo adicional de configuração ao inves da configuração padrão."
 
 #: lazarusidestrconsts:lispkgmangwarningthefilebelongstothecurrentproject
 msgid "Warning: The file %s%s%s%sbelongs to the current project."
@@ -9855,7 +9855,7 @@ msgstr "caminho das unidades"
 
 #: lazarusidestrconsts:srkmecunknown
 msgid "unknown editor command"
-msgstr ""
+msgstr "editor de comando desconhecido"
 
 #: lazarusidestrconsts:lisedtdefuseheaptrcunit
 msgid "use HeapTrc unit"
