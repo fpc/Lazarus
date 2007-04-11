@@ -1120,7 +1120,7 @@ begin
         lWinControl := GetWindowInfo(HWND(LParam))^.WinControl;
         // buddy controls use 'awincontrol' to designate associated wincontrol
         if lWinControl = nil then
-          lWinControl := GetWindowInfo(LParam)^.AWinControl;
+          lWinControl := GetWindowInfo(HWND(LParam))^.AWinControl;
         if lWinControl is TCustomButton then
           case HIWORD(WParam) of
             BN_CLICKED:   LMessage.Msg := LM_CLICKED;
