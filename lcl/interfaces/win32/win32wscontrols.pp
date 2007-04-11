@@ -472,14 +472,13 @@ begin
   TWin32WidgetSet(WidgetSet).ShowHide(AWinControl);
 end;
 
-
 { TWin32WSDragImageList }
 
 class function TWin32WSDragImageList.BeginDrag(
   const ADragImageList: TDragImageList; Window: HWND; AIndex, X, Y: Integer): Boolean;
 begin
-  if not WSCheckHandleAllocated(ADragImageList, 'BeginDrag') then
-    Exit;
+  // No check to Handle should be done, because if there is no handle (no needed)
+  // we must create it here. This is normal for imagelist (we can never need handle)
   Result := ImageList_BeginDrag(ADragImageList.Handle, AIndex, X, Y);
 end;
 
@@ -500,7 +499,7 @@ begin
   if DoUnLock then
     Result := ImageList_DragLeave(ALockedWindow)
   else
-    Result := ImageList_DragShowNolock(True);
+    Result := ImageList_DragShowNolock(False);
 end;
 
 class function TWin32WSDragImageList.ShowDragImage(const ADragImageList: TDragImageList;
@@ -509,7 +508,7 @@ begin
   if DoLock then
     Result := ImageList_DragEnter(ALockedWindow, X, Y)
   else
-    Result := ImageList_DragShowNolock(False);
+    Result := ImageList_DragShowNolock(True);
 end;
 
 initialization
@@ -520,7 +519,7 @@ initialization
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
-//  RegisterWSComponent(TDragImageList, TWin32WSDragImageList); // Uncomment with native image list
+  RegisterWSComponent(TDragImageList, TWin32WSDragImageList); // Uncomment with native image list
   RegisterWSComponent(TControl, TWin32WSControl);
   RegisterWSComponent(TWinControl, TWin32WSWinControl);
 //  RegisterWSComponent(TGraphicControl, TWin32WSGraphicControl);
