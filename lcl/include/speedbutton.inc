@@ -593,7 +593,10 @@ begin
     else begin
       // if pushed, move text 1 pixel right and down
       if (FLastDrawFlags and DFCS_PUSHED) <>0 then
-        OffsetRect(PaintRect, 1, 1);
+      begin
+        Inc(PaintRect.Left, 1);
+        Inc(PaintRect.Top, 1);
+      end;
     end;
     //DebugLn(['TCustomSpeedButton.Paint PaintRect=',PaintRect.Left,',',PaintRect.TOp,',',PaintRect.Right,',',PaintRect.Bottom,caption,', ', TXTStyle.SystemFont]);
     Canvas.TextRect(PaintRect, PaintRect.Left, PaintRect.Top, Caption, TXTStyle);
