@@ -147,7 +147,7 @@ type
     
     {$ifndef IMGLIST_OLDSTYLE}
     procedure InternalMove(ACurIndex, ANewIndex: Cardinal; AIgnoreCurrent: Boolean);
-    function InternalSetImage(AIndex: Integer; AImage: TRawImage): PRGBAQuad;
+    function InternalSetImage(AIndex: Integer; AImage: TRawImage; AFreeImage: Boolean): PRGBAQuad;
     {$endif}
 
     procedure NotifyChangeLink;
@@ -163,7 +163,7 @@ type
     {$endif}
   protected
     procedure CheckIndex(AIndex: Integer; AForInsert: Boolean = False);
-    procedure FillDescription(var ADesc: TRawImageDescription);
+    procedure FillDescription(out ADesc: TRawImageDescription);
     procedure GetImages(Index: Integer; const Image, Mask: TBitmap);
     procedure Initialize; virtual;
     procedure DefineProperties(Filer: TFiler); override;

@@ -129,6 +129,7 @@ type
     FWriteRawImageBits: TOnWriteRawImageBits;
     FAlphaReadRawImageBits: TOnReadRawImageBits;
     FAlphaWriteRawImageBits: TOnWriteRawImageBits;
+    FDataOwner: Boolean;
     function GetTColors(x, y: integer): TGraphicsColor;
     procedure SetAutoCreateMask(const AValue: boolean);
     procedure SetTColors(x, y: integer; const AValue: TGraphicsColor);
@@ -173,7 +174,7 @@ type
     procedure SetColor_BPP32_R8G8B8_A1_BIO_TTB_RBO(x, y: integer; const Value: TFPColor);
   public
     constructor Create(AWidth, AHeight: integer); override;
-    constructor Create(ARawImage: TRawImage);
+    constructor Create(ARawImage: TRawImage; ADataOwner: Boolean);
     destructor Destroy; override;
     procedure BeginUpdate;
     procedure EndUpdate;
@@ -188,7 +189,7 @@ type
     procedure LoadFromBitmap(Bitmap, MaskBitmap: HBitmap; AWidth: integer = -1; AHeight: integer = -1); virtual;
     procedure CreateBitmap(var Bitmap, MaskBitmap: HBitmap;
                            AlwaysCreateMask: boolean); virtual;
-    procedure SetRawImage(const RawImage: TRawImage); virtual;
+    procedure SetRawImage(const RawImage: TRawImage; ADataOwner: Boolean = True); virtual;
     procedure GetRawImage(out RawImage: TRawImage); virtual;
     procedure FillPixels(const Color: TFPColor); virtual;
     procedure CopyPixels(Src: TFPCustomImage); virtual;
@@ -404,7 +405,8 @@ function dbgs(const FPColor: TFPColor): string; overload;
 
 implementation
 
-uses Graphics;
+uses
+  Graphics;
 
 var
   IsSpaceChar, IsNumberChar, IsHexNumberChar: array[char] of Boolean;
@@ -1559,16 +1561,18 @@ end;
 
 procedure TLazIntfImage.FreePixelData;
 begin
-  ReallocMem(FPixelData,0);
-  FPixelDataSize:=0;
-  ReallocMem(FLineStarts,0);
+  if FDataOwner then
+    ReallocMem(FPixelData, 0);
+  FPixelDataSize := 0;
+  ReallocMem(FLineStarts, 0);
 end;
 
 procedure TLazIntfImage.FreeMaskData;
 begin
-  ReallocMem(FMaskData,0);
-  FMaskDataSize:=0;
-  ReallocMem(FMaskLineStarts,0);
+  if FDataOwner then
+    ReallocMem(FMaskData, 0);
+  FMaskDataSize := 0;
+  ReallocMem(FMaskLineStarts, 0);
 end;
 
 procedure TLazIntfImage.CreateAllData;
@@ -1630,17 +1634,19 @@ end;
 
 constructor TLazIntfImage.Create(AWidth, AHeight: integer);
 begin
+  FDataOwner := true;
   FAutoCreateMask:=true;
   OnGetInternalColor:=@GetColor_NULL;
   OnSetInternalColor:=@SetColor_NULL;
   inherited Create(AWidth, AHeight);
 end;
 
-constructor TLazIntfImage.Create(ARawImage: TRawImage);
+constructor TLazIntfImage.Create(ARawImage: TRawImage; ADataOwner: Boolean);
 begin
-  Create(FDataDescription.Width, FDataDescription.Height);
-
   FDataDescription := ARawImage.Description;
+  Create(FDataDescription.Width, FDataDescription.Height);
+  FDataOwner := ADataOwner;
+
   FPixelData := ARawImage.Data;
   FPixelDataSize := ARawImage.DataSize;
   FMaskData := ARawImage.Mask;
@@ -1786,7 +1792,7 @@ begin
     raise FPImageException.Create('Failed to create bitmaps');
 end;
 
-procedure TLazIntfImage.SetRawImage(const RawImage: TRawImage);
+procedure TLazIntfImage.SetRawImage(const RawImage: TRawImage; ADataOwner: Boolean);
 var
   OldRawImage: TRawImage;
 begin
@@ -1800,6 +1806,7 @@ begin
     FPixelDataSize:=RawImage.DataSize;
     FMaskData:=RawImage.Mask;
     FMaskDataSize:=RawImage.MaskSize;
+    FDataOwner := ADataOwner;
     SetSize(FDataDescription.Width,FDataDescription.Height);
     fCreateAllDataNeeded:=false;
     CreateRawImageLineStarts(Width,Height,FDataDescription.BitsPerPixel,
@@ -1979,12 +1986,13 @@ end;
 
 procedure TLazIntfImage.CopyPixels(Src: TFPCustomImage);
 var
-  y: Integer;
-  x: Integer;
+  x, y, xStop, yStop: Integer;
   SrcImg: TLazIntfImage;
 begin
+{
   if (Src.Width<>Width) or (Src.Height<>Height) then
     SetSize(Src.Width,Src.Height);
+}
   if Src is TLazIntfImage then begin
     SrcImg:=TLazIntfImage(Src);
     if CompareMem(@FDataDescription,@SrcImg.FDataDescription,
@@ -2000,8 +2008,16 @@ begin
   end;
     
   // copy pixels
-  for y:=0 to Height-1 do
-    for x:=0 to Width-1 do
+  xStop := SrcImg.FDataDescription.Width;
+  if Width < xStop
+  then xStop := Width;
+  yStop := SrcImg.FDataDescription.Height;
+  if Height < yStop
+  then yStop := Height;
+  Dec(xStop);
+  Dec(yStop);
+  for y:=0 to yStop do
+    for x:=0 to xStop do
       Colors[x,y]:=Src.Colors[x,y];
 end;
 

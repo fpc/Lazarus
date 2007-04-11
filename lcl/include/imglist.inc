@@ -579,7 +579,7 @@ end;
 
   Fills the description with the default info of the imagedata
  ------------------------------------------------------------------------------}
-procedure TCustomImageList.FillDescription(var ADesc: TRawImageDescription);
+procedure TCustomImageList.FillDescription(out ADesc: TRawImageDescription);
 begin
   ADesc.Format := ricfRGBA;
   ADesc.HasPalette := False;
@@ -592,11 +592,11 @@ begin
   ADesc.BitsPerPixel := 32;
   ADesc.LineEnd := rileDWordBoundary;
   ADesc.RedPrec := 8; // red precision. bits for red
-  ADesc.RedShift := 24;
+  ADesc.RedShift := 8;
   ADesc.GreenPrec := 8;
   ADesc.GreenShift := 16;
   ADesc.BluePrec := 8;
-  ADesc.BlueShift := 8;
+  ADesc.BlueShift := 24;
   ADesc.AlphaPrec := 8;
   ADesc.AlphaShift := 0;
   ADesc.AlphaSeparate := False;
@@ -628,7 +628,7 @@ begin
   RawImg.DataSize := FWidth * FHeight * SizeOF(FData[0]);
   RawImg.Data := @FData[Index * FWidth * FHeight];
 
-  IntfImg := TLazIntfImage.Create(RawImg);
+  IntfImg := TLazIntfImage.Create(RawImg, False);
   Image.LoadFromIntfImage(IntfImg);
   IntfImg.Free;
   {$endif}
@@ -807,11 +807,15 @@ begin
   then InternalMove(FCount - 1, AIndex, True);
   
   if AMask = nil
-  then msk := 0
+  then begin
+    if AImage.MaskHandleAllocated
+    then msk := AImage.MaskHandle
+    else msk := 0;
+  end
   else msk := AMask.Handle;
   R := Rect(0, 0, FWidth, FHeight);
   GetRawImageFromBitmap(AImage.Handle, msk, R, RawImg);
-  ImgData := InternalSetImage(AIndex, RawImg);
+  ImgData := InternalSetImage(AIndex, RawImg, True);
 
   if HandleAllocated
   then TWSCustomImageListClass(WidgetSetClass).Insert(Self, AIndex, ImgData);
@@ -913,24 +917,25 @@ end;
   Method:  TCustomImageList.InternalSetImage
   Params:  AIndex: the index of the location where the image should be set
            AImage: the new image
+           AFreeImage: if set, the rawimagedata is freed
   Returns: Pointer to the updated image data
 
   Copies the imagedata into the FData array
  ------------------------------------------------------------------------------}
 {$ifndef IMGLIST_OLDSTYLE}
-function TCustomImageList.InternalSetImage(AIndex: Integer; AImage: TRawImage): PRGBAQuad;
+function TCustomImageList.InternalSetImage(AIndex: Integer; AImage: TRawImage; AFreeImage: Boolean): PRGBAQuad;
 var
   RawImg: TRawImage;
   SrcImg, DstImg: TLazIntfImage;
 begin
-  SrcImg := TLazIntfImage.Create(AImage);
+  SrcImg := TLazIntfImage.Create(AImage, AFreeImage);
 
   FillChar(RawImg, SizeOf(RawImg), 0);
   FillDescription(RawImg.Description);
   Result := @FData[AIndex * FWidth * FHeight];
   RawImg.DataSize := FWidth * FHeight * SizeOF(FData[0]);
   RawImg.Data := PByte(Result);
-  DstImg := TLazIntfImage.Create(RawImg);
+  DstImg := TLazIntfImage.Create(RawImg, False);
   DstImg.CopyPixels(SrcImg);
 
   DstImg.Free;
@@ -1327,7 +1332,7 @@ begin
   else msk := AMask.Handle;
   R := Rect(0, 0, FWidth, FHeight);
   GetRawImageFromBitmap(AImage.Handle, AMask.Handle, R, RawImage);
-  ImgData := InternalSetImage(AIndex, RawImage);
+  ImgData := InternalSetImage(AIndex, RawImage, True);
   if HandleAllocated
   then TWSCustomImageListClass(WidgetSetClass).Replace(Self, AIndex, ImgData);
   {$endif}

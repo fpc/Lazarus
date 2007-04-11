@@ -1829,11 +1829,11 @@ type
 
   TImageList = class(TDragImageList)
   published
-    property BkColor: TColor;
+    property BkColor;
     Property Height;
     property Masked;
-    Property Width;
-    Property OnChange;
+    property Width;
+    property OnChange;
   end;
 
 
