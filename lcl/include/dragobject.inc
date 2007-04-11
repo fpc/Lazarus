@@ -28,6 +28,7 @@ begin
   FDragTargetPos := Source.FDragTargetPos;
   FMouseDeltaX := Source.FMouseDeltaX;
   FMouseDeltaY := Source.FMouseDeltaY;
+  FAlwaysShowDragImages := Source.FAlwaysShowDragImages;
 end;
 
 function TDragObject.Capture: HWND;

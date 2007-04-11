@@ -55,11 +55,13 @@ type
   { TWSDragImageList }
 
   TWSDragImageList = class(TWSCustomImageList)
-    class function BeginDrag(const ADragImageList: TDragImageList; Window: HWND; X, Y: Integer): Boolean; virtual;
+    class function BeginDrag(const ADragImageList: TDragImageList; Window: HWND; AIndex, X, Y: Integer): Boolean; virtual;
     class function DragMove(const ADragImageList: TDragImageList; X, Y: Integer): Boolean; virtual;
     class procedure EndDrag(const ADragImageList: TDragImageList); virtual;
-    class procedure HideDragImage(const ADragImageList: TDragImageList); virtual;
-    class procedure ShowDragImage(const ADragImageList: TDragImageList); virtual;
+    class function HideDragImage(const ADragImageList: TDragImageList;
+      ALockedWindow: HWND; DoUnLock: Boolean): Boolean; virtual;
+    class function ShowDragImage(const ADragImageList: TDragImageList;
+      ALockedWindow: HWND; X, Y: Integer; DoLock: Boolean): Boolean; virtual;
   end;
 
   TWSDragImageListClass = class of TWSDragImageList;
@@ -257,7 +259,7 @@ end;
 { TWSDragImageList }
 
 class function TWSDragImageList.BeginDrag(const ADragImageList: TDragImageList;
-  Window: HWND; X, Y: Integer): Boolean;
+  Window: HWND; AIndex, X, Y: Integer): Boolean;
 begin
   Result := False;
 end;
@@ -272,12 +274,16 @@ class procedure TWSDragImageList.EndDrag(const ADragImageList: TDragImageList);
 begin
 end;
 
-class procedure TWSDragImageList.HideDragImage(const ADragImageList: TDragImageList);
+class function TWSDragImageList.HideDragImage(const ADragImageList: TDragImageList;
+  ALockedWindow: HWND; DoUnLock: Boolean): Boolean;
 begin
+  Result := False;
 end;
 
-class procedure TWSDragImageList.ShowDragImage(const ADragImageList: TDragImageList);
+class function TWSDragImageList.ShowDragImage(const ADragImageList: TDragImageList;
+  ALockedWindow: HWND; X, Y: Integer; DoLock: Boolean): Boolean;
 begin
+  Result := False;
 end;
 
 initialization

@@ -281,12 +281,17 @@ Begin
     ADragCursor := DragObject.GetDragCursor(SendDragOver(dmDragMove), Position.X, Position.Y);
     if DragImages <> nil then
     begin
-      if (DragObject.DragTarget = nil) or (csDisplayDragImage in DragObject.DragTarget.ControlStyle) then
+      if (DragObject.DragTarget = nil) or (csDisplayDragImage in DragObject.DragTarget.ControlStyle) or
+         (DragObject.AlwaysShowDragImages) then
       begin
+        DragImages.DragLock(0, Position.X, Position.Y);
         DragImages.DragCursor := ADragCursor;
         DragImages.DragMove(Position.X, Position.Y);
       end else
-        DragImages.EndDrag;
+      begin
+        // we can hide drag image
+        DragImages.DragUnLock;
+      end;
     end;
     WidgetSet.SetCursor(Screen.Cursors[ADragCursor]);
     if DragObject = nil then Exit;

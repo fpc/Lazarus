@@ -45,6 +45,9 @@ type
   TWin32WSCustomImageList = class(TWSCustomImageList)
   private
   protected
+    class procedure InternalCreateBitmap(AList: TCustomImageList; AWidth, AHeight: Integer; AData: PRGBAQuad;
+      var hbmImage, hbmMask: HBitmap);
+    class procedure InternalDestroyBitmap(hbmImage, hbmMask: HBitmap);
   public
     class procedure Clear(AList: TCustomImageList); override;
     class function CreateHandle(AList: TCustomImageList; ACount, AGrow, AWidth,
@@ -72,6 +75,24 @@ const
 
 { TWin32WSCustomImageList }
 
+class procedure TWin32WSCustomImageList.InternalCreateBitmap(AList: TCustomImageList;
+  AWidth, AHeight: Integer; AData: PRGBAQuad; var hbmImage, hbmMask: HBitmap);
+begin
+  // this will work only with Comctl32.dll version 6 (XP manifest)
+  // in other case we need separate image and mask
+  hbmImage := CreateBitmap(AWidth, AHeight, 1, 32, AData);
+  hbmMask := 0;
+end;
+
+class procedure TWin32WSCustomImageList.InternalDestroyBitmap(hbmImage,
+  hbmMask: HBitmap);
+begin
+  if hbmImage <> 0 then
+    DeleteObject(hbmImage);
+  if hbmMask <> 0 then
+    DeleteObject(hbmMask);
+end;
+
 class procedure TWin32WSCustomImageList.Clear(AList: TCustomImageList);
 begin
   if not WSCheckHandleAllocated(AList, 'Clear')
@@ -83,7 +104,7 @@ class function TWin32WSCustomImageList.CreateHandle(AList: TCustomImageList;
   ACount, AGrow, AWidth, AHeight: Integer; AData: PRGBAQuad): TLCLIntfHandle;
 var
   FLags: DWord;
-  hbmImage: HBITMAP;
+  hbmImage, hbmMask: HBITMAP;
   i: integer;
 begin
   if (Win32Platform and VER_PLATFORM_WIN32_NT) <> 0 then
@@ -97,9 +118,10 @@ begin
     // this is very slow method :(
     for i := 0 to ACount - 1 do
     begin
-      hbmImage := CreateBitmap(AWidth, AHeight, 1, 32, @AData[AWidth * AHeight * i]);
-      ImageList_Add(Result, hbmImage, 0);
-      DeleteObject(hbmImage);
+      InternalCreateBitmap(AList, AWidth, AHeight, @AData[AWidth * AHeight * i],
+        hbmImage, hbmMask);
+      ImageList_Add(Result, hbmImage, hbmMask);
+      InternalDestroyBitmap(hbmMask, hbmImage);
     end;
   end;
 end;
@@ -126,7 +148,7 @@ begin
   then Exit;
 
   ImageList_DrawEx(HImageList(AList.Handle), AIndex, ACanvas.Handle, ABounds.Left,
-    ABounds.Top, ABounds.Right, ABounds.Bottom, CLR_DEFAULT, CLR_DEFAULT,
+    ABounds.Top, ABounds.Right, ABounds.Bottom, CLR_NONE, CLR_NONE,
     DrawingStyleMap[AStyle]);
 end;
 
@@ -135,7 +157,7 @@ class procedure TWin32WSCustomImageList.Insert(AList: TCustomImageList;
 var
   AImageList: HImageList;
   ACount: Integer;
-  hbmImage: HBITMAP;
+  hbmImage, hbmMask: HBITMAP;
 begin
   if not WSCheckHandleAllocated(AList, 'Insert')
   then Exit;
@@ -145,9 +167,9 @@ begin
   
   if (AIndex <= ACount) and (AIndex >= 0) then
   begin
-    hbmImage := CreateBitmap(AList.Width, AList.Height, 1, 32, AData);
-    ImageList_Add(AImageList, hbmImage, 0);
-    DeleteObject(hbmImage);
+    InternalCreateBitmap(AList, AList.Width, AList.Height, AData, hbmImage, hbmMask);
+    ImageList_Add(AImageList, hbmImage, hbmMask);
+    InternalDestroyBitmap(hbmImage, hbmMask);
     if AIndex <> ACount 
     then Move(AList, ACount, AIndex);
   end;
@@ -175,21 +197,19 @@ begin
     for n := ACurIndex downto ANewIndex - 1 do
       ImageList_Copy(Handle, n - 1, Handle, n, ILCF_SWAP);
   end;
-
-  
 end;
 
 class procedure TWin32WSCustomImageList.Replace(AList: TCustomImageList;
   AIndex: Integer; AData: PRGBAQuad);
 var
-  hbmImage: HBITMAP;
+  hbmImage, hbmMask: HBITMAP;
 begin
   if not WSCheckHandleAllocated(AList, 'Replace')
   then Exit;
 
-  hbmImage := CreateBitmap(AList.Width, AList.Height, 1, 32, AData);
-  ImageList_Replace(HImageList(AList.Handle), AIndex, hbmImage, 0);
-  DeleteObject(hbmImage);
+  InternalCreateBitmap(AList, AList.Width, AList.Height, AData, hbmImage, hbmMask);
+  ImageList_Replace(HImageList(AList.Handle), AIndex, hbmImage, hbmMask);
+  InternalDestroyBitmap(hbmImage, hbmMask);
 end;
 
 initialization

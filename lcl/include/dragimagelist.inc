@@ -18,6 +18,10 @@
  *****************************************************************************
 }
 
+const
+  // bad window handle. 0 is reserverd by DesktopWindow
+  NoLockedWindow: HWND = $FFFFFFFF;
+  
 { TDragImageList }
 
 {
@@ -29,7 +33,7 @@ begin
   if FDragCursor = AValue then exit;
   FDragCursor := AValue;
   if Dragging then
-    Screen.Cursor := FDragCursor;
+    WidgetSet.SetCursor(Screen.Cursors[DragCursor]);
 end;
 
 {
@@ -42,8 +46,10 @@ begin
   FDragging := False;
   FDragCursor := crNone;
   FDragHotspot := Point(0, 0);
+  FLastDragPos := Point(0, 0);
   FOldCursor := crNone;
-  FImageIndex := -1;
+  FLockedWindow := NoLockedWindow;
+  FImageIndex := 0;
 end;
 
 {
@@ -52,26 +58,40 @@ end;
 }
 function TDragImageList.BeginDrag(Window: HWND; X, Y: Integer): Boolean;
 begin
-  {$note implement}
-   Result := TWsDragImageListClass(WidgetSetClass).BeginDrag(Self, Window, X, Y);
+   Result := TWsDragImageListClass(WidgetSetClass).BeginDrag(Self, Window,
+     FImageIndex, FDragHotspot.X, FDragHotspot.Y);
    FDragging := Result;
    if Result then
    begin
+     DragLock(Window, X, Y);
      FOldCursor := Screen.Cursor;
-     Screen.Cursor := FDragCursor;
+     WidgetSet.SetCursor(Screen.Cursors[DragCursor])
    end;
 end;
 
 {
   TDragImageList.DragLock
+  Show drag image and locks updates of Window during drag operation
 }
 function TDragImageList.DragLock(Window: HWND; XPos, YPos: Integer): Boolean;
 begin
-  if Dragging then
+  Result := Dragging;
+  if not Result then
   begin
-    {$note implement}
-  end else
-    Result := False;
+    Result := BeginDrag(Window, XPos, YPos);
+    Exit;
+  end;
+
+  if Window <> FLockedWindow then
+  begin
+    if FLockedWindow <> NoLockedWindow then
+      DragUnlock;
+    FLockedWindow := Window;
+    Result := TWsDragImageListClass(WidgetSetClass).ShowDragImage(Self, Window,
+      XPos, YPos, True);
+    if Result then
+      FLastDragPos := Point(XPos, YPos);
+   end;
 end;
 
 {
@@ -80,22 +100,22 @@ end;
 }
 function TDragImageList.DragMove(X, Y: Integer): Boolean;
 begin
-  if not Dragging then
-    BeginDrag(0, X, Y);
-  Result := Dragging;
+  Result := Dragging and TWsDragImageListClass(WidgetSetClass).DragMove(Self, X, Y);
   if Result then
-    Result := TWsDragImageListClass(WidgetSetClass).DragMove(Self, X, Y);
-  {$note implement}
+    FLastDragPos := Point(X, Y);
 end;
 
 {
   TDragImageList.DragUnlock
+  Hide drag image and stop lock updates of Window during drag operation
 }
 procedure TDragImageList.DragUnlock;
 begin
   if Dragging then
   begin
-    {$note implement}
+    TWsDragImageListClass(WidgetSetClass).HideDragImage(Self, FLockedWindow, True);
+    FLockedWindow := NoLockedWindow;
+    FLastDragPos := Point(0, 0);
   end;
 end;
 
@@ -104,14 +124,15 @@ end;
 }
 function TDragImageList.EndDrag: Boolean;
 begin
-  if Dragging then
-  begin
-    FDragging := False;
-    FDragCursor := crNone;
-    TWsDragImageListClass(WidgetSetClass).EndDrag(Self);
-    {$note implement}
-  end else
-    Result := False;
+  Result := Dragging;
+  if not Result then
+    Exit;
+
+  DragUnlock;
+  TWsDragImageListClass(WidgetSetClass).EndDrag(Self);
+  FDragging := False;
+  FDragCursor := crNone;
+  WidgetSet.SetCursor(Screen.Cursors[FOldCursor])
 end;
 
 {
@@ -120,20 +141,17 @@ end;
 }
 function TDragImageList.GetHotSpot: TPoint;
 begin
-  Result := inherited GetHotSpot;
+  Result := FDragHotSpot;
 end;
 
 {
   TDragImageList.HideDragImage
-  Hide dragging image
+  Hide dragging image without unlocking of window
 }
 procedure TDragImageList.HideDragImage;
 begin
   if Dragging then
-  begin
-    TWsDragImageListClass(WidgetSetClass).HideDragImage(Self);
-    {$note implement}
-  end;
+    TWsDragImageListClass(WidgetSetClass).HideDragImage(Self, 0, False);
 end;
 
 {
@@ -141,10 +159,25 @@ end;
   Set index of dragging image and hotspot
 }
 function TDragImageList.SetDragImage(Index, HotSpotX, HotSpotY: Integer): Boolean;
+var
+  CurLockedWindow: HWND;
+  CurDragPos: TPoint;
 begin
-  FImageIndex := Index;
-  FDragHotSpot := Point(HotSpotX, HotSpotY);
-  {$note implement}
+  Result := True;
+  if (FImageIndex <> Index) or (FDragHotSpot.X <> HotSpotX) or
+     (FDragHotSpot.Y <> HotSpotY) then
+  begin
+    FImageIndex := Index;
+    FDragHotSpot := Point(HotSpotX, HotSpotY);
+    if Dragging then
+    begin
+      // restart dragging with new params
+      CurLockedWindow := FLockedWindow;
+      CurDragPos := FLastDragPos;
+      EndDrag;
+      BeginDrag(CurLockedWindow, CurDragPos.X, CurDragPos.Y);
+    end;
+  end;
 end;
 
 {
@@ -154,10 +187,7 @@ end;
 procedure TDragImageList.ShowDragImage;
 begin
   if Dragging then
-  begin
-    TWsDragImageListClass(WidgetSetClass).ShowDragImage(Self);
-    {$note implement}
-  end;
+    TWsDragImageListClass(WidgetSetClass).ShowDragImage(Self, 0, 0, 0, False);
 end;
 
 // included by controls.pp

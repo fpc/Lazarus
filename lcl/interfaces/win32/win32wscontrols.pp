@@ -41,13 +41,20 @@ uses
   InterfaceBase, LCLIntf, LCLType;
 
 type
-
   { TWin32WSDragImageList }
 
   TWin32WSDragImageList = class(TWSDragImageList)
   private
   protected
   public
+    class function BeginDrag(const ADragImageList: TDragImageList; Window: HWND;
+      AIndex, X, Y: Integer): Boolean; override;
+    class function DragMove(const ADragImageList: TDragImageList; X, Y: Integer): Boolean; override;
+    class procedure EndDrag(const ADragImageList: TDragImageList); override;
+    class function HideDragImage(const ADragImageList: TDragImageList;
+      ALockedWindow: HWND; DoUnLock: Boolean): Boolean; override;
+    class function ShowDragImage(const ADragImageList: TDragImageList;
+      ALockedWindow: HWND; X, Y: Integer; DoLock: Boolean): Boolean; override;
   end;
 
   { TWin32WSControl }
@@ -466,6 +473,44 @@ begin
 end;
 
 
+{ TWin32WSDragImageList }
+
+class function TWin32WSDragImageList.BeginDrag(
+  const ADragImageList: TDragImageList; Window: HWND; AIndex, X, Y: Integer): Boolean;
+begin
+  if not WSCheckHandleAllocated(ADragImageList, 'BeginDrag') then
+    Exit;
+  Result := ImageList_BeginDrag(ADragImageList.Handle, AIndex, X, Y);
+end;
+
+class function TWin32WSDragImageList.DragMove(const ADragImageList: TDragImageList;
+  X, Y: Integer): Boolean;
+begin
+  Result := ImageList_DragMove(X, Y);
+end;
+
+class procedure TWin32WSDragImageList.EndDrag(const ADragImageList: TDragImageList);
+begin
+  ImageList_EndDrag;
+end;
+
+class function TWin32WSDragImageList.HideDragImage(const ADragImageList: TDragImageList;
+  ALockedWindow: HWND; DoUnLock: Boolean): Boolean;
+begin
+  if DoUnLock then
+    Result := ImageList_DragLeave(ALockedWindow)
+  else
+    Result := ImageList_DragShowNolock(True);
+end;
+
+class function TWin32WSDragImageList.ShowDragImage(const ADragImageList: TDragImageList;
+  ALockedWindow: HWND; X, Y: Integer; DoLock: Boolean): Boolean;
+begin
+  if DoLock then
+    Result := ImageList_DragEnter(ALockedWindow, X, Y)
+  else
+    Result := ImageList_DragShowNolock(False);
+end;
 
 initialization
 
@@ -475,7 +520,7 @@ initialization
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
-//  RegisterWSComponent(TDragImageList, TWin32WSDragImageList);
+//  RegisterWSComponent(TDragImageList, TWin32WSDragImageList); // Uncomment with native image list
   RegisterWSComponent(TControl, TWin32WSControl);
   RegisterWSComponent(TWinControl, TWin32WSWinControl);
 //  RegisterWSComponent(TGraphicControl, TWin32WSGraphicControl);

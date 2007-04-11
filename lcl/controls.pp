@@ -278,6 +278,8 @@ type
     FDragHotspot: TPoint;
     FOldCursor: TCursor;
     FImageIndex: Integer;
+    FLastDragPos: TPoint;
+    FLockedWindow: HWND;
     procedure SetDragCursor(const AValue: TCursor);
   protected
     procedure Initialize; override;
@@ -351,6 +353,7 @@ type
 
   TDragObject = class(TObject)
   private
+    FAlwaysShowDragImages: Boolean;
     FDragTarget: TControl;
     FDragHandle: HWND;
     FDragPos: TPoint;
@@ -377,6 +380,7 @@ type
     procedure HideDragImage; virtual;
     function Instance: THandle; virtual;
     procedure ShowDragImage; virtual;
+    property AlwaysShowDragImages: Boolean read FAlwaysShowDragImages write FAlwaysShowDragImages;
     property Cancelling: Boolean read FCancelling write FCancelling;
     property DragHandle: HWND read FDragHandle write FDragHandle;
     property DragPos: TPoint read FDragPos write FDragPos;
