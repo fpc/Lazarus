@@ -37,7 +37,7 @@ uses
   // widgetset
   WSButtons, WSLCLClasses, WSProc,
   // LCL Carbon
-  CarbonDef, CarbonProc, CarbonPrivate, CarbonGDIObjects, CarbonWSControls;
+  CarbonDef, CarbonPrivate, CarbonGDIObjects, CarbonWSControls;
 
 type
 
@@ -72,6 +72,9 @@ type
 
 
 implementation
+
+uses
+  CarbonProc;
 
 { TCarbonWSButton }
 

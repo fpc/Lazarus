@@ -217,6 +217,21 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method:  TCarbonControl.AddToWidget
+  Params:  AParent - Parent widget
+
+  Adds control to parent widget
+ ------------------------------------------------------------------------------}
+procedure TCarbonControl.AddToWidget(AParent: TCarbonWidget);
+begin
+  // add frame to parent content area
+  OSError(HIViewAddSubview(AParent.Content, Frame), Self, 'AddToWidget',
+    SViewAddView);
+    
+  DebugLn('TCarbonControl.AddToWidget ' + LCLObject.Name + ' ' + DbgS(LCLObject.Parent.ClientRect));
+end;
+
+{------------------------------------------------------------------------------
   Method:  TCarbonControl.RegisterEvents
 
   Registers event handlers for control
@@ -721,6 +736,7 @@ var
   R: OSStatus;
 begin
   Result := False;
+  //DebugLn('TCarbonControl.GetClientRect ' + LCLObject.Name);
 
   ClientRegion := FPCMacOSAll.NewRgn();
   try

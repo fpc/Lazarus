@@ -981,7 +981,7 @@ begin
     CreateNewWindow(NewWindowClass,
       Attributes or kWindowCompositingAttribute or
       kWindowStandardHandlerAttribute or kWindowLiveResizeAttribute or
-      kWindowInWindowMenuAttribute, ParamsToCarbonRect(AParams), Window),
+      kWindowInWindowMenuAttribute, GetCarbonRect(0, 0, 0, 0), Window),
     Self, SCreateWidget, 'CreateNewWindow') then RaiseCreateWidgetError(LCLObject);
 
   Widget := Window;
@@ -993,6 +993,7 @@ begin
     SetControlProperty(Content, LAZARUS_FOURCC, WIDGETINFO_FOURCC, SizeOf(Self), @Self),
     Self, SCreateWidget, SSetControlProp);
 
+  SetBounds(Bounds(AParams.X, AParams.Y, AParams.Width, AParams.Height));
   SetText(AParams.Caption);
   DebugLn('TCarbonWindow.CreateWidget succeeds');
   SetColor(LCLObject.Color);
@@ -1028,6 +1029,17 @@ begin
   if OSError(
     HIViewFindByID(HIViewGetRoot(WindowRef(Widget)), kHIViewWindowContentID,
       Result), Self, 'GetContent', 'HIViewGetRoot') then Result := nil;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWindow.AddToWidget
+  Params:  AParent - Parent widget
+
+  Adds window to parent widget
+ ------------------------------------------------------------------------------}
+procedure TCarbonWindow.AddToWidget(AParent: TCarbonWidget);
+begin
+  DebugLn('TCarbonWindow.AddToWidget failed: Embedding windows is not supported');
 end;
 
 {------------------------------------------------------------------------------
@@ -1203,10 +1215,23 @@ end;
   Sets the window content bounding rectangle relative to the window frame origin
  ------------------------------------------------------------------------------}
 function TCarbonWindow.SetBounds(const ARect: TRect): Boolean;
+const
+  SName = 'SetBounds';
 begin
   Result := False;
-  if OSError(FPCMacOSAll.SetWindowBounds(WindowRef(Widget), kWindowContentRgn,
-    GetCarbonRect(ARect)), Self, 'SetBounds', 'SetWindowBounds') then Exit;
+  
+  BeginUpdate(WindowRef(Widget));
+  try
+    // set window width, height
+    if OSError(FPCMacOSAll.SetWindowBounds(WindowRef(Widget), kWindowContentRgn,
+      GetCarbonRect(ARect)), Self, SName, 'SetWindowBounds') then Exit;
+    // set window left, top
+    if OSError(MoveWindowStructure(WindowRef(Widget), ARect.Left, ARect.Top),
+      Self, SName, 'MoveWindowStructure') then Exit;
+  finally
+    EndUpdate(WindowRef(Widget));
+  end;
+  
   Result := True;
 end;
 

@@ -37,7 +37,7 @@ uses
   // widgetset
   WSControls, WSLCLClasses, WSProc,
   // LCL Carbon
-  CarbonDef, CarbonProc, CarbonPrivate;
+  CarbonDef, CarbonPrivate;
 
 type
 
@@ -108,6 +108,9 @@ type
 
 
 implementation
+
+uses
+  CarbonProc;
 
 { TCarbonWSWinControl }
 
@@ -302,9 +305,7 @@ begin
   if not CheckHandle(AControl as TWinControl, Self, 'AddControl') then Exit;
   if not CheckHandle(AControl.Parent, Self, 'AddControl Parent') then Exit;
   
-  // add frame control to content area
-  HIViewAddSubview(TCarbonWidget(AControl.Parent.Handle).Content,
-    TCarbonControl((AControl as TWinControl).Handle).Frame);
+  TCarbonWidget((AControl as TWinControl).Handle).AddToWidget(TCarbonWidget(AControl.Parent.Handle));
 end;
 
 {------------------------------------------------------------------------------

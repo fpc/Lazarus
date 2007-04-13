@@ -37,7 +37,7 @@ uses
   // widgetset
   WSLCLClasses, WSProc, WSDialogs,
   // LCL Carbon
-  CarbonDef, CarbonProc, CarbonPrivate;
+  CarbonDef, CarbonPrivate;
   
 type
 
@@ -109,6 +109,9 @@ type
 
 
 implementation
+
+uses
+  CarbonProc;
 
 { TCarbonWSFileDialog }
 

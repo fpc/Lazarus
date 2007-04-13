@@ -220,7 +220,7 @@ var
 implementation
 
 uses
-  CarbonProc, CarbonCanvas;
+  CarbonProc, CarbonCanvas, CarbonConsts;
 
 type
   THardwareCursorsAvailability =
@@ -243,6 +243,10 @@ const
 var
   MHardwareCursorsSupported: THardwareCursorsAvailability = hcaUndef;
 
+{------------------------------------------------------------------------------
+  Name: AnimationCursorHandler
+  Handles cursor animation steps
+ ------------------------------------------------------------------------------}
 function AnimationCursorHandler(parameter: UnivPtr): OSStatus;
   {$IFDEF darwin}mwpascal;{$ENDIF}
 begin
@@ -257,11 +261,23 @@ end;
 
 { TCarbonFont }
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonFont.Create
+
+  Creates default Carbon font
+ ------------------------------------------------------------------------------}
 constructor TCarbonFont.Create;
 begin
   FStyle := DefaultTextStyle;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonFont.Create
+  Params:  ALogFont  - Font characteristics
+           AFaceName - Name of the font
+
+  Creates Carbon font with the specified name and characteristics
+ ------------------------------------------------------------------------------}
 constructor TCarbonFont.Create(ALogFont: TLogFont; AFaceName: String);
 var
   Attr: ATSUAttributeTag;
@@ -270,8 +286,10 @@ var
   S: ByteCount;
   A: ATSUAttributeValuePtr;
   ID: ATSUFontID;
+const
+  SSetAttrs = 'ATSUSetAttributes';
 begin
-  ATSUCreateStyle(FStyle);
+  OSError(ATSUCreateStyle(FStyle), Self, SCreate, SCreateStyle);
 
   ID := FindCarbonFontID(AFaceName);
 
@@ -280,7 +298,8 @@ begin
     Attr := kATSUFontTag;
     A := @ID;
     S := SizeOf(ID);
-    ATSUSetAttributes(FStyle, 1, @Attr, @S, @A);
+    OSError(ATSUSetAttributes(FStyle, 1, @Attr, @S, @A), Self, SCreate,
+      SSetAttrs, 'kATSUFontTag');
   end;
 
   if ALogFont.lfHeight <> 0 then
@@ -289,7 +308,8 @@ begin
     M := Abs(ALogFont.lfHeight) shl 16;
     A := @M;
     S := SizeOf(M);
-    ATSUSetAttributes(FStyle, 1, @Attr, @S, @A);
+    OSError(ATSUSetAttributes(FStyle, 1, @Attr, @S, @A), Self, SCreate,
+      SSetAttrs, 'kATSUSizeTag');
   end;
 
   if ALogFont.lfEscapement <> 0 then
@@ -298,7 +318,8 @@ begin
     M := (ALogFont.lfEscapement shl 16) div 10;
     A := @M;
     S := SizeOf(M);
-    ATSUSetAttributes(FStyle, 1, @Attr, @S, @A);
+    OSError(ATSUSetAttributes(FStyle, 1, @Attr, @S, @A), Self, SCreate,
+      SSetAttrs, 'kATSULineRotationTag');
   end;
 
   if ALogFont.lfWeight > FW_NORMAL then
@@ -307,7 +328,8 @@ begin
     B := True;
     A := @B;
     S := SizeOf(B);
-    ATSUSetAttributes(FStyle, 1, @Attr, @S, @A);
+    OSError(ATSUSetAttributes(FStyle, 1, @Attr, @S, @A), Self, SCreate,
+      SSetAttrs, 'kATSUQDBoldfaceTag');
   end;
 
   if ALogFont.lfItalic > 0 then
@@ -316,7 +338,8 @@ begin
     B := True;
     A := @B;
     S := SizeOf(B);
-    ATSUSetAttributes(FStyle, 1, @Attr, @S, @A);
+    OSError(ATSUSetAttributes(FStyle, 1, @Attr, @S, @A), Self, SCreate, SSetAttrs,
+      'kATSUQDItalicTag');
   end;
 
   if ALogFont.lfUnderline > 0 then
@@ -325,7 +348,8 @@ begin
     B := True;
     A := @B;
     S := SizeOf(B);
-    ATSUSetAttributes(FStyle, 1, @Attr, @S, @A);
+    OSError(ATSUSetAttributes(FStyle, 1, @Attr, @S, @A), Self, SCreate,
+      SSetAttrs, 'kATSUQDUnderlineTag');
   end;
 
   if ALogFont.lfStrikeOut > 0 then
@@ -334,30 +358,56 @@ begin
     B := True;
     A := @B;
     S := SizeOf(B);
-    ATSUSetAttributes(FStyle, 1, @Attr, @S, @A);
+    OSError(ATSUSetAttributes(FStyle, 1, @Attr, @S, @A), Self, SCreate,
+      SSetAttrs, 'kATSUStyleStrikeThroughTag');
   end;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonFont.Destroy
+
+  Frees Carbon font
+ ------------------------------------------------------------------------------}
 destructor TCarbonFont.Destroy;
 begin
-  if FStyle <> DefaultTextStyle then ATSUDisposeStyle(FStyle);
+  if FStyle <> DefaultTextStyle then
+    OSError(ATSUDisposeStyle(FStyle), Self, SDestroy, SCreateStyle);
 
   inherited;
 end;
 
 { TCarbonColorObject }
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonColorObject.Destroy
+
+  Creates Carbon color object
+ ------------------------------------------------------------------------------}
 constructor TCarbonColorObject.Create(const AColor: TColor; ASolid: Boolean);
 begin
   SetColor(AColor, ASolid);
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonColorObject.SetColor
+  Params:  AColor - Color
+           ASolid - Opacity
+
+  Sets the color and opacity
+ ------------------------------------------------------------------------------}
 procedure TCarbonColorObject.SetColor(const AColor: TColor; ASolid: Boolean);
 begin
   RedGreenBlue(ColorToRGB(AColor), FR, FG, FB);
   FA := ASolid;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonColorObject.GetRGBA
+  Params:  AROP2 - Binary raster operation
+           AR, AG, AB, AA - Red, green, blue, alpha component of color
+
+  Gets the individual color components according to the binary raster operation
+ ------------------------------------------------------------------------------}
 procedure TCarbonColorObject.GetRGBA(AROP2: Integer; out AR, AG, AB, AA: Single);
 begin
   case AROP2 of
@@ -408,11 +458,22 @@ end;
 
 { TCarbonBrush }
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonBrush.Create
+
+  Creates default Carbon brush
+ ------------------------------------------------------------------------------}
 constructor TCarbonBrush.Create;
 begin
   inherited Create(clWhite, True);
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonBrush.Create
+  Params:  ALogBrush - Brush characteristics
+
+  Creates Carbon brush with the specified characteristics
+ ------------------------------------------------------------------------------}
 constructor TCarbonBrush.Create(ALogBrush: TLogBrush);
 begin
   case ALogBrush.lbStyle of
@@ -427,6 +488,13 @@ begin
   end;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonBrush.Apply
+  Params:  ADC     - Context to apply to
+           UseROP2 - Consider binary raster operation?
+
+  Applies brush to the specified context
+ ------------------------------------------------------------------------------}
 procedure TCarbonBrush.Apply(ADC: TCarbonContext; UseROP2: Boolean);
 var
   AR, AG, AB, AA: Single;
@@ -449,6 +517,11 @@ end;
 
 { TCarbonPen }
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonPen.Create
+
+  Creates default Carbon pen
+ ------------------------------------------------------------------------------}
 constructor TCarbonPen.Create;
 begin
   inherited Create(clBlack, True);
@@ -456,6 +529,12 @@ begin
   FWidth := 1;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonPen.Create
+  Params:  ALogPen - Pen characteristics
+
+  Creates Carbon pen with the specified characteristics
+ ------------------------------------------------------------------------------}
 constructor TCarbonPen.Create(ALogPen: TLogPen);
 begin
   case ALogPen.lopnStyle of
@@ -475,6 +554,13 @@ begin
   FStyle := ALogPen.lopnStyle;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonPen.Apply
+  Params:  ADC     - Context to apply to
+           UseROP2 - Consider binary raster operation?
+
+  Applies pen to the specified context
+ ------------------------------------------------------------------------------}
 procedure TCarbonPen.Apply(ADC: TCarbonContext; UseROP2: Boolean);
 var
   AR, AG, AB, AA: Single;
@@ -511,11 +597,19 @@ end;
 
 { TCarbonBitmap }
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonBitmap.GetBitsPerComponent
+  Returns: Bitmap bits per component
+ ------------------------------------------------------------------------------}
 function TCarbonBitmap.GetBitsPerComponent: Integer;
 begin
   Result := CGImageGetBitsPerComponent(FCGImage);
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonBitmap.GetARGBData
+  Returns: Pointer to bitmap bits with swapped alpha component
+ ------------------------------------------------------------------------------}
 function TCarbonBitmap.GetARGBData: Pointer;
 var
   i, j: integer;
@@ -548,6 +642,14 @@ begin
   Result := FARGBData;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonBitmap.Create
+  Params:  AWidth        - Bitmap width
+           AHeight       - Bitmap height
+           ABitsPerPixel - Bits per pixel (IGNORED)
+  
+  Creates Carbon bitmap with the specified characteristics
+ ------------------------------------------------------------------------------}
 constructor TCarbonBitmap.Create(AWidth, AHeight, ABitsPerPixel: Integer;
   AData: Pointer);
 begin
@@ -576,6 +678,11 @@ begin
   Update;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonBitmap.Destroy
+
+  Frees Carbon bitmap
+ ------------------------------------------------------------------------------}
 destructor TCarbonBitmap.Destroy;
 begin
   CGImageRelease(FCGImage);
@@ -585,6 +692,11 @@ begin
   inherited Destroy;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonBitmap.Update
+
+  Updates Carbon bitmap
+ ------------------------------------------------------------------------------}
 procedure TCarbonBitmap.Update;
 var
   CGDataProvider: CGDataProviderRef;
@@ -604,6 +716,11 @@ end;
 
 { TCarbonCursor }
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonCursor.Create
+
+  Creates Carbon cursor
+ ------------------------------------------------------------------------------}
 constructor TCarbonCursor.Create;
 begin
   FCursorType := cctUnknown;
@@ -613,22 +730,39 @@ begin
   FPixmapHandle := nil;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonCursor.CreateThread
+
+  Creates cursor animation thread
+ ------------------------------------------------------------------------------}
 procedure TCarbonCursor.CreateThread;
 begin
   FTaskID := nil;
-  MPCreateTask(@AnimationCursorHandler, Self, 0, nil, nil, nil, 0, @FTaskID);
+  OSError(MPCreateTask(@AnimationCursorHandler, Self, 0, nil, nil, nil, 0, @FTaskID),
+    Self, 'CreateThread', 'MPCreateTask');
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonCursor.DestroyThread
+
+  Destroys cursor animation thread
+ ------------------------------------------------------------------------------}
 procedure TCarbonCursor.DestroyThread;
 begin
-  MPTerminateTask(FTaskID, noErr);
+  OSError(MPTerminateTask(FTaskID, noErr), Self, 'DestroyThread', 'MPTerminateTask');
   FTaskID := nil;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonCursor.CreateHardwareCursor
+  Params:  ABitmap  - Cursor image
+           AHotSpot - Hot spot position
+
+  Creates new hardware cursor
+ ------------------------------------------------------------------------------}
 procedure TCarbonCursor.CreateHardwareCursor(ABitmap: TCarbonBitmap; AHotSpot: Point);
 var
   B: Rect;
-  Status: OSStatus;
 begin
   FCursorType := cctQDHardware;
 
@@ -654,13 +788,18 @@ begin
   FPixmapHandle^^.baseAddr := Ptr(ABitmap.ARGBData);
 
   FQDHardwareCursorName := Application.Title + LazarusCursorInfix + IntToStr(Integer(Self));
-  Status := QDRegisterNamedPixMapCursor(FPixmapHandle, nil, AHotSpot, PChar(FQDHardwareCursorName));
-  if Status <> noErr then
-  begin
-    DebugLn('[TCarbonCursor.CreateFromInfo] - Hardware cursor error: ', IntToStr(Status));
-  end;
+  OSError(
+    QDRegisterNamedPixMapCursor(FPixmapHandle, nil, AHotSpot, PChar(FQDHardwareCursorName)),
+    Self, 'CreateHardwareCursor', 'QDRegisterNamedPixMapCursor');
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonCursor.CreateColorCursor
+  Params:  ABitmap  - Cursor image
+           AHotSpot - Hot spot position
+
+  Creates new color cursor
+ ------------------------------------------------------------------------------}
 procedure TCarbonCursor.CreateColorCursor(ABitmap: TCarbonBitmap; AHotSpot: Point);
 var
   Bounds: Rect;
@@ -739,6 +878,12 @@ begin
   end;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonCursor.CreateFromInfo
+  Params:  AInfo - Cusrsor info
+
+  Creates new cursor from the specified info
+ ------------------------------------------------------------------------------}
 constructor TCarbonCursor.CreateFromInfo(AInfo: PIconInfo);
 var
   AHotspot: Point;
@@ -746,7 +891,7 @@ begin
   Create;
 
   if (AInfo^.hbmColor = 0) or not (TObject(AInfo^.hbmColor) is TCarbonBitmap) then
-    exit;
+    Exit;
 
   AHotspot.h := AInfo^.xHotspot;
   AHotspot.v := AInfo^.yHotspot;
@@ -756,6 +901,12 @@ begin
     CreateColorCursor(TCarbonBitmap(AInfo^.hbmColor), AHotSpot);
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonCursor.CreateThemed
+  Params:  AThemeCursor - Theme cursor kind
+
+  Creates new theme cursor
+ ------------------------------------------------------------------------------}
 constructor TCarbonCursor.CreateThemed(AThemeCursor: ThemeCursor);
 const
   kThemeCursorTypeMap: array[kThemeArrowCursor..22] of TCarbonCursorType =
@@ -793,24 +944,40 @@ begin
     FCursorType := cctTheme;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonCursor.Destroy
+
+  Frees Carbon cursor
+ ------------------------------------------------------------------------------}
 destructor TCarbonCursor.Destroy;
 begin
   UnInstall;
+  
   case CursorType of
     cctQDHardware:
       if FQDHardwareCursorName <> '' then
       begin
-        QDUnregisterNamedPixmapCursor(PChar(FQDHardwareCursorName));
+        OSError(QDUnregisterNamedPixmapCursor(PChar(FQDHardwareCursorName)),
+          Self, SDestroy, 'QDUnregisterNamedPixmapCursor');
+        
         FPixmapHandle^^.baseAddr := nil;
         DisposePixMap(FPixmapHandle);
       end;
     cctQDColor:
       DisposeCCursor(FQDColorCursorHandle);  // suppose pixmap will be disposed too
   end;
+  
   inherited Destroy;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonCursor.Install
+
+  Installs Carbon cursor
+ ------------------------------------------------------------------------------}
 procedure TCarbonCursor.Install;
+const
+  SName = 'Install';
 begin
   {$IFDEF VerboseCursor}
     DebugLn('TCarbonCursor.Install type: ', DbgS(Ord(CursorType)));
@@ -819,11 +986,13 @@ begin
   case CursorType of
     cctQDHardware:
       if FQDHardwareCursorName <> '' then
-        QDSetNamedPixmapCursor(PChar(FQDHardwareCursorName));
+        OSError(QDSetNamedPixmapCursor(PChar(FQDHardwareCursorName)),
+          Self, SName, 'QDSetNamedPixmapCursor');
     cctQDColor:
-     SetCCursor(FQDColorCursorHandle);
+      SetCCursor(FQDColorCursorHandle);
     cctTheme:
-      SetThemeCursor(FThemeCursor);
+      OSError(SetThemeCursor(FThemeCursor),
+        Self, SName, 'SetThemeCursor');
     cctAnimated:
       begin
         FAnimationStep := 0;
@@ -836,6 +1005,11 @@ begin
   end;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonCursor.UnInstall
+
+  Uninstalls Carbon cursor
+ ------------------------------------------------------------------------------}
 procedure TCarbonCursor.UnInstall;
 begin
   case CursorType of
@@ -844,6 +1018,12 @@ begin
   end;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonCursor.StepAnimation
+  Returns: If the function succeeds
+
+  Steps Carbon cursor animation
+ ------------------------------------------------------------------------------}
 function TCarbonCursor.StepAnimation: Boolean;
 begin
   Result := SetAnimatedThemeCursor(FThemeCursor, FAnimationStep) <> themeBadCursorIndexErr;
@@ -857,6 +1037,10 @@ begin
   end;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonCursor.HardwareCursorsSupported
+  Returns: If hardware cursors are supported
+ ------------------------------------------------------------------------------}
 class function TCarbonCursor.HardwareCursorsSupported: Boolean;
 var
   P: Point;
@@ -887,7 +1071,7 @@ initialization
 
   InitCursor;
 
-  ATSUCreateStyle(DefaultTextStyle);
+  OSError(ATSUCreateStyle(DefaultTextStyle), 'initialization', SCreateStyle);
   RGBColorSpace := CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
 
   StockSystemFont := TCarbonFont.Create;
@@ -911,7 +1095,7 @@ finalization
   StockNullBrush.Free;
   StockSystemFont.Free;
 
-  ATSUDisposeStyle(DefaultTextStyle);
+  OSError(ATSUDisposeStyle(DefaultTextStyle), 'finalization', SDisposeStyle);
   CGColorSpaceRelease(RGBColorSpace);
   
   DefaultBitmap.Free;

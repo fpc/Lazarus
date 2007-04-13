@@ -30,13 +30,14 @@
 {off $DEFINE VerboseCursor}    // Carbon cursor
 {off $DEFINE VerboseKeyboard}
 {off $DEFINE VerbosePaint}
+{off $DEFINE VerboseCanvas}
 {$DEFINE VerboseMenu}      // Carbon menu
 
 {off $DEFINE VerboseWidget}    // Carbon widget
-{$DEFINE VerboseAppEvent}  // Carbon application event handlers
-{$DEFINE VerboseControlEvent} // Carbon control event handlers
-{$DEFINE VerboseWindowEvent}  // Carbon window event handlers
-{$DEFINE VerboseCommonEvent}  // Carbon common event handlers
+{off $DEFINE VerboseAppEvent}  // Carbon application event handlers
+{$DEFINE VerboseControlEvent}  // Carbon control event handlers
+{$DEFINE VerboseWindowEvent}   // Carbon window event handlers
+{$DEFINE VerboseCommonEvent}   // Carbon common event handlers
 
 {off $DEFINE VerboseWSClass}   // Carbon WS class
 

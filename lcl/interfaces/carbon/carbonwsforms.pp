@@ -37,7 +37,7 @@ uses
   // Widgetset
   WSForms, WSLCLClasses, WSProc,
   // LCL Carbon
-  CarbonDef, CarbonProc, CarbonPrivate, CarbonWSControls;
+  CarbonDef, CarbonPrivate, CarbonWSControls;
 
 type
 
@@ -123,6 +123,9 @@ type
 
 
 implementation
+
+uses
+  CarbonProc;
 
 { TCarbonWSCustomForm }
 

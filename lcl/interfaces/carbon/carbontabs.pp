@@ -33,7 +33,7 @@ uses
  // widgetset
   WSControls, WSLCLClasses, WSProc,
  // LCL Carbon
-  CarbonUtils, CarbonDef, CarbonPrivate,
+  CarbonDef, CarbonPrivate,
  // LCL
   LMessages, LCLMessageGlue, LCLProc, LCLType, Graphics, Controls, ExtCtrls;
   
@@ -58,18 +58,20 @@ type
 
   TCarbonTabsControl = class(TCarbonControl)
   private
+    FUserPane: ControlRef;
     FTabPositon: TTabPosition;
     FTabs: TObjectList; // of TCarbonTab
   protected
     procedure CreateWidget(const AParams: TCreateParams); override;
     procedure DestroyWidget; override;
+    function GetContent: ControlRef; override;
     
+    procedure ShowTab;
     procedure UpdateTabs(AIndex: Integer; TilEnd: Boolean = False);
     procedure SetTabCaption(AIndex: Integer; const S: String);
   public
     class function GetValidEvents: TCarbonControlEvents; override;
     procedure ValueChanged; override;
-    procedure Hit(AControlPart: ControlPartCode); override;
   public
     function GetClientRect(var ARect: TRect): Boolean; override;
     procedure Add(ATab: TCarbonTab; AIndex: Integer);
@@ -82,7 +84,7 @@ type
 
 implementation
 
-uses CarbonProc;
+uses CarbonProc, CarbonConsts, CarbonUtils;
 
 { TCarbonTab }
 
@@ -132,6 +134,7 @@ var
   Control: ControlRef;
   Direction: ControlTabDirection;
   TabEntry: ControlTabEntry;
+  R: TRect;
 begin
   case (LCLObject as TCustomNotebook).TabPosition of
   tpTop:    Direction := kControlTabDirectionNorth;
@@ -140,14 +143,28 @@ begin
   tpRight:  Direction := kControlTabDirectionEast;
   end;
 
-  if CreateTabsControl(GetTopParentWindow, ParamsToCarbonRect(AParams),
-    kControlTabSizeLarge, Direction, 0, TabEntry, Control) = noErr then
+  if OSError(
+    CreateTabsControl(GetTopParentWindow, ParamsToCarbonRect(AParams),
+      kControlTabSizeLarge, Direction, 0, TabEntry, Control),
+    Self, SCreateWidget, 'CreateTabsControl') then RaiseCreateWidgetError(LCLObject);
+    
+  Widget := Control;
+  
+  if not GetClientRect(R) then
   begin
-    Widget := Control;
+    DebugLn('TCarbonTabsControl.CreateWidget Error - no content region!');
+    Exit;
+  end;
 
-    inherited;
-  end
-  else RaiseCreateWidgetError(LCLObject);
+  if OSError(
+    CreateUserPaneControl(GetTopParentWindow, GetCarbonRect(R),
+      kControlSupportsEmbedding or kControlHandlesTracking, FUserPane),
+    Self, SCreateWidget, 'CreateUserPaneControl') then Exit;
+
+  if OSError(HIViewAddSubview(Control, FUserPane), Self, SCreateWidget,
+    SViewAddView) then Exit;
+
+  inherited;
 
   FTabPositon := (LCLObject as TCustomNotebook).TabPosition;
   
@@ -157,8 +174,30 @@ end;
 procedure TCarbonTabsControl.DestroyWidget;
 begin
   FTabs.Free;
+  
+  DisposeControl(FUserPane);
 
   inherited DestroyWidget;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonTabsControl.GetContent
+  Returns: Content area control
+ ------------------------------------------------------------------------------}
+function TCarbonTabsControl.GetContent: ControlRef;
+begin
+  Result := FUserPane;
+end;
+
+procedure TCarbonTabsControl.ShowTab;
+var
+  I, VIndex: Integer;
+begin
+  VIndex := GetControl32BitValue(ControlRef(Widget)) - 1;
+
+  // show tab with VIndex, hide the others
+  for I := 0 to FTabs.Count - 1 do
+    TCarbonTab(FTabs[I]).ShowHide(I = VIndex);
 end;
 
 procedure TCarbonTabsControl.UpdateTabs(AIndex: Integer; TilEnd: Boolean);
@@ -205,7 +244,7 @@ end;
 
 class function TCarbonTabsControl.GetValidEvents: TCarbonControlEvents;
 begin
-  Result := [cceHit];
+  Result := [cceValueChanged];
 end;
 
 procedure TCarbonTabsControl.ValueChanged;
@@ -237,7 +276,7 @@ begin
     Exit;
   end;
 
-  SetTabIndex(PIndex);
+  ShowTab;
 
   // send change
   FillChar(Msg, SizeOf(TLMNotify), 0);
@@ -253,11 +292,6 @@ begin
   DeliverMessage(LCLObject, Msg);
 end;
 
-procedure TCarbonTabsControl.Hit(AControlPart: ControlPartCode);
-begin
-  ValueChanged;
-end;
-
 {------------------------------------------------------------------------------
   Method:  TCarbonTabsControl.GetClientRect
   Params:  ARect - Record for client area coordinates
@@ -271,7 +305,7 @@ var
 begin
   Result := False;
   
-  DebugLn('TCarbonTabsControl.GetClientRect');
+  //DebugLn('TCarbonTabsControl.GetClientRect');
 
   if OSError(GetControlData(ControlRef(Widget), kControlEntireControl,
       kControlTabContentRectTag, SizeOf(FPCMacOSAll.Rect), @AClientRect, nil),
@@ -279,12 +313,13 @@ begin
 
   ARect := CarbonRectToRect(AClientRect);
   
-  DebugLn('TCarbonTabsControl.GetClientRect ' + DbgS(ARect));
+  //DebugLn('TCarbonTabsControl.GetClientRect ' + DbgS(ARect));
   Result := True;
 end;
 
 procedure TCarbonTabsControl.Add(ATab: TCarbonTab; AIndex: Integer);
 begin
+  DebugLn('TCarbonTabsControl.Add ' + DbgS(AIndex));
   FTabs.Insert(AIndex, ATab);
   ATab.Attach(Self);
   
@@ -293,6 +328,7 @@ end;
 
 procedure TCarbonTabsControl.Remove(AIndex: Integer);
 begin
+  DebugLn('TCarbonTabsControl.Remove ' + DbgS(AIndex));
   FTabs.Delete(AIndex);
   
   UpdateTabs(AIndex, True);
@@ -300,16 +336,20 @@ end;
 
 procedure TCarbonTabsControl.SetTabIndex(AIndex: Integer);
 var
-  I, VIndex: Integer;
+  VIndex: Integer;
 begin
+  if (AIndex < 0) or (AIndex >= (LCLObject as TCustomNotebook).PageCount) then
+  begin
+    SetControl32BitValue(ControlRef(Widget), 0);
+    ShowTab;
+    Exit;
+  end;
+  
+  //DebugLn('TCarbonTabsControl.SetTabIndex ' + DbgS(AIndex) + ' ' + DbgS((LCLObject as TCustomNotebook).PageCount));
+  
   VIndex := (LCLObject as TCustomNotebook).Page[AIndex].VisibleIndex;
-  
-  // show tab with VIndex, hide the others
-  for I := 0 to FTabs.Count - 1 do
-    TCarbonTab(FTabs[I]).ShowHide(I = VIndex);
-  
-  if GetControl32BitValue(ControlRef(Widget)) <> VIndex + 1 then
-    SetControl32BitValue(ControlRef(Widget), VIndex + 1);
+  SetControl32BitValue(ControlRef(Widget), VIndex + 1);
+  ShowTab;
 end;
 
 end.

@@ -36,7 +36,7 @@ uses
  // widgetset
   WSControls, WSLCLClasses, WSProc,
  // LCL Carbon
-  CarbonUtils, CarbonDef, CarbonConsts,
+  CarbonDef,
  // LCL
   LMessages, LCLMessageGlue, LCLProc, LCLType, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ComCtrls, ExtCtrls, Menus;
@@ -66,6 +66,7 @@ type
     procedure DoAction(AControlPart: ControlPartCode); dynamic;
     procedure ListItemSelected(AIndex: Integer); dynamic;
   public
+    procedure AddToWidget(AParent: TCarbonWidget); override;
     function GetTopParentWindow: WindowRef; override;
     function GetThemeDrawState: ThemeDrawState;
     function GetMousePos: TPoint; override;
@@ -107,6 +108,7 @@ type
     procedure DestroyWidget; override;
     function GetContent: ControlRef; override;
   public
+    procedure AddToWidget(AParent: TCarbonWidget); override;
     function GetMousePos: TPoint; override;
     function GetTopParentWindow: WindowRef; override;
     function GetClientRect(var ARect: TRect): Boolean; override;
@@ -141,6 +143,9 @@ type
   TCarbonCustomControl = class(TCarbonControl)
   protected
     procedure CreateWidget(const AParams: TCreateParams); override;
+  public
+    procedure SetColor(const AColor: TColor); override;
+    procedure SetFont(const AFont: TFont); override;
   end;
   
   { TCarbonGroupBox }
@@ -293,8 +298,8 @@ procedure RaiseCreateWidgetError(AControl: TWinControl);
 
 implementation
 
-uses InterfaceBase, CarbonProc, CarbonWSStdCtrls, CarbonStrings,
-  CarbonGDIObjects;
+uses InterfaceBase, CarbonProc, CarbonConsts, CarbonUtils, CarbonWSStdCtrls,
+  CarbonStrings, CarbonCanvas, CarbonGDIObjects;
 
 {------------------------------------------------------------------------------
   Name:    RaiseCreateWidgetError
@@ -379,6 +384,28 @@ begin
   Widget := Control;
     
   inherited;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonCustomControl.SetColor
+  Params:  AColor - New color
+
+  Sets the color of control (for edit like controls)
+ ------------------------------------------------------------------------------}
+procedure TCarbonCustomControl.SetColor(const AColor: TColor);
+begin
+  // not supported
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonCustomControl.SetFont
+  Params:  AFont - New font
+
+  Sets the font of control
+ ------------------------------------------------------------------------------}
+procedure TCarbonCustomControl.SetFont(const AFont: TFont);
+begin
+  // not supported
 end;
 
 { TCarbonGroupBox }

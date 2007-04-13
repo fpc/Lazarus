@@ -37,7 +37,7 @@ uses
   // widgetset
   WSExtCtrls, WSLCLClasses, WSControls, WSProc,
   // LCL Carbon
-  CarbonDef, CarbonProc, CarbonTabs, CarbonStrings, CarbonWSControls;
+  CarbonDef, CarbonTabs, CarbonStrings, CarbonWSControls;
 
 type
 
@@ -211,6 +211,9 @@ type
 
 
 implementation
+
+uses
+  CarbonProc;
 
 { TCarbonWSCustomPage }
 

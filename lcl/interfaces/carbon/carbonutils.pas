@@ -35,7 +35,7 @@ interface
 {$I carbondebug.inc}
 
 uses
-  FPCMacOSAll, CarbonConsts;
+  FPCMacOSAll;
 
 type
   TFourCC = packed array[0..3] of Char;
@@ -65,7 +65,7 @@ function InstallApplicationEventHandler(inHandler: EventHandlerUPP;
 implementation
 
 uses
-  CarbonProc;
+  CarbonProc, CarbonConsts;
 
 function MakeEventSpec(AClass, AKind: TFourCC): EventTypeSpec; inline;
 begin
@@ -92,7 +92,7 @@ end;
 
 function InstallMenuEventHandler(inMenu: MenuRef; inHandler: EventHandlerUPP;
   inNumTypes: UInt32; inList: EventTypeSpecPtr; inUserData: Pointer;
-  outRef: EventHandlerRefPtr): Boolean; inline;
+  outRef: EventHandlerRefPtr): Boolean;
 begin
   Result := not OSError(
     InstallEventHandler(GetMenuEventTarget(inMenu), inHandler, inNumTypes,
@@ -101,7 +101,7 @@ end;
 
 function InstallControlEventHandler(inControl: ControlRef;
   inHandler: EventHandlerUPP; inNumTypes: UInt32; inList: EventTypeSpecPtr;
-  inUserData: Pointer; outRef: EventHandlerRefPtr): Boolean; inline;
+  inUserData: Pointer; outRef: EventHandlerRefPtr): Boolean;
 begin
   Result := not OSError(
     InstallEventHandler(GetControlEventTarget(inControl), inHandler, inNumTypes,
@@ -110,7 +110,7 @@ end;
 
 function InstallWindowEventHandler(inWindow: WindowRef;
   inHandler: EventHandlerUPP; inNumTypes: UInt32; inList: EventTypeSpecPtr;
-  inUserData: Pointer; outRef: EventHandlerRefPtr): Boolean; inline;
+  inUserData: Pointer; outRef: EventHandlerRefPtr): Boolean;
 begin
   Result := not OSError(
     InstallEventHandler(GetWindowEventTarget(inWindow), inHandler, inNumTypes,
@@ -119,7 +119,7 @@ end;
 
 function InstallApplicationEventHandler(inHandler: EventHandlerUPP;
   inNumTypes: UInt32; inList: EventTypeSpecPtr; inUserData: Pointer;
-  outRef: EventHandlerRefPtr): Boolean; inline;
+  outRef: EventHandlerRefPtr): Boolean;
 begin
   Result := not OSError(
     InstallEventHandler(GetApplicationEventTarget, inHandler, inNumTypes,

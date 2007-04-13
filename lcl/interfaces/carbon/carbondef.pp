@@ -40,9 +40,7 @@ uses
   WSLCLClasses, LCLClasses,
   // LCL + RTL
   Types, Classes, Controls, LCLType, LCLProc, Graphics, Math, LMessages,
-  LCLMessageGlue,
-  // LCL Carbon
-  CarbonUtils;
+  LCLMessageGlue;
 
 const
   DEFAULT_CFSTRING_ENCODING = kCFStringEncodingUTF8;
@@ -83,6 +81,8 @@ type
   public
     constructor Create(const AObject: TWinControl; const AParams: TCreateParams);
     destructor Destroy; override;
+    procedure AddToWidget(AParent: TCarbonWidget); virtual; abstract;
+    procedure BoundsChanged; virtual;
     function GetClientRect(var ARect: TRect): Boolean; virtual; abstract;
     function GetPreferredSize: TPoint; virtual;
     function GetMousePos: TPoint; virtual; abstract;
@@ -134,7 +134,7 @@ const
 implementation
 
 uses
-  CarbonProc, CarbonCanvas;
+  CarbonProc, CarbonCanvas, CarbonConsts, CarbonUtils;
   
 { TCarbonContext }
 
@@ -211,6 +211,61 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method:  TCarbonWidget.BoundsChanged
+
+  Handles bounds change
+ ------------------------------------------------------------------------------}
+procedure TCarbonWidget.BoundsChanged;
+var
+  WidgetBounds, OldBounds: TRect;
+  Resized: Boolean;
+begin
+  //DebugLn('TCarbonWidget.BoundsChanged ' + LCLObject.Name);
+
+  GetBounds(WidgetBounds);
+  OldBounds := LCLObject.BoundsRect;
+  
+  Resized := False;
+
+  if LCLObject.ClientRectNeedsInterfaceUpdate then
+  begin
+    //DebugLn('TCarbonWidget.BoundsChanged Update client rects cache');
+    // update client rects cache
+    LCLObject.InvalidateClientRectCache(True);
+    LCLObject.DoAdjustClientRectChange;
+    
+    Resized := True;
+  end;
+    
+  // then send a LM_SIZE message
+  if (OldBounds.Right - OldBounds.Left <> WidgetBounds.Right - WidgetBounds.Left) or
+     (OldBounds.Bottom - OldBounds.Top <> WidgetBounds.Bottom - WidgetBounds.Top) then
+  begin
+    LCLSendSizeMsg(LCLObject, WidgetBounds.Right - WidgetBounds.Left,
+      WidgetBounds.Bottom - WidgetBounds.Top, Size_SourceIsInterface);
+    
+    Resized := True;
+  end;
+
+  // then send a LM_MOVE message
+  if (OldBounds.Left <> WidgetBounds.Left) or
+     (OldBounds.Top <> WidgetBounds.Top) then
+  begin
+    LCLSendMoveMsg(LCLObject, WidgetBounds.Left,
+      WidgetBounds.Top, Move_SourceIsInterface);
+  end;
+
+  // invalidate control canvas
+  if Resized then Invalidate;
+
+  // invalidate parent client area, previously covered by control
+  if Resized and (LCLObject.Parent <> nil) and LCLObject.Parent.HandleAllocated then
+  begin
+    TCarbonWidget(LCLObject.Parent.Handle).Invalidate(@OldBounds);
+  end;
+end;
+
+{------------------------------------------------------------------------------
   Method:  TCarbonWidget.Create
   Params:  AObject - LCL conrol
            AParams - Creation parameters
@@ -224,15 +279,16 @@ begin
   LCLObject := AObject;
   FProperties := nil;
   Widget := nil;
+  Context := nil;
   
   CreateWidget(AParams);
+  
+  LCLObject.InvalidateClientRectCache(True);
   
   {$IFDEF VerboseWidget}
     DebugLn('TCarbonWidget.Create ', ClassName, ' ', LCLObject.Name, ': ',
       LCLObject.ClassName);
   {$ENDIF}
-  
-  Context := TCarbonControlContext.Create(Self);
   
   RegisterEvents;
 end;
@@ -248,7 +304,6 @@ begin
   
   DestroyWidget;
   
-  Context.Free;
   FProperties.Free;
 
   {$IFDEF VerboseWidget}

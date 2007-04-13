@@ -35,7 +35,7 @@ uses
  // widgetset
   WSControls, WSLCLClasses, WSProc,
  // LCL Carbon
-  CarbonUtils, CarbonDef, CarbonPrivate, CarbonGDIObjects;
+  CarbonDef, CarbonPrivate, CarbonGDIObjects;
   
 type
 
@@ -115,7 +115,7 @@ type
 
 implementation
 
-uses CarbonProc, CarbonStrings, CarbonWSStdCtrls;
+uses CarbonProc, CarbonConsts, CarbonUtils, CarbonStrings, CarbonWSStdCtrls;
 
 { TCarbonControlWithEdit }
 

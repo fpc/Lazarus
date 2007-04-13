@@ -39,13 +39,12 @@ uses
  // rtl+ftl
   Types, Classes, SysUtils, Math, FPCAdds,
  // carbon bindings
-  FPCMacOSAll, CarbonUtils, CarbonConsts,
+  FPCMacOSAll,
  // interfacebase
   InterfaceBase,
  // LCL
   LCLStrConsts, LMessages, LCLMessageGlue, LCLProc, LCLIntf, LCLType,
   GraphType, GraphMath, Graphics, Controls, Forms, Dialogs, Menus, Maps;
-
 
 type
 
@@ -137,8 +136,8 @@ uses
   CarbonWSStdCtrls,
 // CarbonWSToolwin,
 ////////////////////////////////////////////////////
-  CarbonDef, CarbonPrivate, CarbonProc, CarbonCanvas, CarbonGDIObjects,
-  CarbonMenus, CarbonEdits, CarbonTabs, CarbonStrings,
+  CarbonDef, CarbonPrivate, CarbonCanvas, CarbonGDIObjects, CarbonMenus,
+  CarbonEdits, CarbonTabs, CarbonStrings, CarbonProc, CarbonConsts, CarbonUtils,
   
   Buttons, StdCtrls, PairSplitter, ComCtrls, CListBox, Calendar, Arrow,
   Spin, CommCtrl, ExtCtrls, FileCtrl, LResources;

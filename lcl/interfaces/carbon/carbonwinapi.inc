@@ -213,7 +213,7 @@ end;
 
 {------------------------------------------------------------------------------
   Method:   CreateBrushIndirect
-  Params:   LogBrush - Record with brush characteristic
+  Params:   LogBrush - Record with brush characteristics
   Returns:  Handle to a logical brush
 
   Creates new logical brush that has the specified style, color, and pattern
@@ -275,10 +275,10 @@ end;
 
 {------------------------------------------------------------------------------
   Method:  CreateFontIndirect
-  Params:  LogFont - Font characteristic
+  Params:  LogFont - Font characteristics
   Returns: Handle to the font
 
-  Creates new font with specified characteristic
+  Creates new font with specified characteristics
  ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.CreateFontIndirect(const LogFont: TLogFont): HFONT;
 begin
@@ -291,11 +291,11 @@ end;
 
 {------------------------------------------------------------------------------
   Method:  CreateFontIndirectEx
-  Params:  LogFont      - Font characteristic
+  Params:  LogFont      - Font characteristics
            LongFontName - Font name
   Returns: Handle to the font
 
-  Creates new font with specified characteristic and name
+  Creates new font with specified characteristics and name
  ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.CreateFontIndirectEx(const LogFont: TLogFont;
   const LongFontName: string): HFONT;
@@ -315,7 +315,7 @@ end;
 
 {------------------------------------------------------------------------------
   Method:  CreatePenIndirect
-  Params:  LogPen - Record with pen characteristic
+  Params:  LogPen - Record with pen characteristics
   Returns: Handle to a logical cosmetic pen
 
   Creates new logical cosmetic pen that has the specified style, width and color
@@ -557,14 +557,14 @@ end;
 {------------------------------------------------------------------------------
   Method:  EnumFontFamiliesEx
   Params:  DC        - Handle to the device context (ignored)
-           lpLogFont - Font characteristic to match
+           lpLogFont - Font characteristics to match
            Callback  - Callback function
            LParam    - Parameter to pass to the callback function.
            flags     - Not used
   Returns: The last value returned by callback function
 
   Enumerates all the font families in the system that match specified
-  characteristic
+  characteristics
   TODO: specific face or specific char set enumeration
  ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.EnumFontFamiliesEx(DC: HDC; lpLogFont: PLogFont;

@@ -48,28 +48,31 @@ begin
   // first let carbon draw/update
   Result := CallNextEventHandler(ANextHandler, AEvent);
   
-  if OSError(
-    GetEventParameter(AEvent, kEventParamCGContextRef, typeCGContextRef, nil,
-      SizeOf(CGContextRef), nil, @(AWidget.Context.CGContext)),
-    'CarbonCommon_Draw', SGetEvent, 'kEventParamCGContextRef') then Exit;
+  AWidget.Context := TCarbonControlContext.Create(AWidget);
   
-  AWidget.Context.Reset;
-  
-  if (AWidget is TCarbonControl) and
-    (cceDraw in (AWidget as TCarbonControl).GetValidEvents) then
-    (AWidget as TCarbonControl).Draw;
-
-  
-  New(AStruct);
-  FillChar(AStruct^, SizeOf(TPaintStruct), 0);
-  AStruct^.hdc := HDC(AWidget.Context);
   try
-    {$IFDEF VerbosePaint}
-      DebugLn('CarbonCommon_Draw LM_PAINT to ', DbgSName(AWidget.LCLObject));
-    {$ENDIF}
-    LCLSendPaintMsg(AWidget.LCLObject, HDC(AWidget.Context), AStruct);
+    if OSError(
+      GetEventParameter(AEvent, kEventParamCGContextRef, typeCGContextRef, nil,
+        SizeOf(CGContextRef), nil, @(AWidget.Context.CGContext)),
+      'CarbonCommon_Draw', SGetEvent, 'kEventParamCGContextRef') then Exit;
+
+    if (AWidget is TCarbonControl) and
+      (cceDraw in (AWidget as TCarbonControl).GetValidEvents) then
+      (AWidget as TCarbonControl).Draw;
+
+    New(AStruct);
+    FillChar(AStruct^, SizeOf(TPaintStruct), 0);
+    AStruct^.hdc := HDC(AWidget.Context);
+    try
+      {$IFDEF VerbosePaint}
+        DebugLn('CarbonCommon_Draw LM_PAINT to ', DbgSName(AWidget.LCLObject));
+      {$ENDIF}
+      LCLSendPaintMsg(AWidget.LCLObject, HDC(AWidget.Context), AStruct);
+    finally
+      Dispose(AStruct);
+    end;
   finally
-    Dispose(AStruct);
+    FreeAndNil(AWidget.Context);
   end;
 end;
 
@@ -80,10 +83,6 @@ end;
 function CarbonCommon_BoundsChanged(ANextHandler: EventHandlerCallRef;
   AEvent: EventRef;
   AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
-var
-  AWinControl: TWinControl;
-  WidgetBounds, OldBounds: TRect;
-  Resized: Boolean;
 begin
   {$IFDEF VerboseCommonEvent}
     DebugLn('CarbonCommon_BoundsChanged ', DbgSName(AWidget.LCLObject));
@@ -91,38 +90,7 @@ begin
   // first let carbon draw/update
   Result := CallNextEventHandler(ANextHandler, AEvent);
   
-  AWinControl := TWinControl(AWidget.LCLObject);
-  
-  AWidget.GetBounds(WidgetBounds);
-  OldBounds := AWinControl.BoundsRect;
-
-  // then send a LM_SIZE message
-  if (OldBounds.Right - OldBounds.Left <> WidgetBounds.Right - WidgetBounds.Left) or
-     (OldBounds.Bottom - OldBounds.Top <> WidgetBounds.Bottom - WidgetBounds.Top) then
-  begin
-    LCLSendSizeMsg(AWinControl, WidgetBounds.Right - WidgetBounds.Left,
-      WidgetBounds.Bottom - WidgetBounds.Top, Size_SourceIsInterface);
-      
-    Resized := True;
-  end
-  else Resized := False;
-
-  // then send a LM_MOVE message
-  if (OldBounds.Left <> WidgetBounds.Left) or
-     (OldBounds.Top <> WidgetBounds.Top) then
-  begin
-    LCLSendMoveMsg(AWinControl, WidgetBounds.Left,
-      WidgetBounds.Top, Move_SourceIsInterface);
-  end;
-  
-  // invalidate control canvas
-  if Resized then AWidget.Invalidate;
-  
-  // invalidate parent client area, previously covered by control
-  if (AWinControl.Parent <> nil) and AWinControl.Parent.HandleAllocated then
-  begin
-    TCarbonWidget(AWinControl.Parent.Handle).Invalidate(@OldBounds);
-  end;
+  AWidget.BoundsChanged;
 end;
 
 {------------------------------------------------------------------------------

@@ -37,7 +37,7 @@ uses
   // widgetset
   WSStdCtrls, WSLCLClasses, WSControls, WSProc,
   // LCL Carbon
-  CarbonDef, CarbonProc, CarbonPrivate, CarbonEdits, CarbonWSControls;
+  CarbonDef, CarbonPrivate, CarbonEdits, CarbonWSControls;
   
 type
 
@@ -260,7 +260,8 @@ type
 
 implementation
 
-uses CarbonStrings;
+uses
+  CarbonProc, CarbonStrings;
 
 { TCarbonWSScrollBar }
 

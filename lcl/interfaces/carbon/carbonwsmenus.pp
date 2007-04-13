@@ -37,7 +37,7 @@ uses
   // Widgetset
   WSMenus, WSLCLClasses,
   // LCL Carbon
-  CarbonDef, CarbonProc, CarbonMenus, CarbonWSControls;
+  CarbonDef, CarbonMenus, CarbonWSControls;
 
 type
 
@@ -89,6 +89,9 @@ type
 
 
 implementation
+
+uses
+  CarbonProc;
 
 { TCarbonWSMenu }
 

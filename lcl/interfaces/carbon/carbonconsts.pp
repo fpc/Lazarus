@@ -31,6 +31,9 @@ const
   SSetColor = 'SetColor';
   SSetText = 'SetText';
   
+  SCreate = 'Create';
+  SDestroy = 'Destroy';
+  
   SSetControlProp = 'SetControlProperty';
 
   SSetFontStyle = 'SetControlFontStyle';
@@ -62,6 +65,9 @@ const
   SKeyModifiers = 'kEventParamKeyModifiers';
   
   SControlFont = 'kControlFontStyleTag';
+  
+  SCreateStyle = 'ATSUCreateStyle';
+  SDisposeStyle = 'ATSUDisposeStyle';
 
 implementation
 

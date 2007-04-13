@@ -54,13 +54,13 @@ function CheckBitmap(const Bitmap: HBITMAP; const AMethodName: String; AParamNam
 function CheckCursor(const Cursor: HCURSOR; const AMethodName: String; AParamName: String = ''): Boolean;
 
 function OSError(AResult: OSStatus; const AMethodName, ACallName: String;
-  const AText: String = ''): Boolean;// inline;
+  const AText: String = ''): Boolean;
 function OSError(AResult: OSStatus; const AObject: TObject; const AMethodName, ACallName: String;
-  const AText: String = ''): Boolean;// inline;
+  const AText: String = ''): Boolean;
 function OSError(AResult: OSStatus; const AClass: TClass; const AMethodName, ACallName: String;
-  const AText: String = ''): Boolean;// inline;
+  const AText: String = ''): Boolean;
 function OSError(AResult: OSStatus; const AObject: TObject; const AMethodName, ACallName: String;
-  const AText: String; AValidResult: OSStatus): Boolean;// inline;
+  const AText: String; AValidResult: OSStatus): Boolean;
 
 function GetCarbonWidget(AWidget: Pointer): TCarbonWidget;
 function GetCarbonWindow(AWidget: WindowRef): TCarbonWindow;

@@ -77,7 +77,7 @@ type
 implementation
 
 uses
-  CarbonProc;
+  CarbonProc, CarbonConsts;
 
 { TCarbonMenu }
 
@@ -325,7 +325,6 @@ end;
 procedure TCarbonMenu.SetBitmap(const ABitmap: TBitmap);
 var
   IconType: Byte;
-  AIcon: CGImageRef;
   AHandle: FPCMacOSAll.Handle;
 const SName = 'TCarbonMenu.SetBitmap';
 begin
@@ -335,33 +334,24 @@ begin
   {$ENDIF}
   if FParentMenu = nil then Exit;
 
-  AIcon := nil;
+  AHandle := nil;
   
   if ABitmap <> nil then
   begin
     if not CheckBitmap(ABitmap.Handle, SName) then Exit;
     IconType := kMenuCGImageRefType;
-    AIcon := TCarbonBitmap(ABitmap.Handle).CGImage;
+    AHandle := Pointer(TCarbonBitmap(ABitmap.Handle).CGImage);
   end;
   
-  AIcon := nil;
-  if AIcon = nil then
-  begin
-    IconType := kMenuNoIcon;
-    AHandle := nil;
-  end
-  else AHandle := @AIcon;
+  if AHandle = nil then IconType := kMenuNoIcon;
   
   {$IFDEF VerboseMenu}
-    DebugLn('TCarbonMenu.SetBitmap IconType: ' + DbgS(IconType) + ' AIcon: ' + DbgS(AIcon));
+    DebugLn('TCarbonMenu.SetBitmap IconType: ' + DbgS(IconType) + ' AIcon: ' + DbgS(AHandle));
   {$ENDIF}
   
   if OSError(
     SetMenuItemIconHandle(FParentMenu.Menu, GetIndex + 1, IconType, AHandle),
     SName, 'SetMenuItemIconHandle') then Exit;
-      
-  if Menu <> nil then
-    OSError(SetMenuTitleIcon(Menu, IconType, AIcon), SName, 'SetMenuTitleIcon');
 end;
 
 procedure TCarbonMenu.SetCheck(AChecked: Boolean);
@@ -408,6 +398,8 @@ begin
   if FParentMenu = nil then Exit;
   
   ShortCutToKey(AShortCut, Key, Shift);
+  
+  // TODO virtual keys
 
   Index := GetIndex;
   if OSError(SetMenuItemModifiers(FParentMenu.Menu, Index + 1,

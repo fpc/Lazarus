@@ -33,7 +33,7 @@ uses
  // LCL
   LCLProc, LCLType, Graphics, Controls, StdCtrls,
  // LCL Carbon
-  CarbonDef, CarbonProc, CarbonPrivate, CarbonEdits;
+  CarbonDef, CarbonPrivate, CarbonEdits;
 
 type
   { TCarbonComboBoxStrings }
@@ -100,6 +100,9 @@ type
 
 
 implementation
+
+uses
+  CarbonProc;
 
 { TCarbonComboBoxStrings }
 

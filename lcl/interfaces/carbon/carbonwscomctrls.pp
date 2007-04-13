@@ -37,7 +37,7 @@ uses
   // widgetset
   WSComCtrls, WSLCLClasses, WSControls, WSProc,
   // LCL Carbon
-  CarbonDef, CarbonProc, CarbonPrivate, CarbonStrings, CarbonWSControls;
+  CarbonDef, CarbonPrivate, CarbonStrings, CarbonWSControls;
 
 type
 
@@ -159,6 +159,9 @@ type
 
 
 implementation
+
+uses
+  CarbonProc;
 
 { TCarbonWSStatusBar }
 

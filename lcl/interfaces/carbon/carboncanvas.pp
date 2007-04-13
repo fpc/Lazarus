@@ -36,6 +36,7 @@ uses
   CarbonDef, CarbonGDIObjects;
 
 type
+  // device context data for SaveDC/RestoreDC
   TCarbonDCData = class
     CurrentFont: TCarbonFont;
     CurrentBrush: TCarbonBrush;
@@ -119,14 +120,14 @@ type
   protected
     function GetSize: TPoint; override;
   public
-    constructor Create;
+    constructor Create; // TODO
   end;
 
   { TCarbonControlContext }
 
   TCarbonControlContext = class(TCarbonDeviceContext)
   private
-    FOwner: TCarbonWidget;    // owner
+    FOwner: TCarbonWidget;    // owner widget
   protected
     function GetSize: TPoint; override;
   public
@@ -157,10 +158,16 @@ var
 
 implementation
 
-uses CarbonProc;
+uses CarbonProc, CarbonConsts;
 
 { TCarbonDeviceContext }
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonDeviceContext.SetBkColor
+  Params:  AValue - New background color
+
+  Sets the background color
+ ------------------------------------------------------------------------------}
 procedure TCarbonDeviceContext.SetBkColor(const AValue: TColor);
 begin
   if FBkColor <> AValue then
@@ -170,6 +177,12 @@ begin
   end;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonDeviceContext.SetBkMode
+  Params:  AValue - New background mode (OPAQUE, TRANSPARENT)
+
+  Sets the background mode
+ ------------------------------------------------------------------------------}
 procedure TCarbonDeviceContext.SetBkMode(const AValue: Integer);
 begin
   if FBkMode <> AValue then
@@ -179,6 +192,12 @@ begin
   end;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonDeviceContext.SetCurrentBrush
+  Params:  AValue - New brush
+
+  Sets the current brush
+ ------------------------------------------------------------------------------}
 procedure TCarbonDeviceContext.SetCurrentBrush(const AValue: TCarbonBrush);
 begin
   if FCurrentBrush <> AValue then
@@ -188,6 +207,12 @@ begin
   end;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonDeviceContext.SetCurrentFont
+  Params:  AValue - New font
+
+  Sets the current font
+ ------------------------------------------------------------------------------}
 procedure TCarbonDeviceContext.SetCurrentFont(const AValue: TCarbonFont);
 begin
   if FCurrentFont <> AValue then
@@ -196,6 +221,12 @@ begin
   end;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonDeviceContext.SetCurrentPen
+  Params:  AValue - New pen
+
+  Sets the current pen
+ ------------------------------------------------------------------------------}
 procedure TCarbonDeviceContext.SetCurrentPen(const AValue: TCarbonPen);
 begin
   if FCurrentPen <> AValue then
@@ -205,6 +236,12 @@ begin
   end;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonDeviceContext.SetROP2
+  Params:  AValue - New binary raster operation
+
+  Sets the binary raster operation
+ ------------------------------------------------------------------------------}
 procedure TCarbonDeviceContext.SetROP2(const AValue: Integer);
 begin
   if FROP2 <> AValue then
@@ -215,6 +252,12 @@ begin
   end;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonDeviceContext.SetTextColor
+  Params:  AValue - New text color
+
+  Sets the text color
+ ------------------------------------------------------------------------------}
 procedure TCarbonDeviceContext.SetTextColor(const AValue: TColor);
 begin
   if FTextColor <> AValue then
@@ -224,12 +267,22 @@ begin
   end;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonDeviceContext.Create
+
+  Creates new Carbon device context
+ ------------------------------------------------------------------------------}
 constructor TCarbonDeviceContext.Create;
 begin
   FBkBrush := TCarbonBrush.Create;
   FTextBrush := TCarbonBrush.Create;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonDeviceContext.Destroy
+
+  Frees Carbon device context
+ ------------------------------------------------------------------------------}
 destructor TCarbonDeviceContext.Destroy;
 begin
   BkBrush.Free;
@@ -240,6 +293,11 @@ begin
   inherited Destroy;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonDeviceContext.Reset
+
+  Resets the device context properties to defaults (pen, brush, ...)
+ ------------------------------------------------------------------------------}
 procedure TCarbonDeviceContext.Reset;
 begin
   CurrentFont := nil;
@@ -265,9 +323,10 @@ begin
 
   if CGContext <> nil then
   begin
-    {$IFDEF VerbosePaint}
-    DebugLn('TCarbonDeviceContext.Reset set defaults');
+    {$IFDEF VerboseCanvas}
+      DebugLn('TCarbonDeviceContext.Reset set defaults');
     {$ENDIF}
+    
     // enable anti-aliasing
     CGContextSetShouldAntialias(CGContext, 1);
     CGContextSetBlendMode(CGContext, kCGBlendModeNormal);
@@ -279,6 +338,12 @@ begin
   end;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonDeviceContext.SaveDC
+  Returns: Index of saved device context state
+  
+  Note: must be used in pair with RestoreDC!
+ ------------------------------------------------------------------------------}
 function TCarbonDeviceContext.SaveDC: Integer;
 begin
   Result := 0;
@@ -292,9 +357,19 @@ begin
   
   CGContextSaveGState(CGContext);
   Result := FSavedDCList.Add(SaveDCData) + 1;
-  DebugLn('TCarbonDeviceContext.SaveDC Result: ', DbgS(Result));
+  
+  {$IFDEF VerboseCanvas}
+    DebugLn('TCarbonDeviceContext.SaveDC Result: ', DbgS(Result));
+  {$ENDIF}
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonDeviceContext.RestoreDC
+  Params:  ASavedDC - Index of saved device context
+  Returns: If the function succeeds
+  
+  Restores the previously saved state of device context
+ ------------------------------------------------------------------------------}
 function TCarbonDeviceContext.RestoreDC(ASavedDC: Integer): Boolean;
 begin
   Result := False;
@@ -314,18 +389,26 @@ begin
     FSavedDCList.Delete(FSavedDCList.Count - 1);
   end;
   
-  DebugLn('TCarbonDeviceContext.RestoreDC SavedDC: ', DbgS(ASavedDC));
+  {$IFDEF VerboseCanvas}
+    DebugLn('TCarbonDeviceContext.RestoreDC SavedDC: ', DbgS(ASavedDC));
+  {$ENDIF}
   
   CGContextRestoreGState(CGContext);
   RestoreDCData(TCarbonDCData(FSavedDCList[ASavedDC - 1]));
   FSavedDCList.Delete(ASavedDC - 1);
   Result := True;
   
-  DebugLn('TCarbonDeviceContext.RestoreDC End');
+  {$IFDEF VerboseCanvas}
+    DebugLn('TCarbonDeviceContext.RestoreDC End');
+  {$ENDIF}
   
   if FSavedDCList.Count = 0 then FreeAndNil(FSavedDCList);
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonDeviceContext.SaveDCData
+  Returns: The device context data
+ ------------------------------------------------------------------------------}
 function TCarbonDeviceContext.SaveDCData: TCarbonDCData;
 begin
   Result := TCarbonDCData.Create;
@@ -345,6 +428,12 @@ begin
   Result.PenPos := FPenPos;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonDeviceContext.RestoreDCData
+  Params:  AData - Device context data
+  
+  Restores device context data
+ ------------------------------------------------------------------------------}
 procedure TCarbonDeviceContext.RestoreDCData(const AData: TCarbonDCData);
 begin
   FCurrentFont := AData.CurrentFont;
@@ -383,6 +472,8 @@ var
   Tag: ATSUAttributeTag;
   DataSize: ByteCount;
   PContext: ATSUAttributeValuePtr;
+const
+  SName = 'BeginTextRender';
 begin
   Result := False;
 
@@ -405,17 +496,19 @@ begin
 
   // create text layout
   TextLength := kATSUToTextEnd;
-  if ATSUCreateTextLayoutWithTextPtr(ConstUniCharArrayPtr(@W[1]),
-    kATSUFromTextBeginning, kATSUToTextEnd, Length(W), 1, @TextLength, @TextStyle,
-    ALayout) = noErr then
-  begin
-    // set layout context
-    Tag := kATSUCGContextTag;
-    DataSize := SizeOf(CGContextRef);
+  if OSError(ATSUCreateTextLayoutWithTextPtr(ConstUniCharArrayPtr(@W[1]),
+      kATSUFromTextBeginning, kATSUToTextEnd, Length(W), 1, @TextLength,
+      @TextStyle, ALayout), Self, SName, 'ATSUCreateTextLayoutWithTextPtr') then Exit;
+      
+  // set layout context
+  Tag := kATSUCGContextTag;
+  DataSize := SizeOf(CGContextRef);
 
-    PContext := @CGContext;
-    Result := ATSUSetLayoutControls(ALayout, 1, @Tag, @DataSize, @PContext) = noErr;
-  end;
+  PContext := @CGContext;
+  if OSError(ATSUSetLayoutControls(ALayout, 1, @Tag, @DataSize, @PContext),
+    Self, SName, 'ATSUSetLayoutControls') then Exit;
+    
+  Result := True;
 end;
 
 {------------------------------------------------------------------------------
@@ -430,7 +523,8 @@ begin
   // restore context
   CGContextRestoreGState(CGContext);
 
-  if ALayout <> nil then ATSUDisposeTextLayout(ALayout);
+  if ALayout <> nil then
+    OSError(ATSUDisposeTextLayout(ALayout), Self, 'EndTextRender', 'ATSUDisposeTextLayout');
 end;
 
 {------------------------------------------------------------------------------
@@ -446,12 +540,21 @@ end;
 
 { TCarbonScreenContext }
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonScreenContext.GetSize
+  Returns: Size of screen context
+ ------------------------------------------------------------------------------}
 function TCarbonScreenContext.GetSize: TPoint;
 begin
   Result.X := CGDisplayPixelsWide(CGMainDisplayID);
   Result.Y := CGDisplayPixelsHigh(CGMainDisplayID);
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonScreenContext.Create
+
+  Creates new screen context
+ ------------------------------------------------------------------------------}
 constructor TCarbonScreenContext.Create;
 begin
   inherited Create;
@@ -461,12 +564,22 @@ end;
 
 { TCarbonControlContext }
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonControlContext.GetSize
+  Returns: Size of control context
+ ------------------------------------------------------------------------------}
 function TCarbonControlContext.GetSize: TPoint;
 begin
   Result.X := (FOwner.LCLObject as TControl).ClientWidth;
   Result.Y := (FOwner.LCLObject as TControl).ClientHeight;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonControlContext.Create
+  Params:  AOwner - Context widget
+
+  Creates new control context
+ ------------------------------------------------------------------------------}
 constructor TCarbonControlContext.Create(AOwner: TCarbonWidget);
 begin
   inherited Create;
@@ -477,6 +590,12 @@ end;
 
 { TCarbonBitmapContext }
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonBitmapContext.SetBitmap
+  Params:  AValue - New bitmap
+
+  Sets the bitmap
+ ------------------------------------------------------------------------------}
 procedure TCarbonBitmapContext.SetBitmap(const AValue: TCarbonBitmap);
 begin
   //DebugLn('TCarbonBitmapContext.SetBitmap');
@@ -487,6 +606,10 @@ begin
   end;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonBitmapContext.GetSize
+  Returns: Size of bitmap context
+ ------------------------------------------------------------------------------}
 function TCarbonBitmapContext.GetSize: TPoint;
 begin
   if FBitmap <> nil then
@@ -501,12 +624,22 @@ begin
   end;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonBitmapContext.Create
+
+  Creates new bitmap context
+ ------------------------------------------------------------------------------}
 constructor TCarbonBitmapContext.Create;
 begin
   inherited Create;
   FBitmap := nil;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonBitmapContext.Destroy
+
+  Frees bitmap context
+ ------------------------------------------------------------------------------}
 destructor TCarbonBitmapContext.Destroy;
 begin
   if CGContext <> nil then CGContextRelease(CGContext);
@@ -514,6 +647,11 @@ begin
   inherited Destroy;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonBitmapContext.Reset
+
+  Resets the bitmap context properties to defaults (pen, brush, ...)
+ ------------------------------------------------------------------------------}
 procedure TCarbonBitmapContext.Reset;
 begin
   if CGContext <> nil then CGContextRelease(CGContext);
@@ -535,12 +673,16 @@ begin
   inherited Reset;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonBitmapContext.GetBitmap
+  Returns: The bitmap of bitmap context
+ ------------------------------------------------------------------------------}
 function TCarbonBitmapContext.GetBitmap: TCarbonBitmap;
 begin
   if FBitmap = nil then Result := nil
   else
   begin
-    // update bitmap to reflect changes made to canvas
+    // update bitmap to reflect changes made via canvas
     FBitmap.Update;
     Result := FBitmap;
   end;
