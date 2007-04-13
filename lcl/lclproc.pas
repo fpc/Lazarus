@@ -480,20 +480,22 @@ end;
 function ShortCutToText(ShortCut: TShortCut): string;
 var
   Name: string;
+  Key: Byte;
 begin
-  case WordRec(ShortCut).Lo of
+  Key := ShortCut and $FF;
+  case Key of
     $08, $09:
-      Name := MenuKeyCaps[TMenuKeyCap(Ord(mkcBkSp) + WordRec(ShortCut).Lo - $08)];
+      Name := MenuKeyCaps[TMenuKeyCap(Ord(mkcBkSp) + Key - $08)];
     $0D: Name := MenuKeyCaps[mkcEnter];
     $1B: Name := MenuKeyCaps[mkcEsc];
     $20..$28:
-      Name := MenuKeyCaps[TMenuKeyCap(Ord(mkcSpace) + WordRec(ShortCut).Lo - $20)];
+      Name := MenuKeyCaps[TMenuKeyCap(Ord(mkcSpace) + Key - $20)];
     $2D..$2E:
-      Name := MenuKeyCaps[TMenuKeyCap(Ord(mkcIns) + WordRec(ShortCut).Lo - $2D)];
-    $30..$39: Name := Chr(WordRec(ShortCut).Lo - $30 + Ord('0'));
-    $41..$5A: Name := Chr(WordRec(ShortCut).Lo - $41 + Ord('A'));
-    $60..$69: Name := Chr(WordRec(ShortCut).Lo - $60 + Ord('0'));
-    $70..$87: Name := 'F' + IntToStr(WordRec(ShortCut).Lo - $6F);
+      Name := MenuKeyCaps[TMenuKeyCap(Ord(mkcIns) + Key - $2D)];
+    $30..$39: Name := Chr(Key - $30 + Ord('0'));
+    $41..$5A: Name := Chr(Key - $41 + Ord('A'));
+    $60..$69: Name := Chr(Key - $60 + Ord('0'));
+    $70..$87: Name := 'F' + IntToStr(Key - $6F);
   else
     Name := GetSpecialShortCutName(ShortCut);
   end;
@@ -544,7 +546,7 @@ begin
       Break;
   end;
   if ShortCutText = '' then Exit;
-  for Key := $08 to $255 do begin { Copy range from table in ShortCutToText }
+  for Key := $08 to $FF do begin { Copy range from table in ShortCutToText }
     Name:=ShortCutToText(Key);
     if (Name<>'') and (length(Name)=length(ShortCutText)-StartPos+1)
     and (AnsiStrLIComp(@ShortCutText[StartPos], PChar(Name), length(Name)) = 0)

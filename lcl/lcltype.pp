@@ -2457,7 +2457,7 @@ end;
 function KeyToShortCut(const Key: Word; const Shift: TShiftState): TShortCut;
 begin
   Result := Key;
-  if WordRec(Result).Hi <> 0 then begin
+  if (Result and $FF00) <> 0 then begin
     Result:=0;
     exit;
   end;
