@@ -1163,7 +1163,7 @@ var
 
 begin
   if (List=nil) or (List.Count<=1) then exit;
-  ReAllocMem(MergeList,List.Count*SizeOf(Pointer));
+  MergeList:=AllocMem(List.Count*SizeOf(Pointer));
   Sort(0,List.Count-1);
   Freemem(MergeList);
 end;
@@ -1231,7 +1231,7 @@ var
 begin
   if (List=nil) or (List.Count<=1) then exit;
   CurSize:=PtrInt(List.Count)*SizeOf(Pointer);
-  ReAllocMem(MergeList,CurSize);
+  MergeList:=AllocMem(CurSize);
   FillChar(MergeList^,CurSize,0);
   Sort(0,List.Count-1);
   for i:=0 to List.Count-1 do MergeList[i]:='';
