@@ -763,6 +763,7 @@ end;
 
 procedure GtkChangedCB(AWidget: PGtkWidget; WidgetInfo: PWidgetInfo); cdecl;
 begin
+  if WidgetInfo^.UserData <> nil then Exit;
   LCLSendChangedMsg(TControl(WidgetInfo^.LCLObject));
 end;
 
@@ -964,9 +965,16 @@ class procedure TGtk2WSCustomComboBox.SetItemIndex(
   const ACustomComboBox: TCustomComboBox; NewIndex: integer);
 var
   P: PGtkWidget;
+  WidgetInfo: PWidgetInfo;
 begin
-  p := GetWidgetInfo(Pointer(ACustomComboBox.Handle))^.CoreWidget;
-  gtk_combo_box_set_active(PGtkComboBox(p), NewIndex)
+  WidgetInfo := GetWidgetInfo(Pointer(ACustomComboBox.Handle));
+  p := WidgetInfo^.CoreWidget;
+  if gtk_combo_box_get_active(PGtkComboBox(p)) = NewIndex then exit;
+  // to be delphi compatible OnChange only fires in response to user actions not program actions
+  // so we use WidgetInfo^.Userdata as a flag to not signal the OnChange Event
+  WidgetInfo^.UserData := Pointer(1);
+  gtk_combo_box_set_active(PGtkComboBox(p), NewIndex);
+  WidgetInfo^.UserData := Pointer(nil);
 end;
 
 class procedure TGtk2WSCustomComboBox.SetMaxLength(
@@ -1086,15 +1094,18 @@ var
   Index: Integer;
 begin
   WidgetInfo := GetWidgetInfo(Pointer(AWinControl.Handle));
-
+  // we use user data to not signal onchange
+  WidgetInfo^.UserData := Pointer(1);
   if gtk_is_combo_box_entry(WidgetInfo^.CoreWidget) then begin
     Entry := GTK_BIN(WidgetInfo^.CoreWidget)^.child;
     gtk_entry_set_text(PGtkEntry(Entry), PChar(AText));
+  end
+  else begin
+    // if not an entry it is a readonly list so we will try to comply by matching the text to an item
+    Index := TCustomComboBox(AWinControl).Items.IndexOf(AText);
+    SetItemIndex(TCustomComboBox(AWinControl), Index);
   end;
-  
-  // if not an entry it is a readonly list so we will try to comply by matching the text to an item
-  Index := TCustomComboBox(AWinControl).Items.IndexOf(AText);
-  SetItemIndex(TCustomComboBox(AWinControl), Index);
+  WidgetInfo^.UserData := nil;
 end;
 
 class function TGtk2WSCustomComboBox.CreateHandle(const AWinControl: TWinControl;
