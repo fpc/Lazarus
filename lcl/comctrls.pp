@@ -673,8 +673,9 @@ type
     procedure WSCreateCacheItem;
     function WSUpdateAllowed: Boolean;
     procedure ItemDestroying(const AItem: TListItem); //called by TListItem when freed
-    procedure ReadData(Stream: TStream);
-    procedure WriteData(Stream: TStream);
+    procedure ReadData(Stream: TStream); // read data in a Delphi compatible way
+    procedure ReadLazData(Stream: TStream); // read data in a 64 bits safe way
+    procedure WriteLazData(Stream: TStream); // write date in a 64 bits safe way
   protected
     procedure DefineProperties(Filer: TFiler); override;
     function GetCount : Integer;

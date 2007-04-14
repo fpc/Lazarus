@@ -351,26 +351,31 @@ procedure TListItems.DefineProperties(Filer: TFiler);
 
 begin
   inherited DefineProperties(Filer);
-  Filer.DefineBinaryProperty('Data', @ReadData, @WriteData, WriteItems);
+  Filer.DefineBinaryProperty('Data', @ReadData, nil, false);
+  Filer.DefineBinaryProperty('LazData', @ReadLazData, @WriteLazData, WriteItems);
 end;
 
 type
-  PItemHeader = ^TItemHeader;
   TItemHeader = record // packing is not needed (and not wanted since it controls also how this record is stored)
     Size, Count: Integer;
     Items: record end;
   end;
-  PItemInfo = ^TItemInfo;
+  // for reading Delphi compatible TListItem.Data
   TItemInfo = record // packing is not needed (and not wanted since it controls also how this record is stored)
     ImageIndex: Integer;
     StateIndex: Integer;
     OverlayIndex: Integer;
     SubItemCount: Integer;
-    Data: Pointer;
-    //Caption: string[255]; // all stings follow here
+    Data: Integer; // pointer field on 32 bits computers
   end;
-  ShortStr = string[255];
-  PShortStr = ^ShortStr;
+  // Lazarus does not store ListItem.Data field, because a pointer field cannot
+  // be made 64 bits safe
+  TLazItemInfo = record // packing is not needed and not wanted
+    ImageIndex: Integer;
+    StateIndex: Integer;
+    OverlayIndex: Integer;
+    SubItemCount: Integer;
+  end;
 
 procedure TListItems.ReadData(Stream: TStream);
   function ReadString: String;
@@ -391,7 +396,7 @@ var
 begin
   Clear;
   StartPos := Stream.Position;
-  Size := Stream.ReadDWord;
+  Size := LEtoN(Integer(Stream.ReadDWord));
   ItemCount := LEtoN(Integer(Stream.ReadDWord));
   Owner.BeginUpdate;
   try
@@ -431,40 +436,71 @@ begin
   end;
 end;
 
-procedure TListItems.WriteData(Stream: TStream);
-  function GetLength(const S: string): Integer;
-  begin
-    Result := Length(S);
-    if Result > 255 then Result := 255;
-  end;
-  
-  procedure WriteString(const S: String);
-  var
-    Len: Integer;
-  begin
-    Len := Length(S);
-    if Len > 255 then Len := 255;
-    Stream.WriteByte(Len);
-    Stream.WriteBuffer(S[1], Len);
-  end;
+procedure TListItems.ReadLazData(Stream: TStream);
+var
+  I, J: Integer;
+  ItemInfo: TLazItemInfo;
+  ListItem: TListItem;
+  Size, ItemCount, SubCount: Integer;
+  StartPos: Int64;
+begin
+  Clear;
+  StartPos := Stream.Position;
+  Size := LEtoN(Integer(Stream.ReadDWord));
+  ItemCount := LEtoN(Integer(Stream.ReadDWord));
+  Owner.BeginUpdate;
+  try
+    for I := 0 to ItemCount - 1 do
+    begin
+      Stream.ReadBuffer(ItemInfo, SizeOf(ItemInfo));
+      ListItem := Add;
+      ListItem.Caption := Stream.ReadAnsiString;
+      ListItem.ImageIndex := LEtoN(ItemInfo.ImageIndex);
+      // ListItem.StateIndex := LEtoN(ItemInfo.StateIndex);
+      // ListItem.OverlayIndex := LEtoN(ItemInfo.OverlayIndex);
 
+      SubCount := LEtoN(ItemInfo.SubItemCount);
+      for J := 0 to SubCount - 1 do
+      begin
+        ListItem.SubItems.Add(Stream.ReadAnsiString);
+      end;
+    end;
+
+    //read subitem images
+    if Stream.Position < StartPos + Size
+    then begin
+      for I := 0 to Count - 1 do
+      begin
+        ListItem := Item[I];
+        if ListItem.FSubItems = nil then Continue;
+
+        for J := 0 to ListItem.SubItems.Count - 1 do
+          ListItem.SubItemImages[J] := LEtoN(Integer(Stream.ReadDWord));
+      end;
+    end;
+  finally
+    Owner.EndUpdate;
+  end;
+end;
+
+procedure TListItems.WriteLazData(Stream: TStream);
 var
   I, J, Size, L : Integer;
   ItemHeader    : TItemHeader;
-  ItemInfo      : TItemInfo;
+  ItemInfo      : TLazItemInfo;
   ListItem      : TListItem;
 
 begin
   Size := SizeOf(ItemHeader);
   for I := 0 to Count - 1 do
   begin
-    L := GetLength(Item[I].Caption) + 1;
+    L := Length(Item[I].Caption) + 4;
     for J := 0 to Item[I].SubItems.Count - 1 do
     begin
-      Inc(L, GetLength(Item[I].SubItems[J]) + 1);
-      Inc(L, SizeOf(Integer));
+      Inc(L, Length(Item[I].SubItems[J]) + 4);
+      Inc(L, SizeOf(DWORD));
     end;
-    Inc(Size, SizeOf(TItemInfo) - 255 + L);
+    Inc(Size, SizeOf(TLazItemInfo) + L);
   end;
 
   ItemHeader.Size := NtoLE(Size);
@@ -482,17 +518,15 @@ begin
     if ListItem.FSubItems = nil
     then ItemInfo.SubItemCount := 0
     else ItemInfo.SubItemCount := NtoLE(ListItem.SubItems.Count);
-    // TODO: check this
-    // Stream pointers ???
-    ItemInfo.Data := Pointer(NtoLE(PtrInt(ListItem.Data)));
+
     Stream.WriteBuffer(ItemInfo, SizeOf(ItemInfo));
 
     // Write the strings
-    WriteString(ListItem.Caption);
+    Stream.WriteAnsiString(ListItem.Caption);
     
     for J := 0 to ItemInfo.SubItemCount - 1 do
     begin
-      WriteString(ListItem.SubItems[J]);
+      Stream.WriteAnsiString(ListItem.SubItems[J]);
     end;
   end;
   
