@@ -577,10 +577,12 @@ function TSynHighlighterAttributes.LoadFromBorlandRegistry(rootKey: HKEY;
   //     Underline: fsUnderline yes/no, 0/True (string)
   //     Default Foreground: use default foreground (clBlack) yes/no, False/-1 (string)
   //     Default Background: use default backround (clWhite) yes/no, False/-1 (string)
+{$IFNDEF SYN_LAZARUS}
 const
   Pal16: array [0..15] of TColor = (clBlack, clMaroon, clGreen, clOlive,
           clNavy, clPurple, clTeal, clLtGray, clDkGray, clRed, clLime,
           clYellow, clBlue, clFuchsia, clAqua, clWhite);
+{$ENDIF}
 
   function LoadOldStyle(rootKey: HKEY; attrKey, attrName: string): boolean;
   var

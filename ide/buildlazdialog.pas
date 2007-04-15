@@ -716,13 +716,7 @@ var
   TxtH: Integer;
   CurRect: TRect;
   ImgIndex: Integer;
-  CurIcon: TBitmap;
-  Mask: TBitMap;
   mm: TMakeMode;
-  IconWidth: Integer;
-  IconHeight: Integer;
-  IconRect: TRect;
-  DestRect: TRect;
 begin
   if (Index<0) or (Index>=Options.Count) then exit;
   CurItem:=Options.Items[Index];

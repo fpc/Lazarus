@@ -20,7 +20,7 @@
 
 const
   // bad window handle. 0 is reserverd by DesktopWindow
-  NoLockedWindow: HWND = $FFFFFFFF;
+  NoLockedWindow: HWND = High(PtrInt);
   
 { TDragImageList }
 

@@ -56,6 +56,8 @@ begin
     True : gtk_combo_box_popup(Combo);
     False: gtk_combo_box_popdown(Combo);
   end;
+  
+  Result:=true;
 end;
 
 function TGtk2WidgetSet.SetComboMinDropDownSize(Handle: HWND; MinItemsWidth,

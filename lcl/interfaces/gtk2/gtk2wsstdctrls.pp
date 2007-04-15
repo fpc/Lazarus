@@ -775,7 +775,6 @@ var
   AChild: PGtkObject;
   AButton: PGtkObject;
   APrivate: PGtkComboBoxPrivate;
-  AMenu: PGtkMenu;
   BtnPressID: guint;
   HandlerID: guint;
 begin
@@ -1024,7 +1023,6 @@ class procedure TGtk2WSCustomComboBox.SetReadOnly(
 var
   WidgetInfo: PWidgetInfo;
   Entry: PGtkWidget;
-  Start: Integer;
 begin
   WidgetInfo := GetWidgetInfo(Pointer(ACustomComboBox.Handle));
 
@@ -1032,7 +1030,6 @@ begin
     Entry := GTK_BIN(WidgetInfo^.CoreWidget)^.child;
     gtk_entry_set_editable(PGtkEntry(Entry), not NewReadOnly);
   end;
-
 end;
 
 class function TGtk2WSCustomComboBox.GetItems(const ACustomComboBox: TCustomComboBox
