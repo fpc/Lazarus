@@ -135,10 +135,6 @@ msgstr "Definisikan Makro %s"
 msgid "Define macro carbon1"
 msgstr "Definisikan makro carbon1"
 
-#: codetoolsstrconsts:ctsdefinemacrognome2
-msgid "Define macro gnome2"
-msgstr "Definisikan makro gnome2"
-
 #: codetoolsstrconsts:ctsdefinemacrogtk1
 msgid "Define macro gtk1"
 msgstr "Definisikan makro gtk1"
@@ -215,10 +211,6 @@ msgstr "Direktori IDEIntf"
 msgid "Identifier %s already defined"
 msgstr "Pengenal %s sudah didefinisikan"
 
-#: codetoolsstrconsts:ctsiflclwidgettypeequalsgnome2
-msgid "If LCLWidgetType=gnome2 then"
-msgstr "Jika LCLWidgetType=gnome2 lalu"
-
 #: codetoolsstrconsts:ctsiflclwidgettypeequalsgtk2
 msgid "If LCLWidgetType=gtk2 then"
 msgstr "Jika LCLWidgetType=gtk2 lalu"
@@ -234,6 +226,14 @@ msgstr "Jika TargetOS<>SrcOS"
 #: codetoolsstrconsts:ctsiftargetosisnotwin32
 msgid "If TargetOS<>win32 then"
 msgstr "Jika TargetOS<>win32 lalu"
+
+#: codetoolsstrconsts:ctsifdeflinux
+msgid "IfDef Linux"
+msgstr ""
+
+#: codetoolsstrconsts:ctsifdefwindows
+msgid "IfDef Windows"
+msgstr ""
 
 #: codetoolsstrconsts:ctsincludecircledetected
 msgid "Include circle detected"
@@ -358,6 +358,10 @@ msgstr "direktori komponen dalam %s tidak ada atau merupakan dangling symlink"
 #: codetoolsstrconsts:ctsdircomponentisnotdir
 msgid "a directory component in %s is not a directory"
 msgstr "direktori komponen dalam %s bukan sebuah direktori"
+
+#: codetoolsstrconsts:ctsaddsdirtoincludepath
+msgid "adds %s to IncPath"
+msgstr ""
 
 #: codetoolsstrconsts:ctsaddsdirtosourcepath
 msgid "adds %s to SrcPath"
@@ -498,10 +502,6 @@ msgstr "file \"%s\" tidak ada"
 #: codetoolsstrconsts:ctsfileisreadonly
 msgid "file is read only"
 msgstr "file hanya baca"
-
-#: codetoolsstrconsts:ctsgnomeintfdirectory
-msgid "gnome interface directory"
-msgstr "Direktori interface gnome"
 
 #: codetoolsstrconsts:ctsgtk2intfdirectory
 msgid "gtk2 interface directory"

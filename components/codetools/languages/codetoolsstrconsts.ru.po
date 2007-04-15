@@ -133,10 +133,6 @@ msgstr "Определить макрос %s"
 msgid "Define macro carbon1"
 msgstr "Задать макрос carbon1"
 
-#: codetoolsstrconsts:ctsdefinemacrognome2
-msgid "Define macro gnome2"
-msgstr "Определить макрос gnome2"
-
 #: codetoolsstrconsts:ctsdefinemacrogtk1
 msgid "Define macro gtk1"
 msgstr "Определить макрос gtk1"
@@ -213,10 +209,6 @@ msgstr "Каталог интерфейса IDE"
 msgid "Identifier %s already defined"
 msgstr "Идентификатор %s уже определён"
 
-#: codetoolsstrconsts:ctsiflclwidgettypeequalsgnome2
-msgid "If LCLWidgetType=gnome2 then"
-msgstr "Если LCLWidgetType=gnome2 то"
-
 #: codetoolsstrconsts:ctsiflclwidgettypeequalsgtk2
 msgid "If LCLWidgetType=gtk2 then"
 msgstr "Если LCLWidgetType=gtk2 то"
@@ -232,6 +224,14 @@ msgstr "Если TargetOS<>SrcOS2"
 #: codetoolsstrconsts:ctsiftargetosisnotwin32
 msgid "If TargetOS<>win32 then"
 msgstr "Если TargetOS<>win32 то"
+
+#: codetoolsstrconsts:ctsifdeflinux
+msgid "IfDef Linux"
+msgstr ""
+
+#: codetoolsstrconsts:ctsifdefwindows
+msgid "IfDef Windows"
+msgstr ""
 
 #: codetoolsstrconsts:ctsincludecircledetected
 msgid "Include circle detected"
@@ -356,6 +356,10 @@ msgstr "компонент каталога в %s не существует, и�
 #: codetoolsstrconsts:ctsdircomponentisnotdir
 msgid "a directory component in %s is not a directory"
 msgstr "компонент каталога в %s - не каталог"
+
+#: codetoolsstrconsts:ctsaddsdirtoincludepath
+msgid "adds %s to IncPath"
+msgstr ""
 
 #: codetoolsstrconsts:ctsaddsdirtosourcepath
 msgid "adds %s to SrcPath"
@@ -496,10 +500,6 @@ msgstr "файл \"%s\" не существует"
 #: codetoolsstrconsts:ctsfileisreadonly
 msgid "file is read only"
 msgstr "файл только для чтения"
-
-#: codetoolsstrconsts:ctsgnomeintfdirectory
-msgid "gnome interface directory"
-msgstr "каталог интерфейса gnome"
 
 #: codetoolsstrconsts:ctsgtk2intfdirectory
 msgid "gtk2 interface directory"

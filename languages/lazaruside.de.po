@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-03-31 21:19+0100\n"
+"PO-Revision-Date: 2007-04-14 21:40+0100\n"
 "Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -4037,11 +4037,11 @@ msgstr "Formatzeichen für Kommentar einfügen"
 
 #: lazarusidestrconsts:dlginsspaceafter
 msgid "Insert space after"
-msgstr "Knoten nachher einfügen"
+msgstr "Leerzeichen einfügen nach ..."
 
 #: lazarusidestrconsts:dlginsspacefront
 msgid "Insert space in front of"
-msgstr "Vorn Leerzeichen einfügen"
+msgstr "Leerzeichen einfügen vor ..."
 
 #: lazarusidestrconsts:lismenuinserttext
 msgid "Insert text"
@@ -8241,7 +8241,7 @@ msgstr "Das Projekt benötigt das Package %s%s%s.%sEs wurde aber nicht gefunden.
 
 #: lazarusidestrconsts:listheresourceclassdescendsfromprobablythisisatypofor
 msgid "The resource class %s%s%s descends from %s%s%s. Probably this is a typo for TForm."
-msgstr ""
+msgstr "Die Ressourcenklasse %s%s%s ist von %s%s%s abgeleitet. Vielleicht ist das ein Schreibfehler anstelle von TForm."
 
 #: lazarusidestrconsts:lismakeresstrchooseanothername
 msgid "The resourcestring %s%s%s already exists.%sPlease choose another name.%sUse Ignore to add it anyway."

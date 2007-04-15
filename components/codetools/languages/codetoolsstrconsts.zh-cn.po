@@ -133,10 +133,6 @@ msgstr "定义宏 %s"
 msgid "Define macro carbon1"
 msgstr "定义 carbon1 宏"
 
-#: codetoolsstrconsts:ctsdefinemacrognome2
-msgid "Define macro gnome2"
-msgstr "定义 gnome2 宏"
-
 #: codetoolsstrconsts:ctsdefinemacrogtk1
 msgid "Define macro gtk1"
 msgstr "定义 gtk1 宏"
@@ -213,10 +209,6 @@ msgstr "IDEIntf 目录"
 msgid "Identifier %s already defined"
 msgstr "标识符 %s 已经定义"
 
-#: codetoolsstrconsts:ctsiflclwidgettypeequalsgnome2
-msgid "If LCLWidgetType=gnome2 then"
-msgstr "If LCLWidgetType=gnome2 then"
-
 #: codetoolsstrconsts:ctsiflclwidgettypeequalsgtk2
 msgid "If LCLWidgetType=gtk2 then"
 msgstr "If LCLWidgetType=gtk2 then"
@@ -232,6 +224,14 @@ msgstr "If TargetOS<>SrcOS2"
 #: codetoolsstrconsts:ctsiftargetosisnotwin32
 msgid "If TargetOS<>win32 then"
 msgstr "If TargetOS<>win32 then"
+
+#: codetoolsstrconsts:ctsifdeflinux
+msgid "IfDef Linux"
+msgstr ""
+
+#: codetoolsstrconsts:ctsifdefwindows
+msgid "IfDef Windows"
+msgstr ""
 
 #: codetoolsstrconsts:ctsincludecircledetected
 msgid "Include circle detected"
@@ -356,6 +356,10 @@ msgstr "a directory component in %s does not exist or is a dangling symlink"
 #: codetoolsstrconsts:ctsdircomponentisnotdir
 msgid "a directory component in %s is not a directory"
 msgstr "组件目录 %s 不是一个目录"
+
+#: codetoolsstrconsts:ctsaddsdirtoincludepath
+msgid "adds %s to IncPath"
+msgstr ""
 
 #: codetoolsstrconsts:ctsaddsdirtosourcepath
 msgid "adds %s to SrcPath"
@@ -496,10 +500,6 @@ msgstr "文件 \"%s\" 不存在"
 #: codetoolsstrconsts:ctsfileisreadonly
 msgid "file is read only"
 msgstr "文件为只读"
-
-#: codetoolsstrconsts:ctsgnomeintfdirectory
-msgid "gnome interface directory"
-msgstr "gnome 接口目录"
 
 #: codetoolsstrconsts:ctsgtk2intfdirectory
 msgid "gtk2 interface directory"

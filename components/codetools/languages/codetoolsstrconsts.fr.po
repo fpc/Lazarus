@@ -134,10 +134,6 @@ msgstr "Macro définie %s"
 msgid "Define macro carbon1"
 msgstr ""
 
-#: codetoolsstrconsts:ctsdefinemacrognome2
-msgid "Define macro gnome2"
-msgstr ""
-
 #: codetoolsstrconsts:ctsdefinemacrogtk1
 msgid "Define macro gtk1"
 msgstr ""
@@ -214,10 +210,6 @@ msgstr "Répertoire IDEIntf"
 msgid "Identifier %s already defined"
 msgstr "Identificateur %s déjà défini"
 
-#: codetoolsstrconsts:ctsiflclwidgettypeequalsgnome2
-msgid "If LCLWidgetType=gnome2 then"
-msgstr ""
-
 #: codetoolsstrconsts:ctsiflclwidgettypeequalsgtk2
 msgid "If LCLWidgetType=gtk2 then"
 msgstr "si LCLWidgetType=gtk2 alors"
@@ -232,6 +224,14 @@ msgstr ""
 
 #: codetoolsstrconsts:ctsiftargetosisnotwin32
 msgid "If TargetOS<>win32 then"
+msgstr ""
+
+#: codetoolsstrconsts:ctsifdeflinux
+msgid "IfDef Linux"
+msgstr ""
+
+#: codetoolsstrconsts:ctsifdefwindows
+msgid "IfDef Windows"
 msgstr ""
 
 #: codetoolsstrconsts:ctsincludecircledetected
@@ -357,6 +357,10 @@ msgstr "un composant répertoire dans %s n'existe pas ou est un lien symbolique"
 #: codetoolsstrconsts:ctsdircomponentisnotdir
 msgid "a directory component in %s is not a directory"
 msgstr "un composant répertoire dans %s n'est pas un répertoire"
+
+#: codetoolsstrconsts:ctsaddsdirtoincludepath
+msgid "adds %s to IncPath"
+msgstr ""
 
 #: codetoolsstrconsts:ctsaddsdirtosourcepath
 msgid "adds %s to SrcPath"
@@ -497,10 +501,6 @@ msgstr "le fichier \"%s\" n'existe pas"
 #: codetoolsstrconsts:ctsfileisreadonly
 msgid "file is read only"
 msgstr "le fichier est en lecture seule"
-
-#: codetoolsstrconsts:ctsgnomeintfdirectory
-msgid "gnome interface directory"
-msgstr "répertoire interface pour gnome"
 
 #: codetoolsstrconsts:ctsgtk2intfdirectory
 msgid "gtk2 interface directory"

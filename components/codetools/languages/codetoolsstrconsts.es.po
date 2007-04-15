@@ -132,10 +132,6 @@ msgstr "Definir Macro %s"
 msgid "Define macro carbon1"
 msgstr ""
 
-#: codetoolsstrconsts:ctsdefinemacrognome2
-msgid "Define macro gnome2"
-msgstr "Define macro gnome2"
-
 #: codetoolsstrconsts:ctsdefinemacrogtk1
 msgid "Define macro gtk1"
 msgstr "Define macro gtk1"
@@ -212,10 +208,6 @@ msgstr "Directorio IDEIntf"
 msgid "Identifier %s already defined"
 msgstr "Ya fue definido el identificador %s"
 
-#: codetoolsstrconsts:ctsiflclwidgettypeequalsgnome2
-msgid "If LCLWidgetType=gnome2 then"
-msgstr "If LCLWidgetType=gnome2 then"
-
 #: codetoolsstrconsts:ctsiflclwidgettypeequalsgtk2
 msgid "If LCLWidgetType=gtk2 then"
 msgstr "If LCLWidgetType=gtk2 then"
@@ -231,6 +223,14 @@ msgstr ""
 #: codetoolsstrconsts:ctsiftargetosisnotwin32
 msgid "If TargetOS<>win32 then"
 msgstr "If TargetOS<>win32 then"
+
+#: codetoolsstrconsts:ctsifdeflinux
+msgid "IfDef Linux"
+msgstr ""
+
+#: codetoolsstrconsts:ctsifdefwindows
+msgid "IfDef Windows"
+msgstr ""
 
 #: codetoolsstrconsts:ctsincludecircledetected
 msgid "Include circle detected"
@@ -355,6 +355,10 @@ msgstr "componente de un directorio en %s no existe o es un enlace simbólico col
 #: codetoolsstrconsts:ctsdircomponentisnotdir
 msgid "a directory component in %s is not a directory"
 msgstr "un componente de directorio en %s no es un directorio"
+
+#: codetoolsstrconsts:ctsaddsdirtoincludepath
+msgid "adds %s to IncPath"
+msgstr ""
 
 #: codetoolsstrconsts:ctsaddsdirtosourcepath
 msgid "adds %s to SrcPath"
@@ -495,10 +499,6 @@ msgstr "archivo \"%s\" no existe"
 #: codetoolsstrconsts:ctsfileisreadonly
 msgid "file is read only"
 msgstr "archivo es de sólo lectura"
-
-#: codetoolsstrconsts:ctsgnomeintfdirectory
-msgid "gnome interface directory"
-msgstr "directorio de la interfase gnome"
 
 #: codetoolsstrconsts:ctsgtk2intfdirectory
 msgid "gtk2 interface directory"

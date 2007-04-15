@@ -133,10 +133,6 @@ msgstr "Makro %s angeben"
 msgid "Define macro carbon1"
 msgstr "Carbon1-Makro angeben"
 
-#: codetoolsstrconsts:ctsdefinemacrognome2
-msgid "Define macro gnome2"
-msgstr "Gnome2-Makro angeben"
-
 #: codetoolsstrconsts:ctsdefinemacrogtk1
 msgid "Define macro gtk1"
 msgstr "Gtk1-Makro angeben"
@@ -213,10 +209,6 @@ msgstr "IDEIntf-Verzeichnis"
 msgid "Identifier %s already defined"
 msgstr "Bezeichner %s ist bereits definiert"
 
-#: codetoolsstrconsts:ctsiflclwidgettypeequalsgnome2
-msgid "If LCLWidgetType=gnome2 then"
-msgstr "If LCLWidgetType=gnome2 then"
-
 #: codetoolsstrconsts:ctsiflclwidgettypeequalsgtk2
 msgid "If LCLWidgetType=gtk2 then"
 msgstr "If LCLWidgetType=gtk2 then"
@@ -232,6 +224,14 @@ msgstr "If TargetOS<>SrcOS2"
 #: codetoolsstrconsts:ctsiftargetosisnotwin32
 msgid "If TargetOS<>win32 then"
 msgstr "If TargetOS<>win32 then"
+
+#: codetoolsstrconsts:ctsifdeflinux
+msgid "IfDef Linux"
+msgstr ""
+
+#: codetoolsstrconsts:ctsifdefwindows
+msgid "IfDef Windows"
+msgstr ""
 
 #: codetoolsstrconsts:ctsincludecircledetected
 msgid "Include circle detected"
@@ -356,6 +356,10 @@ msgstr "ein Verzeichniseintrag in %s ist nicht vorhanden oder es ist ein toter S
 #: codetoolsstrconsts:ctsdircomponentisnotdir
 msgid "a directory component in %s is not a directory"
 msgstr "ein Verzeichniseintrag in %s ist kein Verzeichnis"
+
+#: codetoolsstrconsts:ctsaddsdirtoincludepath
+msgid "adds %s to IncPath"
+msgstr ""
 
 #: codetoolsstrconsts:ctsaddsdirtosourcepath
 msgid "adds %s to SrcPath"
@@ -496,10 +500,6 @@ msgstr "Datei \"%s\" ist nicht vorhanden"
 #: codetoolsstrconsts:ctsfileisreadonly
 msgid "file is read only"
 msgstr "Datei ist schreibgeschützt"
-
-#: codetoolsstrconsts:ctsgnomeintfdirectory
-msgid "gnome interface directory"
-msgstr "Gnome-Interface-Verzeichnis"
 
 #: codetoolsstrconsts:ctsgtk2intfdirectory
 msgid "gtk2 interface directory"
