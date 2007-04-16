@@ -215,7 +215,7 @@ msgstr "&Propriedades"
 
 #: lazarusidestrconsts:dlgreplacewith
 msgid "&Replace With"
-msgstr "&Substituir com"
+msgstr "&Substituir por"
 
 #: lazarusidestrconsts:lismenurun
 msgid "&Run"
@@ -295,7 +295,7 @@ msgstr "<nenhuma variável selecionada>"
 
 #: lazarusidestrconsts:lisacannotholdtcontrolsyoucanonlyputnonvisualcomponen
 msgid "A %s can not hold TControls.%sYou can only put non visual components on it."
-msgstr "Um %s não pode conter TControls.%sVocê somente pode colocar componentes não-visual nele"
+msgstr "Um %s não pode conter TControls.%sVocê somente pode colocar componentes não-visuais nele"
 
 #: lazarusidestrconsts:lisafilealreadyexistsreplaceit
 msgid "A file %s%s%s already exists.%sReplace it?"
@@ -399,7 +399,7 @@ msgstr "Adicionar Unidade Atual ao Pacote"
 
 #: lazarusidestrconsts:liskmaddactiveunittoproject
 msgid "Add active unit to project"
-msgstr ""
+msgstr "Adicionar unidade atual ao projeto"
 
 #: lazarusidestrconsts:lispckeditaddanitem
 msgid "Add an item"
@@ -407,7 +407,7 @@ msgstr "Adicionar um item"
 
 #: lazarusidestrconsts:liskmaddbreakpoint
 msgid "Add break point"
-msgstr ""
+msgstr "Adicionar ponto de interrupção"
 
 #: lazarusidestrconsts:lismenuaddbreakpoint
 msgid "Add breakpoint"
@@ -467,7 +467,7 @@ msgstr "Adicionar caminhos para pacotes/projetos dependentes"
 
 #: lazarusidestrconsts:dlgaddsemicolon
 msgid "Add semicolon"
-msgstr ""
+msgstr "Adicionar ponto e virgula"
 
 #: lazarusidestrconsts:lisoifaddtofavouriteproperties
 msgid "Add to favourite properties"
@@ -487,7 +487,7 @@ msgstr "Adicionar unidade a clausula uses do pacote. Desative isto somente para 
 
 #: lazarusidestrconsts:liskmaddwatch
 msgid "Add watch"
-msgstr ""
+msgstr "Adicionar observador"
 
 #: lazarusidestrconsts:lismenuaddwatch
 msgid "Add watch ..."
@@ -1063,15 +1063,15 @@ msgstr "Cursor Salta a Seleção"
 
 #: lazarusidestrconsts:lisdiffdlgcaseinsensitive
 msgid "Case Insensitive"
-msgstr "Insensivel a maius/minus"
+msgstr "Nao diferenciar a maiusc./minusc."
 
 #: lazarusidestrconsts:dlgcasesensitive
 msgid "Case Sensitive"
-msgstr "Sensivel a maiusc./minusc."
+msgstr "Diferenciar maiusc./minusc."
 
 #: lazarusidestrconsts:lisfindfilecasesensitive
 msgid "Case sensitive"
-msgstr "Sensivel a maiusc./minusc."
+msgstr "Diferenciar maiusc./minusc."
 
 #: lazarusidestrconsts:rslanguagecatalan
 msgid "Catalan"
@@ -1083,11 +1083,11 @@ msgstr "Centralizar Linha do Cursor"
 
 #: lazarusidestrconsts:liscentercontrolhorizontallyrelativetosibling
 msgid "Center control horizontally relative to the given sibling"
-msgstr "Centralizar controle horizontalmente relativo ao determinado irmão"
+msgstr "Centralizar controle horizontalmente em relacao ao controle-irmão especificado"
 
 #: lazarusidestrconsts:liscentercontrolverticallyrelativetosibling
 msgid "Center control vertically relative to the given sibling"
-msgstr "Centralizar controle verticalmente relativo ao determinado irmão"
+msgstr "Centralizar controle verticalmente em relacao ao controle-irmão especificado"
 
 #: lazarusidestrconsts:liscenterinwindow
 msgid "Center in window"
@@ -1335,7 +1335,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenucloseproject
 msgid "Close Project"
-msgstr ""
+msgstr "Fechar Projeto"
 
 #: lazarusidestrconsts:lismenucloseall
 msgid "Close all editor files"
@@ -5151,7 +5151,7 @@ msgstr "Novo Projeto ..."
 
 #: lazarusidestrconsts:lismenunewprojectfromfile
 msgid "New Project from file ..."
-msgstr "Novo Projeto do arquivo ..."
+msgstr "Novo Projeto do Arquivo ..."
 
 #: lazarusidestrconsts:lisprojaddnewrequirement
 msgid "New Requirement"
