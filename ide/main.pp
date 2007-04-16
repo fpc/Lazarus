@@ -7242,7 +7242,7 @@ begin
   end;
 
   // save main source
-  if (MainUnitInfo<>nil) and (not MainUnitInfo.IsVirtual) then begin
+  if (MainUnitInfo<>nil) and (not (sfDoNotSaveVirtualFiles in flags)) then begin
     if MainUnitInfo.Loaded then begin
       // loaded in source editor
       Result:=DoSaveEditorFile(MainUnitInfo.EditorIndex,
