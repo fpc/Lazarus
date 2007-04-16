@@ -46,7 +46,7 @@ uses
   {$ENDIF}
   // FCL, LCL
   Classes, SysUtils, LCLProc, Forms, Controls, FileUtil, Dialogs, Menus,
-  StringHashList, Translations, GetText,
+  StringHashList, Translations,
   // codetools
   CodeToolManager, CodeCache, BasicCodeTools, DefineTemplates,
   AVL_Tree, Laz_XMLCfg,
@@ -1992,6 +1992,7 @@ var
   FallbackLang: String;
   Language: String;
 begin
+  DebugLn(['TPkgManager.DoTranslatePackage ', APackage.Name, 'from ', APackage.RSTOutputDirectory]);
   if (APackage.RSTOutputDirectory='') then exit;
   Directory:=AppendPathDelim(APackage.GetRSTOutDirectory);
 
