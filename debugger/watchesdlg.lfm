@@ -1,20 +1,19 @@
-object WatchesDlg: TWatchesDlg
-  ActiveControl = lvWatches
-  Caption = 'Watch list'
-  ClientHeight = 200
-  ClientWidth = 500
-  OnClose = FormClose
-  OnCloseQuery = FormCloseQuery
-  OnCreate = FormCreate
-  OnDestroy = FormDestroy
-  PixelsPerInch = 112
-  HorzScrollBar.Page = 499
-  VertScrollBar.Page = 199
+inherited WatchesDlg: TWatchesDlg
   Left = 321
   Height = 200
   Top = 437
   Width = 500
+  HorzScrollBar.Page = 499
+  VertScrollBar.Page = 199
+  ActiveControl = lvWatches
+  Caption = 'Watch list'
+  OnClose = FormClose
+  OnCloseQuery = FormCloseQuery
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
   object lvWatches: TListView
+    Height = 200
+    Width = 500
     Align = alClient
     Columns = <    
       item
@@ -31,11 +30,8 @@ object WatchesDlg: TWatchesDlg
     TabOrder = 0
     ViewStyle = vsReport
     OnDblClick = lvWatchesDblClick
-    OnMouseDown = lvWatchesMouseDown
     OnKeyDown = lvWatchesKeyDown
     OnSelectItem = lvWatchesSelectItem
-    Height = 200
-    Width = 500
   end
   object mnuPopup: TPopupMenu
     left = 100

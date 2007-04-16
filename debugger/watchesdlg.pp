@@ -65,8 +65,6 @@ type
     procedure lvWatchesDblClick(Sender: TObject);
     procedure lvWatchesKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
-    procedure lvWatchesMouseDown(Sender: TOBject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
     procedure lvWatchesSelectItem(Sender: TObject; AItem: TListItem; Selected: Boolean);
     procedure popAddClick(Sender: TObject);
     procedure popPropertiesClick(Sender: TObject);
@@ -174,15 +172,6 @@ begin
   popEnabled.Enabled := Enable;
   popDelete.Enabled := Enable;   
   popEnabled.Checked := Enable and Watch.Enabled;
-end;
-
-procedure TWatchesDlg.lvWatchesMouseDown(Sender: TOBject; Button: TMouseButton;
-  Shift: TShiftState; X, Y: Integer);
-begin
-  {$IFdef MSWindows}
-  {$NOTE TODO repair TListView.PopupMenu and remove this hack}
-  if Button in [mbRight] then mnuPopup.PopUp(X + lvWatches.Left + Left, Y + lvWatches.Top + Top);
-  {$ENDIF}
 end;
 
 procedure TWatchesDlg.lvWatchesDblClick(Sender: TObject);
