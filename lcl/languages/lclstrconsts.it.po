@@ -210,7 +210,7 @@ msgstr "Differenzia maiuscolo e minuscolo"
 
 #: lclstrconsts:ifsvk_clear
 msgid "Clear"
-msgstr "Cancella"
+msgstr "Pulisci"
 
 #: lclstrconsts:rsmtconfirmation
 msgid "Confirmation"

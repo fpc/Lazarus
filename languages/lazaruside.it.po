@@ -840,7 +840,7 @@ msgstr "Segnalibro"
 
 #: lazarusidestrconsts:lisborderspace
 msgid "BorderSpace"
-msgstr ""
+msgstr "Bordi"
 
 #: lazarusidestrconsts:lisaroundborderspacehint
 msgid "Borderspace around the control. The other four borderspaces are added to this value."
@@ -1040,7 +1040,7 @@ msgstr "È possibile solo cambiare la classe dei TComponents."
 
 #: lazarusidestrconsts:dlgcancel
 msgid "Cancel"
-msgstr "Cancella"
+msgstr "Annulla"
 
 #: lazarusidestrconsts:liscancelloadingthiscomponent
 msgid "Cancel loading this component"
@@ -1188,7 +1188,7 @@ msgstr "Scegliere la directory sorgente FPC"
 
 #: lazarusidestrconsts:liskmchoosekeymappingscheme
 msgid "Choose Keymapping scheme"
-msgstr ""
+msgstr "Scegliere lo schema della tastiera"
 
 #: lazarusidestrconsts:lischooselazarussourcedirectory
 msgid "Choose Lazarus Directory"
@@ -1292,19 +1292,19 @@ msgstr "Pulisci la cartella"
 
 #: lazarusidestrconsts:liscleanlazarussource
 msgid "Clean Lazarus Source"
-msgstr "Cancella sorgenti Lazarus"
+msgstr "Pulisci sorgenti Lazarus"
 
 #: lazarusidestrconsts:lislazbuildcleanall
 msgid "Clean all"
-msgstr "Cancella tutto"
+msgstr "Pulisci tutto"
 
 #: lazarusidestrconsts:lismenucleandirectory
 msgid "Clean directory ..."
-msgstr "Cancella directory ..."
+msgstr "Pulisci directory ..."
 
 #: lazarusidestrconsts:liscldircleansubdirectories
 msgid "Clean sub directories"
-msgstr "Cancella le sottodirectory"
+msgstr "Pulisci le sottodirectory"
 
 #: lazarusidestrconsts:liscleanupunitpath
 msgid "Clean up unit path?"
@@ -1312,7 +1312,7 @@ msgstr "Pulisco il percorso dei moduli?"
 
 #: lazarusidestrconsts:lislazbuildcleanbuild
 msgid "Clean+Build"
-msgstr "Cancella+build"
+msgstr "Pulisci+build"
 
 #: lazarusidestrconsts:srvk_clear
 msgid "Clear"
@@ -1328,7 +1328,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisdebugoptionsfrmclearlogonrun
 msgid "Clear log on run"
-msgstr ""
+msgstr "Pulisci il log durante l'esecuzione"
 
 #: lazarusidestrconsts:lisdiskdiffclickononeoftheaboveitemstoseethediff
 msgid "Click on one of the above items to see the diff"
@@ -1364,7 +1364,7 @@ msgstr "Codice"
 
 #: lazarusidestrconsts:lismenuviewcodebrowser
 msgid "Code Browser"
-msgstr ""
+msgstr "Navigatore del codice"
 
 #: lazarusidestrconsts:dlgcodecreation
 msgid "Code Creation"
@@ -1384,7 +1384,7 @@ msgstr "Strumenti del codice"
 
 #: lazarusidestrconsts:liscodebrowser
 msgid "Code browser"
-msgstr ""
+msgstr "Navigatore del codice"
 
 #: lazarusidestrconsts:dlgusecodefolding
 msgid "Code folding"
@@ -1456,15 +1456,15 @@ msgstr "Opzioni dei CodeTool"
 
 #: lazarusidestrconsts:liscollapseallclasses
 msgid "Collapse all classes"
-msgstr ""
+msgstr "Comprimi tutte le classi"
 
 #: lazarusidestrconsts:liscollapseallpackages
 msgid "Collapse all packages"
-msgstr ""
+msgstr "Comprimi tutti i pacchetti"
 
 #: lazarusidestrconsts:liscollapseallunits
 msgid "Collapse all units"
-msgstr ""
+msgstr "Comprimi tutte le unit"
 
 #: lazarusidestrconsts:lismenucollectpofil
 msgid "Collect .po files"
@@ -1656,7 +1656,7 @@ msgstr "Configura \"Build Lazarus\" ..."
 
 #: lazarusidestrconsts:liskmconfigurecustomcomponents
 msgid "Configure custom components"
-msgstr ""
+msgstr "Configura componenti personali"
 
 #: lazarusidestrconsts:lismenuconfigcustomcomps
 msgid "Configure custom components ..."
@@ -1712,7 +1712,7 @@ msgstr "Aiuto sensibile al contesto"
 
 #: lazarusidestrconsts:liskmcontextsensitivehelp
 msgid "Context sensitive help"
-msgstr ""
+msgstr "Aiuto relativo al contesto"
 
 #: lazarusidestrconsts:liscontinue
 msgid "Continue"
@@ -1812,7 +1812,7 @@ msgstr "Copia il nome del file"
 
 #: lazarusidestrconsts:lisldcopyfrominherited
 msgid "Copy from inherited"
-msgstr ""
+msgstr "Copia dall'ereditato"
 
 #: lazarusidestrconsts:lisplistcopymethodtoclipboard
 msgid "Copy method name to the clipboard"
@@ -1880,7 +1880,7 @@ msgstr "Crea Macro FPC e percorsi per una directory progetto fpc"
 
 #: lazarusidestrconsts:lismenucreatelazdocfiles
 msgid "Create LazDoc files"
-msgstr ""
+msgstr "Crea files LazDoc"
 
 #: lazarusidestrconsts:lispckeditcreatemakefile
 msgid "Create Makefile"
@@ -2376,7 +2376,7 @@ msgstr "Non chiudere l'IDE"
 
 #: lazarusidestrconsts:lisdonotclosetheproject
 msgid "Do not close the project"
-msgstr ""
+msgstr "Non chiudere il progetto"
 
 #: lazarusidestrconsts:lispodonotsaveanysessioninfo
 msgid "Do not save any session info"
@@ -2444,7 +2444,7 @@ msgstr "Rilascia file"
 
 #: lazarusidestrconsts:lisduplicatenameacomponentnamedalreadyexistsintheinhe
 msgid "Duplicate name: A component named %s%s%s already exists in the inherited component %s"
-msgstr ""
+msgstr "Nome duplicato: Esiste gi� un componente chiamato  %s%s%s nel componente ereditato %s"
 
 #: lazarusidestrconsts:rslanguagedutch
 msgid "Dutch"
@@ -2792,15 +2792,15 @@ msgstr "Esci senza salvare"
 
 #: lazarusidestrconsts:lisexpandallclasses
 msgid "Expand all classes"
-msgstr ""
+msgstr "Espandi tutte le classi"
 
 #: lazarusidestrconsts:lisexpandallpackages
 msgid "Expand all packages"
-msgstr ""
+msgstr "Espandi tutti i pacchetti"
 
 #: lazarusidestrconsts:lisexpandallunits
 msgid "Expand all units"
-msgstr ""
+msgstr "Espandi tutte le unit"
 
 #: lazarusidestrconsts:lisexpandedfilenameofcurrenteditor
 msgid "Expanded filename of current editor file"
@@ -2808,7 +2808,7 @@ msgstr "Nome file espanso del file dell'editor corrente"
 
 #: lazarusidestrconsts:lisexport
 msgid "Export ..."
-msgstr ""
+msgstr "Esporta ..."
 
 #: lazarusidestrconsts:lisiecoexportfileexistsopenfileandreplaceonlycompileropti
 msgid "Export file %s%s%s exists.%sOpen file and replace only compiler options?%s(Other settings will be kept.)"
@@ -2832,7 +2832,7 @@ msgstr "Estendere il percorso delle unit?"
 
 #: lazarusidestrconsts:liskmexternaltoolssettings
 msgid "External Tools settings"
-msgstr ""
+msgstr "Impostazioni Strumenti sterni"
 
 #: lazarusidestrconsts:srkmecexttool
 msgid "External tool %d"
@@ -3032,7 +3032,7 @@ msgstr "File"
 
 #: lazarusidestrconsts:lisfilter
 msgid "Filter"
-msgstr ""
+msgstr "Filtro"
 
 #: lazarusidestrconsts:lisplistfilterany
 msgid "Filter by matching any part of method"
@@ -3196,7 +3196,7 @@ msgstr "Editor form"
 
 #: lazarusidestrconsts:rsformdatafiledfm
 msgid "Form data file (*.dfm)|*.dfm"
-msgstr ""
+msgstr "Sorgente del form (*.dfm)|*.dfm"
 
 #: lazarusidestrconsts:lisformloaderror
 msgid "Form load error"
@@ -3468,15 +3468,15 @@ msgstr "Vai alla riga di sorgente selezionata"
 
 #: lazarusidestrconsts:srkmgrabkey
 msgid "Grab key"
-msgstr ""
+msgstr "Cattura tasto"
 
 #: lazarusidestrconsts:srkmgrabsecondkey
 msgid "Grab second key"
-msgstr ""
+msgstr "Cattura il secondo tasto"
 
 #: lazarusidestrconsts:dlggrabbercolor
 msgid "Grabber color"
-msgstr "Colore grabber"
+msgstr "Reperisci il colore"
 
 #: lazarusidestrconsts:dlgenvgrid
 msgid "Grid"
@@ -3532,15 +3532,15 @@ msgstr "Handle evento OnClick"
 
 #: lazarusidestrconsts:lisdebugoptionsfrmhandledby
 msgid "Handled by"
-msgstr ""
+msgstr "Modificato da"
 
 #: lazarusidestrconsts:lisdebugoptionsfrmhandledbydebugger
 msgid "Handled by Debugger"
-msgstr ""
+msgstr "Modificato dal Debugger"
 
 #: lazarusidestrconsts:lisdebugoptionsfrmhandledbyprogram
 msgid "Handled by Program"
-msgstr ""
+msgstr "Modificato dal Programma"
 
 #: lazarusidestrconsts:srvk_hanja
 msgid "Hanja"
@@ -3660,7 +3660,7 @@ msgstr "Identificatore"
 
 #: lazarusidestrconsts:lisidentifierbeginswith
 msgid "Identifier begins with ..."
-msgstr ""
+msgstr "L'identificatore comincia con ..."
 
 #: lazarusidestrconsts:dlgedidcomlet
 msgid "Identifier completion"
@@ -3668,7 +3668,7 @@ msgstr "Completamento dell'identificatore"
 
 #: lazarusidestrconsts:lisidentifiercontains
 msgid "Identifier contains ..."
-msgstr ""
+msgstr "L'identificatore contiene ..."
 
 #: lazarusidestrconsts:lismakeresstridentifierlength
 msgid "Identifier length:"
@@ -3752,7 +3752,7 @@ msgstr "Ignora spazi all'inizio delle righe"
 
 #: lazarusidestrconsts:lisdebugoptionsfrmignoretheseexceptions
 msgid "Ignore these exceptions"
-msgstr ""
+msgstr "Ignora questa eccezione"
 
 #: lazarusidestrconsts:lisignoreusetformasancestor
 msgid "Ignore, use TForm as ancestor"
@@ -3840,7 +3840,7 @@ msgstr "Inserisci"
 
 #: lazarusidestrconsts:liskminsertifdef
 msgid "Insert $IFDEF"
-msgstr ""
+msgstr "Inserisci $IFDEF"
 
 #: lazarusidestrconsts:lismenuconditionalselection
 msgid "Insert $IFDEF..."
@@ -4004,7 +4004,7 @@ msgstr "Inserisci in nome corrente"
 
 #: lazarusidestrconsts:liskminsertdateandtime
 msgid "Insert date and time"
-msgstr ""
+msgstr "Inserisci data e ora"
 
 #: lazarusidestrconsts:lismenuinsertcharacter
 msgid "Insert from Character Map"
@@ -4052,7 +4052,7 @@ msgstr "Inserisci il tag di formattazione sottolineato"
 
 #: lazarusidestrconsts:liskminsertusername
 msgid "Insert username"
-msgstr ""
+msgstr "Inserisci il nome utente"
 
 #: lazarusidestrconsts:lislazdochintvartag
 msgid "Insert var formatting tag"
@@ -4060,7 +4060,7 @@ msgstr "Inserisci il tag di formattazione Var"
 
 #: lazarusidestrconsts:liskminspect
 msgid "Inspect"
-msgstr ""
+msgstr "Analizza"
 
 #: lazarusidestrconsts:lismenuinspect
 msgid "Inspect ..."
@@ -4104,11 +4104,11 @@ msgstr "L'installazione del pacchetto %s installera automaticamente i seguenti p
 
 #: lazarusidestrconsts:lisdebugoptionsfrminterface
 msgid "Interface"
-msgstr ""
+msgstr "Interfaccia"
 
 #: lazarusidestrconsts:listcompilerinternalerror
 msgid "Internal compiler error! (%d)"
-msgstr ""
+msgstr "Errore del compilatore ! (%d)"
 
 #: lazarusidestrconsts:dlgintvinsec
 msgid "Interval in secs"
@@ -4332,7 +4332,7 @@ msgstr "Giapponese"
 
 #: lazarusidestrconsts:lisplistjumptoselection
 msgid "Jump To Selection"
-msgstr ""
+msgstr "Salta alla Selezione"
 
 #: lazarusidestrconsts:lismenujumpback
 msgid "Jump back"
@@ -4408,7 +4408,7 @@ msgstr "Tasto"
 
 #: lazarusidestrconsts:srkmkey
 msgid "Key (or 2 keys combination)"
-msgstr ""
+msgstr "Tasto (o combinazione di 2 tasti)"
 
 #: lazarusidestrconsts:dlgkeymappingscheme
 msgid "Key Mapping Scheme"
@@ -4424,7 +4424,7 @@ msgstr "Errori di mappatura tasti"
 
 #: lazarusidestrconsts:liskmkeymappingscheme
 msgid "Keymapping Scheme"
-msgstr ""
+msgstr "Schema della tastiera"
 
 #: lazarusidestrconsts:liscodetoolsoptskeyword
 msgid "Keyword"
@@ -4648,7 +4648,7 @@ msgstr "Livello 3 (livello 2 + incerte)"
 
 #: lazarusidestrconsts:lislevels
 msgid "Levels"
-msgstr ""
+msgstr "Livelli"
 
 #: lazarusidestrconsts:dlgcolibraries
 msgid "Libraries (-Fl):"
@@ -5180,11 +5180,11 @@ msgstr "Nome nuova classe:"
 
 #: lazarusidestrconsts:liskmnewproject
 msgid "New project"
-msgstr ""
+msgstr "Nuovo progetto"
 
 #: lazarusidestrconsts:liskmnewprojectfromfile
 msgid "New project from file"
-msgstr ""
+msgstr "Nuovo progetto da file"
 
 #: lazarusidestrconsts:lispkgeditnewunitnotinunitpath
 msgid "New unit not in unitpath"
@@ -5216,7 +5216,7 @@ msgstr "Non è stata trovata nessuna sezione ResourceString"
 
 #: lazarusidestrconsts:lisnobackupfiles
 msgid "No backup files"
-msgstr ""
+msgstr "Non fare il backup dei files"
 
 #: lazarusidestrconsts:lisnochange
 msgid "No change"

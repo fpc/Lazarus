@@ -248,7 +248,7 @@ msgstr "Pulisci"
 
 #: objinspstrconsts:sccsiledtclear
 msgid "Clear"
-msgstr "Cancella"
+msgstr "Pulisci"
 
 #: objinspstrconsts:oisclearpicture
 msgid "Clear picture"
