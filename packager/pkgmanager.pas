@@ -1992,7 +1992,7 @@ var
   FallbackLang: String;
   Language: String;
 begin
-  DebugLn(['TPkgManager.DoTranslatePackage ', APackage.Name, 'from ', APackage.RSTOutputDirectory]);
+  //DebugLn(['TPkgManager.DoTranslatePackage ', APackage.Name, 'from ', APackage.RSTOutputDirectory]);
   if (APackage.RSTOutputDirectory='') then exit;
   Directory:=AppendPathDelim(APackage.GetRSTOutDirectory);
 
