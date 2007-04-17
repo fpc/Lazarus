@@ -20,6 +20,8 @@ http://developer.apple.com/documentation/mac/pdf/MacintoshToolboxEssentials.pdf
 *)
 
 const
+  MK_ENTER     = $24;
+  MK_SPACE     = $31;
   MK_ESC       = $35;
   MK_F1        = $7A;
   MK_F2        = $78;

@@ -1,6 +1,6 @@
 {
  /***************************************************************************
-                    carbonconsts.pp  -  Carbon string constants
+                    carbondbgconsts.pp  -  Carbon string constants
  ***************************************************************************/
 
  *****************************************************************************
@@ -17,22 +17,33 @@
  *****************************************************************************
  }
 
-unit CarbonConsts;
+unit CarbonDbgConsts;
 
 {$mode objfpc}{$H+}
 
 interface
 
 const
+  SCarbonWSPrefix = 'TCarbonWidgetSet.';
+   
   SCreateWidget = 'CreateWidget';
   SDestroyWidget = 'DestroyWidget';
   SInvalidate = 'Invalidate';
   SEnable = 'Enable';
   SSetColor = 'SetColor';
+  SGetText = 'GetText';
   SSetText = 'SetText';
+  SSetReadOnly = 'SetReadOnly';
+  
+  SShowModal = 'ShowModal';
   
   SCreate = 'Create';
   SDestroy = 'Destroy';
+  
+  SGetCurrentProc = 'GetCurrentProcess';
+  SShowHideProc = 'ShowHideProcess';
+  
+  SGetKeyboardFocus = 'GetKeyboardFocus';
   
   SSetControlProp = 'SetControlProperty';
 
@@ -40,7 +51,9 @@ const
   
   SCreateBevelButton = 'SCreateBevelButtonControl';
 
+  SActivateWindow = 'ActivateWindow';
   SGetWindowBounds = 'GetWindowBounds';
+  
   SViewForMouse = 'HIViewGetViewForMouseEvent';
   SViewVisible  = 'HIViewSetVisible';
   SViewConvert = 'HIViewConvertPoint';
@@ -48,11 +61,18 @@ const
   SViewNeedsDisplay = 'HiViewSetNeedsDisplay';
   SViewNeedsDisplayRect = 'HiViewSetNeedsDisplayInRect';
   SViewAddView = 'HIViewAddSubview';
+  SViewSetScrollBarAutoHide = 'HIScrollViewSetScrollBarAutoHide';
+  
+  SSetTXNControls = 'TXNSetTXNObjectControls';
   
   SEnableControl = 'EnableControl';
   SDisableControl = 'DisableControl';
   
+  SChangeMenuItemAttrs = 'ChangeMenuItemAttributes';
+  SChangeMenuAttrs = 'ChangeMenuAttributes';
+  
   SChangeWindowAttrs = 'ChangeWindowAttributes';
+  SSetModality = 'SetWindowModality';
   
   SGetData = 'GetControlData';
   SSetData = 'GetControlData';
@@ -66,6 +86,9 @@ const
   
   SControlFont = 'kControlFontStyleTag';
   
+  SGetThemeMetric = 'GetThemeMetric';
+  
+  SGetUnjustifiedBounds = 'ATSUGetUnjustifiedBounds';
   SCreateStyle = 'ATSUCreateStyle';
   SDisposeStyle = 'ATSUDisposeStyle';
 

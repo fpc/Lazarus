@@ -48,9 +48,6 @@ function MakeEventSpec(AClass, AKind: UInt32): EventTypeSpec; inline;
 function MakeFourCC(AFourCC: TFourCC): FourCharCode; inline;
 
 // Some missing macros (params differ)
-function InstallMenuEventHandler(inMenu: MenuRef;
-  inHandler: EventHandlerUPP; inNumTypes: UInt32; inList: EventTypeSpecPtr;
-  inUserData: Pointer; outRef: EventHandlerRefPtr): Boolean;
 function InstallControlEventHandler(inControl: ControlRef;
   inHandler: EventHandlerUPP; inNumTypes: UInt32; inList: EventTypeSpecPtr;
   inUserData: Pointer; outRef: EventHandlerRefPtr): Boolean;
@@ -65,40 +62,66 @@ function InstallApplicationEventHandler(inHandler: EventHandlerUPP;
 implementation
 
 uses
-  CarbonProc, CarbonConsts;
+  CarbonProc, CarbonDbgConsts;
 
+{------------------------------------------------------------------------------
+  Name:    MakeEventSpec
+  Params:  AClass - Event class
+           AKind  - Event kind
+  Returns: Event type specification
+ ------------------------------------------------------------------------------}
 function MakeEventSpec(AClass, AKind: TFourCC): EventTypeSpec; inline;
 begin
   Result.eventClass := FourCharCode(AClass);
   Result.eventKind := FourCharCode(AKind);
 end;
 
+{------------------------------------------------------------------------------
+  Name:    MakeEventSpec
+  Params:  AClass - Event class
+           AKind  - Event kind
+  Returns: Event type specification
+ ------------------------------------------------------------------------------}
 function MakeEventSpec(AClass, AKind: UInt32): EventTypeSpec; inline;
 begin
   Result.eventClass := AClass;
   Result.eventKind := AKind;
 end;
 
+{------------------------------------------------------------------------------
+  Name:    MakeEventSpec
+  Params:  AClass - Event class
+           AKind  - Event kind
+  Returns: Event type specification
+ ------------------------------------------------------------------------------}
 function MakeEventSpec(AClass: TFourCC; AKind: UInt32): EventTypeSpec; inline;
 begin
   Result.eventClass := FourCharCode(AClass);
   Result.eventKind := AKind;
 end;
 
+{------------------------------------------------------------------------------
+  Name:    MakeFourCC
+  Params:  AFourCC - Four char code
+  Returns: Four char code
+ ------------------------------------------------------------------------------}
 function MakeFourCC(AFourCC: TFourCC): FourCharCode; inline;
 begin
   Result := FourCharCode(AFourCC);
 end;
 
-function InstallMenuEventHandler(inMenu: MenuRef; inHandler: EventHandlerUPP;
-  inNumTypes: UInt32; inList: EventTypeSpecPtr; inUserData: Pointer;
-  outRef: EventHandlerRefPtr): Boolean;
-begin
-  Result := not OSError(
-    InstallEventHandler(GetMenuEventTarget(inMenu), inHandler, inNumTypes,
-      inList, inUserData, outRef), 'InstallMenuEventHandler', SInstallEvent);
-end;
-
+{------------------------------------------------------------------------------
+  Name:    InstallControlEventHandler
+  Params:  inControl  - Event target control
+           inHandler  - Event handler
+           inNumTypes - Count of event types in list
+           inList     - The list of event types
+           inUserData - User data passed to handler
+           outRef     - Reference to handler for disposing
+  Returns: If the function succeeds
+  
+  Installs the handler for the specified event types on the control
+ ------------------------------------------------------------------------------}
 function InstallControlEventHandler(inControl: ControlRef;
   inHandler: EventHandlerUPP; inNumTypes: UInt32; inList: EventTypeSpecPtr;
   inUserData: Pointer; outRef: EventHandlerRefPtr): Boolean;
@@ -108,6 +131,18 @@ begin
       inList, inUserData, outRef), 'InstallControlEventHandler', SInstallEvent);
 end;
 
+{------------------------------------------------------------------------------
+  Name:    InstallWindowEventHandler
+  Params:  inWindow   - Event target window
+           inHandler  - Event handler
+           inNumTypes - Count of event types in list
+           inList     - The list of event types
+           inUserData - User data passed to handler
+           outRef     - Reference to handler for disposing
+  Returns: If the function succeeds
+
+  Installs the handler for the specified event types on the window
+ ------------------------------------------------------------------------------}
 function InstallWindowEventHandler(inWindow: WindowRef;
   inHandler: EventHandlerUPP; inNumTypes: UInt32; inList: EventTypeSpecPtr;
   inUserData: Pointer; outRef: EventHandlerRefPtr): Boolean;
@@ -117,6 +152,17 @@ begin
       inList, inUserData, outRef), 'InstallWindowEventHandler', SInstallEvent);
 end;
 
+{------------------------------------------------------------------------------
+  Name:    InstallApplicationEventHandler
+  Params:  inHandler  - Event handler
+           inNumTypes - Count of event types in list
+           inList     - The list of event types
+           inUserData - User data passed to handler
+           outRef     - Reference to handler for disposing
+  Returns: If the function succeeds
+
+  Installs the handler for the specified event types on the application
+ ------------------------------------------------------------------------------}
 function InstallApplicationEventHandler(inHandler: EventHandlerUPP;
   inNumTypes: UInt32; inList: EventTypeSpecPtr; inUserData: Pointer;
   outRef: EventHandlerRefPtr): Boolean;

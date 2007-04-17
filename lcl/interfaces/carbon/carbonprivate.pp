@@ -296,9 +296,13 @@ type
   
 procedure RaiseCreateWidgetError(AControl: TWinControl);
 
+function GetCarbonWidget(AWidget: Pointer): TCarbonWidget;
+function GetCarbonWindow(AWidget: WindowRef): TCarbonWindow;
+function GetCarbonControl(AWidget: ControlRef): TCarbonControl;
+
 implementation
 
-uses InterfaceBase, CarbonProc, CarbonConsts, CarbonUtils, CarbonWSStdCtrls,
+uses InterfaceBase, CarbonProc, CarbonDbgConsts, CarbonUtils, CarbonWSStdCtrls,
   CarbonStrings, CarbonCanvas, CarbonGDIObjects;
 
 {------------------------------------------------------------------------------
@@ -313,14 +317,61 @@ begin
     [AControl.Name, AControl.ClassName]);
 end;
 
+{------------------------------------------------------------------------------
+  Name:    GetCarbonWidget
+  Params:  AWidget - Pointer to control or window widget
+  Returns: The Carbon widget
+
+  Retrieves widget for specified Carbon control or window
+ ------------------------------------------------------------------------------}
+function GetCarbonWidget(AWidget: Pointer): TCarbonWidget;
+begin
+  if AWidget = nil then
+  begin
+    Result := nil;
+    Exit;
+  end;
+
+  if IsValidControlHandle(AWidget) then
+    Result := GetCarbonControl(ControlRef(AWidget))
+  else
+    // there is no (cheap) check for windows so assume a window
+    // when it is not a control.
+    Result := GetCarbonWindow(WindowRef(AWidget));
+end;
+
+{------------------------------------------------------------------------------
+  Name:    GetCarbonWindow
+  Params:  AWidget - Pointer to window widget
+  Returns: The Carbon window
+
+  Retrieves the Carbon window for specified window widget
+ ------------------------------------------------------------------------------}
+function GetCarbonWindow(AWidget: WindowRef): TCarbonWindow;
+begin
+  if GetWindowProperty(AWidget, LAZARUS_FOURCC, WIDGETINFO_FOURCC,
+    SizeOf(TCarbonWidget), nil, @Result) <> noErr then Result := nil;
+end;
+
+{------------------------------------------------------------------------------
+  Name:    GetCarbonControl
+  Params:  AWidget - Pointer to control widget
+  Returns: The Carbon control
+
+  Retrieves the Carbon control for specified control widget
+ ------------------------------------------------------------------------------}
+function GetCarbonControl(AWidget: ControlRef): TCarbonControl;
+begin
+  if GetControlProperty(AWidget, LAZARUS_FOURCC, WIDGETINFO_FOURCC,
+    SizeOf(TCarbonWidget), nil, @Result) <> noErr then Result := nil;
+end;
+
 // Store state of key modifiers so that we can emulate keyup/keydown
 // of keys like control, option, command, caps lock, shift
 var PrevKeyModifiers: UInt32 = 0;
 
 // Stores mouse up message to be fired on control hit after value is updated
 var SavedMouseUpMsg: TLMMouse;
-
-{$I mackeycodes.inc}
 
 {$I carbonprivatecommon.inc}
 {$I carbonprivatecontrol.inc}
@@ -373,9 +424,8 @@ var
 begin
   Attrs := kControlSupportsEmbedding or kControlSupportsFocus or
     kControlWantsActivate or kControlHandlesTracking or
-    kControlHasSpecialBackground or kControlGetsFocusOnClick or
-    kControlSupportsSetCursor or kControlSupportsContextualMenus or
-    kControlSupportsClickActivation;
+    kControlGetsFocusOnClick or kControlSupportsSetCursor or
+    kControlSupportsContextualMenus or kControlSupportsClickActivation;
   
   if OSError(
     CreateUserPaneControl(GetTopParentWindow, ParamsToCarbonRect(AParams), Attrs, Control),
@@ -507,8 +557,6 @@ end;
 {------------------------------------------------------------------------------
   Method:  TCarbonStatusBar.GetValidEvents
   Returns: Set of events with installed handlers
-
-  Returns the set of events with installed handlers
  ------------------------------------------------------------------------------}
 class function TCarbonStatusBar.GetValidEvents: TCarbonControlEvents;
 begin
@@ -665,8 +713,6 @@ end;
 {------------------------------------------------------------------------------
   Method:  TCarbonCustomCheckBox.GetValidEvents
   Returns: Set of events with installed handlers
-
-  Returns the set of events with installed handlers
  ------------------------------------------------------------------------------}
 class function TCarbonCustomCheckBox.GetValidEvents: TCarbonControlEvents;
 begin
@@ -825,8 +871,6 @@ end;
 {------------------------------------------------------------------------------
   Method:  TCarbonCustomButton.GetValidEvents
   Returns: Set of events with installed handlers
-
-  Returns the set of events with installed handlers
  ------------------------------------------------------------------------------}
 class function TCarbonCustomButton.GetValidEvents: TCarbonControlEvents;
 begin
@@ -1047,8 +1091,6 @@ end;
 {------------------------------------------------------------------------------
   Method:  TCarbonTrackBar.GetValidEvents
   Returns: Set of events with installed handlers
-
-  Returns the set of events with installed handlers
  ------------------------------------------------------------------------------}
 class function TCarbonTrackBar.GetValidEvents: TCarbonControlEvents;
 begin
@@ -1130,8 +1172,6 @@ end;
 {------------------------------------------------------------------------------
   Method:  TCarbonScrollBar.GetValidEvents
   Returns: Set of events with installed handlers
-
-  Returns the set of events with installed handlers
  ------------------------------------------------------------------------------}
 class function TCarbonScrollBar.GetValidEvents: TCarbonControlEvents;
 begin

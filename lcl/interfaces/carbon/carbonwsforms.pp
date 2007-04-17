@@ -125,7 +125,7 @@ type
 implementation
 
 uses
-  CarbonProc;
+  CarbonProc, CarbonDbgConsts;
 
 { TCarbonWSCustomForm }
 
@@ -150,11 +150,14 @@ end;
   Closes modal window in Carbon interface
  ------------------------------------------------------------------------------}
 class procedure TCarbonWSCustomForm.CloseModal(const ACustomForm: TCustomForm);
+const
+  SName = 'CloseModal';
 begin
-  if not CheckHandle(ACustomForm, Self, 'CloseModal') then Exit;
+  if not CheckHandle(ACustomForm, Self, SName) then Exit;
   
-  FPCMacOSAll.SetWindowModality(AsWindowRef(ACustomForm.Handle),
-    kWindowModalityNone, nil);
+  OSError(
+    SetWindowModality(AsWindowRef(ACustomForm.Handle), kWindowModalityNone, nil),
+    Self, SName, SSetModality);
 end;
 
 {------------------------------------------------------------------------------
@@ -165,10 +168,12 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TCarbonWSCustomForm.ShowModal(const ACustomForm: TCustomForm);
 begin
-  if not CheckHandle(ACustomForm, Self, 'ShowModal') then Exit;
+  if not CheckHandle(ACustomForm, Self, SShowModal) then Exit;
 
-  SetWindowModality(AsWindowRef(ACustomForm.Handle),
-    kWindowModalityAppModal, nil);
+  OSError(
+    SetWindowModality(AsWindowRef(ACustomForm.Handle), kWindowModalityAppModal, nil),
+    Self, SShowModal, SSetModality);
+    
   SelectWindow(AsWindowRef(ACustomForm.Handle));
 end;
 
@@ -177,14 +182,16 @@ end;
   Params:  AForm        - LCL custom form
            ABorderIcons - Border icons
 
-  Sets the border icons of window in Carbon interface
+  Sets the border icons of window  in Carbon interface
  ------------------------------------------------------------------------------}
 class procedure TCarbonWSCustomForm.SetBorderIcons(const AForm: TCustomForm;
   const ABorderIcons: TBorderIcons);
 var
   AttrsSet, AttrsClear: WindowAttributes;
+const
+  SName = 'SetBorderIcons';
 begin
-  if not CheckHandle(AForm, Self, 'SetBorderIcons') then Exit;
+  if not CheckHandle(AForm, Self, SName) then Exit;
 
   AttrsSet := 0;
   AttrsClear := 0;
@@ -204,9 +211,17 @@ begin
   else
     AttrsClear := AttrsClear or kWindowCloseBoxAttribute;
     
-  ChangeWindowAttributes(AsWindowRef(AForm.Handle), AttrsSet, AttrsClear);
+  OSError(ChangeWindowAttributes(AsWindowRef(AForm.Handle), AttrsSet, AttrsClear),
+    Self, SName, SChangeWindowAttrs);
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonWSCustomForm.SetFormBorderStyle
+  Params:  AForm           - LCL custom form
+           AFormBorderStyle - Border style
+
+  Sets the border style of window in Carbon interface
+ ------------------------------------------------------------------------------}
 class procedure TCarbonWSCustomForm.SetFormBorderStyle(const AForm: TCustomForm;
   const AFormBorderStyle: TFormBorderStyle);
 begin

@@ -77,6 +77,9 @@ type
   public
     function GetItemIndex: Integer;
     function SetItemIndex(AIndex: Integer): Boolean;
+    
+    procedure Insert(AIndex: Integer; const S: String);
+    procedure Remove(AIndex: Integer);
   end;
 
   { TCarbonEdit }
@@ -115,10 +118,15 @@ type
 
 implementation
 
-uses CarbonProc, CarbonConsts, CarbonUtils, CarbonStrings, CarbonWSStdCtrls;
+uses CarbonProc, CarbonDbgConsts, CarbonUtils, CarbonStrings, CarbonWSStdCtrls;
 
 { TCarbonControlWithEdit }
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonControlWithEdit.LimitTextLength
+
+  Limits the text length to maximum length
+ ------------------------------------------------------------------------------}
 procedure TCarbonControlWithEdit.LimitTextLength;
 var
   S: String;
@@ -138,21 +146,39 @@ begin
   end;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonControlWithEdit.AdaptCharCase
+
+  Change text char case
+ ------------------------------------------------------------------------------}
 procedure TCarbonControlWithEdit.AdaptCharCase;
 begin
   // TODO
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonControlWithEdit.GetEditPart
+  Returns: Control part code of edit control
+ ------------------------------------------------------------------------------}
 class function TCarbonControlWithEdit.GetEditPart: ControlPartCode;
 begin
   Result := kControlEntireControl;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonControlWithEdit.GetValidEvents
+  Returns: Set of events with installed handlers
+ ------------------------------------------------------------------------------}
 class function TCarbonControlWithEdit.GetValidEvents: TCarbonControlEvents;
 begin
   Result := [cceTextDidChange];
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonControlWithEdit.TextDidChange
+
+  Text changed event handler
+ ------------------------------------------------------------------------------}
 procedure TCarbonControlWithEdit.TextDidChange;
 var
   Msg: TLMessage;
@@ -179,11 +205,15 @@ function TCarbonControlWithEdit.GetSelStart(var ASelStart: Integer): Boolean;
 var
   SelData: ControlEditTextSelectionRec;
 begin
-  Result := GetControlData(ControlRef(Widget), GetEditPart,
-    kControlEditTextSelectionTag, SizeOf(ControlEditTextSelectionRec),
-    @SelData, nil) = noErr;
+  Result := False;
+  
+  if OSError(
+    GetControlData(ControlRef(Widget), GetEditPart, kControlEditTextSelectionTag,
+      SizeOf(ControlEditTextSelectionRec), @SelData, nil),
+    Self, 'GetSelStart', SGetData) then Exit;
 
-  if Result then ASelStart := SelData.SelStart;
+  ASelStart := SelData.SelStart;
+  Result := True;
 end;
 
 {------------------------------------------------------------------------------
@@ -197,11 +227,15 @@ function TCarbonControlWithEdit.GetSelLength(var ASelLength: Integer): Boolean;
 var
   SelData: ControlEditTextSelectionRec;
 begin
-  Result := GetControlData(ControlRef(Widget), GetEditPart,
-    kControlEditTextSelectionTag, SizeOf(ControlEditTextSelectionRec),
-    @SelData, nil) = noErr;
+  Result := False;
+  
+  if OSError(
+    GetControlData(ControlRef(Widget), GetEditPart, kControlEditTextSelectionTag,
+    SizeOf(ControlEditTextSelectionRec), @SelData, nil),
+    Self, 'GetSelLength', SGetData) then Exit;
 
-  if Result then ASelLength := SelData.SelEnd - SelData.SelStart;
+  ASelLength := SelData.SelEnd - SelData.SelStart;
+  Result := True;
 end;
 
 {------------------------------------------------------------------------------
@@ -214,21 +248,31 @@ end;
 function TCarbonControlWithEdit.SetSelStart(ASelStart: Integer): Boolean;
 var
   SelData: ControlEditTextSelectionRec;
+const
+  SName = 'SetSelStart';
 begin
-  Result := GetControlData(ControlRef(Widget), GetEditPart,
-    kControlEditTextSelectionTag, SizeOf(ControlEditTextSelectionRec),
-    @SelData, nil) = noErr;
+  Result := False;
+  
+  if OSError(
+    GetControlData(ControlRef(Widget), GetEditPart, kControlEditTextSelectionTag,
+      SizeOf(ControlEditTextSelectionRec), @SelData, nil),
+    Self, SName, SGetData) then Exit;
 
-  if Result then
+  if SelData.SelStart = ASelStart then
   begin
-    if SelData.SelStart = ASelStart then Exit;
-
-    SelData.SelEnd := (SelData.SelEnd - SelData.SelStart) + ASelStart;
-    SelData.SelStart := ASelStart;
-    Result := SetControlData(ControlRef(Widget), GetEditPart,
-      kControlEditTextSelectionTag, SizeOf(ControlEditTextSelectionRec),
-      @SelData) = noErr;
+    Result := True;
+    Exit;
   end;
+
+  SelData.SelEnd := (SelData.SelEnd - SelData.SelStart) + ASelStart;
+  SelData.SelStart := ASelStart;
+  
+  if OSError(
+    SetControlData(ControlRef(Widget), GetEditPart, kControlEditTextSelectionTag,
+      SizeOf(ControlEditTextSelectionRec), @SelData),
+    Self, SName, SSetData) then Exit;
+      
+  Result := True;
 end;
 
 {------------------------------------------------------------------------------
@@ -241,29 +285,49 @@ end;
 function TCarbonControlWithEdit.SetSelLength(ASelLength: Integer): Boolean;
 var
   SelData: ControlEditTextSelectionRec;
+const
+  SName = 'SetSelLength';
 begin
-  Result := GetControlData(ControlRef(Widget), GetEditPart,
-    kControlEditTextSelectionTag, SizeOf(ControlEditTextSelectionRec),
-    @SelData, nil) = noErr;
+  Result := False;
 
-  if Result then
+  if OSError(
+    GetControlData(ControlRef(Widget), GetEditPart, kControlEditTextSelectionTag,
+      SizeOf(ControlEditTextSelectionRec), @SelData, nil),
+    Self, SName, SGetData) then Exit;
+
+  if SelData.SelEnd = SelData.SelStart + ASelLength then
   begin
-    if SelData.SelEnd = SelData.SelStart + ASelLength then Exit;
-
-    SelData.SelEnd := SelData.SelStart + ASelLength;
-    Result := SetControlData(ControlRef(Widget), GetEditPart,
-      kControlEditTextSelectionTag, SizeOf(ControlEditTextSelectionRec),
-      @SelData) = noErr;
+    Result := True;
+    Exit;
   end;
+
+  SelData.SelEnd := SelData.SelStart + ASelLength;
+  
+  if OSError(
+    SetControlData(ControlRef(Widget), GetEditPart, kControlEditTextSelectionTag,
+      SizeOf(ControlEditTextSelectionRec), @SelData),
+    Self, SName, SSetData) then Exit;
+
+  Result := True;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonControlWithEdit.GetText
+  Params:  S - Text
+  Returns: If the function succeeds
+
+  Gets the text of edit control
+ ------------------------------------------------------------------------------}
 function TCarbonControlWithEdit.GetText(var S: String): Boolean;
 var
   CFString: CFStringRef;
 begin
   Result := False;
-  if GetControlData(ControlRef(Widget), GetEditPart, kControlEditTextCFStringTag,
-    SizeOf(CFStringRef), @CFString, nil) <> noErr then Exit;
+  
+  if OSError(
+    GetControlData(ControlRef(Widget), GetEditPart, kControlEditTextCFStringTag,
+      SizeOf(CFStringRef), @CFString, nil),
+    Self, SGetText, SGetData) then Exit;
   try
     S := CFStringToStr(CFString);
     Result := True;
@@ -272,15 +336,27 @@ begin
   end;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonControlWithEdit.SetText
+  Params:  S - New text
+  Returns: If the function succeeds
+
+  Sets the text of edit control
+ ------------------------------------------------------------------------------}
 function TCarbonControlWithEdit.SetText(const S: String): Boolean;
 var
   CFString: CFStringRef;
 begin
   Result := False;
+  
   CreateCFString(S, CFString);
   try
-    Result := SetControlData(ControlRef(Widget), GetEditPart,
-      kControlEditTextCFStringTag, SizeOf(CFStringRef), @CFString) = noErr;
+    if OSError(
+      SetControlData(ControlRef(Widget), GetEditPart, kControlEditTextCFStringTag,
+        SizeOf(CFStringRef), @CFString),
+      Self, SSetText, SSetData) then Exit;
+      
+    Result := True;
   finally
     FreeCFString(CFString);
   end;
@@ -288,6 +364,12 @@ end;
 
 { TCarbonComboBox }
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonComboBox.CreateWidget
+  Params:  AParams - Creation parameters
+
+  Creates Carbon combo box
+ ------------------------------------------------------------------------------}
 procedure TCarbonComboBox.CreateWidget(const AParams: TCreateParams);
 var
   Control: ControlRef;
@@ -295,14 +377,13 @@ var
 begin
   CreateCFString(AParams.Caption, CFString);
   try
-    if HIComboBoxCreate(ParamsToHIRect(AParams), CFString, nil, nil,
-      kHIComboBoxAutoSizeListAttribute, Control) = noErr then
-    begin
-      Widget := Control;
+    if OSError(HIComboBoxCreate(ParamsToHIRect(AParams), CFString, nil, nil,
+        kHIComboBoxAutoSizeListAttribute, Control),
+      Self, SCreateWidget, 'HIComboBoxCreate')then RaiseCreateWidgetError(LCLObject);
 
-      inherited;
-    end
-    else RaiseCreateWidgetError(LCLObject);
+    Widget := Control;
+
+    inherited;
   finally
     FreeCFString(CFString);
   end;
@@ -311,27 +392,51 @@ begin
   FMaxLength := 0;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonComboBox.GetEditPart
+  Returns: Control part code of edit control
+ ------------------------------------------------------------------------------}
 class function TCarbonComboBox.GetEditPart: ControlPartCode;
 begin
   Result := kHIComboBoxEditTextPart;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonComboBox.GetValidEvents
+  Returns: Set of events with installed handlers
+ ------------------------------------------------------------------------------}
 class function TCarbonComboBox.GetValidEvents: TCarbonControlEvents;
 begin
   Result := [cceTextDidChange, cceListItemSelected];
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonComboBox.ListItemSelected
+  Params:  AIndex - Index of selected item
+
+  List item selected event handler
+ ------------------------------------------------------------------------------}
 procedure TCarbonComboBox.ListItemSelected(AIndex: Integer);
 begin
   FItemIndex := AIndex;
   LCLSendSelectionChangedMsg(LCLObject);
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonComboBox.GetItemIndex
+  Returns: The current item selected index
+ ------------------------------------------------------------------------------}
 function TCarbonComboBox.GetItemIndex: Integer;
 begin
   Result := FItemIndex;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonComboBox.SetItemIndex
+  Params:  AIndex - New item index
+  
+  Changes currently selected item
+ ------------------------------------------------------------------------------}
 function TCarbonComboBox.SetItemIndex(AIndex: Integer): Boolean;
 begin
   Result := False;
@@ -351,8 +456,46 @@ begin
   else Result := True;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonComboBox.Insert
+  Params:  AIndex - Item index
+           S      - Item text
+
+  Inserts item with the specified text at index
+ ------------------------------------------------------------------------------}
+procedure TCarbonComboBox.Insert(AIndex: Integer; const S: String);
+var
+  CFString: CFStringRef;
+begin
+  CreateCFString(S, CFString);
+  try
+    OSError(HIComboBoxInsertTextItemAtIndex(HIViewRef(Widget), AIndex, CFString),
+      Self, 'Insert', 'HIComboBoxInsertTextItemAtIndex');
+  finally
+    FreeCFString(CFString);
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonComboBox.Remove
+  Params:  AIndex - Item index
+
+  Removes item with the specified index
+ ------------------------------------------------------------------------------}
+procedure TCarbonComboBox.Remove(AIndex: Integer);
+begin
+  OSError(HIComboBoxRemoveItemAtIndex(HIViewRef(Widget), AIndex),
+    Self, 'Remove', 'HIComboBoxRemoveItemAtIndex');
+end;
+
 { TCarbonEdit }
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonEdit.CreateWidget
+  Params:  AParams - Creation parameters
+
+  Creates Carbon edit
+ ------------------------------------------------------------------------------}
 procedure TCarbonEdit.CreateWidget(const AParams: TCreateParams);
 var
   Edit: TCustomEdit;
@@ -364,26 +507,35 @@ begin
 
   CreateCFString(AParams.Caption, CFString);
   try
-    if CreateEditUniCodeTextControl(GetTopParentWindow,
-      ParamsToCarbonRect(AParams), CFString, (Edit.PasswordChar <> #0), nil,
-      Control) = noErr then
-    begin
-      Widget := Control;
+    if OSError(
+      CreateEditUniCodeTextControl(GetTopParentWindow, ParamsToCarbonRect(AParams),
+        CFString, (Edit.PasswordChar <> #0), nil, Control),
+      Self, SCreateWidget, 'CreateEditUniCodeTextControl') then RaiseCreateWidgetError(LCLObject);
 
-      inherited;
-    end
-    else RaiseCreateWidgetError(LCLObject);
+    Widget := Control;
+
+    inherited;
   finally
     FreeCFString(CFString);
   end;
 
   // set edit single line
-  SetControlData(Control, kControlEntireControl, kControlEditTextSingleLineTag,
-    SizeOf(Boolean), @SingleLine);
+  OSError(
+    SetControlData(Control, kControlEntireControl, kControlEditTextSingleLineTag,
+      SizeOf(Boolean), @SingleLine),
+    Self, SCreateWidget, SSetData);
+    
   FIsPassword := Edit.PasswordChar <> #0;
   FMaxLength := Edit.MaxLength;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonEdit.GetText
+  Params:  S - Text
+  Returns: If the function succeeds
+
+  Gets the text of edit control
+ ------------------------------------------------------------------------------}
 function TCarbonEdit.GetText(var S: String): Boolean;
 var
   CFString: CFStringRef;
@@ -394,9 +546,10 @@ begin
   begin
     Result := False;
 
-    if GetControlData(ControlRef(Widget), GetEditPart,
-      kControlEditTextPasswordCFStringTag, SizeOf(CFStringRef),
-      @CFString, nil) <> noErr then Exit;
+    if OSError(
+      GetControlData(ControlRef(Widget), GetEditPart,
+        kControlEditTextPasswordCFStringTag, SizeOf(CFStringRef), @CFString, nil),
+      Self, SGetText, SGetData) then Exit;
 
     try
       S := CFStringToStr(CFString);
@@ -407,6 +560,13 @@ begin
   end;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonEdit.SetText
+  Params:  S - New text
+  Returns: If the function succeeds
+
+  Sets the text of edit control
+ ------------------------------------------------------------------------------}
 function TCarbonEdit.SetText(const S: String): Boolean;
 var
   CFString: CFStringRef;
@@ -415,10 +575,16 @@ begin
     Result := inherited SetText(S)
   else
   begin
+    Result := False;
+    
     CreateCFString(S, CFString);
     try
-      Result := SetControlData(ControlRef(Widget), GetEditPart,
-        kControlEditTextPasswordCFStringTag, SizeOf(CFStringRef), @CFString) = noErr;
+      if OSError(
+        SetControlData(ControlRef(Widget), GetEditPart,
+          kControlEditTextPasswordCFStringTag, SizeOf(CFStringRef), @CFString),
+        Self, SSetText, SSetData) then Exit;
+        
+      Result := True;
     finally
       FreeCFString(CFString);
     end;
@@ -427,6 +593,12 @@ end;
 
 { TCarbonMemo }
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonMemo.SetScrollBars
+  Params:  AValue - New scroll style
+
+  Sets the memo scrollbars
+ ------------------------------------------------------------------------------}
 procedure TCarbonMemo.SetScrollBars(const AValue: TScrollStyle);
 begin
   if AValue <> FScrollBars then
@@ -439,19 +611,31 @@ begin
       (FScrollBars in [ssHorizontal, ssAutoHorizontal])) then
     begin
       FScrollBars := AValue;
-      HIScrollViewSetScrollBarAutoHide(FScrollView,
-        FScrollBars in [ssNone, ssAutoVertical, ssAutoHorizontal, ssAutoBoth]);
+      
+      OSError(HIScrollViewSetScrollBarAutoHide(FScrollView,
+          FScrollBars in [ssNone, ssAutoVertical, ssAutoHorizontal, ssAutoBoth]),
+        Self, SCreateWidget, SViewSetScrollBarAutoHide);
     end
     else
       RecreateWnd(LCLObject);
   end;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonMemo.GetFrame
+  Returns: Frame area control
+ ------------------------------------------------------------------------------}
 function TCarbonMemo.GetFrame: ControlRef;
 begin
   Result := FScrollView;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonMemo.CreateWidget
+  Params:  AParams - Creation parameters
+
+  Creates Carbon memo
+ ------------------------------------------------------------------------------}
 procedure TCarbonMemo.CreateWidget(const AParams: TCreateParams);
 var
   Control: ControlRef;
@@ -475,34 +659,41 @@ begin
   // caret position
 
   R := ParamsToHIRect(AParams);
-  if HITextViewCreate(@R, 0, Options, Control) = noErr then
+  if OSError(HITextViewCreate(@R, 0, Options, Control),
+    Self, SCreateWidget, 'HITextViewCreate') then RaiseCreateWidgetError(LCLObject);
+
+  Widget := Control;
+
+  if OSError(HIScrollViewCreate(ScrollOptions, FScrollView), Self, SCreateWidget,
+    'HIScrollViewCreate') then
   begin
-    Widget := Control;
+    DebugLn('TCarbonMemo.CreateWidget Error - unable to create scroll view!');
+    Exit;
+  end;
 
-    if HIScrollViewCreate(ScrollOptions, FScrollView) <> noErr then
-    begin
-      DebugLn('TCarbonMemo.CreateWidget Error - unable to create scroll view!');
-      Exit;
-    end;
+  if OSError(HIViewAddSubview(FScrollView, Control), Self, SCreateWidget,
+    SViewAddView) then
+  begin
+    DebugLn('TCarbonMemo.CreateWidget Error - unable to embed conrtol in scroll view!');
+    Exit;
+  end;
 
-    if HIViewAddSubview(FScrollView, Control)<> noErr then
-    begin
-      DebugLn('TCarbonMemo.CreateWidget Error - unable to embed conrtol in scroll view!');
-      Exit;
-    end;
+  OSError(HIViewSetVisible(Control, True), Self, SCreateWidget, SViewVisible);
 
-    HIViewSetVisible(Control, True);
+  inherited;
 
-    inherited;
-  end
-  else RaiseCreateWidgetError(LCLObject);
-
-  HIScrollViewSetScrollBarAutoHide(FScrollView,
-    FScrollBars in [ssNone, ssAutoVertical, ssAutoHorizontal, ssAutoBoth]);
+  OSError(HIScrollViewSetScrollBarAutoHide(FScrollView,
+      FScrollBars in [ssNone, ssAutoVertical, ssAutoHorizontal, ssAutoBoth]),
+    Self, SCreateWidget, SViewSetScrollBarAutoHide);
 
   FMaxLength := 0;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonMemo.DestroyWidget
+
+  Destroys Carbon memo
+ ------------------------------------------------------------------------------}
 procedure TCarbonMemo.DestroyWidget;
 begin
   inherited DestroyWidget;
@@ -510,6 +701,11 @@ begin
   DisposeControl(FScrollView);
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonMemo.TextDidChange
+
+  Text changed event handler
+ ------------------------------------------------------------------------------}
 procedure TCarbonMemo.TextDidChange;
 var
   MemoStrings: TCarbonMemoStrings;
@@ -529,18 +725,31 @@ begin
   DeliverMessage(LCLObject, Msg);
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonMemo.SetColor
+  Params:  AColor - New color
+
+  Sets the color of memo
+ ------------------------------------------------------------------------------}
 procedure TCarbonMemo.SetColor(const AColor: TColor);
 var
   CGColor: CGColorRef;
 begin
   CGColor := CreateCGColor(AColor);
   try
-    HITextViewSetBackgroundColor(HIViewRef(Widget), CGColor);
+    OSError(HITextViewSetBackgroundColor(HIViewRef(Widget), CGColor),
+      Self, SSetColor, 'HITextViewSetBackgroundColor');
   finally
     CGColorRelease(CGColor);
   end;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonMemo.SetFont
+  Params:  AFont - New font
+
+  Sets the font of memo
+ ------------------------------------------------------------------------------}
 procedure TCarbonMemo.SetFont(const AFont: TFont);
 var
   Attrs: Array [0..3] of TXNTypeAttributes;
@@ -568,8 +777,10 @@ begin
  Attrs[3].data.dataPtr := Pointer(TCarbonFont(AFont.Handle).Style);
 
  // apply
- TXNSetTypeAttributes(HITextViewGetTXNObject(ControlRef(Widget)), 4, @Attrs[0],
-   kTXNStartOffset, kTXNEndOffset);
+ OSError(
+   TXNSetTypeAttributes(HITextViewGetTXNObject(ControlRef(Widget)), 4, @Attrs[0],
+     kTXNStartOffset, kTXNEndOffset),
+   Self, 'SetFont', 'TXNSetTypeAttributes');
 
   // invalidate control
   Invalidate;

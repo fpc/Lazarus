@@ -206,21 +206,98 @@ type
     property CursorType: TCarbonCursorType read FCursorType;
   end;
   
-var
-  DefaultTextStyle: ATSUStyle; // default Carbon text style
-  RGBColorSpace: CGColorSpaceRef; // global RGB color space
+function CheckGDIObject(const GDIObject: HGDIOBJ; const AMethodName: String; AParamName: String = ''): Boolean;
+function CheckBitmap(const Bitmap: HBITMAP; const AMethodName: String; AParamName: String = ''): Boolean;
+function CheckCursor(const Cursor: HCURSOR; const AMethodName: String; AParamName: String = ''): Boolean;
 
+
+var
   StockSystemFont: TCarbonFont;
   StockNullBrush: TCarbonBrush;
   WhiteBrush: TCarbonBrush;
   BlackPen: TCarbonPen;
-  
-  DefaultBitmap: TCarbonBitmap; // 1 x 1 bitmap for default context
 
+  DefaultBitmap: TCarbonBitmap; // 1 x 1 bitmap for default context
+  
 implementation
 
 uses
-  CarbonProc, CarbonCanvas, CarbonConsts;
+  CarbonProc, CarbonCanvas, CarbonDbgConsts;
+  
+{------------------------------------------------------------------------------
+  Name:    CheckGDIObject
+  Params:  GDIObject   - Handle to a GDI Object (TCarbonFont, ...)
+           AMethodName - Method name
+           AParamName  - Param name
+  Returns: If the GDIObject is valid
+
+  Remark: All handles for GDI objects must be pascal objects so we can
+ distinguish between them
+ ------------------------------------------------------------------------------}
+function CheckGDIObject(const GDIObject: HGDIOBJ; const AMethodName: String;
+  AParamName: String): Boolean;
+begin
+  if TObject(GDIObject) is TCarbonGDIObject then Result := True
+  else
+  begin
+    Result := False;
+    
+    if Pos('.', AMethodName) = 0 then
+      DebugLn(SCarbonWSPrefix + AMethodName + ' Error - invalid GDIObject ' +
+        AParamName + ' = ' + DbgS(GDIObject) + '!')
+    else
+      DebugLn(AMethodName + ' Error - invalid GDIObject ' + AParamName + ' = ' +
+        DbgS(GDIObject) + '!');
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Name:    CheckBitmap
+  Params:  Bitmap      - Handle to a bitmap (TCarbonBitmap)
+           AMethodName - Method name
+           AParamName  - Param name
+  Returns: If the bitmap is valid
+ ------------------------------------------------------------------------------}
+function CheckBitmap(const Bitmap: HBITMAP; const AMethodName: String;
+  AParamName: String): Boolean;
+begin
+  if TObject(Bitmap) is TCarbonBitmap then Result := True
+  else
+  begin
+    Result := False;
+    
+    if Pos('.', AMethodName) = 0 then
+      DebugLn(SCarbonWSPrefix + AMethodName + ' Error - invalid bitmap ' +
+        AParamName + ' = ' + DbgS(Bitmap) + '!')
+    else
+      DebugLn(AMethodName + ' Error - invalid bitmap ' + AParamName + ' = ' +
+        DbgS(Bitmap) + '!');
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Name:    CheckCursor
+  Params:  Cursor      - Handle to a cursor (TCarbonCursor)
+           AMethodName - Method name
+           AParamName  - Param name
+  Returns: If the cursor is valid
+ ------------------------------------------------------------------------------}
+function CheckCursor(const Cursor: HCURSOR; const AMethodName: String;
+  AParamName: String): Boolean;
+begin
+  if TObject(Cursor) is TCarbonCursor then Result := True
+  else
+  begin
+    Result := False;
+
+    if Pos('.', AMethodName) = 0 then
+      DebugLn(SCarbonWSPrefix + AMethodName + ' Error - invalid cursor ' +
+        AParamName + ' = ' + DbgS(Cursor) + '!')
+    else
+      DebugLn(AMethodName + ' Error - invalid cursor ' + AParamName + ' = ' +
+        DbgS(Cursor) + '!');
+  end;
+end;
 
 type
   THardwareCursorsAvailability =
@@ -1071,9 +1148,6 @@ initialization
 
   InitCursor;
 
-  OSError(ATSUCreateStyle(DefaultTextStyle), 'initialization', SCreateStyle);
-  RGBColorSpace := CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
-
   StockSystemFont := TCarbonFont.Create;
 
   LogBrush.lbStyle := BS_NULL;
@@ -1087,6 +1161,8 @@ initialization
   DefaultBitmap := TCarbonBitmap.Create(1, 1, 32, nil);
   DefaultContext.SetBitmap(DefaultBitmap);
   
+  ScreenContext := TCarbonScreenContext.Create;
+  ScreenContext.CGContext := DefaultContext.CGContext; // workaround
 
 finalization
   BlackPen.Free;
@@ -1094,11 +1170,9 @@ finalization
 
   StockNullBrush.Free;
   StockSystemFont.Free;
-
-  OSError(ATSUDisposeStyle(DefaultTextStyle), 'finalization', SDisposeStyle);
-  CGColorSpaceRelease(RGBColorSpace);
   
   DefaultBitmap.Free;
   DefaultContext.Free;
+  ScreenContext.Free;
 
 end.

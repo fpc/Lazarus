@@ -152,6 +152,10 @@ begin
 *)
 end;
 
+{------------------------------------------------------------------------------
+  Name:  CarbonApp_CommandProcess
+  Handles menu commands
+ ------------------------------------------------------------------------------}
 function CarbonApp_CommandProcess(ANextHandler: EventHandlerCallRef;
   AEvent: EventRef;
   AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
@@ -202,6 +206,40 @@ begin
   end;
   
   Result := CallNextEventHandler(ANextHandler, AEvent);
+end;
+
+{------------------------------------------------------------------------------
+  Name:  CarbonApp_Shown
+  Handles application show
+ ------------------------------------------------------------------------------}
+function CarbonApp_Shown(ANextHandler: EventHandlerCallRef;
+  AEvent: EventRef;
+  AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
+begin
+  {$IFDEF VerboseAppEvent}
+    DebugLn('CarbonApp_Shown');
+  {$ENDIF}
+  
+  Result := CallNextEventHandler(ANextHandler, AEvent);
+  
+  Application.IntfAppRestore;
+end;
+
+{------------------------------------------------------------------------------
+  Name:  CarbonApp_Hidden
+  Handles application hide
+ ------------------------------------------------------------------------------}
+function CarbonApp_Hidden(ANextHandler: EventHandlerCallRef;
+  AEvent: EventRef;
+  AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
+begin
+  {$IFDEF VerboseAppEvent}
+    DebugLn('CarbonApp_Hidden');
+  {$ENDIF}
+
+  Result := CallNextEventHandler(ANextHandler, AEvent);
+
+  Application.IntfAppMinimize;
 end;
 
 {------------------------------------------------------------------------------
@@ -278,14 +316,13 @@ begin
     // explicitly posting an event to our event loop.  Thus, the
     // standard event handlers are installed while our event loop runs.
 
-    EventSpec := MakeEventSpec(LCLCarbonEventClass,LCLCarbonEventKindMain);
+    EventSpec := MakeEventSpec(LCLCarbonEventClass, LCLCarbonEventKindMain);
     if not InstallApplicationEventHandler(EventLoopUPP, 1, @EventSpec, nil,
                                       @EventLoopHandler) then Exit;
 
     try
-      if CreateEvent(nil, EventSpec.eventClass, EventSpec.eventKind,
-                     GetCurrentEventTime, kEventAttributeNone,
-                     DummyEvent) <> noErr
+      if CreateEvent(nil, EventSpec.eventClass, EventSpec.eventKind, 0,
+        kEventAttributeNone, DummyEvent) <> noErr
       then
         RaiseGDBException('TCarbonWidgetSet.AppRun create first dummy event failed');
 
@@ -385,7 +422,7 @@ begin
   
   // Simply wait forever for the next event.
   // Don't pull it, so we can handle it later.
-  OsError(ReceiveNextEvent(0, nil, kEventDurationForever, False, Event),
+  OSError(ReceiveNextEvent(0, nil, kEventDurationForever, False, Event),
     Self, 'AppWaitMessage', 'ReceiveNextEvent');
 end;
 
@@ -435,7 +472,7 @@ var
   EventSpec: EventTypeSpec;
   DummyEvent: EventRef;
 begin
-  if fMainEventQueue=nil then exit;
+  if FMainEventQueue=nil then exit;
   
   {$IFDEF VerboseObject}
     DebugLnThreadLog('TCarbonWidgetSet.SendCheckSynchronizeMessage ');
@@ -458,7 +495,7 @@ begin
       DebugLnThreadLog('TCarbonWidgetSet.SendCheckSynchronizeMessage GetMainEventQueue='+dbgs(GetMainEventQueue));
     {$ENDIF}
 
-    if PostEventToQueue(fMainEventQueue, DummyEvent,
+    if PostEventToQueue(FMainEventQueue, DummyEvent,
       kEventPriorityHigh) <> noErr then
     begin
       {$IFDEF VerboseObject}
@@ -496,6 +533,14 @@ begin
   TmpSpec := MakeEventSpec(kEventClassCommand, kEventCommandProcess);
   InstallApplicationEventHandler(RegisterEventHandler(@CarbonApp_CommandProcess),
     1, @TmpSpec, nil, nil);
+    
+  TmpSpec := MakeEventSpec(kEventClassApplication, kEventAppShown);
+  InstallApplicationEventHandler(RegisterEventHandler(@CarbonApp_Shown),
+    1, @TmpSpec, nil, nil);
+    
+  TmpSpec := MakeEventSpec(kEventClassApplication, kEventAppHidden);
+  InstallApplicationEventHandler(RegisterEventHandler(@CarbonApp_Hidden),
+    1, @TmpSpec, nil, nil);
 end;
 
 {------------------------------------------------------------------------------
@@ -505,6 +550,8 @@ end;
 procedure TCarbonWidgetSet.UnregisterEvents;
 begin
   UnregisterEventHandler(@CarbonApp_CommandProcess);
+  UnregisterEventHandler(@CarbonApp_Shown);
+  UnregisterEventHandler(@CarbonApp_Hidden);
 end;
 
 {------------------------------------------------------------------------------
@@ -528,26 +575,38 @@ end;
   Minimizes the whole application to the taskbar
  ------------------------------------------------------------------------------}
 procedure TCarbonWidgetSet.AppMinimize;
+var
+  Proc: ProcessSerialNumber;
+const
+  SName = 'AppMinimize';
 begin
   {$IFDEF VerboseObject}
     DebugLn('TCarbonWidgetSet.AppMinimize');
   {$ENDIF}
   
-  OSError(CollapseAllWindows(True), Self, 'AppMinimize', 'CollapseAllWindows');
+  // hide process
+  if OSError(GetCurrentProcess(Proc), Self, SName, SGetCurrentProc) then Exit;
+    OSError(ShowHideProcess(Proc, False), Self, SName, SShowHideProc);
 end;
 
 {------------------------------------------------------------------------------
   Method:  TCarbonWidgetSet.AppRestore
 
-  Restore the whole minimized application from the taskbar
+  Restores the whole minimized application from the taskbar
  ------------------------------------------------------------------------------}
 procedure TCarbonWidgetSet.AppRestore;
+var
+  Proc: ProcessSerialNumber;
+const
+  SName = 'AppRestore';
 begin
   {$IFDEF VerboseObject}
     DebugLn('TCarbonWidgetSet.AppRestore');
   {$ENDIF}
 
-  OSError(CollapseAllWindows(False), Self, 'AppRestore', 'CollapseAllWindows');
+  // show process
+  if OSError(GetCurrentProcess(Proc), Self, SName, SGetCurrentProc) then Exit;
+  OSError(ShowHideProcess(Proc, True), Self, SName, SShowHideProc);
 end;
 
 {------------------------------------------------------------------------------
@@ -569,7 +628,7 @@ begin
     34. How do I bring all my windows to the front?
   *)
 
-  if OSError(GetCurrentProcess(Proc), Self, SName, 'GetCurrentProcess') then Exit;
+  if OSError(GetCurrentProcess(Proc), Self, SName, SGetCurrentProc) then Exit;
   OSError(SetFrontProcess(Proc), Self, SName, 'SetFrontProcess');
 end;
 

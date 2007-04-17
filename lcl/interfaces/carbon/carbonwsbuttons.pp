@@ -74,7 +74,7 @@ type
 implementation
 
 uses
-  CarbonProc;
+  CarbonProc, CarbonDbgConsts;
 
 { TCarbonWSButton }
 
@@ -105,8 +105,10 @@ class procedure TCarbonWSButton.SetDefault(const AButton: TCustomButton;
 begin
   if not CheckHandle(AButton, Self, 'SetDefault') then Exit;
 
-  SetControlData(AsControlRef(AButton.Handle), kControlEntireControl,
-    kControlPushButtonDefaultTag, SizeOf(Boolean), @ADefault);
+  OSError(
+    SetControlData(AsControlRef(AButton.Handle), kControlEntireControl,
+      kControlPushButtonDefaultTag, SizeOf(Boolean), @ADefault),
+    Self, 'SetDefault', SSetData);
 end;
 
 { TCarbonWSBitBtn }
@@ -146,7 +148,8 @@ begin
   else
     ContentInfo.imageRef := TCarbonBitmap(AValue.Handle).CGImage;
   
-  SetBevelButtonContentInfo(AsControlRef(ABitBtn.Handle), @ContentInfo);
+  OSError(SetBevelButtonContentInfo(AsControlRef(ABitBtn.Handle), @ContentInfo),
+    Self, 'SetGlyph', 'SetBevelButtonContentInfo');
 end;
 
 {------------------------------------------------------------------------------
@@ -170,8 +173,9 @@ begin
     blGlyphBottom: Placement := kControlBevelButtonPlaceAboveGraphic;
   end;
   
-  SetBevelButtonTextPlacement(AsControlRef(ABitBtn.Handle),
-    Placement);
+  OSError(SetBevelButtonTextPlacement(AsControlRef(ABitBtn.Handle), Placement),
+    Self, 'SetLayout', 'SetBevelButtonTextPlacement');
+    
   TCarbonWidget(ABitBtn.Handle).Invalidate;
 end;
 

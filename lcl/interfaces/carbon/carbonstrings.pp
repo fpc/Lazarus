@@ -114,43 +114,29 @@ uses
   Changes the text on line with the specified index
  ------------------------------------------------------------------------------}
 procedure TCarbonComboBoxStrings.Put(Index: Integer; const S: string);
-var
-  CFString: CFStringRef;
 begin
   inherited Put(Index, S);
 
-  CreateCFString(S, CFString);
-  try
-    if HIComboBoxRemoveItemAtIndex(HIViewRef(FOwner.Widget), Index) = noErr then
-      HIComboBoxInsertTextItemAtIndex(HIViewRef(FOwner.Widget), Index, CFString);
-  finally
-    FreeCFString(CFString);
-  end;
+  FOwner.Remove(Index);
+  FOwner.Insert(Index, S);
 end;
 
 {------------------------------------------------------------------------------
-  Method:  TCarbonComboBoxStrings.Insert
+  Method:  TCarbonComboBoxStrings.InsertItem
   Params:  Index - Line index
            S     - Text to insert
 
   Inserts the text on line with the specified index
  ------------------------------------------------------------------------------}
 procedure TCarbonComboBoxStrings.InsertItem(Index: Integer; const S: string);
-var
-  CFString: CFStringRef;
 begin
   inherited InsertItem(Index, S);
-  
-  CreateCFString(S, CFString);
-  try
-    HIComboBoxInsertTextItemAtIndex(HIViewRef(FOwner.Widget), Index, CFString);
-  finally
-    FreeCFString(CFString);
-  end;
+
+  FOwner.Insert(Index, S);
 end;
 
 {------------------------------------------------------------------------------
-  Method:  TCarbonComboBoxStrings.Insert
+  Method:  TCarbonComboBoxStrings.InsertItem
   Params:  Index - Line index
            S     - Text to insert
            O     - Object to insert
@@ -159,17 +145,10 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCarbonComboBoxStrings.InsertItem(Index: Integer; const S: string;
   O: TObject);
-var
-  CFString: CFStringRef;
 begin
   inherited InsertItem(Index, S, O);
 
-  CreateCFString(S, CFString);
-  try
-    HIComboBoxInsertTextItemAtIndex(HIViewRef(FOwner.Widget), Index, CFString);
-  finally
-    FreeCFString(CFString);
-  end;
+  FOwner.Insert(Index, S);
 end;
 
 {------------------------------------------------------------------------------
@@ -198,8 +177,7 @@ begin
   
   inherited Clear;
   
-  for I := C - 1 downto 0 do
-    if HIComboBoxRemoveItemAtIndex(HIViewRef(FOwner.Widget), I) <> noErr then Break;
+  for I := C - 1 downto 0 do FOwner.Remove(I);
 end;
 
 {------------------------------------------------------------------------------
@@ -211,8 +189,10 @@ end;
 procedure TCarbonComboBoxStrings.Delete(Index: Integer);
 begin
   inherited Delete(Index);
-  HIComboBoxRemoveItemAtIndex(HIViewRef(FOwner.Widget), Index);
+  
+  FOwner.Remove(Index);
 end;
+
 {------------------------------------------------------------------------------
   Method:  TCarbonComboBoxStrings.Sort
 
@@ -220,20 +200,14 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCarbonComboBoxStrings.Sort;
 var
-  CFString: CFStringRef;
   I: Integer;
 begin
   inherited Sort;
   
   for I := 0 to Count - 1 do
   begin
-    CreateCFString(Strings[I], CFString);
-    try
-      if HIComboBoxRemoveItemAtIndex(HIViewRef(FOwner.Widget), I) = noErr then
-        HIComboBoxInsertTextItemAtIndex(HIViewRef(FOwner.Widget), I, CFString);
-    finally
-      FreeCFString(CFString);
-    end;
+    FOwner.Remove(I);
+    FOwner.Insert(I, Strings[I]);
   end;
 end;
 

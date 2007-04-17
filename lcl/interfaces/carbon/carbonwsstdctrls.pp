@@ -261,7 +261,7 @@ type
 implementation
 
 uses
-  CarbonProc, CarbonStrings;
+  CarbonProc, CarbonStrings, CarbonDbgConsts;
 
 { TCarbonWSScrollBar }
 
@@ -759,10 +759,11 @@ end;
 class procedure TCarbonWSCustomEdit.SetReadOnly(const ACustomEdit: TCustomEdit;
   NewReadOnly: boolean);
 begin
-  if not CheckHandle(ACustomEdit, Self, 'SetReadOnly') then Exit;
+  if not CheckHandle(ACustomEdit, Self, SSetReadOnly) then Exit;
 
-  SetControlData(AsControlRef(ACustomEdit.Handle), kControlEntireControl,
-    kControlEditTextLockedTag, SizeOf(Boolean), @NewReadOnly);
+  OSError(SetControlData(AsControlRef(ACustomEdit.Handle), kControlEntireControl,
+      kControlEditTextLockedTag, SizeOf(Boolean), @NewReadOnly),
+    Self, SSetReadOnly, SSetData);
 end;
 
 {------------------------------------------------------------------------------
@@ -855,12 +856,16 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TCarbonWSCustomMemo.SetPasswordChar(
   const ACustomEdit: TCustomEdit; NewChar: char);
+const
+  SName = 'SetPasswordChar';
 begin
-  if not CheckHandle(ACustomEdit, Self, 'SetPasswordChar') then Exit;
+  if not CheckHandle(ACustomEdit, Self, SName) then Exit;
 
-  TXNEchoMode(HITextViewGetTXNObject(AsControlRef(ACustomEdit.Handle)),
-    UniChar(NewChar), CreateTextEncoding(kTextEncodingUnicodeDefault,
-    kUnicodeNoSubset, kUnicodeUTF8Format), NewChar <> #0);
+  OSError(
+    TXNEchoMode(HITextViewGetTXNObject(AsControlRef(ACustomEdit.Handle)),
+      UniChar(NewChar), CreateTextEncoding(kTextEncodingUnicodeDefault,
+      kUnicodeNoSubset, kUnicodeUTF8Format), NewChar <> #0),
+    Self, SName, 'TXNEchoMode');
     
   TCarbonWidget(ACustomEdit.Handle).Invalidate;
 end;
@@ -893,7 +898,7 @@ var
   Tag: TXNControlTag;
   Data: TXNControlData;
 begin
-  if not CheckHandle(ACustomEdit, Self, 'SetReadOnly') then Exit;
+  if not CheckHandle(ACustomEdit, Self, SSetReadOnly) then Exit;
 
   Tag := kTXNNoUserIOTag;
   if NewReadOnly then
@@ -901,8 +906,10 @@ begin
   else
     Data.uValue := UInt32(kTXNReadWrite);
 
-  TXNSetTXNObjectControls(HITextViewGetTXNObject(
-    AsControlRef(ACustomEdit.Handle)), False, 1, @Tag, @Data);
+  OSError(
+    TXNSetTXNObjectControls(HITextViewGetTXNObject(AsControlRef(ACustomEdit.Handle)),
+      False, 1, @Tag, @Data),
+    sELF, SSetReadOnly, SSetTXNControls);
 end;
 
 {------------------------------------------------------------------------------
@@ -917,8 +924,10 @@ class procedure TCarbonWSCustomMemo.SetWordWrap(const ACustomMemo: TCustomMemo;
 var
   Tag: TXNControlTag;
   Data: TXNControlData;
+const
+  SName = 'SetWordWrap';
 begin
-  if not CheckHandle(ACustomMemo, Self, 'SetWordWrap') then Exit;
+  if not CheckHandle(ACustomMemo, Self, SName) then Exit;
 
   Tag := kTXNWordWrapStateTag;
   if NewWordWrap then
@@ -926,8 +935,10 @@ begin
   else
     Data.uValue := UInt32(kTXNNoAutoWrap);
 
-  TXNSetTXNObjectControls(HITextViewGetTXNObject(
-    AsControlRef(ACustomMemo.Handle)), False, 1, @Tag, @Data);
+  OSError(
+    TXNSetTXNObjectControls(HITextViewGetTXNObject(AsControlRef(ACustomMemo.Handle)),
+      False, 1, @Tag, @Data),
+    Self, SName, SSetTXNControls);
     
   TCarbonWidget(ACustomMemo.Handle).Invalidate;
 end;
@@ -1051,12 +1062,16 @@ class procedure TCarbonWSCustomStaticText.SetAlignment(
   const ACustomStaticText: TCustomStaticText; const NewAlignment: TAlignment);
 var
   FontStyle: ControlFontStyleRec;
+const
+  SName = 'SetAlignment';
 begin
-  if not CheckHandle(ACustomStaticText, Self, 'SetAlignment') then Exit;
+  if not CheckHandle(ACustomStaticText, Self, SName) then Exit;
 
   // get static text font style and change only justification
-  GetControlData(AsControlRef(ACustomStaticText.Handle), kControlEntireControl,
-    kControlStaticTextStyleTag, SizeOf(FontStyle), @FontStyle, nil);
+  OSError(
+    GetControlData(AsControlRef(ACustomStaticText.Handle), kControlEntireControl,
+      kControlStaticTextStyleTag, SizeOf(FontStyle), @FontStyle, nil),
+    Self, SName, SGetData);
 
   FontStyle.flags := FontStyle.flags or kControlUseJustMask;
   case NewAlignment of
@@ -1065,8 +1080,10 @@ begin
   taCenter      : FontStyle.just := teCenter;
   end;
 
-  SetControlData(AsControlRef(ACustomStaticText.Handle), kControlEntireControl,
-    kControlStaticTextStyleTag, SizeOf(FontStyle), @FontStyle);
+  OSError(
+    SetControlData(AsControlRef(ACustomStaticText.Handle), kControlEntireControl,
+      kControlStaticTextStyleTag, SizeOf(FontStyle), @FontStyle),
+    Self, SName, SSetData);
   // invalidate static text
   TCarbonWidget(ACustomStaticText.Handle).Invalidate;
 end;

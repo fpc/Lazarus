@@ -67,7 +67,7 @@ type
     function GetContent: ControlRef; override;
     
     procedure ShowTab;
-    procedure UpdateTabs(AIndex: Integer; TilEnd: Boolean = False);
+    procedure UpdateTabs(AIndex: Integer; TillEnd: Boolean = False);
     procedure SetTabCaption(AIndex: Integer; const S: String);
   public
     class function GetValidEvents: TCarbonControlEvents; override;
@@ -77,6 +77,7 @@ type
     procedure Add(ATab: TCarbonTab; AIndex: Integer);
     procedure Remove(AIndex: Integer);
     procedure SetTabIndex(AIndex: Integer);
+    procedure ShowTabs(AShow: Boolean);
   public
     property TabPosition: TTabPosition read FTabPositon;
   end;
@@ -84,10 +85,14 @@ type
 
 implementation
 
-uses CarbonProc, CarbonConsts, CarbonUtils;
+uses CarbonProc, CarbonDbgConsts, CarbonUtils;
 
 { TCarbonTab }
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonTab.GetIndex
+  Returns: The real index of tab
+ ------------------------------------------------------------------------------}
 function TCarbonTab.GetIndex: Integer;
 begin
   if FParent <> nil then Result := FParent.FTabs.IndexOf(Self)
@@ -99,6 +104,12 @@ begin
   end;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonTab.CreateWidget
+  Params:  AParams - Creation parameters
+
+  Creates Carbon tab
+ ------------------------------------------------------------------------------}
 procedure TCarbonTab.CreateWidget(const AParams: TCreateParams);
 begin
   inherited CreateWidget(AParams);
@@ -106,11 +117,22 @@ begin
   ShowHide(False);
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonTab.Attach
+  Params:  AParent - Tabs control
+
+  Attaches Carbon tab to tabs control
+ ------------------------------------------------------------------------------}
 procedure TCarbonTab.Attach(AParent: TCarbonTabsControl);
 begin
   FParent := AParent;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonTab.UpdateTab
+
+  Updates Carbon tab properties
+ ------------------------------------------------------------------------------}
 procedure TCarbonTab.UpdateTab;
 begin
   if FParent = nil then Exit;
@@ -118,6 +140,12 @@ begin
   FParent.UpdateTabs(GetIndex);
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonTab.SetText
+  Params:  S - New text
+
+  Changes Carbon tab caption
+ ------------------------------------------------------------------------------}
 function TCarbonTab.SetText(const S: String): Boolean;
 begin
   if FParent = nil then Exit;
@@ -129,6 +157,12 @@ end;
 
 { TCarbonTabsControl }
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonTabsControl.CreateWidget
+  Params:  AParams - Creation parameters
+
+  Creates Carbon tabs control
+ ------------------------------------------------------------------------------}
 procedure TCarbonTabsControl.CreateWidget(const AParams: TCreateParams);
 var
   Control: ControlRef;
@@ -171,6 +205,11 @@ begin
   FTabs := TObjectList.Create(False);
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonTabsControl.DestroyWidget
+
+  Frees Carbon tabs control
+ ------------------------------------------------------------------------------}
 procedure TCarbonTabsControl.DestroyWidget;
 begin
   FTabs.Free;
@@ -189,6 +228,11 @@ begin
   Result := FUserPane;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonTabsControl.ShowTab
+
+  Shows the current tab and hides the others
+ ------------------------------------------------------------------------------}
 procedure TCarbonTabsControl.ShowTab;
 var
   I, VIndex: Integer;
@@ -200,7 +244,14 @@ begin
     TCarbonTab(FTabs[I]).ShowHide(I = VIndex);
 end;
 
-procedure TCarbonTabsControl.UpdateTabs(AIndex: Integer; TilEnd: Boolean);
+{------------------------------------------------------------------------------
+  Method:  TCarbonTabsControl.UpdateTabs
+  Params:  AIndex  - Start index
+           TillEnd - Till end
+
+  Updates tabs properties
+ ------------------------------------------------------------------------------}
+procedure TCarbonTabsControl.UpdateTabs(AIndex: Integer; TillEnd: Boolean);
 begin
   // update tabs count
   SetControl32BitMaximum(ControlRef(Widget), FTabs.Count);
@@ -208,12 +259,12 @@ begin
   // TODO imageindex
   while AIndex < FTabs.Count do
   begin
-    DebugLn('TCarbonTabsControl.UpdateTabs ' + DbgS(AIndex) + ' Caption: ' +
-      TCarbonTab(FTabs[AIndex]).LCLObject.Caption);
+    //DebugLn('TCarbonTabsControl.UpdateTabs ' + DbgS(AIndex) + ' Caption: ' +
+    //  TCarbonTab(FTabs[AIndex]).LCLObject.Caption);
       
     SetTabCaption(AIndex, TCarbonTab(FTabs[AIndex]).LCLObject.Caption);
     
-    if not TilEnd then Exit;
+    if not TillEnd then Exit;
     
     Inc(AIndex);
   end;
@@ -221,6 +272,13 @@ begin
   Invalidate;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonTabsControl.SetTabCaption
+  Params:  AIndex - Start index
+           S      - New caption
+
+  Changes the specified tab caption
+ ------------------------------------------------------------------------------}
 procedure TCarbonTabsControl.SetTabCaption(AIndex: Integer; const S: String);
 var
   Info: ControlTabInfoRecV1;
@@ -242,11 +300,20 @@ begin
   end;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonTabsControl.GetValidEvents
+  Returns: Set of events with installed handlers
+ ------------------------------------------------------------------------------}
 class function TCarbonTabsControl.GetValidEvents: TCarbonControlEvents;
 begin
   Result := [cceValueChanged];
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonTabsControl.ValueChanged
+
+  Value changed event handler
+ ------------------------------------------------------------------------------}
 procedure TCarbonTabsControl.ValueChanged;
 var
   Msg: TLMNotify;
@@ -317,23 +384,42 @@ begin
   Result := True;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonTabsControl.Add
+  Params:  ATab   - Tab to add
+           AIndex - At index
+
+  Adds Carbon tab at the specified index
+ ------------------------------------------------------------------------------}
 procedure TCarbonTabsControl.Add(ATab: TCarbonTab; AIndex: Integer);
 begin
-  DebugLn('TCarbonTabsControl.Add ' + DbgS(AIndex));
+  //DebugLn('TCarbonTabsControl.Add ' + DbgS(AIndex));
   FTabs.Insert(AIndex, ATab);
   ATab.Attach(Self);
   
   UpdateTabs(AIndex, True);
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonTabsControl.Remove
+  Params:  AIndex - Index of tab to remove
+
+  Removes Carbon tab with the specified index
+ ------------------------------------------------------------------------------}
 procedure TCarbonTabsControl.Remove(AIndex: Integer);
 begin
-  DebugLn('TCarbonTabsControl.Remove ' + DbgS(AIndex));
+  //DebugLn('TCarbonTabsControl.Remove ' + DbgS(AIndex));
   FTabs.Delete(AIndex);
   
   UpdateTabs(AIndex, True);
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonTabsControl.SetTabIndex
+  Params:  AIndex - New index
+
+  Changes the current Carbon tab
+ ------------------------------------------------------------------------------}
 procedure TCarbonTabsControl.SetTabIndex(AIndex: Integer);
 var
   VIndex: Integer;
@@ -350,6 +436,42 @@ begin
   VIndex := (LCLObject as TCustomNotebook).Page[AIndex].VisibleIndex;
   SetControl32BitValue(ControlRef(Widget), VIndex + 1);
   ShowTab;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonTabsControl.ShowTabs
+  Params:  AShow - Show/hide
+
+  Shows/hides all Carbon tabs
+ ------------------------------------------------------------------------------}
+procedure TCarbonTabsControl.ShowTabs(AShow: Boolean);
+var
+  I: Integer;
+  Notebook: TCustomNotebook;
+  Page: TCustomPage;
+begin
+  if AShow then // add all tabs
+  begin
+    Notebook := LCLObject as TCustomNotebook;
+    for I := 0 to Notebook.PageCount - 1 do
+    begin
+      Page := Notebook.Page[I];
+      //DebugLn('TCarbonTabsControl.ShowTabs True ' + DbgS(I) + ' Handle ' +
+      //  DbgS(Page.Handle) + ' TabVisible: ' + DbgS(Page.TabVisible));
+      
+      if Page.TabVisible or (csDesigning in Page.ComponentState) then
+      begin
+        if FTabs.IndexOf(Page) < 0 then
+        begin
+          FTabs.Insert(Page.VisibleIndex, TCarbonTab(Page.Handle));
+          TCarbonTab(Page.Handle).Attach(Self);
+        end;
+      end;
+    end;
+  end
+  else FTabs.Clear; // remove all tabs
+  
+  UpdateTabs(0, True);
 end;
 
 end.

@@ -48,7 +48,6 @@ type
   protected
   public
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
-    //class procedure GetPreferredSize(const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); override;
     class procedure PanelUpdate(const AStatusBar: TStatusBar; PanelIndex: integer); override;
     class procedure SetPanelText(const AStatusBar: TStatusBar; PanelIndex: integer); override;
     class procedure Update(const AStatusBar: TStatusBar); override;
@@ -161,7 +160,7 @@ type
 implementation
 
 uses
-  CarbonProc;
+  CarbonProc, CarbonDbgConsts;
 
 { TCarbonWSStatusBar }
 
@@ -179,6 +178,13 @@ begin
   Result := TLCLIntfHandle(TCarbonStatusBar.Create(AWinControl, AParams));
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonWSStatusBar.PanelUpdate
+  Params:  AStatusBar - LCL status bar
+           PanelIndex - Index of panel to update
+
+  Updates the status bar panel
+ ------------------------------------------------------------------------------}
 class procedure TCarbonWSStatusBar.PanelUpdate(const AStatusBar: TStatusBar;
   PanelIndex: integer);
 begin
@@ -187,6 +193,13 @@ begin
   TCarbonStatusBar(AStatusBar.Handle).UpdatePanel(PanelIndex);
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonWSStatusBar.SetPanelText
+  Params:  AStatusBar - LCL status bar
+           PanelIndex - Index of panel
+
+  Updates the text of status bar panel
+ ------------------------------------------------------------------------------}
 class procedure TCarbonWSStatusBar.SetPanelText(const AStatusBar: TStatusBar;
   PanelIndex: integer);
 begin
@@ -195,6 +208,12 @@ begin
   TCarbonStatusBar(AStatusBar.Handle).UpdatePanel(PanelIndex);
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonWSStatusBar.Update
+  Params:  AStatusBar - LCL status bar
+
+  Updates the status bar
+ ------------------------------------------------------------------------------}
 class procedure TCarbonWSStatusBar.Update(const AStatusBar: TStatusBar);
 begin
   if not CheckHandle(AStatusBar, Self, 'Update') then Exit;

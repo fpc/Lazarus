@@ -48,7 +48,6 @@ type
   protected
   public
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
-
     class procedure UpdateProperties(const ACustomPage: TCustomPage); override;
   end;
 
@@ -70,7 +69,7 @@ type
     //class function GetTabIndexAtPos(const ANotebook: TCustomNotebook; const AClientPos: TPoint): integer; override;
     class procedure SetPageIndex(const ANotebook: TCustomNotebook; const AIndex: integer); override;
     class procedure SetTabPosition(const ANotebook: TCustomNotebook; const ATabPosition: TTabPosition); override;
-    //class procedure ShowTabs(const ANotebook: TCustomNotebook; AShowTabs: boolean); override;
+    class procedure ShowTabs(const ANotebook: TCustomNotebook; AShowTabs: boolean); override;
   end;
 
   { TCarbonWSPage }
@@ -311,7 +310,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method:  TCarbonWSCustomNotebook.CreateHandle
+  Method:  TCarbonWSCustomNotebook.SetPageIndex
   Params:  ANotebook - LCL custom notebook
            AIndex    - New tab index
 
@@ -326,7 +325,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method:  TCarbonWSCustomNotebook.CreateHandle
+  Method:  TCarbonWSCustomNotebook.SetTabPosition
   Params:  ANotebook    - LCL custom notebook
            ATabPosition - New position of tabs
 
@@ -339,6 +338,21 @@ begin
   
   if TCarbonTabsControl(ANotebook.Handle).TabPosition <> ATabPosition then
     RecreateWnd(ANotebook);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWSCustomNotebook.ShowTabs
+  Params:  ANotebook - LCL custom notebook
+           AShowTabs - Tabs visibility
+
+  Changes visibility of all tabs of notebook in Carbon interface
+ ------------------------------------------------------------------------------}
+class procedure TCarbonWSCustomNotebook.ShowTabs(const ANotebook: TCustomNotebook;
+  AShowTabs: boolean);
+begin
+  if not CheckHandle(ANotebook, Self, 'ShowTabs') then Exit;
+
+  TCarbonTabsControl(ANotebook.Handle).ShowTabs(AShowTabs);
 end;
 
 initialization

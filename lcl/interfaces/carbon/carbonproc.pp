@@ -36,22 +36,7 @@ interface
 uses
   FPCMacOSAll,
   Classes, Types, LCLType, LCLProc, LCLClasses, LMessages,
-  Controls, Forms, Avl_Tree, SysUtils, Graphics, Math, GraphType,
-  CarbonDef, CarbonPrivate, CarbonMenus;
-
-function AsControlRef(Handle: HWND): ControlRef; inline;
-function AsWindowRef(Handle: HWND): WindowRef; inline;
-function AsMenuRef(Handle: HMENU): MenuRef; inline;
-
-function CheckHandle(const AWinControl: TWinControl; const AClass: TClass; const DbgText: String): Boolean;
-
-function CheckWidget(const Handle: HWND; const AMethodName: String; AParamName: String = ''): Boolean;
-function CheckMenu(const Menu: HMENU; const AMethodName: String; AParamName: String = ''): Boolean;
-
-function CheckDC(const DC: HDC; const AMethodName: String; AParamName: String = ''): Boolean;
-function CheckGDIObject(const GDIObject: HGDIOBJ; const AMethodName: String; AParamName: String = ''): Boolean;
-function CheckBitmap(const Bitmap: HBITMAP; const AMethodName: String; AParamName: String = ''): Boolean;
-function CheckCursor(const Cursor: HCURSOR; const AMethodName: String; AParamName: String = ''): Boolean;
+  Controls, SysUtils, Graphics, Math, GraphType;
 
 function OSError(AResult: OSStatus; const AMethodName, ACallName: String;
   const AText: String = ''): Boolean;
@@ -61,10 +46,14 @@ function OSError(AResult: OSStatus; const AClass: TClass; const AMethodName, ACa
   const AText: String = ''): Boolean;
 function OSError(AResult: OSStatus; const AObject: TObject; const AMethodName, ACallName: String;
   const AText: String; AValidResult: OSStatus): Boolean;
+  
+var
+  DefaultTextStyle: ATSUStyle; // default Carbon text style
+  RGBColorSpace: CGColorSpaceRef; // global RGB color space
 
-function GetCarbonWidget(AWidget: Pointer): TCarbonWidget;
-function GetCarbonWindow(AWidget: WindowRef): TCarbonWindow;
-function GetCarbonControl(AWidget: ControlRef): TCarbonControl;
+{$I mackeycodes.inc}
+
+function VirtualKeyCodeToMac(AKey: Word): Word;
 
 function GetCarbonMsgKeyState: PtrInt;
 function GetCarbonShiftState: TShiftState;
@@ -75,8 +64,8 @@ function FontStyleToQDStyle(const AStyle: TFontStyles): FPCMacOSAll.Style;
 
 procedure FillStandardDescription(var Desc: TRawImageDescription);
 
-function RegisterEventHandler(AHandler: TCarbonEventHandlerProc): EventHandlerUPP;
-procedure UnRegisterEventHandler(AHandler: TCarbonEventHandlerProc);
+const
+  DEFAULT_CFSTRING_ENCODING = kCFStringEncodingUTF8;
 
 procedure CreateCFString(const S: String; out AString: CFStringRef); inline;
 procedure FreeCFString(var AString: CFStringRef); inline;
@@ -110,223 +99,7 @@ function DbgS(const ATM: TTextMetric): string; overload;
 
 implementation
 
-uses CarbonInt, CarbonCanvas, CarbonGDIObjects;
-
-{------------------------------------------------------------------------------
-  Name:    AsControlRef
-  Params:  Handle  - Handle of window control
-  Returns: Carbon control
- ------------------------------------------------------------------------------}
-function AsControlRef(Handle: HWND): ControlRef;
-begin
-  Result := ControlRef(TCarbonControl(Handle).Widget);
-end;
-
-{------------------------------------------------------------------------------
-  Name:    AsWindowRef
-  Params:  Handle  - Handle of window
-  Returns: Carbon window
- ------------------------------------------------------------------------------}
-function AsWindowRef(Handle: HWND): WindowRef;
-begin
-  Result := WindowRef(TCarbonWindow(Handle).Widget);
-end;
-
-{------------------------------------------------------------------------------
-  Name:    AsMenuRef
-  Params:  Handle  - Handle of menu
-  Returns: Carbon menu
- ------------------------------------------------------------------------------}
-function AsMenuRef(Handle: HMENU): MenuRef; inline;
-begin
-  Result := TCarbonMenu(Handle).Menu;
-end;
-
-const
-  CarbonWSPrefix = 'TCarbonWidgetSet.';
-
-{------------------------------------------------------------------------------
-  Name:    CheckHandle
-  Params:  AWinControl  - Handle of window
-           AClass       - Class
-           DbgText      - Text to output on invalid DC
-  Returns: If the wincontrol handle is allocated and valid
- ------------------------------------------------------------------------------}
-function CheckHandle(const AWinControl: TWinControl; const AClass: TClass;
-  const DbgText: String): Boolean;
-begin
-   if AWinControl <> nil then
-  begin
-    if TObject(AWinControl.Handle) is TCarbonWidget then
-    begin
-      {$IFDEF VerboseWSClass}
-        DebugLn(AClass.ClassName + '.' + DbgText + ' for ' + AWinControl.Name);
-      {$ENDIF}
-
-      Result := True;
-    end
-    else
-    begin
-      Result := False;
-      DebugLn(AClass.ClassName + '.' + DbgText + ' for ' + AWinControl.Name +
-        ' failed: Handle ' + DbgS(Integer(AWinControl.Handle)) + ' is invalid!');
-    end;
-  end
-  else
-  begin
-    Result := False;
-    DebugLn(AClass.ClassName + '.' + DbgText + ' for ' + AWinControl.Name +
-      ' failed: WinControl is nil!');
-  end;
-end;
-
-{------------------------------------------------------------------------------
-  Name:    CheckWidget
-  Params:  Handle      - Handle of window
-           AMethodName - Method name
-           AParamName  - Param name
-  Returns: If the window is valid
- ------------------------------------------------------------------------------}
-function CheckWidget(const Handle: HWND; const AMethodName: String;
-  AParamName: String): Boolean;
-begin
-  if TObject(Handle) is TCarbonWidget then Result := True
-  else
-  begin
-    if Pos('.', AMethodName) = 0 then
-      DebugLn(CarbonWSPrefix + AMethodName + ' Error - invalid widget ' +
-        AParamName + ' = ' + IntToStr(Integer(Handle)) + '!')
-    else
-      DebugLn(AMethodName + ' Error - invalid widget ' + AParamName + ' = ' +
-        IntToStr(Integer(Handle)) + '!');
-        
-    Result := False;
-  end;
-end;
-
-
-{------------------------------------------------------------------------------
-  Name:    CheckMenu
-  Params:  Menu        - Handle of menu
-           AMethodName - Method name
-           AParamName  - Param name
-  Returns: If the menu is valid
- ------------------------------------------------------------------------------}
-function CheckMenu(const Menu: HMENU; const AMethodName: String;
-  AParamName: String): Boolean;
-begin
-  if TObject(Menu) is TCarbonMenu then Result := True
-  else
-  begin
-    if Pos('.', AMethodName) = 0 then
-      DebugLn(CarbonWSPrefix + AMethodName + ' Error - invalid menu ' +
-        AParamName + ' = ' + IntToStr(Integer(Menu)) + '!')
-    else
-      DebugLn(AMethodName + ' Error - invalid menu ' + AParamName + ' = ' +
-        IntToStr(Integer(Menu)) + '!');
-        
-    Result := False;
-  end;
-end;
-
-{------------------------------------------------------------------------------
-  Name:    CheckDC
-  Params:  DC          - Handle to a device context (TCarbonDeviceContext)
-           AMethodName - Method name
-           AParamName  - Param name
-  Returns: If the DC is valid
- ------------------------------------------------------------------------------}
-function CheckDC(const DC: HDC; const AMethodName: String;
-  AParamName: String): Boolean;
-begin
-  if TObject(DC) is TCarbonDeviceContext then Result := True
-  else
-  begin
-    if Pos('.', AMethodName) = 0 then
-      DebugLn(CarbonWSPrefix + AMethodName + ' Error - invalid DC ' +
-        AParamName + ' = ' + IntToStr(Integer(DC)) + '!')
-    else
-      DebugLn(AMethodName + ' Error - invalid DC ' + AParamName + ' = ' +
-        IntToStr(Integer(DC)) + '!');
-        
-    Result := False;
-  end;
-end;
-
-{------------------------------------------------------------------------------
-  Name:    CheckGDIObject
-  Params:  GDIObject   - Handle to a GDI Object (TCarbonFont, ...)
-           AMethodName - Method name
-           AParamName  - Param name
-  Returns: If the GDIObject is valid
-
-  Remark: All handles for GDI objects must be pascal objects so we can
- distinguish between them
- ------------------------------------------------------------------------------}
-function CheckGDIObject(const GDIObject: HGDIOBJ; const AMethodName: String;
-  AParamName: String): Boolean;
-begin
-  if TObject(GDIObject) is TCarbonGDIObject then Result := True
-  else
-  begin
-    if Pos('.', AMethodName) = 0 then
-      DebugLn(CarbonWSPrefix + AMethodName + ' Error - invalid GDIObject ' +
-        AParamName + ' = ' + IntToStr(Integer(GDIObject)) + '!')
-    else
-      DebugLn(AMethodName + ' Error - invalid GDIObject ' + AParamName + ' = ' +
-        IntToStr(Integer(GDIObject)) + '!');
-        
-    Result := False;
-  end;
-end;
-
-{------------------------------------------------------------------------------
-  Name:    CheckBitmap
-  Params:  Bitmap      - Handle to a bitmap (TCarbonBitmap)
-           AMethodName - Method name
-           AParamName  - Param name
-  Returns: If the bitmap is valid
- ------------------------------------------------------------------------------}
-function CheckBitmap(const Bitmap: HBITMAP; const AMethodName: String;
-  AParamName: String): Boolean;
-begin
-  if TObject(Bitmap) is TCarbonBitmap then Result := True
-  else
-  begin
-    if Pos('.', AMethodName) = 0 then
-      DebugLn(CarbonWSPrefix + AMethodName + ' Error - invalid bitmap ' +
-        AParamName + ' = ' + IntToStr(Integer(Bitmap)) + '!')
-    else
-      DebugLn(AMethodName + ' Error - invalid bitmap ' + AParamName + ' = ' +
-        IntToStr(Integer(Bitmap)) + '!');
-        
-    Result := False;
-  end;
-end;
-
-{------------------------------------------------------------------------------
-  Name:    CheckCursor
-  Params:  Cursor      - Handle to a cursor (TCarbonCursor)
-           AMethodName - Method name
-           AParamName  - Param name
-  Returns: If the cursor is valid
- ------------------------------------------------------------------------------}
-function CheckCursor(const Cursor: HCURSOR; const AMethodName: String;
-  AParamName: String): Boolean;
-begin
-  if TObject(Cursor) is TCarbonCursor then Result := True
-  else
-  begin
-    if Pos('.', AMethodName) = 0 then
-      DebugLn(CarbonWSPrefix + AMethodName + ' Error - invalid cursor ' +
-        AParamName + ' = ' + IntToStr(Integer(Cursor)) + '!')
-    else
-      DebugLn(AMethodName + ' Error - invalid cursor ' + AParamName + ' = ' +
-        IntToStr(Integer(Cursor)) + '!');
-        
-    Result := False;
-  end;
-end;
+uses CarbonDbgConsts;
 
 {------------------------------------------------------------------------------
   Name:    OSError
@@ -416,52 +189,69 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Name:    GetCarbonWidget
-  Params:  AWidget - Pointer to control or window widget
-  Returns: The Carbon widget
-
-  Retrieves widget for specified Carbon control or window
+  Name:    VirtualKeyCodeToMac
+  Returns: The Mac virtual key (MK_) code for the specified virtual
+  key code (VK_) or 0
  ------------------------------------------------------------------------------}
-function GetCarbonWidget(AWidget: Pointer): TCarbonWidget;
+function VirtualKeyCodeToMac(AKey: Word): Word;
 begin
-  if AWidget = nil then
-  begin
-    Result := nil;
-    Exit;
-  end;
-
-  if IsValidControlHandle(AWidget) then
-    Result := GetCarbonControl(ControlRef(AWidget))
+  case AKey of
+  VK_BACK      : Result := MK_BACKSPACE;
+  VK_TAB       : Result := MK_TAB;
+  VK_RETURN    : Result := MK_ENTER;
+  VK_PAUSE     : Result := MK_PAUSE;
+  VK_CAPITAL   : Result := MK_CAPSLOCK;
+  VK_ESCAPE    : Result := MK_ESC;
+  VK_SPACE     : Result := MK_SPACE;
+  VK_PRIOR     : Result := MK_PAGUP;
+  VK_NEXT      : Result := MK_PAGDN;
+  VK_END       : Result := MK_END;
+  VK_HOME      : Result := MK_HOME;
+  VK_LEFT      : Result := MK_LEFT;
+  VK_UP        : Result := MK_UP;
+  VK_RIGHT     : Result := MK_RIGHT;
+  VK_DOWN      : Result := MK_DOWN;
+  VK_SNAPSHOT  : Result := MK_PRNSCR;
+  VK_INSERT    : Result := MK_INS;
+  VK_DELETE    : Result := MK_DEL;
+  VK_HELP      : Result := MK_HELP;
+  VK_SLEEP     : Result := MK_POWER;
+  VK_NUMPAD0   : Result := MK_NUMPAD0;
+  VK_NUMPAD1   : Result := MK_NUMPAD1;
+  VK_NUMPAD2   : Result := MK_NUMPAD2;
+  VK_NUMPAD3   : Result := MK_NUMPAD3;
+  VK_NUMPAD4   : Result := MK_NUMPAD4;
+  VK_NUMPAD5   : Result := MK_NUMPAD5;
+  VK_NUMPAD6   : Result := MK_NUMPAD6;
+  VK_NUMPAD7   : Result := MK_NUMPAD7;
+  VK_NUMPAD8   : Result := MK_NUMPAD8;
+  VK_NUMPAD9   : Result := MK_NUMPAD9;
+  VK_MULTIPLY  : Result := MK_PADMULT;
+  VK_ADD       : Result := MK_PADADD;
+  VK_SEPARATOR : Result := MK_PADDEC;
+  VK_SUBTRACT  : Result := MK_PADSUB;
+  VK_DECIMAL   : Result := MK_PADDEC;
+  VK_DIVIDE    : Result := MK_PADDIV;
+  VK_F1        : Result := MK_F1;
+  VK_F2        : Result := MK_F2;
+  VK_F3        : Result := MK_F3;
+  VK_F4        : Result := MK_F4;
+  VK_F5        : Result := MK_F5;
+  VK_F6        : Result := MK_F6;
+  VK_F7        : Result := MK_F7;
+  VK_F8        : Result := MK_F8;
+  VK_F9        : Result := MK_F9;
+  VK_F10       : Result := MK_F10;
+  VK_F11       : Result := MK_F11;
+  VK_F12       : Result := MK_F12;
+  VK_F13       : Result := MK_F13;
+  VK_F14       : Result := MK_F14;
+  VK_F15       : Result := MK_F15;
+  VK_NUMLOCK   : Result := MK_NUMLOCK;
+  VK_SCROLL    : Result := MK_SCRLOCK;
   else
-    // there is no (cheap) check for windows so assume a window
-    // when it is not a control.
-    Result := GetCarbonWindow(WindowRef(AWidget));
-end;
-
-{------------------------------------------------------------------------------
-  Name:    GetCarbonWindow
-  Params:  AWidget - Pointer to window widget
-  Returns: The Carbon window
-
-  Retrieves the Carbon window for specified window widget
- ------------------------------------------------------------------------------}
-function GetCarbonWindow(AWidget: WindowRef): TCarbonWindow;
-begin
-  if GetWindowProperty(AWidget, LAZARUS_FOURCC, WIDGETINFO_FOURCC,
-    SizeOf(TCarbonWidget), nil, @Result) <> noErr then Result := nil;
-end;
-
-{------------------------------------------------------------------------------
-  Name:    GetCarbonControl
-  Params:  AWidget - Pointer to control widget
-  Returns: The Carbon control
-
-  Retrieves the Carbon control for specified control widget
- ------------------------------------------------------------------------------}
-function GetCarbonControl(AWidget: ControlRef): TCarbonControl;
-begin
-  if GetControlProperty(AWidget, LAZARUS_FOURCC, WIDGETINFO_FOURCC,
-    SizeOf(TCarbonWidget), nil, @Result) <> noErr then Result := nil;
+    Result := 0;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -524,7 +314,9 @@ begin
     Result := kMenuNoModifiers
   else
   begin
-    Result := kMenuNoCommandModifier;
+    if ssCtrl in Shift then Result := kMenuNoModifiers
+    else Result := kMenuNoCommandModifier;
+    
     if ssShift in Shift then Inc(Result, kMenuShiftModifier);
     if ssMeta  in Shift then Inc(Result, kMenuControlModifier);
     if ssAlt   in Shift then Inc(Result, kMenuOptionModifier);
@@ -602,104 +394,6 @@ begin
   Desc.BlueShift  := 08;
   Desc.AlphaShift := 00;
 end; 
-
-
-//=====================================================
-// UPP mamanger
-//=====================================================
-type
-  TUPPAVLTreeNode = class(TAVLTreeNode)
-  public
-    UPP: EventHandlerUPP;
-    RefCount: Integer;
-    procedure Clear; reintroduce; // not overridable, so reintroduce since we only will call this clear
-    destructor Destroy; override;
-  end;
-
-var
-  UPPTree: TAVLTree = nil;
-
-procedure TUPPAVLTreeNode.Clear;
-begin
-  if UPP <> nil then
-  begin
-    DisposeEventHandlerUPP(UPP);
-    UPP := nil;
-  end;
-  
-  inherited Clear;
-end;
-
-destructor TUPPAVLTreeNode.Destroy;
-begin
-  if UPP <> nil then
-  begin
-    DisposeEventHandlerUPP(UPP);
-    UPP := nil;
-  end;
-  
-  inherited Destroy;
-end;
-
-{------------------------------------------------------------------------------
-  Name:    RegisterEventHandler
-  Params:  AHandler - Carbon event handler procedure
-  Returns: Event handler UPP
-
-  Registers new carbon event handler procedure
- ------------------------------------------------------------------------------}
-function RegisterEventHandler(AHandler: TCarbonEventHandlerProc): EventHandlerUPP;
-var
-  Node: TUPPAVLTreeNode;
-begin
-  if UPPTree = nil then UPPTree := TAVLTree.Create;
-  
-  Node := TUPPAVLTreeNode(UPPTree.Find(AHandler));
-  if Node = nil then
-  begin
-    Node := TUPPAVLTreeNode.Create;
-    Node.Data := AHandler;
-    Node.UPP := NewEventHandlerUPP(EventHandlerProcPtr(AHandler));
-    UPPTree.Add(Node);
-  end;
-  
-  Inc(Node.Refcount);
-  Result := Node.UPP;
-end;
-
-{------------------------------------------------------------------------------
-  Name:    UnRegisterEventHandler
-  Params:  AHandler - Carbon event handler procedure
-
-  Unregisters event handler procedure
- ------------------------------------------------------------------------------}
-procedure UnRegisterEventHandler(AHandler: TCarbonEventHandlerProc);
-var
-  Node: TUPPAVLTreeNode;
-begin
-  if UPPTree = nil then Exit; //???
-  Node := TUPPAVLTreeNode(UPPTree.Find(AHandler));
-  if Node = nil then Exit; //???
-  if Node.Refcount <= 0 then
-  begin
-    DebugLn('[UnRegisterEventHandler] UPPInconsistency, Node.RefCount <= 0');
-    Exit;
-  end;
-
-  Dec(Node.Refcount);
-  if Node.Refcount > 0 then Exit;
-
-  // Sigh !
-  // there doesn't exist a light version of the avltree without buildin memmanager
-  // So, just free it and "pollute" the memmanager with our classes;
-  // Freeing our node is also not an option, since that would
-  // corrupt the tree (no handling for that).
-  // Tweaking the memmanager is also not possible since only the class is public
-  // and not the manager itself.
-
-  Node.Clear;
-  UPPTree.Delete(Node);
-end;
 
 {------------------------------------------------------------------------------
   Name:    CreateCFString
@@ -1041,7 +735,17 @@ begin
 end;
 
 
+initialization
+
+  OSError(
+    ATSUCreateStyle(DefaultTextStyle), 'CarbonProc.initialization', SCreateStyle);
+  RGBColorSpace := CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
+
 finalization
-  if UPPTree <> nil then FreeAndNil(UPPTree);
+
+  OSError(
+    ATSUDisposeStyle(DefaultTextStyle), 'CarbonProc.finalization', SDisposeStyle);
+  CGColorSpaceRelease(RGBColorSpace);
+  
 
 end.

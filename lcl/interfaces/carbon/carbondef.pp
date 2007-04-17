@@ -39,11 +39,8 @@ uses
   // wdgetset
   WSLCLClasses, LCLClasses,
   // LCL + RTL
-  Types, Classes, Controls, LCLType, LCLProc, Graphics, Math, LMessages,
-  LCLMessageGlue;
-
-const
-  DEFAULT_CFSTRING_ENCODING = kCFStringEncodingUTF8;
+  Types, Classes, SysUtils, Controls, LCLType, LCLProc, Graphics, Math, AVL_Tree,
+  LMessages, LCLMessageGlue;
 
 var
   LAZARUS_FOURCC: FourCharCode;    // = 'Laz ';
@@ -119,7 +116,6 @@ type
     AEvent: EventRef;
     AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
 
-type
   TEventInt = packed record
     case Integer of
     1: (Chars: array[0..4] of Char);
@@ -131,10 +127,196 @@ const
   LCLCarbonEventKindWake = 'Wake';
   LCLCarbonEventKindMain = 'Main';
 
+
+function AsControlRef(Handle: HWND): ControlRef; inline;
+function AsWindowRef(Handle: HWND): WindowRef; inline;
+
+function CheckHandle(const AWinControl: TWinControl; const AClass: TClass; const DbgText: String): Boolean;
+function CheckWidget(const Handle: HWND; const AMethodName: String; AParamName: String = ''): Boolean;
+
+function RegisterEventHandler(AHandler: TCarbonEventHandlerProc): EventHandlerUPP;
+procedure UnRegisterEventHandler(AHandler: TCarbonEventHandlerProc);
+
 implementation
 
 uses
-  CarbonProc, CarbonCanvas, CarbonConsts, CarbonUtils;
+  CarbonProc, CarbonCanvas, CarbonDbgConsts, CarbonUtils;
+
+{------------------------------------------------------------------------------
+  Name:    AsControlRef
+  Params:  Handle  - Handle of window control
+  Returns: Carbon control
+ ------------------------------------------------------------------------------}
+function AsControlRef(Handle: HWND): ControlRef;
+begin
+  Result := ControlRef(TCarbonWidget(Handle).Widget);
+end;
+
+{------------------------------------------------------------------------------
+  Name:    AsWindowRef
+  Params:  Handle  - Handle of window
+  Returns: Carbon window
+ ------------------------------------------------------------------------------}
+function AsWindowRef(Handle: HWND): WindowRef;
+begin
+  Result := WindowRef(TCarbonWidget(Handle).Widget);
+end;
+
+{------------------------------------------------------------------------------
+  Name:    CheckHandle
+  Params:  AWinControl  - Handle of window
+           AClass       - Class
+           DbgText      - Text to output on invalid DC
+  Returns: If the wincontrol handle is allocated and valid
+ ------------------------------------------------------------------------------}
+function CheckHandle(const AWinControl: TWinControl; const AClass: TClass;
+  const DbgText: String): Boolean;
+begin
+   if AWinControl <> nil then
+  begin
+    if TObject(AWinControl.Handle) is TCarbonWidget then
+    begin
+      {$IFDEF VerboseWSClass}
+        DebugLn(AClass.ClassName + '.' + DbgText + ' for ' + AWinControl.Name);
+      {$ENDIF}
+
+      Result := True;
+    end
+    else
+    begin
+      Result := False;
+      DebugLn(AClass.ClassName + '.' + DbgText + ' for ' + AWinControl.Name +
+        ' failed: Handle ' + DbgS(Integer(AWinControl.Handle)) + ' is invalid!');
+    end;
+  end
+  else
+  begin
+    Result := False;
+    DebugLn(AClass.ClassName + '.' + DbgText + ' for ' + AWinControl.Name +
+      ' failed: WinControl is nil!');
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Name:    CheckWidget
+  Params:  Handle      - Handle of window
+           AMethodName - Method name
+           AParamName  - Param name
+  Returns: If the window is valid
+ ------------------------------------------------------------------------------}
+function CheckWidget(const Handle: HWND; const AMethodName: String;
+  AParamName: String): Boolean;
+begin
+  if TObject(Handle) is TCarbonWidget then Result := True
+  else
+  begin
+    Result := False;
+        
+    if Pos('.', AMethodName) = 0 then
+      DebugLn(SCarbonWSPrefix + AMethodName + ' Error - invalid widget ' +
+        AParamName + ' = ' + DbgS(Handle) + '!')
+    else
+      DebugLn(AMethodName + ' Error - invalid widget ' + AParamName + ' = ' +
+        DbgS(Handle) + '!');
+  end;
+end;
+
+//=====================================================
+// UPP mamanger
+//=====================================================
+type
+  TUPPAVLTreeNode = class(TAVLTreeNode)
+  public
+    UPP: EventHandlerUPP;
+    RefCount: Integer;
+    procedure Clear; reintroduce; // not overridable, so reintroduce since we only will call this clear
+    destructor Destroy; override;
+  end;
+
+var
+  UPPTree: TAVLTree = nil;
+
+procedure TUPPAVLTreeNode.Clear;
+begin
+  if UPP <> nil then
+  begin
+    DisposeEventHandlerUPP(UPP);
+    UPP := nil;
+  end;
+
+  inherited Clear;
+end;
+
+destructor TUPPAVLTreeNode.Destroy;
+begin
+  if UPP <> nil then
+  begin
+    DisposeEventHandlerUPP(UPP);
+    UPP := nil;
+  end;
+
+  inherited Destroy;
+end;
+
+{------------------------------------------------------------------------------
+  Name:    RegisterEventHandler
+  Params:  AHandler - Carbon event handler procedure
+  Returns: Event handler UPP
+
+  Registers new carbon event handler procedure
+ ------------------------------------------------------------------------------}
+function RegisterEventHandler(AHandler: TCarbonEventHandlerProc): EventHandlerUPP;
+var
+  Node: TUPPAVLTreeNode;
+begin
+  if UPPTree = nil then UPPTree := TAVLTree.Create;
+
+  Node := TUPPAVLTreeNode(UPPTree.Find(AHandler));
+  if Node = nil then
+  begin
+    Node := TUPPAVLTreeNode.Create;
+    Node.Data := AHandler;
+    Node.UPP := NewEventHandlerUPP(EventHandlerProcPtr(AHandler));
+    UPPTree.Add(Node);
+  end;
+
+  Inc(Node.Refcount);
+  Result := Node.UPP;
+end;
+
+{------------------------------------------------------------------------------
+  Name:    UnRegisterEventHandler
+  Params:  AHandler - Carbon event handler procedure
+
+  Unregisters event handler procedure
+ ------------------------------------------------------------------------------}
+procedure UnRegisterEventHandler(AHandler: TCarbonEventHandlerProc);
+var
+  Node: TUPPAVLTreeNode;
+begin
+  if UPPTree = nil then Exit; //???
+  Node := TUPPAVLTreeNode(UPPTree.Find(AHandler));
+  if Node = nil then Exit; //???
+  if Node.Refcount <= 0 then
+  begin
+    DebugLn('[UnRegisterEventHandler] UPPInconsistency, Node.RefCount <= 0');
+    Exit;
+  end;
+
+  Dec(Node.Refcount);
+  if Node.Refcount > 0 then Exit;
+
+  // Sigh !
+  // there doesn't exist a light version of the avltree without buildin memmanager
+  // So, just free it and "pollute" the memmanager with our classes;
+  // Freeing our node is also not an option, since that would
+  // corrupt the tree (no handling for that).
+  // Tweaking the memmanager is also not possible since only the class is public
+  // and not the manager itself.
+
+  Node.Clear;
+  UPPTree.Delete(Node);
+end;
   
 { TCarbonContext }
 
@@ -329,5 +511,9 @@ initialization
   LAZARUS_FOURCC := MakeFourCC('Laz ');
   WIDGETINFO_FOURCC := MakeFourCC('WInf');
   MENU_FOURCC := MakeFourCC('Menu');
+  
+finalization
+
+  if UPPTree <> nil then FreeAndNil(UPPTree);
 
 end.

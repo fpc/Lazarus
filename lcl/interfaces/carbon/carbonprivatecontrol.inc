@@ -128,8 +128,6 @@ end;
 {------------------------------------------------------------------------------
   Method:  TCarbonControl.GetValidEvents
   Returns: Set of events with installed handlers
-
-  Returns the set of events with installed handlers
  ------------------------------------------------------------------------------}
 class function TCarbonControl.GetValidEvents: TCarbonControlEvents;
 begin
@@ -583,6 +581,7 @@ end;
 procedure TCarbonControl.SetFont(const AFont: TFont);
 var
   FontStyle: ControlFontStyleRec;
+  ID: ATSUFontID;
 const
   SName = 'SetFont';
 begin
@@ -590,15 +589,24 @@ begin
   OSError(GetControlData(ControlRef(Widget), kControlEntireControl,
       kControlFontStyleTag, SizeOf(FontStyle), @FontStyle, nil), Self, SName,
     SGetData, SControlFont);
+    
+  ID := FindCarbonFontID(AFont.Name);
+  
 
   FontStyle.flags := FontStyle.flags or kControlUseFontMask or kControlUseSizeMask or
     kControlUseFaceMask or kControlUseForeColorMask;
+    
+  if ID = 0 then         // use default font
+    FontStyle.flags := FontStyle.flags and not kControlUseFontMask;
+  if AFont.Size = 0 then // use default size
+    FontStyle.flags := FontStyle.flags and not kControlUseSizeMask;
 
-  FontStyle.font := FindCarbonFontID(AFont.Name);
+  FontStyle.font := ID;
   FontStyle.size := AFont.Size;
   FontStyle.style := FontStyleToQDStyle(AFont.Style);
   FontStyle.foreColor := ColorToRGBColor(AFont.Color);
 
+  
   OSError(SetControlFontStyle(ControlRef(Widget), FontStyle), Self, SName,
     SSetFontStyle);
     

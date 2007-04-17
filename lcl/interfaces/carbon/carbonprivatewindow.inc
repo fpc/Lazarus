@@ -677,7 +677,7 @@ begin
   
   Control := nil;
   if OSError(GetKeyboardFocus(AWidget.Widget, Control), SName,
-    'GetKeyboardFocus') then Exit;
+    SGetKeyboardFocus) then Exit;
   if Control = nil then Control := AWidget.Content;
 
   // if a control other than root is found, send the message

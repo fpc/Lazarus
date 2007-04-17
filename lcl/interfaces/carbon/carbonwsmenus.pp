@@ -295,7 +295,7 @@ end;
   Params:  APopupMenu - LCL popup menu
            X, Y       - Screen coordinates to popup
 
-  Creates new menu in Carbon interface
+  Popups menu in Carbon interface
  ------------------------------------------------------------------------------}
 class procedure TCarbonWSPopupMenu.Popup(const APopupMenu: TPopupMenu; const X,
   Y: integer);

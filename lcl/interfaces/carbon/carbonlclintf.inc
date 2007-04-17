@@ -117,9 +117,13 @@ begin
   Result:=inherited GetListBoxItemRect(ListBox, Index, ARect);
 end;
 
+{------------------------------------------------------------------------------
+  Method:  IntfSendsUTF8KeyPress
+  Returns: If the interface sends UTF-8 key press events
+ ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.IntfSendsUTF8KeyPress: boolean;
 begin
-  Result:=true;
+  Result := True;
 end;
 
 {------------------------------------------------------------------------------

@@ -137,7 +137,7 @@ uses
 // CarbonWSToolwin,
 ////////////////////////////////////////////////////
   CarbonDef, CarbonPrivate, CarbonCanvas, CarbonGDIObjects, CarbonMenus,
-  CarbonEdits, CarbonTabs, CarbonStrings, CarbonProc, CarbonConsts, CarbonUtils,
+  CarbonEdits, CarbonTabs, CarbonStrings, CarbonProc, CarbonDbgConsts, CarbonUtils,
   
   Buttons, StdCtrls, PairSplitter, ComCtrls, CListBox, Calendar, Arrow,
   Spin, CommCtrl, ExtCtrls, FileCtrl, LResources;

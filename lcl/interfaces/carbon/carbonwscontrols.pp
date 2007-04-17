@@ -220,7 +220,8 @@ begin
       if RefView = nil then Exit;
     end;
     
-  HIViewSetZOrder(AsControlRef(AChild.Handle), Order, RefView);
+  OSError(HIViewSetZOrder(AsControlRef(AChild.Handle), Order, RefView),
+    Self, 'SetChildZPosition', 'HIViewSetZOrder');
 end;
 
 {------------------------------------------------------------------------------
@@ -305,7 +306,8 @@ begin
   if not CheckHandle(AControl as TWinControl, Self, 'AddControl') then Exit;
   if not CheckHandle(AControl.Parent, Self, 'AddControl Parent') then Exit;
   
-  TCarbonWidget((AControl as TWinControl).Handle).AddToWidget(TCarbonWidget(AControl.Parent.Handle));
+  TCarbonWidget((AControl as
+    TWinControl).Handle).AddToWidget(TCarbonWidget(AControl.Parent.Handle));
 end;
 
 {------------------------------------------------------------------------------

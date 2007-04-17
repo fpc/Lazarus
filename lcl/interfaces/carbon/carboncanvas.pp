@@ -152,13 +152,40 @@ type
   
   // TODO: TCarbonPrinterContext
   
+function CheckDC(const DC: HDC; const AMethodName: String; AParamName: String = ''): Boolean;
+
 var
   // context for calculating text parameters for invisible controls
   DefaultContext: TCarbonBitmapContext;
+  ScreenContext: TCarbonScreenContext;
 
 implementation
 
-uses CarbonProc, CarbonConsts;
+uses CarbonProc, CarbonDbgConsts;
+
+{------------------------------------------------------------------------------
+  Name:    CheckDC
+  Params:  DC          - Handle to a device context (TCarbonDeviceContext)
+           AMethodName - Method name
+           AParamName  - Param name
+  Returns: If the DC is valid
+ ------------------------------------------------------------------------------}
+function CheckDC(const DC: HDC; const AMethodName: String;
+  AParamName: String): Boolean;
+begin
+  if TObject(DC) is TCarbonDeviceContext then Result := True
+  else
+  begin
+    Result := False;
+    
+    if Pos('.', AMethodName) = 0 then
+      DebugLn(SCarbonWSPrefix + AMethodName + ' Error - invalid DC ' +
+        AParamName + ' = ' + DbgS(DC) + '!')
+    else
+      DebugLn(AMethodName + ' Error - invalid DC ' + AParamName + ' = ' +
+        DbgS(DC) + '!');
+  end;
+end;
 
 { TCarbonDeviceContext }
 
