@@ -191,7 +191,6 @@ object Form1: TForm1
     ColCount = 5
     DefaultRowHeight = 24
     FixedColor = clBtnFace
-    GridLineWidth = 0
     Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goSmoothScroll]
     RowCount = 5
     ScrollBars = ssAutoBoth
@@ -287,7 +286,6 @@ object Form1: TForm1
     Width = 288
     ColCount = 5
     FixedColor = clBtnFace
-    GridLineWidth = 0
     Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goSmoothScroll]
     RowCount = 5
     ScrollBars = ssAutoBoth
@@ -305,7 +303,6 @@ object Form1: TForm1
     Width = 279
     ColCount = 5
     FixedColor = clBtnFace
-    GridLineWidth = 0
     Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goSmoothScroll]
     RowCount = 5
     ScrollBars = ssAutoBoth

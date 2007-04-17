@@ -49,15 +49,14 @@ object CharacterMapDialog: TCharacterMapDialog
     end
     object StringGrid1: TStringGrid
       Left = 6
-      Height = 305
+      Height = 288
       Top = 6
-      Width = 329
+      Width = 325
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Around = 6
       ColCount = 17
       DefaultColWidth = 16
       FixedColor = clBtnFace
-      GridLineWidth = 0
       Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goSmoothScroll]
       RowCount = 15
       ScrollBars = ssAutoBoth

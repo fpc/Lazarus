@@ -16,11 +16,11 @@ LazarusResources.Add('TCharacterMapDialog','FORMDATA',[
   +'arInfoLabel'#4'Left'#2#6#6'Height'#2#13#3'Top'#3'<'#1#5'Width'#3'I'#1#5'Ali'
   +'gn'#7#8'alBottom'#20'BorderSpacing.Around'#2#6#7'Caption'#6#13'CharInfoLabe'
   +'l'#5'Color'#7#6'clNone'#11'ParentColor'#8#0#0#11'TStringGrid'#11'StringGrid'
-  +'1'#4'Left'#2#6#6'Height'#3'1'#1#3'Top'#2#6#5'Width'#3'I'#1#7'Anchors'#11#5
+  +'1'#4'Left'#2#6#6'Height'#3' '#1#3'Top'#2#6#5'Width'#3'E'#1#7'Anchors'#11#5
   +'akTop'#6'akLeft'#7'akRight'#8'akBottom'#0#20'BorderSpacing.Around'#2#6#8'Co'
-  +'lCount'#2#17#15'DefaultColWidth'#2#16#10'FixedColor'#7#9'clBtnFace'#13'Grid'
-  +'LineWidth'#2#0#7'Options'#11#15'goFixedVertLine'#15'goFixedHorzLine'#10'goV'
-  +'ertLine'#10'goHorzLine'#14'goSmoothScroll'#0#8'RowCount'#2#15#10'ScrollBars'
-  +#7#10'ssAutoBoth'#8'TabOrder'#2#0#7'TabStop'#9#11'OnMouseDown'#7#20'StringGr'
-  +'id1MouseDown'#11'OnMouseMove'#7#20'StringGrid1MouseMove'#0#0#0#0
+  +'lCount'#2#17#15'DefaultColWidth'#2#16#10'FixedColor'#7#9'clBtnFace'#7'Optio'
+  +'ns'#11#15'goFixedVertLine'#15'goFixedHorzLine'#10'goVertLine'#10'goHorzLine'
+  +#14'goSmoothScroll'#0#8'RowCount'#2#15#10'ScrollBars'#7#10'ssAutoBoth'#8'Tab'
+  +'Order'#2#0#7'TabStop'#9#11'OnMouseDown'#7#20'StringGrid1MouseDown'#11'OnMou'
+  +'seMove'#7#20'StringGrid1MouseMove'#0#0#0#0
 ]);

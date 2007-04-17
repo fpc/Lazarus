@@ -7,8 +7,6 @@ object StringGridEditorDlg: TStringGridEditorDlg
   VertScrollBar.Page = 269
   ActiveControl = StringGrid
   Caption = 'StringGridEditorDlg'
-  ClientHeight = 270
-  ClientWidth = 520
   Constraints.MinHeight = 270
   Constraints.MinWidth = 340
   OnCreate = FormCreate
@@ -24,8 +22,6 @@ object StringGridEditorDlg: TStringGridEditorDlg
     BorderSpacing.Around = 6
     BorderSpacing.InnerBorder = 6
     Caption = 'String Grid'
-    ClientHeight = 210
-    ClientWidth = 504
     TabOrder = 0
     object LabelMove: TLabel
       AnchorSideLeft.Control = ArrowDown
@@ -149,7 +145,6 @@ object StringGridEditorDlg: TStringGridEditorDlg
       FixedColor = clBtnFace
       FixedCols = 0
       FixedRows = 0
-      GridLineWidth = 0
       Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRowSizing, goColSizing, goRowMoving, goColMoving, goEditing, goSmoothScroll]
       RowCount = 5
       ScrollBars = ssAutoBoth

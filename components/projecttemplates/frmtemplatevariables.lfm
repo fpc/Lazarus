@@ -55,7 +55,6 @@ object ProjectVariablesForm: TProjectVariablesForm
     ColCount = 3
     DefaultColWidth = 120
     FixedColor = clBtnFace
-    GridLineWidth = 0
     Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goEditing, goAlwaysShowEditor, goDblClickAutoSize, goSmoothScroll]
     RowCount = 5
     ScrollBars = ssAutoBoth

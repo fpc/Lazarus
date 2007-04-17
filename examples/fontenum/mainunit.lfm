@@ -185,7 +185,6 @@ object frmMain: TfrmMain
     FixedColor = clBtnFace
     FixedCols = 0
     FixedRows = 0
-    GridLineWidth = 0
     Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goEditing, goSmoothScroll]
     RowCount = 5
     ScrollBars = ssAutoBoth
