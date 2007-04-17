@@ -14,7 +14,7 @@
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
-    <Files Count="5">
+    <Files Count="6">
       <Item1>
         <Filename Value="openglcontext.pas"/>
         <HasRegisterProc Value="True"/>
@@ -40,6 +40,11 @@
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="GLWin32WGLContext"/>
       </Item5>
+      <Item6>
+        <Filename Value="glgtk2glxcontext.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="GLGtk2GLXContext"/>
+      </Item6>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="2">

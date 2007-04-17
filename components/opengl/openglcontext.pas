@@ -29,7 +29,7 @@ unit OpenGLContext;
   {$DEFINE OpenGLTargetDefined}
 {$ENDIF}
 {$IFDEF LCLGTK2}
-  {$DEFINE UseGtkGLX}
+  {$DEFINE UseGtk2GLX}
   {$DEFINE OpenGLTargetDefined}
 {$ENDIF}
 {$IFDEF LCLCarbon}
@@ -51,6 +51,9 @@ uses
   Graphics, LMessages, WSLCLClasses, WSControls,
 {$IFDEF UseGtkGLX}
   GLGtkGlxContext;
+{$ENDIF}
+{$IFDEF UseGtk2GLX}
+  GLGtk2GlxContext;
 {$ENDIF}
 {$IFDEF UseCarbonAGL}
   GLCarbonAGLContext;

@@ -3764,6 +3764,7 @@ begin
 
     LM_PAINT :
     begin
+      //DebugLn(['TGtkWidgetSet.SetCallback ',DbgSName(ALCLObject)]);
       ConnectSenderSignalAfter(gFixed, 'expose-event', @GTKExposeEventAfter);
       {$Ifdef GTK1}
       ConnectSenderSignalAfter(gFixed, 'draw', @GTKDrawAfter);
