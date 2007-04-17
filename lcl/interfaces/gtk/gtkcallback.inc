@@ -152,7 +152,7 @@ begin
     if TObject(Data) is TCustomForm then begin
       TheForm:=TCustomForm(Data);
       if TheForm.Parent=nil then begin
-        TheWindow:=GetControlWindow(Widget);
+        TheWindow:=gtk_widget_get_toplevel(Widget)^.window;
 
         //apart from none and sizeable, this will
         //only work if WM supports motif flags
