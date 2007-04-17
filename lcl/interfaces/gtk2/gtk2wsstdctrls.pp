@@ -761,12 +761,6 @@ begin
   LCLSendDropDownMsg(TControl(WidgetInfo^.LCLObject));
 end;
 
-function GtkComboButtonPressCB(AWidget: PGtkWidget; Event: PGdkEventButton; ComboBox: PGtkComboBox): Boolean;
-begin
-  Result := False;
-  gtk_combo_box_popup(ComboBox);
-end;
-
 procedure GtkChangedCB(AWidget: PGtkWidget; WidgetInfo: PWidgetInfo); cdecl;
 begin
   if WidgetInfo^.UserData <> nil then Exit;
@@ -832,7 +826,6 @@ begin
     // Anything?
   end;
 
-  g_signal_connect(AButton, 'button_press_event', TGCallback(@GtkComboButtonPressCB), AWidget);
   g_signal_connect(APrivate^.popup_widget, 'show', TGCallback(@GtkPopupShowCB), AWidgetInfo);
   g_object_set_data(G_OBJECT(AWidget), 'Menu', APrivate^.popup_widget);
 end;
