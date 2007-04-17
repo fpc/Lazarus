@@ -2694,6 +2694,7 @@ begin
     {$endif}
     with R, Canvas do begin
       Pen.Color := fBorderColor;
+      Pen.Width := 1;
       MoveTo(0,0);
       LineTo(0,Bottom);
       LineTo(Right, Bottom);
@@ -2936,43 +2937,63 @@ var
 begin
   // Draw Cell Grid or Maybe in the future Borders..
   with Canvas, aRect do begin
-    if (gdFixed in aState) then begin
+    if (gdFixed in aState) then
+    begin
       Dv := goFixedVertLine in Options;
       Dh := goFixedHorzLine in Options;
       Pen.Style := psSolid;
-      if not FFlat then begin
-        if FTitleStyle=tsNative then begin
+      if FGridLineWidth > 0 then
+        Pen.Width := 1
+      else
+        Pen.Width := 0;
+      if not FFlat then
+      begin
+        if FTitleStyle=tsNative then
+        begin
           aR := aRect;
           DrawFrameControl(Handle, ar, DFC_BUTTON, DFCS_BUTTONPUSH);
           exit;
-        end else begin
-          Pen.Color := cl3DHilight;
-          MoveTo(Right - 1, Top);
-          LineTo(Left, Top);
-          LineTo(Left, Bottom);
-          if FTitleStyle=tsStandard then begin
-            // more contrast
-            Pen.Color := cl3DShadow;
-            MoveTo(Left+1, Bottom-2);
-            LineTo(Right-2, Bottom-2);
-            LineTo(Right-2, Top);
+        end
+        else
+        begin
+          if FGridLineWidth > 0 then
+          begin
+            Pen.Color := cl3DHilight;
+            MoveTo(Right - 1, Top);
+            LineTo(Left, Top);
+            LineTo(Left, Bottom);
+            if FTitleStyle=tsStandard then
+            begin
+              // more contrast
+              Pen.Color := cl3DShadow;
+              MoveTo(Left+1, Bottom-2);
+              LineTo(Right-2, Bottom-2);
+              LineTo(Right-2, Top);
+            end;
           end;
         end;
       end;
       Pen.Color := cl3DDKShadow;
-    end else begin
+    end
+    else
+    begin
       Dv := goVertLine in Options;
       Dh := goHorzLine in Options;
       Pen.Style := fGridLineStyle;
       Pen.Color := fGridLineColor;
+      Pen.Width := fGridLineWidth;
     end;
-    if Dh then begin
-      MoveTo(Left, Bottom - 1);
-      LineTo(Right, Bottom - 1);
-    end;
-    if Dv then begin
-       MoveTo(Right - 1, Top);
-       LineTo(Right - 1, Bottom);
+    
+    if fGridLineWidth > 0 then
+    begin
+      if Dh then begin
+        MoveTo(Left, Bottom - 1);
+        LineTo(Right, Bottom - 1);
+      end;
+      if Dv then begin
+         MoveTo(Right - 1, Top);
+         LineTo(Right - 1, Bottom);
+      end;
     end;
   end;
 end;
@@ -3284,9 +3305,9 @@ end;
 
 procedure TCustomGrid.SetGridLineWidth(const AValue: Integer);
 begin
-  // Todo
-  if FGridLineWidth=AValue then exit;
-  FGridLineWidth:=AValue;
+  if FGridLineWidth = AValue then
+    exit;
+  FGridLineWidth := AValue;
   Invalidate;
 end;
 
@@ -6120,10 +6141,11 @@ begin
      goSmoothScroll ];
   FScrollbars:=ssAutoBoth;
   fGridState:=gsNormal;
-  fDefColWidth:=DEFCOLWIDTH;
-  fDefRowHeight:=DEFROWHEIGHT;
-  fGridLineColor:=clSilver;
+  FDefColWidth:=DEFCOLWIDTH;
+  FDefRowHeight:=DEFROWHEIGHT;
+  FGridLineColor:=clSilver;
   FGridLineStyle:=psSolid;
+  FGridLineWidth := 1;
   fFocusColor:=clRed;
   FFixedColor:=clBtnFace;
   FSelectedColor:= clHighlight;
