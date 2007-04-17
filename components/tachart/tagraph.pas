@@ -2041,7 +2041,7 @@ end;
 
 {$IFDEF fpc}
 initialization
-
+  {$I tagraph.lrs}
 {$ENDIF}
 
 
