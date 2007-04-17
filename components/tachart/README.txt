@@ -43,7 +43,7 @@ Installation
 
 Changes
 -------
-
+* 17/04/2007 - Series clipping bugfixes and partially implement TSeriesPointer
 * 12/03/2007 - Bugfixes and implement ShowInLegend
 * 01/01/2007 - Initial Release
 

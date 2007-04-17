@@ -47,7 +47,7 @@ type
   end;
   PChartCoord = ^ChartCoord;
 
-  TPointStyle=(psRectangle,psCircle,psCross,psDiagCross,psStar);
+  TSeriesPointerStyle=(psRectangle,psCircle,psCross,psDiagCross,psStar);
 
   BarException=class(Exception);
 
@@ -68,7 +68,7 @@ type
     function GetXMinVal: Integer;
     procedure SetShowInLegend(Value: Boolean);
   public
-    Chart:TChart;
+    ParentChart:TChart;
     procedure Draw; virtual; abstract;
 
     constructor Create(AOwner:TComponent); override;
@@ -94,18 +94,45 @@ type
       property ShowInLegend:Boolean read FShowInLegend write SetShowInLegend;
   end;
 
+  TSeriesPointer=class(TPersistent)
+  private
+    FHorizSize,
+    FVertSize:Integer;
+    FStyle:TSeriesPointerStyle;
+    FPen:TChartPen;
+    FBrush:TBrush;
+    FVisible:Boolean;
+    FOwner:TChartSeries;
+    FChanged: TNotifyEvent;
 
-{  TTACustomSeries = class(TChartSeries);
-
-  TTACustomBarSeries = class(TChartSeries)
+    Procedure SetVisible(Value:Boolean);
+    Procedure SetStyle(Value:TSeriesPointerStyle);
+    Procedure SetPen(Value:TChartPen);
+    Procedure SetBrush(Value:TBrush);
+    Procedure SetHorizSize(Value:Integer);
+    Procedure SetVertSize(Value:Integer);
+  protected
   public
+    Constructor Create(AOwner:TChartSeries);
+    Destructor Destroy; override;
+//    Procedure Draw(px,py:Integer; ColorValue:TColor; AStyle:TSeriesPointerStyle);
+    Procedure Draw(px,py:Integer);
+
+    property ParentSeries:TChartSeries read FOwner;
+    Procedure Assign(Source:TPersistent); override;
+  published
+    property Brush:TBrush read FBrush write SetBrush;
+    property Pen:TChartPen read FPen write SetPen;
+    Property Style:TSeriesPointerStyle read FStyle write SetStyle;
+    Property Visible:Boolean read FVisible write SetVisible;
+    property OnChange: TNotifyEvent read FChanged write FChanged;
+    property HorizSize:Integer read FHorizSize write SetHorizSize default 4;
+    property VertSize:Integer read FVertSize write SetVertSize default 4;
 
   end;
-  }
 
 
   TLineStyle=(lsVertical,lsHorizontal);
-
 
   TBarSeries = class(TChartSeries)
   private
@@ -196,10 +223,7 @@ type
 
   TSerie = class(TChartSeries)
   private
-    FStyle:TPointStyle;
-
-// Image = coordinates in the component
-
+    FPointer:TSeriesPointer;
 
     XOfYGraphMin,XOfYGraphMax:Double;          // X max value of points
     FShowPoints:Boolean;
@@ -209,7 +233,7 @@ type
 
     procedure SetShowPoints(Value:Boolean);
     procedure SetShowLines(Value:Boolean);
-    procedure SetStyle(Value:TPointStyle);
+    procedure SetPointer(Value:TSeriesPointer);
   protected
     { Déclarations protégées }
   public
@@ -236,10 +260,6 @@ type
     procedure SetColor(Index:Integer;_Color:TColor);
     function  GetColor(Index:Integer):TColor;
 
-    property PointStyle:TPointStyle read FStyle write SetStyle;
-    property ShowPoints:Boolean read FShowPoints write SetShowPoints;
-    property ShowLines:Boolean read FShowLines write SetShowLines default True;
-
     procedure BeginUpdate;
     procedure EndUpdate;
 
@@ -247,11 +267,13 @@ type
     property YGraphMin;
     property XGraphMax;
     property YGraphMax;
-
-
   published
     property Title;
     property Active;
+
+    property ShowPoints:Boolean read FShowPoints write SetShowPoints;
+    property ShowLines:Boolean read FShowLines write SetShowLines default True;
+    property Pointer:TSeriesPointer read FPointer write SetPointer;
   end;
 
   TLine = class(TChartSeries)
@@ -351,7 +373,7 @@ procedure TChartSeries.Delete(Index:Integer);
 begin
      Dispose( PChartCoord(FCoordList.Items[Index]) );
      FCoordList.Delete( Index );
-     if Chart <> nil then Chart.Invalidate;
+     if ParentChart <> nil then ParentChart.Invalidate;
 end;
 
 procedure TChartSeries.Clear;
@@ -363,10 +385,8 @@ begin
      XGraphMax:=MinDouble;
      YGraphMax:=MinDouble;
 
-     if Chart <> nil then Chart.Invalidate;
+     if ParentChart <> nil then ParentChart.Invalidate;
 end;
-
-
 
 function TChartSeries.Count:Integer;
 begin
@@ -376,22 +396,130 @@ end;
 procedure TChartSeries.SetActive(Value:Boolean);
 begin
      FActive:=Value;
-     if Chart <> nil then Chart.Invalidate;
+     if ParentChart <> nil then ParentChart.Invalidate;
 end;
 
 procedure TChartSeries.SetShowInLegend(Value:Boolean);
 begin
      FShowInLegend:=Value;
-     if Chart <> nil then Chart.Invalidate;
+     if ParentChart <> nil then ParentChart.Invalidate;
 end;
 
 procedure TChartSeries.SetMarks(Value:TSeriesMarksStyle);
 begin
      FMarks := Value;
-     if Chart <> nil then Chart.Invalidate;
+     if ParentChart <> nil then ParentChart.Invalidate;
 end;
 
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 
+Procedure TSeriesPointer.SetVisible(Value:Boolean);
+begin
+     FVisible := Value;
+     if assigned( FChanged ) then FChanged(Self);
+end;
+
+Procedure TSeriesPointer.SetStyle(Value:TSeriesPointerStyle);
+begin
+     FStyle := Value;
+     if assigned( FChanged ) then FChanged(Self);
+end;
+
+Procedure TSeriesPointer.SetPen(Value:TChartPen);
+begin
+     FPen.Assign(Value);
+     if assigned( FChanged ) then FChanged(Self);
+end;
+
+Procedure TSeriesPointer.SetBrush(Value:TBrush);
+begin
+     FBrush.Assign(Value);
+     if assigned( FChanged ) then FChanged(Self);
+end;
+
+Procedure TSeriesPointer.SetHorizSize(Value:Integer);
+Begin
+   FHorizSize := Value;
+   if assigned( FChanged ) then FChanged(Self);
+end;
+
+Procedure TSeriesPointer.SetVertSize(Value:Integer);
+Begin
+  FVertSize := Value;
+  if assigned( FChanged ) then FChanged(Self);
+end;
+
+Constructor TSeriesPointer.Create(AOwner:TChartSeries);
+begin
+     FBrush := TBrush.Create;
+     FBrush.Color := clLime;
+     FPen := TChartPen.Create;
+     FOwner := AOwner;
+
+     FHorizSize := 4;
+     FVertSize  := 4;
+end;
+
+Destructor TSeriesPointer.Destroy;
+begin
+   FBrush.Free;
+   FPen.Free;
+   inherited Destroy;
+end;
+
+Procedure TSeriesPointer.Draw(px,py:Integer);
+begin
+     with FOwner do begin
+        ParentChart.Canvas.Brush.Assign( FBrush );
+        ParentChart.Canvas.Pen.Assign( FPen );
+
+        case FStyle of
+            psRectangle: begin
+               ParentChart.Canvas.Rectangle(px-FHorizSize,py-FVertSize,px+FHorizSize+1,py+FVertSize+1);
+            end;
+            psCross: begin
+               ParentChart.Canvas.MoveTo(px-FHorizSize,py);
+               ParentChart.Canvas.LineTo(px+FHorizSize+1,py);
+               ParentChart.Canvas.MoveTo(px,py-FVertSize);
+               ParentChart.Canvas.LineTo(px,py+FVertSize+1);
+            end;
+            psDiagCross: begin
+               ParentChart.Canvas.MoveTo(px-FHorizSize,py-FVertSize);
+               ParentChart.Canvas.LineTo(px+FHorizSize+1,py+FVertSize+1);
+               ParentChart.Canvas.MoveTo(px-FHorizSize,py+FVertSize+1);
+               ParentChart.Canvas.LineTo(px+FHorizSize+1,py-FVertSize);
+            end;
+            psStar: begin
+               ParentChart.Canvas.MoveTo(px-FHorizSize,py);
+               ParentChart.Canvas.LineTo(px+FHorizSize+1,py);
+               ParentChart.Canvas.MoveTo(px,py-FVertSize);
+               ParentChart.Canvas.LineTo(px,py+FVertSize+1);
+
+               ParentChart.Canvas.MoveTo(px-FHorizSize,py-FVertSize);
+               ParentChart.Canvas.LineTo(px+FHorizSize+1,py+FVertSize+1);
+               ParentChart.Canvas.MoveTo(px-FHorizSize,py+FVertSize+1);
+               ParentChart.Canvas.LineTo(px+FHorizSize+1,py-FVertSize);
+            end;
+            psCircle: begin
+               ParentChart.Canvas.Ellipse(px-FHorizSize,py-FVertSize,px+FHorizSize+1,py+FVertSize+1);
+            end;
+        end;
+     end;
+end;
+
+Procedure TSeriesPointer.Assign(Source:TPersistent);
+begin
+     if Source is TSeriesPointer then
+        with TSeriesPointer( Source ) do begin
+             FBrush.Assign(Brush);
+             FPen.Assign(Pen);
+             FStyle := Style;
+             FVisible := Visible;
+        end;
+     inherited Assign( Source );
+end;
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -402,7 +530,9 @@ constructor TSerie.Create(AOwner:TComponent);
 begin
    inherited Create(AOwner);
 
-   PointStyle:=psCross;
+   FPointer := TSeriesPointer.Create( Self );
+   FPointer.FStyle := psCross;
+   FPointer.OnChange := StyleChanged;
 
    ShowPoints:=False;
    ShowLines:=True;
@@ -417,20 +547,16 @@ end;
 
 procedure TSerie.StyleChanged(Sender:TObject);
 begin
-     if Chart <> nil then Chart.Invalidate;
+     if ParentChart <> nil then ParentChart.Invalidate;
 end;
 
-procedure TSerie.SetStyle(Value:TPointStyle);
+procedure TSerie.SetPointer(Value:TSeriesPointer);
 begin
-if FStyle<>Value then
-   begin
-   FStyle:=Value;
-   if Chart<>nil then Chart.Invalidate;
-   end;
+     FPointer.Assign(Value);
+     if ParentChart<>nil then ParentChart.Invalidate;
 end;
 
 procedure TSerie.Draw;
-const   Larg = 4;
 var
    i,j:Integer;
 
@@ -450,52 +576,10 @@ var
    graphCoord: PChartCoord;
 
    label Points;
-
-   procedure drawPoint( xi1, yi1: integer; PointStyle: TPointStyle );
-   begin
-        Chart.Canvas.Brush.Style:=bsSolid;
-
-            case PointStyle of
-            psRectangle:
-               begin
-               Chart.Canvas.Rectangle(xi1-Larg,yi1-Larg,xi1+Larg+1,yi1+Larg+1);
-               end;
-            psCross:
-               begin
-               Chart.Canvas.MoveTo(xi1-Larg,yi1);
-               Chart.Canvas.LineTo(xi1+Larg+1,yi1);
-               Chart.Canvas.MoveTo(xi1,yi1-Larg);
-               Chart.Canvas.LineTo(xi1,yi1+Larg+1);
-               end;
-            psDiagCross:
-               begin
-               Chart.Canvas.MoveTo(xi1-Larg,yi1-Larg);
-               Chart.Canvas.LineTo(xi1+Larg+1,yi1+Larg+1);
-               Chart.Canvas.MoveTo(xi1-Larg,yi1+Larg+1);
-               Chart.Canvas.LineTo(xi1+Larg+1,yi1-Larg);
-               end;
-            psStar:
-               begin
-               Chart.Canvas.MoveTo(xi1-Larg,yi1);
-               Chart.Canvas.LineTo(xi1+Larg+1,yi1);
-               Chart.Canvas.MoveTo(xi1,yi1-Larg);
-               Chart.Canvas.LineTo(xi1,yi1+Larg+1);
-
-               Chart.Canvas.MoveTo(xi1-Larg,yi1-Larg);
-               Chart.Canvas.LineTo(xi1+Larg+1,yi1+Larg+1);
-               Chart.Canvas.MoveTo(xi1-Larg,yi1+Larg+1);
-               Chart.Canvas.LineTo(xi1+Larg+1,yi1-Larg);
-               end;
-            psCircle:
-               begin
-               Chart.Canvas.Ellipse(xi1-Larg,yi1-Larg,xi1+Larg+1,yi1+Larg+1);
-               end;
-            end;
-   end;
 begin
    if count=0 then Exit;
 
-   with Chart do begin
+   with ParentChart do begin
       XMin:=XImageMin;
       XMax:=XImageMax;
       YMin:=YImageMin;
@@ -513,39 +597,39 @@ begin
       YMax:=TempI;
    end;
 
-   with Chart do begin
+   with ParentChart do begin
       Canvas.Pen.Mode:=pmCopy;
       Canvas.Pen.Style:=psSolid;
       Canvas.Pen.Width:=1;
    end;
 
-   Min:=Chart.XGraphMin;
-   Max:=Chart.XGraphMax;
+   Min:=ParentChart.XGraphMin;
+   Max:=ParentChart.XGraphMax;
 
 
    for i:=0 to count-2 do begin
       graphCoord := FCoordList.Items[i];
       xg1 := graphCoord^.x;
       yg1 := graphCoord^.y;
-      Chart.GraphToImage(xg1, yg1, xi1, yi1);
+      ParentChart.GraphToImage(xg1, yg1, xi1, yi1);
       graphCoord := FCoordList.Items[i+1];
       xg2 := graphCoord^.x;
       yg2 := graphCoord^.y;
-      Chart.GraphToImage(xg2, yg2, xi2, yi2);
+      ParentChart.GraphToImage(xg2, yg2, xi2, yi2);
 
-      Chart.Canvas.Pen.Color:= graphCoord^.Color;
+      ParentChart.Canvas.Pen.Color:= graphCoord^.Color;
 
       if FShowLines then begin
-         if (xg1>Chart.XGraphMin) and (xg2>Chart.XGraphMin) and (xg1<Chart.XGraphMax) and (xg2<Chart.XGraphMax) and
-            (yg1>Chart.YGraphMin) and (yg2>Chart.YGraphMin) and (yg1<Chart.YGraphMax) and (yg2<Chart.YGraphMax) then
+         if (xg1>ParentChart.XGraphMin) and (xg2>ParentChart.XGraphMin) and (xg1<ParentChart.XGraphMax) and (xg2<ParentChart.XGraphMax) and
+            (yg1>ParentChart.YGraphMin) and (yg2>ParentChart.YGraphMin) and (yg1<ParentChart.YGraphMax) and (yg2<ParentChart.YGraphMax) then
             begin
-               Chart.Canvas.MoveTo(xi1,yi1);
-               Chart.Canvas.LineTo(xi2,yi2);
+               ParentChart.Canvas.MoveTo(xi1,yi1);
+               ParentChart.Canvas.LineTo(xi2,yi2);
                goto Points;
             end;
 
-         if ((xg1<Chart.XGraphMin) and (xg2<Chart.XGraphMin)) or ((xg1>Chart.XGraphMax) and (xg2>Chart.XGraphMax)) or
-            ((yg1<Chart.YGraphMin) and (yg2<Chart.YGraphMin)) or ((yg1>Chart.YGraphMax) and (yg2>Chart.YGraphMax)) then
+         if ((xg1<ParentChart.XGraphMin) and (xg2<ParentChart.XGraphMin)) or ((xg1>ParentChart.XGraphMax) and (xg2>ParentChart.XGraphMax)) or
+            ((yg1<ParentChart.YGraphMin) and (yg2<ParentChart.YGraphMin)) or ((yg1>ParentChart.YGraphMax) and (yg2>ParentChart.YGraphMax)) then
             goto Points;
 
          if yg1>yg2 then begin
@@ -558,28 +642,28 @@ begin
                Temp:=xg1; xg1:=xg2; xg2:=Temp;
                Temp:=yg1; yg1:=yg2; yg2:=Temp;
             end;
-            if xg1<Chart.XGraphMin then xi1:=Chart.XImageMin;
-            if xg2>Chart.XGraphMax then xi2:=Chart.XImageMax;
-            Chart.Canvas.MoveTo(xi1,yi1);
-            Chart.Canvas.LineTo(xi2,yi2);
+            if xg1<ParentChart.XGraphMin then xi1:=ParentChart.XImageMin;
+            if xg2>ParentChart.XGraphMax then xi2:=ParentChart.XImageMax;
+            ParentChart.Canvas.MoveTo(xi1,yi1);
+            ParentChart.Canvas.LineTo(xi2,yi2);
             goto Points;
          end;
 
          if xg1=xg2 then begin
-            if yg1<Chart.YGraphMin then yi1:=Chart.YImageMin;
-            if yg2>Chart.YGraphMax then yi2:=Chart.YImageMax;
-            Chart.Canvas.MoveTo(xi1,yi1);
-            Chart.Canvas.LineTo(xi2,yi2);
+            if yg1<ParentChart.YGraphMin then yi1:=ParentChart.YImageMin;
+            if yg2>ParentChart.YGraphMax then yi2:=ParentChart.YImageMax;
+            ParentChart.Canvas.MoveTo(xi1,yi1);
+            ParentChart.Canvas.LineTo(xi2,yi2);
             goto Points;
          end;
 
          dy:=yg1-yg2;
          dx:=xg1-xg2;
          dxy:=xg1*yg2-yg1*xg2;
-         qx:=Chart.XGraphMin*dy;
-         rx:=Chart.XGraphMax*dy;
-         qy:=Chart.YGraphMin*dx;
-         ry:=Chart.YGraphMax*dx;
+         qx:=ParentChart.XGraphMin*dy;
+         rx:=ParentChart.XGraphMax*dy;
+         qy:=ParentChart.YGraphMin*dx;
+         ry:=ParentChart.YGraphMax*dx;
          u1:=qx-qy+dxy;
          u2:=qx-ry+dxy;
          u3:=rx-ry+dxy;
@@ -588,16 +672,16 @@ begin
          OK:=False;
          if u1*u2<0 then begin
             OK:=True;
-            if xg1<Chart.XGraphMin then begin
-               yg1:=(Chart.XGraphMin*dy+dxy)/dx;
-               xg1:=Chart.XGraphMin;
+            if xg1<ParentChart.XGraphMin then begin
+               yg1:=(ParentChart.XGraphMin*dy+dxy)/dx;
+               xg1:=ParentChart.XGraphMin;
                dy:=yg1-yg2;
                dx:=xg1-xg2;
                dxy:=xg1*yg2-yg1*xg2;
             end;
-            if xg2<Chart.XGraphMin then begin
-               yg2:=(Chart.XGraphMin*dy+dxy)/dx;
-               xg2:=Chart.XGraphMin;
+            if xg2<ParentChart.XGraphMin then begin
+               yg2:=(ParentChart.XGraphMin*dy+dxy)/dx;
+               xg2:=ParentChart.XGraphMin;
                dy:=yg1-yg2;
                dx:=xg1-xg2;
                dxy:=xg1*yg2-yg1*xg2;
@@ -606,9 +690,9 @@ begin
 
          if u2*u3<0 then begin
             OK:=True;
-            if yg2>Chart.YGraphMax then begin
-               xg2:=(Chart.YGraphMax*dx-dxy)/dy;
-               yg2:=Chart.YGraphMax;
+            if yg2>ParentChart.YGraphMax then begin
+               xg2:=(ParentChart.YGraphMax*dx-dxy)/dy;
+               yg2:=ParentChart.YGraphMax;
                dy:=yg1-yg2;
                dx:=xg1-xg2;
                dxy:=xg1*yg2-yg1*xg2;
@@ -617,16 +701,16 @@ begin
 
          if u3*u4<0 then begin
             OK:=True;
-            if xg1>Chart.XGraphMax then begin
-               yg1:=(Chart.XGraphMax*dy+dxy)/dx;
-               xg1:=Chart.XGraphMax;
+            if xg1>ParentChart.XGraphMax then begin
+               yg1:=(ParentChart.XGraphMax*dy+dxy)/dx;
+               xg1:=ParentChart.XGraphMax;
                dy:=yg1-yg2;
                dx:=xg1-xg2;
                dxy:=xg1*yg2-yg1*xg2;
             end;
-            if xg2>Chart.XGraphMax then begin
-               yg2:=(Chart.XGraphMax*dy+dxy)/dx;
-               xg2:=Chart.XGraphMax;
+            if xg2>ParentChart.XGraphMax then begin
+               yg2:=(ParentChart.XGraphMax*dy+dxy)/dx;
+               xg2:=ParentChart.XGraphMax;
                dy:=yg1-yg2;
                dx:=xg1-xg2;
                dxy:=xg1*yg2-yg1*xg2;
@@ -635,9 +719,9 @@ begin
 
          if u4*u1<0 then begin
             OK:=True;
-            if yg1<Chart.YGraphMin then begin
-               xg1:=(Chart.YGraphMin*dx-dxy)/dy;
-               yg1:=Chart.YGraphMin;
+            if yg1<ParentChart.YGraphMin then begin
+               xg1:=(ParentChart.YGraphMin*dx-dxy)/dy;
+               yg1:=ParentChart.YGraphMin;
                dy:=yg1-yg2;
                dx:=xg1-xg2;
                dxy:=xg1*yg2-yg1*xg2;
@@ -645,24 +729,25 @@ begin
          end;
 
          if OK then begin
-            Chart.XGraphToImage(xg1,xi1);
-            Chart.YGraphToImage(yg1,yi1);
-            Chart.XGraphToImage(xg2,xi2);
-            Chart.YGraphToImage(yg2,yi2);
+            ParentChart.XGraphToImage(xg1,xi1);
+            ParentChart.YGraphToImage(yg1,yi1);
+            ParentChart.XGraphToImage(xg2,xi2);
+            ParentChart.YGraphToImage(yg2,yi2);
 
-            Chart.Canvas.MoveTo(xi1,yi1);
-            Chart.Canvas.LineTo(xi2,yi2);
+            ParentChart.Canvas.MoveTo(xi1,yi1);
+            ParentChart.Canvas.LineTo(xi2,yi2);
 
          end;
 
       end;
 
       Points:
-        if FShowPoints and (yi1>YMin) and (yi1<YMax)
-           and (xi1>XMin) and (xi1<XMax) then begin
-           Chart.Canvas.Pen.Color := clBlack;
-           Chart.Canvas.Brush.Color:=graphCoord^.Color;
-           drawPoint( xi1, yi1, PointStyle );
+        if FShowPoints and (yi1>=YMin) and (yi1<=YMax)
+           and (xi1>=XMin) and (xi1<=XMax) then begin
+           ParentChart.Canvas.Pen.Color := clBlack;
+           ParentChart.Canvas.Brush.Color:=graphCoord^.Color;
+
+           FPointer.Draw(xi1, yi1 );
          end;
 
    end;
@@ -671,14 +756,13 @@ begin
    graphCoord := FCoordList.items[ Count - 1 ];
    xg1 := graphCoord^.x;
    yg1 := graphCoord^.y;
-   Chart.GraphToImage(xg1, yg1, xi1, yi1);
+   ParentChart.GraphToImage(xg1, yg1, xi1, yi1);
 
-
-   if FShowPoints and (yi1>YMin) and
-      (yi1<YMax) and (xi1>XMin) and (xi1<XMax) then begin
-         Chart.Canvas.Pen.Color := clBlack;
-         Chart.Canvas.Brush.Color:=graphCoord^.Color;
-         drawPoint( xi1, yi1, PointStyle );
+   if FShowPoints and (yi1>=YMin) and
+      (yi1<=YMax) and (xi1>=XMin) and (xi1<=XMax) then begin
+         ParentChart.Canvas.Pen.Color := clBlack;
+         ParentChart.Canvas.Brush.Color:=graphCoord^.Color;
+         FPointer.draw( xi1, yi1 );
    end;
 end;
 
@@ -701,7 +785,7 @@ begin
         XOfYGraphMin:=X;
      end;
 
-     if Chart <> nil then Chart.Invalidate;
+     if ParentChart <> nil then ParentChart.Invalidate;
 end;
 
 function TSerie.GetXValue(Index:Integer):Double;
@@ -748,7 +832,7 @@ end;
 
 PChartCoord(FCoordList.Items[Index])^.x:=Value;
 
-if Chart <> nil then Chart.Invalidate;
+if ParentChart <> nil then ParentChart.Invalidate;
 end;
 
 procedure TSerie.SetYValue(Index:Integer;Value:Double);
@@ -785,17 +869,17 @@ end;
 
 PChartCoord(FCoordList.Items[Index])^.y := Value;
 
-if Chart <> nil then Chart.Invalidate;
+if ParentChart <> nil then ParentChart.Invalidate;
 end;
 
 function TSerie.GetXImgValue(Index:Integer):Integer;
 begin
-     Chart.XGraphToImage( PChartCoord(FCoordList.Items[Index])^.x, Result );
+     ParentChart.XGraphToImage( PChartCoord(FCoordList.Items[Index])^.x, Result );
 end;
 
 function TSerie.GetYImgValue(Index:Integer):Integer;
 begin
-     Chart.YGraphToImage( PChartCoord(FCoordList.Items[Index])^.y, Result );
+     ParentChart.YGraphToImage( PChartCoord(FCoordList.Items[Index])^.y, Result );
 end;
 
 
@@ -844,13 +928,13 @@ end;
 procedure TSerie.SetShowPoints(Value:Boolean);
 begin
      FShowPoints:=Value;
-     if Chart<>nil then Chart.Invalidate;
+     if ParentChart<>nil then ParentChart.Invalidate;
 end;
 
 procedure TSerie.SetShowLines(Value:Boolean);
 begin
      FShowLines:=Value;
-     if Chart<>nil then Chart.Invalidate;
+     if ParentChart<>nil then ParentChart.Invalidate;
 end;
 
 procedure TSerie.BeginUpdate;
@@ -881,7 +965,7 @@ begin
          if Val<YGraphMin then YGraphMin:=Val;
      end;
 
-     if Chart <> nil then Chart.Invalidate;
+     if ParentChart <> nil then ParentChart.Invalidate;
 end;
 
 
@@ -908,12 +992,12 @@ end;
 
 procedure TLine.StyleChanged(Sender:TObject);
 begin
-     if Chart <> nil then Chart.Invalidate;
+     if ParentChart <> nil then ParentChart.Invalidate;
 end;
 
 procedure TLine.SetPen(Value:TPen);
 begin
-FPen.Assign(Value);
+   FPen.Assign(Value);
 end;
 
 procedure TLine.SetStyle(Value:TLineStyle);
@@ -924,7 +1008,7 @@ begin
            lsHorizontal: begin YGraphMin := PosGraph; YGraphMax := PosGraph; end;
            lsVertical:  begin XGraphMin := PosGraph; XGraphMax := PosGraph; end;
         end;
-        if Chart<>nil then Chart.Invalidate;
+        if ParentChart<>nil then ParentChart.Invalidate;
      end;
 end;
 
@@ -954,7 +1038,7 @@ begin
         lsVertical:  begin XGraphMin := PosGraph; XGraphMax := PosGraph; end;
       end;
 
-     if Chart<>nil then Chart.Invalidate;
+     if ParentChart<>nil then ParentChart.Invalidate;
 end;
 
 procedure TLine.Draw;
@@ -963,7 +1047,7 @@ var
    label Points;
 begin
 
-with Chart as TChart do
+with ParentChart as TChart do
    begin
    XMin:=XImageMin;
    XMax:=XImageMax;
@@ -985,20 +1069,20 @@ if YMin>YMax then
    end;
 
 // Draw
-Chart.Canvas.Pen.Assign(FPen);
+ParentChart.Canvas.Pen.Assign(FPen);
 
 case LineStyle of
    lsHorizontal:
-      if (PosGraph < Chart.XGraphMax) and (PosGraph > Chart.XGraphMin) then begin
-         Chart.YGraphToImage(PosGraph,PosImage);
-         Chart.Canvas.MoveTo(XMin,PosImage);
-         Chart.Canvas.LineTo(XMax,PosImage);
+      if (PosGraph < ParentChart.XGraphMax) and (PosGraph > ParentChart.XGraphMin) then begin
+         ParentChart.YGraphToImage(PosGraph,PosImage);
+         ParentChart.Canvas.MoveTo(XMin,PosImage);
+         ParentChart.Canvas.LineTo(XMax,PosImage);
       end;
    lsVertical:
-      if (PosGraph < Chart.YGraphMax) and (PosGraph > Chart.YGraphMin) then begin
-         Chart.XGraphToImage(PosGraph,PosImage);
-         Chart.Canvas.MoveTo(PosImage,YMin);
-         Chart.Canvas.LineTo(PosImage,YMax);
+      if (PosGraph < ParentChart.YGraphMax) and (PosGraph > ParentChart.YGraphMin) then begin
+         ParentChart.XGraphToImage(PosGraph,PosImage);
+         ParentChart.Canvas.MoveTo(PosImage,YMin);
+         ParentChart.Canvas.LineTo(PosImage,YMax);
       end;
 end;
 
@@ -1047,7 +1131,7 @@ end;
 
 procedure TBarSeries.StyleChanged(Sender:TObject);
 begin
-     if Chart<>nil then Chart.Invalidate;
+     if ParentChart<>nil then ParentChart.Invalidate;
 end;
 
 procedure TBarSeries.SetBarBrush(Value:TBrush);
@@ -1087,7 +1171,7 @@ begin
    end;
 
 
-   if Chart <> nil then Chart.Invalidate;
+   if ParentChart <> nil then ParentChart.Invalidate;
    //this has to change
    result := 0;
 end;
@@ -1106,10 +1190,10 @@ var
 
    function BarInViewPort( cTop, cBottom: ChartCoord  ): boolean;
    begin //FIXME make cleaner?
-        result :=  ( (cTop.x >= Chart.XGraphMin) and (cTop.x <= Chart.XGraphMax) )
-                    and ( ( (cTop.y > Chart.YGraphMax) and (cBottom.y < Chart.YGraphMin))
-                          or ( (cTop.y < Chart.YGraphMax) and (cTop.y > Chart.YGraphMin))
-                          or ( (cBottom.y < Chart.YGraphMax) and (cBottom.y > Chart.YGraphMin))
+        result :=  ( (cTop.x >= ParentChart.XGraphMin) and (cTop.x <= ParentChart.XGraphMax) )
+                    and ( ( (cTop.y > ParentChart.YGraphMax) and (cBottom.y < ParentChart.YGraphMin))
+                          or ( (cTop.y < ParentChart.YGraphMax) and (cTop.y > ParentChart.YGraphMin))
+                          or ( (cBottom.y < ParentChart.YGraphMax) and (cBottom.y > ParentChart.YGraphMin))
                          );
    end;
 
@@ -1118,8 +1202,8 @@ begin
    if FCoordList.Count = 0 then exit;
 
    //get the limits (for the zoom) ??
-   XMin := Chart.XImageMin;
-   XMax := Chart.XImageMax;
+   XMin := ParentChart.XImageMin;
+   XMax := ParentChart.XImageMax;
    if XMin > XMax then begin
       TempI:=XMin;
       XMin:=XMax;
@@ -1127,11 +1211,11 @@ begin
    end;
 
    // Draw the bars
-   Chart.Canvas.Pen.Assign( FBarPen );
-   Chart.Canvas.Brush.Assign( FBarBrush );
+   ParentChart.Canvas.Pen.Assign( FBarPen );
+   ParentChart.Canvas.Brush.Assign( FBarBrush );
 
    //calc the single bar width
-   barWidth:=Round((FBarWidthPercent*0.01)*Chart.ChartWidth/FCoordList.Count);
+   barWidth:=Round((FBarWidthPercent*0.01)*ParentChart.ChartWidth/FCoordList.Count);
    // barWidth:=barWidth div NumBarSeries; //to use with multibar
 
 
@@ -1150,13 +1234,13 @@ begin
        //check if bar in view port
        if BarInViewPort( graphCoordTop, graphCoordBottom ) then begin
           //only draw to the limits
-          if graphCoordTop.y > Chart.YGraphMax then graphCoordTop.y := Chart.YGraphMax;
-          if graphCoordBottom.y < Chart.YGraphMin then graphCoordBottom.y := Chart.YGraphMin;
+          if graphCoordTop.y > ParentChart.YGraphMax then graphCoordTop.y := ParentChart.YGraphMax;
+          if graphCoordBottom.y < ParentChart.YGraphMin then graphCoordBottom.y := ParentChart.YGraphMin;
           //convert from graph to imgs coords
-          Chart.GraphToImage(graphCoordTop.x, graphCoordTop.y, topX, topY);
-          Chart.YGraphToImage(graphCoordBottom.y, bottomY);
+          ParentChart.GraphToImage(graphCoordTop.x, graphCoordTop.y, topX, topY);
+          ParentChart.YGraphToImage(graphCoordBottom.y, bottomY);
 
-          Chart.Canvas.Brush.Color := graphCoordTop.Color;
+          ParentChart.Canvas.Brush.Color := graphCoordTop.Color;
 
           //calc coords for bar
           bx1 := topX-(barWidth div 2);
@@ -1168,11 +1252,11 @@ begin
           //FIXME only draw if bar inside image coord (get a better way of doing this)
           if (bx1 >= XMin)  and (bx2 <= XMax) then
              if by1 = by2 then begin //draw a line when y=0 FIXME (clean)
-                Chart.Canvas.Pen.Color := FBarBrush.Color;
-                Chart.Canvas.MoveTo(bx1, by1);
-                Chart.Canvas.LineTo(bx2, by2);
-                Chart.Canvas.Pen.Assign( FBarPen );
-             end else Chart.Canvas.Rectangle( bx1, by1, bx2, by2);
+                ParentChart.Canvas.Pen.Color := FBarBrush.Color;
+                ParentChart.Canvas.MoveTo(bx1, by1);
+                ParentChart.Canvas.LineTo(bx2, by2);
+                ParentChart.Canvas.Pen.Assign( FBarPen );
+             end else ParentChart.Canvas.Rectangle( bx1, by1, bx2, by2);
 
        end;
    end;
@@ -1207,7 +1291,7 @@ end;
 
 procedure TPieSeries.StyleChanged(Sender:TObject);
 begin
-     if Chart <> nil then Chart.Invalidate;
+     if ParentChart <> nil then ParentChart.Invalidate;
 end;
 
 procedure TPieSeries.SetPiePen(Value:TPen);
@@ -1224,7 +1308,7 @@ begin
    inherited AddXY(X, Y, XLabel, Color);
 
 
-   if Chart <> nil then Chart.Invalidate;
+   if ParentChart <> nil then ParentChart.Invalidate;
    //this has to change
    result := 0;
 end;
@@ -1264,16 +1348,16 @@ begin
    if FCoordList.Count = 0 then exit;
 
 
-   //center the chart on the canvas
-   if Chart.XImageMax-Chart.XImageMin > Chart.YImageMin-Chart.YImageMax then begin
-      W := Chart.YImageMin-Chart.YImageMax;
-      nOrigoX  := (Chart.XImageMax-Chart.XImageMin) div 2+Chart.XImageMin;
-      nOrigoY  := Round((W-1.01)/2)+Chart.YImageMax;
+   //center the ParentChart on the canvas
+   if ParentChart.XImageMax-ParentChart.XImageMin > ParentChart.YImageMin-ParentChart.YImageMax then begin
+      W := ParentChart.YImageMin-ParentChart.YImageMax;
+      nOrigoX  := (ParentChart.XImageMax-ParentChart.XImageMin) div 2+ParentChart.XImageMin;
+      nOrigoY  := Round((W-1.01)/2)+ParentChart.YImageMax;
    end
    else begin
-       W := Chart.XImageMax-Chart.XImageMin;
-       nOrigoX  := Round((W-1.01)/2)+Chart.XImageMin;
-      nOrigoY  := (Chart.YImageMin-Chart.YImageMax) div 2 +Chart.YImageMax;
+       W := ParentChart.XImageMax-ParentChart.XImageMin;
+       nOrigoX  := Round((W-1.01)/2)+ParentChart.XImageMin;
+      nOrigoY  := (ParentChart.YImageMin-ParentChart.YImageMax) div 2 +ParentChart.YImageMax;
 
    end;
 
@@ -1285,8 +1369,8 @@ begin
    for i := 0 to FCoordList.Count - 1 do begin
       graphCoord := FCoordList[i];
       n100Sum  := n100Sum + graphCoord^.y;
-       if Chart.Canvas.TextWidth(graphCoord^.Text) > maxtextw then
-          maxtextw := Chart.Canvas.TextWidth(graphCoord^.Text);
+       if ParentChart.Canvas.TextWidth(graphCoord^.Text) > maxtextw then
+          maxtextw := ParentChart.Canvas.TextWidth(graphCoord^.Text);
    end;
 
    //we can only draw if enought space for text is saved
@@ -1297,7 +1381,7 @@ begin
    CircleRect.Right  := nOrigoX+nlen+TAGSMargin;
    CircleRect.Bottom := nOrigoY+nlen+TAGSMargin;
 
-//   Chart.Canvas.Rectangle(CircleRect.Left, CircleRect.Top, CircleRect.Right, CircleRect.Bottom);
+//   ParentChart.Canvas.Rectangle(CircleRect.Left, CircleRect.Top, CircleRect.Right, CircleRect.Bottom);
 
    for i := 0 to FCoordList.Count - 1 do begin
       graphCoord := FCoordList[i];
@@ -1309,8 +1393,8 @@ begin
       curangle := prop * (2*pi)  ;
       conv_angle(nOrigoX, nOrigoY, nLen, prevangle+curangle, BX, BY);
 
-      Chart.Canvas.Brush.color := graphCoord^.Color;
-      Chart.canvas.pie(CircleRect.Left,CircleRect.Top, CircleRect.Right, CircleRect.Bottom, AX,AY,BX,BY);
+      ParentChart.Canvas.Brush.color := graphCoord^.Color;
+      ParentChart.canvas.pie(CircleRect.Left,CircleRect.Top, CircleRect.Right, CircleRect.Bottom, AX,AY,BX,BY);
 
       if nLen < SPACE_InMarks then
          SPACE_InMarks := nLen;
@@ -1321,15 +1405,15 @@ begin
       conv_angle(nOrigoX, nOrigoY, nLen+SPACE_InMarks, midleangle, BX, BY);
       conv_angle(nOrigoX, nOrigoY, nLen, midleangle, aX, aY);
 
-      Chart.canvas.Pen.Color := clWhite;
-      Chart.canvas.moveto(ax, ay);
-      Chart.canvas.lineto(bx, by);
-      Chart.canvas.Pen.Color := clBlack;
+      ParentChart.canvas.Pen.Color := clWhite;
+      ParentChart.canvas.moveto(ax, ay);
+      ParentChart.canvas.lineto(bx, by);
+      ParentChart.canvas.Pen.Color := clBlack;
 
        //depends on label type
       case MarksStyle of
-           smsLabel: MarkTxtWidth := Chart.canvas.TextWidth( graphCoord^.Text );
-           smsLabelPercent: MarkTxtWidth := Chart.canvas.TextWidth( graphCoord^.Text+' '+format('%1.3g',[prop*100])+'%' );
+           smsLabel: MarkTxtWidth := ParentChart.canvas.TextWidth( graphCoord^.Text );
+           smsLabelPercent: MarkTxtWidth := ParentChart.canvas.TextWidth( graphCoord^.Text+' '+format('%1.3g',[prop*100])+'%' );
       end;
 
       //line from mark to pie
@@ -1339,17 +1423,17 @@ begin
       markrect.Right  :=  markrect.Left + MarkTxtWidth +MarkXMargin*2;
 
       markrect.Top   := BY - MarkYMargin;
-      markrect.Bottom := BY + Chart.canvas.textheight( graphCoord^.Text )+MarkYMargin;
+      markrect.Bottom := BY + ParentChart.canvas.textheight( graphCoord^.Text )+MarkYMargin;
 
 
-      Chart.canvas.Brush.Color := clYellow;
-      Chart.Canvas.Rectangle(markrect.Left, markrect.Top, markrect.Right, markrect.Bottom);
+      ParentChart.canvas.Brush.Color := clYellow;
+      ParentChart.Canvas.Rectangle(markrect.Left, markrect.Top, markrect.Right, markrect.Bottom);
 
       if Bx < nOrigoX then BX := BX - MarkTxtWidth;
-      Chart.canvas.Brush.Color := clYellow;
+      ParentChart.canvas.Brush.Color := clYellow;
       case MarksStyle of
-           smsLabel: Chart.Canvas.TextOut(BX, BY, graphCoord^.Text);
-           smsLabelPercent: Chart.Canvas.TextOut(BX, BY, graphCoord^.Text+' '+format('%1.3g',[prop*100])+'%');
+           smsLabel: ParentChart.Canvas.TextOut(BX, BY, graphCoord^.Text);
+           smsLabelPercent: ParentChart.Canvas.TextOut(BX, BY, graphCoord^.Text+' '+format('%1.3g',[prop*100])+'%');
       end;
 
       prevangle := prevangle + curangle;
@@ -1386,31 +1470,31 @@ begin
      if Y>YGraphMax then YGraphMax:=Y;
      if Y<YGraphMin then YGraphMin:=Y;
 
-     if Chart <> nil then Chart.Invalidate;
+     if ParentChart <> nil then ParentChart.Invalidate;
 end;
 
 procedure TAreaSeries.SetAreaBrush(value: TBrush);
 begin
    FAreaBrush.Assign( value );
-   if Chart <> nil then Chart.Invalidate;
+   if ParentChart <> nil then ParentChart.Invalidate;
 end;
 
 procedure TAreaSeries.SetStairs(value: Boolean);
 begin
    FStairs := value;
-   if Chart <> nil then Chart.Invalidate;
+   if ParentChart <> nil then ParentChart.Invalidate;
 end;
 
 procedure TAreaSeries.SetInvertedStairs(value: Boolean);
 begin
    FInvertedStairs := value;
-   if Chart <> nil then Chart.Invalidate;
+   if ParentChart <> nil then ParentChart.Invalidate;
 end;
 
 
 procedure TAreaSeries.StyleChanged(Sender:TObject);
 begin
-     if Chart <> nil then Chart.Invalidate;
+     if ParentChart <> nil then ParentChart.Invalidate;
 end;
 
 
@@ -1437,7 +1521,7 @@ var
 begin
    if count=0 then Exit;
 
-   with Chart do begin
+   with ParentChart do begin
       XMin:=XImageMin;
       XMax:=XImageMax;
       YMin:=YImageMin;
@@ -1455,7 +1539,7 @@ begin
       YMax:=TempI;
    end;
 
-   with Chart do begin
+   with ParentChart do begin
       Canvas.Pen.Mode:=pmCopy;
       Canvas.Pen.Style:=psSolid;
       Canvas.Pen.Width:=1;
@@ -1466,33 +1550,33 @@ begin
       graphCoord := FCoordList.Items[i];
       xg1 := graphCoord^.x;
       yg1 := graphCoord^.y;
-      Chart.GraphToImage(xg1, yg1, xi1, yi1);
+      ParentChart.GraphToImage(xg1, yg1, xi1, yi1);
       graphCoord := FCoordList.Items[i+1];
       xg2 := graphCoord^.x;
       yg2 := graphCoord^.y;
-      Chart.GraphToImage(xg2, yg2, xi2, yi2);
+      ParentChart.GraphToImage(xg2, yg2, xi2, yi2);
 
-      Chart.YGraphToImage(Chart.YGraphMin, iy_min);
-      Chart.Canvas.Pen.Color:= clBlack;
-      Chart.Canvas.Brush.Color:= graphCoord^.Color;
+      ParentChart.YGraphToImage(ParentChart.YGraphMin, iy_min);
+      ParentChart.Canvas.Pen.Color:= clBlack;
+      ParentChart.Canvas.Brush.Color:= graphCoord^.Color;
 
 
-         if (xg1>Chart.XGraphMin) and (xg2>Chart.XGraphMin) and (xg1<Chart.XGraphMax) and (xg2<Chart.XGraphMax) and
-            (yg1>Chart.YGraphMin) and (yg2>Chart.YGraphMin) and (yg1<Chart.YGraphMax) and (yg2<Chart.YGraphMax) then
+         if (xg1>ParentChart.XGraphMin) and (xg2>ParentChart.XGraphMin) and (xg1<ParentChart.XGraphMax) and (xg2<ParentChart.XGraphMax) and
+            (yg1>ParentChart.YGraphMin) and (yg2>ParentChart.YGraphMin) and (yg1<ParentChart.YGraphMax) and (yg2<ParentChart.YGraphMax) then
             begin
                if FStairs then begin
                   if FInvertedStairs then
-                     Chart.Canvas.Polygon([Point(xi1, iy_min), Point(xi1, yi2), Point(xi2, yi2), Point(xi2, iy_min)])
+                     ParentChart.Canvas.Polygon([Point(xi1, iy_min), Point(xi1, yi2), Point(xi2, yi2), Point(xi2, iy_min)])
                   else
-                     Chart.Canvas.Polygon([Point(xi1, iy_min), Point(xi1, yi1), Point(xi2, yi1), Point(xi2, iy_min)])
+                     ParentChart.Canvas.Polygon([Point(xi1, iy_min), Point(xi1, yi1), Point(xi2, yi1), Point(xi2, iy_min)])
                end else
-                  Chart.Canvas.Polygon([Point(xi1, iy_min), Point(xi1, yi1), Point(xi2, yi2), Point(xi2, iy_min)]);
+                  ParentChart.Canvas.Polygon([Point(xi1, iy_min), Point(xi1, yi1), Point(xi2, yi2), Point(xi2, iy_min)]);
                   
                continue;
             end;
 
-         if ((xg1<Chart.XGraphMin) and (xg2<Chart.XGraphMin)) or ((xg1>Chart.XGraphMax) and (xg2>Chart.XGraphMax)) or
-            ((yg1<Chart.YGraphMin) and (yg2<Chart.YGraphMin)) or ((yg1>Chart.YGraphMax) and (yg2>Chart.YGraphMax)) then
+         if ((xg1<ParentChart.XGraphMin) and (xg2<ParentChart.XGraphMin)) or ((xg1>ParentChart.XGraphMax) and (xg2>ParentChart.XGraphMax)) or
+            ((yg1<ParentChart.YGraphMin) and (yg2<ParentChart.YGraphMin)) or ((yg1>ParentChart.YGraphMax) and (yg2>ParentChart.YGraphMax)) then
             continue;
 
          if yg1>yg2 then begin
@@ -1505,26 +1589,26 @@ begin
                Temp:=xg1; xg1:=xg2; xg2:=Temp;
                Temp:=yg1; yg1:=yg2; yg2:=Temp;
             end;
-            if xg1<Chart.XGraphMin then xi1:=Chart.XImageMin;
-            if xg2>Chart.XGraphMax then xi2:=Chart.XImageMax;
-            Chart.Canvas.Polygon([Point(xi1, iy_min), Point(xi1, yi1), Point(xi2, yi2), Point(xi2, iy_min)]);
+            if xg1<ParentChart.XGraphMin then xi1:=ParentChart.XImageMin;
+            if xg2>ParentChart.XGraphMax then xi2:=ParentChart.XImageMax;
+            ParentChart.Canvas.Polygon([Point(xi1, iy_min), Point(xi1, yi1), Point(xi2, yi2), Point(xi2, iy_min)]);
             continue;
          end;
 
          if xg1=xg2 then begin
-            if yg1<Chart.YGraphMin then yi1:=Chart.YImageMin;
-            if yg2>Chart.YGraphMax then yi2:=Chart.YImageMax;
-            Chart.Canvas.Polygon([Point(xi1, iy_min), Point(xi1, yi1), Point(xi2, yi2), Point(xi2, iy_min)]);
+            if yg1<ParentChart.YGraphMin then yi1:=ParentChart.YImageMin;
+            if yg2>ParentChart.YGraphMax then yi2:=ParentChart.YImageMax;
+            ParentChart.Canvas.Polygon([Point(xi1, iy_min), Point(xi1, yi1), Point(xi2, yi2), Point(xi2, iy_min)]);
             continue;
          end;
 
          dy:=yg1-yg2;
          dx:=xg1-xg2;
          dxy:=xg1*yg2-yg1*xg2;
-         qx:=Chart.XGraphMin*dy;
-         rx:=Chart.XGraphMax*dy;
-         qy:=Chart.YGraphMin*dx;
-         ry:=Chart.YGraphMax*dx;
+         qx:=ParentChart.XGraphMin*dy;
+         rx:=ParentChart.XGraphMax*dy;
+         qy:=ParentChart.YGraphMin*dx;
+         ry:=ParentChart.YGraphMax*dx;
          u1:=qx-qy+dxy;
          u2:=qx-ry+dxy;
          u3:=rx-ry+dxy;
@@ -1533,16 +1617,16 @@ begin
          OK:=False;
          if u1*u2<0 then begin
             OK:=True;
-            if xg1<Chart.XGraphMin then begin
-               yg1:=(Chart.XGraphMin*dy+dxy)/dx;
-               xg1:=Chart.XGraphMin;
+            if xg1<ParentChart.XGraphMin then begin
+               yg1:=(ParentChart.XGraphMin*dy+dxy)/dx;
+               xg1:=ParentChart.XGraphMin;
                dy:=yg1-yg2;
                dx:=xg1-xg2;
                dxy:=xg1*yg2-yg1*xg2;
             end;
-            if xg2<Chart.XGraphMin then begin
-               yg2:=(Chart.XGraphMin*dy+dxy)/dx;
-               xg2:=Chart.XGraphMin;
+            if xg2<ParentChart.XGraphMin then begin
+               yg2:=(ParentChart.XGraphMin*dy+dxy)/dx;
+               xg2:=ParentChart.XGraphMin;
                dy:=yg1-yg2;
                dx:=xg1-xg2;
                dxy:=xg1*yg2-yg1*xg2;
@@ -1551,9 +1635,9 @@ begin
 
          if u2*u3<0 then begin
             OK:=True;
-            if yg2>Chart.YGraphMax then begin
-               xg2:=(Chart.YGraphMax*dx-dxy)/dy;
-               yg2:=Chart.YGraphMax;
+            if yg2>ParentChart.YGraphMax then begin
+               xg2:=(ParentChart.YGraphMax*dx-dxy)/dy;
+               yg2:=ParentChart.YGraphMax;
                dy:=yg1-yg2;
                dx:=xg1-xg2;
                dxy:=xg1*yg2-yg1*xg2;
@@ -1562,16 +1646,16 @@ begin
 
          if u3*u4<0 then begin
             OK:=True;
-            if xg1>Chart.XGraphMax then begin
-               yg1:=(Chart.XGraphMax*dy+dxy)/dx;
-               xg1:=Chart.XGraphMax;
+            if xg1>ParentChart.XGraphMax then begin
+               yg1:=(ParentChart.XGraphMax*dy+dxy)/dx;
+               xg1:=ParentChart.XGraphMax;
                dy:=yg1-yg2;
                dx:=xg1-xg2;
                dxy:=xg1*yg2-yg1*xg2;
             end;
-            if xg2>Chart.XGraphMax then begin
-               yg2:=(Chart.XGraphMax*dy+dxy)/dx;
-               xg2:=Chart.XGraphMax;
+            if xg2>ParentChart.XGraphMax then begin
+               yg2:=(ParentChart.XGraphMax*dy+dxy)/dx;
+               xg2:=ParentChart.XGraphMax;
                dy:=yg1-yg2;
                dx:=xg1-xg2;
                dxy:=xg1*yg2-yg1*xg2;
@@ -1580,9 +1664,9 @@ begin
 
          if u4*u1<0 then begin
             OK:=True;
-            if yg1<Chart.YGraphMin then begin
-               xg1:=(Chart.YGraphMin*dx-dxy)/dy;
-               yg1:=Chart.YGraphMin;
+            if yg1<ParentChart.YGraphMin then begin
+               xg1:=(ParentChart.YGraphMin*dx-dxy)/dy;
+               yg1:=ParentChart.YGraphMin;
                dy:=yg1-yg2;
                dx:=xg1-xg2;
                dxy:=xg1*yg2-yg1*xg2;
@@ -1590,11 +1674,11 @@ begin
          end;
 
          if OK then begin
-            Chart.XGraphToImage(xg1,xi1);
-            Chart.YGraphToImage(yg1,yi1);
-            Chart.XGraphToImage(xg2,xi2);
-            Chart.YGraphToImage(yg2,yi2);
-            Chart.Canvas.Polygon([Point(xi1, iy_min), Point(xi1, yi1), Point(xi2, yi2), Point(xi2, iy_min)]);
+            ParentChart.XGraphToImage(xg1,xi1);
+            ParentChart.YGraphToImage(yg1,yi1);
+            ParentChart.XGraphToImage(xg2,xi2);
+            ParentChart.YGraphToImage(yg2,yi2);
+            ParentChart.Canvas.Polygon([Point(xi1, iy_min), Point(xi1, yi1), Point(xi2, yi2), Point(xi2, iy_min)]);
          end;
    end;
 end;

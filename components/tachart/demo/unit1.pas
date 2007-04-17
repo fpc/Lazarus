@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  TAGraph, TASeries, Buttons, StdCtrls;
+  TAGraph, TASeries, Buttons, StdCtrls, TAEngine;
 
 type
 
@@ -83,7 +83,7 @@ begin
       Chart1.AddSerie(p);
       p.title := 'pie';
       p.SeriesColor := clRed;
-      p.MarksStyle := taseries.smsLabelPercent;
+      p.MarksStyle := taengine.smsLabelPercent;
 
 end;
 
@@ -92,7 +92,7 @@ begin
      d:= TSerie.Create(Chart1);
      d.ShowLines := true;
      d.ShowPoints := true;
-     d.PointStyle := taseries.psRectangle;
+     d.Pointer.Style := psRectangle;
      d.title := 'line';
      d.SeriesColor := clRed;
      Chart1.AddSerie(d);

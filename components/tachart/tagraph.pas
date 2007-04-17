@@ -76,7 +76,7 @@ type
     procedure Assign(Source:TPersistent); override;
   published
     property Visible: boolean read FVisible write SetVisible;
-    property OnChange: TNotifyEvent read FChanged write FChanged;
+    property OnChange: TNotifyEvent read FChanged write FChanged; 
   end;
 
   TLegendAlignment=(laLeft,laRight,laTop,laBottom);
@@ -1384,7 +1384,7 @@ end;
 
 
 Series.Add(Serie);
-TChartSeries(Serie).Chart := Self;
+TChartSeries(Serie).ParentChart := Self;
 end;
 
 //procedure TChart.DeleteSerie(Serie:TSerie);
@@ -1556,6 +1556,7 @@ Clean;
 DrawAxis;
 DisplaySeries;
 DrawTitleFoot;
+
 if FLegend.Visible then DrawLegend;
 
 if FShowVerticalReticule then
@@ -1600,7 +1601,19 @@ procedure TChart.DisplaySeries;
 var
    i:Integer;
    Serie:TChartSeries;
+   Rgn : HRGN;
+   p: array[0..1] of TPoint;
 begin
+     //set cliping region
+     p[0].x := XImageMin;
+     p[0].y := YImageMax;
+     p[1].x := XImageMax;
+     p[1].y := YImageMin;
+//     LPtoDP(Canvas.Handle, p, 2);
+
+     Rgn := CreateRectRgn(p[0].x, p[0].y, p[1].x, p[1].y);
+     SelectClipRgn (Canvas.Handle, Rgn);
+
      // Update all series
      for i:=0 to FSeries.Count-1 do begin
          Serie:= TChartSeries( Series[i] );
@@ -2028,7 +2041,7 @@ end;
 
 {$IFDEF fpc}
 initialization
-  {$I tagraph.lrs}
+
 {$ENDIF}
 
 
