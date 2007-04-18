@@ -42,8 +42,8 @@ uses
 type
 
   IContainer = interface(IInterface)
-    procedure AddChild(AControl: TWinControl);
-    procedure RemoveChild(AControl: TWinControl);
+    procedure AddChild(AWidget: TFWidget);
+    procedure RemoveChild(AWidget: TFWidget);
   end;
   
   ISimpleText = interface(IInterface)
@@ -64,31 +64,37 @@ type
 
   TFPGUIPrivateWidget = class(TFPGUIPrivate)
   private
-    fWidget: TFWidget;
-    fLCLObject: TControl;
+    FWidget: TFWidget;
+    FLCLObject: TWinControl;
     function GetVisible: Boolean;
     procedure SetVisible(const AValue: Boolean);
   protected
   public
-    constructor Create(ALCLObject: TControl; const AParams: TCreateParams); virtual;
+    constructor Create(ALCLObject: TWinControl; const AParams: TCreateParams); virtual;
     destructor Destroy; override;
     procedure CreateWidget(const AParams: TCreateParams); virtual; abstract;
     procedure SetSize(AWidth, AHeight: LongInt); virtual;
     procedure SetPosition(AX, AY: Integer); virtual;
 
-    property LCLObject: TControl read fLCLObject;
+    property LCLObject: TWinControl read FLCLObject;
     property Visible: Boolean read GetVisible write SetVisible;
-    property Widget: TFWidget read fWidget write fWidget;
+    property Widget: TFWidget read FWidget write FWidget;
   end;
   
   
   { TFPGUIPrivateContainer }
   { Private class for containers }
 
-  TFPGUIPrivateContainer = class(TFPGUIPrivateWidget)
+  TFPGUIPrivateContainer = class(TFPGUIPrivateWidget, IContainer)
   private
   protected
+    fFixed: TFFixedLayout;
   public
+    constructor Create(ALCLObject: TWinControl; const AParams: TCreateParams); override;
+    destructor Destroy; override;
+  // IContainer
+    procedure AddChild(AWidget: TFWidget);
+    procedure RemoveChild(AWidget: TFWidget);
   end;
 
 
@@ -105,20 +111,16 @@ type
   { TFPGUIPrivateWindow }
   { Private class for windows }
 
-  TFPGUIPrivateWindow = class(TFPGUIPrivateBin, IContainer, ISimpleText)
+  TFPGUIPrivateWindow = class(TFPGUIPrivateBin, ISimpleText)
   private
-    fFixed: TFFixedLayout;
   protected
   public
-    constructor Create(ALCLObject: TControl; const AParams: TCreateParams); override;
+    constructor Create(ALCLObject: TWinControl; const AParams: TCreateParams); override;
     procedure CreateWidget(const AParams: TCreateParams); override;
     destructor Destroy; override;
     function Form: TFForm;
     procedure SetSize(AWidth, AHeight: LongInt); override;
     procedure SetPosition(AX, AY: Integer); override;
-  // IContainer
-    procedure AddChild(AControl: TWinControl);
-    procedure RemoveChild(AControl: TWinControl);
   // ISimpleText
     procedure SetText(const AText: String);
     function GetText: String;
@@ -144,7 +146,7 @@ type
   protected
   public
     function Button: TFButton;
-    constructor Create(ALCLObject: TControl; const AParams: TCreateParams); override;
+    constructor Create(ALCLObject: TWinControl; const AParams: TCreateParams); override;
     procedure CreateWidget(const AParams: TCreateParams); override;
     // ISimpleText
     procedure SetText(const AText: String);
@@ -160,7 +162,83 @@ type
 
 
 implementation
+
 uses LCLMessageGlue, GfxBase;
+
+{ TFPGUIPrivate }
+
+function TFPGUIPrivate._AddRef: longint; stdcall;
+begin
+  Result := -1;
+end;
+
+function TFPGUIPrivate._Release: longint; stdcall;
+begin
+  Result := -1;
+end;
+
+{ TFPGUIPrivateWidget }
+
+procedure TFPGUIPrivateWidget.SetVisible(const AValue: Boolean);
+begin
+  Widget.Visible := AValue;
+end;
+
+function TFPGUIPrivateWidget.GetVisible: Boolean;
+begin
+  Result := Widget.Visible;
+end;
+
+constructor TFPGUIPrivateWidget.Create(ALCLObject: TWinControl; const AParams: TCreateParams);
+begin
+  FLCLObject := ALCLObject;
+  
+  CreateWidget(AParams);
+end;
+
+destructor TFPGUIPrivateWidget.Destroy;
+begin
+  FreeAndNil(Widget);
+  inherited Destroy;
+end;
+
+procedure TFPGUIPrivateWidget.SetSize(AWidth, AHeight: LongInt);
+begin
+  Widget.SetBounds(Widget.Left, Widget.Top, AWidth, AHeight);
+end;
+
+procedure TFPGUIPrivateWidget.SetPosition(AX, AY: Integer);
+begin
+  Widget.SetBounds(AX, AY, Widget.Width, Widget.Height);
+end;
+
+{ TFPGUIPrivateContainer }
+
+constructor TFPGUIPrivateContainer.Create(ALCLObject: TWinControl;
+  const AParams: TCreateParams);
+begin
+  inherited Create(ALCLObject, AParams);
+
+  FFixed := TFFixedLayout.Create(Widget);
+end;
+
+destructor TFPGUIPrivateContainer.Destroy;
+begin
+  FFixed.Free;
+
+  inherited Destroy;
+end;
+
+procedure TFPGUIPrivateContainer.AddChild(AWidget: TFWidget);
+begin
+  fFixed.AddWidget(AWidget, 0, 0);
+end;
+
+procedure TFPGUIPrivateContainer.RemoveChild(AWidget: TFWidget);
+begin
+  //fFixed.RemoveChild(TFPGUIPrivateWidget(AControl.Handle).Widget);
+  // !!
+end;
 
 { TFPGUIPrivateWindow }
 
@@ -179,25 +257,10 @@ begin
   Form.Wnd.SetPosition(Point(AX, AY));
 end;
 
-procedure TFPGUIPrivateWindow.AddChild(AControl: TWinControl);
-var
- AWidget: TFWidget;
-begin
-  AWidget := TFPGUIPrivateWidget(AControl.Handle).Widget;
-  fFixed.AddWidget(AWidget, AControl.Left, AControl.Top);
-  AWidget.SetBounds(AControl.Left, AControl.Top, AControl.Width, AControl.Height);
-end;
-
-procedure TFPGUIPrivateWindow.RemoveChild(AControl: TWinControl);
-begin
-  //fFixed.RemoveChild(TFPGUIPrivateWidget(AControl.Handle).Widget);
-  // !!
-end;
-
-constructor TFPGUIPrivateWindow.Create(ALCLObject: TControl; const AParams: TCreateParams);
+constructor TFPGUIPrivateWindow.Create(ALCLObject: TWinControl; const AParams: TCreateParams);
 begin
   inherited Create(ALCLObject, AParams);
-  fFixed := TFFixedLayout.Create(Widget);
+
   Form.InsertChild(fFixed);
 end;
 
@@ -210,7 +273,6 @@ end;
 
 destructor TFPGUIPrivateWindow.Destroy;
 begin
-  fFixed.Free;
   inherited Destroy;
 end;
 
@@ -238,12 +300,17 @@ end;
 
 procedure TFPGUIPrivateButton.CreateWidget(const AParams: TCreateParams);
 begin
-  Widget := TFButton.Create(LCLObject);
+  Widget := TFButton.Create(TFPGUIPrivateWidget(LCLObject.Parent.Handle).Widget);
+  
+  TFPGUIPrivateContainer(LCLObject.Parent.Handle).AddChild(Widget);
+  Widget.SetBounds(LCLObject.Left, LCLObject.Top, LCLObject.Width, LCLObject.Height);
 end;
 
-constructor TFPGUIPrivateButton.Create(ALCLObject: TControl; const AParams: TCreateParams);
+constructor TFPGUIPrivateButton.Create(ALCLObject: TWinControl; const AParams: TCreateParams);
 begin
   inherited Create(ALCLObject, AParams);
+  
+  // Events
   Button.OnClick := @Clicked;
 end;
 
@@ -255,52 +322,6 @@ end;
 function TFPGUIPrivateButton.GetText: String;
 begin
   Result := Button.Text;
-end;
-
-{ TFPGUIPrivateWidget }
-
-procedure TFPGUIPrivateWidget.SetVisible(const AValue: Boolean);
-begin
-  Widget.Visible := AValue;
-end;
-
-function TFPGUIPrivateWidget.GetVisible: Boolean;
-begin
-  Result := Widget.Visible;
-end;
-
-constructor TFPGUIPrivateWidget.Create(ALCLObject: TControl; const AParams: TCreateParams);
-begin
-  fLCLObject := ALCLObject;
-  CreateWidget(AParams);
-end;
-
-destructor TFPGUIPrivateWidget.Destroy;
-begin
-  FreeAndNil(Widget);
-  inherited Destroy;
-end;
-
-procedure TFPGUIPrivateWidget.SetSize(AWidth, AHeight: LongInt);
-begin
-  Widget.SetBounds(Widget.Left, Widget.Top, AWidth, AHeight);
-end;
-
-procedure TFPGUIPrivateWidget.SetPosition(AX, AY: Integer);
-begin
-  Widget.SetBounds(AX, AY, Widget.Width, Widget.Height);
-end;
-
-{ TFPGUIPrivate }
-
-function TFPGUIPrivate._AddRef: longint; stdcall;
-begin
-  Result := -1;
-end;
-
-function TFPGUIPrivate._Release: longint; stdcall;
-begin
-  Result := -1;
 end;
 
 end.

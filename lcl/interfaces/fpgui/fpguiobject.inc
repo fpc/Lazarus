@@ -79,7 +79,7 @@ var
   Display: String;
 begin
   // This doesn't hurt. on other playforms than X it just will do nothing
-  GetEnvironmentVariable('DISPLAY');
+  Display := GetEnvironmentVariable('DISPLAY');
   GFApplication.Initialize(Display);
   //GFApplication.QuitWhenLastWindowCloses := False;
 end;

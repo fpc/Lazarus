@@ -68,6 +68,7 @@ type
 
 
 implementation
+
 uses FPGUIWSPrivate;
 
 { TFpGuiWSButton }

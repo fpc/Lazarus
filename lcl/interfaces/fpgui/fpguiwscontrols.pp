@@ -53,7 +53,6 @@ type
   private
   protected
   public
-    class procedure AddControl(const AControl: TControl); override;
   end;
 
   { TFpGuiWSWinControl }
@@ -93,6 +92,7 @@ type
 
 
 implementation
+
 uses fpgui, FPGUIWSPrivate;
 
 { TFpGuiWSWinControl }
@@ -123,19 +123,6 @@ begin
   FPWIdget.SetBounds(AWinControl.Left, AWinControl.Top, AWidth, AHeight);
 end;
 
-{ TFpGuiWSControl }
-
-class procedure TFpGuiWSControl.AddControl(const AControl: TControl);
-var
-  AParent: TWinControl;
-  ParentWidget: TFPGUIPrivateWidget;
-begin
-  AParent := TWinControl(AControl).Parent;
-  ParentWidget := TFPGUIPrivateWidget(AParent.Handle);
-  
-  (ParentWidget as IContainer).AddChild(TWinControl(AControl));
-end;
-
 initialization
 
 ////////////////////////////////////////////////////
@@ -145,7 +132,7 @@ initialization
 // which actually implement something
 ////////////////////////////////////////////////////
 //  RegisterWSComponent(TDragImageList, TFpGuiWSDragImageList);
-  RegisterWSComponent(TControl, TFpGuiWSControl);
+//  RegisterWSComponent(TControl, TFpGuiWSControl);
   RegisterWSComponent(TWinControl, TFpGuiWSWinControl);
 //  RegisterWSComponent(TGraphicControl, TFpGuiWSGraphicControl);
 //  RegisterWSComponent(TCustomControl, TFpGuiWSCustomControl);
