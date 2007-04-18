@@ -305,6 +305,14 @@ begin
   Result := SendMessage(ALV.Handle, LVM_GETITEMSTATE, AIndex, LVIS_STATEIMAGEMASK) shr 13 <> 0;
 end;
 
+class function TWin32WSCustomListView.ItemGetPosition(
+  const ALV: TCustomListView; const AIndex: Integer): TPoint;
+begin
+  Result := Point(0, 0);
+  if WSCheckHandleAllocated(ALV, 'ItemGetPosition') then
+    SendMessage(ALV.Handle, LVM_GETITEMPOSITION, AIndex, LPARAM(@Result));
+end;
+
 class function TWin32WSCustomListView.ItemGetState(const ALV: TCustomListView;
   const AIndex: Integer; const AItem: TListItem; const AState: TListItemState;
   out AIsSet: Boolean): Boolean;
@@ -360,6 +368,15 @@ begin
   lvi.iImage := AImageIndex;
 
   ListView_SetItem(ALV.Handle, lvi);
+end;
+
+class function TWin32WSCustomListView.ItemSetPosition(const ALV: TCustomListView; const AIndex: Integer; const ANewPosition: TPoint): Boolean;
+begin
+  if not WSCheckHandleAllocated(ALV, 'ItemSetPosition') then
+    Result := False
+  else
+    Result := SendMessage(ALV.Handle, LVM_SETITEMPOSITION,
+      AIndex, MAKELPARAM(ANewPosition.X, ANewPosition.Y)) <> 0;
 end;
 
 class procedure TWin32WSCustomListView.ItemSetState(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const AState: TListItemState; const AIsSet: Boolean);

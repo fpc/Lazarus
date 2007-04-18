@@ -451,7 +451,7 @@ end;
 {------------------------------------------------------------------------------}
 {   TListItem GetChecked                                                       }
 {------------------------------------------------------------------------------}
-function TListItem.GetChecked(): Boolean;
+function TListItem.GetChecked: Boolean;
 var
   LV: TCustomListView;
 begin
@@ -482,12 +482,25 @@ begin
   else Result := AState in FStates;
 end;
 
+function TListItem.GetLeft: Integer;
+begin
+  Result := Position.X;
+end;
+
 {------------------------------------------------------------------------------}
 {   The ListView this ListItem belongs to                                      }
 {------------------------------------------------------------------------------}
 function TListItem.GetListView: TCustomListView;
 begin
   Result := Owner.Owner;
+end;
+
+function TListItem.GetPosition: TPoint;
+var
+  LV: TCustomListView;
+begin
+  LV := FOwner.FOwner;
+  Result := TWSCustomListViewClass(LV.WidgetSetClass).ItemGetPosition(LV, GetIndex);
 end;
 
 {------------------------------------------------------------------------------}
@@ -506,6 +519,22 @@ begin
   if FSubItems = nil
   then FSubItems := TListItemSubItems.Create(Self);
   Result := FSubItems;
+end;
+
+function TListItem.GetTop: Integer;
+begin
+  Result := Position.Y;
+end;
+
+procedure TListItem.SetPosition(const AValue: TPoint);
+var
+  LV: TCustomListView;
+  CurPos: TPoint;
+begin
+  LV := FOwner.FOwner;
+  CurPos := Position;
+  if (CurPos.X <> AValue.X) or (CurPos.Y <> AValue.Y) then
+    TWSCustomListViewClass(LV.WidgetSetClass).ItemSetPosition(LV, GetIndex, AValue);
 end;
 
 {------------------------------------------------------------------------------}
@@ -566,6 +595,11 @@ begin
   then TWSCustomListViewClass(FOwner.FOwner.WidgetSetClass).ItemSetImage(FOwner.FOwner, GetIndex, Self, 0, FImageIndex);
 end;
 
+procedure TListItem.SetLeft(Value: Integer);
+begin
+  Position := Point(Value, Top);
+end;
+
 {------------------------------------------------------------------------------}
 {   TListItem SetState                                                         }
 {------------------------------------------------------------------------------}
@@ -603,4 +637,10 @@ begin
   if (AValue = nil) and (FSubItems = nil) then Exit;
   SubItems.Assign(AValue);
 end;
+
+procedure TListItem.SetTop(Value: Integer);
+begin
+  Position := Point(Left, Value);
+end;
+
 

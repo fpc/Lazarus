@@ -94,10 +94,12 @@ type
     class procedure ItemDelete(const ALV: TCustomListView; const AIndex: Integer); virtual;
     class function  ItemDisplayRect(const ALV: TCustomListView; const AIndex, ASubItem: Integer; ACode: TDisplayCode): TRect; virtual;
     class function  ItemGetChecked(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem): Boolean; virtual;
+    class function  ItemGetPosition(const ALV: TCustomListView; const AIndex: Integer): TPoint; virtual;
     class function  ItemGetState(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const AState: TListItemState; out AIsSet: Boolean): Boolean; virtual; // returns True if supported
     class procedure ItemInsert(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem); virtual;
     class procedure ItemSetChecked(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const AChecked: Boolean); virtual;
     class procedure ItemSetImage(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const ASubIndex, AImageIndex: Integer); virtual;
+    class function ItemSetPosition(const ALV: TCustomListView; const AIndex: Integer; const ANewPosition: TPoint): Boolean; virtual;
     class procedure ItemSetState(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const AState: TListItemState; const AIsSet: Boolean); virtual;
     class procedure ItemSetText(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const ASubIndex: Integer; const AText: String); virtual;
     class procedure ItemShow(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const PartialOK: Boolean); virtual;
@@ -286,6 +288,12 @@ begin
   Result := False;
 end;
 
+class function TWSCustomListView.ItemGetPosition(const ALV: TCustomListView;
+  const AIndex: Integer): TPoint;
+begin
+  Result := Point(0, 0);
+end;
+
 class function TWSCustomListView.ItemGetState(const ALV: TCustomListView;
   const AIndex: Integer; const AItem: TListItem; const AState: TListItemState;
   out AIsSet: Boolean): Boolean;
@@ -308,6 +316,12 @@ class procedure TWSCustomListView.ItemSetImage(const ALV: TCustomListView;
   const AIndex: Integer; const AItem: TListItem;
   const ASubIndex, AImageIndex: Integer);
 begin
+end;
+
+class function TWSCustomListView.ItemSetPosition(const ALV: TCustomListView;
+  const AIndex: Integer; const ANewPosition: TPoint): Boolean;
+begin
+  Result := False;
 end;
 
 class procedure TWSCustomListView.ItemSetState(const ALV: TCustomListView;
