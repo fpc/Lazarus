@@ -30,7 +30,7 @@ Date=`date +%Y%m%d`
 RPMDIR=$(rpm/get_rpm_source_dir.sh)
 ARCH=`rpm --eval "%{_arch}"`
 LIB=`rpm --eval "%{_lib}"`
-FPCRPM=$RPMDIR/RPMS/$ARCH/fpc-2.1.1-$Date.$ARCH.rpm
+FPCRPM=$RPMDIR/RPMS/$ARCH/fpc-2.0.4-$Date.$ARCH.rpm
 if [ ! -f $FPCRPM ]; then
   echo ERROR: fpc rpm $FPCRPM not available
   exit
@@ -81,8 +81,8 @@ cat rpm/lazarus.spec.template | \
   sed -e "s/LAZVERSION/$LazVersion/g" \
       -e "s/LAZRELEASE/$Date/g" \
       -e "s/FPCVERSION/$FPCVersion/g" \
+      -e "s/FPCSRCVERSION/$FPCVersion/g" \
   > $SpecFile
-#      -e "s/FPCSRCVERSION/$FPCRPMVersion/" \
 
 # build rpm
 rpmbuild --target $ARCH -ba $SpecFile --nodeps
