@@ -44,6 +44,7 @@ function LCLSendMoveMsg(const Target: TControl; XPos, YPos: SmallInt; MoveType: 
 function LCLSendMouseMoveMsg(const Target: TControl; XPos, YPos: SmallInt; ShiftState: TShiftState = []): PtrInt;
 function LCLSendMouseDownMsg(const Target: TControl; XPos, YPos: SmallInt; Button: TMouseButton; ShiftState: TShiftState = []): PtrInt;
 function LCLSendMouseUpMsg(const Target: TControl; XPos, YPos: SmallInt; Button: TMouseButton; ShiftState: TShiftState = []): PtrInt;
+function LCLSendMouseWheelMsg(const Target: TControl; XPos, YPos, WheelDelta: SmallInt; ShiftState: TShiftState = []): PtrInt;
 function LCLSendCaptureChangedMsg(const Target: TControl): PtrInt;
 function LCLSendSelectionChangedMsg(const Target: TControl): PtrInt;
 function LCLSendDestroyMsg(const Target: TControl): PtrInt;
@@ -395,6 +396,36 @@ begin
   if ssRight  in ShiftState then Keys := Keys or MK_RBUTTON;
   if ssMiddle in ShiftState then Keys := Keys or MK_MBUTTON;
   Mess.Keys := Keys;
+
+  Result := DeliverMessage(Target, Mess);
+end;
+
+{******************************************************************************
+ *                                                                            *
+ * LCLSendMouseWheelMsg                                                       *
+ *                                                                            *
+ * Returns       : 0 to accept the message, non-zero to reject the message    *
+ *                                                                            *
+ * Params                                                                     *
+ *                                                                            *
+ * Target        : The Control that will recieve the message LM_xBUTTONUP     *
+ * XPos, YPos    : The Mouses X and Y position relative to the control.       *
+ * WheelDelta    : -1 for Up, 1 for Down                                      *
+ * ShiftState    : Modifier keys that are pressed at the time of the event    *
+ *                                                                            *
+ ******************************************************************************}
+function LCLSendMouseWheelMsg(const Target: TControl; XPos, YPos,
+  WheelDelta: SmallInt; ShiftState: TShiftState): PtrInt;
+var
+  Mess: TLMMouseEvent;
+  Keys: PtrInt;
+begin
+  FillChar(Mess, SizeOf(Mess), 0);
+
+  Mess.Msg := LM_MOUSEWHEEL;
+  Mess.X := XPos;
+  Mess.Y := YPos;
+  Mess.WheelDelta := WheelDelta;
 
   Result := DeliverMessage(Target, Mess);
 end;
