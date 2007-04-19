@@ -248,7 +248,7 @@ msgstr "Pulisci"
 
 #: objinspstrconsts:sccsiledtclear
 msgid "Clear"
-msgstr "Pulisci"
+msgstr "Cancella"
 
 #: objinspstrconsts:oisclearpicture
 msgid "Clear picture"
@@ -632,7 +632,7 @@ msgstr "Nessuno"
 
 #: objinspstrconsts:rscdok
 msgid "OK"
-msgstr ""
+msgstr "OK"
 
 #: objinspstrconsts:oisobject
 msgid "Object"
@@ -648,7 +648,7 @@ msgstr "Ok"
 
 #: objinspstrconsts:clbcheckduplicate
 msgid "On Add, Check for Duplicate in Items"
-msgstr ""
+msgstr "Quando aggiungi, verifica se ci sono elementi duplicati"
 
 #: objinspstrconsts:sccstredtopendialog
 msgid "Open"
@@ -860,7 +860,7 @@ msgstr "Testo:"
 
 #: objinspstrconsts:clbcheckduplicatemsg
 msgid "The \"%s\" Item is already listed. Add it anyway? "
-msgstr ""
+msgstr "L'elemento \"%s\" è già in lista. Aggiungerlo comunque?"
 
 #: objinspstrconsts:cactionlisteditorpaneltoolbar
 msgid "Toolbar"
@@ -912,5 +912,5 @@ msgstr "Parola"
 
 #: objinspstrconsts:clbcolumns
 msgid "n. columns"
-msgstr ""
+msgstr "num. colonne"
 

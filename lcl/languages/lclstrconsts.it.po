@@ -210,7 +210,7 @@ msgstr "Differenzia maiuscolo e minuscolo"
 
 #: lclstrconsts:ifsvk_clear
 msgid "Clear"
-msgstr "Pulisci"
+msgstr "Cancella"
 
 #: lclstrconsts:rsmtconfirmation
 msgid "Confirmation"
@@ -246,7 +246,7 @@ msgstr "La directory deve esistere"
 
 #: lclstrconsts:rsdocking
 msgid "Docking"
-msgstr ""
+msgstr "Aggancia"
 
 #: lclstrconsts:ifsvk_down
 msgid "Down"
@@ -594,11 +594,11 @@ msgstr "Tasto pausa"
 
 #: lclstrconsts:rspixmap
 msgid "Pixmap"
-msgstr ""
+msgstr "Pixmap"
 
 #: lclstrconsts:rsportablenetworkgraphic
 msgid "Portable Network Graphic"
-msgstr ""
+msgstr "Portable Network Graphic"
 
 #: lclstrconsts:ifsvk_print
 msgid "Print"

@@ -306,7 +306,7 @@ msgstr "Errore di sintassi nell'espressione \"%s\""
 
 #: codetoolsstrconsts:ctstcodetoolmanagerconsistencycheck
 msgid "TCodeToolManager.ConsistencyCheck=%d"
-msgstr ""
+msgstr "TCodeToolManager.ConsistencyCheck=%d"
 
 #: codetoolsstrconsts:ctstermnotsimple
 msgid "Term has no simple type"
