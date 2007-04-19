@@ -15,6 +15,7 @@ TWin32MemoStrings = class(TStrings)
     function GetCount: integer; override;
     function Get(Index : Integer) : string; override;
     //procedure SetSorted(Val : boolean); virtual;
+    procedure SetUpdateState(Updating: Boolean); override;
   public
     constructor Create(Handle: HWND; TheOwner: TWinControl);
     destructor Destroy; override;
@@ -80,6 +81,13 @@ begin
   len := SendMessage(fHandle, EM_GETLINE, Index, lparam(pchar(Result)));
   // readjust length in case something went wrong
   Setlength(Result, len);
+end;
+
+procedure TWin32MemoStrings.SetUpdateState(Updating: Boolean);
+begin
+  Windows.SendMessage(fHandle, WM_SETREDRAW, WPARAM(not Updating), 0);
+  if not Updating then
+    Windows.InvalidateRect(fHandle, nil, TRUE);
 end;
 
 constructor TWin32MemoStrings.Create(Handle: HWND; TheOwner: TWinControl);

@@ -729,6 +729,7 @@ type
     procedure RealSetText(const Value: TCaption); override;
     function GetCachedText(var CachedText: TCaption): boolean; override;
     procedure SetLines(const Value: TStrings);
+    procedure SetSelText(const Val: string); override;
     procedure SetWantTabs(const NewWantTabs: boolean);
     procedure SetWordWrap(const Value: boolean);
     procedure SetScrollBars(const Value: TScrollStyle);
