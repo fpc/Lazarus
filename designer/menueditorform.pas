@@ -191,9 +191,6 @@ begin
   height:=220;
   position:=poDesktopCenter;
   
-  fMenu:=aMenu;
-  fDesigner:=FindRootDesigner(fMenu) as TComponentEditorDesigner;
-
   Cmp2:=TScrollBox.Create(self);
   with Cmp2 do
   begin
@@ -243,8 +240,7 @@ begin
   
   Panel:=Cmp;
 
-  UpdateListOfMenus;
-  CreateDesignerMenu;
+  SetMenu(aMenu);
 
   GlobalDesignHook.AddHandlerPersistentDeleting(@OnPersistentDeleting);
   GlobalDesignHook.AddHandlerPersistentAdded(@OnPersistentAdded);
@@ -283,11 +279,15 @@ end;
 
 procedure TMainMenuEditorForm.SetMenu(NewMenu: TMenu);
 begin
-  if NewMenu=fMenu then exit;
-  DesignerMainMenu.Free;
-  DesignerMainMenu:=nil;
-  fMenu:=NewMenu;
-  CreateDesignerMenu;
+  if NewMenu <> fMenu then
+  begin
+    DesignerMainMenu.Free;
+    DesignerMainMenu := nil;
+    fMenu := NewMenu;
+    fDesigner := FindRootDesigner(fMenu) as TComponentEditorDesigner;
+    UpdateListOfMenus;
+    CreateDesignerMenu;
+  end;
 end;
 
 procedure TMainMenuEditorForm.Paint;
