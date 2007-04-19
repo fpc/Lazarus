@@ -1,12 +1,12 @@
 <?xml version="1.0"?>
 <CONFIG>
   <ProjectOptions>
-    <PathDelim Value="/"/>
+    <PathDelim Value="\"/>
     <Version Value="5"/>
     <General>
       <SessionStorage Value="InProjectDir"/>
       <MainUnit Value="0"/>
-      <IconPath Value="./"/>
+      <IconPath Value=".\"/>
       <TargetFileExt Value=""/>
       <Title Value="Example for the Object Inspector"/>
     </General>
@@ -18,7 +18,7 @@
     <RunParams>
       <local>
         <FormatVersion Value="1"/>
-        <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
+        <LaunchingApplication PathPlusParams="\usr\X11R6\bin\xterm -T 'Lazarus Run Output' -e $(LazarusDir)\tools\runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
     <RequiredPackages Count="1">
@@ -43,14 +43,13 @@
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>
+    <PathDelim Value="\"/>
     <SearchPaths>
-      <OtherUnitFiles Value="$(LazarusDir)/components/units/"/>
-      <LCLWidgetType Value="win32"/>
-      <SrcPath Value="$(LazarusDir)/designer/"/>
+      <OtherUnitFiles Value="$(LazarusDir)\components\units\"/>
+      <SrcPath Value="$(LazarusDir)\designer\"/>
     </SearchPaths>
     <CodeGeneration>
       <Generate Value="Faster"/>
-      <TargetOS Value="Win32"/>
     </CodeGeneration>
     <Other>
       <CompilerPath Value="$(CompPath)"/>
