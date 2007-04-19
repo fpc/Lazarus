@@ -1639,7 +1639,12 @@ end;
 procedure TOICustomPropertyGrid.SetItemIndexAndFocus(NewItemIndex: integer);
 begin
   ItemIndex:=NewItemIndex;
-  if FCurrentEdit<>nil then FCurrentEdit.SetFocus;
+  if FCurrentEdit<>nil then
+  begin
+    FCurrentEdit.SetFocus;
+    if (FCurrentEdit is TCustomEdit) then
+      TCustomEdit(FCurrentEdit).SelectAll;
+  end;
 end;
 
 function TOICustomPropertyGrid.CanEditRowValue: boolean;
@@ -1854,7 +1859,11 @@ begin
       Handled:=false;
 
   VK_RETURN:
-    SetRowValue;
+    begin
+      SetRowValue;
+      if (FCurrentEdit is TCustomEdit) then
+        TCustomEdit(FCurrentEdit).SelectAll;
+    end;
 
   else
     if Assigned(OnOIKeyDown) then
