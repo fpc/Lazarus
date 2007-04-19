@@ -99,7 +99,7 @@ begin
   if FileExists(AhkFileName) then
     Result.AddTest(TLpiTest.Create(APath, 'TestRun'));
 {$ELSE}
-  {$NOTE scripting is only available on windows}
+  {$NOTE scripting is only available on win32}
 {$ENDIF}
 end;
 
@@ -141,7 +141,7 @@ begin
   AssertTrue(LazBuildPath + ' does not exist', FileExists(LazBuildPath));
   LazBuild := TProcess.Create(nil);
   try
-    {$IFDEF win32}
+    {$IFDEF windows}
     LazBuild.Options := [poNewConsole];
     {$ELSE}
     LazBuild.Options := [poNoConsole];
