@@ -327,6 +327,27 @@ begin
   Result:=inherited ReplaceBitmapMask(Image, Mask, NewMask);
 end;
 
+{------------------------------------------------------------------------------
+  Method:  SetMainMenuEnabled
+  Params:  AEnabled
+
+  Enables/disables main menu
+ ------------------------------------------------------------------------------}
+procedure TCarbonWidgetSet.SetMainMenuEnabled(AEnabled: Boolean);
+begin
+  {$IFDEF VerboseLCLIntf}
+    DebugLn('TCarbonWidgetSet.SetMainMenuEnabled AEnabled: ' + DbgS(AEnabled));
+  {$ENDIF}
+  
+  if FMainMenu <> nil then
+  begin
+    if FMainMenu.Items.HandleAllocated then
+    begin
+      TCarbonMenu(FMainMenu.Items.Handle).SetEnable(AEnabled);
+    end;
+  end;
+end;
+
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line
 
 // included by carbonint.pas

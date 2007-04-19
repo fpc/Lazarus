@@ -956,32 +956,37 @@ var
 begin
   // apply appropriate form border style and form style
   case (LCLObject as TCustomForm).FormStyle of
-  fsStayOnTop, fsSplash: NewWindowClass := kUtilityWindowClass;
+  fsStayOnTop, fsSplash:
+    begin
+      NewWindowClass := kFloatingWindowClass;
+      Attributes := 0;
+    end;
   else
     NewWindowClass := kDocumentWindowClass;
+    Attributes := kWindowInWindowMenuAttribute;
   end;
 
   case (LCLObject as TCustomForm).BorderStyle of
   bsNone:
-    Attributes := kWindowNoTitleBarAttribute;
+    Attributes := Attributes or kWindowNoTitleBarAttribute;
   bsToolWindow, bsSingle:
-    Attributes := kWindowCloseBoxAttribute or kWindowCollapseBoxAttribute;
+    Attributes := Attributes or kWindowCloseBoxAttribute or
+      kWindowCollapseBoxAttribute;
   bsSizeable:
-    Attributes := kWindowCloseBoxAttribute or kWindowCollapseBoxAttribute
+    Attributes := Attributes or kWindowCloseBoxAttribute or kWindowCollapseBoxAttribute
       or kWindowFullZoomAttribute or kWindowResizableAttribute;
   bsDialog:
-    Attributes := kWindowCloseBoxAttribute;
+    Attributes := Attributes or kWindowCloseBoxAttribute;
   bsSizeToolWin:
-    Attributes := kWindowCloseBoxAttribute or kWindowResizableAttribute;
+    Attributes := Attributes or kWindowCloseBoxAttribute or kWindowResizableAttribute;
   end;
 
   //DebugLn('TCarbonWindow.CreateWidget ' + DbgS(ParamsToCarbonRect(AParams)));
   
   if OSError(
     CreateNewWindow(NewWindowClass,
-      Attributes or kWindowCompositingAttribute or
-      kWindowStandardHandlerAttribute or kWindowLiveResizeAttribute or
-      kWindowInWindowMenuAttribute, GetCarbonRect(0, 0, 0, 0), Window),
+      Attributes or kWindowCompositingAttribute or kWindowStandardHandlerAttribute
+      or kWindowLiveResizeAttribute, GetCarbonRect(0, 0, 0, 0), Window),
     Self, SCreateWidget, 'CreateNewWindow') then RaiseCreateWidgetError(LCLObject);
 
   Widget := Window;
@@ -992,6 +997,8 @@ begin
   OSError(
     SetControlProperty(Content, LAZARUS_FOURCC, WIDGETINFO_FOURCC, SizeOf(Self), @Self),
     Self, SCreateWidget, SSetControlProp);
+    
+  FBorderStyle := (LCLObject as TCustomForm).BorderStyle;
 
   SetBounds(Bounds(AParams.X, AParams.Y, AParams.Width, AParams.Height));
   SetText(AParams.Caption);
@@ -1236,6 +1243,32 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method:  TCarbonWindow.SetChildZPosition
+  Params:  AChild      - Child widget
+           AOldPos     - Old z position
+           ANewPos     - New z position
+           AChildren   - List of all child controls
+
+  Sets the child z position of Carbon widget
+ ------------------------------------------------------------------------------}
+procedure TCarbonWindow.SetChildZPosition(AChild: TCarbonWidget; const AOldPos,
+  ANewPos: Integer; const AChildren: TFPList);
+begin
+  // not supported
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWindow.SetFocus
+
+  Sets the focus to window
+ ------------------------------------------------------------------------------}
+procedure TCarbonWindow.SetFocus;
+begin
+  OSError(
+    SetUserFocusWindow(WindowRef(Widget)), Self, SSetFocus, SSetUserFocusWindow);
+end;
+
+{------------------------------------------------------------------------------
   Method:  TCarbonWindow.SetColor
   Params:  AColor - New color
 
@@ -1317,4 +1350,145 @@ begin
   Result := False;
   if OSError(HIViewRender(Content), Self, 'Update', SViewRender) then Exit;
   Result := True;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWindow.Activate
+  Returns: If the function suceeds
+
+  Activates Carbon window
+ ------------------------------------------------------------------------------}
+function TCarbonWindow.Activate: Boolean;
+begin
+  Result := False;
+  
+  if OSError(ActivateWindow(WindowRef(Widget), True), Self, 'Activate',
+    'ActivateWindow') then Exit;
+
+  Result := True;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWindow.CloseModal
+
+  Closes modal Carbon window
+ ------------------------------------------------------------------------------}
+procedure TCarbonWindow.CloseModal;
+begin
+  CarbonWidgetSet.SetMainMenuEnabled(True);
+
+  OSError(
+    SetWindowModality(WindowRef(Widget), kWindowModalityNone, nil),
+    Self, 'CloseModal', SSetModality);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWindow.ShowModal
+
+  Shows modal Carbon window
+ ------------------------------------------------------------------------------}
+procedure TCarbonWindow.ShowModal;
+begin
+  OSError(
+    SetWindowModality(WindowRef(Widget), kWindowModalityAppModal, nil),
+    Self, 'ShowModal', SSetModality);
+
+  CarbonWidgetSet.SetMainMenuEnabled(False);
+  SelectWindow(WindowRef(Widget));
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWindow.Show
+  Params:  AShow - (SW_SHOWNORMAL, SW_MINIMIZE, SW_SHOWMAXIMIZED)
+  Returns: If the function succeeds
+
+  Shows the Carbon window normal, minimized or maximized
+------------------------------------------------------------------------------}
+function TCarbonWindow.Show(AShow: Integer): Boolean;
+var
+  P: FPCMacOSAll.Point;
+  Maximized: Boolean;
+const
+  SName = 'Show';
+  SCollapse = 'CollapseWindow';
+  SZoomIdeal = 'ZoomWindowIdeal';
+begin
+  Result := False;
+
+  case AShow of
+  SW_SHOWNORMAL, SW_SHOWMAXIMIZED:
+  begin
+    if IsWindowCollapsed(WindowRef(Widget)) then
+      if OSError(CollapseWindow(WindowRef(Widget), False),
+        Self, SName, SCollapse) then Exit;
+
+    // for checking if any change is necessary
+    Maximized := IsWindowInStandardState(WindowRef(Widget), nil, nil);
+
+    if AShow = SW_SHOWNORMAL then
+    begin
+      if Maximized then
+        if OSError(ZoomWindowIdeal(WindowRef(Widget), inZoomIn, P),
+          Self, SName, SZoomIdeal, 'inZoomIn') then Exit;
+    end
+    else
+      if not Maximized then
+      begin
+        P.v := $3FFF;
+        P.h := $3FFF;
+        if OSError(ZoomWindowIdeal(WindowRef(Widget), inZoomOut, P),
+         Self, SName, SZoomIdeal, 'inZoomOut') then Exit;
+      end;
+  end;
+  SW_MINIMIZE:
+    begin
+      if OSError(CollapseWindow(WindowRef(Widget), True),
+        Self, SName, SCollapse) then Exit;
+    end;
+  end;
+
+  Result := True;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWSCustomForm.SetBorderIcons
+  Params:  ABorderIcons - Border icons
+
+  Sets the border icons of Carbon window
+ ------------------------------------------------------------------------------}
+procedure TCarbonWindow.SetBorderIcons(ABorderIcons: TBorderIcons);
+var
+  AttrsSet, AttrsClear: WindowAttributes;
+begin
+  AttrsSet := 0;
+  AttrsClear := 0;
+
+  if (biMinimize in ABorderIcons) and (biSystemMenu in ABorderIcons) then
+    AttrsSet := AttrsSet or kWindowCollapseBoxAttribute
+  else
+    AttrsClear := AttrsClear or kWindowCollapseBoxAttribute;
+
+  if (biMaximize in ABorderIcons) and (biSystemMenu in ABorderIcons) then
+    AttrsSet := AttrsSet or kWindowFullZoomAttribute
+  else
+    AttrsClear := AttrsClear or kWindowFullZoomAttribute;
+
+  if biSystemMenu in ABorderIcons then
+    AttrsSet := AttrsSet or kWindowCloseBoxAttribute
+  else
+    AttrsClear := AttrsClear or kWindowCloseBoxAttribute;
+
+  OSError(ChangeWindowAttributes(WindowRef(Widget), AttrsSet, AttrsClear),
+    Self, 'SetBorderIcons', SChangeWindowAttrs);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWSCustomForm.SetFormBorderStyle
+  Params:  AFormBorderStyle - Form border style
+
+  Sets the form border style of Carbon window
+ ------------------------------------------------------------------------------}
+procedure TCarbonWindow.SetFormBorderStyle(AFormBorderStyle: TFormBorderStyle);
+begin
+  if AFormBorderStyle <> FBorderStyle then RecreateWnd(LCLObject);
 end;

@@ -61,6 +61,7 @@ type
     function SetText(const S: String): Boolean; override;
   public
     property MaxLength: Integer read FMaxLength write FMaxLength;
+    procedure SetReadOnly(AReadOnly: Boolean); virtual;
   end;
 
   { TCarbonComboBox }
@@ -80,11 +81,20 @@ type
     
     procedure Insert(AIndex: Integer; const S: String);
     procedure Remove(AIndex: Integer);
+    
+    function DropDown(ADropDown: Boolean): Boolean;
+  end;
+  
+  { TCarbonCustomEdit }
+
+  TCarbonCustomEdit = class(TCarbonControlWithEdit)
+  public
+    procedure SetPasswordChar(AChar: Char); virtual; abstract;
   end;
 
   { TCarbonEdit }
 
-  TCarbonEdit = class(TCarbonControlWithEdit)
+  TCarbonEdit = class(TCarbonCustomEdit)
   private
     FIsPassword: Boolean;
   protected
@@ -92,13 +102,12 @@ type
   public
     function GetText(var S: String): Boolean; override;
     function SetText(const S: String): Boolean; override;
-  public
-    property IsPassword: Boolean read FIsPassword;
+    procedure SetPasswordChar(AChar: Char); override;
   end;
 
   { TCarbonMemo }
 
-  TCarbonMemo = class(TCarbonControlWithEdit)
+  TCarbonMemo = class(TCarbonCustomEdit)
   private
     FScrollView: HIViewRef;
     FScrollBars: TScrollStyle;
@@ -112,6 +121,9 @@ type
   public
     procedure SetColor(const AColor: TColor); override;
     procedure SetFont(const AFont: TFont); override;
+    procedure SetPasswordChar(AChar: Char); override;
+    procedure SetReadOnly(AReadOnly: Boolean); override;
+    procedure SetWordWrap(AWordWrap: Boolean); virtual;
   public
     property ScrollBars: TScrollStyle read FScrollBars write SetScrollBars;
   end;
@@ -362,6 +374,19 @@ begin
   end;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonControlWithEdit.SetReadOnly
+  Params:  AReadOnly - Read only behavior
+
+  Sets the read only behavior of edit control
+ ------------------------------------------------------------------------------}
+procedure TCarbonControlWithEdit.SetReadOnly(AReadOnly: Boolean);
+begin
+  OSError(SetControlData(ControlRef(Widget), GetEditPart,
+      kControlEditTextLockedTag, SizeOf(Boolean), @AReadOnly),
+    Self, 'SetReadOnly', SSetData);
+end;
+
 { TCarbonComboBox }
 
 {------------------------------------------------------------------------------
@@ -488,6 +513,23 @@ begin
     Self, 'Remove', 'HIComboBoxRemoveItemAtIndex');
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonComboBox.DropDown
+  Params:  ADropDown - Drop down
+  Returns: If the function succeeds
+
+  Shows or hides drop down list
+ ------------------------------------------------------------------------------}
+function TCarbonComboBox.DropDown(ADropDown: Boolean): Boolean;
+begin
+  Result := False;
+  
+  if OSError(HIComboBoxSetListVisible(ControlRef(Widget), ADropDown), Self,
+    'DropDown', 'HIComboBoxSetListVisible') then Exit;
+
+  Result := True;
+end;
+
 { TCarbonEdit }
 
 {------------------------------------------------------------------------------
@@ -540,7 +582,7 @@ function TCarbonEdit.GetText(var S: String): Boolean;
 var
   CFString: CFStringRef;
 begin
-  if not IsPassword then
+  if not FIsPassword then
     Result := inherited GetText(S)
   else
   begin
@@ -571,7 +613,7 @@ function TCarbonEdit.SetText(const S: String): Boolean;
 var
   CFString: CFStringRef;
 begin
-  if not IsPassword then
+  if not FIsPassword then
     Result := inherited SetText(S)
   else
   begin
@@ -589,6 +631,17 @@ begin
       FreeCFString(CFString);
     end;
   end;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonEdit.SetPasswordChar
+  Params:  AChar     - New password char
+
+  Sets the new password char of Carbon edit
+ ------------------------------------------------------------------------------}
+procedure TCarbonEdit.SetPasswordChar(AChar: Char);
+begin
+  if FIsPassword <> (AChar <> #0) then RecreateWnd(LCLObject);
 end;
 
 { TCarbonMemo }
@@ -783,6 +836,72 @@ begin
    Self, 'SetFont', 'TXNSetTypeAttributes');
 
   // invalidate control
+  Invalidate;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonMemo.SetPasswordChar
+  Params:  AChar     - New password char
+
+  Sets the new password char of Carbon memo
+ ------------------------------------------------------------------------------}
+procedure TCarbonMemo.SetPasswordChar(AChar: Char);
+begin
+  OSError(
+    TXNEchoMode(HITextViewGetTXNObject(ControlRef(Widget)),
+      UniChar(AChar), CreateTextEncoding(kTextEncodingUnicodeDefault,
+      kUnicodeNoSubset, kUnicodeUTF8Format), AChar <> #0),
+    Self, 'SetPasswordChar', 'TXNEchoMode');
+
+  Invalidate;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonMemo.SetReadOnly
+  Params:  AReadOnly - Read only behavior
+
+  Sets the read only behavior of Carbon memo
+ ------------------------------------------------------------------------------}
+procedure TCarbonMemo.SetReadOnly(AReadOnly: Boolean);
+var
+  Tag: TXNControlTag;
+  Data: TXNControlData;
+begin
+  Tag := kTXNNoUserIOTag;
+  if AReadOnly then
+    Data.uValue := UInt32(kTXNReadOnly)
+  else
+    Data.uValue := UInt32(kTXNReadWrite);
+
+  OSError(
+    TXNSetTXNObjectControls(HITextViewGetTXNObject(ControlRef(Widget)),
+      False, 1, @Tag, @Data),
+    Self, 'SetReadOnly', SSetTXNControls);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonMemo.SetWordWrap
+  Params:  AWordWrap - New word wrap
+
+  Sets the word wrap of Carbon memo
+ ------------------------------------------------------------------------------}
+procedure TCarbonMemo.SetWordWrap(AWordWrap: Boolean);
+var
+  Tag: TXNControlTag;
+  Data: TXNControlData;
+begin
+  Tag := kTXNWordWrapStateTag;
+  
+  if AWordWrap then
+    Data.uValue := UInt32(kTXNAutoWrap)
+  else
+    Data.uValue := UInt32(kTXNNoAutoWrap);
+
+  OSError(
+    TXNSetTXNObjectControls(HITextViewGetTXNObject(ControlRef(Widget)),
+      False, 1, @Tag, @Data),
+    Self, 'SetWordWrap', SSetTXNControls);
+
   Invalidate;
 end;
 

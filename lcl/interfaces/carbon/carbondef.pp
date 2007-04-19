@@ -92,7 +92,9 @@ type
     function GetBounds(var ARect: TRect): Boolean; virtual; abstract;
     function GetScreenBounds(var ARect: TRect): Boolean; virtual; abstract;
     function SetBounds(const ARect: TRect): Boolean; virtual; abstract;
+    procedure SetChildZPosition(AChild: TCarbonWidget; const AOldPos, ANewPos: Integer; const AChildren: TFPList); virtual; abstract;
     
+    procedure SetFocus; virtual; abstract;
     procedure SetColor(const AColor: TColor); virtual; abstract;
     procedure SetFont(const AFont: TFont); virtual; abstract;
     procedure ShowHide(AVisible: Boolean); virtual; abstract;
@@ -127,10 +129,6 @@ const
   LCLCarbonEventKindWake = 'Wake';
   LCLCarbonEventKindMain = 'Main';
 
-
-function AsControlRef(Handle: HWND): ControlRef; inline;
-function AsWindowRef(Handle: HWND): WindowRef; inline;
-
 function CheckHandle(const AWinControl: TWinControl; const AClass: TClass; const DbgText: String): Boolean;
 function CheckWidget(const Handle: HWND; const AMethodName: String; AParamName: String = ''): Boolean;
 
@@ -140,27 +138,7 @@ procedure UnRegisterEventHandler(AHandler: TCarbonEventHandlerProc);
 implementation
 
 uses
-  CarbonProc, CarbonCanvas, CarbonDbgConsts, CarbonUtils;
-
-{------------------------------------------------------------------------------
-  Name:    AsControlRef
-  Params:  Handle  - Handle of window control
-  Returns: Carbon control
- ------------------------------------------------------------------------------}
-function AsControlRef(Handle: HWND): ControlRef;
-begin
-  Result := ControlRef(TCarbonWidget(Handle).Widget);
-end;
-
-{------------------------------------------------------------------------------
-  Name:    AsWindowRef
-  Params:  Handle  - Handle of window
-  Returns: Carbon window
- ------------------------------------------------------------------------------}
-function AsWindowRef(Handle: HWND): WindowRef;
-begin
-  Result := WindowRef(TCarbonWidget(Handle).Widget);
-end;
+  CarbonProc, CarbonDbgConsts, CarbonUtils;
 
 {------------------------------------------------------------------------------
   Name:    CheckHandle

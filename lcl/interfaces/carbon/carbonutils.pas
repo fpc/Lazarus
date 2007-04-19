@@ -41,11 +41,11 @@ type
   TFourCC = packed array[0..3] of Char;
 
 // in eventhandlers UInt32 and FourCCs are mixed, so we provide here some fixup wrappers
-function MakeEventSpec(AClass: TFourCC; AKind: UInt32): EventTypeSpec; inline;
-function MakeEventSpec(AClass, AKind: TFourCC): EventTypeSpec; inline;
-function MakeEventSpec(AClass, AKind: UInt32): EventTypeSpec; inline;
+function MakeEventSpec(AClass: TFourCC; AKind: UInt32): EventTypeSpec; //inline;
+function MakeEventSpec(AClass, AKind: TFourCC): EventTypeSpec; //inline;
+function MakeEventSpec(AClass, AKind: UInt32): EventTypeSpec; //inline;
 
-function MakeFourCC(AFourCC: TFourCC): FourCharCode; inline;
+function MakeFourCC(AFourCC: TFourCC): FourCharCode; //inline;
 
 // Some missing macros (params differ)
 function InstallControlEventHandler(inControl: ControlRef;
@@ -70,7 +70,7 @@ uses
            AKind  - Event kind
   Returns: Event type specification
  ------------------------------------------------------------------------------}
-function MakeEventSpec(AClass, AKind: TFourCC): EventTypeSpec; inline;
+function MakeEventSpec(AClass, AKind: TFourCC): EventTypeSpec;
 begin
   Result.eventClass := FourCharCode(AClass);
   Result.eventKind := FourCharCode(AKind);
@@ -82,7 +82,7 @@ end;
            AKind  - Event kind
   Returns: Event type specification
  ------------------------------------------------------------------------------}
-function MakeEventSpec(AClass, AKind: UInt32): EventTypeSpec; inline;
+function MakeEventSpec(AClass, AKind: UInt32): EventTypeSpec;
 begin
   Result.eventClass := AClass;
   Result.eventKind := AKind;
@@ -94,7 +94,7 @@ end;
            AKind  - Event kind
   Returns: Event type specification
  ------------------------------------------------------------------------------}
-function MakeEventSpec(AClass: TFourCC; AKind: UInt32): EventTypeSpec; inline;
+function MakeEventSpec(AClass: TFourCC; AKind: UInt32): EventTypeSpec;
 begin
   Result.eventClass := FourCharCode(AClass);
   Result.eventKind := AKind;
@@ -105,7 +105,7 @@ end;
   Params:  AFourCC - Four char code
   Returns: Four char code
  ------------------------------------------------------------------------------}
-function MakeFourCC(AFourCC: TFourCC): FourCharCode; inline;
+function MakeFourCC(AFourCC: TFourCC): FourCharCode;
 begin
   Result := FourCharCode(AFourCC);
 end;

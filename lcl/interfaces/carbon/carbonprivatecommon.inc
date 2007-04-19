@@ -372,7 +372,7 @@ begin
     end;
     
     if TabIndex < TabList.Count then
-      NextControl := AsControlRef(TWinControl(TabList[TabIndex]).Handle)
+      NextControl := TCarbonControl(TWinControl(TabList[TabIndex]).Handle).Widget
     else
       NextControl := nil;
     

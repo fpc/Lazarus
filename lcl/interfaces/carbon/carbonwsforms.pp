@@ -150,14 +150,10 @@ end;
   Closes modal window in Carbon interface
  ------------------------------------------------------------------------------}
 class procedure TCarbonWSCustomForm.CloseModal(const ACustomForm: TCustomForm);
-const
-  SName = 'CloseModal';
 begin
-  if not CheckHandle(ACustomForm, Self, SName) then Exit;
+  if not CheckHandle(ACustomForm, Self, 'CloseModal') then Exit;
   
-  OSError(
-    SetWindowModality(AsWindowRef(ACustomForm.Handle), kWindowModalityNone, nil),
-    Self, SName, SSetModality);
+  TCarbonWindow(ACustomForm.Handle).CloseModal;
 end;
 
 {------------------------------------------------------------------------------
@@ -170,11 +166,7 @@ class procedure TCarbonWSCustomForm.ShowModal(const ACustomForm: TCustomForm);
 begin
   if not CheckHandle(ACustomForm, Self, SShowModal) then Exit;
 
-  OSError(
-    SetWindowModality(AsWindowRef(ACustomForm.Handle), kWindowModalityAppModal, nil),
-    Self, SShowModal, SSetModality);
-    
-  SelectWindow(AsWindowRef(ACustomForm.Handle));
+  TCarbonWindow(ACustomForm.Handle).ShowModal;
 end;
 
 {------------------------------------------------------------------------------
@@ -186,46 +178,25 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TCarbonWSCustomForm.SetBorderIcons(const AForm: TCustomForm;
   const ABorderIcons: TBorderIcons);
-var
-  AttrsSet, AttrsClear: WindowAttributes;
-const
-  SName = 'SetBorderIcons';
 begin
-  if not CheckHandle(AForm, Self, SName) then Exit;
+  if not CheckHandle(AForm, Self, 'SetBorderIcons') then Exit;
 
-  AttrsSet := 0;
-  AttrsClear := 0;
-  
-  if (biMinimize in ABorderIcons) and (biSystemMenu in ABorderIcons) then
-    AttrsSet := AttrsSet or kWindowCollapseBoxAttribute
-  else
-    AttrsClear := AttrsClear or kWindowCollapseBoxAttribute;
-    
-  if (biMaximize in ABorderIcons) and (biSystemMenu in ABorderIcons) then
-    AttrsSet := AttrsSet or kWindowFullZoomAttribute
-  else
-    AttrsClear := AttrsClear or kWindowFullZoomAttribute;
-    
-  if biSystemMenu in ABorderIcons then
-    AttrsSet := AttrsSet or kWindowCloseBoxAttribute
-  else
-    AttrsClear := AttrsClear or kWindowCloseBoxAttribute;
-    
-  OSError(ChangeWindowAttributes(AsWindowRef(AForm.Handle), AttrsSet, AttrsClear),
-    Self, SName, SChangeWindowAttrs);
+  TCarbonWindow(AForm.Handle).SetBorderIcons(ABorderIcons);
 end;
 
 {------------------------------------------------------------------------------
   Method:  TCarbonWSCustomForm.SetFormBorderStyle
-  Params:  AForm           - LCL custom form
-           AFormBorderStyle - Border style
+  Params:  AForm            - LCL custom form
+           AFormBorderStyle - Form border style
 
-  Sets the border style of window in Carbon interface
+  Sets the form border style of window in Carbon interface
  ------------------------------------------------------------------------------}
 class procedure TCarbonWSCustomForm.SetFormBorderStyle(const AForm: TCustomForm;
   const AFormBorderStyle: TFormBorderStyle);
 begin
-  RecreateWnd(AForm);
+  if not CheckHandle(AForm, Self, 'SetFormBorderStyle') then Exit;
+
+  TCarbonWindow(AForm.Handle).SetFormBorderStyle(AFormBorderStyle);
 end;
 
 

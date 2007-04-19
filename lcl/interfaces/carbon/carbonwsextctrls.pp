@@ -336,8 +336,7 @@ class procedure TCarbonWSCustomNotebook.SetTabPosition(const ANotebook: TCustomN
 begin
   if not CheckHandle(ANotebook, Self, 'SetTabPosition') then Exit;
   
-  if TCarbonTabsControl(ANotebook.Handle).TabPosition <> ATabPosition then
-    RecreateWnd(ANotebook);
+  TCarbonTabsControl(ANotebook.Handle).SetTabPosition(ATabPosition);
 end;
 
 {------------------------------------------------------------------------------

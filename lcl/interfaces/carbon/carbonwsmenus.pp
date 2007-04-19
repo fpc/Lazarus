@@ -245,6 +245,7 @@ class function TCarbonWSMenuItem.SetCheck(const AMenuItem: TMenuItem;
   const Checked: boolean): boolean;
 begin
   Result := False;
+
   if not CheckMenuItem(AMenuItem, 'SetCheck') then Exit;
   if not CheckMenuItem(AMenuItem.Parent, 'SetCheck', 'Parent') then Exit;
 
@@ -266,6 +267,7 @@ class function TCarbonWSMenuItem.SetEnable(const AMenuItem: TMenuItem;
   const Enabled: boolean): boolean;
 begin
   Result := False;
+
   if not CheckMenuItem(AMenuItem, 'SetEnable') then Exit;
   if not CheckMenuItem(AMenuItem.Parent, 'SetEnable', 'Parent') then Exit;
 
@@ -302,7 +304,7 @@ class procedure TCarbonWSPopupMenu.Popup(const APopupMenu: TPopupMenu; const X,
 begin
   if not CheckMenu(APopupMenu.Handle, 'TCarbonWSPopupMenu.Popup') then Exit;
   
-  PopUpMenuSelect(AsMenuRef(APopupMenu.Handle), Y, X, 0);
+  PopUpMenuSelect(TCarbonMenu(APopupMenu.Handle).Menu, Y, X, 0);
                                              // ^- order top, left is correct!
   APopupMenu.Close; // notify LCL popup menu
 end;

@@ -180,48 +180,12 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TCarbonWSWinControl.SetChildZPosition(const AWinControl,
   AChild: TWinControl; const AOldPos, ANewPos: Integer; const AChildren: TFPList);
-var
-  RefView: HIViewRef;
-  Order: HIViewZOrderOp;
-  I, StopPos: Integer;
-  Child: TWinControl;
 begin
   if not CheckHandle(AWinControl, Self, 'SetChildZPosition') then Exit;
   if not CheckHandle(AChild, Self, 'SetChildZPosition AChild') then Exit;
   
-  RefView := nil;
-  if ANewPos <= 0 then // send behind all
-    Order := kHIViewZOrderBelow
-  else
-    if ANewPos >= Pred(AChildren.Count) then // bring to front of all
-      Order := kHIViewZOrderAbove
-    else // custom position
-    begin
-      // Search for the first child above us with a handle.
-      // The child list is reversed form the windows order.
-      // If we don't find an allocated handle then exit.
-      
-      if AOldPos > ANewPos then
-        StopPos := AOldPos // the child is moved to the bottom
-      else
-        StopPos := Pred(AChildren.Count); // the child is moved to the top
-
-      for I := Succ(ANewPos) to StopPos do
-      begin
-        Child := TWinControl(AChildren[I]);
-        if Child.HandleAllocated then
-        begin
-          RefView := AsControlRef(Child.Handle);
-          Order := kHIViewZOrderBelow;
-          Break;
-        end;
-      end;
-      
-      if RefView = nil then Exit;
-    end;
-    
-  OSError(HIViewSetZOrder(AsControlRef(AChild.Handle), Order, RefView),
-    Self, 'SetChildZPosition', 'HIViewSetZOrder');
+  TCarbonWidget(AWinControl.Handle).SetChildZPosition(TCarbonWidget(AChild.Handle),
+    AOldPos, ANewPos, AChildren);
 end;
 
 {------------------------------------------------------------------------------

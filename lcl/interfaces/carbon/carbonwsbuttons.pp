@@ -105,10 +105,7 @@ class procedure TCarbonWSButton.SetDefault(const AButton: TCustomButton;
 begin
   if not CheckHandle(AButton, Self, 'SetDefault') then Exit;
 
-  OSError(
-    SetControlData(AsControlRef(AButton.Handle), kControlEntireControl,
-      kControlPushButtonDefaultTag, SizeOf(Boolean), @ADefault),
-    Self, 'SetDefault', SSetData);
+  TCarbonButton(AButton.Handle).SetDefault(ADefault);
 end;
 
 { TCarbonWSBitBtn }
@@ -137,19 +134,10 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TCarbonWSBitBtn.SetGlyph(const ABitBtn: TCustomBitBtn;
   const AValue: TBitmap);
-var
-  ContentInfo: ControlButtonContentInfo;
 begin
   if not CheckHandle(ABitBtn, Self, 'SetGlyph') then Exit;
   
-  ContentInfo.contentType := kControlContentCGImageRef;
-  if AValue = nil then
-    ContentInfo.imageRef := nil
-  else
-    ContentInfo.imageRef := TCarbonBitmap(AValue.Handle).CGImage;
-  
-  OSError(SetBevelButtonContentInfo(AsControlRef(ABitBtn.Handle), @ContentInfo),
-    Self, 'SetGlyph', 'SetBevelButtonContentInfo');
+  TCarbonBitBtn(ABitBtn.Handle).SetGlyph(AValue);
 end;
 
 {------------------------------------------------------------------------------
@@ -157,26 +145,14 @@ end;
   Params:  ABitBtn - LCL custom bitmap button
            AValue  - Bitmap and caption layout
 
-  Sets the bitmap nad caption layout of bevel button in Carbon interface
+  Sets the bitmap and caption layout of bevel button in Carbon interface
  ------------------------------------------------------------------------------}
 class procedure TCarbonWSBitBtn.SetLayout(const ABitBtn: TCustomBitBtn;
   const AValue: TButtonLayout);
-var
-  Placement: ControlButtonTextPlacement;
 begin
   if not CheckHandle(ABitBtn, Self, 'SetLayout') then Exit;
-  
-  case AValue of
-    blGlyphLeft  : Placement := kControlBevelButtonPlaceToRightOfGraphic;
-    blGlyphRight : Placement := kControlBevelButtonPlaceToLeftOfGraphic;
-    blGlyphTop   : Placement := kControlBevelButtonPlaceBelowGraphic;
-    blGlyphBottom: Placement := kControlBevelButtonPlaceAboveGraphic;
-  end;
-  
-  OSError(SetBevelButtonTextPlacement(AsControlRef(ABitBtn.Handle), Placement),
-    Self, 'SetLayout', 'SetBevelButtonTextPlacement');
-    
-  TCarbonWidget(ABitBtn.Handle).Invalidate;
+
+  TCarbonBitBtn(ABitBtn.Handle).SetLayout(AValue);
 end;
 
 initialization

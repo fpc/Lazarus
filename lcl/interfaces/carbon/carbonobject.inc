@@ -633,6 +633,17 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method:  TCarbonWidgetSet.AppSetTitle
+  Params:  ATitle - New application title
+
+  Changes the application title
+ ------------------------------------------------------------------------------}
+procedure TCarbonWidgetSet.AppSetTitle(const ATitle: string);
+begin
+  // TODO
+end;
+
+{------------------------------------------------------------------------------
   Method:  TCarbonWidgetSet.WidgetSetName
   Returns: Name of Carbon widget set
  ------------------------------------------------------------------------------}

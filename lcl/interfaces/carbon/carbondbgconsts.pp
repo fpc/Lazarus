@@ -30,10 +30,10 @@ const
   SDestroyWidget = 'DestroyWidget';
   SInvalidate = 'Invalidate';
   SEnable = 'Enable';
+  SSetFocus = 'SetFocus';
   SSetColor = 'SetColor';
   SGetText = 'GetText';
   SSetText = 'SetText';
-  SSetReadOnly = 'SetReadOnly';
   
   SShowModal = 'ShowModal';
   
@@ -44,6 +44,7 @@ const
   SShowHideProc = 'ShowHideProcess';
   
   SGetKeyboardFocus = 'GetKeyboardFocus';
+  SSetUserFocusWindow = 'SetUserFocusWindow';
   
   SSetControlProp = 'SetControlProperty';
 
@@ -70,6 +71,8 @@ const
   
   SChangeMenuItemAttrs = 'ChangeMenuItemAttributes';
   SChangeMenuAttrs = 'ChangeMenuAttributes';
+  
+  SSetMenuTitle = 'SetMenuTitleWithCFString';
   
   SChangeWindowAttrs = 'ChangeWindowAttributes';
   SSetModality = 'SetWindowModality';

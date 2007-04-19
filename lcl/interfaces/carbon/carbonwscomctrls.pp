@@ -248,8 +248,7 @@ class procedure TCarbonWSProgressBar.ApplyChanges(
 begin
   if not CheckHandle(AProgressBar, Self, 'ApplyChanges') then Exit;
 
-  TCarbonCustomBar(AProgressBar.Handle).SetData(AProgressBar.Position,
-    AProgressBar.Min, AProgressBar.Max);
+  TCarbonProgressBar(AProgressBar.Handle).ApplyChanges;
 end;
 
 {------------------------------------------------------------------------------
@@ -264,7 +263,7 @@ class procedure TCarbonWSProgressBar.SetPosition(
 begin
   if not CheckHandle(AProgressBar, Self, 'SetPosition') then Exit;
 
-  TCarbonCustomBar(AProgressBar.Handle).SetData(AProgressBar.Position);
+  TCarbonCustomBar(AProgressBar.Handle).SetPosition(AProgressBar.Position);
 end;
 
 { TCarbonWSTrackBar }
@@ -290,17 +289,10 @@ end;
   Sets the parameters (Min, Max, Position, Ticks) of slider in Carbon interface
  ------------------------------------------------------------------------------}
 class procedure TCarbonWSTrackBar.ApplyChanges(const ATrackBar: TCustomTrackBar);
-var
-  CarbonTrackBar: TCarbonTrackBar;
 begin
   if not CheckHandle(ATrackBar, Self, 'ApplyChanges') then Exit;
 
-  CarbonTrackBar := TCarbonTrackBar(ATrackBar.Handle);
-  
-  if CarbonTrackBar.Ticks <> CarbonTrackBar.GetTicks then
-    RecreateWnd(ATrackBar) // recreate track bar if ticks have changed
-  else
-    CarbonTrackBar.SetData(ATrackBar.Position, ATrackBar.Min, ATrackBar.Max);
+  TCarbonTrackBar(ATrackBar.Handle).ApplyChanges;
 end;
 
 {------------------------------------------------------------------------------
@@ -314,7 +306,7 @@ begin
   Result := 0;
   if not CheckHandle(ATrackBar, Self, 'GetPosition') then Exit;
 
-  Result := TCarbonTrackBar(ATrackBar.Handle).GetPos;
+  Result := TCarbonTrackBar(ATrackBar.Handle).GetPosition;
 end;
 
 {------------------------------------------------------------------------------
@@ -329,7 +321,7 @@ class procedure TCarbonWSTrackBar.SetPosition(const ATrackBar: TCustomTrackBar;
 begin
   if not CheckHandle(ATrackBar, Self, 'SetPosition') then Exit;
 
-  TCarbonTrackBar(ATrackBar.Handle).SetData(ATrackBar.Position);
+  TCarbonTrackBar(ATrackBar.Handle).SetPosition(ATrackBar.Position);
 end;
 
 

@@ -146,12 +146,11 @@ end;
   Method:  ComboBoxDropDown
   Params:  Handle   - Handle to combo box
            DropDown - Show list
-  Returns: If hte function succeeds
+  Returns: If the function succeeds
 
   Shows or hides the combo box list
  ------------------------------------------------------------------------------}
-function TCarbonWidgetSet.ComboBoxDropDown(Handle: HWND; DropDown: boolean
-  ): boolean;
+function TCarbonWidgetSet.ComboBoxDropDown(Handle: HWND; DropDown: boolean): boolean;
 begin
   Result := False;
 
@@ -160,11 +159,14 @@ begin
   {$ENDIF}
   
   if not CheckWidget(Handle, 'ComboBoxDropDown') then Exit;
-
-  if OSError(HIComboBoxSetListVisible(AsControlRef(Handle), DropDown), Self,
-    'ComboBoxDropDown', 'HIComboBoxSetListVisible') then Exit;
-    
-  Result := True;
+  if not (TCarbonWidget(Handle) is TCarbonComboBox) then
+  begin
+    DebugLn('TCarbonWidgetSet.ComboBoxDropDown failed - passed widget ' +
+      TCarbonWidget(Handle).ClassName + ' is not TCarbonComboBox!');
+    Exit;
+  end;
+  
+  Result := TCarbonComboBox(Handle).DropDown(DropDown);
 end;
 
 {------------------------------------------------------------------------------
@@ -1430,7 +1432,8 @@ begin
   if not CheckWidget(Handle, 'GetParent') then Exit;
   
   if TCarbonWidget(Handle) is TCarbonControl then
-     Result := HWnd(GetCarbonWidget(HIViewGetSuperview(AsControlRef(Handle))));
+     Result :=
+       HWnd(GetCarbonWidget(HIViewGetSuperview(TCarbonControl(Handle).Widget)));
   // Carbon windows has no parent
   
   {$IFDEF VerboseWinAPI}
@@ -2683,9 +2686,15 @@ begin
   {$ENDIF}
   
   if not CheckWidget(Handle, SName) then Exit;
+  if not (TCarbonWidget(Handle) is TCarbonWindow) then
+  begin
+    DebugLn('TCarbonWidgetSet.SetActiveWindow failed - widget ' +
+      TCarbonWidget(Handle).ClassName + ' is not TCarbonWindow!');
+    Exit;
+  end;
+  
   Result := GetActiveWindow;
-  if OSError(ActivateWindow(AsWindowRef(Handle), True), Self, SName,
-    SActivateWindow) then Result := 0;
+  if not TCarbonWindow(Handle).Activate then Result := 0;
 end;
 
 {------------------------------------------------------------------------------
@@ -2794,11 +2803,6 @@ end;
   Sets the keyboard focus to the specified window
  ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.SetFocus(HWnd: HWND): HWND;
-var
-  Window: WindowRef;
-  Control: ControlRef;
-const
-  SName = 'SetFocus';
 begin
   {$IFDEF VerboseWinAPI}
     DebugLn('TCarbonWidgetSet.SetFocus HWnd: ' + DbgS(HWnd));
@@ -2807,21 +2811,9 @@ begin
   Result := GetFocus;
   if HWnd = 0 then Exit;
   if HWnd = Result then Exit; // if window is already focused exit
-  if not CheckWidget(HWnd, 'SetFocus') then Exit;
+  if not CheckWidget(HWnd, SSetFocus) then Exit;
   
-  Window := TCarbonWidget(HWnd).GetTopParentWindow;
-  
-  OSError(
-    SetUserFocusWindow(Window), Self, SName, 'SetUserFocusWindow');
-    
-  if HWnd <> THandle(GetCarbonWindow(Window)) then
-  begin
-    OSError(GetKeyboardFocus(Window, Control), Self, SName, SGetKeyboardFocus);
-    
-    if Control <> AsControlRef(HWnd) then
-      OSError(SetKeyboardFocus(Window, AsControlRef(HWnd), kControlFocusNextPart),
-        Self, SName, 'SetKeyboardFocus');
-  end;
+  TCarbonWidget(HWnd).SetFocus;
 end;
 
 {------------------------------------------------------------------------------
@@ -2842,10 +2834,14 @@ begin
   {$ENDIF}
 
   if not CheckWidget(HWnd, SName) then Exit;
-  if OSError(ActivateWindow(AsWindowRef(HWnd), True), Self, SName,
-    SActivateWindow) then Exit;
+  if not (TCarbonWidget(HWnd) is TCarbonWindow) then
+  begin
+    DebugLn('TCarbonWidgetSet.SetForegroundWindow failed - widget ' +
+      TCarbonWidget(HWnd).ClassName + ' is not TCarbonWindow!');
+    Exit;
+  end;
   
-  Result := True;
+  Result := TCarbonWindow(HWnd).Activate;
 end;
 
 {------------------------------------------------------------------------------
@@ -2909,6 +2905,8 @@ end;
  ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.SetScrollInfo(Handle: HWND; SBStyle: Integer;
   ScrollInfo: TScrollInfo; bRedraw: Boolean): Integer;
+var
+  CarbonControl: TCarbonControl;
 begin
   Result := 0;
 
@@ -2921,17 +2919,18 @@ begin
   
   if SBStyle = SB_CTL then
   begin
-    Result := GetControl32BitValue(AsControlRef(Handle));
+    CarbonControl := TCarbonControl(Handle);
+    Result := CarbonControl.GetValue;
     
     if (SIF_RANGE and ScrollInfo.fMask) > 0 then
     begin
-      SetControl32BitMinimum(AsControlRef(Handle), ScrollInfo.nMin);
-      SetControl32BitMaximum(AsControlRef(Handle), ScrollInfo.nMax);
+      CarbonControl.SetMinimum(ScrollInfo.nMin);
+      CarbonControl.SetMaximum(ScrollInfo.nMax);
     end;
     if (SIF_POS and ScrollInfo.fMask) > 0 then
-      SetControl32BitValue(AsControlRef(Handle), ScrollInfo.nPos);
+      CarbonControl.SetValue(ScrollInfo.nPos);
     if (SIF_PAGE and ScrollInfo.fMask) > 0 then
-      SetControlViewSize(AsControlRef(Handle), ScrollInfo.nPage);
+      CarbonControl.SetViewSize(ScrollInfo.nPage);
   end
   else
     // TODO: SB_VERT, SB_HORZ
@@ -3010,13 +3009,6 @@ end;
   Shows the window normal, minimized or maximized
 ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.ShowWindow(hWnd: HWND; nCmdShow: Integer): Boolean;
-var
-  P: FPCMacOSAll.Point;
-  Maximized: Boolean;
-const
-  SName = 'ShowWindow';
-  SCollapse = 'CollapseWindow';
-  SZoomIdeal = 'ZoomWindowIdeal';
 begin
   Result := False;
 
@@ -3025,41 +3017,15 @@ begin
       DbgS(nCmdShow));
   {$ENDIF}
   
-  if not CheckWidget(HWnd, SName) then Exit;
-
-  case nCmdShow of
-  SW_SHOWNORMAL, SW_SHOWMAXIMIZED:
+  if not CheckWidget(HWnd, 'ShowWindow') then Exit;
+  if not (TCarbonWidget(HWnd) is TCarbonWindow) then
   begin
-    if IsWindowCollapsed(AsWindowRef(HWnd)) then
-      if OSError(CollapseWindow(AsWindowRef(HWnd), False),
-        Self, SName, SCollapse) then Exit;
+    DebugLn('TCarbonWidgetSet.ShowWindow failed - widget ' +
+      TCarbonWidget(HWnd).ClassName + ' is not TCarbonWindow!');
+    Exit;
+  end;
 
-    // for checking if any change is necessary
-    Maximized := IsWindowInStandardState(AsWindowRef(HWnd), nil, nil);
-    
-    if nCmdShow = SW_SHOWNORMAL then
-    begin
-      if Maximized then
-        if OSError(ZoomWindowIdeal(AsWindowRef(HWnd), inZoomIn, P),
-          Self, SName, SZoomIdeal, 'inZoomIn') then Exit;
-    end
-    else
-      if not Maximized then
-      begin
-        P.v := $3FFF;
-        P.h := $3FFF;
-        if OSError(ZoomWindowIdeal(AsWindowRef(HWnd), inZoomOut, P),
-         Self, SName, SZoomIdeal, 'inZoomOut') then Exit;
-      end;
-  end;
-  SW_MINIMIZE:
-    begin
-      if OSError(CollapseWindow(AsWindowRef(HWnd), True),
-        Self, SName, SCollapse) then Exit;
-    end;
-  end;
-  
-  Result := True;
+  Result := TCarbonWindow(HWnd).Show(nCmdShow);
 end;
 
 function TCarbonWidgetSet.StretchBlt(DestDC: HDC; X, Y, Width, Height: Integer;

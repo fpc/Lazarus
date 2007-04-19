@@ -72,24 +72,12 @@ type
     procedure SetStyle;
   end;
   
-function AsMenuRef(Handle: HMENU): MenuRef; inline;
-
 function CheckMenu(const Menu: HMENU; const AMethodName: String; AParamName: String = ''): Boolean;
 
 implementation
 
 uses
   CarbonProc, CarbonDbgConsts;
-  
-{------------------------------------------------------------------------------
-  Name:    AsMenuRef
-  Params:  Handle  - Handle of menu
-  Returns: Carbon menu
- ------------------------------------------------------------------------------}
-function AsMenuRef(Handle: HMENU): MenuRef;
-begin
-  Result := TCarbonMenu(Handle).Menu;
-end;
 
 {------------------------------------------------------------------------------
   Name:    CheckMenu
@@ -310,7 +298,7 @@ begin
       
       if Menu <> nil then
         OSError(SetMenuTitleWithCFString(Menu, CFString), Self, SName,
-          'SetMenuTitleWithCFString');
+          SSetMenuTitle);
     finally
       FreeCFString(CFString);
     end;
@@ -332,7 +320,7 @@ end;
 {------------------------------------------------------------------------------
   Method:  TCarbonMenu.AttachToMenuBar
 
-  Attaches Carbon menu to root menu bar
+  Attaches Carbon menu to the menu bar
  ------------------------------------------------------------------------------}
 procedure TCarbonMenu.AttachToMenuBar;
 var
@@ -385,8 +373,7 @@ begin
         Self, SName, 'SetMenuItemTextWithCFString');
 
       if Menu <> nil then
-        OSError(SetMenuTitleWithCFString(Menu, CFString), Self, SName,
-          'SetMenuTitleWithCFString');
+        OSError(SetMenuTitleWithCFString(Menu, CFString), Self, SName, SSetMenuTitle);
     finally
       FreeCFString(CFString);
     end;
@@ -436,30 +423,41 @@ end;
 procedure TCarbonMenu.SetEnable(AEnabled: Boolean);
 var
   I: Integer;
-const
-  SName = 'SetEnable';
 begin
-  if FParentMenu = nil then Exit;
-  
-  if AEnabled and FParentMenu.LCLMenuItem.Enabled then
+  if FParentMenu = nil then
   begin
-    OSError(
-      ChangeMenuItemAttributes(FParentMenu.Menu, GetIndex + 1, 0, kMenuItemAttrDisabled),
-      Self, SName, SChangeMenuItemAttrs, 'enable');
-      
-    // update sub menus enabled
+    // diable sub items for top most menus
     if FItems <> nil then
       for I := 0 to FItems.Count - 1 do
-        TCarbonMenu(FItems[I]).SetEnable(TCarbonMenu(FItems[I]).LCLMenuItem.Enabled);
+      begin
+        if AEnabled then
+          TCarbonMenu(FItems[I]).SetEnable(TCarbonMenu(FItems[I]).LCLMenuItem.Enabled)
+        else
+          TCarbonMenu(FItems[I]).SetEnable(False);
+      end;
+      
+    Exit;
+  end;
+  
+  if AEnabled then
+  begin
+    EnableMenuItem(FParentMenu.Menu, GetIndex + 1);
+    
+    // enable sub menu
+    if Menu <> nil then
+    begin
+      EnableMenuItem(Menu, 0);
+    end;
   end
   else
   begin
-    OSError(
-      ChangeMenuItemAttributes(FParentMenu.Menu, GetIndex + 1, kMenuItemAttrDisabled, 0),
-      Self, SName, SChangeMenuItemAttrs, 'disable');
-      
-    // disable sub menus
-    if Menu <> nil then DisableAllMenuItems(Menu);
+    DisableMenuItem(FParentMenu.Menu, GetIndex + 1);
+
+    // disable sub menu
+    if Menu <> nil then
+    begin
+      DisableMenuItem(Menu, 0);
+    end;
   end;
 end;
 

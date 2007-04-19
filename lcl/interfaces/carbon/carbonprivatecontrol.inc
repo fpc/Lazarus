@@ -419,6 +419,59 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method:  TCarbonControl.GetValue
+  Returns: The value of Carbon control
+ ------------------------------------------------------------------------------}
+function TCarbonControl.GetValue: Integer;
+begin
+  Result := GetControl32BitValue(ControlRef(Widget));
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonControl.SetValue
+  Params:  AValue - New control value
+
+  Sets the Carbon control value
+ ------------------------------------------------------------------------------}
+procedure TCarbonControl.SetValue(AValue: Integer);
+begin
+  SetControl32BitValue(ControlRef(Widget), AValue);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonControl.SetMinimum
+  Params:  AValue - New control minimum
+
+  Sets the Carbon control minimum
+ ------------------------------------------------------------------------------}
+procedure TCarbonControl.SetMinimum(AValue: Integer);
+begin
+  SetControl32BitMinimum(ControlRef(Widget), AValue);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonControl.SetMaximum
+  Params:  AValue - New control maximum
+
+  Sets the Carbon control maximum
+ ------------------------------------------------------------------------------}
+procedure TCarbonControl.SetMaximum(AValue: Integer);
+begin
+  SetControl32BitMaximum(ControlRef(Widget), AValue);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonControl.SetViewSize
+  Params:  AValue - New control view size
+
+  Sets the Carbon control view size
+ ------------------------------------------------------------------------------}
+procedure TCarbonControl.SetViewSize(AValue: Integer);
+begin
+  SetControlViewSize(ControlRef(Widget), AValue);
+end;
+
+{------------------------------------------------------------------------------
   Method:  TCarbonControl.Invalidate
   Params:  Rect - Pointer to rect (optional)
 
@@ -545,6 +598,82 @@ begin
   end;
   
   Result := True;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonControl.SetChildZPosition
+  Params:  AChild      - Child widget
+           AOldPos     - Old z position
+           ANewPos     - New z position
+           AChildren   - List of all child controls
+
+  Sets the child z position of Carbon widget
+ ------------------------------------------------------------------------------}
+procedure TCarbonControl.SetChildZPosition(AChild: TCarbonWidget;
+  const AOldPos, ANewPos: Integer; const AChildren: TFPList);
+var
+  RefView: HIViewRef;
+  Order: HIViewZOrderOp;
+  I, StopPos: Integer;
+  Child: TWinControl;
+begin
+  RefView := nil;
+  
+  if ANewPos <= 0 then // send behind all
+    Order := kHIViewZOrderBelow
+  else
+    if ANewPos >= Pred(AChildren.Count) then // bring to front of all
+      Order := kHIViewZOrderAbove
+    else // custom position
+    begin
+      // Search for the first child above us with a handle.
+      // The child list is reversed form the windows order.
+      // If we don't find an allocated handle then exit.
+
+      if AOldPos > ANewPos then
+        StopPos := AOldPos // the child is moved to the bottom
+      else
+        StopPos := Pred(AChildren.Count); // the child is moved to the top
+
+      for I := Succ(ANewPos) to StopPos do
+      begin
+        Child := TWinControl(AChildren[I]);
+        
+        if Child.HandleAllocated then
+        begin
+          RefView := ControlRef(TCarbonWidget(Child.Handle).Widget);
+          Order := kHIViewZOrderBelow;
+          Break;
+        end;
+      end;
+
+      if RefView = nil then Exit;
+    end;
+
+  OSError(HIViewSetZOrder(ControlRef(AChild.Widget), Order, RefView),
+    Self, 'SetChildZPosition', 'HIViewSetZOrder');
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonControl.SetFocus
+
+  Sets the focus to control
+ ------------------------------------------------------------------------------}
+procedure TCarbonControl.SetFocus;
+var
+  Window: WindowRef;
+  Control: ControlRef;
+begin
+  Window := GetTopParentWindow;
+  
+  OSError(
+    SetUserFocusWindow(Window), Self, SSetFocus, SSetUserFocusWindow);
+
+  OSError(GetKeyboardFocus(Window, Control), Self, SSetFocus, SGetKeyboardFocus);
+
+  if Control <> ControlRef(Widget) then
+    OSError(SetKeyboardFocus(Window, ControlRef(Widget), kControlFocusNextPart),
+    Self, SSetFocus, 'SetKeyboardFocus');
 end;
 
 {------------------------------------------------------------------------------
@@ -688,7 +817,8 @@ var
 begin
   Window := LCLObject.GetTopParent;
 
-  if Window is TCustomForm then Result := AsWindowRef((Window as TWinControl).Handle)
+  if Window is TCustomForm then
+    Result := TCarbonWindow((Window as TWinControl).Handle).Widget
   else Result := nil;
 end;
 

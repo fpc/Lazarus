@@ -59,7 +59,7 @@ type
   TCarbonTabsControl = class(TCarbonControl)
   private
     FUserPane: ControlRef;
-    FTabPositon: TTabPosition;
+    FTabPosition: TTabPosition;
     FTabs: TObjectList; // of TCarbonTab
   protected
     procedure CreateWidget(const AParams: TCreateParams); override;
@@ -78,8 +78,7 @@ type
     procedure Remove(AIndex: Integer);
     procedure SetTabIndex(AIndex: Integer);
     procedure ShowTabs(AShow: Boolean);
-  public
-    property TabPosition: TTabPosition read FTabPositon;
+    procedure SetTabPosition(ATabPosition: TTabPosition);
   end;
 
 
@@ -200,7 +199,7 @@ begin
 
   inherited;
 
-  FTabPositon := (LCLObject as TCustomNotebook).TabPosition;
+  FTabPosition := (LCLObject as TCustomNotebook).TabPosition;
   
   FTabs := TObjectList.Create(False);
 end;
@@ -394,7 +393,8 @@ end;
 procedure TCarbonTabsControl.Add(ATab: TCarbonTab; AIndex: Integer);
 begin
   //DebugLn('TCarbonTabsControl.Add ' + DbgS(AIndex));
-  FTabs.Insert(AIndex, ATab);
+  if FTabs.IndexOf(ATab) < 0 then
+    FTabs.Insert(AIndex, ATab);
   ATab.Attach(Self);
   
   UpdateTabs(AIndex, True);
@@ -461,7 +461,7 @@ begin
       
       if Page.TabVisible or (csDesigning in Page.ComponentState) then
       begin
-        if FTabs.IndexOf(Page) < 0 then
+        if FTabs.IndexOf(TCarbonTab(Page.Handle)) < 0 then
         begin
           FTabs.Insert(Page.VisibleIndex, TCarbonTab(Page.Handle));
           TCarbonTab(Page.Handle).Attach(Self);
@@ -472,6 +472,17 @@ begin
   else FTabs.Clear; // remove all tabs
   
   UpdateTabs(0, True);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonTabsControl.SetTabPosition
+  Params:  ATabPosition - New position of tabs
+
+  Changes position of the tabs
+ ------------------------------------------------------------------------------}
+procedure TCarbonTabsControl.SetTabPosition(ATabPosition: TTabPosition);
+begin
+  if FTabPosition <> ATabPosition then RecreateWnd(LCLObject);
 end;
 
 end.

@@ -156,9 +156,7 @@ type
     class function  GetStrings(const ACustomMemo: TCustomMemo): TStrings; override;
 
     class procedure AppendText(const ACustomMemo: TCustomMemo; const AText: string); override;
-    class procedure SetPasswordChar(const ACustomEdit: TCustomEdit; NewChar: char); override;
     class procedure SetScrollbars(const ACustomMemo: TCustomMemo; const NewScrollbars: TScrollStyle); override;
-    class procedure SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean); override;
     class procedure SetWordWrap(const ACustomMemo: TCustomMemo; const NewWordWrap: boolean); override;
   end;
 
@@ -290,8 +288,7 @@ class procedure TCarbonWSScrollBar.SetParams(const AScrollBar: TCustomScrollBar)
 begin
   if not CheckHandle(AScrollBar, Self, 'SetParams') then Exit;
   
-  TCarbonCustomBar(AScrollBar.Handle).SetData(AScrollBar.Position,
-    AScrollBar.Min, AScrollBar.Max, AScrollBar.PageSize);
+  TCarbonScrollBar(AScrollBar.Handle).SetParams;
 end;
 
 { TCarbonWSCustomGroupBox }
@@ -407,7 +404,7 @@ end;
 class procedure TCarbonWSCustomComboBox.SetSelLength(
   const ACustomComboBox: TCustomComboBox; NewLength: integer);
 begin
-    if not CheckHandle(ACustomComboBox, Self, 'SetSelLength') then Exit;
+  if not CheckHandle(ACustomComboBox, Self, 'SetSelLength') then Exit;
 
   TCarbonComboBox(ACustomComboBox.Handle).SetSelLength(NewLength);
 end;
@@ -745,8 +742,7 @@ class procedure TCarbonWSCustomEdit.SetPasswordChar(const ACustomEdit: TCustomEd
 begin
   if not CheckHandle(ACustomEdit, Self, 'SetPasswordChar') then Exit;
 
-  if TCarbonEdit(ACustomEdit.Handle).IsPassword <> (NewChar <> #0) then
-    RecreateWnd(ACustomEdit);
+  TCarbonCustomEdit(ACustomEdit.Handle).SetPasswordChar(NewChar);
 end;
 
 {------------------------------------------------------------------------------
@@ -759,11 +755,9 @@ end;
 class procedure TCarbonWSCustomEdit.SetReadOnly(const ACustomEdit: TCustomEdit;
   NewReadOnly: boolean);
 begin
-  if not CheckHandle(ACustomEdit, Self, SSetReadOnly) then Exit;
+  if not CheckHandle(ACustomEdit, Self, 'SetReadOnly') then Exit;
 
-  OSError(SetControlData(AsControlRef(ACustomEdit.Handle), kControlEntireControl,
-      kControlEditTextLockedTag, SizeOf(Boolean), @NewReadOnly),
-    Self, SSetReadOnly, SSetData);
+  TCarbonEdit(ACustomEdit.Handle).SetReadOnly(NewReadOnly);
 end;
 
 {------------------------------------------------------------------------------
@@ -848,29 +842,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method:  TCarbonWSCustomMemo.SetPasswordChar
-  Params:  ACustomEdit - LCL custom edit
-           NewChar     - New password char
-
-  Sets the new password char of memo in Carbon interface
- ------------------------------------------------------------------------------}
-class procedure TCarbonWSCustomMemo.SetPasswordChar(
-  const ACustomEdit: TCustomEdit; NewChar: char);
-const
-  SName = 'SetPasswordChar';
-begin
-  if not CheckHandle(ACustomEdit, Self, SName) then Exit;
-
-  OSError(
-    TXNEchoMode(HITextViewGetTXNObject(AsControlRef(ACustomEdit.Handle)),
-      UniChar(NewChar), CreateTextEncoding(kTextEncodingUnicodeDefault,
-      kUnicodeNoSubset, kUnicodeUTF8Format), NewChar <> #0),
-    Self, SName, 'TXNEchoMode');
-    
-  TCarbonWidget(ACustomEdit.Handle).Invalidate;
-end;
-
-{------------------------------------------------------------------------------
   Method:  TCarbonWSCustomMemo.SetScrollbars
   Params:  ACustomEdit   - LCL custom memo
            NewScrollbars - New scrollbars style
@@ -886,33 +857,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method:  TCarbonWSCustomMemo.SetReadOnly
-  Params:  ACustomEdit - LCL custom edit
-           NewReadOnly - Read only behavior
-
-  Sets the read only behavior of memo in Carbon interface
- ------------------------------------------------------------------------------}
-class procedure TCarbonWSCustomMemo.SetReadOnly(const ACustomEdit: TCustomEdit;
-  NewReadOnly: boolean);
-var
-  Tag: TXNControlTag;
-  Data: TXNControlData;
-begin
-  if not CheckHandle(ACustomEdit, Self, SSetReadOnly) then Exit;
-
-  Tag := kTXNNoUserIOTag;
-  if NewReadOnly then
-    Data.uValue := UInt32(kTXNReadOnly)
-  else
-    Data.uValue := UInt32(kTXNReadWrite);
-
-  OSError(
-    TXNSetTXNObjectControls(HITextViewGetTXNObject(AsControlRef(ACustomEdit.Handle)),
-      False, 1, @Tag, @Data),
-    sELF, SSetReadOnly, SSetTXNControls);
-end;
-
-{------------------------------------------------------------------------------
   Method:  TCarbonWSCustomMemo.SetWordWrap
   Params:  ACustomMemo - LCL custom memo
            NewWordWrap - New word wrap
@@ -921,26 +865,11 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TCarbonWSCustomMemo.SetWordWrap(const ACustomMemo: TCustomMemo;
   const NewWordWrap: boolean);
-var
-  Tag: TXNControlTag;
-  Data: TXNControlData;
-const
-  SName = 'SetWordWrap';
 begin
-  if not CheckHandle(ACustomMemo, Self, SName) then Exit;
+  if not CheckHandle(ACustomMemo, Self, 'SetWordWrap') then Exit;
 
-  Tag := kTXNWordWrapStateTag;
-  if NewWordWrap then
-    Data.uValue := UInt32(kTXNAutoWrap)
-  else
-    Data.uValue := UInt32(kTXNNoAutoWrap);
-
-  OSError(
-    TXNSetTXNObjectControls(HITextViewGetTXNObject(AsControlRef(ACustomMemo.Handle)),
-      False, 1, @Tag, @Data),
-    Self, SName, SSetTXNControls);
     
-  TCarbonWidget(ACustomMemo.Handle).Invalidate;
+  TCarbonMemo(ACustomMemo.Handle).SetWordWrap(NewWordWrap);
 end;
 
 { TCarbonWSCustomCheckBox }
@@ -970,13 +899,10 @@ class function TCarbonWSCustomCheckBox.RetrieveState(
   const ACustomCheckBox: TCustomCheckBox): TCheckBoxState;
 begin
   Result := cbUnchecked;
+  
   if not CheckHandle(ACustomCheckBox, Self, 'RetrieveState') then Exit;
 
-  case GetControl32BitValue(AsControlRef(ACustomCheckBox.Handle)) of
-    kControlCheckBoxCheckedValue   : Result := cbChecked;
-    kControlCheckBoxUncheckedValue : Result := cbUnchecked;
-    kControlCheckBoxMixedValue     : Result := cbGrayed;
-  end;
+  Result := TCarbonCustomCheckBox(ACustomCheckBox.Handle).RetrieveState;
 end;
 
 {------------------------------------------------------------------------------
@@ -988,17 +914,10 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TCarbonWSCustomCheckBox.SetState(
   const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState);
-var
-  Value: UInt32;
 begin
   if not CheckHandle(ACustomCheckBox, Self, 'SetState') then Exit;
 
-  case NewState of
-    cbChecked  : Value := kControlCheckBoxCheckedValue;
-    cbUnChecked: Value := kControlCheckBoxUncheckedValue;
-    cbGrayed   : Value := kControlCheckBoxMixedValue;
-  end;
-  SetControl32BitValue(AsControlRef(ACustomCheckBox.Handle), Value);
+  TCarbonCustomCheckBox(ACustomCheckBox.Handle).SetState(NewState);
 end;
 
 
@@ -1056,36 +975,14 @@ end;
   Params:  ACustomStaticText - LCL custom static text
            NewAlignment      - New caption alignment
 
-  Sets the new cpation alignment of static text in Carbon interface
+  Sets the new caption alignment of static text in Carbon interface
  ------------------------------------------------------------------------------}
 class procedure TCarbonWSCustomStaticText.SetAlignment(
   const ACustomStaticText: TCustomStaticText; const NewAlignment: TAlignment);
-var
-  FontStyle: ControlFontStyleRec;
-const
-  SName = 'SetAlignment';
 begin
-  if not CheckHandle(ACustomStaticText, Self, SName) then Exit;
+  if not CheckHandle(ACustomStaticText, Self, 'SetAlignment') then Exit;
 
-  // get static text font style and change only justification
-  OSError(
-    GetControlData(AsControlRef(ACustomStaticText.Handle), kControlEntireControl,
-      kControlStaticTextStyleTag, SizeOf(FontStyle), @FontStyle, nil),
-    Self, SName, SGetData);
-
-  FontStyle.flags := FontStyle.flags or kControlUseJustMask;
-  case NewAlignment of
-  taLeftJustify : FontStyle.just := teFlushLeft;
-  taRightJustify: FontStyle.just := teFlushRight;
-  taCenter      : FontStyle.just := teCenter;
-  end;
-
-  OSError(
-    SetControlData(AsControlRef(ACustomStaticText.Handle), kControlEntireControl,
-      kControlStaticTextStyleTag, SizeOf(FontStyle), @FontStyle),
-    Self, SName, SSetData);
-  // invalidate static text
-  TCarbonWidget(ACustomStaticText.Handle).Invalidate;
+  TCarbonStaticText(ACustomStaticText.Handle).SetAlignment(NewAlignment);
 end;
 
 initialization

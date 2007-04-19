@@ -77,6 +77,8 @@ type
     procedure AppMinimize; override;
     procedure AppRestore; override;
     procedure AppBringToFront; override;
+    procedure AppSetTitle(const ATitle: string); override;
+
     function  WidgetSetName: string; override;
     procedure AttachMenuToWindow(AMenuObject: TComponent); Override;
     
@@ -96,6 +98,7 @@ type
     {$I carbonlclintfh.inc}
 
   public
+    procedure SetMainMenuEnabled(AEnabled: Boolean);
   end;
 
 var

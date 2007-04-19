@@ -67,8 +67,8 @@ procedure FillStandardDescription(var Desc: TRawImageDescription);
 const
   DEFAULT_CFSTRING_ENCODING = kCFStringEncodingUTF8;
 
-procedure CreateCFString(const S: String; out AString: CFStringRef); inline;
-procedure FreeCFString(var AString: CFStringRef); inline;
+procedure CreateCFString(const S: String; out AString: CFStringRef);
+procedure FreeCFString(var AString: CFStringRef);
 function CFStringToStr(AString: CFStringRef): String;
 
 function GetCarbonRect(Left, Top, Width, Height: Integer): FPCMacOSAll.Rect;
@@ -89,7 +89,7 @@ function ParamsToHIRect(const AParams: TCreateParams): HIRect;
 function CarbonRectToRect(const ARect: FPCMacOSAll.Rect): TRect;
 
 function ColorToRGBColor(const AColor: TColor): RGBColor;
-function RGBColorToColor(const AColor: RGBColor): TColor; inline;
+function RGBColorToColor(const AColor: RGBColor): TColor;
 function CreateCGColor(const AColor: TColor): CGColorRef;
 
 function DbgS(const ASize: TSize): string; overload;
@@ -393,7 +393,7 @@ begin
   Desc.GreenShift := 16;
   Desc.BlueShift  := 08;
   Desc.AlphaShift := 00;
-end; 
+end;
 
 {------------------------------------------------------------------------------
   Name:    CreateCFString
