@@ -69,28 +69,34 @@ function TPageControl.FindNextPage(CurPage: TTabSheet; GoForward,
 var
   I, StartIndex: Integer;
 begin
-  Result:=nil;
-  if PageCount=0 then exit;
-  StartIndex:=IndexOf(CurPage);
-  if StartIndex<0 then
+  Result := nil;
+  if PageCount = 0 then
+    exit;
+  StartIndex := IndexOf(CurPage);
+  if StartIndex < 0 then
     if GoForward then
-      StartIndex:=PageCount-1
+      StartIndex := PageCount - 1
     else
-      StartIndex:=0;
-  i:=StartIndex;
+      StartIndex := 0;
+  i := StartIndex;
   repeat
-    if GoForward then begin
+    if GoForward then
+    begin
       Inc(i);
-      if i=PageCount then i:=0;
-    end else begin
-      if i=0 then i:=PageCount;
+      if i = PageCount then
+        i := 0;
+    end else
+    begin
+      if i = 0 then
+        i := PageCount;
       Dec(I);
     end;
-    if not CheckTabVisible or Result.TabVisible then begin
-      Result:=Pages[i];
+    if not CheckTabVisible or Pages[i].TabVisible then
+    begin
+      Result := Pages[i];
       exit;
     end;
-  until i=StartIndex;
+  until i = StartIndex;
 end;
 
 procedure TPageControl.SelectNextPage(GoForward: Boolean);
