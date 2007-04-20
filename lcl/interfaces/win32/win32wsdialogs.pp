@@ -64,6 +64,8 @@ type
   protected
   public
     class function  CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
+    class procedure DestroyHandle(const ACommonDialog: TCommonDialog); override;
+    class procedure ShowModal(const ACommonDialog: TCommonDialog); override;
   end;
 
   { TWin32WSSaveDialog }
@@ -73,6 +75,8 @@ type
   protected
   public
     class function  CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
+    class procedure DestroyHandle(const ACommonDialog: TCommonDialog); override;
+    class procedure ShowModal(const ACommonDialog: TCommonDialog); override;
   end;
 
   { TWin32WSSelectDirectoryDialog }
@@ -112,6 +116,13 @@ type
 
 
 implementation
+
+type
+  TOpenFileDialogRec = record
+    Dialog: TFileDialog;
+    FileNames: String;
+  end;
+  POpenFileDialogRec = ^TOpenFileDialogRec;
 
 // The size of the OPENFILENAME record depends on the windows version
 // In the initialization section the correct size is determined.
@@ -234,46 +245,57 @@ var
   OpenFileNotify: LPOFNOTIFY;
   OpenFileName: Windows.POPENFILENAME;
   NeededSize: SizeInt;
-  FileNames: pstring;
+  DialogRec: POpenFileDialogRec;
 begin
-  if uMsg = WM_NOTIFY then begin
+  if uMsg = WM_NOTIFY then
+  begin
     OpenFileNotify := LPOFNOTIFY(lParam);
-    if OpenFileNotify^.hdr.code=CDN_SELCHANGE then begin
+    if OpenFileNotify <> nil then
+    begin
       OpenFileName := OpenFileNotify^.lpOFN;
-      // NeededSize is the size that the lpStrFile buffer must have.
-      // the lpstrFile buffer contains the directory and a list of files
-      // for example 'c:\winnt'#0'file1.txt'#0'file2.txt'#0#0.
-      // GetFolderPath returns upper limit for the path, GetSpec for the files.
-      // This is not exact because the GetSpec returns the size for
-      // '"file1.txt" "file2.txt"', so that size will be two bytes per filename
-      // more than needed in thlengthe lpStrFile buffer.
-      NeededSize := CommDlg_OpenSave_GetFolderPath(GetParent(hwnd), nil, 0) +
-                      CommDlg_OpenSave_GetSpec(GetParent(hwnd), nil, 0);
-      // test if we need to use our own storage
-      if SizeInt(OpenFileName^.nMaxFile)<NeededSize then begin
-        if OpenFileName^.lCustData=0 then
-          OpenFileName^.lCustData := Windows.LParam(new(PString));
-        FileNames := PString(OpenFileName^.lCustData);
-        if length(FileNames^)<NeededSize then
-          SetLength(FileNames^, NeededSize*2);
-        CommDlg_OpenSave_GetSpec(GetParent(hwnd),
-                                   PChar(FileNames^), Length(FileNames^));
-      end;
+      DialogRec := POpenFileDialogRec(OpenFileName^.lCustData);
+    end
+    else
+    begin
+      OpenFileName := nil;
+      DialogRec := nil;
+    end;
+
+    case OpenFileNotify^.hdr.code of
+      CDN_SELCHANGE:
+        begin
+          // NeededSize is the size that the lpStrFile buffer must have.
+          // the lpstrFile buffer contains the directory and a list of files
+          // for example 'c:\winnt'#0'file1.txt'#0'file2.txt'#0#0.
+          // GetFolderPath returns upper limit for the path, GetSpec for the files.
+          // This is not exact because the GetSpec returns the size for
+          // '"file1.txt" "file2.txt"', so that size will be two bytes per filename
+          // more than needed in thlengthe lpStrFile buffer.
+          NeededSize := CommDlg_OpenSave_GetFolderPath(GetParent(hwnd), nil, 0) +
+                          CommDlg_OpenSave_GetSpec(GetParent(hwnd), nil, 0);
+          // test if we need to use our own storage
+          if (SizeInt(OpenFileName^.nMaxFile) < NeededSize) and (OpenFileName^.lCustData <> 0) then
+          begin
+            if length(DialogRec^.FileNames) < NeededSize then
+              SetLength(DialogRec^.FileNames, NeededSize*2);
+            CommDlg_OpenSave_GetSpec(GetParent(hwnd),
+                                       PChar(DialogRec^.FileNames), Length(DialogRec^.FileNames));
+          end;
+        end;
+      CDN_TYPECHANGE:
+        begin
+          DialogRec^.Dialog.IntfFileTypeChanged(OpenFileNotify^.lpOFN^.nFilterIndex);
+        end;
     end;
   end;
   Result:= 0;
 end;
 
-procedure ShowFileDialog(AOpenDialog: TOpenDialog; AWinFunc: TWinFileDialogFunc);
-var
-  OpenFile: OPENFILENAME;
-  UserResult: WINBOOL;
-
+function CreateFileDialogHandle(AOpenDialog: TOpenDialog): THandle;
   function GetFlagsFromOptions(Options: TOpenOptions): DWord;
   begin
-    Result := 0;
-    if ofAllowMultiSelect in Options then
-      Result := Result or OFN_ALLOWMULTISELECT or OFN_ENABLEHOOK;
+    Result := OFN_ENABLEHOOK;
+    if ofAllowMultiSelect in Options then Result := Result or OFN_ALLOWMULTISELECT;
     if ofCreatePrompt in Options then Result := Result or OFN_CREATEPROMPT;
     if not (ofOldStyleDialog in Options) then Result := Result or OFN_EXPLORER;
     if ofExtensionDifferent in Options then Result := Result or OFN_EXTENSIONDIFFERENT;
@@ -301,15 +323,72 @@ var
       if AFilter[i] = '|' then AFilter[i]:=#0;
     AFilter:=AFilter + #0#0;
   end;
+const
+  FileNameBufferLen = 1000;
+var
+  DialogRec: POpenFileDialogRec;
+  OpenFile: LPOPENFILENAME;
+  Filter: string;
+  FileName: string;
+  InitialDir: String;
+  FileNameBuffer: PChar;
+begin
+  FileNameBuffer := AllocMem(FileNameBufferLen + 1);
+  FileName := AOpenDialog.FileName;
+  InitialDir := AOpenDialog.InitialDir;
+  if (FileName<>'') and (FileName[length(FileName)]=PathDelim) then
+  begin
+    // if the filename contains a directory, set the initial directory
+    // and clear the filename
+    InitialDir := Copy(FileName,1, Length(FileName)-1);
+    FileName := '';
+  end;
+  StrLCopy(FileNameBuffer, PChar(FileName), FileNameBufferLen);
+  if AOpenDialog.Filter <> '' then 
+  begin
+    Filter := AOpenDialog.Filter;
+    ReplacePipe(Filter);
+  end
+  else
+    Filter:='All File Types(*.*)'+#0+'*.*'+#0#0; // Default -> avoid empty combobox
+
+  OpenFile := AllocMem(SizeOf(OpenFileName));
+  with OpenFile^ Do
+  begin
+    lStructSize := OpenFileNameSize;
+    hWndOwner := GetOwnerHandle(AOpenDialog);
+    hInstance := System.hInstance;
+    lpStrFilter := StrAlloc(Length(Filter)+1);
+    StrPCopy(lpStrFilter, Filter);
+    nFilterIndex := AOpenDialog.FilterIndex;
+    lpStrFile := FileNameBuffer;
+    lpStrTitle := PChar(AOpenDialog.Title);
+    lpStrInitialDir := PChar(InitialDir);
+    nMaxFile := FileNameBufferLen + 1; // Size in TCHARs
+    lpfnHook := @OpenFileDialogCallBack;
+    Flags := GetFlagsFromOptions(AOpenDialog.Options);
+    New(DialogRec);
+    DialogRec^.Dialog := AOpenDialog;
+    DialogRec^.FileNames := '';
+    lCustData := LParam(DialogRec);
+  end;
+  Result := THandle(OpenFile);
+end;
+
+procedure ProcessFileDialogResult(AOpenDialog: TOpenDialog; UserResult: WordBool);
+var
+  DialogRec: POpenFileDialogRec;
+  OpenFile: LPOPENFILENAME;
 
   procedure SetFilesProperty(AFiles:TStrings);
-  var 
+  var
     I: integer;
     pName: PChar;
   begin
-    pName := OpenFile.lpStrFile;
+    pName := OpenFile^.lpStrFile;
     I:=Length(pName);
-    if I < OpenFile.nFileOffset then begin
+    if I < OpenFile^.nFileOffset then
+    begin
       Inc(pName,Succ(I));
       I:=Length(pName);
       while I > 0 do
@@ -328,14 +407,16 @@ var
     i, Start: integer;
     FileNames: String;
   begin
-    FileNames := PString(OpenFile.lCustData)^;
-    if (FileNames[1] = '"') then begin
+    FileNames := DialogRec^.FileNames;
+    if (FileNames[1] = '"') then
+    begin
       Start := 1; // first quote is on pos 1
-      while FileNames[Start] <> #0 do begin
+      while FileNames[Start] <> #0 do
+      begin
         i := Start + 1;
         while FileNames[i] <> '"' do
           inc(i);
-        AFiles.Add(ExpandFileName(Copy(FileNames,Start+1,I - Start - 1)));
+        AFiles.Add(ExpandFileName(Copy(FileNames, Start + 1, I - Start - 1)));
         start := i+1;
         while (FileNames[Start] <> #0) and (FileNames[start] <> '"') do
           inc(Start);
@@ -348,7 +429,7 @@ var
     SelectedStr: string;
     I,Start: integer;
   begin
-    SelectedStr:=StrPas(OpenFile.lpStrFile);
+    SelectedStr:=StrPas(OpenFile^.lpStrFile);
     I:=Pos(' ',SelectedStr);
     if I = 0 then
       AFiles.Add(SelectedStr)
@@ -357,55 +438,19 @@ var
       SelectedStr:=SelectedStr+' ';
       Start:=1;
       for I:= 1 to Length(SelectedStr) do
-        if SelectedStr[I] =  ' ' then 
+        if SelectedStr[I] =  ' ' then
         begin
           AFiles.Add(ExpandFileName(Copy(SelectedStr,Start,I - Start)));
           Start:=Succ(I);
         end;
     end;
   end;
-
+  
 var
-  Filter: string;
-  FileName: string;
-  InitialDir: String;
-  FileNameBuffer: array[0..1000] of char;
   BufferTooSmall: boolean;
 begin
-  FillChar(FileNameBuffer[0], sizeof(FileNameBuffer), 0);
-  FileName := AOpenDialog.FileName;
-  InitialDir := AOpenDialog.InitialDir;
-  if (FileName<>'') and (FileName[length(FileName)]=PathDelim) then begin
-    // if the filename contains a directory, set the initial directory
-    // and clear the filename
-    InitialDir := Copy(FileName,1, Length(FileName)-1);
-    FileName := '';
-  end;
-  StrLCopy(@FileNameBuffer[0],PChar(Filename),sizeof(FileNameBuffer)-1);
-  if AOpenDialog.Filter <> '' then 
-  begin
-    Filter := AOpenDialog.Filter;
-    ReplacePipe(Filter);
-  end
-  else
-    Filter:='All File Types(*.*)'+#0+'*.*'+#0#0; // Default -> avoid empty combobox
-  ZeroMemory(@OpenFile, sizeof(OpenFileName));
-  with OpenFile Do
-  begin
-    lStructSize := OpenFileNameSize;
-    hWndOwner := GetOwnerHandle(AOpenDialog);
-    hInstance := System.hInstance;
-    lpStrFilter := StrAlloc(Length(Filter)+1);
-    StrPCopy(lpStrFilter, Filter);
-    nFilterIndex := AOpenDialog.FilterIndex;
-    lpStrFile := FileNameBuffer;
-    lpStrTitle := PChar(AOpenDialog.Title);
-    lpStrInitialDir := PChar(InitialDir);
-    nMaxFile := sizeof(FileNameBuffer);
-    lpfnHook := @OpenFileDialogCallBack;
-    Flags := GetFlagsFromOptions(AOpenDialog.Options);
-  end;
-  UserResult := AWinFunc(@OpenFile);
+  OPENFILE := LPOPENFILENAME(AOpenDialog.Handle);
+  DialogRec := POpenFileDialogRec(OPENFILE^.lCustData);
   BufferTooSmall := not UserResult and (CommDlgExtendedError=FNERR_BUFFERTOOSMALL);
   if BufferTooSmall then
     UserResult := true;
@@ -415,7 +460,7 @@ begin
     Files.Clear;
     if UserResult then
     begin
-      AOpenDialog.FilterIndex := OpenFile.nFilterIndex;
+      AOpenDialog.FilterIndex := OpenFile^.nFilterIndex;
       if (ofOldStyleDialog in Options) then
         SetFilesPropertyForOldStyle(Files)
       else if BufferTooSmall then
@@ -425,10 +470,6 @@ begin
       FileName := Files[0];
     end else
       FileName := '';
-
-    if OpenFile.lCustData<>0 then
-      Dispose(PString(OpenFile.lCustData));
-    StrDispose(OpenFile.lpStrFilter);
   end;
 end;
 
@@ -436,16 +477,56 @@ end;
 
 class function TWin32WSSaveDialog.CreateHandle(const ACommonDialog: TCommonDialog): THandle;
 begin
-  ShowFileDialog(TOpenDialog(ACommonDialog), @GetSaveFileName);
-  Result := 0;
+  Result := CreateFileDialogHandle(TOpenDialog(ACommonDialog));
+end;
+
+class procedure TWin32WSSaveDialog.DestroyHandle(const ACommonDialog: TCommonDialog);
+var
+  OPENFILE: LPOPENFILENAME;
+begin
+  if ACommonDialog.Handle <> 0 then
+  begin
+    OPENFILE := LPOPENFILENAME(ACommonDialog.Handle);
+    if OPENFILE^.lCustData <> 0 then
+      Dispose(POpenFileDialogRec(OPENFILE^.lCustData));
+    StrDispose(OpenFile^.lpStrFilter);
+    FreeMem(OpenFile^.lpStrFile);
+  end;
+end;
+
+class procedure TWin32WSSaveDialog.ShowModal(const ACommonDialog: TCommonDialog);
+begin
+  if ACommonDialog.Handle <> 0 then
+    ProcessFileDialogResult(TOpenDialog(ACommonDialog),
+      GetSaveFileName(LPOPENFILENAME(ACommonDialog.Handle)));
 end;
 
 { TWin32WSOpenDialog }
 
 class function TWin32WSOpenDialog.CreateHandle(const ACommonDialog: TCommonDialog): THandle;
 begin
-  ShowFileDialog(TOpenDialog(ACommonDialog), @GetOpenFileName);
-  Result := 0;
+  Result := CreateFileDialogHandle(TOpenDialog(ACommonDialog));
+end;
+
+class procedure TWin32WSOpenDialog.DestroyHandle(const ACommonDialog: TCommonDialog);
+var
+  OPENFILE: LPOPENFILENAME;
+begin
+  if ACommonDialog.Handle <> 0 then
+  begin
+    OPENFILE := LPOPENFILENAME(ACommonDialog.Handle);
+    if OPENFILE^.lCustData <> 0 then
+      Dispose(POpenFileDialogRec(OPENFILE^.lCustData));
+    StrDispose(OpenFile^.lpStrFilter);
+    FreeMem(OpenFile^.lpStrFile);
+  end;
+end;
+
+class procedure TWin32WSOpenDialog.ShowModal(const ACommonDialog: TCommonDialog);
+begin
+  if ACommonDialog.Handle <> 0 then
+    ProcessFileDialogResult(TOpenDialog(ACommonDialog),
+      GetOpenFileName(LPOPENFILENAME(ACommonDialog.Handle)));
 end;
 
 { TWin32WSFontDialog }

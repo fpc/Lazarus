@@ -100,6 +100,7 @@ type
   
   TFileDialog = class(TCommonDialog)
   private
+    FInternalFilterIndex: Integer;
     FDefaultExt: string;
     FFileName : String;
     FFiles: TStrings;
@@ -109,26 +110,32 @@ type
     FInitialDir: string;
     FOldWorkingDir: string;
     FOnHelpClicked: TNotifyEvent;
+    FOnTypeChange: TNotifyEvent;
     procedure SetDefaultExt(const AValue: string);
+    procedure SetFilterIndex(const AValue: Integer);
   protected
     function DoExecute: boolean; override;
+    function GetFilterIndex: Integer; virtual;
     procedure SetFileName(const Value: String); virtual;
     procedure SetFilter(const Value: String); virtual;
     procedure SetHistoryList(const AValue: TStrings); virtual;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
+    procedure DoTypeChange; virtual;
     function Execute: boolean; override;
     property Files: TStrings read FFiles;
     property HistoryList: TStrings read FHistoryList write SetHistoryList;
+    procedure IntfFileTypeChanged(NewFilterIndex: Integer);
   published
     property Title;
     property DefaultExt: string read FDefaultExt write SetDefaultExt;
     property FileName: String read FFileName write SetFileName;
     property Filter: String read FFilter write SetFilter;
-    property FilterIndex: Integer read FFilterIndex write FFilterIndex default 1;
+    property FilterIndex: Integer read GetFilterIndex write SetFilterIndex default 1;
     property InitialDir: string read FInitialDir write FInitialDir;
     property OnHelpClicked: TNotifyEvent read FOnHelpClicked write FOnHelpClicked;
+    property OnTypeChange: TNotifyEvent read FOnTypeChange write FOnTypeChange;
   end;
 
 

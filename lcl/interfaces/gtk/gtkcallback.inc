@@ -2128,15 +2128,17 @@ var
   theDialog: TCommonDialog;
 
   procedure CheckFilterActivated(FilterWidget: PGtkWidget);
-  var AFilterEntry: PFileSelFilterEntry;
+  var
+    AFilterEntry: PFileSelFilterEntry;
   begin
     if FilterWidget=nil then exit;
     AFilterEntry:=gtk_object_get_data(PGtkObject(FilterWidget),
                                       'LCLIsFilterMenuItem');
-    if (AFilterEntry<>nil) and (AFilterEntry^.Mask<>nil) then begin
+    if (AFilterEntry<>nil) and (AFilterEntry^.Mask<>nil) then
+    begin
       PopulateFileAndDirectoryLists(PGtkFileSelection(theDialog.Handle),
         AFilterEntry^.Mask);
-      TOpenDialog(TheDialog).FilterIndex := AFilterEntry^.FilterIndex + 1;
+      TFileDialog(TheDialog).IntfFileTypeChanged(AFilterEntry^.FilterIndex);
       UpdateDetailView(TOpenDialog(theDialog));
     end;
   end;
@@ -3292,4 +3294,5 @@ end;
   {$UNDEF ASSERT_IS_ON}
   {$C-}
 {$ENDIF}
+
 

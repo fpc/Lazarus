@@ -39,6 +39,16 @@ begin
   inherited Destroy;
 end;
 
+
+{------------------------------------------------------------------------------}
+{  TFileDialog DoOnTypeChange                                                         }
+{------------------------------------------------------------------------------}
+procedure TFileDialog.DoTypeChange;
+begin
+  if Assigned(FOnTypeChange) then
+    OnTypeChange(Self);
+end;
+
 {------------------------------------------------------------------------------}
 {  TFileDialog Execute                                                         }
 {------------------------------------------------------------------------------}
@@ -61,6 +71,15 @@ begin
   FHistoryList.Assign(AValue);
 end;
 
+procedure TFileDialog.IntfFileTypeChanged(NewFilterIndex: Integer);
+begin
+  if FilterIndex <> NewFilterIndex then
+  begin
+    FInternalFilterIndex := NewFilterIndex;
+    DoTypeChange;
+  end;
+end;
+
 {------------------------------------------------------------------------------
   procedure TFileDialog.SetDefaultExt(const AValue: string);
 ------------------------------------------------------------------------------}
@@ -71,12 +90,27 @@ begin
     FDefaultExt:='.'+FDefaultExt;
 end;
 
+procedure TFileDialog.SetFilterIndex(const AValue: Integer);
+begin
+  FFilterIndex := AValue;
+  if FHandle = 0 then
+    FInternalFilterIndex := AValue;
+end;
+
 {------------------------------------------------------------------------------}
 {  TFileDialog DoExecute                                                         }
 {------------------------------------------------------------------------------}
 function TFileDialog.DoExecute : boolean;
 begin
   Result:= inherited DoExecute;
+end;
+
+{------------------------------------------------------------------------------
+  TFileDialog GetFilterIndex
+------------------------------------------------------------------------------}
+function TFileDialog.GetFilterIndex: Integer;
+begin
+  Result := FInternalFilterIndex;
 end;
 
 {------------------------------------------------------------------------------}
@@ -284,4 +318,5 @@ begin
   end else
     Result:=true;
 end;
+
 

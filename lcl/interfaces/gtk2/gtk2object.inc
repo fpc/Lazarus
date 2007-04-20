@@ -1,4 +1,4 @@
-{%MainUnit gtk2int.pp}
+{%MainUnit gtk2int.pas}
 {******************************************************************************
                                    TGtk2WidgetSet
  ******************************************************************************
@@ -125,6 +125,24 @@ begin
     Result := Status
   else
     Result := False;
+end;
+
+procedure Gtk2FileChooserNotifyCB(dialog: PGObject; pspec: PGParamSpec; user_data: gpointer); cdecl;
+var
+  TheDialog: TFileDialog;
+  GtkFilter: PGtkFileFilter;
+  GtkFilterList: PGSList;
+  NewFilterIndex: Integer;
+begin
+  if pspec^.name = 'filter' then
+  begin // filter changed
+    theDialog := TFileDialog(user_data);
+    GtkFilter := gtk_file_chooser_get_filter(dialog);
+    GtkFilterList := gtk_file_chooser_list_filters(dialog);
+    NewFilterIndex := g_slist_index(GtkFilterList, GtkFilter);
+    theDialog.IntfFileTypeChanged(NewFilterIndex);
+    g_slist_free(GtkFilterList);
+  end;
 end;
 
 procedure Gtk2FileChooserResponseCB(widget: PGtkFileChooser; arg1: gint; data: gpointer); cdecl;
@@ -822,6 +840,7 @@ begin
     PChar(GTK_STOCK_CANCEL), [GTK_RESPONSE_CANCEL, PChar(Button1), GTK_RESPONSE_OK, nil]);
 
   g_signal_connect(SelWidget, 'response', gtk_signal_func(@Gtk2FileChooserResponseCB), FileDialog);
+  g_signal_connect(SelWidget, 'notify', gtk_signal_func(@Gtk2FileChooserNotifyCB), FileDialog);
 
 (*gtk 2.8 
   if FileDialog is TSaveDialog then begin
