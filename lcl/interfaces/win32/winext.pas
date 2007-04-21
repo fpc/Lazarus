@@ -296,6 +296,10 @@ type
      POPENFILENAME = ^OPENFILENAME;
      
      OPENFILENAME_NT4 = Windows.OPENFILENAME;
+
+// these functions are declared, because they need to have WinExt.LPOPENFILENAME parameter
+function GetOpenFileName(_para1:LPOPENFILENAME):WINBOOL; external 'comdlg32' name 'GetOpenFileNameA';
+function GetSaveFileName(_para1:LPOPENFILENAME):WINBOOL; external 'comdlg32' name 'GetSaveFileNameA';
 {$endif}
 
 
