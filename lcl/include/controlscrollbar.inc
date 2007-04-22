@@ -157,7 +157,7 @@ var
   KindID: integer;
 begin
   if Kind=sbHorizontal then
-    KindID:=SM_CXHSCROLL
+    KindID:=SM_CYHSCROLL
   else
     KindID:=SM_CXVSCROLL;
   if HandleAllocated then begin
