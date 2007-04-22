@@ -1130,9 +1130,9 @@ var
 begin
   TextLen := GetWindowTextLength(AHandle);
   tmpWideStr := PWideChar(SysAllocStringLen(nil,TextLen + 1));
-  GetWindowText(AHandle, PWideChar(tmpWideStr), TextLen + 1);
+  GetWindowText(AHandle, tmpWideStr, TextLen + 1);
   Result := WideStringToString(widestring(tmpWideStr));
-  FreeMem(tmpWideStr);
+  SysFreeString(tmpWideStr);
 end;
 
 
