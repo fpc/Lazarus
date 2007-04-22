@@ -71,24 +71,41 @@ type
 
   TMaskEdit = class(TCustomMaskEdit)
   published
-(*
     property Align;
     property Anchors;
     property AutoSize;
+    property AutoSelect;
     property BorderSpacing;
-    property CharCase;
     property Color;
     property Constraints;
+    property CharCase;
     property Ctl3D;
     property DragCursor;
     property DragKind;
     property DragMode;
-    property Enabled;
-*)
+    property EchoMode;
     property EditMask;
-(*
+    property Enabled;
     property Font;
     property MaxLength;
+    property OnChange;
+    property OnChangeBounds;
+    property OnClick;
+    property OnDblClick;
+    property OnDragDrop;
+    property OnDragOver;
+    property OnEditingDone;
+    property OnEndDrag;
+    property OnEnter;
+    property OnExit;
+    Property OnKeyDown;
+    property OnKeyPress;
+    Property OnKeyUp;
+    Property OnMouseDown;
+    Property OnMouseMove;
+    property OnMouseUp;
+    property OnResize;
+    property OnStartDrag;
     property ParentColor;
     property ParentCtl3D;
     property ParentFont;
@@ -97,26 +114,10 @@ type
     property PopupMenu;
     property ReadOnly;
     property ShowHint;
-    property TabOrder;
     property TabStop;
+    property TabOrder;
     property Text;
     property Visible;
-    property OnChange;
-    property OnClick;
-    property OnDblClick;
-    property OnDragDrop;
-    property OnDragOver;
-    property OnEndDrag;
-    property OnEnter;
-    property OnExit;
-    property OnKeyDown;
-    property OnKeyPress;
-    property OnKeyUp;
-    property OnMouseDown;
-    property OnMouseMove;
-    property OnMouseUp;
-    property OnStartDrag;
-*)
   end;
   
 procedure Register;
