@@ -33,15 +33,6 @@ Uses Classes, Windows;
 
 { Win32 API records not included in windows.pp }
 Type
-  { Record for the @link(GetComboBoxInfo) function }
-  COMBOBOXINFO = Record
-    cbSize, stateButton: DWORD;
-    rcItem, rcButton: RECT;
-    hwndCombo, hwndItem, hwndList: HWND;
-  End;
-  { Pointer to @link(COMBOBOXINFO) }
-  PComboBoxInfo = ^COMBOBOXINFO;
-
   TNMCustomDraw = record
     hdr        : NMHDR;
     dwDrawStage: DWORD;
@@ -61,7 +52,7 @@ Type
                    dwItemSpec   : DWORD;
                    uItemState   : UINT;
                    lItemlParam  : longint;
-				   clrText,clrTextBk:COLORREF;
+		   clrText,clrTextBk:COLORREF;
                    iSubItem     :longint;
                 END;
   PNMLVCustomDraw=^TNMLVCustomDraw;
@@ -88,12 +79,6 @@ Const
   PBS_SMOOTH = 1;
   { Vertical progress bar }
   PBS_VERTICAL = 4;
-  { Mouse-hovering message }
-  WM_MOUSEHOVER = $02A1;
-  { Mouse-leaving message }
-  WM_MOUSELEAVE = $02A3;
-  { Mouse-wheel message }
-  WM_MOUSEWHEEL = $020A;
   { Left-to-right reading text }
   WS_EX_LTRLEADING = 0;
 
@@ -209,9 +194,6 @@ Const
   TBCD_THUMB         = $02;
   TBCD_CHANNEL       = $03;
   
-// progressbar
-  PBM_SETRANGE32          = 1030;
-
 // for calendar control
   MCN_FIRST               = (0-750);          // monthcal
   MCN_SELCHANGE           = (MCN_FIRST + 1);
@@ -241,7 +223,6 @@ function ImageList_Copy(himlDst: HIMAGELIST; iDst: longint; himlSrc: HIMAGELIST;
 { Get the ancestor at level Flag of window HWnd }
 Function GetAncestor(Const HWnd: HWND; Const Flag: UINT): HWND; StdCall; External 'user32';
 { Get information about combo box hwndCombo and place in pcbi }
-Function GetComboBoxInfo(Const hwndCombo: HWND; pcbi: PCOMBOBOXINFO): BOOL; StdCall; External 'user32';
 function GetRandomRgn(aHDC: HDC; aHRGN: HRGN; iNum: longint): longint; stdcall; external 'gdi32';
 
 { Functions allocate and dealocate memory used in ole32 functions
@@ -298,8 +279,8 @@ type
      OPENFILENAME_NT4 = Windows.OPENFILENAME;
 
 // these functions are declared, because they need to have WinExt.LPOPENFILENAME parameter
-function GetOpenFileName(_para1:LPOPENFILENAME):WINBOOL; external 'comdlg32' name 'GetOpenFileNameA';
-function GetSaveFileName(_para1:LPOPENFILENAME):WINBOOL; external 'comdlg32' name 'GetSaveFileNameA';
+function GetOpenFileName(_para1:LPOPENFILENAME):WINBOOL; stdcall; external 'comdlg32' name 'GetOpenFileNameA';
+function GetSaveFileName(_para1:LPOPENFILENAME):WINBOOL; stdcall; external 'comdlg32' name 'GetSaveFileNameA';
 {$endif}
 
 
