@@ -2697,10 +2697,6 @@ const MimeTypeExt : Array[0..4] of String = ('.htm','.html','.txt','.jpg','.png'
       MimeTypes   : Array[0..4] of String = ('text/html','text/html','text/plain','image/jpeg','image/png');
 {$endif}
 
-{$IFDEF VER2_0_2}
-type
- TMyRegistry=Class(TRegistry);
-{$ENDIF}
 function GetLocalContent(const TheFileName: string): string;
 var
   Reg : TRegistry;
@@ -2725,14 +2721,8 @@ begin
   begin
     Reg := nil;
     try
-      {$IFDEF VER2_0_2}
-      Reg := TMyRegistry.Create;
-      Reg.RootKey := HKEY_CLASSES_ROOT;
-      TMyRegistry(Reg).SetCurrentKey(Reg.RootKey);
-      {$ELSE}
       Reg := TRegistry.Create;
       Reg.RootKey := HKEY_CLASSES_ROOT;
-      {$ENDIF}
       if Reg.OpenKey(Ext, False) then
         Result := Reg.ReadString('Content Type');
     finally
