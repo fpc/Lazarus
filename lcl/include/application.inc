@@ -1243,6 +1243,8 @@ begin
   LM_MOUSEMOVE: DoOnMouseMove;
   else          CancelHint;
   end;
+  
+  if Assigned(FOnUserInput) then FOnUserInput(Self, Msg);
 
   i:=FApplicationHandlers[ahtUserInput].Count;
   while FApplicationHandlers[ahtUserInput].NextDownIndex(i) do
