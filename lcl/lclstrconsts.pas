@@ -165,6 +165,7 @@ ResourceString
   rsGridFileDoesNotExists = 'Grid file doesn''t exists';
   rsNotAValidGridFile = 'Not a valid grid file';
   rsIndexOutOfRange = 'Index Out of range Cell[Col=%d Row=%d]';
+  rsGridIndexOutOfRange = 'Grid index out of range.';
   rsERRORInLCL = 'ERROR in LCL: ';
   rsCreatingGdbCatchableError = 'Creating gdb catchable error:';
   rsAControlCanNotHaveItselfAsParent = 'A control can''t have itself as parent';
