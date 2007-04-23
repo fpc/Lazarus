@@ -375,9 +375,10 @@ var
 begin
   if (fMenu.Items.Count = 0) then
   begin
-    firstmenuitem:=TMenuItem.Create(fMenu.Owner);
-    firstmenuitem.Caption:='New Item1';
-    firstmenuitem.Name:=GetDesigner.CreateUniqueComponentName(firstmenuitem.ClassName);
+    firstmenuitem := TMenuItem.Create(fMenu.Owner);
+    firstmenuitem.Name := GetDesigner.CreateUniqueComponentName(firstmenuitem.ClassName);
+    firstmenuitem.Caption := 'New Item1';
+
     fMenu.Items.Insert(0, firstmenuitem);
     GetDesigner.PropertyEditorHook.PersistentAdded(firstmenuitem, true);
     GetDesigner.Modified;
@@ -744,7 +745,7 @@ procedure TDesignerMainMenu.MenuItemMouseDown(Sender: TObject;
 var
   DesignerItem: PDesignerMenuItem;
 begin
-  ChangeMenuItem(Root,2,Root^.ID);
+  ChangeMenuItem(Root, 2, Root^.ID);
   InitIndexSequence;
   if (Sender is TPanel) then
     DesignerItem := SearchItemByPanel(Root, TPanel(Sender))
@@ -777,11 +778,17 @@ end;
 // New Item (before) has been selected from context menu -------//
 // -------------------------------------------------------------//
 procedure TDesignerMainMenu.AddNewItemBeforeClick(Sender: TObject);
+var
+  NewItem: PDesignerMenuItem;
 begin
-  AddNewItemBefore(Root, SelectedDesignerMenuItem);
+  NewItem := AddNewItemBefore(Root, SelectedDesignerMenuItem);
+  if NewItem = nil then
+    Exit;
+   
+  NewItem^.Active := True; // set visible
   SetCoordinates(POSITION_LEFT, POSITION_TOP, 0, Root);
   Parent.Invalidate;
-  
+
   InitIndexSequence;
   CreateIndexSequence(Root, SelectedDesignerMenuItem, 1);
   UpdateMenu(fMenu.Items, GetDesignerMenuItem(Root, SelectedDesignerMenuItem)^.PrevItem, 1, 2);
@@ -791,14 +798,19 @@ end;
 // New Item (after) has been selected from context menu -------//
 // ------------------------------------------------------------//
 procedure TDesignerMainMenu.AddNewItemAfterClick(Sender: TObject);
+var
+  NewItem: PDesignerMenuItem;
 begin
-  AddNewItemAfter(Root, SelectedDesignerMenuItem);
-  SetCoordinates(POSITION_LEFT,POSITION_TOP,0,Root);
+  NewItem := AddNewItemAfter(Root, SelectedDesignerMenuItem);
+  if NewItem = nil then
+    Exit;
+   
+  NewItem^.Active := True; // set visible
+  SetCoordinates(POSITION_LEFT, POSITION_TOP, 0, Root); 
   Parent.Invalidate;
-  
+
   InitIndexSequence;
-  CreateIndexSequence(Root, SelectedDesignerMenuItem, 1);
-  
+  CreateIndexSequence(Root, SelectedDesignerMenuItem, 1);  
   UpdateMenu(fMenu.Items, GetDesignerMenuItem(Root, SelectedDesignerMenuItem)^.NextItem, 1, 1);
 end;
 
@@ -806,14 +818,19 @@ end;
 // Add SubMenu has been selected from context menu ------------//
 // ------------------------------------------------------------//
 procedure TDesignerMainMenu.AddSubMenuClick(Sender: TObject);
+var
+  NewItem: PDesignerMenuItem;
 begin
-  if AddSubMenu(Root, SelectedDesignerMenuItem)=nil then exit;
+  NewItem := AddSubMenu(Root, SelectedDesignerMenuItem);
+  if NewItem = nil then
+    Exit;
+   
+  NewItem^.Active := True; // set visible
   SetCoordinates(POSITION_LEFT, POSITION_TOP, 0, Root);
   Parent.Invalidate;
   
   InitIndexSequence;
   CreateIndexSequence(Root, SelectedDesignerMenuItem,1);
-  
   UpdateMenu(fMenu.Items, GetDesignerMenuItem(Root, SelectedDesignerMenuItem)^.SubMenu, 1, 3);
 end;
 
@@ -855,28 +872,52 @@ end;
 procedure TDesignerMainMenu.DeleteItemClick(Sender: TObject);
 var
   temp_returnvalue: Integer;
+  Item, NextSelectedItem: PDesignerMenuItem;
 begin
   //SelectedDesignerMenuItem:=GetSelectedDesignerMenuItem(Root);
   CreateIndexSequence(Root, SelectedDesignerMenuItem, 1);
-  temp_returnvalue:=DeleteItem(GetDesignerMenuItem(Root, SelectedDesignerMenuItem));
+  Item := GetDesignerMenuItem(Root, SelectedDesignerMenuItem);
+
+  // look for next selected item
+  NextSelectedItem := Item^.NextItem;
+  if NextSelectedItem = nil then
+    NextSelectedItem := Item^.PrevItem;
+  if NextSelectedItem = nil then
+    NextSelectedItem := Item^.ParentMenu;
+  if NextSelectedItem = nil then
+    NextSelectedItem := Root;
+    
+  temp_returnvalue := DeleteItem(Item);
   if (temp_returnvalue > 0) then
   begin
-    SetCoordinates(POSITION_LEFT, POSITION_TOP,0,Root);
+    SelectedDesignerMenuItem := NextSelectedItem^.ID;
+    
+    ChangeMenuItem(Root, 2, Root^.ID);
+    SetCoordinates(POSITION_LEFT, POSITION_TOP, 0, Root);
     Parent.Invalidate;
     if (temp_returnvalue = 1) then
       UpdateMenu(fMenu.Items, nil, 1, 7);
     if (temp_returnvalue = 2) then
       UpdateMenu(fMenu.Items, GetDesignerMenuItem(Root, SelectedDesignerMenuItem), 1 , 8);
+    ChangeMenuItem(Root, 1, SelectedDesignerMenuItem);    
   end;
 end;
 
 procedure TDesignerMainMenu.PersistentDeleting(APersistent: TPersistent);
+var
+  MenuItem: TMenuItem absolute APersistent;
+  Item: PDesignerMenuItem;
 begin
   if APersistent is TMenuItem then
   begin
-    DeleteItem(FindDesignerMenuItem(TMenuItem(APersistent)));
-    SetCoordinates(POSITION_LEFT, POSITION_TOP, 0, Root);
-    Parent.Invalidate;
+    Item := FindDesignerMenuItem(MenuItem);
+    // how we can compare them?
+    if (Item <> nil) and (Item^.Caption = MenuItem.Caption) then
+    begin
+      DeleteItem(Item);
+      SetCoordinates(POSITION_LEFT, POSITION_TOP, 0, Root);
+      Parent.Invalidate;
+    end;
   end;
   inherited;
 end;
@@ -1286,9 +1327,10 @@ var
   i: Integer;
   str_i: string;
 begin
-  DebugLn('Old Item: ',old_Item);
-  DebugLn('New Item: ',new_Item);
-  DebugLn('Tak se na to mrknem: ', XMLConfig.GetValue(old_Item + '/Name/Value',''));
+  //DebugLn('Old Item: ',old_Item);
+  //DebugLn('New Item: ',new_Item);
+  //DebugLn('Tak se na to mrknem: ', XMLConfig.GetValue(old_Item + '/Name/Value',''));
+
   XMLConfig.SetValue(new_Item + '/Name/Value', XMLConfig.GetValue(old_Item + '/Name/Value',''));
   if (XMLConfig.GetValue(old_Item + '/Description/Value', 'does_not_exists') <> 'does_not_exists') then
     XMLConfig.SetValue(new_Item + '/Description/Value', XMLConfig.GetValue(old_Item + '/Description/Value',''));
@@ -1422,11 +1464,12 @@ begin
       new_menuitem^.Index:=MenuItem^.Index + 1;
 
     Init(new_menuitem);
+    Result := new_menuitem;
   end else
   begin
     if (MenuItem^.SubMenu <> nil) then
-      AddNewItemBefore(MenuItem^.SubMenu,Ident);
-    if (MenuItem^.NextItem <> nil) then
+      Result := AddNewItemBefore(MenuItem^.SubMenu,Ident);
+    if (Result = nil) and (MenuItem^.NextItem <> nil) then
       AddNewItemBefore(MenuItem^.NextItem,Ident);
   end;
 end;
@@ -1720,35 +1763,44 @@ function TDesignerMainMenu.FindDesignerMenuItem(AMenuItem: TMenuItem
     ParentDesignerMenuItem: PDesignerMenuItem;
     i: Integer;
   begin
-    Result:=nil;
-    if TheMenuItem=nil then exit;
+    Result := nil;
+    if TheMenuItem = nil then
+      exit;
     // find parent
-    if TheMenuItem.Parent=nil then begin
+    if TheMenuItem.Parent = nil then
+    begin
       // this is TMenu.Items -> no corresponding
-    end else if TheMenuItem.Parent.Parent=nil then begin
+    end
+    else
+    if TheMenuItem.Parent.Parent = nil then
+    begin
       // top level menu item
-      if (TheMenuItem.GetParentMenu=fMenu) then begin
+      if (TheMenuItem.GetParentMenu = fMenu) then
+      begin
         // root item
         Result:=Root;
       end;
-    end else begin
+    end else
+    begin
       // sub menu item
       // -> search parent
-      ParentDesignerMenuItem:=FindRecursive(TheMenuItem.Parent);
-      if ParentDesignerMenuItem<>nil then
-        Result:=ParentDesignerMenuItem^.SubMenu;
+      ParentDesignerMenuItem := FindRecursive(TheMenuItem.Parent);
+      if ParentDesignerMenuItem <> nil then
+        Result := ParentDesignerMenuItem^.SubMenu;
     end;
-    if Result<>nil then begin
-      i:=TheMenuItem.MenuIndex;
-      while (Result<>nil) and (i>0) do begin
-        Result:=Result^.NextItem;
+    if Result <> nil then
+    begin
+      i := TheMenuItem.MenuIndex;
+      while (Result <> nil) and (i > 0) do
+      begin
+        Result := Result^.NextItem;
         dec(i);
       end;
     end;
   end;
 
 begin
-  Result:=FindRecursive(AMenuItem);
+  Result := FindRecursive(AMenuItem);
 end;
 
 // ------------------------------------------------
