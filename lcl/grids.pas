@@ -102,6 +102,7 @@ type
     goSmoothScroll,       // Switch scrolling mode (pixel scroll is by default)
     goFixedRowNumbering,  // Ya
     goScrollKeepVisible   // keeps focused cell visible while scrolling
+    
   );
   TGridOptions = set of TGridOption;
 
@@ -570,6 +571,8 @@ type
     FGridFlags: TGridFlags;
     FGridPropBackup: TGridPropertyBackup;
     FStrictSort: boolean;
+    FIgnoreClick: boolean;
+    FAllowOutboundEvents: boolean;
     procedure AdjustCount(IsColumn:Boolean; OldValue, NewValue:Integer);
     procedure CacheVisibleGrid;
     procedure CancelSelection;
@@ -674,6 +677,7 @@ type
     function  CanGridAcceptKey(Key: Word; Shift: TShiftState): Boolean; dynamic;
     procedure CellClick(const aCol,aRow: Integer); virtual;
     procedure CheckLimits(var aCol,aRow: Integer);
+    procedure CheckLimitsWithError(const aCol, aRow: Integer);
     procedure ColRowDeleted(IsColumn: Boolean; index: Integer); dynamic;
     procedure ColRowExchanged(IsColumn: Boolean; index,WithIndex: Integer); dynamic;
     procedure ColRowInserted(IsColumn: boolean; index: integer); dynamic;
@@ -688,6 +692,7 @@ type
     procedure CheckNewCachedSizes(var AGCache:TGridDataCache); virtual;
     procedure CreateWnd; override;
     procedure CreateParams(var Params: TCreateParams); override;
+    procedure Click; override;
     procedure DblClick; override;
     procedure DefineProperties(Filer: TFiler); override;
     procedure DestroyHandle; override;
@@ -815,6 +820,7 @@ type
     procedure WMSetFocus(var message: TLMSetFocus); message LM_SETFOCUS;
     procedure WndProc(var TheMessage : TLMessage); override;
 
+    property AllowOutboundEvents: boolean read FAllowOutboundEvents write FAllowOutboundEvents default true;
     property AlternateColor: TColor read FAlternateColor write SetAlternateColor stored IsAltColorStored;
     property AutoAdvance: TAutoAdvance read FAutoAdvance write FAutoAdvance default aaRight;
     property AutoFillColumns: boolean read FAutoFillColumns write SetAutoFillColumns;
@@ -971,6 +977,7 @@ type
 
     procedure DefaultDrawCell(aCol,aRow: Integer; var aRect: TRect; aState:TGridDrawState); virtual;
     // properties
+    property AllowOutboundEvents;
     property BorderColor;
     property Canvas;
     property Col;
@@ -980,6 +987,7 @@ type
     property EditorMode;
     property ExtendedColSizing;
     property AltColorStartNormal;
+    property FastEditing;
     property FocusColor;
     property FocusRectVisible;
     property GridHeight;
@@ -2005,13 +2013,19 @@ end;
 procedure TCustomGrid.SetCol(AValue: Integer);
 begin
   if AValue=FCol then Exit;
+  if not AllowOutboundEvents then
+    CheckLimitsWithError(AValue, FRow);
   MoveExtend(False, AValue, FRow);
+  Click;
 end;
 
 procedure TCustomGrid.SetRow(AValue: Integer);
 begin
   if AValue=FRow then Exit;
+  if not AllowOutBoundEvents then
+    CheckLimitsWithError(FCol, AValue);
   MoveExtend(False, FCol, AValue);
+  Click;
 end;
 
 procedure TCustomGrid.Sort(ColSorting: Boolean; index, IndxFrom, IndxTo: Integer);
@@ -2271,6 +2285,13 @@ begin
     WindowClass.Style := WindowClass.Style and DWORD(not ClassStylesOff);
     Style := Style or WS_VSCROLL or WS_HSCROLL or WS_CLIPCHILDREN;
   end;
+end;
+
+procedure TCustomGrid.Click;
+begin
+  {$IFDEF dbgGrid} DebugLn('FIgnoreClick=', dbgs(FIgnoreClick)); {$ENDIF}
+  if not FIgnoreClick then
+    inherited Click;
 end;
 
 procedure TCustomGrid.ScrollBarRange(Which: Integer; aRange,aPage: Integer);
@@ -3424,7 +3445,7 @@ procedure TCustomGrid.CheckIndex(IsColumn: Boolean; Index: Integer);
 begin
   if (IsColumn and ((Index<0) or (Index>ColCount-1))) or
      (not IsColumn and ((Index<0) or (Index>RowCount-1))) then
-    raise EGridException.Create('Index out of range');
+    raise EGridException.Create(rsGridIndexOutOfRange);
 end;
 
 function TCustomGrid.CheckTopLeft(aCol,aRow: Integer; CheckCols, CheckRows: boolean): boolean;
@@ -4024,28 +4045,36 @@ var
   aBorderWidth: Integer;
 begin
   aBorderWidth := GetBorderWidth;
-  if X<FGCache.FixedWidth+aBorderWidth then
+  if X<FGCache.FixedWidth+aBorderWidth then begin
+    // in fixedwidth zone
     if Y<FGcache.FixedHeight+aBorderWidth then
-      Result:=gzFixedCells
+      Result:= gzFixedCells
     else
-      if RowCount>FixedRows then
-        Result:=gzFixedRows
-      else
-        Result:=gzInvalid
-  else
-  if Y<FGCache.FixedHeight+aBorderWidth then
+    if RowCount>FixedRows then
+      Result:= gzFixedRows
+    else
+      Result:= gzInvalid
+  end
+  else if Y<FGCache.FixedHeight+aBorderWidth then begin
+    // if fixedheight zone
     if X<FGCache.FixedWidth+aBorderWidth then
       Result:=gzFixedCells
     else
-      if ColCount>FixedCols then
-        Result:=gzFixedCols
-      else
-        Result:=gzInvalid
-  else
-    if not fixedGrid then
+    if ColCount>FixedCols then
+      Result:=gzFixedCols
+    else
+      Result:=gzInvalid
+  end
+  else if not FixedGrid then begin
+    // in normal cell zone (though, might be outbounds)
+    if AllowOutboundEvents or
+      ((X<=FGCache.GridWidth) and (Y<=FGCache.GridHeight)) then
       result := gzNormal
     else
-      result := gzInvalid;
+      result := gzInvalid
+  end
+  else
+    result := gzInvalid;
 end;
 
 function TCustomGrid.CellToGridZone(aCol, aRow: Integer): TGridZone;
@@ -4190,7 +4219,20 @@ begin
 
   {$IfDef dbgGrid} DebugLn('MouseDown INIT'); {$Endif}
 
+  FIgnoreClick := True;
   Gz:=MouseToGridZone(X,Y);
+
+  {$IFDEF dbgGrid}
+  DebugOut('Mouse was in ');
+  case Gz of
+    gzFixedCells: DebugLn('gzFixedCells');
+    gzFixedCols:  DebugLn('gzFixedCols');
+    gzFixedRows:  DebugLn('gzFixedRows');
+    gzNormal:     DebugLn('gzNormal');
+    gzInvalid:    DebugLn('gzInvalid');
+  end;
+  {$ENDIF}
+
   case Gz of
     gzFixedCols:
       begin
@@ -4222,6 +4264,7 @@ begin
       
     gzNormal:
       begin
+        FIgnoreClick := False;
         WasFocused := Focused;
         if not WasFocused then
           SetFocus;
@@ -4638,8 +4681,11 @@ var
     FGCache.TLColOff:=0;
     FGCache.TLRowOff:=0;
     SelectActive:=Sh;
-    MoveNextSelectable(Rel, aCol, aRow);
-    Key:=0;
+    if MoveNextSelectable(Rel, aCol, aRow) then
+    begin
+      Key := 0;
+      Click;
+    end;
   end;
 begin
   {$ifdef dbgGrid}DebugLn('Grid.KeyDown INIT Key=',IntToStr(Key));{$endif}
@@ -5068,6 +5114,14 @@ begin
   if aCol>ColCount-1 then acol:=ColCount-1;
   if aRow<FFixedRows then aRow:=FFixedRows else
   if aRow>RowCount-1 then aRow:=RowCount-1;
+end;
+
+// We don't want to do this inside CheckLimits() because keyboard handling
+// shouldn't raise an error whereas setting the Row or Col property it should.
+procedure TCustomGrid.CheckLimitsWithError(const aCol, aRow: Integer);
+begin
+  if (aCol < 0) or (aRow < 0) or (aCol >= ColCount) or (aRow >= RowCount) then
+    raise EGridException.Create(rsGridIndexOutOfRange);
 end;
 
 // This procedure checks if cursor cell position is allowed
@@ -6159,7 +6213,7 @@ begin
   Editor:=nil;
   FBorderColor := cl3DDKShadow;
   BorderStyle := bsSingle;
-
+  FIgnoreClick := False;
 
   ParentColor := False;
   Color:=clWindow;
@@ -6187,6 +6241,7 @@ begin
 
   FFastEditing := True;
   TabStop := True;
+  FAllowOutboundEvents:=True;
 end;
 
 destructor TCustomGrid.Destroy;
